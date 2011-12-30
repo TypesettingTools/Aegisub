@@ -311,8 +311,8 @@ END
 LANGUAGE LANG_SERBIAN, SUBLANG_SERBIAN_LATIN
 STRINGTABLE 
 BEGIN
-	10000 "Egisub"
-	10001 "Pravite i uređujte složene titlove s Egisubom."
+	10000 "Idžisab"
+	10001 "Idžisab je uređivač složenih titlova koji podržava mnoge formate, uključujući i ASS/SSA."
 	10101 "Svi titlovi"
 	10102 "Napredni ASS titlovi"
 	10103 "Napredni SSA titlovi"
@@ -321,16 +321,16 @@ BEGIN
 	10106 "Matroška titlovi"
 	10107 "Tekstualni titlovi"
 	10108 "Medijske datoteke"
-	10109 "Zvučne datoteke"
-	10110 "Video datoteke"
+	10109 "Zvučni zapisi"
+	10110 "Video-zapisi"
 END
 
 // by Rancher
 LANGUAGE LANG_SERBIAN, SUBLANG_SERBIAN_CYRILLIC
 STRINGTABLE 
 BEGIN
-	10000 "Егисуб"
-	10001 "Правите и уређујте сложене титлове с Егисубом."
+	10000 "Иџисаб"
+	10001 "Иџисаб је уређивач сложених титлова који подржава многе формате, укључујући и ASS/SSA."
 	10101 "Сви титлови"
 	10102 "Напредни ASS титлови"
 	10103 "Напредни SSA титлови"
@@ -339,8 +339,8 @@ BEGIN
 	10106 "Матрошка титлови"
 	10107 "Текстуални титлови"
 	10108 "Медијске датотеке"
-	10109 "Звучне датотеке"
-	10110 "Видео датотеке"
+	10109 "Звучни записи"
+	10110 "Видео-записи"
 END
 
 // by doplank

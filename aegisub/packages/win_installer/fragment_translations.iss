@@ -74,8 +74,8 @@ Source: ..\..\po\pl.mo;          DestDir: {app}\locale\pl;    DestName: aegisub.
 Source: ..\..\po\wxstd-pl.mo;    DestDir: {app}\locale\pl;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/pl
 Source: ..\..\po\ru.mo;          DestDir: {app}\locale\ru;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/ru
 Source: ..\..\po\wxstd-ru.mo;    DestDir: {app}\locale\ru;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/ru
-Source: ..\..\po\sr_RS.mo;       DestDir: {app}\locale\sr_HS; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/sr
-Source: ..\..\po\sr_RS@latin.mo; DestDir: {app}\locale\sr_HS@latin; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/sr
+Source: ..\..\po\sr_RS.mo;       DestDir: {app}\locale\sr_RS; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/sr
+Source: ..\..\po\sr_RS@latin.mo; DestDir: {app}\locale\sr_RS@latin; DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/sr
 ; Missing wxstd for Serbian
 Source: ..\..\po\vi.mo;          DestDir: {app}\locale\vi;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/vi
 Source: ..\..\po\wxstd-vi.mo;    DestDir: {app}\locale\vi;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/vi

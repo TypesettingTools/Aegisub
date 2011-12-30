@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 2.1.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-04 01:20+0200\n"
-"PO-Revision-Date: 2011-07-21 23:21+0100\n"
-"Last-Translator: Ђорђе Васиљевић <theranchcowboy@googlemail.com>\n"
+"POT-Creation-Date: 2011-12-25 03:03+0100\n"
+"PO-Revision-Date: 2011-12-25 13:33+0100\n"
+"Last-Translator: Đorđe Vasiljević <theranchcowboy@googlemail.com>\n"
 "Language-Team: Serbian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -89,7 +89,7 @@ msgstr "tajlandski"
 
 #: ass_style.cpp:592
 msgid "East European"
-msgstr "istočnoevropski"
+msgstr "Istočna Evropa"
 
 #: ass_style.cpp:593
 msgid "OEM"
@@ -199,61 +199,61 @@ msgstr "Karaoke"
 msgid "Toggle karaoke mode"
 msgstr "Uključi/isključi karaoke"
 
-#: audio_box.cpp:551
+#: audio_box.cpp:541
 msgid "Cancel Split"
 msgstr "&Otkaži"
 
-#: audio_box.cpp:552
+#: audio_box.cpp:542
 msgid "Discard all splits and leave split-mode"
 msgstr "Otkažite razdvajanje"
 
-#: audio_box.cpp:553
+#: audio_box.cpp:543
 msgid "Accept Split"
 msgstr "&Prihvati"
 
-#: audio_box.cpp:554
+#: audio_box.cpp:544
 msgid "Commit splits and leave split-mode"
 msgstr "Razdvojite slogove"
 
-#: audio_box.cpp:556
+#: audio_box.cpp:546
 msgid "Join"
 msgstr "Spoji"
 
-#: audio_box.cpp:557
+#: audio_box.cpp:547
 msgid "Join selected syllables"
 msgstr "Spoji izabrane slogove"
 
-#: audio_box.cpp:558
+#: audio_box.cpp:548
 msgid "Split"
 msgstr "Razdvoji"
 
-#: audio_box.cpp:559
+#: audio_box.cpp:549
 msgid "Enter split-mode"
 msgstr "Razdvajanje"
 
-#: audio_display.cpp:2294
-#: audio_display.cpp:2349
+#: audio_display.cpp:2248
+#: audio_display.cpp:2293
 msgid "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr "Želite li da primenite izmene?"
 
-#: audio_display.cpp:2294
-#: audio_display.cpp:2349
+#: audio_display.cpp:2248
+#: audio_display.cpp:2293
 msgid "Commit?"
 msgstr "Primeniti?"
 
-#: audio_karaoke.cpp:811
+#: audio_karaoke.cpp:754
 msgid "Karaoke tag"
 msgstr "Karaoke oznaka"
 
-#: audio_karaoke.cpp:815
+#: audio_karaoke.cpp:758
 msgid "Change karaoke tag to \\k"
 msgstr "Promeni karaoke oznaku u \\k"
 
-#: audio_karaoke.cpp:816
+#: audio_karaoke.cpp:759
 msgid "Change karaoke tag to \\kf"
 msgstr "Promeni karaoke oznaku u \\kf"
 
-#: audio_karaoke.cpp:817
+#: audio_karaoke.cpp:760
 msgid "Change karaoke tag to \\ko"
 msgstr "Promeni karaoke oznaku u \\ko"
 
@@ -263,7 +263,7 @@ msgstr "Učitaj zvučni zapis"
 
 #: audio_provider_ram.cpp:90
 msgid "Reading into RAM"
-msgstr "Učitavam RAM memoriju…"
+msgstr "Učitavam radnu memoriju…"
 
 #: auto4_base.cpp:401
 #: dialog_kanji_timer.cpp:737
@@ -272,12 +272,12 @@ msgstr "&Zatvori"
 
 #: auto4_base.cpp:403
 msgid "Script completed"
-msgstr "Skript je završio radnju."
+msgstr "Skript je završio."
 
 #: auto4_base.cpp:755
 #, c-format
 msgid "An Automation script failed to load. File name: '%s', error reported:"
-msgstr "Skript Automatizacije se ne može učitati. Naziv datoteke: „%s“, greška:"
+msgstr "Automatizacioni skript ne može da se učita. Naziv datoteke: „%s“, greška:"
 
 #: auto4_base.cpp:768
 #, c-format
@@ -294,7 +294,7 @@ msgstr "Nema dovoljno parametara za Aegisub::text_extents()"
 
 #: auto4_perl.cpp:315
 msgid "Tried to register PerlConsole, but support for it was disabled in this version."
-msgstr "Pokušavam da upišem PerlConsole, ali je podrška za njega onemogućena u ovom izdanju."
+msgstr "Podrška za Perl Console je onemogućena u ovoj verziji."
 
 #: auto4_perl.cpp:383
 msgid "Fatal error: "
@@ -341,80 +341,6 @@ msgstr "Ponovno učitavam %s jer je datoteka na disku (%s) izmenjena."
 msgid "Saving changes"
 msgstr "Čuvanje izmena"
 
-#: base_grid.cpp:434
-msgid "#"
-msgstr "#"
-
-#: base_grid.cpp:435
-msgid "L"
-msgstr "L"
-
-#: base_grid.cpp:436
-#: subs_grid.cpp:120
-msgid "Start"
-msgstr "Početak"
-
-#: base_grid.cpp:437
-#: subs_grid.cpp:121
-msgid "End"
-msgstr "Kraj"
-
-#: base_grid.cpp:438
-#: dialog_options.cpp:213
-#: dialog_options.cpp:284
-#: dialog_options.cpp:470
-#: dialog_paste_over.cpp:68
-#: dialog_search_replace.cpp:96
-#: dialog_selection.cpp:78
-#: subs_grid.cpp:122
-msgid "Style"
-msgstr "Stil"
-
-#: base_grid.cpp:439
-#: dialog_paste_over.cpp:69
-#: dialog_search_replace.cpp:97
-#: dialog_selection.cpp:79
-#: subs_edit_box.cpp:90
-#: subs_grid.cpp:123
-msgid "Actor"
-msgstr "Glumac"
-
-#: base_grid.cpp:440
-#: dialog_paste_over.cpp:79
-#: dialog_search_replace.cpp:98
-#: dialog_selection.cpp:80
-#: subs_edit_box.cpp:93
-#: subs_grid.cpp:124
-msgid "Effect"
-msgstr "Efekat"
-
-#: base_grid.cpp:441
-#: dialog_style_editor.cpp:248
-#: subs_grid.cpp:125
-msgid "Left"
-msgstr "Leva"
-
-#: base_grid.cpp:442
-#: dialog_style_editor.cpp:248
-#: subs_grid.cpp:126
-msgid "Right"
-msgstr "Desna"
-
-#: base_grid.cpp:443
-#: dialog_style_editor.cpp:248
-#: subs_grid.cpp:127
-msgid "Vert"
-msgstr "Uspr."
-
-#: base_grid.cpp:444
-#: dialog_kanji_timer.cpp:707
-#: dialog_paste_over.cpp:80
-#: dialog_paste_over.cpp:92
-#: dialog_search_replace.cpp:95
-#: dialog_selection.cpp:77
-msgid "Text"
-msgstr "Tekst"
-
 #: browse_button.cpp:52
 msgid "Browse..."
 msgstr "P&otraži…"
@@ -436,9 +362,9 @@ msgid "Choose character set"
 msgstr "Odabir kodnog rasporeda"
 
 #: dialog_about.cpp:53
-#: frame_main.cpp:527
+#: frame_main.cpp:537
 msgid "About Aegisub"
-msgstr "O Egisubu"
+msgstr "O Idžisabu"
 
 #: dialog_about.cpp:114
 msgid "Translated into LANGUAGE by PERSON\n"
@@ -469,7 +395,7 @@ msgid ""
 msgstr ""
 "Program može da upravlja sledećim vrstama datoteka.\n"
 "\n"
-"Ako više ne želite da Egisub otvara određene datoteke, podesite drugi program za to."
+"Ako više ne želite da Idžisab otvara određene datoteke, podesite drugi program za to."
 
 #: dialog_associations.cpp:378
 msgid ""
@@ -479,29 +405,31 @@ msgid ""
 msgstr ""
 "Program je već povezan sa svim podržanim vrstama datoteka.\n"
 "\n"
-"Ako više ne želite da Egisub otvara određene datoteke, podesite drugi program za to."
-
-#: dialog_associations.cpp:475
-msgid "Aegisub"
-msgstr "Egisub"
+"Ako više ne želite da Idžisab otvara određene datoteke, podesite drugi program za to."
 
 #: dialog_associations.cpp:476
-msgid "Make Aegisub default editor for subtitles?"
-msgstr "Postaviti Egisub za podrazumevani uređivač titlova?"
+msgid "Aegisub"
+msgstr "Idžisab"
 
 #: dialog_associations.cpp:477
-msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
-msgstr "Egisub nije vaš podrazumevani uređivač titlova. Želite li da to postane?"
+msgid "Make Aegisub default editor for subtitles?"
+msgstr "Želite li da postavite Idžisab kao podrazumevani uređivač titlova?"
 
 #: dialog_associations.cpp:478
+msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
+msgstr ""
+"Idžisab nije vaš podrazumevani uređivač titlova.\n"
+"Želite li da to postane?"
+
+#: dialog_associations.cpp:479
 msgid "Always perform this check when Aegisub starts"
 msgstr "&Uvek prikazuj ovo prozorče"
 
-#: dialog_associations.cpp:533
+#: dialog_associations.cpp:534
 msgid "&Yes"
 msgstr "&Da"
 
-#: dialog_associations.cpp:534
+#: dialog_associations.cpp:535
 msgid "&No"
 msgstr "&Ne"
 
@@ -523,48 +451,48 @@ msgstr "Zakači &font…"
 
 #: dialog_attachments.cpp:76
 msgid "Attach &Graphics"
-msgstr "Zakači &grafiku…"
+msgstr "Zakači &crtež…"
 
 #: dialog_attachments.cpp:80
 #: dialog_automation.cpp:69
-#: dialog_version_check.cpp:502
+#: dialog_version_check.cpp:576
 msgid "&Close"
 msgstr "&Zatvori"
 
-#: dialog_attachments.cpp:99
+#: dialog_attachments.cpp:101
 msgid "Attachment name"
 msgstr "Naziv priloga"
 
-#: dialog_attachments.cpp:100
+#: dialog_attachments.cpp:102
 msgid "Size"
 msgstr "Veličina"
 
-#: dialog_attachments.cpp:101
+#: dialog_attachments.cpp:103
 msgid "Group"
 msgstr "Grupa"
 
-#: dialog_attachments.cpp:194
-#: dialog_attachments.cpp:229
+#: dialog_attachments.cpp:196
+#: dialog_attachments.cpp:231
 msgid "Choose file to be attached"
 msgstr "Odabir datoteke za kačenje"
 
-#: dialog_attachments.cpp:215
+#: dialog_attachments.cpp:217
 msgid "attach font file"
 msgstr "zakači font"
 
-#: dialog_attachments.cpp:250
+#: dialog_attachments.cpp:252
 msgid "attach graphics file"
 msgstr "zakači grafiku"
 
-#: dialog_attachments.cpp:269
+#: dialog_attachments.cpp:271
 msgid "Select the path to save the files to:"
 msgstr "Čuvanje datoteke"
 
-#: dialog_attachments.cpp:273
+#: dialog_attachments.cpp:275
 msgid "Select the path to save the file to:"
 msgstr "Čuvanje datoteke"
 
-#: dialog_attachments.cpp:300
+#: dialog_attachments.cpp:302
 msgid "remove attachment"
 msgstr "ukloni prilog"
 
@@ -604,11 +532,11 @@ msgstr "Naziv datoteke"
 msgid "Description"
 msgstr "Opis"
 
-#: dialog_automation.cpp:210
+#: dialog_automation.cpp:212
 msgid "Add Automation script"
 msgstr "Dodavanje skripta"
 
-#: dialog_automation.cpp:281
+#: dialog_automation.cpp:283
 #, c-format
 msgid ""
 "Total scripts loaded: %d\n"
@@ -616,16 +544,16 @@ msgid ""
 "Local scripts loaded: %d\n"
 "\n"
 msgstr ""
-"Ukupno učitanih skriptova: %d\n"
-"Globalno učitanih skriptova: %d\n"
-"Lokalno učitanih skriptova: %d\n"
+"Ukupan broj učitanih skriptova: %d\n"
+"Broj globalno učitanih skriptova: %d\n"
+"Broj lokalno učitanih skriptova: %d\n"
 "\n"
 
-#: dialog_automation.cpp:286
+#: dialog_automation.cpp:288
 msgid "Scripting engines installed:\n"
 msgstr "Instalirani mehanizmi za skriptovanje:\n"
 
-#: dialog_automation.cpp:293
+#: dialog_automation.cpp:295
 #, c-format
 msgid ""
 "\n"
@@ -644,33 +572,33 @@ msgstr ""
 "Naziv: %s\n"
 "Opis: %s\n"
 "Autor: %s\n"
-"Izdanje: %s\n"
+"Verzija: %s\n"
 "Putanja: %s\n"
 "Stanje: %s\n"
 "\n"
 "Mogućnosti pružaju skriptovi:\n"
 
-#: dialog_automation.cpp:299
+#: dialog_automation.cpp:301
 msgid "Correctly loaded"
 msgstr "ispravno"
 
-#: dialog_automation.cpp:299
+#: dialog_automation.cpp:301
 msgid "Failed to load"
 msgstr "neispravno"
 
-#: dialog_automation.cpp:303
+#: dialog_automation.cpp:305
 msgid "    Macro: "
 msgstr "    Makro: "
 
-#: dialog_automation.cpp:305
+#: dialog_automation.cpp:307
 msgid "    Export filter: "
 msgstr "    Filter za izvoz: "
 
-#: dialog_automation.cpp:307
+#: dialog_automation.cpp:309
 msgid "    Subtitle format handler: "
 msgstr "    Format titla: "
 
-#: dialog_automation.cpp:315
+#: dialog_automation.cpp:317
 msgid "Automation Script Info"
 msgstr "Podaci o skriptu"
 
@@ -704,15 +632,15 @@ msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
 msgid "RGB colour"
-msgstr "RGB boja"
+msgstr "Boja RGB"
 
 #: dialog_colorpicker.cpp:558
 msgid "HSL colour"
-msgstr "HSL boja"
+msgstr "Boja HSL"
 
 #: dialog_colorpicker.cpp:563
 msgid "HSV colour"
-msgstr "HSV boja"
+msgstr "Boja HSV"
 
 #: dialog_colorpicker.cpp:583
 msgid "Spectrum mode:"
@@ -746,7 +674,7 @@ msgstr "Lumin.:"
 
 #: dialog_colorpicker.cpp:628
 msgid "Value:"
-msgstr "Vred.:"
+msgstr "Vredn.:"
 
 #: dialog_colorpicker.cpp:653
 msgid "Colour Picker"
@@ -781,53 +709,53 @@ msgstr "Broj kadrova (FPS):"
 msgid "Duration (frames):"
 msgstr "Trajanje (u kadrovima):"
 
-#: dialog_dummy_video.cpp:257
+#: dialog_dummy_video.cpp:258
 #, c-format
 msgid "Resulting duration: %d:%02d:%02d.%03d"
 msgstr "Ciljno trajanje: %d:%02d:%02d.%03d"
 
-#: dialog_dummy_video.cpp:263
+#: dialog_dummy_video.cpp:264
 msgid "Invalid fps or length value"
 msgstr "Neispravni broj kadrova ili trajanje"
 
-#: dialog_export.cpp:56
+#: dialog_export.cpp:57
 msgid "Export"
 msgstr "Izvoz"
 
-#: dialog_export.cpp:59
+#: dialog_export.cpp:60
 msgid "Filters"
 msgstr "Filteri"
 
-#: dialog_export.cpp:90
+#: dialog_export.cpp:91
 msgid "Move up"
 msgstr "Pomeri nagore"
 
-#: dialog_export.cpp:91
+#: dialog_export.cpp:92
 msgid "Move down"
 msgstr "Pomeri nadole"
 
-#: dialog_export.cpp:92
+#: dialog_export.cpp:93
 msgid "Select all"
 msgstr "Izaberi sve"
 
-#: dialog_export.cpp:93
+#: dialog_export.cpp:94
 msgid "Select none"
 msgstr "Poništi sve"
 
-#: dialog_export.cpp:99
+#: dialog_export.cpp:100
 msgid "Text encoding:"
 msgstr "Kodni raspored:"
 
-#: dialog_export.cpp:116
+#: dialog_export.cpp:117
 msgid "Export..."
 msgstr "Izvezi…"
 
-#: dialog_export.cpp:192
+#: dialog_export.cpp:194
 msgid "Export subtitles file"
 msgstr "Izvoz titla"
 
 #: dialog_fonts_collector.cpp:80
-#: frame_main.cpp:255
+#: frame_main.cpp:265
 msgid "Fonts Collector"
 msgstr "Zbirka fontova"
 
@@ -836,7 +764,7 @@ msgid "&Browse..."
 msgstr "Po&traži…"
 
 #: dialog_fonts_collector.cpp:98
-#: dialog_fonts_collector.cpp:309
+#: dialog_fonts_collector.cpp:310
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
@@ -876,47 +804,48 @@ msgstr "Izveštaj"
 msgid "&Start!"
 msgstr "&Započni"
 
-#: dialog_fonts_collector.cpp:195
+#: dialog_fonts_collector.cpp:196
 msgid "Invalid destination."
 msgstr "Neispravno odredište."
 
-#: dialog_fonts_collector.cpp:195
-#: dialog_fonts_collector.cpp:204
-#: dialog_fonts_collector.cpp:213
-#: dialog_kanji_timer.cpp:820
-#: dialog_kanji_timer.cpp:822
-#: dialog_kanji_timer.cpp:865
+#: dialog_fonts_collector.cpp:196
+#: dialog_fonts_collector.cpp:205
+#: dialog_fonts_collector.cpp:214
+#: dialog_kanji_timer.cpp:821
+#: dialog_kanji_timer.cpp:823
+#: dialog_kanji_timer.cpp:866
 #: dialog_options.cpp:238
-#: dialog_resample.cpp:217
-#: dialog_resample.cpp:221
-#: options.cpp:467
+#: dialog_resample.cpp:218
+#: dialog_resample.cpp:222
+#: dialog_spellchecker.cpp:83
+#: options.cpp:469
 #: subs_grid.cpp:686
 #: subs_grid.cpp:690
 #: subs_grid.cpp:736
 msgid "Error"
 msgstr "Greška"
 
-#: dialog_fonts_collector.cpp:204
+#: dialog_fonts_collector.cpp:205
 msgid "Could not create destination folder."
 msgstr "Odredišna fascikla nije stvorena."
 
-#: dialog_fonts_collector.cpp:213
+#: dialog_fonts_collector.cpp:214
 msgid "Invalid path for .zip file."
 msgstr "Neispravna putanja arhive."
 
-#: dialog_fonts_collector.cpp:259
+#: dialog_fonts_collector.cpp:260
 msgid "Select archive file name"
 msgstr "Izaberite naziv arhive"
 
-#: dialog_fonts_collector.cpp:259
+#: dialog_fonts_collector.cpp:260
 msgid "Zip Archives (*.zip)|*.zip"
 msgstr "ZIP arhive (*.zip)|*.zip"
 
-#: dialog_fonts_collector.cpp:267
+#: dialog_fonts_collector.cpp:268
 msgid "Select folder to save fonts on"
 msgstr "Izaberite fasciklu u kojoj želite da sačuvate fontove"
 
-#: dialog_fonts_collector.cpp:323
+#: dialog_fonts_collector.cpp:324
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to.\n"
 "If a folder is entered, a default name will be used."
@@ -924,43 +853,43 @@ msgstr ""
 "Unesite naziv odredišne arhive za skupljanje fontova.\n"
 "Ako unesete fasciklu, koristiće se podrazumevani naziv."
 
-#: dialog_fonts_collector.cpp:393
+#: dialog_fonts_collector.cpp:394
 msgid "Invalid destination directory."
 msgstr "Neispravna odredišna fascikla."
 
-#: dialog_fonts_collector.cpp:406
+#: dialog_fonts_collector.cpp:407
 msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
 msgstr "Skupljam podatke o fontovima. Ova radnja može potrajati. Rezultati bivaju privremeno memorisani da bi ponovno pokretanje bilo brže.\n"
 
-#: dialog_fonts_collector.cpp:408
+#: dialog_fonts_collector.cpp:409
 msgid "Done collecting font data."
 msgstr "Prikupljanje podataka o fontovima je završeno."
 
-#: dialog_fonts_collector.cpp:409
+#: dialog_fonts_collector.cpp:410
 msgid "Scanning file for fonts..."
 msgstr "Tražim fontove u datoteci… "
 
-#: dialog_fonts_collector.cpp:442
+#: dialog_fonts_collector.cpp:443
 msgid "Done."
 msgstr "Završeno."
 
-#: dialog_fonts_collector.cpp:444
+#: dialog_fonts_collector.cpp:445
 msgid "Checking fonts...\n"
 msgstr "Proveravam fontove…\n"
 
-#: dialog_fonts_collector.cpp:445
+#: dialog_fonts_collector.cpp:446
 msgid "Copying fonts to folder...\n"
 msgstr "Umnožavam fontove u fasciklu…\n"
 
-#: dialog_fonts_collector.cpp:446
+#: dialog_fonts_collector.cpp:447
 msgid "Copying fonts to archive...\n"
 msgstr "Umnožavam fontove u arhivu…\n"
 
-#: dialog_fonts_collector.cpp:447
+#: dialog_fonts_collector.cpp:448
 msgid "Attaching fonts to file...\n"
 msgstr "Kačim fontove na datoteku…\n"
 
-#: dialog_fonts_collector.cpp:463
+#: dialog_fonts_collector.cpp:464
 #, c-format
 msgid ""
 "\n"
@@ -969,60 +898,60 @@ msgstr ""
 "\n"
 "Završeno pisanje na %s.\n"
 
-#: dialog_fonts_collector.cpp:469
+#: dialog_fonts_collector.cpp:470
 msgid "Done. All fonts found."
 msgstr "Završeno. Pronađeni su svi fontovi."
 
-#: dialog_fonts_collector.cpp:472
+#: dialog_fonts_collector.cpp:473
 msgid "Done. All fonts copied."
 msgstr "Završeno. Umnoženi su svi fontovi."
 
-#: dialog_fonts_collector.cpp:477
+#: dialog_fonts_collector.cpp:478
 msgid "font attachment"
 msgstr "prilog fonta"
 
-#: dialog_fonts_collector.cpp:484
+#: dialog_fonts_collector.cpp:485
 msgid "Done. Some fonts could not be found."
 msgstr "Završeno. Pojedini fontovi se ne mogu pronaći."
 
-#: dialog_fonts_collector.cpp:485
+#: dialog_fonts_collector.cpp:486
 msgid "Done. Some fonts could not be copied."
 msgstr "Završeno. Pojedini fontovi se ne mogu umnožiti."
 
-#: dialog_fonts_collector.cpp:505
+#: dialog_fonts_collector.cpp:506
 msgid "Not found.\n"
 msgstr "Nije pronađeno.\n"
 
-#: dialog_fonts_collector.cpp:511
+#: dialog_fonts_collector.cpp:512
 msgid "Found.\n"
 msgstr "Pronađeno.\n"
 
-#: dialog_fonts_collector.cpp:526
+#: dialog_fonts_collector.cpp:527
 #, c-format
 msgid "* Copied %s.\n"
 msgstr "* Umnoženo (%s).\n"
 
-#: dialog_fonts_collector.cpp:530
+#: dialog_fonts_collector.cpp:531
 #, c-format
 msgid "* %s already exists on destination.\n"
 msgstr "* %s već postoji u odredištu.\n"
 
-#: dialog_fonts_collector.cpp:533
+#: dialog_fonts_collector.cpp:534
 #, c-format
 msgid "* Failed to copy %s.\n"
 msgstr "* Ne mogu da umnožim %s.\n"
 
-#: dialog_fonts_collector.cpp:606
+#: dialog_fonts_collector.cpp:607
 #, c-format
 msgid "\"%s\" found on style \"%s\".\n"
 msgstr "Pronađen je font „%s“ u stilu „%s“.\n"
 
-#: dialog_fonts_collector.cpp:607
+#: dialog_fonts_collector.cpp:608
 #, c-format
 msgid "\"%s\" found on dialogue line \"%d\".\n"
 msgstr "„%s“ pronađeno u dijalogu „%d“.\n"
 
-#: dialog_fonts_collector.cpp:608
+#: dialog_fonts_collector.cpp:609
 #, c-format
 msgid "\"%s\" found.\n"
 msgstr "„%s“ pronađeno.\n"
@@ -1051,6 +980,15 @@ msgstr "Odredište:"
 #: dialog_kanji_timer.cpp:695
 msgid "Kanji timing"
 msgstr "Kandži brojač"
+
+#: dialog_kanji_timer.cpp:707
+#: dialog_paste_over.cpp:80
+#: dialog_paste_over.cpp:92
+#: dialog_search_replace.cpp:95
+#: dialog_selection.cpp:78
+#: subs_grid.cpp:1530
+msgid "Text"
+msgstr "Tekst"
 
 #: dialog_kanji_timer.cpp:708
 msgid "Styles"
@@ -1087,7 +1025,7 @@ msgid ""
 "Enter: Link, accept line when done\n"
 "Backspace: Unlink last"
 msgstr ""
-"Kada polje za odredište zauzme fokus, koristite sledeće tastere:\n"
+"Kada polje za odredište zauzme prvi plan, koristite sledeće tastere:\n"
 "\n"
 "Desna strelica: povećajte odabir odredišta\n"
 "Leva strelica: smanjite odabir odredišta\n"
@@ -1124,19 +1062,19 @@ msgstr "&Vrati jednu liniju unazad"
 msgid "Accept Line"
 msgstr "Pr&ihvati liniju"
 
-#: dialog_kanji_timer.cpp:810
+#: dialog_kanji_timer.cpp:811
 msgid "kanji timing"
 msgstr "kandži brojač"
 
-#: dialog_kanji_timer.cpp:820
+#: dialog_kanji_timer.cpp:821
 msgid "Select source and destination styles first."
 msgstr "Prvo izaberite izvorni i odredišni stil."
 
-#: dialog_kanji_timer.cpp:822
+#: dialog_kanji_timer.cpp:823
 msgid "The source and destination styles must be different."
 msgstr "Izvorni i odredišni stilovi ne mogu biti isti."
 
-#: dialog_kanji_timer.cpp:865
+#: dialog_kanji_timer.cpp:866
 msgid "Group all of the source text."
 msgstr "Skupi sav tekst izvora."
 
@@ -1149,9 +1087,9 @@ msgstr "Skupi sav tekst izvora."
 #: dialog_options.cpp:555
 #: dialog_properties.cpp:119
 #: dialog_timing_processor.cpp:83
-#: frame_main.cpp:279
+#: frame_main.cpp:289
 #: hotkeys.cpp:333
-#: hotkeys.cpp:337
+#: hotkeys.cpp:341
 msgid "Options"
 msgstr "Mogućnosti"
 
@@ -1160,13 +1098,13 @@ msgid "Startup"
 msgstr "Pokretanje"
 
 #: dialog_options.cpp:114
-#: dialog_version_check.cpp:495
+#: dialog_version_check.cpp:569
 msgid "Auto Check for Updates"
 msgstr "&Samodograđivanje"
 
 #: dialog_options.cpp:116
 msgid "Check File Associations on Start"
-msgstr "Proveri povezanost po pokretanju"
+msgstr "Proveri povezanost pri pokretanju"
 
 #: dialog_options.cpp:121
 msgid "Limits for levels and recent files"
@@ -1190,7 +1128,7 @@ msgstr "Najviše skorašnjih datoteka titlova"
 
 #: dialog_options.cpp:124
 msgid "Maximum recent video files"
-msgstr "Najviše skorašnjih video snimaka"
+msgstr "Najviše skorašnjih video-snimaka"
 
 #: dialog_options.cpp:124
 msgid "Maximum recent audio files"
@@ -1198,7 +1136,7 @@ msgstr "Najviše skorašnjih zvučnih zapisa"
 
 #: dialog_options.cpp:124
 msgid "Maximum recent find strings"
-msgstr "Najviše skorašnjih niski za traženje"
+msgstr "Najviše skorašnjih niski za pretragu"
 
 #: dialog_options.cpp:124
 msgid "Maximum recent replace strings"
@@ -1258,6 +1196,17 @@ msgstr "uvek"
 #: dialog_options.cpp:359
 msgid "Ask"
 msgstr "pitaj"
+
+#: dialog_options.cpp:213
+#: dialog_options.cpp:284
+#: dialog_options.cpp:470
+#: dialog_paste_over.cpp:68
+#: dialog_search_replace.cpp:96
+#: dialog_selection.cpp:79
+#: subs_grid.cpp:122
+#: subs_grid.cpp:1518
+msgid "Style"
+msgstr "Stil"
 
 #: dialog_options.cpp:218
 msgid "Enable call tips"
@@ -1328,7 +1277,7 @@ msgstr "Font:"
 
 #: dialog_options.cpp:290
 msgid "Allow grid to take focus"
-msgstr "&Dozvoli da mreža zauzme fokus"
+msgstr "&Dozvoli da mreža zauzme prvi plan"
 
 #: dialog_options.cpp:290
 msgid "Highlight subtitles that are currently visible in video"
@@ -1394,7 +1343,7 @@ msgstr "Napredno"
 
 #: dialog_options.cpp:358
 msgid "Match video resolution on open: "
-msgstr "Uskladi rezoluciju snimka po otvaranju:"
+msgstr "Uskladi rezoluciju snimka pri otvaranju:"
 
 #: dialog_options.cpp:363
 msgid "Default Zoom: "
@@ -1426,7 +1375,7 @@ msgstr "Memorijsko ograničenje Avisinta:"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
-msgstr "&Dozvoli izdanja Avisinta starija od 2.56a"
+msgstr "&Dozvoli verzije Avisinta starije od 2.56a"
 
 #: dialog_options.cpp:416
 #: dialog_options.cpp:544
@@ -1453,15 +1402,15 @@ msgstr "&Zaključaj klizanje s mišem"
 
 #: dialog_options.cpp:436
 msgid "Snap to keyframes"
-msgstr "P&rijanjanje uz ključne kadrove"
+msgstr "P&rianjaj uz ključne kadrove"
 
 #: dialog_options.cpp:437
 msgid "Snap to adjacent lines"
-msgstr "Pr&ijanjanje uz granične linije"
+msgstr "Pr&ianjaj uz susedne linije"
 
 #: dialog_options.cpp:438
 msgid "Auto-focus on mouse over"
-msgstr "Vr&ati fokus pri prelasku mišem"
+msgstr "&Fokusiraj pri prelasku mišem"
 
 #: dialog_options.cpp:442
 msgid "Don't show"
@@ -1481,11 +1430,11 @@ msgstr "Podrazumevana dužina vremena"
 
 #: dialog_options.cpp:444
 msgid "Default lead-in length"
-msgstr "Vreme proširavanja početnog vremena"
+msgstr "Vreme proširivanja početnog vremena"
 
 #: dialog_options.cpp:445
 msgid "Default lead-out length"
-msgstr "Vreme proširavanja završnog vremena"
+msgstr "Vreme proširivanja završnog vremena"
 
 #: dialog_options.cpp:446
 msgid "Show inactive lines"
@@ -1529,7 +1478,7 @@ msgstr "Izmenjena pozadina izbora"
 
 #: dialog_options.cpp:488
 msgid "Seconds boundary"
-msgstr "Granica sekundi"
+msgstr "Granica za sekunde"
 
 #: dialog_options.cpp:488
 msgid "Waveform"
@@ -1585,11 +1534,11 @@ msgstr "Dobavljač zvuka"
 
 #: dialog_options.cpp:530
 msgid "Audio player"
-msgstr "Izvođač zvuka"
+msgstr "Muzički plejer"
 
 #: dialog_options.cpp:531
 msgid "Cache type"
-msgstr "Vrsta međumemorije"
+msgstr "Vrsta ostave"
 
 #: dialog_options.cpp:533
 msgid "Avisynth down-mixer"
@@ -1597,11 +1546,11 @@ msgstr "Avisint mikser"
 
 #: dialog_options.cpp:535
 msgid "HD cache path"
-msgstr "Putanja za međumemorisanje"
+msgstr "Putanja za skladištenje"
 
 #: dialog_options.cpp:536
 msgid "HD cache name"
-msgstr "Naziv međumemorije"
+msgstr "Naziv ostave"
 
 #: dialog_options.cpp:537
 msgid "Spectrum cutoff"
@@ -1629,7 +1578,7 @@ msgstr "Kvalitet spektra"
 
 #: dialog_options.cpp:540
 msgid "Spectrum cache memory max (MB)"
-msgstr "Najveća međumemorija spektra (MB)"
+msgstr "Najveća ostava spektra (MB)"
 
 #: dialog_options.cpp:559
 msgid "Base path"
@@ -1637,11 +1586,11 @@ msgstr "Osnovna putanja"
 
 #: dialog_options.cpp:560
 msgid "Include path"
-msgstr "Uključna putanja"
+msgstr "Putanja za uključivanje"
 
 #: dialog_options.cpp:561
 msgid "Auto-load path"
-msgstr "Samoučitavanje"
+msgstr "Putanja za samoučitavanje"
 
 #: dialog_options.cpp:562
 msgid "0: Fatal"
@@ -1704,12 +1653,12 @@ msgid "Autoreload on Export"
 msgstr "Samoučitavanje na izvozu"
 
 #: dialog_options.cpp:585
-#: dialog_options.cpp:1081
+#: dialog_options.cpp:1082
 msgid "Function"
 msgstr "Mogućnost"
 
 #: dialog_options.cpp:586
-#: dialog_options.cpp:1082
+#: dialog_options.cpp:1083
 msgid "Key"
 msgstr "Taster"
 
@@ -1759,7 +1708,7 @@ msgid "Advanced"
 msgstr "Napredno"
 
 #: dialog_options.cpp:621
-#: frame_main.cpp:260
+#: frame_main.cpp:270
 msgid "Automation"
 msgstr "Automatizacija"
 
@@ -1771,41 +1720,43 @@ msgstr "Prečice"
 msgid "Restore Defaults"
 msgstr "&Vrati podrazumevano"
 
-#: dialog_options.cpp:727
-#: dialog_options.cpp:761
-#: dialog_options.cpp:901
+#: dialog_options.cpp:728
+#: dialog_options.cpp:762
+#: dialog_options.cpp:902
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
 msgstr "Program mora biti ponovo pokrenut da bi izmene stupile na snagu. Želite li to da uradite?"
 
-#: dialog_options.cpp:727
-#: dialog_options.cpp:761
-#: dialog_options.cpp:901
+#: dialog_options.cpp:728
+#: dialog_options.cpp:762
+#: dialog_options.cpp:902
 msgid "Restart Aegisub"
 msgstr "Ponovo pokreni"
 
-#: dialog_options.cpp:777
+#: dialog_options.cpp:778
 msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
-msgstr "Želite li da vratite podrazumevane vrednosti? Sve vaše postavke će biti poništene."
+msgstr ""
+"Želite li da vratite podrazumevane vrednosti?\n"
+"Sve vaše postavke će biti poništene."
 
-#: dialog_options.cpp:777
+#: dialog_options.cpp:778
 msgid "Restore defaults?"
-msgstr "Vratiti podrazumevane postavke?"
+msgstr "Vraćanje podrazumevanih postavki"
 
-#: dialog_options.cpp:1101
+#: dialog_options.cpp:1102
 msgid "Press Key"
 msgstr "Pritiskanje tastera"
 
-#: dialog_options.cpp:1112
+#: dialog_options.cpp:1113
 #, c-format
 msgid "Press key to bind to \"%s\" or Esc to cancel."
 msgstr "Pritisnite taster za „%s“ ili zatvorite prozorče."
 
-#: dialog_options.cpp:1148
+#: dialog_options.cpp:1149
 #, c-format
 msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
 msgstr "Prečica %s je već namenjena za taster %s. Ako nastavite, prečica će biti očišćena. Nastaviti?"
 
-#: dialog_options.cpp:1148
+#: dialog_options.cpp:1149
 msgid "Hotkey conflict"
 msgstr "Sukob prečica"
 
@@ -1834,6 +1785,15 @@ msgstr "Početno vreme"
 msgid "End Time"
 msgstr "Završno vreme"
 
+#: dialog_paste_over.cpp:69
+#: dialog_search_replace.cpp:97
+#: dialog_selection.cpp:80
+#: subs_edit_box.cpp:90
+#: subs_grid.cpp:123
+#: subs_grid.cpp:1520
+msgid "Actor"
+msgstr "Glumac"
+
 #: dialog_paste_over.cpp:70
 msgid "Margin Left"
 msgstr "Leva margina"
@@ -1853,6 +1813,15 @@ msgstr "Gornja na vrhu"
 #: dialog_paste_over.cpp:77
 msgid "Margin Bottom"
 msgstr "Donja margina"
+
+#: dialog_paste_over.cpp:79
+#: dialog_search_replace.cpp:98
+#: dialog_selection.cpp:81
+#: subs_edit_box.cpp:93
+#: subs_grid.cpp:124
+#: subs_grid.cpp:1522
+msgid "Effect"
+msgstr "Efekat"
 
 #: dialog_paste_over.cpp:89
 #: dialog_timing_processor.cpp:77
@@ -1891,7 +1860,7 @@ msgstr "Prevod:"
 
 #: dialog_properties.cpp:74
 msgid "Editing:"
-msgstr "Uređivanje:"
+msgstr "Redaktura:"
 
 #: dialog_properties.cpp:76
 msgid "Timing:"
@@ -1907,7 +1876,7 @@ msgstr "Ažurirao/la:"
 
 #: dialog_properties.cpp:82
 msgid "Update details:"
-msgstr "Detalji ažuriranja:"
+msgstr "Podaci ažuriranja:"
 
 #: dialog_properties.cpp:105
 #: dialog_resample.cpp:90
@@ -1917,7 +1886,7 @@ msgstr "Rezolucija"
 #: dialog_properties.cpp:111
 #: dialog_resample.cpp:99
 msgid "From video"
-msgstr "Iz video snimka"
+msgstr "Iz video-snimka"
 
 #: dialog_properties.cpp:122
 msgid "0: Smart wrapping, top line is wider"
@@ -1943,7 +1912,7 @@ msgstr "Stil prelamanja:"
 
 #: dialog_properties.cpp:134
 msgid "Reverse"
-msgstr "obratno"
+msgstr "obrnuto"
 
 #: dialog_properties.cpp:139
 msgid "Collision: "
@@ -1957,7 +1926,7 @@ msgstr "Povećaj ivice i senku"
 msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
 msgstr "Uskladite veličinu ivica i senke u zavisnosti od rezolucije skripta ili iscrtavača. Ako nije označeno, veličina će zavisiti samo od iscrtavača."
 
-#: dialog_properties.cpp:204
+#: dialog_properties.cpp:205
 msgid "property changes"
 msgstr "izmene svojstva"
 
@@ -1981,11 +1950,11 @@ msgstr "×"
 msgid "Change aspect ratio"
 msgstr "Promeni razmeru"
 
-#: dialog_resample.cpp:221
+#: dialog_resample.cpp:222
 msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
 msgstr "Nepoznata rezolucija: ona ne može imati vrednost nule."
 
-#: dialog_resample.cpp:305
+#: dialog_resample.cpp:306
 msgid "resolution resampling"
 msgstr "prouzorkovanje rezolucije"
 
@@ -1994,12 +1963,12 @@ msgid "Find what:"
 msgstr "Šta pronaći:"
 
 #: dialog_search_replace.cpp:74
-#: dialog_spellchecker.cpp:113
+#: dialog_spellchecker.cpp:119
 msgid "Replace with:"
 msgstr "Zameni sa:"
 
 #: dialog_search_replace.cpp:81
-#: dialog_selection.cpp:70
+#: dialog_selection.cpp:71
 msgid "Match case"
 msgstr "P&odudaranje malih i velikih slova"
 
@@ -2009,7 +1978,7 @@ msgstr "&Koristi regularne izraze"
 
 #: dialog_search_replace.cpp:83
 msgid "Update Video (slow)"
-msgstr "&Ažuriraj video snimak"
+msgstr "&Ažuriraj video-snimak"
 
 #: dialog_search_replace.cpp:100
 #: dialog_shift_times.cpp:108
@@ -2022,7 +1991,7 @@ msgid "Selected rows"
 msgstr "&Izabrane linije"
 
 #: dialog_search_replace.cpp:102
-#: dialog_selection.cpp:81
+#: dialog_selection.cpp:82
 msgid "In Field"
 msgstr "Polje"
 
@@ -2057,101 +2026,99 @@ msgid "No matches found."
 msgstr "Nema poklapanja."
 
 #: dialog_search_replace.cpp:566
-#: dialog_spellchecker.cpp:122
-#: hotkeys.cpp:351
-#: hotkeys.cpp:354
+#: dialog_spellchecker.cpp:128
+#: hotkeys.cpp:355
+#: hotkeys.cpp:358
 msgid "Replace"
 msgstr "Zameni"
 
 #: dialog_search_replace.cpp:566
-#: hotkeys.cpp:348
+#: hotkeys.cpp:352
 msgid "Find"
 msgstr "Pronalaženje"
 
-#: dialog_selection.cpp:56
+#: dialog_selection.cpp:57
 msgid "Select"
 msgstr "Odabir linija"
 
-#: dialog_selection.cpp:62
+#: dialog_selection.cpp:63
 msgid "Match"
 msgstr "Poklapanje"
 
-#: dialog_selection.cpp:64
+#: dialog_selection.cpp:65
 msgid "Match dialogues/comments"
 msgstr "Dijalozi i komentari"
 
-#: dialog_selection.cpp:67
+#: dialog_selection.cpp:68
 msgid "Matches"
 msgstr "Pok&lopi"
 
-#: dialog_selection.cpp:68
+#: dialog_selection.cpp:69
 msgid "Doesn't Match"
 msgstr "&Ne poklapaj"
 
-#: dialog_selection.cpp:71
+#: dialog_selection.cpp:72
 msgid "Exact match"
 msgstr "&Tačno poklapanje"
 
-#: dialog_selection.cpp:72
+#: dialog_selection.cpp:73
 msgid "Contains"
 msgstr "&Sadrži unete reči"
 
-#: dialog_selection.cpp:73
+#: dialog_selection.cpp:74
 msgid "Regular Expression match"
 msgstr "&Regularni izraz"
 
-#: dialog_selection.cpp:84
+#: dialog_selection.cpp:85
 msgid "Dialogues"
 msgstr "&Dijalozi"
 
-#: dialog_selection.cpp:85
+#: dialog_selection.cpp:86
 msgid "Comments"
 msgstr "&Komentari"
 
-#: dialog_selection.cpp:89
+#: dialog_selection.cpp:90
 msgid "Set selection"
 msgstr "&Izaberi"
 
-#: dialog_selection.cpp:90
+#: dialog_selection.cpp:91
 msgid "Add to selection"
 msgstr "Doda&j u odabir"
 
-#: dialog_selection.cpp:91
+#: dialog_selection.cpp:92
 msgid "Subtract from selection"
 msgstr "I&zuzmi iz odabira"
 
-#: dialog_selection.cpp:92
+#: dialog_selection.cpp:93
 msgid "Intersect with selection"
 msgstr "&Ukrsti s odabirom"
 
-#: dialog_selection.cpp:93
+#: dialog_selection.cpp:94
 msgid "Action"
 msgstr "Radnja"
 
-#: dialog_selection.cpp:276
+#: dialog_selection.cpp:277
 #, c-format
 msgid "Selection was set to %i lines"
 msgstr "Izabrano linija: %i"
 
-#: dialog_selection.cpp:276
-#: dialog_selection.cpp:277
 #: dialog_selection.cpp:278
-msgid "Selection"
-msgstr "Odabir"
-
-#: dialog_selection.cpp:277
 #, c-format
 msgid "%i lines were added to selection"
 msgstr "Dodato linija: %i"
 
-#: dialog_selection.cpp:278
+#: dialog_selection.cpp:279
 #, c-format
 msgid "%i lines were removed from selection"
 msgstr "Izuzeto linija: %i"
 
+#: dialog_selection.cpp:282
+msgid "Selection"
+msgstr "Odabir"
+
 #: dialog_shift_times.cpp:63
-#: frame_main.cpp:269
-#: hotkeys.cpp:347
+#: frame_main.cpp:279
+#: hotkeys.cpp:351
 msgid "Shift Times"
 msgstr "Pomeranje vremena"
 
@@ -2161,7 +2128,7 @@ msgstr "Vrsta"
 
 #: dialog_shift_times.cpp:75
 msgid "History"
-msgstr "Istorijat"
+msgstr "Istorija"
 
 #: dialog_shift_times.cpp:79
 msgid "Frames: "
@@ -2223,100 +2190,104 @@ msgstr "Samo &završno vreme"
 msgid "Clear"
 msgstr "Oč&isti"
 
-#: dialog_shift_times.cpp:251
+#: dialog_shift_times.cpp:252
 msgid "unsaved, "
 msgstr "nesačuvano,"
 
-#: dialog_shift_times.cpp:256
+#: dialog_shift_times.cpp:257
 msgid " frames "
 msgstr " kadrovi"
 
-#: dialog_shift_times.cpp:259
+#: dialog_shift_times.cpp:260
 msgid "backward, "
 msgstr "nazad,"
 
-#: dialog_shift_times.cpp:260
+#: dialog_shift_times.cpp:261
 msgid "forward, "
 msgstr "napred,"
 
-#: dialog_shift_times.cpp:263
+#: dialog_shift_times.cpp:264
 msgid "s+e, "
 msgstr "s+e,"
 
-#: dialog_shift_times.cpp:264
+#: dialog_shift_times.cpp:265
 msgid "s, "
 msgstr "s,"
 
-#: dialog_shift_times.cpp:265
+#: dialog_shift_times.cpp:266
 msgid "e, "
 msgstr "e,"
 
-#: dialog_shift_times.cpp:268
+#: dialog_shift_times.cpp:269
 msgid "all"
 msgstr "sve"
 
-#: dialog_shift_times.cpp:269
+#: dialog_shift_times.cpp:270
 #, c-format
 msgid "from %i onward"
 msgstr "iz %i pa naviše"
 
-#: dialog_shift_times.cpp:271
+#: dialog_shift_times.cpp:272
 msgid "sel "
 msgstr "izaberi"
 
-#: dialog_shift_times.cpp:299
+#: dialog_shift_times.cpp:300
 msgid "shifting"
 msgstr "pomeranje"
 
 #: dialog_spellchecker.cpp:69
-#: frame_main.cpp:275
+#: frame_main.cpp:285
 msgid "Spell Checker"
-msgstr "Provera pravopisa"
+msgstr "Provera pisanja"
 
-#: dialog_spellchecker.cpp:108
+#: dialog_spellchecker.cpp:83
+msgid "No dictionaries available."
+msgstr "Nema dostupnih rečnika."
+
+#: dialog_spellchecker.cpp:114
 msgid "original"
 msgstr "izvorno"
 
-#: dialog_spellchecker.cpp:109
+#: dialog_spellchecker.cpp:115
 msgid "replace with"
 msgstr "zameni sa"
 
-#: dialog_spellchecker.cpp:111
+#: dialog_spellchecker.cpp:117
 msgid "Misspelled word:"
 msgstr "Neispravna reč:"
 
-#: dialog_spellchecker.cpp:123
+#: dialog_spellchecker.cpp:129
 msgid "Replace All"
 msgstr "&Zameni sve"
 
-#: dialog_spellchecker.cpp:124
+#: dialog_spellchecker.cpp:130
 msgid "Ignore"
 msgstr "Z&anemari"
 
-#: dialog_spellchecker.cpp:125
+#: dialog_spellchecker.cpp:131
 msgid "Ignore all"
 msgstr "Za&nemari sve"
 
-#: dialog_spellchecker.cpp:126
+#: dialog_spellchecker.cpp:132
 msgid "Add to dictionary"
 msgstr "&Dodaj u rečnik"
 
-#: dialog_spellchecker.cpp:327
+#: dialog_spellchecker.cpp:333
 msgid "Aegisub has finished checking spelling of this script."
-msgstr "Provera pravopisa ovog skripta je završena."
+msgstr "Provera pisanja ovog skripta je završena."
 
-#: dialog_spellchecker.cpp:327
-#: dialog_spellchecker.cpp:394
+#: dialog_spellchecker.cpp:333
+#: dialog_spellchecker.cpp:400
 msgid "Spell checking complete."
-msgstr "Provera pravopisa je završena"
+msgstr "Provera pisanja je završena"
 
-#: dialog_spellchecker.cpp:347
+#: dialog_spellchecker.cpp:353
 msgid "Spell check replace"
-msgstr "Zamena provere pravopisa"
+msgstr "Zamena provere pisanja"
 
-#: dialog_spellchecker.cpp:394
+#: dialog_spellchecker.cpp:400
 msgid "Aegisub has found no spelling mistakes in this script."
-msgstr "Provera pravopisa nije pronašla nijednu grešku."
+msgstr "Provera pisanja nije pronašla nijednu grešku."
 
 #: dialog_style_editor.cpp:99
 msgid "Style Editor"
@@ -2470,6 +2441,24 @@ msgstr "Sporedna"
 msgid "Shadow"
 msgstr "Senka"
 
+#: dialog_style_editor.cpp:248
+#: subs_grid.cpp:125
+#: subs_grid.cpp:1524
+msgid "Left"
+msgstr "Leva"
+
+#: dialog_style_editor.cpp:248
+#: subs_grid.cpp:126
+#: subs_grid.cpp:1526
+msgid "Right"
+msgstr "Desna"
+
+#: dialog_style_editor.cpp:248
+#: subs_grid.cpp:127
+#: subs_grid.cpp:1528
+msgid "Vert"
+msgstr "Uspr."
+
 #: dialog_style_editor.cpp:268
 msgid "Outline:"
 msgstr "Kontura:"
@@ -2514,20 +2503,15 @@ msgstr "Boja pozadine"
 msgid "No subtitle providers available. Cannot preview subs."
 msgstr "Nema dostupnih dobavljača titlova. Pregled nije moguć."
 
-#: dialog_style_editor.cpp:452
+#: dialog_style_editor.cpp:453
 msgid "Do you want to change all instances of this style in the script to this new name?"
 msgstr "Želite li da promenite sve primerke ovog stila na novi naziv?"
 
-#: dialog_style_editor.cpp:452
+#: dialog_style_editor.cpp:453
 msgid "Update script?"
 msgstr "Ažurirati skript?"
 
-#: dialog_style_editor.cpp:486
-#: subs_edit_box.cpp:595
-msgid "style change"
-msgstr "promenu stila"
-
-#: dialog_style_editor.cpp:583
+#: dialog_style_editor.cpp:485
 msgid ""
 "You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
 "I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
@@ -2536,12 +2520,17 @@ msgstr ""
 "Izabrali ste font „Comic Sans“. Kao programer i slovoslagač,\n"
 "savetujem vam da izaberete neki drugi font."
 
-#: dialog_style_editor.cpp:583
+#: dialog_style_editor.cpp:485
 msgid "Warning"
 msgstr "Upozorenje"
 
+#: dialog_style_editor.cpp:492
+#: subs_edit_box.cpp:595
+msgid "style change"
+msgstr "promenu stila"
+
 #: dialog_style_manager.cpp:60
-#: frame_main.cpp:252
+#: frame_main.cpp:262
 msgid "Styles Manager"
 msgstr "Upravljač stilovima"
 
@@ -2552,7 +2541,7 @@ msgstr "Katalog dostupnih ostava"
 #: dialog_style_manager.cpp:71
 #: dialog_style_manager.cpp:84
 #: dialog_style_manager.cpp:129
-#: frame_main.cpp:221
+#: frame_main.cpp:231
 msgid "New"
 msgstr "&Novo"
 
@@ -2578,7 +2567,7 @@ msgstr "&Uredi"
 
 #: dialog_style_manager.cpp:86
 #: dialog_style_manager.cpp:131
-#: hotkeys.cpp:357
+#: hotkeys.cpp:361
 msgid "Copy"
 msgstr "Umnoži"
 
@@ -2619,23 +2608,23 @@ msgstr "← Pr&ebaci u ostavu"
 msgid "Import from script..."
 msgstr "U&vezi iz titla…"
 
-#: dialog_style_manager.cpp:393
+#: dialog_style_manager.cpp:394
 msgid "New storage name:"
 msgstr "Naziv ostave:"
 
-#: dialog_style_manager.cpp:393
+#: dialog_style_manager.cpp:394
 msgid "New catalog entry"
 msgstr "Novi unos u katalogu"
 
-#: dialog_style_manager.cpp:409
+#: dialog_style_manager.cpp:410
 msgid "A catalog with that name already exists."
 msgstr "Katalog s tim nazivom već postoji."
 
-#: dialog_style_manager.cpp:409
+#: dialog_style_manager.cpp:410
 msgid "Catalog name conflict"
 msgstr "Sukob u nazivu kataloga"
 
-#: dialog_style_manager.cpp:415
+#: dialog_style_manager.cpp:416
 #, c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
@@ -2644,110 +2633,110 @@ msgstr ""
 "Navedeni naziv kataloga sadrži zabranjene znakove. Oni su zamenjeni s donjim crtama.\n"
 "Katalog je preimenovan u „%s“."
 
-#: dialog_style_manager.cpp:415
+#: dialog_style_manager.cpp:416
 msgid "Invalid characters"
 msgstr "Neispravni znakovi"
 
-#: dialog_style_manager.cpp:442
+#: dialog_style_manager.cpp:443
 #, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr "Želite li da obrišete ostavu „%s“ iz kataloga?"
 
-#: dialog_style_manager.cpp:443
+#: dialog_style_manager.cpp:444
 msgid "Confirm delete"
 msgstr "Potvrda brisanja"
 
-#: dialog_style_manager.cpp:575
-#: dialog_style_manager.cpp:624
+#: dialog_style_manager.cpp:579
+#: dialog_style_manager.cpp:631
 msgid "style copy"
 msgstr "umnožavanje stila"
 
-#: dialog_style_manager.cpp:588
-#: dialog_style_manager.cpp:611
+#: dialog_style_manager.cpp:593
+#: dialog_style_manager.cpp:617
 msgid "Copy of "
 msgstr "Umnožak – "
 
-#: dialog_style_manager.cpp:677
+#: dialog_style_manager.cpp:684
 msgid "style paste"
 msgstr "ubacivanje stila"
 
-#: dialog_style_manager.cpp:681
-#: dialog_style_manager.cpp:685
-#: dialog_style_manager.cpp:721
-#: dialog_style_manager.cpp:725
+#: dialog_style_manager.cpp:688
+#: dialog_style_manager.cpp:692
+#: dialog_style_manager.cpp:728
+#: dialog_style_manager.cpp:732
 msgid "Could not parse style"
 msgstr "Ne mogu da raščlanim stil"
 
-#: dialog_style_manager.cpp:766
-#: dialog_style_manager.cpp:799
+#: dialog_style_manager.cpp:775
+#: dialog_style_manager.cpp:809
 msgid "Are you sure you want to delete these "
 msgstr "Želite li da obrišete "
 
-#: dialog_style_manager.cpp:768
-#: dialog_style_manager.cpp:801
+#: dialog_style_manager.cpp:777
+#: dialog_style_manager.cpp:811
 msgid " styles?"
 msgstr " stila?"
 
-#: dialog_style_manager.cpp:770
-#: dialog_style_manager.cpp:803
+#: dialog_style_manager.cpp:779
+#: dialog_style_manager.cpp:813
 msgid "Are you sure you want to delete this style?"
 msgstr "Želite li da obrišete stil?"
 
-#: dialog_style_manager.cpp:771
+#: dialog_style_manager.cpp:780
 msgid "Confirm delete from storage"
 msgstr "Potvrda brisanja"
 
-#: dialog_style_manager.cpp:804
+#: dialog_style_manager.cpp:814
 msgid "Confirm delete from current"
 msgstr "Potvrda brisanja"
 
-#: dialog_style_manager.cpp:821
+#: dialog_style_manager.cpp:832
 msgid "style delete"
 msgstr "brisanje stila"
 
-#: dialog_style_manager.cpp:831
-#: frame_main_events.cpp:722
-#: frame_main_events.cpp:740
+#: dialog_style_manager.cpp:842
+#: frame_main_events.cpp:724
+#: frame_main_events.cpp:742
 msgid "Open subtitles file"
 msgstr "Otvaranje titla"
 
-#: dialog_style_manager.cpp:847
+#: dialog_style_manager.cpp:858
 msgid "The selected file has no available styles."
 msgstr "Izabrana datoteka nema dostupnih stilova."
 
-#: dialog_style_manager.cpp:847
+#: dialog_style_manager.cpp:858
 msgid "Error Importing Styles"
 msgstr "Greška"
 
-#: dialog_style_manager.cpp:854
-#: dialog_style_manager.cpp:856
+#: dialog_style_manager.cpp:865
+#: dialog_style_manager.cpp:867
 msgid "Choose styles to import:"
 msgstr "Izaberite stilove za uvoz:"
 
-#: dialog_style_manager.cpp:854
-#: dialog_style_manager.cpp:856
+#: dialog_style_manager.cpp:865
+#: dialog_style_manager.cpp:867
 msgid "Import Styles"
 msgstr "Uvoz stilova"
 
-#: dialog_style_manager.cpp:888
+#: dialog_style_manager.cpp:899
 msgid "style import"
 msgstr "uvoz stilova"
 
-#: dialog_style_manager.cpp:1033
+#: dialog_style_manager.cpp:1044
 msgid "Are you sure? This cannot be undone!"
 msgstr "Jeste li sigurni? Ova radnja je nepovratna."
 
-#: dialog_style_manager.cpp:1033
+#: dialog_style_manager.cpp:1044
 msgid "Sort styles"
 msgstr "Razvrstavanje stilova"
 
-#: dialog_style_manager.cpp:1085
+#: dialog_style_manager.cpp:1096
 msgid "style move"
 msgstr "premeštanje stila"
 
 #: dialog_styling_assistant.cpp:62
 msgid "Styling assistant"
-msgstr "Pomoćnik za stilizovanje…"
+msgstr "Pomoćnik za stilizovanje"
 
 #: dialog_styling_assistant.cpp:75
 #: dialog_styling_assistant.cpp:76
@@ -2812,7 +2801,7 @@ msgstr "Klik na spisak:"
 
 #: dialog_styling_assistant.cpp:108
 msgid "Select style"
-msgstr "Odabir stila"
+msgstr "Izaberi stil"
 
 #: dialog_styling_assistant.cpp:111
 msgid "Enable preview (slow)"
@@ -2840,7 +2829,7 @@ msgid "Comment starter:"
 msgstr "Pokretač komentara:"
 
 #: dialog_timing_processor.cpp:57
-#: frame_main.cpp:273
+#: frame_main.cpp:283
 msgid "Timing Post-Processor"
 msgstr "Preuređivač vremena"
 
@@ -2903,7 +2892,7 @@ msgstr "Omogući"
 
 #: dialog_timing_processor.cpp:109
 msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Omogućite prijanjanje titlova ako se nalaze na određenom rastojanju jedan od drugog."
+msgstr "Omogućite prianjanje titlova ako se nalaze na određenom rastojanju jedan od drugog."
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
@@ -2931,11 +2920,11 @@ msgstr "→ kraj"
 
 #: dialog_timing_processor.cpp:124
 msgid "Keyframe snapping"
-msgstr "Prijanjanje ključnih kadrova"
+msgstr "Prianjanje ključnih kadrova"
 
 #: dialog_timing_processor.cpp:127
 msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Omogućava prijanjanje titlova na najbliži ključni kadar, ako je rastojanje unutar praga"
+msgstr "Omogućava prianjanje titlova na najbliži ključni kadar, ako je rastojanje unutar praga"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -2943,7 +2932,7 @@ msgstr "Počinje pre praga:"
 
 #: dialog_timing_processor.cpp:131
 msgid "Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."
-msgstr "Prag za rastojanje „pre početka“, tj. s koliko kadrova titl mora počinjati pre ključnog kadra za prijanjanje"
+msgstr "Prag za rastojanje „pre početka“, tj. s koliko kadrova titl mora počinjati pre ključnog kadra za prianjanje"
 
 #: dialog_timing_processor.cpp:132
 msgid "Starts after thres.:"
@@ -2951,7 +2940,7 @@ msgstr "Počinje posle praga:"
 
 #: dialog_timing_processor.cpp:134
 msgid "Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."
-msgstr "Prag za rastojanje „posle početka“, tj. s koliko kadrova titl mora počinjati posle ključnog kadra za prijanjanje"
+msgstr "Prag za rastojanje „posle početka“, tj. s koliko kadrova titl mora počinjati posle ključnog kadra za prianjanje"
 
 #: dialog_timing_processor.cpp:135
 msgid "Ends before thres.:"
@@ -2959,7 +2948,7 @@ msgstr "Kraj pre praga:"
 
 #: dialog_timing_processor.cpp:137
 msgid "Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."
-msgstr "Prag za rastojanje „pre kraja“, tj. s koliko kadrova se titl mora završavati pre ključnog kadra za prijanjanje"
+msgstr "Prag za rastojanje „pre kraja“, tj. s koliko kadrova se titl mora završavati pre ključnog kadra za prianjanje"
 
 #: dialog_timing_processor.cpp:138
 msgid "Ends after thres.:"
@@ -2967,24 +2956,24 @@ msgstr "Kraj posle praga:"
 
 #: dialog_timing_processor.cpp:140
 msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
-msgstr "Prag za rastojanje „posle kraja“, tj. s koliko kadrova se titl mora završavati posle ključnog kadra za prijanjanje"
+msgstr "Prag za rastojanje „posle kraja“, tj. s koliko kadrova se titl mora završavati posle ključnog kadra za prianjanje"
 
-#: dialog_timing_processor.cpp:322
+#: dialog_timing_processor.cpp:324
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr "Jedan od redova u datoteci (%i) ima negativno trajanje. Zaustavljanje."
 
-#: dialog_timing_processor.cpp:322
+#: dialog_timing_processor.cpp:324
 msgid "Invalid script"
 msgstr "Neispravni skript"
 
-#: dialog_timing_processor.cpp:571
+#: dialog_timing_processor.cpp:573
 msgid "timing processor"
 msgstr "preuređivač vremena"
 
 #: dialog_tip.cpp:52
 msgid "Aegisub can export subtitles to many different formats, character encodings, and even compensate Variable Frame Rate so you can hardsub them - it's all in the Export option in File menu."
-msgstr "Egisub može da sačuva titlove u raznim formatima, kodnim rasporedima i promenljivim brojem kadrova za lakše ugrađivanje titla u sliku."
+msgstr "Idžisab može da sačuva titlove u raznim formatima, kodnim rasporedima i promenljivim brojem kadrova za lakše ugrađivanje titla u sliku."
 
 #: dialog_tip.cpp:53
 msgid "You can easily translate subtitle files using the translation assistant."
@@ -3000,7 +2989,7 @@ msgstr "Koristite prečice na tastaturi. Oni vam umnogome olakšavaju upravljanj
 
 #: dialog_tip.cpp:56
 msgid "There is no reason to use the SSA format (as opposed to ASS). ASS is very similar, but adds some important functionality. Most importantly, however, is that only ASS supports certain override tags (such as \\pos and \\t). Those only work on SSA files because VSFilter/Textsub is merciful."
-msgstr "Nema razloga da koristite format SSA u poređenju sa ASS. ASS je veoma sličan, ali sadrži dodatne važne mogućnosti."
+msgstr "Nema razloga da koristite SSA format u poređenju sa ASS. ASS je veoma sličan, ali sadrži dodatne važne mogućnosti."
 
 #: dialog_tip.cpp:57
 msgid "DON'T PANIC!"
@@ -3008,7 +2997,7 @@ msgstr "Ne paničite!"
 
 #: dialog_tip.cpp:58
 msgid "Aegisub has several features to make sure you will never lose your work. It will periodically save your subtitles to autosave folder, and will create a copy of subs whenever you open them, to autoback folder. Also, if it crashes, it will attempt to save a restore file."
-msgstr "Egisub vas štiti od gubitka podataka. Dostupna je mogućnost čuvanja titla u određenim vremenskim razmacima, kao i pravljenje umnoška titla svaki put kada ga otvorite. Takođe, program će pokušati da sačuva datoteku za povratak ako se desi do pada."
+msgstr "Idžisab vas štiti od gubitka podataka. Dostupna je mogućnost čuvanja titla u određenim vremenskim razmacima, kao i pravljenje umnoška titla svaki put kada ga otvorite. Takođe, program će pokušati da sačuva datoteku za povratak ako se desi do pada."
 
 #: dialog_tip.cpp:59
 msgid "The styling assistant is a practical way to set styles to each line, when each actor has a different style assigned to it."
@@ -3032,7 +3021,7 @@ msgstr "Probajte režim spektra za prikaz zvuka jer je lakše uočiti gde su va�
 
 #: dialog_tip.cpp:64
 msgid "If you decode your audio to a PCM WAV file before loading it in Aegisub, you don't have to wait for it to be decoded before you can use it."
-msgstr "Ako pretvorite zvuk u format PCM WAV, nećete morati da čekate dešifrovanje pre korišćenja."
+msgstr "Ako pretvorite zvuk u PCM WAV format, nećete morati da čekate dešifrovanje pre korišćenja."
 
 #: dialog_tip.cpp:65
 msgid "Having video open is often more a nuisance than a help when timing subtitles. Timing with only audio open is often much easier. You can always adjust the subtitles to match the video later on."
@@ -3047,7 +3036,7 @@ msgid "If anything goes wrong, blame movax."
 msgstr "Ako nešto pođe po zlu, ne brinite."
 
 #: dialog_translation.cpp:61
-#: frame_main.cpp:271
+#: frame_main.cpp:281
 msgid "Translation Assistant"
 msgstr "Pomoćnik za prevođenje"
 
@@ -3084,7 +3073,7 @@ msgstr "pomoćnika za prevođenje"
 msgid "No more lines to translate."
 msgstr "Nema više redova za prevođenje."
 
-#: dialog_version_check.cpp:178
+#: dialog_version_check.cpp:186
 #, c-format
 msgid ""
 "There was an error checking for updates to Aegisub:\n"
@@ -3097,46 +3086,48 @@ msgstr ""
 "\n"
 "Ako drugi programi mogu da pristupe internetu, onda je verovatno privremeni problem s naše strane."
 
-#: dialog_version_check.cpp:182
+#: dialog_version_check.cpp:190
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr "Došlo je do nepoznate greške pri proveravanju dogradnji."
 
-#: dialog_version_check.cpp:346
+#: dialog_version_check.cpp:420
+#: dialog_version_check.cpp:488
 msgid "Could not connect to updates server."
-msgstr "Ne mogu da se povežem na server za dogradnje."
+msgstr "ne mogu da se povežem sa serverom."
 
-#: dialog_version_check.cpp:350
+#: dialog_version_check.cpp:424
 msgid "Could not download from updates server."
-msgstr "Ne mogu da preuzimam sa servera za dogradnje."
+msgstr "ne mogu da preuzmem podatke sa servera."
 
-#: dialog_version_check.cpp:353
+#: dialog_version_check.cpp:427
+#: dialog_version_check.cpp:492
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr "HTTP zahtev nije uspeo. Odgovor: %d."
+msgstr "Zahtev HTTP nije izvršen. Odgovor: %d."
 
-#: dialog_version_check.cpp:426
+#: dialog_version_check.cpp:500
 msgid "An update to Aegisub was found."
 msgstr "Pronađena je dogradnja."
 
-#: dialog_version_check.cpp:430
+#: dialog_version_check.cpp:504
 msgid "Several possible updates to Aegisub were found."
 msgstr "Pronađeno je nekoliko dogradnji."
 
-#: dialog_version_check.cpp:434
+#: dialog_version_check.cpp:508
 msgid "There are no updates to Aegisub."
-msgstr "Novo izdanje nije dostupno."
+msgstr "Nova verzija nije dostupna."
 
-#: dialog_version_check.cpp:468
+#: dialog_version_check.cpp:542
 msgid "Version Checker"
 msgstr "Dogradnja programa"
 
-#: dialog_version_check.cpp:500
+#: dialog_version_check.cpp:574
 msgid "Remind me again in a &week"
 msgstr "Podseti me ponovo za &nedelju dana"
 
 #: dialog_video_details.cpp:52
 msgid "Video Details"
-msgstr "Detalji o video snimku"
+msgstr "Podaci o video-snimku"
 
 #: dialog_video_details.cpp:71
 msgid "File name:"
@@ -3184,11 +3175,11 @@ msgid ""
 "\n"
 "This is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\n"
 "It can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup."
-msgstr "Menja početno i završno vreme titla, zajedno s oznakama. Ovo je korisno za usklađivanje titla za drugo izdanje video sadržaja (npr. NTSC u PAL)."
+msgstr "Menja početno i završno vreme titla, zajedno s oznakama. Ovo je korisno za usklađivanje titla za drugo izdanje video-snimka (npr. NTSC u PAL)."
 
 #: export_framerate.cpp:88
 msgid "From Video"
-msgstr "Iz video snimka"
+msgstr "Iz video-snimka"
 
 #: export_framerate.cpp:105
 msgid "Variable"
@@ -3216,7 +3207,7 @@ msgstr "Popisivanje"
 
 #: ffmpegsource_common.cpp:87
 msgid "Reading timecodes and frame/sample data"
-msgstr "Učitavam vremenske kodove i kadrove tj. uzorke…"
+msgstr "Učitavam vremenske kodove i kadrove odn. uzorke…"
 
 #: ffmpegsource_common.cpp:145
 msgid "video"
@@ -3241,1028 +3232,1028 @@ msgstr "Pronađeno je više %s zapisa. Izaberite onaj koji želite da učitate:"
 msgid "Choose %s track"
 msgstr "Izaberite zapis %s"
 
-#: frame_main.cpp:185
+#: frame_main.cpp:190
 msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
 msgstr "Želite li da program proverava dogradnje svaki put kada se pokrene?"
 
-#: frame_main.cpp:185
+#: frame_main.cpp:190
 msgid "Check for updates?"
-msgstr "Proveriti dogradnje?"
+msgstr "Provera dogradnji"
 
-#: frame_main.cpp:221
-#: frame_main.cpp:320
+#: frame_main.cpp:231
+#: frame_main.cpp:330
 #: hotkeys.cpp:327
 msgid "New subtitles"
 msgstr "Napravi novi titl"
 
-#: frame_main.cpp:222
+#: frame_main.cpp:232
 msgid "Open"
 msgstr "Otvori"
 
-#: frame_main.cpp:222
+#: frame_main.cpp:232
 #: hotkeys.cpp:328
 msgid "Open subtitles"
 msgstr "Otvori titl"
 
-#: frame_main.cpp:223
+#: frame_main.cpp:233
 msgid "Save"
 msgstr "Sačuvaj"
 
-#: frame_main.cpp:223
+#: frame_main.cpp:233
 #: hotkeys.cpp:329
 msgid "Save subtitles"
 msgstr "Sačuvaj titl"
 
-#: frame_main.cpp:227
+#: frame_main.cpp:237
 msgid "Jump To..."
 msgstr "Idi na…"
 
-#: frame_main.cpp:227
+#: frame_main.cpp:237
 msgid "Jump video to time/frame"
 msgstr "Idi na određeni kadar ili vreme"
 
-#: frame_main.cpp:228
+#: frame_main.cpp:238
 msgid "Zoom in"
 msgstr "Uvećaj"
 
-#: frame_main.cpp:228
+#: frame_main.cpp:238
 msgid "Zoom video in"
-msgstr "Uvećaj video snimak"
+msgstr "Uvećaj video-snimak"
 
-#: frame_main.cpp:229
+#: frame_main.cpp:239
 msgid "Zoom out"
 msgstr "Umanji"
 
-#: frame_main.cpp:229
+#: frame_main.cpp:239
 msgid "Zoom video out"
-msgstr "Umanji video snimak"
+msgstr "Umanji video-snimak"
 
-#: frame_main.cpp:242
+#: frame_main.cpp:252
 msgid "Jump video to start"
 msgstr "&Premotaj snimak na početak"
 
-#: frame_main.cpp:242
-#: frame_main.cpp:468
+#: frame_main.cpp:252
+#: frame_main.cpp:478
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "Premotaj snimak na početni kadar izabrane linije"
 
-#: frame_main.cpp:243
+#: frame_main.cpp:253
 msgid "Jump video to end"
 msgstr "Pr&emotaj snimak na kraj"
 
-#: frame_main.cpp:243
-#: frame_main.cpp:469
+#: frame_main.cpp:253
+#: frame_main.cpp:479
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "Premotaj snimak na završni kadar izabrane linije"
 
-#: frame_main.cpp:244
+#: frame_main.cpp:254
 msgid "Snap start to video"
 msgstr "Postavi početak putem snimka"
 
-#: frame_main.cpp:244
-#: frame_main.cpp:408
+#: frame_main.cpp:254
+#: frame_main.cpp:418
 msgid "Set start of selected subtitles to current video frame"
 msgstr "Postavi početno vreme linije na izabrani kadar"
 
-#: frame_main.cpp:245
+#: frame_main.cpp:255
 msgid "Snap end to video"
 msgstr "Postavi završetak putem snimka"
 
-#: frame_main.cpp:245
-#: frame_main.cpp:409
+#: frame_main.cpp:255
+#: frame_main.cpp:419
 msgid "Set end of selected subtitles to current video frame"
 msgstr "Postavi završno vreme linije na izabrani kadar"
 
-#: frame_main.cpp:246
+#: frame_main.cpp:256
 msgid "Select visible"
 msgstr "Izaberi vidljivo"
 
-#: frame_main.cpp:246
+#: frame_main.cpp:256
 msgid "Selects all lines that are currently visible on video frame"
 msgstr "Izaberi sve linije koje su vidljive na kadru"
 
-#: frame_main.cpp:247
+#: frame_main.cpp:257
 msgid "Snap subtitles to scene"
 msgstr "Postavi titlove putem scene"
 
-#: frame_main.cpp:247
+#: frame_main.cpp:257
 msgid "Snap selected subtitles so they match current scene start/end"
 msgstr "Postavi izabrane titlove tako da se poklapaju s početnim i završnim vremenom izabrane linije"
 
-#: frame_main.cpp:248
+#: frame_main.cpp:258
 msgid "Shift subtitles to frame"
 msgstr "Pomeri titlove putem kadra"
 
-#: frame_main.cpp:248
+#: frame_main.cpp:258
 msgid "Shift selected subtitles so first selected starts at this frame"
 msgstr "Pomeri izabrane linije tako da prva počinje na tekućem kadru"
 
-#: frame_main.cpp:252
+#: frame_main.cpp:262
 msgid "Open Styles Manager"
 msgstr "Otvori upravljača stilovima"
 
-#: frame_main.cpp:253
+#: frame_main.cpp:263
 msgid "Properties"
 msgstr "Svojstva"
 
-#: frame_main.cpp:253
+#: frame_main.cpp:263
 msgid "Open Properties"
 msgstr "Otvori svojstva"
 
-#: frame_main.cpp:254
+#: frame_main.cpp:264
 msgid "Attachments"
 msgstr "Prilozi"
 
-#: frame_main.cpp:254
+#: frame_main.cpp:264
 msgid "Open Attachment List"
 msgstr "Otvori spisak priloga"
 
-#: frame_main.cpp:255
+#: frame_main.cpp:265
 msgid "Open Fonts Collector"
 msgstr "Otvori zbirku fontova"
 
-#: frame_main.cpp:260
+#: frame_main.cpp:270
 msgid "Open Automation manager"
 msgstr "Otvori automatizaciju"
 
-#: frame_main.cpp:266
-#: frame_main.cpp:373
+#: frame_main.cpp:276
+#: frame_main.cpp:383
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
-msgstr "Pokreni ASSDraw3, alatku za vektorsko crtanje."
+msgstr "Pokreni ASSDraw3, alatku za vektorsko crtanje"
 
-#: frame_main.cpp:269
+#: frame_main.cpp:279
 msgid "Open Shift Times Dialogue"
 msgstr "Otvori prozorče za pomeranje vremena"
 
-#: frame_main.cpp:270
+#: frame_main.cpp:280
 msgid "Styling Assistant"
-msgstr "Pomoćnik za stilizovanje"
+msgstr "Pomoćnik za stilizovanje…"
 
-#: frame_main.cpp:270
+#: frame_main.cpp:280
 msgid "Open Styling Assistant"
 msgstr "Otvori pomoćnika za stilizovanje"
 
-#: frame_main.cpp:271
+#: frame_main.cpp:281
 msgid "Open Translation Assistant"
 msgstr "Otvori pomoćnika za prevođenje"
 
-#: frame_main.cpp:272
+#: frame_main.cpp:282
 msgid "Resample"
 msgstr "Prouzorkovanje"
 
-#: frame_main.cpp:272
+#: frame_main.cpp:282
 msgid "Resample Script Resolution"
 msgstr "Prouzorkuj rezoluciju skripta"
 
-#: frame_main.cpp:273
+#: frame_main.cpp:283
 msgid "Open Timing Post-processor dialog"
 msgstr "Otvori preuređivača vremena"
 
-#: frame_main.cpp:274
+#: frame_main.cpp:284
 msgid "Kanji Timer"
 msgstr "Kandži brojač"
 
-#: frame_main.cpp:274
+#: frame_main.cpp:284
 msgid "Open Kanji Timer dialog"
 msgstr "Otvori kandži brojač"
 
-#: frame_main.cpp:275
+#: frame_main.cpp:285
 msgid "Open Spell checker"
-msgstr "Otvori proveru pravopisa"
+msgstr "Otvori proveru pisanja"
 
-#: frame_main.cpp:279
-#: frame_main.cpp:497
+#: frame_main.cpp:289
+#: frame_main.cpp:507
 msgid "Configure Aegisub"
 msgstr "Podesi program"
 
-#: frame_main.cpp:280
+#: frame_main.cpp:290
 msgid "Cycle Tag Hidding Mode"
 msgstr "Prikaz oznaka"
 
-#: frame_main.cpp:280
+#: frame_main.cpp:290
 msgid "Cycle through tag-hiding modes"
 msgstr "Promeni prikaz oznaka"
 
-#: frame_main.cpp:305
-#: frame_main.cpp:528
+#: frame_main.cpp:315
+#: frame_main.cpp:538
 msgid "&Help"
 msgstr "&Pomoć"
 
-#: frame_main.cpp:320
+#: frame_main.cpp:330
 msgid "&New Subtitles"
 msgstr "&Novi titl"
 
-#: frame_main.cpp:321
+#: frame_main.cpp:331
 msgid "&Open Subtitles..."
 msgstr "&Otvori titl…"
 
-#: frame_main.cpp:321
+#: frame_main.cpp:331
 msgid "Opens a subtitles file"
 msgstr "Otvorite titl"
 
-#: frame_main.cpp:322
+#: frame_main.cpp:332
 msgid "&Open Subtitles with Charset..."
 msgstr "O&tvori titl sa znakovima…"
 
-#: frame_main.cpp:322
+#: frame_main.cpp:332
 msgid "Opens a subtitles file with a specific charset"
 msgstr "Otvorite titl sa željenim kodnim rasporedom"
 
-#: frame_main.cpp:323
+#: frame_main.cpp:333
 msgid "&Save Subtitles"
 msgstr "&Sačuvaj titl"
 
-#: frame_main.cpp:323
+#: frame_main.cpp:333
 msgid "Saves subtitles"
 msgstr "Sačuvajte titl"
 
-#: frame_main.cpp:324
+#: frame_main.cpp:334
 msgid "Save Subtitles as..."
 msgstr "S&ačuvaj titl kao…"
 
-#: frame_main.cpp:324
+#: frame_main.cpp:334
 msgid "Saves subtitles with another name"
 msgstr "Sačuvajte titl pod drugim nazivom"
 
-#: frame_main.cpp:325
+#: frame_main.cpp:335
 msgid "Export Subtitles..."
 msgstr "&Izvezi titl…"
 
-#: frame_main.cpp:325
+#: frame_main.cpp:335
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "Sačuvajte obrađeni titl"
 
-#: frame_main.cpp:326
-#: frame_main.cpp:427
-#: frame_main.cpp:435
-#: frame_main.cpp:441
-#: frame_main.cpp:477
+#: frame_main.cpp:336
+#: frame_main.cpp:437
+#: frame_main.cpp:445
+#: frame_main.cpp:451
+#: frame_main.cpp:487
 msgid "Recent"
-msgstr "Isto&rijat"
+msgstr "Isto&rija"
 
-#: frame_main.cpp:332
+#: frame_main.cpp:342
 msgid "&Properties..."
 msgstr "S&vojstva…"
 
-#: frame_main.cpp:332
+#: frame_main.cpp:342
 msgid "Open script properties window"
 msgstr "Otvorite svojstva skripta"
 
-#: frame_main.cpp:333
+#: frame_main.cpp:343
 msgid "&Attachments..."
 msgstr "Pri&lozi…"
 
-#: frame_main.cpp:333
+#: frame_main.cpp:343
 msgid "Open the attachment list"
 msgstr "Otvorite spisak priloga"
 
-#: frame_main.cpp:334
+#: frame_main.cpp:344
 msgid "&Fonts Collector..."
 msgstr "&Zbirka fontova…"
 
-#: frame_main.cpp:334
+#: frame_main.cpp:344
 msgid "Open fonts collector"
 msgstr "Otvorite zbirku fontova"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:348
 msgid "New Window"
 msgstr "&Novi prozor"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:348
 msgid "Open a new application window"
 msgstr "Otvorite novi prozor programa"
 
-#: frame_main.cpp:340
+#: frame_main.cpp:350
 msgid "E&xit"
 msgstr "Iza&đi"
 
-#: frame_main.cpp:340
+#: frame_main.cpp:350
 msgid "Exit the application"
 msgstr "Izađite iz programa"
 
-#: frame_main.cpp:341
+#: frame_main.cpp:351
 msgid "&File"
 msgstr "&Datoteka"
 
-#: frame_main.cpp:346
+#: frame_main.cpp:356
 #: frame_main_events.cpp:429
-#: subs_edit_ctrl.cpp:951
+#: subs_edit_ctrl.cpp:962
 msgid "&Undo"
 msgstr "&Opozovi"
 
-#: frame_main.cpp:346
+#: frame_main.cpp:356
 msgid "Undoes last action"
 msgstr "Opozovite poslednju radnju"
 
-#: frame_main.cpp:347
+#: frame_main.cpp:357
 #: frame_main_events.cpp:435
 msgid "&Redo"
 msgstr "&Ponovi"
 
-#: frame_main.cpp:347
+#: frame_main.cpp:357
 msgid "Redoes last action"
 msgstr "Ponovite poslednju radnju"
 
-#: frame_main.cpp:349
+#: frame_main.cpp:359
 msgid "Cut Lines"
 msgstr "&Iseci"
 
-#: frame_main.cpp:349
+#: frame_main.cpp:359
 msgid "Cut subtitles"
 msgstr "Isecite linije titla"
 
-#: frame_main.cpp:350
+#: frame_main.cpp:360
 msgid "Copy Lines"
 msgstr "&Umnoži"
 
-#: frame_main.cpp:350
+#: frame_main.cpp:360
 msgid "Copy subtitles"
 msgstr "Umnožite linije titla"
 
-#: frame_main.cpp:351
+#: frame_main.cpp:361
 msgid "Paste Lines"
 msgstr "U&baci"
 
-#: frame_main.cpp:351
+#: frame_main.cpp:361
 msgid "Paste subtitles"
 msgstr "Ubacite linije titla"
 
-#: frame_main.cpp:352
+#: frame_main.cpp:362
 msgid "Paste Lines Over..."
 msgstr "Ub&aci preko…"
 
-#: frame_main.cpp:352
+#: frame_main.cpp:362
 msgid "Paste subtitles over others"
 msgstr "Ubacite linije preko drugih"
 
-#: frame_main.cpp:354
+#: frame_main.cpp:364
 msgid "&Find..."
 msgstr "P&ronađi…"
 
-#: frame_main.cpp:354
+#: frame_main.cpp:364
 msgid "Find words in subtitles"
 msgstr "Pronađite određene reči u titlu"
 
-#: frame_main.cpp:355
-#: hotkeys.cpp:350
-#: hotkeys.cpp:353
+#: frame_main.cpp:365
+#: hotkeys.cpp:354
+#: hotkeys.cpp:357
 msgid "Find Next"
 msgstr "Pronađi &sledeće"
 
-#: frame_main.cpp:355
+#: frame_main.cpp:365
 msgid "Find next match of last word"
 msgstr "Pronađite sledeće poklapanje"
 
-#: frame_main.cpp:356
+#: frame_main.cpp:366
 msgid "Search and &Replace..."
 msgstr "Pronađi i &zameni…"
 
-#: frame_main.cpp:356
+#: frame_main.cpp:366
 msgid "Find and replace words in subtitles"
 msgstr "Pronađite i zamenite reči u titlu"
 
-#: frame_main.cpp:357
+#: frame_main.cpp:367
 msgid "&Edit"
 msgstr "&Uređivanje"
 
-#: frame_main.cpp:362
+#: frame_main.cpp:372
 msgid "&Insert Lines"
 msgstr "Ubaci &liniju"
 
-#: frame_main.cpp:366
+#: frame_main.cpp:376
 msgid "&Styles Manager..."
 msgstr "&Upravljač stilovima…"
 
-#: frame_main.cpp:366
+#: frame_main.cpp:376
 msgid "Open styles manager"
 msgstr "Otvorite upravljača stilovima"
 
-#: frame_main.cpp:367
+#: frame_main.cpp:377
 msgid "St&yling Assistant..."
 msgstr "P&omoćnik za stilizovanje"
 
-#: frame_main.cpp:367
+#: frame_main.cpp:377
 msgid "Open styling assistant"
 msgstr "Otvorite pomoćnika za stilizovanje"
 
-#: frame_main.cpp:368
+#: frame_main.cpp:378
 msgid "&Translation Assistant..."
 msgstr "Po&moćnik za prevođenje…"
 
-#: frame_main.cpp:368
+#: frame_main.cpp:378
 msgid "Open translation assistant"
 msgstr "Otvorite pomoćnika za prevođenje"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:379
 msgid "Resample Resolution..."
 msgstr "Prou&zorkovanje…"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:379
 msgid "Changes resolution and modifies subtitles to conform to change"
 msgstr "Promenite rezoluciju i prilagodite titlove na tu promenu"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:380
 msgid "Spe&ll Checker..."
-msgstr "Pro&vera pravopisa…"
+msgstr "Pro&vera pisanja…"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:380
 msgid "Open spell checker"
 msgstr "Proverite pravopis titla"
 
-#: frame_main.cpp:376
+#: frame_main.cpp:386
 msgid "&Before Current"
 msgstr "&pre izabrane"
 
-#: frame_main.cpp:376
+#: frame_main.cpp:386
 msgid "Inserts a line before current"
 msgstr "Ubacite liniju pre izabrane"
 
-#: frame_main.cpp:377
+#: frame_main.cpp:387
 msgid "&After Current"
 msgstr "p&osle izabrane"
 
-#: frame_main.cpp:377
+#: frame_main.cpp:387
 msgid "Inserts a line after current"
 msgstr "Ubacite liniju posle izabrane"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:388
 msgid "Before Current, at Video Time"
 msgstr "pre izabrane, uz vreme na snimku"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:388
 msgid "Inserts a line before current, starting at video time"
 msgstr "Ubacite liniju pre izabrane, zajedno s vremenom na snimku"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:389
 msgid "After Current, at Video Time"
 msgstr "posle izabrane, uz vreme na snimku"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:389
 msgid "Inserts a line after current, starting at video time"
 msgstr "Ubacite liniju posle izabrane, zajedno s vremenom na snimku"
 
-#: frame_main.cpp:381
+#: frame_main.cpp:391
 msgid "&Duplicate Lines"
 msgstr "&Udvostruči"
 
-#: frame_main.cpp:381
+#: frame_main.cpp:391
 #: subs_grid.cpp:167
 msgid "Duplicate the selected lines"
 msgstr "Udvostručite izabrane linije"
 
-#: frame_main.cpp:382
+#: frame_main.cpp:392
 msgid "&Duplicate and Shift by 1 Frame"
 msgstr "U&dvostruči i pomeri za jedan kadar"
 
-#: frame_main.cpp:382
+#: frame_main.cpp:392
 #: subs_grid.cpp:168
 msgid "Duplicate lines and shift by one frame"
 msgstr "Udvostručite linije i pomerite za jedan kadar"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:393
 msgid "Delete Lines"
 msgstr "Obri&ši"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:393
 #: subs_grid.cpp:204
 msgid "Delete currently selected lines"
 msgstr "Obrišite izabrane linije"
 
-#: frame_main.cpp:386
+#: frame_main.cpp:396
 msgid "Join Lines"
 msgstr "&Spoji linije"
 
-#: frame_main.cpp:390
+#: frame_main.cpp:400
 msgid "&Concatenate"
 msgstr "&stapanjem"
 
-#: frame_main.cpp:390
+#: frame_main.cpp:400
 #: subs_grid.cpp:177
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "Spojite izabrane linije zajedno s tekstom"
 
-#: frame_main.cpp:391
+#: frame_main.cpp:401
 msgid "Keep &First"
 msgstr "zadrži &prvu"
 
-#: frame_main.cpp:391
+#: frame_main.cpp:401
 #: subs_grid.cpp:178
 msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
 msgstr "Spojite izabrane linije tako da sačuvate samo tekst prve linije"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:402
 msgid "As &Karaoke"
 msgstr "kao &karaoke"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:402
 msgid "Joins selected lines in a single one, as karaoke"
 msgstr "Spojite izabrane linije kao karaoke"
 
-#: frame_main.cpp:394
+#: frame_main.cpp:404
 #: subs_grid.cpp:188
 msgid "Recombine Lines"
 msgstr "Po&novo sjedini"
 
-#: frame_main.cpp:394
+#: frame_main.cpp:404
 #: subs_grid.cpp:188
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "Ponovo sjedinite linije koje su rastavljene i sastavljene"
 
-#: frame_main.cpp:395
+#: frame_main.cpp:405
 msgid "Split Lines (by karaoke)"
 msgstr "&Razdvoji linije (karaoke)"
 
-#: frame_main.cpp:395
+#: frame_main.cpp:405
 #: subs_grid.cpp:169
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "Koristite vreme karaoka za razdvajanje linije"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:407
 msgid "Swap Lines"
 msgstr "Zam&eni linije"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:407
 #: subs_grid.cpp:173
 msgid "Swaps the two selected lines"
 msgstr "Zamenite redosled dve izabrane linije"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:408
 msgid "Select Lines..."
 msgstr "&Izaberi linije…"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:408
 msgid "Selects lines based on defined criterea"
 msgstr "Izaberite linije putem određenog kriterijuma"
 
-#: frame_main.cpp:399
+#: frame_main.cpp:409
 msgid "&Subtitles"
 msgstr "&Titl"
 
-#: frame_main.cpp:403
+#: frame_main.cpp:413
 msgid "S&hift Times..."
 msgstr "&Pomeri vremena…"
 
-#: frame_main.cpp:403
+#: frame_main.cpp:413
 msgid "Shift subtitles by time or frames"
 msgstr "Pomerite titlove preko vremena ili kadrova"
 
-#: frame_main.cpp:404
+#: frame_main.cpp:414
 msgid "Sort by Time"
 msgstr "P&oređaj po vremenu"
 
-#: frame_main.cpp:404
+#: frame_main.cpp:414
 msgid "Sort all subtitles by their start times"
 msgstr "Poređajte sve titlove po njihovim početnim vremenima"
 
-#: frame_main.cpp:405
+#: frame_main.cpp:415
 msgid "Timing Post-Processor..."
 msgstr "P&reuređivač vremena…"
 
-#: frame_main.cpp:405
+#: frame_main.cpp:415
 msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
 msgstr "Proširite početno i završno vreme, uskladite vreme sa scenom itd."
 
-#: frame_main.cpp:406
+#: frame_main.cpp:416
 msgid "Kanji Timer..."
 msgstr "&Kandži brojač…"
 
-#: frame_main.cpp:406
+#: frame_main.cpp:416
 msgid "Open Kanji timer"
 msgstr "Otvorite kandži brojač"
 
-#: frame_main.cpp:408
+#: frame_main.cpp:418
 msgid "Snap Start to Video"
-msgstr "Pri&janjaj početak uz snimak"
+msgstr "Pri&anjaj početak uz snimak"
 
-#: frame_main.cpp:409
+#: frame_main.cpp:419
 msgid "Snap End to Video"
-msgstr "Prij&anjaj završetak uz snimak"
+msgstr "Pri&anjaj završetak uz snimak"
 
-#: frame_main.cpp:410
-#: hotkeys.cpp:371
+#: frame_main.cpp:420
+#: hotkeys.cpp:375
 msgid "Snap to Scene"
-msgstr "Prijanjaj uz &scenu"
+msgstr "Prianjaj uz &scenu"
 
-#: frame_main.cpp:410
+#: frame_main.cpp:420
 msgid "Set start and end of subtitles to the keyframes around current video frame"
 msgstr "Postavite početak i završetak na ključne kadrove oko izabranog kadra"
 
-#: frame_main.cpp:411
+#: frame_main.cpp:421
 msgid "Shift to Current Frame"
 msgstr "Pomeri na &tekući kadar"
 
-#: frame_main.cpp:411
+#: frame_main.cpp:421
 msgid "Shift selection so first selected line starts at current frame"
 msgstr "Pomerite izabrane linije tako da prva počinje na tekućem kadru"
 
-#: frame_main.cpp:414
+#: frame_main.cpp:424
 msgid "Make Times Continuous"
 msgstr "Učini vreme trajnim"
 
-#: frame_main.cpp:418
+#: frame_main.cpp:428
 msgid "Change &Start"
 msgstr "promeni &početak"
 
-#: frame_main.cpp:418
+#: frame_main.cpp:428
 #: subs_grid.cpp:183
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr "Promenite vremena linija tako da početno vreme počinje na završetku prethodne linije"
 
-#: frame_main.cpp:419
+#: frame_main.cpp:429
 msgid "Change &End"
 msgstr "promeni &završetak"
 
-#: frame_main.cpp:419
+#: frame_main.cpp:429
 #: subs_grid.cpp:184
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr "Promenite vremena linija tako da završno vreme počinje na početku sledeće linije"
 
-#: frame_main.cpp:421
+#: frame_main.cpp:431
 msgid "&Timing"
 msgstr "&Vreme"
 
-#: frame_main.cpp:425
+#: frame_main.cpp:435
 msgid "&Open Video..."
 msgstr "&Otvori snimak…"
 
-#: frame_main.cpp:425
+#: frame_main.cpp:435
 msgid "Opens a video file"
-msgstr "Otvorite video snimak"
+msgstr "Otvorite video-snimak"
 
-#: frame_main.cpp:426
+#: frame_main.cpp:436
 msgid "&Close Video"
 msgstr "&Zatvori snimak"
 
-#: frame_main.cpp:426
+#: frame_main.cpp:436
 msgid "Closes the currently open video file"
-msgstr "Zatvorite video snimak"
+msgstr "Zatvorite video-snimak"
 
-#: frame_main.cpp:429
+#: frame_main.cpp:439
 msgid "Use Dummy Video..."
 msgstr "O&tvori probni snimak…"
 
-#: frame_main.cpp:429
+#: frame_main.cpp:439
 msgid "Opens a video clip with solid colour"
-msgstr "Otvorite video snimak s čistom bojom"
+msgstr "Otvorite video-snimak s čistom bojom"
 
-#: frame_main.cpp:430
+#: frame_main.cpp:440
 msgid "Show Video Details..."
 msgstr "Prika&ži podatke o snimku…"
 
-#: frame_main.cpp:430
+#: frame_main.cpp:440
 msgid "Shows video details"
-msgstr "Pogledajte podatke o video snimku"
+msgstr "Pogledajte podatke o video-snimku"
 
-#: frame_main.cpp:432
+#: frame_main.cpp:442
 msgid "Open Timecodes File..."
 msgstr "Ot&vori vremenske kodove…"
 
-#: frame_main.cpp:432
+#: frame_main.cpp:442
 msgid "Opens a VFR timecodes v1 or v2 file"
 msgstr "Otvorite datoteku vremenskih kodova (VFR v1 ili v2)"
 
-#: frame_main.cpp:433
+#: frame_main.cpp:443
 msgid "Save Timecodes File..."
 msgstr "&Sačuvaj vremenske kodove…"
 
-#: frame_main.cpp:433
+#: frame_main.cpp:443
 msgid "Saves a VFR timecodes v2 file"
 msgstr "Sačuvajte datoteku vremenskih kodova (VFR v2)"
 
-#: frame_main.cpp:434
+#: frame_main.cpp:444
 msgid "Close Timecodes File"
 msgstr "Z&atvori vremenske kodove"
 
-#: frame_main.cpp:434
+#: frame_main.cpp:444
 msgid "Closes the currently open timecodes file"
 msgstr "Zatvorite datoteku vremenskih kodova"
 
-#: frame_main.cpp:438
+#: frame_main.cpp:448
 msgid "Open Keyframes..."
 msgstr "Otvori &ključne kadrove…"
 
-#: frame_main.cpp:438
+#: frame_main.cpp:448
 msgid "Opens a keyframe list file"
 msgstr "Otvorite datoteku ključnih kadrova"
 
-#: frame_main.cpp:439
+#: frame_main.cpp:449
 msgid "Save Keyframes..."
 msgstr "Sačuvaj k&ljučne kadrove…"
 
-#: frame_main.cpp:439
+#: frame_main.cpp:449
 msgid "Saves the current keyframe list"
 msgstr "Sačuvajte datoteku ključnih kadrova"
 
-#: frame_main.cpp:440
+#: frame_main.cpp:450
 msgid "Close Keyframes"
 msgstr "Zatvori ključ&ne kadrove"
 
-#: frame_main.cpp:440
+#: frame_main.cpp:450
 msgid "Closes the currently open keyframes list"
 msgstr "Zatvorite datoteku ključnih kadrova"
 
-#: frame_main.cpp:444
+#: frame_main.cpp:454
 msgid "Detach Video"
-msgstr "Otka&či snimak"
+msgstr "Otka&či okvir video-snimka"
 
-#: frame_main.cpp:444
+#: frame_main.cpp:454
 msgid "Detach video, displaying it in a separate Window."
-msgstr "Otkačite video snimak s prozora"
+msgstr "Otkačite video-snimak s prozora"
 
-#: frame_main.cpp:446
+#: frame_main.cpp:456
 msgid "Set Zoom"
 msgstr "&Uvećanje"
 
-#: frame_main.cpp:450
+#: frame_main.cpp:460
 msgid "Set zoom to 50%"
 msgstr "Uvećajte sliku do pedeset odsto"
 
-#: frame_main.cpp:451
+#: frame_main.cpp:461
 msgid "Set zoom to 100%"
 msgstr "Uvećajte sliku do sto odsto"
 
-#: frame_main.cpp:452
+#: frame_main.cpp:462
 msgid "Set zoom to 200%"
 msgstr "Uvećajte sliku do dvesta odsto"
 
-#: frame_main.cpp:455
+#: frame_main.cpp:465
 msgid "Override Aspect Ratio"
 msgstr "Razmera"
 
-#: frame_main.cpp:459
+#: frame_main.cpp:469
 msgid "&Default"
 msgstr "&podrazumevana"
 
-#: frame_main.cpp:459
+#: frame_main.cpp:469
 msgid "Leave video on original aspect ratio"
 msgstr "Ostavite izvornu razmeru slike"
 
-#: frame_main.cpp:460
+#: frame_main.cpp:470
 msgid "&Fullscreen (4:3)"
 msgstr "p&reko celog ekrana"
 
-#: frame_main.cpp:460
+#: frame_main.cpp:470
 msgid "Forces video to 4:3 aspect ratio"
 msgstr "Postavite razmeru na 4:3"
 
-#: frame_main.cpp:461
+#: frame_main.cpp:471
 msgid "&Widescreen (16:9)"
 msgstr "&široki ekran"
 
-#: frame_main.cpp:461
+#: frame_main.cpp:471
 msgid "Forces video to 16:9 aspect ratio"
 msgstr "Postavite razmeru na 16:9"
 
-#: frame_main.cpp:462
+#: frame_main.cpp:472
 msgid "&Cinematic (2.35)"
 msgstr "&bioskopska (2.35)"
 
-#: frame_main.cpp:462
+#: frame_main.cpp:472
 msgid "Forces video to 2.35 aspect ratio"
 msgstr "Postavite razmeru na 2.35"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:473
 msgid "Custom..."
 msgstr "prilagodi…"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:473
 msgid "Forces video to a custom aspect ratio"
 msgstr "Izaberite željenu razmeru"
 
-#: frame_main.cpp:465
+#: frame_main.cpp:475
 msgid "Show Overscan Mask"
 msgstr "Prikaži oversken &masku"
 
-#: frame_main.cpp:465
+#: frame_main.cpp:475
 msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
 msgstr ""
 "Postavite masku preko slike koja prikazuje\n"
 "oblasti koje mogu biti isečene na televizorima"
 
-#: frame_main.cpp:467
+#: frame_main.cpp:477
 msgid "&Jump to..."
 msgstr "I&di na…"
 
-#: frame_main.cpp:467
+#: frame_main.cpp:477
 msgid "Jump to frame or time"
 msgstr "Idite na određeni kadar ili vreme"
 
-#: frame_main.cpp:468
-#: hotkeys.cpp:367
+#: frame_main.cpp:478
+#: hotkeys.cpp:371
 msgid "Jump Video to Start"
 msgstr "Premotaj snimak na početak"
 
-#: frame_main.cpp:469
-#: hotkeys.cpp:368
+#: frame_main.cpp:479
+#: hotkeys.cpp:372
 msgid "Jump Video to End"
 msgstr "Premotaj snimak na kraj"
 
-#: frame_main.cpp:470
+#: frame_main.cpp:480
 msgid "&Video"
 msgstr "V&ideo"
 
-#: frame_main.cpp:474
+#: frame_main.cpp:484
 msgid "&Open Audio File..."
 msgstr "&Otvori zvučni zapis…"
 
-#: frame_main.cpp:474
+#: frame_main.cpp:484
 msgid "Opens an audio file"
 msgstr "Otvorite zvučnu datoteku"
 
-#: frame_main.cpp:475
+#: frame_main.cpp:485
 msgid "Open Audio from &Video"
 msgstr "O&tvori zvuk iz snimka"
 
-#: frame_main.cpp:475
+#: frame_main.cpp:485
 msgid "Opens the audio from the current video file"
-msgstr "Otvorite zvuk iz video snimka"
+msgstr "Otvorite zvuk iz video-snimka"
 
-#: frame_main.cpp:476
+#: frame_main.cpp:486
 msgid "&Close Audio"
 msgstr "&Zatvori zvuk"
 
-#: frame_main.cpp:476
+#: frame_main.cpp:486
 msgid "Closes the currently open audio file"
 msgstr "Zatvorite zvučnu datoteku"
 
-#: frame_main.cpp:484
+#: frame_main.cpp:494
 msgid "&Audio"
 msgstr "&Zvuk"
 
-#: frame_main.cpp:489
+#: frame_main.cpp:499
 msgid "&Automation..."
 msgstr "&Automatizacija…"
 
-#: frame_main.cpp:489
+#: frame_main.cpp:499
 msgid "Open automation manager"
 msgstr "Otvorite automatizaciju"
 
-#: frame_main.cpp:491
+#: frame_main.cpp:501
 msgid "&Automation"
 msgstr "&Automatizacija"
 
-#: frame_main.cpp:496
+#: frame_main.cpp:506
 msgid "Select Aegisub interface language"
-msgstr "Izaberite jezik sučelja"
+msgstr "Izaberite jezik korisničkog okruženja"
 
-#: frame_main.cpp:497
+#: frame_main.cpp:507
 msgid "&Options..."
 msgstr "&Mogućnosti…"
 
-#: frame_main.cpp:500
+#: frame_main.cpp:510
 msgid "&Associations..."
 msgstr "&Povezanost…"
 
-#: frame_main.cpp:500
+#: frame_main.cpp:510
 msgid "Associate file types with Aegisub"
 msgstr "Povežite vrste datoteka s programom"
 
-#: frame_main.cpp:503
+#: frame_main.cpp:513
 msgid "Lo&g Window..."
 msgstr "&Izveštaj…"
 
-#: frame_main.cpp:503
+#: frame_main.cpp:513
 msgid "Open log window"
 msgstr "Otvorite prozor za izveštaje"
 
-#: frame_main.cpp:506
+#: frame_main.cpp:516
 msgid "Subs Only View"
 msgstr "Prikaz &titla"
 
-#: frame_main.cpp:506
+#: frame_main.cpp:516
 msgid "Display subtitles only"
 msgstr "Prikažite samo titlove"
 
-#: frame_main.cpp:507
+#: frame_main.cpp:517
 msgid "Video+Subs View"
 msgstr "Prikaz &slike i titla"
 
-#: frame_main.cpp:507
+#: frame_main.cpp:517
 msgid "Display video and subtitles only"
 msgstr "Prikažite sliku i titl"
 
-#: frame_main.cpp:508
+#: frame_main.cpp:518
 msgid "Audio+Subs View"
 msgstr "Prikaz &zvuka i titla"
 
-#: frame_main.cpp:508
+#: frame_main.cpp:518
 msgid "Display audio and subtitles only"
 msgstr "Prikažite zvuk i titl"
 
-#: frame_main.cpp:509
+#: frame_main.cpp:519
 msgid "Full view"
-msgstr "Pun &prikaz"
+msgstr "Celokupan &prikaz"
 
-#: frame_main.cpp:509
+#: frame_main.cpp:519
 msgid "Display audio, video and subtitles"
 msgstr "Prikažite sliku, zvuk i titl"
 
-#: frame_main.cpp:510
+#: frame_main.cpp:520
 msgid "Vie&w"
 msgstr "P&rikaz"
 
-#: frame_main.cpp:514
+#: frame_main.cpp:524
 msgid "&Contents..."
 msgstr "&Sadržaj…"
 
-#: frame_main.cpp:514
+#: frame_main.cpp:524
 msgid "Help topics"
 msgstr "Teme za pomoć"
 
-#: frame_main.cpp:516
+#: frame_main.cpp:526
 msgid "&Resource Files..."
 msgstr "&Resursi…"
 
-#: frame_main.cpp:516
+#: frame_main.cpp:526
 msgid "Resource files distributed with Aegisub"
 msgstr "Datoteke koje dolaze s programom"
 
-#: frame_main.cpp:519
+#: frame_main.cpp:529
 msgid "&Website..."
-msgstr "&Veb sajt…"
+msgstr "&Veb-sajt…"
 
-#: frame_main.cpp:519
+#: frame_main.cpp:529
 msgid "Visit Aegisub's official website"
-msgstr "Posetite našu veb stranicu"
+msgstr "Posetite našu internet stranicu"
 
-#: frame_main.cpp:520
+#: frame_main.cpp:530
 msgid "&Forums..."
 msgstr "&Forum…"
 
-#: frame_main.cpp:520
+#: frame_main.cpp:530
 msgid "Visit Aegisub's forums"
 msgstr "Posetite naš forum"
 
-#: frame_main.cpp:521
+#: frame_main.cpp:531
 msgid "&Bug Tracker..."
 msgstr "&Prijavi grešku…"
 
-#: frame_main.cpp:521
+#: frame_main.cpp:531
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Posetite stranicu za prijavljivanje grešaka i zahtevanje novih mogućnosti"
 
-#: frame_main.cpp:522
+#: frame_main.cpp:532
 msgid "&IRC Channel..."
 msgstr "IRC &kanal…"
 
-#: frame_main.cpp:522
+#: frame_main.cpp:532
 msgid "Visit Aegisub's official IRC channel"
 msgstr "Posetite naš kanal za ćaskanje"
 
-#: frame_main.cpp:526
+#: frame_main.cpp:536
 msgid "&Check for Updates..."
 msgstr "P&roveri dogradnje…"
 
-#: frame_main.cpp:526
+#: frame_main.cpp:536
 msgid "Check to see if there is a new version of Aegisub available"
-msgstr "Proverite da li je dostupno novo izdanje programa"
+msgstr "Proverite da li je dostupna nova verzija programa"
 
-#: frame_main.cpp:527
+#: frame_main.cpp:537
 msgid "&About..."
 msgstr "&O programu…"
 
-#: frame_main.cpp:740
+#: frame_main.cpp:750
 msgid "Save subtitles file"
 msgstr "Čuvanje titla"
 
-#: frame_main.cpp:759
-#: frame_main_events.cpp:742
+#: frame_main.cpp:769
+#: frame_main_events.cpp:744
 msgid "Choose charset code:"
 msgstr "Izaberite kodni raspored:"
 
-#: frame_main.cpp:789
+#: frame_main.cpp:803
 msgid "Save before continuing?"
 msgstr "Želite li da sačuvate izmene?"
 
-#: frame_main.cpp:789
+#: frame_main.cpp:803
 msgid "Unsaved changes"
 msgstr "Nesačuvane izmene"
 
-#: frame_main.cpp:855
+#: frame_main.cpp:869
 msgid "Untitled"
 msgstr "Neimenovano"
 
-#: frame_main.cpp:865
+#: frame_main.cpp:879
 msgid "untitled"
 msgstr "neimenovano"
 
-#: frame_main.cpp:930
+#: frame_main.cpp:944
 msgid "Do you want to load/unload the associated files?"
 msgstr "Želite li da zatvorite učitanu datoteku?"
 
-#: frame_main.cpp:930
+#: frame_main.cpp:944
 msgid "(Un)Load files?"
 msgstr "Zatvaranje datoteke"
 
-#: frame_main.cpp:1075
+#: frame_main.cpp:1089
 msgid "You have timecodes loaded currently. Would you like to unload them?"
 msgstr "Vremenski kodovi su učitani. Želite li da ih zatvorite?"
 
-#: frame_main.cpp:1075
+#: frame_main.cpp:1089
 msgid "Unload timecodes?"
 msgstr "Zatvaranje vremenskih kodova"
 
-#: frame_main.cpp:1117
+#: frame_main.cpp:1131
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
@@ -4279,11 +4270,11 @@ msgstr ""
 "\n"
 "Change subtitles resolution to match video?"
 
-#: frame_main.cpp:1117
+#: frame_main.cpp:1131
 msgid "Resolution mismatch"
-msgstr "Rezolucija se ne slaže"
+msgstr "Rezolucija se ne poklapa"
 
-#: frame_main.cpp:1124
+#: frame_main.cpp:1138
 msgid "Change script resolution"
 msgstr "Promeni rezoluciju skripta"
 
@@ -4296,438 +4287,431 @@ msgid "No Automation macros loaded"
 msgstr "Makroi automatizacije nisu učitani."
 
 #: frame_main_events.cpp:665
-#: frame_main_events.cpp:688
+#: frame_main_events.cpp:689
 msgid "Video Formats"
 msgstr "Video formati"
 
 #: frame_main_events.cpp:666
-#: frame_main_events.cpp:816
-#: frame_main_events.cpp:831
+#: frame_main_events.cpp:819
+#: frame_main_events.cpp:835
 msgid "All Files"
 msgstr "Sve datoteke"
 
 #: frame_main_events.cpp:667
 msgid "Open video file"
-msgstr "Otvaranje video snimka"
+msgstr "Otvaranje video-snimka"
 
-#: frame_main_events.cpp:687
+#: frame_main_events.cpp:688
 msgid "Audio Formats"
 msgstr "Zvučni formati"
 
-#: frame_main_events.cpp:689
+#: frame_main_events.cpp:690
 msgid "All files"
 msgstr "Sve datoteke"
 
-#: frame_main_events.cpp:690
+#: frame_main_events.cpp:691
 msgid "Open audio file"
 msgstr "Otvaranje zvučne datoteke"
 
-#: frame_main_events.cpp:742
+#: frame_main_events.cpp:744
 msgid "Charset"
 msgstr "Kodni raspored"
 
-#: frame_main_events.cpp:815
-#: frame_main_events.cpp:830
+#: frame_main_events.cpp:818
+#: frame_main_events.cpp:834
 msgid "All Supported Types"
 msgstr "Svi podržani formati "
 
-#: frame_main_events.cpp:817
+#: frame_main_events.cpp:820
 msgid "Open timecodes file"
 msgstr "Otvaranje vremenskih kodova"
 
-#: frame_main_events.cpp:832
+#: frame_main_events.cpp:836
 msgid "Save timecodes file"
 msgstr "Čuvanje vremenskih kodova"
 
-#: frame_main_events.cpp:1124
+#: frame_main_events.cpp:1131
 msgid "Reloaded all Automation scripts"
-msgstr "Ponovo učitani skriptovi Automatizacije"
+msgstr "Ponovo učitani automatizacioni skriptovi"
 
-#: frame_main_events.cpp:1127
+#: frame_main_events.cpp:1134
 msgid "Reloaded autoload Automation scripts"
-msgstr "Ponovo učitani samoučitavajući skriptovi Automatizacije"
+msgstr "Ponovo učitani samoučitavajući automatizacioni skriptovi"
 
-#: frame_main_events.cpp:1264
+#: frame_main_events.cpp:1271
 msgid "snap to scene"
-msgstr "prijanjaj uz scenu"
+msgstr "prianjaj uz scenu"
 
-#: frame_main_events.cpp:1295
+#: frame_main_events.cpp:1302
 msgid "shift to frame"
 msgstr "pomeranje kadra"
 
-#: frame_main_events.cpp:1392
+#: frame_main_events.cpp:1399
 msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
 msgstr "Unesite razmeru u decimali, razlomku ili unesite željenu rezoluciju."
 
-#: frame_main_events.cpp:1392
+#: frame_main_events.cpp:1399
 msgid "Enter aspect ratio"
 msgstr "Unos razmere"
 
-#: frame_main_events.cpp:1427
+#: frame_main_events.cpp:1434
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr "Vrednost je neispravna. Razmera mora biti između 0,5 i 5,0."
 
-#: frame_main_events.cpp:1427
+#: frame_main_events.cpp:1434
 msgid "Invalid Aspect Ratio"
 msgstr "Razmera je neispravna"
 
-#: frame_main_events.cpp:1528
+#: frame_main_events.cpp:1535
 msgid "sort"
 msgstr "svrstavanje"
 
-#: frame_main_events.cpp:1567
+#: frame_main_events.cpp:1574
 msgid "File backup saved as \""
 msgstr "Rezerva datoteke je sačuvana u "
 
-#: frame_main_events.cpp:1661
+#: frame_main_events.cpp:1668
 msgid "ASS Override Tag mode set to "
 msgstr "ASS oznake "
 
-#: frame_main_events.cpp:1662
+#: frame_main_events.cpp:1669
 msgid "show full tags."
 msgstr "su prikazane u celosti."
 
-#: frame_main_events.cpp:1663
+#: frame_main_events.cpp:1670
 msgid "simplify tags."
 msgstr "su uprošćene."
 
-#: frame_main_events.cpp:1664
+#: frame_main_events.cpp:1671
 msgid "hide tags."
 msgstr "su sakrivene."
 
 #: hotkeys.cpp:331
-#: hotkeys.cpp:335
+#: hotkeys.cpp:336
+#: hotkeys.cpp:338
 msgid "Exit"
 msgstr "Izađi"
 
 #: hotkeys.cpp:332
-#: hotkeys.cpp:336
+#: hotkeys.cpp:340
 #: video_box.cpp:124
 msgid "Help"
 msgstr "Pomoć"
 
-#: hotkeys.cpp:340
+#: hotkeys.cpp:344
 msgid "Edit Box Commit"
 msgstr "Primeni u uređivačkom okviru"
 
-#: hotkeys.cpp:341
+#: hotkeys.cpp:345
 msgid "Undo"
 msgstr "Opozovi"
 
-#: hotkeys.cpp:343
-#: hotkeys.cpp:345
+#: hotkeys.cpp:347
+#: hotkeys.cpp:349
 msgid "Redo"
 msgstr "Ponovi"
 
-#: hotkeys.cpp:356
+#: hotkeys.cpp:360
 msgid "Select Lines"
 msgstr "Izaberi linije"
 
-#: hotkeys.cpp:358
+#: hotkeys.cpp:362
 msgid "Cut"
 msgstr "Iseci"
 
-#: hotkeys.cpp:359
+#: hotkeys.cpp:363
 msgid "Paste"
 msgstr "Ubaci"
 
-#: hotkeys.cpp:360
+#: hotkeys.cpp:364
 msgid "Paste Over"
 msgstr "Ubaci preko"
 
-#: hotkeys.cpp:363
-#: hotkeys.cpp:365
+#: hotkeys.cpp:367
+#: hotkeys.cpp:369
 msgid "Video Jump"
 msgstr "Video – preskoči"
 
-#: hotkeys.cpp:369
+#: hotkeys.cpp:373
 msgid "Set Start to Video"
-msgstr "Postavi početak video snimka"
+msgstr "Postavi početak video-snimka"
 
-#: hotkeys.cpp:370
+#: hotkeys.cpp:374
 msgid "Set End to Video"
-msgstr "Postavi završetak video snimka"
+msgstr "Postavi završetak video-snimka"
 
-#: hotkeys.cpp:372
+#: hotkeys.cpp:376
 msgid "Shift by Current Time"
 msgstr "Pomeri po tekućem vremenu"
 
-#: hotkeys.cpp:373
+#: hotkeys.cpp:377
 msgid "Zoom 50%"
 msgstr "Uvećaj do 50%"
 
-#: hotkeys.cpp:374
+#: hotkeys.cpp:378
 msgid "Zoom 100%"
 msgstr "Uvećaj do 100%"
 
-#: hotkeys.cpp:375
+#: hotkeys.cpp:379
 msgid "Zoom 200%"
 msgstr "Uvećaj do 200%"
 
-#: hotkeys.cpp:377
+#: hotkeys.cpp:381
 msgid "Video global prev frame"
 msgstr "Video – prethodni kadar"
 
-#: hotkeys.cpp:378
+#: hotkeys.cpp:382
 msgid "Video global next frame"
 msgstr "Video – sledeći kadar"
 
-#: hotkeys.cpp:379
+#: hotkeys.cpp:383
 msgid "Video global focus seek"
-msgstr "Video – usredsredi na premotavanje"
+msgstr "Video – fokusiraj premotavanje"
 
-#: hotkeys.cpp:380
+#: hotkeys.cpp:384
 msgid "Video global play"
 msgstr "Video – pusti"
 
-#: hotkeys.cpp:381
+#: hotkeys.cpp:385
 msgid "Grid global prev line"
 msgstr "Mreža – prethodna linija"
 
-#: hotkeys.cpp:382
+#: hotkeys.cpp:386
 msgid "Grid global next line"
 msgstr "Mreža – sledeća linija"
 
-#: hotkeys.cpp:383
+#: hotkeys.cpp:387
 msgid "Save Subtitles Alt"
 msgstr "Sačuvaj titl (rezervno)"
 
-#: hotkeys.cpp:384
+#: hotkeys.cpp:388
 msgid "Video global zoom in"
 msgstr "Video – uvećaj"
 
-#: hotkeys.cpp:385
+#: hotkeys.cpp:389
 msgid "Video global zoom out"
 msgstr "Video – umanji"
 
-#: hotkeys.cpp:387
+#: hotkeys.cpp:391
 msgid "Grid move row down"
 msgstr "Mreža – pomeri red nadole"
 
-#: hotkeys.cpp:388
+#: hotkeys.cpp:392
 msgid "Grid move row up"
 msgstr "Mreža – pomeri red nagore"
 
-#: hotkeys.cpp:390
-#: hotkeys.cpp:392
+#: hotkeys.cpp:394
+#: hotkeys.cpp:396
 msgid "Grid delete rows"
 msgstr "Mreža – obriši redove"
 
-#: hotkeys.cpp:394
+#: hotkeys.cpp:398
 msgid "Grid duplicate rows"
 msgstr "Mreža – udvostruči redove"
 
-#: hotkeys.cpp:395
+#: hotkeys.cpp:399
 msgid "Grid duplicate and shift one frame"
 msgstr "Mreža – udvostruči i pomeri kadar"
 
-#: hotkeys.cpp:397
+#: hotkeys.cpp:401
 msgid "Audio Commit Alt"
 msgstr "Zvuk – primeni (rezervno)"
 
-#: hotkeys.cpp:398
+#: hotkeys.cpp:402
 msgid "Audio Commit"
 msgstr "Zvuk – primeni"
 
-#: hotkeys.cpp:399
+#: hotkeys.cpp:403
 msgid "Audio Commit (Stay)"
 msgstr "Zvuk – primeni (ostanak)"
 
-#: hotkeys.cpp:400
+#: hotkeys.cpp:404
 msgid "Audio Prev Line"
 msgstr "Zvuk – prethodna linija"
 
-#: hotkeys.cpp:401
+#: hotkeys.cpp:405
 msgid "Audio Prev Line Alt"
 msgstr "Zvuk – prethodna linija (rezervno)"
 
-#: hotkeys.cpp:402
+#: hotkeys.cpp:406
 msgid "Audio Next Line"
 msgstr "Zvuk – sledeća linija"
 
-#: hotkeys.cpp:403
+#: hotkeys.cpp:407
 msgid "Audio Next Line Alt"
 msgstr "Zvuk – sledeća linija (rezervno)"
 
-#: hotkeys.cpp:404
+#: hotkeys.cpp:408
 msgid "Audio Play"
 msgstr "Zvuk – pusti"
 
-#: hotkeys.cpp:405
+#: hotkeys.cpp:409
 msgid "Audio Play Alt"
 msgstr "Zvuk – pusti (rezervno)"
 
-#: hotkeys.cpp:406
+#: hotkeys.cpp:410
 msgid "Audio Play or Stop"
 msgstr "Zvuk – pusti ili zaustavi"
 
-#: hotkeys.cpp:407
+#: hotkeys.cpp:411
 msgid "Audio Stop"
 msgstr "Zvuk – zaustavi"
 
-#: hotkeys.cpp:408
+#: hotkeys.cpp:412
 msgid "Audio Karaoke Increase Len"
 msgstr "Zvuk – povećaj sočivo za karaoke"
 
-#: hotkeys.cpp:409
+#: hotkeys.cpp:413
 msgid "Audio Karaoke Decrease Len"
 msgstr "Zvuk – smanji sočivo za karaoke"
 
-#: hotkeys.cpp:410
+#: hotkeys.cpp:414
 msgid "Audio Karaoke Increase Len Shift"
 msgstr "Zvuk – povećaj pomeraj sočiva za karaoke"
 
-#: hotkeys.cpp:411
+#: hotkeys.cpp:415
 msgid "Audio Karaoke Decrease Len Shift"
 msgstr "Zvuk – smanji pomeraj sočiva za karaoke"
 
-#: hotkeys.cpp:412
+#: hotkeys.cpp:416
 msgid "Audio Scroll Left"
 msgstr "Zvuk – klizaj ulevo"
 
-#: hotkeys.cpp:413
+#: hotkeys.cpp:417
 msgid "Audio Scroll Right"
 msgstr "Zvuk – klizaj udesno"
 
-#: hotkeys.cpp:414
+#: hotkeys.cpp:418
 msgid "Audio Play First 500ms"
 msgstr "Zvuk – pusti pola sekunde od početka"
 
-#: hotkeys.cpp:415
+#: hotkeys.cpp:419
 msgid "Audio Play Last 500ms"
 msgstr "Zvuk – pusti pola sekunde od kraja"
 
-#: hotkeys.cpp:416
+#: hotkeys.cpp:420
 msgid "Audio Play 500ms Before"
 msgstr "Zvuk – pusti pola sekunde pre"
 
-#: hotkeys.cpp:417
+#: hotkeys.cpp:421
 msgid "Audio Play 500ms After"
 msgstr "Zvuk – pusti pola sekunde posle"
 
-#: hotkeys.cpp:418
+#: hotkeys.cpp:422
 msgid "Audio Play To End"
 msgstr "Zvuk – pusti do kraja"
 
-#: hotkeys.cpp:419
+#: hotkeys.cpp:423
 msgid "Audio Play Original Line"
 msgstr "Zvuk – pusti izvornu liniju"
 
-#: hotkeys.cpp:420
+#: hotkeys.cpp:424
 msgid "Audio Add Lead In"
 msgstr "Zvuk – proširi početno vreme"
 
-#: hotkeys.cpp:421
+#: hotkeys.cpp:425
 msgid "Audio Add Lead Out"
 msgstr "Zvuk – proširi završno vreme"
 
-#: hotkeys.cpp:423
+#: hotkeys.cpp:427
 msgid "Audio Medusa Toggle"
 msgstr "Meduza – uključi/isključi"
 
-#: hotkeys.cpp:424
+#: hotkeys.cpp:428
 msgid "Audio Medusa Play"
 msgstr "Meduza – pusti"
 
-#: hotkeys.cpp:425
+#: hotkeys.cpp:429
 msgid "Audio Medusa Stop"
 msgstr "Meduza – zaustavi"
 
-#: hotkeys.cpp:426
-msgid "Audio Medusa Shift Start Back"
-msgstr "Meduza – pomeri početno vreme nazad"
-
-#: hotkeys.cpp:427
-msgid "Audio Medusa Shift Start Forward"
-msgstr "Meduza – pomeri početno vreme napred"
-
-#: hotkeys.cpp:428
-msgid "Audio Medusa Shift End Back"
-msgstr "Meduza – pomeri završno vreme nazad"
-
-#: hotkeys.cpp:429
-msgid "Audio Medusa Shift End Forward"
-msgstr "Meduza – pomeri završno vreme napred"
-
 #: hotkeys.cpp:430
+msgid "Audio Medusa Shift Start Back"
+msgstr "Meduza – pomeri početno vreme unazad"
+
+#: hotkeys.cpp:431
+msgid "Audio Medusa Shift Start Forward"
+msgstr "Meduza – pomeri početno vreme unapred"
+
+#: hotkeys.cpp:432
+msgid "Audio Medusa Shift End Back"
+msgstr "Meduza – pomeri završno vreme unazad"
+
+#: hotkeys.cpp:433
+msgid "Audio Medusa Shift End Forward"
+msgstr "Meduza – pomeri završno vreme unapred"
+
+#: hotkeys.cpp:434
 msgid "Audio Medusa Play Before"
 msgstr "Meduza – pusti pre"
 
-#: hotkeys.cpp:431
+#: hotkeys.cpp:435
 msgid "Audio Medusa Play After"
 msgstr "Meduza – pusti posle"
 
-#: hotkeys.cpp:432
+#: hotkeys.cpp:436
 msgid "Audio Medusa Next"
 msgstr "Meduza – sledeće"
 
-#: hotkeys.cpp:433
+#: hotkeys.cpp:437
 msgid "Audio Medusa Previous"
 msgstr "Meduza – prethodno"
 
-#: hotkeys.cpp:434
+#: hotkeys.cpp:438
 msgid "Audio Medusa Enter"
 msgstr "Meduza – unesi"
 
-#: hotkeys.cpp:436
+#: hotkeys.cpp:440
 msgid "Translation Assistant Play Audio"
 msgstr "Pomoćnik za prevođenje – pusti zvuk"
 
-#: hotkeys.cpp:437
+#: hotkeys.cpp:441
 msgid "Translation Assistant Play Video"
 msgstr "Pomoćnik za prevođenje – pusti snimak"
 
-#: hotkeys.cpp:438
+#: hotkeys.cpp:442
 msgid "Translation Assistant Next"
 msgstr "Pomoćnik za prevođenje – sledeće"
 
-#: hotkeys.cpp:439
+#: hotkeys.cpp:443
 msgid "Translation Assistant Prev"
 msgstr "Pomoćnik za prevođenje – prethodno"
 
-#: hotkeys.cpp:440
+#: hotkeys.cpp:444
 msgid "Translation Assistant Accept"
 msgstr "Pomoćnik za prevođenje – prihvati"
 
-#: hotkeys.cpp:441
+#: hotkeys.cpp:445
 msgid "Translation Assistant Preview"
 msgstr "Pomoćnik za prevođenje – pregledaj"
 
-#: hotkeys.cpp:442
+#: hotkeys.cpp:446
 msgid "Translation Assistant Insert Original"
 msgstr "Pomoćnik za prevođenje – unesi izvorno"
 
-#: hotkeys.cpp:444
+#: hotkeys.cpp:448
 msgid "Styling Assistant Play Audio"
 msgstr "Pomoćnik za stilizovanje – pusti zvuk"
 
-#: hotkeys.cpp:445
+#: hotkeys.cpp:449
 msgid "Styling Assistant Play Video"
 msgstr "Pomoćnik za stilizovanje – pusti snimak"
 
-#: hotkeys.cpp:446
+#: hotkeys.cpp:450
 msgid "Styling Assistant Next"
 msgstr "Pomoćnik za stilizovanje – sledeće"
 
-#: hotkeys.cpp:447
+#: hotkeys.cpp:451
 msgid "Styling Assistant Prev"
 msgstr "Pomoćnik za stilizovanje – prethodno"
 
-#: hotkeys.cpp:448
+#: hotkeys.cpp:452
 msgid "Styling Assistant Accept"
 msgstr "Pomoćnik za stilizovanje – prihvati"
 
-#: hotkeys.cpp:449
+#: hotkeys.cpp:453
 msgid "Styling Assistant Preview"
 msgstr "Pomoćnik za stilizovanje – pregledaj"
-
-#: lavc_keyframes.cpp:97
-msgid "Load keyframes"
-msgstr "Učitaj ključne kadrove"
-
-#: lavc_keyframes.cpp:97
-msgid "Reading keyframes from video"
-msgstr "Učitavam ključne kadrove iz snimka…"
 
 #: mkv_wrap.cpp:170
 #: mkv_wrap.cpp:398
@@ -4742,7 +4726,7 @@ msgstr "Učitavam ključne kadrove i vremenske kodove iz matroške…"
 msgid "Reading subtitles from Matroska file."
 msgstr "Učitavam titlove iz matroške…"
 
-#: options.cpp:467
+#: options.cpp:469
 msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
 msgstr "Datoteka postavki je neispravna ili oštećena. Tekuća datoteka biće zamenjena s podrazumevanom."
 
@@ -4758,7 +4742,7 @@ msgstr ""
 
 #: subs_edit_box.cpp:87
 msgid "Style for this line."
-msgstr "Stil izabrane linije."
+msgstr "Stil izabrane linije"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -4887,77 +4871,87 @@ msgstr "promenu komentara"
 msgid "editing"
 msgstr "uređivanje"
 
-#: subs_edit_ctrl.cpp:800
+#: subs_edit_ctrl.cpp:811
 msgid "No correction suggestions"
 msgstr "Nema predloga za ispravku"
 
-#: subs_edit_ctrl.cpp:812
+#: subs_edit_ctrl.cpp:823
 #, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr "Dodaj „%s“ u rečnik"
 
-#: subs_edit_ctrl.cpp:820
+#: subs_edit_ctrl.cpp:831
 msgid "No spell checker suggestions"
 msgstr "Nema predloga"
 
-#: subs_edit_ctrl.cpp:827
+#: subs_edit_ctrl.cpp:838
 #, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Predlozi za „%s“"
 
-#: subs_edit_ctrl.cpp:847
-#: subs_edit_ctrl.cpp:933
+#: subs_edit_ctrl.cpp:858
+#: subs_edit_ctrl.cpp:944
 msgid "Disable"
 msgstr "Onemogući"
 
-#: subs_edit_ctrl.cpp:860
+#: subs_edit_ctrl.cpp:871
 msgid "Spell checker language"
-msgstr "Jezik provere pravopisa"
+msgstr "Jezik provere pisanja"
 
-#: subs_edit_ctrl.cpp:911
+#: subs_edit_ctrl.cpp:922
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr "Predlozi sinonima za „%s“"
 
-#: subs_edit_ctrl.cpp:918
+#: subs_edit_ctrl.cpp:929
 msgid "No thesaurus suggestions"
 msgstr "Nema predloga"
 
-#: subs_edit_ctrl.cpp:946
+#: subs_edit_ctrl.cpp:957
 msgid "Thesaurus language"
 msgstr "Jezik tezaurusa"
 
-#: subs_edit_ctrl.cpp:953
+#: subs_edit_ctrl.cpp:964
 msgid "Cu&t"
 msgstr "&Iseci"
 
-#: subs_edit_ctrl.cpp:954
+#: subs_edit_ctrl.cpp:965
 #: subs_grid.cpp:198
 #: timeedit_ctrl.cpp:307
 msgid "&Copy"
 msgstr "U&množi"
 
-#: subs_edit_ctrl.cpp:955
+#: subs_edit_ctrl.cpp:966
 #: subs_grid.cpp:200
 #: timeedit_ctrl.cpp:308
 msgid "&Paste"
 msgstr "U&baci"
 
-#: subs_edit_ctrl.cpp:957
+#: subs_edit_ctrl.cpp:968
 msgid "Select &All"
 msgstr "Izaberi &sve"
 
-#: subs_edit_ctrl.cpp:961
+#: subs_edit_ctrl.cpp:972
 msgid "Split at cursor (preserve times)"
 msgstr "Podeli pokazivačem (sačuvaj vreme)"
 
-#: subs_edit_ctrl.cpp:962
+#: subs_edit_ctrl.cpp:973
 msgid "Split at cursor (estimate times)"
 msgstr "Podeli pokazivačem (proceni vreme)"
 
 #: subs_grid.cpp:118
 msgid "Line Number"
 msgstr "Broj linije"
+
+#: subs_grid.cpp:120
+#: subs_grid.cpp:1514
+msgid "Start"
+msgstr "Početak"
+
+#: subs_grid.cpp:121
+#: subs_grid.cpp:1516
+msgid "End"
+msgstr "Kraj"
 
 #: subs_grid.cpp:151
 msgid "&Insert (before)"
@@ -5084,81 +5078,185 @@ msgstr "ubacivanje"
 msgid "delete"
 msgstr "brisanje"
 
-#: subs_grid.cpp:1149
+#: subs_grid.cpp:1150
 msgid "adjoin"
 msgstr "spajanje"
 
-#: subs_grid.cpp:1319
+#: subs_grid.cpp:1320
 msgid "split"
 msgstr "razdvajanje"
 
-#: subs_grid.cpp:1435
+#: subs_grid.cpp:1436
 msgid "timing"
 msgstr "vreme"
+
+#: subs_grid.cpp:1510
+msgid "#"
+msgstr "#"
+
+#: subs_grid.cpp:1512
+msgid "L"
+msgstr "L"
 
 #: subtitles_provider_libass.cpp:113
 msgid "Please wait, caching fonts..."
 msgstr "Privremeno memorišem fontove…"
 
-#: subtitle_format.cpp:273
+#: subtitle_format.cpp:275
 msgid "All Supported Formats"
 msgstr "Svi podržani formati"
 
-#: subtitle_format.cpp:297
+#: subtitle_format.cpp:299
 msgid "15.000 FPS"
 msgstr "15.000 FPS"
 
-#: subtitle_format.cpp:298
+#: subtitle_format.cpp:300
 msgid "23.976 FPS (Decimated NTSC)"
 msgstr "23.976 FPS (usporeni NTSC)"
 
-#: subtitle_format.cpp:299
+#: subtitle_format.cpp:301
 msgid "24.000 FPS (FILM)"
 msgstr "24.000 FPS (FILM)"
 
-#: subtitle_format.cpp:300
+#: subtitle_format.cpp:302
 msgid "25.000 FPS (PAL)"
 msgstr "25.000 FPS (PAL)"
 
-#: subtitle_format.cpp:301
+#: subtitle_format.cpp:303
 msgid "29.970 FPS (NTSC)"
 msgstr "29.970 FPS (NTSC)"
 
-#: subtitle_format.cpp:303
+#: subtitle_format.cpp:305
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
 msgstr "29.970 FPS (NTSC sa SMPTE ispuštanjem kadrova)"
 
-#: subtitle_format.cpp:304
+#: subtitle_format.cpp:306
 msgid "30.000 FPS"
 msgstr "30.000 FPS"
 
-#: subtitle_format.cpp:305
+#: subtitle_format.cpp:307
 msgid "50.000 FPS (PAL x2)"
 msgstr "50.000 FPS (PAL ×2)"
 
-#: subtitle_format.cpp:306
+#: subtitle_format.cpp:308
 msgid "59.940 FPS (NTSC x2)"
 msgstr "59.940 FPS (NTSC ×2)"
 
-#: subtitle_format.cpp:307
+#: subtitle_format.cpp:309
 msgid "60.000 FPS"
 msgstr "60.000 FPS"
 
-#: subtitle_format.cpp:308
+#: subtitle_format.cpp:310
 msgid "119.880 FPS (NTSC x4)"
 msgstr "119.880 FPS (NTSC ×4)"
 
-#: subtitle_format.cpp:309
+#: subtitle_format.cpp:311
 msgid "120.000 FPS"
 msgstr "120.000 FPS"
 
-#: subtitle_format.cpp:312
+#: subtitle_format.cpp:314
 msgid "Please choose the appropriate FPS for the subtitles:"
 msgstr "Izaberite odgovarajući broj kadrova za titlove:"
 
-#: subtitle_format.cpp:312
+#: subtitle_format.cpp:314
 msgid "FPS"
 msgstr "FPS"
+
+#: subtitle_format_ebu3264.cpp:305
+msgid "Time code offset in incorrect format. Ensure it is entered as four groups of two digits separated by colons."
+msgstr "Odmak vremenskog koda je u neispravnom formatu. Uverite se da je unet kao četiri grupe sa po dva broja koje su odvojene dvotačkama."
+
+#: subtitle_format_ebu3264.cpp:305
+msgid "EBU STL export"
+msgstr "Izvoz EBU STL"
+
+#: subtitle_format_ebu3264.cpp:1179
+msgid "Export to EBU STL format"
+msgstr "Izvezi u EBU STL format"
+
+#: subtitle_format_ebu3264.cpp:1182
+msgid "23.976 fps (non-standard, STL24.01)"
+msgstr "23.976 FPS (nestandardno, STL24.01)"
+
+#: subtitle_format_ebu3264.cpp:1183
+msgid "24 fps (non-standard, STL24.01)"
+msgstr "24 FPS (nestandardno, STL24.01)"
+
+#: subtitle_format_ebu3264.cpp:1184
+msgid "25 fps (STL25.01)"
+msgstr "25 FPS (STL25.01)"
+
+#: subtitle_format_ebu3264.cpp:1185
+msgid "29.97 fps (non-dropframe, STL30.01)"
+msgstr "29.97 FPS (neispušteni kadar, STL30.01)"
+
+#: subtitle_format_ebu3264.cpp:1186
+msgid "29.97 fps (dropframe, STL30.01)"
+msgstr "29.97 FPS (ispušteni kadar, STL30.01)"
+
+#: subtitle_format_ebu3264.cpp:1187
+msgid "30 fps (STL30.01)"
+msgstr "30 FPS (STL30.01)"
+
+#: subtitle_format_ebu3264.cpp:1189
+msgid "TV standard"
+msgstr "TV standard"
+
+#: subtitle_format_ebu3264.cpp:1191
+msgid "Time codes"
+msgstr "Vremenski kodovi"
+
+#: subtitle_format_ebu3264.cpp:1193
+msgid "Out-times are inclusive"
+msgstr "Završna vremena su uključiva"
+
+#: subtitle_format_ebu3264.cpp:1196
+msgid "ISO 6937-2 (Latin/Western Europe)"
+msgstr "ISO 6937-2 (latinska/zapadna Evropa)"
+
+#: subtitle_format_ebu3264.cpp:1197
+msgid "ISO 8859-5 (Cyrillic)"
+msgstr "ISO 8859-5 (ćirilica)"
+
+#: subtitle_format_ebu3264.cpp:1198
+msgid "ISO 8859-6 (Arabic)"
+msgstr "ISO 8859-6 (arapski)"
+
+#: subtitle_format_ebu3264.cpp:1199
+msgid "ISO 8859-7 (Greek)"
+msgstr "ISO 8859-7 (grčki)"
+
+#: subtitle_format_ebu3264.cpp:1200
+msgid "ISO 8859-8 (Hebrew)"
+msgstr "ISO 8859-8 (hebrejski)"
+
+#: subtitle_format_ebu3264.cpp:1201
+msgid "UTF-8 Unicode (non-standard)"
+msgstr "UTF-8 (nestandardno)"
+
+#: subtitle_format_ebu3264.cpp:1203
+msgid "Text encoding"
+msgstr "Kodiranje teksta"
+
+#: subtitle_format_ebu3264.cpp:1205
+msgid "Text formatting"
+msgstr "Oblikovanje teksta"
+
+#: subtitle_format_ebu3264.cpp:1207
+msgid "Automatic wrapping"
+msgstr "Samoprelamanje"
+
+#: subtitle_format_ebu3264.cpp:1208
+msgid "Translate alignments"
+msgstr "Poravnanja prevoda"
+
+#: subtitle_format_ebu3264.cpp:1215
+msgid "Max. line length:"
+msgstr "Najveća dužina linije:"
+
+#: subtitle_format_ebu3264.cpp:1219
+msgid "Time code offset:"
+msgstr "Odmak vremenskog koda:"
 
 #: subtitle_format_prs.cpp:145
 msgid "Exporting PRS"
@@ -5190,7 +5288,7 @@ msgstr "Uključi/isključi praćenje snimka"
 
 #: video_box.cpp:90
 msgid "Seek video."
-msgstr "Premotajte video snimak."
+msgstr "Premotajte video-snimak."
 
 #: video_box.cpp:94
 msgid "Current frame time and number."
@@ -5208,7 +5306,7 @@ msgstr "Standardno"
 
 #: video_box.cpp:114
 msgid "Standard mode, double click sets position."
-msgstr "Standardno (dvoklik postavlja položaj)."
+msgstr "Standardno (dvoklik postavlja položaj)"
 
 #: video_box.cpp:115
 #: visual_tool_vector_clip.cpp:70
@@ -5217,7 +5315,7 @@ msgstr "Prevlačenje"
 
 #: video_box.cpp:115
 msgid "Drag subtitles."
-msgstr "Prevlačite titlove."
+msgstr "Prevucite titlove"
 
 #: video_box.cpp:116
 msgid "Rotate Z"
@@ -5225,7 +5323,7 @@ msgstr "Okretanje (Z)"
 
 #: video_box.cpp:116
 msgid "Rotate subtitles on their Z axis."
-msgstr "Okrećite titlove po Z osi."
+msgstr "Okrenite titlove po Z osi"
 
 #: video_box.cpp:117
 msgid "Rotate XY"
@@ -5233,7 +5331,7 @@ msgstr "Okretanje (XY)"
 
 #: video_box.cpp:117
 msgid "Rotate subtitles on their X and Y axes."
-msgstr "Okrećite titlove po osama X i Y."
+msgstr "Okrenite titlove po osama X i Y"
 
 #: video_box.cpp:118
 msgid "Scale"
@@ -5241,7 +5339,7 @@ msgstr "Uvećavanje"
 
 #: video_box.cpp:118
 msgid "Scale subtitles on X and Y axes."
-msgstr "Uvećavajte titlove po osama X i Y."
+msgstr "Uvećajte titlove po osama X i Y"
 
 #: video_box.cpp:119
 msgid "Clip"
@@ -5249,7 +5347,7 @@ msgstr "Isecanje"
 
 #: video_box.cpp:119
 msgid "Clip subtitles to a rectangle."
-msgstr "Isecajte titlove pomoću pravougaonika."
+msgstr "Isecite titlove na pravougaonik"
 
 #: video_box.cpp:120
 msgid "Vector Clip"
@@ -5257,7 +5355,7 @@ msgstr "Vektorsko isecanje"
 
 #: video_box.cpp:120
 msgid "Clip subtitles to a vectorial area."
-msgstr "Isecajte titlove na vektorske oblasti."
+msgstr "Isecite titlove na vektorske oblasti"
 
 #: video_box.cpp:122
 msgid "Realtime"
@@ -5265,29 +5363,29 @@ msgstr "Stvarno vreme"
 
 #: video_box.cpp:122
 msgid "Toggle realtime display of changes."
-msgstr "Uključite/isključite prikaz izmena u stvarnom vremenu."
+msgstr "Uključite/isključite prikaz izmena u stvarnom vremenu"
 
 #: video_box.cpp:124
 msgid "Open the manual page for Visual Typesetting."
 msgstr "Otvorite priručnik za vizuelno uređivanje."
 
-#: video_display.cpp:478
+#: video_display.cpp:496
 msgid "Save PNG snapshot"
 msgstr "&Uslikaj ekran"
 
-#: video_display.cpp:479
+#: video_display.cpp:497
 msgid "Copy image to Clipboard"
 msgstr "U&množi sliku"
 
-#: video_display.cpp:481
+#: video_display.cpp:499
 msgid "Save PNG snapshot (no subtitles)"
 msgstr "U&slikaj ekran (bez titlova)"
 
-#: video_display.cpp:482
+#: video_display.cpp:500
 msgid "Copy image to Clipboard (no subtitles)"
 msgstr "Um&noži sliku (bez titlova)"
 
-#: video_display.cpp:484
+#: video_display.cpp:502
 msgid "Copy coordinates to Clipboard"
 msgstr "Umnoži &koordinate"
 
@@ -5302,15 +5400,13 @@ msgstr "Već ste učitali vremenske kodove. Zameniti ih s onim iz matroške?"
 
 #: video_provider_avs.cpp:289
 #: video_provider_dshow.cpp:311
-#: video_provider_ffmpegsource.cpp:269
-#: video_provider_lavc.cpp:149
+#: video_provider_ffmpegsource.cpp:270
 msgid "Replace timecodes?"
 msgstr "Zameniti vremenske kodove?"
 
-#: video_provider_ffmpegsource.cpp:269
-#: video_provider_lavc.cpp:149
+#: video_provider_ffmpegsource.cpp:270
 msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
-msgstr "Vremenski kodovi su već učitani. Želite li da ih zamenite s kodovima iz video snimka?"
+msgstr "Vremenski kodovi su već učitani. Želite li da ih zamenite s kodovima iz video-snimka?"
 
 #: visual_tool.cpp:285
 #: visual_tool_drag.cpp:117
@@ -5380,6 +5476,12 @@ msgstr "Ugladi slobodnom rukom"
 #: visual_tool_vector_clip.cpp:79
 msgid "Draws a smoothed freehand shape."
 msgstr "Nacrtajte uglađeni oblik slobodnom rukom."
+
+#~ msgid "Load keyframes"
+#~ msgstr "Učitaj ključne kadrove"
+
+#~ msgid "Reading keyframes from video"
+#~ msgstr "Učitavam ključne kadrove iz snimka…"
 
 #~ msgid "FRAME"
 #~ msgstr "KADAR"
