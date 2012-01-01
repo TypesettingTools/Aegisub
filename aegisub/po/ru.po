@@ -5,11 +5,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aegisub 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-04 01:20+0200\n"
-"PO-Revision-Date: 2011-06-04 23:45+0200\n"
+"POT-Creation-Date: 2011-12-25 03:03+0100\n"
+"PO-Revision-Date: 2012-01-01 21:14+0300\n"
 "Last-Translator: Igor Urazov <z0rc3r@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
@@ -196,61 +198,61 @@ msgstr "Караоке"
 msgid "Toggle karaoke mode"
 msgstr "Выбор между простым режимом и караоке"
 
-#: audio_box.cpp:551
+#: audio_box.cpp:541
 msgid "Cancel Split"
 msgstr "Отменить"
 
-#: audio_box.cpp:552
+#: audio_box.cpp:542
 msgid "Discard all splits and leave split-mode"
 msgstr "Отменить все разбиения и выйти из этого режима"
 
-#: audio_box.cpp:553
+#: audio_box.cpp:543
 msgid "Accept Split"
 msgstr "Принять"
 
-#: audio_box.cpp:554
+#: audio_box.cpp:544
 msgid "Commit splits and leave split-mode"
 msgstr "Принять разбиаения и выйти из этого режима"
 
-#: audio_box.cpp:556
+#: audio_box.cpp:546
 msgid "Join"
 msgstr "Объединить"
 
-#: audio_box.cpp:557
+#: audio_box.cpp:547
 msgid "Join selected syllables"
 msgstr "Объединить выбранные слоги"
 
-#: audio_box.cpp:558
+#: audio_box.cpp:548
 msgid "Split"
 msgstr "Разбить"
 
-#: audio_box.cpp:559
+#: audio_box.cpp:549
 msgid "Enter split-mode"
 msgstr "Включить режим разбиения"
 
-#: audio_display.cpp:2294
-#: audio_display.cpp:2349
+#: audio_display.cpp:2248
+#: audio_display.cpp:2293
 msgid "Do you want to commit your changes? If you choose No, they will be discarded."
 msgstr "Хотите фиксировать изменения? Если выберите «Нет», они будут отменены."
 
-#: audio_display.cpp:2294
-#: audio_display.cpp:2349
+#: audio_display.cpp:2248
+#: audio_display.cpp:2293
 msgid "Commit?"
 msgstr "Фиксировать?"
 
-#: audio_karaoke.cpp:811
+#: audio_karaoke.cpp:754
 msgid "Karaoke tag"
 msgstr "Тег караоке"
 
-#: audio_karaoke.cpp:815
+#: audio_karaoke.cpp:758
 msgid "Change karaoke tag to \\k"
 msgstr "Изменить тег караоке на \\k"
 
-#: audio_karaoke.cpp:816
+#: audio_karaoke.cpp:759
 msgid "Change karaoke tag to \\kf"
 msgstr "Изменить тег караоке на \\kf"
 
-#: audio_karaoke.cpp:817
+#: audio_karaoke.cpp:760
 msgid "Change karaoke tag to \\ko"
 msgstr "Изменить тег караоке на \\ko"
 
@@ -338,80 +340,6 @@ msgstr "Перезагружаю %s в связи с изменением фай
 msgid "Saving changes"
 msgstr "Сохранение изменений"
 
-#: base_grid.cpp:434
-msgid "#"
-msgstr "№"
-
-#: base_grid.cpp:435
-msgid "L"
-msgstr "С"
-
-#: base_grid.cpp:436
-#: subs_grid.cpp:120
-msgid "Start"
-msgstr "Начало"
-
-#: base_grid.cpp:437
-#: subs_grid.cpp:121
-msgid "End"
-msgstr "Конец"
-
-#: base_grid.cpp:438
-#: dialog_options.cpp:213
-#: dialog_options.cpp:284
-#: dialog_options.cpp:470
-#: dialog_paste_over.cpp:68
-#: dialog_search_replace.cpp:96
-#: dialog_selection.cpp:78
-#: subs_grid.cpp:122
-msgid "Style"
-msgstr "Стиль"
-
-#: base_grid.cpp:439
-#: dialog_paste_over.cpp:69
-#: dialog_search_replace.cpp:97
-#: dialog_selection.cpp:79
-#: subs_edit_box.cpp:90
-#: subs_grid.cpp:123
-msgid "Actor"
-msgstr "Актёр"
-
-#: base_grid.cpp:440
-#: dialog_paste_over.cpp:79
-#: dialog_search_replace.cpp:98
-#: dialog_selection.cpp:80
-#: subs_edit_box.cpp:93
-#: subs_grid.cpp:124
-msgid "Effect"
-msgstr "Эффект"
-
-#: base_grid.cpp:441
-#: dialog_style_editor.cpp:248
-#: subs_grid.cpp:125
-msgid "Left"
-msgstr "Лев"
-
-#: base_grid.cpp:442
-#: dialog_style_editor.cpp:248
-#: subs_grid.cpp:126
-msgid "Right"
-msgstr "Прав"
-
-#: base_grid.cpp:443
-#: dialog_style_editor.cpp:248
-#: subs_grid.cpp:127
-msgid "Vert"
-msgstr "Верт"
-
-#: base_grid.cpp:444
-#: dialog_kanji_timer.cpp:707
-#: dialog_paste_over.cpp:80
-#: dialog_paste_over.cpp:92
-#: dialog_search_replace.cpp:95
-#: dialog_selection.cpp:77
-msgid "Text"
-msgstr "Текст"
-
 #: browse_button.cpp:52
 msgid "Browse..."
 msgstr "Обзор..."
@@ -433,7 +361,7 @@ msgid "Choose character set"
 msgstr "Выбрать кодировку"
 
 #: dialog_about.cpp:53
-#: frame_main.cpp:527
+#: frame_main.cpp:537
 msgid "About Aegisub"
 msgstr "О программе"
 
@@ -478,27 +406,27 @@ msgstr ""
 "\n"
 "Если вы хотите, чтобы Aegisub более не был ассоциирован с каким-либо типом файлов, надо назначить этот тип файлов другой программе."
 
-#: dialog_associations.cpp:475
+#: dialog_associations.cpp:476
 msgid "Aegisub"
 msgstr "Aegisub"
 
-#: dialog_associations.cpp:476
+#: dialog_associations.cpp:477
 msgid "Make Aegisub default editor for subtitles?"
 msgstr "Сделать Aegisub редактором субтитров по умолчанию?"
 
-#: dialog_associations.cpp:477
+#: dialog_associations.cpp:478
 msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
 msgstr "Aegisub не выбран как редактор субтитров по умолчанию. Сделать его таковым?"
 
-#: dialog_associations.cpp:478
+#: dialog_associations.cpp:479
 msgid "Always perform this check when Aegisub starts"
 msgstr "Всегда проверять ассоциации при старте"
 
-#: dialog_associations.cpp:533
+#: dialog_associations.cpp:534
 msgid "&Yes"
 msgstr "&Да"
 
-#: dialog_associations.cpp:534
+#: dialog_associations.cpp:535
 msgid "&No"
 msgstr "&Нет"
 
@@ -524,44 +452,44 @@ msgstr "Прикрепить &графику"
 
 #: dialog_attachments.cpp:80
 #: dialog_automation.cpp:69
-#: dialog_version_check.cpp:502
+#: dialog_version_check.cpp:576
 msgid "&Close"
 msgstr "&Закрыть"
 
-#: dialog_attachments.cpp:99
+#: dialog_attachments.cpp:101
 msgid "Attachment name"
 msgstr "Имя вложения"
 
-#: dialog_attachments.cpp:100
+#: dialog_attachments.cpp:102
 msgid "Size"
 msgstr "Размер"
 
-#: dialog_attachments.cpp:101
+#: dialog_attachments.cpp:103
 msgid "Group"
 msgstr "Группа"
 
-#: dialog_attachments.cpp:194
-#: dialog_attachments.cpp:229
+#: dialog_attachments.cpp:196
+#: dialog_attachments.cpp:231
 msgid "Choose file to be attached"
 msgstr "Выбрать прикрепляемый файл"
 
-#: dialog_attachments.cpp:215
+#: dialog_attachments.cpp:217
 msgid "attach font file"
 msgstr "прикрепление шрифта"
 
-#: dialog_attachments.cpp:250
+#: dialog_attachments.cpp:252
 msgid "attach graphics file"
 msgstr "прикрепление графики"
 
-#: dialog_attachments.cpp:269
+#: dialog_attachments.cpp:271
 msgid "Select the path to save the files to:"
 msgstr "Выберите путь для сохранения файлов:"
 
-#: dialog_attachments.cpp:273
+#: dialog_attachments.cpp:275
 msgid "Select the path to save the file to:"
 msgstr "Выберите путь для сохранения файла:"
 
-#: dialog_attachments.cpp:300
+#: dialog_attachments.cpp:302
 msgid "remove attachment"
 msgstr "удаление прикреплённого файла"
 
@@ -601,11 +529,11 @@ msgstr "Имя файла"
 msgid "Description"
 msgstr "Описание"
 
-#: dialog_automation.cpp:210
+#: dialog_automation.cpp:212
 msgid "Add Automation script"
 msgstr "Добавить скрипт автоматизации"
 
-#: dialog_automation.cpp:281
+#: dialog_automation.cpp:283
 #, c-format
 msgid ""
 "Total scripts loaded: %d\n"
@@ -618,11 +546,11 @@ msgstr ""
 "Загружено локальных скриптов: %d\n"
 "\n"
 
-#: dialog_automation.cpp:286
+#: dialog_automation.cpp:288
 msgid "Scripting engines installed:\n"
 msgstr "Установленные средства автоматизации:\n"
 
-#: dialog_automation.cpp:293
+#: dialog_automation.cpp:295
 #, c-format
 msgid ""
 "\n"
@@ -647,27 +575,27 @@ msgstr ""
 "\n"
 "Предоставляет:\n"
 
-#: dialog_automation.cpp:299
+#: dialog_automation.cpp:301
 msgid "Correctly loaded"
 msgstr "Корректно загружен"
 
-#: dialog_automation.cpp:299
+#: dialog_automation.cpp:301
 msgid "Failed to load"
 msgstr "Не удалось загрузить"
 
-#: dialog_automation.cpp:303
+#: dialog_automation.cpp:305
 msgid "    Macro: "
 msgstr "    Макрос: "
 
-#: dialog_automation.cpp:305
+#: dialog_automation.cpp:307
 msgid "    Export filter: "
 msgstr "    Фильтр экспорта: "
 
-#: dialog_automation.cpp:307
+#: dialog_automation.cpp:309
 msgid "    Subtitle format handler: "
 msgstr "    Обработчик формата субтиров: "
 
-#: dialog_automation.cpp:315
+#: dialog_automation.cpp:317
 msgid "Automation Script Info"
 msgstr "Информация о скрипте"
 
@@ -778,53 +706,53 @@ msgstr "Частота кадров (кадр/с):"
 msgid "Duration (frames):"
 msgstr "Длительность (в кадрах):"
 
-#: dialog_dummy_video.cpp:257
+#: dialog_dummy_video.cpp:258
 #, c-format
 msgid "Resulting duration: %d:%02d:%02d.%03d"
 msgstr "Расчётная длительность: %d:%02d:%02d.%03d"
 
-#: dialog_dummy_video.cpp:263
+#: dialog_dummy_video.cpp:264
 msgid "Invalid fps or length value"
 msgstr "Неверное значение частоты кадров или длительности"
 
-#: dialog_export.cpp:56
+#: dialog_export.cpp:57
 msgid "Export"
 msgstr "Экспорт"
 
-#: dialog_export.cpp:59
+#: dialog_export.cpp:60
 msgid "Filters"
 msgstr "Фильтры"
 
-#: dialog_export.cpp:90
+#: dialog_export.cpp:91
 msgid "Move up"
 msgstr "Вверх"
 
-#: dialog_export.cpp:91
+#: dialog_export.cpp:92
 msgid "Move down"
 msgstr "Вниз"
 
-#: dialog_export.cpp:92
+#: dialog_export.cpp:93
 msgid "Select all"
 msgstr "Всё"
 
-#: dialog_export.cpp:93
+#: dialog_export.cpp:94
 msgid "Select none"
 msgstr "Ничего"
 
-#: dialog_export.cpp:99
+#: dialog_export.cpp:100
 msgid "Text encoding:"
 msgstr "Кодировка:"
 
-#: dialog_export.cpp:116
+#: dialog_export.cpp:117
 msgid "Export..."
 msgstr "Экспорт..."
 
-#: dialog_export.cpp:192
+#: dialog_export.cpp:194
 msgid "Export subtitles file"
 msgstr "Экспорт файла субтитров"
 
 #: dialog_fonts_collector.cpp:80
-#: frame_main.cpp:255
+#: frame_main.cpp:265
 msgid "Fonts Collector"
 msgstr "Сборщик шрифтов"
 
@@ -833,7 +761,7 @@ msgid "&Browse..."
 msgstr "&Обзор..."
 
 #: dialog_fonts_collector.cpp:98
-#: dialog_fonts_collector.cpp:309
+#: dialog_fonts_collector.cpp:310
 msgid ""
 "Choose the folder where the fonts will be collected to.\n"
 "It will be created if it doesn't exist."
@@ -873,47 +801,48 @@ msgstr "Журнал"
 msgid "&Start!"
 msgstr "&Выполнить"
 
-#: dialog_fonts_collector.cpp:195
+#: dialog_fonts_collector.cpp:196
 msgid "Invalid destination."
 msgstr "Указан неверный путь."
 
-#: dialog_fonts_collector.cpp:195
-#: dialog_fonts_collector.cpp:204
-#: dialog_fonts_collector.cpp:213
-#: dialog_kanji_timer.cpp:820
-#: dialog_kanji_timer.cpp:822
-#: dialog_kanji_timer.cpp:865
+#: dialog_fonts_collector.cpp:196
+#: dialog_fonts_collector.cpp:205
+#: dialog_fonts_collector.cpp:214
+#: dialog_kanji_timer.cpp:821
+#: dialog_kanji_timer.cpp:823
+#: dialog_kanji_timer.cpp:866
 #: dialog_options.cpp:238
-#: dialog_resample.cpp:217
-#: dialog_resample.cpp:221
-#: options.cpp:467
+#: dialog_resample.cpp:218
+#: dialog_resample.cpp:222
+#: dialog_spellchecker.cpp:83
+#: options.cpp:469
 #: subs_grid.cpp:686
 #: subs_grid.cpp:690
 #: subs_grid.cpp:736
 msgid "Error"
 msgstr "Ошибка"
 
-#: dialog_fonts_collector.cpp:204
+#: dialog_fonts_collector.cpp:205
 msgid "Could not create destination folder."
 msgstr "Невозможно создать папку назначения."
 
-#: dialog_fonts_collector.cpp:213
+#: dialog_fonts_collector.cpp:214
 msgid "Invalid path for .zip file."
 msgstr "Неверный путь к ZIP архиву."
 
-#: dialog_fonts_collector.cpp:259
+#: dialog_fonts_collector.cpp:260
 msgid "Select archive file name"
 msgstr "Выберите имя файла архива"
 
-#: dialog_fonts_collector.cpp:259
+#: dialog_fonts_collector.cpp:260
 msgid "Zip Archives (*.zip)|*.zip"
 msgstr "ZIP архивы (*.zip)|*.zip"
 
-#: dialog_fonts_collector.cpp:267
+#: dialog_fonts_collector.cpp:268
 msgid "Select folder to save fonts on"
 msgstr "Выберите папку для сохранения шрифтов"
 
-#: dialog_fonts_collector.cpp:323
+#: dialog_fonts_collector.cpp:324
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to.\n"
 "If a folder is entered, a default name will be used."
@@ -921,43 +850,43 @@ msgstr ""
 "Укажите архив, в который будут собраны шрифты.\n"
 "Если указана папка, будет использованно имя по умолчанию."
 
-#: dialog_fonts_collector.cpp:393
+#: dialog_fonts_collector.cpp:394
 msgid "Invalid destination directory."
 msgstr "Неверная папка назначения."
 
-#: dialog_fonts_collector.cpp:406
+#: dialog_fonts_collector.cpp:407
 msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
 msgstr "Получение информации о шрифтах. Это может занять некоторое время в зависимости от их количества в системе. Результаты кэшируются, и последующие выполнения команды будут быстрее...\n"
 
-#: dialog_fonts_collector.cpp:408
+#: dialog_fonts_collector.cpp:409
 msgid "Done collecting font data."
 msgstr "Сбор информации о шрифтах завершён. "
 
-#: dialog_fonts_collector.cpp:409
+#: dialog_fonts_collector.cpp:410
 msgid "Scanning file for fonts..."
 msgstr "Поиск шрифтов в файле... "
 
-#: dialog_fonts_collector.cpp:442
+#: dialog_fonts_collector.cpp:443
 msgid "Done."
 msgstr "Готово."
 
-#: dialog_fonts_collector.cpp:444
+#: dialog_fonts_collector.cpp:445
 msgid "Checking fonts...\n"
 msgstr "Проверка шрифтов...\n"
 
-#: dialog_fonts_collector.cpp:445
+#: dialog_fonts_collector.cpp:446
 msgid "Copying fonts to folder...\n"
 msgstr "Копирование шрифтов в папку...\n"
 
-#: dialog_fonts_collector.cpp:446
+#: dialog_fonts_collector.cpp:447
 msgid "Copying fonts to archive...\n"
 msgstr "Архивирование шрифтов...\n"
 
-#: dialog_fonts_collector.cpp:447
+#: dialog_fonts_collector.cpp:448
 msgid "Attaching fonts to file...\n"
 msgstr "Прикрепление шрифтов к файлу...\n"
 
-#: dialog_fonts_collector.cpp:463
+#: dialog_fonts_collector.cpp:464
 #, c-format
 msgid ""
 "\n"
@@ -966,60 +895,60 @@ msgstr ""
 "\n"
 "Запись в %s окончена.\n"
 
-#: dialog_fonts_collector.cpp:469
+#: dialog_fonts_collector.cpp:470
 msgid "Done. All fonts found."
 msgstr "Готово. Все шрифты найдены."
 
-#: dialog_fonts_collector.cpp:472
+#: dialog_fonts_collector.cpp:473
 msgid "Done. All fonts copied."
 msgstr "Готово. Все шрифты скопированы."
 
-#: dialog_fonts_collector.cpp:477
+#: dialog_fonts_collector.cpp:478
 msgid "font attachment"
 msgstr "прикрепление шрифтов"
 
-#: dialog_fonts_collector.cpp:484
+#: dialog_fonts_collector.cpp:485
 msgid "Done. Some fonts could not be found."
 msgstr "Готово. Некоторые шрифты невозможно найти."
 
-#: dialog_fonts_collector.cpp:485
+#: dialog_fonts_collector.cpp:486
 msgid "Done. Some fonts could not be copied."
 msgstr "Готово. Некоторые шрифты невозможно скопировать."
 
-#: dialog_fonts_collector.cpp:505
+#: dialog_fonts_collector.cpp:506
 msgid "Not found.\n"
 msgstr "Не найден.\n"
 
-#: dialog_fonts_collector.cpp:511
+#: dialog_fonts_collector.cpp:512
 msgid "Found.\n"
 msgstr "Найден.\n"
 
-#: dialog_fonts_collector.cpp:526
+#: dialog_fonts_collector.cpp:527
 #, c-format
 msgid "* Copied %s.\n"
 msgstr "* %s скопирован.\n"
 
-#: dialog_fonts_collector.cpp:530
+#: dialog_fonts_collector.cpp:531
 #, c-format
 msgid "* %s already exists on destination.\n"
 msgstr "* %s уже существует в назначении.\n"
 
-#: dialog_fonts_collector.cpp:533
+#: dialog_fonts_collector.cpp:534
 #, c-format
 msgid "* Failed to copy %s.\n"
 msgstr "* Ошибка копирования %s.\n"
 
-#: dialog_fonts_collector.cpp:606
+#: dialog_fonts_collector.cpp:607
 #, c-format
 msgid "\"%s\" found on style \"%s\".\n"
 msgstr "«%s» найден в стиле «%s».\n"
 
-#: dialog_fonts_collector.cpp:607
+#: dialog_fonts_collector.cpp:608
 #, c-format
 msgid "\"%s\" found on dialogue line \"%d\".\n"
 msgstr "«%s» найден в тексте события «%d».\n"
 
-#: dialog_fonts_collector.cpp:608
+#: dialog_fonts_collector.cpp:609
 #, c-format
 msgid "\"%s\" found.\n"
 msgstr "«%s» найден.\n"
@@ -1048,6 +977,15 @@ msgstr "Результат:"
 #: dialog_kanji_timer.cpp:695
 msgid "Kanji timing"
 msgstr "Кандзи-таймер"
+
+#: dialog_kanji_timer.cpp:707
+#: dialog_paste_over.cpp:80
+#: dialog_paste_over.cpp:92
+#: dialog_search_replace.cpp:95
+#: dialog_selection.cpp:78
+#: subs_grid.cpp:1530
+msgid "Text"
+msgstr "Текст"
 
 #: dialog_kanji_timer.cpp:708
 msgid "Styles"
@@ -1122,19 +1060,19 @@ msgstr "Вернуться на строку назад"
 msgid "Accept Line"
 msgstr "Принять изменения"
 
-#: dialog_kanji_timer.cpp:810
+#: dialog_kanji_timer.cpp:811
 msgid "kanji timing"
 msgstr "тайминг кандзи"
 
-#: dialog_kanji_timer.cpp:820
+#: dialog_kanji_timer.cpp:821
 msgid "Select source and destination styles first."
 msgstr "Сначала выберите исходный стиль и стиль назначения."
 
-#: dialog_kanji_timer.cpp:822
+#: dialog_kanji_timer.cpp:823
 msgid "The source and destination styles must be different."
 msgstr "Исходный стиль и стиль назначения должны быть разными."
 
-#: dialog_kanji_timer.cpp:865
+#: dialog_kanji_timer.cpp:866
 msgid "Group all of the source text."
 msgstr "Сгруппируйте весь текст исходника."
 
@@ -1147,9 +1085,9 @@ msgstr "Сгруппируйте весь текст исходника."
 #: dialog_options.cpp:555
 #: dialog_properties.cpp:119
 #: dialog_timing_processor.cpp:83
-#: frame_main.cpp:279
+#: frame_main.cpp:289
 #: hotkeys.cpp:333
-#: hotkeys.cpp:337
+#: hotkeys.cpp:341
 msgid "Options"
 msgstr "Параметры"
 
@@ -1158,7 +1096,7 @@ msgid "Startup"
 msgstr "Запуск"
 
 #: dialog_options.cpp:114
-#: dialog_version_check.cpp:495
+#: dialog_version_check.cpp:569
 msgid "Auto Check for Updates"
 msgstr "Автоматически проверять обновления"
 
@@ -1256,6 +1194,17 @@ msgstr "Всегда"
 #: dialog_options.cpp:359
 msgid "Ask"
 msgstr "Спросить"
+
+#: dialog_options.cpp:213
+#: dialog_options.cpp:284
+#: dialog_options.cpp:470
+#: dialog_paste_over.cpp:68
+#: dialog_search_replace.cpp:96
+#: dialog_selection.cpp:79
+#: subs_grid.cpp:122
+#: subs_grid.cpp:1518
+msgid "Style"
+msgstr "Стиль"
 
 #: dialog_options.cpp:218
 msgid "Enable call tips"
@@ -1703,12 +1652,12 @@ msgid "Autoreload on Export"
 msgstr "Автоматически перезагружать при экспорте"
 
 #: dialog_options.cpp:585
-#: dialog_options.cpp:1081
+#: dialog_options.cpp:1082
 msgid "Function"
 msgstr "Функция"
 
 #: dialog_options.cpp:586
-#: dialog_options.cpp:1082
+#: dialog_options.cpp:1083
 msgid "Key"
 msgstr "Клавиша"
 
@@ -1758,7 +1707,7 @@ msgid "Advanced"
 msgstr "Расширеные настройки"
 
 #: dialog_options.cpp:621
-#: frame_main.cpp:260
+#: frame_main.cpp:270
 msgid "Automation"
 msgstr "Автоматизация"
 
@@ -1770,41 +1719,41 @@ msgstr "Горячие клавиши"
 msgid "Restore Defaults"
 msgstr "Восстановить умолчания"
 
-#: dialog_options.cpp:727
-#: dialog_options.cpp:761
-#: dialog_options.cpp:901
+#: dialog_options.cpp:728
+#: dialog_options.cpp:762
+#: dialog_options.cpp:902
 msgid "Aegisub must restart for the changes to take effect. Restart now?"
 msgstr "Необходимо перезапустить Aegisub, чтобы применить настройки. Перезагрузить сейчас?"
 
-#: dialog_options.cpp:727
-#: dialog_options.cpp:761
-#: dialog_options.cpp:901
+#: dialog_options.cpp:728
+#: dialog_options.cpp:762
+#: dialog_options.cpp:902
 msgid "Restart Aegisub"
 msgstr "Перезапустить Aegisub"
 
-#: dialog_options.cpp:777
+#: dialog_options.cpp:778
 msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
 msgstr "Вы уверены, что хотите восстановить настройки по умолчанию? Все ваши настройки будет сброшены."
 
-#: dialog_options.cpp:777
+#: dialog_options.cpp:778
 msgid "Restore defaults?"
 msgstr "Восстановить настройки по умолчанию?"
 
-#: dialog_options.cpp:1101
+#: dialog_options.cpp:1102
 msgid "Press Key"
 msgstr "Нажмите клавишу"
 
-#: dialog_options.cpp:1112
+#: dialog_options.cpp:1113
 #, c-format
 msgid "Press key to bind to \"%s\" or Esc to cancel."
 msgstr "Нажмите клавишу для переопределения на «%s» или Esc для отмены."
 
-#: dialog_options.cpp:1148
+#: dialog_options.cpp:1149
 #, c-format
 msgid "The hotkey %s is already mapped to %s. If you proceed, that hotkey will be cleared. Proceed?"
 msgstr "Горячая клавиша %s уже привязана к %s. Привязка к прошлой функции будет убрана. Продолжить?"
 
-#: dialog_options.cpp:1148
+#: dialog_options.cpp:1149
 msgid "Hotkey conflict"
 msgstr "Конфликт горячих клавиш"
 
@@ -1833,6 +1782,15 @@ msgstr "Время начала"
 msgid "End Time"
 msgstr "Время окончания"
 
+#: dialog_paste_over.cpp:69
+#: dialog_search_replace.cpp:97
+#: dialog_selection.cpp:80
+#: subs_edit_box.cpp:90
+#: subs_grid.cpp:123
+#: subs_grid.cpp:1520
+msgid "Actor"
+msgstr "Актёр"
+
 #: dialog_paste_over.cpp:70
 msgid "Margin Left"
 msgstr "Отступ слева"
@@ -1852,6 +1810,15 @@ msgstr "Отступ сверху"
 #: dialog_paste_over.cpp:77
 msgid "Margin Bottom"
 msgstr "Отступ снизу"
+
+#: dialog_paste_over.cpp:79
+#: dialog_search_replace.cpp:98
+#: dialog_selection.cpp:81
+#: subs_edit_box.cpp:93
+#: subs_grid.cpp:124
+#: subs_grid.cpp:1522
+msgid "Effect"
+msgstr "Эффект"
 
 #: dialog_paste_over.cpp:89
 #: dialog_timing_processor.cpp:77
@@ -1958,7 +1925,7 @@ msgstr "Подогнать контур и тень"
 msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
 msgstr "Подогнать тень и контур к разрешению скрипта. Если флажок не установлен, их размер будет зависеть от рендерера."
 
-#: dialog_properties.cpp:204
+#: dialog_properties.cpp:205
 msgid "property changes"
 msgstr "изменение свойств"
 
@@ -1982,11 +1949,11 @@ msgstr "x"
 msgid "Change aspect ratio"
 msgstr "Изменить соотношение сторон"
 
-#: dialog_resample.cpp:221
+#: dialog_resample.cpp:222
 msgid "Invalid resolution: destination resolution cannot be 0 on either dimension."
 msgstr "Неверное разрешение: оно не может быть равно нулю."
 
-#: dialog_resample.cpp:305
+#: dialog_resample.cpp:306
 msgid "resolution resampling"
 msgstr "пересчёт разрешения"
 
@@ -1995,12 +1962,12 @@ msgid "Find what:"
 msgstr "Найти:"
 
 #: dialog_search_replace.cpp:74
-#: dialog_spellchecker.cpp:113
+#: dialog_spellchecker.cpp:119
 msgid "Replace with:"
 msgstr "Заменить на:"
 
 #: dialog_search_replace.cpp:81
-#: dialog_selection.cpp:70
+#: dialog_selection.cpp:71
 msgid "Match case"
 msgstr "Учитывать регистр"
 
@@ -2023,7 +1990,7 @@ msgid "Selected rows"
 msgstr "Выбранные события"
 
 #: dialog_search_replace.cpp:102
-#: dialog_selection.cpp:81
+#: dialog_selection.cpp:82
 msgid "In Field"
 msgstr "В поле"
 
@@ -2058,101 +2025,99 @@ msgid "No matches found."
 msgstr "Совпадения не найдены."
 
 #: dialog_search_replace.cpp:566
-#: dialog_spellchecker.cpp:122
-#: hotkeys.cpp:351
-#: hotkeys.cpp:354
+#: dialog_spellchecker.cpp:128
+#: hotkeys.cpp:355
+#: hotkeys.cpp:358
 msgid "Replace"
 msgstr "Заменить"
 
 #: dialog_search_replace.cpp:566
-#: hotkeys.cpp:348
+#: hotkeys.cpp:352
 msgid "Find"
 msgstr "Найти"
 
-#: dialog_selection.cpp:56
+#: dialog_selection.cpp:57
 msgid "Select"
 msgstr "Выделить"
 
-#: dialog_selection.cpp:62
+#: dialog_selection.cpp:63
 msgid "Match"
 msgstr "Совпадение"
 
-#: dialog_selection.cpp:64
+#: dialog_selection.cpp:65
 msgid "Match dialogues/comments"
 msgstr "Диалоги/комментарии"
 
-#: dialog_selection.cpp:67
+#: dialog_selection.cpp:68
 msgid "Matches"
 msgstr "Совпадает"
 
-#: dialog_selection.cpp:68
+#: dialog_selection.cpp:69
 msgid "Doesn't Match"
 msgstr "Не совпадает"
 
-#: dialog_selection.cpp:71
+#: dialog_selection.cpp:72
 msgid "Exact match"
 msgstr "Точное совпадение"
 
-#: dialog_selection.cpp:72
+#: dialog_selection.cpp:73
 msgid "Contains"
 msgstr "Содержит"
 
-#: dialog_selection.cpp:73
+#: dialog_selection.cpp:74
 msgid "Regular Expression match"
 msgstr "Совпадение по регулярному выражению"
 
-#: dialog_selection.cpp:84
+#: dialog_selection.cpp:85
 msgid "Dialogues"
 msgstr "Диалоги"
 
-#: dialog_selection.cpp:85
+#: dialog_selection.cpp:86
 msgid "Comments"
 msgstr "Комментарии"
 
-#: dialog_selection.cpp:89
+#: dialog_selection.cpp:90
 msgid "Set selection"
 msgstr "Установить выделение"
 
-#: dialog_selection.cpp:90
+#: dialog_selection.cpp:91
 msgid "Add to selection"
 msgstr "Добавить к выделению"
 
-#: dialog_selection.cpp:91
+#: dialog_selection.cpp:92
 msgid "Subtract from selection"
 msgstr "Убрать из выделения"
 
-#: dialog_selection.cpp:92
+#: dialog_selection.cpp:93
 msgid "Intersect with selection"
 msgstr "Пересечение с выделением"
 
-#: dialog_selection.cpp:93
+#: dialog_selection.cpp:94
 msgid "Action"
 msgstr "Действие"
 
-#: dialog_selection.cpp:276
+#: dialog_selection.cpp:277
 #, c-format
 msgid "Selection was set to %i lines"
 msgstr "Выделение установлено на %i событий"
 
-#: dialog_selection.cpp:276
-#: dialog_selection.cpp:277
 #: dialog_selection.cpp:278
-msgid "Selection"
-msgstr "Выделение"
-
-#: dialog_selection.cpp:277
 #, c-format
 msgid "%i lines were added to selection"
 msgstr "%i событий добавлено к выделению"
 
-#: dialog_selection.cpp:278
+#: dialog_selection.cpp:279
 #, c-format
 msgid "%i lines were removed from selection"
 msgstr "%i убрано из выделения"
 
+#: dialog_selection.cpp:282
+msgid "Selection"
+msgstr "Выделение"
+
 #: dialog_shift_times.cpp:63
-#: frame_main.cpp:269
-#: hotkeys.cpp:347
+#: frame_main.cpp:279
+#: hotkeys.cpp:351
 msgid "Shift Times"
 msgstr "Временной сдвиг"
 
@@ -2224,98 +2189,102 @@ msgstr "Только конечное время"
 msgid "Clear"
 msgstr "Очистить"
 
-#: dialog_shift_times.cpp:251
+#: dialog_shift_times.cpp:252
 msgid "unsaved, "
 msgstr "несохран., "
 
-#: dialog_shift_times.cpp:256
+#: dialog_shift_times.cpp:257
 msgid " frames "
 msgstr " кадры "
 
-#: dialog_shift_times.cpp:259
+#: dialog_shift_times.cpp:260
 msgid "backward, "
 msgstr "назад, "
 
-#: dialog_shift_times.cpp:260
+#: dialog_shift_times.cpp:261
 msgid "forward, "
 msgstr "вперёд, "
 
-#: dialog_shift_times.cpp:263
+#: dialog_shift_times.cpp:264
 msgid "s+e, "
 msgstr "н+к, "
 
-#: dialog_shift_times.cpp:264
+#: dialog_shift_times.cpp:265
 msgid "s, "
 msgstr "н, "
 
-#: dialog_shift_times.cpp:265
+#: dialog_shift_times.cpp:266
 msgid "e, "
 msgstr "к, "
 
-#: dialog_shift_times.cpp:268
+#: dialog_shift_times.cpp:269
 msgid "all"
 msgstr "все"
 
-#: dialog_shift_times.cpp:269
+#: dialog_shift_times.cpp:270
 #, c-format
 msgid "from %i onward"
 msgstr "от %i и далее"
 
-#: dialog_shift_times.cpp:271
+#: dialog_shift_times.cpp:272
 msgid "sel "
 msgstr "выб. "
 
-#: dialog_shift_times.cpp:299
+#: dialog_shift_times.cpp:300
 msgid "shifting"
 msgstr "сдвиг"
 
 #: dialog_spellchecker.cpp:69
-#: frame_main.cpp:275
+#: frame_main.cpp:285
 msgid "Spell Checker"
 msgstr "Проверка орфографии"
 
-#: dialog_spellchecker.cpp:108
+#: dialog_spellchecker.cpp:83
+msgid "No dictionaries available."
+msgstr "Словари отсутствуют."
+
+#: dialog_spellchecker.cpp:114
 msgid "original"
 msgstr "оригинал"
 
-#: dialog_spellchecker.cpp:109
+#: dialog_spellchecker.cpp:115
 msgid "replace with"
 msgstr "заменить на"
 
-#: dialog_spellchecker.cpp:111
+#: dialog_spellchecker.cpp:117
 msgid "Misspelled word:"
 msgstr "Слово с ошибкой:"
 
-#: dialog_spellchecker.cpp:123
+#: dialog_spellchecker.cpp:129
 msgid "Replace All"
 msgstr "Заменить все"
 
-#: dialog_spellchecker.cpp:124
+#: dialog_spellchecker.cpp:130
 msgid "Ignore"
 msgstr "Игнорировать"
 
-#: dialog_spellchecker.cpp:125
+#: dialog_spellchecker.cpp:131
 msgid "Ignore all"
 msgstr "Игнорировать все"
 
-#: dialog_spellchecker.cpp:126
+#: dialog_spellchecker.cpp:132
 msgid "Add to dictionary"
 msgstr "Добавить в словарь"
 
-#: dialog_spellchecker.cpp:327
+#: dialog_spellchecker.cpp:333
 msgid "Aegisub has finished checking spelling of this script."
 msgstr "Aegisub закончил проверять орфографию в скрипте."
 
-#: dialog_spellchecker.cpp:327
-#: dialog_spellchecker.cpp:394
+#: dialog_spellchecker.cpp:333
+#: dialog_spellchecker.cpp:400
 msgid "Spell checking complete."
 msgstr "Проверка орфографии завершена."
 
-#: dialog_spellchecker.cpp:347
+#: dialog_spellchecker.cpp:353
 msgid "Spell check replace"
 msgstr "Замена"
 
-#: dialog_spellchecker.cpp:394
+#: dialog_spellchecker.cpp:400
 msgid "Aegisub has found no spelling mistakes in this script."
 msgstr "Aegisub не нашёл ошибок в этом скрипте."
 
@@ -2471,6 +2440,24 @@ msgstr "Вторичный"
 msgid "Shadow"
 msgstr "Тень"
 
+#: dialog_style_editor.cpp:248
+#: subs_grid.cpp:125
+#: subs_grid.cpp:1524
+msgid "Left"
+msgstr "Лев"
+
+#: dialog_style_editor.cpp:248
+#: subs_grid.cpp:126
+#: subs_grid.cpp:1526
+msgid "Right"
+msgstr "Прав"
+
+#: dialog_style_editor.cpp:248
+#: subs_grid.cpp:127
+#: subs_grid.cpp:1528
+msgid "Vert"
+msgstr "Верт"
+
 #: dialog_style_editor.cpp:268
 msgid "Outline:"
 msgstr "Контур:"
@@ -2515,20 +2502,15 @@ msgstr "Цвет фона для предпросмотра"
 msgid "No subtitle providers available. Cannot preview subs."
 msgstr "Нет доступных провайдеров субтитров. Предпросмотр невозможен."
 
-#: dialog_style_editor.cpp:452
+#: dialog_style_editor.cpp:453
 msgid "Do you want to change all instances of this style in the script to this new name?"
 msgstr "Сменить имя стиля во всех событиях, где он используется?"
 
-#: dialog_style_editor.cpp:452
+#: dialog_style_editor.cpp:453
 msgid "Update script?"
 msgstr "Обновить скрипт?"
 
-#: dialog_style_editor.cpp:486
-#: subs_edit_box.cpp:595
-msgid "style change"
-msgstr "изменение стиля"
-
-#: dialog_style_editor.cpp:583
+#: dialog_style_editor.cpp:485
 msgid ""
 "You have chosen to use the \"Comic Sans\" font. As the programmer and a typesetter,\n"
 "I must urge you to reconsider. Comic Sans is the most abused font in the history\n"
@@ -2538,12 +2520,17 @@ msgstr ""
 "я прошу вас передумать. Это самый часто используемый шрифт во всей\n"
 "компьютерной истории, так что, пожалуйста, избегайте его использования. Спасибо. "
 
-#: dialog_style_editor.cpp:583
+#: dialog_style_editor.cpp:485
 msgid "Warning"
 msgstr "Предупреждение"
 
+#: dialog_style_editor.cpp:492
+#: subs_edit_box.cpp:595
+msgid "style change"
+msgstr "изменение стиля"
+
 #: dialog_style_manager.cpp:60
-#: frame_main.cpp:252
+#: frame_main.cpp:262
 msgid "Styles Manager"
 msgstr "Менеджер стилей"
 
@@ -2554,7 +2541,7 @@ msgstr "Каталог доступных наборов"
 #: dialog_style_manager.cpp:71
 #: dialog_style_manager.cpp:84
 #: dialog_style_manager.cpp:129
-#: frame_main.cpp:221
+#: frame_main.cpp:231
 msgid "New"
 msgstr "Создать"
 
@@ -2580,7 +2567,7 @@ msgstr "Изменить"
 
 #: dialog_style_manager.cpp:86
 #: dialog_style_manager.cpp:131
-#: hotkeys.cpp:357
+#: hotkeys.cpp:361
 msgid "Copy"
 msgstr "Копировать"
 
@@ -2621,23 +2608,23 @@ msgstr "<- Копировать в набор"
 msgid "Import from script..."
 msgstr "Импортировать..."
 
-#: dialog_style_manager.cpp:393
+#: dialog_style_manager.cpp:394
 msgid "New storage name:"
 msgstr "Новое имя набора:"
 
-#: dialog_style_manager.cpp:393
+#: dialog_style_manager.cpp:394
 msgid "New catalog entry"
 msgstr "Новая запись в каталоге"
 
-#: dialog_style_manager.cpp:409
+#: dialog_style_manager.cpp:410
 msgid "A catalog with that name already exists."
 msgstr "Набор с таким именем уже существует."
 
-#: dialog_style_manager.cpp:409
+#: dialog_style_manager.cpp:410
 msgid "Catalog name conflict"
 msgstr "Конфликт имён наборов"
 
-#: dialog_style_manager.cpp:415
+#: dialog_style_manager.cpp:416
 #, c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
@@ -2646,104 +2633,104 @@ msgstr ""
 "Указанный набор содержит один или несколько запрещённых символов. Они были заменены на подчёркивания.\n"
 "Набор переименован в «%s»."
 
-#: dialog_style_manager.cpp:415
+#: dialog_style_manager.cpp:416
 msgid "Invalid characters"
 msgstr "Запрещённые символы"
 
-#: dialog_style_manager.cpp:442
+#: dialog_style_manager.cpp:443
 #, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr "Вы уверены, что хотите удалить набор «%s» из каталога?"
 
-#: dialog_style_manager.cpp:443
+#: dialog_style_manager.cpp:444
 msgid "Confirm delete"
 msgstr "Подтверждение удаления"
 
-#: dialog_style_manager.cpp:575
-#: dialog_style_manager.cpp:624
+#: dialog_style_manager.cpp:579
+#: dialog_style_manager.cpp:631
 msgid "style copy"
 msgstr "копирование стиля"
 
-#: dialog_style_manager.cpp:588
-#: dialog_style_manager.cpp:611
+#: dialog_style_manager.cpp:593
+#: dialog_style_manager.cpp:617
 msgid "Copy of "
 msgstr "Копия "
 
-#: dialog_style_manager.cpp:677
+#: dialog_style_manager.cpp:684
 msgid "style paste"
 msgstr "вставку стиля"
 
-#: dialog_style_manager.cpp:681
-#: dialog_style_manager.cpp:685
-#: dialog_style_manager.cpp:721
-#: dialog_style_manager.cpp:725
+#: dialog_style_manager.cpp:688
+#: dialog_style_manager.cpp:692
+#: dialog_style_manager.cpp:728
+#: dialog_style_manager.cpp:732
 msgid "Could not parse style"
 msgstr "Невозможно прочитать стиль"
 
-#: dialog_style_manager.cpp:766
-#: dialog_style_manager.cpp:799
+#: dialog_style_manager.cpp:775
+#: dialog_style_manager.cpp:809
 msgid "Are you sure you want to delete these "
 msgstr "Хотите удалить эти"
 
-#: dialog_style_manager.cpp:768
-#: dialog_style_manager.cpp:801
+#: dialog_style_manager.cpp:777
+#: dialog_style_manager.cpp:811
 msgid " styles?"
 msgstr " стили?"
 
-#: dialog_style_manager.cpp:770
-#: dialog_style_manager.cpp:803
+#: dialog_style_manager.cpp:779
+#: dialog_style_manager.cpp:813
 msgid "Are you sure you want to delete this style?"
 msgstr "Хотите удалить этот стиль?"
 
-#: dialog_style_manager.cpp:771
+#: dialog_style_manager.cpp:780
 msgid "Confirm delete from storage"
 msgstr "Подтверждение удаления из набора"
 
-#: dialog_style_manager.cpp:804
+#: dialog_style_manager.cpp:814
 msgid "Confirm delete from current"
 msgstr "Подтверждение удаления из текущего скрипта"
 
-#: dialog_style_manager.cpp:821
+#: dialog_style_manager.cpp:832
 msgid "style delete"
 msgstr "удаление стиля"
 
-#: dialog_style_manager.cpp:831
-#: frame_main_events.cpp:722
-#: frame_main_events.cpp:740
+#: dialog_style_manager.cpp:842
+#: frame_main_events.cpp:724
+#: frame_main_events.cpp:742
 msgid "Open subtitles file"
 msgstr "Открыть файл субтитров"
 
-#: dialog_style_manager.cpp:847
+#: dialog_style_manager.cpp:858
 msgid "The selected file has no available styles."
 msgstr "В выбранном файле нет доступных стилей."
 
-#: dialog_style_manager.cpp:847
+#: dialog_style_manager.cpp:858
 msgid "Error Importing Styles"
 msgstr "Ошибка импорта стилей"
 
-#: dialog_style_manager.cpp:854
-#: dialog_style_manager.cpp:856
+#: dialog_style_manager.cpp:865
+#: dialog_style_manager.cpp:867
 msgid "Choose styles to import:"
 msgstr "Вебрите стили для импорта:"
 
-#: dialog_style_manager.cpp:854
-#: dialog_style_manager.cpp:856
+#: dialog_style_manager.cpp:865
+#: dialog_style_manager.cpp:867
 msgid "Import Styles"
 msgstr "Импорт стилей"
 
-#: dialog_style_manager.cpp:888
+#: dialog_style_manager.cpp:899
 msgid "style import"
 msgstr "импорт стиля"
 
-#: dialog_style_manager.cpp:1033
+#: dialog_style_manager.cpp:1044
 msgid "Are you sure? This cannot be undone!"
 msgstr "Вы уверенны? Это нельзя будет отменить!"
 
-#: dialog_style_manager.cpp:1033
+#: dialog_style_manager.cpp:1044
 msgid "Sort styles"
 msgstr "Сортировка стилей"
 
-#: dialog_style_manager.cpp:1085
+#: dialog_style_manager.cpp:1096
 msgid "style move"
 msgstr "перемещение стиля"
 
@@ -2842,7 +2829,7 @@ msgid "Comment starter:"
 msgstr "Начало комментариев:"
 
 #: dialog_timing_processor.cpp:57
-#: frame_main.cpp:273
+#: frame_main.cpp:283
 msgid "Timing Post-Processor"
 msgstr "Пост-обработка тайминга"
 
@@ -2969,16 +2956,16 @@ msgstr "Порог после конца:"
 msgid "Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."
 msgstr "Пороговое количество кадров между концом субтитра и ближайшим ключкадром слева, при котором время конца субтитра будет сдвинуто к этому ключкадру"
 
-#: dialog_timing_processor.cpp:322
+#: dialog_timing_processor.cpp:324
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr "Одно из событий в файле (%i) имеет отрицательную длительность. Прекращение процесса."
 
-#: dialog_timing_processor.cpp:322
+#: dialog_timing_processor.cpp:324
 msgid "Invalid script"
 msgstr "Неверный скрипт"
 
-#: dialog_timing_processor.cpp:571
+#: dialog_timing_processor.cpp:573
 msgid "timing processor"
 msgstr "пост-обработку тайминга"
 
@@ -3047,7 +3034,7 @@ msgid "If anything goes wrong, blame movax."
 msgstr "Если что-то не так, виноват movax."
 
 #: dialog_translation.cpp:61
-#: frame_main.cpp:271
+#: frame_main.cpp:281
 msgid "Translation Assistant"
 msgstr "Ассистент перевода"
 
@@ -3084,7 +3071,7 @@ msgstr "ассистент перевода"
 msgid "No more lines to translate."
 msgstr "Больше нет событий для перевода."
 
-#: dialog_version_check.cpp:178
+#: dialog_version_check.cpp:186
 #, c-format
 msgid ""
 "There was an error checking for updates to Aegisub:\n"
@@ -3097,40 +3084,42 @@ msgstr ""
 "\n"
 "Если у других приложений нет проблем с доступом к Интернет, то скорее всего это временная проблема с нашей стороны."
 
-#: dialog_version_check.cpp:182
+#: dialog_version_check.cpp:190
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr "Произошла неизвестная ошибка при проверке обновлений Aegisub."
 
-#: dialog_version_check.cpp:346
+#: dialog_version_check.cpp:420
+#: dialog_version_check.cpp:488
 msgid "Could not connect to updates server."
 msgstr "Невозможно подключиться к северу обновлений."
 
-#: dialog_version_check.cpp:350
+#: dialog_version_check.cpp:424
 msgid "Could not download from updates server."
 msgstr "Невозможно загрузить обновление с сервера."
 
-#: dialog_version_check.cpp:353
+#: dialog_version_check.cpp:427
+#: dialog_version_check.cpp:492
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
 msgstr "Ошибка HTTP запроса, получен ответ HTTP %d."
 
-#: dialog_version_check.cpp:426
+#: dialog_version_check.cpp:500
 msgid "An update to Aegisub was found."
 msgstr "Было найдено обновление Aegisub."
 
-#: dialog_version_check.cpp:430
+#: dialog_version_check.cpp:504
 msgid "Several possible updates to Aegisub were found."
 msgstr "Было найдено несколько обновлений Aegisub."
 
-#: dialog_version_check.cpp:434
+#: dialog_version_check.cpp:508
 msgid "There are no updates to Aegisub."
 msgstr "Обновлений Aegisub нет."
 
-#: dialog_version_check.cpp:468
+#: dialog_version_check.cpp:542
 msgid "Version Checker"
 msgstr "Проверка обновлений"
 
-#: dialog_version_check.cpp:500
+#: dialog_version_check.cpp:574
 msgid "Remind me again in a &week"
 msgstr "Напомнить через &неделю"
 
@@ -3245,1026 +3234,1026 @@ msgstr "Обнаружено несколько %s дорожек, пожалу�
 msgid "Choose %s track"
 msgstr "Выберите %s дорожку"
 
-#: frame_main.cpp:185
+#: frame_main.cpp:190
 msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
 msgstr "Проверять обновления при запуске? В любом случае вы сможете сделать это самостоятельно, выбрав пункт в меню «Помощь»."
 
-#: frame_main.cpp:185
+#: frame_main.cpp:190
 msgid "Check for updates?"
 msgstr "Проверить обновления?"
 
-#: frame_main.cpp:221
-#: frame_main.cpp:320
+#: frame_main.cpp:231
+#: frame_main.cpp:330
 #: hotkeys.cpp:327
 msgid "New subtitles"
 msgstr "Новые субтитры"
 
-#: frame_main.cpp:222
+#: frame_main.cpp:232
 msgid "Open"
 msgstr "Открыть"
 
-#: frame_main.cpp:222
+#: frame_main.cpp:232
 #: hotkeys.cpp:328
 msgid "Open subtitles"
 msgstr "Открыть субтитры"
 
-#: frame_main.cpp:223
+#: frame_main.cpp:233
 msgid "Save"
 msgstr "Сохранить"
 
-#: frame_main.cpp:223
+#: frame_main.cpp:233
 #: hotkeys.cpp:329
 msgid "Save subtitles"
 msgstr "Сохранить субтитры"
 
-#: frame_main.cpp:227
+#: frame_main.cpp:237
 msgid "Jump To..."
 msgstr "Перейти к..."
 
-#: frame_main.cpp:227
+#: frame_main.cpp:237
 msgid "Jump video to time/frame"
 msgstr "Перемотка видео к времени/кадру"
 
-#: frame_main.cpp:228
+#: frame_main.cpp:238
 msgid "Zoom in"
 msgstr "Увеличить"
 
-#: frame_main.cpp:228
+#: frame_main.cpp:238
 msgid "Zoom video in"
 msgstr "Увеличить масштаб видео"
 
-#: frame_main.cpp:229
+#: frame_main.cpp:239
 msgid "Zoom out"
 msgstr "Уменьшить"
 
-#: frame_main.cpp:229
+#: frame_main.cpp:239
 msgid "Zoom video out"
 msgstr "Уменьшить масштаб видео"
 
-#: frame_main.cpp:242
+#: frame_main.cpp:252
 msgid "Jump video to start"
 msgstr "Перемотка видео к началу"
 
-#: frame_main.cpp:242
-#: frame_main.cpp:468
+#: frame_main.cpp:252
+#: frame_main.cpp:478
 msgid "Jumps the video to the start frame of current subtitle"
 msgstr "Перемотка видео к начальному кадру текущего события"
 
-#: frame_main.cpp:243
+#: frame_main.cpp:253
 msgid "Jump video to end"
 msgstr "Перемотка видео к концу"
 
-#: frame_main.cpp:243
-#: frame_main.cpp:469
+#: frame_main.cpp:253
+#: frame_main.cpp:479
 msgid "Jumps the video to the end frame of current subtitle"
 msgstr "Перемотка видео к конечному кадру текущего события"
 
-#: frame_main.cpp:244
+#: frame_main.cpp:254
 msgid "Snap start to video"
 msgstr "Привязка начала к видео"
 
-#: frame_main.cpp:244
-#: frame_main.cpp:408
+#: frame_main.cpp:254
+#: frame_main.cpp:418
 msgid "Set start of selected subtitles to current video frame"
 msgstr "Привязка начала выделенных субтитров к текущему кадру видео"
 
-#: frame_main.cpp:245
+#: frame_main.cpp:255
 msgid "Snap end to video"
 msgstr "Привязка конца к видео"
 
-#: frame_main.cpp:245
-#: frame_main.cpp:409
+#: frame_main.cpp:255
+#: frame_main.cpp:419
 msgid "Set end of selected subtitles to current video frame"
 msgstr "Привязка конца выделенных субтитров к текущему кадру видео"
 
-#: frame_main.cpp:246
+#: frame_main.cpp:256
 msgid "Select visible"
 msgstr "Выделить видимое"
 
-#: frame_main.cpp:246
+#: frame_main.cpp:256
 msgid "Selects all lines that are currently visible on video frame"
 msgstr "Выделяет все события, задействованные в текущем кадре"
 
-#: frame_main.cpp:247
+#: frame_main.cpp:257
 msgid "Snap subtitles to scene"
 msgstr "Подгон субтитров к сцене"
 
-#: frame_main.cpp:247
+#: frame_main.cpp:257
 msgid "Snap selected subtitles so they match current scene start/end"
 msgstr "Установка времени выделенных событий так, что оно совпадёт с текущей сценой"
 
-#: frame_main.cpp:248
+#: frame_main.cpp:258
 msgid "Shift subtitles to frame"
 msgstr "Смещение событий к кадру"
 
-#: frame_main.cpp:248
+#: frame_main.cpp:258
 msgid "Shift selected subtitles so first selected starts at this frame"
 msgstr "Смещение начала выделенных событий к текущему кадру"
 
-#: frame_main.cpp:252
+#: frame_main.cpp:262
 msgid "Open Styles Manager"
 msgstr "Менеджер стилей"
 
-#: frame_main.cpp:253
+#: frame_main.cpp:263
 msgid "Properties"
 msgstr "Свойства"
 
-#: frame_main.cpp:253
+#: frame_main.cpp:263
 msgid "Open Properties"
 msgstr "Свойства"
 
-#: frame_main.cpp:254
+#: frame_main.cpp:264
 msgid "Attachments"
 msgstr "Прикреплённые файлы"
 
-#: frame_main.cpp:254
+#: frame_main.cpp:264
 msgid "Open Attachment List"
 msgstr "Прикреплённые файлы"
 
-#: frame_main.cpp:255
+#: frame_main.cpp:265
 msgid "Open Fonts Collector"
 msgstr "Сборщик шрифтов"
 
-#: frame_main.cpp:260
+#: frame_main.cpp:270
 msgid "Open Automation manager"
 msgstr "Менеджер автоматизации"
 
-#: frame_main.cpp:266
-#: frame_main.cpp:373
+#: frame_main.cpp:276
+#: frame_main.cpp:383
 msgid "Launches ai-chan's \"ASSDraw3\" tool for vector drawing."
 msgstr "Программа векторного рисования «ASSDraw3» от ai-chan’а"
 
-#: frame_main.cpp:269
+#: frame_main.cpp:279
 msgid "Open Shift Times Dialogue"
 msgstr "Временной сдвиг"
 
-#: frame_main.cpp:270
+#: frame_main.cpp:280
 msgid "Styling Assistant"
 msgstr "Ассистент стилей"
 
-#: frame_main.cpp:270
+#: frame_main.cpp:280
 msgid "Open Styling Assistant"
 msgstr "Ассистент стилей"
 
-#: frame_main.cpp:271
+#: frame_main.cpp:281
 msgid "Open Translation Assistant"
 msgstr "Ассистент перевода"
 
-#: frame_main.cpp:272
+#: frame_main.cpp:282
 msgid "Resample"
 msgstr "Пересчёт"
 
-#: frame_main.cpp:272
+#: frame_main.cpp:282
 msgid "Resample Script Resolution"
 msgstr "Пересчитать разрешение"
 
-#: frame_main.cpp:273
+#: frame_main.cpp:283
 msgid "Open Timing Post-processor dialog"
 msgstr "Пост-обработка тайминга"
 
-#: frame_main.cpp:274
+#: frame_main.cpp:284
 msgid "Kanji Timer"
 msgstr "Кандзи-таймер"
 
-#: frame_main.cpp:274
+#: frame_main.cpp:284
 msgid "Open Kanji Timer dialog"
 msgstr "Кандзи-таймер"
 
-#: frame_main.cpp:275
+#: frame_main.cpp:285
 msgid "Open Spell checker"
 msgstr "Проверка орфографии"
 
-#: frame_main.cpp:279
-#: frame_main.cpp:497
+#: frame_main.cpp:289
+#: frame_main.cpp:507
 msgid "Configure Aegisub"
 msgstr "Настройка"
 
-#: frame_main.cpp:280
+#: frame_main.cpp:290
 msgid "Cycle Tag Hidding Mode"
 msgstr "Режим показа тегов"
 
-#: frame_main.cpp:280
+#: frame_main.cpp:290
 msgid "Cycle through tag-hiding modes"
 msgstr "Переключить режим показа тегов"
 
-#: frame_main.cpp:305
-#: frame_main.cpp:528
+#: frame_main.cpp:315
+#: frame_main.cpp:538
 msgid "&Help"
 msgstr "&Помощь"
 
-#: frame_main.cpp:320
+#: frame_main.cpp:330
 msgid "&New Subtitles"
 msgstr "&Новые субтитры"
 
-#: frame_main.cpp:321
+#: frame_main.cpp:331
 msgid "&Open Subtitles..."
 msgstr "&Открыть субтитры"
 
-#: frame_main.cpp:321
+#: frame_main.cpp:331
 msgid "Opens a subtitles file"
 msgstr "Открывает файл субтитров"
 
-#: frame_main.cpp:322
+#: frame_main.cpp:332
 msgid "&Open Subtitles with Charset..."
 msgstr "&Открыть субтитры в кодировке..."
 
-#: frame_main.cpp:322
+#: frame_main.cpp:332
 msgid "Opens a subtitles file with a specific charset"
 msgstr "Открывает субтитры в заданной кодировке"
 
-#: frame_main.cpp:323
+#: frame_main.cpp:333
 msgid "&Save Subtitles"
 msgstr "&Сохранить субтитры"
 
-#: frame_main.cpp:323
+#: frame_main.cpp:333
 msgid "Saves subtitles"
 msgstr "Сохраняет субтитры"
 
-#: frame_main.cpp:324
+#: frame_main.cpp:334
 msgid "Save Subtitles as..."
 msgstr "Сохранить субтитры как..."
 
-#: frame_main.cpp:324
+#: frame_main.cpp:334
 msgid "Saves subtitles with another name"
 msgstr "Сохраняет субтитры под другим именем"
 
-#: frame_main.cpp:325
+#: frame_main.cpp:335
 msgid "Export Subtitles..."
 msgstr "Экспорт субтитров..."
 
-#: frame_main.cpp:325
+#: frame_main.cpp:335
 msgid "Saves a copy of subtitles with processing applied to it."
 msgstr "Сохраняет копию субтитров с дополнительной обработкой."
 
-#: frame_main.cpp:326
-#: frame_main.cpp:427
-#: frame_main.cpp:435
-#: frame_main.cpp:441
-#: frame_main.cpp:477
+#: frame_main.cpp:336
+#: frame_main.cpp:437
+#: frame_main.cpp:445
+#: frame_main.cpp:451
+#: frame_main.cpp:487
 msgid "Recent"
 msgstr "Недавние"
 
-#: frame_main.cpp:332
+#: frame_main.cpp:342
 msgid "&Properties..."
 msgstr "&Свойства..."
 
-#: frame_main.cpp:332
+#: frame_main.cpp:342
 msgid "Open script properties window"
 msgstr "Открыть окно свойств скрипта"
 
-#: frame_main.cpp:333
+#: frame_main.cpp:343
 msgid "&Attachments..."
 msgstr "Прикреплённые &файлы..."
 
-#: frame_main.cpp:333
+#: frame_main.cpp:343
 msgid "Open the attachment list"
 msgstr "Открывает список прикреплённых файлов"
 
-#: frame_main.cpp:334
+#: frame_main.cpp:344
 msgid "&Fonts Collector..."
 msgstr "Сборщик &шрифтов..."
 
-#: frame_main.cpp:334
+#: frame_main.cpp:344
 msgid "Open fonts collector"
 msgstr "Открывает сборщик шрифтов"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:348
 msgid "New Window"
 msgstr "Новое окно"
 
-#: frame_main.cpp:338
+#: frame_main.cpp:348
 msgid "Open a new application window"
 msgstr "Открывает новое окно приложения"
 
-#: frame_main.cpp:340
+#: frame_main.cpp:350
 msgid "E&xit"
 msgstr "&Выход"
 
-#: frame_main.cpp:340
+#: frame_main.cpp:350
 msgid "Exit the application"
 msgstr "Выход из приложения"
 
-#: frame_main.cpp:341
+#: frame_main.cpp:351
 msgid "&File"
 msgstr "Файл"
 
-#: frame_main.cpp:346
+#: frame_main.cpp:356
 #: frame_main_events.cpp:429
-#: subs_edit_ctrl.cpp:951
+#: subs_edit_ctrl.cpp:962
 msgid "&Undo"
 msgstr "&Отменить"
 
-#: frame_main.cpp:346
+#: frame_main.cpp:356
 msgid "Undoes last action"
 msgstr "Отменяет последнее действие"
 
-#: frame_main.cpp:347
+#: frame_main.cpp:357
 #: frame_main_events.cpp:435
 msgid "&Redo"
 msgstr "&Повторить"
 
-#: frame_main.cpp:347
+#: frame_main.cpp:357
 msgid "Redoes last action"
 msgstr "Повторяет последнее действие"
 
-#: frame_main.cpp:349
+#: frame_main.cpp:359
 msgid "Cut Lines"
 msgstr "Вырезать события"
 
-#: frame_main.cpp:349
+#: frame_main.cpp:359
 msgid "Cut subtitles"
 msgstr "Вырезет субтитры"
 
-#: frame_main.cpp:350
+#: frame_main.cpp:360
 msgid "Copy Lines"
 msgstr "Копировать события"
 
-#: frame_main.cpp:350
+#: frame_main.cpp:360
 msgid "Copy subtitles"
 msgstr "Копирует субтитры"
 
-#: frame_main.cpp:351
+#: frame_main.cpp:361
 msgid "Paste Lines"
 msgstr "Вставить события"
 
-#: frame_main.cpp:351
+#: frame_main.cpp:361
 msgid "Paste subtitles"
 msgstr "Вставляет субтитры"
 
-#: frame_main.cpp:352
+#: frame_main.cpp:362
 msgid "Paste Lines Over..."
 msgstr "Вставить поверх событий..."
 
-#: frame_main.cpp:352
+#: frame_main.cpp:362
 msgid "Paste subtitles over others"
 msgstr "Вставляет субтитры поверх других"
 
-#: frame_main.cpp:354
+#: frame_main.cpp:364
 msgid "&Find..."
 msgstr "&Найти..."
 
-#: frame_main.cpp:354
+#: frame_main.cpp:364
 msgid "Find words in subtitles"
 msgstr "Ищет слова в субтитрах"
 
-#: frame_main.cpp:355
-#: hotkeys.cpp:350
-#: hotkeys.cpp:353
+#: frame_main.cpp:365
+#: hotkeys.cpp:354
+#: hotkeys.cpp:357
 msgid "Find Next"
 msgstr "Найти далее"
 
-#: frame_main.cpp:355
+#: frame_main.cpp:365
 msgid "Find next match of last word"
 msgstr "Ищет следующее совпадение"
 
-#: frame_main.cpp:356
+#: frame_main.cpp:366
 msgid "Search and &Replace..."
 msgstr "Найти и заменить..."
 
-#: frame_main.cpp:356
+#: frame_main.cpp:366
 msgid "Find and replace words in subtitles"
 msgstr "Ищет и заменяеть символы в субтитрах"
 
-#: frame_main.cpp:357
+#: frame_main.cpp:367
 msgid "&Edit"
 msgstr "&Правка"
 
-#: frame_main.cpp:362
+#: frame_main.cpp:372
 msgid "&Insert Lines"
 msgstr "&Вставить события"
 
-#: frame_main.cpp:366
+#: frame_main.cpp:376
 msgid "&Styles Manager..."
 msgstr "Менеджер &стилей..."
 
-#: frame_main.cpp:366
+#: frame_main.cpp:376
 msgid "Open styles manager"
 msgstr "Открыть менеджер стилей"
 
-#: frame_main.cpp:367
+#: frame_main.cpp:377
 msgid "St&yling Assistant..."
 msgstr "&Ассистент стиля..."
 
-#: frame_main.cpp:367
+#: frame_main.cpp:377
 msgid "Open styling assistant"
 msgstr "Открыть ассистент стилей"
 
-#: frame_main.cpp:368
+#: frame_main.cpp:378
 msgid "&Translation Assistant..."
 msgstr "Ассистент &перевода..."
 
-#: frame_main.cpp:368
+#: frame_main.cpp:378
 msgid "Open translation assistant"
 msgstr "Открыть ассистент перевода"
 
-#: frame_main.cpp:369
+#: frame_main.cpp:379
 msgid "Resample Resolution..."
 msgstr "Пересчитать разрешение..."
 
-#: frame_main.cpp:369
+#: frame_main.cpp:379
 msgid "Changes resolution and modifies subtitles to conform to change"
 msgstr "Изменяет разрешение и модифицирует скрипт"
 
-#: frame_main.cpp:370
+#: frame_main.cpp:380
 msgid "Spe&ll Checker..."
 msgstr "Проверка &орфографии..."
 
-#: frame_main.cpp:370
+#: frame_main.cpp:380
 msgid "Open spell checker"
 msgstr "Открывает проверку орфографии"
 
-#: frame_main.cpp:376
+#: frame_main.cpp:386
 msgid "&Before Current"
 msgstr "&Перед текущим"
 
-#: frame_main.cpp:376
+#: frame_main.cpp:386
 msgid "Inserts a line before current"
 msgstr "Вставляет событие перед текущим"
 
-#: frame_main.cpp:377
+#: frame_main.cpp:387
 msgid "&After Current"
 msgstr "П&осле текущего"
 
-#: frame_main.cpp:377
+#: frame_main.cpp:387
 msgid "Inserts a line after current"
 msgstr "Вставляет событие после текущего"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:388
 msgid "Before Current, at Video Time"
 msgstr "Перед текущим, по времени видео"
 
-#: frame_main.cpp:378
+#: frame_main.cpp:388
 msgid "Inserts a line before current, starting at video time"
 msgstr "Вставляет событие перед текущим по времени видео"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:389
 msgid "After Current, at Video Time"
 msgstr "После текущего, по времени видео"
 
-#: frame_main.cpp:379
+#: frame_main.cpp:389
 msgid "Inserts a line after current, starting at video time"
 msgstr "Вставляет событие после текущего по времени видео"
 
-#: frame_main.cpp:381
+#: frame_main.cpp:391
 msgid "&Duplicate Lines"
 msgstr "&Дублировать события"
 
-#: frame_main.cpp:381
+#: frame_main.cpp:391
 #: subs_grid.cpp:167
 msgid "Duplicate the selected lines"
 msgstr "Дублирует выделенные события"
 
-#: frame_main.cpp:382
+#: frame_main.cpp:392
 msgid "&Duplicate and Shift by 1 Frame"
 msgstr "&Дублировать и сдвинуть на 1 кадр"
 
-#: frame_main.cpp:382
+#: frame_main.cpp:392
 #: subs_grid.cpp:168
 msgid "Duplicate lines and shift by one frame"
 msgstr "Дублирует события и сдвигает их на один кадр"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:393
 msgid "Delete Lines"
 msgstr "Удалить события"
 
-#: frame_main.cpp:383
+#: frame_main.cpp:393
 #: subs_grid.cpp:204
 msgid "Delete currently selected lines"
 msgstr "Удаляет выделенные события"
 
-#: frame_main.cpp:386
+#: frame_main.cpp:396
 msgid "Join Lines"
 msgstr "Объединить события"
 
-#: frame_main.cpp:390
+#: frame_main.cpp:400
 msgid "&Concatenate"
 msgstr "&Объединить"
 
-#: frame_main.cpp:390
+#: frame_main.cpp:400
 #: subs_grid.cpp:177
 msgid "Joins selected lines in a single one, concatenating text together"
 msgstr "Объединяет выбранные события в одно, текст тоже объединяется"
 
-#: frame_main.cpp:391
+#: frame_main.cpp:401
 msgid "Keep &First"
 msgstr "Сохранить &первое"
 
-#: frame_main.cpp:391
+#: frame_main.cpp:401
 #: subs_grid.cpp:178
 msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
 msgstr "Объединяет выбранные события в одно, сохраняя только текст первого события"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:402
 msgid "As &Karaoke"
 msgstr "Как &караоке"
 
-#: frame_main.cpp:392
+#: frame_main.cpp:402
 msgid "Joins selected lines in a single one, as karaoke"
 msgstr "Объединяет выбранные события в одно как караоке"
 
-#: frame_main.cpp:394
+#: frame_main.cpp:404
 #: subs_grid.cpp:188
 msgid "Recombine Lines"
 msgstr "Рекомбинировать события"
 
-#: frame_main.cpp:394
+#: frame_main.cpp:404
 #: subs_grid.cpp:188
 msgid "Recombine subtitles when they have been split and merged"
 msgstr "Рекомбинирует субтитры после того, как их разделили и объединили"
 
-#: frame_main.cpp:395
+#: frame_main.cpp:405
 msgid "Split Lines (by karaoke)"
 msgstr "Разбить события (как караоке)"
 
-#: frame_main.cpp:395
+#: frame_main.cpp:405
 #: subs_grid.cpp:169
 msgid "Uses karaoke timing to split line into multiple smaller lines"
 msgstr "Использует тайминг караоке, чтобы разбить собятия на несколько"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:407
 msgid "Swap Lines"
 msgstr "Обменять события"
 
-#: frame_main.cpp:397
+#: frame_main.cpp:407
 #: subs_grid.cpp:173
 msgid "Swaps the two selected lines"
 msgstr "Обменивает два выбранных события"
 
-#: frame_main.cpp:398
+#: frame_main.cpp:408
 msgid "Select Lines..."
 msgstr "Выделить события..."
 
-#: frame_main.cpp:398
+#: frame_main.cpp:408
 msgid "Selects lines based on defined criterea"
 msgstr "Выбор событий по заданному критерию"
 
-#: frame_main.cpp:399
+#: frame_main.cpp:409
 msgid "&Subtitles"
 msgstr "&Субтитры"
 
-#: frame_main.cpp:403
+#: frame_main.cpp:413
 msgid "S&hift Times..."
 msgstr "С&двиг по времени..."
 
-#: frame_main.cpp:403
+#: frame_main.cpp:413
 msgid "Shift subtitles by time or frames"
 msgstr "Сдвиг субтитров по времени или кадрам"
 
-#: frame_main.cpp:404
+#: frame_main.cpp:414
 msgid "Sort by Time"
 msgstr "Отсортировать по времени"
 
-#: frame_main.cpp:404
+#: frame_main.cpp:414
 msgid "Sort all subtitles by their start times"
 msgstr "Сортировать все субтитры по начальному времени"
 
-#: frame_main.cpp:405
+#: frame_main.cpp:415
 msgid "Timing Post-Processor..."
 msgstr "Пост-обработка тайминга..."
 
-#: frame_main.cpp:405
+#: frame_main.cpp:415
 msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
 msgstr "Запуск пост-обработки тайминга для задания вступлений, окончаний, сцен-тайминга и т.п."
 
-#: frame_main.cpp:406
+#: frame_main.cpp:416
 msgid "Kanji Timer..."
 msgstr "Кандзи-таймер..."
 
-#: frame_main.cpp:406
+#: frame_main.cpp:416
 msgid "Open Kanji timer"
 msgstr "Открыть таймер кандзи"
 
-#: frame_main.cpp:408
+#: frame_main.cpp:418
 msgid "Snap Start to Video"
 msgstr "Привязка начала к видео"
 
-#: frame_main.cpp:409
+#: frame_main.cpp:419
 msgid "Snap End to Video"
 msgstr "Привязка конца к видео"
 
-#: frame_main.cpp:410
-#: hotkeys.cpp:371
+#: frame_main.cpp:420
+#: hotkeys.cpp:375
 msgid "Snap to Scene"
 msgstr "Привязка к сцене"
 
-#: frame_main.cpp:410
+#: frame_main.cpp:420
 msgid "Set start and end of subtitles to the keyframes around current video frame"
 msgstr "Задание начала и конца показа событий к ключкадрам по обе стороны от текущего кадра"
 
-#: frame_main.cpp:411
+#: frame_main.cpp:421
 msgid "Shift to Current Frame"
 msgstr "Смещение к текущему кадру"
 
-#: frame_main.cpp:411
+#: frame_main.cpp:421
 msgid "Shift selection so first selected line starts at current frame"
 msgstr "Сдвинуть выделение так, что первое выделенное событие начинается с текущего кадра"
 
-#: frame_main.cpp:414
+#: frame_main.cpp:424
 msgid "Make Times Continuous"
 msgstr "Сделать тайминг непрерывным"
 
-#: frame_main.cpp:418
+#: frame_main.cpp:428
 msgid "Change &Start"
 msgstr "Изменить &начало"
 
-#: frame_main.cpp:418
+#: frame_main.cpp:428
 #: subs_grid.cpp:183
 msgid "Changes times of subs so start times begin on previous's end time"
 msgstr "Изменяет тайминг событий так, что начало следующего события совпадёт в концом предыдущего"
 
-#: frame_main.cpp:419
+#: frame_main.cpp:429
 msgid "Change &End"
 msgstr "Изменить &конец"
 
-#: frame_main.cpp:419
+#: frame_main.cpp:429
 #: subs_grid.cpp:184
 msgid "Changes times of subs so end times begin on next's start time"
 msgstr "Изменяет тайминг событий так, что конец предыдущего события совпадёт с началом следующего"
 
-#: frame_main.cpp:421
+#: frame_main.cpp:431
 msgid "&Timing"
 msgstr "&Тайминг"
 
-#: frame_main.cpp:425
+#: frame_main.cpp:435
 msgid "&Open Video..."
 msgstr "&Oткрыть видео..."
 
-#: frame_main.cpp:425
+#: frame_main.cpp:435
 msgid "Opens a video file"
 msgstr "Открывает видеофайл"
 
-#: frame_main.cpp:426
+#: frame_main.cpp:436
 msgid "&Close Video"
 msgstr "&Закрыть видео"
 
-#: frame_main.cpp:426
+#: frame_main.cpp:436
 msgid "Closes the currently open video file"
 msgstr "Закрывает открытый видеофайл"
 
-#: frame_main.cpp:429
+#: frame_main.cpp:439
 msgid "Use Dummy Video..."
 msgstr "Использовать пустое видео..."
 
-#: frame_main.cpp:429
+#: frame_main.cpp:439
 msgid "Opens a video clip with solid colour"
 msgstr "Открывает видео, залитое сплошным цветом"
 
-#: frame_main.cpp:430
+#: frame_main.cpp:440
 msgid "Show Video Details..."
 msgstr "Информация о видео"
 
-#: frame_main.cpp:430
+#: frame_main.cpp:440
 msgid "Shows video details"
 msgstr "Показывает информацию о видео"
 
-#: frame_main.cpp:432
+#: frame_main.cpp:442
 msgid "Open Timecodes File..."
 msgstr "Открыть файл временных меток..."
 
-#: frame_main.cpp:432
+#: frame_main.cpp:442
 msgid "Opens a VFR timecodes v1 or v2 file"
 msgstr "Открывает файл временных меток в формате v1 или v2"
 
-#: frame_main.cpp:433
+#: frame_main.cpp:443
 msgid "Save Timecodes File..."
 msgstr "Сохранить файл с временными метками..."
 
-#: frame_main.cpp:433
+#: frame_main.cpp:443
 msgid "Saves a VFR timecodes v2 file"
 msgstr "Сохораняет файл временных меток в формате v2"
 
-#: frame_main.cpp:434
+#: frame_main.cpp:444
 msgid "Close Timecodes File"
 msgstr "Закрыть файл с временными метками"
 
-#: frame_main.cpp:434
+#: frame_main.cpp:444
 msgid "Closes the currently open timecodes file"
 msgstr "Закрывает текущий файл с временными метками"
 
-#: frame_main.cpp:438
+#: frame_main.cpp:448
 msgid "Open Keyframes..."
 msgstr "Открыть файл с ключкадрами"
 
-#: frame_main.cpp:438
+#: frame_main.cpp:448
 msgid "Opens a keyframe list file"
 msgstr "Открывает файл со списоком ключкадров"
 
-#: frame_main.cpp:439
+#: frame_main.cpp:449
 msgid "Save Keyframes..."
 msgstr "Сохранить ключкадры"
 
-#: frame_main.cpp:439
+#: frame_main.cpp:449
 msgid "Saves the current keyframe list"
 msgstr "Сохраняет текущий список ключкадров"
 
-#: frame_main.cpp:440
+#: frame_main.cpp:450
 msgid "Close Keyframes"
 msgstr "Закрыть ключкадры"
 
-#: frame_main.cpp:440
+#: frame_main.cpp:450
 msgid "Closes the currently open keyframes list"
 msgstr "Закрывает текущий файл с ключкадрами"
 
-#: frame_main.cpp:444
+#: frame_main.cpp:454
 msgid "Detach Video"
 msgstr "Отсоединить видео"
 
-#: frame_main.cpp:444
+#: frame_main.cpp:454
 msgid "Detach video, displaying it in a separate Window."
 msgstr "Отсоединяет область с видео от главного окна"
 
-#: frame_main.cpp:446
+#: frame_main.cpp:456
 msgid "Set Zoom"
 msgstr "Установить масштаб"
 
-#: frame_main.cpp:450
+#: frame_main.cpp:460
 msgid "Set zoom to 50%"
 msgstr "Установить масштаб в 50%"
 
-#: frame_main.cpp:451
+#: frame_main.cpp:461
 msgid "Set zoom to 100%"
 msgstr "Установить масштаб в 100%"
 
-#: frame_main.cpp:452
+#: frame_main.cpp:462
 msgid "Set zoom to 200%"
 msgstr "Установить масштаб в 200%"
 
-#: frame_main.cpp:455
+#: frame_main.cpp:465
 msgid "Override Aspect Ratio"
 msgstr "Изменить соотношение сторон"
 
-#: frame_main.cpp:459
+#: frame_main.cpp:469
 msgid "&Default"
 msgstr "По &умолчанию"
 
-#: frame_main.cpp:459
+#: frame_main.cpp:469
 msgid "Leave video on original aspect ratio"
 msgstr "Оставить соотношение сторон по умолчанию"
 
-#: frame_main.cpp:460
+#: frame_main.cpp:470
 msgid "&Fullscreen (4:3)"
 msgstr "&Полноэкранное (4:3)"
 
-#: frame_main.cpp:460
+#: frame_main.cpp:470
 msgid "Forces video to 4:3 aspect ratio"
 msgstr "Установить соотношение 4:3"
 
-#: frame_main.cpp:461
+#: frame_main.cpp:471
 msgid "&Widescreen (16:9)"
 msgstr "&Широкоэкранное (16:9)"
 
-#: frame_main.cpp:461
+#: frame_main.cpp:471
 msgid "Forces video to 16:9 aspect ratio"
 msgstr "Установить соотношение 16:9"
 
-#: frame_main.cpp:462
+#: frame_main.cpp:472
 msgid "&Cinematic (2.35)"
 msgstr "&Кинематографическое (2.35)"
 
-#: frame_main.cpp:462
+#: frame_main.cpp:472
 msgid "Forces video to 2.35 aspect ratio"
 msgstr "Установить соотношение 2.35"
 
-#: frame_main.cpp:463
+#: frame_main.cpp:473
 msgid "Custom..."
 msgstr "Собственное..."
 
-#: frame_main.cpp:463
+#: frame_main.cpp:473
 msgid "Forces video to a custom aspect ratio"
 msgstr "Установить соотношение, заданное пользователем"
 
-#: frame_main.cpp:465
+#: frame_main.cpp:475
 msgid "Show Overscan Mask"
 msgstr "Границы отсечения"
 
-#: frame_main.cpp:465
+#: frame_main.cpp:475
 msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
 msgstr "Границы, не отображаемые на ЭЛТ-телевизоре"
 
-#: frame_main.cpp:467
+#: frame_main.cpp:477
 msgid "&Jump to..."
 msgstr "&Перейти к..."
 
-#: frame_main.cpp:467
+#: frame_main.cpp:477
 msgid "Jump to frame or time"
 msgstr "Переход к кадру или времени"
 
-#: frame_main.cpp:468
-#: hotkeys.cpp:367
+#: frame_main.cpp:478
+#: hotkeys.cpp:371
 msgid "Jump Video to Start"
 msgstr "Перемотка видео к началу"
 
-#: frame_main.cpp:469
-#: hotkeys.cpp:368
+#: frame_main.cpp:479
+#: hotkeys.cpp:372
 msgid "Jump Video to End"
 msgstr "Перемотка видео к концу"
 
-#: frame_main.cpp:470
+#: frame_main.cpp:480
 msgid "&Video"
 msgstr "&Видео"
 
-#: frame_main.cpp:474
+#: frame_main.cpp:484
 msgid "&Open Audio File..."
 msgstr "&Oткрыть аудиофайл..."
 
-#: frame_main.cpp:474
+#: frame_main.cpp:484
 msgid "Opens an audio file"
 msgstr "Открывает аудиофайл"
 
-#: frame_main.cpp:475
+#: frame_main.cpp:485
 msgid "Open Audio from &Video"
 msgstr "Открыть аудио из &видео"
 
-#: frame_main.cpp:475
+#: frame_main.cpp:485
 msgid "Opens the audio from the current video file"
 msgstr "Открывает аудио из текущего видеофайла"
 
-#: frame_main.cpp:476
+#: frame_main.cpp:486
 msgid "&Close Audio"
 msgstr "&Закрыть аудио"
 
-#: frame_main.cpp:476
+#: frame_main.cpp:486
 msgid "Closes the currently open audio file"
 msgstr "Закрывает текущий аудиофайл"
 
-#: frame_main.cpp:484
+#: frame_main.cpp:494
 msgid "&Audio"
 msgstr "&Aудио"
 
-#: frame_main.cpp:489
+#: frame_main.cpp:499
 msgid "&Automation..."
 msgstr "&Aвтоматизация..."
 
-#: frame_main.cpp:489
+#: frame_main.cpp:499
 msgid "Open automation manager"
 msgstr "Открыть менеджер автоматизации"
 
-#: frame_main.cpp:491
+#: frame_main.cpp:501
 msgid "&Automation"
 msgstr "&Автоматизация"
 
-#: frame_main.cpp:496
+#: frame_main.cpp:506
 msgid "Select Aegisub interface language"
 msgstr "Выбрать язык интерфейса Aegisub"
 
-#: frame_main.cpp:497
+#: frame_main.cpp:507
 msgid "&Options..."
 msgstr "&Настройки..."
 
-#: frame_main.cpp:500
+#: frame_main.cpp:510
 msgid "&Associations..."
 msgstr "&Ассоциации..."
 
-#: frame_main.cpp:500
+#: frame_main.cpp:510
 msgid "Associate file types with Aegisub"
 msgstr "Ассоциировать типы файлов с Aegisub"
 
-#: frame_main.cpp:503
+#: frame_main.cpp:513
 msgid "Lo&g Window..."
 msgstr "Окно &журнала..."
 
-#: frame_main.cpp:503
+#: frame_main.cpp:513
 msgid "Open log window"
 msgstr "Открыть окно журнала"
 
-#: frame_main.cpp:506
+#: frame_main.cpp:516
 msgid "Subs Only View"
 msgstr "Только субтитры"
 
-#: frame_main.cpp:506
+#: frame_main.cpp:516
 msgid "Display subtitles only"
 msgstr "Показывать только субтитры"
 
-#: frame_main.cpp:507
+#: frame_main.cpp:517
 msgid "Video+Subs View"
 msgstr "Видео+субтитры"
 
-#: frame_main.cpp:507
+#: frame_main.cpp:517
 msgid "Display video and subtitles only"
 msgstr "Показывать только видео и субтитры"
 
-#: frame_main.cpp:508
+#: frame_main.cpp:518
 msgid "Audio+Subs View"
 msgstr "Аудио+субтитры"
 
-#: frame_main.cpp:508
+#: frame_main.cpp:518
 msgid "Display audio and subtitles only"
 msgstr "Показывать только аудио и субтитры"
 
-#: frame_main.cpp:509
+#: frame_main.cpp:519
 msgid "Full view"
 msgstr "Показывать всё"
 
-#: frame_main.cpp:509
+#: frame_main.cpp:519
 msgid "Display audio, video and subtitles"
 msgstr "Показ аудио, видео и субтитров"
 
-#: frame_main.cpp:510
+#: frame_main.cpp:520
 msgid "Vie&w"
 msgstr "&Вид"
 
-#: frame_main.cpp:514
+#: frame_main.cpp:524
 msgid "&Contents..."
 msgstr "&Cодержание..."
 
-#: frame_main.cpp:514
+#: frame_main.cpp:524
 msgid "Help topics"
 msgstr "Разделы помощи"
 
-#: frame_main.cpp:516
+#: frame_main.cpp:526
 msgid "&Resource Files..."
 msgstr "Файлы &ресурсов..."
 
-#: frame_main.cpp:516
+#: frame_main.cpp:526
 msgid "Resource files distributed with Aegisub"
 msgstr "Файлы ресурсов, распространяемые с Aegisub"
 
-#: frame_main.cpp:519
+#: frame_main.cpp:529
 msgid "&Website..."
 msgstr "Web-&сайт..."
 
-#: frame_main.cpp:519
+#: frame_main.cpp:529
 msgid "Visit Aegisub's official website"
 msgstr "Посетить официальный сайт Aegisub"
 
-#: frame_main.cpp:520
+#: frame_main.cpp:530
 msgid "&Forums..."
 msgstr "&Форум..."
 
-#: frame_main.cpp:520
+#: frame_main.cpp:530
 msgid "Visit Aegisub's forums"
 msgstr "Посетить официальный форум Aegisub"
 
-#: frame_main.cpp:521
+#: frame_main.cpp:531
 msgid "&Bug Tracker..."
 msgstr "&Трекер ошибок..."
 
-#: frame_main.cpp:521
+#: frame_main.cpp:531
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Посетить трекер ошибок Aegisub"
 
-#: frame_main.cpp:522
+#: frame_main.cpp:532
 msgid "&IRC Channel..."
 msgstr "IRC &канал..."
 
-#: frame_main.cpp:522
+#: frame_main.cpp:532
 msgid "Visit Aegisub's official IRC channel"
 msgstr "Посетить официальный канал IRC Aegisub"
 
-#: frame_main.cpp:526
+#: frame_main.cpp:536
 msgid "&Check for Updates..."
 msgstr "&Проверить обновления..."
 
-#: frame_main.cpp:526
+#: frame_main.cpp:536
 msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Проверить, доступна ли новая версия Aegisub"
 
-#: frame_main.cpp:527
+#: frame_main.cpp:537
 msgid "&About..."
 msgstr "&О программе..."
 
-#: frame_main.cpp:740
+#: frame_main.cpp:750
 msgid "Save subtitles file"
 msgstr "Сохранить файл субтитров"
 
-#: frame_main.cpp:759
-#: frame_main_events.cpp:742
+#: frame_main.cpp:769
+#: frame_main_events.cpp:744
 msgid "Choose charset code:"
 msgstr "Выбрать кодировку:"
 
-#: frame_main.cpp:789
+#: frame_main.cpp:803
 msgid "Save before continuing?"
 msgstr "Сохранить прежде, чем продолжить?"
 
-#: frame_main.cpp:789
+#: frame_main.cpp:803
 msgid "Unsaved changes"
 msgstr "Несохранённые изменения"
 
-#: frame_main.cpp:855
+#: frame_main.cpp:869
 msgid "Untitled"
 msgstr "Без имени"
 
-#: frame_main.cpp:865
+#: frame_main.cpp:879
 msgid "untitled"
 msgstr "без имени"
 
-#: frame_main.cpp:930
+#: frame_main.cpp:944
 msgid "Do you want to load/unload the associated files?"
 msgstr "Хотите загрузить/выгрузить используемые файлы?"
 
-#: frame_main.cpp:930
+#: frame_main.cpp:944
 msgid "(Un)Load files?"
 msgstr "Загрузить/Выгрузить файлы?"
 
-#: frame_main.cpp:1075
+#: frame_main.cpp:1089
 msgid "You have timecodes loaded currently. Would you like to unload them?"
 msgstr "Файл временных меток уже загружен. Хотите его выгрузить?"
 
-#: frame_main.cpp:1075
+#: frame_main.cpp:1089
 msgid "Unload timecodes?"
 msgstr "Выгрузить временные метки?"
 
-#: frame_main.cpp:1117
+#: frame_main.cpp:1131
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
@@ -4281,11 +4270,11 @@ msgstr ""
 "\n"
 "Изменить разрешение субтитров на разрешение видео?"
 
-#: frame_main.cpp:1117
+#: frame_main.cpp:1131
 msgid "Resolution mismatch"
 msgstr "Несовпадение разрешения"
 
-#: frame_main.cpp:1124
+#: frame_main.cpp:1138
 msgid "Change script resolution"
 msgstr "Пересчёт разрешения скрипта"
 
@@ -4298,13 +4287,13 @@ msgid "No Automation macros loaded"
 msgstr "Нет загруженных макросов"
 
 #: frame_main_events.cpp:665
-#: frame_main_events.cpp:688
+#: frame_main_events.cpp:689
 msgid "Video Formats"
 msgstr "Форматы видео"
 
 #: frame_main_events.cpp:666
-#: frame_main_events.cpp:816
-#: frame_main_events.cpp:831
+#: frame_main_events.cpp:819
+#: frame_main_events.cpp:835
 msgid "All Files"
 msgstr "Все файлы"
 
@@ -4312,424 +4301,417 @@ msgstr "Все файлы"
 msgid "Open video file"
 msgstr "Открыть видеофайл"
 
-#: frame_main_events.cpp:687
+#: frame_main_events.cpp:688
 msgid "Audio Formats"
 msgstr "Форматы аудио"
 
-#: frame_main_events.cpp:689
+#: frame_main_events.cpp:690
 msgid "All files"
 msgstr "Все файлы"
 
-#: frame_main_events.cpp:690
+#: frame_main_events.cpp:691
 msgid "Open audio file"
 msgstr "Открыть аудиофайл"
 
-#: frame_main_events.cpp:742
+#: frame_main_events.cpp:744
 msgid "Charset"
 msgstr "Кодировка"
 
-#: frame_main_events.cpp:815
-#: frame_main_events.cpp:830
+#: frame_main_events.cpp:818
+#: frame_main_events.cpp:834
 msgid "All Supported Types"
 msgstr "Все поддерживаемые типы"
 
-#: frame_main_events.cpp:817
+#: frame_main_events.cpp:820
 msgid "Open timecodes file"
 msgstr "Открыть файл временных меток"
 
-#: frame_main_events.cpp:832
+#: frame_main_events.cpp:836
 msgid "Save timecodes file"
 msgstr "Сохранить файл временных меток"
 
-#: frame_main_events.cpp:1124
+#: frame_main_events.cpp:1131
 msgid "Reloaded all Automation scripts"
 msgstr "Перезагрузить все скрипты автоматизации"
 
-#: frame_main_events.cpp:1127
+#: frame_main_events.cpp:1134
 msgid "Reloaded autoload Automation scripts"
 msgstr "Перезагрузить автоматически загруженные скрипты"
 
-#: frame_main_events.cpp:1264
+#: frame_main_events.cpp:1271
 msgid "snap to scene"
 msgstr "привязку к сцене"
 
-#: frame_main_events.cpp:1295
+#: frame_main_events.cpp:1302
 msgid "shift to frame"
 msgstr "сдвиг к кадру"
 
-#: frame_main_events.cpp:1392
+#: frame_main_events.cpp:1399
 msgid "Enter aspect ratio in either decimal (e.g. 2.35) or fractional (e.g. 16:9) form. Enter a value like 853x480 to set a specific resolution."
 msgstr "Введите отношение сторон в десятичном (2.35) или дробном (16:9) виде. Введите значение наподобие 853х480 для точного разрешения."
 
-#: frame_main_events.cpp:1392
+#: frame_main_events.cpp:1399
 msgid "Enter aspect ratio"
 msgstr "Задать отношение сторон"
 
-#: frame_main_events.cpp:1427
+#: frame_main_events.cpp:1434
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr "Неправильное значение! Отношение сторон должно быть между 0.5 и 5.0."
 
-#: frame_main_events.cpp:1427
+#: frame_main_events.cpp:1434
 msgid "Invalid Aspect Ratio"
 msgstr "Неправильное отношение сторон"
 
-#: frame_main_events.cpp:1528
+#: frame_main_events.cpp:1535
 msgid "sort"
 msgstr "сортировку"
 
-#: frame_main_events.cpp:1567
+#: frame_main_events.cpp:1574
 msgid "File backup saved as \""
 msgstr "Резервный файл сохранён как \""
 
-#: frame_main_events.cpp:1661
+#: frame_main_events.cpp:1668
 msgid "ASS Override Tag mode set to "
 msgstr "ASS теги "
 
-#: frame_main_events.cpp:1662
+#: frame_main_events.cpp:1669
 msgid "show full tags."
 msgstr "показываются полностью."
 
-#: frame_main_events.cpp:1663
+#: frame_main_events.cpp:1670
 msgid "simplify tags."
 msgstr "показываются упрощённо."
 
-#: frame_main_events.cpp:1664
+#: frame_main_events.cpp:1671
 msgid "hide tags."
 msgstr "не показываются."
 
 #: hotkeys.cpp:331
-#: hotkeys.cpp:335
+#: hotkeys.cpp:336
+#: hotkeys.cpp:338
 msgid "Exit"
 msgstr "Выход"
 
 #: hotkeys.cpp:332
-#: hotkeys.cpp:336
+#: hotkeys.cpp:340
 #: video_box.cpp:124
 msgid "Help"
 msgstr "Помощь"
 
-#: hotkeys.cpp:340
+#: hotkeys.cpp:344
 msgid "Edit Box Commit"
 msgstr "Фиксировать ввод"
 
-#: hotkeys.cpp:341
+#: hotkeys.cpp:345
 msgid "Undo"
 msgstr "Отменить"
 
-#: hotkeys.cpp:343
-#: hotkeys.cpp:345
+#: hotkeys.cpp:347
+#: hotkeys.cpp:349
 msgid "Redo"
 msgstr "Повторить"
 
-#: hotkeys.cpp:356
+#: hotkeys.cpp:360
 msgid "Select Lines"
 msgstr "Выделить события"
 
-#: hotkeys.cpp:358
+#: hotkeys.cpp:362
 msgid "Cut"
 msgstr "Вырезать"
 
-#: hotkeys.cpp:359
+#: hotkeys.cpp:363
 msgid "Paste"
 msgstr "Вставить"
 
-#: hotkeys.cpp:360
+#: hotkeys.cpp:364
 msgid "Paste Over"
 msgstr "Вставить поверх"
 
-#: hotkeys.cpp:363
-#: hotkeys.cpp:365
+#: hotkeys.cpp:367
+#: hotkeys.cpp:369
 msgid "Video Jump"
 msgstr "Переход видео"
 
-#: hotkeys.cpp:369
+#: hotkeys.cpp:373
 msgid "Set Start to Video"
 msgstr "Установить начало по видео"
 
-#: hotkeys.cpp:370
+#: hotkeys.cpp:374
 msgid "Set End to Video"
 msgstr "Установить конец по видео"
 
-#: hotkeys.cpp:372
+#: hotkeys.cpp:376
 msgid "Shift by Current Time"
 msgstr "Сдвиг на текущее время"
 
-#: hotkeys.cpp:373
+#: hotkeys.cpp:377
 msgid "Zoom 50%"
 msgstr "Масштаб 50%"
 
-#: hotkeys.cpp:374
+#: hotkeys.cpp:378
 msgid "Zoom 100%"
 msgstr "Масштаб 100%"
 
-#: hotkeys.cpp:375
+#: hotkeys.cpp:379
 msgid "Zoom 200%"
 msgstr "Масштаб 200%"
 
-#: hotkeys.cpp:377
+#: hotkeys.cpp:381
 msgid "Video global prev frame"
 msgstr "Глобальный переход на пред. кадр"
 
-#: hotkeys.cpp:378
+#: hotkeys.cpp:382
 msgid "Video global next frame"
 msgstr "Глобальный переход на след. кадр"
 
-#: hotkeys.cpp:379
+#: hotkeys.cpp:383
 msgid "Video global focus seek"
 msgstr "Глобальное перемещение фокуса на видео"
 
-#: hotkeys.cpp:380
+#: hotkeys.cpp:384
 msgid "Video global play"
 msgstr "Играть видео глоб."
 
-#: hotkeys.cpp:381
+#: hotkeys.cpp:385
 msgid "Grid global prev line"
 msgstr "Глобальный переход на пред. событие"
 
-#: hotkeys.cpp:382
+#: hotkeys.cpp:386
 msgid "Grid global next line"
 msgstr "Глобальный переход на след. событие"
 
-#: hotkeys.cpp:383
+#: hotkeys.cpp:387
 msgid "Save Subtitles Alt"
 msgstr "Сохранить субтитры Альт"
 
-#: hotkeys.cpp:384
+#: hotkeys.cpp:388
 msgid "Video global zoom in"
 msgstr "Глобальное увеличение масштаба видео"
 
-#: hotkeys.cpp:385
+#: hotkeys.cpp:389
 msgid "Video global zoom out"
 msgstr "Глобальное уменьшение масштаба видео"
 
-#: hotkeys.cpp:387
+#: hotkeys.cpp:391
 msgid "Grid move row down"
 msgstr "Сдвинуть событие по таблице вниз"
 
-#: hotkeys.cpp:388
+#: hotkeys.cpp:392
 msgid "Grid move row up"
 msgstr "Сдвинуть событие таблице вверх"
 
-#: hotkeys.cpp:390
-#: hotkeys.cpp:392
+#: hotkeys.cpp:394
+#: hotkeys.cpp:396
 msgid "Grid delete rows"
 msgstr "Удалить события"
 
-#: hotkeys.cpp:394
+#: hotkeys.cpp:398
 msgid "Grid duplicate rows"
 msgstr "Дублировать события"
 
-#: hotkeys.cpp:395
+#: hotkeys.cpp:399
 msgid "Grid duplicate and shift one frame"
 msgstr "Дублировать события и сдвиг на 1 кадр"
 
-#: hotkeys.cpp:397
+#: hotkeys.cpp:401
 msgid "Audio Commit Alt"
 msgstr "Аудио фиксировать Альт"
 
-#: hotkeys.cpp:398
+#: hotkeys.cpp:402
 msgid "Audio Commit"
 msgstr "Аудио фиксировать"
 
-#: hotkeys.cpp:399
+#: hotkeys.cpp:403
 msgid "Audio Commit (Stay)"
 msgstr "Аудио фиксировать (без перехода)"
 
-#: hotkeys.cpp:400
+#: hotkeys.cpp:404
 msgid "Audio Prev Line"
 msgstr "Аудио пред. событие"
 
-#: hotkeys.cpp:401
+#: hotkeys.cpp:405
 msgid "Audio Prev Line Alt"
 msgstr "Аудио пред. событие Альт"
 
-#: hotkeys.cpp:402
+#: hotkeys.cpp:406
 msgid "Audio Next Line"
 msgstr "Аудио след. событие"
 
-#: hotkeys.cpp:403
+#: hotkeys.cpp:407
 msgid "Audio Next Line Alt"
 msgstr "Аудио след. событие"
 
-#: hotkeys.cpp:404
+#: hotkeys.cpp:408
 msgid "Audio Play"
 msgstr "Аудио играть"
 
-#: hotkeys.cpp:405
+#: hotkeys.cpp:409
 msgid "Audio Play Alt"
 msgstr "Аудио играть Альт"
 
-#: hotkeys.cpp:406
+#: hotkeys.cpp:410
 msgid "Audio Play or Stop"
 msgstr "Аудио играть или стоп"
 
-#: hotkeys.cpp:407
+#: hotkeys.cpp:411
 msgid "Audio Stop"
 msgstr "Аудио стоп"
 
-#: hotkeys.cpp:408
+#: hotkeys.cpp:412
 msgid "Audio Karaoke Increase Len"
 msgstr "Аудио увеличение длины для караоке"
 
-#: hotkeys.cpp:409
+#: hotkeys.cpp:413
 msgid "Audio Karaoke Decrease Len"
 msgstr "Аудио уменьшение длины для караоке"
 
-#: hotkeys.cpp:410
+#: hotkeys.cpp:414
 msgid "Audio Karaoke Increase Len Shift"
 msgstr "Аудио увеличение длины для караоке Шифт"
 
-#: hotkeys.cpp:411
+#: hotkeys.cpp:415
 msgid "Audio Karaoke Decrease Len Shift"
 msgstr "Аудио уменьшение длины для караоке Шифт"
 
-#: hotkeys.cpp:412
+#: hotkeys.cpp:416
 msgid "Audio Scroll Left"
 msgstr "Аудио перемещение влево"
 
-#: hotkeys.cpp:413
+#: hotkeys.cpp:417
 msgid "Audio Scroll Right"
 msgstr "Аудио перемещение вправо"
 
-#: hotkeys.cpp:414
+#: hotkeys.cpp:418
 msgid "Audio Play First 500ms"
 msgstr "Аудио играть 500 мс аудио"
 
-#: hotkeys.cpp:415
+#: hotkeys.cpp:419
 msgid "Audio Play Last 500ms"
 msgstr "Аудио играть 500 мс аудио"
 
-#: hotkeys.cpp:416
+#: hotkeys.cpp:420
 msgid "Audio Play 500ms Before"
 msgstr "Аудио играть 500 мс до "
 
-#: hotkeys.cpp:417
+#: hotkeys.cpp:421
 msgid "Audio Play 500ms After"
 msgstr "Аудио играть 500 мс после"
 
-#: hotkeys.cpp:418
+#: hotkeys.cpp:422
 msgid "Audio Play To End"
 msgstr "Аудио играть до конца"
 
-#: hotkeys.cpp:419
+#: hotkeys.cpp:423
 msgid "Audio Play Original Line"
 msgstr "Аудио играть оригинальную событие"
 
-#: hotkeys.cpp:420
+#: hotkeys.cpp:424
 msgid "Audio Add Lead In"
 msgstr "Аудио добавить вступление"
 
-#: hotkeys.cpp:421
+#: hotkeys.cpp:425
 msgid "Audio Add Lead Out"
 msgstr "Аудио добавить окончание"
 
-#: hotkeys.cpp:423
+#: hotkeys.cpp:427
 msgid "Audio Medusa Toggle"
 msgstr "Медуза Аудио переключить"
 
-#: hotkeys.cpp:424
+#: hotkeys.cpp:428
 msgid "Audio Medusa Play"
 msgstr "Медуза Играть аудио"
 
-#: hotkeys.cpp:425
+#: hotkeys.cpp:429
 msgid "Audio Medusa Stop"
 msgstr "Медуза Аудио стоп"
 
-#: hotkeys.cpp:426
+#: hotkeys.cpp:430
 msgid "Audio Medusa Shift Start Back"
 msgstr "Медуза Аудио сдвинуть начало влево"
 
-#: hotkeys.cpp:427
+#: hotkeys.cpp:431
 msgid "Audio Medusa Shift Start Forward"
 msgstr "Медуза Аудио сдвинуть начало вправо"
 
-#: hotkeys.cpp:428
+#: hotkeys.cpp:432
 msgid "Audio Medusa Shift End Back"
 msgstr "Медуза Аудио сдвинуть конец влево"
 
-#: hotkeys.cpp:429
+#: hotkeys.cpp:433
 msgid "Audio Medusa Shift End Forward"
 msgstr "Медуза Аудио сдвинуть конец вправо"
 
-#: hotkeys.cpp:430
+#: hotkeys.cpp:434
 msgid "Audio Medusa Play Before"
 msgstr "Медуза Играть аудио 500 мс до"
 
-#: hotkeys.cpp:431
+#: hotkeys.cpp:435
 msgid "Audio Medusa Play After"
 msgstr "Медуза Играть аудио 500 мс после"
 
-#: hotkeys.cpp:432
+#: hotkeys.cpp:436
 msgid "Audio Medusa Next"
 msgstr "Медуза Аудио след. событие"
 
-#: hotkeys.cpp:433
+#: hotkeys.cpp:437
 msgid "Audio Medusa Previous"
 msgstr "Медуза Аудио пред. событие"
 
-#: hotkeys.cpp:434
+#: hotkeys.cpp:438
 msgid "Audio Medusa Enter"
 msgstr "Медуза Аудио принять"
 
-#: hotkeys.cpp:436
+#: hotkeys.cpp:440
 msgid "Translation Assistant Play Audio"
 msgstr "Ассистент перевода Играть аудио"
 
-#: hotkeys.cpp:437
+#: hotkeys.cpp:441
 msgid "Translation Assistant Play Video"
 msgstr "Ассистент перевода Играть видео"
 
-#: hotkeys.cpp:438
+#: hotkeys.cpp:442
 msgid "Translation Assistant Next"
 msgstr "Ассистент перевода След."
 
-#: hotkeys.cpp:439
+#: hotkeys.cpp:443
 msgid "Translation Assistant Prev"
 msgstr "Ассистент перевода Пред."
 
-#: hotkeys.cpp:440
+#: hotkeys.cpp:444
 msgid "Translation Assistant Accept"
 msgstr "Ассистент перевода Принять"
 
-#: hotkeys.cpp:441
+#: hotkeys.cpp:445
 msgid "Translation Assistant Preview"
 msgstr "Ассистент перевода Просмотр"
 
-#: hotkeys.cpp:442
+#: hotkeys.cpp:446
 msgid "Translation Assistant Insert Original"
 msgstr "Ассистент перевода Вставить оригинал"
 
-#: hotkeys.cpp:444
+#: hotkeys.cpp:448
 msgid "Styling Assistant Play Audio"
 msgstr "Ассистент стилей играть аудио"
 
-#: hotkeys.cpp:445
+#: hotkeys.cpp:449
 msgid "Styling Assistant Play Video"
 msgstr "Ассистент стилей играть видео"
 
-#: hotkeys.cpp:446
+#: hotkeys.cpp:450
 msgid "Styling Assistant Next"
 msgstr "Ассистент стилей След."
 
-#: hotkeys.cpp:447
+#: hotkeys.cpp:451
 msgid "Styling Assistant Prev"
 msgstr "Ассистент стилей Пред."
 
-#: hotkeys.cpp:448
+#: hotkeys.cpp:452
 msgid "Styling Assistant Accept"
 msgstr "Ассистент стилей Принять"
 
-#: hotkeys.cpp:449
+#: hotkeys.cpp:453
 msgid "Styling Assistant Preview"
 msgstr "Ассистент стилей Просмотр"
-
-#: lavc_keyframes.cpp:97
-msgid "Load keyframes"
-msgstr "Загрузить ключкадры"
-
-#: lavc_keyframes.cpp:97
-msgid "Reading keyframes from video"
-msgstr "Чтение ключкадров из файла"
 
 #: mkv_wrap.cpp:170
 #: mkv_wrap.cpp:398
@@ -4744,7 +4726,7 @@ msgstr "Считывание ключевых кадров и временных
 msgid "Reading subtitles from Matroska file."
 msgstr "Считывание субтитров из матрёшки"
 
-#: options.cpp:467
+#: options.cpp:469
 msgid "Configuration file is either invalid or corrupt. The current file will be backed up and replaced with a default file."
 msgstr "Файл настроек повреждён или содержит ошибки. Текущий файл будет сохранён в папку бэкапа и заменён на файл с настройками по умолчанию."
 
@@ -4881,77 +4863,87 @@ msgstr "комментирование"
 msgid "editing"
 msgstr "редактирование"
 
-#: subs_edit_ctrl.cpp:800
+#: subs_edit_ctrl.cpp:811
 msgid "No correction suggestions"
 msgstr "Нет вариантов"
 
-#: subs_edit_ctrl.cpp:812
+#: subs_edit_ctrl.cpp:823
 #, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr "Добавить «%s» в словарь"
 
-#: subs_edit_ctrl.cpp:820
+#: subs_edit_ctrl.cpp:831
 msgid "No spell checker suggestions"
 msgstr "Нет вариантов"
 
-#: subs_edit_ctrl.cpp:827
+#: subs_edit_ctrl.cpp:838
 #, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Варианты для «%s»"
 
-#: subs_edit_ctrl.cpp:847
-#: subs_edit_ctrl.cpp:933
+#: subs_edit_ctrl.cpp:858
+#: subs_edit_ctrl.cpp:944
 msgid "Disable"
 msgstr "Отключить"
 
-#: subs_edit_ctrl.cpp:860
+#: subs_edit_ctrl.cpp:871
 msgid "Spell checker language"
 msgstr "Язык проверки орфографии"
 
-#: subs_edit_ctrl.cpp:911
+#: subs_edit_ctrl.cpp:922
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr "Варианты тезауруса для «%s»"
 
-#: subs_edit_ctrl.cpp:918
+#: subs_edit_ctrl.cpp:929
 msgid "No thesaurus suggestions"
 msgstr "Нет вариантов тезауруса"
 
-#: subs_edit_ctrl.cpp:946
+#: subs_edit_ctrl.cpp:957
 msgid "Thesaurus language"
 msgstr "Язык тезауруса"
 
-#: subs_edit_ctrl.cpp:953
+#: subs_edit_ctrl.cpp:964
 msgid "Cu&t"
 msgstr "Вырезать"
 
-#: subs_edit_ctrl.cpp:954
+#: subs_edit_ctrl.cpp:965
 #: subs_grid.cpp:198
 #: timeedit_ctrl.cpp:307
 msgid "&Copy"
 msgstr "&Копировать"
 
-#: subs_edit_ctrl.cpp:955
+#: subs_edit_ctrl.cpp:966
 #: subs_grid.cpp:200
 #: timeedit_ctrl.cpp:308
 msgid "&Paste"
 msgstr "В&ставить"
 
-#: subs_edit_ctrl.cpp:957
+#: subs_edit_ctrl.cpp:968
 msgid "Select &All"
 msgstr "Выбрать всё"
 
-#: subs_edit_ctrl.cpp:961
+#: subs_edit_ctrl.cpp:972
 msgid "Split at cursor (preserve times)"
 msgstr "Разделить по курсору (оставить время)"
 
-#: subs_edit_ctrl.cpp:962
+#: subs_edit_ctrl.cpp:973
 msgid "Split at cursor (estimate times)"
 msgstr "Разделить по курсору (пересчитать время)"
 
 #: subs_grid.cpp:118
 msgid "Line Number"
 msgstr "Номер события"
+
+#: subs_grid.cpp:120
+#: subs_grid.cpp:1514
+msgid "Start"
+msgstr "Начало"
+
+#: subs_grid.cpp:121
+#: subs_grid.cpp:1516
+msgid "End"
+msgstr "Конец"
 
 #: subs_grid.cpp:151
 msgid "&Insert (before)"
@@ -5078,81 +5070,185 @@ msgstr "вставку"
 msgid "delete"
 msgstr "удаление"
 
-#: subs_grid.cpp:1149
+#: subs_grid.cpp:1150
 msgid "adjoin"
 msgstr "объединение"
 
-#: subs_grid.cpp:1319
+#: subs_grid.cpp:1320
 msgid "split"
 msgstr "разбиение"
 
-#: subs_grid.cpp:1435
+#: subs_grid.cpp:1436
 msgid "timing"
 msgstr "тайминг"
+
+#: subs_grid.cpp:1510
+msgid "#"
+msgstr "№"
+
+#: subs_grid.cpp:1512
+msgid "L"
+msgstr "С"
 
 #: subtitles_provider_libass.cpp:113
 msgid "Please wait, caching fonts..."
 msgstr "Пожалуйста подождите, кешировние шрифтов..."
 
-#: subtitle_format.cpp:273
+#: subtitle_format.cpp:275
 msgid "All Supported Formats"
 msgstr "Все поддерживаемые форматы"
 
-#: subtitle_format.cpp:297
+#: subtitle_format.cpp:299
 msgid "15.000 FPS"
 msgstr "15.000 кадр/с"
 
-#: subtitle_format.cpp:298
+#: subtitle_format.cpp:300
 msgid "23.976 FPS (Decimated NTSC)"
 msgstr "23.976 кадр/с (Прорежённый NTSC)"
 
-#: subtitle_format.cpp:299
+#: subtitle_format.cpp:301
 msgid "24.000 FPS (FILM)"
 msgstr "24.000 кадр/с (FILM)"
 
-#: subtitle_format.cpp:300
+#: subtitle_format.cpp:302
 msgid "25.000 FPS (PAL)"
 msgstr "25.000 кадр/с (PAL)"
 
-#: subtitle_format.cpp:301
+#: subtitle_format.cpp:303
 msgid "29.970 FPS (NTSC)"
 msgstr "29.970 кадр/с (NTSC)"
 
-#: subtitle_format.cpp:303
+#: subtitle_format.cpp:305
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
 msgstr "29.970 кадр/с (NTSC с SMPTE пропуском кадров)"
 
-#: subtitle_format.cpp:304
+#: subtitle_format.cpp:306
 msgid "30.000 FPS"
 msgstr "30.000 кадр/с"
 
-#: subtitle_format.cpp:305
+#: subtitle_format.cpp:307
 msgid "50.000 FPS (PAL x2)"
 msgstr "50.000 кадр/с (PAL x2)"
 
-#: subtitle_format.cpp:306
+#: subtitle_format.cpp:308
 msgid "59.940 FPS (NTSC x2)"
 msgstr "59.940 кадр/с (NTSC x2)"
 
-#: subtitle_format.cpp:307
+#: subtitle_format.cpp:309
 msgid "60.000 FPS"
 msgstr "60.000 кадр/с"
 
-#: subtitle_format.cpp:308
+#: subtitle_format.cpp:310
 msgid "119.880 FPS (NTSC x4)"
 msgstr "119.880 кадр/с (NTSC x4)"
 
-#: subtitle_format.cpp:309
+#: subtitle_format.cpp:311
 msgid "120.000 FPS"
 msgstr "120.000 кадр/с"
 
-#: subtitle_format.cpp:312
+#: subtitle_format.cpp:314
 msgid "Please choose the appropriate FPS for the subtitles:"
 msgstr "Пожалуйста, выберите частоту кадров для субтитров:"
 
-#: subtitle_format.cpp:312
+#: subtitle_format.cpp:314
 msgid "FPS"
 msgstr "кард/с"
+
+#: subtitle_format_ebu3264.cpp:305
+msgid "Time code offset in incorrect format. Ensure it is entered as four groups of two digits separated by colons."
+msgstr "Неверный формат сдвига временных меток. Убедитесь, что он состоит из четырёх групп, разделённых двоеточиями, по две цифры каждая."
+
+#: subtitle_format_ebu3264.cpp:305
+msgid "EBU STL export"
+msgstr "Экспорт EBU STL"
+
+#: subtitle_format_ebu3264.cpp:1179
+msgid "Export to EBU STL format"
+msgstr "Экспорт в формат EBU STL"
+
+#: subtitle_format_ebu3264.cpp:1182
+msgid "23.976 fps (non-standard, STL24.01)"
+msgstr "23.976 кадр/с (не входит в стандарт, STL24.01)"
+
+#: subtitle_format_ebu3264.cpp:1183
+msgid "24 fps (non-standard, STL24.01)"
+msgstr "24 кадр/с (не входит в стандарт, STL24.01)"
+
+#: subtitle_format_ebu3264.cpp:1184
+msgid "25 fps (STL25.01)"
+msgstr "25 кадр/с (STL25.01)"
+
+#: subtitle_format_ebu3264.cpp:1185
+msgid "29.97 fps (non-dropframe, STL30.01)"
+msgstr "29.97 кадр/с (без пропуска кадров, STL24.01)"
+
+#: subtitle_format_ebu3264.cpp:1186
+msgid "29.97 fps (dropframe, STL30.01)"
+msgstr "29.97 кадр/с (с пропуском кадров, STL24.01)"
+
+#: subtitle_format_ebu3264.cpp:1187
+msgid "30 fps (STL30.01)"
+msgstr "30 кадр/с (STL30.01)"
+
+#: subtitle_format_ebu3264.cpp:1189
+msgid "TV standard"
+msgstr "ТВ стандарт"
+
+#: subtitle_format_ebu3264.cpp:1191
+msgid "Time codes"
+msgstr "Временные метки"
+
+#: subtitle_format_ebu3264.cpp:1193
+msgid "Out-times are inclusive"
+msgstr "Охватывающие метки окончания"
+
+#: subtitle_format_ebu3264.cpp:1196
+msgid "ISO 6937-2 (Latin/Western Europe)"
+msgstr "ISO 6937-2 (Восточная Европа)"
+
+#: subtitle_format_ebu3264.cpp:1197
+msgid "ISO 8859-5 (Cyrillic)"
+msgstr "ISO 8859-5 (Кириллица)"
+
+#: subtitle_format_ebu3264.cpp:1198
+msgid "ISO 8859-6 (Arabic)"
+msgstr "ISO 8859-6 (Арабская)"
+
+#: subtitle_format_ebu3264.cpp:1199
+msgid "ISO 8859-7 (Greek)"
+msgstr "ISO 8859-7 (Греческая)"
+
+#: subtitle_format_ebu3264.cpp:1200
+msgid "ISO 8859-8 (Hebrew)"
+msgstr "ISO 8859-8 (Иврит)"
+
+#: subtitle_format_ebu3264.cpp:1201
+msgid "UTF-8 Unicode (non-standard)"
+msgstr "UTF-8 Юникод (не входит в стандарт)"
+
+#: subtitle_format_ebu3264.cpp:1203
+msgid "Text encoding"
+msgstr "Кодировка текста"
+
+#: subtitle_format_ebu3264.cpp:1205
+msgid "Text formatting"
+msgstr "Форматирование текста"
+
+#: subtitle_format_ebu3264.cpp:1207
+msgid "Automatic wrapping"
+msgstr "Автоматический перенос"
+
+#: subtitle_format_ebu3264.cpp:1208
+msgid "Translate alignments"
+msgstr "Преобразовать выравнивания"
+
+#: subtitle_format_ebu3264.cpp:1215
+msgid "Max. line length:"
+msgstr "Макс. длинна строки:"
+
+#: subtitle_format_ebu3264.cpp:1219
+msgid "Time code offset:"
+msgstr "Сдвиг временных меток:"
 
 #: subtitle_format_prs.cpp:145
 msgid "Exporting PRS"
@@ -5263,23 +5359,23 @@ msgstr "Мометальное отображение изменений"
 msgid "Open the manual page for Visual Typesetting."
 msgstr "Открыть документацию по средствам визуального оформления"
 
-#: video_display.cpp:478
+#: video_display.cpp:496
 msgid "Save PNG snapshot"
 msgstr "Сохранить кадр в PNG "
 
-#: video_display.cpp:479
+#: video_display.cpp:497
 msgid "Copy image to Clipboard"
 msgstr "Копировать кадр в буфер обмена"
 
-#: video_display.cpp:481
+#: video_display.cpp:499
 msgid "Save PNG snapshot (no subtitles)"
 msgstr "Сохранить кадр в PNG (без субтитров)"
 
-#: video_display.cpp:482
+#: video_display.cpp:500
 msgid "Copy image to Clipboard (no subtitles)"
 msgstr "Копировать кадр в буфер обмена (без субтитров)"
 
-#: video_display.cpp:484
+#: video_display.cpp:502
 msgid "Copy coordinates to Clipboard"
 msgstr "Копировать координаты в буфер обмена"
 
@@ -5294,13 +5390,11 @@ msgstr "Временные метки уже загружены. Хотите з
 
 #: video_provider_avs.cpp:289
 #: video_provider_dshow.cpp:311
-#: video_provider_ffmpegsource.cpp:269
-#: video_provider_lavc.cpp:149
+#: video_provider_ffmpegsource.cpp:270
 msgid "Replace timecodes?"
 msgstr "Заменить временные метки?"
 
-#: video_provider_ffmpegsource.cpp:269
-#: video_provider_lavc.cpp:149
+#: video_provider_ffmpegsource.cpp:270
 msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
 msgstr "Временные метки уже загружены. Хотите заменить их на метки из видеофайла?"
 
@@ -5372,6 +5466,12 @@ msgstr "От руки сглажено"
 #: visual_tool_vector_clip.cpp:79
 msgid "Draws a smoothed freehand shape."
 msgstr "Рисовать сглаженный контур от руки"
+
+#~ msgid "Load keyframes"
+#~ msgstr "Загрузить ключкадры"
+
+#~ msgid "Reading keyframes from video"
+#~ msgstr "Чтение ключкадров из файла"
 
 #~ msgid "Show Splash Screen"
 #~ msgstr "Показывать заставку при запуске программы"
