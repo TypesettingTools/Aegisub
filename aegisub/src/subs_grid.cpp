@@ -193,10 +193,8 @@ void SubtitlesGrid::OnPopupMenu(bool alternate, const wxPoint &pos) {
 		menu.Append(MENU_AUDIOCLIP,_("Create audio clip"),_("Create an audio clip of the selected line"))->Enable(state);
 		menu.AppendSeparator();
 
-
-		// Copy/cut/paste
-		menu.Append(MENU_COPY,_("&Copy"),_("Copies selected lines to clipboard"));
 		menu.Append(MENU_CUT,_("C&ut"),_("Cuts selected lines to clipboard"));
+		menu.Append(MENU_COPY,_("&Copy"),_("Copies selected lines to clipboard"));
 		menu.Append(MENU_PASTE,_("&Paste"),_("Paste lines from clipboard"));
 		menu.AppendSeparator();
 
