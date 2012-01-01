@@ -541,7 +541,7 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 		// don't bother trying with anything else if this works
 		return provider;
 	}
-	catch (const wxChar *msg) {
+	catch (const wxChar *) {
 		provider = 0;
 	}
 
@@ -550,7 +550,7 @@ AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 		provider = new Wave64AudioProvider(filename);
 		return provider;
 	}
-	catch (const wxChar *msg) {
+	catch (const wxChar *) {
 		provider = 0;
 	}
 
