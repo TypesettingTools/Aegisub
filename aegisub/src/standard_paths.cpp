@@ -57,26 +57,12 @@ StandardPaths::StandardPaths() {
    static_cast<wxStandardPaths&>(paths).SetInstallPrefix(wxT(INSTALL_PREFIX));
 #endif
 
-	// Get paths
-#ifdef __WINDOWS__
-	wxString dataDir = paths.GetDataDir();
-	wxString userDir = paths.GetUserDataDir();
-#elif defined(__APPLE__)
-	wxString dataDir = paths.GetDataDir();
-	wxString userDir = paths.GetUserDataDir() + "-" + AEGISUB_VERSION_DATA;
-#else
-	wxString dataDir = paths.GetDataDir() + "/" + AEGISUB_VERSION_DATA;
-	wxString userDir = paths.GetUserConfigDir() + "/.aegisub-" + AEGISUB_VERSION_DATA;
-#endif
-	wxString tempDir = paths.GetTempDir();
-
-	// Set paths
-	DoSetPathValue("?data", dataDir);
-	DoSetPathValue("?user", userDir);
-	DoSetPathValue("?temp", tempDir);
+	DoSetPathValue("?data", paths.GetDataDir());
+	DoSetPathValue("?user", paths.GetUserDataDir());
+	DoSetPathValue("?temp", paths.GetTempDir());
 
 	// Create paths if they don't exist
-	wxFileName folder(userDir + "/");
+	wxFileName folder(paths.GetUserDataDir() + "/");
 	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
 }
 
