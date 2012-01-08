@@ -59,11 +59,14 @@ StandardPaths::StandardPaths() {
 
 	DoSetPathValue("?data", paths.GetDataDir());
 	DoSetPathValue("?user", paths.GetUserDataDir());
+	DoSetPathValue("?local", paths.GetUserLocalDataDir());
 	DoSetPathValue("?temp", paths.GetTempDir());
 
 	// Create paths if they don't exist
-	wxFileName folder(paths.GetUserDataDir() + "/");
-	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+	if (!wxDirExists(paths.GetUserDataDir()))
+		wxMkDir(paths.GetUserDataDir(), 0777);
+	if (!wxDirExists(paths.GetUserLocalDataDir()))
+		wxMkDir(paths.GetUserLocalDataDir(), 0777);
 }
 
 wxString StandardPaths::DoDecodePath(wxString path) {

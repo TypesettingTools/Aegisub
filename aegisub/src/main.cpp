@@ -184,6 +184,7 @@ bool AegisubApp::OnInit() {
 		if (OPT_GET("App/Local Config")->GetBool()) {
 			// Local config, make ?user mean ?data so all user settings are placed in install dir
 			StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
+			StandardPaths::SetPathValue("?local", StandardPaths::DecodePath("?data"));
 			config::opt->SetConfigPath(conf_local);
 		}
 	} catch (agi::acs::AcsError const&) {

@@ -227,7 +227,7 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
 
 	// Generate the filename
 	unsigned int *md5 = (unsigned int*) digest;
-	wxString result = wxString::Format("?user/ffms2cache/%08X%08X%08X%08X.ffindex",md5[0],md5[1],md5[2],md5[3]);
+	wxString result = wxString::Format("?local/ffms2cache/%08X%08X%08X%08X.ffindex",md5[0],md5[1],md5[2],md5[3]);
 	result = StandardPaths::DecodePath(result);
 
 	// Ensure that folder exists
@@ -284,7 +284,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 		return (wxThread::ExitCode)1;
 	}
 
-	wxString cachedirname = StandardPaths::DecodePath("?user/ffms2cache/");
+	wxString cachedirname = StandardPaths::DecodePath("?local/ffms2cache/");
 	wxDir cachedir;
 	if (!cachedir.Open(cachedirname)) {
 		LOG_D("provider/ffmpegsource/cache") << "couldn't open cache directory " << STD_STR(cachedirname);
