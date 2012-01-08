@@ -152,19 +152,6 @@ bool AegisubApp::OnInit() {
 	emit_stdout->Enable();
 #endif
 
-	std::string path(agi::Path::Config());
-	config::path = new agi::Path(path.append("path.json"), GET_DEFAULT_CONFIG(default_path));
-
-
-	// Init commands.
-	cmd::init_builtin_commands();
-
-	// Init hotkeys
-	hotkey::init();
-
-	// Init icons.
-	icon::icon_init();
-
 	// Set config file
 	StartupLog("Load configuration");
 #ifdef __WXMSW__
@@ -196,6 +183,18 @@ bool AegisubApp::OnInit() {
 	catch (agi::Exception const& err) {
 		wxMessageBox("Configuration file is invalid. Error reported:\n" + lagi_wxString(err.GetMessage()), "Error");
 	}
+
+	std::string path(agi::Path::Config());
+	config::path = new agi::Path(path.append("path.json"), GET_DEFAULT_CONFIG(default_path));
+
+	// Init commands.
+	cmd::init_builtin_commands();
+
+	// Init hotkeys
+	hotkey::init();
+
+	// Init icons.
+	icon::icon_init();
 
 	StartupLog("Load MRU");
 	config::mru = new agi::MRUManager(STD_STR(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru));
