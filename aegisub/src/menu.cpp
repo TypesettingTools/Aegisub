@@ -184,7 +184,7 @@ public:
 
 		wxString menu_text = text.empty() ?
 			get_menu_text(co, context) :
-			lagi_wxString(text) + "\t" + hotkey::get_hotkey_str_first("Default", co->name());
+			_(lagi_wxString(text)) + "\t" + hotkey::get_hotkey_str_first("Default", co->name());
 
 		wxMenuItem *item = new wxMenuItem(parent, MENU_ID_BASE + items.size(), menu_text, co->StrHelp(), kind);
 #ifndef __WXMAC__
