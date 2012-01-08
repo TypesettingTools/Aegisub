@@ -38,14 +38,14 @@
 #include <wx/dialog.h>
 #endif
 
-#include <libaegisub/log.h>
-#include <libaegisub/scoped_ptr.h>
+namespace agi { namespace log { class Emitter; } }
 
 class LogWindow: public wxDialog {
-	agi::scoped_ptr<agi::log::Emitter> emit_log;
+	agi::log::Emitter *emit_log;
 
 public:
 	/// @brief Constructor
 	/// @param parent Parent frame.
 	LogWindow(wxWindow *parent);
+	~LogWindow();
 };

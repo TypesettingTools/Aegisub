@@ -49,6 +49,8 @@
 #include <wx/textctrl.h>
 #endif
 
+#include <libaegisub/log.h>
+
 class EmitLog : public agi::log::Emitter {
 	wxTextCtrl *text_ctrl;
 public:
@@ -73,7 +75,7 @@ public:
 			sm->file,
 			sm->func,
 			sm->line,
-			std::string(sm->message, sm->len));
+			wxString::FromUTF8(sm->message, sm->len));
 #else
 		wxString log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm->severity],
@@ -82,7 +84,7 @@ public:
 			sm->file,
 			sm->func,
 			sm->line,
-			std::string(sm->message, sm->len));
+			wxString::FromUTF8(sm->message, sm->len));
 #endif
 		text_ctrl->AppendText(log);
 	}
@@ -99,8 +101,11 @@ LogWindow::LogWindow(wxWindow *parent)
 	sizer->Add(new wxButton(this, wxID_OK), wxSizerFlags(0).Border().Right());
 	SetSizerAndFit(sizer);
 
-	emit_log.reset(new EmitLog(text_ctrl));
-	emit_log->Enable();
+	agi::log::log->Subscribe(emit_log = new EmitLog(text_ctrl));
 
 	Bind(wxEVT_CLOSE_WINDOW, std::tr1::bind(&wxDialog::Destroy, this));
+}
+
+LogWindow::~LogWindow() {
+	agi::log::log->Unsubscribe(emit_log);
 }

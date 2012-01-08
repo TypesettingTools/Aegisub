@@ -44,6 +44,8 @@
 
 #include "command.h"
 
+#include <libaegisub/log.h>
+
 #include "../include/aegisub/context.h"
 #include "../main.h"
 
