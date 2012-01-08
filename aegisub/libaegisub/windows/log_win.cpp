@@ -28,6 +28,8 @@
 #endif
 
 #include "libaegisub/log.h"
+
+#include "libaegisub/charset_conv_win.h"
 #include "libaegisub/util.h"
 
 namespace agi {
@@ -51,7 +53,7 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->func,
 		sm->len,
 		sm->message);
-	OutputDebugStringA(buff);
+	OutputDebugStringW(charset::ConvertW(buff).c_str());
 }
 	} // namespace log
 } // namespace agi
