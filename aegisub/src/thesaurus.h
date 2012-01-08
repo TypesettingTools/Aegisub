@@ -1,4 +1,4 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,6 @@
 /// @ingroup thesaurus
 ///
 
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <vector>
 
@@ -44,50 +41,40 @@
 #include <wx/string.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signal.h>
 
-/// DOCME
-/// @class ThesaurusEntry
-/// @brief DOCME
-///
-/// DOCME
-class ThesaurusEntry {
-public:
+namespace agi { class Thesaurus; }
 
-	/// DOCME
-	wxString name;
-
-	/// DOCME
-	wxArrayString words;
-};
-
-
-
-/// DOCME
-typedef std::vector<ThesaurusEntry> ThesaurusEntryArray;
-
-
-
-/// DOCME
 /// @class Thesaurus
-/// @brief DOCME
-///
-/// DOCME
+/// @brief A wrapper around agi::Thesarus adding wx and Aegisub-specific stuff
 class Thesaurus {
+	/// The actual thesarus implementation
+	agi::scoped_ptr<agi::Thesaurus> impl;
+	/// A cached list of languages available
+	mutable wxArrayString languages;
+
+	/// Thesaurus language change slot
+	agi::signal::Connection lang_listener;
+	/// Thesaurus language change handler
+	void OnLanguageChanged();
+
+	/// Thesaurus path change slot
+	agi::signal::Connection dict_path_listener;
+	/// Thesaurus path change handler
+	void OnPathChanged();
 public:
-	static Thesaurus *GetThesaurus();
+	/// A pair of a word and synonyms for that word
+	typedef std::pair<std::string, std::vector<std::string> > Entry;
 
+	Thesaurus();
+	~Thesaurus();
 
-	/// @brief DOCME
-	///
-	Thesaurus() {}
+	/// Get a list of synonyms for a word, grouped by possible meanings of the word
+	/// @param word Word to get synonyms for
+	/// @param[out] result Output list
+	void Lookup(wxString const& word, std::vector<Entry> *result);
 
-	/// @brief DOCME
-	///
-	virtual ~Thesaurus() {}
-
-	virtual void Lookup(wxString word,ThesaurusEntryArray &result)=0;
-	virtual wxArrayString GetLanguageList()=0;
-	virtual void SetLanguage(wxString language)=0;
+	/// Get a list of language codes which thesauri are available for
+	wxArrayString GetLanguageList() const;
 };
-
-

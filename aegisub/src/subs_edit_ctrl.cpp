@@ -79,7 +79,7 @@ enum {
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, SubtitlesGrid *grid)
 : ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
-, thesaurus(Thesaurus::GetThesaurus())
+, thesaurus(new Thesaurus)
 , grid(grid)
 {
 	// Set properties
@@ -795,14 +795,15 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	// Thesaurus
 	if (thesaurus.get() && currentWord.Length()) {
 		// Get results
-		ThesaurusEntryArray result;
-		thesaurus->Lookup(currentWord,result);
+		std::vector<Thesaurus::Entry> result;
+		thesaurus->Lookup(currentWord,&result);
 
 		// Compile list
-		thesSugs.Clear();
-		for (unsigned int i=0;i<result.size();i++) {
-			for (unsigned int j=0;j<result[i].words.Count();j++) {
-				thesSugs.Add(result[i].words[j]);
+		thesSugs.clear();
+		thesSugs.reserve(result.size() * 5);
+		for (size_t i = 0; i < result.size(); ++i) {
+			for (size_t j = 0; j < result[i].second.size(); ++j) {
+				thesSugs.push_back(result[i].second[j]);
 			}
 		}
 
@@ -815,10 +816,10 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 
 			// Build menu
 			int curThesEntry = 0;
-			for (unsigned int i=0;i<result.size();i++) {
+			for (size_t i=0;i<result.size();i++) {
 				// Single word, insert directly
-				if (result[i].words.Count() == 1) {
-					thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].name);
+				if (result[i].second.size() == 1) {
+					thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,lagi_wxString(result[i].first));
 					curThesEntry++;
 				}
 
@@ -826,13 +827,13 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 				else {
 					// Insert entries
 					wxMenu *subMenu = new wxMenu();
-					for (unsigned int j=0;j<result[i].words.Count();j++) {
-						subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,result[i].words[j]);
+					for (size_t j=0;j<result[i].second.size();j++) {
+						subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,lagi_wxString(result[i].second[j]));
 						curThesEntry++;
 					}
 
 					// Insert submenu
-					thesMenu->Append(-1, result[i].name, subMenu);
+					thesMenu->Append(-1, lagi_wxString(result[i].first), subMenu);
 				}
 			}
 
@@ -911,7 +912,7 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	wxString suggestion;
 	int sugIdx = event.GetId() - EDIT_MENU_THESAURUS_SUGS;
 	if (sugIdx >= 0) {
-		suggestion = thesSugs[sugIdx];
+		suggestion = lagi_wxString(thesSugs[sugIdx]);
 	}
 	else {
 		suggestion = sugs[event.GetId() - EDIT_MENU_SUGGESTIONS];
@@ -953,10 +954,9 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 
 	// Set language
 	int index = event.GetId() - EDIT_MENU_THES_LANGS - 1;
-	if (index >= 0) {
-		thesaurus->SetLanguage(langs[index]);
-		OPT_SET("Tool/Thesaurus/Language")->SetString(STD_STR(langs[index]));
-	}
+	wxString lang;
+	if (index >= 0) lang = langs[index];
+	OPT_SET("Tool/Thesaurus/Language")->SetString(STD_STR(lang));
 
 	UpdateStyle();
 }

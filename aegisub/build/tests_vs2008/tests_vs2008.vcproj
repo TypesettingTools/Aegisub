@@ -335,6 +335,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\tests\libaegisub_thesaurus.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\tests\libaegisub_util.cpp"
 			>
 		</File>

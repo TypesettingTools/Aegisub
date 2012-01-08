@@ -27,6 +27,7 @@ SRC = \
 		libaegisub_option.cpp \
 		libaegisub_mru.cpp \
 		libaegisub_signals.cpp \
+		libaegisub_thesaurus.cpp \
 		libaegisub_util.cpp \
 		libaegisub_vfr.cpp
 		

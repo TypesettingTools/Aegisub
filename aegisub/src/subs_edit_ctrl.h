@@ -67,7 +67,7 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	wxArrayString sugs;
 
 	/// DOCME
-	wxArrayString thesSugs;
+	std::vector<std::string> thesSugs;
 
 	/// DOCME
 	int currentWordPos;

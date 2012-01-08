@@ -856,14 +856,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\mythes.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\mythes.hxx"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\pen.cpp"
 				>
 			</File>
@@ -1421,14 +1413,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\thesaurus.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\thesaurus_myspell.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\thesaurus_myspell.h"
 				>
 			</File>
 		</Filter>

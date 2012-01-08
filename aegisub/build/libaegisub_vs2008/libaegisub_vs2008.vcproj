@@ -312,6 +312,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\common\thesaurus.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\common\util.cpp"
 				>
 			</File>
@@ -475,6 +479,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\signal.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\thesaurus.h"
 				>
 			</File>
 			<File

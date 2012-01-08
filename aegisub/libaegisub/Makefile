@@ -35,6 +35,7 @@ SRC = \
 	common/keyframe.cpp \
 	common/util.cpp \
 	common/log.cpp \
+	common/thesaurus.cpp \
 	common/validator.cpp \
 	common/vfr.cpp \
 	unix/util.cpp \
