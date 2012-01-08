@@ -281,12 +281,12 @@ struct video_details : public validator_video_loaded {
 	}
 };
 
-/// 
+/// Toggle focus between the video slider and other things
 struct video_focus_seek : public validator_video_loaded {
 	CMD_NAME("video/focus_seek")
-	STR_MENU("XXX: no idea")
-	STR_DISP("XXX: no idea")
-	STR_HELP("XXX: no idea")
+	STR_MENU("Toggle video slider focus")
+	STR_DISP("Toggle video slider focus")
+	STR_HELP("Toggle focus between the video slider and other things")
 
 	void operator()(agi::Context *c) {
 		wxWindow *curFocus = wxWindow::FindFocus();
