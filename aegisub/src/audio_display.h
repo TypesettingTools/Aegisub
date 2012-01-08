@@ -184,6 +184,32 @@ class AudioDisplay: public wxWindow {
 	/// @param sample_end Last sample to repaint
 	void Redraw(int64_t sample_start, int64_t sample_end);
 
+	/// Paint the audio data for a range of samples
+	/// @param dc DC to paint to
+	/// @param updsamples Sample range to repaint
+	/// @param updrect Pixel range to repaint
+	void PaintAudio(wxDC &dc, SampleRange updsamples, wxRect updrect);
+
+	/// Paint the markers in a range of samples
+	/// @param dc DC to paint to
+	/// @param updsamples Sample range to repaint
+	void PaintMarkers(wxDC &dc, SampleRange updsamples);
+
+	/// Draw a single foot for a marker
+	/// @param dc DC to paint to
+	/// @param marker_x Position of the marker whose foot is being painted in pixels
+	/// @param dir -1 for left, 1 for right
+	void PaintFoot(wxDC &dc, int marker_x, int dir);
+
+	/// Paint the labels in a range of samples
+	/// @param dc DC to paint to
+	/// @param updsamples Sample range to repaint
+	void PaintLabels(wxDC &dc, SampleRange updsamples);
+
+	/// Paint the track cursor
+	/// @param dc DC to paint to
+	void PaintTrackCursor(wxDC &dc);
+
 	/// wxWidgets paint event
 	void OnPaint(wxPaintEvent &event);
 	/// wxWidgets mouse input event
