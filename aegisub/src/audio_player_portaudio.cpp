@@ -50,26 +50,18 @@
 // Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG
 
-// Init reference counter
-int PortAudioPlayer::pa_refcount = 0;
-
 PortAudioPlayer::PortAudioPlayer() {
-	// Initialize portaudio
-	if (!pa_refcount) {
-		PaError err = Pa_Initialize();
+	PaError err = Pa_Initialize();
 
-		if (err != paNoError)
-			throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err));
-	}
-	pa_refcount++;
+	if (err != paNoError)
+		throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err));
 
 	volume = 1.0f;
 	pa_start = 0.0;
 }
 
 PortAudioPlayer::~PortAudioPlayer() {
-	// Deinit portaudio
-	if (!--pa_refcount) Pa_Terminate();
+	Pa_Terminate();
 }
 
 void PortAudioPlayer::OpenStream() {

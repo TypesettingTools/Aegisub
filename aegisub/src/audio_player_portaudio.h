@@ -51,9 +51,6 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(PortAudioError, agi::Exception, "audio/player/po
 /// @brief PortAudio Player
 ///
 class PortAudioPlayer : public AudioPlayer {
-	/// PortAudio initilisation reference counter
-	static int pa_refcount;
-
 	float volume;    ///< Current volume level
 	int64_t current; ///< Current position
 	int64_t start;   ///< Start position
