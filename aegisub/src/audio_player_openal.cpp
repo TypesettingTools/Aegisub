@@ -233,7 +233,7 @@ void OpenALPlayer::Notify()
 
 	LOG_D("player/audio/openal") << "frames played=" << (buffers_played - num_buffers) * decode_buffer.size() / bpf << " num frames=" << end_frame - start_frame;
 	// Check that all of the selected audio plus one full set of buffers has been queued
-	if ((int64_t)(buffers_played - num_buffers) * decode_buffer.size() > (end_frame - start_frame) * bpf) {
+	if ((buffers_played - num_buffers) * (int64_t)decode_buffer.size() > (end_frame - start_frame) * bpf) {
 		Stop(true);
 	}
 }
