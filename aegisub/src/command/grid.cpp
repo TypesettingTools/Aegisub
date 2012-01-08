@@ -93,10 +93,10 @@ struct grid_tag_cycle_hiding : public Command {
 		tagMode = (tagMode+1)%3;
 
 		// Show on status bar
-		wxString message = _("ASS Override Tag mode set to ");
-		if (tagMode == 0) message += _("show full tags.");
-		if (tagMode == 1) message += _("simplify tags.");
-		if (tagMode == 2) message += _("hide tags.");
+		wxString message;
+		if (tagMode == 0) message = _("ASS Override Tag mode set to show full tags.");
+		if (tagMode == 1) message = _("ASS Override Tag mode set to simplify tags.");
+		if (tagMode == 2) message = _("ASS Override Tag mode set to hide tags.");
 		wxGetApp().frame->StatusTimeout(message,10000);
 
 		// Set option

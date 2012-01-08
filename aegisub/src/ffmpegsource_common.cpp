@@ -141,19 +141,16 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Index
 int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &TrackList, FFMS_TrackType Type) {
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
-	wxString TypeName = "";
-	if (Type == FFMS_TYPE_VIDEO)
-		TypeName = _("video");
-	else if (Type == FFMS_TYPE_AUDIO)
-		TypeName = _("audio");
 	
 	for (std::map<int,wxString>::const_iterator i = TrackList.begin(); i != TrackList.end(); i++) {
 		Choices.Add(wxString::Format(_("Track %02d: %s"), i->first, i->second));
 		TrackNumbers.push_back(i->first);
 	}
 	
-	int Choice = wxGetSingleChoiceIndex(wxString::Format(_("Multiple %s tracks detected, please choose the one you wish to load:"), TypeName),
-		wxString::Format(_("Choose %s track"), TypeName), Choices);
+	int Choice = wxGetSingleChoiceIndex(
+		Type == FFMS_TYPE_VIDEO ? _("Multiple video tracks detected, please choose the one you wish to load:") : _("Multiple audio tracks detected, please choose the one you wish to load:"),
+		Type == FFMS_TYPE_VIDEO ? _("Choose video track") : _("Choose audio track"),
+		Choices);
 
 	if (Choice < 0)
 		return Choice;
