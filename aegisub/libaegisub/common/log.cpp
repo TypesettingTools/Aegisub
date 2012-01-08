@@ -110,10 +110,10 @@ LogSink::~LogSink() {
 void LogSink::log(SinkMessage *sm) {
 	sink.push_back(sm);
 
-	std::for_each(
+	for_each(
 		emitters.begin(),
 		emitters.end(),
-		std::bind2nd(std::mem_fun(&Emitter::log), sm));
+		bind2nd(std::mem_fun(&Emitter::log), sm));
 }
 
 void LogSink::Subscribe(Emitter *em) {
@@ -122,8 +122,9 @@ void LogSink::Subscribe(Emitter *em) {
 }
 
 void LogSink::Unsubscribe(Emitter *em) {
-	emitters.erase(std::remove(emitters.begin(), emitters.end(), em), emitters.end());
-	LOG_D("agi/log/emitter/unsubscribe") << "Un-Ssubscribe: " << this;
+	emitters.erase(remove(emitters.begin(), emitters.end(), em), emitters.end());
+	delete em;
+	LOG_D("agi/log/emitter/unsubscribe") << "Un-Subscribe: " << this;
 }
 
 Message::Message(const char *section,
@@ -145,22 +146,6 @@ Message::~Message() {
 	sm->len = (size_t)msg.pcount();
 	agi::log::log->log(sm);
 }
-
-Emitter::Emitter() {
-}
-
-Emitter::~Emitter() {
-	Disable();
-}
-
-void Emitter::Enable() {
-	agi::log::log->Subscribe(this);
-}
-
-void Emitter::Disable() {
-	agi::log::log->Unsubscribe(this);
-}
-
 
 	} // namespace log
 } // namespace agi

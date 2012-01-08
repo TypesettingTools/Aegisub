@@ -107,7 +107,7 @@ class LogSink {
 	/// Log sink
 	Sink sink;
 
-	/// List of function pointers to emitters
+	/// List of pointers to emitters
 	std::vector<Emitter*> emitters;
 
 	/// Init time for log writing purposes.
@@ -115,7 +115,6 @@ class LogSink {
 
 	/// Directory to place logfiles.
 	const std::string dir_log;
-
 
 public:
 	/// Constructor
@@ -128,12 +127,14 @@ public:
 	/// Insert a message into the sink.
 	void log(SinkMessage *sm);
 
-	/// @brief Subscribe an emitter.
+	/// @brief Subscribe an emitter
 	/// @param em Emitter to add
+	///
+	/// LogSink takes ownership of the passed emitter
 	void Subscribe(Emitter *em);
 
-	/// @brief Unsubscribe an emitter.
-	/// @param em Emitter to remove
+	/// @brief Unsubscribe and delete an emitter
+	/// @param em Emitter to delete
 	void Unsubscribe(Emitter *em);
 
 	/// @brief @get the complete (current) log.
@@ -144,22 +145,12 @@ public:
 /// An emitter to produce human readable output for a log sink.
 class Emitter {
 public:
-	/// Constructor
-	Emitter();
-
 	/// Destructor
-	virtual ~Emitter();
-
-	/// Enable (subscribe)
-	void Enable();
-
-	/// Disable (unsubscribe)
-	void Disable();
+	virtual ~Emitter() { }
 
 	/// Accept a single log entry
 	virtual void log(SinkMessage *sm)=0;
 };
-
 
 /// Generates a message and submits it to the log sink.
 class Message {

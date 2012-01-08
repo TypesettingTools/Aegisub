@@ -146,10 +146,8 @@ bool AegisubApp::OnInit() {
 	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
 	agi::log::log = new agi::log::LogSink(STD_STR(path_log));
 
-
 #ifdef _DEBUG
-	emit_stdout = new agi::log::EmitSTDOUT();
-	emit_stdout->Enable();
+	agi::log::log->Subscribe(new agi::log::EmitSTDOUT());
 #endif
 
 	// Set config file
@@ -304,10 +302,6 @@ int AegisubApp::OnExit() {
 	delete global_scripts;
 
 	AssExportFilterChain::Clear();
-
-#ifdef _DEBUG
-	delete emit_stdout;
-#endif
 
 	// Keep this last!
 	delete agi::log::log;

@@ -54,13 +54,6 @@
 
 class FrameMain;
 class PluginManager;
-#ifdef _DEBUG
-namespace agi {
-	namespace log {
-		class EmitSTDOUT;
-	}
-}
-#endif
 
 /// For holding all configuration-related objects and values.
 namespace config {
@@ -99,11 +92,6 @@ namespace Automation4 { class AutoloadScriptManager; }
 class AegisubApp: public wxApp {
 	/// DOCME
 	PluginManager *plugins;
-
-#ifdef _DEBUG
-	/// stdout log emitter
-	agi::log::EmitSTDOUT *emit_stdout;
-#endif
 
 	bool OnInit();
 	int OnExit();
