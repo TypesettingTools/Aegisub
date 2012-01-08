@@ -237,7 +237,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 void VideoContext::Reload() {
 	if (IsLoaded()) {
 		int frame = frame_n;
-		SetVideo(videoFile);
+		SetVideo(videoFile.Clone());
 		JumpToFrame(frame);
 	}
 }
