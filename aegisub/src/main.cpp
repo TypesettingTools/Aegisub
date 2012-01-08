@@ -446,16 +446,16 @@ void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 
 	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
 
-		wxString dst = wxString::Format("%03i - 0x%08X: ",frame.GetLevel(),frame.GetAddress()) + frame.GetName();
+		wxString dst = wxString::Format("%03u - %p: ", (unsigned)frame.GetLevel(),frame.GetAddress()) + frame.GetName();
 		if (frame.HasSourceLocation())
-			dst = wxString::Format("%s on %s:%d", dst, frame.GetFileName(), frame.GetLine());
+			dst = wxString::Format("%s on %s:%u", dst, frame.GetFileName(), (unsigned)frame.GetLine());
 
 		crash_text->Write(wxString::Format("%s\n", dst));
 
-		crash_xml->Write(wxString::Format("    <frame id='%i' loc='%X'>\n", frame.GetLevel(), frame.GetAddress()));
+		crash_xml->Write(wxString::Format("    <frame id='%u' loc='%p'>\n", (int)frame.GetLevel(), frame.GetAddress()));
 		crash_xml->Write(wxString::Format("      <name>%s</name>\n", frame.GetName()));
 		if (frame.HasSourceLocation())
-			crash_xml->Write(wxString::Format("      <file line='%d'>%s</file>\n", frame.GetLine(), frame.GetFileName()));
+			crash_xml->Write(wxString::Format("      <file line='%u'>%s</file>\n", (unsigned)frame.GetLine(), frame.GetFileName()));
 		crash_xml->Write(wxString::Format("      <module><![CDATA[%s]]></module>\n", frame.GetModule()));
 		crash_xml->Write(                 "    </frame>\n");
 	}
