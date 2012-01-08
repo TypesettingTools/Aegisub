@@ -245,7 +245,8 @@ struct subtitle_new : public Command {
 	STR_HELP("New subtitles.")
 
 	void operator()(agi::Context *c) {
-		c->ass->LoadDefault();
+		if (wxGetApp().frame->TryToCloseSubs() != wxCANCEL)
+			c->ass->LoadDefault();
 	}
 };
 

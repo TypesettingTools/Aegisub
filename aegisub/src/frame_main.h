@@ -104,10 +104,6 @@ class FrameMain: public wxFrame {
 	void OnStatusClear(wxTimerEvent &event);
 	void OnCloseWindow (wxCloseEvent &event);
 
-	/// Close the currently open subs, asking the user if they want to save if there are unsaved changes
-	/// @param enableCancel Should the user be able to cancel the close?
-	int TryToCloseSubs(bool enableCancel=true);
-
 	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);
 	void OnAudioClose();
@@ -141,6 +137,10 @@ public:
 
 	bool IsVideoShown() const { return showVideo; }
 	bool IsAudioShown() const { return showAudio; }
+
+	/// Close the currently open subs, asking the user if they want to save if there are unsaved changes
+	/// @param enableCancel Should the user be able to cancel the close?
+	int TryToCloseSubs(bool enableCancel=true);
 
 	void LoadSubtitles(wxString filename,wxString charset="");
 
