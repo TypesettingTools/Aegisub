@@ -187,9 +187,4 @@ void Options::Flush() {
 	json::Writer::Write(obj_out, io::Save(config_file).Get());
 }
 
-void Options::SetConfigPath(std::string const& new_path) {
-	config_file = new_path;
-	Flush();
-}
-
 } // namespace agi

@@ -79,9 +79,9 @@
 #include <libaegisub/scoped_ptr.h>
 
 namespace config {
-	agi::Options *opt;
-	agi::MRUManager *mru;
-	agi::Path *path;
+	agi::Options *opt = 0;
+	agi::MRUManager *mru = 0;
+	agi::Path *path = 0;
 }
 
 
@@ -167,30 +167,29 @@ bool AegisubApp::OnInit() {
 
 	// Set config file
 	StartupLog("Load configuration");
-	try {
-		config::opt = new agi::Options(STD_STR(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
-	} catch (agi::Exception& e) {
-		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
-	}
-
 #ifdef __WXMSW__
 	// Try loading configuration from the install dir if one exists there
 	try {
 		std::string conf_local(STD_STR(StandardPaths::DecodePath("?data/config.json")));
 		agi::scoped_ptr<std::istream> localConfig(agi::io::Open(conf_local));
-		config::opt->ConfigNext(*localConfig);
+		config::opt = new agi::Options(conf_local, GET_DEFAULT_CONFIG(default_config));
 
-		if (OPT_GET("App/Local Config")->GetBool()) {
-			// Local config, make ?user mean ?data so all user settings are placed in install dir
-			StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
-			StandardPaths::SetPathValue("?local", StandardPaths::DecodePath("?data"));
-			config::opt->SetConfigPath(conf_local);
-		}
+		// Local config, make ?user mean ?data so all user settings are placed in install dir
+		StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
+		StandardPaths::SetPathValue("?local", StandardPaths::DecodePath("?data"));
 	} catch (agi::acs::AcsError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
 	}
 #endif
+
+	try {
+		if (!config::opt)
+			config::opt = new agi::Options(STD_STR(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
+	} catch (agi::Exception& e) {
+		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
+	}
+
 	try {
 		config::opt->ConfigUser();
 	}
