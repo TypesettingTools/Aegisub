@@ -464,6 +464,21 @@ AC_SUBST(with_auto4_lua)
 AC_SUBST(LUA_CFLAGS)
 AC_SUBST(LUA_LIBS)
 
+######################################################
+# Debugging support
+######################################################
+AC_MSG_CHECKING([whether to turn on debugging])
+AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug],[enable debugging [no]]))
+AC_MSG_RESULT([${enable_debug:=no}])
+
+AC_MSG_CHECKING([whether to use exception handling in debug mode])
+AC_ARG_ENABLE(debug-exceptions, AS_HELP_STRING([--enable-debug-exceptions],[enable exception handling in debug mode [no]]))
+AC_MSG_RESULT([${enabled_debug_exceptions:=no}])
+
+AS_IF([test x$enable_debug_exceptions = xyes],
+      [AC_DEFINE(WITH_EXCEPTIONS, 1,
+       [Enable exception handling in debug mode. (--enable-debug)  This is always enabled when debug mode is off.])])
+
 ################
 # Widget support
 ################
@@ -498,6 +513,13 @@ int main(void) {
 AS_IF([test x$with_agi_cv_wxopengl = xno], AC_MSG_FAILURE([wxWidgets OpenGL support missing]))
 AS_IF([test x$with_agi_cv_wxstc = xno], AC_MSG_FAILURE([wxWidgets StyledTextCtrl support missing]))
 
+# This turns on some internal (to aegisub) debugging features.
+# A debug version of wxWidgets is required.
+AS_IF([test x$enable_debug = xyes],
+      [PACKAGE_DEBUG="-debug"
+       AS_IF([$WX_CONFIG_PATH --debug],[AC_CXX_FLAG([-D_DEBUG])])])
+
+AC_SUBST(PACKAGE_DEBUG)
 
 ############################
 # Precompiled Header Support
@@ -507,30 +529,6 @@ AC_MSG_CHECKING([whether to use precompiled headers])
 AC_ARG_ENABLE(gcc-prec, AS_HELP_STRING([--disable-gcc-prec],[disable GCC precompiled headers]))
 AC_MSG_RESULT([${enable_gcc_prec:=no}])
 AC_SUBST(enable_gcc_prec)
-
-
-######################################################
-# Debugging support
-######################################################
-AC_MSG_CHECKING([whether to turn on debugging])
-AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug],[enable debugging [no]]))
-AC_MSG_RESULT([${enable_debug:=no}])
-
-# This turns on some internal (to aegisub) debugging features.
-# A debug version of wxWidgets is required.
-AS_IF([test x$enable_debug = xyes],
-      [PACKAGE_DEBUG="-debug"
-       AS_IF([$WX_CONFIG_PATH --debug],[AC_CXX_FLAG([-D_DEBUG])])])
-
-AC_SUBST(PACKAGE_DEBUG)
-
-AC_MSG_CHECKING([whether to use exception handling in debug mode])
-AC_ARG_ENABLE(debug-exceptions, AS_HELP_STRING([--enable-debug-exceptions],[enable exception handling in debug mode [no]]))
-AC_MSG_RESULT([${enabled_debug_exceptions:=no}])
-
-AS_IF([test x$enable_debug_exceptions = xyes],
-      [AC_DEFINE(WITH_EXCEPTIONS, 1,
-       [Enable exception handling in debug mode. (--enable-debug)  This is always enabled when debug mode is off.])])
 
 ###########
 # Profiling
