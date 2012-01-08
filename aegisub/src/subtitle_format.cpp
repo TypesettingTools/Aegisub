@@ -104,8 +104,8 @@ void SubtitleFormat::LoadDefault(bool defline) {
 	assFile->LoadDefault(defline);
 }
 
-void SubtitleFormat::AddLine(wxString data, wxString group, int &version, wxString *outgroup) {
-	assFile->AddLine(data, group, version, outgroup);
+void SubtitleFormat::AddLine(wxString data, int *version, AssAttachment **attach) {
+	assFile->AddLine(data, version, attach);
 }
 
 /// @brief Ask the user to enter the FPS 

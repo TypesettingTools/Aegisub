@@ -159,13 +159,12 @@ public:
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
 	void SetScriptInfo(wxString const& key, wxString const& value);
 	// Add a ";" comment in the [Script Info] section
-	void AddComment(const wxString comment);
+	void AddComment(wxString comment);
 	/// @brief Add a line to the file
 	/// @param data Full text of ASS line
-	/// @param group Section of the file to add the line to
-	/// @param[out] version ASS version the line was parsed as
-	/// @param[out] outGroup Group it was actually added to; attachments do something strange here
-	void AddLine(wxString data,wxString group,int &version,wxString *outGroup=NULL);
+	/// @param[in,out] version ASS version the line was parsed as
+	/// @param[in,out] attach Accumulator for attachment parsing
+	void AddLine(wxString data, int *version, AssAttachment **attach);
 
 	/// Type of changes made in a commit
 	enum CommitType {

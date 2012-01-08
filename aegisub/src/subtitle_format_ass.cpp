@@ -69,45 +69,12 @@ void ASSSubtitleFormat::ReadFile(wxString const& filename, wxString const& encod
 
 	TextFileReader file(filename, encoding);
 	int version = filename.Right(4).Lower() != ".ssa";
+	AssAttachment *attach = 0;
 
-	wxString curgroup;
 	while (file.HasMoreLines()) {
 		wxString line = file.ReadLineFromFile();
-
-		// Make sure that the first non-blank non-comment non-group-header line
-		// is really [Script Info]
-		if (curgroup.empty() && !line.empty() && line[0] != ';' && line[0] != '[') {
-			curgroup = "[Script Info]";
-			AddLine(curgroup, curgroup, version, &curgroup);
-		}
-
-		// Convert v4 styles to v4+ styles
-		if (!line.empty() && line[0] == '[') {
-			// Ugly hacks to allow intermixed v4 and v4+ style sections
-			wxString low = line.Lower();
-			if (low == "[v4 styles]") {
-				line = "[V4+ Styles]";
-				curgroup = line;
-				version = 0;
-			}
-			else if (low == "[v4+ styles]") {
-				line = "[V4+ Styles]";
-				curgroup = line;
-				version = 1;
-			}
-			else if (low == "[v4++ styles]") {
-				line = "[V4+ Styles]";
-				curgroup = line;
-				version = 2;
-			}
-			// Not-so-special case for other groups, just set it
-			else {
-				curgroup = line;
-			}
-		}
-
 		try {
-			AddLine(line, curgroup, version, &curgroup);
+			AddLine(line, &version, &attach);
 		}
 		catch (const char *err) {
 			Clear();

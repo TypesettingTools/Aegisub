@@ -45,8 +45,9 @@
 
 #include <libaegisub/exception.h>
 
-class AssFile;
+class AssAttachment;
 class AssEntry;
+class AssFile;
 class FractionalTime;
 
 /// DOCME
@@ -102,9 +103,10 @@ protected:
 
 	AssFile *GetAssFile() { return assFile; }
 	/// Add a line to the output file
-	/// @param data Line data
-	/// @param group File section
-	void AddLine(wxString data,wxString group,int &version,wxString *outgroup=NULL);
+	/// @param data Full text of ASS line
+	/// @param[in,out] version ASS version the line was parsed as
+	/// @param[in,out] attach Accumulator for attachment parsing
+	void AddLine(wxString data, int *version, AssAttachment **attach);
 	/// Prompt the user for a framerate to use
 	/// @param showSMPTE Include SMPTE as an option?
 	FractionalTime AskForFPS(bool showSMPTE=false);

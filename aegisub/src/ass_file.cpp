@@ -273,90 +273,92 @@ bool AssFile::CanSave() {
 	return true;
 }
 
-// I strongly advice you against touching this function unless you know what you're doing;
-// even moving things out of order might break ASS parsing - AMZ.
-void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGroup) {
+void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {
+	// Is this line an attachment filename?
+	bool isFilename = data.StartsWith("fontname: ") || data.StartsWith("filename: ");
+
+	// If there's an attachment in progress, deal with it first as an
+	// attachment data line can appear to be other things
+	if (*attach) {
+		// Check if it's valid data
+		bool validData = data.size() > 0 && data.size() <= 80;
+		for (size_t i = 0; i < data.size(); ++i) {
+			if (data[i] < 33 || data[i] >= 97) {
+				validData = false;
+				break;
+			}
+		}
+
+		// Data is over, add attachment to the file
+		if (!validData || isFilename) {
+			(*attach)->Finish();
+			Line.push_back(*attach);
+			*attach = NULL;
+		}
+		else {
+			// Insert data
+			(*attach)->AddData(data);
+
+			// Done building
+			if (data.Length() < 80) {
+				(*attach)->Finish();
+				Line.push_back(*attach);
+				*attach = NULL;
+				return;
+			}
+		}
+	}
+
 	if (data.empty()) return;
 
-	// Group
-	wxString origGroup = group;
-	static wxString keepGroup;
-	if (!keepGroup.empty()) group = keepGroup;
-	if (outGroup) *outGroup = group;
+	// Section header
+	if (data[0] == '[' && data.Last() == ']') {
+		// Ugly hacks to allow intermixed v4 and v4+ style sections
+		wxString low = data.Lower();
+		if (low == "[v4 styles]") {
+			data = "[V4+ Styles]";
+			*version = 0;
+		}
+		else if (low == "[v4+ styles]") {
+			data = "[V4+ Styles]";
+			*version = 1;
+		}
+		else if (low == "[v4++ styles]") {
+			data = "[V4+ Styles]";
+			*version = 2;
+		}
+
+		Line.push_back(new AssEntry(data, data));
+		return;
+	}
+
+	// If the first nonblank line isn't a header pretend it starts with [Script Info]
+	if (Line.empty())
+		Line.push_back(new AssEntry("[Script Info]", "[Script Info]"));
+
+	wxString group = Line.back()->group;
 	wxString lowGroup = group.Lower();
 
 	// Attachment
 	if (lowGroup == "[fonts]" || lowGroup == "[graphics]") {
-		// Check if it's valid data
-		size_t dataLen = data.Length();
-		bool validData = (dataLen > 0) && (dataLen <= 80);
-		for (size_t i=0;i<dataLen;i++) {
-			if (data[i] < 33 || data[i] >= 97) validData = false;
-		}
-
-		// Is the filename line?
-		bool isFilename = (data.StartsWith("fontname: ") || data.StartsWith("filename: "));
-
-		// The attachment file is static, since it is built through several calls to this
-		// After it's done building, it's reset to NULL
-		static AssAttachment *attach = NULL;
-
-		// Attachment exists, and data is over
-		if (attach && (!validData || isFilename)) {
-			attach->Finish();
-			keepGroup.Clear();
-			group = origGroup;
-			lowGroup = group.Lower();
-			Line.push_back(attach);
-			attach = NULL;
-		}
-
-		// Create attachment if needed
 		if (isFilename) {
-			attach = new AssAttachment(data.Mid(10));
-			attach->group = group;
-			keepGroup = group;
-			return;
-		}
-
-		// Valid data?
-		if (attach && validData) {
-			// Insert data
-			attach->AddData(data);
-
-			// Done building
-			if (data.Length() < 80) {
-				attach->Finish();
-				keepGroup.Clear();
-				group = origGroup;
-				lowGroup = group.Lower();
-				Line.push_back(attach);
-				attach = NULL;
-			}
-
-			// Not done
-			else {
-				return;
-			}
+			*attach = new AssAttachment(data.Mid(10));
+			(*attach)->group = group;
 		}
 	}
 	// Dialogue
 	else if (lowGroup == "[events]") {
 		if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))
-			Line.push_back(new AssDialogue(data,version));
+			Line.push_back(new AssDialogue(data, *version));
 		else if (data.StartsWith("Format:"))
 			Line.push_back(new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", group));
-		else
-			Line.push_back(new AssEntry(data, group));
 	}
 	// Style
 	else if (lowGroup == "[v4+ styles]") {
 		if (data.StartsWith("Style:"))
-			Line.push_back(new AssStyle(data,version));
+			Line.push_back(new AssStyle(data, *version));
 		else if (data.StartsWith("Format:"))
 			Line.push_back(new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", group));
-		else
-			Line.push_back(new AssEntry(data, group));
 	}
 	// Script info
 	else if (lowGroup == "[script info]") {
@@ -367,20 +369,21 @@ void AssFile::AddLine(wxString data,wxString group,int &version,wxString *outGro
 			return;
 		}
 
-		// Version
 		if (data.StartsWith("ScriptType:")) {
-			wxString versionString = data.Mid(11);
-			versionString.Trim(true);
-			versionString.Trim(false);
-			versionString.MakeLower();
+			wxString versionString = data.Mid(11).Trim(true).Trim(false).Lower();
 			int trueVersion;
-			if (versionString == "v4.00") trueVersion = 0;
-			else if (versionString == "v4.00+") trueVersion = 1;
-			else if (versionString == "v4.00++") trueVersion = 2;
-			else throw "Unknown SSA file format version";
-			if (trueVersion != version) {
-				if (!(trueVersion == 2 && version == 1)) wxLogMessage("Warning: File has the wrong extension.");
-				version = trueVersion;
+			if (versionString == "v4.00")
+				trueVersion = 0;
+			else if (versionString == "v4.00+")
+				trueVersion = 1;
+			else if (versionString == "v4.00++")
+				trueVersion = 2;
+			else throw
+				"Unknown SSA file format version";
+			if (trueVersion != *version) {
+				if (!(trueVersion == 2 && *version == 1))
+					wxLogMessage("Warning: File has the wrong extension.");
+				*version = trueVersion;
 			}
 		}
 
@@ -407,30 +410,26 @@ void AssFile::LoadDefault(bool defline) {
 	Clear();
 
 	// Write headers
-	AssStyle defstyle;
+	AssAttachment *attach = 0;
 	int version = 1;
-	AddLine("[Script Info]","[Script Info]",version);
-	AddLine("Title: Default Aegisub file","[Script Info]",version);
-	AddLine("ScriptType: v4.00+","[Script Info]",version);
-	AddLine("WrapStyle: 0", "[Script Info]",version);
-	AddLine("ScaledBorderAndShadow: yes","[Script Info]",version);
-	AddLine("Collisions: Normal","[Script Info]",version);
+	AddLine("[Script Info]", &version, &attach);
+	AddLine("Title: Default Aegisub file", &version, &attach);
+	AddLine("ScriptType: v4.00+", &version, &attach);
+	AddLine("WrapStyle: 0", &version, &attach);
+	AddLine("ScaledBorderAndShadow: yes", &version, &attach);
+	AddLine("Collisions: Normal", &version, &attach);
 	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
-		AddLine(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()),"[Script Info]",version);
-		AddLine(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()),"[Script Info]",version);
+		AddLine(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()), &version, &attach);
+		AddLine(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()), &version, &attach);
 	}
-	AddLine("","[Script Info]",version);
-	AddLine("[V4+ Styles]","[V4+ Styles]",version);
-	AddLine("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding","[V4+ Styles]",version);
-	AddLine(defstyle.GetEntryData(),"[V4+ Styles]",version);
-	AddLine("","[V4+ Styles]",version);
-	AddLine("[Events]","[Events]",version);
-	AddLine("Format:  Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text","[Events]",version);
+	AddLine("[V4+ Styles]", &version, &attach);
+	AddLine("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", &version, &attach);
+	AddLine(AssStyle().GetEntryData(), &version, &attach);
+	AddLine("[Events]", &version, &attach);
+	AddLine("Format:  Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", &version, &attach);
 
-	if (defline) {
-		AssDialogue def;
-		AddLine(def.GetEntryData(),"[Events]",version);
-	}
+	if (defline)
+		AddLine(AssDialogue().GetEntryData(), &version, &attach);
 
 	Commit("", COMMIT_NEW);
 	savedCommitId = commitId;
@@ -460,102 +459,50 @@ AssFile& AssFile::operator=(AssFile from) {
 	return *this;
 }
 
-void AssFile::InsertStyle (AssStyle *style) {
-	using std::list;
-	AssEntry *curEntry;
-	list<AssEntry*>::iterator lastStyle = Line.end();
-	list<AssEntry*>::iterator cur;
-	wxString lastGroup;
-
-	// Look for insert position
-	for (cur=Line.begin();cur!=Line.end();cur++) {
-		curEntry = *cur;
-		if (curEntry->GetType() == ENTRY_STYLE || (lastGroup == "[V4+ Styles]" && curEntry->GetEntryData().substr(0,7) == "Format:")) {
-			lastStyle = cur;
+void AssFile::InsertStyle(AssStyle *style) {
+	// Search for insertion point
+	std::list<AssEntry*>::iterator it = Line.end();
+	do {
+		--it;
+		if ((*it)->group == style->group) {
+			Line.insert(++it, style);
+			return;
 		}
-		lastGroup = curEntry->group;
-	}
+	} while (it != Line.begin());
 
 	// No styles found, add them
-	if (lastStyle == Line.end()) {
-		// Add space
-		curEntry = new AssEntry("");
-		curEntry->group = lastGroup;
-		Line.push_back(curEntry);
-
-		// Add header
-		curEntry = new AssEntry("[V4+ Styles]");
-		curEntry->group = "[V4+ Styles]";
-		Line.push_back(curEntry);
-
-		// Add format line
-		curEntry = new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding");
-		curEntry->group = "[V4+ Styles]";
-		Line.push_back(curEntry);
-
-		// Add style
-		style->group = "[V4+ Styles]";
-		Line.push_back(style);
-	}
-
-	// Add to end of list
-	else {
-		lastStyle++;
-		style->group = (*lastStyle)->group;
-		Line.insert(lastStyle,style);
-	}
+	Line.push_back(new AssEntry("[V4+ Styles]", "[V4+ Styles]"));
+	Line.push_back(new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", "[V4+ Styles]"));
+	Line.push_back(style);
 }
 
-void AssFile::InsertAttachment (AssAttachment *attach) {
+void AssFile::InsertAttachment(AssAttachment *attach) {
 	// Search for insertion point
-	std::list<AssEntry*>::iterator insPoint=Line.end(),cur;
-	for (cur=Line.begin();cur!=Line.end();cur++) {
-		// Check if it's another attachment
-		AssAttachment *att = dynamic_cast<AssAttachment*>(*cur);
-		if (att) {
-			if (attach->group == att->group) insPoint = cur;
+	std::list<AssEntry*>::iterator it = Line.end();
+	do {
+		--it;
+		if ((*it)->group == attach->group) {
+			Line.insert(++it, attach);
+			return;
 		}
+	} while (it != Line.begin());
 
-		// See if it's the start of group
-		else if ((*cur)->GetType() == ENTRY_BASE) {
-			AssEntry *entry = (AssEntry*) (*cur);
-			if (entry->GetEntryData() == attach->group) insPoint = cur;
-		}
-	}
-
-	// Found point, insert there
-	if (insPoint != Line.end()) {
-		insPoint++;
-		Line.insert(insPoint,attach);
-	}
-
-	// Otherwise, create the [Fonts] group and insert
-	else {
-		int version=1;
-		AddLine("",Line.back()->group,version);
-		AddLine(attach->group,attach->group,version);
-		Line.push_back(attach);
-		AddLine("",attach->group,version);
-	}
+	// Didn't find a group of the appropriate type so create it
+	Line.push_back(new AssEntry(attach->group, attach->group));
+	Line.push_back(attach);
 }
 
 void AssFile::InsertAttachment (wxString filename) {
-	wxFileName fname(filename);
-	AssAttachment *newAttach = new AssAttachment(fname.GetFullName());
-
-	try {
-		newAttach->Import(filename);
-	}
-	catch (...) {
-		delete newAttach;
-		throw;
-	}
+	std::auto_ptr<AssAttachment> newAttach(new AssAttachment(wxFileName(filename).GetFullName()));
+	newAttach->Import(filename);
 
 	// Insert
 	wxString ext = filename.Right(4).Lower();
-	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb") newAttach->group = "[Fonts]";
-	else newAttach->group = "[Graphics]";
-	InsertAttachment(newAttach);
+	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb")
+		newAttach->group = "[Fonts]";
+	else
+		newAttach->group = "[Graphics]";
+	InsertAttachment(newAttach.release());
 }
 
 wxString AssFile::GetScriptInfo(wxString key) {
@@ -638,22 +585,18 @@ void AssFile::GetResolution(int &sw,int &sh) {
 	}
 }
 
-void AssFile::AddComment(const wxString _comment) {
-	wxString comment = "; ";
-	comment += _comment;
-	std::list<AssEntry*>::iterator cur;
+void AssFile::AddComment(wxString comment) {
+	comment.Prepend("; ");
 	int step = 0;
 
-	for (cur=Line.begin();cur!=Line.end();cur++) {
+	for (std::list<AssEntry*>::iterator cur = Line.begin(); cur != Line.end(); ++cur) {
 		// Start of group
-		if (step == 0 && (*cur)->group == "[Script Info]") step = 1;
+		if (step == 0 && (*cur)->group == "[Script Info]")
+			step = 1;
 
 		// First line after a ;
 		else if (step == 1 && !(*cur)->GetEntryData().StartsWith(";")) {
-			AssEntry *prev = *cur;
-			AssEntry *comm = new AssEntry(comment);
-			comm->group = prev->group;
-			Line.insert(cur,comm);
+			Line.insert(cur, new AssEntry(comment, "[Script Info]"));
 			break;
 		}
 	}
@@ -661,12 +604,9 @@ void AssFile::AddComment(const wxString _comment) {
 
 wxArrayString AssFile::GetStyles() {
 	wxArrayString styles;
-	AssStyle *curstyle;
-	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
-		curstyle = dynamic_cast<AssStyle*>(*cur);
-		if (curstyle) {
+	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
+		if (AssStyle *curstyle = dynamic_cast<AssStyle*>(*cur))
 			styles.Add(curstyle->name);
-		}
 	}
 	return styles;
 }

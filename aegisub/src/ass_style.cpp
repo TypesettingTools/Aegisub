@@ -173,35 +173,6 @@ AssStyle::AssStyle()
 	UpdateData();
 }
 
-AssStyle::AssStyle(const AssStyle& s)
-: AssEntry(s)
-, name(s.name)
-, font(s.font)
-, fontsize(s.fontsize)
-, primary(s.primary)
-, secondary(s.secondary)
-, outline(s.outline)
-, shadow(s.shadow)
-, bold(s.bold)
-, italic(s.italic)
-, underline(s.underline)
-, strikeout(s.strikeout)
-, scalex(s.scalex)
-, scaley(s.scaley)
-, spacing(s.spacing)
-, angle(s.angle)
-, borderstyle(s.borderstyle)
-, outline_w(s.outline_w)
-, shadow_w(s.shadow_w)
-, alignment(s.alignment)
-, encoding(s.encoding)
-, relativeTo(s.relativeTo)
-{
-	group = "[V4+ Styles]";
-	memcpy(Margin, s.Margin, sizeof(Margin));
-	SetEntryData(s.GetEntryData());
-}
-
 static wxString get_next_string(wxStringTokenizer &tok) {
 	if (!tok.HasMoreTokens()) throw "Malformed style: not enough fields";
 	return tok.GetNextToken();
@@ -222,6 +193,8 @@ static int get_next_double(wxStringTokenizer &tok) {
 }
 
 AssStyle::AssStyle(wxString rawData,int version) {
+	group = "[V4+ Styles]";
+
 	wxStringTokenizer tkn(rawData.Trim(false).Mid(6), ",", wxTOKEN_RET_EMPTY_ALL);
 
 	name = get_next_string(tkn).Trim(true).Trim(false);

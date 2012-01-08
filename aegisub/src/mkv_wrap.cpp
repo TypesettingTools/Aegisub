@@ -126,10 +126,10 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 	delete[] readBuf;
 
 	// Insert into file
-	wxString group = "[Events]";
 	int version = ssa;
+	AssAttachment *attach = 0;
 	for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
-		target->AddLine(it->second, group, version, &group);
+		target->AddLine(it->second, &version, &attach);
 	}
 }
 
@@ -196,15 +196,11 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 			wxString privString((const char *)trackInfo->CodecPrivate, wxConvUTF8, trackInfo->CodecPrivateSize);
 
 			// Load into file
-			wxString group = "[Script Info]";
-			int version = 1;
-			if (CodecID == "S_TEXT/SSA") version = 0;
-			wxStringTokenizer token(privString,"\r\n",wxTOKEN_STRTOK);
-			while (token.HasMoreTokens()) {
-				wxString next = token.GetNextToken();
-				if (next[0] == '[') group = next;
-				target->AddLine(next,group,version,&group);
-			}
+			int version = !ssa;
+			AssAttachment *attach = 0;
+			wxStringTokenizer token(privString, "\r\n", wxTOKEN_STRTOK);
+			while (token.HasMoreTokens())
+				target->AddLine(token.GetNextToken(), &version, &attach);
 		}
 		// Load default if it's SRT
 		else {
