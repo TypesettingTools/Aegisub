@@ -206,22 +206,6 @@
 //#define WITH_LIBASS
 
 
-// Enable FFmpeg video and audio decoders
-// Deprecated by the FFmpegSource library, might not compile
-// Requires: libavcodec, libavformat, libswscale, libavutil
-// If you compiled static libraries (yes, by default), uncomment the second line as well,
-// and remember to add the correct .a files to the linker's additional dependencies.
-//#define WITH_FFMPEG
-//#define WITH_STATIC_FFMPEG
-#ifdef WITH_FFMPEG
-# ifndef WITH_STATIC_FFMPEG
-#  pragma comment(lib, "avcodec-51.lib")
-#  pragma comment(lib, "avformat-51.lib")
-#  pragma comment(lib, "avutil-49.lib")
-# endif
-#endif
-
-
 // Enable Ruby support for Automation, unmaintained
 // Requires: Ruby 1.9
 //#define WITH_RUBY
