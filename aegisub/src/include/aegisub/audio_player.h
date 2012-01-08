@@ -62,8 +62,8 @@ public:
 	AudioPlayer();
 	virtual ~AudioPlayer();
 
-	virtual void OpenStream() {}
-	virtual void CloseStream() {}
+	virtual void OpenStream()=0;
+	virtual void CloseStream()=0;
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
 	virtual void Stop(bool timerToo=true)=0;			// Stop playing
