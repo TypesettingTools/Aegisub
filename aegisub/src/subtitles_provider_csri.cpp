@@ -86,7 +86,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Open from memory
 	if (canOpenMem) {
 		std::vector<char> data;
-		subs->SaveMemory(data,wxSTRING_ENCODING);
+		subs->SaveMemory(data);
 		instance.reset(csri_open_mem(renderer,&data[0],data.size(),NULL), &csri_close);
 	}
 

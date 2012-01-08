@@ -211,45 +211,20 @@ wxString AssFile::AutoSave() {
 	return dstpath.GetFullPath();
 }
 
-void AssFile::SaveMemory(std::vector<char> &dst,const wxString encoding) {
-	// Set encoding
-	wxString enc = encoding;
-	if (enc.IsEmpty()) enc = "UTF-8";
-	if (enc != "UTF-8") throw "Memory writer only supports UTF-8 for now.";
-
+void AssFile::SaveMemory(std::vector<char> &dst) {
 	// Check if subs contain at least one style
 	// Add a default style if they don't for compatibility with libass/asa
 	if (GetStyles().Count() == 0)
-		InsertStyle(new AssStyle());
+		InsertStyle(new AssStyle);
 
 	// Prepare vector
 	dst.clear();
 	dst.reserve(0x4000);
 
 	// Write file
-	entryIter cur;
-	unsigned int lineSize = 0;
-	unsigned int targetSize = 0;
-	unsigned int pos = 0;
-	wxCharBuffer buffer;
-	for (cur=Line.begin();cur!=Line.end();cur++) {
-		// Convert
-		wxString temp = (*cur)->GetEntryData() + "\r\n";
-		buffer = temp.mb_str(wxConvUTF8);
-		lineSize = strlen(buffer);
-
-		// Raise capacity if needed
-		targetSize = dst.size() + lineSize;
-		if (dst.capacity() < targetSize) {
-			unsigned int newSize = dst.capacity();
-			while (newSize < targetSize) newSize *= 2;
-			dst.reserve(newSize);
-		}
-
-		// Append line
-		pos = dst.size();
-		dst.resize(targetSize);
-		memcpy(&dst[pos],buffer,lineSize);
+	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
+		wxCharBuffer buffer = ((*cur)->GetEntryData() + "\r\n").utf8_str();
+		copy(buffer.data(), buffer.data() + buffer.length(), back_inserter(dst));
 	}
 }
 

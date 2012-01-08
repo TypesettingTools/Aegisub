@@ -161,7 +161,7 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Prepare subtitles
 	std::vector<char> data;
-	subs->SaveMemory(data,"UTF-8");
+	subs->SaveMemory(data);
 
 	// Load file
 	if (ass_track) ass_free_track(ass_track);

@@ -139,7 +139,7 @@ public:
 
 	/// @brief Save to a memory buffer. Used for subtitle providers which support it
 	/// @param[out] dst Destination vector
-	void SaveMemory(std::vector<char> &dst,const wxString encoding="");
+	void SaveMemory(std::vector<char> &dst);
 	/// Add file name to the MRU list
 	void AddToRecent(wxString file);
 	/// Can the file be saved in its current format?
