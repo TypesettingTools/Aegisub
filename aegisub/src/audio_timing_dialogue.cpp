@@ -218,7 +218,6 @@ public:
 	SampleRange GetIdealVisibleSampleRange() const;
 	SampleRange GetPrimaryPlaybackRange() const;
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
-	bool HasLabels() const { return false; }
 	void GetLabels(SampleRange const& range, std::vector<AudioLabel> &out) const { }
 	void Next();
 	void Prev();

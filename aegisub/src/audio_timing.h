@@ -81,16 +81,8 @@ public:
 	virtual SampleRange GetPrimaryPlaybackRange() const = 0;
 
 	/// @brief Get all rendering style ranges
-	/// @param[out] swpts Rendering ranges will be added to this
+	/// @param[out] ranges Rendering ranges will be added to this
 	virtual void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const = 0;
-
-	/// @brief Does this timing mode have labels on the audio display?
-	/// @return True if this timing mode needs labels on the audio display.
-	///
-	/// This is labels for things such as karaoke syllables. When labels are
-	/// required, some vertical space is set off for them in the drawing of the
-	/// audio display.
-	virtual bool HasLabels() const = 0;
 
 	/// @brief Go to next timing unit
 	/// 
