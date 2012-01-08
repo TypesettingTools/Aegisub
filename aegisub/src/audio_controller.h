@@ -365,12 +365,6 @@ public:
 	/// @param volume The new amplification factor for the audio
 	void SetVolume(double volume);
 
-
-	/// @brief Return the current audio provider
-	/// @return A const pointer to the current audio provider
-	const AudioProvider * GetAudioProvider() const { return provider; }
-
-
 	/// @brief Return the current timing controller
 	/// @return The current timing controller or 0
 	AudioTimingController * GetTimingController() const { return timing_controller.get(); }
