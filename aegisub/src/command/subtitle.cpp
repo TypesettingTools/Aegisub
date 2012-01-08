@@ -438,19 +438,6 @@ struct subtitle_spellcheck : public Command {
 		new DialogSpellChecker(c);
 	}
 };
-
-
-/// 
-struct subtitle_tags_show : public Command {
-	CMD_NAME("subtitle/tags/show")
-	STR_MENU("XXX: No idea")
-	STR_DISP("XXX: No idea")
-	STR_HELP("XXX: No idea")
-
-	void operator()(agi::Context *c) {
-//XXX: see grid.cpp:grid_tags_hide()
-	}
-};
 }
 
 /// @}
@@ -474,6 +461,5 @@ namespace cmd {
 		reg(new subtitle_select_all);
 		reg(new subtitle_select_visible);
 		reg(new subtitle_spellcheck);
-		reg(new subtitle_tags_show);
 	}
 }
