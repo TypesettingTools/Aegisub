@@ -142,9 +142,9 @@ bool AegisubApp::OnInit() {
 #endif
 
 	// logging.
-	const std::string path_log(StandardPaths::DecodePath("?user/log/"));
+	wxString path_log = StandardPaths::DecodePath("?user/log/");
 	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
-	agi::log::log = new agi::log::LogSink(path_log);
+	agi::log::log = new agi::log::LogSink(STD_STR(path_log));
 
 
 #ifdef _DEBUG
@@ -168,8 +168,7 @@ bool AegisubApp::OnInit() {
 	// Set config file
 	StartupLog("Load configuration");
 	try {
-		const std::string conf_user(StandardPaths::DecodePath("?user/config.json"));
-		config::opt = new agi::Options(conf_user, GET_DEFAULT_CONFIG(default_config));
+		config::opt = new agi::Options(STD_STR(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
 	} catch (agi::Exception& e) {
 		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
 	}
@@ -177,7 +176,7 @@ bool AegisubApp::OnInit() {
 #ifdef __WXMSW__
 	// Try loading configuration from the install dir if one exists there
 	try {
-		const std::string conf_local(StandardPaths::DecodePath("?data/config.json"));
+		std::string conf_local(STD_STR(StandardPaths::DecodePath("?data/config.json")));
 		agi::scoped_ptr<std::istream> localConfig(agi::io::Open(conf_local));
 		config::opt->ConfigNext(*localConfig);
 
@@ -200,8 +199,7 @@ bool AegisubApp::OnInit() {
 	}
 
 	StartupLog("Load MRU");
-	const std::string conf_mru(StandardPaths::DecodePath("?user/mru.json"));
-	config::mru = new agi::MRUManager(conf_mru, GET_DEFAULT_CONFIG(default_mru));
+	config::mru = new agi::MRUManager(STD_STR(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru));
 
 #ifdef __VISUALC__
 	SetThreadName((DWORD) -1,"AegiMain");
