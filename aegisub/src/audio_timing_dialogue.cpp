@@ -80,7 +80,7 @@ public:
 	int64_t GetPosition() const { return position; }
 	wxPen GetStyle() const { return style; }
 	FeetStyle GetFeet() const { return feet; }
-	bool CanSnap() const { return true; }
+	bool CanSnap() const { return false; }
 
 public:
 	// Specific interface
@@ -197,6 +197,11 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	/// @param sample New position of the marker
 	void SetMarker(AudioMarkerDialogueTiming *marker, int64_t sample);
 
+	/// Snap a position to a nearby marker, if any
+	/// @param position Position to snap
+	/// @param snap_range Maximum distance to snap in samples
+	int64_t SnapPosition(int64_t position, int64_t snap_range) const;
+
 	// SubtitleSelectionListener interface
 	void OnActiveLineChanged(AssDialogue *new_line);
 	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
@@ -220,9 +225,9 @@ public:
 	void Commit();
 	void Revert();
 	bool IsNearbyMarker(int64_t sample, int sensitivity) const;
-	AudioMarker * OnLeftClick(int64_t sample, int sensitivity);
-	AudioMarker * OnRightClick(int64_t sample, int sensitivity);
-	void OnMarkerDrag(AudioMarker *marker, int64_t new_position, bool snap, int64_t snap_range);
+	AudioMarker * OnLeftClick(int64_t sample, int sensitivity, int64_t snap_range);
+	AudioMarker * OnRightClick(int64_t sample, int sensitivity, int64_t snap_range);
+	void OnMarkerDrag(AudioMarker *marker, int64_t new_position, int64_t snap_range);
 
 public:
 	// Specific interface
@@ -481,7 +486,7 @@ bool AudioTimingControllerDialogue::IsNearbyMarker(int64_t sample, int sensitivi
 	return range.contains(active_markers[0]) || range.contains(active_markers[1]);
 }
 
-AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sensitivity)
+AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sensitivity, int64_t snap_range)
 {
 	assert(sensitivity >= 0);
 
@@ -497,7 +502,7 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sen
 	{
 		// Clicked near the left marker:
 		// Insta-move it and start dragging it
-		SetMarker(left, sample);
+		SetMarker(left, SnapPosition(sample, snap_range));
 		return left;
 	}
 
@@ -511,42 +516,22 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int64_t sample, int sen
 	// Clicked far from either marker:
 	// Insta-set the left marker to the clicked position and return the right as the dragged one,
 	// such that if the user does start dragging, he will create a new selection from scratch
-	SetMarker(left, sample);
+	SetMarker(left, SnapPosition(sample, snap_range));
 	return right;
 }
 
-AudioMarker * AudioTimingControllerDialogue::OnRightClick(int64_t sample, int sensitivity)
+AudioMarker * AudioTimingControllerDialogue::OnRightClick(int64_t sample, int sensitivity, int64_t snap_range)
 {
 	AudioMarkerDialogueTiming *right = GetRightMarker();
-	SetMarker(right, sample);
+	SetMarker(right, SnapPosition(sample, snap_range));
 	return right;
 }
 
-void AudioTimingControllerDialogue::OnMarkerDrag(AudioMarker *marker, int64_t new_position, bool snap, int64_t snap_range)
+void AudioTimingControllerDialogue::OnMarkerDrag(AudioMarker *marker, int64_t new_position, int64_t snap_range)
 {
 	assert(marker == &active_markers[0] || marker == &active_markers[1]);
 
-	if (snap)
-	{
-		SampleRange snap_sample_range(new_position - snap_range, new_position + snap_range);
-		const AudioMarker *snap_marker = 0;
-		AudioMarkerVector potential_snaps;
-		GetMarkers(snap_sample_range, potential_snaps);
-		for (AudioMarkerVector::iterator mi = potential_snaps.begin(); mi != potential_snaps.end(); ++mi)
-		{
-			if (*mi != marker && (*mi)->CanSnap())
-			{
-				if (!snap_marker)
-					snap_marker = *mi;
-				else if (tabs((*mi)->GetPosition() - new_position) < tabs(snap_marker->GetPosition() - new_position))
-					snap_marker = *mi;
-			}
-		}
-
-		if (snap_marker)
-			new_position = snap_marker->GetPosition();
-	}
-	SetMarker(static_cast<AudioMarkerDialogueTiming*>(marker), new_position);
+	SetMarker(static_cast<AudioMarkerDialogueTiming*>(marker), SnapPosition(new_position, snap_range));
 }
 
 void AudioTimingControllerDialogue::UpdateSelection()
@@ -605,4 +590,29 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		inactive_markers.clear();
 	}
 	AnnounceUpdatedStyleRanges();
+}
+
+int64_t AudioTimingControllerDialogue::SnapPosition(int64_t position, int64_t snap_range) const
+{
+	if (snap_range <= 0)
+		return position;
+
+	SampleRange snap_sample_range(position - snap_range, position + snap_range);
+	const AudioMarker *snap_marker = 0;
+	AudioMarkerVector potential_snaps;
+	GetMarkers(snap_sample_range, potential_snaps);
+	for (AudioMarkerVector::iterator mi = potential_snaps.begin(); mi != potential_snaps.end(); ++mi)
+	{
+		if ((*mi)->CanSnap())
+		{
+			if (!snap_marker)
+				snap_marker = *mi;
+			else if (tabs((*mi)->GetPosition() - position) < tabs(snap_marker->GetPosition() - position))
+				snap_marker = *mi;
+		}
+	}
+
+	if (snap_marker)
+		return snap_marker->GetPosition();
+	return position;
 }

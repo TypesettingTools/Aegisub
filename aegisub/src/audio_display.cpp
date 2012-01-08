@@ -511,8 +511,7 @@ public:
 			timing_controller->OnMarkerDrag(
 				marker,
 				display->SamplesFromRelativeX(event.GetPosition().x),
-				default_snap != event.ShiftDown(),
-				display->SamplesFromAbsoluteX(snap_range));
+				default_snap != event.ShiftDown() ? display->SamplesFromAbsoluteX(snap_range) : 0);
 		}
 
 		// We lose the marker drag if the button used to initiate it goes up
@@ -1128,6 +1127,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	AudioTimingController *timing = controller->GetTimingController();
 	if (!timing) return;
 	int drag_sensitivity = pixel_samples * OPT_GET("Audio/Start Drag Sensitivity")->GetInt();
+	int snap_sensitivity = OPT_GET("Audio/Snap/Enable")->GetBool() != event.ShiftDown() ? pixel_samples * OPT_GET("Audio/Snap/Distance")->GetInt() : 0;
 
 	// Not scrollbar, not timeline, no button action
 	if (event.Moving())
@@ -1144,8 +1144,8 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	{
 		int64_t samplepos = SamplesFromRelativeX(mousepos.x);
 		AudioMarker *marker = event.LeftDown() ?
-			timing->OnLeftClick(samplepos, drag_sensitivity) :
-			timing->OnRightClick(samplepos, drag_sensitivity);
+			timing->OnLeftClick(samplepos, drag_sensitivity, snap_sensitivity) :
+			timing->OnRightClick(samplepos, drag_sensitivity, snap_sensitivity);
 
 		if (marker)
 		{

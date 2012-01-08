@@ -130,9 +130,9 @@ public:
 	void Commit();
 	void Revert();
 	bool IsNearbyMarker(int64_t sample, int sensitivity) const;
-	AudioMarker * OnLeftClick(int64_t sample, int sensitivity);
-	AudioMarker * OnRightClick(int64_t sample, int sensitivity) { return 0; }
-	void OnMarkerDrag(AudioMarker *marker, int64_t new_position, bool, int64_t);
+	AudioMarker * OnLeftClick(int64_t sample, int sensitivity, int64_t);
+	AudioMarker * OnRightClick(int64_t, int, int64_t) { return 0; }
+	void OnMarkerDrag(AudioMarker *marker, int64_t new_position, int64_t);
 
 	AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
 };
@@ -284,7 +284,7 @@ bool AudioTimingControllerKaraoke::IsNearbyMarker(int64_t sample, int sensitivit
 	return false;
 }
 
-AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int64_t sample, int sensitivity) {
+AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int64_t sample, int sensitivity, int64_t) {
 	SampleRange range(sample - sensitivity, sample + sensitivity);
 
 	size_t syl = distance(markers.begin(), lower_bound(markers.begin(), markers.end(), sample));
@@ -301,7 +301,7 @@ AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int64_t sample, int sensi
 	return 0;
 }
 
-void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_position, bool, int64_t) {
+void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_position, int64_t) {
 	KaraokeMarker *marker = static_cast<KaraokeMarker*>(m);
 	// No rearranging of syllables allowed
 	new_position = mid(

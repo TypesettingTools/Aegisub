@@ -125,25 +125,26 @@ public:
 	/// @brief The user pressed the left button down at an empty place in the audio
 	/// @param sample      The audio sample index the user clicked
 	/// @param sensitivity Distance in samples to consider existing markers
+	/// @param snap_range  Maximum snapping range in samples
 	/// @return An audio marker or 0. If a marker is returned and the user
 	/// starts dragging the mouse after pressing down the button, the returned
 	/// marker is being dragged.
-	virtual AudioMarker * OnLeftClick(int64_t sample, int sensitivity) = 0;
+	virtual AudioMarker * OnLeftClick(int64_t sample, int sensitivity, int64_t snap_range) = 0;
 
 	/// @brief The user pressed the right button down at an empty place in the audio
 	/// @param sample      The audio sample index the user clicked
 	/// @param sensitivity Distance in samples to consider existing markers
+	/// @param snap_range  Maximum snapping range in samples
 	/// @return An audio marker or 0. If a marker is returned and the user
 	/// starts dragging the mouse after pressing down the button, the returned
 	/// marker is being dragged.
-	virtual AudioMarker * OnRightClick(int64_t sample, int sensitivity) = 0;
+	virtual AudioMarker * OnRightClick(int64_t sample, int sensitivity, int64_t snap_range) = 0;
 
 	/// @brief The user dragged a timing marker
 	/// @param marker       The marker being dragged
 	/// @param new_position Sample position the marker was dragged to
-	/// @param snap         Enable snapping to other markers
 	/// @param snap_range   Maximum snapping range in samples
-	virtual void OnMarkerDrag(AudioMarker *marker, int64_t new_position, bool snap, int64_t snap_range) = 0;
+	virtual void OnMarkerDrag(AudioMarker *marker, int64_t new_position, int64_t snap_range) = 0;
 
 	/// @brief Destructor
 	virtual ~AudioTimingController() { }
