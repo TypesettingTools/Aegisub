@@ -43,10 +43,15 @@
 #include <libaegisub/log.h>
 
 #include "audio_player_oss.h"
-#include "frame_main.h"
+
+#include "audio_controller.h"
 #include "compat.h"
+#include "include/aegisub/audio_provider.h"
 #include "main.h"
 #include "utils.h"
+
+DEFINE_SIMPLE_EXCEPTION(OSSError, agi::AudioPlayerOpenError, "audio/player/open/oss")
+
 
 /// @brief Constructor 
 ///
@@ -81,7 +86,7 @@ void OSSPlayer::OpenStream()
     wxString device = lagi_wxString(OPT_GET("Audio/OSS/Device")->GetString());
     dspdev = ::open(device.mb_str(wxConvUTF8), O_WRONLY, 0);
     if (dspdev < 0) {
-        throw OSSError("OSS player: opening device failed");
+        throw OSSError("OSS player: opening device failed", 0);
     }
 
     // Use a reasonable buffer policy for low latency (OSS4)
@@ -93,7 +98,7 @@ void OSSPlayer::OpenStream()
     // Set number of channels
     int channels = provider->GetChannels();
     if (ioctl(dspdev, SNDCTL_DSP_CHANNELS, &channels) < 0) {
-        throw OSSError("OSS player: setting channels failed");
+        throw OSSError("OSS player: setting channels failed", 0);
     }
 
     // Set sample format
@@ -106,17 +111,17 @@ void OSSPlayer::OpenStream()
             sample_format = AFMT_S16_LE;
             break;
         default:
-            throw OSSError("OSS player: can only handle 8 and 16 bit sound");
+            throw OSSError("OSS player: can only handle 8 and 16 bit sound", 0);
     }
 
     if (ioctl(dspdev, SNDCTL_DSP_SETFMT, &sample_format) < 0) {
-        throw OSSError("OSS player: setting sample format failed");
+        throw OSSError("OSS player: setting sample format failed", 0);
     }
 
     // Set sample rate
     rate = provider->GetSampleRate();
     if (ioctl(dspdev, SNDCTL_DSP_SPEED, &rate) < 0) {
-        throw OSSError("OSS player: setting samplerate failed");
+        throw OSSError("OSS player: setting samplerate failed", 0);
     }
 
     // Now ready

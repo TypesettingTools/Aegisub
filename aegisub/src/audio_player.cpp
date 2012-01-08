@@ -55,6 +55,8 @@
 #ifdef WITH_LIBPULSE
 #include "audio_player_pulse.h"
 #endif
+
+#include "audio_controller.h"
 #include "compat.h"
 #include "main.h"
 
@@ -70,38 +72,20 @@ AudioPlayer::~AudioPlayer() {
 	CloseStream();
 }
 
-/// @brief Ask to stop later 
-void AudioPlayer::RequestStop() {
-	wxCommandEvent event(wxEVT_STOP_AUDIO, 1000);
-	event.SetEventObject(this);
-	AddPendingEvent(event); // thread safe
-}
-
-DEFINE_EVENT_TYPE(wxEVT_STOP_AUDIO)
-
-BEGIN_EVENT_TABLE(AudioPlayer, wxEvtHandler)
-	EVT_COMMAND (1000, wxEVT_STOP_AUDIO, AudioPlayer::OnStopAudio)
-END_EVENT_TABLE()
-
-void AudioPlayer::OnStopAudio(wxCommandEvent &) {
-	Stop(false);
-}
-
 AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
-	if (list.empty()) throw "No audio players are available.";
+	if (list.empty()) throw agi::NoAudioPlayersError("No audio players are available.", 0);
 
-	wxString error;
-	for (unsigned int i=0;i<list.size();i++) {
+	std::string error;
+	for (size_t i = 0; i < list.size(); ++i) {
 		try {
-			AudioPlayer *player = Create(list[i]);
-			if (player) return player;
+			return Create(list[i]);
 		}
-		catch (wxString err) { error += list[i] + " factory: " + err + "\n"; }
-		catch (const wxChar *err) { error += list[i] + " factory: " + wxString(err) + "\n"; }
-		catch (...) { error += list[i] + " factory: Unknown error\n"; }
+		catch (agi::AudioPlayerOpenError const& err) {
+			error += list[i] + " factory: " + err.GetChainedMessage() + "\n";
+		}
 	}
-	throw error;
+	throw agi::AudioPlayerOpenError(error, 0);
 }
 
 void AudioPlayerFactory::RegisterProviders() {

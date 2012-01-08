@@ -38,7 +38,6 @@
 #include <pulse/pulseaudio.h>
 
 #include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
 
 class PulseAudioPlayer;
 
@@ -141,16 +140,7 @@ public:
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
 
-
-	/// @brief DOCME
-	/// @param vol 
-	/// @return 
-	///
 	void SetVolume(double vol) { volume = vol; }
-
-	/// @brief DOCME
-	/// @return 
-	///
 	double GetVolume() { return volume; }
 };
 

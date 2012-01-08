@@ -40,6 +40,7 @@
 
 #include "audio_provider_ram.h"
 
+#include "audio_controller.h"
 #include "compat.h"
 #include "main.h"
 #include "utils.h"
@@ -67,7 +68,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br
 	}
 	catch (std::bad_alloc const&) {
 		Clear();
-		throw AudioOpenError("Couldn't open audio, not enough ram available.");
+		throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", 0);
 	}
 
 	// Copy parameters

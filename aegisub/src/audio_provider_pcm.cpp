@@ -54,6 +54,7 @@
 #include <libaegisub/log.h>
 
 #include "aegisub_endian.h"
+#include "audio_controller.h"
 #include "audio_provider_pcm.h"
 #include "compat.h"
 #include "utils.h"
@@ -81,7 +82,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	LARGE_INTEGER li_file_size = {0};
 	if (!GetFileSizeEx(file_handle, &li_file_size)) {
 		CloseHandle(file_handle);
-		throw AudioOpenError("Failed getting file size");
+		throw agi::AudioProviderOpenError("Failed getting file size", 0);
 	}
 	file_size = li_file_size.QuadPart;
 
@@ -94,7 +95,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 	if (file_mapping == 0) {
 		CloseHandle(file_handle);
-		throw AudioOpenError("Failed creating file mapping");
+		throw agi::AudioProviderOpenError("Failed creating file mapping", 0);
 	}
 
 	current_mapping = 0;
@@ -111,7 +112,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	memset(&filestats, 0, sizeof(filestats));
 	if (fstat(file_handle, &filestats)) {
 		close(file_handle);
-		throw AudioOpenError("Could not stat file to get size");
+		throw agi::AudioProviderOpenError("Could not stat file to get size", 0);
 	}
 	file_size = filestats.st_size;
 
@@ -331,9 +332,9 @@ public:
 
 		// Check magic values
 		if (!CheckFourcc(header.ch.type, "RIFF"))
-			throw AudioOpenError("File is not a RIFF file");
+			throw agi::AudioDataNotFoundError("File is not a RIFF file", 0);
 		if (!CheckFourcc(header.format, "WAVE"))
-			throw AudioOpenError("File is not a RIFF WAV file");
+			throw agi::AudioDataNotFoundError("File is not a RIFF WAV file", 0);
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
@@ -356,13 +357,13 @@ public:
 			filepos += sizeof(ch);
 
 			if (CheckFourcc(ch.type, "fmt ")) {
-				if (got_fmt_header) throw AudioOpenError("Invalid file, multiple 'fmt ' chunks");
+				if (got_fmt_header) throw agi::AudioProviderOpenError("Invalid file, multiple 'fmt ' chunks", 0);
 				got_fmt_header = true;
 
 				fmtChunk &fmt = *(fmtChunk*)EnsureRangeAccessible(filepos, sizeof(fmtChunk));
 
 				if (Endian::LittleToMachine(fmt.compression) != 1)
-					throw AudioOpenError("Can't use file, not PCM encoding");
+					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", 0);
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = Endian::LittleToMachine(fmt.samplerate);
@@ -374,7 +375,7 @@ public:
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
-				if (!got_fmt_header) throw AudioOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.");
+				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", 0);
 
 				int64_t samples = Endian::LittleToMachine(ch.size) / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -518,7 +519,7 @@ public:
 		int64_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
 		if (file_size < smallest_possible_file)
-			throw AudioOpenError("File is too small to be a Wave64 file");
+			throw agi::AudioDataNotFoundError("File is too small to be a Wave64 file", 0);
 
 		// Read header
 		// This should throw an exception if the mapping fails
@@ -528,9 +529,9 @@ public:
 
 		// Check magic values
 		if (!CheckGuid(header.riff_guid, w64GuidRIFF))
-			throw AudioOpenError("File is not a Wave64 RIFF file");
+			throw agi::AudioDataNotFoundError("File is not a Wave64 RIFF file", 0);
 		if (!CheckGuid(header.format_guid, w64GuidWAVE))
-			throw AudioOpenError("File is not a Wave64 WAVE file");
+			throw agi::AudioDataNotFoundError("File is not a Wave64 WAVE file", 0);
 
 		// Count how much more data we can have in the entire file
 		uint64_t data_left = Endian::LittleToMachine(header.file_size) - sizeof(RiffChunk);
@@ -550,15 +551,15 @@ public:
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
-					throw AudioOpenError("Bad file, found more than one 'fmt' chunk");
+					throw agi::AudioProviderOpenError("Bad file, found more than one 'fmt' chunk", 0);
 
 				FormatChunk &fmt = *(FormatChunk*)EnsureRangeAccessible(filepos, sizeof(FormatChunk));
 				got_fmt_header = true;
 
 				if (Endian::LittleToMachine(fmt.format.wFormatTag) == 3)
-					throw AudioOpenError("File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.");
+					throw agi::AudioProviderOpenError("File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.", 0);
 				if (Endian::LittleToMachine(fmt.format.wFormatTag) != 1)
-					throw AudioOpenError("Can't use file, not PCM encoding");
+					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", 0);
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = Endian::LittleToMachine(fmt.format.nSamplesPerSec);
@@ -567,7 +568,7 @@ public:
 			}
 			else if (CheckGuid(chunk_guid, w64Guiddata)) {
 				if (!got_fmt_header)
-					throw AudioOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.");
+					throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", 0);
 
 				int64_t samples = chunk_size / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -601,23 +602,35 @@ public:
 	}
 };
 
-/// @brief DOCME
-/// @param filename 
-///
 AudioProvider *CreatePCMAudioProvider(const wxString &filename)
 {
+	bool wrong_file_type = true;
 	std::string msg;
+
 	try {
 		return new RiffWavPCMAudioProvider(filename);
 	}
-	catch (AudioOpenError const& err) {
+	catch (agi::AudioDataNotFoundError const& err) {
 		msg = "RIFF PCM WAV audio provider: " + err.GetMessage();
 	}
+	catch (agi::AudioProviderOpenError const& err) {
+		wrong_file_type = false;
+		msg = "RIFF PCM WAV audio provider: " + err.GetMessage();
+	}
+
 	try {
 		return new Wave64AudioProvider(filename);
 	}
-	catch (AudioOpenError const& err) {
+	catch (agi::AudioDataNotFoundError const& err) {
 		msg += "\nWave64 audio provider: " + err.GetMessage();
-		throw AudioOpenError(msg);
 	}
+	catch (agi::AudioProviderOpenError const& err) {
+		wrong_file_type = false;
+		msg += "\nWave64 audio provider: " + err.GetMessage();
+	}
+
+	if (wrong_file_type)
+		throw agi::AudioDataNotFoundError(msg, 0);
+	else
+		throw agi::AudioProviderOpenError(msg, 0);
 }

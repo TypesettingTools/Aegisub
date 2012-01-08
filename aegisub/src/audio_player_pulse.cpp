@@ -43,11 +43,11 @@
 #endif
 
 #include "audio_player_pulse.h"
+
+#include "audio_controller.h"
+#include "include/aegisub/audio_provider.h"
 #include "utils.h"
 
-
-/// @brief Constructor 
-///
 PulseAudioPlayer::PulseAudioPlayer()
 : context_notify(0, 1)
 , context_success(0, 1)
@@ -60,32 +60,20 @@ PulseAudioPlayer::PulseAudioPlayer()
 	is_playing = false;
 }
 
-
-
-/// @brief Destructor 
-///
 PulseAudioPlayer::~PulseAudioPlayer()
 {
-	if (open) CloseStream();
+	CloseStream();
 }
 
-
-
-/// @brief Open stream 
-///
 void PulseAudioPlayer::OpenStream()
 {
-	//printf("Opening PulseAudio stream\n");
 	if (open) CloseStream();
-
-	// Get provider
-	AudioProvider *provider = GetProvider();
 
 	// Initialise a mainloop
 	//printf("Initialising threaded main loop\n");
 	mainloop = pa_threaded_mainloop_new();
 	if (!mainloop) {
-		throw "Failed to initialise PulseAudio threaded mainloop object";
+		throw agi::AudioPlayerOpenError("Failed to initialise PulseAudio threaded mainloop object", 0);
 	}
 	//printf("Starting main loop\n");
 	pa_threaded_mainloop_start(mainloop);
@@ -95,7 +83,7 @@ void PulseAudioPlayer::OpenStream()
 	context = pa_context_new(pa_threaded_mainloop_get_api(mainloop), "Aegisub");
 	if (!context) {
 		pa_threaded_mainloop_free(mainloop);
-		throw "Failed to create PulseAudio context";
+		throw agi::AudioPlayerOpenError("Failed to create PulseAudio context", 0);
 	}
 	pa_context_set_state_callback(context, (pa_context_notify_cb_t)pa_context_notify, this);
 
@@ -113,9 +101,7 @@ void PulseAudioPlayer::OpenStream()
 			pa_context_unref(context);
 			pa_threaded_mainloop_stop(mainloop);
 			pa_threaded_mainloop_free(mainloop);
-			wxString s(pa_strerror(paerror), wxConvUTF8);
-			s.Prepend("PulseAudio reported error: ");
-			throw s.c_str();
+			throw agi::AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror), 0);
 		}
 		// otherwise loop once more
 	}
@@ -137,7 +123,7 @@ void PulseAudioPlayer::OpenStream()
 		pa_context_unref(context);
 		pa_threaded_mainloop_stop(mainloop);
 		pa_threaded_mainloop_free(mainloop);
-		throw "PulseAudio could not create stream";
+		throw agi::AudioPlayerOpenError("PulseAudio could not create stream", 0);
 	}
 	pa_stream_set_state_callback(stream, (pa_stream_notify_cb_t)pa_stream_notify, this);
 	pa_stream_set_write_callback(stream, (pa_stream_request_cb_t)pa_stream_write, this);
@@ -147,9 +133,7 @@ void PulseAudioPlayer::OpenStream()
 	paerror = pa_stream_connect_playback(stream, NULL, NULL, (pa_stream_flags_t)(PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE), NULL, NULL);
 	if (paerror) {
 		printf("PulseAudio reported error: %s (%d)\n", pa_strerror(paerror), paerror);
-		wxString s(pa_strerror(paerror), wxConvUTF8);
-		s.Prepend("PulseAudio reported error: ");
-		throw s.c_str();
+		throw agi::AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror), 0);
 	}
 	while (true) {
 		stream_notify.Wait();
@@ -158,7 +142,7 @@ void PulseAudioPlayer::OpenStream()
 		} else if (sstate == PA_STREAM_FAILED) {
 			paerror = pa_context_errno(context);
 			printf("PulseAudio player: Stream connection failed: %s (%d)\n", pa_strerror(paerror), paerror);
-			throw "PulseAudio player: Something went wrong connecting the stream";
+			throw agi::AudioPlayerOpenError("PulseAudio player: Something went wrong connecting the stream", 0);
 		}
 	}
 	//printf("Connected playback stream, now playing\n\n");
@@ -168,11 +152,6 @@ void PulseAudioPlayer::OpenStream()
 	open = true;
 }
 
-
-
-/// @brief Close stream 
-/// @return 
-///
 void PulseAudioPlayer::CloseStream()
 {
 	if (!open) return;
@@ -192,12 +171,6 @@ void PulseAudioPlayer::CloseStream()
 	open = false;
 }
 
-
-
-/// @brief Play 
-/// @param start 
-/// @param count 
-///
 void PulseAudioPlayer::Play(int64_t start,int64_t count)
 {
 	//printf("Starting PulseAudio playback\n");
@@ -249,12 +222,6 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
-
-
-/// @brief Stop 
-/// @param timerToo 
-/// @return 
-///
 void PulseAudioPlayer::Stop(bool timerToo)
 {
 	if (!is_playing) return;
@@ -286,61 +253,31 @@ void PulseAudioPlayer::Stop(bool timerToo)
         }
 }
 
-
-
-/// @brief DOCME
-/// @return 
-///
 bool PulseAudioPlayer::IsPlaying()
 {
 	return is_playing;
 }
 
-
-
-/// @brief Set end 
-/// @param pos 
-///
 void PulseAudioPlayer::SetEndPosition(int64_t pos)
 {
 	end_frame = pos;
 }
 
-
-
-/// @brief Set current position 
-/// @param pos 
-///
 void PulseAudioPlayer::SetCurrentPosition(int64_t pos)
 {
 	cur_frame = pos;
 }
 
-
-
-/// @brief DOCME
-/// @return 
-///
 int64_t PulseAudioPlayer::GetStartPosition()
 {
 	return start_frame;
 }
 
-
-
-/// @brief DOCME
-/// @return 
-///
 int64_t PulseAudioPlayer::GetEndPosition()
 {
 	return end_frame;
 }
 
-
-
-/// @brief Get current position 
-/// @return 
-///
 int64_t PulseAudioPlayer::GetCurrentPosition()
 {
 	if (!is_playing) return 0;
@@ -356,52 +293,28 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 	return start_frame + playtime * provider->GetSampleRate() / (1000*1000);
 }
 
-
-
 /// @brief Called by PA to notify about contetxt operation completion
-/// @param c       
-/// @param success 
-/// @param thread  
-///
 void PulseAudioPlayer::pa_context_success(pa_context *c, int success, PulseAudioPlayer *thread)
 {
 	thread->context_success_val = success;
 	thread->context_success.Post();
 }
 
-
-
 /// @brief Called by PA to notify about other context-related stuff
-/// @param c      
-/// @param thread 
-///
 void PulseAudioPlayer::pa_context_notify(pa_context *c, PulseAudioPlayer *thread)
 {
 	thread->cstate = pa_context_get_state(thread->context);
 	thread->context_notify.Post();
 }
 
-
-
 /// @brief Called by PA when an operation completes
-/// @param p       
-/// @param success 
-/// @param thread  
-///
 void PulseAudioPlayer::pa_stream_success(pa_stream *p, int success, PulseAudioPlayer *thread)
 {
 	thread->stream_success_val = success;
 	thread->stream_success.Post();
 }
 
-
-
 /// @brief Called by PA to request more data (and other things?)
-/// @param p      
-/// @param length 
-/// @param thread 
-/// @return 
-///
 void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPlayer *thread)
 {
 	if (!thread->is_playing) return;
@@ -434,12 +347,7 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 	thread->cur_frame += frames;
 }
 
-
-
 /// @brief Called by PA to notify about other stuff
-/// @param p      
-/// @param thread 
-///
 void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 {
 	thread->sstate = pa_stream_get_state(thread->stream);

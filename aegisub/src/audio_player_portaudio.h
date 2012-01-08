@@ -37,15 +37,15 @@
 #ifdef WITH_PORTAUDIO
 
 #include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
-
-#include <libaegisub/exception.h>
 
 extern "C" {
 #include <portaudio.h>
 }
 
-DEFINE_SIMPLE_EXCEPTION_NOINNER(PortAudioError, agi::Exception, "audio/player/portaudio")
+#ifndef AGI_PRE
+#include <map>
+#include <string>
+#endif
 
 /// @class PortAudioPlayer
 /// @brief PortAudio Player

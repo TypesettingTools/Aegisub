@@ -72,8 +72,6 @@ namespace agi { struct Context; }
 namespace cmd { class Command; }
 
 
-DECLARE_EVENT_TYPE(wxEVT_AUTOMATION_SCRIPT_COMPLETED, -1)
-
 /// DOCME
 namespace Automation4 {
 	DEFINE_BASE_EXCEPTION_NOINNER(AutomationError, agi::Exception)

@@ -42,12 +42,15 @@
 
 #include "audio_player_openal.h"
 
+#include "audio_controller.h"
 #include "utils.h"
 
 // Auto-link to OpenAL lib for MSVC
 #ifdef _MSC_VER
 #pragma comment(lib, "openal32.lib")
 #endif
+
+DEFINE_SIMPLE_EXCEPTION(OpenALException, agi::AudioPlayerOpenError, "audio/open/player/openal")
 
 OpenALPlayer::OpenALPlayer()
 : open(false)
@@ -76,25 +79,25 @@ void OpenALPlayer::OpenStream()
 	try {
 		// Open device
 		device = alcOpenDevice(0);
-		if (!device) throw OpenALException("Failed opening default OpenAL device");
+		if (!device) throw OpenALException("Failed opening default OpenAL device", 0);
 
 		// Create context
 		context = alcCreateContext(device, 0);
-		if (!context) throw OpenALException("Failed creating OpenAL context");
-		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context");
+		if (!context) throw OpenALException("Failed creating OpenAL context", 0);
+		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context", 0);
 
 		// Clear error code
 		alGetError();
 
 		// Generate buffers
 		alGenBuffers(num_buffers, buffers);
-		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers");
+		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers", 0);
 
 		// Generate source
 		alGenSources(1, &source);
 		if (alGetError() != AL_NO_ERROR) {
 			alDeleteBuffers(num_buffers, buffers);
-			throw OpenALException("Error generating OpenAL source");
+			throw OpenALException("Error generating OpenAL source", 0);
 		}
 	}
 	catch (...)

@@ -40,6 +40,7 @@
 
 #include <libaegisub/log.h>
 
+#include "audio_controller.h"
 #include "audio_player_dsound.h"
 #include "frame_main.h"
 #include "main.h"
@@ -75,7 +76,7 @@ void DirectSoundPlayer::OpenStream() {
 	// Initialize the DirectSound object
 	HRESULT res;
 	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,NULL); // TODO: support selecting audio device
-	if (FAILED(res)) throw "Failed initializing DirectSound";
+	if (FAILED(res)) throw agi::AudioPlayerOpenError("Failed initializing DirectSound", 0);
 
 	// Set DirectSound parameters
 	directSound->SetCooperativeLevel((HWND)wxGetApp().frame->GetHandle(),DSSCL_PRIORITY);
@@ -106,11 +107,11 @@ void DirectSoundPlayer::OpenStream() {
 	// Create the buffer
 	IDirectSoundBuffer *buf;
 	res = directSound->CreateSoundBuffer(&desc,&buf,NULL);
-	if (res != DS_OK) throw "Failed creating DirectSound buffer";
+	if (res != DS_OK) throw agi::AudioPlayerOpenError("Failed creating DirectSound buffer", 0);
 
 	// Copy interface to buffer
 	res = buf->QueryInterface(IID_IDirectSoundBuffer8,(LPVOID*) &buffer);
-	if (res != S_OK) throw "Failed casting interface to IDirectSoundBuffer8";
+	if (res != S_OK) throw agi::AudioPlayerOpenError("Failed casting interface to IDirectSoundBuffer8", 0);
 
 	// Set data
 	offset = 0;

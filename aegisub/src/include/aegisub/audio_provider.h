@@ -98,7 +98,5 @@ public:
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioOpenError, AudioProviderError, "audio/open/failed")
-
 /// Error of some sort occurred while decoding a frame
 DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioDecodeError, AudioProviderError, "audio/error")

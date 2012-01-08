@@ -26,6 +26,7 @@
 #include "audio_provider_convert.h"
 
 #include "aegisub_endian.h"
+#include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
 
 #include <libaegisub/scoped_ptr.h>
@@ -54,7 +55,7 @@ class BitdepthConvertAudioProvider : public AudioProviderConverter {
 public:
 	BitdepthConvertAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
 		if (bytes_per_sample > 8)
-			throw AudioOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported");
+			throw agi::AudioProviderOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported", 0);
 
 		src_is_native_endian = src->AreSamplesNativeEndian();
 		src_bytes_per_sample = bytes_per_sample;

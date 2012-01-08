@@ -42,10 +42,14 @@
 #include <libaegisub/log.h>
 
 #include "audio_player_portaudio.h"
-#include "charset_conv.h"
+
+#include "audio_controller.h"
+#include "compat.h"
 #include "include/aegisub/audio_provider.h"
 #include "main.h"
 #include "utils.h"
+
+DEFINE_SIMPLE_EXCEPTION(PortAudioError, agi::AudioPlayerOpenError, "audio/player/open/portaudio")
 
 // Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG
@@ -54,7 +58,7 @@ PortAudioPlayer::PortAudioPlayer() {
 	PaError err = Pa_Initialize();
 
 	if (err != paNoError)
-		throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err));
+		throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err), 0);
 
 	volume = 1.0f;
 	pa_start = 0.0;
@@ -109,7 +113,7 @@ void PortAudioPlayer::OpenStream() {
 		const PaHostErrorInfo *pa_err = Pa_GetLastHostErrorInfo();
 		LOG_D_IF(pa_err->errorCode != 0, "audio/player/portaudio") << "HostError: API: " << pa_err->hostApiType << ", " << pa_err->errorText << ", " << pa_err->errorCode;
 		LOG_D("audio/player/portaudio") << "Failed initializing PortAudio stream with error: " << Pa_GetErrorText(err);
-		throw PortAudioError("Failed initializing PortAudio stream with error: " + std::string(Pa_GetErrorText(err)));
+		throw PortAudioError("Failed initializing PortAudio stream with error: " + std::string(Pa_GetErrorText(err)), 0);
 	}
 }
 

@@ -53,10 +53,6 @@
 #include <vector>
 #endif
 
-#include <libaegisub/exception.h>
-
-DEFINE_SIMPLE_EXCEPTION_NOINNER(OpenALException, agi::Exception, "audio/player/openal/generic")
-
 /// DOCME
 /// @class OpenALPlayer
 /// @brief DOCME

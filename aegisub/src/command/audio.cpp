@@ -119,7 +119,12 @@ struct audio_open_blank : public Command {
 	STR_HELP("Open a 150 minutes blank audio clip, for debugging.")
 
 	void operator()(agi::Context *c) {
-		c->audioController->OpenAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
+		try {
+			c->audioController->OpenAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
+		}
+		catch (agi::Exception const& e) {
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+		}
 	}
 };
 
@@ -132,7 +137,12 @@ struct audio_open_noise : public Command {
 	STR_HELP("Open a 150 minutes noise-filled audio clip, for debugging.")
 
 	void operator()(agi::Context *c) {
-		c->audioController->OpenAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
+		try {
+			c->audioController->OpenAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
+		}
+		catch (agi::Exception const& e) {
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+		}
 	}
 };
 
@@ -153,6 +163,7 @@ struct audio_open_video : public Command {
 		try {
 			c->audioController->OpenAudio(c->videoController->GetVideoName());
 		}
+		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
 			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
 		}

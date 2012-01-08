@@ -445,6 +445,27 @@ public:
 };
 
 namespace agi {
-	DEFINE_BASE_EXCEPTION(AudioControllerError, Exception)
-	DEFINE_SIMPLE_EXCEPTION(AudioOpenError, AudioControllerError, "audio_controller/open_failed")
+	/// Base class for all audio-related errors
+	DEFINE_BASE_EXCEPTION(AudioError, Exception)
+
+	/// Opening the audio failed for any reason
+	DEFINE_SIMPLE_EXCEPTION(AudioOpenError, AudioError, "audio/open")
+
+	/// There are no audio providers available to open audio files
+	DEFINE_SIMPLE_EXCEPTION(NoAudioProvidersError, AudioOpenError, "audio/open/no_providers")
+
+	/// The file exists, but no providers could find any audio tracks in it
+	DEFINE_SIMPLE_EXCEPTION(AudioDataNotFoundError, AudioOpenError, "audio/open/no_tracks")
+
+	/// There are audio tracks, but no provider could actually read them
+	DEFINE_SIMPLE_EXCEPTION(AudioProviderOpenError, AudioOpenError, "audio/open/provider")
+
+	/// The audio cache failed to initialize
+	DEFINE_SIMPLE_EXCEPTION(AudioCacheOpenError, AudioOpenError, "audio/open/cache")
+
+	/// There are no audio players available
+	DEFINE_SIMPLE_EXCEPTION(NoAudioPlayersError, AudioOpenError, "audio/open/no_players")
+
+	/// The audio player failed to initialize
+	DEFINE_SIMPLE_EXCEPTION(AudioPlayerOpenError, AudioOpenError, "audio/open/player")
 }

@@ -46,6 +46,8 @@
 #endif
 
 #include "audio_provider_avs.h"
+
+#include "audio_controller.h"
 #include "charset_conv.h"
 #include "compat.h"
 #include "main.h"
@@ -55,56 +57,64 @@
 /// @brief Constructor 
 /// @param _filename 
 ///
-AvisynthAudioProvider::AvisynthAudioProvider(wxString filename) try : filename(filename) {
-	AVSValue script;
-	wxMutexLocker lock(AviSynthMutex);
+AvisynthAudioProvider::AvisynthAudioProvider(wxString filename)
+: filename(filename)
+{
+	try {
+		AVSValue script;
+		wxMutexLocker lock(AviSynthMutex);
 
-	wxFileName fn(filename);
-	if (!fn.FileExists())
-		throw agi::FileNotFoundError(STD_STR(filename));
+		wxFileName fn(filename);
+		if (!fn.FileExists())
+			throw agi::FileNotFoundError(STD_STR(filename));
 
-	// Include
-	if (filename.EndsWith(".avs")) {
-		char *fname = env->SaveString(fn.GetShortPath().mb_str(csConvLocal));
-		script = env->Invoke("Import", fname);
-	}
-
-	// Use DirectShowSource
-	else {
-		const char * argnames[3] = { 0, "video", "audio" };
-		AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(csConvLocal)), false, true };
-
-		// Load DirectShowSource.dll from app dir if it exists
-		wxFileName dsspath(StandardPaths::DecodePath("?data/DirectShowSource.dll"));
-		if (dsspath.FileExists()) {
-			env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
+		// Include
+		if (filename.EndsWith(".avs")) {
+			char *fname = env->SaveString(fn.GetShortPath().mb_str(csConvLocal));
+			script = env->Invoke("Import", fname);
 		}
 
-		// Load audio with DSS if it exists
-		if (env->FunctionExists("DirectShowSource")) {
-			script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
-		}
-		// Otherwise fail
+		// Use DirectShowSource
 		else {
-			throw AudioOpenError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.");
-		}
-	}
+			const char * argnames[3] = { 0, "video", "audio" };
+			AVSValue args[3] = { env->SaveString(fn.GetShortPath().mb_str(csConvLocal)), false, true };
 
-	LoadFromClip(script);
-}
-catch (AvisynthError &err) {
-	throw AudioOpenError("Avisynth error: " + std::string(err.msg));
+			// Load DirectShowSource.dll from app dir if it exists
+			wxFileName dsspath(StandardPaths::DecodePath("?data/DirectShowSource.dll"));
+			if (dsspath.FileExists()) {
+				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
+			}
+
+			// Load audio with DSS if it exists
+			if (env->FunctionExists("DirectShowSource")) {
+				script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
+			}
+			// Otherwise fail
+			else {
+				throw agi::AudioProviderOpenError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.", 0);
+			}
+		}
+
+		LoadFromClip(script);
+	}
+	catch (AvisynthError &err) {
+		std::string errmsg(err.msg);
+		if (errmsg.find("filter graph manager won't talk to me") != errmsg.npos)
+			throw agi::AudioDataNotFoundError("Avisynth error: " + errmsg, 0);
+		else
+			throw agi::AudioProviderOpenError("Avisynth error: " + errmsg, 0);
+	}
 }
 
 /// @brief Read from environment 
 /// @param _clip 
 ///
-void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {	
+void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	AVSValue script;
 
 	// Check if it has audio
 	VideoInfo vi = _clip.AsClip()->GetVideoInfo();
-	if (!vi.HasAudio()) throw AudioOpenError("No audio found.");
+	if (!vi.HasAudio()) throw agi::AudioDataNotFoundError("No audio found.", 0);
 
 	// Convert to one channel
 	char buffer[1024];

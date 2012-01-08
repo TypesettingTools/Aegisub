@@ -46,6 +46,7 @@
 
 #include "audio_provider_hd.h"
 
+#include "audio_controller.h"
 #include "audio_provider_pcm.h"
 #include "compat.h"
 #include "main.h"
@@ -103,7 +104,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) 
 	wxDiskspaceSize_t freespace;
 	if (wxGetDiskSpace(cache_dir(), 0, &freespace)) {
 		if (num_samples * channels * bytes_per_sample > freespace)
-			throw AudioOpenError("Not enough free disk space in " + STD_STR(cache_dir()) + " to cache the audio");
+			throw agi::AudioCacheOpenError("Not enough free disk space in " + STD_STR(cache_dir()) + " to cache the audio", 0);
 	}
 
 	bytes_per_sample = source->GetBytesPerSample();

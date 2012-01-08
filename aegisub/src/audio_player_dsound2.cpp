@@ -48,6 +48,7 @@
 
 #include "audio_player_dsound2.h"
 
+#include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
 #include "frame_main.h"
 #include "main.h"
@@ -669,7 +670,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 	thread_handle.handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
-		throw "Failed creating playback thread in DirectSoundPlayer2. This is bad.";
+		throw agi::AudioPlayerOpenError("Failed creating playback thread in DirectSoundPlayer2. This is bad.", 0);
 
 	HANDLE running_or_error[] = { thread_running, error_happened };
 	switch (WaitForMultipleObjects(2, running_or_error, FALSE, INFINITE))
@@ -680,10 +681,10 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 
 	case WAIT_OBJECT_0 + 1:
 		// error happened, we fail
-		throw error_message;
+		throw agi::AudioPlayerOpenError(error_message, 0);
 
 	default:
-		throw "Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.";
+		throw agi::AudioPlayerOpenError("Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.", 0);
 	}
 }
 
@@ -714,7 +715,7 @@ void DirectSoundPlayer2Thread::Play(int64_t start, int64_t count)
 	case WAIT_OBJECT_0+1: // Error
 		throw error_message;
 	default:
-		throw "Unexpected result from WaitForMultipleObjects in DirectSoundPlayer2Thread::Play";
+		throw agi::InternalError("Unexpected result from WaitForMultipleObjects in DirectSoundPlayer2Thread::Play", 0);
 	}
 }
 

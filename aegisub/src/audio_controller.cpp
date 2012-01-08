@@ -292,18 +292,14 @@ void AudioController::OpenAudio(const wxString &url)
 		/*
 		 * Assume it's not a URI but instead a filename in the platform's native format.
 		 */
-		wxFileName fn(url);
-		if (!fn.FileExists())
-		{
-			config::mru->Remove("Audio", STD_STR(url));
-			agi::FileNotFoundError fnf(STD_STR(url));
-			throw agi::AudioOpenError(
-				"Failed opening audio file (parsing as plain filename)",
-				&fnf);
+		try {
+			provider = AudioProviderFactory::GetProvider(url);
+			StandardPaths::SetPathValue("?audio", wxFileName(url).GetPath());
 		}
-		provider = AudioProviderFactory::GetProvider(url);
-
-		StandardPaths::SetPathValue("?audio", fn.GetPath());
+		catch (...) {
+			config::mru->Remove("Audio", STD_STR(url));
+			throw;
+		}
 	}
 
 	try

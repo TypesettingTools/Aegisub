@@ -47,9 +47,10 @@
 #endif
 
 #include "audio_provider_ffmpegsource.h"
+
+#include "audio_controller.h"
 #include "compat.h"
 #include "main.h"
-
 
 /// @brief Constructor 
 /// @param filename 
@@ -64,7 +65,7 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename)
 	if (SUCCEEDED(res)) 
 		COMInited = true;
 	else if (res != RPC_E_CHANGED_MODE)
-		throw AudioOpenError("COM initialization failure");
+		throw agi::AudioProviderOpenError("COM initialization failure", 0);
 #endif
 	// initialize ffmpegsource
 	// FIXME: CPU detection?
@@ -101,7 +102,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 
 	std::map<int,wxString> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_AUDIO);
 	if (TrackList.size() <= 0)
-		throw AudioOpenError("no audio tracks found");
+		throw agi::AudioDataNotFoundError("no audio tracks found", 0);
 
 	// initialize the track number to an invalid value so we can detect later on
 	// whether the user actually had to choose a track or not
@@ -110,7 +111,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		TrackNumber = AskForTrackSelection(TrackList, FFMS_TYPE_AUDIO);
 		// if it's still -1 here, user pressed cancel
 		if (TrackNumber == -1)
-			throw agi::UserCancelException("audio loading cancelled by user");
+			throw agi::UserCancelException("audio loading canceled by user");
 	}
 
 	// generate a name for the cache file
@@ -137,7 +138,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		if (TrackNumber < 0) {
 			FFMS_DestroyIndex(Index);
 			Index = NULL;
-			throw AudioOpenError(std::string("Couldn't find any audio tracks: ") + ErrInfo.Buffer);
+			throw agi::AudioDataNotFoundError(std::string("Couldn't find any audio tracks: ") + ErrInfo.Buffer, 0);
 		}
 
 		// index is valid and track number is now set,
@@ -166,7 +167,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 			Index = DoIndexing(Indexer, CacheName, TrackMask, GetErrorHandlingMode());
 		}
 		catch (wxString const& err) {
-			throw AudioOpenError(STD_STR(err));
+			throw agi::AudioProviderOpenError(STD_STR(err), 0);
 		}
 
 		// if tracknumber still isn't set we need to set it now
@@ -187,7 +188,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	FFMS_DestroyIndex(Index);
 	Index = NULL;
 	if (!AudioSource) {
-		throw AudioOpenError(std::string("Failed to open audio track: %s") + ErrInfo.Buffer);
+		throw agi::AudioProviderOpenError(std::string("Failed to open audio track: %s") + ErrInfo.Buffer, 0);
 	}
 		
 	const FFMS_AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
@@ -196,7 +197,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	sample_rate	= AudioInfo.SampleRate;
 	num_samples = AudioInfo.NumSamples;
 	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
-		throw AudioOpenError("sanity check failed, consult your local psychiatrist");
+		throw agi::AudioProviderOpenError("sanity check failed, consult your local psychiatrist", 0);
 
 	// FIXME: use the actual sample format too?
 	// why not just bits_per_sample/8? maybe there's some oddball format with half bytes out there somewhere...
@@ -206,7 +207,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		case 24:	bytes_per_sample = 3; break;
 		case 32:	bytes_per_sample = 4; break;
 		default:
-			throw AudioOpenError("unknown or unsupported sample format");
+			throw agi::AudioProviderOpenError("unknown or unsupported sample format", 0);
 	}
 }
 

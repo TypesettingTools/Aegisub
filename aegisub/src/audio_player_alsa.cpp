@@ -41,6 +41,8 @@
 #include <libaegisub/log.h>
 
 #include "audio_player_alsa.h"
+
+#include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
 #include "compat.h"
 #include "frame_main.h"
@@ -365,7 +367,7 @@ void AlsaPlayer::OpenStream()
 	}
 	else
 	{
-		throw 1; // FIXME
+		throw agi::AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed", 0);
 	}
 }
 

@@ -50,9 +50,7 @@ class AudioProvider;
 /// @brief DOCME
 ///
 /// DOCME
-class AudioPlayer : public wxEvtHandler {
-	void OnStopAudio(wxCommandEvent &event);
-
+class AudioPlayer {
 protected:
 	/// DOCME
 	AudioProvider *provider;
@@ -64,18 +62,11 @@ public:
 	AudioPlayer();
 	virtual ~AudioPlayer();
 
-
-	/// @brief DOCME
-	///
 	virtual void OpenStream() {}
-
-	/// @brief DOCME
-	///
 	virtual void CloseStream() {}
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
 	virtual void Stop(bool timerToo=true)=0;			// Stop playing
-	virtual void RequestStop();							// Request it to stop playing in a thread-safe way
 	virtual bool IsPlaying()=0;
 
 	virtual void SetVolume(double volume)=0;
@@ -87,14 +78,8 @@ public:
 	virtual void SetEndPosition(int64_t pos)=0;
 	virtual void SetCurrentPosition(int64_t pos)=0;
 
-	virtual wxMutex *GetMutex() { return NULL; }
-
 	virtual void SetProvider(AudioProvider *new_provider) { provider = new_provider; }
 	AudioProvider *GetProvider() const { return provider; }
-
-	void SetDisplayTimer(wxTimer *timer) { displayTimer = timer; }
-
-	DECLARE_EVENT_TABLE()
 };
 
 class AudioPlayerFactory : public Factory0<AudioPlayer> {
@@ -104,5 +89,3 @@ public:
 	static void RegisterProviders();
 	static AudioPlayer *GetAudioPlayer();
 };
-
-DECLARE_EVENT_TYPE(wxEVT_STOP_AUDIO, -1)
