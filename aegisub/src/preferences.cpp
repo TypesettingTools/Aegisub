@@ -185,10 +185,6 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Seek video to line start on selection change"), "Video/Subtitle Sync");
 	CellSkip(general);
 
-	const wxString cres_arr[3] = { _("Never"), _("Ask"), _("Always") };
-	wxArrayString choice_res(3, cres_arr);
-	OptionChoice(general, _("Match video resolution on open"), choice_res, "Video/Check Script Res");
-
 	const wxString czoom_arr[24] = { "12.5%", "25%", "37.5%", "50%", "62.5%", "75%", "87.5%", "100%", "112.5%", "125%", "137.5%", "150%", "162.5%", "175%", "187.5%", "200%", "212.5%", "225%", "237.5%", "250%", "262.5%", "275%", "287.5%", "300%" };
 	wxArrayString choice_zoom(24, czoom_arr);
 	OptionChoice(general, _("Default Zoom"), choice_zoom, "Video/Default Zoom");
@@ -198,6 +194,16 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	const wxString cscr_arr[3] = { _("?video"), _("?script"), _(".") };
 	wxArrayString scr_res(3, cscr_arr);
 	OptionChoice(general, _("Screenshot save path"), scr_res, "Path/Screenshot");
+
+	wxFlexGridSizer *resolution = PageSizer(_("Script Resolution"));
+	OptionAdd(resolution, _("Use resolution of first video opened"), "Subtitle/Default Resolution/Auto");
+	CellSkip(resolution);
+	OptionAdd(resolution, _("Default width"), "Subtitle/Default Resolution/Width");
+	OptionAdd(resolution, _("Default height"), "Subtitle/Default Resolution/Height");
+
+	const wxString cres_arr[3] = { _("Never"), _("Ask"), _("Always") };
+	wxArrayString choice_res(3, cres_arr);
+	OptionChoice(resolution, _("Match video resolution on open"), choice_res, "Video/Check Script Res");
 
 	SetSizerAndFit(sizer);
 }

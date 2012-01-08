@@ -346,6 +346,11 @@
 	},
 
 	"Subtitle" : {
+		"Default Resolution" : {
+			"Auto" : true,
+			"Height" : 720,
+			"Width" : 1280
+		},
 		"Edit Box" : {
 			"Font Face" : "",
 			"Font Size" : 10,

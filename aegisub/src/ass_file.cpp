@@ -38,6 +38,7 @@
 #ifndef AGI_PRE
 #include <algorithm>
 #include <fstream>
+#include <inttypes.h>
 #include <list>
 
 #include <wx/filename.h>
@@ -439,6 +440,10 @@ void AssFile::LoadDefault(bool defline) {
 	AddLine("WrapStyle: 0", "[Script Info]",version);
 	AddLine("ScaledBorderAndShadow: yes","[Script Info]",version);
 	AddLine("Collisions: Normal","[Script Info]",version);
+	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
+		AddLine(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()),"[Script Info]",version);
+		AddLine(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()),"[Script Info]",version);
+	}
 	AddLine("","[Script Info]",version);
 	AddLine("[V4+ Styles]","[V4+ Styles]",version);
 	AddLine("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding","[V4+ Styles]",version);
