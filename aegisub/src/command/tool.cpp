@@ -276,8 +276,8 @@ struct tool_translation_assistant_preview : public tool_translation_assistant_va
 /// Move to the next line without committing changes.
 struct tool_translation_assistant_next : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/next")
-	STR_MENU("&Next line")
-	STR_DISP("Next line")
+	STR_MENU("&Next Line")
+	STR_DISP("Next Line")
 	STR_HELP("Move to the next line without committing changes.")
 
 	void operator()(agi::Context *c) {
@@ -288,8 +288,8 @@ struct tool_translation_assistant_next : public tool_translation_assistant_valid
 /// Move to the previous line without committing changes.
 struct tool_translation_assistant_prev : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/prev")
-	STR_MENU("&Prev line")
-	STR_DISP("Prev line")
+	STR_MENU("&Previous Line")
+	STR_DISP("Previous Line")
 	STR_HELP("Move to the previous line without committing changes.")
 
 	void operator()(agi::Context *c) {

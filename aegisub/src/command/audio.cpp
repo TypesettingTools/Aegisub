@@ -96,8 +96,8 @@ struct audio_open : public Command {
 			wxString path = lagi_wxString(OPT_GET("Path/Last/Audio")->GetString());  
 			wxString str = wxString(_("Audio Formats")) + " (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a,*.w64)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a;*.w64|"
 						+ _("Video Formats") + " (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|"
-						+ _("All files") + " (*.*)|*.*";
-			wxString filename = wxFileSelector(_("Open audio file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+						+ _("All Files") + " (*.*)|*.*";
+			wxString filename = wxFileSelector(_("Open Audio File"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (!filename.empty()) {
 				c->audioController->OpenAudio(filename);
 				OPT_SET("Path/Last/Audio")->SetString(STD_STR(wxFileName(filename).GetPath()));

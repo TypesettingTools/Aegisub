@@ -67,7 +67,7 @@ enum {
 };
 
 DialogResample::DialogResample(agi::Context *c)
-: wxDialog(c->parent,-1,_("Resample resolution"),wxDefaultPosition)
+: wxDialog(c->parent,-1,_("Resample Resolution"),wxDefaultPosition)
 , c(c)
 {
 	// Set icon

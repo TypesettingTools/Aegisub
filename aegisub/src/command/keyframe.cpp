@@ -88,7 +88,7 @@ struct keyframe_open : public Command {
 			path,
 			""
 			,".txt",
-			"All supported formats (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|All files (*.*)|*.*",
+			_("All Supported Formats") + " (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" + _("All Files") + " (*.*)|*.*",
 			wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 
 		if (filename.empty()) return;

@@ -576,16 +576,13 @@ namespace Automation4 {
 			fnfilter = wxString::Format("%s%s scripts (%s)|%s|", fnfilter, fact->GetEngineName(), fact->GetFilenamePattern(), fact->GetFilenamePattern());
 			catchall += fact->GetFilenamePattern() + ";";
 		}
-#ifdef __WINDOWS__
-		fnfilter += "All files|*.*";
-#else
-		fnfilter += "All files|*";
-#endif
+		fnfilter += _("All Files") + " (*.*)|*.*";
+
 		if (!catchall.empty())
 			catchall.RemoveLast();
 
 		if (factories->size() > 1)
-			fnfilter = "All supported scripts|" + catchall + "|" + fnfilter;
+			fnfilter = _("All Supported Formats") + "|" + catchall + "|" + fnfilter;
 
 		return fnfilter;
 	}

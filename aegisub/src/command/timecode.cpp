@@ -82,8 +82,8 @@ struct timecode_open : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Timecodes")->GetString());
-		wxString str = wxString(_("All Supported Types")) + "(*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
-		wxString filename = wxFileSelector(_("Open timecodes file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		wxString str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
+		wxString filename = wxFileSelector(_("Open Timecodes File"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			c->videoController->LoadTimecodes(filename);
 			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(wxFileName(filename).GetPath()));
@@ -106,8 +106,8 @@ struct timecode_save : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Timecodes")->GetString());
-		wxString str = wxString(_("All Supported Types")) + "(*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
-		wxString filename = wxFileSelector(_("Save timecodes file"),path,"","",str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxString str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
+		wxString filename = wxFileSelector(_("Save Timecodes File"),path,"","",str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (!filename.empty()) {
 			c->videoController->SaveTimecodes(filename);
 			OPT_SET("Path/Last/Timecodes")->SetString(STD_STR(wxFileName(filename).GetPath()));

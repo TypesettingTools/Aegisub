@@ -56,7 +56,7 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, co
 }
 
 DialogStyling::DialogStyling(agi::Context *context)
-: wxDialog(context->parent, -1, _("Styling assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
+: wxDialog(context->parent, -1, _("Styling Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(context)
 , active_line(0)
 {
