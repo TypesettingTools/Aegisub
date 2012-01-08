@@ -209,16 +209,20 @@ public:
 		// Get a list of macro blocks sorted by access count
 		std::vector<MacroBlock*> access_data;
 		access_data.resize(data.size());
+		size_t access_data_count = 0;
 		// For whatever reason, G++ pukes if I try using iterators here...
 		for (size_t mbi = 0; mbi != data.size(); ++mbi)
-			access_data[mbi] = &data[mbi];
-		sort(access_data.begin(), access_data.end(), comp_access_count);
+		{
+			if (data[mbi].blocks.size())
+				access_data[access_data_count++] = &data[mbi];
+		}
+		sort(access_data.begin(), access_data.begin() + access_data_count, comp_access_count);
 
 		// Sum up data size until we hit the max
 		size_t cur_size = 0;
 		size_t block_size = factory.GetBlockSize();
 		size_t mbi = 0;
-		for (; mbi < access_data.size() && cur_size < max_size; ++mbi)
+		for (; mbi < access_data_count && cur_size < max_size; ++mbi)
 		{
 			BlockArray &ba = access_data[mbi]->blocks;
 			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), (BlockT*)0)) * block_size;
@@ -228,7 +232,7 @@ public:
 			access_data[mbi]->access_count /= 2;
 		}
 		// Hit max, clear all remaining blocks
-		for (++mbi; mbi < access_data.size(); ++mbi)
+		for (++mbi; mbi < access_data_count; ++mbi)
 		{
 			KillMacroBlock(*access_data[mbi]);
 		}
