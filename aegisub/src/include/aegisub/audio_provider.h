@@ -48,16 +48,7 @@
 ///
 /// DOCME
 class AudioProvider {
-private:
-
-	/// DOCME
-	char *raw;
-
-	/// DOCME
-	int raw_len;
-
 protected:
-
 	/// DOCME
 	int channels;
 
@@ -75,8 +66,7 @@ protected:
 	wxString filename;
 
 public:
-	AudioProvider();
-	virtual ~AudioProvider();
+	virtual ~AudioProvider() { }
 
 	virtual wxString GetFilename() const { return filename; };
 	virtual void GetAudio(void *buf, int64_t start, int64_t count) const = 0;
@@ -100,7 +90,11 @@ public:
 class AudioProviderFactory : public Factory1<AudioProvider, wxString> {
 public:
 	static void RegisterProviders();
-	static AudioProvider *GetProvider(wxString filename, int cache=-1);
+
+	/// Get a provider for the file
+	/// @param filename URI to open
+	/// @param cache Caching mode
+	static AudioProvider *GetProvider(wxString const& filename, int cache=-1);
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception)

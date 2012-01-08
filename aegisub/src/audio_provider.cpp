@@ -56,17 +56,6 @@
 #include "frame_main.h"
 #include "main.h"
 
-/// @brief Constructor 
-///
-AudioProvider::AudioProvider() : raw(NULL) {
-}
-
-/// @brief Destructor 
-///
-AudioProvider::~AudioProvider() {
-	delete[] raw;
-}
-
 /// @brief Get audio with volume 
 /// @param buf    
 /// @param start  
@@ -102,12 +91,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 	}
 }
 
-/// @brief Get provider 
-/// @param filename 
-/// @param cache    
-/// @return 
-///
-AudioProvider *AudioProviderFactory::GetProvider(wxString filename, int cache) {
+AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int cache) {
 	AudioProvider *provider = NULL;
 	bool found = false;
 	std::string msg;
