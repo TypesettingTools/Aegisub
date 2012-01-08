@@ -498,9 +498,8 @@ SampleRange AudioController::GetPrimaryPlaybackRange() const
 void AudioController::GetMarkers(const SampleRange &range, AudioMarkerVector &markers) const
 {
 	/// @todo Find all sources of markers
-	if (keyframes_marker_provider.get()) keyframes_marker_provider->GetMarkers(range, markers);
-	if (video_position_marker_provider.get()) video_position_marker_provider->GetMarkers(range, markers);
 	if (timing_controller) timing_controller->GetMarkers(range, markers);
+	if (video_position_marker_provider.get()) video_position_marker_provider->GetMarkers(range, markers);
 }
 
 void AudioController::GetLabels(const SampleRange &range, std::vector<AudioLabel> &labels) const

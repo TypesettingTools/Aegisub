@@ -338,7 +338,8 @@ const AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetRightMarker()
 
 void AudioTimingControllerDialogue::GetMarkers(const SampleRange &range, AudioMarkerVector &out_markers) const
 {
-	keyframes_provider.GetMarkers(range, out_markers);
+	// The order matters here; later markers are painted on top of earlier
+	// markers, so the markers that we want to end up on top need to appear last
 
 	// Copy inactive line markers in the range
 	std::vector<InactiveLineMarker>::const_iterator
@@ -352,6 +353,8 @@ void AudioTimingControllerDialogue::GetMarkers(const SampleRange &range, AudioMa
 		out_markers.push_back(&active_markers[0]);
 	if (range.contains(active_markers[1]))
 		out_markers.push_back(&active_markers[1]);
+
+	keyframes_provider.GetMarkers(range, out_markers);
 }
 
 void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)

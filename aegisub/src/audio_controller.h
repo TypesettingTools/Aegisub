@@ -213,9 +213,6 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 	/// The current timing mode, if any; owned by the audio controller
 	agi::scoped_ptr<AudioTimingController> timing_controller;
 
-	/// Provide keyframe data for audio displays
-	agi::scoped_ptr<AudioMarkerProvider> keyframes_marker_provider;
-
 	/// Provider current video position data for audio display
 	agi::scoped_ptr<AudioMarkerProvider> video_position_marker_provider;
 
