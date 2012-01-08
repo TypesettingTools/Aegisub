@@ -716,10 +716,7 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 		pixel_samples = new_samples_per_pixel;
 		audio_renderer->SetSamplesPerPixel(pixel_samples);
 
-		if (provider)
-			pixel_audio_width = provider->GetNumSamples() / pixel_samples + 1;
-		else
-			pixel_audio_width = 1;
+		pixel_audio_width = provider->GetNumSamples() / pixel_samples + 1;
 
 		scrollbar->ChangeLengths(pixel_audio_width, client_width);
 		timeline->ChangeZoom(pixel_samples);
