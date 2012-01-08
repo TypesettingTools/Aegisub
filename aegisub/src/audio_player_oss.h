@@ -55,18 +55,17 @@ class OSSPlayer;
 
 /// DOCME
 /// @class OSSPlayerThread
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Worker thread to asynchronously write audio data to the output device
 class OSSPlayerThread : public wxThread {
-private:
-
-    /// DOCME
+    /// Parent player
     OSSPlayer *parent;
 
 public:
+    /// Constructor
+    /// @param parent Player to get audio data and playback state from
     OSSPlayerThread(OSSPlayer *parent);
 
+    /// Main thread entry point
     wxThread::ExitCode Entry();
 };
 
@@ -76,37 +75,34 @@ public:
 ///
 /// DOCME
 class OSSPlayer : public AudioPlayer {
-private:
     friend class OSSPlayerThread;
 
-    /// DOCME
+    /// Is the output file handle initialized and ready to be written to?
     bool open;
 
-    /// DOCME
-    unsigned int rate; // sample rate of audio
+    /// sample rate of audio
+    unsigned int rate;
 
+	/// Worker thread that does the actual writing
     OSSPlayerThread *thread;
 
-    /// DOCME
-    AudioProvider *provider;
-
-    /// DOCME
+    /// Is the player currently playing?
     volatile bool playing;
 
-    /// DOCME
+    /// Current volume level
     volatile float volume;
 
-    /// DOCME
-    volatile unsigned long start_frame; // first frame of playback
+    /// first frame of playback
+    volatile unsigned long start_frame;
 
-    /// DOCME
-    volatile unsigned long cur_frame; // last written frame + 1
+    /// last written frame + 1
+    volatile unsigned long cur_frame;
 
-    /// DOCME
-    volatile unsigned long end_frame; // last frame to play
+    /// last frame to play
+    volatile unsigned long end_frame;
 
-    /// DOCME
-    unsigned long bpf; // bytes per frame
+    /// bytes per frame
+    unsigned long bpf;
 
     // OSS audio device handle
     volatile int dspdev;
@@ -120,23 +116,17 @@ public:
 
     void Play(int64_t start, int64_t count);
     void Stop(bool timerToo=true);
-    bool IsPlaying();
+    bool IsPlaying() { return playing; }
 
-    int64_t GetStartPosition();
-    int64_t GetEndPosition();
-    int64_t GetCurrentPosition();
+    int64_t GetStartPosition() { return start_frame; }
+
+    int64_t GetEndPosition() { return end_frame; }
     void SetEndPosition(int64_t pos);
+
+    int64_t GetCurrentPosition();
     void SetCurrentPosition(int64_t pos);
 
-    /// @brief DOCME
-    /// @param vol 
-    /// @return 
-    ///
     void SetVolume(double vol) { volume = vol; }
-
-    /// @brief DOCME
-    /// @return 
-    ///
     double GetVolume() { return volume; }
 };
 #endif

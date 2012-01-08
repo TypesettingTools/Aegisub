@@ -52,9 +52,6 @@
 
 DEFINE_SIMPLE_EXCEPTION(OSSError, agi::AudioPlayerOpenError, "audio/player/open/oss")
 
-
-/// @brief Constructor 
-///
 OSSPlayer::OSSPlayer()
 {
     volume = 1.0f;
@@ -65,21 +62,15 @@ OSSPlayer::OSSPlayer()
     thread = 0;
 }
 
-/// @brief Destructor 
-///
 OSSPlayer::~OSSPlayer()
 {
     CloseStream();
 }
 
-/// @brief Open stream 
-///
 void OSSPlayer::OpenStream()
 {
     CloseStream();
 
-    // Get provider
-    provider = GetProvider();
     bpf = provider->GetChannels() * provider->GetBytesPerSample();
 
     // Open device
@@ -128,9 +119,6 @@ void OSSPlayer::OpenStream()
     open = true;
 }
 
-/// @brief Close stream 
-/// @return 
-///
 void OSSPlayer::CloseStream()
 {
     if (!open) return;
@@ -142,10 +130,6 @@ void OSSPlayer::CloseStream()
     open = false;
 }
 
-/// @brief Play 
-/// @param start 
-/// @param count 
-///
 void OSSPlayer::Play(int64_t start, int64_t count)
 {
     Stop();
@@ -162,10 +146,6 @@ void OSSPlayer::Play(int64_t start, int64_t count)
     playing = true;
 }
 
-/// @brief Stop 
-/// @param timerToo 
-/// @return 
-///
 void OSSPlayer::Stop(bool timerToo)
 {
     if (!open) return;
@@ -195,17 +175,6 @@ void OSSPlayer::Stop(bool timerToo)
     }
 }
 
-/// @brief DOCME 
-/// @return 
-///
-bool OSSPlayer::IsPlaying()
-{
-    return playing;
-}
-
-/// @brief Set end 
-/// @param pos 
-///
 void OSSPlayer::SetEndPosition(int64_t pos)
 {
     end_frame = pos;
@@ -215,36 +184,13 @@ void OSSPlayer::SetEndPosition(int64_t pos)
         if (thread && thread->IsAlive())
             thread->Delete();
     }
-
 }
 
-/// @brief Set current position 
-/// @param pos 
-///
 void OSSPlayer::SetCurrentPosition(int64_t pos)
 {
     cur_frame = start_frame = pos;
 }
 
-/// @brief DOCME 
-/// @return 
-///
-int64_t OSSPlayer::GetStartPosition()
-{
-    return start_frame;
-}
-
-/// @brief DOCME 
-/// @return 
-///
-int64_t OSSPlayer::GetEndPosition()
-{
-    return end_frame;
-}
-
-/// @brief Get current position 
-/// @return 
-///
 int64_t OSSPlayer::GetCurrentPosition()
 {
     if (!playing)
@@ -290,17 +236,12 @@ int64_t OSSPlayer::GetCurrentPosition()
     return cur_frame;
 }
 
-/// @brief Thread constructor 
-/// @param par 
-///
-OSSPlayerThread::OSSPlayerThread(OSSPlayer *par) : wxThread(wxTHREAD_JOINABLE)
+OSSPlayerThread::OSSPlayerThread(OSSPlayer *par)
+: wxThread(wxTHREAD_JOINABLE)
+, parent(par)
 {
-    parent = par;
 }
 
-/// @brief Thread entry point
-/// @return
-///
 wxThread::ExitCode OSSPlayerThread::Entry() {
     // Use small enough writes for good timing accuracy with all
     // timing methods.
@@ -317,7 +258,7 @@ wxThread::ExitCode OSSPlayerThread::Entry() {
     free(buf);
     parent->cur_frame = parent->end_frame;
 
-	LOG_D("player/audio/oss") << "Thread dead";
+    LOG_D("player/audio/oss") << "Thread dead";
     return 0;
 }
 
