@@ -58,7 +58,6 @@ class StandardPaths {
 	void DoSetPathValue(const wxString &path, const wxString &value);
 
 public:
-
 	static wxString DecodePath(const wxString &path) { return GetInstance().DoDecodePath(path); }
 	static void SetPathValue(const wxString &path, const wxString &value) { GetInstance().DoSetPathValue(path,value); }
 };

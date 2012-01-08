@@ -34,9 +34,6 @@
 /// @ingroup utility
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -46,19 +43,11 @@
 
 #include "standard_paths.h"
 
-
-/// @brief Get instance 
-/// @return 
-///
 StandardPaths &StandardPaths::GetInstance() {
 	static StandardPaths instance;
 	return instance;
 }
 
-
-
-/// @brief Constructor 
-///
 StandardPaths::StandardPaths() {
    wxStandardPathsBase &paths = wxStandardPaths::Get();
 
@@ -82,53 +71,40 @@ StandardPaths::StandardPaths() {
 	wxString tempDir = paths.GetTempDir();
 
 	// Set paths
-	DoSetPathValue("?data",dataDir);
-	DoSetPathValue("?user",userDir);
-	DoSetPathValue("?temp",tempDir);
+	DoSetPathValue("?data", dataDir);
+	DoSetPathValue("?user", userDir);
+	DoSetPathValue("?temp", tempDir);
 
 	// Create paths if they don't exist
 	wxFileName folder(userDir + "/");
 	if (!folder.DirExists()) folder.Mkdir(0777,wxPATH_MKDIR_FULL);
 }
 
-
-
-/// @brief Decode path 
-/// @param path 
-/// @return 
-///
 wxString StandardPaths::DoDecodePath(wxString path) {
-	// Decode
-	if (path[0] == '?') {
-		// Split ?part from rest
-		path.Replace("\\","/");
-		int pos = path.Find("/");
-		wxString path1,path2;
-		if (pos == wxNOT_FOUND) path1 = path;
-		else {
-			path1 = path.Left(pos);
-			path2 = path.Mid(pos+1);
-		}
+	if (!path || path[0] != '?')
+		return path;
 
-		// Replace ?part if valid
-		std::map<wxString,wxString>::iterator iter = paths.find(path1);
-		if (iter == paths.end()) return path;
-		wxString final = iter->second + "/" + path2;
-		final.Replace("//","/");
-#ifdef WIN32
-		final.Replace("/","\\");
-#endif
-		return final;
+	// Split ?part from rest
+	path.Replace("\\","/");
+	int pos = path.Find("/");
+	wxString path1,path2;
+	if (pos == wxNOT_FOUND) path1 = path;
+	else {
+		path1 = path.Left(pos);
+		path2 = path.Mid(pos+1);
 	}
 
-	// Nothing to decode
-	else return path;
+	// Replace ?part if valid
+	std::map<wxString,wxString>::iterator iter = paths.find(path1);
+	if (iter == paths.end()) return path;
+	wxString final = iter->second + "/" + path2;
+	final.Replace("//","/");
+#ifdef WIN32
+	final.Replace("/","\\");
+#endif
+	return final;
 }
 
-/// @brief Set value of a ? path 
-/// @param path  
-/// @param value 
-///
 void StandardPaths::DoSetPathValue(const wxString &path, const wxString &value) {
 	paths[path] = value;
 }
