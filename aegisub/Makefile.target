@@ -46,6 +46,12 @@ $(PROGRAM): $(OBJ)
 ##########
 clean: $(SUBDIRS)
 	$(BIN_RM) -f $(OBJ) $(CLEANFILES) $(LIB) $(LIB_SHARED) $(PROGRAM)
+ifdef PRECOMPILED_HEADER_NAME
+	$(BIN_RM) -f $(PRECOMPILED_HEADER_NAME).gch
+endif
+
+mostlyclean: $(SUBDIRS)
+	$(BIN_RM) -f $(OBJ) $(CLEANFILES) $(LIB) $(LIB_SHARED) $(PROGRAM)
 
 distclean: clean
 	$(BIN_RM) -rf $(DISTCLEANFILES) $(DEP)
