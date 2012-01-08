@@ -69,7 +69,6 @@ AudioPlayer::~AudioPlayer() {
 	if (displayTimer) {
 		displayTimer->Stop();
 	}
-	CloseStream();
 }
 
 AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
