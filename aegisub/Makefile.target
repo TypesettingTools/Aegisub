@@ -69,16 +69,19 @@ endif
 
 install: $(SUBDIRS) install-share install-program install-lib
 
+install-strip:
+	$(MAKE) BIN_SINSTALL='$(BIN_INSTALL) -s' install
+
 install-program:
 ifdef PROGRAM_INSTALL
 	@$(BIN_MKDIR) -p $(DESTDIR)$(P_BINDIR)
-	@$(BIN_INSTALL) $(PROGRAM) $(DESTDIR)$(P_BINDIR)/$(PROGRAM)
+	@${BIN_SINSTALL:-$BIN_INSTALL} $(PROGRAM) $(DESTDIR)$(P_BINDIR)/$(PROGRAM)
 endif
 
 install-lib:
 ifdef LIB_SHARED_INSTALL
 	$(BIN_MKDIR) -p $(DESTDIR)$(P_LIB)
-	$(BIN_INSTALL) $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED_FULL)
+	${BIN_SINSTALL:-$BIN_INSTALL} $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED_FULL)
 	$(BIN_LN) -sf $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED)
 endif
 
