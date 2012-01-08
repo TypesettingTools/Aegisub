@@ -477,11 +477,11 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 
 	OptionAdd(spectrum, _("Cache memory max (MB)"), "Audio/Renderer/Spectrum/Memory Max", 2, 1024);
 
-#if defined(WIN32) || defined(_DEBUG)
-	wxFlexGridSizer *windows = PageSizer(_("Windows Specific"));
+#ifdef WITH_AVISYNTH
+	wxFlexGridSizer *avisynth = PageSizer(_("Avisynth"));
 	const wxString adm_arr[3] = { "ConvertToMono", "GetLeftChannel", "GetRightChannel" };
 	wxArrayString adm_choice(3, adm_arr);
-	OptionChoice(windows, _("Avisynth down-mixer"), adm_choice, "Audio/Downmixer");
+	OptionChoice(avisynth, _("Avisynth down-mixer"), adm_choice, "Audio/Downmixer");
 #endif
 
 #ifdef WITH_PORTAUDIO
@@ -504,11 +504,11 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	OptionChoice(expert, _("Subtitle provider"), sp_choice, "Subtitle/Provider");
 
 
-#if defined(WIN32) || defined(_DEBUG)
-	wxFlexGridSizer *windows = PageSizer(_("Windows Specific"));
-	OptionAdd(windows, _("Allow pre-2.56a Avisynth"), "Provider/Avisynth/Allow Ancient");
-	CellSkip(windows);
-	OptionAdd(windows, _("Avisynth memory limit"), "Provider/Avisynth/Memory Max");
+#ifdef WITH_AVISYNTH
+	wxFlexGridSizer *avisynth = PageSizer(_("Avisynth"));
+	OptionAdd(avisynth, _("Allow pre-2.56a Avisynth"), "Provider/Avisynth/Allow Ancient");
+	CellSkip(avisynth);
+	OptionAdd(avisynth, _("Avisynth memory limit"), "Provider/Avisynth/Memory Max");
 #endif
 
 	SetSizerAndFit(sizer);
