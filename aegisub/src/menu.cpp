@@ -55,11 +55,6 @@ static const int MENU_ID_BASE = 10000;
 using std::tr1::placeholders::_1;
 using std::tr1::bind;
 
-/// Get the menu text for a command along with hotkey
-inline wxString get_menu_text(cmd::Command *command, agi::Context *c) {
-	return command->StrMenu(c) + "\t" + hotkey::get_hotkey_str_first("Default", command->name());
-}
-
 class MruMenu : public wxMenu {
 	std::string type;
 	std::vector<wxMenuItem *> items;
@@ -164,7 +159,12 @@ class CommandManager {
 	}
 
 	void UpdateItemName(std::pair<cmd::Command*, wxMenuItem*> const& item) {
-		item.second->SetItemLabel(get_menu_text(item.first, context));
+		wxString text;
+		if (item.first->Type() & cmd::COMMAND_DYNAMIC_NAME)
+			text = item.first->StrMenu(context);
+		else
+			text = item.second->GetItemLabel().BeforeFirst('\t');
+		item.second->SetItemLabel(text + "\t" + hotkey::get_hotkey_str_first("Default", item.first->name()));
 	}
 
 public:
@@ -182,9 +182,8 @@ public:
 			flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 			wxITEM_NORMAL;
 
-		wxString menu_text = text.empty() ?
-			get_menu_text(co, context) :
-			_(lagi_wxString(text)) + "\t" + hotkey::get_hotkey_str_first("Default", co->name());
+		wxString menu_text = text.empty() ? co->StrMenu(context) : _(lagi_wxString(text));
+		menu_text += "\t" + hotkey::get_hotkey_str_first("Default", co->name());
 
 		wxMenuItem *item = new wxMenuItem(parent, MENU_ID_BASE + items.size(), menu_text, co->StrHelp(), kind);
 #ifndef __WXMAC__
