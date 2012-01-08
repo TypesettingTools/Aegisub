@@ -222,7 +222,7 @@ public:
 	bool IsNearbyMarker(int64_t sample, int sensitivity) const;
 	AudioMarker * OnLeftClick(int64_t sample, int sensitivity);
 	AudioMarker * OnRightClick(int64_t sample, int sensitivity);
-	void OnMarkerDrag(AudioMarker *marker, int64_t new_position);
+	void OnMarkerDrag(AudioMarker *marker, int64_t new_position, bool snap, int64_t snap_range);
 
 public:
 	// Specific interface
@@ -522,9 +522,30 @@ AudioMarker * AudioTimingControllerDialogue::OnRightClick(int64_t sample, int se
 	return right;
 }
 
-void AudioTimingControllerDialogue::OnMarkerDrag(AudioMarker *marker, int64_t new_position)
+void AudioTimingControllerDialogue::OnMarkerDrag(AudioMarker *marker, int64_t new_position, bool snap, int64_t snap_range)
 {
 	assert(marker == &active_markers[0] || marker == &active_markers[1]);
+
+	if (snap)
+	{
+		SampleRange snap_sample_range(new_position - snap_range, new_position + snap_range);
+		const AudioMarker *snap_marker = 0;
+		AudioMarkerVector potential_snaps;
+		GetMarkers(snap_sample_range, potential_snaps);
+		for (AudioMarkerVector::iterator mi = potential_snaps.begin(); mi != potential_snaps.end(); ++mi)
+		{
+			if (*mi != marker && (*mi)->CanSnap())
+			{
+				if (!snap_marker)
+					snap_marker = *mi;
+				else if (tabs((*mi)->GetPosition() - new_position) < tabs(snap_marker->GetPosition() - new_position))
+					snap_marker = *mi;
+			}
+		}
+
+		if (snap_marker)
+			new_position = snap_marker->GetPosition();
+	}
 	SetMarker(static_cast<AudioMarkerDialogueTiming*>(marker), new_position);
 }
 

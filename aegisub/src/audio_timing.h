@@ -141,7 +141,9 @@ public:
 	/// @brief The user dragged a timing marker
 	/// @param marker       The marker being dragged
 	/// @param new_position Sample position the marker was dragged to
-	virtual void OnMarkerDrag(AudioMarker *marker, int64_t new_position) = 0;
+	/// @param snap         Enable snapping to other markers
+	/// @param snap_range   Maximum snapping range in samples
+	virtual void OnMarkerDrag(AudioMarker *marker, int64_t new_position, bool snap, int64_t snap_range) = 0;
 
 	/// @brief Destructor
 	virtual ~AudioTimingController() { }

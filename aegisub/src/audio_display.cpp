@@ -508,32 +508,11 @@ public:
 	{
 		if (event.Dragging())
 		{
-			int64_t sample_pos = display->SamplesFromRelativeX(event.GetPosition().x);
-
-			if (marker->CanSnap() && (default_snap != event.ShiftDown()))
-			{
-				SampleRange snap_sample_range(
-					display->SamplesFromRelativeX(event.GetPosition().x - snap_range),
-					display->SamplesFromRelativeX(event.GetPosition().x + snap_range));
-				const AudioMarker *snap_marker = 0;
-				AudioMarkerVector potential_snaps;
-				controller->GetMarkers(snap_sample_range, potential_snaps);
-				for (AudioMarkerVector::iterator mi = potential_snaps.begin(); mi != potential_snaps.end(); ++mi)
-				{
-					if (*mi != marker && (*mi)->CanSnap())
-					{
-						if (!snap_marker)
-							snap_marker = *mi;
-						else if (tabs((*mi)->GetPosition() - sample_pos) < tabs(snap_marker->GetPosition() - sample_pos))
-							snap_marker = *mi;
-					}
-				}
-
-				if (snap_marker)
-					sample_pos = snap_marker->GetPosition();
-			}
-
-			timing_controller->OnMarkerDrag(marker, sample_pos);
+			timing_controller->OnMarkerDrag(
+				marker,
+				display->SamplesFromRelativeX(event.GetPosition().x),
+				default_snap != event.ShiftDown(),
+				display->SamplesFromAbsoluteX(snap_range));
 		}
 
 		// We lose the marker drag if the button used to initiate it goes up
