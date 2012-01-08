@@ -19,8 +19,8 @@
         {},
         { "command" : "audio/save/clip" },
         {},
-        { "command" : "edit/line/copy" },
         { "command" : "edit/line/cut" },
+        { "command" : "edit/line/copy" },
         { "command" : "edit/line/paste" },
         {},
         { "command" : "edit/line/delete" }
