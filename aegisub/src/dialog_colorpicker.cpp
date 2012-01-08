@@ -799,7 +799,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 
 	colorspace_choice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DialogColorPicker::OnChangeMode, this);
 
-	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, _("Colour Picker")));
+	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Colour Picker"));
 
 	// Fill the controls
 	int mode = OPT_GET("Tool/Colour Picker/Mode")->GetInt();
