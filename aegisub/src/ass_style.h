@@ -103,15 +103,6 @@ public:
 	/// Update the raw line data after one or more of the public members have been changed
 	void UpdateData();
 
-	/// Returns the margin value as a string
-	/// @param which 0: left; 1: right; 2: vertical/top; 3: bottom
-	wxString GetMarginString(int which) const;
-
-	/// Sets margin value from a string
-	/// @param value New value for the margin; must contain a number
-	/// @param which 0: left; 1: right; 2: vertical/top; 3: bottom
-	void SetMarginString(const wxString value, int which);
-
 	/// @brief Get a list of valid ASS font encodings
 	static void GetEncodings(wxArrayString &encodingStrings);
 

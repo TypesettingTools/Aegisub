@@ -290,19 +290,19 @@ AssStyle::AssStyle(wxString rawData,int version) {
 	}
 
 	// Read left margin
-	SetMarginString(get_next_string(tkn), 0);
+	Margin[0] = mid(0, get_next_int(tkn), 9999);
 
 	// Read right margin
-	SetMarginString(get_next_string(tkn), 1);
+	Margin[1] = mid(0, get_next_int(tkn), 9999);
 
 	// Read top margin
-	SetMarginString(get_next_string(tkn), 2);
+	Margin[2] = mid(0, get_next_int(tkn), 9999);
 
 	// Read bottom margin
 	if (version == 2)
-		SetMarginString(get_next_string(tkn),3);
+		Margin[3] = mid(0, get_next_int(tkn), 9999);
 	else
-		SetMarginString(GetMarginString(2), 3);
+		Margin[3] = Margin[2];
 
 	// Skip alpha level
 	if (version == 0)
@@ -341,23 +341,6 @@ void AssStyle::UpdateData() {
 					  Margin[0],Margin[1],Margin[2],encoding);
 
 	SetEntryData(final);
-}
-
-void AssStyle::SetMarginString(const wxString str,int which) {
-	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
-	if (!str.IsNumber()) throw "Invalid margin value";
-	long value;
-	str.ToLong(&value);
-	if (value < 0) value = 0;
-	else if (value > 9999) value = 9999;
-	
-	Margin[which] = value;
-}
-
-wxString AssStyle::GetMarginString(int which) const {
-	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
-	wxString result = wxString::Format("%04i",Margin[which]);
-	return result;
 }
 
 wxString AssStyle::GetSSAText() const {
