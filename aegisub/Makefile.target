@@ -1,7 +1,6 @@
 #  *** THERE ARE NO USER-EDITABLE ITEMS HERE. ***
 #
 # TODO:
-#       * DESTDIR= support for make install.
 #       * Allow variables to be overridden on the CL.
 
 .PHONY: all install clean subdirs $(SUBDIRS)
@@ -66,30 +65,30 @@ install: $(SUBDIRS) install-share install-program install-lib
 
 install-program:
 ifdef PROGRAM_INSTALL
-	@$(BIN_MKDIR) -p $(P_BINDIR)
-	@$(BIN_INSTALL) $(PROGRAM) $(P_BINDIR)/$(PROGRAM)
+	@$(BIN_MKDIR) -p $(DESTDIR)$(P_BINDIR)
+	@$(BIN_INSTALL) $(PROGRAM) $(DESTDIR)$(P_BINDIR)/$(PROGRAM)
 endif
 
 install-lib:
 ifdef LIB_SHARED_INSTALL
-	$(BIN_MKDIR) -p $(P_LIB)
-	$(BIN_INSTALL) $(LIB_SHARED_FULL) $(P_LIB)/$(LIB_SHARED_FULL)
-	$(BIN_LN) -sf $(LIB_SHARED_FULL) $(P_LIB)/$(LIB_SHARED)
+	$(BIN_MKDIR) -p $(DESTDIR)$(P_LIB)
+	$(BIN_INSTALL) $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED_FULL)
+	$(BIN_LN) -sf $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED)
 endif
 
 install-share:
 ifdef DATA_SHARE
-	@$(BIN_MKDIR) -p $(addprefix $(P_DATA)/, $(dir $(DATA_SHARE)))
+	@$(BIN_MKDIR) -p $(addprefix $(DESTDIR)$(P_DATA)/, $(dir $(DATA_SHARE)))
 	@for i in $(DATA_SHARE); do \
-		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(P_DATA)/$$i"; \
-		$(BIN_INSTALL) $$i $(P_DATA)/$$i; \
+		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(DESTDIR)$(P_DATA)/$$i"; \
+		$(BIN_INSTALL) $$i $(DESTDIR)$(P_DATA)/$$i; \
 	done
 endif
 ifdef DATA_SHARE_DOC
-	@$(BIN_MKDIR) -p $(addprefix $(P_DOC)/, $(dir $(DATA_SHARE_DOC)))
+	@$(BIN_MKDIR) -p $(addprefix $(DESTDIR)$(P_DOC)/, $(dir $(DATA_SHARE_DOC)))
 	@for i in $(DATA_SHARE_DOC); do \
-		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(P_DOC)/$$i"; \
-		$(BIN_INSTALL) $$i $(P_DOC)/$$i; \
+		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(DESTDIR)$(P_DOC)/$$i"; \
+		$(BIN_INSTALL) $$i $(DESTDIR)$(P_DOC)/$$i; \
 	done
 endif
 

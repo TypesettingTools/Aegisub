@@ -35,10 +35,10 @@ all: $(MO)
 	$(BIN_MSGFMT) -o $@ $<
 
 install:
-	@$(BIN_MKDIR) -p $(addsuffix /LC_MESSAGES/, $(addprefix $(P_LOCALE)/, $(basename $(PO))))
+	@$(BIN_MKDIR) -p $(addsuffix /LC_MESSAGES/, $(addprefix $(DESTDIR)$(P_LOCALE)/, $(basename $(PO))))
 	@for i in $(basename $(PO)); do \
-		echo $(BIN_INSTALL) $$i.mo $(P_LOCALE)/$$i/LC_MESSAGES/$(GETTEXT_PACKAGE).mo; \
-		$(BIN_INSTALL) $$i.mo $(P_LOCALE)/$$i/LC_MESSAGES/$(GETTEXT_PACKAGE).mo; \
+		echo $(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(GETTEXT_PACKAGE).mo; \
+		$(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(GETTEXT_PACKAGE).mo; \
 	done
 
 
