@@ -142,17 +142,14 @@ bool AegisubApp::OnInit() {
 #endif
 
 	// logging.
-	wxString path_log = StandardPaths::DecodePath("?user/log/");
-	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
 	agi::log::log = new agi::log::LogSink;
-	agi::log::log->Subscribe(new agi::log::JsonEmitter(STD_STR(path_log), agi::log::log));
 
 #ifdef _DEBUG
 	agi::log::log->Subscribe(new agi::log::EmitSTDOUT());
 #endif
 
 	// Set config file
-	StartupLog("Load configuration");
+	StartupLog("Load local configuration");
 #ifdef __WXMSW__
 	// Try loading configuration from the install dir if one exists there
 	try {
@@ -169,6 +166,12 @@ bool AegisubApp::OnInit() {
 	}
 #endif
 
+	StartupLog("Create log writer");
+	wxString path_log = StandardPaths::DecodePath("?user/log/");
+	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
+	agi::log::log->Subscribe(new agi::log::JsonEmitter(STD_STR(path_log), agi::log::log));
+
+	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
 			config::opt = new agi::Options(STD_STR(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
