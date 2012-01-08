@@ -184,7 +184,7 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Show keyframes in slider"), "Video/Slider/Show Keyframes");
 	OptionAdd(general, _("Always show visual tools"), "Tool/Visual/Always Show");
 	OptionAdd(general, _("Seek video to line start on selection change"), "Video/Subtitle Sync");
-	CellSkip(general);
+	OptionAdd(general, _("Automatically open audio when opening video"), "Video/Open Audio");
 
 	const wxString czoom_arr[24] = { "12.5%", "25%", "37.5%", "50%", "62.5%", "75%", "87.5%", "100%", "112.5%", "125%", "137.5%", "150%", "162.5%", "175%", "187.5%", "200%", "212.5%", "225%", "237.5%", "250%", "262.5%", "275%", "287.5%", "300%" };
 	wxArrayString choice_zoom(24, czoom_arr);

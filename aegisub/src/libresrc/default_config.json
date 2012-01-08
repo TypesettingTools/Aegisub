@@ -541,6 +541,7 @@
 			},
 			"Pattern" : false
 		},
+		"Open Audio" : false,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",
 		"Slider" : {
