@@ -92,8 +92,6 @@ IMPLEMENT_APP(AegisubApp)
 static const char *LastStartupState = NULL;
 
 #ifdef WITH_STARTUPLOG
-
-/// DOCME
 #define StartupLog(a) MessageBox(0, L ## a, L"Aegisub startup log", 0)
 #else
 #define StartupLog(a) LastStartupState = a
@@ -104,30 +102,17 @@ static const char *LastStartupState = NULL;
 /// DOCME
 #define MS_VC_EXCEPTION 0x406d1388
 
+/// Parameters for setting the thread name
+struct THREADNAME_INFO {
+	DWORD dwType;     ///< must be 0x1000
+	LPCSTR szName;    ///< pointer to name (in same addr space)
+	DWORD dwThreadID; ///< thread ID (-1 caller thread)
+	DWORD dwFlags;    ///< reserved for future use, most be zero
+};
 
-/// DOCME
-typedef struct tagTHREADNAME_INFO {
-
-	/// DOCME
-	DWORD dwType; // must be 0x1000
-
-	/// DOCME
-	LPCSTR szName; // pointer to name (in same addr space)
-
-	/// DOCME
-	DWORD dwThreadID; // thread ID (-1 caller thread)
-
-	/// DOCME
-	DWORD dwFlags; // reserved for future use, most be zero
-
-/// DOCME
-} THREADNAME_INFO;
-
-
-/// @brief DOCME
-/// @param dwThreadID   
-/// @param szThreadName 
-///
+/// Set the name of a thread in the visual studio debugger
+/// @param dwThreadID Thread ID, or -1 for caller
+/// @param szThreadName New name for the thread
 void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 	THREADNAME_INFO info;
 	info.dwType = 0x1000;
