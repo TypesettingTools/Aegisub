@@ -64,48 +64,16 @@ SinkMessage::~SinkMessage() {
 	delete message;
 }
 
-
-LogSink::LogSink(const std::string& dir_log): dir_log(dir_log) {
-	util::time_log(time_start);
-}
-
 /// @todo The log files need to be trimmed after N amount.
 LogSink::~LogSink() {
-	json::Object root;
-	json::Array &array = root["log"];
+	// The destructor for emitters may try to log messages, so disable all the
+	// emitters before destructing any
+	std::vector<Emitter*> emitters_temp;
+	swap(emitters_temp, emitters);
+	util::delete_clear(emitters_temp);
 
-	agi_timeval time_close;
-	util::time_log(time_close);
-
-	for (unsigned int i=0; i < sink.size(); i++) {
-		json::Object entry;
-		entry["sec"]      = sink[i]->tv.tv_sec;
-		entry["usec"]     = sink[i]->tv.tv_usec;
-		entry["severity"] = sink[i]->severity,
-		entry["section"]  = sink[i]->section;
-		entry["file"]     = sink[i]->file;
-		entry["func"]     = sink[i]->func;
-		entry["line"]     = sink[i]->line;
-		entry["message"]  = std::string(sink[i]->message, sink[i]->len);
-
-		array.push_back(entry);
-	}
-
-	json::Array &timeval_open = root["timeval"]["open"];
-	timeval_open.push_back(time_start.tv_sec);
-	timeval_open.push_back(time_start.tv_usec);
-
-	json::Array &timeval_close = root["timeval"]["close"];
-	timeval_close.push_back(time_close.tv_sec);
-	timeval_close.push_back(time_close.tv_usec);
-
-	std::stringstream str;
-	str << dir_log << time_start.tv_sec << ".json";
-	json::Writer::Write(root, io::Save(str.str()).Get());
-
-	agi::util::delete_clear(sink);
+	util::delete_clear(sink);
 }
-
 
 void LogSink::log(SinkMessage *sm) {
 	sink.push_back(sm);
@@ -145,6 +113,48 @@ Message::~Message() {
 	sm->message = msg.str();
 	sm->len = (size_t)msg.pcount();
 	agi::log::log->log(sm);
+}
+
+JsonEmitter::JsonEmitter(std::string const& directory, const agi::log::LogSink *log_sink)
+: directory(directory)
+, log_sink(log_sink)
+{
+	util::time_log(time_start);
+}
+
+JsonEmitter::~JsonEmitter() {
+	json::Object root;
+	json::Array &array = root["log"];
+
+	agi_timeval time_close;
+	util::time_log(time_close);
+
+	Sink const& sink = *log_sink->GetSink();
+	for (unsigned int i=0; i < sink.size(); i++) {
+		json::Object entry;
+		entry["sec"]      = sink[i]->tv.tv_sec;
+		entry["usec"]     = sink[i]->tv.tv_usec;
+		entry["severity"] = sink[i]->severity;
+		entry["section"]  = sink[i]->section;
+		entry["file"]     = sink[i]->file;
+		entry["func"]     = sink[i]->func;
+		entry["line"]     = sink[i]->line;
+		entry["message"]  = std::string(sink[i]->message, sink[i]->len);
+
+		array.push_back(entry);
+	}
+
+	json::Array &timeval_open = root["timeval"]["open"];
+	timeval_open.push_back(time_start.tv_sec);
+	timeval_open.push_back(time_start.tv_usec);
+
+	json::Array &timeval_close = root["timeval"]["close"];
+	timeval_close.push_back(time_close.tv_sec);
+	timeval_close.push_back(time_close.tv_usec);
+
+	std::stringstream str;
+	str << directory << time_start.tv_sec << ".json";
+	json::Writer::Write(root, io::Save(str.str()).Get());
 }
 
 	} // namespace log

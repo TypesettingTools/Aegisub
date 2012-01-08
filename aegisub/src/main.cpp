@@ -144,7 +144,8 @@ bool AegisubApp::OnInit() {
 	// logging.
 	wxString path_log = StandardPaths::DecodePath("?user/log/");
 	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
-	agi::log::log = new agi::log::LogSink(STD_STR(path_log));
+	agi::log::log = new agi::log::LogSink;
+	agi::log::log->Subscribe(new agi::log::JsonEmitter(STD_STR(path_log), agi::log::log));
 
 #ifdef _DEBUG
 	agi::log::log->Subscribe(new agi::log::EmitSTDOUT());

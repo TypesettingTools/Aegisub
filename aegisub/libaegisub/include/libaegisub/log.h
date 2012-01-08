@@ -110,17 +110,7 @@ class LogSink {
 	/// List of pointers to emitters
 	std::vector<Emitter*> emitters;
 
-	/// Init time for log writing purposes.
-	agi_timeval time_start;
-
-	/// Directory to place logfiles.
-	const std::string dir_log;
-
 public:
-	/// Constructor
-	/// @param dir_log Directory to place log files.
-	LogSink(const std::string &dir_log);
-
 	/// Destructor
 	~LogSink();
 
@@ -139,7 +129,7 @@ public:
 
 	/// @brief @get the complete (current) log.
 	/// @return Const pointer to internal sink.
-	const Sink* GetSink() { return &sink; }
+	const Sink* GetSink() const { return &sink; }
 };
 
 /// An emitter to produce human readable output for a log sink.
@@ -150,6 +140,28 @@ public:
 
 	/// Accept a single log entry
 	virtual void log(SinkMessage *sm)=0;
+};
+
+/// A simple emitter which writes the log to a file in json format when it's destroyed
+class JsonEmitter : public Emitter {
+	/// Init time
+	agi_timeval time_start;
+
+	/// Directory to write the log file in
+	std::string directory;
+
+	/// Parent sink to get messages from
+	const agi::log::LogSink *log_sink;
+public:
+	/// Constructor
+	/// @param directory Directory to write the log file in
+	/// @param log_sink Parent sink to get messages from
+	JsonEmitter(std::string const& directory, const agi::log::LogSink *log_sink);
+	/// Destructor
+	~JsonEmitter();
+
+	/// No-op log function as everything is done in the destructor
+	void log(SinkMessage *) { }
 };
 
 /// Generates a message and submits it to the log sink.
