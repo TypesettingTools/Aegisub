@@ -79,10 +79,10 @@ public:
 };
 
 static void browse_button(wxTextCtrl *ctrl) {
-	wxString def = StandardPaths::DecodePathMaybeRelative(ctrl->GetValue(), "?user/");
+	wxString def = StandardPaths::DecodePath(ctrl->GetValue());
 	wxDirDialog dlg(0, _("Please choose the folder:"), def);
 	if (dlg.ShowModal() == wxID_OK) {
-		wxString dir = StandardPaths::EncodePath(dlg.GetPath());
+		wxString dir = dlg.GetPath();
 		if (!dir.empty())
 			ctrl->SetValue(dir);
 	}

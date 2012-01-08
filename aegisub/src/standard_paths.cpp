@@ -125,19 +125,6 @@ wxString StandardPaths::DoDecodePath(wxString path) {
 	else return path;
 }
 
-
-
-/// @brief Encode path 
-/// @param path 
-/// @return 
-///
-wxString StandardPaths::DoEncodePath(const wxString &path) {
-	// TODO
-	return path;
-}
-
-
-
 /// @brief Set value of a ? path 
 /// @param path  
 /// @param value 
@@ -145,19 +132,3 @@ wxString StandardPaths::DoEncodePath(const wxString &path) {
 void StandardPaths::DoSetPathValue(const wxString &path, const wxString &value) {
 	paths[path] = value;
 }
-
-
-
-/// @brief Decode a path that for legacy reasons might be relative to another path
-/// @param path       parent path.
-/// @param relativeTo relative path.
-/// @returns absolute path
-/// @depreciated Older aegisub versions allowed people to put in single directory names w/out a full path this isn't an issue with 2.2 as preferences will be redone.
-wxString StandardPaths::DecodePathMaybeRelative(const wxString &path, const wxString &relativeTo) {
-	wxFileName res(DecodePath(path));
-	if (res.IsRelative())
-		res.Assign(DecodePath(relativeTo + "/" + path));
-	return res.GetFullPath();
-}
-
-

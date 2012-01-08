@@ -128,19 +128,13 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 		if (file.FileExists()) {
 			wxString path = lagi_wxString(OPT_GET("Path/Auto/Backup")->GetString());
 			if (path.empty()) path = file.GetPath();
+			wxFileName dstpath(StandardPaths::DecodePath(path));
+			if (!dstpath.DirExists())
+				wxMkdir(dstpath.GetPath());
 
-			wxFileName dstpath(path);
-			if (!dstpath.IsAbsolute())
-				path = StandardPaths::DecodePathMaybeRelative(path, "?user/");
-			path += "/";
-			dstpath.Assign(path);
+			dstpath.SetFullName(file.GetName() + ".ORIGINAL." + file.GetExt());
 
-			if (!dstpath.DirExists()) {
-				wxMkdir(path);
-			}
-
-			wxString backup = path + file.GetName() + ".ORIGINAL." + file.GetExt();
-			wxCopyFile(file.GetFullPath(), backup, true);
+			wxCopyFile(file.GetFullPath(), dstpath.GetFullPath(), true);
 		}
 	}
 
@@ -190,11 +184,9 @@ wxString AssFile::AutoSave() {
 	wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
 	if (!path)
 		path = origfile.GetPath();
+	path = StandardPaths::DecodePath(path);
 
 	wxFileName dstpath(path);
-	if (!dstpath.IsAbsolute())
-		path = StandardPaths::DecodePathMaybeRelative(path, "?user/");
-	dstpath.AssignDir(path);
 	if (!dstpath.DirExists())
 		wxMkdir(path);
 
