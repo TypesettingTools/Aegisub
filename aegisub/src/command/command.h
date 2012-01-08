@@ -38,9 +38,9 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconNone, CommandError, "command/icon")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/invalid")
 
 #define CMD_NAME(a) const char* name() const { return a; }
-#define STR_MENU(a) wxString StrMenu(const agi::Context *) const { return a; }
-#define STR_DISP(a) wxString StrDisplay(const agi::Context *) const { return a; }
-#define STR_HELP(a) wxString StrHelp() const { return a; }
+#define STR_MENU(a) wxString StrMenu(const agi::Context *) const { return _(a); }
+#define STR_DISP(a) wxString StrDisplay(const agi::Context *) const { return _(a); }
+#define STR_HELP(a) wxString StrHelp() const { return _(a); }
 #define CMD_TYPE(a) int Type() const { using namespace cmd; return a; }
 
 #define COMMAND_GROUP(cname, cmdname, menu, disp, help) \
