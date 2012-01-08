@@ -582,6 +582,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 					context->audioController->SamplesFromMilliseconds(line->End), false));
 			}
 		}
+		sort(inactive_markers.begin(), inactive_markers.end());
 		break;
 	}
 	default:
