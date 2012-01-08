@@ -18,6 +18,7 @@
 /// @brief Preferences dialogue
 /// @ingroup configuration_ui
 
+#include "config.h"
 
 #ifndef AGI_PRE
 #include <iterator>
