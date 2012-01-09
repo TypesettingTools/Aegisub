@@ -58,7 +58,7 @@ using std::tr1::bind;
 class MruMenu : public wxMenu {
 	std::string type;
 	std::vector<wxMenuItem *> items;
-	std::vector<cmd::Command*> *cmds;
+	std::vector<std::string> *cmds;
 
 	void Resize(size_t new_size) {
 		for (size_t i = GetMenuItemCount(); i > new_size; --i) {
@@ -68,14 +68,14 @@ class MruMenu : public wxMenu {
 		for (size_t i = GetMenuItemCount(); i < new_size; ++i) {
 			if (i >= items.size()) {
 				items.push_back(new wxMenuItem(this, MENU_ID_BASE + cmds->size(), "_"));
-				cmds->push_back(cmd::get(STD_STR(wxString::Format("recent/%s/%d", lagi_wxString(type).Lower(), (int)i))));
+				cmds->push_back(STD_STR(wxString::Format("recent/%s/%d", lagi_wxString(type).Lower(), (int)i)));
 			}
 			Append(items[i]);
 		}
 	}
 
 public:
-	MruMenu(std::string const& type, std::vector<cmd::Command*> *cmds)
+	MruMenu(std::string const& type, std::vector<std::string> *cmds)
 	: type(type)
 	, cmds(cmds)
 	{
@@ -114,7 +114,7 @@ public:
 struct menu_item_cmp {
 	wxMenuItem *item;
 	menu_item_cmp(wxMenuItem *item) : item(item) { }
-	bool operator()(std::pair<cmd::Command*, wxMenuItem*> o) const {
+	bool operator()(std::pair<std::string, wxMenuItem*> const& o) const {
 		return o.second == item;
 	}
 };
@@ -128,11 +128,11 @@ struct menu_item_cmp {
 /// handlers makes everything involves events unusably slow.
 class CommandManager {
 	/// Menu items which need to do something on menu open
-	std::deque<std::pair<cmd::Command*, wxMenuItem*> > dynamic_items;
+	std::deque<std::pair<std::string, wxMenuItem*> > dynamic_items;
 	/// Menu items which need to be updated only when hotkeys change
-	std::deque<std::pair<cmd::Command*, wxMenuItem*> > static_items;
+	std::deque<std::pair<std::string, wxMenuItem*> > static_items;
 	/// window id -> command map
-	std::vector<cmd::Command*> items;
+	std::vector<std::string> items;
 	/// MRU menus which need to be updated on menu open
 	std::deque<MruMenu*> mru;
 
@@ -143,14 +143,15 @@ class CommandManager {
 	agi::signal::Connection hotkeys_changed;
 
 	/// Update a single dynamic menu item
-	void UpdateItem(std::pair<cmd::Command*, wxMenuItem*> const& item) {
-		int flags = item.first->Type();
+	void UpdateItem(std::pair<std::string, wxMenuItem*> const& item) {
+		cmd::Command *c = cmd::get(item.first);
+		int flags = c->Type();
 		if (flags & cmd::COMMAND_DYNAMIC_NAME)
 			UpdateItemName(item);
 		if (flags & cmd::COMMAND_VALIDATE)
-			item.second->Enable(item.first->Validate(context));
+			item.second->Enable(c->Validate(context));
 		if (flags & cmd::COMMAND_RADIO || flags & cmd::COMMAND_TOGGLE) {
-			bool check = item.first->IsActive(context);
+			bool check = c->IsActive(context);
 			// Don't call Check(false) on radio items as this causes wxGtk to
 			// send a menu clicked event, and it should be a no-op anyway
 			if (check || flags & cmd::COMMAND_TOGGLE)
@@ -158,13 +159,14 @@ class CommandManager {
 		}
 	}
 
-	void UpdateItemName(std::pair<cmd::Command*, wxMenuItem*> const& item) {
+	void UpdateItemName(std::pair<std::string, wxMenuItem*> const& item) {
+		cmd::Command *c = cmd::get(item.first);
 		wxString text;
-		if (item.first->Type() & cmd::COMMAND_DYNAMIC_NAME)
-			text = item.first->StrMenu(context);
+		if (c->Type() & cmd::COMMAND_DYNAMIC_NAME)
+			text = c->StrMenu(context);
 		else
 			text = item.second->GetItemLabel().BeforeFirst('\t');
-		item.second->SetItemLabel(text + "\t" + hotkey::get_hotkey_str_first("Default", item.first->name()));
+		item.second->SetItemLabel(text + "\t" + hotkey::get_hotkey_str_first("Default", c->name()));
 	}
 
 public:
@@ -192,19 +194,19 @@ public:
 			item->SetBitmap(co->Icon(16));
 #endif
 		parent->Append(item);
-		items.push_back(co);
+		items.push_back(co->name());
 
 		if (flags != cmd::COMMAND_NORMAL)
-			dynamic_items.push_back(std::make_pair(co, item));
+			dynamic_items.push_back(std::make_pair(co->name(), item));
 		else
-			static_items.push_back(std::make_pair(co, item));
+			static_items.push_back(std::make_pair(co->name(), item));
 
 		return item->GetId();
 	}
 
 	/// Unregister a dynamic menu item
 	void Remove(wxMenuItem *item) {
-		std::deque<std::pair<cmd::Command*, wxMenuItem*> >::iterator it =
+		std::deque<std::pair<std::string, wxMenuItem*> >::iterator it =
 			find_if(dynamic_items.begin(), dynamic_items.end(), menu_item_cmp(item));
 		if (it != dynamic_items.end())
 			dynamic_items.erase(it);
@@ -228,7 +230,7 @@ public:
 		// the window ID ranges really need to be unique
 		size_t id = static_cast<size_t>(evt.GetId() - MENU_ID_BASE);
 		if (id < items.size())
-			(*items[id])(context);
+			cmd::call(items[id], context);
 	}
 
 	/// Update the hotkeys for all menu items
