@@ -140,10 +140,17 @@ VideoDisplay::~VideoDisplay () {
 }
 
 bool VideoDisplay::InitContext() {
-	if (!IsShownOnScreen()) return false;
-	if (!glContext.get()) {
+	if (!IsShownOnScreen())
+		return false;
+
+	// If this display is in a minimized detached dialog IsShownOnScreen will
+	// return true, but the client size is guaranteed to be 0
+	if (GetClientSize() == wxSize(0, 0))
+		return false;
+
+	if (!glContext)
 		glContext.reset(new wxGLContext(this));
-	}
+
 	SetCurrent(*glContext.get());
 	return true;
 }
@@ -183,7 +190,8 @@ void VideoDisplay::OnVideoOpen() {
 }
 
 void VideoDisplay::Render() try {
-	if (!InitContext() || !con->videoController->IsLoaded() || !videoOut) return;
+	if (!InitContext() || !con->videoController->IsLoaded() || !videoOut)
+		return;
 
 	if (!viewport_height || !viewport_width)
 		UpdateSize();
