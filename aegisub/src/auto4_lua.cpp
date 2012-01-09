@@ -125,7 +125,10 @@ namespace {
 	const agi::Context *get_context(lua_State *L)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "project_context");
-		assert(lua_islightuserdata(L, -1));
+		if (!lua_islightuserdata(L, -1)) {
+			lua_pop(L, 1);
+			return 0;
+		}
 		const agi::Context * c = static_cast<const agi::Context *>(lua_touserdata(L, -1));
 		lua_pop(L, 1);
 		return c;
@@ -458,7 +461,7 @@ namespace Automation4 {
 		const agi::Context *c = get_context(L);
 		int ms = lua_tointeger(L, -1);
 		lua_pop(L, 1);
-		if (c->videoController->TimecodesLoaded())
+		if (c && c->videoController->TimecodesLoaded())
 			lua_pushnumber(L, c->videoController->FrameAtTime(ms, agi::vfr::START));
 		else
 			lua_pushnil(L);
@@ -471,7 +474,7 @@ namespace Automation4 {
 		const agi::Context *c = get_context(L);
 		int frame = lua_tointeger(L, -1);
 		lua_pop(L, 1);
-		if (c->videoController->TimecodesLoaded())
+		if (c && c->videoController->TimecodesLoaded())
 			lua_pushnumber(L, c->videoController->TimeAtFrame(frame, agi::vfr::START));
 		else
 			lua_pushnil(L);
@@ -481,7 +484,7 @@ namespace Automation4 {
 	int LuaScript::LuaVideoSize(lua_State *L)
 	{
 		const agi::Context *c = get_context(L);
-		if (c->videoController->IsLoaded()) {
+		if (c && c->videoController->IsLoaded()) {
 			lua_pushnumber(L, c->videoController->GetWidth());
 			lua_pushnumber(L, c->videoController->GetHeight());
 			lua_pushnumber(L, c->videoController->GetAspectRatioValue());
@@ -497,6 +500,11 @@ namespace Automation4 {
 	int LuaScript::LuaGetKeyframes(lua_State *L)
 	{
 		const agi::Context *c = get_context(L);
+		if (!c) {
+			lua_pushnil(L);
+			return 1;
+		}
+
 		std::vector<int> const& kf = c->videoController->GetKeyFrames();
 
 		lua_newtable(L);
