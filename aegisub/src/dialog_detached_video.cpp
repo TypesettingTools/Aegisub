@@ -105,6 +105,7 @@ void DialogDetachedVideo::OnClose(wxCloseEvent&) {
 	context->videoDisplay = old_display;
 	context->videoSlider = old_slider;
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
+	context->videoController->Reload();
 	Destroy();
 }
 
@@ -126,6 +127,7 @@ void DialogDetachedVideo::OnVideoOpen() {
 		context->detachedVideo = 0;
 		context->videoDisplay = old_display;
 		context->videoSlider = old_slider;
+		context->videoController->Reload();
 		Destroy();
 	}
 }
