@@ -74,7 +74,7 @@
 			}
 		},
 		"Snap" : {
-			"Distance" : 5,
+			"Distance" : 10,
 			"Enable" : false
 		},
 		"Spectrum" : true,
