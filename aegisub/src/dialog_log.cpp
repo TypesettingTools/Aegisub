@@ -39,6 +39,7 @@
 #include "dialog_log.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
 #include <ctime>
 #include <tr1/functional>
 #include <string>
