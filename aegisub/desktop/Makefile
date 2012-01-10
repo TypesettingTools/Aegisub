@@ -36,7 +36,7 @@ install-desktop:
 
 
 install-icons:
-	@$(BIN_MKDIR) -p $(addprefix $(P_ICON)/hicolor/, $(dir $(ICON_HICOLOR)))
+	@$(BIN_MKDIR) -p $(addprefix $(DESTDIR)$(P_ICON)/hicolor/, $(dir $(ICON_HICOLOR)))
 	@for i in $(ICON_HICOLOR); do \
 		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(DESTDIR)$(P_ICON)/hicolor/$$i"; \
 		$(BIN_INSTALL) $$i $(DESTDIR)$(P_ICON)/hicolor/$$i; \
