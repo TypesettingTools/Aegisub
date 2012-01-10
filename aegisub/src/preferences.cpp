@@ -492,6 +492,20 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	OptionChoice(portaudio, _("Portaudio device"), PortAudioPlayer::GetOutputDevices(), "Player/Audio/PortAudio/Device Name");
 #endif
 
+#ifdef WITH_FFMS2
+	wxFlexGridSizer *ffms = PageSizer(_("FFMS2"));
+
+	const wxString log_levels[] = { "Quiet", "Panic", "Fatal", "Error", "Warning", "Info", "Verbose", "Debug" };
+	wxArrayString log_levels_choice(8, log_levels);
+	OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level");
+
+	const wxString error_modes[] = { _("Ignore"), _("Clear"), _("Stop"), _("Abort") };
+	wxArrayString error_modes_choice(4, error_modes);
+	OptionChoice(ffms, _("Audio indexing error handling mode"), error_modes_choice, "Provider/Audio/FFmpegSource/Decode Error Handling");
+
+	OptionAdd(ffms, _("Always index all audio tracks"), "Provider/FFmpegSource/Index All Tracks");
+#endif
+
 	SetSizerAndFit(sizer);
 }
 
