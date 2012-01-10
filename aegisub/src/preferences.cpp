@@ -153,7 +153,7 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Default lead-out length"), "Audio/Lead/OUT", 0, 36000);
 
 	OptionAdd(general, _("Start-marker drag sensitivity"), "Audio/Start Drag Sensitivity", 1, 15);
-	OptionAdd(general, _("Line boundry thickness"), "Audio/Line Boundaries Thickness", 1, 5);
+	OptionAdd(general, _("Line boundary thickness"), "Audio/Line Boundaries Thickness", 1, 5);
 	OptionAdd(general, _("Maximum snap distance"), "Audio/Snap/Distance", 0, 25);
 
 	const wxString dtl_arr[] = { _("Don't show"), _("Show previous"), _("Show previous and next"), _("Show all") };
