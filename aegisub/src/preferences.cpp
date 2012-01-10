@@ -152,12 +152,15 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Default lead-in length"), "Audio/Lead/IN", 0, 36000);
 	OptionAdd(general, _("Default lead-out length"), "Audio/Lead/OUT", 0, 36000);
 
-	const wxString dtl_arr[] = { _("Don't show"), _("Show previous"), _("Show previous and next"), _("Show all") };
-	wxArrayString choice_dtl(4, dtl_arr);
-	OptionChoice(general, _("Show inactive lines"), choice_dtl, "Audio/Inactive Lines Display Mode");
 	OptionAdd(general, _("Start-marker drag sensitivity"), "Audio/Start Drag Sensitivity", 1, 15);
 	OptionAdd(general, _("Line boundry thickness"), "Audio/Line Boundaries Thickness", 1, 5);
 	OptionAdd(general, _("Maximum snap distance"), "Audio/Snap/Distance", 0, 25);
+
+	const wxString dtl_arr[] = { _("Don't show"), _("Show previous"), _("Show previous and next"), _("Show all") };
+	wxArrayString choice_dtl(4, dtl_arr);
+	OptionChoice(general, _("Show inactive lines"), choice_dtl, "Audio/Inactive Lines Display Mode");
+	CellSkip(general);
+	OptionAdd(general, _("Include comments in inactive lines"), "Audio/Display/Draw/Inactive Comments");
 
 	wxFlexGridSizer *display = PageSizer(_("Display Visual Options"));
 	OptionAdd(display, _("Selection background"), "Audio/Display/Draw/Selection Background");

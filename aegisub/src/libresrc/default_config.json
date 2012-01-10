@@ -37,6 +37,7 @@
 		"Display" : {
 			"Draw" : {
 				"Cursor Time" : true,
+				"Inactive Comments" : true,
 				"Keyframes in Dialogue Mode" : true,
 				"Keyframes in Karaoke Mode" : true,
 				"Selection Background" : true,

@@ -173,10 +173,12 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	/// Autocommit option
 	const agi::OptionValue *auto_commit;
 	const agi::OptionValue *inactive_line_mode;
+	const agi::OptionValue *inactive_line_comments;
 
 	agi::signal::Connection commit_connection;
 	agi::signal::Connection audio_open_connection;
 	agi::signal::Connection inactive_line_mode_connection;
+	agi::signal::Connection inactive_line_comment_connection;
 
 	/// Get the leftmost of the markers
 	AudioMarkerDialogueTiming *GetLeftMarker();
@@ -298,9 +300,11 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , context(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit"))
 , inactive_line_mode(OPT_GET("Audio/Inactive Lines Display Mode"))
+, inactive_line_comments(OPT_GET("Audio/Display/Draw/Inactive Comments"))
 , commit_connection(c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this))
 , audio_open_connection(c->audioController->AddAudioOpenListener(&AudioTimingControllerDialogue::Revert, this))
 , inactive_line_mode_connection(OPT_SUB("Audio/Inactive Lines Display Mode", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
+, inactive_line_comment_connection(OPT_SUB("Audio/Display/Draw/Inactive Comments", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 {
 	assert(c->audioController != 0);
 
@@ -310,7 +314,6 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 
 	Revert();
-	RegenerateInactiveLines();
 }
 
 
@@ -365,7 +368,6 @@ void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
 	if (context->audioController->IsAudioOpen())
 	{
 		Revert();
-		RegenerateInactiveLines();
 	}
 }
 
@@ -378,7 +380,6 @@ void AudioTimingControllerDialogue::OnFileChanged(int type) {
 	if (type & AssFile::COMMIT_DIAG_TIME)
 	{
 		Revert();
-		RegenerateInactiveLines();
 	}
 	else if (type & AssFile::COMMIT_DIAG_ADDREM)
 	{
@@ -480,9 +481,12 @@ void AudioTimingControllerDialogue::Revert()
 			active_markers[0].SetPosition(context->audioController->SamplesFromMilliseconds(line->Start));
 			active_markers[1].SetPosition(context->audioController->SamplesFromMilliseconds(line->End));
 			timing_modified = false;
-			UpdateSelection();
+			AnnounceUpdatedPrimaryRange();
+			if (inactive_line_mode->GetInt() == 0)
+				AnnounceUpdatedStyleRanges;
 		}
 	}
+	RegenerateInactiveLines();
 }
 
 bool AudioTimingControllerDialogue::IsNearbyMarker(int64_t sample, int sensitivity) const
@@ -554,8 +558,22 @@ void AudioTimingControllerDialogue::SetMarker(AudioMarkerDialogueTiming *marker,
 	UpdateSelection();
 }
 
+static bool noncomment_dialogue(AssEntry *e)
+{
+	if (AssDialogue *diag = dynamic_cast<AssDialogue*>(e))
+		return !diag->Comment;
+	return false;
+}
+
+static bool dialogue(AssEntry *e)
+{
+	return !!dynamic_cast<AssDialogue*>(e);
+}
+
 void AudioTimingControllerDialogue::RegenerateInactiveLines()
 {
+	bool (*predicate)(AssEntry*) = inactive_line_comments->GetBool() ? dialogue : noncomment_dialogue;
+
 	switch (int mode = inactive_line_mode->GetInt())
 	{
 	case 1: // Previous line only
@@ -567,15 +585,15 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 				find(context->ass->Line.begin(), context->ass->Line.end(), line);
 
 			std::list<AssEntry*>::iterator prev = current_line;
-			while (--prev != context->ass->Line.begin() && !dynamic_cast<AssDialogue*>(*prev)) ;
-			AddInactiveMarkers(dynamic_cast<AssDialogue*>(*prev));
+			while (--prev != context->ass->Line.begin() && !predicate(*prev)) ;
+			AddInactiveMarkers(static_cast<AssDialogue*>(*prev));
 
 			if (mode == 2)
 			{
 				std::list<AssEntry*>::iterator next =
-					find_if(++current_line, context->ass->Line.end(), cast<AssDialogue*>());
+					find_if(++current_line, context->ass->Line.end(), predicate);
 				if (next != context->ass->Line.end())
-					AddInactiveMarkers(dynamic_cast<AssDialogue*>(*next));
+					AddInactiveMarkers(static_cast<AssDialogue*>(*next));
 			}
 		}
 		break;
@@ -585,8 +603,8 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		AssDialogue *active_line = context->selectionController->GetActiveLine();
 		for (std::list<AssEntry*>::const_iterator it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it)
 		{
-			if (*it != active_line)
-				AddInactiveMarkers(dynamic_cast<AssDialogue*>(*it));
+			if (*it != active_line && predicate(*it))
+				AddInactiveMarkers(static_cast<AssDialogue*>(*it));
 		}
 		break;
 	}
@@ -627,11 +645,8 @@ int64_t AudioTimingControllerDialogue::SnapPosition(int64_t position, int64_t sn
 
 void AudioTimingControllerDialogue::AddInactiveMarkers(AssDialogue *line)
 {
-	if (line)
-	{
-		inactive_markers.push_back(InactiveLineMarker(
-			context->audioController->SamplesFromMilliseconds(line->Start), true));
-		inactive_markers.push_back(InactiveLineMarker(
-			context->audioController->SamplesFromMilliseconds(line->End), false));
-	}
+	inactive_markers.push_back(InactiveLineMarker(
+		context->audioController->SamplesFromMilliseconds(line->Start), true));
+	inactive_markers.push_back(InactiveLineMarker(
+		context->audioController->SamplesFromMilliseconds(line->End), false));
 }

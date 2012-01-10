@@ -1326,7 +1326,7 @@ void AudioDisplay::Redraw(int64_t sample_start, int64_t sample_end)
 
 	if (sample_end >= 0 && sample_start <= GetClientSize().GetWidth())
 	{
-		RefreshRect(wxRect(sample_start, audio_top, sample_end, audio_height), false);
+		RefreshRect(wxRect(sample_start, audio_top, sample_end - sample_start, audio_height), false);
 	}
 }
 
