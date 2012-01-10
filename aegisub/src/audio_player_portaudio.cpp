@@ -91,7 +91,7 @@ void PortAudioPlayer::OpenStream() {
 	if (pa_device == paNoDevice) {
 		pa_device = Pa_GetDefaultOutputDevice();
 		if (pa_device == paNoDevice)
-			throw PortAudioError("No PortAudio output devices found");
+			throw PortAudioError("No PortAudio output devices found", 0);
 		LOG_D("audio/player/portaudio") << "using default output device:" << pa_device;
 	}
 
