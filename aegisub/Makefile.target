@@ -67,6 +67,8 @@ ifeq (install, $(MAKECMDGOALS))
 INSTALL_LIB 		= $(addprefix $(P_LIB)/, $(LIB_SHARED) $(LIB_SHARED_FULL))
 endif
 
+BIN_SINSTALL=$(BIN_INSTALL)
+
 install: $(SUBDIRS) install-share install-program install-lib
 
 install-strip:
@@ -75,13 +77,13 @@ install-strip:
 install-program:
 ifdef PROGRAM_INSTALL
 	@$(BIN_MKDIR) -p $(DESTDIR)$(P_BINDIR)
-	@${BIN_SINSTALL:-$BIN_INSTALL} $(PROGRAM) $(DESTDIR)$(P_BINDIR)/$(PROGRAM)
+	@$(BIN_SINSTALL) $(PROGRAM) $(DESTDIR)$(P_BINDIR)/$(PROGRAM)
 endif
 
 install-lib:
 ifdef LIB_SHARED_INSTALL
 	$(BIN_MKDIR) -p $(DESTDIR)$(P_LIB)
-	${BIN_SINSTALL:-$BIN_INSTALL} $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED_FULL)
+	$(BIN_SINSTALL) $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED_FULL)
 	$(BIN_LN) -sf $(LIB_SHARED_FULL) $(DESTDIR)$(P_LIB)/$(LIB_SHARED)
 endif
 
