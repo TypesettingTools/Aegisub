@@ -718,149 +718,15 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 		activePos = PositionFromPoint(ScreenToClient(pos));
 	}
 
+	currentWordPos = GetReverseUnicodePosition(activePos);
+	currentWord = GetWordAtPosition(currentWordPos);
+
 	wxMenu menu;
-	activePos = GetReverseUnicodePosition(activePos);
-
-	currentWord = GetWordAtPosition(activePos);
-	currentWordPos = activePos;
-
-	if (spellchecker.get() && currentWord.Length()) {
-		bool rightSpelling = spellchecker->CheckWord(currentWord);
-
-		sugs.Clear();
-		sugs = spellchecker->GetSuggestions(currentWord);
-		int nSugs = sugs.Count();
-
-		if (!rightSpelling) {
-			if (!nSugs) {
-				menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
-			}
-
-			for (int i=0;i<nSugs;i++) {
-				menu.Append(EDIT_MENU_SUGGESTIONS+i, sugs[i]);
-			}
-
-			// Append "add word"
-			wxString add_to_dict_text(_("Add \"%s\" to dictionary"));
-			add_to_dict_text.Replace("%s", currentWord);
-			menu.Append(EDIT_MENU_ADD_TO_DICT,add_to_dict_text)->Enable(spellchecker->CanAddWord(currentWord));
-		}
-		// Spelled right
-		else {
-			if (!nSugs) {
-				menu.Append(EDIT_MENU_SUGGESTION,_("No spell checker suggestions"))->Enable(false);
-			}
-			else {
-				// Build list
-				wxMenu *subMenu = new wxMenu();
-				for (int i=0;i<nSugs;i++) subMenu->Append(EDIT_MENU_SUGGESTIONS+i,sugs[i]);
-				menu.Append(-1,wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord), subMenu);
-			}
-		}
-
-		wxArrayString langs = spellchecker->GetLanguageList();
-		wxString curLang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
-
-		// Languages
-		wxMenu *languageMenu = new wxMenu();
-		wxMenuItem *cur;
-		wxString name;
-		const wxLanguageInfo *info;
-
-		// Insert "Disable"
-		cur = languageMenu->AppendCheckItem(EDIT_MENU_DIC_LANGS,_("Disable"));
-		if (curLang.IsEmpty()) cur->Check();
-
-		// Each language found
-		for (unsigned int i=0;i<langs.Count();i++) {
-			info = wxLocale::FindLanguageInfo(langs[i]);
-			if (info) name = info->Description;
-			else name = langs[i];
-			cur = languageMenu->AppendCheckItem(EDIT_MENU_DIC_LANGS+i+1,name);
-			if (langs[i] == curLang) cur->Check();
-		}
-
-		// Append language list
-		menu.Append(-1,_("Spell checker language"), languageMenu);
-		menu.AppendSeparator();
-	}
-
-	// Thesaurus
-	if (thesaurus.get() && currentWord.Length()) {
-		// Get results
-		std::vector<Thesaurus::Entry> result;
-		thesaurus->Lookup(currentWord,&result);
-
-		// Compile list
-		thesSugs.clear();
-		thesSugs.reserve(result.size() * 5);
-		for (size_t i = 0; i < result.size(); ++i) {
-			for (size_t j = 0; j < result[i].second.size(); ++j) {
-				thesSugs.push_back(result[i].second[j]);
-			}
-		}
-
-		if (result.size()) {
-			// Create thesaurus menu
-			wxMenu *thesMenu = new wxMenu();
-
-			// Build menu
-			int curThesEntry = 0;
-			for (size_t i=0;i<result.size();i++) {
-				// Single word, insert directly
-				if (result[i].second.size() == 1) {
-					thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,lagi_wxString(result[i].first));
-					curThesEntry++;
-				}
-
-				// Multiple, create submenu
-				else {
-					// Insert entries
-					wxMenu *subMenu = new wxMenu();
-					for (size_t j=0;j<result[i].second.size();j++) {
-						subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry,lagi_wxString(result[i].second[j]));
-						curThesEntry++;
-					}
-
-					// Insert submenu
-					thesMenu->Append(-1, lagi_wxString(result[i].first), subMenu);
-				}
-			}
-
-			// Thesaurus menu
-			wxString thes_suggestion_text(_("Thesaurus suggestions for \"%s\""));
-			thes_suggestion_text.Replace("%s", currentWord);
-			menu.Append(-1,thes_suggestion_text,thesMenu);
-
-		}
-
-		if (!result.size()) menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
-
-		wxArrayString langs = thesaurus->GetLanguageList();	// This probably should be cached...
-		wxString curLang = lagi_wxString(OPT_GET("Tool/Thesaurus/Language")->GetString());
-
-		// Languages
-		wxMenu *languageMenu = new wxMenu();
-		wxMenuItem *cur;
-		wxString name;
-		const wxLanguageInfo *info;
-
-		// Insert "Disable"
-		cur = languageMenu->AppendCheckItem(EDIT_MENU_THES_LANGS,_("Disable"));
-		if (curLang.IsEmpty()) cur->Check();
-
-		// Each language found
-		for (unsigned int i=0;i<langs.Count();i++) {
-			info = wxLocale::FindLanguageInfo(langs[i]);
-			if (info) name = info->Description;
-			else name = langs[i];
-			cur = languageMenu->AppendCheckItem(EDIT_MENU_THES_LANGS+i+1,name);
-			if (langs[i] == curLang) cur->Check();
-		}
-
-		// Append language list
-		menu.Append(-1, _("Thesaurus language"), languageMenu);
-		menu.AppendSeparator();
+	if (!currentWord.empty()) {
+		if (spellchecker.get())
+			AddSpellCheckerEntries(menu);
+		if (thesaurus.get())
+			AddThesaurusEntries(menu);
 	}
 
 	// Standard actions
@@ -877,6 +743,94 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 
 	PopupMenu(&menu);
 }
+
+void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
+	sugs = spellchecker->GetSuggestions(currentWord);
+	if (spellchecker->CheckWord(currentWord)) {
+		if (sugs.empty())
+			menu.Append(EDIT_MENU_SUGGESTION,_("No spell checker suggestions"))->Enable(false);
+		else {
+			wxMenu *subMenu = new wxMenu;
+			for (size_t i = 0; i < sugs.size(); ++i)
+				subMenu->Append(EDIT_MENU_SUGGESTIONS+i, sugs[i]);
+
+			menu.Append(-1, wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord), subMenu);
+		}
+	}
+	else {
+		if (sugs.empty())
+			menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
+
+		for (size_t i = 0; i < sugs.size(); ++i)
+			menu.Append(EDIT_MENU_SUGGESTIONS+i, sugs[i]);
+
+		// Append "add word"
+		menu.Append(EDIT_MENU_ADD_TO_DICT, wxString::Format(_("Add \"%s\" to dictionary"), currentWord))->Enable(spellchecker->CanAddWord(currentWord));
+	}
+
+	// Append language list
+	menu.Append(-1,_("Spell checker language"), GetLanguagesMenu(
+		EDIT_MENU_DIC_LANGS,
+		lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()),
+		spellchecker->GetLanguageList()));
+	menu.AppendSeparator();
+}
+
+void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
+	std::vector<Thesaurus::Entry> result;
+	thesaurus->Lookup(currentWord, &result);
+
+	thesSugs.clear();
+
+	if (result.size()) {
+		wxMenu *thesMenu = new wxMenu;
+
+		int curThesEntry = 0;
+		for (size_t i = 0; i < result.size(); ++i) {
+			// Single word, insert directly
+			if (result[i].second.size() == 1) {
+				thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, lagi_wxString(result[i].first));
+				thesSugs.push_back(result[i].first);
+				++curThesEntry;
+			}
+			// Multiple, create submenu
+			else {
+				wxMenu *subMenu = new wxMenu;
+				for (size_t j = 0; j < result[i].second.size(); ++j) {
+					subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, lagi_wxString(result[i].second[j]));
+					thesSugs.push_back(result[i].second[j]);
+					++curThesEntry;
+				}
+
+				thesMenu->Append(-1, lagi_wxString(result[i].first), subMenu);
+			}
+		}
+
+		menu.Append(-1, wxString::Format(_("Thesaurus suggestions for \"%s\""), currentWord), thesMenu);
+	}
+	else
+		menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
+
+	// Append language list
+	menu.Append(-1,_("Thesaurus language"), GetLanguagesMenu(
+		EDIT_MENU_THES_LANGS,
+		lagi_wxString(OPT_GET("Tool/Thesaurus/Language")->GetString()),
+		thesaurus->GetLanguageList()));
+	menu.AppendSeparator();
+}
+
+wxMenu *SubsTextEditCtrl::GetLanguagesMenu(int base_id, wxString const& curLang, wxArrayString const& langs) {
+	wxMenu *languageMenu = new wxMenu;
+	languageMenu->AppendCheckItem(base_id, _("Disable"))->Check(curLang.empty());
+
+	for (size_t i = 0; i < langs.size(); ++i) {
+		const wxLanguageInfo *info = wxLocale::FindLanguageInfo(langs[i]);
+		languageMenu->AppendCheckItem(base_id + i + 1, info ? info->Description : langs[i])->Check(langs[i] == curLang);
+	}
+
+	return languageMenu;
+}
+
 
 void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &) {
 	int from,to;

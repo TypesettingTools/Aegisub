@@ -97,6 +97,18 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 
 	void UpdateStyle();
 
+	/// Add the thesaurus suggestions to a menu
+	void AddThesaurusEntries(wxMenu &menu);
+
+	/// Add the spell checker suggestions to a menu
+	void AddSpellCheckerEntries(wxMenu &menu);
+
+	/// Generate a languages submenu from a list of locales and a current language
+	/// @param base_id ID to use for the first menu item
+	/// @param curLang Currently selected language
+	/// @param lang Full list of languages
+	wxMenu *GetLanguagesMenu(int base_id, wxString const& curLang, wxArrayString const& langs);
+
 public:
 	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, SubtitlesGrid *grid);
 	~SubsTextEditCtrl();
