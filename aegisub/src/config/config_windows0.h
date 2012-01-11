@@ -34,20 +34,16 @@
 /// @ingroup build
 ///
 
-
 #pragma once
-
 
 // Build credit: Set this to a string with your name as you want it to appear on the program
 #ifndef BUILD_CREDIT
 #define BUILD_CREDIT "Anonymous"
 #endif
 
-
 // Endianness: We don't support any Windows version that runs on big endian
 #define HAVE_LITTLE_ENDIAN
 #undef HAVE_BIG_ENDIAN
-
 
 ////////////// HIGH PRIORITY /////////////
 
@@ -55,25 +51,39 @@
 // Requires: Lua 5.1 (in repository)
 #define WITH_AUTO4_LUA
 
-
 // Enable DirectSound audio player
 // Requires: DirectX SDK
 #define WITH_DIRECTSOUND
-
+#ifdef WITH_DIRECTSOUND
+#pragma comment(lib, "dsound.lib")
+#pragma comment(lib, "dxguid.lib")
+#endif
 
 // Enable Avisynth
-// Requires: nothing (just the avisynth dlls)
+// Requires: nothing (just the avisynth dlls at runtime)
 #define WITH_AVISYNTH
 
 
-// Enable ffmpegsource video and audio providers
-// Requires: FFmpegSource2 headers (in repository), loader library and DLL
+// Enable FFMS2 video and audio providers
+// Requires: FFMS2 SDK
 //#define WITH_FFMS2
-
-
-
+#ifdef WITH_FFMS2
+#pragma comment(lib, "ffms2.lib")
+#endif
 
 ///////////// MEDIUM PRIORITY ////////////
+
+// Enable FreeType2 font lister for the fonts collector
+// Make sure the version numbers are correct, as the library names change
+// Requires: FreeType2
+#define WITH_FREETYPE2
+#ifdef WITH_FREETYPE2
+#ifdef _DEBUG
+#pragma comment(lib, "freetype235_D.lib")
+#else
+#pragma comment(lib, "freetype235.lib")
+#endif
+
 
 // Enable FreeType2 font lister for the fonts collector
 // If you're on Visual Studio, also uncomment the library names and make sure they match the files that you have
@@ -104,7 +114,9 @@
 // tricky to get working on Windows, and has the additional problem of being GPL licensed.
 // Enable this option to use FFTW to get faster rendering of the audio spectrogram
 //#define WITH_FFTW3
-//#pragma comment(lib,libfftw.lib)
+#ifdef WITH_FFTW3
+#pragma comment(lib,libfftw.lib)
+#endif
 // Specify tags the update checker accepts
 // See <http://devel.aegisub.org/wiki/Technical/UpdateChecker> for details on tags.
 // Depending on who will be using your build, you may or may not want to have the
@@ -123,32 +135,35 @@
 // Enable FontConfig
 // Requires: fontconfig
 //#define WITH_FONTCONFIG
-
+#ifdef WITH_FONTCONFIG
+#pragma comment(lib,"libfontconfig.lib")
+#endif
 
 // Enable libass
 // Requires: libass
 //#define WITH_LIBASS
-
+#ifdef WITH_LIBASS
+#pragma comment(lib, "libass.lib")
+#endif
 
 // Enable PortAudio audio player
 // Requires PortAudio release 19
 //#define WITH_PORTAUDIO
-
+#ifdef WITH_PORTAUDIO
+#pragma comment(lib,"portaudio_x86.lib")
+#endif
 
 // Enable ALSA audio player
 // Requires Linux and libasound
 //#define WITH_ALSA
 
-
 // Enable OpenAL audio player
 // Requires OpenAL development libraries and headers
 //#define WITH_OPENAL
 
-
 // Enable Pulse Audio audio player
 // Requires libpulse (and a *NIX compatible system and a running sound server to actually use)
 //#define WITH_LIBPULSE
-
 
 // Display trace-level diagnostic messages during startup
 // Only enable for making special builds for end users having trouble with starting Aegisub

@@ -1016,9 +1016,6 @@
     <ClCompile Include="$(SrcDir)string_codec.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)setup.cpp">
-      <Filter>Config</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)frame_main.cpp">
       <Filter>Main UI</Filter>
     </ClCompile>

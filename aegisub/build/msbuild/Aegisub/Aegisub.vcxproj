@@ -350,7 +350,6 @@
     <ClCompile Include="$(SrcDir)preferences.cpp" />
     <ClCompile Include="$(SrcDir)preferences_base.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
-    <ClCompile Include="$(SrcDir)setup.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker_hunspell.cpp" />
     <ClCompile Include="$(SrcDir)spline.cpp" />
