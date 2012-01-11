@@ -390,7 +390,6 @@ class AutomationMenu : public wxMenu {
 		std::vector<cmd::Command*> macros = wxGetApp().global_scripts->GetMacros();
 		std::vector<cmd::Command*> local_macros = c->local_scripts->GetMacros();
 		copy(local_macros.begin(), local_macros.end(), back_inserter(macros));
-		sort(macros.begin(), macros.end(), comp_str_menu(c));
 
 		if (macros.empty())
 			Append(-1, _("No Automation macros loaded"))->Enable(false);
