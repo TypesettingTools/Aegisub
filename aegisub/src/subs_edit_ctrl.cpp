@@ -727,9 +727,6 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	if (spellchecker.get() && currentWord.Length()) {
 		bool rightSpelling = spellchecker->CheckWord(currentWord);
 
-		wxFont font;
-		font.SetWeight(wxFONTWEIGHT_BOLD);
-
 		sugs.Clear();
 		sugs = spellchecker->GetSuggestions(currentWord);
 		int nSugs = sugs.Count();
@@ -740,11 +737,7 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 			}
 
 			for (int i=0;i<nSugs;i++) {
-				wxMenuItem *itm = new wxMenuItem(&menu, EDIT_MENU_SUGGESTIONS+i, sugs[i]);
-#ifdef __WINDOWS__
-				itm->SetFont(font);
-#endif
-				menu.Append(itm);
+				menu.Append(EDIT_MENU_SUGGESTIONS+i, sugs[i]);
 			}
 
 			// Append "add word"
@@ -808,9 +801,6 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 		}
 
 		if (result.size()) {
-			wxFont font;
-			font.SetStyle(wxFONTSTYLE_ITALIC);
-
 			// Create thesaurus menu
 			wxMenu *thesMenu = new wxMenu();
 
