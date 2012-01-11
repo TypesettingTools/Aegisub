@@ -883,12 +883,13 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 	wxArrayString langs = spellchecker->GetLanguageList();
 
-	// Set dictionary
 	int index = event.GetId() - EDIT_MENU_DIC_LANGS - 1;
-	if (index >= 0) {
-		spellchecker->SetLanguage(langs[index]);
-		OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(langs[index]));
-	}
+	wxString lang;
+	if (index >= 0)
+		lang = langs[index];
+
+	spellchecker->SetLanguage(lang);
+	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(lang));
 
 	UpdateStyle();
 }
@@ -896,7 +897,6 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 	wxArrayString langs = thesaurus->GetLanguageList();
 
-	// Set language
 	int index = event.GetId() - EDIT_MENU_THES_LANGS - 1;
 	wxString lang;
 	if (index >= 0) lang = langs[index];

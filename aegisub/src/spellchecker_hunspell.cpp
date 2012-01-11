@@ -194,7 +194,10 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 }
 
 void HunspellSpellChecker::SetLanguage(wxString language) {
-	if (language.empty()) return;
+	if (language.empty()) {
+		hunspell.reset();
+		return;
+	}
 
 	wxString userDicRoot = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()));
 	wxString dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
