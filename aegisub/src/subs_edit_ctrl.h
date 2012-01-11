@@ -35,15 +35,18 @@
 ///
 
 #ifndef AGI_PRE
-#include <memory>
+#include <string>
+#include <vector>
 #endif
 
 #include "scintilla_text_ctrl.h"
 
+#include <libaegisub/scoped_ptr.h>
+
 class SpellChecker;
 class SubsEditBox;
-class SubtitlesGrid;
 class Thesaurus;
+namespace agi { struct Context; }
 
 /// DOCME
 /// @class SubsTextEditCtrl
@@ -52,26 +55,24 @@ class Thesaurus;
 /// DOCME
 class SubsTextEditCtrl : public ScintillaTextCtrl {
 	/// DOCME
-	std::auto_ptr<SpellChecker> spellchecker;
+	agi::scoped_ptr<SpellChecker> spellchecker;
 
 	/// DOCME
-	std::auto_ptr<Thesaurus> thesaurus;
+	agi::scoped_ptr<Thesaurus> thesaurus;
 
-	SubtitlesGrid *grid;
+	agi::Context *context;
 
-
-	/// DOCME
+	/// The word right-clicked on, used for spellchecker replacing
 	wxString currentWord;
+
+	/// The beginning of the word right-clicked on, for spellchecker replacing
+	int currentWordPos;
 
 	/// DOCME
 	wxArrayString sugs;
 
 	/// DOCME
 	std::vector<std::string> thesSugs;
-
-	/// DOCME
-	int currentWordPos;
-
 
 	/// DOCME
 	wxArrayString proto;
@@ -97,6 +98,10 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 
 	void UpdateStyle();
 
+	/// Split the line at the current cursor position
+	/// @param estimateTimes Adjust the times based on the lengths of the halves
+	void SplitLine(bool estimateTimes);
+
 	/// Add the thesaurus suggestions to a menu
 	void AddThesaurusEntries(wxMenu &menu);
 
@@ -110,7 +115,7 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	wxMenu *GetLanguagesMenu(int base_id, wxString const& curLang, wxArrayString const& langs);
 
 public:
-	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, SubtitlesGrid *grid);
+	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, agi::Context *context);
 	~SubsTextEditCtrl();
 
 	void SetTextTo(wxString text);

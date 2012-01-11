@@ -46,14 +46,15 @@
 #include <wx/intl.h>
 #endif
 
+#include "subs_edit_ctrl.h"
+
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "compat.h"
 #include "main.h"
+#include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
 #include "selection_controller.h"
-#include "subs_edit_box.h"
-#include "subs_edit_ctrl.h"
-#include "subs_grid.h"
 #include "thesaurus.h"
 #include "utils.h"
 
@@ -76,11 +77,11 @@ enum {
 	EDIT_MENU_THES_LANGS
 };
 
-SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, SubtitlesGrid *grid)
+SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context *context)
 : ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
 , thesaurus(new Thesaurus)
-, grid(grid)
+, context(context)
 {
 	// Set properties
 	SetWrapMode(wxSTC_WRAP_WORD);
@@ -279,7 +280,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 	if (text.empty()) return;
 
 	// Check if it's a template line
-	AssDialogue *diag = grid->GetActiveLine();
+	AssDialogue *diag = context->selectionController->GetActiveLine();
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
 
 	bool in_parens = false;
@@ -632,7 +633,7 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 }
 
 void SubsTextEditCtrl::StyleSpellCheck() {
-	if (!spellchecker.get()) return;
+	if (!spellchecker) return;
 
 	// Results
 	wxString text = GetText();
@@ -706,7 +707,7 @@ void SubsTextEditCtrl::Paste() {
 }
 
 void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
-	if (!grid->GetActiveLine())
+	if (!context->selectionController->GetActiveLine())
 		return;
 
 	wxPoint pos = event.GetPosition();
@@ -723,9 +724,9 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 
 	wxMenu menu;
 	if (!currentWord.empty()) {
-		if (spellchecker.get())
+		if (spellchecker)
 			AddSpellCheckerEntries(menu);
-		if (thesaurus.get())
+		if (thesaurus)
 			AddThesaurusEntries(menu);
 	}
 
@@ -831,23 +832,37 @@ wxMenu *SubsTextEditCtrl::GetLanguagesMenu(int base_id, wxString const& curLang,
 	return languageMenu;
 }
 
-
-void SubsTextEditCtrl::OnSplitLinePreserve (wxCommandEvent &) {
-	int from,to;
+void SubsTextEditCtrl::SplitLine(bool estimateTimes) {
+	int from, to;
 	GetSelection(&from, &to);
 	from = GetReverseUnicodePosition(from);
-	grid->SplitLine(grid->GetActiveLine(),from,0);
+
+	AssDialogue *n2 = context->selectionController->GetActiveLine();
+	AssDialogue *n1 = new AssDialogue(*n2);
+	context->ass->Line.insert(find(context->ass->Line.begin(), context->ass->Line.end(), n2), n1);
+
+	wxString orig = n1->Text;
+	n1->Text = orig.Left(from).Trim(true); // Trim off trailing whitespace
+	n2->Text = orig.Mid(from).Trim(false); // Trim off leading whitespace
+
+	if (estimateTimes) {
+		double splitPos = double(from) / orig.size();
+		n2->Start = n1->End = (int)((n1->End - n1->Start) * splitPos) + n1->Start;
+	}
+
+	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 
-void SubsTextEditCtrl::OnSplitLineEstimate (wxCommandEvent &) {
-	int from,to;
-	GetSelection(&from, &to);
-	from = GetReverseUnicodePosition(from);
-	grid->SplitLine(grid->GetActiveLine(),from,1);
+void SubsTextEditCtrl::OnSplitLinePreserve(wxCommandEvent &) {
+	SplitLine(false);
+}
+
+void SubsTextEditCtrl::OnSplitLineEstimate(wxCommandEvent &) {
+	SplitLine(true);
 }
 
 void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {
-	if (spellchecker.get()) spellchecker->AddWord(currentWord);
+	if (spellchecker) spellchecker->AddWord(currentWord);
 	UpdateStyle();
 	SetFocus();
 }

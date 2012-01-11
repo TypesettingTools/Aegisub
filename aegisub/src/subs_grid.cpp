@@ -401,24 +401,6 @@ void SubtitlesGrid::DuplicateLines(int n1,int n2,bool nextFrame) {
 	SetActiveLine(GetDialogue(n1+step));
 }
 
-void SubtitlesGrid::SplitLine(AssDialogue *n1,int pos,bool estimateTimes) {
-	AssDialogue *n2 = new AssDialogue(*n1);
-	InsertLine(n2,GetDialogueIndex(n1),true,false);
-
-	wxString orig = n1->Text;
-	n1->Text = orig.Left(pos).Trim(true); // Trim off trailing whitespace
-	n2->Text = orig.Mid(pos).Trim(false); // Trim off leading whitespace
-
-	if (estimateTimes) {
-		double splitPos = double(pos)/orig.Length();
-		int splitTime = (int)((n1->End - n1->Start)*splitPos) + n1->Start;
-		n1->End = splitTime;
-		n2->Start = splitTime;
-	}
-
-	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
-}
-
 /// @brief Retrieve a list of selected lines in the actual ASS file (ie. not as displayed in the grid but as represented in the file)
 /// @return 
 ///

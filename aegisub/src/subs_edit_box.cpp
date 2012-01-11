@@ -258,7 +258,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MiddleBotSizer->Add(ByFrame,0,wxRIGHT | wxALIGN_CENTER | wxEXPAND,5);
 
 	// Text editor
-	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c->subsGrid);
+	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
 	TextEdit->Bind(wxEVT_KEY_DOWN, &SubsEditBox::OnKeyDown, this);
 	TextEdit->SetUndoCollection(false);
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);

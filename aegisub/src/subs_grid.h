@@ -57,11 +57,7 @@ public:
 	/// @param n2       Last line to adjoin
 	/// @param setStart Set the start times (rather than end times)
 	void AdjoinLines(int first,int last,bool setStart);
-	/// @brief Split line at the given position
-	/// @param line Line to split
-	/// @param pos Position in line
-	/// @param estimateTimes Adjust the times based on the lengths of the halves
-	void SplitLine(AssDialogue *line,int splitPosition,bool estimateTimes);
+
 	/// @brief Duplicate lines
 	/// @param n1        First frame to duplicate
 	/// @param n2        Last frame to duplicate
