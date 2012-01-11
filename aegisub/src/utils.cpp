@@ -190,91 +190,75 @@ int SmallestPowerOf2(int x) {
 	return x;
 }
 
-
-
-/// @brief Get word boundaries 
-/// @param text    
-/// @param results 
-/// @param start   
-/// @param end     
-///
-void GetWordBoundaries(const wxString text,IntPairVector &results,int start,int end) {
-	// Variables
-	wxChar cur;
-	int curPos;
-	int lastpos = -1;
+void GetWordBoundaries(const wxString text, IntPairVector &results, int start, int end) {
 	int depth = 0;
-	if (end < 0) end = text.Length();
-	bool isDelim;
+	bool in_draw_mode = false;
+	if (end < 0) end = text.size();
 
 	// Delimiters
-	const wchar_t delim_chars[] = {
-		0x0020, 0x0021, 0x0022, 0x0023, 0x0024, 0x0025, 0x0026, 0x0028,
-		0x0029, 0x002a, 0x002b, 0x002c, 0x002d, 0x002e, 0x002f, 0x003a,
-		0x003b, 0x003d, 0x003f, 0x0040, 0x005b, 0x005c, 0x005d, 0x005e,
-		0x005f, 0x0060, 0x007b, 0x007c, 0x007d, 0x007e, 0x00a1, 0x00a2,
-		0x00a3, 0x00a4, 0x00a5, 0x00a6, 0x00a7, 0x00a8, 0x00aa, 0x00ab,
-		0x00b0, 0x00b6, 0x00b7, 0x00ba, 0x00bb, 0x00bf, 0x02dc, 0x0e3f,
-		0x2010, 0x2013, 0x2014, 0x2015, 0x2018, 0x2019, 0x201c, 0x201d,
-		0x2020, 0x2021, 0x2022, 0x2025, 0x2026, 0x2026, 0x2030, 0x2031,
-		0x2032, 0x203b, 0x203b, 0x203d, 0x2042, 0x2044, 0x20a6, 0x20a9,
-		0x20aa, 0x20ac, 0x20ad, 0x2116, 0x2234, 0x2235, 0x2420, 0x2422,
-		0x2423, 0x2506, 0x25ca, 0x2605, 0x261e, 0x2e2e, 0x3000, 0x3001,
-		0x3002, 0x3008, 0x3009, 0x300a, 0x300b, 0x300c, 0x300d, 0x300e,
-		0x300f, 0x3010, 0x3011, 0x3014, 0x3015, 0x3016, 0x3017, 0x3018,
-		0x3019, 0x301a, 0x301b, 0x301c, 0x3030, 0x303d, 0x30fb, 0xff0a,
-		0xff5b, 0xff5d, 0xff5e, 0
-	};
-	wxString delim(delim_chars);
+	static std::set<wxUniChar> delims;
+	if (delims.empty()) {
+		const wxUniChar delim_chars[] = {
+			0x0020, 0x0021, 0x0022, 0x0023, 0x0024, 0x0025, 0x0026, 0x0028,
+			0x0029, 0x002a, 0x002b, 0x002c, 0x002d, 0x002e, 0x002f, 0x003a,
+			0x003b, 0x003d, 0x003f, 0x0040, 0x005b, 0x005c, 0x005d, 0x005e,
+			0x005f, 0x0060, 0x007b, 0x007c, 0x007d, 0x007e, 0x00a1, 0x00a2,
+			0x00a3, 0x00a4, 0x00a5, 0x00a6, 0x00a7, 0x00a8, 0x00aa, 0x00ab,
+			0x00b0, 0x00b6, 0x00b7, 0x00ba, 0x00bb, 0x00bf, 0x02dc, 0x0e3f,
+			0x2010, 0x2013, 0x2014, 0x2015, 0x2018, 0x2019, 0x201c, 0x201d,
+			0x2020, 0x2021, 0x2022, 0x2025, 0x2026, 0x2026, 0x2030, 0x2031,
+			0x2032, 0x203b, 0x203b, 0x203d, 0x2042, 0x2044, 0x20a6, 0x20a9,
+			0x20aa, 0x20ac, 0x20ad, 0x2116, 0x2234, 0x2235, 0x2420, 0x2422,
+			0x2423, 0x2506, 0x25ca, 0x2605, 0x261e, 0x2e2e, 0x3000, 0x3001,
+			0x3002, 0x3008, 0x3009, 0x300a, 0x300b, 0x300c, 0x300d, 0x300e,
+			0x300f, 0x3010, 0x3011, 0x3014, 0x3015, 0x3016, 0x3017, 0x3018,
+			0x3019, 0x301a, 0x301b, 0x301c, 0x3030, 0x303d, 0x30fb, 0xff0a,
+			0xff5b, 0xff5d, 0xff5e
+		};
+		delims.insert(delim_chars, delim_chars + sizeof(delim_chars) / sizeof(delim_chars[0]));
+	}
 
-	// Scan
-	for (int i=start;i<end+1;i++) {
+	for (int i = start; i < end + 1; ++i) {
 		// Current character
-		curPos = i;
-		if (i < end) cur = text[i];
-		else cur = '.';
-		isDelim = false;
+		wxUniChar cur = i < end ? text[i] : '.';
 
 		// Increase depth
 		if (cur == '{') {
 			depth++;
-			if (depth == 1) {
-				if (lastpos+1 != curPos) {
-					results.push_back(std::pair<int,int>(lastpos+1,curPos));
-				}
-				continue;
-			}
+			if (depth == 1 && start != i && !in_draw_mode)
+				results.push_back(std::make_pair(start, i));
 		}
-
 		// Decrease depth
-		if (cur == '}') {
+		else if (cur == '}') {
 			depth--;
-			if (depth == 0) {
-				lastpos = i;
-				continue;
+			start = i + 1;
+		}
+		else if (depth > 0) {
+			// Check for draw mode
+			if (cur == '\\' && i + 1 < end && text[i + 1] == 'p') {
+				i += 2;
+
+				// Eat leading zeros
+				while (i < end && text[i] == '0') ++i;
+
+				in_draw_mode = i < end && text[i] >= '0' && text[i] <= '9';
+				if (!in_draw_mode) --i;
 			}
 		}
-
-		// Wrong depth
-		if (depth != 0) continue;
-
-		// Check if it is \n or \N
-		if (cur == '\\' && i < end-1 && (text[i+1] == 'N' || text[i+1] == 'n' || text[i+1] == 'h')) {
-			isDelim = true;
-			i++;
-		}
-
-		// Check for standard delimiters
-		if (delim.Find(cur) != wxNOT_FOUND) {
-			isDelim = true;
-		}
-
-		// Is delimiter?
-		if (isDelim) {
-			if (lastpos+1 != curPos) {
-				results.push_back(std::pair<int,int>(lastpos+1,curPos));
+		else if (!in_draw_mode) {
+			// Check if it is \n or \N
+			if (cur == '\\' && i < end-1 && (text[i+1] == 'N' || text[i+1] == 'n' || text[i+1] == 'h')) {
+				if (start != i)
+					results.push_back(std::make_pair(start, i));
+				start = i + 2;
+				i++;
 			}
-			lastpos = i;
+			// Check for standard delimiters
+			else if (delims.count(cur)) {
+				if (start != i)
+					results.push_back(std::make_pair(start, i));
+				start = i + 1;
+			}
 		}
 	}
 }
