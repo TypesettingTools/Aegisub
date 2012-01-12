@@ -127,6 +127,7 @@ void VisualToolBase::OnActiveLineChanged(AssDialogue *new_line) {
 	if (new_line != active_line) {
 		active_line = new_line;
 		OnLineChanged();
+		parent->Render();
 	}
 }
 
