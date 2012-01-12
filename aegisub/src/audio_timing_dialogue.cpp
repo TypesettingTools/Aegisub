@@ -483,7 +483,7 @@ void AudioTimingControllerDialogue::Revert()
 			timing_modified = false;
 			AnnounceUpdatedPrimaryRange();
 			if (inactive_line_mode->GetInt() == 0)
-				AnnounceUpdatedStyleRanges;
+				AnnounceUpdatedStyleRanges();
 		}
 	}
 	RegenerateInactiveLines();
