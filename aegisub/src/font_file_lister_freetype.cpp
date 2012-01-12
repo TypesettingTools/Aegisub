@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Niels Martin Hansen, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,154 +21,162 @@
 /// @ingroup font_collector
 ///
 
-
-////////////
-// Includes
-
 #include "config.h"
 
 #ifdef WITH_FREETYPE2
-
-#ifndef AGI_PRE
-#include <wx/dir.h>
-#endif
+#include "font_file_lister_freetype.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_SFNT_NAMES_H
+#include FT_TRUETYPE_IDS_H
 
-#ifdef WIN32
 #include <shlobj.h>
-#endif
 
 #include "charset_conv.h"
-#include "font_file_lister_freetype.h"
+#include "standard_paths.h"
+#include "text_file_reader.h"
+#include "text_file_writer.h"
 
+namespace {
+	typedef std::map<wxString, std::set<wxString> > FontMap;
 
-/// @brief Constructor 
-///
-FreetypeFontFileLister::FreetypeFontFileLister() {
-	// Initialize freetype2
-	FT_Init_FreeType(&ft2lib);
-}
+	wxString get_font_folder() {
+		wchar_t szPath[MAX_PATH];
+		if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_FONTS, NULL, 0, szPath)))
+			return wxString(szPath) + "\\";
+		else
+			return wxGetOSDirectory() + "\\fonts\\";
+	}
 
+	FT_UInt get_name_count(wxString const& filename, FT_Face face) {
+		wxString ext = filename.Right(4).Lower();
+		if (ext == ".otf" || ext == ".ttf" || ext == ".ttc_")
+			return FT_Get_Sfnt_Name_Count(face);
+		return 0;
+	}
 
+	std::map<FT_UShort, std::vector<wxString> > get_names(FT_Face face) {
+		std::map<FT_UShort, std::vector<wxString> > final;
 
-/// @brief Destructor 
-///
-FreetypeFontFileLister::~FreetypeFontFileLister() {
-}
+		FT_UInt count = FT_Get_Sfnt_Name_Count(face);
+		for (FT_UInt i = 0; i < count; ++i) {
+			FT_SfntName name;
+			FT_Get_Sfnt_Name(face, i, &name);
 
-
-
-/// @brief Get name from face 
-/// @param face 
-/// @param id   
-/// @return 
-///
-wxArrayString GetName(FT_Face &face,int id) {
-	// Get name
-	wxArrayString final;
-	int count = FT_Get_Sfnt_Name_Count(face);
-
-	for (int i=0;i<count;i++) {
-		FT_SfntName name;
-		FT_Get_Sfnt_Name(face,i,&name);
-		if (name.name_id == id) {
-			char *str = new char[name.string_len+2];
-			memcpy(str,name.string,name.string_len);
-			str[name.string_len] = 0;
-			str[name.string_len+1] = 0;
-			if (name.encoding_id == 0) final.Add(wxString(str));
-			else if (name.encoding_id == 1) {
-				wxMBConvUTF16BE conv;
-				wxString string(str,conv);
-				final.Add(string);
+			// truetype string encoding is an absolute nightmare, so just try
+			// UTF-16BE and local charsets
+			if (name.string_len) {
+				if ((name.platform_id == TT_PLATFORM_MICROSOFT && name.encoding_id == TT_MS_ID_UNICODE_CS) ||
+					name.platform_id == TT_PLATFORM_APPLE_UNICODE ||
+					name.string[0])
+				{
+					final[name.name_id].push_back(wxString(name.string, wxMBConvUTF16BE(), name.string_len));
+				}
+				else
+					final[name.name_id].push_back(wxString(name.string, name.string_len));
 			}
-			delete [] str;
+		}
+
+		return final;
+	}
+
+	void load_cache(FontMap &font_files, std::set<wxString> &indexed_files) {
+		try {
+			TextFileReader file(StandardPaths::DecodePath("?local/freetype_collector_index.dat"), "utf-16le");
+			while (file.HasMoreLines()) {
+				wxString face = file.ReadLineFromFile();
+				std::set<wxString>& files = font_files[face];
+
+				while (file.HasMoreLines()) {
+					wxString filename = file.ReadLineFromFile();
+					if (filename.empty()) break;
+					if (wxFileExists(filename)) {
+						files.insert(filename);
+						indexed_files.insert(filename);
+					}
+				}
+			}
+		}
+		catch (agi::FileNotAccessibleError const&) { }
+	}
+
+	void save_cache(FontMap &font_files) {
+		TextFileWriter file(StandardPaths::DecodePath("?local/freetype_collector_index.dat"), "utf-16le");
+		for (FontMap::iterator face_it = font_files.begin(); face_it != font_files.end(); ++face_it) {
+			file.WriteLineToFile(face_it->first);
+			for_each(face_it->second.begin(), face_it->second.end(),
+				bind(&TextFileWriter::WriteLineToFile, &file, std::tr1::placeholders::_1, true));
+			file.WriteLineToFile("");
 		}
 	}
-
-	return final;
 }
 
+FreetypeFontFileLister::FreetypeFontFileLister(FontCollectorStatusCallback AppendText) {
+	AppendText(_("Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"), 0);
+	load_cache(font_files, indexed_files);
 
+	FT_Library ft2lib;
+	FT_Init_FreeType(&ft2lib);
 
-/// @brief Gather data from system 
-///
-void FreetypeFontFileLister::DoInitialize() {
-	// Load cache
-	LoadCache();
-
-	// Get fonts folder
-	wxString source;
-#ifdef WIN32
-	TCHAR szPath[MAX_PATH];
-	if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_FONTS,NULL,0,szPath))) {
-		source = wxString(szPath);
-	}
-	else source = wxGetOSDirectory() + _T("\\fonts");
-	source += _T("\\");
-#else
-# ifdef __APPLE__
-	// XXXHACK: Is this always a correct assumption?
-	// Fonts might be instaled in more places, I think...
-	source = _T("/Library/Fonts/");
-# endif
-#endif
-
-	// Get the list of fonts in the fonts folder
 	wxArrayString fontfiles;
-	wxDir::GetAllFiles(source, &fontfiles, wxEmptyString, wxDIR_FILES);
+	wxDir::GetAllFiles(get_font_folder(), &fontfiles, "", wxDIR_FILES);
 
-	// Loop through each file
-	int fterr;
-	for (unsigned int i=0;i<fontfiles.Count(); i++) {
-		// Check if it's cached
-		if (IsFilenameCached(fontfiles[i])) continue;
+	for (size_t i = 0; i < fontfiles.size(); ++i) {
+		if (indexed_files.count(fontfiles[i])) continue;
 
-		// Loop through each face in the file
-		for (int facenum=0;true;facenum++) {
-			// Get font face
-			FT_Face face;
-			fterr = FT_New_Face(ft2lib, fontfiles[i].mb_str(*wxConvFileName), facenum, &face);
-			if (fterr) break;
+		FT_Face face;
+		for (FT_Long i = 0; FT_New_Face(ft2lib, fontfiles[i].mb_str(*wxConvFileName), i, &face) == 0; ++i) {
+			if (get_name_count(fontfiles[i], face) > 0) {
+				std::map<FT_UShort, std::vector<wxString> > names = get_names(face);
+				std::vector<wxString>& family = names[1];
+				std::vector<wxString>& style = names[2];
+				std::vector<wxString>& full_name = names[4];
 
-			// Special names for TTF and OTF
-			int nameCount = 0;
-			wxString ext = fontfiles[i].Right(4).Lower();
-			if (ext == _T(".otf") || ext == _T(".ttf") || ext == _T(".ttc_")) nameCount = FT_Get_Sfnt_Name_Count(face);
-			if (nameCount > 0) {
-				wxArrayString family = GetName(face,1);
-				wxArrayString subFamily = GetName(face,2);
-				wxArrayString fullName = GetName(face,4);
-				for (size_t j=0;j<family.Count() && j<subFamily.Count();j++) {
-					if (subFamily[j] != _T("Regular")) {
-						AddFont(fontfiles[i],family[j] + _T(" ") + subFamily[j]);
-						AddFont(fontfiles[i],_T("*")+family[j]);
-					}
-					else AddFont(fontfiles[i],family[j]);
+				for (size_t j = 0; j < family.size() && j < style.size(); ++j) {
+					if (style[j] != "Regular")
+						AddFont(fontfiles[i], family[j], style[j]);
+					else
+						AddFont(fontfiles[i], family[j]);
 				}
-				for (size_t j=0;j<fullName.Count();j++) AddFont(fontfiles[i],fullName[j]);
+				for (size_t j = 0; j < full_name.size(); ++j)
+					AddFont(fontfiles[i], full_name[j]);
 			}
-
-			// Ordinary fonts
 			else {
-				if (face->style_name) {
-					AddFont(fontfiles[i],wxString(face->family_name, csConvLocal) + _T(" ") + wxString(face->style_name, csConvLocal));
-					AddFont(fontfiles[i],_T("*")+wxString(face->family_name, csConvLocal));
-				}
-				else AddFont(fontfiles[i],wxString(face->family_name, csConvLocal));
+				if (face->style_name)
+					AddFont(fontfiles[i], face->family_name, face->style_name);
+				else
+					AddFont(fontfiles[i], wxString(face->family_name));
 			}
 			FT_Done_Face(face);
 		}
 	}
 
-	// Save cache
-	SaveCache();
+	FT_Done_FreeType(ft2lib);
+
+	AppendText(_("Done collecting font data.\n"), 0);
+
+	save_cache(font_files);
+}
+
+void FreetypeFontFileLister::AddFont(wxString const& filename, wxString facename) {
+	facename.Trim(true).Trim(false);
+	if (facename.size() && !facename.Lower().StartsWith("copyright "))
+		font_files[facename].insert(filename);
+}
+
+void FreetypeFontFileLister::AddFont(wxString const& filename, wxString const& family, wxString const& style) {
+	AddFont(filename, family + " " + style);
+	AddFont(filename, "*" + family);
+}
+
+std::vector<wxString> FreetypeFontFileLister::GetFontPaths(wxString const& facename, int, bool) {
+	std::vector<wxString> ret;
+	ret.insert(ret.end(), font_files[facename].begin(), font_files[facename].end());
+	if (ret.empty())
+		ret.insert(ret.end(), font_files["*" + facename].begin(), font_files["*" + facename].end());
+	return ret;
 }
 
 #endif WITH_FREETYPE2
-
-

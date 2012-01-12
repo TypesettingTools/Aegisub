@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,653 +21,357 @@
 /// @ingroup tools_ui font_collector
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
-#ifndef AGI_PRE
-#include <wx/config.h>
-#include <wx/dirdlg.h>
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/fontenum.h>
-#include <wx/msgdlg.h>
-#include <wx/sizer.h>
-#include <wx/wfstream.h>
-#include <wx/zipstrm.h>
-#endif
-
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "ass_override.h"
-#include "ass_style.h"
-#include "compat.h"
 #include "dialog_fonts_collector.h"
+
 #include "font_file_lister.h"
+#include "font_file_lister_fontconfig.h"
+#include "font_file_lister_freetype.h"
+
+#include "ass_file.h"
+#include "compat.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "scintilla_text_ctrl.h"
 #include "selection_controller.h"
+#include "standard_paths.h"
 #include "utils.h"
 
+#include <libaegisub/scoped_ptr.h>
 
-/// DOCME
-enum IDs {
+#ifndef AGI_PRE
+#include <wx/button.h>
+#include <wx/config.h>
+#include <wx/dirdlg.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <wx/radiobox.h>
+#include <wx/sizer.h>
+#include <wx/statbox.h>
+#include <wx/stattext.h>
+#include <wx/stc/stc.h>
+#include <wx/textctrl.h>
+#include <wx/wfstream.h>
+#include <wx/zipstrm.h>
+#endif
 
-	/// DOCME
-	START_BUTTON = 1150,
-
-	/// DOCME
-	BROWSE_BUTTON,
-
-	/// DOCME
-	RADIO_BOX
+enum FcMode {
+	CheckFontsOnly = 0,
+	CopyToFolder = 1,
+	CopyToScriptFolder = 2,
+	CopyToZip = 3
 };
 
+wxDEFINE_EVENT(EVT_ADD_TEXT, wxThreadEvent);
+wxDEFINE_EVENT(EVT_COLLECTION_DONE, wxThreadEvent);
 
-/////////
-// Event
-DECLARE_EVENT_TYPE(EVT_ADD_TEXT, -1)
-DEFINE_EVENT_TYPE(EVT_ADD_TEXT)
+/// @class FontsCollectorThread
+/// @brief Worker thread for the font collector dialog
+class FontsCollectorThread : public wxThread {
+	AssFile *subs;           ///< Subtitle file to process
+	wxString destination;    ///< Path to write fonts to for modes 2 and 3
+	wxEvtHandler *collector; ///< Parent dialog
+	FcMode oper;             ///< Copying mode
 
+	void Collect() {
+		using namespace std::tr1::placeholders;
 
+		FontCollectorStatusCallback callback(bind(&FontsCollectorThread::AppendText, this, _1, _2));
 
-/// @brief Constructor 
-/// @param parent 
-///
+#ifdef WITH_FONTCONFIG
+		FontConfigFontFileLister lister(callback);
+#elif defined(WITH_FREETYPE2)
+		FreetypeFontFileLister lister(callback);
+#else
+		AppendText(_("Aegisub was built without any font file listers enabled"), 2);
+		struct DummyLister : public FontFileLister {
+			std::vector<wxString> GetFontPaths(wxString const&, int, bool) { return std::vector<wxString>(); }
+		} lister;
+#endif
+		std::vector<wxString> paths = FontCollector(callback, lister).GetFontPaths(subs->Line);
+		if (paths.empty()) return;
+
+		// Copy fonts
+		switch (oper) {
+			case CheckFontsOnly: return;
+			case CopyToScriptFolder:
+			case CopyToFolder: AppendText(_("Copying fonts to folder...\n"));  break;
+			case CopyToZip:    AppendText(_("Copying fonts to archive...\n")); break;
+		}
+
+		// Open zip stream if saving to compressed archive
+		agi::scoped_ptr<wxFFileOutputStream> out;
+		agi::scoped_ptr<wxZipOutputStream> zip;
+		if (oper == CopyToZip) {
+			out.reset(new wxFFileOutputStream(destination));
+			zip.reset(new wxZipOutputStream(*out));
+		}
+
+		bool allOk = true;
+		for (std::vector<wxString>::iterator cur = paths.begin(); cur != paths.end(); ++cur) {
+			int ret = 0;
+			switch (oper) {
+				case CopyToScriptFolder:
+				case CopyToFolder: {
+					wxString dest = destination + wxFileName(*cur).GetFullName();
+					if (wxFileName::FileExists(dest))
+						ret = 2;
+					else
+						ret = wxCopyFile(*cur, dest, true);
+				}
+				break;
+				case CopyToZip: {
+					wxFFileInputStream in(*cur);
+					if (!in.IsOk())
+						ret = false;
+					else {
+						ret = zip->PutNextEntry(wxFileName(*cur).GetFullName());
+						zip->Write(in);
+					}
+				}
+				default: break;
+			}
+
+			if (ret == 1)
+				AppendText(wxString::Format(_("* Copied %s.\n"), *cur), 1);
+			else if (ret == 2)
+				AppendText(wxString::Format(_("* %s already exists on destination.\n"), wxFileName(*cur).GetFullName()), 3);
+			else {
+				AppendText(wxString::Format(_("* Failed to copy %s.\n"), *cur), 2);
+				allOk = false;
+			}
+		}
+
+		if (allOk)
+			AppendText(_("Done. All fonts copied."), 1);
+		else
+			AppendText(_("Done. Some fonts could not be copied."), 2);
+	}
+
+	/// @brief Tell the dialog to add text to the textbox
+	/// @param text Text to add
+	/// @param colour 0: neutral; 1: success; 2: error
+	void AppendText(wxString text, int colour=0) {
+		wxThreadEvent event(EVT_ADD_TEXT);
+		event.SetPayload(std::make_pair(colour, text));
+		collector->AddPendingEvent(event);
+	}
+
+	/// Do the font collection
+	wxThread::ExitCode Entry() {
+		Collect();
+		collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
+		return 0;
+	}
+public:
+	FontsCollectorThread(AssFile *subs, wxString destination, FcMode oper, wxEvtHandler *collector)
+	: wxThread(wxTHREAD_DETACHED)
+	, subs(subs)
+	, destination(destination)
+	, collector(collector)
+	, oper(oper)
+	{
+		Create();
+		Run();
+	}
+};
+
 DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
-: wxDialog(parent,-1,_("Fonts Collector"),wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
+: wxDialog(parent, -1, _("Fonts Collector"))
 , subs(ass)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(font_collector_button_24)));
 
-	// Destination box
-	wxString dest = lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString());
-	if (dest == "?script") {
-		wxFileName filename(subs->filename);
-		dest = filename.GetPath();
-	}
-	while (dest.Right(1) == "/") dest = dest.Left(dest.Length()-1);
-	DestBox = new wxTextCtrl(this,-1,dest,wxDefaultPosition,wxSize(250,20),0);
-	BrowseButton = new wxButton(this,BROWSE_BUTTON,_("&Browse..."));
-	wxSizer *DestBottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	DestLabel = new wxStaticText(this,-1,_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
-	DestBottomSizer->Add(DestBox,1,wxEXPAND | wxRIGHT,5);
-	DestBottomSizer->Add(BrowseButton,0,0,0);
-	wxSizer *DestSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Destination"));
-	DestSizer->Add(DestLabel,0,wxEXPAND | wxBOTTOM,5);
-	DestSizer->Add(DestBottomSizer,0,wxEXPAND,0);
+	wxString modes[] = {
+		_("Check fonts for availability"),
+		_("Copy fonts to folder"),
+		_("Copy fonts to subtitle file's folder"),
+		_("Copy fonts to zipped archive")
+	};
+	collection_mode = new wxRadioBox(this, -1, "Action", wxDefaultPosition, wxDefaultSize, 4, modes, 1);
+	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 3));
 
-	// Action radio box
-	wxArrayString choices;
-	choices.Add(_("Check fonts for availability"));
-	choices.Add(_("Copy fonts to folder"));
-	choices.Add(_("Copy fonts to zipped archive"));
-	choices.Add(_("Attach fonts to current subtitles"));
-#ifdef _DEBUG
-	choices.Add(_("DEBUG: Verify all fonts in system"));
-#endif
-	CollectAction = new wxRadioBox(this,RADIO_BOX, "Action",wxDefaultPosition,wxDefaultSize,choices,1);
-	size_t lastAction = OPT_GET("Tool/Fonts Collector/Action")->GetInt();
-	if (lastAction >= choices.GetCount()) lastAction = 0;
-	CollectAction->SetSelection(lastAction);
+	if (!ass->filename)
+		collection_mode->Enable(2, false);
 
-	// Log box
-	LogBox = new ScintillaTextCtrl(this,-1,"",wxDefaultPosition,wxSize(300,210));
-	LogBox->SetWrapMode(wxSTC_WRAP_WORD);
-	LogBox->SetMarginWidth(1,0);
-	LogBox->SetReadOnly(true);
-	LogBox->StyleSetForeground(1,wxColour(0,200,0));
-	LogBox->StyleSetForeground(2,wxColour(200,0,0));
-	LogBox->StyleSetForeground(3,wxColour(200,100,0));
-	wxSizer *LogSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Log"));
-	LogSizer->Add(LogBox,1,wxEXPAND,0);
+	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
 
-	// Buttons sizer
-	StartButton = new wxButton(this,START_BUTTON,_("&Start!"));
-	CloseButton = new wxButton(this,wxID_CANCEL);
-	StartButton->SetDefault();
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(StartButton);
-	ButtonSizer->AddButton(CloseButton);
-	ButtonSizer->AddButton(new HelpButton(this,"Fonts Collector"));
-	ButtonSizer->SetAffirmativeButton(StartButton);
-	ButtonSizer->Realize();
+	dest_label = new wxStaticText(destination_box->GetStaticBox(), -1, "\n");
+	dest_ctrl = new wxTextCtrl(destination_box->GetStaticBox(), -1, StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())));
+	dest_browse_button = new wxButton(destination_box->GetStaticBox(), -1, _("&Browse..."));
 
-	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(CollectAction,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	MainSizer->Add(DestSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	MainSizer->Add(LogSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
-	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,5);
+	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
+	dest_browse_sizer->Add(dest_ctrl, wxSizerFlags(1).Border(wxRIGHT));
+	dest_browse_sizer->Add(dest_browse_button, wxSizerFlags());
 
-	// Set sizer
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
+	destination_box->Add(dest_label, wxSizerFlags().Border(wxBOTTOM));
+	destination_box->Add(dest_browse_sizer, wxSizerFlags().Expand());
+
+	wxStaticBoxSizer *log_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
+	collection_log = new ScintillaTextCtrl(log_box->GetStaticBox(), -1, "", wxDefaultPosition, wxSize(300, 210));
+	collection_log->SetWrapMode(wxSTC_WRAP_WORD);
+	collection_log->SetMarginWidth(1, 0);
+	collection_log->SetReadOnly(true);
+	collection_log->StyleSetForeground(1, wxColour(0, 200, 0));
+	collection_log->StyleSetForeground(2, wxColour(200, 0, 0));
+	collection_log->StyleSetForeground(3, wxColour(200, 100, 0));
+	log_box->Add(collection_log, wxSizerFlags().Border());
+
+	wxStdDialogButtonSizer *button_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	start_btn = button_sizer->GetAffirmativeButton();
+	close_btn = button_sizer->GetCancelButton();
+	start_btn->SetLabel(_("&Start!"));
+	start_btn->SetDefault();
+
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(collection_mode, wxSizerFlags().Expand().Border());
+	main_sizer->Add(destination_box, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	main_sizer->Add(log_box, wxSizerFlags().Border(wxALL & ~wxTOP));
+	main_sizer->Add(button_sizer, wxSizerFlags().Right().Border(wxALL & ~wxTOP));
+
+	SetSizerAndFit(main_sizer);
 	CenterOnParent();
 
-	// Run dummy event to update label
+	// Update the browse button and label
 	wxCommandEvent evt;
-	evt.SetInt(-1);
 	OnRadio(evt);
+
+	start_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogFontsCollector::OnStart, this);
+	dest_browse_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogFontsCollector::OnBrowse, this);
+	collection_mode->Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &DialogFontsCollector::OnRadio, this);
+	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Fonts Collector"));
+	Bind(EVT_ADD_TEXT, &DialogFontsCollector::OnAddText, this);
+	Bind(EVT_COLLECTION_DONE, &DialogFontsCollector::OnCollectionComplete, this);
 }
 
+void DialogFontsCollector::OnStart(wxCommandEvent &) {
+	collection_log->SetReadOnly(false);
+	collection_log->ClearAll();
+	collection_log->SetReadOnly(true);
 
+	wxString dest;
+	int action = collection_mode->GetSelection();
+	OPT_SET("Tool/Fonts Collector/Action")->SetInt(action);
+	if (action != CheckFontsOnly) {
+		if (action == CopyToScriptFolder)
+			dest = "?script/";
+		else
+			dest = dest_ctrl->GetValue();
+		dest = StandardPaths::DecodePath(dest);
+		wxFileName folder = dest;
 
-/// @brief Destructor 
-///
-DialogFontsCollector::~DialogFontsCollector() {
-	FontFileLister::ClearData();
-}
+		if (action != CopyToZip) {
+			if (dest.Last() != '/' && dest.Last() != '\\') {
+				dest += wxFileName::GetPathSeparator();
+				folder = dest;
+			}
 
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogFontsCollector, wxDialog)
-	EVT_BUTTON(START_BUTTON,DialogFontsCollector::OnStart)
-	EVT_BUTTON(BROWSE_BUTTON,DialogFontsCollector::OnBrowse)
-	EVT_BUTTON(wxID_CLOSE,DialogFontsCollector::OnClose)
-	EVT_RADIOBOX(RADIO_BOX,DialogFontsCollector::OnRadio)
-	EVT_COMMAND(0,EVT_ADD_TEXT,DialogFontsCollector::OnAddText)
-END_EVENT_TABLE()
-
-
-
-/// @brief Start processing 
-/// @param event 
-/// @return 
-///
-void DialogFontsCollector::OnStart(wxCommandEvent &event) {
-	// Clear
-	LogBox->SetReadOnly(false);
-	LogBox->ClearAll();
-	LogBox->SetReadOnly(true);
-
-	// Action being done
-	int action = CollectAction->GetSelection();
-
-	// Check if it's OK to do it
-	wxString foldername = DestBox->GetValue();
-	if (action == 1) foldername += _T("//");
-	wxFileName folder(foldername);
-	bool isFolder = folder.IsDir();
-
-	// Check if it's a folder
-	if (action == 1 && !isFolder) {
-		wxMessageBox(_("Invalid destination."),_("Error"),wxICON_EXCLAMATION | wxOK);
-		return;
-	}
-
-	// Make folder if it doesn't exist
-	if (action == 1 || action == 2) {
-		if (!folder.DirExists()) {
-			folder.Mkdir(0777,wxPATH_MKDIR_FULL);
+			if (folder.FileExists())
+				wxMessageBox(_("Invalid destination."), _("Error"), wxICON_EXCLAMATION | wxOK);
+			if (!folder.DirExists())
+				folder.Mkdir(0777, wxPATH_MKDIR_FULL);
 			if (!folder.DirExists()) {
-				wxMessageBox(_("Could not create destination folder."),_("Error"),wxICON_EXCLAMATION | wxOK);
+				wxMessageBox(_("Could not create destination folder."), _("Error"), wxICON_EXCLAMATION | wxOK);
 				return;
 			}
 		}
-	}
-
-	// Check if we have a valid archive name
-	if (action == 2) {
-		if (isFolder || folder.GetName().IsEmpty() || folder.GetExt() != _T("zip")) {
-			wxMessageBox(_("Invalid path for .zip file."),_("Error"),wxICON_EXCLAMATION | wxOK);
+		else if (folder.IsDir() || folder.GetName().empty()) {
+			wxMessageBox(_("Invalid path for .zip file."), _("Error"), wxICON_EXCLAMATION | wxOK);
 			return;
 		}
 	}
 
-	// Start thread
-	wxThread *worker = new FontsCollectorThread(subs,foldername,this);
-	worker->Create();
-	worker->Run();
-
-	// Set options
-	if (action == 1 || action == 2) {
-		wxString dest = foldername;
-		wxFileName filename(subs->filename);
-		if (filename.GetPath() == dest) {
-			dest = _T("?script");
-		}
+	if (action != CheckFontsOnly)
 		OPT_SET("Path/Fonts Collector Destination")->SetString(STD_STR(dest));
-	}
-	OPT_SET("Tool/Fonts Collector/Action")->SetInt(action);
 
-	// Set buttons
-	StartButton->Enable(false);
-	BrowseButton->Enable(false);
-	DestBox->Enable(false);
-	CloseButton->Enable(false);
-	CollectAction->Enable(false);
-	DestLabel->Enable(false);
-	if (!worker->IsDetached()) worker->Wait();
+	// Disable the UI while it runs as we don't support canceling
+	EnableCloseButton(false);
+	start_btn->Enable(false);
+	dest_browse_button->Enable(false);
+	dest_ctrl->Enable(false);
+	close_btn->Enable(false);
+	collection_mode->Enable(false);
+	dest_label->Enable(false);
+
+	new FontsCollectorThread(subs, dest, static_cast<FcMode>(action), GetEventHandler());
 }
 
+void DialogFontsCollector::OnBrowse(wxCommandEvent &) {
+	wxString dest;
+	if (collection_mode->GetSelection() == CopyToZip) {
+		dest = wxFileSelector(
+			_("Select archive file name"),
+			dest_ctrl->GetValue(),
+			wxFileName(dest_ctrl->GetValue()).GetFullName(),
+			".zip", _("Zip Archives (*.zip)|*.zip"),
+			wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	}
+	else
+		dest = wxDirSelector(_("Select folder to save fonts on"), dest_ctrl->GetValue(), 0);
 
-
-/// @brief Close dialog 
-/// @param event 
-///
-void DialogFontsCollector::OnClose(wxCommandEvent &event) {
-	EndModal(0);
+	if (!dest.empty())
+		dest_ctrl->SetValue(dest);
 }
 
+void DialogFontsCollector::OnRadio(wxCommandEvent &) {
+	int value = collection_mode->GetSelection();
+	wxString dst = dest_ctrl->GetValue();
 
-
-/// @brief Browse location 
-/// @param event 
-///
-void DialogFontsCollector::OnBrowse(wxCommandEvent &event) {
-	// Chose file name
-	if (CollectAction->GetSelection()==2) {
-		wxFileName fname(DestBox->GetValue());
-		wxString dest = wxFileSelector(_("Select archive file name"),DestBox->GetValue(),fname.GetFullName(),".zip",_("Zip Archives (*.zip)|*.zip"),wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-		if (!dest.empty()) {
-			DestBox->SetValue(dest);
-		}
+	if (value == CheckFontsOnly || value == CopyToScriptFolder) {
+		dest_ctrl->Enable(false);
+		dest_browse_button->Enable(false);
+		dest_label->Enable(false);
+		dest_label->SetLabel(_("N/A"));
 	}
-
-	// Choose folder
 	else {
-		wxString dest = wxDirSelector(_("Select folder to save fonts on"),DestBox->GetValue(),0);
-		if (!dest.empty()) {
-			DestBox->SetValue(dest);
-		}
-	}
-}
+		dest_ctrl->Enable(true);
+		dest_browse_button->Enable(true);
+		dest_label->Enable(true);
 
+		if (value == CopyToFolder) {
+			dest_label->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
 
-
-/// @brief Radio box changed 
-/// @param event 
-///
-void DialogFontsCollector::OnRadio(wxCommandEvent &event) {
-	int value = event.GetInt();
-
-	// Enable buttons
-	CloseButton->Enable(true);
-	StartButton->Enable(true);
-	CollectAction->Enable(true);
-	wxString dst = DestBox->GetValue();
-
-	// Get value if -1
-	if (value == -1) {
-		value = CollectAction->GetSelection();
-	}
-
-	// Check or attach
-	if (value == 0 || value == 3) {
-		DestBox->Enable(false);
-		BrowseButton->Enable(false);
-		DestLabel->Enable(false);
-		DestLabel->SetLabel("N/A\n");
-	}
-
-	// Collect to folder
-	else if (value == 1) {
-		DestBox->Enable(true);
-		BrowseButton->Enable(true);
-		DestLabel->Enable(true);
-		DestLabel->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
-
-		// Remove filename from browse box
-		if (dst.Right(4) == ".zip") {
-			wxFileName fn(dst);
-			DestBox->SetValue(fn.GetPath());
-		}
-	}
-
-	// Collect to zip
-	else if (value == 2) {
-		DestBox->Enable(true);
-		BrowseButton->Enable(true);
-		DestLabel->Enable(true);
-		DestLabel->SetLabel(_("Enter the name of the destination zip file to collect the fonts to.\nIf a folder is entered, a default name will be used."));
-
-		// Add filename to browse box
-		if (dst.Right(4) != ".zip") {
-			wxFileName fn(dst + "//");
-			fn.SetFullName("fonts.zip");
-			DestBox->SetValue(fn.GetFullPath());
-		}
-	}
-}
-
-
-
-/// @brief Add text 
-/// @param event 
-///
-void DialogFontsCollector::OnAddText(wxCommandEvent &event) {
-	ColourString *str = (ColourString*) event.GetClientData();
-	LogBox->SetReadOnly(false);
-	int pos = LogBox->GetReverseUnicodePosition(LogBox->GetLength());
-	LogBox->AppendText(str->text);
-	if (str->colour) {
-		LogBox->StartUnicodeStyling(pos,31);
-		LogBox->SetUnicodeStyling(pos,str->text.Length(),str->colour);
-	}
-	delete str;
-	LogBox->GotoPos(pos);
-	LogBox->SetReadOnly(true);
-}
-
-
-
-/// @brief Collect font files 
-///
-void FontsCollectorThread::CollectFontData () {
-	FontFileLister::Initialize();
-}
-
-
-
-/// @brief Collector thread 
-/// @param _subs        
-/// @param _destination 
-/// @param _collector   
-///
-FontsCollectorThread::FontsCollectorThread(AssFile *_subs,wxString _destination,DialogFontsCollector *_collector)
-: wxThread(wxTHREAD_DETACHED)
-{
-	subs = _subs;
-	destination = _destination;
-	collector = _collector;
-	instance = this;
-}
-
-
-
-/// @brief Thread entry 
-/// @return 
-///
-wxThread::ExitCode FontsCollectorThread::Entry() {
-	try {
-		Collect();
-	}
-	catch (...) {
-		collector->Update();
-		if (IsDetached() && TestDestroy()) Delete();
-		throw;
-	}
-
-	// After done, restore status
-	collector->Update();
-
-	// Return
-	if (IsDetached() && TestDestroy()) Delete();
-	return 0;
-}
-
-
-
-/// @brief Collect 
-/// @return 
-///
-void FontsCollectorThread::Collect() {
-	// Set destination folder
-	int oper = collector->CollectAction->GetSelection();
-	destFolder = collector->DestBox->GetValue();
-	if (oper == 1 && !wxFileName::DirExists(destFolder)) {
-		AppendText(_("Invalid destination directory."),1);
-		return;
-	}
-
-	// Open zip stream if saving to compressed archive
-	wxFFileOutputStream *out = NULL;
-	zip = NULL;
-	if (oper == 2) {
-		out = new wxFFileOutputStream(destFolder);
-		zip = new wxZipOutputStream(*out);
-	}
-
-	// Collect font data
-	AppendText(_("Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"));
-	CollectFontData();
-	AppendText(_("Done collecting font data."));
-	AppendText(_("Scanning file for fonts..."));
-
-	// Scan file
-	if (collector->CollectAction->GetSelection() != 4) {
-		AssDialogue *curDiag;
-		curLine = 0;
-		for (std::list<AssEntry*>::iterator cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-			// Collect from style
-			curStyle = dynamic_cast<AssStyle*>(*cur);
-			if (curStyle) {
-				AddFont(curStyle->font,0);
-			}
-
-			// Collect from dialogue
-			else {
-				curDiag = dynamic_cast<AssDialogue*>(*cur);
-				if (curDiag) {
-					curLine++;
-					curDiag->ParseASSTags();
-					curDiag->ProcessParameters(GetFonts);
-					curDiag->ClearBlocks();
-				}
-			}
-		}
-	}
-
-	// For maitenance, gather all on system
-	else {
-		wxArrayString fonts = wxFontEnumerator::GetFacenames();
-		for (size_t i=0;i<fonts.Count();i++) AddFont(fonts[i],2);
-	}
-
-	// Copy fonts
-	AppendText(wxString(_("Done.")) + _T("\n\n"));
-	switch (oper) {
-		case 0: AppendText(_("Checking fonts...\n")); break;
-		case 1: AppendText(_("Copying fonts to folder...\n")); break;
-		case 2: AppendText(_("Copying fonts to archive...\n")); break;
-		case 3: AppendText(_("Attaching fonts to file...\n")); break;
-	}
-	bool ok = true;
-	bool someOk = false;
-	for (size_t i=0;i<fonts.Count();i++) {
-		bool result = ProcessFont(fonts[i]);
-		if (result) someOk = true;
-		if (!result) ok = false;
-	}
-
-	// Close ZIP archive
-	if (oper == 2) {
-		zip->Close();
-		delete zip;
-		delete out;
-
-		AppendText(wxString::Format(_("\nFinished writing to %s.\n"),destination.c_str()),1);
-	}
-
-	// Final result
-	if (ok) {
-		if (oper == 0) {
-			AppendText(_("Done. All fonts found."),1);
+			// Remove filename from browse box
+			if (dst.Right(4) == ".zip")
+				dest_ctrl->SetValue(wxFileName(dst).GetPath());
 		}
 		else {
-			AppendText(_("Done. All fonts copied."),1);
+			dest_label->SetLabel(_("Enter the name of the destination zip file to collect the fonts to.\nIf a folder is entered, a default name will be used."));
 
-			// Modify file if it was attaching
-			if (oper == 3 && someOk) {
-				wxMutexGuiEnter();
-				subs->Commit(_("font attachment"), AssFile::COMMIT_ATTACHMENT);
-				wxMutexGuiLeave();
+			// Add filename to browse box
+			if (!dst.EndsWith(".zip")) {
+				wxFileName fn(dst + "//");
+				fn.SetFullName("fonts.zip");
+				dest_ctrl->SetValue(fn.GetFullPath());
 			}
 		}
 	}
-	else {
-		if (oper == 0) AppendText(_("Done. Some fonts could not be found."),2);
-		else  AppendText(_("Done. Some fonts could not be copied."),2);
-	}
 }
 
-
-
-/// @brief Process font 
-/// @param name 
-/// @return 
-///
-bool FontsCollectorThread::ProcessFont(wxString name) {
-	// Action
-	int action = collector->CollectAction->GetSelection();
-
-	// Font name
-	AppendText(wxString::Format("\"%s\"... ", name));
-
-	// Get font list
-	wxArrayString files = FontFileLister::GetFilesWithFace(name);
-	bool result = files.Count() != 0;
-
-	// No files found
-	if (!result) {
-		AppendText(_("Not found.\n"),2);
-		return false;
+void DialogFontsCollector::OnAddText(wxThreadEvent &event) {
+	std::pair<int, wxString> str = event.GetPayload<std::pair<int, wxString> >();
+	collection_log->SetReadOnly(false);
+	int pos = collection_log->GetReverseUnicodePosition(collection_log->GetLength());
+	collection_log->AppendText(str.second);
+	if (str.first) {
+		collection_log->StartUnicodeStyling(pos, 31);
+		collection_log->SetUnicodeStyling(pos, str.second.size(), str.first);
 	}
-
-	// Just checking, found
-	else if (action == 0 || action == 4) {
-		AppendText(_("Found.\n"),1);
-		return true;
-	}
-
-	// Copy font
-	AppendText(_T("\n"));
-	for (size_t i=0;i<files.Count();i++) {
-		int tempResult = 0;
-		switch (action) {
-			case 1: tempResult = CopyFont(files[i]); break;
-			case 2: tempResult = ArchiveFont(files[i]) ? 1 : 0; break;
-			case 3: tempResult = AttachFont(files[i]) ? 1 : 0; break;
-		}
-
-		if (tempResult == 1) {
-			AppendText(wxString::Format(_("* Copied %s.\n"),files[i]),1);
-		}
-		else if (tempResult == 2) {
-			wxFileName fn(files[i]);
-			AppendText(wxString::Format(_("* %s already exists on destination.\n"),fn.GetFullName()),3);
-		}
-		else {
-			AppendText(wxString::Format(_("* Failed to copy %s.\n"),files[i]),2);
-			result = false;
-		}
-	}
-
-	// Done
-	return result;
+	collection_log->GotoPos(pos);
+	collection_log->SetReadOnly(true);
 }
 
+void DialogFontsCollector::OnCollectionComplete(wxThreadEvent &) {
+	EnableCloseButton();
+	start_btn->Enable();
+	close_btn->Enable();
+	collection_mode->Enable();
+	if (!subs->filename)
+		collection_mode->Enable(2, false);
 
-
-/// @brief Copy font 
-/// @param filename 
-/// @return 
-///
-int FontsCollectorThread::CopyFont(wxString filename) {
-	wxFileName fn(filename);
-	wxString dstName = destFolder + _T("//") + fn.GetFullName();
-	if (wxFileName::FileExists(dstName)) return 2;
-	return wxCopyFile(filename,dstName,true) ? 1 : 0;
+	wxCommandEvent evt;
+	OnRadio(evt);
 }
-
-
-
-/// @brief Archive font 
-/// @param filename 
-/// @return 
-///
-bool FontsCollectorThread::ArchiveFont(wxString filename) {
-	// Open file
-	wxFFileInputStream in(filename);
-	if (!in.IsOk()) return false;
-
-	// Write to archive
-	try {
-		wxFileName fn(filename);
-		zip->PutNextEntry(fn.GetFullName());
-		zip->Write(in);
-	}
-	catch (...) {
-		return false;
-	}
-
-	return true;
-}
-
-
-
-/// @brief Attach font 
-/// @param filename 
-/// @return 
-///
-bool FontsCollectorThread::AttachFont(wxString filename) {
-	try {
-		subs->InsertAttachment(filename);
-	}
-	catch (...) {
-		return false;
-	}
-	return true;
-}
-
-
-
-/// @brief Get fonts from ass overrides 
-/// @param tagName 
-/// @param par_n   
-/// @param param   
-/// @param usr     
-///
-void FontsCollectorThread::GetFonts (wxString tagName,int par_n,AssOverrideParameter *param,void *usr) {
-	if (tagName == _T("\\fn")) {
-		if (instance) instance->AddFont(param->Get<wxString>(),1);
-	}
-}
-
-
-
-/// @brief Adds a font 
-/// @param fontname 
-/// @param mode     
-///
-void FontsCollectorThread::AddFont(wxString fontname,int mode) {
-	// @-fonts (CJK vertical layout variations) should be listed as the non-@ name
-	if (fontname.StartsWith(_T("@"), 0))
-		fontname.Remove(0, 1);
-
-	if (fonts.Index(fontname) == wxNOT_FOUND) {
-		fonts.Add(fontname);
-
-		if (mode == 0) AppendText(wxString::Format(_("\"%s\" found on style \"%s\".\n"), fontname, curStyle->name));
-		else if (mode == 1) AppendText(wxString::Format(_("\"%s\" found on dialogue line \"%d\".\n"), fontname, curLine));
-		else AppendText(wxString::Format(_("\"%s\" found.\n"), fontname));
-	}
-}
-
-
-
-/// @brief Append text 
-/// @param text   
-/// @param colour 
-///
-void FontsCollectorThread::AppendText(wxString text,int colour) {
-	ColourString *str = new ColourString;
-	str->text = text;
-	str->colour = colour;
-	wxCommandEvent event(EVT_ADD_TEXT,0);
-	event.SetClientData(str);
-	collector->AddPendingEvent(event);
-}
-
-
-
-/// DOCME
-FontsCollectorThread *FontsCollectorThread::instance;
-
-

@@ -98,8 +98,7 @@ audio_player.o:                CXXFLAGS += $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(
 audio_provider.o:              CXXFLAGS += $(CFLAGS_FFMS2)
 auto4_base.o:                  CXXFLAGS += $(CFLAGS_FREETYPE)
 charset_detect.o:              CXXFLAGS += -D_X86_
-font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG) $(CFLAGS_FREETYPE)
-font_file_lister.o:            CXXFLAGS += $(CFLAGS_FREETYPE)
+font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG)
 text_file_reader.o:            CXXFLAGS += -D_X86_
 video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS2)
 

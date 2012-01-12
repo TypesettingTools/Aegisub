@@ -1,29 +1,16 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 //
@@ -34,201 +21,130 @@
 /// @ingroup font_collector
 ///
 
-
-////////////
-// Includes
-
 #include "config.h"
 
-#ifndef AGI_PRE
-#include <wx/tokenzr.h>
-#endif
+#include "ass_dialogue.h"
+#include "ass_override.h"
+#include "ass_style.h"
 
-#ifdef WITH_FONTCONFIG
 #include "font_file_lister_fontconfig.h"
-#define FontListerClass FontConfigFontFileLister
-#elif defined(WITH_FREETYPE2)
-#include "font_file_lister_freetype.h"
-#define FontListerClass FreetypeFontFileLister
-#else
-#include "font_file_lister.h"
+
+#ifndef AGI_PRE
+#include <algorithm>
+
+#include <wx/intl.h>
 #endif
 
-#include "standard_paths.h"
-#include "text_file_reader.h"
-#include "text_file_writer.h"
+using namespace std::tr1::placeholders;
 
-/// DOCME
-FontFileLister *FontFileLister::instance = NULL;
-
-/// @brief Constructor 
-///
-FontFileLister::FontFileLister() {
+FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister)
+: status_callback(status_callback)
+, lister(lister)
+{
 }
 
+void FontCollector::ProcessDialogueLine(AssDialogue *line) {
+	if (line->Comment) return;
 
+	line->ParseASSTags();
+	bool text = false;
+	StyleInfo style = styles[line->Style];
+	StyleInfo initial = style;
 
-/// @brief Destructor 
-///
-FontFileLister::~FontFileLister() {
-}
-
-
-
-/// @brief Get instance 
-///
-void FontFileLister::GetInstance() {
-#ifdef FontListerClass
-	if (!instance) instance = new FontListerClass();
-#endif
-}
-
-
-
-/// @brief Redirect statics to the instance 
-/// @param facename 
-/// @return 
-///
-wxArrayString FontFileLister::GetFilesWithFace(wxString facename) {
-	GetInstance();
-	if (instance)
-		return instance->DoGetFilesWithFace(facename);
-	else {
-		wxArrayString ret;
-		return ret;
-	}
-}
-
-/// @brief DOCME
-///
-void FontFileLister::Initialize() {
-	GetInstance();
-	if (instance) instance->DoInitialize();
-}
-
-/// @brief DOCME
-///
-void FontFileLister::ClearData() {
-	GetInstance();
-	if (instance) instance->DoClearData();
-}
-
-
-
-/// @brief Get list of files that match a specific face 
-/// @param facename 
-/// @return 
-///
-wxArrayString FontFileLister::CacheGetFilesWithFace(wxString facename) {
-	FontMap::iterator iter = fontTable.find(facename);
-	if (iter != fontTable.end()) return iter->second;
-	else {
-		iter = fontTable.find("*"+facename);
-		if (iter != fontTable.end()) return iter->second;
-		return wxArrayString();
-	}
-}
-
-
-
-/// @brief Clear data 
-///
-void FontFileLister::ClearCache() {
-	fontFiles.clear();
-	fontTable.clear();
-}
-
-
-
-/// @brief Add font 
-/// @param filename 
-/// @param facename 
-/// @return 
-///
-void FontFileLister::AddFont(wxString filename,wxString facename) {
-	// See if it's a valid facename
-	facename.Trim(true).Trim(false);
-	if (facename.IsEmpty()) return;
-	if (facename.Lower().StartsWith("copyright ")) return;
-
-	// Add filename to general list
-	if (fontFiles.Index(filename) == wxNOT_FOUND) {
-		fontFiles.Add(filename);
-	}
-
-	// Add filename to mapping of this face
-	wxArrayString &arr = fontTable[facename];
-	if (arr.Index(filename) == wxNOT_FOUND) arr.Add(filename);
-}
-
-
-
-/// @brief Check if a filename is cached 
-/// @param filename 
-/// @return 
-///
-bool FontFileLister::IsFilenameCached(wxString filename) {
-	return fontFiles.Index(filename) != wxNOT_FOUND;
-}
-
-
-
-/// @brief Save cache 
-///
-void FontFileLister::SaveCache() {
-	try {
-		// Open file
-		TextFileWriter file(StandardPaths::DecodePath("?user/fontscache.dat"));
-
-		// For each face...
-		for (FontMap::iterator iter = fontTable.begin();iter!=fontTable.end();iter++) {
-			// Write face name
-			wxString line = iter->first + "?";
-			size_t len = iter->second.Count();
-
-			// Write file names
-			for (size_t i=0;i<len;i++) {
-				line += iter->second[i];
-				if (i != len-1) line += "|";
+	for (size_t i = 0; i < line->Blocks.size(); ++i) {
+		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(line->Blocks[i])) {
+			if (text) {
+				used_styles.insert(style);
+				text = false;
 			}
 
-			// Write line
-			file.WriteLineToFile(line);
+			for (size_t j = 0; j < ovr->Tags.size(); ++j) {
+				AssOverrideTag *tag = ovr->Tags[j];
+				wxString name = tag->Name;
+
+				if (name == "\\r")
+					style = styles[tag->Params[0]->Get(line->Style)];
+				if (name == "\\b")
+					style.bold = tag->Params[0]->Get(initial.bold);
+				else if (name == "\\i")
+					style.italic = tag->Params[0]->Get(initial.italic);
+				else if (name == "\\fn")
+					style.facename = tag->Params[0]->Get(initial.facename);
+				else
+					continue;
+			}
 		}
+		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(line->Blocks[i])) {
+			text = text || !txt->GetText().empty();
+		}
+		// Do nothing with drawing blocks
 	}
-	catch (...) {
+	if (text)
+		used_styles.insert(style);
+	line->ClearBlocks();
+}
+
+void FontCollector::ProcessChunk(StyleInfo const& style) {
+	std::vector<wxString> paths = lister.GetFontPaths(style.facename, style.bold, style.italic);
+
+	if (paths.empty()) {
+		status_callback(wxString::Format("Could not find font '%s'\n", style.facename), 2);
+		++missing;
+	}
+	else {
+		for (size_t i = 0; i < paths.size(); ++i) {
+			if (results.insert(paths[i]).second)
+				status_callback(wxString::Format("Found '%s' at '%s'\n", style.facename, paths[i]), 0);
+		}
 	}
 }
 
+std::vector<wxString> FontCollector::GetFontPaths(std::list<AssEntry*> const& file) {
+	missing = 0;
 
-
-/// @brief Load cache 
-///
-void FontFileLister::LoadCache() {
-	try {
-		// Load cache
-		TextFileReader file(StandardPaths::DecodePath("?user/fontscache.dat"));
-
-		// Read each line
-		while (file.HasMoreLines()) {
-			// Read line
-			wxString line = file.ReadLineFromFile();
-			int pos = line.Find('?');
-
-			// Get face name
-			wxString face = line.Left(pos);
-			if (face.IsEmpty()) continue;
-
-			// Get files
-			wxStringTokenizer tkn(line.Mid(pos+1),"|");
-			while (tkn.HasMoreTokens()) {
-				wxString file = tkn.GetNextToken();
-				if (!file.IsEmpty()) {
-					AddFont(file,face);
-				}
-			}
+	status_callback(_("Parsing file\n"), 0);
+	for (std::list<AssEntry*>::const_iterator cur = file.begin(); cur != file.end(); ++cur) {
+		if (AssStyle *style = dynamic_cast<AssStyle*>(*cur)) {
+			StyleInfo &info = styles[style->name];
+			info.facename = style->font;
+			info.bold     = style->bold;
+			info.italic   = style->italic;
 		}
+		else if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur))
+			ProcessDialogueLine(diag);
 	}
-	catch (...) {
+
+	if (used_styles.empty()) {
+		status_callback(_("No non-empty dialogue lines found"), 2);
+		return std::vector<wxString>();
 	}
+
+	status_callback(_("Searching for font files\n"), 0);
+	for_each(used_styles.begin(), used_styles.end(), bind(&FontCollector::ProcessChunk, this, _1));
+	status_callback(_("Done\n\n"), 0);
+
+	std::vector<wxString> paths;
+	paths.reserve(results.size());
+	paths.insert(paths.end(), results.begin(), results.end());
+
+	if (missing == 0)
+		status_callback(_("All fonts found.\n"), 1);
+	else
+		status_callback(wxString::Format(_("%d fonts could not be found.\n"), missing), 2);
+
+	return paths;
+}
+
+bool FontCollector::StyleInfo::operator<(StyleInfo const& rgt) const {
+#define CMP(field) \
+	if (field < rgt.field) return true; \
+	if (field > rgt.field) return false
+
+	CMP(facename);
+	CMP(bold);
+	CMP(italic);
+
+#undef CMP
+
+	return false;
 }
