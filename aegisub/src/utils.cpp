@@ -40,6 +40,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <set>
+
 #ifdef __UNIX__
 #include <unistd.h>
 #endif

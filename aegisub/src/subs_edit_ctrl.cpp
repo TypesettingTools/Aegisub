@@ -44,6 +44,8 @@
 #endif
 #include <wx/clipbrd.h>
 #include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
 #endif
 
 #include "subs_edit_ctrl.h"
