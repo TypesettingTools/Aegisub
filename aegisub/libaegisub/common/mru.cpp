@@ -22,7 +22,6 @@
 
 #include "libaegisub/cajun/writer.h"
 
-#include "libaegisub/access.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"

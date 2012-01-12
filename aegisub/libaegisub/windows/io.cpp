@@ -26,6 +26,7 @@
 #include <fstream>
 #endif
 
+#include <libaegisub/access.h>
 #include <libaegisub/charset_conv_win.h>
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
@@ -60,7 +61,7 @@ Save::Save(const std::string& file, bool binary): file_name(file) {
 
 	try {
 		acs::CheckFileWrite(file);
-	} catch (acs::AcsNotFound&) {
+	} catch (FileNotFoundError const&) {
 		// If the file doesn't exist we create a 0 byte file, this so so
 		// util::Rename will find it, and to let users know something went
 		// wrong by leaving a 0 byte file.

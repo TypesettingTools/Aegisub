@@ -25,10 +25,29 @@
 #include <fstream>
 #endif
 
+#include <libaegisub/access.h>
+
 #include <libaegisub/charset_conv_win.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 #include <libaegisub/util_win.h>
+
+namespace {
+	bool check_permission(bool is_read, SECURITY_DESCRIPTOR *sd, HANDLE client_token) {
+		DWORD access_check = is_read ? FILE_READ_DATA : FILE_APPEND_DATA | FILE_WRITE_DATA;
+
+		GENERIC_MAPPING generic_mapping;
+		MapGenericMask(&access_check, &generic_mapping);
+
+		PRIVILEGE_SET priv_set;
+		DWORD priv_set_size = sizeof(PRIVILEGE_SET);
+		DWORD access;
+		BOOL access_ok;
+		if(!AccessCheck(sd, client_token, access_check, &generic_mapping, &priv_set, &priv_set_size, &access, &access_ok))
+			LOG_W("acs/check") << "AccessCheck failed: " << agi::util::ErrorString(GetLastError());
+		return !!access;
+	}
+}
 
 namespace agi {
 	namespace acs {
@@ -63,13 +82,13 @@ void Check(const std::string &file, acs::Type type) {
 		switch (GetLastError()) {
 			case ERROR_FILE_NOT_FOUND:
 			case ERROR_PATH_NOT_FOUND:
-				throw AcsNotFound("File or path not found.");
+				throw FileNotFoundError(file);
 
 			case ERROR_ACCESS_DENIED:
-				throw AcsAccess("Access denied to file or path component");
+				throw Read("Access denied to file or path component");
 
 			default:
-				throw AcsFatal("Fatal I/O error occurred.");
+				throw Fatal("Fatal I/O error occurred.");
 		}
 	}
 
@@ -77,12 +96,12 @@ void Check(const std::string &file, acs::Type type) {
 		case FileRead:
 		case FileWrite:
 			if ((file_attr & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-				throw AcsNotAFile("Not a file");
+				throw NotAFile(file + " is not a file");
 			break;
 		case DirRead:
 		case DirWrite:
 			if ((file_attr & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY)
-				throw AcsNotADirectory("Not a directory");
+				throw NotADirectory(file + " is not a directory");
 			break;
 	}
 
@@ -103,32 +122,10 @@ void Check(const std::string &file, acs::Type type) {
 	if (!OpenThreadToken(GetCurrentThread(), TOKEN_ALL_ACCESS, TRUE, &client_token))
 		LOG_W("acs/check") << "OpenThreadToken failed: " << util::ErrorString(GetLastError());
 
-	DWORD access_check;
-	switch (type) {
-		case DirRead:
-		case FileRead:
-			access_check = FILE_READ_DATA;
-			break;
-		case DirWrite:
-		case FileWrite:
-			access_check = FILE_APPEND_DATA | FILE_WRITE_DATA;
-			break;
-		default:
-			LOG_W("acs/check") << "Warning: type not handled";
-			return;
-	}
-
-	GENERIC_MAPPING generic_mapping;
-	MapGenericMask(&access_check, &generic_mapping);
-
-	PRIVILEGE_SET priv_set;
-	DWORD priv_set_size = sizeof(PRIVILEGE_SET);
-	DWORD access;
-	BOOL access_ok;
-	if(!AccessCheck(sd, client_token, access_check, &generic_mapping, &priv_set, &priv_set_size, &access, &access_ok))
-		LOG_W("acs/check") << "AccessCheck failed: " << util::ErrorString(GetLastError());
-	if (!access)
-		throw AcsRead("File or directory is not readable");
+	if (!check_permission(true, sd, client_token))
+		throw Read("File or directory is not readable");
+	if ((type == DirWrite || type == FileWrite) && !check_permission(false, sd, client_token))
+		throw Write("File or directory is not writable");
 }
 
 	} // namespace Access

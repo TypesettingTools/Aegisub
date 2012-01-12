@@ -34,7 +34,6 @@
 
 #include "libaegisub/hotkey.h"
 
-#include "libaegisub/access.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/exception.h"
 #include "libaegisub/io.h"

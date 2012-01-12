@@ -18,7 +18,6 @@
 /// @brief agi::keyframe tests
 /// @ingroup video_input
 
-#include <libaegisub/access.h>
 #include <libaegisub/keyframe.h>
 
 #include <fstream>
@@ -42,7 +41,7 @@ TEST(lagi_keyframe, save) {
 }
 
 TEST(lagi_keyframe, bad_files) {
-	EXPECT_THROW(Load(""), agi::acs::AcsError);
+	EXPECT_THROW(Load(""), agi::FileSystemError);
 	EXPECT_THROW(Load("data/keyframe/empty.txt"), Error);
 	EXPECT_THROW(Load("data/keyframe/garbage.txt"), Error);
 }

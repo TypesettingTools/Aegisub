@@ -47,7 +47,6 @@
 #include <wx/tokenzr.h>
 #endif
 
-#include <libaegisub/access.h>
 #include <libaegisub/log.h>
 
 #include "include/aegisub/context.h"
@@ -312,7 +311,7 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 
 		context->ass->Load(filename,charset);
 	}
-	catch (agi::acs::AcsNotFound const&) {
+	catch (agi::FileNotFoundError const&) {
 		wxMessageBox(filename + " not found.", "Error", wxOK | wxICON_ERROR, NULL);
 		config::mru->Remove("Subtitle", STD_STR(filename));
 		return;

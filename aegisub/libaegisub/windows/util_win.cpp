@@ -28,8 +28,9 @@
 #include <windows.h>
 #endif
 
-#include "libaegisub/types.h"
+#include "libaegisub/access.h"
 #include "libaegisub/charset_conv_win.h"
+#include "libaegisub/types.h"
 #include "libaegisub/util.h"
 #include "libaegisub/util_win.h"
 
@@ -52,7 +53,7 @@ void Rename(const std::string& from, const std::string& to) {
 
 	try {
 		acs::CheckFileWrite(to);
-	} catch (acs::AcsNotFound&) {
+	} catch (FileNotFoundError const&) {
 		acs::CheckDirWrite(DirName(to));
 	}
 

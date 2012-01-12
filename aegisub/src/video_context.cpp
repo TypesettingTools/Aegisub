@@ -46,7 +46,6 @@
 #include <wx/msgdlg.h>
 #endif
 
-#include <libaegisub/access.h>
 #include <libaegisub/keyframe.h>
 #include <libaegisub/log.h>
 
@@ -433,7 +432,7 @@ void VideoContext::LoadKeyframes(wxString filename) {
 		wxMessageBox(err.GetMessage(), "Error opening keyframes file", wxOK | wxICON_ERROR, NULL);
 		config::mru->Remove("Keyframes", STD_STR(filename));
 	}
-	catch (agi::acs::AcsError const&) {
+	catch (agi::FileSystemError const&) {
 		wxLogError("Could not open file " + filename);
 		config::mru->Remove("Keyframes", STD_STR(filename));
 	}
@@ -462,7 +461,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 		OnSubtitlesCommit();
 		TimecodesOpen(ovrFPS);
 	}
-	catch (const agi::acs::AcsError&) {
+	catch (const agi::FileSystemError&) {
 		wxLogError("Could not open file " + filename);
 		config::mru->Remove("Timecodes", STD_STR(filename));
 	}
@@ -475,7 +474,7 @@ void VideoContext::SaveTimecodes(wxString filename) {
 		FPS().Save(STD_STR(filename), IsLoaded() ? GetLength() : -1);
 		config::mru->Add("Timecodes", STD_STR(filename));
 	}
-	catch(const agi::acs::AcsError&) {
+	catch(const agi::FileSystemError&) {
 		wxLogError("Could not write to " + filename);
 	}
 }

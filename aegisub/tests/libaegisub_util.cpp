@@ -19,6 +19,7 @@
 /// @ingroup util
 
 #include <fstream>
+#include <libaegisub/access.h>
 #include <libaegisub/util.h>
 #include "main.h"
 
@@ -62,7 +63,7 @@ TEST_F(lagi_util, UtilRenameNew) {
 }
 
 TEST_F(lagi_util, UtilRenameExNotFound) {
-	EXPECT_THROW(util::Rename("./data/nonexistent", ""), acs::AcsNotFound);
+	EXPECT_THROW(util::Rename("./data/nonexistent", ""), FileNotFoundError);
 }
 
 TEST_F(lagi_util, Utilstr_lower) {
@@ -111,7 +112,7 @@ TEST_F(lagi_util, UtilfreespaceDir) {
 
 TEST_F(lagi_util, UtilfreespaceNoAccess) {
 	std::string path("./data/dir_access_denied");
-	EXPECT_THROW(util::freespace(path), acs::AcsAccess);
+	EXPECT_THROW(util::freespace(path), acs::Read);
 }
 
 TEST_F(lagi_util, UtilfreespaceInvalid) {

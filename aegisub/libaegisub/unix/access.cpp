@@ -61,15 +61,15 @@ void Check(const std::string &file, acs::Type type) {
 	if (file_status != 0) {
 		switch (errno) {
 			case ENOENT:
-				throw AcsNotFound("File or path not found.");
+				throw FileNotFoundError("File or path not found.");
 			break;
 
 			case EACCES:
-				throw AcsAccess("Access Denied to file, path or path component.");
+				throw Read("Access Denied to file, path or path component.");
 			break;
 
 			case EIO:
-				throw AcsFatal("Fatal I/O error occurred.");
+				throw Fatal("Fatal I/O error occurred.");
 			break;
 		}
 	}
@@ -78,13 +78,13 @@ void Check(const std::string &file, acs::Type type) {
 		case FileRead:
 		case FileWrite:
 			if ((file_stat.st_mode & S_IFREG) == 0)
-				throw AcsNotAFile("Not a file.");
+				throw NotAFile("Not a file.");
 		break;
 
 		case DirRead:
 		case DirWrite:
 			if ((file_stat.st_mode & S_IFDIR) == 0)
-				throw AcsNotADirectory("Not a directory.");
+				throw NotADirectory("Not a directory.");
 		break;
 	}
 
@@ -93,14 +93,14 @@ void Check(const std::string &file, acs::Type type) {
 		case FileRead:
 			file_status = access(file.c_str(), R_OK);
 			if (file_status != 0)
-				throw AcsRead("File or directory is not readable.");
+				throw Read("File or directory is not readable.");
 		break;
 
 		case DirWrite:
 		case FileWrite:
 			file_status = access(file.c_str(), W_OK);
 			if (file_status != 0)
-				throw AcsWrite("File or directory is not writable.");
+				throw Write("File or directory is not writable.");
 		break;
 	}
 }

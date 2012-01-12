@@ -34,7 +34,6 @@
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/cajun/elements.h"
 
-#include "libaegisub/access.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 #include "libaegisub/option_value.h"
@@ -101,7 +100,7 @@ void Options::ConfigUser() {
 
 	try {
 		stream.reset(agi::io::Open(config_file));
-	} catch (const acs::AcsNotFound&) {
+	} catch (const FileNotFoundError&) {
 		return;
 	}
 

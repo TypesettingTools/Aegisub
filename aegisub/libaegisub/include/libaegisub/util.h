@@ -25,7 +25,6 @@
 #include <algorithm>
 #endif // LAGI_PRE
 
-#include <libaegisub/access.h>
 #include <libaegisub/types.h>
 
 namespace agi {

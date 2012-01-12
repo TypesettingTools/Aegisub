@@ -25,7 +25,6 @@
 #include <sstream>
 #endif
 
-#include "libaegisub/access.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
@@ -59,7 +58,7 @@ json::UnknownElement file(const std::string &file, const std::string &default_co
 	try {
 		return parse(io::Open(file));
 	}
-	catch (const acs::AcsNotFound&) {
+	catch (FileNotFoundError const&) {
 		// Not an error
 		return parse(new std::istringstream(default_config));
 	}
@@ -68,7 +67,7 @@ json::UnknownElement file(const std::string &file, const std::string &default_co
 		return parse(new std::istringstream(default_config));
 	}
 	catch (agi::Exception& e) {
-		LOG_E("json/file") << "Unexpted error when reading config file " << file << ": " << e.GetMessage();
+		LOG_E("json/file") << "Unexpected error when reading config file " << file << ": " << e.GetMessage();
 		return parse(new std::istringstream(default_config));
 	}
 }

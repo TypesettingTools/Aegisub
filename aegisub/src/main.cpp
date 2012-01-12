@@ -73,7 +73,6 @@
 #include "video_context.h"
 
 #include <libaegisub/io.h>
-#include <libaegisub/access.h>
 #include <libaegisub/log.h>
 #include <libaegisub/hotkey.h>
 #include <libaegisub/scoped_ptr.h>
@@ -160,7 +159,7 @@ bool AegisubApp::OnInit() {
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
 		StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
 		StandardPaths::SetPathValue("?local", StandardPaths::DecodePath("?data"));
-	} catch (agi::acs::AcsError const&) {
+	} catch (agi::FileNotAccessibleError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
 	}

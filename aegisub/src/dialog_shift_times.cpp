@@ -38,7 +38,6 @@
 #include <wx/textctrl.h>
 #endif
 
-#include <libaegisub/access.h>
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
 #include <libaegisub/scoped_ptr.h>
@@ -247,7 +246,7 @@ void DialogShiftTimes::SaveHistory(std::vector<std::pair<int, int> > const& shif
 			file.Get() << history->GetString(i).utf8_str() << std::endl;
 		file.Get() << new_line.utf8_str() << std::endl;
 	}
-	catch (agi::acs::AcsError const& e) {
+	catch (agi::FileSystemError const& e) {
 		LOG_E("dialog_shift_times/save_history") << "Cannot save shift times history: " << e.GetChainedMessage();
 	}
 }
@@ -265,7 +264,7 @@ void DialogShiftTimes::LoadHistory() {
 				history->Insert(lagi_wxString(buffer), 0);
 		}
 	}
-	catch (agi::acs::AcsError const& e) {
+	catch (agi::FileSystemError const& e) {
 		LOG_E("dialog_shift_times/save_history") << "Cannot load shift times history: " << e.GetChainedMessage();
 	}
 	catch (...) {

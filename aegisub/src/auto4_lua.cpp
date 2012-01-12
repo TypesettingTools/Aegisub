@@ -413,10 +413,10 @@ namespace Automation4 {
 				}
 				break;
 			}
-			catch (agi::acs::AcsNotFound const&) {
+			catch (agi::FileNotFoundError const&) {
 				// Not an error so swallow and continue on
 			}
-			catch (agi::acs::AcsNotAFile const&) {
+			catch (agi::acs::NotAFile const&) {
 				// Not an error so swallow and continue on
 			}
 			catch (agi::Exception const& e) {

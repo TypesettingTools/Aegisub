@@ -23,16 +23,12 @@
 namespace agi {
 	namespace acs {
 
-DEFINE_BASE_EXCEPTION_NOINNER(AcsError, Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AcsFatal, AcsError, "acs/fatal")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AcsNotFound, AcsError, "acs/notfound")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AcsNotAFile, AcsError, "acs/file")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AcsNotADirectory, AcsError, "acs/directory")
+DEFINE_SIMPLE_EXCEPTION_NOINNER(Fatal, FileSystemError, "filesystem/fatal");
+DEFINE_SIMPLE_EXCEPTION_NOINNER(NotAFile, FileSystemError, "filesystem/not_a_file")
+DEFINE_SIMPLE_EXCEPTION_NOINNER(NotADirectory, FileSystemError, "filesystem/not_a_directory")
 
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AcsAccess, AcsError, "acs/access")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AcsRead, AcsAccess, "acs/access/read")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AcsWrite, AcsAccess, "acs/access/write")
-
+DEFINE_SIMPLE_EXCEPTION_NOINNER(Read, FileNotAccessibleError, "filesystem/not_accessible/read_permission")
+DEFINE_SIMPLE_EXCEPTION_NOINNER(Write, FileNotAccessibleError, "filesystem/not_accessible/write_permission")
 
 enum Type {
 	FileRead,
@@ -41,7 +37,6 @@ enum Type {
 	DirWrite
 };
 
-
 void Check(const std::string &file, acs::Type);
 
 void CheckFileRead(const std::string &file);
@@ -49,7 +44,6 @@ void CheckDirRead(const std::string &dir);
 
 void CheckFileWrite(const std::string &file);
 void CheckDirWrite(const std::string &dir);
-
 
 	} // namespace axs
 } // namespace agi
