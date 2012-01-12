@@ -220,7 +220,7 @@ void GetWordBoundaries(const wxString text, IntPairVector &results, int start, i
 
 	for (int i = start; i < end + 1; ++i) {
 		// Current character
-		wxUniChar cur = i < end ? text[i] : '.';
+		wxUniChar cur = i < end ? text[i] : wxUniChar('.');
 
 		// Increase depth
 		if (cur == '{') {
