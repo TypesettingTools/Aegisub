@@ -586,7 +586,8 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 
 			std::list<AssEntry*>::iterator prev = current_line;
 			while (--prev != context->ass->Line.begin() && !predicate(*prev)) ;
-			AddInactiveMarkers(static_cast<AssDialogue*>(*prev));
+			if (prev != context->ass->Line.begin())
+				AddInactiveMarkers(static_cast<AssDialogue*>(*prev));
 
 			if (mode == 2)
 			{
