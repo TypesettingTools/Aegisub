@@ -197,59 +197,59 @@ struct grid_tags_simplify : public Command {
 };
 
 template<class T, class U>
-static bool move_one(T begin, T end, U value) {
-	T it = find(begin, end, value);
-	assert(it != end);
-
-	T prev = it;
-	++prev;
-	prev = find_if(prev, end, cast<U>());
-
-	if (prev != end) {
-		using std::swap;
-		swap(*it, *prev);
-		return true;
+static bool move_one(T begin, T end, U const& value) {
+	size_t move_count = 0;
+	T prev = end;
+	for (; begin != end; ++begin) {
+		typename U::key_type cur = dynamic_cast<typename U::key_type>(*begin);
+		bool in_set = !!value.count(cur);
+		if (!in_set && cur)
+			prev = begin;
+		else if (in_set && prev != end) {
+			using std::swap;
+			swap(*begin, *prev);
+			prev = begin;
+			if (++move_count == value.size())
+				break;
+		}
 	}
-	return false;
+
+	return move_count > 0;
 }
 
-/// Move the active line up one row
+/// Move the selected lines up one row
 struct grid_move_up : public Command {
 	CMD_NAME("grid/move/up")
 	STR_MENU("Move line up")
 	STR_DISP("Move line up")
-	STR_HELP("Move the selected line up one row")
+	STR_HELP("Move the selected lines up one row")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
-		return c->selectionController->GetActiveLine() != 0;
+		return c->selectionController->GetSelectedSet().size() != 0;
 	}
 
 	void operator()(agi::Context *c) {
-		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
-			if (move_one(c->ass->Line.rbegin(), c->ass->Line.rend(), line))
-				c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
-		}
+		if (move_one(c->ass->Line.begin(), c->ass->Line.end(), c->selectionController->GetSelectedSet()))
+			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };
 
-/// Move the active line down one row
+/// Move the selected lines down one row
 struct grid_move_down : public Command {
 	CMD_NAME("grid/move/down")
 	STR_MENU("Move line down")
 	STR_DISP("Move line down")
-	STR_HELP("Move the selected line down one row")
+	STR_HELP("Move the selected lines down one row")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
-		return c->selectionController->GetActiveLine() != 0;
+		return c->selectionController->GetSelectedSet().size() != 0;
 	}
 
 	void operator()(agi::Context *c) {
-		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
-			if (move_one(c->ass->Line.begin(), c->ass->Line.end(), line))
-				c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
-		}
+		if (move_one(c->ass->Line.rbegin(), c->ass->Line.rend(), c->selectionController->GetSelectedSet()))
+			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };
 
