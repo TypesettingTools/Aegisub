@@ -189,8 +189,8 @@ public:
 
 	void SetSelection(int new_start, int new_length)
 	{
-		sel_start = new_start;
-		sel_length = new_length;
+		sel_start = (int64_t)new_start * bounds.width / data_length;
+		sel_length = (int64_t)new_length * bounds.width / data_length;
 	}
 
 	void ChangeLengths(int new_data_length, int new_page_length)
@@ -231,15 +231,9 @@ public:
 
 		if (sel_length > 0 && sel_start >= 0)
 		{
-			wxRect r;
-			r.x = int((int64_t)sel_start * bounds.width / data_length);
-			r.y = bounds.y;
-			r.width = int((int64_t)sel_length * bounds.width / data_length);
-			r.height = bounds.height;
-
 			dc.SetPen(wxPen(colours.Selection()));
 			dc.SetBrush(wxBrush(colours.Selection()));
-			dc.DrawRectangle(r);
+			dc.DrawRectangle(wxRect(sel_start, bounds.y, sel_length, bounds.height));
 		}
 
 		dc.SetPen(wxPen(colours.Light()));
@@ -1176,8 +1170,11 @@ void AudioDisplay::OnSize(wxSizeEvent &)
 	// We changed size, update the sub-controls' internal data and redraw
 	wxSize size = GetClientSize();
 
-	scrollbar->SetDisplaySize(size);
 	timeline->SetDisplaySize(wxSize(size.x, scrollbar->GetBounds().y));
+	scrollbar->SetDisplaySize(size);
+
+	SampleRange sel(controller->GetPrimaryPlaybackRange());
+	scrollbar->SetSelection(AbsoluteXFromSamples(sel.begin()), AbsoluteXFromSamples(sel.length()));
 
 	audio_height = size.GetHeight();
 	audio_height -= scrollbar->GetBounds().GetHeight();
