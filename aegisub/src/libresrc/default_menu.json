@@ -100,9 +100,9 @@
         { "command" : "edit/line/join/as_karaoke" }
     ],
     "main/subtitle/sort lines" : [
-        { "command" : "time/sort/start" },
-        { "command" : "time/sort/end" },
-        { "command" : "time/sort/style" }
+        { "command" : "grid/sort/start" },
+        { "command" : "grid/sort/end" },
+        { "command" : "grid/sort/style" }
     ],
     "main/timing" : [
         { "command" : "time/shift" },

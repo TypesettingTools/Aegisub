@@ -283,48 +283,6 @@ struct time_snap_start_video : public validate_video_loaded {
 	}
 };
 
-
-/// Sort all subtitles by their end times.
-struct time_sort_end : public Command {
-	CMD_NAME("time/sort/end")
-	STR_MENU("&End Time")
-	STR_DISP("End Time")
-	STR_HELP("Sort all subtitles by their end times.")
-
-	void operator()(agi::Context *c) {
-		c->ass->Sort(AssFile::CompEnd);
-		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
-	}
-};
-
-
-/// Sort all subtitles by their start times.
-struct time_sort_start : public Command {
-	CMD_NAME("time/sort/start")
-	STR_MENU("&Start Time")
-	STR_DISP("Start Time")
-	STR_HELP("Sort all subtitles by their start times.")
-
-	void operator()(agi::Context *c) {
-		c->ass->Sort();
-		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
-	}
-};
-
-
-/// Sort all subtitles by their style names.
-struct time_sort_style : public Command {
-	CMD_NAME("time/sort/style")
-	STR_MENU("St&yle Name")
-	STR_DISP("Style Name")
-	STR_HELP("Sort all subtitles by their style names.")
-
-	void operator()(agi::Context *c) {
-		c->ass->Sort(AssFile::CompStyle);
-		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
-	}
-};
-
 /// Switch to the next timeable thing (line or syllable)
 struct time_next : public Command {
 	CMD_NAME("time/next")
@@ -369,8 +327,5 @@ namespace cmd {
 		reg(new time_snap_end_video);
 		reg(new time_snap_scene);
 		reg(new time_snap_start_video);
-		reg(new time_sort_end);
-		reg(new time_sort_start);
-		reg(new time_sort_style);
 	}
 }

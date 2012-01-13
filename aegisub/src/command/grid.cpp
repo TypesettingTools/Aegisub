@@ -76,8 +76,46 @@ struct grid_line_prev : public Command {
 	void operator()(agi::Context *c) {
 		c->subsGrid->PrevLine();
 	}
+}
+;
+/// Sort all subtitles by their end times.
+struct grid_sort_end : public Command {
+	CMD_NAME("grid/sort/end")
+	STR_MENU("&End Time")
+	STR_DISP("End Time")
+	STR_HELP("Sort all subtitles by their end times.")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompEnd);
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
 };
 
+/// Sort all subtitles by their start times.
+struct grid_sort_start : public Command {
+	CMD_NAME("grid/sort/start")
+	STR_MENU("&Start Time")
+	STR_DISP("Start Time")
+	STR_HELP("Sort all subtitles by their start times.")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort();
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
+/// Sort all subtitles by their style names.
+struct grid_sort_style : public Command {
+	CMD_NAME("grid/sort/style")
+	STR_MENU("St&yle Name")
+	STR_DISP("Style Name")
+	STR_HELP("Sort all subtitles by their style names.")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompStyle);
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
 
 /// Cycle through tag hiding modes.
 struct grid_tag_cycle_hiding : public Command {
@@ -221,6 +259,9 @@ namespace cmd {
 	void init_grid() {
 		reg(new grid_line_next);
 		reg(new grid_line_prev);
+		reg(new grid_sort_end);
+		reg(new grid_sort_start);
+		reg(new grid_sort_style);
 		reg(new grid_swap_down);
 		reg(new grid_swap_up);
 		reg(new grid_tag_cycle_hiding);
