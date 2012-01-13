@@ -213,9 +213,9 @@ static bool move_one(T begin, T end, U value) {
 	return false;
 }
 
-/// Swap the active line with the dialogue line above it
-struct grid_swap_up : public Command {
-	CMD_NAME("grid/swap/up")
+/// Move the active line up one row
+struct grid_move_up : public Command {
+	CMD_NAME("grid/move/up")
 	STR_MENU("Move line up")
 	STR_DISP("Move line up")
 	STR_HELP("Move the selected line up one row")
@@ -228,14 +228,14 @@ struct grid_swap_up : public Command {
 	void operator()(agi::Context *c) {
 		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
 			if (move_one(c->ass->Line.rbegin(), c->ass->Line.rend(), line))
-				c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
+				c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 		}
 	}
 };
 
-/// Swap the active line with the dialogue line below it
-struct grid_swap_down : public Command {
-	CMD_NAME("grid/swap/down")
+/// Move the active line down one row
+struct grid_move_down : public Command {
+	CMD_NAME("grid/move/down")
 	STR_MENU("Move line down")
 	STR_DISP("Move line down")
 	STR_HELP("Move the selected line down one row")
@@ -248,10 +248,36 @@ struct grid_swap_down : public Command {
 	void operator()(agi::Context *c) {
 		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
 			if (move_one(c->ass->Line.begin(), c->ass->Line.end(), line))
-				c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
+				c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 		}
 	}
 };
+
+/// Swaps the two selected lines.
+struct grid_swap : public Command {
+	CMD_NAME("grid/swap")
+	STR_MENU("Swap Lines")
+	STR_DISP("Swap Lines")
+	STR_HELP("Swaps the two selected lines.")
+	CMD_TYPE(COMMAND_VALIDATE)
+
+	bool Validate(const agi::Context *c) {
+		return c->selectionController->GetSelectedSet().size() == 2;
+	}
+
+	void operator()(agi::Context *c) {
+		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+		if (sel.size() == 2) {
+			entryIter a = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.begin());
+			entryIter b = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.rbegin());
+
+			using std::swap;
+			swap(*a, *b);
+			c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
+		}
+	}
+};
+
 }
 /// @}
 
@@ -262,8 +288,9 @@ namespace cmd {
 		reg(new grid_sort_end);
 		reg(new grid_sort_start);
 		reg(new grid_sort_style);
-		reg(new grid_swap_down);
-		reg(new grid_swap_up);
+		reg(new grid_move_down);
+		reg(new grid_move_up);
+		reg(new grid_swap);
 		reg(new grid_tag_cycle_hiding);
 		reg(new grid_tags_hide);
 		reg(new grid_tags_show);

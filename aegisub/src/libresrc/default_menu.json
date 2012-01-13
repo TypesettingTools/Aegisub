@@ -8,7 +8,7 @@
         { "command" : "edit/line/duplicate" },
         { "command" : "edit/line/duplicate/shift" },
         {},
-        { "command" : "edit/line/swap" },
+        { "command" : "grid/swap" },
         { "command" : "edit/line/join/concatenate", "text" : "&Join (concatenate)" },
         { "command" : "edit/line/join/keep_first", "text" : "Join (keep first)" },
         { "command" : "edit/line/join/as_karaoke", "text" : "Join (as Karaoke)" },
@@ -84,7 +84,7 @@
         { "command" : "edit/line/split/by_karaoke" },
         {},
         { "submenu" : "main/subtitle/sort lines", "text" : "Sort Lines" },
-        { "command" : "edit/line/swap" },
+        { "command" : "grid/swap" },
         { "command" : "tool/line/select" },
         { "command" : "subtitle/select/all" }
     ],

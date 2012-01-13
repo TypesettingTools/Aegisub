@@ -321,33 +321,6 @@ struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	}
 };
 
-
-/// Swaps the two selected lines.
-struct edit_line_swap : public Command {
-	CMD_NAME("edit/line/swap")
-	STR_MENU("Swap Lines")
-	STR_DISP("Swap Lines")
-	STR_HELP("Swaps the two selected lines.")
-	CMD_TYPE(COMMAND_VALIDATE)
-
-	bool Validate(const agi::Context *c) {
-		return c->selectionController->GetSelectedSet().size() == 2;
-	}
-
-	void operator()(agi::Context *c) {
-		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
-		if (sel.size() == 2) {
-			entryIter a = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.begin());
-			entryIter b = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.rbegin());
-
-			using std::swap;
-			swap(*a, *b);
-			c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
-		}
-	}
-};
-
-
 /// Redoes last action.
 struct edit_redo : public Command {
 	CMD_NAME("edit/redo")
@@ -420,7 +393,6 @@ namespace cmd {
 		reg(new edit_line_paste_over);
 		reg(new edit_line_recombine);
 		reg(new edit_line_split_by_karaoke);
-		reg(new edit_line_swap);
 		reg(new edit_redo);
 		reg(new edit_undo);
 	}

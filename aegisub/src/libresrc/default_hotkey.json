@@ -148,13 +148,13 @@
 				"key" : "KP_8"
 			}
 		],
-		"grid/swap/down" : [
+		"grid/move/down" : [
 			{
 				"modifiers" : [ "Alt" ],
 				"key" : "Down"
 			}
 		],
-		"grid/swap/up" : [
+		"grid/move/up" : [
 			{
 				"modifiers" : [ "Alt" ],
 				"key" : "Up"
