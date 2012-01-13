@@ -42,88 +42,70 @@ namespace {
 	/// @defgroup cmd-visual Visual typesetting tools commands
 	/// @{
 
-	struct validator_video_loaded : public Command {
-		CMD_TYPE(COMMAND_VALIDATE)
-			bool Validate(const agi::Context *c) {
-				return c->videoController->IsLoaded();
+	template<class T>
+	struct visual_tool_command : public Command {
+		CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
+
+		bool Validate(const agi::Context *c) {
+			return c->videoController->IsLoaded();
+		}
+
+		bool IsActive(const agi::Context *c) {
+			return c->videoDisplay->ToolIsType(typeid(T));
+		}
+
+		void operator()(agi::Context *c) {
+			c->videoDisplay->SetTool(new T(c->videoDisplay, c));
 		}
 	};
 
-	struct visual_mode_cross : public validator_video_loaded {
+	struct visual_mode_cross : public visual_tool_command<VisualToolCross> {
 		CMD_NAME("video/tool/cross")
 		STR_MENU("Standard")
 		STR_DISP("Standard")
 		STR_HELP("Standard mode, double click sets position.")
-
-		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new VisualToolCross(c->videoDisplay, c));
-		}
 	};
 
-	struct visual_mode_drag : public validator_video_loaded {
+	struct visual_mode_drag : public visual_tool_command<VisualToolDrag> {
 		CMD_NAME("video/tool/drag")
 		STR_MENU("Drag")
 		STR_DISP("Drag")
 		STR_HELP("Drag subtitles.")
-
-		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new VisualToolDrag(c->videoDisplay, c));
-		}
 	};
 
-	struct visual_mode_rotate_z : public validator_video_loaded {
+	struct visual_mode_rotate_z : public visual_tool_command<VisualToolRotateZ> {
 		CMD_NAME("video/tool/rotate/z")
 		STR_MENU("Rotate Z")
 		STR_DISP("Rotate Z")
 		STR_HELP("Rotate subtitles on their Z axis.")
-
-		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new VisualToolRotateZ(c->videoDisplay, c));
-		}
 	};
 
-	struct visual_mode_rotate_xy : public validator_video_loaded {
+	struct visual_mode_rotate_xy : public visual_tool_command<VisualToolRotateXY> {
 		CMD_NAME("video/tool/rotate/xy")
 		STR_MENU("Rotate XY")
 		STR_DISP("Rotate XY")
 		STR_HELP("Rotate subtitles on their X and Y axes.")
-
-		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new VisualToolRotateXY(c->videoDisplay, c));
-		}
 	};
 
-	struct visual_mode_scale : public validator_video_loaded {
+	struct visual_mode_scale : public visual_tool_command<VisualToolScale> {
 		CMD_NAME("video/tool/scale")
 		STR_MENU("Scale")
 		STR_DISP("Scale")
 		STR_HELP("Scale subtitles on X and Y axes.")
-
-		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new VisualToolScale(c->videoDisplay, c));
-		}
 	};
 
-	struct visual_mode_clip : public validator_video_loaded {
+	struct visual_mode_clip : public visual_tool_command<VisualToolClip> {
 		CMD_NAME("video/tool/clip")
 		STR_MENU("Clip")
 		STR_DISP("Clip")
 		STR_HELP("Clip subtitles to a rectangle.")
-
-		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new VisualToolClip(c->videoDisplay, c));
-		}
 	};
 
-	struct visual_mode_vector_clip : public validator_video_loaded {
+	struct visual_mode_vector_clip : public visual_tool_command<VisualToolVectorClip> {
 		CMD_NAME("video/tool/vector_clip")
 		STR_MENU("Vector Clip")
 		STR_DISP("Vector Clip")
-		STR_HELP("Clip subtitles to a vectorial arean.")
-
-		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new VisualToolVectorClip(c->videoDisplay, c));
-		}
+		STR_HELP("Clip subtitles to a vectorial area.")
 	};
 }
 

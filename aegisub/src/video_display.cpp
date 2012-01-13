@@ -421,6 +421,10 @@ void VideoDisplay::SetTool(VisualToolBase *new_tool) {
 	UpdateSize();
 }
 
+bool VideoDisplay::ToolIsType(std::type_info const& type) const {
+	return typeid(*tool) == type;
+}
+
 Vector2D VideoDisplay::GetMousePosition() const {
 	return mouse_pos ? tool->ToScriptCoords(mouse_pos) : mouse_pos;
 }

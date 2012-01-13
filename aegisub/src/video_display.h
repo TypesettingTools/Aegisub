@@ -41,6 +41,8 @@
 #include <wx/glcanvas.h>
 #endif
 
+#include <typeinfo>
+
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
@@ -166,4 +168,6 @@ public:
 	Vector2D GetMousePosition() const;
 
 	void SetTool(VisualToolBase *new_tool);
+
+	bool ToolIsType(std::type_info const& type) const;
 };
