@@ -551,19 +551,19 @@ void SubsEditBox::CommitTimes(TimeField field) {
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {
-	int topWidth = TopSizer->GetSize().GetWidth();
+	int availableWidth = GetVirtualSize().GetWidth();
 	int midMin = MiddleSizer->GetMinSize().GetWidth();
 	int botMin = MiddleBotSizer->GetMinSize().GetWidth();
 
 	if (splitLineMode) {
-		if (topWidth >= midMin + botMin) {
+		if (availableWidth > midMin + botMin) {
 			MainSizer->Detach(MiddleBotSizer);
 			MiddleSizer->Add(MiddleBotSizer,0,wxALIGN_CENTER_VERTICAL);
 			splitLineMode = false;
 		}
 	}
 	else {
-		if (topWidth < midMin) {
+		if (availableWidth < midMin) {
 			MiddleSizer->Detach(MiddleBotSizer);
 			MainSizer->Insert(2,MiddleBotSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 			splitLineMode = true;
