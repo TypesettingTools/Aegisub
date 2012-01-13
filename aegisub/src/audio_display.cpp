@@ -595,6 +595,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	Bind(wxEVT_MIDDLE_UP, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_RIGHT_UP, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOTION, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_ENTER_WINDOW, &AudioDisplay::OnMouseEvent, this);
 }
 
 
@@ -1062,7 +1063,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		return;
 	}
 
-	if (event.IsButton())
+	if (event.IsButton() || (event.Entering() && OPT_GET("Audio/Auto/Focus")->GetBool()))
 		SetFocus();
 
 	// Handle any ongoing drag
