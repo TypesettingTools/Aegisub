@@ -22,6 +22,8 @@
 
 #include "libaegisub/util.h"
 
+#include "libaegisub/access.h"
+
 #ifndef LAGI_PRE
 #include <stdarg.h>
 #include <stdio.h>
@@ -55,7 +57,7 @@ void Rename(const std::string& from, const std::string& to) {
 
 	try {
 		acs::CheckFileWrite(to);
-	} catch (acs::AcsNotFound& e) {
+	} catch (FileNotFoundError const&) {
 		acs::CheckDirWrite(DirName(to));
 	}
 

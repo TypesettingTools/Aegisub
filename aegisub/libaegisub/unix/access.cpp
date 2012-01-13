@@ -18,6 +18,10 @@
 /// @brief Unix access methods.
 /// @ingroup libaegisub unix
 
+#include "config.h"
+
+#include "libaegisub/access.h"
+
 #ifndef LAGI_PRE
 #include <sys/stat.h>
 #include <errno.h>
@@ -88,20 +92,14 @@ void Check(const std::string &file, acs::Type type) {
 		break;
 	}
 
-	switch (type) {
-		case DirRead:
-		case FileRead:
-			file_status = access(file.c_str(), R_OK);
-			if (file_status != 0)
-				throw Read("File or directory is not readable.");
-		break;
+	file_status = access(file.c_str(), R_OK);
+	if (file_status != 0)
+		throw Read("File or directory is not readable.");
 
-		case DirWrite:
-		case FileWrite:
-			file_status = access(file.c_str(), W_OK);
-			if (file_status != 0)
-				throw Write("File or directory is not writable.");
-		break;
+	if (type == DirWrite || type == FileWrite) {
+		file_status = access(file.c_str(), W_OK);
+		if (file_status != 0)
+			throw Write("File or directory is not writable.");
 	}
 }
 

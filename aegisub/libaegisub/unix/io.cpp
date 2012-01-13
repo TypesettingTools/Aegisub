@@ -20,6 +20,8 @@
 
 #include "config.h"
 
+#include "libaegisub/io.h"
+
 #ifndef LAGI_PRE
 #include <sys/stat.h>
 #include <errno.h>
@@ -28,7 +30,7 @@
 #include <fstream>
 #endif
 
-#include "libaegisub/io.h"
+#include "libaegisub/access.h"
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
 
@@ -57,12 +59,11 @@ Save::Save(const std::string& file, bool binary): file_name(file) {
 
 	try {
 		acs::CheckFileWrite(file);
-	} catch (acs::AcsNotFound& e) {
+	} catch (FileNotFoundError const&) {
 		// If the file doesn't exist we create a 0 byte file, this so so
 		// util::Rename will find it, and to let users know something went
 		// wrong by leaving a 0 byte file.
-		std::ofstream fp_touch(file.c_str());
-		fp_touch.close();
+		std::ofstream(file.c_str());
 	}
 
 	/// @todo This is a temp hack, proper implementation needs to come after
