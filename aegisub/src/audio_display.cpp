@@ -134,9 +134,9 @@ class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
 	// Recalculate thumb bounds from position and length data
 	void RecalculateThumb()
 	{
-		thumb.width = std::max(min_width, bounds.width * page_length / data_length);
+		thumb.width = std::max<int>(min_width, (int64_t)bounds.width * page_length / data_length);
 		thumb.height = height;
-		thumb.x = bounds.width * position / data_length;
+		thumb.x = int((int64_t)bounds.width * position / data_length);
 		thumb.y = bounds.y;
 	}
 
@@ -209,7 +209,7 @@ public:
 			const int data_length_less_page = data_length - page_length;
 			const int shaft_length_less_thumb = bounds.width - thumb.width;
 
-			display->ScrollPixelToLeft(data_length_less_page * thumb_left / shaft_length_less_thumb);
+			display->ScrollPixelToLeft((int64_t)data_length_less_page * thumb_left / shaft_length_less_thumb);
 
 			dragging = true;
 		}
@@ -232,9 +232,9 @@ public:
 		if (sel_length > 0 && sel_start >= 0)
 		{
 			wxRect r;
-			r.x = sel_start * bounds.width / data_length;
+			r.x = int((int64_t)sel_start * bounds.width / data_length);
 			r.y = bounds.y;
-			r.width = sel_length * bounds.width / data_length;
+			r.width = int((int64_t)sel_length * bounds.width / data_length);
 			r.height = bounds.height;
 
 			dc.SetPen(wxPen(colours.Selection()));
