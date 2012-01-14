@@ -30,6 +30,46 @@
 #include "main.h"
 #include "standard_paths.h"
 
+namespace {
+	const char *removed_commands_6294[] = {
+		"edit/line/swap",
+		"grid/swap/up",
+		"grid/swap/down",
+		"time/sort/end",
+		"time/sort/start",
+		"time/sort/style",
+		0
+	};
+
+	const char *added_hotkeys_6294[][4] = {
+		{ "grid/move/down", "Default", "Alt", "Down" },
+		{ "grid/move/up", "Default", "Alt", "Up" },
+		{ "grid/line/next/create", "Subtitle Edit Box", "Enter", 0 },
+		{ "grid/line/next/create", "Subtitle Edit Box", "KP_Enter", 0 },
+		0
+	};
+
+	void migrate_hotkeys(const char *removed[], const char *added[][4]) {
+		agi::hotkey::Hotkey::HotkeyMap hk_map = hotkey::inst->GetHotkeyMap();
+
+		for (size_t i = 0; removed[i]; ++i) {
+			hk_map.erase(removed[i]);
+		}
+
+		for (size_t i = 0; added[i] && added[i][0]; ++i) {
+			std::vector<std::string> keys;
+			keys.push_back(added[i][2]);
+			if (added[i][3])
+				keys.push_back(added[i][3]);
+			hk_map.insert(make_pair(
+				std::string(added[i][0]),
+				agi::hotkey::Combo(added[i][1], added[i][0], keys)));
+		}
+
+		hotkey::inst->SetHotkeyMap(hk_map);
+	}
+}
+
 namespace hotkey {
 
 agi::hotkey::Hotkey *inst = 0;
@@ -37,6 +77,11 @@ void init() {
 	inst = new agi::hotkey::Hotkey(
 		STD_STR(StandardPaths::DecodePath("?user/hotkey.json")),
 		GET_DEFAULT_CONFIG(default_hotkey));
+
+	int last_version = OPT_GET("Version/Last Version")->GetInt();
+	if (last_version < 6294) {
+		migrate_hotkeys(removed_commands_6294, added_hotkeys_6294);
+	}
 }
 
 void clear() {
