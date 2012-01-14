@@ -39,6 +39,8 @@ EXTRA_DIST = \
 	configure \
 	svn_revision \
 	config.log \
+	config.sub \
+	config.guess \
 	install-sh \
 	Makefile.inc.in \
 	Makefile.target
@@ -46,13 +48,14 @@ EXTRA_DIST = \
 
 # m4macros/
 EXTRA_DIST += \
-	m4macros/check_gnu_make.m4 \
-	m4macros/acx_pthread.m4 \
 	m4macros/ac_agi.m4 \
-	m4macros/ax_lang_compiler_ms.m4 \
 	m4macros/ac_agi_mdcpucfg.m4 \
+	m4macros/ac_flag.m4 \
+	m4macros/agi_find_libheader.m4 \
 	m4macros/ax_check_gl.m4 \
-	m4macros/ac_flag.m4
+	m4macros/ax_lang_compiler_ms.m4 \
+	m4macros/ax_pthread.m4 \
+	m4macros/check_gnu_make.m4
 
 # packages/osx_bundle/
 EXTRA_DIST += \

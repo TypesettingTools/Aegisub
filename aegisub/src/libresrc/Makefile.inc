@@ -18,4 +18,8 @@ CLEANFILES += \
 	libresrc/default_config.cpp \
 	libresrc/default_config.h
 
-GLOBAL_DEPS = libresrc/bitmap.h libresrc/default_config.h
+GLOBAL_DEPS += libresrc/bitmap.h libresrc/default_config.h
+
+EXTRA_DIST += \
+	libresrc/*.json \
+	libresrc/*.respack

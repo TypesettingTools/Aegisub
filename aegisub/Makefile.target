@@ -113,10 +113,10 @@ distdir:
 		echo "Please run this from the parent directory."; \
 		exit 1; \
 	fi
-	${SHELL} packages/distfile/distfile.sh
+	${SHELL} packages/distfile/distfile.sh $(MAKE) aegisub-pkg
 
 distfiles: $(SUBDIRS)
-	@for i in $(SRC) $(HEADER) $(EXTRA_DIST); do \
+	@for i in $(SRC) $(HEADER) $(PO) $(EXTRA_DIST); do \
 		echo $(CURDIR)/$$i; \
 	done
 

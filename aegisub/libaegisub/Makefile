@@ -19,7 +19,7 @@ endif
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=\"$(P_LOCALE)\"
 
-SRC = \
+SRC += \
 	common/cajun/elements.cpp \
 	common/cajun/reader.cpp \
 	common/cajun/writer.cpp \
@@ -49,10 +49,14 @@ SRC += \
 	osx/util.cpp
 endif
 
-HEADERS = \
+HEADER += \
+	*.h \
 	*/*.h \
-	include/aegisub/*.h \
-	include/aegisub/cajun/*.h
+	include/libaegisub/*.h \
+	include/libaegisub/charsets.def \
+	include/libaegisub/cajun/*.h
+
+EXTRA_DIST += osx/util.cpp
 
 
 include ../Makefile.target

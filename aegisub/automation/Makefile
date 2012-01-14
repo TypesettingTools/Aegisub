@@ -7,6 +7,8 @@ DATA_AUTOMATION += \
 	autoload/karaoke-auto-leadin.lua \
 	autoload/macro-1-edgeblur.lua \
 	autoload/macro-2-mkfullwitdh.lua \
+	autoload/select-overlaps.lua \
+	autoload/strip-tags.lua \
 	include/cleantags.lua \
 	include/karaskel-auto4.lua \
 	include/karaskel.lua \

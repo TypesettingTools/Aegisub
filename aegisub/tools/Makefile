@@ -13,6 +13,7 @@ endif
 EXTRA_DIST = \
 	osx-bundle-restart-helper.c \
 	osx-bundle.sh \
+	osx-bundle.sed.in \
 	osx-dmg.sh \
 	osx-fix-libs.py
 

@@ -25,16 +25,21 @@ SRC = \
 
 ifeq (yes, $(BUILD_BSD))
 SRC += platform_unix_bsd.cpp
+else
+EXTRA_DIST += platform_unix_bsd.cpp
 endif
 
 ifeq (yes, $(BUILD_LINUX))
 SRC += platform_unix_linux.cpp
+else
+EXTRA_DIST += platform_unix_linux.cpp
 endif
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += platform_unix_osx.cpp
+else
+EXTRA_DIST += platform_unix_osx.cpp
 endif
-
 
 HEADER = \
 	*.h \

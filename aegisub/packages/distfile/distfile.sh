@@ -1,26 +1,22 @@
 #!/bin/sh
 SRCDIR=`pwd`
-TMPFILE=`mktemp /tmp/aegisub_dist.XXXXXX`
-EXTRA=`find . -name Makefile -or -name wscript`
-distdir?=aegisub-pkg
+MAKE=$1
+DISTDIR=$2
 
-rm -rf aegisub-pkg
+rm -rf $DISTDIR
 
 if ! test -d src; then
 	echo "Please run this from the parent directory.";
 	exit 1;
 fi
 
-gmake distfiles \
-	|egrep ^/ |sed "s|${SRCDIR}/||" \
-	|awk '{print "echo \"aegisub-pkg/"$0"\"\n./install-sh -m 0644 \""$0"\" \"aegisub-pkg/"$0"\""}' \
-	> ${TMPFILE}
+$MAKE distfiles \
+	| grep -E ^/ \
+	| sed "s|${SRCDIR}/||" \
+	| xargs -I {} ./install-sh -m 0644 "{}" "$DISTDIR/{}"
 
-for i in ${EXTRA}; do
-	echo "aegisub-pkg/$i";
-	./install-sh -m 0644 $i ${distdir}/$i;
+for i in `find . -name Makefile -or -name wscript`; do
+	./install-sh -m 0644 "$i" "${DISTDIR}/$i"
 done
 
-sh ${TMPFILE}
-
-#rm ${TMPFILE}
+chmod +x ${DISTDIR}/configure

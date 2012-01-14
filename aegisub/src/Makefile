@@ -26,69 +26,87 @@ endif
 # AUDIO PLAYERS
 ###############
 ifeq (yes, $(HAVE_ALSA))
-SRC_OPT += audio_player_alsa.cpp
 audio_player_alsa.o: CXXFLAGS += $(CFLAGS_ALSA)
 LIBS += $(LIBS_ALSA)
+SRC += audio_player_alsa.cpp
+else
+EXTRA_DIST += audio_player_alsa.cpp
 endif
 
 ifeq (yes, $(HAVE_PORTAUDIO))
-SRC_OPT += audio_player_portaudio.cpp
 audio_player_portaudio.o: CXXFLAGS += $(CFLAGS_PORTAUDIO)
 LIBS += $(LIBS_PORTAUDIO)
+SRC += audio_player_portaudio.cpp
+else
+EXTRA_DIST += audio_player_portaudio.cpp
 endif
 
 ifeq (yes, $(HAVE_LIBPULSE))
-SRC_OPT += audio_player_pulse.cpp
 audio_player_pulse.o: CXXFLAGS += $(CFLAGS_LIBPULSE)
 LIBS += $(LIBS_LIBPULSE)
+SRC += audio_player_pulse.cpp
+else
+EXTRA_DIST += audio_player_pulse.cpp
 endif
 
 ifeq (yes, $(HAVE_OPENAL))
-SRC_OPT += audio_player_openal.cpp
 audio_player_openal.o: CXXFLAGS += $(CFLAGS_OPENAL)
 LIBS += $(LIBS_OPENAL)
+SRC += audio_player_openal.cpp
+else
+EXTRA_DIST += audio_player_openal.cpp
 endif
 
 ifeq (yes, $(HAVE_OSS))
-SRC_OPT += audio_player_oss.cpp
 audio_player_oss.o: CXXFLAGS += $(CFLAGS_OSS)
+SRC += audio_player_oss.cpp
+else
+EXTRA_DIST += audio_player_oss.cpp
 endif
 
 #######################
 # AUDIO / VIDEO SUPPORT
 #######################
 ifeq (yes, $(HAVE_FFMS2))
-SRC_OPT += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
 	CXXFLAGS += $(CFLAGS_FFMS2)
 LIBS += $(LIBS_FFMS2)
+SRC += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
+else
+EXTRA_DIST += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 endif
 
 ###########
 # SUBTITLES
 ###########
 ifeq (yes, $(HAVE_LIBASS))
-SRC_OPT += subtitles_provider_libass.cpp
 subtitles_provider_libass.o: CXXFLAGS += $(CFLAGS_LIBASS)
 LIBS += $(LIBS_LIBASS)
+SRC += subtitles_provider_libass.cpp
+else
+EXTRA_DIST += subtitles_provider_libass.cpp
 endif
 
 ############
 # AUTOMATION
 ############
 ifeq (yes, $(HAVE_AUTO4_LUA))
-SRC_OPT += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_lua_scriptreader.cpp
 auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_scriptreader.o: CXXFLAGS += $(CFLAGS_LUA)
 LIBS += $(LIBS_LUA)
+SRC += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_lua_scriptreader.cpp
+else
+EXTRA_DIST += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_lua_scriptreader.cpp
 endif
 
 ##############
 # MISCELLANOUS
 ##############
 ifeq (yes, $(HAVE_HUNSPELL))
-SRC_OPT += spellchecker_hunspell.cpp
 spellchecker_hunspell.o: CXXFLAGS += $(CFLAGS_HUNSPELL)
 LIBS += $(LIBS_HUNSPELL)
+SRC += spellchecker_hunspell.cpp
+else
+EXTRA_DIST += spellchecker_hunspell.cpp
 endif
 
 #####################
@@ -101,10 +119,6 @@ charset_detect.o:              CXXFLAGS += -D_X86_
 font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG)
 text_file_reader.o:            CXXFLAGS += -D_X86_
 video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS2)
-
-
-# Ensure any optional source files above are added for compilation.
-SRC += $(SRC_OPT)
 
 SRC += \
 	MatroskaParser.c \
@@ -252,23 +266,26 @@ SRC += \
 
 HEADER += \
 	*.h \
+	command/*.h \
+	config/*.h \
 	include/aegisub/*.h \
-    config/*.h
+	gl/*.h
 
-
-EXTRA_DIST = \
-	$(SRC_OPT) \
-	*.hxx
-
-EXTRA_DIST= \
-	bitmaps/16/*.png \
-	bitmaps/24/*.png \
+EXTRA_DIST += \
+	bitmaps/button/*.png \
 	bitmaps/misc/*.png \
 	bitmaps/windows/eyedropper.cur \
-	bitmaps/windows/icon.ico
+	bitmaps/windows/icon.ico \
+	bitmaps/*.respack
+
+EXTRA_DIST += \
+	command/Makefile.inc \
+	libresrc/Makefile.inc
 
 include command/Makefile.inc
 include libresrc/Makefile.inc
 
 include ../Makefile.target
 -include *.d
+-include command/*.d
+-include libresrc/*.d
