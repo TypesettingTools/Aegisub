@@ -41,6 +41,7 @@ LIB_SHARED_LINK_OSX = -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -compatibili
 AEGISUB_COMMAND      = @AEGISUB_COMMAND@
 AEGISUB_VERSION_DATA = @AEGISUB_VERSION_DATA@
 BUILD_DATE           = @BUILD_DATE@
+PACKAGE_TARNAME      = @PACKAGE_TARNAME@
 PACKAGE_DEBUG        = @PACKAGE_DEBUG@
 SVN_REVISION         = @SVN_REVISION@
 # OS X
@@ -151,3 +152,5 @@ BIN_MKDIR    = mkdir
 BIN_MKDIR_P  = mkdir -p
 BIN_ECHO     = echo
 BIN_TOUCH    = touch
+BIN_TAR      = tar
+BIN_GZIP     = gzip
