@@ -54,19 +54,19 @@
 #include <wx/spinctrl.h>
 #endif
 
-#include "include/aegisub/hotkey.h"
+#include "subs_edit_box.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
-#include "audio_controller.h"
+#include "command/command.h"
 #include "dialog_colorpicker.h"
 #include "dialog_search_replace.h"
 #include "include/aegisub/context.h"
+#include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
-#include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"
@@ -451,36 +451,12 @@ void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 }
 
 void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
-	if (hotkey::check("Subtitle Edit Box", c, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		return;
-
-	int key = event.GetKeyCode();
-	if (line && (key == WXK_RETURN || key == WXK_NUMPAD_ENTER)) {
-		NextLine();
-	}
-	else {
+	if (!hotkey::check("Subtitle Edit Box", c, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
 		event.Skip();
-	}
 }
 
 void SubsEditBox::OnCommitButton(wxCommandEvent &) {
-	if (line) NextLine();
-}
-
-void SubsEditBox::NextLine() {
-	AssDialogue *cur = line;
-	c->selectionController->NextLine();
-	if (line == cur) {
-		AssDialogue *newline = new AssDialogue;
-		newline->Start = cur->End;
-		newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
-		newline->Style = cur->Style;
-
-		entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), line);
-		c->ass->Line.insert(++pos, newline);
-		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
-		c->selectionController->NextLine();
-	}
+	cmd::call("grid/line/next/create", c);
 }
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {

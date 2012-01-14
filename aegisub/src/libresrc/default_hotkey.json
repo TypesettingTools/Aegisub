@@ -545,6 +545,19 @@
 		]
 	},
 
+	"Subtitle Edit Box" : {
+		"grid/line/next/create" : [
+			{
+				"modifiers" : [],
+				"key" : "KP_Enter"
+			},
+			{
+				"modifiers" : [],
+				"key" : "Enter"
+			}
+		]
+	},
+
 	"Styling Assistant" : {
 		"audio/play/selection" : [
 			{

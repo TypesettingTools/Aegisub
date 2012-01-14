@@ -43,9 +43,9 @@
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../include/aegisub/context.h"
-#include "../subs_grid.h"
 #include "../main.h"
 #include "../frame_main.h"
+#include "../selection_controller.h"
 #include "../utils.h"
 
 namespace {
@@ -61,10 +61,33 @@ struct grid_line_next : public Command {
 	STR_HELP("Move to the next subtitle line.")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->NextLine();
+		c->selectionController->NextLine();
 	}
 };
 
+/// Move to the next subtitle line, creating it if needed
+struct grid_line_next_create : public Command {
+	CMD_NAME("grid/line/next/create")
+	STR_MENU("Next Line")
+	STR_DISP("Next Line")
+	STR_HELP("Move to the next subtitle line, creating a new one if needed.")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *cur = c->selectionController->GetActiveLine();
+		c->selectionController->NextLine();
+		if (cur == c->selectionController->GetActiveLine()) {
+			AssDialogue *newline = new AssDialogue;
+			newline->Start = cur->End;
+			newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
+			newline->Style = cur->Style;
+
+			entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), cur);
+			c->ass->Line.insert(++pos, newline);
+			c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+			c->selectionController->NextLine();
+		}
+	}
+};
 
 /// Move to the previous line.
 struct grid_line_prev : public Command {
@@ -74,7 +97,7 @@ struct grid_line_prev : public Command {
 	STR_HELP("Move to the previous line.")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->PrevLine();
+		c->selectionController->PrevLine();
 	}
 }
 ;
@@ -284,6 +307,7 @@ struct grid_swap : public Command {
 namespace cmd {
 	void init_grid() {
 		reg(new grid_line_next);
+		reg(new grid_line_next_create);
 		reg(new grid_line_prev);
 		reg(new grid_sort_end);
 		reg(new grid_sort_start);
