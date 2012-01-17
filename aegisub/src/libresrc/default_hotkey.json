@@ -263,7 +263,7 @@
 		"video/jump" : [
 			{
 				"modifiers" : [ "Ctrl" ],
-				"key" : "J"
+				"key" : "G"
 			}
 		],
 		"video/jump/end" : [
