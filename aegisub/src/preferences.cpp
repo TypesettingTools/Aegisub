@@ -61,7 +61,7 @@
 
 static wxArrayString vec_to_arrstr(std::vector<std::string> const& vec) {
 	wxArrayString arrstr;
-	std::copy(vec.begin(), vec.end(), std::back_inserter(arrstr));
+	transform(vec.begin(), vec.end(), std::back_inserter(arrstr), &lagi_wxString);
 	return arrstr;
 }
 
