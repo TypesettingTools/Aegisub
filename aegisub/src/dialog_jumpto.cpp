@@ -96,11 +96,21 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	SetSizerAndFit(MainSizer);
 	CenterOnParent();
 
+	Bind(wxEVT_INIT_DIALOG, &DialogJumpTo::OnInitDialog, this);
 	Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogJumpTo::OnOK, this);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogJumpTo::OnOK, this, wxID_OK);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogJumpTo::EndModal, this, 0), wxID_CANCEL);
 	JumpTime->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditTime, this);
 	JumpFrame->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditFrame, this);
+}
+
+void DialogJumpTo::OnInitDialog(wxInitDialogEvent&) {
+	TransferDataToWindow();
+	UpdateWindowUI(wxUPDATE_UI_RECURSE);
+
+	// This can't simply be done in the constructor as the value hasn't been set yet
+	JumpFrame->SetFocus();
+	JumpFrame->SelectAll();
 }
 
 void DialogJumpTo::OnOK(wxCommandEvent &) {

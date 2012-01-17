@@ -54,6 +54,8 @@ class DialogJumpTo : public wxDialog {
 	void OnEditTime(wxCommandEvent &event);
 	/// Update target time on target frame changed
 	void OnEditFrame(wxCommandEvent &event);
+	/// Dialog initializer to set default focus and selection
+	void OnInitDialog(wxInitDialogEvent&);
 
 public:
 	/// Constructor
