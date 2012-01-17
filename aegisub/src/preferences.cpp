@@ -274,11 +274,13 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 }
 
 /// wxDataViewIconTextRenderer with command name autocompletion
-class CommandRenderer : public wxDataViewIconTextRenderer {
+class CommandRenderer : public wxDataViewCustomRenderer {
 	wxArrayString autocomplete;
+	wxDataViewIconText value;
+
 public:
 	CommandRenderer()
-	: wxDataViewIconTextRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE)
+	: wxDataViewCustomRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE)
 	{
 		std::vector<std::string> cmd_names = cmd::get_registered_commands();
 		autocomplete.reserve(cmd_names.size());
@@ -286,19 +288,77 @@ public:
 	}
 
 	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) {
-		wxTextCtrl *ctrl = static_cast<wxTextCtrl*>(wxDataViewIconTextRenderer::CreateEditorCtrl(parent, label_rect, value));
+		wxDataViewIconText iconText;
+		iconText << value;
+
+		wxString text = iconText.GetText();
+
+		// adjust the label rect to take the width of the icon into account
+		if (iconText.GetIcon().IsOk()) {
+			int w = iconText.GetIcon().GetWidth() + 4;
+			label_rect.x += w;
+			label_rect.width -= w;
+		}
+
+		wxTextCtrl* ctrl = new wxTextCtrl(parent, -1, text, label_rect.GetPosition(), label_rect.GetSize(), wxTE_PROCESS_ENTER);
+		ctrl->SetInsertionPointEnd();
+		ctrl->SelectAll();
 		ctrl->AutoComplete(autocomplete);
 		return ctrl;
 	}
+
+	bool SetValue(wxVariant const& var) {
+		value << var;
+		return true;
+	}
+
+	bool Render(wxRect rect, wxDC *dc, int state) {
+		int xoffset = 0;
+
+		wxIcon const& icon = value.GetIcon();
+		if (icon.IsOk()) {
+			dc->DrawIcon(icon, rect.x, rect.y + (rect.height - icon.GetHeight()) / 2);
+			xoffset = icon.GetWidth() + 4;
+		}
+
+		RenderText(value.GetText(), xoffset, rect, dc, state);
+
+		return true;
+	}
+
+	wxSize GetSize() const {
+		if (!value.GetText().empty()) {
+			wxSize size = GetTextExtent(value.GetText());
+
+			if (value.GetIcon().IsOk())
+				size.x += value.GetIcon().GetWidth() + 4;
+			return size;
+		}
+		return wxSize(80,20);
+	}
+
+	bool GetValueFromEditorCtrl(wxWindow* editor, wxVariant &var) {
+		wxTextCtrl *text = static_cast<wxTextCtrl*>(editor);
+		wxDataViewIconText iconText(text->GetValue(), value.GetIcon());
+		var << iconText;
+		return true;
+	}
+
+	bool GetValue(wxVariant &) const { return false; }
+	bool HasEditorCtrl() const { return true; }
 };
 
-class HotkeyRenderer : public wxDataViewTextRenderer {
+class HotkeyRenderer : public wxDataViewCustomRenderer {
+	wxString value;
 	wxTextCtrl *ctrl;
-public:
-	HotkeyRenderer() : wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE) { }
 
-	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) {
-		ctrl = static_cast<wxTextCtrl*>(wxDataViewTextRenderer::CreateEditorCtrl(parent, label_rect, value));
+public:
+	HotkeyRenderer() : wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_EDITABLE) { }
+
+	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& var) {
+		ctrl = new wxTextCtrl(parent, -1, var.GetString(), label_rect.GetPosition(), label_rect.GetSize(), wxTE_PROCESS_ENTER);
+		ctrl->SetInsertionPointEnd();
+		ctrl->SelectAll();
 		ctrl->Bind(wxEVT_KEY_DOWN, &HotkeyRenderer::OnKeyDown, this);
 		return ctrl;
 	}
@@ -306,6 +366,25 @@ public:
 	void OnKeyDown(wxKeyEvent &evt) {
 		ctrl->ChangeValue(lagi_wxString(hotkey::keypress_to_str(evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())));
 	}
+
+	bool SetValue(wxVariant const& var) {
+		value = var.GetString();
+		return true;
+	}
+
+	bool Render(wxRect rect, wxDC *dc, int state) {
+		RenderText(value, 0, rect, dc, state);
+		return true;
+	}
+
+	bool GetValueFromEditorCtrl(wxWindow*, wxVariant &var) {
+		var = ctrl->GetValue();
+		return true;
+	}
+
+	bool GetValue(wxVariant &) const { return false; }
+	wxSize GetSize() const { return !value ? wxSize(80, 20) : GetTextExtent(value); }
+	bool HasEditorCtrl() const { return true; }
 };
 
 /// Interface Hotkeys preferences subpage
