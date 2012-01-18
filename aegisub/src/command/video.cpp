@@ -451,9 +451,14 @@ struct video_frame_prev_keyframe : public validator_video_loaded {
 	STR_HELP("Seek to the previous keyframe.")
 
 	void operator()(agi::Context *c) {
-		int frame = c->videoController->GetFrameN();
 		std::vector<int> const& kf = c->videoController->GetKeyFrames();
-		std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), frame);
+		if (kf.empty()) {
+			c->videoController->JumpToFrame(0);
+			return;
+		}
+
+		std::vector<int>::const_iterator pos =
+			lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN());
 
 		if (pos != kf.begin())
 			--pos;
