@@ -537,9 +537,45 @@
 				"key" : "Right"
 			}
 		],
+		"video/frame/next/boundary" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Right"
+			}
+		],
+		"video/frame/next/keyframe" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "Right"
+			}
+		],
+		"video/frame/next/large" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "Right"
+			}
+		],
 		"video/frame/prev" : [
 			{
 				"modifiers" : [],
+				"key" : "Left"
+			}
+		],
+		"video/frame/prev/boundary" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : "Left"
+			}
+		],
+		"video/frame/prev/keyframe" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "Left"
+			}
+		],
+		"video/frame/prev/large" : [
+			{
+				"modifiers" : [ "Alt" ],
 				"key" : "Left"
 			}
 		]
