@@ -65,6 +65,13 @@ NumValidator::NumValidator(int val, bool issigned)
 {
 }
 
+NumValidator::NumValidator(int64_t val, bool issigned)
+: iValue((int)val)
+, isFloat(false)
+, isSigned(issigned)
+{
+}
+
 NumValidator::NumValidator(double val, bool issigned)
 : fValue(val)
 , isFloat(true)

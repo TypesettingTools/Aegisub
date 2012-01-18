@@ -85,6 +85,11 @@ public:
 	/// Constructor
 	/// @param val Initial value to set the associated control to
 	/// @param issigned Allow negative numbers?
+	explicit NumValidator(int64_t val, bool issigned=false);
+
+	/// Constructor
+	/// @param val Initial value to set the associated control to
+	/// @param issigned Allow negative numbers?
 	explicit NumValidator(double val, bool issigned=false);
 
 	/// Copy constructor

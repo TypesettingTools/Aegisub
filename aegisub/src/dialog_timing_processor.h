@@ -37,92 +37,54 @@
 #ifndef AGI_PRE
 #include <vector>
 
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/checklst.h>
 #include <wx/dialog.h>
-#include <wx/sizer.h>
-#include <wx/slider.h>
-#include <wx/textctrl.h>
 #endif
 
 namespace agi { struct Context; }
 class AssDialogue;
+class wxButton;
+class wxCheckBox;
+class wxCheckListBox;
+class wxSlider;
 
-/// DOCME
 /// @class DialogTimingProcessor
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Automatic postprocessor for correcting common timing issues
 class DialogTimingProcessor : public wxDialog {
-	agi::Context *c;
+	agi::Context *c; ///< Project context
 
-	/// DOCME
-	wxStaticBoxSizer *KeyframesSizer;
+	int leadIn;      ///< Lead-in to add in milliseconds
+	int leadOut;     ///< Lead-out to add in milliseconds
+	int beforeStart; ///< Maximum time in milliseconds to move start time of line backwards to land on a keyframe
+	int afterStart;  ///< Maximum time in milliseconds to move start time of line forwards to land on a keyframe
+	int beforeEnd;   ///< Maximum time in milliseconds to move end time of line backwards to land on a keyframe
+	int afterEnd;    ///< Maximum time in milliseconds to move end time of line forwards to land on a keyframe
+	int adjDistance; ///< Maximum time in milliseconds to snap adjacent lines to each other
 
-	/// DOCME
-	wxCheckBox *onlySelection;
+	wxCheckBox *onlySelection; ///< Only process selected lines of the selected styles
+	wxCheckBox *hasLeadIn;     ///< Enable adding lead-in
+	wxCheckBox *hasLeadOut;    ///< Enable adding lead-out
+	wxCheckBox *keysEnable;    ///< Enable snapping to keyframes
+	wxCheckBox *adjsEnable;    ///< Enable snapping adjacent lines to each other
+	wxSlider *adjacentBias;    ///< Bias between shifting start and end times when snapping adjacent lines
+	wxCheckListBox *StyleList; ///< List of styles to process
+	wxButton *ApplyButton;     ///< Button to apply the processing
 
-	/// DOCME
-	wxTextCtrl *leadIn;
-
-	/// DOCME
-	wxTextCtrl *leadOut;
-
-	/// DOCME
-	wxCheckBox *hasLeadIn;
-
-	/// DOCME
-	wxCheckBox *hasLeadOut;
-
-	/// DOCME
-	wxCheckBox *keysEnable;
-
-	/// DOCME
-	wxTextCtrl *keysStartBefore;
-
-	/// DOCME
-	wxTextCtrl *keysStartAfter;
-
-	/// DOCME
-	wxTextCtrl *keysEndBefore;
-
-	/// DOCME
-	wxTextCtrl *keysEndAfter;
-
-	/// DOCME
-	wxCheckBox *adjsEnable;
-
-	/// DOCME
-	wxTextCtrl *adjacentThres;
-
-	/// DOCME
-	wxSlider *adjacentBias;
-
-	/// DOCME
-	wxCheckListBox *StyleList;
-
-	/// DOCME
-	wxButton *ApplyButton;
-
-	/// DOCME
-	std::vector<int> KeyFrames;
-
-	void OnCheckBox(wxCommandEvent &event);
-	void OnSelectAll(wxCommandEvent &event);
-	void OnSelectNone(wxCommandEvent &event);
 	void OnApply(wxCommandEvent &event);
 
-	void UpdateControls();
-	void Process();
-	int GetClosestKeyFrame(int frame);
+	/// Check or uncheck all styles
+	void CheckAll(bool check);
 
-	/// DOCME
-	std::vector<AssDialogue*> Sorted;
-	void SortDialogues();
+	/// Enable and disable text boxes based on which checkboxes are checked
+	void UpdateControls();
+
+	/// Process the file
+	void Process();
+
+	/// Get a list of dialogue lines in the file sorted by start time
+	std::vector<AssDialogue*> SortDialogues();
 
 public:
+	/// Constructor
+	/// @param c Project context
 	DialogTimingProcessor(agi::Context *c);
-
-	DECLARE_EVENT_TABLE()
 };
