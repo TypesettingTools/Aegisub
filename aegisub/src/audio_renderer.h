@@ -279,7 +279,7 @@ protected:
 
 public:
 	/// @brief Constructor
-	AudioRendererBitmapProvider() : provider(0), pixel_samples(0) { };
+	AudioRendererBitmapProvider() : provider(0), pixel_samples(0), amplitude_scale(0) { };
 
 	/// @brief Destructor
 	virtual ~AudioRendererBitmapProvider() { }

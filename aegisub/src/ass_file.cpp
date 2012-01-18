@@ -147,8 +147,8 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 	UndoStack.clear();
 	RedoStack.clear();
 	undoDescription.clear();
+	autosavedCommitId = savedCommitId = commitId + 1;
 	Commit("", COMMIT_NEW);
-	savedCommitId = commitId;
 
 	// Add to recent
 	if (addToRecent) AddToRecent(filename);
@@ -161,7 +161,7 @@ void AssFile::Save(wxString filename, bool setfilename, bool addToRecent, wxStri
 		throw "Unknown file type.";
 
 	if (setfilename) {
-		savedCommitId = commitId;
+		autosavedCommitId = savedCommitId = commitId;
 		this->filename = filename;
 		StandardPaths::SetPathValue("?script", wxFileName(filename).GetPath());
 	}
@@ -423,8 +423,8 @@ void AssFile::LoadDefault(bool defline) {
 	if (defline)
 		AddLine(AssDialogue().GetEntryData(), &version, &attach);
 
+	autosavedCommitId = savedCommitId = commitId + 1;
 	Commit("", COMMIT_NEW);
-	savedCommitId = commitId;
 	loaded = true;
 	StandardPaths::SetPathValue("?script", "");
 	FileOpen("");

@@ -79,7 +79,10 @@ size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
 
 
 AudioRenderer::AudioRenderer()
-: cache_bitmap_width(32) // arbitrary value for now
+: pixel_samples(0)
+, pixel_height(0)
+, amplitude_scale(0)
+, cache_bitmap_width(32) // arbitrary value for now
 , cache_bitmap_maxsize(0)
 , cache_renderer_maxsize(0)
 , renderer(0)

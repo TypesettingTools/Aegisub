@@ -911,6 +911,7 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[6] = effectLen;
 	for (int i = 0; i < 3; i++)
 		colWidth[i + 7] = showMargin[i] ? marginLen : 0;
+	colWidth[10] = 1;
 
 	// Hide columns
 	for (int i = 0; i < columns; i++) {
