@@ -61,7 +61,7 @@ SinkMessage::SinkMessage(const char *section, Severity severity,
 }
 
 SinkMessage::~SinkMessage() {
-	delete message;
+	delete [] message;
 }
 
 /// @todo The log files need to be trimmed after N amount.
