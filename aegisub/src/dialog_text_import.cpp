@@ -36,30 +36,25 @@
 
 #include "config.h"
 
+#include "dialog_text_import.h"
+
 #ifndef AGI_PRE
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 #endif
 
 #include "compat.h"
-#include "dialog_text_import.h"
 #include "main.h"
 
-enum {
-	EDIT_ACTOR_SEPARATOR = 1480,
-	EDIT_COMMENT_STARTER
-};
-
-/// @brief Constructor 
-///
 DialogTextImport::DialogTextImport()
-: wxDialog(NULL , -1, _("Text import options"),wxDefaultPosition,wxDefaultSize)
+: wxDialog(NULL , -1, _("Text import options"))
 {
 	// Main controls
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 5);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	edit_separator = new wxTextCtrl(this, EDIT_ACTOR_SEPARATOR, lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString()));
-	edit_comment = new wxTextCtrl(this, EDIT_COMMENT_STARTER, lagi_wxString(OPT_GET("Tool/Import/Text/Comment Starter")->GetString()));
+	edit_separator = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString()));
+	edit_comment = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Import/Text/Comment Starter")->GetString()));
 
 	// Dialog layout
 	fg->Add(new wxStaticText(this, -1, _("Actor separator:")), 0, wxALIGN_CENTRE_VERTICAL);
@@ -69,32 +64,14 @@ DialogTextImport::DialogTextImport()
 
 	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
 	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
-	main_sizer->SetSizeHints(this);
-	SetSizer(main_sizer);
+	SetSizerAndFit(main_sizer);
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTextImport::OnOK, this, wxID_OK);
 }
 
-
-/// @brief Destructor 
-///
-DialogTextImport::~DialogTextImport()
-{
-}
-
-
-/// @brief DOCME
-/// @param event 
-///
-void DialogTextImport::OnOK(wxCommandEvent &)
-{
-	// Set options
+void DialogTextImport::OnOK(wxCommandEvent &) {
 	OPT_SET("Tool/Import/Text/Actor Separator")->SetString(STD_STR(edit_separator->GetValue()));
 	OPT_SET("Tool/Import/Text/Comment Starter")->SetString(STD_STR(edit_comment->GetValue()));
 
 	EndModal(wxID_OK);
 }
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogTextImport,wxDialog)
-	EVT_BUTTON(wxID_OK,DialogTextImport::OnOK)
-END_EVENT_TABLE()

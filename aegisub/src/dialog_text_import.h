@@ -36,30 +36,21 @@
 
 #ifndef AGI_PRE
 #include <wx/dialog.h>
-#include <wx/textctrl.h>
 #endif
 
+class wxTextCtrl;
 
-/// DOCME
 /// @class DialogTextImport
-/// @brief DOCME
+/// @brief Plain text import separator character selection dialog
 ///
-/// DOCME
+/// A simple dialog to let the user select the format of a plain text file
+/// being imported into Aegisub
 class DialogTextImport : public wxDialog {
-private:
-
-	/// DOCME
 	wxTextCtrl *edit_separator;
-
-	/// DOCME
 	wxTextCtrl *edit_comment;
 
-	void OnOK(wxCommandEvent &event);
-	void OnCancel(wxCommandEvent &event);
+	void OnOK(wxCommandEvent &);
 
 public:
 	DialogTextImport();
-	virtual ~DialogTextImport();
-
-	DECLARE_EVENT_TABLE()
 };
