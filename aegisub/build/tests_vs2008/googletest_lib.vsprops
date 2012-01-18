@@ -6,8 +6,8 @@
 	>
 	<Tool
 		Name="VCLinkerTool"
+		AdditionalDependencies="&quot;$(LibraryOutDir)gtestd.lib&quot;"
 		OutputFile=""
 		AdditionalLibraryDirectories="$(LibraryOutDir)"
-		AdditionalDependencies="$(LibraryOutDir)gtestd.lib"
 	/>
 </VisualStudioPropertySheet>
