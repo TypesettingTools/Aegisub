@@ -497,10 +497,10 @@
 			"Only Selection" : false,
 			"Threshold" : {
 				"Adjacent" : 300,
-				"Key End After" : 6,
-				"Key End Before" : 5,
-				"Key Start After" : 4,
-				"Key Start Before" : 5
+				"Key End After" : 250,
+				"Key End Before" : 200,
+				"Key Start After" : 150,
+				"Key Start Before" : 200
 			}
 		},
 		"Translation Assistant" : {

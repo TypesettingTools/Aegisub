@@ -183,18 +183,18 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	}
 
 	make_ctrl(this, KeyframesFlexSizer, _("Starts before thres.:"), &beforeStart, keysEnable,
-		_("Threshold for 'before start' distance, that is, how many frames a subtitle must start before a keyframe to snap to it."));
+		_("Threshold for 'before start' distance, that is, how many milliseconds a subtitle must start before a keyframe to snap to it."));
 
 	make_ctrl(this, KeyframesFlexSizer, _("Starts after thres.:"), &afterStart, keysEnable,
-		_("Threshold for 'after start' distance, that is, how many frames a subtitle must start after a keyframe to snap to it."));
+		_("Threshold for 'after start' distance, that is, how many milliseconds a subtitle must start after a keyframe to snap to it."));
 
 	KeyframesFlexSizer->AddStretchSpacer(1);
 
 	make_ctrl(this, KeyframesFlexSizer, _("Ends before thres.:"), &beforeEnd, keysEnable,
-		_("Threshold for 'before end' distance, that is, how many frames a subtitle must end before a keyframe to snap to it."));
+		_("Threshold for 'before end' distance, that is, how many milliseconds a subtitle must end before a keyframe to snap to it."));
 
 	make_ctrl(this, KeyframesFlexSizer, _("Ends after thres.:"), &afterEnd, keysEnable,
-		_("Threshold for 'after end' distance, that is, how many frames a subtitle must end after a keyframe to snap to it."));
+		_("Threshold for 'after end' distance, that is, how many milliseconds a subtitle must end after a keyframe to snap to it."));
 
 	KeyframesSizer->Add(KeyframesFlexSizer,0,wxEXPAND);
 	KeyframesSizer->AddStretchSpacer(1);
@@ -397,14 +397,16 @@ void DialogTimingProcessor::Process() {
 
 			// Get closest for start
 			int closest = get_closest_kf(kf, startF);
-			if ((closest > startF && closest-startF <= beforeStart) || (closest < startF && startF-closest <= afterStart)) {
-				cur->Start = c->videoController->TimeAtFrame(closest, agi::vfr::START);
+			int time = c->videoController->TimeAtFrame(closest, agi::vfr::START);
+			if ((closest > startF && time - cur->Start <= beforeStart) || (closest < startF && cur->Start - time <= afterStart)) {
+				cur->Start = time;
 			}
 
 			// Get closest for end
 			closest = get_closest_kf(kf, endF) - 1;
-			if ((closest > endF && closest-endF <= beforeEnd) || (closest < endF && endF-closest <= afterEnd)) {
-				cur->End = c->videoController->TimeAtFrame(closest, agi::vfr::END);
+			time = c->videoController->TimeAtFrame(closest, agi::vfr::END);
+			if ((closest > endF && time - cur->End <= beforeEnd) || (closest < endF && cur->End - time <= afterEnd)) {
+				cur->End = time;
 			}
 		}
 	}
