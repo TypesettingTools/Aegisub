@@ -41,6 +41,7 @@
 #endif
 
 #include "include/aegisub/video_provider.h"
+#include "video_frame.h"
 
 /// DOCME
 /// @class DummyVideoProvider

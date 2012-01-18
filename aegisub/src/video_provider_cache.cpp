@@ -35,9 +35,12 @@
 ///
 
 #include "config.h"
-#include "main.h"
 
 #include "video_provider_cache.h"
+
+#include "main.h"
+#include "video_frame.h"
+
 
 /// DOCME
 /// @class CachedFrame

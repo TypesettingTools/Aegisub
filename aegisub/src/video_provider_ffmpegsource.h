@@ -41,7 +41,7 @@
 
 #include "ffmpegsource_common.h"
 #include "include/aegisub/video_provider.h"
-
+#include "video_frame.h"
 
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.

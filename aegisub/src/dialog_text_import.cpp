@@ -34,9 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -48,6 +45,10 @@
 #include "dialog_text_import.h"
 #include "main.h"
 
+enum {
+	EDIT_ACTOR_SEPARATOR = 1480,
+	EDIT_COMMENT_STARTER
+};
 
 /// @brief Constructor 
 ///

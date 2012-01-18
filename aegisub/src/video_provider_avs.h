@@ -38,6 +38,7 @@
 #include "avisynth.h"
 #include "avisynth_wrap.h"
 #include "include/aegisub/video_provider.h"
+#include "video_frame.h"
 
 /// DOCME
 /// @class AvisynthVideoProvider

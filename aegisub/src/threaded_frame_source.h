@@ -44,8 +44,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>
 
-#include "video_frame.h"
-
+class AegiVideoFrame;
 class AssFile;
 class SubtitlesProvider;
 class VideoProvider;

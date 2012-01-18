@@ -34,22 +34,17 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
 #ifndef AGI_PRE
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/spinctrl.h>
-#include <wx/stattext.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
 #endif
 
-#include "colour_button.h"
-#include "video_provider_dummy.h"
-
+class ColourButton;
+class wxButton;
+class wxCheckBox;
+class wxComboBox;
+class wxSpinCtrl;
+class wxStaticText;
+class wxTextCtrl;
 
 /// DOCME
 /// @class DialogDummyVideo
@@ -57,10 +52,8 @@
 ///
 /// DOCME
 class DialogDummyVideo : public wxDialog {
-private:
 	DialogDummyVideo(wxWindow *parent);
-	virtual ~DialogDummyVideo();
-
+	~DialogDummyVideo();
 
 	/// DOCME
 	wxComboBox *resolution_shortcuts;
@@ -103,16 +96,4 @@ public:
 	static bool CreateDummyVideo(wxWindow *parent, wxString &out_filename);
 
 	DECLARE_EVENT_TABLE()
-};
-
-enum {
-
-	/// DOCME
-	Dummy_Video_Resolution_Shortcut = 1700,
-
-	/// DOCME
-	Dummy_Video_FPS,
-
-	/// DOCME
-	Dummy_Video_Length
 };

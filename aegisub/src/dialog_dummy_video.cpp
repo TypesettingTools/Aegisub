@@ -37,18 +37,33 @@
 
 #include "config.h"
 
+#include "dialog_dummy_video.h"
+
 #ifndef AGI_PRE
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
 #include <wx/datetime.h>
 #include <wx/log.h>
 #include <wx/sizer.h>
+#include <wx/spinctrl.h>
 #include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
 #endif
 
+#include "colour_button.h"
 #include "compat.h"
-#include "dialog_dummy_video.h"
 #include "help_button.h"
 #include "main.h"
 #include "utils.h"
+#include "video_provider_dummy.h"
+
+enum {
+	Dummy_Video_Resolution_Shortcut = 1700,
+	Dummy_Video_FPS,
+	Dummy_Video_Length
+};
 
 /// DOCME
 struct ResolutionShortcut {

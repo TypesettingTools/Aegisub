@@ -60,6 +60,7 @@
 
 #include "ass_style.h"
 #include "colour_button.h"
+#include "compat.h"
 #include "string_codec.h"
 #include "utils.h"
 

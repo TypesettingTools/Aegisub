@@ -47,6 +47,7 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/subtitles_provider.h"
+#include "video_frame.h"
 #include "video_provider_manager.h"
 
 // Test if a line is a dialogue line which is not visible at the given time

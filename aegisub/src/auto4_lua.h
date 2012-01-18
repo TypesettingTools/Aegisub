@@ -41,7 +41,6 @@
 #include <wx/thread.h>
 #endif
 
-#include "compat.h"
 #include "auto4_base.h"
 
 #include "command/command.h"

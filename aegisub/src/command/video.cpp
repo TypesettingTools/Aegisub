@@ -62,6 +62,7 @@
 #include "../video_box.h"
 #include "../video_context.h"
 #include "../video_display.h"
+#include "../video_frame.h"
 #include "../video_slider.h"
 
 namespace {

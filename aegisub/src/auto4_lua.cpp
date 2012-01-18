@@ -62,6 +62,7 @@
 #include "ass_style.h"
 #include "auto4_lua_factory.h"
 #include "auto4_lua_scriptreader.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"

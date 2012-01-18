@@ -36,9 +36,14 @@
 
 #pragma once
 
-#include "video_frame.h"
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
+
+#ifndef AGI_PRE
+#include <wx/string.h>
+#endif
+
+class AegiVideoFrame;
 
 /// @class VideoProvider
 /// @brief DOCME

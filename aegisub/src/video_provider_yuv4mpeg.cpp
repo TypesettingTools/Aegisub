@@ -38,9 +38,11 @@
 
 #include <libaegisub/log.h>
 
+#include "video_provider_yuv4mpeg.h"
+
 #include "compat.h"
 #include "utils.h"
-#include "video_provider_yuv4mpeg.h"
+#include "video_frame.h"
 
 // All of this cstdio bogus is because of one reason and one reason only:
 // MICROSOFT'S IMPLEMENTATION OF STD::FSTREAM DOES NOT SUPPORT FILES LARGER THAN 2 GB.

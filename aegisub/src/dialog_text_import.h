@@ -34,10 +34,6 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-///////////
-// Headers
 #ifndef AGI_PRE
 #include <wx/dialog.h>
 #include <wx/textctrl.h>
@@ -66,16 +62,4 @@ public:
 	virtual ~DialogTextImport();
 
 	DECLARE_EVENT_TABLE()
-};
-
-
-///////
-// IDs
-enum {
-
-	/// DOCME
-	EDIT_ACTOR_SEPARATOR = 1480,
-
-	/// DOCME
-	EDIT_COMMENT_STARTER
 };
