@@ -62,11 +62,13 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString filename)
 {
 	try {
 		AVSValue script;
-		wxMutexLocker lock(AviSynthMutex);
+		wxMutexLocker lock(avs_wrapper.GetMutex());
 
 		wxFileName fn(filename);
 		if (!fn.FileExists())
 			throw agi::FileNotFoundError(STD_STR(filename));
+
+		IScriptEnvironment *env = avs_wrapper.GetEnv();
 
 		// Include
 		if (filename.EndsWith(".avs")) {
@@ -115,6 +117,8 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	// Check if it has audio
 	VideoInfo vi = _clip.AsClip()->GetVideoInfo();
 	if (!vi.HasAudio()) throw agi::AudioDataNotFoundError("No audio found.", 0);
+
+	IScriptEnvironment *env = avs_wrapper.GetEnv();
 
 	// Convert to one channel
 	char buffer[1024];
@@ -174,7 +178,7 @@ void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) co
 	}
 
 	if (count) {
-		clip->GetAudio(buf,start,count,env);
+		clip->GetAudio(buf,start,count,avs_wrapper.GetEnv());
 	}
 }
 #endif

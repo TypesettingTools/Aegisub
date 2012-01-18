@@ -38,30 +38,30 @@
 
 #ifdef WITH_AVISYNTH
 #include "avisynth_wrap.h"
+
+#include "avisynth.h"
 #include "main.h"
 
 // Allocate storage for and initialise static members
-int AviSynthWrapper::avs_refcount = 0;
-HINSTANCE AviSynthWrapper::hLib = NULL;
-IScriptEnvironment *AviSynthWrapper::env = NULL;
-wxMutex AviSynthWrapper::AviSynthMutex;
+namespace {
+	int avs_refcount = 0;
+	HINSTANCE hLib = NULL;
+	IScriptEnvironment *env = NULL;
+	wxMutex AviSynthMutex;
+}
 
+typedef IScriptEnvironment* __stdcall FUNC(int);
 
-/// @brief AviSynth constructor 
-///
 AviSynthWrapper::AviSynthWrapper() {
-	if (!avs_refcount) {
-		hLib=LoadLibrary(L"avisynth.dll");
+	if (!avs_refcount++) {
+		hLib = LoadLibrary(L"avisynth.dll");
 
-		if (hLib == NULL) {
+		if (!hLib)
 			throw wxString("Could not load avisynth.dll");
-		}
 
 		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
-
-		if (CreateScriptEnv == NULL) {
+		if (!CreateScriptEnv)
 			throw wxString("Failed to get address of CreateScriptEnv from avisynth.dll");
-		}
 
 		// Require Avisynth 2.5.6+?
 		if (OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
@@ -69,21 +69,16 @@ AviSynthWrapper::AviSynthWrapper() {
 		else
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
-		if (env == NULL) {
+		if (!env)
 			throw wxString("Failed to create a new avisynth script environment. Avisynth is too old?");
-		}
+
 		// Set memory limit
 		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();
-		if (memoryMax != 0) {
+		if (memoryMax != 0)
 			env->SetMemoryMax(memoryMax);
-		}
 	}
-
-	avs_refcount++;
 }
 
-/// @brief AviSynth destructor 
-///
 AviSynthWrapper::~AviSynthWrapper() {
 	if (!--avs_refcount) {
 		delete env;
@@ -91,10 +86,12 @@ AviSynthWrapper::~AviSynthWrapper() {
 	}
 }
 
-/// @brief Get environment 
-///
-IScriptEnvironment *AviSynthWrapper::GetEnv() {
+wxMutex& AviSynthWrapper::GetMutex() const {
+	return AviSynthMutex;
+}
+
+IScriptEnvironment *AviSynthWrapper::GetEnv() const {
 	return env;
 }
-#endif
 
+#endif

@@ -35,14 +35,8 @@
 ///
 
 #ifdef WITH_AVISYNTH
-#ifndef AGI_PRE
-#include <windows.h>
-#endif
 
-#include "avisynth.h"
-
-/// DOCME
-typedef IScriptEnvironment* __stdcall FUNC(int);
+class IScriptEnvironment;
 
 /// DOCME
 /// @class AviSynthWrapper
@@ -50,23 +44,11 @@ typedef IScriptEnvironment* __stdcall FUNC(int);
 ///
 /// DOCME
 class AviSynthWrapper {
-private:
-
-	/// DOCME
-	static int avs_refcount;
-
-	/// DOCME
-	static HINSTANCE hLib;
-protected:
-
-	/// DOCME
-	static IScriptEnvironment *env;
+	AviSynthWrapper(AviSynthWrapper const&);
 public:
+	wxMutex& GetMutex() const;
+	IScriptEnvironment *GetEnv() const;
 
-	/// DOCME
-	static wxMutex AviSynthMutex;
-
-	IScriptEnvironment *GetEnv();
 	AviSynthWrapper();
 	~AviSynthWrapper();
 };

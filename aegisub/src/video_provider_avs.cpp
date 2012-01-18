@@ -59,7 +59,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString filename) try
 	iframe.flipped = true;
 	iframe.invertChannels = true;
 
-	wxMutexLocker lock(AviSynthMutex);
+	wxMutexLocker lock(avs.GetMutex());
 
 	wxFileName fname(filename);
 	if (!fname.FileExists())
@@ -151,7 +151,7 @@ file_exit:
 	if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo())
 		throw VideoNotSupported("No usable video found");
 
-	RGB32Video = (env->Invoke("Cache", env->Invoke("ConvertToRGB32", script))).AsClip();
+	RGB32Video = (avs.GetEnv()->Invoke("Cache", avs.GetEnv()->Invoke("ConvertToRGB32", script))).AsClip();
 	vi = RGB32Video->GetVideoInfo();
 	fps = (double)vi.fps_numerator / vi.fps_denominator;
 }
@@ -164,6 +164,7 @@ AvisynthVideoProvider::~AvisynthVideoProvider() {
 }
 
 AVSValue AvisynthVideoProvider::Open(wxFileName const& fname, wxString const& extension) {
+	IScriptEnvironment *env = avs.GetEnv();
 	char *videoFilename = env->SaveString(fname.GetShortPath().mb_str(csConvLocal));
 
 	// Avisynth file, just import it
@@ -265,9 +266,9 @@ AVSValue AvisynthVideoProvider::Open(wxFileName const& fname, wxString const& ex
 const AegiVideoFrame AvisynthVideoProvider::GetFrame(int n) {
 	if (n == last_fnum) return iframe;
 
-	wxMutexLocker lock(AviSynthMutex);
+	wxMutexLocker lock(avs.GetMutex());
 
-	PVideoFrame frame = RGB32Video->GetFrame(n,env);
+	PVideoFrame frame = RGB32Video->GetFrame(n, avs.GetEnv());
 	iframe.pitch = frame->GetPitch();
 	iframe.w = frame->GetRowSize() / (vi.BitsPerPixel() / 8);
 	iframe.h = frame->GetHeight();

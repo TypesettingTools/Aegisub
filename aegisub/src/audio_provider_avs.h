@@ -36,6 +36,8 @@
 
 #ifdef WITH_AVISYNTH
 #include "include/aegisub/audio_provider.h"
+
+#include "avisynth.h"
 #include "avisynth_wrap.h"
 
 
@@ -44,7 +46,9 @@
 /// @brief DOCME
 ///
 /// DOCME
-class AvisynthAudioProvider : public AudioProvider, public AviSynthWrapper {
+class AvisynthAudioProvider : public AudioProvider {
+	AviSynthWrapper avs_wrapper;
+
 	/// DOCME
 	wxString filename;
 

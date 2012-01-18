@@ -35,6 +35,7 @@
 ///
 
 #ifdef WITH_AVISYNTH
+#include "avisynth.h"
 #include "avisynth_wrap.h"
 #include "include/aegisub/video_provider.h"
 
@@ -43,7 +44,8 @@
 /// @brief DOCME
 ///
 /// DOCME
-class AvisynthVideoProvider: public VideoProvider, AviSynthWrapper {
+class AvisynthVideoProvider: public VideoProvider {
+	AviSynthWrapper avs;
 	AegiVideoFrame iframe;
 	wxString decoderName;
 	agi::vfr::Framerate fps;
