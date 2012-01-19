@@ -659,10 +659,8 @@ int AssFile::Commit(wxString desc, int type, int amendId, AssEntry *single_line)
 		UndoStack.pop_front();
 	}
 
-	if (OPT_GET("App/Auto/Save on Every Change")->GetBool()) {
-		if (!filename.empty() && CanSave())
-			Save(filename);
-	}
+	if (UndoStack.size() > 1 && OPT_GET("App/Auto/Save on Every Change")->GetBool() && !filename.empty() && CanSave())
+		Save(filename);
 
 	AnnounceCommit(type);
 	return commitId;
