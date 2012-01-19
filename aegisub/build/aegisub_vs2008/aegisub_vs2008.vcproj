@@ -426,6 +426,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\audio_player_oss.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_player_oss.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\audio_player_portaudio.cpp"
 				>
 			</File>
