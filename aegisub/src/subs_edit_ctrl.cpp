@@ -317,12 +317,15 @@ void SubsTextEditCtrl::UpdateStyle() {
 		if (cur_char == '{') {
 			new_style = in_ovr ? STYLE_ERROR : STYLE_OVERRIDE;
 			in_ovr = true;
-			in_parens = false;
 		}
 		// End override block
 		else if (cur_char == '}') {
 			new_style = in_ovr ? STYLE_OVERRIDE : STYLE_ERROR;
 			in_ovr = false;
+
+			in_karaoke_template = false;
+			in_parens = false;
+			in_unparened_arg = false;
 		}
 		// Start karaoke template
 		else if (templateLine && style != STYLE_KARAOKE_TEMPLATE && cur_char == '!') {
