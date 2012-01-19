@@ -654,7 +654,7 @@ int AssFile::Commit(wxString desc, int type, int amendId, AssEntry *single_line)
 	UndoStack.push_back(*this);
 
 	// Cap depth
-	int depth = OPT_GET("Limits/Undo Levels")->GetInt();
+	int depth = std::max<int>(OPT_GET("Limits/Undo Levels")->GetInt(), 2);
 	while ((int)UndoStack.size() > depth) {
 		UndoStack.pop_front();
 	}
