@@ -95,7 +95,11 @@ static void font_button(Preferences *parent, wxTextCtrl *name, wxSpinCtrl *size)
 	font = wxGetFontFromUser(parent, font);
 	if (font.IsOk()) {
 		name->SetValue(font.GetFaceName());
-		size->SetValue(wxString::Format("%d", font.GetPointSize()));
+		size->SetValue(font.GetPointSize());
+		// wxGTK doesn't generate wxEVT_COMMAND_SPINCTRL_UPDATED from SetValue
+		wxSpinEvent evt(wxEVT_COMMAND_SPINCTRL_UPDATED);
+		evt.SetInt(font.GetPointSize());
+		size->ProcessWindowEvent(evt);
 	}
 }
 
