@@ -45,6 +45,7 @@
 
 #include "selection_controller.h"
 
+namespace agi { namespace vfr { class Framerate; } }
 namespace agi { struct Context; }
 struct AssColor;
 class AssDialogue;
@@ -61,7 +62,7 @@ class wxStyledTextCtrl;
 class wxStyledTextEvent;
 class wxTextCtrl;
 
-namespace agi { namespace vfr { class Framerate; } }
+template<class Base> class Placeholder;
 
 /// DOCME
 /// @class SubsEditBox
@@ -92,7 +93,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	// Box controls
 	wxCheckBox *CommentBox;
 	wxComboBox *StyleBox;
-	wxComboBox *ActorBox;
+	Placeholder<wxComboBox> *ActorBox;
 	TimeEdit *StartTime;
 	TimeEdit *EndTime;
 	TimeEdit *Duration;
@@ -100,7 +101,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	wxTextCtrl *MarginL;
 	wxTextCtrl *MarginR;
 	wxTextCtrl *MarginV;
-	wxTextCtrl *Effect;
+	Placeholder<wxTextCtrl> *Effect;
 	wxRadioButton *ByTime;
 	wxRadioButton *ByFrame;
 
@@ -158,6 +159,8 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	void OnFlagButton(bool (AssStyle::*field), const char *tag, wxString const& undo_msg);
 	void OnColorButton(AssColor (AssStyle::*field), const char *tag, const char *alt);
 	void OnFontButton();
+
+	void SetPlaceholderCtrl(wxControl *ctrl, wxString const& value);
 
 	/// @brief Set the value of a tag for the currently selected text
 	/// @param tag   Tag to set

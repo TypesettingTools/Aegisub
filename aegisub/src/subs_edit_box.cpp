@@ -63,6 +63,7 @@
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "placeholder_ctrl.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"
@@ -113,34 +114,6 @@ static T get_value(AssDialogue const& line, int blockn, T initial, wxString tag,
 	return initial;
 }
 
-template<class Control>
-struct FocusHandler : std::unary_function<wxFocusEvent &, void> {
-	wxString value;
-	wxString alt;
-	wxColor color;
-	Control *control;
-	void operator()(wxFocusEvent &event) const {
-		event.Skip();
-
-		if (control->GetValue() == alt) {
-			control->Freeze();
-			control->ChangeValue(value);
-			control->SetForegroundColour(color);
-			control->Thaw();
-		}
-	}
-};
-
-template<class Event, class T>
-void bind_focus_handler(T *control, Event event, wxString value, wxString alt, wxColor color) {
-	FocusHandler<T> handler;
-	handler.value = value;
-	handler.alt = alt;
-	handler.color = color;
-	handler.control = control;
-	control->Bind(event, handler);
-}
-
 /// Get the block index in the text of the position
 int block_at_pos(wxString const& text, int pos) {
 	int n = 0;
@@ -182,10 +155,14 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	TopSizer->Add(CommentBox, 0, wxRIGHT | wxALIGN_CENTER, 5);
 
 	StyleBox = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line."));
-	ActorBox = MakeComboBox("Actor", wxCB_DROPDOWN, &SubsEditBox::OnActorChange, _("Actor name for this speech. This is only for reference, and is mainly useless."));
 
-	Effect = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(80,-1),wxTE_PROCESS_ENTER);
-	Effect->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	ActorBox = new Placeholder<wxComboBox>(this, "Actor", wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());
+	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());
+	TopSizer->Add(ActorBox, wxSizerFlags(2).Center().Border(wxRIGHT));
+
+	Effect = new Placeholder<wxTextCtrl>(this, "Effect", wxSize(80,-1), wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
 	TopSizer->Add(Effect, 3, wxALIGN_CENTER, 5);
 
 	// Middle controls
@@ -243,24 +220,11 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	SetSizerAndFit(MainSizer);
 
-	wxColour text = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-	wxColour grey = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
-
-	// Setup placeholders for effect and actor boxes
-	bind_focus_handler(Effect, wxEVT_SET_FOCUS, "", "Effect", text);
-	bind_focus_handler(Effect, wxEVT_KILL_FOCUS, "Effect", "", grey);
-	Effect->SetForegroundColour(grey);
-
-	bind_focus_handler(ActorBox, wxEVT_SET_FOCUS, "", "Actor", text);
-	bind_focus_handler(ActorBox, wxEVT_KILL_FOCUS, "Actor", "", grey);
-	ActorBox->SetForegroundColour(grey);
-
 	TextEdit->Bind(wxEVT_STC_MODIFIED, &SubsEditBox::OnChange, this);
 	TextEdit->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT);
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnLayerEnter, this, Layer->GetId());
 	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerChange, this, Layer->GetId());
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
 	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, CommentBox->GetId());
 
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
@@ -361,12 +325,12 @@ void SubsEditBox::OnCommit(int type) {
 		change_value(MarginL, line->GetMarginString(0,false));
 		change_value(MarginR, line->GetMarginString(1,false));
 		change_value(MarginV, line->GetMarginString(2,false));
-		Effect->ChangeValue(line->Effect.empty() ? "Effect" : line->Effect);
+		Effect->ChangeValue(line->Effect);
 		CommentBox->SetValue(line->Comment);
 		StyleBox->Select(StyleBox->FindString(line->Style));
 
 		PopulateActorList();
-		ActorBox->ChangeValue(line->Actor.empty() ? "Actor" : line->Actor);
+		ActorBox->ChangeValue(line->Actor);
 		ActorBox->SetStringSelection(line->Actor);
 	}
 }

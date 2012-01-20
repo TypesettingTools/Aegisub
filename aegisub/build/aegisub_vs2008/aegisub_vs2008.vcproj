@@ -634,6 +634,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\placeholder_ctrl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\scintilla_text_ctrl.cpp"
 				>
 			</File>
