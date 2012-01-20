@@ -450,7 +450,6 @@ bool FrameMain::LoadList(wxArrayString list) {
 	videoList.Add("m2ts");
 	videoList.Add("mkv");
 	videoList.Add("mov");
-	videoList.Add("mov");
 	videoList.Add("mp4");
 	videoList.Add("mpeg");
 	videoList.Add("mpg");
