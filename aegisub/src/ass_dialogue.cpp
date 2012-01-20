@@ -372,15 +372,9 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 	}
 
 	// Get value
-	long value;
+	long value = 0;
 	strvalue.ToLong(&value);
-
-	// Cap it
-	if (value < 0) value = 0;
-	if (value > 9999) value = 9999;
-
-	// Assign
-	Margin[which] = value;
+	Margin[which] = mid<int>(0, value, 9999);
 }
 
 wxString AssDialogue::GetMarginString(int which,bool pad) const {
