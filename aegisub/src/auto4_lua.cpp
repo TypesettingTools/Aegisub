@@ -574,7 +574,7 @@ namespace Automation4 {
 		luaL_unref(L, LUA_REGISTRYINDEX, myid);
 	}
 
-	void LuaFeature::GetFeatureFunction(const char *function)
+	void LuaFeature::GetFeatureFunction(const char *function) const
 	{
 		// get this feature's function pointers
 		lua_rawgeti(L, LUA_REGISTRYINDEX, myid);
@@ -596,11 +596,15 @@ namespace Automation4 {
 	LuaCommand::LuaCommand(lua_State *L)
 	: LuaFeature(L)
 	, display(check_wxstring(L, 1))
-	, help(get_wxstring(L, 2))
 	, cmd_type(cmd::COMMAND_NORMAL)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
 		cmd_name = STD_STR(wxString::Format("automation/lua/%s/%s", get_wxstring(L, -1), check_wxstring(L, 1)));
+
+		if (lua_isstring(L, 2))
+			help = get_wxstring(L, 2);
+		else if (lua_isfunction(L, 2))
+			cmd_type |= cmd::COMMAND_DYNAMIC_HELP;
 
 		if (!lua_isfunction(L, 3))
 			luaL_error(L, "The macro processing function must be a function");
@@ -613,6 +617,11 @@ namespace Automation4 {
 
 		// new table for containing the functions for this feature
 		lua_newtable(L);
+
+		// store help string function
+		lua_pushstring(L, "help");
+		lua_pushvalue(L, 2);
+		lua_rawset(L, -3);
 
 		// store processing function
 		lua_pushstring(L, "run");
@@ -639,6 +648,17 @@ namespace Automation4 {
 	{
 		UnregisterFeature();
 		LuaScript::GetScriptObject(L)->UnregisterCommand(this);
+	}
+
+	wxString LuaCommand::StrHelp() const
+	{
+		if (!(cmd_type & cmd::COMMAND_DYNAMIC_HELP)) return help;
+
+		GetFeatureFunction("help");
+		lua_pcall(L, 0, 1, 0);
+		wxString result = get_wxstring(L, -1);
+		lua_pop(L, 1);
+		return result;
 	}
 
 	static int transform_selection(lua_State *L, const agi::Context *c)

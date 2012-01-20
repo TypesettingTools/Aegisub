@@ -231,7 +231,7 @@ namespace Automation4 {
 		void RegisterFeature();
 		void UnregisterFeature();
 
-		void GetFeatureFunction(const char *function);
+		void GetFeatureFunction(const char *function) const;
 
 		LuaFeature(lua_State *L);
 	};
@@ -259,7 +259,7 @@ namespace Automation4 {
 		const char* name() const { return cmd_name.c_str(); }
 		wxString StrMenu(const agi::Context *) const { return display; }
 		wxString StrDisplay(const agi::Context *) const { return display; }
-		wxString StrHelp() const { return help; }
+		wxString StrHelp() const;
 
 		int Type() const { return cmd_type; }
 
