@@ -443,18 +443,22 @@ bool FrameMain::LoadList(wxArrayString list) {
 
 	// Video formats
 	wxArrayString videoList;
-	videoList.Add("avi");
-	videoList.Add("mkv");
-	videoList.Add("mp4");
-	videoList.Add("d2v");
-	videoList.Add("mpg");
-	videoList.Add("mpeg");
-	videoList.Add("ogm");
-	videoList.Add("avs");
-	videoList.Add("wmv");
 	videoList.Add("asf");
+	videoList.Add("avi");
+	videoList.Add("avs");
+	videoList.Add("d2v");
+	videoList.Add("m2ts");
+	videoList.Add("mkv");
 	videoList.Add("mov");
+	videoList.Add("mov");
+	videoList.Add("mp4");
+	videoList.Add("mpeg");
+	videoList.Add("mpg");
+	videoList.Add("ogm");
 	videoList.Add("rm");
+	videoList.Add("rmvb");
+	videoList.Add("wmv");
+	videoList.Add("ts");
 	videoList.Add("y4m");
 	videoList.Add("yuv");
 
@@ -469,17 +473,18 @@ bool FrameMain::LoadList(wxArrayString list) {
 
 	// Audio formats
 	wxArrayString audioList;
-	audioList.Add("wav");
+	audioList.Add("aac");
+	audioList.Add("ac3");
+	audioList.Add("ape");
+	audioList.Add("dts");
+	audioList.Add("flac");
+	audioList.Add("m4a");
+	audioList.Add("mka");
 	audioList.Add("mp3");
 	audioList.Add("ogg");
+	audioList.Add("w64");
+	audioList.Add("wav");
 	audioList.Add("wma");
-	audioList.Add("ac3");
-	audioList.Add("aac");
-	audioList.Add("mpc");
-	audioList.Add("ape");
-	audioList.Add("flac");
-	audioList.Add("mka");
-	audioList.Add("m4a");
 
 	// Scan list
 	wxString audio;

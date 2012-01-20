@@ -94,8 +94,8 @@ struct audio_open : public Command {
 	void operator()(agi::Context *c) {
 		try {
 			wxString path = lagi_wxString(OPT_GET("Path/Last/Audio")->GetString());  
-			wxString str = wxString(_("Audio Formats")) + " (*.wav,*.mp3,*.ogg,*.flac,*.mp4,*.ac3,*.aac,*.mka,*.m4a,*.w64)|*.wav;*.mp3;*.ogg;*.flac;*.mp4;*.ac3;*.aac;*.mka;*.m4a;*.w64|"
-						+ _("Video Formats") + " (*.avi,*.mkv,*.ogm,*.mpg,*.mpeg)|*.avi;*.mkv;*.ogm;*.mp4;*.mpeg;*.mpg|"
+			wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
+						+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.mkv,*.mov,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.mkv;*.mov;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.wmv;*.ts|"
 						+ _("All Files") + " (*.*)|*.*";
 			wxString filename = wxFileSelector(_("Open Audio File"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (!filename.empty()) {
