@@ -4,6 +4,7 @@
 			"Backup" : true,
 			"Check For Updates" : true,
 			"Load Linked Files" : 2,
+			"Save" : true,
 			"Save Every Seconds" : 60,
 			"Save on Every Change" : false
 		},

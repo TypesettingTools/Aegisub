@@ -90,7 +90,7 @@ enum {
 #define StartupLog(a) LOG_I("frame_main/init") << a
 #endif
 
-static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt);
+static void autosave_timer_changed(wxTimer *timer);
 
 /// Handle files drag and dropped onto Aegisub
 class AegisubFileDropTarget : public wxFileDropTarget {
@@ -190,11 +190,9 @@ FrameMain::FrameMain (wxArrayString args)
 
 	StartupLog("Set up Auto Save");
 	AutoSave.SetOwner(this, ID_APP_TIMER_AUTOSAVE);
-	int time = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
-	if (time > 0) {
-		AutoSave.Start(time*1000);
-	}
-	OPT_SUB("App/Auto/Save Every Seconds", autosave_timer_changed, &AutoSave, agi::signal::_1);
+	autosave_timer_changed(&AutoSave);
+	OPT_SUB("App/Auto/Save", autosave_timer_changed, &AutoSave);
+	OPT_SUB("App/Auto/Save Every Seconds", autosave_timer_changed, &AutoSave);
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(this));
@@ -513,14 +511,12 @@ bool FrameMain::LoadList(wxArrayString list) {
 	return subs.size() || audio.size() || video.size();
 }
 
-static void autosave_timer_changed(wxTimer *timer, const agi::OptionValue &opt) {
-	int freq = opt.GetInt();
-	if (freq <= 0) {
-		timer->Stop();
-	}
-	else {
+static void autosave_timer_changed(wxTimer *timer) {
+	int freq = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
+	if (freq > 0 && OPT_GET("App/Auto/Save")->GetBool())
 		timer->Start(freq * 1000);
-	}
+	else
+		timer->Stop();
 }
 BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_TIMER(ID_APP_TIMER_AUTOSAVE, FrameMain::OnAutoSave)

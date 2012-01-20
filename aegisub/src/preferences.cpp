@@ -470,9 +470,9 @@ File_Associations::File_Associations(wxTreebook *book, Preferences *parent): Opt
 /// Backup preferences page
 Backup::Backup(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup")) {
 	wxFlexGridSizer *save = PageSizer(_("Automatic Save"));
-	OptionAdd(save, _("Enable"), "App/Auto/Backup");
+	OptionAdd(save, _("Enable"), "App/Auto/Save");
 	CellSkip(save);
-	OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds");
+	OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds", 1);
 	OptionBrowse(save, _("Path"), "Path/Auto/Save");
 	OptionAdd(save, _("Autosave after every change"), "App/Auto/Save on Every Change");
 
