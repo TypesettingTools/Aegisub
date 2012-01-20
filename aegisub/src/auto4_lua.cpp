@@ -263,6 +263,7 @@ namespace Automation4 {
 			set_field(L, "video_size", LuaVideoSize);
 			set_field(L, "keyframes", LuaGetKeyframes);
 			set_field(L, "decode_path", LuaDecodePath);
+			set_field(L, "cancel", LuaCancel);
 			set_field(L, "lua_automation_version", 4);
 
 			// store aegisub table to globals
@@ -525,14 +526,22 @@ namespace Automation4 {
 		return 1;
 	}
 
+	int LuaScript::LuaCancel(lua_State *L)
+	{
+		lua_pushnil(L);
+		return lua_error(L);
+	}
+
 	static void lua_threaded_call(ProgressSink *ps, lua_State *L, int nargs, int nresults, bool can_open_config, bool *failed)
 	{
 		LuaProgressSink lps(L, ps, can_open_config);
 
 		if (lua_pcall(L, nargs, nresults, 0)) {
-			// if the call failed, log the error here
-			ps->Log("\n\nLua reported a runtime error:\n");
-			ps->Log(lua_tostring(L, -1));
+			if (!lua_isnil(L, -1)) {
+				// if the call failed, log the error here
+				ps->Log("\n\nLua reported a runtime error:\n");
+				ps->Log(lua_tostring(L, -1));
+			}
 			lua_pop(L, 1);
 			*failed = true;
 		}
