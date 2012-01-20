@@ -32,6 +32,7 @@
 
 #include "ass_dialogue.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "utils.h"
 
 /// Button IDs
@@ -55,21 +56,26 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *c
 
 void VisualToolVectorClip::SetToolbar(wxToolBar *toolBar) {
 	this->toolBar = toolBar;
-	toolBar->AddTool(BUTTON_DRAG, _("Drag"), GETIMAGE(visual_vector_clip_drag_24), _("Drag control points."), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_LINE, _("Line"), GETIMAGE(visual_vector_clip_line_24), _("Appends a line."), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_BICUBIC, _("Bicubic"), GETIMAGE(visual_vector_clip_bicubic_24), _("Appends a bezier bicubic curve."), wxITEM_CHECK);
+
+	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
+
+#define ICON(name) icon_size == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24)
+	toolBar->AddTool(BUTTON_DRAG, _("Drag"), ICON(visual_vector_clip_drag), _("Drag control points."), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_LINE, _("Line"), ICON(visual_vector_clip_line), _("Appends a line."), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_BICUBIC, _("Bicubic"), ICON(visual_vector_clip_bicubic), _("Appends a bezier bicubic curve."), wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_CONVERT, _("Convert"), GETIMAGE(visual_vector_clip_convert_24), _("Converts a segment between line and bicubic."), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_INSERT, _("Insert"), GETIMAGE(visual_vector_clip_insert_24), _("Inserts a control point."), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_REMOVE, _("Remove"), GETIMAGE(visual_vector_clip_remove_24), _("Removes a control point."), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_CONVERT, _("Convert"), ICON(visual_vector_clip_convert), _("Converts a segment between line and bicubic."), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_INSERT, _("Insert"), ICON(visual_vector_clip_insert), _("Inserts a control point."), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_REMOVE, _("Remove"), ICON(visual_vector_clip_remove), _("Removes a control point."), wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_FREEHAND, _("Freehand"), GETIMAGE(visual_vector_clip_freehand_24), _("Draws a freehand shape."), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_FREEHAND_SMOOTH, _("Freehand smooth"), GETIMAGE(visual_vector_clip_freehand_smooth_24), _("Draws a smoothed freehand shape."), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_FREEHAND, _("Freehand"), ICON(visual_vector_clip_freehand), _("Draws a freehand shape."), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_FREEHAND_SMOOTH, _("Freehand smooth"), ICON(visual_vector_clip_freehand_smooth), _("Draws a smoothed freehand shape."), wxITEM_CHECK);
 	toolBar->ToggleTool(BUTTON_DRAG, true);
 	toolBar->Realize();
 	toolBar->Show(true);
 	toolBar->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VisualToolVectorClip::OnSubTool, this);
 	SetMode(features.empty());
+#undef ICON
 }
 
 void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {

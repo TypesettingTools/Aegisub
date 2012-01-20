@@ -33,12 +33,15 @@
 #include "ass_file.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
+#include "main.h"
 #include "utils.h"
 #include "video_context.h"
 
 static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
 static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
+
+#define ICON(name) (OPT_GET("App/Toolbar Icon Size")->GetInt() == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24))
 
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolDragDraggableFeature>(parent, context)
@@ -50,7 +53,7 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 
 void VisualToolDrag::SetToolbar(wxToolBar *tb) {
 	toolbar = tb;
-	toolbar->AddTool(-1, _("Toggle between \\move and \\pos"), GETIMAGE(visual_move_conv_move_24));
+	toolbar->AddTool(-1, _("Toggle between \\move and \\pos"), ICON(visual_move_conv_move));
 	toolbar->Realize();
 	toolbar->Show(true);
 
@@ -68,7 +71,7 @@ void VisualToolDrag::UpdateToggleButtons() {
 	if (to_move == button_is_move) return;
 
 	toolbar->SetToolNormalBitmap(toolbar->GetToolByPos(0)->GetId(),
-		to_move ? GETIMAGE(visual_move_conv_move_24) : GETIMAGE(visual_move_conv_pos_24));
+		to_move ? ICON(visual_move_conv_move) : ICON(visual_move_conv_pos));
 	button_is_move = to_move;
 }
 
