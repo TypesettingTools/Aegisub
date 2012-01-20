@@ -117,6 +117,7 @@ OptionPage::OptionPage(wxTreebook *book, Preferences *parent, wxString name, int
 		SetScrollbars(0, 20, 0, 50);
 	else
 		SetScrollbars(0, 0, 0, 0);
+	DisableKeyboardScrolling();
 }
 
 template<class T>
