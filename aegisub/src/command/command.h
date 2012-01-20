@@ -79,8 +79,11 @@ namespace cmd {
 		/// This command's name may change based on the state of the project
 		COMMAND_DYNAMIC_NAME = 8,
 
+		/// This command's help string may change
+		COMMAND_DYNAMIC_HELP = 16,
+
 		/// This command's icon may change based on the state of the project
-		COMMAND_DYNAMIC_ICON = 16
+		COMMAND_DYNAMIC_ICON = 32
 	};
 
 	/// Holds an individual Command
@@ -93,7 +96,7 @@ namespace cmd {
 		/// Plain string for display purposes; should normally be the same as StrMenu
 		/// but without accelerators
 		virtual wxString StrDisplay(const agi::Context *) const=0;
-		/// Short help string descripting the command purpose.
+		/// Short help string describing what the command does
 		virtual wxString StrHelp() const=0;
 
 		/// Get this command's type flags

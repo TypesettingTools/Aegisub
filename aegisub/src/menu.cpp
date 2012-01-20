@@ -148,6 +148,8 @@ class CommandManager {
 		int flags = c->Type();
 		if (flags & cmd::COMMAND_DYNAMIC_NAME)
 			UpdateItemName(item);
+		if (flags & cmd::COMMAND_DYNAMIC_HELP)
+			item.second->SetHelp(c->StrHelp());
 		if (flags & cmd::COMMAND_VALIDATE)
 			item.second->Enable(c->Validate(context));
 		if (flags & cmd::COMMAND_RADIO || flags & cmd::COMMAND_TOGGLE) {
