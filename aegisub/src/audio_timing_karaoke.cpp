@@ -313,7 +313,7 @@ void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_posi
 	size_t syl = marker - &markers.front() + 1;
 	kara->SetStartTime(syl, ToMS(new_position));
 
-	if (syl == cur_syl || syl + 1 == cur_syl) {
+	if (syl == cur_syl || syl == cur_syl + 1) {
 		AnnounceUpdatedPrimaryRange();
 		AnnounceUpdatedStyleRanges();
 	}
