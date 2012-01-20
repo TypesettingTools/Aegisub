@@ -46,7 +46,9 @@
 #include "selection_controller.h"
 
 namespace agi { struct Context; }
+struct AssColor;
 class AssDialogue;
+class AssStyle;
 class SubsTextEditCtrl;
 class TimeEdit;
 class wxButton;
@@ -83,9 +85,6 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// Are the controls currently enabled?
 	bool controlState;
 
-	wxColour disabledBgColour;
-	wxColour origBgColour;
-
 	agi::Context *c;
 
 	agi::signal::Connection file_changed_slot;
@@ -105,13 +104,9 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	wxRadioButton *ByTime;
 	wxRadioButton *ByFrame;
 
-	/// Buttons which turn on or off with the control
-	std::vector<wxButton*> ToggableButtons;
-
 	wxSizer *TopSizer;
 	wxSizer *MiddleBotSizer;
 	wxSizer *MiddleSizer;
-	wxSizer *MainSizer;
 	wxSizer *BottomSizer;
 
 	void SetControlsState(bool state);
@@ -122,16 +117,21 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// @param desc Undo description to use
 	void CommitText(wxString desc);
 
-	/// Get block number at text position
-	int BlockAtPos(wxString const& text, int pos) const;
-
-	/// @brief Move to the next line, creating it if needed
+	/// Move to the next line, creating it if needed
 	void NextLine();
 
 	int timeCommitId[3];
 	int commitId;
 	wxString lastCommitType;
 	wxTimer undoTimer;
+
+	// Constructor helpers
+	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));
+	TimeEdit *MakeTimeCtrl(bool end, wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));
+	template<class Handler>
+	void MakeButton(wxBitmap const& icon, wxString const& tooltip, Handler const& handler);
+	wxComboBox *MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip);
+	wxRadioButton *MakeRadio(wxString const& text, bool start, wxString const& tooltip);
 
 	void OnChange(wxStyledTextEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
@@ -155,10 +155,9 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	void OnSize(wxSizeEvent &event);
 	void OnUndoTimer(wxTimerEvent&);
 
-	void OnFlagButton(wxCommandEvent &event);
-	void OnColorButton(wxCommandEvent &event);
-	void OnFontButton(wxCommandEvent &event);
-	void OnCommitButton(wxCommandEvent &);
+	void OnFlagButton(bool (AssStyle::*field), const char *tag, wxString const& undo_msg);
+	void OnColorButton(AssColor (AssStyle::*field), const char *tag, const char *alt);
+	void OnFontButton();
 
 	/// @brief Set the value of a tag for the currently selected text
 	/// @param tag   Tag to set
