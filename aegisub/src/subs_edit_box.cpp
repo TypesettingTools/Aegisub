@@ -174,9 +174,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MiddleSizer->AddSpacer(5);
 
 	StartTime = MakeTimeCtrl(false, _("Start time"), &SubsEditBox::OnStartTimeChange);
-	EndTime   = MakeTimeCtrl(true, _("End time"), &SubsEditBox::OnStartTimeChange);
+	EndTime   = MakeTimeCtrl(true, _("End time"), &SubsEditBox::OnEndTimeChange);
 	MiddleSizer->AddSpacer(5);
-	Duration  = MakeTimeCtrl(false, _("Line duration"), &SubsEditBox::OnStartTimeChange);
+	Duration  = MakeTimeCtrl(false, _("Line duration"), &SubsEditBox::OnDurationChange);
 	MiddleSizer->AddSpacer(5);
 
 	MarginL = MakeMarginCtrl(_("Left Margin (0 = default)"), &SubsEditBox::OnMarginLChange);
