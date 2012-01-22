@@ -596,6 +596,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	Bind(wxEVT_RIGHT_UP, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOTION, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_ENTER_WINDOW, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_LEAVE_WINDOW, &AudioDisplay::OnMouseEvent, this);
 }
 
 
