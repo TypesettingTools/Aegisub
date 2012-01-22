@@ -37,10 +37,18 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/filename.h>
+#include <wx/bmpbuttn.h>
+#include <wx/combobox.h>
 #include <wx/rawbmp.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
 #include <wx/statline.h>
+#include <wx/textctrl.h>
+#include <wx/tglbtn.h>
+#include <wx/toolbar.h>
 #endif
+
+#include "video_box.h"
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/toolbar.h"
@@ -49,15 +57,12 @@
 #include "ass_file.h"
 #include "command/command.h"
 #include "compat.h"
-#include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
-#include "subs_grid.h"
 #include "toggle_bitmap.h"
 #include "tooltip_manager.h"
 #include "utils.h"
-#include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
 #include "video_slider.h"
@@ -75,7 +80,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 , context(context)
 {
 	// Visual controls sub-toolbar
-	visualSubToolBar = new wxToolBar(this,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
+	wxToolBar *visualSubToolBar = new wxToolBar(this,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
 
 	// Buttons
 	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -85,7 +90,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	videoBottomSizer->Add(new ToggleBitmap(this, context, "video/opt/autoscroll", 24, "Video"), 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
 
 	// Seek
-	videoSlider = new VideoSlider(this, context);
+	VideoSlider *videoSlider = new VideoSlider(this, context);
 	videoSlider->SetToolTip(_("Seek video."));
 
 	// Position
@@ -101,15 +106,15 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	for (int i = 1 ; i <= 24; ++i) {
 		choices.Add(wxString::Format("%g%%", i * 12.5));
 	}
-	zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN);
+	wxComboBox *zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN);
 
 	// Typesetting buttons
-	visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
+	wxToolBar *visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
 	// Avoid ugly themed background on Vista and possibly also Win7
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
-	videoDisplay = new VideoDisplay(visualSubToolBar,isDetached,zoomBox,this,context);
+	VideoDisplay *videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
 
 	// Top sizer
 	// Detached and attached video needs different flags, see bugs #742 and #853
@@ -188,5 +193,4 @@ void VideoBox::UpdateTimeBoxes() {
 			time - active_line->Start,
 			time - active_line->End));
 	}
-
 }

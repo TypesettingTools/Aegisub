@@ -38,10 +38,6 @@
 #include <list>
 
 #include <wx/panel.h>
-#include <wx/sizer.h>
-#include <wx/textctrl.h>
-#include <wx/tglbtn.h>
-#include <wx/toolbar.h>
 #endif
 
 #include <libaegisub/signal.h>
@@ -50,10 +46,8 @@
 
 namespace agi { struct Context; }
 class AssDialogue;
-class ToggleBitmap;
-class VideoDisplay;
-class VideoSlider;
 class wxComboBox;
+class wxTextCtrl;
 
 /// DOCME
 /// @class VideoBox
@@ -65,25 +59,12 @@ class VideoBox : public wxPanel, private SelectionListener<AssDialogue> {
 	agi::Context *context;     ///< Project context
 	wxTextCtrl *VideoPosition; ///< Current frame/time
 	wxTextCtrl *VideoSubsPos;  ///< Time relative to the active subtitle line
-	wxComboBox *zoomBox;
 
 	/// Update VideoPosition and VideoSubsPos
 	void UpdateTimeBoxes();
 
 	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 	void OnActiveLineChanged(AssDialogue*) { UpdateTimeBoxes(); }
-
-	/// DOCME
-	wxToolBar *visualToolBar;
-
-	/// DOCME
-	wxToolBar *visualSubToolBar;
-
-	/// DOCME
-	VideoDisplay *videoDisplay;
-
-	/// DOCME
-	VideoSlider *videoSlider;
 
 public:
 	VideoBox(wxWindow *parent, bool isDetached, agi::Context *context);
