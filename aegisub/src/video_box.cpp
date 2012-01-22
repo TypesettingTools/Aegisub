@@ -79,9 +79,6 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 : wxPanel (parent,-1)
 , context(context)
 {
-	// Visual controls sub-toolbar
-	wxToolBar *visualSubToolBar = new wxToolBar(this,-1,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL | wxTB_BOTTOM | wxTB_FLAT);
-
 	// Buttons
 	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	add_button(this, videoBottomSizer, "video/play", context);
@@ -114,18 +111,26 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
 	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
+	// Visual controls sub-toolbar
+	wxToolBar *visualSubToolBar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_BOTTOM | wxTB_FLAT);
+	visualSubToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
+	visualSubToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+
 	VideoDisplay *videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
+
+	wxSizer *toolbarSizer = new wxBoxSizer(wxVERTICAL);
+	toolbarSizer->Add(visualToolBar, wxSizerFlags());
+	toolbarSizer->AddStretchSpacer();
+	toolbarSizer->Add(visualSubToolBar, wxSizerFlags());
 
 	// Top sizer
 	// Detached and attached video needs different flags, see bugs #742 and #853
 	int highSizerFlags = isDetached ? wxEXPAND : 0;
 	wxSizer *topTopSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
-	visualSubToolBar->Show(false);
-	topTopSizer->Add(visualToolBar,0,highSizerFlags,0);
+	topTopSizer->Add(toolbarSizer,0,wxEXPAND,0);
 	topTopSizer->Add(videoDisplay,1,highSizerFlags,0);
 	topSizer->Add(topTopSizer,1,wxEXPAND,0);
-	topSizer->Add(visualSubToolBar,0,wxEXPAND | wxBOTTOM,4);
 	topSizer->Add(new wxStaticLine(this),0,wxEXPAND,0);
 
 	// Sizers
