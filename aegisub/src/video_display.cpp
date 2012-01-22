@@ -190,7 +190,7 @@ void VideoDisplay::OnVideoOpen() {
 }
 
 void VideoDisplay::Render() try {
-	if (!InitContext() || !con->videoController->IsLoaded() || !videoOut)
+	if (!con->videoController->IsLoaded() || !videoOut || !InitContext() )
 		return;
 
 	if (!viewport_height || !viewport_width)
