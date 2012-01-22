@@ -201,6 +201,8 @@ do_setup:
 
 		if (ps.signal_start == false || ps.end_position <= ps.start_position)
 		{
+			printf("alsa_player: nothing to play, rewaiting\n");
+			ps.signal_start = false;
 			continue;
 		}
 
