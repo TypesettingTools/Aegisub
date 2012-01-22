@@ -293,7 +293,6 @@ struct time_next : public Command {
 		c->audioController->Stop();
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->Next();
-		c->audioController->PlayPrimaryRange();
 	}
 };
 
@@ -307,7 +306,6 @@ struct time_prev : public Command {
 		c->audioController->Stop();
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->Prev();
-		c->audioController->PlayPrimaryRange();
 	}
 };
 }

@@ -185,6 +185,8 @@ void AudioTimingControllerKaraoke::Next() {
 		AnnounceUpdatedPrimaryRange();
 		AnnounceUpdatedStyleRanges();
 	}
+
+	c->audioController->PlayPrimaryRange();
 }
 
 void AudioTimingControllerKaraoke::Prev() {
@@ -202,6 +204,8 @@ void AudioTimingControllerKaraoke::Prev() {
 		AnnounceUpdatedPrimaryRange();
 		AnnounceUpdatedStyleRanges();
 	}
+
+	c->audioController->PlayPrimaryRange();
 }
 
 void AudioTimingControllerKaraoke::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
