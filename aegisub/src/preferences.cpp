@@ -105,12 +105,12 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 
 	wxFlexGridSizer *general = PageSizer(_("General"));
 	OptionAdd(general, _("Check for updates on startup"), "App/Auto/Check For Updates");
-	CellSkip(general);
+	OptionAdd(general, _("Show main toolbar"), "App/Show Toolbar");
 
+	OptionAdd(general, _("Toolbar Icon Size"), "App/Toolbar Icon Size");
 	wxString autoload_modes[] = { _("Never"), _("Always"), _("Ask") };
 	wxArrayString autoload_modes_arr(3, autoload_modes);
 	OptionChoice(general, _("Automatically load linked files"), autoload_modes_arr, "App/Auto/Load Linked Files");
-	OptionAdd(general, _("Toolbar Icon Size"), "App/Toolbar Icon Size");
 	OptionAdd(general, _("Undo Levels"), "Limits/Undo Levels", 2);
 
 	wxFlexGridSizer *recent = PageSizer(_("Recently Used Lists"));

@@ -113,6 +113,8 @@ class FrameMain: public wxFrame {
 
 	void OnSubtitlesOpen();
 
+	void EnableToolBar(agi::OptionValue const& opt);
+
 	SubtitlesGrid *SubsGrid; ///< The subtitle editing area
 	AudioBox *audioBox;      ///< The audio area
 	VideoBox *videoBox;      ///< The video area
