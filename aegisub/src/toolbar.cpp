@@ -108,38 +108,43 @@ namespace {
 			json::Array const& arr = root_it->second;
 			commands.reserve(arr.size());
 			bool needs_onidle = false;
+			bool last_was_sep = false;
 
 			for (json::Array::const_iterator it = arr.begin(); it != arr.end(); ++it) {
 				json::String const& command_name = *it;
 
 				if (command_name.empty()) {
-					AddSeparator();
+					if (!last_was_sep)
+						AddSeparator();
+					last_was_sep = true;
+					continue;
 				}
-				else {
-					cmd::Command *command;
-					try {
-						command = cmd::get(command_name);
-					}
-					catch (CommandNotFound const&) {
-						LOG_W("toolbar/command/not_found") << "Command '" << command_name << "' not found; skipping";
-						continue;
-					}
 
-					wxBitmap const& bitmap = command->Icon(icon_size);
-					// this hack is needed because ???
-					wxBitmap icon = bitmap.GetSubBitmap(wxRect(0, 0, bitmap.GetWidth(), bitmap.GetHeight()));
-
-					int flags = command->Type();
-					wxItemKind kind =
-						flags & cmd::COMMAND_RADIO ? wxITEM_RADIO :
-						flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
-						wxITEM_NORMAL;
-
-					AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), icon, GetTooltip(command), kind);
-
-					commands.push_back(command);
-					needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;
+				cmd::Command *command;
+				try {
+					command = cmd::get(command_name);
 				}
+				catch (CommandNotFound const&) {
+					LOG_W("toolbar/command/not_found") << "Command '" << command_name << "' not found; skipping";
+					continue;
+				}
+
+				last_was_sep = false;
+
+				wxBitmap const& bitmap = command->Icon(icon_size);
+				// this hack is needed because ???
+				wxBitmap icon = bitmap.GetSubBitmap(wxRect(0, 0, bitmap.GetWidth(), bitmap.GetHeight()));
+
+				int flags = command->Type();
+				wxItemKind kind =
+					flags & cmd::COMMAND_RADIO ? wxITEM_RADIO :
+					flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
+					wxITEM_NORMAL;
+
+				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), icon, GetTooltip(command), kind);
+
+				commands.push_back(command);
+				needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;
 			}
 
 			// Only bind the update function if there are actually any dynamic tools
