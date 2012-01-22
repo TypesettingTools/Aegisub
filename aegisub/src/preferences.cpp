@@ -428,7 +428,11 @@ void Interface_Hotkeys::OnNewButton(wxCommandEvent&) {
 }
 
 void Interface_Hotkeys::OnEditButton(wxCommandEvent&) {
+#if wxCHECK_VERSION(2, 9, 4)
+	dvc->EditItem(dvc->GetSelection(), dvc->GetColumn(0));
+#else
 	dvc->StartEditor(dvc->GetSelection(), 0);
+#endif
 }
 
 void Interface_Hotkeys::OnDeleteButton(wxCommandEvent&) {
