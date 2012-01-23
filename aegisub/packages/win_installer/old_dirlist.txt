@@ -4,3 +4,4 @@ automation\docs\
 automation\demos\
 automation\include\Aegisub\
 automation\include\
+csri\
