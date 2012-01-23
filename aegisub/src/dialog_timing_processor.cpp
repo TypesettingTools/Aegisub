@@ -262,6 +262,7 @@ void DialogTimingProcessor::UpdateControls() {
 }
 
 void DialogTimingProcessor::OnApply(wxCommandEvent &) {
+	TransferDataFromWindow();
 	// Save settings
 	OPT_SET("Audio/Lead/IN")->SetInt(leadIn);
 	OPT_SET("Audio/Lead/OUT")->SetInt(leadOut);
