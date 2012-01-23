@@ -46,21 +46,21 @@
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
 class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
-private:
-	FFMS_VideoSource *VideoSource;			/// video source object
-	const FFMS_VideoProperties *VideoInfo;	/// video properties
+	FFMS_VideoSource *VideoSource;         ///< video source object
+	const FFMS_VideoProperties *VideoInfo; ///< video properties
 
-	int Width;					/// width in pixels
-	int Height;					/// height in pixels
-	int FrameNumber;			/// current framenumber
-	std::vector<int> KeyFramesList;	/// list of keyframes
-	agi::vfr::Framerate Timecodes;	/// vfr object
-	bool COMInited;				/// COM initialization state
-	
-	AegiVideoFrame CurFrame;	/// current video frame
-	
-	char FFMSErrMsg[1024];		/// FFMS error message
-	FFMS_ErrorInfo ErrInfo;		/// FFMS error codes/messages
+	int Width;                      ///< width in pixels
+	int Height;                     ///< height in pixels
+	int FrameNumber;                ///< current framenumber
+	std::vector<int> KeyFramesList; ///< list of keyframes
+	agi::vfr::Framerate Timecodes;  ///< vfr object
+	bool COMInited;                 ///< COM initialization state
+	wxString ColorSpace;            ///< Colorspace name
+
+	AegiVideoFrame CurFrame;        ///< current video frame
+
+	char FFMSErrMsg[1024];          ///< FFMS error message
+	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
 
 	void LoadVideo(wxString filename);
 	void Close();
@@ -76,6 +76,8 @@ public:
 	int GetWidth() const { return Width; }
 	int GetHeight() const { return Height; }
 	agi::vfr::Framerate GetFPS() const { return Timecodes; }
+
+	wxString GetColorSpace() const { return ColorSpace; }
 
 	/// @brief Gets a list of keyframes
 	/// @return	Returns a wxArrayInt of keyframes.

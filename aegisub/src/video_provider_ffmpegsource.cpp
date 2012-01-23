@@ -223,6 +223,14 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	Width	= TempFrame->EncodedWidth;
 	Height	= TempFrame->EncodedHeight;
 
+	switch (TempFrame->ColorSpace) {
+		case FFMS_CS_RGB:         ColorSpace = "RGB"; break;
+		case FFMS_CS_BT709:       ColorSpace = "BT.709"; break;
+		case FFMS_CS_BT470BG:     ColorSpace = "BT.601"; break;
+		case FFMS_CS_UNSPECIFIED: ColorSpace = Width > 1024 || Height >= 600 ? "BT.709" : "BT.601"; break;
+		default:                  ColorSpace = ""; break;
+	}
+
 #if FFMS_VERSION >= ((2 << 24) | (15 << 16) | (3 << 8) | 0)
 	const int TargetFormat[] = { FFMS_GetPixFmt("bgra"), -1 };
 	if (FFMS_SetOutputFormatV2(VideoSource, TargetFormat, Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {
@@ -266,8 +274,6 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	FrameNumber = 0;
 }
 
-/// @brief Close video 
-///
 void FFmpegSourceVideoProvider::Close() {
 	if (VideoSource) FFMS_DestroyVideoSource(VideoSource);
 #ifdef WIN32
@@ -276,10 +282,6 @@ void FFmpegSourceVideoProvider::Close() {
 #endif
 }
 
-/// @brief Get frame 
-/// @param _n 
-/// @return 
-///
 const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
 	FrameNumber = mid(0, n, GetFrameCount() - 1);
 
@@ -292,4 +294,5 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
 	CurFrame.SetTo(SrcFrame->Data[0], Width, Height, SrcFrame->Linesize[0]);
 	return CurFrame;
 }
+
 #endif /* WITH_FFMS2 */

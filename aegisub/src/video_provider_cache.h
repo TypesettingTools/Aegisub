@@ -71,12 +71,13 @@ public:
 	virtual ~VideoProviderCache();
 
 	// Override the following methods:
-	virtual int GetPosition() const               { return master->GetPosition(); }
-	virtual int GetFrameCount() const             { return master->GetFrameCount(); }
-	virtual int GetWidth() const                  { return master->GetWidth(); }
-	virtual int GetHeight() const                 { return master->GetHeight(); }
-	virtual agi::vfr::Framerate GetFPS() const    { return master->GetFPS(); }
-	virtual std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
-	virtual wxString GetWarning() const           { return master->GetWarning(); }
-	virtual wxString GetDecoderName() const       { return master->GetDecoderName(); }
+	int GetPosition() const               { return master->GetPosition(); }
+	int GetFrameCount() const             { return master->GetFrameCount(); }
+	int GetWidth() const                  { return master->GetWidth(); }
+	int GetHeight() const                 { return master->GetHeight(); }
+	agi::vfr::Framerate GetFPS() const    { return master->GetFPS(); }
+	std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
+	wxString GetWarning() const           { return master->GetWarning(); }
+	wxString GetDecoderName() const       { return master->GetDecoderName(); }
+	wxString GetColorSpace() const        { return master->GetColorSpace(); }
 };
