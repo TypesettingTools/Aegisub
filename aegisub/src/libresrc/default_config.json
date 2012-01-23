@@ -63,9 +63,6 @@
 		"Lock Scroll on Cursor" : false,
 		"Medusa Timing Hotkeys" : false,
 		"Next Line on Commit" : true,
-		"OSS" : {
-			"Device" : "/dev/dsp"
-		},
 		"Player" : "",
 		"Plays When Stepping Video" : false,
 		"Provider" : "ffmpegsource",
