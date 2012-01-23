@@ -45,12 +45,20 @@ extern "C" {
 #ifndef AGI_PRE
 #include <map>
 #include <string>
+#include <vector>
 #endif
 
 /// @class PortAudioPlayer
 /// @brief PortAudio Player
 ///
 class PortAudioPlayer : public AudioPlayer {
+	typedef std::vector<PaDeviceIndex> DeviceVec;
+	/// Map of supported output devices from name -> device index
+	std::map<std::string, DeviceVec> devices;
+
+	/// The index of the default output devices sorted by host API priority
+	DeviceVec default_device;
+
 	float volume;    ///< Current volume level
 	int64_t current; ///< Current position
 	int64_t start;   ///< Start position
@@ -81,9 +89,14 @@ class PortAudioPlayer : public AudioPlayer {
 	/// @param userData Local data to be handed to the callback.
 	static void paStreamFinishedCallback(void *userData);
 
+	/// Gather the list of output devices supported by a host API
+	/// @param host_idx Host API ID
+	void GatherDevices(PaHostApiIndex host_idx);
+
 public:
 	/// @brief Constructor
 	PortAudioPlayer();
+
 	/// @brief Destructor
 	~PortAudioPlayer();
 

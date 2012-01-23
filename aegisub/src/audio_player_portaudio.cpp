@@ -54,14 +54,69 @@ DEFINE_SIMPLE_EXCEPTION(PortAudioError, agi::AudioPlayerOpenError, "audio/player
 // Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG
 
-PortAudioPlayer::PortAudioPlayer() {
+/// Order that the host APIs should be tried if there are multiple available
+static const PaHostApiTypeId pa_host_api_priority[] = {
+	// No WDMKS or ASIO as they don't support shared mode (and WDMKS is pretty broken)
+	paWASAPI,
+	paDirectSound,
+	paMME,
+
+	paCoreAudio,
+#ifdef __APPLE__
+	paAL,
+#endif
+
+	paALSA,
+	paOSS
+};
+static const size_t pa_host_api_priority_count = sizeof(pa_host_api_priority) / sizeof(pa_host_api_priority[0]);
+
+PortAudioPlayer::PortAudioPlayer()
+: volume(1.0f)
+, pa_start(0.0)
+{
 	PaError err = Pa_Initialize();
 
 	if (err != paNoError)
 		throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err), 0);
 
-	volume = 1.0f;
-	pa_start = 0.0;
+	// Build a list of host API-specific devices we can use
+	// Some host APIs may not support all audio formats, so build a priority
+	// list of host APIs for each device rather than just always using the best
+	for (size_t i = 0; i < pa_host_api_priority_count; ++i) {
+		PaHostApiIndex host_idx = Pa_HostApiTypeIdToHostApiIndex(pa_host_api_priority[i]);
+		if (host_idx >= 0)
+			GatherDevices(host_idx);
+	}
+	GatherDevices(Pa_GetDefaultHostApi());
+
+	if (devices.empty())
+		throw PortAudioError("No PortAudio output devices found", 0);
+}
+
+void PortAudioPlayer::GatherDevices(PaHostApiIndex host_idx) {
+	const PaHostApiInfo *host_info = Pa_GetHostApiInfo(host_idx);
+	if (!host_info) return;
+
+	for (int host_device_idx = 0; host_device_idx < host_info->deviceCount; ++host_device_idx) {
+		PaDeviceIndex real_idx = Pa_HostApiDeviceIndexToDeviceIndex(host_idx, host_device_idx);
+		if (real_idx < 0) continue;
+
+		const PaDeviceInfo *device_info = Pa_GetDeviceInfo(real_idx);
+		if (!device_info) continue;
+		if (device_info->maxOutputChannels <= 0) continue;
+
+		// MME truncates device names so check for prefix rather than exact match
+		std::map<std::string, DeviceVec>::iterator dev_it = devices.lower_bound(device_info->name);
+		if (dev_it == devices.end() || dev_it->first.find(device_info->name) != 0) {
+			devices[device_info->name];
+			--dev_it;
+		}
+
+		dev_it->second.push_back(real_idx);
+		if (real_idx == host_info->defaultOutputDevice)
+			default_device.push_back(real_idx);
+	}
 }
 
 PortAudioPlayer::~PortAudioPlayer() {
@@ -69,52 +124,52 @@ PortAudioPlayer::~PortAudioPlayer() {
 }
 
 void PortAudioPlayer::OpenStream() {
-	PaDeviceIndex pa_device = paNoDevice;
-
+	DeviceVec *device_ids = 0;
 	std::string device_name = OPT_GET("Player/Audio/PortAudio/Device Name")->GetString();
 
-	if (device_name.size() && device_name != "Default") {
-		int devices = Pa_GetDeviceCount();
-		for (int i = 0; i < devices; i++) {
-			const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
-			if (info->maxOutputChannels > 0 && info->name == device_name) {
-				pa_device = i;
-				LOG_D("audio/player/portaudio") << "using config device: " << device_name << ": " << pa_device;
-				break;
-			}
+	if (devices.count(device_name)) {
+		device_ids = &devices[device_name];
+		LOG_D("audio/player/portaudio") << "using config device: " << device_name;
+	}
+
+	if (!device_ids || device_ids->empty()) {
+		device_ids = &default_device;
+		LOG_D("audio/player/portaudio") << "using default output device";
+	}
+
+	std::string error;
+
+	for (size_t i = 0; i < device_ids->size(); ++i) {
+		const PaDeviceInfo *device_info = Pa_GetDeviceInfo((*device_ids)[i]);
+		PaStreamParameters pa_output_p;
+		pa_output_p.device = (*device_ids)[i];
+		pa_output_p.channelCount = provider->GetChannels();
+		pa_output_p.sampleFormat = paInt16;
+		pa_output_p.suggestedLatency = device_info->defaultLowOutputLatency;
+		pa_output_p.hostApiSpecificStreamInfo = NULL;
+
+		LOG_D("audio/player/portaudio") << "OpenStream:"
+			<< " output channels: " << pa_output_p.channelCount
+			<< " latency: " << pa_output_p.suggestedLatency
+			<< " sample rate: " << provider->GetSampleRate()
+			<< " sample format: " << pa_output_p.sampleFormat;
+
+		PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 0, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
+
+		if (err == paNoError) {
+			LOG_D("audo/player/portaudio") << "Using device " << pa_output_p.device << " " << device_info->name << " " << Pa_GetHostApiInfo(device_info->hostApi)->name;
+			return;
 		}
-
-		if (pa_device == paNoDevice)
-			LOG_D("audio/player/portaudio") << "config device " << device_name << " not found, using default";
+		else {
+			const PaHostErrorInfo *pa_err = Pa_GetLastHostErrorInfo();
+			LOG_D_IF(pa_err->errorCode != 0, "audio/player/portaudio") << "HostError: API: " << pa_err->hostApiType << ", " << pa_err->errorText << ", " << pa_err->errorCode;
+			LOG_D("audio/player/portaudio") << "Failed initializing PortAudio stream with error: " << Pa_GetErrorText(err);
+			error += Pa_GetErrorText(err);
+			error += " ";
+		}
 	}
 
-	if (pa_device == paNoDevice) {
-		pa_device = Pa_GetDefaultOutputDevice();
-		if (pa_device == paNoDevice)
-			throw PortAudioError("No PortAudio output devices found", 0);
-		LOG_D("audio/player/portaudio") << "using default output device:" << pa_device;
-	}
-
-	PaStreamParameters pa_output_p;
-	pa_output_p.device = pa_device;
-	pa_output_p.channelCount = provider->GetChannels();
-	pa_output_p.sampleFormat = paInt16;
-	pa_output_p.suggestedLatency = Pa_GetDeviceInfo(pa_device)->defaultLowOutputLatency;
-	pa_output_p.hostApiSpecificStreamInfo = NULL;
-
-	LOG_D("audio/player/portaudio") << "OpenStream:"
-		<< " output channels: " << pa_output_p.channelCount
-		<< " latency: " << pa_output_p.suggestedLatency
-		<< " sample rate: " << pa_output_p.sampleFormat;
-
-	PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 0, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
-
-	if (err != paNoError) {
-		const PaHostErrorInfo *pa_err = Pa_GetLastHostErrorInfo();
-		LOG_D_IF(pa_err->errorCode != 0, "audio/player/portaudio") << "HostError: API: " << pa_err->hostApiType << ", " << pa_err->errorText << ", " << pa_err->errorCode;
-		LOG_D("audio/player/portaudio") << "Failed initializing PortAudio stream with error: " << Pa_GetErrorText(err);
-		throw PortAudioError("Failed initializing PortAudio stream with error: " + std::string(Pa_GetErrorText(err)), 0);
-	}
+	throw PortAudioError("Failed initializing PortAudio stream: " + error, 0);
 }
 
 void PortAudioPlayer::CloseStream() {
@@ -223,17 +278,17 @@ int64_t PortAudioPlayer::GetCurrentPosition() {
 }
 
 wxArrayString PortAudioPlayer::GetOutputDevices() {
-	PortAudioPlayer player; // temp player to ensure PA is initialized
-
-	int devices = Pa_GetDeviceCount();
-
 	wxArrayString list;
 	list.push_back("Default");
 
-	for (int i = 0; i < devices; i++) {
-		const PaDeviceInfo *info = Pa_GetDeviceInfo(i);
-		if (info->maxOutputChannels > 0)
-			list.push_back(wxString(info->name, wxConvUTF8));
+	try {
+		PortAudioPlayer player;
+
+		for (std::map<std::string, DeviceVec>::iterator it = player.devices.begin(); it != player.devices.end(); ++it)
+			list.push_back(lagi_wxString(it->first));
+	}
+	catch (PortAudioError const&) {
+		// No output devices, just return the list with only Default
 	}
 
 	return list;
