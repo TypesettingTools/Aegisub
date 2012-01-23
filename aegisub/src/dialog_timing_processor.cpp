@@ -354,10 +354,10 @@ void DialogTimingProcessor::Process() {
 		for (size_t i = 0; i < sorted.size(); ++i) {
 			AssDialogue *cur = sorted[i];
 			if (addIn)
-				cur->Start = safe_time(sorted.begin() + i + 1, sorted.end(), cur, cur->Start - leadIn, &AssDialogue::End, &std::max<int>);
+				cur->Start = safe_time(sorted.rend() - i, sorted.rend(), cur, cur->Start - leadIn, &AssDialogue::End, &std::max<int>);
 
 			if (addOut)
-				cur->End = safe_time(sorted.rend() - i, sorted.rend(), cur, cur->End + leadOut, &AssDialogue::Start, &std::min<int>);
+				cur->End = safe_time(sorted.begin() + i + 1, sorted.end(), cur, cur->End + leadOut, &AssDialogue::Start, &std::min<int>);
 		}
 	}
 
