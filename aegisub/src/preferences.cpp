@@ -123,12 +123,12 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 
 /// Subtitles preferences page
 Subtitles::Subtitles(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Subtitles")) {
-
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Enable call tips"), "App/Call Tips");
 	OptionAdd(general, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
 	OptionAdd(general, _("Link commiting of times"), "Subtitle/Edit Box/Link Time Boxes Commit");
 	OptionAdd(general, _("Overwrite-Insertion in time boxes"), "Subtitle/Time Edit/Insert Mode");
+	OptionBrowse(general, _("Dictionaries path"), "Path/Dictionary");
 
 	wxFlexGridSizer *grid = PageSizer(_("Grid"));
 	OptionAdd(grid, _("Allow grid to take focus"), "Subtitle/Grid/Focus Allow");
@@ -171,6 +171,9 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	CellSkip(display);
 	OptionChoice(display, _("Waveform Style"), AudioWaveformRenderer::GetWaveformStyles(), "Audio/Display/Waveform Style");
 
+	wxFlexGridSizer *label = PageSizer(_("Audio labels"));
+	OptionFont(label, "Audio/Karaoke/");
+
 	wxFlexGridSizer *color = PageSizer(_("Color Schemes"));
 	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
 	OptionChoice(color, _("Spectrum"), schemes, "Colour/Audio Display/Spectrum");
@@ -182,11 +185,10 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 
 /// Video preferences page
 Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Video")) {
-
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Show keyframes in slider"), "Video/Slider/Show Keyframes");
-	OptionAdd(general, _("Always show visual tools"), "Tool/Visual/Always Show");
 	OptionAdd(general, _("Seek video to line start on selection change"), "Video/Subtitle Sync");
+	OptionAdd(general, _("Always show visual tools"), "Tool/Visual/Always Show");
 	OptionAdd(general, _("Automatically open audio when opening video"), "Video/Open Audio");
 
 	const wxString czoom_arr[24] = { "12.5%", "25%", "37.5%", "50%", "62.5%", "75%", "87.5%", "100%", "112.5%", "125%", "137.5%", "150%", "162.5%", "175%", "187.5%", "200%", "212.5%", "225%", "237.5%", "250%", "262.5%", "275%", "287.5%", "300%" };
@@ -568,6 +570,17 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	const wxString adm_arr[3] = { "ConvertToMono", "GetLeftChannel", "GetRightChannel" };
 	wxArrayString adm_choice(3, adm_arr);
 	OptionChoice(avisynth, _("Avisynth down-mixer"), adm_choice, "Audio/Downmixer");
+	OptionAdd(avisynth, _("Force sample rate"), "Provider/Audio/AVS/Sample Rate");
+#endif
+
+#ifdef WITH_FFMS2
+	wxFlexGridSizer *ffms = PageSizer(_("FFMS2"));
+
+	const wxString error_modes[] = { _("Ignore"), _("Clear"), _("Stop"), _("Abort") };
+	wxArrayString error_modes_choice(4, error_modes);
+	OptionChoice(ffms, _("Audio indexing error handling mode"), error_modes_choice, "Provider/Audio/FFmpegSource/Decode Error Handling");
+
+	OptionAdd(ffms, _("Always index all audio tracks"), "Provider/FFmpegSource/Index All Tracks");
 #endif
 
 #ifdef WITH_PORTAUDIO
@@ -575,18 +588,15 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	OptionChoice(portaudio, _("Portaudio device"), PortAudioPlayer::GetOutputDevices(), "Player/Audio/PortAudio/Device Name");
 #endif
 
-#ifdef WITH_FFMS2
-	wxFlexGridSizer *ffms = PageSizer(_("FFMS2"));
+#ifdef WITH_OSS
+	wxFlexGridSizer *oss = PageSizer(_("OSS"));
+	OptionBrowse(oss, _("OSS Device"), "Player/Audio/OSS/Device");
+#endif
 
-	const wxString log_levels[] = { "Quiet", "Panic", "Fatal", "Error", "Warning", "Info", "Verbose", "Debug" };
-	wxArrayString log_levels_choice(8, log_levels);
-	OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level");
-
-	const wxString error_modes[] = { _("Ignore"), _("Clear"), _("Stop"), _("Abort") };
-	wxArrayString error_modes_choice(4, error_modes);
-	OptionChoice(ffms, _("Audio indexing error handling mode"), error_modes_choice, "Provider/Audio/FFmpegSource/Decode Error Handling");
-
-	OptionAdd(ffms, _("Always index all audio tracks"), "Provider/FFmpegSource/Index All Tracks");
+#ifdef WITH_DIRECTSOUND
+	wxFlexGridSizer *dsound = PageSizer(_("DirectSound"));
+	OptionAdd(dsound, _("Buffer latency"), "Player/Audio/DirectSound/Buffer Latency", 1, 1000);
+	OptionAdd(dsound, _("Buffer length"), "Player/Audio/DirectSound/Buffer Length", 1, 100);
 #endif
 
 	SetSizerAndFit(sizer);
@@ -609,6 +619,17 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	OptionAdd(avisynth, _("Allow pre-2.56a Avisynth"), "Provider/Avisynth/Allow Ancient");
 	CellSkip(avisynth);
 	OptionAdd(avisynth, _("Avisynth memory limit"), "Provider/Avisynth/Memory Max");
+#endif
+
+#ifdef WITH_FFMS2
+	wxFlexGridSizer *ffms = PageSizer(_("FFMS2"));
+
+	const wxString log_levels[] = { "Quiet", "Panic", "Fatal", "Error", "Warning", "Info", "Verbose", "Debug" };
+	wxArrayString log_levels_choice(8, log_levels);
+	OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level");
+
+	OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads");
+	OptionAdd(ffms, _("Enable unsafe seeking"), "Provider/Video/FFmpegSource/Unsafe Seeking");
 #endif
 
 	SetSizerAndFit(sizer);
