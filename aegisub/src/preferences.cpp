@@ -77,12 +77,9 @@ CLASS_PAGE(Audio)
 CLASS_PAGE(Video)
 CLASS_PAGE(Interface)
 CLASS_PAGE(Interface_Colours)
-CLASS_PAGE(Paths)
-CLASS_PAGE(File_Associations)
 CLASS_PAGE(Backup)
 CLASS_PAGE(Automation)
 CLASS_PAGE(Advanced)
-CLASS_PAGE(Advanced_Interface)
 CLASS_PAGE(Advanced_Audio)
 CLASS_PAGE(Advanced_Video)
 
@@ -102,7 +99,6 @@ public:
 
 /// General preferences page
 General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("General")) {
-
 	wxFlexGridSizer *general = PageSizer(_("General"));
 	OptionAdd(general, _("Check for updates on startup"), "App/Auto/Check For Updates");
 	OptionAdd(general, _("Show main toolbar"), "App/Show Toolbar");
@@ -140,7 +136,6 @@ Subtitles::Subtitles(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 
 /// Audio preferences page
 Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Audio")) {
-
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Grab times from line upon selection"), "Audio/Grab Times on Select");
 	OptionAdd(general, _("Default mouse wheel to zoom"), "Audio/Wheel Default to Zoom");
@@ -182,7 +177,6 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	SetSizerAndFit(sizer);
 }
 
-
 /// Video preferences page
 Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Video")) {
 	wxFlexGridSizer *general = PageSizer(_("Options"));
@@ -214,7 +208,6 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	SetSizerAndFit(sizer);
 }
 
-
 /// Interface preferences page
 Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Interface")) {
 	wxFlexGridSizer *grid = PageSizer(_("Subtitle Grid"));
@@ -227,7 +220,6 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 
 	SetSizerAndFit(sizer);
 }
-
 
 /// Interface Colours preferences subpage
 Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
@@ -456,23 +448,6 @@ void Interface_Hotkeys::OnClearFilter(wxCommandEvent &) {
 	quick_search->SetValue("");
 }
 
-/// Paths preferences page
-Paths::Paths(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Paths")) {
-	wxFlexGridSizer *general = PageSizer(_("General"));
-	general->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
-
-	SetSizerAndFit(sizer);
-}
-
-/// File Associations preferences page
-File_Associations::File_Associations(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("File Associations")) {
-	wxFlexGridSizer *assoc = PageSizer(_("General"));
-	assoc->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
-
-	SetSizerAndFit(sizer);
-}
-
-
 /// Backup preferences page
 Backup::Backup(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup")) {
 	wxFlexGridSizer *save = PageSizer(_("Automatic Save"));
@@ -523,16 +498,6 @@ Advanced::Advanced(wxTreebook *book, Preferences *parent): OptionPage(book, pare
 	sizer->Fit(this);
 	warning->Wrap(400);
 	general->Add(warning, 0, wxALL, 5);
-
-	SetSizerAndFit(sizer);
-}
-
-
-/// Advanced Interface preferences subpage
-Advanced_Interface::Advanced_Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup"), PAGE_SUB) {
-	wxFlexGridSizer *interface_ = PageSizer(_("Interface"));
-
-	interface_->Add(new wxStaticText(this, wxID_ANY, "TBD..."), 0, wxALL, 5);
 
 	SetSizerAndFit(sizer);
 }
@@ -601,7 +566,6 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 
 	SetSizerAndFit(sizer);
 }
-
 
 /// Advanced Video preferences subpage
 Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Video"), PAGE_SUB) {
@@ -704,12 +668,9 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	new Interface(book, this);
 	new Interface_Colours(book, this);
 	new Interface_Hotkeys(book, this);
-	new Paths(book, this);
-	new File_Associations(book, this);
 	new Backup(book, this);
 	new Automation(book, this);
 	new Advanced(book, this);
-	new Advanced_Interface(book, this);
 	new Advanced_Audio(book, this);
 	new Advanced_Video(book, this);
 
