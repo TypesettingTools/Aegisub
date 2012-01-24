@@ -323,11 +323,11 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 }
 
 static int get_closest_kf(std::vector<int> const& kf, int frame) {
-	std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), frame);
-	// Return last keyframe if this is on or after the last one
-	if (distance(pos, kf.end()) < 2) return kf.back();
-	// Check if this one or the one after is closer to the frame
-	return frame - *pos < *(pos + 1) - frame ? *pos : *(pos + 1);
+	std::vector<int>::const_iterator pos = upper_bound(kf.begin(), kf.end(), frame);
+	// Return last keyframe if this is after the last one
+	if (pos == kf.end()) return kf.back();
+	// *pos is greater than frame, and *(pos - 1) is less than or equal to frame
+	return (pos == kf.begin() || *pos - frame < frame - *(pos - 1)) ? *pos : *(pos - 1);
 }
 
 template<class Iter, class Field>
