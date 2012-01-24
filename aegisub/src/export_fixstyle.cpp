@@ -47,7 +47,7 @@
 #include "ass_style.h"
 
 AssFixStylesFilter::AssFixStylesFilter()
-: AssExportFilter(_("Fix Styles"), _("Fixes styles by replacing any style that isn't available on file with Default."), -5000)
+: AssExportFilter(_("Fix Styles"), _("Fixes styles by replacing any style that isn't available on file with Default."), -5000, true)
 {
 }
 
