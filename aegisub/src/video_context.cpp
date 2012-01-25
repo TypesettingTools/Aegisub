@@ -360,6 +360,8 @@ void VideoContext::Play() {
 }
 
 void VideoContext::PlayLine() {
+	Stop();
+
 	AssDialogue *curline = context->selectionController->GetActiveLine();
 	if (!curline) return;
 
