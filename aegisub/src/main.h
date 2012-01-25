@@ -97,10 +97,8 @@ class AegisubApp: public wxApp {
 	int OnExit();
 	int OnRun();
 
-#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
 	void OnUnhandledException();
 	void OnFatalException();
-#endif
 
 	/// @brief Handle wx assertions and redirect to the logging system.
 	/// @param file File name

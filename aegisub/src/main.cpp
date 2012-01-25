@@ -217,7 +217,7 @@ bool AegisubApp::OnInit() {
 		setlocale(LC_CTYPE, "C");
 
 		// Crash handling
-#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
+#if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 		StartupLog("Install exception handler");
 		wxHandleFatalExceptions(true);
 #endif
@@ -312,12 +312,11 @@ int AegisubApp::OnExit() {
 	return wxApp::OnExit();
 }
 
-
-#if !defined(_DEBUG) || defined(WITH_EXCEPTIONS)
 /// Message displayed when an exception has occurred.
 const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 static void UnhandledExeception(bool stackWalk) {
+#if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	if (AssFile::top) {
 		// Current filename if any.
 		wxFileName file(AssFile::top->filename);
@@ -350,6 +349,7 @@ static void UnhandledExeception(bool stackWalk) {
 #endif
 		wxMessageBox(wxString::Format("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR);
 	}
+#endif
 }
 
 /// @brief Called during an unhandled exception
@@ -362,8 +362,6 @@ void AegisubApp::OnUnhandledException() {
 void AegisubApp::OnFatalException() {
 	UnhandledExeception(true);
 }
-#endif
-
 
 void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const {
 #define SHOW_EXCEPTION(str) wxMessageBox(str, "Exception in event handler", wxOK|wxICON_ERROR|wxSTAY_ON_TOP)
@@ -499,9 +497,7 @@ int AegisubApp::OnRun() {
 			file.close();
 		}
 
-#if wxUSE_EXCEPTIONS
 		OnUnhandledException();
-#endif
 	}
 
 	ExitMainLoop();
