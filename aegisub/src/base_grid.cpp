@@ -118,6 +118,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &BaseGrid::OnHighlightVisibleChange, this);
 	context->ass->AddCommitListener(&BaseGrid::OnSubtitlesCommit, this);
 	context->ass->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this);
+	context->ass->AddFileSaveListener(&BaseGrid::OnSubtitlesSave, this);
 
 	std::tr1::function<void (agi::OptionValue const&)> Refresh(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
 	OPT_SUB("Colour/Subtitle Grid/Active Border", Refresh);
@@ -175,11 +176,23 @@ void BaseGrid::OnSubtitlesOpen() {
 	UpdateMaps();
 
 	if (GetRows()) {
-		SetActiveLine(GetDialogue(0));
-		SelectRow(0);
+		int row = context->ass->GetScriptInfoAsInt("Active Line");
+		if (row < 0 || row >= GetRows())
+			row = 0;
+
+		SetActiveLine(GetDialogue(row));
+		SelectRow(row);
 	}
+
+	ScrollTo(context->ass->GetScriptInfoAsInt("Scroll Position"));
+
 	EndBatch();
 	SetColumnWidths();
+}
+
+void BaseGrid::OnSubtitlesSave() {
+	context->ass->SetScriptInfo("Scroll Position", wxString::Format("%d", yPos));
+	context->ass->SetScriptInfo("Active Line", wxString::Format("%d", GetDialogueIndex(active_line)));
 }
 
 void BaseGrid::OnShowColMenu(wxCommandEvent &event) {

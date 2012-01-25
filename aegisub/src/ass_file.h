@@ -152,7 +152,7 @@ public:
 	/// @param[out] w Width
 	/// @param[in] h Height
 	void GetResolution(int &w,int &h);
-	/// Get the value in a [Script Info] key as int.
+	/// Get the value in a [Script Info] key as int, or 0 if it is not present
 	int GetScriptInfoAsInt(const wxString key);
 	/// Get the value in a [Script Info] key as string.
 	wxString GetScriptInfo(wxString key);

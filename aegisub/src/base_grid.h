@@ -110,6 +110,7 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	void OnSize(wxSizeEvent &event);
 	void OnSubtitlesCommit(int type);
 	void OnSubtitlesOpen();
+	void OnSubtitlesSave();
 
 	void DrawImage(wxDC &dc, bool paint_columns[]);
 	void GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings) const;
