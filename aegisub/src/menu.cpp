@@ -146,12 +146,12 @@ class CommandManager {
 	void UpdateItem(std::pair<std::string, wxMenuItem*> const& item) {
 		cmd::Command *c = cmd::get(item.first);
 		int flags = c->Type();
+		if (flags & cmd::COMMAND_VALIDATE)
+			item.second->Enable(c->Validate(context));
 		if (flags & cmd::COMMAND_DYNAMIC_NAME)
 			UpdateItemName(item);
 		if (flags & cmd::COMMAND_DYNAMIC_HELP)
 			item.second->SetHelp(c->StrHelp());
-		if (flags & cmd::COMMAND_VALIDATE)
-			item.second->Enable(c->Validate(context));
 		if (flags & cmd::COMMAND_RADIO || flags & cmd::COMMAND_TOGGLE) {
 			bool check = c->IsActive(context);
 			// Don't call Check(false) on radio items as this causes wxGtk to

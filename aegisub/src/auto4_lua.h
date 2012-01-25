@@ -259,7 +259,7 @@ namespace Automation4 {
 		const char* name() const { return cmd_name.c_str(); }
 		wxString StrMenu(const agi::Context *) const { return display; }
 		wxString StrDisplay(const agi::Context *) const { return display; }
-		wxString StrHelp() const;
+		wxString StrHelp() const { return help; }
 
 		int Type() const { return cmd_type; }
 

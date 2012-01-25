@@ -596,15 +596,11 @@ namespace Automation4 {
 	LuaCommand::LuaCommand(lua_State *L)
 	: LuaFeature(L)
 	, display(check_wxstring(L, 1))
+	, help(get_wxstring(L, 2))
 	, cmd_type(cmd::COMMAND_NORMAL)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
 		cmd_name = STD_STR(wxString::Format("automation/lua/%s/%s", get_wxstring(L, -1), check_wxstring(L, 1)));
-
-		if (lua_isstring(L, 2))
-			help = get_wxstring(L, 2);
-		else if (lua_isfunction(L, 2))
-			cmd_type |= cmd::COMMAND_DYNAMIC_HELP;
 
 		if (!lua_isfunction(L, 3))
 			luaL_error(L, "The macro processing function must be a function");
@@ -617,11 +613,6 @@ namespace Automation4 {
 
 		// new table for containing the functions for this feature
 		lua_newtable(L);
-
-		// store help string function
-		lua_pushstring(L, "help");
-		lua_pushvalue(L, 2);
-		lua_rawset(L, -3);
 
 		// store processing function
 		lua_pushstring(L, "run");
@@ -648,17 +639,6 @@ namespace Automation4 {
 	{
 		UnregisterFeature();
 		LuaScript::GetScriptObject(L)->UnregisterCommand(this);
-	}
-
-	wxString LuaCommand::StrHelp() const
-	{
-		if (!(cmd_type & cmd::COMMAND_DYNAMIC_HELP)) return help;
-
-		GetFeatureFunction("help");
-		lua_pcall(L, 0, 1, 0);
-		wxString result = get_wxstring(L, -1);
-		lua_pop(L, 1);
-		return result;
 	}
 
 	static int transform_selection(lua_State *L, const agi::Context *c)
@@ -695,18 +675,25 @@ namespace Automation4 {
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
 		lua_pushinteger(L, transform_selection(L, c));
 
-		int err = lua_pcall(L, 3, 1, 0);
+		int err = lua_pcall(L, 3, 2, 0);
 
 		subsobj->ProcessingComplete();
 
-		bool result = false;
-		if (err)
+		if (err) {
 			wxLogWarning("Runtime error in Lua macro validation function:\n%s", get_wxstring(L, -1));
-		else
-			result = !!lua_toboolean(L, -1);
+			lua_pop(L, 1);
+			return false;
+		}
 
-		// clean up stack (result or error message)
-		lua_pop(L, 1);
+		bool result = !!lua_toboolean(L, -2);
+
+		wxString new_help_string(get_wxstring(L, -1));
+		if (new_help_string.size()) {
+			help = new_help_string;
+			cmd_type |= cmd::COMMAND_DYNAMIC_HELP;
+		}
+
+		lua_pop(L, 2);
 
 		return result;
 	}
