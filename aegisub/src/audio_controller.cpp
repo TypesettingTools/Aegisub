@@ -296,6 +296,9 @@ void AudioController::OpenAudio(const wxString &url)
 			provider = AudioProviderFactory::GetProvider(url);
 			StandardPaths::SetPathValue("?audio", wxFileName(url).GetPath());
 		}
+		catch (agi::UserCancelException const&) {
+			throw;
+		}
 		catch (...) {
 			config::mru->Remove("Audio", STD_STR(url));
 			throw;
