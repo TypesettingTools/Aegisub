@@ -82,7 +82,7 @@ public:
 	///
 	/// If new_value is empty, the control will switch to placeholder mode
 	void ChangeValue(wxString new_value) {
-		if (new_value.empty()) {
+		if (new_value.empty() && !this->HasFocus()) {
 			is_placeholder = true;
 			new_value = placeholder;
 			BaseCtrl::SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
