@@ -89,7 +89,6 @@ static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
 BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, long style, const wxString& name)
 : wxWindow(parent, -1, wxDefaultPosition, size, style, name)
 , lineHeight(1) // non-zero to avoid div by 0
-, lastRow(-1)
 , holding(false)
 , scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 , bmp(0)
@@ -349,8 +348,6 @@ void BaseGrid::EndBatch() {
 }
 
 void BaseGrid::MakeCellVisible(int row, int col, bool center) {
-	lastRow = row;
-
 	int w = 0;
 	int h = 0;
 	GetClientSize(&w,&h);
@@ -722,51 +719,45 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 	// Click
 	if ((click || holding || dclick) && dlg) {
+		int old_extend = extendRow;
+		SetActiveLine(dlg);
+
 		// Toggle selected
 		if (click && ctrl && !shift && !alt) {
 			bool isSel = !!selection.count(dlg);
 			if (isSel && selection.size() == 1) return;
-			SelectRow(row,true,!isSel);
-			if (dlg == GetActiveLine()) {
-				SetActiveLine(GetDialogue(GetFirstSelRow()));
-			}
-			lastRow = row;
+			SelectRow(row, true, !isSel);
 			return;
 		}
 
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
-			SetActiveLine(dlg);
 			if (dclick) context->videoController->JumpToTime(dlg->Start);
-			SelectRow(row,false);
-			lastRow = row;
+			SelectRow(row, false);
 			return;
 		}
 
-		// Keep selection
+		// Change active line only
 		if (click && !shift && !ctrl && alt) {
-			SetActiveLine(dlg);
 			return;
 		}
 
 		// Block select
 		if ((click && shift && !alt) || (holding && !ctrl && !alt && !shift)) {
-			if (lastRow != -1) {
-				// Set boundaries
-				int i1 = row;
-				int i2 = lastRow;
-				if (i1 > i2) {
-					std::swap(i1, i2);
-				}
+			extendRow = old_extend;
+			int i1 = row;
+			int i2 = extendRow;
 
-				// Toggle each
-				Selection newsel;
-				if (ctrl) newsel = selection;
-				for (int i=i1;i<=i2;i++) {
-					newsel.insert(GetDialogue(i));
-				}
-				SetSelectedSet(newsel);
+			if (i1 > i2)
+				std::swap(i1, i2);
+
+			// Toggle each
+			Selection newsel;
+			if (ctrl) newsel = selection;
+			for (int i = i1; i <= i2; i++) {
+				newsel.insert(GetDialogue(i));
 			}
+			SetSelectedSet(newsel);
 			return;
 		}
 
@@ -1010,38 +1001,36 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 
 	// Moving
 	if (dir) {
+		int old_extend = extendRow;
+		int next = mid(0, GetDialogueIndex(active_line) + dir * step, GetRows() - 1);
+		SetActiveLine(GetDialogue(next));
+
 		// Move selection
 		if (!ctrl && !shift && !alt) {
-			int next = mid(0, extendRow + dir * step, GetRows() - 1);
-			SetActiveLine(GetDialogue(next));
 			SelectRow(next);
 			return;
 		}
 
 		// Move active only
-		else if (alt && !shift && !ctrl) {
-			int next = mid(0, GetDialogueIndex(GetActiveLine()) + dir * step, GetRows() - 1);
-			SetActiveLine(GetDialogue(next));
+		if (alt && !shift && !ctrl) {
 			Refresh(false);
 			return;
 		}
 
 		// Shift-selection
-		else if (shift && !ctrl && !alt) {
-			extendRow = mid(0, extendRow + dir * step, GetRows() - 1);
-
+		if (shift && !ctrl && !alt) {
+			extendRow = old_extend;
 			// Set range
-			int begin = GetDialogueIndex(GetActiveLine());
+			int begin = next;
 			int end = extendRow;
-			if (end < begin) {
+			if (end < begin)
 				std::swap(begin, end);
-			}
 
 			// Select range
 			Selection newsel;
-			for (int i = begin; i <= end; i++) {
+			for (int i = begin; i <= end; i++)
 				newsel.insert(GetDialogue(i));
-			}
+
 			SetSelectedSet(newsel);
 
 			MakeCellVisible(extendRow, 0, false);

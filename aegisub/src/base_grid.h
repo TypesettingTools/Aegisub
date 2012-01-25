@@ -66,14 +66,14 @@ typedef SelectionListener<AssDialogue> SubtitleSelectionListener;
 /// DOCME
 class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	int lineHeight;         ///< Height of a line in pixels in the current font
-	int lastRow;            ///< ?
 	bool holding;           ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
 	wxBitmap *bmp;          ///< Back buffer which the grid is rendered into
 	bool byFrame;           ///< Should times be displayed as frame numbers
+
 	/// Row from which the selection shrinks/grows from when selecting via the
-	/// keyboard. Equal to the active row except for when using shift+up/down.
+	/// keyboard, shift-clicking or dragging
 	int extendRow;
 
 	Selection selection;      ///< Currently selected lines
