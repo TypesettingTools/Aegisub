@@ -62,8 +62,8 @@ SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context,  const wxS
 }
 
 static void trim_text(AssDialogue *diag) {
-	static wxRegEx start("^( |\\t|\\\\[nNh])+");
-	static wxRegEx end("( |\\t|\\\\[nNh])+$");
+	static wxRegEx start("^( |\t|\\\\[nNh])+");
+	static wxRegEx end("( |\t|\\\\[nNh])+$");
 	start.ReplaceFirst(&diag->Text, "");
 	end.ReplaceFirst(&diag->Text, "");
 }
