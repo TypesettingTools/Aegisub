@@ -120,7 +120,8 @@ void DialogDetachedVideo::OnMinimize(wxIconizeEvent &event) {
 }
 
 void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
-	hotkey::check("Video Display", context, evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers());
+	if (!hotkey::check("Video Display", context, evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers()))
+		evt.Skip();
 }
 
 void DialogDetachedVideo::OnVideoOpen() {
