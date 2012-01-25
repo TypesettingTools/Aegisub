@@ -508,10 +508,8 @@ namespace cmd {
 		reg(new audio_commit);
 		reg(new audio_go_to);
 		reg(new audio_open);
-#if _DEBUG
 		reg(new audio_open_blank);
 		reg(new audio_open_noise);
-#endif
 		reg(new audio_open_video);
 		reg(new audio_play_after);
 		reg(new audio_play_before);
