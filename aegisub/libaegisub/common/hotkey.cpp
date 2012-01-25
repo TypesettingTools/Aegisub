@@ -79,11 +79,17 @@ void Hotkey::BuildHotkey(std::string const& context, const json::Object& object)
 		const json::Array& array = index->second;
 
 		for (json::Array::const_iterator arr_index(array.begin()); arr_index != array.end(); ++arr_index) {
-			const json::Array& arr_mod = (*arr_index)["modifiers"];
 			std::vector<std::string> keys;
-			keys.reserve(arr_mod.size() + 1);
-			copy(arr_mod.begin(), arr_mod.end(), back_inserter(keys));
-			keys.push_back((*arr_index)["key"]);
+
+			try {
+				const json::Array& arr_mod = (*arr_index)["modifiers"];
+				keys.reserve(arr_mod.size() + 1);
+				copy(arr_mod.begin(), arr_mod.end(), back_inserter(keys));
+				keys.push_back((*arr_index)["key"]);
+			}
+			catch (json::Exception const& e) {
+				LOG_E("agi/hotkey/load") << "Failed loading hotkey for command '" << index->first << "': " << e.what();
+			}
 
 			ComboInsert(Combo(context, index->first, keys));
 		}
@@ -156,10 +162,11 @@ void Hotkey::Flush() {
 		std::vector<std::string> const& combo_map(index->second.Get());
 
 		json::Object hotkey;
-		hotkey["key"] = combo_map.back();
-		json::Array& modifiers = hotkey["modifiers"];
-
-		copy(combo_map.begin(), combo_map.end() - 1, std::back_inserter(modifiers));
+		if (combo_map.size()) {
+			hotkey["key"] = combo_map.back();
+			json::Array& modifiers = hotkey["modifiers"];
+			copy(combo_map.begin(), combo_map.end() - 1, std::back_inserter(modifiers));
+		}
 
 		json::Array& combo_array = root[index->second.Context()][index->second.CmdName()];
 		combo_array.push_back(hotkey);
