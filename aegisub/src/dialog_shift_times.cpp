@@ -40,7 +40,10 @@
 
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
-#include <libaegisub/scoped_ptr.h>
+
+#include <libaegisub/cajun/elements.h>
+#include <libaegisub/cajun/reader.h>
+#include <libaegisub/cajun/writer.h>
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -55,10 +58,53 @@
 #include "utils.h"
 #include "video_context.h"
 
+static wxString get_history_string(json::Object &obj) {
+	wxString filename = lagi_wxString(obj["filename"]);
+	if (filename.empty())
+		filename = _("unsaved");
+
+	wxString shift_amount(lagi_wxString(obj["amount"]));
+	if (!obj["is by time"])
+		shift_amount = wxString::Format(_("%s frames"), shift_amount);
+
+	wxString shift_direction = obj["is backward"] ? _("backward") : _("forward");
+
+	int64_t time_field = obj["fields"];
+	wxString fields =
+		time_field == 0 ? _("s+e") :
+		time_field == 1 ? _("s")   :
+		                  _("e")   ;
+
+	json::Array const& sel = obj["selection"];
+	wxString lines;
+
+	int64_t sel_mode = obj["mode"];
+	if (sel_mode == 0)
+		lines = _("all");
+	else if (sel_mode == 2)
+		lines = wxString::Format(_("from %d onward"), (int)(int64_t)sel.front()["start"]);
+	else {
+		lines += _("sel ");
+		for (json::Array::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+			int beg = (int64_t)(*it)["start"];
+			int end = (int64_t)(*it)["end"];
+			if (beg == end)
+				lines += wxString::Format("%d", beg);
+			else
+				lines += wxString::Format("%d-%d", beg, end);
+			if (it + 1 != sel.end())
+				lines += ";";
+		}
+	}
+
+	return wxString::Format("%s, %s %s, %s, %s", filename, shift_amount, shift_direction, fields, lines);
+}
+
 DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
-, history_filename(STD_STR(StandardPaths::DecodePath("?user/shift_history.txt")))
+, history_filename(STD_STR(StandardPaths::DecodePath("?user/shift_history.json")))
+, history(new json::Array)
 , timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 {
 	SetIcon(BitmapToIcon(GETIMAGE(shift_times_toolbutton_24)));
@@ -90,7 +136,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	wxString time_field_vals[] = { _("Start a&nd End times"), _("&Start times only"), _("&End times only") };
 	time_fields = new wxRadioBox(this, -1, _("Times"), wxDefaultPosition, wxDefaultSize, 3, time_field_vals, 1);
 
-	history = new wxListBox(this, -1, wxDefaultPosition, wxSize(350, 100), 0, NULL, wxLB_HSCROLL);
+	history_box = new wxListBox(this, -1, wxDefaultPosition, wxSize(350, 100), 0, NULL, wxLB_HSCROLL);
 
 	wxButton *clear_button = new wxButton(this, -1, _("&Clear"));
 	clear_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::OnClear, this);
@@ -134,7 +180,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	left_sizer->Add(time_fields, wxSizerFlags().Expand());
 
 	wxSizer *history_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("History"));
-	history_sizer->Add(history, wxSizerFlags(1).Expand());
+	history_sizer->Add(history_box, wxSizerFlags(1).Expand());
 	history_sizer->Add(clear_button, wxSizerFlags().Expand().Border(wxTOP));
 
 	wxSizer *top_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -150,6 +196,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::Process, this, wxID_OK);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::OnClose, this, wxID_CANCEL);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Shift Times"), wxID_HELP);
+	history_box->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogShiftTimes::OnHistoryClick, this);
 	context->selectionController->AddSelectionListener(this);
 }
 
@@ -185,7 +232,8 @@ void DialogShiftTimes::OnSelectedSetChanged(Selection const&, Selection const&) 
 
 void DialogShiftTimes::OnClear(wxCommandEvent &) {
 	wxRemoveFile(lagi_wxString(history_filename));
-	history->Clear();
+	history_box->Clear();
+	history->clear();
 }
 
 void DialogShiftTimes::OnClose(wxCommandEvent &) {
@@ -212,39 +260,47 @@ void DialogShiftTimes::OnByFrames(wxCommandEvent &) {
 	shift_frames->Enable(true);
 }
 
-void DialogShiftTimes::SaveHistory(std::vector<std::pair<int, int> > const& shifted_blocks) {
-	wxString filename = wxFileName(context->ass->filename).GetFullName();
-	int fields = time_fields->GetSelection();
+void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
+	size_t entry = evt.GetInt();
+	if (entry >= history->size()) return;
 
-	wxString new_line = wxString::Format("%s, %s %s, %s, ",
-		filename.empty() ? _("unsaved") : filename,
-		shift_by_time->GetValue() ? shift_time->GetValue() : shift_frames->GetValue() + _(" frames"),
-		shift_backward->GetValue() ? _("backward") : _("forward"),
-		fields == 0 ? _("s+e") : fields == 1 ? _("s") : _("e"));
-
-	int sel_mode = selection_mode->GetSelection();
-	if (sel_mode == 0)
-		new_line += _("all");
-	else if (sel_mode == 2)
-		new_line += wxString::Format(_("from %d onward"), shifted_blocks.front().first);
+	json::Object& obj = (*history)[entry];
+	if (obj["is by time"]) {
+		shift_time->SetValue(lagi_wxString(obj["amount"]));
+		shift_by_time->SetValue(true);
+		OnByTime(evt);
+	}
 	else {
-		new_line += _("sel ");
-		for (size_t i = 0; i < shifted_blocks.size(); ++i) {
-			std::pair<int, int> const& b = shifted_blocks[i];
-			wxString term = i == shifted_blocks.size() - 1 ? "" : ";";
-			if (b.first == b.second)
-				new_line += wxString::Format("%d%s", b.first, term);
-			else
-				new_line += wxString::Format("%d-%d%s", b.first, b.second, term);
+		shift_frames->SetValue(lagi_wxString(obj["amount"]));
+		if (shift_by_frames->IsEnabled()) {
+			shift_by_frames->SetValue(true);
+			OnByFrames(evt);
 		}
 	}
 
-	try {
-		agi::io::Save file(history_filename);
+	if (obj["is backward"])
+		shift_backward->SetValue(true);
+	else
+		shift_forward->SetValue(true);
 
-		for (size_t i = 0; i < history->GetCount(); ++i)
-			file.Get() << history->GetString(i).utf8_str() << std::endl;
-		file.Get() << new_line.utf8_str() << std::endl;
+	selection_mode->SetSelection((int64_t)obj["mode"]);
+	time_fields->SetSelection((int64_t)obj["fields"]);
+}
+
+void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
+	json::Object new_entry;
+	new_entry["filename"] = STD_STR(wxFileName(context->ass->filename).GetFullName());
+	new_entry["is by time"] = shift_by_time->GetValue();
+	new_entry["is backward"] = shift_backward->GetValue();
+	new_entry["amount"] = STD_STR(shift_by_time->GetValue() ? shift_time->GetValue() : shift_frames->GetValue());
+	new_entry["fields"] = time_fields->GetSelection();
+	new_entry["mode"] = selection_mode->GetSelection();
+	new_entry["selection"] = shifted_blocks;
+
+	history->push_front(new_entry);
+
+	try {
+		json::Writer::Write(*history, agi::io::Save(history_filename).Get());
 	}
 	catch (agi::FileSystemError const& e) {
 		LOG_E("dialog_shift_times/save_history") << "Cannot save shift times history: " << e.GetChainedMessage();
@@ -252,27 +308,27 @@ void DialogShiftTimes::SaveHistory(std::vector<std::pair<int, int> > const& shif
 }
 
 void DialogShiftTimes::LoadHistory() {
-	history->Clear();
-	history->Freeze();
+	history_box->Clear();
+	history_box->Freeze();
 
 	try {
 		agi::scoped_ptr<std::istream> file(agi::io::Open(history_filename));
-		std::string buffer;
-		while(!file->eof()) {
-			getline(*file, buffer);
-			if (buffer.size())
-				history->Insert(lagi_wxString(buffer), 0);
-		}
+		json::UnknownElement root;
+		json::Reader::Read(root, *file);
+		*history = root;
+
+		for (json::Array::iterator it = history->begin(); it != history->end(); ++it)
+			history_box->Append(get_history_string(*it));
 	}
 	catch (agi::FileSystemError const& e) {
-		LOG_E("dialog_shift_times/save_history") << "Cannot load shift times history: " << e.GetChainedMessage();
+		LOG_D("dialog_shift_times/load_history") << "Cannot load shift times history: " << e.GetChainedMessage();
 	}
 	catch (...) {
-		history->Thaw();
+		history_box->Thaw();
 		throw;
 	}
 
-	history->Thaw();
+	history_box->Thaw();
 }
 
 void DialogShiftTimes::Process(wxCommandEvent &) {
@@ -303,7 +359,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	// Track which rows were shifted for the log
 	int row_number = 0;
 	int block_start = 0;
-	std::vector<std::pair<int, int> > shifted_blocks;
+	json::Array shifted_blocks;
 
 	for (entryIter it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it) {
 		AssDialogue *line = dynamic_cast<AssDialogue*>(*it);
@@ -312,7 +368,10 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 
 		if (!sel.count(line)) {
 			if (block_start) {
-				shifted_blocks.push_back(std::make_pair(block_start, row_number - 1));
+				json::Object block;
+				block["start"] = block_start;
+				block["end"] = row_number - 1;
+				shifted_blocks.push_back(block);
 				block_start = 0;
 			}
 			if (mode == 1) continue;
@@ -329,8 +388,12 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 
 	context->ass->Commit(_("shifting"), AssFile::COMMIT_DIAG_TIME);
 
-	if (block_start)
-		shifted_blocks.push_back(std::make_pair(block_start, row_number - 1));
+	if (block_start) {
+		json::Object block;
+		block["start"] = block_start;
+		block["end"] = row_number - 1;
+		shifted_blocks.push_back(block);
+	}
 
 	SaveHistory(shifted_blocks);
 	Close();

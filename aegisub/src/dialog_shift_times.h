@@ -22,9 +22,12 @@
 ///
 
 #ifndef AGI_PRE
+#include <deque>
+
 #include <wx/dialog.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 
@@ -37,6 +40,10 @@ class wxRadioBox;
 class wxRadioButton;
 class wxTextCtrl;
 namespace agi { struct Context; }
+namespace json {
+	class UnknownElement;
+	typedef std::deque<UnknownElement> Array;
+}
 
 /// DOCME
 /// @class DialogShiftTimes
@@ -47,6 +54,7 @@ class DialogShiftTimes : public wxDialog, private SelectionListener<AssDialogue>
 	agi::Context *context;
 
 	std::string history_filename;
+	agi::scoped_ptr<json::Array> history;
 	agi::vfr::Framerate fps;
 	agi::signal::Connection timecodes_loaded_slot;
 
@@ -58,9 +66,9 @@ class DialogShiftTimes : public wxDialog, private SelectionListener<AssDialogue>
 	wxRadioButton *shift_backward;
 	wxRadioBox *selection_mode;
 	wxRadioBox *time_fields;
-	wxListBox *history;
+	wxListBox *history_box;
 
-	void SaveHistory(std::vector<std::pair<int, int> > const& shifted_blocks);
+	void SaveHistory(json::Array const& shifted_blocks);
 	void LoadHistory();
 	void Process(wxCommandEvent&);
 	int Shift(int initial_time, int shift, bool by_time, agi::vfr::Time type);
@@ -69,6 +77,7 @@ class DialogShiftTimes : public wxDialog, private SelectionListener<AssDialogue>
 	void OnClose(wxCommandEvent&);
 	void OnByTime(wxCommandEvent&);
 	void OnByFrames(wxCommandEvent&);
+	void OnHistoryClick(wxCommandEvent&);
 
 	void OnActiveLineChanged(AssDialogue*) { }
 	void OnSelectedSetChanged(Selection const&, Selection const&);
