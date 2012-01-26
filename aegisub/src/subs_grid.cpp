@@ -53,6 +53,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "dialog_paste_over.h"
+#include "main.h"
 #include "utils.h"
 #include "video_context.h"
 
@@ -255,11 +256,12 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 				if (n+inserted < GetRows()) {
 					// Get list of options to paste over, if not asked yet
 					if (pasteOverOptions.empty()) {
-						DialogPasteOver diag(NULL, pasteOverOptions);
-						if (!diag.ShowModal()) {
+						DialogPasteOver diag(context->parent);
+						if (diag.ShowModal()) {
 							delete curdiag;
 							return;
 						}
+						pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
 					}
 
 					// Paste over

@@ -35,12 +35,10 @@
 ///
 
 #ifndef AGI_PRE
-#include <vector>
-
 #include <wx/dialog.h>
-#include <wx/checklst.h>
 #endif
 
+class wxCheckListBox;
 
 /// DOCME
 /// @class DialogPasteOver
@@ -48,24 +46,14 @@
 ///
 /// DOCME
 class DialogPasteOver : public wxDialog {
-private:
-
-	/// DOCME
 	wxCheckListBox *ListBox;
 
-	/// DOCME
-	std::vector<bool>& options;
+	void CheckAll(bool check);
 
-	void OnOK(wxCommandEvent &event);
-	void OnCancel(wxCommandEvent &event);
-	void OnTimes(wxCommandEvent &event);
-	void OnText(wxCommandEvent &event);
-	void OnAll(wxCommandEvent &event);
-	void OnNone(wxCommandEvent &event);
+	void OnOK(wxCommandEvent &);
+	void OnTimes(wxCommandEvent &);
+	void OnText(wxCommandEvent &);
 
 public:
-	DialogPasteOver(wxWindow *parent, std::vector<bool>& options);
-	~DialogPasteOver();
-
-	DECLARE_EVENT_TABLE()
+	DialogPasteOver(wxWindow *parent);
 };

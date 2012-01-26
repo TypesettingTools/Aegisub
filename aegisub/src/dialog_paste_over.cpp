@@ -36,40 +36,26 @@
 
 #include "config.h"
 
+#include "dialog_paste_over.h"
+
 #ifndef AGI_PRE
+#include <tr1/functional>
+
 #include <wx/button.h>
-#include <wx/config.h>
+#include <wx/checklst.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #endif
 
-#include "dialog_paste_over.h"
 #include "help_button.h"
 #include "main.h"
 
-/// Button IDs
-enum {
-	Paste_Over_Times = 1620,
-	Paste_Over_Text,
-	Paste_Over_All,
-	Paste_Over_None
-};
-
-
-/// @brief Constructor 
-/// @param parent 
-///
-DialogPasteOver::DialogPasteOver (wxWindow *parent, std::vector<bool>& options)
-: wxDialog (parent,-1,_("Select Fields to Paste Over"),wxDefaultPosition,wxDefaultSize)
-, options(options)
+DialogPasteOver::DialogPasteOver(wxWindow *parent)
+: wxDialog (parent, -1, _("Select Fields to Paste Over"))
 {
-	// Script mode
-	int mode = 1; // ASS
-
 	// Label and list sizer
-	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Fields"));
-	wxStaticText *label = new wxStaticText(this,-1,_("Please select the fields that you want to paste over:"),wxDefaultPosition,wxDefaultSize);
-	ListSizer->Add(label,0,wxEXPAND,0);
+	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Fields"));
+	ListSizer->Add(new wxStaticText(this, -1, _("Please select the fields that you want to paste over:")), wxSizerFlags());
 	
 	// List box
 	wxArrayString choices;
@@ -80,94 +66,67 @@ DialogPasteOver::DialogPasteOver (wxWindow *parent, std::vector<bool>& options)
 	choices.Add(_("Actor"));
 	choices.Add(_("Margin Left"));
 	choices.Add(_("Margin Right"));
-	if (mode == 1) {
-		choices.Add(_("Margin Vertical"));
-	}
-	else {
-		choices.Add(_("Margin Top"));
-		choices.Add(_("Margin Bottom"));
-	}
+	choices.Add(_("Margin Vertical"));
 	choices.Add(_("Effect"));
 	choices.Add(_("Text"));
-	ListBox = new wxCheckListBox(this,-1,wxDefaultPosition,wxSize(250,170), choices);
-	ListSizer->Add(ListBox,0,wxEXPAND|wxTOP,5);
+	ListBox = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(-1, 170), choices);
+	ListSizer->Add(ListBox, wxSizerFlags(0).Expand().Border(wxTOP));
 
-	// Load checked items
-	/// @todo This assumes a static set of fields.
-	options = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
-	for (unsigned int i=0;i<choices.Count();i++) ListBox->Check(i,options[i]);
+	std::vector<bool> options = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
+	if (options.size() != choices.size())
+		options.resize(choices.size(), false);
+
+	for (size_t i = 0; i < choices.size(); ++i)
+		ListBox->Check(i, options[i]);
 
 	// Top buttons
+	wxButton *btn;
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_All, _("&All")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_None, _("&None")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_Times, _("&Times")),1,0,0);
-	TopButtonSizer->Add(new wxButton(this, Paste_Over_Text, _("T&ext")),1,0,0);
+
+	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&All")), wxSizerFlags(1));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogPasteOver::CheckAll, this, true));
+	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&None")), wxSizerFlags(1));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogPasteOver::CheckAll, this, false));
+	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&Times")), wxSizerFlags(1));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogPasteOver::OnTimes, this);
+	TopButtonSizer->Add(btn = new wxButton(this, -1, _("T&ext")), wxSizerFlags(1));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogPasteOver::OnText, this);
 
 	// Buttons
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(new wxButton(this, wxID_OK));
-	ButtonSizer->AddButton(new wxButton(this, wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,"Paste Over"));
-	ButtonSizer->Realize();
+	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogPasteOver::OnOK, this, wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Paste Over"), wxID_HELP);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(ListSizer,0,wxEXPAND | wxLEFT | wxRIGHT,5);
 	MainSizer->Add(TopButtonSizer,0,wxLEFT | wxRIGHT | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxALL | wxEXPAND,5);
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
-	Center();
+	SetSizerAndFit(MainSizer);
+	CenterOnParent();
 }
 
-/// @brief Destructor 
-DialogPasteOver::~DialogPasteOver() {
-}
-
-BEGIN_EVENT_TABLE(DialogPasteOver, wxDialog)
-	EVT_BUTTON(wxID_OK,DialogPasteOver::OnOK)
-	EVT_BUTTON(wxID_CANCEL,DialogPasteOver::OnCancel)
-	EVT_BUTTON(Paste_Over_All,DialogPasteOver::OnAll)
-	EVT_BUTTON(Paste_Over_None,DialogPasteOver::OnNone)
-	EVT_BUTTON(Paste_Over_Text,DialogPasteOver::OnText)
-	EVT_BUTTON(Paste_Over_Times,DialogPasteOver::OnTimes)
-END_EVENT_TABLE()
-
-/// @brief OK pressed 
 void DialogPasteOver::OnOK(wxCommandEvent &) {
-	for (int i=0;i<10;i++) {
-		options[i] = ListBox->IsChecked(i);
-	}
+	std::vector<bool> options;
+	for (size_t i = 0; i < ListBox->GetCount(); ++i)
+		options.push_back(ListBox->IsChecked(i));
 	OPT_SET("Tool/Paste Lines Over/Fields")->SetListBool(options);
 
-	EndModal(1);
-}
-
-/// @brief Cancel pressed 
-void DialogPasteOver::OnCancel(wxCommandEvent &) {
 	EndModal(0);
 }
 
-/// @brief Select Text 
 void DialogPasteOver::OnText(wxCommandEvent &) {
-	for (int i=0;i<9;i++) ListBox->Check(i,false);
-	ListBox->Check(9,true);
+	CheckAll(false);
+	ListBox->Check(9, true);
 }
 
-/// @brief Select Times 
 void DialogPasteOver::OnTimes(wxCommandEvent &) {
-	for (int i=0;i<10;i++) ListBox->Check(i,false);
-	ListBox->Check(1,true);
-	ListBox->Check(2,true);
+	CheckAll(false);
+	ListBox->Check(1, true);
+	ListBox->Check(2, true);
 }
 
-/// @brief Select All 
-void DialogPasteOver::OnAll(wxCommandEvent &) {
-	for (int i=0;i<10;i++) ListBox->Check(i,true);
-}
-
-/// @brief Select None 
-void DialogPasteOver::OnNone(wxCommandEvent &) {
-	for (int i=0;i<10;i++) ListBox->Check(i,false);
+void DialogPasteOver::CheckAll(bool check) {
+	for (size_t i = 0; i < ListBox->GetCount(); ++i)
+		ListBox->Check(i, check);
 }
