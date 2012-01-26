@@ -207,7 +207,6 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	// Text editor
 	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
 	TextEdit->Bind(wxEVT_KEY_DOWN, &SubsEditBox::OnKeyDown, this);
-	TextEdit->SetUndoCollection(false);
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	BottomSizer->Add(TextEdit,1,wxEXPAND,0);
 
@@ -221,7 +220,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	SetSizerAndFit(MainSizer);
 
 	TextEdit->Bind(wxEVT_STC_MODIFIED, &SubsEditBox::OnChange, this);
-	TextEdit->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT);
+	TextEdit->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT | wxSTC_STARTACTION);
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnLayerEnter, this, Layer->GetId());
 	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerChange, this, Layer->GetId());
@@ -406,12 +405,9 @@ void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 	if (line && TextEdit->GetText() != line->Text) {
-		if (event.GetModificationType() & wxSTC_MOD_INSERTTEXT) {
-			CommitText(_("insert text"));
-		}
-		else {
-			CommitText(_("delete text"));
-		}
+		if (event.GetModificationType() & wxSTC_STARTACTION)
+			commitId = -1;
+		CommitText(_("modify text"));
 	}
 }
 
