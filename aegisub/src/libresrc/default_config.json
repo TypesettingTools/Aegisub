@@ -456,7 +456,8 @@
 		},
 		"Spell Checker" : {
 			"Backend" : "hunspell",
-			"Language" : "en_US"
+			"Language" : "en_US",
+			"Skip Comments" : false
 		},
 		"Style Editor" : {
 			"Last" : {

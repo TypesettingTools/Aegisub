@@ -47,6 +47,10 @@
 #include "subs_edit_ctrl.h"
 #include "utils.h"
 
+static void save_skip_comments(wxCommandEvent &evt) {
+	OPT_SET("Tool/Spell Checker/Skip Comments")->SetBool(!!evt.GetInt());
+}
+
 DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 : wxDialog(context->parent, -1, _("Spell Checker"))
 , context(context)
@@ -115,8 +119,14 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	}
 
 	{
-		wxButton *button;
 		wxSizerFlags button_flags = wxSizerFlags().Expand().Bottom().Border(wxBOTTOM, 5);
+
+		skip_comments = new wxCheckBox(this, -1, _("&Skip Comments"));
+		actions_sizer->Add(skip_comments, button_flags);
+		skip_comments->SetValue(OPT_GET("Tool/Spell Checker/Skip Comments")->GetBool());
+		skip_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, save_skip_comments);
+
+		wxButton *button;
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("&Replace")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplace, this);
@@ -233,6 +243,8 @@ bool DialogSpellChecker::FindNext() {
 }
 
 bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int *commit_id) {
+	if (active_line->Comment && skip_comments->GetValue()) return false;
+
 	IntPairVector results;
 	GetWordBoundaries(active_line->Text, results);
 

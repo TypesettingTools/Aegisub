@@ -34,6 +34,7 @@ namespace agi { struct Context; }
 class AssDialogue;
 class SpellChecker;
 class wxButton;
+class wxCheckBox;
 class wxComboBox;
 class wxListBox;
 class wxTextCtrl;
@@ -65,6 +66,7 @@ class DialogSpellChecker : public wxDialog {
 
 	wxComboBox *language; ///< The list of available languages
 	wxButton *add_button; ///< Add word to currently active dictionary
+	wxCheckBox *skip_comments; ///< Skip over commented lines
 
 	/// Find the next misspelled word and close the dialog if there are none
 	/// @return Are there any more misspelled words?
