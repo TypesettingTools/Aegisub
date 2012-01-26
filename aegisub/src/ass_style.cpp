@@ -185,7 +185,7 @@ static int get_next_int(wxStringTokenizer &tok) {
 	return temp;
 }
 
-static int get_next_double(wxStringTokenizer &tok) {
+static double get_next_double(wxStringTokenizer &tok) {
 	double temp;
 	if (!get_next_string(tok).ToDouble(&temp))
 		throw "Malformed style: could not parse double field";
