@@ -69,7 +69,7 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 	choices.Add(_("Margin Vertical"));
 	choices.Add(_("Effect"));
 	choices.Add(_("Text"));
-	ListBox = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(-1, 170), choices);
+	ListBox = new wxCheckListBox(this, -1, wxDefaultPosition, wxDefaultSize, choices);
 	ListSizer->Add(ListBox, wxSizerFlags(0).Expand().Border(wxTOP));
 
 	std::vector<bool> options = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
