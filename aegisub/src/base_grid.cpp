@@ -165,8 +165,9 @@ void BaseGrid::OnSubtitlesCommit(int type) {
 		return;
 	}
 	if (type & AssFile::COMMIT_DIAG_TIME)
-		RefreshRect(wxRect(time_cols_x, 0, time_cols_w, GetClientSize().GetHeight()), false);
-	if (type & AssFile::COMMIT_DIAG_TEXT)
+		Refresh(false);
+		//RefreshRect(wxRect(time_cols_x, 0, time_cols_w, GetClientSize().GetHeight()), false);
+	else if (type & AssFile::COMMIT_DIAG_TEXT)
 		RefreshRect(wxRect(text_col_x, 0, text_col_w, GetClientSize().GetHeight()), false);
 }
 
