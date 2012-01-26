@@ -553,7 +553,7 @@ wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &
 			(*tag)[0]->Get<int>(), (*tag)[3]->Get<int>());
 	}
 	if (tag) {
-		scale = (*tag)[0]->Get<int>(scale);
+		scale = std::max((*tag)[0]->Get(scale), 1);
 		return (*tag)[1]->Get<wxString>("");
 	}
 

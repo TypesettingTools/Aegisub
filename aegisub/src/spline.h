@@ -49,7 +49,17 @@ class VisualToolBase;
 /// @class Spline
 /// @brief DOCME
 class Spline : private std::list<SplineCurve> {
-	const VisualToolBase &scale;
+	/// Visual tool to do the conversion between script and video pixels
+	const VisualToolBase &coord_translator;
+	/// Spline scale
+	int scale;
+	int raw_scale;
+
+	/// Video coordinates -> Script coordinates
+	Vector2D ToScript(Vector2D vec) const;
+
+	/// Script coordinates -> Video coordinates
+	Vector2D FromScript(Vector2D vec) const;
 public:
 	Spline(const VisualToolBase &scale);
 
@@ -58,6 +68,12 @@ public:
 
 	/// Decode an ASS vector drawing
 	void DecodeFromASS(wxString str);
+
+	/// Set the scale
+	/// @param new_scale Power-of-two to scale coordinates by
+	void SetScale(int new_scale);
+	/// Get the current scale
+	int GetScale() const { return raw_scale; }
 
 	/// @brief Moves a specific point in the spline
 	/// @param curve Curve which the point is in

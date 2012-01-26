@@ -196,7 +196,13 @@ void VisualToolVectorClip::MakeFeatures() {
 }
 
 void VisualToolVectorClip::Save() {
-	SetOverride(active_line, inverse ? "\\iclip" : "\\clip", "(" + spline.EncodeToASS() + ")");
+	wxString tag = inverse ? "\\iclip" : "\\clip";
+	wxString value = "(";
+	if (spline.GetScale() != 1)
+		value += wxString::Format("%d,", spline.GetScale());
+	value += spline.EncodeToASS() + ")";
+
+	SetOverride(active_line, tag, value);
 }
 
 void VisualToolVectorClip::UpdateDrag(feature_iterator feature) {
@@ -382,6 +388,7 @@ void VisualToolVectorClip::DoRefresh() {
 	wxString vect;
 	int scale;
 	vect = GetLineVectorClip(active_line, scale, inverse);
+	spline.SetScale(scale);
 	spline.DecodeFromASS(vect);
 
 	MakeFeatures();

@@ -47,10 +47,26 @@
 #include "utils.h"
 #include "visual_tool.h"
 
-Spline::Spline(const VisualToolBase &scale) : scale(scale) {
+Spline::Spline(const VisualToolBase &tl)
+: coord_translator(tl)
+, scale(1)
+, raw_scale(1)
+{
 }
 
-/// @brief Encode to ASS 
+Vector2D Spline::ToScript(Vector2D vec) const {
+	return coord_translator.ToScriptCoords(vec) * scale;
+}
+
+Vector2D Spline::FromScript(Vector2D vec) const {
+	return coord_translator.FromScriptCoords(vec / scale);
+}
+
+void Spline::SetScale(int new_scale) {
+	raw_scale = new_scale;
+	scale = 1 << (raw_scale - 1);
+}
+
 wxString Spline::EncodeToASS() {
 	wxString result;
 	result.reserve(size() * 10);
@@ -63,7 +79,7 @@ wxString Spline::EncodeToASS() {
 					result += "m ";
 					last = 'm';
 				}
-				result += scale.ToScriptCoords(cur->p1).DStr(' ');
+				result += ToScript(cur->p1).DStr(' ');
 				break;
 
 			case SplineCurve::LINE:
@@ -71,7 +87,7 @@ wxString Spline::EncodeToASS() {
 					result += "l ";
 					last = 'l';
 				}
-				result += scale.ToScriptCoords(cur->p2).DStr(' ');
+				result += ToScript(cur->p2).DStr(' ');
 				break;
 
 			case SplineCurve::BICUBIC:
@@ -79,9 +95,9 @@ wxString Spline::EncodeToASS() {
 					result += "b ";
 					last = 'b';
 				}
-				result += scale.ToScriptCoords(cur->p2).DStr(' ') + " ";
-				result += scale.ToScriptCoords(cur->p3).DStr(' ') + " ";
-				result += scale.ToScriptCoords(cur->p4).DStr(' ');
+				result += ToScript(cur->p2).DStr(' ') + " ";
+				result += ToScript(cur->p3).DStr(' ') + " ";
+				result += ToScript(cur->p4).DStr(' ');
 				break;
 
 			default: break;
@@ -110,7 +126,7 @@ void Spline::DecodeFromASS(wxString str) {
 
 			// Move
 			if (stack.size() == 2 && command == 'm') {
-				pt = scale.FromScriptCoords(Vector2D(stack[0], stack[1]));
+				pt = FromScript(Vector2D(stack[0], stack[1]));
 				stack.clear();
 
 				push_back(pt);
@@ -118,7 +134,7 @@ void Spline::DecodeFromASS(wxString str) {
 
 			// Line
 			if (stack.size() == 2 && command == 'l') {
-				SplineCurve curve(pt, scale.FromScriptCoords(Vector2D(stack[0], stack[1])));
+				SplineCurve curve(pt, FromScript(Vector2D(stack[0], stack[1])));
 				push_back(curve);
 
 				pt = curve.p2;
@@ -128,9 +144,9 @@ void Spline::DecodeFromASS(wxString str) {
 			// Bicubic
 			else if (stack.size() == 6 && command == 'b') {
 				SplineCurve curve(pt,
-					scale.FromScriptCoords(Vector2D(stack[0], stack[1])),
-					scale.FromScriptCoords(Vector2D(stack[2], stack[3])),
-					scale.FromScriptCoords(Vector2D(stack[4], stack[5])));
+					FromScript(Vector2D(stack[0], stack[1])),
+					FromScript(Vector2D(stack[2], stack[3])),
+					FromScript(Vector2D(stack[4], stack[5])));
 				push_back(curve);
 
 				pt = curve.p4;
