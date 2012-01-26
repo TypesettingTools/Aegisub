@@ -59,20 +59,12 @@ using namespace std::tr1::placeholders;
 
 SubtitleFormat::SubtitleFormat(wxString const& name)
 : name(name)
-, isCopy(0)
-, Line(0)
 {
 	formats.push_back(this);
 }
 
 SubtitleFormat::~SubtitleFormat() {
 	formats.remove(this);
-}
-
-void SubtitleFormat::SetTarget(AssFile *file) {
-	ClearCopy();
-	Line = file ? &file->Line : 0;
-	assFile = file;
 }
 
 bool SubtitleFormat::CanReadFile(wxString const& filename) const {
@@ -83,33 +75,8 @@ bool SubtitleFormat::CanWriteFile(wxString const& filename) const {
 	return GetWriteWildcards().Index(filename.AfterLast('.'), false) != wxNOT_FOUND;
 }
 
-void SubtitleFormat::CreateCopy() {
-	SetTarget(new AssFile(*assFile));
-	isCopy = true;
-}
-
-void SubtitleFormat::ClearCopy() {
-	if (isCopy) {
-		delete assFile;
-		assFile = NULL;
-		isCopy = false;
-	}
-}
-
-void SubtitleFormat::Clear() {
-	assFile->Clear();
-}
-
-void SubtitleFormat::LoadDefault(bool defline) {
-	assFile->LoadDefault(defline);
-}
-
-void SubtitleFormat::AddLine(wxString data, int *version, AssAttachment **attach) {
-	assFile->AddLine(data, version, attach);
-}
-
 /// @brief Ask the user to enter the FPS 
-FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) {
+FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) const {
 	wxArrayString choices;
 	bool drop = false;
 	
@@ -171,20 +138,16 @@ FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) {
 	return FractionalTime(fps, drop);
 }
 
-void SubtitleFormat::SortLines() {
-	AssFile::Sort(*Line);
-}
-
-void SubtitleFormat::StripTags() {
-	for (std::list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); ++cur) {
+void SubtitleFormat::StripTags(LineList &lines) const {
+	for (LineList::iterator cur = lines.begin(); cur != lines.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			current->StripTags();
 		}
 	}
 }
 
-void SubtitleFormat::ConvertNewlines(wxString const& newline, bool mergeLineBreaks) {
-	for (std::list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); ++cur) {
+void SubtitleFormat::ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks) const {
+	for (LineList::iterator cur = lines.begin(); cur != lines.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			current->Text.Replace("\\h", " ");
 			current->Text.Replace("\\n", newline);
@@ -196,25 +159,25 @@ void SubtitleFormat::ConvertNewlines(wxString const& newline, bool mergeLineBrea
 	}
 }
 
-void SubtitleFormat::StripComments() {
-	for (std::list<AssEntry*>::iterator it = Line->begin(); it != Line->end(); ) {
+void SubtitleFormat::StripComments(LineList &lines) const {
+	for (LineList::iterator it = lines.begin(); it != lines.end(); ) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
 		if (!diag || (!diag->Comment && diag->Text.size()))
 			++it;
 		else {
 			delete *it;
-			Line->erase(it++);
+			lines.erase(it++);
 		}
 	}
 }
 
-void SubtitleFormat::StripNonDialogue() {
-	for (std::list<AssEntry*>::iterator it = Line->begin(); it != Line->end(); ) {
+void SubtitleFormat::StripNonDialogue(LineList &lines) const {
+	for (LineList::iterator it = lines.begin(); it != lines.end(); ) {
 		if (dynamic_cast<AssDialogue*>(*it))
 			++it;
 		else {
 			delete *it;
-			Line->erase(it++);
+			lines.erase(it++);
 		}
 	}
 }
@@ -227,11 +190,11 @@ static bool dialog_start_lt(AssEntry *pos, AssDialogue *to_insert) {
 /// @brief Split and merge lines so there are no overlapping lines 
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-void SubtitleFormat::RecombineOverlaps() {
-	std::list<AssEntry*>::iterator cur, next = Line->begin();
+void SubtitleFormat::RecombineOverlaps(LineList &lines) const {
+	LineList::iterator cur, next = lines.begin();
 	cur = next++;
 
-	for (; next != Line->end(); cur = next++) {
+	for (; next != lines.end(); cur = next++) {
 		AssDialogue *prevdlg = dynamic_cast<AssDialogue*>(*cur);
 		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*next);
 
@@ -240,15 +203,15 @@ void SubtitleFormat::RecombineOverlaps() {
 
 		// Use names like in the algorithm description and prepare for erasing
 		// old dialogues from the list
-		std::list<AssEntry*>::iterator prev = cur;
+		LineList::iterator prev = cur;
 		cur = next;
 		next++;
 
 		// std::list::insert() inserts items before the given iterator, so
 		// we need 'next' for inserting. 'prev' and 'cur' can safely be erased
 		// from the list now.
-		Line->erase(prev);
-		Line->erase(cur);
+		lines.erase(prev);
+		lines.erase(cur);
 
 		//Is there an A part before the overlap?
 		if (curdlg->Start > prevdlg->Start) {
@@ -258,7 +221,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			newdlg->End = curdlg->Start;
 			newdlg->Text = prevdlg->Text;
 
-			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
 		}
 
 		// Overlapping A+B part
@@ -269,7 +232,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			// Put an ASS format hard linewrap between lines
 			newdlg->Text = curdlg->Text + "\\N" + prevdlg->Text;
 
-			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
 		}
 
 		// Is there an A part after the overlap?
@@ -280,7 +243,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			newdlg->End = prevdlg->End;
 			newdlg->Text = prevdlg->Text;
 
-			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
 		}
 
 		// Is there a B part after the overlap?
@@ -291,7 +254,7 @@ void SubtitleFormat::RecombineOverlaps() {
 			newdlg->End = curdlg->End;
 			newdlg->Text = curdlg->Text;
 
-			Line->insert(find_if(next, Line->end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
 		}
 
 		next--;
@@ -299,11 +262,11 @@ void SubtitleFormat::RecombineOverlaps() {
 }
 
 /// @brief Merge identical lines that follow each other 
-void SubtitleFormat::MergeIdentical() {
-	std::list<AssEntry*>::iterator cur, next = Line->begin();
+void SubtitleFormat::MergeIdentical(LineList &lines) const {
+	LineList::iterator cur, next = lines.begin();
 	cur = next++;
 	
-	for (; next != Line->end(); cur = next++) {
+	for (; next != lines.end(); cur = next++) {
 		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*cur);
 		AssDialogue *nextdlg = dynamic_cast<AssDialogue*>(*next);
 		
@@ -314,7 +277,7 @@ void SubtitleFormat::MergeIdentical() {
 			
 			// Remove duplicate line
 			delete *cur;
-			Line->erase(cur);
+			lines.erase(cur);
 		}
 	}
 }
@@ -323,14 +286,14 @@ std::list<SubtitleFormat*> SubtitleFormat::formats;
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
-		new ASSSubtitleFormat();
-		new EncoreSubtitleFormat();
-		new MKVSubtitleFormat();
-		new MicroDVDSubtitleFormat();
-		new SRTSubtitleFormat();
-		new TTXTSubtitleFormat();
-		new TXTSubtitleFormat();
-		new TranStationSubtitleFormat();
+		new ASSSubtitleFormat;
+		new EncoreSubtitleFormat;
+		new MKVSubtitleFormat;
+		new MicroDVDSubtitleFormat;
+		new SRTSubtitleFormat;
+		new TTXTSubtitleFormat;
+		new TXTSubtitleFormat;
+		new TranStationSubtitleFormat;
 	}
 }
 
@@ -347,12 +310,12 @@ SubtitleFormat *find_or_null(Cont &container, Pred pred) {
 	return *it;
 }
 
-SubtitleFormat *SubtitleFormat::GetReader(wxString const& filename) {
+const SubtitleFormat *SubtitleFormat::GetReader(wxString const& filename) {
 	LoadFormats();
 	return find_or_null(formats, bind(&SubtitleFormat::CanReadFile, _1, filename));
 }
 
-SubtitleFormat *SubtitleFormat::GetWriter(wxString const& filename) {
+const SubtitleFormat *SubtitleFormat::GetWriter(wxString const& filename) {
 	LoadFormats();
 	return find_or_null(formats, bind(&SubtitleFormat::CanWriteFile, _1, filename));
 }

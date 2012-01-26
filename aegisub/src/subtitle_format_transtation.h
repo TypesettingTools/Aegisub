@@ -44,10 +44,10 @@ class AssDialogue;
 ///
 /// DOCME
 class TranStationSubtitleFormat : public SubtitleFormat {
-	wxString ConvertLine(AssDialogue *line, FractionalTime *ft, int nextl_start);
+	wxString ConvertLine(AssFile *file, AssDialogue *line, FractionalTime *ft, int nextl_start) const;
 
 public:
 	TranStationSubtitleFormat();
 	wxArrayString GetWriteWildcards() const;
-	void WriteFile(wxString const& filename, wxString const& encoding);
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
 };

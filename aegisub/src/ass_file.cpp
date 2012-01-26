@@ -88,7 +88,7 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 		}
 
 		// Get proper format reader
-		SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
+		const SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
 
 		if (!reader) {
 			wxMessageBox("Unknown file type","Error loading file",wxICON_ERROR | wxOK);
@@ -97,8 +97,7 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 
 		// Read file
 		AssFile temp;
-		reader->SetTarget(&temp);
-		reader->ReadFile(_filename,charset);
+		reader->ReadFile(&temp, _filename, charset);
 		swap(temp);
 	}
 	catch (agi::UserCancelException const&) {
@@ -156,7 +155,7 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 }
 
 void AssFile::Save(wxString filename, bool setfilename, bool addToRecent, wxString encoding) {
-	SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
+	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer)
 		throw "Unknown file type.";
 
@@ -168,8 +167,7 @@ void AssFile::Save(wxString filename, bool setfilename, bool addToRecent, wxStri
 
 	FileSave();
 
-	writer->SetTarget(this);
-	writer->WriteFile(filename, encoding);
+	writer->WriteFile(this, filename, encoding);
 
 	if (addToRecent) {
 		AddToRecent(filename);
@@ -229,8 +227,7 @@ bool AssFile::CanSave() {
 	if (ext == ".txt") return false;
 
 	// Check if it's a known extension
-	SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
-	if (!writer) return false;
+	if (!SubtitleFormat::GetWriter(filename)) return false;
 
 	// Scan through the lines
 	AssStyle defstyle;

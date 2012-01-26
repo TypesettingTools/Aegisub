@@ -49,7 +49,7 @@ public:
 	wxArrayString GetWriteWildcards() const;
 
 	bool CanReadFile(wxString const& filename) const;
-	void ReadFile(wxString const& filename, wxString const& forceEncoding);
+	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
 
-	void WriteFile(wxString const& filename, wxString const& encoding);
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
 };

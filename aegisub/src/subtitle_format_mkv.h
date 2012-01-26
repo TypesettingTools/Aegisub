@@ -46,5 +46,5 @@ public:
 	MKVSubtitleFormat();
 	wxArrayString GetReadWildcards() const;
 
-	void ReadFile(wxString const& filename, wxString const& forceEncoding);
+	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
 };

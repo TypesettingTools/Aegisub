@@ -59,25 +59,25 @@ wxArrayString TranStationSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
-void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
+void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	FractionalTime ft = AskForFPS(true);
 	if (!ft.FPS().IsLoaded()) return;
 
 	TextFileWriter file(filename, encoding);
 
 	// Convert to TranStation
-	CreateCopy();
-	SortLines();
-	StripComments();
-	RecombineOverlaps();
-	MergeIdentical();
+	AssFile copy(*src);
+	copy.Sort();
+	StripComments(copy.Line);
+	RecombineOverlaps(copy.Line);
+	MergeIdentical(copy.Line);
 
 	AssDialogue *prev = 0;
-	for (std::list<AssEntry*>::iterator it = Line->begin(); it != Line->end(); ++it) {
+	for (std::list<AssEntry*>::iterator it = copy.Line.begin(); it != copy.Line.end(); ++it) {
 		AssDialogue *cur = dynamic_cast<AssDialogue*>(*it);
 
 		if (prev && cur) {
-			file.WriteLineToFile(ConvertLine(prev, &ft, cur->Start));
+			file.WriteLineToFile(ConvertLine(&copy, prev, &ft, cur->Start));
 			file.WriteLineToFile("");
 		}
 
@@ -87,19 +87,17 @@ void TranStationSubtitleFormat::WriteFile(wxString const& filename, wxString con
 
 	// flush last line
 	if (prev)
-		file.WriteLineToFile(ConvertLine(prev, &ft, -1));
+		file.WriteLineToFile(ConvertLine(&copy, prev, &ft, -1));
 
 	// Every file must end with this line
 	file.WriteLineToFile("SUB[");
-
-	ClearCopy();
 }
 
-wxString TranStationSubtitleFormat::ConvertLine(AssDialogue *current, FractionalTime *ft, int nextl_start) {
+wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *current, FractionalTime *ft, int nextl_start) const {
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style
-	if (AssStyle *style = GetAssFile()->GetStyle(current->Style)) {
+	if (AssStyle *style = file->GetStyle(current->Style)) {
 		if (style->alignment >= 4) valign = 4;
 		if (style->alignment >= 7) valign = 9;
 		if (style->alignment == 1 || style->alignment == 4 || style->alignment == 7) halign = "L";

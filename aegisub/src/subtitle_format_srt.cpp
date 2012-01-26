@@ -375,11 +375,11 @@ wxArrayString SRTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-void SRTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encoding) {
+void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
-	LoadDefault(false);
+	target->LoadDefault(false);
 
 	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
 
@@ -433,7 +433,7 @@ found_timestamps:
 				line->Start = ReadSRTTime(timestamp_regex.GetMatch(text_line, 1));
 				line->End = ReadSRTTime(timestamp_regex.GetMatch(text_line, 2));
 				// store pointer to subtitle, we'll continue working on it
-				Line->push_back(line);
+				target->Line.push_back(line);
 				// next we're reading the text
 				state = 3;
 				break;
@@ -496,20 +496,20 @@ found_timestamps:
 		line->Text = tag_parser.ToAss(line->Text);
 }
 
-void SRTSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
-	TextFileWriter file(filename,encoding);
+void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
+	TextFileWriter file(filename, encoding);
 
 	// Convert to SRT
-	CreateCopy();
-	SortLines();
-	StripComments();
-	RecombineOverlaps();
-	MergeIdentical();
-	ConvertNewlines("\r\n", false);
+	AssFile copy(*src);
+	copy.Sort();
+	StripComments(copy.Line);
+	RecombineOverlaps(copy.Line);
+	MergeIdentical(copy.Line);
+	ConvertNewlines(copy.Line, "\r\n", false);
 
 	// Write lines
 	int i=1;
-	for (std::list<AssEntry*>::iterator cur = Line->begin(); cur != Line->end(); ++cur) {
+	for (LineList::const_iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			file.WriteLineToFile(wxString::Format("%d", i++));
 			file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
@@ -517,11 +517,9 @@ void SRTSubtitleFormat::WriteFile(wxString const& filename, wxString const& enco
 			file.WriteLineToFile("");
 		}
 	}
-
-	ClearCopy();
 }
 
-wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) {
+wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
 	wxString final;
 	std::map<char, bool> tag_states;
 	tag_states['i'] = false;

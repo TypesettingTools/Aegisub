@@ -36,13 +36,15 @@
 
 #include "config.h"
 
+#include "subtitle_format_microdvd.h"
+
 #ifndef AGI_PRE
 #include <wx/regex.h>
 #endif
 
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "ass_time.h"
-#include "subtitle_format_microdvd.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "video_context.h"
@@ -76,11 +78,11 @@ bool MicroDVDSubtitleFormat::CanReadFile(wxString const& filename) const {
 	return false;
 }
 
-void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& forceEncoding) {
+void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
 	TextFileReader file(filename);
 	wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$", wxRE_ADVANCED);
 
-	LoadDefault(false);
+	target->LoadDefault(false);
 
 	agi::vfr::Framerate fps;
 
@@ -117,22 +119,22 @@ void MicroDVDSubtitleFormat::ReadFile(wxString const& filename, wxString const& 
 			diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
 			diag->End = fps.TimeAtFrame(f2, agi::vfr::END);
 			diag->Text = text;
-			Line->push_back(diag);
+			target->Line.push_back(diag);
 		}
 	}
 }
 
-void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
+void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	agi::vfr::Framerate fps = AskForFPS().FPS();
 	if (!fps.IsLoaded()) return;
 
-	CreateCopy();
-	SortLines();
-	StripComments();
-	RecombineOverlaps();
-	MergeIdentical();
-	StripTags();
-	ConvertNewlines("|");
+	AssFile copy(*src);
+	copy.Sort();
+	StripComments(copy.Line);
+	RecombineOverlaps(copy.Line);
+	MergeIdentical(copy.Line);
+	StripTags(copy.Line);
+	ConvertNewlines(copy.Line, "|");
 
 	TextFileWriter file(filename, encoding);
 
@@ -142,7 +144,7 @@ void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const&
 	}
 
 	// Write lines
-	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+	for (LineList::const_iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			int start = fps.FrameAtTime(current->Start, agi::vfr::START);
 			int end = fps.FrameAtTime(current->End, agi::vfr::END);
@@ -150,6 +152,4 @@ void MicroDVDSubtitleFormat::WriteFile(wxString const& filename, wxString const&
 			file.WriteLineToFile(wxString::Format("{%i}{%i}%s", start, end, current->Text));
 		}
 	}
-
-	ClearCopy();
 }

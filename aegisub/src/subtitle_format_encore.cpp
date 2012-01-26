@@ -39,6 +39,7 @@
 #include "subtitle_format_encore.h"
 
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "text_file_writer.h"
 
 EncoreSubtitleFormat::EncoreSubtitleFormat()
@@ -52,20 +53,20 @@ wxArrayString EncoreSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
-void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
+void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	FractionalTime ft = AskForFPS(true);
 	if (!ft.FPS().IsLoaded()) return;
 
 	TextFileWriter file(filename, encoding);
 
 	// Convert to encore
-	CreateCopy();
-	SortLines();
-	StripComments();
-	RecombineOverlaps();
-	MergeIdentical();
-	StripTags();
-	ConvertNewlines("\r\n");
+	AssFile copy(*src);
+	copy.Sort();
+	StripComments(copy.Line);
+	RecombineOverlaps(copy.Line);
+	MergeIdentical(copy.Line);
+	StripTags(copy.Line);
+	ConvertNewlines(copy.Line, "\r\n");
 
 	// Write lines
 	int i = 0;
@@ -73,12 +74,10 @@ void EncoreSubtitleFormat::WriteFile(wxString const& filename, wxString const& e
 	// Encore wants ; instead of : if we're dealing with NTSC dropframe stuff
 	char sep = ft.IsDrop() ? ';' : ':';
 
-	for (std::list<AssEntry*>::iterator cur=Line->begin();cur!=Line->end();cur++) {
+	for (LineList::const_iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			++i;
 			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start, sep), ft.ToSMPTE(current->End, sep), current->Text));
 		}
 	}
-
-	ClearCopy();
 }

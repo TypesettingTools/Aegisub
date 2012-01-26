@@ -45,7 +45,6 @@
 
 #include <libaegisub/exception.h>
 
-class AssAttachment;
 class AssEntry;
 class AssFile;
 class FractionalTime;
@@ -57,8 +56,6 @@ class FractionalTime;
 /// DOCME
 class SubtitleFormat {
 	wxString name;
-	bool isCopy;
-	AssFile *assFile;
 
 	/// Get this format's wildcards for a load dialog
 	virtual wxArrayString GetReadWildcards() const { return wxArrayString(); }
@@ -69,47 +66,28 @@ class SubtitleFormat {
 	static std::list<SubtitleFormat*> formats;
 
 protected:
-	std::list<AssEntry*> *Line;
+	typedef std::list<AssEntry*> LineList;
 
-	/// Copy the input subtitles file; must be called before making any changes
-	void CreateCopy();
-	/// Delete the subtitle file if we own it; should be called after processing
-	/// if CreateCopy was used
-	void ClearCopy();
-	/// Sort the lines by start time
-	void SortLines();
 	/// Strip override tags
-	void StripTags();
+	void StripTags(LineList &lines) const;
 	/// Convert newlines to the specified character(s)
 	/// @param lineEnd newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
-	void ConvertNewlines(wxString const& newline, bool mergeLineBreaks = true);
+	void ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks = true) const;
 	/// Remove All commented and empty lines
-	void StripComments();
+	void StripComments(LineList &lines) const;
 	/// Remove everything but the dialogue lines
-	void StripNonDialogue();
+	void StripNonDialogue(LineList &lines) const;
 	/// @brief Split and merge lines so there are no overlapping lines
 	///
 	/// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-	void RecombineOverlaps();
+	void RecombineOverlaps(LineList &lines) const;
 	/// Merge sequential identical lines
-	void MergeIdentical();
+	void MergeIdentical(LineList &lines) const;
 
-	/// Clear the subtitle file
-	void Clear();
-	/// Load the default file
-	/// @param defline Add a blank line?
-	void LoadDefault(bool defline=true);
-
-	AssFile *GetAssFile() { return assFile; }
-	/// Add a line to the output file
-	/// @param data Full text of ASS line
-	/// @param[in,out] version ASS version the line was parsed as
-	/// @param[in,out] attach Accumulator for attachment parsing
-	void AddLine(wxString data, int *version, AssAttachment **attach);
 	/// Prompt the user for a framerate to use
 	/// @param showSMPTE Include SMPTE as an option?
-	FractionalTime AskForFPS(bool showSMPTE=false);
+	FractionalTime AskForFPS(bool showSMPTE=false) const;
 
 public:
 	/// Constructor
@@ -120,42 +98,41 @@ public:
 	/// @note Automatically unregisters the format
 	virtual ~SubtitleFormat();
 
-	/// Set the target file to write
-	void SetTarget(AssFile *file);
-
 	/// Get this format's name
 	wxString GetName() const { return name; }
 
 	/// @brief Check if the given file can be read by this format
 	///
-	/// Default implemention simply checks if the file's extension is in the
+	/// Default implement ion simply checks if the file's extension is in the
 	/// format's wildcard list
 	virtual bool CanReadFile(wxString const& filename) const;
 
 	/// @brief Check if the given file can be written by this format
 	///
-	/// Default implemention simply checks if the file's extension is in the
+	/// Default implement ion simply checks if the file's extension is in the
 	/// format's wildcard list
 	virtual bool CanWriteFile(wxString const& filename) const;
 
 	/// Load a subtitle file
+	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void ReadFile(wxString const& filename, wxString const& forceEncoding="") { }
+	virtual void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding="") const { }
 
 	/// Save a subtitle file
+	/// @param src Data to write
 	/// @param filename File to write to
 	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void WriteFile(wxString const& filename, wxString const& encoding="") { }
+	virtual void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding="") const { }
 
 	/// Get the wildcards for a save or load dialog
 	/// @param mode 0: load 1: save
 	static wxString GetWildcards(int mode);
 
 	/// Get a subtitle format that can read the given file or NULL if none can
-	static SubtitleFormat *GetReader(wxString const& filename);
+	static const SubtitleFormat *GetReader(wxString const& filename);
 	/// Get a subtitle format that can write the given file or NULL if none can
-	static SubtitleFormat *GetWriter(wxString const& filename);
+	static const SubtitleFormat *GetWriter(wxString const& filename);
 	/// Initialize subtitle formats
 	static void LoadFormats();
 	/// Deinitialize subtitle formats

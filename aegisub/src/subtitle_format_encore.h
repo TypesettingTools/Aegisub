@@ -46,5 +46,5 @@ class EncoreSubtitleFormat : public SubtitleFormat {
 public:
 	EncoreSubtitleFormat();
 	wxArrayString GetWriteWildcards() const;
-	void WriteFile(wxString const& filename, wxString const& encoding);
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
 };

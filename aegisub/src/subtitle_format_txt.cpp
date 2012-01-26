@@ -39,6 +39,7 @@
 #include "subtitle_format_txt.h"
 
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "compat.h"
 #include "dialog_text_import.h"
 #include "main.h"
@@ -66,14 +67,14 @@ bool TXTSubtitleFormat::CanWriteFile(wxString const& filename) const {
 	return (filename.Right(4).Lower() == ".txt" && filename.Right(11).Lower() != ".encore.txt" && filename.Right(16).Lower() != ".transtation.txt");
 }
 
-void TXTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encoding) {
+void TXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
 	using namespace std;
 	DialogTextImport dlg;
 	if (dlg.ShowModal() == wxID_CANCEL) return;
 
 	TextFileReader file(filename, encoding, false);
 
-	LoadDefault(false);
+	target->LoadDefault(false);
 
 	wxString actor;
 	wxString separator = lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString());
@@ -123,7 +124,7 @@ void TXTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encod
 		line->End = 0;
 
 		// Adds line
-		Line->push_back(line);
+		target->Line.push_back(line);
 		lines++;
 	}
 
@@ -131,15 +132,15 @@ void TXTSubtitleFormat::ReadFile(wxString const& filename, wxString const& encod
 	if (lines == 0) {
 		AssDialogue *line = new AssDialogue;
 		line->End = OPT_GET("Timing/Default Duration")->GetInt();
-		Line->push_back(line);
+		target->Line.push_back(line);
 	}
 }
 
-void TXTSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
+void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (std::list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
+	for (LineList::const_iterator l = src->Line.begin(); l != src->Line.end(); ++l) {
 		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
 		if (dia && !dia->Comment) {
 			num_dialogue_lines++;
@@ -156,7 +157,7 @@ void TXTSubtitleFormat::WriteFile(wxString const& filename, wxString const& enco
 	file.WriteLineToFile(wxString("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (std::list<AssEntry*>::iterator l = Line->begin(); l != Line->end(); ++l) {
+	for (LineList::const_iterator l = src->Line.begin(); l != src->Line.end(); ++l) {
 		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
 
 		if (dia) {

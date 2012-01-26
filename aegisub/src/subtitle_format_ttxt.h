@@ -34,14 +34,10 @@
 /// @ingroup subtitle_io
 ///
 
-#ifndef AGI_PRE
-#include <wx/xml/xml.h>
-#endif
-
 #include "subtitle_format.h"
 
 class AssDialogue;
-
+class wxXmlNode;
 
 /// DOCME
 /// @class TTXTSubtitleFormat
@@ -49,28 +45,19 @@ class AssDialogue;
 ///
 /// DOCME
 class TTXTSubtitleFormat : public SubtitleFormat {
-	/// DOCME
-	int version;
+	AssDialogue *ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const;
+	void ProcessHeader(wxXmlNode *node) const;
 
-	/// DOCME
-	AssDialogue *diag;
+	void WriteHeader(wxXmlNode *root) const;
+	void WriteLine(wxXmlNode *root, AssDialogue *prev, AssDialogue *line) const;
 
-	/// DOCME
-	AssDialogue *prev;
-
-	bool ProcessLine(wxXmlNode *node);
-	void ProcessHeader(wxXmlNode *node);
-
-	void WriteHeader(wxXmlNode *root);
-	void WriteLine(wxXmlNode *root, AssDialogue *line);
-
-	void ConvertToTTXT();
+	void ConvertToTTXT(AssFile &file) const;
 
 public:
 	TTXTSubtitleFormat();
 	wxArrayString GetReadWildcards() const;
 	wxArrayString GetWriteWildcards() const;
 
-	void ReadFile(wxString const& filename, wxString const& forceEncoding);
-	void WriteFile(wxString const& filename, wxString const& encoding);
+	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
 };

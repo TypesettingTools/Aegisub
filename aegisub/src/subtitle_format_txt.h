@@ -48,6 +48,6 @@ public:
 	wxArrayString GetWriteWildcards() const;
 
 	bool CanWriteFile(wxString const& filename) const;
-	void ReadFile(wxString const& filename, wxString const& forceEncoding);
-	void WriteFile(wxString const& filename, wxString const& encoding);
+	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
 };

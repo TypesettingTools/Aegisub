@@ -39,6 +39,7 @@
 #include "subtitle_format_ass.h"
 
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "compat.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -64,8 +65,10 @@ wxArrayString ASSSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
-void ASSSubtitleFormat::ReadFile(wxString const& filename, wxString const& encoding) {
+void ASSSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
 	using namespace std;
+
+	target->Clear();
 
 	TextFileReader file(filename, encoding);
 	int version = filename.Right(4).Lower() != ".ssa";
@@ -74,22 +77,22 @@ void ASSSubtitleFormat::ReadFile(wxString const& filename, wxString const& encod
 	while (file.HasMoreLines()) {
 		wxString line = file.ReadLineFromFile();
 		try {
-			AddLine(line, &version, &attach);
+			target->AddLine(line, &version, &attach);
 		}
 		catch (const char *err) {
-			Clear();
+			target->Clear();
 			throw AssParseError("Error processing line: " + STD_STR(line) + ": " + err, 0);
 		}
 	}
 }
 
-void ASSSubtitleFormat::WriteFile(wxString const& filename, wxString const& encoding) {
+void ASSSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	TextFileWriter file(filename, encoding);
 	bool ssa = filename.Right(4).Lower() == ".ssa";
 
-	std::list<AssEntry*>::iterator last = Line->end(); --last;
-	wxString group = Line->front()->group;
-	for (std::list<AssEntry*>::iterator cur=Line->begin(); cur!=Line->end(); ++cur) {
+	LineList::const_iterator last = src->Line.end(); --last;
+	wxString group = src->Line.front()->group;
+	for (LineList::const_iterator cur = src->Line.begin(); cur != src->Line.end(); ++cur) {
 		// Add a blank line between each group
 		if ((*cur)->group != group) {
 			file.WriteLineToFile("");
