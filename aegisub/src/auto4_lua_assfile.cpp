@@ -635,6 +635,19 @@ namespace Automation4 {
 		luaL_argcheck(L, dia, 1, "Subtitle line must be a dialogue line");
 
 		int idx = 0;
+
+		// 2.1.x stored everything before the first syllable at index zero
+		// There's no longer any such thing with the new parser, but scripts
+		// may rely on kara[0] existing so add an empty syllable
+		lua_newtable(L);
+		set_field(L, "duration", 0);
+		set_field(L, "start_time", dia->Start);
+		set_field(L, "end_time", dia->Start);
+		set_field(L, "tag", "");
+		set_field(L, "text", "");
+		set_field(L, "text_stripped", "");
+		lua_rawseti(L, -2, idx++);
+
 		AssKaraoke kara(dia);
 		for (AssKaraoke::iterator it = kara.begin(); it != kara.end(); ++it) {
 			lua_newtable(L);
