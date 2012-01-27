@@ -179,7 +179,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	left_sizer->Add(selection_mode, wxSizerFlags().Expand().Border(wxBOTTOM));
 	left_sizer->Add(time_fields, wxSizerFlags().Expand());
 
-	wxSizer *history_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("History"));
+	wxSizer *history_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Load from history"));
 	history_sizer->Add(history_box, wxSizerFlags(1).Expand());
 	history_sizer->Add(clear_button, wxSizerFlags().Expand().Border(wxTOP));
 
