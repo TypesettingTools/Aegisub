@@ -168,7 +168,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	// Middle controls
 	MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	Layer = new wxSpinCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),wxSP_ARROW_KEYS,0,0x7FFFFFFF,0);
+	Layer = new wxSpinCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1), wxSP_ARROW_KEYS | wxTE_PROCESS_ENTER,0,0x7FFFFFFF,0);
 	Layer->SetToolTip(_("Layer number"));
 	MiddleSizer->Add(Layer, wxSizerFlags().Center());
 	MiddleSizer->AddSpacer(5);
@@ -206,7 +206,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	// Text editor
 	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
-	TextEdit->Bind(wxEVT_KEY_DOWN, &SubsEditBox::OnKeyDown, this);
+	Bind(wxEVT_KEY_DOWN, &SubsEditBox::OnKeyDown, this);
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	BottomSizer->Add(TextEdit,1,wxEXPAND,0);
 
