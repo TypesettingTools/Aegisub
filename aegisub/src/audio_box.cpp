@@ -224,13 +224,15 @@ void AudioBox::OnVerticalLink(agi::OptionValue const& opt) {
 
 void AudioBox::ShowKaraokeBar(bool show) {
 	wxSizer *panel_sizer = panel->GetSizer();
+	if (panel_sizer->IsShown(context->karaoke) == show) return;
+
 	int new_height = GetSize().GetHeight();
 	int kara_height = context->karaoke->GetSize().GetHeight() + 3;
 
-	if (panel_sizer->IsShown(context->karaoke))
-		new_height -= kara_height;
-	else
+	if (show)
 		new_height += kara_height;
+	else
+		new_height -= kara_height;
 
 	panel_sizer->Show(context->karaoke, show);
 	SetMinSize(wxSize(-1, new_height));
