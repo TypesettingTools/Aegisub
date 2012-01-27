@@ -160,6 +160,9 @@ void Spline::DecodeFromASS(wxString str) {
 			stack.clear();
 		}
 	}
+
+	if (!empty() && front().type != SplineCurve::POINT)
+		push_front(pt);
 }
 
 void Spline::MovePoint(iterator curve,int point,Vector2D pos) {
