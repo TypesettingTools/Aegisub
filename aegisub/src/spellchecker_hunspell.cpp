@@ -92,12 +92,17 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	}
 	// Read the old contents of the user's dictionary
 	else {
-		std::auto_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
-		std::remove_copy_if(
-			++agi::line_iterator<std::string>(*stream.get()),
-			agi::line_iterator<std::string>(),
-			std::back_inserter(words),
-			std::mem_fun_ref(&std::string::empty));
+		try {
+			agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
+			remove_copy_if(
+				++agi::line_iterator<std::string>(*stream.get()),
+				agi::line_iterator<std::string>(),
+				back_inserter(words),
+				mem_fun_ref(&std::string::empty));
+		}
+		catch (agi::FileNotFoundError&) {
+			LOG_I("dictionary/hunspell/add") << "User dictionary not found; creating it";
+		}
 	}
 
 	// Add the word
@@ -105,14 +110,9 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	words.sort();
 
 	// Write the new dictionary
-	try {
-		agi::io::Save writer(STD_STR(userDicPath));
-		writer.Get() << words.size() << "\n";
-		std::copy(words.begin(), words.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
-	}
-	catch (const agi::Exception&) {
-		// Failed to open file
-	}
+	agi::io::Save writer(STD_STR(userDicPath));
+	writer.Get() << words.size() << "\n";
+	copy(words.begin(), words.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
 }
 
 bool HunspellSpellChecker::CheckWord(wxString word) {
