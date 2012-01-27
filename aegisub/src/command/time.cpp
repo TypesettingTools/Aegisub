@@ -120,12 +120,12 @@ struct time_continuous_start : public validate_adjoinable {
 };
 
 
-/// Shift selection so first selected line starts at current frame.
+/// Shift selection so that the active line starts at current frame.
 struct time_frame_current : public validate_video_loaded {
 	CMD_NAME("time/frame/current")
 	STR_MENU("Shift to &Current Frame")
 	STR_DISP("Shift to Current Frame")
-	STR_HELP("Shift selection so first selected line starts at current frame.")
+	STR_HELP("Shift selection so that the active line starts at current frame.")
 
 	void operator()(agi::Context *c) {
 		if (!c->videoController->IsLoaded()) return;
