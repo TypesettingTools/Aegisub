@@ -75,7 +75,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split) {
 
 		if (dynamic_cast<AssDialogueBlockPlain*>(block)) {
 			// treat comments as overrides rather than dialogue
-			if (text[0] == '{')
+			if (text.size() && text[0] == '{')
 				syl.ovr_tags[syl.text.size()] += text;
 			else
 				syl.text += text;
