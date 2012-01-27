@@ -110,7 +110,7 @@ VideoDisplay::VideoDisplay(
 {
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	zoomBox->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &VideoDisplay::SetZoomFromBox, this);
-	zoomBox->Bind(wxEVT_COMMAND_TEXT_ENTER, &VideoDisplay::SetZoomFromBox, this);
+	zoomBox->Bind(wxEVT_COMMAND_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
@@ -395,18 +395,27 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = std::max(value, .125);
-	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
+	zoomBox->SetSelection(value / .125 - 1);
+	zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
 	UpdateSize(true);
 }
 
 void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
-	wxString strValue = zoomBox->GetValue();
-	strValue.EndsWith("%", &strValue);
-	double value;
-	if (strValue.ToDouble(&value)) {
-		zoomValue = value / 100.;
+	int sel = zoomBox->GetSelection();
+	if (sel != wxNOT_FOUND) {
+		zoomValue = (sel + 1) * .125;
 		UpdateSize(true);
 	}
+}
+
+void VideoDisplay::SetZoomFromBoxText(wxCommandEvent &) {
+	wxString strValue = zoomBox->GetValue();
+	if (strValue.EndsWith("%"))
+		strValue.RemoveLast();
+
+	double value;
+	if (strValue.ToDouble(&value))
+		SetZoom(value / 100.);
 }
 
 void VideoDisplay::SetTool(VisualToolBase *new_tool) {
