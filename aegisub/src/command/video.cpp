@@ -106,7 +106,7 @@ struct video_aspect_cinematic : public validator_video_loaded {
 /// Forces video to a custom aspect ratio.
 struct video_aspect_custom : public validator_video_loaded {
 	CMD_NAME("video/aspect/custom")
-	STR_MENU("Custom...")
+	STR_MENU("C&ustom...")
 	STR_DISP("Custom")
 	STR_HELP("Forces video to a custom aspect ratio.")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)

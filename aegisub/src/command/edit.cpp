@@ -299,7 +299,7 @@ struct edit_line_paste_over : public Command {
 /// Recombine subtitles when they have been split and merged.
 struct edit_line_recombine : public validate_sel_multiple {
 	CMD_NAME("edit/line/recombine")
-	STR_MENU("Recombine Lines")
+	STR_MENU("Recom&bine Lines")
 	STR_DISP("Recombine Lines")
 	STR_HELP("Recombine subtitles when they have been split and merged.")
 

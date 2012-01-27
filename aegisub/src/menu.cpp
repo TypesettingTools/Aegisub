@@ -219,7 +219,7 @@ public:
 	/// @param parent Menu to append the new MRU menu to
 	void AddRecent(std::string const& name, wxMenu *parent) {
 		mru.push_back(new MruMenu(name, &items));
-		parent->AppendSubMenu(mru.back(), _("Recent"));
+		parent->AppendSubMenu(mru.back(), _("&Recent"));
 	}
 
 	void OnMenuOpen(wxMenuEvent &) {
