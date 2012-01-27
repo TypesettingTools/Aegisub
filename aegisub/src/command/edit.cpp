@@ -77,7 +77,7 @@ struct validate_sel_multiple : public Command {
 /// Find and replace words in subtitles.
 struct edit_find_replace : public Command {
 	CMD_NAME("edit/find_replace")
-		STR_MENU("Find and &Replace...")
+		STR_MENU("Find and R&eplace...")
 		STR_DISP("Find and Replace")
 		STR_HELP("Find and replace words in subtitles.")
 
