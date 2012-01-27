@@ -127,7 +127,7 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 		if (file.FileExists()) {
 			wxString path = lagi_wxString(OPT_GET("Path/Auto/Backup")->GetString());
 			if (path.empty()) path = file.GetPath();
-			wxFileName dstpath(StandardPaths::DecodePath(path));
+			wxFileName dstpath(StandardPaths::DecodePath(path + "/"));
 			if (!dstpath.DirExists())
 				wxMkdir(dstpath.GetPath());
 
@@ -182,7 +182,7 @@ wxString AssFile::AutoSave() {
 	wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
 	if (!path)
 		path = origfile.GetPath();
-	path = StandardPaths::DecodePath(path);
+	path = StandardPaths::DecodePath(path + "/");
 
 	wxFileName dstpath(path);
 	if (!dstpath.DirExists())
