@@ -234,6 +234,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	CenterOnParent();
 
 	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, bind(&DialogTimingProcessor::UpdateControls, this));
+	Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, bind(&DialogTimingProcessor::UpdateControls, this));
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTimingProcessor::OnApply, this, wxID_OK);
 	all->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogTimingProcessor::CheckAll, this, true));
 	none->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogTimingProcessor::CheckAll, this, false));
