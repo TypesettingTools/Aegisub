@@ -103,7 +103,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	for (int i = 1 ; i <= 24; ++i) {
 		choices.Add(wxString::Format("%g%%", i * 12.5));
 	}
-	wxComboBox *zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN);
+	wxComboBox *zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
 	// Typesetting buttons
 	wxToolBar *visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
