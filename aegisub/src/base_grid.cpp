@@ -510,6 +510,11 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 		_("Effect"), _("Left"), _("Right"), _("Vert"), _("Text")
 	};
 
+	int override_mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
+	wxString replace_char;
+	if (override_mode == 1)
+		replace_char = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
+
 	for (int i = 0; i < nDraw + 1; i++) {
 		int curRow = i + yPos - 1;
 		RowColor curColor = COLOR_DEFAULT;
@@ -521,7 +526,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 		}
 		// Lines
 		else if (AssDialogue *curDiag = GetDialogue(curRow)) {
-			GetRowStrings(curRow, curDiag, paint_columns, strings);
+			GetRowStrings(curRow, curDiag, paint_columns, strings, !!override_mode, replace_char);
 
 			bool inSel = !!selection.count(curDiag);
 			if (inSel && curDiag->Comment)
@@ -600,7 +605,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 	}
 }
 
-void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings) const {
+void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings, bool replace, wxString const& rep_char) const {
 	if (paint_columns[0]) strings[0] = wxString::Format("%d", row + 1);
 	if (paint_columns[1]) strings[1] = wxString::Format("%d", line->Layer);
 	if (byFrame) {
@@ -620,19 +625,14 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 
 	if (paint_columns[10]) {
 		strings[10].clear();
-		int mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 
 		// Hidden overrides
-		if (mode == 1 || mode == 2) {
-			wxString replaceWith;
-			if (mode == 1)
-				replaceWith = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
-
+		if (replace) {
 			strings[10].reserve(line->Text.size());
 			size_t start = 0, pos;
 			while ((pos = line->Text.find('{', start)) != wxString::npos) {
 				strings[10] += line->Text.Mid(start, pos - start);
-				strings[10] += replaceWith;
+				strings[10] += rep_char;
 				start = line->Text.find('}', pos);
 				if (start != wxString::npos) ++start;
 			}
