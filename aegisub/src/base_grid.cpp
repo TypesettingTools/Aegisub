@@ -452,7 +452,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		wxRect updrect = region.GetRect();
 		int x = 0;
 		for (size_t i = 0; i < 11; ++i) {
-			if (updrect.x < x + colWidth[i] && updrect.x + updrect.width > x)
+			if (updrect.x < x + colWidth[i] && updrect.x + updrect.width > x && colWidth[i])
 				paint_columns[i] = true;
 			x += colWidth[i];
 		}
