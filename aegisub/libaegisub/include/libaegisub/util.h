@@ -74,8 +74,10 @@ namespace agi {
 	};
 	template<class T>
 	void delete_clear(T& container) {
-		std::for_each(container.begin(), container.end(), delete_ptr());
-		container.clear();
+		if (!container.empty()) {
+			std::for_each(container.begin(), container.end(), delete_ptr());
+			container.clear();
+		}
 	}
 
 	} // namespace util
