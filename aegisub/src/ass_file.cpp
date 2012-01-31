@@ -701,6 +701,12 @@ bool AssFile::CompEnd(const AssDialogue* lft, const AssDialogue* rgt) {
 bool AssFile::CompStyle(const AssDialogue* lft, const AssDialogue* rgt) {
 	return lft->Style < rgt->Style;
 }
+bool AssFile::CompActor(const AssDialogue* lft, const AssDialogue* rgt) {
+	return lft->Actor < rgt->Actor;
+}
+bool AssFile::CompEffect(const AssDialogue* lft, const AssDialogue* rgt) {
+	return lft->Effect < rgt->Effect;
+}
 
 void AssFile::Sort(CompFunc comp) {
 	Sort(Line, comp);

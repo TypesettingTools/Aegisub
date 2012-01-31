@@ -102,7 +102,9 @@
     "main/subtitle/sort lines" : [
         { "command" : "grid/sort/start" },
         { "command" : "grid/sort/end" },
-        { "command" : "grid/sort/style" }
+        { "command" : "grid/sort/style" },
+        { "command" : "grid/sort/actor" },
+        { "command" : "grid/sort/effect" }
     ],
     "main/timing" : [
         { "command" : "time/shift" },

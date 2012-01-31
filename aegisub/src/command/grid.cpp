@@ -99,8 +99,34 @@ struct grid_line_prev : public Command {
 	void operator()(agi::Context *c) {
 		c->selectionController->PrevLine();
 	}
-}
-;
+};
+
+/// Sort all subtitles by their actor names
+struct grid_sort_actor : public Command {
+	CMD_NAME("grid/sort/actor")
+	STR_MENU("&Actor Name")
+	STR_DISP("Actor Name")
+	STR_HELP("Sort all subtitles by their actor names.")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompActor);
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
+/// Sort all subtitles by their effects
+struct grid_sort_effect : public Command {
+	CMD_NAME("grid/sort/effect")
+	STR_MENU("&Effect")
+	STR_DISP("Effect")
+	STR_HELP("Sort all subtitles by their effects")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompEffect);
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
 /// Sort all subtitles by their end times.
 struct grid_sort_end : public Command {
 	CMD_NAME("grid/sort/end")
@@ -127,7 +153,7 @@ struct grid_sort_start : public Command {
 	}
 };
 
-/// Sort all subtitles by their style names.
+/// Sort all subtitles by their style names
 struct grid_sort_style : public Command {
 	CMD_NAME("grid/sort/style")
 	STR_MENU("St&yle Name")
@@ -309,6 +335,8 @@ namespace cmd {
 		reg(new grid_line_next);
 		reg(new grid_line_next_create);
 		reg(new grid_line_prev);
+		reg(new grid_sort_actor);
+		reg(new grid_sort_effect);
 		reg(new grid_sort_end);
 		reg(new grid_sort_start);
 		reg(new grid_sort_style);

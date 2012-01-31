@@ -226,12 +226,16 @@ public:
 	/// Comparison function for use when sorting
 	typedef bool (*CompFunc)(const AssDialogue* lft, const AssDialogue* rgt);
 
-	/// @brief Compare based on start time
+	/// Compare based on start time
 	static bool CompStart(const AssDialogue* lft, const AssDialogue* rgt);
-	/// @brief Compare based on end time
+	/// Compare based on end time
 	static bool CompEnd(const AssDialogue* lft, const AssDialogue* rgt);
-	/// @brief Compare based on end time
+	/// Compare based on style name
 	static bool CompStyle(const AssDialogue* lft, const AssDialogue* rgt);
+	/// Compare based on actor name
+	static bool CompActor(const AssDialogue* lft, const AssDialogue* rgt);
+	/// Compare based on effect
+	static bool CompEffect(const AssDialogue* lft, const AssDialogue* rgt);
 
 	/// @brief Sort the dialogue lines in this file
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
