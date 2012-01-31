@@ -36,32 +36,44 @@
 
 #ifdef WITH_HUNSPELL
 
-#include <memory>
-#include <hunspell/hunspell.hxx>
-
 #include "include/aegisub/spellchecker.h"
+
+#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signal.h>
+
 namespace agi {
 	namespace charset {
 		class IconvWrapper;
 	}
 }
+class Hunspell;
 
 /// @class HunspellSpellChecker
 /// @brief Hunspell spell checker
 ///
 class HunspellSpellChecker : public SpellChecker {
 	/// Hunspell instance
-	std::auto_ptr<Hunspell> hunspell;
+	agi::scoped_ptr<Hunspell> hunspell;
 
 	/// Conversions between the dictionary charset and utf-8
-	std::auto_ptr<agi::charset::IconvWrapper> conv;
-	std::auto_ptr<agi::charset::IconvWrapper> rconv;
+	agi::scoped_ptr<agi::charset::IconvWrapper> conv;
+	agi::scoped_ptr<agi::charset::IconvWrapper> rconv;
 
 	/// Languages which we have dictionaries for
 	wxArrayString languages;
 
 	/// Path to user-local dictionary.
 	wxString userDicPath;
+
+	/// Dictionary language change connection
+	agi::signal::Connection lang_listener;
+	/// Dictionary language change handler
+	void OnLanguageChanged();
+
+	/// Dictionary path change connection
+	agi::signal::Connection dict_path_listener;
+	/// Dictionary path change handler
+	void OnPathChanged();
 
 public:
 	HunspellSpellChecker();
@@ -88,9 +100,6 @@ public:
 
 	/// @brief Get a list of languages which dictionaries are present for
 	wxArrayString GetLanguageList();
-	/// @brief Set the spellchecker's language
-	/// @param language Language code
-	void SetLanguage(wxString language);
 };
 
 #endif

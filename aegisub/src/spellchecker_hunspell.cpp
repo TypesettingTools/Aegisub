@@ -38,6 +38,8 @@
 
 #ifdef WITH_HUNSPELL
 
+#include "spellchecker_hunspell.h"
+
 #ifndef AGI_PRE
 #include <algorithm>
 #include <iterator>
@@ -47,6 +49,8 @@
 #include <wx/filename.h>
 #endif
 
+#include <hunspell/hunspell.hxx>
+
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/log.h>
@@ -54,18 +58,20 @@
 #include "charset_conv.h"
 #include "compat.h"
 #include "main.h"
-#include "spellchecker_hunspell.h"
 #include "standard_paths.h"
 
-HunspellSpellChecker::HunspellSpellChecker() {
-	SetLanguage(lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()));
+HunspellSpellChecker::HunspellSpellChecker()
+: lang_listener(OPT_SUB("Tool/Spell Checker/Language", &HunspellSpellChecker::OnLanguageChanged, this))
+, dict_path_listener(OPT_SUB("Path/Dictionary", &HunspellSpellChecker::OnPathChanged, this))
+{
+	OnLanguageChanged();
 }
 
 HunspellSpellChecker::~HunspellSpellChecker() {
 }
 
 bool HunspellSpellChecker::CanAddWord(wxString word) {
-	if (!hunspell.get()) return false;
+	if (!hunspell) return false;
 	try {
 		conv->Convert(STD_STR(word));
 		return true;
@@ -76,7 +82,7 @@ bool HunspellSpellChecker::CanAddWord(wxString word) {
 }
 
 void HunspellSpellChecker::AddWord(wxString word) {
-	if (!hunspell.get()) return;
+	if (!hunspell) return;
 
 	std::string sword = STD_STR(word);
 
@@ -95,7 +101,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 		try {
 			agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
 			remove_copy_if(
-				++agi::line_iterator<std::string>(*stream.get()),
+				++agi::line_iterator<std::string>(*stream),
 				agi::line_iterator<std::string>(),
 				back_inserter(words),
 				mem_fun_ref(&std::string::empty));
@@ -116,7 +122,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 }
 
 bool HunspellSpellChecker::CheckWord(wxString word) {
-	if (!hunspell.get()) return true;
+	if (!hunspell) return true;
 	try {
 		return hunspell->spell(conv->Convert(STD_STR(word)).c_str()) == 1;
 	}
@@ -127,7 +133,7 @@ bool HunspellSpellChecker::CheckWord(wxString word) {
 
 wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	wxArrayString suggestions;
-	if (!hunspell.get()) return suggestions;
+	if (!hunspell) return suggestions;
 
 	// Grab raw from Hunspell
 	char **results;
@@ -193,11 +199,11 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 	return languages;
 }
 
-void HunspellSpellChecker::SetLanguage(wxString language) {
-	if (language.empty()) {
-		hunspell.reset();
-		return;
-	}
+void HunspellSpellChecker::OnLanguageChanged() {
+	hunspell.reset();
+
+	std::string language = OPT_GET("Tool/Spell Checker/Language")->GetString();
+	if (language.empty()) return;
 
 	wxString userDicRoot = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()));
 	wxString dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
@@ -221,14 +227,14 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	}
 
 	hunspell.reset(new Hunspell(affPath.mb_str(csConvLocal), dicPath.mb_str(csConvLocal)));
-	if (!hunspell.get()) return;
+	if (!hunspell) return;
 
 	conv.reset(new agi::charset::IconvWrapper("utf-8", hunspell->get_dic_encoding()));
 	rconv.reset(new agi::charset::IconvWrapper(hunspell->get_dic_encoding(), "utf-8"));
 
 	try {
-		std::auto_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
-		agi::line_iterator<std::string> userDic(*stream.get());
+		agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
+		agi::line_iterator<std::string> userDic(*stream);
 		agi::line_iterator<std::string> end;
 		++userDic; // skip entry count line
 		for (; userDic != end; ++userDic) {
@@ -245,6 +251,10 @@ void HunspellSpellChecker::SetLanguage(wxString language) {
 	catch (agi::Exception const&) {
 		// File doesn't exist or we don't have permission to read it
 	}
+}
+
+void HunspellSpellChecker::OnPathChanged() {
+	languages.clear();
 }
 
 #endif // WITH_HUNSPELL

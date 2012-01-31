@@ -908,7 +908,6 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 	if (index >= 0)
 		lang = langs[index];
 
-	spellchecker->SetLanguage(lang);
 	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(lang));
 
 	UpdateStyle();

@@ -189,7 +189,6 @@ void DialogSpellChecker::OnAdd(wxCommandEvent&) {
 
 void DialogSpellChecker::OnChangeLanguage(wxCommandEvent&) {
 	wxString code = dictionary_lang_codes[language->GetSelection()];
-	spellchecker->SetLanguage(code);
 	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(code));
 
 	FindNext();

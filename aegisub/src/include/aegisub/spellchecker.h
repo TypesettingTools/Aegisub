@@ -69,7 +69,6 @@ public:
 	virtual wxArrayString GetSuggestions(wxString word)=0;
 
 	virtual wxArrayString GetLanguageList()=0;
-	virtual void SetLanguage(wxString language)=0;
 };
 
 /// DOCME
