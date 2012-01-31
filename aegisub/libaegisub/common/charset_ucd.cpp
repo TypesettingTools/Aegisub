@@ -20,11 +20,8 @@
 
 #include "charset_ucd.h"
 
-#ifndef LAGI_PRE
-#include <memory>
-#endif
-
 #include "libaegisub/io.h"
+#include "libaegisub/scoped_ptr.h"
 
 #include "../../universalchardet/nsCharSetProber.h"
 
@@ -34,13 +31,39 @@ namespace agi {
 
 UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) {
 	{
-		std::auto_ptr<std::ifstream> fp(io::Open(file, true));
+		agi::scoped_ptr<std::ifstream> fp(io::Open(file, true));
 
-		while (!mDone && !fp->eof()) {
-			char buf[512];
-			fp->read(buf, 512);
-			size_t bytes = (size_t)fp->gcount();
-			HandleData(buf, (PRUint32)bytes);
+		// If it's over 100 MB it's either binary or big enough that we won't
+		// be able to do anything useful with it anyway
+		fp->seekg(0, std::ios::end);
+		if (fp->tellg() > 100 * 1024 * 1024) {
+			list.insert(CLDPair(1.f, "binary"));
+			return;
+		}
+		fp->seekg(0, std::ios::beg);
+
+		std::streamsize binaryish = 0;
+		std::streamsize bytes = 0;
+
+		while (!mDone && *fp) {
+			char buf[4096];
+			fp->read(buf, sizeof(buf));
+			std::streamsize read = fp->gcount();
+			HandleData(buf, (PRUint32)read);
+
+			// A dumb heuristic to detect binary files
+			if (!mDone) {
+				bytes += read;
+				for (std::streamsize i = 0; i < read; ++i) {
+					if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
+						++binaryish;
+				}
+
+				if (binaryish > bytes / 8) {
+					list.insert(CLDPair(1.f, "binary"));
+					return;
+				}
+			}
 		}
 	}
 
