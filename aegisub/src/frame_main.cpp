@@ -660,10 +660,13 @@ void FrameMain::OnSubtitlesOpen() {
 
 		// Audio
 		if (curSubsAudio != context->audioController->GetAudioURL()) {
-			if (!curSubsAudio)
-				context->audioController->CloseAudio();
-			else
-				context->audioController->OpenAudio(curSubsAudio);
+			try {
+				if (!curSubsAudio)
+					context->audioController->CloseAudio();
+				else
+					context->audioController->OpenAudio(curSubsAudio);
+			}
+			catch (agi::UserCancelException const&) { }
 		}
 	}
 
