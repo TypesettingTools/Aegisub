@@ -43,7 +43,7 @@
 #ifndef AGI_PRE
 #include <algorithm>
 #include <iterator>
-#include <list>
+#include <set>
 
 #include <wx/dir.h>
 #include <wx/filename.h>
@@ -89,7 +89,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	// Add it to the in-memory dictionary
 	hunspell->add(conv->Convert(sword).c_str());
 
-	std::list<std::string> words;
+	std::set<std::string> words;
 
 	// Ensure that the path exists
 	wxFileName fn(userDicPath);
@@ -103,7 +103,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 			remove_copy_if(
 				++agi::line_iterator<std::string>(*stream),
 				agi::line_iterator<std::string>(),
-				back_inserter(words),
+				inserter(words, words.end()),
 				mem_fun_ref(&std::string::empty));
 		}
 		catch (agi::FileNotFoundError&) {
@@ -112,13 +112,20 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	}
 
 	// Add the word
-	words.push_back(sword);
-	words.sort();
+	words.insert(sword);
 
 	// Write the new dictionary
-	agi::io::Save writer(STD_STR(userDicPath));
-	writer.Get() << words.size() << "\n";
-	copy(words.begin(), words.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
+	{
+		agi::io::Save writer(STD_STR(userDicPath));
+		writer.Get() << words.size() << "\n";
+		copy(words.begin(), words.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
+	}
+
+	// Announce a language change so that any other spellcheckers pick up the
+	// new word
+	lang_listener.Block();
+	OPT_SET("Tool/Spell Checker/Language")->SetString(OPT_GET("Tool/Spell Checker/Language")->GetString());
+	lang_listener.Unblock();
 }
 
 bool HunspellSpellChecker::CheckWord(wxString word) {
