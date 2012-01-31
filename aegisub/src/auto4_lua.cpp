@@ -707,9 +707,22 @@ namespace Automation4 {
 		lua_pushinteger(L, transform_selection(L, c));
 
 		try {
-			LuaThreadedCall(L, 3, 1, StrDisplay(c), c->parent, true);
+			LuaThreadedCall(L, 3, 2, StrDisplay(c), c->parent, true);
 
 			subsobj->ProcessingComplete(StrDisplay(c));
+
+			AssDialogue *active_line = 0;
+			int active_idx = 0;
+
+			// Check for a new active row
+			if (lua_isnumber(L, -1)) {
+				active_idx = lua_tointeger(L, -1);
+				if (active_idx < 1 || active_idx > (int)c->ass->Line.size()) {
+					wxLogError("Active row %d is out of bounds (must be 1-%u)", active_idx, c->ass->Line.size());
+					active_idx = 0;
+				}
+			}
+			lua_pop(L, 1);
 
 			// top of stack will be selected lines array, if any was returned
 			if (lua_istable(L, -1)) {
@@ -735,11 +748,15 @@ namespace Automation4 {
 
 						sel.insert(diag);
 						last_idx = cur;
+						if (!active_line || active_idx == cur)
+							active_line = diag;
 					}
 					lua_pop(L, 1);
 				}
 
 				c->selectionController->SetSelectedSet(sel);
+				if (active_line && (active_idx > 0 || !sel.count(c->selectionController->GetActiveLine())))
+					c->selectionController->SetActiveLine(active_line);
 			}
 		}
 		catch (agi::UserCancelException const&) {
