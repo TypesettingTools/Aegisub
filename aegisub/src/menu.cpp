@@ -146,8 +146,10 @@ class CommandManager {
 	void UpdateItem(std::pair<std::string, wxMenuItem*> const& item) {
 		cmd::Command *c = cmd::get(item.first);
 		int flags = c->Type();
-		if (flags & cmd::COMMAND_VALIDATE)
+		if (flags & cmd::COMMAND_VALIDATE) {
 			item.second->Enable(c->Validate(context));
+			flags = c->Type();
+		}
 		if (flags & cmd::COMMAND_DYNAMIC_NAME)
 			UpdateItemName(item);
 		if (flags & cmd::COMMAND_DYNAMIC_HELP)
