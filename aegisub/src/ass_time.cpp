@@ -75,11 +75,22 @@ void AssTime::ParseASS(wxString const& text) {
 	*this = AssTime(ms);
 }
 
-wxString AssTime::GetASSFormated (bool msPrecision) const {
-	if (msPrecision)
-		return wxString::Format("%d:%02d:%02d.%03d", GetTimeHours(), GetTimeMinutes(), GetTimeSeconds(), GetTimeMiliseconds());
-	else
-		return wxString::Format("%d:%02d:%02d.%02d", GetTimeHours(), GetTimeMinutes(), GetTimeSeconds(), GetTimeCentiseconds());
+wxString AssTime::GetASSFormated(bool msPrecision) const {
+	wxChar ret[] = {
+		'0' + GetTimeHours(),
+		':',
+		'0' + (time % (60 * 60 * 1000)) / (60 * 1000 * 10),
+		'0' + (time % (10 * 60 * 1000)) / (60 * 1000),
+		':',
+		'0' + (time % (60 * 1000)) / (1000 * 10),
+		'0' + (time % (10 * 1000)) / 1000,
+		'.',
+		'0' + (time % 1000) / 100,
+		'0' + (time % 100) / 10,
+		'0' + time % 10
+	};
+
+	return wxString(ret, msPrecision ? 11 : 10);
 }
 
 int AssTime::GetTimeHours() const { return time / 3600000; }
