@@ -42,8 +42,7 @@
 #include <iterator>
 #include <numeric>
 
-#include <wx/dcclient.h>
-#include <wx/dcmemory.h>
+#include <wx/dcbuffer.h>
 #include <wx/kbdstate.h>
 #include <wx/menu.h>
 #include <wx/sizer.h>
@@ -91,7 +90,6 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , lineHeight(1) // non-zero to avoid div by 0
 , holding(false)
 , scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
-, bmp(0)
 , byFrame(false)
 , extendRow(-1)
 , active_line(0)
@@ -109,6 +107,8 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	scrollbarpositioner->Add(scrollBar, 0, wxEXPAND, 0);
 
 	SetSizerAndFit(scrollbarpositioner);
+
+	SetBackgroundStyle(wxBG_STYLE_PAINT);
 
 	UpdateStyle();
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
@@ -140,7 +140,6 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 
 BaseGrid::~BaseGrid() {
 	ClearMaps();
-	delete bmp;
 	delete context_menu;
 }
 
@@ -445,13 +444,6 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	wxSize cs = GetClientSize();
 	cs.SetWidth(cs.GetWidth() - scrollBar->GetSize().GetWidth());
 
-	// Prepare bitmap
-	if (bmp && (bmp->GetWidth() < cs.GetWidth() || bmp->GetHeight() < cs.GetHeight())) {
-		delete bmp;
-		bmp = 0;
-	}
-	if (!bmp) bmp = new wxBitmap(cs);
-
 	// Find which columns need to be repainted
 	bool paint_columns[11];
 	memset(paint_columns, 0, sizeof paint_columns);
@@ -466,13 +458,8 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		}
 	}
 
-	// Draw bitmap
-	wxMemoryDC bmpDC;
-	bmpDC.SelectObject(*bmp);
-	DrawImage(bmpDC, paint_columns);
-
-	wxPaintDC dc(this);
-	dc.Blit(wxPoint(0, 0), cs, &bmpDC, wxPoint(0, 0));
+	wxAutoBufferedPaintDC dc(this);
+	DrawImage(dc, paint_columns);
 }
 
 void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {

@@ -69,7 +69,6 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	bool holding;           ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
-	wxBitmap *bmp;          ///< Back buffer which the grid is rendered into
 	bool byFrame;           ///< Should times be displayed as frame numbers
 
 	/// Row from which the selection shrinks/grows from when selecting via the
