@@ -188,7 +188,7 @@ void AudioRenderer::ResetBlockCount()
 }
 
 
-wxBitmap AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
+const wxBitmap *AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
 {
 	assert(provider);
 	assert(renderer);
@@ -202,7 +202,7 @@ wxBitmap AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
 	}
 
 	assert(bmp->IsOk());
-	return *bmp;
+	return bmp;
 }
 
 
@@ -223,68 +223,17 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, Audi
 	// And the offset in it to start its use at
 	int firstbitmapoffset = start % cache_bitmap_width;
 	// The last bitmap required
-	int lastbitmap = end / cache_bitmap_width;
-	// How many columns of the last bitmap to use
-	int lastbitmapoffset = end % cache_bitmap_width;
+	int lastbitmap = std::min<int>(end / cache_bitmap_width, cache_numblocks - 1);
 
-	// Check if we need to render any blank audio past the last bitmap from cache,
-	// this happens if we're asked to render more audio than the provider has.
-	if (lastbitmap >= (int)cache_numblocks)
+	// Set a clipping region so that the first and last bitmaps don't draw
+	// outside the requested range
+	wxDCClipper clipper(dc, wxRect(origin, wxSize(length, pixel_height)));
+	origin.x -= firstbitmapoffset;
+
+	for (int i = firstbitmap; i <= lastbitmap; ++i)
 	{
-		lastbitmap = cache_numblocks - 1;
-		lastbitmapoffset = cache_bitmap_width;
-
-		if (firstbitmap > lastbitmap)
-			firstbitmap = lastbitmap;
-	}
-
-	// Three basic cases now:
-	//  * Either we're just rendering blank audio,
-	//  * Or there is exactly one bitmap to render,
-	//  * Or there is more than one bitmap to render.
-
-	// origin is passed by value because we'll be using it as a local var to keep track
-	// of rendering progress!
-
-	if (start / cache_bitmap_width >= (int)cache_numblocks)
-	{
-		// Do nothing, the blank audio rendering will happen later
-	}
-	else if (firstbitmap == lastbitmap)
-	{
-		const int renderwidth = lastbitmapoffset - firstbitmapoffset;
-		wxBitmap bmp = GetCachedBitmap(firstbitmap, style);
-		wxMemoryDC bmpdc(bmp);
-		dc.Blit(origin, wxSize(renderwidth, pixel_height), &bmpdc, wxPoint(firstbitmapoffset, 0));
-		origin.x += renderwidth;
-	}
-	else
-	{
-		wxBitmap bmp;
-
-		{
-			bmp = GetCachedBitmap(firstbitmap, style);
-			// Can't use dc.DrawBitmap here because we need to clip the bitmap
-			wxMemoryDC bmpdc(bmp);
-			dc.Blit(origin, wxSize(cache_bitmap_width-firstbitmapoffset, pixel_height),
-				&bmpdc, wxPoint(firstbitmapoffset, 0));
-			origin.x += cache_bitmap_width-firstbitmapoffset;
-		}
-
-		for (int i = firstbitmap+1; i < lastbitmap; ++i)
-		{
-			bmp = GetCachedBitmap(i, style);
-			dc.DrawBitmap(bmp, origin);
-			origin.x += cache_bitmap_width;
-		}
-
-		{
-			bmp = GetCachedBitmap(lastbitmap, style);
-			// We also need clipping here
-			wxMemoryDC bmpdc(bmp);
-			dc.Blit(origin, wxSize(lastbitmapoffset+1, pixel_height), &bmpdc, wxPoint(0, 0));
-			origin.x += lastbitmapoffset+1;
-		}
+		dc.DrawBitmap(*GetCachedBitmap(i, style), origin);
+		origin.x += cache_bitmap_width;
 	}
 
 	// Now render blank audio from origin to end
