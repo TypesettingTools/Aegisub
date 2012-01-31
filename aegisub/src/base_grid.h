@@ -70,6 +70,7 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	wxFont font;            ///< Current grid font
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
 	bool byFrame;           ///< Should times be displayed as frame numbers
+	wxBrush rowColors[7];   ///< Cached brushes used for row backgrounds
 
 	/// Row from which the selection shrinks/grows from when selecting via the
 	/// keyboard, shift-clicking or dragging

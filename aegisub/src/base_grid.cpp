@@ -75,7 +75,8 @@ enum RowColor {
 	COLOR_SELECTION,
 	COLOR_COMMENT,
 	COLOR_VISIBLE,
-	COLOR_SELECTED_COMMENT
+	COLOR_SELECTED_COMMENT,
+	COLOR_LEFT_COL
 };
 
 template<class S1, class S2, class D>
@@ -230,6 +231,16 @@ void BaseGrid::UpdateStyle() {
 		dc.GetTextExtent("#TWFfgGhH", &fw, &fh, NULL, NULL, &font);
 		lineHeight = fh + 4;
 	}
+
+	// Set row brushes
+	assert(sizeof(rowColors) / sizeof(rowColors[0]) >= COLOR_LEFT_COL);
+	rowColors[COLOR_DEFAULT].SetColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColour()));
+	rowColors[COLOR_HEADER].SetColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Header")->GetColour()));
+	rowColors[COLOR_SELECTION].SetColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
+	rowColors[COLOR_COMMENT].SetColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Comment")->GetColour()));
+	rowColors[COLOR_VISIBLE].SetColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Inframe")->GetColour()));
+	rowColors[COLOR_SELECTED_COMMENT].SetColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColour()));
+	rowColors[COLOR_LEFT_COL].SetColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Left Column")->GetColour()));
 
 	// Set column widths
 	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
@@ -470,12 +481,12 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 
 	dc.SetFont(font);
 
-	dc.SetBackground(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColour())));
+	dc.SetBackground(rowColors[COLOR_DEFAULT]);
 	dc.Clear();
 
 	// Draw labels
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.SetBrush(wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Left Column")->GetColour())));
+	dc.SetBrush(rowColors[COLOR_LEFT_COL]);
 	dc.DrawRectangle(0,lineHeight,colWidth[0],h-lineHeight);
 
 	// Visible lines
@@ -487,15 +498,6 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 	wxColour text_standard(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Standard")->GetColour()));
 	wxColour text_selection(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
 	wxColour text_collision(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Collision")->GetColour()));
-
-	wxBrush rowColors[] = {
-		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColour())),
-		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Header")->GetColour())),
-		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour())),
-		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Comment")->GetColour())),
-		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Inframe")->GetColour())),
-		wxBrush(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColour())),
-	};
 
 	// First grid row
 	wxPen grid_pen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour()));
@@ -581,7 +583,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 
 	// Draw grid columns
 	int dx = 0;
-	dc.SetPen(wxPen(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Lines")->GetColour())));
+	dc.SetPen(grid_pen);
 	for (int i=0;i<10;i++) {
 		dx += colWidth[i];
 		dc.DrawLine(dx,0,dx,maxH);
