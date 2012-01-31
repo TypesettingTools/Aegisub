@@ -641,8 +641,8 @@ namespace Automation4 {
 		// may rely on kara[0] existing so add an empty syllable
 		lua_newtable(L);
 		set_field(L, "duration", 0);
-		set_field(L, "start_time", dia->Start);
-		set_field(L, "end_time", dia->Start);
+		set_field(L, "start_time", 0);
+		set_field(L, "end_time", 0);
 		set_field(L, "tag", "");
 		set_field(L, "text", "");
 		set_field(L, "text_stripped", "");
@@ -652,8 +652,8 @@ namespace Automation4 {
 		for (AssKaraoke::iterator it = kara.begin(); it != kara.end(); ++it) {
 			lua_newtable(L);
 			set_field(L, "duration", it->duration);
-			set_field(L, "start_time", it->start_time);
-			set_field(L, "end_time", it->start_time + it->duration);
+			set_field(L, "start_time", it->start_time - dia->Start);
+			set_field(L, "end_time", it->start_time + it->duration - dia->Start);
 			set_field(L, "tag", it->tag_type);
 			set_field(L, "text", it->GetText(false));
 			set_field(L, "text_stripped", it->text);
