@@ -72,11 +72,11 @@ static void add_button(wxWindow *parent, wxSizer *sizer, const char *command, ag
 	wxBitmapButton *btn = new wxBitmapButton(parent, -1, c->Icon(24));
 	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&cmd::Command::operator(), c, context));
 	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
-	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);;
+	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
 }
 
 VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
-: wxPanel (parent,-1)
+: wxPanel(parent,-1)
 , context(context)
 {
 	// Buttons
@@ -171,13 +171,8 @@ void VideoBox::UpdateTimeBoxes() {
 	int frame = context->videoController->GetFrameN();
 	int time = context->videoController->TimeAtFrame(frame, agi::vfr::EXACT);
 
-	int h = time / 3600000;
-	int m = time % 3600000 / 60000;
-	int s = time % 60000 / 1000;
-	int ms = time % 1000;
-
 	// Set the text box for frame number and time
-	VideoPosition->SetValue(wxString::Format("%01i:%02i:%02i.%03i - %i", h, m, s, ms, frame));
+	VideoPosition->SetValue(wxString::Format("%s - %d", AssTime(time).GetASSFormated(true), frame));
 	if (binary_search(context->videoController->GetKeyFrames().begin(), context->videoController->GetKeyFrames().end(), frame)) {
 		// Set the background color to indicate this is a keyframe
 		VideoPosition->SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
