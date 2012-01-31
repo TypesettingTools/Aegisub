@@ -24,6 +24,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>
@@ -141,7 +142,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnIgnoreAll, this);
 
 		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to &dictionary")), button_flags);
-		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnAdd, this);
+		add_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnAdd, this);
 
 		actions_sizer->Add(new HelpButton(this, "Spell Checker"), button_flags);
 
