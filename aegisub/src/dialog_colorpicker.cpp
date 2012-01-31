@@ -136,7 +136,7 @@ public:
 	ColorPickerRecent(wxWindow *parent, int cols, int rows, int cellsize);
 
 	/// Load the colors to show from a string
-	void LoadFromString(const wxString &recent_string = "");
+	void LoadFromString(const wxString &recent_string = wxString());
 	/// Save the colors currently shown to a string
 	wxString StoreToString();
 	/// Add a color to the beginning of the recent list

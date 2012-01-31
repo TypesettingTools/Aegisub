@@ -441,7 +441,6 @@ namespace Automation4 {
 			} else if (first_char == '$') {
 				basepath = autobasefn;
 			} else if (first_char == '/') {
-				basepath = "";
 			} else {
 				wxLogWarning("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %c\nFilename specified: %s",
 					first_char, trimmed);

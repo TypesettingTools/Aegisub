@@ -617,7 +617,7 @@ void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
 /// @param list 
 /// @param v    
 void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*> v) {
-	wxString data = "";
+	wxString data;
 	AssStyle *s;
 	wxArrayInt selections;
 	list->GetSelections(selections);
@@ -637,7 +637,7 @@ void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*
 
 /// @brief Paste from clipboard 
 void DialogStyleManager::PasteToCurrent() {
-	wxString data = "";
+	wxString data;
 
 	if (wxTheClipboard->Open()) {
 		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
@@ -669,7 +669,7 @@ void DialogStyleManager::PasteToCurrent() {
 
 /// @brief DOCME
 void DialogStyleManager::PasteToStorage() {
-	wxString data = "";
+	wxString data;
 
 	if (wxTheClipboard->Open()) {
 		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {

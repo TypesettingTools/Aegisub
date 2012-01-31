@@ -82,7 +82,7 @@ public:
 	/// Group it belongs to, e.g. "[Events]"
 	wxString group;
 
-	AssEntry(wxString const& data = "", wxString const& group = "") : data(data), group(group) { }
+	AssEntry(wxString const& data = wxString(), wxString const& group = wxString()) : data(data), group(group) { }
 	virtual ~AssEntry() { }
 
 	/// Create a copy of this entry

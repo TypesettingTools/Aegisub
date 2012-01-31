@@ -96,7 +96,7 @@ public:
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
 	ASS_BlockType GetType() { return BLOCK_PLAIN; }
-	AssDialogueBlockPlain(wxString const& text = "") : AssDialogueBlock(text) { }
+	AssDialogueBlockPlain(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 };
 
 /// @class AssDialogueBlockDrawing
@@ -109,7 +109,7 @@ public:
 	int Scale;
 
 	ASS_BlockType GetType() { return BLOCK_DRAWING; }
-	AssDialogueBlockDrawing(wxString const& text = "") : AssDialogueBlock(text) { }
+	AssDialogueBlockDrawing(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
@@ -119,7 +119,7 @@ public:
 /// DOCME
 class AssDialogueBlockOverride : public AssDialogueBlock {
 public:
-	AssDialogueBlockOverride(wxString const& text = "") : AssDialogueBlock(text) { }
+	AssDialogueBlockOverride(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 	~AssDialogueBlockOverride();
 
 	/// DOCME

@@ -75,7 +75,7 @@ public:
 	/// @param val Initial value to set the associated control to
 	/// @param isfloat Allow floats, or just ints?
 	/// @param issigned Allow negative numbers?
-	explicit NumValidator(wxString val = "", bool isfloat=false, bool issigned=false);
+	explicit NumValidator(wxString val = wxString(), bool isfloat=false, bool issigned=false);
 
 	/// Constructor
 	/// @param val Initial value to set the associated control to

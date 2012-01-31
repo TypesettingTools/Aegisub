@@ -302,7 +302,7 @@ namespace Automation4 {
 			wxString section = get_string_field(L, "section", "common");
 
 			if (lclass == "clear")
-				result = new AssEntry("");
+				result = new AssEntry;
 			else if (lclass == "comment")
 				result = new AssEntry(";" + get_string_field(L, "text", "comment"));
 			else if (lclass == "head")

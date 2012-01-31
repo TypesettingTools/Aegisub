@@ -49,21 +49,18 @@
 #include "utils.h"
 
 AssDialogue::AssDialogue()
-: Comment(false)
+: AssEntry(wxString(), "[Events]")
+, Comment(false)
 , Layer(0)
 , Start(0)
 , End(5000)
 , Style("Default")
-, Actor("")
-, Effect("")
-, Text("")
 {
-	group = "[Events]";
 	for (int i=0;i<4;i++) Margin[i] = 0;
 }
 
 AssDialogue::AssDialogue(AssDialogue const& that)
-: AssEntry()
+: AssEntry(wxString(), "[Events]")
 , Comment(that.Comment)
 , Layer(that.Layer)
 , Start(that.Start)
@@ -73,7 +70,6 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 , Effect(that.Effect)
 , Text(that.Text)
 {
-	group = that.group;
 	for (int i=0;i<4;i++) Margin[i] = that.Margin[i];
 }
 
@@ -81,16 +77,13 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 /// @param _data   
 /// @param version 
 AssDialogue::AssDialogue(wxString _data,int version)
-: Comment(false)
+: AssEntry(wxString(), "[Events]")
+, Comment(false)
 , Layer(0)
 , Start(0)
 , End(5000)
 , Style("Default")
-, Actor("")
-, Effect("")
-, Text("")
 {
-	group = "[Events]";
 	bool valid = false;
 	// Try parsing in different ways
 	int count = 0;
@@ -363,7 +356,7 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 	// Make it numeric
 	wxString strvalue = origvalue;
 	if (!strvalue.IsNumber()) {
-		strvalue = "";
+		strvalue.clear();
 		for (size_t i=0;i<origvalue.Length();i++) {
 			if (origvalue.Mid(i,1).IsNumber()) {
 				strvalue += origvalue.Mid(i,1);

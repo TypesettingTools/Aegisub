@@ -123,7 +123,7 @@ namespace Automation4 {
 		/// @param set_undo If there's any uncommitted changes to the file,
 		///                 they will be automatically committed with this
 		///                 description
-		void ProcessingComplete(wxString const& undo_description = "");
+		void ProcessingComplete(wxString const& undo_description = wxString());
 
 		/// End processing without applying any changes made
 		void Cancel();

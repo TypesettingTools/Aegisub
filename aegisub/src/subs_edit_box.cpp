@@ -100,7 +100,7 @@ std::pair<int, int> get_selection(SubsTextEditCtrl *TextEdit) {
 /// @param tag     Tag to get the value of
 /// @param alt     Alternate name of the tag, if any
 template<class T>
-static T get_value(AssDialogue const& line, int blockn, T initial, wxString tag, wxString alt = "") {
+static T get_value(AssDialogue const& line, int blockn, T initial, wxString tag, wxString alt = wxString()) {
 	for (int i = blockn; i >= 0; i--) {
 		AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(line.Blocks[i]);
 		if (!ovr) continue;

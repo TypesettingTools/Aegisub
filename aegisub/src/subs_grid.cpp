@@ -181,7 +181,7 @@ void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 
 void SubtitlesGrid::CopyLines(wxArrayInt target) {
 	// Prepare text
-	wxString data = "";
+	wxString data;
 	AssDialogue *cur;
 	int nrows = target.Count();
 	bool first = true;
