@@ -34,7 +34,7 @@ namespace agi {
 
 UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) {
 	{
-		std::auto_ptr<std::ifstream> fp(io::Open(file));
+		std::auto_ptr<std::ifstream> fp(io::Open(file, true));
 
 		while (!mDone && !fp->eof()) {
 			char buf[512];
