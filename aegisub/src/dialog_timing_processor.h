@@ -58,7 +58,8 @@ class DialogTimingProcessor : public wxDialog {
 	int afterStart;  ///< Maximum time in milliseconds to move start time of line forwards to land on a keyframe
 	int beforeEnd;   ///< Maximum time in milliseconds to move end time of line backwards to land on a keyframe
 	int afterEnd;    ///< Maximum time in milliseconds to move end time of line forwards to land on a keyframe
-	int adjDistance; ///< Maximum time in milliseconds to snap adjacent lines to each other
+	int adjGap;      ///< Maximum gap in milliseconds to snap adjacent lines to each other
+	int adjOverlap;  ///< Maximum overlap in milliseconds to snap adjacent lines to each other
 
 	wxCheckBox *onlySelection; ///< Only process selected lines of the selected styles
 	wxCheckBox *hasLeadIn;     ///< Enable adding lead-in

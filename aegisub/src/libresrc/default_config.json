@@ -496,7 +496,8 @@
 			},
 			"Only Selection" : false,
 			"Threshold" : {
-				"Adjacent" : 300,
+				"Adjacent Gap" : 300,
+				"Adjacent Overlap" : 50,
 				"Key End After" : 250,
 				"Key End Before" : 200,
 				"Key Start After" : 150,

@@ -116,7 +116,8 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	beforeEnd = OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt();
 	afterStart = OPT_GET("Tool/Timing Post Processor/Threshold/Key Start After")->GetInt();
 	afterEnd = OPT_GET("Tool/Timing Post Processor/Threshold/Key End After")->GetInt();
-	adjDistance = OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent")->GetInt();
+	adjGap = OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent Gap")->GetInt();
+	adjOverlap = OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent Overlap")->GetInt();
 
 	// Styles box
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
@@ -156,15 +157,24 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 		"Tool/Timing Post Processor/Enable/Adjacent",
 		_("Enable snapping of subtitles together if they are within a certain distance of each other."));
 
-	make_ctrl(AdjacentSizer, _("Threshold:"), &adjDistance, adjsEnable,
+	wxSizer *adjBoxes = new wxBoxSizer(wxHORIZONTAL);
+	make_ctrl(this, adjBoxes, _("Max gap:"), &adjGap, adjsEnable,
 		_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."));
+	make_ctrl(this, adjBoxes, _("Max overlap:"), &adjOverlap, adjsEnable,
+		_("Maximum overlap between the end and start time for two subtitles to be made continuous, in milliseconds."));
 
 	adjacentBias = new wxSlider(this, -1, mid<int>(0, OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble() * 100, 100), 0, 100, wxDefaultPosition, wxSize(-1,20));
-	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."));
+	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend or shrink start time of the second line; if totally to right, it will extend or shrink the end time of the first line."));
 
-	AdjacentSizer->Add(new wxStaticText(this, -1, _("Bias: Start <- ")), wxSizerFlags().Center());
-	AdjacentSizer->Add(adjacentBias, wxSizerFlags(1).Expand().Center());
-	AdjacentSizer->Add(new wxStaticText(this, -1, _(" -> End")), wxSizerFlags().Center());
+	wxSizer *adjSliderSizer = new wxBoxSizer(wxHORIZONTAL);
+	adjSliderSizer->Add(new wxStaticText(this, -1, _("Bias: Start <- ")), wxSizerFlags().Center());
+	adjSliderSizer->Add(adjacentBias, wxSizerFlags(1).Expand().Center());
+	adjSliderSizer->Add(new wxStaticText(this, -1, _(" -> End")), wxSizerFlags().Center());
+
+	wxSizer *adjRightSizer = new wxBoxSizer(wxVERTICAL);
+	adjRightSizer->Add(adjBoxes);
+	adjRightSizer->Add(adjSliderSizer);
+	AdjacentSizer->Add(adjRightSizer);
 
 	// Keyframes sizer
 	wxStaticBoxSizer *KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Keyframe snapping"));
@@ -271,7 +281,8 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	OPT_SET("Tool/Timing Post Processor/Threshold/Key Start After")->SetInt(afterStart);
 	OPT_SET("Tool/Timing Post Processor/Threshold/Key End Before")->SetInt(beforeEnd);
 	OPT_SET("Tool/Timing Post Processor/Threshold/Key End After")->SetInt(afterEnd);
-	OPT_SET("Tool/Timing Post Processor/Threshold/Adjacent")->SetInt(adjDistance);
+	OPT_SET("Tool/Timing Post Processor/Threshold/Adjacent Gap")->SetInt(adjGap);
+	OPT_SET("Tool/Timing Post Processor/Threshold/Adjacent Overlap")->SetInt(adjOverlap);
 	OPT_SET("Tool/Timing Post Processor/Adjacent Bias")->SetDouble(adjacentBias->GetValue() / 100.0);
 	OPT_SET("Tool/Timing Post Processor/Enable/Lead/IN")->SetBool(hasLeadIn->IsChecked());
 	OPT_SET("Tool/Timing Post Processor/Enable/Lead/OUT")->SetBool(hasLeadOut->IsChecked());
@@ -371,12 +382,8 @@ void DialogTimingProcessor::Process() {
 			AssDialogue *prev = sorted[i - 1];
 			AssDialogue *cur = sorted[i];
 
-			// Check if they don't collide
-			if (cur->CollidesWith(prev)) continue;
-
-			// Compare distance
 			int dist = cur->Start - prev->End;
-			if (dist > 0 && dist <= adjDistance) {
+			if ((dist < 0 && -dist <= adjOverlap) || (dist > 0 && dist <= adjGap)) {
 				int setPos = prev->End + int(dist * bias);
 				cur->Start = setPos;
 				prev->End = setPos;
