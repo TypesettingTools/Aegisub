@@ -40,8 +40,9 @@ class PersistLocation {
 	agi::OptionValue *x_opt;
 	agi::OptionValue *y_opt;
 	agi::OptionValue *maximize_opt;
+	class wxDialog *dialog;
 
-	void OnMove(wxMoveEvent &evt);
+	void OnMove(wxMoveEvent &);
 	void OnMinimize(wxIconizeEvent &evt);
 
 public:

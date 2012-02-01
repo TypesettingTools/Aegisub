@@ -35,6 +35,7 @@ PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)
 : x_opt(OPT_SET(options_prefix + "/Last/X"))
 , y_opt(OPT_SET(options_prefix + "/Last/Y"))
 , maximize_opt(OPT_SET(options_prefix + "/Maximized"))
+, dialog(dialog)
 {
 	dialog->Bind(wxEVT_MOVE, &PersistLocation::OnMove, this);
 	dialog->Bind(wxEVT_ICONIZE, &PersistLocation::OnMinimize, this);
@@ -78,8 +79,8 @@ PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)
 	}
 }
 
-void PersistLocation::OnMove(wxMoveEvent &evt) {
-	wxPoint pos = evt.GetPosition();
+void PersistLocation::OnMove(wxMoveEvent &) {
+	wxPoint pos = dialog->GetPosition();
 	x_opt->SetInt(pos.x);
 	y_opt->SetInt(pos.y);
 }
