@@ -145,10 +145,11 @@ public:
 	{
 	}
 
-	void AddChild(Combo const& combo) {
+	wxDataViewItem AddChild(Combo const& combo) {
 		children.push_back(HotkeyModelCombo(this, combo));
 		visible_items.push_back(wxDataViewItem(&children.back()));
 		model->ItemAdded(wxDataViewItem(this), wxDataViewItem(&children.back()));
+		return wxDataViewItem(&children.back());
 	}
 
 	void Delete(wxDataViewItem const& item) {
@@ -307,8 +308,8 @@ bool HotkeyDataViewModel::SetValue(wxVariant const& variant, wxDataViewItem cons
 	return get(item)->SetValue(variant, col);
 }
 
-void HotkeyDataViewModel::New(wxDataViewItem item) {
-	if (!item.IsOk()) return;
+wxDataViewItem HotkeyDataViewModel::New(wxDataViewItem item) {
+	if (!item.IsOk()) return wxDataViewItem();
 
 	if (!IsContainer(item))
 		item = GetParent(item);
@@ -316,7 +317,7 @@ void HotkeyDataViewModel::New(wxDataViewItem item) {
 	HotkeyModelCategory *ctx = static_cast<HotkeyModelCategory*>(item.GetID());
 	wxVariant name;
 	ctx->GetValue(name, 0);
-	ctx->AddChild(Combo(STD_STR(name.GetString()), "", std::vector<std::string>()));
+	return ctx->AddChild(Combo(STD_STR(name.GetString()), "", std::vector<std::string>()));
 }
 
 void HotkeyDataViewModel::Delete(wxDataViewItem const& item) {

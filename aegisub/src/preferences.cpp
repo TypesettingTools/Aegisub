@@ -417,16 +417,29 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	SetSizerAndFit(sizer);
 }
 
+static void edit_item(wxDataViewCtrl *dvc, wxDataViewItem item) {
+#if wxCHECK_VERSION(2, 9, 4)
+	dvc->EditItem(item, dvc->GetColumn(0));
+#else
+	dvc->StartEditor(item, 0);
+#endif
+}
+
 void Interface_Hotkeys::OnNewButton(wxCommandEvent&) {
-	model->New(dvc->GetSelection());
+	wxDataViewItem sel = dvc->GetSelection();
+	dvc->ExpandAncestors(sel);
+	dvc->Expand(sel);
+
+	wxDataViewItem new_item = model->New(sel);
+	if (new_item.IsOk()) {
+		dvc->Select(new_item);
+		dvc->EnsureVisible(new_item);
+		edit_item(dvc, new_item);
+	}
 }
 
 void Interface_Hotkeys::OnEditButton(wxCommandEvent&) {
-#if wxCHECK_VERSION(2, 9, 4)
-	dvc->EditItem(dvc->GetSelection(), dvc->GetColumn(0));
-#else
-	dvc->StartEditor(dvc->GetSelection(), 0);
-#endif
+	edit_item(dvc, dvc->GetSelection());
 }
 
 void Interface_Hotkeys::OnDeleteButton(wxCommandEvent&) {

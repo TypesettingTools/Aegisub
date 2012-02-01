@@ -46,7 +46,9 @@ public:
 	HotkeyDataViewModel(Preferences *parent);
 
 	/// Create a new hotkey in the current context
-	void New(wxDataViewItem item);
+	/// @param item A context or hotkey entry
+	/// @return The new hotkey
+	wxDataViewItem New(wxDataViewItem item);
 	/// Delete the currently selected hotkey
 	void Delete(wxDataViewItem const& item);
 	/// Update the hotkeys with changes made to the model
