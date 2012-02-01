@@ -60,7 +60,7 @@ AssDialogue::AssDialogue()
 }
 
 AssDialogue::AssDialogue(AssDialogue const& that)
-: AssEntry(wxString(), "[Events]")
+: AssEntry(wxString(), that.group)
 , Comment(that.Comment)
 , Layer(that.Layer)
 , Start(that.Start)
