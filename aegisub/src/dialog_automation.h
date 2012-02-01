@@ -83,23 +83,11 @@ class DialogAutomation : public wxDialog {
 	/// List of loaded scripts
 	wxListView *list;
 
-	/// Load a local script
-	wxButton *add_button;
-
 	/// Unload a local script
 	wxButton *remove_button;
 
 	/// Reload a script
 	wxButton *reload_button;
-
-	/// Get a list of features provided by a script
-	wxButton *info_button;
-
-	/// Rescan the autoload directories
-	wxButton *reload_autoload_button;
-
-	/// Close the dialog
-	wxButton *close_button;
 
 	void RebuildList();
 	void AddScript(Automation4::Script *script, bool is_global);

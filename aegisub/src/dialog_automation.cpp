@@ -70,12 +70,12 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 
 	// create main controls
 	list = new wxListView(this, -1, wxDefaultPosition, wxSize(600, 175), wxLC_REPORT|wxLC_SINGLE_SEL);
-	add_button = new wxButton(this, -1, _("&Add"));
+	wxButton *add_button = new wxButton(this, -1, _("&Add"));
 	remove_button = new wxButton(this, -1, _("&Remove"));
 	reload_button = new wxButton(this, -1, _("Re&load"));
-	info_button = new wxButton(this, -1, _("Show &Info"));
-	reload_autoload_button = new wxButton(this, -1, _("Re&scan Autoload Dir"));
-	close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
+	wxButton *info_button = new wxButton(this, -1, _("Show &Info"));
+	wxButton *reload_autoload_button = new wxButton(this, -1, _("Re&scan Autoload Dir"));
+	wxButton *close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
 
 	list->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, &DialogAutomation::OnSelectionChange, this);
 	list->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, &DialogAutomation::OnSelectionChange, this);
@@ -151,6 +151,8 @@ void DialogAutomation::SetScriptInfo(int i, Automation4::Script *script)
 	list->SetItem(i, 3, script->GetDescription());
 	if (!script->GetLoadedState())
 		list->SetItemBackgroundColour(i, wxColour(255,128,128));
+	else
+		list->SetItemBackgroundColour(i, list->GetBackgroundColour());
 }
 
 void DialogAutomation::AddScript(Automation4::Script *script, bool is_global)
@@ -170,12 +172,8 @@ void DialogAutomation::UpdateDisplay()
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	bool selected = i >= 0;
 	bool local = selected && !script_info[list->GetItemData(i)].is_global;
-	add_button->Enable(true);
 	remove_button->Enable(local);
 	reload_button->Enable(selected);
-	info_button->Enable(true);
-	reload_autoload_button->Enable(true);
-	close_button->Enable(true);
 }
 
 template<class Container>
