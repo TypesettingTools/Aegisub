@@ -1023,10 +1023,6 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 	wxCommandEvent evt;
 	switch(event.GetKeyCode()) {
-		case WXK_ESCAPE :
-			OnClose(evt);
-			break;
-
 		case WXK_DELETE :
 			if (wxWindow::FindFocus()==StorageList) {
 				OnStorageDelete(evt);
@@ -1058,7 +1054,9 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 					PasteToStorage();
 				}
 			}
-
+			break;
+		default:
+			event.Skip();
 			break;
 	}
 }
