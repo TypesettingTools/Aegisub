@@ -36,6 +36,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <tr1/functional>
+
 #include <wx/bmpbuttn.h>
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
@@ -196,10 +198,9 @@ DialogStyleManager::DialogStyleManager (agi::Context *context)
 	CurrentDelete->Disable();
 
 	// Buttons
-	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
-	buttonSizer->SetCancelButton(new wxButton(this, wxID_CLOSE));
-	buttonSizer->AddButton(new HelpButton(this,"Styles Manager"));
-	buttonSizer->Realize();
+	wxStdDialogButtonSizer *buttonSizer = CreateStdDialogButtonSizer(wxCANCEL | wxHELP);
+	buttonSizer->GetCancelButton()->SetLabel(_("Close"));
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Styles Manager"), wxID_HELP);
 
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -342,7 +343,6 @@ void DialogStyleManager::StorageActions (bool state) {
 ///////////////
 // Event table
 BEGIN_EVENT_TABLE(DialogStyleManager, wxDialog)
-	EVT_BUTTON(wxID_CLOSE, DialogStyleManager::OnClose)
 	EVT_BUTTON(BUTTON_CATALOG_NEW, DialogStyleManager::OnCatalogNew)
 	EVT_BUTTON(BUTTON_CATALOG_DELETE, DialogStyleManager::OnCatalogDelete)
 	EVT_COMBOBOX(LIST_CATALOG, DialogStyleManager::OnChangeCatalog)
@@ -375,11 +375,6 @@ END_EVENT_TABLE()
 
 //////////
 // Events
-
-/// @brief Close 
-void DialogStyleManager::OnClose (wxCommandEvent &) {
-	Close();
-}
 
 /// @brief Change catalog entry 
 void DialogStyleManager::OnChangeCatalog (wxCommandEvent &) {

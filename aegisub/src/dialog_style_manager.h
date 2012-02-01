@@ -104,7 +104,6 @@ class DialogStyleManager : public wxDialog {
 	/// DOCME
 	wxSizer *MainSizer;
 
-	void OnClose (wxCommandEvent &event);
 	void OnChangeCatalog (wxCommandEvent &event);
 	void OnCatalogNew (wxCommandEvent &event);
 	void OnCatalogDelete (wxCommandEvent &event);
