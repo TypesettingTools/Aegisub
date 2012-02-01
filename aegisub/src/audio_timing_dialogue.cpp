@@ -42,7 +42,6 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
-#include "audio_marker_provider_keyframes.h"
 #include "audio_renderer.h"
 #include "audio_timing.h"
 #include "include/aegisub/context.h"
@@ -157,6 +156,9 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 
 	/// Marker provider for video keyframes
 	AudioMarkerProviderKeyframes keyframes_provider;
+
+	/// Marker provider for video playback position
+	VideoPositionMarkerProvider video_position_provider;
 
 	/// Has the timing been modified by the user?
 	/// If auto commit is enabled this will only be true very briefly following
@@ -294,6 +296,7 @@ void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, Aud
 
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 : keyframes_provider(c, "Audio/Display/Draw/Keyframes in Dialogue Mode")
+, video_position_provider(c)
 , timing_modified(false)
 , commit_id(-1)
 , context(c)
@@ -308,6 +311,7 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 
 	c->selectionController->AddSelectionListener(this);
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
+	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 
 	Revert();
 }
@@ -357,6 +361,7 @@ void AudioTimingControllerDialogue::GetMarkers(const TimeRange &range, AudioMark
 		out_markers.push_back(&active_markers[1]);
 
 	keyframes_provider.GetMarkers(range, out_markers);
+	video_position_provider.GetMarkers(range, out_markers);
 }
 
 void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)

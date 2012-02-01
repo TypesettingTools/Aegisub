@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -16,14 +16,14 @@
 //
 // $Id$
 
-/// @file audio_marker_provider_keyframes.cpp
-/// @see audio_marker_provider_keyframes.h
+/// @file audio_marker.cpp
+/// @see audio_marker.h
 /// @ingroup audio_ui
 ///
 
 #include "config.h"
 
-#include "audio_marker_provider_keyframes.h"
+#include "audio_marker.h"
 
 #include "include/aegisub/context.h"
 #include "main.h"
@@ -49,7 +49,6 @@ public:
 AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, const char *opt_name)
 : vc(c->videoController)
 , keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
-, audio_open_slot(c->audioController->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
 , timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
 , enabled_slot(OPT_SUB(opt_name, &AudioMarkerProviderKeyframes::Update, this))
 , enabled_opt(OPT_GET(opt_name))
@@ -89,4 +88,56 @@ void AudioMarkerProviderKeyframes::GetMarkers(TimeRange const& range, AudioMarke
 	// Place pointers to the markers in the output vector
 	for (; a != b; ++a)
 		out.push_back(&*a);
+}
+
+class VideoPositionMarker : public AudioMarker {
+	Pen style;
+	int position;
+
+public:
+	VideoPositionMarker()
+	: style("Colour/Audio Display/Play Cursor")
+	, position(-1)
+	{
+	}
+
+	void SetPosition(int new_pos) { position = new_pos; }
+
+	int GetPosition() const { return position; }
+	FeetStyle GetFeet() const { return Feet_None; }
+	bool CanSnap() const { return true; }
+	wxPen GetStyle() const { return style; }
+	operator int() const { return position; }
+};
+
+VideoPositionMarkerProvider::VideoPositionMarkerProvider(agi::Context *c)
+: vc(c->videoController)
+, video_seek_slot(vc->AddSeekListener(&VideoPositionMarkerProvider::Update, this))
+, enable_opt_changed_slot(OPT_SUB("Audio/Display/Draw/Video Position", &VideoPositionMarkerProvider::OptChanged, this))
+{
+	OptChanged(*OPT_GET("Audio/Display/Draw/Video Position"));
+}
+
+VideoPositionMarkerProvider::~VideoPositionMarkerProvider() { }
+
+void VideoPositionMarkerProvider::Update(int frame_number) {
+	marker->SetPosition(vc->TimeAtFrame(frame_number));
+	AnnounceMarkerMoved();
+}
+
+void VideoPositionMarkerProvider::OptChanged(agi::OptionValue const& opt) {
+	if (opt.GetBool()) {
+		video_seek_slot.Unblock();
+		marker.reset(new VideoPositionMarker);
+		marker->SetPosition(vc->GetFrameN());
+	}
+	else {
+		video_seek_slot.Block();
+		marker.reset();
+	}
+}
+
+void VideoPositionMarkerProvider::GetMarkers(const TimeRange &range, AudioMarkerVector &out) const {
+	if (marker && range.contains(*marker))
+		out.push_back(marker.get());
 }

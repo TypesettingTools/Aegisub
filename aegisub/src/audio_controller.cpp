@@ -58,79 +58,6 @@
 #include "standard_paths.h"
 #include "video_context.h"
 
-class VideoPositionMarker : public AudioMarker {
-	Pen style;
-	int position;
-
-public:
-	VideoPositionMarker()
-	: style("Colour/Audio Display/Play Cursor")
-	, position(-1)
-	{
-	}
-
-	void SetPosition(int new_pos) { position = new_pos; }
-
-	int GetPosition() const { return position; }
-	FeetStyle GetFeet() const { return Feet_None; }
-	bool CanSnap() const { return true; }
-	wxPen GetStyle() const { return style; }
-	operator int() const { return position; }
-};
-
-class VideoPositionMarkerProvider : public AudioMarkerProvider {
-	VideoContext *vc;
-
-	VideoPositionMarker marker;
-
-	agi::signal::Connection video_seek_slot;
-	agi::signal::Connection enable_opt_changed_slot;
-
-	void Update(int frame_number)
-	{
-		if (frame_number == -1)
-		{
-			marker.SetPosition(-1);
-		}
-		else
-		{
-			marker.SetPosition(vc->TimeAtFrame(frame_number));
-		}
-		AnnounceMarkerMoved();
-	}
-
-	void OptChanged(agi::OptionValue const& opt)
-	{
-		if (opt.GetBool())
-		{
-			video_seek_slot.Unblock();
-			Update(vc->GetFrameN());
-		}
-		else
-		{
-			video_seek_slot.Block();
-			Update(-1);
-		}
-	}
-
-public:
-	VideoPositionMarkerProvider(agi::Context *c)
-	: vc(c->videoController)
-	, video_seek_slot(vc->AddSeekListener(&VideoPositionMarkerProvider::Update, this))
-	, enable_opt_changed_slot(OPT_SUB("Audio/Display/Draw/Video Position", &VideoPositionMarkerProvider::OptChanged, this))
-	{
-		OptChanged(*OPT_GET("Audio/Display/Draw/Video Position"));
-	}
-
-	void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const
-	{
-		if (range.contains(marker))
-		{
-			out.push_back(&marker);
-		}
-	}
-};
-
 AudioController::AudioController(agi::Context *context)
 : context(context)
 , subtitle_save_slot(context->ass->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
@@ -318,12 +245,6 @@ void AudioController::OpenAudio(const wxString &url)
 
 	config::mru->Add("Audio", STD_STR(url));
 
-	if (!video_position_marker_provider.get())
-	{
-		video_position_marker_provider.reset(new VideoPositionMarkerProvider(context));
-		video_position_marker_provider->AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
-	}
-
 	try
 	{
 		// Tell listeners about this.
@@ -371,10 +292,7 @@ void AudioController::SetTimingController(AudioTimingController *new_controller)
 		timing_controller.reset(new_controller);
 		if (timing_controller)
 		{
-			timing_controller->AddMarkerMovedListener(bind(std::tr1::ref(AnnounceMarkerMoved)));
-			timing_controller->AddLabelChangedListener(bind(std::tr1::ref(AnnounceLabelChanged)));
 			timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
-			timing_controller->AddUpdatedStyleRangesListener(bind(std::tr1::ref(AnnounceStyleRangesChanged)));
 		}
 	}
 
@@ -387,8 +305,6 @@ void AudioController::OnTimingControllerUpdatedPrimaryRange()
 	{
 		player->SetEndPosition(timing_controller->GetPrimaryPlaybackRange().end());
 	}
-
-	AnnounceSelectionChanged();
 }
 
 void AudioController::OnSubtitlesSave()
@@ -497,25 +413,11 @@ TimeRange AudioController::GetPrimaryPlaybackRange() const
 	}
 }
 
-
-void AudioController::GetMarkers(const TimeRange &range, AudioMarkerVector &markers) const
-{
-	/// @todo Find all sources of markers
-	if (timing_controller) timing_controller->GetMarkers(range, markers);
-	if (video_position_marker_provider.get()) video_position_marker_provider->GetMarkers(range, markers);
-}
-
-void AudioController::GetLabels(const TimeRange &range, std::vector<AudioLabel> &labels) const
-{
-	if (timing_controller) timing_controller->GetLabels(range, labels);
-}
-
 double AudioController::GetVolume() const
 {
 	if (!IsAudioOpen()) return 1.0;
 	return player->GetVolume();
 }
-
 
 void AudioController::SetVolume(double volume)
 {

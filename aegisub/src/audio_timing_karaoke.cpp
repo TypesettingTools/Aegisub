@@ -28,7 +28,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
-#include "audio_marker_provider_keyframes.h"
+#include "audio_controller.h"
 #include "audio_renderer.h"
 #include "audio_timing.h"
 #include "include/aegisub/context.h"
@@ -101,6 +101,9 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 	/// Marker provider for video keyframes
 	AudioMarkerProviderKeyframes keyframes_provider;
 
+	/// Marker provider for video playback position
+	VideoPositionMarkerProvider video_position_provider;
+
 	/// Labels containing the stripped text of each syllable
 	std::vector<AudioLabel> labels;
 
@@ -150,6 +153,7 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , start_marker(active_line->Start, &start_pen, AudioMarker::Feet_Right)
 , end_marker(active_line->End, &end_pen, AudioMarker::Feet_Left)
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
+, video_position_provider(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
 , auto_next(OPT_GET("Audio/Next Line on Commit")->GetBool())
 , commit_id(-1)
@@ -159,6 +163,7 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 	slots.push_back(OPT_SUB("Audio/Next Line on Commit", &AudioTimingControllerKaraoke::OnAutoNextChange, this));
 
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
+	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 
 	Revert();
 	
@@ -231,6 +236,7 @@ void AudioTimingControllerKaraoke::GetMarkers(TimeRange const& range, AudioMarke
 	if (range.contains(end_marker)) out.push_back(&end_marker);
 
 	keyframes_provider.GetMarkers(range, out);
+	video_position_provider.GetMarkers(range, out);
 }
 
 void AudioTimingControllerKaraoke::DoCommit() {

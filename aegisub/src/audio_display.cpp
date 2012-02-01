@@ -37,6 +37,8 @@
 
 #include "config.h"
 
+#include "audio_display.h"
+
 #ifndef AGI_PRE
 #include <algorithm>
 
@@ -48,7 +50,6 @@
 #include "ass_time.h"
 #include "audio_colorscheme.h"
 #include "audio_controller.h"
-#include "audio_display.h"
 #include "audio_renderer.h"
 #include "audio_renderer_spectrum.h"
 #include "audio_renderer_waveform.h"
@@ -848,7 +849,7 @@ void AudioDisplay::PaintAudio(wxDC &dc, TimeRange updtime, wxRect updrect)
 void AudioDisplay::PaintMarkers(wxDC &dc, TimeRange updtime)
 {
 	AudioMarkerVector markers;
-	controller->GetMarkers(updtime, markers);
+	controller->GetTimingController()->GetMarkers(updtime, markers);
 	if (markers.empty()) return;
 
 	wxDCPenChanger pen_retainer(dc, wxPen());
@@ -884,7 +885,7 @@ void AudioDisplay::PaintFoot(wxDC &dc, int marker_x, int dir)
 void AudioDisplay::PaintLabels(wxDC &dc, TimeRange updtime)
 {
 	std::vector<AudioLabelProvider::AudioLabel> labels;
-	controller->GetLabels(updtime, labels);
+	controller->GetTimingController()->GetLabels(updtime, labels);
 	if (labels.empty()) return;
 
 	wxDCFontChanger fc(dc);
@@ -1166,10 +1167,7 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 			connections.push_back(controller->AddAudioCloseListener(&AudioDisplay::OnAudioOpen, this, (AudioProvider*)0));
 			connections.push_back(controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this));
 			connections.push_back(controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this));
-			connections.push_back(controller->AddTimingControllerListener(&AudioDisplay::OnStyleRangesChanged, this));
-			connections.push_back(controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this));
-			connections.push_back(controller->AddSelectionChangedListener(&AudioDisplay::OnSelectionChanged, this));
-			connections.push_back(controller->AddStyleRangesChangedListener(&AudioDisplay::OnStyleRangesChanged, this));
+			connections.push_back(controller->AddTimingControllerListener(&AudioDisplay::OnTimingController, this));
 			connections.push_back(OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
 			connections.push_back(OPT_SUB("Audio/Display/Waveform Style", &AudioDisplay::ReloadRenderingSettings, this));
 			connections.push_back(OPT_SUB("Colour/Audio Display/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
@@ -1180,6 +1178,20 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 	else
 	{
 		connections.clear();
+	}
+}
+
+void AudioDisplay::OnTimingController()
+{
+	AudioTimingController *timing_controller = controller->GetTimingController();
+	if (timing_controller)
+	{
+		timing_controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this);
+		timing_controller->AddUpdatedPrimaryRangeListener(&AudioDisplay::OnSelectionChanged, this);
+		timing_controller->AddUpdatedStyleRangesListener(&AudioDisplay::OnStyleRangesChanged, this);
+
+		OnStyleRangesChanged();
+		OnMarkerMoved();
 	}
 }
 

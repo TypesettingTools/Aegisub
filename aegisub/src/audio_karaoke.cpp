@@ -47,6 +47,7 @@
 #include "ass_karaoke.h"
 #include "ass_override.h"
 #include "audio_box.h"
+#include "audio_controller.h"
 #include "audio_timing.h"
 #include "libresrc/libresrc.h"
 #include "main.h"

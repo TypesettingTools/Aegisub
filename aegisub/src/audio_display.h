@@ -49,10 +49,12 @@
 
 namespace agi { struct Context; }
 
+class AudioController;
 class AudioRenderer;
 class AudioRendererBitmapProvider;
 class AudioKaraoke;
 class AudioProvider;
+class TimeRange;
 
 // Helper classes used in implementation of the audio display
 class AudioDisplayScrollbar;
@@ -112,7 +114,6 @@ class AudioDisplay: public wxWindow {
 
 	/// The controller managing us
 	AudioController *controller;
-
 
 	/// Scrollbar helper object
 	agi::scoped_ptr<AudioDisplayScrollbar> scrollbar;
@@ -223,6 +224,7 @@ class AudioDisplay: public wxWindow {
 	void OnPlaybackPosition(int ms_position);
 	void OnSelectionChanged();
 	void OnStyleRangesChanged();
+	void OnTimingController();
 	void OnMarkerMoved();
 
 public:

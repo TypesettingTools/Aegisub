@@ -39,10 +39,8 @@ class AssKaraoke;
 class AudioRenderingStyleRanges;
 namespace agi { struct Context; }
 
-#include "audio_controller.h"
+#include "audio_marker.h"
 #include "selection_controller.h"
-
-#include <libaegisub/signal.h>
 
 /// @class AudioTimingController
 /// @brief Base class for objects controlling audio timing

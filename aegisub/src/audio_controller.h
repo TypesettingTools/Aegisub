@@ -54,115 +54,12 @@
 
 class AudioPlayer;
 class AudioProvider;
-namespace agi { struct Context; }
-
-// Declared below
-class AudioControllerAudioEventListener;
-class AudioControllerTimingEventListener;
 class AudioTimingController;
-class AudioMarker;
-class AudioMarkerProvider;
-
-typedef std::vector<const AudioMarker*> AudioMarkerVector;
-
-/// @class TimeRange
-/// @brief Represents an immutable range of time
-class TimeRange {
-	int _begin;
-	int _end;
-
-public:
-	/// @brief Constructor
-	/// @param begin Index of the first millisecond to include in the range
-	/// @param end   Index of one past the last millisecond to include in the range
-	TimeRange(int begin, int end) : _begin(begin), _end(end)
-	{
-		assert(end >= begin);
-	}
-
-	/// @brief Copy constructor, optionally adjusting the range
-	/// @param src          The range to duplicate
-	/// @param begin_adjust Number of milliseconds to add to the start of the range
-	/// @param end_adjust   Number of milliseconds to add to the end of the range
-	TimeRange(const TimeRange &src, int begin_adjust = 0, int end_adjust = 0)
-	{
-		_begin = src._begin + begin_adjust;
-		_end = src._end + end_adjust;
-		assert(_end >= _begin);
-	}
-
-	/// Get the length of the range in milliseconds
-	int length() const { return _end - _begin; }
-	/// Get the start time of the range in milliseconds
-	int begin() const { return _begin; }
-	/// Get the exclusive end time of the range in milliseconds
-	int end() const { return _end; }
-
-	/// Determine whether the range contains a given time in milliseconds
-	bool contains(int ms) const { return ms >= begin() && ms < end(); }
-
-	/// Determine whether there is an overlap between two ranges
-	bool overlaps(const TimeRange &other) const
-	{
-		return other.contains(_begin) || contains(other._begin);
-	}
-};
-
-/// @class AudioMarkerProvider
-/// @brief Abstract interface for audio marker providers
-class AudioMarkerProvider {
-protected:
-	/// One or more of the markers provided by this object have changed
-	agi::signal::Signal<> AnnounceMarkerMoved;
-public:
-	/// Virtual destructor, does nothing
-	virtual ~AudioMarkerProvider() { }
-
-	/// @brief Return markers in a time range
-	virtual void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const = 0;
-
-	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
-};
-
-/// @class AudioLabelProvider
-/// @brief Abstract interface for audio label providers
-class AudioLabelProvider {
-protected:
-	/// One or more of the labels provided by this object have changed
-	agi::signal::Signal<> AnnounceLabelChanged;
-public:
-	/// A label for a range of time on the audio display
-	struct AudioLabel {
-		/// Text of the label
-		wxString text;
-		/// Range which this label applies to
-		TimeRange range;
-		AudioLabel(wxString const& text, TimeRange const& range) : text(text), range(range) { }
-	};
-
-	/// Virtual destructor, does nothing
-	virtual ~AudioLabelProvider() { }
-
-	/// @brief Get labels in a time range
-	/// @param range Range of times to get labels for
-	/// @param[out] out Vector which should be filled with the labels
-	virtual void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const = 0;
-
-	DEFINE_SIGNAL_ADDERS(AnnounceLabelChanged, AddLabelChangedListener)
-};
+namespace agi { struct Context; }
+class TimeRange;
 
 /// @class AudioController
-/// @brief Manage an open audio stream and UI state for it
-///
-/// Keeps track of the UI interaction state of the open audio for a project,
-/// i.e. what the current selection is, what movable markers are on the audio,
-/// and any secondary non-movable markers that are present.
-///
-/// Changes in interaction are broadcast to all managed audio displays so they
-/// can redraw, and the audio displays report all interactions back to the
-/// controller. There is a one to many relationship between controller and
-/// audio displays. There is at most one audio controller for an open
-/// subtitling project.
+/// @brief Manage an open audio stream
 ///
 /// Creates and destroys audio providers and players. This behaviour should at
 /// some point be moved to a separate class, as it adds too many
@@ -173,7 +70,7 @@ public:
 /// providers or players owned by a controller. If some operation that isn't
 /// possible in the existing design is needed, the controller should be
 /// extended in some way to allow it.
-class AudioController : public wxEvtHandler, public AudioMarkerProvider, public AudioLabelProvider {
+class AudioController : public wxEvtHandler {
 	/// Project context this controller belongs to
 	agi::Context *context;
 
@@ -195,12 +92,6 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 	/// The timing controller was replaced
 	agi::signal::Signal<> AnnounceTimingControllerChanged;
 
-	/// The selected time range changed
-	agi::signal::Signal<> AnnounceSelectionChanged;
-
-	/// The styling ranges have been updated by the timing controller
-	agi::signal::Signal<> AnnounceStyleRangesChanged;
-
 	/// The audio output object
 	AudioPlayer *player;
 
@@ -209,9 +100,6 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 
 	/// The current timing mode, if any; owned by the audio controller
 	agi::scoped_ptr<AudioTimingController> timing_controller;
-
-	/// Provider current video position data for audio display
-	agi::scoped_ptr<AudioMarkerProvider> video_position_marker_provider;
 
 	/// The URL of the currently open audio, if any
 	wxString audio_url;
@@ -356,17 +244,6 @@ public:
 	/// @return An immutable TimeRange object
 	TimeRange GetPrimaryPlaybackRange() const;
 
-	/// @brief Get all markers inside a range
-	/// @param range   The time range to retrieve markers for
-	/// @param markers Vector to fill found markers into
-	void GetMarkers(const TimeRange &range, AudioMarkerVector &markers) const;
-
-	/// @brief Get all labels inside a range
-	/// @param range   The time range to retrieve labels for
-	/// @param labels Vector to fill found labels into
-	void GetLabels(const TimeRange &range, std::vector<AudioLabel> &labels) const;
-
-
 	/// @brief Get the playback audio volume
 	/// @return The amplification factor for the audio
 	double GetVolume() const;
@@ -396,43 +273,6 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackPosition,        AddPlaybackPositionListener)
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop,            AddPlaybackStopListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)
-	DEFINE_SIGNAL_ADDERS(AnnounceSelectionChanged,        AddSelectionChangedListener)
-	DEFINE_SIGNAL_ADDERS(AnnounceStyleRangesChanged,      AddStyleRangesChangedListener)
-};
-
-/// @class AudioMarker
-/// @brief A marker on the audio display
-class AudioMarker {
-public:
-
-	/// Describe which directions a marker has feet in
-	enum FeetStyle {
-		Feet_None = 0,
-		Feet_Left,
-		Feet_Right,
-		Feet_Both // Conveniently Feet_Left|Feet_Right
-	};
-
-	/// @brief Get the marker's position
-	/// @return The marker's position in milliseconds
-	virtual int GetPosition() const = 0;
-
-	/// @brief Get the marker's drawing style
-	/// @return A pen object describing the marker's drawing style
-	virtual wxPen GetStyle() const = 0;
-
-	/// @brief Get the marker's feet style
-	/// @return The marker's feet style
-	virtual FeetStyle GetFeet() const = 0;
-
-	/// @brief Retrieve whether this marker participates in snapping
-	/// @return True if this marker may snap to other snappable markers
-	///
-	/// If a marker being dragged returns true from this method, and another
-	/// marker which also returns true from this method is within range, the
-	/// marker being dragged will be positioned at the position of the other
-	/// marker if it is released while it is inside snapping range.
-	virtual bool CanSnap() const = 0;
 };
 
 namespace agi {
