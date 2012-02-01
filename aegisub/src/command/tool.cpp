@@ -71,7 +71,7 @@ struct tool_assdraw : public Command {
 	CMD_NAME("tool/assdraw")
 	STR_MENU("ASSDraw3...")
 	STR_DISP("ASSDraw3")
-	STR_HELP("Launch ASSDraw3 tool for vector drawing.")
+	STR_HELP("Launch ASSDraw3 tool for vector drawing")
 
 	void operator()(agi::Context *) {
 		wxExecute("\"" + StandardPaths::DecodePath("?data/ASSDraw3.exe") + "\"");
@@ -83,7 +83,7 @@ struct tool_export : public Command {
 	CMD_NAME("tool/export")
 	STR_MENU("&Export Subtitles...")
 	STR_DISP("Export Subtitles")
-	STR_HELP("Saves a copy of subtitles with processing applied to it.")
+	STR_HELP("Saves a copy of subtitles with processing applied to it")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -97,7 +97,7 @@ struct tool_font_collector : public Command {
 	CMD_NAME("tool/font_collector")
 	STR_MENU("&Fonts Collector...")
 	STR_DISP("Fonts Collector")
-	STR_HELP("Open fonts collector.")
+	STR_HELP("Open fonts collector")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -111,7 +111,7 @@ struct tool_line_select : public Command {
 	CMD_NAME("tool/line/select")
 	STR_MENU("S&elect Lines...")
 	STR_DISP("Select Lines")
-	STR_HELP("Selects lines based on defined criteria.")
+	STR_HELP("Selects lines based on defined criteria")
 
 	void operator()(agi::Context *c) {
 		(new DialogSelection(c))->Show();
@@ -124,7 +124,7 @@ struct tool_resampleres : public Command {
 	CMD_NAME("tool/resampleres")
 	STR_MENU("&Resample Resolution...")
 	STR_DISP("Resample Resolution")
-	STR_HELP("Changes resolution and modifies subtitles to conform to change.")
+	STR_HELP("Changes resolution and modifies subtitles to conform to change")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -138,7 +138,7 @@ struct tool_style_assistant : public Command {
 	CMD_NAME("tool/style/assistant")
 	STR_MENU("St&yling Assistant...")
 	STR_DISP("Styling Assistant")
-	STR_HELP("Open styling assistant.")
+	STR_HELP("Open styling assistant")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -160,7 +160,7 @@ struct tool_styling_assistant_commit : public tool_styling_assistant_validator {
 	CMD_NAME("tool/styling_assistant/commit")
 	STR_MENU("&Accept changes")
 	STR_DISP("Accept changes")
-	STR_HELP("Commit changes and move to the next line.")
+	STR_HELP("Commit changes and move to the next line")
 
 	void operator()(agi::Context *c) {
 		c->stylingAssistant->Commit(true);
@@ -172,7 +172,7 @@ struct tool_styling_assistant_preview : public tool_styling_assistant_validator 
 	CMD_NAME("tool/styling_assistant/preview")
 	STR_MENU("&Preview changes")
 	STR_DISP("Preview changes")
-	STR_HELP("Commit changes and stay on the current line.")
+	STR_HELP("Commit changes and stay on the current line")
 
 	void operator()(agi::Context *c) {
 		c->stylingAssistant->Commit(false);
@@ -184,7 +184,7 @@ struct tool_style_manager : public Command {
 	CMD_NAME("tool/style/manager")
 	STR_MENU("&Styles Manager...")
 	STR_DISP("Styles Manager")
-	STR_HELP("Open styles manager.")
+	STR_HELP("Open styles manager")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -198,7 +198,7 @@ struct tool_time_kanji : public Command {
 	CMD_NAME("tool/time/kanji")
 	STR_MENU("&Kanji Timer...")
 	STR_DISP("Kanji Timer")
-	STR_HELP("Open Kanji timer.")
+	STR_HELP("Open Kanji timer")
 
 	void operator()(agi::Context *c) {
 		DialogKanjiTimer(c).ShowModal();
@@ -211,7 +211,7 @@ struct tool_time_postprocess : public Command {
 	CMD_NAME("tool/time/postprocess")
 	STR_MENU("&Timing Post-Processor...")
 	STR_DISP("Timing Post-Processor")
-	STR_HELP("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc.")
+	STR_HELP("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc")
 
 	void operator()(agi::Context *c) {
 		DialogTimingProcessor(c).ShowModal();
@@ -224,7 +224,7 @@ struct tool_translation_assistant : public Command {
 	CMD_NAME("tool/translation_assistant")
 	STR_MENU("&Translation Assistant...")
 	STR_DISP("Translation Assistant")
-	STR_HELP("Open translation assistant.")
+	STR_HELP("Open translation assistant")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -254,7 +254,7 @@ struct tool_translation_assistant_commit : public tool_translation_assistant_val
 	CMD_NAME("tool/translation_assistant/commit")
 	STR_MENU("&Accept changes")
 	STR_DISP("Accept changes")
-	STR_HELP("Commit changes and move to the next line.")
+	STR_HELP("Commit changes and move to the next line")
 
 	void operator()(agi::Context *c) {
 		c->translationAssistant->Commit(true);
@@ -266,7 +266,7 @@ struct tool_translation_assistant_preview : public tool_translation_assistant_va
 	CMD_NAME("tool/translation_assistant/preview")
 	STR_MENU("&Preview changes")
 	STR_DISP("Preview changes")
-	STR_HELP("Commit changes and stay on the current line.")
+	STR_HELP("Commit changes and stay on the current line")
 
 	void operator()(agi::Context *c) {
 		c->translationAssistant->Commit(false);
@@ -278,7 +278,7 @@ struct tool_translation_assistant_next : public tool_translation_assistant_valid
 	CMD_NAME("tool/translation_assistant/next")
 	STR_MENU("&Next Line")
 	STR_DISP("Next Line")
-	STR_HELP("Move to the next line without committing changes.")
+	STR_HELP("Move to the next line without committing changes")
 
 	void operator()(agi::Context *c) {
 		c->translationAssistant->NextBlock();
@@ -290,7 +290,7 @@ struct tool_translation_assistant_prev : public tool_translation_assistant_valid
 	CMD_NAME("tool/translation_assistant/prev")
 	STR_MENU("&Previous Line")
 	STR_DISP("Previous Line")
-	STR_HELP("Move to the previous line without committing changes.")
+	STR_HELP("Move to the previous line without committing changes")
 
 	void operator()(agi::Context *c) {
 		c->translationAssistant->PrevBlock();
@@ -303,7 +303,7 @@ struct tool_translation_assistant_insert : public tool_translation_assistant_val
 	CMD_NAME("tool/translation_assistant/insert_original")
 	STR_MENU("&Insert Original")
 	STR_DISP("Insert Original")
-	STR_HELP("Insert the untranslated text.")
+	STR_HELP("Insert the untranslated text")
 
 	void operator()(agi::Context *c) {
 		c->translationAssistant->InsertOriginal();

@@ -67,7 +67,7 @@ struct recent_audio_entry : public Command {
 	CMD_NAME("recent/audio/")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
-	STR_HELP("Open recent audio.")
+	STR_HELP("Open recent audio")
 
 	void operator()(agi::Context *c, int id) {
 		try {
@@ -84,7 +84,7 @@ struct recent_keyframes_entry : public Command {
 	CMD_NAME("recent/keyframes/")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
-	STR_HELP("Open recent keyframes.")
+	STR_HELP("Open recent keyframes")
 
 	void operator()(agi::Context *c, int id) {
 		c->videoController->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", id)));
@@ -95,7 +95,7 @@ struct recent_subtitle_entry : public Command {
 	CMD_NAME("recent/subtitle/")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
-	STR_HELP("Open recent subtitles.")
+	STR_HELP("Open recent subtitles")
 
 	void operator()(agi::Context *c, int id) {
 		wxGetApp().frame->LoadSubtitles(lagi_wxString(config::mru->GetEntry("Subtitle", id)));
@@ -106,7 +106,7 @@ struct recent_timecodes_entry : public Command {
 	CMD_NAME("recent/timecodes/")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
-	STR_HELP("Open recent timecodes.")
+	STR_HELP("Open recent timecodes")
 
 	void operator()(agi::Context *c, int id) {
 		c->videoController->LoadTimecodes(lagi_wxString(config::mru->GetEntry("Timecodes", id)));
@@ -117,7 +117,7 @@ struct recent_video_entry : public Command {
 	CMD_NAME("recent/video/")
 	STR_MENU("Recent")
 	STR_DISP("Recent")
-	STR_HELP("Open recent videos.")
+	STR_HELP("Open recent videos")
 
 	void operator()(agi::Context *c, int id) {
 		c->videoController->SetVideo(lagi_wxString(config::mru->GetEntry("Video", id)));

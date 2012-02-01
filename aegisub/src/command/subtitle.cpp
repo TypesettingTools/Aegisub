@@ -86,7 +86,7 @@ struct subtitle_attachment : public Command {
 	CMD_NAME("subtitle/attachment")
 	STR_MENU("A&ttachments...")
 	STR_DISP("Attachments")
-	STR_HELP("Open the attachment list.")
+	STR_HELP("Open the attachment list")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -100,7 +100,7 @@ struct subtitle_find : public Command {
 	CMD_NAME("subtitle/find")
 	STR_MENU("&Find...")
 	STR_DISP("Find")
-	STR_HELP("Find words in subtitles.")
+	STR_HELP("Find words in subtitles")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -114,7 +114,7 @@ struct subtitle_find_next : public Command {
 	CMD_NAME("subtitle/find/next")
 	STR_MENU("Find &Next")
 	STR_DISP("Find Next")
-	STR_HELP("Find next match of last word.")
+	STR_HELP("Find next match of last word")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -145,7 +145,7 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/after")
 	STR_MENU("&After Current")
 	STR_DISP("After Current")
-	STR_HELP("Inserts a line after current.")
+	STR_HELP("Inserts a line after current")
 
 	void operator()(agi::Context *c) {
 		int n = c->subsGrid->GetFirstSelRow();
@@ -179,7 +179,7 @@ struct subtitle_insert_after_videotime : public validate_nonempty_selection_vide
 	CMD_NAME("subtitle/insert/after/videotime")
 	STR_MENU("After Current, at Video Time")
 	STR_DISP("After Current, at Video Time")
-	STR_HELP("Inserts a line after current, starting at video time.")
+	STR_HELP("Inserts a line after current, starting at video time")
 
 	void operator()(agi::Context *c) {
 		insert_subtitle_at_video(c, true);
@@ -192,7 +192,7 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/before")
 	STR_MENU("&Before Current")
 	STR_DISP("Before Current")
-	STR_HELP("Inserts a line before current.")
+	STR_HELP("Inserts a line before current")
 
 	void operator()(agi::Context *c) {
 		int n = c->subsGrid->GetFirstSelRow();
@@ -229,7 +229,7 @@ struct subtitle_insert_before_videotime : public validate_nonempty_selection_vid
 	CMD_NAME("subtitle/insert/before/videotime")
 	STR_MENU("Before Current, at Video Time")
 	STR_DISP("Before Current, at Video Time")
-	STR_HELP("Inserts a line before current, starting at video time.")
+	STR_HELP("Inserts a line before current, starting at video time")
 
 	void operator()(agi::Context *c) {
 		insert_subtitle_at_video(c, false);
@@ -242,7 +242,7 @@ struct subtitle_new : public Command {
 	CMD_NAME("subtitle/new")
 	STR_MENU("&New Subtitles")
 	STR_DISP("New Subtitles")
-	STR_HELP("New subtitles.")
+	STR_HELP("New subtitles")
 
 	void operator()(agi::Context *c) {
 		if (wxGetApp().frame->TryToCloseSubs() != wxCANCEL)
@@ -256,7 +256,7 @@ struct subtitle_open : public Command {
 	CMD_NAME("subtitle/open")
 	STR_MENU("&Open Subtitles...")
 	STR_DISP("Open Subtitles")
-	STR_HELP("Opens a subtitles file.")
+	STR_HELP("Opens a subtitles file")
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString()); 
@@ -273,7 +273,7 @@ struct subtitle_open_charset : public Command {
 	CMD_NAME("subtitle/open/charset")
 	STR_MENU("Open Subtitles with &Charset...")
 	STR_DISP("Open Subtitles with Charset")
-	STR_HELP("Opens a subtitles file with a specific charset.")
+	STR_HELP("Opens a subtitles file with a specific charset")
 
 	void operator()(agi::Context *c) {
 		// Initialize charsets
@@ -296,7 +296,7 @@ struct subtitle_open_video : public Command {
 	CMD_NAME("subtitle/open/video")
 	STR_MENU("Open Subtitles from &Video")
 	STR_DISP("Open Subtitles from Video")
-	STR_HELP("Opens the subtitles from the current video file.")
+	STR_HELP("Opens the subtitles from the current video file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
@@ -314,7 +314,7 @@ struct subtitle_properties : public Command {
 	CMD_NAME("subtitle/properties")
 	STR_MENU("&Properties...")
 	STR_DISP("Properties")
-	STR_HELP("Open script properties window.")
+	STR_HELP("Open script properties window")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -350,7 +350,7 @@ struct subtitle_save : public Command {
 	CMD_NAME("subtitle/save")
 	STR_MENU("&Save Subtitles")
 	STR_DISP("Save Subtitles")
-	STR_HELP("Saves subtitles.")
+	STR_HELP("Saves subtitles")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
@@ -368,7 +368,7 @@ struct subtitle_save_as : public Command {
 	CMD_NAME("subtitle/save/as")
 	STR_MENU("Save Subtitles &as...")
 	STR_DISP("Save Subtitles as")
-	STR_HELP("Saves subtitles with another name.")
+	STR_HELP("Saves subtitles with another name")
 
 	void operator()(agi::Context *c) {
 		save_subtitles(c, "");
@@ -380,7 +380,7 @@ struct subtitle_select_all : public Command {
 	CMD_NAME("subtitle/select/all")
 	STR_MENU("Select &All")
 	STR_DISP("Select All")
-	STR_HELP("Selects all dialogue lines.")
+	STR_HELP("Selects all dialogue lines")
 
 	void operator()(agi::Context *c) {
 		SelectionController<AssDialogue>::Selection sel;
@@ -396,7 +396,7 @@ struct subtitle_select_visible : public Command {
 	CMD_NAME("subtitle/select/visible")
 	STR_MENU("Select Visible")
 	STR_DISP("Select Visible")
-	STR_HELP("Selects all lines that are currently visible on video frame.")
+	STR_HELP("Selects all lines that are currently visible on video frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
@@ -432,7 +432,7 @@ struct subtitle_spellcheck : public Command {
 	CMD_NAME("subtitle/spellcheck")
 	STR_MENU("Spell &Checker...")
 	STR_DISP("Spell Checker")
-	STR_HELP("Open spell checker.")
+	STR_HELP("Open spell checker")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();

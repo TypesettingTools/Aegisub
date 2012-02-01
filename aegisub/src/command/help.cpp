@@ -60,7 +60,7 @@ struct help_bugs : public Command {
 	CMD_NAME("help/bugs")
 	STR_MENU("&Bug Tracker...")
 	STR_DISP("Bug Tracker")
-	STR_HELP("Visit Aegisub's bug tracker to report bugs and request new features.")
+	STR_HELP("Visit Aegisub's bug tracker to report bugs and request new features")
 
 	void operator()(agi::Context *c) {
 		if (wxGetMouseState().CmdDown()) {
@@ -82,7 +82,7 @@ struct help_contents : public Command {
 	CMD_NAME("help/contents")
 	STR_MENU("&Contents...")
 	STR_DISP("Contents")
-	STR_HELP("Help topics.")
+	STR_HELP("Help topics")
 
 	void operator()(agi::Context *) {
 		HelpButton::OpenPage("Main");
@@ -95,7 +95,7 @@ struct help_files : public Command {
 	CMD_NAME("help/files")
 	STR_MENU("All Fil&es")
 	STR_DISP("All Files")
-	STR_HELP("Resource files.")
+	STR_HELP("Resource files")
 
 	void operator()(agi::Context *) {
 		char *shared_path = agi::util::OSX_GetBundleSharedSupportDirectory();
@@ -111,7 +111,7 @@ struct help_forums : public Command {
 	CMD_NAME("help/forums")
 	STR_MENU("&Forums...")
 	STR_DISP("Forums")
-	STR_HELP("Visit Aegisub's forums.")
+	STR_HELP("Visit Aegisub's forums")
 
 	void operator()(agi::Context *) {
 		wxLaunchDefaultBrowser("http://forum.aegisub.org/", wxBROWSER_NEW_WINDOW);
@@ -124,7 +124,7 @@ struct help_irc : public Command {
 	CMD_NAME("help/irc")
 	STR_MENU("&IRC Channel...")
 	STR_DISP("IRC Channel")
-	STR_HELP("Visit Aegisub's official IRC channel.")
+	STR_HELP("Visit Aegisub's official IRC channel")
 
 	void operator()(agi::Context *) {
 		wxLaunchDefaultBrowser("irc://irc.rizon.net/aegisub", wxBROWSER_NEW_WINDOW);
@@ -136,7 +136,7 @@ struct help_video : public Command {
 	CMD_NAME("help/video")
 	STR_MENU("&Visual Typesetting...")
 	STR_DISP("Visual Typesetting")
-	STR_HELP("Open the manual page for Visual Typesetting.")
+	STR_HELP("Open the manual page for Visual Typesetting")
 
 	void operator()(agi::Context *) {
 		HelpButton::OpenPage("Visual Typesetting");
@@ -148,7 +148,7 @@ struct help_website : public Command {
 	CMD_NAME("help/website")
 	STR_MENU("&Website...")
 	STR_DISP("Website")
-	STR_HELP("Visit Aegisub's official website.")
+	STR_HELP("Visit Aegisub's official website")
 
 	void operator()(agi::Context *) {
 		wxLaunchDefaultBrowser("http://www.aegisub.org/", wxBROWSER_NEW_WINDOW);

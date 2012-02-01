@@ -61,7 +61,7 @@ struct am_manager : public Command {
 	CMD_NAME("am/manager")
 	STR_MENU("&Automation...")
 	STR_DISP("Automation")
-	STR_HELP("Open automation manager.")
+	STR_HELP("Open automation manager")
 
 	void operator()(agi::Context *c) {
 		if (wxGetMouseState().CmdDown()) {

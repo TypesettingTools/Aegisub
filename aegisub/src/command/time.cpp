@@ -96,7 +96,7 @@ struct time_continuous_end : public validate_adjoinable {
 	CMD_NAME("time/continuous/end")
 	STR_MENU("Change &End")
 	STR_DISP("Change End")
-	STR_HELP("Changes times of subs so end times begin on next's start time.")
+	STR_HELP("Changes times of subs so end times begin on next's start time")
 
 	void operator()(agi::Context *c) {
 		wxArrayInt sels = c->subsGrid->GetSelection();
@@ -110,7 +110,7 @@ struct time_continuous_start : public validate_adjoinable {
 	CMD_NAME("time/continuous/start")
 	STR_MENU("Change &Start")
 	STR_DISP("Change Start")
-	STR_HELP("Changes times of subs so start times begin on previous's end time.")
+	STR_HELP("Changes times of subs so start times begin on previous's end time")
 
 	void operator()(agi::Context *c) {
 		wxArrayInt sels = c->subsGrid->GetSelection();
@@ -125,7 +125,7 @@ struct time_frame_current : public validate_video_loaded {
 	CMD_NAME("time/frame/current")
 	STR_MENU("Shift to &Current Frame")
 	STR_DISP("Shift to Current Frame")
-	STR_HELP("Shift selection so that the active line starts at current frame.")
+	STR_HELP("Shift selection so that the active line starts at current frame")
 
 	void operator()(agi::Context *c) {
 		if (!c->videoController->IsLoaded()) return;
@@ -152,7 +152,7 @@ struct time_shift : public Command {
 	CMD_NAME("time/shift")
 	STR_MENU("S&hift Times...")
 	STR_DISP("Shift Times")
-	STR_HELP("Shift subtitles by time or frames.")
+	STR_HELP("Shift subtitles by time or frames")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -183,7 +183,7 @@ struct time_snap_end_video : public validate_video_loaded {
 	CMD_NAME("time/snap/end_video")
 	STR_MENU("Snap &End to Video")
 	STR_DISP("Snap End to Video")
-	STR_HELP("Set end of selected subtitles to current video frame.")
+	STR_HELP("Set end of selected subtitles to current video frame")
 
 	void operator()(agi::Context *c) {
 		snap_subs_video(c, false);
@@ -195,7 +195,7 @@ struct time_snap_scene : public validate_video_loaded {
 	CMD_NAME("time/snap/scene")
 	STR_MENU("Snap to S&cene")
 	STR_DISP("Snap to Scene")
-	STR_HELP("Set start and end of subtitles to the keyframes around current video frame.")
+	STR_HELP("Set start and end of subtitles to the keyframes around current video frame")
 
 	void operator()(agi::Context *c) {
 		VideoContext *con = c->videoController;
@@ -276,7 +276,7 @@ struct time_snap_start_video : public validate_video_loaded {
 	CMD_NAME("time/snap/start_video")
 	STR_MENU("Snap &Start to Video")
 	STR_DISP("Snap Start to Video")
-	STR_HELP("Set start of selected subtitles to current video frame.")
+	STR_HELP("Set start of selected subtitles to current video frame")
 
 	void operator()(agi::Context *c) {
 		snap_subs_video(c, true);

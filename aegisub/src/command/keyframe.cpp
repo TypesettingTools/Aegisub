@@ -61,7 +61,7 @@ struct keyframe_close : public Command {
 	CMD_NAME("keyframe/close")
 	STR_MENU("Close Keyframes")
 	STR_DISP("Close Keyframes")
-	STR_HELP("Closes the currently open keyframes list.")
+	STR_HELP("Closes the currently open keyframes list")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
@@ -79,7 +79,7 @@ struct keyframe_open : public Command {
 	CMD_NAME("keyframe/open")
 	STR_MENU("Open Keyframes...")
 	STR_DISP("Open Keyframes")
-	STR_HELP("Opens a keyframe list file.")
+	STR_HELP("Opens a keyframe list file")
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
@@ -103,7 +103,7 @@ struct keyframe_save : public Command {
 	CMD_NAME("keyframe/save")
 	STR_MENU("Save Keyframes...")
 	STR_DISP("Save Keyframes")
-	STR_HELP("Saves the current keyframe list.")
+	STR_HELP("Saves the current keyframe list")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {

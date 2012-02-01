@@ -89,7 +89,7 @@ struct video_aspect_cinematic : public validator_video_loaded {
 	CMD_NAME("video/aspect/cinematic")
 	STR_MENU("&Cinematic (2.35)")
 	STR_DISP("Cinematic (235)")
-	STR_HELP("Forces video to 2.35 aspect ratio.")
+	STR_HELP("Forces video to 2.35 aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -108,7 +108,7 @@ struct video_aspect_custom : public validator_video_loaded {
 	CMD_NAME("video/aspect/custom")
 	STR_MENU("C&ustom...")
 	STR_DISP("Custom")
-	STR_HELP("Forces video to a custom aspect ratio.")
+	STR_HELP("Forces video to a custom aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -168,7 +168,7 @@ struct video_aspect_default : public validator_video_loaded {
 	CMD_NAME("video/aspect/default")
 	STR_MENU("&Default")
 	STR_DISP("Default")
-	STR_HELP("Leave video on original aspect ratio.")
+	STR_HELP("Leave video on original aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -187,7 +187,7 @@ struct video_aspect_full : public validator_video_loaded {
 	CMD_NAME("video/aspect/full")
 	STR_MENU("&Fullscreen (4:3)")
 	STR_DISP("Fullscreen (4:3)")
-	STR_HELP("Forces video to 4:3 aspect ratio.")
+	STR_HELP("Forces video to 4:3 aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -206,7 +206,7 @@ struct video_aspect_wide : public validator_video_loaded {
 	CMD_NAME("video/aspect/wide")
 	STR_MENU("&Widescreen (16:9)")
 	STR_DISP("Widescreen (16:9)")
-	STR_HELP("Forces video to 16:9 aspect ratio.")
+	STR_HELP("Forces video to 16:9 aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -225,7 +225,7 @@ struct video_close : public validator_video_loaded {
 	CMD_NAME("video/close")
 	STR_MENU("&Close Video")
 	STR_DISP("Close Video")
-	STR_HELP("Closes the currently open video file.")
+	STR_HELP("Closes the currently open video file")
 
 	void operator()(agi::Context *c) {
 		c->videoController->SetVideo("");
@@ -237,7 +237,7 @@ struct video_copy_coordinates : public validator_video_loaded {
 	CMD_NAME("video/copy_coordinates")
 	STR_MENU("Copy coordinates to Clipboard")
 	STR_DISP("Copy coordinates to Clipboard")
-	STR_HELP("Copy the current coordinates of the mouse over the video to the clipboard.")
+	STR_HELP("Copy the current coordinates of the mouse over the video to the clipboard")
 
 	void operator()(agi::Context *c) {
 		if (wxTheClipboard->Open()) {
@@ -252,7 +252,7 @@ struct video_detach : public validator_video_loaded {
 	CMD_NAME("video/detach")
 	STR_MENU("&Detach Video")
 	STR_DISP("Detach Video")
-	STR_HELP("Detach video, displaying it in a separate Window.")
+	STR_HELP("Detach video, displaying it in a separate Window")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *c) {
@@ -274,7 +274,7 @@ struct video_details : public validator_video_loaded {
 	CMD_NAME("video/details")
 	STR_MENU("Show &Video Details...")
 	STR_DISP("Show Video Details")
-	STR_HELP("Shows video details.")
+	STR_HELP("Shows video details")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -306,7 +306,7 @@ struct video_frame_copy : public validator_video_loaded {
 	CMD_NAME("video/frame/copy")
 	STR_MENU("Copy image to Clipboard")
 	STR_DISP("Copy image to Clipboard")
-	STR_HELP("Copy the currently displayed frame to the clipboard.")
+	STR_HELP("Copy the currently displayed frame to the clipboard")
 
 	void operator()(agi::Context *c) {
 		if (wxTheClipboard->Open()) {
@@ -321,7 +321,7 @@ struct video_frame_copy_raw : public validator_video_loaded {
 	CMD_NAME("video/frame/copy/raw")
 	STR_MENU("Copy image to Clipboard (no subtitles)")
 	STR_DISP("Copy image to Clipboard (no subtitles)")
-	STR_HELP("Copy the currently displayed frame to the clipboard, without the subtitles.")
+	STR_HELP("Copy the currently displayed frame to the clipboard, without the subtitles")
 
 	void operator()(agi::Context *c) {
 		if (wxTheClipboard->Open()) {
@@ -336,7 +336,7 @@ struct video_frame_next : public validator_video_loaded {
 	CMD_NAME("video/frame/next")
 	STR_MENU("Next Frame")
 	STR_DISP("Next Frame")
-	STR_HELP("Seek to the next frame.")
+	STR_HELP("Seek to the next frame")
 
 	void operator()(agi::Context *c) {
 		c->videoController->NextFrame();
@@ -348,7 +348,7 @@ struct video_frame_next_boundary : public validator_video_loaded {
 	CMD_NAME("video/frame/next/boundary")
 	STR_MENU("Next Boundary")
 	STR_DISP("Next Boundary")
-	STR_HELP("Seek to the next subtitle boundary.")
+	STR_HELP("Seek to the next subtitle boundary")
 
 	void operator()(agi::Context *c) {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
@@ -378,7 +378,7 @@ struct video_frame_next_keyframe : public validator_video_loaded {
 	CMD_NAME("video/frame/next/keyframe")
 	STR_MENU("Next Keyframe")
 	STR_DISP("Next Keyframe")
-	STR_HELP("Seek to the next keyframe.")
+	STR_HELP("Seek to the next keyframe")
 
 	void operator()(agi::Context *c) {
 		std::vector<int> const& kf = c->videoController->GetKeyFrames();
@@ -393,7 +393,7 @@ struct video_frame_next_large : public validator_video_loaded {
 	CMD_NAME("video/frame/next/large")
 	STR_MENU("Fast jump forward")
 	STR_DISP("Fast jump forward")
-	STR_HELP("Fast jump forward.")
+	STR_HELP("Fast jump forward")
 
 	void operator()(agi::Context *c) {
 		c->videoController->JumpToFrame(
@@ -407,7 +407,7 @@ struct video_frame_prev : public validator_video_loaded {
 	CMD_NAME("video/frame/prev")
 	STR_MENU("Previous Frame")
 	STR_DISP("Previous Frame")
-	STR_HELP("Seek to the previous frame.")
+	STR_HELP("Seek to the previous frame")
 
 	void operator()(agi::Context *c) {
 		c->videoController->PrevFrame();
@@ -419,7 +419,7 @@ struct video_frame_prev_boundary : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/boundary")
 	STR_MENU("Previous Boundary")
 	STR_DISP("Previous Boundary")
-	STR_HELP("Seek to the previous subtitle boundary.")
+	STR_HELP("Seek to the previous subtitle boundary")
 
 	void operator()(agi::Context *c) {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
@@ -449,7 +449,7 @@ struct video_frame_prev_keyframe : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/keyframe")
 	STR_MENU("Previous Keyframe")
 	STR_DISP("Previous Keyframe")
-	STR_HELP("Seek to the previous keyframe.")
+	STR_HELP("Seek to the previous keyframe")
 
 	void operator()(agi::Context *c) {
 		std::vector<int> const& kf = c->videoController->GetKeyFrames();
@@ -522,7 +522,7 @@ struct video_frame_save : public validator_video_loaded {
 	CMD_NAME("video/frame/save")
 	STR_MENU("Save PNG snapshot")
 	STR_DISP("Save PNG snapshot")
-	STR_HELP("Save the currently displayed frame to a PNG file in the video's directory.")
+	STR_HELP("Save the currently displayed frame to a PNG file in the video's directory")
 
 	void operator()(agi::Context *c) {
 		save_snapshot(c, false);
@@ -534,7 +534,7 @@ struct video_frame_save_raw : public validator_video_loaded {
 	CMD_NAME("video/frame/save/raw")
 	STR_MENU("Save PNG snapshot (no subtitles)")
 	STR_DISP("Save PNG snapshot (no subtitles)")
-	STR_HELP("Save the currently displayed frame without the subtitles to a PNG file in the video's directory.")
+	STR_HELP("Save the currently displayed frame without the subtitles to a PNG file in the video's directory")
 
 	void operator()(agi::Context *c) {
 		save_snapshot(c, true);
@@ -546,7 +546,7 @@ struct video_jump : public validator_video_loaded {
 	CMD_NAME("video/jump")
 	STR_MENU("&Jump to...")
 	STR_DISP("Jump to")
-	STR_HELP("Jump to frame or time.")
+	STR_HELP("Jump to frame or time")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -562,7 +562,7 @@ struct video_jump_end : public validator_video_loaded {
 	CMD_NAME("video/jump/end")
 	STR_MENU("Jump Video to &End")
 	STR_DISP("Jump Video to End")
-	STR_HELP("Jumps the video to the end frame of current subtitle.")
+	STR_HELP("Jumps the video to the end frame of current subtitle")
 
 	void operator()(agi::Context *c) {
 		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
@@ -576,7 +576,7 @@ struct video_jump_start : public validator_video_loaded {
 	CMD_NAME("video/jump/start")
 	STR_MENU("Jump Video to &Start")
 	STR_DISP("Jump Video to Start")
-	STR_HELP("Jumps the video to the start frame of current subtitle.")
+	STR_HELP("Jumps the video to the start frame of current subtitle")
 
 	void operator()(agi::Context *c) {
 		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
@@ -590,7 +590,7 @@ struct video_open : public Command {
 	CMD_NAME("video/open")
 	STR_MENU("&Open Video...")
 	STR_DISP("Open Video")
-	STR_HELP("Opens a video file.")
+	STR_HELP("Opens a video file")
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Video")->GetString());
@@ -609,7 +609,7 @@ struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
 	STR_MENU("&Use Dummy Video...")
 	STR_DISP("Use Dummy Video")
-	STR_HELP("Opens a video clip with solid colour.")
+	STR_HELP("Opens a video clip with solid colour")
 
 	void operator()(agi::Context *c) {
 		wxString fn;
@@ -665,7 +665,7 @@ struct video_show_overscan : public validator_video_loaded {
 	CMD_NAME("video/show_overscan")
 	STR_MENU("Show &Overscan Mask")
 	STR_DISP("Show Overscan Mask")
-	STR_HELP("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions.")
+	STR_HELP("Show a mask over the video, indicating areas that might get cropped off by overscan on televisions")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *) {
@@ -684,7 +684,7 @@ public:
 	CMD_NAME("video/zoom/100")
 	STR_MENU("&100%")
 	STR_DISP("100%")
-	STR_HELP("Set zoom to 100%.")
+	STR_HELP("Set zoom to 100%")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -716,7 +716,7 @@ public:
 	CMD_NAME("video/zoom/200")
 	STR_MENU("&200%")
 	STR_DISP("200%")
-	STR_HELP("Set zoom to 200%.")
+	STR_HELP("Set zoom to 200%")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -735,7 +735,7 @@ public:
 	CMD_NAME("video/zoom/50")
 	STR_MENU("&50%")
 	STR_DISP("50%")
-	STR_HELP("Set zoom to 50%.")
+	STR_HELP("Set zoom to 50%")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -753,7 +753,7 @@ struct video_zoom_in : public validator_video_attached {
 	CMD_NAME("video/zoom/in")
 	STR_MENU("Zoom In")
 	STR_DISP("Zoom In")
-	STR_HELP("Zoom video in.")
+	STR_HELP("Zoom video in")
 
 	void operator()(agi::Context *c) {
 		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() + .125);
@@ -765,7 +765,7 @@ struct video_zoom_out : public validator_video_attached {
 	CMD_NAME("video/zoom/out")
 	STR_MENU("Zoom Out")
 	STR_DISP("Zoom Out")
-	STR_HELP("Zoom video out.")
+	STR_HELP("Zoom video out")
 
 	void operator()(agi::Context *c) {
 		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() - .125);

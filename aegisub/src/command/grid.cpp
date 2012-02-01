@@ -58,7 +58,7 @@ struct grid_line_next : public Command {
 	CMD_NAME("grid/line/next")
 	STR_MENU("Next Line")
 	STR_DISP("Next Line")
-	STR_HELP("Move to the next subtitle line.")
+	STR_HELP("Move to the next subtitle line")
 
 	void operator()(agi::Context *c) {
 		c->selectionController->NextLine();
@@ -70,7 +70,7 @@ struct grid_line_next_create : public Command {
 	CMD_NAME("grid/line/next/create")
 	STR_MENU("Next Line")
 	STR_DISP("Next Line")
-	STR_HELP("Move to the next subtitle line, creating a new one if needed.")
+	STR_HELP("Move to the next subtitle line, creating a new one if needed")
 
 	void operator()(agi::Context *c) {
 		AssDialogue *cur = c->selectionController->GetActiveLine();
@@ -94,7 +94,7 @@ struct grid_line_prev : public Command {
 	CMD_NAME("grid/line/prev")
 	STR_MENU("Previous Line")
 	STR_DISP("Previous Line")
-	STR_HELP("Move to the previous line.")
+	STR_HELP("Move to the previous line")
 
 	void operator()(agi::Context *c) {
 		c->selectionController->PrevLine();
@@ -106,7 +106,7 @@ struct grid_sort_actor : public Command {
 	CMD_NAME("grid/sort/actor")
 	STR_MENU("&Actor Name")
 	STR_DISP("Actor Name")
-	STR_HELP("Sort all subtitles by their actor names.")
+	STR_HELP("Sort all subtitles by their actor names")
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort(AssFile::CompActor);
@@ -132,7 +132,7 @@ struct grid_sort_end : public Command {
 	CMD_NAME("grid/sort/end")
 	STR_MENU("&End Time")
 	STR_DISP("End Time")
-	STR_HELP("Sort all subtitles by their end times.")
+	STR_HELP("Sort all subtitles by their end times")
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort(AssFile::CompEnd);
@@ -145,7 +145,7 @@ struct grid_sort_start : public Command {
 	CMD_NAME("grid/sort/start")
 	STR_MENU("&Start Time")
 	STR_DISP("Start Time")
-	STR_HELP("Sort all subtitles by their start times.")
+	STR_HELP("Sort all subtitles by their start times")
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort();
@@ -158,7 +158,7 @@ struct grid_sort_style : public Command {
 	CMD_NAME("grid/sort/style")
 	STR_MENU("St&yle Name")
 	STR_DISP("Style Name")
-	STR_HELP("Sort all subtitles by their style names.")
+	STR_HELP("Sort all subtitles by their style names")
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort(AssFile::CompStyle);
@@ -171,7 +171,7 @@ struct grid_tag_cycle_hiding : public Command {
 	CMD_NAME("grid/tag/cycle_hiding")
 	STR_MENU("Cycle Tag Hiding")
 	STR_DISP("Cycle Tag Hiding")
-	STR_HELP("Cycle through tag hiding modes.")
+	STR_HELP("Cycle through tag hiding modes")
 
 	void operator()(agi::Context *) {
 		int tagMode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
@@ -197,7 +197,7 @@ struct grid_tags_hide : public Command {
 	CMD_NAME("grid/tags/hide")
 	STR_MENU("&Hide Tags")
 	STR_DISP("Hide Tags")
-	STR_HELP("Hide override tags in the subtitle grid.")
+	STR_HELP("Hide override tags in the subtitle grid")
 	CMD_TYPE(COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *) {
@@ -215,7 +215,7 @@ struct grid_tags_show : public Command {
 	CMD_NAME("grid/tags/show")
 	STR_MENU("Sh&ow Tags")
 	STR_DISP("Show Tags")
-	STR_HELP("Show full override tags in the subtitle grid.")
+	STR_HELP("Show full override tags in the subtitle grid")
 	CMD_TYPE(COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *) {
@@ -233,7 +233,7 @@ struct grid_tags_simplify : public Command {
 	CMD_NAME("grid/tags/simplify")
 	STR_MENU("S&implify Tags")
 	STR_DISP("Simplify Tags")
-	STR_HELP("Replace override tags in the subtitle grid with a simplified placeholder.")
+	STR_HELP("Replace override tags in the subtitle grid with a simplified placeholder")
 	CMD_TYPE(COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *) {
@@ -307,7 +307,7 @@ struct grid_swap : public Command {
 	CMD_NAME("grid/swap")
 	STR_MENU("Swap Lines")
 	STR_DISP("Swap Lines")
-	STR_HELP("Swaps the two selected lines.")
+	STR_HELP("Swaps the two selected lines")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {

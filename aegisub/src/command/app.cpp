@@ -69,7 +69,7 @@ struct app_about : public Command {
 	CMD_NAME("app/about")
 	STR_MENU("&About...")
 	STR_DISP("About")
-	STR_HELP("About Aegisub.")
+	STR_HELP("About Aegisub")
 
 	void operator()(agi::Context *c) {
 		AboutScreen(c->parent).ShowModal();
@@ -82,7 +82,7 @@ struct app_display_audio_subs : public Command {
 	CMD_NAME("app/display/audio_subs")
 	STR_MENU("&Audio+Subs View")
 	STR_DISP("Audio+Subs View")
-	STR_HELP("Display audio and subtitles only.")
+	STR_HELP("Display audio and subtitles only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *) {
@@ -104,7 +104,7 @@ struct app_display_full : public Command {
 	CMD_NAME("app/display/full")
 	STR_MENU("&Full view")
 	STR_DISP("Full view")
-	STR_HELP("Display audio, video and subtitles.")
+	STR_HELP("Display audio, video and subtitles")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
@@ -126,7 +126,7 @@ struct app_display_subs : public Command {
 	CMD_NAME("app/display/subs")
 	STR_MENU("S&ubs Only View")
 	STR_DISP("Subs Only View")
-	STR_HELP("Display subtitles only.")
+	STR_HELP("Display subtitles only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
@@ -144,7 +144,7 @@ struct app_display_video_subs : public Command {
 	CMD_NAME("app/display/video_subs")
 	STR_MENU("&Video+Subs View")
 	STR_DISP("Video+Subs View")
-	STR_HELP("Display video and subtitles only.")
+	STR_HELP("Display video and subtitles only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
@@ -166,7 +166,7 @@ struct app_exit : public Command {
 	CMD_NAME("app/exit")
 	STR_MENU("E&xit")
 	STR_DISP("Exit")
-	STR_HELP("Exit the application.")
+	STR_HELP("Exit the application")
 
 	void operator()(agi::Context *c) {
 		wxGetApp().frame->Close();
@@ -207,7 +207,7 @@ struct app_log : public Command {
 	CMD_NAME("app/log")
 	STR_MENU("&Log window...")
 	STR_DISP("Log window")
-	STR_HELP("Event log.")
+	STR_HELP("View the event log")
 
 	void operator()(agi::Context *c) {
 		(new LogWindow(c->parent))->Show(1);
@@ -220,7 +220,7 @@ struct app_new_window : public Command {
 	CMD_NAME("app/new_window")
 	STR_MENU("New &Window")
 	STR_DISP("New Window")
-	STR_HELP("Open a new application window.")
+	STR_HELP("Open a new application window")
 
 	void operator()(agi::Context *) {
 		RestartAegisub();
@@ -233,7 +233,7 @@ struct app_options : public Command {
 	CMD_NAME("app/options")
 	STR_MENU("&Options...")
 	STR_DISP("Options")
-	STR_HELP("Configure Aegisub.")
+	STR_HELP("Configure Aegisub")
 
 	void operator()(agi::Context *c) {
 		try {
@@ -249,7 +249,7 @@ struct app_toggle_global_hotkeys : public Command {
 	CMD_NAME("app/toggle/global_hotkeys")
 	STR_MENU("Toggle global hotkey overrides")
 	STR_DISP("Toggle global hotkey overrides")
-	STR_HELP("Toggle global hotkey overrides.")
+	STR_HELP("Toggle global hotkey overrides")
 	CMD_TYPE(COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *) {
@@ -267,7 +267,7 @@ struct app_updates : public Command {
 	CMD_NAME("app/updates")
 	STR_MENU("&Check for Updates...")
 	STR_DISP("Check for Updates")
-	STR_HELP("Check to see if there is a new version of Aegisub available.")
+	STR_HELP("Check to see if there is a new version of Aegisub available")
 
 	void operator()(agi::Context *) {
 		PerformVersionCheck(true);
