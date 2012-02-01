@@ -130,8 +130,8 @@ public:
 		using std::swap;
 		swap(cont, source);
 
-		SetPriority(WXTHREAD_MIN_PRIORITY);
 		Create();
+		SetPriority(WXTHREAD_MIN_PRIORITY);
 		Run();
 	}
 };
