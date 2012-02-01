@@ -58,15 +58,19 @@ class DialogSpellChecker : public wxDialog {
 	wxArrayString dictionary_lang_codes;
 
 	int word_start; ///< Start index of the current misspelled word
-	int word_end; ///< End index of the current misspelled word
+	int word_end;   ///< End index of the current misspelled word
 
-	wxTextCtrl *orig_word; ///< The word being corrected
+	wxTextCtrl *orig_word;    ///< The word being corrected
 	wxTextCtrl *replace_word; ///< The replacement that will be used if "Replace" is clicked
-	wxListBox *suggest_list; ///< The list of suggested replacements
+	wxListBox *suggest_list;  ///< The list of suggested replacements
 
-	wxComboBox *language; ///< The list of available languages
-	wxButton *add_button; ///< Add word to currently active dictionary
+	wxComboBox *language;      ///< The list of available languages
+	wxButton *add_button;      ///< Add word to currently active dictionary
 	wxCheckBox *skip_comments; ///< Skip over commented lines
+
+	AssDialogue *start_line;  ///< The first line checked
+	AssDialogue *active_line; ///< The most recently checked line
+	bool has_looped;          ///< Has the search already looped from the end to beginning?
 
 	/// Find the next misspelled word and close the dialog if there are none
 	/// @return Are there any more misspelled words?

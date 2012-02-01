@@ -56,6 +56,9 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 : wxDialog(context->parent, -1, _("Spell Checker"))
 , context(context)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
+, start_line(0)
+, active_line(0)
+, has_looped(false)
 {
 	SetIcon(BitmapToIcon(GETIMAGE(spellcheck_toolbutton_24)));
 
@@ -203,16 +206,21 @@ void DialogSpellChecker::OnClose(wxCommandEvent&) {
 }
 
 bool DialogSpellChecker::FindNext() {
-	AssDialogue *active_line = context->selectionController->GetActiveLine();
+	AssDialogue *real_active_line = context->selectionController->GetActiveLine();
+	// User has changed the active line; restart search from this position
+	if (real_active_line != active_line) {
+		active_line = real_active_line;
+		has_looped = false;
+		start_line = active_line;
+	}
+
 	int start_pos = context->editBox->GetReverseUnicodePosition(context->editBox->GetCurrentPos());
 	int commit_id = -1;
 
 	if (CheckLine(active_line, start_pos, &commit_id))
 		return true;
 
-	AssDialogue *start_line = active_line;
 	std::list<AssEntry*>::iterator it = find(context->ass->Line.begin(), context->ass->Line.end(), active_line);
-	bool has_looped = false;
 
 	// Note that it is deliberate that the start line is checked twice, as if
 	// the cursor is past the first misspelled word in the current line, that
@@ -298,4 +306,3 @@ void DialogSpellChecker::SetWord(wxString const& word) {
 
 	add_button->Enable(spellchecker->CanAddWord(word));
 }
-
