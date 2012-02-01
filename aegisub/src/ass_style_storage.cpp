@@ -34,56 +34,47 @@
 /// @ingroup style_editor
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
+#include "ass_style_storage.h"
+
 #ifndef AGI_PRE
-#include <fstream>
+#include <tr1/functional>
 #endif
 
-#include "ass_file.h"
 #include "ass_style.h"
-#include "ass_style_storage.h"
 #include "standard_paths.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
+#include "utils.h"
 
-
-/// @brief Save styles to disk 
-/// @param name 
-/// @return 
-///
-void AssStyleStorage::Save(wxString name) {
-	if (name.IsEmpty()) return;
-
-	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/"+name+".sty"), "UTF-8");
-
-	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
-		file.WriteLineToFile((*cur)->GetEntryData());
-	}
+AssStyleStorage::~AssStyleStorage() {
+	delete_clear(style);
 }
 
+void AssStyleStorage::Save(wxString const& name) {
+	if (name.empty()) return;
 
+	wxString dirname = StandardPaths::DecodePath("?user/catalog/");
+	if (!wxDirExists(dirname) && !wxMkdir(dirname))
+		throw "Failed creating directory for style catalogs";
 
-/// @brief Load styles from disk 
-/// @param name 
-/// @return 
-///
-void AssStyleStorage::Load(wxString name) {
-	if (name.IsEmpty()) return;
+	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"), "UTF-8");
+	for (std::list<AssStyle*>::iterator cur = style.begin(); cur != style.end(); ++cur)
+		file.WriteLineToFile((*cur)->GetEntryData());
+}
+
+void AssStyleStorage::Load(wxString const& name) {
+	if (name.empty()) return;
 	Clear();
 
-	TextFileReader file(StandardPaths::DecodePath("?user/catalog/"+name+".sty"), "UTF-8");
+	TextFileReader file(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"), "UTF-8");
 
-	AssStyle *curStyle;
 	while (file.HasMoreLines()) {
 		wxString data = file.ReadLineFromFile();
-		if (data.substr(0,6) == "Style:") {
+		if (data.StartsWith("Style:")) {
 			try {
-				curStyle = new AssStyle(data);
-				style.push_back(curStyle);
+				style.push_back(new AssStyle(data));
 			} catch(...) {
 				/* just ignore invalid lines for now */
 			}
@@ -91,23 +82,10 @@ void AssStyleStorage::Load(wxString name) {
 	}
 }
 
-
-
-/// @brief Clear 
-///
 void AssStyleStorage::Clear () {
-	using std::list;
-	for (list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
-		delete *cur;
-	}
-	style.clear();
+	delete_clear(style);
 }
 
-
-
-/// @brief Get names 
-/// @return 
-///
 wxArrayString AssStyleStorage::GetNames() {
 	wxArrayString names;
 	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
@@ -116,16 +94,10 @@ wxArrayString AssStyleStorage::GetNames() {
 	return names;
 }
 
-
-
-/// @brief Get a style by name 
-/// @param name 
-///
 AssStyle *AssStyleStorage::GetStyle(wxString name) {
-	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
-		if ((*cur)->name == name) return *cur;
+	for (std::list<AssStyle*>::iterator cur = style.begin(); cur != style.end(); ++cur) {
+		if ((*cur)->name.CmpNoCase(name) == 0)
+			return *cur;
 	}
-	return NULL;
+	return 0;
 }
-
-

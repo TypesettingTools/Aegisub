@@ -34,22 +34,13 @@
 /// @ingroup style_editor
 ///
 
-
-
-
-////////////
-// Includes
 #ifndef AGI_PRE
 #include <list>
 
 #include <wx/arrstr.h>
 #endif
 
-
-//////////////
-// Prototypes
 class AssStyle;
-
 
 /// DOCME
 /// @class AssStyleStorage
@@ -58,13 +49,26 @@ class AssStyle;
 /// DOCME
 class AssStyleStorage {
 public:
+	~AssStyleStorage();
 
-	/// DOCME
 	std::list<AssStyle*> style;
 
+	/// Get the names of all styles in this storage
 	wxArrayString GetNames();
-	AssStyle *GetStyle(wxString name);
+
+	/// Delete all styles in this storage
 	void Clear();
-	void Save(wxString name);
-	void Load(wxString name);
+
+	/// Get the style with the given name
+	/// @param name Case-insensitive style name
+	/// @return Style or NULL if the requested style is not found
+	AssStyle *GetStyle(wxString name);
+
+	/// Save stored styles to a file
+	/// @param name Catalog name (note: not file name)
+	void Save(wxString const& name);
+
+	/// Load stored styles from a file
+	/// @param name Catalog name (note: not file name)
+	void Load(wxString const& name);
 };

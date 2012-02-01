@@ -253,26 +253,19 @@ DialogStyleManager::~DialogStyleManager() {
 	if (sel != wxNOT_FOUND) {
 		c->ass->SetScriptInfo("Last Style Storage",CatalogList->GetString(sel));
 	}
-	Store.Clear();
 }
 
 /// @brief Load the catalog of stored styles
-void DialogStyleManager::LoadCatalog () {
+void DialogStyleManager::LoadCatalog() {
 	CatalogList->Clear();
 
 	// Create catalog if it doesn't exist
 	wxString dirname = StandardPaths::DecodePath("?user/catalog/");
 	if (!wxDirExists(dirname)) {
-		if (!wxMkdir(dirname)) {
-			throw "Failed creating directory for style catalogues";
-		}
-		else {
-			// Create default style
-			Store.Clear();
-			AssStyle *defstyle = new AssStyle;
-			Store.style.push_back(defstyle);
-			Store.Save("Default");
-		}
+		// Create default style
+		Store.Clear();
+		Store.style.push_back(new AssStyle);
+		Store.Save("Default");
 	}
 
 	// Get dir
@@ -319,10 +312,9 @@ void DialogStyleManager::LoadStorageStyles () {
 	styleStorageMap.clear();
 
 	for (std::list<AssStyle*>::iterator cur=Store.style.begin();cur!=Store.style.end();cur++) {
-		if (AssStyle *style = *cur) {
-			StorageList->Append(style->name);
-			styleStorageMap.push_back(style);
-		}
+		AssStyle *style = *cur;
+		StorageList->Append(style->name);
+		styleStorageMap.push_back(style);
 	}
 
 	// Flag change
@@ -440,12 +432,6 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &) {
 		StorageActions(true);
 
 		// Save
-		wxString dirname = StandardPaths::DecodePath("?user/catalog/");
-		if (!wxDirExists(dirname)) {
-			if (!wxMkdir(dirname)) {
-				throw "Failed creating directory for style catalogues";
-			}
-		}
 		Store.Save(name);
 	}
 	UpdateMoveButtons();
@@ -518,37 +504,32 @@ void DialogStyleManager::OnStorageChange (wxCommandEvent &) {
 }
 
 /// @brief Copy to Storage 
-void DialogStyleManager::OnCopyToStorage (wxCommandEvent &) {
-	using std::list;
+void DialogStyleManager::OnCopyToStorage(wxCommandEvent &) {
 	// Check if there is actually a storage
 	if (!StorageNew->IsEnabled()) return;
 
-	list<wxString> copied;
+	std::list<wxString> copied;
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
 	for (int i = 0; i < n; i++) {
 		wxString styleName = CurrentList->GetString(selections[i]);
 		bool addStyle = true;
-		
-		for (list<AssStyle *>::iterator style = Store.style.begin(); style != Store.style.end(); ++style) {
-			if ((*style)->name.CmpNoCase(styleName) == 0) {
-				addStyle = false;
-				if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?",styleName), "Style name collision.", wxYES_NO)) {
-					**style = *styleMap.at(selections[i]);
-					copied.push_back(styleName);
-				}
-				break;
+
+		if (AssStyle *style = Store.GetStyle(styleName)) {
+			addStyle = false;
+			if (wxYES == wxMessageBox(wxString::Format("There is already a style with the name \"%s\" on the current storage. Proceed and overwrite anyway?",styleName), "Style name collision.", wxYES_NO)) {
+				*style = *styleMap.at(selections[i]);
+				copied.push_back(styleName);
 			}
 		}
 		if (addStyle) {
-			AssStyle *temp = new AssStyle(*styleMap.at(selections[i]));
-			Store.style.push_back(temp);
+			Store.style.push_back(new AssStyle(*styleMap.at(selections[i])));
 			copied.push_back(styleName);
 		}
 	}
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	LoadStorageStyles();
-	for (list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
+	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		StorageList->SetStringSelection(*name, true);
 	}
 	wxCommandEvent dummy;
@@ -684,7 +665,7 @@ void DialogStyleManager::PasteToStorage() {
 	while (st.HasMoreTokens()) {
 		try {
 			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
-			while (Store.GetStyle(s->name) != NULL)
+			while (Store.GetStyle(s->name))
 				s->name = "Copy of " + s->name;
 
 			Store.style.push_back(s);
@@ -998,7 +979,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 	if (storage) {
 		// Rewrite storage
 		Store.style.clear();
-		for (unsigned int i=0;i<styls.size();i++) Store.style.push_back(styls[i]);
+		copy(styls.begin(), styls.end(), back_inserter(Store.style));
 		
 		// Save storage
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
