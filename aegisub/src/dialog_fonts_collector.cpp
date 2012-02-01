@@ -199,7 +199,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 
 	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
 
-	dest_label = new wxStaticText(destination_box->GetStaticBox(), -1, "\n");
+	dest_label = new wxStaticText(destination_box->GetStaticBox(), -1, " ");
 	dest_ctrl = new wxTextCtrl(destination_box->GetStaticBox(), -1, StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())));
 	dest_browse_button = new wxButton(destination_box->GetStaticBox(), -1, _("&Browse..."));
 
@@ -211,7 +211,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 	destination_box->Add(dest_browse_sizer, wxSizerFlags().Expand());
 
 	wxStaticBoxSizer *log_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
-	collection_log = new ScintillaTextCtrl(log_box->GetStaticBox(), -1, "", wxDefaultPosition, wxSize(300, 210));
+	collection_log = new ScintillaTextCtrl(log_box->GetStaticBox(), -1, "", wxDefaultPosition, wxSize(600, 300));
 	collection_log->SetWrapMode(wxSTC_WRAP_WORD);
 	collection_log->SetMarginWidth(1, 0);
 	collection_log->SetReadOnly(true);
@@ -332,14 +332,14 @@ void DialogFontsCollector::OnRadio(wxCommandEvent &) {
 		dest_label->Enable(true);
 
 		if (value == CopyToFolder) {
-			dest_label->SetLabel(_("Choose the folder where the fonts will be collected to.\nIt will be created if it doesn't exist."));
+			dest_label->SetLabel(_("Choose the folder where the fonts will be collected to. It will be created if it doesn't exist."));
 
 			// Remove filename from browse box
 			if (dst.Right(4) == ".zip")
 				dest_ctrl->SetValue(wxFileName(dst).GetPath());
 		}
 		else {
-			dest_label->SetLabel(_("Enter the name of the destination zip file to collect the fonts to.\nIf a folder is entered, a default name will be used."));
+			dest_label->SetLabel(_("Enter the name of the destination zip file to collect the fonts to. If a folder is entered, a default name will be used."));
 
 			// Add filename to browse box
 			if (!dst.EndsWith(".zip")) {
