@@ -46,6 +46,7 @@
 
 #include <wx/icon.h>
 #include <wx/menuitem.h>
+#include <wx/thread.h>
 #endif
 
 class wxMouseEvent;
@@ -97,17 +98,52 @@ template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b
 #endif
 #endif
 
+/// Polymorphic delete functor
 struct delete_ptr {
 	template<class T>
 	void operator()(T* ptr) const {
 		delete ptr;
 	}
 };
+
+/// Delete all of the items in a container of pointers and clear the container
 template<class T>
 void delete_clear(T& container) {
-	std::for_each(container.begin(), container.end(), delete_ptr());
-	container.clear();
+	if (!container.empty()) {
+		std::for_each(container.begin(), container.end(), delete_ptr());
+		container.clear();
+	}
 }
+
+/// Helper class for background_delete_clear
+template<class Container>
+class BackgroundDeleter : public wxThread {
+	Container cont;
+	wxThread::ExitCode Entry() {
+		delete_clear(cont);
+		return (wxThread::ExitCode)0;
+	}
+public:
+	BackgroundDeleter(Container &source)
+	: wxThread(wxTHREAD_DETACHED)
+	{
+		using std::swap;
+		swap(cont, source);
+
+		SetPriority(WXTHREAD_MIN_PRIORITY);
+		Create();
+		Run();
+	}
+};
+
+/// Clear a container of pointers and delete the pointed to members on a
+/// background thread
+template<class T>
+void background_delete_clear(T& container) {
+	if (!container.empty())
+		new BackgroundDeleter<T>(container);
+}
+
 
 template<class Out>
 struct cast {

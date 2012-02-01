@@ -68,16 +68,14 @@ namespace std {
 	}
 }
 
-/// @brief AssFile constructor
 AssFile::AssFile ()
 : commitId(0)
 , loaded(false)
 {
 }
 
-/// @brief AssFile destructor
 AssFile::~AssFile() {
-	delete_clear(Line);
+	background_delete_clear(Line);
 }
 
 /// @brief Load generic subs
@@ -386,7 +384,7 @@ void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {
 }
 
 void AssFile::Clear() {
-	delete_clear(Line);
+	background_delete_clear(Line);
 
 	loaded = false;
 	filename.clear();
