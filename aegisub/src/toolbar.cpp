@@ -75,7 +75,7 @@ namespace {
 				if (commands[i]->Type() & cmd::COMMAND_VALIDATE) {
 					EnableTool(TOOL_ID_BASE + i, commands[i]->Validate(context));
 				}
-				if (commands[i]->Type() & cmd::COMMAND_TOGGLE) {
+				if (commands[i]->Type() & cmd::COMMAND_TOGGLE || commands[i]->Type() & cmd::COMMAND_RADIO) {
 					ToggleTool(TOOL_ID_BASE + i, commands[i]->IsActive(context));
 				}
 			}
