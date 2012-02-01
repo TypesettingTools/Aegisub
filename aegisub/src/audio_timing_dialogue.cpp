@@ -142,9 +142,6 @@ public:
 /// for those markers to be dragged. Dragging the start/end markers changes
 /// the audio selection.
 ///
-/// When the audio rendering code is expanded to support it, inactive lines
-/// will also be shown as shaded lines that cannot be changed.
-///
 /// Another later expansion will be to affect the timing of multiple selected
 /// lines at the same time, if they e.g. have end1==start2.
 class AudioTimingControllerDialogue : public AudioTimingController, private SelectionListener<AssDialogue> {
@@ -153,6 +150,9 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 
 	/// Markers for inactive lines
 	std::vector<InactiveLineMarker> inactive_markers;
+
+	/// Time ranges with inactive lines
+	std::vector<std::pair<int, int> > inactive_ranges;
 
 	/// Marker provider for video keyframes
 	AudioMarkerProviderKeyframes keyframes_provider;
@@ -404,9 +404,9 @@ TimeRange AudioTimingControllerDialogue::GetPrimaryPlaybackRange() const
 void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
 {
 	ranges.AddRange(*GetLeftMarker(), *GetRightMarker(), AudioStyle_Selected);
-	for (size_t i = 0; i < inactive_markers.size(); i += 2)
+	for (size_t i = 0; i < inactive_ranges.size(); ++i)
 	{
-		ranges.AddRange(inactive_markers[i], inactive_markers[i + 1], AudioStyle_Inactive);
+		ranges.AddRange(inactive_ranges[i].first, inactive_ranges[i].second, AudioStyle_Inactive);
 	}
 }
 
@@ -572,11 +572,14 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 {
 	bool (*predicate)(AssEntry*) = inactive_line_comments->GetBool() ? dialogue : noncomment_dialogue;
 
+	bool was_empty = inactive_markers.empty();
+	inactive_markers.clear();
+	inactive_ranges.clear();
+
 	switch (int mode = inactive_line_mode->GetInt())
 	{
 	case 1: // Previous line only
 	case 2: // Previous and next lines
-		inactive_markers.clear();
 		if (AssDialogue *line = context->selectionController->GetActiveLine())
 		{
 			std::list<AssEntry*>::iterator current_line =
@@ -598,7 +601,6 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		break;
 	case 3: // All inactive lines
 	{
-		inactive_markers.clear();
 		AssDialogue *active_line = context->selectionController->GetActiveLine();
 		for (std::list<AssEntry*>::const_iterator it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it)
 		{
@@ -608,9 +610,8 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		break;
 	}
 	default:
-		if (inactive_markers.empty())
+		if (was_empty)
 			return;
-		inactive_markers.clear();
 	}
 
 	sort(inactive_markers.begin(), inactive_markers.end());
@@ -646,4 +647,5 @@ void AudioTimingControllerDialogue::AddInactiveMarkers(AssDialogue *line)
 {
 	inactive_markers.push_back(InactiveLineMarker(line->Start, true));
 	inactive_markers.push_back(InactiveLineMarker(line->End, false));
+	inactive_ranges.push_back(std::pair<int, int>(line->Start, line->End));
 }
