@@ -610,7 +610,7 @@ void FrameMain::OnSubtitlesOpen() {
 	wxString curSubsVideo = DecodeRelativePath(context->ass->GetScriptInfo("Video File"),context->ass->filename);
 	wxString curSubsVFR = DecodeRelativePath(context->ass->GetScriptInfo("VFR File"),context->ass->filename);
 	wxString curSubsKeyframes = DecodeRelativePath(context->ass->GetScriptInfo("Keyframes File"),context->ass->filename);
-	wxString curSubsAudio = DecodeRelativePath(context->ass->GetScriptInfo("Audio URI"),context->ass->filename);
+	wxString curSubsAudio = context->ass->GetScriptInfo("Audio URI");
 
 	// Check if there is anything to change
 	int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
