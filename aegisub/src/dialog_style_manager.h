@@ -57,19 +57,25 @@ class PersistLocation;
 ///
 /// DOCME
 class DialogStyleManager : public wxDialog {
-	agi::Context *c;
+	agi::Context *c; ///< Project context
 	agi::scoped_ptr<PersistLocation> persist;
 
-	/// DOCME
+	/// Styles in the current subtitle file
 	std::vector<AssStyle*> styleMap;
 
-	/// DOCME
+	/// Styles in the currently selected style storage
 	std::vector<AssStyle*> styleStorageMap;
+
+	/// Style storage manager
+	AssStyleStorage Store;
 
 	wxComboBox *CatalogList;
 	wxListBox *StorageList;
 	wxListBox *CurrentList;
+
 	wxButton *MoveToLocal;
+	wxButton *MoveToStorage;
+
 	wxButton *StorageNew;
 	wxButton *StorageEdit;
 	wxButton *StorageCopy;
@@ -79,7 +85,7 @@ class DialogStyleManager : public wxDialog {
 	wxButton *StorageMoveTop;
 	wxButton *StorageMoveBottom;
 	wxButton *StorageSort;
-	wxButton *MoveToStorage;
+
 	wxButton *CurrentNew;
 	wxButton *CurrentEdit;
 	wxButton *CurrentCopy;
@@ -90,54 +96,41 @@ class DialogStyleManager : public wxDialog {
 	wxButton *CurrentMoveBottom;
 	wxButton *CurrentSort;
 
+	/// Enable or disable the storage buttons
+	void StorageActions(bool state);
+	/// Load the list of available storages
+	void LoadCatalog();
+	/// Load the style list from the subtitles file
+	void LoadCurrentStyles(AssFile *subs);
+	/// Load the style list from the current storage
+	void LoadStorageStyles();
+	/// Enable/disable all of the buttons as appropriate
+	void UpdateButtons();
+	/// Move styles up or down
+	/// @param storage Storage or current file styles
+	/// @param type 0: up; 1: top; 2: down; 3: bottom; 4: sort
+	void MoveStyles(bool storage, int type);
 
-	/// DOCME
-	AssStyleStorage Store;
-
-	void StorageActions (bool state);
-	void LoadCatalog ();
-	void LoadCurrentStyles (AssFile *subs);
-	void LoadStorageStyles ();
-	void UpdateMoveButtons();
-	void MoveStyles(bool storage,int type);
-
-	/// DOCME
-	wxSizer *MainSizer;
-
-	void OnChangeCatalog (wxCommandEvent &event);
-	void OnCatalogNew (wxCommandEvent &event);
-	void OnCatalogDelete (wxCommandEvent &event);
-	void OnStorageEdit (wxCommandEvent &event);
-	void OnCurrentEdit (wxCommandEvent &event);
-	void OnCurrentMoveUp (wxCommandEvent &event);
-	void OnCurrentMoveDown (wxCommandEvent &event);
-	void OnCurrentMoveTop (wxCommandEvent &event);
-	void OnCurrentMoveBottom (wxCommandEvent &event);
-	void OnCurrentSort (wxCommandEvent &event);
-	void OnStorageChange (wxCommandEvent &event);
-	void OnCurrentChange (wxCommandEvent &event);
-	void OnCopyToStorage (wxCommandEvent &event);
-	void OnCopyToCurrent (wxCommandEvent &event);
-	void OnStorageCopy (wxCommandEvent &event);
-	void OnCurrentCopy (wxCommandEvent &event);
-	void OnStorageNew (wxCommandEvent &event);
-	void OnCurrentNew (wxCommandEvent &event);
-	void OnStorageMoveUp (wxCommandEvent &event);
-	void OnStorageMoveDown (wxCommandEvent &event);
-	void OnStorageMoveTop (wxCommandEvent &event);
-	void OnStorageMoveBottom (wxCommandEvent &event);
-	void OnStorageSort (wxCommandEvent &event);
-	void OnStorageDelete (wxCommandEvent &event);
-	void OnCurrentDelete (wxCommandEvent &event);
-	void OnCurrentImport (wxCommandEvent &event);
-	void OnKeyDown (wxKeyEvent &event);
-	void CopyToClipboard (wxListBox *list, std::vector<AssStyle*> v);
+	void OnChangeCatalog();
+	void OnCatalogNew();
+	void OnCatalogDelete();
+	void OnStorageEdit();
+	void OnCurrentEdit();
+	void OnCopyToStorage();
+	void OnCopyToCurrent();
+	void OnStorageCopy();
+	void OnCurrentCopy();
+	void OnStorageNew();
+	void OnCurrentNew();
+	void OnStorageDelete();
+	void OnCurrentDelete();
+	void OnCurrentImport();
+	void OnKeyDown(wxKeyEvent &event);
+	void CopyToClipboard(wxListBox *list, std::vector<AssStyle*> v);
 	void PasteToCurrent();
 	void PasteToStorage();
 
 public:
 	DialogStyleManager(agi::Context *context);
 	~DialogStyleManager();
-
-	DECLARE_EVENT_TABLE()
 };

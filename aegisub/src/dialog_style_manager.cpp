@@ -35,6 +35,8 @@
 
 #include "config.h"
 
+#include "dialog_style_manager.h"
+
 #ifndef AGI_PRE
 #include <tr1/functional>
 
@@ -55,7 +57,6 @@
 #include "compat.h"
 #include "dialog_selected_choices.h"
 #include "dialog_style_editor.h"
-#include "dialog_style_manager.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
@@ -65,155 +66,107 @@
 #include "standard_paths.h"
 #include "utils.h"
 
-/// IDs
-enum {
-	BUTTON_CATALOG_NEW = 1000,
-	BUTTON_CATALOG_DELETE,
-	BUTTON_STORAGE_COPYTO,
-	BUTTON_STORAGE_NEW,
-	BUTTON_STORAGE_EDIT,
-	BUTTON_STORAGE_COPY,
-	BUTTON_STORAGE_DELETE,
-	BUTTON_STORAGE_UP,
-	BUTTON_STORAGE_DOWN,
-	BUTTON_STORAGE_TOP,
-	BUTTON_STORAGE_BOTTOM,
-	BUTTON_STORAGE_SORT,
-	BUTTON_CURRENT_COPYTO,
-	BUTTON_CURRENT_NEW,
-	BUTTON_CURRENT_EDIT,
-	BUTTON_CURRENT_COPY,
-	BUTTON_CURRENT_DELETE,
-	BUTTON_CURRENT_IMPORT,
-	BUTTON_CURRENT_UP,
-	BUTTON_CURRENT_DOWN,
-	BUTTON_CURRENT_TOP,
-	BUTTON_CURRENT_BOTTOM,
-	BUTTON_CURRENT_SORT,
-	LIST_CATALOG,
-	LIST_STORAGE,
-	LIST_CURRENT
-};
+static wxBitmapButton *add_bitmap_button(wxWindow *parent, wxSizer *sizer, wxBitmap const& img, wxString const& tooltip) {
+	wxBitmapButton *btn = new wxBitmapButton(parent, -1, img);
+	btn->SetToolTip(tooltip);
+	sizer->Add(btn, wxSizerFlags().Expand());
+	return btn;
+}
 
-DialogStyleManager::DialogStyleManager (agi::Context *context)
+static wxSizer *make_move_buttons(wxWindow *parent, wxButton **up, wxButton **down, wxButton **top, wxButton **bottom, wxButton **sort) {
+	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	sizer->AddStretchSpacer(1);
+
+	*up     = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_24), _("Move style up."));
+	*down   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_24), _("Move style down."));
+	*top    = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_stop_24), _("Move style to top."));
+	*bottom = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_stop_24), _("Move style to bottom."));
+	*sort   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_sort_24), _("Sort styles alphabetically."));
+
+	sizer->AddStretchSpacer(1);
+	return sizer;
+}
+
+static wxSizer *make_edit_buttons(wxWindow *parent, wxString move_label, wxButton **move, wxButton **nw, wxButton **edit, wxButton **copy, wxButton **del) {
+	wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+
+	*move = new wxButton(parent, -1, move_label);
+	*nw = new wxButton(parent, -1, _("&New"));
+	*edit = new wxButton(parent, -1, _("&Edit"));
+	*copy = new wxButton(parent, -1, _("&Copy"));
+	*del = new wxButton(parent, -1, _("&Delete"));
+
+	sizer->Add(*nw, wxSizerFlags(1).Expand().Border(wxRIGHT));
+	sizer->Add(*edit, wxSizerFlags(1).Expand().Border(wxRIGHT));
+	sizer->Add(*copy, wxSizerFlags(1).Expand().Border(wxRIGHT));
+	sizer->Add(*del, wxSizerFlags(1).Expand());
+
+	return sizer;
+}
+
+DialogStyleManager::DialogStyleManager(agi::Context *context)
 : wxDialog (context->parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,"DialogStylesManager")
 , c(context)
 {
+	using std::tr1::bind;
 	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
 
 	// Catalog
 	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));
-	CatalogList = new wxComboBox(this,LIST_CATALOG, "", wxDefaultPosition, wxSize(-1,-1), 0, NULL, wxCB_READONLY | wxCB_READONLY, wxDefaultValidator, "Catalog List");
-	wxButton *CatalogNew = new wxButton(this, BUTTON_CATALOG_NEW, _("New"));
-	wxButton *CatalogDelete = new wxButton(this, BUTTON_CATALOG_DELETE, _("Delete"));
+	CatalogList = new wxComboBox(this,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, NULL, wxCB_READONLY | wxCB_READONLY, wxDefaultValidator, "Catalog List");
+	wxButton *CatalogNew = new wxButton(this, -1, _("New"));
+	wxButton *CatalogDelete = new wxButton(this, -1, _("Delete"));
 	CatalogBox->Add(CatalogList,1,wxEXPAND | wxRIGHT | wxALIGN_RIGHT,5);
 	CatalogBox->Add(CatalogNew,0,wxRIGHT,5);
 	CatalogBox->Add(CatalogDelete,0,0,0);
 
 	// Storage styles list
-	StorageList = new wxListBox(this, LIST_STORAGE, wxDefaultPosition, wxSize(240,250), 0, NULL, wxLB_EXTENDED);
-	wxSizer *StorageBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Storage"));
-	wxSizer *StorageButtons = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *StorageButtonsLow = new wxBoxSizer(wxVERTICAL);
+	wxSizer *StorageButtons = make_edit_buttons(this, _("Copy to &current script ->"), &MoveToLocal, &StorageNew, &StorageEdit, &StorageCopy, &StorageDelete);
+
 	wxSizer *StorageListSizer = new wxBoxSizer(wxHORIZONTAL);
-	MoveToLocal = new wxButton(this, BUTTON_STORAGE_COPYTO, _("Copy to &current script ->"));
-	StorageNew = new wxButton(this, BUTTON_STORAGE_NEW, _("Ne&w"));
-	StorageEdit = new wxButton(this, BUTTON_STORAGE_EDIT, _("Ed&it"));
-	StorageCopy = new wxButton(this, BUTTON_STORAGE_COPY, _("C&opy"));
-	StorageDelete = new wxButton(this, BUTTON_STORAGE_DELETE, _("De&lete"));
-	StorageButtons->Add(StorageNew,1,wxEXPAND | wxRIGHT,5);
-	StorageButtons->Add(StorageEdit,1,wxEXPAND | wxRIGHT,5);
-	StorageButtons->Add(StorageCopy,1,wxEXPAND | wxRIGHT,5);
-	StorageButtons->Add(StorageDelete,1,wxEXPAND | wxALL,0);
-	StorageMoveUp = new wxBitmapButton(this, BUTTON_STORAGE_UP, GETIMAGE(arrow_up_24));
-	StorageMoveDown = new wxBitmapButton(this, BUTTON_STORAGE_DOWN, GETIMAGE(arrow_down_24));
-	StorageMoveTop = new wxBitmapButton(this, BUTTON_STORAGE_TOP, GETIMAGE(arrow_up_stop_24));
-	StorageMoveBottom = new wxBitmapButton(this, BUTTON_STORAGE_BOTTOM, GETIMAGE(arrow_down_stop_24));
-	StorageSort = new wxBitmapButton(this, BUTTON_STORAGE_SORT, GETIMAGE(arrow_sort_24));
-	StorageMoveUp->SetToolTip(_("Move style up."));
-	StorageMoveDown->SetToolTip(_("Move style down."));
-	StorageMoveTop->SetToolTip(_("Move style to top."));
-	StorageMoveBottom->SetToolTip(_("Move style to bottom."));
-	StorageSort->SetToolTip(_("Sort styles alphabetically."));
-	StorageButtonsLow->AddStretchSpacer(1);
-	StorageButtonsLow->Add(StorageMoveTop,0,wxEXPAND | wxALL,0);
-	StorageButtonsLow->Add(StorageMoveUp,0,wxEXPAND | wxALL,0);
-	StorageButtonsLow->Add(StorageMoveDown,0,wxEXPAND | wxALL,0);
-	StorageButtonsLow->Add(StorageMoveBottom,0,wxEXPAND | wxALL,0);
-	StorageButtonsLow->Add(StorageSort,0,wxEXPAND | wxALL,0);
-	StorageButtonsLow->AddStretchSpacer(1);
+	StorageList = new wxListBox(this, -1, wxDefaultPosition, wxSize(240,250), 0, NULL, wxLB_EXTENDED);
 	StorageListSizer->Add(StorageList,1,wxEXPAND | wxRIGHT,0);
-	StorageListSizer->Add(StorageButtonsLow,0,wxEXPAND | wxALL,0);
+	StorageListSizer->Add(make_move_buttons(this, &StorageMoveUp, &StorageMoveDown, &StorageMoveTop, &StorageMoveBottom, &StorageSort), wxSizerFlags().Expand());
+
+	wxSizer *StorageBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Storage"));
 	StorageBox->Add(StorageListSizer,1,wxEXPAND | wxBOTTOM,5);
 	StorageBox->Add(MoveToLocal,0,wxEXPAND | wxBOTTOM,5);
 	StorageBox->Add(StorageButtons,0,wxEXPAND | wxBOTTOM,0);
-	MoveToLocal->Disable();
-	StorageEdit->Disable();
-	StorageCopy->Disable();
-	StorageDelete->Disable();
 
 	// Local styles list
-	CurrentList = new wxListBox(this, LIST_CURRENT, wxDefaultPosition, wxSize(240,250), 0, NULL, wxLB_EXTENDED);
-	wxSizer *CurrentBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Current script"));
-	wxSizer *CurrentButtons = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *CurrentButtonsLow = new wxBoxSizer(wxVERTICAL);
-	wxSizer *CurrentListSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxButton *CurrentImport = new wxButton(this, -1, _("&Import from script..."));
+	wxSizer *CurrentButtons = make_edit_buttons(this, _("<- Copy to &storage"), &MoveToStorage, &CurrentNew, &CurrentEdit, &CurrentCopy, &CurrentDelete);
+
 	wxSizer *MoveImportSizer = new wxBoxSizer(wxHORIZONTAL);
-	MoveToStorage = new wxButton(this, BUTTON_CURRENT_COPYTO, _("<- Copy to &storage"));
 	MoveImportSizer->Add(MoveToStorage,1,wxEXPAND | wxRIGHT,5);
-	MoveImportSizer->Add(new wxButton(this, BUTTON_CURRENT_IMPORT, _("&Import from script...")),1,wxEXPAND,0);
-	CurrentNew = new wxButton(this, BUTTON_CURRENT_NEW, _("&New"));
-	CurrentEdit = new wxButton(this, BUTTON_CURRENT_EDIT, _("&Edit"));
-	CurrentCopy = new wxButton(this, BUTTON_CURRENT_COPY, _("&Copy"));
-	CurrentDelete = new wxButton(this, BUTTON_CURRENT_DELETE, _("&Delete"));
-	CurrentButtons->Add(CurrentNew,1,wxEXPAND | wxRIGHT,5);
-	CurrentButtons->Add(CurrentEdit,1,wxEXPAND | wxRIGHT,5);
-	CurrentButtons->Add(CurrentCopy,1,wxEXPAND | wxRIGHT,5);
-	CurrentButtons->Add(CurrentDelete,1,wxEXPAND | wxALL,0);
-	CurrentMoveUp = new wxBitmapButton(this, BUTTON_CURRENT_UP, GETIMAGE(arrow_up_24));
-	CurrentMoveDown = new wxBitmapButton(this, BUTTON_CURRENT_DOWN, GETIMAGE(arrow_down_24));
-	CurrentMoveTop = new wxBitmapButton(this, BUTTON_CURRENT_TOP, GETIMAGE(arrow_up_stop_24));
-	CurrentMoveBottom = new wxBitmapButton(this, BUTTON_CURRENT_BOTTOM, GETIMAGE(arrow_down_stop_24));
-	CurrentSort = new wxBitmapButton(this, BUTTON_CURRENT_SORT, GETIMAGE(arrow_sort_24));
-	CurrentMoveUp->SetToolTip(_("Move style up."));
-	CurrentMoveDown->SetToolTip(_("Move style down."));
-	CurrentMoveTop->SetToolTip(_("Move style to top."));
-	CurrentMoveBottom->SetToolTip(_("Move style to bottom."));
-	CurrentSort->SetToolTip(_("Sort styles alphabetically."));
-	CurrentButtonsLow->AddStretchSpacer(1);
-	CurrentButtonsLow->Add(CurrentMoveTop,0,wxEXPAND | wxALL,0);
-	CurrentButtonsLow->Add(CurrentMoveUp,0,wxEXPAND | wxALL,0);
-	CurrentButtonsLow->Add(CurrentMoveDown,0,wxEXPAND | wxALL,0);
-	CurrentButtonsLow->Add(CurrentMoveBottom,0,wxEXPAND | wxALL,0);
-	CurrentButtonsLow->Add(CurrentSort,0,wxEXPAND | wxALL,0);
-	CurrentButtonsLow->AddStretchSpacer(1);
+	MoveImportSizer->Add(CurrentImport,1,wxEXPAND,0);
+
+	wxSizer *CurrentListSizer = new wxBoxSizer(wxHORIZONTAL);
+	CurrentList = new wxListBox(this, -1, wxDefaultPosition, wxSize(240,250), 0, NULL, wxLB_EXTENDED);
 	CurrentListSizer->Add(CurrentList,1,wxEXPAND | wxRIGHT,0);
-	CurrentListSizer->Add(CurrentButtonsLow,0,wxEXPAND | wxALL,0);
+	CurrentListSizer->Add(make_move_buttons(this, &CurrentMoveUp, &CurrentMoveDown, &CurrentMoveTop, &CurrentMoveBottom, &CurrentSort), wxSizerFlags().Expand());
+
+	wxSizer *CurrentBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Current script"));
 	CurrentBox->Add(CurrentListSizer,1,wxEXPAND | wxBOTTOM,5);
 	CurrentBox->Add(MoveImportSizer,0,wxEXPAND | wxBOTTOM,5);
 	CurrentBox->Add(CurrentButtons,0,wxEXPAND | wxBOTTOM,0);
-	MoveToStorage->Disable();
-	CurrentEdit->Disable();
-	CurrentCopy->Disable();
-	CurrentDelete->Disable();
 
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = CreateStdDialogButtonSizer(wxCANCEL | wxHELP);
 	buttonSizer->GetCancelButton()->SetLabel(_("Close"));
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Styles Manager"), wxID_HELP);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Styles Manager"), wxID_HELP);
 
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
 	StylesSizer->Add(StorageBox,0,wxRIGHT | wxEXPAND,5);
 	StylesSizer->Add(CurrentBox,0,wxLEFT | wxEXPAND,0);
-	MainSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(CatalogBox,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,5);
 	MainSizer->Add(StylesSizer,1,wxEXPAND | wxALL,5);
 	MainSizer->Add(buttonSizer,0,wxBOTTOM | wxEXPAND,5);
 
 	// Set sizer
-	SetSizer(MainSizer);
-	MainSizer->SetSizeHints(this);
+	SetSizerAndFit(MainSizer);
 
 	// Position window
 	persist.reset(new PersistLocation(this, "Tool/Style Manager"));
@@ -233,68 +186,83 @@ DialogStyleManager::DialogStyleManager (agi::Context *context)
 		selected_style = dia->Style;
 	}
 
-	if (StorageList->GetCount() && StorageList->SetStringSelection(selected_style)) {
-		StorageEdit->Enable();
-		StorageCopy->Enable();
-		StorageDelete->Enable();
-		MoveToLocal->Enable();
-	}
-	if (CurrentList->GetCount() && CurrentList->SetStringSelection(selected_style)) {
-		CurrentEdit->Enable();
-		CurrentCopy->Enable();
-		CurrentDelete->Enable();
-		MoveToStorage->Enable();
-	}
-	UpdateMoveButtons();
+	UpdateButtons();
+
+	StorageMoveUp->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 0));
+	StorageMoveTop->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 1));
+	StorageMoveDown->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 2));
+	StorageMoveBottom->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 3));
+	StorageSort->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 4));
+
+	CurrentMoveUp->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 0));
+	CurrentMoveTop->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 1));
+	CurrentMoveDown->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 2));
+	CurrentMoveBottom->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 3));
+	CurrentSort->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 4));
+
+	CatalogNew->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCatalogNew, this));
+	CatalogDelete->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCatalogDelete, this));
+
+	StorageNew->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageNew, this));
+	StorageEdit->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageEdit, this));
+	StorageCopy->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageCopy, this));
+	StorageDelete->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageDelete, this));
+
+	CurrentNew->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentNew, this));
+	CurrentEdit->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentEdit, this));
+	CurrentCopy->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentCopy, this));
+	CurrentDelete->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentDelete, this));
+
+	CurrentImport->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentImport, this));
+
+	MoveToLocal->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCopyToCurrent, this));
+	MoveToStorage->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCopyToStorage, this));
+
+	CatalogList->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, bind(&DialogStyleManager::OnChangeCatalog, this));
+
+	StorageList->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, bind(&DialogStyleManager::UpdateButtons, this));
+	StorageList->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, bind(&DialogStyleManager::OnStorageEdit, this));
+
+	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, bind(&DialogStyleManager::UpdateButtons, this));
+	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, bind(&DialogStyleManager::OnCurrentEdit, this));
 }
 
-/// @brief Destructor 
 DialogStyleManager::~DialogStyleManager() {
 	int sel = CatalogList->GetSelection();
-	if (sel != wxNOT_FOUND) {
-		c->ass->SetScriptInfo("Last Style Storage",CatalogList->GetString(sel));
-	}
+	if (sel != wxNOT_FOUND)
+		c->ass->SetScriptInfo("Last Style Storage", CatalogList->GetString(sel));
 }
 
-/// @brief Load the catalog of stored styles
 void DialogStyleManager::LoadCatalog() {
 	CatalogList->Clear();
 
-	// Create catalog if it doesn't exist
-	wxString dirname = StandardPaths::DecodePath("?user/catalog/");
-	if (!wxDirExists(dirname)) {
-		// Create default style
+	// Get saved style catalogs
+	wxString dirname = StandardPaths::DecodePath("?user/catalog/*.sty");
+	for (wxString curfile = wxFindFirstFile(dirname, wxFILE); !curfile.empty(); curfile = wxFindNextFile())
+		CatalogList->Append(wxFileName(curfile).GetName());
+
+	// Create a default storage if there are none
+	if (CatalogList->IsListEmpty()) {
 		Store.Clear();
 		Store.style.push_back(new AssStyle);
 		Store.Save("Default");
-	}
-
-	// Get dir
-	dirname = StandardPaths::DecodePath("?user/catalog/*.sty");
-
-	// Populate
-	wxString curfile = wxFindFirstFile(dirname,wxFILE);
-	wxString path,name,ext;
-	while (!curfile.empty()) {
-		wxFileName::SplitPath(curfile,&path,&name,&ext);
-		CatalogList->Append(name);
-		curfile = wxFindNextFile();
+		CatalogList->Append("Default");
 	}
 
 	// Set to default if available
 	StorageActions(false);
 	wxString pickStyle = c->ass->GetScriptInfo("Last Style Storage");
-	if (pickStyle.IsEmpty()) pickStyle = "Default";
+	if (pickStyle.empty())
+		pickStyle = "Default";
+
 	int opt = CatalogList->FindString(pickStyle, false);
 	if (opt != wxNOT_FOUND) {
 		CatalogList->SetSelection(opt);
-		wxCommandEvent dummy;
-		OnChangeCatalog(dummy);
+		OnChangeCatalog();
 	}
 }
 
-/// @brief Load the list of styles from a subtitle file
-void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
+void DialogStyleManager::LoadCurrentStyles(AssFile *subs) {
 	CurrentList->Clear();
 	styleMap.clear();
 
@@ -304,11 +272,10 @@ void DialogStyleManager::LoadCurrentStyles (AssFile *subs) {
 			styleMap.push_back(style);
 		}
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Load the list of styles from the currently active storage
-void DialogStyleManager::LoadStorageStyles () {
+void DialogStyleManager::LoadStorageStyles() {
 	StorageList->Clear();
 	styleStorageMap.clear();
 
@@ -318,66 +285,20 @@ void DialogStyleManager::LoadStorageStyles () {
 		styleStorageMap.push_back(style);
 	}
 
-	// Flag change
-	wxCommandEvent dummy;
-	OnStorageChange(dummy);
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Enables or disables storage actions 
-void DialogStyleManager::StorageActions (bool state) {
+void DialogStyleManager::StorageActions(bool state) {
 	StorageList->Enable(state);
 	MoveToLocal->Enable(state);
 	StorageNew->Enable(state);
 	StorageCopy->Enable(state);
 	StorageDelete->Enable(state);
 
-	wxCommandEvent dummy;
-	OnStorageChange(dummy);
-	
-	wxArrayInt selections;
-	if (CurrentList->GetSelections(selections) != 0) MoveToStorage->Enable(state);
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogStyleManager, wxDialog)
-	EVT_BUTTON(BUTTON_CATALOG_NEW, DialogStyleManager::OnCatalogNew)
-	EVT_BUTTON(BUTTON_CATALOG_DELETE, DialogStyleManager::OnCatalogDelete)
-	EVT_COMBOBOX(LIST_CATALOG, DialogStyleManager::OnChangeCatalog)
-	EVT_LISTBOX(LIST_CURRENT, DialogStyleManager::OnCurrentChange)
-	EVT_LISTBOX(LIST_STORAGE, DialogStyleManager::OnStorageChange)
-	EVT_LISTBOX_DCLICK(LIST_STORAGE, DialogStyleManager::OnStorageEdit)
-	EVT_LISTBOX_DCLICK(LIST_CURRENT, DialogStyleManager::OnCurrentEdit)
-	EVT_BUTTON(BUTTON_CURRENT_COPYTO, DialogStyleManager::OnCopyToStorage)
-	EVT_BUTTON(BUTTON_STORAGE_COPYTO, DialogStyleManager::OnCopyToCurrent)
-	EVT_BUTTON(BUTTON_CURRENT_EDIT, DialogStyleManager::OnCurrentEdit)
-	EVT_BUTTON(BUTTON_STORAGE_EDIT, DialogStyleManager::OnStorageEdit)
-	EVT_BUTTON(BUTTON_CURRENT_COPY, DialogStyleManager::OnCurrentCopy)
-	EVT_BUTTON(BUTTON_STORAGE_COPY, DialogStyleManager::OnStorageCopy)
-	EVT_BUTTON(BUTTON_CURRENT_NEW, DialogStyleManager::OnCurrentNew)
-	EVT_BUTTON(BUTTON_STORAGE_NEW, DialogStyleManager::OnStorageNew)
-	EVT_BUTTON(BUTTON_CURRENT_DELETE, DialogStyleManager::OnCurrentDelete)
-	EVT_BUTTON(BUTTON_STORAGE_DELETE, DialogStyleManager::OnStorageDelete)
-	EVT_BUTTON(BUTTON_CURRENT_IMPORT, DialogStyleManager::OnCurrentImport)
-	EVT_BUTTON(BUTTON_CURRENT_UP, DialogStyleManager::OnCurrentMoveUp)
-	EVT_BUTTON(BUTTON_CURRENT_TOP, DialogStyleManager::OnCurrentMoveTop)
-	EVT_BUTTON(BUTTON_CURRENT_DOWN, DialogStyleManager::OnCurrentMoveDown)
-	EVT_BUTTON(BUTTON_CURRENT_BOTTOM, DialogStyleManager::OnCurrentMoveBottom)
-	EVT_BUTTON(BUTTON_CURRENT_SORT, DialogStyleManager::OnCurrentSort)
-	EVT_BUTTON(BUTTON_STORAGE_UP, DialogStyleManager::OnStorageMoveUp)
-	EVT_BUTTON(BUTTON_STORAGE_TOP, DialogStyleManager::OnStorageMoveTop)
-	EVT_BUTTON(BUTTON_STORAGE_DOWN, DialogStyleManager::OnStorageMoveDown)
-	EVT_BUTTON(BUTTON_STORAGE_BOTTOM, DialogStyleManager::OnStorageMoveBottom)
-	EVT_BUTTON(BUTTON_STORAGE_SORT, DialogStyleManager::OnStorageSort)
-END_EVENT_TABLE()
-
-//////////
-// Events
-
-/// @brief Change catalog entry 
-void DialogStyleManager::OnChangeCatalog (wxCommandEvent &) {
+void DialogStyleManager::OnChangeCatalog() {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
 		StorageActions(true);
@@ -389,11 +310,10 @@ void DialogStyleManager::OnChangeCatalog (wxCommandEvent &) {
 		Store.Clear();
 		LoadStorageStyles();
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief New catalog entry button
-void DialogStyleManager::OnCatalogNew (wxCommandEvent &) {
+void DialogStyleManager::OnCatalogNew() {
 	wxString name = wxGetTextFromUser(_("New storage name:"), _("New catalog entry"), "", this);
 	if (!name.empty()) {
 		// Remove bad characters from the name
@@ -426,14 +346,12 @@ void DialogStyleManager::OnCatalogNew (wxCommandEvent &) {
 		CatalogList->SetStringSelection(name);
 		StorageActions(true);
 
-		// Save
 		Store.Save(name);
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Catalog delete 
-void DialogStyleManager::OnCatalogDelete (wxCommandEvent &) {
+void DialogStyleManager::OnCatalogDelete() {
 	int sel = CatalogList->GetSelection();
 	if (sel != wxNOT_FOUND) {
 		wxString name = CatalogList->GetString(sel);
@@ -446,11 +364,10 @@ void DialogStyleManager::OnCatalogDelete (wxCommandEvent &) {
 			StorageActions(false);
 		}
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Edit style on storage 
-void DialogStyleManager::OnStorageEdit (wxCommandEvent &) {
+void DialogStyleManager::OnStorageEdit() {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
 	if (n == 1) {
@@ -459,11 +376,10 @@ void DialogStyleManager::OnStorageEdit (wxCommandEvent &) {
 		StorageList->SetString(selections[0],selStyle->name);
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Edit style on current script 
-void DialogStyleManager::OnCurrentEdit (wxCommandEvent &) {
+void DialogStyleManager::OnCurrentEdit() {
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
 	if (n == 1) {
@@ -471,35 +387,10 @@ void DialogStyleManager::OnCurrentEdit (wxCommandEvent &) {
 		DialogStyleEditor(this, selStyle, c, 0, false).ShowModal();
 		CurrentList->SetString(selections[0],selStyle->name);
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Selection on current script changed 
-void DialogStyleManager::OnCurrentChange (wxCommandEvent &) {
-	wxArrayInt selections;
-	int n = CurrentList->GetSelections(selections);
-
-	CurrentEdit->Enable(n == 1);
-	CurrentCopy->Enable(n == 1);
-	CurrentDelete->Enable(n > 0);
-	MoveToStorage->Enable(n > 0);
-	UpdateMoveButtons();
-}
-
-/// @brief Selection on storage changed 
-void DialogStyleManager::OnStorageChange (wxCommandEvent &) {
-	wxArrayInt selections;
-	int n = StorageList->GetSelections(selections);
-
-	StorageEdit->Enable(n == 1);
-	StorageCopy->Enable(n == 1);
-	StorageDelete->Enable(n > 0);
-	MoveToLocal->Enable(n > 0);
-	UpdateMoveButtons();
-}
-
-/// @brief Copy to Storage 
-void DialogStyleManager::OnCopyToStorage(wxCommandEvent &) {
+void DialogStyleManager::OnCopyToStorage() {
 	// Check if there is actually a storage
 	if (!StorageNew->IsEnabled()) return;
 
@@ -527,14 +418,11 @@ void DialogStyleManager::OnCopyToStorage(wxCommandEvent &) {
 	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		StorageList->SetStringSelection(*name, true);
 	}
-	wxCommandEvent dummy;
-	OnStorageChange(dummy);
+	UpdateButtons();
 }
 
-/// @brief Copy to Current 
-void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
-	using std::list;
-	list<wxString> copied;
+void DialogStyleManager::OnCopyToCurrent() {
+	std::list<wxString> copied;
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
 	for (int i = 0; i < n; i++) {
@@ -552,55 +440,47 @@ void DialogStyleManager::OnCopyToCurrent (wxCommandEvent &) {
 			}
 		}
 		if (addStyle) {
-			AssStyle *temp = new AssStyle(*styleStorageMap.at(selections[i]));
-			c->ass->InsertStyle(temp);
+			c->ass->InsertStyle(new AssStyle(*styleStorageMap.at(selections[i])));
 			copied.push_back(styleName);
 		}
 	}
 	LoadCurrentStyles(c->ass);
-	for (list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
+	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		CurrentList->SetStringSelection(*name, true);
 	}
 	c->ass->Commit(_("style copy"), AssFile::COMMIT_STYLES);
-	wxCommandEvent dummy;
-	OnCurrentChange(dummy);
+	UpdateButtons();
 }
 
-/// @brief Storage make copy 
-void DialogStyleManager::OnStorageCopy (wxCommandEvent &) {
+void DialogStyleManager::OnStorageCopy() {
 	wxArrayInt selections;
 	StorageList->GetSelections(selections);
-	if (selections.size() == 0) return;
+	if (selections.empty()) return;
 
 	DialogStyleEditor(this, styleStorageMap[selections[0]], c, &Store, true).ShowModal();
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	LoadStorageStyles();
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Current make copy 
-void DialogStyleManager::OnCurrentCopy (wxCommandEvent &) {
+void DialogStyleManager::OnCurrentCopy() {
 	wxArrayInt selections;
 	CurrentList->GetSelections(selections);
-	if (selections.size() == 0) return;
+	if (selections.empty()) return;
 
 	DialogStyleEditor(this, styleMap[selections[0]], c, 0, true).ShowModal();
 	LoadCurrentStyles(c->ass);
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Copy to clipboard 
-/// @param list 
-/// @param v    
-void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*> v) {
+void DialogStyleManager::CopyToClipboard(wxListBox *list, std::vector<AssStyle*> v) {
 	wxString data;
-	AssStyle *s;
 	wxArrayInt selections;
 	list->GetSelections(selections);
 
-	for(int unsigned i=0;i<selections.size();i++) {
-		if (i!=0) data += "\r\n";
-		s = v.at(selections[i]);
+	for(size_t i = 0; i < selections.size(); ++i) {
+		if (i) data += "\r\n";
+		AssStyle *s = v[selections[i]];
 		s->UpdateData();
 		data += s->GetEntryData();
 	}
@@ -611,96 +491,79 @@ void DialogStyleManager::CopyToClipboard (wxListBox *list, std::vector<AssStyle*
 	}
 }
 
-/// @brief Paste from clipboard 
-void DialogStyleManager::PasteToCurrent() {
-	wxString data;
-
+static wxString get_clipboard_text() {
+	wxString text;
 	if (wxTheClipboard->Open()) {
 		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
 			wxTextDataObject rawdata;
 			wxTheClipboard->GetData(rawdata);
-			data = rawdata.GetText();
+			text = rawdata.GetText();
 		}
 		wxTheClipboard->Close();
 	}
+	return text;
+}
 
-	wxStringTokenizer st(data,'\n');
+template<class Func1, class Func2>
+static void add_styles(Func1 name_checker, Func2 style_adder) {
+	wxStringTokenizer st(get_clipboard_text(), '\n');
 	while (st.HasMoreTokens()) {
 		try {
 			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
-			while (c->ass->GetStyle(s->name) != NULL)
+			while (name_checker(s->name))
 				s->name = "Copy of " + s->name;
-
-			c->ass->InsertStyle(s);
-			LoadCurrentStyles(c->ass);
-
-			c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
+			style_adder(s);
 		}
 		catch (...) {
-			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
+			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION);
 		}
-
 	}
 }
 
-/// @brief DOCME
+void DialogStyleManager::PasteToCurrent() {
+	add_styles(
+		bind(&AssFile::GetStyle, c->ass, std::tr1::placeholders::_1),
+		bind(&AssFile::InsertStyle, c->ass, std::tr1::placeholders::_1));
+
+	LoadCurrentStyles(c->ass);
+	c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
+}
+
 void DialogStyleManager::PasteToStorage() {
-	wxString data;
+	add_styles(
+		bind(&AssStyleStorage::GetStyle, &Store, std::tr1::placeholders::_1),
+		bind(&std::list<AssStyle*>::push_back, &Store.style, std::tr1::placeholders::_1));
 
-	if (wxTheClipboard->Open()) {
-		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
-			wxTextDataObject rawdata;
-			wxTheClipboard->GetData(rawdata);
-			data = rawdata.GetText();
-		}
-		wxTheClipboard->Close();
-	}
-
-	wxStringTokenizer st(data,'\n');
-	while (st.HasMoreTokens()) {
-		try {
-			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
-			while (Store.GetStyle(s->name))
-				s->name = "Copy of " + s->name;
-
-			Store.style.push_back(s);
-			Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
-
-			LoadStorageStyles();
-			StorageList->SetStringSelection(s->name);
-		}
-		catch(...) {
-			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION , this);
-		}
-	}
+	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+	LoadStorageStyles();
+	StorageList->SetStringSelection(Store.style.back()->name);
 }
 
-/// @brief Storage new 
-void DialogStyleManager::OnStorageNew (wxCommandEvent &) {
+void DialogStyleManager::OnStorageNew() {
 	DialogStyleEditor(this, 0, c, &Store, false).ShowModal();
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	LoadStorageStyles();
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Current new 
-void DialogStyleManager::OnCurrentNew (wxCommandEvent &) {
+void DialogStyleManager::OnCurrentNew() {
 	DialogStyleEditor(this,0, c, 0, false).ShowModal();
 	LoadCurrentStyles(c->ass);
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Storage delete 
-void DialogStyleManager::OnStorageDelete (wxCommandEvent &) {
-	wxArrayInt selections;
-	int n = StorageList->GetSelections(selections);
-
+static int confirm_delete(int n, wxWindow *parent, wxString const& title) {
 	wxString message = n == 1 ?
 		_("Are you sure you want to delete this style?") :
 		wxString::Format(_("Are you sure you want to delete these %d styles?"), n);
-	int option = wxMessageBox(message, _("Confirm delete from storage"), wxYES_NO | wxICON_EXCLAMATION , this);
+	return wxMessageBox(message, title, wxYES_NO | wxICON_EXCLAMATION, parent);
+}
 
-	if (option == wxYES) {
+void DialogStyleManager::OnStorageDelete() {
+	wxArrayInt selections;
+	int n = StorageList->GetSelections(selections);
+
+	if (confirm_delete(n, this, _("Confirm delete from storage")) == wxYES) {
 		for (int i=0;i<n;i++) {
 			AssStyle *temp = styleStorageMap.at(selections[i]);
 			Store.style.remove(temp);
@@ -708,27 +571,15 @@ void DialogStyleManager::OnStorageDelete (wxCommandEvent &) {
 		}
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 		LoadStorageStyles();
-		
-		// Set buttons
-		MoveToLocal->Enable(false);
-		StorageEdit->Enable(false);
-		StorageCopy->Enable(false);
-		StorageDelete->Enable(false);
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Current delete 
-void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
+void DialogStyleManager::OnCurrentDelete() {
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
 
-	wxString message = n == 1 ?
-		_("Are you sure you want to delete this style?") :
-		wxString::Format(_("Are you sure you want to delete these %d styles?"), n);
-	int option = wxMessageBox(message, _("Confirm delete from current"), wxYES_NO | wxICON_EXCLAMATION , this);
-
-	if (option == wxYES) {
+	if (confirm_delete(n, this, _("Confirm delete from current")) == wxYES) {
 		for (int i=0;i<n;i++) {
 			AssStyle *temp = styleMap.at(selections[i]);
 			c->ass->Line.remove(temp);
@@ -736,19 +587,12 @@ void DialogStyleManager::OnCurrentDelete (wxCommandEvent &) {
 		}
 		LoadCurrentStyles(c->ass);
 
-		// Set buttons
-		MoveToStorage->Enable(false);
-		CurrentEdit->Enable(false);
-		CurrentCopy->Enable(false);
-		CurrentDelete->Enable(false);
-
 		c->ass->Commit(_("style delete"), AssFile::COMMIT_STYLES);
 	}
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Import styles from another script 
-void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
+void DialogStyleManager::OnCurrentImport() {
 	// Get file name
 	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());	
 	wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -811,18 +655,22 @@ void DialogStyleManager::OnCurrentImport(wxCommandEvent &) {
 	}
 }
 
-/// @brief Enable or disable the move buttons
-void DialogStyleManager::UpdateMoveButtons() {
+void DialogStyleManager::UpdateButtons() {
 	// Get storage selection
 	wxArrayInt sels;
 	int n = StorageList->GetSelections(sels);
+
+	StorageEdit->Enable(n == 1);
+	StorageCopy->Enable(n == 1);
+	StorageDelete->Enable(n > 0);
+	MoveToLocal->Enable(n > 0);
+
 	int firstStor = -1;
 	int lastStor = -1;
 	if (n) {
 		firstStor = sels[0];
 		lastStor = sels[n-1];
 	}
-	int itemsStor = StorageList->GetCount();
 
 	// Check if selection is continuous
 	bool contStor = true;
@@ -833,15 +681,28 @@ void DialogStyleManager::UpdateMoveButtons() {
 		}
 	}
 
+	int itemsStor = StorageList->GetCount();
+	StorageMoveUp->Enable(contStor && firstStor > 0);
+	StorageMoveTop->Enable(contStor && firstStor > 0);
+	StorageMoveDown->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
+	StorageMoveBottom->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
+	StorageSort->Enable(itemsStor > 1);
+
+
 	// Get current selection
 	n = CurrentList->GetSelections(sels);
+
+	CurrentEdit->Enable(n == 1);
+	CurrentCopy->Enable(n == 1);
+	CurrentDelete->Enable(n > 0);
+	MoveToStorage->Enable(n > 0);
+
 	int firstCurr = -1;
 	int lastCurr = -1;
 	if (n) {
 		firstCurr = sels[0];
 		lastCurr = sels[n-1];
 	}
-	int itemsCurr = CurrentList->GetCount();
 
 	// Check if selection is continuous
 	bool contCurr = true;
@@ -852,12 +713,7 @@ void DialogStyleManager::UpdateMoveButtons() {
 		}
 	}
 
-	// Set values
-	StorageMoveUp->Enable(contStor && firstStor > 0);
-	StorageMoveTop->Enable(contStor && firstStor > 0);
-	StorageMoveDown->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
-	StorageMoveBottom->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
-	StorageSort->Enable(itemsStor > 1);
+	int itemsCurr = CurrentList->GetCount();
 	CurrentMoveUp->Enable(contCurr && firstCurr > 0);
 	CurrentMoveTop->Enable(contCurr && firstCurr > 0);
 	CurrentMoveDown->Enable(contCurr && lastCurr != -1 && lastCurr < itemsCurr-1);
@@ -865,189 +721,133 @@ void DialogStyleManager::UpdateMoveButtons() {
 	CurrentSort->Enable(itemsCurr > 1);
 }
 
-void DialogStyleManager::OnStorageMoveUp (wxCommandEvent &) { MoveStyles(true,0); }
-void DialogStyleManager::OnStorageMoveTop (wxCommandEvent &) { MoveStyles(true,1); }
-void DialogStyleManager::OnStorageMoveDown (wxCommandEvent &) { MoveStyles(true,2); }
-void DialogStyleManager::OnStorageMoveBottom (wxCommandEvent &) { MoveStyles(true,3); }
-void DialogStyleManager::OnStorageSort (wxCommandEvent &) { MoveStyles(true,4); }
-void DialogStyleManager::OnCurrentMoveUp (wxCommandEvent &) { MoveStyles(false,0); }
-void DialogStyleManager::OnCurrentMoveTop (wxCommandEvent &) { MoveStyles(false,1); }
-void DialogStyleManager::OnCurrentMoveDown (wxCommandEvent &) { MoveStyles(false,2); }
-void DialogStyleManager::OnCurrentMoveBottom (wxCommandEvent &) { MoveStyles(false,3); }
-void DialogStyleManager::OnCurrentSort (wxCommandEvent &) { MoveStyles(false,4); }
+static bool cmp_style_name(const AssStyle *lft, const AssStyle *rgt) {
+	return lft->name < rgt->name;
+}
 
-/// @brief Move function 
-/// @param storage 
-/// @param type    
 void DialogStyleManager::MoveStyles(bool storage, int type) {
-	wxListBox *list;
-	if (storage) list = StorageList;
-	else list = CurrentList;
+	wxListBox *list = storage ? StorageList : CurrentList;
 
 	// Get selection
 	wxArrayInt sels;
 	int n = list->GetSelections(sels);
-	int first = -1;;
-	int last = -1;
-	if (n) {
-		first = sels[0];
-		last = sels[n-1];
-	}
+	if (n == 0 && type != 4) return;
 
-	// Get total style count
-	int nStyles = list->GetCount();
+	int first = sels.front();
+	int last = sels.back();
 
 	// Get styles
-	std::vector<AssStyle*> styls;
-	std::vector<AssStyle*> *srcStyls;
-	if (storage) srcStyls = &styleStorageMap;
-	else srcStyls = &styleMap;
+	std::vector<AssStyle*>& styls = storage ? styleStorageMap : styleMap;
 
 	// Move up
 	if (type == 0) {
-		for (int i=0;i<first-1;i++) styls.push_back(srcStyls->at(i));
-		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
-		styls.push_back(srcStyls->at(first-1));
-		for (int i=last+1;i<nStyles;i++) styls.push_back(srcStyls->at(i));
+		AssStyle *rem = styls[first - 1];
+		styls.erase(styls.begin() + first - 1);
+		styls.insert(styls.begin() + last, rem);
 		first--;
 		last--;
 	}
-
 	// Move to top
-	if (type == 1) {
-		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
-		for (int i=0;i<first;i++) styls.push_back(srcStyls->at(i));
-		for (int i=last+1;i<nStyles;i++) styls.push_back(srcStyls->at(i));
-		last = last-first;
+	else if (type == 1) {
+		std::vector<AssStyle*> tmp(styls.begin() + first, styls.begin() + last + 1);
+		styls.erase(styls.begin() + first, styls.begin() + last + 1);
+		styls.insert(styls.begin(), tmp.begin(), tmp.end());
+		last = last - first;
 		first = 0;
 	}
-
 	// Move down
-	if (type == 2) {
-		for (int i=0;i<first;i++) styls.push_back(srcStyls->at(i));
-		styls.push_back(srcStyls->at(last+1));
-		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
-		for (int i=last+2;i<nStyles;i++) styls.push_back(srcStyls->at(i));
+	else if (type == 2) {
+		AssStyle *rem = styls[last + 1];
+		styls.erase(styls.begin() + last + 1);
+		styls.insert(styls.begin() + first, rem);
 		first++;
 		last++;
 	}
-
 	// Move to bottom
-	if (type == 3) {
-		for (int i=0;i<first;i++) styls.push_back(srcStyls->at(i));
-		for (int i=last+1;i<nStyles;i++) styls.push_back(srcStyls->at(i));
-		for (int i=first;i<=last;i++) styls.push_back(srcStyls->at(i));
-		first = nStyles-(last-first+1);
-		last = nStyles-1;
+	else if (type == 3) {
+		std::vector<AssStyle*> tmp(styls.begin() + first, styls.begin() + last + 1);
+		styls.erase(styls.begin() + first, styls.begin() + last + 1);
+		styls.insert(styls.end(), tmp.begin(), tmp.end());
+		first = styls.size() - (last - first + 1);
+		last = styls.size() - 1;
 	}
-
 	// Sort
-	if (type == 4) {
+	else if (type == 4) {
 		// Get confirmation
 		if (storage) {
 			int res = wxMessageBox(_("Are you sure? This cannot be undone!"),_("Sort styles"),wxYES_NO);
 			if (res == wxNO) return;
 		}
 
-		// Get sorted list
-		wxArrayString styleNames;
-		for (int i=0; i < nStyles; i++) styleNames.Add(srcStyls->at(i)->name);
-		styleNames.Sort();
+		sort(styls.begin(), styls.end(), cmp_style_name);
 
-		std::list<AssStyle *> styles(srcStyls->begin(), srcStyls->end());
-		for (int i = 0; i < nStyles; i++) {
-			for (std::list<AssStyle *>::iterator style = styles.begin(); style != styles.end(); style++) {
-				if ((*style)->name == styleNames[i]) {
-					styls.push_back(*style);
-					styles.erase(style);
-					break;
-				}
-			}
-		}
-
-		// Zero selection
 		first = 0;
 		last = 0;
 	}
 
 	// Storage
 	if (storage) {
-		// Rewrite storage
 		Store.style.clear();
 		copy(styls.begin(), styls.end(), back_inserter(Store.style));
-		
-		// Save storage
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	}
-
 	// Current
 	else {
 		// Replace styles
 		entryIter next;
 		int curn = 0;
-		for (entryIter cur=c->ass->Line.begin();cur!=c->ass->Line.end();cur = next) {
+		for (entryIter cur = c->ass->Line.begin(); cur != c->ass->Line.end(); cur = next) {
 			next = cur;
 			next++;
-			AssStyle *style = dynamic_cast<AssStyle*>(*cur);
-			if (style) {
-				c->ass->Line.insert(cur,styls[curn]);
+			if (dynamic_cast<AssStyle*>(*cur)) {
+				c->ass->Line.insert(cur, styls[curn]);
 				c->ass->Line.erase(cur);
 				curn++;
 			}
 		}
 
-		// Flag as modified
 		c->ass->Commit(_("style move"), AssFile::COMMIT_STYLES);
 	}
 
-	// Update
-	for (int i=0;i<nStyles;i++) {
-		list->SetString(i,styls[i]->name);
-		if (i < first || i > last) list->Deselect(i);
-		else list->Select(i);
+	for (int i = 0 ; i < (int)styls.size(); ++i) {
+		list->SetString(i, styls[i]->name);
+		if (i < first || i > last)
+			list->Deselect(i);
+		else
+			list->Select(i);
 	}
 
-	// Set map
-	*srcStyls = styls;
-
-	// Update buttons
-	UpdateMoveButtons();
+	UpdateButtons();
 }
 
-/// @brief Keydown event 
 void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
-	wxCommandEvent evt;
+	wxWindow *focus = wxWindow::FindFocus();
+
 	switch(event.GetKeyCode()) {
 		case WXK_DELETE :
-			if (wxWindow::FindFocus()==StorageList) {
-				OnStorageDelete(evt);
-			}
-			else if (wxWindow::FindFocus()==CurrentList) {
-				OnCurrentDelete(evt);
-			}
+			if (focus == StorageList)
+				OnStorageDelete();
+			else if (focus == CurrentList)
+				OnCurrentDelete();
 			break;
 
 		case 'C' :
 		case 'c' :
 			if (event.CmdDown()) {
-				if (wxWindow::FindFocus()==CurrentList) {
-					CopyToClipboard(CurrentList,styleMap);
-				}
-				else if (wxWindow::FindFocus()==StorageList) {
-					CopyToClipboard(StorageList,styleStorageMap);
-				}
+				if (focus == StorageList)
+					CopyToClipboard(StorageList, styleStorageMap);
+				else if (focus == CurrentList)
+					CopyToClipboard(CurrentList, styleMap);
 			}
 			break;
 
 		case 'V' :
 		case 'v' :
 			if (event.CmdDown()) {
-				if (wxWindow::FindFocus()==CurrentList) {
-					PasteToCurrent();
-				}
-				else if (wxWindow::FindFocus()==StorageList) {
+				if (focus == StorageList)
 					PasteToStorage();
-				}
+				else if (focus == CurrentList)
+					PasteToCurrent();
 			}
 			break;
 		default:
