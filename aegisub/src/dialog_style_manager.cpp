@@ -181,10 +181,10 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	CurrentList->Bind(wxEVT_KEY_DOWN, &DialogStyleManager::OnKeyDown, this);
 
 	// Select default item
-	wxString selected_style;
-	if (AssDialogue *dia = context->selectionController->GetActiveLine()) {
-		selected_style = dia->Style;
-	}
+	if (AssDialogue *dia = context->selectionController->GetActiveLine())
+		CurrentList->SetStringSelection(dia->Style);
+	else
+		CurrentList->SetSelection(0);
 
 	UpdateButtons();
 
