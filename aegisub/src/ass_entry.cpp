@@ -52,7 +52,5 @@ wxString AssEntry::GetSSAText() const {
 }
 
 AssEntry *AssEntry::Clone() const {
-	AssEntry *final = new AssEntry(data);
-	final->group = group;
-	return final;
+	return new AssEntry(data, group);
 }

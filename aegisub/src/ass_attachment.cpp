@@ -49,8 +49,9 @@
 #include <libaegisub/io.h>
 #include <libaegisub/scoped_ptr.h>
 
-AssAttachment::AssAttachment(wxString name)
-: data(new std::vector<char>)
+AssAttachment::AssAttachment(wxString const& name, wxString const& group)
+: AssEntry(wxString(), group)
+, data(new std::vector<char>)
 , filename(name)
 {
 	wxFileName fname(filename);
@@ -60,9 +61,8 @@ AssAttachment::AssAttachment(wxString name)
 }
 
 AssEntry *AssAttachment::Clone() const {
-	AssAttachment *clone = new AssAttachment(filename);
+	AssAttachment *clone = new AssAttachment(filename, group);
 	clone->data = data;
-	clone->group = group;
 	return clone;
 }
 

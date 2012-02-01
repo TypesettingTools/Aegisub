@@ -79,5 +79,5 @@ public:
 	ASS_EntryType GetType() const { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone() const;
 
-	AssAttachment(wxString name);
+	AssAttachment(wxString const& name, wxString const& group);
 };

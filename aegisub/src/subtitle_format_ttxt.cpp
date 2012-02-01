@@ -282,8 +282,5 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 	AssDialogue *diag = new AssDialogue;
 	diag->Start = lastTime;
 	diag->End = lastTime+OPT_GET("Timing/Default Duration")->GetInt();
-	diag->group = "[Events]";
-	diag->Style = "Default";
-	diag->Comment = false;
 	file.Line.push_back(diag);
 }

@@ -329,8 +329,7 @@ void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {
 	// Attachment
 	if (lowGroup == "[fonts]" || lowGroup == "[graphics]") {
 		if (isFilename) {
-			*attach = new AssAttachment(data.Mid(10));
-			(*attach)->group = group;
+			*attach = new AssAttachment(data.Mid(10), group);
 		}
 	}
 	// Dialogue
@@ -479,16 +478,16 @@ void AssFile::InsertAttachment(AssAttachment *attach) {
 	Line.push_back(attach);
 }
 
-void AssFile::InsertAttachment (wxString filename) {
-	std::auto_ptr<AssAttachment> newAttach(new AssAttachment(wxFileName(filename).GetFullName()));
-	newAttach->Import(filename);
+void AssFile::InsertAttachment(wxString filename) {
+	wxString group("[Graphics]");
 
-	// Insert
 	wxString ext = filename.Right(4).Lower();
 	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb")
-		newAttach->group = "[Fonts]";
-	else
-		newAttach->group = "[Graphics]";
+		group = "[Fonts]";
+
+	std::auto_ptr<AssAttachment> newAttach(new AssAttachment(wxFileName(filename).GetFullName(), group));
+	newAttach->Import(filename);
+
 	InsertAttachment(newAttach.release());
 }
 
@@ -540,11 +539,8 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 			script_info_end = cur;
 		}
 		else if (found_script_info) {
-			if (value.size()) {
-				AssEntry *entry = new AssEntry(key + ": " + value);
-				entry->group = "[Script Info]";
-				Line.insert(script_info_end, entry);
-			}
+			if (value.size())
+				Line.insert(script_info_end, new AssEntry(key + ": " + value, "[Script Info]"));
 			return;
 		}
 	}

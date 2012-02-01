@@ -139,7 +139,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& group, wx
 
 	// Create attachments
 	for (size_t i = 0; i < filenames.size(); ++i) {
-		AssAttachment *newAttach = new AssAttachment(filenames[i]);
+		AssAttachment *newAttach = new AssAttachment(filenames[i], group);
 		try {
 			newAttach->Import(paths[i]);
 		}
@@ -147,7 +147,6 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& group, wx
 			delete newAttach;
 			return;
 		}
-		newAttach->group = group;
 		ass->InsertAttachment(newAttach);
 	}
 

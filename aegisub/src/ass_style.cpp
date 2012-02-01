@@ -144,7 +144,8 @@ bool AssColor::operator!=(const AssColor &col) const {
 }
 
 AssStyle::AssStyle()
-: name("Default")
+: AssEntry(wxString(), wxS("[V4+ Styles]"))
+, name("Default")
 , font("Arial")
 , fontsize(20.)
 , primary(255, 255, 255)
@@ -166,7 +167,6 @@ AssStyle::AssStyle()
 , encoding(1)
 , relativeTo(1)
 {
-	group = "[V4+ Styles]";
 	for (int i = 0; i < 4; i++)
 		Margin[i] = 10;
 
@@ -192,9 +192,9 @@ static double get_next_double(wxStringTokenizer &tok) {
 	return temp;
 }
 
-AssStyle::AssStyle(wxString rawData,int version) {
-	group = "[V4+ Styles]";
-
+AssStyle::AssStyle(wxString rawData, int version)
+: AssEntry(wxString(), wxS("[V4+ Styles]"))
+{
 	wxStringTokenizer tkn(rawData.Trim(false).Mid(6), ",", wxTOKEN_RET_EMPTY_ALL);
 
 	name = get_next_string(tkn).Trim(true).Trim(false);
@@ -292,6 +292,37 @@ AssStyle::AssStyle(wxString rawData,int version) {
 		throw "Malformed style: too many fields";
 
 	UpdateData();
+}
+
+AssStyle& AssStyle::operator=(AssStyle const& rgt) {
+	name = rgt.name;
+	font = rgt.font;
+	fontsize = rgt.fontsize;
+
+	primary = rgt.primary;
+	secondary = rgt.secondary;
+	outline = rgt.outline;
+	shadow = rgt.shadow;
+
+	bold = rgt.bold;
+	italic = rgt.italic;
+	underline = rgt.underline;
+	strikeout = rgt.strikeout;
+
+	scalex = rgt.scalex;
+	scaley = rgt.scaley;
+	spacing = rgt.spacing;
+	angle = rgt.angle;
+	borderstyle = rgt.borderstyle;
+	outline_w = rgt.outline_w;
+	shadow_w = rgt.shadow_w;
+	alignment = rgt.alignment;
+	encoding = rgt.encoding;
+	relativeTo = rgt.relativeTo;
+
+	memcpy(Margin, rgt.Margin, sizeof(Margin));
+
+	return *this;
 }
 
 void AssStyle::UpdateData() {

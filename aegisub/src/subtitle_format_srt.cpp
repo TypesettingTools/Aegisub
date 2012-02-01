@@ -427,9 +427,6 @@ found_timestamps:
 				}
 				// create new subtitle
 				line = new AssDialogue;
-				line->group = "[Events]";
-				line->Style = "Default";
-				line->Comment = false;
 				line->Start = ReadSRTTime(timestamp_regex.GetMatch(text_line, 1));
 				line->End = ReadSRTTime(timestamp_regex.GetMatch(text_line, 2));
 				// store pointer to subtitle, we'll continue working on it

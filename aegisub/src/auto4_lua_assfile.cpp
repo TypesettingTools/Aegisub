@@ -302,19 +302,18 @@ namespace Automation4 {
 			wxString section = get_string_field(L, "section", "common");
 
 			if (lclass == "clear")
-				result = new AssEntry;
+				result = new AssEntry("", "");
 			else if (lclass == "comment")
-				result = new AssEntry(";" + get_string_field(L, "text", "comment"));
+				result = new AssEntry(";" + get_string_field(L, "text", "comment"), section);
 			else if (lclass == "head")
-				result = new AssEntry(section);
+				result = new AssEntry(section, section);
 			else if (lclass == "info") {
-				result = new AssEntry(wxString::Format("%s: %s", get_string_field(L, "key", "info"), get_string_field(L, "value", "info")));
-				result->group = "[Script Info]"; // just so it can be read correctly back
+				result = new AssEntry(wxString::Format("%s: %s", get_string_field(L, "key", "info"), get_string_field(L, "value", "info")), "[Script Info]");
 			}
 			else if (lclass == "format") {
 				// ohshi- ...
 				// *FIXME* maybe ignore the actual data and just put some default stuff based on section?
-				result = new AssEntry("Format: Auto4,Is,Broken");
+				result = new AssEntry("Format: Auto4,Is,Broken", section);
 			}
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;
@@ -366,9 +365,6 @@ namespace Automation4 {
 				luaL_error(L, "Found line with unknown class: %s", lclass.utf8_str().data());
 				return 0;
 			}
-
-			if (result->group.empty())
-				result->group = section;
 
 			return result;
 		}
@@ -571,9 +567,7 @@ namespace Automation4 {
 				// create it at the end of the file
 				if (e->GetEntryData() != e->group) {
 					// Add the header if the entry being added isn't a header
-					AssEntry *header = new AssEntry(e->group);
-					header->group = e->group;
-					lines.push_back(header);
+					lines.push_back(new AssEntry(e->group, e->group));
 				}
 
 				lines.push_back(e);

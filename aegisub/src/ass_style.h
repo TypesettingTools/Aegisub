@@ -107,7 +107,8 @@ public:
 	static void GetEncodings(wxArrayString &encodingStrings);
 
 	AssStyle();
-	AssStyle(wxString data,int version=1);
+	AssStyle(wxString data, int version=1);
+	AssStyle& operator=(AssStyle const&);
 
 	wxString GetSSAText() const;
 	ASS_EntryType GetType() const { return ENTRY_STYLE; }
