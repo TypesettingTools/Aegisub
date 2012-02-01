@@ -57,7 +57,7 @@ public:
 	/// @param cb Callback for status logging
 	FreetypeFontFileLister(FontCollectorStatusCallback cb);
 
-	std::vector<wxString> GetFontPaths(wxString const& facename, int, bool);
+	std::vector<wxString> GetFontPaths(wxString const& facename, int, bool, std::set<wxUniChar> const&);
 };
 
 #endif

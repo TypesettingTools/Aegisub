@@ -42,6 +42,7 @@ class FontConfigFontFileLister : public FontFileLister {
 	};
 
 	scoped<FcConfig*> config;
+	FontCollectorStatusCallback cb;
 
 	/// @brief Case-insensitive match ASS/SSA font family against full name. (also known as "name for humans")
 	/// @param family font fullname
@@ -54,7 +55,7 @@ public:
 	/// @param cb Callback for status logging
 	FontConfigFontFileLister(FontCollectorStatusCallback cb);
 
-	std::vector<wxString> GetFontPaths(wxString const& facename, int bold, bool italic);
+	std::vector<wxString> GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters);
 };
 
 #endif

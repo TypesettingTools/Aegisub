@@ -46,8 +46,9 @@ public:
 	/// @param facename Name of font face
 	/// @param bold ASS font weight
 	/// @param italic Italic?
+	/// @param characters Characters in this style
 	/// @return Path to the matching font file(s), or empty if not found
-	virtual std::vector<wxString> GetFontPaths(wxString const& facename, int bold, bool italic) = 0;
+	virtual std::vector<wxString> GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) = 0;
 };
 
 /// @class FontCollector
@@ -65,8 +66,8 @@ class FontCollector {
 	/// The actual lister to use to get font paths
 	FontFileLister &lister;
 
-	/// A set of each combination of styles used in the file
-	std::set<StyleInfo> used_styles;
+	/// The set of all glyphs used in the file
+	std::map<StyleInfo, std::set<wxUniChar> > used_styles;
 	/// Style name -> ASS style definition
 	std::map<wxString, StyleInfo> styles;
 	/// Paths to found required font files
@@ -77,7 +78,7 @@ class FontCollector {
 	/// Gather all of the unique styles with text on a line
 	void ProcessDialogueLine(AssDialogue *line);
 	/// Get the font for a single style
-	void ProcessChunk(StyleInfo const& style);
+	void ProcessChunk(std::pair<StyleInfo, std::set<wxUniChar> > const& style);
 
 public:
 	/// Constructor

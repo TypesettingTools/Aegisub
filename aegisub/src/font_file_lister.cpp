@@ -47,17 +47,11 @@ void FontCollector::ProcessDialogueLine(AssDialogue *line) {
 	if (line->Comment) return;
 
 	line->ParseASSTags();
-	bool text = false;
 	StyleInfo style = styles[line->Style];
 	StyleInfo initial = style;
 
 	for (size_t i = 0; i < line->Blocks.size(); ++i) {
 		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(line->Blocks[i])) {
-			if (text) {
-				used_styles.insert(style);
-				text = false;
-			}
-
 			for (size_t j = 0; j < ovr->Tags.size(); ++j) {
 				AssOverrideTag *tag = ovr->Tags[j];
 				wxString name = tag->Name;
@@ -75,26 +69,29 @@ void FontCollector::ProcessDialogueLine(AssDialogue *line) {
 			}
 		}
 		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(line->Blocks[i])) {
-			text = text || !txt->GetText().empty();
+			wxString text = txt->GetText();
+			if (text.size()) {
+				std::set<wxUniChar>& chars = used_styles[style];
+				for (size_t i = 0; i < text.size(); ++i)
+					chars.insert(text[i]);
+			}
 		}
 		// Do nothing with drawing blocks
 	}
-	if (text)
-		used_styles.insert(style);
 	line->ClearBlocks();
 }
 
-void FontCollector::ProcessChunk(StyleInfo const& style) {
-	std::vector<wxString> paths = lister.GetFontPaths(style.facename, style.bold, style.italic);
+void FontCollector::ProcessChunk(std::pair<StyleInfo, std::set<wxUniChar> > const& style) {
+	std::vector<wxString> paths = lister.GetFontPaths(style.first.facename, style.first.bold, style.first.italic, style.second);
 
 	if (paths.empty()) {
-		status_callback(wxString::Format("Could not find font '%s'\n", style.facename), 2);
+		status_callback(wxString::Format("Could not find font '%s'\n", style.first.facename), 2);
 		++missing;
 	}
 	else {
 		for (size_t i = 0; i < paths.size(); ++i) {
 			if (results.insert(paths[i]).second)
-				status_callback(wxString::Format("Found '%s' at '%s'\n", style.facename, paths[i]), 0);
+				status_callback(wxString::Format("Found '%s' at '%s'\n", style.first.facename, paths[i]), 0);
 		}
 	}
 }
