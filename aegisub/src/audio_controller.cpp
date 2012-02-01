@@ -34,7 +34,6 @@
 /// @ingroup audio_ui
 ///
 
-
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -61,7 +60,7 @@
 
 class VideoPositionMarker : public AudioMarker {
 	Pen style;
-	int64_t position;
+	int position;
 
 public:
 	VideoPositionMarker()
@@ -70,20 +69,16 @@ public:
 	{
 	}
 
-	void SetPosition(int64_t new_pos)
-	{
-		position = new_pos;
-	}
+	void SetPosition(int new_pos) { position = new_pos; }
 
-	int64_t GetPosition() const { return position; }
+	int GetPosition() const { return position; }
 	FeetStyle GetFeet() const { return Feet_None; }
 	bool CanSnap() const { return true; }
 	wxPen GetStyle() const { return style; }
-	operator int64_t() const { return position; }
+	operator int() const { return position; }
 };
 
 class VideoPositionMarkerProvider : public AudioMarkerProvider {
-	AudioController *ac;
 	VideoContext *vc;
 
 	VideoPositionMarker marker;
@@ -99,7 +94,7 @@ class VideoPositionMarkerProvider : public AudioMarkerProvider {
 		}
 		else
 		{
-			marker.SetPosition(ac->SamplesFromMilliseconds(vc->TimeAtFrame(frame_number)));
+			marker.SetPosition(vc->TimeAtFrame(frame_number));
 		}
 		AnnounceMarkerMoved();
 	}
@@ -120,15 +115,14 @@ class VideoPositionMarkerProvider : public AudioMarkerProvider {
 
 public:
 	VideoPositionMarkerProvider(agi::Context *c)
-	: ac(c->audioController)
-	, vc(c->videoController)
+	: vc(c->videoController)
 	, video_seek_slot(vc->AddSeekListener(&VideoPositionMarkerProvider::Update, this))
 	, enable_opt_changed_slot(OPT_SUB("Audio/Display/Draw/Video Position", &VideoPositionMarkerProvider::OptChanged, this))
 	{
 		OptChanged(*OPT_GET("Audio/Display/Draw/Video Position"));
 	}
 
-	void GetMarkers(const SampleRange &range, AudioMarkerVector &out) const
+	void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const
 	{
 		if (range.contains(marker))
 		{
@@ -177,7 +171,7 @@ void AudioController::OnPlaybackTimer(wxTimerEvent &)
 	}
 	else
 	{
-		AnnouncePlaybackPosition(pos);
+		AnnouncePlaybackPosition(MillisecondsFromSamples(pos));
 	}
 }
 
@@ -409,11 +403,11 @@ void AudioController::OnSubtitlesSave()
 	}
 }
 
-void AudioController::PlayRange(const SampleRange &range)
+void AudioController::PlayRange(const TimeRange &range)
 {
 	if (!IsAudioOpen()) return;
 
-	player->Play(range.begin(), range.length());
+	player->Play(SamplesFromMilliseconds(range.begin()), SamplesFromMilliseconds(range.length()));
 	playback_mode = PM_Range;
 	playback_timer.Start(20);
 
@@ -428,26 +422,25 @@ void AudioController::PlayPrimaryRange()
 		playback_mode = PM_PrimaryRange;
 }
 
-void AudioController::PlayToEndOfPrimary(int64_t start_sample)
+void AudioController::PlayToEndOfPrimary(int start_ms)
 {
 	if (!IsAudioOpen()) return;
 
-	player->Play(start_sample, GetPrimaryPlaybackRange().end() - start_sample);
-	playback_mode = PM_PrimaryRange;
-	playback_timer.Start(20);
-
-	AnnouncePlaybackPosition(start_sample);
+	PlayRange(TimeRange(start_ms, GetPrimaryPlaybackRange().end()));
+	if (playback_mode == PM_Range)
+		playback_mode = PM_PrimaryRange;
 }
 
-void AudioController::PlayToEnd(int64_t start_sample)
+void AudioController::PlayToEnd(int start_ms)
 {
 	if (!IsAudioOpen()) return;
 
+	int64_t start_sample = SamplesFromMilliseconds(start_ms);
 	player->Play(start_sample, provider->GetNumSamples()-start_sample);
 	playback_mode = PM_ToEnd;
 	playback_timer.Start(20);
 
-	AnnouncePlaybackPosition(start_sample);
+	AnnouncePlaybackPosition(start_ms);
 }
 
 
@@ -469,23 +462,30 @@ bool AudioController::IsPlaying()
 }
 
 
-int64_t AudioController::GetPlaybackPosition()
+int AudioController::GetPlaybackPosition()
 {
 	if (!IsPlaying()) return 0;
 
-	return player->GetCurrentPosition();
+	return MillisecondsFromSamples(player->GetCurrentPosition());
+}
+
+int AudioController::GetDuration() const
+{
+	if (!provider) return 0;
+
+	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
 }
 
 
-void AudioController::ResyncPlaybackPosition(int64_t new_position)
+void AudioController::ResyncPlaybackPosition(int new_position)
 {
 	if (!IsPlaying()) return;
 
-	player->SetCurrentPosition(new_position);
+	player->SetCurrentPosition(SamplesFromMilliseconds(new_position));
 }
 
 
-SampleRange AudioController::GetPrimaryPlaybackRange() const
+TimeRange AudioController::GetPrimaryPlaybackRange() const
 {
 	if (timing_controller)
 	{
@@ -493,19 +493,19 @@ SampleRange AudioController::GetPrimaryPlaybackRange() const
 	}
 	else
 	{
-		return SampleRange(0, 0);
+		return TimeRange(0, 0);
 	}
 }
 
 
-void AudioController::GetMarkers(const SampleRange &range, AudioMarkerVector &markers) const
+void AudioController::GetMarkers(const TimeRange &range, AudioMarkerVector &markers) const
 {
 	/// @todo Find all sources of markers
 	if (timing_controller) timing_controller->GetMarkers(range, markers);
 	if (video_position_marker_provider.get()) video_position_marker_provider->GetMarkers(range, markers);
 }
 
-void AudioController::GetLabels(const SampleRange &range, std::vector<AudioLabel> &labels) const
+void AudioController::GetLabels(const TimeRange &range, std::vector<AudioLabel> &labels) const
 {
 	if (timing_controller) timing_controller->GetLabels(range, labels);
 }
@@ -551,15 +551,17 @@ int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
 	return millisamples / sr;
 }
 
-void AudioController::SaveClip(wxString const& filename, SampleRange const& range) const
+void AudioController::SaveClip(wxString const& filename, TimeRange const& range) const
 {
-	if (filename.empty() || range.begin() > provider->GetNumSamples() || range.length() == 0) return;
+	int64_t start_sample = SamplesFromMilliseconds(range.begin());
+	int64_t end_sample = SamplesFromMilliseconds(range.end());
+	if (filename.empty() || start_sample > provider->GetNumSamples() || range.length() == 0) return;
 
 	agi::io::Save outfile(STD_STR(filename), true);
 	std::ofstream& out(outfile.Get());
 
 	size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
-	size_t bufsize = range.length() * bytes_per_sample;
+	size_t bufsize = (end_sample - start_sample) * bytes_per_sample;
 
 	int intval;
 	short shortval;
@@ -580,8 +582,8 @@ void AudioController::SaveClip(wxString const& filename, SampleRange const& rang
 	//samples per read
 	size_t spr = 65536 / bytes_per_sample;
 	std::vector<char> buf(bufsize);
-	for(int64_t i = range.begin(); i < range.end(); i += spr) {
-		size_t len = std::min<size_t>(spr, range.end() - i);
+	for(int64_t i = start_sample; i < end_sample; i += spr) {
+		size_t len = std::min<size_t>(spr, end_sample - i);
 		provider->GetAudio(&buf[0], i, len);
 		out.write(&buf[0], len * bytes_per_sample);
 	}

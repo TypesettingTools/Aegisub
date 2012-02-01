@@ -320,9 +320,7 @@ void VideoContext::NextFrame() {
 	JumpToFrame(frame_n + 1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
-		context->audioController->PlayRange(SampleRange(
-			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n - 1)),
-			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n))));
+		context->audioController->PlayRange(TimeRange(TimeAtFrame(frame_n - 1), TimeAtFrame(frame_n)));
 	}
 }
 
@@ -333,9 +331,7 @@ void VideoContext::PrevFrame() {
 	JumpToFrame(frame_n - 1);
 	// Start playing audio
 	if (playAudioOnStep->GetBool()) {
-		context->audioController->PlayRange(SampleRange(
-			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n)),
-			context->audioController->SamplesFromMilliseconds(TimeAtFrame(frame_n + 1))));
+		context->audioController->PlayRange(TimeRange(TimeAtFrame(frame_n), TimeAtFrame(frame_n + 1)));
 	}
 }
 
@@ -352,7 +348,7 @@ void VideoContext::Play() {
 	endFrame = GetLength() - 1;
 
 	// Start playing audio
-	context->audioController->PlayToEnd(context->audioController->SamplesFromMilliseconds(startMS));
+	context->audioController->PlayToEnd(startMS);
 
 	// Start timer
 	playTime.Start();
@@ -366,9 +362,7 @@ void VideoContext::PlayLine() {
 	if (!curline) return;
 
 	// Start playing audio
-	context->audioController->PlayRange(SampleRange(
-		context->audioController->SamplesFromMilliseconds(curline->Start),
-		context->audioController->SamplesFromMilliseconds(curline->End)));
+	context->audioController->PlayRange(TimeRange(curline->Start, curline->End));
 
 	// Round-trip conversion to convert start to exact
 	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start,agi::vfr::START);

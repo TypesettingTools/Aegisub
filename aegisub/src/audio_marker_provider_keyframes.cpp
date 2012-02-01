@@ -36,21 +36,20 @@
 
 class AudioMarkerKeyframe : public AudioMarker {
 	Pen *style;
-	int64_t position;
+	int position;
 public:
-	AudioMarkerKeyframe(Pen *style, int64_t position) : style(style), position(position) { }
-	int64_t GetPosition() const { return position; }
+	AudioMarkerKeyframe(Pen *style, int position) : style(style), position(position) { }
+	int GetPosition() const { return position; }
 	FeetStyle GetFeet() const { return Feet_None; }
 	bool CanSnap() const { return true; }
 	wxPen GetStyle() const { return *style; }
-	operator int64_t() const { return position; }
+	operator int() const { return position; }
 };
 
 AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, const char *opt_name)
-: controller(c->audioController)
-, vc(c->videoController)
+: vc(c->videoController)
 , keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
-, audio_open_slot(controller->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
+, audio_open_slot(c->audioController->AddAudioOpenListener(&AudioMarkerProviderKeyframes::Update, this))
 , timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
 , enabled_slot(OPT_SUB(opt_name, &AudioMarkerProviderKeyframes::Update, this))
 , enabled_opt(OPT_GET(opt_name))
@@ -76,13 +75,12 @@ void AudioMarkerProviderKeyframes::Update() {
 	markers.clear();
 	markers.reserve(keyframes.size());
 	for (size_t i = 0; i < keyframes.size(); ++i) {
-		markers.push_back(AudioMarkerKeyframe(style.get(),
-			controller->SamplesFromMilliseconds(timecodes.TimeAtFrame(keyframes[i]))));
+		markers.push_back(AudioMarkerKeyframe(style.get(), timecodes.TimeAtFrame(keyframes[i])));
 	}
 	AnnounceMarkerMoved();
 }
 
-void AudioMarkerProviderKeyframes::GetMarkers(SampleRange const& range, AudioMarkerVector &out) const {
+void AudioMarkerProviderKeyframes::GetMarkers(TimeRange const& range, AudioMarkerVector &out) const {
 	// Find first and last keyframes inside the range
 	std::vector<AudioMarkerKeyframe>::const_iterator
 		a = lower_bound(markers.begin(), markers.end(), range.begin()),

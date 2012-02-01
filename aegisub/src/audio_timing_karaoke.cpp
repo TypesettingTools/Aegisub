@@ -43,27 +43,27 @@
 /// @class KaraokeMarker
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke
 class KaraokeMarker : public AudioMarker {
-	int64_t position;
+	int position;
 	Pen *pen;
 	FeetStyle style;
 public:
 
-	int64_t GetPosition() const { return position; }
+	int GetPosition() const { return position; }
 	wxPen GetStyle() const { return *pen; }
 	FeetStyle GetFeet() const { return style; }
 	bool CanSnap() const { return false; }
 
-	void Move(int64_t new_pos) { position = new_pos; }
+	void Move(int new_pos) { position = new_pos; }
 
-	KaraokeMarker(int64_t position, Pen *pen, FeetStyle style)
+	KaraokeMarker(int position, Pen *pen, FeetStyle style)
 	: position(position)
 	, pen(pen)
 	, style(style)
 	{
 	}
 
-	KaraokeMarker(int64_t position) : position(position) { }
-	operator int64_t() const { return position; }
+	KaraokeMarker(int position) : position(position) { }
+	operator int() const { return position; }
 };
 
 /// @class AudioTimingControllerKaraoke
@@ -111,27 +111,24 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 	void OnAutoCommitChange(agi::OptionValue const& opt);
 	void OnAutoNextChange(agi::OptionValue const& opt);
 
-	int64_t ToMS(int64_t samples) const { return c->audioController->MillisecondsFromSamples(samples); }
-	int64_t ToSamples(int64_t ms) const { return c->audioController->SamplesFromMilliseconds(ms); }
-
 	void DoCommit();
 
 public:
 	// AudioTimingController implementation
-	void GetMarkers(const SampleRange &range, AudioMarkerVector &out_markers) const;
+	void GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const;
 	wxString GetWarningMessage() const { return ""; }
-	SampleRange GetIdealVisibleSampleRange() const;
+	TimeRange GetIdealVisibleTimeRange() const;
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
-	SampleRange GetPrimaryPlaybackRange() const;
-	void GetLabels(const SampleRange &range, std::vector<AudioLabel> &out_labels) const;
+	TimeRange GetPrimaryPlaybackRange() const;
+	void GetLabels(const TimeRange &range, std::vector<AudioLabel> &out_labels) const;
 	void Next();
 	void Prev();
 	void Commit();
 	void Revert();
-	bool IsNearbyMarker(int64_t sample, int sensitivity) const;
-	AudioMarker * OnLeftClick(int64_t sample, int sensitivity, int64_t);
-	AudioMarker * OnRightClick(int64_t, int, int64_t) { return 0; }
-	void OnMarkerDrag(AudioMarker *marker, int64_t new_position, int64_t);
+	bool IsNearbyMarker(int ms, int sensitivity) const;
+	AudioMarker * OnLeftClick(int ms, int sensitivity, int);
+	AudioMarker * OnRightClick(int, int, int) { return 0; }
+	void OnMarkerDrag(AudioMarker *marker, int new_position, int);
 
 	AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
 };
@@ -150,8 +147,8 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , separator_pen("Colour/Audio Display/Syllable Boundaries", "Audio/Line Boundaries Thickness", wxPENSTYLE_DOT)
 , start_pen("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
 , end_pen("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
-, start_marker(ToSamples(active_line->Start), &start_pen, AudioMarker::Feet_Right)
-, end_marker(ToSamples(active_line->End), &end_pen, AudioMarker::Feet_Left)
+, start_marker(active_line->Start, &start_pen, AudioMarker::Feet_Right)
+, end_marker(active_line->End, &end_pen, AudioMarker::Feet_Left)
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
 , auto_next(OPT_GET("Audio/Next Line on Commit")->GetBool())
@@ -210,21 +207,21 @@ void AudioTimingControllerKaraoke::Prev() {
 
 void AudioTimingControllerKaraoke::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
 {
-	SampleRange sr = GetPrimaryPlaybackRange();
+	TimeRange sr = GetPrimaryPlaybackRange();
 	ranges.AddRange(sr.begin(), sr.end(), AudioStyle_Selected);
 }
 
-SampleRange AudioTimingControllerKaraoke::GetPrimaryPlaybackRange() const {
-	return SampleRange(
+TimeRange AudioTimingControllerKaraoke::GetPrimaryPlaybackRange() const {
+	return TimeRange(
 		cur_syl > 0 ? markers[cur_syl - 1] : start_marker,
 		cur_syl < markers.size() ? markers[cur_syl] : end_marker);
 }
 
-SampleRange AudioTimingControllerKaraoke::GetIdealVisibleSampleRange() const {
-	return SampleRange(start_marker, end_marker);
+TimeRange AudioTimingControllerKaraoke::GetIdealVisibleTimeRange() const {
+	return TimeRange(start_marker, end_marker);
 }
 
-void AudioTimingControllerKaraoke::GetMarkers(SampleRange const& range, AudioMarkerVector &out) const {
+void AudioTimingControllerKaraoke::GetMarkers(TimeRange const& range, AudioMarkerVector &out) const {
 	size_t i;
 	for (i = 0; i < markers.size() && markers[i] < range.begin(); ++i) ;
 	for (; i < markers.size() && markers[i] < range.end(); ++i)
@@ -256,8 +253,8 @@ void AudioTimingControllerKaraoke::Revert() {
 	cur_syl = 0;
 	commit_id = -1;
 
-	start_marker.Move(ToSamples(active_line->Start));
-	end_marker.Move(ToSamples(active_line->End));
+	start_marker.Move(active_line->Start);
+	end_marker.Move(active_line->End);
 
 	markers.clear();
 	labels.clear();
@@ -266,10 +263,9 @@ void AudioTimingControllerKaraoke::Revert() {
 	labels.reserve(kara->size());
 
 	for (AssKaraoke::iterator it = kara->begin(); it != kara->end(); ++it) {
-		int64_t sample = ToSamples(it->start_time);
 		if (it != kara->begin())
-			markers.push_back(KaraokeMarker(sample, &separator_pen, AudioMarker::Feet_None));
-		labels.push_back(AudioLabel(it->text, SampleRange(sample, ToSamples(it->start_time + it->duration))));
+			markers.push_back(KaraokeMarker(it->start_time, &separator_pen, AudioMarker::Feet_None));
+		labels.push_back(AudioLabel(it->text, TimeRange(it->start_time, it->start_time + it->duration)));
 	}
 
 	AnnounceUpdatedPrimaryRange();
@@ -277,8 +273,8 @@ void AudioTimingControllerKaraoke::Revert() {
 	AnnounceMarkerMoved();
 }
 
-bool AudioTimingControllerKaraoke::IsNearbyMarker(int64_t sample, int sensitivity) const {
-	SampleRange range(sample - sensitivity, sample + sensitivity);
+bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity) const {
+	TimeRange range(ms - sensitivity, ms + sensitivity);
 
 	for (size_t i = 0; i < markers.size(); ++i)
 		if (range.contains(markers[i]))
@@ -287,10 +283,10 @@ bool AudioTimingControllerKaraoke::IsNearbyMarker(int64_t sample, int sensitivit
 	return false;
 }
 
-AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int64_t sample, int sensitivity, int64_t) {
-	SampleRange range(sample - sensitivity, sample + sensitivity);
+AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int ms, int sensitivity, int) {
+	TimeRange range(ms - sensitivity, ms + sensitivity);
 
-	size_t syl = distance(markers.begin(), lower_bound(markers.begin(), markers.end(), sample));
+	size_t syl = distance(markers.begin(), lower_bound(markers.begin(), markers.end(), ms));
 	if (syl < markers.size() && range.contains(markers[syl]))
 		return &markers[syl];
 	if (syl > 0 && range.contains(markers[syl - 1]))
@@ -304,7 +300,7 @@ AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int64_t sample, int sensi
 	return 0;
 }
 
-void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_position, int64_t) {
+void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int new_position, int) {
 	KaraokeMarker *marker = static_cast<KaraokeMarker*>(m);
 	// No rearranging of syllables allowed
 	new_position = mid(
@@ -315,7 +311,7 @@ void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_posi
 	marker->Move(new_position);
 
 	size_t syl = marker - &markers.front() + 1;
-	kara->SetStartTime(syl, ToMS(new_position));
+	kara->SetStartTime(syl, new_position);
 
 	if (syl == cur_syl || syl == cur_syl + 1) {
 		AnnounceUpdatedPrimaryRange();
@@ -324,8 +320,8 @@ void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_posi
 
 	AnnounceMarkerMoved();
 
-	labels[syl - 1].range = SampleRange(labels[syl - 1].range.begin(), new_position);
-	labels[syl].range = SampleRange(new_position, labels[syl].range.end());
+	labels[syl - 1].range = TimeRange(labels[syl - 1].range.begin(), new_position);
+	labels[syl].range = TimeRange(new_position, labels[syl].range.end());
 	AnnounceLabelChanged();
 
 	if (auto_commit)
@@ -334,7 +330,7 @@ void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int64_t new_posi
 		commit_id = -1;
 }
 
-void AudioTimingControllerKaraoke::GetLabels(SampleRange const& range, std::vector<AudioLabel> &out) const {
+void AudioTimingControllerKaraoke::GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const {
 	for (size_t i = 0; i < labels.size(); ++i) {
 		if (range.overlaps(labels[i].range))
 			out.push_back(labels[i]);

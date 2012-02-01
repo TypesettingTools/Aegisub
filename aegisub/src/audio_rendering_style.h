@@ -58,8 +58,8 @@ protected:
 	~AudioRenderingStyleRanges() { }
 public:
 	/// @brief Add a range to the line
-	/// @param start First sample index in range
-	/// @param end   One past last sample index in range
+	/// @param start First milisecond in range
+	/// @param end   One past last milisecond in range
 	/// @param style Style of the range added
-	virtual void AddRange(int64_t start, int64_t end, AudioRenderingStyle style) = 0;
+	virtual void AddRange(int start, int end, AudioRenderingStyle style) = 0;
 };

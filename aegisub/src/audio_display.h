@@ -110,9 +110,6 @@ class AudioDisplay: public wxWindow {
 	/// The current audio renderer
 	agi::scoped_ptr<AudioRendererBitmapProvider> audio_renderer_provider;
 
-	/// Our current audio provider
-	AudioProvider *provider;
-
 	/// The controller managing us
 	AudioController *controller;
 
@@ -139,8 +136,8 @@ class AudioDisplay: public wxWindow {
 	/// Total width of the audio in pixels
 	int pixel_audio_width;
 
-	/// Horizontal zoom measured in audio samples per pixel
-	int pixel_samples;
+	/// Horizontal zoom measured in millisecond per pixels
+	double ms_per_pixel;
 
 	/// Amplitude scaling ("vertical zoom") as a factor, 1.0 is neutral
 	float scale_amplitude;
@@ -171,7 +168,7 @@ class AudioDisplay: public wxWindow {
 	void RemoveTrackCursor();
 
 	/// Previous style ranges for optimizing redraw when ranges change
-	std::map<int64_t, int> style_ranges;
+	std::map<int, int> style_ranges;
 
 	/// @brief Reload all rendering settings from Options and reset caches
 	///
@@ -179,21 +176,21 @@ class AudioDisplay: public wxWindow {
 	/// in Options and need to be reloaded to take effect.
 	void ReloadRenderingSettings();
 
-	/// @brief Repaint a range of samples
-	/// @param sample_start First sample to repaint
-	/// @param sample_end Last sample to repaint
-	void Redraw(int64_t sample_start, int64_t sample_end);
+	/// @brief Repaint a time range
+	/// @param ms_start Beginning of range to repaint
+	/// @param ms_end End of range to repaint
+	void Redraw(int ms_start, int ms_end);
 
-	/// Paint the audio data for a range of samples
+	/// Paint the audio data for a time range
 	/// @param dc DC to paint to
-	/// @param updsamples Sample range to repaint
+	/// @param updtime Time range to repaint
 	/// @param updrect Pixel range to repaint
-	void PaintAudio(wxDC &dc, SampleRange updsamples, wxRect updrect);
+	void PaintAudio(wxDC &dc, TimeRange updtime, wxRect updrect);
 
-	/// Paint the markers in a range of samples
+	/// Paint the markers in a time range
 	/// @param dc DC to paint to
-	/// @param updsamples Sample range to repaint
-	void PaintMarkers(wxDC &dc, SampleRange updsamples);
+	/// @param updtime Time range to repaint
+	void PaintMarkers(wxDC &dc, TimeRange updtime);
 
 	/// Draw a single foot for a marker
 	/// @param dc DC to paint to
@@ -201,10 +198,10 @@ class AudioDisplay: public wxWindow {
 	/// @param dir -1 for left, 1 for right
 	void PaintFoot(wxDC &dc, int marker_x, int dir);
 
-	/// Paint the labels in a range of samples
+	/// Paint the labels in a time range
 	/// @param dc DC to paint to
-	/// @param updsamples Sample range to repaint
-	void PaintLabels(wxDC &dc, SampleRange updsamples);
+	/// @param updtime Time range to repaint
+	void PaintLabels(wxDC &dc, TimeRange updtime);
 
 	/// Paint the track cursor
 	/// @param dc DC to paint to
@@ -223,7 +220,7 @@ class AudioDisplay: public wxWindow {
 
 	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);
-	void OnPlaybackPosition(int64_t sample_position);
+	void OnPlaybackPosition(int ms_position);
 	void OnSelectionChanged();
 	void OnStyleRangesChanged();
 	void OnMarkerMoved();
@@ -248,46 +245,49 @@ public:
 
 	/// @brief Scroll the audio display
 	/// @param pixel_position Absolute pixel to put in center of the audio display
-	void ScrollPixelToCenter(int pixel_position);
+	void ScrollPixelToCenter(int pixel_position) { ScrollPixelToLeft(pixel_position - GetClientRect().GetWidth()/2); }
 
 	/// @brief Scroll the audio display
-	/// @param sample_position Audio sample to put at left edge of the audio display
-	void ScrollSampleToLeft(int64_t sample_position);
+	/// @param ms Time in milliseconds to put at left edge of the audio display
+	void ScrollTimeToLeft(int ms) { ScrollPixelToLeft(AbsoluteXFromTime(ms)); }
 
 	/// @brief Scroll the audio display
-	/// @param sample_position Audio sample to put in center of the audio display
-	void ScrollSampleToCenter(int64_t sample_position);
+	/// @param ms Time in milliseconds to put in center of the audio display
+	void ScrollTimeToCenter(int ms)  { ScrollPixelToCenter(AbsoluteXFromTime(ms)); }
 
 	/// @brief Scroll the audio display
-	/// @param range Range of audio samples to ensure is in view
+	/// @param range Time range to ensure is in view
 	///
-	/// If the entire range is already visible inside the display, nothing is scrolled. If
-	/// just one of the two endpoints is visible, the display is scrolled such that the
-	/// visible endpoint stays in view but more of the rest of the range becomes visible.
+	/// If the entire range is already visible inside the display, nothing is
+	/// scrolled. If just one of the two endpoints is visible, the display is
+	/// scrolled such that the visible endpoint stays in view but more of the
+	/// rest of the range becomes visible.
 	///
-	/// If the entire range fits inside the display, the display is centered over the range.
-	/// For this calculation, the display is considered smaller by some margins, see below.
+	/// If the entire range fits inside the display, the display is centered
+	/// over the range.  For this calculation, the display is considered
+	/// smaller by some margins, see below.
 	///
-	/// If the range does not fit within the display with margins subtracted, the start of 
-	/// the range is ensured visible and as much of the rest of the range is brought into
-	/// view.
+	/// If the range does not fit within the display with margins subtracted,
+	/// the start of the range is ensured visible and as much of the rest of
+	/// the range is brought into view.
 	///
-	/// For the purpose of this function, a 5 percent margin is assumed at each end of the
-	/// audio display such that a range endpoint that is ensured to be in view never gets
-	/// closer to the edge of the display than the margin. The edge that is not ensured to
-	/// be in view might be outside of view or might be closer to the display edge than the
+	/// For the purpose of this function, a 5 percent margin is assumed at each
+	/// end of the audio display such that a range endpoint that is ensured to
+	/// be in view never gets closer to the edge of the display than the
+	/// margin. The edge that is not ensured to be in view might be outside of
+	/// view or might be closer to the display edge than the
 	/// margin.
-	void ScrollSampleRangeInView(const SampleRange &range);
+	void ScrollTimeRangeInView(const TimeRange &range);
 
 
 	/// @brief Change the zoom level
 	/// @param new_zoom_level The new zoom level to use
 	///
-	/// A zoom level of 0 is the default zoom level, all other levels are based on this.
-	/// Negative zoom levels zoom out, positive zoom in.
+	/// A zoom level of 0 is the default zoom level, all other levels are based
+	/// on this. Negative zoom levels zoom out, positive zoom in.
 	///
-	/// The zoom levels generally go from +30 to -30. It is possible to zoom in more than
-	/// +30 
+	/// The zoom levels generally go from +30 to -30. It is possible to zoom in
+	/// more than +30.
 	void SetZoomLevel(int new_zoom_level);
 
 	/// @brief Get the zoom level
@@ -320,21 +320,15 @@ public:
 	/// @param scale New amplitude scale factor, 1.0 is no scaling
 	void SetAmplitudeScale(float scale);
 
-	/// @brief Get amplitude scale factor
-	/// @return The amplitude scaling factor
-	float GetAmplitudeScale() const;
-
-
-	/// @brief Get a sample index from an X coordinate relative to current scroll
-	int64_t SamplesFromRelativeX(int x) const { return (scroll_left + x) * pixel_samples; }
-	/// @brief Get a sample index from an absolute X coordinate
-	int64_t SamplesFromAbsoluteX(int x) const { return x * pixel_samples; }
-	/// @brief Get an X coordinate relative to the current scroll from a sample index
-	int RelativeXFromSamples(int64_t samples) const { return samples/pixel_samples - scroll_left; }
-	/// @brief Get an absolute X coordinate from a sample index
-	int AbsoluteXFromSamples(int64_t samples) const { return samples/pixel_samples; }
+	/// Get a time in milliseconds from an X coordinate relative to current scroll
+	int TimeFromRelativeX(int x) const { return int((scroll_left + x) * ms_per_pixel); }
+	/// Get a time in milliseconds from an absolute X coordinate
+	int TimeFromAbsoluteX(int x) const { return int(x * ms_per_pixel); }
+	/// Get an X coordinate relative to the current scroll from a time in milliseconds
+	int RelativeXFromTime(int ms) const { return int(ms / ms_per_pixel) - scroll_left; }
+	/// Get an absolute X coordinate from a time in milliseconds
+	int AbsoluteXFromTime(int ms) const { return int(ms / ms_per_pixel); }
 
 
 	DECLARE_EVENT_TABLE()
 };
-

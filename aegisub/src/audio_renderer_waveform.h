@@ -65,7 +65,7 @@ class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 	const AudioColorScheme *GetColorScheme(AudioRenderingStyle style) const;
 
 	void OnSetProvider();
-	void OnSetSamplesPerPixel();
+	void OnSetMillisecondsPerPixel();
 
 public:
 	/// @brief Constructor

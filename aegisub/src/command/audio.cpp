@@ -223,8 +223,7 @@ struct audio_save_clip : public Command {
 		for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {
 			c->audioController->SaveClip(
 				wxFileSelector(_("Save audio clip"), "", "", "wav", "", wxFD_SAVE|wxFD_OVERWRITE_PROMPT, c->parent),
-				SampleRange(c->audioController->SamplesFromMilliseconds((*it)->Start),
-							c->audioController->SamplesFromMilliseconds((*it)->End)));
+				TimeRange((*it)->Start, (*it)->End));
 		}
 	}
 };
@@ -268,10 +267,8 @@ struct audio_play_before : public validate_audio_open {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
-		c->audioController->PlayRange(SampleRange(
-			times.begin() - c->audioController->SamplesFromMilliseconds(500),
-			times.begin()));
+		int begin = c->audioController->GetPrimaryPlaybackRange().begin();
+		c->audioController->PlayRange(TimeRange(begin - 500, begin));
 	}
 };
 
@@ -284,10 +281,8 @@ struct audio_play_after : public validate_audio_open {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
-		c->audioController->PlayRange(SampleRange(
-			times.end(),
-			times.end() + c->audioController->SamplesFromMilliseconds(500)));
+		int end = c->audioController->GetPrimaryPlaybackRange().end();
+		c->audioController->PlayRange(TimeRange(end, end + 500));
 	}
 };
 
@@ -300,11 +295,8 @@ struct audio_play_end : public validate_audio_open {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
-		c->audioController->PlayToEndOfPrimary(
-			times.end() - std::min(
-				c->audioController->SamplesFromMilliseconds(500),
-				times.length()));
+		TimeRange times(c->audioController->GetPrimaryPlaybackRange());
+		c->audioController->PlayToEndOfPrimary(times.end() - std::min(500, times.length()));
 	}
 };
 
@@ -317,12 +309,10 @@ struct audio_play_begin : public validate_audio_open {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		SampleRange times(c->audioController->GetPrimaryPlaybackRange());
-		c->audioController->PlayRange(SampleRange(
+		TimeRange times(c->audioController->GetPrimaryPlaybackRange());
+		c->audioController->PlayRange(TimeRange(
 			times.begin(),
-			times.begin() + std::min(
-				c->audioController->SamplesFromMilliseconds(500),
-				times.length())));
+			times.begin() + std::min(500, times.length())));
 	}
 };
 

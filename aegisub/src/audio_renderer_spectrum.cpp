@@ -266,7 +266,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	for (int ax = start; ax < end; ++ax)
 	{
 		// Derived audio data
-		size_t block_index = (size_t)(ax * pixel_samples) >> derivation_dist;
+		size_t block_index = (size_t)(ax * pixel_ms * provider->GetSampleRate() / 1000) >> derivation_dist;
 		float *power = cache->Get(block_index);
 
 		// Prepare bitmap writing

@@ -67,18 +67,18 @@ public:
 	/// @return The warning message to show, may be empty if there is none
 	virtual wxString GetWarningMessage() const = 0;
 
-	/// @brief Get the sample range the user is most likely to want to see for the current state
-	/// @return A sample range
+	/// @brief Get the time range the user is most likely to want to see for the current state
+	/// @return A time range
 	///
 	/// This is used for "bring working area into view" operations.
-	virtual SampleRange GetIdealVisibleSampleRange() const = 0;
+	virtual TimeRange GetIdealVisibleTimeRange() const = 0;
 
 	/// @brief Get the primary playback range
-	/// @return A sample range
+	/// @return A time range
 	///
-	/// Get the sample range the user is most likely to want to play back
+	/// Get the time range the user is most likely to want to play back
 	/// currently.
-	virtual SampleRange GetPrimaryPlaybackRange() const = 0;
+	virtual TimeRange GetPrimaryPlaybackRange() const = 0;
 
 	/// @brief Get all rendering style ranges
 	/// @param[out] ranges Rendering ranges will be added to this
@@ -106,37 +106,37 @@ public:
 	virtual void Revert() = 0;
 
 	/// @brief Determine if a position is close to a draggable marker
-	/// @param sample      The audio sample index to test
-	/// @param sensitivity Distance in samples to consider markers as nearby
-	/// @return True if a marker is close by the given sample, as defined by sensitivity
+	/// @param ms          The time in milliseconds to test
+	/// @param sensitivity Distance in milliseconds to consider markers as nearby
+	/// @return True if a marker is close by the given time, as defined by sensitivity
 	///
 	/// This is solely for hit-testing against draggable markers, for
 	/// controlling the mouse cursor.
-	virtual bool IsNearbyMarker(int64_t sample, int sensitivity) const = 0;
+	virtual bool IsNearbyMarker(int ms, int sensitivity) const = 0;
 
 	/// @brief The user pressed the left button down at an empty place in the audio
-	/// @param sample      The audio sample index the user clicked
-	/// @param sensitivity Distance in samples to consider existing markers
-	/// @param snap_range  Maximum snapping range in samples
+	/// @param ms          The time in milliseconds the user clicked
+	/// @param sensitivity Distance in milliseconds to consider existing markers
+	/// @param snap_range  Maximum snapping range in milliseconds
 	/// @return An audio marker or 0. If a marker is returned and the user
 	/// starts dragging the mouse after pressing down the button, the returned
 	/// marker is being dragged.
-	virtual AudioMarker * OnLeftClick(int64_t sample, int sensitivity, int64_t snap_range) = 0;
+	virtual AudioMarker * OnLeftClick(int ms, int sensitivity, int snap_range) = 0;
 
 	/// @brief The user pressed the right button down at an empty place in the audio
-	/// @param sample      The audio sample index the user clicked
-	/// @param sensitivity Distance in samples to consider existing markers
-	/// @param snap_range  Maximum snapping range in samples
+	/// @param ms          The time in milliseconds the user clicked
+	/// @param sensitivity Distance in milliseconds to consider existing markers
+	/// @param snap_range  Maximum snapping range in milliseconds
 	/// @return An audio marker or 0. If a marker is returned and the user
 	/// starts dragging the mouse after pressing down the button, the returned
 	/// marker is being dragged.
-	virtual AudioMarker * OnRightClick(int64_t sample, int sensitivity, int64_t snap_range) = 0;
+	virtual AudioMarker * OnRightClick(int ms, int sensitivity, int snap_range) = 0;
 
 	/// @brief The user dragged a timing marker
 	/// @param marker       The marker being dragged
-	/// @param new_position Sample position the marker was dragged to
-	/// @param snap_range   Maximum snapping range in samples
-	virtual void OnMarkerDrag(AudioMarker *marker, int64_t new_position, int64_t snap_range) = 0;
+	/// @param new_position Time position the marker was dragged to
+	/// @param snap_range  Maximum snapping range in milliseconds
+	virtual void OnMarkerDrag(AudioMarker *marker, int new_position, int snap_range) = 0;
 
 	/// @brief Destructor
 	virtual ~AudioTimingController() { }

@@ -97,8 +97,8 @@ typedef DataBlockCache<wxBitmap, 8, AudioRendererBitmapCacheBitmapFactory> Audio
 class AudioRenderer {
 	friend struct AudioRendererBitmapCacheBitmapFactory;
 
-	/// Horizontal zoom level, samples per pixel
-	int pixel_samples;
+	/// Horizontal zoom level, milliseconds per pixel
+	double pixel_ms;
 	/// Rendering height in pixels
 	int pixel_height;
 	/// Vertical zoom level/amplitude scale
@@ -152,10 +152,10 @@ public:
 	~AudioRenderer();
 
 	/// @brief Set horizontal zoom
-	/// @param pixel_samples Audio samples per pixel to render at
+	/// @param pixel_ms Milliseconds per pixel to render audio at
 	///
 	/// Changing the zoom level invalidates all cached bitmaps.
-	void SetSamplesPerPixel(int pixel_samples);
+	void SetMillisecondsPerPixel(double pixel_ms);
 
 	/// @brief Set rendering height
 	/// @param pixel_height Height in pixels to render at
@@ -183,18 +183,6 @@ public:
 	///
 	/// Changing the max cache size does not trigger cache aging.
 	void SetCacheMaxSize(size_t max_size);
-
-	/// @brief Get horizontal zoom
-	/// @return Audio samples per pixel rendering at
-	int GetSamplesPerPixel() const { return pixel_samples; }
-
-	/// @brief Get rendering height
-	/// @return Height in pixels rendering at
-	int GetHeight() const { return pixel_height; }
-
-	/// @brief Get vertical zoom
-	/// @return The amplitude scaling factor
-	float GetAmplitudeScale() const { return amplitude_scale; }
 
 	/// @brief Change renderer
 	/// @param renderer New renderer to use
@@ -257,8 +245,8 @@ class AudioRendererBitmapProvider {
 protected:
 	/// Audio provider to use for rendering
 	AudioProvider *provider;
-	/// Horizontal zoom in samples per pixel
-	int pixel_samples;
+	/// Horizontal zoom in milliseconds per pixel
+	double pixel_ms;
 	/// Vertical zoom/amplitude scale factor
 	float amplitude_scale;
 
@@ -270,7 +258,7 @@ protected:
 	/// @brief Called when horizontal zoom changes
 	///
 	/// Implementations can override this method to do something when the horizontal zoom is changed
-	virtual void OnSetSamplesPerPixel() { }
+	virtual void OnSetMillisecondsPerPixel() { }
 
 	/// @brief Called when vertical zoom changes
 	///
@@ -279,7 +267,7 @@ protected:
 
 public:
 	/// @brief Constructor
-	AudioRendererBitmapProvider() : provider(0), pixel_samples(0), amplitude_scale(0) { };
+	AudioRendererBitmapProvider() : provider(0), pixel_ms(0), amplitude_scale(0) { };
 
 	/// @brief Destructor
 	virtual ~AudioRendererBitmapProvider() { }
@@ -307,8 +295,8 @@ public:
 	void SetProvider(AudioProvider *provider);
 
 	/// @brief Change horizontal zoom
-	/// @param pixel_samples Samples per pixel to zoom to
-	void SetSamplesPerPixel(int pixel_samples);
+	/// @param pixel_ms Milliseconds per pixel to zoom to
+	void SetMillisecondsPerPixel(double new_pixel_ms);
 
 	/// @brief Change vertical zoom
 	/// @param amplitude_scale Scaling factor to zoom to

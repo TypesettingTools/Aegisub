@@ -65,47 +65,44 @@ class AudioMarkerProvider;
 
 typedef std::vector<const AudioMarker*> AudioMarkerVector;
 
-
-/// @class SampleRange
-/// @brief Represents an immutable range of audio samples
-class SampleRange {
-	int64_t _begin;
-	int64_t _end;
+/// @class TimeRange
+/// @brief Represents an immutable range of time
+class TimeRange {
+	int _begin;
+	int _end;
 
 public:
 	/// @brief Constructor
-	/// @param begin Index of the first sample to include in the range
-	/// @param end   Index of one past the last sample to include in the range
-	SampleRange(int64_t begin, int64_t end)
-		: _begin(begin)
-		, _end(end)
+	/// @param begin Index of the first millisecond to include in the range
+	/// @param end   Index of one past the last millisecond to include in the range
+	TimeRange(int begin, int end) : _begin(begin), _end(end)
 	{
 		assert(end >= begin);
 	}
 
 	/// @brief Copy constructor, optionally adjusting the range
 	/// @param src          The range to duplicate
-	/// @param begin_adjust Number of samples to add to the start of the range
-	/// @param end_adjust   Number of samples to add to the end of the range
-	SampleRange(const SampleRange &src, int64_t begin_adjust = 0, int64_t end_adjust = 0)
+	/// @param begin_adjust Number of milliseconds to add to the start of the range
+	/// @param end_adjust   Number of milliseconds to add to the end of the range
+	TimeRange(const TimeRange &src, int begin_adjust = 0, int end_adjust = 0)
 	{
 		_begin = src._begin + begin_adjust;
 		_end = src._end + end_adjust;
 		assert(_end >= _begin);
 	}
 
-	/// Get the number of samples in the range
-	int64_t length() const { return _end - _begin; }
-	/// Get the index of the first sample in the range
-	int64_t begin() const { return _begin; }
-	/// Get the index of one past the last sample in the range
-	int64_t end() const { return _end; }
+	/// Get the length of the range in milliseconds
+	int length() const { return _end - _begin; }
+	/// Get the start time of the range in milliseconds
+	int begin() const { return _begin; }
+	/// Get the exclusive end time of the range in milliseconds
+	int end() const { return _end; }
 
-	/// Determine whether the range contains a given sample index
-	bool contains(int64_t sample) const { return sample >= begin() && sample < end(); }
+	/// Determine whether the range contains a given time in milliseconds
+	bool contains(int ms) const { return ms >= begin() && ms < end(); }
 
 	/// Determine whether there is an overlap between two ranges
-	bool overlaps(const SampleRange &other) const
+	bool overlaps(const TimeRange &other) const
 	{
 		return other.contains(_begin) || contains(other._begin);
 	}
@@ -121,8 +118,8 @@ public:
 	/// Virtual destructor, does nothing
 	virtual ~AudioMarkerProvider() { }
 
-	/// @brief Return markers in a sample range
-	virtual void GetMarkers(const SampleRange &range, AudioMarkerVector &out) const = 0;
+	/// @brief Return markers in a time range
+	virtual void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const = 0;
 
 	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
 };
@@ -134,22 +131,22 @@ protected:
 	/// One or more of the labels provided by this object have changed
 	agi::signal::Signal<> AnnounceLabelChanged;
 public:
-	/// A label for a range of samples on the audio display
+	/// A label for a range of time on the audio display
 	struct AudioLabel {
 		/// Text of the label
 		wxString text;
 		/// Range which this label applies to
-		SampleRange range;
-		AudioLabel(wxString const& text, SampleRange const& range) : text(text), range(range) { }
+		TimeRange range;
+		AudioLabel(wxString const& text, TimeRange const& range) : text(text), range(range) { }
 	};
 
 	/// Virtual destructor, does nothing
 	virtual ~AudioLabelProvider() { }
 
-	/// @brief Get labels in a sample range
-	/// @param range Range of samples to get labels for
+	/// @brief Get labels in a time range
+	/// @param range Range of times to get labels for
 	/// @param[out] out Vector which should be filled with the labels
-	virtual void GetLabels(SampleRange const& range, std::vector<AudioLabel> &out) const = 0;
+	virtual void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const = 0;
 
 	DEFINE_SIGNAL_ADDERS(AnnounceLabelChanged, AddLabelChangedListener)
 };
@@ -190,7 +187,7 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 	agi::signal::Signal<> AnnounceAudioClose;
 
 	/// Playback is in progress and the current position was updated
-	agi::signal::Signal<int64_t> AnnouncePlaybackPosition;
+	agi::signal::Signal<int> AnnouncePlaybackPosition;
 
 	/// Playback has stopped
 	agi::signal::Signal<> AnnouncePlaybackStop;
@@ -258,8 +255,17 @@ class AudioController : public wxEvtHandler, public AudioMarkerProvider, public 
 	void OnComputerResuming(wxPowerEvent &event);
 #endif
 
-public:
+	/// @brief Convert a count of audio samples to a time in milliseconds
+	/// @param samples Sample count to convert
+	/// @return The number of milliseconds equivalent to the sample-count, rounded down
+	int64_t MillisecondsFromSamples(int64_t samples) const;
 
+	/// @brief Convert a time in milliseconds to a count of audio samples
+	/// @param ms Time in milliseconds to convert
+	/// @return The index of the first sample that is wholly inside the millisecond
+	int64_t SamplesFromMilliseconds(int64_t ms) const;
+
+public:
 	/// @brief Constructor
 	AudioController(agi::Context *context);
 
@@ -294,7 +300,7 @@ public:
 	///
 	/// The end of the played back range may be requested changed, but is not
 	/// changed automatically from any other operations.
-	void PlayRange(const SampleRange &range);
+	void PlayRange(const TimeRange &range);
 
 	/// @brief Start or restart audio playback, playing the primary playback range
 	///
@@ -304,19 +310,19 @@ public:
 	void PlayPrimaryRange();
 
 	/// @brief Start or restart audio playback, playing from a point to the end of of the primary playback range
-	/// @param start_sample Index of the sample to start playback at
+	/// @param start_ms Time in milliseconds to start playback at
 	///
 	/// This behaves like PlayPrimaryRange, but the start point can differ from
 	/// the beginning of the primary range.
-	void PlayToEndOfPrimary(int64_t start_sample);
+	void PlayToEndOfPrimary(int start_ms);
 
 	/// @brief Start or restart audio playback, playing from a point to the end of stream
-	/// @param start_sample Index of the sample to start playback at
+	/// @param start_ms Time in milliseconds to start playback at
 	///
 	/// Playback to end cannot be converted to a range playback like range
 	/// playback can, it will continue until the end is reached, it is stopped,
 	/// or restarted.
-	void PlayToEnd(int64_t start_sample);
+	void PlayToEnd(int start_ms);
 
 	/// @brief Stop all audio playback
 	void Stop();
@@ -326,35 +332,39 @@ public:
 	bool IsPlaying();
 
 	/// @brief Get the current playback position
-	/// @return Approximate current sample index being heard by the user
+	/// @return Approximate current time in milliseconds being heard by the user
 	///
 	/// Returns 0 if playback is stopped. The return value is only approximate.
-	int64_t GetPlaybackPosition();
+	int GetPlaybackPosition();
+
+	/// Get the duration of the currently open audio in milliseconds, or 0 if none
+	/// @return Duration in milliseconds
+	int GetDuration() const;
 
 	/// @brief If playing, restart playback from the specified position
-	/// @param new_position Sample index to restart playback from
+	/// @param new_position Time to restart playback from
 	///
 	/// This function can be used to re-synchronise audio playback to another
 	/// source that might not be able to keep up with the full speed, such as
 	/// video playback in high resolution or with complex subtitles.
 	///
 	/// This function only does something if audio is already playing.
-	void ResyncPlaybackPosition(int64_t new_position);
+	void ResyncPlaybackPosition(int new_position);
 
 
 	/// @brief Get the primary playback range
-	/// @return An immutable SampleRange object
-	SampleRange GetPrimaryPlaybackRange() const;
+	/// @return An immutable TimeRange object
+	TimeRange GetPrimaryPlaybackRange() const;
 
 	/// @brief Get all markers inside a range
-	/// @param range   The sample range to retrieve markers for
+	/// @param range   The time range to retrieve markers for
 	/// @param markers Vector to fill found markers into
-	void GetMarkers(const SampleRange &range, AudioMarkerVector &markers) const;
+	void GetMarkers(const TimeRange &range, AudioMarkerVector &markers) const;
 
 	/// @brief Get all labels inside a range
-	/// @param range   The sample range to retrieve labels for
+	/// @param range   The time range to retrieve labels for
 	/// @param labels Vector to fill found labels into
-	void GetLabels(const SampleRange &range, std::vector<AudioLabel> &labels) const;
+	void GetLabels(const TimeRange &range, std::vector<AudioLabel> &labels) const;
 
 
 	/// @brief Get the playback audio volume
@@ -376,20 +386,10 @@ public:
 	/// dialogue line.
 	void SetTimingController(AudioTimingController *new_controller);
 
-	/// @brief Convert a count of audio samples to a time in milliseconds
-	/// @param samples Sample count to convert
-	/// @return The number of milliseconds equivalent to the sample-count, rounded down
-	int64_t MillisecondsFromSamples(int64_t samples) const;
-
-	/// @brief Convert a time in milliseconds to a count of audio samples
-	/// @param ms Time in milliseconds to convert
-	/// @return The index of the first sample that is wholly inside the millisecond
-	int64_t SamplesFromMilliseconds(int64_t ms) const;
-
 	/// @brief Save a portion of the decoded loaded audio to a wav file
 	/// @param filename File to save to
-	/// @param range Range of samples to save
-	void SaveClip(wxString const& filename, SampleRange const& range) const;
+	/// @param range Time range to save
+	void SaveClip(wxString const& filename, TimeRange const& range) const;
 
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioOpen,               AddAudioOpenListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioClose,              AddAudioCloseListener)
@@ -414,8 +414,8 @@ public:
 	};
 
 	/// @brief Get the marker's position
-	/// @return The marker's position in samples
-	virtual int64_t GetPosition() const = 0;
+	/// @return The marker's position in milliseconds
+	virtual int GetPosition() const = 0;
 
 	/// @brief Get the marker's drawing style
 	/// @return A pen object describing the marker's drawing style

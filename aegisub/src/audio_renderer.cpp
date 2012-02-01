@@ -79,7 +79,7 @@ size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
 
 
 AudioRenderer::AudioRenderer()
-: pixel_samples(0)
+: pixel_ms(0)
 , pixel_height(0)
 , amplitude_scale(0)
 , cache_bitmap_width(32) // arbitrary value for now
@@ -91,7 +91,7 @@ AudioRenderer::AudioRenderer()
 	bitmaps.resize(AudioStyle_MAX, AudioRendererBitmapCache(256, AudioRendererBitmapCacheBitmapFactory(this)));
 
 	// Make sure there's *some* values for those fields, and in the caches
-	SetSamplesPerPixel(1);
+	SetMillisecondsPerPixel(1);
 	SetHeight(1);
 }
 
@@ -99,14 +99,14 @@ AudioRenderer::~AudioRenderer()
 {
 }
 
-void AudioRenderer::SetSamplesPerPixel(int _pixel_samples)
+void AudioRenderer::SetMillisecondsPerPixel(double new_pixel_ms)
 {
-	if (pixel_samples == _pixel_samples) return;
+	if (pixel_ms == new_pixel_ms) return;
 
-	pixel_samples = _pixel_samples;
+	pixel_ms = new_pixel_ms;
 
 	if (renderer)
-		renderer->SetSamplesPerPixel(pixel_samples);
+		renderer->SetMillisecondsPerPixel(pixel_ms);
 
 	ResetBlockCount();
 }
@@ -147,7 +147,7 @@ void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *_renderer)
 	{
 		renderer->SetProvider(provider);
 		renderer->SetAmplitudeScale(amplitude_scale);
-		renderer->SetSamplesPerPixel(pixel_samples);
+		renderer->SetMillisecondsPerPixel(pixel_ms);
 	}
 }
 
@@ -181,7 +181,8 @@ void AudioRenderer::ResetBlockCount()
 {
 	if (provider)
 	{
-		size_t rendered_width = (size_t)((provider->GetNumSamples() + pixel_samples - 1) / pixel_samples);
+		double duration = provider->GetNumSamples() * 1000.0 / provider->GetSampleRate();
+		size_t rendered_width = (size_t)ceil(duration / pixel_ms);
 		cache_numblocks = rendered_width / cache_bitmap_width;
 		for_each(bitmaps, bind(&AudioRendererBitmapCache::SetBlockCount, _1, cache_numblocks));
 	}
@@ -263,13 +264,13 @@ void AudioRendererBitmapProvider::SetProvider(AudioProvider *_provider)
 }
 
 
-void AudioRendererBitmapProvider::SetSamplesPerPixel(int _pixel_samples)
+void AudioRendererBitmapProvider::SetMillisecondsPerPixel(double new_pixel_ms)
 {
-	if (pixel_samples == _pixel_samples) return;
+	if (pixel_ms == new_pixel_ms) return;
 
-	pixel_samples = _pixel_samples;
+	pixel_ms = new_pixel_ms;
 	
-	OnSetSamplesPerPixel();
+	OnSetMillisecondsPerPixel();
 }
 
 

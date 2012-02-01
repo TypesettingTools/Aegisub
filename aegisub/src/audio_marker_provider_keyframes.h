@@ -40,8 +40,6 @@ namespace agi {
 
 /// Marker provider for video keyframes
 class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
-	/// Audio controller for time -> sample conversions
-	AudioController *controller;
 	/// Video controller to get keyframes from
 	VideoContext *vc;
 
@@ -71,5 +69,5 @@ public:
 	/// Get all keyframe markers within a range
 	/// @param range Range of samples to get markers for
 	/// @param[out] out Vector to fill with markers in the range
-	void GetMarkers(SampleRange const& range, AudioMarkerVector &out) const;
+	void GetMarkers(TimeRange const& range, AudioMarkerVector &out) const;
 };

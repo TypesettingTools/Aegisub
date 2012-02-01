@@ -245,5 +245,5 @@ void AudioBox::ScrollAudioBy(int pixel_amount) {
 
 void AudioBox::ScrollToActiveLine() {
 	if (controller->GetTimingController())
-		audioDisplay->ScrollSampleRangeInView(controller->GetTimingController()->GetIdealVisibleSampleRange());
+		audioDisplay->ScrollTimeRangeInView(controller->GetTimingController()->GetIdealVisibleTimeRange());
 }
