@@ -94,6 +94,8 @@ void FontCollector::ProcessDialogueLine(AssDialogue *line, int index) {
 }
 
 void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
+	if (style.second.chars.empty()) return;
+
 	FontFileLister::CollectionResult res = lister.GetFontPaths(style.first.facename, style.first.bold, style.first.italic, style.second.chars);
 
 	if (res.paths.empty()) {
