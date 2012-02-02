@@ -71,7 +71,6 @@ namespace {
 
 FontConfigFontFileLister::FontConfigFontFileLister(FontCollectorStatusCallback cb)
 : config(FcInitLoadConfig(), FcConfigDestroy)
-, cb(cb)
 {
 	cb(_("Updating font cache\n"), 0);
 	FcConfigBuildFonts(config);
@@ -113,8 +112,8 @@ FcFontSet *FontConfigFontFileLister::MatchFullname(const char *family, int weigh
 	return result;
 }
 
-std::vector<wxString> FontConfigFontFileLister::GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) {
-	std::vector<wxString> ret;
+FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) {
+	CollectionResult ret;
 
 	std::string family = STD_STR(facename);
 	if (family[0] == '@')
@@ -188,22 +187,15 @@ std::vector<wxString> FontConfigFontFileLister::GetFontPaths(wxString const& fac
 	if(FcPatternGetString(rpat, FC_FILE, 0, &file) != FcResultMatch)
 		return ret;
 
-	wxString missing;
-
 	FcCharSet *charset;
 	if (FcPatternGetCharSet(rpat, FC_CHARSET, 0, &charset) == FcResultMatch) {
 		for (std::set<wxUniChar>::const_iterator it = characters.begin(); it != characters.end(); ++it) {
 			if (!FcCharSetHasChar(charset, *it))
-				missing += *it;
+				ret.missing += *it;
 		}
 	}
 
-	if (missing.size() > 50)
-		cb(wxString::Format(_("'%s' is missing %d glyphs used.\n"), facename, (int)missing.size()), 2);
-	else if (missing.size() > 0)
-		cb(wxString::Format(_("'%s' is missing the following glyphs used: %s\n"), facename, missing), 2);
-
-	ret.push_back((const char *)file);
+	ret.paths.push_back((const char *)file);
 	return ret;
 }
 #endif

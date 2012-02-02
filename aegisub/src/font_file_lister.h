@@ -42,23 +42,38 @@ typedef std::tr1::function<void (wxString, int)> FontCollectorStatusCallback;
 /// @brief Font lister interface
 class FontFileLister {
 public:
+	struct CollectionResult {
+		/// Characters which could not be found in any font files
+		wxString missing;
+		/// Paths to the file(s) containing the requested font
+		std::vector<wxString> paths;
+	};
+
 	/// @brief Get the path to the font with the given styles
 	/// @param facename Name of font face
 	/// @param bold ASS font weight
 	/// @param italic Italic?
 	/// @param characters Characters in this style
 	/// @return Path to the matching font file(s), or empty if not found
-	virtual std::vector<wxString> GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) = 0;
+	virtual CollectionResult GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) = 0;
 };
 
 /// @class FontCollector
 /// @brief Class which collects the paths to all fonts used in a script
 class FontCollector {
+	/// All data needed to find the font file used to render text
 	struct StyleInfo {
 		wxString facename;
 		int bold;
 		bool italic;
 		bool operator<(StyleInfo const& rgt) const;
+	};
+
+	/// Data about where each style is used
+	struct UsageData {
+		std::set<wxUniChar> chars; ///< Characters used in this style which glyphs will be needed for
+		std::set<int> lines;       ///< Lines on which this style is used via overrides
+		std::set<wxString> styles; ///< ASS styles which use this style
 	};
 
 	/// Message callback provider by caller
@@ -67,18 +82,24 @@ class FontCollector {
 	FontFileLister &lister;
 
 	/// The set of all glyphs used in the file
-	std::map<StyleInfo, std::set<wxUniChar> > used_styles;
+	std::map<StyleInfo, UsageData> used_styles;
 	/// Style name -> ASS style definition
 	std::map<wxString, StyleInfo> styles;
 	/// Paths to found required font files
 	std::set<wxString> results;
 	/// Number of fonts which could not be found
 	int missing;
+	/// Number of fonts which were found, but did not contain all used glyphs
+	int missing_glyphs;
 
 	/// Gather all of the unique styles with text on a line
-	void ProcessDialogueLine(AssDialogue *line);
+	void ProcessDialogueLine(AssDialogue *line, int index);
+
 	/// Get the font for a single style
-	void ProcessChunk(std::pair<StyleInfo, std::set<wxUniChar> > const& style);
+	void ProcessChunk(std::pair<StyleInfo, UsageData> const& style);
+
+	/// Print the lines and styles on which a missing font is used
+	void PrintUsage(UsageData const& data);
 
 public:
 	/// Constructor

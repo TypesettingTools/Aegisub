@@ -171,11 +171,11 @@ void FreetypeFontFileLister::AddFont(wxString const& filename, wxString const& f
 	AddFont(filename, "*" + family);
 }
 
-std::vector<wxString> FreetypeFontFileLister::GetFontPaths(wxString const& facename, int, bool, std::set<wxUniChar> const&) {
-	std::vector<wxString> ret;
-	ret.insert(ret.end(), font_files[facename].begin(), font_files[facename].end());
-	if (ret.empty())
-		ret.insert(ret.end(), font_files["*" + facename].begin(), font_files["*" + facename].end());
+FontFileLister::CollectionResult FreetypeFontFileLister::GetFontPaths(wxString const& facename, int, bool, std::set<wxUniChar> const&) {
+	CollectionResult ret;
+	ret.paths.insert(ret.paths.end(), font_files[facename].begin(), font_files[facename].end());
+	if (ret.paths.empty())
+		ret.paths.insert(ret.paths.end(), font_files["*" + facename].begin(), font_files["*" + facename].end());
 	return ret;
 }
 
