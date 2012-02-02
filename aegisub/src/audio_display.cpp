@@ -1235,60 +1235,13 @@ void AudioDisplay::OnStyleRangesChanged()
 	AudioStyleRangeMerger asrm;
 	controller->GetTimingController()->GetRenderingStyles(asrm);
 
-	std::map<int, int> old_style_ranges;
-	swap(old_style_ranges, style_ranges);
+	style_ranges.clear();
 	style_ranges.insert(asrm.begin(), asrm.end());
 
-	std::map<int, int>::iterator old_style_it = old_style_ranges.begin();
-	std::map<int, int>::iterator new_style_it = style_ranges.begin();
-
-	int old_style = old_style_it->second;
-	int new_style = new_style_it->second;
-	int range_start = 0;
-
-	// Repaint each range which has changed
-	while (old_style_it != old_style_ranges.end() || new_style_it != style_ranges.end())
-	{
-		if (new_style_it == style_ranges.end() || (old_style_it != old_style_ranges.end() && old_style_it->first <= new_style_it->first))
-		{
-			if (old_style != new_style)
-				Redraw(range_start, old_style_it->first);
-			old_style = old_style_it->second;
-			range_start = old_style_it->first;
-			++old_style_it;
-		}
-		else
-		{
-			if (old_style != new_style)
-				Redraw(range_start, new_style_it->first);
-			new_style = new_style_it->second;
-			range_start = new_style_it->first;
-			++new_style_it;
-		}
-	}
-
-	// Fill in the last style range
-	if (old_style != new_style)
-	{
-		Redraw(range_start, TimeFromRelativeX(GetClientSize().GetWidth()));
-	}
-}
-
-void AudioDisplay::Redraw(int time_start, int time_end)
-{
-	if (time_start == time_end) return;
-
-	time_start = RelativeXFromTime(time_start) - foot_size;
-	time_end = RelativeXFromTime(time_end) + foot_size;
-
-	if (time_end >= 0 && time_start <= GetClientSize().GetWidth())
-	{
-		RefreshRect(wxRect(time_start, audio_top, time_end - time_start, audio_height), false);
-	}
+	RefreshRect(wxRect(0, audio_top, GetClientSize().GetWidth(), audio_height), false);
 }
 
 void AudioDisplay::OnMarkerMoved()
 {
-	/// @todo investigate if it's worth refreshing only the changed spots
 	RefreshRect(wxRect(0, audio_top, GetClientSize().GetWidth(), audio_height), false);
 }

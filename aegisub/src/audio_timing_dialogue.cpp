@@ -554,6 +554,7 @@ void AudioTimingControllerDialogue::SetMarker(AudioMarkerDialogueTiming *marker,
 	timing_modified = true;
 	if (auto_commit->GetBool()) Commit();
 	UpdateSelection();
+	AnnounceMarkerMoved();
 }
 
 static bool noncomment_dialogue(AssEntry *e)
@@ -616,6 +617,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 
 	sort(inactive_markers.begin(), inactive_markers.end());
 	AnnounceUpdatedStyleRanges();
+	AnnounceMarkerMoved();
 }
 
 int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range) const

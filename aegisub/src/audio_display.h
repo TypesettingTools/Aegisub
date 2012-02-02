@@ -177,11 +177,6 @@ class AudioDisplay: public wxWindow {
 	/// in Options and need to be reloaded to take effect.
 	void ReloadRenderingSettings();
 
-	/// @brief Repaint a time range
-	/// @param ms_start Beginning of range to repaint
-	/// @param ms_end End of range to repaint
-	void Redraw(int ms_start, int ms_end);
-
 	/// Paint the audio data for a time range
 	/// @param dc DC to paint to
 	/// @param updtime Time range to repaint
