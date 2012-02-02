@@ -78,13 +78,15 @@ void FontCollector::ProcessDialogueLine(AssDialogue *line, int index) {
 		}
 		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(line->Blocks[i])) {
 			wxString text = txt->GetText();
-			if (text.size()) {
-				if (overriden)
-					used_styles[style].lines.insert(index);
-				std::set<wxUniChar>& chars = used_styles[style].chars;
-				for (size_t i = 0; i < text.size(); ++i)
-					chars.insert(text[i]);
-			}
+
+			if (text.empty() || (text.size() >= 2 && text.StartsWith("{") && text.EndsWith("}")))
+				continue;
+
+			if (overriden)
+				used_styles[style].lines.insert(index);
+			std::set<wxUniChar>& chars = used_styles[style].chars;
+			for (size_t i = 0; i < text.size(); ++i)
+				chars.insert(text[i]);
 		}
 		// Do nothing with drawing blocks
 	}
