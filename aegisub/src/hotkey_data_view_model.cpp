@@ -38,6 +38,7 @@
 #include <wx/dataview.h>
 #include <wx/regex.h>
 
+#include <algorithm>
 #include <list>
 #include <set>
 #endif

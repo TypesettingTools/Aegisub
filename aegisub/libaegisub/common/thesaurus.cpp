@@ -24,6 +24,10 @@
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
 
+#ifndef LAGI_PRE
+#include <cstdlib>
+#endif
+
 template<class String, class Char, class Container>
 static void split(String const& str, Char sep, Container *out) {
 	typename String::size_type pos, prev = 0;

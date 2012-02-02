@@ -20,10 +20,6 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
-#include <algorithm>
-#endif
-
 namespace agi {
 
 /// @class scoped_ptr
@@ -48,14 +44,8 @@ public:
 		ptr = p;
 	}
 
-	void swap(scoped_ptr &b) { using std::swap; swap(ptr, b.ptr); }
-
 	explicit scoped_ptr(T *ptr = 0) : ptr(ptr){ }
 	~scoped_ptr() { delete ptr; }
 };
 
-template<class T>
-inline void swap(scoped_ptr<T> &a, scoped_ptr<T> &b) {
-	a.swap(b);
-}
 }

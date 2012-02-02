@@ -37,6 +37,7 @@
 #include <libaegisub/log.h>
 
 #ifndef AGI_PRE
+#include <algorithm>
 #include <deque>
 #include <sstream>
 #include <vector>

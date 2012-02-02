@@ -28,6 +28,8 @@
 
 #ifndef AGI_PRE
 #include <vector>
+
+#include <wx/string.h>
 #endif
 
 class AudioMarkerKeyframe;
@@ -35,13 +37,14 @@ class Pen;
 class VideoContext;
 class TimeRange;
 class VideoPositionMarker;
-
-#include "time_range.h"
+class wxPen;
 
 namespace agi {
 	class OptionValue;
 	struct Context;
 }
+
+#include "time_range.h"
 
 /// @class AudioMarker
 /// @brief A marker on the audio display

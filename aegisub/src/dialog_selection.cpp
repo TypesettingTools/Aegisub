@@ -26,6 +26,8 @@
 #include "dialog_selection.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
+
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/msgdlg.h>
