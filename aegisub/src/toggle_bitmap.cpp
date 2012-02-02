@@ -37,7 +37,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <wx/dcclient.h>
+#include <wx/dcbuffer.h>
 #include <wx/settings.h>
 #include <wx/tglbtn.h>
 #endif
@@ -60,6 +60,8 @@ ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *
 	GetSize(&w, &h);
 	SetSizeHints(w, h, w, h);
 
+	SetBackgroundStyle(wxBG_STYLE_PAINT);
+
 	ToolTipManager::Bind(this, command->StrHelp(), ht_ctx, cmd_name);
 	Bind(wxEVT_PAINT, &ToggleBitmap::OnPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &ToggleBitmap::OnMouseEvent, this);
@@ -71,9 +73,7 @@ void ToggleBitmap::OnMouseEvent(wxMouseEvent &) {
 }
 
 void ToggleBitmap::OnPaint(wxPaintEvent &) {
-	wxPaintDC dc(this);
-	int w,h;
-	GetClientSize(&w,&h);
+	wxAutoBufferedPaintDC dc(this);
 
 	// Get background color
 	wxColour bgColor = command->IsActive(context) ? wxColour(0,255,0) : wxColour(255,0,0);
@@ -85,7 +85,8 @@ void ToggleBitmap::OnPaint(wxPaintEvent &) {
 
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetBrush(wxBrush(bgColor));
-	dc.DrawRectangle(0, 0, w, h);
+	dc.DrawRectangle(wxPoint(0, 0), GetClientSize());
 
-	dc.DrawBitmap(img, (w - img.GetWidth()) / 2, (h - img.GetHeight()) / 2, true);
+	wxSize excess = (GetClientSize() - img.GetSize()) / 2;
+	dc.DrawBitmap(img, excess.GetX(), excess.GetY(), true);
 }
