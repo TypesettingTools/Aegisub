@@ -53,7 +53,7 @@
 #include "standard_paths.h"
 #include "video_provider_avs.h"
 
-AvisynthVideoProvider::AvisynthVideoProvider(wxString filename) try
+AvisynthVideoProvider::AvisynthVideoProvider(wxString filename)
 : last_fnum(-1)
 {
 	iframe.flipped = true;
@@ -145,18 +145,20 @@ file_exit:
 	}
 #endif
 
-	AVSValue script = Open(fname, extension);
+	try {
+		AVSValue script = Open(fname, extension);
 
-	// Check if video was loaded properly
-	if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo())
-		throw VideoNotSupported("No usable video found");
+		// Check if video was loaded properly
+		if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo())
+			throw VideoNotSupported("No usable video found");
 
-	RGB32Video = (avs.GetEnv()->Invoke("Cache", avs.GetEnv()->Invoke("ConvertToRGB32", script))).AsClip();
-	vi = RGB32Video->GetVideoInfo();
-	fps = (double)vi.fps_numerator / vi.fps_denominator;
-}
-catch (AvisynthError const& err) {
-	throw VideoOpenError("Avisynth error: " + std::string(err.msg));
+		RGB32Video = (avs.GetEnv()->Invoke("Cache", avs.GetEnv()->Invoke("ConvertToRGB32", script))).AsClip();
+		vi = RGB32Video->GetVideoInfo();
+		fps = (double)vi.fps_numerator / vi.fps_denominator;
+	}
+	catch (AvisynthError const& err) {
+		throw VideoOpenError("Avisynth error: " + std::string(err.msg));
+	}
 }
 
 AvisynthVideoProvider::~AvisynthVideoProvider() {
