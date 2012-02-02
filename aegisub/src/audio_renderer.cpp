@@ -200,6 +200,7 @@ const wxBitmap *AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
 	if (created)
 	{
 		renderer->Render(*bmp, i*cache_bitmap_width, style);
+		needs_age = true;
 	}
 
 	assert(bmp->IsOk());
@@ -243,14 +244,19 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, Audi
 		renderer->RenderBlank(dc, wxRect(origin.x-1, origin.y, lastx-origin.x+1, pixel_height), style);
 	}
 
-	bitmaps[style].Age(cache_bitmap_maxsize);
-	renderer->AgeCache(cache_renderer_maxsize);
+	if (needs_age)
+	{
+		bitmaps[style].Age(cache_bitmap_maxsize);
+		renderer->AgeCache(cache_renderer_maxsize);
+		needs_age = false;
+	}
 }
 
 
 void AudioRenderer::Invalidate()
 {
 	for_each(bitmaps, bind(&AudioRendererBitmapCache::Age, _1, 0));
+	needs_age = false;
 }
 
 

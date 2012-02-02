@@ -115,6 +115,8 @@ class AudioRenderer {
 	size_t cache_bitmap_maxsize;
 	/// The maximum allowed size of the renderer's cache, in bytes
 	size_t cache_renderer_maxsize;
+	/// Do the caches need to be aged?
+	bool needs_age;
 
 	/// Actual renderer for bitmaps
 	AudioRendererBitmapProvider *renderer;
