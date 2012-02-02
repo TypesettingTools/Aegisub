@@ -103,8 +103,8 @@ class DataBlockCache {
 
 	/// DOCME
 	struct MacroBlock {
-		/// How many times data in the macroblock has been accessed
-		int access_count;
+		/// How long has it been since this macroblock was accessed?
+		int age;
 		/// The blocks contained in the macroblock
 		BlockArray blocks;
 	};
@@ -124,15 +124,13 @@ class DataBlockCache {
 	/// Factory object for blocks
 	BlockFactoryT factory;
 
-	/// Used in sorting the macroblocks by accesas count for aging
-	static bool comp_access_count(const MacroBlock *lft, const MacroBlock *rgt) { return lft->access_count > rgt->access_count; }
+	/// Used in sorting the macroblocks by age
+	static bool comp_age(const MacroBlock *lft, const MacroBlock *rgt) { return lft->age < rgt->age; }
 
 	/// @brief Dispose of all blocks in a macroblock and mark it empty
 	/// @param mb_index Index of macroblock to clear
 	void KillMacroBlock(MacroBlock &mb)
 	{
-		mb.access_count = 0;
-
 		for (size_t bi = 0; bi < mb.blocks.size(); ++bi)
 		{
 			BlockT *b = mb.blocks[bi];
@@ -208,31 +206,26 @@ public:
 
 		// Get a list of macro blocks sorted by access count
 		std::vector<MacroBlock*> access_data;
-		access_data.resize(data.size());
-		size_t access_data_count = 0;
+		access_data.reserve(data.size());
 		// For whatever reason, G++ pukes if I try using iterators here...
 		for (size_t mbi = 0; mbi != data.size(); ++mbi)
 		{
 			if (data[mbi].blocks.size())
-				access_data[access_data_count++] = &data[mbi];
+				access_data.push_back(&data[mbi]);
 		}
-		sort(access_data.begin(), access_data.begin() + access_data_count, comp_access_count);
+		sort(access_data.begin(), access_data.end(), comp_age);
 
 		// Sum up data size until we hit the max
 		size_t cur_size = 0;
 		size_t block_size = factory.GetBlockSize();
 		size_t mbi = 0;
-		for (; mbi < access_data_count && cur_size < max_size; ++mbi)
+		for (; mbi < access_data.size() && cur_size < max_size; ++mbi)
 		{
 			BlockArray &ba = access_data[mbi]->blocks;
 			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), (BlockT*)0)) * block_size;
-
-			// Cut access count in half for live blocks, so parts that don't get accessed
-			// a lot will eventually be killed off.
-			access_data[mbi]->access_count /= 2;
 		}
 		// Hit max, clear all remaining blocks
-		for (++mbi; mbi < access_data_count; ++mbi)
+		for (++mbi; mbi < access_data.size(); ++mbi)
 		{
 			KillMacroBlock(*access_data[mbi]);
 		}
@@ -250,8 +243,14 @@ public:
 		size_t mbi = i >> MacroblockExponent;
 		assert(mbi < data.size());
 
+		// Age all of the other macroblocks
+		for (size_t idx = 0; idx < data.size(); ++idx)
+		{
+			data[idx].age += 1;
+		}
+
 		MacroBlock &mb = data[mbi];
-		mb.access_count += 1;
+		mb.age = 0;
 
 		if (mb.blocks.size() == 0)
 		{
