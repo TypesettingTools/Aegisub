@@ -45,15 +45,11 @@
 namespace agi { struct Context; }
 
 class VideoContext;
-class SubtitlesGrid;
 
-/// DOCME
 /// @class VideoSlider
-/// @brief DOCME
-///
-/// DOCME
+/// @brief Slider for displaying and adjusting the video position
 class VideoSlider: public wxWindow {
-	agi::Context *c;
+	agi::Context *c; ///< Associated project context
 	std::vector<int> keyframes; ///< Currently loaded keyframes
 	std::vector<agi::signal::Connection> slots;
 
@@ -64,8 +60,6 @@ class VideoSlider: public wxWindow {
 	int GetValueAtX(int x);
 	/// Get the x-coordinate for a frame number
 	int GetXAtValue(int value);
-	/// Render the slider
-	void DrawImage(wxDC &dc);
 	/// Set the position of the slider
 	void SetValue(int value);
 
@@ -76,9 +70,8 @@ class VideoSlider: public wxWindow {
 
 	void OnMouse(wxMouseEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
-	void OnPaint(wxPaintEvent &event);
-	void OnFocus(wxFocusEvent &event);
-	void OnEraseBackground(wxEraseEvent &) {}
+	void OnPaint(wxPaintEvent &);
+	void OnFocus(wxFocusEvent &);
 
 public:
 	VideoSlider(wxWindow* parent, agi::Context *c);

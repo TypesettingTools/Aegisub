@@ -37,6 +37,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <wx/dcbuffer.h>
 #include <wx/settings.h>
 #endif
 
@@ -56,6 +57,8 @@ VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 {
 	SetClientSize(20,25);
 	SetMinSize(wxSize(20, 25));
+	SetBackgroundStyle(wxBG_STYLE_PAINT);
+
 	slots.push_back(OPT_SUB("Video/Slider/Show Keyframes", &wxWindow::Refresh, this, false, (wxRect*)NULL));
 	slots.push_back(c->videoController->AddSeekListener(&VideoSlider::SetValue, this));
 	slots.push_back(c->videoController->AddVideoOpenListener(&VideoSlider::VideoOpened, this));
@@ -86,9 +89,7 @@ void VideoSlider::KeyframesChanged(std::vector<int> const& newKeyframes) {
 }
 
 int VideoSlider::GetValueAtX(int x) {
-	int w,h;
-	GetClientSize(&w,&h);
-
+	int w = GetClientSize().GetWidth();
 	// Special case
 	if (w <= 10) return 0;
 
@@ -98,8 +99,7 @@ int VideoSlider::GetValueAtX(int x) {
 int VideoSlider::GetXAtValue(int value) {
 	if (max <= 0) return 0;
 
-	int w,h;
-	GetClientSize(&w,&h);
+	int w = GetClientSize().GetWidth();
 	return (int64_t)value*(int64_t)(w-10)/(int64_t)max+5;
 }
 
@@ -109,23 +109,24 @@ BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 	EVT_PAINT(VideoSlider::OnPaint)
 	EVT_SET_FOCUS(VideoSlider::OnFocus)
 	EVT_KILL_FOCUS(VideoSlider::OnFocus)
-	EVT_ERASE_BACKGROUND(VideoSlider::OnEraseBackground)
 END_EVENT_TABLE()
 
 void VideoSlider::OnMouse(wxMouseEvent &event) {
+	bool had_focus = HasFocus();
+	if (event.ButtonDown())
+		SetFocus();
+
 	if (event.LeftIsDown()) {
 		int x = event.GetX();
 
 		// If the slider didn't already have focus, don't seek if the user
 		// clicked very close to the current location as they were probably
 		// just trying to focus the slider
-		if (wxWindow::FindFocus() != this && abs(x - GetXAtValue(val)) < 4) {
-			SetFocus();
+		if (!had_focus && abs(x - GetXAtValue(val)) < 4)
 			return;
-		}
 
 		// Shift click to snap to keyframe
-		if (event.ShiftDown()) {
+		if (event.ShiftDown() && keyframes.size()) {
 			int clickedFrame = GetValueAtX(x);
 			std::vector<int>::const_iterator pos = lower_bound(keyframes.begin(), keyframes.end(), clickedFrame);
 			if (pos == keyframes.end())
@@ -136,7 +137,6 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 			if (*pos == val) return;
 			SetValue(*pos);
 		}
-
 		// Normal click
 		else {
 			int go = GetValueAtX(x);
@@ -145,10 +145,7 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		}
 
 		c->videoController->JumpToFrame(val);
-		SetFocus();
 	}
-	else if (event.ButtonDown())
-		SetFocus();
 }
 
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
@@ -165,18 +162,9 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 }
 
 void VideoSlider::OnPaint(wxPaintEvent &) {
-	wxPaintDC dc(this);
-	DrawImage(dc);
-}
-
-void VideoSlider::DrawImage(wxDC &destdc) {
+	wxAutoBufferedPaintDC dc(this);
 	int w,h;
-	GetClientSize(&w,&h);
-
-	// Back buffer
-	wxMemoryDC dc;
-	wxBitmap bmp(w,h);
-	dc.SelectObject(bmp);
+	GetClientSize(&w, &h);
 
 	// Colors
 	wxColour shad = wxSystemSettings::GetColour(wxSYS_COLOUR_3DDKSHADOW);
@@ -193,8 +181,7 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 	dc.DrawRectangle(0,0,w,h);
 
 	// Selection border
-	bool selected = wxWindow::FindFocus() == this;
-	if (selected) {
+	if (HasFocus()) {
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
 		dc.SetPen(wxPen(shad,1,wxDOT));
 		dc.DrawRectangle(0,0,w,h);
@@ -253,12 +240,8 @@ void VideoSlider::DrawImage(wxDC &destdc) {
 
 	// Draw selection
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	if (selected) dc.SetBrush(wxBrush(sel));
-	else dc.SetBrush(wxBrush(notSel));
+	dc.SetBrush(HasFocus() ? wxBrush(sel) : wxBrush(notSel));
 	dc.DrawRectangle(curX-3,y2+1,7,4);
-
-	// Draw final
-	destdc.Blit(0,0,w,h,&dc,0,0);
 }
 
 void VideoSlider::OnFocus(wxFocusEvent &) {
