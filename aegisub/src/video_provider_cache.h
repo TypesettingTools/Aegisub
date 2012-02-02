@@ -71,7 +71,6 @@ public:
 	virtual ~VideoProviderCache();
 
 	// Override the following methods:
-	int GetPosition() const               { return master->GetPosition(); }
 	int GetFrameCount() const             { return master->GetFrameCount(); }
 	int GetWidth() const                  { return master->GetWidth(); }
 	int GetHeight() const                 { return master->GetHeight(); }

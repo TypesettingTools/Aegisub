@@ -66,7 +66,6 @@ public:
 
 	const AegiVideoFrame GetFrame(int n);
 
-	int GetPosition() const { return last_fnum; };
 	int GetFrameCount() const { return vi.num_frames; };
 	agi::vfr::Framerate GetFPS() const { return fps; };
 	int GetWidth() const { return vi.width; };

@@ -143,7 +143,6 @@ public:
 
 	const AegiVideoFrame GetFrame(int n);
 
-	int GetPosition() const               { return cur_fn; }
 	int GetFrameCount() const             { return num_frames; }
 	int GetWidth() const                  { return w; }
 	int GetHeight() const                 { return h; }

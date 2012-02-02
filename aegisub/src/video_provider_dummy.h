@@ -77,7 +77,6 @@ public:
 	const AegiVideoFrame GetFrame(int n);
 	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
 
-	int GetPosition() const { return lastFrame; }
 	int GetFrameCount() const { return framecount; }
 	int GetWidth() const { return width; }
 	int GetHeight() const { return height; }

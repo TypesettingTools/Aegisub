@@ -57,7 +57,6 @@ public:
 	virtual const AegiVideoFrame GetFrame(int n)=0;
 
 	// Override the following methods to get video information:
-	virtual int GetPosition() const=0;				///< Get the number of the last frame loaded
 	virtual int GetFrameCount() const=0;			///< Get total number of frames
 	virtual int GetWidth() const=0;					///< Returns the video width in pixels
 	virtual int GetHeight() const=0;				///< Returns the video height in pixels
