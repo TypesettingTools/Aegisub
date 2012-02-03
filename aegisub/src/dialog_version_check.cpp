@@ -481,7 +481,7 @@ END_EVENT_TABLE()
 VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates)
 : wxDialog(0, -1, _("Version Checker"))
 {
-	const int controls_width = 350;
+	const int controls_width = 500;
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
