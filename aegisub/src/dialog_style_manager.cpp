@@ -105,7 +105,7 @@ static wxSizer *make_edit_buttons(wxWindow *parent, wxString move_label, wxButto
 }
 
 DialogStyleManager::DialogStyleManager(agi::Context *context)
-: wxDialog (context->parent,-1,_("Styles Manager"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,"DialogStylesManager")
+: wxDialog(context->parent, -1, _("Styles Manager"))
 , c(context)
 {
 	using std::tr1::bind;

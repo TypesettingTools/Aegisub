@@ -374,7 +374,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 		// Style name change
 		bool did_rename = false;
 		if (work->name != newStyleName) {
-			if (!store && !is_new && work->name != "Default") {
+			if (!store && !is_new) {
 				// See if user wants to update style name through script
 				int answer = wxMessageBox(_("Do you want to change all instances of this style in the script to this new name?"), _("Update script?"), wxYES_NO | wxCANCEL);
 
