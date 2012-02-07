@@ -215,6 +215,9 @@ public:
 			find_if(dynamic_items.begin(), dynamic_items.end(), menu_item_cmp(item));
 		if (it != dynamic_items.end())
 			dynamic_items.erase(it);
+		it = find_if(static_items.begin(), static_items.end(), menu_item_cmp(item));
+		if (it != static_items.end())
+			static_items.erase(it);
 	}
 
 	/// Create a MRU menu and register the needed handlers
