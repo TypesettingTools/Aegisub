@@ -125,10 +125,10 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 
 	wxButton *all = new wxButton(this,-1,_("&All"));
-	all->SetToolTip(_("Select all styles."));
+	all->SetToolTip(_("Select all styles"));
 
 	wxButton *none = new wxButton(this,-1,_("&None"));
-	none->SetToolTip(_("Deselect all styles."));
+	none->SetToolTip(_("Deselect all styles"));
 
 	// Options box
 	wxStaticBoxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
@@ -141,13 +141,13 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 
 	hasLeadIn = make_check(LeadSizer, _("Add lead &in:"),
 		"Tool/Timing Post Processor/Enable/Lead/IN",
-		_("Enable adding of lead-ins to lines."));
-	make_ctrl(LeadSizer, "", &leadIn, hasLeadIn, _("Lead in to be added, in milliseconds."));
+		_("Enable adding of lead-ins to lines"));
+	make_ctrl(LeadSizer, "", &leadIn, hasLeadIn, _("Lead in to be added, in milliseconds"));
 
 	hasLeadOut = make_check(LeadSizer, _("Add lead &out:"),
 		"Tool/Timing Post Processor/Enable/Lead/OUT",
-		_("Enable adding of lead-outs to lines."));
-	make_ctrl(LeadSizer, "", &leadOut, hasLeadOut, _("Lead out to be added, in milliseconds."));
+		_("Enable adding of lead-outs to lines"));
+	make_ctrl(LeadSizer, "", &leadOut, hasLeadOut, _("Lead out to be added, in milliseconds"));
 
 	LeadSizer->AddStretchSpacer(1);
 
@@ -155,13 +155,13 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	wxStaticBoxSizer *AdjacentSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Make adjacent subtitles continuous"));
 	adjsEnable = make_check(AdjacentSizer, _("&Enable"),
 		"Tool/Timing Post Processor/Enable/Adjacent",
-		_("Enable snapping of subtitles together if they are within a certain distance of each other."));
+		_("Enable snapping of subtitles together if they are within a certain distance of each other"));
 
 	wxSizer *adjBoxes = new wxBoxSizer(wxHORIZONTAL);
 	make_ctrl(this, adjBoxes, _("Max gap:"), &adjGap, adjsEnable,
-		_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."));
+		_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"));
 	make_ctrl(this, adjBoxes, _("Max overlap:"), &adjOverlap, adjsEnable,
-		_("Maximum overlap between the end and start time for two subtitles to be made continuous, in milliseconds."));
+		_("Maximum overlap between the end and start time for two subtitles to be made continuous, in milliseconds"));
 
 	adjacentBias = new wxSlider(this, -1, mid<int>(0, OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble() * 100, 100), 0, 100, wxDefaultPosition, wxSize(-1,20));
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend or shrink start time of the second line; if totally to right, it will extend or shrink the end time of the first line."));
@@ -181,7 +181,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	wxSizer *KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
 
 	keysEnable = new wxCheckBox(this, -1, _("E&nable"));
-	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold."));
+	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold"));
 	keysEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Keyframe")->GetBool());
 	KeyframesFlexSizer->Add(keysEnable,0,wxRIGHT|wxEXPAND,10);
 
@@ -193,18 +193,18 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	}
 
 	make_ctrl(this, KeyframesFlexSizer, _("Starts before thres.:"), &beforeStart, keysEnable,
-		_("Threshold for 'before start' distance, that is, how many milliseconds a subtitle must start before a keyframe to snap to it."));
+		_("Threshold for 'before start' distance, that is, how many milliseconds a subtitle must start before a keyframe to snap to it"));
 
 	make_ctrl(this, KeyframesFlexSizer, _("Starts after thres.:"), &afterStart, keysEnable,
-		_("Threshold for 'after start' distance, that is, how many milliseconds a subtitle must start after a keyframe to snap to it."));
+		_("Threshold for 'after start' distance, that is, how many milliseconds a subtitle must start after a keyframe to snap to it"));
 
 	KeyframesFlexSizer->AddStretchSpacer(1);
 
 	make_ctrl(this, KeyframesFlexSizer, _("Ends before thres.:"), &beforeEnd, keysEnable,
-		_("Threshold for 'before end' distance, that is, how many milliseconds a subtitle must end before a keyframe to snap to it."));
+		_("Threshold for 'before end' distance, that is, how many milliseconds a subtitle must end before a keyframe to snap to it"));
 
 	make_ctrl(this, KeyframesFlexSizer, _("Ends after thres.:"), &afterEnd, keysEnable,
-		_("Threshold for 'after end' distance, that is, how many milliseconds a subtitle must end after a keyframe to snap to it."));
+		_("Threshold for 'after end' distance, that is, how many milliseconds a subtitle must end after a keyframe to snap to it"));
 
 	KeyframesSizer->Add(KeyframesFlexSizer,0,wxEXPAND);
 	KeyframesSizer->AddStretchSpacer(1);

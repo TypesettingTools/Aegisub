@@ -154,7 +154,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	CommentBox->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
 	TopSizer->Add(CommentBox, 0, wxRIGHT | wxALIGN_CENTER, 5);
 
-	StyleBox = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line."));
+	StyleBox = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
 
 	ActorBox = new Placeholder<wxComboBox>(this, "Actor", wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());

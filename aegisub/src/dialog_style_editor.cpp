@@ -148,26 +148,26 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Encoding = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, encodingStrings, wxCB_READONLY);
 
 	// Set control tooltips
-	StyleName->SetToolTip(_("Style name."));
-	FontName->SetToolTip(_("Font face."));
-	FontSize->SetToolTip(_("Font size."));
-	colorButton[0]->SetToolTip(_("Choose primary color."));
-	colorButton[1]->SetToolTip(_("Choose secondary color."));
-	colorButton[2]->SetToolTip(_("Choose outline color."));
-	colorButton[3]->SetToolTip(_("Choose shadow color."));
-	for (int i=0;i<4;i++) colorAlpha[i]->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)."));
-	margin[0]->SetToolTip(_("Distance from left edge, in pixels."));
-	margin[1]->SetToolTip(_("Distance from right edge, in pixels."));
-	margin[2]->SetToolTip(_("Distance from top/bottom edge, in pixels."));
-	OutlineType->SetToolTip(_("When selected, display an opaque box behind the subtitles instead of an outline around the text."));
-	Outline->SetToolTip(_("Outline width, in pixels."));
-	Shadow->SetToolTip(_("Shadow distance, in pixels."));
-	ScaleX->SetToolTip(_("Scale X, in percentage."));
-	ScaleY->SetToolTip(_("Scale Y, in percentage."));
-	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees."));
-	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."));
-	Spacing->SetToolTip(_("Character spacing, in pixels."));
-	Alignment->SetToolTip(_("Alignment in screen, in numpad style."));
+	StyleName->SetToolTip(_("Style name"));
+	FontName->SetToolTip(_("Font face"));
+	FontSize->SetToolTip(_("Font size"));
+	colorButton[0]->SetToolTip(_("Choose primary color"));
+	colorButton[1]->SetToolTip(_("Choose secondary color"));
+	colorButton[2]->SetToolTip(_("Choose outline color"));
+	colorButton[3]->SetToolTip(_("Choose shadow color"));
+	for (int i=0;i<4;i++) colorAlpha[i]->SetToolTip(_("Set opacity, from 0 (opaque) to 255 (transparent)"));
+	margin[0]->SetToolTip(_("Distance from left edge, in pixels"));
+	margin[1]->SetToolTip(_("Distance from right edge, in pixels"));
+	margin[2]->SetToolTip(_("Distance from top/bottom edge, in pixels"));
+	OutlineType->SetToolTip(_("When selected, display an opaque box behind the subtitles instead of an outline around the text"));
+	Outline->SetToolTip(_("Outline width, in pixels"));
+	Shadow->SetToolTip(_("Shadow distance, in pixels"));
+	ScaleX->SetToolTip(_("Scale X, in percentage"));
+	ScaleY->SetToolTip(_("Scale Y, in percentage"));
+	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees"));
+	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"));
+	Spacing->SetToolTip(_("Character spacing, in pixels"));
+	Alignment->SetToolTip(_("Alignment in screen, in numpad style"));
 
 	// Set up controls
 	BoxBold->SetValue(style->bold);
@@ -271,11 +271,11 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		previewButton = new ColourButton(this, -1, wxSize(45, 16), lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
 		SubsPreview = new SubtitlesPreview(this, -1, wxDefaultPosition, wxSize(100, 60), wxSUNKEN_BORDER, lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
 	
-		SubsPreview->SetToolTip(_("Preview of current style."));
+		SubsPreview->SetToolTip(_("Preview of current style"));
 		SubsPreview->SetStyle(*style);
 		SubsPreview->SetText(PreviewText->GetValue());
-		PreviewText->SetToolTip(_("Text to be used for the preview."));
-		previewButton->SetToolTip(_("Colour of preview background."));
+		PreviewText->SetToolTip(_("Text to be used for the preview"));
+		previewButton->SetToolTip(_("Colour of preview background"));
 
 		wxSizer *PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 		PreviewBottomSizer->Add(PreviewText, 1, wxEXPAND | wxRIGHT, 5);

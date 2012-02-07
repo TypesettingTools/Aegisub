@@ -57,11 +57,11 @@ namespace {
 /// @defgroup cmd-recent MRU (Most Recently Used) commands.
 /// @{
 
-COMMAND_GROUP(recent_audio, "recent/audio", "Recent", "Recent", "Open recent audio.");
-COMMAND_GROUP(recent_keyframes, "recent/keyframe", "Recent", "Recent", "Open recent keyframes.");
-COMMAND_GROUP(recent_subtitle, "recent/subtitle", "Recent", "Recent", "Open recent subtitles.");
-COMMAND_GROUP(recent_timecodes, "recent/timecodes", "Recent", "Recent", "Open recent timecodes.");
-COMMAND_GROUP(recent_video, "recent/video", "Recent", "Recent", "Open recent video.");
+COMMAND_GROUP(recent_audio,     "recent/audio",     _("Recent"), _("Recent"), _("Open recent audio"));
+COMMAND_GROUP(recent_keyframes, "recent/keyframe",  _("Recent"), _("Recent"), _("Open recent keyframes"));
+COMMAND_GROUP(recent_subtitle,  "recent/subtitle",  _("Recent"), _("Recent"), _("Open recent subtitles"));
+COMMAND_GROUP(recent_timecodes, "recent/timecodes", _("Recent"), _("Recent"), _("Open recent timecodes"));
+COMMAND_GROUP(recent_video,     "recent/video",     _("Recent"), _("Recent"), _("Open recent video"));
 
 struct recent_audio_entry : public Command {
 	CMD_NAME("recent/audio/")

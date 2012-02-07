@@ -77,11 +77,11 @@ static wxSizer *make_move_buttons(wxWindow *parent, wxButton **up, wxButton **do
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->AddStretchSpacer(1);
 
-	*up     = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_24), _("Move style up."));
-	*down   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_24), _("Move style down."));
-	*top    = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_stop_24), _("Move style to top."));
-	*bottom = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_stop_24), _("Move style to bottom."));
-	*sort   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_sort_24), _("Sort styles alphabetically."));
+	*up     = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_24), _("Move style up"));
+	*down   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_24), _("Move style down"));
+	*top    = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_stop_24), _("Move style to top"));
+	*bottom = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_stop_24), _("Move style to bottom"));
+	*sort   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_sort_24), _("Sort styles alphabetically"));
 
 	sizer->AddStretchSpacer(1);
 	return sizer;
