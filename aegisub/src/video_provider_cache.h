@@ -36,41 +36,35 @@
 
 #ifndef AGI_PRE
 #include <list>
-#include <memory>
 #endif
 
 #include "include/aegisub/video_provider.h"
 
+#include <libaegisub/scoped_ptr.h>
+
 struct CachedFrame;
 
-/// DOCME
 /// @class VideoProviderCache
-/// @brief DOCME
-///
-/// DOCME
+/// @brief A wrapper around a video provider which provides LRU caching
 class VideoProviderCache : public VideoProvider {
-	/// DOCME
-	std::auto_ptr<VideoProvider> master;
+	/// The source provider to get frames from
+	agi::scoped_ptr<VideoProvider> master;
 
-	/// DOCME
-	unsigned int cacheMax;
+	/// @brief Maximum size of the cache in bytes
+	///
+	/// Note that this is a soft limit. The cache stops allocating new frames
+	/// once it has exceeded the limit, but it never tries to shrink
+	const size_t max_cache_size;
 
-	/// DOCME
+	/// Cache of video frames with the most recently used ones at the front
 	std::list<CachedFrame> cache;
 
-	void Cache(int n,const AegiVideoFrame frame);
-	AegiVideoFrame GetCachedFrame(int n);
-
-	// Cache functions
-	unsigned GetCurCacheSize();
-
 public:
-	// Base methods
-	const AegiVideoFrame GetFrame(int n);
 	VideoProviderCache(VideoProvider *master);
-	virtual ~VideoProviderCache();
+	~VideoProviderCache();
 
-	// Override the following methods:
+	const AegiVideoFrame GetFrame(int n);
+
 	int GetFrameCount() const             { return master->GetFrameCount(); }
 	int GetWidth() const                  { return master->GetWidth(); }
 	int GetHeight() const                 { return master->GetHeight(); }

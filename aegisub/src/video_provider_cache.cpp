@@ -41,88 +41,54 @@
 #include "main.h"
 #include "video_frame.h"
 
+#ifndef AGI_PRE
+#include <algorithm>
+#include <tr1/functional>
+#endif
 
-/// DOCME
-/// @class CachedFrame
-/// @brief DOCME
-///
-/// DOCME
-struct CachedFrame {
-	/// DOCME
-	AegiVideoFrame frame;
-
-	/// DOCME
-	int n;
+/// A video frame and its frame number
+struct CachedFrame : public AegiVideoFrame {
+	int frame_number;
 };
 
-/// @brief Constructor 
-/// @param parent 
-///
 VideoProviderCache::VideoProviderCache(VideoProvider *parent)
 : master(parent)
-, cacheMax(OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20) // convert MB to bytes
+, max_cache_size(OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20) // convert MB to bytes
 {
 }
 
-/// @brief Destructor 
-///
 VideoProviderCache::~VideoProviderCache() {
-	while (cache.size()) {
-		cache.front().frame.Clear();
-		cache.pop_front();
-	}
+	for_each(cache.begin(), cache.end(), std::tr1::mem_fn(&AegiVideoFrame::Clear));
 }
 
-/// @brief Get frame 
-/// @param n 
-/// @return 
-///
 const AegiVideoFrame VideoProviderCache::GetFrame(int n) {
+	size_t total_size = 0;
+
 	// See if frame is cached
-	CachedFrame cached;
-	for (std::list<CachedFrame>::iterator cur=cache.begin();cur!=cache.end();cur++) {
-		cached = *cur;
-		if (cached.n == n) {
+	for (std::list<CachedFrame>::iterator cur = cache.begin(); cur != cache.end(); ++cur) {
+		if (cur->frame_number == n) {
+			cache.push_front(*cur);
 			cache.erase(cur);
-			cache.push_back(cached);
-			return cached.frame;
+			return cache.front();
 		}
+
+		total_size += cur->memSize;
 	}
 
 	// Not cached, retrieve it
 	const AegiVideoFrame frame = master->GetFrame(n);
-	const AegiVideoFrame *srcFrame = &frame;
 
-	// Cache frame
-	Cache(n,*srcFrame);
-	return *srcFrame;
-}
-
-/// @brief Add to cache 
-/// @param n     
-/// @param frame 
-void VideoProviderCache::Cache(int n,const AegiVideoFrame frame) {
-	// Cache full, use frame at front
-	if (GetCurCacheSize() >= cacheMax) {
-		cache.push_back(cache.front());
-		cache.pop_front();
+	// Cache full, use oldest frame
+	if (total_size >= max_cache_size) {
+		cache.push_front(cache.back());
+		cache.pop_back();
 	}
-
 	// Cache not full, insert new one
-	else {
-		cache.push_back(CachedFrame());
-	}
+	else
+		cache.push_front(CachedFrame());
 
 	// Cache
-	cache.back().n = n;
-	cache.back().frame.CopyFrom(frame);
-}
-
-/// @brief Get the current size of the cache
-/// @return Returns the size in bytes
-unsigned VideoProviderCache::GetCurCacheSize() {
-	int sz = 0;
-	for (std::list<CachedFrame>::iterator i = cache.begin(); i != cache.end(); i++)
-		sz += i->frame.memSize;
-	return sz;
+	cache.front().frame_number = n;
+	cache.front().CopyFrom(frame);
+	return cache.front();
 }
