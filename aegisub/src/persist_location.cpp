@@ -37,9 +37,6 @@ PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)
 , maximize_opt(OPT_SET(options_prefix + "/Maximized"))
 , dialog(dialog)
 {
-	dialog->Bind(wxEVT_MOVE, &PersistLocation::OnMove, this);
-	dialog->Bind(wxEVT_SIZE, &PersistLocation::OnSize, this);
-
 	int x = x_opt->GetInt();
 	int y = y_opt->GetInt();
 	if (x == -1 && y == -1)
@@ -76,7 +73,13 @@ PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)
 		dialog->Move(x, y);
 	}
 
-	if (maximize_opt->GetBool()) dialog->Maximize();
+	dialog->Bind(wxEVT_MOVE, &PersistLocation::OnMove, this);
+
+	if (dialog->GetWindowStyle() & wxMAXIMIZE_BOX) {
+		dialog->Bind(wxEVT_SIZE, &PersistLocation::OnSize, this);
+		if (maximize_opt->GetBool())
+			dialog->Maximize();
+	}
 }
 
 void PersistLocation::OnMove(wxMoveEvent &e) {
