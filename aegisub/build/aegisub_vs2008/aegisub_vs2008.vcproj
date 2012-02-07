@@ -1620,10 +1620,6 @@
 			Name="Include"
 			>
 			<File
-				RelativePath="..\..\src\include\aegisub\aegisub.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\include\aegisub\audio_player.h"
 				>
 			</File>
@@ -1633,10 +1629,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\aegisub\context.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\aegisub\exception.h"
 				>
 			</File>
 			<File
