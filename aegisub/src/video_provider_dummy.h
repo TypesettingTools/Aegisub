@@ -34,53 +34,61 @@
 /// @ingroup video_input
 ///
 
-// The dummy video provider needs a header, since it needs to be created directly as a special case
-
-#ifndef AGI_PRE
-#include <wx/colour.h>
-#endif
-
 #include "include/aegisub/video_provider.h"
 #include "video_frame.h"
 
-/// DOCME
+class wxColour;
+
 /// @class DummyVideoProvider
-/// @brief DOCME
+/// @brief A dummy video provider for when opening a file is just too much effort
 ///
-/// DOCME
+/// This simply returns a single constant frame, which can either be a flat
+/// color or a checkerboard pattern
 class DummyVideoProvider : public VideoProvider {
-	/// DOCME
-	int lastFrame;
+	int framecount;          ///< Length of the dummy video in frames
+	agi::vfr::Framerate fps; ///< Frame rate to use
+	int width;               ///< Width in pixels
+	int height;              ///< Height in pixels
 
-	/// DOCME
-	int framecount;
-
-	/// DOCME
-	agi::vfr::Framerate fps;
-
-	/// DOCME
-	int width;
-
-	/// DOCME
-	int height;
-
-	/// DOCME
+	/// The single image which is returned for all frames
 	AegiVideoFrame frame;
 
-	void Create(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
+	/// Create the dummy frame from the given parameters
+	/// @param fps Frame rate of the dummy video
+	/// @param frames Length in frames of the dummy video
+	/// @param width Width in pixels of the dummy video
+	/// @param height Height in pixels of the dummy video
+	/// @param red Red component of the primary colour of the dummy video
+	/// @param green Green component of the primary colour of the dummy video
+	/// @param blue Blue component of the primary colour of the dummy video
+	/// @param pattern Use a checkerboard pattern rather than a solid colour
+	void Create(double fps, int frames, int width, int height, unsigned char red, unsigned char green, unsigned char blue, bool pattern);
 
 public:
-	DummyVideoProvider(wxString filename);
-	DummyVideoProvider(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
+	/// Create a dummy video from a string returned from MakeFilename
+	DummyVideoProvider(wxString const& filename);
+
+	/// Create a dummy video from separate parameters
+	/// @param fps Frame rate of the dummy video
+	/// @param frames Length in frames of the dummy video
+	/// @param width Width in pixels of the dummy video
+	/// @param height Height in pixels of the dummy video
+	/// @param colour Primary colour of the dummy video
+	/// @param pattern Use a checkerboard pattern rather than a solid colour
+	DummyVideoProvider(double fps, int frames, int width, int height, wxColour const& colour, bool pattern);
+
+	/// Destructor
 	~DummyVideoProvider();
 
-	const AegiVideoFrame GetFrame(int n);
-	static wxString MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern);
+	/// Make a fake filename which when passed to the constructor taking a
+	/// string will result in a video with the given parameters
+	static wxString MakeFilename(double fps, int frames, int width, int height, wxColour const& colour, bool pattern);
 
-	int GetFrameCount() const { return framecount; }
-	int GetWidth() const { return width; }
-	int GetHeight() const { return height; }
-	agi::vfr::Framerate GetFPS() const { return fps; }
+	const AegiVideoFrame GetFrame(int n)  { return frame; }
+	int GetFrameCount()             const { return framecount; }
+	int GetWidth()                  const { return width; }
+	int GetHeight()                 const { return height; }
+	agi::vfr::Framerate GetFPS()    const { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
-	wxString GetDecoderName() const { return "Dummy Video Provider"; }
+	wxString GetDecoderName()       const { return "Dummy Video Provider"; }
 };

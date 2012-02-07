@@ -36,183 +36,91 @@
 
 #include "config.h"
 
+#include "video_provider_dummy.h"
+
 #ifndef AGI_PRE
+#include <wx/colour.h>
 #include <wx/tokenzr.h>
 #endif
 
 #include "colorspace.h"
-#include "video_provider_dummy.h"
 
-/// @brief Constructor 
-/// @param _fps    
-/// @param frames  
-/// @param _width  
-/// @param _height 
-/// @param colour  
-/// @param pattern 
-///
-void DummyVideoProvider::Create(double _fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
-	lastFrame = -1;
-	framecount = frames;
-	fps = _fps;
-	width = _width;
-	height = _height;
+void DummyVideoProvider::Create(double fps, int frames, int width, int height, unsigned char red, unsigned char green, unsigned char blue, bool pattern) {
+	this->framecount = frames;
+	this->fps = fps;
+	this->width = width;
+	this->height = height;
+	this->frame = AegiVideoFrame(width, height);
 
-	frame = AegiVideoFrame(width,height);
 	unsigned char *dst = frame.data;
-	unsigned char r = colour.Red(), g = colour.Green(), b = colour.Blue();
-
-	unsigned char h, s, l, lr, lg, lb; // light variants
-	rgb_to_hsl(r, g, b, &h, &s, &l);
-	l += 24;
-	if (l < 24) l -= 48;
-	hsl_to_rgb(h, s, l, &lr, &lg, &lb);
+	unsigned char colors[2][4] = {
+		blue, green, red, 0,
+		0, 0, 0, 0
+	};
 
 	if (pattern) {
+		// Generate light version
+		unsigned char h, s, l;
+		rgb_to_hsl(red, blue, green, &h, &s, &l);
+		l += 24;
+		if (l < 24) l -= 48;
+		hsl_to_rgb(h, s, l, &colors[1][2], &colors[1][1], &colors[1][0]);
+
+		// Divide into a 8x8 grid and use light colours when row % 2 != col % 2
 		int ppitch = frame.pitch / frame.GetBpp();
 		for (unsigned int y = 0; y < frame.h; ++y) {
-			if ((y / 8) & 1) {
-				for (int x = 0; x < ppitch; ++x) {
-					if ((x / 8) & 1) {
-						*dst++ = b;
-						*dst++ = g;
-						*dst++ = r;
-						*dst++ = 0;
-					}
-					else {
-						*dst++ = lb;
-						*dst++ = lg;
-						*dst++ = lr;
-						*dst++ = 0;
-					}
-				}
-			}
-			else {
-				for (int x = 0; x < ppitch; ++x) {
-					if ((x / 8) & 1) {
-						*dst++ = lb;
-						*dst++ = lg;
-						*dst++ = lr;
-						*dst++ = 0;
-					}
-					else {
-						*dst++ = b;
-						*dst++ = g;
-						*dst++ = r;
-						*dst++ = 0;
-					}
-				}
+			for (int x = 0; x < ppitch; ++x) {
+				memcpy(dst, colors[((y / 8) & 1) != ((x / 8) & 1)], 4);
+				dst += 4;
 			}
 		}
 	}
 	else {
-		for (int i=frame.pitch*frame.h/frame.GetBpp();--i>=0;) {
-			*dst++ = b;
-			*dst++ = g;
-			*dst++ = r;
-			*dst++ = 0;
-		}
+		for (int i = frame.pitch * frame.h / frame.GetBpp() - 1; i >= 0; --i)
+			memcpy(dst + i * 4, colors[0], 4);
 	}
 }
 
-/// @brief Parsing constructor 
-/// @param filename 
-///
-DummyVideoProvider::DummyVideoProvider(wxString filename)
-{
+static long get_long(wxStringTokenizer &t, const char *err) {
+	long ret;
+	if (!t.GetNextToken().ToLong(&ret))
+		throw VideoOpenError(err);
+	return ret;
+}
+
+DummyVideoProvider::DummyVideoProvider(wxString const& filename) {
 	wxString params;
-	if (!filename.StartsWith("?dummy:", &params)) {
+	if (!filename.StartsWith("?dummy:", &params))
 		throw agi::FileNotFoundError("Attempted creating dummy video provider with non-dummy filename");
-	}
 
 	wxStringTokenizer t(params, ":");
-	if (t.CountTokens() < 7) {
+	if (t.CountTokens() < 7)
 		throw VideoOpenError("Too few fields in dummy video parameter list");
-	}
 
 	double fps;
-	long _frames, _width, _height, red, green, blue;
-	bool pattern = false;
-
-	wxString field = t.GetNextToken();
-	if (!field.ToDouble(&fps)) {
+	if (!t.GetNextToken().ToDouble(&fps))
 		throw VideoOpenError("Unable to parse fps field in dummy video parameter list");
-	}
 
-	field = t.GetNextToken();
-	if (!field.ToLong(&_frames)) {
-		throw VideoOpenError("Unable to parse framecount field in dummy video parameter list");
-	}
+	long frames = get_long(t, "Unable to parse framecount field in dummy video parameter list");
+	long width  = get_long(t, "Unable to parse width field in dummy video parameter list");
+	long height = get_long(t, "Unable to parse height field in dummy video parameter list");
+	long red    = get_long(t, "Unable to parse red colour field in dummy video parameter list");
+	long green  = get_long(t, "Unable to parse green colour field in dummy video parameter list");
+	long blue   = get_long(t, "Unable to parse blue colour field in dummy video parameter list");
 
-	field = t.GetNextToken();
-	if (!field.ToLong(&_width)) {
-		throw VideoOpenError("Unable to parse width field in dummy video parameter list");
-	}
+	bool pattern = t.GetNextToken() == "c";
 
-	field = t.GetNextToken();
-	if (!field.ToLong(&_height)) {
-		throw VideoOpenError("Unable to parse height field in dummy video parameter list");
-	}
-
-	field = t.GetNextToken();
-	if (!field.ToLong(&red)) {
-		throw VideoOpenError("Unable to parse red colour field in dummy video parameter list");
-	}
-
-	field = t.GetNextToken();
-	if (!field.ToLong(&green)) {
-		throw VideoOpenError("Unable to parse green colour field in dummy video parameter list");
-	}
-
-	field = t.GetNextToken();
-	if (!field.ToLong(&blue)) {
-		throw VideoOpenError("Unable to parse blue colour field in dummy video parameter list");
-	}
-
-	field = t.GetNextToken();
-	if (field == "c") {
-		pattern = true;
-	}
-
-	Create(fps, _frames, _width, _height, wxColour(red, green, blue), pattern);
+	Create(fps, frames, width, height, red, green, blue, pattern);
 }
 
-/// @brief Direct constructor 
-/// @param _fps    
-/// @param frames  
-/// @param _width  
-/// @param _height 
-/// @param colour  
-/// @param pattern 
-///
-DummyVideoProvider::DummyVideoProvider(double _fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
-	Create(_fps, frames, _width, _height, colour, pattern);
+DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, const wxColour &colour, bool pattern) {
+	Create(fps, frames, width, height, colour.Red(), colour.Green(), colour.Blue(), pattern);
 }
 
-/// @brief Destructor 
-///
 DummyVideoProvider::~DummyVideoProvider() {
 	frame.Clear();
 }
 
-/// @brief Construct a fake filename describing the video 
-/// @param fps     
-/// @param frames  
-/// @param _width  
-/// @param _height 
-/// @param colour  
-/// @param pattern 
-/// @return 
-///
-wxString DummyVideoProvider::MakeFilename(double fps, int frames, int _width, int _height, const wxColour &colour, bool pattern) {
-	return wxString::Format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, _width, _height, colour.Red(), colour.Green(), colour.Blue(), pattern?"c":"");
-}
-
-/// @brief Get frame 
-/// @param n 
-/// @return 
-///
-const AegiVideoFrame DummyVideoProvider::GetFrame(int n) {
-	lastFrame = n;
-	return frame;
+wxString DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, const wxColour &colour, bool pattern) {
+	return wxString::Format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, colour.Red(), colour.Green(), colour.Blue(), pattern ? "c" : "");
 }
