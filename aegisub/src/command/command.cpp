@@ -51,7 +51,9 @@ namespace cmd {
 	}
 
 	void call(std::string const& name, agi::Context*c) {
-		(*find_command(name)->second)(c);
+		Command &cmd = *find_command(name)->second;
+		if (cmd.Validate(c))
+			cmd(c);
 	}
 
 	wxBitmap const& Command::Icon(int size) {

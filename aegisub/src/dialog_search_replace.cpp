@@ -336,7 +336,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		// Update video
 		if (updateVideo) {
-			(*cmd::get("video/jump/start"))(context);
+			cmd::call("video/jump/start", context);
 		}
 		else if (DoReplace) Modified = true;
 

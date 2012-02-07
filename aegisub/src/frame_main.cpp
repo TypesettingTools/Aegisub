@@ -347,7 +347,7 @@ int FrameMain::TryToCloseSubs(bool enableCancel) {
 		if (enableCancel) flags |= wxCANCEL;
 		int result = wxMessageBox(wxString::Format(_("Do you want to save changes to %s?"), GetScriptFileName()), _("Unsaved changes"), flags, this);
 		if (result == wxYES) {
-			(*cmd::get("subtitle/save"))(context.get());
+			cmd::call("subtitle/save", context.get());
 			// If it fails saving, return cancel anyway
 			return context->ass->IsModified() ? wxCANCEL : wxYES;
 		}

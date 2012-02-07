@@ -126,7 +126,7 @@ bool check(std::string const& context, agi::Context *c, int key_code, wchar_t ke
 		/// The bottom line should be removed after all the hotkey commands are fixed.
 		/// This is to avoid pointless exceptions.
 		if (command.find("/") != std::string::npos) {
-			(*cmd::get(command))(c);
+			cmd::call(command, c);
 			return true;
 		}
 	}

@@ -49,7 +49,7 @@ namespace cmd { class Command; }
 /// DOCME
 class ToggleBitmap : public wxControl {
 	agi::Context *context;
-	cmd::Command *command;
+	cmd::Command &command;
 	wxBitmap img;
 
 	void OnMouseEvent(wxMouseEvent &evt);
