@@ -57,6 +57,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "audio_box.h"
 #include "compat.h"
 #include "frame_main.h"
 #include "main.h"
@@ -735,7 +736,10 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 
 		// Normal click
 		if ((click || dclick) && !shift && !ctrl && !alt) {
-			if (dclick) context->videoController->JumpToTime(dlg->Start);
+			if (dclick) {
+				context->audioBox->ScrollToActiveLine();
+				context->videoController->JumpToTime(dlg->Start);
+			}
 			SelectRow(row, false);
 			return;
 		}
