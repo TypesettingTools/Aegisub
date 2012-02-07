@@ -42,6 +42,7 @@
 
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lua.h"
+#include "../../contrib/lua51/src/lauxlib.h"
 #else
 #include <lua.hpp>
 #endif
@@ -165,7 +166,14 @@ namespace Automation4 {
 			// put the format function into place
 			lua_insert(L, 1);
 			// call format function
-			lua_call(L, lua_gettop(L)-1, 1);
+			if (lua_pcall(L, lua_gettop(L) - 1, 1, 0)) {
+				// format failed so top of the stack now has an error message
+				// which we want to add position information to
+				luaL_where(L, 1);
+				lua_insert(L, 1);
+				lua_concat(L, 2);
+				lua_error(L);
+			}
 		}
 
 		// Top of stack is now a string to output
