@@ -191,7 +191,7 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 
 	OptionAdd(general, _("Fast jump step in frames"), "Video/Slider/Fast Jump Step");
 
-	const wxString cscr_arr[3] = { _("?video"), _("?script"), _(".") };
+	const wxString cscr_arr[3] = { "?video", "?script", "." };
 	wxArrayString scr_res(3, cscr_arr);
 	OptionChoice(general, _("Screenshot save path"), scr_res, "Path/Screenshot");
 
