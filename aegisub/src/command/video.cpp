@@ -272,7 +272,7 @@ struct video_detach : public validator_video_loaded {
 /// Shows video details.
 struct video_details : public validator_video_loaded {
 	CMD_NAME("video/details")
-	STR_MENU("Show &Video Details...")
+	STR_MENU("Show &Video Details")
 	STR_DISP("Show Video Details")
 	STR_HELP("Shows video details")
 

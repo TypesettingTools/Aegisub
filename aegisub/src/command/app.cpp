@@ -67,7 +67,7 @@ namespace {
 /// Launch about dialogue.
 struct app_about : public Command {
 	CMD_NAME("app/about")
-	STR_MENU("&About...")
+	STR_MENU("&About")
 	STR_DISP("About")
 	STR_HELP("About Aegisub")
 
@@ -205,7 +205,7 @@ struct app_language : public Command {
 /// Event log.
 struct app_log : public Command {
 	CMD_NAME("app/log")
-	STR_MENU("&Log window...")
+	STR_MENU("&Log window")
 	STR_DISP("Log window")
 	STR_HELP("View the event log")
 
