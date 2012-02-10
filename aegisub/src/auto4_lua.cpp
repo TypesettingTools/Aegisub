@@ -158,7 +158,7 @@ namespace {
 				lua_pushvalue(L, i);
 				wxString type(lua_typename(L, lua_type(L, -1)), wxConvUTF8);
 				if (lua_isstring(L, i)) {
-					LOG_D("automation/lua/stackdump") << type << ": " << luatostring(L, -1);
+					LOG_D("automation/lua/stackdump") << type << ": " << lua_tostring(L, -1);
 				} else {
 					LOG_D("automation/lua/stackdump") << type;
 				}
@@ -700,7 +700,9 @@ namespace Automation4 {
 
 	void LuaCommand::operator()(agi::Context *c)
 	{
+		LuaStackcheck stackcheck(L);
 		set_context(L, c);
+		stackcheck.check_stack(0);
 
 		GetFeatureFunction("run");
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass, true, true);
@@ -722,6 +724,8 @@ namespace Automation4 {
 					active_idx = 0;
 				}
 			}
+
+			stackcheck.check_stack(2);
 			lua_pop(L, 1);
 
 			// top of stack will be selected lines array, if any was returned
@@ -758,13 +762,14 @@ namespace Automation4 {
 				if (active_line && (active_idx > 0 || !sel.count(c->selectionController->GetActiveLine())))
 					c->selectionController->SetActiveLine(active_line);
 			}
+
+			stackcheck.check_stack(1);
+			lua_pop(L, 1);
 		}
 		catch (agi::UserCancelException const&) {
 			subsobj->Cancel();
+			stackcheck.check_stack(0);
 		}
-
-		// either way, there will be something on the stack
-		lua_pop(L, 1);
 	}
 
 	bool LuaCommand::IsActive(const agi::Context *c)
