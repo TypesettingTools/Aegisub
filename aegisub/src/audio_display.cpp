@@ -464,7 +464,7 @@ public:
 
 class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
 	// Object-pair being interacted with
-	AudioMarker *marker;
+	std::vector<AudioMarker*> markers;
 	AudioTimingController *timing_controller;
 	// Audio display drag is happening on
 	AudioDisplay *display;
@@ -478,8 +478,8 @@ class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
 	int snap_range;
 
 public:
-	AudioMarkerInteractionObject(AudioMarker *marker, AudioTimingController *timing_controller, AudioDisplay *display, AudioController *controller, wxMouseButton button_used)
-	: marker(marker)
+	AudioMarkerInteractionObject(std::vector<AudioMarker*> markers, AudioTimingController *timing_controller, AudioDisplay *display, AudioController *controller, wxMouseButton button_used)
+	: markers(markers)
 	, timing_controller(timing_controller)
 	, display(display)
 	, controller(controller)
@@ -494,7 +494,7 @@ public:
 		if (event.Dragging())
 		{
 			timing_controller->OnMarkerDrag(
-				marker,
+				markers,
 				display->TimeFromRelativeX(event.GetPosition().x),
 				default_snap != event.ShiftDown() ? display->TimeFromAbsoluteX(snap_range) : 0);
 		}
@@ -1093,14 +1093,14 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	if (event.LeftDown() || event.RightDown())
 	{
 		int timepos = TimeFromRelativeX(mousepos.x);
-		AudioMarker *marker = event.LeftDown() ?
-			timing->OnLeftClick(timepos, drag_sensitivity, snap_sensitivity) :
-			timing->OnRightClick(timepos, drag_sensitivity, snap_sensitivity);
+		std::vector<AudioMarker*> markers = event.LeftDown() ?
+			timing->OnLeftClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity) :
+			timing->OnRightClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity);
 
-		if (marker)
+		if (markers.size())
 		{
 			RemoveTrackCursor();
-			audio_marker.reset(new AudioMarkerInteractionObject(marker, timing, this, controller, (wxMouseButton)event.GetButton()));
+			audio_marker.reset(new AudioMarkerInteractionObject(markers, timing, this, controller, (wxMouseButton)event.GetButton()));
 			SetDraggedObject(audio_marker.get());
 			return;
 		}
@@ -1173,6 +1173,8 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 			connections.push_back(OPT_SUB("Colour/Audio Display/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
 			connections.push_back(OPT_SUB("Colour/Audio Display/Waveform", &AudioDisplay::ReloadRenderingSettings, this));
 			connections.push_back(OPT_SUB("Audio/Renderer/Spectrum/Quality", &AudioDisplay::ReloadRenderingSettings, this));
+
+			OnTimingController();
 		}
 	}
 	else

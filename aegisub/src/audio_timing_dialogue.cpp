@@ -231,9 +231,9 @@ public:
 	void Commit();
 	void Revert();
 	bool IsNearbyMarker(int ms, int sensitivity) const;
-	AudioMarker * OnLeftClick(int ms, int sensitivity, int snap_range);
-	AudioMarker * OnRightClick(int ms, int sensitivity, int snap_range);
-	void OnMarkerDrag(AudioMarker *marker, int new_position, int snap_range);
+	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range);
+	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range);
+	void OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range);
 
 public:
 	// Specific interface
@@ -494,7 +494,7 @@ bool AudioTimingControllerDialogue::IsNearbyMarker(int ms, int sensitivity) cons
 	return range.contains(active_markers[0]) || range.contains(active_markers[1]);
 }
 
-AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int ms, int sensitivity, int snap_range)
+std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range)
 {
 	assert(sensitivity >= 0);
 
@@ -511,32 +511,34 @@ AudioMarker * AudioTimingControllerDialogue::OnLeftClick(int ms, int sensitivity
 		// Clicked near the left marker:
 		// Insta-move it and start dragging it
 		SetMarker(left, SnapPosition(ms, snap_range));
-		return left;
+		return std::vector<AudioMarker*>(1, left);
 	}
 
 	if (dist_r < dist_l && dist_r <= sensitivity)
 	{
 		// Clicked near the right marker:
 		// Only drag it. For insta-move, the user must right-click.
-		return right;
+		return std::vector<AudioMarker*>(1, right);
 	}
 
 	// Clicked far from either marker:
 	// Insta-set the left marker to the clicked position and return the right as the dragged one,
 	// such that if the user does start dragging, he will create a new selection from scratch
 	SetMarker(left, SnapPosition(ms, snap_range));
-	return right;
+	return std::vector<AudioMarker*>(1, right);
 }
 
-AudioMarker * AudioTimingControllerDialogue::OnRightClick(int ms, int sensitivity, int snap_range)
+std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int sensitivity, int snap_range)
 {
 	AudioMarkerDialogueTiming *right = GetRightMarker();
 	SetMarker(right, SnapPosition(ms, snap_range));
-	return right;
+	return std::vector<AudioMarker*>(1, right);
 }
 
-void AudioTimingControllerDialogue::OnMarkerDrag(AudioMarker *marker, int new_position, int snap_range)
+void AudioTimingControllerDialogue::OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range)
 {
+	assert(markers.size() == 1);
+	AudioMarker *marker = markers[0];
 	assert(marker == &active_markers[0] || marker == &active_markers[1]);
 
 	SetMarker(static_cast<AudioMarkerDialogueTiming*>(marker), SnapPosition(new_position, snap_range));

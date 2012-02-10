@@ -112,29 +112,30 @@ public:
 	/// controlling the mouse cursor.
 	virtual bool IsNearbyMarker(int ms, int sensitivity) const = 0;
 
-	/// @brief The user pressed the left button down at an empty place in the audio
+	/// @brief The user pressed the left mouse button on the audio
 	/// @param ms          The time in milliseconds the user clicked
+	/// @param ctrl_down   Is the user currently holding the ctrl key down?
 	/// @param sensitivity Distance in milliseconds to consider existing markers
 	/// @param snap_range  Maximum snapping range in milliseconds
-	/// @return An audio marker or 0. If a marker is returned and the user
-	/// starts dragging the mouse after pressing down the button, the returned
-	/// marker is being dragged.
-	virtual AudioMarker * OnLeftClick(int ms, int sensitivity, int snap_range) = 0;
+	/// @return All audio markers at the clicked position which are eligible
+	///         to be dragged, if any.
+	virtual std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range) = 0;
 
-	/// @brief The user pressed the right button down at an empty place in the audio
+	/// @brief The user pressed the right mouse button on the audio
 	/// @param ms          The time in milliseconds the user clicked
+	/// @param ctrl_down   Is the user currently holding the ctrl key down?
 	/// @param sensitivity Distance in milliseconds to consider existing markers
 	/// @param snap_range  Maximum snapping range in milliseconds
-	/// @return An audio marker or 0. If a marker is returned and the user
-	/// starts dragging the mouse after pressing down the button, the returned
-	/// marker is being dragged.
-	virtual AudioMarker * OnRightClick(int ms, int sensitivity, int snap_range) = 0;
+	/// @return All audio markers at the clicked position which are eligible
+	///         to be dragged, if any.
+	virtual std::vector<AudioMarker*> OnRightClick(int ms, bool ctrl_down, int sensitivity, int snap_range) = 0;
 
-	/// @brief The user dragged a timing marker
-	/// @param marker       The marker being dragged
+	/// @brief The user dragged one or more timing markers
+	/// @param marker       The markers being dragged. This is guaranteed to be
+	///                     a vector returned from OnLeftClick or OnRightClick.
 	/// @param new_position Time position the marker was dragged to
-	/// @param snap_range  Maximum snapping range in milliseconds
-	virtual void OnMarkerDrag(AudioMarker *marker, int new_position, int snap_range) = 0;
+	/// @param snap_range   Maximum snapping range in milliseconds
+	virtual void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int snap_range) = 0;
 
 	/// @brief Destructor
 	virtual ~AudioTimingController() { }

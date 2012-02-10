@@ -129,9 +129,9 @@ public:
 	void Commit();
 	void Revert();
 	bool IsNearbyMarker(int ms, int sensitivity) const;
-	AudioMarker * OnLeftClick(int ms, int sensitivity, int);
-	AudioMarker * OnRightClick(int, int, int) { return 0; }
-	void OnMarkerDrag(AudioMarker *marker, int new_position, int);
+	std::vector<AudioMarker*> OnLeftClick(int ms, bool, int sensitivity, int);
+	std::vector<AudioMarker*> OnRightClick(int, bool, int, int) { return std::vector<AudioMarker*>(); }
+	void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int);
 
 	AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
 };
@@ -289,25 +289,26 @@ bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity) const
 	return false;
 }
 
-AudioMarker *AudioTimingControllerKaraoke::OnLeftClick(int ms, int sensitivity, int) {
+std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool, int sensitivity, int) {
 	TimeRange range(ms - sensitivity, ms + sensitivity);
 
 	size_t syl = distance(markers.begin(), lower_bound(markers.begin(), markers.end(), ms));
 	if (syl < markers.size() && range.contains(markers[syl]))
-		return &markers[syl];
+		return std::vector<AudioMarker*>(1, &markers[syl]);
 	if (syl > 0 && range.contains(markers[syl - 1]))
-		return &markers[syl - 1];
+		return std::vector<AudioMarker*>(1, &markers[syl - 1]);
 
 	cur_syl = syl;
 
 	AnnounceUpdatedPrimaryRange();
 	AnnounceUpdatedStyleRanges();
 
-	return 0;
+	return std::vector<AudioMarker*>();
 }
 
-void AudioTimingControllerKaraoke::OnMarkerDrag(AudioMarker *m, int new_position, int) {
-	KaraokeMarker *marker = static_cast<KaraokeMarker*>(m);
+void AudioTimingControllerKaraoke::OnMarkerDrag(std::vector<AudioMarker*> const& m, int new_position, int) {
+	assert(m.size() == 1);
+	KaraokeMarker *marker = static_cast<KaraokeMarker*>(m[0]);
 	// No rearranging of syllables allowed
 	new_position = mid(
 		marker == &markers.front() ? start_marker.GetPosition() : (marker - 1)->GetPosition(),
