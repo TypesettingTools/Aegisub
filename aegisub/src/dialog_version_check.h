@@ -34,11 +34,7 @@
 /// @ingroup configuration_ui
 ///
 
-
-#ifndef AGI_PRE
-#include <wx/thread.h>
-#endif
-
+class wxMutex;
 
 /// @brief Check whether a newer version is available and report to the user if there is
 /// @param interactive If true, always check and report all results, both success and failure.

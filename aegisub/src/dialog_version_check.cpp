@@ -37,36 +37,40 @@
 
 #include "config.h"
 
+#include "dialog_version_check.h"
+
 #ifndef AGI_PRE
 #ifdef WIN32
 // Congratulation wx, you forgot to include a header somewhere
 #include <winsock2.h>
 #endif
 
-#include <wx/string.h>
-#include <wx/event.h>
-#include <wx/thread.h>
-#include <wx/protocol/http.h>
-#include <wx/txtstrm.h>
-#include <wx/platinfo.h>
-#include <wx/tokenzr.h>
-#include <wx/hyperlink.h>
-#include <wx/intl.h>
-#include <wx/checkbox.h>
 #include <wx/app.h>
 #include <wx/button.h>
+#include <wx/checkbox.h>
 #include <wx/dialog.h>
+#include <wx/event.h>
+#include <wx/hyperlink.h>
+#include <wx/intl.h>
+#include <wx/platinfo.h>
+#include <wx/protocol/http.h>
 #include <wx/sizer.h>
-#include <wx/stattext.h>
 #include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
 #include <wx/textctrl.h>
+#include <wx/thread.h>
+#include <wx/tokenzr.h>
+#include <wx/txtstrm.h>
+
+#include <algorithm>
 #include <memory>
 #include <set>
+#include <tr1/functional>
 #include <vector>
 #endif
 
 #include "compat.h"
-#include "dialog_version_check.h"
 #include "main.h"
 #include "string_codec.h"
 #include "version.h"
@@ -82,9 +86,9 @@ class AegisubVersionCheckerThread : public wxThread {
 	bool interactive;
 	void DoCheck();
 	void PostErrorEvent(const wxString &error_text);
+	ExitCode Entry();
 public:
 	AegisubVersionCheckerThread(bool interactive);
-	virtual ExitCode Entry();
 };
 
 // Public API for version checker
@@ -93,15 +97,7 @@ void PerformVersionCheck(bool interactive)
 	new AegisubVersionCheckerThread(interactive);
 }
 
-
-
 /* *** The actual implementation begins here *** */
-
-
-
-// A new event class for reporting the result of checking
-
-DEFINE_EVENT_TYPE(AEGISUB_EVENT_VERSIONCHECK_RESULT)
 
 struct AegisubUpdateDescription {
 	wxString url;
@@ -114,17 +110,15 @@ class AegisubVersionCheckResultEvent : public wxEvent {
 	std::vector<AegisubUpdateDescription> updates;
 
 public:
-	AegisubVersionCheckResultEvent()
-		: wxEvent(0, AEGISUB_EVENT_VERSIONCHECK_RESULT)
-	{ }
+	AegisubVersionCheckResultEvent(wxString message = wxString());
+	
 
-	virtual wxEvent *Clone() const
+	wxEvent *Clone() const
 	{
 		return new AegisubVersionCheckResultEvent(*this);
 	}
 
 	const wxString & GetMainText() const { return main_text; }
-	void SetMainText(const wxString &new_text) { main_text = new_text; }
 
 	// If there are no updates in the list, either none were found or an error occurred,
 	// either way it means "failure" if it's empty
@@ -137,26 +131,26 @@ public:
 		desc.friendly_name = friendly_name;
 		desc.description = description;
 	}
-
 };
+
+wxDEFINE_EVENT(AEGISUB_EVENT_VERSIONCHECK_RESULT, AegisubVersionCheckResultEvent);
+
+AegisubVersionCheckResultEvent::AegisubVersionCheckResultEvent(wxString message)
+: wxEvent(AEGISUB_EVENT_VERSIONCHECK_RESULT)
+, main_text(message)
+{
+}
+
 
 DEFINE_SIMPLE_EXCEPTION_NOINNER(VersionCheckError, agi::Exception, "versioncheck")
 
-
-class AegisubVersionCheckEventHandler : public wxEvtHandler {
-public:
-	void OnUpdateResult(AegisubVersionCheckResultEvent &evt);
-
-	static void EnsureHandlerIsRegistered();
-};
-
-
+static void register_event_handler();
 
 AegisubVersionCheckerThread::AegisubVersionCheckerThread(bool interactive)
 : wxThread(wxTHREAD_DETACHED)
 , interactive(interactive)
 {
-	AegisubVersionCheckEventHandler::EnsureHandlerIsRegistered();
+	register_event_handler();
 
 	if (!wxSocketBase::IsInitialized())
 		wxSocketBase::Initialize();
@@ -164,7 +158,6 @@ AegisubVersionCheckerThread::AegisubVersionCheckerThread(bool interactive)
 	Create();
 	Run();
 }
-
 
 wxThread::ExitCode AegisubVersionCheckerThread::Entry()
 {
@@ -176,7 +169,7 @@ wxThread::ExitCode AegisubVersionCheckerThread::Entry()
 
 		// Is it actually time for a check?
 		time_t next_check = OPT_GET("Version/Next Check")->GetInt();
-		if ((time_t)next_check > wxDateTime::GetTimeNow())
+		if (next_check > wxDateTime::GetTimeNow())
 			return 0;
 	}
 
@@ -208,14 +201,10 @@ wxThread::ExitCode AegisubVersionCheckerThread::Entry()
 	return 0;
 }
 
-
 void AegisubVersionCheckerThread::PostErrorEvent(const wxString &error_text)
 {
-	if (!interactive) return;
-
-	AegisubVersionCheckResultEvent evt;
-	evt.SetMainText(error_text);
-	wxTheApp->AddPendingEvent(evt);
+	if (interactive)
+		wxTheApp->AddPendingEvent(AegisubVersionCheckResultEvent(error_text));
 }
 
 
@@ -236,6 +225,8 @@ static const char * GetOSShortName()
 			return "win60"; // vista and server 2008
 		else if (osver_maj == 6 && osver_min == 1)
 			return "win61"; // 7 and server 2008r2
+		else if (osver_maj == 6 && osver_min == 2)
+			return "win62"; // 8
 		else
 			return "windows"; // future proofing? I doubt we run on nt4
 	}
@@ -276,43 +267,41 @@ static const char * GetOSShortName()
 
 #ifdef WIN32
 typedef BOOL (WINAPI * PGetUserPreferredUILanguages)(DWORD dwFlags, PULONG pulNumLanguages, wchar_t *pwszLanguagesBuffer, PULONG pcchLanguagesBuffer);
-static wxString GetSystemLanguage()
+
+// Try using Win 6+ functions if available
+static wxString GetUILanguage()
 {
 	wxString res;
 
-	// Try using Win 6+ functions if available
 	HMODULE kernel32 = LoadLibraryW(L"kernel32.dll");
-	if (!kernel32)
-		goto getsyslang_fallback;
+	if (!kernel32) return res;
+
 	PGetUserPreferredUILanguages gupuil = (PGetUserPreferredUILanguages)GetProcAddress(kernel32, "GetUserPreferredUILanguages");
-	if (gupuil)
+	if (!gupuil) goto error;
+
+	ULONG numlang = 0, output_len = 0;
+	if (gupuil(MUI_LANGUAGE_NAME, &numlang, 0, &output_len) == TRUE && output_len)
 	{
-		ULONG numlang = 0, output_len = 0;
-		if (gupuil(MUI_LANGUAGE_NAME, &numlang, 0, &output_len) != TRUE)
-			goto getsyslang_fallback;
-		wchar_t *output = new wchar_t[output_len];
-		if (gupuil(MUI_LANGUAGE_NAME, &numlang, output, &output_len) && numlang >= 1)
+		std::vector<wchar_t> output(output_len);
+		if (gupuil(MUI_LANGUAGE_NAME, &numlang, &output[0], &output_len) && numlang >= 1)
 		{
 			// We got at least one language, just treat it as the only, and a null-terminated string
-			res = wxString(output);
-			delete[] output;
-		}
-		else
-		{
-			delete[] output;
-			goto getsyslang_fallback;
+			res = &output[0];
 		}
 	}
-	else
-	{
-getsyslang_fallback:
-		// On an old version of Windows, let's just return the LANGID as a string
-		LANGID langid = GetUserDefaultUILanguage();
-		res = wxString::Format("x-win%04x", langid);
 
+error:
+	FreeModule(kernel32);
+	return res;
+}
+static wxString GetSystemLanguage()
+{
+	wxString res = GetUILanguage();
+	if (!res)
+	{
+		// On an old version of Windows, let's just return the LANGID as a string
+		res = wxString::Format("x-win%04x", GetUserDefaultUILanguage());
 	}
-	if (kernel32)
-		FreeModule(kernel32);
 
 	return res;
 }
@@ -323,18 +312,23 @@ static wxString GetSystemLanguage()
 }
 #endif
 
+template<class OutIter>
+static void split_str(wxString const& str, wxString const& sep, bool empty, OutIter out)
+{
+	wxStringTokenizer tk(str, sep, empty ? wxTOKEN_DEFAULT : wxTOKEN_RET_EMPTY_ALL);
+	while (tk.HasMoreTokens())
+	{
+		*out++ = tk.GetNextToken();
+	}
+}
+
 
 void AegisubVersionCheckerThread::DoCheck()
 {
 	std::set<wxString> accept_tags;
 #ifdef UPDATE_CHECKER_ACCEPT_TAGS
-	{
-		wxStringTokenizer tk(wxString(UPDATE_CHECKER_ACCEPT_TAGS, wxConvUTF8), " ");
-		while (tk.HasMoreTokens())
-		{
-			accept_tags.insert(tk.GetNextToken());
-		}
-	}
+	split_str(wxString(UPDATE_CHECKER_ACCEPT_TAGS, wxConvUTF8), " ", false,
+		inserter(accept_tags, accept_tags.end()));
 #endif
 
 	const wxString servername = "updates.aegisub.org";
@@ -352,18 +346,17 @@ void AegisubVersionCheckerThread::DoCheck()
 	wxHTTP http;
 	http.SetHeader("User-Agent", wxString("Aegisub ") + GetAegisubLongVersionString());
 	http.SetHeader("Connection", "Close");
-	http.SetFlags(wxSOCKET_WAITALL|wxSOCKET_BLOCK);
+	http.SetFlags(wxSOCKET_WAITALL | wxSOCKET_BLOCK);
 
 	if (!http.Connect(servername))
 		throw VersionCheckError(STD_STR(_("Could not connect to updates server.")));
 
-	std::auto_ptr<wxInputStream> stream(http.GetInputStream(path));
-	if (stream.get() == 0) // check for null-pointer
+	agi::scoped_ptr<wxInputStream> stream(http.GetInputStream(path));
+	if (!stream) // check for null-pointer
 		throw VersionCheckError(STD_STR(_("Could not download from updates server.")));
 
 	if (http.GetResponse() < 200 || http.GetResponse() >= 300) {
-		const std::string str_err = STD_STR(wxString::Format(_("HTTP request failed, got HTTP response %d."), http.GetResponse()));
-		throw VersionCheckError(str_err);
+		throw VersionCheckError(STD_STR(wxString::Format(_("HTTP request failed, got HTTP response %d."), http.GetResponse())));
 	}
 
 	wxTextInputStream text(*stream);
@@ -372,13 +365,9 @@ void AegisubVersionCheckerThread::DoCheck()
 
 	while (!stream->Eof() && stream->GetSize() > 0)
 	{
-		wxString line = text.ReadLine();
-		wxStringTokenizer tkn(line, "|", wxTOKEN_RET_EMPTY_ALL);
 		wxArrayString parsed;
-		while (tkn.HasMoreTokens()) {
-			parsed.Add(tkn.GetNextToken());
-		}
-		if (parsed.Count() != 6) continue;
+		split_str(text.ReadLine(), "|", true, std::back_inserter(parsed));
+		if (parsed.size() != 6) continue;
 
 		wxString line_type = parsed[0];
 		wxString line_revision = parsed[1];
@@ -387,30 +376,20 @@ void AegisubVersionCheckerThread::DoCheck()
 		wxString line_friendlyname = inline_string_decode(parsed[4]);
 		wxString line_description = inline_string_decode(parsed[5]);
 
+		// stable runners don't want unstable, not interesting, skip
 		if ((line_type == "branch" || line_type == "dev") && GetIsOfficialRelease())
-		{
-			// stable runners don't want unstable, not interesting, skip
 			continue;
-		}
 
 		// check if the tags match
-		if (line_tags_str.IsEmpty() || line_tags_str == "all")
+		if (line_tags_str.empty() || line_tags_str == "all")
 		{
 			// looking good
 		}
 		else
 		{
-			bool accepts_all_tags = true;
-			wxStringTokenizer tk(line_tags_str, " ");
-			while (tk.HasMoreTokens())
-			{
-				if (accept_tags.find(tk.GetNextToken()) == accept_tags.end())
-				{
-					accepts_all_tags = false;
-					break;
-				}
-			}
-			if (!accepts_all_tags)
+			std::set<wxString> tags;
+			split_str(line_tags_str, " ", false, inserter(tags, tags.end()));
+			if (!includes(accept_tags.begin(), accept_tags.end(), tags.begin(), tags.end()))
 				continue;
 		}
 
@@ -435,26 +414,11 @@ void AegisubVersionCheckerThread::DoCheck()
 		result_event.AddUpdate(line_url, line_friendlyname, line_description);
 	}
 
-	if (result_event.GetUpdates().size() == 1)
-	{
-		result_event.SetMainText(_("An update to Aegisub was found."));
-	}
-	else if (result_event.GetUpdates().size() > 1)
-	{
-		result_event.SetMainText(_("Several possible updates to Aegisub were found."));
-	}
-	else
-	{
-		result_event.SetMainText(_("There are no updates to Aegisub."));
-	}
-
 	if (result_event.GetUpdates().size() > 0 || interactive)
 	{
 		wxTheApp->AddPendingEvent(result_event);
 	}
 }
-
-
 
 class VersionCheckerResultDialog : public wxDialog {
 	void OnCloseButton(wxCommandEvent &evt);
@@ -467,16 +431,7 @@ public:
 	VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates);
 
 	bool ShouldPreventAppExit() const { return false; }
-
-	DECLARE_EVENT_TABLE()
 };
-
-BEGIN_EVENT_TABLE(VersionCheckerResultDialog, wxDialog)
-	EVT_BUTTON(wxID_OK, VersionCheckerResultDialog::OnCloseButton)
-	EVT_BUTTON(wxID_NO, VersionCheckerResultDialog::OnRemindMeLater)
-	EVT_CLOSE(VersionCheckerResultDialog::OnClose)
-END_EVENT_TABLE()
-
 
 VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text, const std::vector<AegisubUpdateDescription> &updates)
 : wxDialog(0, -1, _("Version Checker"))
@@ -517,7 +472,8 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 	SetAffirmativeId(wxID_OK);
 	SetEscapeId(wxID_OK);
 
-	main_sizer->Add(new wxStaticLine(this), 0, wxEXPAND|wxALL, 6);
+	if (updates.size())
+		main_sizer->Add(new wxStaticLine(this), 0, wxEXPAND|wxALL, 6);
 	main_sizer->Add(automatic_check_checkbox, 0, wxEXPAND|wxBOTTOM, 6);
 
 	wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer();
@@ -532,15 +488,12 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(const wxString &main_text
 
 	SetSizerAndFit(outer_sizer);
 	Centre();
+	Show();
+
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&VersionCheckerResultDialog::Close, this, false), wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &VersionCheckerResultDialog::OnRemindMeLater, this, wxID_NO);
+	Bind(wxEVT_CLOSE_WINDOW, &VersionCheckerResultDialog::OnClose, this);
 }
-
-
-void VersionCheckerResultDialog::OnCloseButton(wxCommandEvent &)
-{
-	Close();
-}
-
-
 void VersionCheckerResultDialog::OnRemindMeLater(wxCommandEvent &)
 {
 	// In one week
@@ -550,35 +503,39 @@ void VersionCheckerResultDialog::OnRemindMeLater(wxCommandEvent &)
 	Close();
 }
 
-
 void VersionCheckerResultDialog::OnClose(wxCloseEvent &)
 {
 	OPT_SET("App/Auto/Check For Updates")->SetBool(automatic_check_checkbox->GetValue());
 	Destroy();
 }
 
-
-
-void AegisubVersionCheckEventHandler::OnUpdateResult(AegisubVersionCheckResultEvent &evt)
+static void on_update_result(AegisubVersionCheckResultEvent &evt)
 {
-	VersionCheckerResultDialog *dlg = new VersionCheckerResultDialog(evt.GetMainText(), evt.GetUpdates());
-	dlg->Show();
+	wxString text = evt.GetMainText();
+	if (!text)
+	{
+		if (evt.GetUpdates().size() == 1)
+		{
+			text = _("An update to Aegisub was found.");
+		}
+		else if (evt.GetUpdates().size() > 1)
+		{
+			text = _("Several possible updates to Aegisub were found.");
+		}
+		else
+		{
+			text = _("There are no updates to Aegisub.");
+		}
+	}
+
+	new VersionCheckerResultDialog(text, evt.GetUpdates());
 }
 
-void AegisubVersionCheckEventHandler::EnsureHandlerIsRegistered()
+static void register_event_handler()
 {
 	static bool is_registered = false;
-	static AegisubVersionCheckEventHandler evt_handler_object;
-
 	if (is_registered) return;
 
-	wxTheApp->Connect(
-		-1, -1,
-		AEGISUB_EVENT_VERSIONCHECK_RESULT,
-		(wxObjectEventFunction)&AegisubVersionCheckEventHandler::OnUpdateResult,
-		0,
-		&evt_handler_object);
-
+	wxTheApp->Bind(AEGISUB_EVENT_VERSIONCHECK_RESULT, on_update_result);
 	is_registered = true;
 }
-
