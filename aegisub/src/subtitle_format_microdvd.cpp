@@ -79,7 +79,7 @@ bool MicroDVDSubtitleFormat::CanReadFile(wxString const& filename) const {
 }
 
 void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
-	TextFileReader file(filename);
+	TextFileReader file(filename, encoding);
 	wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$", wxRE_ADVANCED);
 
 	target->LoadDefault(false);

@@ -51,7 +51,6 @@
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
-#include "charset_detect.h"
 #include "compat.h"
 #include "main.h"
 #include "standard_paths.h"
@@ -79,21 +78,15 @@ AssFile::~AssFile() {
 }
 
 /// @brief Load generic subs
-void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) {
+void AssFile::Load(const wxString &_filename, wxString charset, bool addToRecent) {
 	try {
-		if (charset.empty()) {
-			charset = CharSetDetect::GetEncoding(_filename);
-		}
-
 		// Get proper format reader
 		const SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
-
 		if (!reader) {
 			wxMessageBox("Unknown file type","Error loading file",wxICON_ERROR | wxOK);
 			return;
 		}
 
-		// Read file
 		AssFile temp;
 		reader->ReadFile(&temp, _filename, charset);
 		swap(temp);
@@ -106,7 +99,6 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 		wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR|wxOK);
 		return;
 	}
-
 	// Other error
 	catch (...) {
 		wxMessageBox("Unknown error","Error loading file",wxICON_ERROR | wxOK);
@@ -116,8 +108,7 @@ void AssFile::Load(const wxString &_filename,wxString charset,bool addToRecent) 
 	// Set general data
 	loaded = true;
 	filename = _filename;
-	wxFileName fn(filename);
-	StandardPaths::SetPathValue("?script", fn.GetPath());
+	StandardPaths::SetPathValue("?script", wxFileName(filename).GetPath());
 
 	// Save backup of file
 	if (CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
