@@ -50,109 +50,252 @@
 #include "selection_controller.h"
 #include "utils.h"
 
-/// @class AudioMarkerDialogueTiming
+class TimeableLine;
+
+/// @class DialogueTimingMarker
 /// @brief AudioMarker implementation for AudioTimingControllerDialogue
 ///
 /// Audio marker intended to live in pairs of two, taking styles depending
 /// on which marker in the pair is to the left and which is to the right.
-class AudioMarkerDialogueTiming : public AudioMarker {
-	/// The other marker for the dialogue line's pair
-	AudioMarkerDialogueTiming *other;
-
+class DialogueTimingMarker : public AudioMarker {
 	/// Current ms position of this marker
 	int position;
 
 	/// Draw style for the marker
-	wxPen style;
-	/// Foot style for the marker
+	const Pen *style;
+
+	/// Feet style for the marker
 	FeetStyle feet;
 
-	/// Draw style for the left marker
-	Pen style_left;
-	/// Draw style for the right marker
-	Pen style_right;
+	/// Rendering style of the owning line, needed for sorting
+	AudioRenderingStyle type;
 
-
-public:
-	// AudioMarker interface
-	int GetPosition() const { return position; }
-	wxPen GetStyle() const { return style; }
-	FeetStyle GetFeet() const { return feet; }
-	bool CanSnap() const { return false; }
+	/// The line which owns this marker
+	TimeableLine *line;
 
 public:
-	// Specific interface
+	int       GetPosition() const { return position; }
+	wxPen     GetStyle()    const { return *style; }
+	FeetStyle GetFeet()     const { return feet; }
+	bool      CanSnap()     const { return true; }
 
-	/// @brief Move the marker to a new position
+	/// Move the marker to a new position
 	/// @param new_position The position to move the marker to, in milliseconds
 	///
-	/// If the marker moves to the opposite side of the other marker in the pair,
-	/// the styles of the two markers will be changed to match the new start/end
-	/// relationship of them.
+	/// This notifies the owning line of the change, so that it can ensure that
+	/// this marker has the appropriate rendering style.
 	void SetPosition(int new_position);
 
-
-	/// @brief Constructor
-	///
-	/// Initialises the fields to default values.
-	AudioMarkerDialogueTiming();
-
-
-	/// @brief Initialise a pair of dialogue markers to be a pair
-	/// @param marker1 The first marker in the pair to make
-	/// @param marker2 The second marker in the pair to make
-	///
-	/// This checks that the markers aren't already part of a pair, and then
-	/// sets their "other" field. Positions and styles aren't affected.
-	static void InitPair(AudioMarkerDialogueTiming *marker1, AudioMarkerDialogueTiming *marker2);
-
-	/// Implicit decay to the position of the marker
-	operator int() const { return position; }
-};
-
-/// @class InactiveLineMarker
-/// @brief Markers for the beginning and ends of inactive lines
-class InactiveLineMarker : public AudioMarker {
-	int position;
-	Pen style;
-	FeetStyle feet;
-
-public:
-	int GetPosition() const { return position; }
-	wxPen GetStyle() const { return style; }
-	FeetStyle GetFeet() const { return feet; }
-	bool CanSnap() const { return true; }
-
-	InactiveLineMarker(int position, bool start)
+	/// Constructor
+	/// @param position Initial position of this marker
+	/// @param style Rendering style of this marker
+	/// @param feet Foot style of this marker
+	/// @param type Type of this marker, used only for sorting
+	/// @param line Line which this is a marker for
+	DialogueTimingMarker(int position, const Pen *style, FeetStyle feet, AudioRenderingStyle type, TimeableLine *line)
 	: position(position)
-	, style("Colour/Audio Display/Line Boundary Inactive Line", "Audio/Line Boundaries Thickness")
-	, feet(start ? Feet_Right : Feet_Left)
+	, style(style)
+	, feet(feet)
+	, type(type)
+	, line(line)
 	{
 	}
 
+	DialogueTimingMarker(DialogueTimingMarker const& other, TimeableLine *line)
+	: position(other.position)
+	, style(other.style)
+	, feet(other.feet)
+	, type(other.type)
+	, line(line)
+	{
+	}
+
+	/// Get the line which this is a marker for
+	TimeableLine *GetLine() const { return line; }
+
 	/// Implicit decay to the position of the marker
 	operator int() const { return position; }
+
+	/// Comparison operator
+	///
+	/// Compares first on position, then on audio rendering style so that the
+	/// markers for the active line end up after those for the inactive lines.
+	bool operator<(DialogueTimingMarker const& other) const
+	{
+		if (position < other.position) return true;
+		if (position > other.position) return false;
+		return type < other.type;
+	}
+
+	/// Swap the rendering style of this marker with that of the passed marker
+	void SwapStyles(DialogueTimingMarker &other)
+	{
+		std::swap(style, other.style);
+		std::swap(feet, other.feet);
+	}
 };
 
+/// A comparison predicate for pointers to dialogue markers and millisecond positions
+struct marker_ptr_cmp
+{
+	bool operator()(const DialogueTimingMarker *lft, const DialogueTimingMarker *rgt) const
+	{
+		return *lft < *rgt;
+	}
+
+	bool operator()(const DialogueTimingMarker *lft, int rgt) const
+	{
+		return *lft < rgt;
+	}
+
+	bool operator()(int lft, const DialogueTimingMarker *rgt) const
+	{
+		return lft < *rgt;
+	}
+};
+
+/// @class TimeableLine
+/// @brief A single dialogue line which can be timed via AudioTimingControllerDialogue
+///
+/// This class provides markers and styling ranges for a single dialogue line,
+/// both active and inactive. In addition, it can apply changes made via those
+/// markers to the tracked dialogue line.
+class TimeableLine {
+	/// The current tracked dialogue line
+	AssDialogue *line;
+	/// The rendering style of this line
+	AudioRenderingStyle style;
+
+	/// One of the markers. Initially the left marker, but the user may change this.
+	DialogueTimingMarker marker1;
+	/// One of the markers. Initially the right marker, but the user may change this.
+	DialogueTimingMarker marker2;
+
+	/// Pointer to whichever marker happens to be on the left
+	DialogueTimingMarker *left_marker;
+	/// Pointer to whichever marker happens to be on the right
+	DialogueTimingMarker *right_marker;
+
+public:
+	/// Constructor
+	/// @param style Rendering style to use for this line's time range
+	/// @param style_left The rendering style for the start marker
+	/// @param style_right The rendering style for the end marker
+	TimeableLine(AudioRenderingStyle style, const Pen *style_left, const Pen *style_right)
+		: line(0)
+		, style(style)
+		, marker1(0, style_left, AudioMarker::Feet_Right, style, this)
+		, marker2(0, style_right, AudioMarker::Feet_Left, style, this)
+		, left_marker(&marker1)
+		, right_marker(&marker2)
+	{
+	}
+
+	/// Explicit copy constructor needed due to that the markers have a pointer to this
+	TimeableLine(TimeableLine const& other)
+		: line(other.line)
+		, style(other.style)
+		, marker1(*other.left_marker, this)
+		, marker2(*other.right_marker, this)
+		, left_marker(&marker1)
+		, right_marker(&marker2)
+	{
+	}
+
+	/// Get the tracked dialogue line
+	AssDialogue *GetLine() const { return line; }
+
+	/// Get the time range for this line
+	operator TimeRange() const { return TimeRange(*left_marker, *right_marker); }
+
+	/// Add this line's style to the style ranges
+	void GetStyleRange(AudioRenderingStyleRanges *ranges) const
+	{
+		ranges->AddRange(*left_marker, *right_marker, style);
+	}
+
+	/// Get this line's markers
+	/// @param c Vector to add the markers to
+	void GetMarkers(std::vector<DialogueTimingMarker*> *c) const
+	{
+		c->push_back(left_marker);
+		c->push_back(right_marker);
+	}
+
+	/// Get the leftmost of the markers
+	DialogueTimingMarker *GetLeftMarker() { return left_marker; }
+	const DialogueTimingMarker *GetLeftMarker() const { return left_marker; }
+
+	/// Get the rightmost of the markers
+	DialogueTimingMarker *GetRightMarker() { return right_marker; }
+	const DialogueTimingMarker *GetRightMarker() const { return right_marker; }
+
+	/// Does this line have a marker in the given range?
+	bool ContainsMarker(TimeRange const& range) const
+	{
+		return range.contains(marker1) || range.contains(marker2);
+	}
+
+	/// Check if the markers have the correct styles, and correct them if needed
+	void CheckMarkers()
+	{
+		if (*right_marker < *left_marker)
+		{
+			marker1.SwapStyles(marker2);
+			std::swap(left_marker, right_marker);
+		}
+	}
+
+	/// Apply any changes made here to the tracked dialogue line
+	void Apply()
+	{
+		if (line)
+		{
+			line->Start = left_marker->GetPosition();
+			line->End = right_marker->GetPosition();
+		}
+	}
+
+	/// Set the dialogue line which this is tracking and reset the markers to
+	/// the line's time range
+	void SetLine(AssDialogue *new_line)
+	{
+		line = new_line;
+		marker1.SetPosition(new_line->Start);
+		marker2.SetPosition(new_line->End);
+	}
+};
+
+void DialogueTimingMarker::SetPosition(int new_position) {
+	position = new_position;
+	line->CheckMarkers();
+}
 
 /// @class AudioTimingControllerDialogue
 /// @brief Default timing mode for dialogue subtitles
 ///
-/// Displays a start and end marker for an active subtitle line, and allows
-/// for those markers to be dragged. Dragging the start/end markers changes
-/// the audio selection.
-///
-/// Another later expansion will be to affect the timing of multiple selected
-/// lines at the same time, if they e.g. have end1==start2.
+/// Displays a start and end marker for an active subtitle line, and possibly
+/// some of the inactive lines. The markers for the active line can be dragged,
+/// updating the audio selection and the start/end time of that line. In
+/// addition, any markers for inactive lines that start/end at the same time
+/// as the active line starts/ends can optionally be dragged along with the
+/// active line's markers, updating those lines as well.
 class AudioTimingControllerDialogue : public AudioTimingController, private SelectionListener<AssDialogue> {
-	/// Start and end markers for the active line
-	AudioMarkerDialogueTiming active_markers[2];
+	/// The rendering style for the active line's start marker
+	Pen style_left;
+	/// The rendering style for the active line's end marker
+	Pen style_right;
+	/// The rendering style for the start and end markers of inactive lines
+	Pen style_inactive;
 
-	/// Markers for inactive lines
-	std::vector<InactiveLineMarker> inactive_markers;
+	/// The currently active line
+	TimeableLine active_line;
 
-	/// Time ranges with inactive lines
-	std::vector<std::pair<int, int> > inactive_ranges;
+	/// Inactive lines which are currently modifiable
+	std::list<TimeableLine> inactive_lines;
+
+	/// All audio markers for active and inactive lines, sorted by position
+	std::vector<DialogueTimingMarker*> markers;
 
 	/// Marker provider for video keyframes
 	AudioMarkerProviderKeyframes keyframes_provider;
@@ -160,10 +303,9 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	/// Marker provider for video playback position
 	VideoPositionMarkerProvider video_position_provider;
 
-	/// Has the timing been modified by the user?
-	/// If auto commit is enabled this will only be true very briefly following
-	/// changes
-	bool timing_modified;
+	/// The set of lines which have been modified and need to have their
+	/// changes applied on commit
+	std::set<TimeableLine*> modified_lines;
 
 	/// Commit id for coalescing purposes when in auto commit mode
 	int commit_id;
@@ -181,33 +323,32 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	agi::signal::Connection inactive_line_mode_connection;
 	agi::signal::Connection inactive_line_comment_connection;
 
-	/// Get the leftmost of the markers
-	AudioMarkerDialogueTiming *GetLeftMarker();
-	const AudioMarkerDialogueTiming *GetLeftMarker() const;
-
-	/// Get the rightmost of the markers
-	AudioMarkerDialogueTiming *GetRightMarker();
-	const AudioMarkerDialogueTiming *GetRightMarker() const;
-
 	/// Update the audio controller's selection
 	void UpdateSelection();
 
-	/// Regenerate markers for inactive lines
+	/// Regenerate the list of timeable inactive lines
 	void RegenerateInactiveLines();
 
-	/// Add the inactive line markers for a single line
-	/// @param line Line to add markers for. May be NULL.
-	void AddInactiveMarkers(AssDialogue *line);
+	/// Add a line to the list of timeable inactive lines
+	void AddInactiveLine(AssDialogue *diag);
 
-	/// @brief Set the position of a marker and announce the change to the world
-	/// @param marker Marker to move
-	/// @param ms New position of the marker
-	void SetMarker(AudioMarkerDialogueTiming *marker, int ms);
+	/// Regenerate the list of active and inactive line markers
+	void RegenerateMarkers();
+
+	/// @brief Set the position of markers and announce the change to the world
+	/// @param upd_markers Markers to move
+	/// @param ms New position of the markers
+	void SetMarkers(std::vector<AudioMarker*> const& upd_markers, int ms);
 
 	/// Snap a position to a nearby marker, if any
-	/// @param position Position to snap
+	/// @param position   Position to snap
 	/// @param snap_range Maximum distance to snap in milliseconds
-	int SnapPosition(int position, int snap_range) const;
+	/// @param exclude    Markers which should be excluded from the potential snaps
+	int SnapPosition(int position, int snap_range, std::vector<AudioMarker*> const& exclude) const;
+
+	/// Commit all pending changes to the file
+	/// @param user_triggered Is this a user-initiated commit or an autocommit
+	void DoCommit(bool user_triggered);
 
 	// SubtitleSelectionListener interface
 	void OnActiveLineChanged(AssDialogue *new_line);
@@ -235,11 +376,10 @@ public:
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range);
 	void OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range);
 
-public:
-	// Specific interface
-
-	/// @brief Constructor
+	/// Constructor
+	/// @param c Project context
 	AudioTimingControllerDialogue(agi::Context *c);
+	/// Destructor
 	~AudioTimingControllerDialogue();
 };
 
@@ -248,56 +388,13 @@ AudioTimingController *CreateDialogueTimingController(agi::Context *c)
 	return new AudioTimingControllerDialogue(c);
 }
 
-// AudioMarkerDialogueTiming
-void AudioMarkerDialogueTiming::SetPosition(int new_position)
-{
-	position = new_position;
-
-	if (other)
-	{
-		if (position < other->position)
-		{
-			feet = Feet_Right;
-			other->feet = Feet_Left;
-			style = style_left;
-			other->style = style_right;
-		}
-		else if (position > other->position)
-		{
-			feet = Feet_Left;
-			other->feet = Feet_Right;
-			style = style_right;
-			other->style = style_left;
-		}
-	}
-}
-
-AudioMarkerDialogueTiming::AudioMarkerDialogueTiming()
-: other(0)
-, position(0)
-, style(*wxTRANSPARENT_PEN)
-, feet(Feet_None)
-, style_left("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
-, style_right("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
-{
-	// Nothing more to do
-}
-
-void AudioMarkerDialogueTiming::InitPair(AudioMarkerDialogueTiming *marker1, AudioMarkerDialogueTiming *marker2)
-{
-	assert(marker1->other == 0);
-	assert(marker2->other == 0);
-
-	marker1->other = marker2;
-	marker2->other = marker1;
-}
-
-// AudioTimingControllerDialogue
-
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
-: keyframes_provider(c, "Audio/Display/Draw/Keyframes in Dialogue Mode")
+: style_left("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
+, style_right("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
+, style_inactive("Colour/Audio Display/Line Boundary Inactive Line", "Audio/Line Boundaries Thickness")
+, active_line(AudioStyle_Selected, &style_left, &style_right)
+, keyframes_provider(c, "Audio/Display/Draw/Keyframes in Dialogue Mode")
 , video_position_provider(c)
-, timing_modified(false)
 , commit_id(-1)
 , context(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit"))
@@ -307,8 +404,6 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , inactive_line_mode_connection(OPT_SUB("Audio/Inactive Lines Display Mode", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 , inactive_line_comment_connection(OPT_SUB("Audio/Display/Draw/Inactive Comments", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 {
-	AudioMarkerDialogueTiming::InitPair(&active_markers[0], &active_markers[1]);
-
 	c->selectionController->AddSelectionListener(this);
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
@@ -322,43 +417,16 @@ AudioTimingControllerDialogue::~AudioTimingControllerDialogue()
 	context->selectionController->RemoveSelectionListener(this);
 }
 
-AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetLeftMarker()
-{
-	return active_markers[0] < active_markers[1] ? &active_markers[0] : &active_markers[1];
-}
-
-const AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetLeftMarker() const
-{
-	return &std::min(active_markers[0], active_markers[1]);
-}
-
-AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetRightMarker()
-{
-	return active_markers[0] < active_markers[1] ? &active_markers[1] : &active_markers[0];
-}
-
-const AudioMarkerDialogueTiming *AudioTimingControllerDialogue::GetRightMarker() const
-{
-	return &std::max(active_markers[0], active_markers[1]);
-}
-
 void AudioTimingControllerDialogue::GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const
 {
 	// The order matters here; later markers are painted on top of earlier
 	// markers, so the markers that we want to end up on top need to appear last
 
 	// Copy inactive line markers in the range
-	std::vector<InactiveLineMarker>::const_iterator
-		a = lower_bound(inactive_markers.begin(), inactive_markers.end(), range.begin()),
-		b = upper_bound(inactive_markers.begin(), inactive_markers.end(), range.end());
-
-	for (; a != b; ++a)
-		out_markers.push_back(&*a);
-
-	if (range.contains(active_markers[0]))
-		out_markers.push_back(&active_markers[0]);
-	if (range.contains(active_markers[1]))
-		out_markers.push_back(&active_markers[1]);
+	copy(
+		lower_bound(markers.begin(), markers.end(), range.begin(), marker_ptr_cmp()),
+		upper_bound(markers.begin(), markers.end(), range.end(), marker_ptr_cmp()),
+		back_inserter(out_markers));
 
 	keyframes_provider.GetMarkers(range, out_markers);
 	video_position_provider.GetMarkers(range, out_markers);
@@ -376,13 +444,9 @@ void AudioTimingControllerDialogue::OnSelectedSetChanged(const Selection &lines_
 
 void AudioTimingControllerDialogue::OnFileChanged(int type) {
 	if (type & AssFile::COMMIT_DIAG_TIME)
-	{
 		Revert();
-	}
 	else if (type & AssFile::COMMIT_DIAG_ADDREM)
-	{
 		RegenerateInactiveLines();
-	}
 }
 
 wxString AudioTimingControllerDialogue::GetWarningMessage() const
@@ -398,16 +462,14 @@ TimeRange AudioTimingControllerDialogue::GetIdealVisibleTimeRange() const
 
 TimeRange AudioTimingControllerDialogue::GetPrimaryPlaybackRange() const
 {
-	return TimeRange(*GetLeftMarker(), *GetRightMarker());
+	return active_line;
 }
 
 void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
 {
-	ranges.AddRange(*GetLeftMarker(), *GetRightMarker(), AudioStyle_Selected);
-	for (size_t i = 0; i < inactive_ranges.size(); ++i)
-	{
-		ranges.AddRange(inactive_ranges[i].first, inactive_ranges[i].second, AudioStyle_Inactive);
-	}
+	active_line.GetStyleRange(&ranges);
+	for_each(inactive_lines.begin(), inactive_lines.end(),
+		bind(&TimeableLine::GetStyleRange, std::tr1::placeholders::_1, &ranges));
 }
 
 void AudioTimingControllerDialogue::Next()
@@ -422,24 +484,16 @@ void AudioTimingControllerDialogue::Prev()
 
 void AudioTimingControllerDialogue::Commit()
 {
-	int new_start_ms = *GetLeftMarker();
-	int new_end_ms = *GetRightMarker();
+	DoCommit(true);
+}
 
-	// If auto committing is enabled, timing_modified will be true iif it is an
-	// auto commit, as there is never pending changes to commit when the button
-	// is clicked
-	bool user_triggered = !(timing_modified && auto_commit->GetBool());
-
+void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
+{
 	// Store back new times
-	if (timing_modified)
+	if (modified_lines.size())
 	{
-		Selection sel;
-		context->selectionController->GetSelectedSet(sel);
-		for (Selection::iterator sub = sel.begin(); sub != sel.end(); ++sub)
-		{
-			(*sub)->Start = new_start_ms;
-			(*sub)->End = new_end_ms;
-		}
+		for_each(modified_lines.begin(), modified_lines.end(),
+			std::tr1::mem_fn(&TimeableLine::Apply));
 
 		commit_connection.Block();
 		if (user_triggered)
@@ -448,23 +502,32 @@ void AudioTimingControllerDialogue::Commit()
 			commit_id = -1; // never coalesce with a manually triggered commit
 		}
 		else
-			commit_id = context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id, context->selectionController->GetActiveLine());
+		{
+			AssDialogue *amend = modified_lines.size() == 1 ? (*modified_lines.begin())->GetLine() : 0;
+			commit_id = context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id, amend);
+		}
 
 		commit_connection.Unblock();
-		timing_modified = false;
+		modified_lines.clear();
 	}
 
 	if (user_triggered && OPT_GET("Audio/Next Line on Commit")->GetBool())
 	{
+		int new_end_ms = *active_line.GetRightMarker();
+
 		/// @todo Old audio display created a new line if there was no next,
 		///       like the edit box, so maybe add a way to do that which both
 		///       this and the edit box can use
 		Next();
-		if (context->selectionController->GetActiveLine()->End == 0) {
+
+		if (*active_line.GetRightMarker() == 0) {
 			const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
-			active_markers[0].SetPosition(new_end_ms);
-			active_markers[1].SetPosition(new_end_ms + default_duration);
-			timing_modified = true;
+			// Setting right first here so that they don't get switched and the
+			// same marker gets set twice
+			active_line.GetRightMarker()->SetPosition(new_end_ms + default_duration);
+			active_line.GetLeftMarker()->SetPosition(new_end_ms);
+			sort(markers.begin(), markers.end(), marker_ptr_cmp());
+			modified_lines.insert(&active_line);
 			UpdateSelection();
 		}
 	}
@@ -474,74 +537,78 @@ void AudioTimingControllerDialogue::Revert()
 {
 	if (AssDialogue *line = context->selectionController->GetActiveLine())
 	{
-		if (line->Start != 0 || line->End != 0)
-		{
-			active_markers[0].SetPosition(line->Start);
-			active_markers[1].SetPosition(line->End);
-			timing_modified = false;
-			AnnounceUpdatedPrimaryRange();
-			if (inactive_line_mode->GetInt() == 0)
-				AnnounceUpdatedStyleRanges();
-		}
+		active_line.SetLine(line);
+		modified_lines.clear();
+		AnnounceUpdatedPrimaryRange();
+		if (inactive_line_mode->GetInt() == 0)
+			AnnounceUpdatedStyleRanges();
 	}
+
 	RegenerateInactiveLines();
 }
 
 bool AudioTimingControllerDialogue::IsNearbyMarker(int ms, int sensitivity) const
 {
-	TimeRange range(ms-sensitivity, ms+sensitivity);
-
-	return range.contains(active_markers[0]) || range.contains(active_markers[1]);
+	assert(sensitivity >= 0);
+	return active_line.ContainsMarker(TimeRange(ms-sensitivity, ms+sensitivity));
 }
 
 std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range)
 {
 	assert(sensitivity >= 0);
+	assert(snap_range >= 0);
 
-	int dist_l, dist_r;
+	DialogueTimingMarker *left = active_line.GetLeftMarker();
+	DialogueTimingMarker *right = active_line.GetRightMarker();
 
-	AudioMarkerDialogueTiming *left = GetLeftMarker();
-	AudioMarkerDialogueTiming *right = GetRightMarker();
+	int dist_l = tabs(*left - ms);
+	int dist_r = tabs(*right - ms);
 
-	dist_l = tabs(*left - ms);
-	dist_r = tabs(*right - ms);
-
-	if (dist_l < dist_r && dist_l <= sensitivity)
+	if (dist_l > sensitivity && dist_r > sensitivity)
 	{
-		// Clicked near the left marker:
-		// Insta-move it and start dragging it
-		SetMarker(left, SnapPosition(ms, snap_range));
-		return std::vector<AudioMarker*>(1, left);
+		// Clicked far from either marker:
+		// Insta-set the left marker to the clicked position and return the
+		// right as the dragged one, such that if the user does start dragging,
+		// he will create a new selection from scratch
+		std::vector<AudioMarker*> ret(1, left);
+		SetMarkers(ret, SnapPosition(ms, snap_range, ret));
+		ret[0] = right;
+		return ret;
 	}
 
-	if (dist_r < dist_l && dist_r <= sensitivity)
-	{
-		// Clicked near the right marker:
-		// Only drag it. For insta-move, the user must right-click.
-		return std::vector<AudioMarker*>(1, right);
-	}
+	DialogueTimingMarker *clicked = dist_l <= dist_r ? left : right;
+	std::vector<AudioMarker*> ret;
 
-	// Clicked far from either marker:
-	// Insta-set the left marker to the clicked position and return the right as the dragged one,
-	// such that if the user does start dragging, he will create a new selection from scratch
-	SetMarker(left, SnapPosition(ms, snap_range));
-	return std::vector<AudioMarker*>(1, right);
+	if (ctrl_down)
+	{
+		// The use of GetPosition here is important, as otherwise it'll start
+		// after lines ending at the same time as the active line begins
+		std::vector<DialogueTimingMarker*>::iterator it =
+			lower_bound(markers.begin(), markers.end(), clicked->GetPosition(), marker_ptr_cmp());
+		for(; it != markers.end() && !(*clicked < **it); ++it)
+			ret.push_back(*it);
+	}
+	else
+		ret.push_back(clicked);
+
+	// Left-click within drag range should still move the left marker to the
+	// clicked position, but not the right marker
+	if (clicked == left)
+		SetMarkers(ret, SnapPosition(ms, snap_range, ret));
+
+	return ret;
 }
 
 std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int sensitivity, int snap_range)
 {
-	AudioMarkerDialogueTiming *right = GetRightMarker();
-	SetMarker(right, SnapPosition(ms, snap_range));
-	return std::vector<AudioMarker*>(1, right);
+	std::vector<AudioMarker*> ret(1, active_line.GetRightMarker());
+	SetMarkers(ret, SnapPosition(ms, snap_range, ret));
+	return ret;
 }
 
 void AudioTimingControllerDialogue::OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range)
 {
-	assert(markers.size() == 1);
-	AudioMarker *marker = markers[0];
-	assert(marker == &active_markers[0] || marker == &active_markers[1]);
-
-	SetMarker(static_cast<AudioMarkerDialogueTiming*>(marker), SnapPosition(new_position, snap_range));
+	SetMarkers(markers, SnapPosition(new_position, snap_range, markers));
 }
 
 void AudioTimingControllerDialogue::UpdateSelection()
@@ -550,12 +617,38 @@ void AudioTimingControllerDialogue::UpdateSelection()
 	AnnounceUpdatedStyleRanges();
 }
 
-void AudioTimingControllerDialogue::SetMarker(AudioMarkerDialogueTiming *marker, int ms)
+void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& upd_markers, int ms)
 {
-	marker->SetPosition(ms);
-	timing_modified = true;
-	if (auto_commit->GetBool()) Commit();
+	// Since we're moving markers, the sorted list of markers will need to be
+	// resorted. To avoid resorting the entire thing, find the subrange that
+	// is effected.
+	int min_ms = ms;
+	int max_ms = ms;
+	for (size_t i = 0; i < upd_markers.size(); ++i)
+	{
+		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_markers[i]);
+		min_ms = std::min<int>(*marker, min_ms);
+		max_ms = std::max<int>(*marker, max_ms);
+	}
+
+	std::vector<DialogueTimingMarker*>::iterator
+		begin = lower_bound(markers.begin(), markers.end(), min_ms, marker_ptr_cmp()),
+		end = upper_bound(begin, markers.end(), max_ms, marker_ptr_cmp());
+
+	// Update the markers
+	for (size_t i = 0; i < upd_markers.size(); ++i)
+	{
+		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_markers[i]);
+		marker->SetPosition(ms);
+		modified_lines.insert(marker->GetLine());
+	}
+
+	// Resort the range
+	sort(begin, end, marker_ptr_cmp());
+
+	if (auto_commit->GetBool()) DoCommit(false);
 	UpdateSelection();
+
 	AnnounceMarkerMoved();
 }
 
@@ -575,9 +668,8 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 {
 	bool (*predicate)(AssEntry*) = inactive_line_comments->GetBool() ? dialogue : noncomment_dialogue;
 
-	bool was_empty = inactive_markers.empty();
-	inactive_markers.clear();
-	inactive_ranges.clear();
+	bool was_empty = inactive_lines.empty();
+	inactive_lines.clear();
 
 	switch (int mode = inactive_line_mode->GetInt())
 	{
@@ -591,14 +683,14 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 			std::list<AssEntry*>::iterator prev = current_line;
 			while (--prev != context->ass->Line.begin() && !predicate(*prev)) ;
 			if (prev != context->ass->Line.begin())
-				AddInactiveMarkers(static_cast<AssDialogue*>(*prev));
+				AddInactiveLine(static_cast<AssDialogue*>(*prev));
 
 			if (mode == 2)
 			{
 				std::list<AssEntry*>::iterator next =
 					find_if(++current_line, context->ass->Line.end(), predicate);
 				if (next != context->ass->Line.end())
-					AddInactiveMarkers(static_cast<AssDialogue*>(*next));
+					AddInactiveLine(static_cast<AssDialogue*>(*next));
 			}
 		}
 		break;
@@ -608,21 +700,42 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		for (std::list<AssEntry*>::const_iterator it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it)
 		{
 			if (*it != active_line && predicate(*it))
-				AddInactiveMarkers(static_cast<AssDialogue*>(*it));
+				AddInactiveLine(static_cast<AssDialogue*>(*it));
 		}
 		break;
 	}
 	default:
 		if (was_empty)
+		{
+			RegenerateMarkers();
 			return;
+		}
 	}
 
-	sort(inactive_markers.begin(), inactive_markers.end());
 	AnnounceUpdatedStyleRanges();
+
+	RegenerateMarkers();
+}
+
+void AudioTimingControllerDialogue::AddInactiveLine(AssDialogue *diag)
+{
+	inactive_lines.push_back(TimeableLine(AudioStyle_Inactive, &style_inactive, &style_inactive));
+	inactive_lines.back().SetLine(diag);
+}
+
+void AudioTimingControllerDialogue::RegenerateMarkers()
+{
+	markers.clear();
+
+	active_line.GetMarkers(&markers);
+	for_each(inactive_lines.begin(), inactive_lines.end(),
+		bind(&TimeableLine::GetMarkers, std::tr1::placeholders::_1, &markers));
+	sort(markers.begin(), markers.end(), marker_ptr_cmp());
+
 	AnnounceMarkerMoved();
 }
 
-int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range) const
+int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range, std::vector<AudioMarker*> const& exclude) const
 {
 	if (snap_range <= 0)
 		return position;
@@ -633,7 +746,7 @@ int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range) co
 	GetMarkers(snap_time_range, potential_snaps);
 	for (AudioMarkerVector::iterator mi = potential_snaps.begin(); mi != potential_snaps.end(); ++mi)
 	{
-		if ((*mi)->CanSnap())
+		if ((*mi)->CanSnap() && find(exclude.begin(), exclude.end(), *mi) == exclude.end())
 		{
 			if (!snap_marker)
 				snap_marker = *mi;
@@ -645,11 +758,4 @@ int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range) co
 	if (snap_marker)
 		return snap_marker->GetPosition();
 	return position;
-}
-
-void AudioTimingControllerDialogue::AddInactiveMarkers(AssDialogue *line)
-{
-	inactive_markers.push_back(InactiveLineMarker(line->Start, true));
-	inactive_markers.push_back(InactiveLineMarker(line->End, false));
-	inactive_ranges.push_back(std::pair<int, int>(line->Start, line->End));
 }
