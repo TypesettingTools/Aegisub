@@ -23,7 +23,7 @@
 namespace agi { class OptionValue; }
 class wxDialog;
 class wxMoveEvent;
-class wxIconizeEvent;
+class wxSizeEvent;
 
 #ifndef AGI_PRE
 #include <string>
