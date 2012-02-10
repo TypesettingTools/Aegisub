@@ -44,6 +44,7 @@
 #include "ass_time.h"
 #include "audio_renderer.h"
 #include "audio_timing.h"
+#include "command/command.h"
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "pen.h"
@@ -515,10 +516,7 @@ void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
 	{
 		int new_end_ms = *active_line.GetRightMarker();
 
-		/// @todo Old audio display created a new line if there was no next,
-		///       like the edit box, so maybe add a way to do that which both
-		///       this and the edit box can use
-		Next();
+		cmd::call("grid/line/next/create", context);
 
 		if (*active_line.GetRightMarker() == 0) {
 			const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
