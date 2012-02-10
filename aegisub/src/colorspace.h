@@ -34,42 +34,33 @@
 /// @ingroup utility
 ///
 
-
-
-
 #ifndef AGI_PRE
 #include <wx/colour.h>
 #include <wx/string.h>
 #endif
 
-
-/// @brief DOCME
-/// @param val 
-///
 inline unsigned int clip_colorval(int val)
 {
-	if (val < 0) return 0;
-	if (val > 255) return 255;
-	return val;
+	return std::max(0, std::min(val, 255));
 }
 
 
-// Convert an YUV color to RGB; all values are expected to be in range 0..255
+/// Convert an YUV color to RGB; all values are expected to be in range 0..255
 void yuv_to_rgb(int Y, int U, int V, unsigned char *R, unsigned char *G, unsigned char *B);
 
-// Convert a HSL color to RGB; all values are expected to be in range 0..255
+/// Convert a HSL color to RGB; all values are expected to be in range 0..255
 void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigned char *B);
 
-// Convert a HSV color to RGB; all values are expected to be in range 0..255
+/// Convert a HSV color to RGB; all values are expected to be in range 0..255
 void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigned char *B);
 
-// Convert an RGB color to YUV; all values are expected to be in range 0..255
+/// Convert an RGB color to YUV; all values are expected to be in range 0..255
 void rgb_to_yuv(int R, int G, int B, unsigned char *Y, unsigned char *U, unsigned char *V);
 
-// Convert an RGB color to HSL; all values are expected to be in range 0..255
+/// Convert an RGB color to HSL; all values are expected to be in range 0..255
 void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *L);
 
-// Convert an RGB color to HSV; all values are expected to be in range 0..255
+/// Convert an RGB color to HSV; all values are expected to be in range 0..255
 void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *V);
 
 void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, unsigned char *oL);
@@ -77,8 +68,8 @@ void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, un
 void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, unsigned char *oV);
 
 
-// Convert a wxColour to a HTML hex string
+/// Convert a wxColour to a HTML hex string
 wxString color_to_html(wxColour color);
 
-// Convert a HTML hex string to a wxColour
+/// Convert a HTML hex string to a wxColour
 wxColour html_to_color(wxString html);
