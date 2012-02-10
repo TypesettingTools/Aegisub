@@ -137,7 +137,7 @@ namespace {
 }
 
 	// LuaStackcheck
-#if 0
+#ifdef _DEBUG
 	struct LuaStackcheck {
 		lua_State *L;
 		int startstack;
@@ -768,15 +768,18 @@ namespace Automation4 {
 		}
 		catch (agi::UserCancelException const&) {
 			subsobj->Cancel();
-			stackcheck.check_stack(0);
 		}
+		stackcheck.check_stack(0);
 	}
 
 	bool LuaCommand::IsActive(const agi::Context *c)
 	{
 		if (!(cmd_type & cmd::COMMAND_TOGGLE)) return false;
 
+		LuaStackcheck stackcheck(L);
+
 		set_context(L, c);
+		stackcheck.check_stack(0);
 
 		GetFeatureFunction("isactive");
 		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
@@ -792,6 +795,7 @@ namespace Automation4 {
 			result = !!lua_toboolean(L, -1);
 
 		// clean up stack (result or error message)
+		stackcheck.check_stack(1);
 		lua_pop(L, 1);
 
 		return result;
