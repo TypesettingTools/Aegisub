@@ -303,7 +303,7 @@ void AudioController::OnTimingControllerUpdatedPrimaryRange()
 {
 	if (playback_mode == PM_PrimaryRange)
 	{
-		player->SetEndPosition(timing_controller->GetPrimaryPlaybackRange().end());
+		player->SetEndPosition(SamplesFromMilliseconds(timing_controller->GetPrimaryPlaybackRange().end()));
 	}
 }
 
