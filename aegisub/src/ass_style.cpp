@@ -322,6 +322,8 @@ AssStyle& AssStyle::operator=(AssStyle const& rgt) {
 
 	memcpy(Margin, rgt.Margin, sizeof(Margin));
 
+	SetEntryData(rgt.GetEntryData());
+
 	return *this;
 }
 
