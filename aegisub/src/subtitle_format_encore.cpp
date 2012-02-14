@@ -53,6 +53,10 @@ wxArrayString EncoreSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
+bool EncoreSubtitleFormat::CanWriteFile(wxString const& filename) const {
+	return filename.EndsWith(".encore.txt");
+}
+
 void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const&) const {
 	FractionalTime ft = AskForFPS(true);
 	if (!ft.FPS().IsLoaded()) return;
