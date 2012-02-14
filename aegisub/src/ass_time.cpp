@@ -47,8 +47,9 @@
 
 AssTime::AssTime(int time) : time(mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
 
-void AssTime::ParseASS(wxString const& text) {
-	int ms = 0;
+AssTime::AssTime(wxString const& text)
+: time(0)
+{
 	size_t pos = 0, end = 0;
 
 	int colons = text.Freq(':');
@@ -59,20 +60,18 @@ void AssTime::ParseASS(wxString const& text) {
 	// Hours
 	if (colons == 2) {
 		while (text[end++] != ':') { }
-		ms += AegiStringToInt(text, pos, end) * 60 * 60 * 1000;
+		time += AegiStringToInt(text, pos, end) * 60 * 60 * 1000;
 		pos = end;
 	}
 
 	// Minutes
 	if (colons >= 1) {
 		while (text[end++] != ':') { }
-		ms += AegiStringToInt(text, pos, end) * 60 * 1000;
+		time += AegiStringToInt(text, pos, end) * 60 * 1000;
 	}
 
 	// Milliseconds (includes seconds)
-	ms += AegiStringToFix(text, 3, end, text.size());
-
-	*this = AssTime(ms);
+	time += AegiStringToFix(text, 3, end, text.size());
 }
 
 wxString AssTime::GetASSFormated(bool msPrecision) const {

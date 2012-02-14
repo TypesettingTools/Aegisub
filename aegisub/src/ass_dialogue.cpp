@@ -140,11 +140,11 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 
 	// Get start time
 	if (!tkn.HasMoreTokens()) return false;
-	Start.ParseASS(tkn.GetNextToken());
+	Start = tkn.GetNextToken();
 
 	// Get end time
 	if (!tkn.HasMoreTokens()) return false;
-	End.ParseASS(tkn.GetNextToken());
+	End = tkn.GetNextToken();
 
 	// Get style
 	if (!tkn.HasMoreTokens()) return false;

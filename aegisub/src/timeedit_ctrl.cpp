@@ -128,7 +128,7 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 		time = c->videoController->TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START);
 	}
 	else if (insert)
-		time.ParseASS(GetValue());
+		time = GetValue();
 }
 
 
@@ -188,7 +188,7 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 		}
 
 		// Overwrite the digit
-		time.ParseASS(text.Left(start) + (char)key + text.Mid(start + 1));
+		time = text.Left(start) + (char)key + text.Mid(start + 1);
 		SetValue(time.GetASSFormated());
 		SetInsertionPoint(start + 1);
 	}
@@ -238,8 +238,7 @@ void TimeEdit::PasteTime() {
 		}
 		wxTheClipboard->Close();
 
-		AssTime tempTime;
-		tempTime.ParseASS(text);
+		AssTime tempTime(text);
 		if (tempTime.GetASSFormated() == text) {
 			SetTime(tempTime);
 			SetSelection(0, GetValue().size());

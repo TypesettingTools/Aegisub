@@ -53,6 +53,7 @@ class AssTime {
 
 public:
 	AssTime(int ms = 0);
+	AssTime(wxString const& text);
 
 	/// Get millisecond, rounded to centisecond precision
 	operator int() const { return time / 10 * 10; }
@@ -63,8 +64,6 @@ public:
 	int GetTimeMiliseconds() const;  ///< Get the miliseconds portion of this time
 	int GetTimeCentiseconds() const; ///< Get the centiseconds portion of this time
 
-	/// Parse an ASS time string, leaving the time unchanged if the string is malformed
-	void ParseASS(wxString const& text);
 	/// Return the time as a string
 	/// @param ms Use milliseconds precision, for non-ASS formats
 	wxString GetASSFormated(bool ms=false) const;

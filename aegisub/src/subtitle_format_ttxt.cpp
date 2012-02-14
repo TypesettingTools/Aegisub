@@ -110,8 +110,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxS
 AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const {
 	// Get time
 	wxString sampleTime = node->GetAttribute("sampleTime", "00:00:00.000");
-	AssTime time;
-	time.ParseASS(sampleTime);
+	AssTime time(sampleTime);
 
 	// Set end time of last line
 	if (prev)
