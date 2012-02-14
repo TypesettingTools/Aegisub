@@ -204,6 +204,9 @@ FrameMain::FrameMain (wxArrayString args)
 	Show();
 	SetDisplayMode(1, 1);
 
+	StartupLog("Load files specified on command line");
+	LoadList(args);
+
 	// Version checker
 	StartupLog("Possibly perform automatic updates check");
 	if (OPT_GET("App/First Start")->GetBool()) {
@@ -213,9 +216,6 @@ FrameMain::FrameMain (wxArrayString args)
 	}
 
 	PerformVersionCheck(false);
-
-	StartupLog("Load files specified on command line");
-	LoadList(args);
 
 	StartupLog("Leaving FrameMain constructor");
 }
