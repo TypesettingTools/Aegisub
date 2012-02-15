@@ -133,6 +133,60 @@ struct edit_line_delete : public validate_sel_nonempty {
 	}
 };
 
+struct in_selection : public std::unary_function<AssEntry*, bool> {
+	SubtitleSelectionController::Selection const& sel;
+	in_selection(SubtitleSelectionController::Selection const& sel) : sel(sel) { }
+	bool operator()(AssEntry *e) const {
+		AssDialogue *d = dynamic_cast<AssDialogue*>(e);
+		return d && sel.count(d);
+	}
+};
+
+static void duplicate_lines(agi::Context *c, bool shift) {
+	in_selection sel(c->selectionController->GetSelectedSet());
+	SubtitleSelectionController::Selection new_sel;
+	AssDialogue *new_active = 0;
+
+	std::list<AssEntry*>::iterator start = c->ass->Line.begin();
+	std::list<AssEntry*>::iterator end = c->ass->Line.end();
+	while (start != end) {
+		// Find the first line in the selection
+		start = find_if(start, end, sel);
+		if (start == end) break;
+
+		// And the last line in this contiguous selection
+		std::list<AssEntry*>::iterator insert_pos = find_if(start, end, std::not1(sel));
+		std::list<AssEntry*>::iterator last = insert_pos;
+		--last;
+
+		// Duplicate each of the selected lines, inserting them in a block
+		// after the selected block
+		do {
+			AssDialogue *new_diag = static_cast<AssDialogue*>((*start)->Clone());
+
+			c->ass->Line.insert(insert_pos, new_diag);
+			new_sel.insert(new_diag);
+			if (!new_active)
+				new_active = new_diag;
+
+			if (shift) {
+				int pos = c->videoController->FrameAtTime(new_diag->End, agi::vfr::END) + 1;
+				new_diag->Start = c->videoController->TimeAtFrame(pos, agi::vfr::START);
+				new_diag->End = c->videoController->TimeAtFrame(pos, agi::vfr::END);
+			}
+		} while (start++ != last);
+
+		// Skip over the lines we just made
+		start = insert_pos;
+	}
+
+	if (new_sel.empty()) return;
+
+	c->ass->Commit(_("duplicate lines"), AssFile::COMMIT_DIAG_ADDREM);
+
+	c->selectionController->SetSelectedSet(new_sel);
+	c->selectionController->SetActiveLine(new_active);
+}
 
 /// Duplicate the selected lines.
 struct edit_line_duplicate : public validate_sel_nonempty {
@@ -142,8 +196,7 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 	STR_HELP("Duplicate the selected lines")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->DuplicateLines(sels.front(), sels.back(), false);
+		duplicate_lines(c, false);
 	}
 };
 
@@ -161,8 +214,7 @@ struct edit_line_duplicate_shift : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->DuplicateLines(sels.front(), sels.back(), true);
+		duplicate_lines(c, true);
 	}
 };
 

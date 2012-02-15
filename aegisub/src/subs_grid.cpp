@@ -373,37 +373,6 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 	context->ass->Commit(_("adjoin"), AssFile::COMMIT_DIAG_TIME);
 }
 
-void SubtitlesGrid::DuplicateLines(int n1, int n2, bool nextFrame) {
-	std::list<AssEntry*>::iterator insert_pos = find(context->ass->Line.begin(), context->ass->Line.end(), GetDialogue(n2));
-	if (insert_pos != context->ass->Line.end())
-		++insert_pos;
-
-	Selection newsel;
-
-	AssDialogue *first = 0;
-
-	for (int i = n1; i <= n2; ++i) {
-		AssDialogue *diag = new AssDialogue(*GetDialogue(i));
-		if (!first)
-			first = diag;
-
-		context->ass->Line.insert(insert_pos, diag);
-		newsel.insert(diag);
-
-		// Shift to next frame
-		if (nextFrame) {
-			int posFrame = context->videoController->FrameAtTime(diag->End, agi::vfr::END) + 1;
-			diag->Start = context->videoController->TimeAtFrame(posFrame, agi::vfr::START);
-			diag->End = context->videoController->TimeAtFrame(posFrame, agi::vfr::END);
-		}
-	}
-
-	context->ass->Commit(_("duplicate lines"), AssFile::COMMIT_DIAG_ADDREM);
-
-	SetSelectedSet(newsel);
-	SetActiveLine(first);
-}
-
 /// @brief Retrieve a list of selected lines in the actual ASS file (ie. not as displayed in the grid but as represented in the file)
 /// @return 
 ///

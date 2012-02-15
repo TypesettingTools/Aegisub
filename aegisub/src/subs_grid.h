@@ -58,12 +58,6 @@ public:
 	/// @param setStart Set the start times (rather than end times)
 	void AdjoinLines(int first,int last,bool setStart);
 
-	/// @brief Duplicate lines
-	/// @param n1        First frame to duplicate
-	/// @param n2        Last frame to duplicate
-	/// @param nextFrame Set the new lines to start and end on the next frame
-	void DuplicateLines(int first,int last,bool nextFrame=false);
-
 	void InsertLine(AssDialogue *line,int position,bool insertAfter,bool update=true);
 	/// @brief Delete selected lines
 	/// @param target       Lines to delete
