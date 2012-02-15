@@ -525,7 +525,11 @@ bool FrameMain::LoadList(wxArrayString list) {
 	if (!audio.empty())
 		context->audioController->OpenAudio(audio);
 
-	return subs.size() || audio.size() || video.size();
+	bool loaded_any = subs.size() || audio.size() || video.size();
+	if (loaded_any)
+		Refresh(false);
+
+	return loaded_any;
 }
 
 static void autosave_timer_changed(wxTimer *timer) {
