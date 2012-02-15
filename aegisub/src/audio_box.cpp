@@ -83,9 +83,9 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 , context(context)
 , panel(new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_RAISED))
 , audioDisplay(new AudioDisplay(panel, context->audioController, context))
-, HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, 0, -50, 30, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH))
-, VerticalZoom(new wxSlider(panel, Audio_Vertical_Zoom, 50, 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
-, VolumeBar(new wxSlider(panel, Audio_Volume, 50, 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
+, HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, OPT_GET("Audio/Zoom/Horizontal")->GetInt(), -50, 30, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH))
+, VerticalZoom(new wxSlider(panel, Audio_Vertical_Zoom, OPT_GET("Audio/Zoom/Vertical")->GetInt(), 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
+, VolumeBar(new wxSlider(panel, Audio_Volume, OPT_GET("Audio/Volume")->GetInt(), 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
 , mouse_zoom_accum(0)
 {
 	SetSashVisible(wxSASH_BOTTOM, true);
@@ -171,6 +171,7 @@ void AudioBox::OnMouseWheel(wxMouseEvent &evt) {
 		int new_zoom = audioDisplay->GetZoomLevel() + zoom_delta;
 		audioDisplay->SetZoomLevel(new_zoom);
 		HorizontalZoom->SetValue(-new_zoom);
+		OPT_SET("Audio/Zoom/Horizontal")->SetInt(new_zoom);
 	}
 }
 
@@ -195,10 +196,12 @@ void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
 	// Negate the value, we want zoom out to be on bottom and zoom in on top,
 	// but the control doesn't want negative on bottom and positive on top.
 	audioDisplay->SetZoomLevel(-event.GetPosition());
+	OPT_SET("Audio/Zoom/Horizontal")->SetInt(event.GetPosition());
 }
 
 void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
 	int pos = mid(1, event.GetPosition(), 100);
+	OPT_SET("Audio/Zoom/Vertical")->SetInt(pos);
 	double value = pow(pos / 50.0, 3);
 	audioDisplay->SetAmplitudeScale(value);
 	if (!VolumeBar->IsEnabled()) {
@@ -209,6 +212,7 @@ void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
 
 void AudioBox::OnVolume(wxScrollEvent &event) {
 	int pos = mid(1, event.GetPosition(), 100);
+	OPT_SET("Audio/Volume")->SetInt(pos);
 	controller->SetVolume(pow(pos / 50.0, 3));
 }
 
