@@ -33,7 +33,6 @@ class wxGauge;
 class wxStaticText;
 class wxTextCtrl;
 
-/// DOCME
 /// @class DialogProgress
 /// @brief Progress-bar dialog box for displaying during long operations
 class DialogProgress : public wxDialog, public agi::BackgroundRunner {
@@ -47,6 +46,8 @@ class DialogProgress : public wxDialog, public agi::BackgroundRunner {
 
 	wxTimer pulse_timer;
 
+	wxString pending_log;
+
 	void OnSetTitle(wxThreadEvent &evt);
 	void OnSetMessage(wxThreadEvent &evt);
 	void OnSetProgress(wxThreadEvent &evt);
@@ -57,6 +58,7 @@ class DialogProgress : public wxDialog, public agi::BackgroundRunner {
 	void OnShow(wxShowEvent&);
 	void OnCancel(wxCommandEvent &);
 	void OnPulseTimer(wxTimerEvent&);
+	void OnIdle(wxIdleEvent&);
 
 public:
 	/// Constructor

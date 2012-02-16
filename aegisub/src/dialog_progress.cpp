@@ -147,6 +147,7 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 
 	Bind(wxEVT_SHOW, &DialogProgress::OnShow, this);
 	Bind(wxEVT_TIMER, &DialogProgress::OnPulseTimer, this);
+	Bind(wxEVT_IDLE, &DialogProgress::OnIdle, this);
 
 	Bind(EVT_TITLE, &DialogProgress::OnSetTitle, this);
 	Bind(EVT_MESSAGE, &DialogProgress::OnSetMessage, this);
@@ -180,6 +181,21 @@ void DialogProgress::OnShow(wxShowEvent&) {
 	}
 }
 
+void DialogProgress::OnIdle(wxIdleEvent&) {
+	if (!pending_log) return;
+
+	if (log_output->IsEmpty()) {
+		wxSizer *sizer = GetSizer();
+		sizer->Show(log_output);
+		Layout();
+		sizer->Fit(this);
+	}
+
+	*log_output << pending_log;
+	log_output->SetInsertionPointEnd();
+	pending_log.clear();
+}
+
 void DialogProgress::OnSetTitle(wxThreadEvent &evt) {
 	title->SetLabelText(evt.GetPayload<wxString>());
 }
@@ -207,22 +223,14 @@ void DialogProgress::OnComplete(wxThreadEvent &) {
 	// so the user can read the debug output and switch the cancel button to a
 	// close button
 	bool cancelled = ps->IsCancelled();
-	if (cancelled || log_output->IsEmpty())
+	if (cancelled || (log_output->IsEmpty() && !pending_log))
 		EndModal(!cancelled);
 	else
 		cancel_button->SetLabelText(_("Close"));
 }
 
 void DialogProgress::OnLog(wxThreadEvent &evt) {
-	if (log_output->IsEmpty()) {
-		wxSizer *sizer = GetSizer();
-		sizer->Show(log_output);
-		Layout();
-		sizer->Fit(this);
-	}
-
-	*log_output << evt.GetPayload<wxString>();
-	log_output->SetInsertionPointEnd();
+	pending_log += evt.GetPayload<wxString>();
 }
 
 void DialogProgress::OnCancel(wxCommandEvent &) {
