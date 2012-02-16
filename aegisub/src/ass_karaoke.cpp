@@ -53,13 +53,13 @@ wxString AssKaraoke::Syllable::GetText(bool k_tag) const {
 }
 
 
-AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split)
+AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize)
 : no_announce(false)
 {
-	if (line) SetLine(line, auto_split);
+	if (line) SetLine(line, auto_split, normalize);
 }
 
-void AssKaraoke::SetLine(AssDialogue *line, bool auto_split) {
+void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 	active_line = line;
 	line->ParseASSTags();
 
@@ -133,26 +133,28 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split) {
 
 	line->ClearBlocks();
 
-	// Normalize the syllables so that the total duration is equal to the line length
-	int end_time = active_line->End;
-	int last_end = syl.start_time + syl.duration;
+	if (normalize) {
+		// Normalize the syllables so that the total duration is equal to the line length
+		int end_time = active_line->End;
+		int last_end = syl.start_time + syl.duration;
 
-	// Total duration is shorter than the line length so just extend the last
-	// syllable; this has no effect on rendering but is easier to work with
-	if (last_end < end_time)
-		syls.back().duration += end_time - last_end;
-	else if (last_end > end_time) {
-		// Shrink each syllable proportionately
-		int start_time = active_line->Start;
-		double scale_factor = double(end_time - start_time) / (last_end - start_time);
+		// Total duration is shorter than the line length so just extend the last
+		// syllable; this has no effect on rendering but is easier to work with
+		if (last_end < end_time)
+			syls.back().duration += end_time - last_end;
+		else if (last_end > end_time) {
+			// Shrink each syllable proportionately
+			int start_time = active_line->Start;
+			double scale_factor = double(end_time - start_time) / (last_end - start_time);
 
-		for (size_t i = 0; i < size(); ++i) {
-			syls[i].start_time = start_time + scale_factor * (syls[i].start_time - start_time);
-		}
+			for (size_t i = 0; i < size(); ++i) {
+				syls[i].start_time = start_time + scale_factor * (syls[i].start_time - start_time);
+			}
 
-		for (int i = size() - 1; i > 0; --i) {
-			syls[i].duration = end_time - syls[i].start_time;
-			end_time = syls[i].start_time;
+			for (int i = size() - 1; i > 0; --i) {
+				syls[i].duration = end_time - syls[i].start_time;
+				end_time = syls[i].start_time;
+			}
 		}
 	}
 

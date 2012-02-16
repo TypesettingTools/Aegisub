@@ -642,7 +642,7 @@ namespace Automation4 {
 		set_field(L, "text_stripped", "");
 		lua_rawseti(L, -2, idx++);
 
-		AssKaraoke kara(dia);
+		AssKaraoke kara(dia, false, false);
 		for (AssKaraoke::iterator it = kara.begin(); it != kara.end(); ++it) {
 			lua_newtable(L);
 			set_field(L, "duration", it->duration);
