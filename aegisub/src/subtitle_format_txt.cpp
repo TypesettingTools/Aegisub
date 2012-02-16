@@ -79,7 +79,6 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 	wxString actor;
 	wxString separator = lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString());
 	wxString comment = lagi_wxString(OPT_GET("Tool/Import/Text/Comment Starter")->GetString());
-	int lines = 0;
 
 	// Parse file
 	while (file.HasMoreLines()) {
@@ -124,14 +123,6 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 		line->End = 0;
 
 		// Adds line
-		target->Line.push_back(line);
-		lines++;
-	}
-
-	// No lines?
-	if (lines == 0) {
-		AssDialogue *line = new AssDialogue;
-		line->End = OPT_GET("Timing/Default Duration")->GetInt();
 		target->Line.push_back(line);
 	}
 }

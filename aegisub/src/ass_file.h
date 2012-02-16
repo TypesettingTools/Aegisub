@@ -111,6 +111,8 @@ public:
 	void InsertAttachment(AssAttachment *attach);
 	/// Attach a file to the ass file
 	void InsertAttachment(wxString filename);
+	/// Add a dialogue line to the file
+	void InsertDialogue(AssDialogue *diag);
 	/// Get the names of all of the styles available
 	wxArrayString GetStyles();
 	/// @brief Get a style by name

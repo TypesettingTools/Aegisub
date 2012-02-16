@@ -89,6 +89,24 @@ void AssFile::Load(const wxString &_filename, wxString charset, bool addToRecent
 
 		AssFile temp;
 		reader->ReadFile(&temp, _filename, charset);
+
+		bool found_style = false;
+		bool found_dialogue = false;
+
+		// Check if the file has at least one style and at least one dialogue line
+		for (entryIter it = temp.Line.begin(); it != temp.Line.end(); ++it) {
+			ASS_EntryType type = (*it)->GetType();
+			if (type == ENTRY_STYLE) found_style = true;
+			if (type == ENTRY_DIALOGUE) found_dialogue = true;
+			if (found_style && found_dialogue) break;
+		}
+
+		// And if it doesn't add defaults for each
+		if (!found_style)
+			temp.InsertStyle(new AssStyle);
+		if (!found_dialogue)
+			temp.InsertDialogue(new AssDialogue);
+
 		swap(temp);
 	}
 	catch (agi::UserCancelException const&) {
@@ -399,14 +417,14 @@ void AssFile::LoadDefault(bool defline) {
 		AddLine(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()), &version, &attach);
 		AddLine(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()), &version, &attach);
 	}
-	AddLine("[V4+ Styles]", &version, &attach);
-	AddLine("Format:  Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", &version, &attach);
-	AddLine(AssStyle().GetEntryData(), &version, &attach);
+
+	InsertStyle(new AssStyle);
+
 	AddLine("[Events]", &version, &attach);
 	AddLine("Format:  Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", &version, &attach);
 
 	if (defline)
-		AddLine(AssDialogue().GetEntryData(), &version, &attach);
+		Line.push_back(new AssDialogue);
 
 	autosavedCommitId = savedCommitId = commitId + 1;
 	Commit("", COMMIT_NEW);
@@ -436,16 +454,24 @@ AssFile& AssFile::operator=(AssFile from) {
 	return *this;
 }
 
-void AssFile::InsertStyle(AssStyle *style) {
+static bool try_insert(std::list<AssEntry*> &lines, AssEntry *entry) {
+	if (lines.empty()) return false;
+
 	// Search for insertion point
-	std::list<AssEntry*>::iterator it = Line.end();
+	std::list<AssEntry*>::iterator it = lines.end();
 	do {
 		--it;
-		if ((*it)->group == style->group) {
-			Line.insert(++it, style);
-			return;
+		if ((*it)->group == entry->group) {
+			lines.insert(++it, entry);
+			return true;
 		}
-	} while (it != Line.begin());
+	} while (it != lines.begin());
+
+	return false;
+}
+
+void AssFile::InsertStyle(AssStyle *style) {
+	if (try_insert(Line, style)) return;
 
 	// No styles found, add them
 	Line.push_back(new AssEntry("[V4+ Styles]", "[V4+ Styles]"));
@@ -454,15 +480,7 @@ void AssFile::InsertStyle(AssStyle *style) {
 }
 
 void AssFile::InsertAttachment(AssAttachment *attach) {
-	// Search for insertion point
-	std::list<AssEntry*>::iterator it = Line.end();
-	do {
-		--it;
-		if ((*it)->group == attach->group) {
-			Line.insert(++it, attach);
-			return;
-		}
-	} while (it != Line.begin());
+	if (try_insert(Line, attach)) return;
 
 	// Didn't find a group of the appropriate type so create it
 	Line.push_back(new AssEntry(attach->group, attach->group));
@@ -480,6 +498,15 @@ void AssFile::InsertAttachment(wxString filename) {
 	newAttach->Import(filename);
 
 	InsertAttachment(newAttach.release());
+}
+
+void AssFile::InsertDialogue(AssDialogue *diag) {
+	if (try_insert(Line, diag)) return;
+
+	// Didn't find a group of the appropriate type so create it
+	Line.push_back(new AssEntry("[Events]", "[Events]"));
+	Line.push_back(new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
+	Line.push_back(diag);
 }
 
 wxString AssFile::GetScriptInfo(wxString key) {
