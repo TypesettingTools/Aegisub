@@ -562,6 +562,16 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 			return;
 		}
 	}
+
+	// Found a script info section, but not this key or anything after it,
+	// so add it at the end of the file
+	if (found_script_info)
+		Line.push_back(new AssEntry(key + ": " + value, "[Script Info]"));
+	// Script info section not found, so add it at the beginning of the file
+	else {
+		Line.push_front(new AssEntry(key + ": " + value, "[Script Info]"));
+		Line.push_front(new AssEntry("[Script Info]", "[Script Info]"));
+	}
 }
 
 void AssFile::GetResolution(int &sw,int &sh) {
