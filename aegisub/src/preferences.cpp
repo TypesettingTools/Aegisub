@@ -695,16 +695,11 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	// Bottom Buttons
 	wxStdDialogButtonSizer *stdButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY);
 	applyButton = stdButtonSizer->GetApplyButton();
-	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxButton *defaultButton = new wxButton(this, -1, _("&Restore Defaults"));
-	buttonSizer->Add(defaultButton, wxSizerFlags(0).Expand());
-	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand());
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(book, wxSizerFlags(1).Expand().Border());
-	mainSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
+	mainSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
 
 	SetSizerAndFit(mainSizer);
 	SetMinSize(wxSize(-1, 500));
