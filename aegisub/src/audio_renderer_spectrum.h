@@ -67,7 +67,7 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	agi::scoped_ptr<AudioColorScheme> colors_normal;
 
 	/// Colour table used for rendering the audio selection
-	agi::scoped_ptr<AudioColorScheme> colors_selected;
+	agi::scoped_ptr<AudioColorScheme> colors_primary;
 
 	/// Colour table used for rendering inactive lines
 	agi::scoped_ptr<AudioColorScheme> colors_inactive;

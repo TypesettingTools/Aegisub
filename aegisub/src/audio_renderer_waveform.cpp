@@ -60,7 +60,7 @@ enum {
 
 AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_name)
 : colors_normal(new AudioColorScheme(6, color_scheme_name, AudioStyle_Normal))
-, colors_selected(new AudioColorScheme(6, color_scheme_name, AudioStyle_Selected))
+, colors_primary(new AudioColorScheme(6, color_scheme_name, AudioStyle_Primary))
 , colors_inactive(new AudioColorScheme(6, color_scheme_name, AudioStyle_Inactive))
 , audio_buffer(0)
 , render_averages(OPT_GET("Audio/Display/Waveform Style")->GetInt() == Waveform_MaxAvg)
@@ -186,7 +186,7 @@ const AudioColorScheme *AudioWaveformRenderer::GetColorScheme(AudioRenderingStyl
 {
 	switch (style)
 	{
-		case AudioStyle_Selected: return colors_selected.get();
+		case AudioStyle_Primary: return colors_primary.get();
 		case AudioStyle_Inactive: return colors_inactive.get();
 		default: return colors_normal.get();
 	}

@@ -213,7 +213,7 @@ void AudioTimingControllerKaraoke::Prev() {
 void AudioTimingControllerKaraoke::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
 {
 	TimeRange sr = GetPrimaryPlaybackRange();
-	ranges.AddRange(sr.begin(), sr.end(), AudioStyle_Selected);
+	ranges.AddRange(sr.begin(), sr.end(), AudioStyle_Primary);
 }
 
 TimeRange AudioTimingControllerKaraoke::GetPrimaryPlaybackRange() const {

@@ -32,17 +32,18 @@
 /// @brief Styles audio may be rendered in
 ///
 /// The constants are ordered by priority:
-/// Selected has highest priority and should overlap active, which should
+/// Primary has highest priority and should overlap selected, which should
 /// overlap inactive, which should overlap normal regions.
 enum AudioRenderingStyle {
 	/// Regular audio with no special properties
 	AudioStyle_Normal,
-	/// Audio belonging to objects that can not be manipulated currently
+	/// Audio belonging to objects that are not part of the current selection
 	AudioStyle_Inactive,
-	/// Audio that may be manipulated indirectly, usually part of selected lines
-	AudioStyle_Active,
-	/// Primary selection for work, usually coinciding with the primary playback range
+	/// Audio belonging to objects that are part of the current selection,
+	/// but not the primary work rage
 	AudioStyle_Selected,
+	/// Primary selection for work, usually coinciding with the primary playback range
+	AudioStyle_Primary,
 	/// Number of audio styles
 	AudioStyle_MAX
 };
