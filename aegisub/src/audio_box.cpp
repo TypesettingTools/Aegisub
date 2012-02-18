@@ -136,6 +136,10 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	SetMinimumSizeY(panel->GetSize().GetHeight());
 
 	audioDisplay->Bind(wxEVT_MOUSEWHEEL, &AudioBox::OnMouseWheel, this);
+
+	audioDisplay->SetZoomLevel(-HorizontalZoom->GetValue());
+	audioDisplay->SetAmplitudeScale(pow(mid(1, VerticalZoom->GetValue(), 100) / 50.0, 3));
+	controller->SetVolume(pow(mid(1, VolumeBar->GetValue(), 100) / 50.0, 3));
 }
 
 AudioBox::~AudioBox() { }
