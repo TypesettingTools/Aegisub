@@ -239,7 +239,11 @@ void DialogTranslation::UpdateDisplay() {
 }
 
 void DialogTranslation::Commit(bool next) {
-	*active_line->Blocks[cur_block] = AssDialogueBlockPlain(translated_text->GetValue());
+	wxString new_value = translated_text->GetValue();
+	new_value.Replace("\r\n", "\\N");
+	new_value.Replace("\r", "\\N");
+	new_value.Replace("\n", "\\N");
+	*active_line->Blocks[cur_block] = AssDialogueBlockPlain(new_value);
 	active_line->UpdateText();
 	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_DIAG_TEXT);
 
