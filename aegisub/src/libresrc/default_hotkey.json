@@ -605,6 +605,10 @@
 			{
 				"modifiers" : [],
 				"key" : "Enter"
+			},
+			{
+				"modifiers" : [],
+				"key" : "KP_Enter"
 			}
 		],
 		"grid/line/next" : [
@@ -650,6 +654,10 @@
 			{
 				"modifiers" : [],
 				"key" : "Enter"
+			},
+			{
+				"modifiers" : [],
+				"key" : "KP_Enter"
 			}
 		],
 		"tool/translation_assistant/insert_original" : [
