@@ -271,6 +271,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 class CommandRenderer : public wxDataViewCustomRenderer {
 	wxArrayString autocomplete;
 	wxDataViewIconText value;
+	static const int icon_width = 20;
 
 public:
 	CommandRenderer()
@@ -288,11 +289,8 @@ public:
 		wxString text = iconText.GetText();
 
 		// adjust the label rect to take the width of the icon into account
-		if (iconText.GetIcon().IsOk()) {
-			int w = iconText.GetIcon().GetWidth() + 4;
-			label_rect.x += w;
-			label_rect.width -= w;
-		}
+		label_rect.x += icon_width;
+		label_rect.width -= icon_width;
 
 		wxTextCtrl* ctrl = new wxTextCtrl(parent, -1, text, label_rect.GetPosition(), label_rect.GetSize(), wxTE_PROCESS_ENTER);
 		ctrl->SetInsertionPointEnd();
@@ -307,15 +305,11 @@ public:
 	}
 
 	bool Render(wxRect rect, wxDC *dc, int state) {
-		int xoffset = 0;
-
 		wxIcon const& icon = value.GetIcon();
-		if (icon.IsOk()) {
+		if (icon.IsOk())
 			dc->DrawIcon(icon, rect.x, rect.y + (rect.height - icon.GetHeight()) / 2);
-			xoffset = icon.GetWidth() + 4;
-		}
 
-		RenderText(value.GetText(), xoffset, rect, dc, state);
+		RenderText(value.GetText(), icon_width, rect, dc, state);
 
 		return true;
 	}
@@ -323,9 +317,7 @@ public:
 	wxSize GetSize() const {
 		if (!value.GetText().empty()) {
 			wxSize size = GetTextExtent(value.GetText());
-
-			if (value.GetIcon().IsOk())
-				size.x += value.GetIcon().GetWidth() + 4;
+			size.x += icon_width;
 			return size;
 		}
 		return wxSize(80,20);

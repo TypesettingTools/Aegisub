@@ -53,19 +53,8 @@ wxBitmap const& get(std::string const& name, const int size) {
 
 	LOG_W("icon/get") << "Icon not found: " << name << " " << size;
 
-	static wxBitmap empty16(16, 16, 1);
-	static wxBitmap empty24(24, 24, 1);
-	static bool initialized = false;
-
-	if (!initialized) {
-		empty16.SetMask(new wxMask(empty16));
-		empty24.SetMask(new wxMask(empty24));
-		initialized = true;
-	}
-
-	if (size != 24)
-		return empty16;
-	return empty24;
+	static wxBitmap bad;
+	return bad;
 }
 
 
