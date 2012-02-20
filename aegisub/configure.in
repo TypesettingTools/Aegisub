@@ -17,7 +17,7 @@ m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
 # Required packages
 ###################
 m4_define([curl_required_version], [7.18.2])
-m4_define([ffms2_required_version], [2.15])
+m4_define([ffms2_required_version], [2.16])
 m4_define([fftw3_required_version], [3.3])
 m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])

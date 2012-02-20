@@ -181,12 +181,8 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		default:                  ColorSpace = ""; break;
 	}
 
-#if FFMS_VERSION >= ((2 << 24) | (15 << 16) | (3 << 8) | 0)
 	const int TargetFormat[] = { FFMS_GetPixFmt("bgra"), -1 };
 	if (FFMS_SetOutputFormatV2(VideoSource, TargetFormat, Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {
-#else
-	if (FFMS_SetOutputFormatV(VideoSource, 1LL << FFMS_GetPixFmt("bgra"), Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {
-#endif
 		throw VideoOpenError(std::string("Failed to set output format: ") + ErrInfo.Buffer);
 	}
 

@@ -142,11 +142,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		// warn user?
 	}
 
-#if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (1 << 8) | 0)
 	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, -1, &ErrInfo);
-#else
-	AudioSource = FFMS_CreateAudioSource(FileNameShort.utf8_str(), TrackNumber, Index, &ErrInfo);
-#endif
 	if (!AudioSource)
 		throw agi::AudioProviderOpenError(std::string("Failed to open audio track: ") + ErrInfo.Buffer, 0);
 
