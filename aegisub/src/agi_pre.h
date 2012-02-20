@@ -57,12 +57,12 @@
 #define AGI_PRE
 
 // General headers
-#include <ctype.h>
+#include <clocale>
+#include <cstdlib>
+#include <cctype>
 #include <fcntl.h>
 #include <iconv.h>
 #include <inttypes.h>
-#include <locale.h>
-#include <stdlib.h>
 #include <wchar.h>
 
 #ifdef _WIN32
