@@ -42,6 +42,7 @@
 
 #ifndef AGI_PRE
 #include <cassert>
+#include <stdint.h>
 
 #include <algorithm>
 
@@ -49,6 +50,7 @@
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
+#include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/window.h>
 #endif
@@ -223,7 +225,7 @@ namespace {
 				lua_pushstring(L, "Flags must follow all non-flag arguments");
 				return 1;
 			}
-			ret |= (int)lua_touserdata(L, i);
+			ret |= (int)(intptr_t)lua_touserdata(L, i);
 		}
 
 		lua_pushinteger(L, ret);
