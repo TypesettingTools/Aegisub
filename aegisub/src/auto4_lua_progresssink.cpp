@@ -177,7 +177,7 @@ namespace Automation4 {
 		}
 
 		// Top of stack is now a string to output
-		ps->Log(lua_tostring(L, 1));
+		ps->Log(luaL_checkstring(L, 1));
 		return 0;
 	}
 
