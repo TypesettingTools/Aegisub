@@ -270,7 +270,17 @@ do_setup:
 			}
 
 			// Fill buffer
-			avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(ps.end_position-position));
+			avail = snd_pcm_avail(pcm);
+			if (avail == -EPIPE)
+			{
+				if (snd_pcm_recover(pcm, -EPIPE, 1) < 0)
+				{
+					LOG_D("audio/player/alsa") << "failed to recover from underrun";
+					return (void*)"snd_pcm_avail";
+				}
+				avail = snd_pcm_avail(pcm);
+			}
+			avail = std::min(avail, (snd_pcm_sframes_t)(ps.end_position-position));
 			buf = new char[avail*framesize];
 			ps.provider->GetAudioWithVolume(buf, position, avail, ps.volume);
 			written = 0;
