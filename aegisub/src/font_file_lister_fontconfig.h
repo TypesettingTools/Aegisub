@@ -25,23 +25,15 @@
 
 #include "font_file_lister.h"
 
+#include <libaegisub/scoped_ptr.h>
+
 typedef struct _FcConfig FcConfig;
 typedef struct _FcFontSet FcFontSet;
 
 /// @class FontConfigFontFileLister
 /// @brief fontconfig powered font lister
 class FontConfigFontFileLister : public FontFileLister {
-	template<typename T> class scoped {
-		T data;
-		void (*destructor)(T);
-	public:
-		scoped(T data, void (*destructor)(T)) : data(data), destructor(destructor) { }
-		~scoped() { if (data) destructor(data); }
-		operator T() { return data; }
-		T operator->() { return data; }
-	};
-
-	scoped<FcConfig*> config;
+	agi::scoped_holder<FcConfig*> config;
 
 	/// @brief Case-insensitive match ASS/SSA font family against full name. (also known as "name for humans")
 	/// @param family font fullname

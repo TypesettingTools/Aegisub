@@ -119,25 +119,19 @@ struct COMObjectRetainer {
 };
 
 /// @brief RAII wrapper around Win32 HANDLE type
-struct Win32KernelHandle {
-	/// HANDLE value being managed
-	HANDLE handle;
-
+struct Win32KernelHandle : public agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> {
 	/// @brief Create with a managed handle
 	/// @param handle Win32 handle to manage
 	Win32KernelHandle(HANDLE handle = 0)
-		: handle(handle)
+	: scoped_holder(handle, CloseHandle)
 	{
 	}
 
-	/// @brief Destructor, closes the managed handle
-	~Win32KernelHandle()
+	Win32KernelHandle& operator=(HANDLE new_handle)
 	{
-		if (handle) CloseHandle(handle);
+		scoped_holder::operator=(new_handle);
+		return *this;
 	}
-
-	/// @brief Returns the managed handle
-	operator HANDLE () const { return handle; }
 };
 
 /// @class DirectSoundPlayer2Thread
@@ -667,7 +661,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 	start_frame = 0;
 	end_frame = 0;
 
-	thread_handle.handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
+	thread_handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
 		throw agi::AudioPlayerOpenError("Failed creating playback thread in DirectSoundPlayer2. This is bad.", 0);

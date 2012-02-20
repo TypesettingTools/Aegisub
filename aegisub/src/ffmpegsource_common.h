@@ -45,6 +45,8 @@
 
 #include <ffms.h>
 
+#include <libaegisub/scoped_ptr.h>
+
 /// Index all tracks
 #define FFMS_TRACKMASK_ALL		-1
 /// Index no tracks
@@ -54,7 +56,11 @@
 /// @brief Base class for FFMS2 source providers; contains common functions etc
 class FFmpegSourceProvider {
 	friend class FFmpegSourceCacheCleaner;
+	agi::scoped_holder<bool> COMInited; ///< COM initialization state
+
 public:
+	FFmpegSourceProvider();
+
 	/// Logging level constants from avutil/log.h
 	enum FFMS_LogLevel {
 		/// nothing printed
@@ -85,7 +91,6 @@ public:
 /// @class FFmpegSourceCacheCleaner
 /// @brief Implements index cache cleaning functionality for the FFMS2 providers 
 class FFmpegSourceCacheCleaner : public wxThread {
-private:
 	FFmpegSourceProvider *parent;
 
 public:
@@ -96,4 +101,3 @@ public:
 };
 
 #endif /* WITH_FFMS2 */
-

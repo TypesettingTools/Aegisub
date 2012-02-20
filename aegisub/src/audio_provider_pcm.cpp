@@ -64,8 +64,10 @@
 /// @param filename 
 ///
 PCMAudioProvider::PCMAudioProvider(const wxString &filename)
-{
 #ifdef _WIN32
+: file_handle(0, CloseHandle)
+, file_mapping(0, CloseHandle)
+{
 	file_handle = CreateFile(
 		filename.c_str(),
 		FILE_READ_DATA,
@@ -75,15 +77,13 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		FILE_ATTRIBUTE_NORMAL|FILE_FLAG_RANDOM_ACCESS,
 		0);
 
-	if (file_handle == INVALID_HANDLE_VALUE) {
+	if (file_handle == INVALID_HANDLE_VALUE)
 		throw agi::FileNotFoundError(STD_STR(filename));
-	}
 
 	LARGE_INTEGER li_file_size = {0};
-	if (!GetFileSizeEx(file_handle, &li_file_size)) {
-		CloseHandle(file_handle);
+	if (!GetFileSizeEx(file_handle, &li_file_size))
 		throw agi::AudioProviderOpenError("Failed getting file size", 0);
-	}
+
 	file_size = li_file_size.QuadPart;
 
 	file_mapping = CreateFileMapping(
@@ -93,20 +93,16 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		0, 0,
 		0);
 
-	if (file_mapping == 0) {
-		CloseHandle(file_handle);
+	if (file_mapping == 0)
 		throw agi::AudioProviderOpenError("Failed creating file mapping", 0);
-	}
 
 	current_mapping = 0;
 
 #else
-
-	file_handle = open(filename.mb_str(*wxConvFileName), O_RDONLY);
-
-	if (file_handle == -1) {
+: file_handle(open(filename.mb_str(*wxConvFileName), O_RDONLY), close)
+{
+	if (file_handle == -1)
 		throw agi::FileNotFoundError(STD_STR(filename));
-	}
 
 	struct stat filestats;
 	memset(&filestats, 0, sizeof(filestats));
@@ -125,18 +121,11 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 PCMAudioProvider::~PCMAudioProvider()
 {
 #ifdef _WIN32
-	if (current_mapping) {
+	if (current_mapping)
 		UnmapViewOfFile(current_mapping);
-	}
-
-	CloseHandle(file_mapping);
-	CloseHandle(file_handle);
 #else
-	if (current_mapping) {
+	if (current_mapping)
 		munmap(current_mapping, mapping_length);
-	}
-
-	close(file_handle);
 #endif
 }
 

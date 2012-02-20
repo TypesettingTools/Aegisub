@@ -42,19 +42,16 @@
 /// @class FFmpegSourceAudioProvider
 /// @brief Implements audio loading with the FFMS library.
 class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
-private:
-	FFMS_AudioSource *AudioSource;	///< audio source object
-	bool COMInited;					///< COM initialization state
+	/// audio source object
+	agi::scoped_holder<FFMS_AudioSource*, void (FFMS_CC *)(FFMS_AudioSource*)> AudioSource;
 
 	mutable char FFMSErrMsg[1024];			///< FFMS error message
 	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
-	void Close();
 	void LoadAudio(wxString filename);
 
 public:
 	FFmpegSourceAudioProvider(wxString filename);
-	virtual ~FFmpegSourceAudioProvider();
 
 	/// @brief Checks sample endianness
 	/// @return Returns true.

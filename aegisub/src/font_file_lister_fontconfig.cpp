@@ -124,7 +124,7 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString
 	                         bold;
 	int slant  = italic ? 110 : 0;
 
-	scoped<FcPattern*> pat(FcPatternCreate(), FcPatternDestroy);
+	agi::scoped_holder<FcPattern*> pat(FcPatternCreate(), FcPatternDestroy);
 	if (!pat) return ret;
 
 	int family_cnt = add_families(pat, family);
@@ -138,11 +138,11 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString
 	if (!FcConfigSubstitute(config, pat, FcMatchPattern)) return ret;
 
 	FcResult result;
-	scoped<FcFontSet*> fsorted(FcFontSort(config, pat, true, NULL, &result), FcFontSetDestroy);
-	scoped<FcFontSet*> ffullname(MatchFullname(family.c_str(), weight, slant), FcFontSetDestroy);
+	agi::scoped_holder<FcFontSet*> fsorted(FcFontSort(config, pat, true, NULL, &result), FcFontSetDestroy);
+	agi::scoped_holder<FcFontSet*> ffullname(MatchFullname(family.c_str(), weight, slant), FcFontSetDestroy);
 	if (!fsorted || !ffullname) return ret;
 
-	scoped<FcFontSet*> fset(FcFontSetCreate(), FcFontSetDestroy);
+	agi::scoped_holder<FcFontSet*> fset(FcFontSetCreate(), FcFontSetDestroy);
 	for (int cur_font = 0; cur_font < ffullname->nfont; ++cur_font) {
 		FcPattern *curp = ffullname->fonts[cur_font];
 		FcPatternReference(curp);
@@ -169,7 +169,7 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString
 	for (; family_cnt > 1; --family_cnt)
 		FcPatternRemove(pat, FC_FAMILY, family_cnt - 1);
 
-	scoped<FcPattern*> rpat(FcFontRenderPrepare(config, pat, fset->fonts[cur_font]), FcPatternDestroy);
+	agi::scoped_holder<FcPattern*> rpat(FcFontRenderPrepare(config, pat, fset->fonts[cur_font]), FcPatternDestroy);
 	if (!rpat) return ret;
 
 	FcChar8 *r_family;

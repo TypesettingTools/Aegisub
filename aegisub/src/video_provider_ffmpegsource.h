@@ -46,7 +46,8 @@
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
 class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
-	FFMS_VideoSource *VideoSource;         ///< video source object
+	/// video source object
+	agi::scoped_holder<FFMS_VideoSource*, void (FFMS_CC*)(FFMS_VideoSource*)> VideoSource;
 	const FFMS_VideoProperties *VideoInfo; ///< video properties
 
 	int Width;                      ///< width in pixels
@@ -54,7 +55,6 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 	int FrameNumber;                ///< current framenumber
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
-	bool COMInited;                 ///< COM initialization state
 	wxString ColorSpace;            ///< Colorspace name
 
 	AegiVideoFrame CurFrame;        ///< current video frame
@@ -63,11 +63,9 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
 
 	void LoadVideo(wxString filename);
-	void Close();
 
 public:
 	FFmpegSourceVideoProvider(wxString filename);
-	~FFmpegSourceVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
 

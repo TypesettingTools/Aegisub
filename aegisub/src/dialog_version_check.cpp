@@ -271,28 +271,22 @@ typedef BOOL (WINAPI * PGetUserPreferredUILanguages)(DWORD dwFlags, PULONG pulNu
 // Try using Win 6+ functions if available
 static wxString GetUILanguage()
 {
-	wxString res;
-
-	HMODULE kernel32 = LoadLibraryW(L"kernel32.dll");
-	if (!kernel32) return res;
+	agi::scoped_holder<HMODULE, BOOL (__stdcall *)(HMODULE)> kernel32(LoadLibraryW(L"kernel32.dll"), FreeLibrary);
+	if (!kernel32) return "";
 
 	PGetUserPreferredUILanguages gupuil = (PGetUserPreferredUILanguages)GetProcAddress(kernel32, "GetUserPreferredUILanguages");
-	if (!gupuil) goto error;
+	if (!gupuil) return "";
 
 	ULONG numlang = 0, output_len = 0;
-	if (gupuil(MUI_LANGUAGE_NAME, &numlang, 0, &output_len) == TRUE && output_len)
-	{
-		std::vector<wchar_t> output(output_len);
-		if (gupuil(MUI_LANGUAGE_NAME, &numlang, &output[0], &output_len) && numlang >= 1)
-		{
-			// We got at least one language, just treat it as the only, and a null-terminated string
-			res = &output[0];
-		}
-	}
+	if (gupuil(MUI_LANGUAGE_NAME, &numlang, 0, &output_len) != TRUE || !output_len)
+		return "";
 
-error:
-	FreeModule(kernel32);
-	return res;
+	std::vector<wchar_t> output(output_len);
+	if (!gupuil(MUI_LANGUAGE_NAME, &numlang, &output[0], &output_len) || numlang < 1)
+		return "";
+
+	// We got at least one language, just treat it as the only, and a null-terminated string
+	return &output[0];
 }
 static wxString GetSystemLanguage()
 {

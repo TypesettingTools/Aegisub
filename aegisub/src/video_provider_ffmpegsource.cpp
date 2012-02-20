@@ -57,33 +57,15 @@
 #include "video_context.h"
 #include "video_provider_ffmpegsource.h"
 
-
-
 /// @brief Constructor 
 /// @param filename The filename to open
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename)
-: VideoSource(NULL)
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) try
+: VideoSource(NULL, FFMS_DestroyVideoSource)
 , VideoInfo(NULL)
 , Width(-1)
 , Height(-1)
 , FrameNumber(-1)
-, COMInited(false)
 {
-#ifdef WIN32
-	HRESULT res = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-	if (SUCCEEDED(res)) 
-		COMInited = true;
-	else if (res != RPC_E_CHANGED_MODE)
-		throw VideoOpenError("COM initialization failure");
-#endif
-	// initialize ffmpegsource
-	// FIXME: CPU detection?
-#if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (0 << 8) | 0)
-	FFMS_Init(0, 1);
-#else
-	FFMS_Init(0);
-#endif
-
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
 	ErrInfo.ErrorType	= FFMS_ERROR_SUCCESS;
@@ -92,25 +74,14 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename)
 	SetLogLevel();
 
 	// and here we go
-	try {
-		LoadVideo(filename);
-	}
-	catch (wxString const& err) {
-		Close();
-		throw VideoOpenError(STD_STR(err));
-	}
-	catch (...) {
-		Close();
-		throw;
-	}
+	LoadVideo(filename);
 }
-
-
-/// @brief Destructor 
-FFmpegSourceVideoProvider::~FFmpegSourceVideoProvider() {
-	Close();
+catch (wxString const& err) {
+	throw VideoOpenError(STD_STR(err));
 }
-
+catch (const char * err) {
+	throw VideoOpenError(err);
+}
 
 /// @brief Opens video 
 /// @param filename The filename to open
@@ -118,9 +89,8 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	wxString FileNameShort = wxFileName(filename).GetShortPath(); 
 
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), &ErrInfo);
-	if (Indexer == NULL) {
+	if (!Indexer)
 		throw agi::FileNotFoundError(ErrInfo.Buffer);
-	}
 
 	std::map<int,wxString> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_VIDEO);
 	if (TrackList.size() <= 0)
@@ -140,40 +110,26 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	wxString CacheName = GetCacheFilename(filename);
 
 	// try to read index
-	FFMS_Index *Index = NULL;
-	Index = FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo);
-	bool IndexIsValid = false;
-	if (Index != NULL) {
-		if (FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo)) {
-			FFMS_DestroyIndex(Index);
-			Index = NULL;
-		}
-		else
-			IndexIsValid = true;
-	}
+	agi::scoped_holder<FFMS_Index*, void (FFMS_CC*)(FFMS_Index*)>
+		Index(FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo), FFMS_DestroyIndex);
+
+	if (Index && !FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo))
+		Index = NULL;
 
 	// time to examine the index and check if the track we want is indexed
 	// technically this isn't really needed since all video tracks should always be indexed,
 	// but a bit of sanity checking never hurt anyone
-	if (IndexIsValid && TrackNumber >= 0) {
+	if (Index && TrackNumber >= 0) {
 		FFMS_Track *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
-		if (FFMS_GetNumFrames(TempTrackData) <= 0) {
-			IndexIsValid = false;
-			FFMS_DestroyIndex(Index);
+		if (FFMS_GetNumFrames(TempTrackData) <= 0)
 			Index = NULL;
-		}
 	}
 	
 	// moment of truth
-	if (!IndexIsValid) {
+	if (!Index) {
 		int TrackMask = OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool() ? FFMS_TRACKMASK_ALL : FFMS_TRACKMASK_NONE;
-		try {
-			// ignore audio decoding errors here, we don't care right now
-			Index = DoIndexing(Indexer, CacheName, TrackMask, FFMS_IEH_IGNORE);
-		}
-		catch (wxString err) {
-			throw VideoOpenError(STD_STR(err));
-		}
+		// ignore audio decoding errors here, we don't care right now
+		Index = DoIndexing(Indexer, CacheName, TrackMask, FFMS_IEH_IGNORE);
 	}
 	
 	// update access time of index file so it won't get cleaned away
@@ -188,11 +144,8 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	if (TrackNumber < 0) {
 		// just grab the first track
 		TrackNumber = FFMS_GetFirstIndexedTrackOfType(Index, FFMS_TYPE_VIDEO, &ErrInfo);
-		if (TrackNumber < 0) {
-			FFMS_DestroyIndex(Index);
-			Index = NULL;
+		if (TrackNumber < 0)
 			throw VideoNotSupported(std::string("Couldn't find any video tracks: ") + ErrInfo.Buffer);
-		}
 	}
 
 	// set thread count
@@ -207,11 +160,8 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		SeekMode = FFMS_SEEK_NORMAL;
 
 	VideoSource = FFMS_CreateVideoSource(FileNameShort.utf8_str(), TrackNumber, Index, Threads, SeekMode, &ErrInfo);
-	FFMS_DestroyIndex(Index);
-	Index = NULL;
-	if (VideoSource == NULL) {
+	if (!VideoSource)
 		throw VideoOpenError(std::string("Failed to open video track: ") + ErrInfo.Buffer);
-	}
 
 	// load video properties
 	VideoInfo = FFMS_GetVideoProperties(VideoSource);
@@ -272,14 +222,6 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		Timecodes = agi::vfr::Framerate(TimecodesVector);
 
 	FrameNumber = 0;
-}
-
-void FFmpegSourceVideoProvider::Close() {
-	if (VideoSource) FFMS_DestroyVideoSource(VideoSource);
-#ifdef WIN32
-	if (COMInited)
-		CoUninitialize();
-#endif
 }
 
 const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {

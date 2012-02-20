@@ -56,6 +56,33 @@
 #include "md5.h"
 #include "standard_paths.h"
 
+#ifdef WIN32
+static void deinit_com(bool) {
+	CoUninitialize();
+}
+#else
+static void deinit_com(bool) { }
+#endif
+
+FFmpegSourceProvider::FFmpegSourceProvider()
+: COMInited(false, deinit_com)
+{
+#ifdef WIN32
+	HRESULT res = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+	if (SUCCEEDED(res))
+		COMInited = true;
+	else if (res != RPC_E_CHANGED_MODE)
+		throw "COM initialization failure";
+#endif
+
+	// initialize ffmpegsource
+	// FIXME: CPU detection?
+#if FFMS_VERSION >= ((2 << 24) | (14 << 16) | (0 << 8) | 0)
+	FFMS_Init(0, 1);
+#else
+	FFMS_Init(0);
+#endif
+}
 
 wxMutex FFmpegSourceProvider::CleaningInProgress;
 

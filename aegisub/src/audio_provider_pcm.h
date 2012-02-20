@@ -47,6 +47,8 @@
 
 #include "include/aegisub/audio_provider.h"
 
+#include <libaegisub/scoped_ptr.h>
+
 
 /// DOCME
 /// @class PCMAudioProvider
@@ -54,14 +56,12 @@
 ///
 /// DOCME
 class PCMAudioProvider : public AudioProvider {
-private:
 #ifdef _WIN32
+	/// DOCME
+	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_handle;
 
 	/// DOCME
-	HANDLE file_handle;
-
-	/// DOCME
-	HANDLE file_mapping;
+	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_mapping;
 
 	/// DOCME
 	mutable void *current_mapping;
@@ -72,7 +72,7 @@ private:
 	/// DOCME
 	mutable size_t mapping_length;
 #else
-	int file_handle;
+	agi::scoped_holder<int, int(*)(int)> file_handle;
 	mutable void *current_mapping;
 	mutable off_t mapping_start;
 	mutable size_t mapping_length;
