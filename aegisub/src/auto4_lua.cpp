@@ -142,6 +142,16 @@ namespace {
 		return c;
 	}
 
+	int get_file_name(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		if (c && c->ass->filename.size())
+			lua_pushstring(L, wxFileName(c->ass->filename).GetFullName().utf8_str());
+		else
+			lua_pushnil(L);
+		return 1;
+	}
+
 	inline wxRegEx *get_regex(lua_State *L)
 	{
 		return static_cast<wxRegEx*>(luaL_checkudata(L, 1, "aegisub.regex"));
@@ -392,6 +402,7 @@ namespace Automation4 {
 			set_field(L, "cancel", LuaCancel);
 			set_field(L, "lua_automation_version", 4);
 			set_field(L, "__init_regex", regex_init);
+			set_field(L, "file_name", get_file_name);
 
 			// store aegisub table to globals
 			lua_settable(L, LUA_GLOBALSINDEX);
