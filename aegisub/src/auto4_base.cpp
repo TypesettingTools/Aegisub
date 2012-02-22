@@ -439,8 +439,12 @@ namespace Automation4 {
 				more = dir.GetNext(&fn);
 			}
 		}
-		if (error_count > 0) {
-			wxLogWarning("One or more scripts placed in the Automation autoload directory failed to load\nPlease review the errors above, correct them and use the Reload Autoload dir button in Automation Manager to attempt loading the scripts again.");
+
+		if (error_count == 1) {
+			wxLogWarning("A script in the Automation autoload directory failed to load.\nPlease review the errors, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
+		}
+		else if (error_count > 1) {
+			wxLogWarning("Multiple scripts in the Automation autoload directory failed to load.\nPlease review the errors, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
 		}
 
 		ScriptsChanged();
