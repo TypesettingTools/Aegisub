@@ -270,6 +270,55 @@ namespace {
 		set_field(L, "init_flags", regex_init_flags);
 		return 1;
 	}
+
+	int clipboard_get(lua_State *L)
+	{
+		if (wxTheClipboard->Open()) {
+			if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+				wxTextDataObject rawdata;
+				wxTheClipboard->GetData(rawdata);
+				lua_pushstring(L, rawdata.GetText().utf8_str());
+			}
+			else
+				lua_pushnil(L);
+			wxTheClipboard->Close();
+		}
+		else
+			lua_pushnil(L);
+		return 1;
+	}
+
+	int clipboard_set(lua_State *L)
+	{
+		wxString str(check_wxstring(L, 1));
+
+		bool succeeded = false;
+
+#if wxUSE_OLE
+		// OLE needs to be initialized on each thread that wants to write to
+		// the clipboard, which wx does not handle automatically
+		wxClipboard cb;
+		wxClipboard *theCB = &cb;
+#else
+		wxClipboard *theCB = wxTheClipboard;
+#endif
+		if (theCB->Open()) {
+			succeeded = theCB->SetData(new wxTextDataObject(str));
+			theCB->Close();
+			theCB->Flush();
+		}
+
+		lua_pushboolean(L, succeeded);
+		return 1;
+	}
+
+	int clipboard_init(lua_State *L)
+	{
+		lua_newtable(L);
+		set_field(L, "get", clipboard_get);
+		set_field(L, "set", clipboard_set);
+		return 1;
+	}
 }
 
 	// LuaStackcheck
@@ -402,6 +451,7 @@ namespace Automation4 {
 			set_field(L, "cancel", LuaCancel);
 			set_field(L, "lua_automation_version", 4);
 			set_field(L, "__init_regex", regex_init);
+			set_field(L, "__init_clipboard", clipboard_init);
 			set_field(L, "file_name", get_file_name);
 
 			// store aegisub table to globals
