@@ -131,8 +131,10 @@ namespace Automation4 {
 		agi::scoped_ptr<DialogProgress> impl;
 
 		void OnDialog(wxThreadEvent &evt);
+		void OnScriptDialog(wxThreadEvent &evt);
 	public:
 		void QueueEvent(wxEvent *evt);
+		wxWindow *GetParentWindow() const;
 
 		void Run(std::tr1::function<void(ProgressSink*)> task);
 
@@ -157,6 +159,8 @@ namespace Automation4 {
 		/// Show the passed dialog on the GUI thread, blocking the calling
 		/// thread until it closes
 		void ShowDialog(ScriptDialog *config_dialog);
+		int ShowDialog(wxDialog *dialog);
+		wxWindow *GetParentWindow() const { return bsr->GetParentWindow(); }
 
 		/// Get the current automation trace level
 		int GetTraceLevel() const { return trace_level; }

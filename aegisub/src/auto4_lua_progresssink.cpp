@@ -60,6 +60,16 @@ namespace {
 		lua_pushnil(L);
 		lua_setfield(L, idx, name);
 	}
+
+	inline wxString get_wxstring(lua_State *L, int idx)
+	{
+		return wxString(lua_tostring(L, idx), wxConvUTF8);
+	}
+
+	inline wxString check_wxstring(lua_State *L, int idx)
+	{
+		return wxString(luaL_checkstring(L, idx), wxConvUTF8);
+	}
 }
 
 namespace Automation4 {
@@ -91,6 +101,8 @@ namespace Automation4 {
 		if (allow_config_dialog) {
 			lua_newtable(L);
 			set_field_to_closure(L, "display", LuaDisplayDialog);
+			set_field_to_closure(L, "open", LuaDisplayOpenDialog);
+			set_field_to_closure(L, "save", LuaDisplaySaveDialog);
 			lua_setfield(L, -2, "dialog");
 		}
 
@@ -190,6 +202,68 @@ namespace Automation4 {
 
 		// more magic: puts two values on stack: button pushed and table with control results
 		return dlg.LuaReadBack(L);
+	}
+
+	int LuaProgressSink::LuaDisplayOpenDialog(lua_State *L)
+	{
+		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
+		wxString message(check_wxstring(L, 1));
+		wxString dir(check_wxstring(L, 2));
+		wxString file(check_wxstring(L, 3));
+		wxString wildcard(check_wxstring(L, 4));
+		bool multiple = !!lua_toboolean(L, 5);
+		bool must_exist = lua_toboolean(L, 6) || lua_isnil(L, 6);
+
+		int flags = wxFD_OPEN;
+		if (multiple)
+			flags |= wxFD_MULTIPLE;
+		if (must_exist)
+			flags |= wxFD_FILE_MUST_EXIST;
+
+		wxFileDialog diag(0, message, dir, file, wildcard, flags);
+		if (ps->ShowDialog(&diag) == wxID_CANCEL) {
+			lua_pushnil(L);
+			return 1;
+		}
+
+		if (multiple) {
+			wxArrayString files;
+			diag.GetFilenames(files);
+
+			lua_newtable(L);
+			for (size_t i = 0; i < files.size(); ++i) {
+				lua_pushstring(L, files[i].utf8_str());
+				lua_rawseti(L, -2, i + 1);
+			}
+
+			return 1;
+		}
+
+		lua_pushstring(L, diag.GetFilename().utf8_str());
+		return 1;
+	}
+
+	int LuaProgressSink::LuaDisplaySaveDialog(lua_State *L)
+	{
+		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
+		wxString message(check_wxstring(L, 1));
+		wxString dir(check_wxstring(L, 2));
+		wxString file(check_wxstring(L, 3));
+		wxString wildcard(check_wxstring(L, 4));
+		bool prompt_overwrite = !lua_toboolean(L, 5);
+
+		int flags = wxFD_SAVE;
+		if (prompt_overwrite)
+			flags |= wxFD_OVERWRITE_PROMPT;
+
+		wxFileDialog diag(ps->GetParentWindow(), message, dir, file, wildcard, flags);
+		if (ps->ShowDialog(&diag) == wxID_CANCEL) {
+			lua_pushnil(L);
+			return 1;
+		}
+
+		lua_pushstring(L, diag.GetFilename().utf8_str());
+		return 1;
 	}
 }
 

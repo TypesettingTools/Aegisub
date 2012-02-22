@@ -55,6 +55,12 @@
 #include <wx/tokenzr.h>
 #endif
 
+#ifdef _WIN32
+#include <tuple>
+#else
+#include <tr1/tuple>
+#endif
+
 #ifndef __WINDOWS__
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -230,6 +236,7 @@ namespace Automation4 {
 
 	// ProgressSink
 	wxDEFINE_EVENT(EVT_SHOW_DIALOG, wxThreadEvent);
+	wxDEFINE_EVENT(EVT_SHOW_SCRIPT_DIALOG, wxThreadEvent);
 
 	ProgressSink::ProgressSink(agi::ProgressSink *impl, BackgroundScriptRunner *bsr)
 	: impl(impl)
@@ -241,23 +248,35 @@ namespace Automation4 {
 	void ProgressSink::ShowDialog(ScriptDialog *config_dialog)
 	{
 		wxSemaphore sema(0, 1);
-		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_DIALOG);
+		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_SCRIPT_DIALOG);
 		evt->SetPayload(std::make_pair(config_dialog, &sema));
 		bsr->QueueEvent(evt);
 		sema.Wait();
+	}
+
+	int ProgressSink::ShowDialog(wxDialog *dialog)
+	{
+		int ret = 0;
+		wxSemaphore sema(0, 1);
+		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_DIALOG);
+		evt->SetPayload(std::tr1::make_tuple(dialog, &sema, &ret));
+		bsr->QueueEvent(evt);
+		sema.Wait();
+		return ret;
 	}
 
 	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, wxString const& title)
 	: impl(new DialogProgress(parent, title))
 	{
 		impl->Bind(EVT_SHOW_DIALOG, &BackgroundScriptRunner::OnDialog, this);
+		impl->Bind(EVT_SHOW_SCRIPT_DIALOG, &BackgroundScriptRunner::OnScriptDialog, this);
 	}
 
 	BackgroundScriptRunner::~BackgroundScriptRunner()
 	{
 	}
 
-	void BackgroundScriptRunner::OnDialog(wxThreadEvent &evt)
+	void BackgroundScriptRunner::OnScriptDialog(wxThreadEvent &evt)
 	{
 		std::pair<ScriptDialog*, wxSemaphore*> payload = evt.GetPayload<std::pair<ScriptDialog*, wxSemaphore*> >();
 
@@ -274,7 +293,16 @@ namespace Automation4 {
 		payload.second->Post();
 	}
 
-	void BackgroundScriptRunner::QueueEvent(wxEvent *evt) {
+	void BackgroundScriptRunner::OnDialog(wxThreadEvent &evt)
+	{
+		using namespace std::tr1;
+		tuple<wxDialog*, wxSemaphore*, int*> payload = evt.GetPayload<tuple<wxDialog*, wxSemaphore*, int*> >();
+		*get<2>(payload) = get<0>(payload)->ShowModal();
+		get<1>(payload)->Post();
+	}
+
+	void BackgroundScriptRunner::QueueEvent(wxEvent *evt)
+	{
 		wxQueueEvent(impl.get(), evt);
 	}
 
@@ -295,6 +323,11 @@ namespace Automation4 {
 		else prio = 50; // fallback normal
 
 		impl->Run(bind(progress_sink_wrapper, task, std::tr1::placeholders::_1, this), prio);
+	}
+
+	wxWindow *BackgroundScriptRunner::GetParentWindow() const
+	{
+		return impl.get();
 	}
 
 	// Script

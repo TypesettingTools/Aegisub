@@ -145,6 +145,8 @@ namespace Automation4 {
 		static int LuaGetCancelled(lua_State *L);
 		static int LuaDebugOut(lua_State *L);
 		static int LuaDisplayDialog(lua_State *L);
+		static int LuaDisplayOpenDialog(lua_State *L);
+		static int LuaDisplaySaveDialog(lua_State *L);
 
 	public:
 		LuaProgressSink(lua_State *L, ProgressSink *ps, bool allow_config_dialog = true);
