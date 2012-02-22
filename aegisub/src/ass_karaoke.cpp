@@ -264,6 +264,25 @@ void AssKaraoke::SetStartTime(size_t syl_idx, int time) {
 	prev.duration += delta;
 }
 
+void AssKaraoke::SetLineTimes(int start_time, int end_time) {
+	assert(end_time >= start_time);
+
+	size_t idx = 0;
+	do {
+		int delta = start_time - syls[idx].start_time;
+		syls[idx].start_time = start_time;
+		syls[idx].duration = std::max(0, syls[idx].duration - delta);
+	} while (++idx < syls.size() && syls[idx].start_time < start_time);
+
+	idx = syls.size() - 1;
+	while (syls[idx].start_time > end_time) {
+		syls[idx].start_time = end_time;
+		syls[idx].duration = 0;
+		--idx;
+	}
+	syls[idx].duration = end_time - syls[idx].start_time;
+}
+
 void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c) {
 	if (lines.empty()) return;
 

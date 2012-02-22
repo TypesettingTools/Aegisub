@@ -77,6 +77,8 @@ public:
 	void RemoveSplit(size_t syl_idx);
 	/// Set the start time of a syllable in ms
 	void SetStartTime(size_t syl_idx, int time);
+	/// Adjust the line's start and end times without shifting the syllables
+	void SetLineTimes(int start_time, int end_time);
 
 	typedef std::vector<Syllable>::const_iterator iterator;
 

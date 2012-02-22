@@ -115,6 +115,7 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 	void OnAutoNextChange(agi::OptionValue const& opt);
 
 	void DoCommit();
+	void ApplyLead(bool announce_primary);
 
 public:
 	// AudioTimingController implementation
@@ -128,6 +129,8 @@ public:
 	void Prev();
 	void Commit();
 	void Revert();
+	void AddLeadIn();
+	void AddLeadOut();
 	bool IsNearbyMarker(int ms, int sensitivity) const;
 	std::vector<AudioMarker*> OnLeftClick(int ms, bool, int sensitivity, int);
 	std::vector<AudioMarker*> OnRightClick(int, bool, int, int) { return std::vector<AudioMarker*>(); }
@@ -277,6 +280,32 @@ void AudioTimingControllerKaraoke::Revert() {
 	AnnounceUpdatedPrimaryRange();
 	AnnounceUpdatedStyleRanges();
 	AnnounceMarkerMoved();
+}
+
+void AudioTimingControllerKaraoke::AddLeadIn() {
+	start_marker.Move(start_marker - OPT_GET("Audio/Lead/IN")->GetInt());
+	labels.front().range = TimeRange(start_marker, labels.front().range.end());
+	ApplyLead(cur_syl == 0);
+}
+
+void AudioTimingControllerKaraoke::AddLeadOut() {
+	end_marker.Move(end_marker + OPT_GET("Audio/Lead/OUT")->GetInt());
+	labels.back().range = TimeRange(labels.back().range.begin(), end_marker);
+	ApplyLead(cur_syl == markers.size());
+}
+
+void AudioTimingControllerKaraoke::ApplyLead(bool announce_primary) {
+	kara->SetLineTimes(start_marker, end_marker);
+
+	AnnounceUpdatedStyleRanges();
+	AnnounceMarkerMoved();
+	if (announce_primary)
+		AnnounceUpdatedPrimaryRange();
+
+	if (auto_commit)
+		DoCommit();
+	else
+		commit_id = -1;
 }
 
 bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity) const {

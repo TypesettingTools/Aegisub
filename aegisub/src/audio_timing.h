@@ -103,6 +103,12 @@ public:
 	/// Revert all changes to the last committed state.
 	virtual void Revert() = 0;
 
+	/// Add lead-in time to the current timing unit
+	virtual void AddLeadIn() = 0;
+
+	/// Add lead-out time to the current timing unit
+	virtual void AddLeadOut() = 0;
+
 	/// @brief Determine if a position is close to a draggable marker
 	/// @param ms          The time in milliseconds to test
 	/// @param sensitivity Distance in milliseconds to consider markers as nearby

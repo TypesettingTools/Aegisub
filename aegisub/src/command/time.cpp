@@ -250,10 +250,8 @@ struct time_add_lead_in : public Command {
 	STR_DISP("Add lead in")
 	STR_HELP("Add lead in")
 	void operator()(agi::Context *c) {
-		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
-			line->Start = line->Start - OPT_GET("Audio/Lead/IN")->GetInt();
-			c->ass->Commit(_("add lead in"), AssFile::COMMIT_DIAG_TIME);
-		}
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->AddLeadIn();
 	}
 };
 
@@ -263,10 +261,8 @@ struct time_add_lead_out : public Command {
 	STR_DISP("Add lead out")
 	STR_HELP("Add lead out")
 	void operator()(agi::Context *c) {
-		if (AssDialogue *line = c->selectionController->GetActiveLine()) {
-			line->End = line->End + OPT_GET("Audio/Lead/OUT")->GetInt();
-			c->ass->Commit(_("add lead out"), AssFile::COMMIT_DIAG_TIME);
-		}
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->AddLeadOut();
 	}
 };
 
