@@ -284,6 +284,9 @@ void SubsTextEditCtrl::UpdateStyle() {
 	// Check if it's a template line
 	AssDialogue *diag = context->selectionController->GetActiveLine();
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
+	size_t last_template = 0;
+	if (templateLine)
+		last_template = text.rfind('!');
 
 	bool in_parens = false;
 	bool in_unparened_arg = false;
@@ -313,8 +316,30 @@ void SubsTextEditCtrl::UpdateStyle() {
 
 		int new_style = style;
 
+		// Start karaoke template variable
+		if (templateLine && cur_char == '$') {
+			new_style = STYLE_KARAOKE_VARIABLE;
+		}
+		// Continue karaoke template variable
+		else if (style == STYLE_KARAOKE_VARIABLE && ((cur_char >= 'A' && cur_char <= 'Z') || (cur_char >= 'a' && cur_char <= 'z') || cur_char == '_')) {
+			// Do nothing and just continue the karaoke variable style
+		}
+		// Start karaoke template
+		else if (templateLine && !in_karaoke_template && cur_char == '!' && i < last_template) {
+			new_style = STYLE_KARAOKE_TEMPLATE;
+			in_karaoke_template = true;
+		}
+		// End karaoke template
+		else if (in_karaoke_template && cur_char == '!') {
+			new_style = STYLE_KARAOKE_TEMPLATE;
+			in_karaoke_template = false;
+		}
+		// Continue karaoke template
+		else if (in_karaoke_template) {
+			new_style = STYLE_KARAOKE_TEMPLATE;
+		}
 		// Start override block
-		if (cur_char == '{') {
+		else if (cur_char == '{') {
 			new_style = in_ovr ? STYLE_ERROR : STYLE_OVERRIDE;
 			in_ovr = true;
 		}
@@ -323,30 +348,8 @@ void SubsTextEditCtrl::UpdateStyle() {
 			new_style = in_ovr ? STYLE_OVERRIDE : STYLE_ERROR;
 			in_ovr = false;
 
-			in_karaoke_template = false;
 			in_parens = false;
 			in_unparened_arg = false;
-		}
-		// Start karaoke template
-		else if (templateLine && style != STYLE_KARAOKE_TEMPLATE && cur_char == '!') {
-			new_style = STYLE_KARAOKE_TEMPLATE;
-			in_karaoke_template = true;
-		}
-		// End karaoke template
-		else if (style == STYLE_KARAOKE_TEMPLATE && cur_char == '!') {
-			in_karaoke_template = false;
-		}
-		// Continue karaoke template
-		else if (in_karaoke_template) {
-			// Do nothing and just continue the karaoke template style
-		}
-		// Start karaoke template variable
-		else if (templateLine && style != STYLE_KARAOKE_TEMPLATE && cur_char == '$') {
-			new_style = STYLE_KARAOKE_VARIABLE;
-		}
-		// Continue karaoke template variable
-		else if (style == STYLE_KARAOKE_VARIABLE && ((cur_char >= 'A' && cur_char <= 'Z') || (cur_char >= 'a' && cur_char <= 'z') || cur_char == '_')) {
-			// Do nothing and just continue the karaoke variable style
 		}
 		// Plain text
 		else if (!in_ovr) {
