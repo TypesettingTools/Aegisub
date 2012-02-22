@@ -284,9 +284,13 @@ void SubsTextEditCtrl::UpdateStyle() {
 	// Check if it's a template line
 	AssDialogue *diag = context->selectionController->GetActiveLine();
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
+
 	size_t last_template = 0;
 	if (templateLine)
 		last_template = text.rfind('!');
+	size_t last_ovr_end = text.rfind('}');
+	if (last_ovr_end == text.npos)
+		last_ovr_end = 0;
 
 	bool in_parens = false;
 	bool in_unparened_arg = false;
@@ -339,7 +343,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 			new_style = STYLE_KARAOKE_TEMPLATE;
 		}
 		// Start override block
-		else if (cur_char == '{') {
+		else if (cur_char == '{' && i < last_ovr_end) {
 			new_style = in_ovr ? STYLE_ERROR : STYLE_OVERRIDE;
 			in_ovr = true;
 		}
