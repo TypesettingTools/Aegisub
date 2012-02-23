@@ -146,6 +146,7 @@ public:
 	int GetFrameCount() const             { return num_frames; }
 	int GetWidth() const                  { return w; }
 	int GetHeight() const                 { return h; }
+	double GetDAR() const                 { return 0; }
 	agi::vfr::Framerate GetFPS() const    { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
 	wxString GetDecoderName() const       { return "YU4MPEG"; };

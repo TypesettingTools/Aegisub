@@ -52,6 +52,7 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 
 	int Width;                      ///< width in pixels
 	int Height;                     ///< height in pixels
+	double DAR;                     ///< display aspect ratio
 	int FrameNumber;                ///< current framenumber
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
@@ -72,6 +73,7 @@ public:
 	int GetFrameCount() const { return VideoInfo->NumFrames; }
 	int GetWidth() const { return Width; }
 	int GetHeight() const { return Height; }
+	double GetDAR() const { return DAR; }
 	agi::vfr::Framerate GetFPS() const { return Timecodes; }
 
 	wxString GetColorSpace() const { return ColorSpace; }

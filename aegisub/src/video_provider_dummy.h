@@ -88,6 +88,7 @@ public:
 	int GetFrameCount()             const { return framecount; }
 	int GetWidth()                  const { return width; }
 	int GetHeight()                 const { return height; }
+	double GetDAR()                 const { return 0; }
 	agi::vfr::Framerate GetFPS()    const { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
 	wxString GetDecoderName()       const { return "Dummy Video Provider"; }

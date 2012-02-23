@@ -70,6 +70,7 @@ public:
 	agi::vfr::Framerate GetFPS() const { return fps; };
 	int GetWidth() const { return vi.width; };
 	int GetHeight() const { return vi.height; };
+	double GetDAR() const { return 0; }
 	std::vector<int> GetKeyFrames() const { return KeyFrames; };
 	wxString GetWarning() const { return warning; }
 	wxString GetDecoderName() const { return decoderName; }

@@ -186,6 +186,11 @@ void VideoContext::SetVideo(const wxString &filename) {
 			}
 		}
 
+		// Set aspect ratio
+		double dar = videoProvider->GetDAR();
+		if (dar > 0)
+			SetAspectRatio(4, dar);
+
 		// Set filename
 		config::mru->Add("Video", STD_STR(filename));
 		StandardPaths::SetPathValue("?video", wxFileName(filename).GetPath());

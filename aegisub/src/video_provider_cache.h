@@ -68,6 +68,7 @@ public:
 	int GetFrameCount() const             { return master->GetFrameCount(); }
 	int GetWidth() const                  { return master->GetWidth(); }
 	int GetHeight() const                 { return master->GetHeight(); }
+	double GetDAR() const                 { return master->GetDAR(); }
 	agi::vfr::Framerate GetFPS() const    { return master->GetFPS(); }
 	std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
 	wxString GetWarning() const           { return master->GetWarning(); }

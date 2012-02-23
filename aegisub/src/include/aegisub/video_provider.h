@@ -60,6 +60,7 @@ public:
 	virtual int GetFrameCount() const=0;			///< Get total number of frames
 	virtual int GetWidth() const=0;					///< Returns the video width in pixels
 	virtual int GetHeight() const=0;				///< Returns the video height in pixels
+	virtual double GetDAR() const=0;				///< Returns the video display aspect ratio
 	virtual agi::vfr::Framerate GetFPS() const=0;	///< Get frame rate
 	virtual std::vector<int> GetKeyFrames() const=0;///< Returns list of keyframes
 

@@ -167,11 +167,15 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	VideoInfo = FFMS_GetVideoProperties(VideoSource);
 
 	const FFMS_Frame *TempFrame = FFMS_GetFrame(VideoSource, 0, &ErrInfo);
-	if (TempFrame == NULL) {
+	if (!TempFrame)
 		throw VideoOpenError(std::string("Failed to decode first frame: ") + ErrInfo.Buffer);
-	}
-	Width	= TempFrame->EncodedWidth;
-	Height	= TempFrame->EncodedHeight;
+
+	Width  = TempFrame->EncodedWidth;
+	Height = TempFrame->EncodedHeight;
+	if (VideoInfo->SARDen > 0 && VideoInfo->SARNum > 0)
+		DAR = double(Width * VideoInfo->SARNum) / (Height * VideoInfo->SARDen);
+	else
+		DAR = double(Width) / Height;
 
 	switch (TempFrame->ColorSpace) {
 		case FFMS_CS_RGB:         ColorSpace = "RGB"; break;
