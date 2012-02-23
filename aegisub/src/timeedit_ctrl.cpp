@@ -242,6 +242,10 @@ void TimeEdit::PasteTime() {
 		if (tempTime.GetASSFormated() == text) {
 			SetTime(tempTime);
 			SetSelection(0, GetValue().size());
+
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, GetId());
+			evt.SetEventObject(this);
+			HandleWindowEvent(evt);
 		}
 	}
 }
