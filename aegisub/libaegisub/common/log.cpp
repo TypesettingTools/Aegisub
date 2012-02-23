@@ -132,8 +132,8 @@ JsonEmitter::~JsonEmitter() {
 	Sink const& sink = *log_sink->GetSink();
 	for (unsigned int i=0; i < sink.size(); i++) {
 		json::Object entry;
-		entry["sec"]      = sink[i]->tv.tv_sec;
-		entry["usec"]     = sink[i]->tv.tv_usec;
+		entry["sec"]      = (int64_t)sink[i]->tv.tv_sec;
+		entry["usec"]     = (int64_t)sink[i]->tv.tv_usec;
 		entry["severity"] = sink[i]->severity;
 		entry["section"]  = sink[i]->section;
 		entry["file"]     = sink[i]->file;
@@ -145,12 +145,12 @@ JsonEmitter::~JsonEmitter() {
 	}
 
 	json::Array &timeval_open = root["timeval"]["open"];
-	timeval_open.push_back(time_start.tv_sec);
-	timeval_open.push_back(time_start.tv_usec);
+	timeval_open.push_back((int64_t)time_start.tv_sec);
+	timeval_open.push_back((int64_t)time_start.tv_usec);
 
 	json::Array &timeval_close = root["timeval"]["close"];
-	timeval_close.push_back(time_close.tv_sec);
-	timeval_close.push_back(time_close.tv_usec);
+	timeval_close.push_back((int64_t)time_close.tv_sec);
+	timeval_close.push_back((int64_t)time_close.tv_usec);
 
 	std::stringstream str;
 	str << directory << time_start.tv_sec << ".json";

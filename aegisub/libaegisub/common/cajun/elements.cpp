@@ -90,10 +90,6 @@ UnknownElement::UnknownElement() :                              m_pImp(new Imp_T
 UnknownElement::UnknownElement(const UnknownElement& unknown) : m_pImp(unknown.m_pImp->Clone()) {}
 UnknownElement::UnknownElement(int number) :                    m_pImp(new Imp_T<Integer>(number)) {}
 UnknownElement::UnknownElement(const char *string) :            m_pImp(new Imp_T<String>(string)) {}
-#if SIZEOF_TIME_T+0 == 4
-UnknownElement::UnknownElement(time_t number) :                 m_pImp(new Imp_T<Integer>(number)) {}
-#endif
-
 UnknownElement::~UnknownElement() { delete m_pImp; }
 
 #define DEFINE_UE_TYPE(Type) \

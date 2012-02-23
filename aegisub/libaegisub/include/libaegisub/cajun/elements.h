@@ -77,10 +77,6 @@ public:
    UnknownElement(const String& string);
    UnknownElement(const Null& null);
 
-#if SIZEOF_TIME_T+0 == 4
-      UnknownElement(time_t number);
-#endif
-
    ~UnknownElement();
 
    UnknownElement& operator = (const UnknownElement& unknown);

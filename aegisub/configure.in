@@ -256,7 +256,6 @@ AS_IF([test x$agi_cv_pragma_once = xno],
 AC_CHECK_HEADER([wchar.h],,[AC_MSG_FAILURE([aegisub requires wide character support])])
 
 AC_CHECK_HEADERS([sys/time.h])
-AC_CHECK_SIZEOF([time_t])
 
 ##############################
 # Program Support and Features
