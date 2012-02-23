@@ -39,7 +39,7 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		tmtime.tm_hour,
 		tmtime.tm_min,
 		tmtime.tm_sec,
-		sm->tv.tv_usec,
+		(long)sm->tv.tv_usec,
 		sm->section,
 		sm->file,
 		sm->func,
