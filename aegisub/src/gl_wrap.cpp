@@ -29,7 +29,7 @@
 #ifndef AGI_PRE
 #include <wx/msgdlg.h>
 
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>

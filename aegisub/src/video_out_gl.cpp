@@ -44,7 +44,7 @@
 #include <libaegisub/log.h>
 
 // These must be included before local headers.
-#ifdef __APPLE__
+#ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else

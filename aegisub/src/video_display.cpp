@@ -48,7 +48,7 @@
 #include <wx/toolbar.h>
 #endif
 
-#ifdef __APPLE__
+#ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else

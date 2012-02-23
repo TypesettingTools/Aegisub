@@ -47,7 +47,7 @@
 #include "gl_text.h"
 #include "utils.h"
 
-#ifdef __APPLE__
+#ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>

@@ -198,7 +198,7 @@
 #include <wx/xml/xml.h>
 #include <wx/zipstrm.h>
 
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+#ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
