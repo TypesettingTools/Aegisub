@@ -115,7 +115,6 @@ Report::Report() {
 #ifdef __APPLE__
 	json::Object& osx = root["OS X"];
 	osx["Patch"] = p->PatchLevel();
-	osx["QuickTime Extensions"] = p->QuickTimeExt();
 	osx["Model"] = p->HardwareModel();
 #endif
 

@@ -202,10 +202,6 @@ std::string Platform::PatchLevel() {
 	return "";
 }
 
-std::string Platform::QuickTimeExt() {
-	return "";
-}
-
 std::string Platform::HardwareModel() {
 	return "";
 }

@@ -25,7 +25,6 @@ PREDEFINED             +=	\
 							WITH_OPENAL \
 							WITH_PORTAUDIO \
 							WITH_PORTAUDIO2 \
-							WITH_PULSEAUDIO \
-							WITH_QUICKTIME \
+							WITH_LIBPULSE \
 							WITH_STARTUPLOG \
 							WITH_UNIVCHARDET

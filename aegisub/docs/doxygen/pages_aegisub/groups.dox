@@ -14,7 +14,6 @@
 @defgroup main_headers Main Headers
 @defgroup main_ui Main UI
 @defgroup matroska Matroska support.
-@defgroup quicktime QuickTime support.
 @defgroup scripting Scripting
 @defgroup secondary_ui Secondary UI
 @defgroup spelling Spelling

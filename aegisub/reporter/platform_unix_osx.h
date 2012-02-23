@@ -36,7 +36,6 @@ public:
 	virtual uint64_t Memory();
 
 	virtual std::string PatchLevel();
-	virtual std::string QuickTimeExt();
 	virtual std::string HardwareModel();
 
 	// Unix Specific

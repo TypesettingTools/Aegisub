@@ -86,10 +86,6 @@ std::string PlatformUnixOSX::PatchLevel() {
 	return "";
 }
 
-std::string PlatformUnixOSX::QuickTimeExt() {
-	return "";
-}
-
 std::string PlatformUnixOSX::HardwareModel() {
 	char model[300];
 	size_t len = sizeof(model);

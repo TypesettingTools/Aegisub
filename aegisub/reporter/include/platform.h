@@ -267,14 +267,6 @@ public:
 	/// @retval Any
 	virtual std::string PatchLevel()=0;
 
-	/// QuickTime extensions
-	/// @return json::Array of extensions used
-	/// @retval A json::Array in the format of:
-	/// \verbatim
-	/// { "version", "name" }
-	/// \endverbatim
-	virtual std::string QuickTimeExt()=0;
-
 	/// Hardware model
 	/// @return Model
 	/// @retval Any
