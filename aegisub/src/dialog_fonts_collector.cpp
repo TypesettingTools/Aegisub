@@ -365,7 +365,7 @@ void DialogFontsCollector::OnAddText(wxThreadEvent &event) {
 }
 
 void DialogFontsCollector::OnCollectionComplete(wxThreadEvent &) {
-	EnableCloseButton();
+	EnableCloseButton(true);
 	start_btn->Enable();
 	close_btn->Enable();
 	collection_mode->Enable();

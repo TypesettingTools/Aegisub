@@ -46,6 +46,7 @@
 
 #include <algorithm>
 
+#include <wx/clipbrd.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/log.h>
