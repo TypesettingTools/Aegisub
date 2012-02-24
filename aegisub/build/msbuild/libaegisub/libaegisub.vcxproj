@@ -65,6 +65,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\path.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\signal.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\thesaurus.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\types.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
@@ -95,6 +96,7 @@
     <ClCompile Include="$(SrcDir)common\option.cpp" />
     <ClCompile Include="$(SrcDir)common\option_visit.cpp" />
     <ClCompile Include="$(SrcDir)common\path.cpp" />
+    <ClCompile Include="$(SrcDir)common\thesaurus.cpp" />
     <ClCompile Include="$(SrcDir)common\util.cpp" />
     <ClCompile Include="$(SrcDir)common\validator.cpp" />
     <ClCompile Include="$(SrcDir)common\vfr.cpp" />

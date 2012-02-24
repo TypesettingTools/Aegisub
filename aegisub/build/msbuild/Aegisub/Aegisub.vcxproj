@@ -67,7 +67,7 @@
     <ClInclude Include="$(SrcDir)audio_controller.h" />
     <ClInclude Include="$(SrcDir)audio_display.h" />
     <ClInclude Include="$(SrcDir)audio_karaoke.h" />
-    <ClInclude Include="$(SrcDir)audio_marker_provider_keyframes.h" />
+    <ClInclude Include="$(SrcDir)audio_marker.h" />
     <ClInclude Include="$(SrcDir)audio_player_alsa.h" />
     <ClInclude Include="$(SrcDir)audio_player_dsound.h" />
     <ClInclude Include="$(SrcDir)audio_player_dsound2.h" />
@@ -151,7 +151,6 @@
     <ClInclude Include="$(SrcDir)MatroskaParser.h" />
     <ClInclude Include="$(SrcDir)md5.h" />
     <ClInclude Include="$(SrcDir)mkv_wrap.h" />
-    <ClInclude Include="$(SrcDir)mythes.hxx" />
     <ClInclude Include="$(SrcDir)persist_location.h" />
     <ClInclude Include="$(SrcDir)pen.h" />
     <ClInclude Include="$(SrcDir)plugin_manager.h" />
@@ -182,7 +181,6 @@
     <ClInclude Include="$(SrcDir)text_file_reader.h" />
     <ClInclude Include="$(SrcDir)text_file_writer.h" />
     <ClInclude Include="$(SrcDir)thesaurus.h" />
-    <ClInclude Include="$(SrcDir)thesaurus_myspell.h" />
     <ClInclude Include="$(SrcDir)threaded_frame_source.h" />
     <ClInclude Include="$(SrcDir)timeedit_ctrl.h" />
     <ClInclude Include="$(SrcDir)toggle_bitmap.h" />
@@ -238,7 +236,7 @@
     <ClCompile Include="$(SrcDir)audio_controller.cpp" />
     <ClCompile Include="$(SrcDir)audio_display.cpp" />
     <ClCompile Include="$(SrcDir)audio_karaoke.cpp" />
-    <ClCompile Include="$(SrcDir)audio_marker_provider_keyframes.cpp" />
+    <ClCompile Include="$(SrcDir)audio_marker.cpp" />
     <ClCompile Include="$(SrcDir)audio_player.cpp" />
     <ClCompile Include="$(SrcDir)audio_player_alsa.cpp" />
     <ClCompile Include="$(SrcDir)audio_player_dsound.cpp" />
@@ -343,7 +341,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)menu.cpp" />
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />
-    <ClCompile Include="$(SrcDir)mythes.cxx" />
     <ClCompile Include="$(SrcDir)pen.cpp" />
     <ClCompile Include="$(SrcDir)persist_location.cpp" />
     <ClCompile Include="$(SrcDir)plugin_manager.cpp" />
@@ -375,7 +372,6 @@
     <ClCompile Include="$(SrcDir)text_file_reader.cpp" />
     <ClCompile Include="$(SrcDir)text_file_writer.cpp" />
     <ClCompile Include="$(SrcDir)thesaurus.cpp" />
-    <ClCompile Include="$(SrcDir)thesaurus_myspell.cpp" />
     <ClCompile Include="$(SrcDir)threaded_frame_source.cpp" />
     <ClCompile Include="$(SrcDir)timeedit_ctrl.cpp" />
     <ClCompile Include="$(SrcDir)toggle_bitmap.cpp" />

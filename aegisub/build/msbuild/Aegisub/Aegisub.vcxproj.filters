@@ -207,7 +207,7 @@
     <ClInclude Include="$(SrcDir)audio_karaoke.h">
       <Filter>Audio\UI</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_marker_provider_keyframes.h">
+    <ClInclude Include="$(SrcDir)audio_marker.h">
       <Filter>Audio\UI</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)audio_renderer.h">
@@ -377,12 +377,6 @@
     </ClInclude>
     <ClInclude Include="$(SrcDir)spellchecker_hunspell.h">
       <Filter>Features\Spell checker</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)mythes.hxx">
-      <Filter>Features\Thesaurus</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)thesaurus_myspell.h">
-      <Filter>Features\Thesaurus</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)thesaurus.h">
       <Filter>Features\Thesaurus</Filter>
@@ -707,7 +701,7 @@
     <ClCompile Include="$(SrcDir)audio_karaoke.cpp">
       <Filter>Audio\UI</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_marker_provider_keyframes.cpp">
+    <ClCompile Include="$(SrcDir)audio_marker.cpp">
       <Filter>Audio\UI</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_renderer.cpp">
@@ -956,13 +950,7 @@
     <ClCompile Include="$(SrcDir)spellchecker_hunspell.cpp">
       <Filter>Features\Spell checker</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)mythes.cxx">
-      <Filter>Features\Thesaurus</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)thesaurus.cpp">
-      <Filter>Features\Thesaurus</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)thesaurus_myspell.cpp">
       <Filter>Features\Thesaurus</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_resample.cpp">

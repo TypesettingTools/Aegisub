@@ -119,7 +119,7 @@
   </StringProperty>
 
   <BoolProperty
-    Name="AegisubUseFt2"
+    Name="AegisubUseFreetype2"
     Category="Features"
     DisplayName="Use Freetype 2"
     Description="Specify whether to use Freetype 2 for font enumeration in the Font Collector. You will need to configure the location of the Freetype 2 library on the Library paths page."
