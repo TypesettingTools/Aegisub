@@ -23,11 +23,12 @@
 
 #include "config.h"
 
+#include "font_file_lister.h"
+
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include "ass_style.h"
 
-#include "font_file_lister_fontconfig.h"
 
 #ifndef AGI_PRE
 #include <algorithm>
