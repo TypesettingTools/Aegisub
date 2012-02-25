@@ -357,8 +357,7 @@
 		},
 		"Edit Box" : {
 			"Font Face" : "",
-			"Font Size" : 10,
-			"Link Time Boxes Commit" : true
+			"Font Size" : 10
 		},
 		"Grid" : {
 			"Column" : [

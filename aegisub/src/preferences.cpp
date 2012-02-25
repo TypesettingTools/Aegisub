@@ -122,8 +122,8 @@ Subtitles::Subtitles(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Enable call tips"), "App/Call Tips");
 	OptionAdd(general, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
-	OptionAdd(general, _("Link commiting of times"), "Subtitle/Edit Box/Link Time Boxes Commit");
 	OptionAdd(general, _("Overwrite-Insertion in time boxes"), "Subtitle/Time Edit/Insert Mode");
+	CellSkip(general);
 	OptionBrowse(general, _("Dictionaries path"), "Path/Dictionary");
 
 	wxFlexGridSizer *grid = PageSizer(_("Grid"));
