@@ -224,9 +224,9 @@ public:
 			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), (BlockT*)0)) * block_size;
 		}
 		// Hit max, clear all remaining blocks
-		for (; it != age.end(); ++it)
+		for (; it != age.end();)
 		{
-			KillMacroBlock(**it);
+			KillMacroBlock(**it++);
 		}
 	}
 
