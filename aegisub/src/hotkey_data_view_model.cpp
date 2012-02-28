@@ -84,7 +84,8 @@ public:
 	}
 
 	void Apply(Hotkey::HotkeyMap *hk_map) {
-		hk_map->insert(make_pair(combo.CmdName(), combo));
+		if (combo.CmdName().size() || combo.Str().size())
+			hk_map->insert(make_pair(combo.CmdName(), combo));
 	}
 
 	unsigned int GetChildren(wxDataViewItemArray &) const { return 0; }
