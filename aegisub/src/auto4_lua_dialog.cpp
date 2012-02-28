@@ -285,10 +285,10 @@ namespace Automation4 {
 			IntEdit(lua_State *L)
 			: Edit(L)
 			, value(get_field(L, "value", 0))
-			, min(get_field(L, "min", 0))
-			, max(get_field(L, "max", 0))
+			, min(get_field(L, "min", INT_MIN))
+			, max(get_field(L, "max", INT_MAX))
 			{
-				if (min <= max) {
+				if (min >= max) {
 					max = INT_MAX;
 					min = INT_MIN;
 				}
