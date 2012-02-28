@@ -72,7 +72,6 @@ public:                                          \
 };
 
 CLASS_PAGE(General)
-CLASS_PAGE(Subtitles)
 CLASS_PAGE(Audio)
 CLASS_PAGE(Video)
 CLASS_PAGE(Interface)
@@ -115,24 +114,6 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 
 	SetSizerAndFit(sizer);
 }
-
-
-/// Subtitles preferences page
-Subtitles::Subtitles(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Subtitles")) {
-	wxFlexGridSizer *general = PageSizer(_("Options"));
-	OptionAdd(general, _("Enable call tips"), "App/Call Tips");
-	OptionAdd(general, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
-	OptionAdd(general, _("Overwrite-Insertion in time boxes"), "Subtitle/Time Edit/Insert Mode");
-	CellSkip(general);
-	OptionBrowse(general, _("Dictionaries path"), "Path/Dictionary");
-
-	wxFlexGridSizer *grid = PageSizer(_("Grid"));
-	OptionAdd(grid, _("Allow grid to take focus"), "Subtitle/Grid/Focus Allow");
-	OptionAdd(grid, _("Highlight visible subtitles"), "Subtitle/Grid/Highlight Subtitles in Frame");
-
-	SetSizerAndFit(sizer);
-}
-
 
 /// Audio preferences page
 Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Audio")) {
@@ -212,13 +193,19 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 
 /// Interface preferences page
 Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Interface")) {
-	wxFlexGridSizer *grid = PageSizer(_("Subtitle Grid"));
-	OptionFont(grid, "Subtitle/Grid/");
-
-	OptionAdd(grid, _("Hide overrides symbol"), "Subtitle/Grid/Hide Overrides Char");
-
 	wxFlexGridSizer *edit_box = PageSizer(_("Edit Box"));
+	OptionAdd(edit_box, _("Enable call tips"), "App/Call Tips");
+	OptionAdd(edit_box, _("Overwrite-Insertion in time boxes"), "Subtitle/Time Edit/Insert Mode");
+	CellSkip(edit_box);
+	OptionAdd(edit_box, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
+	OptionBrowse(edit_box, _("Dictionaries path"), "Path/Dictionary");
 	OptionFont(edit_box, "Subtitle/Edit Box/");
+
+	wxFlexGridSizer *grid = PageSizer(_("Grid"));
+	OptionAdd(grid, _("Allow grid to take focus"), "Subtitle/Grid/Focus Allow");
+	OptionAdd(grid, _("Highlight visible subtitles"), "Subtitle/Grid/Highlight Subtitles in Frame");
+	OptionAdd(grid, _("Hide overrides symbol"), "Subtitle/Grid/Hide Overrides Char");
+	OptionFont(grid, "Subtitle/Grid/");
 
 	SetSizerAndFit(sizer);
 }
@@ -670,7 +657,6 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 
 	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
 	new General(book, this);
-	new Subtitles(book, this);
 	new Audio(book, this);
 	new Video(book, this);
 	new Interface(book, this);
