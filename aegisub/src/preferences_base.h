@@ -37,9 +37,15 @@ public:
 	OptionPage(wxTreebook *book, Preferences *parent, wxString name, int style = PAGE_DEFAULT);
 
 	wxFlexGridSizer* PageSizer(wxString name);
+
 	void CellSkip(wxFlexGridSizer *flex);
-	void OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1);
+	wxControl *OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min=0, double max=100, double inc=1);
 	void OptionChoice(wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name);
-	void OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name);
+	void OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, wxControl *enabler = 0, bool do_enable = false);
 	void OptionFont(wxSizer *sizer, std::string opt_prefix);
+
+	/// Enable ctrl only when cbx is checked
+	void EnableIfChecked(wxControl *cbx, wxControl *ctrl);
+	/// Enable ctrl only when cbx is not checked
+	void DisableIfChecked(wxControl *cbx, wxControl *ctrl);
 };

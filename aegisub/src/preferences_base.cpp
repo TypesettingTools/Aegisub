@@ -48,13 +48,16 @@
 #include "standard_paths.h"
 #include "video_provider_manager.h"
 
-#define OPTION_UPDATER(type, evttype, opt, body)                                       \
-	class type {                                                                       \
-		std::string name;                                                              \
-		Preferences *parent;                                                           \
-	public:                                                                            \
-		type(std::string const& n, Preferences *p) : name(n), parent(p) {}             \
-		void operator()(evttype& evt) { parent->SetOption(new agi::opt(name, body)); } \
+#define OPTION_UPDATER(type, evttype, opt, body)                            \
+	class type {                                                            \
+		std::string name;                                                   \
+		Preferences *parent;                                                \
+	public:                                                                 \
+		type(std::string const& n, Preferences *p) : name(n), parent(p) { } \
+		void operator()(evttype& evt) {                                     \
+			evt.Skip();                                                     \
+			parent->SetOption(new agi::opt(name, body));                    \
+		}                                                                   \
 	}
 
 OPTION_UPDATER(StringUpdater, wxCommandEvent, OptionValueString, STD_STR(evt.GetString()));
@@ -69,12 +72,9 @@ public:
 	ColourUpdater(const char *n = "", Preferences *p = NULL) : name(n), parent(p) { }
 	void operator()(wxCommandEvent& evt) {
 		ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
-		if (btn) {
+		if (btn)
 			parent->SetOption(new agi::OptionValueColour(name, STD_STR(btn->GetColour().GetAsString(wxC2S_CSS_SYNTAX))));
-		}
-		else {
-			evt.Skip();
-		}
+		evt.Skip();
 	}
 };
 
@@ -130,7 +130,7 @@ void OptionPage::CellSkip(wxFlexGridSizer *flex) {
 	flex->Add(new wxStaticText(this, -1, ""), wxSizerFlags().Border());
 }
 
-void OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
+wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	switch (opt->GetType()) {
@@ -139,35 +139,35 @@ void OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, const ch
 			flex->Add(cb, 1, wxEXPAND, 0);
 			cb->SetValue(opt->GetBool());
 			cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, BoolUpdater(opt_name, parent));
-			break;
+			return cb;
 		}
 
 		case agi::OptionValue::Type_Int: {
 			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
 			sc->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(opt_name, parent));
 			Add(flex, name, sc);
-			break;
+			return sc;
 		}
 
 		case agi::OptionValue::Type_Double: {
 			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
 			scd->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, DoubleUpdater(opt_name, parent));
 			Add(flex, name, scd);
-			break;
+			return scd;
 		}
 
 		case agi::OptionValue::Type_String: {
 			wxTextCtrl *text = new wxTextCtrl(this, -1 , lagi_wxString(opt->GetString()));
 			text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
 			Add(flex, name, text);
-			break;
+			return text;
 		}
 
 		case agi::OptionValue::Type_Colour: {
 			ColourButton *cb = new ColourButton(this, -1, wxSize(40,10), lagi_wxColour(opt->GetColour()));
 			cb->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ColourUpdater(opt_name, parent));
 			Add(flex, name, cb);
-			break;
+			return cb;
 		}
 
 		default:
@@ -213,7 +213,7 @@ wxFlexGridSizer* OptionPage::PageSizer(wxString name) {
 	return flex;
 }
 
-void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name) {
+void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, wxControl *enabler, bool do_enable) {
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	if (opt->GetType() != agi::OptionValue::Type_String)
@@ -230,6 +230,17 @@ void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const
 	button_sizer->Add(browse, wxSizerFlags().Expand());
 
 	Add(flex, name, button_sizer);
+
+	if (enabler) {
+		if (do_enable) {
+			EnableIfChecked(enabler, text);
+			EnableIfChecked(enabler, browse);
+		}
+		else {
+			DisableIfChecked(enabler, text);
+			DisableIfChecked(enabler, browse);
+		}
+	}
 }
 
 void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
@@ -251,4 +262,31 @@ void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 
 	Add(sizer, _("Font Face"), button_sizer);
 	Add(sizer, _("Font Size"), font_size);
+}
+
+struct disabler {
+	wxControl *ctrl;
+	bool enable;
+
+	disabler(wxControl *ctrl, bool enable) : ctrl(ctrl), enable(enable) { }
+	void operator()(wxCommandEvent &evt) {
+		ctrl->Enable(!!evt.GetInt() == enable);
+		evt.Skip();
+	}
+};
+
+void OptionPage::EnableIfChecked(wxControl *cbx, wxControl *ctrl) {
+	wxCheckBox *cb = dynamic_cast<wxCheckBox*>(cbx);
+	if (!cb) return;
+
+	ctrl->Enable(cb->IsChecked());
+	cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, disabler(ctrl, true));
+}
+
+void OptionPage::DisableIfChecked(wxControl *cbx, wxControl *ctrl) {
+	wxCheckBox *cb = dynamic_cast<wxCheckBox*>(cbx);
+	if (!cb) return;
+
+	ctrl->Enable(!cb->IsChecked());
+	cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, disabler(ctrl, false));
 }

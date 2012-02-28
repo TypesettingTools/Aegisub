@@ -155,7 +155,7 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	wxArrayString choice_dtl(4, dtl_arr);
 	OptionChoice(general, _("Show inactive lines"), choice_dtl, "Audio/Inactive Lines Display Mode");
 	CellSkip(general);
-	OptionAdd(general, _("Include comments in inactive lines"), "Audio/Display/Draw/Inactive Comments");
+	OptionAdd(general, _("Include commented inactive lines"), "Audio/Display/Draw/Inactive Comments");
 
 	wxFlexGridSizer *display = PageSizer(_("Display Visual Options"));
 	OptionAdd(display, _("Selection background"), "Audio/Display/Draw/Selection Background");
@@ -196,10 +196,12 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionChoice(general, _("Screenshot save path"), scr_res, "Path/Screenshot");
 
 	wxFlexGridSizer *resolution = PageSizer(_("Script Resolution"));
-	OptionAdd(resolution, _("Use resolution of first video opened"), "Subtitle/Default Resolution/Auto");
+	wxControl *autocb = OptionAdd(resolution, _("Use resolution of first video opened"), "Subtitle/Default Resolution/Auto");
 	CellSkip(resolution);
-	OptionAdd(resolution, _("Default width"), "Subtitle/Default Resolution/Width");
-	OptionAdd(resolution, _("Default height"), "Subtitle/Default Resolution/Height");
+	DisableIfChecked(autocb,
+		OptionAdd(resolution, _("Default width"), "Subtitle/Default Resolution/Width"));
+	DisableIfChecked(autocb,
+		OptionAdd(resolution, _("Default height"), "Subtitle/Default Resolution/Height"));
 
 	const wxString cres_arr[3] = { _("Never"), _("Ask"), _("Always") };
 	wxArrayString choice_res(3, cres_arr);
@@ -456,16 +458,17 @@ void Interface_Hotkeys::OnClearFilter(wxCommandEvent &) {
 /// Backup preferences page
 Backup::Backup(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Backup")) {
 	wxFlexGridSizer *save = PageSizer(_("Automatic Save"));
-	OptionAdd(save, _("Enable"), "App/Auto/Save");
+	wxControl *cb = OptionAdd(save, _("Enable"), "App/Auto/Save");
 	CellSkip(save);
-	OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds", 1);
-	OptionBrowse(save, _("Path"), "Path/Auto/Save");
+	EnableIfChecked(cb,
+		OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds", 1));
+	OptionBrowse(save, _("Path"), "Path/Auto/Save", cb, true);
 	OptionAdd(save, _("Autosave after every change"), "App/Auto/Save on Every Change");
 
 	wxFlexGridSizer *backup = PageSizer(_("Automatic Backup"));
-	OptionAdd(backup, _("Enable"), "App/Auto/Backup");
+	cb = OptionAdd(backup, _("Enable"), "App/Auto/Backup");
 	CellSkip(backup);
-	OptionBrowse(backup, _("Path"), "Path/Auto/Backup");
+	OptionBrowse(backup, _("Path"), "Path/Auto/Backup", cb, true);
 
 	SetSizerAndFit(sizer);
 }
