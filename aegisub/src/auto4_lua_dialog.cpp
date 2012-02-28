@@ -42,7 +42,7 @@
 #include "auto4_lua.h"
 
 #ifndef AGI_PRE
-#include <assert.h>
+#include <cassert>
 
 #include <wx/button.h>
 #include <wx/checkbox.h>
@@ -53,8 +53,11 @@
 #include <wx/spinctrl.h>
 #include <wx/tokenzr.h>
 #include <wx/validate.h>
+#include <wx/valnum.h>
 #include <wx/window.h>
 #endif
+
+#include <cfloat>
 
 #include <libaegisub/log.h>
 
@@ -82,13 +85,13 @@ namespace {
 	inline void get_if_right_type(lua_State *L, double &def)
 	{
 		if (lua_isnumber(L, -1))
-			def = std::max(lua_tonumber(L, -1), def);
+			def = lua_tonumber(L, -1);
 	}
 
 	inline void get_if_right_type(lua_State *L, int &def)
 	{
 		if (lua_isnumber(L, -1))
-			def = std::max<int>(lua_tointeger(L, -1), def);
+			def = lua_tointeger(L, -1);
 	}
 
 	inline void get_if_right_type(lua_State *L, bool &def)
@@ -329,17 +332,28 @@ namespace Automation4 {
 
 		// Float only edit
 		class FloatEdit : public Edit {
-		public:
 			double value;
+			double min;
+			double max;
+			double step;
+			wxSpinCtrlDouble *scd;
 
+		public:
 			FloatEdit(lua_State *L)
 			: Edit(L)
 			, value(get_field(L, "value", 0.0))
+			, min(get_field(L, "min", -DBL_MAX))
+			, max(get_field(L, "max", DBL_MAX))
+			, step(get_field(L, "step", 0.0))
+			, scd(0)
 			{
-				// TODO: spin button support
+				if (min >= max) {
+					max = DBL_MAX;
+					min = -DBL_MAX;
+				}
 			}
 
-			bool CanSerialiseValue() const  { return true; }
+			bool CanSerialiseValue() const { return true; }
 
 			wxString SerialiseValue() const
 			{
@@ -355,15 +369,30 @@ namespace Automation4 {
 
 			wxControl *Create(wxWindow *parent)
 			{
-				cw = new wxTextCtrl(parent, -1, SerialiseValue());
+				if (step > 0) {
+					scd = new wxSpinCtrlDouble(parent, -1,
+						wxString::Format("%g", value), wxDefaultPosition,
+						wxDefaultSize, wxSP_ARROW_KEYS, min, max, value, step);
+					scd->SetToolTip(hint);
+					return scd;
+				}
+
+				wxFloatingPointValidator<double> val(4, &value, wxNUM_VAL_NO_TRAILING_ZEROES);
+				val.SetRange(min, max);
+
+				cw = new wxTextCtrl(parent, -1, SerialiseValue(), wxDefaultPosition, wxDefaultSize, 0, val);
 				cw->SetToolTip(hint);
 				return cw;
 			}
 
 			void ControlReadBack()
 			{
-				text = cw->GetValue();
-				UnserialiseValue(text);
+				if (scd)
+					value = scd->GetValue();
+				else
+					cw->TransferDataFromWindow();
+
+				text = SerialiseValue();
 			}
 
 			void LuaReadBack(lua_State *L)
@@ -575,7 +604,7 @@ namespace Automation4 {
 			LOG_D("automation/lua/dialog") << "reading back button_pushed";
 			int btn = button_pushed;
 			if (btn == 0) {
-				LOG_D("automation/lua/dialog") << "was zero, cancelled";
+				LOG_D("automation/lua/dialog") << "was zero, canceled";
 				// Always cancel/closed
 				lua_pushboolean(L, 0);
 			} else if (buttons.size() == 0 && btn == 1) {
