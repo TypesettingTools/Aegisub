@@ -593,6 +593,7 @@ bool KaraokeLineMatchDisplay::AcceptMatch()
 
 	assert(source_sel_length <= unmatched_source.size());
 	copy(unmatched_source.begin(), unmatched_source.begin() + source_sel_length, back_inserter(match.src));
+	unmatched_source.erase(unmatched_source.begin(), unmatched_source.begin() + source_sel_length);
 	source_sel_length = 0;
 
 	assert(destination_sel_length <= unmatched_destination.size());
