@@ -113,7 +113,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	agi::scoped_holder<FFMS_Index*, void (FFMS_CC*)(FFMS_Index*)>
 		Index(FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo), FFMS_DestroyIndex);
 
-	if (Index && !FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo))
+	if (Index && FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo))
 		Index = NULL;
 
 	// time to examine the index and check if the track we want is indexed
