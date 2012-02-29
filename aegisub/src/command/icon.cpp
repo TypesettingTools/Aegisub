@@ -79,6 +79,7 @@ void icon_init() {
 	LOG_D("icon/init") << "Generating 24x24, 16x16 icons";
 
 INSERT_ICON("am/manager", automation_toolbutton)
+INSERT_ICON("am/meta", automation_toolbutton)
 INSERT_ICON("app/about", about_menu)
 INSERT_ICON("app/exit", exit_button)
 INSERT_ICON("app/language", languages_menu)

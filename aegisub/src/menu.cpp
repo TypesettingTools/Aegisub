@@ -413,7 +413,7 @@ public:
 	, global_slot(wxGetApp().global_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
 	, local_slot(c->local_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
 	{
-		cm->AddCommand(cmd::get("am/manager"), this, "");
+		cm->AddCommand(cmd::get("am/meta"), this, "");
 		AppendSeparator();
 		Regenerate();
 	}

@@ -55,9 +55,32 @@ namespace {
 /// @defgroup cmd-am Automation commands
 /// @{
 
+struct reload_all : public Command {
+	CMD_NAME("am/reload")
+	STR_MENU("&Reload Automation scripts")
+	STR_DISP("Reload Automation scripts")
+	STR_HELP("Reload all Automation scripts and rescan the autoload folder")
 
-/// Open automation manager.
-struct am_manager : public Command {
+	void operator()(agi::Context *c) {
+		wxGetApp().global_scripts->Reload();
+		c->local_scripts->Reload();
+		wxGetApp().frame->StatusTimeout(_("Reloaded all Automation scripts"));
+	}
+};
+
+struct reload_autoload : public Command {
+	CMD_NAME("am/reload/autoload")
+	STR_MENU("R&eload autoload Automation scripts")
+	STR_DISP("Reload autoload Automation scripts")
+	STR_HELP("Rescan the Automation autoload folder")
+
+	void operator()(agi::Context *c) {
+		wxGetApp().global_scripts->Reload();
+		wxGetApp().frame->StatusTimeout(_("Reloaded autoload Automation scripts"));
+	}
+};
+
+struct open_manager : public Command {
 	CMD_NAME("am/manager")
 	STR_MENU("&Automation...")
 	STR_DISP("Automation")
@@ -82,11 +105,32 @@ struct am_manager : public Command {
 	}
 };
 
+struct meta : public Command {
+	CMD_NAME("am/meta")
+	STR_MENU("&Automation...")
+	STR_DISP("Automation")
+	STR_HELP("Open automation manager")
+
+	void operator()(agi::Context *c) {
+		if (wxGetMouseState().CmdDown()) {
+			if (wxGetMouseState().ShiftDown())
+				cmd::call("am/reload", c);
+			else
+				cmd::call("am/reload/autoload", c);
+		}
+		else
+			cmd::call("am/manager", c);
+	}
+};
+
 /// @}
 }
 
 namespace cmd {
 	void init_automation() {
-		reg(new am_manager);
+		reg(new meta);
+		reg(new open_manager);
+		reg(new reload_all);
+		reg(new reload_autoload);
 	}
 }
