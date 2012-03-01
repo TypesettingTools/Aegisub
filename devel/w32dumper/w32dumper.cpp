@@ -246,29 +246,27 @@ INT_PTR CALLBACK dialog_msghandler(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
 			AddStringToListbox(hwndDlg, std::wstring(L"Completed ") + IntToWstring(numdumps) + (numdumps>1?L" minidumps.":L" minidump."));
 		else
 			AddStringToListbox(hwndDlg, L"Finished, found no processes to dump.");
-		break;
+		return TRUE;
 
 	case DNM_ERROR:
 		numerrors += 1;
 		AddStringToListbox(hwndDlg, std::wstring(L"An error occurred: ") + (wchar_t const *)lParam);
-		break;
+		return TRUE;
 
 	case DNM_DUMPSTARTED:
 		numdumps += 1;
 		AddStringToListbox(hwndDlg, std::wstring(L"Beginning dump of pid ") + IntToWstring(wParam) + L" (" + (wchar_t const *)lParam + L")");
-		break;
+		return TRUE;
 
 	case DNM_DUMPFINISHED:
 		AddStringToListbox(hwndDlg, std::wstring(L"    Finished dump: ") + (wchar_t const *)lParam);
-		break;
+		return TRUE;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
+		if (LOWORD(wParam) == IDCLOSE && HIWORD(wParam) == BN_CLICKED)
 		{
-		case IDCLOSE:
-			if (HIWORD(wParam) == BN_CLICKED)
-				PostQuitMessage(0);
-			break;
+			PostQuitMessage(0);
+			return TRUE;
 		}
 		break;
 
@@ -279,6 +277,7 @@ INT_PTR CALLBACK dialog_msghandler(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
 			{
 				std::wstring dumpfile_folder = GetDumpfileFolder();
 				ShellExecuteW(hwndDlg, L"open", dumpfile_folder.c_str(), 0, 0, SW_SHOWNORMAL);
+				return TRUE;
 			}
 		}
 		break;
