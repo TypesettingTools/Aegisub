@@ -47,18 +47,57 @@ std::wstring IntToWstring(int n)
 	return std::wstring(buf);
 }
 
+// reinventing the wheel because the C or C++ std libs don't seem to have
+// a function that does something as simple as this.
+// note: atoi() and family don't do this, they don't really report success/failure.
+template <typename UIntType>
+bool try_str2uint(wchar_t *s, UIntType &res)
+{
+	res = 0;
+	while (*s != 0)
+	{
+		if (*s >= L'0' && *s <= L'9')
+		{
+			res *= 10;
+			res += (*s - L'0');
+		}
+		else
+		{
+			// invalid character
+			return false;
+		}
+		++s;
+	}
+	return true;
+}
+
+
+// ideally identical to the one used by aegisub
+// but otherwise the "base" part is fixed
+// todo: move this to some shared include file
+struct AegisubCrashInfo {
+	struct {
+		EXCEPTION_POINTERS *exception_pointers;
+		DWORD exception_thread_id;
+		size_t sz; // size of entire containing struct
+	} base;
+	wchar_t unhandled_cpp_exception_text[1024];
+};
+
 
 // DNM = Dumper Notify Message
 #define DNM_COMPLETED    (WM_APP + 0)
 #define DNM_ERROR        (WM_APP + 1)
 #define DNM_DUMPSTARTED  (WM_APP + 2)
 #define DNM_DUMPFINISHED (WM_APP + 3)
+#define DNM_INFOMSG      (WM_APP + 4)
 
 
 // Data being passed to the worker thread
 struct DumperThreadData {
 	HWND hwndDlg;
-	HINSTANCE hInstance;
+	DWORD target_pid;
+	INT_PTR target_infoblock;
 };
 
 // Miniclass to make sure the dialog gets sent a message when the thread ends,
@@ -83,6 +122,13 @@ struct WindowsHandle {
 	operator HANDLE() { return handle; }
 };
 
+// fake IsWow64Process function for old 32 bit systems (NT 5.1 and earlier miss it)
+BOOL WINAPI FakeIsWow64Process(HANDLE hProcess, PBOOL Wow64Process)
+{
+	*Wow64Process = FALSE;
+	return TRUE;
+}
+
 // Thread that will actually find and make dumps of Aegisub processes
 void __cdecl dumper_thread(void *data)
 {
@@ -90,9 +136,23 @@ void __cdecl dumper_thread(void *data)
 
 	EnsureDialogNotifiedOfThreadCompletion completion_notify(dtd->hwndDlg);
 
-	// Find Aegisub's install dir based on where we are located
 	std::wstring aegisub_filename_prefix;
+	std::vector<DWORD> process_ids;
+
+	BOOL dumper_proc_is_wow64 = FALSE;
+	BOOL (WINAPI * IsWow64Process)(HANDLE hProcess, PBOOL Wow64Process);
 	{
+		HMODULE kernel32 = LoadLibraryW(L"kernel32.dll");
+		IsWow64Process = (BOOL(WINAPI*)(HANDLE, PBOOL))GetProcAddress(kernel32, "IsWow64Process");
+		if (IsWow64Process == 0) IsWow64Process = FakeIsWow64Process;
+	}
+	IsWow64Process(GetCurrentProcess(), &dumper_proc_is_wow64);
+
+	if (dtd->target_pid == 0)
+	{
+		SendMessageW(dtd->hwndDlg, DNM_INFOMSG, 0, (LPARAM)L"Searching for active processes...");
+
+		// Find Aegisub's install dir based on where we are located
 		DWORD bufsize = MAX_PATH;
 		LPWSTR modfnbuf = (LPWSTR)malloc(sizeof(*modfnbuf)*bufsize);
 		DWORD modfnlen = GetModuleFileNameW(0, modfnbuf, bufsize);
@@ -104,8 +164,7 @@ void __cdecl dumper_thread(void *data)
 		}
 		aegisub_filename_prefix = CanonicalFileName(std::wstring(modfnbuf, modfnbuf+modfnlen));
 		free(modfnbuf);
-	}
-	{
+
 		// Chomp it at the last backslash and append "aegisub"
 		size_t backslash_pos = aegisub_filename_prefix.rfind(L'\\');
 		if (backslash_pos == std::wstring::npos)
@@ -114,19 +173,9 @@ void __cdecl dumper_thread(void *data)
 			return;
 		}
 		aegisub_filename_prefix.erase(backslash_pos+1);
-	}
 
-	// Figure out where we should be writing dump files to
-	std::wstring dumpfile_folder = GetDumpfileFolder();
-	if (dumpfile_folder.empty())
-	{
-		completion_notify.error(3, L"Could not access folder for writing dump files to");
-		return;
-	}
 
-	// Get pids of all processes
-	std::vector<DWORD> process_ids;
-	{
+		// Get pids of all processes
 		size_t pidlist_size = 128;
 		size_t pidlist_count = 0;
 		do {
@@ -140,6 +189,21 @@ void __cdecl dumper_thread(void *data)
 			pidlist_count = bytes_returned / sizeof(DWORD);
 		} while (pidlist_count == pidlist_size);
 		process_ids.resize(pidlist_count);
+	}
+	else // target_pid given
+	{
+		SendMessageW(dtd->hwndDlg, DNM_INFOMSG, 0, (LPARAM)L"Searching for crash target...");
+
+		// just add the single PID to the list, most of the magic happens in the dumping loop
+		process_ids.push_back(dtd->target_pid);
+	}
+
+	// Figure out where we should be writing dump files to
+	std::wstring dumpfile_folder = GetDumpfileFolder();
+	if (dumpfile_folder.empty())
+	{
+		completion_notify.error(3, L"Could not access folder for writing dump files to");
+		return;
 	}
 
 	// Build a string useful for making filenames more unique
@@ -188,7 +252,7 @@ void __cdecl dumper_thread(void *data)
 		}
 
 		// Check it's relevant
-		if (procfn.find(aegisub_filename_prefix) != 0)
+		if (dtd->target_pid == 0 && procfn.find(aegisub_filename_prefix) != 0)
 			continue;
 
 		// Pick a filename to write
@@ -205,6 +269,55 @@ void __cdecl dumper_thread(void *data)
 		// Tell about our exploits
 		SendMessageW(dtd->hwndDlg, DNM_DUMPSTARTED, (WPARAM)*ppid, (LPARAM)procfn_basename.c_str());
 
+		MINIDUMP_EXCEPTION_INFORMATION exception_information = {0};
+		MINIDUMP_USER_STREAM_INFORMATION *user_stream_information = 0;
+		if (dtd->target_pid != 0)
+		{
+			// sanity check: we can't easily work with different-bitness processes
+			BOOL target_proc_is_wow64 = FALSE;
+			IsWow64Process(proc, &target_proc_is_wow64);
+			if (target_proc_is_wow64 != dumper_proc_is_wow64)
+			{
+				SendMessageW(dtd->hwndDlg, DNM_INFOMSG, 0, (LPARAM)(
+					target_proc_is_wow64
+					? L"Target process is 32 bit, but crash dumper is 64 bit. Cannot include all information in dump."
+					: L"Target process is 64 bit, but crash dumper is 32 bit. Cannot include all infromation in dump."
+					));
+				goto skip_advanced_dump;
+			}
+
+			AegisubCrashInfo crashinfo;
+			if (ReadProcessMemory(proc, (LPCVOID)dtd->target_infoblock, &crashinfo, sizeof(crashinfo.base), 0) == FALSE ||
+				ReadProcessMemory(proc, (LPCVOID)dtd->target_infoblock, &crashinfo, crashinfo.base.sz, 0) == FALSE)
+			{
+				SendMessageW(dtd->hwndDlg, DNM_INFOMSG, 0, (LPARAM)L"Failed to read detailed crash information. Proceeding with basic dump.");
+				goto skip_advanced_dump;
+			}
+
+			// fill in exception_pointers stuff
+			exception_information.ThreadId = crashinfo.base.exception_thread_id;
+			exception_information.ExceptionPointers = crashinfo.base.exception_pointers;
+			exception_information.ClientPointers = TRUE;
+
+			// use complex information if available
+			if (sizeof(crashinfo) != crashinfo.base.sz)
+			{
+				SendMessageW(dtd->hwndDlg, DNM_INFOMSG, 0, (LPARAM)L"Detailed crash information is unsupported version, only using exception information (if present).");
+			}
+			else
+			{
+				// design pattern: allocate some memory and don't plan to ever free it
+				user_stream_information = new MINIDUMP_USER_STREAM_INFORMATION;
+				user_stream_information->UserStreamArray = new MINIDUMP_USER_STREAM[1];
+				user_stream_information->UserStreamCount = 1;
+
+				user_stream_information->UserStreamArray[0].Type = CommentStreamW;
+				user_stream_information->UserStreamArray[0].Buffer = crashinfo.unhandled_cpp_exception_text;
+				user_stream_information->UserStreamArray[0].BufferSize = sizeof(crashinfo.unhandled_cpp_exception_text);
+			}
+		}
+skip_advanced_dump:
+
 		std::wstring dumpfile_name =
 			dumpfile_folder +
 			procfn_basename + L'-' +
@@ -219,7 +332,9 @@ void __cdecl dumper_thread(void *data)
 			*ppid,
 			dumpfile,
 			MINIDUMP_TYPE(MiniDumpWithThreadInfo|MiniDumpIgnoreInaccessibleMemory|MiniDumpWithIndirectlyReferencedMemory),
-			0, 0, 0);
+			exception_information.ExceptionPointers ? &exception_information : 0,
+			user_stream_information,
+			0);
 
 		SendMessageW(dtd->hwndDlg, DNM_DUMPFINISHED, 0, (LPARAM)dumpfile_name.c_str());
 	}
@@ -262,6 +377,10 @@ INT_PTR CALLBACK dialog_msghandler(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
 		AddStringToListbox(hwndDlg, std::wstring(L"    Finished dump: ") + (wchar_t const *)lParam);
 		return TRUE;
 
+	case DNM_INFOMSG:
+		AddStringToListbox(hwndDlg, (wchar_t const *)lParam);
+		return true;
+
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDCLOSE && HIWORD(wParam) == BN_CLICKED)
 		{
@@ -289,7 +408,7 @@ INT_PTR CALLBACK dialog_msghandler(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' ""version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 	INITCOMMONCONTROLSEX iccx = {
@@ -303,7 +422,50 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (hwndDlg == 0)
 		ExitProcess(2);
 
-	DumperThreadData dtd = { hwndDlg, hInstance };
+	// todo: figure out a commandline format and parse it
+	// todo: what about exception data? shared memory?
+
+	// idea: SetUnhandledExceptionFilter() in Aegisub.
+	// When it hits, fill in a global storage struct with various useful information including
+	// pointer to EXCEPTION_POINTERS struct, then launch w32dumper with arguments:
+	//    -crash <pid> <address_of_global_struct>
+	// Since the size of the struct is known and Aegisub will be OpenProcess()'d with VM_READ
+	// privileges anyway, we can ReadProcessMemory() the struct out and parse it for interesting
+	// information. The EXCEPTION_POINTERS pointer will be to the address in Aegisub's VM but
+	// that's okay, MiniDumpWriteDump() can handle that.
+	// Last problem is then to make sure that Aegisub stays in the correct state (with exception
+	// pointers valid and all that), maybe just wait for the w32dumper process, then abort? Will
+	// other threads continue running then? If so, should they all be suspended?
+	//
+	// linkdump:
+	//  SetUnhandledExceptionFilter: <http://msdn.microsoft.com/en-us/library/windows/desktop/ms680634%28v=vs.85%29.aspx>
+	//  ReadProcessMemory: <http://msdn.microsoft.com/en-us/library/windows/desktop/ms680553%28v=vs.85%29.aspx>
+
+	DumperThreadData dtd = { hwndDlg };
+
+	{
+		int argc = 0;
+		// this will allocate a bit of memory, it's a waste of time to free it since the allocation
+		// disappears anyway when the process exits, and this process generally shouldn't be long-lived
+		// and this isn't a recurring allocation either.
+		wchar_t **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+		// accept command line args "-crash <pid> <infoblock_address>"
+		// infoblock_address is given as decimal, for simplicity
+		if (argc >= 4 && wcscmp(argv[1], L"-crash") == 0)
+		{
+			if (try_str2uint(argv[2], dtd.target_pid) && try_str2uint(argv[3], dtd.target_infoblock))
+			{
+				// well we got some values, the thread will act on them, no more to do here...
+			}
+			else
+			{
+				dtd.target_pid = 0;
+				dtd.target_infoblock = 0;
+			}
+		}
+	}
+
 	uintptr_t dumper_thread_handle = _beginthread(dumper_thread, 0, &dtd);
 	ShowWindow(hwndDlg, SW_SHOWNORMAL);
 
