@@ -88,7 +88,7 @@ class FontsCollectorThread : public wxThread {
 #else
 		AppendText(_("Aegisub was built without any font file listers enabled"), 2);
 		struct DummyLister : public FontFileLister {
-			std::vector<wxString> GetFontPaths(wxString const&, int, bool) { return std::vector<wxString>(); }
+			std::vector<wxString> GetFontPaths(wxString const&, int, bool, std::set<wxUniChar> const&) { return std::vector<wxString>(); }
 		} lister;
 #endif
 		std::vector<wxString> paths = FontCollector(callback, lister).GetFontPaths(subs->Line);
