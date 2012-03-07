@@ -66,6 +66,8 @@
 #include "standard_paths.h"
 #include "utils.h"
 
+using std::tr1::placeholders::_1;
+
 static wxBitmapButton *add_bitmap_button(wxWindow *parent, wxSizer *sizer, wxBitmap const& img, wxString const& tooltip) {
 	wxBitmapButton *btn = new wxBitmapButton(parent, -1, img);
 	btn->SetToolTip(tooltip);
@@ -372,7 +374,7 @@ void DialogStyleManager::OnStorageEdit() {
 	int n = StorageList->GetSelections(selections);
 	if (n == 1) {
 		AssStyle *selStyle = styleStorageMap[selections[0]];
-		DialogStyleEditor(this, selStyle, c, &Store, false).ShowModal();
+		DialogStyleEditor(this, selStyle, c, &Store).ShowModal();
 		StorageList->SetString(selections[0],selStyle->name);
 		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	}
@@ -384,7 +386,7 @@ void DialogStyleManager::OnCurrentEdit() {
 	int n = CurrentList->GetSelections(selections);
 	if (n == 1) {
 		AssStyle *selStyle = styleMap[selections[0]];
-		DialogStyleEditor(this, selStyle, c, 0, false).ShowModal();
+		DialogStyleEditor(this, selStyle, c).ShowModal();
 		CurrentList->SetString(selections[0],selStyle->name);
 	}
 	UpdateButtons();
@@ -452,15 +454,32 @@ void DialogStyleManager::OnCopyToCurrent() {
 	UpdateButtons();
 }
 
+template<class Func>
+static wxString unique_name(Func name_checker, wxString const& source_name) {
+	if (name_checker(source_name)) {
+		wxString name = wxString::Format(_("%s - Copy"), source_name);
+		for (int i = 2; name_checker(name); ++i)
+			name = wxString::Format(_("%s - Copy (%d)"), source_name, i);
+		return name;
+	}
+	return source_name;
+}
+
 void DialogStyleManager::OnStorageCopy() {
 	wxArrayInt selections;
 	StorageList->GetSelections(selections);
 	if (selections.empty()) return;
 
-	DialogStyleEditor(this, styleStorageMap[selections[0]], c, &Store, true).ShowModal();
-	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
-	LoadStorageStyles();
-	UpdateButtons();
+	AssStyle *s = styleStorageMap[selections[0]];
+	DialogStyleEditor editor(this, s, c, &Store,
+		unique_name(bind(&AssStyleStorage::GetStyle, &Store, _1), s->name));
+
+	if (editor.ShowModal()) {
+		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+		LoadStorageStyles();
+		StorageList->SetStringSelection(editor.GetStyleName());
+		UpdateButtons();
+	}
 }
 
 void DialogStyleManager::OnCurrentCopy() {
@@ -468,9 +487,15 @@ void DialogStyleManager::OnCurrentCopy() {
 	CurrentList->GetSelections(selections);
 	if (selections.empty()) return;
 
-	DialogStyleEditor(this, styleMap[selections[0]], c, 0, true).ShowModal();
-	LoadCurrentStyles(c->ass);
-	UpdateButtons();
+	AssStyle *s = styleMap[selections[0]];
+	DialogStyleEditor editor(this, s, c, 0,
+		unique_name(bind(&AssFile::GetStyle, c->ass, _1), s->name));
+
+	if (editor.ShowModal()) {
+		LoadCurrentStyles(c->ass);
+		CurrentList->SetStringSelection(editor.GetStyleName());
+		UpdateButtons();
+	}
 }
 
 void DialogStyleManager::CopyToClipboard(wxListBox *list, std::vector<AssStyle*> v) {
@@ -510,8 +535,7 @@ static void add_styles(Func1 name_checker, Func2 style_adder) {
 	while (st.HasMoreTokens()) {
 		try {
 			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
-			while (name_checker(s->name))
-				s->name = "Copy of " + s->name;
+			s->name = unique_name(name_checker, s->name);
 			style_adder(s);
 		}
 		catch (...) {
@@ -522,8 +546,8 @@ static void add_styles(Func1 name_checker, Func2 style_adder) {
 
 void DialogStyleManager::PasteToCurrent() {
 	add_styles(
-		bind(&AssFile::GetStyle, c->ass, std::tr1::placeholders::_1),
-		bind(&AssFile::InsertStyle, c->ass, std::tr1::placeholders::_1));
+		bind(&AssFile::GetStyle, c->ass, _1),
+		bind(&AssFile::InsertStyle, c->ass, _1));
 
 	LoadCurrentStyles(c->ass);
 	c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
@@ -531,8 +555,8 @@ void DialogStyleManager::PasteToCurrent() {
 
 void DialogStyleManager::PasteToStorage() {
 	add_styles(
-		bind(&AssStyleStorage::GetStyle, &Store, std::tr1::placeholders::_1),
-		bind(&std::list<AssStyle*>::push_back, &Store.style, std::tr1::placeholders::_1));
+		bind(&AssStyleStorage::GetStyle, &Store, _1),
+		bind(&std::list<AssStyle*>::push_back, &Store.style, _1));
 
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	LoadStorageStyles();
@@ -540,14 +564,14 @@ void DialogStyleManager::PasteToStorage() {
 }
 
 void DialogStyleManager::OnStorageNew() {
-	DialogStyleEditor(this, 0, c, &Store, false).ShowModal();
+	DialogStyleEditor(this, 0, c, &Store).ShowModal();
 	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
 	LoadStorageStyles();
 	UpdateButtons();
 }
 
 void DialogStyleManager::OnCurrentNew() {
-	DialogStyleEditor(this,0, c, 0, false).ShowModal();
+	DialogStyleEditor(this, 0, c, 0).ShowModal();
 	LoadCurrentStyles(c->ass);
 	UpdateButtons();
 }

@@ -78,17 +78,17 @@ static wxTextCtrl *num_text_ctrl(wxWindow *parent, double value, wxSize size = w
 	return new wxTextCtrl(parent, -1, "", wxDefaultPosition, size, 0, NumValidator(value));
 }
 
-DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, bool copy_style)
-: wxDialog (parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "DialogStyleEditor")
+DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, wxString const& new_name)
+: wxDialog (parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , c(c)
 , is_new(false)
 , style(style)
 , store(store)
 {
-	if (copy_style) {
+	if (new_name.size()) {
 		is_new = true;
 		style = this->style = new AssStyle(*style);
-		style->name = wxString::Format(_("%s - Copy"), style->name);
+		style->name = new_name;
 	}
 	else if (!style) {
 		is_new = true;
@@ -344,6 +344,10 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 DialogStyleEditor::~DialogStyleEditor() {
 	if (is_new)
 		delete style;
+}
+
+wxString DialogStyleEditor::GetStyleName() const {
+	return style->name;
 }
 
 /// @brief Update appearances of a renamed style in \r tags
