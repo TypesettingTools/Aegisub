@@ -97,6 +97,13 @@ public:
 		if (new_value != BaseCtrl::GetValue())
 			BaseCtrl::ChangeValue(new_value);
 	}
+
+	/// Override GetValue to return empty when in placeholder mode rather than the placeholder text
+	wxString GetValue() const {
+		if (is_placeholder && !this->HasFocus())
+			return "";
+		return BaseCtrl::GetValue();
+	}
 };
 
 template<> inline void Placeholder<wxComboBox>::Create(wxWindow *parent, wxSize const& size, long style) {
