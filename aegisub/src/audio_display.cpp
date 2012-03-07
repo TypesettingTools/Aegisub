@@ -502,6 +502,9 @@ public:
 		// We lose the marker drag if the button used to initiate it goes up
 		return !event.ButtonUp(button_used);
 	}
+
+	/// Get the position in milliseconds of this group of markers
+	int GetPosition() const { return markers.front()->GetPosition(); }
 };
 
 class AudioStyleRangeMerger : public AudioRenderingStyleRanges {
@@ -1090,12 +1093,16 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 			SetCursor(wxNullCursor);
 	}
 
+	int old_scroll_pos = scroll_left;
 	if (event.LeftDown() || event.RightDown())
 	{
 		int timepos = TimeFromRelativeX(mousepos.x);
 		std::vector<AudioMarker*> markers = event.LeftDown() ?
 			timing->OnLeftClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity) :
 			timing->OnRightClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity);
+
+		// Clicking should never result in the audio display scrolling
+		ScrollPixelToLeft(old_scroll_pos);
 
 		if (markers.size())
 		{
@@ -1222,7 +1229,23 @@ void AudioDisplay::OnSelectionChanged()
 	TimeRange sel(controller->GetPrimaryPlaybackRange());
 	scrollbar->SetSelection(AbsoluteXFromTime(sel.begin()), AbsoluteXFromTime(sel.length()));
 
-	if (OPT_GET("Audio/Auto/Scroll")->GetBool())
+	if (audio_marker)
+	{
+		int rel_x = RelativeXFromTime(audio_marker->GetPosition());
+		int width = GetClientSize().GetWidth();
+
+		// If the dragged object is outside the visible area, scroll it into
+		// view with a 5% margin
+		if (rel_x < 0)
+		{
+			ScrollBy(rel_x - width / 20);
+		}
+		else if (rel_x >= width)
+		{
+			ScrollBy(rel_x - width + width / 20);
+		}
+	}
+	else if (OPT_GET("Audio/Auto/Scroll")->GetBool())
 	{
 		ScrollTimeRangeInView(sel);
 	}
