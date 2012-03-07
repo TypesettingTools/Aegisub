@@ -516,8 +516,9 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Style, StyleBox->GetValue(), _("style change"), AssFile::COMMIT_DIAG_META);
 }
 
-void SubsEditBox::OnActorChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Actor, ActorBox->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META);
+void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
+	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
+	SetSelectedRows(&AssDialogue::Actor, ActorBox->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateActorList();
 }
 
