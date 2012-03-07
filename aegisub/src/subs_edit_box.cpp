@@ -567,7 +567,7 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &) {
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META, true);
 }
 
 void SubsEditBox::OnCommentChange(wxCommandEvent &) {
