@@ -172,9 +172,6 @@ namespace Automation4 {
 		/// Get the default flags to use when inserting this control into a sizer
 		virtual int GetSizerFlags() const { return wxEXPAND; }
 
-		/// Read the current value of the control. Must not touch Lua as this is called on the GUI thread.
-		virtual void ControlReadBack() = 0;
-
 		/// Push the current value of the control onto the lua stack. Must not
 		/// touch the GUI as this may be called on a background thread.
 		virtual void LuaReadBack(lua_State *L) = 0;
@@ -208,6 +205,8 @@ namespace Automation4 {
 		/// Id of the button pushed (once a button has been pushed)
 		int button_pushed;
 
+		wxWindow *window;
+
 		void OnButtonPush(wxCommandEvent &evt);
 
 	public:
@@ -222,7 +221,6 @@ namespace Automation4 {
 		wxWindow* CreateWindow(wxWindow *parent);
 		wxString Serialise();
 		void Unserialise(const wxString &serialised);
-		void ReadBack();
 	};
 
 	class LuaFeature {

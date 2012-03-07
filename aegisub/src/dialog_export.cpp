@@ -53,10 +53,12 @@
 #include "help_button.h"
 
 DialogExport::DialogExport(agi::Context *c)
-: wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX, "Export")
+: wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
 , c(c)
 , exporter(new AssExporter(c))
 {
+	SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+
 	wxArrayString filters = exporter->GetAllFilterNames();
 	filter_list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(200, 100), filters);
 	filter_list->Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &DialogExport::OnCheck, this);
@@ -109,8 +111,8 @@ DialogExport::DialogExport(agi::Context *c)
 
 	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	btn_sizer->GetAffirmativeButton()->SetLabelText(_("Export..."));
-	btn_sizer->GetAffirmativeButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogExport::OnProcess, this);
-	btn_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Export"));
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogExport::OnProcess, this, wxID_OK);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
 
 	wxSizer *horz_sizer = new wxBoxSizer(wxHORIZONTAL);
 	opt_sizer = new wxBoxSizer(wxVERTICAL);
@@ -137,6 +139,8 @@ DialogExport::~DialogExport() {
 }
 
 void DialogExport::OnProcess(wxCommandEvent &) {
+	if (!TransferDataFromWindow()) return;
+
 	wxString filename = wxFileSelector(_("Export subtitles file"), "", "", "", AssFile::GetWildcardList(2), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
 	if (filename.empty()) return;
 

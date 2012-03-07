@@ -192,14 +192,12 @@ namespace Automation4 {
 
 	ExportFilter::ExportFilter(wxString const& name, wxString const& description, int priority)
 	: AssExportFilter(name, description, priority)
-	, config_dialog(0)
 	{
 		AssExportFilterChain::Register(this);
 	}
 
 	ExportFilter::~ExportFilter()
 	{
-		delete config_dialog;
 		AssExportFilterChain::Unregister(this);
 	}
 
@@ -209,12 +207,9 @@ namespace Automation4 {
 	}
 
 	wxWindow* ExportFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {
-		if (config_dialog) {
-			delete config_dialog;
-			config_dialog = 0;
-		}
+		config_dialog.reset(GenerateConfigDialog(parent, c));
 
-		if ((config_dialog = GenerateConfigDialog(parent, c))) {
+		if (config_dialog) {
 			wxString val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());
 			if (!val.empty())
 				config_dialog->Unserialise(val);
@@ -226,8 +221,6 @@ namespace Automation4 {
 
 	void ExportFilter::LoadSettings(bool is_default, agi::Context *c) {
 		if (config_dialog) {
-			config_dialog->ReadBack();
-
 			wxString val = config_dialog->Serialise();
 			if (!val.empty())
 				c->ass->SetScriptInfo(GetScriptSettingsIdentifier(), val);
@@ -280,14 +273,15 @@ namespace Automation4 {
 	{
 		std::pair<ScriptDialog*, wxSemaphore*> payload = evt.GetPayload<std::pair<ScriptDialog*, wxSemaphore*> >();
 
-		wxDialog w(impl.get(), -1, impl->GetTitle()); // container dialog box
+		wxDialog w; // container dialog box
+		w.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+		w.Create(impl.get(), -1, impl->GetTitle());
 		wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
 		wxWindow *ww = payload.first->CreateWindow(&w); // generate actual dialog contents
 		s->Add(ww, 0, wxALL, 5); // add contents to dialog
 		w.SetSizerAndFit(s);
 		w.CenterOnParent();
 		w.ShowModal();
-		payload.first->ReadBack();
 
 		// Tell the calling thread it can wake up now
 		payload.second->Post();

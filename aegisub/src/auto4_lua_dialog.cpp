@@ -58,6 +58,7 @@
 #endif
 
 #include <cfloat>
+#include <wx/valgen.h>
 
 #include <libaegisub/log.h>
 
@@ -159,8 +160,6 @@ namespace Automation4 {
 
 			int GetSizerFlags() const { return wxALIGN_CENTRE_VERTICAL | wxALIGN_LEFT; }
 
-			void ControlReadBack() { }
-
 			void LuaReadBack(lua_State *L)
 			{
 				// Label doesn't produce output, so let it be nil
@@ -200,13 +199,9 @@ namespace Automation4 {
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxTextCtrl(parent, -1, text);
+				cw->SetValidator(wxGenericValidator(&text));
 				cw->SetToolTip(hint);
 				return cw;
-			}
-
-			void ControlReadBack()
-			{
-				text = cw->GetValue();
 			}
 
 			void LuaReadBack(lua_State *L)
@@ -218,9 +213,21 @@ namespace Automation4 {
 		/// A color-picker button
 		class Color : public LuaDialogControl {
 			wxString text;
-			ColourButton *cw;
-		public:
 
+			struct ColorValidator : public wxValidator {
+				wxString *text;
+				ColorValidator(wxString *text) : text(text) { }
+				wxValidator *Clone() const { return new ColorValidator(text); }
+				bool Validate(wxWindow*) { return true; }
+				bool TransferToWindow() { return true; }
+
+				bool TransferFromWindow()
+				{
+					*text = static_cast<ColourButton*>(GetWindow())->GetColour().GetAsString(wxC2S_HTML_SYNTAX);
+					return true;
+				}
+			};
+		public:
 			Color(lua_State *L)
 			: LuaDialogControl(L)
 			, text(get_field(L, "value"))
@@ -243,14 +250,10 @@ namespace Automation4 {
 			{
 				AssColor colour;
 				colour.Parse(text);
-				cw = new ColourButton(parent, -1, wxSize(50*width,10*height), colour.GetWXColor());
+				wxControl *cw = new ColourButton(parent, -1, wxSize(50*width,10*height), colour.GetWXColor());
+				cw->SetValidator(ColorValidator(&text));
 				cw->SetToolTip(hint);
 				return cw;
-			}
-
-			void ControlReadBack()
-			{
-				text = cw->GetColour().GetAsString(wxC2S_HTML_SYNTAX);
 			}
 
 			void LuaReadBack(lua_State *L)
@@ -270,7 +273,7 @@ namespace Automation4 {
 			// Same serialisation interface as single-line edit
 			wxControl *Create(wxWindow *parent)
 			{
-				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+				cw = new wxTextCtrl(parent, -1, text, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxGenericValidator(&text));
 				cw->SetMinSize(wxSize(0, 30));
 				cw->SetToolTip(hint);
 				return cw;
@@ -314,13 +317,9 @@ namespace Automation4 {
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxSpinCtrl(parent, -1, wxString::Format("%d", value), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
+				cw->SetValidator(wxGenericValidator(&value));
 				cw->SetToolTip(hint);
 				return cw;
-			}
-
-			void ControlReadBack()
-			{
-				value = cw->GetValue();
 			}
 
 			void LuaReadBack(lua_State *L)
@@ -337,6 +336,20 @@ namespace Automation4 {
 			double max;
 			double step;
 			wxSpinCtrlDouble *scd;
+
+			struct DoubleValidator : public wxValidator {
+				double *value;
+				DoubleValidator(double *value) : value(value) { }
+				wxValidator *Clone() const { return new DoubleValidator(value); }
+				bool Validate(wxWindow*) { return true; }
+				bool TransferToWindow() { return true; }
+
+				bool TransferFromWindow()
+				{
+					*value = static_cast<wxSpinCtrlDouble*>(GetWindow())->GetValue();
+					return true;
+				}
+			};
 
 		public:
 			FloatEdit(lua_State *L)
@@ -373,6 +386,7 @@ namespace Automation4 {
 					scd = new wxSpinCtrlDouble(parent, -1,
 						wxString::Format("%g", value), wxDefaultPosition,
 						wxDefaultSize, wxSP_ARROW_KEYS, min, max, value, step);
+					scd->SetValidator(DoubleValidator(&value));
 					scd->SetToolTip(hint);
 					return scd;
 				}
@@ -383,16 +397,6 @@ namespace Automation4 {
 				cw = new wxTextCtrl(parent, -1, SerialiseValue(), wxDefaultPosition, wxDefaultSize, 0, val);
 				cw->SetToolTip(hint);
 				return cw;
-			}
-
-			void ControlReadBack()
-			{
-				if (scd)
-					value = scd->GetValue();
-				else
-					cw->TransferDataFromWindow();
-
-				text = SerialiseValue();
 			}
 
 			void LuaReadBack(lua_State *L)
@@ -406,8 +410,8 @@ namespace Automation4 {
 			wxArrayString items;
 			wxString value;
 			wxComboBox *cw;
-		public:
 
+		public:
 			Dropdown(lua_State *L)
 			: LuaDialogControl(L)
 			, value(get_field(L, "value"))
@@ -430,14 +434,9 @@ namespace Automation4 {
 
 			wxControl *Create(wxWindow *parent)
 			{
-				cw = new wxComboBox(parent, -1, value, wxDefaultPosition, wxDefaultSize, items, wxCB_READONLY);
+				cw = new wxComboBox(parent, -1, value, wxDefaultPosition, wxDefaultSize, items, wxCB_READONLY, wxGenericValidator(&value));
 				cw->SetToolTip(hint);
 				return cw;
-			}
-
-			void ControlReadBack()
-			{
-				value = cw->GetValue();
 			}
 
 			void LuaReadBack(lua_State *L)
@@ -475,14 +474,10 @@ namespace Automation4 {
 			wxControl *Create(wxWindow *parent)
 			{
 				cw = new wxCheckBox(parent, -1, label);
+				cw->SetValidator(wxGenericValidator(&value));
 				cw->SetToolTip(hint);
 				cw->SetValue(value);
 				return cw;
-			}
-
-			void ControlReadBack()
-			{
-				value = cw->GetValue();
 			}
 
 			void LuaReadBack(lua_State *L)
@@ -560,12 +555,12 @@ namespace Automation4 {
 
 	wxWindow* LuaDialog::CreateWindow(wxWindow *parent)
 	{
-		wxWindow *w = new wxPanel(parent);
+		window = new wxPanel(parent);
 		wxGridBagSizer *s = new wxGridBagSizer(4, 4);
 
 		for (size_t i = 0; i < controls.size(); ++i) {
 			LuaDialogControl *c = controls[i];
-			s->Add(c->Create(w), wxGBPosition(c->y, c->x), wxGBSpan(c->height, c->width), c->GetSizerFlags());
+			s->Add(c->Create(window), wxGBPosition(c->y, c->x), wxGBSpan(c->height, c->width), c->GetSizerFlags());
 		}
 
 		if (use_buttons) {
@@ -575,26 +570,26 @@ namespace Automation4 {
 				for (size_t i = 0; i < buttons.size(); ++i) {
 					LOG_D("automation/lua/dialog") << "button '" << STD_STR(buttons[i]) << "' gets id " << 1001+(wxWindowID)i;
 
-					bs->Add(new wxButton(w, 1001+(wxWindowID)i, buttons[i]));
+					bs->Add(new wxButton(window, 1001+(wxWindowID)i, buttons[i]));
 				}
 			} else {
 				LOG_D("automation/lua/dialog") << "creating default buttons";
-				bs->Add(new wxButton(w, wxID_OK));
-				bs->Add(new wxButton(w, wxID_CANCEL));
+				bs->Add(new wxButton(window, wxID_OK));
+				bs->Add(new wxButton(window, wxID_CANCEL));
 			}
 			bs->Realize();
 
-			w->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &LuaDialog::OnButtonPush, this);
+			window->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &LuaDialog::OnButtonPush, this);
 
 			wxBoxSizer *ms = new wxBoxSizer(wxVERTICAL);
 			ms->Add(s, 0, wxBOTTOM, 5);
 			ms->Add(bs);
-			w->SetSizerAndFit(ms);
+			window->SetSizerAndFit(ms);
 		} else {
-			w->SetSizerAndFit(s);
+			window->SetSizerAndFit(s);
 		}
 
-		return w;
+		return window;
 	}
 
 	int LuaDialog::LuaReadBack(lua_State *L)
@@ -667,13 +662,6 @@ namespace Automation4 {
 					controls[i]->UnserialiseValue(value);
 				}
 			}
-		}
-	}
-
-	void LuaDialog::ReadBack()
-	{
-		for (size_t i = 0; i < controls.size(); ++i) {
-			controls[i]->ControlReadBack();
 		}
 	}
 

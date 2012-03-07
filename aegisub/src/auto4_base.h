@@ -84,7 +84,7 @@ namespace Automation4 {
 	class ScriptDialog;
 
 	class ExportFilter : public AssExportFilter {
-		ScriptDialog *config_dialog;
+		agi::scoped_ptr<ScriptDialog> config_dialog;
 
 		/// subclasses should implement this, producing a new ScriptDialog
 		virtual ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) = 0;
@@ -111,10 +111,6 @@ namespace Automation4 {
 
 		/// Create a window with the given parent
 		virtual wxWindow *CreateWindow(wxWindow *parent) = 0;
-
-		/// Read the values of the controls in this dialog and cache them in
-		/// some way so that they can be accessed from a background thread
-		virtual void ReadBack() = 0;
 
 		/// Serialize the values of the controls in this dialog to a string
 		/// suitable for storage in the subtitle script
