@@ -59,6 +59,10 @@
 #include "audio_player_portaudio.h"
 #endif
 
+#ifdef WITH_FFMS2
+#include <ffms.h>
+#endif
+
 static wxArrayString vec_to_arrstr(std::vector<std::string> const& vec) {
 	wxArrayString arrstr;
 	transform(vec.begin(), vec.end(), std::back_inserter(arrstr), &lagi_wxString);
@@ -589,6 +593,9 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 
 	OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads");
 	OptionAdd(ffms, _("Enable unsafe seeking"), "Provider/Video/FFmpegSource/Unsafe Seeking");
+#if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
+	OptionAdd(ffms, _("Force BT.601"), "Provider/Video/FFmpegSource/Force BT.601");
+#endif
 #endif
 
 	SetSizerAndFit(sizer);

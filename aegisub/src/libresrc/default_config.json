@@ -344,6 +344,7 @@
 			},
 			"FFmpegSource" : {
 				"Decoding Threads" : -1,
+				"Force BT.601" : false,
 				"Unsafe Seeking" : false
 			}
 		}
