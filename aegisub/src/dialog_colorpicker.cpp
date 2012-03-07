@@ -470,8 +470,11 @@ wxString ColorPickerRecent::StoreToString()
 
 void ColorPickerRecent::AddColor(wxColour color)
 {
-	colors.erase(remove(colors.begin(), colors.end(), color), colors.end());
-	colors.insert(colors.begin(), color);
+	std::vector<wxColour>::iterator existing = find(colors.begin(), colors.end(), color);
+	if (existing != colors.end())
+		rotate(colors.begin(), existing, existing + 1);
+	else
+		colors.insert(colors.begin(), color);
 
 	background_valid = false;
 
