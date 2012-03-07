@@ -40,6 +40,7 @@
 #ifndef AGI_PRE
 #include <fstream>
 #include <list>
+#include <set>
 #include <vector>
 
 #include <wx/arrstr.h>
@@ -241,10 +242,12 @@ public:
 
 	/// @brief Sort the dialogue lines in this file
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
-	void Sort(CompFunc comp = CompStart);
+	/// @param limit If non-empty, only lines in this set are sorted
+	void Sort(CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 	/// @brief Sort the dialogue lines in the given list
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
-	static void Sort(std::list<AssEntry*>& lst, CompFunc comp = CompStart);
+	/// @param limit If non-empty, only lines in this set are sorted
+	static void Sort(std::list<AssEntry*>& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 	/// @brief Sort the dialogue lines in the given list
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
 	static void Sort(std::list<AssDialogue*>& lst, CompFunc comp = CompStart);

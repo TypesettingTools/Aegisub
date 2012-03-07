@@ -114,6 +114,27 @@ struct grid_sort_actor : public Command {
 	}
 };
 
+struct validate_sel_multiple : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
+
+	bool Validate(const agi::Context *c) {
+		return c->selectionController->GetSelectedSet().size() > 1;
+	}
+};
+
+/// Sort all selected subtitles by their actor names
+struct grid_sort_actor_selected : public validate_sel_multiple {
+	CMD_NAME("grid/sort/actor/selected")
+	STR_MENU("&Actor Name")
+	STR_DISP("Actor Name")
+	STR_HELP("Sort selected subtitles by their actor names")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompActor, c->selectionController->GetSelectedSet());
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
 /// Sort all subtitles by their effects
 struct grid_sort_effect : public Command {
 	CMD_NAME("grid/sort/effect")
@@ -123,6 +144,19 @@ struct grid_sort_effect : public Command {
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort(AssFile::CompEffect);
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
+/// Sort all selected subtitles by their effects
+struct grid_sort_effect_selected : public validate_sel_multiple {
+	CMD_NAME("grid/sort/effect/selected")
+	STR_MENU("&Effect")
+	STR_DISP("Effect")
+	STR_HELP("Sort selected subtitles by their effects")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompEffect, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
 };
@@ -140,6 +174,19 @@ struct grid_sort_end : public Command {
 	}
 };
 
+/// Sort all selected subtitles by their end times.
+struct grid_sort_end_selected : public validate_sel_multiple {
+	CMD_NAME("grid/sort/end/selected")
+	STR_MENU("&End Time")
+	STR_DISP("End Time")
+	STR_HELP("Sort selected subtitles by their end times")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompEnd, c->selectionController->GetSelectedSet());
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
 /// Sort all subtitles by their start times.
 struct grid_sort_start : public Command {
 	CMD_NAME("grid/sort/start")
@@ -153,6 +200,19 @@ struct grid_sort_start : public Command {
 	}
 };
 
+/// Sort all selected subtitles by their start times.
+struct grid_sort_start_selected : public validate_sel_multiple {
+	CMD_NAME("grid/sort/start/selected")
+	STR_MENU("&Start Time")
+	STR_DISP("Start Time")
+	STR_HELP("Sort selected subtitles by their start times")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompStart, c->selectionController->GetSelectedSet());
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
 /// Sort all subtitles by their style names
 struct grid_sort_style : public Command {
 	CMD_NAME("grid/sort/style")
@@ -162,6 +222,19 @@ struct grid_sort_style : public Command {
 
 	void operator()(agi::Context *c) {
 		c->ass->Sort(AssFile::CompStyle);
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
+/// Sort all selected subtitles by their style names
+struct grid_sort_style_selected : public validate_sel_multiple {
+	CMD_NAME("grid/sort/style/selected")
+	STR_MENU("St&yle Name")
+	STR_DISP("Style Name")
+	STR_HELP("Sort selected subtitles by their style names")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompStyle, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
 };
@@ -340,6 +413,11 @@ namespace cmd {
 		reg(new grid_sort_end);
 		reg(new grid_sort_start);
 		reg(new grid_sort_style);
+		reg(new grid_sort_actor_selected);
+		reg(new grid_sort_effect_selected);
+		reg(new grid_sort_end_selected);
+		reg(new grid_sort_start_selected);
+		reg(new grid_sort_style_selected);
 		reg(new grid_move_down);
 		reg(new grid_move_up);
 		reg(new grid_swap);

@@ -730,8 +730,8 @@ bool AssFile::CompEffect(const AssDialogue* lft, const AssDialogue* rgt) {
 	return lft->Effect < rgt->Effect;
 }
 
-void AssFile::Sort(CompFunc comp) {
-	Sort(Line, comp);
+void AssFile::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
+	Sort(Line, comp, limit);
 }
 namespace {
 	struct AssEntryComp : public std::binary_function<const AssEntry*, const AssEntry*, bool> {
@@ -740,15 +740,20 @@ namespace {
 			return comp(static_cast<const AssDialogue*>(a), static_cast<const AssDialogue*>(b));
 		}
 	};
+
+	inline bool is_dialogue(AssEntry *e, std::set<AssDialogue*> const& limit) {
+		AssDialogue *d = dynamic_cast<AssDialogue*>(e);
+		return d && (limit.empty() || limit.count(d));
+	}
 }
-void AssFile::Sort(std::list<AssEntry*> &lst, CompFunc comp) {
+void AssFile::Sort(std::list<AssEntry*> &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
 	AssEntryComp compE;
 	compE.comp = comp;
 	// Sort each block of AssDialogues separately, leaving everything else untouched
 	for (entryIter begin = lst.begin(); begin != lst.end(); ++begin) {
-		if (!dynamic_cast<AssDialogue*>(*begin)) continue;
+		if (!is_dialogue(*begin, limit)) continue;
 		entryIter end = begin;
-		while (end != lst.end() && dynamic_cast<AssDialogue*>(*end)) ++end;
+		while (end != lst.end() && is_dialogue(*end, limit)) ++end;
 
 		// used instead of std::list::sort for partial list sorting
 		std::list<AssEntry*> tmp;
