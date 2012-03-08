@@ -44,11 +44,14 @@
 #endif
 
 #include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signal.h>
+
 #include "ass_style_storage.h"
 
 namespace agi { struct Context; }
 class AssFile;
 class AssStyle;
+class DialogStyleEditor;
 class PersistLocation;
 
 /// DOCME
@@ -59,6 +62,8 @@ class PersistLocation;
 class DialogStyleManager : public wxDialog {
 	agi::Context *c; ///< Project context
 	agi::scoped_ptr<PersistLocation> persist;
+
+	agi::signal::Connection commit_connection;
 
 	/// Styles in the current subtitle file
 	std::vector<AssStyle*> styleMap;
@@ -98,13 +103,23 @@ class DialogStyleManager : public wxDialog {
 	/// Load the list of available storages
 	void LoadCatalog();
 	/// Load the style list from the subtitles file
-	void LoadCurrentStyles(AssFile *subs);
+	void LoadCurrentStyles(int commit_type);
 	/// Enable/disable all of the buttons as appropriate
 	void UpdateButtons();
 	/// Move styles up or down
 	/// @param storage Storage or current file styles
 	/// @param type 0: up; 1: top; 2: down; 3: bottom; 4: sort
 	void MoveStyles(bool storage, int type);
+
+	/// Open the style editor for the given style on the script
+	/// @param style Style to edit, or NULL for new
+	/// @param new_name Default new name for copies
+	void ShowCurrentEditor(AssStyle *style, wxString const& new_name = "");
+
+	/// Open the style editor for the given style in the storage
+	/// @param style Style to edit, or NULL for new
+	/// @param new_name Default new name for copies
+	void ShowStorageEditor(AssStyle *style, wxString const& new_name = "");
 
 	/// Save the storage and update the view after a change
 	void UpdateStorage();
