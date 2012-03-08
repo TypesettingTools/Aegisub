@@ -154,8 +154,9 @@ PKG_PROG_PKG_CONFIG([pkgconfig_required_version])
 # XXX: This needs to be fixed to handle mixed revisions properly
 #      There is probably a better way to handle it as well...
 AC_MSG_CHECKING([for svn version])
-AS_IF([test -d "$srcdir/.svn"], [
-  SVN_REVISION=`svnversion $srcdir | sed "s/\(^@<:@0-9@:>@*\).*/\1/"`
+# Try to get revision from working copy and check if it makes sense
+SVN_REVISION=`svnversion $srcdir | sed "s/\(^@<:@0-9@:>@*\).*/\1/"` 2> /dev/null
+AS_IF([test -n "$SVN_REVISION" -a -z "`echo $SVN_REVISION | tr -d '0-9'`"], [
   `echo $SVN_REVISION > $srcdir/svn_revision`
   AC_MSG_RESULT([$SVN_REVISION from "svnversion $srcdir"])
 ], [test -f "$srcdir/svn_revision"], [
