@@ -35,7 +35,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <list>
+#include <deque>
 
 #include <wx/arrstr.h>
 #endif
@@ -49,10 +49,18 @@ class AssStyle;
 /// DOCME
 class AssStyleStorage {
 	wxString storage_name;
+	std::deque<AssStyle*> style;
+
 public:
 	~AssStyleStorage();
 
-	std::list<AssStyle*> style;
+	typedef std::deque<AssStyle*>::iterator iterator;
+	iterator begin() { return style.begin(); }
+	iterator end() { return style.end(); }
+	void push_back(AssStyle *new_style) { style.push_back(new_style); }
+	AssStyle *back() { return style.back(); }
+	AssStyle *operator[](size_t idx) const { return style[idx]; }
+	size_t size() const { return style.size(); }
 
 	/// Get the names of all styles in this storage
 	wxArrayString GetNames();
@@ -60,10 +68,13 @@ public:
 	/// Delete all styles in this storage
 	void Clear();
 
+	/// Delete the style at the given index
+	void Delete(int idx);
+
 	/// Get the style with the given name
 	/// @param name Case-insensitive style name
 	/// @return Style or NULL if the requested style is not found
-	AssStyle *GetStyle(wxString name);
+	AssStyle *GetStyle(wxString const& name);
 
 	/// Save stored styles to a file
 	void Save();

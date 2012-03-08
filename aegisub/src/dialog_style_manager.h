@@ -63,9 +63,6 @@ class DialogStyleManager : public wxDialog {
 	/// Styles in the current subtitle file
 	std::vector<AssStyle*> styleMap;
 
-	/// Styles in the currently selected style storage
-	std::vector<AssStyle*> styleStorageMap;
-
 	/// Style storage manager
 	AssStyleStorage Store;
 
@@ -98,20 +95,19 @@ class DialogStyleManager : public wxDialog {
 	wxButton *CurrentMoveBottom;
 	wxButton *CurrentSort;
 
-	/// Enable or disable the storage buttons
-	void StorageActions(bool state);
 	/// Load the list of available storages
 	void LoadCatalog();
 	/// Load the style list from the subtitles file
 	void LoadCurrentStyles(AssFile *subs);
-	/// Load the style list from the current storage
-	void LoadStorageStyles();
 	/// Enable/disable all of the buttons as appropriate
 	void UpdateButtons();
 	/// Move styles up or down
 	/// @param storage Storage or current file styles
 	/// @param type 0: up; 1: top; 2: down; 3: bottom; 4: sort
 	void MoveStyles(bool storage, int type);
+
+	/// Save the storage and update the view after a change
+	void UpdateStorage();
 
 	void OnChangeCatalog();
 	void OnCatalogNew();
@@ -128,9 +124,11 @@ class DialogStyleManager : public wxDialog {
 	void OnCurrentDelete();
 	void OnCurrentImport();
 	void OnKeyDown(wxKeyEvent &event);
-	void CopyToClipboard(wxListBox *list, std::vector<AssStyle*> v);
 	void PasteToCurrent();
 	void PasteToStorage();
+
+	template<class T>
+	void CopyToClipboard(wxListBox *list, T const& v);
 
 public:
 	DialogStyleManager(agi::Context *context);

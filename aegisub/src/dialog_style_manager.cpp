@@ -272,23 +272,19 @@ void DialogStyleManager::LoadCurrentStyles(AssFile *subs) {
 	UpdateButtons();
 }
 
-void DialogStyleManager::LoadStorageStyles() {
-	StorageList->Clear();
-	styleStorageMap.clear();
+void DialogStyleManager::UpdateStorage() {
+	Store.Save();
 
-	for (std::list<AssStyle*>::iterator cur=Store.style.begin();cur!=Store.style.end();cur++) {
-		AssStyle *style = *cur;
-		StorageList->Append(style->name);
-		styleStorageMap.push_back(style);
-	}
+	StorageList->Clear();
+	for (AssStyleStorage::iterator cur = Store.begin(); cur != Store.end(); ++cur)
+		StorageList->Append((*cur)->name);
 
 	UpdateButtons();
 }
 
 void DialogStyleManager::OnChangeCatalog() {
 	Store.Load(CatalogList->GetStringSelection());
-	LoadStorageStyles();
-	UpdateButtons();
+	UpdateStorage();
 }
 
 void DialogStyleManager::OnCatalogNew() {
@@ -322,8 +318,7 @@ void DialogStyleManager::OnCatalogNew() {
 		CatalogList->SetStringSelection(name);
 
 		Store.Load(name);
-		Store.Save();
-		StorageList->Clear();
+		UpdateStorage();
 	}
 	UpdateButtons();
 }
@@ -346,12 +341,12 @@ void DialogStyleManager::OnStorageEdit() {
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
 	if (n == 1) {
-		AssStyle *selStyle = styleStorageMap[selections[0]];
+		AssStyle *selStyle = Store[selections[0]];
 		DialogStyleEditor(this, selStyle, c, &Store).ShowModal();
-		StorageList->SetString(selections[0], selStyle->name);
-		Store.Save();
+		UpdateStorage();
+		StorageList->SetStringSelection(selStyle->name);
+		UpdateButtons();
 	}
-	UpdateButtons();
 }
 
 void DialogStyleManager::OnCurrentEdit() {
@@ -384,15 +379,15 @@ void DialogStyleManager::OnCopyToStorage() {
 			}
 		}
 		if (addStyle) {
-			Store.style.push_back(new AssStyle(*styleMap.at(selections[i])));
+			Store.push_back(new AssStyle(*styleMap.at(selections[i])));
 			copied.push_back(styleName);
 		}
 	}
-	Store.Save();
-	LoadStorageStyles();
-	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
+
+	UpdateStorage();
+	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name)
 		StorageList->SetStringSelection(*name, true);
-	}
+
 	UpdateButtons();
 }
 
@@ -408,14 +403,14 @@ void DialogStyleManager::OnCopyToCurrent() {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
 				if (wxYES == wxMessageBox(wxString::Format(_("There is already a style with the name \"%s\" in the current script. Proceed and overwrite anyway?"), styleName), _("Style name collision"), wxYES_NO)) {
-					**style = *styleStorageMap.at(selections[i]);
+					**style = *Store[selections[i]];
 					copied.push_back(styleName);
 				}
 				break;
 			}
 		}
 		if (addStyle) {
-			c->ass->InsertStyle(new AssStyle(*styleStorageMap.at(selections[i])));
+			c->ass->InsertStyle(new AssStyle(*Store[selections[i]]));
 			copied.push_back(styleName);
 		}
 	}
@@ -443,13 +438,12 @@ void DialogStyleManager::OnStorageCopy() {
 	StorageList->GetSelections(selections);
 	if (selections.empty()) return;
 
-	AssStyle *s = styleStorageMap[selections[0]];
+	AssStyle *s = Store[selections[0]];
 	DialogStyleEditor editor(this, s, c, &Store,
 		unique_name(bind(&AssStyleStorage::GetStyle, &Store, _1), s->name));
 
 	if (editor.ShowModal()) {
-		Store.Save();
-		LoadStorageStyles();
+		UpdateStorage();
 		StorageList->SetStringSelection(editor.GetStyleName());
 		UpdateButtons();
 	}
@@ -471,7 +465,8 @@ void DialogStyleManager::OnCurrentCopy() {
 	}
 }
 
-void DialogStyleManager::CopyToClipboard(wxListBox *list, std::vector<AssStyle*> v) {
+template<class T>
+void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
 	wxString data;
 	wxArrayInt selections;
 	list->GetSelections(selections);
@@ -529,17 +524,18 @@ void DialogStyleManager::PasteToCurrent() {
 void DialogStyleManager::PasteToStorage() {
 	add_styles(
 		bind(&AssStyleStorage::GetStyle, &Store, _1),
-		bind(&std::list<AssStyle*>::push_back, &Store.style, _1));
+		bind(&AssStyleStorage::push_back, &Store, _1));
 
-	Store.Save();
-	LoadStorageStyles();
-	StorageList->SetStringSelection(Store.style.back()->name);
+	UpdateStorage();
+	StorageList->SetStringSelection(Store.back()->name);
+	UpdateButtons();
 }
 
 void DialogStyleManager::OnStorageNew() {
-	DialogStyleEditor(this, 0, c, &Store).ShowModal();
-	Store.Save();
-	LoadStorageStyles();
+	bool did_add = !!DialogStyleEditor(this, 0, c, &Store).ShowModal();
+	UpdateStorage();
+	if (did_add)
+		StorageList->SetStringSelection(Store.back()->name);
 	UpdateButtons();
 }
 
@@ -561,15 +557,10 @@ void DialogStyleManager::OnStorageDelete() {
 	int n = StorageList->GetSelections(selections);
 
 	if (confirm_delete(n, this, _("Confirm delete from storage")) == wxYES) {
-		for (int i=0;i<n;i++) {
-			AssStyle *temp = styleStorageMap.at(selections[i]);
-			Store.style.remove(temp);
-			delete temp;
-		}
-		Store.Save();
-		LoadStorageStyles();
+		for (int i = 0; i < n; i++)
+			Store.Delete(selections[i] - i);
+		UpdateStorage();
 	}
-	UpdateButtons();
 }
 
 void DialogStyleManager::OnCurrentDelete() {
@@ -626,10 +617,10 @@ void DialogStyleManager::OnCurrentImport() {
 					if (answer == wxYES) {
 						// Overwrite
 						modified = true;
-						// The GetString->FindString mess is a silly workaround for the fact that to vsfilter
-						// (and the duplicate check a few lines above), style names aren't case sensitive, but to the
-						// rest of Aegisub they are.
-						*(c->ass->GetStyle(CurrentList->GetString(CurrentList->FindString(styles[selections[i]], false)))) = *temp.GetStyle(styles[selections[i]]);
+						// The result of GetString is used rather than the name
+						// itself to deal with that AssFile::GetStyle is
+						// case-sensitive, but style names are case insensitive
+						*c->ass->GetStyle(CurrentList->GetString(test)) = *temp.GetStyle(styles[selections[i]]);
 					}
 					continue;
 				}
@@ -724,6 +715,51 @@ static bool cmp_style_name(const AssStyle *lft, const AssStyle *rgt) {
 	return lft->name < rgt->name;
 }
 
+template<class Cont>
+static void do_move(Cont& styls, int type, int& first, int& last, bool storage) {
+	Cont::iterator begin = styls.begin();
+
+	// Move up
+	if (type == 0) {
+		if (first == 0) return;
+		rotate(begin + first - 1, begin + first, begin + last + 1);
+		first--;
+		last--;
+	}
+	// Move to top
+	else if (type == 1) {
+		rotate(begin, begin + first, begin + last + 1);
+		last = last - first;
+		first = 0;
+	}
+	// Move down
+	else if (type == 2) {
+		if (last + 1 == styls.size()) return;
+		rotate(begin + first, begin + last + 1, begin + last + 2);
+		first++;
+		last++;
+	}
+	// Move to bottom
+	else if (type == 3) {
+		rotate(begin + first, begin + last + 1, styls.end());
+		first = styls.size() - (last - first + 1);
+		last = styls.size() - 1;
+	}
+	// Sort
+	else if (type == 4) {
+		// Get confirmation
+		if (storage) {
+			int res = wxMessageBox(_("Are you sure? This cannot be undone!"), _("Sort styles"), wxYES_NO);
+			if (res == wxNO) return;
+		}
+
+		sort(styls.begin(), styls.end(), cmp_style_name);
+
+		first = 0;
+		last = 0;
+	}
+}
+
 void DialogStyleManager::MoveStyles(bool storage, int type) {
 	wxListBox *list = storage ? StorageList : CurrentList;
 
@@ -735,63 +771,13 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 	int first = sels.front();
 	int last = sels.back();
 
-	// Get styles
-	std::vector<AssStyle*>& styls = storage ? styleStorageMap : styleMap;
-
-	// Move up
-	if (type == 0) {
-		AssStyle *rem = styls[first - 1];
-		styls.erase(styls.begin() + first - 1);
-		styls.insert(styls.begin() + last, rem);
-		first--;
-		last--;
-	}
-	// Move to top
-	else if (type == 1) {
-		std::vector<AssStyle*> tmp(styls.begin() + first, styls.begin() + last + 1);
-		styls.erase(styls.begin() + first, styls.begin() + last + 1);
-		styls.insert(styls.begin(), tmp.begin(), tmp.end());
-		last = last - first;
-		first = 0;
-	}
-	// Move down
-	else if (type == 2) {
-		AssStyle *rem = styls[last + 1];
-		styls.erase(styls.begin() + last + 1);
-		styls.insert(styls.begin() + first, rem);
-		first++;
-		last++;
-	}
-	// Move to bottom
-	else if (type == 3) {
-		std::vector<AssStyle*> tmp(styls.begin() + first, styls.begin() + last + 1);
-		styls.erase(styls.begin() + first, styls.begin() + last + 1);
-		styls.insert(styls.end(), tmp.begin(), tmp.end());
-		first = styls.size() - (last - first + 1);
-		last = styls.size() - 1;
-	}
-	// Sort
-	else if (type == 4) {
-		// Get confirmation
-		if (storage) {
-			int res = wxMessageBox(_("Are you sure? This cannot be undone!"),_("Sort styles"),wxYES_NO);
-			if (res == wxNO) return;
-		}
-
-		sort(styls.begin(), styls.end(), cmp_style_name);
-
-		first = 0;
-		last = 0;
-	}
-
-	// Storage
 	if (storage) {
-		Store.style.clear();
-		copy(styls.begin(), styls.end(), back_inserter(Store.style));
-		Store.Save();
+		do_move(Store, type, first, last, true);
+		UpdateStorage();
 	}
-	// Current
 	else {
+		do_move(styleMap, type, first, last, false);
+
 		// Replace styles
 		entryIter next;
 		int curn = 0;
@@ -799,17 +785,17 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 			next = cur;
 			next++;
 			if (dynamic_cast<AssStyle*>(*cur)) {
-				c->ass->Line.insert(cur, styls[curn]);
+				c->ass->Line.insert(cur, styleMap[curn]);
 				c->ass->Line.erase(cur);
 				curn++;
 			}
 		}
 
 		c->ass->Commit(_("style move"), AssFile::COMMIT_STYLES);
+		LoadCurrentStyles(c->ass);
 	}
 
-	for (int i = 0 ; i < (int)styls.size(); ++i) {
-		list->SetString(i, styls[i]->name);
+	for (int i = 0 ; i < (int)list->GetCount(); ++i) {
 		if (i < first || i > last)
 			list->Deselect(i);
 		else
@@ -834,7 +820,7 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 		case 'c' :
 			if (event.CmdDown()) {
 				if (focus == StorageList)
-					CopyToClipboard(StorageList, styleStorageMap);
+					CopyToClipboard(StorageList, Store);
 				else if (focus == CurrentList)
 					CopyToClipboard(CurrentList, styleMap);
 			}

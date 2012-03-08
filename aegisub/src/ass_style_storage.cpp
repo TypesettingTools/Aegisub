@@ -60,7 +60,7 @@ void AssStyleStorage::Save() {
 		throw "Failed creating directory for style catalogs";
 
 	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/" + storage_name + ".sty"), "UTF-8");
-	for (std::list<AssStyle*>::iterator cur = style.begin(); cur != style.end(); ++cur)
+	for (iterator cur = begin(); cur != end(); ++cur)
 		file.WriteLineToFile((*cur)->GetEntryData());
 }
 
@@ -87,20 +87,24 @@ void AssStyleStorage::Load(wxString const& name) {
 	}
 }
 
-void AssStyleStorage::Clear () {
+void AssStyleStorage::Clear() {
 	delete_clear(style);
+}
+
+void AssStyleStorage::Delete(int idx) {
+	delete style[idx];
+	style.erase(style.begin() + idx);
 }
 
 wxArrayString AssStyleStorage::GetNames() {
 	wxArrayString names;
-	for (std::list<AssStyle*>::iterator cur=style.begin();cur!=style.end();cur++) {
+	for (iterator cur = begin(); cur != end(); ++cur)
 		names.Add((*cur)->name);
-	}
 	return names;
 }
 
-AssStyle *AssStyleStorage::GetStyle(wxString name) {
-	for (std::list<AssStyle*>::iterator cur = style.begin(); cur != style.end(); ++cur) {
+AssStyle *AssStyleStorage::GetStyle(wxString const& name) {
+	for (iterator cur = begin(); cur != end(); ++cur) {
 		if ((*cur)->name.CmpNoCase(name) == 0)
 			return *cur;
 	}

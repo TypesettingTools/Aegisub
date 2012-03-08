@@ -464,7 +464,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 		style->UpdateData();
 		if (is_new) {
 			if (store)
-				store->style.push_back(style);
+				store->push_back(style);
 			else
 				c->ass->InsertStyle(style);
 			is_new = false;
