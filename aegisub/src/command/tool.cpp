@@ -187,8 +187,14 @@ struct tool_style_manager : public Command {
 	STR_HELP("Open styles manager")
 
 	void operator()(agi::Context *c) {
-		c->videoController->Stop();
-		DialogStyleManager(c).ShowModal();
+		if (c->stylesManager) {
+			c->stylesManager->Show();
+			c->stylesManager->SetFocus();
+		}
+		else {
+			c->stylesManager = new DialogStyleManager(c);
+			c->stylesManager->Show();
+		}
 	}
 };
 

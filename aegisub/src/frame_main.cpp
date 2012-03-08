@@ -182,6 +182,7 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog("Create views and inner main window controls");
 	context->detachedVideo = 0;
 	context->stylingAssistant = 0;
+	context->stylesManager = 0;
 	InitContents();
 	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this, agi::signal::_1);
 

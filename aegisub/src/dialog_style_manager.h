@@ -47,8 +47,10 @@
 #include <libaegisub/signal.h>
 
 #include "ass_style_storage.h"
+#include "selection_controller.h"
 
 namespace agi { struct Context; }
+class AssDialogue;
 class AssFile;
 class AssStyle;
 class DialogStyleEditor;
@@ -59,7 +61,7 @@ class PersistLocation;
 /// @brief DOCME
 ///
 /// DOCME
-class DialogStyleManager : public wxDialog {
+class DialogStyleManager : public wxDialog, private SelectionListener<AssDialogue> {
 	agi::Context *c; ///< Project context
 	agi::scoped_ptr<PersistLocation> persist;
 
@@ -127,23 +129,30 @@ class DialogStyleManager : public wxDialog {
 	void OnChangeCatalog();
 	void OnCatalogNew();
 	void OnCatalogDelete();
-	void OnStorageEdit();
-	void OnCurrentEdit();
-	void OnCopyToStorage();
+
 	void OnCopyToCurrent();
-	void OnStorageCopy();
+	void OnCopyToStorage();
+
 	void OnCurrentCopy();
-	void OnStorageNew();
-	void OnCurrentNew();
-	void OnStorageDelete();
 	void OnCurrentDelete();
+	void OnCurrentEdit();
 	void OnCurrentImport();
+	void OnCurrentNew();
+
+	void OnStorageCopy();
+	void OnStorageDelete();
+	void OnStorageEdit();
+	void OnStorageNew();
+
 	void OnKeyDown(wxKeyEvent &event);
 	void PasteToCurrent();
 	void PasteToStorage();
 
 	template<class T>
 	void CopyToClipboard(wxListBox *list, T const& v);
+
+	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnSelectedSetChanged(const Selection &, const Selection &) { }
 
 public:
 	DialogStyleManager(agi::Context *context);

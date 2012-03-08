@@ -5,6 +5,7 @@ class AssDialogue;
 class AudioKaraoke;
 class DialogDetachedVideo;
 class DialogStyling;
+class DialogStyleManager;
 class DialogTranslation;
 template<class T> class SelectionController;
 class SubsTextEditCtrl;
@@ -36,6 +37,7 @@ struct Context {
 	AudioKaraoke *karaoke;
 	DialogDetachedVideo *detachedVideo;
 	DialogStyling *stylingAssistant;
+	DialogStyleManager *stylesManager;
 	DialogTranslation *translationAssistant;
 	SubsTextEditCtrl *editBox;
 	SubtitlesGrid *subsGrid;

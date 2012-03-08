@@ -275,10 +275,12 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, bind(&DialogStyleManager::UpdateButtons, this));
 	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, bind(&DialogStyleManager::OnCurrentEdit, this));
+
+	c->selectionController->AddSelectionListener(this);
 }
 
 DialogStyleManager::~DialogStyleManager() {
-	c->ass->SetScriptInfo("Last Style Storage", CatalogList->GetStringSelection());
+	c->selectionController->RemoveSelectionListener(this);
 }
 
 void DialogStyleManager::LoadCurrentStyles(int commit_type) {
@@ -296,6 +298,7 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 
 	if (commit_type & AssFile::COMMIT_DIAG_META) {
 		AssDialogue *dia = c->selectionController->GetActiveLine();
+		CurrentList->DeselectAll();
 		if (dia && commit_type != AssFile::COMMIT_NEW)
 			CurrentList->SetStringSelection(dia->Style);
 		else
@@ -303,6 +306,14 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 	}
 
 	UpdateButtons();
+}
+
+void DialogStyleManager::OnActiveLineChanged(AssDialogue *new_line) {
+	if (new_line) {
+		CurrentList->DeselectAll();
+		CurrentList->SetStringSelection(new_line->Style);
+		UpdateButtons();
+	}
 }
 
 void DialogStyleManager::UpdateStorage() {
@@ -316,6 +327,7 @@ void DialogStyleManager::UpdateStorage() {
 }
 
 void DialogStyleManager::OnChangeCatalog() {
+	c->ass->SetScriptInfo("Last Style Storage", CatalogList->GetStringSelection());
 	Store.Load(CatalogList->GetStringSelection());
 	UpdateStorage();
 }
