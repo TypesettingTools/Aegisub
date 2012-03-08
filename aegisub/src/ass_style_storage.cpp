@@ -68,17 +68,22 @@ void AssStyleStorage::Load(wxString const& name) {
 	if (name.empty()) return;
 	Clear();
 
-	TextFileReader file(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"), "UTF-8");
+	try {
+		TextFileReader file(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"), "UTF-8");
 
-	while (file.HasMoreLines()) {
-		wxString data = file.ReadLineFromFile();
-		if (data.StartsWith("Style:")) {
-			try {
-				style.push_back(new AssStyle(data));
-			} catch(...) {
-				/* just ignore invalid lines for now */
+		while (file.HasMoreLines()) {
+			wxString data = file.ReadLineFromFile();
+			if (data.StartsWith("Style:")) {
+				try {
+					style.push_back(new AssStyle(data));
+				} catch(...) {
+					/* just ignore invalid lines for now */
+				}
 			}
 		}
+	}
+	catch (agi::FileNotAccessibleError const&) {
+		// Just treat a missing file as an empty file
 	}
 }
 

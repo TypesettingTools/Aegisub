@@ -73,6 +73,8 @@ class DialogStyleManager : public wxDialog {
 	wxListBox *StorageList;
 	wxListBox *CurrentList;
 
+	wxButton *CatalogDelete;
+
 	wxButton *MoveToLocal;
 	wxButton *MoveToStorage;
 

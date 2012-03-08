@@ -117,7 +117,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));
 	CatalogList = new wxComboBox(this,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, NULL, wxCB_READONLY | wxCB_READONLY, wxDefaultValidator, "Catalog List");
 	wxButton *CatalogNew = new wxButton(this, -1, _("New"));
-	wxButton *CatalogDelete = new wxButton(this, -1, _("Delete"));
+	CatalogDelete = new wxButton(this, -1, _("Delete"));
 	CatalogBox->Add(CatalogList,1,wxEXPAND | wxRIGHT | wxALIGN_RIGHT,5);
 	CatalogBox->Add(CatalogNew,0,wxRIGHT,5);
 	CatalogBox->Add(CatalogDelete,0,0,0);
@@ -230,9 +230,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 }
 
 DialogStyleManager::~DialogStyleManager() {
-	int sel = CatalogList->GetSelection();
-	if (sel != wxNOT_FOUND)
-		c->ass->SetScriptInfo("Last Style Storage", CatalogList->GetString(sel));
+	c->ass->SetScriptInfo("Last Style Storage", CatalogList->GetStringSelection());
 }
 
 void DialogStyleManager::LoadCatalog() {
@@ -244,24 +242,21 @@ void DialogStyleManager::LoadCatalog() {
 		CatalogList->Append(wxFileName(curfile).GetName());
 
 	// Create a default storage if there are none
-	if (CatalogList->IsListEmpty()) {
-		Store.Clear();
-		Store.style.push_back(new AssStyle);
-		Store.Save("Default");
+	if (CatalogList->IsListEmpty())
 		CatalogList->Append("Default");
-	}
 
 	// Set to default if available
-	StorageActions(false);
 	wxString pickStyle = c->ass->GetScriptInfo("Last Style Storage");
 	if (pickStyle.empty())
 		pickStyle = "Default";
 
 	int opt = CatalogList->FindString(pickStyle, false);
-	if (opt != wxNOT_FOUND) {
+	if (opt != wxNOT_FOUND)
 		CatalogList->SetSelection(opt);
-		OnChangeCatalog();
-	}
+	else
+		CatalogList->SetSelection(0);
+
+	OnChangeCatalog();
 }
 
 void DialogStyleManager::LoadCurrentStyles(AssFile *subs) {
@@ -290,28 +285,9 @@ void DialogStyleManager::LoadStorageStyles() {
 	UpdateButtons();
 }
 
-void DialogStyleManager::StorageActions(bool state) {
-	StorageList->Enable(state);
-	MoveToLocal->Enable(state);
-	StorageNew->Enable(state);
-	StorageCopy->Enable(state);
-	StorageDelete->Enable(state);
-
-	UpdateButtons();
-}
-
 void DialogStyleManager::OnChangeCatalog() {
-	int sel = CatalogList->GetSelection();
-	if (sel != wxNOT_FOUND) {
-		StorageActions(true);
-		Store.Load(CatalogList->GetString(sel));
-		LoadStorageStyles();
-	}
-	else {
-		StorageActions(false);
-		Store.Clear();
-		LoadStorageStyles();
-	}
+	Store.Load(CatalogList->GetStringSelection());
+	LoadStorageStyles();
 	UpdateButtons();
 }
 
@@ -346,7 +322,6 @@ void DialogStyleManager::OnCatalogNew() {
 		StorageList->Clear();
 		CatalogList->Append(name);
 		CatalogList->SetStringSelection(name);
-		StorageActions(true);
 
 		Store.Save(name);
 	}
@@ -354,19 +329,17 @@ void DialogStyleManager::OnCatalogNew() {
 }
 
 void DialogStyleManager::OnCatalogDelete() {
-	int sel = CatalogList->GetSelection();
-	if (sel != wxNOT_FOUND) {
-		wxString name = CatalogList->GetString(sel);
-		wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name);
-		int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
-		if (option == wxYES) {
-			wxRemoveFile(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"));
-			CatalogList->Delete(sel);
-			StorageList->Clear();
-			StorageActions(false);
-		}
+	if (CatalogList->GetCount() == 1) return;
+
+	wxString name = CatalogList->GetStringSelection();
+	wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name);
+	int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
+	if (option == wxYES) {
+		wxRemoveFile(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"));
+		CatalogList->Delete(CatalogList->GetSelection());
+		CatalogList->SetSelection(0);
+		OnChangeCatalog();
 	}
-	UpdateButtons();
 }
 
 void DialogStyleManager::OnStorageEdit() {
@@ -376,7 +349,7 @@ void DialogStyleManager::OnStorageEdit() {
 		AssStyle *selStyle = styleStorageMap[selections[0]];
 		DialogStyleEditor(this, selStyle, c, &Store).ShowModal();
 		StorageList->SetString(selections[0],selStyle->name);
-		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+		Store.Save(CatalogList->GetStringSelection());
 	}
 	UpdateButtons();
 }
@@ -415,7 +388,7 @@ void DialogStyleManager::OnCopyToStorage() {
 			copied.push_back(styleName);
 		}
 	}
-	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+	Store.Save(CatalogList->GetStringSelection());
 	LoadStorageStyles();
 	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		StorageList->SetStringSelection(*name, true);
@@ -475,7 +448,7 @@ void DialogStyleManager::OnStorageCopy() {
 		unique_name(bind(&AssStyleStorage::GetStyle, &Store, _1), s->name));
 
 	if (editor.ShowModal()) {
-		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+		Store.Save(CatalogList->GetStringSelection());
 		LoadStorageStyles();
 		StorageList->SetStringSelection(editor.GetStyleName());
 		UpdateButtons();
@@ -558,14 +531,14 @@ void DialogStyleManager::PasteToStorage() {
 		bind(&AssStyleStorage::GetStyle, &Store, _1),
 		bind(&std::list<AssStyle*>::push_back, &Store.style, _1));
 
-	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+	Store.Save(CatalogList->GetStringSelection());
 	LoadStorageStyles();
 	StorageList->SetStringSelection(Store.style.back()->name);
 }
 
 void DialogStyleManager::OnStorageNew() {
 	DialogStyleEditor(this, 0, c, &Store).ShowModal();
-	Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+	Store.Save(CatalogList->GetStringSelection());
 	LoadStorageStyles();
 	UpdateButtons();
 }
@@ -593,7 +566,7 @@ void DialogStyleManager::OnStorageDelete() {
 			Store.style.remove(temp);
 			delete temp;
 		}
-		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+		Store.Save(CatalogList->GetStringSelection());
 		LoadStorageStyles();
 	}
 	UpdateButtons();
@@ -680,6 +653,8 @@ void DialogStyleManager::OnCurrentImport() {
 }
 
 void DialogStyleManager::UpdateButtons() {
+	CatalogDelete->Enable(CatalogList->GetCount() > 1);
+
 	// Get storage selection
 	wxArrayInt sels;
 	int n = StorageList->GetSelections(sels);
@@ -813,7 +788,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 	if (storage) {
 		Store.style.clear();
 		copy(styls.begin(), styls.end(), back_inserter(Store.style));
-		Store.Save(CatalogList->GetString(CatalogList->GetSelection()));
+		Store.Save(CatalogList->GetStringSelection());
 	}
 	// Current
 	else {
