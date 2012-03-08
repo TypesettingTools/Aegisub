@@ -318,12 +318,12 @@ void DialogStyleManager::OnCatalogNew() {
 		}
 
 		// Add to list of storages
-		Store.Clear();
-		StorageList->Clear();
 		CatalogList->Append(name);
 		CatalogList->SetStringSelection(name);
 
-		Store.Save(name);
+		Store.Load(name);
+		Store.Save();
+		StorageList->Clear();
 	}
 	UpdateButtons();
 }
@@ -348,8 +348,8 @@ void DialogStyleManager::OnStorageEdit() {
 	if (n == 1) {
 		AssStyle *selStyle = styleStorageMap[selections[0]];
 		DialogStyleEditor(this, selStyle, c, &Store).ShowModal();
-		StorageList->SetString(selections[0],selStyle->name);
-		Store.Save(CatalogList->GetStringSelection());
+		StorageList->SetString(selections[0], selStyle->name);
+		Store.Save();
 	}
 	UpdateButtons();
 }
@@ -388,7 +388,7 @@ void DialogStyleManager::OnCopyToStorage() {
 			copied.push_back(styleName);
 		}
 	}
-	Store.Save(CatalogList->GetStringSelection());
+	Store.Save();
 	LoadStorageStyles();
 	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name) {
 		StorageList->SetStringSelection(*name, true);
@@ -448,7 +448,7 @@ void DialogStyleManager::OnStorageCopy() {
 		unique_name(bind(&AssStyleStorage::GetStyle, &Store, _1), s->name));
 
 	if (editor.ShowModal()) {
-		Store.Save(CatalogList->GetStringSelection());
+		Store.Save();
 		LoadStorageStyles();
 		StorageList->SetStringSelection(editor.GetStyleName());
 		UpdateButtons();
@@ -531,14 +531,14 @@ void DialogStyleManager::PasteToStorage() {
 		bind(&AssStyleStorage::GetStyle, &Store, _1),
 		bind(&std::list<AssStyle*>::push_back, &Store.style, _1));
 
-	Store.Save(CatalogList->GetStringSelection());
+	Store.Save();
 	LoadStorageStyles();
 	StorageList->SetStringSelection(Store.style.back()->name);
 }
 
 void DialogStyleManager::OnStorageNew() {
 	DialogStyleEditor(this, 0, c, &Store).ShowModal();
-	Store.Save(CatalogList->GetStringSelection());
+	Store.Save();
 	LoadStorageStyles();
 	UpdateButtons();
 }
@@ -566,7 +566,7 @@ void DialogStyleManager::OnStorageDelete() {
 			Store.style.remove(temp);
 			delete temp;
 		}
-		Store.Save(CatalogList->GetStringSelection());
+		Store.Save();
 		LoadStorageStyles();
 	}
 	UpdateButtons();
@@ -788,7 +788,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 	if (storage) {
 		Store.style.clear();
 		copy(styls.begin(), styls.end(), back_inserter(Store.style));
-		Store.Save(CatalogList->GetStringSelection());
+		Store.Save();
 	}
 	// Current
 	else {

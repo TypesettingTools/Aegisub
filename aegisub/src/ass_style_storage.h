@@ -48,6 +48,7 @@ class AssStyle;
 ///
 /// DOCME
 class AssStyleStorage {
+	wxString storage_name;
 public:
 	~AssStyleStorage();
 
@@ -65,8 +66,7 @@ public:
 	AssStyle *GetStyle(wxString name);
 
 	/// Save stored styles to a file
-	/// @param name Catalog name (note: not file name)
-	void Save(wxString const& name);
+	void Save();
 
 	/// Load stored styles from a file
 	/// @param name Catalog name (note: not file name)

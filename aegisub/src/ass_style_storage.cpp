@@ -52,20 +52,20 @@ AssStyleStorage::~AssStyleStorage() {
 	delete_clear(style);
 }
 
-void AssStyleStorage::Save(wxString const& name) {
-	if (name.empty()) return;
+void AssStyleStorage::Save() {
+	if (storage_name.empty()) return;
 
 	wxString dirname = StandardPaths::DecodePath("?user/catalog/");
 	if (!wxDirExists(dirname) && !wxMkdir(dirname))
 		throw "Failed creating directory for style catalogs";
 
-	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"), "UTF-8");
+	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/" + storage_name + ".sty"), "UTF-8");
 	for (std::list<AssStyle*>::iterator cur = style.begin(); cur != style.end(); ++cur)
 		file.WriteLineToFile((*cur)->GetEntryData());
 }
 
 void AssStyleStorage::Load(wxString const& name) {
-	if (name.empty()) return;
+	storage_name = name;
 	Clear();
 
 	try {
