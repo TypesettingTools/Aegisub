@@ -420,18 +420,20 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 	}
 
 	param_vec align_tag;
+	int ovr_align = 0;
 	if ((align_tag = find_tag(diag, "\\an")) && !(*align_tag)[0]->omitted)
-		align = (*align_tag)[0]->Get<int>();
+		ovr_align = (*align_tag)[0]->Get<int>();
 	else if ((align_tag = find_tag(diag, "\\a"))) {
-		align = (*align_tag)[0]->Get<int>(2);
+		ovr_align = (*align_tag)[0]->Get<int>(2);
 
 		// \a -> \an values mapping
-		static int align_mapping[] = { 2, 1, 2, 3, 7, 7, 8, 9, 7, 4, 5, 6 };
-		if (static_cast<size_t>(align) < sizeof(align_mapping) / sizeof(int))
-			align = align_mapping[align];
-		else
-			align = 2;
+		static int align_mapping[] = { 0, 1, 2, 3, 7, 7, 8, 9, 7, 4, 5, 6 };
+		if (static_cast<size_t>(ovr_align) < sizeof(align_mapping) / sizeof(int))
+			ovr_align = align_mapping[ovr_align];
 	}
+
+	if (ovr_align > 0 && ovr_align <= 9)
+		align = ovr_align;
 
 	// Alignment type
 	int hor = (align - 1) % 3;
