@@ -162,7 +162,7 @@ void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selectio
 			sel_features.erase(it);
 			any_changed = true;
 		}
-		else if (added.count(it->line) && it->type == DRAG_START) {
+		else if (added.count(it->line) && it->type == DRAG_START && !sel_features.count(it->parent)) {
 			sel_features.insert(it);
 			any_changed = true;
 		}
