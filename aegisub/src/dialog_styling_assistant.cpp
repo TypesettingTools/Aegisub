@@ -145,7 +145,6 @@ DialogStyling::DialogStyling(agi::Context *context)
 	c->selectionController->AddSelectionListener(this);
 	Bind(wxEVT_ACTIVATE, &DialogStyling::OnActivate, this);
 	Bind(wxEVT_KEY_DOWN, &DialogStyling::OnKeyDown, this);
-	Bind(wxEVT_SHOW, &DialogStyling::OnShow, this);
 	style_name->Bind(wxEVT_KEY_DOWN, &DialogStyling::OnKeyDown, this);
 	play_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayVideoButton, this);
 	play_audio->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayAudioButton, this);
@@ -157,15 +156,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 }
 
 DialogStyling::~DialogStyling () {
-	c->stylingAssistant = 0;
 	c->selectionController->RemoveSelectionListener(this);
-}
-
-void DialogStyling::OnShow(wxShowEvent &evt) {
-	if (evt.IsShown())
-		evt.Skip();
-	else
-		Destroy();
 }
 
 void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {

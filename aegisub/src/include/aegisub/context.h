@@ -3,11 +3,7 @@ class AudioBox;
 class AudioController;
 class AssDialogue;
 class AudioKaraoke;
-class DialogAutomation;
-class DialogDetachedVideo;
-class DialogStyling;
-class DialogStyleManager;
-class DialogTranslation;
+class DialogManager;
 template<class T> class SelectionController;
 class SubsTextEditCtrl;
 class SubtitlesGrid;
@@ -36,11 +32,7 @@ struct Context {
 	// Views (i.e. things that should eventually not be here at all)
 	AudioBox *audioBox;
 	AudioKaraoke *karaoke;
-	DialogAutomation *automationManager;
-	DialogDetachedVideo *detachedVideo;
-	DialogStyling *stylingAssistant;
-	DialogStyleManager *stylesManager;
-	DialogTranslation *translationAssistant;
+	DialogManager *dialog;
 	SubsTextEditCtrl *editBox;
 	SubtitlesGrid *subsGrid;
 	VideoDisplay *videoDisplay;

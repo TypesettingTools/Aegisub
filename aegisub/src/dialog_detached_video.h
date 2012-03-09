@@ -67,8 +67,7 @@ class DialogDetachedVideo : public wxDialog {
 public:
 	/// @brief Constructor
 	/// @param context Project context
-	/// @param initialDisplaySize Initial size of the window
-	DialogDetachedVideo(agi::Context *context, const wxSize &initialDisplaySize);
+	DialogDetachedVideo(agi::Context *context);
 	/// Destructor
 	~DialogDetachedVideo();
 };

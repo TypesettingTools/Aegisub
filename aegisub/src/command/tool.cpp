@@ -51,6 +51,7 @@
 #include "../video_context.h" // tool_font_collector
 #include "../compat.h"
 #include "../dialog_export.h"
+#include "../dialog_manager.h"
 #include "../dialog_resample.h"
 #include "../dialog_selection.h"
 #include "../dialog_styling_assistant.h"
@@ -114,7 +115,7 @@ struct tool_line_select : public Command {
 	STR_HELP("Selects lines based on defined criteria")
 
 	void operator()(agi::Context *c) {
-		(new DialogSelection(c))->Show();
+		c->dialog->Show<DialogSelection>(c);
 	}
 };
 
@@ -141,9 +142,7 @@ struct tool_style_assistant : public Command {
 	STR_HELP("Open styling assistant")
 
 	void operator()(agi::Context *c) {
-		c->videoController->Stop();
-		if (!c->stylingAssistant) c->stylingAssistant = new DialogStyling(c);
-		c->stylingAssistant->Show(true);
+		c->dialog->Show<DialogStyling>(c);
 	}
 };
 
@@ -151,7 +150,7 @@ struct tool_styling_assistant_validator : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
-		return !!c->stylingAssistant;
+		return !!c->dialog->Get<DialogStyling>();
 	}
 };
 
@@ -163,7 +162,7 @@ struct tool_styling_assistant_commit : public tool_styling_assistant_validator {
 	STR_HELP("Commit changes and move to the next line")
 
 	void operator()(agi::Context *c) {
-		c->stylingAssistant->Commit(true);
+		c->dialog->Get<DialogStyling>()->Commit(true);
 	}
 };
 
@@ -175,7 +174,7 @@ struct tool_styling_assistant_preview : public tool_styling_assistant_validator 
 	STR_HELP("Commit changes and stay on the current line")
 
 	void operator()(agi::Context *c) {
-		c->stylingAssistant->Commit(false);
+		c->dialog->Get<DialogStyling>()->Commit(false);
 	}
 };
 
@@ -187,14 +186,7 @@ struct tool_style_manager : public Command {
 	STR_HELP("Open styles manager")
 
 	void operator()(agi::Context *c) {
-		if (c->stylesManager) {
-			c->stylesManager->Show();
-			c->stylesManager->SetFocus();
-		}
-		else {
-			c->stylesManager = new DialogStyleManager(c);
-			c->stylesManager->Show();
-		}
+		c->dialog->Show<DialogStyleManager>(c);
 	}
 };
 
@@ -235,13 +227,9 @@ struct tool_translation_assistant : public Command {
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 		try {
-			DialogTranslation d(c);
-			c->translationAssistant = &d;
-			d.ShowModal();
-			c->translationAssistant = 0;
+			c->dialog->ShowModal<DialogTranslation>(c);
 		}
 		catch (agi::Exception const& e) {
-			c->translationAssistant = 0;
 			wxMessageBox(lagi_wxString(e.GetChainedMessage()));
 		}
 	}
@@ -251,7 +239,7 @@ struct tool_translation_assistant_validator : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
-		return !!c->translationAssistant;
+		return !!c->dialog->Get<DialogTranslation>();
 	}
 };
 
@@ -263,7 +251,7 @@ struct tool_translation_assistant_commit : public tool_translation_assistant_val
 	STR_HELP("Commit changes and move to the next line")
 
 	void operator()(agi::Context *c) {
-		c->translationAssistant->Commit(true);
+		c->dialog->Get<DialogTranslation>()->Commit(true);
 	}
 };
 
@@ -275,7 +263,7 @@ struct tool_translation_assistant_preview : public tool_translation_assistant_va
 	STR_HELP("Commit changes and stay on the current line")
 
 	void operator()(agi::Context *c) {
-		c->translationAssistant->Commit(false);
+		c->dialog->Get<DialogTranslation>()->Commit(false);
 	}
 };
 
@@ -287,7 +275,7 @@ struct tool_translation_assistant_next : public tool_translation_assistant_valid
 	STR_HELP("Move to the next line without committing changes")
 
 	void operator()(agi::Context *c) {
-		c->translationAssistant->NextBlock();
+		c->dialog->Get<DialogTranslation>()->NextBlock();
 	}
 };
 
@@ -299,7 +287,7 @@ struct tool_translation_assistant_prev : public tool_translation_assistant_valid
 	STR_HELP("Move to the previous line without committing changes")
 
 	void operator()(agi::Context *c) {
-		c->translationAssistant->PrevBlock();
+		c->dialog->Get<DialogTranslation>()->PrevBlock();
 	}
 };
 }
@@ -312,7 +300,7 @@ struct tool_translation_assistant_insert : public tool_translation_assistant_val
 	STR_HELP("Insert the untranslated text")
 
 	void operator()(agi::Context *c) {
-		c->translationAssistant->InsertOriginal();
+		c->dialog->Get<DialogTranslation>()->InsertOriginal();
 	}
 };
 /// @}

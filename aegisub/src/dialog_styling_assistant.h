@@ -59,7 +59,6 @@ class DialogStyling : public wxDialog, public SelectionListener<AssDialogue> {
 	void OnListDoubleClicked(wxCommandEvent &evt);
 	void OnPlayAudioButton(wxCommandEvent &evt);
 	void OnPlayVideoButton(wxCommandEvent &evt);
-	void OnShow(wxShowEvent &evt);
 	void OnStyleBoxModified(wxCommandEvent &evt);
 
 	void OnActiveLineChanged(AssDialogue *);

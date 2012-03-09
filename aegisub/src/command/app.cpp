@@ -51,6 +51,8 @@
 
 #include "../audio_controller.h"
 #include "../dialog_about.h"
+#include "../dialog_detached_video.h"
+#include "../dialog_manager.h"
 #include "../dialog_log.h"
 #include "../dialog_version_check.h"
 #include "../frame_main.h"
@@ -112,7 +114,7 @@ struct app_display_full : public Command {
 	}
 
 	bool Validate(const agi::Context *c) {
-		return c->audioController->IsAudioOpen() && c->videoController->IsLoaded() && !c->detachedVideo;
+		return c->audioController->IsAudioOpen() && c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 
 	bool IsActive(const agi::Context *) {
@@ -152,7 +154,7 @@ struct app_display_video_subs : public Command {
 	}
 
 	bool Validate(const agi::Context *c) {
-		return c->videoController->IsLoaded() && !c->detachedVideo;
+		return c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 
 	bool IsActive(const agi::Context *) {
@@ -210,7 +212,7 @@ struct app_log : public Command {
 	STR_HELP("View the event log")
 
 	void operator()(agi::Context *c) {
-		(new LogWindow(c->parent))->Show(1);
+		c->dialog->Show<LogWindow>(c);
 	}
 };
 

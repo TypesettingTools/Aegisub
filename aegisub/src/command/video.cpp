@@ -53,6 +53,7 @@
 #include "../include/aegisub/context.h"
 #include "../dialog_detached_video.h"
 #include "../dialog_dummy_video.h"
+#include "../dialog_manager.h"
 #include "../dialog_jumpto.h"
 #include "../dialog_video_details.h"
 #include "../selection_controller.h"
@@ -80,7 +81,7 @@ struct validator_video_loaded : public Command {
 struct validator_video_attached : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
-		return c->videoController->IsLoaded() && !c->detachedVideo;
+		return c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 };
 
@@ -256,16 +257,14 @@ struct video_detach : public validator_video_loaded {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *c) {
-		return !!c->detachedVideo;
+		return !!c->dialog->Get<DialogDetachedVideo>();
 	}
 
 	void operator()(agi::Context *c) {
-		if (!c->detachedVideo) {
-			c->detachedVideo = new DialogDetachedVideo(c, c->videoDisplay->GetClientSize());
-		}
-		else {
-			c->detachedVideo->Close();
-		}
+		if (DialogDetachedVideo *d = c->dialog->Get<DialogDetachedVideo>())
+			d->Close();
+		else
+			c->dialog->Show<DialogDetachedVideo>(c);
 	}
 };
 

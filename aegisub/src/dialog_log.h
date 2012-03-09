@@ -38,14 +38,17 @@
 #include <wx/dialog.h>
 #endif
 
-namespace agi { namespace log { class Emitter; } }
+namespace agi {
+	namespace log { class Emitter; }
+	struct Context;
+}
 
 class LogWindow: public wxDialog {
 	agi::log::Emitter *emit_log;
 
 public:
 	/// @brief Constructor
-	/// @param parent Parent frame.
-	LogWindow(wxWindow *parent);
+	/// @param c Project context
+	LogWindow(agi::Context *c);
 	~LogWindow();
 };

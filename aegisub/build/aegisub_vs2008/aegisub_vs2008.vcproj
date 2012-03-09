@@ -734,6 +734,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\dialog_manager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\factory_manager.h"
 				>
 			</File>

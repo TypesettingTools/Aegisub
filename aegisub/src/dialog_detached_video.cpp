@@ -53,7 +53,7 @@
 #include "video_context.h"
 #include "video_display.h"
 
-DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &initialDisplaySize)
+DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 : wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, wxSize(400,300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 , context(context)
 , old_display(context->videoDisplay)
@@ -67,7 +67,7 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 
 	// Video area;
 	VideoBox *videoBox = new VideoBox(this, true, context);
-	context->videoDisplay->SetMinClientSize(initialDisplaySize);
+	context->videoDisplay->SetMinClientSize(old_display->GetClientSize());
 	videoBox->Layout();
 
 	// Set sizer
@@ -95,19 +95,16 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context, const wxSize &in
 	Bind(wxEVT_CLOSE_WINDOW, &DialogDetachedVideo::OnClose, this);
 	Bind(wxEVT_ICONIZE, &DialogDetachedVideo::OnMinimize, this);
 	Bind(wxEVT_KEY_DOWN, &DialogDetachedVideo::OnKeyDown, this);
-
-	Show();
 }
 
 DialogDetachedVideo::~DialogDetachedVideo() { }
 
-void DialogDetachedVideo::OnClose(wxCloseEvent&) {
-	context->detachedVideo = 0;
+void DialogDetachedVideo::OnClose(wxCloseEvent &evt) {
+	evt.Skip();
 	context->videoDisplay = old_display;
 	context->videoSlider = old_slider;
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
 	context->videoController->Reload();
-	Destroy();
 }
 
 void DialogDetachedVideo::OnMinimize(wxIconizeEvent &event) {
@@ -126,10 +123,7 @@ void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
 
 void DialogDetachedVideo::OnVideoOpen() {
 	if (!context->videoController->IsLoaded()) {
-		context->detachedVideo = 0;
-		context->videoDisplay = old_display;
-		context->videoSlider = old_slider;
-		context->videoController->Reload();
-		Destroy();
+		Close();
+		OPT_SET("Video/Detached/Enabled")->SetBool(true);
 	}
 }

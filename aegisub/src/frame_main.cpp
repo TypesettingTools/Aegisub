@@ -60,6 +60,8 @@
 #include "auto4_base.h"
 #include "compat.h"
 #include "command/command.h"
+#include "dialog_detached_video.h"
+#include "dialog_manager.h"
 #include "dialog_search_replace.h"
 #include "dialog_version_check.h"
 #include "help_button.h"
@@ -181,6 +183,7 @@ FrameMain::FrameMain (wxArrayString args)
 #endif
 
 	StartupLog("Create views and inner main window controls");
+	context->dialog = new DialogManager;
 	InitContents();
 	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this, agi::signal::_1);
 
@@ -220,6 +223,8 @@ FrameMain::FrameMain (wxArrayString args)
 }
 
 FrameMain::~FrameMain () {
+	delete context->dialog;
+
 	// Because the subs grid is the selection controller, it needs to stay
 	// alive significantly longer than the other child controls
 	SubsGrid->Reparent(0);
@@ -363,7 +368,7 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	bool sv = false, sa = false;
 
 	if (video == -1) sv = showVideo;
-	else if (video)  sv = context->videoController->IsLoaded() && !context->detachedVideo;
+	else if (video)  sv = context->videoController->IsLoaded() && !context->dialog->Get<DialogDetachedVideo>();
 
 	if (audio == -1) sa = showAudio;
 	else if (audio)  sa = context->audioController->IsAudioOpen();
@@ -427,7 +432,7 @@ void FrameMain::OnVideoOpen() {
 
 	SetDisplayMode(1,-1);
 
-	if (OPT_GET("Video/Detached/Enabled")->GetBool() && !context->detachedVideo)
+	if (OPT_GET("Video/Detached/Enabled")->GetBool() && !context->dialog->Get<DialogDetachedVideo>())
 		cmd::call("video/detach", context.get());
 	Thaw();
 }

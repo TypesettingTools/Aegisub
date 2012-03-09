@@ -46,6 +46,7 @@
 #include "../main.h"
 #include "../include/aegisub/context.h"
 #include "../dialog_automation.h"
+#include "../dialog_manager.h"
 #include "../auto4_base.h"
 #include "../video_context.h"
 #include "../frame_main.h"
@@ -87,14 +88,7 @@ struct open_manager : public Command {
 	STR_HELP("Open automation manager")
 
 	void operator()(agi::Context *c) {
-		if (c->automationManager) {
-			c->automationManager->Show();
-			c->automationManager->SetFocus();
-		}
-		else {
-			c->automationManager = new DialogAutomation(c);
-			c->automationManager->Show();
-		}
+		c->dialog->Show<DialogAutomation>(c);
 	}
 };
 

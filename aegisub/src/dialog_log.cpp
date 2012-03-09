@@ -52,6 +52,8 @@
 
 #include <libaegisub/log.h>
 
+#include "include/aegisub/context.h"
+
 class EmitLog : public agi::log::Emitter {
 	wxTextCtrl *text_ctrl;
 public:
@@ -91,8 +93,8 @@ public:
 	}
 };
 
-LogWindow::LogWindow(wxWindow *parent)
-: wxDialog (parent, -1, _("Log window"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER)
+LogWindow::LogWindow(agi::Context *c)
+: wxDialog(c->parent, -1, _("Log window"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER)
 {
 	wxTextCtrl *text_ctrl = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(700,300), wxTE_MULTILINE|wxTE_READONLY);
 	text_ctrl->SetDefaultStyle(wxTextAttr(wxNullColour, wxNullColour, wxFont(8, wxMODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)));
@@ -103,8 +105,6 @@ LogWindow::LogWindow(wxWindow *parent)
 	SetSizerAndFit(sizer);
 
 	agi::log::log->Subscribe(emit_log = new EmitLog(text_ctrl));
-
-	Bind(wxEVT_CLOSE_WINDOW, std::tr1::bind(&wxDialog::Destroy, this));
 }
 
 LogWindow::~LogWindow() {
