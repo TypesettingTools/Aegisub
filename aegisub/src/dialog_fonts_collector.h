@@ -25,6 +25,8 @@
 #include <wx/dialog.h>
 #endif
 
+namespace agi { struct Context; }
+
 class AssFile;
 class ScintillaTextCtrl;
 class wxButton;
@@ -59,5 +61,5 @@ class DialogFontsCollector : public wxDialog {
 	void OnCollectionComplete(wxThreadEvent &);
 
 public:
-	DialogFontsCollector(wxWindow *parent, AssFile *subs);
+	DialogFontsCollector(agi::Context *c);
 };

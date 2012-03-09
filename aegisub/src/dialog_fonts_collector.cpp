@@ -32,6 +32,7 @@
 #include "ass_file.h"
 #include "compat.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "scintilla_text_ctrl.h"
@@ -179,9 +180,9 @@ public:
 	}
 };
 
-DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
-: wxDialog(parent, -1, _("Fonts Collector"))
-, subs(ass)
+DialogFontsCollector::DialogFontsCollector(agi::Context *c)
+: wxDialog(c->parent, -1, _("Fonts Collector"))
+, subs(c->ass)
 {
 	SetIcon(BitmapToIcon(GETIMAGE(font_collector_button_24)));
 
@@ -194,7 +195,7 @@ DialogFontsCollector::DialogFontsCollector(wxWindow *parent, AssFile *ass)
 	collection_mode = new wxRadioBox(this, -1, "Action", wxDefaultPosition, wxDefaultSize, 4, modes, 1);
 	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 3));
 
-	if (!ass->filename)
+	if (!subs->filename)
 		collection_mode->Enable(2, false);
 
 	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));

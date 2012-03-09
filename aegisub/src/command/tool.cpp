@@ -101,8 +101,7 @@ struct tool_font_collector : public Command {
 	STR_HELP("Open fonts collector")
 
 	void operator()(agi::Context *c) {
-		c->videoController->Stop();
-		DialogFontsCollector(c->parent, c->ass).ShowModal();
+		c->dialog->Show<DialogFontsCollector>(c);
 	}
 };
 
