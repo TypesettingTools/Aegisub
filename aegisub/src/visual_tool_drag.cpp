@@ -36,6 +36,7 @@
 #include "main.h"
 #include "utils.h"
 #include "video_context.h"
+#include "video_display.h"
 
 static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
@@ -155,12 +156,20 @@ void VisualToolDrag::OnFrameChanged() {
 void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {
 	c->selectionController->GetSelectedSet(selection);
 
+	bool any_changed = false;
 	for (feature_iterator it = features.begin(); it != features.end(); ++it) {
-		if (removed.count(it->line))
+		if (removed.count(it->line)) {
 			sel_features.erase(it);
-		else if (added.count(it->line) && it->type == DRAG_START)
+			any_changed = true;
+		}
+		else if (added.count(it->line) && it->type == DRAG_START) {
 			sel_features.insert(it);
+			any_changed = true;
+		}
 	}
+
+	if (any_changed)
+		parent->Render();
 }
 
 void VisualToolDrag::Draw() {
