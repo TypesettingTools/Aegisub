@@ -714,7 +714,7 @@ static bool cmp_style_name(const AssStyle *lft, const AssStyle *rgt) {
 
 template<class Cont>
 static void do_move(Cont& styls, int type, int& first, int& last, bool storage) {
-	Cont::iterator begin = styls.begin();
+	typename Cont::iterator begin = styls.begin();
 
 	// Move up
 	if (type == 0) {
@@ -731,7 +731,7 @@ static void do_move(Cont& styls, int type, int& first, int& last, bool storage) 
 	}
 	// Move down
 	else if (type == 2) {
-		if (last + 1 == styls.size()) return;
+		if (last + 1 == (int)styls.size()) return;
 		rotate(begin + first, begin + last + 1, begin + last + 2);
 		first++;
 		last++;
