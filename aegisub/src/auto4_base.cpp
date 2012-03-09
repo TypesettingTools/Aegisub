@@ -456,7 +456,10 @@ namespace Automation4 {
 		delete_clear(scripts);
 
 		wxString local_scripts = context->ass->GetScriptInfo("Automation Scripts");
-		if (local_scripts.empty()) return;
+		if (local_scripts.empty()) {
+			ScriptsChanged();
+			return;
+		}
 
 		wxStringTokenizer tok(local_scripts, "|", wxTOKEN_STRTOK);
 		wxFileName assfn(context->ass->filename);

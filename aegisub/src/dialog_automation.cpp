@@ -64,7 +64,9 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , context(c)
 , local_manager(c->local_scripts)
+, local_scripts_changed(local_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 , global_manager(wxGetApp().global_scripts)
+, global_scripts_changed(global_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 {
 	SetIcon(BitmapToIcon(GETIMAGE(automation_toolbutton_24)));
 
@@ -77,8 +79,8 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	wxButton *reload_autoload_button = new wxButton(this, -1, _("Re&scan Autoload Dir"));
 	wxButton *close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
 
-	list->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, &DialogAutomation::OnSelectionChange, this);
-	list->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, &DialogAutomation::OnSelectionChange, this);
+	list->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, std::tr1::bind(&DialogAutomation::UpdateDisplay, this));
+	list->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, std::tr1::bind(&DialogAutomation::UpdateDisplay, this));
 	add_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnAdd, this);
 	remove_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnRemove, this);
 	reload_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnReload, this);
@@ -120,7 +122,6 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	close_button->SetDefault();
 
 	RebuildList();
-	UpdateDisplay();
 }
 
 template<class Container, class Pred>
@@ -142,6 +143,8 @@ void DialogAutomation::RebuildList()
 
 	for_each(local_manager->GetScripts(), bind(&DialogAutomation::AddScript, this, _1, false));
 	for_each(global_manager->GetScripts(), bind(&DialogAutomation::AddScript, this, _1, true));
+
+	UpdateDisplay();
 }
 
 void DialogAutomation::SetScriptInfo(int i, Automation4::Script *script)
@@ -206,9 +209,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 			continue;
 		}
 
-		Automation4::Script *script = Automation4::ScriptFactory::CreateFromFile(fnames[i], true);
-		local_manager->Add(script);
-		AddScript(script, false);
+		local_manager->Add(Automation4::ScriptFactory::CreateFromFile(fnames[i], true));
 	}
 }
 
@@ -218,10 +219,8 @@ void DialogAutomation::OnRemove(wxCommandEvent &)
 	if (i < 0) return;
 	const ExtraScriptInfo &ei = script_info[list->GetItemData(i)];
 	if (ei.is_global) return;
-	list->DeleteItem(i);
+
 	local_manager->Remove(ei.script);
-	// don't bother doing anything in script_info, it's relatively short-lived, and having any indexes change would break stuff
-	list->Select(i);
 }
 
 void DialogAutomation::OnReload(wxCommandEvent &)
@@ -234,8 +233,6 @@ void DialogAutomation::OnReload(wxCommandEvent &)
 		global_manager->Reload(ei.script);
 	else
 		local_manager->Reload(ei.script);
-
-	SetScriptInfo(i, ei.script);
 }
 
 static wxString fac_to_str(const Automation4::ScriptFactory* f) {
@@ -291,11 +288,4 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 void DialogAutomation::OnReloadAutoload(wxCommandEvent &)
 {
 	global_manager->Reload();
-	RebuildList();
-	UpdateDisplay();
-}
-
-void DialogAutomation::OnSelectionChange(wxListEvent &)
-{
-	UpdateDisplay();
 }

@@ -125,6 +125,7 @@ FrameMain::FrameMain (wxArrayString args)
 #endif
 
 	StartupLog("Initializing context models");
+	memset(context.get(), 0, sizeof(*context));
 	AssFile::top = context->ass = new AssFile;
 	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
 	context->ass->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
@@ -180,9 +181,6 @@ FrameMain::FrameMain (wxArrayString args)
 #endif
 
 	StartupLog("Create views and inner main window controls");
-	context->detachedVideo = 0;
-	context->stylingAssistant = 0;
-	context->stylesManager = 0;
 	InitContents();
 	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this, agi::signal::_1);
 

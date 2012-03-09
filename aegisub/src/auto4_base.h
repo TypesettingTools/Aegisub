@@ -219,7 +219,7 @@ namespace Automation4 {
 		void Remove(Script *script);
 		/// Deletes all scripts managed
 		void RemoveAll();
-		/// Reload all scripts mananaged
+		/// Reload all scripts managed
 		virtual void Reload() = 0;
 		/// Reload a single managed script
 		virtual void Reload(Script *script);

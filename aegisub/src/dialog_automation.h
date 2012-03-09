@@ -34,15 +34,13 @@
 /// @ingroup secondary_ui
 ///
 
-
-
-
 #ifndef AGI_PRE
 #include <vector>
 
 #include <wx/dialog.h>
 #endif
 
+#include <libaegisub/signal.h>
 
 namespace Automation4 {
 	class ScriptManager;
@@ -76,8 +74,14 @@ class DialogAutomation : public wxDialog {
 	/// File-local script manager
 	Automation4::ScriptManager *local_manager;
 
+	/// Listener for external changes to the local scripts
+	agi::signal::Connection local_scripts_changed;
+
 	/// Global script manager
 	Automation4::ScriptManager *global_manager;
+
+	/// Listener for external changes to the global scripts
+	agi::signal::Connection global_scripts_changed;
 
 
 	/// List of loaded scripts
@@ -100,7 +104,6 @@ class DialogAutomation : public wxDialog {
 
 	void OnInfo(wxCommandEvent &);
 	void OnReloadAutoload(wxCommandEvent &);
-	void OnSelectionChange(wxListEvent &);
 
 public:
 	DialogAutomation(agi::Context *context);

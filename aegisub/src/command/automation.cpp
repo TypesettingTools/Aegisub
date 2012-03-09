@@ -87,20 +87,13 @@ struct open_manager : public Command {
 	STR_HELP("Open automation manager")
 
 	void operator()(agi::Context *c) {
-		if (wxGetMouseState().CmdDown()) {
-			wxGetApp().global_scripts->Reload();
-
-			if (wxGetMouseState().ShiftDown()) {
-				c->local_scripts->Reload();
-				wxGetApp().frame->StatusTimeout(_("Reloaded all Automation scripts"));
-			}
-			else {
-				wxGetApp().frame->StatusTimeout(_("Reloaded autoload Automation scripts"));
-			}
+		if (c->automationManager) {
+			c->automationManager->Show();
+			c->automationManager->SetFocus();
 		}
 		else {
-			c->videoController->Stop();
-			DialogAutomation(c).ShowModal();
+			c->automationManager = new DialogAutomation(c);
+			c->automationManager->Show();
 		}
 	}
 };
