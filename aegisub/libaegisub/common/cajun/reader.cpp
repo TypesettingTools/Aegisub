@@ -232,7 +232,7 @@ void Reader::MatchString(std::string& string, InputStream& inputStream) {
 				case 't':  string.push_back('\t'); break;
 				case 'u':  // TODO: what do we do with this?
 				default:
-					throw ScanException("Unrecognized escape sequence found in string: \\" + c, inputStream.GetLocation());
+					throw ScanException(std::string("Unrecognized escape sequence found in string: \\") + c, inputStream.GetLocation());
 			}
 		}
 		else {
