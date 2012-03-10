@@ -157,15 +157,17 @@ void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selectio
 	c->selectionController->GetSelectedSet(selection);
 
 	bool any_changed = false;
-	for (feature_iterator it = features.begin(); it != features.end(); ++it) {
+	for (feature_iterator it = features.begin(); it != features.end(); ) {
 		if (removed.count(it->line)) {
-			sel_features.erase(it);
+			sel_features.erase(it++);
 			any_changed = true;
 		}
 		else if (added.count(it->line) && it->type == DRAG_START && !sel_features.count(it->parent)) {
-			sel_features.insert(it);
+			sel_features.insert(it++);
 			any_changed = true;
 		}
+		else
+			++it;
 	}
 
 	if (any_changed)
