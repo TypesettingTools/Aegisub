@@ -105,7 +105,7 @@ static std::set<AssDialogue*> process(wxString match_text, bool match_case, int 
 		int flags = wxRE_ADVANCED;
 		if (!match_case)
 			flags |= wxRE_ICASE;
-		if (!re.Compile(match_text))
+		if (!re.Compile(match_text, flags))
 			throw BadRegex("Syntax error in regular expression", 0);
 		match_case = false;
 	}
