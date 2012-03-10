@@ -60,13 +60,12 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 	for (unsigned int i=0;i<list.size();i++) {
 		try {
 			size_t pos = list[i].find('/');
-			std::string name = list[i].substr(0, pos);
 			std::string subType = pos < list[i].size() - 1 ? list[i].substr(pos + 1) : "";
 			SubtitlesProvider *provider = Create(list[i], subType);
 			if (provider) return provider;
 		}
 		catch (agi::UserCancelException const&) { throw; }
-		catch (wxString err) { error += list[i] + " factory: " + err + "\n"; }
+		catch (wxString const& err) { error += list[i] + " factory: " + err + "\n"; }
 		catch (const char *err) { error += list[i] + " factory: " + wxString(err) + "\n"; }
 		catch (...) { error += list[i] + " factory: Unknown error\n"; }
 	}

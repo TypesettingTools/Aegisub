@@ -194,7 +194,7 @@ void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *c
 
 		case PARCLASS_DRAWING:
 			{
-				AssDialogueBlockDrawing block(curParam->Get<wxString>());
+				AssDialogueBlockDrawing block(curParam->Get<wxString>(), 1);
 				block.TransformCoords(m[0],m[2],rx,ry);
 				curParam->Set(block.GetText());
 			}
@@ -296,7 +296,7 @@ void DialogResample::OnResample (wxCommandEvent &) {
 			catch (const char *err) {
 				wxLogMessage(err);
 			}
-			catch (wxString err) {
+			catch (wxString const& err) {
 				wxLogMessage(err);
 			}
 		}

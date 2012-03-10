@@ -46,7 +46,7 @@ namespace {
 		{ "grid/move/up", "Default", "Alt", "Up" },
 		{ "grid/line/next/create", "Subtitle Edit Box", "Enter", 0 },
 		{ "grid/line/next/create", "Subtitle Edit Box", "KP_Enter", 0 },
-		0
+		{ 0 }
 	};
 
 	void migrate_hotkeys(const char *removed[], const char *added[][4]) {

@@ -65,11 +65,6 @@ namespace {
 		lua_setfield(L, idx, name);
 	}
 
-	inline wxString get_wxstring(lua_State *L, int idx)
-	{
-		return wxString(lua_tostring(L, idx), wxConvUTF8);
-	}
-
 	inline wxString check_wxstring(lua_State *L, int idx)
 	{
 		return wxString(luaL_checkstring(L, idx), wxConvUTF8);

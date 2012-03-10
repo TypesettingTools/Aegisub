@@ -57,10 +57,9 @@ AssColor::AssColor(int r, int g, int b, int a)
 {
 }
 
-/// @brief DOCME
-/// @param color 
-///
-AssColor::AssColor (const wxColour &color) {
+AssColor::AssColor(const wxColour &color)
+: a(0)
+{
 	SetWXColor(color);
 }
 

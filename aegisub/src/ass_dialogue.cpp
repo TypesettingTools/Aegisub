@@ -300,9 +300,7 @@ void AssDialogue::ParseASSTags() {
 			}
 			// Drawing
 			else {
-				AssDialogueBlockDrawing *block = new AssDialogueBlockDrawing(work);
-				block->Scale = drawingLevel;
-				Blocks.push_back(block);
+				Blocks.push_back(new AssDialogueBlockDrawing(work, drawingLevel));
 			}
 		}
 	}

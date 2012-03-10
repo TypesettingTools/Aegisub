@@ -335,7 +335,7 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 		wxMessageBox(wxString(err), "Error", wxOK | wxICON_ERROR, NULL);
 		return;
 	}
-	catch (wxString err) {
+	catch (wxString const& err) {
 		wxMessageBox(err, "Error", wxOK | wxICON_ERROR, NULL);
 		return;
 	}

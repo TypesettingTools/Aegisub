@@ -91,7 +91,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxS
 	for (wxXmlNode *child = doc.GetRoot()->GetChildren(); child; child = child->GetNext()) {
 		// Line
 		if (child->GetName() == "TextSample") {
-			if (diag = ProcessLine(child, diag, version)) {
+			if ((diag = ProcessLine(child, diag, version))) {
 				lines++;
 				target->Line.push_back(diag);
 			}

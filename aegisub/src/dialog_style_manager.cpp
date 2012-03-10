@@ -172,7 +172,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	// Catalog
 	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));
-	CatalogList = new wxComboBox(this,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, NULL, wxCB_READONLY | wxCB_READONLY, wxDefaultValidator, "Catalog List");
+	CatalogList = new wxComboBox(this,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, NULL, wxCB_READONLY);
 	wxButton *CatalogNew = new wxButton(this, -1, _("New"));
 	CatalogDelete = new wxButton(this, -1, _("Delete"));
 	CatalogBox->Add(CatalogList,1,wxEXPAND | wxRIGHT | wxALIGN_RIGHT,5);

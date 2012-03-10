@@ -54,8 +54,8 @@ void DummyVideoProvider::Create(double fps, int frames, int width, int height, u
 
 	unsigned char *dst = frame.data;
 	unsigned char colors[2][4] = {
-		blue, green, red, 0,
-		0, 0, 0, 0
+		{ blue, green, red, 0 },
+		{ 0, 0, 0, 0 }
 	};
 
 	if (pattern) {

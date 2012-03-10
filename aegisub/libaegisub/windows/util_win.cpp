@@ -88,7 +88,6 @@ void time_log(agi_timeval &tv) {
 
 	// Initialize the present time to 0 and the timezone to UTC
 	unsigned __int64 tmpres = 0;
-	static int tzflag = 0;
 
 	GetSystemTimeAsFileTime(&ft);
 

@@ -109,7 +109,7 @@ public:
 	int Scale;
 
 	ASS_BlockType GetType() { return BLOCK_DRAWING; }
-	AssDialogueBlockDrawing(wxString const& text = wxString()) : AssDialogueBlock(text) { }
+	AssDialogueBlockDrawing(wxString const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
