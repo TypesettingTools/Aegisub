@@ -148,7 +148,7 @@ namespace Automation4 {
 		void SetIndeterminate() { impl->SetIndeterminate(); }
 		void SetTitle(std::string const& title) { impl->SetTitle(title); }
 		void SetMessage(std::string const& msg) { impl->SetMessage(msg); }
-		void SetProgress(int cur, int max) { impl->SetProgress(cur, max); }
+		void SetProgress(int64_t cur, int64_t max) { impl->SetProgress(cur, max); }
 		void Log(std::string const& str) { impl->Log(str); }
 		bool IsCancelled() { return impl->IsCancelled(); }
 

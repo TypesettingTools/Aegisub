@@ -70,7 +70,7 @@ public:
 		SafeQueue(EVT_MESSAGE, lagi_wxString(msg));
 	}
 
-	void SetProgress(int cur, int max) {
+	void SetProgress(int64_t cur, int64_t max) {
 		SafeQueue(EVT_PROGRESS, int(double(cur) / max * 100));
 	}
 

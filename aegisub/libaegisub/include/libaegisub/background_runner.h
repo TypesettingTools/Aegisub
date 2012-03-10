@@ -21,7 +21,9 @@
 #pragma once
 
 #ifndef LAGI_PRE
+#include <stdint.h>
 #include <string>
+
 #ifdef _WIN32
 #include <functional>
 #else
@@ -49,7 +51,7 @@ namespace agi {
 		/// Set an additional message associated with the task
 		virtual void SetMessage(std::string const& msg)=0;
 		/// Set the current task progress
-		virtual void SetProgress(int cur, int max)=0;
+		virtual void SetProgress(int64_t cur, int64_t max)=0;
 
 		/// @brief Log a message
 		///
