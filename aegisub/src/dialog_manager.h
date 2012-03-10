@@ -21,6 +21,8 @@
 #ifndef AGI_PRE
 #include <map>
 #include <typeinfo>
+
+#include <wx/dialog.h>
 #endif
 
 /// @brief A manager for dialogs
