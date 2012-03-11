@@ -175,7 +175,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	Width  = TempFrame->EncodedWidth;
 	Height = TempFrame->EncodedHeight;
 	if (VideoInfo->SARDen > 0 && VideoInfo->SARNum > 0)
-		DAR = double(Width * VideoInfo->SARNum) / (Height * VideoInfo->SARDen);
+		DAR = double(Width) * VideoInfo->SARNum / ((double)Height * VideoInfo->SARDen);
 	else
 		DAR = double(Width) / Height;
 
