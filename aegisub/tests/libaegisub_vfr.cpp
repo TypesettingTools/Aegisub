@@ -420,3 +420,28 @@ TEST(lagi_vfr, no_intermediate_overflow) {
 	EXPECT_EQ(last_frame * 1000, fps.TimeAtFrame(last_frame, EXACT));
 	EXPECT_EQ(last_frame, fps.FrameAtTime(last_frame * 1000, EXACT));
 }
+
+TEST(lagi_vfr, duplicate_timestamps) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(6, 0, 0, 1, 2, 2, 3)));
+
+	EXPECT_EQ(1, fps.FrameAtTime(0, EXACT));
+	EXPECT_EQ(2, fps.FrameAtTime(1, EXACT));
+	EXPECT_EQ(4, fps.FrameAtTime(2, EXACT));
+	EXPECT_EQ(5, fps.FrameAtTime(3, EXACT));
+
+	EXPECT_EQ(0, fps.TimeAtFrame(0, EXACT));
+	EXPECT_EQ(0, fps.TimeAtFrame(1, EXACT));
+	EXPECT_EQ(1, fps.TimeAtFrame(2, EXACT));
+	EXPECT_EQ(2, fps.TimeAtFrame(3, EXACT));
+	EXPECT_EQ(2, fps.TimeAtFrame(4, EXACT));
+	EXPECT_EQ(3, fps.TimeAtFrame(5, EXACT));
+
+	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(5, 0, 100, 100, 200, 300)));
+
+	EXPECT_EQ(0, fps.FrameAtTime(0, EXACT));
+	EXPECT_EQ(0, fps.FrameAtTime(99, EXACT));
+	EXPECT_EQ(2, fps.FrameAtTime(100, EXACT));
+	EXPECT_EQ(2, fps.FrameAtTime(199, EXACT));
+	EXPECT_EQ(3, fps.FrameAtTime(200, EXACT));
+}

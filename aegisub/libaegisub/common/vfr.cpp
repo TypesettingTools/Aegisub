@@ -46,9 +46,8 @@ namespace agi {
 namespace vfr {
 
 static int is_increasing(int prev, int cur) {
-	if (prev >= cur) {
-		throw UnorderedTimecodes("Timecodes are out of order or too close together");
-	}
+	if (prev > cur)
+		throw UnorderedTimecodes("Timecodes are out of order");
 	return cur;
 }
 
