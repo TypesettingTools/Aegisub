@@ -223,8 +223,6 @@ FrameMain::FrameMain (wxArrayString args)
 }
 
 FrameMain::~FrameMain () {
-	delete context->dialog;
-
 	// Because the subs grid is the selection controller, it needs to stay
 	// alive significantly longer than the other child controls
 	SubsGrid->Reparent(0);
@@ -566,16 +564,18 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 	// Ask user if he wants to save first
 	bool canVeto = event.CanVeto();
 	int result = TryToCloseSubs(canVeto);
+	if (canVeto && result == wxCANCEL) {
+		event.Veto();
+		return;
+	}
+
+	delete context->dialog;
+	context->dialog = 0;
 
 	// Store maximization state
 	OPT_SET("App/Maximized")->SetBool(IsMaximized());
 
-	// Abort/destroy
-	if (canVeto) {
-		if (result == wxCANCEL) event.Veto();
-		else Destroy();
-	}
-	else Destroy();
+	Destroy();
 }
 
 void FrameMain::OnAutoSave(wxTimerEvent &) try {
