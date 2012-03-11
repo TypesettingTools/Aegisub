@@ -9,8 +9,7 @@ LDFLAGS += -Wl,-rpath $(CURDIR)/../libaegisub $(LDFLAGS_ICONV)
 CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV)
 CXXFLAGS += -Wno-unused-value
 
-
-ifdef $(BUILD_DARWIN)
+ifeq (yes, $(BUILD_DARWIN))
 LDFLAGS += -framework ApplicationServices
 endif
 
