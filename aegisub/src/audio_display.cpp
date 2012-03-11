@@ -1245,7 +1245,7 @@ void AudioDisplay::OnSelectionChanged()
 			ScrollBy(rel_x - width + width / 20);
 		}
 	}
-	else if (OPT_GET("Audio/Auto/Scroll")->GetBool())
+	else if (OPT_GET("Audio/Auto/Scroll")->GetBool() && sel.end() != 0)
 	{
 		ScrollTimeRangeInView(sel);
 	}
