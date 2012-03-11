@@ -78,7 +78,7 @@ PortAudioPlayer::PortAudioPlayer()
 	PaError err = Pa_Initialize();
 
 	if (err != paNoError)
-		throw PortAudioError(std::string("Failed opening PortAudio:") + Pa_GetErrorText(err), 0);
+		throw PortAudioError(std::string("Failed opening PortAudio: ") + Pa_GetErrorText(err), 0);
 
 	// Build a list of host API-specific devices we can use
 	// Some host APIs may not support all audio formats, so build a priority

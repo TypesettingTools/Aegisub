@@ -242,7 +242,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
 	// decode frame
 	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, FrameNumber, &ErrInfo);
 	if (SrcFrame == NULL) {
-		throw VideoDecodeError(std::string("Failed to retrieve frame:") +  ErrInfo.Buffer);
+		throw VideoDecodeError(std::string("Failed to retrieve frame: ") +  ErrInfo.Buffer);
 	}
 
 	CurFrame.SetTo(SrcFrame->Data[0], Width, Height, SrcFrame->Linesize[0]);
