@@ -72,6 +72,9 @@ AssTime::AssTime(wxString const& text)
 
 	// Milliseconds (includes seconds)
 	time += AegiStringToFix(text, 3, end, text.size());
+
+	// Limit to the valid range
+	time = mid(0, time, 10 * 60 * 60 * 1000 - 1);
 }
 
 wxString AssTime::GetASSFormated(bool msPrecision) const {
