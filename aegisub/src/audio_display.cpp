@@ -966,6 +966,9 @@ void AudioDisplay::SetDraggedObject(AudioDisplayInteractionObject *new_obj)
 		CaptureMouse();
 	else if (!dragged_object && HasCapture())
 		ReleaseMouse();
+
+	if (!dragged_object)
+		audio_marker.reset();
 }
 
 

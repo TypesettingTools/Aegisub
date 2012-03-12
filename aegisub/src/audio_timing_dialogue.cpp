@@ -295,6 +295,12 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	/// Inactive lines which are currently modifiable
 	std::list<TimeableLine> inactive_lines;
 
+	/// The current set of selected dialogue lines
+	Selection sel;
+
+	/// Selected lines which are currently modifiable
+	std::list<TimeableLine> selected_lines;
+
 	/// All audio markers for active and inactive lines, sorted by position
 	std::vector<DialogueTimingMarker*> markers;
 
@@ -329,6 +335,9 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 
 	/// Regenerate the list of timeable inactive lines
 	void RegenerateInactiveLines();
+
+	/// Regenerate the list of timeable selected lines
+	void RegenerateSelectedLines();
 
 	/// Add a line to the list of timeable inactive lines
 	void AddInactiveLine(AssDialogue *diag);
@@ -411,6 +420,7 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 
+	sel = context->selectionController->GetSelectedSet();
 	Revert();
 }
 
@@ -440,9 +450,11 @@ void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
 	Revert();
 }
 
-void AudioTimingControllerDialogue::OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed)
+void AudioTimingControllerDialogue::OnSelectedSetChanged(Selection const&, Selection const&)
 {
-	/// @todo Create new passive markers, perhaps
+	sel = context->selectionController->GetSelectedSet();
+	RegenerateSelectedLines();
+	RegenerateInactiveLines();
 }
 
 void AudioTimingControllerDialogue::OnFileChanged(int type) {
@@ -471,6 +483,8 @@ TimeRange AudioTimingControllerDialogue::GetPrimaryPlaybackRange() const
 void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
 {
 	active_line.GetStyleRange(&ranges);
+	for_each(selected_lines.begin(), selected_lines.end(),
+		bind(&TimeableLine::GetStyleRange, std::tr1::placeholders::_1, &ranges));
 	for_each(inactive_lines.begin(), inactive_lines.end(),
 		bind(&TimeableLine::GetStyleRange, std::tr1::placeholders::_1, &ranges));
 }
@@ -545,6 +559,7 @@ void AudioTimingControllerDialogue::Revert()
 	}
 
 	RegenerateInactiveLines();
+	RegenerateSelectedLines();
 }
 
 void AudioTimingControllerDialogue::AddLeadIn()
@@ -731,8 +746,31 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 
 void AudioTimingControllerDialogue::AddInactiveLine(AssDialogue *diag)
 {
+	if (sel.count(diag)) return;
+
 	inactive_lines.push_back(TimeableLine(AudioStyle_Inactive, &style_inactive, &style_inactive));
 	inactive_lines.back().SetLine(diag);
+}
+
+void AudioTimingControllerDialogue::RegenerateSelectedLines()
+{
+	bool was_empty = selected_lines.empty();
+	selected_lines.clear();
+
+	AssDialogue *active = context->selectionController->GetActiveLine();
+	for (Selection::iterator it = sel.begin(); it != sel.end(); ++it)
+	{
+		if (*it == active) continue;
+
+		selected_lines.push_back(TimeableLine(AudioStyle_Selected, &style_inactive, &style_inactive));
+		selected_lines.back().SetLine(*it);
+	}
+
+	if (!selected_lines.empty() || !was_empty)
+	{
+		AnnounceUpdatedStyleRanges();
+		RegenerateMarkers();
+	}
 }
 
 void AudioTimingControllerDialogue::RegenerateMarkers()
@@ -740,6 +778,8 @@ void AudioTimingControllerDialogue::RegenerateMarkers()
 	markers.clear();
 
 	active_line.GetMarkers(&markers);
+	for_each(selected_lines.begin(), selected_lines.end(),
+		bind(&TimeableLine::GetMarkers, std::tr1::placeholders::_1, &markers));
 	for_each(inactive_lines.begin(), inactive_lines.end(),
 		bind(&TimeableLine::GetMarkers, std::tr1::placeholders::_1, &markers));
 	sort(markers.begin(), markers.end(), marker_ptr_cmp());
