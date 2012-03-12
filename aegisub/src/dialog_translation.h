@@ -26,6 +26,9 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signal.h>
+
+#include "selection_controller.h"
 
 namespace agi { struct Context; }
 class AssDialogue;
@@ -39,8 +42,10 @@ class wxCheckBox;
 /// @brief Assistant for translating subtitles in one language to another language
 ///
 /// DOCME
-class DialogTranslation : public wxDialog {
+class DialogTranslation : public wxDialog, private SelectionListener<AssDialogue> {
 	agi::Context *c;
+
+	agi::signal::Connection file_change_connection;
 
 	/// The active line
 	AssDialogue *active_line;
@@ -52,6 +57,9 @@ class DialogTranslation : public wxDialog {
 	/// Line number of the currently active line
 	size_t line_number;
 
+	/// Should active line change announcements be ignored?
+	bool switching_lines;
+
 	wxStaticText *line_number_display;
 	ScintillaTextCtrl *original_text;
 	SubsTextEditCtrl *translated_text;
@@ -62,8 +70,12 @@ class DialogTranslation : public wxDialog {
 	void OnPlayAudioButton(wxCommandEvent &);
 	void OnPlayVideoButton(wxCommandEvent &);
 	void OnKeyDown(wxKeyEvent &evt);
+	void OnExternalCommit(int commit_type);
 
 	void UpdateDisplay();
+
+	void OnSelectedSetChanged(Selection const&, Selection const&) { }
+	void OnActiveLineChanged(AssDialogue *new_line);
 
 public:
 	DialogTranslation(agi::Context *context);

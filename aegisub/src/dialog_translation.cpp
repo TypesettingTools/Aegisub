@@ -66,10 +66,12 @@ static bool bad_block(AssDialogueBlock *block) {
 DialogTranslation::DialogTranslation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(c)
+, file_change_connection(c->ass->AddCommitListener(&DialogTranslation::OnExternalCommit, this))
 , active_line(c->selectionController->GetActiveLine())
 , cur_block(0)
 , line_count(count_if(c->ass->Line.begin(), c->ass->Line.end(), cast<AssDialogue*>()))
 , line_number(count_if(c->ass->Line.begin(), find(c->ass->Line.begin(), c->ass->Line.end(), active_line), cast<AssDialogue*>()) + 1)
+, switching_lines(false)
 {
 	SetIcon(BitmapToIcon(GETIMAGE(translation_toolbutton_16)));
 
@@ -164,11 +166,40 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	}
 	else
 		UpdateDisplay();
+
+	c->selectionController->AddSelectionListener(this);
 }
 
-DialogTranslation::~DialogTranslation() { }
+DialogTranslation::~DialogTranslation() {
+	c->selectionController->RemoveSelectionListener(this);
+}
+
+void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
+	if (switching_lines) return;
+
+	active_line = new_line;
+	active_line->ParseASSTags();
+	cur_block = 0;
+	line_number = count_if(c->ass->Line.begin(), find(c->ass->Line.begin(), c->ass->Line.end(), active_line), cast<AssDialogue*>()) + 1;
+
+	if (bad_block(active_line->Blocks[cur_block]) && !NextBlock()) {
+		wxMessageBox(_("No more lines to translate."));
+		EndModal(1);
+	}
+}
+
+void DialogTranslation::OnExternalCommit(int commit_type) {
+	if (commit_type == AssFile::COMMIT_NEW || commit_type & AssFile::COMMIT_DIAG_ADDREM) {
+		line_count = count_if(c->ass->Line.begin(), c->ass->Line.end(), cast<AssDialogue*>());
+		line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), (int)line_number, (int)line_count));
+	}
+
+	if (commit_type & AssFile::COMMIT_DIAG_TEXT)
+		OnActiveLineChanged(active_line);
+}
 
 bool DialogTranslation::NextBlock() {
+	switching_lines = true;
 	do {
 		if (cur_block == active_line->Blocks.size() - 1) {
 			c->selectionController->NextLine();
@@ -184,12 +215,14 @@ bool DialogTranslation::NextBlock() {
 		else
 			++cur_block;
 	} while (bad_block(active_line->Blocks[cur_block]));
+	switching_lines = false;
 
 	UpdateDisplay();
 	return true;
 }
 
 bool DialogTranslation::PrevBlock() {
+	switching_lines = true;
 	do {
 		if (cur_block == 0) {
 			c->selectionController->PrevLine();
@@ -205,6 +238,7 @@ bool DialogTranslation::PrevBlock() {
 		else
 			--cur_block;
 	} while (bad_block(active_line->Blocks[cur_block]));
+	switching_lines = false;
 
 	UpdateDisplay();
 	return true;
@@ -245,7 +279,10 @@ void DialogTranslation::Commit(bool next) {
 	new_value.Replace("\n", "\\N");
 	*active_line->Blocks[cur_block] = AssDialogueBlockPlain(new_value);
 	active_line->UpdateText();
+
+	file_change_connection.Block();
 	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_DIAG_TEXT);
+	file_change_connection.Unblock();
 
 	if (next) {
 		if (!NextBlock()) {
