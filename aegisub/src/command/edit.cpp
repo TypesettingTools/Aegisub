@@ -95,11 +95,17 @@ struct edit_line_copy : public validate_sel_nonempty {
 	STR_HELP("Copy subtitles")
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->editBox) {
-			c->editBox->Copy();
-			return;
-		}
-		c->subsGrid->CopyLines(c->subsGrid->GetSelection());
+		// Ideally we'd let the control's keydown handler run and only deal
+		// with the events not processed by it, but that doesn't seem to be
+		// possible with how wx implements key event handling - the native
+		// platform processing is evoked only if the wx event is unprocessed,
+		// and there's no way to do something if the native platform code leaves
+		// it unprocessed
+
+		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
+			ctrl->Copy();
+		else
+			c->subsGrid->CopyLines(c->subsGrid->GetSelection());
 	}
 };
 
@@ -112,11 +118,10 @@ struct edit_line_cut: public validate_sel_nonempty {
 	STR_HELP("Cut subtitles")
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->editBox) {
-			c->editBox->Cut();
-			return;
-		}
-		c->subsGrid->CutLines(c->subsGrid->GetSelection());
+		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
+			ctrl->Cut();
+		else
+			c->subsGrid->CutLines(c->subsGrid->GetSelection());
 	}
 };
 
@@ -316,11 +321,10 @@ struct edit_line_paste : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		if (c->parent->FindFocus() == c->editBox) {
-			c->editBox->Paste();
-			return;
-		}
-		c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow());
+		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
+			ctrl->Paste();
+		else
+			c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow());
 	}
 };
 
