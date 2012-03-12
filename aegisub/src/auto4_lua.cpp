@@ -153,6 +153,13 @@ namespace {
 		return 1;
 	}
 
+	int get_translation(lua_State *L)
+	{
+		wxString str(check_wxstring(L, 1));
+		lua_pushstring(L, _(str).utf8_str());
+		return 1;
+	}
+
 	inline wxRegEx *get_regex(lua_State *L)
 	{
 		return static_cast<wxRegEx*>(luaL_checkudata(L, 1, "aegisub.regex"));
@@ -454,6 +461,7 @@ namespace Automation4 {
 			set_field(L, "__init_regex", regex_init);
 			set_field(L, "__init_clipboard", clipboard_init);
 			set_field(L, "file_name", get_file_name);
+			set_field(L, "gettext", get_translation);
 
 			// store aegisub table to globals
 			lua_settable(L, LUA_GLOBALSINDEX);
