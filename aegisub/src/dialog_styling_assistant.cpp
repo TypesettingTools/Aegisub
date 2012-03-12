@@ -50,8 +50,8 @@
 #include <wx/textctrl.h>
 #endif
 
-static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, const char *text) {
-	sizer->Add(new wxStaticText(parent, -1, _(text)));
+static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wxString const& text) {
+	sizer->Add(new wxStaticText(parent, -1, text));
 	sizer->Add(new wxStaticText(parent, -1, hotkey::get_hotkey_str_first("Styling Assistant", command)));
 }
 
@@ -91,12 +91,12 @@ DialogStyling::DialogStyling(agi::Context *context)
 		wxSizer *hotkey_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
 
 		wxSizer *hotkey_grid = new wxGridSizer(2, 0, 5);
-		add_hotkey(hotkey_grid, this, "tool/styling_assistant/commit", "Accept changes");
-		add_hotkey(hotkey_grid, this, "tool/styling_assistant/preview", "Preview changes");
-		add_hotkey(hotkey_grid, this, "grid/line/prev", "Previous line");
-		add_hotkey(hotkey_grid, this, "grid/line/next", "Next line");
-		add_hotkey(hotkey_grid, this, "video/play/line", "Play video");
-		add_hotkey(hotkey_grid, this, "audio/play/selection", "Play audio");
+		add_hotkey(hotkey_grid, this, "tool/styling_assistant/commit", _("Accept changes"));
+		add_hotkey(hotkey_grid, this, "tool/styling_assistant/preview", _("Preview changes"));
+		add_hotkey(hotkey_grid, this, "grid/line/prev", _("Previous line"));
+		add_hotkey(hotkey_grid, this, "grid/line/next", _("Next line"));
+		add_hotkey(hotkey_grid, this, "video/play/line", _("Play video"));
+		add_hotkey(hotkey_grid, this, "audio/play/selection", _("Play audio"));
 		hotkey_grid->Add(new wxStaticText(this, -1, _("Click on list")));
 		hotkey_grid->Add(new wxStaticText(this, -1, _("Select style")));
 

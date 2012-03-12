@@ -49,8 +49,8 @@
 #include <wx/stattext.h>
 #endif
 
-static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, const char *text) {
-	sizer->Add(new wxStaticText(parent, -1, _(text)));
+static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wxString const& text) {
+	sizer->Add(new wxStaticText(parent, -1, text));
 	sizer->Add(new wxStaticText(parent, -1, hotkey::get_hotkey_str_first("Translation Assistant", command)));
 }
 
@@ -112,14 +112,14 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		wxSizer *hotkey_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
 
 		wxSizer *hotkey_grid = new wxGridSizer(2, 0, 5);
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/commit", "Accept changes");
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/preview", "Preview changes");
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/prev", "Previous line");
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/next", "Next line");
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/insert_original", "Insert original");
-		add_hotkey(hotkey_grid, this, "video/play/line", "Play video");
-		add_hotkey(hotkey_grid, this, "audio/play/selection", "Play audio");
-		add_hotkey(hotkey_grid, this, "edit/line/delete", "Delete line");
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/commit", _("Accept changes"));
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/preview", _("Preview changes"));
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/prev", _("Previous line"));
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/next", _("Next line"));
+		add_hotkey(hotkey_grid, this, "tool/translation_assistant/insert_original", _("Insert original"));
+		add_hotkey(hotkey_grid, this, "video/play/line", _("Play video"));
+		add_hotkey(hotkey_grid, this, "audio/play/selection", _("Play audio"));
+		add_hotkey(hotkey_grid, this, "edit/line/delete", _("Delete line"));
 		hotkey_box->Add(hotkey_grid, 0, wxEXPAND, 0);
 
 		seek_video = new wxCheckBox(this, -1, _("Enable &preview"));
