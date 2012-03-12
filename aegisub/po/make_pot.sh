@@ -9,3 +9,9 @@ find ../src ../src/command -name \*.cpp -o -name \*.h | \
     aegisub.pot
 
 sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/\n#: default_menu.json\nmsgid \1\nmsgstr ""\n/' ../src/libresrc/default_menu.json >> aegisub.pot
+
+find ../automation -name *.lua | \
+    xargs grep tr\"[^\"]\*\" -o -n | \
+    sed 's/\(.*\):\([0-9]\+\):tr\(".*"\)/#: \1:\2\nmsgid \3\nmsgstr ""\n/' \
+    >> aegisub.pot
+
