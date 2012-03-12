@@ -167,10 +167,15 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 
 	using namespace std::tr1;
 
-	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::Cut, this)), EDIT_MENU_CUT);
-	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::Copy, this)), EDIT_MENU_COPY);
-	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::Paste, this)), EDIT_MENU_PASTE);
-	Bind(wxEVT_COMMAND_MENU_SELECTED, function<void (wxCommandEvent &)>(bind(&SubsTextEditCtrl::SelectAll, this)), EDIT_MENU_SELECT_ALL);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::Cut, this), EDIT_MENU_CUT);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::Copy, this), EDIT_MENU_COPY);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::Paste, this), EDIT_MENU_PASTE);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SelectAll, this), EDIT_MENU_SELECT_ALL);
+
+	if (context) {
+		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, true), EDIT_MENU_SPLIT_PRESERVE);
+		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, false), EDIT_MENU_SPLIT_ESTIMATE);
+	}
 
 	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
 
@@ -208,8 +213,6 @@ void SubsTextEditCtrl::Subscribe(std::string const& name) {
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
 	EVT_KILL_FOCUS(SubsTextEditCtrl::OnLoseFocus)
 
-	EVT_MENU(EDIT_MENU_SPLIT_PRESERVE,SubsTextEditCtrl::OnSplitLinePreserve)
-	EVT_MENU(EDIT_MENU_SPLIT_ESTIMATE,SubsTextEditCtrl::OnSplitLineEstimate)
 	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
 	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_THESAURUS-1,SubsTextEditCtrl::OnUseSuggestion)
 	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseSuggestion)
@@ -282,7 +285,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 	if (text.empty()) return;
 
 	// Check if it's a template line
-	AssDialogue *diag = context->selectionController->GetActiveLine();
+	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
 	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
 
 	size_t last_template = 0;
@@ -719,9 +722,6 @@ void SubsTextEditCtrl::Paste() {
 }
 
 void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
-	if (!context->selectionController->GetActiveLine())
-		return;
-
 	wxPoint pos = event.GetPosition();
 	int activePos;
 	if (pos == wxDefaultPosition) {
@@ -750,9 +750,11 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	menu.Append(EDIT_MENU_SELECT_ALL,_("Select &All"));
 
 	// Split
-	menu.AppendSeparator();
-	menu.Append(EDIT_MENU_SPLIT_PRESERVE,_("Split at cursor (preserve times)"));
-	menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
+	if (context) {
+		menu.AppendSeparator();
+		menu.Append(EDIT_MENU_SPLIT_PRESERVE,_("Split at cursor (preserve times)"));
+		menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
+	}
 
 	PopupMenu(&menu);
 }
@@ -863,14 +865,6 @@ void SubsTextEditCtrl::SplitLine(bool estimateTimes) {
 	}
 
 	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
-}
-
-void SubsTextEditCtrl::OnSplitLinePreserve(wxCommandEvent &) {
-	SplitLine(false);
-}
-
-void SubsTextEditCtrl::OnSplitLineEstimate(wxCommandEvent &) {
-	SplitLine(true);
 }
 
 void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {

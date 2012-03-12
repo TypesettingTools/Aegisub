@@ -48,18 +48,16 @@ class SubsEditBox;
 class Thesaurus;
 namespace agi { struct Context; }
 
-/// DOCME
 /// @class SubsTextEditCtrl
-/// @brief DOCME
-///
-/// DOCME
+/// @brief A Scintilla control with spell checking and syntax highlighting
 class SubsTextEditCtrl : public ScintillaTextCtrl {
-	/// DOCME
+	/// Backend spellchecker to use
 	agi::scoped_ptr<SpellChecker> spellchecker;
 
-	/// DOCME
+	/// Backend thesaurus to use
 	agi::scoped_ptr<Thesaurus> thesaurus;
 
+	/// Project context, for splitting lines
 	agi::Context *context;
 
 	/// The word right-clicked on, used for spellchecker replacing
@@ -68,21 +66,19 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	/// The beginning of the word right-clicked on, for spellchecker replacing
 	int currentWordPos;
 
-	/// DOCME
+	/// Spellchecker suggestions for the last right-clicked word
 	wxArrayString sugs;
 
-	/// DOCME
+	/// Thesaurus suggestions for the last right-clicked word
 	std::vector<std::string> thesSugs;
 
-	/// DOCME
+	/// Calltip prototypes
 	wxArrayString proto;
 
-	/// DOCME
+	/// Last show calltip, to avoid flickering the currently active one
 	int tipProtoN;
 
 	void OnContextMenu(wxContextMenuEvent &);
-	void OnSplitLinePreserve(wxCommandEvent &event);
-	void OnSplitLineEstimate(wxCommandEvent &event);
 	void OnAddToDictionary(wxCommandEvent &event);
 	void OnUseSuggestion(wxCommandEvent &event);
 	void OnSetDicLanguage(wxCommandEvent &event);

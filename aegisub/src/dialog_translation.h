@@ -31,6 +31,7 @@ namespace agi { struct Context; }
 class AssDialogue;
 class PersistLocation;
 class ScintillaTextCtrl;
+class SubsTextEditCtrl;
 class wxStaticText;
 class wxCheckBox;
 
@@ -43,7 +44,7 @@ class DialogTranslation : public wxDialog {
 
 	/// The active line
 	AssDialogue *active_line;
-	/// Which dialogue block in the active line is currrently being translated
+	/// Which dialogue block in the active line is currently being translated
 	size_t cur_block;
 
 	/// Total number of dialogue lines in the file
@@ -53,7 +54,7 @@ class DialogTranslation : public wxDialog {
 
 	wxStaticText *line_number_display;
 	ScintillaTextCtrl *original_text;
-	ScintillaTextCtrl *translated_text;
+	SubsTextEditCtrl *translated_text;
 	wxCheckBox *seek_video;
 
 	agi::scoped_ptr<PersistLocation> persist;

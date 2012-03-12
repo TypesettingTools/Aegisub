@@ -36,7 +36,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
-#include "scintilla_text_ctrl.h"
+#include "subs_edit_ctrl.h"
 #include "selection_controller.h"
 #include "utils.h"
 #include "video_context.h"
@@ -64,7 +64,7 @@ static bool bad_block(AssDialogueBlock *block) {
 }
 
 DialogTranslation::DialogTranslation(agi::Context *c)
-: wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX, "TranslationAssistant")
+: wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(c)
 , active_line(c->selectionController->GetActiveLine())
 , cur_block(0)
@@ -93,7 +93,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	}
 
 	{
-		translated_text = new ScintillaTextCtrl(this, -1, "", wxDefaultPosition, wxSize(320, 80));
+		translated_text = new SubsTextEditCtrl(this, wxSize(320, 80), 0, 0);
 		translated_text->SetWrapMode(wxSTC_WRAP_WORD);
 		translated_text->SetMarginWidth(1, 0);
 		translated_text->SetFocus();
