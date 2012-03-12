@@ -117,8 +117,9 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		add_hotkey(hotkey_grid, this, "tool/translation_assistant/prev", "Previous line");
 		add_hotkey(hotkey_grid, this, "tool/translation_assistant/next", "Next line");
 		add_hotkey(hotkey_grid, this, "tool/translation_assistant/insert_original", "Insert original");
-		add_hotkey(hotkey_grid, this, "video/play/line", "Play Video");
-		add_hotkey(hotkey_grid, this, "audio/play/selection", "Play Audio");
+		add_hotkey(hotkey_grid, this, "video/play/line", "Play video");
+		add_hotkey(hotkey_grid, this, "audio/play/selection", "Play audio");
+		add_hotkey(hotkey_grid, this, "edit/line/delete", "Delete line");
 		hotkey_box->Add(hotkey_grid, 0, wxEXPAND, 0);
 
 		seek_video = new wxCheckBox(this, -1, _("Enable &preview"));
