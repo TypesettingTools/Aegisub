@@ -60,7 +60,6 @@
 #include "auto4_base.h"
 #include "charset_conv.h"
 #include "compat.h"
-#include "export_clean_info.h"
 #include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"
@@ -246,7 +245,6 @@ bool AegisubApp::OnInit() {
 		// Load export filters
 		StartupLog("Register export filters");
 		AssExportFilterChain::Register(new AssFixStylesFilter);
-		AssExportFilterChain::Register(new AssTransformCleanInfoFilter);
 		AssExportFilterChain::Register(new AssTransformFramerateFilter);
 
 		// Get parameter subs

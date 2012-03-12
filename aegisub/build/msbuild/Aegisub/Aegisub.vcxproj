@@ -130,7 +130,6 @@
     <ClInclude Include="$(SrcDir)dialog_translation.h" />
     <ClInclude Include="$(SrcDir)dialog_version_check.h" />
     <ClInclude Include="$(SrcDir)dialog_video_details.h" />
-    <ClInclude Include="$(SrcDir)export_clean_info.h" />
     <ClInclude Include="$(SrcDir)export_fixstyle.h" />
     <ClInclude Include="$(SrcDir)export_framerate.h" />
     <ClInclude Include="$(SrcDir)factory_manager.h" />
@@ -315,7 +314,6 @@
     <ClCompile Include="$(SrcDir)dialog_translation.cpp" />
     <ClCompile Include="$(SrcDir)dialog_version_check.cpp" />
     <ClCompile Include="$(SrcDir)dialog_video_details.cpp" />
-    <ClCompile Include="$(SrcDir)export_clean_info.cpp" />
     <ClCompile Include="$(SrcDir)export_fixstyle.cpp" />
     <ClCompile Include="$(SrcDir)export_framerate.cpp" />
     <ClCompile Include="$(SrcDir)ffmpegsource_common.cpp" />

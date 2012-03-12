@@ -188,7 +188,6 @@ SRC += \
 	dialog_version_check.cpp \
 	dialog_video_details.cpp \
 	audio_provider_dummy.cpp \
-	export_clean_info.cpp \
 	export_fixstyle.cpp \
 	export_framerate.cpp \
 	fft.cpp \
