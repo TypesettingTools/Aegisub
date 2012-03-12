@@ -79,7 +79,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 	while (mkv_ReadFrame(file,0,&rt,&startTime,&endTime,&filePos,&frameSize,&frameFlags) == 0) {
 		if (ps->IsCancelled()) {
-			delete readBuf;
+			delete[] readBuf;
 			return;
 		}
 
