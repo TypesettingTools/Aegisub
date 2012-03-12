@@ -63,14 +63,8 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	/// Internal cache management for the spectrum
 	agi::scoped_ptr<AudioSpectrumCache> cache;
 
-	/// Colour table used for regular rendering
-	agi::scoped_ptr<AudioColorScheme> colors_normal;
-
-	/// Colour table used for rendering the audio selection
-	agi::scoped_ptr<AudioColorScheme> colors_primary;
-
-	/// Colour table used for rendering inactive lines
-	agi::scoped_ptr<AudioColorScheme> colors_inactive;
+	/// Colour tables used for rendering
+	std::vector<AudioColorScheme> colors;
 
 	/// Binary logarithm of number of samples to use in deriving frequency-power data
 	size_t derivation_size;
@@ -115,9 +109,6 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 
 	/// Pre-allocated scratch area for storing raw audio data
 	std::vector<int16_t> audio_scratch;
-
-	/// Get the color scheme for a rendering style
-	const AudioColorScheme *GetColorScheme(AudioRenderingStyle style) const;
 
 public:
 	/// @brief Constructor

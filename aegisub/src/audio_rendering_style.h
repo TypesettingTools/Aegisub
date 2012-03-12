@@ -36,7 +36,7 @@
 /// overlap inactive, which should overlap normal regions.
 enum AudioRenderingStyle {
 	/// Regular audio with no special properties
-	AudioStyle_Normal,
+	AudioStyle_Normal = 0,
 	/// Audio belonging to objects that are not part of the current selection
 	AudioStyle_Inactive,
 	/// Audio belonging to objects that are part of the current selection,

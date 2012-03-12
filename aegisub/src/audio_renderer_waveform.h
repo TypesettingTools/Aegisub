@@ -37,32 +37,22 @@
 
 #ifndef AGI_PRE
 #include <stdint.h>
+#include <vector>
 #endif
-
-#include <libaegisub/scoped_ptr.h>
 
 class AudioColorScheme;
 
 #include "audio_renderer.h"
 
 class AudioWaveformRenderer : public AudioRendererBitmapProvider {
-	/// Colour table used for regular rendering
-	agi::scoped_ptr<AudioColorScheme> colors_normal;
-
-	/// Colour table used for rendering the audio selection
-	agi::scoped_ptr<AudioColorScheme> colors_primary;
-
-	/// Colour table used for rendering inactive lines
-	agi::scoped_ptr<AudioColorScheme> colors_inactive;
+	/// Colour tables used for rendering
+	std::vector<AudioColorScheme> colors;
 
 	/// Pre-allocated buffer for audio fetched from provider
 	char *audio_buffer;
 
 	/// Whether to render max+avg or just max
 	bool render_averages;
-
-	/// Get the color scheme for a rendering style
-	const AudioColorScheme *GetColorScheme(AudioRenderingStyle style) const;
 
 	void OnSetProvider();
 	void OnSetMillisecondsPerPixel();

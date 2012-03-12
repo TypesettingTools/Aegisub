@@ -173,7 +173,7 @@ void AudioRenderer::SetCacheMaxSize(size_t max_size)
 	// bitmap cache should be plenty even if working with a one hour audio clip.
 	cache_bitmap_maxsize = std::min<size_t>(max_size/8, 0x1000000);
 	// The renderer gets whatever is left.
-	cache_renderer_maxsize = max_size - 2*cache_bitmap_maxsize;
+	cache_renderer_maxsize = max_size - 4*cache_bitmap_maxsize;
 }
 
 

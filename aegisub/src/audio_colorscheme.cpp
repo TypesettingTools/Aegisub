@@ -57,8 +57,8 @@ AudioColorScheme::AudioColorScheme(int prec, std::string const& scheme_name, int
 	{
 		case AudioStyle_Normal:   opt_base += "Normal/"; break;
 		case AudioStyle_Inactive: opt_base += "Inactive/"; break;
-		case AudioStyle_Selected: opt_base += "Active/"; break;
-		case AudioStyle_Primary:  opt_base += "Selected/"; break;
+		case AudioStyle_Selected: opt_base += "Selection/"; break;
+		case AudioStyle_Primary:  opt_base += "Primary/"; break;
 		default: throw agi::InternalError("Unknown audio rendering styling", 0);
 	}
 

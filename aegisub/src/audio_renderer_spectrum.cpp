@@ -105,10 +105,7 @@ public:
 
 
 AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_name)
-: colors_normal(new AudioColorScheme(12, color_scheme_name, AudioStyle_Normal))
-, colors_primary(new AudioColorScheme(12, color_scheme_name, AudioStyle_Primary))
-, colors_inactive(new AudioColorScheme(12, color_scheme_name, AudioStyle_Inactive))
-, derivation_size(8)
+: derivation_size(8)
 , derivation_dist(8)
 #ifdef WITH_FFTW3
 , dft_plan(0)
@@ -116,6 +113,9 @@ AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_nam
 , dft_output(0)
 #endif
 {
+	colors.reserve(AudioStyle_MAX);
+	for (int i = 0; i < AudioStyle_MAX; ++i)
+		colors.push_back(AudioColorScheme(12, color_scheme_name, i));
 }
 
 AudioSpectrumRenderer::~AudioSpectrumRenderer()
@@ -256,7 +256,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	ptrdiff_t stride = img.GetWidth()*3;
 	int imgheight = img.GetHeight();
 
-	const AudioColorScheme *pal = GetColorScheme(style);
+	const AudioColorScheme *pal = &colors[style];
 
 	/// @todo Make minband and maxband configurable
 	int minband = 0;
@@ -315,7 +315,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 void AudioSpectrumRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style)
 {
 	// Get the colour of silence
-	wxColour col = GetColorScheme(style)->get(0.0f);
+	wxColour col = colors[style].get(0.0f);
 	dc.SetBrush(wxBrush(col));
 	dc.SetPen(wxPen(col));
 	dc.DrawRectangle(rect);
@@ -325,13 +325,4 @@ void AudioSpectrumRenderer::AgeCache(size_t max_size)
 {
 	if (cache)
 		cache->Age(max_size);
-}
-const AudioColorScheme *AudioSpectrumRenderer::GetColorScheme(AudioRenderingStyle style) const
-{
-	switch (style)
-	{
-		case AudioStyle_Primary: return colors_primary.get();
-		case AudioStyle_Inactive: return colors_inactive.get();
-		default: return colors_normal.get();
-	}
 }
