@@ -49,11 +49,8 @@ class AssDialogue;
 class wxComboBox;
 class wxTextCtrl;
 
-/// DOCME
 /// @class VideoBox
-/// @brief DOCME
-///
-/// DOCME
+/// @brief The box containing the video display and associated controls
 class VideoBox : public wxPanel, private SelectionListener<AssDialogue> {
 	std::list<agi::signal::Connection> slots;
 	agi::Context *context;     ///< Project context

@@ -58,11 +58,12 @@ namespace agi {
 	class OptionValue;
 }
 
-/// DOCME
 /// @class VideoContext
-/// @brief DOCME
+/// @brief Manage a bunch of things vaguely related to video playback
 ///
-/// DOCME
+/// VideoContext's core responsibility is opening and playing videos. Along
+/// with that, it also manages video timecodes and keyframes, and some
+/// video-related UI properties
 class VideoContext : public wxEvtHandler {
 	/// Current frame number changed (new frame number)
 	agi::signal::Signal<int> Seek;
@@ -93,7 +94,8 @@ class VideoContext : public wxEvtHandler {
 	/// File name of the currently open keyframes or empty if keyframes are not overridden
 	wxString keyFramesFilename;
 
-	/// DOCME
+	/// Playback timer used to periodically check if we should go to the next
+	/// frame while playing video
 	wxTimer playback;
 
 	/// Time since playback was last started
@@ -114,16 +116,20 @@ class VideoContext : public wxEvtHandler {
 	/// overridden by the user
 	double arValue;
 
-	/// DOCME
+	/// @brief The current AR type
+	///
+	/// 0 is square pixels; 1-3 are predefined ARs; 4 is custom, where the real
+	/// AR is in arValue
 	int arType;
 
 	/// Does the currently loaded video file have subtitles muxed into it?
 	bool hasSubtitles;
 
 	/// Filename of the currently loaded timecodes file, or empty if timecodes
-	/// have not been overriden
+	/// have not been overridden
 	wxString ovrTimecodeFile;
 
+	/// Cached option for audio playing when frame stepping
 	const agi::OptionValue* playAudioOnStep;
 
 	void OnPlayTimer(wxTimerEvent &event);
@@ -193,6 +199,7 @@ public:
 	/// Get the current frame number
 	int GetFrameN() const { return frame_n; }
 
+	/// Get the actual aspect ratio from a predefined AR type
 	double GetARFromType(int type) const;
 
 	/// Override the aspect ratio of the currently loaded video
@@ -200,8 +207,7 @@ public:
 	/// @param value If type is 4 (custom), the aspect ratio to use
 	void SetAspectRatio(int type, double value=1.0);
 
-	/// @brief DOCME
-	/// @return 
+	/// Get the current AR type
 	int GetAspectRatioType() const { return arType; }
 
 	/// Get the current aspect ratio of the video

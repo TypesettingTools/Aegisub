@@ -41,46 +41,32 @@
 class OpenGLWrapper;
 class AssDialogue;
 
-/// DOCME
+/// VisualDraggableFeature display types
 enum DraggableFeatureType {
-
-	/// DOCME
 	DRAG_NONE,
-
-	/// DOCME
 	DRAG_BIG_SQUARE,
-
-	/// DOCME
 	DRAG_BIG_CIRCLE,
-
-	/// DOCME
 	DRAG_BIG_TRIANGLE,
-
-	/// DOCME
 	DRAG_SMALL_SQUARE,
-
-	/// DOCME
 	DRAG_SMALL_CIRCLE
 };
 
-/// DOCME
 /// @class VisualDraggableFeature
-/// @brief Onscreen control used by many visual tools which doesn't do much
+/// @brief Onscreen control used by many visual tools
+///
+/// By itself this class doesn't do much. It mostly just draws itself at a
+/// specified position and performs hit-testing.
 class VisualDraggableFeature {
-	Vector2D start; ///< position before the last operation began
+	Vector2D start; ///< position before the last drag operation began
 
 public:
-	/// @brief Constructor
+	/// Constructor
 	VisualDraggableFeature();
 
-	/// Shape of feature
-	DraggableFeatureType type;
-
-	Vector2D pos;
-
-	int layer; /// Layer; Higher = above
-
-	AssDialogue* line; /// The dialogue line this feature is for
+	DraggableFeatureType type; ///< Shape of feature
+	Vector2D pos;              ///< Position of this feature
+	int layer;                 ///< Layer; Higher = above
+	AssDialogue* line;         ///< The dialogue line this feature is for; may be NULL
 
 	/// @brief Is the given point over this feature?
 	/// @param mouse_pos Position of the mouse
@@ -90,9 +76,14 @@ public:
 	/// @param gl OpenGLWrapper to use
 	void Draw(OpenGLWrapper const& gl) const;
 
+	/// Start a drag
 	void StartDrag();
 
+	/// Update the position of the feature during a drag
+	/// @param d New position of the feature
+	/// @param single_axis Only apply the larger of the two changes to the position
 	void UpdateDrag(Vector2D d, bool single_axis);
 
+	/// Has this feature actually moved since a drag was last started?
 	bool HasMoved() const;
 };
