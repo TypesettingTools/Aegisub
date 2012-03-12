@@ -157,7 +157,7 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString
 	int cur_font;
 	for (cur_font = 0; cur_font < fset->nfont; ++cur_font) {
 		FcBool outline;
-		FcResult result = FcPatternGetBool(fset->fonts[cur_font], FC_OUTLINE, 0, &outline);
+		result = FcPatternGetBool(fset->fonts[cur_font], FC_OUTLINE, 0, &outline);
 		if (result == FcResultMatch && outline) break;
 	}
 

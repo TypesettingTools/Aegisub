@@ -123,12 +123,13 @@ FreetypeFontFileLister::FreetypeFontFileLister(FontCollectorStatusCallback Appen
 	wxArrayString fontfiles;
 	wxDir::GetAllFiles(get_font_folder(), &fontfiles, "", wxDIR_FILES);
 
-	for (size_t i = 0; i < fontfiles.size(); ++i) {
-		if (indexed_files.count(fontfiles[i])) continue;
+	for (size_t ff = 0; ff < fontfiles.size(); ++ff) {
+		wxString const& fontfile = fontfiles[ff];
+		if (indexed_files.count(fontfile)) continue;
 
 		FT_Face face;
-		for (FT_Long i = 0; FT_New_Face(ft2lib, fontfiles[i].mb_str(*wxConvFileName), i, &face) == 0; ++i) {
-			if (get_name_count(fontfiles[i], face) > 0) {
+		for (FT_Long i = 0; FT_New_Face(ft2lib, fontfile.mb_str(*wxConvFileName), i, &face) == 0; ++i) {
+			if (get_name_count(fontfile, face) > 0) {
 				std::map<FT_UShort, std::vector<wxString> > names = get_names(face);
 				std::vector<wxString>& family = names[1];
 				std::vector<wxString>& style = names[2];
@@ -136,18 +137,18 @@ FreetypeFontFileLister::FreetypeFontFileLister(FontCollectorStatusCallback Appen
 
 				for (size_t j = 0; j < family.size() && j < style.size(); ++j) {
 					if (style[j] != "Regular")
-						AddFont(fontfiles[i], family[j], style[j]);
+						AddFont(fontfile, family[j], style[j]);
 					else
-						AddFont(fontfiles[i], family[j]);
+						AddFont(fontfile, family[j]);
 				}
 				for (size_t j = 0; j < full_name.size(); ++j)
-					AddFont(fontfiles[i], full_name[j]);
+					AddFont(fontfile, full_name[j]);
 			}
 			else {
 				if (face->style_name)
-					AddFont(fontfiles[i], face->family_name, face->style_name);
+					AddFont(fontfile, face->family_name, face->style_name);
 				else
-					AddFont(fontfiles[i], wxString(face->family_name));
+					AddFont(fontfile, wxString(face->family_name));
 			}
 			FT_Done_Face(face);
 		}
