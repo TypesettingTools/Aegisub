@@ -1312,14 +1312,6 @@
 			Name="Export"
 			>
 			<File
-				RelativePath="..\..\src\export_clean_info.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\export_clean_info.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\export_fixstyle.cpp"
 				>
 			</File>
