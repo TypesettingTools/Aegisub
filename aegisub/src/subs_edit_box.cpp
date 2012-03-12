@@ -400,8 +400,7 @@ void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 }
 
 void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
-	if (!hotkey::check("Subtitle Edit Box", c, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		event.Skip();
+	hotkey::check("Subtitle Edit Box", c, event);
 }
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {

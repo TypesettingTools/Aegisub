@@ -683,8 +683,7 @@ void FrameMain::OnSubtitlesOpen() {
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
-	if (!hotkey::check("Main Frame", context.get(), event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		event.Skip();
+	hotkey::check("Main Frame", context.get(), event);
 }
 
 void FrameMain::OnMouseWheel(wxMouseEvent &evt) {

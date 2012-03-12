@@ -149,7 +149,7 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 }
 
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
-	if (hotkey::check("Video", c, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+	if (hotkey::check("Video", c, event))
 		return;
 
 	// Forward up/down to grid as those aren't yet handled by commands

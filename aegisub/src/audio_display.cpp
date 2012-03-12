@@ -1119,8 +1119,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 
 void AudioDisplay::OnKeyDown(wxKeyEvent& event)
 {
-	if (!hotkey::check("Audio", context, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
-		event.Skip();
+	hotkey::check("Audio", context, event);
 }
 
 void AudioDisplay::OnSize(wxSizeEvent &)

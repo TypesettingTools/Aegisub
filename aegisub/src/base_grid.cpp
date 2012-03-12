@@ -974,7 +974,7 @@ bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 }
 
 void BaseGrid::OnKeyDown(wxKeyEvent &event) {
-	if (hotkey::check("Subtitle Grid", context, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers()))
+	if (hotkey::check("Subtitle Grid", context, event))
 		return;
 
 	int w,h;
@@ -1044,9 +1044,8 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 			return;
 		}
 	}
-	else if (!hotkey::check("Audio", context, event.GetKeyCode(), event.GetUnicodeKey(), event.GetModifiers())) {
-		event.Skip();
-	}
+	else
+		hotkey::check("Audio", context, event);
 }
 
 void BaseGrid::SetByFrame(bool state) {

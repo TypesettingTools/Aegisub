@@ -21,6 +21,8 @@
 #ifndef AGI_PRE
 #include <string>
 #include <vector>
+
+#include <wx/event.h>
 #endif
 
 namespace agi {
@@ -35,6 +37,7 @@ extern agi::hotkey::Hotkey *inst;
 void init();
 void clear();
 
+bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt);
 bool check(std::string const& context, agi::Context *c, int key_code, wchar_t key_char, int modifier);
 std::string keypress_to_str(int key_code, wchar_t key_char, int modifier);
 std::string get_hotkey_str_first(std::string const& context, std::string const& command);
