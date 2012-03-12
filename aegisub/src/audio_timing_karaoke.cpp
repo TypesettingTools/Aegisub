@@ -217,6 +217,7 @@ void AudioTimingControllerKaraoke::GetRenderingStyles(AudioRenderingStyleRanges 
 {
 	TimeRange sr = GetPrimaryPlaybackRange();
 	ranges.AddRange(sr.begin(), sr.end(), AudioStyle_Primary);
+	ranges.AddRange(start_marker, end_marker, AudioStyle_Selected);
 }
 
 TimeRange AudioTimingControllerKaraoke::GetPrimaryPlaybackRange() const {
