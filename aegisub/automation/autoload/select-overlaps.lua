@@ -14,8 +14,10 @@
 --
 -- $Id$
 
-script_name = "Select overlaps"
-script_description = "Select lines which begin while another non-comment line is active"
+local tr = aegisub.gettext
+
+script_name = tr"Select overlaps"
+script_description = tr"Select lines which begin while another non-comment line is active"
 script_author = "Thomas Goyne"
 script_version = "1"
 

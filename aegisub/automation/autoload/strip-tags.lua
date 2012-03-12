@@ -14,8 +14,10 @@
 --
 -- $Id$
 
-script_name = "Strip tags"
-script_description = "Remove all override tags from selected lines"
+local tr = aegisub.gettext
+
+script_name = tr"Strip tags"
+script_description = tr"Remove all override tags from selected lines"
 script_author = "Thomas Goyne"
 script_version = "1"
 
@@ -25,7 +27,7 @@ function strip_tags(subs, sel)
         line.text = line.text:gsub("{[^}]+}", "")
         subs[i] = line
     end
-    aegisub.set_undo_point("Strip tags")
+    aegisub.set_undo_point(tr"strip tags")
 end
 
 aegisub.register_macro(script_name, script_description, strip_tags)

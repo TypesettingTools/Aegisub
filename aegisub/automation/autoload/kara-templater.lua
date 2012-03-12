@@ -31,8 +31,10 @@
 -- Parse and apply a karaoke effect written in ASS karaoke template language
 -- See help file and wiki for more information on this
 
-script_name = "Karaoke Templater"
-script_description = "Macro and export filter to apply karaoke effects using the template language"
+local tr = aegisub.gettext
+
+script_name = tr"Karaoke Templater"
+script_description = tr"Macro and export filter to apply karaoke effects using the template language"
 script_author = "Niels Martin Hansen"
 script_version = "2.1.7"
 
@@ -853,5 +855,5 @@ function macro_can_template(subs)
 	return false
 end
 
-aegisub.register_macro("Apply karaoke template", "Applies karaoke effects from templates", macro_apply_templates, macro_can_template)
-aegisub.register_filter("Karaoke template", "Apply karaoke effect templates to the subtitles.\n\nSee the help file for information on how to use this.", 2000, filter_apply_templates)
+aegisub.register_macro(tr"Apply karaoke template", tr"Applies karaoke effects from templates", macro_apply_templates, macro_can_template)
+aegisub.register_filter(tr"Karaoke template", tr"Apply karaoke effect templates to the subtitles.\n\nSee the help file for information on how to use this.", 2000, filter_apply_templates)

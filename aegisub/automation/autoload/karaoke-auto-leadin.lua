@@ -27,8 +27,10 @@
  POSSIBILITY OF SUCH DAMAGE.
 ]]
 
-script_name = "Automatic karaoke lead-in"
-script_description = "Join up the ends of selected lines and add \k tags to shift karaoke"
+local tr = aegisub.gettext
+
+script_name = tr"Automatic karaoke lead-in"
+script_description = tr"Join up the ends of selected lines and add \k tags to shift karaoke"
 script_author = "Niels Martin Hansen"
 script_version = "1.0"
 

@@ -26,8 +26,10 @@ OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
-script_name = "Clean Tags"
-script_description = "Clean subtitle lines by re-arranging ASS tags and override blocks within the lines"
+local tr = aegisub.gettext
+
+script_name = tr"Clean Tags"
+script_description = tr"Clean subtitle lines by re-arranging ASS tags and override blocks within the lines"
 script_author = "Muhammad Lukman Nasaruddin (ai-chan)"
 script_version = "1.20"
 script_modified = "25 February 2009"

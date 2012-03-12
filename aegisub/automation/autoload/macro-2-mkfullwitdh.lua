@@ -1,8 +1,10 @@
 -- Automation 4 demo script
 -- Converts halfwidth (ASCII) Latin letters to fullwidth JIS Latin letters
 
-script_name = "Make text fullwidth"
-script_description = "Shows how to use the unicode include to iterate over characters and a lookup table to convert those characters to something else."
+local tr = aegisub.gettext
+
+script_name = tr("Make text fullwidth")
+script_description = tr("Shows how to use the unicode include to iterate over characters and a lookup table to convert those characters to something else.")
 script_author = "Niels Martin Hansen"
 script_version = "1"
 
@@ -72,7 +74,7 @@ function make_fullwidth(subtitles, selected_lines, active_line)
 		l.text = newtext
 		subtitles[i] = l
 	end
-	aegisub.set_undo_point("Make fullwidth")
+	aegisub.set_undo_point(tr"Make fullwidth")
 end
 
-aegisub.register_macro("Make fullwidth", "Convert Latin letters to SJIS fullwidth letters", make_fullwidth)
+aegisub.register_macro(tr"Make fullwidth", tr"Convert Latin letters to SJIS fullwidth letters", make_fullwidth)
