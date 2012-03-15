@@ -32,16 +32,18 @@ function clean_script_info(subs)
         ["wrapstyle"] = true
     }
 
+    local deleted = 0
     for i = 1, #subs do
-        if subs[i].class == "info" and not keep_keys[strlower(subs[i].key)] then
-            subs[i] = nil
-            i = i - 1
+        local idx = i - deleted
+        if subs[idx].class == "info" and not keep_keys[subs[idx].key:lower()] then
+            subs.delete(idx)
+            deleted = deleted + 1
         end
     end
 end
 
 function clean_script_info_macro(subs)
-    clean_script_info(sub)
+    clean_script_info(subs)
     aegisub.set_undo_point(script_name)
 end
 

@@ -25,6 +25,9 @@
 #include "visual_tool_drag.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
+#include <tr1/functional>
+
 #include <wx/bmpbuttn.h>
 #include <wx/toolbar.h>
 #endif
@@ -153,21 +156,27 @@ void VisualToolDrag::OnFrameChanged() {
 	}
 }
 
+template<class T> static bool cmp_line(T const& lft, T const& rgt) {
+	return lft->line == rgt->line;
+}
+
+template<class C, class T> static bool line_not_present(C const& set, T const& it) {
+	return find_if(set.begin(), set.end(), bind(cmp_line<T>, it, std::tr1::placeholders::_1)) == set.end();
+}
+
 void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {
 	c->selectionController->GetSelectedSet(selection);
 
 	bool any_changed = false;
-	for (feature_iterator it = features.begin(); it != features.end(); ) {
+	for (feature_iterator it = features.begin(); it != features.end(); ++it) {
 		if (removed.count(it->line)) {
-			sel_features.erase(it++);
+			sel_features.erase(it);
 			any_changed = true;
 		}
-		else if (added.count(it->line) && it->type == DRAG_START && !sel_features.count(it->parent)) {
-			sel_features.insert(it++);
+		else if (added.count(it->line) && it->type == DRAG_START && line_not_present(sel_features, it)) {
+			sel_features.insert(it);
 			any_changed = true;
 		}
-		else
-			++it;
 	}
 
 	if (any_changed)
