@@ -81,7 +81,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 
 	const AudioColorScheme *pal = &colors[style];
 
-	int pixel_samples = (pixel_ms * provider->GetSampleRate() + 500) / 1000;
+	double pixel_samples = pixel_ms * provider->GetSampleRate() / 1000.0;
 
 	// Fill the background
 	dc.SetBrush(wxBrush(pal->get(0.0f)));
@@ -96,7 +96,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 		audio_buffer = new char[buffer_needed];
 	}
 
-	int64_t cur_sample = start * pixel_samples;
+	double cur_sample = start * pixel_samples;
 
 	assert(provider->GetBytesPerSample() == 2);
 	assert(provider->GetChannels() == 1);
@@ -106,7 +106,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 
 	for (int x = 0; x < rect.width; ++x)
 	{
-		provider->GetAudio(audio_buffer, cur_sample, pixel_samples);
+		provider->GetAudio(audio_buffer, (int64_t)cur_sample, (int64_t)pixel_samples);
 		cur_sample += pixel_samples;
 		
 		int peak_min = 0, peak_max = 0;
