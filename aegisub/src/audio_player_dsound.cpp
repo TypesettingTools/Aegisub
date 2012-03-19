@@ -46,30 +46,20 @@
 #include "main.h"
 #include "utils.h"
 
-/// @brief Constructor
-///
-DirectSoundPlayer::DirectSoundPlayer() {
-	playing = false;
-	volume = 1.0f;
-	playPos = 0;
-	startPos = 0;
-	endPos = 0;
-	offset = 0;
-
-	buffer = NULL;
-	directSound = NULL;
-	thread = NULL;
-}
-
-/// @brief Destructor
-///
-DirectSoundPlayer::~DirectSoundPlayer() {
-	CloseStream();
-}
-
-/// @brief Open stream
-///
-void DirectSoundPlayer::OpenStream() {
+DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider)
+: AudioPlayer(provider)
+, playing(false)
+, volume(1.0f)
+, offset(0)
+, bufSize(0)
+, playPos(0)
+, startPos(0)
+, endPos(0)
+, startTime(0)
+, directSound(0)
+, buffer(0)
+, thread(0)
+{
 	// Initialize the DirectSound object
 	HRESULT res;
 	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,NULL); // TODO: support selecting audio device
@@ -114,10 +104,7 @@ void DirectSoundPlayer::OpenStream() {
 	offset = 0;
 }
 
-/// @brief Close stream
-///
-void DirectSoundPlayer::CloseStream() {
-	// Stop it
+DirectSoundPlayer::~DirectSoundPlayer() {
 	Stop();
 
 	// Unref the DirectSound buffer

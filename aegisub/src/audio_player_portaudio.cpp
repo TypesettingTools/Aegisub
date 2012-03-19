@@ -71,9 +71,11 @@ static const PaHostApiTypeId pa_host_api_priority[] = {
 };
 static const size_t pa_host_api_priority_count = sizeof(pa_host_api_priority) / sizeof(pa_host_api_priority[0]);
 
-PortAudioPlayer::PortAudioPlayer()
-: volume(1.0f)
+PortAudioPlayer::PortAudioPlayer(AudioProvider *provider)
+: AudioPlayer(provider)
+, volume(1.0f)
 , pa_start(0.0)
+, stream(0)
 {
 	PaError err = Pa_Initialize();
 
@@ -92,6 +94,9 @@ PortAudioPlayer::PortAudioPlayer()
 
 	if (devices.empty())
 		throw PortAudioError("No PortAudio output devices found", 0);
+
+	if (provider)
+		OpenStream();
 }
 
 void PortAudioPlayer::GatherDevices(PaHostApiIndex host_idx) {
@@ -120,6 +125,10 @@ void PortAudioPlayer::GatherDevices(PaHostApiIndex host_idx) {
 }
 
 PortAudioPlayer::~PortAudioPlayer() {
+	if (stream) {
+		Stop();
+		Pa_CloseStream(stream);
+	}
 	Pa_Terminate();
 }
 
@@ -170,11 +179,6 @@ void PortAudioPlayer::OpenStream() {
 	}
 
 	throw PortAudioError("Failed initializing PortAudio stream: " + error, 0);
-}
-
-void PortAudioPlayer::CloseStream() {
-	Stop();
-	Pa_CloseStream(stream);
 }
 
 void PortAudioPlayer::paStreamFinishedCallback(void *) {
@@ -271,7 +275,7 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 	list.push_back("Default");
 
 	try {
-		PortAudioPlayer player;
+		PortAudioPlayer player(0);
 
 		for (std::map<std::string, DeviceVec>::iterator it = player.devices.begin(); it != player.devices.end(); ++it)
 			list.push_back(lagi_wxString(it->first));

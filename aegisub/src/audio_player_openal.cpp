@@ -52,8 +52,8 @@
 
 DEFINE_SIMPLE_EXCEPTION(OpenALException, agi::AudioPlayerOpenError, "audio/open/player/openal")
 
-OpenALPlayer::OpenALPlayer()
-: open(false)
+OpenALPlayer::OpenALPlayer(AudioProvider *provider)
+: AudioPlayer(provider)
 , playing(false)
 , volume(1.f)
 , samplerate(0)
@@ -64,17 +64,6 @@ OpenALPlayer::OpenALPlayer()
 , device(0)
 , context(0)
 {
-}
-
-OpenALPlayer::~OpenALPlayer()
-{
-	CloseStream();
-}
-
-void OpenALPlayer::OpenStream()
-{
-	CloseStream();
-
 	bpf = provider->GetChannels() * provider->GetBytesPerSample();
 	try {
 		// Open device
@@ -112,27 +101,16 @@ void OpenALPlayer::OpenStream()
 	// Determine buffer length
 	samplerate = provider->GetSampleRate();
 	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
-
-	// Now ready
-	open = true;
 }
 
-void OpenALPlayer::CloseStream()
+OpenALPlayer::~OpenALPlayer()
 {
-	if (!open) return;
-
 	Stop();
 
 	alDeleteSources(1, &source);
 	alDeleteBuffers(num_buffers, buffers);
 	alcDestroyContext(context);
 	alcCloseDevice(device);
-
-	context = 0;
-	device = 0;
-
-	// No longer working
-	open = false;
 }
 
 void OpenALPlayer::Play(int64_t start, int64_t count)
@@ -165,7 +143,6 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 
 void OpenALPlayer::Stop()
 {
-	if (!open) return;
 	if (!playing) return;
 
 	// Reset data

@@ -64,22 +64,9 @@ class DirectSoundPlayer2 : public AudioPlayer {
 
 public:
 	/// @brief Constructor
-	DirectSoundPlayer2();
+	DirectSoundPlayer2(AudioProvider *provider);
 	/// @brief Destructor
 	~DirectSoundPlayer2();
-
-	/// @brief Prepare for playback
-	///
-	/// This means creating the playback thread
-	void OpenStream();
-	/// @brief Shutdown playback
-	void CloseStream();
-
-	/// @brief Change audio provider used
-	/// @param provider New audio provider to use
-	///
-	/// Will re-create the playback thread if the provider changed and playback was open
-	void SetProvider(AudioProvider *provider);
 
 	/// @brief Start playback
 	/// @param start First audio frame to play

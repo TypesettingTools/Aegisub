@@ -52,25 +52,29 @@
 
 DEFINE_SIMPLE_EXCEPTION(OSSError, agi::AudioPlayerOpenError, "audio/player/open/oss")
 
-OSSPlayer::OSSPlayer()
+OSSPlayer::OSSPlayer(AudioProvider *provider)
+: AudioPlayer(provider)
+, rate(0)
+, thread(0)
+, playing(false)
+, volume(1.0f)
+, start_frame(0)
+, cur_frame(0)
+, end_frame(0)
+, bpf(0)
+, dspdev(0)
 {
-    volume = 1.0f;
-    open = false;
-    playing = false;
-    start_frame = cur_frame = end_frame = bpf = 0;
-    provider = 0;
-    thread = 0;
+    OpenStream();
 }
 
 OSSPlayer::~OSSPlayer()
 {
-    CloseStream();
+    Stop();
+    ::close(dspdev);
 }
 
 void OSSPlayer::OpenStream()
 {
-    CloseStream();
-
     bpf = provider->GetChannels() * provider->GetBytesPerSample();
 
     // Open device
@@ -114,20 +118,6 @@ void OSSPlayer::OpenStream()
     if (ioctl(dspdev, SNDCTL_DSP_SPEED, &rate) < 0) {
         throw OSSError("OSS player: setting samplerate failed", 0);
     }
-
-    // Now ready
-    open = true;
-}
-
-void OSSPlayer::CloseStream()
-{
-    if (!open) return;
-
-    Stop();
-    ::close(dspdev);
-
-    // No longer working
-    open = false;
 }
 
 void OSSPlayer::Play(int64_t start, int64_t count)
@@ -146,7 +136,6 @@ void OSSPlayer::Play(int64_t start, int64_t count)
 
 void OSSPlayer::Stop()
 {
-    if (!open) return;
     if (!playing) return;
 
     // Stop the thread

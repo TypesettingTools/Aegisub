@@ -47,14 +47,10 @@ struct PlaybackState;
 class AlsaPlayer : public AudioPlayer {
 	agi::scoped_ptr<PlaybackState> ps;
 	pthread_t thread;
-	bool open;
 
 public:
-	AlsaPlayer();
+	AlsaPlayer(AudioProvider *provider);
 	~AlsaPlayer();
-
-	void OpenStream();
-	void CloseStream();
 
 	void Play(int64_t start, int64_t count);
 	void Stop();

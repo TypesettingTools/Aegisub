@@ -48,6 +48,8 @@ extern "C" {
 #include <vector>
 #endif
 
+class wxArrayString;
+
 /// @class PortAudioPlayer
 /// @brief PortAudio Player
 ///
@@ -93,17 +95,14 @@ class PortAudioPlayer : public AudioPlayer {
 	/// @param host_idx Host API ID
 	void GatherDevices(PaHostApiIndex host_idx);
 
+	void OpenStream();
+
 public:
 	/// @brief Constructor
-	PortAudioPlayer();
+	PortAudioPlayer(AudioProvider *provider);
 
 	/// @brief Destructor
 	~PortAudioPlayer();
-
-	/// @brief Open stream
-	void OpenStream();
-	/// @brief Close stream
-	void CloseStream();
 
 	/// @brief Play audio.
 	/// @param start Start position.

@@ -50,11 +50,8 @@ protected:
 	AudioProvider *provider;
 
 public:
-	AudioPlayer();
+	AudioPlayer(AudioProvider *provider);
 	virtual ~AudioPlayer() { }
-
-	virtual void OpenStream()=0;
-	virtual void CloseStream()=0;
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
 	virtual void Stop()=0;			// Stop playing
@@ -68,12 +65,10 @@ public:
 	virtual int64_t GetCurrentPosition()=0;
 	virtual void SetEndPosition(int64_t pos)=0;
 	virtual void SetCurrentPosition(int64_t pos)=0;
-
-	virtual void SetProvider(AudioProvider *new_provider) { provider = new_provider; }
 };
 
-class AudioPlayerFactory : public Factory0<AudioPlayer> {
+class AudioPlayerFactory : public Factory1<AudioPlayer, AudioProvider*> {
 public:
 	static void RegisterProviders();
-	static AudioPlayer *GetAudioPlayer();
+	static AudioPlayer *GetAudioPlayer(AudioProvider *provider);
 };

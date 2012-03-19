@@ -60,18 +60,19 @@
 #include "compat.h"
 #include "main.h"
 
-AudioPlayer::AudioPlayer() {
-	provider = NULL;
+AudioPlayer::AudioPlayer(AudioProvider *provider)
+: provider(provider)
+{
 }
 
-AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {
+AudioPlayer* AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider) {
 	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
 	if (list.empty()) throw agi::NoAudioPlayersError("No audio players are available.", 0);
 
 	std::string error;
 	for (size_t i = 0; i < list.size(); ++i) {
 		try {
-			return Create(list[i]);
+			return Create(list[i], provider);
 		}
 		catch (agi::AudioPlayerOpenError const& err) {
 			error += list[i] + " factory: " + err.GetChainedMessage() + "\n";
@@ -102,4 +103,4 @@ void AudioPlayerFactory::RegisterProviders() {
 #endif
 }
 
-template<> AudioPlayerFactory::map *FactoryBase<AudioPlayer *(*)()>::classes = NULL;
+template<> AudioPlayerFactory::map *FactoryBase<AudioPlayer *(*)(AudioProvider*)>::classes = NULL;

@@ -47,13 +47,8 @@ class PulseAudioPlayer;
 ///
 /// DOCME
 class PulseAudioPlayer : public AudioPlayer {
-private:
-
 	/// DOCME
 	float volume;
-
-	/// DOCME
-	bool open;
 
 	/// DOCME
 	bool is_playing;
@@ -124,18 +119,15 @@ private:
 	static void pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread);
 
 public:
-	PulseAudioPlayer();
+	PulseAudioPlayer(AudioProvider *provider);
 	~PulseAudioPlayer();
-
-	void OpenStream();
-	void CloseStream();
 
 	void Play(int64_t start,int64_t count);
 	void Stop();
-	bool IsPlaying();
+	bool IsPlaying() { return is_playing; }
 
-	int64_t GetStartPosition();
-	int64_t GetEndPosition();
+	int64_t GetStartPosition() { return start_frame; }
+	int64_t GetEndPosition() { return end_frame; }
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);

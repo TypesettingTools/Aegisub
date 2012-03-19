@@ -115,42 +115,21 @@ private:
 	DirectSoundPlayerThread *thread;
 
 public:
-	DirectSoundPlayer();
+	DirectSoundPlayer(AudioProvider *provider);
 	~DirectSoundPlayer();
-
-	void OpenStream();
-	void CloseStream();
 
 	void Play(int64_t start,int64_t count);
 	void Stop();
 
-	/// @brief DOCME
-	/// @return
-	///
 	bool IsPlaying() { return playing; }
 
-	/// @brief DOCME
-	/// @return
-	///
 	int64_t GetStartPosition() { return startPos; }
-
-	/// @brief DOCME
-	/// @return
-	///
 	int64_t GetEndPosition() { return endPos; }
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
 	void SetCurrentPosition(int64_t pos);
 
-	/// @brief DOCME
-	/// @param vol
-	/// @return
-	///
 	void SetVolume(double vol) { volume = vol; }
-
-	/// @brief DOCME
-	/// @return
-	///
 	double GetVolume() { return volume; }
 };
 #endif

@@ -801,7 +801,8 @@ bool DirectSoundPlayer2Thread::IsDead()
 	}
 }
 
-DirectSoundPlayer2::DirectSoundPlayer2()
+DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider)
+: AudioPlayer(provider)
 {
 	// The buffer will hold BufferLength times WantedLatency milliseconds of audio
 	WantedLatency = OPT_GET("Player/Audio/DirectSound/Buffer Latency")->GetInt();
@@ -812,6 +813,16 @@ DirectSoundPlayer2::DirectSoundPlayer2()
 		WantedLatency = 100;
 	if (BufferLength <= 0)
 		BufferLength = 5;
+
+	try
+	{
+		thread.reset(new DirectSoundPlayer2Thread(provider, WantedLatency, BufferLength));
+	}
+	catch (const char *msg)
+	{
+		LOG_E("audio/player/dsound") << msg;
+		throw agi::AudioPlayerOpenError(msg, 0);
+	}
 }
 
 DirectSoundPlayer2::~DirectSoundPlayer2()
@@ -828,47 +839,10 @@ bool DirectSoundPlayer2::IsThreadAlive()
 	return thread;
 }
 
-void DirectSoundPlayer2::OpenStream()
-{
-	if (IsThreadAlive()) return;
-
-	try
-	{
-		thread.reset(new DirectSoundPlayer2Thread(provider, WantedLatency, BufferLength));
-	}
-	catch (const char *msg)
-	{
-		LOG_E("audio/player/dsound") << msg;
-	}
-}
-
-void DirectSoundPlayer2::CloseStream()
-{
-	thread.reset();
-}
-
-void DirectSoundPlayer2::SetProvider(AudioProvider *new_provider)
-{
-	try
-	{
-		if (IsThreadAlive() && new_provider != provider)
-		{
-			thread.reset(new DirectSoundPlayer2Thread(new_provider, WantedLatency, BufferLength));
-		}
-
-		AudioPlayer::SetProvider(new_provider);
-	}
-	catch (const char *msg)
-	{
-		LOG_E("audio/player/dsound") << msg;
-	}
-}
-
 void DirectSoundPlayer2::Play(int64_t start,int64_t count)
 {
 	try
 	{
-		OpenStream();
 		thread->Play(start, count);
 	}
 	catch (const char *msg)

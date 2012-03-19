@@ -79,13 +79,10 @@ public:
 class OSSPlayer : public AudioPlayer {
     friend class OSSPlayerThread;
 
-    /// Is the output file handle initialized and ready to be written to?
-    bool open;
-
     /// sample rate of audio
     unsigned int rate;
 
-	/// Worker thread that does the actual writing
+    /// Worker thread that does the actual writing
     OSSPlayerThread *thread;
 
     /// Is the player currently playing?
@@ -106,15 +103,14 @@ class OSSPlayer : public AudioPlayer {
     /// bytes per frame
     unsigned long bpf;
 
-    // OSS audio device handle
+    /// OSS audio device handle
     volatile int dspdev;
 
-public:
-    OSSPlayer();
-    ~OSSPlayer();
-
     void OpenStream();
-    void CloseStream();
+
+public:
+    OSSPlayer(AudioProvider *provider);
+    ~OSSPlayer();
 
     void Play(int64_t start, int64_t count);
     void Stop();
