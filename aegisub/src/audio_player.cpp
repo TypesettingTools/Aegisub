@@ -36,25 +36,13 @@
 
 #include "config.h"
 
-#ifdef WITH_ALSA
 #include "audio_player_alsa.h"
-#endif
-#ifdef WITH_DIRECTSOUND
 #include "audio_player_dsound.h"
 #include "audio_player_dsound2.h"
-#endif
-#ifdef WITH_OPENAL
 #include "audio_player_openal.h"
-#endif
-#ifdef WITH_OSS
 #include "audio_player_oss.h"
-#endif
-#ifdef WITH_PORTAUDIO
 #include "audio_player_portaudio.h"
-#endif
-#ifdef WITH_LIBPULSE
 #include "audio_player_pulse.h"
-#endif
 
 #include "audio_controller.h"
 #include "compat.h"
