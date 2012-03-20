@@ -64,6 +64,7 @@
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/menu.h"
 #include "main.h"
+#include "spline_curve.h"
 #include "threaded_frame_source.h"
 #include "utils.h"
 #include "video_out_gl.h"
@@ -236,29 +237,39 @@ catch (const agi::Exception &err) {
 void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {
 	Vector2D v(viewport_width, viewport_height);
 	Vector2D size = Vector2D(horizontal_percent, vertical_percent) / 2 * v;
-	int rad1 = viewport_height * 0.05;
-	Vector2D gap = size + rad1;
-	int rad2 = gap.Len() + 1;
-	Vector2D igap = v - gap;
-	Vector2D isize = v - size;
+
+	// Clockwise from top-left
+	Vector2D corners[] = {
+		size,
+		Vector2D(viewport_width - size.X(), size),
+		v - size,
+		Vector2D(size, viewport_height - size.Y())
+	};
+
+	// Shift to compensate for black bars
+	Vector2D pos(viewport_left, viewport_top);
+	for (size_t i = 0; i < 4; ++i)
+		corners[i] = corners[i] + pos;
+
+	int count = 0;
+	std::vector<float> points;
+	for (size_t i = 0; i < 4; ++i) {
+		size_t prev = (i + 3) % 4;
+		size_t next = (i + 1) % 4;
+		count += SplineCurve(
+				(corners[prev] + corners[i] * 4) / 5,
+				corners[i], corners[i],
+				(corners[next] + corners[i] * 4) / 5)
+			.GetPoints(points);
+	}
 
 	OpenGLWrapper gl;
 	gl.SetFillColour(wxColor(30, 70, 200), .5f);
 	gl.SetLineColour(*wxBLACK, 0, 1);
 
-	// Draw sides
-	gl.DrawRectangle(Vector2D(gap, 0),     Vector2D(igap, size)); // Top
-	gl.DrawRectangle(Vector2D(isize, gap), Vector2D(v, igap));    // Right
-	gl.DrawRectangle(Vector2D(gap, isize), Vector2D(igap, v));    // Bottom
-	gl.DrawRectangle(Vector2D(0, gap),     Vector2D(size, igap)); // Left
-
-	// Draw rounded corners
-	gl.DrawRing(gap,                 rad1, rad2, 1.f,  90.f, 180.f); // Top-left
-	gl.DrawRing(Vector2D(igap, gap), rad1, rad2, 1.f,   0.f, 90.f);  // Top-right
-	gl.DrawRing(v - gap,             rad1, rad2, 1.f, 270.f, 360.f); // Bottom-right
-	gl.DrawRing(Vector2D(gap, igap), rad1, rad2, 1.f, 180.f, 270.f); // Bottom-left
-
-	E(glDisable(GL_BLEND));
+	std::vector<int> vstart(1, 0);
+	std::vector<int> vcount(1, count);
+	gl.DrawMultiPolygon(points, vstart, vcount, Vector2D(viewport_left, viewport_top), Vector2D(viewport_width, viewport_height), true);
 }
 
 void VideoDisplay::UpdateSize(bool force) {
