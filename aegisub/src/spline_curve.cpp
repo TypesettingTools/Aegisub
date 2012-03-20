@@ -169,3 +169,38 @@ float SplineCurve::GetClosestSegmentDistance(Vector2D pt1, Vector2D pt2, Vector2
 	float t = GetClosestSegmentPart(pt1, pt2, pt3);
 	return (pt1 * (1.f - t) + pt2 * t - pt3).Len();
 }
+
+int SplineCurve::GetPoints(std::vector<float> &points) const {
+	switch (type) {
+		case POINT:
+			points.push_back(p1.X());
+			points.push_back(p1.Y());
+			return 1;
+
+		case LINE:
+			points.push_back(p2.X());
+			points.push_back(p2.Y());
+			return 1;
+
+		case BICUBIC: {
+			int len = int(
+				(p2 - p1).Len() +
+				(p3 - p2).Len() +
+				(p4 - p3).Len());
+			int steps = len/8;
+
+			for (int i = 0; i <= steps; ++i) {
+				// Get t and t-1 (u)
+				float t = i / float(steps);
+				Vector2D p = GetPoint(t);
+				points.push_back(p.X());
+				points.push_back(p.Y());
+			}
+
+			return steps + 1;
+		}
+
+		default:
+			return 0;
+	}
+}

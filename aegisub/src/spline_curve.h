@@ -36,6 +36,10 @@
 
 #include "vector2d.h"
 
+#ifndef AGI_PRE
+#include <vector>
+#endif
+
 /// DOCME
 /// @class SplineCurve
 /// @brief DOCME
@@ -83,4 +87,9 @@ public:
 	float GetClosestParam(Vector2D ref) const;
 	/// Get distance from ref to the closest point on the curve
 	float GetQuickDistance(Vector2D ref) const;
+
+	/// Get the coordinates of each point on this curve
+	/// @param[out] points Vector to add points to
+	/// @return Number of points in the curve
+	int GetPoints(std::vector<float> &points) const;
 };

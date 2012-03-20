@@ -196,24 +196,6 @@ void Spline::MovePoint(iterator curve,int point,Vector2D pos) {
 	}
 }
 
-static int render_bicubic(Spline::iterator cur, std::vector<float> &points) {
-	int len = int(
-		(cur->p2 - cur->p1).Len() +
-		(cur->p3 - cur->p2).Len() +
-		(cur->p4 - cur->p3).Len());
-	int steps = len/8;
-
-	for (int i = 0; i <= steps; ++i) {
-		// Get t and t-1 (u)
-		float t = i / float(steps);
-		Vector2D p = cur->GetPoint(t);
-		points.push_back(p.X());
-		points.push_back(p.Y());
-	}
-
-	return steps + 1;
-}
-
 void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, std::vector<int>& count) {
 	points.clear();
 	first.clear();
@@ -224,30 +206,15 @@ void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, s
 
 	// Generate points for each curve
 	for (iterator cur = begin(); cur != end(); ++cur) {
-		switch (cur->type) {
-			case SplineCurve::POINT:
-				if (curCount > 0)
-					count.push_back(curCount);
+		if (cur->type == SplineCurve::POINT) {
+			if (curCount > 0)
+				count.push_back(curCount);
 
-				// start new path
-				first.push_back(points.size() / 2);
-				points.push_back(cur->p1.X());
-				points.push_back(cur->p1.Y());
-				curCount = 1;
-				break;
-
-			case SplineCurve::LINE:
-				points.push_back(cur->p2.X());
-				points.push_back(cur->p2.Y());
-				++curCount;
-				break;
-
-			case SplineCurve::BICUBIC:
-				curCount += render_bicubic(cur, points);
-				break;
-
-			default: break;
+			// start new path
+			first.push_back(points.size() / 2);
+			curCount = 0;
 		}
+		curCount += cur->GetPoints(points);
 	}
 
 	count.push_back(curCount);
@@ -265,7 +232,7 @@ void Spline::GetPointList(std::vector<float> &points, iterator curve) {
 			break;
 
 		case SplineCurve::BICUBIC:
-			render_bicubic(curve, points);
+			curve->GetPoints(points);
 			break;
 
 		default: break;
