@@ -71,8 +71,6 @@ struct AssColor {
 ///
 /// DOCME
 class AssStyle : public AssEntry {
-	// Parses raw ASS/SSA data into everything else
-	bool Parse(wxString data,int version=1);
 public:
 	wxString name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
 	wxString font;   ///< Font face name
