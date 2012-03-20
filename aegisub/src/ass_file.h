@@ -115,7 +115,7 @@ public:
 	/// Add a dialogue line to the file
 	void InsertDialogue(AssDialogue *diag);
 	/// Get the names of all of the styles available
-	wxArrayString GetStyles();
+	wxArrayString GetStyles() const;
 	/// @brief Get a style by name
 	/// @param name Style name
 	/// @return Pointer to style or NULL
@@ -154,11 +154,11 @@ public:
 	/// @brief Get the script resolution
 	/// @param[out] w Width
 	/// @param[in] h Height
-	void GetResolution(int &w,int &h);
+	void GetResolution(int &w,int &h) const;
 	/// Get the value in a [Script Info] key as int, or 0 if it is not present
-	int GetScriptInfoAsInt(const wxString key);
+	int GetScriptInfoAsInt(const wxString key) const;
 	/// Get the value in a [Script Info] key as string.
-	wxString GetScriptInfo(wxString key);
+	wxString GetScriptInfo(wxString key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
 	void SetScriptInfo(wxString const& key, wxString const& value);
 	// Add a ";" comment in the [Script Info] section

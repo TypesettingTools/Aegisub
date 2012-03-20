@@ -140,11 +140,11 @@ public:
 	AssOverrideTag(wxString text);
 	~AssOverrideTag();
 
-	bool IsValid();
+	bool IsValid() const { return valid; }
 	/// @brief Parses the parameters for the ass override tag
 	/// @param text All text between the name and the next \ or the end of the override block
 	void ParseParameters(const wxString &text, AssOverrideTagProto::iterator proto);
 	void Clear();
 	void SetText(const wxString &text);
-	operator wxString();
+	operator wxString() const;
 };

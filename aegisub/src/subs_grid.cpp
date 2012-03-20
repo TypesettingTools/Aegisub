@@ -376,7 +376,7 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 /// @brief Retrieve a list of selected lines in the actual ASS file (ie. not as displayed in the grid but as represented in the file)
 /// @return 
 ///
-std::vector<int> SubtitlesGrid::GetAbsoluteSelection() {
+std::vector<int> SubtitlesGrid::GetAbsoluteSelection() const {
 	Selection sel = GetSelectedSet();
 
 	std::vector<int> result;

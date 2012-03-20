@@ -59,21 +59,21 @@ public:
 
 	/// Add a line of data (without newline) read from a subtitle file to the
 	/// buffer waiting to be decoded
-	void AddData(wxString data) { buffer += data; }
+	void AddData(wxString const& data) { buffer += data; }
 	/// Decode all data passed with AddData
 	void Finish();
 
 	/// Extract the contents of this attachment to a file
 	/// @param filename Path to save the attachment to
-	void Extract(wxString filename);
+	void Extract(wxString const& filename) const;
 
 	/// Import the contents of a file as an attachment
 	/// @param filename Path to import
-	void Import(wxString filename);
+	void Import(wxString const& filename);
 
 	/// Get the name of the attached file
 	/// @param raw If false, remove the SSA filename mangling
-	wxString GetFileName(bool raw=false);
+	wxString GetFileName(bool raw=false) const;
 
 	const wxString GetEntryData() const;
 	ASS_EntryType GetType() const { return ENTRY_ATTACHMENT; }

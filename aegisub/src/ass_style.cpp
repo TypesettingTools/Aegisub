@@ -99,7 +99,7 @@ void AssColor::Parse(wxString const& value) {
 
 /// @brief Gets a wxColour 
 /// @return 
-wxColour AssColor::GetWXColor() {
+wxColour AssColor::GetWXColor() const {
 	return wxColour(r,g,b,255-a);
 }
 

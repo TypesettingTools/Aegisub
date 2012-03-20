@@ -304,10 +304,6 @@ void AssOverrideTag::SetText(const wxString &text) {
 	valid = false;
 }
 
-bool AssOverrideTag::IsValid() {
-	return valid;
-}
-
 std::vector<wxString> tokenize(const wxString &text) {
 	std::vector<wxString> paramList;
 	paramList.reserve(6);
@@ -439,7 +435,7 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 	}
 }
 
-AssOverrideTag::operator wxString() {
+AssOverrideTag::operator wxString() const {
 	wxString result = Name;
 
 	// Determine if it needs parentheses
@@ -456,7 +452,7 @@ AssOverrideTag::operator wxString() {
 
 	// Add parameters
 	bool any = false;
-	for (std::vector<AssOverrideParameter*>::iterator cur=Params.begin();cur!=Params.end();cur++) {
+	for (std::vector<AssOverrideParameter*>::const_iterator cur=Params.begin();cur!=Params.end();cur++) {
 		if ((*cur)->GetType() != VARDATA_NONE && !(*cur)->omitted) {
 			result += (*cur)->Get<wxString>();
 			result += ",";

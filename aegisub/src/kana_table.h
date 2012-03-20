@@ -54,4 +54,4 @@ struct KanaEntry {
 };
 
 /// Table of Hiragana, Katakana and Hepburn romaji tuples.
-extern KanaEntry KanaTable[];
+extern const KanaEntry KanaTable[];

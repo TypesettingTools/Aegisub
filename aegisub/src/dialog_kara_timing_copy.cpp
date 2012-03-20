@@ -450,7 +450,7 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 	{
 		wxString dst_hira_rest, dst_kata_rest, src_rest;
 		bool matched = false;
-		for (KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
+		for (const KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
 		{
 			if (src.StartsWith(ke->hepburn, &src_rest))
 			{
@@ -521,7 +521,7 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 		// Find a position where hiragana or katakana matches
 		wxString matched_roma;
 		wxString matched_kana;
-		for (KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
+		for (const KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
 		{
 			if (*ke->hiragana && dst.StartsWith(ke->hiragana))
 			{

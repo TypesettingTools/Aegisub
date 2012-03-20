@@ -67,12 +67,12 @@ void Spline::SetScale(int new_scale) {
 	scale = 1 << (raw_scale - 1);
 }
 
-wxString Spline::EncodeToASS() {
+wxString Spline::EncodeToASS() const {
 	wxString result;
 	result.reserve(size() * 10);
 	char last = 0;
 
-	for (iterator cur = begin(); cur != end(); ++cur) {
+	for (const_iterator cur = begin(); cur != end(); ++cur) {
 		switch (cur->type) {
 			case SplineCurve::POINT:
 				if (last != 'm') {

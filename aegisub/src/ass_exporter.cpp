@@ -96,7 +96,7 @@ void AssExporter::AddAutoFilters() {
 	}
 }
 
-wxArrayString AssExporter::GetAllFilterNames() {
+wxArrayString AssExporter::GetAllFilterNames() const {
 	wxArrayString names;
 	transform(filter_list_begin(), filter_list_end(),
 		std::back_inserter(names), std::mem_fun(&AssExportFilter::GetName));
@@ -125,7 +125,7 @@ wxSizer *AssExporter::GetSettingsSizer(wxString const& name) {
 	return pos->second;
 }
 
-wxString const& AssExporter::GetDescription(wxString const& name) {
+wxString const& AssExporter::GetDescription(wxString const& name) const {
 	AssExportFilter *filter = AssExportFilterChain::GetFilter(name);
 	if (filter)
 		return filter->GetDescription();

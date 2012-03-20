@@ -39,7 +39,7 @@
 
 #include "kana_table.h"
 
-KanaEntry KanaTable[] =
+const KanaEntry KanaTable[] =
 {
 	// Regular kana usage and combinations
 	{ L"\u3042", L"\u30a2", L"a" },

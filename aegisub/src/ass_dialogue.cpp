@@ -388,7 +388,7 @@ void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersC
 	//ClearBlocks();
 }
 
-bool AssDialogue::CollidesWith(AssDialogue *target) {
+bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 	if (!target) return false;
 	return ((Start < target->Start) ? (target->Start < End) : (Start < target->End));
 }

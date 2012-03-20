@@ -118,11 +118,11 @@ const wxString AssAttachment::GetEntryData() const {
 	return entryData;
 }
 
-void AssAttachment::Extract(wxString filename) {
+void AssAttachment::Extract(wxString const& filename) const {
 	agi::io::Save(STD_STR(filename)).Get().write(&(*data)[0], data->size());
 }
 
-void AssAttachment::Import(wxString filename) {
+void AssAttachment::Import(wxString const& filename) {
 	agi::scoped_ptr<std::istream> file(agi::io::Open(STD_STR(filename)));
 	file->seekg(0, std::ios::end);
 	data->resize(file->tellg());
@@ -130,7 +130,7 @@ void AssAttachment::Import(wxString filename) {
 	file->read(&(*data)[0], data->size());
 }
 
-wxString AssAttachment::GetFileName(bool raw) {
+wxString AssAttachment::GetFileName(bool raw) const {
 	if (raw || filename.Right(4).Lower() != ".ttf") return filename;
 
 	// Remove stuff after last underscore if it's a font

@@ -64,7 +64,7 @@ public:
 	Spline(const VisualToolBase &scale);
 
 	/// Encode to an ASS vector drawing
-	wxString EncodeToASS();
+	wxString EncodeToASS() const;
 
 	/// Decode an ASS vector drawing
 	void DecodeFromASS(wxString str);

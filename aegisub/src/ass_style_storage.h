@@ -55,8 +55,11 @@ public:
 	~AssStyleStorage();
 
 	typedef std::deque<AssStyle*>::iterator iterator;
+	typedef std::deque<AssStyle*>::const_iterator const_iterator;
 	iterator begin() { return style.begin(); }
 	iterator end() { return style.end(); }
+	const_iterator begin() const { return style.begin(); }
+	const_iterator end() const { return style.end(); }
 	void push_back(AssStyle *new_style) { style.push_back(new_style); }
 	AssStyle *back() { return style.back(); }
 	AssStyle *operator[](size_t idx) const { return style[idx]; }
@@ -77,7 +80,7 @@ public:
 	AssStyle *GetStyle(wxString const& name);
 
 	/// Save stored styles to a file
-	void Save();
+	void Save() const;
 
 	/// Load stored styles from a file
 	/// @param name Catalog name (note: not file name)

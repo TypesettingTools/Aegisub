@@ -58,7 +58,7 @@ struct AssColor {
 	bool operator==(const AssColor &col) const;
 	bool operator!=(const AssColor &col) const;
 
-	wxColor GetWXColor();					// Return as a wxColor
+	wxColor GetWXColor() const;				// Return as a wxColor
 	void SetWXColor(const wxColor &color);	// Sets from a wxColor
 	void Parse(wxString  const& value);		// Parse SSA or ASS-style color
 	wxString GetASSFormatted(bool alpha,bool stripped=false,bool isStyle=false) const;	// Gets color formated in ASS format

@@ -75,7 +75,7 @@ public:
 	~AssExporter();
 
 	/// Get the names of all registered export filters
-	wxArrayString GetAllFilterNames();
+	wxArrayString GetAllFilterNames() const;
 
 	/// Add the named filter to the list of filters to be run
 	/// @throws wxString if filter is not found
@@ -107,5 +107,5 @@ public:
 
 	/// Get the description of the named export filter
 	/// @throws wxString if filter is not found
-	wxString const& GetDescription(wxString const& name);
+	wxString const& GetDescription(wxString const& name) const;
 };

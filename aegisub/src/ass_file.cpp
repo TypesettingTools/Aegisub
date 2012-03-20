@@ -509,12 +509,12 @@ void AssFile::InsertDialogue(AssDialogue *diag) {
 	Line.push_back(diag);
 }
 
-wxString AssFile::GetScriptInfo(wxString key) {
+wxString AssFile::GetScriptInfo(wxString key) const {
 	key.MakeLower();
 	key += ":";
 	bool GotIn = false;
 
-	for (std::list<AssEntry*>::iterator cur = Line.begin(); cur != Line.end(); ++cur) {
+	for (std::list<AssEntry*>::const_iterator cur = Line.begin(); cur != Line.end(); ++cur) {
 		if ((*cur)->group == "[Script Info]") {
 			GotIn = true;
 			wxString curText = (*cur)->GetEntryData();
@@ -527,7 +527,7 @@ wxString AssFile::GetScriptInfo(wxString key) {
 	return "";
 }
 
-int AssFile::GetScriptInfoAsInt(const wxString key) {
+int AssFile::GetScriptInfoAsInt(const wxString key) const {
 	long temp = 0;
 	GetScriptInfo(key).ToLong(&temp);
 	return temp;
@@ -574,7 +574,7 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 	}
 }
 
-void AssFile::GetResolution(int &sw,int &sh) {
+void AssFile::GetResolution(int &sw,int &sh) const {
 	sw = GetScriptInfoAsInt("PlayResX");
 	sh = GetScriptInfoAsInt("PlayResY");
 
@@ -613,9 +613,9 @@ void AssFile::AddComment(wxString comment) {
 	}
 }
 
-wxArrayString AssFile::GetStyles() {
+wxArrayString AssFile::GetStyles() const {
 	wxArrayString styles;
-	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
+	for (std::list<AssEntry*>::const_iterator cur = Line.begin(); cur != Line.end(); ++cur) {
 		if (AssStyle *curstyle = dynamic_cast<AssStyle*>(*cur))
 			styles.Add(curstyle->name);
 	}

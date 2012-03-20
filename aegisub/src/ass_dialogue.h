@@ -81,11 +81,7 @@ public:
 	AssDialogueBlock(wxString const& text) : text(text) { }
 	virtual ~AssDialogueBlock() { }
 
-	virtual ASS_BlockType GetType() = 0;
-
-	/// @brief DOCME
-	/// @return 
-	///
+	virtual ASS_BlockType GetType() const = 0;
 	virtual wxString GetText() { return text; }
 };
 
@@ -95,7 +91,7 @@ public:
 /// DOCME
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
-	ASS_BlockType GetType() { return BLOCK_PLAIN; }
+	ASS_BlockType GetType() const { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 };
 
@@ -108,7 +104,7 @@ public:
 	/// DOCME
 	int Scale;
 
-	ASS_BlockType GetType() { return BLOCK_DRAWING; }
+	ASS_BlockType GetType() const { return BLOCK_DRAWING; }
 	AssDialogueBlockDrawing(wxString const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
@@ -129,7 +125,7 @@ public:
 	/// @brief DOCME
 	/// @return 
 	///
-	ASS_BlockType GetType() { return BLOCK_OVERRIDE; }
+	ASS_BlockType GetType() const { return BLOCK_OVERRIDE; }
 	wxString GetText();
 	void ParseTags();		// Parses tags
 	void AddTag(wxString const& tag);
@@ -217,7 +213,7 @@ public:
 	/// Get the line as SSA rather than ASS
 	wxString GetSSAText() const;
 	/// Does this line collide with the passed line?
-	bool CollidesWith(AssDialogue *target);
+	bool CollidesWith(const AssDialogue *target) const;
 
 	AssEntry *Clone() const;
 
