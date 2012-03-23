@@ -173,8 +173,8 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SelectAll, this), EDIT_MENU_SELECT_ALL);
 
 	if (context) {
-		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, true), EDIT_MENU_SPLIT_PRESERVE);
-		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, false), EDIT_MENU_SPLIT_ESTIMATE);
+		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, false), EDIT_MENU_SPLIT_PRESERVE);
+		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, true), EDIT_MENU_SPLIT_ESTIMATE);
 	}
 
 	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
