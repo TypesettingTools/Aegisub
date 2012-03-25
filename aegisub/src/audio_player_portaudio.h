@@ -111,7 +111,7 @@ public:
 	void Play(int64_t start,int64_t count);
 	/// @brief Stop Playback
 	/// @param timerToo Stop display timer?
-	void Stop(bool timerToo=true);
+	void Stop();
 
 	/// @brief Whether audio is currently being played.
 	/// @return Status

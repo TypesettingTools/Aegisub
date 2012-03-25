@@ -88,7 +88,7 @@ public:
 
 	/// @brief Stop audio playback
 	/// @param timerToo Whether to also stop the playback update timer
-	void Stop(bool timerToo=true);
+	void Stop();
 
 	/// @brief Tell whether playback is active
 	/// @return True if audio is playing back

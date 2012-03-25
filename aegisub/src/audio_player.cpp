@@ -62,13 +62,6 @@
 
 AudioPlayer::AudioPlayer() {
 	provider = NULL;
-	displayTimer = NULL;
-}
-
-AudioPlayer::~AudioPlayer() {
-	if (displayTimer) {
-		displayTimer->Stop();
-	}
 }
 
 AudioPlayer* AudioPlayerFactory::GetAudioPlayer() {

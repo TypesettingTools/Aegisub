@@ -111,7 +111,7 @@ public:
 	void CloseStream();
 
 	void Play(int64_t start,int64_t count);
-	void Stop(bool timerToo=true);
+	void Stop();
 	bool IsPlaying() { return playing; }
 
 	int64_t GetStartPosition() { return start_frame; }

@@ -217,12 +217,9 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 		paerror = pa_context_errno(context);
 		printf("PulseAudio player: Error triggering stream: %s (%d)\n", pa_strerror(paerror), paerror);
 	}
-
-	// Update timer
-	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
-void PulseAudioPlayer::Stop(bool timerToo)
+void PulseAudioPlayer::Stop()
 {
 	if (!is_playing) return;
 	//printf("Stopping PulseAudio\n");
@@ -247,10 +244,6 @@ void PulseAudioPlayer::Stop(bool timerToo)
 
 	// And unref it
 	//printf("Stopped stream\n\n");
-
-        if (timerToo && displayTimer) {
-                displayTimer->Stop();
-        }
 }
 
 bool PulseAudioPlayer::IsPlaying()

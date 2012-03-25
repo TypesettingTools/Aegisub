@@ -404,33 +404,23 @@ void AlsaPlayer::Play(int64_t start, int64_t count)
 {
 	OpenStream();
 
-	{
-		PthreadMutexLocker ml(ps->mutex);
-		ps->signal_start = true;
-		ps->signal_stop = true; // make sure to stop any ongoing playback first
-		ps->start_position = start;
-		ps->end_position = start + count;
-		pthread_cond_signal(&ps->cond);
-	}
-
-	if (displayTimer && !displayTimer->IsRunning())
-		displayTimer->Start(15);
+	PthreadMutexLocker ml(ps->mutex);
+	ps->signal_start = true;
+	ps->signal_stop = true; // make sure to stop any ongoing playback first
+	ps->start_position = start;
+	ps->end_position = start + count;
+	pthread_cond_signal(&ps->cond);
 }
 
 
-void AlsaPlayer::Stop(bool timerToo)
+void AlsaPlayer::Stop()
 {
 	if (!open) return;
 
-	{
-		PthreadMutexLocker ml(ps->mutex);
-		ps->signal_stop = true;
-		LOG_D("audio/player/alsa") << "stop stream, stop signal";
-		pthread_cond_signal(&ps->cond);
-	}
-
-	if (timerToo && displayTimer)
-		    displayTimer->Stop();
+	PthreadMutexLocker ml(ps->mutex);
+	ps->signal_stop = true;
+	LOG_D("audio/player/alsa") << "stop stream, stop signal";
+	pthread_cond_signal(&ps->cond);
 }
 
 bool AlsaPlayer::IsPlaying()

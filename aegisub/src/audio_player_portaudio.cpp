@@ -173,15 +173,11 @@ void PortAudioPlayer::OpenStream() {
 }
 
 void PortAudioPlayer::CloseStream() {
-	Stop(false);
+	Stop();
 	Pa_CloseStream(stream);
 }
 
-void PortAudioPlayer::paStreamFinishedCallback(void *userData) {
-	PortAudioPlayer *player = (PortAudioPlayer *) userData;
-
-	if (player->displayTimer)
-		player->displayTimer->Stop();
+void PortAudioPlayer::paStreamFinishedCallback(void *) {
 	LOG_D("audio/player/portaudio") << "stopping stream";
 }
 
@@ -205,17 +201,10 @@ void PortAudioPlayer::Play(int64_t start_sample, int64_t count) {
 		}
 	}
 	pa_start = Pa_GetStreamTime(stream);
-
-	// Update timer
-	if (displayTimer && !displayTimer->IsRunning())
-		displayTimer->Start(15);
 }
 
-void PortAudioPlayer::Stop(bool timerToo) {
+void PortAudioPlayer::Stop() {
 	Pa_StopStream(stream);
-
-	if (timerToo && displayTimer)
-		displayTimer->Stop();
 }
 
 int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,

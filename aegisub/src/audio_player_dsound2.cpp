@@ -870,8 +870,6 @@ void DirectSoundPlayer2::Play(int64_t start,int64_t count)
 	{
 		OpenStream();
 		thread->Play(start, count);
-
-		if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 	}
 	catch (const char *msg)
 	{
@@ -879,15 +877,11 @@ void DirectSoundPlayer2::Play(int64_t start,int64_t count)
 	}
 }
 
-void DirectSoundPlayer2::Stop(bool timerToo)
+void DirectSoundPlayer2::Stop()
 {
 	try
 	{
 		if (IsThreadAlive()) thread->Stop();
-
-		if (timerToo && displayTimer) {
-			displayTimer->Stop();
-		}
 	}
 	catch (const char *msg)
 	{

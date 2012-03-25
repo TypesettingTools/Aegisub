@@ -258,15 +258,12 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	res = buffer->Play(0,0,play_flag);
 	if (SUCCEEDED(res)) playing = true;
 	startTime = GetTickCount();
-
-	// Update timer
-	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
 /// @brief Stop
 /// @param timerToo
 ///
-void DirectSoundPlayer::Stop(bool timerToo) {
+void DirectSoundPlayer::Stop() {
 	// Stop the thread
 	if (thread) {
 		if (thread->IsAlive()) {
@@ -286,11 +283,6 @@ void DirectSoundPlayer::Stop(bool timerToo) {
 	startPos = 0;
 	endPos = 0;
 	offset = 0;
-
-	// Stop timer
-	if (timerToo && displayTimer) {
-		displayTimer->Stop();
-	}
 }
 
 /// @brief Set end

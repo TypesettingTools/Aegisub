@@ -36,12 +36,6 @@
 
 #pragma once
 
-#ifndef AGI_PRE
-#include <wx/event.h>
-#include <wx/thread.h>
-#include <wx/timer.h>
-#endif
-
 #include "factory_manager.h"
 
 class AudioProvider;
@@ -55,18 +49,15 @@ protected:
 	/// DOCME
 	AudioProvider *provider;
 
-	/// DOCME
-	wxTimer *displayTimer;
-
 public:
 	AudioPlayer();
-	virtual ~AudioPlayer();
+	virtual ~AudioPlayer() { }
 
 	virtual void OpenStream()=0;
 	virtual void CloseStream()=0;
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
-	virtual void Stop(bool timerToo=true)=0;			// Stop playing
+	virtual void Stop()=0;			// Stop playing
 	virtual bool IsPlaying()=0;
 
 	virtual void SetVolume(double volume)=0;

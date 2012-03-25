@@ -161,12 +161,9 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 	alSourcePlay(source);
 	wxTimer::Start(100);
 	playback_segment_timer.Start();
-
-	// Update timer
-	if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
 }
 
-void OpenALPlayer::Stop(bool timerToo)
+void OpenALPlayer::Stop()
 {
 	if (!open) return;
 	if (!playing) return;
@@ -181,10 +178,6 @@ void OpenALPlayer::Stop(bool timerToo)
 	// Then drop the playback
 	alSourceStop(source);
 	alSourcei(source, AL_BUFFER, 0);
-
-	if (timerToo && displayTimer) {
-		displayTimer->Stop();
-	}
 }
 
 void OpenALPlayer::FillBuffers(ALsizei count)
@@ -237,7 +230,7 @@ void OpenALPlayer::Notify()
 	LOG_D("player/audio/openal") << "frames played=" << (buffers_played - num_buffers) * decode_buffer.size() / bpf << " num frames=" << end_frame - start_frame;
 	// Check that all of the selected audio plus one full set of buffers has been queued
 	if ((buffers_played - num_buffers) * (int64_t)decode_buffer.size() > (end_frame - start_frame) * bpf) {
-		Stop(true);
+		Stop();
 	}
 }
 

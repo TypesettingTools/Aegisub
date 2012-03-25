@@ -141,12 +141,10 @@ void OSSPlayer::Play(int64_t start, int64_t count)
     thread->Create();
     thread->Run();
 
-    // Update timer
-    if (displayTimer && !displayTimer->IsRunning()) displayTimer->Start(15);
     playing = true;
 }
 
-void OSSPlayer::Stop(bool timerToo)
+void OSSPlayer::Stop()
 {
     if (!open) return;
     if (!playing) return;
@@ -168,11 +166,6 @@ void OSSPlayer::Stop(bool timerToo)
     start_frame = 0;
     cur_frame = 0;
     end_frame = 0;
-
-    // Stop timer
-    if (timerToo && displayTimer) {
-        displayTimer->Stop();
-    }
 }
 
 void OSSPlayer::SetEndPosition(int64_t pos)
@@ -208,10 +201,6 @@ int64_t OSSPlayer::GetCurrentPosition()
         played_frames = pos.samples + pos.fifo_samples;
 #endif
         LOG_D("player/audio/oss") << "played_frames: " << played_frames << " fifo " << pos.fifo_samples;
-        if (start_frame + played_frames >= end_frame) {
-            if (displayTimer)
-                displayTimer->Stop();
-        }
         return start_frame + played_frames;
     }
 #endif
@@ -224,8 +213,6 @@ int64_t OSSPlayer::GetCurrentPosition()
         LOG_D("player/audio/oss") << "cur_frame: " << cur_frame << " delay " << delay;
         // delay can jitter a bit at the end, detect that
         if (cur_frame == end_frame && delay < rate / 20) {
-            if (displayTimer)
-                displayTimer->Stop();
             return cur_frame;
         }
         return MAX(0, (long) cur_frame - delay);
