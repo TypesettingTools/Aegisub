@@ -185,15 +185,14 @@ struct app_language : public Command {
 
 	void operator()(agi::Context *c) {
 		// Get language
-		int old = wxGetApp().locale.curCode;
 		int newCode = wxGetApp().locale.PickLanguage();
 		// Is OK?
-		if (newCode != -1 && newCode != old) {
+		if (newCode != -1) {
 			// Set code
 			OPT_SET("App/Locale")->SetInt(newCode);
 
 			// Ask to restart program
-			int result = wxMessageBox("Aegisub needs to be restarted so that the new language can be applied. Restart now?","Restart Aegisub?",wxICON_QUESTION | wxYES_NO);
+			int result = wxMessageBox("Aegisub needs to be restarted so that the new language can be applied. Restart now?", "Restart Aegisub?", wxICON_QUESTION | wxYES_NO);
 			if (result == wxYES) {
 				// Restart Aegisub
 				if (wxGetApp().frame->Close()) {

@@ -34,9 +34,6 @@
 /// @ingroup utility
 ///
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
@@ -52,34 +49,17 @@
 #include "aegisublocale.h"
 #include "standard_paths.h"
 
-/// @brief Constructor
-///
-AegisubLocale::AegisubLocale () {
-	locale = NULL;
-	curCode = -1;
-}
-
-
-/// @brief DOCME
-///
 AegisubLocale::~AegisubLocale() {
-	delete locale;
 }
 
-
-/// @brief Initialize
-/// @param language
-///
 void AegisubLocale::Init(int language) {
-	if (language == -1) language = wxLANGUAGE_ENGLISH;
-	if (locale) delete locale;
+	if (language == -1)
+		language = wxLANGUAGE_ENGLISH;
 
-	if (!wxLocale::IsAvailable(language)) {
+	if (!wxLocale::IsAvailable(language))
 		language = wxLANGUAGE_UNKNOWN;
-	}
 
-	curCode = language;
-	locale = new wxLocale(language);
+	locale.reset(new wxLocale(language));
 
 #ifdef __WINDOWS__
 	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/"));
@@ -93,52 +73,52 @@ void AegisubLocale::Init(int language) {
 	setlocale(LC_CTYPE, "C");
 }
 
-
-
-/// @brief Pick a language
-/// @return
-///
 int AegisubLocale::PickLanguage() {
-	// Get list
 	wxArrayInt langs = GetAvailableLanguages();
 
 	// Check if english is in it, else add it
 	if (langs.Index(wxLANGUAGE_ENGLISH) == wxNOT_FOUND) {
-		langs.Insert(wxLANGUAGE_ENGLISH,0);
+		langs.Insert(wxLANGUAGE_ENGLISH, 0);
 	}
 
 	// Check if user local language is available, if so, make it first
 	int user = wxLocale::GetSystemLanguage();
 	if (langs.Index(user) != wxNOT_FOUND) {
 		langs.Remove(user);
-		langs.Insert(user,0);
-	}
-
-	// Generate names
-	wxArrayString langNames;
-	for (size_t i=0;i<langs.Count();i++) {
-		langNames.Add(wxLocale::GetLanguageName(langs[i]));
+		langs.Insert(user, 0);
 	}
 
 	// Nothing to pick
-	if (langs.Count() == 0) return -1;
+	if (langs.empty()) return -1;
 
-	// Popup
-	int picked = wxGetSingleChoiceIndex("Please choose a language:","Language",langNames,NULL,-1,-1,true,300,400);
-	if (picked == -1) return -1;
-	return langs[picked];
+	// Only one language, so don't bother asking the user
+	if (langs.size() == 1 && !locale)
+		return langs[0];
+
+	// Generate names
+	wxArrayString langNames;
+	for (size_t i = 0; i < langs.size(); ++i)
+		langNames.Add(wxLocale::GetLanguageName(langs[i]));
+
+	long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxOK | wxCENTRE;
+	if (locale)
+		style |= wxCANCEL;
+
+	wxSingleChoiceDialog dialog(NULL, "Please choose a language:", "Language", langNames, 0, style);
+	if (dialog.ShowModal() == wxID_OK) {
+		int picked = dialog.GetSelection();
+		if (locale && langs[picked] == locale->GetLanguage())
+			return -1;
+		return langs[picked];
+	}
+
+	return -1;
 }
 
-
-
-/// @brief Get list of available languages
-///
 wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	wxArrayInt final;
 
 #ifdef __WINDOWS__
-	wxString temp1;
-
 	// Open directory
 	wxString folder = StandardPaths::DecodePath("?data/locale/");
 	wxDir dir;
@@ -146,19 +126,17 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	if (!dir.Open(folder)) return final;
 
 	// Enumerate folders
-	for (bool cont = dir.GetFirst(&temp1,"",wxDIR_DIRS);cont;cont = dir.GetNext(&temp1)) {
+	wxString temp1;
+	for (bool cont = dir.GetFirst(&temp1, "", wxDIR_DIRS); cont; cont = dir.GetNext(&temp1)) {
 		// Check if .so exists inside folder
-		wxFileName file(folder + temp1 + "/aegisub.mo");
-		if (file.FileExists()) {
+		if (wxFileName::FileExists(folder + temp1 + "/aegisub.mo")) {
 			const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(temp1);
 			if (lang) {
 				final.Add(lang->Language);
 			}
 		}
 	}
-
 #else
-
 	const char* langs[] = {
 		"ca",
 		"cs",

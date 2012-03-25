@@ -34,14 +34,9 @@
 /// @ingroup utility
 ///
 
+#include <libaegisub/scoped_ptr.h>
 
-
-
-//////////////
-// Prototypes
 class wxLocale;
-
-
 
 /// DOCME
 /// @class AegisubLocale
@@ -49,18 +44,10 @@ class wxLocale;
 ///
 /// DOCME
 class AegisubLocale {
-private:
-
-	/// DOCME
-	wxLocale *locale;
+	agi::scoped_ptr<wxLocale> locale;
 	wxArrayInt GetAvailableLanguages();
 
 public:
-
-	/// DOCME
-	int curCode;
-
-	AegisubLocale();
 	~AegisubLocale();
 	void Init(int language);
 	int PickLanguage();
