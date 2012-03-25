@@ -70,9 +70,6 @@ DirectSoundPlayer::~DirectSoundPlayer() {
 /// @brief Open stream
 ///
 void DirectSoundPlayer::OpenStream() {
-	// Get provider
-	AudioProvider *provider = GetProvider();
-
 	// Initialize the DirectSound object
 	HRESULT res;
 	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,NULL); // TODO: support selecting audio device
@@ -147,7 +144,6 @@ bool DirectSoundPlayer::FillBuffer(bool fill) {
 	HRESULT res;
 	void *ptr1, *ptr2;
 	unsigned long int size1, size2;
-	AudioProvider *provider = GetProvider();
 	int bytesps = provider->GetBytesPerSample();
 
 	// To write length

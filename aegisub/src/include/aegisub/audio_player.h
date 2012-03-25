@@ -79,7 +79,6 @@ public:
 	virtual void SetCurrentPosition(int64_t pos)=0;
 
 	virtual void SetProvider(AudioProvider *new_provider) { provider = new_provider; }
-	AudioProvider *GetProvider() const { return provider; }
 };
 
 class AudioPlayerFactory : public Factory0<AudioPlayer> {

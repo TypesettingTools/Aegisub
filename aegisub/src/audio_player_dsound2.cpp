@@ -834,7 +834,7 @@ void DirectSoundPlayer2::OpenStream()
 
 	try
 	{
-		thread.reset(new DirectSoundPlayer2Thread(GetProvider(), WantedLatency, BufferLength));
+		thread.reset(new DirectSoundPlayer2Thread(provider, WantedLatency, BufferLength));
 	}
 	catch (const char *msg)
 	{
@@ -847,16 +847,16 @@ void DirectSoundPlayer2::CloseStream()
 	thread.reset();
 }
 
-void DirectSoundPlayer2::SetProvider(AudioProvider *provider)
+void DirectSoundPlayer2::SetProvider(AudioProvider *new_provider)
 {
 	try
 	{
-		if (IsThreadAlive() && provider != GetProvider())
+		if (IsThreadAlive() && new_provider != provider)
 		{
-			thread.reset(new DirectSoundPlayer2Thread(provider, WantedLatency, BufferLength));
+			thread.reset(new DirectSoundPlayer2Thread(new_provider, WantedLatency, BufferLength));
 		}
 
-		AudioPlayer::SetProvider(provider);
+		AudioPlayer::SetProvider(new_provider);
 	}
 	catch (const char *msg)
 	{

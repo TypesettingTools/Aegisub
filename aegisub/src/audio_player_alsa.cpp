@@ -370,7 +370,7 @@ void AlsaPlayer::OpenStream()
 	CloseStream();
 
 	ps->Reset();
-	ps->provider = GetProvider();
+	ps->provider = provider;
 
 	wxString device_name = lagi_wxString(OPT_GET("Player/Audio/ALSA/Device")->GetString());
 	ps->device_name = std::string(device_name.utf8_str());
