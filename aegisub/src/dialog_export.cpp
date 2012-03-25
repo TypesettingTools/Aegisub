@@ -154,6 +154,8 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 		c->ass->SetScriptInfo("Export Encoding", charset_list->GetStringSelection());
 		exporter->Export(filename, charset_list->GetStringSelection(), this);
 	}
+	catch (agi::UserCancelException const&) {
+	}
 	catch (const char *error) {
 		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR, this);
 	}
