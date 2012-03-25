@@ -259,6 +259,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 						DialogPasteOver diag(context->parent);
 						if (diag.ShowModal()) {
 							delete curdiag;
+							EndBatch();
 							return;
 						}
 						pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
