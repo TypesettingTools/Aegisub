@@ -68,21 +68,6 @@ public:
 
 	wxThread::ExitCode Entry();
 };
-/*
-TODO: Rewrite playback thread to manage all of the buffer, and properly marshal the IDirectSound8
-object into the thread for creating the buffer there.
-The thread should own the buffer and manage all of the playback.
-It must be created with start and duration set, and begins playback at the given position.
-New functions:
-* Seek(pos) : Restart playback from the given position
-* SetEnd(pos) : Set new end point
-* GetPosition() : Get the current sample number being played
-* Stop() : Stop playback immediately
-
-Instead of using a stop event, use a playback parameters changed event. When that one's fired,
-detect which were actually changed and act accordingly.
-All but GetPosition() set appropriate fields and then raise the parameters changed event.
-*/
 
 /// DOCME
 /// @class DirectSoundPlayer
