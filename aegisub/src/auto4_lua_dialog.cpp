@@ -53,12 +53,12 @@
 #include <wx/spinctrl.h>
 #include <wx/tokenzr.h>
 #include <wx/validate.h>
+#include <wx/valgen.h>
 #include <wx/valnum.h>
 #include <wx/window.h>
 #endif
 
 #include <cfloat>
-#include <wx/valgen.h>
 
 #include <libaegisub/log.h>
 

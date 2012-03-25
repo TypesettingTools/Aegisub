@@ -1,31 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-// Aegisub Project http://www.aegisub.org/
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // $Id$
 
@@ -36,335 +21,238 @@
 
 #include "config.h"
 
+#include "dialog_resample.h"
+
 #ifndef AGI_PRE
-#include <wx/log.h>
-#include <wx/msgdlg.h>
+#include <algorithm>
+#include <tr1/functional>
+
+#include <wx/checkbox.h>
 #include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
+#include <wx/valgen.h>
 #endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
-#include "dialog_resample.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "utils.h"
-#include "validators.h"
 #include "video_context.h"
 
-// IDs
 enum {
-	BUTTON_DEST_FROM_VIDEO = 1520,
-	CHECK_ANAMORPHIC,
-	CHECK_SYMMETRICAL,
-	TEXT_MARGIN_T,
-	TEXT_MARGIN_L,
-	TEXT_MARGIN_R,
-	TEXT_MARGIN_B
+	LEFT = 0,
+	RIGHT = 1,
+	TOP = 2,
+	BOTTOM = 3
 };
 
-DialogResample::DialogResample(agi::Context *c)
-: wxDialog(c->parent,-1,_("Resample Resolution"),wxDefaultPosition)
+DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
+: wxDialog(c->parent, -1, _("Resample Resolution"))
 , c(c)
 {
-	// Set icon
 	SetIcon(BitmapToIcon(GETIMAGE(resample_toolbutton_24)));
 
-	// Margins
-	MarginSymmetrical = NULL;	// Do not remove this
-	wxSizer *MarginBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Margin offset"));
-	wxSizer *MarginSizer = new wxGridSizer(3,3,5,5);
-	MarginTop = new wxTextCtrl(this,TEXT_MARGIN_T,"0",wxDefaultPosition,wxSize(50,-1),0);
-	MarginLeft = new wxTextCtrl(this,TEXT_MARGIN_L,"0",wxDefaultPosition,wxSize(50,-1),0);
-	MarginSymmetrical = new wxCheckBox(this,CHECK_SYMMETRICAL,_("&Symmetrical"));
-	MarginRight = new wxTextCtrl(this,TEXT_MARGIN_R,"0",wxDefaultPosition,wxSize(50,-1),0);
-	MarginBottom = new wxTextCtrl(this,TEXT_MARGIN_B,"0",wxDefaultPosition,wxSize(50,-1),0);
-	MarginSizer->AddSpacer(1);
-	MarginSizer->Add(MarginTop,1,wxEXPAND);
-	MarginSizer->AddSpacer(1);
-	MarginSizer->Add(MarginLeft,1,wxEXPAND);
-	MarginSizer->Add(MarginSymmetrical,1,wxEXPAND);
-	MarginSizer->Add(MarginRight,1,wxEXPAND);
-	MarginSizer->AddSpacer(1);
-	MarginSizer->Add(MarginBottom,1,wxEXPAND);
-	MarginSizer->AddSpacer(1);
-	MarginBoxSizer->Add(MarginSizer,1,wxALIGN_CENTER|wxBOTTOM,5);
-	MarginSymmetrical->SetValue(true);
-	MarginRight->Enable(false);
-	MarginBottom->Enable(false);
-	
-	// Resolution
-	wxSizer *ResBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Resolution"));
-	wxSizer *ResSizer = new wxBoxSizer(wxHORIZONTAL);
-	int sw,sh;
-	c->ass->GetResolution(sw,sh);
-	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(sw));
-	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1),0,NumValidator(sh));
-	wxStaticText *ResText = new wxStaticText(this,-1,_("x"));
-	wxButton *FromVideo = new wxButton(this,BUTTON_DEST_FROM_VIDEO,_("From &video"));
-	if (!c->videoController->IsLoaded()) FromVideo->Enable(false);
-	ResSizer->Add(ResX,1,wxRIGHT,5);
-	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
-	ResSizer->Add(ResY,1,wxRIGHT,5);
-	ResSizer->Add(FromVideo,1,0,0);
-	Anamorphic = new wxCheckBox(this,CHECK_ANAMORPHIC,_("&Change aspect ratio"));
-	ResBoxSizer->Add(ResSizer,1,wxEXPAND|wxBOTTOM,5);
-	ResBoxSizer->Add(Anamorphic,0,0,0);
+	memset(&settings, 0, sizeof(settings));
+	c->ass->GetResolution(settings.script_x, settings.script_y);
 
-	// Button sizer
-	wxStdDialogButtonSizer *ButtonSizer = new wxStdDialogButtonSizer();
-	ButtonSizer->AddButton(new wxButton(this,wxID_OK));
-	ButtonSizer->AddButton(new wxButton(this,wxID_CANCEL));
-	ButtonSizer->AddButton(new HelpButton(this,"Resample resolution"));
-	ButtonSizer->Realize();
+	// Create all controls and set validators
+	for (size_t i = 0; i < 4; ++i) {
+		margin_ctrl[i] = new wxSpinCtrl(this, -1, "0", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, -9999, 9999, 0);
+		margin_ctrl[i]->SetValidator(wxGenericValidator(&settings.margin[i]));
+	}
 
-	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(MarginBoxSizer,1,wxEXPAND|wxALL,5);
-	MainSizer->Add(ResBoxSizer,0,wxEXPAND|wxALL,5);
-	MainSizer->Add(ButtonSizer,0,wxEXPAND|wxRIGHT|wxLEFT|wxBOTTOM,5);
-	MainSizer->SetSizeHints(this);
-	SetSizer(MainSizer);
+	symmetrical = new wxCheckBox(this, -1, _("&Symmetrical"));
+	symmetrical->SetValue(true);
+
+	margin_ctrl[RIGHT]->Enable(false);
+	margin_ctrl[BOTTOM]->Enable(false);
+
+	res_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	res_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+
+	res_x->SetValidator(wxGenericValidator(&settings.script_x));
+	res_y->SetValidator(wxGenericValidator(&settings.script_y));
+
+	wxButton *from_video = new wxButton(this, -1, _("From &video"));
+	from_video->Enable(c->videoController->IsLoaded());
+
+	wxCheckBox *change_ar = new wxCheckBox(this, -1, _("&Change aspect ratio"));
+	change_ar->SetValidator(wxGenericValidator(&settings.change_ar));
+
+	// Position the controls
+	wxSizer *margin_sizer = new wxGridSizer(3, 3, 5, 5);
+	margin_sizer->AddSpacer(1);
+	margin_sizer->Add(margin_ctrl[TOP], wxSizerFlags(1).Expand());
+	margin_sizer->AddSpacer(1);
+	margin_sizer->Add(margin_ctrl[LEFT], wxSizerFlags(1).Expand());
+	margin_sizer->Add(symmetrical, wxSizerFlags(1).Expand());
+	margin_sizer->Add(margin_ctrl[RIGHT], wxSizerFlags(1).Expand());
+	margin_sizer->AddSpacer(1);
+	margin_sizer->Add(margin_ctrl[BOTTOM], wxSizerFlags(1).Expand());
+	margin_sizer->AddSpacer(1);
+
+	wxSizer *margin_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Margin offset"));
+	margin_box->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+
+	wxSizer *res_sizer = new wxBoxSizer(wxHORIZONTAL);
+	res_sizer->Add(res_x, wxSizerFlags(1).Border(wxRIGHT));
+	res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
+	res_sizer->Add(res_y, wxSizerFlags(1).Border(wxRIGHT));
+	res_sizer->Add(from_video, wxSizerFlags(1));
+
+	wxSizer *res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Resolution"));
+	res_box->Add(res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	res_box->Add(change_ar);
+
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
+	main_sizer->Add(res_box, wxSizerFlags(0).Expand().Border());
+	main_sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	SetSizerAndFit(main_sizer);
 	CenterOnParent();
-	instance = this;
+
+	// Bind events
+	using std::tr1::bind;
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
+	from_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogResample::SetDestFromVideo, this);
+	symmetrical->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DialogResample::OnSymmetrical, this);
+	margin_ctrl[LEFT]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogResample::OnMarginChange, this, margin_ctrl[LEFT], margin_ctrl[RIGHT]));
+	margin_ctrl[TOP]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogResample::OnMarginChange, this, margin_ctrl[TOP], margin_ctrl[BOTTOM]));
 }
 
-
-///////////////
-// Event table
-BEGIN_EVENT_TABLE(DialogResample,wxDialog)
-	EVT_BUTTON(wxID_OK,DialogResample::OnResample)
-	EVT_BUTTON(BUTTON_DEST_FROM_VIDEO,DialogResample::OnGetDestRes)
-	EVT_CHECKBOX(CHECK_SYMMETRICAL,DialogResample::OnSymmetrical)
-	EVT_TEXT(TEXT_MARGIN_T,DialogResample::OnMarginChange)
-	EVT_TEXT(TEXT_MARGIN_L,DialogResample::OnMarginChange)
-	EVT_TEXT(TEXT_MARGIN_R,DialogResample::OnMarginChange)
-	EVT_TEXT(TEXT_MARGIN_B,DialogResample::OnMarginChange)
-END_EVENT_TABLE()
-
-
-
-/// @brief Resample tags 
-/// @param name     
-/// @param n        
-/// @param curParam 
-/// @param _curDiag 
-///
-void DialogResample::ResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag) {
-	instance->DoResampleTags(name,n,curParam,_curDiag);
+void DialogResample::SetDestFromVideo(wxCommandEvent &) {
+	res_x->SetValue(c->videoController->GetWidth());
+	res_y->SetValue(c->videoController->GetHeight());
 }
 
-/// @brief DOCME
-/// @param name     
-/// @param n        
-/// @param curParam 
-/// @param _curDiag 
-/// @return 
-///
-void DialogResample::DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *) {
-	double resizer = 1.0;
-	bool isX = false;
-	bool isY = false;
+void DialogResample::OnSymmetrical(wxCommandEvent &) {
+	bool state = !symmetrical->IsChecked();
 
-	switch (curParam->classification) {
-		case PARCLASS_ABSOLUTE_SIZE:
-			resizer = r;
-			break;
-			
-		case PARCLASS_ABSOLUTE_POS_X:
-			resizer = rx;
-			isX = true;
-			break;
+	margin_ctrl[RIGHT]->Enable(state);
+	margin_ctrl[BOTTOM]->Enable(state);
 
-		case PARCLASS_ABSOLUTE_POS_Y:
-			resizer = ry;
-			isY = true;
-			break;
+	if (!state) {
+		margin_ctrl[RIGHT]->SetValue(margin_ctrl[LEFT]->GetValue());
+		margin_ctrl[BOTTOM]->SetValue(margin_ctrl[TOP]->GetValue());
+	}
+}
 
-		case PARCLASS_RELATIVE_SIZE_X:
-			resizer = ar;
-			break;
+void DialogResample::OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst) {
+	if (symmetrical->IsChecked())
+		dst->SetValue(src->GetValue());
+}
 
-		case PARCLASS_RELATIVE_SIZE_Y:
-			//resizer = ry;
-			break;
+namespace {
+	struct resample_state {
+		const int *margin;
+		double rx;
+		double ry;
+		double ar;
+	};
 
-		case PARCLASS_DRAWING:
-			{
-				AssDialogueBlockDrawing block(curParam->Get<wxString>(), 1);
-				block.TransformCoords(m[0],m[2],rx,ry);
-				curParam->Set(block.GetText());
+	void resample_tags(wxString name, int n, AssOverrideParameter *cur, void *ud) {
+		resample_state *state = static_cast<resample_state *>(ud);
+
+		double resizer = 1.0;
+		int shift = 0;
+
+		switch (cur->classification) {
+			case PARCLASS_ABSOLUTE_SIZE:
+				resizer = state->ry;
+				break;
+
+			case PARCLASS_ABSOLUTE_POS_X:
+				resizer = state->rx;
+				shift = state->margin[LEFT];
+				break;
+
+			case PARCLASS_ABSOLUTE_POS_Y:
+				resizer = state->ry;
+				shift = state->margin[TOP];
+				break;
+
+			case PARCLASS_RELATIVE_SIZE_X:
+				resizer = state->ar;
+				break;
+
+			case PARCLASS_RELATIVE_SIZE_Y:
+				//resizer = ry;
+				break;
+
+			case PARCLASS_DRAWING: {
+				AssDialogueBlockDrawing block(cur->Get<wxString>(), 1);
+				block.TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
+				cur->Set(block.GetText());
+				return;
 			}
-			return;
 
-		default:
-			return;
+			default:
+				return;
+		}
+
+		VariableDataType curType = cur->GetType();
+		if (curType == VARDATA_FLOAT)
+			cur->Set((cur->Get<double>() + shift) * resizer);
+		else if (curType == VARDATA_INT)
+			cur->Set<int>((cur->Get<int>() + shift) * resizer + 0.5);
 	}
 
-	VariableDataType curType = curParam->GetType();
-	if (curType == VARDATA_FLOAT) {
-		float par = curParam->Get<double>();
-		if (isX) par += m[0];
-		if (isY) par += m[2];
-		curParam->Set<double>(par * resizer);
-	}
-	if (curType == VARDATA_INT) {
-		int par = curParam->Get<int>();
-		if (isX) par += m[0];
-		if (isY) par += m[2];
-		curParam->Set<int>(int(double(par) * resizer + 0.5));
+	void resample_line(resample_state *state, AssEntry *line) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(line);
+		if (diag && !(diag->Comment && (diag->Effect.StartsWith("template") || diag->Effect.StartsWith("code")))) {
+			diag->ParseASSTags();
+			diag->ProcessParameters(resample_tags, state);
+
+			for (size_t i = 0; i < diag->Blocks.size(); ++i) {
+				if (AssDialogueBlockDrawing *block = dynamic_cast<AssDialogueBlockDrawing*>(diag->Blocks[i]))
+					block->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
+			}
+
+			for (size_t i = 0; i < 4; ++i)
+				diag->Margin[i] = int((diag->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
+
+
+			diag->UpdateText();
+			diag->ClearBlocks();
+		}
+		else if (AssStyle *style = dynamic_cast<AssStyle*>(line)) {
+			style->fontsize = int(style->fontsize * state->ry + 0.5);
+			style->outline_w *= state->ry;
+			style->shadow_w *= state->ry;
+			style->spacing *= state->rx;
+			style->scalex *= state->ar;
+			for (int i = 0; i < 4; i++)
+				style->Margin[i] = int((style->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
+			style->UpdateData();
+		}
 	}
 }
 
-
-
-/// @brief Resample 
-/// @param event 
-/// @return 
-///
-void DialogResample::OnResample (wxCommandEvent &) {
-	int x1,y1;
-	c->ass->GetResolution(x1,y1);
-	long x2 = 0;
-	long y2 = 0;
-	ResX->GetValue().ToLong(&x2);
-	ResY->GetValue().ToLong(&y2);
-
-	// Sanity check
-	if (x1 == 0 || y1 == 0) {
-		wxMessageBox("Invalid source resolution. This should not happen. Please contact the developers.",_("Error"),wxCENTRE|wxICON_ERROR);
-		return;
-	}
-	if (x2 == 0 || y2 == 0) {
-		wxMessageBox(_("Invalid resolution: destination resolution cannot be 0 on either dimension."),_("Error"),wxCENTRE|wxICON_ERROR);
-		return;
-	}
-
-	// Get margins
-	MarginLeft->GetValue().ToLong(&m[0]);
-	MarginRight->GetValue().ToLong(&m[1]);
-	MarginTop->GetValue().ToLong(&m[2]);
-	MarginBottom->GetValue().ToLong(&m[3]);
+void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
+	int src_x, src_y;
+	ass->GetResolution(src_x, src_y);
 
 	// Add margins to original resolution
-	x1 += m[0] + m[1];
-	x2 += m[2] + m[3];
+	src_x += settings.margin[LEFT] + settings.margin[RIGHT];
+	src_y += settings.margin[TOP] + settings.margin[BOTTOM];
 
-	// Calculate resamples
-	rx = double(x2)/double(x1);
-	ry = double(y2)/double(y1);
-	r = ry;
-	if (Anamorphic->IsChecked()) ar = rx/ry;
-	else ar = 1.0;
+	resample_state state = {
+		settings.margin,
+		double(settings.script_x) / double(src_x),
+		double(settings.script_y) / double(src_y),
+		settings.change_ar ? state.rx / state.ry : 1.0
+	};
 
-	// Iterate through subs
-	AssStyle *curStyle;
-	AssDialogue *curDiag;
-	for (entryIter cur=c->ass->Line.begin();cur!=c->ass->Line.end();cur++) {
-		// Apply to dialogues
-		curDiag = dynamic_cast<AssDialogue*>(*cur);
-		if (curDiag && !(curDiag->Comment && (curDiag->Effect.StartsWith("template") || curDiag->Effect.StartsWith("code")))) {
-			try {
-				// Override tags
-				curDiag->ParseASSTags();
-				curDiag->ProcessParameters(&DialogResample::ResampleTags,curDiag);
+	for_each(ass->Line.begin(), ass->Line.end(), bind(resample_line, &state, std::tr1::placeholders::_1));
 
-				// Drawing tags
-				size_t nblocks = curDiag->Blocks.size();
-				AssDialogueBlockDrawing *curBlock;
-				for (size_t i=0;i<nblocks;i++) {
-					curBlock = dynamic_cast<AssDialogueBlockDrawing*>(curDiag->Blocks.at(i));
-					if (curBlock) {
-						curBlock->TransformCoords(m[0],m[2],rx,ry);
-					}
-				}
+	ass->SetScriptInfo("PlayResX", wxString::Format("%d", settings.script_x));
+	ass->SetScriptInfo("PlayResY", wxString::Format("%d", settings.script_y));
 
-				// Margins
-				for (int i=0;i<2;i++) {
-					curDiag->Margin[i] = int((curDiag->Margin[i]+m[i]) * rx + 0.5);
-					curDiag->Margin[i+2] = int((curDiag->Margin[i+2]+m[i+2]) * ry + 0.5);
-				}
-
-				// Update
-				curDiag->UpdateText();
-				curDiag->ClearBlocks();
-				continue;
-			}
-			catch (const char *err) {
-				wxLogMessage(err);
-			}
-			catch (wxString const& err) {
-				wxLogMessage(err);
-			}
-		}
-
-		// Apply to styles
-		curStyle = dynamic_cast<AssStyle*>(*cur);
-		if (curStyle) {
-			curStyle->fontsize = int(curStyle->fontsize * r + 0.5);
-			curStyle->outline_w *= r;
-			curStyle->shadow_w *= r;
-			curStyle->spacing *= rx;
-			curStyle->scalex *= ar;
-			for (int i=0;i<2;i++) {
-				curStyle->Margin[i] = int((curStyle->Margin[i]+m[i]) * rx + 0.5);
-				curStyle->Margin[i+2] = int((curStyle->Margin[i+2]+m[i+2]) * ry + 0.5);
-			}
-			curStyle->UpdateData();
-		}
-	}
-
-	// Change script resolution
-	c->ass->SetScriptInfo("PlayResX",wxString::Format("%i",x2));
-	c->ass->SetScriptInfo("PlayResY",wxString::Format("%i",y2));
-
-	// Flag as modified
-	c->ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
-	EndModal(0);
+	ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
 }
-
-
-
-/// @brief Get destination resolution from video 
-/// @param event 
-///
-void DialogResample::OnGetDestRes (wxCommandEvent &) {
-	ResX->SetValue(wxString::Format("%i",c->videoController->GetWidth()));
-	ResY->SetValue(wxString::Format("%i",c->videoController->GetHeight()));
-}
-
-
-
-/// @brief Symmetrical checkbox clicked 
-/// @param event 
-///
-void DialogResample::OnSymmetrical (wxCommandEvent &) {
-	bool state = !MarginSymmetrical->IsChecked();
-	MarginRight->Enable(state);
-	MarginBottom->Enable(state);
-	if (!state) {
-		MarginRight->SetValue(MarginLeft->GetValue());
-		MarginBottom->SetValue(MarginTop->GetValue());
-	}
-}
-
-
-
-/// @brief Margin value changed 
-/// @param event 
-/// @return 
-///
-void DialogResample::OnMarginChange (wxCommandEvent &event) {
-	if (!MarginSymmetrical) return;
-	bool state = !MarginSymmetrical->IsChecked();
-	if (!state && (event.GetEventObject() == MarginLeft || event.GetEventObject() == MarginTop)) {
-		MarginRight->SetValue(MarginLeft->GetValue());
-		MarginBottom->SetValue(MarginTop->GetValue());
-	}
-}
-
-/// DOCME
-DialogResample *DialogResample::instance = NULL;

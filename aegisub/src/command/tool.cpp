@@ -128,7 +128,9 @@ struct tool_resampleres : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		DialogResample(c).ShowModal();
+		ResampleSettings settings;
+		if (DialogResample(c, settings).ShowModal() == wxID_OK)
+			ResampleResolution(c->ass, settings);
 	}
 };
 

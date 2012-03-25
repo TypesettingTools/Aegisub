@@ -191,6 +191,7 @@
 #include <wx/txtstrm.h>
 #include <wx/utils.h>
 #include <wx/validate.h>
+#include <wx/valgen.h>
 #include <wx/valnum.h>
 #include <wx/valtext.h>
 #include <wx/wfstream.h>

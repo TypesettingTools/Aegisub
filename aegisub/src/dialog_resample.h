@@ -1,31 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-// Aegisub Project http://www.aegisub.org/
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // $Id$
 
@@ -35,75 +20,53 @@
 ///
 
 #ifndef AGI_PRE
-#include <wx/checkbox.h>
 #include <wx/dialog.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
 #endif
 
 namespace agi { struct Context; }
-class AssOverrideParameter;
+class AssFile;
+class wxCheckBox;
+class wxSpinCtrl;
 
+/// Configuration parameters for a resample
+struct ResampleSettings {
+	/// Amount to add to each margin
+	int margin[4];
+	/// New X resolution
+	int script_x;
+	/// New Y resolution
+	int script_y;
+	/// Should the aspect ratio of the subs be changed?
+	bool change_ar;
+};
 
+/// Resample the subtitles in the project
+/// @param file Subtitles to resample
+/// @param settings Resample configuration settings
+void ResampleResolution(AssFile *file, ResampleSettings const& settings);
 
-/// DOCME
 /// @class DialogResample
-/// @brief DOCME
+/// @brief Configuration dialog for resolution resampling
 ///
-/// DOCME
+/// Populate a ResampleSettings structure with data from the user
 class DialogResample : public wxDialog {
-	agi::Context *c;
+	agi::Context *c; ///< Project context
 
-	/// DOCME
-	wxTextCtrl *ResX;
+	wxSpinCtrl *res_x;
+	wxSpinCtrl *res_y;
+	wxCheckBox *symmetrical;
+	wxSpinCtrl *margin_ctrl[4];
 
-	/// DOCME
-	wxTextCtrl *ResY;
-
-	/// DOCME
-	wxTextCtrl *MarginLeft;
-
-	/// DOCME
-	wxTextCtrl *MarginRight;
-
-	/// DOCME
-	wxTextCtrl *MarginTop;
-
-	/// DOCME
-	wxTextCtrl *MarginBottom;
-
-	/// DOCME
-	wxCheckBox *Anamorphic;
-
-	/// DOCME
-	wxCheckBox *MarginSymmetrical;
-
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-	double rx,ry,r,ar;
-
-	/// DOCME
-	long m[4];
-
-	/// DOCME
-	static DialogResample *instance;
-
-	void OnResample (wxCommandEvent &event);
-	void OnGetDestRes (wxCommandEvent &event);
-	void OnSymmetrical (wxCommandEvent &event);
-	void OnMarginChange (wxCommandEvent &event);
-
-	static void ResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag);
-	void DoResampleTags (wxString name,int n,AssOverrideParameter *curParam,void *_curDiag);
+	/// Set the destination resolution to the video's resolution
+	void SetDestFromVideo(wxCommandEvent &);
+	/// Symmetrical checkbox toggle handler
+	void OnSymmetrical(wxCommandEvent &);
+	/// Copy margin values over if symmetrical is enabled
+	void OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst);
 
 public:
-	DialogResample(agi::Context *context);
-
-	DECLARE_EVENT_TABLE()
+	/// Constructor
+	/// @param context Project context
+	/// @param[out] settings Settings struct to populate
+	DialogResample(agi::Context *context, ResampleSettings &settings);
 };
