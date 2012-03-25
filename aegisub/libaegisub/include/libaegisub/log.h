@@ -70,7 +70,10 @@ extern const char *Severity_ID;
 extern LogSink *log;
 
 /// Container to hold a single message
-struct SinkMessage {
+class SinkMessage {
+	SinkMessage(SinkMessage const&);
+	SinkMessage& operator=(SinkMessage const&);
+public:
 	/// @brief Constructor
 	/// @param section  Section info
 	/// @param severity Severity
