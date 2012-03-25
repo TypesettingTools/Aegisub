@@ -282,8 +282,8 @@ bool AegisubApp::OnInit() {
 
 
 
-/// @brief Exit 
-/// @return 
+/// @brief Exit
+/// @return
 ///
 int AegisubApp::OnExit() {
 	if (wxTheClipboard->Open()) {
@@ -456,8 +456,8 @@ StackWalker::~StackWalker() {
 #endif
 
 
-/// @brief Call main loop 
-/// @return 
+/// @brief Call main loop
+/// @return
 ///
 int AegisubApp::OnRun() {
 	wxString error;
@@ -513,7 +513,7 @@ int AegisubApp::FilterEvent(wxEvent& event) {
 #ifdef __WXMAC__
 
 /// @brief DOCME
-/// @param filename 
+/// @param filename
 ///
 void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame != NULL && !filename.empty()) {

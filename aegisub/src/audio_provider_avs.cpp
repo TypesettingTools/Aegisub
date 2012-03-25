@@ -54,8 +54,8 @@
 #include "standard_paths.h"
 #include "utils.h"
 
-/// @brief Constructor 
-/// @param _filename 
+/// @brief Constructor
+/// @param _filename
 ///
 AvisynthAudioProvider::AvisynthAudioProvider(wxString filename)
 : filename(filename)
@@ -108,8 +108,8 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString filename)
 	}
 }
 
-/// @brief Read from environment 
-/// @param _clip 
+/// @brief Read from environment
+/// @param _clip
 ///
 void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	AVSValue script;
@@ -150,10 +150,10 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	clip = tempclip;
 }
 
-/// @brief Get audio 
-/// @param buf   
-/// @param start 
-/// @param count 
+/// @brief Get audio
+/// @param buf
+/// @param start
+/// @param count
 ///
 void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	// Requested beyond the length of audio

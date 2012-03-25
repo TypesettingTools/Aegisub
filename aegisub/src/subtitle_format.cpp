@@ -75,11 +75,11 @@ bool SubtitleFormat::CanWriteFile(wxString const& filename) const {
 	return GetWriteWildcards().Index(filename.AfterLast('.'), false) != wxNOT_FOUND;
 }
 
-/// @brief Ask the user to enter the FPS 
+/// @brief Ask the user to enter the FPS
 FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) const {
 	wxArrayString choices;
 	bool drop = false;
-	
+
 	// Video FPS
 	VideoContext *context = VideoContext::Get();
 	bool vidLoaded = context->TimecodesLoaded();
@@ -91,7 +91,7 @@ FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) const {
 			vidFPS = wxString::Format("%.3f", context->FPS().FPS());
 		choices.Add(wxString::Format(_("From video (%s)"), vidFPS));
 	}
-	
+
 	// Standard FPS values
 	choices.Add(_("15.000 FPS"));
 	choices.Add(_("23.976 FPS (Decimated NTSC)"));
@@ -187,7 +187,7 @@ static bool dialog_start_lt(AssEntry *pos, AssDialogue *to_insert) {
 	return diag && diag->Start > to_insert->Start;
 }
 
-/// @brief Split and merge lines so there are no overlapping lines 
+/// @brief Split and merge lines so there are no overlapping lines
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
 void SubtitleFormat::RecombineOverlaps(LineList &lines) const {
@@ -261,20 +261,20 @@ void SubtitleFormat::RecombineOverlaps(LineList &lines) const {
 	}
 }
 
-/// @brief Merge identical lines that follow each other 
+/// @brief Merge identical lines that follow each other
 void SubtitleFormat::MergeIdentical(LineList &lines) const {
 	LineList::iterator cur, next = lines.begin();
 	cur = next++;
-	
+
 	for (; next != lines.end(); cur = next++) {
 		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*cur);
 		AssDialogue *nextdlg = dynamic_cast<AssDialogue*>(*next);
-		
+
 		if (curdlg && nextdlg && curdlg->End == nextdlg->Start && curdlg->Text == nextdlg->Text) {
 			// Merge timing
 			nextdlg->Start = std::min(nextdlg->Start, curdlg->Start);
 			nextdlg->End = std::max(nextdlg->End, curdlg->End);
-			
+
 			// Remove duplicate line
 			delete *cur;
 			lines.erase(cur);

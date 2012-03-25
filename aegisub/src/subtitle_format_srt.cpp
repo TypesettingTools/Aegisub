@@ -61,7 +61,7 @@ class SrtTagParser {
 	};
 
 	enum TagType {
-		// leave 0 unused so indexing an unknown tag in the map won't clash 
+		// leave 0 unused so indexing an unknown tag in the map won't clash
 		TAG_BOLD_OPEN = 1,
 		TAG_BOLD_CLOSE,
 		TAG_ITALICS_OPEN,

@@ -84,7 +84,7 @@ wxMutex FFmpegSourceProvider::CleaningInProgress;
 /// @brief Callback function that updates the indexing progress dialog
 /// @param Current	The current file positition in bytes
 /// @param Total	The total file size in bytes
-/// @param Private	A pointer to the progress sink to update 
+/// @param Private	A pointer to the progress sink to update
 /// @return			Returns non-0 if indexing is cancelled, 0 otherwise.
 ///
 static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private) {
@@ -107,7 +107,7 @@ static void DoIndexingWrapper(FFMS_Index **Ret, FFMS_Indexer *Indexer, int Index
 /// @return				Returns the index object on success, NULL otherwise
 ///
 FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxString &CacheName, int Trackmask, FFMS_IndexErrorHandling IndexEH) {
-	char FFMSErrMsg[1024]; 
+	char FFMSErrMsg[1024];
 	FFMS_ErrorInfo ErrInfo;
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -139,7 +139,7 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	return Index;
 }
 
-/// @brief Finds all tracks of the given type and return their track numbers and respective codec names 
+/// @brief Finds all tracks of the given type and return their track numbers and respective codec names
 /// @param Indexer	The indexer object representing the source file
 /// @param Type		The track type to look for
 /// @return			Returns a std::map with the track numbers as keys and the codec names as values.
@@ -156,19 +156,19 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Index
 	return TrackList;
 }
 
-/// @brief Ask user for which track he wants to load 
+/// @brief Ask user for which track he wants to load
 /// @param TrackList	A std::map with the track numbers as keys and codec names as values
 /// @param Type			The track type to ask about
 /// @return				Returns the track number chosen (an integer >= 0) on success, or a negative integer if the user cancelled.
 int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &TrackList, FFMS_TrackType Type) {
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
-	
+
 	for (std::map<int,wxString>::const_iterator i = TrackList.begin(); i != TrackList.end(); i++) {
 		Choices.Add(wxString::Format(_("Track %02d: %s"), i->first, i->second));
 		TrackNumbers.push_back(i->first);
 	}
-	
+
 	int Choice = wxGetSingleChoiceIndex(
 		Type == FFMS_TYPE_VIDEO ? _("Multiple video tracks detected, please choose the one you wish to load:") : _("Multiple audio tracks detected, please choose the one you wish to load:"),
 		Type == FFMS_TYPE_VIDEO ? _("Choose video track") : _("Choose audio track"),
@@ -182,7 +182,7 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 
 
 
-/// @brief Set ffms2 log level according to setting in config.dat 
+/// @brief Set ffms2 log level according to setting in config.dat
 void FFmpegSourceProvider::SetLogLevel() {
 	wxString LogLevel = lagi_wxString(OPT_GET("Provider/FFmpegSource/Log Level")->GetString());
 
@@ -221,7 +221,7 @@ FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
 }
 
 #include <inttypes.h>
-/// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist 
+/// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist
 /// @param filename	The name of the source file
 /// @return			Returns the generated filename.
 wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
@@ -290,7 +290,7 @@ bool FFmpegSourceProvider::CleanCache() {
 
 
 
-/// @brief constructor 
+/// @brief constructor
 /// @param par	the parent provider
 FFmpegSourceCacheCleaner::FFmpegSourceCacheCleaner(FFmpegSourceProvider *par) : wxThread(wxTHREAD_DETACHED) {
 	parent = par;
@@ -326,7 +326,7 @@ wxThread::ExitCode FFmpegSourceCacheCleaner::Entry() {
 		LOG_D("provider/ffmpegsource/cache") << "no index files in cache folder, exiting";
 		return (wxThread::ExitCode)0;
 	}
-	
+
 	int deleted = 0;
 	int numfiles = 0;
 	std::multimap<int64_t,wxFileName> cachefiles;

@@ -110,7 +110,7 @@ namespace Automation4 {
 		HFONT thefont = CreateFontIndirect(&lf);
 		if (!thefont) return false;
 		SelectObject(thedc, thefont);
-		
+
 		SIZE sz;
 		size_t thetextlen = text.length();
 		const TCHAR *thetext = text.wc_str();

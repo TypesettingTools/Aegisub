@@ -74,7 +74,7 @@ static void expand_times(AssDialogue *src, AssDialogue *dst) {
 	dst->End = std::max(dst->End, src->End);
 }
 
-/// @brief Recombine 
+/// @brief Recombine
 void SubtitlesGrid::RecombineLines() {
 	using namespace std;
 
@@ -158,11 +158,11 @@ void SubtitlesGrid::RecombineLines() {
 	context->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 
-/// @brief Insert a line 
-/// @param line   
-/// @param n      
-/// @param after  
-/// @param update 
+/// @brief Insert a line
+/// @param line
+/// @param n
+/// @param after
+/// @param update
 void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
 	AssDialogue *rel_line = GetDialogue(n);
 	entryIter pos = std::find(context->ass->Line.begin(), context->ass->Line.end(), rel_line);
@@ -207,8 +207,8 @@ void SubtitlesGrid::CutLines(wxArrayInt target) {
 }
 
 /// @brief Paste lines from clipboard
-/// @param n         
-/// @param pasteOver 
+/// @param n
+/// @param pasteOver
 void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 	BeginBatch();
 
@@ -237,7 +237,7 @@ void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
 			curdata.Trim(true);
 			curdata.Trim(false);
 			AssDialogue *curdiag;
-			try { 
+			try {
 				// Try to interpret the line as an ASS line
 				curdiag = new AssDialogue(curdata);
 			}
@@ -375,7 +375,7 @@ void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
 }
 
 /// @brief Retrieve a list of selected lines in the actual ASS file (ie. not as displayed in the grid but as represented in the file)
-/// @return 
+/// @return
 ///
 std::vector<int> SubtitlesGrid::GetAbsoluteSelection() const {
 	Selection sel = GetSelectedSet();
@@ -393,7 +393,7 @@ std::vector<int> SubtitlesGrid::GetAbsoluteSelection() const {
 }
 
 /// @brief Update list of selected lines from absolute selection
-/// @param selection 
+/// @param selection
 ///
 void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 	Selection newsel;
@@ -402,7 +402,7 @@ void SubtitlesGrid::SetSelectionFromAbsolute(std::vector<int> &selection) {
 
 	int i = 0;
 	std::list<AssEntry*>::iterator j = context->ass->Line.begin();
-	
+
 	for (size_t selveci = 0; selveci < selection.size(); ++selveci) {
 		while (i != selection[selveci] && j != context->ass->Line.end()) ++i, ++j;
 		if (j == context->ass->Line.end()) break; /// @todo Report error somehow

@@ -49,8 +49,8 @@
 
 
 /// @brief DOCME
-/// @param filename 
-/// @param encoding 
+/// @param filename
+/// @param encoding
 ///
 TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 : file(new agi::io::Save(STD_STR(filename), true))
@@ -77,8 +77,8 @@ TextFileWriter::~TextFileWriter() {
 
 
 /// @brief DOCME
-/// @param line         
-/// @param addLineBreak 
+/// @param line
+/// @param addLineBreak
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 #ifdef _WIN32
 	if (addLineBreak) line += "\r\n";

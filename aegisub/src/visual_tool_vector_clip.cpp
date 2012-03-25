@@ -148,7 +148,7 @@ void VisualToolVectorClip::Draw() {
 			gl.DrawDashedLine(mouse_pos, c1->EndPoint(), 6);
 		}
 	}
-	
+
 	// Draw preview of insert point
 	if (mode == 4)
 		gl.DrawCircle(pt, 4);

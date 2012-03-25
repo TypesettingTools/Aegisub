@@ -191,7 +191,7 @@ void DialogSearchReplace::FindReplace(int mode) {
 		else Search.ReplaceAll();
 		config::mru->Add("Replace", STD_STR(ReplaceWith));
 	}
-	
+
 	// Add to history
 	config::mru->Add("Find", STD_STR(LookFor));
 	UpdateDropDowns();
@@ -223,13 +223,13 @@ void SearchReplaceEngine::FindNext() {
 }
 
 
-/// @brief Find & Replace next instance 
+/// @brief Find & Replace next instance
 void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	if (!CanContinue) {
 		OpenDialog(DoReplace);
 		return;
 	}
-	
+
 	wxArrayInt sels = context->subsGrid->GetSelection();
 	int firstLine = 0;
 	if (sels.Count() > 0) firstLine = sels[0];

@@ -83,7 +83,7 @@ void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 
 void AssExporter::AddFilter(wxString const& name) {
 	AssExportFilter *filter = AssExportFilterChain::GetFilter(name);
-	
+
 	if (!filter) throw wxString::Format("Filter not found: %s", name);
 
 	filters.push_back(filter);

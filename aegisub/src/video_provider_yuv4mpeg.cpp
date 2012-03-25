@@ -311,7 +311,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 	int64_t curpos = ftello(sf);
 
 	// the ParseFileHeader() call in LoadVideo() will already have read
-	// the file header for us and set the seek position correctly	
+	// the file header for us and set the seek position correctly
 	while (true) {
 		curpos = ftello(sf); // update position
 		// continue reading headers until no more are found

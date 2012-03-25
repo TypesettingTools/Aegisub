@@ -67,7 +67,7 @@
 #include "video_context.h"
 #include "video_frame.h"
 
-/// @brief Constructor 
+/// @brief Constructor
 ///
 VideoContext::VideoContext()
 : playback(this)

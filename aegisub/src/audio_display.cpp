@@ -1051,7 +1051,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	{
 		SetCursor(wxCursor(wxCURSOR_SIZEWE));
 		new_obj = timeline.get();
-		
+
 	}
 
 	if (new_obj)

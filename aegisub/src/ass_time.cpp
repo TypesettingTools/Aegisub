@@ -53,7 +53,7 @@ AssTime::AssTime(wxString const& text)
 	size_t pos = 0, end = 0;
 
 	int colons = text.Freq(':');
-	
+
 	// Set start so that there are only two colons at most
 	for (; colons > 2; --colons) pos = text.find(':', pos) + 1;
 
@@ -137,7 +137,7 @@ wxString FractionalTime::ToSMPTE(AssTime time, char sep) {
 		almost 4 seconds (108000 frames versus 107892).
 
 		DEATH TO SMPTE
-		*/ 
+		*/
 		int fps_approx = floor(fps.FPS() + 0.5);
 		int frames_per_h = 3600*fps_approx;
 		int frames_per_m = 60*fps_approx;

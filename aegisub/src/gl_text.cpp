@@ -241,9 +241,9 @@ OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
 	return glyph;
 }
 
-/// @brief Texture constructor 
-/// @param w 
-/// @param h 
+/// @brief Texture constructor
+/// @param w
+/// @param h
 OpenGLTextTexture::OpenGLTextTexture(OpenGLTextGlyph &glyph) {
 	x = y = nextY = 0;
 	width = std::max(SmallestPowerOf2(glyph.w), 64);
@@ -272,9 +272,9 @@ OpenGLTextTexture::~OpenGLTextTexture() {
 	if (tex) glDeleteTextures(1, &tex);
 }
 
-/// @brief Can fit a glyph in it? 
-/// @param glyph 
-/// @return 
+/// @brief Can fit a glyph in it?
+/// @param glyph
+/// @return
 bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph &glyph) {
 	int w = glyph.w;
 	int h = glyph.h;
@@ -301,8 +301,8 @@ bool OpenGLTextTexture::TryToInsert(OpenGLTextGlyph &glyph) {
 	}
 }
 
-/// @brief Insert 
-/// @param glyph 
+/// @brief Insert
+/// @param glyph
 void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 	int w = glyph.w;
 	int h = glyph.h;

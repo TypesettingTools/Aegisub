@@ -74,8 +74,8 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 }
 
 /// @brief DOCME
-/// @param _data   
-/// @param version 
+/// @param _data
+/// @param version
 AssDialogue::AssDialogue(wxString _data,int version)
 : AssEntry(wxString(), "[Events]")
 , Comment(false)
@@ -259,7 +259,7 @@ void AssDialogue::ParseASSTags() {
 				work = Text.substr(cur, end - cur);
 				cur = end + 1;
 			}
-			
+
 			if (work.size() && work.Find("\\") == wxNOT_FOUND) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block

@@ -89,7 +89,7 @@ public:
 };
 
 /// @class FFmpegSourceCacheCleaner
-/// @brief Implements index cache cleaning functionality for the FFMS2 providers 
+/// @brief Implements index cache cleaning functionality for the FFMS2 providers
 class FFmpegSourceCacheCleaner : public wxThread {
 	FFmpegSourceProvider *parent;
 

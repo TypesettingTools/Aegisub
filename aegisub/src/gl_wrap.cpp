@@ -178,7 +178,7 @@ void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, floa
 
 	// Arc range
 	bool needs_end_caps = arc_start != arc_end;
-	
+
 	arc_end *= deg2rad;
 	arc_start *= deg2rad;
 	if (arc_end <= arc_start)

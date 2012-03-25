@@ -95,9 +95,9 @@ static ResolutionShortcut resolutions[] = {
 
 
 /// @brief DOCME
-/// @param parent       
-/// @param out_filename 
-/// @return 
+/// @param parent
+/// @param out_filename
+/// @return
 ///
 bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename)
 {
@@ -156,7 +156,7 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 
 
 /// @brief DOCME
-/// @param parent 
+/// @param parent
 ///
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 : wxDialog(parent, -1, _("Dummy video options"),wxDefaultPosition,wxDefaultSize)
@@ -254,7 +254,7 @@ END_EVENT_TABLE()
 
 
 /// @brief DOCME
-/// @param evt 
+/// @param evt
 ///
 void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &)
 {
@@ -266,7 +266,7 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &)
 
 
 /// @brief DOCME
-/// @param evt 
+/// @param evt
 ///
 void DialogDummyVideo::OnFpsChange(wxCommandEvent &)
 {
@@ -276,7 +276,7 @@ void DialogDummyVideo::OnFpsChange(wxCommandEvent &)
 
 
 /// @brief DOCME
-/// @param evt 
+/// @param evt
 ///
 void DialogDummyVideo::OnLengthSpin(wxSpinEvent &)
 {
@@ -286,7 +286,7 @@ void DialogDummyVideo::OnLengthSpin(wxSpinEvent &)
 
 
 /// @brief DOCME
-/// @param evt 
+/// @param evt
 ///
 void DialogDummyVideo::OnLengthChange(wxCommandEvent &)
 {
@@ -317,7 +317,7 @@ void DialogDummyVideo::UpdateLengthDisplay()
 			ok_button->Enable();
 		}
 	}
-	
+
 	if (!valid) {
 		length_display->SetLabel(_("Invalid fps or length value"));
 		ok_button->Disable();

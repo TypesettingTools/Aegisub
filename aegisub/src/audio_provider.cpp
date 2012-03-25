@@ -158,7 +158,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 	throw agi::AudioCacheOpenError("Unknown caching method", 0);
 }
 
-/// @brief Register all providers 
+/// @brief Register all providers
 ///
 void AudioProviderFactory::RegisterProviders() {
 #ifdef WITH_AVISYNTH

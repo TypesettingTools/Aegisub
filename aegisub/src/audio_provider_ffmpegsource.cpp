@@ -52,7 +52,7 @@
 #include "compat.h"
 #include "main.h"
 
-/// @brief Constructor 
+/// @brief Constructor
 /// @param filename The filename to open
 FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) try
 : AudioSource(NULL, FFMS_DestroyAudioSource)
@@ -102,7 +102,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 
 	if (Index && FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo))
 		Index = NULL;
-	
+
 	// index valid but track number still not set?
 	if (Index) {
 		// track number not set? just grab the first track
@@ -118,10 +118,10 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 			Index = NULL;
 	}
 	// no valid index exists and the file only has one audio track, index it
-	else if (TrackNumber < 0) 
+	else if (TrackNumber < 0)
 		TrackNumber = FFMS_TRACKMASK_ALL;
 	// else: do nothing (keep track mask as it is)
-	
+
 	// moment of truth
 	if (!Index) {
 		int TrackMask;

@@ -123,7 +123,7 @@ public:
 
 
 	/// @brief DOCME
-	/// @return 
+	/// @return
 	///
 	ASS_BlockType GetType() const { return BLOCK_OVERRIDE; }
 	wxString GetText();
@@ -132,7 +132,7 @@ public:
 
 	/// Type of callback function passed to ProcessParameters
 	typedef void (*ProcessParametersCallback)(wxString,int,AssOverrideParameter*,void *);
-	/// @brief Process parameters via callback 
+	/// @brief Process parameters via callback
 	/// @param callback The callback function to call per tag paramer
 	/// @param userData User data to pass to callback function
 	void ProcessParameters(ProcessParametersCallback callback,void *userData);
@@ -183,7 +183,7 @@ public:
 	/// Clear all blocks, ALWAYS call this after you're done processing tags
 	void ClearBlocks();
 
-	/// @brief Process parameters via callback 
+	/// @brief Process parameters via callback
 	/// @param callback The callback function to call per tag parameter
 	/// @param userData User data to pass to callback function
 	void ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData=NULL);
@@ -202,7 +202,7 @@ public:
 
 	template<int which>
 	void SetMarginString(const wxString value) { SetMarginString(value, which);}
-	/// @brief Set a margin 
+	/// @brief Set a margin
 	/// @param value New value of the margin
 	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
 	void SetMarginString(const wxString value,int which);

@@ -64,9 +64,9 @@
 
 #ifndef __LINUX__
 
-/// @brief Absolute of 64 bit int 
-/// @param input 
-/// @return 
+/// @brief Absolute of 64 bit int
+/// @param input
+/// @return
 ///
 int64_t abs64(int64_t input) {
 	if (input < 0) return -input;
@@ -76,10 +76,10 @@ int64_t abs64(int64_t input) {
 
 
 
-/// @brief Count number of matches of a substr 
-/// @param parent 
-/// @param child  
-/// @return 
+/// @brief Count number of matches of a substr
+/// @param parent
+/// @param child
+/// @return
 ///
 int CountMatches(wxString parent,wxString child) {
 	size_t pos = wxString::npos;
@@ -90,10 +90,10 @@ int CountMatches(wxString parent,wxString child) {
 
 
 
-/// @brief Make a path relative to reference 
-/// @param _path     
-/// @param reference 
-/// @return 
+/// @brief Make a path relative to reference
+/// @param _path
+/// @param reference
+/// @return
 ///
 wxString MakeRelativePath(wxString _path,wxString reference) {
 	if (_path.IsEmpty()) return "";
@@ -106,10 +106,10 @@ wxString MakeRelativePath(wxString _path,wxString reference) {
 
 
 
-/// @brief Extract original path from relative 
-/// @param _path     
-/// @param reference 
-/// @return 
+/// @brief Extract original path from relative
+/// @param _path
+/// @param reference
+/// @return
 ///
 wxString DecodeRelativePath(wxString _path,wxString reference) {
 	if (_path.IsEmpty()) return "";
@@ -125,25 +125,25 @@ wxString DecodeRelativePath(wxString _path,wxString reference) {
 #endif
 }
 
-/// @brief Float to string 
-/// @param value 
-/// @return 
+/// @brief Float to string
+/// @param value
+/// @return
 ///
 wxString AegiFloatToString(double value) {
 	return wxString::Format("%g",value);
 }
 
-/// @brief Int to string 
-/// @param value 
-/// @return 
+/// @brief Int to string
+/// @param value
+/// @return
 ///
 wxString AegiIntegerToString(int value) {
 	return wxString::Format("%i",value);
 }
 
-/// @brief There shall be no kiB, MiB stuff here Pretty reading of size 
-/// @param bytes 
-/// @return 
+/// @brief There shall be no kiB, MiB stuff here Pretty reading of size
+/// @param bytes
+/// @return
 ///
 wxString PrettySize(int bytes) {
 	// Suffixes
@@ -166,7 +166,7 @@ wxString PrettySize(int bytes) {
 			break;
 		}
 	}
-	
+
 	// Set number of decimal places
 	wxString final;
 	if (size < 10) final = wxString::Format("%.2f",size);
@@ -177,9 +177,9 @@ wxString PrettySize(int bytes) {
 
 
 
-/// @brief Code from http://bob.allegronetwork.com/prog/tricks.html Get the smallest power of two that is greater or equal to x 
-/// @param x 
-/// @return 
+/// @brief Code from http://bob.allegronetwork.com/prog/tricks.html Get the smallest power of two that is greater or equal to x
+/// @param x
+/// @return
 ///
 int SmallestPowerOf2(int x) {
 	x--;
@@ -267,9 +267,9 @@ void GetWordBoundaries(const wxString text, IntPairVector &results, int start, i
 
 
 
-/// @brief Determine whether wchar 'c' is a whitespace character 
-/// @param c 
-/// @return 
+/// @brief Determine whether wchar 'c' is a whitespace character
+/// @param c
+/// @return
 ///
 bool IsWhitespace(wchar_t c)
 {
@@ -291,9 +291,9 @@ bool IsWhitespace(wchar_t c)
 
 
 
-/// @brief Returns true if str is empty of consists of only whitespace 
-/// @param str 
-/// @return 
+/// @brief Returns true if str is empty of consists of only whitespace
+/// @param str
+/// @return
 ///
 bool StringEmptyOrWhitespace(const wxString &str)
 {
@@ -306,11 +306,11 @@ bool StringEmptyOrWhitespace(const wxString &str)
 
 
 
-/// @brief wxString::ToLong() is slow and not as flexible String to integer 
-/// @param str   
-/// @param start 
-/// @param end   
-/// @return 
+/// @brief wxString::ToLong() is slow and not as flexible String to integer
+/// @param str
+/// @param start
+/// @param end
+/// @return
 ///
 int AegiStringToInt(const wxString &str,int start,int end) {
 	// Initialize to zero and get length if end set to -1
@@ -335,12 +335,12 @@ int AegiStringToInt(const wxString &str,int start,int end) {
 
 
 
-/// @brief String to fixed point 
-/// @param str           
-/// @param decimalPlaces 
-/// @param start         
-/// @param end           
-/// @return 
+/// @brief String to fixed point
+/// @param str
+/// @param decimalPlaces
+/// @param start
+/// @param end
+/// @return
 ///
 int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) {
 	// Parts of the number
@@ -388,9 +388,9 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) 
 
 
 
-/// @brief This is needed because wxIcon has to be 16x16 to work properly on win32 Convert a wxBitmap to wxIcon 
-/// @param iconBmp 
-/// @return 
+/// @brief This is needed because wxIcon has to be 16x16 to work properly on win32 Convert a wxBitmap to wxIcon
+/// @param iconBmp
+/// @return
 ///
 wxIcon BitmapToIcon(wxBitmap iconBmp) {
 	// Create the icon and background bmp
@@ -414,7 +414,7 @@ wxIcon BitmapToIcon(wxBitmap iconBmp) {
 }
 
 
-/// @brief just before this is called. It is assumed that something has prepared closing the current instance Start Aegisub again 
+/// @brief just before this is called. It is assumed that something has prepared closing the current instance Start Aegisub again
 ///
 void RestartAegisub() {
 #if defined(__WXMSW__)

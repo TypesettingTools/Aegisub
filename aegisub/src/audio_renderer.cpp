@@ -275,7 +275,7 @@ void AudioRendererBitmapProvider::SetMillisecondsPerPixel(double new_pixel_ms)
 	if (pixel_ms == new_pixel_ms) return;
 
 	pixel_ms = new_pixel_ms;
-	
+
 	OnSetMillisecondsPerPixel();
 }
 

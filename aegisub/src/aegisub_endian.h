@@ -87,8 +87,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint16_t Reverse(uint16_t val)
 	{
@@ -99,8 +99,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint32_t Reverse(uint32_t val)
 	{
@@ -113,8 +113,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint64_t Reverse(uint64_t val)
 	{
@@ -134,8 +134,8 @@ namespace Endian {
 	// Regular, fast, templatized conditional reversing
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	template <class T>
 	inline T LittleToMachine(T val)
@@ -150,8 +150,8 @@ namespace Endian {
 	}
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	template <class T>
 	inline T BigToMachine(T val)
@@ -166,8 +166,8 @@ namespace Endian {
 	}
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	template <class T>
 	inline T MachineToLittle(T val)
@@ -182,8 +182,8 @@ namespace Endian {
 	}
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	template <class T>
 	inline T MachineToBig(T val)
@@ -242,8 +242,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint16_t MachineToBig(uint16_t val)
 	{
@@ -257,8 +257,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint16_t MachineToLittle(uint16_t val)
 	{
@@ -272,8 +272,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint16_t BigToMachine(uint16_t val)
 	{
@@ -286,8 +286,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint16_t LittleToMachine(uint16_t val)
 	{
@@ -303,8 +303,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint32_t MachineToBig(uint32_t val)
 	{
@@ -318,8 +318,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint32_t MachineToLittle(uint32_t val)
 	{
@@ -333,8 +333,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint32_t BigToMachine(uint32_t val)
 	{
@@ -349,8 +349,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint32_t LittleToMachine(uint32_t val)
 	{
@@ -368,8 +368,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint64_t MachineToBig(uint64_t val)
 	{
@@ -387,8 +387,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint64_t MachineToLittle(uint64_t val)
 	{
@@ -406,8 +406,8 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
-	/// @return 
+	/// @param val
+	/// @return
 	///
 	inline uint64_t BigToMachine(uint64_t val)
 	{
@@ -426,7 +426,7 @@ namespace Endian {
 
 
 	/// @brief DOCME
-	/// @param val 
+	/// @param val
 	///
 	inline uint64_t LittleToMachine(uint64_t val)
 	{

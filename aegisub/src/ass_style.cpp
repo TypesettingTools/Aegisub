@@ -63,8 +63,8 @@ AssColor::AssColor(const wxColour &color)
 	SetWXColor(color);
 }
 
-/// @brief Parse from SSA/ASS 
-/// @param value 
+/// @brief Parse from SSA/ASS
+/// @param value
 void AssColor::Parse(wxString const& value) {
 	if (value.size() > 0 && value[0] == '#') {
 		// HTML colour
@@ -97,14 +97,14 @@ void AssColor::Parse(wxString const& value) {
 	a = (outval>>24) & 0xFF;
 }
 
-/// @brief Gets a wxColour 
-/// @return 
+/// @brief Gets a wxColour
+/// @return
 wxColour AssColor::GetWXColor() const {
 	return wxColour(r,g,b,255-a);
 }
 
-/// @brief Sets color from wx 
-/// @param color 
+/// @brief Sets color from wx
+/// @param color
 void AssColor::SetWXColor(const wxColor &color) {
 	r = color.Red();
 	g = color.Green();
@@ -112,11 +112,11 @@ void AssColor::SetWXColor(const wxColor &color) {
 	//a = color.Alpha();
 }
 
-/// @brief Get formatted in ASS format 
-/// @param alpha    
-/// @param stripped 
-/// @param isStyle  
-/// @return 
+/// @brief Get formatted in ASS format
+/// @param alpha
+/// @param stripped
+/// @param isStyle
+/// @return
 wxString AssColor::GetASSFormatted(bool alpha,bool stripped,bool isStyle) const {
 	wxString work;
 	if (!stripped) work += "&H";
@@ -126,8 +126,8 @@ wxString AssColor::GetASSFormatted(bool alpha,bool stripped,bool isStyle) const 
 	return work;
 }
 
-/// @brief Get decimal formatted 
-/// @return 
+/// @brief Get decimal formatted
+/// @return
 wxString AssColor::GetSSAFormatted() const {
 	long color = (a<<24)+(b<<16)+(g<<8)+r;
 	wxString output=wxString::Format("%i",(long)color);

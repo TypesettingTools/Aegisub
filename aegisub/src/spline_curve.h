@@ -46,7 +46,7 @@
 ///
 /// DOCME
 class SplineCurve {
-	/// Closest t in segment p1-p2 to point p3 
+	/// Closest t in segment p1-p2 to point p3
 	float GetClosestSegmentPart(Vector2D p1, Vector2D p2, Vector2D p3) const;
 
 	/// Closest distance between p3 and segment p1-p2

@@ -44,8 +44,8 @@
 #include "include/aegisub/spellchecker.h"
 #include "main.h"
 
-/// @brief Get spell checker 
-/// @return 
+/// @brief Get spell checker
+/// @return
 ///
 SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	// List of providers
@@ -68,7 +68,7 @@ SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	throw error;
 }
 
-/// @brief Register all providers 
+/// @brief Register all providers
 ///
 void SpellCheckerFactory::RegisterProviders() {
 #ifdef WITH_HUNSPELL

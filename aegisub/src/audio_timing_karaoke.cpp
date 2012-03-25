@@ -169,7 +169,7 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 
 	Revert();
-	
+
 }
 
 void AudioTimingControllerKaraoke::OnAutoCommitChange(agi::OptionValue const& opt) {

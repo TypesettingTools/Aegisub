@@ -217,12 +217,12 @@ void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigne
 	unsigned int q  = v * (65535 - (f * s)/256) / 65536;
 	unsigned int t  = v * (65535 - ((255 - f) * s)/256) / 65536;
 	switch (Hi) {
-		case 0: 
+		case 0:
 			r = v;
 			g = t;
 			b = p;
 			break;
-		case 1: 
+		case 1:
 			r = q;
 			g = v;
 			b = p;

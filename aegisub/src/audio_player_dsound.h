@@ -140,17 +140,17 @@ public:
 	void Stop(bool timerToo=true);
 
 	/// @brief DOCME
-	/// @return 
+	/// @return
 	///
 	bool IsPlaying() { return playing; }
 
 	/// @brief DOCME
-	/// @return 
+	/// @return
 	///
 	int64_t GetStartPosition() { return startPos; }
 
 	/// @brief DOCME
-	/// @return 
+	/// @return
 	///
 	int64_t GetEndPosition() { return endPos; }
 	int64_t GetCurrentPosition();
@@ -158,13 +158,13 @@ public:
 	void SetCurrentPosition(int64_t pos);
 
 	/// @brief DOCME
-	/// @param vol 
-	/// @return 
+	/// @param vol
+	/// @return
 	///
 	void SetVolume(double vol) { volume = vol; }
 
 	/// @brief DOCME
-	/// @return 
+	/// @return
 	///
 	double GetVolume() { return volume; }
 };

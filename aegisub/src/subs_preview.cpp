@@ -51,13 +51,13 @@
 #include "video_provider_dummy.h"
 
 
-/// @brief Constructor 
-/// @param parent   
-/// @param id       
-/// @param pos      
-/// @param size     
-/// @param winStyle 
-/// @param col      
+/// @brief Constructor
+/// @param parent
+/// @param id
+/// @param pos
+/// @param size
+/// @param winStyle
+/// @param col
 ///
 SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle,wxColour col)
 : wxWindow(parent,id,pos,size,winStyle)

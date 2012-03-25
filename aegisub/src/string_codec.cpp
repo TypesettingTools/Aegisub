@@ -42,8 +42,8 @@
 #include "string_codec.h"
 
 /// @brief DOCME
-/// @param input 
-/// @return 
+/// @param input
+/// @return
 ///
 wxString inline_string_encode(const wxString &input)
 {
@@ -63,7 +63,7 @@ wxString inline_string_encode(const wxString &input)
 
 
 /// @brief DOCME
-/// @param input 
+/// @param input
 ///
 wxString inline_string_decode(const wxString &input)
 {

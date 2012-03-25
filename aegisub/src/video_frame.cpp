@@ -58,8 +58,8 @@ AegiVideoFrame::AegiVideoFrame() {
 }
 
 /// @brief Create a solid black frame of the request size and format
-/// @param width  
-/// @param height 
+/// @param width
+/// @param height
 AegiVideoFrame::AegiVideoFrame(unsigned int width, unsigned int height) {
 	assert(width  > 0 && width  < 10000);
 	assert(height > 0 && height < 10000);

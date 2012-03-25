@@ -56,7 +56,7 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 	// Label and list sizer
 	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Fields"));
 	ListSizer->Add(new wxStaticText(this, -1, _("Please select the fields that you want to paste over:")), wxSizerFlags());
-	
+
 	// List box
 	wxArrayString choices;
 	choices.Add(_("Layer"));

@@ -434,7 +434,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 	StyleSpellCheck();
 }
 
-/// @brief Update call tip 
+/// @brief Update call tip
 void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 	UpdateStyle();
 
@@ -473,7 +473,7 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 			if (i == pos) break;
 			continue;
 		}
-		
+
 		// Inside overrides
 		if (depth == 1) {
 			// Inner depth
@@ -547,7 +547,7 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 
 		// Tag name
 		if (parN == 1 && !gotName) {
-			tagName = tag.Left(i); 
+			tagName = tag.Left(i);
 			gotName = true;
 		}
 
@@ -585,7 +585,7 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 			div = proto[i].Find('(');
 			protoName = proto[i].Left(div);
 		}
-		
+
 		// Fix name
 		semiProto = false;
 		cleanProto = proto[i];
@@ -669,7 +669,7 @@ void SubsTextEditCtrl::StyleSpellCheck() {
 			SetUnicodeStyling(s,e-s,32);
 		}
 	}
-	
+
 	// It seems like wxStyledTextCtrl wants you to finish styling at the end of the text.
 	// I don't really understand why, it's not documented anywhere I can find, but this fixes bug #595.
 	StartUnicodeStyling(text.Length(), 0);

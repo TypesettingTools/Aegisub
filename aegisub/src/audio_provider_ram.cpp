@@ -138,10 +138,10 @@ void RAMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 		int i = (start*bytes_per_sample) >> CacheBits;
 		int start_offset = (start*bytes_per_sample) & (CacheBlockSize-1);
 		int64_t bytesremaining = count*bytes_per_sample;
-		
+
 		// Copy
 		while (bytesremaining) {
-			int readsize = std::min<int>(bytesremaining, CacheBlockSize - start_offset); 
+			int readsize = std::min<int>(bytesremaining, CacheBlockSize - start_offset);
 
 			memcpy(charbuf,(char *)(blockcache[i++]+start_offset),readsize);
 

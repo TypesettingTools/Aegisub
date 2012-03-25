@@ -175,7 +175,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	// Encoding options
 	wxArrayString encodingStrings;
 	AssStyle::GetEncodings(encodingStrings);
-	
+
 	// Create sizers
 	wxSizer *NameSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Style Name"));
 	wxSizer *FontSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Font"));
@@ -337,7 +337,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		PreviewText = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
 		previewButton = new ColourButton(this, -1, wxSize(45, 16), lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
 		SubsPreview = new SubtitlesPreview(this, -1, wxDefaultPosition, wxSize(100, 60), wxSUNKEN_BORDER, lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
-	
+
 		SubsPreview->SetToolTip(_("Preview of current style"));
 		SubsPreview->SetStyle(*style);
 		SubsPreview->SetText(PreviewText->GetValue());
@@ -388,7 +388,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	persist.reset(new PersistLocation(this, "Tool/Style Editor"));
 
 	Bind(wxEVT_CHILD_FOCUS, &DialogStyleEditor::OnChildFocus, this);
-	
+
 	if (PreviewText) {
 		Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DialogStyleEditor::OnCommandPreviewUpdate, this);
 		Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &DialogStyleEditor::OnCommandPreviewUpdate, this);
@@ -483,7 +483,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 	}
 }
 
-/// @brief Update work style 
+/// @brief Update work style
 void DialogStyleEditor::UpdateWorkStyle() {
 	work->font = FontName->GetValue();
 	FontSize->GetValue().ToDouble(&(work->fontsize));
@@ -520,7 +520,7 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	work->strikeout = BoxStrikeout->IsChecked();
 }
 
-/// @brief Sets color for one of the four color buttons 
+/// @brief Sets color for one of the four color buttons
 /// @param n Colour to set
 void DialogStyleEditor::OnSetColor (int n, wxCommandEvent& evt) {
 	ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
@@ -554,7 +554,7 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 	event.Skip();
 }
 
-/// @brief Change colour of preview's background 
+/// @brief Change colour of preview's background
 void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &evt) {
 	ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
 	if (!btn)
@@ -565,7 +565,7 @@ void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &evt) {
 	}
 }
 
-/// @brief Command event to update preview 
+/// @brief Command event to update preview
 void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
 	if (!IsShownOnScreen()) return;
 	UpdateWorkStyle();
@@ -573,7 +573,7 @@ void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
 	event.Skip();
 }
 
-/// @brief Converts control value to alignment 
+/// @brief Converts control value to alignment
 int DialogStyleEditor::ControlToAlign (int n) {
 	switch (n) {
 		case 0: return 7;
@@ -589,7 +589,7 @@ int DialogStyleEditor::ControlToAlign (int n) {
 	}
 }
 
-/// @brief Converts alignment value to control 
+/// @brief Converts alignment value to control
 int DialogStyleEditor::AlignToControl (int n) {
 	switch (n) {
 		case 7: return 0;

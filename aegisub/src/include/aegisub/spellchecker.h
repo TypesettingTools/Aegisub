@@ -54,14 +54,14 @@ public:
 	virtual ~SpellChecker() {}
 
 	/// @brief DOCME
-	/// @param word 
-	/// @return 
+	/// @param word
+	/// @return
 	///
 	virtual void AddWord(wxString word) {}
 
 	/// @brief DOCME
-	/// @param word 
-	/// @return 
+	/// @param word
+	/// @return
 	///
 	virtual bool CanAddWord(wxString word) { return false; }
 

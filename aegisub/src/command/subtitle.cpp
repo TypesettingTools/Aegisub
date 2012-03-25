@@ -259,7 +259,7 @@ struct subtitle_open : public Command {
 	STR_HELP("Opens a subtitles file")
 
 	void operator()(agi::Context *c) {
-		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString()); 
+		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			wxGetApp().frame->LoadSubtitles(filename);

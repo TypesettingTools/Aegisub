@@ -75,7 +75,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString filename)
 		AVIFileInit();
 
 		PAVIFILE pfile;
-		long hr = AVIFileOpen(&pfile, filename.wc_str(), OF_SHARE_DENY_WRITE, 0); 
+		long hr = AVIFileOpen(&pfile, filename.wc_str(), OF_SHARE_DENY_WRITE, 0);
 		if (hr) {
 			warning = "Unable to open AVI file for reading keyframes:\n";
 			switch (hr) {

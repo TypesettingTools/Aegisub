@@ -56,7 +56,7 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 
 		/// 4:2:0 sampling variants.
 		/// afaict the only difference between these three
-		/// is the chroma sample location, and nobody cares about that. 
+		/// is the chroma sample location, and nobody cares about that.
 		Y4M_PIXFMT_420JPEG,		/// 4:2:0, H/V centered, for JPEG/MPEG-1
 		Y4M_PIXFMT_420MPEG2,	/// 4:2:0, H cosited, for MPEG-2
 		Y4M_PIXFMT_420PALDV,	/// 4:2:0, alternating Cb/Cr, for PAL-DV
@@ -115,7 +115,7 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 	int num_frames; /// length of file in frames
 	int frame_sz;	/// size of each frame in bytes
 	int luma_sz;	/// size of the luma plane of each frame, in bytes
-	int chroma_sz;	/// size of one of the two chroma planes of each frame, in bytes	
+	int chroma_sz;	/// size of one of the two chroma planes of each frame, in bytes
 	int cur_fn;		/// current frame number
 
 	Y4M_PixelFormat pixfmt;		/// colorspace/pixel format

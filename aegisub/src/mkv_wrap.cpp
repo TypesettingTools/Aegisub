@@ -156,7 +156,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 				wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
 				wxString TrackName = wxString(trackInfo->Name,*wxConvCurrent);
 				wxString TrackLanguage = wxString(trackInfo->Language,*wxConvCurrent);
-				
+
 				// Known subtitle format
 				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
 					tracksFound.push_back(track);

@@ -53,7 +53,7 @@
 #include "main.h"
 #include "video_context.h"
 
-#define TimeEditWindowStyle 
+#define TimeEditWindowStyle
 
 enum {
 	Time_Edit_Copy = 1320,

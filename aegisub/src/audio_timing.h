@@ -83,7 +83,7 @@ public:
 	virtual void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const = 0;
 
 	/// @brief Go to next timing unit
-	/// 
+	///
 	/// Advances the timing controller cursor to the next timing unit, for
 	/// example the next dialogue line or the next karaoke syllable.
 	virtual void Next() = 0;

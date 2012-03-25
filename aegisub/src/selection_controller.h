@@ -104,7 +104,7 @@ public:
 	///
 	/// This method must not affect the selected set.
 	virtual void SetActiveLine(ItemDataType *new_line) = 0;
-	
+
 	/// @brief Obtain the active line
 	/// @return The active line or NULL if there is none
 	virtual ItemDataType * GetActiveLine() const = 0;

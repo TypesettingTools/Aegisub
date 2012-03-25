@@ -93,7 +93,7 @@ struct audio_open : public Command {
 
 	void operator()(agi::Context *c) {
 		try {
-			wxString path = lagi_wxString(OPT_GET("Path/Last/Audio")->GetString());  
+			wxString path = lagi_wxString(OPT_GET("Path/Last/Audio")->GetString());
 			wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
 						+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.wmv;*.ts|"
 						+ _("All Files") + " (*.*)|*.*";

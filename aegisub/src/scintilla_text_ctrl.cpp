@@ -45,12 +45,12 @@ ScintillaTextCtrl::ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxSt
 	Bind(wxEVT_MOUSEWHEEL, &ScintillaTextCtrl::OnMouseWheel, this);
 }
 
-/// @brief Get unicode-compatible position 
+/// @brief Get unicode-compatible position
 int ScintillaTextCtrl::GetUnicodePosition(int pos) {
 	return GetText().Left(pos).utf8_str().length();
 }
 
-/// @brief Reverse unicode-compatible position 
+/// @brief Reverse unicode-compatible position
 int ScintillaTextCtrl::GetReverseUnicodePosition(int pos) {
 	wxCharBuffer buffer = GetText().utf8_str();
 
@@ -68,14 +68,14 @@ int ScintillaTextCtrl::GetReverseUnicodePosition(int pos) {
 	return buf3.Length();
 }
 
-/// @brief Start unicode-safe styling 
+/// @brief Start unicode-safe styling
 void ScintillaTextCtrl::StartUnicodeStyling(int start,int mask) {
 	StartStyling(GetUnicodePosition(start),mask);
 	// Cache the text for styling as GetText is hideously slow
 	text = GetText();
 }
 
-/// @brief Unicode-safe styling 
+/// @brief Unicode-safe styling
 void ScintillaTextCtrl::SetUnicodeStyling(int start,int length,int style) {
 	// Get the real length
 	int len = text.Mid(start, length).utf8_str().length();
@@ -84,7 +84,7 @@ void ScintillaTextCtrl::SetUnicodeStyling(int start,int length,int style) {
 	SetStyling(len,style);
 }
 
-/// @brief Get boundaries of word at position 
+/// @brief Get boundaries of word at position
 void ScintillaTextCtrl::GetBoundsOfWordAtPosition(int pos,int &start,int &end) {
 	IntPairVector results;
 	GetWordBoundaries(GetText(), results);
@@ -103,14 +103,14 @@ void ScintillaTextCtrl::GetBoundsOfWordAtPosition(int pos,int &start,int &end) {
 	end = 0;
 }
 
-/// @brief Get word at specified position 
+/// @brief Get word at specified position
 wxString ScintillaTextCtrl::GetWordAtPosition(int pos) {
 	int start,end;
 	GetBoundsOfWordAtPosition(pos, start, end);
 	return GetText().Mid(start, end - start);
 }
 
-/// @brief Set selection, unicode-aware 
+/// @brief Set selection, unicode-aware
 void ScintillaTextCtrl::SetSelectionU(int start, int end) {
 	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));
 }

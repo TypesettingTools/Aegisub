@@ -53,9 +53,9 @@
 #include "video_provider_yuv4mpeg.h"
 
 
-/// @brief Get provider 
-/// @param video 
-/// @return 
+/// @brief Get provider
+/// @param video
+/// @return
 ///
 VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 	std::vector<std::string> list = GetClasses(OPT_GET("Video/Provider")->GetString());
@@ -107,7 +107,7 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 	throw VideoOpenError(msg);
 }
 
-/// @brief Register all providers 
+/// @brief Register all providers
 ///
 void VideoProviderFactory::RegisterProviders() {
 #ifdef WITH_AVISYNTH

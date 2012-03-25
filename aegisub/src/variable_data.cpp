@@ -42,19 +42,19 @@
 #include "utils.h"
 #include "variable_data.h"
 
-/// @brief Constructor 
+/// @brief Constructor
 VariableData::VariableData() {
 	type = VARDATA_NONE;
 	value = NULL;
 }
 
-/// @brief Destructor 
+/// @brief Destructor
 VariableData::~VariableData() {
 	DeleteValue ();
 }
 
-/// @brief Deletes the stored value 
-/// @return 
+/// @brief Deletes the stored value
+/// @return
 void VariableData::DeleteValue () {
 	if (!value) return;
 	if (type == VARDATA_NONE) return;
@@ -109,8 +109,8 @@ template void VariableData::Set(wxString param);
 template void VariableData::Set<wxColour>(wxColour param);
 template void VariableData::Set<AssDialogueBlockOverride *>(AssDialogueBlockOverride * param);
 
-/// @brief Resets a value with a string, preserving current type 
-/// @param value 
+/// @brief Resets a value with a string, preserving current type
+/// @param value
 void VariableData::ResetWith(wxString value) {
 	switch (type) {
 		case VARDATA_INT: {
@@ -143,8 +143,8 @@ void VariableData::ResetWith(wxString value) {
 	}
 }
 
-/// @brief Reads as an int 
-/// @return 
+/// @brief Reads as an int
+/// @return
 template<> int VariableData::Get<int>() const {
 	if (!value) throw "Null parameter";
 	if (type == VARDATA_BOOL) return !!(*value_bool);
@@ -154,7 +154,7 @@ template<> int VariableData::Get<int>() const {
 	throw "Wrong parameter type, should be int";
 }
 
-/// @brief Reads as a float 
+/// @brief Reads as a float
 /// @return
 template<> float VariableData::Get<float>() const {
 	if (!value) throw "Null parameter";
@@ -171,8 +171,8 @@ template<> double VariableData::Get<double>() const {
 	throw "Wrong parameter type, should be float";
 }
 
-/// @brief Reads as a bool 
-/// @return 
+/// @brief Reads as a bool
+/// @return
 template<> bool VariableData::Get<bool>() const {
 	if (!value) throw "Null parameter";
 	if (type == VARDATA_BOOL) return *value_bool;
@@ -182,8 +182,8 @@ template<> bool VariableData::Get<bool>() const {
 	throw "Wrong parameter type, should be bool";
 }
 
-/// @brief Reads as a colour 
-/// @return 
+/// @brief Reads as a colour
+/// @return
 template<> wxColour VariableData::Get<wxColour>() const {
 	if (!value) throw "Null parameter";
 	if (type == VARDATA_COLOUR)	return *value_colour;
@@ -195,16 +195,16 @@ template<> wxColour VariableData::Get<wxColour>() const {
 	else throw "Wrong parameter type, should be colour";
 }
 
-/// @brief Reads as a block 
-/// @return 
+/// @brief Reads as a block
+/// @return
 template<> AssDialogueBlockOverride *VariableData::Get<AssDialogueBlockOverride *>() const {
 	if (!value) throw "Null parameter";
 	if (type != VARDATA_BLOCK) throw "Wrong parameter type, should be block";
 	return *value_block;
 }
 
-/// @brief Reads as a string 
-/// @return 
+/// @brief Reads as a string
+/// @return
 template<> wxString VariableData::Get<wxString>() const {
 	if (!value) throw "Null parameter";
 	if (type != VARDATA_TEXT) {
@@ -218,14 +218,14 @@ template<> wxString VariableData::Get<wxString>() const {
 	return *value_text;
 }
 
-/// @brief Gets type 
-/// @return 
+/// @brief Gets type
+/// @return
 VariableDataType VariableData::GetType() const {
 	return type;
 }
 
-/// @brief Copy 
-/// @param param 
+/// @brief Copy
+/// @param param
 void VariableData::operator= (const VariableData &param) {
 	switch(param.GetType()) {
 		case VARDATA_INT: Set(param.Get<int>()); break;

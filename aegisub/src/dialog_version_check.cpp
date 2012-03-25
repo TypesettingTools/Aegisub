@@ -111,7 +111,7 @@ class AegisubVersionCheckResultEvent : public wxEvent {
 
 public:
 	AegisubVersionCheckResultEvent(wxString message = wxString());
-	
+
 
 	wxEvent *Clone() const
 	{
@@ -394,10 +394,10 @@ void AegisubVersionCheckerThread::DoCheck()
 		else
 		{
 			// maybe interesting, check revision
-			
+
 			long new_revision = 0;
 			if (!line_revision.ToLong(&new_revision)) continue;
-			if (new_revision <= GetSVNRevision()) 
+			if (new_revision <= GetSVNRevision())
 			{
 				// too old, not interesting, skip
 				continue;

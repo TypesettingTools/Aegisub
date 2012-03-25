@@ -61,7 +61,7 @@
 
 
 /// @brief DOCME
-/// @param filename 
+/// @param filename
 ///
 PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 #ifdef _WIN32
@@ -130,9 +130,9 @@ PCMAudioProvider::~PCMAudioProvider()
 }
 
 /// @brief DOCME
-/// @param range_start  
-/// @param range_length 
-/// @return 
+/// @param range_start
+/// @param range_length
+/// @return
 ///
 char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length) const
 {
@@ -203,9 +203,9 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 }
 
 /// @brief DOCME
-/// @param buf   
-/// @param start 
-/// @param count 
+/// @param buf
+/// @param start
+/// @param count
 ///
 void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const
 {
@@ -308,7 +308,7 @@ class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 public:
 
 	/// @brief DOCME
-	/// @param _filename 
+	/// @param _filename
 	///
 	RiffWavPCMAudioProvider(const wxString &_filename)
 		: PCMAudioProvider(_filename)
@@ -388,7 +388,7 @@ public:
 	}
 
 	/// @brief DOCME
-	/// @return 
+	/// @return
 	///
 	bool AreSamplesNativeEndian() const
 	{
@@ -486,9 +486,9 @@ class Wave64AudioProvider : public PCMAudioProvider {
 	};
 
 	/// @brief DOCME
-	/// @param guid1 
-	/// @param guid2 
-	/// @return 
+	/// @param guid1
+	/// @param guid2
+	/// @return
 	///
 	inline bool CheckGuid(const uint8_t *guid1, const uint8_t *guid2)
 	{
@@ -498,7 +498,7 @@ class Wave64AudioProvider : public PCMAudioProvider {
 public:
 
 	/// @brief DOCME
-	/// @param _filename 
+	/// @param _filename
 	///
 	Wave64AudioProvider(const wxString &_filename)
 	: PCMAudioProvider(_filename)
@@ -579,7 +579,7 @@ public:
 	}
 
 	/// @brief DOCME
-	/// @return 
+	/// @return
 	///
 	bool AreSamplesNativeEndian() const
 	{

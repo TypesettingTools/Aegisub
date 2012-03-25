@@ -125,7 +125,7 @@ struct recent_video_entry : public Command {
 };
 
 /// @class mru_wrapper
-/// @brief Wrapper class for mru commands to 
+/// @brief Wrapper class for mru commands to
 template<class T>
 class mru_wrapper : public T {
 	int id;

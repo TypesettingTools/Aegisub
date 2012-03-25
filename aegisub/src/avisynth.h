@@ -45,8 +45,8 @@ enum { AVISYNTH_INTERFACE_VERSION = 3 };
 /* Define all types necessary for interfacing with avisynth.dll
    Moved from internal.h */
 
-// Win32 API macros, notably the types BYTE, DWORD, ULONG, etc. 
-#include <windef.h>  
+// Win32 API macros, notably the types BYTE, DWORD, ULONG, etc.
+#include <windef.h>
 
 // COM interface macros
 #include <objbase.h>
@@ -79,7 +79,7 @@ typedef	long			PixOffset;
   #define _RPT2(a,b,c,d) ((void)0)
   #define _RPT3(a,b,c,d,e) ((void)0)
   #define _RPT4(a,b,c,d,e,f) ((void)0)
-  
+
   #define _ASSERTE(x) assert(x)
   #include <assert.h>
 #endif
@@ -101,7 +101,7 @@ typedef	long			PixOffset;
 typedef float SFLOAT;
 
 enum {SAMPLE_INT8  = 1<<0,
-        SAMPLE_INT16 = 1<<1, 
+        SAMPLE_INT16 = 1<<1,
         SAMPLE_INT24 = 1<<2,    // Int24 is a very stupid thing to code, but it's supported by some hardware.
         SAMPLE_INT32 = 1<<3,
         SAMPLE_FLOAT = 1<<4};
@@ -124,7 +124,7 @@ struct VideoInfo {
 
   // Colorspace properties.
   enum {
-    CS_BGR = 1<<28,  
+    CS_BGR = 1<<28,
     CS_YUV = 1<<29,
     CS_INTERLEAVED = 1<<30,
     CS_PLANAR = 1<<31
@@ -140,7 +140,7 @@ struct VideoInfo {
          CS_IYUV = 1<<4 | CS_YUV | CS_PLANAR  // same as above
          };
   int pixel_type;                // changed to int as of 2.5
-  
+
 
   int audio_samples_per_second;   // 0 means no audio
   int sample_type;                // as of 2.5
@@ -164,7 +164,7 @@ struct VideoInfo {
   bool IsRGB24() const { return (pixel_type&CS_BGR24)==CS_BGR24; } // Clear out additional properties
   bool IsRGB32() const { return (pixel_type & CS_BGR32) == CS_BGR32 ; }
   bool IsYUV() const { return !!(pixel_type&CS_YUV ); }
-  bool IsYUY2() const { return (pixel_type & CS_YUY2) == CS_YUY2; }  
+  bool IsYUY2() const { return (pixel_type & CS_YUY2) == CS_YUY2; }
   bool IsYV12() const { return ((pixel_type & CS_YV12) == CS_YV12)||((pixel_type & CS_I420) == CS_I420); }
   bool IsColorSpace(int c_space) const { return ((pixel_type & c_space) == c_space); }
   bool Is(int property) const { return ((pixel_type & property)==property ); }
@@ -173,8 +173,8 @@ struct VideoInfo {
   bool IsParityKnown() const { return ((image_type & IT_FIELDBASED)&&(image_type & (IT_BFF|IT_TFF))); }
   bool IsBFF() const { return !!(image_type & IT_BFF); }
   bool IsTFF() const { return !!(image_type & IT_TFF); }
-  
-  bool IsVPlaneFirst() const {return ((pixel_type & CS_YV12) == CS_YV12); }  // Don't use this 
+
+  bool IsVPlaneFirst() const {return ((pixel_type & CS_YV12) == CS_YV12); }  // Don't use this
   int BytesFromPixels(int pixels) const { return pixels * (BitsPerPixel()>>3); }   // Will not work on planar images, but will return only luma planes
   int RowSize() const { return BytesFromPixels(width); }  // Also only returns first plane on planar images
   int BMPSize() const { if (IsPlanar()) {int p = height * ((RowSize()+3) & ~3); p+=p>>1; return p;  } return height * ((RowSize()+3) & ~3); }
@@ -191,7 +191,7 @@ struct VideoInfo {
   void Set(int property)  { image_type|=property; }
   void Clear(int property)  { image_type&=~property; }
 
-  int BitsPerPixel() const { 
+  int BitsPerPixel() const {
     switch (pixel_type) {
       case CS_BGR24:
         return 24;
@@ -206,7 +206,7 @@ struct VideoInfo {
         return 0;
     }
   }
-  int BytesPerChannelSample() const { 
+  int BytesPerChannelSample() const {
     switch (sample_type) {
     case SAMPLE_INT8:
       return sizeof(signed char);
@@ -343,20 +343,20 @@ public:
   int GetPitch() const { return pitch; }
   int GetPitch(int plane) const { switch (plane) {case PLANAR_U: case PLANAR_V: return pitchUV;} return pitch; }
   int GetRowSize() const { return row_size; }
-  int GetRowSize(int plane) const { 
+  int GetRowSize(int plane) const {
     switch (plane) {
     case PLANAR_U: case PLANAR_V: if (pitchUV) return row_size>>1; else return 0;
-    case PLANAR_U_ALIGNED: case PLANAR_V_ALIGNED: 
-      if (pitchUV) { 
+    case PLANAR_U_ALIGNED: case PLANAR_V_ALIGNED:
+      if (pitchUV) {
         int r = ((row_size+FRAME_ALIGN-1)&(~(FRAME_ALIGN-1)) )>>1; // Aligned rowsize
-        if (r<=pitchUV) 
-          return r; 
-        return row_size>>1; 
+        if (r<=pitchUV)
+          return r;
+        return row_size>>1;
       } else return 0;
     case PLANAR_Y_ALIGNED:
       int r = (row_size+FRAME_ALIGN-1)&(~(FRAME_ALIGN-1)); // Aligned rowsize
-      if (r<=pitch) 
-        return r; 
+      if (r<=pitch)
+        return r;
       return row_size;
     }
     return row_size; }
@@ -419,7 +419,7 @@ public:
   IClip() : refcnt(0) {}
 
   virtual int __stdcall GetVersion() { return AVISYNTH_INTERFACE_VERSION; }
-  
+
   virtual PVideoFrame __stdcall GetFrame(int n, IScriptEnvironment* env) = 0;
   virtual bool __stdcall GetParity(int n) = 0;  // return field parity if field_based, else parity of first field in frame
   virtual void __stdcall GetAudio(void* buf, __int64 start, __int64 count, IScriptEnvironment* env) = 0;  // start and count are in samples
@@ -529,8 +529,8 @@ public:
 
   PClip AsClip() const { _ASSERTE(IsClip()); return IsClip()?clip:0; }
   bool AsBool() const { _ASSERTE(IsBool()); return boolean; }
-  int AsInt() const { _ASSERTE(IsInt()); return integer; }   
-//  int AsLong() const { _ASSERTE(IsLong()); return longlong; } 
+  int AsInt() const { _ASSERTE(IsInt()); return integer; }
+//  int AsLong() const { _ASSERTE(IsLong()); return longlong; }
   const char* AsString() const { _ASSERTE(IsString()); return IsString()?string:0; }
   double AsFloat() const { _ASSERTE(IsFloat()); return IsInt()?integer:floating_pt; }
 
@@ -599,7 +599,7 @@ public:
 
 /* Helper classes useful to plugin authors */
 
-class AlignPlanar : public GenericVideoFilter 
+class AlignPlanar : public GenericVideoFilter
 {
 public:
   AlignPlanar(PClip _clip);
@@ -609,7 +609,7 @@ public:
 
 
 
-class FillBorder : public GenericVideoFilter 
+class FillBorder : public GenericVideoFilter
 {
 public:
   FillBorder(PClip _clip);
@@ -619,7 +619,7 @@ public:
 
 
 
-class ConvertAudio : public GenericVideoFilter 
+class ConvertAudio : public GenericVideoFilter
 /**
   * Helper class to convert audio to any format
  **/
@@ -662,7 +662,7 @@ private:
 
 
 // For GetCPUFlags.  These are backwards-compatible with those in VirtualDub.
-enum {                    
+enum {
                     /* slowest CPU to support extension */
   CPUF_FORCE			  = 0x01,   // N/A
   CPUF_FPU			    = 0x02,   // 386/486DX

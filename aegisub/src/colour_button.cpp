@@ -89,7 +89,7 @@ wxColour ColourButton::GetColour() {
 }
 
 /// @brief Click handler
-/// @param event 
+/// @param event
 void ColourButton::OnClick(wxCommandEvent &event) {
 	if (event.GetClientData() != this)
 		GetColorFromUser<ColourButton, &ColourButton::SetColour>(GetParent(), colour, this);

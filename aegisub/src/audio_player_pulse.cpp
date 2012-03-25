@@ -106,7 +106,7 @@ void PulseAudioPlayer::OpenStream()
 		// otherwise loop once more
 	}
 	//printf("Context connected\n");
-	
+
 	// Set up stream
 	bpf = provider->GetChannels() * provider->GetBytesPerSample();
 	pa_sample_spec ss;

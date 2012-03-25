@@ -53,7 +53,7 @@ PluginManager::PluginManager() {
 #ifdef WITH_AUTO4_LUA
 	lua = NULL;
 #endif
-	
+
 }
 
 PluginManager::~PluginManager() {
@@ -68,7 +68,7 @@ PluginManager::~PluginManager() {
 #endif
 }
 
-/// @brief Registers all built-in plugins 
+/// @brief Registers all built-in plugins
 void PluginManager::RegisterBuiltInPlugins() {
 	if (!init) {
 		// Managers

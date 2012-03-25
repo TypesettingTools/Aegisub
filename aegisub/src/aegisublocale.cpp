@@ -52,7 +52,7 @@
 #include "aegisublocale.h"
 #include "standard_paths.h"
 
-/// @brief Constructor 
+/// @brief Constructor
 ///
 AegisubLocale::AegisubLocale () {
 	locale = NULL;
@@ -67,8 +67,8 @@ AegisubLocale::~AegisubLocale() {
 }
 
 
-/// @brief Initialize 
-/// @param language 
+/// @brief Initialize
+/// @param language
 ///
 void AegisubLocale::Init(int language) {
 	if (language == -1) language = wxLANGUAGE_ENGLISH;
@@ -95,8 +95,8 @@ void AegisubLocale::Init(int language) {
 
 
 
-/// @brief Pick a language 
-/// @return 
+/// @brief Pick a language
+/// @return
 ///
 int AegisubLocale::PickLanguage() {
 	// Get list
@@ -131,7 +131,7 @@ int AegisubLocale::PickLanguage() {
 
 
 
-/// @brief Get list of available languages 
+/// @brief Get list of available languages
 ///
 wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	wxArrayInt final;
@@ -183,7 +183,7 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 	for (size_t i=0; i<len; i++) {
 		const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(langs[i]);
 
-		// If the locale file doesn't exist then don't list it as an option. 
+		// If the locale file doesn't exist then don't list it as an option.
 		wxString locDir = wxStandardPaths::Get().GetLocalizedResourcesDir(langs[i], wxStandardPathsBase::ResourceCat_Messages);
 		wxFileName file(wxString::Format("%s/%s.mo", locDir, GETTEXT_PACKAGE));
 		if (lang && file.FileExists()) final.Add(lang->Language);

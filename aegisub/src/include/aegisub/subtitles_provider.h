@@ -52,8 +52,8 @@ public:
 	virtual void LoadSubtitles(AssFile *subs)=0;
 
 	/// @brief DOCME
-	/// @param dst  
-	/// @param time 
+	/// @param dst
+	/// @param time
 	///
 	virtual void DrawSubtitles(AegiVideoFrame &dst,double time)=0;
 };

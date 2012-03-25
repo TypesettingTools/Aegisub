@@ -262,7 +262,7 @@ namespace {
 	}
 
 	int regex_init(lua_State *L)
-	{	
+	{
 		if (luaL_newmetatable(L, "aegisub.regex")) {
 			set_field(L, "__gc", regex_gc);
 			lua_pop(L, 1);

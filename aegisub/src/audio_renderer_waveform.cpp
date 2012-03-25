@@ -108,7 +108,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	{
 		provider->GetAudio(audio_buffer, (int64_t)cur_sample, (int64_t)pixel_samples);
 		cur_sample += pixel_samples;
-		
+
 		int peak_min = 0, peak_max = 0;
 		int64_t avg_min_accum = 0, avg_max_accum = 0;
 		const int16_t *aud = (const int16_t *)audio_buffer;

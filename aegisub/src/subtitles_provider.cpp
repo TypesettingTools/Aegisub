@@ -48,8 +48,8 @@
 #include "include/aegisub/subtitles_provider.h"
 #endif
 
-/// @brief Get provider 
-/// @return 
+/// @brief Get provider
+/// @return
 ///
 SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Subtitle/Provider")->GetString());
@@ -74,7 +74,7 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 	throw error;
 }
 
-/// @brief Register providers 
+/// @brief Register providers
 ///
 void SubtitlesProviderFactory::RegisterProviders() {
 #ifdef WITH_CSRI

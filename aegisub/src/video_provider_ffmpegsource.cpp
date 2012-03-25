@@ -57,7 +57,7 @@
 #include "video_context.h"
 #include "video_provider_ffmpegsource.h"
 
-/// @brief Constructor 
+/// @brief Constructor
 /// @param filename The filename to open
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) try
 : VideoSource(NULL, FFMS_DestroyVideoSource)
@@ -83,10 +83,10 @@ catch (const char * err) {
 	throw VideoOpenError(err);
 }
 
-/// @brief Opens video 
+/// @brief Opens video
 /// @param filename The filename to open
 void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
-	wxString FileNameShort = wxFileName(filename).GetShortPath(); 
+	wxString FileNameShort = wxFileName(filename).GetShortPath();
 
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), &ErrInfo);
 	if (!Indexer)
@@ -124,7 +124,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		if (FFMS_GetNumFrames(TempTrackData) <= 0)
 			Index = NULL;
 	}
-	
+
 	// moment of truth
 	if (!Index) {
 		int TrackMask = FFMS_TRACKMASK_NONE;
@@ -133,7 +133,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		// ignore audio decoding errors here, we don't care right now
 		Index = DoIndexing(Indexer, CacheName, TrackMask, FFMS_IEH_IGNORE);
 	}
-	
+
 	// update access time of index file so it won't get cleaned away
 	wxFileName(CacheName).Touch();
 
@@ -158,7 +158,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	int SeekMode;
 	if (OPT_GET("Provider/Video/FFmpegSource/Unsafe Seeking")->GetBool())
 		SeekMode = FFMS_SEEK_UNSAFE;
-	else 
+	else
 		SeekMode = FFMS_SEEK_NORMAL;
 
 	VideoSource = FFMS_CreateVideoSource(FileNameShort.utf8_str(), TrackNumber, Index, Threads, SeekMode, &ErrInfo);

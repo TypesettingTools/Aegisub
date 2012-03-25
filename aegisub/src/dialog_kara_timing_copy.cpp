@@ -285,7 +285,7 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 		// Matched destination text
 		{
 			int adv = DrawBoxedText(dc, grp.dst, next_x, y_line2);
-			
+
 			// Adjust next_x here while we have the text_w
 			if (syl_x > next_x + adv)
 				next_x = syl_x;

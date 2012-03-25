@@ -90,7 +90,7 @@ class ScopedAliveFlag {
 
 	ScopedAliveFlag(const ScopedAliveFlag &); // uncopyable
 	ScopedAliveFlag(); // no default
-	ScopedAliveFlag& operator=(ScopedAliveFlag const&); 
+	ScopedAliveFlag& operator=(ScopedAliveFlag const&);
 
 public:
 	explicit ScopedAliveFlag(bool &var) : flag(var) { flag = true; }

@@ -169,7 +169,7 @@ FrameMain::FrameMain (wxArrayString args)
 
 	StartupLog("Initialize menu bar");
 	menu::GetMenuBar("main", this, context.get());
-	
+
 	StartupLog("Create status bar");
 	CreateStatusBar(2);
 

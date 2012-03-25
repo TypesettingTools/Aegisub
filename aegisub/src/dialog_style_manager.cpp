@@ -438,7 +438,7 @@ void DialogStyleManager::OnCopyToCurrent() {
 	for (int i = 0; i < n; i++) {
 		wxString styleName = StorageList->GetString(selections[i]);
 		bool addStyle = true;
-		
+
 		for (std::vector<AssStyle *>::iterator style = styleMap.begin(); style != styleMap.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
@@ -581,7 +581,7 @@ void DialogStyleManager::OnCurrentDelete() {
 
 void DialogStyleManager::OnCurrentImport() {
 	// Get file name
-	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());	
+	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 	wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename) return;
 
