@@ -246,20 +246,8 @@ AssStyle::AssStyle(wxString rawData, int version)
 	shadow_w = get_next_double(tkn);
 	alignment = get_next_int(tkn);
 
-	if (version == 0) {
-		switch(alignment) {
-			case 1:  alignment = 1; break;
-			case 2:  alignment = 2; break;
-			case 3:  alignment = 3; break;
-			case 5:  alignment = 7; break;
-			case 6:  alignment = 8; break;
-			case 7:  alignment = 9; break;
-			case 9:  alignment = 4; break;
-			case 10: alignment = 5; break;
-			case 11: alignment = 6; break;
-			default: alignment = 2; break;
-		}
-	}
+	if (version == 0)
+		alignment = SsaToAss(alignment);
 
 	// Read left margin
 	Margin[0] = mid(0, get_next_int(tkn), 9999);
@@ -350,18 +338,7 @@ void AssStyle::UpdateData() {
 
 wxString AssStyle::GetSSAText() const {
 	wxString output;
-	int align = 0;
-	switch (alignment) {
-		case 1: align = 1; break;
-		case 2: align = 2; break;
-		case 3: align = 3; break;
-		case 4: align = 9; break;
-		case 5: align = 10; break;
-		case 6: align = 11; break;
-		case 7: align = 5; break;
-		case 8: align = 6; break;
-		case 9: align = 7; break;
-	}
+	int align = AssToSsa(alignment);
 	wxString n = name;
 	n.Replace(",", ";");
 	wxString f = font;
@@ -404,4 +381,34 @@ void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Add(wxString("222 - ") + _("Thai"));
 	encodingStrings.Add(wxString("238 - ") + _("East European"));
 	encodingStrings.Add(wxString("255 - ") + _("OEM"));
+}
+
+int AssStyle::AssToSsa(int ass_align) {
+	switch (ass_align) {
+		case 1:  return 1;
+		case 2:  return 2;
+		case 3:  return 3;
+		case 4:  return 9;
+		case 5:  return 10;
+		case 6:  return 11;
+		case 7:  return 5;
+		case 8:  return 6;
+		case 9:  return 7;
+		default: return 2;
+	}
+}
+
+int AssStyle::SsaToAss(int ssa_align) {
+	switch(ssa_align) {
+		case 1:  return 1;
+		case 2:  return 2;
+		case 3:  return 3;
+		case 5:  return 7;
+		case 6:  return 8;
+		case 7:  return 9;
+		case 9:  return 4;
+		case 10: return 5;
+		case 11: return 6;
+		default: return 2;
+	}
 }

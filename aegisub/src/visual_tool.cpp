@@ -423,14 +423,8 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 	int ovr_align = 0;
 	if ((align_tag = find_tag(diag, "\\an")) && !(*align_tag)[0]->omitted)
 		ovr_align = (*align_tag)[0]->Get<int>();
-	else if ((align_tag = find_tag(diag, "\\a"))) {
-		ovr_align = (*align_tag)[0]->Get<int>(2);
-
-		// \a -> \an values mapping
-		static int align_mapping[] = { 0, 1, 2, 3, 7, 7, 8, 9, 7, 4, 5, 6 };
-		if (static_cast<size_t>(ovr_align) < sizeof(align_mapping) / sizeof(int))
-			ovr_align = align_mapping[ovr_align];
-	}
+	else if ((align_tag = find_tag(diag, "\\a")))
+		ovr_align = AssStyle::SsaToAss((*align_tag)[0]->Get<int>(2));
 
 	if (ovr_align > 0 && ovr_align <= 9)
 		align = ovr_align;

@@ -111,4 +111,9 @@ public:
 	wxString GetSSAText() const;
 	ASS_EntryType GetType() const { return ENTRY_STYLE; }
 	AssEntry *Clone() const;
+
+	/// Convert an ASS alignment to the equivalent SSA alignment
+	static int AssToSsa(int ass_align);
+	/// Convert a SSA  alignment to the equivalent ASS alignment
+	static int SsaToAss(int ssa_align);
 };
