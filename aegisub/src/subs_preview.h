@@ -35,10 +35,11 @@
 ///
 
 #ifndef AGI_PRE
-#include <memory>
 #include <wx/window.h>
 #include <wx/bitmap.h>
 #endif
+
+#include <libaegisub/scoped_ptr.h>
 
 class AssFile;
 class AssStyle;
@@ -49,19 +50,18 @@ class VideoProvider;
 /// @class SubtitlesPreview
 /// @brief Preview window to show a short string with a given ass style
 class SubtitlesPreview : public wxWindow {
-private:
 	/// The subtitle provider used to render the string
-	std::auto_ptr<SubtitlesProvider> provider;
+	agi::scoped_ptr<SubtitlesProvider> provider;
 	/// Bitmap to render into
-	std::auto_ptr<wxBitmap> bmp;
+	agi::scoped_ptr<wxBitmap> bmp;
 	/// The currently display style
 	AssStyle* style;
 	/// Video provider to render into
-	std::auto_ptr<VideoProvider> vid;
+	agi::scoped_ptr<VideoProvider> vid;
 	/// Current background color
 	wxColour backColour;
 	/// Subtitle file containing the style and displayed line
-	std::auto_ptr<AssFile> subFile;
+	agi::scoped_ptr<AssFile> subFile;
 	/// Line used to render the specified text
 	AssDialogue* line;
 
@@ -80,10 +80,6 @@ public:
 	/// Set the background color
 	void SetColour(wxColour col);
 
-	void Update() { UpdateBitmap(); }
-
-	SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int style,wxColour colour);
+	SubtitlesPreview(wxWindow *parent, wxSize size, int style, wxColour colour);
 	~SubtitlesPreview();
-
-	DECLARE_EVENT_TABLE()
 };

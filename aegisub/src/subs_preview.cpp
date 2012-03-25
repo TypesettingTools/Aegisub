@@ -50,17 +50,8 @@
 #include "include/aegisub/subtitles_provider.h"
 #include "video_provider_dummy.h"
 
-
-/// @brief Constructor
-/// @param parent
-/// @param id
-/// @param pos
-/// @param size
-/// @param winStyle
-/// @param col
-///
-SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize size,int winStyle,wxColour col)
-: wxWindow(parent,id,pos,size,winStyle)
+SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, wxColour col)
+: wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
 , style(new AssStyle)
 , backColour(col)
 , subFile(new AssFile)
@@ -78,6 +69,9 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent,int id,wxPoint pos,wxSize si
 	wxSizeEvent evt(size);
 	OnSize(evt);
 	UpdateBitmap();
+
+	Bind(wxEVT_PAINT, &SubtitlesPreview::OnPaint, this);
+	Bind(wxEVT_SIZE, &SubtitlesPreview::OnSize, this);
 }
 
 SubtitlesPreview::~SubtitlesPreview() {
@@ -100,13 +94,21 @@ void SubtitlesPreview::SetText(wxString text) {
 	}
 }
 
+void SubtitlesPreview::SetColour(wxColour col) {
+	if (col != backColour) {
+		backColour = col;
+		vid.reset(new DummyVideoProvider(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), backColour, true));
+		UpdateBitmap();
+	}
+}
+
 void SubtitlesPreview::UpdateBitmap() {
-	if (!vid.get()) return;
+	if (!vid) return;
 
 	AegiVideoFrame frame;
 	frame.CopyFrom(vid->GetFrame(0));
 
-	if (provider.get()) {
+	if (provider) {
 		try {
 			provider->LoadSubtitles(subFile.get());
 			provider->DrawSubtitles(frame, 0.1);
@@ -120,14 +122,8 @@ void SubtitlesPreview::UpdateBitmap() {
 	Refresh();
 }
 
-BEGIN_EVENT_TABLE(SubtitlesPreview,wxWindow)
-	EVT_PAINT(SubtitlesPreview::OnPaint)
-	EVT_SIZE(SubtitlesPreview::OnSize)
-END_EVENT_TABLE()
-
 void SubtitlesPreview::OnPaint(wxPaintEvent &) {
-	wxPaintDC dc(this);
-	dc.DrawBitmap(*bmp,0,0);
+	wxPaintDC(this).DrawBitmap(*bmp, 0, 0);
 }
 
 void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
@@ -148,16 +144,8 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 			"No subtitles provider", wxICON_ERROR | wxOK);
 	}
 
-	subFile->SetScriptInfo("PlayResX", wxString::Format("%i", w));
-	subFile->SetScriptInfo("PlayResY", wxString::Format("%i", h));
+	subFile->SetScriptInfo("PlayResX", wxString::Format("%d", w));
+	subFile->SetScriptInfo("PlayResY", wxString::Format("%d", h));
 
 	UpdateBitmap();
-}
-
-void SubtitlesPreview::SetColour(wxColour col) {
-	if (col != backColour) {
-		backColour = col;
-		vid.reset(new DummyVideoProvider(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), backColour, true));
-		UpdateBitmap();
-	}
 }

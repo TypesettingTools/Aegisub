@@ -36,8 +36,6 @@
 
 #include "config.h"
 
-#include <libaegisub/background_runner.h>
-
 #include "audio_provider_ram.h"
 
 #include "audio_controller.h"
@@ -45,12 +43,15 @@
 #include "main.h"
 #include "utils.h"
 
+#include <libaegisub/background_runner.h>
+#include <libaegisub/scoped_ptr.h>
+
 #define CacheBits ((22))
 
 #define CacheBlockSize ((1 << CacheBits))
 
 RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) {
-	std::auto_ptr<AudioProvider> source(src);
+	agi::scoped_ptr<AudioProvider> source(src);
 
 	samples_native_endian = source->AreSamplesNativeEndian();
 

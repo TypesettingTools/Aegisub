@@ -44,6 +44,7 @@
 #include <wx/stopwatch.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 
@@ -83,7 +84,7 @@ class VideoContext : public wxEvtHandler {
 	VideoProvider *videoProvider;
 
 	/// Asynchronous provider of video frames
-	std::auto_ptr<ThreadedFrameSource> provider;
+	agi::scoped_ptr<ThreadedFrameSource> provider;
 
 	/// Filename of currently open video
 	wxString videoFile;

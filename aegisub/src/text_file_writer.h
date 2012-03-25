@@ -38,7 +38,6 @@
 
 #ifndef AGI_PRE
 #include <fstream>
-#include <memory>
 
 #include <wx/string.h>
 #endif
@@ -52,6 +51,8 @@ namespace agi {
 	}
 }
 
+#include <libaegisub/scoped_ptr.h>
+
 
 /// DOCME
 /// @class TextFileWriter
@@ -60,13 +61,10 @@ namespace agi {
 /// DOCME
 class TextFileWriter {
 	/// DOCME
-	std::auto_ptr<agi::io::Save> file;
+	agi::scoped_ptr<agi::io::Save> file;
 
 	/// DOCME
-	std::auto_ptr<agi::charset::IconvWrapper> conv;
-
-	TextFileWriter(const TextFileWriter&);
-	TextFileWriter& operator=(const TextFileWriter&);
+	agi::scoped_ptr<agi::charset::IconvWrapper> conv;
 
 public:
 	TextFileWriter(wxString const& filename, wxString encoding="");

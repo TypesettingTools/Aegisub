@@ -54,7 +54,8 @@
 ///
 TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 : file(new agi::io::Save(STD_STR(filename), true))
-, conv() {
+, conv()
+{
 	if (encoding.empty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
 	if (encoding.Lower() != wxSTRING_ENCODING)
 		conv.reset(new agi::charset::IconvWrapper(wxSTRING_ENCODING, encoding.utf8_str(), true));
@@ -68,17 +69,10 @@ TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 	}
 }
 
-
-/// @brief DOCME
-///
 TextFileWriter::~TextFileWriter() {
 	// Explicit empty destructor required with an auto_ptr to an incomplete class
 }
 
-
-/// @brief DOCME
-/// @param line
-/// @param addLineBreak
 void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 #ifdef _WIN32
 	if (addLineBreak) line += "\r\n";
@@ -94,7 +88,7 @@ void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
 	size_t len = line.length() * sizeof(wxStringCharType);
 #endif
 
-	if (conv.get()) {
+	if (conv) {
 		std::string buf = conv->Convert(std::string(data, len));
 		file->Get().write(buf.data(), buf.size());
 	}

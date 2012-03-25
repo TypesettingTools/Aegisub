@@ -41,6 +41,8 @@
 #include "ass_file.h"
 #include "include/aegisub/context.h"
 
+#include <libaegisub/scoped_ptr.h>
+
 #ifndef AGI_PRE
 #include <algorithm>
 #endif
@@ -115,7 +117,7 @@ AssFile *AssExporter::ExportTransform(wxWindow *export_dialog, bool copy) {
 }
 
 void AssExporter::Export(wxString const& filename, wxString const& charset, wxWindow *export_dialog) {
-	std::auto_ptr<AssFile> subs(ExportTransform(export_dialog, true));
+	agi::scoped_ptr<AssFile> subs(ExportTransform(export_dialog, true));
 	subs->Save(filename, false, false, charset);
 }
 
