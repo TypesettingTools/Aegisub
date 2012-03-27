@@ -40,7 +40,6 @@
 #include <wx/thread.h>
 #endif
 
-#include "aegisub_endian.h"
 #include <libaegisub/charset_conv.h>
 
 /// @class AegisubCSConv
@@ -60,9 +59,7 @@ private:
 	AegisubCSConv& operator=(const AegisubCSConv&);
 	wxString localCharset;
 
-#if wxUSE_THREADS
 	mutable wxMutex iconvMutex;
-#endif
 
 	// ToWChar and FromWChar are const in wxMBConv, but iconv can't be used
 	// immutably

@@ -36,12 +36,8 @@
 
 #include "ass_export_filter.h"
 
-
-/// DOCME
 /// @class AssFixStylesFilter
 /// @brief Fixes styles by replacing any style that isn't available on file with Default
-///
-/// DOCME
 class AssFixStylesFilter : public AssExportFilter {
 public:
 	void ProcessSubs(AssFile *subs, wxWindow *);
