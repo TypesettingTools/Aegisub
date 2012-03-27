@@ -227,12 +227,7 @@ void GetWordBoundaries(const wxString text, IntPairVector &results, int start, i
 	}
 }
 
-
-
 /// @brief Determine whether wchar 'c' is a whitespace character
-/// @param c
-/// @return
-///
 bool IsWhitespace(wchar_t c)
 {
 	const wchar_t whitespaces[] = {
@@ -243,20 +238,10 @@ bool IsWhitespace(wchar_t c)
 		0x025F, 0x3000, 0xFEFF
 	};
 	const size_t num_chars = sizeof(whitespaces) / sizeof(whitespaces[0]);
-
-	for (size_t i = 0; i < num_chars; ++i)
-		if (whitespaces[i] == c)
-			return true;
-
-	return false;
+	return std::binary_search(whitespaces, whitespaces + num_chars, c);
 }
 
-
-
 /// @brief Returns true if str is empty of consists of only whitespace
-/// @param str
-/// @return
-///
 bool StringEmptyOrWhitespace(const wxString &str)
 {
 	for (size_t i = 0; i < str.size(); ++i)
