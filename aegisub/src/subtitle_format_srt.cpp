@@ -531,7 +531,7 @@ wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
 			// Iterate through overrides
 			for (size_t j = 0; j < block->Tags.size(); j++) {
 				AssOverrideTag *tag = block->Tags[j];
-				if (tag->IsValid()) {
+				if (tag->IsValid() && tag->Name.size() == 2) {
 					std::map<char, bool>::iterator it = tag_states.find(tag->Name[1]);
 					if (it != tag_states.end()) {
 						bool temp = tag->Params[0]->Get<bool>();
