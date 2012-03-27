@@ -786,10 +786,12 @@ void DialogKanjiTimer::OnGoBack(wxCommandEvent &) {
 }
 
 void DialogKanjiTimer::OnAccept(wxCommandEvent &) {
+	if (currentDestinationLine == subs->Line.end()) return;
+
 	if (display->GetRemainingSource() > 0)
 		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
-	else {
-		LinesToChange.push_back(std::make_pair(dynamic_cast<AssDialogue*>(*currentDestinationLine), display->GetOutputLine()));
+	else if (AssDialogue *destLine = dynamic_cast<AssDialogue*>(*currentDestinationLine)) {
+		LinesToChange.push_back(std::make_pair(destLine, display->GetOutputLine()));
 
 		currentSourceLine = FindNextStyleMatch(currentSourceLine, SourceStyle->GetValue());
 		currentDestinationLine = FindNextStyleMatch(currentDestinationLine, DestStyle->GetValue());
