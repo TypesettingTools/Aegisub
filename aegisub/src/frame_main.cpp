@@ -110,6 +110,7 @@ FrameMain::FrameMain (wxArrayString args)
 , showVideo(true)
 , showAudio(true)
 , blockVideoLoad(false)
+, blockAudioLoad(false)
 {
 	StartupLog("Entering FrameMain constructor");
 
@@ -433,6 +434,23 @@ void FrameMain::OnVideoOpen() {
 	if (OPT_GET("Video/Detached/Enabled")->GetBool() && !context->dialog->Get<DialogDetachedVideo>())
 		cmd::call("video/detach", context.get());
 	Thaw();
+
+	if (!blockAudioLoad && OPT_GET("Video/Open Audio")->GetBool()) {
+		try {
+			context->audioController->OpenAudio(context->videoController->GetVideoName());
+		}
+		// Opening a video with no audio data isn't an error, so just log
+		// and move on
+		catch (agi::FileNotAccessibleError const&) {
+			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " found by video provider but not audio provider";
+		}
+		catch (agi::AudioDataNotFoundError const& e) {
+			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " has no audio data: " << e.GetChainedMessage();
+		}
+		catch (agi::AudioOpenError const& err) {
+			wxMessageBox(lagi_wxString(err.GetMessage()), "Error loading audio", wxICON_ERROR | wxOK);
+		}
+	}
 }
 
 void FrameMain::OnVideoDetach(agi::OptionValue const& opt) {
@@ -448,84 +466,92 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 	StatusClear.Start(ms,true);
 }
 
+#define countof(array) (sizeof(array) / sizeof(array[0]))
 bool FrameMain::LoadList(wxArrayString list) {
-	wxArrayString List;
-	for (size_t i=0;i<list.Count();i++) {
-		wxFileName file(list[i]);
-		if (file.IsRelative()) file.MakeAbsolute();
-		if (file.FileExists()) List.Add(file.GetFullPath());
-	}
+	// Keep these lists sorted
 
 	// Video formats
-	wxArrayString videoList;
-	videoList.Add("asf");
-	videoList.Add("avi");
-	videoList.Add("avs");
-	videoList.Add("d2v");
-	videoList.Add("m2ts");
-	videoList.Add("mkv");
-	videoList.Add("mov");
-	videoList.Add("mp4");
-	videoList.Add("mpeg");
-	videoList.Add("mpg");
-	videoList.Add("ogm");
-	videoList.Add("rm");
-	videoList.Add("rmvb");
-	videoList.Add("wmv");
-	videoList.Add("ts");
-	videoList.Add("y4m");
-	videoList.Add("yuv");
+	const wxString videoList[] = {
+		"asf",
+		"avi",
+		"avs",
+		"d2v",
+		"m2ts",
+		"mkv",
+		"mov",
+		"mp4",
+		"mpeg",
+		"mpg",
+		"ogm",
+		"rm",
+		"rmvb",
+		"ts",
+		"wmv",
+		"y4m",
+		"yuv"
+	};
 
 	// Subtitle formats
-	wxArrayString subsList;
-	subsList.Add("ass");
-	subsList.Add("ssa");
-	subsList.Add("srt");
-	subsList.Add("sub");
-	subsList.Add("txt");
-	subsList.Add("ttxt");
+	const wxString subsList[] = {
+		"ass",
+		"srt",
+		"ssa",
+		"sub",
+		"ttxt",
+		"txt"
+	};
 
 	// Audio formats
-	wxArrayString audioList;
-	audioList.Add("aac");
-	audioList.Add("ac3");
-	audioList.Add("ape");
-	audioList.Add("dts");
-	audioList.Add("flac");
-	audioList.Add("m4a");
-	audioList.Add("mka");
-	audioList.Add("mp3");
-	audioList.Add("ogg");
-	audioList.Add("w64");
-	audioList.Add("wav");
-	audioList.Add("wma");
+	const wxString audioList[] = {
+		"aac",
+		"ac3",
+		"ape",
+		"dts",
+		"flac",
+		"m4a",
+		"mka",
+		"mp3",
+		"ogg",
+		"w64",
+		"wav",
+		"wma"
+	};
 
 	// Scan list
-	wxString audio;
-	wxString video;
-	wxString subs;
-	wxString ext;
-	for (size_t i=0;i<List.Count();i++) {
-		wxFileName file(List[i]);
-		ext = file.GetExt().Lower();
+	wxString audio, video, subs;
+	for (size_t i = 0; i < list.size(); ++i) {
+		wxFileName file(list[i]);
+		if (file.IsRelative()) file.MakeAbsolute();
+		if (!file.FileExists()) continue;
 
-		if (subs.empty() && subsList.Index(ext) != wxNOT_FOUND) subs = List[i];
-		if (video.empty() && videoList.Index(ext) != wxNOT_FOUND) video = List[i];
-		if (audio.empty() && audioList.Index(ext) != wxNOT_FOUND) audio = List[i];
+		wxString ext = file.GetExt().Lower();
+
+		if (subs.empty() && std::binary_search(subsList, subsList + countof(subsList), ext))
+			subs = file.GetFullPath();
+		if (video.empty() && std::binary_search(videoList, videoList + countof(videoList), ext))
+			video = file.GetFullPath();
+		if (audio.empty() && std::binary_search(audioList, audioList + countof(audioList), ext))
+			audio = file.GetFullPath();
 	}
 
 	blockVideoLoad = !video.empty();
+	blockAudioLoad = !audio.empty();
 
 	// Load files
-	if (subs.size()) {
+	if (subs.size())
 		LoadSubtitles(subs);
-	}
+
 	if (blockVideoLoad) {
 		blockVideoLoad = false;
 		context->videoController->SetVideo(video);
 	}
-	if (!audio.empty())
-		context->audioController->OpenAudio(audio);
+
+	if (blockAudioLoad) {
+		blockAudioLoad = false;
+		try {
+			context->audioController->OpenAudio(audio);
+		} catch (agi::UserCancelException const&) { }
+	}
 
 	bool loaded_any = subs.size() || audio.size() || video.size();
 	if (loaded_any)
@@ -615,71 +641,69 @@ void FrameMain::OnSubtitlesOpen() {
 	///       prompting for each file loaded/unloaded
 
 	// Load stuff from the new script
-	wxString curSubsVideo = DecodeRelativePath(context->ass->GetScriptInfo("Video File"),context->ass->filename);
-	wxString curSubsVFR = DecodeRelativePath(context->ass->GetScriptInfo("VFR File"),context->ass->filename);
-	wxString curSubsKeyframes = DecodeRelativePath(context->ass->GetScriptInfo("Keyframes File"),context->ass->filename);
+	wxString curSubsVideo = DecodeRelativePath(context->ass->GetScriptInfo("Video File"), context->ass->filename);
+	wxString curSubsVFR = DecodeRelativePath(context->ass->GetScriptInfo("VFR File"), context->ass->filename);
+	wxString curSubsKeyframes = DecodeRelativePath(context->ass->GetScriptInfo("Keyframes File"), context->ass->filename);
 	wxString curSubsAudio = context->ass->GetScriptInfo("Audio URI");
+
+	bool videoChanged = !blockVideoLoad && curSubsVideo != context->videoController->GetVideoName();
+	bool timecodesChanged = curSubsVFR != context->videoController->GetTimecodesName();
+	bool keyframesChanged = curSubsKeyframes != context->videoController->GetKeyFramesName();
+	bool audioChanged = !blockAudioLoad && curSubsAudio != context->audioController->GetAudioURL();
 
 	// Check if there is anything to change
 	int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
-	bool doLoad = false;
-	if (curSubsAudio != context->audioController->GetAudioURL() ||
-		curSubsVFR != context->videoController->GetTimecodesName() ||
-		curSubsVideo != context->videoController->GetVideoName() ||
-		curSubsKeyframes != context->videoController->GetKeyFramesName()
-		)
-	{
-		if (autoLoadMode == 1) {
-			doLoad = true;
-		}
-		else if (autoLoadMode == 2) {
-			doLoad = wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO) == wxYES;
+	if (autoLoadMode == 0 || (!videoChanged && !timecodesChanged && !keyframesChanged && !audioChanged)) {
+		SetDisplayMode(1, 1);
+		return;
+	}
+
+	if (autoLoadMode == 2) {
+		if (wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO) != wxYES) {
+			SetDisplayMode(1, 1);
+			return;
 		}
 	}
 
-	if (doLoad) {
-		// Video
-		if (!blockVideoLoad && curSubsVideo != context->videoController->GetVideoName()) {
-			context->videoController->SetVideo(curSubsVideo);
-			if (context->videoController->IsLoaded()) {
-				context->videoController->JumpToFrame(context->ass->GetScriptInfoAsInt("Video Position"));
+	// Video
+	if (videoChanged) {
+		context->videoController->SetVideo(curSubsVideo);
+		if (context->videoController->IsLoaded()) {
+			context->videoController->JumpToFrame(context->ass->GetScriptInfoAsInt("Video Position"));
 
-				long videoAr = 0;
-				double videoArValue = 0.;
-				wxString arString = context->ass->GetScriptInfo("Video Aspect Ratio");
-				if (arString.Left(1) == "c") {
-					videoAr = 4;
-					arString = arString.Mid(1);
-					arString.ToDouble(&videoArValue);
-				}
-				else if (arString.IsNumber()) {
-					arString.ToLong(&videoAr);
-				}
-				context->videoController->SetAspectRatio(videoAr,videoArValue);
-
-				double videoZoom = 0.;
-				if (context->ass->GetScriptInfo("Video Zoom Percent").ToDouble(&videoZoom))
-					context->videoDisplay->SetZoom(videoZoom);
+			long videoAr = 0;
+			double videoArValue = 0.;
+			wxString arString = context->ass->GetScriptInfo("Video Aspect Ratio");
+			if (arString.StartsWith("c")) {
+				videoAr = 4;
+				arString.Mid(1).ToDouble(&videoArValue);
 			}
-		}
+			else
+				arString.ToLong(&videoAr);
 
-		context->videoController->LoadTimecodes(curSubsVFR);
-		context->videoController->LoadKeyframes(curSubsKeyframes);
+			context->videoController->SetAspectRatio(videoAr, videoArValue);
 
-		// Audio
-		if (curSubsAudio != context->audioController->GetAudioURL()) {
-			try {
-				if (!curSubsAudio)
-					context->audioController->CloseAudio();
-				else
-					context->audioController->OpenAudio(curSubsAudio);
-			}
-			catch (agi::UserCancelException const&) { }
+			double videoZoom = 0.;
+			if (context->ass->GetScriptInfo("Video Zoom Percent").ToDouble(&videoZoom))
+				context->videoDisplay->SetZoom(videoZoom);
 		}
 	}
 
-	// Display
-	SetDisplayMode(1,1);
+	context->videoController->LoadTimecodes(curSubsVFR);
+	context->videoController->LoadKeyframes(curSubsKeyframes);
+
+	// Audio
+	if (audioChanged) {
+		try {
+			if (!curSubsAudio)
+				context->audioController->CloseAudio();
+			else
+				context->audioController->OpenAudio(curSubsAudio);
+		}
+		catch (agi::UserCancelException const&) { }
+	}
+
+	SetDisplayMode(1, 1);
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
@@ -701,8 +725,6 @@ wxString FrameMain::GetScriptFileName() const {
 		return _("untitled");
 #endif
 	}
-	else {
-		wxFileName file (context->ass->filename);
-		return file.GetFullName();
-	}
+	else
+		return wxFileName(context->ass->filename).GetFullName();
 }

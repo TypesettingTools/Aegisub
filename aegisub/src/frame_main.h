@@ -88,6 +88,7 @@ class FrameMain: public wxFrame {
 	/// the same time, so that the video associated with the subtitles (if any)
 	/// isn't loaded
 	bool blockVideoLoad;
+	bool blockAudioLoad;
 
 	void InitToolbar();
 	void InitContents();

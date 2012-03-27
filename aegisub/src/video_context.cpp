@@ -212,20 +212,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 		VideoOpen();
 		KeyframesOpen(keyFrames);
 		TimecodesOpen(FPS());
-
-		if (OPT_GET("Video/Open Audio")->GetBool()) {
-			try {
-				context->audioController->OpenAudio(filename);
-			}
-			// Opening a video with no audio data isn't an error, so just log
-			// and move on
-			catch (agi::FileNotAccessibleError const&) {
-				LOG_D("video/open/audio") << "File " << filename << " found by video provider but not audio provider";
-			}
-			catch (agi::AudioDataNotFoundError const& e) {
-				LOG_D("video/open/audio") << "File " << filename << " has no audio data: " << e.GetChainedMessage();
-			}
-		}
 	}
 	catch (agi::UserCancelException const&) { }
 	catch (agi::FileNotAccessibleError const& err) {
@@ -234,9 +220,6 @@ void VideoContext::SetVideo(const wxString &filename) {
 	}
 	catch (VideoProviderError const& err) {
 		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxICON_ERROR | wxOK);
-	}
-	catch (agi::AudioOpenError const& err) {
-		wxMessageBox(lagi_wxString(err.GetMessage()), "Error loading audio", wxICON_ERROR | wxOK);
 	}
 }
 
