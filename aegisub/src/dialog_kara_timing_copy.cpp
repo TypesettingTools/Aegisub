@@ -381,7 +381,7 @@ wxString KaraokeLineMatchDisplay::GetOutputLine() const
 		{
 			duration += match.src[j].duration;
 		}
-		res = wxString::Format("%s{\\k%d}%s", res, duration, match.dst);
+		res = wxString::Format("%s{\\k%d}%s", res, duration / 10, match.dst);
 	}
 
 	return res;
