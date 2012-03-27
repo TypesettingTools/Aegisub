@@ -90,7 +90,6 @@ class DialogKanjiTimer : public wxDialog {
 	void OnSkipDest(wxCommandEvent &event);
 	void OnGoBack(wxCommandEvent &event);
 	void OnAccept(wxCommandEvent &event);
-	inline void OnKeyEnter(wxCommandEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 
 	void ResetForNewLine();

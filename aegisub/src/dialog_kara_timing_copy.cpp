@@ -76,9 +76,7 @@ enum {
 	BUTTON_KTSKIPSOURCE,
 	BUTTON_KTSKIPDEST,
 	BUTTON_KTGOBACK,
-	BUTTON_KTACCEPT,
-	TEXT_SOURCE,
-	TEXT_DEST
+	BUTTON_KTACCEPT
 };
 
 /// DOCME
@@ -726,8 +724,6 @@ BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
 	EVT_BUTTON(BUTTON_KTGOBACK,DialogKanjiTimer::OnGoBack)
 	EVT_BUTTON(BUTTON_KTACCEPT,DialogKanjiTimer::OnAccept)
 	EVT_KEY_DOWN(DialogKanjiTimer::OnKeyDown)
-	EVT_TEXT_ENTER(TEXT_SOURCE,DialogKanjiTimer::OnKeyEnter)
-	EVT_TEXT_ENTER(TEXT_DEST,DialogKanjiTimer::OnKeyEnter)
 END_EVENT_TABLE()
 
 void DialogKanjiTimer::OnClose(wxCommandEvent &) {
@@ -823,23 +819,13 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 			display->DecreaseSourceMatch();
 			break;
 		case WXK_RETURN :
-			OnKeyEnter(evt);
+			if (display->GetRemainingSource() == 0 && display->GetRemainingDestination() == 0)
+				OnAccept(evt);
+			else
+				OnLink(evt);
 			break;
 		default :
 			event.Skip();
-	}
-}
-
-void DialogKanjiTimer::OnKeyEnter(wxCommandEvent &) {
-	wxCommandEvent evt;
-
-	if (display->GetRemainingSource() == 0 && display->GetRemainingDestination() == 0)
-	{
-		OnAccept(evt);
-	}
-	else
-	{
-		OnLink(evt);
 	}
 }
 
