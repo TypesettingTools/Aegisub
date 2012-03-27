@@ -659,7 +659,7 @@ void FrameMain::OnSubtitlesOpen() {
 	}
 
 	if (autoLoadMode == 2) {
-		if (wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO) != wxYES) {
+		if (wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO | wxCENTRE, this) != wxYES) {
 			SetDisplayMode(1, 1);
 			return;
 		}
