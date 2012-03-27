@@ -61,35 +61,6 @@
 
 #include "utils.h"
 
-
-#ifndef __LINUX__
-
-/// @brief Absolute of 64 bit int
-/// @param input
-/// @return
-///
-int64_t abs64(int64_t input) {
-	if (input < 0) return -input;
-	return input;
-}
-#endif
-
-
-
-/// @brief Count number of matches of a substr
-/// @param parent
-/// @param child
-/// @return
-///
-int CountMatches(wxString parent,wxString child) {
-	size_t pos = wxString::npos;
-	int n = 0;
-	while ((pos = parent.find(child,pos+1)) != wxString::npos) n++;
-	return n;
-}
-
-
-
 /// @brief Make a path relative to reference
 /// @param _path
 /// @param reference

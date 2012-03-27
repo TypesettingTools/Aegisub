@@ -55,10 +55,6 @@ class wxWindow;
 /// DOCME
 typedef std::vector<std::pair<int,int> > IntPairVector;
 
-#ifndef __LINUX__
-int64_t abs64(int64_t input);
-#endif
-int CountMatches(wxString parent,wxString child);
 wxString MakeRelativePath(wxString path,wxString reference);
 wxString DecodeRelativePath(wxString path,wxString reference);
 wxString AegiFloatToString(double value);
