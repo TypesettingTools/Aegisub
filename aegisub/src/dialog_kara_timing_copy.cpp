@@ -658,10 +658,8 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
 	wxArrayString styles = subs->GetStyles();
-	SourceStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1),
-		styles, wxCB_READONLY, wxDefaultValidator, _("Source Style"));
-	DestStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1),
-		styles, wxCB_READONLY, wxDefaultValidator, _("Dest Style"));
+	SourceStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
+	DestStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
 
 	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
