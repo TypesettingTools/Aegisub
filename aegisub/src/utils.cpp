@@ -86,33 +86,23 @@ wxString AegiIntegerToString(int value) {
 
 /// @brief There shall be no kiB, MiB stuff here Pretty reading of size
 wxString PrettySize(int bytes) {
-	// Suffixes
-	wxArrayString suffix;
-	suffix.Add("");
-	suffix.Add(" kB");
-	suffix.Add(" MB");
-	suffix.Add(" GB");
-	suffix.Add(" TB");
-	suffix.Add(" PB");
+	const char *suffix[] = { "", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
 	// Set size
 	int i = 0;
 	double size = bytes;
-	while (size > 1024) {
-		size = size / 1024.0;
+	while (size > 1024 && i < 9) {
+		size /= 1024.0;
 		i++;
-		if (i == 6) {
-			i--;
-			break;
-		}
 	}
 
 	// Set number of decimal places
-	wxString final;
-	if (size < 10) final = wxString::Format("%.2f",size);
-	else if (size < 100) final = wxString::Format("%.1f",size);
-	else final = wxString::Format("%.0f",size);
-	return final + suffix[i];
+	const char *fmt = "%.0f";
+	if (size < 10)
+		fmt = "%.2f";
+	else if (size < 100)
+		fmt = "%1.f";
+	return wxString::Format(fmt, size) + " " + suffix[i];
 }
 
 int SmallestPowerOf2(int x) {
