@@ -45,28 +45,58 @@
 #include <vector>
 
 #include <wx/icon.h>
-#include <wx/menuitem.h>
 #include <wx/thread.h>
 #endif
 
 class wxMouseEvent;
 class wxWindow;
 
-/// DOCME
 typedef std::vector<std::pair<int,int> > IntPairVector;
 
+/// @brief Make a path relative to reference
 wxString MakeRelativePath(wxString path,wxString reference);
+/// @brief Extract original path from relative
 wxString DecodeRelativePath(wxString path,wxString reference);
 wxString AegiFloatToString(double value);
 wxString AegiIntegerToString(int value);
 wxString PrettySize(int bytes);
+
+/// @brief Get the smallest power of two that is greater or equal to x
+///
+/// Algorithm from http://bob.allegronetwork.com/prog/tricks.html
 int SmallestPowerOf2(int x);
-void GetWordBoundaries(const wxString text,IntPairVector &results,int start=0,int end=-1);
+
+/// Get the indices in text which are the beginnings of words
+/// @param text Text to split into words
+/// @param[out] results Vector of indices which are the beginnings of words
+/// @param start First index in text to check
+/// @param end Last index in text to check, or -1 for end
+///
+/// This is ASS-specific and not a general purpose word boundary finder; words
+/// within override blocks or drawing blocks are ignored
+void GetWordBoundaries(wxString const& text, IntPairVector &results, int start=0, int end=-1);
+
+/// Check if wchar 'c' is a whitespace character
 bool IsWhitespace(wchar_t c);
+
+/// Check if every character in str is whitespace
 bool StringEmptyOrWhitespace(const wxString &str);
+
+/// @brief String to integer
+///
+/// wxString::ToLong() is slow and not as flexible
 int AegiStringToInt(const wxString &str,int start=0,int end=-1);
 int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end=-1);
-wxIcon BitmapToIcon(wxBitmap bmp);
+
+/// @brief Convert a wxBitmap to wxIcon
+///
+/// This is needed because wxIcon has to be 16x16 to work properly on win32
+wxIcon BitmapToIcon(wxBitmap const& bmp);
+
+/// @brief Launch a new copy of Aegisub.
+///
+/// Contrary to what the name suggests, this does not close the currently
+/// running process.
 void RestartAegisub();
 
 /// Forward a mouse wheel event to the window under the mouse if needed
@@ -79,16 +109,14 @@ bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt);
 /// @brief Templated abs() function
 template <typename T> T tabs(T x) { return x < 0 ? -x : x; }
 
+/// Get the middle value of a, b, and c (i.e. clamp b to [a,c])
+/// @precondition a <= c
 template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
 #ifndef FORCEINLINE
 #ifdef __VISUALC__
-
-/// DOCME
 #define FORCEINLINE __forceinline
 #else
-
-/// DOCME
 #define FORCEINLINE inline
 // __attribute__((always_inline)) gives me errors on g++ ~amz
 #endif

@@ -43,7 +43,6 @@
 
 #include <wx/dcmemory.h>
 #include <wx/filename.h>
-#include <wx/log.h>
 #include <wx/stdpaths.h>
 #include <wx/window.h>
 #endif
@@ -56,30 +55,16 @@
 
 #include "utils.h"
 
-/// @brief Make a path relative to reference
-/// @param _path
-/// @param reference
-/// @return
-///
-wxString MakeRelativePath(wxString _path,wxString reference) {
-	if (_path.IsEmpty()) return "";
-	if (_path.Left(1) == "?") return _path;
+wxString MakeRelativePath(wxString _path, wxString reference) {
+	if (_path.empty() || _path[0] == '?') return _path;
 	wxFileName path(_path);
 	wxFileName refPath(reference);
 	path.MakeRelativeTo(refPath.GetPath());
 	return path.GetFullPath();
 }
 
-
-
-/// @brief Extract original path from relative
-/// @param _path
-/// @param reference
-/// @return
-///
 wxString DecodeRelativePath(wxString _path,wxString reference) {
-	if (_path.IsEmpty()) return "";
-	if (_path.Left(1) == "?") return _path;
+	if (_path.empty() || _path[0] == '?') return _path;
 	wxFileName path(_path);
 	wxFileName refPath(reference);
 	if (!path.IsAbsolute()) path.MakeAbsolute(refPath.GetPath());
@@ -91,26 +76,15 @@ wxString DecodeRelativePath(wxString _path,wxString reference) {
 #endif
 }
 
-/// @brief Float to string
-/// @param value
-/// @return
-///
 wxString AegiFloatToString(double value) {
 	return wxString::Format("%g",value);
 }
 
-/// @brief Int to string
-/// @param value
-/// @return
-///
 wxString AegiIntegerToString(int value) {
 	return wxString::Format("%i",value);
 }
 
 /// @brief There shall be no kiB, MiB stuff here Pretty reading of size
-/// @param bytes
-/// @return
-///
 wxString PrettySize(int bytes) {
 	// Suffixes
 	wxArrayString suffix;
@@ -141,12 +115,6 @@ wxString PrettySize(int bytes) {
 	return final + suffix[i];
 }
 
-
-
-/// @brief Code from http://bob.allegronetwork.com/prog/tricks.html Get the smallest power of two that is greater or equal to x
-/// @param x
-/// @return
-///
 int SmallestPowerOf2(int x) {
 	x--;
 	x |= (x >> 1);
@@ -158,7 +126,7 @@ int SmallestPowerOf2(int x) {
 	return x;
 }
 
-void GetWordBoundaries(const wxString text, IntPairVector &results, int start, int end) {
+void GetWordBoundaries(wxString const& text, IntPairVector &results, int start, int end) {
 	int depth = 0;
 	bool in_draw_mode = false;
 	if (end < 0) end = text.size();
@@ -227,7 +195,6 @@ void GetWordBoundaries(const wxString text, IntPairVector &results, int start, i
 	}
 }
 
-/// @brief Determine whether wchar 'c' is a whitespace character
 bool IsWhitespace(wchar_t c)
 {
 	const wchar_t whitespaces[] = {
@@ -241,7 +208,6 @@ bool IsWhitespace(wchar_t c)
 	return std::binary_search(whitespaces, whitespaces + num_chars, c);
 }
 
-/// @brief Returns true if str is empty of consists of only whitespace
 bool StringEmptyOrWhitespace(const wxString &str)
 {
 	for (size_t i = 0; i < str.size(); ++i)
@@ -251,14 +217,6 @@ bool StringEmptyOrWhitespace(const wxString &str)
 	return true;
 }
 
-
-
-/// @brief wxString::ToLong() is slow and not as flexible String to integer
-/// @param str
-/// @param start
-/// @param end
-/// @return
-///
 int AegiStringToInt(const wxString &str,int start,int end) {
 	// Initialize to zero and get length if end set to -1
 	int sign = 1;
@@ -279,16 +237,6 @@ int AegiStringToInt(const wxString &str,int start,int end) {
 	return value*sign;
 }
 
-
-
-
-/// @brief String to fixed point
-/// @param str
-/// @param decimalPlaces
-/// @param start
-/// @param end
-/// @return
-///
 int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) {
 	// Parts of the number
 	int sign = 1;
@@ -333,13 +281,7 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) 
 	return (major + minor)*sign;
 }
 
-
-
-/// @brief This is needed because wxIcon has to be 16x16 to work properly on win32 Convert a wxBitmap to wxIcon
-/// @param iconBmp
-/// @return
-///
-wxIcon BitmapToIcon(wxBitmap iconBmp) {
+wxIcon BitmapToIcon(wxBitmap const& iconBmp) {
 	// Create the icon and background bmp
 	wxIcon ico;
 	wxBitmap bmp(16,16);
@@ -360,9 +302,6 @@ wxIcon BitmapToIcon(wxBitmap iconBmp) {
 	return ico;
 }
 
-
-/// @brief just before this is called. It is assumed that something has prepared closing the current instance Start Aegisub again
-///
 void RestartAegisub() {
 #if defined(__WXMSW__)
 	wxStandardPaths stand;
