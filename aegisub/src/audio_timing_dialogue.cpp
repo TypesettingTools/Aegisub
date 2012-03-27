@@ -815,6 +815,9 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::GetRightMarkers()
 
 int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range, std::vector<AudioMarker*> const& exclude) const
 {
+	if (position < 0)
+		position = 0;
+
 	if (snap_range <= 0)
 		return position;
 
