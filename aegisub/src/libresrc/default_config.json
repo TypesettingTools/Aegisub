@@ -42,13 +42,11 @@
 				"Inactive Comments" : true,
 				"Keyframes in Dialogue Mode" : true,
 				"Keyframes in Karaoke Mode" : true,
-				"Selection Background" : true,
 				"Video Position" : false
 			},
 			"Waveform Style" : 1
 		},
 		"Downmixer" : "ConvertToMono",
-		"Grab Times on Select" : true,
 		"Inactive Lines Display Mode" : 1,
 		"Karaoke" : {
 			"Font Face" : "Verdana",
@@ -102,10 +100,8 @@
 			"Line boundary End" : "rgb(0, 0, 216)",
 			"Line boundary Start" : "rgb(216, 0, 0)",
 			"Play Cursor" : "rgb(255,255,255)",
-			"Seconds Boundaries" : "rgb(0, 100, 255)",
 			"Spectrum" : "Icy Blue",
 			"Syllable Boundaries" : "rgb(255,255,0)",
-			"Syllable Text" : "rgb(255,0,0)",
 			"Waveform" : "Green"
 		},
 		"Schemes" : {

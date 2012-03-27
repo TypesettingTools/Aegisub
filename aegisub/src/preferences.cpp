@@ -122,12 +122,12 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 /// Audio preferences page
 Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Audio")) {
 	wxFlexGridSizer *general = PageSizer(_("Options"));
-	OptionAdd(general, _("Grab times from line upon selection"), "Audio/Grab Times on Select");
 	OptionAdd(general, _("Default mouse wheel to zoom"), "Audio/Wheel Default to Zoom");
 	OptionAdd(general, _("Lock scroll on cursor"), "Audio/Lock Scroll on Cursor");
 	OptionAdd(general, _("Snap markers by default"), "Audio/Snap/Enable");
 	OptionAdd(general, _("Auto-focus on mouse over"), "Audio/Auto/Focus");
 	OptionAdd(general, _("Play audio when stepping in video"), "Audio/Plays When Stepping Video");
+	CellSkip(general);
 	OptionAdd(general, _("Default timing length"), "Timing/Default Duration", 0, 36000);
 	OptionAdd(general, _("Default lead-in length"), "Audio/Lead/IN", 0, 36000);
 	OptionAdd(general, _("Default lead-out length"), "Audio/Lead/OUT", 0, 36000);
@@ -143,12 +143,10 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Include commented inactive lines"), "Audio/Display/Draw/Inactive Comments");
 
 	wxFlexGridSizer *display = PageSizer(_("Display Visual Options"));
-	OptionAdd(display, _("Selection background"), "Audio/Display/Draw/Selection Background");
-	OptionAdd(display, _("Cursor time"), "Audio/Display/Draw/Cursor Time");
 	OptionAdd(display, _("Keyframes"), "Audio/Display/Draw/Keyframes in Dialogue Mode");
 	OptionAdd(display, _("Karaoke keyframes"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
+	OptionAdd(display, _("Cursor time"), "Audio/Display/Draw/Cursor Time");
 	OptionAdd(display, _("Video position"), "Audio/Display/Draw/Video Position");
-	CellSkip(display);
 	OptionChoice(display, _("Waveform Style"), AudioWaveformRenderer::GetWaveformStyles(), "Audio/Display/Waveform Style");
 
 	wxFlexGridSizer *label = PageSizer(_("Audio labels"));
@@ -221,11 +219,9 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 
 	wxFlexGridSizer *audio = PageSizer(_("Audio Display"));
 	OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
-	OptionAdd(audio, _("Seconds boundaries"), "Colour/Audio Display/Seconds Boundaries");
 	OptionAdd(audio, _("Line boundary start"), "Colour/Audio Display/Line boundary Start");
 	OptionAdd(audio, _("Line boundary end"), "Colour/Audio Display/Line boundary End");
 	OptionAdd(audio, _("Line boundary inactive line"), "Colour/Audio Display/Line Boundary Inactive Line");
-	OptionAdd(audio, _("Syllable text"), "Colour/Audio Display/Syllable Text");
 	OptionAdd(audio, _("Syllable boundaries"), "Colour/Audio Display/Syllable Boundaries");
 
 	sizer = new wxBoxSizer(wxVERTICAL);
@@ -520,8 +516,6 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	OptionAdd(cache, _("File name"), "Audio/Cache/HD/Name");
 
 	wxFlexGridSizer *spectrum = PageSizer(_("Spectrum"));
-
-	OptionAdd(spectrum, _("Cutoff"), "Audio/Renderer/Spectrum/Cutoff");
 
 	const wxString sq_arr[4] = { _("Regular quality"), _("Better quality"), _("High quality"), _("Insane quality") };
 	wxArrayString sq_choice(4, sq_arr);
