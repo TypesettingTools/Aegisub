@@ -103,15 +103,21 @@ public:
 
 	/// @brief Check if the given file can be read by this format
 	///
-	/// Default implement ion simply checks if the file's extension is in the
+	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
 	virtual bool CanReadFile(wxString const& filename) const;
 
 	/// @brief Check if the given file can be written by this format
 	///
-	/// Default implement ion simply checks if the file's extension is in the
+	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
 	virtual bool CanWriteFile(wxString const& filename) const;
+
+	/// @brief Check if the given subtitles can be losslessly written by this format
+	///
+	/// Default implementation rejects files with attachments, non-default
+	/// styles, and any overrides
+	virtual bool CanSave(const AssFile *file) const;
 
 	/// Load a subtitle file
 	/// @param[out] target Destination to read lines into

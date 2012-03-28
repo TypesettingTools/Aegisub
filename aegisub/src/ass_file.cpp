@@ -225,45 +225,9 @@ void AssFile::SaveMemory(std::vector<char> &dst) {
 	}
 }
 
-bool AssFile::CanSave() {
-	// ASS format?
-	wxString ext = filename.Lower().Right(4);
-	if (ext == ".ass") return true;
-
-	// Never save texts
-	if (ext == ".txt") return false;
-
-	// Check if it's a known extension
-	if (!SubtitleFormat::GetWriter(filename)) return false;
-
-	// Scan through the lines
-	AssStyle defstyle;
-	AssStyle *curstyle;
-	AssDialogue *curdiag;
-	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
-		// Check style, if anything non-default is found, return false
-		curstyle = dynamic_cast<AssStyle*>(*cur);
-		if (curstyle) {
-			if (curstyle->GetEntryData() != defstyle.GetEntryData()) return false;
-		}
-
-		// Check for attachments, if any is found, return false
-		if (dynamic_cast<AssAttachment*>(*cur)) return false;
-
-		// Check dialog
-		curdiag = dynamic_cast<AssDialogue*>(*cur);
-		if (curdiag) {
-			// Overrides?
-			curdiag->ParseASSTags();
-			for (size_t i=0;i<curdiag->Blocks.size();i++) {
-				if (curdiag->Blocks[i]->GetType() != BLOCK_PLAIN) return false;
-			}
-			curdiag->ClearBlocks();
-		}
-	}
-
-	// Success
-	return true;
+bool AssFile::CanSave() const {
+	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
+	return writer && writer->CanSave(this);
 }
 
 void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {

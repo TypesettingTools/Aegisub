@@ -48,6 +48,9 @@ public:
 	wxArrayString GetReadWildcards() const;
 	wxArrayString GetWriteWildcards() const;
 
+	// Naturally the ASS subtitle format can save all Ass files
+	bool CanSave(const AssFile*) const { return true; }
+
 	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
 	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
 };

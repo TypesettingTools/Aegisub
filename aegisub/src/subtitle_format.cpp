@@ -36,14 +36,17 @@
 
 #include "config.h"
 
+#include "subtitle_format.h"
+
 #ifndef AGI_PRE
 #include <wx/intl.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
+#include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "subtitle_format.h"
+#include "ass_style.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_encore.h"
 #include "subtitle_format_microdvd.h"
@@ -75,7 +78,28 @@ bool SubtitleFormat::CanWriteFile(wxString const& filename) const {
 	return GetWriteWildcards().Index(filename.AfterLast('.'), false) != wxNOT_FOUND;
 }
 
-/// @brief Ask the user to enter the FPS
+bool SubtitleFormat::CanSave(const AssFile *subs) const {
+	AssStyle defstyle;
+	for (std::list<AssEntry*>::const_iterator cur = subs->Line.begin(); cur != subs->Line.end(); ++cur) {
+		// Check style, if anything non-default is found, return false
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(*cur)) {
+			if (curstyle->GetEntryData() != defstyle.GetEntryData())
+				return false;
+		}
+
+		// Check for attachments, if any is found, return false
+		if (dynamic_cast<const AssAttachment*>(*cur)) return false;
+
+		// Check dialog
+		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(*cur)) {
+			if (curdiag->GetStrippedText() != curdiag->Text)
+				return false;
+		}
+	}
+
+	return true;
+}
+
 FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) const {
 	wxArrayString choices;
 	bool drop = false;

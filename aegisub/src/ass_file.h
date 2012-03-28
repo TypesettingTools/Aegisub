@@ -146,7 +146,7 @@ public:
 	/// Add file name to the MRU list
 	void AddToRecent(wxString file);
 	/// Can the file be saved in its current format?
-	bool CanSave();
+	bool CanSave() const;
 	/// @brief Get the list of wildcards supported
 	/// @param mode 0 = open, 1 = save, 2 = export
 	static wxString GetWildcardList(int mode);

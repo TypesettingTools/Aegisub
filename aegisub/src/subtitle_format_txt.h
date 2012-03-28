@@ -47,6 +47,9 @@ public:
 	wxArrayString GetReadWildcards() const;
 	wxArrayString GetWriteWildcards() const;
 
+	// TXT format supports so little that it should always require an export
+	bool CanSave(const AssFile*) const { return false; }
+
 	bool CanWriteFile(wxString const& filename) const;
 	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
 	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
