@@ -253,9 +253,6 @@ bool AssFile::CanSave() {
 		// Check dialog
 		curdiag = dynamic_cast<AssDialogue*>(*cur);
 		if (curdiag) {
-			// Timed?
-			if (curdiag->Start != 0 || curdiag->End != 0) return false;
-
 			// Overrides?
 			curdiag->ParseASSTags();
 			for (size_t i=0;i<curdiag->Blocks.size();i++) {
