@@ -36,6 +36,8 @@
 
 #include "subtitle_format.h"
 
+class AssDialogue;
+
 /// DOCME
 /// @class SRTSubtitleFormat
 /// @brief DOCME
@@ -47,6 +49,8 @@ public:
 	SRTSubtitleFormat();
 	wxArrayString GetReadWildcards() const;
 	wxArrayString GetWriteWildcards() const;
+
+	bool CanSave(const AssFile *file) const;
 
 	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
 	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;

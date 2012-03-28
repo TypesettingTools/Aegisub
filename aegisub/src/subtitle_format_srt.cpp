@@ -36,17 +36,20 @@
 
 #include "config.h"
 
+#include "subtitle_format_srt.h"
+
 #ifndef AGI_PRE
 #include <wx/regex.h>
 #endif
 
+#include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
 #include "colorspace.h"
 #include "compat.h"
-#include "subtitle_format_srt.h"
+#include "utils.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
@@ -514,6 +517,42 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 			file.WriteLineToFile("");
 		}
 	}
+}
+
+bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
+	wxString supported_tags[] = { "\\b", "\\i", "\\s", "\\u" };
+
+	AssStyle defstyle;
+	for (std::list<AssEntry*>::const_iterator cur = file->Line.begin(); cur != file->Line.end(); ++cur) {
+		// Check style, if anything non-default is found, return false
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(*cur)) {
+			if (curstyle->GetEntryData() != defstyle.GetEntryData())
+				return false;
+		}
+
+		// Check for attachments, if any is found, return false
+		if (dynamic_cast<const AssAttachment*>(*cur)) return false;
+
+		// Check dialogue
+		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(*cur)) {
+			std::vector<AssDialogueBlock*> blocks = curdiag->ParseTags();
+			for (size_t i = 0; i < blocks.size(); ++i) {
+				AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(blocks[i]);
+				if (!ovr) continue;
+
+				// Verify that all overrides used are supported
+				for (size_t j = 0; j < ovr->Tags.size(); ++j) {
+					if (!std::binary_search(supported_tags, supported_tags + 4, ovr->Tags[j]->Name)) {
+						delete_clear(blocks);
+						return false;
+					}
+				}
+			}
+			delete_clear(blocks);
+		}
+	}
+
+	return true;
 }
 
 wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
