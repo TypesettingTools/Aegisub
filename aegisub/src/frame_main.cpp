@@ -214,7 +214,7 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog("Possibly perform automatic updates check");
 	if (OPT_GET("App/First Start")->GetBool()) {
 		OPT_SET("App/First Start")->SetBool(false);
-		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"),wxYES_NO);
+		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"), wxYES_NO | wxCENTER);
 		OPT_SET("App/Auto/Check For Updates")->SetBool(result == wxYES);
 	}
 
@@ -326,20 +326,20 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 		context->ass->Load(filename,charset);
 	}
 	catch (agi::FileNotFoundError const&) {
-		wxMessageBox(filename + " not found.", "Error", wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(filename + " not found.", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		config::mru->Remove("Subtitle", STD_STR(filename));
 		return;
 	}
 	catch (const char *err) {
-		wxMessageBox(wxString(err), "Error", wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(wxString(err), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
 	}
 	catch (wxString const& err) {
-		wxMessageBox(err, "Error", wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR, NULL);
+		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
 	}
 }
@@ -448,7 +448,7 @@ void FrameMain::OnVideoOpen() {
 			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " has no audio data: " << e.GetChainedMessage();
 		}
 		catch (agi::AudioOpenError const& err) {
-			wxMessageBox(lagi_wxString(err.GetMessage()), "Error loading audio", wxICON_ERROR | wxOK);
+			wxMessageBox(lagi_wxString(err.GetMessage()), "Error loading audio", wxOK | wxICON_ERROR | wxCENTER);
 		}
 	}
 }

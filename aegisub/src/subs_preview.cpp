@@ -141,7 +141,7 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 		wxMessageBox(
 			"Could not get any subtitles provider for the preview box. Make "
 			"sure that you have a provider installed.",
-			"No subtitles provider", wxICON_ERROR | wxOK);
+			"No subtitles provider", wxOK | wxICON_ERROR | wxCENTER);
 	}
 
 	subFile->SetScriptInfo("PlayResX", wxString::Format("%d", w));

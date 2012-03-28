@@ -254,7 +254,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 	}
 
 	if (count == 0)
-		wxMessageBox(message, _("Selection"), wxOK);
+		wxMessageBox(message, _("Selection"), wxOK | wxCENTER, this);
 	else
 		wxGetApp().frame->StatusTimeout(message);
 

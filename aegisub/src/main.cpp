@@ -336,7 +336,7 @@ static void UnhandledExeception(bool stackWalk) {
 #endif
 
 		// Inform user of crash.
-		wxMessageBox(wxString::Format(exception_message, filename), _("Program error"), wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(wxString::Format(exception_message, filename), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, NULL);
 	}
 	else if (LastStartupState) {
 #if wxUSE_STACKWALKER == 1
@@ -345,7 +345,7 @@ static void UnhandledExeception(bool stackWalk) {
 			walker.WalkFromException();
 		}
 #endif
-		wxMessageBox(wxString::Format("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR);
+		wxMessageBox(wxString::Format("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR | wxCENTER);
 	}
 #endif
 }
@@ -362,7 +362,7 @@ void AegisubApp::OnFatalException() {
 }
 
 void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const {
-#define SHOW_EXCEPTION(str) wxMessageBox(str, "Exception in event handler", wxOK|wxICON_ERROR|wxSTAY_ON_TOP)
+#define SHOW_EXCEPTION(str) wxMessageBox(str, "Exception in event handler", wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
 	try {
 		wxApp::HandleEvent(handler, func, event);
 	}

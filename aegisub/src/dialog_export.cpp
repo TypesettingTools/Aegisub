@@ -157,16 +157,16 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 	catch (agi::UserCancelException const&) {
 	}
 	catch (const char *error) {
-		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR, this);
+		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (wxString const& error) {
-		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR, this);
+		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(err.GetMessage(), "Error exporting subtitles", wxOK | wxICON_ERROR, this);
+		wxMessageBox(err.GetMessage(), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR, this);
+		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 
 	EndModal(0);

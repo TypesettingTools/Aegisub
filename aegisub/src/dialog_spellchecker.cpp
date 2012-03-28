@@ -92,14 +92,14 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	// List of supported spellchecker languages
 	{
 		if (!spellchecker.get()) {
-			wxMessageBox("No spellchecker available.", "Error", wxICON_ERROR | wxOK);
+			wxMessageBox("No spellchecker available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
 			Destroy();
 			return;
 		}
 
 		dictionary_lang_codes = spellchecker->GetLanguageList();
 		if (dictionary_lang_codes.empty()) {
-			wxMessageBox("No spellchecker dictionaries available.", "Error", wxICON_ERROR | wxOK);
+			wxMessageBox("No spellchecker dictionaries available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
 			Destroy();
 			return;
 		}

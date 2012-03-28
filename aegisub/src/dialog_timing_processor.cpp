@@ -324,7 +324,7 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 			wxMessageBox(
 				wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."), i),
 				_("Invalid script"),
-				wxICON_ERROR|wxOK);
+				wxOK | wxICON_ERROR | wxCENTER);
 			sorted.clear();
 			break;
 		}

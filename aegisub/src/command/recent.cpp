@@ -75,7 +75,7 @@ struct recent_audio_entry : public Command {
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };

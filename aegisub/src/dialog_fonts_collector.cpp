@@ -271,16 +271,16 @@ void DialogFontsCollector::OnStart(wxCommandEvent &) {
 			}
 
 			if (folder.FileExists())
-				wxMessageBox(_("Invalid destination."), _("Error"), wxICON_EXCLAMATION | wxOK);
+				wxMessageBox(_("Invalid destination."), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 			if (!folder.DirExists())
 				folder.Mkdir(0777, wxPATH_MKDIR_FULL);
 			if (!folder.DirExists()) {
-				wxMessageBox(_("Could not create destination folder."), _("Error"), wxICON_EXCLAMATION | wxOK);
+				wxMessageBox(_("Could not create destination folder."), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 				return;
 			}
 		}
 		else if (folder.IsDir() || folder.GetName().empty()) {
-			wxMessageBox(_("Invalid path for .zip file."), _("Error"), wxICON_EXCLAMATION | wxOK);
+			wxMessageBox(_("Invalid path for .zip file."), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 			return;
 		}
 	}

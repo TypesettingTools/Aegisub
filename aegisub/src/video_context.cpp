@@ -162,7 +162,12 @@ void VideoContext::SetVideo(const wxString &filename) {
 		else if (sx % vx != 0 || sy % vy != 0) {
 			switch (OPT_GET("Video/Check Script Res")->GetInt()) {
 			case 1: // Ask to change on mismatch
-				if (wxMessageBox(wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vx, vy, sx, sy), _("Resolution mismatch"), wxYES_NO, context->parent) != wxYES)
+				if (wxYES != wxMessageBox(
+					wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vx, vy, sx, sy),
+					_("Resolution mismatch"),
+					wxYES_NO | wxCENTER,
+					context->parent))
+
 					break;
 				// Fallthrough to case 2
 			case 2: // Always change script res
@@ -216,10 +221,10 @@ void VideoContext::SetVideo(const wxString &filename) {
 	catch (agi::UserCancelException const&) { }
 	catch (agi::FileNotAccessibleError const& err) {
 		config::mru->Remove("Video", STD_STR(filename));
-		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxICON_ERROR | wxOK);
+		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
 	}
 	catch (VideoProviderError const& err) {
-		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxICON_ERROR | wxOK);
+		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
 	}
 }
 
@@ -417,7 +422,7 @@ void VideoContext::LoadKeyframes(wxString filename) {
 		config::mru->Add("Keyframes", STD_STR(filename));
 	}
 	catch (agi::keyframe::Error const& err) {
-		wxMessageBox(err.GetMessage(), "Error opening keyframes file", wxOK | wxICON_ERROR, NULL);
+		wxMessageBox(err.GetMessage(), "Error opening keyframes file", wxOK | wxICON_ERROR | wxCENTER, context->parent);
 		config::mru->Remove("Keyframes", STD_STR(filename));
 	}
 	catch (agi::FileSystemError const&) {

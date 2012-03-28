@@ -83,7 +83,7 @@ void AssFile::Load(const wxString &_filename, wxString charset, bool addToRecent
 		// Get proper format reader
 		const SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
 		if (!reader) {
-			wxMessageBox("Unknown file type","Error loading file",wxICON_ERROR | wxOK);
+			wxMessageBox("Unknown file type","Error loading file",wxOK | wxICON_ERROR | wxCENTER);
 			return;
 		}
 
@@ -114,12 +114,12 @@ void AssFile::Load(const wxString &_filename, wxString charset, bool addToRecent
 	}
 	// Real exception
 	catch (agi::Exception &e) {
-		wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR|wxOK);
+		wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER);
 		return;
 	}
 	// Other error
 	catch (...) {
-		wxMessageBox("Unknown error","Error loading file",wxICON_ERROR | wxOK);
+		wxMessageBox("Unknown error","Error loading file",wxOK | wxICON_ERROR | wxCENTER);
 		return;
 	}
 

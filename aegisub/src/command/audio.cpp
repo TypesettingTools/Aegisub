@@ -105,7 +105,7 @@ struct audio_open : public Command {
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
@@ -123,7 +123,7 @@ struct audio_open_blank : public Command {
 			c->audioController->OpenAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
 		}
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
@@ -141,7 +141,7 @@ struct audio_open_noise : public Command {
 			c->audioController->OpenAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
 		}
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
@@ -165,7 +165,7 @@ struct audio_open_video : public Command {
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxICON_ERROR | wxOK);
+			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };

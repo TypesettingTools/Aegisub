@@ -192,7 +192,7 @@ struct app_language : public Command {
 			OPT_SET("App/Locale")->SetInt(newCode);
 
 			// Ask to restart program
-			int result = wxMessageBox("Aegisub needs to be restarted so that the new language can be applied. Restart now?", "Restart Aegisub?", wxICON_QUESTION | wxYES_NO);
+			int result = wxMessageBox("Aegisub needs to be restarted so that the new language can be applied. Restart now?", "Restart Aegisub?", wxYES_NO | wxICON_QUESTION |  wxCENTER);
 			if (result == wxYES) {
 				// Restart Aegisub
 				if (wxGetApp().frame->Close()) {
