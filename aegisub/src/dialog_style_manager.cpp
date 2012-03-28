@@ -765,8 +765,11 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 	int n = list->GetSelections(sels);
 	if (n == 0 && type != 4) return;
 
-	int first = sels.front();
-	int last = sels.back();
+	int first = 0, last = 0;
+	if (n) {
+		first = sels.front();
+		last = sels.back();
+	}
 
 	if (storage) {
 		do_move(Store, type, first, last, true);
