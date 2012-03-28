@@ -178,8 +178,13 @@ public:
 	/// @param version ASS version to try first (4, 4+, ASS2)
 	/// @return Did it successfully parse?
 	bool Parse(wxString data,int version=1);
+
 	/// Parse text as ASS to generate block information
 	void ParseASSTags();
+
+	/// Parse text as ASS and return block information
+	std::vector<AssDialogueBlock*> ParseTags() const;
+
 	/// Clear all blocks, ALWAYS call this after you're done processing tags
 	void ClearBlocks();
 

@@ -233,13 +233,13 @@ wxString AssDialogue::GetSSAText () const {
 	return GetData(true);
 }
 
-void AssDialogue::ParseASSTags() {
-	ClearBlocks();
+std::vector<AssDialogueBlock*> AssDialogue::ParseTags() const {
+	std::vector<AssDialogueBlock*> Blocks;
 
 	// Empty line, make an empty block
 	if (Text.empty()) {
 		Blocks.push_back(new AssDialogueBlockPlain);
-		return;
+		return Blocks;
 	}
 
 	int drawingLevel = 0;
@@ -304,6 +304,13 @@ void AssDialogue::ParseASSTags() {
 			}
 		}
 	}
+
+	return Blocks;
+}
+
+void AssDialogue::ParseASSTags() {
+	ClearBlocks();
+	Blocks = ParseTags();
 }
 
 void AssDialogue::StripTags () {
