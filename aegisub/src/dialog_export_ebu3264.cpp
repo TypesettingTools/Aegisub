@@ -124,7 +124,6 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 	};
 	wxRadioBox *tv_standard_box = new wxRadioBox(this, -1, _("TV standard"), wxDefaultPosition, wxDefaultSize, 6, tv_standards, 0, wxRA_SPECIFY_ROWS);
 
-	wxStaticBox *timecode_control_box = new wxStaticBox(this, -1, _("Time codes"));
 	wxTextCtrl *timecode_offset_entry = new wxTextCtrl(this, -1, "00:00:00:00");
 	wxCheckBox *inclusive_end_times_check = new wxCheckBox(this, -1, _("Out-times are inclusive"));
 
@@ -145,12 +144,19 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 		_("Skip lines that are too long")
 	};
 
-	wxStaticBox *text_formatting_box = new wxStaticBox(this, -1, _("Text formatting"));
 	wxSpinCtrl *max_line_length_ctrl = new wxSpinCtrl(this, -1, wxString(), wxDefaultPosition, wxSize(65, -1));
 	wxComboBox *wrap_mode_ctrl = new wxComboBox(this, -1, wrap_modes[0], wxDefaultPosition, wxDefaultSize, 4, wrap_modes, wxCB_DROPDOWN | wxCB_READONLY);
 	wxCheckBox *translate_alignments_check = new wxCheckBox(this, -1, _("Translate alignments"));
 
 	max_line_length_ctrl->SetRange(10, 99);
+
+	wxString display_standards[] = {
+		_("Open subtitles"),
+		_("Level-1 teletext"),
+		_("Level-2 teletext")
+	};
+
+	wxComboBox *display_standard_ctrl = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 2, display_standards, wxCB_DROPDOWN | wxCB_READONLY);
 
 	wxSizer *max_line_length_labelled = new wxBoxSizer(wxHORIZONTAL);
 	max_line_length_labelled->Add(new wxStaticText(this, -1, _("Max. line length:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
@@ -160,18 +166,22 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 	timecode_offset_labelled->Add(new wxStaticText(this, -1, _("Time code offset:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
 	timecode_offset_labelled->Add(timecode_offset_entry, 0, 0, 0);
 
-	wxSizer *text_formatting_sizer = new wxStaticBoxSizer(text_formatting_box, wxVERTICAL);
+	wxSizer *text_formatting_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Text formatting"));
 	text_formatting_sizer->Add(max_line_length_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	text_formatting_sizer->Add(wrap_mode_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	text_formatting_sizer->Add(translate_alignments_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
-	wxSizer *timecode_control_sizer = new wxStaticBoxSizer(timecode_control_box, wxVERTICAL);
+	wxSizer *timecode_control_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Time codes"));
 	timecode_control_sizer->Add(timecode_offset_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	timecode_control_sizer->Add(inclusive_end_times_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
+	wxSizer *display_standard_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Display standard"));
+	display_standard_sizer->Add(display_standard_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
+
 	wxSizer *left_column = new wxBoxSizer(wxVERTICAL);
-	left_column->Add(tv_standard_box, 0, wxEXPAND|wxBOTTOM, 6);
-	left_column->Add(timecode_control_sizer, 0, wxEXPAND, 0);
+	left_column->Add(tv_standard_box, 0, wxEXPAND | wxBOTTOM, 6);
+	left_column->Add(timecode_control_sizer, 0, wxEXPAND | wxBOTTOM, 6);
+	left_column->Add(display_standard_sizer, 0, wxEXPAND, 0);
 
 	wxSizer *right_column = new wxBoxSizer(wxVERTICAL);
 	right_column->Add(text_encoding_box, 0, wxEXPAND|wxBOTTOM, 6);
@@ -203,6 +213,7 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 	wrap_mode_ctrl->SetValidator(wxGenericValidator((int*)&s.line_wrapping_mode));
 	inclusive_end_times_check->SetValidator(wxGenericValidator(&s.inclusive_end_times));
 	timecode_offset_entry->SetValidator(TimecodeValidator(&s.timecode_offset));
+	display_standard_ctrl->SetValidator(wxGenericValidator((int*)&s.display_standard));
 }
 
 agi::vfr::Framerate EbuExportSettings::GetFramerate() const {
@@ -237,6 +248,7 @@ EbuExportSettings::EbuExportSettings(std::string const& prefix)
 , line_wrapping_mode((LineWrappingMode)OPT_GET(prefix + "/Line Wrapping Mode")->GetInt())
 , translate_alignments(OPT_GET(prefix + "/Translate Alignments")->GetBool())
 , inclusive_end_times(OPT_GET(prefix + "/Inclusive End Times")->GetBool())
+, display_standard((DisplayStandard)OPT_GET(prefix + "/Display Standard")->GetInt())
 {
 	timecode_offset.h = OPT_GET(prefix + "/Timecode Offset/H")->GetInt();
 	timecode_offset.m = OPT_GET(prefix + "/Timecode Offset/M")->GetInt();
@@ -251,6 +263,7 @@ void EbuExportSettings::Save() const {
 	OPT_SET(prefix + "/Line Wrapping Mode")->SetInt(line_wrapping_mode);
 	OPT_SET(prefix + "/Translate Alignments")->SetBool(translate_alignments);
 	OPT_SET(prefix + "/Inclusive End Times")->SetBool(inclusive_end_times);
+	OPT_SET(prefix + "/Display Standard")->SetInt(display_standard);
 	OPT_SET(prefix + "/Timecode Offset/H")->SetInt(timecode_offset.h);
 	OPT_SET(prefix + "/Timecode Offset/M")->SetInt(timecode_offset.m);
 	OPT_SET(prefix + "/Timecode Offset/S")->SetInt(timecode_offset.s);

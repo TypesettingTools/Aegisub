@@ -387,6 +387,7 @@
 
 	"Subtitle Format" : {
 		"EBU STL" : {
+			"Display Standard" : 0,
 			"Inclusive End Times" : true,
 			"Line Wrapping Mode" : 1,
 			"Max Line Length" : 42,

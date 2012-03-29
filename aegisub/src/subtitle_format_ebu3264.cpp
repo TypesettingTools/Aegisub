@@ -455,7 +455,7 @@ namespace
 		return reinterpret_cast<const char *>(str.wx_str());
 	}
 
-	std::string convert_subtitle_line(std::vector<EbuSubtitle>::const_iterator sub, agi::charset::IconvWrapper *encoder)
+	std::string convert_subtitle_line(std::vector<EbuSubtitle>::const_iterator sub, agi::charset::IconvWrapper *encoder, bool enable_formatting)
 	{
 		std::string fullstring;
 		for (std::vector<EbuTextRow>::const_iterator row = sub->text_rows.begin(); row != sub->text_rows.end(); ++row)
@@ -464,14 +464,17 @@ namespace
 			bool underline = false, italic = false;
 			for (std::vector<EbuFormattedText>::const_iterator block = row->begin(); block != row->end(); ++block)
 			{
-				// insert codes for changed formatting
-				if (underline != block->underline)
-					fullstring += EBU_FORMAT_UNDERLINE[block->underline];
-				if (italic != block->italic)
-					fullstring += EBU_FORMAT_ITALIC[block->italic];
+				if (enable_formatting)
+				{
+					// insert codes for changed formatting
+					if (underline != block->underline)
+						fullstring += EBU_FORMAT_UNDERLINE[block->underline];
+					if (italic != block->italic)
+						fullstring += EBU_FORMAT_ITALIC[block->italic];
 
-				underline = block->underline;
-				italic = block->italic;
+					underline = block->underline;
+					italic = block->italic;
+				}
 
 				// convert text to specified encoding
 				fullstring += encoder->Convert(std::string(wx_str(block->text), buffer_size(block->text)));
@@ -500,13 +503,22 @@ namespace
 		agi::scoped_ptr<agi::charset::IconvWrapper> encoder(export_settings.GetTextEncoder());
 		agi::vfr::Framerate fps = export_settings.GetFramerate();
 
+		// Teletext captions are 1-23; Open subtitles are 0-99
+		uint8_t min_row = 0;
+		uint8_t max_row = 100;
+		if (export_settings.display_standard != EbuExportSettings::DSC_Open) {
+			min_row = 1;
+			max_row = 24;
+		}
+
 		uint16_t subtitle_number = 0;
 
 		std::vector<BlockTTI> tti;
 		tti.reserve(subs_list.size());
 		for (std::vector<EbuSubtitle>::const_iterator sub = subs_list.begin(); sub != subs_list.end(); ++sub)
 		{
-			std::string fullstring = convert_subtitle_line(sub, encoder.get());
+			std::string fullstring = convert_subtitle_line(sub, encoder.get(),
+				export_settings.display_standard == EbuExportSettings::DSC_Open);
 
 			// construct a base block that can be copied and filled
 			BlockTTI base;
@@ -523,17 +535,17 @@ namespace
 			{
 				// vertical position
 				if (sub->vertical_position == EbuSubtitle::PositionTop)
-					base.vp = 0;
+					base.vp = min_row;
 				else if (sub->vertical_position == EbuSubtitle::PositionMiddle)
-					base.vp = std::min<size_t>(0, 50 - (10 * sub->text_rows.size()));
+					base.vp = std::min<uint8_t>(min_row, max_row / 2 - (max_row / 5 * sub->text_rows.size()));
 				else //if (sub->vertical_position == EbuSubtitle::PositionBottom)
-					base.vp = 99;
+					base.vp = max_row - 1;
 
 				base.jc = sub->justification_code;
 			}
 			else
 			{
-				base.vp = 99;
+				base.vp = max_row - 1;
 				base.jc = EbuSubtitle::JustifyCentre;
 			}
 
@@ -591,7 +603,7 @@ namespace
 				memcpy(gsi.dfc, "STL25.01", 8);
 				break;
 		}
-		gsi.dsc = '0'; // open subtitling
+		gsi.dsc = '0' + (int)export_settings.display_standard;
 		gsi.cct[0] = '0';
 		gsi.cct[1] = '0' + (int)export_settings.text_encoding;
 		if (export_settings.text_encoding == EbuExportSettings::utf8)

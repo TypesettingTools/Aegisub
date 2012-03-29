@@ -67,6 +67,13 @@ public:
 		IgnoreOverLength = 3  ///< Skip overly-long lines
 	};
 
+	/// Types of subtitles/captions that can be stored in STL files
+	enum DisplayStandard {
+		DSC_Open      = 0, ///< Open subtitles
+		DSC_Level1    = 1, ///< Level-1 teletext closed captions
+		DSC_Level2    = 2  ///< Level-2 teletext closed captions
+	};
+
 	/// Which TV standard (frame rate + timecode encoding) to use
 	TvStandard tv_standard;
 
@@ -87,6 +94,9 @@ public:
 
 	/// Are end timecodes inclusive or exclusive?
 	bool inclusive_end_times;
+
+	/// Save as subtitles, or as closed captions?
+	DisplayStandard display_standard;
 
 	/// Get the frame rate for the current TV Standard
 	agi::vfr::Framerate GetFramerate() const;
