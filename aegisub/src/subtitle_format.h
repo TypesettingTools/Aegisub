@@ -65,32 +65,31 @@ class SubtitleFormat {
 	/// List of loaded subtitle formats
 	static std::list<SubtitleFormat*> formats;
 
-protected:
+public:
 	typedef std::list<AssEntry*> LineList;
 
 	/// Strip override tags
-	void StripTags(LineList &lines) const;
+	static void StripTags(LineList &lines);
 	/// Convert newlines to the specified character(s)
 	/// @param lineEnd newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
-	void ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks = true) const;
+	static void ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
-	void StripComments(LineList &lines) const;
+	static void StripComments(LineList &lines);
 	/// Remove everything but the dialogue lines
-	void StripNonDialogue(LineList &lines) const;
+	static void StripNonDialogue(LineList &lines);
 	/// @brief Split and merge lines so there are no overlapping lines
 	///
 	/// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-	void RecombineOverlaps(LineList &lines) const;
+	static void RecombineOverlaps(LineList &lines);
 	/// Merge sequential identical lines
-	void MergeIdentical(LineList &lines) const;
+	static void MergeIdentical(LineList &lines);
 
 	/// Prompt the user for a frame rate to use
 	/// @param allow_vfr Include video frame rate as an option even if it's vfr
 	/// @param show_smpte Show SMPTE drop frame option
-	agi::vfr::Framerate AskForFPS(bool allow_vfr, bool show_smpte) const;
+	static agi::vfr::Framerate AskForFPS(bool allow_vfr, bool show_smpte);
 
-public:
 	/// Constructor
 	/// @param Subtitle format name
 	/// @note Automatically registers the format

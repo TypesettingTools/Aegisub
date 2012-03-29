@@ -385,6 +385,23 @@
 		}
 	},
 
+	"Subtitle Format" : {
+		"EBU STL" : {
+			"Inclusive End Times" : true,
+			"Line Wrapping Mode" : 1,
+			"Max Line Length" : 42,
+			"TV Standard" : 0,
+			"Text Encoding" : 0,
+			"Timecode Offset" : {
+				"H" : 0,
+				"M" : 0,
+				"S" : 0,
+				"F" : 0
+			},
+			"Translate Alignments" : true
+		}
+	},
+
 	"Timing" : {
 		"Default Duration" : 2000
 	},

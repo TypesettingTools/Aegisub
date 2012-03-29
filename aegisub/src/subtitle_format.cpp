@@ -48,6 +48,7 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "subtitle_format_ass.h"
+#include "subtitle_format_ebu3264.h"
 #include "subtitle_format_encore.h"
 #include "subtitle_format_microdvd.h"
 #include "subtitle_format_mkv.h"
@@ -100,7 +101,7 @@ bool SubtitleFormat::CanSave(const AssFile *subs) const {
 	return true;
 }
 
-agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) const {
+agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
 	wxArrayString choices;
 
 	// Video FPS
@@ -164,7 +165,7 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) c
 	return Framerate();
 }
 
-void SubtitleFormat::StripTags(LineList &lines) const {
+void SubtitleFormat::StripTags(LineList &lines) {
 	for (LineList::iterator cur = lines.begin(); cur != lines.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			current->StripTags();
@@ -172,7 +173,7 @@ void SubtitleFormat::StripTags(LineList &lines) const {
 	}
 }
 
-void SubtitleFormat::ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks) const {
+void SubtitleFormat::ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks) {
 	for (LineList::iterator cur = lines.begin(); cur != lines.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			current->Text.Replace("\\h", " ");
@@ -185,7 +186,7 @@ void SubtitleFormat::ConvertNewlines(LineList &lines, wxString const& newline, b
 	}
 }
 
-void SubtitleFormat::StripComments(LineList &lines) const {
+void SubtitleFormat::StripComments(LineList &lines) {
 	for (LineList::iterator it = lines.begin(); it != lines.end(); ) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
 		if (!diag || (!diag->Comment && diag->Text.size()))
@@ -197,7 +198,7 @@ void SubtitleFormat::StripComments(LineList &lines) const {
 	}
 }
 
-void SubtitleFormat::StripNonDialogue(LineList &lines) const {
+void SubtitleFormat::StripNonDialogue(LineList &lines) {
 	for (LineList::iterator it = lines.begin(); it != lines.end(); ) {
 		if (dynamic_cast<AssDialogue*>(*it))
 			++it;
@@ -216,7 +217,7 @@ static bool dialog_start_lt(AssEntry *pos, AssDialogue *to_insert) {
 /// @brief Split and merge lines so there are no overlapping lines
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-void SubtitleFormat::RecombineOverlaps(LineList &lines) const {
+void SubtitleFormat::RecombineOverlaps(LineList &lines) {
 	LineList::iterator cur, next = lines.begin();
 	cur = next++;
 
@@ -288,7 +289,7 @@ void SubtitleFormat::RecombineOverlaps(LineList &lines) const {
 }
 
 /// @brief Merge identical lines that follow each other
-void SubtitleFormat::MergeIdentical(LineList &lines) const {
+void SubtitleFormat::MergeIdentical(LineList &lines) {
 	LineList::iterator cur, next = lines.begin();
 	cur = next++;
 
@@ -313,6 +314,7 @@ std::list<SubtitleFormat*> SubtitleFormat::formats;
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
 		new ASSSubtitleFormat;
+		new Ebu3264SubtitleFormat;
 		new EncoreSubtitleFormat;
 		new MKVSubtitleFormat;
 		new MicroDVDSubtitleFormat;

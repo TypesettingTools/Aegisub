@@ -297,6 +297,9 @@
     <ClInclude Include="$(SrcDir)dialog_export.h">
       <Filter>Features\Export</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)dialog_export_ebu3264.h">
+      <Filter>Features\Export</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)export_framerate.h">
       <Filter>Features\Export</Filter>
     </ClInclude>
@@ -349,6 +352,9 @@
       <Filter>Subtitle formats</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)subtitle_format_ass.h">
+      <Filter>Subtitle formats</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)subtitle_format_ebu3264.h">
       <Filter>Subtitle formats</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)subtitle_format_encore.h">
@@ -788,6 +794,9 @@
     <ClCompile Include="$(SrcDir)subtitle_format_ass.cpp">
       <Filter>Subtitle formats</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)subtitle_format_ebu3264.cpp">
+      <Filter>Subtitle formats</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)subtitle_format_encore.cpp">
       <Filter>Subtitle formats</Filter>
     </ClCompile>
@@ -879,6 +888,9 @@
       <Filter>Video\UI</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_export.cpp">
+      <Filter>Features\Export</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)dialog_export_ebu3264.cpp">
       <Filter>Features\Export</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)export_fixstyle.cpp">

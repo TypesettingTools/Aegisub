@@ -193,6 +193,7 @@
 #include <wx/validate.h>
 #include <wx/valgen.h>
 #include <wx/valnum.h>
+#include <wx/valgen.h>
 #include <wx/valtext.h>
 #include <wx/wfstream.h>
 #include <wx/window.h>

@@ -109,6 +109,7 @@
     <ClInclude Include="$(SrcDir)dialog_detached_video.h" />
     <ClInclude Include="$(SrcDir)dialog_dummy_video.h" />
     <ClInclude Include="$(SrcDir)dialog_export.h" />
+    <ClInclude Include="$(SrcDir)dialog_export_ebu3264.h" />
     <ClInclude Include="$(SrcDir)dialog_fonts_collector.h" />
     <ClInclude Include="$(SrcDir)dialog_jumpto.h" />
     <ClInclude Include="$(SrcDir)dialog_kara_timing_copy.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="$(SrcDir)subtitles_provider_libass.h" />
     <ClInclude Include="$(SrcDir)subtitle_format.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_ass.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_ebu3264.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_encore.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_microdvd.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_mkv.h" />
@@ -293,6 +295,7 @@
     <ClCompile Include="$(SrcDir)dialog_detached_video.cpp" />
     <ClCompile Include="$(SrcDir)dialog_dummy_video.cpp" />
     <ClCompile Include="$(SrcDir)dialog_export.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_export_ebu3264.cpp" />
     <ClCompile Include="$(SrcDir)dialog_fonts_collector.cpp" />
     <ClCompile Include="$(SrcDir)dialog_jumpto.cpp" />
     <ClCompile Include="$(SrcDir)dialog_kara_timing_copy.cpp" />
@@ -360,6 +363,7 @@
     <ClCompile Include="$(SrcDir)subtitles_provider_libass.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_ass.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_ebu3264.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_encore.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_microdvd.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_mkv.cpp" />

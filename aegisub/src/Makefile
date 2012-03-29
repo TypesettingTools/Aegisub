@@ -166,6 +166,7 @@ SRC += \
 	dialog_detached_video.cpp \
 	dialog_dummy_video.cpp \
 	dialog_export.cpp \
+	dialog_export_ebu3264.cpp \
 	dialog_fonts_collector.cpp \
 	dialog_jumpto.cpp \
 	dialog_kara_timing_copy.cpp \
@@ -221,6 +222,7 @@ SRC += \
 	subs_preview.cpp \
 	subtitle_format.cpp \
 	subtitle_format_ass.cpp \
+	subtitle_format_ebu3264.cpp \
 	subtitle_format_encore.cpp \
 	subtitle_format_microdvd.cpp \
 	subtitle_format_mkv.cpp \

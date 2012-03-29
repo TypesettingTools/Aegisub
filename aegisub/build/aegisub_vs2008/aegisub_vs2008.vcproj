@@ -1036,6 +1036,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\dialog_export_ebu3264.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\dialog_export_ebu3264.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\dialog_fonts_collector.cpp"
 				>
 			</File>
@@ -1437,6 +1445,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\subtitle_format_ass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\subtitle_format_ebu3264.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\subtitle_format_ebu3264.h"
 				>
 			</File>
 			<File
