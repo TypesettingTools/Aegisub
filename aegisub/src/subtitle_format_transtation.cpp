@@ -59,6 +59,10 @@ wxArrayString TranStationSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
+bool TranStationSubtitleFormat::CanWriteFile(wxString const& filename) const {
+	return filename.Lower().EndsWith(".transtation.txt");
+}
+
 void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	FractionalTime ft = AskForFPS(true);
 	if (!ft.FPS().IsLoaded()) return;

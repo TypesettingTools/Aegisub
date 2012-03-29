@@ -48,6 +48,7 @@ class TranStationSubtitleFormat : public SubtitleFormat {
 
 public:
 	TranStationSubtitleFormat();
+	bool CanWriteFile(wxString const& filename) const;
 	wxArrayString GetWriteWildcards() const;
 	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
 };
