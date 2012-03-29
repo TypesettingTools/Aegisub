@@ -130,9 +130,11 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) c
 	choices.Add(_("119.880 FPS (NTSC x4)"));
 	choices.Add(_("120.000 FPS"));
 
-	using agi::vfr::Framerate;
-	// Ask
+	wxEndBusyCursor();
 	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
+	wxBeginBusyCursor();
+
+	using agi::vfr::Framerate;
 	if (choice == -1)
 		return Framerate();
 
