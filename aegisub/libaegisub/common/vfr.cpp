@@ -181,16 +181,18 @@ Framerate::Framerate(double fps)
 : denominator(default_denominator)
 , numerator(int64_t(fps * denominator))
 , last(0)
+, drop(false)
 {
 	if (fps < 0.) throw BadFPS("FPS must be greater than zero");
 	if (fps > 1000.) throw BadFPS("FPS must not be greater than 1000");
 	timecodes.push_back(0);
 }
 
-Framerate::Framerate(int64_t numerator, int64_t denominator)
+Framerate::Framerate(int64_t numerator, int64_t denominator, bool drop)
 : denominator(denominator)
 , numerator(numerator)
 , last(0)
+, drop(drop && numerator % denominator != 0)
 {
 	if (numerator <= 0 || denominator <= 0)
 		throw BadFPS("Numerator and denominator must both be greater than zero");
@@ -208,6 +210,7 @@ void Framerate::SetFromTimecodes() {
 
 Framerate::Framerate(std::vector<int> const& timecodes)
 : timecodes(timecodes)
+, drop(false)
 {
 	SetFromTimecodes();
 }
@@ -312,6 +315,72 @@ int Framerate::TimeAtFrame(int frame, Time type) const {
 	}
 
 	return timecodes[frame];
+}
+
+void Framerate::SmpteAtFrame(int frame, int *h, int *m, int *s, int *f) const {
+	frame = std::max(frame, 0);
+	int ifps = (int)ceil(FPS());
+
+	if (drop && denominator == 1001 && numerator % 30000 == 0) {
+		// NTSC skips the first two frames of every minute except for multiples
+		// of ten. For multiples of NTSC, simply multiplying the number of
+		// frames skips seems like the most sensible option.
+		const int drop_factor = int(numerator / 30000);
+		const int one_minute = 60 * 30 * drop_factor - drop_factor * 2;
+		const int ten_minutes = 60 * 10 * 30 * drop_factor - drop_factor * 18;
+		const int ten_minute_groups = frame / ten_minutes;
+		const int last_ten_minutes  = frame % ten_minutes;
+
+		frame += ten_minute_groups * 18 * drop_factor;
+		frame += (last_ten_minutes - 2 * drop_factor) / one_minute * 2 * drop_factor;
+	}
+
+	// Non-integral frame rates other than NTSC aren't supported by SMPTE
+	// timecodes, but the user has asked for it so just give something that
+	// resembles a valid timecode which is no more than half a frame off
+	// wallclock time
+	else if (drop && ifps != FPS()) {
+		frame = int(frame / FPS() * ifps + 0.5);
+	}
+
+	*h = frame / (ifps * 60 * 60);
+	*m = (frame / (ifps * 60)) % 60;
+	*s = (frame / ifps) % 60;
+	*f = frame % ifps;
+}
+
+void Framerate::SmpteAtTime(int ms, int *h, int *m, int *s, int *f) const {
+	SmpteAtFrame(FrameAtTime(ms), h, m, s, f);
+}
+
+int Framerate::FrameAtSmpte(int h, int m, int s, int f) const {
+	int ifps = (int)ceil(FPS());
+
+	if (drop && denominator == 1001 && numerator % 30000 == 0) {
+		const int drop_factor = int(numerator / 30000);
+		const int one_minute = 60 * 30 * drop_factor - drop_factor * 2;
+		const int ten_minutes = 60 * 10 * 30 * drop_factor - drop_factor * 18;
+
+		const int ten_m = m / 10;
+		m = m % 10;
+
+		// The specified frame doesn't actually exist so skip forward to the
+		// next frame that does
+		if (m != 0 && s == 0 && f < 2 * drop_factor)
+			f = 2 * drop_factor;
+
+		return h * ten_minutes * 6 + ten_m * ten_minutes + m * one_minute + s * ifps + f;
+	}
+	else if (drop && ifps != FPS()) {
+		int frame = (h * 60 * 60 + m * 60 + s) * ifps + f;
+		return int((double)frame / ifps * FPS() + 0.5);
+	}
+
+	return (h * 60 * 60 + m * 60 + s) * ifps + f;
+}
+
+int Framerate::TimeAtSmpte(int h, int m, int s, int f) const {
+	return TimeAtFrame(FrameAtSmpte(h, m, s, f));
 }
 
 }

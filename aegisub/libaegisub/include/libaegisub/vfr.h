@@ -83,6 +83,9 @@ class Framerate {
 	/// Start time in milliseconds of each frame
 	std::vector<int> timecodes;
 
+	/// Does this frame rate need drop frames and have them enabled?
+	bool drop;
+
 	/// Set FPS properties from the timecodes vector
 	void SetFromTimecodes();
 public:
@@ -102,7 +105,8 @@ public:
 	/// @brief CFR constructor with rational timebase
 	/// @param numerator Timebase numerator
 	/// @param denominator Timebase denominator
-	Framerate(int64_t numerator, int64_t denominator);
+	/// @param drop Enable drop frames if the FPS requires it
+	Framerate(int64_t numerator, int64_t denominator, bool drop=true);
 
 	/// @brief VFR from frame times
 	/// @param timecodes Vector of frame start times in milliseconds
@@ -139,6 +143,54 @@ public:
 	/// results for all frame numbers
 	int TimeAtFrame(int frame, Time type = EXACT) const;
 
+	/// @brief Get the components of the SMPTE timecode for the given time
+	/// @param[out] h Hours component
+	/// @param[out] m Minutes component
+	/// @param[out] s Seconds component
+	/// @param[out] f Frames component
+	///
+	/// For NTSC (30000/1001), this generates proper SMPTE timecodes with drop
+	/// frames handled. For multiples of NTSC, this multiplies the number of
+	/// dropped frames. For other non-integral frame rates, it drops frames in
+	/// an undefined manner which results in no more than half a second error
+	/// from wall clock time.
+	///
+	/// For integral frame rates, no frame dropping occurs.
+	void SmpteAtTime(int ms, int *h, int *m, int *s, int *f) const;
+
+	/// @brief Get the components of the SMPTE timecode for the given frame
+	/// @param[out] h Hours component
+	/// @param[out] m Minutes component
+	/// @param[out] s Seconds component
+	/// @param[out] f Frames component
+	///
+	/// For NTSC (30000/1001), this generates proper SMPTE timecodes with drop
+	/// frames handled. For multiples of NTSC, this multiplies the number of
+	/// dropped frames. For other non-integral frame rates, it drops frames in
+	/// an undefined manner which results in no more than half a second error
+	/// from wall clock time.
+	///
+	/// For integral frame rates, no frame dropping occurs.
+	void SmpteAtFrame(int frame, int *h, int *m, int *s, int *f) const;
+
+	/// @brief Get the frame indicated by the SMPTE timecode components
+	/// @param h Hours component
+	/// @param m Minutes component
+	/// @param s Seconds component
+	/// @param f Frames component
+	/// @return Frame number
+	/// @see SmpteAtFrame
+	int FrameAtSmpte(int h, int m, int s, int f) const;
+
+	/// @brief Get the time indicated by the SMPTE timecode components
+	/// @param h Hours component
+	/// @param m Minutes component
+	/// @param s Seconds component
+	/// @param f Frames component
+	/// @return Time in milliseconds
+	/// @see SmpteAtTime
+	int TimeAtSmpte(int h, int m, int s, int f) const;
+
 	/// @brief Save the current time codes to a file as v2 timecodes
 	/// @param file File name
 	/// @param length Minimum number of frames to output
@@ -149,9 +201,17 @@ public:
 	/// be otherwise sensible.
 	void Save(std::string const& file, int length = -1) const;
 
+	/// Is this frame rate possibly variable?
 	bool IsVFR() const {return timecodes.size() > 1; }
-	bool IsLoaded() const { return numerator > 0; };
+
+	/// Does this represent a valid frame rate?
+	bool IsLoaded() const { return numerator > 0; }
+
+	/// Get average FPS of this frame rate
 	double FPS() const { return double(numerator) / denominator; }
+
+	/// Does this frame rate need drop frames for SMPTE timeish frame numbers?
+	bool NeedsDropFrames() const { return drop; }
 };
 
 	} // namespace vfr

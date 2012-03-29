@@ -64,10 +64,8 @@ bool TranStationSubtitleFormat::CanWriteFile(wxString const& filename) const {
 }
 
 void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
-	FractionalTime ft = AskForFPS(true);
-	if (!ft.FPS().IsLoaded()) return;
-
-	TextFileWriter file(filename, encoding);
+	agi::vfr::Framerate fps = AskForFPS(false, true);
+	if (!fps.IsLoaded()) return;
 
 	// Convert to TranStation
 	AssFile copy(*src);
@@ -76,12 +74,14 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& fi
 	RecombineOverlaps(copy.Line);
 	MergeIdentical(copy.Line);
 
+	SmpteFormatter ft(fps);
+	TextFileWriter file(filename, encoding);
 	AssDialogue *prev = 0;
 	for (std::list<AssEntry*>::iterator it = copy.Line.begin(); it != copy.Line.end(); ++it) {
 		AssDialogue *cur = dynamic_cast<AssDialogue*>(*it);
 
 		if (prev && cur) {
-			file.WriteLineToFile(ConvertLine(&copy, prev, &ft, cur->Start));
+			file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, cur->Start));
 			file.WriteLineToFile("");
 		}
 
@@ -91,13 +91,13 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& fi
 
 	// flush last line
 	if (prev)
-		file.WriteLineToFile(ConvertLine(&copy, prev, &ft, -1));
+		file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, -1));
 
 	// Every file must end with this line
 	file.WriteLineToFile("SUB[");
 }
 
-wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *current, FractionalTime *ft, int nextl_start) const {
+wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *current, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const {
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style
@@ -120,9 +120,9 @@ wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *curr
 	// start of next one, since the end timestamp is inclusive and the lines
 	// would overlap if left as is.
 	if (nextl_start > 0 && end == nextl_start)
-		end = ft->FPS().TimeAtFrame(ft->FPS().FrameAtTime(end, agi::vfr::END) - 1, agi::vfr::END);
+		end = fps.TimeAtFrame(fps.FrameAtTime(end, agi::vfr::END) - 1, agi::vfr::END);
 
-	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft->ToSMPTE(current->Start) + ">" + ft->ToSMPTE(end) + "]\r\n";
+	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft.ToSMPTE(current->Start) + ">" + ft.ToSMPTE(end) + "]\r\n";
 
 	// Process text
 	wxString lineEnd = "\r\n";

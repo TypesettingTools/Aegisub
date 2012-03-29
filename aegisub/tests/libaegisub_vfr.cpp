@@ -445,3 +445,327 @@ TEST(lagi_vfr, duplicate_timestamps) {
 	EXPECT_EQ(2, fps.FrameAtTime(199, EXACT));
 	EXPECT_EQ(3, fps.FrameAtTime(200, EXACT));
 }
+
+#define EXPECT_SMPTE(eh, em, es, ef) \
+	EXPECT_EQ(eh, h); \
+	EXPECT_EQ(em, m); \
+	EXPECT_EQ(es, s); \
+	EXPECT_EQ(ef, f)
+
+TEST(lagi_vfr, to_smpte_ntsc) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(30000, 1001));
+
+	EXPECT_TRUE(fps.NeedsDropFrames());
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(0, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 1);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(29, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 29);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(30, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 1, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1799, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 59, 29);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1800, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 1, 0, 2);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(3597, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 1, 59, 29);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(3598, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 2, 0, 2);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(5396, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 3, 0, 2);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(7194, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 4, 0, 2);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(107892, &h, &m, &s, &f));
+	EXPECT_SMPTE(1, 0, 0, 0);
+
+	for (int i = 0; i < 60 * 60 * 10; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtTime(i * 1000, &h, &m, &s, &f));
+		ASSERT_NEAR(i, h * 3600 + m * 60 + s, 1);
+	}
+}
+
+TEST(lagi_vfr, to_smpte_double_ntsc) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(60000, 1001));
+
+	EXPECT_TRUE(fps.NeedsDropFrames());
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(0, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 1);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(59, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 59);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(60, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 1, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(3599, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 59, 59);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(3600, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 1, 0, 4);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(7195, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 1, 59, 59);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(7196, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 2, 0, 4);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(215784, &h, &m, &s, &f));
+	EXPECT_SMPTE(1, 0, 0, 0);
+
+	for (int i = 0; i < 60 * 60 * 10; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtTime(i * 1000, &h, &m, &s, &f));
+		ASSERT_NEAR(i, h * 3600 + m * 60 + s, 1);
+	}
+}
+
+TEST(lagi_vfr, to_smpte_pal) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(25, 1));
+
+	EXPECT_FALSE(fps.NeedsDropFrames());
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(0, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 1);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(24, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 24);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(25, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 1, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1499, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 59, 24);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1500, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 1, 0, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(25 * 60 * 60, &h, &m, &s, &f));
+	EXPECT_SMPTE(1, 0, 0, 0);
+
+	for (int i = 0; i < 60 * 60 * 10; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtTime(i * 1000, &h, &m, &s, &f));
+		ASSERT_EQ(i, h * 3600 + m * 60 + s);
+	}
+}
+
+// this test is different from the above due to that the exact frames which are
+// skipped are undefined, so instead it tests that the error never exceeds the
+// limit
+TEST(lagi_vfr, to_smpte_decimated) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(24000, 1001));
+
+	EXPECT_TRUE(fps.NeedsDropFrames());
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(0, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 1);
+
+	for (int frame = 0; frame < 100000; ++frame) {
+		ASSERT_NO_THROW(fps.SmpteAtFrame(frame, &h, &m, &s, &f));
+		int expected_time = fps.TimeAtFrame(frame);
+		int real_time = int((h * 3600 + m * 60 + s + f / 24.0) * 1000.0);
+		ASSERT_NEAR(expected_time, real_time, 600.0 / fps.FPS());
+	}
+}
+
+TEST(lagi_vfr, to_smpte_manydrop) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(24, 11));
+
+	EXPECT_TRUE(fps.NeedsDropFrames());
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(0, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 0);
+
+	ASSERT_NO_THROW(fps.SmpteAtFrame(1, &h, &m, &s, &f));
+	EXPECT_SMPTE(0, 0, 0, 1);
+
+	for (int frame = 0; frame < 1000; ++frame) {
+		ASSERT_NO_THROW(fps.SmpteAtFrame(frame, &h, &m, &s, &f));
+		int expected_time = fps.TimeAtFrame(frame);
+		int real_time = int((h * 3600 + m * 60 + s + f / 3.0) * 1000.0);
+		ASSERT_NEAR(expected_time, real_time, 600.0 / fps.FPS());
+	}
+}
+
+TEST(lagi_vfr, from_smpte_ntsc) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(30000, 1001));
+
+	EXPECT_EQ(0, fps.FrameAtSmpte(0, 0, 0, 0));
+	EXPECT_EQ(1, fps.FrameAtSmpte(0, 0, 0, 1));
+	EXPECT_EQ(29, fps.FrameAtSmpte(0, 0, 0, 29));
+	EXPECT_EQ(30, fps.FrameAtSmpte(0, 0, 1, 0));
+	EXPECT_EQ(1799, fps.FrameAtSmpte(0, 0, 59, 29));
+	EXPECT_EQ(1800, fps.FrameAtSmpte(0, 1, 0, 0));
+	EXPECT_EQ(1800, fps.FrameAtSmpte(0, 1, 0, 1));
+	EXPECT_EQ(1800, fps.FrameAtSmpte(0, 1, 0, 2));
+	EXPECT_EQ(3597, fps.FrameAtSmpte(0, 1, 59, 29));
+	EXPECT_EQ(3598, fps.FrameAtSmpte(0, 2, 0, 0));
+	EXPECT_EQ(3598, fps.FrameAtSmpte(0, 2, 0, 1));
+	EXPECT_EQ(3598, fps.FrameAtSmpte(0, 2, 0, 2));
+	EXPECT_EQ(5396, fps.FrameAtSmpte(0, 3, 0, 2));
+	EXPECT_EQ(7194, fps.FrameAtSmpte(0, 4, 0, 2));
+	EXPECT_EQ(107892, fps.FrameAtSmpte(1, 0, 0, 0));
+}
+
+TEST(lagi_vfr, from_smpte_double_ntsc) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(60000, 1001));
+
+	EXPECT_TRUE(fps.NeedsDropFrames());
+
+	EXPECT_EQ(0, fps.FrameAtSmpte(0, 0, 0, 0));
+	EXPECT_EQ(1, fps.FrameAtSmpte(0, 0, 0, 1));
+	EXPECT_EQ(59, fps.FrameAtSmpte(0, 0, 0, 59));
+	EXPECT_EQ(60, fps.FrameAtSmpte(0, 0, 1, 0));
+	EXPECT_EQ(3599, fps.FrameAtSmpte(0, 0, 59, 59));
+	EXPECT_EQ(3600, fps.FrameAtSmpte(0, 1, 0, 4));
+	EXPECT_EQ(7195, fps.FrameAtSmpte(0, 1, 59, 59));
+	EXPECT_EQ(7196, fps.FrameAtSmpte(0, 2, 0, 4));
+	EXPECT_EQ(10792, fps.FrameAtSmpte(0, 3, 0, 0));
+	EXPECT_EQ(10792, fps.FrameAtSmpte(0, 3, 0, 1));
+	EXPECT_EQ(10792, fps.FrameAtSmpte(0, 3, 0, 2));
+	EXPECT_EQ(10792, fps.FrameAtSmpte(0, 3, 0, 3));
+	EXPECT_EQ(10792, fps.FrameAtSmpte(0, 3, 0, 4));
+	EXPECT_EQ(10793, fps.FrameAtSmpte(0, 3, 0, 5));
+	EXPECT_EQ(215784, fps.FrameAtSmpte(1, 0, 0, 0));
+}
+
+TEST(lagi_vfr, from_smpte_pal) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(25, 1));
+
+	EXPECT_FALSE(fps.NeedsDropFrames());
+
+	EXPECT_EQ(0, fps.FrameAtSmpte(0, 0, 0, 0));
+	EXPECT_EQ(1, fps.FrameAtSmpte(0, 0, 0, 1));
+	EXPECT_EQ(24, fps.FrameAtSmpte(0, 0, 0, 24));
+	EXPECT_EQ(25, fps.FrameAtSmpte(0, 0, 1, 0));
+	EXPECT_EQ(1499, fps.FrameAtSmpte(0, 0, 59, 24));
+	EXPECT_EQ(1500, fps.FrameAtSmpte(0, 1, 0, 0));
+	EXPECT_EQ(25 * 60 * 60, fps.FrameAtSmpte(1, 0, 0, 0));
+}
+
+TEST(lagi_vfr, roundtrip_smpte_ntsc) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(30000, 1001));
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	for (int i = 0; i < 100000; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtFrame(i, &h, &m, &s, &f));
+		ASSERT_EQ(i, fps.FrameAtSmpte(h, m, s, f));
+	}
+}
+
+TEST(lagi_vfr, roundtrip_smpte_pal) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(25, 1));
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	for (int i = 0; i < 100000; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtFrame(i, &h, &m, &s, &f));
+		ASSERT_EQ(i, fps.FrameAtSmpte(h, m, s, f));
+	}
+}
+
+TEST(lagi_vfr, roundtrip_smpte_manydrop) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(20, 11));
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	for (int i = 0; i < 10000; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtFrame(i, &h, &m, &s, &f));
+		ASSERT_EQ(i, fps.FrameAtSmpte(h, m, s, f));
+	}
+}
+
+TEST(lagi_vfr, roundtrip_smpte_decimated) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(24000, 1001));
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	for (int i = 0; i < 100000; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtFrame(i, &h, &m, &s, &f));
+		ASSERT_EQ(i, fps.FrameAtSmpte(h, m, s, f));
+	}
+}
+
+TEST(lagi_vfr, to_smpte_ntsc_nodrop) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(30000, 1001, false));
+
+	int h = -1, m = -1, s = -1, f = -1;
+
+	for (int i = 0; i < 100000; ++i) {
+		ASSERT_NO_THROW(fps.SmpteAtFrame(i, &h, &m, &s, &f));
+		ASSERT_EQ(i, h * 60 * 60 * 30 + m * 60 * 30 + s * 30 + f);
+	}
+}
+
+TEST(lagi_vfr, from_smpte_ntsc_nodrop) {
+	Framerate fps;
+	ASSERT_NO_THROW(fps = Framerate(30000, 1001, false));
+
+	int h = 0, m = 0, s = 0, f = 0;
+
+	int i = 0;
+	while (h < 10) {
+		if (f >= 30) {
+			f = 0;
+			++s;
+		}
+
+		if (s >= 60) {
+			s = 0;
+			++m;
+		}
+
+		if (m >= 60) {
+			m = 0;
+			++h;
+		}
+
+		ASSERT_EQ(i, fps.FrameAtSmpte(h, m, s, f));
+		++i;
+		++f;
+	}
+}

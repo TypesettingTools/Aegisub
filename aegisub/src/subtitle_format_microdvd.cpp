@@ -109,7 +109,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename,
 				}
 
 				// If it wasn't an fps line, ask the user for it
-				fps = AskForFPS().FPS();
+				fps = AskForFPS(true, false);
 				if (!fps.IsLoaded()) return;
 			}
 
@@ -125,7 +125,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename,
 }
 
 void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
-	agi::vfr::Framerate fps = AskForFPS().FPS();
+	agi::vfr::Framerate fps = AskForFPS(true, false);
 	if (!fps.IsLoaded()) return;
 
 	AssFile copy(*src);

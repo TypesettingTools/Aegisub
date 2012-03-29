@@ -58,8 +58,8 @@ bool EncoreSubtitleFormat::CanWriteFile(wxString const& filename) const {
 }
 
 void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const&) const {
-	FractionalTime ft = AskForFPS(true);
-	if (!ft.FPS().IsLoaded()) return;
+	agi::vfr::Framerate fps = AskForFPS(false, true);
+	if (!fps.IsLoaded()) return;
 
 	// Convert to encore
 	AssFile copy(*src);
@@ -70,17 +70,19 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filenam
 	StripTags(copy.Line);
 	ConvertNewlines(copy.Line, "\r\n");
 
+
+	// Encode wants ; for NTSC and : for PAL
+	// The manual suggests no other frame rates are supported
+	char sep = fps.NeedsDropFrames() ? ';' : ':';
+	SmpteFormatter ft(fps, sep);
+
 	// Write lines
 	int i = 0;
-
-	// Encore wants ; instead of : if we're dealing with NTSC dropframe stuff
-	char sep = ft.IsDrop() ? ';' : ':';
-
 	TextFileWriter file(filename, "UTF-8");
 	for (LineList::const_iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
 		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
 			++i;
-			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start, sep), ft.ToSMPTE(current->End, sep), current->Text));
+			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start), ft.ToSMPTE(current->End), current->Text));
 		}
 	}
 }

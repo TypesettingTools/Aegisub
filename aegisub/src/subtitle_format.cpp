@@ -100,20 +100,19 @@ bool SubtitleFormat::CanSave(const AssFile *subs) const {
 	return true;
 }
 
-FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) const {
+agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) const {
 	wxArrayString choices;
-	bool drop = false;
 
 	// Video FPS
 	VideoContext *context = VideoContext::Get();
 	bool vidLoaded = context->TimecodesLoaded();
 	if (vidLoaded) {
-		wxString vidFPS;
-		if (context->FPS().IsVFR())
-			vidFPS = "VFR";
+		if (!context->FPS().IsVFR())
+			choices.Add(wxString::Format(_("From video (%g)"), context->FPS().FPS()));
+		else if (allow_vfr)
+			choices.Add(_("From video (VFR)"));
 		else
-			vidFPS = wxString::Format("%.3f", context->FPS().FPS());
-		choices.Add(wxString::Format(_("From video (%s)"), vidFPS));
+			vidLoaded = false;
 	}
 
 	// Standard FPS values
@@ -122,7 +121,7 @@ FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) const {
 	choices.Add(_("24.000 FPS (FILM)"));
 	choices.Add(_("25.000 FPS (PAL)"));
 	choices.Add(_("29.970 FPS (NTSC)"));
-	if (showSMPTE)
+	if (show_smpte)
 		choices.Add(_("29.970 FPS (NTSC with SMPTE dropframe)"));
 	choices.Add(_("30.000 FPS"));
 	choices.Add(_("50.000 FPS (PAL x2)"));
@@ -132,34 +131,35 @@ FractionalTime SubtitleFormat::AskForFPS(bool showSMPTE) const {
 	choices.Add(_("120.000 FPS"));
 
 	using agi::vfr::Framerate;
-	Framerate fps;
 	// Ask
 	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
 	if (choice == -1)
-		return FractionalTime(fps);
+		return Framerate();
 
 	// Get FPS from choice
-	if (vidLoaded) choice--;
-	// dropframe was displayed, that means all choices >4 are bumped up by 1
-	if (!showSMPTE && choice > 4) ++choice;
+	if (vidLoaded)
+		--choice;
+	if (!show_smpte && choice > 4)
+		--choice;
 
 	switch (choice) {
-		case -1: fps = context->FPS();                      break; // VIDEO
-		case 0:  fps = Framerate(15, 1);                    break;
-		case 1:  fps = Framerate(24000, 1001);              break;
-		case 2:  fps = Framerate(24, 1);                    break;
-		case 3:  fps = Framerate(25, 1);                    break;
-		case 4:  fps = Framerate(30000, 1001);              break;
-		case 5:  fps = Framerate(30000, 1001); drop = true; break;
-		case 6:  fps = Framerate(30, 1);                    break;
-		case 7:  fps = Framerate(50, 1);                    break;
-		case 8:  fps = Framerate(60000, 1001);              break;
-		case 9:  fps = Framerate(60, 1);                    break;
-		case 10: fps = Framerate(120000, 1001);             break;
-		case 11: fps = Framerate(120, 1);                   break;
+		case -1: return context->FPS();          break; // VIDEO
+		case 0:  return Framerate(15, 1);        break;
+		case 1:  return Framerate(24000, 1001);  break;
+		case 2:  return Framerate(24, 1);        break;
+		case 3:  return Framerate(25, 1);        break;
+		case 4:  return Framerate(30000, 1001);  break;
+		case 5:  return Framerate(30000, 1001, true); break;
+		case 6:  return Framerate(30, 1);        break;
+		case 7:  return Framerate(50, 1);        break;
+		case 8:  return Framerate(60000, 1001);  break;
+		case 9:  return Framerate(60, 1);        break;
+		case 10: return Framerate(120000, 1001); break;
+		case 11: return Framerate(120, 1);       break;
 	}
 
-	return FractionalTime(fps, drop);
+	assert(false);
+	return Framerate();
 }
 
 void SubtitleFormat::StripTags(LineList &lines) const {

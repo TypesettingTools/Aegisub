@@ -41,6 +41,8 @@
 #ifndef AGI_PRE
 #include <algorithm>
 #include <cmath>
+
+#include <wx/tokenzr.h>
 #endif
 
 #include "utils.h"
@@ -101,59 +103,25 @@ int AssTime::GetTimeSeconds() const { return (time % 60000) / 1000; }
 int AssTime::GetTimeMiliseconds() const { return (time % 1000); }
 int AssTime::GetTimeCentiseconds() const { return (time % 1000) / 10; }
 
-FractionalTime::FractionalTime(agi::vfr::Framerate fps, bool dropframe)
+SmpteFormatter::SmpteFormatter(agi::vfr::Framerate fps, char sep)
 : fps(fps)
-, drop(dropframe)
+, sep(sep)
 {
 }
 
-wxString FractionalTime::ToSMPTE(AssTime time, char sep) {
-	int h=0, m=0, s=0, f=0; // hours, minutes, seconds, fractions
-	int fn = fps.FrameAtTime(time);
+wxString SmpteFormatter::ToSMPTE(AssTime time) const {
+	int h=0, m=0, s=0, f=0;
+	fps.SmpteAtTime(time, &h, &m, &s, &f);
+	return wxString::Format("%02d%c%02d%c%02d%c%02d", h, sep, m, sep, s, sep, f);
+}
 
-	// return 00:00:00:00
-	if (time <= 0) {
-	}
-	// dropframe?
-	else if (drop) {
-		fn += 2 * (fn / (30 * 60)) - 2 * (fn / (30 * 60 * 10));
-		h = fn / (30 * 60 * 60);
-		m = (fn / (30 * 60)) % 60;
-		s = (fn / 30) % 60;
-		f = fn % 30;
-	}
-	// no dropframe; h/m/s may or may not sync to wallclock time
-	else {
-		/*
-		This is truly the dumbest shit. What we're trying to ensure here
-		is that non-integer framerates are desynced from the wallclock
-		time by a correct amount of time. For example, in the
-		NTSC-without-dropframe case, 3600*num/den would be 107892
-		(when truncated to int), which is quite a good approximation of
-		how a long an hour is when counted in 30000/1001 frames per second.
-		Unfortunately, that's not what we want, since frame numbers will
-		still range from 00 to 29, meaning that we're really getting _30_
-		frames per second and not 29.97 and the full hour will be off by
-		almost 4 seconds (108000 frames versus 107892).
-
-		DEATH TO SMPTE
-		*/
-		int fps_approx = floor(fps.FPS() + 0.5);
-		int frames_per_h = 3600*fps_approx;
-		int frames_per_m = 60*fps_approx;
-		int frames_per_s = fps_approx;
-
-		h = fn / frames_per_h;
-		fn = fn % frames_per_h;
-
-		m = fn / frames_per_m;
-		fn = fn % frames_per_m;
-
-		s = fn / frames_per_s;
-		fn = fn % frames_per_s;
-
-		f = fn;
-	}
-
-	return wxString::Format("%02i%c%02%c%02i%c%02i", h, sep, m, sep, s, sep, f);
+AssTime SmpteFormatter::FromSMPTE(wxString const& str) const {
+	long h, m, s, f;
+	wxArrayString toks = wxStringTokenize(str, sep);
+	if (toks.size() != 4) return 0;
+	toks[0].ToLong(&h);
+	toks[1].ToLong(&m);
+	toks[2].ToLong(&s);
+	toks[3].ToLong(&f);
+	return fps.TimeAtSmpte(h, m, s, f);
 }

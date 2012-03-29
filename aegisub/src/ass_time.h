@@ -69,24 +69,19 @@ public:
 	wxString GetASSFormated(bool ms=false) const;
 };
 
-/// DOCME
-/// @class FractionalTime
-/// @brief DOCME
-///
-/// DOCME
-class FractionalTime {
+/// @class SmpteFormatter
+/// @brief Convert times to and from SMPTE timecodes
+class SmpteFormatter {
+	/// Frame rate to use
 	agi::vfr::Framerate fps;
-	bool drop; ///< Enable SMPTE dropframe handling
-
-	/// How often to drop frames when enabled
-	static const int frames_per_period = 17982;
+	/// Separator character
+	char sep;
 
 public:
-	FractionalTime(agi::vfr::Framerate fps, bool dropframe = false);
-
-	bool IsDrop() const { return drop; }
-	agi::vfr::Framerate const& FPS() const { return fps; }
+	SmpteFormatter(agi::vfr::Framerate fps, char sep=':');
 
 	/// Convert an AssTime to a SMPTE timecode
-	wxString ToSMPTE(AssTime time, char sep=':');
+	wxString ToSMPTE(AssTime time) const;
+	/// Convert a SMPTE timecode to an AssTime
+	AssTime FromSMPTE(wxString const& str) const;
 };

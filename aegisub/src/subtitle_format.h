@@ -47,7 +47,7 @@
 
 class AssEntry;
 class AssFile;
-class FractionalTime;
+namespace agi { namespace vfr { class Framerate; } }
 
 /// DOCME
 /// @class SubtitleFormat
@@ -85,9 +85,10 @@ protected:
 	/// Merge sequential identical lines
 	void MergeIdentical(LineList &lines) const;
 
-	/// Prompt the user for a framerate to use
-	/// @param showSMPTE Include SMPTE as an option?
-	FractionalTime AskForFPS(bool showSMPTE=false) const;
+	/// Prompt the user for a frame rate to use
+	/// @param allow_vfr Include video frame rate as an option even if it's vfr
+	/// @param show_smpte Show SMPTE drop frame option
+	agi::vfr::Framerate AskForFPS(bool allow_vfr, bool show_smpte) const;
 
 public:
 	/// Constructor

@@ -37,6 +37,7 @@
 #include "subtitle_format.h"
 
 class AssDialogue;
+class SmpteFormatter;
 
 /// DOCME
 /// @class TranStationSubtitleFormat
@@ -44,7 +45,7 @@ class AssDialogue;
 ///
 /// DOCME
 class TranStationSubtitleFormat : public SubtitleFormat {
-	wxString ConvertLine(AssFile *file, AssDialogue *line, FractionalTime *ft, int nextl_start) const;
+	wxString ConvertLine(AssFile *file, AssDialogue *line, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const;
 
 public:
 	TranStationSubtitleFormat();
