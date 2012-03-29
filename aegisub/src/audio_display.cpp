@@ -565,14 +565,15 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 , scrollbar(new AudioDisplayScrollbar(this))
 , timeline(new AudioDisplayTimeline(this))
 , dragged_object(0)
+, scroll_left(0)
+, pixel_audio_width(0)
+, ms_per_pixel(0.0)
+, scale_amplitude(1.0f)
+, audio_top(0)
+, audio_height(0)
+, track_cursor_pos(-1)
 {
 	style_ranges[0] = AudioStyle_Normal;
-
-	scroll_left = 0;
-	pixel_audio_width = 0;
-	scale_amplitude = 1.0;
-
-	track_cursor_pos = -1;
 
 	audio_renderer->SetAmplitudeScale(scale_amplitude);
 	SetZoomLevel(0);
