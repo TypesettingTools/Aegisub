@@ -59,6 +59,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\json.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\keyframe.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\line_wrap.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\log.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\mru.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option.h" />

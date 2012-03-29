@@ -28,7 +28,8 @@ SRC = \
 		libaegisub_signals.cpp \
 		libaegisub_thesaurus.cpp \
 		libaegisub_util.cpp \
-		libaegisub_vfr.cpp
+		libaegisub_vfr.cpp \
+		libaegisub_line_wrap.cpp
 		
 HEADER = \
 	*.h

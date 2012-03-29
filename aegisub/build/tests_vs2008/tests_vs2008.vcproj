@@ -323,6 +323,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\tests\libaegisub_line_wrap.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\tests\libaegisub_mru.cpp"
 			>
 		</File>

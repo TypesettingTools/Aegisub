@@ -56,6 +56,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\line_wrap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
