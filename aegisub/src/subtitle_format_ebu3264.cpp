@@ -546,9 +546,14 @@ namespace
 
 				tti.push_back(base);
 				// write an extension block number if the remaining text doesn't fit in the block
-				tti.back().ebn = bytes_remaining > block_size ? num_blocks++ : 255;
+				tti.back().ebn = bytes_remaining >= block_size ? num_blocks++ : 255;
 
 				std::copy(&fullstring[pos], &fullstring[pos + std::min(block_size, bytes_remaining)], tti.back().tf);
+
+				// Write another block for the terminator if we exactly used up
+				// the last block
+				if (bytes_remaining == block_size)
+					tti.push_back(base);
 			}
 		}
 
