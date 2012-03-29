@@ -45,6 +45,7 @@
   <ItemGroup>
     <ClInclude Include="$(SrcDir)lagi_pre.h" />
     <ClInclude Include="$(SrcDir)config.h" />
+    <ClInclude Include="$(SrcDir)common\charset_6937.h" />
     <ClInclude Include="$(SrcDir)common\charset_ucd.h" />
     <ClInclude Include="$(SrcDir)common\option_visit.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\access.h" />
@@ -86,6 +87,7 @@
     <ClCompile Include="$(SrcDir)common\cajun\reader.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\writer.cpp" />
     <ClCompile Include="$(SrcDir)common\charset.cpp" />
+    <ClCompile Include="$(SrcDir)common\charset_6937.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_conv.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_ucd.cpp" />
     <ClCompile Include="$(SrcDir)common\hotkey.cpp" />

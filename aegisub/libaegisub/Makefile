@@ -24,6 +24,7 @@ SRC += \
 	common/cajun/reader.cpp \
 	common/cajun/writer.cpp \
 	common/charset.cpp \
+	common/charset_6937.cpp \
 	common/charset_conv.cpp \
 	common/charset_ucd.cpp \
 	common/hotkey.cpp \

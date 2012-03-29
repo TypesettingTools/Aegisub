@@ -150,3 +150,36 @@ TEST(lagi_iconv, Roundtrip) {
 					"Jackdaws love my big sphinx of quartz")));
 	}
 }
+
+TEST(lagi_iconv, Iso6937) {
+	ASSERT_NO_THROW(IconvWrapper("UTF-8", "ISO-6937-2"));
+	IconvWrapper subst("UTF-8", "ISO-6937-2");
+	IconvWrapper no_subst("UTF-8", "ISO-6937-2", false);
+
+	// 7-bit is same as ISO-8859
+	for (int i = 0; i < 128; ++i) {
+		const char buf[] = { i, 0 };
+		std::string ret;
+		EXPECT_NO_THROW(ret = subst.Convert(buf));
+		EXPECT_STREQ(buf, ret.c_str());
+	}
+
+	std::string ret;
+
+	// LATIN CAPITAL LETTER D WITH CARON (U+010E) - multibyte char in main block
+	EXPECT_NO_THROW(ret = subst.Convert("\xC4\x8E"));
+	EXPECT_STREQ("\xCF\x44", ret.c_str());
+
+	// BREVE - multibyte char in extended ranges
+	EXPECT_NO_THROW(ret = subst.Convert("\xCB\x98"));
+	EXPECT_STREQ("\xC6\x20", ret.c_str());
+
+	// EM DASH - single byte char in extended ranges
+	EXPECT_NO_THROW(ret = subst.Convert("\xE2\x80\x94"));
+	EXPECT_STREQ("\xD0", ret.c_str());
+
+	// codepoint not in ISO-6937-2
+	EXPECT_NO_THROW(ret = subst.Convert("\xCB\x97"));
+	EXPECT_STREQ("?", ret.c_str());
+	EXPECT_THROW(no_subst.Convert("\xCB\x97"), agi::charset::BadOutput);
+}

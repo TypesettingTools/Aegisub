@@ -41,9 +41,12 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(BadOutput, ConversionFailure, "iconv/failed/EINV
 
 typedef void* iconv_t;
 
-// Helper class that abstracts away the differences between libiconv and
-// POSIX iconv implementations
-class Converter;
+/// Helper class that abstracts away the differences between libiconv and
+/// POSIX iconv implementations
+struct Converter {
+	virtual ~Converter() { }
+	virtual size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) = 0;
+};
 
 /// @brief A C++ wrapper for iconv
 class IconvWrapper {

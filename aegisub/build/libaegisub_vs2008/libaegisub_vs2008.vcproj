@@ -268,6 +268,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\common\charset_6937.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libaegisub\common\charset_6937.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\common\charset_conv.cpp"
 				>
 			</File>
