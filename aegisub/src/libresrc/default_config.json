@@ -264,7 +264,7 @@
 	"Limits" : {
 		"Find Replace" : 16,
 		"MRU" : 16,
-		"Undo Levels" : 8
+		"Undo Levels" : 50
 	},
 
 	"Path" : {
