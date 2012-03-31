@@ -241,7 +241,7 @@ namespace {
 
 				int transliterate = 1;
 				iconvctl(cd, ICONV_SET_TRANSLITERATE, &transliterate);
-				iconvctl(cd, ICONV_SET_FALLBACKS, this);
+				iconvctl(cd, ICONV_SET_FALLBACKS, static_cast<iconv_fallbacks*>(this));
 			}
 		}
 		~ConverterImpl() {
