@@ -128,13 +128,13 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Auto-focus on mouse over"), "Audio/Auto/Focus");
 	OptionAdd(general, _("Play audio when stepping in video"), "Audio/Plays When Stepping Video");
 	CellSkip(general);
-	OptionAdd(general, _("Default timing length"), "Timing/Default Duration", 0, 36000);
-	OptionAdd(general, _("Default lead-in length"), "Audio/Lead/IN", 0, 36000);
-	OptionAdd(general, _("Default lead-out length"), "Audio/Lead/OUT", 0, 36000);
+	OptionAdd(general, _("Default timing length (ms)"), "Timing/Default Duration", 0, 36000);
+	OptionAdd(general, _("Default lead-in length (ms)"), "Audio/Lead/IN", 0, 36000);
+	OptionAdd(general, _("Default lead-out length (ms)"), "Audio/Lead/OUT", 0, 36000);
 
-	OptionAdd(general, _("Start-marker drag sensitivity"), "Audio/Start Drag Sensitivity", 1, 15);
-	OptionAdd(general, _("Line boundary thickness"), "Audio/Line Boundaries Thickness", 1, 5);
-	OptionAdd(general, _("Maximum snap distance"), "Audio/Snap/Distance", 0, 25);
+	OptionAdd(general, _("Start-marker drag sensitivity (px)"), "Audio/Start Drag Sensitivity", 1, 15);
+	OptionAdd(general, _("Line boundary thickness (px)"), "Audio/Line Boundaries Thickness", 1, 5);
+	OptionAdd(general, _("Maximum snap distance (px)"), "Audio/Snap/Distance", 0, 25);
 
 	const wxString dtl_arr[] = { _("Don't show"), _("Show previous"), _("Show previous and next"), _("Show all") };
 	wxArrayString choice_dtl(4, dtl_arr);
@@ -143,8 +143,8 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Include commented inactive lines"), "Audio/Display/Draw/Inactive Comments");
 
 	wxFlexGridSizer *display = PageSizer(_("Display Visual Options"));
-	OptionAdd(display, _("Keyframes"), "Audio/Display/Draw/Keyframes in Dialogue Mode");
-	OptionAdd(display, _("Karaoke keyframes"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
+	OptionAdd(display, _("Keyframes in dialogue mode"), "Audio/Display/Draw/Keyframes in Dialogue Mode");
+	OptionAdd(display, _("Keyframes in karaoke mode"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
 	OptionAdd(display, _("Cursor time"), "Audio/Display/Draw/Cursor Time");
 	OptionAdd(display, _("Video position"), "Audio/Display/Draw/Video Position");
 	OptionChoice(display, _("Waveform Style"), AudioWaveformRenderer::GetWaveformStyles(), "Audio/Display/Waveform Style");
@@ -197,7 +197,7 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Interface")) {
 	wxFlexGridSizer *edit_box = PageSizer(_("Edit Box"));
 	OptionAdd(edit_box, _("Enable call tips"), "App/Call Tips");
-	OptionAdd(edit_box, _("Overwrite-Insertion in time boxes"), "Subtitle/Time Edit/Insert Mode");
+	OptionAdd(edit_box, _("Overwrite in time boxes"), "Subtitle/Time Edit/Insert Mode");
 	CellSkip(edit_box);
 	OptionAdd(edit_box, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
 	OptionBrowse(edit_box, _("Dictionaries path"), "Path/Dictionary");
