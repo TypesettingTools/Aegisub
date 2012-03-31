@@ -152,11 +152,6 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	wxFlexGridSizer *label = PageSizer(_("Audio labels"));
 	OptionFont(label, "Audio/Karaoke/");
 
-	wxFlexGridSizer *color = PageSizer(_("Color Schemes"));
-	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
-	OptionChoice(color, _("Spectrum"), schemes, "Colour/Audio Display/Spectrum");
-	OptionChoice(color, _("Waveform"), schemes, "Colour/Audio Display/Waveform");
-
 	SetSizerAndFit(sizer);
 }
 
@@ -215,7 +210,10 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 /// Interface Colours preferences subpage
 Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
 	delete sizer;
-	wxSizer *main_sizer = sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
+
+	sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(sizer);
 
 	wxFlexGridSizer *audio = PageSizer(_("Audio Display"));
 	OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
@@ -223,6 +221,11 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	OptionAdd(audio, _("Line boundary end"), "Colour/Audio Display/Line boundary End");
 	OptionAdd(audio, _("Line boundary inactive line"), "Colour/Audio Display/Line Boundary Inactive Line");
 	OptionAdd(audio, _("Syllable boundaries"), "Colour/Audio Display/Syllable Boundaries");
+
+	wxFlexGridSizer *color_schemes = PageSizer(_("Audio Color Schemes"));
+	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
+	OptionChoice(color_schemes, _("Spectrum"), schemes, "Colour/Audio Display/Spectrum");
+	OptionChoice(color_schemes, _("Waveform"), schemes, "Colour/Audio Display/Waveform");
 
 	sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(sizer);
