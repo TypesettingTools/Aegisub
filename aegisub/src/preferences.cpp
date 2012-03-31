@@ -585,7 +585,7 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	wxArrayString log_levels_choice(8, log_levels);
 	OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level");
 
-	OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads");
+	OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads", -1);
 	OptionAdd(ffms, _("Enable unsafe seeking"), "Provider/Video/FFmpegSource/Unsafe Seeking");
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
 	OptionAdd(ffms, _("Force BT.601"), "Provider/Video/FFmpegSource/Force BT.601");
