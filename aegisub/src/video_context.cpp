@@ -139,6 +139,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 		return;
 	}
 
+	bool commit_subs = false;
 	try {
 		provider.reset(new ThreadedFrameSource(filename, this));
 		videoProvider = provider->GetVideoProvider();
@@ -155,7 +156,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 		if (sx == 0 && sy == 0) {
 			context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vx));
 			context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vy));
-			context->ass->Commit(_("Change script resolution"), AssFile::COMMIT_SCRIPTINFO);
+			commit_subs = true;
 		}
 		// If it has been set to something other than a multiple of the video
 		// resolution, ask the user if they want it to be fixed
@@ -173,7 +174,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			case 2: // Always change script res
 				context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vx));
 				context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vy));
-				context->ass->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
+				commit_subs = true;
 				break;
 			default: // Never change
 				break;
@@ -226,6 +227,9 @@ void VideoContext::SetVideo(const wxString &filename) {
 	catch (VideoProviderError const& err) {
 		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
 	}
+
+	if (commit_subs)
+		context->ass->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
 }
 
 void VideoContext::Reload() {
