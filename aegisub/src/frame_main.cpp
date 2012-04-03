@@ -439,6 +439,7 @@ void FrameMain::OnVideoOpen() {
 		try {
 			context->audioController->OpenAudio(context->videoController->GetVideoName());
 		}
+		catch (agi::UserCancelException const&) { }
 		// Opening a video with no audio data isn't an error, so just log
 		// and move on
 		catch (agi::FileNotAccessibleError const&) {

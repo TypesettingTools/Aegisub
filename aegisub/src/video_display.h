@@ -127,8 +127,6 @@ class VideoDisplay : public wxGLCanvas {
 	/// @return Could the context be set?
 	bool InitContext();
 
-	void OnVideoOpen();
-
 	/// @brief Set the size of the display based on the current zoom and video resolution
 	/// @param force Force the size to be set based on zoom even in detached mode
 	void UpdateSize(bool force = false);
@@ -172,4 +170,7 @@ public:
 	void SetTool(VisualToolBase *new_tool);
 
 	bool ToolIsType(std::type_info const& type) const;
+
+	/// Discard all OpenGL state
+	void Reload();
 };

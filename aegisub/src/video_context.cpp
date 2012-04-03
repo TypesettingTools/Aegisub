@@ -202,12 +202,9 @@ void VideoContext::SetVideo(const wxString &filename) {
 		config::mru->Add("Video", STD_STR(filename));
 		StandardPaths::SetPathValue("?video", wxFileName(filename).GetPath());
 
-		// Get frame
-		frame_n = 0;
-
 		// Show warning
 		wxString warning = videoProvider->GetWarning();
-		if (!warning.empty()) wxMessageBox(warning,"Warning",wxICON_WARNING | wxOK);
+		if (!warning.empty()) wxMessageBox(warning, "Warning", wxICON_WARNING | wxOK);
 
 		hasSubtitles = false;
 		if (filename.Right(4).Lower() == ".mkv") {
@@ -230,6 +227,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 
 	if (commit_subs)
 		context->ass->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
+	else
+		JumpToFrame(0);
 }
 
 void VideoContext::Reload() {

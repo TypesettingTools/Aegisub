@@ -114,7 +114,7 @@ VideoDisplay::VideoDisplay(
 	zoomBox->Bind(wxEVT_COMMAND_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
-	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::OnVideoOpen, this));
+	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::UpdateSize, this, false));
 	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this, true));
 
 	Bind(wxEVT_PAINT, std::tr1::bind(&VideoDisplay::Render, this));
@@ -133,8 +133,9 @@ VideoDisplay::VideoDisplay(
 
 	c->videoDisplay = this;
 
+	UpdateSize();
 	if (con->videoController->IsLoaded())
-		OnVideoOpen();
+		con->videoController->JumpToFrame(con->videoController->GetFrameN());
 }
 
 VideoDisplay::~VideoDisplay () {
@@ -158,10 +159,16 @@ bool VideoDisplay::InitContext() {
 }
 
 void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
-	if (!InitContext()) return;
+	if (!InitContext()) {
+		evt.Skip();
+		return;
+	}
 
 	if (!videoOut)
 		videoOut.reset(new VideoOutGL);
+
+	if (!tool)
+		cmd::call("video/tool/cross", con);
 
 	try {
 		videoOut->UploadFrameData(*evt.frame);
@@ -181,14 +188,6 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 			err.GetMessage());
 	}
 	Render();
-}
-
-void VideoDisplay::OnVideoOpen() {
-	if (!con->videoController->IsLoaded()) return;
-	if (!tool)
-		cmd::call("video/tool/cross", con);
-	UpdateSize();
-	con->videoController->JumpToFrame(0);
 }
 
 void VideoDisplay::Render() try {
@@ -221,7 +220,7 @@ void VideoDisplay::Render() try {
 		}
 	}
 
-	if (mouse_pos || alwaysShowTools->GetBool())
+	if ((mouse_pos || alwaysShowTools->GetBool()) && tool)
 		tool->Draw();
 
 	SwapBuffers();
@@ -273,8 +272,7 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 }
 
 void VideoDisplay::UpdateSize(bool force) {
-	if (!con->videoController->IsLoaded()) return;
-	if (!IsShownOnScreen()) return;
+	if (!con->videoController->IsLoaded() || !IsShownOnScreen()) return;
 
 	int vidW = con->videoController->GetWidth();
 	int vidH = con->videoController->GetHeight();
@@ -359,7 +357,7 @@ void VideoDisplay::UpdateSize(bool force) {
 		}
 	}
 
-	if (tool.get())
+	if (tool)
 		tool->SetDisplayArea(viewport_left, viewport_top, viewport_width, viewport_height);
 
 	Refresh(false);
@@ -378,12 +376,14 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 	mouse_pos = event.GetPosition();
 
-	tool->OnMouseEvent(event);
+	if (tool)
+		tool->OnMouseEvent(event);
 }
 
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 	mouse_pos = Vector2D();
-	tool->OnMouseEvent(event);
+	if (tool)
+		tool->OnMouseEvent(event);
 }
 
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
@@ -448,4 +448,13 @@ bool VideoDisplay::ToolIsType(std::type_info const& type) const {
 
 Vector2D VideoDisplay::GetMousePosition() const {
 	return mouse_pos ? tool->ToScriptCoords(mouse_pos) : mouse_pos;
+}
+
+void VideoDisplay::Reload() {
+	glContext.reset();
+	videoOut.reset();
+	tool.reset();
+
+	if (con->videoController->IsLoaded())
+		con->videoController->JumpToFrame(con->videoController->GetFrameN());
 }
