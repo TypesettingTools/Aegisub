@@ -103,7 +103,7 @@ int main(int argc, const char *argv[]) {
 
 		while (ifp_i != eof) {
 			if (length > 0) file_cpp << ",";
-			file_cpp << (int)*ifp_i;
+			file_cpp << (unsigned int)(unsigned char)*ifp_i;
 
 			++ifp_i;
 			length++;
