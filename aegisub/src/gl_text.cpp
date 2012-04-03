@@ -67,7 +67,7 @@ struct OpenGLTextGlyph {
 	wxFont font;  ///< Font used for this glyph
 
 	OpenGLTextGlyph(int value, wxFont const& font);
-	void Draw(int x,int y) const;
+	void Draw(float x, float y) const;
 };
 
 
@@ -347,7 +347,7 @@ void OpenGLTextTexture::Insert(OpenGLTextGlyph &glyph) {
 }
 
 /// Draw a glyph at (x,y)
-void OpenGLTextGlyph::Draw(int x,int y) const {
+void OpenGLTextGlyph::Draw(float x, float y) const {
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);

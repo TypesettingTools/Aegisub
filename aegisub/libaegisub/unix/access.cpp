@@ -30,6 +30,8 @@
 #include <fstream>
 #endif
 
+#include <unistd.h>
+
 #include "libaegisub/util.h"
 
 namespace agi {
