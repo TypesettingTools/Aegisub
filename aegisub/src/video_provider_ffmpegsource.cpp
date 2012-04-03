@@ -138,9 +138,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	wxFileName(CacheName).Touch();
 
 	// we have now read the index and may proceed with cleaning the index cache
-	if (!CleanCache()) {
-		//do something?
-	}
+	CleanCache();
 
 	// track number still not set?
 	if (TrackNumber < 0) {

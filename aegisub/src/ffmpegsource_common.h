@@ -74,9 +74,7 @@ public:
 		FFMS_LOG_DEBUG		= 48,
 	};
 
-	/// Mutex preventing two cache cleaner threads from running at the same time
-	static wxMutex CleaningInProgress;
-	bool CleanCache();
+	void CleanCache();
 
 	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, const wxString& Cachename, int Trackmask, FFMS_IndexErrorHandling IndexEH);
 	std::map<int,wxString> GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type);
@@ -86,18 +84,6 @@ public:
 	FFMS_IndexErrorHandling GetErrorHandlingMode();
 
 	virtual ~FFmpegSourceProvider() {}
-};
-
-/// @class FFmpegSourceCacheCleaner
-/// @brief Implements index cache cleaning functionality for the FFMS2 providers
-class FFmpegSourceCacheCleaner : public wxThread {
-	FFmpegSourceProvider *parent;
-
-public:
-	FFmpegSourceCacheCleaner(FFmpegSourceProvider *par);
-
-	~FFmpegSourceCacheCleaner() {};
-	wxThread::ExitCode Entry();
 };
 
 #endif /* WITH_FFMS2 */

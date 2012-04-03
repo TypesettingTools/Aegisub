@@ -36,12 +36,15 @@
 
 #include "config.h"
 
+#include "utils.h"
+
 #ifndef AGI_PRE
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
+#include <map>
 
-#include <wx/dcmemory.h>
+#include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/window.h>
@@ -53,7 +56,7 @@
 #include <libaegisub/util_osx.h>
 #endif
 
-#include "utils.h"
+#include "compat.h"
 
 wxString MakeRelativePath(wxString _path, wxString reference) {
 	if (_path.empty() || _path[0] == '?') return _path;
@@ -304,4 +307,117 @@ bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
 	target->GetEventHandler()->ProcessEvent(evt);
 	evt.Skip(false);
 	return false;
+}
+
+namespace {
+class cache_cleaner : public wxThread {
+	wxString directory;
+	wxString file_type;
+	int64_t max_size;
+	size_t max_files;
+
+	ExitCode Entry() {
+		static wxMutex cleaning_mutex;
+		wxMutexLocker lock(cleaning_mutex);
+
+		if (!lock.IsOk()) {
+			LOG_D("utils/clean_cache") << "cleaning already in progress, thread exiting";
+			return (ExitCode)1;
+		}
+
+		wxDir cachedir;
+		if (!cachedir.Open(directory)) {
+			LOG_D("utils/clean_cache") << "couldn't open cache directory " << STD_STR(directory);
+			return (wxThread::ExitCode)1;
+		}
+
+		// sleep for a bit so we (hopefully) don't thrash the disk too much while indexing is in progress
+		wxThread::This()->Sleep(2000);
+
+		if (!cachedir.HasFiles(file_type)) {
+			LOG_D("utils/clean_cache") << "no files of the checked type in directory, exiting";
+			return (wxThread::ExitCode)0;
+		}
+
+		// unusually paranoid sanity check
+		// (someone might have deleted the file(s) after we did HasFiles() above; does wxDir.Open() lock the dir?)
+		wxString curfn_str;
+		if (!cachedir.GetFirst(&curfn_str, file_type, wxDIR_FILES)) {
+			LOG_D("utils/clean_cache") << "undefined error";
+			return (wxThread::ExitCode)1;
+		}
+
+		int64_t total_size = 0;
+		std::multimap<int64_t,wxFileName> cachefiles;
+		do {
+			wxFileName curfn(directory, curfn_str);
+			wxDateTime curatime;
+			curfn.GetTimes(&curatime, NULL, NULL);
+			cachefiles.insert(std::make_pair(curatime.GetTicks(), curfn));
+			total_size += curfn.GetSize().GetValue();
+
+			wxThread::This()->Sleep(250);
+		} while (cachedir.GetNext(&curfn_str));
+
+		if (cachefiles.size() <= max_files && total_size <= max_size) {
+			LOG_D("utils/clean_cache")
+				<< "cache does not need cleaning (maxsize=" << max_size
+				<< ", cursize=" << total_size
+				<< "; maxfiles=" << max_files
+				<< ", numfiles=" << cachefiles.size()
+				<< "), exiting";
+			return (wxThread::ExitCode)0;
+		}
+
+		int deleted = 0;
+		for (std::multimap<int64_t,wxFileName>::iterator i = cachefiles.begin(); i != cachefiles.end(); i++) {
+			// stop cleaning?
+			if ((total_size <= max_size && cachefiles.size() - deleted <= max_files) || cachefiles.size() - deleted < 2)
+				break;
+
+			int64_t fsize = i->second.GetSize().GetValue();
+			if (!wxRemoveFile(i->second.GetFullPath())) {
+				LOG_D("utils/clean_cache") << "failed to remove file " << STD_STR(i->second.GetFullPath());
+				continue;
+			}
+
+			total_size -= fsize;
+			++deleted;
+
+			wxThread::This()->Sleep(250);
+		}
+
+		LOG_D("utils/clean_cache") << "deleted " << deleted << " files, exiting";
+		return (wxThread::ExitCode)0;
+	}
+
+public:
+	cache_cleaner(wxString const& directory, wxString const& file_type, int64_t max_size, int64_t max_files)
+	: wxThread(wxTHREAD_DETACHED)
+	, directory(directory)
+	, file_type(file_type)
+	, max_size(max_size << 20)
+	{
+		if (max_files < 1)
+			this->max_files = (size_t)-1;
+		else
+			this->max_files = (size_t)max_files;
+	}
+};
+}
+
+void CleanCache(wxString const& directory, wxString const& file_type, int64_t max_size, int64_t max_files) {
+	LOG_D("utils/clean_cache") << "attempting to start cleaner thread";
+	wxThread *CleaningThread = new cache_cleaner(directory, file_type, max_size, max_files);
+
+	if (CleaningThread->Create() != wxTHREAD_NO_ERROR) {
+		LOG_D("utils/clean_cache") << "thread creation failed";
+		delete CleaningThread;
+	}
+	else if (CleaningThread->Run() != wxTHREAD_NO_ERROR) {
+		LOG_D("utils/clean_cache") << "failed to start thread";
+		delete CleaningThread;
+	}
+
+	LOG_D("utils/clean_cache") << "thread started successfully";
 }

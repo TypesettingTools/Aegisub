@@ -100,6 +100,12 @@ void RestartAegisub();
 /// @return Should the calling code process the event?
 bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt);
 
+/// Clean up the given cache directory, limiting the size to max_size
+/// @param directory Directory to clean
+/// @param file_type Wildcard pattern for files to clean up
+/// @param max_size Maximum size of directory in MB
+/// @param max_files Maximum number of files
+void CleanCache(wxString const& directory, wxString const& file_type, int64_t max_size, int64_t max_files = -1);
 
 /// @brief Templated abs() function
 template <typename T> T tabs(T x) { return x < 0 ? -x : x; }
