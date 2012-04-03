@@ -51,13 +51,11 @@ class DialogSelection : public wxDialog {
 
 	void Process(wxCommandEvent&);
 
-	/// Close event handler to save settings and destroy
-	void OnClose(wxCommandEvent&);
-
 	/// Dialogue/Comment check handler to ensure at least one is always checked
 	/// @param chk The checkbox to check if both are clear
 	void OnDialogueCheckbox(wxCheckBox *chk);
 
 public:
 	DialogSelection(agi::Context *c);
+	~DialogSelection();
 };

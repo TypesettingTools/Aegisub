@@ -189,10 +189,20 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 	match_mode->SetSelection(OPT_GET("Tool/Select Lines/Mode")->GetInt());
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSelection::Process, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSelection::OnClose, this, wxID_CANCEL);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
 	apply_to_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::tr1::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
 	apply_to_dialogue->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::tr1::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
+}
+
+DialogSelection::~DialogSelection() {
+	OPT_SET("Tool/Select Lines/Text")->SetString(STD_STR(match_text->GetValue()));
+	OPT_SET("Tool/Select Lines/Condition")->SetInt(select_unmatching_lines->GetValue());
+	OPT_SET("Tool/Select Lines/Field")->SetInt(dialogue_field->GetSelection());
+	OPT_SET("Tool/Select Lines/Action")->SetInt(selection_change_type->GetSelection());
+	OPT_SET("Tool/Select Lines/Mode")->SetInt(match_mode->GetSelection());
+	OPT_SET("Tool/Select Lines/Match/Case")->SetBool(case_sensitive->IsChecked());
+	OPT_SET("Tool/Select Lines/Match/Dialogue")->SetBool(apply_to_dialogue->IsChecked());
+	OPT_SET("Tool/Select Lines/Match/Comment")->SetBool(apply_to_comments->IsChecked());
 }
 
 void DialogSelection::Process(wxCommandEvent&) {
@@ -266,19 +276,6 @@ void DialogSelection::Process(wxCommandEvent&) {
 	con->selectionController->SetSelectedSet(new_sel);
 
 	Close();
-}
-
-void DialogSelection::OnClose(wxCommandEvent&) {
-	OPT_SET("Tool/Select Lines/Text")->SetString(STD_STR(match_text->GetValue()));
-	OPT_SET("Tool/Select Lines/Condition")->SetInt(select_unmatching_lines->GetValue());
-	OPT_SET("Tool/Select Lines/Field")->SetInt(dialogue_field->GetSelection());
-	OPT_SET("Tool/Select Lines/Action")->SetInt(selection_change_type->GetSelection());
-	OPT_SET("Tool/Select Lines/Mode")->SetInt(match_mode->GetSelection());
-	OPT_SET("Tool/Select Lines/Match/Case")->SetBool(case_sensitive->IsChecked());
-	OPT_SET("Tool/Select Lines/Match/Dialogue")->SetBool(apply_to_dialogue->IsChecked());
-	OPT_SET("Tool/Select Lines/Match/Comment")->SetBool(apply_to_comments->IsChecked());
-
-	Destroy();
 }
 
 void DialogSelection::OnDialogueCheckbox(wxCheckBox *chk) {
