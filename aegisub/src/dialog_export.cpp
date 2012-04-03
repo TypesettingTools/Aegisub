@@ -51,12 +51,14 @@
 #include "include/aegisub/context.h"
 #include "charset_conv.h"
 #include "help_button.h"
+#include "libresrc/libresrc.h"
 
 DialogExport::DialogExport(agi::Context *c)
 : wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
 , c(c)
 , exporter(new AssExporter(c))
 {
+	SetIcon(GETICON(export_menu_16));
 	SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 
 	wxArrayString filters = exporter->GetAllFilterNames();

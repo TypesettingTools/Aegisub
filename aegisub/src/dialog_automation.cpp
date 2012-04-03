@@ -38,6 +38,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
+
 #include <wx/button.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>

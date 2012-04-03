@@ -38,6 +38,7 @@
 #include "dialog_style_manager.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
 #include <tr1/functional>
 
 #include <wx/bmpbuttn.h>

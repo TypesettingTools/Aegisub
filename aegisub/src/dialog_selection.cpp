@@ -43,6 +43,7 @@
 #include "frame_main.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
+#include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
 
@@ -131,6 +132,8 @@ DialogSelection::DialogSelection(agi::Context *c) :
 wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTION)
 , con(c)
 {
+	SetIcon(GETICON(select_lines_button_16));
+
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
 	wxSizerFlags main_flags = wxSizerFlags().Expand().Border();

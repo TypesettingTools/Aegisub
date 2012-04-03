@@ -55,6 +55,7 @@
 #include "colour_button.h"
 #include "compat.h"
 #include "help_button.h"
+#include "libresrc/libresrc.h"
 #include "main.h"
 #include "utils.h"
 #include "video_provider_dummy.h"
@@ -153,14 +154,14 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 	}
 }
 
-
-
 /// @brief DOCME
 /// @param parent
 ///
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 : wxDialog(parent, -1, _("Dummy video options"),wxDefaultPosition,wxDefaultSize)
 {
+	SetIcon(GETICON(use_dummy_video_menu_16));
+
 	// Main controls
 	length_display = 0;
 	resolution_shortcuts = new wxComboBox(this, Dummy_Video_Resolution_Shortcut, "", wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY);
