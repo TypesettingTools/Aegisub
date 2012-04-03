@@ -70,6 +70,7 @@
 #include "subtitle_format.h"
 #include "version.h"
 #include "video_context.h"
+#include "utils.h"
 
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
@@ -168,6 +169,7 @@ bool AegisubApp::OnInit() {
 	wxString path_log = StandardPaths::DecodePath("?user/log/");
 	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
 	agi::log::log->Subscribe(new agi::log::JsonEmitter(STD_STR(path_log), agi::log::log));
+	CleanCache(path_log, "*.json", 10, 100);
 
 	StartupLog("Load user configuration");
 	try {
