@@ -73,7 +73,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 , line_number(count_if(c->ass->Line.begin(), find(c->ass->Line.begin(), c->ass->Line.end(), active_line), cast<AssDialogue*>()) + 1)
 , switching_lines(false)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(translation_toolbutton_16)));
+	SetIcon(GETICON(translation_toolbutton_16));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 

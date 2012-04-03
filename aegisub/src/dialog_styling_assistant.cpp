@@ -37,7 +37,6 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
-#include "utils.h"
 #include "video_context.h"
 
 #ifndef AGI_PRE
@@ -60,7 +59,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 , c(context)
 , active_line(0)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(styling_toolbutton_24)));
+	SetIcon(GETICON(styling_toolbutton_16));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);

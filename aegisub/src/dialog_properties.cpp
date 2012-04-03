@@ -51,7 +51,6 @@
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
-#include "utils.h"
 #include "validators.h"
 #include "video_context.h"
 
@@ -59,7 +58,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 : wxDialog(c->parent, -1, _("Script Properties"))
 , c(c)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(properties_toolbutton_24)));
+	SetIcon(GETICON(properties_toolbutton_16));
 
 	// Script details crap
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Script"));

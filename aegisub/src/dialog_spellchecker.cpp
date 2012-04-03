@@ -60,7 +60,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 , active_line(0)
 , has_looped(false)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(spellcheck_toolbutton_24)));
+	SetIcon(GETICON(spellcheck_toolbutton_16));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 

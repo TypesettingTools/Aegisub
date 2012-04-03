@@ -164,7 +164,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	work.reset(new AssStyle(*style));
 
-	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
+	SetIcon(GETICON(style_toolbutton_16));
 
 	// Prepare control values
 	wxString EncodingValue = AegiIntegerToString(style->encoding);

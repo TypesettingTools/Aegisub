@@ -633,7 +633,7 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 : wxDialog(c->parent,-1,_("Kanji timing"),wxDefaultPosition)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(kara_timing_copier_24)));
+	SetIcon(GETICON(kara_timing_copier_16));
 
 	subs = c->ass;
 	currentSourceLine = subs->Line.begin();

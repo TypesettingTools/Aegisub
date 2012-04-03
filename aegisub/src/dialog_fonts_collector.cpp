@@ -184,7 +184,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 : wxDialog(c->parent, -1, _("Fonts Collector"))
 , subs(c->ass)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(font_collector_button_24)));
+	SetIcon(GETICON(font_collector_button_16));
 
 	wxString modes[] = {
 		_("Check fonts for availability"),

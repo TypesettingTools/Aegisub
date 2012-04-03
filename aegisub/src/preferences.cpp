@@ -658,7 +658,7 @@ static void PageChanged(wxBookCtrlEvent& evt) {
 }
 
 Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
-	//	SetIcon(BitmapToIcon(GETIMAGE(options_button_24)));
+	//	SetIcon(GETICON(options_button_16));
 
 	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
 	new General(book, this);

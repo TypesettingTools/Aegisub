@@ -42,7 +42,6 @@
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "utils.h"
 #include "video_context.h"
 
 enum {
@@ -56,7 +55,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 : wxDialog(c->parent, -1, _("Resample Resolution"))
 , c(c)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(resample_toolbutton_24)));
+	SetIcon(GETICON(resample_toolbutton_16));
 
 	memset(&settings, 0, sizeof(settings));
 	c->ass->GetResolution(settings.script_x, settings.script_y);

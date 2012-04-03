@@ -55,7 +55,6 @@
 #include "main.h"
 #include "standard_paths.h"
 #include "timeedit_ctrl.h"
-#include "utils.h"
 #include "video_context.h"
 
 static wxString get_history_string(json::Object &obj) {
@@ -107,7 +106,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 , history(new json::Array)
 , timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 {
-	SetIcon(BitmapToIcon(GETIMAGE(shift_times_toolbutton_24)));
+	SetIcon(GETICON(shift_times_toolbutton_16));
 
 	// Create controls
 	shift_by_time = new wxRadioButton(this, -1, _("&Time: "), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);

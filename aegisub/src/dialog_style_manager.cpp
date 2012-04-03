@@ -64,7 +64,6 @@
 #include "persist_location.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
-#include "utils.h"
 
 using std::tr1::placeholders::_1;
 
@@ -168,7 +167,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 , commit_connection(c->ass->AddCommitListener(&DialogStyleManager::LoadCurrentStyles, this))
 {
 	using std::tr1::bind;
-	SetIcon(BitmapToIcon(GETIMAGE(style_toolbutton_24)));
+	SetIcon(GETICON(style_toolbutton_16));
 
 	// Catalog
 	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));

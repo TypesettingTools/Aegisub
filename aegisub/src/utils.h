@@ -88,11 +88,6 @@ bool StringEmptyOrWhitespace(const wxString &str);
 int AegiStringToInt(const wxString &str,int start=0,int end=-1);
 int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end=-1);
 
-/// @brief Convert a wxBitmap to wxIcon
-///
-/// This is needed because wxIcon has to be 16x16 to work properly on win32
-wxIcon BitmapToIcon(wxBitmap const& bmp);
-
 /// @brief Launch a new copy of Aegisub.
 ///
 /// Contrary to what the name suggests, this does not close the currently

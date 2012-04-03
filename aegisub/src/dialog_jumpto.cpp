@@ -50,7 +50,6 @@
 #include "ass_time.h"
 #include "libresrc/libresrc.h"
 #include "timeedit_ctrl.h"
-#include "utils.h"
 #include "validators.h"
 #include "video_context.h"
 
@@ -59,7 +58,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 , c(c)
 , jumpframe(c->videoController->GetFrameN())
 {
-	SetIcon(BitmapToIcon(GETIMAGE(jumpto_button_24)));
+	SetIcon(GETICON(jumpto_button_16));
 
 	// Set initial values
 	wxString maxLength = wxString::Format("%i",c->videoController->GetLength() - 1);

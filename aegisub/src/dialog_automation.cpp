@@ -56,7 +56,6 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "subtitle_format.h"
-#include "utils.h"
 
 using std::tr1::placeholders::_1;
 
@@ -68,7 +67,7 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 , global_manager(wxGetApp().global_scripts)
 , global_scripts_changed(global_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 {
-	SetIcon(BitmapToIcon(GETIMAGE(automation_toolbutton_24)));
+	SetIcon(GETICON(automation_toolbutton_16));
 
 	// create main controls
 	list = new wxListView(this, -1, wxDefaultPosition, wxSize(600, 175), wxLC_REPORT|wxLC_SINGLE_SEL);

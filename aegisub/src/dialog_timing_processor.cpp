@@ -107,7 +107,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 {
 	using std::tr1::bind;
 
-	SetIcon(BitmapToIcon(GETIMAGE(timing_processor_toolbutton_24)));
+	SetIcon(GETICON(timing_processor_toolbutton_16));
 
 	// Read options
 	leadIn = OPT_GET("Audio/Lead/IN")->GetInt();

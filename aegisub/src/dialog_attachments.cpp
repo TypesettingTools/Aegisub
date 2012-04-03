@@ -67,7 +67,7 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 : wxDialog(parent,-1,_("Attachment List"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE)
 , ass(ass)
 {
-	SetIcon(BitmapToIcon(GETIMAGE(attach_button_24)));
+	SetIcon(GETICON(attach_button_16));
 
 	listView = new wxListView(this,ATTACHMENT_LIST,wxDefaultPosition,wxSize(500,200));
 	UpdateList();
