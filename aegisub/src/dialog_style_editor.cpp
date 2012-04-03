@@ -342,7 +342,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		SubsPreview->SetStyle(*style);
 		SubsPreview->SetText(PreviewText->GetValue());
 		PreviewText->SetToolTip(_("Text to be used for the preview"));
-		previewButton->SetToolTip(_("Colour of preview background"));
+		previewButton->SetToolTip(_("Color of preview background"));
 
 		wxSizer *PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 		PreviewBottomSizer->Add(PreviewText, 1, wxEXPAND | wxRIGHT, 5);

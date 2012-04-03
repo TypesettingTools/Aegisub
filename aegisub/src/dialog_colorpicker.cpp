@@ -652,7 +652,7 @@ static wxBitmap *make_rgb_image(int width, int offset) {
 }
 
 DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, ColorCallback callback, void* userdata)
-: wxDialog(parent, -1, _("Select Colour"))
+: wxDialog(parent, -1, _("Select Color"))
 , callback(callback)
 , callbackUserdata(userdata)
 {
@@ -685,7 +685,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	hsv_slider = new wxBitmap(sliderimg);
 
 	// Create the controls for the dialog
-	wxSizer *spectrum_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Colour spectrum"));
+	wxSizer *spectrum_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Color spectrum"));
 	spectrum = new ColorPickerSpectrum(this, ColorPickerSpectrum::HorzVert, wxSize(256, 256));
 	slider = new ColorPickerSpectrum(this, ColorPickerSpectrum::Vert, wxSize(slider_width, 256));
 	wxString modes[] = { _("RGB/R"), _("RGB/G"), _("RGB/B"), _("HSL/L"), _("HSV/H") };
@@ -694,9 +694,9 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	wxSize colorinput_size(70, -1);
 	wxSize colorinput_labelsize(40, -1);
 
-	wxSizer *rgb_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("RGB colour"));
-	wxSizer *hsl_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSL colour"));
-	wxSizer *hsv_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSV colour"));
+	wxSizer *rgb_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("RGB color"));
+	wxSizer *hsl_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSL color"));
+	wxSizer *hsv_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSV color"));
 	for (int i = 0; i < 3; ++i) {
 		rgb_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 		hsl_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);

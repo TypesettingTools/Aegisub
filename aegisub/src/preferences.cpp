@@ -209,7 +209,7 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 }
 
 /// Interface Colours preferences subpage
-Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Colours"), PAGE_SCROLL|PAGE_SUB) {
+Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Colors"), PAGE_SCROLL|PAGE_SUB) {
 	delete sizer;
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
 

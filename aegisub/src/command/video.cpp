@@ -608,7 +608,7 @@ struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
 	STR_MENU("&Use Dummy Video...")
 	STR_DISP("Use Dummy Video")
-	STR_HELP("Opens a video clip with solid colour")
+	STR_HELP("Opens a video clip with solid color")
 
 	void operator()(agi::Context *c) {
 		wxString fn;

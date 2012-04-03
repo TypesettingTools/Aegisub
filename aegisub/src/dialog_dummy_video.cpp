@@ -182,7 +182,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	res_sizer->Add(new wxStaticText(this, -1, " x "), 0, wxALIGN_CENTRE_VERTICAL|wxFIXED_MINSIZE);
 	res_sizer->Add(height, 0, wxEXPAND);
 	fg->Add(res_sizer, 0, wxEXPAND);
-	fg->Add(new wxStaticText(this, -1, _("Colour:")), 0, wxALIGN_CENTRE_VERTICAL);
+	fg->Add(new wxStaticText(this, -1, _("Color:")), 0, wxALIGN_CENTRE_VERTICAL);
 	fg->Add(colour, 0, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
 	fg->AddStretchSpacer();
 	fg->Add(pattern, 0, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
