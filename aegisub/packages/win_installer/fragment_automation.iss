@@ -38,8 +38,10 @@
 [Files]
 ; auto4 main
 DestDir: {app}\automation\include; Source: ..\..\automation\include\cleantags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\clipboard.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}\automation\include; Source: ..\..\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}\automation\include; Source: ..\..\automation\include\karaskel.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\re.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}\automation\include; Source: ..\..\automation\include\unicode.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}\automation\include; Source: ..\..\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
 DestDir: {app}\automation\include; Source: ..\..\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
