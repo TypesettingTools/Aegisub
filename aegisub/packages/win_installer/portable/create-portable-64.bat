@@ -12,6 +12,7 @@ xcopy ..\src\dictionaries\en_US.aff aegisub-portable\dictionaries\ > NUL
 xcopy ..\src\dictionaries\en_US.dic aegisub-portable\dictionaries\ > NUL
 xcopy ..\src\vsfilter-aegisub64.dll aegisub-portable\csri\ > NUL
 xcopy ..\src\x64\Microsoft.VC90.CRT\* aegisub-portable\Microsoft.VC90.CRT\ > NUL
+xcopy ..\src\x64\OpenAL32.dll aegisub-portable\ > NUL
 xcopy config.json aegisub-portable\ > NUL
 
 echo Creating SFX

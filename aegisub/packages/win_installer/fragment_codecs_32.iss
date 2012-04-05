@@ -44,6 +44,8 @@ DestDir: {app}; Source: ..\..\bin\ffms2.pdb; Flags: ignoreversion; Components: c
 ; vsfilter
 DestDir: {app}\csri; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion; Components: codec/vsfilter
 DestDir: {app}\csri; Source: src\xy-vsfilter-aegisub.dll; Flags: ignoreversion; Components: codec/vsfilter
+; openal
+DestDir: {app}; Source: src\x86\openal32.dll; Flags: ignoreversion; Components: codec
 
 [Components]
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
