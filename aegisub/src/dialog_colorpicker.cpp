@@ -100,6 +100,8 @@ private:
 	void OnPaint(wxPaintEvent &evt);
 	void OnMouse(wxMouseEvent &evt);
 
+	bool AcceptsFocusFromKeyboard() const { return false; }
+
 public:
 	ColorPickerSpectrum(wxWindow *parent, PickerDirection direction, wxSize size);
 
@@ -132,6 +134,8 @@ class ColorPickerRecent : public wxControl {
 	void OnPaint(wxPaintEvent &evt);
 	void OnSize(wxSizeEvent &evt);
 
+	bool AcceptsFocusFromKeyboard() const { return false; }
+
 public:
 	ColorPickerRecent(wxWindow *parent, int cols, int rows, int cellsize);
 
@@ -162,6 +166,8 @@ class ColorPickerScreenDropper : public wxControl {
 
 	void OnMouse(wxMouseEvent &evt);
 	void OnPaint(wxPaintEvent &evt);
+
+	bool AcceptsFocusFromKeyboard() const { return false; }
 
 public:
 	ColorPickerScreenDropper(wxWindow *parent, int resx, int resy, int magnification);
