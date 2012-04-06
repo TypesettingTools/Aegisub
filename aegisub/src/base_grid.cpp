@@ -122,20 +122,19 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	context->ass->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this);
 	context->ass->AddFileSaveListener(&BaseGrid::OnSubtitlesSave, this);
 
-	std::tr1::function<void (agi::OptionValue const&)> Refresh(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
-	OPT_SUB("Colour/Subtitle Grid/Active Border", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Background", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Comment", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Inframe", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Selected Comment", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Background/Selection", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Collision", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Header", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Left Column", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Lines", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Selection", Refresh);
-	OPT_SUB("Colour/Subtitle Grid/Standard", Refresh);
-	OPT_SUB("Subtitle/Grid/Hide Overrides", Refresh);
+	OPT_SUB("Colour/Subtitle Grid/Active Border", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Background/Background", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Background/Comment", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Background/Inframe", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Background/Selected Comment", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Background/Selection", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Collision", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Header", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Left Column", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Lines", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Selection", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Colour/Subtitle Grid/Standard", &BaseGrid::UpdateStyle, this);
+	OPT_SUB("Subtitle/Grid/Hide Overrides", std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
 }
