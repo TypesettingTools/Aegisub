@@ -109,6 +109,12 @@ void SubtitlesGrid::RecombineLines() {
 			context->ass->Line.remove(d1);
 			continue;
 		}
+		// If d2 is the last line in the selection it'll never hit the above test
+		if (d2 == end && (*d2)->Text.empty()) {
+			delete *d2;
+			context->ass->Line.remove(*d2);
+			continue;
+		}
 
 		// 1, 1+2
 		while (d2 <= end && (*d2)->Text.StartsWith(d1->Text, &(*d2)->Text)) {
