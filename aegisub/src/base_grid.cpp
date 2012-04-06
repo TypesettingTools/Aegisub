@@ -1008,6 +1008,8 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 
 	// Moving
 	if (dir) {
+		event.Skip(false);
+
 		int old_extend = extendRow;
 		int next = mid(0, GetDialogueIndex(active_line) + dir * step, GetRows() - 1);
 		SetActiveLine(GetDialogue(next));

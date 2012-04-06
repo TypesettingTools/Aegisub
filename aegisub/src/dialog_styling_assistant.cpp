@@ -255,6 +255,5 @@ void DialogStyling::OnKeyDown(wxKeyEvent &evt) {
 			if (from > 0)
 				style_name->SetSelection(from - 1, to);
 		}
-		evt.Skip();
 	}
 }
