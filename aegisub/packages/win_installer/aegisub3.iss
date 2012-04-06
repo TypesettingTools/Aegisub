@@ -32,7 +32,9 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#define SETUP_TYPE "setup"
+#ifndef ARCH
+#define ARCH 32
+#endif
 
 #include "fragment_setupbase.iss"
 
@@ -40,12 +42,19 @@
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 DefaultDirName={pf}\Aegisub
 PrivilegesRequired=poweruser
-
+#ifdef ARCH64
+ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64
+#endif
 
 #include "fragment_mainprogram.iss"
 #include "fragment_associations.iss"
 #include "fragment_runtimes.iss"
-#include "fragment_codecs.iss"
+#ifdef ARCH64
+#include "fragment_codecs_64.iss"
+#else
+#include "fragment_codecs_32.iss"
+#endif
 #include "fragment_automation.iss"
 #include "fragment_translations.iss"
 #include "fragment_spelling.iss"

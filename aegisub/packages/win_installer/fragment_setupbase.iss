@@ -56,14 +56,14 @@ UsePreviousGroup=yes
 UsePreviousSetupType=no
 UsePreviousAppDir=yes
 UsePreviousTasks=no
-UninstallDisplayIcon={app}\aegisub32.exe
+UninstallDisplayIcon={app}\aegisub{#ARCH}.exe
 ; Default to a large welcome bitmap, suitable for large fonts
 ; The normal fonts version is selected by code below
 WizardImageFile=welcome-large.bmp
 WizardSmallImageFile=aegisub-large.bmp
 
-OutputBaseFilename=Aegisub-{#VERSION}-{#SETUP_TYPE}
-VersionInfoDescription=Aegisub {#VERSION} {#SETUP_TYPE}
+OutputBaseFilename=Aegisub-{#VERSION}-{#ARCH}
+VersionInfoDescription=Aegisub {#VERSION} {#ARCH}
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl

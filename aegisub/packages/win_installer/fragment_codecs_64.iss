@@ -32,41 +32,16 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-; This file implements checking for and installing runtime libraries for Aegisub
-#ifdef ARCH64
-#define SUFFIX "x64"
-#else
-#define SUFFIX "x86"
-#endif
 
 [Files]
-DestDir: {tmp}; Source: src\vcredist_{#SUFFIX}.exe; Flags: nocompression deleteafterinstall; Check: RuntimesRequired
+; ffmpegsource
+DestDir: {app}; Source: ..\..\bin\ffms2_64.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: ..\..\bin\ffms2_64.pdb; Flags: ignoreversion; Components: codec and main/pdb
+; vsfilter
+DestDir: {app}; Source: src\vsfilter-aegisub64.dll; Flags: ignoreversion; Components: codec/vsfilter
 
 [Components]
-Name: main/runtime; Description: Runtime libraries; Check: RuntimesRequired; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
+Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
+Name: codec/vsfilter; Description: VSFilter-Aegisub 2.40; Types: compact full custom; Flags: fixed
 
-[Run]
-Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: Installing runtime libraries...; Check: RuntimesRequired; Components: main/runtime; Parameters: "/q"
-
-[Code]
-function RuntimesRequired: Boolean;
-var
-  DisplayVersion: string;
-begin
-  // Check for uninstall entry for runtimes, don't bother installing if it can be uninstalled now
-  // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}
-  // Check: DisplayVersion = "9.0.30729"
-  try
-    DisplayVersion := '';
-    Result := RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}',
-        'DisplayVersion', DisplayVersion);
-    Result := Result and (DisplayVersion = '9.0.30729');
-  except
-    // If the check fails take the safe route
-    Result := False;
-  end;
-
-  Result := not Result;
-end;
-[/Code]
 
