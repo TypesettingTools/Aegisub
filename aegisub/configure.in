@@ -635,23 +635,23 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
 #   it above.
 ####################################################################
 AC_ARG_WITH(player-audio,
-            AS_HELP_STRING([--with-player-audio=(alsa|openal|portaudio|pulseaudio)],
+            AS_HELP_STRING([--with-player-audio=(ALSA|OpenAL|PortAudio|PulseAudio|OSS)],
                            [Default Audio Player [Linux/ALSA, Darwin/OpenAL, 1:*/OSS, 2:*/PortAudio]]))
 
 # Default audio player.
 AS_IF([test -z "$with_player_audio"], [
-  AS_IF([test x$build_linux = xyes && test x$with_alsa = xyes],    [default_player_audio="alsa"],
-        [test x$build_darwin = xyes && test x$with_openal = xyes], [default_player_audio="openal"],
-        [test x$with_portaudio = xyes],                            [default_player_audio="portaudio"],
-        [test x$with_oss = xyes],                                  [default_player_audio="oss"],
-        [test x$with_alsa = xyes],                                 [default_player_audio="alsa"],
-        [test x$with_openal = xyes],                               [default_player_audio="openal"],
-        [test x$with_libpulse = xyes],                             [default_player_audio="pulseaudio"])],
-  [default_player_audio="$with_player_audio"])
-AC_DEFINE_UNQUOTED([DEFAULT_PLAYER_AUDIO], ["$default_player_audio"], [Default audio player.])
+  AS_IF([test x$build_linux = xyes && test x$with_alsa = xyes],    [DEFAULT_PLAYER_AUDIO="ALSA"],
+        [test x$build_darwin = xyes && test x$with_openal = xyes], [DEFAULT_PLAYER_AUDIO="OpenAL"],
+        [test x$with_portaudio = xyes],                            [DEFAULT_PLAYER_AUDIO="PortAudio"],
+        [test x$with_oss = xyes],                                  [DEFAULT_PLAYER_AUDIO="OSS"],
+        [test x$with_alsa = xyes],                                 [DEFAULT_PLAYER_AUDIO="ALSA"],
+        [test x$with_openal = xyes],                               [DEFAULT_PLAYER_AUDIO="OpenAL"],
+        [test x$with_libpulse = xyes],                             [DEFAULT_PLAYER_AUDIO="PulseAudio"])],
+  [DEFAULT_PLAYER_AUDIO="$with_player_audio"])
+AC_SUBST(DEFAULT_PLAYER_AUDIO)
 
 # Set some friendly strings if some of the above aren't detected.
-default_player_audio=${default_player_audio:-NONE}
+DEFAULT_PLAYER_AUDIO=${DEFAULT_PLAYER_AUDIO:-NONE}
 
 ###############
 # Misc settings
@@ -659,13 +659,14 @@ default_player_audio=${default_player_audio:-NONE}
 # Files that need substitution.
 AC_CONFIG_FILES([
 desktop/aegisub.desktop
+src/libresrc/default_config_platform.json
 tools/osx-bundle.sed
 Makefile.inc
 ])
 
 AC_OUTPUT
 
-AS_IF([test x"$default_player_audio" = xNONE], AC_MSG_NOTICE([
+AS_IF([test x"$DEFAULT_PLAYER_AUDIO" = xNONE], AC_MSG_NOTICE([
 
 ***********************************************************************
 * No supported audio player interface was found on your system.
@@ -707,7 +708,7 @@ Configure settings
   LIBS                   $LIBS
 
 Default Settings
-  Audio Player:          $default_player_audio
+  Audio Player:          $DEFAULT_PLAYER_AUDIO
 
 Scripting Engines
   auto4 Lua:             $with_auto4_lua $lua51_disabled

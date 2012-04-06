@@ -88,6 +88,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;$(ProjectDir)..\src\libresrc\default_config_win.json&quot; &quot;$(ProjectDir)..\src\libresrc\default_config_platform.json&quot;&#x0D;&#x0A;&quot;$(TargetPath)&quot; &quot;$(ProjectDir)../src/libresrc/manifest.respack&quot; &quot;$(ProjectDir)../src/libresrc/default_config.cpp&quot; &quot;$(ProjectDir)../src/libresrc/default_config.h&quot;&#x0D;&#x0A;&quot;$(TargetPath)&quot; &quot;$(ProjectDir)../src/bitmaps/manifest.respack&quot; &quot;$(ProjectDir)../src/libresrc/bitmap.cpp&quot; &quot;$(ProjectDir)../src/libresrc/bitmap.h&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -234,6 +235,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;$(ProjectDir)..\src\libresrc\default_config_win.json&quot; &quot;$(ProjectDir)..\src\libresrc\default_config_platform.json&quot;&#x0D;&#x0A;&quot;$(TargetPath)&quot; &quot;$(ProjectDir)../src/libresrc/manifest.respack&quot; &quot;$(ProjectDir)../src/libresrc/default_config.cpp&quot; &quot;$(ProjectDir)../src/libresrc/default_config.h&quot;&#x0D;&#x0A;&quot;$(TargetPath)&quot; &quot;$(ProjectDir)../src/bitmaps/manifest.respack&quot; &quot;$(ProjectDir)../src/libresrc/bitmap.cpp&quot; &quot;$(ProjectDir)../src/libresrc/bitmap.h&quot;"
 			/>
 		</Configuration>
 		<Configuration

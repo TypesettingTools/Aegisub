@@ -37,6 +37,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <sstream>
+
 #include <wx/clipbrd.h>
 #include <wx/config.h>
 #include <wx/datetime.h>
@@ -175,6 +177,8 @@ bool AegisubApp::OnInit() {
 	try {
 		if (!config::opt)
 			config::opt = new agi::Options(STD_STR(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
+		std::istringstream stream(GET_DEFAULT_CONFIG(default_config_platform));
+		config::opt->ConfigNext(stream);
 	} catch (agi::Exception& e) {
 		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
 	}

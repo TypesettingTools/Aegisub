@@ -1,0 +1,5 @@
+{
+	"Audio" : {
+		"Player" : "@DEFAULT_PLAYER_AUDIO@",
+	}
+}

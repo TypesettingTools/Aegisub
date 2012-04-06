@@ -102,15 +102,4 @@ void AudioPlayerFactory::RegisterProviders() {
 #endif
 }
 
-std::string AudioPlayerFactory::GetDefault() {
-	std::string def = OPT_GET("Audio/Player")->GetString();
-	if (!def.empty())
-		return def;
-#ifdef DEFAULT_PLAYER_AUDIO
-	return DEFAULT_PLAYER_AUDIO;
-#else
-	return "DirectSound";
-#endif
-}
-
 template<> AudioPlayerFactory::map *FactoryBase<AudioPlayer *(*)()>::classes = NULL;

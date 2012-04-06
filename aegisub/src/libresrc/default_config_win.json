@@ -1,0 +1,8 @@
+{
+	"Audio" : {
+		"Player" : "DirectSound"
+	},
+	"Subtitle" : {
+		"Provider" : "CSRI/vsfilter_textsub"
+	}
+}

@@ -74,8 +74,6 @@ public:
 
 class AudioPlayerFactory : public Factory0<AudioPlayer> {
 public:
-	/// Get the name of the preferred audio play
-	static std::string GetDefault();
 	static void RegisterProviders();
 	static AudioPlayer *GetAudioPlayer();
 };
