@@ -52,7 +52,7 @@ void ColorCallbackWrapper(void* obj, wxColor color) {
 /// @param original Initial color to select
 /// @param callback Function called whenever the selected color changes if not NULL
 /// @param userdata Passed to callback function
-/// @return Last selected color when dialog is closed, or original if the dialog was cancelled
+/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was cancelled
 wxColor GetColorFromUser(wxWindow* parent, wxColor original, ColorCallback callback = NULL, void* userdata = NULL);
 
 /// @brief Get a color from the user via a color picker dialog
@@ -61,7 +61,7 @@ wxColor GetColorFromUser(wxWindow* parent, wxColor original, ColorCallback callb
 /// @param parent Parent window
 /// @param original Initial color to select
 /// @param callbackObj Object to call callback method on. Must be of type T.
-/// @return Last selected color when dialog is closed, or original if the dialog was cancelled
+/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was cancelled
 template<class T, void (T::*method)(wxColor)>
 wxColor GetColorFromUser(wxWindow* parent, wxColor original, T* callbackObj) {
 	return GetColorFromUser(parent, original, &ColorCallbackWrapper<T, method>, callbackObj);

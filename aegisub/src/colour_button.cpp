@@ -65,6 +65,8 @@ ColourButton::~ColourButton() {
 /// @brief Callback for the color picker dialog
 /// @param col New color
 void ColourButton::SetColour(wxColour col) {
+	if (!col.IsOk()) return;
+
 	colour = col;
 
 	// Draw colour
@@ -91,8 +93,11 @@ wxColour ColourButton::GetColour() {
 /// @brief Click handler
 /// @param event
 void ColourButton::OnClick(wxCommandEvent &event) {
-	if (event.GetClientData() != this)
-		GetColorFromUser<ColourButton, &ColourButton::SetColour>(GetParent(), colour, this);
-	else
+	if (event.GetClientData() == this)
 		event.Skip();
+	else {
+		wxColour initial = colour;
+		if (!GetColorFromUser<ColourButton, &ColourButton::SetColour>(GetParent(), colour, this).IsOk())
+			SetColour(initial);
+	}
 }

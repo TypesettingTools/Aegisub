@@ -722,15 +722,14 @@ void SubsEditBox::OnColorButton(AssColor (AssStyle::*field), const char *tag, co
 	int blockn = block_at_pos(line->Text, sel.first);
 
 	color = get_value(*line, blockn, color, colorTag, alt);
-	wxString initialText = line->Text;
 	wxColor newColor = GetColorFromUser<SubsEditBox, &SubsEditBox::SetColorCallback>(c->parent, color, this);
-	if (newColor == color) {
-		TextEdit->SetTextTo(initialText);
-		TextEdit->SetSelectionU(sel.first, sel.second);
-	}
-
 	line->ClearBlocks();
 	CommitText(_("set color"));
+
+	if (!newColor.IsOk()) {
+		c->ass->Undo();
+		TextEdit->SetSelectionU(sel.first, sel.second);
+	}
 }
 
 void SubsEditBox::SetColorCallback(wxColor newColor) {
