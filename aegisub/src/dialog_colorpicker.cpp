@@ -829,7 +829,7 @@ wxSizer *DialogColorPicker::MakeColorInputSizer(wxString (&labels)[N], Control *
 {
 	wxFlexGridSizer * sizer = new wxFlexGridSizer(2, 5, 5);
 	for (int i = 0; i < N; ++i) {
-		sizer->Add(new wxStaticText(this, -1, labels[i], wxDefaultPosition, wxSize(40, -1)), 1, wxALIGN_CENTER_VERTICAL|wxEXPAND);
+		sizer->Add(new wxStaticText(this, -1, labels[i], wxDefaultPosition, wxSize(40, -1)), wxSizerFlags(1).Center().Left());
 		sizer->Add(inputs[i]);
 	}
 	sizer->AddGrowableCol(0,1);
