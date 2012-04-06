@@ -699,14 +699,18 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	wxSizer *rgb_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("RGB color"));
 	wxSizer *hsl_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSL color"));
 	wxSizer *hsv_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSV color"));
-	for (int i = 0; i < 3; ++i) {
+
+	for (int i = 0; i < 3; ++i)
 		rgb_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
-		hsl_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
-		hsv_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
-	}
 
 	ass_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
 	html_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
+
+	for (int i = 0; i < 3; ++i)
+		hsl_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
+
+	for (int i = 0; i < 3; ++i)
+		hsv_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 
 	preview_box = new wxStaticBitmap(this, -1, wxBitmap(40, 40, 24), wxDefaultPosition, wxSize(40, 40), STATIC_BORDER_FLAG);
 	recent_box = new ColorPickerRecent(this, 8, 4, 16);
