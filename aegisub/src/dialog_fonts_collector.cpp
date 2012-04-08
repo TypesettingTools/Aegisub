@@ -111,13 +111,17 @@ class FontsCollectorThread : public wxThread {
 			zip.reset(new wxZipOutputStream(*out));
 		}
 
+		int64_t total_size = 0;
 		bool allOk = true;
 		for (std::vector<wxString>::iterator cur = paths.begin(); cur != paths.end(); ++cur) {
 			int ret = 0;
+			wxFileName cur_fn(*cur);
+			total_size += cur_fn.GetSize().GetValue();
+
 			switch (oper) {
 				case CopyToScriptFolder:
 				case CopyToFolder: {
-					wxString dest = destination + wxFileName(*cur).GetFullName();
+					wxString dest = destination + cur_fn.GetFullName();
 					if (wxFileName::FileExists(dest))
 						ret = 2;
 					else
@@ -129,7 +133,7 @@ class FontsCollectorThread : public wxThread {
 					if (!in.IsOk())
 						ret = false;
 					else {
-						ret = zip->PutNextEntry(wxFileName(*cur).GetFullName());
+						ret = zip->PutNextEntry(cur_fn.GetFullName());
 						zip->Write(in);
 					}
 				}
@@ -150,6 +154,9 @@ class FontsCollectorThread : public wxThread {
 			AppendText(_("Done. All fonts copied."), 1);
 		else
 			AppendText(_("Done. Some fonts could not be copied."), 2);
+
+		if (total_size > 32 * 1024 * 1024)
+			AppendText(_("\nOver 32 MB of fonts were copied. Some of the fonts may not be loaded by the player if they are all attached to a Matroska file."), 2);
 	}
 
 	/// @brief Tell the dialog to add text to the textbox
