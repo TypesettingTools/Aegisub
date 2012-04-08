@@ -157,6 +157,8 @@ class FontsCollectorThread : public wxThread {
 
 		if (total_size > 32 * 1024 * 1024)
 			AppendText(_("\nOver 32 MB of fonts were copied. Some of the fonts may not be loaded by the player if they are all attached to a Matroska file."), 2);
+
+		AppendText("\n");
 	}
 
 	/// @brief Tell the dialog to add text to the textbox
