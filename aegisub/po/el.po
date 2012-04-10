@@ -673,11 +673,11 @@ msgid "Automation Script Info"
 msgstr "Πληροφορίες script αυτοματοποίησης"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Επιλέξτε χρώμα"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Φάσμα χρωμάτων"
 
 #: dialog_colorpicker.cpp:547
@@ -701,15 +701,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "Χρώμα RGB"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "Χρώμα HSL"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "Χρώμα HSV"
 
 #: dialog_colorpicker.cpp:583
@@ -747,7 +747,7 @@ msgid "Value:"
 msgstr "Τιμή:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Επιλογέας Χρώματος"
 
 #: dialog_detached_video.cpp:76
@@ -768,7 +768,7 @@ msgid "Video resolution:"
 msgstr "Ανάλυση βίντεο:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Χρώμα:"
 
 #: dialog_dummy_video.cpp:150
@@ -1239,7 +1239,7 @@ msgid "Crash recovery path:"
 msgstr "Διαδρομή αρχείων επαναφοράς από κρασάρισμα:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Αυτόματη φόρτωση συνδεδεμένων αρχείων:"
 
 #: dialog_options.cpp:189
@@ -1391,36 +1391,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Για Προχωρημένους - ΜΟΝΟ ΕΜΠΕΙΡΟΙ ΧΡΗΣΤΕΣ"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "Ταίριασμα ανάλυσης βίντεο κατά το άνοιγμα:"
+msgid "Match video resolution on open"
+msgstr "Ταίριασμα ανάλυσης βίντεο κατά το άνοιγμα"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "Προκαθορισμένη Μεγέθυνση:"
+msgid "Default Zoom"
+msgstr "Προκαθορισμένη Μεγέθυνση"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "Γρήγορο βήμα άλματος σε frame:"
+msgid "Fast jump step in frames"
+msgstr "Γρήγορο βήμα άλματος σε frame"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "Διαδρομή αποθήκευσης στιγμιότυπων:"
+msgid "Screenshot save path"
+msgstr "Διαδρομή αποθήκευσης στιγμιότυπων"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "Εμφάνιση keyframe στον ρυθμιστή"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "Παροχή βίντεο:"
+msgid "Video provider"
+msgstr "Παροχή βίντεο"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "Παροχή υπότιτλων:"
+msgid "Subtitles provider"
+msgstr "Παροχή υπότιτλων"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Όριο μνήμης Avisynth:"
+msgid "Avisynth memory limit"
+msgstr "Όριο μνήμης Avisynth"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1606,20 +1606,20 @@ msgid "Spectrum cutoff"
 msgstr "Συχνότητα αποκοπής φάσματος"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0 - Κανονική ποιότητα"
+msgid "Regular quality"
+msgstr "Κανονική ποιότητα"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1 - Καλύτερη ποιότητα"
+msgid "Better quality"
+msgstr "Καλύτερη ποιότητα"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2 - Υψηλή ποιότητα"
+msgid "High quality"
+msgstr "Υψηλή ποιότητα"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
-msgstr "3 - Απίστευτη ποιότητα"
+msgid "Insane quality"
+msgstr "Απίστευτη ποιότητα"
 
 #: dialog_options.cpp:539
 msgid "Spectrum quality"
@@ -2130,8 +2130,8 @@ msgstr "Ενέργεια"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "Επιλέχθηκαν %i γραμμές"
+msgid "Selection was set to %u lines"
+msgstr "Επιλέχθηκαν %u γραμμές"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2141,13 +2141,13 @@ msgstr "Επιλογή"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "%i γραμμές προστέθηκαν στην επιλογή"
+msgid "%u lines were added to selection"
+msgstr "%u γραμμές προστέθηκαν στην επιλογή"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "%i γραμμές αφαιρέθηκαν από την επιλογή"
+msgid "%u lines were removed from selection"
+msgstr "%u γραμμές αφαιρέθηκαν από την επιλογή"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2224,32 +2224,32 @@ msgid "Clear"
 msgstr "Εκκαθάριση"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "μη αποθηκευμένο, "
+msgid "unsaved"
+msgstr "μη αποθηκευμένο"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr " frames "
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "προς τα πίσω, "
+msgid "backward"
+msgstr "προς τα πίσω"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "προς τα μπρος, "
+msgid "forward"
+msgstr "προς τα μπρος"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "α+τ, "
+msgid "s+e"
+msgstr "α+τ"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "α, "
+msgid "s"
+msgstr "α"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "τ, "
+msgid "e"
+msgstr "τ"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2257,8 +2257,8 @@ msgstr "όλων"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "από %i και πέρα"
+msgid "from %d onward"
+msgstr "από %d και πέρα"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2383,80 +2383,80 @@ msgid "Style name."
 msgstr "Όνομα στυλ."
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
-msgstr "Όνομα γραμματοσειράς."
+msgid "Font face"
+msgstr "Όνομα γραμματοσειράς"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
-msgstr "Μέγεθος γραμματοσειράς."
+msgid "Font size"
+msgstr "Μέγεθος γραμματοσειράς"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
-msgstr "Επιλέξτε κύριο χρώμα."
+msgid "Choose primary color"
+msgstr "Επιλέξτε κύριο χρώμα"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
-msgstr "Επιλέξτε δευτερεύον χρώμα."
+msgid "Choose secondary color"
+msgstr "Επιλέξτε δευτερεύον χρώμα"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
-msgstr "Επιλέξτε χρώμα περιγράμματος."
+msgid "Choose outline color"
+msgstr "Επιλέξτε χρώμα περιγράμματος"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
-msgstr "Επιλέξτε χρώμα σκιάς."
+msgid "Choose shadow color"
+msgstr "Επιλέξτε χρώμα σκιάς"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
-msgstr "Ορίστε την αδιαφάνεια, από 0 (αδιαφανής) μέχρι 255 (διαφανής)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "Ορίστε την αδιαφάνεια, από 0 (αδιαφανής) μέχρι 255 (διαφανής)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
-msgstr "Απόσταση από το αριστερό άκρο, σε pixel."
+msgid "Distance from left edge, in pixels"
+msgstr "Απόσταση από το αριστερό άκρο, σε pixel"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
-msgstr "Απόσταση από το δεξί άκρο, σε pixel."
+msgid "Distance from right edge, in pixels"
+msgstr "Απόσταση από το δεξί άκρο, σε pixel"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
-msgstr "Απόσταση από το ανώτερο/κατώτερο άκρο, σε pixel."
+msgid "Distance from top/bottom edge, in pixels"
+msgstr "Απόσταση από το ανώτερο/κατώτερο άκρο, σε pixel"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "Όταν επιλεχθεί, εμφανίζεται ένα αδιαφανές πλαίσιο πίσω από τους υπότιτλους αντί του περιγράμματος γύρω από το κείμενο."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "Όταν επιλεχθεί, εμφανίζεται ένα αδιαφανές πλαίσιο πίσω από τους υπότιτλους αντί του περιγράμματος γύρω από το κείμενο"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
-msgstr "Μήκος περιγράμματος, σε pixel."
+msgid "Outline width, in pixels"
+msgstr "Μήκος περιγράμματος, σε pixel"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
-msgstr "Απόσταση σκιάς, σε pixel."
+msgid "Shadow distance, in pixels"
+msgstr "Απόσταση σκιάς, σε pixel"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
-msgstr "Κλίμακα άξονα Χ, σε ποσοστό επί τοις εκατό."
+msgid "Scale X, in percentage"
+msgstr "Κλίμακα άξονα Χ, σε ποσοστό επί τοις εκατό"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
-msgstr "Κλίμακα άξονα Υ, σε ποσοστό επί τοις εκατό."
+msgid "Scale Y, in percentage"
+msgstr "Κλίμακα άξονα Υ, σε ποσοστό επί τοις εκατό"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
-msgstr "Γωνία περιστροφής στο άξονα Ζ, σε μοίρες."
+msgid "Angle to rotate in Z axis, in degrees"
+msgstr "Γωνία περιστροφής στο άξονα Ζ, σε μοίρες"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "Κωδικοποίηση χαρακτήρων, χρήσιμο μονάχα για unicode αν η γραμματοσειρά δεν υποστηρίζει σωστή χαρτογράφηση unicode."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "Κωδικοποίηση χαρακτήρων, χρήσιμο μονάχα για unicode αν η γραμματοσειρά δεν υποστηρίζει σωστή χαρτογράφηση unicode"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
-msgstr "Απόσταση μεταξύ χαρακτήρων, σε pixel."
+msgid "Character spacing, in pixels"
+msgstr "Απόσταση μεταξύ χαρακτήρων, σε pixel"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
-msgstr "Ευθυγράμμιση στην οθόνη, σε στυλ numpad."
+msgid "Alignment in screen, in numpad style"
+msgstr "Ευθυγράμμιση στην οθόνη, σε στυλ numpad"
 
 #: dialog_style_editor.cpp:236
 msgid "Primary"
@@ -2499,16 +2499,16 @@ msgid "Encoding:"
 msgstr "Κωδικοποίηση:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
-msgstr "Προεπισκόπιση του τρέχοντος στυλ."
+msgid "Preview of current style"
+msgstr "Προεπισκόπιση του τρέχοντος στυλ"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
-msgstr "Κείμενο που θα χρησιμοποιηθεί για την προεπισκόπηση."
+msgid "Text to be used for the preview"
+msgstr "Κείμενο που θα χρησιμοποιηθεί για την προεπισκόπηση"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
-msgstr "Χρώμα του φόντου της προεπισκόπισης."
+msgid "Color of preview background"
+msgstr "Χρώμα του φόντου της προεπισκόπισης"
 
 #: dialog_style_editor.cpp:314
 msgid "No subtitle providers available. Cannot preview subs."
@@ -2585,28 +2585,28 @@ msgstr "Αντιγραφή"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
-msgstr "Μετακίνηση στυλ πάνω."
+msgid "Move style up"
+msgstr "Μετακίνηση στυλ πάνω"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
-msgstr "Μετακίνηση στυλ κάτω."
+msgid "Move style down"
+msgstr "Μετακίνηση στυλ κάτω"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
-msgstr "Μετακίνηση στυλ στην κορυφή."
+msgid "Move style to top"
+msgstr "Μετακίνηση στυλ στην κορυφή"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
-msgstr "Μετακίνηση στυλ στο κάτω μέρος."
+msgid "Move style to bottom"
+msgstr "Μετακίνηση στυλ στο κάτω μέρος"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
-msgstr "Ταξινόμηση στυλ αλφαβητικά."
+msgid "Sort styles alphabetically"
+msgstr "Ταξινόμηση στυλ αλφαβητικά"
 
 #: dialog_style_manager.cpp:121
 msgid "Current script"
@@ -2854,12 +2854,12 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Επιλέξτε στυλ για επεξεργασία. Τα αποεπιλεγμένα θα αγνοηθούν."
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
-msgstr "Επιλογή όλων των στυλ."
+msgid "Select all styles"
+msgstr "Επιλογή όλων των στυλ"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
-msgstr "Αποεπιλογή όλων των στυλ."
+msgid "Deselect all styles"
+msgstr "Αποεπιλογή όλων των στυλ"
 
 #: dialog_timing_processor.cpp:84
 msgid "Affect selection only"
@@ -2874,24 +2874,24 @@ msgid "Add lead in:"
 msgstr "Προσθήκη lead-in:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "Ενεργοποίηση προσθήκης lead-in στις γραμμές."
+msgid "Enable adding of lead-ins to lines"
+msgstr "Ενεργοποίηση προσθήκης lead-in στις γραμμές"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
-msgstr "Το lead-in για πρόσθεση, σε millisecond."
+msgid "Lead in to be added, in milliseconds"
+msgstr "Το lead-in για πρόσθεση, σε millisecond"
 
 #: dialog_timing_processor.cpp:95
 msgid "Add lead out:"
 msgstr "Προσθήκη lead-out:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "Ενεργοποίηση προσθήκης lead-out στις γραμμές."
+msgid "Enable adding of lead-outs to lines"
+msgstr "Ενεργοποίηση προσθήκης lead-out στις γραμμές"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
-msgstr "Το lead-out για πρόσθεση, σε millisecond."
+msgid "Lead out to be added, in milliseconds"
+msgstr "Το lead-out για πρόσθεση, σε millisecond"
 
 #: dialog_timing_processor.cpp:107
 msgid "Make adjacent subtitles continuous"
@@ -2903,16 +2903,16 @@ msgid "Enable"
 msgstr "Ενεργοποίηση"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Μετατροπή υποτίτλων σε συνεχόμενους όταν απέχουν μια συγκεκριμένη απόσταση μεταξύ τους."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Μετατροπή υποτίτλων σε συνεχόμενους όταν απέχουν μια συγκεκριμένη απόσταση μεταξύ τους"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Κατώφλι:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "Μέγιστη διαφορά μεταξύ χρόνων αρχής και τέλους για να γίνουν δύο υπότιτλοι συνεχόμενοι, σε milliseconds."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "Μέγιστη διαφορά μεταξύ χρόνων αρχής και τέλους για να γίνουν δύο υπότιτλοι συνεχόμενοι, σε milliseconds"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2931,8 +2931,8 @@ msgid "Keyframe snapping"
 msgstr "Προσκόλληση σε keyframe"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Ενεργοποίηση προσκόλλησης υποτίτλων στο κοντινότερο keyframe, εάν η απόσταση είναι μικρότερη από το κατώφλι."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "Ενεργοποίηση προσκόλλησης υποτίτλων στο κοντινότερο keyframe, εάν η απόσταση είναι μικρότερη από το κατώφλι"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -3070,8 +3070,8 @@ msgstr "Ενεργοποίηση προεπισκόπησης"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Τρέχουσα γραμμή: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Τρέχουσα γραμμή: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3437,11 +3437,11 @@ msgid "Configure Aegisub"
 msgstr "Παραμετροποίηση Aegisub"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Κυκλική Eναλλαγή Λειτουργίας Απόκρυψης των Tag"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Κυκλική Εναλλαγή μεταξύ των Λειτουργιών Απόκρυψης των Tag"
 
 #: frame_main.cpp:305
@@ -3478,20 +3478,20 @@ msgid "Saves subtitles"
 msgstr "Αποθήκευση υπότιτλων"
 
 #: frame_main.cpp:324
-msgid "Save Subtitles as..."
-msgstr "Αποθήκευση Υπότιτλων ως..."
+msgid "Save Subtitles as"
+msgstr "Αποθήκευση Υπότιτλων ως"
 
 #: frame_main.cpp:324
 msgid "Saves subtitles with another name"
 msgstr "Αποθήκευση των υπότιτλων με άλλο όνομα"
 
 #: frame_main.cpp:325
-msgid "Export Subtitles..."
-msgstr "Εξαγωγή Υπότιτλων..."
+msgid "Export Subtitles"
+msgstr "Εξαγωγή Υπότιτλων"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
-msgstr "Αποθήκευση ενός αντίγραφου των υπότιτλων αφού έχουν υποστεί επεξεργασία."
+msgid "Saves a copy of subtitles with processing applied to it"
+msgstr "Αποθήκευση ενός αντίγραφου των υπότιτλων αφού έχουν υποστεί επεξεργασία"
 
 #: frame_main.cpp:326
 #: frame_main.cpp:427
@@ -3589,8 +3589,8 @@ msgid "Paste subtitles"
 msgstr "Επικόλληση υπότιτλων"
 
 #: frame_main.cpp:352
-msgid "Paste Lines Over..."
-msgstr "Επικόλληση Γραμμών από πάνω..."
+msgid "Paste Lines Over"
+msgstr "Επικόλληση Γραμμών από πάνω"
 
 #: frame_main.cpp:352
 msgid "Paste subtitles over others"
@@ -3655,8 +3655,8 @@ msgid "Open translation assistant"
 msgstr "Άνοιγμα βοηθού μετάφρασης"
 
 #: frame_main.cpp:369
-msgid "Resample Resolution..."
-msgstr "Μετατροπή Ανάλυσης..."
+msgid "Resample Resolution"
+msgstr "Μετατροπή Ανάλυσης"
 
 #: frame_main.cpp:369
 msgid "Changes resolution and modifies subtitles to conform to change"
@@ -3792,7 +3792,7 @@ msgid "Select Lines..."
 msgstr "Επιλογή Γραμμών..."
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Επιλέγει γραμμές σύμφωνα με τα οριζόμενα κριτήρια"
 
 #: frame_main.cpp:399
@@ -3820,8 +3820,8 @@ msgid "Timing Post-Processor..."
 msgstr "Επεξεργαστής Χρονισμών..."
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Εκτελεί έναν επεξεργαστή χρονισμών για την επεξεργασία lead-in, lead-out, χρονισμό σκηνών κτλ."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
+msgstr "Εκτελεί έναν επεξεργαστή χρονισμών για την επεξεργασία lead-in, lead-out, χρονισμό σκηνών κτλ"
 
 #: frame_main.cpp:406
 msgid "Kanji Timer..."
@@ -3899,16 +3899,16 @@ msgid "Closes the currently open video file"
 msgstr "Κλείσιμο του ανοιχτού αρχείου βίντεο"
 
 #: frame_main.cpp:429
-msgid "Use Dummy Video..."
-msgstr "Χρήση Πλαστού Βίντεο..."
+msgid "Use Dummy Video"
+msgstr "Χρήση Πλαστού Βίντεο"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Άνοιγμα ενός βίντεο κλιπ με ενιαίο χρώμα"
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
-msgstr "Εμφάνιση Λεπτομερειών Βίντεο..."
+msgid "Show Video Details"
+msgstr "Εμφάνιση Λεπτομερειών Βίντεο"
 
 #: frame_main.cpp:430
 msgid "Shows video details"
@@ -3967,8 +3967,8 @@ msgid "Detach Video"
 msgstr "Απόσπαση του Βίντεο"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
-msgstr "Απόσπαση του βίντεο, εμφανίζοντας το σ' ένα ξεχωριστό Παράθυρο."
+msgid "Detach video, displaying it in a separate Window"
+msgstr "Απόσπαση του βίντεο, εμφανίζοντας το σ' ένα ξεχωριστό Παράθυρο"
 
 #: frame_main.cpp:446
 msgid "Set Zoom"
@@ -4023,8 +4023,8 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "Επιβάλλει αναλογία 2.35 στο βίντεο"
 
 #: frame_main.cpp:463
-msgid "Custom..."
-msgstr "Προσωπική..."
+msgid "Custom"
+msgstr "Προσωπική"
 
 #: frame_main.cpp:463
 msgid "Forces video to a custom aspect ratio"
@@ -4035,8 +4035,8 @@ msgid "Show Overscan Mask"
 msgstr "Εμφάνιση Μάσκας Overscan"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "Εμφάνιση μιας μάσκας πάνω από το βίντεο, υποδεικνύοντας περιοχές που μπορεί να αποκοπούν σε τηλεοράσεις λόγω overscan."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgstr "Εμφάνιση μιας μάσκας πάνω από το βίντεο, υποδεικνύοντας περιοχές που μπορεί να αποκοπούν σε τηλεοράσεις λόγω overscan"
 
 #: frame_main.cpp:467
 msgid "&Jump to..."
@@ -4161,8 +4161,8 @@ msgid "Vie&w"
 msgstr "&Προβολή"
 
 #: frame_main.cpp:514
-msgid "&Contents..."
-msgstr "Πε&ριεχόμενα..."
+msgid "&Contents"
+msgstr "Πε&ριεχόμενα"
 
 #: frame_main.cpp:514
 msgid "Help topics"
@@ -4177,16 +4177,16 @@ msgid "Resource files distributed with Aegisub"
 msgstr "Αρχεία πόρων που διανέμονται μαζί με το Aegisub"
 
 #: frame_main.cpp:519
-msgid "&Website..."
-msgstr "&Ιστοσελίδα..."
+msgid "&Website"
+msgstr "&Ιστοσελίδα"
 
 #: frame_main.cpp:519
 msgid "Visit Aegisub's official website"
 msgstr "Επισκεφθείτε την επίσημη ιστοσελίδα του Aegisub"
 
 #: frame_main.cpp:520
-msgid "&Forums..."
-msgstr "&Φόρουμ..."
+msgid "&Forums"
+msgstr "&Φόρουμ"
 
 #: frame_main.cpp:520
 msgid "Visit Aegisub's forums"
@@ -4201,7 +4201,7 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Επισκεφθείτε τον Bug Tracker του Aegisub για να αναφέρετε σφάλματα στο λογισμικό ή να ζητήσετε νέες δυνατότητες"
 
 #: frame_main.cpp:522
-msgid "&IRC Channel..."
+msgid "&IRC Channel"
 msgstr "Κανάλι &IRC"
 
 #: frame_main.cpp:522
@@ -4217,8 +4217,8 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Ελέγξτε αν υπάρχει διαθέσιμη μια νεότερη έκδοση του Aegisub"
 
 #: frame_main.cpp:527
-msgid "&About..."
-msgstr "&Σχετικά..."
+msgid "&About"
+msgstr "&Σχετικά"
 
 #: frame_main.cpp:740
 msgid "Save subtitles file"
@@ -4754,8 +4754,8 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "Μετατροπή αυτής της γραμμής σε σχόλιο. Οι γραμμές σχόλια δεν εμφανίζονται στην οθόνη."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
-msgstr "Στυλ για αυτή τη γραμμή."
+msgid "Style for this line"
+msgstr "Στυλ για αυτή τη γραμμή"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -5180,24 +5180,24 @@ msgid "Toggle autoscroll of video"
 msgstr "Εναλλαγή λειτουργίας αυτόματης κύλισης του βίντεο"
 
 #: video_box.cpp:90
-msgid "Seek video."
-msgstr "Μετακίνηση στο βίντεο."
+msgid "Seek video"
+msgstr "Μετακίνηση στο βίντεο"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
-msgstr "Αριθμός και χρόνος του τρέχοντος frame."
+msgid "Current frame time and number"
+msgstr "Αριθμός και χρόνος του τρέχοντος frame"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
-msgstr "Χρόνος αυτού του frame σχετικά με την αρχή και το τέλος του τρέχοντος υπότιτλου."
+msgid "Time of this frame relative to start and end of current subs"
+msgstr "Χρόνος αυτού του frame σχετικά με την αρχή και το τέλος του τρέχοντος υπότιτλου"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "Τυπική"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
-msgstr "Τυπική λειτουργία, το διπλό κλικ θέτει συντεταγμένες."
+msgid "Standard mode, double click sets position"
+msgstr "Τυπική λειτουργία, το διπλό κλικ θέτει συντεταγμένες"
 
 #: video_box.cpp:115
 #: visual_tool_vector_clip.cpp:70
@@ -5205,48 +5205,48 @@ msgid "Drag"
 msgstr "Σύρσιμο"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
-msgstr "Σύρσιμο υπότιτλων."
+msgid "Drag subtitles"
+msgstr "Σύρσιμο υπότιτλων"
 
 #: video_box.cpp:116
 msgid "Rotate Z"
 msgstr "Περιστροφή στον άξονα Z"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
-msgstr "Περιστροφή υπότιτλων στον άξονα Z."
+msgid "Rotate subtitles on their Z axis"
+msgstr "Περιστροφή υπότιτλων στον άξονα Z"
 
 #: video_box.cpp:117
 msgid "Rotate XY"
 msgstr "Περιστροφή στους άξονες XY"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
-msgstr "Περιστροφή υπότιτλων στους άξονες X και Y."
+msgid "Rotate subtitles on their X and Y axes"
+msgstr "Περιστροφή υπότιτλων στους άξονες X και Y"
 
 #: video_box.cpp:118
 msgid "Scale"
 msgstr "Κλίμακα"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
-msgstr "Αλλαγή κλίμακας υπότιτλων στους άξονες X και Y."
+msgid "Scale subtitles on X and Y axes"
+msgstr "Αλλαγή κλίμακας υπότιτλων στους άξονες X και Y"
 
 #: video_box.cpp:119
 msgid "Clip"
 msgstr "Clip"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
-msgstr "Clip υπότιτλων σε ένα ορθογώνιο."
+msgid "Clip subtitles to a rectangle"
+msgstr "Clip υπότιτλων σε ένα ορθογώνιο"
 
 #: video_box.cpp:120
 msgid "Vector Clip"
 msgstr "Διανυσματικό Clip"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
-msgstr "Clip υπότιτλων σε μία περιοχή ορισμένη από διανύσματα."
+msgid "Clip subtitles to a vectorial area"
+msgstr "Clip υπότιτλων σε μία περιοχή ορισμένη από διανύσματα"
 
 #: video_box.cpp:122
 msgid "Realtime"
@@ -5257,8 +5257,8 @@ msgid "Toggle realtime display of changes."
 msgstr "Εναλλαγή εμφάνισης αλλαγών σε πραγματικό χρόνο"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
-msgstr "Άνοιγμα της σελίδας του εγχειριδίου για την οπτική στοιχειοθέτηση."
+msgid "Open the manual page for Visual Typesetting"
+msgstr "Άνοιγμα της σελίδας του εγχειριδίου για την οπτική στοιχειοθέτηση"
 
 #: video_display.cpp:478
 msgid "Save PNG snapshot"
@@ -5311,55 +5311,55 @@ msgid "positioning"
 msgstr "τοποθέτηση"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
-msgstr "Σύρσιμο σημείων ελέγχου."
+msgid "Drag control points"
+msgstr "Σύρσιμο σημείων ελέγχου"
 
 #: visual_tool_vector_clip.cpp:71
 msgid "Line"
 msgstr "Γραμμή"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
-msgstr "Προσθέτει μία γραμμή."
+msgid "Appends a line"
+msgstr "Προσθέτει μία γραμμή"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Bicubic"
 msgstr "Bicubic"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
-msgstr "Προσθέτει μια καμπύλη bezier bicubic."
+msgid "Appends a bezier bicubic curve"
+msgstr "Προσθέτει μια καμπύλη bezier bicubic"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Convert"
 msgstr "Μετατροπή"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
-msgstr "Μετατρέπει ένα κομμάτι ανάμεσα από μια γραμμή κι ένα bicubic."
+msgid "Converts a segment between line and bicubic"
+msgstr "Μετατρέπει ένα κομμάτι ανάμεσα από μια γραμμή κι ένα bicubic"
 
 #: visual_tool_vector_clip.cpp:75
 msgid "Insert"
 msgstr "Εισαγωγή"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
-msgstr "Εισάγει ένα σημείο ελέγχου."
+msgid "Inserts a control point"
+msgstr "Εισάγει ένα σημείο ελέγχου"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Remove"
 msgstr "Αφαίρεση"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
-msgstr "Αφαιρεί ένα σημείο ελέγχου."
+msgid "Removes a control point"
+msgstr "Αφαιρεί ένα σημείο ελέγχου"
 
 #: visual_tool_vector_clip.cpp:78
 msgid "Freehand"
 msgstr "Ελεύθερη Σχεδίαση"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "Σχεδίαση ενός σχήματος με ελεύθερη σχεδίαση"
 
 #: visual_tool_vector_clip.cpp:79
@@ -5367,7 +5367,7 @@ msgid "Freehand smooth"
 msgstr "Ελεύθερη σχεδίαση ομαλού σχήματος"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "Σχεδίαση ενός ομαλού σχήματος με ελεύθερη σχεδίαση"
 
 #~ msgid "Show Splash Screen"

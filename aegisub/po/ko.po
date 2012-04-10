@@ -113,7 +113,7 @@ msgid "All"
 msgstr "모두"
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
+msgid "Select all styles"
 msgstr "모든 스타일 선택"
 
 #: dialog_timing_processor.cpp:79
@@ -122,7 +122,7 @@ msgid "None"
 msgstr "없음"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
+msgid "Deselect all styles"
 msgstr "모든 스타일 선택 취소"
 
 #: dialog_timing_processor.cpp:83
@@ -153,11 +153,11 @@ msgid "Add lead in:"
 msgstr "리드 인(시작점) 추가:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
+msgid "Enable adding of lead-ins to lines"
 msgstr "라인에 시작 부분(리드인)를 추가 사용"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
+msgid "Lead in to be added, in milliseconds"
 msgstr "리드 인(시작점)추가, ms"
 
 #: dialog_timing_processor.cpp:95
@@ -165,11 +165,11 @@ msgid "Add lead out:"
 msgstr "리드 아웃(종료점) 추가:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
+msgid "Enable adding of lead-outs to lines"
 msgstr "라인에 리드 아웃(종료점)를 추가 사용"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
+msgid "Lead out to be added, in milliseconds"
 msgstr "리드 아웃(종료점)추가, ms"
 
 #: dialog_timing_processor.cpp:107
@@ -182,16 +182,16 @@ msgid "Enable"
 msgstr "사용"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "모두 해서 자막 맞추기를 사용하면, 각각의 자막들의 거리는 일정한 범위내에 있습니다."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "모두 해서 자막 맞추기를 사용하면, 각각의 자막들의 거리는 일정한 범위내에 있습니다"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "스레시홀드:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "시작 시간과 끝 시간이 완전히 다른 두 자막들은 연결시키다, ms."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "시작 시간과 끝 시간이 완전히 다른 두 자막들은 연결시키다, ms"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -212,8 +212,8 @@ msgid "Keyframe snapping"
 msgstr "키 프레임 맞춤"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "스레시홀드 범위내에 거리가 있으면 ,자막에 가장 가까운 키 프레임 맞추기를 사용하다."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "스레시홀드 범위내에 거리가 있으면 ,자막에 가장 가까운 키 프레임 맞추기를 사용하다"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -277,23 +277,23 @@ msgid "Toggle autoscroll of video"
 msgstr "비디오의 자동 화면 전환 토클"
 
 #: video_box.cpp:90
-msgid "Seek video."
+msgid "Seek video"
 msgstr "비디오 탐색"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
+msgid "Current frame time and number"
 msgstr "현재 프레임 시간과 수"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
-msgstr "현재 자막의 시작과 끝은 이 프레임의 시간과 관계 있다."
+msgid "Time of this frame relative to start and end of current subs"
+msgstr "현재 자막의 시작과 끝은 이 프레임의 시간과 관계 있다"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "표준"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
+msgid "Standard mode, double click sets position"
 msgstr "표준 모드, 위치 설정 두번 클릭"
 
 #: video_box.cpp:115
@@ -302,7 +302,7 @@ msgid "Drag"
 msgstr "끌기"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
+msgid "Drag subtitles"
 msgstr "자막 끌기"
 
 #: video_box.cpp:116
@@ -310,7 +310,7 @@ msgid "Rotate Z"
 msgstr "Z 회전"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
+msgid "Rotate subtitles on their Z axis"
 msgstr "자막의 Z각 회전"
 
 #: video_box.cpp:117
@@ -318,7 +318,7 @@ msgid "Rotate XY"
 msgstr "XY 회전"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
+msgid "Rotate subtitles on their X and Y axes"
 msgstr "자막의 X와Y 각 회전"
 
 #: video_box.cpp:118
@@ -326,7 +326,7 @@ msgid "Scale"
 msgstr "크기"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
+msgid "Scale subtitles on X and Y axes"
 msgstr "자막의 X 와 Y 각 크기"
 
 #: video_box.cpp:119
@@ -334,7 +334,7 @@ msgid "Clip"
 msgstr "클립"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
+msgid "Clip subtitles to a rectangle"
 msgstr "직사각형 자막 클립"
 
 #: video_box.cpp:120
@@ -342,7 +342,7 @@ msgid "Vector Clip"
 msgstr "수직 클립"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
+msgid "Clip subtitles to a vectorial area"
 msgstr "벡터 지역 자막 클립"
 
 #: video_box.cpp:122
@@ -360,7 +360,7 @@ msgid "Help"
 msgstr "도움말"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
+msgid "Open the manual page for Visual Typesetting"
 msgstr " Visual Typesetting의 메뉴얼 페이지 열기"
 
 #: video_display.cpp:496
@@ -583,8 +583,8 @@ msgstr "작업"
 
 #: dialog_selection.cpp:267
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "선택 영역에 %i 라인를 설정"
+msgid "Selection was set to %u lines"
+msgstr "선택 영역에 %u 라인를 설정"
 
 #: dialog_selection.cpp:267
 #: dialog_selection.cpp:268
@@ -594,13 +594,13 @@ msgstr "선택 영역"
 
 #: dialog_selection.cpp:268
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "선택 영역에 %i 라인을 추가"
+msgid "%u lines were added to selection"
+msgstr "선택 영역에 %u 라인을 추가"
 
 #: dialog_selection.cpp:269
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "선택 영역에서 %i 라인을 제거"
+msgid "%u lines were removed from selection"
+msgstr "선택 영역에서 %u 라인을 제거"
 
 #: dialog_style_manager.cpp:62
 #: frame_main.cpp:265
@@ -646,28 +646,28 @@ msgstr "복사"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style up."
-msgstr "스타일 위로 이동."
+msgid "Move style up"
+msgstr "스타일 위로 이동"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style down."
-msgstr "스타일 아래로 이동."
+msgid "Move style down"
+msgstr "스타일 아래로 이동"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Move style to top."
-msgstr "스타일 맨 위로 이동."
+msgid "Move style to top"
+msgstr "스타일 맨 위로 이동"
 
 #: dialog_style_manager.cpp:102
 #: dialog_style_manager.cpp:147
-msgid "Move style to bottom."
-msgstr "스타일 맨 아래로 이동."
+msgid "Move style to bottom"
+msgstr "스타일 맨 아래로 이동"
 
 #: dialog_style_manager.cpp:103
 #: dialog_style_manager.cpp:148
-msgid "Sort styles alphabetically."
-msgstr "사전 순서로 스타일 정렬."
+msgid "Sort styles alphabetically"
+msgstr "사전 순서로 스타일 정렬"
 
 #: dialog_style_manager.cpp:123
 msgid "Current script"
@@ -898,7 +898,7 @@ msgid "Crash recovery path:"
 msgstr "충돌시 복구할 파일 경로:"
 
 #: dialog_options.cpp:190
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "자동-로드 파일 경로:"
 
 #: dialog_options.cpp:191
@@ -1066,36 +1066,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "고급 - 고급 사용자 설정"
 
 #: dialog_options.cpp:363
-msgid "Match video resolution on open: "
-msgstr "열린 비디오의 해상도를 일치시키다:"
+msgid "Match video resolution on open"
+msgstr "열린 비디오의 해상도를 일치시키다"
 
 #: dialog_options.cpp:368
-msgid "Default Zoom: "
-msgstr "기본 화면 :"
+msgid "Default Zoom"
+msgstr "기본 화면 "
 
 #: dialog_options.cpp:379
-msgid "Fast jump step in frames: "
-msgstr "프레임간 빠른 이동:"
+msgid "Fast jump step in frames"
+msgstr "프레임간 빠른 이동"
 
 #: dialog_options.cpp:383
-msgid "Screenshot save path: "
-msgstr "스크린샷 저장 경로:"
+msgid "Screenshot save path"
+msgstr "스크린샷 저장 경로"
 
 #: dialog_options.cpp:389
 msgid "Show keyframes in slider"
 msgstr "슬라이더에 키 프레임 표시"
 
 #: dialog_options.cpp:395
-msgid "Video provider: "
-msgstr "비디오 코덱:"
+msgid "Video provider"
+msgstr "비디오 코덱"
 
 #: dialog_options.cpp:400
-msgid "Subtitles provider: "
-msgstr "자막 코덱:"
+msgid "Subtitles provider"
+msgstr "자막 코덱"
 
 #: dialog_options.cpp:406
-msgid "Avisynth memory limit: "
-msgstr "Avisynth 최대 사용 메모리(MB): "
+msgid "Avisynth memory limit"
+msgstr "Avisynth 최대 사용 메모리(MB)"
 
 #: dialog_options.cpp:413
 msgid "Allow pre-2.56a Avisynth"
@@ -1281,20 +1281,20 @@ msgid "Spectrum cutoff"
 msgstr "스펙트럼 정지"
 
 #: dialog_options.cpp:546
-msgid "0 - Regular quality"
-msgstr "0 - 표준 품질"
+msgid "Regular quality"
+msgstr "표준 품질"
 
 #: dialog_options.cpp:546
-msgid "1 - Better quality"
-msgstr "1 - 최적 품질"
+msgid "Better quality"
+msgstr "최적 품질"
 
 #: dialog_options.cpp:546
-msgid "2 - High quality"
-msgstr "2 - 고품질"
+msgid "High quality"
+msgstr "고품질"
 
 #: dialog_options.cpp:546
-msgid "3 - Insane quality"
-msgstr "3 - 최고 품질"
+msgid "Insane quality"
+msgstr "최고 품질"
 
 #: dialog_options.cpp:547
 msgid "Spectrum quality"
@@ -2177,7 +2177,7 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "설명은 라인밖에 있다. 화면에 설명 라인은 표시 되지 않는다."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
+msgid "Style for this line"
 msgstr "라인의 스타일"
 
 #: subs_edit_box.cpp:89
@@ -2472,7 +2472,7 @@ msgid "Find"
 msgstr "찾기"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
+msgid "Drag control points"
 msgstr "제어점 끌기"
 
 #: visual_tool_vector_clip.cpp:71
@@ -2480,7 +2480,7 @@ msgid "Line"
 msgstr "라인"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
+msgid "Appends a line"
 msgstr "라인에 설명를 첨부"
 
 #: visual_tool_vector_clip.cpp:72
@@ -2488,7 +2488,7 @@ msgid "Bicubic"
 msgstr "Bicubic"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
+msgid "Appends a bezier bicubic curve"
 msgstr " a bezier bicubic 곡선에 설명 첨부"
 
 #: visual_tool_vector_clip.cpp:74
@@ -2496,15 +2496,15 @@ msgid "Convert"
 msgstr "변환"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
-msgstr "라인과 bicubic의 세그먼트를 변환한다."
+msgid "Converts a segment between line and bicubic"
+msgstr "라인과 bicubic의 세그먼트를 변환한다"
 
 #: visual_tool_vector_clip.cpp:75
 msgid "Insert"
 msgstr "삽입"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
+msgid "Inserts a control point"
 msgstr "제어점 삽입"
 
 #: visual_tool_vector_clip.cpp:76
@@ -2512,7 +2512,7 @@ msgid "Remove"
 msgstr "제거"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
+msgid "Removes a control point"
 msgstr "제어점 제거"
 
 #: visual_tool_vector_clip.cpp:78
@@ -2520,7 +2520,7 @@ msgid "Freehand"
 msgstr "프리핸드"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "프리핸드 쉐입 그리기"
 
 #: visual_tool_vector_clip.cpp:79
@@ -2528,7 +2528,7 @@ msgid "Freehand smooth"
 msgstr "프리핸드 스무스"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "스무스 프리핸드 쉐입 그리기"
 
 #: export_clean_info.cpp:60
@@ -2777,8 +2777,8 @@ msgstr "미리보기 사용"
 
 #: dialog_translation.cpp:202
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "현재 라인: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "현재 라인: %d/%d"
 
 #: dialog_translation.cpp:333
 msgid "translation assistant"
@@ -3024,11 +3024,11 @@ msgid "Configure Aegisub"
 msgstr "Aegisub 구성"
 
 #: frame_main.cpp:293
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "태그 숨김 모드 전환"
 
 #: frame_main.cpp:293
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "태그-숨기기 모드를 전환"
 
 #: frame_main.cpp:318
@@ -3065,7 +3065,7 @@ msgid "Saves subtitles"
 msgstr "자막을 저장하다"
 
 #: frame_main.cpp:337
-msgid "Save Subtitles as..."
+msgid "Save Subtitles as"
 msgstr "다른 이름으로 자막 저장"
 
 #: frame_main.cpp:337
@@ -3073,11 +3073,11 @@ msgid "Saves subtitles with another name"
 msgstr "다른 이름으로 자막 저장"
 
 #: frame_main.cpp:338
-msgid "Export Subtitles..."
+msgid "Export Subtitles"
 msgstr "자막 내보내기"
 
 #: frame_main.cpp:338
-msgid "Saves a copy of subtitles with processing applied to it."
+msgid "Saves a copy of subtitles with processing applied to it"
 msgstr "자막의 변경 내용 적용해서 자막의 복사본으로 저장"
 
 #: frame_main.cpp:339
@@ -3178,8 +3178,8 @@ msgid "Paste subtitles"
 msgstr "자막 불여넣기"
 
 #: frame_main.cpp:365
-msgid "Paste Lines Over..."
-msgstr "라인 덮어쓰기..."
+msgid "Paste Lines Over"
+msgstr "라인 덮어쓰기"
 
 #: frame_main.cpp:365
 msgid "Paste subtitles over others"
@@ -3336,7 +3336,7 @@ msgid "Select Lines..."
 msgstr "라인 선택..."
 
 #: frame_main.cpp:411
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "기본 지정된 라인 선택"
 
 #: frame_main.cpp:412
@@ -3364,7 +3364,7 @@ msgid "Timing Post-Processor..."
 msgstr "타이밍 포스트-프로세서"
 
 #: frame_main.cpp:418
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
 msgstr "리드인,리드아웃, 장면 시간 그리고 기타 시간을 나누어서  post-processor 실행"
 
 #: frame_main.cpp:419
@@ -3433,16 +3433,16 @@ msgid "Closes the currently open video file"
 msgstr "현재 열려 있는 비디오 파일 닫기"
 
 #: frame_main.cpp:442
-msgid "Use Dummy Video..."
-msgstr "더미 비디오 사용..."
+msgid "Use Dummy Video"
+msgstr "더미 비디오 사용"
 
 #: frame_main.cpp:442
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "흑백 비디오 클립 열기"
 
 #: frame_main.cpp:443
-msgid "Show Video Details..."
-msgstr "비디오 상세 정보 표시..."
+msgid "Show Video Details"
+msgstr "비디오 상세 정보 표시"
 
 #: frame_main.cpp:443
 msgid "Shows video details"
@@ -3501,7 +3501,7 @@ msgid "Detach Video"
 msgstr "비디오 파일 첨부 해제"
 
 #: frame_main.cpp:457
-msgid "Detach video, displaying it in a separate Window."
+msgid "Detach video, displaying it in a separate Window"
 msgstr "분리된 창에 표시되고 있는 비디오 닫기"
 
 #: frame_main.cpp:459
@@ -3557,7 +3557,7 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "화면 비율 2.35 고정"
 
 #: frame_main.cpp:476
-msgid "Custom..."
+msgid "Custom"
 msgstr "사용자 설정"
 
 #: frame_main.cpp:476
@@ -3569,8 +3569,8 @@ msgid "Show Overscan Mask"
 msgstr "오버스캔 마스크 표시"
 
 #: frame_main.cpp:478
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "비디오에 마크 표시, 텔레비전 오버스캔 표시된 부분을 잘라서 가져오다."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgstr "비디오에 마크 표시, 텔레비전 오버스캔 표시된 부분을 잘라서 가져오다"
 
 #: frame_main.cpp:480
 msgid "&Jump to..."
@@ -3695,7 +3695,7 @@ msgid "Vie&w"
 msgstr "보기(&W)"
 
 #: frame_main.cpp:527
-msgid "&Contents..."
+msgid "&Contents"
 msgstr "콘텐츠(&C)"
 
 #: frame_main.cpp:527
@@ -3711,7 +3711,7 @@ msgid "Resource files distributed with Aegisub"
 msgstr "리소스 파일이 보내졌습니다."
 
 #: frame_main.cpp:532
-msgid "&Website..."
+msgid "&Website"
 msgstr "웹사이트(&W)"
 
 #: frame_main.cpp:532
@@ -3719,7 +3719,7 @@ msgid "Visit Aegisub's official website"
 msgstr "Aegisub 공식 웹사이트로 이동"
 
 #: frame_main.cpp:533
-msgid "&Forums..."
+msgid "&Forums"
 msgstr "포럼(&F)"
 
 #: frame_main.cpp:533
@@ -3735,7 +3735,7 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "새 기능 요청이나 버그 신고시 Aegusub 버그 신고 사이트에 방문하세요 "
 
 #: frame_main.cpp:535
-msgid "&IRC Channel..."
+msgid "&IRC Channel"
 msgstr "IRC 채널(&I)"
 
 #: frame_main.cpp:535
@@ -3751,7 +3751,7 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "사용가능한 Aegisub 새버전이 있는지 검사."
 
 #: frame_main.cpp:540
-msgid "&About..."
+msgid "&About"
 msgstr "Aegisub 정보(&A)"
 
 #: frame_main.cpp:750
@@ -3942,79 +3942,79 @@ msgid "Style name."
 msgstr "스타일 이름"
 
 #: dialog_style_editor.cpp:170
-msgid "Font face."
+msgid "Font face"
 msgstr "글꼴"
 
 #: dialog_style_editor.cpp:171
-msgid "Font size."
+msgid "Font size"
 msgstr "글꼴 크기"
 
 #: dialog_style_editor.cpp:172
-msgid "Choose primary color."
+msgid "Choose primary color"
 msgstr "기준색 선택"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose secondary color."
+msgid "Choose secondary color"
 msgstr "보조색 선택"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "외곽선색 선택"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose shadow color."
+msgid "Choose shadow color"
 msgstr "그림자색 선택"
 
 #: dialog_style_editor.cpp:176
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
-msgstr "불투명도 설정, 0 ( 불투명 )에서 ~ 255 ( 투명 )까지."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "불투명도 설정, 0 ( 불투명 )에서 ~ 255 ( 투명 )까지"
 
 #: dialog_style_editor.cpp:177
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "왼쪽 여백 간격, 픽셀"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "오른쪽 여백 간격, 픽셀"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "위쪽/아래쪽 여백 간격, 픽셀"
 
 #: dialog_style_editor.cpp:180
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "택스트의 외곽선 대신에 자막뒤에 불투명 상자를 표시할 때 선택한다."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "택스트의 외곽선 대신에 자막뒤에 불투명 상자를 표시할 때 선택한다"
 
 #: dialog_style_editor.cpp:181
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "외곽선 폭, 픽셀"
 
 #: dialog_style_editor.cpp:182
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "그림자 길이,픽셀"
 
 #: dialog_style_editor.cpp:183
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "X축 크기, %"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "Y축 크기, %"
 
 #: dialog_style_editor.cpp:185
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Z축의 회전 각도, 도"
 
 #: dialog_style_editor.cpp:186
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "글꼴이 적당한 유니코드 맵핑을 가지고 있지 않을때, 유니코드 인코딩 쓸모있다."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "글꼴이 적당한 유니코드 맵핑을 가지고 있지 않을때, 유니코드 인코딩 쓸모있다"
 
 #: dialog_style_editor.cpp:187
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "문자 간격, 픽셀"
 
 #: dialog_style_editor.cpp:188
-msgid "Alignment in screen, in numpad style."
+msgid "Alignment in screen, in numpad style"
 msgstr "화면 조정, 숫자키패드 방식"
 
 #: dialog_style_editor.cpp:235
@@ -4058,15 +4058,15 @@ msgid "Encoding:"
 msgstr "인코딩:"
 
 #: dialog_style_editor.cpp:300
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "현재 스타일 미리보기:"
 
 #: dialog_style_editor.cpp:303
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr "미리 보기에 사용될 텍스트"
 
 #: dialog_style_editor.cpp:304
-msgid "Colour of preview background."
+msgid "Color of preview background"
 msgstr "미리보기 배경색"
 
 #: dialog_style_editor.cpp:313
@@ -4182,24 +4182,24 @@ msgid " frames "
 msgstr "프레임"
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "뒤로,"
+msgid "backward"
+msgstr "뒤로"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "앞으로,"
+msgid "forward"
+msgstr "앞으로"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "시작+종료,"
+msgid "s+e"
+msgstr "시작+종료"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "시작,"
+msgid "s"
+msgstr "시작"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "종료,"
+msgid "e"
+msgstr "종료"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -4207,8 +4207,8 @@ msgstr "모두"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "%i 이후 에서 "
+msgid "from %d onward"
+msgstr "%d 이후 에서 "
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -4231,7 +4231,7 @@ msgid "Video resolution:"
 msgstr "비디오 해상도:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "색:"
 
 #: dialog_dummy_video.cpp:150
@@ -5166,11 +5166,11 @@ msgid "Writing file"
 msgstr "파일 기록중"
 
 #: dialog_colorpicker.cpp:446
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "색 선택"
 
 #: dialog_colorpicker.cpp:519
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "색 스펙트럼"
 
 #: dialog_colorpicker.cpp:522
@@ -5194,16 +5194,16 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:528
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "RGB 색"
 
 #: dialog_colorpicker.cpp:533
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "HSL 색"
 
 #: dialog_colorpicker.cpp:538
-msgid "HSV colour"
-msgstr "HSV colour"
+msgid "HSV color"
+msgstr "HSV color"
 
 #: dialog_colorpicker.cpp:560
 msgid "Spectrum mode:"
@@ -5240,7 +5240,7 @@ msgid "Value:"
 msgstr "명도 :"
 
 #: dialog_colorpicker.cpp:632
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "컬러 선택"
 
 #: vfr.cpp:68

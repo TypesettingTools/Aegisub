@@ -675,11 +675,11 @@ msgid "Automation Script Info"
 msgstr "Podaci o skriptu"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Odabir boje"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Spektar boja"
 
 #: dialog_colorpicker.cpp:547
@@ -703,15 +703,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "RGB boja"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "HSL boja"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "HSV boja"
 
 #: dialog_colorpicker.cpp:583
@@ -749,7 +749,7 @@ msgid "Value:"
 msgstr "Vred.:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Birač boja"
 
 #: dialog_detached_video.cpp:76
@@ -770,7 +770,7 @@ msgid "Video resolution:"
 msgstr "Rezolucija slike:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Boja:"
 
 #: dialog_dummy_video.cpp:150
@@ -1241,7 +1241,7 @@ msgid "Crash recovery path:"
 msgstr "Putanja za padove:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Učitaj povezane datoteke:"
 
 #: dialog_options.cpp:189
@@ -1393,36 +1393,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Napredno"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "Uskladi rezoluciju snimka po otvaranju:"
+msgid "Match video resolution on open"
+msgstr "Uskladi rezoluciju snimka po otvaranju"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "Podrazumevano uvećanje:"
+msgid "Default Zoom"
+msgstr "Podrazumevano uvećanje"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "Brzina preskakanja kadrova:"
+msgid "Fast jump step in frames"
+msgstr "Brzina preskakanja kadrova"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "Putanja za čuvanje snimaka ekrana:"
+msgid "Screenshot save path"
+msgstr "Putanja za čuvanje snimaka ekrana"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "&Ključni kadrovi na klizaču"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "Dobavljač slike:"
+msgid "Video provider"
+msgstr "Dobavljač slike"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "Dobavljač titlova:"
+msgid "Subtitles provider"
+msgstr "Dobavljač titlova"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Memorijsko ograničenje Avisinta:"
+msgid "Avisynth memory limit"
+msgstr "Memorijsko ograničenje Avisinta"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1608,19 +1608,19 @@ msgid "Spectrum cutoff"
 msgstr "Ventil spektra"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
+msgid "Regular quality"
 msgstr "običan"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
+msgid "Better quality"
 msgstr "dobar"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
+msgid "High quality"
 msgstr "visok"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
+msgid "Insane quality"
 msgstr "odličan"
 
 #: dialog_options.cpp:539
@@ -1661,11 +1661,11 @@ msgstr "savet"
 
 #: dialog_options.cpp:562
 msgid "4: Debug"
-msgstr "otklanjanje grešaka"
+msgstr "4: otklanjanje grešaka"
 
 #: dialog_options.cpp:562
 msgid "5: Trace"
-msgstr "trag"
+msgstr "5: trag"
 
 #: dialog_options.cpp:563
 msgid "Below Normal (recommended)"
@@ -2130,8 +2130,8 @@ msgstr "Radnja"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "Izabrano linija: %i"
+msgid "Selection was set to %u lines"
+msgstr "Izabrano linija: %u"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2141,13 +2141,13 @@ msgstr "Odabir"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "Dodato linija: %i"
+msgid "%u lines were added to selection"
+msgstr "Dodato linija: %u"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "Izuzeto linija: %i"
+msgid "%u lines were removed from selection"
+msgstr "Izuzeto linija: %u"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2224,32 +2224,32 @@ msgid "Clear"
 msgstr "Oč&isti"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "nesačuvano,"
+msgid "unsaved"
+msgstr "nesačuvano"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr " kadrovi"
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "nazad,"
+msgid "backward"
+msgstr "nazad"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "napred,"
+msgid "forward"
+msgstr "napred"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "s+e,"
+msgid "s+e"
+msgstr "s+e"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "s,"
+msgid "s"
+msgstr "s"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "e,"
+msgid "e"
+msgstr "e"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2257,8 +2257,8 @@ msgstr "sve"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "iz %i pa naviše"
+msgid "from %d onward"
+msgstr "iz %d pa naviše"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2383,79 +2383,79 @@ msgid "Style name."
 msgstr "Naziv stila"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
+msgid "Font face"
 msgstr "Lik fonta"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
+msgid "Font size"
 msgstr "Veličina fonta"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
+msgid "Choose primary color"
 msgstr "Glavna boja"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
+msgid "Choose secondary color"
 msgstr "Sporedna boja"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "Boja konture"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
+msgid "Choose shadow color"
 msgstr "Boja senke"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
-msgstr "Postavite od 0 (neprovidno) do 255 (providno)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "Postavite od 0 (neprovidno) do 255 (providno)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "Rastojanje od leve ivice (u pikselima)"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "Rastojanje od desne ivice (u pikselima)"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "Rastojanje od gornje i donje ivice (u pikselima)"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "Ako je označeno, neprovidni okvir će biti postavljen iza titlova."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "Ako je označeno, neprovidni okvir će biti postavljen iza titlova"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "Širina konture (u pikselima)"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "Rastojanje senke (u pikselima)"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "Širina titla (u pikselima)"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "Dužina titla (u pikselima)"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Okretanje po Z osi (u stepenima)"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "Izaberite željeni kodni raspored."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "Izaberite željeni kodni raspored"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "Razmak između znakova (u pikselima)"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
+msgid "Alignment in screen, in numpad style"
 msgstr "Poravnanje na ekranu"
 
 #: dialog_style_editor.cpp:236
@@ -2499,15 +2499,15 @@ msgid "Encoding:"
 msgstr "Kodiranje:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "Pregled tekućeg stila"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr "Tekst pregleda"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
+msgid "Color of preview background"
 msgstr "Boja pozadine"
 
 #: dialog_style_editor.cpp:314
@@ -2584,27 +2584,27 @@ msgstr "Umnoži"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "Pomeri nagore"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "Pomeri nadole"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "Pomeri na vrh"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "Pomeri na dno"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "Poređaj stilove abecednim redom"
 
 #: dialog_style_manager.cpp:121
@@ -2853,11 +2853,11 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Izaberite željene stilove."
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
+msgid "Select all styles"
 msgstr "Izaberi sve stilove"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
+msgid "Deselect all styles"
 msgstr "Poništi sve stilove"
 
 #: dialog_timing_processor.cpp:84
@@ -2873,11 +2873,11 @@ msgid "Add lead in:"
 msgstr "Početak:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "Proširite početno vreme linija."
+msgid "Enable adding of lead-ins to lines"
+msgstr "Proširite početno vreme linija"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
+msgid "Lead in to be added, in milliseconds"
 msgstr "Vreme za proširenje (u milisekundama)"
 
 #: dialog_timing_processor.cpp:95
@@ -2885,11 +2885,11 @@ msgid "Add lead out:"
 msgstr "Završetak:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "Proširite završno vreme linija."
+msgid "Enable adding of lead-outs to lines"
+msgstr "Proširite završno vreme linija"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
+msgid "Lead out to be added, in milliseconds"
 msgstr "Vreme za proširenje (u milisekundama)"
 
 #: dialog_timing_processor.cpp:107
@@ -2902,18 +2902,18 @@ msgid "Enable"
 msgstr "Omogući"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Omogućite prijanjanje titlova ako se nalaze na određenom rastojanju jedan od drugog."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Omogućite prijanjanje titlova ako se nalaze na određenom rastojanju jedan od drugog"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Prag:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
 msgstr ""
 "Najveća razlika između početnog i završnog vremena\n"
-"za dva titla koja će postati trajna (u milisekundama)."
+"za dva titla koja će postati trajna (u milisekundama)"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2934,7 +2934,7 @@ msgid "Keyframe snapping"
 msgstr "Prijanjanje ključnih kadrova"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
 msgstr "Omogućava prijanjanje titlova na najbliži ključni kadar, ako je rastojanje unutar praga"
 
 #: dialog_timing_processor.cpp:129
@@ -3073,8 +3073,8 @@ msgstr "Pregled"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Tekuća linija: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Tekuća linija: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3436,11 +3436,11 @@ msgid "Configure Aegisub"
 msgstr "Podesi program"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Prikaz oznaka"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Promeni prikaz oznaka"
 
 #: frame_main.cpp:305
@@ -3489,7 +3489,7 @@ msgid "Export Subtitles..."
 msgstr "&Izvezi titl…"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
+msgid "Saves a copy of subtitles with processing applied to it"
 msgstr "Sačuvajte obrađeni titl"
 
 #: frame_main.cpp:326
@@ -3791,7 +3791,7 @@ msgid "Select Lines..."
 msgstr "&Izaberi linije…"
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Izaberite linije putem određenog kriterijuma"
 
 #: frame_main.cpp:399
@@ -3819,8 +3819,8 @@ msgid "Timing Post-Processor..."
 msgstr "P&reuređivač vremena…"
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Proširite početno i završno vreme, uskladite vreme sa scenom itd."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
+msgstr "Proširite početno i završno vreme, uskladite vreme sa scenom itd"
 
 #: frame_main.cpp:406
 msgid "Kanji Timer..."
@@ -3902,7 +3902,7 @@ msgid "Use Dummy Video..."
 msgstr "O&tvori probni snimak…"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Otvorite video snimak s čistom bojom"
 
 #: frame_main.cpp:430
@@ -3966,7 +3966,7 @@ msgid "Detach Video"
 msgstr "Otka&či snimak"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
+msgid "Detach video, displaying it in a separate Window"
 msgstr "Otkačite video snimak s prozora"
 
 #: frame_main.cpp:446
@@ -4034,7 +4034,7 @@ msgid "Show Overscan Mask"
 msgstr "Prikaži oversken &masku"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
 msgstr ""
 "Postavite masku preko slike koja prikazuje\n"
 "oblasti koje mogu biti isečene na televizorima"
@@ -4757,8 +4757,8 @@ msgstr ""
 "Ona neće biti prikazana na ekranu."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
-msgstr "Stil izabrane linije."
+msgid "Style for this line"
+msgstr "Stil izabrane linije"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -5189,26 +5189,26 @@ msgid "Toggle autoscroll of video"
 msgstr "Uključi/isključi praćenje snimka"
 
 #: video_box.cpp:90
-msgid "Seek video."
-msgstr "Premotajte video snimak."
+msgid "Seek video"
+msgstr "Premotajte video snimak"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
-msgstr "Broj i vreme kadra za izabranu liniju."
+msgid "Current frame time and number"
+msgstr "Broj i vreme kadra za izabranu liniju"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
+msgid "Time of this frame relative to start and end of current subs"
 msgstr ""
 "Vreme ovog kadra u odnosu na početno\n"
-"i završno vreme tekućih titlova."
+"i završno vreme tekućih titlova"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "Standardno"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
-msgstr "Standardno (dvoklik postavlja položaj)."
+msgid "Standard mode, double click sets position"
+msgstr "Standardno (dvoklik postavlja položaj)"
 
 #: video_box.cpp:115
 #: visual_tool_vector_clip.cpp:70
@@ -5216,48 +5216,48 @@ msgid "Drag"
 msgstr "Prevlačenje"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
-msgstr "Prevlačite titlove."
+msgid "Drag subtitles"
+msgstr "Prevlačite titlove"
 
 #: video_box.cpp:116
 msgid "Rotate Z"
 msgstr "Okretanje (Z)"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
-msgstr "Okrećite titlove po Z osi."
+msgid "Rotate subtitles on their Z axis"
+msgstr "Okrećite titlove po Z osi"
 
 #: video_box.cpp:117
 msgid "Rotate XY"
 msgstr "Okretanje (XY)"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
-msgstr "Okrećite titlove po osama X i Y."
+msgid "Rotate subtitles on their X and Y axes"
+msgstr "Okrećite titlove po osama X i Y"
 
 #: video_box.cpp:118
 msgid "Scale"
 msgstr "Uvećavanje"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
-msgstr "Uvećavajte titlove po osama X i Y."
+msgid "Scale subtitles on X and Y axes"
+msgstr "Uvećavajte titlove po osama X i Y"
 
 #: video_box.cpp:119
 msgid "Clip"
 msgstr "Isecanje"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
-msgstr "Isecajte titlove pomoću pravougaonika."
+msgid "Clip subtitles to a rectangle"
+msgstr "Isecajte titlove pomoću pravougaonika"
 
 #: video_box.cpp:120
 msgid "Vector Clip"
 msgstr "Vektorsko isecanje"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
-msgstr "Isecajte titlove na vektorske oblasti."
+msgid "Clip subtitles to a vectorial area"
+msgstr "Isecajte titlove na vektorske oblasti"
 
 #: video_box.cpp:122
 msgid "Realtime"
@@ -5268,8 +5268,8 @@ msgid "Toggle realtime display of changes."
 msgstr "Uključite/isključite prikaz izmena u stvarnom vremenu."
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
-msgstr "Otvorite priručnik za vizuelno uređivanje."
+msgid "Open the manual page for Visual Typesetting"
+msgstr "Otvorite priručnik za vizuelno uređivanje"
 
 #: video_display.cpp:478
 msgid "Save PNG snapshot"
@@ -5322,64 +5322,64 @@ msgid "positioning"
 msgstr "položaj"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
-msgstr "Prevucite upravljačke tačke."
+msgid "Drag control points"
+msgstr "Prevucite upravljačke tačke"
 
 #: visual_tool_vector_clip.cpp:71
 msgid "Line"
 msgstr "Linija"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
-msgstr "Zakačite linije."
+msgid "Appends a line"
+msgstr "Zakačite linije"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Bicubic"
 msgstr "Bikubno"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
-msgstr "Zakačite Bezierove i kubne krive."
+msgid "Appends a bezier bicubic curve"
+msgstr "Zakačite Bezierove i kubne krive"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Convert"
 msgstr "Pretvori"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
-msgstr "Pretvorite delove između linije i kuba."
+msgid "Converts a segment between line and bicubic"
+msgstr "Pretvorite delove između linije i kuba"
 
 #: visual_tool_vector_clip.cpp:75
 msgid "Insert"
 msgstr "Unesi"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
-msgstr "Unesite upravljačke tačke."
+msgid "Inserts a control point"
+msgstr "Unesite upravljačke tačke"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Remove"
 msgstr "Ukloni"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
-msgstr "Uklonite upravljačke tačke."
+msgid "Removes a control point"
+msgstr "Uklonite upravljačke tačke"
 
 #: visual_tool_vector_clip.cpp:78
 msgid "Freehand"
 msgstr "Slobodnom rukom"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
-msgstr "Nacrtajte oblik slobodnom rukom."
+msgid "Draws a freehand shape"
+msgstr "Nacrtajte oblik slobodnom rukom"
 
 #: visual_tool_vector_clip.cpp:79
 msgid "Freehand smooth"
 msgstr "Ugladi slobodnom rukom"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
-msgstr "Nacrtajte uglađeni oblik slobodnom rukom."
+msgid "Draws a smoothed freehand shape"
+msgstr "Nacrtajte uglađeni oblik slobodnom rukom"
 
 #~ msgid "FRAME"
 #~ msgstr "KADAR"

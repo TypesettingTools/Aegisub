@@ -675,11 +675,11 @@ msgid "Automation Script Info"
 msgstr "Подаци о скрипту"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Одабир боје"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Спектар боја"
 
 #: dialog_colorpicker.cpp:547
@@ -703,15 +703,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "RGB боја"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "HSL боја"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "HSV боја"
 
 #: dialog_colorpicker.cpp:583
@@ -749,7 +749,7 @@ msgid "Value:"
 msgstr "Вред.:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Бирач боја"
 
 #: dialog_detached_video.cpp:76
@@ -770,7 +770,7 @@ msgid "Video resolution:"
 msgstr "Резолуција слике:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Боја:"
 
 #: dialog_dummy_video.cpp:150
@@ -1241,7 +1241,7 @@ msgid "Crash recovery path:"
 msgstr "Путања за падове:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Учитај повезане датотеке:"
 
 #: dialog_options.cpp:189
@@ -1393,36 +1393,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Напредно"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "Усклади резолуцију снимка по отварању:"
+msgid "Match video resolution on open"
+msgstr "Усклади резолуцију снимка по отварању"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "Подразумевано увећање:"
+msgid "Default Zoom"
+msgstr "Подразумевано увећање"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "Брзина прескакања кадрова:"
+msgid "Fast jump step in frames"
+msgstr "Брзина прескакања кадрова"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "Путања за чување снимака екрана:"
+msgid "Screenshot save path"
+msgstr "Путања за чување снимака екрана"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "&Кључни кадрови на клизачу"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "Добављач слике:"
+msgid "Video provider"
+msgstr "Добављач слике"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "Добављач титлова:"
+msgid "Subtitles provider"
+msgstr "Добављач титлова"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Меморијско ограничење Ависинта:"
+msgid "Avisynth memory limit"
+msgstr "Меморијско ограничење Ависинта"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1608,19 +1608,19 @@ msgid "Spectrum cutoff"
 msgstr "Вентил спектра"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
+msgid "Regular quality"
 msgstr "обичан"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
+msgid "Better quality"
 msgstr "добар"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
+msgid "High quality"
 msgstr "висок"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
+msgid "Insane quality"
 msgstr "одличан"
 
 #: dialog_options.cpp:539
@@ -1661,11 +1661,11 @@ msgstr "савет"
 
 #: dialog_options.cpp:562
 msgid "4: Debug"
-msgstr "отклањање грешака"
+msgstr "4: отклањање грешака"
 
 #: dialog_options.cpp:562
 msgid "5: Trace"
-msgstr "траг"
+msgstr "5: траг"
 
 #: dialog_options.cpp:563
 msgid "Below Normal (recommended)"
@@ -2130,8 +2130,8 @@ msgstr "Радња"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "Изабрано линија: %i"
+msgid "Selection was set to %u lines"
+msgstr "Изабрано линија: %u"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2141,13 +2141,13 @@ msgstr "Одабир"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "Додато линија: %i"
+msgid "%u lines were added to selection"
+msgstr "Додато линија: %u"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "Изузето линија: %i"
+msgid "%u lines were removed from selection"
+msgstr "Изузето линија: %u"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2224,32 +2224,32 @@ msgid "Clear"
 msgstr "Оч&исти"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "несачувано,"
+msgid "unsaved"
+msgstr "несачувано"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr " кадрови"
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "назад,"
+msgid "backward"
+msgstr "назад"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "напред,"
+msgid "forward"
+msgstr "напред"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "s+e,"
+msgid "s+e"
+msgstr "s+e"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "s,"
+msgid "s"
+msgstr "s"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "e,"
+msgid "e"
+msgstr "e"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2257,8 +2257,8 @@ msgstr "све"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "из %i па навише"
+msgid "from %d onward"
+msgstr "из %d па навише"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2383,79 +2383,79 @@ msgid "Style name."
 msgstr "Назив стила"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
+msgid "Font face"
 msgstr "Лик фонта"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
+msgid "Font size"
 msgstr "Величина фонта"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
+msgid "Choose primary color"
 msgstr "Главна боја"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
+msgid "Choose secondary color"
 msgstr "Споредна боја"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "Боја контуре"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
+msgid "Choose shadow color"
 msgstr "Боја сенке"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
-msgstr "Поставите од 0 (непровидно) до 255 (провидно)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "Поставите од 0 (непровидно) до 255 (провидно)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "Растојање од леве ивице (у пикселима)"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "Растојање од десне ивице (у пикселима)"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "Растојање од горње и доње ивице (у пикселима)"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "Ако је означено, непровидни оквир ће бити постављен иза титлова."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "Ако је означено, непровидни оквир ће бити постављен иза титлова"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "Ширина контуре (у пикселима)"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "Растојање сенке (у пикселима)"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "Ширина титла (у пикселима)"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "Дужина титла (у пикселима)"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Окретање по Z оси (у степенима)"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "Изаберите жељени кодни распоред."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "Изаберите жељени кодни распоред"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "Размак између знакова (у пикселима)"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
+msgid "Alignment in screen, in numpad style"
 msgstr "Поравнање на екрану"
 
 #: dialog_style_editor.cpp:236
@@ -2499,15 +2499,15 @@ msgid "Encoding:"
 msgstr "Кодирање:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "Преглед текућег стила"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr "Текст прегледа"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
+msgid "Color of preview background"
 msgstr "Боја позадине"
 
 #: dialog_style_editor.cpp:314
@@ -2584,27 +2584,27 @@ msgstr "Умножи"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "Помери нагоре"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "Помери надоле"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "Помери на врх"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "Помери на дно"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "Поређај стилове азбучним редом"
 
 #: dialog_style_manager.cpp:121
@@ -2853,11 +2853,11 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Изаберите жељене стилове."
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
+msgid "Select all styles"
 msgstr "Изабери све стилове"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
+msgid "Deselect all styles"
 msgstr "Поништи све стилове"
 
 #: dialog_timing_processor.cpp:84
@@ -2873,11 +2873,11 @@ msgid "Add lead in:"
 msgstr "Почетак:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "Проширите почетно време линија."
+msgid "Enable adding of lead-ins to lines"
+msgstr "Проширите почетно време линија"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
+msgid "Lead in to be added, in milliseconds"
 msgstr "Време за проширење (у милисекундама)"
 
 #: dialog_timing_processor.cpp:95
@@ -2885,11 +2885,11 @@ msgid "Add lead out:"
 msgstr "Завршетак:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "Проширите завршно време линија."
+msgid "Enable adding of lead-outs to lines"
+msgstr "Проширите завршно време линија"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
+msgid "Lead out to be added, in milliseconds"
 msgstr "Време за проширење (у милисекундама)"
 
 #: dialog_timing_processor.cpp:107
@@ -2902,18 +2902,18 @@ msgid "Enable"
 msgstr "Омогући"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Омогућите пријањање титлова ако се налазе на одређеном растојању један од другог."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Омогућите пријањање титлова ако се налазе на одређеном растојању један од другог"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Праг:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
 msgstr ""
 "Највећа разлика између почетног и завршног времена\n"
-"за два титла која ће постати трајна (у милисекундама)."
+"за два титла која ће постати трајна (у милисекундама)"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2934,7 +2934,7 @@ msgid "Keyframe snapping"
 msgstr "Пријањање кључних кадрова"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
 msgstr "Омогућава пријањање титлова на најближи кључни кадар, ако је растојање унутар прага"
 
 #: dialog_timing_processor.cpp:129
@@ -3073,8 +3073,8 @@ msgstr "Преглед"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Текућа линија: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Текућа линија: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3436,11 +3436,11 @@ msgid "Configure Aegisub"
 msgstr "Подеси програм"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Приказ ознака"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Промени приказ ознака"
 
 #: frame_main.cpp:305
@@ -3489,7 +3489,7 @@ msgid "Export Subtitles..."
 msgstr "&Извези титл…"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
+msgid "Saves a copy of subtitles with processing applied to it"
 msgstr "Сачувајте обрађени титл"
 
 #: frame_main.cpp:326
@@ -3791,7 +3791,7 @@ msgid "Select Lines..."
 msgstr "&Изабери линије…"
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Изаберите линије путем одређеног критеријума"
 
 #: frame_main.cpp:399
@@ -3819,8 +3819,8 @@ msgid "Timing Post-Processor..."
 msgstr "П&реуређивач времена…"
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Проширите почетно и завршно време, ускладите време са сценом итд."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
+msgstr "Проширите почетно и завршно време, ускладите време са сценом итд"
 
 #: frame_main.cpp:406
 msgid "Kanji Timer..."
@@ -3902,7 +3902,7 @@ msgid "Use Dummy Video..."
 msgstr "О&твори пробни снимак…"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Отворите видео снимак с чистом бојом"
 
 #: frame_main.cpp:430
@@ -3966,7 +3966,7 @@ msgid "Detach Video"
 msgstr "Отка&чи снимак"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
+msgid "Detach video, displaying it in a separate Window"
 msgstr "Откачите видео снимак с прозора"
 
 #: frame_main.cpp:446
@@ -4034,7 +4034,7 @@ msgid "Show Overscan Mask"
 msgstr "Прикажи оверскен &маску"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
 msgstr ""
 "Поставите маску преко слике која приказује\n"
 "области које могу бити исечене на телевизорима"
@@ -4757,8 +4757,8 @@ msgstr ""
 "Она неће бити приказана на екрану."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
-msgstr "Стил изабране линије."
+msgid "Style for this line"
+msgstr "Стил изабране линије"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -5189,26 +5189,26 @@ msgid "Toggle autoscroll of video"
 msgstr "Укључи/искључи праћење снимка"
 
 #: video_box.cpp:90
-msgid "Seek video."
-msgstr "Премотајте видео снимак."
+msgid "Seek video"
+msgstr "Премотајте видео снимак"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
-msgstr "Број и време кадра за изабрану линију."
+msgid "Current frame time and number"
+msgstr "Број и време кадра за изабрану линију"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
+msgid "Time of this frame relative to start and end of current subs"
 msgstr ""
 "Време овог кадра у односу на почетно\n"
-"и завршно време текућих титлова."
+"и завршно време текућих титлова"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "Стандардно"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
-msgstr "Стандардно (двоклик поставља положај)."
+msgid "Standard mode, double click sets position"
+msgstr "Стандардно (двоклик поставља положај)"
 
 #: video_box.cpp:115
 #: visual_tool_vector_clip.cpp:70
@@ -5216,48 +5216,48 @@ msgid "Drag"
 msgstr "Превлачење"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
-msgstr "Превлачите титлове."
+msgid "Drag subtitles"
+msgstr "Превлачите титлове"
 
 #: video_box.cpp:116
 msgid "Rotate Z"
 msgstr "Окретање (Z)"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
-msgstr "Окрећите титлове по Z оси."
+msgid "Rotate subtitles on their Z axis"
+msgstr "Окрећите титлове по Z оси"
 
 #: video_box.cpp:117
 msgid "Rotate XY"
 msgstr "Окретање (XY)"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
-msgstr "Окрећите титлове по осама X и Y."
+msgid "Rotate subtitles on their X and Y axes"
+msgstr "Окрећите титлове по осама X и Y"
 
 #: video_box.cpp:118
 msgid "Scale"
 msgstr "Увећавање"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
-msgstr "Увећавајте титлове по осама X и Y."
+msgid "Scale subtitles on X and Y axes"
+msgstr "Увећавајте титлове по осама X и Y"
 
 #: video_box.cpp:119
 msgid "Clip"
 msgstr "Исецање"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
-msgstr "Исецајте титлове помоћу правоугаоника."
+msgid "Clip subtitles to a rectangle"
+msgstr "Исецајте титлове помоћу правоугаоника"
 
 #: video_box.cpp:120
 msgid "Vector Clip"
 msgstr "Векторско исецање"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
-msgstr "Исецајте титлове на векторске области."
+msgid "Clip subtitles to a vectorial area"
+msgstr "Исецајте титлове на векторске области"
 
 #: video_box.cpp:122
 msgid "Realtime"
@@ -5268,8 +5268,8 @@ msgid "Toggle realtime display of changes."
 msgstr "Укључите/искључите приказ измена у стварном времену."
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
-msgstr "Отворите приручник за визуелно уређивање."
+msgid "Open the manual page for Visual Typesetting"
+msgstr "Отворите приручник за визуелно уређивање"
 
 #: video_display.cpp:478
 msgid "Save PNG snapshot"
@@ -5322,64 +5322,64 @@ msgid "positioning"
 msgstr "положај"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
-msgstr "Превуците управљачке тачке."
+msgid "Drag control points"
+msgstr "Превуците управљачке тачке"
 
 #: visual_tool_vector_clip.cpp:71
 msgid "Line"
 msgstr "Линија"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
-msgstr "Закачите линије."
+msgid "Appends a line"
+msgstr "Закачите линије"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Bicubic"
 msgstr "Бикубно"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
-msgstr "Закачите Безиерове и кубне криве."
+msgid "Appends a bezier bicubic curve"
+msgstr "Закачите Безиерове и кубне криве"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Convert"
 msgstr "Претвори"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
-msgstr "Претворите делове између линије и куба."
+msgid "Converts a segment between line and bicubic"
+msgstr "Претворите делове између линије и куба"
 
 #: visual_tool_vector_clip.cpp:75
 msgid "Insert"
 msgstr "Унеси"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
-msgstr "Унесите управљачке тачке."
+msgid "Inserts a control point"
+msgstr "Унесите управљачке тачке"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Remove"
 msgstr "Уклони"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
-msgstr "Уклоните управљачке тачке."
+msgid "Removes a control point"
+msgstr "Уклоните управљачке тачке"
 
 #: visual_tool_vector_clip.cpp:78
 msgid "Freehand"
 msgstr "Слободном руком"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
-msgstr "Нацртајте облик слободном руком."
+msgid "Draws a freehand shape"
+msgstr "Нацртајте облик слободном руком"
 
 #: visual_tool_vector_clip.cpp:79
 msgid "Freehand smooth"
 msgstr "Углади слободном руком"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
-msgstr "Нацртајте углађени облик слободном руком."
+msgid "Draws a smoothed freehand shape"
+msgstr "Нацртајте углађени облик слободном руком"
 
 #~ msgid "FRAME"
 #~ msgstr "КАДАР"

@@ -670,11 +670,11 @@ msgid "Automation Script Info"
 msgstr "Thông tin Script Tự động"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Chọn màu"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Dải phổ màu"
 
 #: dialog_colorpicker.cpp:547
@@ -698,15 +698,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "Màu RGB"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "Màu HSL"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "Màu HSV"
 
 #: dialog_colorpicker.cpp:583
@@ -744,7 +744,7 @@ msgid "Value:"
 msgstr "Giá trị:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Trình chọn màu:"
 
 #: dialog_detached_video.cpp:76
@@ -765,7 +765,7 @@ msgid "Video resolution:"
 msgstr "Độ phân giải phim:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Màu:"
 
 #: dialog_dummy_video.cpp:150
@@ -1236,7 +1236,7 @@ msgid "Crash recovery path:"
 msgstr "Đường dẫn khôi phục sau đổ vỡ:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Tự động nạp tập tin được liên kết:"
 
 #: dialog_options.cpp:189
@@ -1388,36 +1388,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Nâng cao - CHỈ DÀNH CHO NGƯỜI DÙNG CHUYÊN NGHIỆP"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "Khớp độ phân giải phim khi mở:"
+msgid "Match video resolution on open"
+msgstr "Khớp độ phân giải phim khi mở"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "Thu phóng Mặc định:"
+msgid "Default Zoom"
+msgstr "Thu phóng Mặc định"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "Bước nhảy nhanh trong khung hình:"
+msgid "Fast jump step in frames"
+msgstr "Bước nhảy nhanh trong khung hình"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "Đường dẫn lưu ảnh chụp màn hình:"
+msgid "Screenshot save path"
+msgstr "Đường dẫn lưu ảnh chụp màn hình"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "Hiện keyframe trong thanh trượt:"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "Trình cung cấp phim:"
+msgid "Video provider"
+msgstr "Trình cung cấp phim"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "Trình cung cấp phụ đề:"
+msgid "Subtitles provider"
+msgstr "Trình cung cấp phụ đề"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Giới hạn bộ nhớ Avisynth:"
+msgid "Avisynth memory limit"
+msgstr "Giới hạn bộ nhớ Avisynth"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1603,20 +1603,20 @@ msgid "Spectrum cutoff"
 msgstr "Cutoff dải quang phổ"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0 - Chất lượng bình thường"
+msgid "Regular quality"
+msgstr "Chất lượng bình thường"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1 - Chất lượng tốt hơn"
+msgid "Better quality"
+msgstr "Chất lượng tốt hơn"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2- Chất lượng cao"
+msgid "High quality"
+msgstr "Chất lượng cao"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
-msgstr "3 - Chất lượng khủng bố"
+msgid "Insane quality"
+msgstr "Chất lượng khủng bố"
 
 #: dialog_options.cpp:539
 msgid "Spectrum quality"
@@ -2127,8 +2127,8 @@ msgstr "Thao tác"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "Đoạn được chọn được thiết lập là %i dòng"
+msgid "Selection was set to %u lines"
+msgstr "Đoạn được chọn được thiết lập là %u dòng"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2138,13 +2138,13 @@ msgstr "Đoạn được chọn"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "%i dòng được thêm vào đoạn được chọn"
+msgid "%u lines were added to selection"
+msgstr "%u dòng được thêm vào đoạn được chọn"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "%i dòng bị xóa từ đoạn được chọn"
+msgid "%u lines were removed from selection"
+msgstr "%u dòng bị xóa từ đoạn được chọn"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2221,32 +2221,32 @@ msgid "Clear"
 msgstr "Xóa trắng"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "không lưu,"
+msgid "unsaved"
+msgstr "không lưu"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr " khung hình "
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "lùi, "
+msgid "backward"
+msgstr "lùi"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "tiến, "
+msgid "forward"
+msgstr "tiến"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "s+e, "
+msgid "s+e"
+msgstr "s+e"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "s, "
+msgid "s"
+msgstr "s"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "e, "
+msgid "e"
+msgstr "e"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2254,8 +2254,8 @@ msgstr "tất cả"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "từ %i trở đi"
+msgid "from %d onward"
+msgstr "từ %d trở đi"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2380,80 +2380,80 @@ msgid "Style name."
 msgstr "Tên kiểu dáng"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
-msgstr "Tên font."
+msgid "Font face"
+msgstr "Tên font"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
-msgstr "Cỡ font."
+msgid "Font size"
+msgstr "Cỡ font"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
-msgstr "Chọn màu chính."
+msgid "Choose primary color"
+msgstr "Chọn màu chính"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
-msgstr "Chọn màu thứ cấp."
+msgid "Choose secondary color"
+msgstr "Chọn màu thứ cấp"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
-msgstr "Chọn màu đường nét ngoài."
+msgid "Choose outline color"
+msgstr "Chọn màu đường nét ngoài"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
-msgstr "Chọn màu đổ bóng."
+msgid "Choose shadow color"
+msgstr "Chọn màu đổ bóng"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
-msgstr "Thiết lập độ mờ, từ 0 (mờ đục) tới 255 (trong suốt)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "Thiết lập độ mờ, từ 0 (mờ đục) tới 255 (trong suốt)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
-msgstr "Khoảng cách từ đỉnh trái, theo pixel."
+msgid "Distance from left edge, in pixels"
+msgstr "Khoảng cách từ đỉnh trái, theo pixel"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
-msgstr "Khoảng cách từ đỉnh phải, theo pixel."
+msgid "Distance from right edge, in pixels"
+msgstr "Khoảng cách từ đỉnh phải, theo pixel"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
-msgstr "Khoảng cách từ đỉnh trên cùng/dưới cùng, theo pixel."
+msgid "Distance from top/bottom edge, in pixels"
+msgstr "Khoảng cách từ đỉnh trên cùng/dưới cùng, theo pixel"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "Khi được chọn, sẽ hiển thị một hộp mờ sau phụ đề thay cho đường nét ngoài xung quanh văn bản."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "Khi được chọn, sẽ hiển thị một hộp mờ sau phụ đề thay cho đường nét ngoài xung quanh văn bản"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
-msgstr "Độ rộng đường nét ngoài, theo pixel."
+msgid "Outline width, in pixels"
+msgstr "Độ rộng đường nét ngoài, theo pixel"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
-msgstr "Khoảng cách bóng đổ, theo pixel."
+msgid "Shadow distance, in pixels"
+msgstr "Khoảng cách bóng đổ, theo pixel"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
-msgstr "Chỉnh tỉ lệ X, theo phần trăm."
+msgid "Scale X, in percentage"
+msgstr "Chỉnh tỉ lệ X, theo phần trăm"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
-msgstr "Chỉnh tỉ lệ Y, theo phần trăm."
+msgid "Scale Y, in percentage"
+msgstr "Chỉnh tỉ lệ Y, theo phần trăm"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
-msgstr "Góc để quay theo trục Z, theo độ."
+msgid "Angle to rotate in Z axis, in degrees"
+msgstr "Góc để quay theo trục Z, theo độ"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "Bảng mã, chỉ có ích trong unicode nếu font không có gán unicode phù hợp."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "Bảng mã, chỉ có ích trong unicode nếu font không có gán unicode phù hợp"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
-msgstr "Khoảng cách kí tự, theo pixel."
+msgid "Character spacing, in pixels"
+msgstr "Khoảng cách kí tự, theo pixel"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
-msgstr "Canh hàng trong màn hình, theo kiểu numpad."
+msgid "Alignment in screen, in numpad style"
+msgstr "Canh hàng trong màn hình, theo kiểu numpad"
 
 #: dialog_style_editor.cpp:236
 msgid "Primary"
@@ -2496,16 +2496,16 @@ msgid "Encoding:"
 msgstr "Bảng mã:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
-msgstr "Xem trước kiểu dáng hiện tại."
+msgid "Preview of current style"
+msgstr "Xem trước kiểu dáng hiện tại"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
-msgstr "Văn bản được dùng để xem trước."
+msgid "Text to be used for the preview"
+msgstr "Văn bản được dùng để xem trước"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
-msgstr "Màu của hậu cảnh phần xem thử."
+msgid "Color of preview background"
+msgstr "Màu của hậu cảnh phần xem thử"
 
 #: dialog_style_editor.cpp:314
 msgid "No subtitle providers available. Cannot preview subs."
@@ -2582,28 +2582,28 @@ msgstr "Chép"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
-msgstr "Di chuyển kiểu dáng lên."
+msgid "Move style up"
+msgstr "Di chuyển kiểu dáng lên"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
-msgstr "Di chuyển kiểu dáng xuống."
+msgid "Move style down"
+msgstr "Di chuyển kiểu dáng xuống"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
-msgstr "Di chuyển kiểu dáng lên đầu."
+msgid "Move style to top"
+msgstr "Di chuyển kiểu dáng lên đầu"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
-msgstr "Di chuyển kiểu dáng xuống dưới cùng."
+msgid "Move style to bottom"
+msgstr "Di chuyển kiểu dáng xuống dưới cùng"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
-msgstr "Sắp xếp kiểu dáng theo abc."
+msgid "Sort styles alphabetically"
+msgstr "Sắp xếp kiểu dáng theo abc"
 
 #: dialog_style_manager.cpp:121
 msgid "Current script"
@@ -2851,12 +2851,12 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Chọn kiểu dáng để xử lí. Những cái không được chọn sẽ bị bỏ qua."
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
-msgstr "Chọn tất cả các kiểu."
+msgid "Select all styles"
+msgstr "Chọn tất cả các kiểu"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
-msgstr "Bỏ chọn tất cả các kiểu."
+msgid "Deselect all styles"
+msgstr "Bỏ chọn tất cả các kiểu"
 
 #: dialog_timing_processor.cpp:84
 msgid "Affect selection only"
@@ -2871,24 +2871,24 @@ msgid "Add lead in:"
 msgstr "Thêm lead-in:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "Kích hoạt việc thêm lead-in vào dòng."
+msgid "Enable adding of lead-ins to lines"
+msgstr "Kích hoạt việc thêm lead-in vào dòng"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
-msgstr "Lead-in được thêm, tính theo giây."
+msgid "Lead in to be added, in milliseconds"
+msgstr "Lead-in được thêm, tính theo giây"
 
 #: dialog_timing_processor.cpp:95
 msgid "Add lead out:"
 msgstr "Thêm lead-out:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "Kích hoạt việc thêm lead-out vào dòng."
+msgid "Enable adding of lead-outs to lines"
+msgstr "Kích hoạt việc thêm lead-out vào dòng"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
-msgstr "Lead-out được thêm, tính theo giây."
+msgid "Lead out to be added, in milliseconds"
+msgstr "Lead-out được thêm, tính theo giây"
 
 #: dialog_timing_processor.cpp:107
 msgid "Make adjacent subtitles continuous"
@@ -2900,16 +2900,16 @@ msgid "Enable"
 msgstr "Kích hoạt"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Kích hoạt việc nắm kéo phụ đề với nhau nếu chúng ở trong cùng một khoảng nào đó của nhau."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Kích hoạt việc nắm kéo phụ đề với nhau nếu chúng ở trong cùng một khoảng nào đó của nhau"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Ngưỡng:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "Khác biệt tối đa giữa thời gian bắt đầu và kết thúc để cho hai phụ đề được tạo tiếp tục, tính bằng giây."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "Khác biệt tối đa giữa thời gian bắt đầu và kết thúc để cho hai phụ đề được tạo tiếp tục, tính bằng giây"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2928,8 +2928,8 @@ msgid "Keyframe snapping"
 msgstr "Nắm kéo keyframe"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Kích hoạt việc nắm kéo phụ đề tới keyframe gần nhất, nếu khoảng cách vẫn trong ngưỡng."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "Kích hoạt việc nắm kéo phụ đề tới keyframe gần nhất, nếu khoảng cách vẫn trong ngưỡng"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -3067,8 +3067,8 @@ msgstr "Cho phép Xem trước"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Dong hiện tại: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Dong hiện tại: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3434,11 +3434,11 @@ msgid "Configure Aegisub"
 msgstr "Cấu hình Aegisub"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Xoay vòng Chế độ Ẩn thẻ"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Xoay vòng qua các chế độ ẩn thẻ"
 
 #: frame_main.cpp:305
@@ -3475,20 +3475,20 @@ msgid "Saves subtitles"
 msgstr "Lưu phụ đề"
 
 #: frame_main.cpp:324
-msgid "Save Subtitles as..."
-msgstr "Lưu phụ đề &dưới dạng..."
+msgid "Save Subtitles as"
+msgstr "Lưu phụ đề &dưới dạng"
 
 #: frame_main.cpp:324
 msgid "Saves subtitles with another name"
 msgstr "Lưu phụ đề với tên khác"
 
 #: frame_main.cpp:325
-msgid "Export Subtitles..."
-msgstr "&Xuất phụ đề..."
+msgid "Export Subtitles"
+msgstr "&Xuất phụ đề"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
-msgstr "Lưu một bản sao của phụ đề kèm theo các xử lí đã được áp dụng cho nó."
+msgid "Saves a copy of subtitles with processing applied to it"
+msgstr "Lưu một bản sao của phụ đề kèm theo các xử lí đã được áp dụng cho nó"
 
 #: frame_main.cpp:326
 #: frame_main.cpp:427
@@ -3586,8 +3586,8 @@ msgid "Paste subtitles"
 msgstr "Dán phụ đề"
 
 #: frame_main.cpp:352
-msgid "Paste Lines Over..."
-msgstr "Dán dòn&g đè lên..."
+msgid "Paste Lines Over"
+msgstr "Dán dòn&g đè lên"
 
 #: frame_main.cpp:352
 msgid "Paste subtitles over others"
@@ -3652,8 +3652,8 @@ msgid "Open translation assistant"
 msgstr "Mở trình trợ lí dịch thuật"
 
 #: frame_main.cpp:369
-msgid "Resample Resolution..."
-msgstr "Tạo lại &mẫu Độ phân giải..."
+msgid "Resample Resolution"
+msgstr "Tạo lại &mẫu Độ phân giải"
 
 #: frame_main.cpp:369
 msgid "Changes resolution and modifies subtitles to conform to change"
@@ -3789,7 +3789,7 @@ msgid "Select Lines..."
 msgstr "Chọ&n dòng..."
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Chọn dòng dựa trên tiêu chí đã xác định"
 
 #: frame_main.cpp:399
@@ -3896,16 +3896,16 @@ msgid "Closes the currently open video file"
 msgstr "Đóng tập tin phim đang được mở"
 
 #: frame_main.cpp:429
-msgid "Use Dummy Video..."
-msgstr "&Sử dụng Phim giả..."
+msgid "Use Dummy Video"
+msgstr "&Sử dụng Phim giả"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Mở một đoạn phim có một màu đặc"
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
-msgstr "&Hiện chi tiết Phim..."
+msgid "Show Video Details"
+msgstr "&Hiện chi tiết Phim"
 
 #: frame_main.cpp:430
 msgid "Shows video details"
@@ -3964,8 +3964,8 @@ msgid "Detach Video"
 msgstr "Tách &riêng Phim"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
-msgstr "Tách riêng phim, hiển thị nó trong một Cửa sổ riêng."
+msgid "Detach video, displaying it in a separate Window"
+msgstr "Tách riêng phim, hiển thị nó trong một Cửa sổ riêng"
 
 #: frame_main.cpp:446
 msgid "Set Zoom"
@@ -4020,8 +4020,8 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "Bắt buộc phim theo tỉ lệ 2.35"
 
 #: frame_main.cpp:463
-msgid "Custom..."
-msgstr "Tù&y biến..."
+msgid "Custom"
+msgstr "Tù&y biến"
 
 #: frame_main.cpp:463
 msgid "Forces video to a custom aspect ratio"
@@ -4032,8 +4032,8 @@ msgid "Show Overscan Mask"
 msgstr "Hiện mặt nạ &Overscan"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "Hiện một mặt nạ trên phim, xác định các vùng có thể bị cắt cúp bởi overscan trên tivi."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgstr "Hiện một mặt nạ trên phim, xác định các vùng có thể bị cắt cúp bởi overscan trên tivi"
 
 #: frame_main.cpp:467
 msgid "&Jump to..."
@@ -4158,8 +4158,8 @@ msgid "Vie&w"
 msgstr "&Hiển thị"
 
 #: frame_main.cpp:514
-msgid "&Contents..."
-msgstr "&Nội dung..."
+msgid "&Contents"
+msgstr "&Nội dung"
 
 #: frame_main.cpp:514
 msgid "Help topics"
@@ -4174,16 +4174,16 @@ msgid "Resource files distributed with Aegisub"
 msgstr "Các tập tin tài nguyên được phân phối cùng Aegisub"
 
 #: frame_main.cpp:519
-msgid "&Website..."
-msgstr "Trang &web..."
+msgid "&Website"
+msgstr "Trang &web"
 
 #: frame_main.cpp:519
 msgid "Visit Aegisub's official website"
 msgstr "Vào trang chủ chính thức của Aegisub"
 
 #: frame_main.cpp:520
-msgid "&Forums..."
-msgstr "&Diễn đàn..."
+msgid "&Forums"
+msgstr "&Diễn đàn"
 
 #: frame_main.cpp:520
 msgid "Visit Aegisub's forums"
@@ -4198,8 +4198,8 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Vào trình theo dõi lỗi của Aegisub để báo cáo lỗi và yêu cầu tính năng mới"
 
 #: frame_main.cpp:522
-msgid "&IRC Channel..."
-msgstr "Kênh &IRC..."
+msgid "&IRC Channel"
+msgstr "Kênh &IRC"
 
 #: frame_main.cpp:522
 msgid "Visit Aegisub's official IRC channel"
@@ -4214,8 +4214,8 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Kiểm tra xem đã có phiên bản mới của Aegisub chưa"
 
 #: frame_main.cpp:527
-msgid "&About..."
-msgstr "&Giới thiệu..."
+msgid "&About"
+msgstr "&Giới thiệu"
 
 #: frame_main.cpp:740
 msgid "Save subtitles file"
@@ -4751,8 +4751,8 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "Chú giải dòng này ở bên ngoài. Các dòng bị chú giả sẽ không hiện trên màn hình."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
-msgstr "Kiểu dáng cho dòng này."
+msgid "Style for this line"
+msgstr "Kiểu dáng cho dòng này"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -5177,24 +5177,24 @@ msgid "Toggle autoscroll of video"
 msgstr "Bật tắt việc tự động cuộn phim"
 
 #: video_box.cpp:90
-msgid "Seek video."
-msgstr "Truy tìm phim."
+msgid "Seek video"
+msgstr "Truy tìm phim"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
-msgstr "Số và thời gian khung hình hiện tại."
+msgid "Current frame time and number"
+msgstr "Số và thời gian khung hình hiện tại"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
-msgstr "Thời gian của khung hình này liên quan với bắt đầu và kết thúc của phụ đề hiện tại."
+msgid "Time of this frame relative to start and end of current subs"
+msgstr "Thời gian của khung hình này liên quan với bắt đầu và kết thúc của phụ đề hiện tại"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "Chuẩn"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
-msgstr "Chế độ chuẩn, nhấp đôi sẽ thiết lập vị trí."
+msgid "Standard mode, double click sets position"
+msgstr "Chế độ chuẩn, nhấp đôi sẽ thiết lập vị trí"
 
 #: video_box.cpp:115
 #: visual_tool_vector_clip.cpp:70
@@ -5202,48 +5202,48 @@ msgid "Drag"
 msgstr "Kéo"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
-msgstr "Kéo phụ đề."
+msgid "Drag subtitles"
+msgstr "Kéo phụ đề"
 
 #: video_box.cpp:116
 msgid "Rotate Z"
 msgstr "Xoay Z"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
-msgstr "Xoay phụ đề trên trục Z của chúng."
+msgid "Rotate subtitles on their Z axis"
+msgstr "Xoay phụ đề trên trục Z của chúng"
 
 #: video_box.cpp:117
 msgid "Rotate XY"
 msgstr "Xoay XY"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
-msgstr "Xoay phụ đề trên trục XY của chúng."
+msgid "Rotate subtitles on their X and Y axes"
+msgstr "Xoay phụ đề trên trục XY của chúng"
 
 #: video_box.cpp:118
 msgid "Scale"
 msgstr "Tỉ lệ"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
-msgstr "Chỉnh tỉ lệ phụ đề trên trục X và Y."
+msgid "Scale subtitles on X and Y axes"
+msgstr "Chỉnh tỉ lệ phụ đề trên trục X và Y"
 
 #: video_box.cpp:119
 msgid "Clip"
 msgstr "Co kéo"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
-msgstr "Co kéo phụ đề cho vừa trong một hình chữ nhật."
+msgid "Clip subtitles to a rectangle"
+msgstr "Co kéo phụ đề cho vừa trong một hình chữ nhật"
 
 #: video_box.cpp:120
 msgid "Vector Clip"
 msgstr "Co kéo Véctơ"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
-msgstr "Co kéo phụ đề cho vừa trong một vùng véctơ."
+msgid "Clip subtitles to a vectorial area"
+msgstr "Co kéo phụ đề cho vừa trong một vùng véctơ"
 
 #: video_box.cpp:122
 msgid "Realtime"
@@ -5254,8 +5254,8 @@ msgid "Toggle realtime display of changes."
 msgstr "Bật-tắt hiển thị thay đổi theo thời gian thực."
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
-msgstr "Mở trang sổ tay hướng dẫn cho Typeset Trực quan."
+msgid "Open the manual page for Visual Typesetting"
+msgstr "Mở trang sổ tay hướng dẫn cho Typeset Trực quan"
 
 #: video_display.cpp:478
 msgid "Save PNG snapshot"
@@ -5308,64 +5308,64 @@ msgid "positioning"
 msgstr "định vị"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
-msgstr "Kéo điểm điều khiển."
+msgid "Drag control points"
+msgstr "Kéo điểm điều khiển"
 
 #: visual_tool_vector_clip.cpp:71
 msgid "Line"
 msgstr "Dòng"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
-msgstr "Ghép nối một dòng."
+msgid "Appends a line"
+msgstr "Ghép nối một dòng"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Bicubic"
 msgstr "Song lập phương"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
-msgstr "Ghép nối một đường cong song lập phương Bezier."
+msgid "Appends a bezier bicubic curve"
+msgstr "Ghép nối một đường cong song lập phương Bezier"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Convert"
 msgstr "Chuyển đổi"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
-msgstr "Chuyển đổi một phân mảnh giữa dòng và song lập phương."
+msgid "Converts a segment between line and bicubic"
+msgstr "Chuyển đổi một phân mảnh giữa dòng và song lập phương"
 
 #: visual_tool_vector_clip.cpp:75
 msgid "Insert"
 msgstr "Chèn"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
-msgstr "Chèn một điểm điều khiển."
+msgid "Inserts a control point"
+msgstr "Chèn một điểm điều khiển"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Remove"
 msgstr "Xóa"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
-msgstr "Xóa một điểm điều khiển."
+msgid "Removes a control point"
+msgstr "Xóa một điểm điều khiển"
 
 #: visual_tool_vector_clip.cpp:78
 msgid "Freehand"
 msgstr "Rảnh tay"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
-msgstr "Vẽ một hình dạng rảnh tay."
+msgid "Draws a freehand shape"
+msgstr "Vẽ một hình dạng rảnh tay"
 
 #: visual_tool_vector_clip.cpp:79
 msgid "Freehand smooth"
 msgstr "Rảnh tay mượt mà"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
-msgstr "Vẽ một hình dạng rảnh tay mượt mà."
+msgid "Draws a smoothed freehand shape"
+msgstr "Vẽ một hình dạng rảnh tay mượt mà"
 
 #~ msgid "Show Splash Screen"
 #~ msgstr "Hiện hình ảnh Splash"

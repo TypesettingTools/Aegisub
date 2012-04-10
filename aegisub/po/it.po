@@ -668,11 +668,11 @@ msgid "Automation Script Info"
 msgstr "Info Script Automazione"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Seleziona Colore"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Spettro del colore"
 
 #: dialog_colorpicker.cpp:547
@@ -696,15 +696,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "Colore RGB"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "Colore HSL"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "Colore HSV"
 
 #: dialog_colorpicker.cpp:583
@@ -742,7 +742,7 @@ msgid "Value:"
 msgstr "Valore:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Cattura Colore"
 
 #: dialog_detached_video.cpp:76
@@ -763,7 +763,7 @@ msgid "Video resolution:"
 msgstr "Risoluzione video:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Colore:"
 
 #: dialog_dummy_video.cpp:150
@@ -1234,7 +1234,7 @@ msgid "Crash recovery path:"
 msgstr "Percorso recupero crash:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Auto carica file linkati:"
 
 #: dialog_options.cpp:189
@@ -1386,36 +1386,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Avanzate - SOLO UTENTI ESPERTI"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "Confronta risoluzione video all'apertura:"
+msgid "Match video resolution on open"
+msgstr "Confronta risoluzione video all'apertura"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "Zoom Predefinito:"
+msgid "Default Zoom"
+msgstr "Zoom Predefinito"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "Salto veloce nei frame:"
+msgid "Fast jump step in frames"
+msgstr "Salto veloce nei frame"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "Percorso salvataggio screenshot:"
+msgid "Screenshot save path"
+msgstr "Percorso salvataggio screenshot"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "Mostra keyframe negli slider"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "Provider video:"
+msgid "Video provider"
+msgstr "Provider video"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "Provider sottotitoli:"
+msgid "Subtitles provider"
+msgstr "Provider sottotitoli"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Limite di memoria di Avisynth:"
+msgid "Avisynth memory limit"
+msgstr "Limite di memoria di Avisynth"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1601,20 +1601,20 @@ msgid "Spectrum cutoff"
 msgstr "Riduzione spettro"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0 - Qualità regolare"
+msgid "Regular quality"
+msgstr "Qualità regolare"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1 - Qualità migliore"
+msgid "Better quality"
+msgstr "Qualità migliore"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2 - Qualità alta"
+msgid "High quality"
+msgstr "Qualità alta"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
-msgstr "3 - Qualità insana"
+msgid "Insane quality"
+msgstr "Qualità insana"
 
 #: dialog_options.cpp:539
 msgid "Spectrum quality"
@@ -2125,8 +2125,8 @@ msgstr "Azione"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "Selezione settata su %i righe"
+msgid "Selection was set to %u lines"
+msgstr "Selezione settata su %u righe"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2136,13 +2136,13 @@ msgstr "Selezione"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "%i righe aggiunte alla selezione"
+msgid "%u lines were added to selection"
+msgstr "%u righe aggiunte alla selezione"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "%i righe rimose dalla selezione"
+msgid "%u lines were removed from selection"
+msgstr "%u righe rimose dalla selezione"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2219,32 +2219,32 @@ msgid "Clear"
 msgstr "Azzera"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "non salvata,"
+msgid "unsaved"
+msgstr "non salvata"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr "frames"
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "indetro,"
+msgid "backward"
+msgstr "indetro"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "avanti,"
+msgid "forward"
+msgstr "avanti"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "s+e, "
+msgid "s+e"
+msgstr "s+e"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "s, "
+msgid "s"
+msgstr "s"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "e, "
+msgid "e"
+msgstr "e"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2252,8 +2252,8 @@ msgstr "tutti"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "da %i in avanti"
+msgid "from %d onward"
+msgstr "da %d in avanti"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2378,79 +2378,79 @@ msgid "Style name."
 msgstr "Nome stile"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
+msgid "Font face"
 msgstr "Font"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
+msgid "Font size"
 msgstr "Grandezza font"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
+msgid "Choose primary color"
 msgstr "Scegli il colore primario"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
+msgid "Choose secondary color"
 msgstr "Scegli il colore secondario"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "Scegli il colore del bordo"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
+msgid "Choose shadow color"
 msgstr "Scegli il colore dell'ombra"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
-msgstr "Imposta l'opacità, da 0 (opaco) a 255 (trasparente)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "Imposta l'opacità, da 0 (opaco) a 255 (trasparente)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "Distanza dal bordo sinistro, in pixel"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "Distanza dal bordo destro, in pixel"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "Distanza dal bordo superiore/inferiore, in pixel"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
 msgstr "Quando selezionato, mostra un riquadro opaco dietro ai sottotitoli invece di un contorno intorno al testo"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "Grandezza bordo, in pixel"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "Distanza ombra, in pixel"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "Scala X, in percentuale"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "Scala Y, in percentuale"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Angolo di rotazione sull'asse Z, in gradi"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
 msgstr "Codifica, utile solo nell'unicode se il font non ha un mapping unicode appropriato"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "Spaziatura caratteri, in pixel"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
+msgid "Alignment in screen, in numpad style"
 msgstr "Allineamento allo schermo, in stile tastiera numerica"
 
 #: dialog_style_editor.cpp:236
@@ -2494,16 +2494,16 @@ msgid "Encoding:"
 msgstr "Codifica:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "Anteprima dello stile corrente"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr "Testo da usare per l'anteprima"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
-msgstr "Colore dello sfondo dell'anteprima."
+msgid "Color of preview background"
+msgstr "Colore dello sfondo dell'anteprima"
 
 #: dialog_style_editor.cpp:314
 msgid "No subtitle providers available. Cannot preview subs."
@@ -2580,27 +2580,27 @@ msgstr "Copia"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "Sposta stile su"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "Sposta stile giù"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "Sposta stile in cima"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "Sposta stile in fondo"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "Ordina stili alfabeticamente"
 
 #: dialog_style_manager.cpp:121
@@ -2849,11 +2849,11 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Seleziona gli stili da processare. I restanti verranno ignorati."
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
+msgid "Select all styles"
 msgstr "Seleziona tutti gli stili"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
+msgid "Deselect all styles"
 msgstr "Deseleziona tutti gli stili"
 
 #: dialog_timing_processor.cpp:84
@@ -2869,24 +2869,24 @@ msgid "Add lead in:"
 msgstr "Aggiungi lead in:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "Abilita l'inserimento di lead-in alle righe."
+msgid "Enable adding of lead-ins to lines"
+msgstr "Abilita l'inserimento di lead-in alle righe"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
-msgstr "Lead-in da aggiungere, in millisecondi."
+msgid "Lead in to be added, in milliseconds"
+msgstr "Lead-in da aggiungere, in millisecondi"
 
 #: dialog_timing_processor.cpp:95
 msgid "Add lead out:"
 msgstr "Aggiungi lead out:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "Abilita l'inserimento di lead-out alle righe."
+msgid "Enable adding of lead-outs to lines"
+msgstr "Abilita l'inserimento di lead-out alle righe"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
-msgstr "Lead-out da aggiungere, in millisecondi."
+msgid "Lead out to be added, in milliseconds"
+msgstr "Lead-out da aggiungere, in millisecondi"
 
 #: dialog_timing_processor.cpp:107
 msgid "Make adjacent subtitles continuous"
@@ -2898,7 +2898,7 @@ msgid "Enable"
 msgstr "Abilita"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
 msgstr "Abilita lo snapping di sottotitoli insieme se sono ad una certa distanza l'uno dall'altro"
 
 #: dialog_timing_processor.cpp:111
@@ -2906,8 +2906,8 @@ msgid "Threshold:"
 msgstr "Soglia:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "Differenza massima tra inizio e fine di due sottotitoli per renderli continui, in millisecondi."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "Differenza massima tra inizio e fine di due sottotitoli per renderli continui, in millisecondi"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2926,8 +2926,8 @@ msgid "Keyframe snapping"
 msgstr "Keyframe snapping"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Abilita lo snapping dei sottotitoli al keyframe più vicino, se la distanza è entro la soglia."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "Abilita lo snapping dei sottotitoli al keyframe più vicino, se la distanza è entro la soglia"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -3065,8 +3065,8 @@ msgstr "Abilita anteprima"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Riga corrente: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Riga corrente: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3432,11 +3432,11 @@ msgid "Configure Aegisub"
 msgstr "Configura Aegisub"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Cambia Metodo Nascondi-Tag"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Cambia le modalità del nascondi-tag"
 
 #: frame_main.cpp:305
@@ -3473,19 +3473,19 @@ msgid "Saves subtitles"
 msgstr "Salva Sottotitoli"
 
 #: frame_main.cpp:324
-msgid "Save Subtitles as..."
-msgstr "Salva Sottotitoli come..."
+msgid "Save Subtitles as"
+msgstr "Salva Sottotitoli come"
 
 #: frame_main.cpp:324
 msgid "Saves subtitles with another name"
 msgstr "Salva i sottotitoli con un altro nome"
 
 #: frame_main.cpp:325
-msgid "Export Subtitles..."
-msgstr "Esporta Sottotitoli..."
+msgid "Export Subtitles"
+msgstr "Esporta Sottotitoli"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
+msgid "Saves a copy of subtitles with processing applied to it"
 msgstr "Salva una copia dei sottotitoli con le elaborazioni aggiunte"
 
 #: frame_main.cpp:326
@@ -3584,8 +3584,8 @@ msgid "Paste subtitles"
 msgstr "Incolla i sottotitoli"
 
 #: frame_main.cpp:352
-msgid "Paste Lines Over..."
-msgstr "Incolla Righe Su..."
+msgid "Paste Lines Over"
+msgstr "Incolla Righe Su"
 
 #: frame_main.cpp:352
 msgid "Paste subtitles over others"
@@ -3650,7 +3650,7 @@ msgid "Open translation assistant"
 msgstr "Apre l'assistente alla traduzione"
 
 #: frame_main.cpp:369
-msgid "Resample Resolution..."
+msgid "Resample Resolution"
 msgstr "Ricampiona Risoluzione"
 
 #: frame_main.cpp:369
@@ -3787,7 +3787,7 @@ msgid "Select Lines..."
 msgstr "Seleziona Righe"
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Seleziona le righe secondo un criterio definito"
 
 #: frame_main.cpp:399
@@ -3894,16 +3894,16 @@ msgid "Closes the currently open video file"
 msgstr "Chiude il file video aperto"
 
 #: frame_main.cpp:429
-msgid "Use Dummy Video..."
-msgstr "Usa Video Fittizio..."
+msgid "Use Dummy Video"
+msgstr "Usa Video Fittizio"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Apri un clip video con colore solido"
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
-msgstr "Mostra dettagli video..."
+msgid "Show Video Details"
+msgstr "Mostra dettagli video"
 
 #: frame_main.cpp:430
 msgid "Shows video details"
@@ -3962,8 +3962,8 @@ msgid "Detach Video"
 msgstr "Stacca Video"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
-msgstr "Stacca il video, mostrandolo in una finestra separata."
+msgid "Detach video, displaying it in a separate Window"
+msgstr "Stacca il video, mostrandolo in una finestra separata"
 
 #: frame_main.cpp:446
 msgid "Set Zoom"
@@ -4018,8 +4018,8 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "Forza l'aspect ratio del video a 2.35"
 
 #: frame_main.cpp:463
-msgid "Custom..."
-msgstr "Personalizzato..."
+msgid "Custom"
+msgstr "Personalizzato"
 
 #: frame_main.cpp:463
 msgid "Forces video to a custom aspect ratio"
@@ -4030,8 +4030,8 @@ msgid "Show Overscan Mask"
 msgstr "Mostra Maschera Overscan"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "Mostra una maschera sul video, indicando aree che sulle TV potrebbero essere tagliate."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgstr "Mostra una maschera sul video, indicando aree che sulle TV potrebbero essere tagliate"
 
 #: frame_main.cpp:467
 msgid "&Jump to..."
@@ -4156,8 +4156,8 @@ msgid "Vie&w"
 msgstr "Visua&lizza"
 
 #: frame_main.cpp:514
-msgid "&Contents..."
-msgstr "&Contenuti..."
+msgid "&Contents"
+msgstr "&Contenuti"
 
 #: frame_main.cpp:514
 msgid "Help topics"
@@ -4172,16 +4172,16 @@ msgid "Resource files distributed with Aegisub"
 msgstr "File di risorse distribuiti con Aegisub"
 
 #: frame_main.cpp:519
-msgid "&Website..."
-msgstr "&Sito Web..."
+msgid "&Website"
+msgstr "&Sito Web"
 
 #: frame_main.cpp:519
 msgid "Visit Aegisub's official website"
 msgstr "Visita il sito web ufficiale di Aegisub"
 
 #: frame_main.cpp:520
-msgid "&Forums..."
-msgstr "&Forum..."
+msgid "&Forums"
+msgstr "&Forum"
 
 #: frame_main.cpp:520
 msgid "Visit Aegisub's forums"
@@ -4196,8 +4196,8 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Visita il bug tracker di Aegisub per riportare bug e richiedere nuove funzionalità"
 
 #: frame_main.cpp:522
-msgid "&IRC Channel..."
-msgstr "&Canale IRC..."
+msgid "&IRC Channel"
+msgstr "&Canale IRC"
 
 #: frame_main.cpp:522
 msgid "Visit Aegisub's official IRC channel"
@@ -4212,8 +4212,8 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Controlla se è disponibile una nuova versione di Aegisub"
 
 #: frame_main.cpp:527
-msgid "&About..."
-msgstr "&Info su..."
+msgid "&About"
+msgstr "&Info su"
 
 #: frame_main.cpp:740
 msgid "Save subtitles file"
@@ -4749,8 +4749,8 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "Rendi questa riga un commento. Le righe commentate non appaiono sullo schermo."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
-msgstr "Stile per questa riga."
+msgid "Style for this line"
+msgstr "Stile per questa riga"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -5175,15 +5175,15 @@ msgid "Toggle autoscroll of video"
 msgstr "Abilita autoscorrimento video"
 
 #: video_box.cpp:90
-msgid "Seek video."
+msgid "Seek video"
 msgstr "Scorri video"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
+msgid "Current frame time and number"
 msgstr "Tempo e numero del frame corrente"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
+msgid "Time of this frame relative to start and end of current subs"
 msgstr "Tempo di questo frame, relativo all'inizio e alla fine dei sub correnti"
 
 #: video_box.cpp:114
@@ -5191,7 +5191,7 @@ msgid "Standard"
 msgstr "Standard"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
+msgid "Standard mode, double click sets position"
 msgstr "Modalità standard, doppio click imposta la posizione"
 
 #: video_box.cpp:115
@@ -5200,7 +5200,7 @@ msgid "Drag"
 msgstr "Trascina"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
+msgid "Drag subtitles"
 msgstr "Trascina sottotitoli"
 
 #: video_box.cpp:116
@@ -5208,7 +5208,7 @@ msgid "Rotate Z"
 msgstr "Ruota Z"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
+msgid "Rotate subtitles on their Z axis"
 msgstr "Ruota sottotitoli sul loro asse Z"
 
 #: video_box.cpp:117
@@ -5216,7 +5216,7 @@ msgid "Rotate XY"
 msgstr "Ruota XY"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
+msgid "Rotate subtitles on their X and Y axes"
 msgstr "Ruota i sottotitoli nei loro assi X ed Y"
 
 #: video_box.cpp:118
@@ -5224,7 +5224,7 @@ msgid "Scale"
 msgstr "Bilancia"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
+msgid "Scale subtitles on X and Y axes"
 msgstr "Bilancia sottotitoli sugli assi X ed Y"
 
 #: video_box.cpp:119
@@ -5232,7 +5232,7 @@ msgid "Clip"
 msgstr "Clip"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
+msgid "Clip subtitles to a rectangle"
 msgstr "Ritaglia sottotitoli in un rettangolo"
 
 #: video_box.cpp:120
@@ -5240,7 +5240,7 @@ msgid "Vector Clip"
 msgstr "Clip Vettoriale"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
+msgid "Clip subtitles to a vectorial area"
 msgstr "Ritaglia sottotitoli in un'area vettoriale"
 
 #: video_box.cpp:122
@@ -5252,7 +5252,7 @@ msgid "Toggle realtime display of changes."
 msgstr "Passa a visualizzazione in tempo reale delle modifiche"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
+msgid "Open the manual page for Visual Typesetting"
 msgstr "Apre la pagina della guida per i Visual Typesetting"
 
 #: video_display.cpp:478
@@ -5306,7 +5306,7 @@ msgid "positioning"
 msgstr "posizionamento"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
+msgid "Drag control points"
 msgstr "Trascina punti di controllo"
 
 #: visual_tool_vector_clip.cpp:71
@@ -5314,15 +5314,15 @@ msgid "Line"
 msgstr "Linea"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
-msgstr "Aggiunge una linea."
+msgid "Appends a line"
+msgstr "Aggiunge una linea"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Bicubic"
 msgstr "Bicubico"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
+msgid "Appends a bezier bicubic curve"
 msgstr "Aggiunge una curva bezier bicubica"
 
 #: visual_tool_vector_clip.cpp:74
@@ -5330,7 +5330,7 @@ msgid "Convert"
 msgstr "Converti"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
+msgid "Converts a segment between line and bicubic"
 msgstr "Converte un segmento tra linea e bicubico"
 
 #: visual_tool_vector_clip.cpp:75
@@ -5338,7 +5338,7 @@ msgid "Insert"
 msgstr "Inserisci"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
+msgid "Inserts a control point"
 msgstr "Inserisce un punto di controllo"
 
 #: visual_tool_vector_clip.cpp:76
@@ -5346,7 +5346,7 @@ msgid "Remove"
 msgstr "Rimuovi"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
+msgid "Removes a control point"
 msgstr "Rimuove un punto di controllo"
 
 #: visual_tool_vector_clip.cpp:78
@@ -5354,7 +5354,7 @@ msgid "Freehand"
 msgstr "A mano libera"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "Disegna una forma a mano libera"
 
 #: visual_tool_vector_clip.cpp:79
@@ -5362,7 +5362,7 @@ msgid "Freehand smooth"
 msgstr "A mano libera morbida"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "Disegna una forma arrotondata (ammorbidita) a mano libera"
 
 #~ msgid "Show Splash Screen"

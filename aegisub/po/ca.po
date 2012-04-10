@@ -113,8 +113,8 @@ msgid "All"
 msgstr "Tot"
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
-msgstr "Selecciona tots els estils."
+msgid "Select all styles"
+msgstr "Selecciona tots els estils"
 
 #: dialog_timing_processor.cpp:79
 #: dialog_paste_over.cpp:90
@@ -122,8 +122,8 @@ msgid "None"
 msgstr "Res"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
-msgstr "Deselecciona tots els estils."
+msgid "Deselect all styles"
+msgstr "Deselecciona tots els estils"
 
 #: dialog_timing_processor.cpp:83
 #: dialog_options.cpp:86
@@ -153,24 +153,24 @@ msgid "Add lead in:"
 msgstr "Afegeix temps d'entrada:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "Activa afegir temps d'entrada a les línies."
+msgid "Enable adding of lead-ins to lines"
+msgstr "Activa afegir temps d'entrada a les línies"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
-msgstr "Temps d'entrada que s'afegirà, en mil·lisegons."
+msgid "Lead in to be added, in milliseconds"
+msgstr "Temps d'entrada que s'afegirà, en mil·lisegons"
 
 #: dialog_timing_processor.cpp:95
 msgid "Add lead out:"
 msgstr "Afegeix temps de sortida:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "Activa afegir temps de sortida a les línies."
+msgid "Enable adding of lead-outs to lines"
+msgstr "Activa afegir temps de sortida a les línies"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
-msgstr "Temps de sortida que s'afegirà, en mil·lisegons."
+msgid "Lead out to be added, in milliseconds"
+msgstr "Temps de sortida que s'afegirà, en mil·lisegons"
 
 #: dialog_timing_processor.cpp:107
 msgid "Make adjacent subtitles continuous"
@@ -182,16 +182,16 @@ msgid "Enable"
 msgstr "Activa"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Activa que els subtítols s'enganxin si estan a una certa distància l'un de l'altre."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Activa que els subtítols s'enganxin si estan a una certa distància l'un de l'altre"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Valor:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "Diferència màxima entre el temps d'inici i final per a dos subtítols perquè es facin continus, en mil·lisegons."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "Diferència màxima entre el temps d'inici i final per a dos subtítols perquè es facin continus, en mil·lisegons"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -210,8 +210,8 @@ msgid "Keyframe snapping"
 msgstr "Enganxament als marcs clau"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Activa que els subtítols s'enganxin al marc clau més proper, si la distància és dins del valor."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "Activa que els subtítols s'enganxin al marc clau més proper, si la distància és dins del valor"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -275,24 +275,24 @@ msgid "Toggle autoscroll of video"
 msgstr "Activa/desactiva el moviment automàtic del vídeo"
 
 #: video_box.cpp:90
-msgid "Seek video."
-msgstr "Mou el vídeo."
+msgid "Seek video"
+msgstr "Mou el vídeo"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
-msgstr "Temps del marc actual i número."
+msgid "Current frame time and number"
+msgstr "Temps del marc actual i número"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
-msgstr "Temps d'aquest marc relatiu a l'inici i al final dels subtítols actuals."
+msgid "Time of this frame relative to start and end of current subs"
+msgstr "Temps d'aquest marc relatiu a l'inici i al final dels subtítols actuals"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "Estàndard"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
-msgstr "Mode estàndard, el doble clic defineix la posició."
+msgid "Standard mode, double click sets position"
+msgstr "Mode estàndard, el doble clic defineix la posició"
 
 #: video_box.cpp:115
 #: visual_tool_vector_clip.cpp:70
@@ -300,48 +300,48 @@ msgid "Drag"
 msgstr "Arrossega"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
-msgstr "Arrossegua els subtítols."
+msgid "Drag subtitles"
+msgstr "Arrossegua els subtítols"
 
 #: video_box.cpp:116
 msgid "Rotate Z"
 msgstr "Rota en Z"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
-msgstr "Gira els subtítols en l'eix Z."
+msgid "Rotate subtitles on their Z axis"
+msgstr "Gira els subtítols en l'eix Z"
 
 #: video_box.cpp:117
 msgid "Rotate XY"
 msgstr "Rota en XY"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
-msgstr "Gira els subtítols en els eixos X i Y."
+msgid "Rotate subtitles on their X and Y axes"
+msgstr "Gira els subtítols en els eixos X i Y"
 
 #: video_box.cpp:118
 msgid "Scale"
 msgstr "Escala"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
-msgstr "Escala els subtítols en els eixos X i Y."
+msgid "Scale subtitles on X and Y axes"
+msgstr "Escala els subtítols en els eixos X i Y"
 
 #: video_box.cpp:119
 msgid "Clip"
 msgstr "Retalla"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
-msgstr "Retalla els subtítols a un rectangle."
+msgid "Clip subtitles to a rectangle"
+msgstr "Retalla els subtítols a un rectangle"
 
 #: video_box.cpp:120
 msgid "Vector Clip"
 msgstr "Retallat vectorial"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
-msgstr "Retalla els subtítols a una àrea vectorial."
+msgid "Clip subtitles to a vectorial area"
+msgstr "Retalla els subtítols a una àrea vectorial"
 
 #: video_box.cpp:122
 msgid "Realtime"
@@ -358,8 +358,8 @@ msgid "Help"
 msgstr "Ajuda"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
-msgstr "Obre la pàgina del manual per a la definició d'estils visual."
+msgid "Open the manual page for Visual Typesetting"
+msgstr "Obre la pàgina del manual per a la definició d'estils visual"
 
 #: video_display.cpp:496
 msgid "Save PNG snapshot"
@@ -581,8 +581,8 @@ msgstr "Acció"
 
 #: dialog_selection.cpp:267
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "S'han seleccionat %i línies"
+msgid "Selection was set to %u lines"
+msgstr "S'han seleccionat %u línies"
 
 #: dialog_selection.cpp:267
 #: dialog_selection.cpp:268
@@ -592,13 +592,13 @@ msgstr "Selecció"
 
 #: dialog_selection.cpp:268
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "S'han afegit %i línies a la selecció."
+msgid "%u lines were added to selection"
+msgstr "S'han afegit %u línies a la selecció."
 
 #: dialog_selection.cpp:269
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "S'han tret %i línies de la selecció"
+msgid "%u lines were removed from selection"
+msgstr "S'han tret %u línies de la selecció"
 
 #: dialog_style_manager.cpp:62
 #: frame_main.cpp:265
@@ -644,28 +644,28 @@ msgstr "Copia"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style up."
-msgstr "Mou l'estil cap amunt."
+msgid "Move style up"
+msgstr "Mou l'estil cap amunt"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style down."
-msgstr "Mou l'estil cap avall."
+msgid "Move style down"
+msgstr "Mou l'estil cap avall"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Move style to top."
-msgstr "Mou l'estil a dalt de tot."
+msgid "Move style to top"
+msgstr "Mou l'estil a dalt de tot"
 
 #: dialog_style_manager.cpp:102
 #: dialog_style_manager.cpp:147
-msgid "Move style to bottom."
-msgstr "Mou l'estil a baix de tot."
+msgid "Move style to bottom"
+msgstr "Mou l'estil a baix de tot"
 
 #: dialog_style_manager.cpp:103
 #: dialog_style_manager.cpp:148
-msgid "Sort styles alphabetically."
-msgstr "Ordena els estils alfabèticament."
+msgid "Sort styles alphabetically"
+msgstr "Ordena els estils alfabèticament"
 
 #: dialog_style_manager.cpp:123
 msgid "Current script"
@@ -896,7 +896,7 @@ msgid "Crash recovery path:"
 msgstr "Camí de recuperació de petades:"
 
 #: dialog_options.cpp:190
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Carrega automàticament els fitxers enllaçats:"
 
 #: dialog_options.cpp:191
@@ -1064,36 +1064,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Avançades - NOMÉS USUARIS EXPERTS"
 
 #: dialog_options.cpp:363
-msgid "Match video resolution on open: "
-msgstr "Encaixa la resolució del vídeo en obrir:"
+msgid "Match video resolution on open"
+msgstr "Encaixa la resolució del vídeo en obrir"
 
 #: dialog_options.cpp:368
-msgid "Default Zoom: "
-msgstr "Ampliació per defecte:"
+msgid "Default Zoom"
+msgstr "Ampliació per defecte"
 
 #: dialog_options.cpp:379
-msgid "Fast jump step in frames: "
-msgstr "Pas de salt ràpid als marcs:"
+msgid "Fast jump step in frames"
+msgstr "Pas de salt ràpid als marcs"
 
 #: dialog_options.cpp:383
-msgid "Screenshot save path: "
-msgstr "Camí per desar les captures de pantalla:"
+msgid "Screenshot save path"
+msgstr "Camí per desar les captures de pantalla"
 
 #: dialog_options.cpp:389
 msgid "Show keyframes in slider"
 msgstr "Mostra els marcs clau a la barra de desplaçament"
 
 #: dialog_options.cpp:395
-msgid "Video provider: "
-msgstr "Proveïdor del vídeo:"
+msgid "Video provider"
+msgstr "Proveïdor del vídeo"
 
 #: dialog_options.cpp:400
-msgid "Subtitles provider: "
+msgid "Subtitles provider"
 msgstr "Proveïdor de subtítols"
 
 #: dialog_options.cpp:406
-msgid "Avisynth memory limit: "
-msgstr "Límit de memòria de l'Aegisub:"
+msgid "Avisynth memory limit"
+msgstr "Límit de memòria de l'Aegisub"
 
 #: dialog_options.cpp:413
 msgid "Allow pre-2.56a Avisynth"
@@ -1279,20 +1279,20 @@ msgid "Spectrum cutoff"
 msgstr "Tall de l'espectre"
 
 #: dialog_options.cpp:546
-msgid "0 - Regular quality"
-msgstr "0 - Qualitat regular"
+msgid "Regular quality"
+msgstr "Qualitat regular"
 
 #: dialog_options.cpp:546
-msgid "1 - Better quality"
-msgstr "1 - Millor qualitat"
+msgid "Better quality"
+msgstr "Millor qualitat"
 
 #: dialog_options.cpp:546
-msgid "2 - High quality"
-msgstr "2 - Alta qualitat"
+msgid "High quality"
+msgstr "Alta qualitat"
 
 #: dialog_options.cpp:546
-msgid "3 - Insane quality"
-msgstr "3 - Qualitat exagerada"
+msgid "Insane quality"
+msgstr "Qualitat exagerada"
 
 #: dialog_options.cpp:547
 msgid "Spectrum quality"
@@ -2170,7 +2170,7 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "Comenta aquesta línia. Les línies comentades no es mostren a la pantalla"
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
+msgid "Style for this line"
 msgstr "Estil per a aquesta línia"
 
 #: subs_edit_box.cpp:89
@@ -2465,63 +2465,63 @@ msgid "Find"
 msgstr "Cerca"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
-msgstr "Arrossega els punts de control."
+msgid "Drag control points"
+msgstr "Arrossega els punts de control"
 
 #: visual_tool_vector_clip.cpp:71
 msgid "Line"
 msgstr "Línia"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
-msgstr "Afegeix una línia."
+msgid "Appends a line"
+msgstr "Afegeix una línia"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Bicubic"
 msgstr "Bicúbica"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
-msgstr "Afegeix una corba Bézier bicúbia."
+msgid "Appends a bezier bicubic curve"
+msgstr "Afegeix una corba Bézier bicúbia"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Convert"
 msgstr "Converteix"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
-msgstr "Converteix un segment entre una línia i bicúbic."
+msgid "Converts a segment between line and bicubic"
+msgstr "Converteix un segment entre una línia i bicúbic"
 
 #: visual_tool_vector_clip.cpp:75
 msgid "Insert"
 msgstr "Insereix"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
-msgstr "Insereix un punt de control."
+msgid "Inserts a control point"
+msgstr "Insereix un punt de control"
 
 #: visual_tool_vector_clip.cpp:76
 msgid "Remove"
 msgstr "Esborra"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
-msgstr "Esborra un punt de control."
+msgid "Removes a control point"
+msgstr "Esborra un punt de control"
 
 #: visual_tool_vector_clip.cpp:78
 msgid "Freehand"
 msgstr "Mà alçada"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
-msgstr "Dibuixa una forma a mà alçada."
+msgid "Draws a freehand shape"
+msgstr "Dibuixa una forma a mà alçada"
 
 #: visual_tool_vector_clip.cpp:79
 msgid "Freehand smooth"
 msgstr "Mà alçada suavitzada"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "Dibuixa una forma suavitzada a mà alçada"
 
 #: export_clean_info.cpp:60
@@ -2770,8 +2770,8 @@ msgstr "Activa la previsualització"
 
 #: dialog_translation.cpp:202
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Línia actual: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Línia actual: %d/%d"
 
 #: dialog_translation.cpp:333
 msgid "translation assistant"
@@ -3017,11 +3017,11 @@ msgid "Configure Aegisub"
 msgstr "Configura l'Aegisub"
 
 #: frame_main.cpp:293
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Canvia el mode d'amagat de les etiquetes"
 
 #: frame_main.cpp:293
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Canvia els modes d'amagat de les etiquetes"
 
 #: frame_main.cpp:318
@@ -3058,20 +3058,20 @@ msgid "Saves subtitles"
 msgstr "Desa els subtítols"
 
 #: frame_main.cpp:337
-msgid "Save Subtitles as..."
-msgstr "Anomena i desa els subtítols..."
+msgid "Save Subtitles as"
+msgstr "Anomena i desa els subtítols"
 
 #: frame_main.cpp:337
 msgid "Saves subtitles with another name"
 msgstr "Desa els subtítols amb un altre nom"
 
 #: frame_main.cpp:338
-msgid "Export Subtitles..."
-msgstr "Exporta els subtítols..."
+msgid "Export Subtitles"
+msgstr "Exporta els subtítols"
 
 #: frame_main.cpp:338
-msgid "Saves a copy of subtitles with processing applied to it."
-msgstr "Desa una còpia dels subtítols aplicant-hi uns processos."
+msgid "Saves a copy of subtitles with processing applied to it"
+msgstr "Desa una còpia dels subtítols aplicant-hi uns processos"
 
 #: frame_main.cpp:339
 #: frame_main.cpp:440
@@ -3171,8 +3171,8 @@ msgid "Paste subtitles"
 msgstr "Enganxa els subtítols"
 
 #: frame_main.cpp:365
-msgid "Paste Lines Over..."
-msgstr "Enganxa les línies sobre..."
+msgid "Paste Lines Over"
+msgstr "Enganxa les línies sobre"
 
 #: frame_main.cpp:365
 msgid "Paste subtitles over others"
@@ -3237,8 +3237,8 @@ msgid "Open translation assistant"
 msgstr "Obre l'auxiliar de traducció"
 
 #: frame_main.cpp:382
-msgid "Resample Resolution..."
-msgstr "Reajusta la resolució..."
+msgid "Resample Resolution"
+msgstr "Reajusta la resolució"
 
 #: frame_main.cpp:382
 msgid "Changes resolution and modifies subtitles to conform to change"
@@ -3329,7 +3329,7 @@ msgid "Select Lines..."
 msgstr "Selecciona línies..."
 
 #: frame_main.cpp:411
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Selecciona les línies basant-se en un criteri definit"
 
 #: frame_main.cpp:412
@@ -3357,8 +3357,8 @@ msgid "Timing Post-Processor..."
 msgstr "Post-processador de temps..."
 
 #: frame_main.cpp:418
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Executa un post-processador per al temps per tractar els temps d'entrada i de sortida, el temps de les escenes, etcètera."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
+msgstr "Executa un post-processador per al temps per tractar els temps d'entrada i de sortida, el temps de les escenes, etcètera"
 
 #: frame_main.cpp:419
 msgid "Kanji Timer..."
@@ -3426,16 +3426,16 @@ msgid "Closes the currently open video file"
 msgstr "Tanca el fitxer de vídeo obert actualment"
 
 #: frame_main.cpp:442
-msgid "Use Dummy Video..."
-msgstr "Utilitza un vídeo fictici..."
+msgid "Use Dummy Video"
+msgstr "Utilitza un vídeo fictici"
 
 #: frame_main.cpp:442
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Obre una peça de vídeo amb color sòlid"
 
 #: frame_main.cpp:443
-msgid "Show Video Details..."
-msgstr "Mostra els detalls del vídeo..."
+msgid "Show Video Details"
+msgstr "Mostra els detalls del vídeo"
 
 #: frame_main.cpp:443
 msgid "Shows video details"
@@ -3494,8 +3494,8 @@ msgid "Detach Video"
 msgstr "Desancora el vídeo"
 
 #: frame_main.cpp:457
-msgid "Detach video, displaying it in a separate Window."
-msgstr "Desancora el vídeo, mostrant-lo en una finestra separada."
+msgid "Detach video, displaying it in a separate Window"
+msgstr "Desancora el vídeo, mostrant-lo en una finestra separada"
 
 #: frame_main.cpp:459
 msgid "Set Zoom"
@@ -3550,8 +3550,8 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "Força la relació d'aspecte del vídeo a 2.35"
 
 #: frame_main.cpp:476
-msgid "Custom..."
-msgstr "Personalitzada..."
+msgid "Custom"
+msgstr "Personalitzada"
 
 #: frame_main.cpp:476
 msgid "Forces video to a custom aspect ratio"
@@ -3562,8 +3562,8 @@ msgid "Show Overscan Mask"
 msgstr "Mostra la màscara de sobreescaneig"
 
 #: frame_main.cpp:478
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "Mostra una masca sobre el vídeo, indicant les àres que poden ser retallades per sobreescaneig als televisors."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgstr "Mostra una masca sobre el vídeo, indicant les àres que poden ser retallades per sobreescaneig als televisors"
 
 #: frame_main.cpp:480
 msgid "&Jump to..."
@@ -3688,8 +3688,8 @@ msgid "Vie&w"
 msgstr "&Visualitza"
 
 #: frame_main.cpp:527
-msgid "&Contents..."
-msgstr "&Contingut..."
+msgid "&Contents"
+msgstr "&Contingut"
 
 #: frame_main.cpp:527
 msgid "Help topics"
@@ -3704,16 +3704,16 @@ msgid "Resource files distributed with Aegisub"
 msgstr "Fitxers de recursos distribuïts amb l'Aegisub"
 
 #: frame_main.cpp:532
-msgid "&Website..."
-msgstr "Pàgina &web..."
+msgid "&Website"
+msgstr "Pàgina &web"
 
 #: frame_main.cpp:532
 msgid "Visit Aegisub's official website"
 msgstr "Visita la pàgina web oficial de l'Aegisub"
 
 #: frame_main.cpp:533
-msgid "&Forums..."
-msgstr "&Fòrums..."
+msgid "&Forums"
+msgstr "&Fòrums"
 
 #: frame_main.cpp:533
 msgid "Visit Aegisub's forums"
@@ -3728,8 +3728,8 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Visita el sistema de seguiment d'errors de l'Aegisub per avisar d'errades i demanar noves funcionalitats"
 
 #: frame_main.cpp:535
-msgid "&IRC Channel..."
-msgstr "Canal d'&IRC..."
+msgid "&IRC Channel"
+msgstr "Canal d'&IRC"
 
 #: frame_main.cpp:535
 msgid "Visit Aegisub's official IRC channel"
@@ -3744,8 +3744,8 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Comprova si hi ha una nova versió de l'Aegisub disponible"
 
 #: frame_main.cpp:540
-msgid "&About..."
-msgstr "&Quant a..."
+msgid "&About"
+msgstr "&Quant a"
 
 #: frame_main.cpp:750
 msgid "Save subtitles file"
@@ -3935,80 +3935,80 @@ msgid "Style name."
 msgstr "Nom de l'estil."
 
 #: dialog_style_editor.cpp:170
-msgid "Font face."
-msgstr "Tipus de lletra."
+msgid "Font face"
+msgstr "Tipus de lletra"
 
 #: dialog_style_editor.cpp:171
-msgid "Font size."
-msgstr "Mida de la lletra."
+msgid "Font size"
+msgstr "Mida de la lletra"
 
 #: dialog_style_editor.cpp:172
-msgid "Choose primary color."
-msgstr "Escolliu el color primari."
+msgid "Choose primary color"
+msgstr "Escolliu el color primari"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose secondary color."
-msgstr "Escolliu el color secundari."
+msgid "Choose secondary color"
+msgstr "Escolliu el color secundari"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose outline color."
-msgstr "Escolliu el color del marge."
+msgid "Choose outline color"
+msgstr "Escolliu el color del marge"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose shadow color."
-msgstr "Escolliu el color de l'ombra."
+msgid "Choose shadow color"
+msgstr "Escolliu el color de l'ombra"
 
 #: dialog_style_editor.cpp:176
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
-msgstr "Definiu l'opacitat, de 0 (opac) a 255 (transparent)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
+msgstr "Definiu l'opacitat, de 0 (opac) a 255 (transparent)"
 
 #: dialog_style_editor.cpp:177
-msgid "Distance from left edge, in pixels."
-msgstr "Distància des de la vora esquerra, en píxels."
+msgid "Distance from left edge, in pixels"
+msgstr "Distància des de la vora esquerra, en píxels"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from right edge, in pixels."
-msgstr "Distància des de la vora dreta, en píxels."
+msgid "Distance from right edge, in pixels"
+msgstr "Distància des de la vora dreta, en píxels"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from top/bottom edge, in pixels."
-msgstr "Distància des de la vora superior/inferior, en píxels."
+msgid "Distance from top/bottom edge, in pixels"
+msgstr "Distància des de la vora superior/inferior, en píxels"
 
 #: dialog_style_editor.cpp:180
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "Quan estigui seleccionat, es mostrarà una capsa opaca darrere els subtítols en lloc d'una vora al voltant del text."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "Quan estigui seleccionat, es mostrarà una capsa opaca darrere els subtítols en lloc d'una vora al voltant del text"
 
 #: dialog_style_editor.cpp:181
-msgid "Outline width, in pixels."
-msgstr "Mida de la vora, en píxels."
+msgid "Outline width, in pixels"
+msgstr "Mida de la vora, en píxels"
 
 #: dialog_style_editor.cpp:182
-msgid "Shadow distance, in pixels."
-msgstr "Distància de l'ombra, en píxels."
+msgid "Shadow distance, in pixels"
+msgstr "Distància de l'ombra, en píxels"
 
 #: dialog_style_editor.cpp:183
-msgid "Scale X, in percentage."
-msgstr "Escalat X, en percentatge."
+msgid "Scale X, in percentage"
+msgstr "Escalat X, en percentatge"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale Y, in percentage."
-msgstr "Escalat Y, en percentatge."
+msgid "Scale Y, in percentage"
+msgstr "Escalat Y, en percentatge"
 
 #: dialog_style_editor.cpp:185
-msgid "Angle to rotate in Z axis, in degrees."
-msgstr "Angle a rotar en l'eix Z, en graus."
+msgid "Angle to rotate in Z axis, in degrees"
+msgstr "Angle a rotar en l'eix Z, en graus"
 
 #: dialog_style_editor.cpp:186
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "Codificació, només útil en Unicode si la lletra no té el mapeig Unicode correcte."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "Codificació, només útil en Unicode si la lletra no té el mapeig Unicode correcte"
 
 #: dialog_style_editor.cpp:187
-msgid "Character spacing, in pixels."
-msgstr "Espaiat dels caràcters, en píxels."
+msgid "Character spacing, in pixels"
+msgstr "Espaiat dels caràcters, en píxels"
 
 #: dialog_style_editor.cpp:188
-msgid "Alignment in screen, in numpad style."
-msgstr "Alineació a la pantalla, segons el teclat numèric."
+msgid "Alignment in screen, in numpad style"
+msgstr "Alineació a la pantalla, segons el teclat numèric"
 
 #: dialog_style_editor.cpp:235
 msgid "Primary"
@@ -4051,16 +4051,16 @@ msgid "Encoding:"
 msgstr "Codificació:"
 
 #: dialog_style_editor.cpp:300
-msgid "Preview of current style."
-msgstr "Previsualització de l'estil actual."
+msgid "Preview of current style"
+msgstr "Previsualització de l'estil actual"
 
 #: dialog_style_editor.cpp:303
-msgid "Text to be used for the preview."
-msgstr "Text que s'utilitzarà a la previsualització."
+msgid "Text to be used for the preview"
+msgstr "Text que s'utilitzarà a la previsualització"
 
 #: dialog_style_editor.cpp:304
-msgid "Colour of preview background."
-msgstr "Color de fons de la previsualització."
+msgid "Color of preview background"
+msgstr "Color de fons de la previsualització"
 
 #: dialog_style_editor.cpp:313
 msgid "No subtitle providers available. Cannot preview subs."
@@ -4167,32 +4167,32 @@ msgid "Clear"
 msgstr "Neteja"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "no desat, "
+msgid "unsaved"
+msgstr "no desat"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr " marcs "
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "endarrere, "
+msgid "backward"
+msgstr "endarrere"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "endavant, "
+msgid "forward"
+msgstr "endavant"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "i+f, "
+msgid "s+e"
+msgstr "i+f"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "i, "
+msgid "s"
+msgstr "i"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "f, "
+msgid "e"
+msgstr "f"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -4200,8 +4200,8 @@ msgstr "tot"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "des de %i en endavant"
+msgid "from %d onward"
+msgstr "des de %d en endavant"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -4224,7 +4224,7 @@ msgid "Video resolution:"
 msgstr "Resolució del vídeo:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Color:"
 
 #: dialog_dummy_video.cpp:150
@@ -5159,11 +5159,11 @@ msgid "Writing file"
 msgstr "S'està escrivint el fitxer"
 
 #: dialog_colorpicker.cpp:446
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Seleccioneu un color"
 
 #: dialog_colorpicker.cpp:519
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Espectre de colors"
 
 #: dialog_colorpicker.cpp:522
@@ -5187,15 +5187,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:528
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "Color RGB"
 
 #: dialog_colorpicker.cpp:533
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "Color HSL"
 
 #: dialog_colorpicker.cpp:538
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "Color HSV"
 
 #: dialog_colorpicker.cpp:560
@@ -5233,7 +5233,7 @@ msgid "Value:"
 msgstr "Valor:"
 
 #: dialog_colorpicker.cpp:632
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Selector de color"
 
 #: vfr.cpp:68

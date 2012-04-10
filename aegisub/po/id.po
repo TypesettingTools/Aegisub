@@ -676,11 +676,11 @@ msgid "Automation Script Info"
 msgstr "Info skrip otomatisasi"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Pilih warna"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Warna spektrum"
 
 #: dialog_colorpicker.cpp:547
@@ -704,15 +704,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "Warna RGB"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "Warna HSL "
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "Warna HSV"
 
 #: dialog_colorpicker.cpp:583
@@ -750,7 +750,7 @@ msgid "Value:"
 msgstr "Nilai:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Pengambil warna"
 
 #: dialog_detached_video.cpp:76
@@ -771,7 +771,7 @@ msgid "Video resolution:"
 msgstr "Resolusi Video:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Warna:"
 
 #: dialog_dummy_video.cpp:150
@@ -1242,7 +1242,7 @@ msgid "Crash recovery path:"
 msgstr "Lokasi pemulih kerusakan:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Otomatis buka berkas yang berhubungan:"
 
 #: dialog_options.cpp:189
@@ -1394,36 +1394,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Tingkat tinggi - KHUSUS UNTUK PENGGUNA YANG BERPENGALAMAN"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "Sesuaikan resolusi video ketika dibuka:"
+msgid "Match video resolution on open"
+msgstr "Sesuaikan resolusi video ketika dibuka"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "Standar Pembesar:"
+msgid "Default Zoom"
+msgstr "Standar Pembesar"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "Lompati Frame:"
+msgid "Fast jump step in frames"
+msgstr "Lompati Frame"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "Jejak Penyimpan Gambar:"
+msgid "Screenshot save path"
+msgstr "Jejak Penyimpan Gambar"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "Perlihatkan keyframe pada garis"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "Penyedia video:"
+msgid "Video provider"
+msgstr "Penyedia video"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "Penyedia takarir:"
+msgid "Subtitles provider"
+msgstr "Penyedia takarir"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Batas memori Avisynth:"
+msgid "Avisynth memory limit"
+msgstr "Batas memori Avisynth"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1609,20 +1609,20 @@ msgid "Spectrum cutoff"
 msgstr "Spektrum cutoff"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0 - Kualitas biasa"
+msgid "Regular quality"
+msgstr "Kualitas biasa"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1 - Kualitas baik"
+msgid "Better quality"
+msgstr "Kualitas baik"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2 - Kualitas tinggi"
+msgid "High quality"
+msgstr "Kualitas tinggi"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
-msgstr "3 - Kualitas lebih tinggi"
+msgid "Insane quality"
+msgstr "Kualitas lebih tinggi"
 
 #: dialog_options.cpp:539
 msgid "Spectrum quality"
@@ -2131,8 +2131,8 @@ msgstr "Aksi"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "Telah ditemukan %i baris"
+msgid "Selection was set to %u lines"
+msgstr "Telah ditemukan %u baris"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2142,13 +2142,13 @@ msgstr "Seleksi"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "%i baris telah ditambahkan ke seleksi"
+msgid "%u lines were added to selection"
+msgstr "%u baris telah ditambahkan ke seleksi"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "%i baris telah dihapus dari seleksi"
+msgid "%u lines were removed from selection"
+msgstr "%u baris telah dihapus dari seleksi"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2225,32 +2225,32 @@ msgid "Clear"
 msgstr "Bersihkan"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "belum disimpan,"
+msgid "unsaved"
+msgstr "belum disimpan"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr " frame"
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "mundur,"
+msgid "backward"
+msgstr "mundur"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "maju,"
+msgid "forward"
+msgstr "maju"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "awal & akhir, "
+msgid "s+e"
+msgstr "awal & akhir"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "awal, "
+msgid "s"
+msgstr "awal"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "akhir, "
+msgid "e"
+msgstr "akhir"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2258,8 +2258,8 @@ msgstr "semua"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "dari %i baris ke depan"
+msgid "from %d onward"
+msgstr "dari %d baris ke depan"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2384,79 +2384,79 @@ msgid "Style name."
 msgstr "Nama Gaya."
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
-msgstr "Nama Font."
+msgid "Font face"
+msgstr "Nama Font"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
-msgstr "Ukuran Font."
+msgid "Font size"
+msgstr "Ukuran Font"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
-msgstr "Pilih warna primer."
+msgid "Choose primary color"
+msgstr "Pilih warna primer"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
-msgstr "Pilih warna sekunder."
+msgid "Choose secondary color"
+msgstr "Pilih warna sekunder"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
-msgstr "Pilih warna garis luar."
+msgid "Choose outline color"
+msgstr "Pilih warna garis luar"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
-msgstr "Pilih warna bayangan."
+msgid "Choose shadow color"
+msgstr "Pilih warna bayangan"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
 msgstr "Atur transparasi, dari 0 (tidak transparan) ke 255 (transparan)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
-msgstr "Jarak dari tepi kiri, dalam pixel."
+msgid "Distance from left edge, in pixels"
+msgstr "Jarak dari tepi kiri, dalam pixel"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
-msgstr "Jarak dari tepi kanan, dalam pixel."
+msgid "Distance from right edge, in pixels"
+msgstr "Jarak dari tepi kanan, dalam pixel"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
-msgstr "Jarak dari tepi atas/bawah, dalam pixel."
+msgid "Distance from top/bottom edge, in pixels"
+msgstr "Jarak dari tepi atas/bawah, dalam pixel"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "Ketika dipilih, tampilan kotak buram akan berada di belakang takarir, bukan disekitar garis luar teks."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "Ketika dipilih, tampilan kotak buram akan berada di belakang takarir, bukan disekitar garis luar teks"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
-msgstr "Lebar garis luar, dalam pixel."
+msgid "Outline width, in pixels"
+msgstr "Lebar garis luar, dalam pixel"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
-msgstr "Jarak bayangan, dalam pixel."
+msgid "Shadow distance, in pixels"
+msgstr "Jarak bayangan, dalam pixel"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
-msgstr "Skala X, dalam persentase."
+msgid "Scale X, in percentage"
+msgstr "Skala X, dalam persentase"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
-msgstr "Skala Y, dalam persentase."
+msgid "Scale Y, in percentage"
+msgstr "Skala Y, dalam persentase"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
-msgstr "Sudut rotasi sumbu Z, dalam derajat."
+msgid "Angle to rotate in Z axis, in degrees"
+msgstr "Sudut rotasi sumbu Z, dalam derajat"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
 msgstr "Pengkodean hanya berguna untuk unicode, jika fontnya tidak memiliki pemetaan unicode yang benar"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
-msgstr "Spasi karakter, dalam pixel."
+msgid "Character spacing, in pixels"
+msgstr "Spasi karakter, dalam pixel"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
+msgid "Alignment in screen, in numpad style"
 msgstr "Penjajaran di video, dengan model Numpad Keyboard"
 
 #: dialog_style_editor.cpp:236
@@ -2500,16 +2500,16 @@ msgid "Encoding:"
 msgstr "Pengkodean Teks:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
-msgstr "Pratinjau gaya saat ini."
+msgid "Preview of current style"
+msgstr "Pratinjau gaya saat ini"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
-msgstr "Teks yang digunakan dalam pratinjau."
+msgid "Text to be used for the preview"
+msgstr "Teks yang digunakan dalam pratinjau"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
-msgstr "Warna latar belajar pratinjau."
+msgid "Color of preview background"
+msgstr "Warna latar belajar pratinjau"
 
 #: dialog_style_editor.cpp:314
 msgid "No subtitle providers available. Cannot preview subs."
@@ -2586,27 +2586,27 @@ msgstr "Salin"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "Pindahkan ke atas"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "Pindahkan ke bawah"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "Pindahkan ke paling atas"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "Pindahkan ke paling bawah"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "Sortir gaya secara alphabet"
 
 #: dialog_style_manager.cpp:121
@@ -2855,12 +2855,12 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Pilih gaya untuk diproses. Yang tidak dicentang akan dibiarkan."
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
-msgstr "Pilih semua gaya."
+msgid "Select all styles"
+msgstr "Pilih semua gaya"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
-msgstr "Tidak pilih semua gaya."
+msgid "Deselect all styles"
+msgstr "Tidak pilih semua gaya"
 
 #: dialog_timing_processor.cpp:84
 msgid "Affect selection only"
@@ -2875,24 +2875,24 @@ msgid "Add lead in:"
 msgstr "Tambahkan transisi awal:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "Hidupkan tambahan transisi awal ke baris-baris."
+msgid "Enable adding of lead-ins to lines"
+msgstr "Hidupkan tambahan transisi awal ke baris-baris"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
-msgstr "Transisi awal akan ditambahkan, dalam milidetik."
+msgid "Lead in to be added, in milliseconds"
+msgstr "Transisi awal akan ditambahkan, dalam milidetik"
 
 #: dialog_timing_processor.cpp:95
 msgid "Add lead out:"
 msgstr "Tambahkan transisi akhir:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "Hidupkan tambahan transisi akhir dibaris-baris."
+msgid "Enable adding of lead-outs to lines"
+msgstr "Hidupkan tambahan transisi akhir dibaris-baris"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
-msgstr "Transisi akhir akan ditambahkan, dalam milidetik."
+msgid "Lead out to be added, in milliseconds"
+msgstr "Transisi akhir akan ditambahkan, dalam milidetik"
 
 #: dialog_timing_processor.cpp:107
 msgid "Make adjacent subtitles continuous"
@@ -2904,16 +2904,16 @@ msgid "Enable"
 msgstr "Hidupkan"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Hidupkan penjepret takarir secara bersama jika mereka berada dijarak tertentu satu sama lain."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Hidupkan penjepret takarir secara bersama jika mereka berada dijarak tertentu satu sama lain"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Ambang:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "Maksimum perbedaan antara awal dan akhir dari dua takarir akan dibuat terus-menerus, dalam milidetik."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "Maksimum perbedaan antara awal dan akhir dari dua takarir akan dibuat terus-menerus, dalam milidetik"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2932,8 +2932,8 @@ msgid "Keyframe snapping"
 msgstr "Penjepret keyframe"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Hidupkan penjepret takarir pada keyframe terdekat, jika jarak berada diambang batas."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "Hidupkan penjepret takarir pada keyframe terdekat, jika jarak berada diambang batas"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -3071,8 +3071,8 @@ msgstr "Hidupkan pratinjau"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Baris saat ini: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Baris saat ini: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3438,11 +3438,11 @@ msgid "Configure Aegisub"
 msgstr "Konfigurasi Aegisub"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Mode Tag Siklus"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Ubah model Tag"
 
 #: frame_main.cpp:305
@@ -3479,20 +3479,20 @@ msgid "Saves subtitles"
 msgstr "Simpan Takarir"
 
 #: frame_main.cpp:324
-msgid "Save Subtitles as..."
-msgstr "Simpan Takarir sebagai..."
+msgid "Save Subtitles as"
+msgstr "Simpan Takarir sebagai"
 
 #: frame_main.cpp:324
 msgid "Saves subtitles with another name"
 msgstr "Simpan takarir dengan nama yang lain"
 
 #: frame_main.cpp:325
-msgid "Export Subtitles..."
-msgstr "Ekspor Takarir..."
+msgid "Export Subtitles"
+msgstr "Ekspor Takarir"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
-msgstr "Simpan salinan takarir dengan prosesing yang diterapkan didalamnya."
+msgid "Saves a copy of subtitles with processing applied to it"
+msgstr "Simpan salinan takarir dengan prosesing yang diterapkan didalamnya"
 
 #: frame_main.cpp:326
 #: frame_main.cpp:427
@@ -3590,8 +3590,8 @@ msgid "Paste subtitles"
 msgstr "Tempel takarir"
 
 #: frame_main.cpp:352
-msgid "Paste Lines Over..."
-msgstr "Tempel Baris di atas..."
+msgid "Paste Lines Over"
+msgstr "Tempel Baris di atas"
 
 #: frame_main.cpp:352
 msgid "Paste subtitles over others"
@@ -3656,8 +3656,8 @@ msgid "Open translation assistant"
 msgstr "Buka asisten penerjemah"
 
 #: frame_main.cpp:369
-msgid "Resample Resolution..."
-msgstr "Reka Ulang Resolusi..."
+msgid "Resample Resolution"
+msgstr "Reka Ulang Resolusi"
 
 #: frame_main.cpp:369
 msgid "Changes resolution and modifies subtitles to conform to change"
@@ -3793,7 +3793,7 @@ msgid "Select Lines..."
 msgstr "Pilih Baris..."
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Pilih baris sesuai dengan kriteria yang dipilih"
 
 #: frame_main.cpp:399
@@ -3821,8 +3821,8 @@ msgid "Timing Post-Processor..."
 msgstr "Proses Pengaturan Waktu..."
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Jalankan pengatur waktu untuk membuat transisi awal, transisi akhir dan lain-lain."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
+msgstr "Jalankan pengatur waktu untuk membuat transisi awal, transisi akhir dan lain-lain"
 
 #: frame_main.cpp:406
 msgid "Kanji Timer..."
@@ -3900,16 +3900,16 @@ msgid "Closes the currently open video file"
 msgstr "Tutup berkas video saat ini"
 
 #: frame_main.cpp:429
-msgid "Use Dummy Video..."
+msgid "Use Dummy Video"
 msgstr "Gunakan Video Sementara"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Buka video klip dengan warna solid"
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
-msgstr "Lihat Detil Video..."
+msgid "Show Video Details"
+msgstr "Lihat Detil Video"
 
 #: frame_main.cpp:430
 msgid "Shows video details"
@@ -3968,8 +3968,8 @@ msgid "Detach Video"
 msgstr "Lepas Video"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
-msgstr "Lepas video, jendela video akan terpisah dari jendela kerja."
+msgid "Detach video, displaying it in a separate Window"
+msgstr "Lepas video, jendela video akan terpisah dari jendela kerja"
 
 #: frame_main.cpp:446
 msgid "Set Zoom"
@@ -4024,8 +4024,8 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "Paksa video sesuai dengan aspek rasio 2.35"
 
 #: frame_main.cpp:463
-msgid "Custom..."
-msgstr "Kustom..."
+msgid "Custom"
+msgstr "Kustom"
 
 #: frame_main.cpp:463
 msgid "Forces video to a custom aspect ratio"
@@ -4036,8 +4036,8 @@ msgid "Show Overscan Mask"
 msgstr "Perlihatkan Batas Pengaman"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "Perlihatkan batas pengaman video, berguna untuk memperlihatkan batas vertikal takarir."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgstr "Perlihatkan batas pengaman video, berguna untuk memperlihatkan batas vertikal takarir"
 
 #: frame_main.cpp:467
 msgid "&Jump to..."
@@ -4162,8 +4162,8 @@ msgid "Vie&w"
 msgstr "Liha&t"
 
 #: frame_main.cpp:514
-msgid "&Contents..."
-msgstr "&Konten..."
+msgid "&Contents"
+msgstr "&Konten"
 
 #: frame_main.cpp:514
 msgid "Help topics"
@@ -4178,16 +4178,16 @@ msgid "Resource files distributed with Aegisub"
 msgstr "Sumber berkas yang didistribusikan dengan Aegisub"
 
 #: frame_main.cpp:519
-msgid "&Website..."
-msgstr "&Situs..."
+msgid "&Website"
+msgstr "&Situs"
 
 #: frame_main.cpp:519
 msgid "Visit Aegisub's official website"
 msgstr "Kunjungi situs resmi Aegisub"
 
 #: frame_main.cpp:520
-msgid "&Forums..."
-msgstr "&Forum..."
+msgid "&Forums"
+msgstr "&Forum"
 
 #: frame_main.cpp:520
 msgid "Visit Aegisub's forums"
@@ -4202,8 +4202,8 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Kunjungi pencari bug untuk melaporkan kesalahan atau meminta fitur baru"
 
 #: frame_main.cpp:522
-msgid "&IRC Channel..."
-msgstr "&Saluran IRC..."
+msgid "&IRC Channel"
+msgstr "&Saluran IRC"
 
 #: frame_main.cpp:522
 msgid "Visit Aegisub's official IRC channel"
@@ -4218,8 +4218,8 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Cek versi terbaru Aegisub"
 
 #: frame_main.cpp:527
-msgid "&About..."
-msgstr "&Tentang..."
+msgid "&About"
+msgstr "&Tentang"
 
 #: frame_main.cpp:740
 msgid "Save subtitles file"
@@ -4755,8 +4755,8 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "Komentar baris ini. Komentar yang dicentang tidak akan muncul dilayar."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
-msgstr "Nama gaya untuk baris ini."
+msgid "Style for this line"
+msgstr "Nama gaya untuk baris ini"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -5181,23 +5181,23 @@ msgid "Toggle autoscroll of video"
 msgstr "Tetapkan scroll otomatis video"
 
 #: video_box.cpp:90
-msgid "Seek video."
+msgid "Seek video"
 msgstr "Lompat video"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
+msgid "Current frame time and number"
 msgstr "Nomor frame dan waktu saat ini"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
-msgstr "Waktu dari frame ini relatif pada waktu awal dan akhir takarir ini."
+msgid "Time of this frame relative to start and end of current subs"
+msgstr "Waktu dari frame ini relatif pada waktu awal dan akhir takarir ini"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "Standar/Crossfire"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
+msgid "Standard mode, double click sets position"
 msgstr "Mode Standar, Klik dua kali untuk set posisi secara langsung"
 
 #: video_box.cpp:115
@@ -5206,48 +5206,48 @@ msgid "Drag"
 msgstr "Pindah"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
-msgstr "Pindahkan Takarir."
+msgid "Drag subtitles"
+msgstr "Pindahkan Takarir"
 
 #: video_box.cpp:116
 msgid "Rotate Z"
 msgstr "Rotasi Z"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
-msgstr "Rotasi takarir sesuai dengan sumbu Z."
+msgid "Rotate subtitles on their Z axis"
+msgstr "Rotasi takarir sesuai dengan sumbu Z"
 
 #: video_box.cpp:117
 msgid "Rotate XY"
 msgstr "Rotasi XY"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
-msgstr "Rotasi takarir sesuai dengan sumbu X dan Y."
+msgid "Rotate subtitles on their X and Y axes"
+msgstr "Rotasi takarir sesuai dengan sumbu X dan Y"
 
 #: video_box.cpp:118
 msgid "Scale"
 msgstr "Skala"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
-msgstr "Skala takarir berdasarkan sumbu X dan Y."
+msgid "Scale subtitles on X and Y axes"
+msgstr "Skala takarir berdasarkan sumbu X dan Y"
 
 #: video_box.cpp:119
 msgid "Clip"
 msgstr "Klip"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
-msgstr "Potong Takarir dengan kotak."
+msgid "Clip subtitles to a rectangle"
+msgstr "Potong Takarir dengan kotak"
 
 #: video_box.cpp:120
 msgid "Vector Clip"
 msgstr "Klip Vektor"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
-msgstr "Potong takarir dengan garis vektor."
+msgid "Clip subtitles to a vectorial area"
+msgstr "Potong takarir dengan garis vektor"
 
 #: video_box.cpp:122
 msgid "Realtime"
@@ -5258,8 +5258,8 @@ msgid "Toggle realtime display of changes."
 msgstr "Gunakan tampilan langsung setiap kali ada perubahan"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
-msgstr "Buka halaman manual untuk menyusun huruf secara visual."
+msgid "Open the manual page for Visual Typesetting"
+msgstr "Buka halaman manual untuk menyusun huruf secara visual"
 
 #: video_display.cpp:478
 msgid "Save PNG snapshot"
@@ -5312,7 +5312,7 @@ msgid "positioning"
 msgstr "posisi"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
+msgid "Drag control points"
 msgstr "Pindahkan titik pengedali"
 
 #: visual_tool_vector_clip.cpp:71
@@ -5320,7 +5320,7 @@ msgid "Line"
 msgstr "Garis Lurus"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
+msgid "Appends a line"
 msgstr "Menambahkan garis"
 
 #: visual_tool_vector_clip.cpp:72
@@ -5328,23 +5328,23 @@ msgid "Bicubic"
 msgstr "Lengkung"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
-msgstr "Tambahkan sebuah garis melengkung."
+msgid "Appends a bezier bicubic curve"
+msgstr "Tambahkan sebuah garis melengkung"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Convert"
 msgstr "Ubah"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
-msgstr "Ubah antara garis lurus dan melengkung, atau sebaliknya."
+msgid "Converts a segment between line and bicubic"
+msgstr "Ubah antara garis lurus dan melengkung, atau sebaliknya"
 
 #: visual_tool_vector_clip.cpp:75
 msgid "Insert"
 msgstr "Sisipkan"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
+msgid "Inserts a control point"
 msgstr "Sisipkan titik pengedali"
 
 #: visual_tool_vector_clip.cpp:76
@@ -5352,7 +5352,7 @@ msgid "Remove"
 msgstr "Hapus"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
+msgid "Removes a control point"
 msgstr "Hampus titik pengedali"
 
 #: visual_tool_vector_clip.cpp:78
@@ -5360,7 +5360,7 @@ msgid "Freehand"
 msgstr "Gambar bebas"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "Gambar kotak bebas"
 
 #: visual_tool_vector_clip.cpp:79
@@ -5368,6 +5368,6 @@ msgid "Freehand smooth"
 msgstr "Gambar bebas yang halus"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "Gambar garis bebas yang halus"
 

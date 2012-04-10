@@ -672,11 +672,11 @@ msgid "Automation Script Info"
 msgstr "Automatizációs script adatai"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "Szín kiválasztása"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "Színspektrum"
 
 #: dialog_colorpicker.cpp:547
@@ -700,15 +700,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "RGB szín"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "HSL szín"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "HSV szín"
 
 #: dialog_colorpicker.cpp:583
@@ -746,7 +746,7 @@ msgid "Value:"
 msgstr "Érték:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "Színfelvevő"
 
 #: dialog_detached_video.cpp:76
@@ -767,7 +767,7 @@ msgid "Video resolution:"
 msgstr "Videó felbontása:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "Szín:"
 
 #: dialog_dummy_video.cpp:150
@@ -1238,7 +1238,7 @@ msgid "Crash recovery path:"
 msgstr "Helyreállítás:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "Csatolt fájlok betöltése:"
 
 #: dialog_options.cpp:189
@@ -1390,36 +1390,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "Haladó beállítások - CSAK HOZZÁÉRTŐ FELHASZNÁLÓKNAK"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "Videó és felirat felbontásának egyezése: "
+msgid "Match video resolution on open"
+msgstr "Videó és felirat felbontásának egyezése"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "Alapértelmezett nagyítás:"
+msgid "Default Zoom"
+msgstr "Alapértelmezett nagyítás"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "Gyorstekerés lépésköz képkocka száma: "
+msgid "Fast jump step in frames"
+msgstr "Gyorstekerés lépésköz képkocka száma"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "Képernyőkép mentési útvonala: "
+msgid "Screenshot save path"
+msgstr "Képernyőkép mentési útvonala"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "Kulcskockák mutatása a keresősávban"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "Videó kimeneti vezérlő: "
+msgid "Video provider"
+msgstr "Videó kimeneti vezérlő"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "Felirat kimeneti vezérlő:"
+msgid "Subtitles provider"
+msgstr "Felirat kimeneti vezérlő"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Avisynth memóriakorlát: "
+msgid "Avisynth memory limit"
+msgstr "Avisynth memóriakorlát"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1605,20 +1605,20 @@ msgid "Spectrum cutoff"
 msgstr "Spektrum levágás"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0 - Hagyományos"
+msgid "Regular quality"
+msgstr "Hagyományos"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1 - Jobb"
+msgid "Better quality"
+msgstr "Jobb"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2 - Magas"
+msgid "High quality"
+msgstr "Magas"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
-msgstr "3 - Nagyon magas"
+msgid "Insane quality"
+msgstr "Nagyon magas"
 
 #: dialog_options.cpp:539
 msgid "Spectrum quality"
@@ -2129,8 +2129,8 @@ msgstr "Esemény"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "%i sor került kijelölésre."
+msgid "Selection was set to %u lines"
+msgstr "%u sor került kijelölésre."
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2140,13 +2140,13 @@ msgstr "Kijelölés"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "%i sor hozzáadva a kijelöltekhez."
+msgid "%u lines were added to selection"
+msgstr "%u sor hozzáadva a kijelöltekhez."
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "%i sor eltávolítva a kijelöltekből."
+msgid "%u lines were removed from selection"
+msgstr "%u sor eltávolítva a kijelöltekből."
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2223,32 +2223,32 @@ msgid "Clear"
 msgstr "Törlés"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "nincs elmentve, "
+msgid "unsaved"
+msgstr "nincs elmentve"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr " képkocka "
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "hátra, "
+msgid "backward"
+msgstr "hátra"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "előre, "
+msgid "forward"
+msgstr "előre"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "k+v, "
+msgid "s+e"
+msgstr "k+v"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "k, "
+msgid "s"
+msgstr "k"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "v, "
+msgid "e"
+msgstr "v"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2256,8 +2256,8 @@ msgstr "mind"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "%i. sortól tovább"
+msgid "from %d onward"
+msgstr "%d. sortól tovább"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2382,80 +2382,80 @@ msgid "Style name."
 msgstr "Stílus nevének megadása"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
+msgid "Font face"
 msgstr "Betűtípus kiválasztása"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
+msgid "Font size"
 msgstr "Betűméret megadása"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
+msgid "Choose primary color"
 msgstr "Elsődleges szín kiválasztása"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
+msgid "Choose secondary color"
 msgstr "Másodlagos szín kiválasztása"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "Körvonal színének kiválasztása"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
+msgid "Choose shadow color"
 msgstr "Arnyék színének kiválasztása"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
 msgstr "Átlátszóság megadása (0: tömör, 255: teljesen átlátszó)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "Távolság a bal széltől, pixelekben"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "Távolság a jobb széltől, pixelekben"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "Távolság az alsó/felső széltől, pixelekben"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
-msgstr "Jelölje be, ha körvonal helyett teljesen kitöltött hátteret szeretne látni."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgstr "Jelölje be, ha körvonal helyett teljesen kitöltött hátteret szeretne látni"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "Körvonal szélessége, pixelekben"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "Árnyék távolsága, pixelekben"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "Vízszintes nyújtás, százalékban"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "Függőleges nyújtás, százalékban"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Forgatás a Z tengely mentén, fokokban"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "A kódolás beállítása csak akkor használatos, ha a megadott betűtípusnak nincs megfelelő unicode leképezése."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "A kódolás beállítása csak akkor használatos, ha a megadott betűtípusnak nincs megfelelő unicode leképezése"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "Két karakter közti szünet, pixelekben"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
-msgstr "Képernyőn való elrendezés numerikus billentyűzet stílusban."
+msgid "Alignment in screen, in numpad style"
+msgstr "Képernyőn való elrendezés numerikus billentyűzet stílusban"
 
 #: dialog_style_editor.cpp:236
 msgid "Primary"
@@ -2498,15 +2498,15 @@ msgid "Encoding:"
 msgstr "Kódolás:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "A jelenlegi stílus előnézete"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr "Az előnézetben megjelenő szöveg"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
+msgid "Color of preview background"
 msgstr "Előnézet háttérszínének kiválasztása"
 
 #: dialog_style_editor.cpp:314
@@ -2584,27 +2584,27 @@ msgstr "Másol"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "Felfelé"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "Lefelé"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "Tetejére"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "Aljára"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "Rendezés név szerint"
 
 #: dialog_style_manager.cpp:121
@@ -2853,12 +2853,12 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Válassza ki a feldolgozni kívánt stílusokat. A jelöletleneket nem veszi figyelembe."
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
-msgstr "Minden stílus kiválasztása."
+msgid "Select all styles"
+msgstr "Minden stílus kiválasztása"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
-msgstr "Egy sílust sem választ ki."
+msgid "Deselect all styles"
+msgstr "Egy sílust sem választ ki"
 
 #: dialog_timing_processor.cpp:84
 msgid "Affect selection only"
@@ -2873,24 +2873,24 @@ msgid "Add lead in:"
 msgstr "Bevezetés:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
-msgstr "A feliratsor kezdetéből levon."
+msgid "Enable adding of lead-ins to lines"
+msgstr "A feliratsor kezdetéből levon"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
-msgstr "Érték megadása ezredmásodpercben."
+msgid "Lead in to be added, in milliseconds"
+msgstr "Érték megadása ezredmásodpercben"
 
 #: dialog_timing_processor.cpp:95
 msgid "Add lead out:"
 msgstr "Kivezetés:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
-msgstr "A feliratsor végéhez hozzáad."
+msgid "Enable adding of lead-outs to lines"
+msgstr "A feliratsor végéhez hozzáad"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
-msgstr "Érték megadása ezredmásodpercben."
+msgid "Lead out to be added, in milliseconds"
+msgstr "Érték megadása ezredmásodpercben"
 
 #: dialog_timing_processor.cpp:107
 msgid "Make adjacent subtitles continuous"
@@ -2902,16 +2902,16 @@ msgid "Enable"
 msgstr "Bekapcsol"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
-msgstr "Folytonossá teszi azokat a sorokat, amik egy bizonyos távolságra vannak egymástól."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Folytonossá teszi azokat a sorokat, amik egy bizonyos távolságra vannak egymástól"
 
 #: dialog_timing_processor.cpp:111
 msgid "Threshold:"
 msgstr "Határérték:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "Maximális távolság két feliratsor (első vége, második eleje) között, ezredmásodpercben megadva."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "Maximális távolság két feliratsor (első vége, második eleje) között, ezredmásodpercben megadva"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2930,8 +2930,8 @@ msgid "Keyframe snapping"
 msgstr "Kulcskockához igazítás"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "Hozzáilleszti a feliratsort a legközelebbi kulcskockához, ha az benne van a megadott határértéken belül."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "Hozzáilleszti a feliratsort a legközelebbi kulcskockához, ha az benne van a megadott határértéken belül"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -3069,8 +3069,8 @@ msgstr "Előnézet"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "Jelenlegi sor: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "Jelenlegi sor: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3436,11 +3436,11 @@ msgid "Configure Aegisub"
 msgstr "Az Aegisub beállításai"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "Címkék megjelenítése"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "Címkék megjelenítési lehetőségei közül válogat."
 
 #: frame_main.cpp:305
@@ -3477,20 +3477,20 @@ msgid "Saves subtitles"
 msgstr "Elmenti a feliratot."
 
 #: frame_main.cpp:324
-msgid "Save Subtitles as..."
-msgstr "Felirat mentése má&sként..."
+msgid "Save Subtitles as"
+msgstr "Felirat mentése má&sként"
 
 #: frame_main.cpp:324
 msgid "Saves subtitles with another name"
 msgstr "Egy másik néven menti el a feliratot."
 
 #: frame_main.cpp:325
-msgid "Export Subtitles..."
-msgstr "Felirat exportálása..."
+msgid "Export Subtitles"
+msgstr "Felirat exportálása"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
-msgstr "Különböző szempontok szerint elmenti a felirat másolatát."
+msgid "Saves a copy of subtitles with processing applied to it"
+msgstr "Különböző szempontok szerint elmenti a felirat másolatát"
 
 #: frame_main.cpp:326
 #: frame_main.cpp:427
@@ -3588,8 +3588,8 @@ msgid "Paste subtitles"
 msgstr "Beilleszti a feliratsorokat."
 
 #: frame_main.cpp:352
-msgid "Paste Lines Over..."
-msgstr "Irányított beillesztés..."
+msgid "Paste Lines Over"
+msgstr "Irányított beillesztés"
 
 #: frame_main.cpp:352
 msgid "Paste subtitles over others"
@@ -3654,8 +3654,8 @@ msgid "Open translation assistant"
 msgstr "Feliratsorok egyszerű és gyors fordítása."
 
 #: frame_main.cpp:369
-msgid "Resample Resolution..."
-msgstr "Felbontás módosítása..."
+msgid "Resample Resolution"
+msgstr "Felbontás módosítása"
 
 #: frame_main.cpp:369
 msgid "Changes resolution and modifies subtitles to conform to change"
@@ -3791,7 +3791,7 @@ msgid "Select Lines..."
 msgstr "Sorok kijelölése..."
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "Sorok kijelölése megadott szempontok szerint."
 
 #: frame_main.cpp:399
@@ -3819,8 +3819,8 @@ msgid "Timing Post-Processor..."
 msgstr "Időzítési utómunkák..."
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
-msgstr "Utólagos időzítési javításokra vagy módosításokra ad lehetőséget."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
+msgstr "Utólagos időzítési javításokra vagy módosításokra ad lehetőséget"
 
 #: frame_main.cpp:406
 msgid "Kanji Timer..."
@@ -3898,16 +3898,16 @@ msgid "Closes the currently open video file"
 msgstr "Bezárja a megnyitott videófájlt."
 
 #: frame_main.cpp:429
-msgid "Use Dummy Video..."
-msgstr "Próbavideó használata..."
+msgid "Use Dummy Video"
+msgstr "Próbavideó használata"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "Egy egyöntetű színből álló videóklipet készít."
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
-msgstr "Videó adatai..."
+msgid "Show Video Details"
+msgstr "Videó adatai"
 
 #: frame_main.cpp:430
 msgid "Shows video details"
@@ -3966,8 +3966,8 @@ msgid "Detach Video"
 msgstr "Videó leválasztása"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
-msgstr "Leválasztja a videót és egy külön ablakban jeleníti meg."
+msgid "Detach video, displaying it in a separate Window"
+msgstr "Leválasztja a videót és egy külön ablakban jeleníti meg"
 
 #: frame_main.cpp:446
 msgid "Set Zoom"
@@ -4022,8 +4022,8 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "2,35-ös képarányba kényszeríti a videót."
 
 #: frame_main.cpp:463
-msgid "Custom..."
-msgstr "Egyéni képarány..."
+msgid "Custom"
+msgstr "Egyéni képarány"
 
 #: frame_main.cpp:463
 msgid "Forces video to a custom aspect ratio"
@@ -4034,8 +4034,8 @@ msgid "Show Overscan Mask"
 msgstr "Túlskálázási maszk megjelenítése"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
-msgstr "A televíziók túlskálázási eljárása miatt esetlegesen levágásra kerülő részek megjelölése."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgstr "A televíziók túlskálázási eljárása miatt esetlegesen levágásra kerülő részek megjelölése"
 
 #: frame_main.cpp:467
 msgid "&Jump to..."
@@ -4160,8 +4160,8 @@ msgid "Vie&w"
 msgstr "&Nézet"
 
 #: frame_main.cpp:514
-msgid "&Contents..."
-msgstr "&Témakörök..."
+msgid "&Contents"
+msgstr "&Témakörök"
 
 #: frame_main.cpp:514
 msgid "Help topics"
@@ -4176,16 +4176,16 @@ msgid "Resource files distributed with Aegisub"
 msgstr "Az Aegisub által használt forrásfájlok helye."
 
 #: frame_main.cpp:519
-msgid "&Website..."
-msgstr "&Honlap..."
+msgid "&Website"
+msgstr "&Honlap"
 
 #: frame_main.cpp:519
 msgid "Visit Aegisub's official website"
 msgstr "Az Aegisub hivatalos honlapja."
 
 #: frame_main.cpp:520
-msgid "&Forums..."
-msgstr "&Fórum..."
+msgid "&Forums"
+msgstr "&Fórum"
 
 #: frame_main.cpp:520
 msgid "Visit Aegisub's forums"
@@ -4200,8 +4200,8 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Az Aegisub bug trackere, ahol programhibákat jelenthet vagy új funkciók beépítését kérheti."
 
 #: frame_main.cpp:522
-msgid "&IRC Channel..."
-msgstr "&IRC csatorna..."
+msgid "&IRC Channel"
+msgstr "&IRC csatorna"
 
 #: frame_main.cpp:522
 msgid "Visit Aegisub's official IRC channel"
@@ -4216,8 +4216,8 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Ellenőrzi, hogy az Aegisubnak van-e frissebb verziója."
 
 #: frame_main.cpp:527
-msgid "&About..."
-msgstr "&Névjegy..."
+msgid "&About"
+msgstr "&Névjegy"
 
 #: frame_main.cpp:740
 msgid "Save subtitles file"
@@ -4755,8 +4755,8 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "Megjegyzés hozzáfűzése a sorhoz. A megjegyzések nem jelennek meg a képernyőn."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
-msgstr "Stílus beállítása a sorhoz."
+msgid "Style for this line"
+msgstr "Stílus beállítása a sorhoz"
 
 #: subs_edit_box.cpp:89
 msgid "Actor name for this speech. This is only for reference, and is mainly useless."
@@ -5181,23 +5181,23 @@ msgid "Toggle autoscroll of video"
 msgstr "Videókövetés ki- és bekapcsolása"
 
 #: video_box.cpp:90
-msgid "Seek video."
+msgid "Seek video"
 msgstr "Keresés a videóban"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
+msgid "Current frame time and number"
 msgstr "Aktuális idő és képkocka szám"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
-msgstr "Az aktuális képkocka relatív távolsága a kijelölt feliratsor kezdeti- és végidőpontjától."
+msgid "Time of this frame relative to start and end of current subs"
+msgstr "Az aktuális képkocka relatív távolsága a kijelölt feliratsor kezdeti- és végidőpontjától"
 
 #: video_box.cpp:114
 msgid "Standard"
 msgstr "Hagyományos"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
+msgid "Standard mode, double click sets position"
 msgstr "Hagyományos elhelyezés, duplaklikk a helyzetberakáshoz"
 
 #: video_box.cpp:115
@@ -5206,7 +5206,7 @@ msgid "Drag"
 msgstr "Elhelyezés"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
+msgid "Drag subtitles"
 msgstr "Felirat elhelyezése"
 
 #: video_box.cpp:116
@@ -5214,7 +5214,7 @@ msgid "Rotate Z"
 msgstr "Forgatás Z"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
+msgid "Rotate subtitles on their Z axis"
 msgstr "Felirat forgatása a Z tengely mentén"
 
 #: video_box.cpp:117
@@ -5222,7 +5222,7 @@ msgid "Rotate XY"
 msgstr "Forgatás XY"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
+msgid "Rotate subtitles on their X and Y axes"
 msgstr "Felirat forgatása az X és az Y tengely mentén"
 
 #: video_box.cpp:118
@@ -5230,7 +5230,7 @@ msgid "Scale"
 msgstr "Méretezés"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
+msgid "Scale subtitles on X and Y axes"
 msgstr "Felirat méretezése az X és Y tengelyen"
 
 #: video_box.cpp:119
@@ -5238,7 +5238,7 @@ msgid "Clip"
 msgstr "Körbevágás"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
+msgid "Clip subtitles to a rectangle"
 msgstr "Felirat körbevágása téglalappal"
 
 #: video_box.cpp:120
@@ -5246,7 +5246,7 @@ msgid "Vector Clip"
 msgstr "Vektoros körbevágás"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
+msgid "Clip subtitles to a vectorial area"
 msgstr "Felirat körbevágása vektorábrával"
 
 #: video_box.cpp:122
@@ -5258,7 +5258,7 @@ msgid "Toggle realtime display of changes."
 msgstr "Változások valós idejű megjelenítése"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
+msgid "Open the manual page for Visual Typesetting"
 msgstr "Vizuális szerkesztés kézikönyv megnyitása"
 
 #: video_display.cpp:478
@@ -5312,7 +5312,7 @@ msgid "positioning"
 msgstr "elhelyezés"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
+msgid "Drag control points"
 msgstr "Vezérlőpontok mozgatása"
 
 #: visual_tool_vector_clip.cpp:71
@@ -5320,7 +5320,7 @@ msgid "Line"
 msgstr "Egyenes"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
+msgid "Appends a line"
 msgstr "Egyenes beszúrása"
 
 #: visual_tool_vector_clip.cpp:72
@@ -5328,7 +5328,7 @@ msgid "Bicubic"
 msgstr "Ív"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
+msgid "Appends a bezier bicubic curve"
 msgstr "Ív beszúrása"
 
 #: visual_tool_vector_clip.cpp:74
@@ -5336,7 +5336,7 @@ msgid "Convert"
 msgstr "Váltás"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
+msgid "Converts a segment between line and bicubic"
 msgstr "Egyenes és ív típusú szegmens közötti váltás"
 
 #: visual_tool_vector_clip.cpp:75
@@ -5344,7 +5344,7 @@ msgid "Insert"
 msgstr "Beszúrás"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
+msgid "Inserts a control point"
 msgstr "Vezérlőpont beszúrása"
 
 #: visual_tool_vector_clip.cpp:76
@@ -5352,7 +5352,7 @@ msgid "Remove"
 msgstr "Eltávolítás"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
+msgid "Removes a control point"
 msgstr "Vezérlőpont eltávolítása"
 
 #: visual_tool_vector_clip.cpp:78
@@ -5360,7 +5360,7 @@ msgid "Freehand"
 msgstr "Szabadkézi"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "Szabadkézi forma rajzolása"
 
 #: visual_tool_vector_clip.cpp:79
@@ -5368,7 +5368,7 @@ msgid "Freehand smooth"
 msgstr "Szabadkézi ívelt"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "Ívelt szabadkézi forma rajzolása"
 
 #~ msgid "Show Splash Screen"

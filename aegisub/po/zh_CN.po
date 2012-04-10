@@ -669,11 +669,11 @@ msgid "Automation Script Info"
 msgstr "自动化脚本信息"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "选择颜色"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "色彩光谱"
 
 #: dialog_colorpicker.cpp:547
@@ -697,15 +697,15 @@ msgid "HSV/H"
 msgstr "HSV/彩度"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "RGB色彩"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "HSL色彩"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "HSV色彩"
 
 #: dialog_colorpicker.cpp:583
@@ -743,7 +743,7 @@ msgid "Value:"
 msgstr "浓度:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "颜色选择器"
 
 #: dialog_detached_video.cpp:76
@@ -764,7 +764,7 @@ msgid "Video resolution:"
 msgstr "视频分辨率:"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "颜色:"
 
 #: dialog_dummy_video.cpp:150
@@ -1235,7 +1235,7 @@ msgid "Crash recovery path:"
 msgstr "崩溃恢复路径:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "自动链接文件:"
 
 #: dialog_options.cpp:189
@@ -1387,36 +1387,36 @@ msgid "Advanced - EXPERT USERS ONLY"
 msgstr "高级 - 仅对专家级用户"
 
 #: dialog_options.cpp:358
-msgid "Match video resolution on open: "
-msgstr "在打开时匹配视频分辨率: "
+msgid "Match video resolution on open"
+msgstr "在打开时匹配视频分辨率"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "默认缩放:"
+msgid "Default Zoom"
+msgstr "默认缩放"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "快速步进帧数: "
+msgid "Fast jump step in frames"
+msgstr "快速步进帧数"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "截图保存路径: "
+msgid "Screenshot save path"
+msgstr "截图保存路径"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "滑动条上显示关键帧"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "视频来自: "
+msgid "Video provider"
+msgstr "视频来自"
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "字幕来自:"
+msgid "Subtitles provider"
+msgstr "字幕来自"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Avisynth 内存限额: "
+msgid "Avisynth memory limit"
+msgstr "Avisynth 内存限额"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1602,20 +1602,20 @@ msgid "Spectrum cutoff"
 msgstr "频谱切换"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0 - 一般质量"
+msgid "Regular quality"
+msgstr "一般质量"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1 - 更好质量"
+msgid "Better quality"
+msgstr "更好质量"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2 - 高质量"
+msgid "High quality"
+msgstr "高质量"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
-msgstr "3 - 极高质量"
+msgid "Insane quality"
+msgstr "极高质量"
 
 #: dialog_options.cpp:539
 msgid "Spectrum quality"
@@ -2126,8 +2126,8 @@ msgstr "动作"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "所选被设为 %i 行"
+msgid "Selection was set to %u lines"
+msgstr "所选被设为 %u 行"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2137,13 +2137,13 @@ msgstr "所选"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "%i 行已被加入所选"
+msgid "%u lines were added to selection"
+msgstr "%u 行已被加入所选"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr " %i 行已被移出所选"
+msgid "%u lines were removed from selection"
+msgstr " %u 行已被移出所选"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2220,32 +2220,32 @@ msgid "Clear"
 msgstr "清除"
 
 #: dialog_shift_times.cpp:251
-msgid "unsaved, "
-msgstr "未保存,"
+msgid "unsaved"
+msgstr "未保存"
 
 #: dialog_shift_times.cpp:256
 msgid " frames "
 msgstr "帧 "
 
 #: dialog_shift_times.cpp:259
-msgid "backward, "
-msgstr "提前,"
+msgid "backward"
+msgstr "提前"
 
 #: dialog_shift_times.cpp:260
-msgid "forward, "
-msgstr "延后,"
+msgid "forward"
+msgstr "延后"
 
 #: dialog_shift_times.cpp:263
-msgid "s+e, "
-msgstr "开始+结束,"
+msgid "s+e"
+msgstr "开始+结束"
 
 #: dialog_shift_times.cpp:264
-msgid "s, "
-msgstr "开始,"
+msgid "s"
+msgstr "开始"
 
 #: dialog_shift_times.cpp:265
-msgid "e, "
-msgstr "结束,"
+msgid "e"
+msgstr "结束"
 
 #: dialog_shift_times.cpp:268
 msgid "all"
@@ -2253,8 +2253,8 @@ msgstr "所有"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "从 %i 往后"
+msgid "from %d onward"
+msgstr "从 %d 往后"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2379,80 +2379,80 @@ msgid "Style name."
 msgstr "样式名称"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
+msgid "Font face"
 msgstr "字体"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
+msgid "Font size"
 msgstr "字体大小"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
+msgid "Choose primary color"
 msgstr "选择主要颜色"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
+msgid "Choose secondary color"
 msgstr "选择次要颜色"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "选择边框颜色"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
+msgid "Choose shadow color"
 msgstr "选择阴影颜色"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
 msgstr "设定透明度,从 0 (不透明) 到 255 (透明)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "与左边界距离 (像素)"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "与右边界距离 (像素)"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "与上/下边界距离 (像素)"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
 msgstr "选中时,则使用不透明背景取代文本边框"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "边框宽度 (像素)"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "阴影深度 (像素)"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "水平缩放率 (百分比)"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "垂直缩放率 (百分比)"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr "沿 Z 轴旋转角度 (度)"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
-msgstr "文字编码,只在unicode中字体没有正确的unicode对应时有用."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "文字编码,只在unicode中字体没有正确的unicode对应时有用"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "字字符间距 (像素)"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
-msgstr "画面中位置的对齐方式,按照数字键盘区布局."
+msgid "Alignment in screen, in numpad style"
+msgstr "画面中位置的对齐方式,按照数字键盘区布局"
 
 #: dialog_style_editor.cpp:236
 msgid "Primary"
@@ -2495,15 +2495,15 @@ msgid "Encoding:"
 msgstr "编码:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "预览当前样式"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr "用于预览的文本"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
+msgid "Color of preview background"
 msgstr "预览框背景色"
 
 #: dialog_style_editor.cpp:314
@@ -2581,27 +2581,27 @@ msgstr "复制"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "样式上移"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "样式下移"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "样式移至顶部"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "样式移至底部"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "按字母表顺序排序样式"
 
 #: dialog_style_manager.cpp:121
@@ -2850,11 +2850,11 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "选择要处理的样式,未选中的将被忽略"
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
+msgid "Select all styles"
 msgstr "选择所有样式"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
+msgid "Deselect all styles"
 msgstr "取消选择所有样式"
 
 #: dialog_timing_processor.cpp:84
@@ -2870,24 +2870,24 @@ msgid "Add lead in:"
 msgstr "开始提前:"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
+msgid "Enable adding of lead-ins to lines"
 msgstr "将各行开始时间都提前"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
-msgstr "增加开始时间(毫秒)."
+msgid "Lead in to be added, in milliseconds"
+msgstr "增加开始时间(毫秒)"
 
 #: dialog_timing_processor.cpp:95
 msgid "Add lead out:"
 msgstr "结束延后:"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
+msgid "Enable adding of lead-outs to lines"
 msgstr "将各行结束时间都延后"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
-msgstr "增加结束时间(毫秒)."
+msgid "Lead out to be added, in milliseconds"
+msgstr "增加结束时间(毫秒)"
 
 #: dialog_timing_processor.cpp:107
 msgid "Make adjacent subtitles continuous"
@@ -2899,7 +2899,7 @@ msgid "Enable"
 msgstr "启用"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
 msgstr "启用字幕紧贴功能,当彼此距离小于指定间隔时"
 
 #: dialog_timing_processor.cpp:111
@@ -2907,8 +2907,8 @@ msgid "Threshold:"
 msgstr "阈值:"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
-msgstr "两条连续字幕的起止时间间隔的最大差值(毫秒)."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgstr "两条连续字幕的起止时间间隔的最大差值(毫秒)"
 
 #: dialog_timing_processor.cpp:115
 msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend start time of the second line; if totally to right, it will extend the end time of the first line."
@@ -2927,8 +2927,8 @@ msgid "Keyframe snapping"
 msgstr "紧贴关键帧"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
-msgstr "使字幕紧贴至最近的关键帧,如果距离在阈值之内."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
+msgstr "使字幕紧贴至最近的关键帧,如果距离在阈值之内"
 
 #: dialog_timing_processor.cpp:129
 msgid "Starts before thres.:"
@@ -3066,8 +3066,8 @@ msgstr "启用预览"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "当前行: %i/%i"
+msgid "Current line: %d/%d"
+msgstr "当前行: %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3433,11 +3433,11 @@ msgid "Configure Aegisub"
 msgstr "配置Aegisub"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "切换标签隐藏模式"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "切换标签隐藏模式"
 
 #: frame_main.cpp:305
@@ -3486,7 +3486,7 @@ msgid "Export Subtitles..."
 msgstr "导出字幕…"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
+msgid "Saves a copy of subtitles with processing applied to it"
 msgstr "应用处理后保存字幕副本"
 
 #: frame_main.cpp:326
@@ -3788,7 +3788,7 @@ msgid "Select Lines..."
 msgstr "选择多行…"
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "按照指定要求选择多行"
 
 #: frame_main.cpp:399
@@ -3816,7 +3816,7 @@ msgid "Timing Post-Processor..."
 msgstr "时间后续处理器…"
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
 msgstr "运行一个时间后续处理器来处理开始提前、结束延后以及镜头计时等"
 
 #: frame_main.cpp:406
@@ -3899,12 +3899,12 @@ msgid "Use Dummy Video..."
 msgstr "使用空白视频…"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "打开一个单色的视频片段"
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
-msgstr "显示视频细节..."
+msgid "Show Video Details"
+msgstr "显示视频细节"
 
 #: frame_main.cpp:430
 msgid "Shows video details"
@@ -3963,7 +3963,7 @@ msgid "Detach Video"
 msgstr "拆分视频"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
+msgid "Detach video, displaying it in a separate Window"
 msgstr "拆分视频,在一个单独窗口显示"
 
 #: frame_main.cpp:446
@@ -4031,7 +4031,7 @@ msgid "Show Overscan Mask"
 msgstr "显示过扫描遮罩"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
 msgstr "在视频上显示一个遮罩,标出可能会在电视上过扫描被截掉的区域"
 
 #: frame_main.cpp:467
@@ -4750,7 +4750,7 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "将该行设为注释.注释行不会显示在屏幕上."
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
+msgid "Style for this line"
 msgstr "该行的样式"
 
 #: subs_edit_box.cpp:89
@@ -5176,15 +5176,15 @@ msgid "Toggle autoscroll of video"
 msgstr "切换视频自动卷动"
 
 #: video_box.cpp:90
-msgid "Seek video."
+msgid "Seek video"
 msgstr "视频定位"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
+msgid "Current frame time and number"
 msgstr "当前帧时间和编号"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
+msgid "Time of this frame relative to start and end of current subs"
 msgstr "该帧时间,相对于当前字幕的开始与结束时间"
 
 #: video_box.cpp:114
@@ -5192,7 +5192,7 @@ msgid "Standard"
 msgstr "标准"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
+msgid "Standard mode, double click sets position"
 msgstr "标准模式,双击设定位置"
 
 #: video_box.cpp:115
@@ -5201,7 +5201,7 @@ msgid "Drag"
 msgstr "拖放"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
+msgid "Drag subtitles"
 msgstr "拖放字幕"
 
 #: video_box.cpp:116
@@ -5209,7 +5209,7 @@ msgid "Rotate Z"
 msgstr "旋转 Z"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
+msgid "Rotate subtitles on their Z axis"
 msgstr "绕Z轴旋转字幕"
 
 #: video_box.cpp:117
@@ -5217,7 +5217,7 @@ msgid "Rotate XY"
 msgstr "旋转 XY"
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
+msgid "Rotate subtitles on their X and Y axes"
 msgstr "绕X轴和Y轴旋转字幕"
 
 #: video_box.cpp:118
@@ -5225,7 +5225,7 @@ msgid "Scale"
 msgstr "缩放"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
+msgid "Scale subtitles on X and Y axes"
 msgstr "沿X轴和Y轴方向缩放"
 
 #: video_box.cpp:119
@@ -5233,7 +5233,7 @@ msgid "Clip"
 msgstr "裁剪"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
+msgid "Clip subtitles to a rectangle"
 msgstr "裁剪字幕为一个矩形"
 
 #: video_box.cpp:120
@@ -5241,7 +5241,7 @@ msgid "Vector Clip"
 msgstr "矢量裁剪"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
+msgid "Clip subtitles to a vectorial area"
 msgstr "裁剪字幕为一个矢量区域"
 
 #: video_box.cpp:122
@@ -5253,7 +5253,7 @@ msgid "Toggle realtime display of changes."
 msgstr "切换实时显示"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
+msgid "Open the manual page for Visual Typesetting"
 msgstr "打开可视化排版的操作手册页面"
 
 #: video_display.cpp:478
@@ -5307,7 +5307,7 @@ msgid "positioning"
 msgstr "定位"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
+msgid "Drag control points"
 msgstr "拖放控制点"
 
 #: visual_tool_vector_clip.cpp:71
@@ -5315,7 +5315,7 @@ msgid "Line"
 msgstr "直线"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
+msgid "Appends a line"
 msgstr "添加一条直线"
 
 #: visual_tool_vector_clip.cpp:72
@@ -5323,7 +5323,7 @@ msgid "Bicubic"
 msgstr "曲线"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
+msgid "Appends a bezier bicubic curve"
 msgstr "添加一条贝兹三次曲线"
 
 #: visual_tool_vector_clip.cpp:74
@@ -5331,7 +5331,7 @@ msgid "Convert"
 msgstr "转换"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
+msgid "Converts a segment between line and bicubic"
 msgstr "将一条线段在直线和曲线之间转换"
 
 #: visual_tool_vector_clip.cpp:75
@@ -5339,7 +5339,7 @@ msgid "Insert"
 msgstr "插入"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
+msgid "Inserts a control point"
 msgstr "插入一个控制点"
 
 #: visual_tool_vector_clip.cpp:76
@@ -5347,7 +5347,7 @@ msgid "Remove"
 msgstr "移除"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
+msgid "Removes a control point"
 msgstr "移除一个控制点"
 
 #: visual_tool_vector_clip.cpp:78
@@ -5355,7 +5355,7 @@ msgid "Freehand"
 msgstr "手绘"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "画一个手绘形状"
 
 #: visual_tool_vector_clip.cpp:79
@@ -5363,7 +5363,7 @@ msgid "Freehand smooth"
 msgstr "平滑手绘"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "画一个平滑的手绘形状"
 
 #~ msgid "Show Splash Screen"

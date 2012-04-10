@@ -676,11 +676,11 @@ msgid "Automation Script Info"
 msgstr "オートメーションスクリプトの詳細"
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "カラーパレット"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "カラースペクトラム"
 
 #: dialog_colorpicker.cpp:547
@@ -704,15 +704,15 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
+msgid "RGB color"
 msgstr "RGB カラー"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
+msgid "HSL color"
 msgstr "HSL カラー"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
+msgid "HSV color"
 msgstr "HSV カラー"
 
 #: dialog_colorpicker.cpp:583
@@ -750,7 +750,7 @@ msgid "Value:"
 msgstr "V 明度:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "スポイト"
 
 #: dialog_detached_video.cpp:76
@@ -773,7 +773,7 @@ msgstr ""
 "数値を入力し指定します"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr "ダミー映像色の指定 :"
 
 #: dialog_dummy_video.cpp:150
@@ -1247,7 +1247,7 @@ msgid "Crash recovery path:"
 msgstr "異常終了からの復旧 パス :"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "映像や音声の自動読み込み (オートロード) 設定 :"
 
 #: dialog_options.cpp:189
@@ -1403,32 +1403,32 @@ msgid "Match video resolution on open: "
 msgstr "開いた映像の解像度に合わせる"
 
 #: dialog_options.cpp:363
-msgid "Default Zoom: "
-msgstr "映像読み込み時のズーム : "
+msgid "Default Zoom"
+msgstr "映像読み込み時のズーム "
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "ジャンプ (Alt+矢印) のフレーム数 : "
+msgid "Fast jump step in frames"
+msgstr "ジャンプ (Alt+矢印) のフレーム数 "
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "スクリーンショット保存パス : "
+msgid "Screenshot save path"
+msgstr "スクリーンショット保存パス "
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
 msgstr "スライドバーにキーフレームの表示をする"
 
 #: dialog_options.cpp:390
-msgid "Video provider: "
-msgstr "映像読み込みエンジン : "
+msgid "Video provider"
+msgstr "映像読み込みエンジン "
 
 #: dialog_options.cpp:395
-msgid "Subtitles provider: "
-msgstr "字幕レンダリングエンジン : "
+msgid "Subtitles provider"
+msgstr "字幕レンダリングエンジン "
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr "Avisynth 最大使用メモリー量 (MB): "
+msgid "Avisynth memory limit"
+msgstr "Avisynth 最大使用メモリー量 (MB)"
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1614,20 +1614,20 @@ msgid "Spectrum cutoff"
 msgstr "スペクトラム カットオフ"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0 - レギュラー品質"
+msgid "Regular quality"
+msgstr "レギュラー品質"
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1 - 最適品質"
+msgid "Better quality"
+msgstr "最適品質"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2 - 高品質"
+msgid "High quality"
+msgstr "高品質"
 
 #: dialog_options.cpp:538
-msgid "3 - Insane quality"
-msgstr "3 - 高精細品質"
+msgid "Insane quality"
+msgstr "高精細品質"
 
 #: dialog_options.cpp:539
 msgid "Spectrum quality"
@@ -2150,8 +2150,8 @@ msgstr "選択する動作"
 
 #: dialog_selection.cpp:276
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr "%i 行の字幕行を選択しました"
+msgid "Selection was set to %u lines"
+msgstr "%u 行の字幕行を選択しました"
 
 #: dialog_selection.cpp:276
 #: dialog_selection.cpp:277
@@ -2161,13 +2161,13 @@ msgstr "選択結果"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "%i 行の字幕行を選択行に追加しました"
+msgid "%u lines were added to selection"
+msgstr "%u 行の字幕行を選択行に追加しました"
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "%i 行の字幕行を選択行から外しました"
+msgid "%u lines were removed from selection"
+msgstr "%u 行の字幕行を選択行から外しました"
 
 #: dialog_shift_times.cpp:63
 #: frame_main.cpp:269
@@ -2277,8 +2277,8 @@ msgstr "すべての行"
 
 #: dialog_shift_times.cpp:269
 #, c-format
-msgid "from %i onward"
-msgstr "%i 行以降"
+msgid "from %d onward"
+msgstr "%d 行以降"
 
 #: dialog_shift_times.cpp:271
 msgid "sel "
@@ -2403,81 +2403,81 @@ msgid "Style name."
 msgstr "スタイルネームを入力します"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
+msgid "Font face"
 msgstr "フォントを選択します"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
+msgid "Font size"
 msgstr "フォントサイズ"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
+msgid "Choose primary color"
 msgstr "プライマリ色を選ぶ"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
+msgid "Choose secondary color"
 msgstr "セカンダリ色を選ぶ"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "縁取り色を選ぶ"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
+msgid "Choose shadow color"
 msgstr "影色を選ぶ"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
 msgstr "透明度を指定します 0 (不透明) ～ 255 (透明)"
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "左余白をピクセルで指定"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "右余白をピクセルで指定"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "上下余白をピクセルで指定"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
 msgstr "アウトラインの代わりに四角い枠付き字幕(opaque box)で描画します"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "縁取りをピクセルで指定"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "影をピクセルで指定"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "横方向を％で指定"
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "縦方向を％で指定"
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr "角度を指定"
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
 msgstr ""
 "キャラクタ(文字)セット : 通常は自国言語の場合「1 - デフォルト」を選択、\n"
 "不具合がある場合は他のキャラクタセットを選択します"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "文字と文字との間隔をピクセルで指定"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
+msgid "Alignment in screen, in numpad style"
 msgstr "アライメント(字幕位置)を選択します"
 
 #: dialog_style_editor.cpp:236
@@ -2521,17 +2521,17 @@ msgid "Encoding:"
 msgstr "文字コード :"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "現在の選択や指定によるスタイルプレビュー"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr ""
 "スタイルプレビューに表示される文字を指定できます\n"
 "\\Nを記述すると改行されます"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
+msgid "Color of preview background"
 msgstr "スタイルプレビューの背景色を指定"
 
 #: dialog_style_editor.cpp:314
@@ -2612,27 +2612,27 @@ msgstr "コピー"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "上へ"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "下へ"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "最上部へ"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "最下部へ"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "ソート"
 
 #: dialog_style_manager.cpp:121
@@ -2885,11 +2885,11 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "適用するスタイルを選択してください、未チェックのものは無視されます"
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
+msgid "Select all styles"
 msgstr "すべてのスタイルを選択"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
+msgid "Deselect all styles"
 msgstr "すべてのスタイルを解除"
 
 #: dialog_timing_processor.cpp:84
@@ -2905,11 +2905,11 @@ msgid "Add lead in:"
 msgstr "リードインの追加 :"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
+msgid "Enable adding of lead-ins to lines"
 msgstr "開始時間から指定した時間を引くことで、字幕時間を長くします"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
+msgid "Lead in to be added, in milliseconds"
 msgstr "リードインに追加する時間を指定 単位ms(ミリセコンド)"
 
 #: dialog_timing_processor.cpp:95
@@ -2917,11 +2917,11 @@ msgid "Add lead out:"
 msgstr "リードアウトの追加 :"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
+msgid "Enable adding of lead-outs to lines"
 msgstr "終了時間に指定した時間を足すことで、字幕時間を長くします"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
+msgid "Lead out to be added, in milliseconds"
 msgstr "リードアウトに追加する時間を指定 単位ms(ミリセコンド)"
 
 #: dialog_timing_processor.cpp:107
@@ -2934,7 +2934,7 @@ msgid "Enable"
 msgstr "有効"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
 msgstr "間隔の離れた隣り合う字幕行のタイミングを修正し字幕を連続表示させます"
 
 #: dialog_timing_processor.cpp:111
@@ -2942,7 +2942,7 @@ msgid "Threshold:"
 msgstr "しきい値 :"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
 msgstr ""
 "修正する隣接字幕行の間隔を時間で指定します 単位ms(ミリセコンド)\n"
 "指定時間以上離れた字幕行は連続させません"
@@ -2966,7 +2966,7 @@ msgid "Keyframe snapping"
 msgstr "キーフレームに同期"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
 msgstr "指定した“しきい値”にキーフレームがある場合は、キーフレームへタイミングを修正します"
 
 #: dialog_timing_processor.cpp:129
@@ -3105,8 +3105,8 @@ msgstr "プレビューを有効化"
 
 #: dialog_translation.cpp:204
 #, c-format
-msgid "Current line: %i/%i"
-msgstr "翻訳中の字幕行 : %i/%i"
+msgid "Current line: %d/%d"
+msgstr "翻訳中の字幕行 : %d/%d"
 
 #: dialog_translation.cpp:335
 msgid "translation assistant"
@@ -3474,11 +3474,11 @@ msgid "Configure Aegisub"
 msgstr "Aegisubの設定を開きます"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "字幕グリッドでのタグ省略表示"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "字幕グリッドでのタグ省略表示切り替え"
 
 #: frame_main.cpp:305
@@ -3515,7 +3515,7 @@ msgid "Saves subtitles"
 msgstr "字幕を上書き保存します"
 
 #: frame_main.cpp:324
-msgid "Save Subtitles as..."
+msgid "Save Subtitles as"
 msgstr "名前を付けて字幕を保存"
 
 #: frame_main.cpp:324
@@ -3523,11 +3523,11 @@ msgid "Saves subtitles with another name"
 msgstr "名前を付けて字幕を保存します"
 
 #: frame_main.cpp:325
-msgid "Export Subtitles..."
+msgid "Export Subtitles"
 msgstr "字幕をエクスポート"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
+msgid "Saves a copy of subtitles with processing applied to it"
 msgstr "エクスポートダイアログを開き、字幕を変換して書き出します"
 
 #: frame_main.cpp:326
@@ -3626,7 +3626,7 @@ msgid "Paste subtitles"
 msgstr "選択行の直前に貼り付けます"
 
 #: frame_main.cpp:352
-msgid "Paste Lines Over..."
+msgid "Paste Lines Over"
 msgstr "項目を選択して貼り付け"
 
 #: frame_main.cpp:352
@@ -3692,7 +3692,7 @@ msgid "Open translation assistant"
 msgstr "翻訳アシスタントを開きます"
 
 #: frame_main.cpp:369
-msgid "Resample Resolution..."
+msgid "Resample Resolution"
 msgstr "解像度の設定"
 
 #: frame_main.cpp:369
@@ -3829,7 +3829,7 @@ msgid "Select Lines..."
 msgstr "字幕行の指定選択"
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "指定ダイアログを開き、字幕行を選択します"
 
 #: frame_main.cpp:399
@@ -3857,7 +3857,7 @@ msgid "Timing Post-Processor..."
 msgstr "タイミング ポストプロセッサー"
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
 msgstr "タイミングをリードイン・リードアウト・シーンなどで調節するタイミング ポストプロセッサーを開きます"
 
 #: frame_main.cpp:406
@@ -3936,15 +3936,15 @@ msgid "Closes the currently open video file"
 msgstr "映像ファイルを閉じます"
 
 #: frame_main.cpp:429
-msgid "Use Dummy Video..."
+msgid "Use Dummy Video"
 msgstr "ダミー映像を使う"
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "単一色のダミー映像を使います"
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
+msgid "Show Video Details"
 msgstr "映像ファイルの詳細"
 
 #: frame_main.cpp:430
@@ -4004,7 +4004,7 @@ msgid "Detach Video"
 msgstr "映像ビュー分離"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
+msgid "Detach video, displaying it in a separate Window"
 msgstr "映像ボックスをAegisub本体から分離します"
 
 #: frame_main.cpp:446
@@ -4060,7 +4060,7 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr "劇場映画などで採用されてるシネマスコープのアスペクト比 (2.35) です"
 
 #: frame_main.cpp:463
-msgid "Custom..."
+msgid "Custom"
 msgstr "カスタム アスペクト比"
 
 #: frame_main.cpp:463
@@ -4072,7 +4072,7 @@ msgid "Show Overscan Mask"
 msgstr "オーバースキャンマスク"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
 msgstr "TVなどオーバースキャン機器用に合わせてセーフティエリア (90％ 80％) を半透明マスクで表示します"
 
 #: frame_main.cpp:467
@@ -4198,7 +4198,7 @@ msgid "Vie&w"
 msgstr "設定 (&W)"
 
 #: frame_main.cpp:514
-msgid "&Contents..."
+msgid "&Contents"
 msgstr "ヘルプを開く (&C)"
 
 #: frame_main.cpp:514
@@ -4214,7 +4214,7 @@ msgid "Resource files distributed with Aegisub"
 msgstr "Aegisub と共に配布されているリソースファイル。"
 
 #: frame_main.cpp:519
-msgid "&Website..."
+msgid "&Website"
 msgstr "オフィシャルサイト (&W)"
 
 #: frame_main.cpp:519
@@ -4222,7 +4222,7 @@ msgid "Visit Aegisub's official website"
 msgstr "Aegisubのオフィシャルサイトをブラウザで開きます"
 
 #: frame_main.cpp:520
-msgid "&Forums..."
+msgid "&Forums"
 msgstr "ウェブフォーラム (&F)"
 
 #: frame_main.cpp:520
@@ -4238,7 +4238,7 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "Aegisubのバグ管理サイトをブラウザで開きます"
 
 #: frame_main.cpp:522
-msgid "&IRC Channel..."
+msgid "&IRC Channel"
 msgstr "IRC チャット (&I)"
 
 #: frame_main.cpp:522
@@ -4254,7 +4254,7 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "Aegisubの最新バージョンをチェックします"
 
 #: frame_main.cpp:527
-msgid "&About..."
+msgid "&About"
 msgstr "Aegisub について (&A)"
 
 #: frame_main.cpp:740
@@ -4798,7 +4798,7 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "コメントアウト"
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
+msgid "Style for this line"
 msgstr "スタイルネーム"
 
 #: subs_edit_box.cpp:89
@@ -5226,15 +5226,15 @@ msgid "Toggle autoscroll of video"
 msgstr "字幕行を選択した時に開始時間に映像を移動"
 
 #: video_box.cpp:90
-msgid "Seek video."
+msgid "Seek video"
 msgstr "シーク"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
+msgid "Current frame time and number"
 msgstr "現在の再生してる時間とフレーム番号"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
+msgid "Time of this frame relative to start and end of current subs"
 msgstr "選択行字幕の開始および終了までの時間"
 
 #: video_box.cpp:114
@@ -5242,7 +5242,7 @@ msgid "Standard"
 msgstr "字幕スタンダード"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
+msgid "Standard mode, double click sets position"
 msgstr "[字幕スタンダードモード] ダブルクリックでポジション(位置情報)を取得できます"
 
 #: video_box.cpp:115
@@ -5251,7 +5251,7 @@ msgid "Drag"
 msgstr "字幕ドラッグ"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
+msgid "Drag subtitles"
 msgstr "[字幕ドラッグモード] 字幕基準点をドラッグして位置を変更できます"
 
 #: video_box.cpp:116
@@ -5259,7 +5259,7 @@ msgid "Rotate Z"
 msgstr "字幕Z回転"
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
+msgid "Rotate subtitles on their Z axis"
 msgstr "[字幕Z回転モード] 字幕をZ方向に回転(frz)できます"
 
 #: video_box.cpp:117
@@ -5267,7 +5267,7 @@ msgid "Rotate XY"
 msgstr "字幕XY回転 "
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
+msgid "Rotate subtitles on their X and Y axes"
 msgstr "[字幕XY回転モード] 字幕をX･Y方向に回転(frx、fry)できます"
 
 #: video_box.cpp:118
@@ -5275,7 +5275,7 @@ msgid "Scale"
 msgstr "字幕拡大･縮小"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
+msgid "Scale subtitles on X and Y axes"
 msgstr "[字幕拡大･縮小モード] 字幕をX･Y方向に拡大縮小(fscx、fscy)できます"
 
 #: video_box.cpp:119
@@ -5283,7 +5283,7 @@ msgid "Clip"
 msgstr "切り抜き"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
+msgid "Clip subtitles to a rectangle"
 msgstr "[四角形切り抜きモード] 四角形の範囲で字幕を切り抜きできます"
 
 #: video_box.cpp:120
@@ -5291,7 +5291,7 @@ msgid "Vector Clip"
 msgstr "ベクター切り抜き"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
+msgid "Clip subtitles to a vectorial area"
 msgstr "[図形切り抜きモード] 任意の頂点数の図形で字幕を切り抜きできます"
 
 #: video_box.cpp:122
@@ -5303,7 +5303,7 @@ msgid "Toggle realtime display of changes."
 msgstr "字幕の変更を映像にリアルタイムに反映し描画します"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
+msgid "Open the manual page for Visual Typesetting"
 msgstr "映像効果についてのヘルプを開きます"
 
 #: video_display.cpp:478
@@ -5357,7 +5357,7 @@ msgid "positioning"
 msgstr "ポジション"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
+msgid "Drag control points"
 msgstr "頂点をドラッグして移動します"
 
 #: visual_tool_vector_clip.cpp:71
@@ -5365,7 +5365,7 @@ msgid "Line"
 msgstr "直線"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
+msgid "Appends a line"
 msgstr "直線を引きます"
 
 #: visual_tool_vector_clip.cpp:72
@@ -5373,7 +5373,7 @@ msgid "Bicubic"
 msgstr "3次曲線"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
+msgid "Appends a bezier bicubic curve"
 msgstr "3次曲線を引きます"
 
 #: visual_tool_vector_clip.cpp:74
@@ -5381,7 +5381,7 @@ msgid "Convert"
 msgstr "変換"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
+msgid "Converts a segment between line and bicubic"
 msgstr "頂点数を変更して直線と曲線を変換します"
 
 #: visual_tool_vector_clip.cpp:75
@@ -5389,7 +5389,7 @@ msgid "Insert"
 msgstr "挿入"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
+msgid "Inserts a control point"
 msgstr "頂点を追加します"
 
 #: visual_tool_vector_clip.cpp:76
@@ -5397,7 +5397,7 @@ msgid "Remove"
 msgstr "削除"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
+msgid "Removes a control point"
 msgstr "頂点を削除します"
 
 #: visual_tool_vector_clip.cpp:78
@@ -5405,7 +5405,7 @@ msgid "Freehand"
 msgstr "フリーハンド - 直線"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "フリーハンドで多角形を描きます"
 
 #: visual_tool_vector_clip.cpp:79
@@ -5413,7 +5413,7 @@ msgid "Freehand smooth"
 msgstr "フリーハンド - 3次曲線"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "フリーハンドで曲線の図形を描きます"
 
 #~ msgid "Show Splash Screen"

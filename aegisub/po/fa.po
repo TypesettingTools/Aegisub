@@ -593,11 +593,11 @@ msgid "Automation Script Info"
 msgstr "عملیات خودکار مشخصات اسکریپت "
 
 #: dialog_colorpicker.cpp:471
-msgid "Select Colour"
+msgid "Select Color"
 msgstr "انتخاب رنگ"
 
 #: dialog_colorpicker.cpp:544
-msgid "Colour spectrum"
+msgid "Color spectrum"
 msgstr "رنگ طیف "
 
 #: dialog_colorpicker.cpp:547
@@ -621,16 +621,16 @@ msgid "HSV/H"
 msgstr "HSV/H"
 
 #: dialog_colorpicker.cpp:553
-msgid "RGB colour"
-msgstr "RGB colour"
+msgid "RGB color"
+msgstr "RGB color"
 
 #: dialog_colorpicker.cpp:558
-msgid "HSL colour"
-msgstr "HSL colour"
+msgid "HSL color"
+msgstr "HSL color"
 
 #: dialog_colorpicker.cpp:563
-msgid "HSV colour"
-msgstr "HSV colour"
+msgid "HSV color"
+msgstr "HSV color"
 
 #: dialog_colorpicker.cpp:583
 msgid "Spectrum mode:"
@@ -667,7 +667,7 @@ msgid "Value:"
 msgstr "مقدار:"
 
 #: dialog_colorpicker.cpp:653
-msgid "Colour Picker"
+msgid "Color Picker"
 msgstr "انتخاب کننده رنگ"
 
 #: dialog_detached_video.cpp:76
@@ -688,7 +688,7 @@ msgid "Video resolution:"
 msgstr "سایز تصویر :"
 
 #: dialog_dummy_video.cpp:146
-msgid "Colour:"
+msgid "Color:"
 msgstr ":رنگ"
 
 #: dialog_dummy_video.cpp:150
@@ -1163,7 +1163,7 @@ msgid "Crash recovery path:"
 msgstr "مسیر ذخیره فایل بازیافت شده:"
 
 #: dialog_options.cpp:188
-msgid "Auto-load linked files:"
+msgid "Automatically load linked files:"
 msgstr "بارگذاری خودکار فایل های مرتبط"
 
 #: dialog_options.cpp:189
@@ -1334,12 +1334,12 @@ msgid "Default Zoom: "
 msgstr "زوم پیش فرض"
 
 #: dialog_options.cpp:374
-msgid "Fast jump step in frames: "
-msgstr "پرش های سریع در فریم ها:"
+msgid "Fast jump step in frames"
+msgstr "پرش های سریع در فریم ها"
 
 #: dialog_options.cpp:378
-msgid "Screenshot save path: "
-msgstr "مسیر ذخیره اسکرین شات:"
+msgid "Screenshot save path"
+msgstr "مسیر ذخیره اسکرین شات"
 
 #: dialog_options.cpp:384
 msgid "Show keyframes in slider"
@@ -1354,8 +1354,8 @@ msgid "Subtitles provider: "
 msgstr "تهیه کننده زیرنویس ها"
 
 #: dialog_options.cpp:401
-msgid "Avisynth memory limit: "
-msgstr " Avisynth محدودیت حافظه  :"
+msgid "Avisynth memory limit"
+msgstr " Avisynth محدودیت حافظه  "
 
 #: dialog_options.cpp:408
 msgid "Allow pre-2.56a Avisynth"
@@ -1541,16 +1541,16 @@ msgid "Spectrum cutoff"
 msgstr "قطع طیف"
 
 #: dialog_options.cpp:538
-msgid "0 - Regular quality"
-msgstr "0- کیفیت معمولی "
+msgid "Regular quality"
+msgstr "کیفیت معمولی "
 
 #: dialog_options.cpp:538
-msgid "1 - Better quality"
-msgstr "1- کیفیت بهتر"
+msgid "Better quality"
+msgstr "کیفیت بهتر"
 
 #: dialog_options.cpp:538
-msgid "2 - High quality"
-msgstr "2- کیفیت بالا"
+msgid "High quality"
+msgstr "کیفیت بالا"
 
 #: dialog_options.cpp:538
 msgid "3 - Insane quality"
@@ -2083,18 +2083,18 @@ msgstr " اقدام"
 
 #: dialog_selection.cpp:277
 #, c-format
-msgid "Selection was set to %i lines"
-msgstr " خط انتخاب شدند %i "
+msgid "Selection was set to %u lines"
+msgstr " خط انتخاب شدند %u "
 
 #: dialog_selection.cpp:278
 #, c-format
-msgid "%i lines were added to selection"
-msgstr "خط به انتخاب ها اضافه شدند%i "
+msgid "%u lines were added to selection"
+msgstr "خط به انتخاب ها اضافه شدند%u "
 
 #: dialog_selection.cpp:279
 #, c-format
-msgid "%i lines were removed from selection"
-msgstr "خط از انتخاب ها حذف شدند%i "
+msgid "%u lines were removed from selection"
+msgstr "خط از انتخاب ها حذف شدند%u "
 
 #: dialog_selection.cpp:282
 msgid "Selection"
@@ -2191,16 +2191,16 @@ msgid "forward, "
 msgstr "رو به جلو"
 
 #: dialog_shift_times.cpp:264
-msgid "s+e, "
-msgstr "s+e, "
+msgid "s+e"
+msgstr "s+e"
 
 #: dialog_shift_times.cpp:265
-msgid "s, "
-msgstr "s, "
+msgid "s"
+msgstr "s"
 
 #: dialog_shift_times.cpp:266
-msgid "e, "
-msgstr "e, "
+msgid "e"
+msgstr "e"
 
 #: dialog_shift_times.cpp:269
 msgid "all"
@@ -2208,7 +2208,7 @@ msgstr "همه"
 
 #: dialog_shift_times.cpp:270
 #, c-format
-msgid "from %i onward"
+msgid "from %d onward"
 msgstr " به جلو % i از  "
 
 #: dialog_shift_times.cpp:272
@@ -2334,79 +2334,79 @@ msgid "Style name."
 msgstr ".نام استایل"
 
 #: dialog_style_editor.cpp:171
-msgid "Font face."
-msgstr ".نام فونت"
+msgid "Font face"
+msgstr "نام فونت"
 
 #: dialog_style_editor.cpp:172
-msgid "Font size."
-msgstr ".اندازه فونت"
+msgid "Font size"
+msgstr "اندازه فونت"
 
 #: dialog_style_editor.cpp:173
-msgid "Choose primary color."
-msgstr ".انتخاب رنگ اولیه"
+msgid "Choose primary color"
+msgstr "انتخاب رنگ اولیه"
 
 #: dialog_style_editor.cpp:174
-msgid "Choose secondary color."
-msgstr ".انتخاب رنگ ثانویه"
+msgid "Choose secondary color"
+msgstr "انتخاب رنگ ثانویه"
 
 #: dialog_style_editor.cpp:175
-msgid "Choose outline color."
+msgid "Choose outline color"
 msgstr "رنگ حاشیه را انتخاب کنید"
 
 #: dialog_style_editor.cpp:176
-msgid "Choose shadow color."
-msgstr ".انتخاب رنگ سایه"
+msgid "Choose shadow color"
+msgstr "انتخاب رنگ سایه"
 
 #: dialog_style_editor.cpp:177
-msgid "Set opacity, from 0 (opaque) to 255 (transparent)."
+msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
 msgstr "(تنظیم شفافیت از0(بدون شفافیت) تا 255(شفافیت کامل "
 
 #: dialog_style_editor.cpp:178
-msgid "Distance from left edge, in pixels."
+msgid "Distance from left edge, in pixels"
 msgstr "فاصله از کناره چپ به پیکسل"
 
 #: dialog_style_editor.cpp:179
-msgid "Distance from right edge, in pixels."
+msgid "Distance from right edge, in pixels"
 msgstr "فاصله از کناره راست به پیکسل"
 
 #: dialog_style_editor.cpp:180
-msgid "Distance from top/bottom edge, in pixels."
+msgid "Distance from top/bottom edge, in pixels"
 msgstr "فاصله از کناره بالا/پایین به پیکسل"
 
 #: dialog_style_editor.cpp:181
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text."
+msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
 msgstr "زمانی که انتخاب شده به جای حاشیه در پشت زیرنویس به نمایش در می آید"
 
 #: dialog_style_editor.cpp:182
-msgid "Outline width, in pixels."
+msgid "Outline width, in pixels"
 msgstr "مقدار حاشیه به پیکسل"
 
 #: dialog_style_editor.cpp:183
-msgid "Shadow distance, in pixels."
+msgid "Shadow distance, in pixels"
 msgstr "فاصله سایه ها به پیکسل"
 
 #: dialog_style_editor.cpp:184
-msgid "Scale X, in percentage."
+msgid "Scale X, in percentage"
 msgstr "به درصد Xاندازه در محور "
 
 #: dialog_style_editor.cpp:185
-msgid "Scale Y, in percentage."
+msgid "Scale Y, in percentage"
 msgstr "به درصد Yاندازه در محور "
 
 #: dialog_style_editor.cpp:186
-msgid "Angle to rotate in Z axis, in degrees."
+msgid "Angle to rotate in Z axis, in degrees"
 msgstr " به درجه Z زاویه برای چرخش در محور "
 
 #: dialog_style_editor.cpp:187
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
 msgstr "تبدیل تنها در یونیکد موثر است"
 
 #: dialog_style_editor.cpp:188
-msgid "Character spacing, in pixels."
+msgid "Character spacing, in pixels"
 msgstr "فاله گذاری کاراکتر ها به پیکسل"
 
 #: dialog_style_editor.cpp:189
-msgid "Alignment in screen, in numpad style."
+msgid "Alignment in screen, in numpad style"
 msgstr "تنظیم در تصویر بر اساس مدل صفحه عدد های کیبورد"
 
 #: dialog_style_editor.cpp:236
@@ -2468,15 +2468,15 @@ msgid "Encoding:"
 msgstr "رمزگذاری:"
 
 #: dialog_style_editor.cpp:301
-msgid "Preview of current style."
+msgid "Preview of current style"
 msgstr "پیش نمایش استایل کنونی:"
 
 #: dialog_style_editor.cpp:304
-msgid "Text to be used for the preview."
+msgid "Text to be used for the preview"
 msgstr "متنی که برای پیش نمایش استفاده می شود"
 
 #: dialog_style_editor.cpp:305
-msgid "Colour of preview background."
+msgid "Color of preview background."
 msgstr "رنگ پس زمینه پیش نمایش"
 
 #: dialog_style_editor.cpp:314
@@ -2551,27 +2551,27 @@ msgstr "کپی"
 
 #: dialog_style_manager.cpp:97
 #: dialog_style_manager.cpp:142
-msgid "Move style up."
+msgid "Move style up"
 msgstr "حرکت استایل به بالا"
 
 #: dialog_style_manager.cpp:98
 #: dialog_style_manager.cpp:143
-msgid "Move style down."
+msgid "Move style down"
 msgstr "حرکت استایل به پایین"
 
 #: dialog_style_manager.cpp:99
 #: dialog_style_manager.cpp:144
-msgid "Move style to top."
+msgid "Move style to top"
 msgstr "حرکت استایل به اول"
 
 #: dialog_style_manager.cpp:100
 #: dialog_style_manager.cpp:145
-msgid "Move style to bottom."
+msgid "Move style to bottom"
 msgstr "حرکت استایل به انتها"
 
 #: dialog_style_manager.cpp:101
 #: dialog_style_manager.cpp:146
-msgid "Sort styles alphabetically."
+msgid "Sort styles alphabetically"
 msgstr "استایل ها را براساس الفبا مرتب کن"
 
 #: dialog_style_manager.cpp:121
@@ -2820,11 +2820,11 @@ msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "استایل مورد نظر را انتخاب کنید.استایل های انتخاب نده تغییر نمی یابند"
 
 #: dialog_timing_processor.cpp:78
-msgid "Select all styles."
+msgid "Select all styles"
 msgstr "انتخاب تمام استایل ها"
 
 #: dialog_timing_processor.cpp:80
-msgid "Deselect all styles."
+msgid "Deselect all styles"
 msgstr "از انتخاب خارج شدن تمام استایل ها"
 
 #: dialog_timing_processor.cpp:84
@@ -2840,11 +2840,11 @@ msgid "Add lead in:"
 msgstr " اضافه کردن فاصله شروع"
 
 #: dialog_timing_processor.cpp:91
-msgid "Enable adding of lead-ins to lines."
+msgid "Enable adding of lead-ins to lines"
 msgstr "فعالسازی اضافه کردن فاصله شروع به خط ها"
 
 #: dialog_timing_processor.cpp:94
-msgid "Lead in to be added, in milliseconds."
+msgid "Lead in to be added, in milliseconds"
 msgstr "فاصله شروع به میلی ثانیه اضافه خواهد شد"
 
 #: dialog_timing_processor.cpp:95
@@ -2852,11 +2852,11 @@ msgid "Add lead out:"
 msgstr " اضافه کردن فاصله پایان"
 
 #: dialog_timing_processor.cpp:96
-msgid "Enable adding of lead-outs to lines."
+msgid "Enable adding of lead-outs to lines"
 msgstr "فعالسازی اضافه کردن فاصله پایان به خط ها"
 
 #: dialog_timing_processor.cpp:99
-msgid "Lead out to be added, in milliseconds."
+msgid "Lead out to be added, in milliseconds"
 msgstr "فاصله پایان به میلی ثانیه اضافه خواهد شد"
 
 #: dialog_timing_processor.cpp:107
@@ -2869,7 +2869,7 @@ msgid "Enable"
 msgstr "فعال"
 
 #: dialog_timing_processor.cpp:109
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other."
+msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
 msgstr "فعالسازی چسبیدن زیرنویس ها به هم در صورتی که نسبت به هم در فاصله معینی قرار دارند"
 
 #: dialog_timing_processor.cpp:111
@@ -2877,7 +2877,7 @@ msgid "Threshold:"
 msgstr "آستانه :"
 
 #: dialog_timing_processor.cpp:113
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds."
+msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
 msgstr "بیشترین فاصله بین شروع و پایان دو زیرنویس که نرم افزار زیرنویس ها را ادامه دار میکند به میلی ثانیه"
 
 #: dialog_timing_processor.cpp:115
@@ -2897,7 +2897,7 @@ msgid "Keyframe snapping"
 msgstr "چسباندن به فریم های کلیدی"
 
 #: dialog_timing_processor.cpp:127
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold."
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
 msgstr "فعالسازی چسبیدن زیرنویس به نزدیکترین فریم کلیدی در صورتی که فاصله آنها در یک حد معین باشد"
 
 #: dialog_timing_processor.cpp:129
@@ -3402,11 +3402,11 @@ msgid "Configure Aegisub"
 msgstr "تنظیم نرم افزار"
 
 #: frame_main.cpp:280
-msgid "Cycle Tag Hidding Mode"
+msgid "Cycle Tag Hiding Mode"
 msgstr "تغییر وضعیت نمایش تگ ها"
 
 #: frame_main.cpp:280
-msgid "Cycle through tag-hiding modes"
+msgid "Cycle through tag hiding modes"
 msgstr "تغییر وضعیت نمایش تگ ها"
 
 #: frame_main.cpp:305
@@ -3443,19 +3443,19 @@ msgid "Saves subtitles"
 msgstr "ذخیره زیرنویس"
 
 #: frame_main.cpp:324
-msgid "Save Subtitles as..."
-msgstr "...ذخیره زیرنویس با نام"
+msgid "Save Subtitles as"
+msgstr "ذخیره زیرنویس با نام"
 
 #: frame_main.cpp:324
 msgid "Saves subtitles with another name"
 msgstr "ذخیره زیرنویس با نامی دیگر"
 
 #: frame_main.cpp:325
-msgid "Export Subtitles..."
-msgstr "خروجی گرفتن از زیرنویس..."
+msgid "Export Subtitles"
+msgstr "خروجی گرفتن از زیرنویس"
 
 #: frame_main.cpp:325
-msgid "Saves a copy of subtitles with processing applied to it."
+msgid "Saves a copy of subtitles with processing applied to it"
 msgstr "ذخیره یک نسخه از زیرنویس با اعمال تغییرات داده شده"
 
 #: frame_main.cpp:326
@@ -3554,8 +3554,8 @@ msgid "Paste subtitles"
 msgstr "چسباندن زیرنویس ها"
 
 #: frame_main.cpp:352
-msgid "Paste Lines Over..."
-msgstr "چسباندن بر روی خطوط ..."
+msgid "Paste Lines Over"
+msgstr "چسباندن بر روی خطوط "
 
 #: frame_main.cpp:352
 msgid "Paste subtitles over others"
@@ -3757,7 +3757,7 @@ msgid "Select Lines..."
 msgstr "... انتخاب خطوط "
 
 #: frame_main.cpp:398
-msgid "Selects lines based on defined criterea"
+msgid "Selects lines based on defined criteria"
 msgstr "انتخاب خطوط بر اساس خواسته های مطرح شده"
 
 #: frame_main.cpp:399
@@ -3785,7 +3785,7 @@ msgid "Timing Post-Processor..."
 msgstr "زمانبندی بعد از پردازش"
 
 #: frame_main.cpp:405
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc."
+msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
 msgstr "نرم افزار مقدیر انتخاب شده در بخشهای مختلف را اعمال میکند "
 
 #: frame_main.cpp:406
@@ -3868,12 +3868,12 @@ msgid "Use Dummy Video..."
 msgstr "استفاده از ویدیوی ساختگی ...."
 
 #: frame_main.cpp:429
-msgid "Opens a video clip with solid colour"
+msgid "Opens a video clip with solid color"
 msgstr "ویدیویی با فقط یک رنگ را میگشاید"
 
 #: frame_main.cpp:430
-msgid "Show Video Details..."
-msgstr "...نمایش اطلاعات ویدیو"
+msgid "Show Video Details"
+msgstr "نمایش اطلاعات ویدیو"
 
 #: frame_main.cpp:430
 msgid "Shows video details"
@@ -3932,7 +3932,7 @@ msgid "Detach Video"
 msgstr "جداسازی ویدیو"
 
 #: frame_main.cpp:444
-msgid "Detach video, displaying it in a separate Window."
+msgid "Detach video, displaying it in a separate Window"
 msgstr "ویدیو را جدا کرده و در یک پنجره جدا نشان میدهد"
 
 #: frame_main.cpp:446
@@ -3988,8 +3988,8 @@ msgid "Forces video to 2.35 aspect ratio"
 msgstr " میکند 2.35 نسبت طول به عرض را "
 
 #: frame_main.cpp:463
-msgid "Custom..."
-msgstr "سفارشی..."
+msgid "Custom"
+msgstr "سفارشی"
 
 #: frame_main.cpp:463
 msgid "Forces video to a custom aspect ratio"
@@ -4000,7 +4000,7 @@ msgid "Show Overscan Mask"
 msgstr "نمایش ماسک"
 
 #: frame_main.cpp:465
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions."
+msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
 msgstr "با نمایش ماسک بر روی ویدیو محل هایی که توسط تلویزیون در هنگام نمایش حذف میشوند را مشخص میکند"
 
 #: frame_main.cpp:467
@@ -4126,8 +4126,8 @@ msgid "Vie&w"
 msgstr "نمایش"
 
 #: frame_main.cpp:514
-msgid "&Contents..."
-msgstr "...محتویات"
+msgid "&Contents"
+msgstr "محتویات"
 
 #: frame_main.cpp:514
 msgid "Help topics"
@@ -4142,16 +4142,16 @@ msgid "Resource files distributed with Aegisub"
 msgstr "فایل های منبعی که با نرم افزار پخش می شوند"
 
 #: frame_main.cpp:519
-msgid "&Website..."
-msgstr "...وب سایت"
+msgid "&Website"
+msgstr "وب سایت"
 
 #: frame_main.cpp:519
 msgid "Visit Aegisub's official website"
 msgstr "بازدید از سایت رسمی نرم افزار"
 
 #: frame_main.cpp:520
-msgid "&Forums..."
-msgstr "... انجمن"
+msgid "&Forums"
+msgstr " انجمن"
 
 #: frame_main.cpp:520
 msgid "Visit Aegisub's forums"
@@ -4166,7 +4166,7 @@ msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr "بازدید از بخش رهگیری اشکالات برای گزارش اشکالات یا درخواست امکانات جدید "
 
 #: frame_main.cpp:522
-msgid "&IRC Channel..."
+msgid "&IRC Channel"
 msgstr "اتاق گفتگو "
 
 #: frame_main.cpp:522
@@ -4182,8 +4182,8 @@ msgid "Check to see if there is a new version of Aegisub available"
 msgstr "بررسی کن که آیا نسخه جدیدی برای نرم افزار موجود هست یا نه"
 
 #: frame_main.cpp:527
-msgid "&About..."
-msgstr "...درباره"
+msgid "&About"
+msgstr "درباره"
 
 #: frame_main.cpp:740
 msgid "Save subtitles file"
@@ -4724,7 +4724,7 @@ msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "نظر شما در مورد این خط.این خطوط در صفحه نمایش داده نمیشود"
 
 #: subs_edit_box.cpp:87
-msgid "Style for this line."
+msgid "Style for this line"
 msgstr "استایل این خط"
 
 #: subs_edit_box.cpp:89
@@ -5168,15 +5168,15 @@ msgid "Toggle autoscroll of video"
 msgstr "دنبال کردن زمان ویدیو"
 
 #: video_box.cpp:90
-msgid "Seek video."
+msgid "Seek video"
 msgstr "جستجوی ویدیو"
 
 #: video_box.cpp:94
-msgid "Current frame time and number."
+msgid "Current frame time and number"
 msgstr "زمان و شماره فریم کنونی"
 
 #: video_box.cpp:98
-msgid "Time of this frame relative to start and end of current subs."
+msgid "Time of this frame relative to start and end of current subs"
 msgstr "زمان این فریم مرتبط با شروع و پایان زیرنویس کنونی است"
 
 #: video_box.cpp:114
@@ -5184,7 +5184,7 @@ msgid "Standard"
 msgstr "استاندارد"
 
 #: video_box.cpp:114
-msgid "Standard mode, double click sets position."
+msgid "Standard mode, double click sets position"
 msgstr "حالت استاندارد، برای تنظیم مکان ها دابل کلیک کنید"
 
 #: video_box.cpp:115
@@ -5193,7 +5193,7 @@ msgid "Drag"
 msgstr "جابجایی"
 
 #: video_box.cpp:115
-msgid "Drag subtitles."
+msgid "Drag subtitles"
 msgstr "مکان زیرنویس را جابجا میکند"
 
 #: video_box.cpp:116
@@ -5201,7 +5201,7 @@ msgid "Rotate Z"
 msgstr "Zچرخش "
 
 #: video_box.cpp:116
-msgid "Rotate subtitles on their Z axis."
+msgid "Rotate subtitles on their Z axis"
 msgstr " میچرخاند Zزیر نویس را حول محور "
 
 #: video_box.cpp:117
@@ -5209,7 +5209,7 @@ msgid "Rotate XY"
 msgstr "XYچرخش "
 
 #: video_box.cpp:117
-msgid "Rotate subtitles on their X and Y axes."
+msgid "Rotate subtitles on their X and Y axes"
 msgstr " میچرخاند XYزیر نویس را حول محورهای "
 
 #: video_box.cpp:118
@@ -5217,7 +5217,7 @@ msgid "Scale"
 msgstr "اندازه"
 
 #: video_box.cpp:118
-msgid "Scale subtitles on X and Y axes."
+msgid "Scale subtitles on X and Y axes"
 msgstr " XYتغییر اندازه زیرنویس در محور"
 
 #: video_box.cpp:119
@@ -5225,7 +5225,7 @@ msgid "Clip"
 msgstr "برش"
 
 #: video_box.cpp:119
-msgid "Clip subtitles to a rectangle."
+msgid "Clip subtitles to a rectangle"
 msgstr "زیرنویس را به صورت مستطیل برش میدهد"
 
 #: video_box.cpp:120
@@ -5233,7 +5233,7 @@ msgid "Vector Clip"
 msgstr "برش برداری"
 
 #: video_box.cpp:120
-msgid "Clip subtitles to a vectorial area."
+msgid "Clip subtitles to a vectorial area"
 msgstr "زیرنویس را به صورت برداری برش میدهد"
 
 #: video_box.cpp:122
@@ -5245,7 +5245,7 @@ msgid "Toggle realtime display of changes."
 msgstr "تغییرات را در همان لحظه نمایش میدهد"
 
 #: video_box.cpp:124
-msgid "Open the manual page for Visual Typesetting."
+msgid "Open the manual page for Visual Typesetting"
 msgstr "صفحه مرتبط را در راهنما باز میکند"
 
 #: video_display.cpp:478
@@ -5299,7 +5299,7 @@ msgid "positioning"
 msgstr "موقعیت یابی"
 
 #: visual_tool_vector_clip.cpp:70
-msgid "Drag control points."
+msgid "Drag control points"
 msgstr "کشیدن نقاط کنترلی"
 
 #: visual_tool_vector_clip.cpp:71
@@ -5307,23 +5307,23 @@ msgid "Line"
 msgstr "خط"
 
 #: visual_tool_vector_clip.cpp:71
-msgid "Appends a line."
-msgstr ".پیوست یک خط"
+msgid "Appends a line"
+msgstr "پیوست یک خط"
 
 #: visual_tool_vector_clip.cpp:72
 msgid "Bicubic"
 msgstr "چند ضلعی"
 
 #: visual_tool_vector_clip.cpp:72
-msgid "Appends a bezier bicubic curve."
-msgstr "Appends a bezier bicubic curve."
+msgid "Appends a bezier bicubic curve"
+msgstr "Appends a bezier bicubic curve"
 
 #: visual_tool_vector_clip.cpp:74
 msgid "Convert"
 msgstr "تبدیل"
 
 #: visual_tool_vector_clip.cpp:74
-msgid "Converts a segment between line and bicubic."
+msgid "Converts a segment between line and bicubic"
 msgstr "یک بخش را بین خط و خط ضلعی تبدیل میکند"
 
 #: visual_tool_vector_clip.cpp:75
@@ -5331,7 +5331,7 @@ msgid "Insert"
 msgstr "وارد کردن"
 
 #: visual_tool_vector_clip.cpp:75
-msgid "Inserts a control point."
+msgid "Inserts a control point"
 msgstr "وارد کردن یک نقطه کنترل"
 
 #: visual_tool_vector_clip.cpp:76
@@ -5339,7 +5339,7 @@ msgid "Remove"
 msgstr "حذف"
 
 #: visual_tool_vector_clip.cpp:76
-msgid "Removes a control point."
+msgid "Removes a control point"
 msgstr "حذف یک نقطه کنترل"
 
 #: visual_tool_vector_clip.cpp:78
@@ -5347,7 +5347,7 @@ msgid "Freehand"
 msgstr "دست آزاد"
 
 #: visual_tool_vector_clip.cpp:78
-msgid "Draws a freehand shape."
+msgid "Draws a freehand shape"
 msgstr "طراحی شکل یه صورت دست آزاد"
 
 #: visual_tool_vector_clip.cpp:79
@@ -5355,7 +5355,7 @@ msgid "Freehand smooth"
 msgstr "صاف کردن دست آزاد"
 
 #: visual_tool_vector_clip.cpp:79
-msgid "Draws a smoothed freehand shape."
+msgid "Draws a smoothed freehand shape"
 msgstr "اشکالی با خطوط صاف در حالت دست آزاد میکشد"
 
 #~ msgid "FRAME"
