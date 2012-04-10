@@ -36,18 +36,16 @@
 
 #ifdef WITH_CSRI
 
+#include "include/aegisub/subtitles_provider.h"
+
 #ifndef AGI_PRE
-#include <tr1/memory>
 #include <vector>
 #endif
 
-#include "include/aegisub/subtitles_provider.h"
-#ifdef WIN32
-#define CSRIAPI
-#include "../../contrib/csri/include/csri/csri.h"
-#else
-#include <csri/csri.h>
-#endif
+#include <libaegisub/scoped_ptr.h>
+
+typedef void csri_rend;
+typedef void csri_inst;
 
 /// DOCME
 /// @class CSRISubtitlesProvider
@@ -55,12 +53,15 @@
 ///
 /// DOCME
 class CSRISubtitlesProvider : public SubtitlesProvider {
-	/// DOCME
-	std::string subType;
+	agi::scoped_holder<csri_inst*> instance;
+	csri_rend *renderer;
 
-	/// DOCME
-	std::tr1::shared_ptr<csri_inst> instance;
+	/// VSFilter's implementation of csri_open_mem writes the file to disk then
+	/// opens it with the standard file reader, and by writing the file ourselves
+	/// we can skip a few pointless charset conversions
+	bool can_open_mem;
 
+	/// Name of the file passed to renderers with can_open_mem false
 	wxString tempfile;
 public:
 	CSRISubtitlesProvider(std::string subType);
