@@ -528,7 +528,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	OptionAdd(spectrum, _("Cache memory max (MB)"), "Audio/Renderer/Spectrum/Memory Max", 2, 1024);
 
 #ifdef WITH_AVISYNTH
-	wxFlexGridSizer *avisynth = PageSizer(_("Avisynth"));
+	wxFlexGridSizer *avisynth = PageSizer("Avisynth");
 	const wxString adm_arr[3] = { "ConvertToMono", "GetLeftChannel", "GetRightChannel" };
 	wxArrayString adm_choice(3, adm_arr);
 	OptionChoice(avisynth, _("Avisynth down-mixer"), adm_choice, "Audio/Downmixer");
@@ -536,7 +536,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 #endif
 
 #ifdef WITH_FFMS2
-	wxFlexGridSizer *ffms = PageSizer(_("FFMS2"));
+	wxFlexGridSizer *ffms = PageSizer("FFmpegSource");
 
 	const wxString error_modes[] = { _("Ignore"), _("Clear"), _("Stop"), _("Abort") };
 	wxArrayString error_modes_choice(4, error_modes);
@@ -546,17 +546,17 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 #endif
 
 #ifdef WITH_PORTAUDIO
-	wxFlexGridSizer *portaudio = PageSizer(_("Portaudio"));
+	wxFlexGridSizer *portaudio = PageSizer("Portaudio");
 	OptionChoice(portaudio, _("Portaudio device"), PortAudioPlayer::GetOutputDevices(), "Player/Audio/PortAudio/Device Name");
 #endif
 
 #ifdef WITH_OSS
-	wxFlexGridSizer *oss = PageSizer(_("OSS"));
+	wxFlexGridSizer *oss = PageSizer("OSS");
 	OptionBrowse(oss, _("OSS Device"), "Player/Audio/OSS/Device");
 #endif
 
 #ifdef WITH_DIRECTSOUND
-	wxFlexGridSizer *dsound = PageSizer(_("DirectSound"));
+	wxFlexGridSizer *dsound = PageSizer("DirectSound");
 	OptionAdd(dsound, _("Buffer latency"), "Player/Audio/DirectSound/Buffer Latency", 1, 1000);
 	OptionAdd(dsound, _("Buffer length"), "Player/Audio/DirectSound/Buffer Length", 1, 100);
 #endif
@@ -576,14 +576,14 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 
 
 #ifdef WITH_AVISYNTH
-	wxFlexGridSizer *avisynth = PageSizer(_("Avisynth"));
+	wxFlexGridSizer *avisynth = PageSizer("Avisynth");
 	OptionAdd(avisynth, _("Allow pre-2.56a Avisynth"), "Provider/Avisynth/Allow Ancient");
 	CellSkip(avisynth);
 	OptionAdd(avisynth, _("Avisynth memory limit"), "Provider/Avisynth/Memory Max");
 #endif
 
 #ifdef WITH_FFMS2
-	wxFlexGridSizer *ffms = PageSizer(_("FFMS2"));
+	wxFlexGridSizer *ffms = PageSizer("FFmpegSource");
 
 	const wxString log_levels[] = { "Quiet", "Panic", "Fatal", "Error", "Warning", "Info", "Verbose", "Debug" };
 	wxArrayString log_levels_choice(8, log_levels);
