@@ -78,7 +78,9 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 ///
 void SubtitlesProviderFactory::RegisterProviders() {
 #ifdef WITH_CSRI
-	Register<CSRISubtitlesProvider>("CSRI", false, CSRISubtitlesProvider::GetSubTypes());
+	std::vector<std::string> csri_providers(CSRISubtitlesProvider::GetSubTypes());
+	if (!csri_providers.empty())
+		Register<CSRISubtitlesProvider>("CSRI", false, csri_providers);
 #endif
 #ifdef WITH_LIBASS
 	Register<LibassSubtitlesProvider>("libass");
