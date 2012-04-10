@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-03 19:44-0700\n"
+"POT-Creation-Date: 2012-04-10 11:09-0700\n"
 "PO-Revision-Date: 2005-2012-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,64 +16,66 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:921
+#: ../src/base_grid.cpp:509 ../src/base_grid.cpp:920
 msgid "#"
 msgstr ""
 
-#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:922
+#: ../src/base_grid.cpp:509 ../src/base_grid.cpp:921
 msgid "L"
 msgstr ""
 
-#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:796 ../src/base_grid.cpp:923
+#: ../src/base_grid.cpp:509 ../src/base_grid.cpp:795 ../src/base_grid.cpp:922
 msgid "Start"
 msgstr ""
 
-#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:797 ../src/base_grid.cpp:924
+#: ../src/base_grid.cpp:509 ../src/base_grid.cpp:796 ../src/base_grid.cpp:923
 msgid "End"
 msgstr ""
 
-#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:798 ../src/base_grid.cpp:925
+#: ../src/base_grid.cpp:509 ../src/base_grid.cpp:797 ../src/base_grid.cpp:924
 #: ../src/dialog_paste_over.cpp:65 ../src/dialog_search_replace.cpp:98
 msgid "Style"
 msgstr ""
 
-#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:799 ../src/base_grid.cpp:926
-#: ../src/dialog_paste_over.cpp:66 ../src/dialog_search_replace.cpp:99
+#: ../src/base_grid.cpp:509 ../src/base_grid.cpp:798 ../src/base_grid.cpp:925
+#: ../src/dialog_paste_over.cpp:66 ../src/subs_edit_box.cpp:159
+#: ../src/dialog_search_replace.cpp:99
 msgid "Actor"
 msgstr ""
 
-#: ../src/base_grid.cpp:511 ../src/base_grid.cpp:800 ../src/base_grid.cpp:927
+#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:799 ../src/base_grid.cpp:926
 #: ../src/command/grid.cpp:142 ../src/command/grid.cpp:155
-#: ../src/dialog_paste_over.cpp:70 ../src/dialog_search_replace.cpp:100
+#: ../src/dialog_paste_over.cpp:70 ../src/subs_edit_box.cpp:164
+#: ../src/dialog_search_replace.cpp:100
 msgid "Effect"
 msgstr ""
 
-#: ../src/base_grid.cpp:511 ../src/base_grid.cpp:801 ../src/base_grid.cpp:928
+#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:800 ../src/base_grid.cpp:927
 #: ../src/dialog_style_editor.cpp:296
 msgid "Left"
 msgstr ""
 
-#: ../src/base_grid.cpp:511 ../src/base_grid.cpp:802 ../src/base_grid.cpp:929
+#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:801 ../src/base_grid.cpp:928
 #: ../src/dialog_style_editor.cpp:296
 msgid "Right"
 msgstr ""
 
-#: ../src/base_grid.cpp:511 ../src/base_grid.cpp:803 ../src/base_grid.cpp:930
+#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:802 ../src/base_grid.cpp:929
 #: ../src/dialog_style_editor.cpp:296
 msgid "Vert"
 msgstr ""
 
-#: ../src/base_grid.cpp:511 ../src/base_grid.cpp:931
+#: ../src/base_grid.cpp:510 ../src/base_grid.cpp:930
 #: ../src/dialog_kara_timing_copy.cpp:643 ../src/dialog_paste_over.cpp:71
 #: ../src/dialog_search_replace.cpp:97
 msgid "Text"
 msgstr ""
 
-#: ../src/base_grid.cpp:794
+#: ../src/base_grid.cpp:793
 msgid "Line Number"
 msgstr ""
 
-#: ../src/base_grid.cpp:795 ../src/dialog_paste_over.cpp:62
+#: ../src/base_grid.cpp:794 ../src/dialog_paste_over.cpp:62
 msgid "Layer"
 msgstr ""
 
@@ -763,18 +765,18 @@ msgstr ""
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current storage. "
-"Proceed and overwrite anyway?"
+"Overwrite?"
 msgstr ""
 
 #: ../src/dialog_style_manager.cpp:416
 msgid "Style name collision."
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:445
+#: ../src/dialog_style_manager.cpp:445 ../src/dialog_style_manager.cpp:617
 #, c-format
 msgid ""
-"There is already a style with the name \"%s\" in the current script. Proceed "
-"and overwrite anyway?"
+"There is already a style with the name \"%s\" in the current script. "
+"Overwrite?"
 msgstr ""
 
 #: ../src/dialog_style_manager.cpp:445 ../src/dialog_style_manager.cpp:618
@@ -820,13 +822,6 @@ msgstr ""
 
 #: ../src/dialog_style_manager.cpp:607
 msgid "Import Styles"
-msgstr ""
-
-#: ../src/dialog_style_manager.cpp:617
-#, c-format
-msgid ""
-"There is already a style with the name \"%s\" on the current script. "
-"Overwrite?"
 msgstr ""
 
 #: ../src/dialog_style_manager.cpp:640
@@ -879,6 +874,11 @@ msgstr ""
 
 #: ../src/command/timecode.cpp:100
 msgid "Saves a VFR timecodes v2 file"
+msgstr ""
+
+#: ../src/command/command.cpp:35
+#, c-format
+msgid "'%s' is not a valid command name"
 msgstr ""
 
 #: ../src/command/video.cpp:91
@@ -1745,7 +1745,7 @@ msgstr ""
 msgid "&Fonts Collector..."
 msgstr ""
 
-#: ../src/command/tool.cpp:100 ../src/dialog_fonts_collector.cpp:184
+#: ../src/command/tool.cpp:100 ../src/dialog_fonts_collector.cpp:193
 msgid "Fonts Collector"
 msgstr ""
 
@@ -2025,7 +2025,7 @@ msgstr ""
 msgid "Move to the next subtitle line, creating a new one if needed"
 msgstr ""
 
-#: ../src/command/grid.cpp:86 ../src/subs_grid.cpp:175
+#: ../src/command/grid.cpp:86 ../src/subs_grid.cpp:181
 msgid "line insertion"
 msgstr ""
 
@@ -2121,7 +2121,7 @@ msgid "Sort selected subtitles by their style names"
 msgstr ""
 
 #: ../src/command/grid.cpp:245 ../src/command/grid.cpp:246
-msgid "Cycle Tag Hiding"
+msgid "Cycle Tag Hiding Mode"
 msgstr ""
 
 #: ../src/command/grid.cpp:247
@@ -2904,100 +2904,107 @@ msgstr ""
 msgid "Copying fonts to archive...\n"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:140
+#: ../src/dialog_fonts_collector.cpp:144
 #, c-format
 msgid "* Copied %s.\n"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:142
+#: ../src/dialog_fonts_collector.cpp:146
 #, c-format
 msgid "* %s already exists on destination.\n"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:144
+#: ../src/dialog_fonts_collector.cpp:148
 #, c-format
 msgid "* Failed to copy %s.\n"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:150
+#: ../src/dialog_fonts_collector.cpp:154
 msgid "Done. All fonts copied."
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:152
+#: ../src/dialog_fonts_collector.cpp:156
 msgid "Done. Some fonts could not be copied."
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:190
+#: ../src/dialog_fonts_collector.cpp:159
+msgid ""
+"\n"
+"Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the "
+"player if they are all attached to a Matroska file."
+msgstr ""
+
+#: ../src/dialog_fonts_collector.cpp:199
 msgid "Check fonts for availability"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:191
+#: ../src/dialog_fonts_collector.cpp:200
 msgid "Copy fonts to folder"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:192
+#: ../src/dialog_fonts_collector.cpp:201
 msgid "Copy fonts to subtitle file's folder"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:193
+#: ../src/dialog_fonts_collector.cpp:202
 msgid "Copy fonts to zipped archive"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:201
+#: ../src/dialog_fonts_collector.cpp:210
 msgid "Destination"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:205
+#: ../src/dialog_fonts_collector.cpp:214
 msgid "&Browse..."
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:214
+#: ../src/dialog_fonts_collector.cpp:223
 msgid "Log"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:227
+#: ../src/dialog_fonts_collector.cpp:236
 msgid "&Start!"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:274
+#: ../src/dialog_fonts_collector.cpp:283
 msgid "Invalid destination."
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:274 ../src/dialog_fonts_collector.cpp:278
-#: ../src/dialog_fonts_collector.cpp:283 ../src/preferences.cpp:240
-#: ../src/preferences.cpp:475 ../src/dialog_kara_timing_copy.cpp:745
+#: ../src/dialog_fonts_collector.cpp:283 ../src/dialog_fonts_collector.cpp:287
+#: ../src/dialog_fonts_collector.cpp:292 ../src/preferences.cpp:240
+#: ../src/dialog_kara_timing_copy.cpp:745
 #: ../src/dialog_kara_timing_copy.cpp:747
 #: ../src/dialog_kara_timing_copy.cpp:792
 msgid "Error"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:278
+#: ../src/dialog_fonts_collector.cpp:287
 msgid "Could not create destination folder."
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:283
+#: ../src/dialog_fonts_collector.cpp:292
 msgid "Invalid path for .zip file."
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:307
+#: ../src/dialog_fonts_collector.cpp:316
 msgid "Select archive file name"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:314
+#: ../src/dialog_fonts_collector.cpp:323
 msgid "Select folder to save fonts on"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:328
+#: ../src/dialog_fonts_collector.cpp:337
 msgid "N/A"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:336
+#: ../src/dialog_fonts_collector.cpp:345
 msgid ""
 "Choose the folder where the fonts will be collected to. It will be created "
 "if it doesn't exist."
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:343
+#: ../src/dialog_fonts_collector.cpp:352
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
@@ -3487,23 +3494,27 @@ msgid "Auto-load path"
 msgstr ""
 
 #: ../src/preferences.cpp:475
-msgid "Fatal"
+msgid "0: Fatal"
 msgstr ""
 
 #: ../src/preferences.cpp:475
-msgid "Warning"
+msgid "1: Error"
 msgstr ""
 
 #: ../src/preferences.cpp:475
-msgid "Hint"
+msgid "2: Warning"
 msgstr ""
 
 #: ../src/preferences.cpp:475
-msgid "Debug"
+msgid "3: Hint"
 msgstr ""
 
 #: ../src/preferences.cpp:475
-msgid "Trace"
+msgid "4: Debug"
+msgstr ""
+
+#: ../src/preferences.cpp:475
+msgid "5: Trace"
 msgstr ""
 
 #: ../src/preferences.cpp:477
@@ -3612,20 +3623,12 @@ msgstr ""
 msgid "Cache memory max (MB)"
 msgstr ""
 
-#: ../src/preferences.cpp:531 ../src/preferences.cpp:579
-msgid "Avisynth"
-msgstr ""
-
 #: ../src/preferences.cpp:534
 msgid "Avisynth down-mixer"
 msgstr ""
 
 #: ../src/preferences.cpp:535
 msgid "Force sample rate"
-msgstr ""
-
-#: ../src/preferences.cpp:539 ../src/preferences.cpp:586
-msgid "FFMS2"
 msgstr ""
 
 #: ../src/preferences.cpp:541
@@ -3648,24 +3651,12 @@ msgstr ""
 msgid "Always index all audio tracks"
 msgstr ""
 
-#: ../src/preferences.cpp:549
-msgid "Portaudio"
-msgstr ""
-
 #: ../src/preferences.cpp:550
 msgid "Portaudio device"
 msgstr ""
 
-#: ../src/preferences.cpp:554
-msgid "OSS"
-msgstr ""
-
 #: ../src/preferences.cpp:555
 msgid "OSS Device"
-msgstr ""
-
-#: ../src/preferences.cpp:559
-msgid "DirectSound"
 msgstr ""
 
 #: ../src/preferences.cpp:560
@@ -3681,7 +3672,7 @@ msgid "Video provider"
 msgstr ""
 
 #: ../src/preferences.cpp:575
-msgid "Subtitle provider"
+msgid "Subtitles provider"
 msgstr ""
 
 #: ../src/preferences.cpp:580
@@ -3915,7 +3906,7 @@ msgstr ""
 msgid "T&ext"
 msgstr ""
 
-#: ../src/main.cpp:316
+#: ../src/main.cpp:320
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -3927,7 +3918,7 @@ msgid ""
 "Aegisub will now close."
 msgstr ""
 
-#: ../src/main.cpp:341 ../src/main.cpp:350
+#: ../src/main.cpp:345 ../src/main.cpp:354
 msgid "Program error"
 msgstr ""
 
@@ -4095,7 +4086,7 @@ msgstr ""
 msgid "set font"
 msgstr ""
 
-#: ../src/subs_edit_box.cpp:733 ../src/subs_edit_box.cpp:739
+#: ../src/subs_edit_box.cpp:727 ../src/subs_edit_box.cpp:738
 msgid "set color"
 msgstr ""
 
@@ -4210,7 +4201,7 @@ msgstr ""
 
 #: ../src/dialog_selection.cpp:246
 #, c-format
-msgid "%u lines were were added to selection"
+msgid "%u lines were added to selection"
 msgstr ""
 
 #: ../src/dialog_selection.cpp:253 ../src/dialog_selection.cpp:262
@@ -4223,7 +4214,7 @@ msgstr ""
 
 #: ../src/dialog_selection.cpp:255 ../src/dialog_selection.cpp:264
 #, c-format
-msgid "%u lines were were removed from selection"
+msgid "%u lines were removed from selection"
 msgstr ""
 
 #: ../src/dialog_selection.cpp:270
@@ -4584,19 +4575,19 @@ msgstr ""
 msgid "No matches found."
 msgstr ""
 
-#: ../src/subs_grid.cpp:158
+#: ../src/subs_grid.cpp:164
 msgid "combining"
 msgstr ""
 
-#: ../src/subs_grid.cpp:293
+#: ../src/subs_grid.cpp:299
 msgid "paste"
 msgstr ""
 
-#: ../src/subs_grid.cpp:334
+#: ../src/subs_grid.cpp:340
 msgid "delete"
 msgstr ""
 
-#: ../src/subs_grid.cpp:374
+#: ../src/subs_grid.cpp:380
 msgid "adjoin"
 msgstr ""
 
@@ -4754,75 +4745,75 @@ msgstr ""
 msgid "OEM"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:655
+#: ../src/dialog_colorpicker.cpp:663
 msgid "Select Color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:688
+#: ../src/dialog_colorpicker.cpp:696
 msgid "Color spectrum"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:691
+#: ../src/dialog_colorpicker.cpp:699
 msgid "RGB/R"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:691
+#: ../src/dialog_colorpicker.cpp:699
 msgid "RGB/G"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:691
+#: ../src/dialog_colorpicker.cpp:699
 msgid "RGB/B"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:691
+#: ../src/dialog_colorpicker.cpp:699
 msgid "HSL/L"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:691
+#: ../src/dialog_colorpicker.cpp:699
 msgid "HSV/H"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:697
+#: ../src/dialog_colorpicker.cpp:705
 msgid "RGB color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:698
+#: ../src/dialog_colorpicker.cpp:706
 msgid "HSL color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:699
+#: ../src/dialog_colorpicker.cpp:707
 msgid "HSV color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:719
+#: ../src/dialog_colorpicker.cpp:731
 msgid "Spectrum mode:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:730
+#: ../src/dialog_colorpicker.cpp:742
 msgid "Red:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:730
+#: ../src/dialog_colorpicker.cpp:742
 msgid "Green:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:730
+#: ../src/dialog_colorpicker.cpp:742
 msgid "Blue:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:737 ../src/dialog_colorpicker.cpp:740
+#: ../src/dialog_colorpicker.cpp:749 ../src/dialog_colorpicker.cpp:752
 msgid "Hue:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:737 ../src/dialog_colorpicker.cpp:740
+#: ../src/dialog_colorpicker.cpp:749 ../src/dialog_colorpicker.cpp:752
 msgid "Sat.:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:737
+#: ../src/dialog_colorpicker.cpp:749
 msgid "Lum.:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:740
+#: ../src/dialog_colorpicker.cpp:752
 msgid "Value:"
 msgstr ""
 
@@ -5586,6 +5577,11 @@ msgstr ""
 
 #: default_menu.json:0
 msgid "Override &AR"
+msgstr ""
+
+
+#: default_hotkey.json:584:
+msgid "Subtitle Edit Box"
 msgstr ""
 
 
