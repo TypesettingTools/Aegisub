@@ -143,7 +143,7 @@ class HotkeyModelCategory : public HotkeyModelItem {
 public:
 	HotkeyModelCategory(wxDataViewModel *model, wxString const& name)
 	: model(model)
-	, name(name)
+	, name(wxGetTranslation(name))
 	{
 	}
 
