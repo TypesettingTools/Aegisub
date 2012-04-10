@@ -572,7 +572,7 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	OptionChoice(expert, _("Video provider"), vp_choice, "Video/Provider");
 
 	wxArrayString sp_choice = vec_to_arrstr(SubtitlesProviderFactory::GetClasses());
-	OptionChoice(expert, _("Subtitle provider"), sp_choice, "Subtitle/Provider");
+	OptionChoice(expert, _("Subtitles provider"), sp_choice, "Subtitle/Provider");
 
 
 #ifdef WITH_AVISYNTH
