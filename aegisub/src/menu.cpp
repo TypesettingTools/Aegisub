@@ -430,12 +430,12 @@ namespace menu {
 			read_entry(*it, "submenu", &submenu);
 			read_entry(*it, "text", &disp);
 			if (!submenu.empty()) {
-				menu->Append(build_menu(submenu, c, &menu->cm), lagi_wxString(disp));
+				menu->Append(build_menu(submenu, c, &menu->cm), _(lagi_wxString(disp)));
 			}
 			else {
 				read_entry(*it, "special", &submenu);
 				if (submenu == "automation")
-					menu->Append(new AutomationMenu(c, &menu->cm), lagi_wxString(disp));
+					menu->Append(new AutomationMenu(c, &menu->cm), _(lagi_wxString(disp)));
 			}
 		}
 
