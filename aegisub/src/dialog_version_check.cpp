@@ -136,7 +136,7 @@ public:
 wxDEFINE_EVENT(AEGISUB_EVENT_VERSIONCHECK_RESULT, AegisubVersionCheckResultEvent);
 
 AegisubVersionCheckResultEvent::AegisubVersionCheckResultEvent(wxString message)
-: wxEvent(AEGISUB_EVENT_VERSIONCHECK_RESULT)
+: wxEvent(0, AEGISUB_EVENT_VERSIONCHECK_RESULT)
 , main_text(message)
 {
 }
