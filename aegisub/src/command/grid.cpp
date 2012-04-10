@@ -242,8 +242,8 @@ struct grid_sort_style_selected : public validate_sel_multiple {
 /// Cycle through tag hiding modes.
 struct grid_tag_cycle_hiding : public Command {
 	CMD_NAME("grid/tag/cycle_hiding")
-	STR_MENU("Cycle Tag Hiding")
-	STR_DISP("Cycle Tag Hiding")
+	STR_MENU("Cycle Tag Hiding Mode")
+	STR_DISP("Cycle Tag Hiding Mode")
 	STR_HELP("Cycle through tag hiding modes")
 
 	void operator()(agi::Context *) {
