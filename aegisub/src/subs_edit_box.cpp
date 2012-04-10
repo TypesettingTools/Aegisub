@@ -156,12 +156,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	StyleBox = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
 
-	ActorBox = new Placeholder<wxComboBox>(this, "Actor", wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
+	ActorBox = new Placeholder<wxComboBox>(this, _("Actor"), wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());
 	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());
 	TopSizer->Add(ActorBox, wxSizerFlags(2).Center().Border(wxRIGHT));
 
-	Effect = new Placeholder<wxTextCtrl>(this, "Effect", wxSize(80,-1), wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	Effect = new Placeholder<wxTextCtrl>(this, _("Effect"), wxSize(80,-1), wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
 	TopSizer->Add(Effect, 3, wxALIGN_CENTER, 5);
 
