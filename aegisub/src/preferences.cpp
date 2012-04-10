@@ -472,7 +472,7 @@ Automation::Automation(wxTreebook *book, Preferences *parent): OptionPage(book, 
 	OptionAdd(general, _("Include path"), "Path/Automation/Include");
 	OptionAdd(general, _("Auto-load path"), "Path/Automation/Autoload");
 
-	const wxString tl_arr[6] = { _("Fatal"), _("Error"), _("Warning"), _("Hint"), _("Debug"), _("Trace") };
+	const wxString tl_arr[6] = { _("0: Fatal"), _("1: Error"), _("2: Warning"), _("3: Hint"), _("4: Debug"), _("5: Trace") };
 	wxArrayString tl_choice(6, tl_arr);
 	OptionChoice(general, _("Trace level"), tl_choice, "Automation/Trace Level");
 
