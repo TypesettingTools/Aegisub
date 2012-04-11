@@ -35,9 +35,16 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueSingle, OptionJsonValueError, "op
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueNull, OptionJsonValueError, "options/value")
 
 class ConfigVisitor : public json::ConstVisitor {
+	/// Option map being populated
 	OptionValueMap &values;
+	/// Option name prefix to add to read names
 	std::string name;
+	/// Log errors rather than throwing them, for when loading user config files
+	/// (as a bad user config file shouldn't make the program fail to start)
 	bool ignore_errors;
+	/// Replace existing options rather than changing their value, so that the
+	/// default value is changed to the new one
+	bool replace;
 
 	template<class ErrorType>
 	void Error(const char *message);
@@ -47,7 +54,7 @@ class ConfigVisitor : public json::ConstVisitor {
 
 	void AddOptionValue(OptionValue* opt);
 public:
-	ConfigVisitor(OptionValueMap &val, const std::string &member_name, bool ignore_errors = false);
+	ConfigVisitor(OptionValueMap &val, const std::string &member_name, bool ignore_errors = false, bool replace = false);
 
 	void Visit(const json::Array& array);
 	void Visit(const json::Object& object);

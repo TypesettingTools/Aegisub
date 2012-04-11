@@ -26,19 +26,20 @@
 #ifndef LAGI_PRE
 #include <cassert>
 #include <cmath>
-#include <memory>
 #endif
 
 #include <libaegisub/colour.h>
 #include <libaegisub/log.h>
 #include <libaegisub/option_value.h>
+#include <libaegisub/scoped_ptr.h>
 
 namespace agi {
 
-ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name, bool ignore_errors)
+ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name, bool ignore_errors, bool replace)
 : values(val)
 , name(member_name)
 , ignore_errors(ignore_errors)
+, replace(replace)
 {
 }
 
@@ -57,13 +58,13 @@ void ConfigVisitor::Visit(const json::Object& object) {
 		name += "/";
 
 	for (; index != index_end; ++index) {
-		ConfigVisitor config_visitor(values, name + index->first, ignore_errors);
+		ConfigVisitor config_visitor(values, name + index->first, ignore_errors, replace);
 		index->second.Accept(config_visitor);
 	}
 }
 
 template<class OptionValueType, class ValueType>
-OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*set_list)(const std::vector<ValueType>&)) {
+OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*)(const std::vector<ValueType>&)) {
 	std::vector<ValueType> arr;
 	arr.reserve(src.size());
 
@@ -82,9 +83,7 @@ OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const&
 		arr.push_back(obj.begin()->second);
 	}
 
-	OptionValueType *ret = new OptionValueType(name);
-	(ret->*set_list)(arr);
-	return ret;
+	return new OptionValueType(name, arr);
 }
 
 void ConfigVisitor::Visit(const json::Array& array) {
@@ -145,63 +144,25 @@ void ConfigVisitor::AddOptionValue(OptionValue* opt) {
 		return;
 	}
 
-	if (!values.count(name)) {
+	if (!values.count(name))
 		values[name] = opt;
-		return;
+	else if (replace) {
+		delete values[name];
+		values[name] = opt;
 	}
-
-	// Ensure than opt is deleted at the end of this function even if the Set
-	// method throws
-	std::auto_ptr<OptionValue> auto_opt(opt);
-
-	try {
-		switch (opt->GetType()) {
-			case OptionValue::Type_String:
-				values[name]->SetString(opt->GetString());
-				break;
-
-			case OptionValue::Type_Int:
-				values[name]->SetInt(opt->GetInt());
-				break;
-
-			case OptionValue::Type_Double:
-				values[name]->SetDouble(opt->GetDouble());
-				break;
-
-			case OptionValue::Type_Colour:
-				values[name]->SetColour(opt->GetColour());
-				break;
-
-			case OptionValue::Type_Bool:
-				values[name]->SetBool(opt->GetBool());
-				break;
-
-			case OptionValue::Type_List_String:
-				values[name]->SetListString(opt->GetListString());
-				break;
-
-			case OptionValue::Type_List_Int:
-				values[name]->SetListInt(opt->GetListInt());
-				break;
-
-			case OptionValue::Type_List_Double:
-				values[name]->SetListDouble(opt->GetListDouble());
-				break;
-
-			case OptionValue::Type_List_Colour:
-				values[name]->SetListColour(opt->GetListColour());
-				break;
-
-			case OptionValue::Type_List_Bool:
-				values[name]->SetListBool(opt->GetListBool());
-				break;
+	else {
+		try {
+			// Ensure than opt is deleted at the end of this function even if the Set
+			// method throws
+			agi::scoped_ptr<OptionValue> auto_opt(opt);
+			values[name]->Set(opt);
 		}
-	}
-	catch (agi::OptionValueError const& e) {
-		if (ignore_errors)
-			LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << e.GetChainedMessage();
-		else
-			throw;
+		catch (agi::OptionValueError const& e) {
+			if (ignore_errors)
+				LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << e.GetChainedMessage();
+			else
+				throw;
+		}
 	}
 }
 } // namespace agi

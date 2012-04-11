@@ -122,7 +122,7 @@ void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
 		LOG_E("option/load") << "json::Exception: " << e.what();
 	}
 
-	ConfigVisitor config_visitor(values, "", ignore_errors);
+	ConfigVisitor config_visitor(values, "", ignore_errors, !ignore_errors);
 	config_root.Accept(config_visitor);
 }
 
