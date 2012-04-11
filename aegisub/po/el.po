@@ -1782,7 +1782,7 @@ msgid "Restart Aegisub"
 msgstr "Επανεκκίνηση του Aegisub"
 
 #: dialog_options.cpp:777
-msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
+msgid "Are you sure that you want to restore the defaults? All your settings will be overridden."
 msgstr "Είστε σίγουροι ότι θέλετε να επαναφέρετε τις προεπιλογές; Όλες οι ρυθμίσεις σας θα αλλάξουν."
 
 #: dialog_options.cpp:777

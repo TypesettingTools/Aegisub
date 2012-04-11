@@ -1785,7 +1785,7 @@ msgid "Restart Aegisub"
 msgstr "Membuka ulang Aegisub"
 
 #: dialog_options.cpp:777
-msgid "Are you sure that you want to restore the defaults? All your settings will be overriden."
+msgid "Are you sure that you want to restore the defaults? All your settings will be overridden."
 msgstr "Apakah anda yakin ingin kembali ke seperti semula? Semua pengaturan sebelumnya akan diabaikan."
 
 #: dialog_options.cpp:777
