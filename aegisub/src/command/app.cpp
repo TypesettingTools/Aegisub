@@ -238,7 +238,7 @@ struct app_options : public Command {
 
 	void operator()(agi::Context *c) {
 		try {
-			Preferences(c->parent).ShowModal();
+			while (Preferences(c->parent).ShowModal() < 0);
 		} catch (agi::Exception& e) {
 			LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
 		}

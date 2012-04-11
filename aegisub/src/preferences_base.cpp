@@ -131,6 +131,7 @@ void OptionPage::CellSkip(wxFlexGridSizer *flex) {
 }
 
 wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
+	parent->AddChangeableOption(opt_name);
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	switch (opt->GetType()) {
@@ -176,6 +177,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 }
 
 void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name) {
+	parent->AddChangeableOption(opt_name);
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	wxComboBox *cb = new wxComboBox(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY | wxCB_DROPDOWN);
@@ -214,6 +216,7 @@ wxFlexGridSizer* OptionPage::PageSizer(wxString name) {
 }
 
 void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, wxControl *enabler, bool do_enable) {
+	parent->AddChangeableOption(opt_name);
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	if (opt->GetType() != agi::OptionValue::Type_String)
@@ -246,6 +249,9 @@ void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const
 void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 	const agi::OptionValue *face_opt = OPT_GET(opt_prefix + "Font Face");
 	const agi::OptionValue *size_opt = OPT_GET(opt_prefix + "Font Size");
+
+	parent->AddChangeableOption(face_opt->GetName());
+	parent->AddChangeableOption(size_opt->GetName());
 
 	wxTextCtrl *font_name = new wxTextCtrl(this, -1, face_opt->GetString());
 	font_name->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(face_opt->GetName().c_str(), parent));

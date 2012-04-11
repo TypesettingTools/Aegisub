@@ -21,10 +21,10 @@
 
 class Preferences;
 
-class OptionPage: public wxScrolled<wxPanel> {
+class OptionPage : public wxScrolled<wxPanel> {
 	template<class T>
 	void Add(wxSizer *sizer, wxString const& label, T *control);
-public:
+protected:
 	enum Style {
 		PAGE_DEFAULT    =   0x00000000,
 		PAGE_SCROLL     =   0x00000001,
@@ -34,7 +34,6 @@ public:
 	wxSizer *sizer;
 	Preferences *parent;
 
-	OptionPage(wxTreebook *book, Preferences *parent, wxString name, int style = PAGE_DEFAULT);
 
 	wxFlexGridSizer* PageSizer(wxString name);
 
@@ -43,9 +42,12 @@ public:
 	void OptionChoice(wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name);
 	void OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, wxControl *enabler = 0, bool do_enable = false);
 	void OptionFont(wxSizer *sizer, std::string opt_prefix);
+public:
 
 	/// Enable ctrl only when cbx is checked
 	void EnableIfChecked(wxControl *cbx, wxControl *ctrl);
 	/// Enable ctrl only when cbx is not checked
 	void DisableIfChecked(wxControl *cbx, wxControl *ctrl);
+
+	OptionPage(wxTreebook *book, Preferences *parent, wxString name, int style = PAGE_DEFAULT);
 };

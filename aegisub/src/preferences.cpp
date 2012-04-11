@@ -38,6 +38,7 @@
 #endif
 
 #include <libaegisub/exception.h>
+#include <libaegisub/hotkey.h>
 
 #include "preferences.h"
 
@@ -614,6 +615,10 @@ void Preferences::AddPendingChange(Thunk const& callback) {
 		applyButton->Enable(true);
 }
 
+void Preferences::AddChangeableOption(std::string const& name) {
+	option_names.push_back(name);
+}
+
 void Preferences::OnOK(wxCommandEvent &event) {
 	OnApply(event);
 	EndModal(0);
@@ -653,6 +658,25 @@ void Preferences::OnApply(wxCommandEvent &) {
 	config::opt->Flush();
 }
 
+void Preferences::OnResetDefault(wxCommandEvent&) {
+	if (wxYES != wxMessageBox(_("Are you sure that you want to restore the defaults? All your settings will be overridden."), _("Restore defaults?"), wxYES_NO))
+		return;
+
+	for (std::deque<std::string>::iterator it = option_names.begin(); it != option_names.end(); ++it) {
+		agi::OptionValue *opt = OPT_SET(*it);
+		if (!opt->IsDefault())
+			opt->Reset();
+	}
+	config::opt->Flush();
+
+	agi::hotkey::Hotkey def_hotkeys("", GET_DEFAULT_CONFIG(default_hotkey));
+	hotkey::inst->SetHotkeyMap(def_hotkeys.GetHotkeyMap());
+
+	// Close and reopen the dialog to update all the controls with the new values
+	OPT_SET("Tool/Preferences/Page")->SetInt(book->GetSelection());
+	EndModal(-1);
+}
+
 static void PageChanged(wxBookCtrlEvent& evt) {
 	OPT_SET("Tool/Preferences/Page")->SetInt(evt.GetSelection());
 }
@@ -681,11 +705,16 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	// Bottom Buttons
 	wxStdDialogButtonSizer *stdButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY | wxHELP);
 	applyButton = stdButtonSizer->GetApplyButton();
+	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxButton *defaultButton = new wxButton(this, -1, _("&Restore Defaults"));
+	buttonSizer->Add(defaultButton, wxSizerFlags(0).Expand());
+	buttonSizer->AddStretchSpacer(1);
+	buttonSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand());
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(book, wxSizerFlags(1).Expand().Border());
-	mainSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
+	mainSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
 
 	SetSizerAndFit(mainSizer);
 	SetMinSize(wxSize(-1, 500));
@@ -697,6 +726,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnOK, this, wxID_OK);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnApply, this, wxID_APPLY);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Options"), wxID_HELP);
+	defaultButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnResetDefault, this);
 }
 
 Preferences::~Preferences() {
