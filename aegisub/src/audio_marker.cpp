@@ -74,7 +74,7 @@ void AudioMarkerProviderKeyframes::Update() {
 	markers.clear();
 	markers.reserve(keyframes.size());
 	for (size_t i = 0; i < keyframes.size(); ++i) {
-		markers.push_back(AudioMarkerKeyframe(style.get(), timecodes.TimeAtFrame(keyframes[i])));
+		markers.push_back(AudioMarkerKeyframe(style.get(), timecodes.TimeAtFrame(keyframes[i], agi::vfr::START)));
 	}
 	AnnounceMarkerMoved();
 }
