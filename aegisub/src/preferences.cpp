@@ -134,7 +134,7 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(general, _("Default lead-in length (ms)"), "Audio/Lead/IN", 0, 36000);
 	OptionAdd(general, _("Default lead-out length (ms)"), "Audio/Lead/OUT", 0, 36000);
 
-	OptionAdd(general, _("Start-marker drag sensitivity (px)"), "Audio/Start Drag Sensitivity", 1, 15);
+	OptionAdd(general, _("Marker drag-start sensitivity (px)"), "Audio/Start Drag Sensitivity", 1, 15);
 	OptionAdd(general, _("Line boundary thickness (px)"), "Audio/Line Boundaries Thickness", 1, 5);
 	OptionAdd(general, _("Maximum snap distance (px)"), "Audio/Snap/Distance", 0, 25);
 
