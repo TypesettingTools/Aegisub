@@ -113,6 +113,7 @@ public:
 	virtual std::vector<Colour> const& GetDefaultListColour() const { throw ListTypeError("colour"); }
 	virtual std::vector<bool> const& GetDefaultListBool() const { throw ListTypeError("string"); }
 
+	virtual void Set(const OptionValue *new_value)=0;
 
 	DEFINE_SIGNAL_ADDERS(ValueChanged, Subscribe)
 };
@@ -132,6 +133,7 @@ public:
 		std::string GetName() const { return name; }                                          \
 		void Reset() { value = value_default; NotifyChanged(); }                              \
 		bool IsDefault() const { return value == value_default; }                             \
+		void Set(const OptionValue *new_val) { Set##type_name(new_val->Get##type_name()); }   \
 	};
 
 CONFIG_OPTIONVALUE(String, std::string)
@@ -147,7 +149,8 @@ CONFIG_OPTIONVALUE(Bool, bool)
 		std::string name;                                                                     \
 	public:                                                                                   \
 	virtual std::string GetString() const { return "";}                                       \
-		OptionValueList##type_name(std::string member_name): name(member_name) {}             \
+		OptionValueList##type_name(std::string const& name, std::vector<type> const& value = std::vector<type>()) \
+		: array(value), array_default(value), name(name) { }                                  \
 		std::vector<type> const& GetList##type_name() const { return array; }                 \
 		void SetList##type_name(const std::vector<type>& val) { array = val; NotifyChanged(); } \
 		std::vector<type> const& GetDefaultList##type_name() const { return array_default; }  \
@@ -155,6 +158,7 @@ CONFIG_OPTIONVALUE(Bool, bool)
 		std::string GetName() const { return name; }                                          \
 		void Reset() { array = array_default; NotifyChanged(); }                              \
 		bool IsDefault() const { return array == array_default; }                             \
+		void Set(const OptionValue *nv) { SetList##type_name(nv->GetList##type_name()); }     \
 	};
 
 

@@ -28,6 +28,7 @@
 #include <wx/event.h>
 #include <wx/filefn.h>
 #include <wx/listctrl.h>
+#include <wx/msgdlg.h>
 #include <wx/srchctrl.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
@@ -626,26 +627,7 @@ void Preferences::OnOK(wxCommandEvent &event) {
 
 void Preferences::OnApply(wxCommandEvent &) {
 	for (std::map<std::string, agi::OptionValue*>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
-		agi::OptionValue *opt = OPT_SET(cur->first);
-		switch (opt->GetType()) {
-			case agi::OptionValue::Type_Bool:
-				opt->SetBool(cur->second->GetBool());
-				break;
-			case agi::OptionValue::Type_Colour:
-				opt->SetColour(cur->second->GetColour());
-				break;
-			case agi::OptionValue::Type_Double:
-				opt->SetDouble(cur->second->GetDouble());
-				break;
-			case agi::OptionValue::Type_Int:
-				opt->SetInt(cur->second->GetInt());
-				break;
-			case agi::OptionValue::Type_String:
-				opt->SetString(cur->second->GetString());
-				break;
-			default:
-				throw PreferenceNotSupported("Unsupported type");
-		}
+		OPT_SET(cur->first)->Set(cur->second);
 		delete cur->second;
 	}
 	pending_changes.clear();
