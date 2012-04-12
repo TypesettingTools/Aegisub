@@ -47,6 +47,7 @@
 			"Waveform Style" : 1
 		},
 		"Downmixer" : "ConvertToMono",
+		"Drag Timing" : true,
 		"Inactive Lines Display Mode" : 1,
 		"Karaoke" : {
 			"Font Face" : "Verdana",

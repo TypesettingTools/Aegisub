@@ -322,6 +322,7 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	const agi::OptionValue *auto_commit;
 	const agi::OptionValue *inactive_line_mode;
 	const agi::OptionValue *inactive_line_comments;
+	const agi::OptionValue *drag_timing;
 
 	agi::signal::Connection commit_connection;
 	agi::signal::Connection audio_open_connection;
@@ -416,6 +417,7 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , auto_commit(OPT_GET("Audio/Auto/Commit"))
 , inactive_line_mode(OPT_GET("Audio/Inactive Lines Display Mode"))
 , inactive_line_comments(OPT_GET("Audio/Display/Draw/Inactive Comments"))
+, drag_timing(OPT_GET("Audio/Drag Timing"))
 , commit_connection(c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this))
 , inactive_line_mode_connection(OPT_SUB("Audio/Inactive Lines Display Mode", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 , inactive_line_comment_connection(OPT_SUB("Audio/Display/Draw/Inactive Comments", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
@@ -604,7 +606,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 		// right as the dragged one, such that if the user does start dragging,
 		// he will create a new selection from scratch
 		std::vector<AudioMarker*> jump = GetLeftMarkers();
-		ret = GetRightMarkers();
+		ret = drag_timing->GetBool() ? GetRightMarkers() : jump;
 		// Get ret before setting as setting may swap left/right
 		SetMarkers(jump, SnapPosition(ms, snap_range, jump));
 		return ret;
