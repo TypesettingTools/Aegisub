@@ -340,7 +340,7 @@ public:
 		ctrl = new wxTextCtrl(parent, -1, var.GetString(), label_rect.GetPosition(), label_rect.GetSize(), wxTE_PROCESS_ENTER);
 		ctrl->SetInsertionPointEnd();
 		ctrl->SelectAll();
-		ctrl->Bind(wxEVT_KEY_DOWN, &HotkeyRenderer::OnKeyDown, this);
+		ctrl->Bind(wxEVT_CHAR_HOOK, &HotkeyRenderer::OnKeyDown, this);
 		return ctrl;
 	}
 
