@@ -228,6 +228,8 @@ bool AegisubApp::OnInit() {
 #endif
 
 		StartupLog("Store options back");
+		if (OPT_GET("Version/Last Version")->GetInt() < 6700)
+			OPT_SET("Subtitle/Provider")->Reset();
 		OPT_SET("Version/Last Version")->SetInt(GetSVNRevision());
 
 		StartupLog("Initialize final locale");
