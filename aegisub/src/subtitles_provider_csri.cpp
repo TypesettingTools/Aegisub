@@ -64,22 +64,15 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
 {
 	wxMutexLocker lock(csri_mutex);
 
-	csri_rend *cur = NULL;
-
-	// Select renderer
-	for (cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
-		std::string name(csri_renderer_info(cur)->name);
-		if (name == type) {
+	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
+		if (type == csri_renderer_info(cur)->name) {
 			renderer = cur;
 			break;
 		}
 	}
 
-	// Matching renderer not found, fallback to default
 	if (!renderer)
-		renderer = csri_renderer_default();
-	if (!renderer)
-		throw "No CSRI renderer available, cannot show subtitles. Try installing one or switch to another subtitle provider.";
+		throw agi::InternalError("CSRI renderer vanished between initial list and creation?", 0);
 
 	std::string name(csri_renderer_info(renderer)->name);
 	can_open_mem = (name.find("vsfilter") == name.npos);
