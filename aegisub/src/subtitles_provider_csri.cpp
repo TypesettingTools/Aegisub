@@ -83,12 +83,11 @@ CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 }
 
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
-	wxMutexLocker lock(csri_mutex);
-
-	// Open from memory
 	if (can_open_mem) {
 		std::vector<char> data;
 		subs->SaveMemory(data);
+
+		wxMutexLocker lock(csri_mutex);
 		instance = csri_open_mem(renderer, &data[0], data.size(), NULL);
 	}
 	// Open from disk
@@ -99,6 +98,8 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 			tempfile += ".ass";
 		}
 		subs->Save(tempfile, false, false, wxSTRING_ENCODING);
+
+		wxMutexLocker lock(csri_mutex);
 		instance = csri_open_file(renderer, tempfile.utf8_str(), NULL);
 	}
 }
