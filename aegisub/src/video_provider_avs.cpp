@@ -160,7 +160,7 @@ file_exit:
 			/// @todo maybe read ColorMatrix hints for d2v files?
 
 			AVSValue args[2] = { script, "Rec601" };
-			if (!OPT_GET("Provider/Video/FFmpegSource/Force BT.601")->GetBool() && (vi.width > 1024 || vi.height >= 600)) {
+			if (!OPT_GET("Video/Force BT.601")->GetBool() && (vi.width > 1024 || vi.height >= 600)) {
 				args[1] = "Rec709";
 				colorspace = "BT.709";
 			}

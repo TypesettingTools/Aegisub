@@ -341,7 +341,6 @@
 			},
 			"FFmpegSource" : {
 				"Decoding Threads" : -1,
-				"Force BT.601" : false,
 				"Unsafe Seeking" : false
 			}
 		}
@@ -562,6 +561,7 @@
 			},
 			"Pattern" : false
 		},
+		"Force BT.601" : true,
 		"Open Audio" : false,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",

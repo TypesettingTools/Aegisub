@@ -576,6 +576,8 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	wxArrayString sp_choice = vec_to_arrstr(SubtitlesProviderFactory::GetClasses());
 	OptionChoice(expert, _("Subtitles provider"), sp_choice, "Subtitle/Provider");
 
+	CellSkip(expert);
+	OptionAdd(expert, _("Force BT.601"), "Video/Force BT.601");
 
 #ifdef WITH_AVISYNTH
 	wxFlexGridSizer *avisynth = PageSizer("Avisynth");
@@ -593,9 +595,6 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 
 	OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads", -1);
 	OptionAdd(ffms, _("Enable unsafe seeking"), "Provider/Video/FFmpegSource/Unsafe Seeking");
-#if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
-	OptionAdd(ffms, _("Force BT.601"), "Provider/Video/FFmpegSource/Force BT.601");
-#endif
 #endif
 
 	SetSizerAndFit(sizer);
