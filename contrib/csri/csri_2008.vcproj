@@ -170,6 +170,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				AdditionalIncludeDirectories="lib;lib/win32;include;../../aegisub/src/msvc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
