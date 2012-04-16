@@ -187,7 +187,14 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 	else {
 		// Default path
 		wxString defPath = ((AssAttachment*)wxUIntToPtr(listView->GetItemData(i)))->GetFileName();
-		path = wxFileSelector(_("Select the path to save the file to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()),defPath);
+		path = wxFileSelector(
+			_("Select the path to save the file to:"),
+			lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()),
+			defPath,
+			".ttf",
+			"Font Files (*.ttf)|*.ttf",
+			wxFD_SAVE | wxFD_OVERWRITE_PROMPT,
+			this);
 		fullPath = true;
 	}
 	if (!path) return;
