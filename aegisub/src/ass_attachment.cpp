@@ -119,11 +119,11 @@ const wxString AssAttachment::GetEntryData() const {
 }
 
 void AssAttachment::Extract(wxString const& filename) const {
-	agi::io::Save(STD_STR(filename)).Get().write(&(*data)[0], data->size());
+	agi::io::Save(STD_STR(filename), true).Get().write(&(*data)[0], data->size());
 }
 
 void AssAttachment::Import(wxString const& filename) {
-	agi::scoped_ptr<std::istream> file(agi::io::Open(STD_STR(filename)));
+	agi::scoped_ptr<std::istream> file(agi::io::Open(STD_STR(filename), true));
 	file->seekg(0, std::ios::end);
 	data->resize(file->tellg());
 	file->seekg(0, std::ios::beg);
