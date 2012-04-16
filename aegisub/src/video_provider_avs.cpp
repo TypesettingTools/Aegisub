@@ -38,6 +38,8 @@
 
 #ifdef WITH_AVISYNTH
 
+#include "video_provider_avs.h"
+
 #ifndef AGI_PRE
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
@@ -47,11 +49,12 @@
 #include <vfw.h>
 #endif
 
+#include <libaegisub/log.h>
+
 #include "charset_conv.h"
 #include "compat.h"
-#include <libaegisub/log.h>
+#include "main.h"
 #include "standard_paths.h"
-#include "video_provider_avs.h"
 
 AvisynthVideoProvider::AvisynthVideoProvider(wxString filename)
 : last_fnum(-1)
@@ -152,7 +155,27 @@ file_exit:
 		if (!script.IsClip() || !script.AsClip()->GetVideoInfo().HasVideo())
 			throw VideoNotSupported("No usable video found");
 
-		RGB32Video = (avs.GetEnv()->Invoke("Cache", avs.GetEnv()->Invoke("ConvertToRGB32", script))).AsClip();
+		vi = script.AsClip()->GetVideoInfo();
+		if (!vi.IsRGB()) {
+			/// @todo maybe read ColorMatrix hints for d2v files?
+
+			AVSValue args[2] = { script, "Rec601" };
+			if (!OPT_GET("Provider/Video/FFmpegSource/Force BT.601")->GetBool() && (vi.width > 1024 || vi.height >= 600)) {
+				args[1] = "Rec709";
+				colorspace = "BT.709";
+			}
+			else
+				colorspace = "BT.601";
+			const char *argnames[2] = { 0, "matrix" };
+			script = avs.GetEnv()->Invoke("ConvertToRGB32", AVSValue(args, 2), argnames);
+		}
+		else if (extension != ".avs")
+			colorspace = "RGB";
+		// Don't set the colorspace to RGB if we're opening an Avisynth script
+		// as we can't tell RGB source video apart from a script that happens
+		// to convert to rgb
+
+		RGB32Video = avs.GetEnv()->Invoke("Cache", script).AsClip();
 		vi = RGB32Video->GetVideoInfo();
 		fps = (double)vi.fps_numerator / vi.fps_denominator;
 	}
