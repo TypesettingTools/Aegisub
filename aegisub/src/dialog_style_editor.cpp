@@ -245,9 +245,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Alignment->SetSelection(AlignToControl(style->alignment));
 	// Fill font face list box
 	FontName->Freeze();
-	for (size_t i = 0; i < fontList.size(); i++) {
-		FontName->Append(fontList[i]);
-	}
+	FontName->Append(fontList);
 	FontName->SetValue(style->font);
 	FontName->Thaw();
 
