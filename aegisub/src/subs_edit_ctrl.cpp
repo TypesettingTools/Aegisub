@@ -82,7 +82,6 @@ enum {
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context *context)
 : ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
-, thesaurus(new Thesaurus)
 , context(context)
 {
 	// Set properties
@@ -738,8 +737,7 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	if (!currentWord.empty()) {
 		if (spellchecker)
 			AddSpellCheckerEntries(menu);
-		if (thesaurus)
-			AddThesaurusEntries(menu);
+		AddThesaurusEntries(menu);
 	}
 
 	// Standard actions
@@ -792,6 +790,9 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 }
 
 void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
+	if (!thesaurus)
+		thesaurus.reset(new Thesaurus);
+
 	std::vector<Thesaurus::Entry> result;
 	thesaurus->Lookup(currentWord, &result);
 
@@ -915,6 +916,8 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 }
 
 void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
+	if (!thesaurus) return;
+
 	wxArrayString langs = thesaurus->GetLanguageList();
 
 	int index = event.GetId() - EDIT_MENU_THES_LANGS - 1;
