@@ -136,8 +136,12 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 
 std::vector<std::string> CSRISubtitlesProvider::GetSubTypes() {
 	std::vector<std::string> final;
-	for (csri_rend *cur = csri_renderer_default();cur;cur = csri_renderer_next(cur)) {
-		final.push_back(csri_renderer_info(cur)->name);
+	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
+		std::string name(csri_renderer_info(cur)->name);
+		if (name.find("aegisub") != name.npos)
+			final.insert(final.begin(), name);
+		else
+			final.push_back(name);
 	}
 	return final;
 }
