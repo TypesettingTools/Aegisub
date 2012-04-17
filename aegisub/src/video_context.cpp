@@ -94,7 +94,7 @@ VideoContext::VideoContext()
 
 	OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", &VideoContext::Reload, this);
 	OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", &VideoContext::Reload, this);
-	OPT_SUB("Provider/Video/FFmpegSource/Force BT.601", &VideoContext::Reload, this);
+	OPT_SUB("Video/Force BT.601", &VideoContext::Reload, this);
 }
 
 VideoContext::~VideoContext () {
