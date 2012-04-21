@@ -38,6 +38,8 @@
 #include <wx/sashwin.h>
 #endif
 
+#include <libaegisub/signal.h>
+
 namespace agi {
 	struct Context;
 	class OptionValue;
@@ -62,6 +64,8 @@ class AudioBox : public wxSashWindow {
 	/// Project context this operates on
 	agi::Context *context;
 
+	agi::signal::Connection audio_open_connection;
+
 
 	/// Panel containing the children
 	wxPanel *panel;
@@ -81,12 +85,13 @@ class AudioBox : public wxSashWindow {
 	// Mouse wheel zoom accumulator
 	int mouse_zoom_accum;
 
+	void OnAudioOpen();
 	void OnHorizontalZoom(wxScrollEvent &event);
+	void OnMouseWheel(wxMouseEvent &evt);
+	void OnSashDrag(wxSashEvent &event);
+	void OnVerticalLink(agi::OptionValue const& opt);
 	void OnVerticalZoom(wxScrollEvent &event);
 	void OnVolume(wxScrollEvent &event);
-	void OnVerticalLink(agi::OptionValue const& opt);
-	void OnSashDrag(wxSashEvent &event);
-	void OnMouseWheel(wxMouseEvent &evt);
 
 public:
 	AudioBox(wxWindow *parent, agi::Context *context);

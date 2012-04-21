@@ -81,6 +81,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 : wxSashWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSW_3D | wxCLIP_CHILDREN)
 , controller(context->audioController)
 , context(context)
+, audio_open_connection(controller->AddAudioOpenListener(&AudioBox::OnAudioOpen, this))
 , panel(new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_RAISED))
 , audioDisplay(new AudioDisplay(panel, context->audioController, context))
 , HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, OPT_GET("Audio/Zoom/Horizontal")->GetInt(), -50, 30, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH))
@@ -139,7 +140,6 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 
 	audioDisplay->SetZoomLevel(-HorizontalZoom->GetValue());
 	audioDisplay->SetAmplitudeScale(pow(mid(1, VerticalZoom->GetValue(), 100) / 50.0, 3));
-	controller->SetVolume(pow(mid(1, VolumeBar->GetValue(), 100) / 50.0, 3));
 }
 
 AudioBox::~AudioBox() { }
@@ -228,6 +228,10 @@ void AudioBox::OnVerticalLink(agi::OptionValue const& opt) {
 		VolumeBar->SetValue(pos);
 	}
 	VolumeBar->Enable(!opt.GetBool());
+}
+
+void AudioBox::OnAudioOpen() {
+	controller->SetVolume(pow(mid(1, VolumeBar->GetValue(), 100) / 50.0, 3));
 }
 
 void AudioBox::ShowKaraokeBar(bool show) {
