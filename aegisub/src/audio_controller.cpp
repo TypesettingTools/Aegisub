@@ -56,6 +56,7 @@
 #include "main.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
+#include "utils.h"
 #include "video_context.h"
 
 AudioController::AudioController(agi::Context *context)
@@ -311,7 +312,7 @@ void AudioController::OnSubtitlesSave()
 {
 	if (IsAudioOpen())
 	{
-		context->ass->SetScriptInfo("Audio URI", audio_url);
+		context->ass->SetScriptInfo("Audio URI", MakeRelativePath(audio_url, context->ass->filename));
 	}
 	else
 	{

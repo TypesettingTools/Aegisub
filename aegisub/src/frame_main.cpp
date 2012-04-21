@@ -645,7 +645,7 @@ void FrameMain::OnSubtitlesOpen() {
 	wxString curSubsVideo = DecodeRelativePath(context->ass->GetScriptInfo("Video File"), context->ass->filename);
 	wxString curSubsVFR = DecodeRelativePath(context->ass->GetScriptInfo("VFR File"), context->ass->filename);
 	wxString curSubsKeyframes = DecodeRelativePath(context->ass->GetScriptInfo("Keyframes File"), context->ass->filename);
-	wxString curSubsAudio = context->ass->GetScriptInfo("Audio URI");
+	wxString curSubsAudio = DecodeRelativePath(context->ass->GetScriptInfo("Audio URI"), context->ass->filename);
 
 	bool videoChanged = !blockVideoLoad && curSubsVideo != context->videoController->GetVideoName();
 	bool timecodesChanged = curSubsVFR != context->videoController->GetTimecodesName();
