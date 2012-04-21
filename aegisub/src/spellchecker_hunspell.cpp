@@ -212,15 +212,15 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	std::string language = OPT_GET("Tool/Spell Checker/Language")->GetString();
 	if (language.empty()) return;
 
-	wxString userDicRoot = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()));
+	wxString custDicRoot = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()));
 	wxString dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
 
 	// If the user has a dic/aff pair in their dictionary path for this language
 	// use that; otherwise use the one from Aegisub's install dir, adding words
 	// from the dic in the user's dictionary path if it exists
-	wxString affPath = wxString::Format("%s/%s.aff", userDicRoot, language);
-	wxString dicPath = wxString::Format("%s/%s.dic", userDicRoot, language);
-	userDicPath = wxString::Format("%s/user_%s.dic", userDicRoot, language);
+	wxString affPath = wxString::Format("%s/%s.aff", custDicRoot, language);
+	wxString dicPath = wxString::Format("%s/%s.dic", custDicRoot, language);
+	userDicPath = wxString::Format("%s/user_%s.dic", StandardPaths::DecodePath("?user/dictionaries"), language);
 	if (!wxFileExists(affPath) || !wxFileExists(dicPath)) {
 		affPath = wxString::Format("%s/%s.aff", dataDicRoot, language);
 		dicPath = wxString::Format("%s/%s.dic", dataDicRoot, language);
