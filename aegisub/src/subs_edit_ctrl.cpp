@@ -837,11 +837,11 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 
 wxMenu *SubsTextEditCtrl::GetLanguagesMenu(int base_id, wxString const& curLang, wxArrayString const& langs) {
 	wxMenu *languageMenu = new wxMenu;
-	languageMenu->AppendCheckItem(base_id, _("Disable"))->Check(curLang.empty());
+	languageMenu->AppendRadioItem(base_id, _("Disable"))->Check(curLang.empty());
 
 	for (size_t i = 0; i < langs.size(); ++i) {
 		const wxLanguageInfo *info = wxLocale::FindLanguageInfo(langs[i]);
-		languageMenu->AppendCheckItem(base_id + i + 1, info ? info->Description : langs[i])->Check(langs[i] == curLang);
+		languageMenu->AppendRadioItem(base_id + i + 1, info ? info->Description : langs[i])->Check(langs[i] == curLang);
 	}
 
 	return languageMenu;
