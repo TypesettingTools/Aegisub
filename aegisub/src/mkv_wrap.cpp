@@ -68,6 +68,14 @@ public:
 
 #define CACHESIZE     65536
 
+#ifdef __VISUALC__
+#define std_fseek _fseeki64
+#define std_ftell _ftelli64
+#else
+#define std_fseek fseeko
+#define std_ftell ftello
+#endif
+
 static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, bool ssa, double totalTime, AssFile *target) {
 	std::map<int, wxString> subList;
 	char *readBuf = 0;
@@ -92,7 +100,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 		else if (frameSize == 0)
 			continue;
 
-		fseek(input->fp, filePos, SEEK_SET);
+		std_fseek(input->fp, filePos, SEEK_SET);
 		fread(readBuf, 1, frameSize, input->fp);
 		wxString blockString(readBuf, wxConvUTF8, frameSize);
 
@@ -252,18 +260,10 @@ bool MatroskaWrapper::HasSubtitles(wxString const& filename) {
 	}
 }
 
-#ifdef __VISUALC__
-#define std_fseek _fseeki64
-#define std_ftell _ftelli64
-#else
-#define std_fseek fseeko
-#define std_ftell ftello
-#endif
-
 int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
   MkvStdIO *st = (MkvStdIO *) _st;
   size_t  rd;
-  if (fseek(st->fp, pos, SEEK_SET)) {
+  if (std_fseek(st->fp, pos, SEEK_SET)) {
     st->error = errno;
     return -1;
   }
