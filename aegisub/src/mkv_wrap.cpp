@@ -66,7 +66,7 @@ public:
 	int error;
 };
 
-#define CACHESIZE     65536
+#define CACHESIZE     1024
 
 #ifdef __VISUALC__
 #define std_fseek _fseeki64
