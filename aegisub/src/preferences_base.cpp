@@ -127,7 +127,7 @@ void OptionPage::Add(wxSizer *sizer, wxString const& label, T *control) {
 }
 
 void OptionPage::CellSkip(wxFlexGridSizer *flex) {
-	flex->Add(new wxStaticText(this, -1, ""), wxSizerFlags().Border());
+	flex->AddStretchSpacer();
 }
 
 wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
