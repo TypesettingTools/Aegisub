@@ -241,6 +241,23 @@ struct audio_play_selection : public validate_audio_open {
 	}
 };
 
+/// Play the current audio selection or stop audio playback
+struct audio_play_toggle : public validate_audio_open {
+	CMD_NAME("audio/play/toggle")
+	STR_MENU("Play audio selection or stop")
+	STR_DISP("Play audio selection or stop")
+	STR_HELP("Play selection or stop playback if it's already playing")
+
+	void operator()(agi::Context *c) {
+		if (c->audioController->IsPlaying())
+			c->audioController->Stop();
+		else {
+			c->videoController->Stop();
+			c->audioController->PlayPrimaryRange();
+		}
+	}
+};
+
 /// Stop playing audio
 struct audio_stop : public Command {
 	CMD_NAME("audio/stop")
@@ -552,6 +569,7 @@ namespace cmd {
 		reg(new audio_commit_next);
 		reg(new audio_commit_stay);
 		reg(new audio_go_to);
+		reg(new audio_karaoke);
 		reg(new audio_open);
 		reg(new audio_open_blank);
 		reg(new audio_open_noise);
@@ -562,6 +580,7 @@ namespace cmd {
 		reg(new audio_play_end);
 		reg(new audio_play_selection);
 		reg(new audio_play_to_end);
+		reg(new audio_play_toggle);
 		reg(new audio_save_clip);
 		reg(new audio_scroll_left);
 		reg(new audio_scroll_right);
@@ -570,6 +589,5 @@ namespace cmd {
 		reg(new audio_vertical_link);
 		reg(new audio_view_spectrum);
 		reg(new audio_view_waveform);
-		reg(new audio_karaoke);
 	}
 }
