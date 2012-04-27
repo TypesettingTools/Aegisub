@@ -256,9 +256,6 @@ namespace Automation4 {
 	/// Both a base class for script factories and a manager of registered
 	/// script factories
 	class ScriptFactory {
-		/// Vector of loaded script engines
-		static std::vector<ScriptFactory*> *factories;
-
 		wxString engine_name;
 		wxString filename_pattern;
 
@@ -270,6 +267,8 @@ namespace Automation4 {
 		/// This is private as it should only ever be called through
 		/// CreateFromFile
 		virtual Script* Produce(wxString const& filename) const = 0;
+
+		static inline std::vector<ScriptFactory*>& Factories();
 
 	protected:
 		ScriptFactory(wxString engine_name, wxString filename_pattern);
