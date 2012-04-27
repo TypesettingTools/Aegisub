@@ -27,7 +27,7 @@ m4_define([libpulse_required_version], [0.5])
 m4_define([lua_auto4_required_version], [5.1])
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([portaudio_required_version], [19])
-m4_define([wx_required_version], [2.9.2])
+m4_define([wx_required_version], [2.9.3])
 
 #######
 # Setup
