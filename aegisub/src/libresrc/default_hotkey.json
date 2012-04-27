@@ -367,6 +367,12 @@
 				"key" : "G"
 			}
 		],
+		"audio/commit/default" : [
+			{
+				"modifiers" : [ "Shift" ],
+				"key" : "G"
+			}
+		],
 		"time/lead/in" : [
 			{
 				"modifiers" : [],
