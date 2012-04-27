@@ -141,3 +141,31 @@ void VideoPositionMarkerProvider::GetMarkers(const TimeRange &range, AudioMarker
 	if (marker && range.contains(*marker))
 		out.push_back(marker.get());
 }
+
+SecondsMarkerProvider::SecondsMarkerProvider()
+: pen(new Pen("Colour/Audio Display/Seconds Line", 1, wxPENSTYLE_DOT))
+, enabled(OPT_GET("Audio/Display/Draw/Seconds"))
+, enabled_opt_changed(OPT_SUB("Audio/Display/Draw/Seconds", &SecondsMarkerProvider::EnabledOptChanged, this))
+{
+}
+
+void SecondsMarkerProvider::EnabledOptChanged() {
+	AnnounceMarkerMoved();
+}
+
+void SecondsMarkerProvider::GetMarkers(TimeRange const& range, AudioMarkerVector &out) const {
+	if (!enabled->GetBool()) return;
+
+	if ((range.length() + 999) / 1000 > (int)markers.size())
+		markers.resize((range.length() + 999) / 1000, Marker(pen.get()));
+
+	size_t i = 0;
+	for (int time = ((range.begin() + 999) / 1000) * 1000; time < range.end(); time += 1000) {
+		markers[i].position = time;
+		out.push_back(&markers[i++]);
+	}
+}
+
+wxPen SecondsMarkerProvider::Marker::GetStyle() const {
+	return *style;
+}

@@ -150,6 +150,8 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	OptionAdd(display, _("Keyframes in karaoke mode"), "Audio/Display/Draw/Keyframes in Karaoke Mode");
 	OptionAdd(display, _("Cursor time"), "Audio/Display/Draw/Cursor Time");
 	OptionAdd(display, _("Video position"), "Audio/Display/Draw/Video Position");
+	OptionAdd(display, _("Seconds boundaries"), "Audio/Display/Draw/Seconds");
+	CellSkip(display);
 	OptionChoice(display, _("Waveform Style"), AudioWaveformRenderer::GetWaveformStyles(), "Audio/Display/Waveform Style");
 
 	wxFlexGridSizer *label = PageSizer(_("Audio labels"));
@@ -224,6 +226,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	OptionAdd(audio, _("Line boundary end"), "Colour/Audio Display/Line boundary End");
 	OptionAdd(audio, _("Line boundary inactive line"), "Colour/Audio Display/Line Boundary Inactive Line");
 	OptionAdd(audio, _("Syllable boundaries"), "Colour/Audio Display/Syllable Boundaries");
+	OptionAdd(audio, _("Seconds boundaries"), "Colour/Audio Display/Seconds Line");
 
 	wxFlexGridSizer *color_schemes = PageSizer(_("Audio Color Schemes"));
 	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());

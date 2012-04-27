@@ -42,6 +42,7 @@
 				"Inactive Comments" : true,
 				"Keyframes in Dialogue Mode" : true,
 				"Keyframes in Karaoke Mode" : true,
+				"Seconds" : false,
 				"Video Position" : false
 			},
 			"Waveform Style" : 1
@@ -101,6 +102,7 @@
 			"Line boundary End" : "rgb(0, 0, 216)",
 			"Line boundary Start" : "rgb(216, 0, 0)",
 			"Play Cursor" : "rgb(255,255,255)",
+			"Seconds Line" : "rgb(0,100,255)",
 			"Spectrum" : "Icy Blue",
 			"Syllable Boundaries" : "rgb(255,255,0)",
 			"Waveform" : "Green"
