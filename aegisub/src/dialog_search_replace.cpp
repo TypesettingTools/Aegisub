@@ -416,7 +416,7 @@ void SearchReplaceEngine::ReplaceAll() {
 
 	if (count > 0) {
 		context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
-		wxMessageBox(wxString::Format(_("%i matches were replaced."),count));
+		wxMessageBox(wxString::Format(_("%i matches were replaced."), (int)count));
 	}
 	else {
 		wxMessageBox(_("No matches found."));
