@@ -382,7 +382,7 @@ public:
 	TimeRange GetPrimaryPlaybackRange() const;
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
 	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const { }
-	void Next();
+	void Next(NextMode mode);
 	void Prev();
 	void Commit();
 	void Revert();
@@ -495,9 +495,28 @@ void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges
 		bind(&TimeableLine::GetStyleRange, std::tr1::placeholders::_1, &ranges));
 }
 
-void AudioTimingControllerDialogue::Next()
+void AudioTimingControllerDialogue::Next(NextMode mode)
 {
-	context->selectionController->NextLine();
+	if (mode == TIMING_UNIT)
+	{
+		context->selectionController->NextLine();
+		return;
+	}
+
+	int new_end_ms = *active_line.GetRightMarker();
+
+	cmd::call("grid/line/next/create", context);
+
+	if (mode == LINE_RESET_DEFAULT || *active_line.GetRightMarker() == 0) {
+		const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
+		// Setting right first here so that they don't get switched and the
+		// same marker gets set twice
+		active_line.GetRightMarker()->SetPosition(new_end_ms + default_duration);
+		active_line.GetLeftMarker()->SetPosition(new_end_ms);
+		sort(markers.begin(), markers.end(), marker_ptr_cmp());
+		modified_lines.insert(&active_line);
+		UpdateSelection();
+	}
 }
 
 void AudioTimingControllerDialogue::Prev()
@@ -532,24 +551,6 @@ void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
 
 		commit_connection.Unblock();
 		modified_lines.clear();
-	}
-
-	if (user_triggered && OPT_GET("Audio/Next Line on Commit")->GetBool())
-	{
-		int new_end_ms = *active_line.GetRightMarker();
-
-		cmd::call("grid/line/next/create", context);
-
-		if (*active_line.GetRightMarker() == 0) {
-			const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
-			// Setting right first here so that they don't get switched and the
-			// same marker gets set twice
-			active_line.GetRightMarker()->SetPosition(new_end_ms + default_duration);
-			active_line.GetLeftMarker()->SetPosition(new_end_ms);
-			sort(markers.begin(), markers.end(), marker_ptr_cmp());
-			modified_lines.insert(&active_line);
-			UpdateSelection();
-		}
 	}
 }
 

@@ -339,7 +339,11 @@ struct audio_commit : public validate_audio_open {
 
 	void operator()(agi::Context *c) {
 		AudioTimingController *tc = c->audioController->GetTimingController();
-		if (tc) tc->Commit();
+		if (tc) {
+			tc->Commit();
+			if(OPT_GET("Audio/Next Line on Commit")->GetBool())
+				tc->Next(AudioTimingController::LINE);
+		}
 	}
 };
 

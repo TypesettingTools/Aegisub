@@ -82,11 +82,27 @@ public:
 	/// @param[out] ranges Rendering ranges will be added to this
 	virtual void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const = 0;
 
+	enum NextMode {
+		/// Advance to the next timing unit, whether it's a line or a sub-part
+		/// of a line such as a karaoke syllable
+		TIMING_UNIT = 0,
+
+		/// @brief Advance to the next line
+		///
+		/// This may create a new line if there are no more lines in the file,
+		/// but should never modify existing lines
+		LINE,
+
+		/// @brief Advance to the next line using default timing
+		///
+		/// This may create new lines when needed, and should discard any
+		/// existing timing data in favor of the defaults
+		LINE_RESET_DEFAULT
+	};
+
 	/// @brief Go to next timing unit
-	///
-	/// Advances the timing controller cursor to the next timing unit, for
-	/// example the next dialogue line or the next karaoke syllable.
-	virtual void Next() = 0;
+	/// @param mode What sort of timing unit should be advanced to
+	virtual void Next(NextMode mode) = 0;
 
 	/// @brief Go to the previous timing unit
 	///

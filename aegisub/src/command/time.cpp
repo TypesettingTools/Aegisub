@@ -288,7 +288,7 @@ struct time_next : public Command {
 	void operator()(agi::Context *c) {
 		c->audioController->Stop();
 		if (c->audioController->GetTimingController())
-			c->audioController->GetTimingController()->Next();
+			c->audioController->GetTimingController()->Next(AudioTimingController::TIMING_UNIT);
 	}
 };
 

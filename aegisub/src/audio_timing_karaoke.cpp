@@ -108,11 +108,9 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 	std::vector<AudioLabel> labels;
 
 	bool auto_commit; ///< Should changes be automatically commited?
-	bool auto_next;   ///< Should user-initiated commits automatically go to the next?
 	int commit_id;    ///< Last commit id used for an autocommit
 
 	void OnAutoCommitChange(agi::OptionValue const& opt);
-	void OnAutoNextChange(agi::OptionValue const& opt);
 
 	void DoCommit();
 	void ApplyLead(bool announce_primary);
@@ -125,7 +123,7 @@ public:
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
 	TimeRange GetPrimaryPlaybackRange() const;
 	void GetLabels(const TimeRange &range, std::vector<AudioLabel> &out_labels) const;
-	void Next();
+	void Next(NextMode mode);
 	void Prev();
 	void Commit();
 	void Revert();
@@ -158,12 +156,10 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
 , video_position_provider(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
-, auto_next(OPT_GET("Audio/Next Line on Commit")->GetBool())
 , commit_id(-1)
 {
 	slots.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
 	slots.push_back(OPT_SUB("Audio/Auto/Commit", &AudioTimingControllerKaraoke::OnAutoCommitChange, this));
-	slots.push_back(OPT_SUB("Audio/Next Line on Commit", &AudioTimingControllerKaraoke::OnAutoNextChange, this));
 
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
@@ -176,11 +172,12 @@ void AudioTimingControllerKaraoke::OnAutoCommitChange(agi::OptionValue const& op
 	auto_commit = opt.GetBool();
 }
 
-void AudioTimingControllerKaraoke::OnAutoNextChange(agi::OptionValue const& opt) {
-	auto_next = opt.GetBool();
-}
+void AudioTimingControllerKaraoke::Next(NextMode mode) {
+	// Don't create new lines since it's almost never useful to k-time a line
+	// before dialogue timing it
+	if (mode != TIMING_UNIT)
+		cur_syl = markers.size();
 
-void AudioTimingControllerKaraoke::Next() {
 	++cur_syl;
 	if (cur_syl > markers.size()) {
 		--cur_syl;
@@ -253,8 +250,6 @@ void AudioTimingControllerKaraoke::DoCommit() {
 void AudioTimingControllerKaraoke::Commit() {
 	if (!auto_commit)
 		DoCommit();
-	if (auto_next)
-		c->selectionController->NextLine();
 }
 
 void AudioTimingControllerKaraoke::Revert() {
