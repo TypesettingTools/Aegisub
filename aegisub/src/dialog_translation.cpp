@@ -99,7 +99,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		translated_text->SetWrapMode(wxSTC_WRAP_WORD);
 		translated_text->SetMarginWidth(1, 0);
 		translated_text->SetFocus();
-		translated_text->Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
+		translated_text->Bind(wxEVT_CHAR_HOOK, &DialogTranslation::OnKeyDown, this);
 
 		wxSizer *translated_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Translation"));
 		translated_box->Add(translated_text, 1, wxEXPAND, 0);

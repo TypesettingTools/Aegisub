@@ -781,7 +781,7 @@ BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
 	EVT_SIZE(AudioDisplay::OnSize)
 	EVT_SET_FOCUS(AudioDisplay::OnFocus)
 	EVT_KILL_FOCUS(AudioDisplay::OnFocus)
-	EVT_KEY_DOWN(AudioDisplay::OnKeyDown)
+	EVT_CHAR_HOOK(AudioDisplay::OnKeyDown)
 END_EVENT_TABLE()
 
 

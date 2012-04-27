@@ -134,7 +134,6 @@ bool check(std::string const& context, agi::Context *c, int key_code, wchar_t ke
 }
 
 bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
-	evt.StopPropagation();
 	if (!hotkey::check(context, c, evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())) {
 		evt.Skip();
 		return false;

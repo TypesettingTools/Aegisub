@@ -103,6 +103,7 @@ class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
 	void OnContextMenu(wxContextMenuEvent &evt);
 	void OnHighlightVisibleChange(agi::OptionValue const& opt);
 	void OnKeyDown(wxKeyEvent &event);
+	void OnCharHook(wxKeyEvent &event);
 	void OnMouseEvent(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnScroll(wxScrollEvent &event);

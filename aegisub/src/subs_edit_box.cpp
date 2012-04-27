@@ -206,8 +206,8 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	// Text editor
 	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
-	TextEdit->Bind(wxEVT_KEY_DOWN, &SubsEditBox::OnKeyDown, this);
-	Bind(wxEVT_KEY_DOWN, &SubsEditBox::OnKeyDown, this);
+	TextEdit->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
+	Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
 	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	BottomSizer->Add(TextEdit,1,wxEXPAND,0);
 

@@ -574,7 +574,7 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 
-	EVT_KEY_DOWN(FrameMain::OnKeyDown)
+	EVT_CHAR_HOOK(FrameMain::OnKeyDown)
 	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
 
 #ifdef __WXMAC__

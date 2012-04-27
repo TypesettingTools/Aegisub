@@ -508,12 +508,6 @@ int AegisubApp::OnRun() {
 	return 1;
 }
 
-int AegisubApp::FilterEvent(wxEvent& event) {
-	if (event.GetEventType() == wxEVT_KEY_DOWN)
-		event.ResumePropagation(wxEVENT_PROPAGATE_MAX);
-	return -1 /* wxEventFilter::Event_Skip */;
-}
-
 ////////////////
 // Apple events
 #ifdef __WXMAC__

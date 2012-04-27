@@ -143,7 +143,8 @@ DialogStyling::DialogStyling(agi::Context *context)
 
 	c->selectionController->AddSelectionListener(this);
 	Bind(wxEVT_ACTIVATE, &DialogStyling::OnActivate, this);
-	Bind(wxEVT_KEY_DOWN, &DialogStyling::OnKeyDown, this);
+	Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);
+	style_name->Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);
 	style_name->Bind(wxEVT_KEY_DOWN, &DialogStyling::OnKeyDown, this);
 	play_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayVideoButton, this);
 	play_audio->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayAudioButton, this);
@@ -245,15 +246,17 @@ void DialogStyling::OnPlayAudioButton(wxCommandEvent &) {
 	style_name->SetFocus();
 }
 
+void DialogStyling::OnCharHook(wxKeyEvent &evt) {
+	hotkey::check("Styling Assistant", c, evt);
+}
+
 void DialogStyling::OnKeyDown(wxKeyEvent &evt) {
-	if (!hotkey::check("Styling Assistant", c, evt)) {
-		// Move the beginning of the selection back one character so that backspace
-		// actually does something
-		if (evt.GetKeyCode() == WXK_BACK && !evt.GetModifiers()) {
-			long from, to;
-			style_name->GetSelection(&from, &to);
-			if (from > 0)
-				style_name->SetSelection(from - 1, to);
-		}
+	// Move the beginning of the selection back one character so that backspace
+	// actually does something
+	if (evt.GetKeyCode() == WXK_BACK && !evt.GetModifiers()) {
+		long from, to;
+		style_name->GetSelection(&from, &to);
+		if (from > 0)
+			style_name->SetSelection(from - 1, to);
 	}
 }

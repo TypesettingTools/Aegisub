@@ -70,6 +70,7 @@ class VideoSlider: public wxWindow {
 
 	void OnMouse(wxMouseEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
+	void OnCharHook(wxKeyEvent &event);
 	void OnPaint(wxPaintEvent &);
 	void OnFocus(wxFocusEvent &);
 

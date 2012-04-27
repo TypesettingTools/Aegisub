@@ -121,7 +121,7 @@ VideoDisplay::VideoDisplay(
 	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
 	Bind(wxEVT_CONTEXT_MENU, &VideoDisplay::OnContextMenu, this);
 	Bind(wxEVT_ENTER_WINDOW, &VideoDisplay::OnMouseEvent, this);
-	Bind(wxEVT_KEY_DOWN, &VideoDisplay::OnKeyDown, this);
+	Bind(wxEVT_CHAR_HOOK, &VideoDisplay::OnKeyDown, this);
 	Bind(wxEVT_LEAVE_WINDOW, &VideoDisplay::OnMouseLeave, this);
 	Bind(wxEVT_LEFT_DCLICK, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_LEFT_DOWN, &VideoDisplay::OnMouseEvent, this);

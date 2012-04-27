@@ -150,6 +150,7 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_COMMAND_SCROLL(GRID_SCROLLBAR,BaseGrid::OnScroll)
 	EVT_MOUSE_EVENTS(BaseGrid::OnMouseEvent)
 	EVT_KEY_DOWN(BaseGrid::OnKeyDown)
+	EVT_CHAR_HOOK(BaseGrid::OnCharHook)
 	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,BaseGrid::OnShowColMenu)
 END_EVENT_TABLE()
 
@@ -972,10 +973,24 @@ bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 		context->videoController->FrameAtTime(line->End,agi::vfr::END) >= frame;
 }
 
-void BaseGrid::OnKeyDown(wxKeyEvent &event) {
+void BaseGrid::OnCharHook(wxKeyEvent &event) {
 	if (hotkey::check("Subtitle Grid", context, event))
 		return;
 
+	int key = event.GetKeyCode();
+
+	if (key == WXK_UP || key == WXK_DOWN ||
+		key == WXK_PAGEUP || key == WXK_PAGEDOWN ||
+		key == WXK_HOME || key == WXK_END)
+	{
+		event.Skip();
+		return;
+	}
+
+	hotkey::check("Audio", context, event);
+}
+
+void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	int w,h;
 	GetClientSize(&w,&h);
 
@@ -1005,48 +1020,46 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 		step = GetRows();
 	}
 
-	// Moving
-	if (dir) {
-		event.Skip(false);
-
-		int old_extend = extendRow;
-		int next = mid(0, GetDialogueIndex(active_line) + dir * step, GetRows() - 1);
-		SetActiveLine(GetDialogue(next));
-
-		// Move selection
-		if (!ctrl && !shift && !alt) {
-			SelectRow(next);
-			return;
-		}
-
-		// Move active only
-		if (alt && !shift && !ctrl) {
-			Refresh(false);
-			return;
-		}
-
-		// Shift-selection
-		if (shift && !ctrl && !alt) {
-			extendRow = old_extend;
-			// Set range
-			int begin = next;
-			int end = extendRow;
-			if (end < begin)
-				std::swap(begin, end);
-
-			// Select range
-			Selection newsel;
-			for (int i = begin; i <= end; i++)
-				newsel.insert(GetDialogue(i));
-
-			SetSelectedSet(newsel);
-
-			MakeCellVisible(extendRow, 0, false);
-			return;
-		}
+	if (!dir) {
+		event.Skip();
+		return;
 	}
-	else
-		hotkey::check("Audio", context, event);
+
+	int old_extend = extendRow;
+	int next = mid(0, GetDialogueIndex(active_line) + dir * step, GetRows() - 1);
+	SetActiveLine(GetDialogue(next));
+
+	// Move selection
+	if (!ctrl && !shift && !alt) {
+		SelectRow(next);
+		return;
+	}
+
+	// Move active only
+	if (alt && !shift && !ctrl) {
+		Refresh(false);
+		return;
+	}
+
+	// Shift-selection
+	if (shift && !ctrl && !alt) {
+		extendRow = old_extend;
+		// Set range
+		int begin = next;
+		int end = extendRow;
+		if (end < begin)
+			std::swap(begin, end);
+
+		// Select range
+		Selection newsel;
+		for (int i = begin; i <= end; i++)
+			newsel.insert(GetDialogue(i));
+
+		SetSelectedSet(newsel);
+
+		MakeCellVisible(extendRow, 0, false);
+		return;
+	}
 }
 
 void BaseGrid::SetByFrame(bool state) {

@@ -106,6 +106,7 @@ int VideoSlider::GetXAtValue(int value) {
 BEGIN_EVENT_TABLE(VideoSlider, wxWindow)
 	EVT_MOUSE_EVENTS(VideoSlider::OnMouse)
 	EVT_KEY_DOWN(VideoSlider::OnKeyDown)
+	EVT_CHAR_HOOK(VideoSlider::OnCharHook)
 	EVT_PAINT(VideoSlider::OnPaint)
 	EVT_SET_FOCUS(VideoSlider::OnFocus)
 	EVT_KILL_FOCUS(VideoSlider::OnFocus)
@@ -148,10 +149,11 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 	}
 }
 
-void VideoSlider::OnKeyDown(wxKeyEvent &event) {
-	if (hotkey::check("Video", c, event))
-		return;
+void VideoSlider::OnCharHook(wxKeyEvent &event) {
+	hotkey::check("Video", c, event);
+}
 
+void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 	// Forward up/down to grid as those aren't yet handled by commands
 	if (event.GetKeyCode() == WXK_UP || event.GetKeyCode() == WXK_DOWN) {
 		c->subsGrid->GetEventHandler()->ProcessEvent(event);
