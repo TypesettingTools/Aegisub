@@ -168,12 +168,12 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 
 	wxSizer *adjSliderSizer = new wxBoxSizer(wxHORIZONTAL);
 	adjSliderSizer->Add(new wxStaticText(this, -1, _("Bias: Start <- ")), wxSizerFlags().Center());
-	adjSliderSizer->Add(adjacentBias, wxSizerFlags(1).Expand().Center());
+	adjSliderSizer->Add(adjacentBias, wxSizerFlags(1).Center());
 	adjSliderSizer->Add(new wxStaticText(this, -1, _(" -> End")), wxSizerFlags().Center());
 
 	wxSizer *adjRightSizer = new wxBoxSizer(wxVERTICAL);
-	adjRightSizer->Add(adjBoxes);
-	adjRightSizer->Add(adjSliderSizer);
+	adjRightSizer->Add(adjBoxes, wxSizerFlags().Expand());
+	adjRightSizer->Add(adjSliderSizer, wxSizerFlags().Expand().Border(wxTOP));
 	AdjacentSizer->Add(adjRightSizer);
 
 	// Keyframes sizer
