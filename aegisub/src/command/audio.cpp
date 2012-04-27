@@ -347,6 +347,37 @@ struct audio_commit : public validate_audio_open {
 	}
 };
 
+/// Commit any pending audio timing changes and move to the next line
+/// @todo maybe move to time?
+struct audio_commit_next : public validate_audio_open {
+	CMD_NAME("audio/commit/next")
+	STR_MENU("Commit and move to next line")
+	STR_DISP("Commit and move to next line")
+	STR_HELP("Commit and move to next line")
+
+	void operator()(agi::Context *c) {
+		AudioTimingController *tc = c->audioController->GetTimingController();
+		if (tc) {
+			tc->Commit();
+			tc->Next(AudioTimingController::LINE);
+		}
+	}
+};
+
+/// Commit any pending audio timing changes and stay on the current line
+/// @todo maybe move to time?
+struct audio_commit_stay : public validate_audio_open {
+	CMD_NAME("audio/commit/stay")
+	STR_MENU("Commit and stay on current line")
+	STR_DISP("Commit and stay on current line")
+	STR_HELP("Commit and stay on current line")
+
+	void operator()(agi::Context *c) {
+		AudioTimingController *tc = c->audioController->GetTimingController();
+		if (tc) tc->Commit();
+	}
+};
+
 /// Scroll the audio display to the current selection
 struct audio_go_to : public validate_audio_open {
 	CMD_NAME("audio/go_to")
@@ -500,6 +531,8 @@ namespace cmd {
 		reg(new audio_autoscroll);
 		reg(new audio_close);
 		reg(new audio_commit);
+		reg(new audio_commit_next);
+		reg(new audio_commit_stay);
 		reg(new audio_go_to);
 		reg(new audio_open);
 		reg(new audio_open_blank);
