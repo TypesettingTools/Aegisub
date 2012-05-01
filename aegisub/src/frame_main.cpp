@@ -487,6 +487,7 @@ bool FrameMain::LoadList(wxArrayString list) {
 		"rm",
 		"rmvb",
 		"ts",
+		"webm"
 		"wmv",
 		"y4m",
 		"yuv"
