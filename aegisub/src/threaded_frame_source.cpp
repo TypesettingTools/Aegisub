@@ -131,12 +131,15 @@ std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum
 }
 
 void *ThreadedFrameSource::Entry() {
-	while (!TestDestroy() && run) {
+	while (!TestDestroy()) {
 		double time;
 		int frameNum;
 		std::auto_ptr<AssFile> newSubs;
 		{
 			wxMutexLocker jobLocker(jobMutex);
+
+			if (!run)
+				return EXIT_SUCCESS;
 
 			if (nextTime == -1.) {
 				jobReady.Wait();
@@ -191,9 +194,13 @@ ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *p
 	Create();
 	Run();
 }
+
 ThreadedFrameSource::~ThreadedFrameSource() {
-	run = false;
-	jobReady.Signal();
+	{
+		wxMutexLocker locker(jobMutex);
+		run = false;
+		jobReady.Signal();
+	}
 	Wait();
 }
 
