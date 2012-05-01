@@ -111,7 +111,7 @@ public:
 };
 
 class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
-	static const int height = 10;
+	static const int height = 15;
 	static const int min_width = 10;
 
 	wxRect bounds;
