@@ -383,6 +383,11 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	SetSizerAndFit(MainSizer);
 
+	// Force the style name text field to scroll based on its final size, rather
+	// than its initial size
+	StyleName->SetInsertionPoint(0);
+	StyleName->SetInsertionPoint(-1);
+
 	persist.reset(new PersistLocation(this, "Tool/Style Editor"));
 
 	Bind(wxEVT_CHILD_FOCUS, &DialogStyleEditor::OnChildFocus, this);
