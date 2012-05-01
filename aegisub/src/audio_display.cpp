@@ -591,6 +591,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	Bind(wxEVT_MOTION, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_ENTER_WINDOW, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_LEAVE_WINDOW, &AudioDisplay::OnMouseEvent, this);
+	scroll_timer.Bind(wxEVT_TIMER, &AudioDisplay::OnScrollTimer, this);
 }
 
 
@@ -1026,6 +1027,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	{
 		if (!dragged_object->OnMouseEvent(event))
 		{
+			scroll_timer.Stop();
 			SetDraggedObject(0);
 			SetCursor(wxNullCursor);
 		}
@@ -1234,18 +1236,17 @@ void AudioDisplay::OnSelectionChanged()
 
 	if (audio_marker)
 	{
-		int rel_x = RelativeXFromTime(audio_marker->GetPosition());
-		int width = GetClientSize().GetWidth();
-
-		// If the dragged object is outside the visible area, scroll it into
-		// view with a 5% margin
-		if (rel_x < 0)
+		if (!scroll_timer.IsRunning())
 		{
-			ScrollBy(rel_x - width / 20);
-		}
-		else if (rel_x >= width)
-		{
-			ScrollBy(rel_x - width + width / 20);
+			// If the dragged object is outside the visible area, start the
+			// scroll timer to shift it back into view
+			int rel_x = RelativeXFromTime(audio_marker->GetPosition());
+			if (rel_x < 0 || rel_x >= GetClientSize().GetWidth())
+			{
+				// 50ms is the default for this on Windows (hardcoded since
+				// wxSystemSettings doesn't expose DragScrollDelay etc.)
+				scroll_timer.Start(50, true);
+			}
 		}
 	}
 	else if (OPT_GET("Audio/Auto/Scroll")->GetBool() && sel.end() != 0)
@@ -1254,6 +1255,25 @@ void AudioDisplay::OnSelectionChanged()
 	}
 
 	RefreshRect(scrollbar->GetBounds(), false);
+}
+
+void AudioDisplay::OnScrollTimer(wxTimerEvent &event)
+{
+	if (!audio_marker) return;
+
+	int rel_x = RelativeXFromTime(audio_marker->GetPosition());
+	int width = GetClientSize().GetWidth();
+
+	// If the dragged object is outside the visible area, scroll it into
+	// view with a 5% margin
+	if (rel_x < 0)
+	{
+		ScrollBy(rel_x - width / 20);
+	}
+	else if (rel_x >= width)
+	{
+		ScrollBy(rel_x - width + width / 20);
+	}
 }
 
 void AudioDisplay::OnStyleRangesChanged()

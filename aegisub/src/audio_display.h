@@ -41,6 +41,7 @@
 
 #include <wx/gdicmn.h>
 #include <wx/string.h>
+#include <wx/timer.h>
 #include <wx/window.h>
 #endif
 
@@ -131,6 +132,9 @@ class AudioDisplay: public wxWindow {
 	void SetDraggedObject(AudioDisplayInteractionObject *new_obj);
 
 
+	/// Timer for scrolling when markers are dragged out of the displayed area
+	wxTimer scroll_timer;
+
 	/// Leftmost pixel in the virtual audio image being displayed
 	int scroll_left;
 
@@ -213,6 +217,7 @@ class AudioDisplay: public wxWindow {
 	void OnFocus(wxFocusEvent &event);
 	/// wxWidgets keypress event
 	void OnKeyDown(wxKeyEvent& event);
+	void OnScrollTimer(wxTimerEvent &event);
 
 	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);
