@@ -242,7 +242,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 
 		combiner(first, diag);
 
-		first->End = diag->End;
+		first->End = std::max(first->End, diag->End);
 		delete diag;
 	}
 
