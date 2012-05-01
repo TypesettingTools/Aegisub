@@ -358,20 +358,19 @@ void DialogTimingProcessor::Process() {
 	std::vector<AssDialogue*> sorted = SortDialogues();
 	if (sorted.empty()) return;
 
-	// Options
-	bool addIn = hasLeadIn->IsChecked() && leadIn;
-	bool addOut = hasLeadOut->IsChecked() && leadOut;
-
 	// Add lead-in/out
-	if (addIn || addOut) {
-		for (size_t i = 0; i < sorted.size(); ++i) {
-			AssDialogue *cur = sorted[i];
-			if (addIn)
-				cur->Start = safe_time(sorted.rend() - i, sorted.rend(), cur, cur->Start - leadIn, &AssDialogue::End, &std::max<int>);
+	if (hasLeadIn->IsChecked() && leadIn) {
+		for (size_t i = 0; i < sorted.size(); ++i)
+			sorted[i]->Start = safe_time(sorted.rend() - i, sorted.rend(),
+				sorted[i], sorted[i]->Start - leadIn,
+				&AssDialogue::End, &std::max<int>);
+	}
 
-			if (addOut)
-				cur->End = safe_time(sorted.begin() + i + 1, sorted.end(), cur, cur->End + leadOut, &AssDialogue::Start, &std::min<int>);
-		}
+	if (hasLeadOut->IsChecked() && leadOut) {
+		for (size_t i = 0; i < sorted.size(); ++i)
+			sorted[i]->End = safe_time(sorted.begin() + i + 1, sorted.end(),
+				sorted[i], sorted[i]->End + leadOut,
+				&AssDialogue::Start, &std::min<int>);
 	}
 
 	// Make adjacent
