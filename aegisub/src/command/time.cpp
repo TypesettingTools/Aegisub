@@ -244,6 +244,19 @@ struct time_snap_scene : public validate_video_loaded {
 	}
 };
 
+struct time_add_lead_both : public Command {
+	CMD_NAME("time/lead/both")
+	STR_MENU("Add lead in and out")
+	STR_DISP("Add lead in and out")
+	STR_HELP("Add lead in and out")
+	void operator()(agi::Context *c) {
+		if (AudioTimingController *tc = c->audioController->GetTimingController()) {
+			tc->AddLeadIn();
+			tc->AddLeadOut();
+		}
+	}
+};
+
 struct time_add_lead_in : public Command {
 	CMD_NAME("time/lead/in")
 	STR_MENU("Add lead in")
@@ -308,6 +321,7 @@ struct time_prev : public Command {
 
 namespace cmd {
 	void init_time() {
+		reg(new time_add_lead_both);
 		reg(new time_add_lead_in);
 		reg(new time_add_lead_out);
 		reg(new time_continuous_end);
