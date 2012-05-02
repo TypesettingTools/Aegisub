@@ -35,6 +35,7 @@
 ///
 
 #ifndef AGI_PRE
+#include <map>
 #include <vector>
 
 #include <wx/panel.h>
@@ -50,6 +51,7 @@ namespace agi { struct Context; }
 struct AssColor;
 class AssDialogue;
 class AssStyle;
+class AssTime;
 class SubsTextEditCtrl;
 class TimeEdit;
 class wxButton;
@@ -118,13 +120,22 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	/// @param desc Undo description to use
 	void CommitText(wxString desc);
 
-	/// Move to the next line, creating it if needed
-	void NextLine();
-
-	int timeCommitId[3];
+	/// Last commit ID for undo coalescing
 	int commitId;
+
+	/// Last used commit message to avoid coalescing different types of changes
 	wxString lastCommitType;
+
+	/// Last field to get a time commit, as they all have the same commit message
+	int lastTimeCommitType;
+
+	/// Timer to stop coalescing changes after a break with no edits
 	wxTimer undoTimer;
+
+	/// The start and end times of the selected lines without changes made to
+	/// avoid negative durations, so that they can be restored if future changes
+	/// eliminate the negative durations
+	std::map<AssDialogue *, std::pair<AssTime, AssTime> > initialTimes;
 
 	// Constructor helpers
 	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));

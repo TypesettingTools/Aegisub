@@ -288,6 +288,8 @@ wxRadioButton *SubsEditBox::MakeRadio(wxString const& text, bool start, wxString
 void SubsEditBox::OnCommit(int type) {
 	wxEventBlocker blocker(this);
 
+	initialTimes.clear();
+
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
 		wxString style = StyleBox->GetValue();
 		StyleBox->Clear();
@@ -384,6 +386,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 }
 void SubsEditBox::OnSelectedSetChanged(const Selection &, const Selection &) {
 	sel = c->selectionController->GetSelectedSet();
+	initialTimes.clear();
 }
 
 void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
@@ -423,6 +426,8 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, 
 	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1, sel.size() == 1 ? *sel.begin() : 0);
 	file_changed_slot.Unblock();
 	lastCommitType = desc;
+	lastTimeCommitType = -1;
+	initialTimes.clear();
 	undoTimer.Start(10000, wxTIMER_ONE_SHOT);
 }
 
@@ -436,35 +441,48 @@ void SubsEditBox::CommitText(wxString desc) {
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
-	if (ByFrame->GetValue())
-		Duration->SetFrame(EndTime->GetFrame() - StartTime->GetFrame() + 1);
-	else
-		Duration->SetTime(EndTime->GetTime() - StartTime->GetTime());
-
-	// Update lines
 	for (Selection::iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		AssDialogue *d = *cur;
+
+		if (!initialTimes.count(d))
+			initialTimes[d] = std::make_pair(d->Start, d->End);
+
 		switch (field) {
 			case TIME_START:
-				d->Start = StartTime->GetTime();
-				if (d->Start > d->End)
-					d->End = d->Start;
+				initialTimes[d].first = d->Start = StartTime->GetTime();
+				d->End = std::max(d->Start, initialTimes[d].second);
 				break;
+
 			case TIME_END:
-				d->End = EndTime->GetTime();
-				if (d->Start > d->End)
-					d->Start = d->End;
+				initialTimes[d].second = d->End = EndTime->GetTime();
+				d->Start = std::min(d->End, initialTimes[d].first);
 				break;
+
 			case TIME_DURATION:
 				if (ByFrame->GetValue())
 					d->End = c->videoController->TimeAtFrame(c->videoController->FrameAtTime(d->Start, agi::vfr::START) + Duration->GetFrame(), agi::vfr::END);
 				else
 					d->End = d->Start + Duration->GetTime();
+				initialTimes[d].second = d->End;
 				break;
 		}
 	}
 
-	timeCommitId[field] = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, timeCommitId[field], sel.size() == 1 ? *sel.begin() : 0);
+	StartTime->SetTime(line->Start);
+	EndTime->SetTime(line->End);
+
+	if (ByFrame->GetValue())
+		Duration->SetFrame(EndTime->GetFrame() - StartTime->GetFrame() + 1);
+	else
+		Duration->SetTime(EndTime->GetTime() - StartTime->GetTime());
+
+	if (field != lastTimeCommitType)
+		commitId = -1;
+
+	lastTimeCommitType = field;
+	file_changed_slot.Block();
+	commitId = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, commitId, sel.size() == 1 ? *sel.begin() : 0);
+	file_changed_slot.Unblock();
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {
@@ -530,20 +548,14 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
 }
 
 void SubsEditBox::OnStartTimeChange(wxCommandEvent &) {
-	if (StartTime->GetTime() > EndTime->GetTime()) EndTime->SetTime(StartTime->GetTime());
 	CommitTimes(TIME_START);
 }
 
 void SubsEditBox::OnEndTimeChange(wxCommandEvent &) {
-	if (StartTime->GetTime() > EndTime->GetTime()) StartTime->SetTime(EndTime->GetTime());
 	CommitTimes(TIME_END);
 }
 
 void SubsEditBox::OnDurationChange(wxCommandEvent &) {
-	if (ByFrame->GetValue())
-		EndTime->SetFrame(StartTime->GetFrame() + Duration->GetFrame() - 1);
-	else
-		EndTime->SetTime(StartTime->GetTime() + Duration->GetTime());
 	CommitTimes(TIME_DURATION);
 }
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {
