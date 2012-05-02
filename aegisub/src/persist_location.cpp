@@ -31,9 +31,11 @@
 #include <wx/display.h>
 #endif
 
-PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)
+PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix, bool size_too)
 : x_opt(OPT_SET(options_prefix + "/Last/X"))
 , y_opt(OPT_SET(options_prefix + "/Last/Y"))
+, w_opt(size_too ? OPT_SET(options_prefix + "/Last/Width") : 0)
+, h_opt(size_too ? OPT_SET(options_prefix + "/Last/Height") : 0)
 , maximize_opt(OPT_SET(options_prefix + "/Maximized"))
 , dialog(dialog)
 {
@@ -44,6 +46,9 @@ PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)
 	else {
 		// First move to the saved place so that it ends up on the right monitor
 		dialog->Move(x, y);
+
+		if (size_too && w_opt->GetInt() > 0 && h_opt->GetInt() > 0)
+			dialog->SetSize(w_opt->GetInt(), h_opt->GetInt());
 
 		int display_index = wxDisplay::GetFromWindow(dialog);
 
@@ -75,11 +80,9 @@ PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix)
 
 	dialog->Bind(wxEVT_MOVE, &PersistLocation::OnMove, this);
 
-	if (dialog->GetWindowStyle() & wxMAXIMIZE_BOX) {
-		dialog->Bind(wxEVT_SIZE, &PersistLocation::OnSize, this);
-		if (maximize_opt->GetBool())
-			dialog->Maximize();
-	}
+	dialog->Bind(wxEVT_SIZE, &PersistLocation::OnSize, this);
+	if ((dialog->GetWindowStyle() & wxMAXIMIZE_BOX) && maximize_opt->GetBool())
+		dialog->Maximize();
 }
 
 void PersistLocation::OnMove(wxMoveEvent &e) {
@@ -91,5 +94,9 @@ void PersistLocation::OnMove(wxMoveEvent &e) {
 
 void PersistLocation::OnSize(wxSizeEvent &e) {
 	maximize_opt->SetBool(dialog->IsMaximized());
+	if (w_opt) {
+		w_opt->SetInt(dialog->GetSize().GetWidth());
+		h_opt->SetInt(dialog->GetSize().GetHeight());
+	}
 	e.Skip();
 }

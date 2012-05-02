@@ -482,6 +482,8 @@
 		},
 		"Style Editor" : {
 			"Last" : {
+				"Height" : -1,
+				"Width" : -1,
 				"X" : -1,
 				"Y" : -1
 			},

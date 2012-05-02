@@ -388,7 +388,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	StyleName->SetInsertionPoint(0);
 	StyleName->SetInsertionPoint(-1);
 
-	persist.reset(new PersistLocation(this, "Tool/Style Editor"));
+	persist.reset(new PersistLocation(this, "Tool/Style Editor", true));
 
 	Bind(wxEVT_CHILD_FOCUS, &DialogStyleEditor::OnChildFocus, this);
 

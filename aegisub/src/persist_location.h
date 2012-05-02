@@ -39,6 +39,8 @@ class wxSizeEvent;
 class PersistLocation {
 	agi::OptionValue *x_opt;
 	agi::OptionValue *y_opt;
+	agi::OptionValue *w_opt;
+	agi::OptionValue *h_opt;
 	agi::OptionValue *maximize_opt;
 	wxDialog *dialog;
 
@@ -49,5 +51,6 @@ public:
 	/// Persist the location of a dialog
 	/// @param dialog The dialog to save and restore the position of
 	/// @param options_prefix Prefix for the options names to store the location
-	PersistLocation(wxDialog *dialog, std::string options_prefix);
+	/// @param size_too Save and restore the size in addition to position
+	PersistLocation(wxDialog *dialog, std::string options_prefix, bool size_too = false);
 };
