@@ -286,7 +286,6 @@ struct time_next : public Command {
 	STR_DISP("Next Line")
 	STR_HELP("Next line or syllable")
 	void operator()(agi::Context *c) {
-		c->audioController->Stop();
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->Next(AudioTimingController::TIMING_UNIT);
 	}
@@ -299,7 +298,6 @@ struct time_prev : public Command {
 	STR_DISP("Previous Line")
 	STR_HELP("Previous line or syllable")
 	void operator()(agi::Context *c) {
-		c->audioController->Stop();
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->Prev();
 	}
