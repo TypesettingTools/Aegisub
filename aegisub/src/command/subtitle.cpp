@@ -148,29 +148,33 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 	STR_HELP("Inserts a line after current")
 
 	void operator()(agi::Context *c) {
-		int n = c->subsGrid->GetFirstSelRow();
-		int nrows = c->subsGrid->GetRows();
+		AssDialogue *active_line = c->selectionController->GetActiveLine();
 
-		// Create line to add
-		AssDialogue *def = new AssDialogue;
-		if (n == nrows-1) {
-			def->Start = c->subsGrid->GetDialogue(n)->End;
-			def->End = c->subsGrid->GetDialogue(n)->End;
-			def->End = def->End + OPT_GET("Timing/Default Duration")->GetInt();
-		}
-		else {
-			def->Start = c->subsGrid->GetDialogue(n)->End;
-			def->End = c->subsGrid->GetDialogue(n+1)->Start;
-		}
-		if (def->End < def->Start) def->End = def->Start + OPT_GET("Timing/Default Duration")->GetInt();
-		def->Style = c->subsGrid->GetDialogue(n)->Style;
+		AssDialogue *new_line = new AssDialogue;
+		new_line->Style = active_line->Style;
+		new_line->Start = active_line->End;
+		new_line->End = new_line->Start + OPT_GET("Timing/Default Duration")->GetInt();
 
-		// Insert it
-		c->subsGrid->BeginBatch();
-		c->subsGrid->InsertLine(def, n, true);
-		c->subsGrid->SelectRow(n + 1);
-		c->subsGrid->SetActiveLine(def);
-		c->subsGrid->EndBatch();
+		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+
+			// Limit the line to the available time
+			if (diag && diag->Start >= new_line->Start)
+				new_line->End = std::min(new_line->End, diag->Start);
+
+			// If we just hit the active line, insert the new line after it
+			if (diag == active_line) {
+				++it;
+				c->ass->Line.insert(it, new_line);
+				--it;
+			}
+		}
+
+		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+		SelectionController<AssDialogue>::Selection sel;
+		sel.insert(new_line);
+		c->selectionController->SetSelectedSet(sel);
+		c->selectionController->SetActiveLine(new_line);
 	}
 };
 
@@ -195,31 +199,30 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 	STR_HELP("Inserts a line before current")
 
 	void operator()(agi::Context *c) {
-		int n = c->subsGrid->GetFirstSelRow();
+		AssDialogue *active_line = c->selectionController->GetActiveLine();
 
-		// Create line to add
-		AssDialogue *def = new AssDialogue;
-		if (n == 0) {
-			def->Start = 0;
-			def->End = c->subsGrid->GetDialogue(n)->Start;
-		}
-		else if (c->subsGrid->GetDialogue(n-1)->End > c->subsGrid->GetDialogue(n)->Start) {
-			def->Start = c->subsGrid->GetDialogue(n)->Start-OPT_GET("Timing/Default Duration")->GetInt();
-			def->End = c->subsGrid->GetDialogue(n)->Start;
-		}
-		else {
-			def->Start = c->subsGrid->GetDialogue(n-1)->End;
-			def->End = c->subsGrid->GetDialogue(n)->Start;
-		}
-		if (def->End < def->Start) def->End = def->Start+OPT_GET("Timing/Default Duration")->GetInt();
-		def->Style = c->subsGrid->GetDialogue(n)->Style;
+		AssDialogue *new_line = new AssDialogue;
+		new_line->Style = active_line->Style;
+		new_line->End = active_line->Start;
+		new_line->Start = new_line->End - OPT_GET("Timing/Default Duration")->GetInt();
 
-		// Insert it
-		c->subsGrid->BeginBatch();
-		c->subsGrid->InsertLine(def, n, false);
-		c->subsGrid->SelectRow(n);
-		c->subsGrid->SetActiveLine(def);
-		c->subsGrid->EndBatch();
+		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+
+			// Limit the line to the available time
+			if (diag && diag->End <= new_line->End)
+				new_line->Start = std::max(new_line->Start, diag->End);
+
+			// If we just hit the active line, insert the new line before it
+			if (diag == active_line)
+				c->ass->Line.insert(it, new_line);
+		}
+
+		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+		SelectionController<AssDialogue>::Selection sel;
+		sel.insert(new_line);
+		c->selectionController->SetSelectedSet(sel);
+		c->selectionController->SetActiveLine(new_line);
 	}
 };
 
