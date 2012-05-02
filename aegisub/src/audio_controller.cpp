@@ -150,12 +150,12 @@ void AudioController::OnAudioProviderChanged()
 
 void AudioController::OpenAudio(const wxString &url)
 {
-	CloseAudio();
-
 	if (!url)
 		throw agi::InternalError("AudioController::OpenAudio() was passed an empty string. This must not happen.", 0);
 
 	wxString path_part;
+
+	AudioProvider *new_provider = 0;
 
 	if (url.StartsWith("dummy-audio:", &path_part))
 	{
@@ -179,7 +179,7 @@ void AudioController::OpenAudio(const wxString &url)
 		 *       in every channel even if one would be LFE.
 		 * "ln", length of signal in samples. ln/sr gives signal length in seconds.
 		 */
-		 provider = new DummyAudioProvider(5*30*60*1000, path_part.StartsWith("noise"));
+		new_provider = new DummyAudioProvider(5*30*60*1000, path_part.StartsWith("noise"));
 	}
 	else if (url.StartsWith("video-audio:", &path_part))
 	{
@@ -215,7 +215,7 @@ void AudioController::OpenAudio(const wxString &url)
 		 * Assume it's not a URI but instead a filename in the platform's native format.
 		 */
 		try {
-			provider = AudioProviderFactory::GetProvider(url);
+			new_provider = AudioProviderFactory::GetProvider(url);
 			StandardPaths::SetPathValue("?audio", wxFileName(url).GetPath());
 		}
 		catch (agi::UserCancelException const&) {
@@ -226,6 +226,9 @@ void AudioController::OpenAudio(const wxString &url)
 			throw;
 		}
 	}
+
+	CloseAudio();
+	provider = new_provider;
 
 	try
 	{
