@@ -135,7 +135,8 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 	bmp.reset(new wxBitmap(w, h, -1));
 	vid.reset(new DummyVideoProvider(0.0, 10, w, h, backColour, true));
 	try {
-		provider.reset(SubtitlesProviderFactory::GetProvider());
+		if (!provider)
+			provider.reset(SubtitlesProviderFactory::GetProvider());
 	}
 	catch (...) {
 		wxMessageBox(
