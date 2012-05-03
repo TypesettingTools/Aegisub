@@ -852,9 +852,9 @@ void SubsTextEditCtrl::SplitLine(bool estimateTimes) {
 	GetSelection(&from, &to);
 	from = GetReverseUnicodePosition(from);
 
-	AssDialogue *n2 = context->selectionController->GetActiveLine();
-	AssDialogue *n1 = new AssDialogue(*n2);
-	context->ass->Line.insert(find(context->ass->Line.begin(), context->ass->Line.end(), n2), n1);
+	AssDialogue *n1 = context->selectionController->GetActiveLine();
+	AssDialogue *n2 = new AssDialogue(*n1);
+	context->ass->Line.insert(++find(context->ass->Line.begin(), context->ass->Line.end(), n1), n2);
 
 	wxString orig = n1->Text;
 	n1->Text = orig.Left(from).Trim(true); // Trim off trailing whitespace
@@ -865,7 +865,7 @@ void SubsTextEditCtrl::SplitLine(bool estimateTimes) {
 		n2->Start = n1->End = (int)((n1->End - n1->Start) * splitPos) + n1->Start;
 	}
 
-	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
+	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | (estimateTimes ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_TEXT));
 }
 
 void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {
