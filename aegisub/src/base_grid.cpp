@@ -373,9 +373,7 @@ void BaseGrid::EndBatch() {
 }
 
 void BaseGrid::MakeCellVisible(int row, int col, bool center) {
-	int w = 0;
-	int h = 0;
-	GetClientSize(&w,&h);
+	int h = GetClientSize().GetHeight();
 
 	// Get min and max visible
 	int minVis = yPos+1;
@@ -422,8 +420,7 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 		AnnounceSelectedSetChanged(Selection(), removed);
 	}
 
-	int w, h;
-	GetClientSize(&w, &h);
+	int w = GetClientSize().GetWidth();
 	RefreshRect(wxRect(0, (row + 1 - yPos) * lineHeight, w, lineHeight), false);
 }
 
@@ -665,10 +662,7 @@ void BaseGrid::OnScroll(wxScrollEvent &event) {
 }
 
 void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
-	int w,h;
-	GetClientSize(&w,&h);
-
-	// Modifiers
+	int h = GetClientSize().GetHeight();
 	bool shift = event.ShiftDown();
 	bool alt = event.AltDown();
 	bool ctrl = event.CmdDown();
@@ -676,55 +670,51 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	// Row that mouse is over
 	bool click = event.LeftDown();
 	bool dclick = event.LeftDClick();
-	int row = event.GetY()/lineHeight + yPos - 1;
+	int row = event.GetY() / lineHeight + yPos - 1;
 	if (holding && !click) {
 		row = mid(0,row,GetRows()-1);
 	}
 	AssDialogue *dlg = GetDialogue(row);
 	if (!dlg) row = 0;
 
-	// Get focus
-	if (event.ButtonDown()) {
-		if (OPT_GET("Subtitle/Grid/Focus Allow")->GetBool()) {
-			SetFocus();
-		}
-	}
+	if (event.ButtonDown() && OPT_GET("Subtitle/Grid/Focus Allow")->GetBool())
+		SetFocus();
 
-	// Click type
-	bool startedHolding = false;
-	if (click && !holding && dlg) {
-		holding = true;
-		startedHolding = true;
-		CaptureMouse();
-	}
-	if (!event.LeftIsDown() && holding) {
-		holding = false;
-		ReleaseMouse();
-	}
-
-	// Scroll to keep visible
 	if (holding) {
-		// Find direction
-		int minVis = yPos+1;
-		int maxVis = yPos+h/lineHeight-3;
-		int delta = 0;
-		if (row < minVis) delta = -1;
-		if (row > maxVis) delta = +1;
-
-		// Scroll
-		if (delta) {
-			ScrollTo(yPos+delta*3);
-			if (startedHolding) {
-				holding = false;
-				ReleaseMouse();
+		if (!event.LeftIsDown()) {
+			if (dlg)
+				MakeCellVisible(row, 0, false);
+			holding = false;
+			ReleaseMouse();
+		}
+		else {
+			// Only scroll if the mouse has moved to a different row to avoid
+			// scrolling on sloppy clicks
+			if (row != extendRow) {
+				if (row <= yPos)
+					ScrollTo(yPos - 3);
+				// When dragging down we give a 3 row margin to make it easier
+				// to see what's going on, but we don't want to scroll down if
+				// the user clicks on the bottom row and drags up
+				else if (row > yPos + h / lineHeight - (row > extendRow ? 3 : 1))
+					ScrollTo(yPos + 3);
 			}
 		}
 	}
+	else if (click && dlg) {
+		holding = true;
+		CaptureMouse();
+	}
 
-	// Click
 	if ((click || holding || dclick) && dlg) {
 		int old_extend = extendRow;
+
+		// SetActiveLine will scroll the grid if the row is only half-visible,
+		// but we don't want to scroll until the mouse moves or the button is
+		// released, to avoid selecting multiple lines on a click
+		int old_y_pos = yPos;
 		SetActiveLine(dlg);
+		ScrollTo(old_y_pos);
 
 		// Toggle selected
 		if (click && ctrl && !shift && !alt) {
@@ -745,9 +735,8 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 		}
 
 		// Change active line only
-		if (click && !shift && !ctrl && alt) {
+		if (click && !shift && !ctrl && alt)
 			return;
-		}
 
 		// Block select
 		if ((click && shift && !alt) || (holding && !ctrl && !alt && !shift)) {
@@ -811,9 +800,8 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 }
 
 void BaseGrid::ScrollTo(int y) {
-	int w,h;
-	GetClientSize(&w,&h);
-	int nextY = mid(0,y,GetRows()+2 - h/lineHeight);
+	int h = GetClientSize().GetHeight();
+	int nextY = mid(0, y, GetRows() + 2 - h / lineHeight);
 	if (yPos != nextY) {
 		yPos = nextY;
 		if (scrollBar->IsEnabled()) scrollBar->SetThumbPosition(yPos);
