@@ -285,7 +285,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		}
 		// start hold
 		else {
-			if (!alt_down) {
+			if (!alt_down && features.size() > 1) {
 				sel_features.clear();
 				Selection sel;
 				sel.insert(c->selectionController->GetActiveLine());
