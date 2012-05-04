@@ -739,7 +739,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 			return;
 
 		// Block select
-		if ((click && shift && !alt) || (holding && !ctrl && !alt && !shift)) {
+		if ((click && shift && !alt) || holding) {
 			extendRow = old_extend;
 			int i1 = row;
 			int i2 = extendRow;
