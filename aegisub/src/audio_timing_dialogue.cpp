@@ -257,11 +257,21 @@ public:
 
 	/// Set the dialogue line which this is tracking and reset the markers to
 	/// the line's time range
-	void SetLine(AssDialogue *new_line)
+	/// @return Were the markers actually set to the line's time?
+	bool SetLine(AssDialogue *new_line)
 	{
-		line = new_line;
-		marker1.SetPosition(new_line->Start);
-		marker2.SetPosition(new_line->End);
+		if (!line || new_line->End > 0)
+		{
+			line = new_line;
+			marker1.SetPosition(new_line->Start);
+			marker2.SetPosition(new_line->End);
+			return true;
+		}
+		else
+		{
+			line = new_line;
+			return false;
+		}
 	}
 };
 
@@ -513,7 +523,7 @@ void AudioTimingControllerDialogue::Next(NextMode mode)
 
 	cmd::call("grid/line/next/create", context);
 
-	if (mode == LINE_RESET_DEFAULT || *active_line.GetRightMarker() == 0) {
+	if (mode == LINE_RESET_DEFAULT || active_line.GetLine()->End == 0) {
 		const int default_duration = OPT_GET("Timing/Default Duration")->GetInt();
 		// Setting right first here so that they don't get switched and the
 		// same marker gets set twice
@@ -564,11 +574,17 @@ void AudioTimingControllerDialogue::Revert()
 {
 	if (AssDialogue *line = context->selectionController->GetActiveLine())
 	{
-		active_line.SetLine(line);
 		modified_lines.clear();
-		AnnounceUpdatedPrimaryRange();
-		if (inactive_line_mode->GetInt() == 0)
-			AnnounceUpdatedStyleRanges();
+		if (active_line.SetLine(line))
+		{
+			AnnounceUpdatedPrimaryRange();
+			if (inactive_line_mode->GetInt() == 0)
+				AnnounceUpdatedStyleRanges();
+		}
+		else
+		{
+			modified_lines.insert(&active_line);
+		}
 	}
 
 	RegenerateInactiveLines();
