@@ -89,11 +89,12 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxStr
 	// Other stuff
 	if (!value) SetValue(time.GetASSFormated());
 
+	Bind(wxEVT_CHAR_HOOK, &TimeEdit::OnCharHook, this);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
+	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
 	Bind(wxEVT_CONTEXT_MENU, &TimeEdit::OnContextMenu, this);
 	Bind(wxEVT_KEY_DOWN, &TimeEdit::OnKeyDown, this);
-	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
-	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
 	Bind(wxEVT_KILL_FOCUS, &TimeEdit::OnFocusLost, this);
 }
 
@@ -137,6 +138,15 @@ void TimeEdit::UpdateText() {
 		ChangeValue(wxString::Format("%d", c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
 		ChangeValue(time.GetASSFormated());
+}
+
+void TimeEdit::OnCharHook(wxKeyEvent &event) {
+	// Force a modified event on Enter
+	// Can't be done in OnKeyDown as the SubsEditBox hotkey would grab it first
+	if (event.GetKeyCode() == WXK_RETURN)
+		SetValue(GetValue());
+	else
+		event.Skip();
 }
 
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
