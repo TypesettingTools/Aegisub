@@ -200,7 +200,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		return;
 	}
 
-	if (event.Entering() && !OPT_GET("Tool/Visual/Always Show")->GetBool())
+	if (event.Entering() && OPT_GET("Tool/Visual/Autohide")->GetBool())
 		need_render = true;
 
 	if (!dragging) {

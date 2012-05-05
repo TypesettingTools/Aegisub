@@ -164,9 +164,13 @@ Audio::Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Video")) {
 	wxFlexGridSizer *general = PageSizer(_("Options"));
 	OptionAdd(general, _("Show keyframes in slider"), "Video/Slider/Show Keyframes");
+	CellSkip(general);
+	OptionAdd(general, _("Only show visual tools when mouse is over video"), "Tool/Visual/Autohide");
+	CellSkip(general);
 	OptionAdd(general, _("Seek video to line start on selection change"), "Video/Subtitle Sync");
-	OptionAdd(general, _("Always show visual tools"), "Tool/Visual/Always Show");
+	CellSkip(general);
 	OptionAdd(general, _("Automatically open audio when opening video"), "Video/Open Audio");
+	CellSkip(general);
 
 	const wxString czoom_arr[24] = { "12.5%", "25%", "37.5%", "50%", "62.5%", "75%", "87.5%", "100%", "112.5%", "125%", "137.5%", "150%", "162.5%", "175%", "187.5%", "200%", "212.5%", "225%", "237.5%", "250%", "262.5%", "275%", "287.5%", "300%" };
 	wxArrayString choice_zoom(24, czoom_arr);

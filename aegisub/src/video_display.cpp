@@ -95,7 +95,7 @@ VideoDisplay::VideoDisplay(
 	wxWindow* parent,
 	agi::Context *c)
 : wxGLCanvas (parent, -1, attribList, wxDefaultPosition, wxDefaultSize, 0, wxPanelNameStr)
-, alwaysShowTools(OPT_GET("Tool/Visual/Always Show"))
+, autohideTools(OPT_GET("Tool/Visual/Autohide"))
 , con(c)
 , w(8)
 , h(8)
@@ -220,7 +220,7 @@ void VideoDisplay::Render() try {
 		}
 	}
 
-	if ((mouse_pos || alwaysShowTools->GetBool()) && tool)
+	if ((mouse_pos || !autohideTools->GetBool()) && tool)
 		tool->Draw();
 
 	SwapBuffers();

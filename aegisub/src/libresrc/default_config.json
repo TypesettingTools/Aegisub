@@ -535,7 +535,7 @@
 			"Maximized" : false
 		},
 		"Visual" : {
-			"Always Show": true
+			"Autohide": false
 		}
 	},
 

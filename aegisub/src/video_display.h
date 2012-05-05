@@ -68,7 +68,7 @@ class VideoDisplay : public wxGLCanvas {
 	/// Signals the display is connected to
 	std::list<agi::signal::Connection> slots;
 
-	const agi::OptionValue* alwaysShowTools;
+	const agi::OptionValue* autohideTools;
 
 	agi::Context *con;
 
