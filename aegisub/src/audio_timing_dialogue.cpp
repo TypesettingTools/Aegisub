@@ -303,9 +303,6 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	/// Inactive lines which are currently modifiable
 	std::list<TimeableLine> inactive_lines;
 
-	/// The current set of selected dialogue lines
-	Selection sel;
-
 	/// Selected lines which are currently modifiable
 	std::list<TimeableLine> selected_lines;
 
@@ -352,7 +349,7 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	void RegenerateSelectedLines();
 
 	/// Add a line to the list of timeable inactive lines
-	void AddInactiveLine(AssDialogue *diag);
+	void AddInactiveLine(Selection const& sel, AssDialogue *diag);
 
 	/// Regenerate the list of active and inactive line markers
 	void RegenerateMarkers();
@@ -440,7 +437,6 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	seconds_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 
-	sel = context->selectionController->GetSelectedSet();
 	Revert();
 }
 
@@ -474,7 +470,6 @@ void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
 
 void AudioTimingControllerDialogue::OnSelectedSetChanged(Selection const&, Selection const&)
 {
-	sel = context->selectionController->GetSelectedSet();
 	RegenerateSelectedLines();
 	RegenerateInactiveLines();
 }
@@ -729,6 +724,8 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
 
+	Selection sel = context->selectionController->GetSelectedSet();
+
 	switch (int mode = inactive_line_mode->GetInt())
 	{
 	case 1: // Previous line only
@@ -741,14 +738,14 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 			std::list<AssEntry*>::iterator prev = current_line;
 			while (--prev != context->ass->Line.begin() && !predicate(*prev)) ;
 			if (prev != context->ass->Line.begin())
-				AddInactiveLine(static_cast<AssDialogue*>(*prev));
+				AddInactiveLine(sel, static_cast<AssDialogue*>(*prev));
 
 			if (mode == 2)
 			{
 				std::list<AssEntry*>::iterator next =
 					find_if(++current_line, context->ass->Line.end(), predicate);
 				if (next != context->ass->Line.end())
-					AddInactiveLine(static_cast<AssDialogue*>(*next));
+					AddInactiveLine(sel, static_cast<AssDialogue*>(*next));
 			}
 		}
 		break;
@@ -758,7 +755,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		for (std::list<AssEntry*>::const_iterator it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it)
 		{
 			if (*it != active_line && predicate(*it))
-				AddInactiveLine(static_cast<AssDialogue*>(*it));
+				AddInactiveLine(sel, static_cast<AssDialogue*>(*it));
 		}
 		break;
 	}
@@ -775,7 +772,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	RegenerateMarkers();
 }
 
-void AudioTimingControllerDialogue::AddInactiveLine(AssDialogue *diag)
+void AudioTimingControllerDialogue::AddInactiveLine(Selection const& sel, AssDialogue *diag)
 {
 	if (sel.count(diag)) return;
 
@@ -789,6 +786,7 @@ void AudioTimingControllerDialogue::RegenerateSelectedLines()
 	selected_lines.clear();
 
 	AssDialogue *active = context->selectionController->GetActiveLine();
+	Selection sel = context->selectionController->GetSelectedSet();
 	for (Selection::iterator it = sel.begin(); it != sel.end(); ++it)
 	{
 		if (*it == active) continue;
