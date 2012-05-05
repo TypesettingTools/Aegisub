@@ -1077,6 +1077,13 @@ void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 	}
 }
 
+void BaseGrid::SetSelectionAndActive(Selection const& new_selection, AssDialogue *new_line) {
+	BeginBatch();
+	SetSelectedSet(new_selection);
+	SetActiveLine(new_line);
+	EndBatch();
+}
+
 void BaseGrid::PrevLine() {
 	int cur_line_i = GetDialogueIndex(GetActiveLine());
 	if (AssDialogue *prev_line = GetDialogue(cur_line_i-1)) {

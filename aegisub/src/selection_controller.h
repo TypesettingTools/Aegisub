@@ -129,6 +129,15 @@ public:
 	/// @return The selected set
 	virtual Selection const& GetSelectedSet() const = 0;
 
+	/// @brief Set both the selected set and active line
+	/// @param new_line Subtitle line to become the new active line
+	/// @param new_selection The set of subtitle lines to become the new selected set
+	///
+	/// This sets both the active line and selected set before announcing the
+	/// change to either of them, and is guaranteed to announce the active line
+	/// change before the selection change.
+	virtual void SetSelectionAndActive(Selection const& new_selection, ItemDataType *new_line) = 0;
+
 	/// @brief Change the active line to the next in sequence
 	///
 	/// If there is no logical next line in sequence, no change happens. This should
@@ -212,6 +221,7 @@ public:
 	virtual ItemDataType * GetActiveLine() const { return 0; }
 	virtual void SetSelectedSet(const Selection &new_selection) { }
 	virtual void GetSelectedSet(Selection &selection) const { }
+	virtual void SetSelectionAndActive(Selection const& new_selection, ItemDataType *new_line) { }
 	virtual void NextLine() { }
 	virtual void PrevLine() { }
 	virtual void AddSelectionListener(SelectionListener<ItemDataType> *listener) { }

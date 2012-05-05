@@ -149,6 +149,7 @@ public:
 	void SetSelectedSet(const Selection &new_selection);
 	void GetSelectedSet(Selection &res) const { res = selection; }
 	Selection const& GetSelectedSet() const { return selection; }
+	void SetSelectionAndActive(Selection const& new_selection, AssDialogue *new_line);;
 	void NextLine();
 	void PrevLine();
 
