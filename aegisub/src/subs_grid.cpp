@@ -155,11 +155,9 @@ void SubtitlesGrid::RecombineLines() {
 		newSel.insert(*lines.begin());
 
 	// Restore selection
-	SetSelectedSet(newSel);
-	if (find(newSel.begin(), newSel.end(), activeLine) == newSel.end()) {
+	if (!newSel.count(activeLine))
 		activeLine = *newSel.begin();
-	}
-	SetActiveLine(activeLine);
+	SetSelectionAndActive(newSel, activeLine);
 
 	context->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }

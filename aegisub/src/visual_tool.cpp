@@ -355,11 +355,11 @@ void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 
 	// Set the active line to an arbitrary selected line if we just
 	// deselected the active line
-	if (feat->line == c->selectionController->GetActiveLine()) {
-		c->selectionController->SetActiveLine(*sel.begin());
-	}
+	AssDialogue *new_active = c->selectionController->GetActiveLine();
+	if (feat->line == new_active)
+		new_active = *sel.begin();
 
-	c->selectionController->SetSelectedSet(sel);
+	c->selectionController->SetSelectionAndActive(sel, new_active);
 }
 
 //////// PARSERS

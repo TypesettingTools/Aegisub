@@ -275,6 +275,11 @@ void DialogSelection::Process(wxCommandEvent&) {
 		con->selectionController->SetActiveLine(*new_sel.begin());
 	con->selectionController->SetSelectedSet(new_sel);
 
+	AssDialogue *new_active = con->selectionController->GetActiveLine();
+	if (new_sel.size() && !new_sel.count(new_active))
+		new_active = *new_sel.begin();
+	con->selectionController->SetSelectionAndActive(new_sel, new_active);
+
 	Close();
 }
 

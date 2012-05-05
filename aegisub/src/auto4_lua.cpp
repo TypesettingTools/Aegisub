@@ -955,9 +955,10 @@ namespace Automation4 {
 					lua_pop(L, 1);
 				}
 
-				c->selectionController->SetSelectedSet(sel);
-				if (active_line && (active_idx > 0 || !sel.count(c->selectionController->GetActiveLine())))
-					c->selectionController->SetActiveLine(active_line);
+				AssDialogue *new_active = c->selectionController->GetActiveLine();
+				if (active_line && (active_idx > 0 || !sel.count(new_active)))
+					new_active = active_line;
+				c->selectionController->SetSelectionAndActive(sel, new_active);
 			}
 
 			stackcheck.check_stack(1);

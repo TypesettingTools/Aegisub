@@ -267,10 +267,9 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 
 		std::map<wxString, wxString>::const_iterator auto_rep = auto_replace.find(word);
 		if (auto_rep == auto_replace.end()) {
-			context->selectionController->SetActiveLine(active_line);
 			SelectionController<AssDialogue>::Selection sel;
 			sel.insert(active_line);
-			context->selectionController->SetSelectedSet(sel);
+			context->selectionController->SetSelectionAndActive(sel, active_line);
 			SetWord(word);
 			return true;
 		}

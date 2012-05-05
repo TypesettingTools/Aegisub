@@ -189,8 +189,7 @@ static void duplicate_lines(agi::Context *c, bool shift) {
 
 	c->ass->Commit(_("duplicate lines"), AssFile::COMMIT_DIAG_ADDREM);
 
-	c->selectionController->SetSelectedSet(new_sel);
-	c->selectionController->SetActiveLine(new_active);
+	c->selectionController->SetSelectionAndActive(new_sel, new_active);
 }
 
 /// Duplicate the selected lines.
@@ -249,8 +248,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 	c->ass->Line.erase(out, c->ass->Line.end());
 	sel.clear();
 	sel.insert(first);
-	c->selectionController->SetActiveLine(first);
-	c->selectionController->SetSelectedSet(sel);
+	c->selectionController->SetSelectionAndActive(sel, first);
 	c->ass->Commit(message, AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 

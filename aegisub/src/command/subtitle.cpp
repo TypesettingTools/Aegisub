@@ -173,8 +173,7 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 		SelectionController<AssDialogue>::Selection sel;
 		sel.insert(new_line);
-		c->selectionController->SetSelectedSet(sel);
-		c->selectionController->SetActiveLine(new_line);
+		c->selectionController->SetSelectionAndActive(sel, new_line);
 	}
 };
 
@@ -221,8 +220,7 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 		SelectionController<AssDialogue>::Selection sel;
 		sel.insert(new_line);
-		c->selectionController->SetSelectedSet(sel);
-		c->selectionController->SetActiveLine(new_line);
+		c->selectionController->SetSelectionAndActive(sel, new_line);
 	}
 };
 
