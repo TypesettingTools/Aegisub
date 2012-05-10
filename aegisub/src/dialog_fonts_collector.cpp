@@ -63,7 +63,8 @@ enum FcMode {
 	CheckFontsOnly = 0,
 	CopyToFolder = 1,
 	CopyToScriptFolder = 2,
-	CopyToZip = 3
+	CopyToZip = 3,
+	SymlinkToFolder = 4
 };
 
 wxDEFINE_EVENT(EVT_ADD_TEXT, wxThreadEvent);
@@ -97,10 +98,18 @@ class FontsCollectorThread : public wxThread {
 
 		// Copy fonts
 		switch (oper) {
-			case CheckFontsOnly: return;
+			case CheckFontsOnly:
+				return;
+			case SymlinkToFolder:
+				AppendText(_("Symlinking fonts to folder...\n"));
+				break;
 			case CopyToScriptFolder:
-			case CopyToFolder: AppendText(_("Copying fonts to folder...\n"));  break;
-			case CopyToZip:    AppendText(_("Copying fonts to archive...\n")); break;
+			case CopyToFolder:
+				AppendText(_("Copying fonts to folder...\n"));
+				break;
+			case CopyToZip:
+				AppendText(_("Copying fonts to archive...\n"));
+				break;
 		}
 
 		// Open zip stream if saving to compressed archive
@@ -119,15 +128,26 @@ class FontsCollectorThread : public wxThread {
 			total_size += cur_fn.GetSize().GetValue();
 
 			switch (oper) {
+				case SymlinkToFolder:
 				case CopyToScriptFolder:
 				case CopyToFolder: {
 					wxString dest = destination + cur_fn.GetFullName();
 					if (wxFileName::FileExists(dest))
 						ret = 2;
+#ifndef _WIN32
+					else if (oper == SymlinkToFolder) {
+						// returns 0 on success, -1 on error...
+						if (symlink(cur_fn.GetFullPath().utf8_str(), dest.utf8_str()))
+							ret = 0;
+						else
+							ret = 3;
+					}
+#endif
 					else
 						ret = wxCopyFile(*cur, dest, true);
 				}
 				break;
+
 				case CopyToZip: {
 					wxFFileInputStream in(*cur);
 					if (!in.IsOk())
@@ -144,6 +164,8 @@ class FontsCollectorThread : public wxThread {
 				AppendText(wxString::Format(_("* Copied %s.\n"), *cur), 1);
 			else if (ret == 2)
 				AppendText(wxString::Format(_("* %s already exists on destination.\n"), wxFileName(*cur).GetFullName()), 3);
+			else if (ret == 3)
+				AppendText(wxString::Format(_("* Symlinked %s.\n"), *cur), 1);
 			else {
 				AppendText(wxString::Format(_("* Failed to copy %s.\n"), *cur), 2);
 				allOk = false;
@@ -196,13 +218,16 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	SetIcon(GETICON(font_collector_button_16));
 
 	wxString modes[] = {
-		_("Check fonts for availability"),
-		_("Copy fonts to folder"),
-		_("Copy fonts to subtitle file's folder"),
-		_("Copy fonts to zipped archive")
+		 _("Check fonts for availability")
+		,_("Copy fonts to folder")
+		,_("Copy fonts to subtitle file's folder")
+		,_("Copy fonts to zipped archive")
+#ifndef _WIN32
+		,_("Symlink fonts to folder")
+#endif
 	};
-	collection_mode = new wxRadioBox(this, -1, "Action", wxDefaultPosition, wxDefaultSize, 4, modes, 1);
-	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 3));
+	collection_mode = new wxRadioBox(this, -1, "Action", wxDefaultPosition, wxDefaultSize, countof(modes), modes, 1);
+	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 4));
 
 	if (!subs->filename)
 		collection_mode->Enable(2, false);
@@ -341,7 +366,7 @@ void DialogFontsCollector::OnRadio(wxCommandEvent &) {
 		dest_browse_button->Enable(true);
 		dest_label->Enable(true);
 
-		if (value == CopyToFolder) {
+		if (value == CopyToFolder || value == SymlinkToFolder) {
 			dest_label->SetLabel(_("Choose the folder where the fonts will be collected to. It will be created if it doesn't exist."));
 
 			// Remove filename from browse box

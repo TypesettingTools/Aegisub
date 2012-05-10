@@ -123,6 +123,8 @@ template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b
 #endif
 #endif
 
+#define countof(array) (sizeof(array) / sizeof(array[0]))
+
 /// Polymorphic delete functor
 struct delete_ptr {
 	template<class T>

@@ -467,7 +467,6 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 	StatusClear.Start(ms,true);
 }
 
-#define countof(array) (sizeof(array) / sizeof(array[0]))
 bool FrameMain::LoadList(wxArrayString list) {
 	// Keep these lists sorted
 
