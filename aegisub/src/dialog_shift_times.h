@@ -74,7 +74,6 @@ class DialogShiftTimes : public wxDialog, private SelectionListener<AssDialogue>
 	int Shift(int initial_time, int shift, bool by_time, agi::vfr::Time type);
 
 	void OnClear(wxCommandEvent&);
-	void OnClose(wxCommandEvent&);
 	void OnByTime(wxCommandEvent&);
 	void OnByFrames(wxCommandEvent&);
 	void OnHistoryClick(wxCommandEvent&);

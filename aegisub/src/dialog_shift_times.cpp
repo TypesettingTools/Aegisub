@@ -193,13 +193,22 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	CenterOnParent();
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::Process, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::OnClose, this, wxID_CANCEL);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Shift Times"), wxID_HELP);
 	history_box->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogShiftTimes::OnHistoryClick, this);
 	context->selectionController->AddSelectionListener(this);
 }
 
 DialogShiftTimes::~DialogShiftTimes() {
+	long shift;
+	shift_frames->GetValue().ToLong(&shift);
+
+	OPT_SET("Tool/Shift Times/Time")->SetInt(shift_time->GetTime());
+	OPT_SET("Tool/Shift Times/Frames")->SetInt(shift);
+	OPT_SET("Tool/Shift Times/ByTime")->SetBool(shift_by_time->GetValue());
+	OPT_SET("Tool/Shift Times/Type")->SetInt(time_fields->GetSelection());
+	OPT_SET("Tool/Shift Times/Affect")->SetInt(selection_mode->GetSelection());
+	OPT_SET("Tool/Shift Times/Direction")->SetBool(shift_backward->GetValue());
+
 	context->selectionController->RemoveSelectionListener(this);
 }
 
@@ -233,20 +242,6 @@ void DialogShiftTimes::OnClear(wxCommandEvent &) {
 	wxRemoveFile(lagi_wxString(history_filename));
 	history_box->Clear();
 	history->clear();
-}
-
-void DialogShiftTimes::OnClose(wxCommandEvent &) {
-	long shift;
-	shift_frames->GetValue().ToLong(&shift);
-
-	OPT_SET("Tool/Shift Times/Time")->SetInt(shift_time->GetTime());
-	OPT_SET("Tool/Shift Times/Frames")->SetInt(shift);
-	OPT_SET("Tool/Shift Times/ByTime")->SetBool(shift_by_time->GetValue());
-	OPT_SET("Tool/Shift Times/Type")->SetInt(time_fields->GetSelection());
-	OPT_SET("Tool/Shift Times/Affect")->SetInt(selection_mode->GetSelection());
-	OPT_SET("Tool/Shift Times/Direction")->SetBool(shift_backward->GetValue());
-
-	Destroy();
 }
 
 void DialogShiftTimes::OnByTime(wxCommandEvent &) {
