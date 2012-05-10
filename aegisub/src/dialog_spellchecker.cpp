@@ -157,8 +157,6 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 
 	if (FindNext())
 		Show();
-
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnClose, this, wxID_CANCEL);
 }
 
 DialogSpellChecker::~DialogSpellChecker() {
@@ -199,10 +197,6 @@ void DialogSpellChecker::OnChangeLanguage(wxCommandEvent&) {
 
 void DialogSpellChecker::OnChangeSuggestion(wxCommandEvent&) {
 	replace_word->SetValue(suggest_list->GetStringSelection());
-}
-
-void DialogSpellChecker::OnClose(wxCommandEvent&) {
-	Destroy();
 }
 
 bool DialogSpellChecker::FindNext() {

@@ -96,7 +96,6 @@ class DialogSpellChecker : public wxDialog {
 	void OnIgnore(wxCommandEvent&);
 	void OnIgnoreAll(wxCommandEvent&);
 	void OnAdd(wxCommandEvent&);
-	void OnClose(wxCommandEvent&);
 
 public:
 	DialogSpellChecker(agi::Context *context);

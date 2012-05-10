@@ -52,6 +52,7 @@
 #include "../ass_file.h"
 #include "../compat.h"
 #include "../dialog_attachments.h"
+#include "../dialog_manager.h"
 #include "../dialog_properties.h"
 #include "../dialog_search_replace.h"
 #include "../dialog_spellchecker.h"
@@ -437,7 +438,7 @@ struct subtitle_spellcheck : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		new DialogSpellChecker(c);
+		c->dialog->Show<DialogSpellChecker>(c);
 	}
 };
 }
