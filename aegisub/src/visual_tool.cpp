@@ -248,17 +248,15 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		}
 	}
 	else if (holding) {
-		if (event.LeftIsDown()) {
-			UpdateHold();
-			need_render = true;
-		}
-		// end hold
-		else {
+		if (!event.LeftIsDown()) {
 			holding = false;
 
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
+
+		UpdateHold();
+		need_render = true;
 		Commit();
 
 	}

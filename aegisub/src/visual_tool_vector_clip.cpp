@@ -333,6 +333,8 @@ bool VisualToolVectorClip::InitializeHold() {
 }
 
 void VisualToolVectorClip::UpdateHold() {
+	bool needs_save = true;
+
 	if (mode == 1) {
 		spline.back().EndPoint() = mouse_pos;
 		features.back().pos = mouse_pos;
@@ -360,20 +362,24 @@ void VisualToolVectorClip::UpdateHold() {
 		// See if distance is enough
 		Vector2D const& last = spline.back().EndPoint();
 		float len = (last - mouse_pos).SquareLen();
-		if (mode == 6 && len < 900) return;
-		if (mode == 7 && len < 3600) return;
-
-		spline.push_back(SplineCurve(last, mouse_pos));
-		MakeFeature(--spline.end());
+		if ((mode == 6 && len >= 900) || (mode == 7 && len >= 3600)) {
+			spline.push_back(SplineCurve(last, mouse_pos));
+			MakeFeature(--spline.end());
+		}
+		else
+			needs_save = false;
 	}
 
 	if (mode == 3 || mode == 4) return;
 
 	// Smooth spline
-	if (!holding && mode == 7)
+	if (!holding && mode == 7) {
 		spline.Smooth();
+		needs_save = true;
+	}
 
-	Save();
+	if (needs_save)
+		Save();
 
 	// End freedraw
 	if (!holding && (mode == 6 || mode == 7)) {
