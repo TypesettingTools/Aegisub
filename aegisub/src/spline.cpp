@@ -281,14 +281,14 @@ void Spline::Smooth(float smooth) {
 	if (size() < 3) return;
 
 	// Smooth curve
-	iterator curve1 = end();
-	--curve1;
+	iterator cur_curve = end();
+	--cur_curve;
 	for (iterator cur = begin(); cur != end(); ) {
-		iterator curve0 = curve1;
-		curve1 = cur;
+		iterator prev_curve = cur_curve;
+		cur_curve = cur;
 		++cur;
-		iterator curve2 = cur == end() ? begin() : cur;
+		iterator next_curve = cur == end() ? begin() : cur;
 
-		curve1->Smooth(curve0->p1, curve2->p2, smooth);
+		cur_curve->Smooth(prev_curve->p1, next_curve->EndPoint(), smooth);
 	}
 }

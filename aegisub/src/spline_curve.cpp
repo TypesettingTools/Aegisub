@@ -74,18 +74,18 @@ std::pair<SplineCurve, SplineCurve> SplineCurve::Split(float t) {
 	return std::make_pair(SplineCurve(p1), SplineCurve(p1));
 }
 
-void SplineCurve::Smooth(Vector2D p0, Vector2D p3, float smooth) {
+void SplineCurve::Smooth(Vector2D p0, Vector2D p5, float smooth) {
 	if (type != LINE || p1 == p2) return;
 	smooth = mid(0.f, smooth, 1.f);
 
 	// Calculate intermediate points
 	Vector2D c1 = (p0 + p1) / 2.f;
 	Vector2D c2 = (p1 + p2) / 2.f;
-	Vector2D c3 = (p2 + p3) / 2.f;
+	Vector2D c3 = (p2 + p5) / 2.f;
 
 	float len1 = (p1 - p0).Len();
 	float len2 = (p2 - p1).Len();
-	float len3 = (p3 - p2).Len();
+	float len3 = (p5 - p2).Len();
 
 	float k1 = len1 / (len1 + len2);
 	float k2 = len2 / (len2 + len3);
