@@ -211,7 +211,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 			ColorSpace = wxString::Format("%s.601", ColorRange);
 			break;
 		case FFMS_CS_SMPTE240M:
-			ColorSpace = wxString::Format("%s.204M", ColorRange);
+			ColorSpace = wxString::Format("%s.240M", ColorRange);
 			break;
 		default:
 			throw VideoOpenError("Unknown video color space");
