@@ -250,7 +250,6 @@ void VideoContext::OnSubtitlesCommit() {
 void VideoContext::OnSubtitlesSave() {
 	if (!IsLoaded()) {
 		context->ass->SetScriptInfo("Video File", "");
-		context->ass->SetScriptInfo("Video Colorspace", "");
 		context->ass->SetScriptInfo("Video Aspect Ratio", "");
 		context->ass->SetScriptInfo("Video Position", "");
 		context->ass->SetScriptInfo("VFR File", "");
@@ -265,7 +264,7 @@ void VideoContext::OnSubtitlesSave() {
 		ar = wxString::Format("%d", arType);
 
 	context->ass->SetScriptInfo("Video File", MakeRelativePath(videoFile, context->ass->filename));
-	context->ass->SetScriptInfo("Video Colorspace", videoProvider->GetColorSpace());
+	context->ass->SetScriptInfo("YCbCr Matrix", videoProvider->GetColorSpace());
 	context->ass->SetScriptInfo("Video Aspect Ratio", ar);
 	context->ass->SetScriptInfo("Video Position", wxString::Format("%d", frame_n));
 	context->ass->SetScriptInfo("VFR File", MakeRelativePath(GetTimecodesName(), context->ass->filename));

@@ -378,6 +378,7 @@ void AssFile::LoadDefault(bool defline) {
 		AddLine(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()), &version, &attach);
 		AddLine(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()), &version, &attach);
 	}
+	AddLine("YCbCr Matrix: None", &version, &attach);
 
 	InsertStyle(new AssStyle);
 

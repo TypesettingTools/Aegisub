@@ -148,7 +148,8 @@ public:
 	int GetHeight() const                 { return h; }
 	double GetDAR() const                 { return 0; }
 	agi::vfr::Framerate GetFPS() const    { return fps; }
-	std::vector<int> GetKeyFrames() const { return std::vector<int>(); };
-	wxString GetDecoderName() const       { return "YU4MPEG"; };
-	bool WantsCaching() const             { return true; };
+	std::vector<int> GetKeyFrames() const { return std::vector<int>(); }
+	wxString GetColorSpace() const        { return "TV.601"; }
+	wxString GetDecoderName() const       { return "YU4MPEG"; }
+	bool WantsCaching() const             { return true; }
 };

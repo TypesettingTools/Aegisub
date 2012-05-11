@@ -162,18 +162,15 @@ file_exit:
 			AVSValue args[2] = { script, "Rec601" };
 			if (!OPT_GET("Video/Force BT.601")->GetBool() && (vi.width > 1024 || vi.height >= 600)) {
 				args[1] = "Rec709";
-				colorspace = "BT.709";
+				colorspace = "TV.709";
 			}
 			else
-				colorspace = "BT.601";
+				colorspace = "TV.601";
 			const char *argnames[2] = { 0, "matrix" };
 			script = avs.GetEnv()->Invoke("ConvertToRGB32", AVSValue(args, 2), argnames);
 		}
-		else if (extension != ".avs")
-			colorspace = "RGB";
-		// Don't set the colorspace to RGB if we're opening an Avisynth script
-		// as we can't tell RGB source video apart from a script that happens
-		// to convert to rgb
+		else
+			colorspace = "None";
 
 		RGB32Video = avs.GetEnv()->Invoke("Cache", script).AsClip();
 		vi = RGB32Video->GetVideoInfo();

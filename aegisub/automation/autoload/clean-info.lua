@@ -29,6 +29,7 @@ function clean_script_info(subs)
         ["scaledborderandshadow"] = true,
         ["scripttype"] = true,
         ["video colorspace"] = true,
+        ["ycbcr matrix"] = true,
         ["wrapstyle"] = true
     }
 

@@ -179,6 +179,9 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	else
 		DAR = double(Width) / Height;
 
+	// Assuming TV for unspecified
+	wxString ColorRange = TempFrame->ColorRange == FFMS_CR_JPEG ? "PC" : "TV";
+
 	int CS = TempFrame->ColorSpace;
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
 	if (CS != FFMS_CS_RGB && CS != FFMS_CS_BT470BG && OPT_GET("Video/Force BT.601")->GetBool()) {
@@ -186,15 +189,33 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 			throw VideoOpenError(std::string("Failed to set input format: ") + ErrInfo.Buffer);
 
 		CS = FFMS_CS_BT470BG;
+		ColorRange = "TV";
 	}
 #endif
 
 	switch (CS) {
-		case FFMS_CS_RGB:         ColorSpace = "RGB"; break;
-		case FFMS_CS_BT709:       ColorSpace = "BT.709"; break;
-		case FFMS_CS_BT470BG:     ColorSpace = "BT.601"; break;
-		case FFMS_CS_UNSPECIFIED: ColorSpace = Width > 1024 || Height >= 600 ? "BT.709" : "BT.601"; break;
-		default:                  ColorSpace = ""; break;
+		case FFMS_CS_RGB:
+			ColorSpace = "None";
+			break;
+		case FFMS_CS_BT709:
+			ColorSpace = wxString::Format("%s.709", ColorRange);
+			break;
+		case FFMS_CS_UNSPECIFIED:
+			ColorSpace = wxString::Format("%s.%s", ColorRange, Width > 1024 || Height >= 600 ? "709" : "601");
+			break;
+		case FFMS_CS_FCC:
+			ColorSpace = wxString::Format("%s.FCC", ColorRange);
+			break;
+		case FFMS_CS_BT470BG:
+		case FFMS_CS_SMPTE170M:
+			ColorSpace = wxString::Format("%s.601", ColorRange);
+			break;
+		case FFMS_CS_SMPTE240M:
+			ColorSpace = wxString::Format("%s.204M", ColorRange);
+			break;
+		default:
+			throw VideoOpenError("Unknown video color space");
+			break;
 	}
 
 	const int TargetFormat[] = { FFMS_GetPixFmt("bgra"), -1 };

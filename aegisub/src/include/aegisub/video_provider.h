@@ -65,9 +65,9 @@ public:
 	virtual std::vector<int> GetKeyFrames() const=0;///< Returns list of keyframes
 
 	/// Get the source colorspace of the video before it was converted to RGB
-	/// @return A string describing the source colorspace or empty if it is
+	/// @return A string describing the source colorspace or "None" if it is
 	///         unknown or meaningless
-	virtual wxString GetColorSpace() const { return ""; }
+	virtual wxString GetColorSpace() const = 0;
 
 	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
 	virtual wxString GetWarning() const { return ""; }
