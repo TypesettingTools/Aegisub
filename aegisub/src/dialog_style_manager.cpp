@@ -346,8 +346,12 @@ void DialogStyleManager::LoadCatalog() {
 	}
 
 	// Create a default storage if there are none
-	if (CatalogList->IsListEmpty())
+	if (CatalogList->IsListEmpty()) {
+		Store.Load("Default");
+		Store.push_back(new AssStyle);
+		Store.Save();
 		CatalogList->Append("Default");
+	}
 
 	// Set to default if available
 	wxString pickStyle = c->ass->GetScriptInfo("Last Style Storage");
