@@ -194,7 +194,7 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 			wxString val(lagi_wxString(opt->GetString()));
 			if (cb->FindString(val) != wxNOT_FOUND)
 				cb->SetStringSelection(val);
-			else
+			else if (!choices.empty())
 				cb->SetSelection(0);
 			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, StringUpdater(opt_name, parent));
 			break;
