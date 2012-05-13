@@ -10,6 +10,7 @@ is_bad_lib = re.compile(r'(/usr/local|/opt)').match
 is_sys_lib = re.compile(r'(/usr|/System)').match
 otool_libname_extract = re.compile(r'\s+(/.*?)[\(\s:]').search
 goodlist = []
+badlist = []
 link_map = {}
 
 def otool(cmdline):
@@ -27,8 +28,8 @@ def collectlibs(lib, masterlist, targetdir):
 		lr = otool_libname_extract(l)
 		if not lr: continue
 		l = lr.group(1)
-		if is_bad_lib(l):
-			sys.exit("Linking with library in blacklisted location: " + l)
+		if is_bad_lib(l) and not l in badlist:
+			badlist.append(l)
 		if not is_sys_lib(l) and not l in masterlist:
 			locallist.append(l)
 			print "found %s:" % l
@@ -91,6 +92,12 @@ for lib in libs:
 	os.system("%s -id '@executable_path/%s' '%s/%s'" % (in_tool_cmdline, libbase, targetdir, libbase))
 	sys.stdout.flush()
 
+if badlist:
+	print
+	print "WARNING: The following libraries have blacklisted paths:"
+	for lib in sorted(badlist):
+		print lib
+	print "These paths normally have files from a package manager, which means that end result may not work if copied to another machine."
 
 print
 print "All done!"
