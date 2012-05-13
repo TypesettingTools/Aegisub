@@ -788,6 +788,8 @@ END_EVENT_TABLE()
 
 void AudioDisplay::OnPaint(wxPaintEvent&)
 {
+	if (!audio_renderer_provider) return;
+
 	wxAutoBufferedPaintDC dc(this);
 
 	wxRect audio_bounds(0, audio_top, GetClientSize().GetWidth(), audio_height);
