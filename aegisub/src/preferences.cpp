@@ -670,7 +670,7 @@ static void PageChanged(wxBookCtrlEvent& evt) {
 	OPT_SET("Tool/Preferences/Page")->SetInt(evt.GetSelection());
 }
 
-Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, 500)) {
+Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, -1), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) {
 	SetIcon(GETICON(options_button_16));
 
 	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
@@ -706,8 +706,6 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	mainSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
 
 	SetSizerAndFit(mainSizer);
-	SetMinSize(wxSize(-1, 500));
-	SetMaxSize(wxSize(-1, 500));
 	CenterOnParent();
 
 	applyButton->Enable(false);
