@@ -336,9 +336,14 @@ void DialogStyleManager::LoadCatalog() {
 	CatalogList->Clear();
 
 	// Get saved style catalogs
-	wxString dirname = StandardPaths::DecodePath("?user/catalog/*.sty");
-	for (wxString curfile = wxFindFirstFile(dirname, wxFILE); !curfile.empty(); curfile = wxFindNextFile())
-		CatalogList->Append(wxFileName(curfile).GetName());
+	wxDir dir(StandardPaths::DecodePath("?user/catalog/"));
+	if (dir.IsOpened()) {
+		wxString curfile;
+		if (dir.GetFirst(&curfile, "*.sty", wxDIR_FILES))
+			CatalogList->Append(wxFileName(curfile).GetName());
+		while (dir.GetNext(&curfile))
+			CatalogList->Append(wxFileName(curfile).GetName());
+	}
 
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty())
