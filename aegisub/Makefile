@@ -16,7 +16,7 @@ ifeq (yes, $(BUILD_DARWIN))
 osx-bundle:
 	$(BIN_SHELL) tools/osx-bundle.sh "$(BUNDLE_STRING)" $(AEGISUB_VERSION_DATA) DICT_DIR=$(DICT_DIR)
 
-osx-dmg:
+osx-dmg: osx-bundle
 	$(BIN_SHELL) tools/osx-dmg.sh "$(BUNDLE_STRING)" "$(DMG_STRING)"
 
 osx-tinderbox-bundle:
