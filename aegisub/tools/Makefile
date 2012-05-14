@@ -17,7 +17,7 @@ EXTRA_DIST = \
 	osx-dmg.sh \
 	osx-fix-libs.py
 
-CLEANFILES= \
+DISTCLEANFILES= \
 	osx-bundle.sed
 
 include ../Makefile.target
