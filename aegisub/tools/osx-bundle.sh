@@ -16,7 +16,7 @@ fi
 if ! test -d packages/osx_bundle; then
   echo
   echo "Make sure you're in the toplevel source directory"
-  exit 1;
+  exit 1
 fi
 
 if test -d "${PKG_DIR}"; then
@@ -39,8 +39,8 @@ echo
 echo "---- Copying Skel Files ----"
 if ! test -f "tools/osx-bundle.sed"; then
   echo
-  echo "NOT FOUND: tools/osx-bundle.sed";
-  exit 1;
+  echo "NOT FOUND: tools/osx-bundle.sed"
+  exit 1
 fi
 
 find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
@@ -82,12 +82,12 @@ mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 
 for i in `ls -1 po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
   if test -f "po/${i}.mo"; then
-    mkdir -p "${PKG_DIR}/Contents/Resources/${i}.lproj";
-    cp -v po/${i}.mo "${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo";
+    mkdir -p "${PKG_DIR}/Contents/Resources/${i}.lproj"
+    cp -v po/${i}.mo "${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo"
   else
     echo "${i}.mo not found!"
-	exit 1
-  fi;
+    exit 1
+  fi
 done
 
 
@@ -95,14 +95,17 @@ echo
 echo "---- Copying WX locale files ----"
 
 for i in `ls -1 po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
-#  WX_MO="${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"
-  WX_MO="${HOME_DIR}/wxstd/${i}.mo"
+  WX_MO="${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"
+
+  if ! test -f "${WX_MO}"; then
+    WX_MO="${HOME_DIR}/wxstd/${i}.mo"
+  fi
 
   if test -f "${WX_MO}"; then
-	cp -v "${WX_MO}" "${PKG_DIR}/Contents/Resources/${i}.lproj/";
+    cp -v "${WX_MO}" "${PKG_DIR}/Contents/Resources/${i}.lproj/"
   else
-	echo "WARNING: \"$i\" locale in aegisub but no WX catalog found!";
-  fi;
+    echo "WARNING: \"$i\" locale in aegisub but no WX catalog found!"
+  fi
 done
 
 
