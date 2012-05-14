@@ -194,16 +194,6 @@ if ! test "$1" = "--skip-configure"; then
   $srcdir/configure  $AUTOGEN_CONFIGURE_ARGS "$@"
   RC=$?
 
-  echo
-  echo
-  echo "***********************************************************************"
-  echo "*"
-  echo "* Please do not ask for support when using the SVN verison of aegisub,"
-  echo "* download an official distfile in order to receive support."
-  echo "*"
-  echo "***********************************************************************"
-  echo
-
   if test $RC -ne 0; then
     echo
     echo "Configure failed or did not finish!"
