@@ -20,7 +20,7 @@ if ! test -d packages/osx_bundle; then
 fi
 
 if test -d "${PKG_DIR}"; then
-  echo "**** USING OLD ${PKG_DIR} ****"
+  rm -rf "${PKG_DIR}"
 fi
 
 echo
