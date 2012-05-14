@@ -20,7 +20,6 @@ AUTOCONF_REQUIRED_VERSION=2.54
 AUTOMAKE_REQUIRED_VERSION=1.10
 
 REQUIRED_M4="fontutil.m4 gettext.m4 pkg.m4"
-REQUIRED_M4_WX="wxwin29.m4 wxwin.m4"
 
 PROJECT="aegisub"
 
@@ -168,25 +167,6 @@ if test -z "$ACLOCAL_FLAGS"; then
              echo
         fi
     done
-
-
-    for file in $REQUIRED_M4_WX; do
-	    if [ -f "$acdir/$file" ]; then
-           FOUND_M4_WX="yes"
-        fi
-    done
-
-    if test -z "$FOUND_M4_WX"; then
-        echo
-        echo "WARNING: aclocal's directory is $acdir, but..."
-        echo "         none of: \"$REQUIRED_M4_WX\" were found."
-        echo "         You may see fatal macro warnings below."
-        echo "         If these files are installed in /some/dir, set the "
-        echo "         ACLOCAL_FLAGS environment variable to \"-I /some/dir\""
-        echo "         or install ONE OF: \"$REQUIRED_M4_WX\" in $acdir."
-        echo "NOTE:    These are the same files under different names."
-        echo
-    fi
 fi
 
 rm -rf autom4te.cache
