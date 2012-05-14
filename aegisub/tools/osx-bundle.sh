@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
 AEGISUB_VERSION_DATA="${2}"
