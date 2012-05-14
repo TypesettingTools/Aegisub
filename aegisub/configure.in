@@ -163,7 +163,7 @@ AS_IF([test -n "$SVN_REVISION" -a -z "`echo $SVN_REVISION | tr -d '0-9'`"], [
   SVN_REVISION=`cat $srcdir/svn_revision`
   AC_MSG_RESULT([$SVN_REVISION from "$srcdir/svn_revision"])
 ], [test -d "$srcdir/../.git"], [
-  SVN_REVISION=[`git log | grep git-svn-id -m 1 | sed -E 's/.*@([0-9]+) .*/\1/'`]
+  SVN_REVISION=[`git log --format=%b | grep git-svn-id -m 1 | sed -E 's/.*@([0-9]+) .*/\1/'`]
   `echo $SVN_REVISION > $srcdir/svn_revision`
   AC_MSG_RESULT([$SVN_REVISION from git])
 ], [
