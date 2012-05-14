@@ -154,3 +154,4 @@ BIN_ECHO     = echo
 BIN_TOUCH    = touch
 BIN_TAR      = tar
 BIN_GZIP     = gzip
+BIN_WX_CONFIG = @WX_CONFIG_PATH@

@@ -4,12 +4,10 @@ set -e
 
 PKG_DIR=${1}.app
 SKEL_DIR="packages/osx_bundle"
-AEGISUB_VERSION_DATA="${2}"
-AEGISUB_BIN="aegisub-${AEGISUB_VERSION_DATA}"
+AEGISUB_BIN="aegisub-${2}"
 SRCDIR=`pwd`
 HOME_DIR=`echo ~`
-WX_CONFIG="wx-config"
-WX_PREFIX=`${WX_CONFIG} --prefix`
+WX_PREFIX=`${3} --prefix`
 
 if test -z "${CC}"; then
   CC="cc"

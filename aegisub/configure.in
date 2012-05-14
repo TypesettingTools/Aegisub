@@ -489,6 +489,7 @@ WX_STANDARD_OPTIONS([debug])
 WX_DEBUG=$DEBUG
 WX_UNICODE=$UNICODE
 WX_CONFIG_CHECK([wx_required_version],,,[std,gl,stc],[$WXCONFIG_FLAGS])
+AC_SUBST(WX_CONFIG_PATH)
 
 AS_IF([test x$WX_VERSION = x],
   [AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LIBS, CXX/CFLAGS.])])
