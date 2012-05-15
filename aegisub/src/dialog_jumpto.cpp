@@ -84,7 +84,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 
 	// General layout
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TimesSizer,0, wxBOTTOM | wxTOP | wxALIGN_CENTER,5);
+	MainSizer->Add(TimesSizer, 0, wxALL | wxALIGN_CENTER, 5);
 	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,5);
 
 	// Set sizer
