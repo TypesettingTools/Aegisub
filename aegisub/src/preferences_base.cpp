@@ -144,14 +144,14 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 		}
 
 		case agi::OptionValue::Type_Int: {
-			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
+			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, wxString::Format("%d", (int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
 			sc->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(opt_name, parent));
 			Add(flex, name, sc);
 			return sc;
 		}
 
 		case agi::OptionValue::Type_Double: {
-			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
+			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, wxString::Format("%g", opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
 			scd->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, DoubleUpdater(opt_name, parent));
 			Add(flex, name, scd);
 			return scd;
