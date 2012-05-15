@@ -117,7 +117,7 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &) {
 	long newframe = c->videoController->FrameAtTime(JumpTime->GetTime());
 	if (jumpframe != newframe) {
 		jumpframe = newframe;
-		JumpFrame->ChangeValue(wxString::Format("%i", jumpframe));
+		JumpFrame->ChangeValue(wxString::Format("%li", jumpframe));
 	}
 }
 
