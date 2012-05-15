@@ -223,6 +223,7 @@ void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const
 		throw PreferenceIncorrectType("Option must be agi::OptionValue::Type_String for BrowseButton.");
 
 	wxTextCtrl *text = new wxTextCtrl(this, -1 , opt->GetString());
+	text->SetMinSize(wxSize(160, -1));
 	text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
 
 	wxButton *browse = new wxButton(this, -1, _("Browse..."));
@@ -254,6 +255,7 @@ void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 	parent->AddChangeableOption(size_opt->GetName());
 
 	wxTextCtrl *font_name = new wxTextCtrl(this, -1, face_opt->GetString());
+	font_name->SetMinSize(wxSize(160, -1));
 	font_name->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(face_opt->GetName().c_str(), parent));
 
 	wxSpinCtrl *font_size = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
