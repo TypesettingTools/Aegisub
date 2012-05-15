@@ -337,8 +337,9 @@ void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {
 			else throw
 				"Unknown SSA file format version";
 			if (trueVersion != *version) {
-				if (!(trueVersion == 2 && *version == 1))
+				if (!(trueVersion == 2 && *version == 1)) {
 					wxLogMessage("Warning: File has the wrong extension.");
+				}
 				*version = trueVersion;
 			}
 		}

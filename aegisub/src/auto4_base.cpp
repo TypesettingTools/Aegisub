@@ -558,14 +558,16 @@ namespace Automation4 {
 		for (std::vector<ScriptFactory*>::iterator i = Factories().begin(); i != Factories().end(); ++i) {
 			Script *s = (*i)->Produce(filename);
 			if (s) {
-				if (!s->GetLoadedState() && log_errors)
+				if (!s->GetLoadedState() && log_errors) {
 					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename, s->GetDescription());
+				}
 				return s;
 			}
 		}
 
-		if (log_errors)
+		if (log_errors) {
 			wxLogError(_("The file was not recognised as an Automation script: %s"), filename);
+		}
 
 
 		return new UnknownScript(filename);
