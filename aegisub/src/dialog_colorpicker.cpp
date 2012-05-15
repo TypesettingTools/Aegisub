@@ -870,11 +870,17 @@ wxColour DialogColorPicker::GetColor()
 	return cur_color;
 }
 
+static void change_value(wxSpinCtrl *ctrl, int value)
+{
+	wxEventBlocker blocker(ctrl);
+	ctrl->SetValue(value);
+}
+
 void DialogColorPicker::SetRGB(unsigned char r, unsigned char g, unsigned char b)
 {
-	rgb_input[0]->SetValue(r);
-	rgb_input[1]->SetValue(g);
-	rgb_input[2]->SetValue(b);
+	change_value(rgb_input[0], r);
+	change_value(rgb_input[1], g);
+	change_value(rgb_input[2], b);
 	cur_color = wxColour(r, g, b, wxALPHA_OPAQUE);
 }
 
@@ -882,18 +888,18 @@ void DialogColorPicker::SetHSL(unsigned char r, unsigned char g, unsigned char b
 {
 	unsigned char h, s, l;
 	rgb_to_hsl(r, g, b, &h, &s, &l);
-	hsl_input[0]->SetValue(h);
-	hsl_input[1]->SetValue(s);
-	hsl_input[2]->SetValue(l);
+	change_value(hsl_input[0], h);
+	change_value(hsl_input[1], s);
+	change_value(hsl_input[2], l);
 }
 
 void DialogColorPicker::SetHSV(unsigned char r, unsigned char g, unsigned char b)
 {
 	unsigned char h, s, v;
 	rgb_to_hsv(r, g, b, &h, &s, &v);
-	hsv_input[0]->SetValue(h);
-	hsv_input[1]->SetValue(s);
-	hsv_input[2]->SetValue(v);
+	change_value(hsv_input[0], h);
+	change_value(hsv_input[1], s);
+	change_value(hsv_input[2], v);
 }
 
 /// @brief Use the values entered in the RGB controls to update the other controls
