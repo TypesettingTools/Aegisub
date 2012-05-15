@@ -134,6 +134,16 @@ void change_value(wxTextCtrl *ctrl, wxString const& value) {
 		ctrl->ChangeValue(value);
 }
 
+void time_edit_char_hook(wxKeyEvent &event) {
+	// Force a modified event on Enter
+	if (event.GetKeyCode() == WXK_RETURN) {
+		TimeEdit *edit = static_cast<TimeEdit*>(event.GetEventObject());
+		edit->SetValue(edit->GetValue());
+	}
+	else
+		event.Skip();
+}
+
 }
 
 SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
@@ -255,6 +265,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(bool end, wxString const& tooltip, void (Sub
 	TimeEdit *ctrl = new TimeEdit(this, -1, c, "", wxSize(75,-1), end);
 	ctrl->SetToolTip(tooltip);
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, handler, this, ctrl->GetId());
+	ctrl->Bind(wxEVT_CHAR_HOOK, time_edit_char_hook);
 	MiddleSizer->Add(ctrl, wxSizerFlags().Center());
 	return ctrl;
 }
