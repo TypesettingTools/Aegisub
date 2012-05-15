@@ -372,7 +372,7 @@ void DialogStyleManager::OnCatalogNew() {
 	if (!name) return;
 
 	// Remove bad characters from the name
-	wxString badchars = wxFileName::GetForbiddenChars();
+	wxString badchars = wxFileName::GetForbiddenChars(wxPATH_DOS);
 	int badchars_removed = 0;
 	for (size_t i = 0; i < name.size(); ++i) {
 		if (badchars.find(name[i]) != badchars.npos) {
