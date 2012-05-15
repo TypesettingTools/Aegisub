@@ -247,6 +247,9 @@ do_setup:
 
 		while (ps.signal_stop == false)
 		{
+			int64_t orig_position = position;
+			int64_t orig_ps_end_position = ps.end_position;
+			
 			ScopedAliveFlag playing_flag(ps.playing);
 
 			// Sleep a bit, or until an event
@@ -270,17 +273,28 @@ do_setup:
 			}
 
 			// Fill buffer
-			avail = snd_pcm_avail(pcm);
-			if (avail == -EPIPE)
+			long tmp_pcm_avail = snd_pcm_avail(pcm);
+			if (tmp_pcm_avail == -EPIPE)
 			{
 				if (snd_pcm_recover(pcm, -EPIPE, 1) < 0)
 				{
 					LOG_D("audio/player/alsa") << "failed to recover from underrun";
 					return (void*)"snd_pcm_avail";
 				}
-				avail = snd_pcm_avail(pcm);
+				tmp_pcm_avail = snd_pcm_avail(pcm);
 			}
-			avail = std::min(avail, (snd_pcm_sframes_t)(ps.end_position-position));
+			avail = std::min(tmp_pcm_avail, (snd_pcm_sframes_t)(ps.end_position-position));
+			if (avail < 0)
+			{
+				printf("\n--------- avail was less than 0: %ld\n", avail);
+				printf("snd_pcm_avail(pcm): %ld\n", tmp_pcm_avail);
+				printf("original position: %ld\n", orig_position);
+				printf("current  position: %ld\n", position);
+				printf("original ps.end_position: %ld\n", orig_ps_end_position);
+				printf("current  ps.end_position: %ld\n", ps.end_position);
+				printf("---------\n\n");
+				continue;
+			}
 			buf = new char[avail*framesize];
 			ps.provider->GetAudioWithVolume(buf, position, avail, ps.volume);
 			written = 0;
