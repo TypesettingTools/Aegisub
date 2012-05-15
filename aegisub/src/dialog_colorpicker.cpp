@@ -1173,24 +1173,24 @@ void DialogColorPicker::OnSpectrumChange(wxCommandEvent &)
 	int i = colorspace_choice->GetSelection();
 	switch (i) {
 		case 0:
-			rgb_input[2]->SetValue(spectrum->GetX());
-			rgb_input[1]->SetValue(spectrum->GetY());
+			change_value(rgb_input[2], spectrum->GetX());
+			change_value(rgb_input[1], spectrum->GetY());
 			break;
 		case 1:
-			rgb_input[2]->SetValue(spectrum->GetX());
-			rgb_input[0]->SetValue(spectrum->GetY());
+			change_value(rgb_input[2], spectrum->GetX());
+			change_value(rgb_input[0], spectrum->GetY());
 			break;
 		case 2:
-			rgb_input[1]->SetValue(spectrum->GetX());
-			rgb_input[0]->SetValue(spectrum->GetY());
+			change_value(rgb_input[1], spectrum->GetX());
+			change_value(rgb_input[0], spectrum->GetY());
 			break;
 		case 3:
-			hsl_input[1]->SetValue(spectrum->GetX());
-			hsl_input[0]->SetValue(spectrum->GetY());
+			change_value(hsl_input[1], spectrum->GetX());
+			change_value(hsl_input[0], spectrum->GetY());
 			break;
 		case 4:
-			hsv_input[1]->SetValue(spectrum->GetX());
-			hsv_input[2]->SetValue(spectrum->GetY());
+			change_value(hsv_input[1], spectrum->GetX());
+			change_value(hsv_input[2], spectrum->GetY());
 			break;
 	}
 
@@ -1213,15 +1213,15 @@ void DialogColorPicker::OnSliderChange(wxCommandEvent &)
 	int i = colorspace_choice->GetSelection();
 	switch (i) {
 		case 0: case 1: case 2:
-			rgb_input[i]->SetValue(slider->GetY());
+			change_value(rgb_input[i], slider->GetY());
 			UpdateFromRGB(false);
 			break;
 		case 3:
-			hsl_input[2]->SetValue(slider->GetY());
+			change_value(hsl_input[2], slider->GetY());
 			UpdateFromHSL(false);
 			break;
 		case 4:
-			hsv_input[0]->SetValue(slider->GetY());
+			change_value(hsv_input[0], slider->GetY());
 			UpdateFromHSV(false);
 			break;
 	}
