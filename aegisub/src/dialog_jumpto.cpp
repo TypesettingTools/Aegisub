@@ -64,31 +64,27 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	wxString maxLength = wxString::Format("%i",c->videoController->GetLength() - 1);
 
 	// Times
-	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "),wxDefaultPosition,wxSize(60,20));
-	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "),wxDefaultPosition,wxSize(60,20));
-	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(60,20),wxTE_PROCESS_ENTER, NumValidator((int)jumpframe));
+	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "));
+	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "));
+
+	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, NumValidator((int)jumpframe));
 	JumpFrame->SetMaxLength(maxLength.size());
-	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetASSFormated(), wxSize(60,20));
-	wxSizer *FrameSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *TimeSizer = new wxBoxSizer(wxHORIZONTAL);
-	FrameSizer->Add(LabelFrame,0,wxALIGN_CENTER_VERTICAL,0);
-	FrameSizer->Add(JumpFrame,1,wxLEFT,5);
-	TimeSizer->Add(LabelTime,0,wxALIGN_CENTER_VERTICAL,0);
-	TimeSizer->Add(JumpTime,1,wxLEFT,5);
-	wxSizer *TimesSizer = new wxStaticBoxSizer(wxVERTICAL, this, "");
-	TimesSizer->Add(FrameSizer,0,wxEXPAND | wxBOTTOM,5);
-	TimesSizer->Add(TimeSizer,0,wxEXPAND,0);
+	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetASSFormated(), wxSize(-1,-1));
+
+	wxGridSizer *TimesSizer = new wxGridSizer(2, 5, 5);
+
+	TimesSizer->Add(LabelFrame, 1, wxALIGN_CENTER_VERTICAL);
+	TimesSizer->Add(JumpFrame, wxEXPAND);
+
+	TimesSizer->Add(LabelTime, 1, wxALIGN_CENTER_VERTICAL);
+	TimesSizer->Add(JumpTime, wxEXPAND);
 
 	// Buttons
-	wxButton *OKButton = new wxButton(this, wxID_OK);
-	wxButton *CancelButton = new wxButton(this, wxID_CANCEL);
-	wxSizer *ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-	ButtonSizer->Add(OKButton,1,wxRIGHT,5);
-	ButtonSizer->Add(CancelButton,0,0,0);
+	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL);
 
 	// General layout
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TimesSizer,0,wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,5);
+	MainSizer->Add(TimesSizer,0, wxBOTTOM | wxTOP | wxALIGN_CENTER,5);
 	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,5);
 
 	// Set sizer
