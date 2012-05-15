@@ -223,25 +223,43 @@ FrameMain::FrameMain (wxArrayString args)
 	StartupLog("Leaving FrameMain constructor");
 }
 
-FrameMain::~FrameMain () {
-	// Because the subs grid is the selection controller, it needs to stay
-	// alive significantly longer than the other child controls
-	SubsGrid->Reparent(0);
-	SubsGrid->Hide();
+/// @brief Delete everything but @a keep and its parents
+/// @param window Root window to delete the children of
+/// @param keep Window to keep alive
+/// @return Was @a keep found?
+static bool delete_children(wxWindow *window, wxWindow *keep) {
+	bool found = false;
+	while (window->GetChildren().size() > (size_t)found) {
+		wxWindowList::iterator it = window->GetChildren().begin();
 
+		if (*it == keep)
+			found = true;
+
+		if (found) {
+			if (++it != window->GetChildren().end())
+				(*it)->wxWindowBase::Destroy();
+		}
+		else if (!delete_children(*it, keep))
+			(*it)->wxWindowBase::Destroy();
+		else
+			found = true;
+	}
+	return found;
+}
+
+FrameMain::~FrameMain () {
 	context->videoController->SetVideo("");
 	context->audioController->CloseAudio();
 
-	// Ensure the children get destroyed before the project context is destroyed
-	DestroyChildren();
-	wxTheApp->ProcessPendingEvents();
+	// SubsGrid needs to be deleted last due to being the selection
+	// controller, but everything else needs to be deleted before the context
+	// is cleaned up
+	delete_children(this, SubsGrid);
 
 	delete context->ass;
 	HelpButton::ClearPages();
 	delete context->audioController;
 	delete context->local_scripts;
-
-	SubsGrid->Destroy();
 }
 
 void FrameMain::InitToolbar() {
