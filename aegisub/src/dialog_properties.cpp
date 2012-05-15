@@ -88,9 +88,9 @@ DialogProperties::DialogProperties(agi::Context *c)
 	else
 		FromVideo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogProperties::OnSetFromVideo, this);
 
-	ResSizer->Add(ResX,1,wxRIGHT,5);
+	ResSizer->Add(ResX,1,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
-	ResSizer->Add(ResY,1,wxRIGHT,5);
+	ResSizer->Add(ResY,1,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 	ResSizer->Add(FromVideo,1,0,0);
 
 	// Options

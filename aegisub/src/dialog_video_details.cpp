@@ -50,7 +50,7 @@
 #include "video_provider_manager.h"
 
 static void make_field(wxWindow *parent, wxSizer *sizer, wxString const& name, wxString const& value) {
-	sizer->Add(new wxStaticText(parent, -1, name), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
+	sizer->Add(new wxStaticText(parent, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
 	sizer->Add(new wxTextCtrl(parent, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
 }
 

@@ -100,9 +100,9 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_box->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 
 	wxSizer *res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	res_sizer->Add(res_x, wxSizerFlags(1).Border(wxRIGHT));
+	res_sizer->Add(res_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
-	res_sizer->Add(res_y, wxSizerFlags(1).Border(wxRIGHT));
+	res_sizer->Add(res_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	res_sizer->Add(from_video, wxSizerFlags(1));
 
 	wxSizer *res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Resolution"));

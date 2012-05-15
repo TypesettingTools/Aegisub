@@ -239,7 +239,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	dest_browse_button = new wxButton(destination_box->GetStaticBox(), -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
-	dest_browse_sizer->Add(dest_ctrl, wxSizerFlags(1).Border(wxRIGHT));
+	dest_browse_sizer->Add(dest_ctrl, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	dest_browse_sizer->Add(dest_browse_button, wxSizerFlags());
 
 	destination_box->Add(dest_label, wxSizerFlags().Border(wxBOTTOM));

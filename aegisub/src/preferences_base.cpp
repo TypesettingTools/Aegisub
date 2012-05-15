@@ -122,7 +122,7 @@ OptionPage::OptionPage(wxTreebook *book, Preferences *parent, wxString name, int
 
 template<class T>
 void OptionPage::Add(wxSizer *sizer, wxString const& label, T *control) {
-	sizer->Add(new wxStaticText(this, -1, label), 1, wxEXPAND | wxALIGN_CENTRE_VERTICAL);
+	sizer->Add(new wxStaticText(this, -1, label), 1, wxALIGN_CENTRE_VERTICAL);
 	sizer->Add(control, wxSizerFlags().Expand());
 }
 
