@@ -40,6 +40,8 @@
 #include "dialog_dummy_video.h"
 
 #ifndef AGI_PRE
+#include <tr1/functional>
+
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/datetime.h>
@@ -196,13 +198,10 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
 
-	ok_button = new wxButton(this,wxID_OK);
-	cancel_button = new wxButton(this,wxID_CANCEL);
-	wxStdDialogButtonSizer *btnSizer = new wxStdDialogButtonSizer();
-	btnSizer->AddButton(ok_button);
-	btnSizer->AddButton(cancel_button);
-	btnSizer->AddButton(new HelpButton(this,"Dummy Video"));
-	btnSizer->Realize();
+	wxStdDialogButtonSizer *btnSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	ok_button = btnSizer->GetAffirmativeButton();
+	btnSizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Dummy Video"));
+
 	main_sizer->Add(new wxStaticLine(this,wxHORIZONTAL),0,wxALL|wxEXPAND,5);
 	main_sizer->Add(btnSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,5);
 //	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
