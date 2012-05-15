@@ -168,7 +168,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	width = new wxTextCtrl(this, -1);
 	height = new wxTextCtrl(this, -1);
 	colour = new ColourButton(this, -1, wxSize(30, 17), lagi_wxColour(OPT_GET("Colour/Video Dummy/Last Colour")->GetColour()));
-	pattern = new wxCheckBox(this, -1, _("&Checkerboard pattern"));
+	pattern = new wxCheckBox(this, -1, _("Checkerboard &pattern"));
 	fps = new wxTextCtrl(this, Dummy_Video_FPS, wxString::Format("%f", OPT_GET("Video/Dummy/FPS")->GetDouble()));
 	length = new wxSpinCtrl(this, Dummy_Video_Length, "", wxDefaultPosition, wxDefaultSize, 4096|wxALIGN_LEFT);
 	length_display = new wxStaticText(this, -1, "");

@@ -214,7 +214,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MakeButton(GETIMAGE(button_audio_commit_16), _("Commits the text (Enter)"), bind(&cmd::call, "grid/line/next/create", c));
 	MiddleBotSizer->AddSpacer(10);
 
-	ByTime = MakeRadio(_("&Time"), true, _("Time by h:mm:ss.cs"));
+	ByTime = MakeRadio(_("T&ime"), true, _("Time by h:mm:ss.cs"));
 	ByFrame = MakeRadio(_("F&rame"), false, _("Time by frame number"));
 	ByFrame->Enable(false);
 
