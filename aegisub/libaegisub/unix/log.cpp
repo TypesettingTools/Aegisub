@@ -46,6 +46,8 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->line,
 		(int)sm->len,
 		sm->message);
+	if (!isatty(fileno(stdout)))
+		fflush(stdout);
 }
 
 	} // namespace log
