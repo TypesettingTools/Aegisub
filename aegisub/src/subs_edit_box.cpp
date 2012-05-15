@@ -162,6 +162,10 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	CommentBox = new wxCheckBox(this,-1,_("&Comment"));
 	CommentBox->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
+#ifdef __WXGTK__
+	// Only supported in wxgtk
+	CommentBox->SetCanFocus(false);
+#endif
 	TopSizer->Add(CommentBox, 0, wxRIGHT | wxALIGN_CENTER, 5);
 
 	StyleBox = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
