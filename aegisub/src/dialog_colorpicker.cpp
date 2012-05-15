@@ -787,6 +787,13 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 
 	persist.reset(new PersistLocation(this, "Tool/Colour Picker"));
 
+	// Fill the controls
+	int mode = OPT_GET("Tool/Colour Picker/Mode")->GetInt();
+	if (mode < 0 || mode > 4) mode = 3; // HSL default
+	colorspace_choice->SetSelection(mode);
+	SetColor(initial_color);
+	recent_box->LoadFromString(lagi_wxString(OPT_GET("Tool/Colour Picker/Recent")->GetString()));
+
 	using std::tr1::bind;
 	for (int i = 0; i < 3; ++i) {
 		rgb_input[i]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromRGB, this, true));
@@ -815,13 +822,6 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, C
 	colorspace_choice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DialogColorPicker::OnChangeMode, this);
 
 	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Colour Picker"));
-
-	// Fill the controls
-	int mode = OPT_GET("Tool/Colour Picker/Mode")->GetInt();
-	if (mode < 0 || mode > 4) mode = 3; // HSL default
-	colorspace_choice->SetSelection(mode);
-	SetColor(initial_color);
-	recent_box->LoadFromString(lagi_wxString(OPT_GET("Tool/Colour Picker/Recent")->GetString()));
 }
 
 template<int N, class Control>
