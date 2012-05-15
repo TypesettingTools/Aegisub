@@ -232,14 +232,6 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	OptionAdd(audio, _("Syllable boundaries"), "Colour/Audio Display/Syllable Boundaries");
 	OptionAdd(audio, _("Seconds boundaries"), "Colour/Audio Display/Seconds Line");
 
-	wxFlexGridSizer *color_schemes = PageSizer(_("Audio Color Schemes"));
-	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
-	OptionChoice(color_schemes, _("Spectrum"), schemes, "Colour/Audio Display/Spectrum");
-	OptionChoice(color_schemes, _("Waveform"), schemes, "Colour/Audio Display/Waveform");
-
-	sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(sizer);
-
 	wxFlexGridSizer *syntax = PageSizer(_("Syntax Highlighting"));
 	OptionAdd(syntax, _("Normal"), "Colour/Subtitle/Syntax/Normal");
 	OptionAdd(syntax, _("Brackets"), "Colour/Subtitle/Syntax/Brackets");
@@ -250,6 +242,15 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	OptionAdd(syntax, _("Error Background"), "Colour/Subtitle/Syntax/Background/Error");
 	OptionAdd(syntax, _("Line Break"), "Colour/Subtitle/Syntax/Line Break");
 	OptionAdd(syntax, _("Karaoke templates"), "Colour/Subtitle/Syntax/Karaoke Template");
+
+	sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->AddSpacer(5);
+	main_sizer->Add(sizer);
+
+	wxFlexGridSizer *color_schemes = PageSizer(_("Audio Color Schemes"));
+	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
+	OptionChoice(color_schemes, _("Spectrum"), schemes, "Colour/Audio Display/Spectrum");
+	OptionChoice(color_schemes, _("Waveform"), schemes, "Colour/Audio Display/Waveform");
 
 	wxFlexGridSizer *grid = PageSizer(_("Subtitle Grid"));
 	OptionAdd(grid, _("Standard foreground"), "Colour/Subtitle Grid/Standard");
