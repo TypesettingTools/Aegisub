@@ -68,7 +68,7 @@ endif
 # AUDIO / VIDEO SUPPORT
 #######################
 ifeq (yes, $(HAVE_FFMS2))
-audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o: \
+audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o preferences.o: \
 	CXXFLAGS += $(CFLAGS_FFMS2)
 LIBS += $(LIBS_FFMS2)
 SRC += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
