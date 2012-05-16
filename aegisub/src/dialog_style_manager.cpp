@@ -43,6 +43,7 @@
 
 #include <wx/bmpbuttn.h>
 #include <wx/clipbrd.h>
+#include <wx/dir.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
