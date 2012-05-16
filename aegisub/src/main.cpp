@@ -292,6 +292,9 @@ bool AegisubApp::OnInit() {
 /// @return
 ///
 int AegisubApp::OnExit() {
+	if (frame)
+		delete frame;
+
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->Flush();
 		wxTheClipboard->Close();

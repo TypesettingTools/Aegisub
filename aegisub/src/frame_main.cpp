@@ -249,6 +249,8 @@ static bool delete_children(wxWindow *window, wxWindow *keep) {
 }
 
 FrameMain::~FrameMain () {
+	wxGetApp().frame = 0;
+
 	context->videoController->SetVideo("");
 	context->audioController->CloseAudio();
 
