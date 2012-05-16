@@ -345,7 +345,7 @@ namespace Automation4 {
 	// ScriptManager
 	ScriptManager::~ScriptManager()
 	{
-		RemoveAll();
+		delete_clear(scripts);
 	}
 
 	void ScriptManager::Add(Script *script)
