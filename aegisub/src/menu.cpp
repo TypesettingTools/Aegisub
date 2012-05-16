@@ -239,6 +239,24 @@ public:
 		size_t id = static_cast<size_t>(evt.GetId() - MENU_ID_BASE);
 		if (id < items.size())
 			cmd::call(items[id], context);
+
+#ifdef __WXMAC__
+		else {
+			switch (evt.GetId()) {
+				case wxID_ABOUT:
+					cmd::call("app/about", context);
+					break;
+				case wxID_PREFERENCES:
+					cmd::call("app/options", context);
+					break;
+				case wxID_EXIT:
+					cmd::call("app/quit", context);
+					break;
+				default:
+					break;
+			}
+		}
+#endif
 	}
 
 	/// Update the hotkeys for all menu items
