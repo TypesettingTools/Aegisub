@@ -567,6 +567,8 @@ void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
 
 void AudioTimingControllerDialogue::Revert()
 {
+	commit_id = -1;
+
 	if (AssDialogue *line = context->selectionController->GetActiveLine())
 	{
 		modified_lines.clear();
