@@ -67,12 +67,9 @@ fi
 
 echo
 echo "---- Copying automation/ files ----"
-cd automation
-make install \
-	aegisubdatadir="../${PKG_DIR}/Contents/SharedSupport" \
-	aegisubdocdir="../${PKG_DIR}/Contents/SharedSupport/doc"
-cd "${SRCDIR}"
-
+pushd automation
+make install DESTDIR="../${PKG_DIR}/Contents/SharedSupport" P_DATA="" P_DOC="/doc"
+popd
 
 echo
 echo "---- Copying Aegisub locale files ----"
