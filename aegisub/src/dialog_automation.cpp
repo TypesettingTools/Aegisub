@@ -262,9 +262,9 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 
 	info.push_back(wxString::Format(
 		_("Total scripts loaded: %d\nGlobal scripts loaded: %d\nLocal scripts loaded: %d\n"),
-		local_manager->GetScripts().size() + global_manager->GetScripts().size(),
-		global_manager->GetScripts().size(),
-		local_manager->GetScripts().size()));
+		(int)local_manager->GetScripts().size() + (int)global_manager->GetScripts().size(),
+		(int)global_manager->GetScripts().size(),
+		(int)local_manager->GetScripts().size()));
 
 	info.push_back(_("Scripting engines installed:"));
 	transform(Automation4::ScriptFactory::GetFactories(), append_info, fac_to_str);
