@@ -92,7 +92,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	if (!audio_buffer)
 	{
 		// Buffer for one pixel strip of audio
-		size_t buffer_needed = pixel_samples * provider->GetChannels() * provider->GetSampleRate() * provider->GetBytesPerSample();
+		size_t buffer_needed = pixel_samples * provider->GetChannels() * provider->GetBytesPerSample();
 		audio_buffer = new char[buffer_needed];
 	}
 
