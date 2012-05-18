@@ -138,12 +138,13 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 
 	wxSizerFlags main_flags = wxSizerFlags().Expand().Border();
 
+	wxRadioButton *select_matching_lines = 0;
 	{
 		wxSizer *match_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Match"));
 		{
 			wxSizerFlags radio_flags = wxSizerFlags().Border(wxLEFT | wxRIGHT);
 			wxSizer *match_radio_line = new wxBoxSizer(wxHORIZONTAL);
-			match_radio_line->Add(new wxRadioButton(this, -1, _("&Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
+			match_radio_line->Add(select_matching_lines = new wxRadioButton(this, -1, _("&Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
 			match_radio_line->Add(select_unmatching_lines = new wxRadioButton(this, -1, _("&Doesn't Match")), radio_flags);
 			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match c&ase")), radio_flags);
 			match_sizer->Add(match_radio_line);
@@ -186,6 +187,7 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 	apply_to_dialogue->SetValue(OPT_GET("Tool/Select Lines/Match/Dialogue")->GetBool());
 	apply_to_comments->SetValue(OPT_GET("Tool/Select Lines/Match/Comment")->GetBool());
 	select_unmatching_lines->SetValue(!!OPT_GET("Tool/Select Lines/Condition")->GetInt());
+	select_matching_lines->SetValue(!select_unmatching_lines->GetValue());
 	match_mode->SetSelection(OPT_GET("Tool/Select Lines/Mode")->GetInt());
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSelection::Process, this, wxID_OK);
