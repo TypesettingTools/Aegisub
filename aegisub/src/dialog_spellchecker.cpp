@@ -48,6 +48,8 @@
 #include "subs_edit_ctrl.h"
 #include "utils.h"
 
+#include <libaegisub/exception.h>
+
 static void save_skip_comments(wxCommandEvent &evt) {
 	OPT_SET("Tool/Spell Checker/Skip Comments")->SetBool(!!evt.GetInt());
 }
@@ -93,15 +95,13 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	{
 		if (!spellchecker.get()) {
 			wxMessageBox("No spellchecker available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
-			Destroy();
-			return;
+			throw agi::UserCancelException("No spellchecker available");
 		}
 
 		dictionary_lang_codes = spellchecker->GetLanguageList();
 		if (dictionary_lang_codes.empty()) {
 			wxMessageBox("No spellchecker dictionaries available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
-			Destroy();
-			return;
+			throw agi::UserCancelException("No spellchecker dictionaries available");
 		}
 
 		wxArrayString language_names(dictionary_lang_codes);
@@ -238,7 +238,7 @@ bool DialogSpellChecker::FindNext() {
 	}
 	else {
 		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."), _("Spell checking complete."));
-		Destroy();
+		throw agi::UserCancelException("No spelling mistakes");
 	}
 
 	return false;

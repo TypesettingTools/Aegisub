@@ -69,10 +69,13 @@ public:
 			it->second->SetFocus();
 		}
 		else {
-			wxDialog *d = new DialogType(c);
-			created_dialogs[&typeid(DialogType)] = d;
-			d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose, this);
-			d->Show();
+			try {
+				wxDialog *d = new DialogType(c);
+				created_dialogs[&typeid(DialogType)] = d;
+				d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose, this);
+				d->Show();
+			}
+			catch (agi::UserCancelException const&) { }
 		}
 	}
 
