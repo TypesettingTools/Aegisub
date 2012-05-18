@@ -70,14 +70,16 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 {
 	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
 	FindEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),lagi_MRU_wxAS("Find"),wxCB_DROPDOWN);
-	FindEdit->SetSelection(0);
+	if (!FindEdit->IsListEmpty())
+		FindEdit->SetSelection(0);
 	FindSizer->Add(new wxStaticText(this,-1,_("Find what:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 	FindSizer->Add(FindEdit,0,wxRIGHT,0);
 	if (hasReplace) {
 		ReplaceEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),lagi_MRU_wxAS("Replace"),wxCB_DROPDOWN);
 		FindSizer->Add(new wxStaticText(this,-1,_("Replace with:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
 		FindSizer->Add(ReplaceEdit,0,wxRIGHT,0);
-		ReplaceEdit->SetSelection(0);
+		if (!ReplaceEdit->IsListEmpty())
+			ReplaceEdit->SetSelection(0);
 	}
 
 	wxSizer *OptionsSizer = new wxBoxSizer(wxVERTICAL);
@@ -201,14 +203,16 @@ void DialogSearchReplace::UpdateDropDowns() {
 	FindEdit->Freeze();
 	FindEdit->Clear();
 	FindEdit->Append(lagi_MRU_wxAS("Find"));
-	FindEdit->SetSelection(0);
+	if (!FindEdit->IsListEmpty())
+		FindEdit->SetSelection(0);
 	FindEdit->Thaw();
 
 	if (hasReplace) {
 		ReplaceEdit->Freeze();
 		ReplaceEdit->Clear();
 		ReplaceEdit->Append(lagi_MRU_wxAS("Replace"));
-		ReplaceEdit->SetSelection(0);
+		if (!ReplaceEdit->IsListEmpty())
+			ReplaceEdit->SetSelection(0);
 		ReplaceEdit->Thaw();
 	}
 }
