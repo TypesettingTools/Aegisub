@@ -76,12 +76,6 @@
 				"key" : "Q"
 			}
 		],
-		"app/options" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "O"
-			}
-		],
 		"edit/line/copy" : [
 			{
 				"modifiers" : [ "Ctrl" ],
@@ -96,14 +90,14 @@
 		],
 		"edit/find_replace" : [
 			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "H"
+				"modifiers" : [ "Ctrl", "Alt" ],
+				"key" : "F"
 			}
 		],
 		"edit/line/delete" : [
 			{
 				"modifiers" : [ "Ctrl" ],
-				"key" : "Delete"
+				"key" : "Backspace"
 			}
 		],
 		"edit/line/duplicate/shift" : [
@@ -126,8 +120,8 @@
 		],
 		"edit/redo" : [
 			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Y"
+				"modifiers" : [ "Ctrl", "Shift" ],
+				"key" : "Z"
 			}
 		],
 		"edit/undo" : [
@@ -174,8 +168,8 @@
 		],
 		"subtitle/find/next" : [
 			{
-				"modifiers" : [],
-				"key" : "F3"
+				"modifiers" : [ "Ctrl" ],
+				"key" : "G"
 			}
 		],
 		"subtitle/new" : [
@@ -204,6 +198,16 @@
 			{
 				"modifiers" : [ "Ctrl", "Shift" ],
 				"key" : "S"
+			}
+		],
+		"subtitle/spellcheck" : [
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : ":"
+			},
+			{
+				"modifiers" : [ "Ctrl" ],
+				"key" : ";"
 			}
 		],
 		"time/frame/current" : [
@@ -263,7 +267,7 @@
 		"video/jump" : [
 			{
 				"modifiers" : [ "Ctrl" ],
-				"key" : "G"
+				"key" : "J"
 			}
 		],
 		"video/jump/end" : [
