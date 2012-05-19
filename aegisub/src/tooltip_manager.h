@@ -36,14 +36,12 @@
 
 #ifndef AGI_PRE
 #include <list>
-#include <vector>
-
-#include <wx/arrstr.h>
-#include <wx/string.h>
-#include <wx/window.h>
 #endif
 
 struct ToolTipBinding;
+
+class wxString;
+class wxWindow;
 
 /// DOCME
 /// @class ToolTipManager
