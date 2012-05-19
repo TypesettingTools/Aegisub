@@ -62,6 +62,8 @@ namespace {
 		std::vector<cmd::Command *> commands;
 		/// Hotkey context
 		std::string ht_context;
+		/// Current icon size
+		int icon_size;
 
 		/// Listener for icon size change signal
 		agi::signal::Connection icon_size_slot;
@@ -86,6 +88,12 @@ namespace {
 			(*commands[evt.GetId() - TOOL_ID_BASE])(context);
 		}
 
+		/// Regenerate the toolbar when the icon size changes
+		void OnIconSizeChange(agi::OptionValue const& opt) {
+			icon_size = opt.GetInt();
+			RegenerateToolbar();
+		}
+
 		/// Clear the toolbar and recreate it
 		void RegenerateToolbar() {
 			Unbind(wxEVT_IDLE, &Toolbar::OnIdle, this);
@@ -102,8 +110,6 @@ namespace {
 				// Toolbar names are all hardcoded so this should never happen
 				throw agi::InternalError("Toolbar named " + name + " not found.", 0);
 			}
-
-			int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
 			json::Array const& arr = root_it->second;
 			commands.reserve(arr.size());
@@ -177,7 +183,8 @@ namespace {
 		, name(name)
 		, context(c)
 		, ht_context(ht_context)
-		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::RegenerateToolbar, this))
+		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
+		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
 			Populate();
@@ -189,7 +196,12 @@ namespace {
 		, name(name)
 		, context(c)
 		, ht_context(ht_context)
-		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::RegenerateToolbar, this))
+#ifndef __WXMAC__
+		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
+		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
+#else
+		, icon_size(24)
+#endif
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
 			parent->SetToolBar(this);
