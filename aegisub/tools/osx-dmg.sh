@@ -97,7 +97,7 @@ echo "---- Detaching ----"
 
 echo
 echo "---- Compressing ----"
-/usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDZO -imagekey zlib-level=9 -o "${PKG_NAME}.dmg" || exit $?
+/usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDBZ -imagekey bzip2-level=9 -o "${PKG_NAME}.dmg" || exit $?
 
 echo
 echo "---- Removing \"${TMP_DMG}\", \"${PKG_NAME_RW}\" ----"
