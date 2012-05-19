@@ -183,12 +183,25 @@ namespace {
 			Populate();
 			Bind(wxEVT_COMMAND_TOOL_CLICKED, &Toolbar::OnClick, this);
 		}
+
+		Toolbar(wxFrame *parent, std::string const& name, agi::Context *c, std::string const& ht_context)
+		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL)
+		, name(name)
+		, context(c)
+		, ht_context(ht_context)
+		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::RegenerateToolbar, this))
+		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
+		{
+			parent->SetToolBar(this);
+			Populate();
+			Bind(wxEVT_COMMAND_TOOL_CLICKED, &Toolbar::OnClick, this);
+		}
 	};
 }
 
 namespace toolbar {
 	void AttachToolbar(wxFrame *frame, std::string const& name, agi::Context *c, std::string const& hotkey) {
-		frame->SetToolBar(new Toolbar(frame, name, c, hotkey, false));
+		new Toolbar(frame, name, c, hotkey);
 	}
 
 	wxToolBar *GetToolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& hotkey, bool vertical) {
