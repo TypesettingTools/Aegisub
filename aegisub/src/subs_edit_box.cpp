@@ -67,7 +67,6 @@
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"
-#include "tooltip_manager.h"
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
