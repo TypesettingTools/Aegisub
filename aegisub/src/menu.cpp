@@ -250,7 +250,7 @@ public:
 					cmd::call("app/options", context);
 					break;
 				case wxID_EXIT:
-					cmd::call("app/quit", context);
+					cmd::call("app/exit", context);
 					break;
 				default:
 					break;
