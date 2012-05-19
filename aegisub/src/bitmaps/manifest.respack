@@ -28,9 +28,6 @@ button/attach_button_32.png
 button/automation_toolbutton_16.png
 button/automation_toolbutton_24.png
 button/automation_toolbutton_32.png
-button/blank_button_16.png
-button/blank_button_24.png
-button/blank_button_32.png
 button/bugtracker_button_16.png
 button/bugtracker_button_24.png
 button/bugtracker_button_32.png
@@ -157,9 +154,6 @@ button/delete_button_32.png
 button/detach_video_menu_16.png
 button/detach_video_menu_24.png
 button/detach_video_menu_32.png
-button/exit_button_16.png
-button/exit_button_24.png
-button/exit_button_32.png
 button/export_menu_16.png
 button/export_menu_24.png
 button/export_menu_32.png
@@ -220,9 +214,6 @@ button/new_toolbutton_32.png
 button/new_window_menu_16.png
 button/new_window_menu_24.png
 button/new_window_menu_32.png
-button/null_button_16.png
-button/null_button_24.png
-button/null_button_32.png
 button/open_audio_from_video_menu_16.png
 button/open_audio_from_video_menu_24.png
 button/open_audio_from_video_menu_32.png
@@ -253,9 +244,6 @@ button/override_aspect_menu_32.png
 button/paste_button_16.png
 button/paste_button_24.png
 button/paste_button_32.png
-button/paste_over_button_16.png
-button/paste_over_button_24.png
-button/paste_over_button_32.png
 button/properties_toolbutton_16.png
 button/properties_toolbutton_24.png
 button/properties_toolbutton_32.png
