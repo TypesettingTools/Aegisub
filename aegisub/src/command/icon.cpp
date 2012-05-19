@@ -37,17 +37,22 @@ typedef std::map<std::string, wxBitmap> iconMap;
 
 iconMap icon16;
 iconMap icon24;
+iconMap icon32;
 
 wxBitmap const& get(std::string const& name, const int size) {
 	// XXX: This code will go away with dynamic icon generation so I'm not
 	//      concerned about it.
 	iconMap::iterator index;
-	if (size != 24) {
-		if ((index = icon16.find(name)) != icon16.end())
+	if (size == 32) {
+		if ((index = icon32.find(name)) != icon32.end())
+			return index->second;
+	}
+	else if (size == 24) {
+		if ((index = icon24.find(name)) != icon24.end())
 			return index->second;
 	}
 	else {
-		if ((index = icon24.find(name)) != icon24.end())
+		if ((index = icon16.find(name)) != icon16.end())
 			return index->second;
 	}
 
@@ -67,7 +72,8 @@ wxBitmap getimage(const unsigned char *buff, size_t size) {
 
 #define INSERT_ICON(a, b) \
 	icon16.insert(std::make_pair(a, getimage(b##_16, sizeof(b##_16)))); \
-	icon24.insert(std::make_pair(a, getimage(b##_24, sizeof(b##_24))));
+	icon24.insert(std::make_pair(a, getimage(b##_24, sizeof(b##_24)))); \
+	icon32.insert(std::make_pair(a, getimage(b##_32, sizeof(b##_32))));
 
 
 void icon_init() {

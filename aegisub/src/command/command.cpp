@@ -64,13 +64,7 @@ namespace cmd {
 	}
 
 	wxBitmap const& Command::Icon(int size) {
-		if (size == 16) {
-			return icon::get(name(), 16);
-		} else if (size == 24) {
-			return icon::get(name(), 24);
-		} else {
-			throw CommandIconInvalid("Valid icon sizes are 16 or 24.");
-		}
+		return icon::get(name(), size);
 	}
 
 	std::vector<std::string> get_registered_commands() {
