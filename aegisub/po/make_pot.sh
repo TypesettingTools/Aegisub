@@ -26,6 +26,9 @@ find ../src ../src/command -name \*.cpp -o -name \*.h \
 sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/default_menu.json|0|\1/' ../src/libresrc/default_menu.json \
   | maybe_append
 
+sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/default_menu.json|0|\1/' ../src/libresrc/osx/default_menu.json \
+  | maybe_append
+
 grep '"[A-Za-z ]\+" : {' -n ../src/libresrc/default_hotkey.json \
   | sed 's/^\([0-9]\+:\).*\("[^"]\+"\).*$/default_hotkey.json|\1|\2/' \
   | maybe_append
