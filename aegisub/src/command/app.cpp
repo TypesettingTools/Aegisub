@@ -263,6 +263,28 @@ struct app_toggle_global_hotkeys : public Command {
 	}
 };
 
+/// Toggle the main toolbar
+struct app_toggle_toolbar : public Command {
+	CMD_NAME("app/toggle/toolbar")
+	STR_HELP("Toggle the main toolbar")
+	CMD_TYPE(COMMAND_DYNAMIC_NAME)
+
+	wxString StrMenu(const agi::Context *) const {
+		return OPT_GET("App/Show Toolbar")->GetBool() ?
+			_("Hide Toolbar") :
+			_("Show Toolbar");
+	}
+
+	wxString StrDisplay(const agi::Context *) const {
+		return StrMenu(0);
+	}
+
+	void operator()(agi::Context *) {
+		agi::OptionValue *opt = OPT_SET("App/Show Toolbar");
+		opt->SetBool(!opt->GetBool());
+	}
+};
+
 /// Check to see if there is a new version of Aegisub available.
 struct app_updates : public Command {
 	CMD_NAME("app/updates")
@@ -291,6 +313,7 @@ namespace cmd {
 		reg(new app_new_window);
 		reg(new app_options);
 		reg(new app_toggle_global_hotkeys);
+		reg(new app_toggle_toolbar);
 		reg(new app_updates);
 	}
 }

@@ -191,7 +191,9 @@
         {},
         { "command" : "grid/tags/show" },
         { "command" : "grid/tags/simplify" },
-        { "command" : "grid/tags/hide" }
+        { "command" : "grid/tags/hide" },
+        {},
+        { "command" : "app/toggle/toolbar" }
     ],
     "main/help" : [
         { "command" : "help/contents" },
