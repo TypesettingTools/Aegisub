@@ -229,11 +229,24 @@ struct audio_save_clip : public Command {
 };
 
 /// Play the current audio selection
+struct audio_play_current_selection : public validate_audio_open {
+	CMD_NAME("audio/play/current")
+	STR_MENU("Play current audio selection")
+	STR_DISP("Play current audio selection")
+	STR_HELP("Play the current audio selection, ignoring changes made while playing")
+
+	void operator()(agi::Context *c) {
+		c->videoController->Stop();
+		c->audioController->PlayRange(c->audioController->GetPrimaryPlaybackRange());
+	}
+};
+
+/// Play the current audio selection
 struct audio_play_selection : public validate_audio_open {
 	CMD_NAME("audio/play/selection")
 	STR_MENU("Play audio selection")
 	STR_DISP("Play audio selection")
-	STR_HELP("Play selection")
+	STR_HELP("Play audio until the end of the selection is reached")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -578,6 +591,7 @@ namespace cmd {
 		reg(new audio_play_before);
 		reg(new audio_play_begin);
 		reg(new audio_play_end);
+		reg(new audio_play_current_selection);
 		reg(new audio_play_selection);
 		reg(new audio_play_to_end);
 		reg(new audio_play_toggle);
