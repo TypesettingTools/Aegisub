@@ -76,6 +76,12 @@
 				"key" : "Q"
 			}
 		],
+		"app/toggle/toolbar" : [
+			{
+				"modifiers" : [ "Ctrl", "Alt" ],
+				"key" : "T"
+			}
+		],
 		"edit/line/copy" : [
 			{
 				"modifiers" : [ "Ctrl" ],
