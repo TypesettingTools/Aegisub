@@ -76,11 +76,11 @@ ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame 
 	
 	wxToolBar *tbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
 	tbar->SetMargins(0, 3);
-	tbar->AddTool(TOOL_SAVE, wxBITMAP(add), _T("Save canvas"));
+	tbar->AddTool(TOOL_SAVE, _T("Save canvas"), wxBITMAP(add));
 	tbar->AddSeparator();
-	tbar->AddTool(TOOL_CHECK, wxBITMAP(check), _T("Select all"));
-	tbar->AddTool(TOOL_UNCHECK, wxBITMAP(uncheck), _T("Select none"));
-	tbar->AddTool(TOOL_DELETE, wxBITMAP(delcross), _T("Delete selected"));
+	tbar->AddTool(TOOL_CHECK, _T("Select all"), wxBITMAP(check));
+	tbar->AddTool(TOOL_UNCHECK, _T("Select none"), wxBITMAP(uncheck));
+	tbar->AddTool(TOOL_DELETE, _T("Delete selected"), wxBITMAP(delcross));
 
 	libarea = new wxScrolledWindow(this, wxID_ANY, __DPDS__ , wxScrolledWindowStyle | wxSIMPLE_BORDER);
 	libarea->SetBackgroundColour(wxColour(0xFF, 0xFF, 0x99));
