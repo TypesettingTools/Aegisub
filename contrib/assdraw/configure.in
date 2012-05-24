@@ -68,7 +68,6 @@ fi
 
 AC_OUTPUT([
 Makefile
-libpropgrid/Makefile
 src/wxAGG/Makefile
 src/xpm/Makefile
 src/Makefile

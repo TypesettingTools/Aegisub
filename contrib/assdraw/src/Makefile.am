@@ -2,11 +2,11 @@ SUFFIXES = .cpp
 
 SUBDIRS = wxAGG xpm
 
-AM_CXXFLAGS = @WX_CPPFLAGS@ @LIBAGG_CFLAGS@ -I../libpropgrid/include
+AM_CXXFLAGS = @WX_CPPFLAGS@ @LIBAGG_CFLAGS@
 
 bin_PROGRAMS = assdraw
 #assdraw_CPPFLAGS =
-assdraw_LDFLAGS = -L../libpropgrid -lpropgrid @WX_LIBS@ @LIBAGG_LIBS@
+assdraw_LDFLAGS = @WX_LIBS@ @LIBAGG_LIBS@
 assdraw_LDADD = wxAGG/libaggwindow.a xpm/libres.a
 
 assdraw_SOURCES = \

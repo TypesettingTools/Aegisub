@@ -1,1 +1,1 @@
-SUBDIRS = libpropgrid src
+SUBDIRS = src
