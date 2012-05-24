@@ -75,7 +75,7 @@ BEGIN_EVENT_TABLE(ASSDrawFrame, wxFrame)
     EVT_TOOL(TB_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
     EVT_TOOL_RANGE(MODE_ARR, MODE_DEL, ASSDrawFrame::OnChoose_Mode)
     EVT_TOOL_RCLICKED(wxID_ANY, ASSDrawFrame::OnToolRClick)
-    EVT_COMMAND(wxID_ANY, wxEVT_SETTINGS_CHANGED, ASSDrawFrame::OnSettingsChanged) 
+    EVT_COMMAND(wxID_ANY, wxEVT_SETTINGS_CHANGED, ASSDrawFrame::OnSettingsChanged)
     EVT_MENU_RANGE(MENU_TB_ALL, MENU_TB_BGIMG, ASSDrawFrame::OnChoose_TBarRClickMenu)
     EVT_MENU(MENU_CLEAR, ASSDrawFrame::OnSelect_Clear)
     EVT_MENU(MENU_PREVIEW, ASSDrawFrame::OnSelect_Preview)
@@ -130,15 +130,15 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 
     // set the frame icon
     SetIcon(wxICON(appico));
-    
+
    	// Create status bar for the frame
     CreateStatusBar(3);
     int statwidths[] = { 64, -1, 64 };
     GetStatusBar()->SetStatusWidths(3, statwidths);
     SetStatusBarPane(1);
-	
+
 	InitializeDefaultSettings();
-	
+
 	// load config
 	configfile = wxFileName(::wxGetCwd(), _T("ASSDraw3.cfg")).GetFullPath();
 	if (!::wxFileExists(configfile))
@@ -170,7 +170,7 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 	// settings
 	settingsdlg = new ASSDrawSettingsDialog(this, this);
 	settingsdlg->Init();
-	
+
 	SetMenus();
 	SetToolBars();
 	SetPanes();
@@ -195,14 +195,14 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 	{
 		wxString libcmds;
 		config->Read(wxString::Format(_T("%d"),i), &libcmds);
-		shapelib->AddShapePreview(libcmds);		
+		shapelib->AddShapePreview(libcmds);
 	}
 	config->SetPath(_T(".."));
-	
+
     m_mgr.Update();
 	m_canvas->SetFocus();
 	m_canvas->Show();
-	
+
 	wxSize clientsize = m_canvas->GetClientSize();
 	m_canvas->ChangeZoomLevelTo(DEFAULT_SCALE, wxPoint(clientsize.x / 2, clientsize.y / 2));
 	m_canvas->MoveCanvasOriginTo(clientsize.x / 2, clientsize.y / 2);
@@ -268,7 +268,7 @@ void ASSDrawFrame::SetToolBars()
 
     m_mgr.AddPane(bgimgtbar, wxAuiPaneInfo().Name(_T("bgimgtbar")).Caption(TBNAME_BGIMG).
                   ToolbarPane().Top().Position(2).Dockable(true).LeftDockable(false).RightDockable(false));
-	
+
 }
 
 void ASSDrawFrame::SetMenus()
@@ -358,7 +358,7 @@ void ASSDrawFrame::SetPanes()
 
 	m_mgr.AddPane(srctxtctrl, wxAuiPaneInfo().Name(_T("commands")).Caption(_T("Drawing commands")).
                   Bottom().Layer(1).CloseButton(false).BestSize(wxSize(320, 48)));
-	
+
 	if (settingsdlg)
 		m_mgr.AddPane(settingsdlg, wxAuiPaneInfo().Name(_T("settings")).Caption(_T("Settings")).
                   Right().Layer(3).Position(0).CloseButton(true).BestSize(wxSize(240, 480)).MinSize(wxSize(200, 200)).Show(false));
@@ -372,7 +372,7 @@ ASSDrawFrame::~ASSDrawFrame()
 	config->SetPath(_T(".."));
 
 	SaveSettings();
-	
+
 	config->SetPath(_T("perspective"));
 	config->Write(_T("perspective"), m_mgr.SavePerspective());
 	config->SetPath(_T(".."));
@@ -390,7 +390,7 @@ ASSDrawFrame::~ASSDrawFrame()
 	wxFileOutputStream cfgf(configfile);
 	config->Save(cfgf);
 	delete config;
-	
+
 	if (settingsdlg) settingsdlg->Destroy(); // we need this since wxPropertyGrid must be Clear()ed before deleting
 
 	m_mgr.UnInit();
@@ -398,7 +398,7 @@ ASSDrawFrame::~ASSDrawFrame()
 
 void ASSDrawFrame::_Clear()
 {
-	wxMessageDialog msgb(this, _T("Clear the canvas and create a new drawing?"), 
+	wxMessageDialog msgb(this, _T("Clear the canvas and create a new drawing?"),
                   _T("Confirmation"), wxOK | wxCANCEL | wxICON_QUESTION );
 	if (msgb.ShowModal() == wxID_OK)
 	{
@@ -521,7 +521,7 @@ void ASSDrawFrame::OnChoose_RecenterToBG(wxCommandEvent& event)
 		int lx = (int)disp.x, ty = (int)disp.y;
 		int rx = lx + (int)(w * scale);
 		int by = ty + (int)(h * scale);
-		
+
 		switch (event.GetId())
 		{
 		case MENU_REPOS_BGTOPLEFT: x = lx, y = ty; break;
@@ -530,7 +530,7 @@ void ASSDrawFrame::OnChoose_RecenterToBG(wxCommandEvent& event)
 		case MENU_REPOS_BGBOTLEFT: x = lx, y = by; break;
 		case MENU_REPOS_BGBOTRIGHT: x = rx, y = by; break;
 		}
-	
+
 		m_canvas->MoveCanvasDrawing(x - m_canvas->GetOriginX(), y - m_canvas->GetOriginY());
 		m_canvas->RefreshDisplay();
 	}
@@ -592,31 +592,31 @@ void ASSDrawFrame::OnChoose_TBarRClickMenu(wxCommandEvent& event)
 	bool dock[2] = { false, true };
 	switch (id)
 	{
-	case MENU_TB_ALL: 
+	case MENU_TB_ALL:
 		tb[0] = true, tb[1] = true, tb[2] = true;
 		show[0] = true, show[1] = true;
 		break;
-	case MENU_TB_NONE: 
+	case MENU_TB_NONE:
 		tb[0] = true, tb[1] = true, tb[2] = true;
 		show[0] = true, show[1] = false;
 		break;
-	case MENU_TB_DOCK: 
+	case MENU_TB_DOCK:
 		tb[0] = true, tb[1] = true, tb[2] = true;
 		dock[0] = true, dock[1] = true;
 		break;
-	case MENU_TB_UNDOCK: 
+	case MENU_TB_UNDOCK:
 		tb[0] = true, tb[1] = true, tb[2] = true;
 		dock[0] = true, dock[1] = false;
 		break;
-	case MENU_TB_DRAW: 
+	case MENU_TB_DRAW:
 		tb[0] = true;
 		show[0] = true, show[1] = !m_mgr.GetPane(tbar[0]).IsShown();
 		break;
-	case MENU_TB_MODE: 
+	case MENU_TB_MODE:
 		tb[1] = true;
 		show[0] = true, show[1] = !m_mgr.GetPane(tbar[1]).IsShown();
 		break;
-	case MENU_TB_BGIMG: 
+	case MENU_TB_BGIMG:
 		tb[2] = true;
 		show[0] = true, show[1] = !m_mgr.GetPane(tbar[2]).IsShown();
 		break;
@@ -730,10 +730,10 @@ void ASSDrawFrame::OnClose(wxCloseEvent &event)
 	if (event.CanVeto() && behaviors.confirmquit)
 	{
 		if (wxMessageDialog(this, _T("Do you want to close ASSDraw3 now?"), _T("Confirmation"), wxOK | wxCANCEL).ShowModal() == wxID_OK)
-			Destroy();	
+			Destroy();
 		else
 			event.Veto();
 	}
 	else
-		Destroy();	
+		Destroy();
 }

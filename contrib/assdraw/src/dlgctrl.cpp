@@ -74,7 +74,7 @@ void ASSDrawSrcTxtCtrl::CustomOnChar(wxKeyEvent &event)
 		//m_frame->SetTitle(wxString::Format(_T("Key: %d"), event.GetKeyCode()));
 		event.Skip(true);
 	}
-	
+
 	//SetBackgroundColour(IsModified()? wxColour(0xFF, 0xFF, 0x99):*wxWHITE);
 }
 
@@ -257,13 +257,13 @@ Control points for Bezier curves are generated once you release the mouse button
 </ul> \
 <p>ai-chan recommends Aegisub for all your subtitle and typesetting needs! \
 </body></html>")
-	);	
+	);
 	htmlwin->Connect(wxEVT_COMMAND_HTML_LINK_CLICKED, wxHtmlLinkEventHandler(ASSDrawAboutDlg::OnURL), NULL, this);
-	
+
 	wxFlexGridSizer *sizer = new wxFlexGridSizer(1);
 	sizer->AddGrowableCol(0);
 	//sizer->AddGrowableRow(1);
-	
+
 	sizer->Add(new BigStaticBitmapCtrl(this, wxBITMAP(assdraw3_), *wxWHITE, this), 1, wxEXPAND);
 	sizer->Add(htmlwin, 1, wxLEFT | wxRIGHT, 2);
 	sizer->Add(new wxStaticText(this, wxID_ANY, wxString::Format(_T("Version: %s"), VERSION)), 1, wxEXPAND | wxALL, 2);
@@ -271,10 +271,10 @@ Control points for Bezier curves are generated once you release the mouse button
 	SetSizer(sizer);
 	sizer->Layout();
 	sizer->Fit(this);
-	
+
 	Center();
 	//if (CanSetTransparent()) SetTransparent(0xCC);
-	
+
 	timer.SetOwner(this);
 	Connect(wxEVT_TIMER, wxTimerEventHandler(ASSDrawAboutDlg::OnTimeout));
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(ASSDrawAboutDlg::OnMouseEnterWindow));
@@ -282,7 +282,7 @@ Control points for Bezier curves are generated once you release the mouse button
 
 ASSDrawAboutDlg::~ASSDrawAboutDlg()
 {
-	timer.Stop();	
+	timer.Stop();
 }
 
 int ASSDrawAboutDlg::ShowModal()
@@ -311,7 +311,7 @@ void ASSDrawAboutDlg::OnMouseEnterWindow(wxMouseEvent& event)
 {
 	// if mouse enters this dialog, stop the timout timer
 	// and dialog will only close through user input
-	timer.Stop();	
+	timer.Stop();
 }
 
 BEGIN_EVENT_TABLE(BigStaticBitmapCtrl, wxPanel)
@@ -332,7 +332,7 @@ BigStaticBitmapCtrl::BigStaticBitmapCtrl(wxWindow *parent, wxBitmap bmap, wxColo
 }
 
 BigStaticBitmapCtrl::~BigStaticBitmapCtrl()
-{	
+{
 }
 
 void BigStaticBitmapCtrl::OnPaint(wxPaintEvent& event)
@@ -354,7 +354,7 @@ void BigStaticBitmapCtrl::OnMouseLeftDown(wxMouseEvent &event)
 
 void BigStaticBitmapCtrl::OnMouseLeftUp(wxMouseEvent &event)
 {
-	ReleaseMouse();	
+	ReleaseMouse();
 }
 
 void BigStaticBitmapCtrl::OnMouseMove(wxMouseEvent &event)

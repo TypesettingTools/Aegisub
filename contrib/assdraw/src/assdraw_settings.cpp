@@ -96,7 +96,7 @@ void ASSDrawFrame::ApplySettings()
 	for (int i = 0; i < n; i++)
 		wxColourToAggRGBA(colors.library_shape, shapes[i]->rgba_shape);
 	shapelib->libarea->Refresh();
-	
+
 	m_canvas->SetDrawCmdSet(behaviors.parse_spc? _T("m n l b s p c _"):_T("m n l b _"));
 
 	UpdateASSCommandStringToSrcTxtCtrl(m_canvas->GenerateASS());

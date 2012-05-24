@@ -51,11 +51,11 @@ void ASSDrawShapePreview::OnSize(wxSizeEvent& event)
 {
 	return;
 	wxSize siz = event.GetSize();
-	
+
 	if (shapelib->layout == HORIZONTAL)
 		SetSize(siz.x, siz.x);
 	else
-		SetSize(siz.y, siz.y);	
+		SetSize(siz.y, siz.y);
 	SetFitToViewPointOnNextPaint(10, 10);
 }
 
@@ -67,13 +67,13 @@ BEGIN_EVENT_TABLE(ASSDrawShapeLibrary, wxScrolledWindow)
     EVT_TOOL(TOOL_DELETE, ASSDrawShapeLibrary::DeleteChecked)
 END_EVENT_TABLE()
 
-ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame ) 
+ASSDrawShapeLibrary::ASSDrawShapeLibrary( wxWindow *parent, ASSDrawFrame *frame )
 	: wxScrolledWindow(parent, wxID_ANY)
 {
 	m_frame = frame;
 	//sizer = NULL;
 	layout = VERTICAL;
-	
+
 	wxToolBar *tbar = new wxToolBar(this, wxID_ANY, __DPDS__ , wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_NODIVIDER);
 	tbar->SetMargins(0, 3);
 	tbar->AddTool(TOOL_SAVE, _T("Save canvas"), wxBITMAP(add));
@@ -105,7 +105,7 @@ void ASSDrawShapeLibrary::OnSize(wxSizeEvent& event)
 
 	wxSize siz = GetClientSize();
 	libsizer->SetDimension(0, 0, siz.x, siz.y);
-			
+
 	UpdatePreviewDisplays();
 }
 
@@ -139,7 +139,7 @@ void ASSDrawShapeLibrary::UpdatePreviewDisplays()
 		node = node->GetNext();
 	}
 	sizer->Layout();
-	sizer->FitInside(libarea);	
+	sizer->FitInside(libarea);
 	libarea->Show(true);
 }
 
@@ -209,12 +209,12 @@ void ASSDrawShapeLibrary::OnPopupMenuClicked(wxCommandEvent &event)
 
 void ASSDrawShapeLibrary::SaveShapeFromCanvas(wxCommandEvent& WXUNUSED(event))
 {
-	AddShapePreview(m_frame->m_canvas->GenerateASS(), true);	
+	AddShapePreview(m_frame->m_canvas->GenerateASS(), true);
 }
 
 void ASSDrawShapeLibrary::CheckUncheckAllPreviews(wxCommandEvent &event)
 {
-	bool checked = event.GetId() == TOOL_CHECK;	
+	bool checked = event.GetId() == TOOL_CHECK;
 	wxwxSizerItemListNode *node = sizer->GetChildren().GetFirst();
 	while (node != NULL)
 	{
@@ -262,4 +262,4 @@ void ASSDrawShapeLibrary::LoadToCanvas(ASSDrawShapePreview *preview)
 	m_frame->m_canvas->RefreshDisplay();
 	m_frame->m_canvas->RefreshUndocmds();
 	m_frame->UpdateFrameUI();
-}	
+}

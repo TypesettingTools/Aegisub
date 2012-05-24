@@ -40,8 +40,8 @@
 // ----------------------------------------------------------------------------
 
 // constructor
-DrawCmd_M::DrawCmd_M ( int x, int y, PointSystem *ps, DrawCmd *prev ) 
-     : DrawCmd ( x, y, ps, prev ) 
+DrawCmd_M::DrawCmd_M ( int x, int y, PointSystem *ps, DrawCmd *prev )
+     : DrawCmd ( x, y, ps, prev )
 {
      type = M;
 }
@@ -59,8 +59,8 @@ wxString DrawCmd_M::ToString()
 // ----------------------------------------------------------------------------
 
 // constructor
-DrawCmd_L::DrawCmd_L ( int x, int y, PointSystem *ps, DrawCmd *prev ) 
-     : DrawCmd ( x, y, ps, prev ) 
+DrawCmd_L::DrawCmd_L ( int x, int y, PointSystem *ps, DrawCmd *prev )
+     : DrawCmd ( x, y, ps, prev )
 {
      type = L;
 }
@@ -78,9 +78,9 @@ wxString DrawCmd_L::ToString()
 // ----------------------------------------------------------------------------
 
 // constructor
-DrawCmd_B::DrawCmd_B 
-( int x, int y, int x1, int y1, int x2, int y2, PointSystem *ps, DrawCmd *prev ) 
-    : DrawCmd ( x, y, ps, prev ) 
+DrawCmd_B::DrawCmd_B
+( int x, int y, int x1, int y1, int x2, int y2, PointSystem *ps, DrawCmd *prev )
+    : DrawCmd ( x, y, ps, prev )
 {
      type = B;
      controlpoints.push_back( new Point(x1, y1, ps, CP, this, 1) );
@@ -90,8 +90,8 @@ DrawCmd_B::DrawCmd_B
 }
 
 // constructor
-DrawCmd_B::DrawCmd_B ( int x, int y, PointSystem *ps, DrawCmd *prev ) 
-    : DrawCmd ( x, y, ps, prev ) 
+DrawCmd_B::DrawCmd_B ( int x, int y, PointSystem *ps, DrawCmd *prev )
+    : DrawCmd ( x, y, ps, prev )
 {
      type = B;
      initialized = false;
@@ -106,8 +106,8 @@ void DrawCmd_B::Init ( unsigned n )
 
      wxPoint wx0 = prev->m_point->ToWxPoint();
      wxPoint wx1 = m_point->ToWxPoint();
-     int xdiff = (wx1.x - wx0.x) / 3;     
-     int ydiff = (wx1.y - wx0.y) / 3;     
+     int xdiff = (wx1.x - wx0.x) / 3;
+     int ydiff = (wx1.y - wx0.y) / 3;
      int xg, yg;
 
      // first control
@@ -119,7 +119,7 @@ void DrawCmd_B::Init ( unsigned n )
      controlpoints.push_back( new Point( xg, yg, m_point->pointsys, CP, this, 2 ) );
 
      initialized = true;
-     
+
 }
 
 // to ASS drawing command
@@ -203,7 +203,7 @@ wxString DrawCmd_S::ToString()
 	for (; iterate != controlpoints.end(); iterate++)
 	{
 		if (initialized)
-			assout = wxString::Format(_T("%s %d %d"), assout.c_str(), (*iterate)->x(), (*iterate)->y()); 
+			assout = wxString::Format(_T("%s %d %d"), assout.c_str(), (*iterate)->x(), (*iterate)->y());
 		else
 			assout = wxString::Format(_T("%s ? ?"), assout.c_str());
 	}

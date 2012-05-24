@@ -48,7 +48,7 @@ ASSDrawSettingsDialog::ASSDrawSettingsDialog(wxWindow *parent, ASSDrawFrame *fra
 	m_frame = frame;
 	propgrid = NULL;
 }
-	
+
 void ASSDrawSettingsDialog::Init()
 {
     propgrid = new wxPropertyGrid(this,
@@ -73,7 +73,7 @@ void ASSDrawSettingsDialog::Init()
 	    pgid = propgrid->Append(new wxBoolProperty (label, wxPG_LABEL, boolvar ) ); \
     	propgrid->SetPropertyAttribute( pgid, wxPG_BOOL_USE_CHECKBOX, (long)1 );
 	wxLongPropertyValidator validator(0x0,0xFF);
-    
+
     propgrid->Append(new wxPropertyCategory(_T("Appearance"),wxPG_LABEL) );
 	APPENDCOLOURPROP(colors_canvas_bg_pgid, _T("Canvas"), m_frame->colors.canvas_bg)
 	APPENDCOLOURPROP(colors_canvas_shape_normal_pgid, _T("Drawing"), m_frame->colors.canvas_shape_normal)
@@ -103,7 +103,7 @@ void ASSDrawSettingsDialog::Init()
 	APPENDBOOLPROP(behaviors_parse_spc_pgid, _T("Parse S/P/C"), m_frame->behaviors.parse_spc);
 	APPENDBOOLPROP(behaviors_nosplashscreen_pgid, _T("No splash screen"), m_frame->behaviors.nosplashscreen);
 	APPENDBOOLPROP(behaviors_confirmquit_pgid, _T("Confirm quit"), m_frame->behaviors.confirmquit);
-	
+
 	wxFlexGridSizer *sizer = new wxFlexGridSizer(2, 1, 0, 0);
 	sizer->AddGrowableCol(0);
 	sizer->AddGrowableRow(0);
@@ -156,7 +156,7 @@ void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 	PARSECOLOR(m_frame->colors.origin, colors_origin_pgid)
 	PARSECOLOR(m_frame->colors.ruler_h, colors_ruler_h_pgid)
 	PARSECOLOR(m_frame->colors.ruler_v, colors_ruler_v_pgid)
-	
+
 	PARSE(&m_frame->alphas.canvas_shape_controlpoint, alphas_canvas_shape_controlpoint_pgid)
 	PARSE(&m_frame->alphas.canvas_shape_guideline, alphas_canvas_shape_guideline_pgid)
 	PARSE(&m_frame->alphas.canvas_shape_mainpoint, alphas_canvas_shape_mainpoint_pgid)
@@ -176,7 +176,7 @@ void ASSDrawSettingsDialog::OnSettingsApplyButtonClicked(wxCommandEvent &event)
 	wxCommandEvent evento( wxEVT_SETTINGS_CHANGED, event.GetId() );
     evento.SetEventObject( button );
     m_frame->GetEventHandler()->ProcessEvent( evento );
-	
+
 }
 
 void ASSDrawSettingsDialog::OnSettingsRevertButtonClicked(wxCommandEvent &event)
@@ -187,7 +187,7 @@ void ASSDrawSettingsDialog::OnSettingsRevertButtonClicked(wxCommandEvent &event)
 void ASSDrawSettingsDialog::RefreshSettingsDisplay()
 {
 	if (propgrid == NULL) return;
-	 
+
 	#define UPDATESETTING(value, pgid) propgrid->SetPropertyValue(pgid, value);
 
 	UPDATESETTING(m_frame->colors.canvas_bg, colors_canvas_bg_pgid)

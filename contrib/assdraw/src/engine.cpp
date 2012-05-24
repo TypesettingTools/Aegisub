@@ -40,24 +40,24 @@
 #include <stdio.h>
 #include <algorithm>
 
-      
+
 
 // ----------------------------------------------------------------------------
 // Point
 // ----------------------------------------------------------------------------
 
 // constructor
-Point::Point ( int _x, int _y, PointSystem* ps, POINTTYPE t, DrawCmd* cmd, unsigned n ) 
+Point::Point ( int _x, int _y, PointSystem* ps, POINTTYPE t, DrawCmd* cmd, unsigned n )
 {
 	x_ = _x;
 	y_ = _y;
 	pointsys = ps;
-	cmd_main = cmd; 
-	cmd_next = NULL; 
+	cmd_main = cmd;
+	cmd_next = NULL;
 	type = t;
 	isselected = false;
 	num = n;
-}      
+}
 
 // setters
 void Point::setXY( int _x, int _y)
@@ -67,11 +67,11 @@ void Point::setXY( int _x, int _y)
 }
 
 // simply returns true if px and py are the coordinate values
-bool Point::IsAt( int px, int py ) 
+bool Point::IsAt( int px, int py )
 {
 	return (x_ == px && y_ == py );
 }
-      
+
 // convert this point to wxPoint using scale and originx, originy
 wxPoint Point::ToWxPoint ( bool useorigin )
 {
@@ -80,9 +80,9 @@ wxPoint Point::ToWxPoint ( bool useorigin )
 	else
 		return *(new wxPoint(x_ * (int) pointsys->scale, y_ * (int) pointsys->scale ));
 }
-      
+
 // check if wxpoint is nearby this point
-bool Point::CheckWxPoint ( wxPoint wxpoint ) 
+bool Point::CheckWxPoint ( wxPoint wxpoint )
 {
 	wxPoint p = ToWxPoint();
 	int cx, cy;
@@ -90,7 +90,7 @@ bool Point::CheckWxPoint ( wxPoint wxpoint )
 	//delete &p;
 	return (x_ == cx && y_ == cy );
 }
-      
+
 
 
 // ----------------------------------------------------------------------------
@@ -98,14 +98,14 @@ bool Point::CheckWxPoint ( wxPoint wxpoint )
 // ----------------------------------------------------------------------------
 
 // constructor
-DrawCmd::DrawCmd ( int x, int y, PointSystem *ps, DrawCmd *pv ) 
-{ 
+DrawCmd::DrawCmd ( int x, int y, PointSystem *ps, DrawCmd *pv )
+{
 	m_point = new Point ( x, y, ps, MP, this );
 	m_point->cmd_main = this;
 	prev = pv;
 	dobreak = false;
 	invisible = false;
-}       
+}
 
 // destructor
 DrawCmd::~DrawCmd ( )
@@ -115,7 +115,7 @@ DrawCmd::~DrawCmd ( )
 	for (PointList::iterator iter_cpoint = controlpoints.begin();
 			iter_cpoint != controlpoints.end(); iter_cpoint++)
 		delete (*iter_cpoint);
-} 
+}
 
 
 
@@ -163,22 +163,22 @@ int ASSDrawEngine::ParseASS ( wxString str )
 	std::vector<int> val;
 	wxString token;
 	long tmp_int;
-	
+
 	bool n_collected = false;
 	DrawCmd_S *s_command = NULL;
 	wxPoint tmp_n_pnt;
-	
+
 	while ( tkz.HasMoreTokens() )
 	{
 		token = tkz.GetNextToken();
-		
+
 		if ( drawcmdset.Find(token) > -1 )
 		{
 			bool done;
-			
+
 			do {
 				done = true;
-				
+
 				// N
 				if (currcmd.IsSameAs(_T("n")) && val.size() >= 2)
 				{
@@ -190,7 +190,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 					AppendCmd ( L, tmp_n_pnt.x, tmp_n_pnt.y );
 					n_collected = false;
 				}
-				
+
 				if (s_command != NULL)
 				{
 					bool ends = true;
@@ -208,14 +208,14 @@ int ASSDrawEngine::ParseASS ( wxString str )
 					if (ends)
 					{
 						AppendCmd(s_command);
-						s_command = NULL;	
+						s_command = NULL;
 					}
 				}
-				
+
 				// M
 				if (currcmd.IsSameAs(_T("m")) && val.size() >= 2)
 					AppendCmd ( M, val[0], val[1] );
-				
+
 				// L
 				if (currcmd.IsSameAs(_T("l")) && val.size() >= 2)
 				{
@@ -225,7 +225,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 					if (val.size() >= 2)
 						done = false;
 				}
-				
+
 				// B
 				if (currcmd.IsSameAs(_T("b")) && val.size() >= 6)
 				{
@@ -236,7 +236,7 @@ int ASSDrawEngine::ParseASS ( wxString str )
 					if (val.size() >= 6)
 						done = false;
 				}
-				
+
 				// S
 				if (currcmd.IsSameAs(_T("s")) && val.size() >= 6)
 				{
@@ -250,16 +250,16 @@ int ASSDrawEngine::ParseASS ( wxString str )
 				}
 				// more to come later
 			} while (!done);
-			
+
 			val.clear();
 			currcmd = token;
 		}
 		else if (token.ToLong( &tmp_int ))
 		{
 			val.push_back( (int) tmp_int );
-		}	
+		}
 	}
-	
+
 	return (int) cmds.size();
 }
 
@@ -408,7 +408,7 @@ void ASSDrawEngine::MovePoints ( int x, int y )
      for (; iterate != cmds.end(); iterate++)
      {
          (*iterate)->m_point->setXY( (*iterate)->m_point->x() + x, (*iterate)->m_point->y() + y );
-         for (iterate2 = (*iterate)->controlpoints.begin(); 
+         for (iterate2 = (*iterate)->controlpoints.begin();
 		 	iterate2 != (*iterate)->controlpoints.end(); iterate2++)
          {
 			(*iterate2)->setXY( (*iterate2)->x() + x, (*iterate2)->y() + y );
@@ -487,13 +487,13 @@ DrawCmd* ASSDrawEngine::ControlAt ( int x, int y, Point* &point )
 // attempts to delete a commmand, returns true|false if successful|fail
 bool ASSDrawEngine::DeleteCommand ( DrawCmd* cmd )
 {
-	
+
 	DrawCmdList::iterator iterate = cmds.begin();
 	// can't delete the first command without deleting other commands first
 	if ( cmd == (*iterate) && cmds.size() > 1) return false;
-	
+
 	DrawCmd* lastiter = NULL;
-	
+
 	for (; iterate != cmds.end(); iterate++)
 	{
 		if ( cmd == (*iterate) )
@@ -509,7 +509,7 @@ bool ASSDrawEngine::DeleteCommand ( DrawCmd* cmd )
 		else
 			lastiter = (*iterate);
 	}
-	
+
 	return true;
 }
 
@@ -521,14 +521,14 @@ void ASSDrawEngine::ConnectSubsequentCmds (DrawCmd* cmd1, DrawCmd* cmd2)
 	{
 		cmd1->m_point->cmd_next = cmd2;
 	}
-	
+
 	if (cmd2 != NULL)
 	{
 		cmd2->prev = cmd1;
 	}
 }
 
-void ASSDrawEngine::RefreshDisplay() 
+void ASSDrawEngine::RefreshDisplay()
 {
 	if (!refresh_called)
 	{
@@ -552,7 +552,7 @@ void ASSDrawEngine::OnPaint(wxPaintEvent& event)
 void ASSDrawEngine::draw()
 {
 	refresh_called = false;
-	
+
 	PixelFormat::AGGType pixf(rBuf);
 	RendererBase rbase(pixf);
 	RendererPrimitives rprim(rbase);
@@ -564,11 +564,11 @@ void ASSDrawEngine::draw()
 	rasterizer.reset();
 	update_rendered_bound_coords(true);
 	DoDraw(rbase, rprim, rsolid, mtx);
-	
+
 	delete rm_path, rb_path, rm_curve;
 }
 
-void ASSDrawEngine::ConstructPathsAndCurves(agg::trans_affine& mtx, 
+void ASSDrawEngine::ConstructPathsAndCurves(agg::trans_affine& mtx,
 	trans_path*& _rm_path, trans_path*& _rb_path, agg::conv_curve<trans_path>*& _rm_curve)
 {
     mtx *= agg::trans_affine_scaling(pointsys->scale);
@@ -639,7 +639,7 @@ void ASSDrawEngine::AddDrawCmdToAGGPathStorage(DrawCmd* cmd, agg::path_storage& 
 		else
 			path.line_to(cmd->m_point->x(),cmd->m_point->y());
 		break;
-		
+
 	case S:
 		unsigned np = cmd->controlpoints.size();
         agg::pod_array<double> m_polygon(np * 2);
@@ -663,9 +663,9 @@ void ASSDrawEngine::AddDrawCmdToAGGPathStorage(DrawCmd* cmd, agg::path_storage& 
 				_pn += 2;
 			}
 	        path.line_to(cmd->m_point->x(), cmd->m_point->y());
-		}	
+		}
 		else
-		{	
+		{
 			//path.line_to((int) m_polygon[0],(int) m_polygon[1]);
 	        aggpolygon poly(&m_polygon[0], np, false, false);
 	        agg::conv_bcspline<agg::simple_polygon_vertex_source>  bspline(poly);
@@ -678,7 +678,7 @@ void ASSDrawEngine::AddDrawCmdToAGGPathStorage(DrawCmd* cmd, agg::path_storage& 
 	        path.line_to(cmd->m_point->x(), cmd->m_point->y());
 		}
 		break;
-	}	
+	}
 
 }
 

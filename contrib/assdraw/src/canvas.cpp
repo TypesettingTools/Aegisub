@@ -92,7 +92,7 @@ ASSDrawCanvas::ASSDrawCanvas(wxWindow *parent, ASSDrawFrame *frame, int extrafla
 	bgimg.bgimg = NULL;
 	bgimg.alpha = 0.5;
 	rectbound2upd = -1, rectbound2upd2 = -1;
-	
+
 	rgba_shape_normal = agg::rgba(0,0,1,0.5);
 	rgba_outline = agg::rgba(0,0,0);
 	rgba_guideline = agg::rgba(0.5,0.5,0.5);
@@ -115,7 +115,7 @@ ASSDrawCanvas::ASSDrawCanvas(wxWindow *parent, ASSDrawFrame *frame, int extrafla
 	bgimg.bgimg = NULL;
 	// drag image background file
 	SetDropTarget(new ASSDrawFileDropTarget(this));
-	
+
 	hasStatusBar = m_frame->GetStatusBar() != NULL;
 
 	// cursor = crosshair
@@ -132,7 +132,7 @@ ASSDrawCanvas::ASSDrawCanvas(wxWindow *parent, ASSDrawFrame *frame, int extrafla
 	bgimg.alpha_slider->Connect(wxEVT_SCROLL_PAGEDOWN, wxScrollEventHandler(ASSDrawCanvas::OnAlphaSliderChanged), NULL, this);
 	bgimg.alpha_slider->Connect(wxEVT_SCROLL_THUMBTRACK, wxScrollEventHandler(ASSDrawCanvas::OnAlphaSliderChanged), NULL, this);
 	bgimg.alpha_slider->Connect(wxEVT_SCROLL_CHANGED, wxScrollEventHandler(ASSDrawCanvas::OnAlphaSliderChanged), NULL, this);
-	
+
 	RefreshUndocmds();
 
 }
@@ -188,8 +188,8 @@ void ASSDrawCanvas::SetPreviewMode(bool mode)
 }
 
 // (Re)draw canvas
-void ASSDrawCanvas::RefreshDisplay() 
-{ 
+void ASSDrawCanvas::RefreshDisplay()
+{
 	ASSDrawEngine::RefreshDisplay();
 	wxString asscmds = GenerateASS();
 	if (oldasscmds != asscmds)
@@ -199,9 +199,9 @@ void ASSDrawCanvas::RefreshDisplay()
 	}
 }
 
-void ASSDrawCanvas::SetDrawMode( MODE mode ) 
-{ 
-	draw_mode = mode; 
+void ASSDrawCanvas::SetDrawMode( MODE mode )
+{
+	draw_mode = mode;
 
 	if (!selected_points.empty())
 		ClearPointsSelection();
@@ -211,7 +211,7 @@ void ASSDrawCanvas::SetDrawMode( MODE mode )
 	if (IsTransformMode())
 	{
 		isshapetransformable = cmds.size() > 1;
-		
+
 		if (isshapetransformable)
 		{
 
@@ -226,9 +226,9 @@ void ASSDrawCanvas::SetDrawMode( MODE mode )
 					backupcmds.move_to(pp.x, pp.y);
 				}
 				wxPoint pp = (*iterate)->m_point->ToWxPoint();
-				backupcmds.move_to(pp.x, pp.y);			
+				backupcmds.move_to(pp.x, pp.y);
 			}
-	
+
 			// calculate bounding rectangle
 			agg::trans_affine mtx;
 			trans_path *rm, *rb;
@@ -241,28 +241,28 @@ void ASSDrawCanvas::SetDrawMode( MODE mode )
 			delete rc;
 		    int minx = rasterizer.min_x(), miny = rasterizer.min_y();
 		    int maxx = rasterizer.max_x(), maxy = rasterizer.max_y();
-		    
+
 		    rectbound[0] = wxRealPoint(minx, miny);
 		    rectbound[1] = wxRealPoint(maxx, miny);
 		    rectbound[2] = wxRealPoint(maxx, maxy);
 		    rectbound[3] = wxRealPoint(minx, maxy);
 		    for (int i = 0; i < 4; i++)
 		    	rectbound2[i] = rectbound[i];
-	
+
 		    rectbound2upd = -1;
 		    rectbound2upd2 = -1;
-		    
+
 		    backupowner = NONE;
 		    InitiateDraggingIfTransformMode();
-		    
+
 		    if (maxx - minx < 5 || maxy - miny < 5)
 		    	isshapetransformable = false;
-		}	    
+		}
 	}
-	
+
 	RefreshUndocmds();
 	m_frame->UpdateFrameUI();
-	
+
 }
 
 void ASSDrawCanvas::SetDragMode( DRAGMODE mode )
@@ -271,8 +271,8 @@ void ASSDrawCanvas::SetDragMode( DRAGMODE mode )
 }
 
 bool ASSDrawCanvas::IsTransformMode()
-{ 
-	return draw_mode == MODE_NUT_BILINEAR || draw_mode == MODE_SCALEROTATE; 
+{
+	return draw_mode == MODE_NUT_BILINEAR || draw_mode == MODE_SCALEROTATE;
 }
 
 bool ASSDrawCanvas::CanZoom()
@@ -319,14 +319,14 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 					if (rectbound2upd2 == -1) //only one vertex dragged
 					{
 						int adjacent[2] = { (rectbound2upd + 3) % 4, (rectbound2upd + 1) % 4 };
-						int opposite = (rectbound2upd + 2) % 4; 
+						int opposite = (rectbound2upd + 2) % 4;
 						wxRealPoint newpoint = backup[rectbound2upd] + rdiff;
 						//wxPoint newadjacent[2];
 						double nx, ny;
 						for (int i = 0; i < 2; i++)
 						{
 							bool isect = agg::calc_intersection(
-								backup[opposite].x, backup[opposite].y, 
+								backup[opposite].x, backup[opposite].y,
 								backup[adjacent[i]].x, backup[adjacent[i]].y,
 								newpoint.x, newpoint.y,
 								backup[adjacent[i]].x + diff.x, backup[adjacent[i]].y + diff.y,
@@ -334,9 +334,9 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 							if (isect && !(fabs(nx - backup[opposite].x) < 10 && fabs(ny - backup[opposite].y) < 10))
 								rectbound2[adjacent[i]] = wxRealPoint(nx, ny);
 						}
-						GetThe4thPoint(backup[opposite].x, backup[opposite].y, 
+						GetThe4thPoint(backup[opposite].x, backup[opposite].y,
 							rectbound2[adjacent[0]].x, rectbound2[adjacent[0]].y,
-							rectbound2[adjacent[1]].x, rectbound2[adjacent[1]].y, 
+							rectbound2[adjacent[1]].x, rectbound2[adjacent[1]].y,
 							&rectbound2[rectbound2upd].x, &rectbound2[rectbound2upd].y);
 						if (event.ShiftDown()) // shift down = maintain aspect ratio (damn so complicated)
 						{
@@ -406,7 +406,7 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 					undodesc = _T("Scale");
 					break;
 				}
-			
+
 				// update points
 				UpdateNonUniformTransformation();
 				RefreshDisplay();
@@ -416,21 +416,21 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 		{
 
 			// point left-dragged
-			if (mousedownAt_point != NULL && mousedownAt_point->isselected) 
+			if (mousedownAt_point != NULL && mousedownAt_point->isselected)
 			{
 				if (!mousedownAt_point->IsAt( wx, wy ))
 				{
 					if (draw_mode == MODE_ARR) {
 						int movex = wx - mousedownAt_point->x(), movey = wy - mousedownAt_point->y();
 						PointSet::iterator iter = selected_points.begin();
-						for (; iter != selected_points.end(); iter++)			
+						for (; iter != selected_points.end(); iter++)
 							(*iter)->setXY( (*iter)->x() + movex, (*iter)->y() + movey );
 					}
 					else
 						mousedownAt_point->setXY( wx, wy );
-	
+
 					EnforceC1Continuity (mousedownAt_point->cmd_main, mousedownAt_point);
-											
+
 					RefreshDisplay();
 					if (undodesc == _T(""))
 					{
@@ -440,9 +440,9 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 							undodesc = _T("Drag control point");
 					}
 				}
-			} 
+			}
 			// origin left-dragged
-			else if (dragOrigin) 
+			else if (dragOrigin)
 			{
 				if (wx != 0 || wy != 0)
 				{
@@ -452,7 +452,7 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 					pointsys->originy = wxp.y;
 					RefreshDisplay();
 					undodesc = _T("Move origin");
-				}          
+				}
 			}
 			else if (dragAnchor_left != NULL)
 			{
@@ -500,15 +500,15 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 					undodesc = _T("Rotate");
 				}
 			}
-			else if (CanMove()) 
+			else if (CanMove())
 			{
 				MoveCanvas(xx - dragAnchor_right->x, yy - dragAnchor_right->y);
 				dragAnchor_right->x = xx;
 				dragAnchor_right->y = yy;
 				RefreshDisplay();
 			}
-		}		
-	}    
+		}
+	}
 	else if (!preview_mode)// not dragging and not preview mode
     {
 		if (IsTransformMode())
@@ -539,7 +539,7 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 	                    mouse_point.x - pointsys->scale, mouse_point.y,
 						mouse_point.x + pointsys->scale, mouse_point.y, &ix, &iy);
 					intersect &= fabs(mouse_point.x - ix) <= pointsys->scale;
-					intersect &= (pj.y > pi.y? 
+					intersect &= (pj.y > pi.y?
 						pj.y - dy3 > iy && iy > pi.y + dy3:
 						pj.y + dy3 < iy && iy < pi.y - dy3);
 				}
@@ -550,7 +550,7 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 	                    mouse_point.x, mouse_point.y - pointsys->scale,
 						mouse_point.x, mouse_point.y + pointsys->scale, &ix, &iy);
 					intersect &= fabs(mouse_point.y - iy) <= pointsys->scale;
-					intersect &= (pj.x > pi.x? 
+					intersect &= (pj.x > pi.x?
 						pj.x - dx3 > ix && ix > pi.x + dx3:
 						pj.x + dx3 < ix && ix < pi.x - dx3);
 				}
@@ -569,14 +569,14 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 	            we need not do this for dragging since this same block has set
 	            the related variables before the user starts to hold the button
 	            (well, before you can drag something you have to move the pointer
-	            over that thing first, right?) and we don't want to mess with those 
+	            over that thing first, right?) and we don't want to mess with those
 	            when it's dragging
 	         */
-	         
+
 			// check if mouse points on any control point first
 			Point* last_pointedAt_point = pointedAt_point;
 			ControlAt( wx, wy, pointedAt_point );
-	
+
 			// then check if mouse points on any m_points
 			// override any control point set to pointedAt_point above
 			DrawCmd* p = PointAt( wx, wy );
@@ -584,7 +584,7 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 			{
 				pointedAt_point = p->m_point;
 			}
-	         
+
 			if (pointedAt_point != last_pointedAt_point)
 			{
 				if (pointedAt_point != NULL)
@@ -600,9 +600,9 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
     // oh yeah, we need to set the status bar just for fun
     if (hasStatusBar)
 	{
-        m_frame->SetStatusText( 
+        m_frame->SetStatusText(
             wxString::Format( _T("%5d %5d"), (int)wx, (int)wy ), 0 );
-        if (pointedAt_point == NULL || 
+        if (pointedAt_point == NULL ||
              (newcommand != NULL && !newcommand->initialized) )
            m_frame->SetStatusText( _T(""), 1 );
         else
@@ -621,9 +621,9 @@ void ASSDrawCanvas::OnMouseLeftUp(wxMouseEvent& event)
 void ASSDrawCanvas::ProcessOnMouseLeftUp()
 {
 	if (!capturemouse_left) return;
-	
+
 	// draw mode
-	if (newcommand != NULL) 
+	if (newcommand != NULL)
 	{
 		newcommand->Init();
 		switch (newcommand->type)
@@ -668,8 +668,8 @@ void ASSDrawCanvas::ProcessOnMouseLeftUp()
 		else
 		{
 			RefreshDisplay(); // redraw before showing the error box
-			wxMessageDialog msgb(m_frame, 
-			_T("You must delete that command/point last"), 
+			wxMessageDialog msgb(m_frame,
+			_T("You must delete that command/point last"),
 			_T("Error"), wxOK | wxICON_EXCLAMATION );
 			msgb.ShowModal();
 		}
@@ -678,11 +678,11 @@ void ASSDrawCanvas::ProcessOnMouseLeftUp()
 	{
 		if (lastDrag_left && dragAnchor_left != lastDrag_left)
 		    delete lastDrag_left;
-	    delete dragAnchor_left;			
+	    delete dragAnchor_left;
 		lastDrag_left = NULL;
 		dragAnchor_left = NULL;
 	}
-	
+
 	if (dragOrigin)
 	{
 		dragOrigin = false;
@@ -705,7 +705,7 @@ void ASSDrawCanvas::ProcessOnMouseLeftUp()
 	if (HasCapture())
 		ReleaseMouse();
 	capturemouse_left = false;
-	
+
 	RefreshDisplay();
 }
 
@@ -722,7 +722,7 @@ void ASSDrawCanvas::OnMouseLeftDown(wxMouseEvent& event)
 	// wxPoint to Point
 	int px, py;
 	pointsys->FromWxPoint(q, px, py);
-	
+
 	// create new cmd if in draw mode / or delete point if del tool selected
 	switch (draw_mode)
 	{
@@ -748,11 +748,11 @@ void ASSDrawCanvas::OnMouseLeftDown(wxMouseEvent& event)
 			delete newcommand;
             newcommand = NULL;
 		}
-		else 
+		else
 		{
 			// first set to drag the new command no matter what
 			mousedownAt_point = newcommand->m_point;
-	      
+
 			// if user drags from existing point, insert the new command
 			// else append the new command
 			if (pointedAt_point != NULL)
@@ -765,10 +765,10 @@ void ASSDrawCanvas::OnMouseLeftDown(wxMouseEvent& event)
 			}
 
 			pointedAt_point = mousedownAt_point;
-	           
+
 			//highlight it
 			SetHighlighted( newcommand, newcommand->m_point );
-		}                    
+		}
 	}
 
 	// we already calculated pointedAt_point in OnMouseMove() so just use it
@@ -802,7 +802,7 @@ void ASSDrawCanvas::OnMouseLeftDown(wxMouseEvent& event)
 
 	if (InitiateDraggingIfTransformMode())
 	    backupowner = LEFT;
-	
+
 	CaptureMouse();
 	capturemouse_left = true;
 	RefreshDisplay();
@@ -882,7 +882,7 @@ void ASSDrawCanvas::OnMouseRightDClick(wxMouseEvent& event)
 		f.SetWeight(wxFONTWEIGHT_BOLD);
 		cmdmenuitem->SetFont(f);
 #endif
-		menu->Append(cmdmenuitem); 
+		menu->Append(cmdmenuitem);
 		menu->Enable(MENU_DUMMY, false);
 		switch (dblclicked_point_right->cmd_main->type)
 		{
@@ -944,9 +944,9 @@ void ASSDrawCanvas::UpdateTranformModeRectCenter()
 	double cx, cy;
 	if (agg::calc_intersection(rectbound2[0].x, rectbound2[0].y, rectbound2[2].x, rectbound2[2].y,
 		rectbound2[1].x, rectbound2[1].y, rectbound2[3].x, rectbound2[3].y, &cx, &cy))
-	{ 
-		rectcenter = wxRealPoint(cx, cy); 
-	}	
+	{
+		rectcenter = wxRealPoint(cx, cy);
+	}
 }
 
 bool ASSDrawCanvas::GetThe4thPoint(double ox, double oy, double a1x, double a1y, double a2x, double a2y, double *x, double *y)
@@ -959,7 +959,7 @@ bool ASSDrawCanvas::GetThe4thPoint(double ox, double oy, double a1x, double a1y,
 		a1x + a2x - ox,
 		a1y + a2y - oy,
 		x, y);	//*/
-	
+
 	*x = a1x + a2x - ox;
 	*y = a1y + a2y - oy;
 	return true;
@@ -991,7 +991,7 @@ void ASSDrawCanvas::ChangeZoomLevel( double amount, wxPoint bgzoomctr )
 
 	case DRAG_BOTH:
 		ChangeDrawingZoomLevel( amount );
-	    ChangeBackgroundZoomLevel(bgimg.scale * pointsys->scale / old_scale, 
+	    ChangeBackgroundZoomLevel(bgimg.scale * pointsys->scale / old_scale,
 			wxRealPoint(pointsys->originx, pointsys->originy));
 		break;
 
@@ -1000,7 +1000,7 @@ void ASSDrawCanvas::ChangeZoomLevel( double amount, wxPoint bgzoomctr )
 		break;
 	}
 	*/
-	
+
 	if (CanZoom() && drag_mode.drawing)
 		ChangeDrawingZoomLevel( amount );
 
@@ -1009,7 +1009,7 @@ void ASSDrawCanvas::ChangeZoomLevel( double amount, wxPoint bgzoomctr )
 		    ChangeBackgroundZoomLevel(bgimg.scale * pointsys->scale / old_scale, wxRealPoint(pointsys->originx, pointsys->originy));
 		else
 		    ChangeBackgroundZoomLevel(bgimg.scale + amount / 10.0,  wxRealPoint(bgzoomctr.x, bgzoomctr.y));
-	
+
 	RefreshDisplay();
 }
 
@@ -1022,7 +1022,7 @@ void ASSDrawCanvas::ChangeDrawingZoomLevel( double scrollamount )
 		if (zoom < 1.0) zoom = 1.0;
 		pointsys->scale = zoom;
 	}
-	
+
 	m_frame->UpdateFrameUI();
 }
 
@@ -1031,7 +1031,7 @@ void ASSDrawCanvas::ChangeBackgroundZoomLevel(double zoom, wxRealPoint newcenter
 	bgimg.new_scale = zoom;
 	bgimg.new_center = newcenter;
 	if (bgimg.new_scale < 0.01) bgimg.new_scale = 0.01;
-	UpdateBackgroundImgScalePosition();	
+	UpdateBackgroundImgScalePosition();
 }
 
 void ASSDrawCanvas::MoveCanvasOriginTo(double originx, double originy)
@@ -1057,7 +1057,7 @@ void ASSDrawCanvas::MoveCanvasDrawing(double xamount, double yamount)
 {
 	if (!CanMove()) return;
 	pointsys->originx += xamount;
-	pointsys->originy += yamount;		
+	pointsys->originy += yamount;
 	if (IsTransformMode())
 	{
 	    for (int i = 0; i < 4; i++)
@@ -1082,14 +1082,14 @@ void ASSDrawCanvas::MoveCanvasBackground(double xamount, double yamount)
 	//bgimg.new_center.x += xamount, bgimg.new_center.y += yamount;
 	bgimg.new_disp.x += xamount;
 	bgimg.new_disp.y += yamount;
-	UpdateBackgroundImgScalePosition();	
+	UpdateBackgroundImgScalePosition();
 }
 
 void ASSDrawCanvas::OnSelect_ConvertLineToBezier(wxCommandEvent& WXUNUSED(event))
 {
 	if (!dblclicked_point_right) return;
 	AddUndo( _T("Convert Line to Bezier") );
-	DrawCmd_B *newB = new DrawCmd_B(dblclicked_point_right->x(), dblclicked_point_right->y(), 
+	DrawCmd_B *newB = new DrawCmd_B(dblclicked_point_right->x(), dblclicked_point_right->y(),
 		pointsys, dblclicked_point_right->cmd_main);
 	InsertCmd ( newB, dblclicked_point_right->cmd_main );
 	ClearPointsSelection();
@@ -1168,7 +1168,7 @@ void ASSDrawCanvas::EnforceC1Continuity (DrawCmd* cmd, Point* pnt)
 	{
 		DrawCmd_B *thisb = static_cast< DrawCmd_B* >(cmd);
 		if (!thisb->C1Cont) return;
-		theotherpoint = *(cmd->m_point->cmd_next->controlpoints.begin());		
+		theotherpoint = *(cmd->m_point->cmd_next->controlpoints.begin());
 		mainpoint = thisb->m_point;
 	}
 	else
@@ -1178,7 +1178,7 @@ void ASSDrawCanvas::EnforceC1Continuity (DrawCmd* cmd, Point* pnt)
 }
 
 // Undo/Redo system
-void ASSDrawCanvas::AddUndo( wxString desc ) 
+void ASSDrawCanvas::AddUndo( wxString desc )
 {
 	PrepareUndoRedo(_undo, false, _T(""), desc);
 	undos.push_back( _undo );
@@ -1198,7 +1198,7 @@ bool ASSDrawCanvas::UndoOrRedo(bool isundo)
 	UndoRedo r = main->back();
 	// push into sub
 	UndoRedo nr(r);
-	PrepareUndoRedo(nr, true, GenerateASS(), r.desc); 
+	PrepareUndoRedo(nr, true, GenerateASS(), r.desc);
 	//PrepareUndoRedo(nr, false, _T(""), r.desc);
 	sub->push_back( nr );
 	// parse
@@ -1249,10 +1249,10 @@ void ASSDrawCanvas::RefreshUndocmds()
 	_undo.Import(this, true, GenerateASS());
 }
 
-void ASSDrawCanvas::PrepareUndoRedo(UndoRedo& ur, bool prestage, wxString cmds, wxString desc) 
+void ASSDrawCanvas::PrepareUndoRedo(UndoRedo& ur, bool prestage, wxString cmds, wxString desc)
 {
 	ur.Import(this, prestage, cmds);
-	ur.desc = desc;	
+	ur.desc = desc;
 }
 
 // set command and point to highlight
@@ -1290,7 +1290,7 @@ int ASSDrawCanvas::SelectPointsWithin( int lx, int rx, int ty, int by, SELECTMOD
 	    		(*pnt_iterator)->isselected = (smode != DEL);
 		    else
 	    		(*pnt_iterator)->isselected &= (smode != NEW);
-			
+
 			if ((*pnt_iterator)->isselected)
 				selected_points.insert(*pnt_iterator);
 			else
@@ -1331,7 +1331,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 	int ww, hh; GetClientSize(&ww, &hh);
 
 	if (bgimg.bgbmp)
-	{ 
+	{
 		rasterizer.reset();
 	    interpolator_type interpolator(bgimg.img_mtx);
 	    PixelFormat::AGGType ipixfmt(bgimg.ibuf);
@@ -1344,7 +1344,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 	}
 
 	ASSDrawEngine::Draw_Draw( rbase, rprim, rsolid, mtx, preview_mode? rgba_shape:rgba_shape_normal );
-		
+
 	if (!preview_mode)
 	{
 		// [0, 0]
@@ -1395,14 +1395,14 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 			rasterizer.add_path(chstroke);
 			if (rectbound2upd != -1)
 			{
-				agg::ellipse circ(rectbound2[rectbound2upd].x, rectbound2[rectbound2upd].y, 
+				agg::ellipse circ(rectbound2[rectbound2upd].x, rectbound2[rectbound2upd].y,
 					pointsys->scale, pointsys->scale);
 				agg::conv_contour< agg::ellipse > c(circ);
 				rasterizer.add_path(c);
 			}
 			if (rectbound2upd2 != -1)
 			{
-				agg::ellipse circ(rectbound2[rectbound2upd2].x, rectbound2[rectbound2upd2].y, 
+				agg::ellipse circ(rectbound2[rectbound2upd2].x, rectbound2[rectbound2upd2].y,
 					pointsys->scale, pointsys->scale);
 				agg::conv_contour< agg::ellipse > c(circ);
 				rasterizer.add_path(c);
@@ -1417,13 +1417,13 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 			rsolid.color(rgba_guideline);
 			rasterizer.add_path(bguidestroke);
 			render_scanlines(rsolid);
-	
+
 			agg::conv_stroke< agg::conv_curve< agg::conv_transform< agg::path_storage > > > stroke(*rm_curve);
 			stroke.width(1);
 			rsolid.color(rgba_outline);
 			rasterizer.add_path(stroke);
 			render_scanlines(rsolid);
-	
+
 			double diameter = pointsys->scale;
 			double radius = diameter / 2.0;
 			// hilite
@@ -1442,7 +1442,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				rasterizer.add_path(stroke);
 				render_scanlines(rsolid);
 			}
-			
+
 			// m_point
 			rasterizer.reset();
 			DrawCmdList::iterator ci = cmds.begin();
@@ -1456,7 +1456,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				ci++;
 			}
 			render_scanlines_aa_solid(rbase, rgba_mainpoint);
-	
+
 			// control_points
 			rasterizer.reset();
 			ci = cmds.begin();
@@ -1465,7 +1465,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				PointList::iterator pi = (*ci)->controlpoints.begin();
 				while (pi != (*ci)->controlpoints.end())
 				{
-					agg::ellipse circ((*pi)->x() * pointsys->scale + pointsys->originx, 
+					agg::ellipse circ((*pi)->x() * pointsys->scale + pointsys->originx,
 						(*pi)->y() * pointsys->scale + pointsys->originy, radius, radius);
 					agg::conv_contour< agg::ellipse > c(circ);
 					rasterizer.add_path(c);
@@ -1474,31 +1474,31 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				ci++;
 			}
 			render_scanlines_aa_solid(rbase, rgba_controlpoint);
-		
+
 			// selection
 			rasterizer.reset();
 			PointSet::iterator si = selected_points.begin();
 			while (si != selected_points.end())
 			{
-				agg::ellipse circ((*si)->x() * pointsys->scale + pointsys->originx, 
+				agg::ellipse circ((*si)->x() * pointsys->scale + pointsys->originx,
 					(*si)->y() * pointsys->scale + pointsys->originy, radius + 3, radius + 3);
 				agg::conv_stroke< agg::ellipse > s(circ);
 				rasterizer.add_path(s);
 				si++;
 			}
 			render_scanlines_aa_solid(rbase, rgba_selectpoint);
-	
+
 			// hover
 			if (hilite_point)
 			{
 				rasterizer.reset();
-				agg::ellipse circ(hilite_point->x() * pointsys->scale + pointsys->originx, 
+				agg::ellipse circ(hilite_point->x() * pointsys->scale + pointsys->originx,
 					hilite_point->y() * pointsys->scale + pointsys->originy, radius + 3, radius + 3);
 				agg::conv_stroke< agg::ellipse > s(circ);
 				s.width(2);
 				rasterizer.add_path(s);
 				render_scanlines_aa_solid(rbase, rgba_selectpoint);
-	
+
 				rasterizer.reset();
 				agg::gsv_text t;
 				t.flip(true);
@@ -1513,7 +1513,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				rasterizer.add_path(pt);
 				rsolid.color(agg::rgba(0,0,0));
 				render_scanlines(rsolid, false);
-				
+
 				rasterizer.reset();
 				agg::path_storage sb_path;
 				sb_path.move_to(pxy.x, 0);
@@ -1529,7 +1529,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				rasterizer.add_path(stroke);
 				render_scanlines(rsolid);
 			}
-			
+
 			// selection box
 			if (lastDrag_left)
 			{
@@ -1551,9 +1551,9 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 				rasterizer.add_path(stroke);
 				render_scanlines(rsolid);
 			}
-		}		
+		}
 	}
-	
+
 	// ruler
 	int w, h;
 	GetClientSize( &w, &h );
@@ -1688,7 +1688,7 @@ void ASSDrawCanvas::AskUserForBackgroundAlpha()
 	bgimg.alpha_dlg->Show();
 	SetFocus();
 }
-	
+
 void ASSDrawCanvas::PrepareBackgroundBitmap(double alpha)
 {
 	if (alpha >= 0.0 && alpha <= 1.0) bgimg.alpha = alpha;
@@ -1701,7 +1701,7 @@ void ASSDrawCanvas::PrepareBackgroundBitmap(double alpha)
     if (stride < 0)
         pd += (data.GetHeight() - 1) * stride;
     bgimg.ibuf.attach(pd, data.GetWidth(), data.GetHeight(), stride);
-    
+
     // apply alpha
 	rasterizer.reset();
 	unsigned w = bgimg.bgbmp->GetWidth(), h = bgimg.bgbmp->GetHeight();
@@ -1791,7 +1791,7 @@ void ASSDrawCanvas::UpdateNonUniformTransformation()
 	agg::path_storage trans;
 	unsigned vertices = backupcmds.total_vertices();
 	double x, y;
-	
+
 	//if (draw_mode == MODE_NUT_BILINEAR)
 	//{
 		agg::trans_bilinear trans_b(rectbound[0].x, rectbound[0].y, rectbound[2].x, rectbound[2].y, bound);
@@ -1833,14 +1833,14 @@ void ASSDrawCanvas::UpdateNonUniformTransformation()
 		pointsys->FromWxPoint ( wxPoint((int)x, (int)y), wx, wy );
 		(*iterate)->m_point->setXY(wx, wy);
 	}
-	
+
 }
 
 void ASSDrawCanvas::CustomOnKeyDown(wxKeyEvent &event)
 {
 	int keycode = event.GetKeyCode();
 	//m_frame->SetStatusText(wxString::Format(_T("Key: %d"), keycode));
-	double scrollamount = (event.GetModifiers() == wxMOD_CMD? 10.0:1.0);	
+	double scrollamount = (event.GetModifiers() == wxMOD_CMD? 10.0:1.0);
     if (event.GetModifiers() == wxMOD_SHIFT)
 	{
 		MODE d_mode = GetDrawMode();
@@ -1874,7 +1874,7 @@ void ASSDrawCanvas::CustomOnKeyDown(wxKeyEvent &event)
 		case WXK_LEFT:
 			MoveCanvas(-scrollamount, 0.0);
 			RefreshDisplay();
-			break; 
+			break;
 		case WXK_RIGHT:
 			MoveCanvas(scrollamount, 0.0);
 			RefreshDisplay();
@@ -1905,8 +1905,8 @@ void ASSDrawCanvas::CustomOnKeyDown(wxKeyEvent &event)
 							{
 								nearest = (*it2);
 								dist = distance;
-							}						
-							it2++;	
+							}
+							it2++;
 						}
 						it++;
 					}
@@ -1999,7 +1999,7 @@ void UndoRedo::Import(ASSDrawCanvas *canvas, bool prestage, wxString cmds)
 	    this->originx = canvas->pointsys->originx;
 		this->originy = canvas->pointsys->originy;
 	    this->scale = canvas->pointsys->scale;
-	
+
 		this->bgimgfile = canvas->bgimg.bgimgfile;
 		this->bgdisp = canvas->bgimg.disp;
 		this->bgcenter = canvas->bgimg.center;
@@ -2038,8 +2038,8 @@ void UndoRedo::Export(ASSDrawCanvas *canvas)
 		canvas->bgimg.new_disp = this->bgdisp;
 		canvas->bgimg.alpha = this->bgalpha;
 		canvas->UpdateBackgroundImgScalePosition();
-	}	
-	
+	}
+
 
 	//canvas->SetDrawMode(this->draw_mode);
 	canvas->draw_mode = this->draw_mode;
