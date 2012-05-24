@@ -99,7 +99,7 @@ ASSDrawTransformDlg::ASSDrawTransformDlg(ASSDrawFrame* parent)
     sizer_main->Add(sizer_templates, 0, wxGROW|wxLEFT, 5);
 
     sizer_templates->Add(new wxStaticText( this, -1, _("Templates"), __DPDS__ , 0 ),
-						0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+						0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     combo_templates = new wxComboBox( this, -1, combo_templatesStrings[0], __DPDS__ , 10, combo_templatesStrings, wxCB_READONLY );
     sizer_templates->Add(combo_templates, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -108,7 +108,7 @@ ASSDrawTransformDlg::ASSDrawTransformDlg(ASSDrawFrame* parent)
     sizer_main->Add(sizer_fields, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT, 5);
 
 	int flag_txtctrl = wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL;
-	int flag_statictxt = wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE;
+	int flag_statictxt = wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL;
 
 	sizer_fields->Add(new wxStaticText( this, -1, _("m11"), __DPDS__ , 0 ),
 						0, flag_statictxt, 5);
