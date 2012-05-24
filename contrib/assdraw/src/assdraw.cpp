@@ -218,19 +218,6 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 	UpdateFrameUI();
 	ApplySettings();
 
-	#ifdef BETAVERSION
-	wxDateTime expire(15, wxDateTime::Dec, 2007, 0, 0, 0);
-	wxDateTime now = wxDateTime::Now();
-	if (now.IsLaterThan(expire))
-	{
-	 	wxMessageDialog expired(this, _T("Thank you for trying ASSDraw3. This beta version has expired. Please visit http://malakith.net/aegisub/index.php?topic=912.0 to get the latest release. Visit now?"), _T("Beta version"), wxYES_NO | wxICON_INFORMATION);
-	 	if (expired.ShowModal() == wxID_YES)
-			::wxLaunchDefaultBrowser(wxString(_T("http://malakith.net/aegisub/index.php?topic=912.0")));
-		Close();
-	}
-	SetTitle(wxString::Format(_T("%s beta %d (expires %s)"), TITLE, BETAVERSION, expire.FormatDate().c_str()));
-	#endif
-
 	if (firsttime)
 		_About();
 	else if (!behaviors.nosplashscreen)
