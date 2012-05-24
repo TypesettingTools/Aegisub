@@ -1,10 +1,9 @@
 AC_PREREQ(2.61)
 
-
 #######
 # Setup
 #######
-AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
+AC_INIT([assdraw], [1.0.0])
 AC_CONFIG_SRCDIR([src/engine.cpp])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([foreign])
