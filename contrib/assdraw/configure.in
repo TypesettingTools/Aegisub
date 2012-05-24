@@ -8,7 +8,7 @@ AC_CONFIG_SRCDIR([src/engine.cpp])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([foreign])
 AC_CANONICAL_HOST
-
+AC_CONFIG_MACRO_DIR([m4])
 
 ####################
 # Check for programs
@@ -18,8 +18,7 @@ AC_PROG_CXX
 AC_LANG(C++)
 AC_PROG_LIBTOOL
 AC_PROG_INSTALL
-#PKG_PROG_PKG_CONFIG([0.20])
-
+PKG_PROG_PKG_CONFIG([0.20])
 
 #################
 # Developers only
@@ -51,11 +50,6 @@ fi
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
-AC_C_CONST
-AC_C_INLINE
-AC_TYPE_SIZE_T
-
 AM_OPTIONS_WXCONFIG
 AM_PATH_WXCONFIG(2.8.1, [have_wxconfig=1], [have_wxconfig=0], [std,gl,stc])
 
