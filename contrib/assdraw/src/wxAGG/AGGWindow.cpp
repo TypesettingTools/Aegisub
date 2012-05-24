@@ -3,6 +3,8 @@
 #include "agg_rendering_buffer.h"
 #include "agg_pixfmt_rgb.h"
 
+#include <wx/dcclient.h>
+
 namespace GUI {
     
     BEGIN_EVENT_TABLE(AGGWindow, wxWindow)
