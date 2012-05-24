@@ -35,6 +35,8 @@ class ASSDrawFrame;
 
 DECLARE_EVENT_TYPE(wxEVT_SETTINGS_CHANGED, -1)
 
+typedef wxPGProperty* wxPGId;
+
 class ASSDrawSettingsDialog : public wxPanel
 {
 public:
