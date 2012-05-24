@@ -158,8 +158,7 @@ ASSDrawTransformDlg::ASSDrawTransformDlg(ASSDrawFrame* parent)
     txtctrl_ny = new wxTextCtrl( this, -1, _T("0.0"), __DPDS__ , wxTE_RIGHT );
     sizer_fields->Add(txtctrl_ny, 0, flag_txtctrl, 5);
 
-    wxBitmap staticbmp_bmp(wxBITMAP(transform));
-    wxStaticBitmap* staticbmp = new wxStaticBitmap( this, -1, staticbmp_bmp, wxDefaultPosition, wxSize(224, 56), 0 );
+    wxStaticBitmap* staticbmp = new wxStaticBitmap( this, -1, wxBITMAP(transform), wxDefaultPosition, wxSize(224, 56), 0 );
     sizer_main->Add(staticbmp, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     wxStdDialogButtonSizer* sizer_stdbutt = new wxStdDialogButtonSizer;
