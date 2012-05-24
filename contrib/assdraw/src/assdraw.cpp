@@ -72,14 +72,11 @@ IMPLEMENT_APP(ASSDrawApp)
 BEGIN_EVENT_TABLE(ASSDrawFrame, wxFrame)
     EVT_TOOL(TB_CLEAR, ASSDrawFrame::OnSelect_Clear)
     EVT_TOOL(TB_PREVIEW, ASSDrawFrame::OnSelect_Preview)
-    //EVT_TOOL(TB_EDITSRC, ASSDrawFrame::OnSelect_EditSrc)
     EVT_TOOL(TB_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
     EVT_TOOL_RANGE(MODE_ARR, MODE_DEL, ASSDrawFrame::OnChoose_Mode)
-//    EVT_TOOL_RANGE(DRAG_DWG, DRAG_BOTH, ASSDrawFrame::OnChoose_DragMode)
     EVT_TOOL_RCLICKED(wxID_ANY, ASSDrawFrame::OnToolRClick)
     EVT_COMMAND(wxID_ANY, wxEVT_SETTINGS_CHANGED, ASSDrawFrame::OnSettingsChanged) 
     EVT_MENU_RANGE(MENU_TB_ALL, MENU_TB_BGIMG, ASSDrawFrame::OnChoose_TBarRClickMenu)
-#if wxUSE_MENUS
     EVT_MENU(MENU_CLEAR, ASSDrawFrame::OnSelect_Clear)
     EVT_MENU(MENU_PREVIEW, ASSDrawFrame::OnSelect_Preview)
     EVT_MENU(MENU_TRANSFORM, ASSDrawFrame::OnSelect_Transform)
@@ -94,10 +91,8 @@ BEGIN_EVENT_TABLE(ASSDrawFrame, wxFrame)
     EVT_MENU(MENU_BGIMG_REMOVE, ASSDrawFrame::OnSelect_RemoveBG)
     EVT_MENU(MENU_BGIMG_ALPHA, ASSDrawFrame::OnSelect_AlphaBG)
     EVT_MENU_RANGE(MODE_ARR, MODE_NUT_BILINEAR, ASSDrawFrame::OnChoose_Mode)
-//    EVT_MENU_RANGE(DRAG_DWG, DRAG_BOTH, ASSDrawFrame::OnChoose_DragMode)
     EVT_MENU_RANGE(MENU_REPOS_TOPLEFT, MENU_REPOS_BOTRIGHT, ASSDrawFrame::OnChoose_Recenter)
     EVT_MENU_RANGE(MENU_REPOS_BGTOPLEFT, MENU_REPOS_BGBOTRIGHT, ASSDrawFrame::OnChoose_RecenterToBG)
-#endif //wxUSE_MENUS
 	EVT_CLOSE(ASSDrawFrame::OnClose)
 END_EVENT_TABLE()
 
@@ -137,12 +132,10 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
     SetIcon(wxICON(appico));
     
    	// Create status bar for the frame
-	#if wxUSE_STATUSBAR
     CreateStatusBar(3);
     int statwidths[] = { 64, -1, 64 };
     GetStatusBar()->SetStatusWidths(3, statwidths);
     SetStatusBarPane(1);
-	#endif // wxUSE_STATUSBAR
 	
 	InitializeDefaultSettings();
 	
@@ -280,7 +273,6 @@ void ASSDrawFrame::SetToolBars()
 
 void ASSDrawFrame::SetMenus()
 {
-#if wxUSE_MENUS
 	drawMenu = new wxMenu;
 	drawMenu->Append(MENU_CLEAR, _T("&Clear\tCtrl+N"), TIPS_CLEAR);
 	//drawMenu->Append(MENU_EDITSRC, _T("&Source"), TIPS_EDITSRC);
@@ -355,7 +347,6 @@ void ASSDrawFrame::SetMenus()
 
 
 	SetMenuBar(menuBar);
-#endif // wxUSE_MENUS
 }
 
 void ASSDrawFrame::SetPanes()
@@ -708,33 +699,25 @@ void ASSDrawFrame::UpdateFrameUI(unsigned level)
 	case 0: // all
 		drawtbar->ToggleTool(TB_PREVIEW, m_canvas->IsPreviewMode());
 		modetbar->ToggleTool(m_canvas->GetDrawMode(), true);
-		#if wxUSE_MENUS
 		drawMenu->Check(MENU_PREVIEW, m_canvas->IsPreviewMode());
 		modeMenu->Check(m_canvas->GetDrawMode(), true);
-		#endif
 	case 2: // bgimg & toolbars
-		//bgimgtbar->ToggleTool(m_canvas->GetDragMode(), true);
 		bgimgtbar->ToggleTool(DRAG_DWG, m_canvas->GetDragMode().drawing);
 		bgimgtbar->ToggleTool(DRAG_BGIMG, m_canvas->GetDragMode().bgimg);
 		bgimgtbar->EnableTool(DRAG_BGIMG, hasbg);
-		//m_mgr.GetPane(bgimgtbar).Show(hasbg);
 		m_mgr.Update();
-		#if wxUSE_MENUS
 		viewMenu->Check(MENU_LIBRARY, m_mgr.GetPane(shapelib).IsShown());
 		if (settingsdlg)
 			viewMenu->Check(MENU_SETTINGS, m_mgr.GetPane(settingsdlg).IsShown());
-		//bgimgMenu->Check(m_canvas->GetDragMode(), true);
 		bgimgMenu->Check(DRAG_DWG, m_canvas->GetDragMode().drawing);
 		bgimgMenu->Check(DRAG_BGIMG, m_canvas->GetDragMode().bgimg);
 		bgimgMenu->Enable(DRAG_BGIMG, hasbg);
-//		bgimgMenu->Enable(DRAG_BOTH, hasbg);
 		bgimgMenu->Enable(MENU_BGIMG_ALPHA, hasbg);
 		bgimgMenu->Enable(MENU_BGIMG_RECENTER, hasbg);
 		bgimgMenu->Enable(MENU_BGIMG_REMOVE, hasbg);
 		tbarMenu->Check(MENU_TB_DRAW, m_mgr.GetPane(drawtbar).IsShown());
 		tbarMenu->Check(MENU_TB_MODE, m_mgr.GetPane(modetbar).IsShown());
 		tbarMenu->Check(MENU_TB_BGIMG, m_mgr.GetPane(bgimgtbar).IsShown());
-		#endif
 	case 3:	// zoom slider
 		zoomslider->SetValue(zoom);
 		SetStatusText( wxString::Format(_T("%d%%"), zoom), 2 );
