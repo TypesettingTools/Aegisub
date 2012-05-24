@@ -158,7 +158,7 @@ void ASSDrawFrame::LoadSettings()
 void ASSDrawFrame::SaveSettings()
 {
 	#define CFGWRITE(var) config->Write(wxString(#var,wxConvUTF8), var);
-	#define CFGWRITECOLOR(color) config->Write(wxString(#color,wxConvUTF8), color.GetAsString(wxC2S_HTML_SYNTAX));
+	#define CFGWRITECOLOR(color) config->Write(wxString(#color,wxConvUTF8), color.GetAsString(wxC2S_CSS_SYNTAX));
 	config->SetPath(_T("settings"));
 	CFGWRITECOLOR(colors.canvas_bg)
 	CFGWRITECOLOR(colors.canvas_shape_normal)
