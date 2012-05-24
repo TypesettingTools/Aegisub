@@ -43,6 +43,8 @@ if ! test -f "tools/osx-bundle.sed"; then
   exit 1
 fi
 
+find po -name *.po | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/' > languages
+
 find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
 cp ${SKEL_DIR}/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.dtd "${PKG_DIR}/Contents/Resources/etc/fonts"
@@ -50,6 +52,7 @@ cat ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.conf |sed -f tools/osx-bundle
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/conf.d/*.conf "${PKG_DIR}/Contents/Resources/etc/fonts/conf.d"
 cat ${SKEL_DIR}/Contents/Info.plist |sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Info.plist"
 
+rm languages
 
 echo
 echo "---- Copying dictionaries ----"
