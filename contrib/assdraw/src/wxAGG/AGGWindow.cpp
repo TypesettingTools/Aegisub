@@ -6,63 +6,64 @@
 #include <wx/dcclient.h>
 
 namespace GUI {
-    
+
     BEGIN_EVENT_TABLE(AGGWindow, wxWindow)
         EVT_PAINT(AGGWindow::onPaint)
         EVT_SIZE(AGGWindow::onSize)
         EVT_ERASE_BACKGROUND(AGGWindow::onEraseBackground)
     END_EVENT_TABLE()
-    
-    AGGWindow::AGGWindow(wxWindow* parent, wxWindowID id, 
+
+    AGGWindow::AGGWindow(wxWindow* parent, wxWindowID id,
                        const wxPoint& pos, const wxSize& size, long style):
         wxWindow(parent, id, pos, size, style, wxT("AGGWindow")),
         bitmap(NULL) {
     }
-    
+
     void AGGWindow::init(const int width, const int height) {
         memDC.SelectObject(wxNullBitmap);
-        delete bitmap;  
-        
+        delete bitmap;
+
         int ncheight = height, ncwidth = width;
         if (ncwidth < 1) ncwidth = 1;
         if (ncheight < 1) ncheight = 1;
-  
+
         bitmap = new wxBitmap(ncwidth, ncheight, PixelFormat::wxWidgetsType::BitsPerPixel);
-        memDC.SelectObject(*bitmap);
 
         // Draw the bitmap
         attachAndDraw();
-        
+
+        memDC.SelectObject(*bitmap);
+
         // Request a full redraw of the window
         Refresh(false);
     }
-    
+
     AGGWindow::~AGGWindow() {
         memDC.SelectObject(wxNullBitmap);
         delete bitmap;
     }
 
     void AGGWindow::attachAndDraw() {
-        // Get raw access to the wxWidgets bitmap -- this locks the pixels and 
+        // Get raw access to the wxWidgets bitmap -- this locks the pixels and
         // unlocks on destruction.
         PixelData data(*bitmap);
         assert(data);
 
 #if 1
-        // This cast looks like it is ignoring byte-ordering, but the 
+        // This cast looks like it is ignoring byte-ordering, but the
         // pixel format already explicitly handles that.
         assert(data.GetPixels().IsOk());
         wxAlphaPixelFormat::ChannelType* pd = (wxAlphaPixelFormat::ChannelType*) &data.GetPixels().Data();
 
         // wxWidgets always returns a pointer to the first row of pixels, whether
-        // that is stored at the beginning of the buffer (stride > 0) or at the 
-        // end of the buffer (stride < 0).  AGG always wants a pointer to the 
+        // that is stored at the beginning of the buffer (stride > 0) or at the
+        // end of the buffer (stride < 0).  AGG always wants a pointer to the
         // beginning of the buffer, no matter what the stride.  (AGG does handle
         // negative strides correctly.)
-        // Upshot: if the stride is negative, rewind the pointer from the end of 
-        // the buffer to the beginning. 
+        // Upshot: if the stride is negative, rewind the pointer from the end of
+        // the buffer to the beginning.
         const int stride = data.GetRowStride();
-        if (stride < 0) 
+        if (stride < 0)
             pd += (data.GetHeight() - 1) * stride;
 
         rBuf.attach(pd, data.GetWidth(), data.GetHeight(), stride);
@@ -91,23 +92,23 @@ namespace GUI {
         }
 #endif
     }
-    
+
     void AGGWindow::onSize(wxSizeEvent& event) {
         const wxSize size = GetClientSize();
         if (bitmap && size.GetWidth() == bitmap->GetWidth() && size.GetHeight() == bitmap->GetHeight())
             return;
-        
+
         init(size.GetWidth(), size.GetHeight());
     }
-    
+
     void AGGWindow::onPaint(wxPaintEvent& event) {
         wxPaintDC dc(this);
 
         wxCoord width, height;
         dc.GetSize(&width, &height);
-        if (!bitmap || bitmap->GetWidth() != width || bitmap->GetHeight() != height) 
+        if (!bitmap || bitmap->GetWidth() != width || bitmap->GetHeight() != height)
             init(width, height);
-        
+
         // Iterate over regions needing repainting
         wxRegionIterator regions(GetUpdateRegion());
         wxRect rect;
