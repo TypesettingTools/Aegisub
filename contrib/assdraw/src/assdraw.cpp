@@ -103,6 +103,7 @@ END_EVENT_TABLE()
 // 'Main program' equivalent: the program execution _T("starts") here
 bool ASSDrawApp::OnInit()
 {
+	SetAppName(TITLE);
     // create the main application window
     ASSDrawFrame * assdrawframe = new ASSDrawFrame( this, TITLE, wxDefaultPosition, wxSize(640, 480) );
 	SetTopWindow(assdrawframe);
