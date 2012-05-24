@@ -175,30 +175,6 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 	srctxtctrl = new ASSDrawSrcTxtCtrl(this, this);
 
 	// settings
-	/*
-	settingsdlg = NULL;
-	wxString settingsdllfile = wxFileName(::wxGetCwd(), _T("settings.dll")).GetFullPath();
-
-	if (::wxFileExists(settingsdllfile))
-	{
-		wxDynamicLibrary settingsdll(settingsdllfile);
-		wxString symbol(_T("CreateASSDrawSettingsDialogInstance"));
-		if (settingsdll.IsLoaded() && settingsdll.HasSymbol(symbol)) 
-		{
-			typedef ASSDrawSettingsDialog* (*FuncType)(wxWindow*,ASSDrawFrame*,int);
-			FuncType func = (FuncType) settingsdll.GetSymbol(symbol);
-			//wxDYNLIB_FUNCTION(ASSDrawSettingsDialog, CreateASSDrawSettingsDialogInstance, settingsdll)
-			//ASSDrawSettingsDialog* test = func(NULL,this,971231);
-			//test->Reparent(this);
-			//test->Init();
-			//SetTitle(settingsdllfile);
-			//settingsdlg = func(NULL,this, 809131);
-			//settingsdlg->Init();
-			//m_mgr.AddPane(settingsdlg, wxAuiPaneInfo().Name(_T("settings")).Caption(_T("Settings")).Right().Layer(3).Position(0).CloseButton(true).BestSize(wxSize(240, 480)).MinSize(wxSize(200, 200)));
-		}
-	}
-	*/
-	
 	settingsdlg = new ASSDrawSettingsDialog(this, this);
 	settingsdlg->Init();
 	
