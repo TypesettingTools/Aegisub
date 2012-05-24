@@ -141,10 +141,13 @@ ASSDrawFrame::ASSDrawFrame( wxApp *app, const wxString& title, const wxPoint& po
 	InitializeDefaultSettings();
 
 	// load config
-	configfile = wxFileName(wxStandardPaths::Get().GetUserConfigDir(), _T("ASSDraw3.cfg")).GetFullPath();
+	configfile = wxFileName(wxStandardPaths::Get().GetUserDataDir(), _T("ASSDraw3.cfg")).GetFullPath();
 
 	bool firsttime = !::wxFileExists(configfile);
-	if (firsttime) wxFileOutputStream(configfile).Close();
+	if (firsttime) {
+		wxFileName::Mkdir(wxStandardPaths::Get().GetUserDataDir(), wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+		wxFileOutputStream(configfile).Close();
+	}
 	wxFileInputStream cfgf(configfile);
 	config = new wxFileConfig(cfgf);
 
