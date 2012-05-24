@@ -51,7 +51,7 @@ fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AM_OPTIONS_WXCONFIG
-AM_PATH_WXCONFIG(2.8.1, [have_wxconfig=1], [have_wxconfig=0], [std,gl,stc])
+AM_PATH_WXCONFIG(2.8.1, [have_wxconfig=1], [have_wxconfig=0], [std,gl,stc,aui, propgrid])
 
 if test "$have_wxconfig" != 1; then
   AC_MSG_FAILURE([
