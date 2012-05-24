@@ -236,7 +236,9 @@ void ASSDrawCanvas::SetDrawMode( MODE mode )
 			ConstructPathsAndCurves(mtx, rm, rb, rc);
 			rasterizer.reset();
 			rasterizer.add_path(*rc);
-			delete rm, rb, rc;
+			delete rm;
+			delete rb;
+			delete rc;
 		    int minx = rasterizer.min_x(), miny = rasterizer.min_y();
 		    int maxx = rasterizer.max_x(), maxy = rasterizer.max_y();
 		    
