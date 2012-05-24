@@ -103,7 +103,7 @@ ASSDrawCanvas::ASSDrawCanvas(wxWindow *parent, ASSDrawFrame *frame, int extrafla
 	rgba_ruler_h = agg::rgba(0,0,1);
 	rgba_ruler_v = agg::rgba(1,0,0);
 
-	wxFlexGridSizer* sizer = new wxFlexGridSizer(1, 1);
+	wxFlexGridSizer* sizer = new wxFlexGridSizer(1, 1, 0);
     sizer->AddGrowableRow(0);
     sizer->AddGrowableCol(0);
     sizer->Add( this, 0, wxGROW|wxGROW, 5);
