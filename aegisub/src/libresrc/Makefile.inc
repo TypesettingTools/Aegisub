@@ -6,7 +6,7 @@ SRC += \
 HEADER += \
 	libresrc/libresrc.h
 
-libresrc/bitmap.cpp libresrc/bitmap.h: ../tools/common-respack
+libresrc/bitmap.cpp libresrc/bitmap.h: ../tools/common-respack bitmaps/button/*
 	../tools/common-respack bitmaps/manifest.respack libresrc/bitmap.cpp libresrc/bitmap.h
 
 ifeq (yes, $(BUILD_DARWIN))
