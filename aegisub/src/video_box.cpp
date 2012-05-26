@@ -119,8 +119,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	VideoDisplay *videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
 
 	wxSizer *toolbarSizer = new wxBoxSizer(wxVERTICAL);
-	toolbarSizer->Add(visualToolBar, wxSizerFlags());
-	toolbarSizer->AddStretchSpacer();
+	toolbarSizer->Add(visualToolBar, wxSizerFlags(1));
 	toolbarSizer->Add(visualSubToolBar, wxSizerFlags());
 
 	// Top sizer
