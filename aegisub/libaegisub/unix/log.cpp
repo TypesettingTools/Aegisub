@@ -20,9 +20,13 @@
 
 #include "config.h"
 
-#include <stdio.h>
-#include <time.h>
-#include <string.h>
+#ifndef LAGI_PRE
+#include <cstdio>
+#include <ctime>
+#include <cstring>
+#endif
+
+#include <unistd.h>
 
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
