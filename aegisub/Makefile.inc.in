@@ -71,9 +71,8 @@ P_LOCALE      = $(P_DATAROOT)/locale
 
 P_DESKTOP     = @P_DESKTOP@
 P_ICON        = @P_ICON@
-P_DATA        = $(P_DATAROOT)/aegisub/$(AEGISUB_VERSION_DATA)
-P_DOC         = $(P_DATAROOT)/doc/aegisub/$(AEGISUB_VERSION_DATA)
-
+P_DATA        = $(P_DATAROOT)/aegisub/
+P_DOC         = $(P_DATAROOT)/doc/aegisub/
 
 
 ###############
