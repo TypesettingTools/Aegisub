@@ -1792,29 +1792,15 @@ void ASSDrawCanvas::UpdateNonUniformTransformation()
 	unsigned vertices = backupcmds.total_vertices();
 	double x, y;
 
-	//if (draw_mode == MODE_NUT_BILINEAR)
-	//{
-		agg::trans_bilinear trans_b(rectbound[0].x, rectbound[0].y, rectbound[2].x, rectbound[2].y, bound);
-		agg::conv_transform<agg::path_storage, agg::trans_bilinear> transb(backupcmds, trans_b);
-		transb.rewind(0);
-		for (int i = 0; i < vertices; i++)
-		{
-			transb.vertex(&x, &y);
-			trans.move_to(x, y);
-		}
-	//}
-	/*	else
+	agg::trans_bilinear trans_b(rectbound[0].x, rectbound[0].y, rectbound[2].x, rectbound[2].y, bound);
+	agg::conv_transform<agg::path_storage, agg::trans_bilinear> transb(backupcmds, trans_b);
+	transb.rewind(0);
+	for (int i = 0; i < vertices; i++)
 	{
-		agg::trans_perspective trans_p(rectbound[0].x, rectbound[0].y, rectbound[2].x, rectbound[2].y, bound);
-		agg::conv_transform<agg::path_storage, agg::trans_perspective> transp(backupcmds, trans_p);
-		transp.rewind(0);
-		for (int i = 0; i < vertices; i++)
-		{
-			transp.vertex(&x, &y);
-			trans.move_to(x, y);
-		}
+		transb.vertex(&x, &y);
+		trans.move_to(x, y);
 	}
-	*/
+
 	trans.rewind(0);
 	for (DrawCmdList::iterator iterate = cmds.begin(); iterate != cmds.end(); iterate++)
 	{
