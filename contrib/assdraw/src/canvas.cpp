@@ -1790,13 +1790,13 @@ void ASSDrawCanvas::UpdateNonUniformTransformation()
 		rectbound2[3].x, rectbound2[3].y };
 	agg::path_storage trans;
 	unsigned vertices = backupcmds.total_vertices();
-	double x, y;
 
 	agg::trans_bilinear trans_b(rectbound[0].x, rectbound[0].y, rectbound[2].x, rectbound[2].y, bound);
 	agg::conv_transform<agg::path_storage, agg::trans_bilinear> transb(backupcmds, trans_b);
 	transb.rewind(0);
 	for (int i = 0; i < vertices; i++)
 	{
+		double x, y;
 		transb.vertex(&x, &y);
 		trans.move_to(x, y);
 	}
@@ -1825,7 +1825,6 @@ void ASSDrawCanvas::UpdateNonUniformTransformation()
 void ASSDrawCanvas::CustomOnKeyDown(wxKeyEvent &event)
 {
 	int keycode = event.GetKeyCode();
-	//m_frame->SetStatusText(wxString::Format(_T("Key: %d"), keycode));
 	double scrollamount = (event.GetModifiers() == wxMOD_CMD? 10.0:1.0);
     if (event.GetModifiers() == wxMOD_SHIFT)
 	{
@@ -1905,15 +1904,11 @@ void ASSDrawCanvas::CustomOnKeyDown(wxKeyEvent &event)
 				else
 				{
 					Point *warpto = NULL;
-					if (pointedAt_point->type == MP)
-					{
-						if (pointedAt_point->cmd_next != NULL)
-						{
-							if (pointedAt_point->cmd_next->controlpoints.size() > 0)
-								warpto = pointedAt_point->cmd_next->controlpoints.front();
-							else
-								warpto = pointedAt_point->cmd_next->m_point;
-						}
+					if (pointedAt_point->type == MP && pointedAt_point->cmd_next)
+						if (pointedAt_point->cmd_next->controlpoints.size() > 0)
+							warpto = pointedAt_point->cmd_next->controlpoints.front();
+						else
+							warpto = pointedAt_point->cmd_next->m_point;
 					}
 					else
 					{
