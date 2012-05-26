@@ -421,3 +421,9 @@ void CleanCache(wxString const& directory, wxString const& file_type, int64_t ma
 
 	LOG_D("utils/clean_cache") << "thread started successfully";
 }
+
+// OS X implementation in osx_utils.mm
+#ifndef __WXOSX_COCOA__
+void AddFullScreenButton(wxWindow *window) {
+}
+#endif

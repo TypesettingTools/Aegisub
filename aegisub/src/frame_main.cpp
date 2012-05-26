@@ -200,6 +200,7 @@ FrameMain::FrameMain (wxArrayString args)
 	context->ass->LoadDefault();
 
 	StartupLog("Display main window");
+	AddFullScreenButton(this);
 	Show();
 	SetDisplayMode(1, 1);
 

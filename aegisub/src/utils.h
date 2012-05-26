@@ -94,6 +94,9 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end
 /// running process.
 void RestartAegisub();
 
+/// Add the OS X 10.7+ full-screen button to a window
+void AddFullScreenButton(wxWindow *window);
+
 /// Forward a mouse wheel event to the window under the mouse if needed
 /// @param source The initial target of the wheel event
 /// @param evt The event
