@@ -152,10 +152,6 @@ FrameMain::FrameMain (wxArrayString args)
 	context->previousFocus = 0;
 	wxGetApp().frame = this;
 
-#ifdef __WXMAC__
-//	Bind(FrameMain::OnAbout, &FrameMain::cmd_call, this, cmd::id("app/about"));
-#endif
-
 	StartupLog("Install PNG handler");
 	wxImage::AddHandler(new wxPNGHandler);
 #ifndef __APPLE__
@@ -597,11 +593,6 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 
 	EVT_CHAR_HOOK(FrameMain::OnKeyDown)
 	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
-
-#ifdef __WXMAC__
-//   EVT_MENU(wxID_ABOUT, FrameMain::OnAbout)
-//   EVT_MENU(wxID_EXIT, FrameMain::OnExit)
-#endif
 END_EVENT_TABLE()
 
 void FrameMain::OnCloseWindow (wxCloseEvent &event) {

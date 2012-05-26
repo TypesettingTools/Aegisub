@@ -20,6 +20,7 @@ LDFLAGS += $(LDFLAGS_CCMALLOC)
 
 ifdef BUILD_DARWIN
 LIBS += -lz
+SRC += osx_utils.mm
 endif
 
 ###############
