@@ -140,6 +140,8 @@ reporter: src
 
 $(OBJ): $(GLOBAL_DEPS)
 
+OBJCXXFLAGS := $(CXXFLAGS)
+
 ####################
 # PRECOMPILED HEADER
 ####################
@@ -169,7 +171,7 @@ endif
 # TRANSFORM RULES
 ##################
 .SUFFIXES:
-.SUFFIXES: .o .c .cpp .cxx
+.SUFFIXES: .o .c .cpp .cxx .mm
 
 %.o: %.c
 	$(CXX_ENV) $(BIN_CC) $(CFLAGS_DEP) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
@@ -179,6 +181,9 @@ endif
 
 %.o: %.cxx
 	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+
+%.o: %.mm
+	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(OBJCXXFLAGS) -c -o $@ $<
 
 $(PRECOMPILED_HEADER_NAME).gch: $(PRECOMPILED_HEADER_NAME)
 	$(CXX_ENV) $(BIN_CXX) $(CPPFLAGS) $(CXXFLAGS) -x c++-header $<
