@@ -81,13 +81,11 @@ ASSDrawCanvas::ASSDrawCanvas(wxWindow *parent, ASSDrawFrame *frame, int extrafla
     pointedAt_point = NULL;
     draw_mode = MODE_ARR;
 
-    //drag_mode = DRAG_DWG;
     dragOrigin = false;
 	hilite_cmd = NULL;
 	hilite_point = NULL;
 	capturemouse_left = false;
 	capturemouse_right = false;
-	//was_preview_mode = false;
 	bgimg.bgbmp = NULL;
 	bgimg.bgimg = NULL;
 	bgimg.alpha = 0.5;
@@ -168,7 +166,6 @@ void ASSDrawCanvas::ResetEngine(bool addM)
 
 void ASSDrawCanvas::SetPreviewMode(bool mode)
 {
-	//was_preview_mode = mode;
 	preview_mode = mode;
 	if (preview_mode)
 	{
@@ -321,7 +318,6 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 						int adjacent[2] = { (rectbound2upd + 3) % 4, (rectbound2upd + 1) % 4 };
 						int opposite = (rectbound2upd + 2) % 4;
 						wxRealPoint newpoint = backup[rectbound2upd] + rdiff;
-						//wxPoint newadjacent[2];
 						double nx, ny;
 						for (int i = 0; i < 2; i++)
 						{
@@ -402,7 +398,6 @@ void ASSDrawCanvas::OnMouseMove(wxMouseEvent &event)
 						}
 					}
 					UpdateTranformModeRectCenter();
-					//*dragAnchor_left = mouse_point;
 					undodesc = _T("Scale");
 					break;
 				}
@@ -714,7 +709,7 @@ void ASSDrawCanvas::OnMouseLeftDown(wxMouseEvent& event)
 {
 
     // no drawing in preview mode
-	if (preview_mode /*|| was_preview_mode*/)
+	if (preview_mode)
 		return;
 
 	wxPoint q = event.GetPosition();
@@ -859,8 +854,6 @@ void ASSDrawCanvas::OnMouseRightDown(wxMouseEvent &event)
 
 	if (InitiateDraggingIfTransformMode())
 	    backupowner = RIGHT;
-//	was_preview_mode = preview_mode;
-//	preview_mode = false;
 
 	event.Skip( true );
 }
@@ -951,15 +944,6 @@ void ASSDrawCanvas::UpdateTranformModeRectCenter()
 
 bool ASSDrawCanvas::GetThe4thPoint(double ox, double oy, double a1x, double a1y, double a2x, double a2y, double *x, double *y)
 {
-	/*
-	return agg::calc_intersection(a1x, a1y,
-		a2x + a1x - ox,
-		a2y + a1y - oy,
-		a2x, a2y,
-		a1x + a2x - ox,
-		a1y + a2y - oy,
-		x, y);	//*/
-
 	*x = a1x + a2x - ox;
 	*y = a1y + a2y - oy;
 	return true;
@@ -982,25 +966,6 @@ void ASSDrawCanvas::ChangeZoomLevelTo( double zoom, wxPoint bgzoomctr )
 void ASSDrawCanvas::ChangeZoomLevel( double amount, wxPoint bgzoomctr )
 {
 	double old_scale = pointsys->scale;
-	/*
-	switch (drag_mode)
-	{
-	case DRAG_BGIMG:
-	    ChangeBackgroundZoomLevel(bgimg.scale + amount / 10.0,  wxRealPoint(bgzoomctr.x, bgzoomctr.y));
-		break;
-
-	case DRAG_BOTH:
-		ChangeDrawingZoomLevel( amount );
-	    ChangeBackgroundZoomLevel(bgimg.scale * pointsys->scale / old_scale,
-			wxRealPoint(pointsys->originx, pointsys->originy));
-		break;
-
-	case DRAG_DWG:
-		ChangeDrawingZoomLevel( amount );
-		break;
-	}
-	*/
-
 	if (CanZoom() && drag_mode.drawing)
 		ChangeDrawingZoomLevel( amount );
 
@@ -1041,12 +1006,6 @@ void ASSDrawCanvas::MoveCanvasOriginTo(double originx, double originy)
 
 void ASSDrawCanvas::MoveCanvas(double xamount, double yamount)
 {
-	/*
-	if (drag_mode == DRAG_DWG || drag_mode == DRAG_BOTH)
-		MoveCanvasDrawing(xamount, yamount);
-	if (drag_mode == DRAG_BGIMG || drag_mode == DRAG_BOTH)
-		MoveCanvasBackground(xamount, yamount);
-	*/
 	if (CanMove() && drag_mode.drawing)
 		MoveCanvasDrawing(xamount, yamount);
 	if (CanMove() && drag_mode.bgimg)
@@ -1079,13 +1038,12 @@ void ASSDrawCanvas::MoveCanvasDrawing(double xamount, double yamount)
 
 void ASSDrawCanvas::MoveCanvasBackground(double xamount, double yamount)
 {
-	//bgimg.new_center.x += xamount, bgimg.new_center.y += yamount;
 	bgimg.new_disp.x += xamount;
 	bgimg.new_disp.y += yamount;
 	UpdateBackgroundImgScalePosition();
 }
 
-void ASSDrawCanvas::OnSelect_ConvertLineToBezier(wxCommandEvent& WXUNUSED(event))
+void ASSDrawCanvas::OnSelect_ConvertLineToBezier(wxCommandEvent&)
 {
 	if (!dblclicked_point_right) return;
 	AddUndo( _T("Convert Line to Bezier") );
@@ -1101,7 +1059,7 @@ void ASSDrawCanvas::OnSelect_ConvertLineToBezier(wxCommandEvent& WXUNUSED(event)
 	RefreshUndocmds();
 }
 
-void ASSDrawCanvas::OnSelect_ConvertBezierToLine(wxCommandEvent& WXUNUSED(event))
+void ASSDrawCanvas::OnSelect_ConvertBezierToLine(wxCommandEvent&)
 {
 	if (!dblclicked_point_right) return;
 	AddUndo( _T("Convert Bezier to Line") );
@@ -1116,7 +1074,7 @@ void ASSDrawCanvas::OnSelect_ConvertBezierToLine(wxCommandEvent& WXUNUSED(event)
 	RefreshUndocmds();
 }
 
-void ASSDrawCanvas::OnSelect_C1ContinuityBezier(wxCommandEvent& WXUNUSED(event))
+void ASSDrawCanvas::OnSelect_C1ContinuityBezier(wxCommandEvent&)
 {
 	if (!dblclicked_point_right) return;
 	DrawCmd_B *cmdb = static_cast<DrawCmd_B*>(dblclicked_point_right->cmd_main);
@@ -1125,7 +1083,7 @@ void ASSDrawCanvas::OnSelect_C1ContinuityBezier(wxCommandEvent& WXUNUSED(event))
 	RefreshUndocmds();
 }
 
-void ASSDrawCanvas::OnSelect_Move00Here(wxCommandEvent& WXUNUSED(event))
+void ASSDrawCanvas::OnSelect_Move00Here(wxCommandEvent&)
 {
 	AddUndo( _T("Move origin") );
 	int wx, wy;
@@ -1199,7 +1157,6 @@ bool ASSDrawCanvas::UndoOrRedo(bool isundo)
 	// push into sub
 	UndoRedo nr(r);
 	PrepareUndoRedo(nr, true, GenerateASS(), r.desc);
-	//PrepareUndoRedo(nr, false, _T(""), r.desc);
 	sub->push_back( nr );
 	// parse
 	r.Export(this);
@@ -1367,7 +1324,7 @@ void ASSDrawCanvas::DoDraw( RendererBase& rbase, RendererPrimitives& rprim, Rend
 			{
 				// rotation centerpoint
 				rasterizer.reset();
-				double len = 10.0; //m_frame->sizes.origincross * pointsys->scale;
+				double len = 10.0;
 				org_path.free_all();
 				org_path.move_to(rectcenter.x - len, rectcenter.y - len);
 				org_path.line_to(rectcenter.x + len, rectcenter.y + len);
@@ -1935,7 +1892,6 @@ void ASSDrawCanvas::CustomOnKeyDown(wxKeyEvent &event)
 
 void ASSDrawCanvas::CustomOnKeyUp(wxKeyEvent &event)
 {
-	int keycode = event.GetKeyCode();
 	if (event.GetModifiers() != wxMOD_SHIFT && (int) mode_b4_shift > (int) MODE_ARR)
 	{
 		SetDrawMode( mode_b4_shift );
@@ -1951,7 +1907,7 @@ void ASSDrawCanvas::OnAlphaSliderChanged(wxScrollEvent &event)
 	RefreshDisplay();
 }
 
-void ASSDrawCanvas::CustomOnMouseCaptureLost(wxMouseCaptureLostEvent &event)
+void ASSDrawCanvas::CustomOnMouseCaptureLost(wxMouseCaptureLostEvent &)
 {
 	if (capturemouse_left)
 		ProcessOnMouseLeftUp();
@@ -2021,8 +1977,6 @@ void UndoRedo::Export(ASSDrawCanvas *canvas)
 		canvas->UpdateBackgroundImgScalePosition();
 	}
 
-
-	//canvas->SetDrawMode(this->draw_mode);
 	canvas->draw_mode = this->draw_mode;
 	if (canvas->IsTransformMode())
 	{
