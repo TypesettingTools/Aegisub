@@ -84,6 +84,7 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	void OnSetDicLanguage(wxCommandEvent &event);
 	void OnSetThesLanguage(wxCommandEvent &event);
 	void OnLoseFocus(wxFocusEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 
 	void SetSyntaxStyle(int id, wxFont &font, std::string const& name);
 	void Subscribe(std::string const& name);
