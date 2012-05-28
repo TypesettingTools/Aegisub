@@ -19,7 +19,6 @@ LIBS += $(LIBS_UCHARDET)
 LDFLAGS += $(LDFLAGS_CCMALLOC)
 
 ifeq (yes, $(BUILD_DARWIN))
-LIBS += -lz
 SRC += osx_utils.mm
 endif
 
