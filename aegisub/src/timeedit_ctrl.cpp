@@ -149,6 +149,14 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 		else
 			event.Skip();
 	}
+	// Shift-Insert would paste the stuff anyway
+	// but no one updates the private "time" variable.
+	else if (event.ShiftDown()) {
+		if (key == WXK_INSERT)
+			PasteTime();
+		else
+			event.Skip();
+	}
 	else {
 		// Translate numpad presses to normal numbers
 		if (key >= WXK_NUMPAD0 && key <= WXK_NUMPAD9)
