@@ -148,58 +148,57 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 			PasteTime();
 		else
 			event.Skip();
+		return;
 	}
+
 	// Shift-Insert would paste the stuff anyway
 	// but no one updates the private "time" variable.
-	else if (event.ShiftDown()) {
-		if (key == WXK_INSERT)
-			PasteTime();
-		else
-			event.Skip();
+	if (event.ShiftDown() && key == WXK_INSERT) {
+		PasteTime();
+		return;
 	}
-	else {
-		// Translate numpad presses to normal numbers
-		if (key >= WXK_NUMPAD0 && key <= WXK_NUMPAD9)
-			key += '0' - WXK_NUMPAD0;
 
-		// If overwriting is disabled, we're in frame mode, or it's a key we
-		// don't care about just let the standard processing happen
-		event.Skip();
-		if (byFrame) return;
-		if (insert) return;
-		if ((key < '0' || key > '9') && key != WXK_BACK && key != WXK_DELETE && key != ';' && key != '.') return;
+	// Translate numpad presses to normal numbers
+	if (key >= WXK_NUMPAD0 && key <= WXK_NUMPAD9)
+		key += '0' - WXK_NUMPAD0;
 
-		event.Skip(false);
+	// If overwriting is disabled, we're in frame mode, or it's a key we
+	// don't care about just let the standard processing happen
+	event.Skip();
+	if (byFrame) return;
+	if (insert) return;
+	if ((key < '0' || key > '9') && key != WXK_BACK && key != WXK_DELETE && key != ';' && key != '.') return;
 
-		long start = GetInsertionPoint();
-		wxString text = GetValue();
+	event.Skip(false);
 
-		// Delete does nothing
-		if (key == WXK_DELETE) return;
-		// Back just moves cursor back one without deleting
-		if (key == WXK_BACK) {
-			if (start > 0)
-				SetInsertionPoint(start - 1);
-			return;
-		}
-		// Cursor is at the end so do nothing
-		if (start >= (long)text.size()) return;
+	long start = GetInsertionPoint();
+	wxString text = GetValue();
 
-		// If the cursor is at punctuation, move it forward to the next digit
-		if (text[start] == ':' || text[start] == '.')
-			++start;
-
-		// : and . hop over punctuation but never insert anything
-		if (key == ';' || key == '.') {
-			SetInsertionPoint(start);
-			return;
-		}
-
-		// Overwrite the digit
-		time = text.Left(start) + (char)key + text.Mid(start + 1);
-		SetValue(time.GetASSFormated());
-		SetInsertionPoint(start + 1);
+	// Delete does nothing
+	if (key == WXK_DELETE) return;
+	// Back just moves cursor back one without deleting
+	if (key == WXK_BACK) {
+		if (start > 0)
+			SetInsertionPoint(start - 1);
+		return;
 	}
+	// Cursor is at the end so do nothing
+	if (start >= (long)text.size()) return;
+
+	// If the cursor is at punctuation, move it forward to the next digit
+	if (text[start] == ':' || text[start] == '.')
+		++start;
+
+	// : and . hop over punctuation but never insert anything
+	if (key == ';' || key == '.') {
+		SetInsertionPoint(start);
+		return;
+	}
+
+	// Overwrite the digit
+	time = text.Left(start) + (char)key + text.Mid(start + 1);
+	SetValue(time.GetASSFormated());
+	SetInsertionPoint(start + 1);
 }
 
 void TimeEdit::OnInsertChanged(agi::OptionValue const& opt) {
