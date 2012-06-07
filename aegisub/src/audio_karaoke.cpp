@@ -256,7 +256,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 void AudioKaraoke::LoadFromLine() {
 	kara->SetLine(active_line, true);
 	SetDisplayText();
-	accept_button->Enable(false);
+	accept_button->Enable(kara->GetText() != active_line->Text);
 	cancel_button->Enable(false);
 }
 
