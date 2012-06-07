@@ -23,20 +23,42 @@
 
 #include "config.h"
 
+// This bit of awfulness is to disable some ARC-incompatible stuff in window.h
+// that we don't need
+#include <wx/brush.h>
+#undef wxOSX_USE_COCOA_OR_IPHONE
+#define wxOSX_USE_COCOA_OR_IPHONE 0
+class WXDLLIMPEXP_FWD_CORE wxWidgetImpl;
+typedef wxWidgetImpl wxOSXWidgetImpl;
+
 #include <wx/window.h>
 
 #import <AppKit/AppKit.h>
 
 void AddFullScreenButton(wxWindow *window) {
-	NSWindow *nsWindow = [window->GetHandle() window];
-	if (![nsWindow respondsToSelector:@selector(toggleFullScreen:)])
-		return;
+    NSWindow *nsWindow = [window->GetHandle() window];
+    if (![nsWindow respondsToSelector:@selector(toggleFullScreen:)])
+        return;
 
-	NSWindowCollectionBehavior collectionBehavior = [nsWindow collectionBehavior];
-	collectionBehavior |= NSWindowCollectionBehaviorFullScreenPrimary;
-	[nsWindow setCollectionBehavior:collectionBehavior];
+    NSWindowCollectionBehavior collectionBehavior = [nsWindow collectionBehavior];
+    collectionBehavior |= NSWindowCollectionBehaviorFullScreenPrimary;
+    [nsWindow setCollectionBehavior:collectionBehavior];
 }
 
 void SetFloatOnParent(wxWindow *window) {
-	[[window->GetHandle() window] setLevel:NSFloatingWindowLevel];
+    __unsafe_unretained NSWindow *nsWindow = [window->GetHandle() window];
+    [nsWindow setLevel:NSFloatingWindowLevel];
+
+    if (!([nsWindow collectionBehavior] & NSWindowCollectionBehaviorFullScreenPrimary))
+        return;
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserverForName:@"NSWindowWillEnterFullScreenNotification"
+                    object:nsWindow
+                     queue:nil
+                usingBlock:^(NSNotification *) { [nsWindow setLevel:NSNormalWindowLevel]; }];
+    [nc addObserverForName:@"NSWindowWillExitFullScreenNotification"
+                    object:nsWindow
+                     queue:nil
+                usingBlock:^(NSNotification *) { [nsWindow setLevel:NSFloatingWindowLevel]; }];
 }
