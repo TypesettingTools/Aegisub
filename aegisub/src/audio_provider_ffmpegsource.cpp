@@ -122,6 +122,13 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		TrackNumber = FFMS_TRACKMASK_ALL;
 	// else: do nothing (keep track mask as it is)
 
+	// reindex if the error handling mode has changed
+	FFMS_IndexErrorHandling ErrorHandling = GetErrorHandlingMode();
+#if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (2 << 8) | 0)
+	if (Index && FFMS_GetErrorHandling(Index) != ErrorHandling)
+		Index = NULL;
+#endif
+
 	// moment of truth
 	if (!Index) {
 		int TrackMask;
@@ -130,7 +137,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		else
 			TrackMask = (1 << TrackNumber);
 
-		Index = DoIndexing(Indexer, CacheName, TrackMask, GetErrorHandlingMode());
+		Index = DoIndexing(Indexer, CacheName, TrackMask, ErrorHandling);
 
 		// if tracknumber still isn't set we need to set it now
 		if (TrackNumber == FFMS_TRACKMASK_ALL)

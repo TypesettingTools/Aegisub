@@ -77,6 +77,12 @@ AudioController::AudioController(agi::Context *context)
 	OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this);
 	OPT_SUB("Audio/Provider", &AudioController::OnAudioProviderChanged, this);
 	OPT_SUB("Audio/Cache/Type", &AudioController::OnAudioProviderChanged, this);
+
+#ifdef WITH_FFMS2
+	// As with the video ones, it'd be nice to figure out a decent way to move
+	// this to the provider itself
+	OPT_SUB("Provider/Audio/FFmpegSource/Decode Error Handling", &AudioController::OnAudioProviderChanged, this);
+#endif
 }
 
 
