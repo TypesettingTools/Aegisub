@@ -49,6 +49,7 @@
 
 #include "main.h"
 #include "persist_location.h"
+#include "utils.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
@@ -95,6 +96,8 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 	Bind(wxEVT_CLOSE_WINDOW, &DialogDetachedVideo::OnClose, this);
 	Bind(wxEVT_ICONIZE, &DialogDetachedVideo::OnMinimize, this);
 	Bind(wxEVT_CHAR_HOOK, &DialogDetachedVideo::OnKeyDown, this);
+
+	AddFullScreenButton(this);
 }
 
 DialogDetachedVideo::~DialogDetachedVideo() { }
