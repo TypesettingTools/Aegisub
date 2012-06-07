@@ -424,6 +424,6 @@ void CleanCache(wxString const& directory, wxString const& file_type, int64_t ma
 
 // OS X implementation in osx_utils.mm
 #ifndef __WXOSX_COCOA__
-void AddFullScreenButton(wxWindow *window) {
-}
+void AddFullScreenButton(wxWindow *) { }
+void SetFloatOnParent(wxWindow *) { }
 #endif

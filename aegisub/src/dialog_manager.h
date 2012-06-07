@@ -25,6 +25,8 @@
 #include <wx/dialog.h>
 #endif
 
+#include "utils.h"
+
 /// @brief A manager for dialogs
 ///
 /// DialogManager keeps track of modal and modeless dialogs which have been
@@ -74,6 +76,7 @@ public:
 				created_dialogs[&typeid(DialogType)] = d;
 				d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose, this);
 				d->Show();
+				SetFloatOnParent(d);
 			}
 			catch (agi::UserCancelException const&) { }
 		}

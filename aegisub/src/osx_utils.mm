@@ -36,3 +36,7 @@ void AddFullScreenButton(wxWindow *window) {
 	collectionBehavior |= NSWindowCollectionBehaviorFullScreenPrimary;
 	[nsWindow setCollectionBehavior:collectionBehavior];
 }
+
+void SetFloatOnParent(wxWindow *window) {
+	[[window->GetHandle() window] setLevel:NSFloatingWindowLevel];
+}
