@@ -57,6 +57,7 @@
 #endif
 
 #include "compat.h"
+#include "main.h"
 
 wxString MakeRelativePath(wxString _path, wxString reference) {
 	if (_path.empty() || _path[0] == '?') return _path;
@@ -275,6 +276,8 @@ int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) 
 }
 
 void RestartAegisub() {
+	config::opt->Flush();
+
 #if defined(__WXMSW__)
 	wxStandardPaths stand;
 	wxExecute("\"" + stand.GetExecutablePath() + "\"");
