@@ -1,17 +1,17 @@
 #!/bin/sh
-BIN="aegisub-3.0"
+BINDIR="$(dirname "$0")"
+BIN="$BINDIR/aegisub-3.0"
+LIBDIR="$BINDIR/../libaegisub"
 
-if ! test -x ${BIN}; then
-	echo "${BIN} does not exist";
+if ! test -x "${BIN}"; then
+	echo "${BIN} does not exist or is not executable.";
 	exit 1;
 fi
 
 case "$1" in
 	"gdb")
-		LD_LIBRARY_PATH="../libaegisub" exec gdb ./${BIN}
-	;;
-	*)
-		LD_LIBRARY_PATH="../libaegisub" exec ./${BIN}
-	;;
+		GDB="gdb"
+		;;
 esac
 
+LD_LIBRARY_PATH="$LIBDIR" exec $GDB "./$BIN"
