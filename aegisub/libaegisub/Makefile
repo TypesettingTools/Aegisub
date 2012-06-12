@@ -46,8 +46,8 @@ SRC += \
 	unix/path.cpp
 
 ifeq (yes, $(BUILD_DARWIN))
-SRC += \
-	osx/util.cpp
+SRC += osx/util.mm
+osx/util.o: OBJCXXFLAGS += -fobjc-arc
 endif
 
 HEADER += \
@@ -57,8 +57,7 @@ HEADER += \
 	include/libaegisub/charsets.def \
 	include/libaegisub/cajun/*.h
 
-EXTRA_DIST += osx/util.cpp
-
+EXTRA_DIST += osx/util.mm
 
 include ../Makefile.target
 -include */*.d

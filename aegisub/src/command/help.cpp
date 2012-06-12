@@ -98,10 +98,7 @@ struct help_files : public Command {
 	STR_HELP("Resource files")
 
 	void operator()(agi::Context *) {
-		char *shared_path = agi::util::OSX_GetBundleSharedSupportDirectory();
-		wxString help_path = wxString::Format("%s/doc", wxString(shared_path, wxConvUTF8));
-		agi::util::OSX_OpenLocation(help_path.c_str());
-		free(shared_path);
+		agi::util::OSX_OpenLocation((agi::util::OSX_GetBundleSharedSupportDirectory() + "/doc").c_str());
 	}
 };
 #endif

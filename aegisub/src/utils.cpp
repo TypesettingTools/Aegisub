@@ -282,14 +282,13 @@ void RestartAegisub() {
 	wxStandardPaths stand;
 	wxExecute("\"" + stand.GetExecutablePath() + "\"");
 #elif defined(__WXMAC__)
-	char *bundle_path = agi::util::OSX_GetBundlePath();
-	char *support_path = agi::util::OSX_GetBundleSupportFilesDirectory();
-	if (!bundle_path || !support_path) return; // oops
-	wxString exec = wxString::Format("\"%s/MacOS/restart-helper\" /usr/bin/open -n \"%s\"'", wxString(support_path, wxConvUTF8), wxString(bundle_path, wxConvUTF8));
+	std::string bundle_path = agi::util::OSX_GetBundlePath();
+	std::string helper_path = agi::util::OSX_GetBundleAuxillaryExecutablePath("restart-helper");
+	if (bundle_path.empty() || helper_path.empty()) return;
+
+	wxString exec = wxString::Format("\"%s\" /usr/bin/open -n \"%s\"'", lagi_wxString(helper_path), lagi_wxString(bundle_path));
 	LOG_I("util/restart/exec") << exec;
 	wxExecute(exec);
-	free(bundle_path);
-	free(support_path);
 #else
 	wxStandardPaths stand;
 	wxExecute(stand.GetExecutablePath());

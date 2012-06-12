@@ -83,15 +83,10 @@ class FontConfigCacheThread : public wxThread {
 	ASS_Renderer *ass_renderer;
 	FontConfigCacheThread** thisPtr;
 	ExitCode Entry() {
-#ifdef __APPLE__
-		char config_path[MAXPATHLEN];
-		char *config_dir;
-
-		config_dir = agi::util::OSX_GetBundleResourcesDirectory();
-		snprintf(config_path, MAXPATHLEN, "%s/etc/fonts/fonts.conf", config_dir);
-		free(config_dir);
-#else
 		const char *config_path = NULL;
+#ifdef __APPLE__
+		std::string conf_path = agi::util::OSX_GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf";
+		config_path = conf_path.c_str();
 #endif
 
 		if (ass_library) ass_renderer = ass_renderer_init(ass_library);
