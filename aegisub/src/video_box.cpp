@@ -79,16 +79,16 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 : wxPanel(parent,-1)
 , context(context)
 {
+	// Seek
+	VideoSlider *videoSlider = new VideoSlider(this, context);
+	videoSlider->SetToolTip(_("Seek video"));
+
 	// Buttons
 	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	add_button(this, videoBottomSizer, "video/play", context);
 	add_button(this, videoBottomSizer, "video/play/line", context);
 	add_button(this, videoBottomSizer, "video/stop", context);
 	videoBottomSizer->Add(new ToggleBitmap(this, context, "video/opt/autoscroll", 24, "Video"), 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
-
-	// Seek
-	VideoSlider *videoSlider = new VideoSlider(this, context);
-	videoSlider->SetToolTip(_("Seek video"));
 
 	// Position
 	VideoPosition = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
@@ -117,6 +117,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	visualSubToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	VideoDisplay *videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
+	videoDisplay->MoveBeforeInTabOrder(videoSlider);
 
 	wxSizer *toolbarSizer = new wxBoxSizer(wxVERTICAL);
 	toolbarSizer->Add(visualToolBar, wxSizerFlags(1));
