@@ -75,6 +75,10 @@
 #include "persist_location.h"
 #include "utils.h"
 
+#ifdef __WXMAC__
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
 /// DOCME
 /// @class ColorPickerSpectrum
 /// @brief DOCME
@@ -541,6 +545,7 @@ void ColorPickerRecent::OnSize(wxSizeEvent &)
 
 ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, int resx, int resy, int magnification)
 : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
+, capture(resx * magnification, resy * magnification)
 , resx(resx)
 , resy(resy)
 , magnification(magnification)
@@ -550,12 +555,10 @@ ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, int resx, i
 	SetMaxSize(GetSize());
 	SetCursor(*wxCROSS_CURSOR);
 
-	capture = wxBitmap(resx, resy);
-	wxMemoryDC capdc;
-	capdc.SelectObject(capture);
+	wxMemoryDC capdc(capture);
 	capdc.SetPen(*wxTRANSPARENT_PEN);
 	capdc.SetBrush(*wxWHITE_BRUSH);
-	capdc.DrawRectangle(0, 0, resx, resy);
+	capdc.DrawRectangle(0, 0, capture.GetWidth(), capture.GetHeight());
 
 	Bind(wxEVT_PAINT, &ColorPickerScreenDropper::OnPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &ColorPickerScreenDropper::OnMouse, this);
@@ -565,23 +568,14 @@ wxDEFINE_EVENT(EVT_DROPPER_SELECT, wxCommandEvent);
 
 void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 {
-	int x = evt.GetX() / magnification;
-	int y = evt.GetY() / magnification;
+	int x = evt.GetX();
+	int y = evt.GetY();
 
-	if (x >= 0 && y >= 0 && x < resx && y < resy) {
-		wxColour color;
-#ifdef __WXMAC__
-		// wxMemoryDC::GetPixel() isn't implemented on OS X
-		// Work around it by reading pixel data from the bitmap instead
-		wxAlphaPixelData cappd(capture);
-		wxAlphaPixelData::Iterator cappdi(cappd);
-		cappdi.MoveTo(cappd, x, y);
-		color.Set(cappdi.Red(), cappdi.Green(), cappdi.Blue());
-#else
-		wxMemoryDC capdc(capture);
-		capdc.GetPixel(x, y, &color);
-#endif
-		color = wxColour(color.Red(), color.Green(), color.Blue(), wxALPHA_OPAQUE);
+	if (x >= 0 && x < capture.GetWidth() && y >= 0 && y < capture.GetHeight()) {
+		wxNativePixelData pd(capture, wxRect(x, y, 1, 1));
+		wxNativePixelData::Iterator pdi(pd.GetPixels());
+		wxColour color(pdi.Red(), pdi.Green(), pdi.Blue(), wxALPHA_OPAQUE);
+
 		wxCommandEvent evnt(EVT_DROPPER_SELECT, GetId());
 		evnt.SetString(AssColor(color).GetASSFormatted(false, false, false));
 		AddPendingEvent(evnt);
@@ -590,45 +584,42 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 
 void ColorPickerScreenDropper::OnPaint(wxPaintEvent &)
 {
-	wxPaintDC pdc(this);
-
-#ifdef __WXMAC__
-	// See OnMouse() above
-	wxAlphaPixelData cappd(capture);
-	wxAlphaPixelData::Iterator cappdi(cappd);
-#else
-	wxMemoryDC capdc(capture);
-#endif
-
-	pdc.SetPen(*wxTRANSPARENT_PEN);
-
-	for (int x = 0; x < resx; x++) {
-		for (int y = 0; y < resy; y++) {
-			wxColour color;
-#ifdef __WXMAC__
-			cappdi.MoveTo(cappd, x, y);
-			color.Set(cappdi.Red(), cappdi.Green(), cappdi.Blue());
-#else
-			capdc.GetPixel(x, y, &color);
-#endif
-			pdc.SetBrush(wxBrush(color));
-			pdc.DrawRectangle(x*magnification, y*magnification, magnification, magnification);
-		}
-	}
+	wxPaintDC(this).DrawBitmap(capture, 0, 0);
 }
 
 void ColorPickerScreenDropper::DropFromScreenXY(int x, int y)
 {
 	wxMemoryDC capdc(capture);
+	capdc.SetPen(*wxTRANSPARENT_PEN);
+#ifndef __WXMAC__
 	wxScreenDC screen;
-
-#ifdef __WXMAC__
-	wxBitmap screenbmp = screen.GetAsBitmap().GetSubBitmap(wxRect(x-resx/2, y-resy/2, resx, resy));
-	capdc.DrawBitmap(screenbmp, 0, 0);
+	capdc.StretchBlit(0, 0, resx * magnification, resy * magnification,
+		&screen, x - resx / 2, y - resy / 2, resx, resy);
 #else
-	screen.StartDrawingOnTop();
-	capdc.Blit(0, 0, resx, resy, &screen, x-resx/2, y-resy/2);
-	screen.EndDrawingOnTop();
+	// wxScreenDC doesn't work on recent versions of OS X so do it manually
+
+	// Doesn't bother handling the case where the rect overlaps two monitors
+	CGDirectDisplayID display_id;
+	uint32_t display_count;
+	CGGetDisplaysWithPoint(CGPointMake(x, y), 1, &display_id, &display_count);
+
+	agi::scoped_holder<CGImageRef> img(CGDisplayCreateImageForRect(display_id, CGRectMake(x - resx / 2, y - resy / 2, resx, resy)), CGImageRelease);
+	NSUInteger width = CGImageGetWidth(img);
+	NSUInteger height = CGImageGetHeight(img);
+	std::vector<uint8_t> imgdata(height * width * 4);
+
+	agi::scoped_holder<CGColorSpaceRef> colorspace(CGColorSpaceCreateDeviceRGB(), CGColorSpaceRelease);
+	agi::scoped_holder<CGContextRef> bmp_context(CGBitmapContextCreate(&imgdata[0], width, height, 8, 4 * width, colorspace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big), CGContextRelease);
+
+	CGContextDrawImage(bmp_context, CGRectMake(0, 0, width, height), img);
+
+	for (int x = 0; x < resx; x++) {
+		for (int y = 0; y < resy; y++) {
+			uint8_t *pixel = &imgdata[y * width * 4 + x * 4];
+			capdc.SetBrush(wxBrush(wxColour(pixel[0], pixel[1], pixel[2])));
+			capdc.DrawRectangle(x * magnification, y * magnification, magnification, magnification);
+		}
+	}
 #endif
 
 	Refresh(false);
