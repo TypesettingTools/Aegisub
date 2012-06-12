@@ -159,6 +159,9 @@ void VideoSlider::OnKeyDown(wxKeyEvent &event) {
 		c->subsGrid->GetEventHandler()->ProcessEvent(event);
 		c->subsGrid->SetFocus();
 	}
+	else {
+		event.Skip();
+	}
 }
 
 void VideoSlider::OnPaint(wxPaintEvent &) {
