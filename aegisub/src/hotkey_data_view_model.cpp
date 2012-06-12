@@ -96,8 +96,10 @@ public:
 		if (col == 0)
 			variant = combo.Str();
 		else if (col == 1) {
+			wxBitmap icon_bmp(icon::get(combo.CmdName(), 16));
 			wxIcon icon;
-			icon.CopyFromBitmap(icon::get(combo.CmdName(), 16));
+			if (icon_bmp.IsOk())
+				icon.CopyFromBitmap(icon_bmp);
 			variant << wxDataViewIconText(combo.CmdName(), icon);
 		}
 		else if (col == 2) {
