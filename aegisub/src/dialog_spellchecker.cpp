@@ -262,14 +262,9 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 		std::map<wxString, wxString>::const_iterator auto_rep = auto_replace.find(word);
 		if (auto_rep == auto_replace.end()) {
 #ifdef __WXGTK__
-			// After changing the value of the edit box, removing text from
-			// text controls doesn't work until the end of the event handler
-			// (i.e. orig_word->Clear(); assert(orig_word->IsEmpty()); will
-			// fail). I have no idea why.
-			//
-			// We can't just call SetWord here only because if the new line is
-			// longer than the old one the selection may not get set correctly.
-			SetWord(word);
+			// http://trac.wxwidgets.org/ticket/14369
+			orig_word->Remove(0, -1);
+			replace_word->Remove(0, -1);
 #endif
 
 			SelectionController<AssDialogue>::Selection sel;
