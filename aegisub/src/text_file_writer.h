@@ -78,5 +78,5 @@ public:
 #elif defined(_WIN32)
 #define wxSTRING_ENCODING "utf-16le"
 #else
-#error wx must be built with wxUSE_UNICODE_UTF8
+#define wxSTRING_ENCODING "utf-32le"
 #endif
