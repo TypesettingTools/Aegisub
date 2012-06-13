@@ -57,6 +57,8 @@
 #include "frame_main.h"
 #include "main.h"
 
+#include <libaegisub/log.h>
+
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
 	try {
 		GetAudio(buf,start,count);
@@ -95,6 +97,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 		// Try a PCM provider first
 		try {
 			provider = CreatePCMAudioProvider(filename);
+			LOG_D("audio_provider") << "Using PCM provider";
 		}
 		catch (agi::FileNotFoundError const& err) {
 			msg = "PCM audio provider: " + err.GetMessage() + " not found.\n";
@@ -104,6 +107,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 			msg += err.GetChainedMessage() + "\n";
 		}
 	}
+
 	if (!provider) {
 		std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
 		if (list.empty()) throw agi::NoAudioProvidersError("No audio providers are available.", 0);
@@ -111,7 +115,10 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 		for (size_t i = 0; i < list.size() ; ++i) {
 			try {
 				provider = Create(list[i], filename);
-				if (provider) break;
+				if (provider) {
+					LOG_D("audio_provider") << "Using audio provider: " << list[i];
+					break;
+				}
 			}
 			catch (agi::FileNotFoundError const& err) {
 				msg += list[i] + ": " + err.GetMessage() + " not found.\n";
@@ -127,6 +134,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 			}
 		}
 	}
+
 	if (!provider) {
 		if (found_audio)
 			throw agi::AudioProviderOpenError(msg, 0);
