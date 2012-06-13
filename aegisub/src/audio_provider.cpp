@@ -76,7 +76,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 		int value;
 
 		// Modify
-		for (int64_t i=0;i<count;i++) {
+		for (size_t i = 0; i < (size_t)count; ++i) {
 			value = (int)(buffer[i]*volume+0.5);
 			if (value < -0x8000) value = -0x8000;
 			if (value > 0x7FFF) value = 0x7FFF;
