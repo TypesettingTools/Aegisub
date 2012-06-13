@@ -31,6 +31,10 @@
 
 #include <libaegisub/scoped_ptr.h>
 
+#ifndef AGI_PRE
+#include <limits>
+#endif
+
 /// Base class for all wrapping converters
 class AudioProviderConverter : public AudioProvider {
 protected:
@@ -41,13 +45,14 @@ public:
 		num_samples = source->GetNumSamples();
 		sample_rate = source->GetSampleRate();
 		bytes_per_sample = source->GetBytesPerSample();
+		float_samples = source->AreSamplesFloat();
 	}
 
 	bool AreSamplesNativeEndian() const { return true; }
 	wxString GetFilename() const { return source->GetFilename(); }
 };
 
-/// Anything -> 16 bit signed machine-endian audio converter
+/// Anything integral -> 16 bit signed machine-endian audio converter
 template<class Target>
 class BitdepthConvertAudioProvider : public AudioProviderConverter {
 	int src_bytes_per_sample;
@@ -100,6 +105,40 @@ public:
 				sample <<= (sizeof(Target) - src_bytes_per_sample ) * 8;
 
 			dest[i] = (Target)sample;
+		}
+	}
+};
+
+/// Floating point -> 16 bit signed machine-endian audio converter
+template<class Source, class Target>
+class FloatConvertAudioProvider : public AudioProviderConverter {
+public:
+	FloatConvertAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
+		if (!src->AreSamplesNativeEndian())
+			throw agi::AudioProviderOpenError("Audio format converter: Float audio with non-native endianness is currently unsupported.", 0);
+		bytes_per_sample = sizeof(Target);
+		float_samples = false;
+	}
+
+	void GetAudio(void *buf, int64_t start, int64_t count) const {
+		std::vector<Source> src_buf(count * channels);
+		source->GetAudio(&src_buf[0], start, count);
+
+		Target *dest = reinterpret_cast<Target*>(buf);
+
+		for (size_t i = 0; i < static_cast<size_t>(count * channels); ++i) {
+			Source expanded;
+			if (src_buf[i] < 0)
+				expanded = static_cast<Target>(-src_buf[i] * std::numeric_limits<Target>::min());
+			else
+				expanded = static_cast<Target>(src_buf[i] * std::numeric_limits<Target>::max());
+
+			if (expanded < std::numeric_limits<Target>::min())
+				dest[i] = std::numeric_limits<Target>::min();
+			else if (expanded > std::numeric_limits<Target>::max())
+				dest[i] = std::numeric_limits<Target>::max();
+			else
+				dest[i] = static_cast<Target>(expanded);
 		}
 	}
 };
@@ -178,6 +217,12 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 	AudioProvider *provider = source_provider;
 
 	// Ensure 16-bit audio with proper endianness
+	if (provider->AreSamplesFloat()) {
+		if (provider->GetBytesPerSample() == sizeof(float))
+			provider = new FloatConvertAudioProvider<float, int16_t>(provider);
+		else
+			provider = new FloatConvertAudioProvider<double, int16_t>(provider);
+	}
 	if (provider->GetBytesPerSample() != 2 || !provider->AreSamplesNativeEndian())
 		provider = new BitdepthConvertAudioProvider<int16_t>(provider);
 

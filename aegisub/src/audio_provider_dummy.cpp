@@ -44,6 +44,7 @@ DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 	channels = 1;
 	sample_rate = 44100;
 	bytes_per_sample = 2;
+	float_samples = false;
 	num_samples = (int64_t)dur_ms * sample_rate / 1000;
 }
 

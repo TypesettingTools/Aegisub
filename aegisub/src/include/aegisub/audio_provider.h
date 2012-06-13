@@ -52,14 +52,16 @@ protected:
 	/// DOCME
 	int channels;
 
-	/// DOCME
-	int64_t num_samples; // for one channel, ie. number of PCM frames
+	/// for one channel, ie. number of PCM frames
+	int64_t num_samples;
 
 	/// DOCME
 	int sample_rate;
 
 	/// DOCME
 	int bytes_per_sample;
+
+	bool float_samples;
 
 
 	/// DOCME
@@ -76,6 +78,7 @@ public:
 	int GetSampleRate() const     { return sample_rate; }
 	int GetBytesPerSample() const { return bytes_per_sample; }
 	int GetChannels() const       { return channels; }
+	bool AreSamplesFloat() const  { return float_samples; }
 	virtual bool AreSamplesNativeEndian() const = 0;
 
 	/// @brief Does this provider benefit from external caching?

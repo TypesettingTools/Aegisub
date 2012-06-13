@@ -161,13 +161,12 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
 		throw agi::AudioProviderOpenError("sanity check failed, consult your local psychiatrist", 0);
 
-	// FIXME: use the actual sample format too?
-	// why not just bits_per_sample/8? maybe there's some oddball format with half bytes out there somewhere...
-	switch (AudioInfo.BitsPerSample) {
-		case 8:		bytes_per_sample = 1; break;
-		case 16:	bytes_per_sample = 2; break;
-		case 24:	bytes_per_sample = 3; break;
-		case 32:	bytes_per_sample = 4; break;
+	switch (AudioInfo.SampleFormat) {
+		case FFMS_FMT_U8:  bytes_per_sample = 1; float_samples = false; break;
+		case FFMS_FMT_S16: bytes_per_sample = 2; float_samples = false; break;
+		case FFMS_FMT_S32: bytes_per_sample = 4; float_samples = false; break;
+		case FFMS_FMT_FLT: bytes_per_sample = 4; float_samples = true; break;
+		case FFMS_FMT_DBL: bytes_per_sample = 8; float_samples = true; break;
 		default:
 			throw agi::AudioProviderOpenError("unknown or unsupported sample format", 0);
 	}

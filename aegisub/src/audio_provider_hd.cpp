@@ -86,6 +86,7 @@ public:
 		channels         = src->GetChannels();
 		sample_rate      = src->GetSampleRate();
 		filename         = src->GetFilename();
+		float_samples    = src->AreSamplesFloat();
 
 		IndexPoint p = { 0, 0, num_samples };
 		index_points.push_back(p);
@@ -112,6 +113,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) 
 	channels         = source->GetChannels();
 	sample_rate      = source->GetSampleRate();
 	filename         = source->GetFilename();
+	float_samples    = source->AreSamplesFloat();
 
 	diskCacheFilename = cache_path();
 

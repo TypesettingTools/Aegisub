@@ -114,6 +114,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 	current_mapping = 0;
 #endif
+	float_samples = false;
 }
 
 /// @brief DOCME
