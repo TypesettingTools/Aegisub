@@ -69,9 +69,9 @@ wxString cache_path() {
 	// Try from 00 to 99
 	for (int i=0;i<100;i++) {
 		// File exists?
-		wxString curStringTry = cache_dir() + wxString::Format(pattern,i);
-		if (!wxFile::Exists(curStringTry))
-			return curStringTry;
+		wxFileName curNameTry(cache_dir(), wxString::Format(pattern, i));
+		if (!curNameTry.Exists())
+			return curNameTry.GetFullPath();
 	}
 	return "";
 }
