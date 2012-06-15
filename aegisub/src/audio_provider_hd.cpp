@@ -102,19 +102,19 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) 
 	agi::scoped_ptr<AudioProvider> source(src);
 	assert(src->AreSamplesNativeEndian()); // Byteswapping should be done before caching
 
-	// Check free space
-	wxDiskspaceSize_t freespace;
-	if (wxGetDiskSpace(cache_dir(), 0, &freespace)) {
-		if (num_samples * channels * bytes_per_sample > freespace)
-			throw agi::AudioCacheOpenError("Not enough free disk space in " + STD_STR(cache_dir()) + " to cache the audio", 0);
-	}
-
 	bytes_per_sample = source->GetBytesPerSample();
 	num_samples      = source->GetNumSamples();
 	channels         = source->GetChannels();
 	sample_rate      = source->GetSampleRate();
 	filename         = source->GetFilename();
 	float_samples    = source->AreSamplesFloat();
+
+	// Check free space
+	wxDiskspaceSize_t freespace;
+	if (wxGetDiskSpace(cache_dir(), 0, &freespace)) {
+		if (num_samples * channels * bytes_per_sample > freespace)
+			throw agi::AudioCacheOpenError("Not enough free disk space in " + STD_STR(cache_dir()) + " to cache the audio", 0);
+	}
 
 	diskCacheFilename = cache_path();
 
