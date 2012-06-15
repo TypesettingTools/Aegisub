@@ -57,8 +57,9 @@ namespace {
 wxString cache_dir() {
 	wxString path = lagi_wxString(OPT_GET("Audio/Cache/HD/Location")->GetString());
 	if (path == "default")
-		return StandardPaths::DecodePath("?temp/");
-	return DecodeRelativePath(path, StandardPaths::DecodePath("?user/"));
+		path = "?temp/";
+
+	return DecodeRelativePath(StandardPaths::DecodePath(path), StandardPaths::DecodePath("?user/"));
 }
 
 wxString cache_path() {
