@@ -185,11 +185,10 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	int CS = TempFrame->ColorSpace;
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
 	if (CS != FFMS_CS_RGB && CS != FFMS_CS_BT470BG && OPT_GET("Video/Force BT.601")->GetBool()) {
-		if (FFMS_SetInputFormatV(VideoSource, FFMS_CS_BT470BG, FFMS_CR_MPEG, FFMS_GetPixFmt(""), &ErrInfo))
+		if (FFMS_SetInputFormatV(VideoSource, FFMS_CS_BT470BG, TempFrame->ColorRange, FFMS_GetPixFmt(""), &ErrInfo))
 			throw VideoOpenError(std::string("Failed to set input format: ") + ErrInfo.Buffer);
 
 		CS = FFMS_CS_BT470BG;
-		ColorRange = "TV";
 	}
 #endif
 
