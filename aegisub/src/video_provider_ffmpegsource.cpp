@@ -150,7 +150,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 
 	// set thread count
 	int Threads = OPT_GET("Provider/Video/FFmpegSource/Decoding Threads")->GetInt();
-	if (FFMS_GetSourceType(Index) == FFMS_SOURCE_LAVF)
+	if (FFMS_GetVersion() < ((2 << 24) | (17 << 16) | (2 << 8) | 1) && FFMS_GetSourceType(Index) == FFMS_SOURCE_LAVF)
 		Threads = 1;
 
 	// set seekmode
