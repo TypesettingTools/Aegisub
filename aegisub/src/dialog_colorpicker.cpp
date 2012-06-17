@@ -545,7 +545,7 @@ void ColorPickerRecent::OnSize(wxSizeEvent &)
 
 ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, int resx, int resy, int magnification)
 : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
-, capture(resx * magnification, resy * magnification)
+, capture(resx * magnification, resy * magnification, wxNativePixelFormat::BitsPerPixel)
 , resx(resx)
 , resy(resy)
 , magnification(magnification)
