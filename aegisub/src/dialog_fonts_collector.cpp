@@ -234,9 +234,9 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 
 	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
 
-	dest_label = new wxStaticText(destination_box->GetStaticBox(), -1, " ");
-	dest_ctrl = new wxTextCtrl(destination_box->GetStaticBox(), -1, StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())));
-	dest_browse_button = new wxButton(destination_box->GetStaticBox(), -1, _("&Browse..."));
+	dest_label = new wxStaticText(this, -1, " ");
+	dest_ctrl = new wxTextCtrl(this, -1, StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())));
+	dest_browse_button = new wxButton(this, -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_browse_sizer->Add(dest_ctrl, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
@@ -246,7 +246,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	destination_box->Add(dest_browse_sizer, wxSizerFlags().Expand());
 
 	wxStaticBoxSizer *log_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
-	collection_log = new ScintillaTextCtrl(log_box->GetStaticBox(), -1, "", wxDefaultPosition, wxSize(600, 300));
+	collection_log = new ScintillaTextCtrl(this, -1, "", wxDefaultPosition, wxSize(600, 300));
 	collection_log->SetWrapMode(wxSTC_WRAP_WORD);
 	collection_log->SetMarginWidth(1, 0);
 	collection_log->SetReadOnly(true);
