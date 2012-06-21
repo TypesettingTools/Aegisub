@@ -314,6 +314,8 @@ namespace cmd {
 		reg(new app_options);
 		reg(new app_toggle_global_hotkeys);
 		reg(new app_toggle_toolbar);
+#ifdef WITH_UPDATE_CHECKER
 		reg(new app_updates);
+#endif
 	}
 }

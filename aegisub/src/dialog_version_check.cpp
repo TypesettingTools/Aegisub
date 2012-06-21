@@ -37,6 +37,8 @@
 
 #include "config.h"
 
+#ifdef WITH_UPDATE_CHECKER
+
 #include "dialog_version_check.h"
 
 #ifndef AGI_PRE
@@ -325,24 +327,20 @@ void AegisubVersionCheckerThread::DoCheck()
 		inserter(accept_tags, accept_tags.end()));
 #endif
 
-	const wxString servername = "updates.aegisub.org";
-	const wxString base_updates_path = "/trunk";
-
-	wxString querystring = wxString::Format(
-		"?rev=%d&rel=%d&os=%s&lang=%s",
+	wxString path = wxString::Format(
+		"%s?rev=%d&rel=%d&os=%s&lang=%s",
+		UPDATE_CHECKER_BASE_URL,
 		GetSVNRevision(),
 		GetIsOfficialRelease()?1:0,
 		GetOSShortName(),
 		GetSystemLanguage());
-
-	wxString path = base_updates_path + querystring;
 
 	wxHTTP http;
 	http.SetHeader("User-Agent", wxString("Aegisub ") + GetAegisubLongVersionString());
 	http.SetHeader("Connection", "Close");
 	http.SetFlags(wxSOCKET_WAITALL | wxSOCKET_BLOCK);
 
-	if (!http.Connect(servername))
+	if (!http.Connect(UPDATE_CHECKER_SERVER))
 		throw VersionCheckError(STD_STR(_("Could not connect to updates server.")));
 
 	agi::scoped_ptr<wxInputStream> stream(http.GetInputStream(path));
@@ -533,3 +531,5 @@ static void register_event_handler()
 	wxTheApp->Bind(AEGISUB_EVENT_VERSIONCHECK_RESULT, on_update_result);
 	is_registered = true;
 }
+
+#endif

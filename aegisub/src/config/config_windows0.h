@@ -128,7 +128,9 @@
 # define UPDATE_CHECKER_ACCEPT_TAGS "win64 source"
 #endif
 
-
+// Where the update checker should look for updates
+#define UPDATE_CHECKER_SERVER "updates.aegisub.org"
+#define UPDATE_CHECKER_BASE_URL "/trunk"
 
 ///////////// NOT RECOMMENDED /////////////
 
