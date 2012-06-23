@@ -18,19 +18,17 @@
 /// @brief Icon for commands.
 /// @ingroup command
 
+#include "../config.h"
+
+#include "icon.h"
 
 #ifndef AGI_PRE
 #include <map>
-
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/mstream.h>
 #endif
 
 #include <libaegisub/log.h>
 
-#include "icon.h"
-#include "../libresrc/bitmap.h"
+#include "../libresrc/libresrc.h"
 
 namespace icon {
 typedef std::map<std::string, wxBitmap> iconMap;
@@ -62,25 +60,15 @@ wxBitmap const& get(std::string const& name, const int size) {
 	return bad;
 }
 
-
-wxBitmap getimage(const unsigned char *buff, size_t size) {
-	wxMemoryInputStream mem(buff, size);
-	wxImage img(mem);
-	return wxBitmap(img);
-}
-
-
 #define INSERT_ICON(a, b) \
-	icon16.insert(std::make_pair(a, getimage(b##_16, sizeof(b##_16)))); \
-	icon24.insert(std::make_pair(a, getimage(b##_24, sizeof(b##_24)))); \
-	icon32.insert(std::make_pair(a, getimage(b##_32, sizeof(b##_32))));
-
+	icon16.insert(std::make_pair(a, GETIMAGE(b##_16))); \
+	icon24.insert(std::make_pair(a, GETIMAGE(b##_24))); \
+	icon32.insert(std::make_pair(a, GETIMAGE(b##_32)));
 
 void icon_init() {
 	// Seems that WX doesn't install the handlers early enough for our use.
 	wxPNGHandler *handler = new wxPNGHandler();
 	wxImage::AddHandler(handler);
-	wxString handler_name(handler->GetName());
 
 	LOG_D("icon/init") << "Generating 24x24, 16x16 icons";
 
@@ -187,6 +175,6 @@ INSERT_ICON("video/zoom/out", zoom_out_button)
 
 	// Remove the handler to avoid "Duplicate handler" warnings from WX since
 	// it will attempt to install all the handlers later on.
-	wxImage::RemoveHandler(handler_name);
+	wxImage::RemoveHandler(handler->GetName());
 }
 } // namespace icon
