@@ -147,7 +147,7 @@ OBJCXXFLAGS := $(CXXFLAGS)
 ####################
 ifeq (yes, $(PRECOMPILED_HEADER))
   ifdef PRECOMPILED_HEADER_NAME
-    CXXFLAGS += -include $(PRECOMPILED_HEADER_NAME) -Winvalid-pch -fpch-deps -fpch-preprocess
+    CXXFLAGS += -include $(PRECOMPILED_HEADER_NAME) $(PCHFLAGS)
     # This hack is required until we can use the 'private' keyword (gmake 3.82) to avoid all the
     # per-object CXXFLAGS being triggered by the ($OBJ) line.
     CXXFLAGS_GNU_MAKE_SUCKS := $(CXXFLAGS)
