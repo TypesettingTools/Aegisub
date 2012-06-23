@@ -1,3 +1,5 @@
+#include "../config.h"
+
 #include "libresrc.h"
 
 wxBitmap libresrc_getimage(const unsigned char *buff, size_t size) {
