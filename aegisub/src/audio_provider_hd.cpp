@@ -70,7 +70,11 @@ wxString cache_path() {
 	for (int i=0;i<100;i++) {
 		// File exists?
 		wxFileName curNameTry(cache_dir(), wxString::Format(pattern, i));
+#if wxCHECK_VERSION(2, 9, 4)
 		if (!curNameTry.Exists())
+#else
+		if (!curNameTry.FileExists() && !curNameTry.DirExists())
+#endif
 			return curNameTry.GetFullPath();
 	}
 	return "";
