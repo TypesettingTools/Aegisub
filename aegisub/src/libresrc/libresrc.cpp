@@ -13,6 +13,5 @@ wxIcon libresrc_geticon(const unsigned char *buff, size_t size) {
 }
 
 const std::string libresrc_getconfig(const unsigned char *config, size_t size) {
-	std::string str((char*)config, size);
-	return str.c_str();
+	return std::string(reinterpret_cast<const char *>(config), size);
 }
