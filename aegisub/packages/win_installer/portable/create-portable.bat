@@ -14,6 +14,7 @@ xcopy ..\src\devil.dll aegisub-portable\ > NUL
 xcopy ..\src\dictionaries\en_US.aff aegisub-portable\dictionaries\ > NUL
 xcopy ..\src\dictionaries\en_US.dic aegisub-portable\dictionaries\ > NUL
 xcopy ..\src\vsfilter-aegisub32.dll aegisub-portable\csri\ > NUL
+xcopy ..\src\xy-vsfilter-aegisub.dll aegisub-portable\csri\ > NUL
 xcopy ..\src\x86\Microsoft.VC90.CRT\* aegisub-portable\Microsoft.VC90.CRT\ > NUL
 xcopy config.json aegisub-portable\ > NUL
 

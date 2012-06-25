@@ -38,7 +38,7 @@
 DestDir: {app}; Source: ..\..\bin\ffms2_64.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\..\bin\ffms2_64.pdb; Flags: ignoreversion; Components: codec and main/pdb
 ; vsfilter
-DestDir: {app}; Source: src\vsfilter-aegisub64.dll; Flags: ignoreversion; Components: codec/vsfilter
+DestDir: {app}\csri; Source: src\vsfilter-aegisub64.dll; Flags: ignoreversion; Components: codec/vsfilter
 
 [Components]
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full

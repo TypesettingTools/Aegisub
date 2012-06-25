@@ -42,10 +42,11 @@ DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion; Componen
 DestDir: {app}; Source: ..\..\bin\ffms2.dll; Flags: ignoreversion; Components: codec
 DestDir: {app}; Source: ..\..\bin\ffms2.pdb; Flags: ignoreversion; Components: codec and main/pdb
 ; vsfilter
-DestDir: {app}; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion; Components: codec/vsfilter
+DestDir: {app}\csri; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion; Components: codec/vsfilter
+DestDir: {app}\csri; Source: src\xy-vsfilter-aegisub.dll; Flags: ignoreversion; Components: codec/vsfilter
 
 [Components]
 Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/vsfilter; Description: VSFilter-Aegisub 2.40; Types: compact full custom; Flags: fixed
+Name: codec/vsfilter; Description: VSFilter-Aegisub 2.41; Types: compact full custom; Flags: fixed
 
 
