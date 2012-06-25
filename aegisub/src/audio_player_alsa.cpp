@@ -50,6 +50,8 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
+
+#include <inttypes.h>
 #endif
 
 class PthreadMutexLocker {
@@ -286,12 +288,12 @@ do_setup:
 			avail = std::min(tmp_pcm_avail, (snd_pcm_sframes_t)(ps.end_position-position));
 			if (avail < 0)
 			{
-				printf("\n--------- avail was less than 0: %ld\n", avail);
-				printf("snd_pcm_avail(pcm): %ld\n", tmp_pcm_avail);
-				printf("original position: %ld\n", orig_position);
-				printf("current  position: %ld\n", position);
-				printf("original ps.end_position: %ld\n", orig_ps_end_position);
-				printf("current  ps.end_position: %ld\n", ps.end_position);
+				printf("\n--------- avail was less than 0: %" PRId64 "\n", avail);
+				printf("snd_pcm_avail(pcm): %" PRId64 "\n", tmp_pcm_avail);
+				printf("original position: %" PRId64 "\n", orig_position);
+				printf("current  position: %" PRId64 "\n", position);
+				printf("original ps.end_position: %" PRId64 "\n", orig_ps_end_position);
+				printf("current  ps.end_position: %" PRId64 "\n", ps.end_position);
 				printf("---------\n\n");
 				continue;
 			}

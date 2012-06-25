@@ -104,9 +104,6 @@ typedef std::deque<SinkMessage*> Sink;
 
 /// Log sink, single destination for all messages
 class LogSink {
-	/// Size of current sink, this is only an estimate that is used for trimming.
-	int64_t size;
-
 	/// Log sink
 	Sink sink;
 

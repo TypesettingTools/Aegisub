@@ -340,7 +340,8 @@ UnknownElement Reader::ParseNumber(Reader::TokenStream& tokenStream) {
 
 	// If there's still stuff left in the token then it's malformed
 	if (!iStr.eof())
-		throw ParseException("Unexpected character in NUMBER token: " + iStr.peek(), currentToken.locBegin, currentToken.locEnd);
+		throw ParseException(std::string("Unexpected character in NUMBER token: ") + (char)iStr.peek(),
+			currentToken.locBegin, currentToken.locEnd);
 
 	return dValue;
 }

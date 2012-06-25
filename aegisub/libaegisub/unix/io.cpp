@@ -63,7 +63,7 @@ Save::Save(const std::string& file, bool binary): file_name(file) {
 		// If the file doesn't exist we create a 0 byte file, this so so
 		// util::Rename will find it, and to let users know something went
 		// wrong by leaving a 0 byte file.
-		std::ofstream(file.c_str());
+		(void)std::ofstream(file.c_str());
 	}
 
 	/// @todo This is a temp hack, proper implementation needs to come after
