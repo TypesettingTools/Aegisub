@@ -86,8 +86,19 @@ void FontCollector::ProcessDialogueLine(AssDialogue *line, int index) {
 			if (overriden)
 				used_styles[style].lines.insert(index);
 			std::set<wxUniChar>& chars = used_styles[style].chars;
-			for (size_t j = 0; j < text.size(); ++j)
-				chars.insert(text[j]);
+			for (wxString::const_iterator it = text.begin(); it != text.end(); ++it) {
+				wxUniChar cur = *it;
+				if (cur == L'\\' && it + 1 != text.end()) {
+					wxUniChar next = *++it;
+					if (next == 'N' || next == 'n')
+						continue;
+					if (next == 'h')
+						cur = 0xA0;
+					else
+						--it;
+				}
+				chars.insert(cur);
+			}
 		}
 		// Do nothing with drawing blocks
 	}
