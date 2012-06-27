@@ -340,10 +340,11 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 	read_entry(ele, "special", &special);
 
 	if (read_entry(ele, "submenu", &submenu) && read_entry(ele, "text", &text)) {
-		parent->AppendSubMenu(build_menu(submenu, c, cm), lagi_wxString(text));
+		wxString tl_text = _(lagi_wxString(text));
+		parent->AppendSubMenu(build_menu(submenu, c, cm), tl_text);
 #ifdef __WXMAC__
 		if (special == "help")
-			wxApp::s_macHelpMenuTitleName = lagi_wxString(text);
+			wxApp::s_macHelpMenuTitleName = tl_text;
 #endif
 		return;
 	}
