@@ -49,6 +49,8 @@ Source: src\mo\es.mo;          DestDir: {app}\locale\es;    DestName: aegisub.mo
 Source: src\mo\wxstd-es.mo;    DestDir: {app}\locale\es;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/es
 Source: src\mo\el.mo;          DestDir: {app}\locale\el;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/el
 Source: src\mo\wxstd-el.mo;    DestDir: {app}\locale\el;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/el
+Source: src\mo\eu.mo;          DestDir: {app}\locale\eu;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/eu
+Source: src\mo\wxstd-eu.mo;    DestDir: {app}\locale\eu;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/eu
 Source: src\mo\fa.mo;          DestDir: {app}\locale\fa;    DestName: aegisub.mo; Flags: ignoreversion; Components: i18n/fa
 ; Farsi wxstd missing
 ;Source: src\mo\wxstd-fa.mo;    DestDir: {app}\locale\fa;    DestName: wxstd.mo;   Flags: ignoreversion; Components: i18n/fa
@@ -88,6 +90,7 @@ Source: src\mo\wxstd-zh_TW.mo; DestDir: {app}\locale\zh_TW; DestName: wxstd.mo; 
 ; Translations (commented out ones are out of date)
 Name: i18n;       Description: Languages; Types: full custom compact
 Name: i18n/en;    Description: "English (built in)"; Flags: fixed; Types: compact full custom
+Name: i18n/eu;    Description: "Euskara (Basque)"; Types: full
 Name: i18n/ca;    Description: "Català (Catalan)"; Types: full
 Name: i18n/zh_CN; Description: "简体中文 (Chinese (Simplified))"; Types: full
 Name: i18n/zh_TW; Description: "繁體中文 (Chinese (Traditional))"; Types: full
@@ -110,5 +113,4 @@ Name: i18n/ru;    Description: "Русский язык (Russian)"; Types: full
 Name: i18n/sr;    Description: "Српски/Srpski (Serbian, Cyrillic and Latin)"; Types: full
 Name: i18n/es;    Description: "Español (Spanish)"; Types: full
 Name: i18n/vi;    Description: "Tiếng Việt (Vietnamese)"; Types: full
-
 

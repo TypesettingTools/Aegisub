@@ -9,6 +9,7 @@ PO = \
 	de.po \
 	el.po \
 	es.po \
+	eu.po \
 	fa.po \
 	fi.po \
 	fr_FR.po \
