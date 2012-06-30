@@ -130,8 +130,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		int TrackMask = FFMS_TRACKMASK_NONE;
 		if (OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool() || OPT_GET("Video/Open Audio")->GetBool())
 			TrackMask = FFMS_TRACKMASK_ALL;
-		// ignore audio decoding errors here, we don't care right now
-		Index = DoIndexing(Indexer, CacheName, TrackMask, FFMS_IEH_IGNORE);
+		Index = DoIndexing(Indexer, CacheName, TrackMask, GetErrorHandlingMode());
 	}
 
 	// update access time of index file so it won't get cleaned away
