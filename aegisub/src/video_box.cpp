@@ -124,30 +124,22 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	toolbarSizer->Add(visualSubToolBar, wxSizerFlags());
 
 	// Top sizer
-	// Detached and attached video needs different flags, see bugs #742 and #853
-	int highSizerFlags = isDetached ? wxEXPAND : 0;
-	wxSizer *topTopSizer = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *topSizer = new wxBoxSizer(wxVERTICAL);
-	topTopSizer->Add(toolbarSizer,0,wxEXPAND,0);
-	topTopSizer->Add(videoDisplay,1,highSizerFlags,0);
-	topSizer->Add(topTopSizer,1,wxEXPAND,0);
-	topSizer->Add(new wxStaticLine(this),0,wxEXPAND,0);
+	wxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
+	topSizer->Add(toolbarSizer, 0, wxEXPAND);
+	topSizer->Add(videoDisplay, isDetached, isDetached ? wxEXPAND : 0);
 
 	// Sizers
 	wxSizer *videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
-	videoSliderSizer->Add(videoSlider,1,wxEXPAND|wxLEFT,0);
-	videoBottomSizer->Add(VideoPosition,1,wxLEFT|wxALIGN_CENTER,5);
-	videoBottomSizer->Add(VideoSubsPos,1,wxALIGN_CENTER,0);
-	videoBottomSizer->Add(zoomBox, 0, wxALIGN_CENTER, 5);
+	videoSliderSizer->Add(videoSlider, wxSizerFlags(1).Expand());
+	videoBottomSizer->Add(VideoPosition, wxSizerFlags(1).Center().Border(wxLEFT));
+	videoBottomSizer->Add(VideoSubsPos, wxSizerFlags(1).Center());
+	videoBottomSizer->Add(zoomBox, wxSizerFlags(0).Center());
 
-	// If we're detached we do want to fill out as much space we can.
-	// But if we're in the main window, the subs grid needs space more than us.
 	wxSizer *VideoSizer = new wxBoxSizer(wxVERTICAL);
-	VideoSizer->Add(topSizer,isDetached?1:0,wxEXPAND,0);
+	VideoSizer->Add(topSizer, 1, wxEXPAND, 0);
+	VideoSizer->Add(new wxStaticLine(this), 0, wxEXPAND, 0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
 	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
-	if (!isDetached)
-		VideoSizer->AddStretchSpacer(1);
 	SetSizer(VideoSizer);
 
 	UpdateTimeBoxes();

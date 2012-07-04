@@ -77,10 +77,9 @@ class VideoDisplay : public wxGLCanvas {
 	/// The frame number currently being displayed
 	int currentFrame;
 
-	/// The width of the canvas in screen pixels
-	int w;
-	/// The height of the canvas in screen pixels
-	int h;
+	/// The size of the video in screen at the current zoom level, which may not
+	/// be the same as the actual client size of the display
+	wxSize videoSize;
 
 	Vector2D mouse_pos;
 
@@ -128,8 +127,8 @@ class VideoDisplay : public wxGLCanvas {
 	bool InitContext();
 
 	/// @brief Set the size of the display based on the current zoom and video resolution
-	/// @param force Force the size to be set based on zoom even in detached mode
-	void UpdateSize(bool force = false);
+	void UpdateSize();
+	void PositionVideo();
 	/// Set the zoom level to that indicated by the dropdown
 	void SetZoomFromBox(wxCommandEvent&);
 	/// Set the zoom level to that indicated by the text
