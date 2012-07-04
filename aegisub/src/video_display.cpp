@@ -420,11 +420,8 @@ Vector2D VideoDisplay::GetMousePosition() const {
 	return mouse_pos ? tool->ToScriptCoords(mouse_pos) : mouse_pos;
 }
 
-void VideoDisplay::Reload() {
+void VideoDisplay::Unload() {
 	glContext.reset();
 	videoOut.reset();
 	tool.reset();
-
-	if (con->videoController->IsLoaded())
-		con->videoController->JumpToFrame(con->videoController->GetFrameN());
 }

@@ -171,5 +171,5 @@ public:
 	bool ToolIsType(std::type_info const& type) const;
 
 	/// Discard all OpenGL state
-	void Reload();
+	void Unload();
 };

@@ -66,6 +66,8 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 
 	SetTitle(wxString::Format(_("Video: %s"), wxFileName(context->videoController->GetVideoName()).GetFullName()));
 
+	old_display->Unload();
+
 	// Video area;
 	VideoBox *videoBox = new VideoBox(this, true, context);
 	context->videoDisplay->SetMinClientSize(old_display->GetClientSize());
@@ -103,16 +105,15 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 DialogDetachedVideo::~DialogDetachedVideo() { }
 
 void DialogDetachedVideo::OnClose(wxCloseEvent &evt) {
-	// Deleting a GL context seems to invalidate ALL contexts, so we need to
-	// delete both the detached and undetached contexts here, then recreate
-	// the undetached one later
 	context->videoDisplay->Destroy();
-	old_display->Reload();
 
 	context->videoDisplay = old_display;
 	context->videoSlider = old_slider;
 
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
+
+	if (context->videoController->IsLoaded())
+		context->videoController->JumpToFrame(context->videoController->GetFrameN());
 
 	evt.Skip();
 }
