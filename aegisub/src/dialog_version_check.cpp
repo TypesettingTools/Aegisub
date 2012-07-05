@@ -72,6 +72,8 @@
 #include <vector>
 #endif
 
+#include <wx/sstream.h>
+
 #include "compat.h"
 #include "main.h"
 #include "string_codec.h"
@@ -154,8 +156,10 @@ AegisubVersionCheckerThread::AegisubVersionCheckerThread(bool interactive)
 {
 	register_event_handler();
 
+#ifndef __APPLE__
 	if (!wxSocketBase::IsInitialized())
 		wxSocketBase::Initialize();
+#endif
 
 	Create();
 	Run();
@@ -327,6 +331,42 @@ void AegisubVersionCheckerThread::DoCheck()
 		inserter(accept_tags, accept_tags.end()));
 #endif
 
+#ifdef __APPLE__
+	wxString cmd = wxString::Format(
+		"curl --silent --fail 'http://%s/%s?rev=%d&rel=%d&os=%s&lang=%s'",
+		UPDATE_CHECKER_SERVER,
+		UPDATE_CHECKER_BASE_URL,
+		GetSVNRevision(),
+		GetIsOfficialRelease()?1:0,
+		GetOSShortName(),
+		GetSystemLanguage());
+
+	// wxExecute only works on the main thread so use popen instead
+	char buf[1024];
+	FILE *pipe = popen(cmd.utf8_str(), "r");
+	if (!pipe)
+		throw VersionCheckError("Could not run curl");
+
+	wxString update_str;
+	while(fgets(buf, sizeof(buf), pipe))
+		update_str += buf;
+
+	int ret = pclose(pipe);
+	switch (ret)
+	{
+		case 0:
+			break;
+		case 6:
+		case 7:
+			throw VersionCheckError(STD_STR(_("Could not connect to updates server.")));
+		case 22:
+			throw VersionCheckError(STD_STR(_("Could not download from updates server.")));
+		default:
+			throw VersionCheckError(STD_STR(wxString::Format("curl failed with error code %d", ret)));
+	}
+
+	agi::scoped_ptr<wxStringInputStream> stream(new wxStringInputStream(update_str));
+#else
 	wxString path = wxString::Format(
 		"%s?rev=%d&rel=%d&os=%s&lang=%s",
 		UPDATE_CHECKER_BASE_URL,
@@ -350,7 +390,7 @@ void AegisubVersionCheckerThread::DoCheck()
 	if (http.GetResponse() < 200 || http.GetResponse() >= 300) {
 		throw VersionCheckError(STD_STR(wxString::Format(_("HTTP request failed, got HTTP response %d."), http.GetResponse())));
 	}
-
+#endif
 	wxTextInputStream text(*stream);
 
 	AegisubVersionCheckResultEvent result_event;
