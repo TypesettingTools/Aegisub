@@ -377,7 +377,9 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = std::max(value, .125);
-	zoomBox->SetSelection(value / .125 - 1);
+	size_t selIndex = value / .125 - 1;
+	if (selIndex < zoomBox->GetCount())
+		zoomBox->SetSelection(selIndex);
 	zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
 	UpdateSize();
 }
