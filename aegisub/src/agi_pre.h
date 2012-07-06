@@ -152,7 +152,6 @@
 #include <wx/msgdlg.h>
 #include <wx/mstream.h>
 #include <wx/notebook.h>
-#include <wx/numformatter.h>
 #include <wx/panel.h>
 #include <wx/power.h>
 #include <wx/protocol/http.h>

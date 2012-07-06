@@ -27,8 +27,6 @@
 
 #ifndef AGI_PRE
 #include <limits>
-
-#include <wx/numformatter.h>
 #endif
 
 Vector2D::Vector2D()
@@ -91,9 +89,13 @@ wxString Vector2D::DStr(char sep) const {
 	return wxString::Format("%d%c%d", (int)x, sep, (int)y);
 }
 
+static wxString float_to_string(float val) {
+	wxString s = wxString::Format("%.3f", val);
+	size_t pos = s.find_last_not_of("0");
+	if (pos != s.find(".")) ++pos;
+	return s.Left(pos);
+}
+
 wxString Vector2D::Str(char sep) const {
-	return
-		wxNumberFormatter::ToString(x, 3, wxNumberFormatter::Style_NoTrailingZeroes) +
-		sep +
-		wxNumberFormatter::ToString(y, 3, wxNumberFormatter::Style_NoTrailingZeroes);
+	return float_to_string(x) + sep + float_to_string(y);
 }
