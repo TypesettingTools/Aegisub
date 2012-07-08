@@ -783,6 +783,7 @@ BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
 	EVT_SET_FOCUS(AudioDisplay::OnFocus)
 	EVT_KILL_FOCUS(AudioDisplay::OnFocus)
 	EVT_CHAR_HOOK(AudioDisplay::OnKeyDown)
+	EVT_KEY_DOWN(AudioDisplay::OnKeyDown)
 END_EVENT_TABLE()
 
 
