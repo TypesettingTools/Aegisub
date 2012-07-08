@@ -736,6 +736,8 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		{
 			std::list<AssEntry*>::iterator current_line =
 				find(context->ass->Line.begin(), context->ass->Line.end(), line);
+			if (current_line == context->ass->Line.end())
+				break;
 
 			std::list<AssEntry*>::iterator prev = current_line;
 			while (--prev != context->ass->Line.begin() && !predicate(*prev)) ;
