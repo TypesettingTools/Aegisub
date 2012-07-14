@@ -12,25 +12,25 @@
 				"key" : "KP_8"
 			}
 		],
-		"timing shift start backward" : [
+		"time/start/decrease" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_4"
 			}
 		],
-		"timing shift start forward" : [
+		"time/start/increase" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_6"
 			}
 		],
-		"timing shift end backward" : [
+		"time/length/decrease" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_7"
 			}
 		],
-		"timing shift end forward" : [
+		"time/length/increase" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_9"
@@ -385,25 +385,25 @@
 				"key" : "V"
 			}
 		],
-		"timing karaoke decrease length" : [
+		"time/length/decrease" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_Subtract"
 			}
 		],
-		"timing karaoke decrease length and shift following" : [
+		"time/length/decrease/shift" : [
 			{
 				"modifiers" : [ "Shift" ],
 				"key" : "KP_Subtract"
 			}
 		],
-		"timing karaoke increase length" : [
+		"time/length/increase" : [
 			{
 				"modifiers" : [],
 				"key" : "KP_Add"
 			}
 		],
-		"timing karaoke increase length and shift following" : [
+		"time/length/increase/shift" : [
 			{
 				"modifiers" : [ "Shift" ],
 				"key" : "KP_Add"

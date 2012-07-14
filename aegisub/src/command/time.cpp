@@ -279,6 +279,71 @@ struct time_add_lead_out : public Command {
 	}
 };
 
+struct time_length_increase : public Command {
+	CMD_NAME("time/length/increase")
+	STR_MENU("Increase length")
+	STR_DISP("Increase length")
+	STR_HELP("Increase the length of the current timing unit")
+	void operator()(agi::Context *c) {
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->ModifyLength(1, false);
+	}
+};
+
+struct time_length_increase_shift : public Command {
+	CMD_NAME("time/length/increase/shift")
+	STR_MENU("Increase length and shift")
+	STR_DISP("Increase length and shift")
+	STR_HELP("Increase the length of the current timing unit and shift the following items")
+	void operator()(agi::Context *c) {
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->ModifyLength(1, true);
+	}
+};
+
+struct time_length_decrease : public Command {
+	CMD_NAME("time/length/decrease")
+	STR_MENU("Decrease length")
+	STR_DISP("Decrease length")
+	STR_HELP("Decrease the length of the current timing unit")
+	void operator()(agi::Context *c) {
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->ModifyLength(-1, false);
+	}
+};
+
+struct time_length_decrease_shift : public Command {
+	CMD_NAME("time/length/decrease/shift")
+	STR_MENU("Decrease length and shift")
+	STR_DISP("Decrease length and shift")
+	STR_HELP("Decrease the length of the current timing unit and shift the following items")
+	void operator()(agi::Context *c) {
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->ModifyLength(-1, true);
+	}
+};
+
+struct time_start_increase : public Command {
+	CMD_NAME("time/start/increase")
+	STR_MENU("Shift start time forward")
+	STR_DISP("Shift start time forward")
+	STR_HELP("Shift the start time of the current timing unit forward")
+	void operator()(agi::Context *c) {
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->ModifyStart(1);
+	}
+};
+
+struct time_start_decrease : public Command {
+	CMD_NAME("time/start/decrease")
+	STR_MENU("Shift start time backward")
+	STR_DISP("Shift start time backward")
+	STR_HELP("Shift the start time of the current timing unit backward")
+	void operator()(agi::Context *c) {
+		if (c->audioController->GetTimingController())
+			c->audioController->GetTimingController()->ModifyStart(-1);
+	}
+};
 
 /// Set start of selected subtitles to current video frame.
 struct time_snap_start_video : public validate_video_loaded {
@@ -327,11 +392,17 @@ namespace cmd {
 		reg(new time_continuous_end);
 		reg(new time_continuous_start);
 		reg(new time_frame_current);
+		reg(new time_length_decrease);
+		reg(new time_length_decrease_shift);
+		reg(new time_length_increase);
+		reg(new time_length_increase_shift);
 		reg(new time_next);
 		reg(new time_prev);
 		reg(new time_shift);
 		reg(new time_snap_end_video);
 		reg(new time_snap_scene);
 		reg(new time_snap_start_video);
+		reg(new time_start_decrease);
+		reg(new time_start_increase);
 	}
 }

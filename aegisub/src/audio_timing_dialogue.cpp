@@ -398,6 +398,8 @@ public:
 	void Revert();
 	void AddLeadIn();
 	void AddLeadOut();
+	void ModifyLength(int delta, bool shift_following);
+	void ModifyStart(int delta);
 	bool IsNearbyMarker(int ms, int sensitivity) const;
 	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range);
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range);
@@ -598,6 +600,18 @@ void AudioTimingControllerDialogue::AddLeadOut()
 {
 	DialogueTimingMarker *m = active_line.GetRightMarker();
 	SetMarkers(std::vector<AudioMarker*>(1, m), *m + OPT_GET("Audio/Lead/OUT")->GetInt());
+}
+
+void AudioTimingControllerDialogue::ModifyLength(int delta, bool) {
+	DialogueTimingMarker *m = active_line.GetRightMarker();
+	SetMarkers(std::vector<AudioMarker*>(1, m),
+		std::max<int>(*m + delta * 10, *active_line.GetLeftMarker()));
+}
+
+void AudioTimingControllerDialogue::ModifyStart(int delta) {
+	DialogueTimingMarker *m = active_line.GetLeftMarker();
+	SetMarkers(std::vector<AudioMarker*>(1, m),
+		std::min<int>(*m + delta * 10, *active_line.GetRightMarker()));
 }
 
 bool AudioTimingControllerDialogue::IsNearbyMarker(int ms, int sensitivity) const

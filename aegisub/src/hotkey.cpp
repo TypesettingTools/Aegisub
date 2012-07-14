@@ -68,6 +68,42 @@ namespace {
 
 		hotkey::inst->SetHotkeyMap(hk_map);
 	}
+
+	const char *renamed_commands[][2] = {
+		{ "timing shift start backward", "time/start/decrease" },
+		{ "timing shift start forward", "time/start/increase" },
+		{ "timing shift end backward", "time/length/decrease" },
+		{ "timing shift end forward", "time/length/increase" },
+
+		{ "timing karaoke decrease length" , "time/length/decrease" },
+		{ "timing karaoke increase length" , "time/length/increase" },
+		{ "timing karaoke decrease length and shift following" , "time/length/decrease/shift" },
+		{ "timing karaoke increase length and shift following" , "time/length/increase/shift" },
+		{ 0, 0}
+	};
+
+	void rename_commands() {
+		std::map<std::string, const char *> name_map;
+		for (size_t i = 0; renamed_commands[i][0]; ++i)
+			name_map[renamed_commands[i][0]] = renamed_commands[i][1];
+
+		bool renamed_any = false;
+		agi::hotkey::Hotkey::HotkeyMap hk_map = hotkey::inst->GetHotkeyMap();
+		for (agi::hotkey::Hotkey::HotkeyMap::iterator it = hk_map.begin(); it != hk_map.end(); ) {
+			std::map<std::string, const char *>::iterator ren = name_map.find(it->first);
+			if (ren != name_map.end()) {
+				hk_map.insert(make_pair(std::string(ren->second),
+					agi::hotkey::Combo(it->second.Context(), ren->second, it->second.Get())));
+				hk_map.erase(it++);
+				renamed_any = true;
+			}
+			else
+				++it;
+		}
+
+		if (renamed_any)
+			hotkey::inst->SetHotkeyMap(hk_map);
+	}
 }
 
 namespace hotkey {
@@ -79,9 +115,10 @@ void init() {
 		GET_DEFAULT_CONFIG(default_hotkey));
 
 	int last_version = OPT_GET("Version/Last Version")->GetInt();
-	if (last_version < 6294) {
+	if (last_version < 6294)
 		migrate_hotkeys(removed_commands_6294, added_hotkeys_6294);
-	}
+	if (last_version < 6933)
+		rename_commands();
 }
 
 void clear() {

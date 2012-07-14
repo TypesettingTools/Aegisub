@@ -125,6 +125,15 @@ public:
 	/// Add lead-out time to the current timing unit
 	virtual void AddLeadOut() = 0;
 
+	/// Modify the length of the current and possibly following timing units
+	/// @param delta Amount to add in centiseconds
+	/// @param shift_following Should the following things be shifted by delta?
+	virtual void ModifyLength(int delta, bool shift_following) = 0;
+
+	/// Modify the start time of the current timing unit
+	/// @param delta Amount to add in centiseconds
+	virtual void ModifyStart(int delta) = 0;
+
 	/// @brief Determine if a position is close to a draggable marker
 	/// @param ms          The time in milliseconds to test
 	/// @param sensitivity Distance in milliseconds to consider markers as nearby

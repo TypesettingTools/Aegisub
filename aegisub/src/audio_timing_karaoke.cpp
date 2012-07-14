@@ -114,6 +114,8 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 
 	void DoCommit();
 	void ApplyLead(bool announce_primary);
+	int MoveMarker(KaraokeMarker *marker, int new_position);
+	void AnnounceChanges(int syl);
 
 public:
 	// AudioTimingController implementation
@@ -129,6 +131,8 @@ public:
 	void Revert();
 	void AddLeadIn();
 	void AddLeadOut();
+	void ModifyLength(int delta, bool shift_following);
+	void ModifyStart(int delta);
 	bool IsNearbyMarker(int ms, int sensitivity) const;
 	std::vector<AudioMarker*> OnLeftClick(int ms, bool, int sensitivity, int);
 	std::vector<AudioMarker*> OnRightClick(int, bool, int, int) { return std::vector<AudioMarker*>(); }
@@ -292,16 +296,36 @@ void AudioTimingControllerKaraoke::AddLeadOut() {
 
 void AudioTimingControllerKaraoke::ApplyLead(bool announce_primary) {
 	kara->SetLineTimes(start_marker, end_marker);
+	if (!announce_primary)
+		AnnounceUpdatedStyleRanges();
+	AnnounceChanges(announce_primary ? cur_syl : cur_syl + 2);
+}
 
-	AnnounceUpdatedStyleRanges();
-	AnnounceMarkerMoved();
-	if (announce_primary)
-		AnnounceUpdatedPrimaryRange();
+void AudioTimingControllerKaraoke::ModifyLength(int delta, bool shift_following) {
+	if (cur_syl == markers.size()) return;
 
-	if (auto_commit)
-		DoCommit();
-	else
-		commit_id = -1;
+	int cur, end, step;
+	if (delta < 0) {
+		cur = cur_syl;
+		end = shift_following ? markers.size() : cur_syl + 1;
+		step = 1;
+	}
+	else {
+		cur = shift_following ? markers.size() - 1 : cur_syl;
+		end = cur_syl - 1;
+		step = -1;
+	}
+
+	for (; cur != end; cur += step) {
+		MoveMarker(&markers[cur], markers[cur] + delta * 10);
+	}
+	AnnounceChanges(cur_syl);
+}
+
+void AudioTimingControllerKaraoke::ModifyStart(int delta) {
+	if (cur_syl == 0) return;
+	MoveMarker(&markers[cur_syl - 1], markers[cur_syl - 1] + delta * 10);
+	AnnounceChanges(cur_syl);
 }
 
 bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity) const {
@@ -331,35 +355,46 @@ std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool
 	return std::vector<AudioMarker*>();
 }
 
-void AudioTimingControllerKaraoke::OnMarkerDrag(std::vector<AudioMarker*> const& m, int new_position, int) {
-	assert(m.size() == 1);
-	KaraokeMarker *marker = static_cast<KaraokeMarker*>(m[0]);
+int AudioTimingControllerKaraoke::MoveMarker(KaraokeMarker *marker, int new_position) {
 	// No rearranging of syllables allowed
 	new_position = mid(
 		marker == &markers.front() ? start_marker.GetPosition() : (marker - 1)->GetPosition(),
 		new_position,
 		marker == &markers.back() ? end_marker.GetPosition() : (marker + 1)->GetPosition());
 
+	if (new_position == marker->GetPosition())
+		return -1;
+
 	marker->Move(new_position);
 
 	size_t syl = marker - &markers.front() + 1;
 	kara->SetStartTime(syl, new_position);
 
+	labels[syl - 1].range = TimeRange(labels[syl - 1].range.begin(), new_position);
+	labels[syl].range = TimeRange(new_position, labels[syl].range.end());
+
+	return syl;
+}
+
+void AudioTimingControllerKaraoke::AnnounceChanges(int syl) {
+	if (syl < 0) return;
+
 	if (syl == cur_syl || syl == cur_syl + 1) {
 		AnnounceUpdatedPrimaryRange();
 		AnnounceUpdatedStyleRanges();
 	}
-
 	AnnounceMarkerMoved();
-
-	labels[syl - 1].range = TimeRange(labels[syl - 1].range.begin(), new_position);
-	labels[syl].range = TimeRange(new_position, labels[syl].range.end());
 	AnnounceLabelChanged();
 
 	if (auto_commit)
 		DoCommit();
 	else
 		commit_id = -1;
+}
+
+void AudioTimingControllerKaraoke::OnMarkerDrag(std::vector<AudioMarker*> const& m, int new_position, int) {
+	assert(m.size() == 1);
+	AnnounceChanges(MoveMarker(static_cast<KaraokeMarker*>(m[0]), new_position));
 }
 
 void AudioTimingControllerKaraoke::GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const {
