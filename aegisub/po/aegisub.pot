@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-22 19:56-0700\n"
+"POT-Creation-Date: 2012-07-14 09:42-0700\n"
 "PO-Revision-Date: 2005-2012-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,12 +255,12 @@ msgstr ""
 msgid "karaoke split"
 msgstr ""
 
-#: ../src/timeedit_ctrl.cpp:208 ../src/dialog_style_manager.cpp:101
-#: ../src/subs_edit_ctrl.cpp:745
+#: ../src/timeedit_ctrl.cpp:215 ../src/dialog_style_manager.cpp:101
+#: ../src/subs_edit_ctrl.cpp:754
 msgid "&Copy"
 msgstr ""
 
-#: ../src/timeedit_ctrl.cpp:209 ../src/subs_edit_ctrl.cpp:746
+#: ../src/timeedit_ctrl.cpp:216 ../src/subs_edit_ctrl.cpp:755
 msgid "&Paste"
 msgstr ""
 
@@ -612,7 +612,7 @@ msgstr ""
 msgid "styling assistant"
 msgstr ""
 
-#: ../src/audio_timing_karaoke.cpp:246
+#: ../src/audio_timing_karaoke.cpp:250
 msgid "karaoke timing"
 msgstr ""
 
@@ -1690,7 +1690,7 @@ msgid "Saves subtitles with another name"
 msgstr ""
 
 #: ../src/command/subtitle.cpp:383 ../src/dialog_selected_choices.cpp:47
-#: ../src/subs_edit_ctrl.cpp:748 ../src/dialog_export.cpp:83
+#: ../src/subs_edit_ctrl.cpp:757 ../src/dialog_export.cpp:83
 msgid "Select &All"
 msgstr ""
 
@@ -1854,8 +1854,8 @@ msgstr ""
 
 #: ../src/command/tool.cpp:275 ../src/command/grid.cpp:59
 #: ../src/command/grid.cpp:60 ../src/command/grid.cpp:71
-#: ../src/command/grid.cpp:72 ../src/command/time.cpp:298
-#: ../src/command/time.cpp:299
+#: ../src/command/grid.cpp:72 ../src/command/time.cpp:363
+#: ../src/command/time.cpp:364
 msgid "Next Line"
 msgstr ""
 
@@ -1868,8 +1868,8 @@ msgid "&Previous Line"
 msgstr ""
 
 #: ../src/command/tool.cpp:287 ../src/command/grid.cpp:95
-#: ../src/command/grid.cpp:96 ../src/command/time.cpp:310
-#: ../src/command/time.cpp:311
+#: ../src/command/grid.cpp:96 ../src/command/time.cpp:375
+#: ../src/command/time.cpp:376
 msgid "Previous Line"
 msgstr ""
 
@@ -2315,8 +2315,8 @@ msgstr ""
 msgid "Shift subtitles by time or frames"
 msgstr ""
 
-#: ../src/command/time.cpp:178 ../src/audio_timing_dialogue.cpp:554
-#: ../src/audio_timing_dialogue.cpp:560
+#: ../src/command/time.cpp:178 ../src/audio_timing_dialogue.cpp:556
+#: ../src/audio_timing_dialogue.cpp:562
 msgid "timing"
 msgstr ""
 
@@ -2364,23 +2364,73 @@ msgstr ""
 msgid "Add lead out"
 msgstr ""
 
+#: ../src/command/time.cpp:284 ../src/command/time.cpp:285
+msgid "Increase length"
+msgstr ""
+
 #: ../src/command/time.cpp:286
+msgid "Increase the length of the current timing unit"
+msgstr ""
+
+#: ../src/command/time.cpp:295 ../src/command/time.cpp:296
+msgid "Increase length and shift"
+msgstr ""
+
+#: ../src/command/time.cpp:297
+msgid ""
+"Increase the length of the current timing unit and shift the following items"
+msgstr ""
+
+#: ../src/command/time.cpp:306 ../src/command/time.cpp:307
+msgid "Decrease length"
+msgstr ""
+
+#: ../src/command/time.cpp:308
+msgid "Decrease the length of the current timing unit"
+msgstr ""
+
+#: ../src/command/time.cpp:317 ../src/command/time.cpp:318
+msgid "Decrease length and shift"
+msgstr ""
+
+#: ../src/command/time.cpp:319
+msgid ""
+"Decrease the length of the current timing unit and shift the following items"
+msgstr ""
+
+#: ../src/command/time.cpp:328 ../src/command/time.cpp:329
+msgid "Shift start time forward"
+msgstr ""
+
+#: ../src/command/time.cpp:330
+msgid "Shift the start time of the current timing unit forward"
+msgstr ""
+
+#: ../src/command/time.cpp:339 ../src/command/time.cpp:340
+msgid "Shift start time backward"
+msgstr ""
+
+#: ../src/command/time.cpp:341
+msgid "Shift the start time of the current timing unit backward"
+msgstr ""
+
+#: ../src/command/time.cpp:351
 msgid "Snap &Start to Video"
 msgstr ""
 
-#: ../src/command/time.cpp:287
+#: ../src/command/time.cpp:352
 msgid "Snap Start to Video"
 msgstr ""
 
-#: ../src/command/time.cpp:288
+#: ../src/command/time.cpp:353
 msgid "Set start of selected subtitles to current video frame"
 msgstr ""
 
-#: ../src/command/time.cpp:300
+#: ../src/command/time.cpp:365
 msgid "Next line or syllable"
 msgstr ""
 
-#: ../src/command/time.cpp:312
+#: ../src/command/time.cpp:377
 msgid "Previous line or syllable"
 msgstr ""
 
@@ -2707,51 +2757,51 @@ msgstr ""
 msgid "Resource files"
 msgstr ""
 
-#: ../src/command/help.cpp:112
+#: ../src/command/help.cpp:109
 msgid "&Forums"
 msgstr ""
 
-#: ../src/command/help.cpp:113
+#: ../src/command/help.cpp:110
 msgid "Forums"
 msgstr ""
 
-#: ../src/command/help.cpp:114
+#: ../src/command/help.cpp:111
 msgid "Visit Aegisub's forums"
 msgstr ""
 
-#: ../src/command/help.cpp:125
+#: ../src/command/help.cpp:122
 msgid "&IRC Channel"
 msgstr ""
 
-#: ../src/command/help.cpp:126
+#: ../src/command/help.cpp:123
 msgid "IRC Channel"
 msgstr ""
 
-#: ../src/command/help.cpp:127
+#: ../src/command/help.cpp:124
 msgid "Visit Aegisub's official IRC channel"
 msgstr ""
 
-#: ../src/command/help.cpp:137
+#: ../src/command/help.cpp:134
 msgid "&Visual Typesetting"
 msgstr ""
 
-#: ../src/command/help.cpp:138
+#: ../src/command/help.cpp:135
 msgid "Visual Typesetting"
 msgstr ""
 
-#: ../src/command/help.cpp:139
+#: ../src/command/help.cpp:136
 msgid "Open the manual page for Visual Typesetting"
 msgstr ""
 
-#: ../src/command/help.cpp:149
+#: ../src/command/help.cpp:146
 msgid "&Website"
 msgstr ""
 
-#: ../src/command/help.cpp:150
+#: ../src/command/help.cpp:147
 msgid "Website"
 msgstr ""
 
-#: ../src/command/help.cpp:151
+#: ../src/command/help.cpp:148
 msgid "Visit Aegisub's official website"
 msgstr ""
 
@@ -2835,7 +2885,7 @@ msgstr ""
 msgid "Aegisub has found no spelling mistakes in this script."
 msgstr ""
 
-#: ../src/dialog_spellchecker.cpp:272 ../src/dialog_spellchecker.cpp:284
+#: ../src/dialog_spellchecker.cpp:278 ../src/dialog_spellchecker.cpp:290
 msgid "spell check replace"
 msgstr ""
 
@@ -3086,43 +3136,43 @@ msgid ""
 "folder is entered, a default name will be used."
 msgstr ""
 
-#: ../src/frame_main.cpp:217
+#: ../src/frame_main.cpp:215
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
 msgstr ""
 
-#: ../src/frame_main.cpp:217
+#: ../src/frame_main.cpp:215
 msgid "Check for updates?"
 msgstr ""
 
-#: ../src/frame_main.cpp:372
+#: ../src/frame_main.cpp:373
 #, c-format
 msgid "Do you want to save changes to %s?"
 msgstr ""
 
-#: ../src/frame_main.cpp:372
+#: ../src/frame_main.cpp:373
 msgid "Unsaved changes"
 msgstr ""
 
-#: ../src/frame_main.cpp:632
+#: ../src/frame_main.cpp:628
 #, c-format
 msgid "File backup saved as \"%s\"."
 msgstr ""
 
-#: ../src/frame_main.cpp:684
+#: ../src/frame_main.cpp:680
 msgid "Do you want to load/unload the associated files?"
 msgstr ""
 
-#: ../src/frame_main.cpp:684
+#: ../src/frame_main.cpp:680
 msgid "(Un)Load files?"
 msgstr ""
 
-#: ../src/frame_main.cpp:745
+#: ../src/frame_main.cpp:741
 msgid "Untitled"
 msgstr ""
 
-#: ../src/frame_main.cpp:747
+#: ../src/frame_main.cpp:743
 msgid "untitled"
 msgstr ""
 
@@ -3805,58 +3855,58 @@ msgstr ""
 msgid "&Restore Defaults"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:744
+#: ../src/subs_edit_ctrl.cpp:753
 msgid "Cu&t"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:753
+#: ../src/subs_edit_ctrl.cpp:762
 msgid "Split at cursor (preserve times)"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:754
+#: ../src/subs_edit_ctrl.cpp:763
 msgid "Split at cursor (estimate times)"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:764
+#: ../src/subs_edit_ctrl.cpp:773
 msgid "No spell checker suggestions"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:770
+#: ../src/subs_edit_ctrl.cpp:779
 #, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:775
+#: ../src/subs_edit_ctrl.cpp:784
 msgid "No correction suggestions"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:781
+#: ../src/subs_edit_ctrl.cpp:790
 #, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:785
+#: ../src/subs_edit_ctrl.cpp:794
 msgid "Spell checker language"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:825
+#: ../src/subs_edit_ctrl.cpp:834
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:828
+#: ../src/subs_edit_ctrl.cpp:837
 msgid "No thesaurus suggestions"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:831
+#: ../src/subs_edit_ctrl.cpp:840
 msgid "Thesaurus language"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:840
+#: ../src/subs_edit_ctrl.cpp:849
 msgid "Disable"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:868
+#: ../src/subs_edit_ctrl.cpp:877
 msgid "split"
 msgstr ""
 
@@ -3868,7 +3918,7 @@ msgstr ""
 msgid "&Recent"
 msgstr ""
 
-#: ../src/menu.cpp:421
+#: ../src/menu.cpp:422
 msgid "No Automation macros loaded"
 msgstr ""
 
@@ -3956,7 +4006,7 @@ msgid "&Accept Line"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:672 ../src/dialog_automation.cpp:81
-#: ../src/dialog_attachments.cpp:88 ../src/dialog_version_check.cpp:465
+#: ../src/dialog_attachments.cpp:88 ../src/dialog_version_check.cpp:503
 msgid "&Close"
 msgstr ""
 
@@ -4323,58 +4373,58 @@ msgstr ""
 msgid "Selection"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:103
+#: ../src/font_file_lister.cpp:114
 #, c-format
 msgid "Could not find font '%s'\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:110
+#: ../src/font_file_lister.cpp:121
 #, c-format
 msgid "Found '%s' at '%s'\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:115
+#: ../src/font_file_lister.cpp:126
 #, c-format
 msgid "'%s' is missing %d glyphs used.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:117
+#: ../src/font_file_lister.cpp:128
 #, c-format
 msgid "'%s' is missing the following glyphs used: %s\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:126
+#: ../src/font_file_lister.cpp:137
 msgid "Used in styles:\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:132
+#: ../src/font_file_lister.cpp:143
 msgid "Used on lines:"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:144
+#: ../src/font_file_lister.cpp:155
 msgid "Parsing file\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:159
+#: ../src/font_file_lister.cpp:170
 msgid "Searching for font files\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:161
+#: ../src/font_file_lister.cpp:172
 msgid ""
 "Done\n"
 "\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:168
+#: ../src/font_file_lister.cpp:179
 msgid "All fonts found.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:170
+#: ../src/font_file_lister.cpp:181
 #, c-format
 msgid "%d fonts could not be found.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:172
+#: ../src/font_file_lister.cpp:183
 #, c-format
 msgid "%d fonts were found, but were missing glyphs used in the script.\n"
 msgstr ""
@@ -4763,7 +4813,7 @@ msgstr ""
 msgid "Comment starter:"
 msgstr ""
 
-#: ../src/video_box.cpp:91
+#: ../src/video_box.cpp:84
 msgid "Seek video"
 msgstr ""
 
@@ -4847,75 +4897,75 @@ msgstr ""
 msgid "OEM"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:663
+#: ../src/dialog_colorpicker.cpp:654
 msgid "Select Color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:696
+#: ../src/dialog_colorpicker.cpp:687
 msgid "Color spectrum"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:699
+#: ../src/dialog_colorpicker.cpp:690
 msgid "RGB/R"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:699
+#: ../src/dialog_colorpicker.cpp:690
 msgid "RGB/G"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:699
+#: ../src/dialog_colorpicker.cpp:690
 msgid "RGB/B"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:699
+#: ../src/dialog_colorpicker.cpp:690
 msgid "HSL/L"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:699
+#: ../src/dialog_colorpicker.cpp:690
 msgid "HSV/H"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:705
+#: ../src/dialog_colorpicker.cpp:696
 msgid "RGB color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:706
+#: ../src/dialog_colorpicker.cpp:697
 msgid "HSL color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:707
+#: ../src/dialog_colorpicker.cpp:698
 msgid "HSV color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:731
+#: ../src/dialog_colorpicker.cpp:722
 msgid "Spectrum mode:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:742
+#: ../src/dialog_colorpicker.cpp:733
 msgid "Red:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:742
+#: ../src/dialog_colorpicker.cpp:733
 msgid "Green:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:742
+#: ../src/dialog_colorpicker.cpp:733
 msgid "Blue:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:749 ../src/dialog_colorpicker.cpp:752
+#: ../src/dialog_colorpicker.cpp:740 ../src/dialog_colorpicker.cpp:743
 msgid "Hue:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:749 ../src/dialog_colorpicker.cpp:752
+#: ../src/dialog_colorpicker.cpp:740 ../src/dialog_colorpicker.cpp:743
 msgid "Sat.:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:749
+#: ../src/dialog_colorpicker.cpp:740
 msgid "Lum.:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:752
+#: ../src/dialog_colorpicker.cpp:743
 msgid "Value:"
 msgstr ""
 
@@ -4929,7 +4979,7 @@ msgstr ""
 msgid "Choose character set"
 msgstr ""
 
-#: ../src/dialog_detached_video.cpp:66
+#: ../src/dialog_detached_video.cpp:67
 #, c-format
 msgid "Video: %s"
 msgstr ""
@@ -5256,7 +5306,7 @@ msgstr ""
 msgid "Update script?"
 msgstr ""
 
-#: ../src/audio_provider.cpp:150
+#: ../src/audio_provider.cpp:158
 msgid "Load audio"
 msgstr ""
 
@@ -5386,11 +5436,11 @@ msgstr ""
 msgid "Display standard"
 msgstr ""
 
-#: ../src/audio_provider_ram.cpp:90
+#: ../src/audio_provider_ram.cpp:91
 msgid "Reading into RAM"
 msgstr ""
 
-#: ../src/audio_provider_hd.cpp:141
+#: ../src/audio_provider_hd.cpp:148
 msgid "Reading to Hard Disk cache"
 msgstr ""
 
@@ -5511,7 +5561,7 @@ msgstr ""
 msgid "resolution resampling"
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:183
+#: ../src/dialog_version_check.cpp:189
 #, c-format
 msgid ""
 "There was an error checking for updates to Aegisub:\n"
@@ -5521,44 +5571,44 @@ msgid ""
 "temporary server problem on our end."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:187
+#: ../src/dialog_version_check.cpp:193
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:346
+#: ../src/dialog_version_check.cpp:361 ../src/dialog_version_check.cpp:384
 msgid "Could not connect to updates server."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:350
+#: ../src/dialog_version_check.cpp:363 ../src/dialog_version_check.cpp:388
 msgid "Could not download from updates server."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:353
+#: ../src/dialog_version_check.cpp:391
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:431
+#: ../src/dialog_version_check.cpp:469
 msgid "Version Checker"
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:458
+#: ../src/dialog_version_check.cpp:496
 msgid "&Auto Check for Updates"
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:463
+#: ../src/dialog_version_check.cpp:501
 msgid "Remind me again in a &week"
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:513
+#: ../src/dialog_version_check.cpp:551
 msgid "An update to Aegisub was found."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:517
+#: ../src/dialog_version_check.cpp:555
 msgid "Several possible updates to Aegisub were found."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:521
+#: ../src/dialog_version_check.cpp:559
 msgid "There are no updates to Aegisub."
 msgstr ""
 
