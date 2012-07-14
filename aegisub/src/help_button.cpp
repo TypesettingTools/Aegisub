@@ -59,9 +59,9 @@ static void init_static() {
 		pages = new std::map<wxString, wxString>;
 		std::map<wxString, wxString> &page = *pages;
 		page["Attachment Manager"] = "Attachment_Manager";
-		page["Automation Manager"] = "Automation_Manager";
+		page["Automation Manager"] = "Automation/Manager";
 		page["Colour Picker"] = "Colour_Picker";
-		page["Dummy Video"] = "Dummy_video";
+		page["Dummy Video"] = "Video#dummyvideo";
 		page["Export"] = "Exporting";
 		page["Fonts Collector"] = "Fonts_Collector";
 		page["Kanji Timer"] = "Kanji_Timer";
@@ -95,6 +95,8 @@ void HelpButton::OpenPage(wxString const& pageID) {
 	init_static();
 
 	wxString page = (*pages)[pageID];
+	wxString section;
+	page = page.BeforeFirst('#', &section);
 
 	wxFileName docFile(StandardPaths::DecodePath("?data/docs/"), page, "html", wxPATH_NATIVE);
 
@@ -106,7 +108,7 @@ void HelpButton::OpenPage(wxString const& pageID) {
 		// is safe with everything everyone uses. Blame Microsoft.
 		url = wxString("file://") + docFile.GetFullPath(wxPATH_NATIVE);
 	else
-		url = wxString::Format("http://docs.aegisub.org/manual/%s", page);
+		url = wxString::Format("http://docs.aegisub.org/manual/%s/#%s", page, section);
 
 	wxLaunchDefaultBrowser(url);
 }
