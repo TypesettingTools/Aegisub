@@ -481,7 +481,7 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 	// Eat all whitespace at the start of the destination.
 	if (StringEmptyOrWhitespace(src))
 	{
-		while (IsWhitespace(unmatched_destination[destination_sel_length]))
+		while (destination_sel_length < unmatched_destination.size() && IsWhitespace(unmatched_destination[destination_sel_length]))
 			++destination_sel_length;
 		// Now we've eaten all spaces in the destination as well
 		// so the selection lengths should be good
