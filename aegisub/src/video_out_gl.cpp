@@ -290,7 +290,7 @@ void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
 	InitTextures(frame.w, frame.h, format, frame.GetBpp(), frame.flipped);
 
 	// Set the row length, needed to be able to upload partial rows
-	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, frame.w));
+	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, frame.pitch / frame.GetBpp()));
 
 	for (unsigned i = 0; i < textureList.size(); i++) {
 		TextureInfo& ti = textureList[i];
