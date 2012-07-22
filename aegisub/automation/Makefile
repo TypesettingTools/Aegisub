@@ -2,6 +2,7 @@ include ../Makefile.inc
 
 # share/
 DATA_AUTOMATION += \
+	autoload/clean-info.lua \
 	autoload/cleantags-autoload.lua \
 	autoload/kara-templater.lua \
 	autoload/karaoke-auto-leadin.lua \
@@ -10,12 +11,13 @@ DATA_AUTOMATION += \
 	autoload/select-overlaps.lua \
 	autoload/strip-tags.lua \
 	include/cleantags.lua \
+	include/clipboard.lua \
 	include/karaskel-auto4.lua \
 	include/karaskel.lua \
+	include/re.lua \
 	include/unicode.lua \
 	include/utils-auto4.lua \
 	include/utils.lua
-
 
 # share/doc
 DATA_GENERAL_DOC = \
