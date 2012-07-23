@@ -132,6 +132,9 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 			TrackMask = FFMS_TRACKMASK_ALL;
 		Index = DoIndexing(Indexer, CacheName, TrackMask, GetErrorHandlingMode());
 	}
+	else {
+		FFMS_CancelIndexing(Indexer);
+	}
 
 	// update access time of index file so it won't get cleaned away
 	wxFileName(CacheName).Touch();

@@ -143,6 +143,9 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		if (TrackNumber == FFMS_TRACKMASK_ALL)
 			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, &ErrInfo);
 	}
+	else {
+		FFMS_CancelIndexing(Indexer);
+	}
 
 	// update access time of index file so it won't get cleaned away
 	if (!wxFileName(CacheName).Touch()) {
