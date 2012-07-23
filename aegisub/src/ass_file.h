@@ -239,6 +239,8 @@ public:
 	static bool CompActor(const AssDialogue* lft, const AssDialogue* rgt);
 	/// Compare based on effect
 	static bool CompEffect(const AssDialogue* lft, const AssDialogue* rgt);
+	/// Compare based on layer
+	static bool CompLayer(const AssDialogue* lft, const AssDialogue* rgt);
 
 	/// @brief Sort the dialogue lines in this file
 	/// @param comp Comparison function to use. Defaults to sorting by start time.

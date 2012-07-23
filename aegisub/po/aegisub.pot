@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-14 09:42-0700\n"
+"POT-Creation-Date: 2012-07-22 17:02-0700\n"
 "PO-Revision-Date: 2005-2012-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,8 @@ msgstr ""
 msgid "Line Number"
 msgstr ""
 
-#: ../src/base_grid.cpp:784 ../src/dialog_paste_over.cpp:62
+#: ../src/base_grid.cpp:784 ../src/command/grid.cpp:194
+#: ../src/command/grid.cpp:207 ../src/dialog_paste_over.cpp:62
 msgid "Layer"
 msgstr ""
 
@@ -2063,6 +2064,7 @@ msgstr ""
 #: ../src/command/grid.cpp:173 ../src/command/grid.cpp:186
 #: ../src/command/grid.cpp:199 ../src/command/grid.cpp:212
 #: ../src/command/grid.cpp:225 ../src/command/grid.cpp:238
+#: ../src/command/grid.cpp:251 ../src/command/grid.cpp:264
 msgid "sort"
 msgstr ""
 
@@ -2100,125 +2102,137 @@ msgid "Sort selected subtitles by their end times"
 msgstr ""
 
 #: ../src/command/grid.cpp:193 ../src/command/grid.cpp:206
+msgid "&Layer"
+msgstr ""
+
+#: ../src/command/grid.cpp:195
+msgid "Sort all subtitles by their layer number"
+msgstr ""
+
+#: ../src/command/grid.cpp:208
+msgid "Sort selected subtitles by their layer number"
+msgstr ""
+
+#: ../src/command/grid.cpp:219 ../src/command/grid.cpp:232
 msgid "&Start Time"
 msgstr ""
 
-#: ../src/command/grid.cpp:194 ../src/command/grid.cpp:207
+#: ../src/command/grid.cpp:220 ../src/command/grid.cpp:233
 #: ../src/dialog_paste_over.cpp:63
 msgid "Start Time"
 msgstr ""
 
-#: ../src/command/grid.cpp:195
+#: ../src/command/grid.cpp:221
 msgid "Sort all subtitles by their start times"
 msgstr ""
 
-#: ../src/command/grid.cpp:208
+#: ../src/command/grid.cpp:234
 msgid "Sort selected subtitles by their start times"
 msgstr ""
 
-#: ../src/command/grid.cpp:219 ../src/command/grid.cpp:232
+#: ../src/command/grid.cpp:245 ../src/command/grid.cpp:258
 msgid "St&yle Name"
 msgstr ""
 
-#: ../src/command/grid.cpp:220 ../src/command/grid.cpp:233
+#: ../src/command/grid.cpp:246 ../src/command/grid.cpp:259
 #: ../src/dialog_style_editor.cpp:180
 msgid "Style Name"
 msgstr ""
 
-#: ../src/command/grid.cpp:221
+#: ../src/command/grid.cpp:247
 msgid "Sort all subtitles by their style names"
 msgstr ""
 
-#: ../src/command/grid.cpp:234
+#: ../src/command/grid.cpp:260
 msgid "Sort selected subtitles by their style names"
 msgstr ""
 
-#: ../src/command/grid.cpp:245 ../src/command/grid.cpp:246
+#: ../src/command/grid.cpp:271 ../src/command/grid.cpp:272
 msgid "Cycle Tag Hiding Mode"
 msgstr ""
 
-#: ../src/command/grid.cpp:247
+#: ../src/command/grid.cpp:273
 msgid "Cycle through tag hiding modes"
 msgstr ""
 
-#: ../src/command/grid.cpp:257
+#: ../src/command/grid.cpp:283
 msgid "ASS Override Tag mode set to show full tags."
 msgstr ""
 
-#: ../src/command/grid.cpp:258
+#: ../src/command/grid.cpp:284
 msgid "ASS Override Tag mode set to simplify tags."
 msgstr ""
 
-#: ../src/command/grid.cpp:259
+#: ../src/command/grid.cpp:285
 msgid "ASS Override Tag mode set to hide tags."
 msgstr ""
 
-#: ../src/command/grid.cpp:271
+#: ../src/command/grid.cpp:297
 msgid "&Hide Tags"
 msgstr ""
 
-#: ../src/command/grid.cpp:272
+#: ../src/command/grid.cpp:298
 msgid "Hide Tags"
 msgstr ""
 
-#: ../src/command/grid.cpp:273
+#: ../src/command/grid.cpp:299
 msgid "Hide override tags in the subtitle grid"
 msgstr ""
 
-#: ../src/command/grid.cpp:289
+#: ../src/command/grid.cpp:315
 msgid "Sh&ow Tags"
 msgstr ""
 
-#: ../src/command/grid.cpp:290
+#: ../src/command/grid.cpp:316
 msgid "Show Tags"
 msgstr ""
 
-#: ../src/command/grid.cpp:291
+#: ../src/command/grid.cpp:317
 msgid "Show full override tags in the subtitle grid"
 msgstr ""
 
-#: ../src/command/grid.cpp:307
+#: ../src/command/grid.cpp:333
 msgid "S&implify Tags"
 msgstr ""
 
-#: ../src/command/grid.cpp:308
+#: ../src/command/grid.cpp:334
 msgid "Simplify Tags"
 msgstr ""
 
-#: ../src/command/grid.cpp:309
+#: ../src/command/grid.cpp:335
 msgid ""
 "Replace override tags in the subtitle grid with a simplified placeholder"
 msgstr ""
 
-#: ../src/command/grid.cpp:345 ../src/command/grid.cpp:346
+#: ../src/command/grid.cpp:371 ../src/command/grid.cpp:372
 msgid "Move line up"
 msgstr ""
 
-#: ../src/command/grid.cpp:347
+#: ../src/command/grid.cpp:373
 msgid "Move the selected lines up one row"
 msgstr ""
 
-#: ../src/command/grid.cpp:356 ../src/command/grid.cpp:374
+#: ../src/command/grid.cpp:382 ../src/command/grid.cpp:400
 msgid "move lines"
 msgstr ""
 
-#: ../src/command/grid.cpp:363 ../src/command/grid.cpp:364
+#: ../src/command/grid.cpp:389 ../src/command/grid.cpp:390
 msgid "Move line down"
 msgstr ""
 
-#: ../src/command/grid.cpp:365
+#: ../src/command/grid.cpp:391
 msgid "Move the selected lines down one row"
 msgstr ""
 
-#: ../src/command/grid.cpp:381 ../src/command/grid.cpp:382
+#: ../src/command/grid.cpp:407 ../src/command/grid.cpp:408
 msgid "Swap Lines"
 msgstr ""
 
-#: ../src/command/grid.cpp:383
+#: ../src/command/grid.cpp:409
 msgid "Swaps the two selected lines"
 msgstr ""
 
-#: ../src/command/grid.cpp:398
+#: ../src/command/grid.cpp:424
 msgid "swap lines"
 msgstr ""
 
@@ -4058,7 +4072,7 @@ msgstr ""
 msgid "T&ext"
 msgstr ""
 
-#: ../src/main.cpp:323
+#: ../src/main.cpp:325
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -4070,7 +4084,7 @@ msgid ""
 "Aegisub will now close."
 msgstr ""
 
-#: ../src/main.cpp:348 ../src/main.cpp:357
+#: ../src/main.cpp:350 ../src/main.cpp:359
 msgid "Program error"
 msgstr ""
 

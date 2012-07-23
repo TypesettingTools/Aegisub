@@ -105,14 +105,16 @@
         { "command" : "grid/sort/end" },
         { "command" : "grid/sort/style" },
         { "command" : "grid/sort/actor" },
-        { "command" : "grid/sort/effect" }
+        { "command" : "grid/sort/effect" },
+        { "command" : "grid/sort/layer" }
     ],
     "main/subtitle/sort selected lines" : [
         { "command" : "grid/sort/start/selected" },
         { "command" : "grid/sort/end/selected" },
         { "command" : "grid/sort/style/selected" },
         { "command" : "grid/sort/actor/selected" },
-        { "command" : "grid/sort/effect/selected" }
+        { "command" : "grid/sort/effect/selected" },
+        { "command" : "grid/sort/layer/selected" }
     ],
     "main/timing" : [
         { "command" : "time/shift" },

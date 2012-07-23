@@ -187,6 +187,32 @@ struct grid_sort_end_selected : public validate_sel_multiple {
 	}
 };
 
+/// Sort all subtitles by their layer number.
+struct grid_sort_layer : public Command {
+	CMD_NAME("grid/sort/layer")
+	STR_MENU("&Layer")
+	STR_DISP("Layer")
+	STR_HELP("Sort all subtitles by their layer number")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompLayer);
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
+/// Sort all selected subtitles by their layer number.
+struct grid_sort_layer_selected : public validate_sel_multiple {
+	CMD_NAME("grid/sort/layer/selected")
+	STR_MENU("&Layer")
+	STR_DISP("Layer")
+	STR_HELP("Sort selected subtitles by their layer number")
+
+	void operator()(agi::Context *c) {
+		c->ass->Sort(AssFile::CompLayer, c->selectionController->GetSelectedSet());
+		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
+	}
+};
+
 /// Sort all subtitles by their start times.
 struct grid_sort_start : public Command {
 	CMD_NAME("grid/sort/start")
@@ -411,11 +437,13 @@ namespace cmd {
 		reg(new grid_sort_actor);
 		reg(new grid_sort_effect);
 		reg(new grid_sort_end);
+		reg(new grid_sort_layer);
 		reg(new grid_sort_start);
 		reg(new grid_sort_style);
 		reg(new grid_sort_actor_selected);
 		reg(new grid_sort_effect_selected);
 		reg(new grid_sort_end_selected);
+		reg(new grid_sort_layer_selected);
 		reg(new grid_sort_start_selected);
 		reg(new grid_sort_style_selected);
 		reg(new grid_move_down);

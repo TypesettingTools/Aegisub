@@ -692,6 +692,9 @@ bool AssFile::CompActor(const AssDialogue* lft, const AssDialogue* rgt) {
 bool AssFile::CompEffect(const AssDialogue* lft, const AssDialogue* rgt) {
 	return lft->Effect < rgt->Effect;
 }
+bool AssFile::CompLayer(const AssDialogue* lft, const AssDialogue* rgt) {
+	return lft->Layer < rgt->Layer;
+}
 
 void AssFile::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
 	Sort(Line, comp, limit);
