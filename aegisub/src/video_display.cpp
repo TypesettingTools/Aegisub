@@ -115,6 +115,8 @@ VideoDisplay::VideoDisplay(
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::UpdateSize, this));
 	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
 
+	slots.push_back(con->ass->AddFileSaveListener(&VideoDisplay::OnSubtitlesSave, this));
+
 	Bind(wxEVT_PAINT, std::tr1::bind(&VideoDisplay::Render, this));
 	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
 	Bind(wxEVT_CONTEXT_MENU, &VideoDisplay::OnContextMenu, this);
@@ -426,4 +428,8 @@ void VideoDisplay::Unload() {
 	glContext.reset();
 	videoOut.reset();
 	tool.reset();
+}
+
+void VideoDisplay::OnSubtitlesSave() {
+	con->ass->SetScriptInfo("Video Zoom Percent", wxString::Format("%g", zoomValue));
 }
