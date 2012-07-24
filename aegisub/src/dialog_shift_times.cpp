@@ -260,7 +260,7 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 	json::Object& obj = (*history)[entry];
 	if (obj["is by time"]) {
-		shift_time->SetValue(lagi_wxString(obj["amount"]));
+		shift_time->SetTime(AssTime(lagi_wxString(obj["amount"])));
 		shift_by_time->SetValue(true);
 		OnByTime(evt);
 	}
