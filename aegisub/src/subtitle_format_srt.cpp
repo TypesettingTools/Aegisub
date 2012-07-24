@@ -505,7 +505,11 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	StripComments(copy.Line);
 	RecombineOverlaps(copy.Line);
 	MergeIdentical(copy.Line);
+#ifdef _WIN32
 	ConvertNewlines(copy.Line, "\r\n", false);
+#else
+	ConvertNewlines(copy.Line, "\n", false);
+#endif
 
 	// Write lines
 	int i=1;
