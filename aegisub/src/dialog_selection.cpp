@@ -236,7 +236,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 			switch (count = new_sel.size()) {
 				case 0:  message = _("Selection was set to no lines"); break;
 				case 1:  message = _("Selection was set to one line"); break;
-				default: message = wxString::Format(_("Selection was set to %u lines"), count);
+				default: message = wxString::Format(_("Selection was set to %u lines"), (unsigned)count);
 			}
 			break;
 
@@ -245,7 +245,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 			switch (count = new_sel.size() - old_sel.size()) {
 				case 0:  message = _("No lines were added to selection"); break;
 				case 1:  message = _("One line was added to selection"); break;
-				default: message = wxString::Format(_("%u lines were added to selection"), count);
+				default: message = wxString::Format(_("%u lines were added to selection"), (unsigned)count);
 			}
 			break;
 
@@ -254,7 +254,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 			switch (count = old_sel.size() - new_sel.size()) {
 				case 0:  message = _("No lines were removed from selection"); break;
 				case 1:  message = _("One line was removed from selection"); break;
-				default: message = wxString::Format(_("%u lines were removed from selection"), count);
+				default: message = wxString::Format(_("%u lines were removed from selection"), (unsigned)count);
 			}
 			break;
 
@@ -263,7 +263,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 			switch (count = old_sel.size() - new_sel.size()) {
 				case 0:  message = _("No lines were removed from selection"); break;
 				case 1:  message = _("One line was removed from selection"); break;
-				default: message = wxString::Format(_("%u lines were removed from selection"), count);
+				default: message = wxString::Format(_("%u lines were removed from selection"), (unsigned)count);
 			}
 			break;
 	}
