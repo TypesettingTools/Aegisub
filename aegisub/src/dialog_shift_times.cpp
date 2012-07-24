@@ -194,6 +194,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::Process, this, wxID_OK);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Shift Times"), wxID_HELP);
+	shift_time->Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogShiftTimes::Process, this);
 	history_box->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogShiftTimes::OnHistoryClick, this);
 	context->selectionController->AddSelectionListener(this);
 }
