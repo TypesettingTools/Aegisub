@@ -683,6 +683,9 @@ void FrameMain::OnSubtitlesOpen() {
 		}
 	}
 
+	if (audioChanged)
+		blockAudioLoad = true;
+
 	// Video
 	if (videoChanged) {
 		context->videoController->SetVideo(curSubsVideo);
@@ -712,6 +715,7 @@ void FrameMain::OnSubtitlesOpen() {
 
 	// Audio
 	if (audioChanged) {
+		blockAudioLoad = false;
 		try {
 			if (!curSubsAudio)
 				context->audioController->CloseAudio();
