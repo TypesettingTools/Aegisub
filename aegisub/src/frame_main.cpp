@@ -688,13 +688,13 @@ void FrameMain::OnSubtitlesOpen() {
 
 	// Video
 	if (videoChanged) {
+		wxString arString = context->ass->GetScriptInfo("Video Aspect Ratio");
 		context->videoController->SetVideo(curSubsVideo);
 		if (context->videoController->IsLoaded()) {
 			context->videoController->JumpToFrame(context->ass->GetScriptInfoAsInt("Video Position"));
 
 			long videoAr = 0;
 			double videoArValue = 0.;
-			wxString arString = context->ass->GetScriptInfo("Video Aspect Ratio");
 			if (arString.StartsWith("c")) {
 				videoAr = 4;
 				arString.Mid(1).ToDouble(&videoArValue);
