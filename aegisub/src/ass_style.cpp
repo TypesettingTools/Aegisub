@@ -130,7 +130,7 @@ wxString AssColor::GetASSFormatted(bool alpha,bool stripped,bool isStyle) const 
 /// @return
 wxString AssColor::GetSSAFormatted() const {
 	long color = (a<<24)+(b<<16)+(g<<8)+r;
-	wxString output=wxString::Format("%i",(long)color);
+	wxString output=wxString::Format("%li",(long)color);
 	return output;
 }
 
