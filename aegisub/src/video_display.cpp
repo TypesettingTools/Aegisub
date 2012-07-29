@@ -69,6 +69,7 @@
 #include "utils.h"
 #include "video_out_gl.h"
 #include "video_context.h"
+#include "video_frame.h"
 #include "visual_tool.h"
 
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
@@ -158,10 +159,13 @@ bool VideoDisplay::InitContext() {
 }
 
 void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
-	if (!InitContext()) {
-		evt.Skip();
+	pending_frame = evt.frame;
+	Render();
+}
+
+void VideoDisplay::Render() try {
+	if (!con->videoController->IsLoaded() || !InitContext() || (!videoOut && !pending_frame))
 		return;
-	}
 
 	if (!videoOut)
 		videoOut.reset(new VideoOutGL);
@@ -170,7 +174,10 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 		cmd::call("video/tool/cross", con);
 
 	try {
-		videoOut->UploadFrameData(*evt.frame);
+		if (pending_frame) {
+			videoOut->UploadFrameData(*pending_frame);
+			pending_frame.reset();
+		}
 	}
 	catch (const VideoOutInitException& err) {
 		wxLogError(
@@ -179,19 +186,15 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 			"Error message reported: %s",
 			err.GetMessage());
 		con->videoController->SetVideo("");
+		return;
 	}
 	catch (const VideoOutRenderException& err) {
 		wxLogError(
 			"Could not upload video frame to graphics card.\n"
 			"Error message reported: %s",
 			err.GetMessage());
-	}
-	Render();
-}
-
-void VideoDisplay::Render() try {
-	if (!con->videoController->IsLoaded() || !videoOut || !InitContext() )
 		return;
+	}
 
 	if (!viewport_height || !viewport_width)
 		PositionVideo();
@@ -428,6 +431,7 @@ void VideoDisplay::Unload() {
 	glContext.reset();
 	videoOut.reset();
 	tool.reset();
+	pending_frame.reset();
 }
 
 void VideoDisplay::OnSubtitlesSave() {

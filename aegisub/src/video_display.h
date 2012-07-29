@@ -37,6 +37,7 @@
 
 #ifndef AGI_PRE
 #include <list>
+#include <tr1/memory>
 
 #include <wx/glcanvas.h>
 #endif
@@ -49,6 +50,7 @@
 #include "vector2d.h"
 
 // Prototypes
+class AegiVideoFrame;
 class FrameReadyEvent;
 class VideoContext;
 class VideoOutGL;
@@ -113,6 +115,9 @@ class VideoDisplay : public wxGLCanvas {
 
 	/// Whether the display can be freely resized by the user
 	bool freeSize;
+
+	/// Frame which will replace the currently visible frame on the next render
+	std::tr1::shared_ptr<AegiVideoFrame> pending_frame;
 
 	/// @brief Draw an overscan mask
 	/// @param horizontal_percent The percent of the video reserved horizontally
