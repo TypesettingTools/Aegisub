@@ -136,7 +136,8 @@ struct time_frame_current : public validate_video_loaded {
 
 		if (sel.empty() || !active_line) return;
 
-		int shift_by = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START) - active_line->Start;
+		int target_start = std::max(0, c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START));
+		int shift_by = target_start - active_line->Start;
 
 		for (std::set<AssDialogue*>::iterator it = sel.begin(); it != sel.end(); ++it) {
 			(*it)->Start = (*it)->Start + shift_by;
