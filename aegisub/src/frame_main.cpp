@@ -94,13 +94,92 @@ enum {
 
 static void autosave_timer_changed(wxTimer *timer);
 
+wxDEFINE_EVENT(FILE_LIST_DROPPED, wxThreadEvent);
+
+static void get_files_to_load(wxArrayString const& list, wxString &subs, wxString &audio, wxString &video) {
+	// Keep these lists sorted
+
+	// Video formats
+	const wxString videoList[] = {
+		"asf",
+		"avi",
+		"avs",
+		"d2v",
+		"m2ts",
+		"mkv",
+		"mov",
+		"mp4",
+		"mpeg",
+		"mpg",
+		"ogm",
+		"rm",
+		"rmvb",
+		"ts",
+		"webm"
+		"wmv",
+		"y4m",
+		"yuv"
+	};
+
+	// Subtitle formats
+	const wxString subsList[] = {
+		"ass",
+		"srt",
+		"ssa",
+		"sub",
+		"ttxt",
+		"txt"
+	};
+
+	// Audio formats
+	const wxString audioList[] = {
+		"aac",
+		"ac3",
+		"ape",
+		"dts",
+		"flac",
+		"m4a",
+		"mka",
+		"mp3",
+		"ogg",
+		"w64",
+		"wav",
+		"wma"
+	};
+
+	// Scan list
+	for (size_t i = 0; i < list.size(); ++i) {
+		wxFileName file(list[i]);
+		if (file.IsRelative()) file.MakeAbsolute();
+		if (!file.FileExists()) continue;
+
+		wxString ext = file.GetExt().Lower();
+
+		if (subs.empty() && std::binary_search(subsList, subsList + countof(subsList), ext))
+			subs = file.GetFullPath();
+		if (video.empty() && std::binary_search(videoList, videoList + countof(videoList), ext))
+			video = file.GetFullPath();
+		if (audio.empty() && std::binary_search(audioList, audioList + countof(audioList), ext))
+			audio = file.GetFullPath();
+	}
+}
+
 /// Handle files drag and dropped onto Aegisub
 class AegisubFileDropTarget : public wxFileDropTarget {
 	FrameMain *parent;
 public:
 	AegisubFileDropTarget(FrameMain *parent) : parent(parent) { }
 	bool OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames) {
-		return parent->LoadList(filenames);
+		wxString subs, audio, video;
+		get_files_to_load(filenames, subs, audio, video);
+
+		if (!subs && !audio && !video)
+			return false;
+
+		wxThreadEvent *evt = new wxThreadEvent(FILE_LIST_DROPPED);
+		evt->SetPayload(filenames);
+		parent->QueueEvent(evt);
+		return true;
 	}
 };
 
@@ -221,6 +300,8 @@ FrameMain::FrameMain (wxArrayString args)
 #ifdef WITH_UPDATE_CHECKER
 	PerformVersionCheck(false);
 #endif
+
+	Bind(FILE_LIST_DROPPED, &FrameMain::OnFilesDropped, this);
 
 	StartupLog("Leaving FrameMain constructor");
 }
@@ -489,73 +570,13 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 	StatusClear.Start(ms,true);
 }
 
+void FrameMain::OnFilesDropped(wxThreadEvent &evt) {
+	LoadList(evt.GetPayload<wxArrayString>());
+}
+
 bool FrameMain::LoadList(wxArrayString list) {
-	// Keep these lists sorted
-
-	// Video formats
-	const wxString videoList[] = {
-		"asf",
-		"avi",
-		"avs",
-		"d2v",
-		"m2ts",
-		"mkv",
-		"mov",
-		"mp4",
-		"mpeg",
-		"mpg",
-		"ogm",
-		"rm",
-		"rmvb",
-		"ts",
-		"webm"
-		"wmv",
-		"y4m",
-		"yuv"
-	};
-
-	// Subtitle formats
-	const wxString subsList[] = {
-		"ass",
-		"srt",
-		"ssa",
-		"sub",
-		"ttxt",
-		"txt"
-	};
-
-	// Audio formats
-	const wxString audioList[] = {
-		"aac",
-		"ac3",
-		"ape",
-		"dts",
-		"flac",
-		"m4a",
-		"mka",
-		"mp3",
-		"ogg",
-		"w64",
-		"wav",
-		"wma"
-	};
-
-	// Scan list
 	wxString audio, video, subs;
-	for (size_t i = 0; i < list.size(); ++i) {
-		wxFileName file(list[i]);
-		if (file.IsRelative()) file.MakeAbsolute();
-		if (!file.FileExists()) continue;
-
-		wxString ext = file.GetExt().Lower();
-
-		if (subs.empty() && std::binary_search(subsList, subsList + countof(subsList), ext))
-			subs = file.GetFullPath();
-		if (video.empty() && std::binary_search(videoList, videoList + countof(videoList), ext))
-			video = file.GetFullPath();
-		if (audio.empty() && std::binary_search(audioList, audioList + countof(audioList), ext))
-			audio = file.GetFullPath();
-	}
+	get_files_to_load(list, subs, audio, video);
 
 	blockVideoLoad = !video.empty();
 	blockAudioLoad = !audio.empty();

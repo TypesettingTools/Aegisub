@@ -93,6 +93,7 @@ class FrameMain: public wxFrame {
 	void InitToolbar();
 	void InitContents();
 
+	void OnFilesDropped(wxThreadEvent &evt);
 	bool LoadList(wxArrayString list);
 	void UpdateTitle();
 	wxString GetScriptFileName() const;
