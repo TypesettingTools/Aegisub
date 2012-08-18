@@ -81,6 +81,10 @@
 
 #include <libaegisub/exception.h>
 
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 /* *** Public API is implemented here *** */
 
 // Allocate global lock mutex declared in header
@@ -304,6 +308,19 @@ static wxString GetSystemLanguage()
 	}
 
 	return res;
+}
+#elif __APPLE__
+static wxString GetSystemLanguage()
+{
+	CFLocaleRef locale = CFLocaleCopyCurrent();
+	CFStringRef localeName = (CFStringRef)CFLocaleGetValue(locale, kCFLocaleIdentifier);
+
+	char buf[128];
+	CFStringGetCString(localeName, buf, sizeof buf, kCFStringEncodingUTF8);
+	CFRelease(locale);
+
+	return wxString::FromUTF8(buf);
+
 }
 #else
 static wxString GetSystemLanguage()
