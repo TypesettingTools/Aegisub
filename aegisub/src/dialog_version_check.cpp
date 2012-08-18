@@ -240,7 +240,9 @@ static const char * GetOSShortName()
 		else
 			return "windows"; // future proofing? I doubt we run on nt4
 	}
-	else if (osid & wxOS_MAC_OSX_DARWIN && osver_maj == 0x10) // yes 0x10, not decimal 10, don't ask me
+	// CF returns 0x10 for some reason, which wx has recently started
+	// turning into 10
+	else if (osid & wxOS_MAC_OSX_DARWIN && (osver_maj == 0x10 || osver_maj == 10))
 	{
 		// ugliest hack in the world? nah.
 		static char osxstring[] = "osx00";
@@ -315,7 +317,7 @@ static wxString GetSystemLanguage()
 	CFLocaleRef locale = CFLocaleCopyCurrent();
 	CFStringRef localeName = (CFStringRef)CFLocaleGetValue(locale, kCFLocaleIdentifier);
 
-	char buf[128];
+	char buf[128] = { 0 };
 	CFStringGetCString(localeName, buf, sizeof buf, kCFStringEncodingUTF8);
 	CFRelease(locale);
 
