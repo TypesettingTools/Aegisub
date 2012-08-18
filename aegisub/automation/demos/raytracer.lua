@@ -1,4 +1,4 @@
--- This script is given to the public domain
+﻿-- This script is given to the public domain
 -- It was originally intended as an april fool's joke in 2007, though it never really caught on.
 -- You're encouraged to experiment with this if you have plenty of time.
 -- Even if it's made as a joke, it does show that "anything is possible with ASS, although some things are insane to try."

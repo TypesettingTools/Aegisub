@@ -1,4 +1,4 @@
-script_name = "Automation 4 test 9"
+﻿script_name = "Automation 4 test 9"
 script_description = "Test debug out function"
 script_author = "Niels Martin Hansen"
 script_version = "2"

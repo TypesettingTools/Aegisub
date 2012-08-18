@@ -1,4 +1,4 @@
---[[
+﻿--[[
  Copyright (c) 2005-2006, Niels Martin Hansen, Rodrigo Braz Monteiro
  All rights reserved.
 

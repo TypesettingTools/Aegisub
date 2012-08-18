@@ -1,4 +1,4 @@
--- Automation 4 test file
+﻿-- Automation 4 test file
 -- Test the unicode.lua include
 
 script_name = "Automation 4 test 7"

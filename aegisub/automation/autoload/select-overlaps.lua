@@ -1,4 +1,4 @@
--- Copyright (c) 2010, Thomas Goyne <plorkyeran@aegisub.org>
+﻿-- Copyright (c) 2010, Thomas Goyne <plorkyeran@aegisub.org>
 --
 -- Permission to use, copy, modify, and distribute this software for any
 -- purpose with or without fee is hereby granted, provided that the above

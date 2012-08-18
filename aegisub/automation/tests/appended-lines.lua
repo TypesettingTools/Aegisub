@@ -1,4 +1,4 @@
--- Automation 4 test file
+﻿-- Automation 4 test file
 -- Test that appending lines to a file places the lines in the appropriate
 -- sections of the file, creating the sections if needed
 

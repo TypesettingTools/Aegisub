@@ -1,4 +1,4 @@
---[[ 
+﻿--[[ 
 "Clean Tags" -- An Auto4 LUA script for cleaning up ASS subtitle lines of badly-formed override 
 blocks and redundant/duplicate tags
 * Designed to work for Aegisub 2.0 and above

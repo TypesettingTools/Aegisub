@@ -1,4 +1,4 @@
--- Automation 4 test file
+﻿-- Automation 4 test file
 -- Create a Filter feature that does some kara stuff
 
 script_name = "Automation 4 test 6"

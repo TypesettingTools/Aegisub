@@ -1,4 +1,4 @@
-script_name = "Test furigana"
+﻿script_name = "Test furigana"
 script_description = "Tests the Auto4/Lua karaskel furigana and multi-highlight code"
 script_author = "jfs"
 

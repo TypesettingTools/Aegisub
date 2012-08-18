@@ -1,4 +1,4 @@
-script_name = "Absurdness"
+﻿script_name = "Absurdness"
 script_description = "Benchmark renderers by testing how they react to an absurd number of \\t tags in one line, and an absurd amount of lines each with a single \\t."
 script_author = "jfs"
 

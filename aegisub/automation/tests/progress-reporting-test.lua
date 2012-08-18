@@ -1,4 +1,4 @@
--- Automation 4 test file
+﻿-- Automation 4 test file
 -- Create a Macro feature, that displays some text
 
 script_name = "Automation 4 test 4"

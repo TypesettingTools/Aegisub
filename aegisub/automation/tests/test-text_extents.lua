@@ -1,4 +1,4 @@
--- Automation 4 test file
+﻿-- Automation 4 test file
 -- Test the result of the text_extents function
 
 script_name = "Test text_extents"

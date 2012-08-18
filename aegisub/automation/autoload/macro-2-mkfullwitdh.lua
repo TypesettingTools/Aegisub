@@ -1,4 +1,4 @@
--- Automation 4 demo script
+﻿-- Automation 4 demo script
 -- Converts halfwidth (ASCII) Latin letters to fullwidth JIS Latin letters
 
 local tr = aegisub.gettext

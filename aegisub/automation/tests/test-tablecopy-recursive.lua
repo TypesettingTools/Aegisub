@@ -1,4 +1,4 @@
-script_name = "Test table.copy_deep"
+﻿script_name = "Test table.copy_deep"
 script_description = "Tests the Auto4 Lua utils.lua table.copy_deep function"
 script_author = "Niels Martin Hansen"
 

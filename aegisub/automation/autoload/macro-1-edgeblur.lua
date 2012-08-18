@@ -1,4 +1,4 @@
--- Automation 4 demo script
+﻿-- Automation 4 demo script
 -- Macro that adds \be1 tags in front of every selected line
 
 local tr = aegisub.gettext
