@@ -90,7 +90,6 @@ void ASSSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	TextFileWriter file(filename, encoding);
 	bool ssa = filename.Right(4).Lower() == ".ssa";
 
-	LineList::const_iterator last = src->Line.end(); --last;
 	wxString group = src->Line.front()->group;
 	for (LineList::const_iterator cur = src->Line.begin(); cur != src->Line.end(); ++cur) {
 		// Add a blank line between each group
@@ -99,11 +98,6 @@ void ASSSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 			group = (*cur)->group;
 		}
 
-		// Only add a line break if there is a next line
-		bool lineBreak = cur != last;
-
-		// Write line
-		if (ssa) file.WriteLineToFile((*cur)->GetSSAText(), lineBreak);
-		else file.WriteLineToFile((*cur)->GetEntryData(), lineBreak);
+		file.WriteLineToFile(ssa ? (*cur)->GetSSAText() : (*cur)->GetEntryData(), true);
 	}
 }
