@@ -64,9 +64,15 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 	try {
 		GetAudio(buf,start,count);
 	}
+	catch (AudioDecodeError const& e) {
+		LOG_E("audio_provider") << e.GetChainedMessage();
+		memset(buf, 0, count*bytes_per_sample);
+		return;
+	}
 	catch (...) {
 		// FIXME: Poor error handling though better than none, to patch issue #800.
 		// Just return blank audio if real provider fails.
+		LOG_E("audio_provider") << "Unknown audio decoding error";
 		memset(buf, 0, count*bytes_per_sample);
 		return;
 	}
