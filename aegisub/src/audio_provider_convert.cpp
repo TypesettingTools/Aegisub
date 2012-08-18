@@ -67,7 +67,7 @@ public:
 		bytes_per_sample = sizeof(Target);
 	}
 
-	void GetAudio(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const {
 		std::vector<char> src_buf(count * src_bytes_per_sample * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
@@ -120,7 +120,7 @@ public:
 		float_samples = false;
 	}
 
-	void GetAudio(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const {
 		std::vector<Source> src_buf(count * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
@@ -156,7 +156,7 @@ public:
 		channels = 1;
 	}
 
-	void GetAudio(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const {
 		if (count == 0) return;
 
 		std::vector<int16_t> src_buf(count * src_channels);
@@ -187,7 +187,7 @@ public:
 		num_samples *= 2;
 	}
 
-	void GetAudio(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const {
 		if (count == 0) return;
 
 		int not_end = start + count < num_samples;

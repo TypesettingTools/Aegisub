@@ -140,7 +140,7 @@ HDAudioProvider::~HDAudioProvider() {
 	wxRemoveFile(diskCacheFilename);
 }
 
-void HDAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
+void HDAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	cache_provider->GetAudio(buf, start, count);
 }
 

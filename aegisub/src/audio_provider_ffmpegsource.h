@@ -49,6 +49,7 @@ class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
 	void LoadAudio(wxString filename);
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
 	FFmpegSourceAudioProvider(wxString filename);
@@ -58,7 +59,5 @@ public:
 	/// FFMS always delivers native endian samples.
 	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }
-
-	virtual void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
 #endif

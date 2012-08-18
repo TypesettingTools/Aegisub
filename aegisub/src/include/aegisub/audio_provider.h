@@ -67,11 +67,13 @@ protected:
 	/// DOCME
 	wxString filename;
 
+	virtual void FillBuffer(void *buf, int64_t start, int64_t count) const = 0;
+
 public:
 	virtual ~AudioProvider() { }
 
 	virtual wxString GetFilename() const { return filename; };
-	virtual void GetAudio(void *buf, int64_t start, int64_t count) const = 0;
+	void GetAudio(void *buf, int64_t start, int64_t count) const;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;
 
 	int64_t GetNumSamples() const { return num_samples; }

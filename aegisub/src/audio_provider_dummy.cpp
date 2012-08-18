@@ -48,7 +48,7 @@ DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
 	num_samples = (int64_t)dur_ms * sample_rate / 1000;
 }
 
-void DummyAudioProvider::GetAudio(void *buf, int64_t, int64_t count) const {
+void DummyAudioProvider::FillBuffer(void *buf, int64_t, int64_t count) const {
 	short *workbuf = (short*)buf;
 
 	if (noise) {

@@ -59,10 +59,6 @@
 #include "compat.h"
 #include "utils.h"
 
-
-/// @brief DOCME
-/// @param filename
-///
 PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 #ifdef _WIN32
 : file_handle(0, CloseHandle)
@@ -117,8 +113,6 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	float_samples = false;
 }
 
-/// @brief DOCME
-///
 PCMAudioProvider::~PCMAudioProvider()
 {
 #ifdef _WIN32
@@ -130,11 +124,6 @@ PCMAudioProvider::~PCMAudioProvider()
 #endif
 }
 
-/// @brief DOCME
-/// @param range_start
-/// @param range_length
-/// @return
-///
 char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length) const
 {
 	if (range_start + range_length > file_size) {
@@ -203,12 +192,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 	return ((char*)current_mapping) + rel_ofs;
 }
 
-/// @brief DOCME
-/// @param buf
-/// @param start
-/// @param count
-///
-void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const
+void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 {
 	// Read blocks from the file
 	size_t index = 0;
@@ -233,16 +217,6 @@ void PCMAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const
 			count -= samples_can_do;
 		}
 		index++;
-	}
-
-	// If we exhausted all sample sections zerofill the rest
-	if (count > 0) {
-		if (bytes_per_sample == 1)
-			// 8 bit formats are usually unsigned with bias 127
-			memset(buf, 127, count*channels);
-		else
-			// While everything else is signed
-			memset(buf, 0, count*bytes_per_sample*channels);
 	}
 }
 
@@ -308,11 +282,8 @@ class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 
 public:
 
-	/// @brief DOCME
-	/// @param _filename
-	///
 	RiffWavPCMAudioProvider(const wxString &_filename)
-		: PCMAudioProvider(_filename)
+	: PCMAudioProvider(_filename)
 	{
 		filename = _filename;
 
@@ -388,9 +359,6 @@ public:
 		}
 	}
 
-	/// @brief DOCME
-	/// @return
-	///
 	bool AreSamplesNativeEndian() const
 	{
 		// 8 bit samples don't consider endianness
@@ -401,33 +369,25 @@ public:
 	}
 };
 
-/// DOCME
 static const uint8_t w64GuidRIFF[16] = {
 	// {66666972-912E-11CF-A5D6-28DB04C10000}
 	0x72, 0x69, 0x66, 0x66, 0x2E, 0x91, 0xCF, 0x11, 0xA5, 0xD6, 0x28, 0xDB, 0x04, 0xC1, 0x00, 0x00
 };
 
-
-/// DOCME
 static const uint8_t w64GuidWAVE[16] = {
 	// {65766177-ACF3-11D3-8CD1-00C04F8EDB8A}
 	0x77, 0x61, 0x76, 0x65, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
 
-
-/// DOCME
 static const uint8_t w64Guidfmt[16] = {
 	// {20746D66-ACF3-11D3-8CD1-00C04F8EDB8A}
 	0x66, 0x6D, 0x74, 0x20, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
 
-
-/// DOCME
 static const uint8_t w64Guiddata[16] = {
 	// {61746164-ACF3-11D3-8CD1-00C04F8EDB8A}
 	0x64, 0x61, 0x74, 0x61, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
-
 
 /// DOCME
 /// @class Wave64AudioProvider
@@ -448,49 +408,24 @@ class Wave64AudioProvider : public PCMAudioProvider {
 		uint16_t cbSize;
 	};
 
-	/// DOCME
 	struct RiffChunk {
-		/// DOCME
 		uint8_t riff_guid[16];
-
-		/// DOCME
 		uint64_t file_size;
-
-		/// DOCME
 		uint8_t format_guid[16];
 	};
 
-
-	/// DOCME
 	struct FormatChunk {
-		/// DOCME
 		uint8_t chunk_guid[16];
-
-		/// DOCME
 		uint64_t chunk_size;
-
-		/// DOCME
 		WaveFormatEx format;
-
-		/// DOCME
 		uint8_t padding[6];
 	};
 
-
-	/// DOCME
 	struct DataChunk {
-		/// DOCME
 		uint8_t chunk_guid[16];
-
-		/// DOCME
 		uint64_t chunk_size;
 	};
 
-	/// @brief DOCME
-	/// @param guid1
-	/// @param guid2
-	/// @return
-	///
 	inline bool CheckGuid(const uint8_t *guid1, const uint8_t *guid2)
 	{
 		return memcmp(guid1, guid2, 16) == 0;
@@ -498,9 +433,6 @@ class Wave64AudioProvider : public PCMAudioProvider {
 
 public:
 
-	/// @brief DOCME
-	/// @param _filename
-	///
 	Wave64AudioProvider(const wxString &_filename)
 	: PCMAudioProvider(_filename)
 	{
@@ -579,9 +511,6 @@ public:
 		}
 	}
 
-	/// @brief DOCME
-	/// @return
-	///
 	bool AreSamplesNativeEndian() const
 	{
 		// 8 bit samples don't consider endianness

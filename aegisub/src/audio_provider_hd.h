@@ -64,11 +64,11 @@ class HDAudioProvider : public AudioProvider {
 	/// @param ps Sink for progress reporting
 	void FillCache(AudioProvider *src, std::ofstream *file, agi::ProgressSink *ps);
 
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+
 public:
 	HDAudioProvider(AudioProvider *source, agi::BackgroundRunner *br);
 	~HDAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return true; }
-
-	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };

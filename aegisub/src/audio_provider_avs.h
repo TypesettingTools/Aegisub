@@ -56,6 +56,7 @@ class AvisynthAudioProvider : public AudioProvider {
 	PClip clip;
 
 	void LoadFromClip(AVSValue clip);
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
 	AvisynthAudioProvider(wxString _filename);
@@ -64,7 +65,5 @@ public:
 
 	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }
-
-	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
 #endif

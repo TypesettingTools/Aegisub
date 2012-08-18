@@ -30,8 +30,8 @@ class LockAudioProvider : public AudioProvider {
 	agi::scoped_ptr<const AudioProvider> source;
 	mutable wxMutex mutex;
 
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 public:
 	LockAudioProvider(AudioProvider *source);
-	void GetAudio(void *buf, int64_t start, int64_t count) const;
 	bool AreSamplesNativeEndian() const { return source->AreSamplesNativeEndian(); }
 };

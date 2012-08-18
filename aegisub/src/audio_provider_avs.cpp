@@ -151,35 +151,7 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	clip = tempclip;
 }
 
-/// @brief Get audio
-/// @param buf
-/// @param start
-/// @param count
-///
-void AvisynthAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
-	// Requested beyond the length of audio
-	if (start+count > num_samples) {
-		int64_t oldcount = count;
-		count = num_samples-start;
-		if (count < 0) count = 0;
-
-		// Fill beyond with zero
-		if (bytes_per_sample == 1) {
-			char *temp = (char *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
-		if (bytes_per_sample == 2) {
-			short *temp = (short *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
-	}
-
-	if (count) {
-		clip->GetAudio(buf,start,count,avs_wrapper.GetEnv());
-	}
+void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
+	clip->GetAudio(buf,start,count,avs_wrapper.GetEnv());
 }
 #endif

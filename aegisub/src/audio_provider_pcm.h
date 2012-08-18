@@ -57,19 +57,12 @@
 /// DOCME
 class PCMAudioProvider : public AudioProvider {
 #ifdef _WIN32
-	/// DOCME
 	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_handle;
-
-	/// DOCME
 	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_mapping;
 
-	/// DOCME
 	mutable void *current_mapping;
 
-	/// DOCME
 	mutable int64_t mapping_start;
-
-	/// DOCME
 	mutable size_t mapping_length;
 #else
 	agi::scoped_holder<int, int(*)(int)> file_handle;
@@ -83,32 +76,20 @@ protected:
 	virtual ~PCMAudioProvider(); // Closes the file mapping
 	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
 
+	/// Size of the opened file
+	int64_t file_size;
 
-	/// DOCME
-	int64_t file_size; // Size of the opened file
-
-
-	/// DOCME
 	struct IndexPoint {
-
-		/// DOCME
 		int64_t start_byte;
-
-		/// DOCME
 		int64_t start_sample;
-
-		/// DOCME
 		int64_t num_samples;
 	};
 
-	/// DOCME
 	typedef std::vector<IndexPoint> IndexVector;
 
-	/// DOCME
 	IndexVector index_points;
 
-public:
-	virtual void GetAudio(void *buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 };
 
 // Construct the right PCM audio provider (if any) for the file

@@ -30,7 +30,7 @@ LockAudioProvider::LockAudioProvider(AudioProvider *source) : source(source) {
 	float_samples = source->AreSamplesFloat();
 }
 
-void LockAudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
+void LockAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	wxMutexLocker lock(mutex);
 	source->GetAudio(buf, start, count);
 }

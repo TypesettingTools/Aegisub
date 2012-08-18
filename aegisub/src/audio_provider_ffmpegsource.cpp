@@ -175,7 +175,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	}
 }
 
-void FFmpegSourceAudioProvider::GetAudio(void *Buf, int64_t Start, int64_t Count) const {
+void FFmpegSourceAudioProvider::FillBuffer(void *Buf, int64_t Start, int64_t Count) const {
 	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo)) {
 		throw AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
 	}

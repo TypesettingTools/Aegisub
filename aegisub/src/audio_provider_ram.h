@@ -58,11 +58,11 @@ class RAMAudioProvider : public AudioProvider {
 
 	void Clear();
 	void FillCache(AudioProvider *source, agi::ProgressSink *ps);
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
 	RAMAudioProvider(AudioProvider *source, agi::BackgroundRunner *br);
 	~RAMAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return samples_native_endian; }
-	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };

@@ -44,10 +44,10 @@
 class DummyAudioProvider : public AudioProvider {
 	/// DOCME
 	bool noise;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
 	DummyAudioProvider(unsigned long dur_ms, bool _noise);
 
 	bool AreSamplesNativeEndian() const { return true; }
-	void GetAudio(void *buf, int64_t start, int64_t count) const;
 };
