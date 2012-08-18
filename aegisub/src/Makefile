@@ -145,6 +145,7 @@ SRC += \
 	audio_provider.cpp \
 	audio_provider_convert.cpp \
 	audio_provider_hd.cpp \
+	audio_provider_lock.cpp \
 	audio_provider_pcm.cpp \
 	audio_provider_ram.cpp \
 	audio_renderer.cpp \

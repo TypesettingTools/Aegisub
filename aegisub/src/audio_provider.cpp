@@ -50,6 +50,7 @@
 #include "audio_provider_ffmpegsource.h"
 #endif
 #include "audio_provider_hd.h"
+#include "audio_provider_lock.h"
 #include "audio_provider_pcm.h"
 #include "audio_provider_ram.h"
 #include "compat.h"
@@ -152,7 +153,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 	// Change provider to RAM/HD cache if needed
 	if (cache == -1) cache = OPT_GET("Audio/Cache/Type")->GetInt();
 	if (!cache || !needsCache) {
-		return provider;
+		return new LockAudioProvider(provider);
 	}
 
 	DialogProgress progress(wxGetApp().frame, _("Load audio"));

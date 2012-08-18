@@ -494,6 +494,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\audio_provider_lock.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio_provider_lock.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\audio_provider_pcm.cpp"
 				>
 			</File>
