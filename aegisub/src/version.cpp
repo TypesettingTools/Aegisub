@@ -37,60 +37,40 @@
 #include "config.h"
 
 #include "version.h"
-
-#ifdef __WINDOWS__
-#include "../build/svn-revision.h"
-#endif
-
-#define STR_INT2(x) #x
-#define STR_INT(x) STR_INT2(x)
-
-#ifdef _DEBUG
-#define DEBUG_SUFFIX " [DEBUG VERSION]"
-#else
-#define DEBUG_SUFFIX ""
-#endif
-
-#ifdef BUILD_CREDIT
-#define BUILD_CREDIT_SUFFIX ", " BUILD_CREDIT
-#else
-#define BUILD_CREDIT_SUFFIX ""
-#endif
-
-#ifndef BUILD_SVN_DATE
-#define BUILD_SVN_DATE __DATE__ " " __TIME__
-#endif
-
-#ifndef BUILD_SVN_LOCALMODS
-#define BUILD_SVN_LOCALMODS ""
-#endif
+#include "git_version.h"
 
 // Define FINAL_RELEASE to mark a build as a "final" version, ie. not pre-release version
 // In that case it won't include the SVN revision information
 #ifdef FINAL_RELEASE
-#define VERSION_NUMBER "3.0.0"
+	#define VERSION_NUMBER "3.0.0"
+	#define BUILD_CREDIT_SUFFIX ""
+	#define DEBUG_SUFFIX ""
 #else
-#define VERSION_NUMBER "r" STR_INT(BUILD_SVN_REVISION) BUILD_SVN_LOCALMODS
+	#define VERSION_NUMBER BUILD_GIT_VERSION_STRING
+
+	#ifdef _DEBUG
+		#define DEBUG_SUFFIX " [DEBUG VERSION]"
+	#else
+		#define DEBUG_SUFFIX ""
+	#endif
+
+	#ifdef BUILD_CREDIT
+		#define BUILD_CREDIT_SUFFIX ", " BUILD_CREDIT
+	#else
+		#define BUILD_CREDIT_SUFFIX ""
+	#endif
 #endif
 
 const char *GetAegisubLongVersionString() {
-#ifdef FINAL_RELEASE
-	return VERSION_NUMBER DEBUG_SUFFIX;
-#else
-	return VERSION_NUMBER " (development version" BUILD_CREDIT_SUFFIX ")" DEBUG_SUFFIX;
-#endif
+	return VERSION_NUMBER BUILD_CREDIT_SUFFIX DEBUG_SUFFIX;
 }
 
 const char *GetAegisubShortVersionString() {
-#ifdef FINAL_RELEASE
-	return VERSION_NUMBER " (built from SVN revision r" #BUILD_SVN_REVISION BUILD_SVN_LOCALMODS ")" DEBUG_SUFFIX;
-#else
-	return VERSION_NUMBER " (development version" BUILD_CREDIT_SUFFIX ")" DEBUG_SUFFIX;
-#endif
+	return VERSION_NUMBER DEBUG_SUFFIX;
 }
 
 const char *GetAegisubBuildTime() {
-	return BUILD_SVN_DATE;
+	return __DATE__ " " __TIME__;
 }
 
 const char *GetAegisubBuildCredit() {
@@ -114,9 +94,10 @@ const char *GetVersionNumber() {
 }
 
 int GetSVNRevision() {
-#ifdef BUILD_SVN_REVISION
-	return BUILD_SVN_REVISION;
+#ifdef BUILD_GIT_VERSION_NUMBER
+	return BUILD_GIT_VERSION_NUMBER;
 #else
 	return 0;
 #endif
 }
+

@@ -64,3 +64,4 @@ configure
 svn-revision.h
 svn_revision
 svnmove.txt
+git_version.h

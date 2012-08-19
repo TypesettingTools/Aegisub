@@ -31,7 +31,7 @@
     <string>@PLIST_VERSION@</string>
 
     <key>CFBundleLongVersionString</key>
-    <string>@PLIST_VERSION@ (@PLIST_SVN_REVISION@), Copyright 2005-2012, aegisub http://www.aegisub.org/</string>
+    <string>@PLIST_VERSION@, Copyright 2005-2012, aegisub http://www.aegisub.org/</string>
 
     <!-- Values: i386, ppc, x86_65, ppc64 -->
     <key>LSArchitecturePriority</key>
@@ -39,7 +39,7 @@
 
     <!-- Displayed in the 'Get Info' context menu dialogue -->
     <key>CFBundleGetInfoString</key>
-    <string>aegisub version @PLIST_VERSION@ (@PLIST_SVN_REVISION@) built on @PLIST_BUILD_DATE@ http://www.aegisub.org/</string>
+    <string>aegisub version @PLIST_VERSION@ built on @PLIST_BUILD_DATE@ http://www.aegisub.org/</string>
 
     <!-- Whether to allow multiple instances across user logins -->
     <key>LSMultipleInstancesProhibited</key>

@@ -40,7 +40,6 @@ AC_CONFIG_HEADER([acconf.h])
 AC_GNU_SOURCE
 AC_CANONICAL_HOST
 
-
 ###########################
 # Check host architecture
 ###########################
@@ -151,29 +150,9 @@ PKG_PROG_PKG_CONFIG([pkgconfig_required_version])
 #################
 # Developers only
 #################
-# XXX: This needs to be fixed to handle mixed revisions properly
-#      There is probably a better way to handle it as well...
-AC_MSG_CHECKING([for svn version])
-# Try to get revision from working copy and check if it makes sense
-SVN_REVISION=`svnversion $srcdir | sed "s/\(^@<:@0-9@:>@*\).*/\1/"` 2> /dev/null
-AS_IF([test -n "$SVN_REVISION" -a -z "`echo $SVN_REVISION | tr -d '0-9'`"], [
-  `echo $SVN_REVISION > $srcdir/svn_revision`
-  AC_MSG_RESULT([$SVN_REVISION from "svnversion $srcdir"])
-], [test -f "$srcdir/svn_revision"], [
-  SVN_REVISION=`cat $srcdir/svn_revision`
-  AC_MSG_RESULT([$SVN_REVISION from "$srcdir/svn_revision"])
-], [test -d "$srcdir/../.git"], [
-  SVN_REVISION=[`git log --format=%b | grep git-svn-id -m 1 | sed -E 's/.*@([0-9]+) .*/\1/'`]
-  `echo $SVN_REVISION > $srcdir/svn_revision`
-  AC_MSG_RESULT([$SVN_REVISION from git])
-], [
-  AC_MSG_RESULT([not found])
-  AC_MSG_FAILURE([unable to get SVN Revision from $srcdir/svn_revision or 'svnversion $srcdir'])
-])
-
-# This is required in order for the config file to work correctly.
-AC_DEFINE_UNQUOTED([BUILD_SVN_REVISION], [$SVN_REVISION], [SVN Revision number, used for config.dat and version.cpp])
-
+AC_MSG_CHECKING([for version])
+. $srcdir/build/version.sh "$srcdir/.."
+AC_MSG_RESULT([$BUILD_GIT_VERSION_STRING $VERSION_SOURCE])
 
 # Release information.
 AS_IF([test "aegisub_FINAL_RELEASE" = "1"], [
@@ -181,24 +160,23 @@ AS_IF([test "aegisub_FINAL_RELEASE" = "1"], [
   BUNDLE_STRING="${PACKAGE_NAME}"
   DMG_STRING="${PACKAGE_NAME}-${PACKAGE_VERSION}-${arch_bundle}"
 ], [
-  PACKAGE_STRING="${PACKAGE_STRING}-dev-r${SVN_REVISION}"
-  PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r${SVN_REVISION}"
-  VERSION="${VERSION}-dev-r${SVN_REVISION}"
+  PACKAGE_STRING="${PACKAGE_STRING}-dev-r${BUILD_GIT_VERSION_NUMBER}"
+  PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r${BUILD_GIT_VERSION_NUMBER}"
+  VERSION="${VERSION}-dev-r${BUILD_GIT_VERSION_NUMBER}"
 
   BUNDLE_STRING="${PACKAGE_NAME}-${PACKAGE_VERSION}"
   DMG_STRING="${PACKAGE_NAME}-${PACKAGE_VERSION}-${arch_bundle}"
 ])
 PACKAGE_TARNAME="${PACKAGE_TARNAME}-${PACKAGE_VERSION}"
 
-# Used in version.cpp
 AC_MSG_CHECKING([for build date])
 BUILD_DATE=`date "+%Y-%m-%d %H:%M %Z"`
 AC_MSG_RESULT($BUILD_DATE)
 
-AC_SUBST(SVN_REVISION)
-AC_SUBST(BUILD_DATE)
 AC_SUBST(BUNDLE_STRING)
 AC_SUBST(DMG_STRING)
+AC_SUBST([BUILD_GIT_VERSION_STRING])
+AC_SUBST([BUILD_DATE])
 
 ###################################################
 # Check for pthreads and setup variables / compiler
@@ -731,7 +709,7 @@ AS_IF([test x$with_ffms2 != xyes], [AC_MSG_NOTICE([
 AC_MSG_RESULT([
 Configure settings
   Install prefix:        $prefix
-  SVN Revision:          $SVN_REVISION
+  Revision:              $BUILD_GIT_VERSION_STRING
   Debug                  $enable_debug
   CFLAGS                 $CFLAGS
   CXXFLAGS               $CXXFLAGS
