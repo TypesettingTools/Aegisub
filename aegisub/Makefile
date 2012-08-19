@@ -14,10 +14,10 @@ all: ;
 
 ifeq (yes, $(BUILD_DARWIN))
 osx-bundle:
-	$(BIN_SHELL) tools/osx-bundle.sh "$(BUNDLE_STRING)" $(AEGISUB_VERSION_DATA) "$(BIN_WX_CONFIG)" DICT_DIR=$(DICT_DIR)
+	$(BIN_SHELL) tools/osx-bundle.sh "$(AEGISUB_COMMAND)" "$(BIN_WX_CONFIG)" DICT_DIR=$(DICT_DIR)
 
 osx-dmg: osx-bundle
-	$(BIN_SHELL) tools/osx-dmg.sh "$(BUNDLE_STRING)" "$(DMG_STRING)"
+	$(BIN_SHELL) tools/osx-dmg.sh "$(BUILD_VERSION_STRING)"
 
 osx-tinderbox-bundle:
 	$(BIN_SHELL) tools/osx-bundle.sh "$(T_BUNDLE)" $(AEGISUB_VERSION_DATA) "$(BIN_WX_CONFIG)" DICT_DIR="$(DICT_DIR)"

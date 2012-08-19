@@ -1,18 +1,5 @@
 AC_PREREQ(2.57)
 
-######################
-# aegisub version info
-######################
-# MAKE SURE YOU UPDATE THE VERSION INFO BELOW WHEN YOU SET THIS TO '1'
-m4_define([aegisub_FINAL_RELEASE], [0])
-
-m4_define([aegisub_version_major], [3])
-m4_define([aegisub_version_minor], [0])
-m4_define([aegisub_version_revision], [0])
-m4_define([aegisub_version], [aegisub_version_major.aegisub_version_minor.aegisub_version_revision])
-m4_define([aegisub_version_data], [aegisub_version_major.aegisub_version_minor])
-
-
 ###################
 # Required packages
 ###################
@@ -49,13 +36,7 @@ build_bsd="no"
 build_default="no"
 
 AS_CASE([$host],
-        [ppc-*-* | powerpc-*], [arch_ppc="yes"; arch_bundle="ppc";   DARWIN_ARCH="ppc"],
-        [i*86-*-*],            [arch_x86="yes"; arch_bundle="intel"; DARWIN_ARCH="intel"],
-        [x86_64-*-*],          [arch_x86="yes"; arch_x86_64="yes";   DARWIN_ARCH="intel"],
-        [])
-
-AS_CASE([$host],
-        [*-*-darwin*], [build_darwin="yes"; AC_SUBST(DARWIN_ARCH)],
+        [*-*-darwin*], [build_darwin="yes"],
         [*-*-linux*],  [build_linux="yes"],
         [*-*-*bsd*],   [build_bsd="yes"],
         [build_default="yes"])
@@ -79,20 +60,13 @@ AC_C_BIGENDIAN(
 ########################
 # Configurable variables
 ########################
-# These cannot be set before AC_INIT()
-AEGISUB_VERSION_MAJOR=aegisub_version_major
-AEGISUB_VERSION_MINOR=aegisub_version_minor
-AEGISUB_VERSION=aegisub_version
-# Used for gettext.
-AEGISUB_VERSION_DATA=aegisub_version_data
-
-# Suffix used for data paths.
-AC_DEFINE_UNQUOTED(AEGISUB_VERSION_DATA, ["$AEGISUB_VERSION_DATA"], [Data path suffix.])
-AC_SUBST(AEGISUB_VERSION_DATA)
-
 # Name of aegisub binary.
-AEGISUB_COMMAND="aegisub-$AEGISUB_VERSION_MAJOR.$AEGISUB_VERSION_MINOR"
+# On OS X everything goes in an app bundle so no point in versioning the executable
+AS_IF([test x$build_darwin = xyes],
+      [AEGISUB_COMMAND="aegisub"],
+      [AEGISUB_COMMAND="aegisub-3.0"])
 AC_SUBST(AEGISUB_COMMAND)
+AC_DEFINE_UNQUOTED([AEGISUB_COMMAND], ["${AEGISUB_COMMAND}"], [Name of the Aegisub executable])
 
 # Handle location of desktop files: http://freedesktop.org/wiki/Specifications/desktop-entry-spec
 AC_ARG_WITH(desktop-dir,
@@ -107,7 +81,6 @@ AC_ARG_WITH(icon-dir,
 
 P_ICON=${with_icon_dir:-$datarootdir/icons}
 AC_SUBST(P_ICON)
-
 
 # Install prefix
 # If a user doesn't supply --prefix then it is set to NONE so we
@@ -146,7 +119,6 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 PKG_PROG_PKG_CONFIG([pkgconfig_required_version])
 
-
 #################
 # Developers only
 #################
@@ -154,27 +126,10 @@ AC_MSG_CHECKING([for version])
 . $srcdir/build/version.sh "$srcdir/.."
 AC_MSG_RESULT([$BUILD_GIT_VERSION_STRING $VERSION_SOURCE])
 
-# Release information.
-AS_IF([test "aegisub_FINAL_RELEASE" = "1"], [
-  AC_DEFINE([FINAL_RELEASE], [aegisub_FINAL_RELEASE], [This is only set to 1 for a RELEASE VERSION.])
-  BUNDLE_STRING="${PACKAGE_NAME}"
-  DMG_STRING="${PACKAGE_NAME}-${PACKAGE_VERSION}-${arch_bundle}"
-], [
-  PACKAGE_STRING="${PACKAGE_STRING}-dev-r${BUILD_GIT_VERSION_NUMBER}"
-  PACKAGE_VERSION="${PACKAGE_VERSION}-dev-r${BUILD_GIT_VERSION_NUMBER}"
-  VERSION="${VERSION}-dev-r${BUILD_GIT_VERSION_NUMBER}"
-
-  BUNDLE_STRING="${PACKAGE_NAME}-${PACKAGE_VERSION}"
-  DMG_STRING="${PACKAGE_NAME}-${PACKAGE_VERSION}-${arch_bundle}"
-])
-PACKAGE_TARNAME="${PACKAGE_TARNAME}-${PACKAGE_VERSION}"
-
 AC_MSG_CHECKING([for build date])
 BUILD_DATE=`date "+%Y-%m-%d %H:%M %Z"`
 AC_MSG_RESULT($BUILD_DATE)
 
-AC_SUBST(BUNDLE_STRING)
-AC_SUBST(DMG_STRING)
 AC_SUBST([BUILD_GIT_VERSION_STRING])
 AC_SUBST([BUILD_DATE])
 
@@ -602,14 +557,6 @@ AC_SUBST(enable_ccache)
 # Internationalisation support
 ##############################
 AM_GNU_GETTEXT([external])
-
-AS_IF([test x$build_darwin = xyes],
-      [GETTEXT_PACKAGE="aegisub"],
-      [GETTEXT_PACKAGE="aegisub${AEGISUB_VERSION_MAJOR}${AEGISUB_VERSION_MINOR}"])
-
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
-                   [The basename for our gettext translation domains.])
 
 ################
 # Update checker

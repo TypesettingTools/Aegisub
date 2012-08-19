@@ -103,12 +103,6 @@
 #define WITH_HUNSPELL
 
 
-// Enable "final release" mode
-// Displays different versions numbers in About box and title bar, and omits detailed version information from
-// the title bar. Only core developers should enable then, and only when making builds for mass consumption.
-//#define FINAL_RELEASE
-
-
 // Use FFTW instead of shipped FFT code
 // FFTW <http://fftw.org/> is a very fast library for computing the discrete fourier transform, but is a bit
 // tricky to get working on Windows, and has the additional problem of being GPL licensed.

@@ -14,10 +14,10 @@
 # information.
 
 TMP_DMG="temp_dmg"
-PKG_DIR="${1}.app"
-PKG_NAME="${2}"
-PKG_NAME_RW="${1}_rw.dmg"
-PKG_NAME_VOLUME="${2}"
+PKG_DIR="Aegisub.app"
+PKG_NAME="Aegisub-${1}"
+PKG_NAME_RW="Aegisub-${1}_rw.dmg"
+PKG_NAME_VOLUME="Aegisub-${1}"
 
 if ! test -d "${PKG_DIR}"; then
   echo "\"${PKG_DIR}\" does not exist, please run 'make osx-bundle'"

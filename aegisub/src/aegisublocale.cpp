@@ -65,7 +65,7 @@ void AegisubLocale::Init(int language) {
 	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/"));
 	locale->AddCatalog("aegisub");
 #else
-	locale->AddCatalog(GETTEXT_PACKAGE);
+	locale->AddCatalog(AEGISUB_COMMAND);
 #endif
 
 	locale->AddCatalog("wxstd");
@@ -170,7 +170,7 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 
 		// If the locale file doesn't exist then don't list it as an option.
 		wxString locDir = wxStandardPaths::Get().GetLocalizedResourcesDir(langs[i], wxStandardPathsBase::ResourceCat_Messages);
-		wxFileName file(wxString::Format("%s/%s.mo", locDir, GETTEXT_PACKAGE));
+		wxFileName file(wxString::Format("%s/%s.mo", locDir, AEGISUB_COMMAND));
 		if (lang && file.FileExists()) final.Add(lang->Language);
 	}
 #endif

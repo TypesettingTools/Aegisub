@@ -39,34 +39,24 @@
 #include "version.h"
 #include "git_version.h"
 
-// Define FINAL_RELEASE to mark a build as a "final" version, ie. not pre-release version
-// In that case it won't include the SVN revision information
-#ifdef FINAL_RELEASE
-	#define VERSION_NUMBER "3.0.0"
-	#define BUILD_CREDIT_SUFFIX ""
-	#define DEBUG_SUFFIX ""
+#ifdef _DEBUG
+	#define DEBUG_SUFFIX " [DEBUG VERSION]"
 #else
-	#define VERSION_NUMBER BUILD_GIT_VERSION_STRING
+	#define DEBUG_SUFFIX ""
+#endif
 
-	#ifdef _DEBUG
-		#define DEBUG_SUFFIX " [DEBUG VERSION]"
-	#else
-		#define DEBUG_SUFFIX ""
-	#endif
-
-	#ifdef BUILD_CREDIT
-		#define BUILD_CREDIT_SUFFIX ", " BUILD_CREDIT
-	#else
-		#define BUILD_CREDIT_SUFFIX ""
-	#endif
+#if defined(BUILD_CREDIT) && !TAGGED_RELEASE
+	#define BUILD_CREDIT_SUFFIX ", " BUILD_CREDIT
+#else
+	#define BUILD_CREDIT_SUFFIX ""
 #endif
 
 const char *GetAegisubLongVersionString() {
-	return VERSION_NUMBER BUILD_CREDIT_SUFFIX DEBUG_SUFFIX;
+	return BUILD_GIT_VERSION_STRING BUILD_CREDIT_SUFFIX DEBUG_SUFFIX;
 }
 
 const char *GetAegisubShortVersionString() {
-	return VERSION_NUMBER DEBUG_SUFFIX;
+	return BUILD_GIT_VERSION_STRING DEBUG_SUFFIX;
 }
 
 const char *GetAegisubBuildTime() {
@@ -82,15 +72,11 @@ const char *GetAegisubBuildCredit() {
 }
 
 bool GetIsOfficialRelease() {
-#ifdef FINAL_RELEASE
-	return true;
-#else
 	return false;
-#endif
 }
 
 const char *GetVersionNumber() {
-	return VERSION_NUMBER;
+	return BUILD_GIT_VERSION_STRING;
 }
 
 int GetSVNRevision() {

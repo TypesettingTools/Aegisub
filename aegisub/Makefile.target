@@ -64,7 +64,7 @@ endif
 # INSTALL
 #########
 ifeq (install, $(MAKECMDGOALS))
-INSTALL_LIB 		= $(addprefix $(P_LIB)/, $(LIB_SHARED) $(LIB_SHARED_FULL))
+INSTALL_LIB=$(addprefix $(P_LIB)/, $(LIB_SHARED) $(LIB_SHARED_FULL))
 endif
 
 BIN_SINSTALL=$(BIN_INSTALL)
@@ -102,8 +102,6 @@ ifdef DATA_SHARE_DOC
 		$(BIN_INSTALL) $$i $(DESTDIR)$(P_DOC)/$$i; \
 	done
 endif
-
-
 
 ##############
 # DISTRIBUTION
@@ -187,8 +185,6 @@ endif
 
 $(PRECOMPILED_HEADER_NAME).gch: $(PRECOMPILED_HEADER_NAME)
 	$(CXX_ENV) $(BIN_CXX) $(CPPFLAGS) $(CXXFLAGS) -x c++-header $<
-
-
 
 
 -include ($DEP)

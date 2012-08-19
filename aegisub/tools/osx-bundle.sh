@@ -2,12 +2,12 @@
 
 set -e
 
-PKG_DIR=${1}.app
+PKG_DIR=Aegisub.app
 SKEL_DIR="packages/osx_bundle"
-AEGISUB_BIN="aegisub-${2}"
+AEGISUB_BIN="${1}"
 SRCDIR=`pwd`
 HOME_DIR=`echo ~`
-WX_PREFIX=`${3} --prefix`
+WX_PREFIX=`${2} --prefix`
 
 if test -z "${CC}"; then
   CC="cc"
@@ -48,9 +48,9 @@ find po -name *.po | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/' > lang
 find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
 cp ${SKEL_DIR}/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.dtd "${PKG_DIR}/Contents/Resources/etc/fonts"
-cat ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.conf |sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Resources/etc/fonts/fonts.conf"
+cat ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.conf | sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Resources/etc/fonts/fonts.conf"
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/conf.d/*.conf "${PKG_DIR}/Contents/Resources/etc/fonts/conf.d"
-cat ${SKEL_DIR}/Contents/Info.plist |sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Info.plist"
+cat ${SKEL_DIR}/Contents/Info.plist | sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Info.plist"
 
 rm languages
 

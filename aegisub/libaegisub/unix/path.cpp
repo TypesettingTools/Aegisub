@@ -63,10 +63,7 @@ std::string Path::Locale() {
 }
 
 std::string Path::Config() {
-	std::string tmp(home());
-	tmp.append("/.aegisub-");
-	tmp.append(AEGISUB_VERSION_DATA);
-	return tmp.append("/");
+	return home() + "/.aegisub/";
 }
 
 std::string Path::Temp() {

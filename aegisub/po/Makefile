@@ -38,8 +38,8 @@ all: $(MO)
 install:
 	@$(BIN_MKDIR) -p $(addsuffix /LC_MESSAGES/, $(addprefix $(DESTDIR)$(P_LOCALE)/, $(basename $(PO))))
 	@for i in $(basename $(PO)); do \
-		echo $(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(GETTEXT_PACKAGE).mo; \
-		$(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(GETTEXT_PACKAGE).mo; \
+		echo $(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_COMMAND).mo; \
+		$(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_COMMAND).mo; \
 	done
 
 

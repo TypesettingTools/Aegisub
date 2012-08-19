@@ -1,6 +1,6 @@
 include ../Makefile.inc
 
-PROGRAM = aegisub-3.0
+PROGRAM = $(AEGISUB_COMMAND)
 PROGRAM_INSTALL = yes
 
 PRECOMPILED_HEADER_NAME=agi_pre.h

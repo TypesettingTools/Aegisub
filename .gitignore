@@ -48,6 +48,7 @@ aegisub/conf.sh
 aegisub/desktop/aegisub.desktop
 aegisub/libaegisub/libaegisub-3.0.so.3
 aegisub/reporter/reporter-3.0
+aegisub/src/aegisub
 aegisub/src/aegisub-3.0
 aegisub/src/libresrc/bitmap.cpp
 aegisub/src/libresrc/bitmap.h

@@ -1,5 +1,5 @@
 cd %~dp0..
-sh build/version.sh .
+sh build/version.sh ..
 if %ERRORLEVEL% NEQ 0 goto :fail
 goto :eof
 
