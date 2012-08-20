@@ -471,6 +471,7 @@ namespace Automation4 {
 			LuaScriptReader script_reader(GetFilename());
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().utf8_str())) {
 				wxString err = wxString::Format("Error loading Lua script \"%s\":\n\n%s", GetPrettyFilename(), get_wxstring(L, -1));
+				lua_pop(L, 1);
 				throw ScriptLoadError(STD_STR(err));
 			}
 			_stackcheck.check_stack(1);
@@ -481,6 +482,7 @@ namespace Automation4 {
 			if (lua_pcall(L, 0, 0, 0)) {
 				// error occurred, assumed to be on top of Lua stack
 				wxString err = wxString::Format("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename(), get_wxstring(L, -1));
+				lua_pop(L, 1);
 				throw ScriptLoadError(STD_STR(err));
 			}
 			_stackcheck.check_stack(0);
