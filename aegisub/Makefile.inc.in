@@ -26,6 +26,7 @@ CFLAGS              = @CFLAGS@
 CXXFLAGS            = @CXXFLAGS@
 CPPFLAGS            = @CPPFLAGS@
 CFLAGS_DEP          = -MD -MP
+LIBS                = @LIBS@
 LDFLAGS             = @LDFLAGS@
 INSTALL_FLAGS       = -m 664
 CCACHE_ENV          = CCACHE_SLOPPINESS=time_macros

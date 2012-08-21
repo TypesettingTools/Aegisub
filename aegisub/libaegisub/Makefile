@@ -1,10 +1,7 @@
 # $Id$
 include ../Makefile.inc
 
-
-LIB_SHARED = libaegisub-3.0.so
-LIB_SHARED_INSTALL = yes
-LIB_VERSION = 3
+LIB = libaegisub.a
 
 CXXFLAGS += -Iinclude -I../src -I.. -DLAGI -fPIC -Wno-variadic-macros
 

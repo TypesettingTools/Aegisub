@@ -5,8 +5,7 @@ PROGRAM_INSTALL = yes
 PRECOMPILED_HEADER_NAME=r_pre.h
 
 CXXFLAGS += -Iinclude $(CFLAGS_WX) -I../libaegisub/include
-LIBS += $(LIBS_WX) $(LIBS_LIBCURL) -L../libaegisub -laegisub-3.0 $(LIBS_UCHARDET) $(LIBS_GL)
-LDFLAGS += -Wl,-rpath ../libaegisub
+LIBS += $(LIBS_WX) $(LIBS_LIBCURL) -L../libaegisub -laegisub $(LIBS_UCHARDET) $(LIBS_GL)
 
 # File-specific flags
 upload.o: CXXFLAGS += $(CFLAGS_CURL)

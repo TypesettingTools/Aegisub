@@ -10,7 +10,7 @@ AEGISUB_CFLAGS = -I. -I.. -Iinclude -I../libaegisub/include -I../build -DAEGISUB
 CFLAGS += $(AEGISUB_CFLAGS)
 CXXFLAGS += $(AEGISUB_CFLAGS) -D__STDC_FORMAT_MACROS $(CXXFLAGS_WX)
 
-LIBS += -L../libaegisub -laegisub-3.0
+LIBS := -L../libaegisub -laegisub $(LIBS)
 LIBS += $(LIBS_CCMALLOC) $(LIBS_EFENCE) $(LIBS_GL)
 LIBS += $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE)
 LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3)
