@@ -5,10 +5,13 @@ SUBDIRS += \
 	libaegisub \
 	tools \
 	src \
-	reporter \
 	automation \
 	desktop \
 	po
+
+ifeq (yes, $(ENABLE_REPORTER))
+SUBDIRS += reporter
+endif
 
 all: ;
 
