@@ -24,7 +24,7 @@ fi
 last_svn_revision=6962
 last_svn_hash="2289c084f28d9923989e1b58b81332347130ea78"
 
-git_revision=$(expr $last_svn_revision + $(git log --pretty=oneline $last_svn_hash..HEAD 2>/dev/null | wc -l))
+git_revision=$(expr $last_svn_revision + $(git log --pretty=oneline $last_svn_hash..master 2>/dev/null | wc -l))
 git_version_str=$(git describe --exact-match 2> /dev/null)
 if test x$git_version_str != x; then
   git_version_str="${git_version_str##v}"
