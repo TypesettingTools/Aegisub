@@ -83,7 +83,7 @@ class VideoDisplay : public wxGLCanvas {
 	/// be the same as the actual client size of the display
 	wxSize videoSize;
 
-	Vector2D mouse_pos;
+	Vector2D last_mouse_pos, mouse_pos;
 
 	/// Screen pixels between the left of the canvas and the left of the video
 	int viewport_left;

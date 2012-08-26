@@ -351,7 +351,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (event.ButtonDown())
 		SetFocus();
 
-	mouse_pos = event.GetPosition();
+	last_mouse_pos = mouse_pos = event.GetPosition();
 
 	if (tool)
 		tool->OnMouseEvent(event);
@@ -424,7 +424,7 @@ bool VideoDisplay::ToolIsType(std::type_info const& type) const {
 }
 
 Vector2D VideoDisplay::GetMousePosition() const {
-	return mouse_pos ? tool->ToScriptCoords(mouse_pos) : mouse_pos;
+	return last_mouse_pos ? tool->ToScriptCoords(last_mouse_pos) : last_mouse_pos;
 }
 
 void VideoDisplay::Unload() {
