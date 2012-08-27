@@ -202,8 +202,13 @@ FrameMain::FrameMain (wxArrayString args)
 	setlocale(LC_NUMERIC, "C");
 #endif
 #ifdef __APPLE__
-	// Apple's wprintf() and family breaks with CTYPE set to "C"
-	setlocale(LC_CTYPE, "");
+	// When run from an app bundle, LC_CTYPE defaults to "C", which breaks on
+	// anything involving unicode and in some cases number formatting.
+	// The right thing to do here would be to query CoreFoundation for the user's
+	// locale and add .UTF-8 to that, but :effort:
+	LOG_D("locale") << setlocale(LC_ALL, 0);
+	setlocale(LC_CTYPE, "en_US.UTF-8");
+	LOG_D("locale") << setlocale(LC_ALL, 0);
 #endif
 
 	StartupLog("Initializing context models");
