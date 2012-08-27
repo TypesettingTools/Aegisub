@@ -35,7 +35,7 @@
 
     <!-- Values: i386, ppc, x86_65, ppc64 -->
     <key>LSArchitecturePriority</key>
-    <string>i386</string>
+    <string>x86_64</string>
 
     <!-- Displayed in the 'Get Info' context menu dialogue -->
     <key>CFBundleGetInfoString</key>
