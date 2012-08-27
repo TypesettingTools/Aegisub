@@ -22,7 +22,7 @@ if ! test -d "${srcdir}/.git"; then
 fi
 
 last_svn_revision=6962
-last_svn_hash="2289c084f28d9923989e1b58b81332347130ea78"
+last_svn_hash="16cd907fe7482cb54a7374cd28b8501f138116be"
 
 git_revision=$(expr $last_svn_revision + $(git log --pretty=oneline $last_svn_hash..HEAD 2>/dev/null | wc -l))
 git_version_str=$(git describe --exact-match 2> /dev/null)
