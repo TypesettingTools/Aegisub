@@ -397,7 +397,6 @@ struct edit_redo : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		c->videoController->Stop();
 		c->ass->Redo();
 	}
 };
@@ -424,7 +423,6 @@ struct edit_undo : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		c->videoController->Stop();
 		c->ass->Undo();
 	}
 };
