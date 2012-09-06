@@ -23,7 +23,7 @@
 #include <libaegisub/scoped_ptr.h>
 
 #ifndef AGI_PRE
-#include <wx/mutex.h>
+#include <wx/thread.h>
 #endif
 
 class LockAudioProvider : public AudioProvider {
