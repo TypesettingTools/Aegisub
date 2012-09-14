@@ -245,8 +245,11 @@ void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
 		settings.margin,
 		double(settings.script_x) / double(src_x),
 		double(settings.script_y) / double(src_y),
-		settings.change_ar ? state.rx / state.ry : 1.0
+		1.0
 	};
+
+	if (settings.change_ar)
+		state.ar = state.rx / state.ry;
 
 	for_each(ass->Line.begin(), ass->Line.end(), bind(resample_line, &state, std::tr1::placeholders::_1));
 
