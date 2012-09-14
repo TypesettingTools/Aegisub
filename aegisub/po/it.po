@@ -4845,6 +4845,7 @@ msgstr ""
 "Percorso completo: %s\n"
 "Stato: %s\n"
 "\n"
+"Features provided by script:"
 
 #: ../src/dialog_automation.cpp:279
 msgid "Correctly loaded"
