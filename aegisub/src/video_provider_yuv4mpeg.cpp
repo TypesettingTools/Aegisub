@@ -308,12 +308,11 @@ YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(co
 /// can easily be done.
 int YUV4MPEGVideoProvider::IndexFile() {
 	int framecount = 0;
-	int64_t curpos = ftello(sf);
 
 	// the ParseFileHeader() call in LoadVideo() will already have read
 	// the file header for us and set the seek position correctly
 	while (true) {
-		curpos = ftello(sf); // update position
+		int64_t curpos = ftello(sf); // update position
 		// continue reading headers until no more are found
 		std::vector<wxString> tags = ReadHeader(curpos, false);
 		curpos = ftello(sf);

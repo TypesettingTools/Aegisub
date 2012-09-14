@@ -123,9 +123,7 @@ static inline Vector2D interp(Vector2D p1, Vector2D p2, float t) {
 }
 
 void OpenGLWrapper::DrawDashedLine(Vector2D p1, Vector2D p2, float step) const {
-	float dist = (p2 - p1).Len();
-	step /= dist;
-	dist -= step;
+	step /= (p2 - p1).Len();
 	for (float t = 0; t < 1.f; t += 2 * step) {
 		DrawLine(interp(p1, p2, t), interp(p1, p2, t + step));
 	}

@@ -125,14 +125,13 @@ void AegiVideoFrame::SetTo(const unsigned char *source, unsigned int width, unsi
 wxImage AegiVideoFrame::GetImage() const {
 	unsigned char *buf = (unsigned char*)malloc(w*h*3);
 	if (!buf) throw std::bad_alloc();
-	const unsigned char *src = data;
-	unsigned char *dst = buf;
 
 	int Bpp = GetBpp();
 
 	// Convert
 	for (unsigned int y=0;y<h;y++) {
-		dst = buf + y*w*3;
+		unsigned char *dst = buf + y*w*3;
+		const unsigned char *src;
 		if (flipped) src = data + (h-y-1)*pitch;
 		else src = data + y*pitch;
 		for (unsigned int x=0;x<w;x++) {
