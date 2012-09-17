@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-16 18:52-0700\n"
-"PO-Revision-Date: 2012-09-17 02:59-0000\n"
-"Last-Translator: Ricardo Constantino <wiiaboo@gmail.com>\n"
+"PO-Revision-Date: 2012-09-17 03:09-0000\n"
+"Last-Translator: Daniel Mota <1060446@isep.ipp.pt>\n"
 "Language-Team: Leinad4Mind & RiCON <wiiaboo@gmail.com>\n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
@@ -5952,7 +5952,7 @@ msgstr "Adiciona expressões \\be1 a todas as linhas seleccionadas"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:32
 msgid "Automatic karaoke lead-in"
-msgstr "Inserir tempo de entrada Automático no Karaoke"
+msgstr "Inserir Tempo de Entrada Automático no Karaoke"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:33
 msgid "Join up the ends of selected lines and add \\k tags to shift karaoke"
@@ -5983,7 +5983,7 @@ msgstr ""
 
 #: ../automation/autoload/kara-templater.lua:858
 msgid "Apply karaoke template"
-msgstr "Aplicar modelos de karaoke"
+msgstr "Aplicar Modelos de Karaoke"
 
 #: ../automation/autoload/kara-templater.lua:858
 msgid "Applies karaoke effects from templates"
@@ -6006,19 +6006,19 @@ msgstr ""
 
 #: ../automation/autoload/strip-tags.lua:19
 msgid "Strip tags"
-msgstr "Remover expressões"
+msgstr "Remover Expressões"
 
 #: ../automation/autoload/strip-tags.lua:20
 msgid "Remove all override tags from selected lines"
-msgstr "Remover todas as expressões das linhas seleccionadas"
+msgstr "Remove todas as expressões das linhas seleccionadas"
 
 #: ../automation/autoload/strip-tags.lua:30
 msgid "strip tags"
-msgstr "esconder expressões."
+msgstr "remover expressões"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
-msgstr "Converter em largura total"
+msgstr "Converter em Largura Total"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
 msgid "Convert Latin letters to SJIS fullwidth letters"
