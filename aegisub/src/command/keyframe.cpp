@@ -84,7 +84,7 @@ struct keyframe_open : public Command {
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
 		wxString filename = wxFileSelector(
-			"Select the keyframes file to open",
+			_("Open keyframes file"),
 			path,
 			""
 			,".txt",
@@ -112,7 +112,7 @@ struct keyframe_save : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Keyframes")->GetString());
-		wxString filename = wxFileSelector("Select the Keyframes file to open",path,"","*.key.txt","Text files (*.txt)|*.txt",wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
+		wxString filename = wxFileSelector(_("Save keyframes file"),path,"","*.key.txt","Text files (*.txt)|*.txt",wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
 		if (filename.empty()) return;
 		OPT_SET("Path/Last/Keyframes")->SetString(STD_STR(wxFileName(filename).GetPath()));
 		c->videoController->SaveKeyframes(filename);
