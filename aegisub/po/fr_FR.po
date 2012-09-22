@@ -917,8 +917,8 @@ msgid "&Cinematic (2.35)"
 msgstr "&Cinématique (2.35)"
 
 #: ../src/command/video.cpp:92
-msgid "Cinematic (235)"
-msgstr "Cinématique (235)"
+msgid "Cinematic (2.35)"
+msgstr "Cinématique (2.35)"
 
 #: ../src/command/video.cpp:93
 msgid "Forces video to 2.35 aspect ratio"

@@ -89,7 +89,7 @@ struct validator_video_attached : public Command {
 struct video_aspect_cinematic : public validator_video_loaded {
 	CMD_NAME("video/aspect/cinematic")
 	STR_MENU("&Cinematic (2.35)")
-	STR_DISP("Cinematic (235)")
+	STR_DISP("Cinematic (2.35)")
 	STR_HELP("Forces video to 2.35 aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 

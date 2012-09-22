@@ -920,7 +920,7 @@ msgid "&Cinematic (2.35)"
 msgstr "&Cine (2.35:1)"
 
 #: ../src/command/video.cpp:92
-msgid "Cinematic (235)"
+msgid "Cinematic (2.35)"
 msgstr "Cine (2.35:1)"
 
 #: ../src/command/video.cpp:93
