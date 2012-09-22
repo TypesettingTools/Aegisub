@@ -37,6 +37,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
+#include <functional>
 #include <locale.h>
 
 #include <wx/dir.h>
@@ -119,6 +121,9 @@ int AegisubLocale::PickLanguage() {
 		langs.Remove(user);
 		langs.Insert(user, 0);
 	}
+
+	// Remove languages which won't work due to the locale not being  installed
+	langs.erase(remove_if(langs.begin(), langs.end(), not1(std::ptr_fun(&wxLocale::IsAvailable))), langs.end());
 
 	// Nothing to pick
 	if (langs.empty()) return -1;
