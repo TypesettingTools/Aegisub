@@ -543,7 +543,7 @@ void FrameMain::OnVideoOpen() {
 		cmd::call("video/detach", context.get());
 	Thaw();
 
-	if (!blockAudioLoad && OPT_GET("Video/Open Audio")->GetBool()) {
+	if (!blockAudioLoad && OPT_GET("Video/Open Audio")->GetBool() && context->audioController->GetAudioURL() != context->videoController->GetVideoName()) {
 		try {
 			context->audioController->OpenAudio(context->videoController->GetVideoName());
 		}
