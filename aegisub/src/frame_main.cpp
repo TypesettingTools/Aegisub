@@ -749,6 +749,10 @@ void FrameMain::OnSubtitlesOpen() {
 				context->audioController->OpenAudio(curSubsAudio);
 		}
 		catch (agi::UserCancelException const&) { }
+		catch (agi::FileNotAccessibleError const& err) {
+			config::mru->Remove("Audio", STD_STR(curSubsAudio));
+			wxMessageBox(lagi_wxString(err.GetMessage()), "Error opening audio", wxOK | wxICON_ERROR | wxCENTER, this);
+		}
 	}
 
 	SetDisplayMode(1, 1);
