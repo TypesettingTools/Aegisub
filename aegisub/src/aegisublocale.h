@@ -46,6 +46,7 @@ class wxLocale;
 class AegisubLocale {
 	agi::scoped_ptr<wxLocale> locale;
 	wxArrayInt GetAvailableLanguages();
+	int EnglishId() const;
 
 public:
 	~AegisubLocale();

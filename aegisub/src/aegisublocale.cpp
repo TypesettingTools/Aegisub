@@ -52,9 +52,39 @@
 AegisubLocale::~AegisubLocale() {
 }
 
+int AegisubLocale::EnglishId() const {
+	static const int english_ids[] = {
+		wxLANGUAGE_ENGLISH,
+		wxLANGUAGE_ENGLISH_US,
+		wxLANGUAGE_ENGLISH_UK,
+		wxLANGUAGE_ENGLISH_AUSTRALIA,
+		wxLANGUAGE_ENGLISH_BELIZE,
+		wxLANGUAGE_ENGLISH_BOTSWANA,
+		wxLANGUAGE_ENGLISH_CANADA,
+		wxLANGUAGE_ENGLISH_CARIBBEAN,
+		wxLANGUAGE_ENGLISH_DENMARK,
+		wxLANGUAGE_ENGLISH_EIRE,
+		wxLANGUAGE_ENGLISH_JAMAICA,
+		wxLANGUAGE_ENGLISH_NEW_ZEALAND,
+		wxLANGUAGE_ENGLISH_PHILIPPINES,
+		wxLANGUAGE_ENGLISH_SOUTH_AFRICA,
+		wxLANGUAGE_ENGLISH_TRINIDAD,
+		wxLANGUAGE_ENGLISH_ZIMBABWE,
+		0
+	};
+
+	for (const int *id = english_ids; *id; ++id) {
+		if (wxLocale::IsAvailable(*id)) {
+			return *id;
+		}
+	}
+
+	return -1;
+}
+
 void AegisubLocale::Init(int language) {
 	if (language == -1)
-		language = wxLANGUAGE_ENGLISH;
+		language = EnglishId();
 
 	if (!wxLocale::IsAvailable(language))
 		language = wxLANGUAGE_UNKNOWN;
@@ -78,7 +108,9 @@ int AegisubLocale::PickLanguage() {
 
 	// Check if english is in it, else add it
 	if (langs.Index(wxLANGUAGE_ENGLISH) == wxNOT_FOUND) {
-		langs.Insert(wxLANGUAGE_ENGLISH, 0);
+		int id = EnglishId();
+		if (id)
+			langs.Insert(id, 0);
 	}
 
 	// Check if user local language is available, if so, make it first
