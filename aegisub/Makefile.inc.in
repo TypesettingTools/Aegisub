@@ -37,6 +37,7 @@ LIB_SHARED_LINK_OSX = -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -compatibili
 # STRINGS
 #########
 AEGISUB_COMMAND      = @AEGISUB_COMMAND@
+AEGISUB_CATALOG      = @AEGISUB_CATALOG@
 BUILD_DATE           = @BUILD_DATE@
 PACKAGE_TARNAME      = aegisub-@BUILD_GIT_VERSION_STRING@
 PACKAGE_DEBUG        = @PACKAGE_DEBUG@

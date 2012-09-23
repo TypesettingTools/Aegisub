@@ -68,6 +68,14 @@ AS_IF([test x$build_darwin = xyes],
 AC_SUBST(AEGISUB_COMMAND)
 AC_DEFINE_UNQUOTED([AEGISUB_COMMAND], ["${AEGISUB_COMMAND}"], [Name of the Aegisub executable])
 
+# Name of gettext catalog.
+# On OS X everything goes in an app bundle so no point in versioning the executable
+AS_IF([test x$build_darwin = xyes],
+      [AEGISUB_CATALOG="aegisub"],
+      [AEGISUB_CATALOG="aegisub-30"])
+AC_SUBST(AEGISUB_CATALOG)
+AC_DEFINE_UNQUOTED([AEGISUB_CATALOG], ["${AEGISUB_CATALOG}"], [Name of the Aegisub gettext catalog])
+
 # Handle location of desktop files: http://freedesktop.org/wiki/Specifications/desktop-entry-spec
 AC_ARG_WITH(desktop-dir,
             AS_HELP_STRING([--with-desktop-dir=PATH],[desktop file locations [PREFIX/share/applications]]))
