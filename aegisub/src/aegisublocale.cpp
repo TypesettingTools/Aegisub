@@ -202,6 +202,8 @@ wxArrayInt AegisubLocale::GetAvailableLanguages() {
 		"ru",
 		"sr_RS",
 		"sr_RS@latin",
+		"sr_YU",
+		"sr_YU@latin",
 		"vi",
 		"zh_CN",
 		"zh_TW"

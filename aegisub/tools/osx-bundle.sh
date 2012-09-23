@@ -81,9 +81,11 @@ echo "---- Copying Aegisub locale files ----"
 mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 
 for i in `ls -1 po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
+  # The only serbian locale 10.8 has is sr_YU
+  destname=$(echo ${i} | sed 's/sr_RS/sr_YU/')
   if test -f "po/${i}.mo"; then
-    mkdir -p "${PKG_DIR}/Contents/Resources/${i}.lproj"
-    cp -v po/${i}.mo "${PKG_DIR}/Contents/Resources/${i}.lproj/aegisub.mo"
+    mkdir -p "${PKG_DIR}/Contents/Resources/${destname}.lproj"
+    cp -v po/${i}.mo "${PKG_DIR}/Contents/Resources/${destname}.lproj/aegisub.mo"
   else
     echo "${i}.mo not found!"
     exit 1
