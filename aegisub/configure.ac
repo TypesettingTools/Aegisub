@@ -64,7 +64,7 @@ AC_C_BIGENDIAN(
 # On OS X everything goes in an app bundle so no point in versioning the executable
 AS_IF([test x$build_darwin = xyes],
       [AEGISUB_COMMAND="aegisub"],
-      [AEGISUB_COMMAND="aegisub-3.0"])
+      [AEGISUB_COMMAND="aegisub-3.1"])
 AC_SUBST(AEGISUB_COMMAND)
 AC_DEFINE_UNQUOTED([AEGISUB_COMMAND], ["${AEGISUB_COMMAND}"], [Name of the Aegisub executable])
 
@@ -72,7 +72,7 @@ AC_DEFINE_UNQUOTED([AEGISUB_COMMAND], ["${AEGISUB_COMMAND}"], [Name of the Aegis
 # On OS X everything goes in an app bundle so no point in versioning the executable
 AS_IF([test x$build_darwin = xyes],
       [AEGISUB_CATALOG="aegisub"],
-      [AEGISUB_CATALOG="aegisub-30"])
+      [AEGISUB_CATALOG="aegisub-31"])
 AC_SUBST(AEGISUB_CATALOG)
 AC_DEFINE_UNQUOTED([AEGISUB_CATALOG], ["${AEGISUB_CATALOG}"], [Name of the Aegisub gettext catalog])
 
