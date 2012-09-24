@@ -35,15 +35,6 @@ test -d src || {
     exit 1
 }
 
-# The internal echo for /bin/sh on darwin doesn't support -n
-# therefore we have to use /bin/echo.
-if test `uname -s` = "Darwin"; then
-    ECHO_N="/bin/echo -n";
-else
-    ECHO_N="echo -n";
-fi
-
-
 check_version ()
 {
     VERSION_A=$1
@@ -86,7 +77,7 @@ check_version ()
 DIE=0
 
 
-$ECHO_N "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
+printf "%s" "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
 if ($AUTOCONF --version) < /dev/null > /dev/null 2>&1; then
     VER=`$AUTOCONF --version | head -n 1 \
          | grep -iw autoconf | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
@@ -102,7 +93,7 @@ fi
 
 
 # 1.11 comes after 1.10 beacuse 1.11 isn't fully supported.
-$ECHO_N "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
+printf "%s" "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
 if ($AUTOMAKE --version) < /dev/null > /dev/null 2>&1; then
    AUTOMAKE=$AUTOMAKE
    ACLOCAL=$ACLOCAL
