@@ -124,7 +124,7 @@ static void wait_for_cache_thread(FontConfigCacheThread const * const * const ca
 	if (!*cache_worker) return;
 
 	DialogProgress progress(wxGetApp().frame, "Updating font index", "This may take several minutes");
-	progress.Run(bind(do_wait, std::tr1::placeholders::_1, cache_worker));
+	progress.Run(std::bind(do_wait, std::placeholders::_1, cache_worker));
 }
 
 /// @brief Constructor

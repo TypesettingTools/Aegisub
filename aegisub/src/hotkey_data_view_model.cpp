@@ -166,7 +166,7 @@ public:
 
 	void Apply(Hotkey::HotkeyMap *hk_map) {
 		for_each(children.begin(), children.end(),
-			bind(&HotkeyModelCombo::Apply, std::tr1::placeholders::_1, hk_map));
+			bind(&HotkeyModelCombo::Apply, std::placeholders::_1, hk_map));
 	}
 
 	void SetFilter(wxRegEx const& new_filter) {
@@ -239,7 +239,7 @@ public:
 
 	void Apply(Hotkey::HotkeyMap *hk_map) {
 		for_each(categories.begin(), categories.end(),
-			bind(&HotkeyModelCategory::Apply, std::tr1::placeholders::_1, hk_map));
+			bind(&HotkeyModelCategory::Apply, std::placeholders::_1, hk_map));
 	}
 
 	void SetFilter(wxString filter) {
@@ -250,7 +250,7 @@ public:
 		// Using wxRegEx for case-insensitive contains
 		wxRegEx re(filter, wxRE_ADVANCED | wxRE_ICASE | wxRE_NOSUB);
 		for_each(categories.begin(), categories.end(),
-			bind(&HotkeyModelCategory::SetFilter, std::tr1::placeholders::_1, std::tr1::ref(re)));
+			bind(&HotkeyModelCategory::SetFilter, std::placeholders::_1, std::ref(re)));
 	}
 
 	wxDataViewItem GetParent() const { return wxDataViewItem(0); }
@@ -305,7 +305,7 @@ bool HotkeyDataViewModel::IsContainer(wxDataViewItem const& item) const {
 bool HotkeyDataViewModel::SetValue(wxVariant const& variant, wxDataViewItem const& item, unsigned int col) {
 	if (!has_pending_changes) {
 		has_pending_changes = true;
-		parent->AddPendingChange(std::tr1::bind(&HotkeyDataViewModel::Apply, this));
+		parent->AddPendingChange(std::bind(&HotkeyDataViewModel::Apply, this));
 	}
 	return get(item)->SetValue(variant, col);
 }
@@ -329,7 +329,7 @@ void HotkeyDataViewModel::Delete(wxDataViewItem const& item) {
 
 	if (!has_pending_changes) {
 		has_pending_changes = true;
-		parent->AddPendingChange(std::tr1::bind(&HotkeyDataViewModel::Apply, this));
+		parent->AddPendingChange(std::bind(&HotkeyDataViewModel::Apply, this));
 	}
 }
 

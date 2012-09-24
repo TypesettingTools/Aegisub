@@ -77,8 +77,8 @@ static wxString AssDialogue::* get_field(int field_n) {
 	}
 }
 
-std::tr1::function<bool (wxString)> get_predicate(int mode, wxRegEx *re, bool match_case, wxString const& match_text) {
-	using std::tr1::placeholders::_1;
+std::function<bool (wxString)> get_predicate(int mode, wxRegEx *re, bool match_case, wxString const& match_text) {
+	using std::placeholders::_1;
 
 	switch (mode) {
 		case MODE_REGEXP:
@@ -110,7 +110,7 @@ static std::set<AssDialogue*> process(wxString match_text, bool match_case, int 
 	}
 
 	wxString AssDialogue::*field = get_field(field_n);
-	std::tr1::function<bool (wxString)> pred = get_predicate(mode, &re, match_case, match_text);
+	std::function<bool (wxString)> pred = get_predicate(mode, &re, match_case, match_text);
 
 	std::set<AssDialogue*> matches;
 	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it) {
@@ -189,9 +189,9 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 	match_mode->SetSelection(OPT_GET("Tool/Select Lines/Mode")->GetInt());
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSelection::Process, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
-	apply_to_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::tr1::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
-	apply_to_dialogue->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::tr1::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
+	apply_to_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
+	apply_to_dialogue->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
 }
 
 DialogSelection::~DialogSelection() {

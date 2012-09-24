@@ -33,7 +33,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <tr1/functional>
+#include <functional>
 #endif
 
 namespace agi { struct Color; }
@@ -44,7 +44,7 @@ class wxWindow;
 /// @param original Initial color to select
 /// @param callback Function called whenever the selected color changes
 /// @return Did the user accept the new color?
-bool GetColorFromUser(wxWindow* parent, agi::Color original, std::tr1::function<void (agi::Color)> callback);
+bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback);
 
 /// @brief Get a color from the user via a color picker dialog
 /// @param T Class which the callback method belongs to
@@ -55,5 +55,5 @@ bool GetColorFromUser(wxWindow* parent, agi::Color original, std::tr1::function<
 /// @return Did the user accept the new color?
 template<class T, void (T::*method)(agi::Color)>
 bool GetColorFromUser(wxWindow* parent, agi::Color original, T* callbackObj) {
-	return GetColorFromUser(parent, original, bind(method, callbackObj, std::tr1::placeholders::_1));
+	return GetColorFromUser(parent, original, std::bind(method, callbackObj, std::placeholders::_1));
 }

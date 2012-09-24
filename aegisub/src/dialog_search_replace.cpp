@@ -136,11 +136,11 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 
 	Search.OnDialogOpen();
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogSearchReplace::FindReplace, this, 0), BUTTON_FIND_NEXT);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogSearchReplace::FindReplace, this, 1), BUTTON_REPLACE_NEXT);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&DialogSearchReplace::FindReplace, this, 2), BUTTON_REPLACE_ALL);
-	Bind(wxEVT_SET_FOCUS, std::tr1::bind(&SearchReplaceEngine::SetFocus, &Search, true));
-	Bind(wxEVT_KILL_FOCUS, std::tr1::bind(&SearchReplaceEngine::SetFocus, &Search, false));
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 0), BUTTON_FIND_NEXT);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 1), BUTTON_REPLACE_NEXT);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 2), BUTTON_REPLACE_ALL);
+	Bind(wxEVT_SET_FOCUS, std::bind(&SearchReplaceEngine::SetFocus, &Search, true));
+	Bind(wxEVT_KILL_FOCUS, std::bind(&SearchReplaceEngine::SetFocus, &Search, false));
 }
 
 DialogSearchReplace::~DialogSearchReplace() {

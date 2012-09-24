@@ -24,7 +24,7 @@
 #ifndef AGI_PRE
 #include <list>
 #include <map>
-#include <tr1/functional>
+#include <functional>
 #include <set>
 #include <vector>
 
@@ -34,7 +34,7 @@
 class AssDialogue;
 class AssFile;
 
-typedef std::tr1::function<void (wxString, int)> FontCollectorStatusCallback;
+typedef std::function<void (wxString, int)> FontCollectorStatusCallback;
 
 /// @class FontFileLister
 /// @brief Font lister interface

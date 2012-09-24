@@ -20,11 +20,7 @@
 
 #ifndef LAGI_PRE
 #include <iterator>
-#ifdef _WIN32
 #include <memory>
-#else
-#include <tr1/memory>
-#endif
 #include <sstream>
 
 #include <stdint.h>
@@ -42,7 +38,7 @@ class line_iterator : public std::iterator<std::input_iterator_tag, OutputType> 
 	bool valid; ///< Are there any more values to read?
 	OutputType value; ///< Value to return when this is dereference
 	std::string encoding; ///< Encoding of source stream
-	std::tr1::shared_ptr<agi::charset::IconvWrapper> conv;
+	std::shared_ptr<agi::charset::IconvWrapper> conv;
 	int cr; ///< CR character in the source encoding
 	int lf; ///< LF character in the source encoding
 	size_t width;  ///< width of LF character in the source encoding

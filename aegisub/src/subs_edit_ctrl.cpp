@@ -35,11 +35,8 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#ifdef _WIN32
 #include <functional>
-#else
-#include <tr1/functional>
-#endif
+
 #include <wx/clipbrd.h>
 #include <wx/intl.h>
 #include <wx/menu.h>
@@ -166,7 +163,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	proto.Add("fax;Factor");
 	proto.Add("fay;Factor");
 
-	using namespace std::tr1;
+	using std::bind;
 
 	Bind(wxEVT_CHAR_HOOK, &SubsTextEditCtrl::OnKeyDown, this);
 

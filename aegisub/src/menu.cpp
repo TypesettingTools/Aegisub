@@ -51,8 +51,8 @@ namespace {
 /// Window ID of first menu item
 static const int MENU_ID_BASE = 10000;
 
-using std::tr1::placeholders::_1;
-using std::tr1::bind;
+using std::placeholders::_1;
+using std::bind;
 
 class MruMenu : public wxMenu {
 	std::string type;

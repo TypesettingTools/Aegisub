@@ -225,7 +225,7 @@ void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const
 	text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
 
 	wxButton *browse = new wxButton(this, -1, _("Browse..."));
-	browse->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(browse_button, text));
+	browse->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(browse_button, text));
 
 	wxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	button_sizer->Add(text, wxSizerFlags(1).Expand());
@@ -260,7 +260,7 @@ void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 	font_size->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(size_opt->GetName().c_str(), parent));
 
 	wxButton *pick_btn = new wxButton(this, -1, _("Choose..."));
-	pick_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(font_button, parent, font_name, font_size));
+	pick_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(font_button, parent, font_name, font_size));
 
 	wxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	button_sizer->Add(font_name, wxSizerFlags(1).Expand());

@@ -114,7 +114,7 @@ VideoDisplay::VideoDisplay(
 
 	slots.push_back(con->ass->AddFileSaveListener(&VideoDisplay::OnSubtitlesSave, this));
 
-	Bind(wxEVT_PAINT, std::tr1::bind(&VideoDisplay::Render, this));
+	Bind(wxEVT_PAINT, std::bind(&VideoDisplay::Render, this));
 	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
 	Bind(wxEVT_CONTEXT_MENU, &VideoDisplay::OnContextMenu, this);
 	Bind(wxEVT_ENTER_WINDOW, &VideoDisplay::OnMouseEvent, this);

@@ -19,7 +19,7 @@
 
 #ifndef AGI_PRE
 #include <deque>
-#include <tr1/functional>
+#include <functional>
 #include <map>
 
 #include <wx/dialog.h>
@@ -37,7 +37,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceNotSupported, PreferencesError, "prefe
 
 class Preferences : public wxDialog {
 public:
-	typedef std::tr1::function<void ()> Thunk;
+	typedef std::function<void ()> Thunk;
 private:
 	wxTreebook *book;
 	wxButton *applyButton;

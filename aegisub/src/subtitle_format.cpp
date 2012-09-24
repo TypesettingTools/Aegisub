@@ -57,7 +57,7 @@
 #include "utils.h"
 #include "video_context.h"
 
-using namespace std::tr1::placeholders;
+using namespace std::placeholders;
 
 SubtitleFormat::SubtitleFormat(wxString const& name)
 : name(name)

@@ -33,7 +33,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <tr1/array>
+#include <array>
 
 #include <wx/colour.h>
 #endif
@@ -66,7 +66,7 @@ public:
 	double outline_w; ///< Outline width in pixels
 	double shadow_w;  ///< Shadow distance in pixels
 	int alignment;    ///< \an-style line alignment
-	std::tr1::array<int, 3> Margin; ///< Left/Right/Vertical
+	std::array<int, 3> Margin; ///< Left/Right/Vertical
 	int encoding;     ///< ASS font encoding needed for some non-unicode fonts
 
 	/// Update the raw line data after one or more of the public members have been changed

@@ -35,7 +35,7 @@
 #include <wx/intl.h>
 #endif
 
-using namespace std::tr1::placeholders;
+using namespace std::placeholders;
 
 FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister)
 : status_callback(status_callback)

@@ -122,7 +122,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	// Button sizer
 	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogProperties::OnOK, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

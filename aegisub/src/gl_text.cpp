@@ -233,7 +233,7 @@ OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
 
 	// No texture could fit it, create a new one
 	if (!ok) {
-		textures.push_back(std::tr1::shared_ptr<OpenGLTextTexture>(new OpenGLTextTexture(glyph)));
+		textures.push_back(std::shared_ptr<OpenGLTextTexture>(new OpenGLTextTexture(glyph)));
 	}
 
 	return glyph;

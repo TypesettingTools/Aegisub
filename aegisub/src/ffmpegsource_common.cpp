@@ -117,7 +117,7 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 
 	// index all audio tracks
 	FFMS_Index *Index;
-	Progress.Run(bind(DoIndexingWrapper, &Index, Indexer, Trackmask, IndexEH, std::tr1::placeholders::_1, &ErrInfo));
+	Progress.Run(std::bind(DoIndexingWrapper, &Index, Indexer, Trackmask, IndexEH, std::placeholders::_1, &ErrInfo));
 
 	if (Index == NULL) {
 		MsgString.Append("Failed to index: ").Append(wxString(ErrInfo.Buffer, wxConvUTF8));

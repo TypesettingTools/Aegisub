@@ -47,7 +47,7 @@ static void for_each(C &range, F func) {
 	std::for_each(range.begin(), range.end(), func);
 }
 
-using std::tr1::placeholders::_1;
+using std::placeholders::_1;
 
 const wxColour VisualToolBase::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
 

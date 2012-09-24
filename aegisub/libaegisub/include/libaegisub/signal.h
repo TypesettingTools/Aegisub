@@ -21,19 +21,14 @@
 #ifndef LAGI_PRE
 #include <boost/container/map.hpp>
 
-#ifdef _WIN32
 #include <functional>
 #include <memory>
-#else
-#include <tr1/functional>
-#include <tr1/memory>
-#endif
 #endif
 
 namespace agi {
 	namespace signal {
 
-using namespace std::tr1::placeholders;
+using namespace std::placeholders;
 
 class Connection;
 
@@ -59,7 +54,7 @@ namespace detail {
 /// @class Connection
 /// @brief Object representing a connection to a signal
 class Connection {
-	std::tr1::shared_ptr<detail::ConnectionToken> token;
+	std::shared_ptr<detail::ConnectionToken> token;
 public:
 	Connection() { }
 	Connection(detail::ConnectionToken *token) : token(token) { token->claimed = true; }
@@ -167,15 +162,15 @@ namespace detail {
 		}
 		template<class F, class Arg1>
 		UnscopedConnection Connect(F func, Arg1 a1) {
-			return Connect(std::tr1::bind(func, a1));
+			return Connect(std::bind(func, a1));
 		}
 		template<class F, class Arg1, class Arg2>
 		UnscopedConnection Connect(F func, Arg1 a1, Arg2 a2) {
-			return Connect(std::tr1::bind(func, a1, a2));
+			return Connect(std::bind(func, a1, a2));
 		}
 		template<class F, class Arg1, class Arg2, class Arg3>
 		UnscopedConnection Connect(F func, Arg1 a1, Arg2 a2, Arg3 a3) {
-			return Connect(std::tr1::bind(func, a1, a2, a3));
+			return Connect(std::bind(func, a1, a2, a3));
 		}
 	};
 }
@@ -193,8 +188,8 @@ namespace detail {
 /// @param Arg1 Type of first argument to pass to slots
 /// @param Arg2 Type of second argument to pass to slots
 template<class Arg1 = void, class Arg2 = void>
-class Signal : public detail::SignalBaseImpl<std::tr1::function<void (Arg1, Arg2)> > {
-	typedef detail::SignalBaseImpl<std::tr1::function<void (Arg1, Arg2)> > super;
+class Signal : public detail::SignalBaseImpl<std::function<void (Arg1, Arg2)> > {
+	typedef detail::SignalBaseImpl<std::function<void (Arg1, Arg2)> > super;
 	using super::Blocked;
 	using super::slots;
 public:
@@ -220,7 +215,7 @@ public:
 	/// sig.Connect(&Class::Foo, this, _1, _2)
 	template<class T>
 	UnscopedConnection Connect(void (T::*func)(Arg1, Arg2), T* a1) {
-		return Connect(std::tr1::bind(func, a1, _1, _2));
+		return Connect(std::bind(func, a1, _1, _2));
 	}
 };
 
@@ -228,8 +223,8 @@ public:
 /// @brief One-argument signal
 /// @param Arg1 Type of the argument to pass to slots
 template<class Arg1>
-class Signal<Arg1, void> : public detail::SignalBaseImpl<std::tr1::function<void (Arg1)> > {
-	typedef detail::SignalBaseImpl<std::tr1::function<void (Arg1)> > super;
+class Signal<Arg1, void> : public detail::SignalBaseImpl<std::function<void (Arg1)> > {
+	typedef detail::SignalBaseImpl<std::function<void (Arg1)> > super;
 	using super::Blocked;
 	using super::slots;
 public:
@@ -253,15 +248,15 @@ public:
 	/// sig.Connect(&Class::Foo, this) rather than sig.Connect(&Class::Foo, this, _1)
 	template<class T>
 	UnscopedConnection Connect(void (T::*func)(Arg1), T* a1) {
-		return Connect(std::tr1::bind(func, a1, _1));
+		return Connect(std::bind(func, a1, _1));
 	}
 };
 
 /// @class Signal
 /// @brief Zero-argument signal
 template<>
-class Signal<void> : public detail::SignalBaseImpl<std::tr1::function<void ()> > {
-	typedef detail::SignalBaseImpl<std::tr1::function<void ()> > super;
+class Signal<void> : public detail::SignalBaseImpl<std::function<void ()> > {
+	typedef detail::SignalBaseImpl<std::function<void ()> > super;
 	using super::Blocked;
 	using super::slots;
 public:

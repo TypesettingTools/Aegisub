@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <tr1/functional>
+#include <functional>
 
 #include <wx/button.h>
 #include <wx/checkbox.h>
@@ -105,7 +105,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 , commitId(-1)
 , undoTimer(GetEventHandler())
 {
-	using std::tr1::bind;
+	using std::bind;
 
 	// Top controls
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -235,7 +235,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	MiddleBotSizer->Add(btn, wxSizerFlags().Center().Expand());
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&SubsEditBox::CallCommand, this, cmd_name));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 }
 
 wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip) {
@@ -391,7 +391,7 @@ void SubsEditBox::OnUndoTimer(wxTimerEvent&) {
 
 template<class T, class setter>
 void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, bool amend) {
-	for_each(sel.begin(), sel.end(), bind(set, std::tr1::placeholders::_1, value));
+	for_each(sel.begin(), sel.end(), bind(set, std::placeholders::_1, value));
 
 	file_changed_slot.Block();
 	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1, sel.size() == 1 ? *sel.begin() : 0);

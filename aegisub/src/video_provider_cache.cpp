@@ -41,7 +41,7 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
-#include <tr1/functional>
+#include <functional>
 #endif
 
 /// A video frame and its frame number
@@ -56,7 +56,7 @@ VideoProviderCache::VideoProviderCache(VideoProvider *parent)
 }
 
 VideoProviderCache::~VideoProviderCache() {
-	for_each(cache.begin(), cache.end(), std::tr1::mem_fn(&AegiVideoFrame::Clear));
+	for_each(cache.begin(), cache.end(), std::mem_fn(&AegiVideoFrame::Clear));
 }
 
 const AegiVideoFrame VideoProviderCache::GetFrame(int n) {

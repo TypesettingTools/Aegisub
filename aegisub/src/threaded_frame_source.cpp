@@ -65,8 +65,8 @@ static void delete_frame(AegiVideoFrame *frame) {
 	delete frame;
 }
 
-std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, double time, bool raw) {
-	std::tr1::shared_ptr<AegiVideoFrame> frame(new AegiVideoFrame, delete_frame);
+std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, double time, bool raw) {
+	std::shared_ptr<AegiVideoFrame> frame(new AegiVideoFrame, delete_frame);
 	{
 		wxMutexLocker locker(providerMutex);
 		try {
@@ -225,7 +225,7 @@ void ThreadedFrameSource::RequestFrame(int frame, double time) throw() {
 	jobReady.Signal();
 }
 
-std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
+std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
 	return ProcFrame(frame, time, raw);
 }
 

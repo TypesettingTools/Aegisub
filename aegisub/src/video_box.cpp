@@ -68,7 +68,7 @@
 static void add_button(wxWindow *parent, wxSizer *sizer, const char *command, agi::Context *context) {
 	cmd::Command *c = cmd::get(command);
 	wxBitmapButton *btn = new wxBitmapButton(parent, -1, c->Icon(24));
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&cmd::Command::operator(), c, context));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&cmd::Command::operator(), c, context));
 	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
 	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
 }

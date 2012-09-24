@@ -158,7 +158,7 @@ TEST(lagi_iconv, Iso6937) {
 
 	// 7-bit is same as ISO-8859
 	for (int i = 0; i < 128; ++i) {
-		const char buf[] = { i, 0 };
+		const char buf[] = { (char)i, 0 };
 		std::string ret;
 		EXPECT_NO_THROW(ret = subst.Convert(buf));
 		EXPECT_STREQ(buf, ret.c_str());

@@ -38,7 +38,7 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
-#include <tr1/functional>
+#include <functional>
 
 #include <wx/button.h>
 #include <wx/checkbox.h>
@@ -64,7 +64,7 @@
 #include "video_context.h"
 
 namespace {
-using std::tr1::placeholders::_1;
+using std::placeholders::_1;
 
 void set_ctrl_state(wxCommandEvent &evt, wxCheckBox *cb, wxTextCtrl *tc) {
 	tc->Enable(cb->IsChecked());
@@ -103,7 +103,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 : wxDialog(c->parent, -1, _("Timing Post-Processor"))
 , c(c)
 {
-	using std::tr1::bind;
+	using std::bind;
 
 	SetIcon(GETICON(timing_processor_toolbutton_16));
 

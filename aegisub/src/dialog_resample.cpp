@@ -23,7 +23,7 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
-#include <tr1/functional>
+#include <functional>
 
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
@@ -115,7 +115,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	CenterOnParent();
 
 	// Bind events
-	using std::tr1::bind;
+	using std::bind;
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
 	from_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogResample::SetDestFromVideo, this);
 	symmetrical->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DialogResample::OnSymmetrical, this);
@@ -248,7 +248,7 @@ void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
 	if (settings.change_ar)
 		state.ar = state.rx / state.ry;
 
-	for_each(ass->Line.begin(), ass->Line.end(), bind(resample_line, &state, std::tr1::placeholders::_1));
+	for_each(ass->Line.begin(), ass->Line.end(), bind(resample_line, &state, std::placeholders::_1));
 
 	ass->SetScriptInfo("PlayResX", wxString::Format("%d", settings.script_x));
 	ass->SetScriptInfo("PlayResY", wxString::Format("%d", settings.script_y));

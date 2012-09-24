@@ -19,14 +19,9 @@
 #pragma once
 
 #ifndef LAGI_PRE
-#include <stdint.h>
-#include <string>
-
-#ifdef _WIN32
+#include <cstdint>
 #include <functional>
-#else
-#include <tr1/functional>
-#endif
+#include <string>
 #endif
 
 namespace agi {
@@ -82,6 +77,6 @@ namespace agi {
 		/// Progress updates sent to the progress sink passed to the task should
 		/// be displayed to the user in some way, along with some way for the
 		/// user to cancel the task.
-		virtual void Run(std::tr1::function<void(ProgressSink *)> task, int priority=-1)=0;
+		virtual void Run(std::function<void(ProgressSink *)> task, int priority=-1)=0;
 	};
 }

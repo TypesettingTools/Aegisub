@@ -35,7 +35,7 @@
 
 #ifndef AGI_PRE
 #include <list>
-#include <tr1/memory>
+#include <memory>
 
 #include <wx/glcanvas.h>
 #endif
@@ -115,7 +115,7 @@ class VideoDisplay : public wxGLCanvas {
 	bool freeSize;
 
 	/// Frame which will replace the currently visible frame on the next render
-	std::tr1::shared_ptr<AegiVideoFrame> pending_frame;
+	std::shared_ptr<AegiVideoFrame> pending_frame;
 
 	/// @brief Draw an overscan mask
 	/// @param horizontal_percent The percent of the video reserved horizontally

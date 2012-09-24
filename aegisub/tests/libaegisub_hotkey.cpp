@@ -14,9 +14,6 @@
 //
 // $Id$
 
-// gtest's tr1 tuple implementation lacks tie, and we require tr1 support anyway
-#define GTEST_USE_OWN_TR1_TUPLE 0
-
 #include "main.h"
 #include "util.h"
 
@@ -188,10 +185,10 @@ TEST(lagi_hotkey, combo_stuff) {
 	Hotkey::HotkeyMap hm = Hotkey("", simple_valid).GetHotkeyMap();
 
 	Hotkey::HotkeyMap::const_iterator it, end;
-	std::tr1::tie(it, end) = hm.equal_range("cmd1");
+	std::tie(it, end) = hm.equal_range("cmd1");
 	EXPECT_EQ(3, std::distance(it, end));
 
-	std::tr1::tie(it, end) = hm.equal_range("cmd2");
+	std::tie(it, end) = hm.equal_range("cmd2");
 	ASSERT_EQ(1, std::distance(it, end));
 
 	Combo c = it->second;

@@ -33,26 +33,22 @@
 #include <algorithm>
 #include <deque>
 #include <fstream>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <list>
 #include <locale>
 #include <map>
+#include <memory>
 #include <numeric>
 #include <set>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <vector>
 
-#ifdef _WIN32
-#include <functional>
-#include <memory>
-#else
-#include <tr1/functional>
-#include <tr1/memory>
-#endif
 
 // Boost
 #include <boost/container/list.hpp>

@@ -38,7 +38,7 @@
 #include "dialog_dummy_video.h"
 
 #ifndef AGI_PRE
-#include <tr1/functional>
+#include <functional>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -181,7 +181,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 
 	wxStdDialogButtonSizer *btnSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	ok_button = btnSizer->GetAffirmativeButton();
-	btnSizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Dummy Video"));
+	btnSizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Dummy Video"));
 
 	main_sizer->Add(new wxStaticLine(this,wxHORIZONTAL),0,wxALL|wxEXPAND,5);
 	main_sizer->Add(btnSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,5);

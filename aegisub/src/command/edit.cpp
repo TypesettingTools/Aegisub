@@ -274,7 +274,7 @@ void set_text(AssDialogue *line, wxString const& value) {
 void commit_text(agi::Context const * const c, wxString const& desc, int sel_start = -1, int sel_end = -1, int *commit_id = 0) {
 	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 	for_each(sel.begin(), sel.end(),
-		bind(set_text, std::tr1::placeholders::_1, c->selectionController->GetActiveLine()->Text));
+		std::bind(set_text, std::placeholders::_1, c->selectionController->GetActiveLine()->Text));
 	int new_commit_id = c->ass->Commit(desc, AssFile::COMMIT_DIAG_TEXT, commit_id ? *commit_id : -1, sel.size() == 1 ? *sel.begin() : 0);
 	if (commit_id)
 		*commit_id = new_commit_id;
@@ -322,7 +322,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 
 	color = get_value(*line, blockn, color, tag, alt);
 	int commit_id = -1;
-	bool ok = GetColorFromUser(c->parent, color, bind(got_color, c, tag, &commit_id, std::tr1::placeholders::_1));
+	bool ok = GetColorFromUser(c->parent, color, std::bind(got_color, c, tag, &commit_id, std::placeholders::_1));
 	line->ClearBlocks();
 	commit_text(c, _("set color"), -1, -1, &commit_id);
 

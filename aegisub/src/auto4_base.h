@@ -130,7 +130,7 @@ namespace Automation4 {
 		void QueueEvent(wxEvent *evt);
 		wxWindow *GetParentWindow() const;
 
-		void Run(std::tr1::function<void(ProgressSink*)> task);
+		void Run(std::function<void(ProgressSink*)> task);
 
 		BackgroundScriptRunner(wxWindow *parent, wxString const& title);
 		~BackgroundScriptRunner();

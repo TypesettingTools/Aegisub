@@ -76,7 +76,7 @@ class FontsCollectorThread : public wxThread {
 	FcMode oper;             ///< Copying mode
 
 	void Collect() {
-		using namespace std::tr1::placeholders;
+		using namespace std::placeholders;
 
 		FontCollectorStatusCallback callback(bind(&FontsCollectorThread::AppendText, this, _1, _2));
 
@@ -272,7 +272,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	start_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogFontsCollector::OnStart, this);
 	dest_browse_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogFontsCollector::OnBrowse, this);
 	collection_mode->Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &DialogFontsCollector::OnRadio, this);
-	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Fonts Collector"));
+	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Fonts Collector"));
 	Bind(EVT_ADD_TEXT, &DialogFontsCollector::OnAddText, this);
 	Bind(EVT_COLLECTION_DONE, &DialogFontsCollector::OnCollectionComplete, this);
 }

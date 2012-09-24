@@ -123,7 +123,7 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) 
 	try {
 		{
 			agi::io::Save out(STD_STR(diskCacheFilename), true);
-			br->Run(bind(&HDAudioProvider::FillCache, this, src, &out.Get(), std::tr1::placeholders::_1));
+			br->Run(bind(&HDAudioProvider::FillCache, this, src, &out.Get(), std::placeholders::_1));
 		}
 		cache_provider.reset(new RawAudioProvider(diskCacheFilename, src));
 	}

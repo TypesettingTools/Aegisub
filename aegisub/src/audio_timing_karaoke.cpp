@@ -171,8 +171,8 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 	slots.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
 	slots.push_back(OPT_SUB("Audio/Auto/Commit", &AudioTimingControllerKaraoke::OnAutoCommitChange, this));
 
-	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
-	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
+	keyframes_provider.AddMarkerMovedListener(std::bind(std::ref(AnnounceMarkerMoved)));
+	video_position_provider.AddMarkerMovedListener(std::bind(std::ref(AnnounceMarkerMoved)));
 
 	Revert();
 

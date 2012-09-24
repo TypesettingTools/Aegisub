@@ -35,7 +35,7 @@
 #ifndef AGI_PRE
 #include <boost/container/map.hpp>
 
-#include <tr1/memory>
+#include <memory>
 #include <vector>
 
 #include <wx/colour.h>
@@ -86,7 +86,7 @@ class OpenGLText {
 	glyphMap glyphs;
 
 	/// DOCME
-	std::vector<std::tr1::shared_ptr<OpenGLTextTexture> > textures;
+	std::vector<std::shared_ptr<OpenGLTextTexture> > textures;
 
 	OpenGLText(OpenGLText const&);
 	OpenGLText& operator=(OpenGLText const&);

@@ -743,7 +743,7 @@ namespace Automation4 {
 	{
 		bool failed = false;
 		BackgroundScriptRunner bsr(parent, title);
-		bsr.Run(bind(lua_threaded_call, std::tr1::placeholders::_1, L, nargs, nresults, can_open_config, &failed));
+		bsr.Run(std::bind(lua_threaded_call, std::placeholders::_1, L, nargs, nresults, can_open_config, &failed));
 		if (failed)
 			throw agi::UserCancelException("Script threw an error");
 	}

@@ -113,7 +113,7 @@ DialogExport::DialogExport(agi::Context *c)
 	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	btn_sizer->GetAffirmativeButton()->SetLabelText(_("Export..."));
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogExport::OnProcess, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
 
 	wxSizer *horz_sizer = new wxBoxSizer(wxHORIZONTAL);
 	opt_sizer = new wxBoxSizer(wxVERTICAL);

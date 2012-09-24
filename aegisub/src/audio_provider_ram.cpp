@@ -78,7 +78,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br
 	filename = source->GetFilename();
 	float_samples = source->AreSamplesFloat();
 
-	br->Run(std::tr1::bind(&RAMAudioProvider::FillCache, this, src, std::tr1::placeholders::_1));
+	br->Run(std::bind(&RAMAudioProvider::FillCache, this, src, std::placeholders::_1));
 }
 
 RAMAudioProvider::~RAMAudioProvider() {

@@ -39,7 +39,7 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
-#include <tr1/functional>
+#include <functional>
 
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
@@ -52,7 +52,7 @@ template<class C, class F> static void for_each(C &container, F const& func)
 	std::for_each(container.begin(), container.end(), func);
 }
 
-using std::tr1::placeholders::_1;
+using std::placeholders::_1;
 
 AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer)
 : renderer(renderer)
@@ -182,7 +182,7 @@ void AudioRenderer::ResetBlockCount()
 		double duration = provider->GetNumSamples() * 1000.0 / provider->GetSampleRate();
 		size_t rendered_width = (size_t)ceil(duration / pixel_ms);
 		cache_numblocks = rendered_width / cache_bitmap_width;
-		for_each(bitmaps, bind(&AudioRendererBitmapCache::SetBlockCount, _1, cache_numblocks));
+		for_each(bitmaps, std::bind(&AudioRendererBitmapCache::SetBlockCount, _1, cache_numblocks));
 	}
 }
 
@@ -253,7 +253,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, Audi
 
 void AudioRenderer::Invalidate()
 {
-	for_each(bitmaps, bind(&AudioRendererBitmapCache::Age, _1, 0));
+	for_each(bitmaps, std::bind(&AudioRendererBitmapCache::Age, _1, 0));
 	needs_age = false;
 }
 

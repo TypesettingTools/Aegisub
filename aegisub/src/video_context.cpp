@@ -290,7 +290,7 @@ void VideoContext::GetFrameAsync(int n) {
 	provider->RequestFrame(n, TimeAtFrame(n) / 1000.0);
 }
 
-std::tr1::shared_ptr<AegiVideoFrame> VideoContext::GetFrame(int n, bool raw) {
+std::shared_ptr<AegiVideoFrame> VideoContext::GetFrame(int n, bool raw) {
 	return provider->GetFrame(n, TimeAtFrame(n) / 1000.0, raw);
 }
 

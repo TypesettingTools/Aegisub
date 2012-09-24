@@ -74,7 +74,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , click_will_remove_split(false)
 , enabled(false)
 {
-	using std::tr1::bind;
+	using std::bind;
 
 	cancel_button = new wxBitmapButton(this, -1, GETIMAGE(kara_split_cancel_16));
 	cancel_button->SetToolTip(_("Discard all uncommitted splits"));
@@ -241,7 +241,7 @@ void AudioKaraoke::RenderText() {
 
 void AudioKaraoke::AddMenuItem(wxMenu &menu, wxString const& tag, wxString const& help, wxString const& selected) {
 	wxMenuItem *item = menu.AppendCheckItem(-1, tag, help);
-	menu.Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&AudioKaraoke::SetTagType, this, tag), item->GetId());
+	menu.Bind(wxEVT_COMMAND_MENU_SELECTED, std::bind(&AudioKaraoke::SetTagType, this, tag), item->GetId());
 	item->Check(tag == selected);
 }
 

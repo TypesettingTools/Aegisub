@@ -95,7 +95,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , active_line(0)
 , batch_level(0)
 , batch_active_line_changed(false)
-, seek_listener(context->videoController->AddSeekListener(std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL)))
+, seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL)))
 , context_menu(0)
 , yPos(0)
 , context(context)
@@ -132,7 +132,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	OPT_SUB("Colour/Subtitle Grid/Lines", &BaseGrid::UpdateStyle, this);
 	OPT_SUB("Colour/Subtitle Grid/Selection", &BaseGrid::UpdateStyle, this);
 	OPT_SUB("Colour/Subtitle Grid/Standard", &BaseGrid::UpdateStyle, this);
-	OPT_SUB("Subtitle/Grid/Hide Overrides", std::tr1::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
+	OPT_SUB("Subtitle/Grid/Hide Overrides", std::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
 }
@@ -272,7 +272,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	if (preserve_selected_rows) {
 		sel_rows.reserve(selection.size());
 		transform(selection.begin(), selection.end(), back_inserter(sel_rows),
-			bind1st(std::mem_fun(&BaseGrid::GetDialogueIndex), this));
+			std::bind(&BaseGrid::GetDialogueIndex, this));
 	}
 
 	index_line_map.clear();
@@ -426,7 +426,7 @@ wxArrayInt BaseGrid::GetSelection() const {
 	wxArrayInt res;
 	res.reserve(selection.size());
 	transform(selection.begin(), selection.end(), std::back_inserter(res),
-		bind(&BaseGrid::GetDialogueIndex, this, std::tr1::placeholders::_1));
+		std::bind(&BaseGrid::GetDialogueIndex, this, std::placeholders::_1));
 	std::sort(res.begin(), res.end());
 	return res;
 }
@@ -784,7 +784,6 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 }
 
 void BaseGrid::ScrollTo(int y) {
-	int h = GetClientSize().GetHeight();
 	int nextY = mid(0, y, GetRows() - 1);
 	if (yPos != nextY) {
 		yPos = nextY;

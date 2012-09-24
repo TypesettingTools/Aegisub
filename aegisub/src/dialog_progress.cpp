@@ -92,12 +92,12 @@ public:
 };
 
 class TaskRunner : public wxThread {
-	std::tr1::function<void(agi::ProgressSink*)> task;
+	std::function<void(agi::ProgressSink*)> task;
 	agi::ProgressSink *ps;
 	wxDialog *dialog;
 
 public:
-	TaskRunner(std::tr1::function<void(agi::ProgressSink*)> task, agi::ProgressSink *ps, wxDialog *dialog, int priority)
+	TaskRunner(std::function<void(agi::ProgressSink*)> task, agi::ProgressSink *ps, wxDialog *dialog, int priority)
 	: task(task)
 	, ps(ps)
 	, dialog(dialog)
@@ -160,7 +160,7 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 	Bind(EVT_LOG, &DialogProgress::OnLog, this);
 }
 
-void DialogProgress::Run(std::tr1::function<void(agi::ProgressSink*)> task, int priority) {
+void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int priority) {
 	DialogProgressSink ps(this);
 	this->ps = &ps;
 	new TaskRunner(task, &ps, this, priority);

@@ -146,8 +146,8 @@ KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(wxWindow *parent)
 	SetMaxSize(wxSize(-1, best_size.GetHeight()));
 	SetMinSize(best_size);
 
-	Bind(wxEVT_SET_FOCUS, std::tr1::bind(&wxControl::Refresh, this, true, (const wxRect*)0));
-	Bind(wxEVT_KILL_FOCUS, std::tr1::bind(&wxControl::Refresh, this, true, (const wxRect*)0));
+	Bind(wxEVT_SET_FOCUS, std::bind(&wxControl::Refresh, this, true, (const wxRect*)0));
+	Bind(wxEVT_KILL_FOCUS, std::bind(&wxControl::Refresh, this, true, (const wxRect*)0));
 	Bind(wxEVT_PAINT, &KaraokeLineMatchDisplay::OnPaint, this);
 }
 

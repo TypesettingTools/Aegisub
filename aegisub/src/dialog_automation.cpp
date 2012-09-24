@@ -57,7 +57,7 @@
 #include "main.h"
 #include "subtitle_format.h"
 
-using std::tr1::placeholders::_1;
+using std::placeholders::_1;
 
 DialogAutomation::DialogAutomation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
@@ -78,8 +78,8 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	wxButton *reload_autoload_button = new wxButton(this, -1, _("Re&scan Autoload Dir"));
 	wxButton *close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
 
-	list->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, std::tr1::bind(&DialogAutomation::UpdateDisplay, this));
-	list->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, std::tr1::bind(&DialogAutomation::UpdateDisplay, this));
+	list->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, std::bind(&DialogAutomation::UpdateDisplay, this));
+	list->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, std::bind(&DialogAutomation::UpdateDisplay, this));
 	add_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnAdd, this);
 	remove_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnRemove, this);
 	reload_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnReload, this);

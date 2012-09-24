@@ -37,7 +37,7 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
-#include <tr1/functional>
+#include <functional>
 
 #include <wx/bmpbuttn.h>
 #include <wx/clipbrd.h>
@@ -67,7 +67,7 @@
 #include "subtitle_format.h"
 #include "utils.h"
 
-using std::tr1::placeholders::_1;
+using std::placeholders::_1;
 
 namespace {
 
@@ -156,7 +156,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 , commit_connection(c->ass->AddCommitListener(&DialogStyleManager::LoadCurrentStyles, this))
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogStyleManager::OnActiveLineChanged, this))
 {
-	using std::tr1::bind;
+	using std::bind;
 	SetIcon(GETICON(style_toolbutton_16));
 
 	// Catalog

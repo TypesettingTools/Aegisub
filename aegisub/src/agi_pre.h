@@ -53,12 +53,7 @@
 #define AGI_PRE
 
 // General headers
-#ifdef _WIN32
 #include <array>
-#else
-#include <tr1/array>
-#endif
-
 #include <clocale>
 #include <cstdlib>
 #include <cctype>

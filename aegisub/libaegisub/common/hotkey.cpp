@@ -22,12 +22,7 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
-#endif
-
-#ifdef _WIN32
 #include <tuple>
-#else
-#include <tr1/tuple>
 #endif
 
 #include "libaegisub/hotkey.h"
@@ -98,7 +93,7 @@ std::string Hotkey::Scan(const std::string &context, const std::string &str, boo
 	std::string local, dfault;
 
 	HotkeyMap::const_iterator index, end;
-	for (std::tr1::tie(index, end) = str_map.equal_range(str); index != end; ++index) {
+	for (std::tie(index, end) = str_map.equal_range(str); index != end; ++index) {
 		std::string const& ctext = index->second.Context();
 
 		if (always && ctext == "Always") {
@@ -127,7 +122,7 @@ std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const st
 	std::vector<std::string> ret;
 
 	HotkeyMap::const_iterator it, end;
-	for (std::tr1::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
+	for (std::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
 		std::string ctext = it->second.Context();
 		if (ctext == "Always" || ctext == "Default" || ctext == context)
 			ret.push_back(it->second.StrMenu());
@@ -142,7 +137,7 @@ std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const st
 std::string Hotkey::GetHotkey(const std::string &context, const std::string &command) const {
 	std::string ret;
 	HotkeyMap::const_iterator it, end;
-	for (std::tr1::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
+	for (std::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
 		std::string ctext = it->second.Context();
 		if (ctext == context) return it->second.StrMenu();
 		if (ctext == "Default")

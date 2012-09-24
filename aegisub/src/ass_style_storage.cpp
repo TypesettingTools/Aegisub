@@ -37,7 +37,7 @@
 #include "ass_style_storage.h"
 
 #ifndef AGI_PRE
-#include <tr1/functional>
+#include <functional>
 #endif
 
 #include "ass_style.h"

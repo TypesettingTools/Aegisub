@@ -33,7 +33,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <tr1/memory>
+#include <memory>
 
 #include <wx/event.h>
 #include <wx/thread.h>
@@ -78,7 +78,7 @@ class ThreadedFrameSource : public wxThread {
 	bool run; ///< Should the thread continue to run
 
 	void *Entry();
-	std::tr1::shared_ptr<AegiVideoFrame> ProcFrame(int frameNum, double time, bool raw = false);
+	std::shared_ptr<AegiVideoFrame> ProcFrame(int frameNum, double time, bool raw = false);
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
@@ -99,7 +99,7 @@ public:
 	/// @brief frame Frame number
 	/// @brief time  Exact start time of the frame in seconds
 	/// @brief raw   Get raw frame without subtitles
-	std::tr1::shared_ptr<AegiVideoFrame> GetFrame(int frame, double time, bool raw = false);
+	std::shared_ptr<AegiVideoFrame> GetFrame(int frame, double time, bool raw = false);
 
 	/// Get a reference to the video provider this is using
 	VideoProvider *GetVideoProvider() const { return videoProvider.get(); }
@@ -116,11 +116,11 @@ public:
 class FrameReadyEvent : public wxEvent {
 public:
 	/// Frame which is ready
-	std::tr1::shared_ptr<AegiVideoFrame> frame;
+	std::shared_ptr<AegiVideoFrame> frame;
 	/// Time which was used for subtitle rendering
 	double time;
 	wxEvent *Clone() const { return new FrameReadyEvent(*this); };
-	FrameReadyEvent(std::tr1::shared_ptr<AegiVideoFrame> frame, double time)
+	FrameReadyEvent(std::shared_ptr<AegiVideoFrame> frame, double time)
 		: frame(frame), time(time) {
 	}
 };

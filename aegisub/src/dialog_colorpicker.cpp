@@ -240,10 +240,10 @@ class DialogColorPicker : public wxDialog {
 	void OnMouse(wxMouseEvent &evt);
 	void OnCaptureLost(wxMouseCaptureLostEvent&);
 
-	std::tr1::function<void (agi::Color)> callback;
+	std::function<void (agi::Color)> callback;
 
 public:
-	DialogColorPicker(wxWindow *parent, agi::Color initial_color, std::tr1::function<void (agi::Color)> callback);
+	DialogColorPicker(wxWindow *parent, agi::Color initial_color, std::function<void (agi::Color)> callback);
 	~DialogColorPicker();
 
 	void SetColor(agi::Color new_color);
@@ -583,7 +583,7 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y)
 	Refresh(false);
 }
 
-bool GetColorFromUser(wxWindow* parent, agi::Color original, std::tr1::function<void (agi::Color)> callback)
+bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback)
 {
 	DialogColorPicker dialog(parent, original, callback);
 	bool ok = dialog.ShowModal() == wxID_OK;
@@ -605,7 +605,7 @@ static wxBitmap *make_rgb_image(int width, int offset) {
 	return new wxBitmap(img);
 }
 
-DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color, std::tr1::function<void (agi::Color)> callback)
+DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color, std::function<void (agi::Color)> callback)
 : wxDialog(parent, -1, _("Select Color"))
 , callback(callback)
 {
@@ -739,7 +739,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	SetColor(initial_color);
 	recent_box->Load(OPT_GET("Tool/Colour Picker/Recent Colours")->GetListColor());
 
-	using std::tr1::bind;
+	using std::bind;
 	for (int i = 0; i < 3; ++i) {
 		rgb_input[i]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromRGB, this, true));
 		rgb_input[i]->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromRGB, this, true));
