@@ -331,6 +331,12 @@ static wxString GetSystemLanguage()
 }
 #endif
 
+static wxString GetAegisubLanguage()
+{
+	const wxLanguageInfo *info = wxLocale::GetLanguageInfo(OPT_GET("App/Locale")->GetInt());
+	return info ? info->CanonicalName : "unknown";
+}
+
 template<class OutIter>
 static void split_str(wxString const& str, wxString const& sep, bool empty, OutIter out)
 {
@@ -352,13 +358,14 @@ void AegisubVersionCheckerThread::DoCheck()
 
 #ifdef __APPLE__
 	wxString cmd = wxString::Format(
-		"curl --silent --fail 'http://%s/%s?rev=%d&rel=%d&os=%s&lang=%s'",
+		"curl --silent --fail 'http://%s/%s?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s'",
 		UPDATE_CHECKER_SERVER,
 		UPDATE_CHECKER_BASE_URL,
 		GetSVNRevision(),
 		GetIsOfficialRelease()?1:0,
 		GetOSShortName(),
-		GetSystemLanguage());
+		GetSystemLanguage(),
+		GetAegisubLanguage());
 
 	// wxExecute only works on the main thread so use popen instead
 	char buf[1024];
@@ -387,12 +394,13 @@ void AegisubVersionCheckerThread::DoCheck()
 	agi::scoped_ptr<wxStringInputStream> stream(new wxStringInputStream(update_str));
 #else
 	wxString path = wxString::Format(
-		"%s?rev=%d&rel=%d&os=%s&lang=%s",
+		"%s?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s",
 		UPDATE_CHECKER_BASE_URL,
 		GetSVNRevision(),
 		GetIsOfficialRelease()?1:0,
 		GetOSShortName(),
-		GetSystemLanguage());
+		GetSystemLanguage(),
+		GetAegisubLanguage());
 
 	wxHTTP http;
 	http.SetHeader("User-Agent", wxString("Aegisub ") + GetAegisubLongVersionString());
