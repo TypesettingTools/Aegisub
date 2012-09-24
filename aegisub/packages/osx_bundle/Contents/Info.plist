@@ -20,6 +20,8 @@
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>agsu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 
     <!-- Bundle version -->
     <!-- This should be bumped on any major changes -->
