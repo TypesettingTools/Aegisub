@@ -36,6 +36,7 @@
 
 #include "config.h"
 
+#include "include/aegisub/audio_player.h"
 #include "audio_player_alsa.h"
 #include "audio_player_dsound.h"
 #include "audio_player_dsound2.h"
