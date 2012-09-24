@@ -3,6 +3,7 @@ AC_PREREQ(2.57)
 ###################
 # Required packages
 ###################
+m4_define([boost_required_version], [1.50.0])
 m4_define([curl_required_version], [7.18.2])
 m4_define([ffms2_required_version], [2.16])
 m4_define([fftw3_required_version], [3.3])
@@ -222,6 +223,8 @@ PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version,
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
                   [AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.])],
                   [AC_MSG_FAILURE([Aegisub requires fontconfig >= fontconfig_required_version])])
+
+BOOST_REQUIRE([boost_required_version])
 
 ########
 ## iconv
