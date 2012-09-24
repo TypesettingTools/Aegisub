@@ -167,6 +167,8 @@ AS_IF([test x$enable_compiler_flags != xno], [
   AC_CXX_FLAG([-fno-strict-aliasing])
   AC_CXX_FLAG([-pipe])
   AC_CXX_FLAG([-g])
+  AC_CXX_FLAG([-stdlib=libc++])
+  AC_LD_FLAG([-stdlib=libc++])
 
   # -O* messes with debugging.
   AS_IF([test x$enable_debug = xyes], [

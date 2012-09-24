@@ -28,6 +28,21 @@ AC_DEFUN([AC_CXX_FLAG], [{
 		])
 	AC_LANG_POP(C++)
 	}])
+AC_DEFUN([AC_LD_FLAG], [{
+	AC_LANG_PUSH(C++)
+	ac_ld_flag_save="$LDFLAGS"
+	LDFLAGS="$LDFLAGS $1"
+	AC_MSG_CHECKING([[whether $CXX supports $1]])
+	AC_LINK_IFELSE(
+		[AC_LANG_PROGRAM([[]])],
+		[AC_MSG_RESULT([yes])],
+		[
+			LDFLAGS="$ac_ld_flag_save"
+			AC_MSG_RESULT([no])
+			$2
+		])
+	AC_LANG_POP(C++)
+	}])
 AC_DEFUN([AC_PCH_FLAG], [{
 	AC_LANG_PUSH(C++)
 	ac_cxx_flag_save="$CXXFLAGS"
