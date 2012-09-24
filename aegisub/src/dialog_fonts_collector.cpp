@@ -27,7 +27,6 @@
 
 #include "font_file_lister.h"
 #include "font_file_lister_fontconfig.h"
-#include "font_file_lister_freetype.h"
 
 #include "ass_file.h"
 #include "compat.h"
@@ -85,8 +84,6 @@ class FontsCollectorThread : public wxThread {
 
 #ifdef WITH_FONTCONFIG
 		FontConfigFontFileLister lister(callback);
-#elif defined(WITH_FREETYPE2)
-		FreetypeFontFileLister lister(callback);
 #else
 		AppendText(_("Aegisub was built without any font file listers enabled"), 2);
 		struct DummyLister : public FontFileLister {

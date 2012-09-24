@@ -774,14 +774,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\font_file_lister_freetype.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\font_file_lister_freetype.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\kana_table.cpp"
 				>
 			</File>
