@@ -34,7 +34,7 @@
 
 #ifndef AGI_PRE
 #include <deque>
-#include <map>
+#include <boost/container/map.hpp>
 #include <vector>
 
 #include <wx/panel.h>
@@ -136,7 +136,7 @@ class SubsEditBox : public wxPanel {
 	/// The start and end times of the selected lines without changes made to
 	/// avoid negative durations, so that they can be restored if future changes
 	/// eliminate the negative durations
-	std::map<AssDialogue *, std::pair<AssTime, AssTime> > initialTimes;
+	boost::container::map<AssDialogue *, std::pair<AssTime, AssTime> > initialTimes;
 
 	// Constructor helpers
 	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));

@@ -33,7 +33,8 @@
 ///
 
 #ifndef AGI_PRE
-#include <map>
+#include <boost/container/map.hpp>
+
 #include <tr1/memory>
 #include <vector>
 
@@ -45,7 +46,7 @@ struct OpenGLTextGlyph;
 class OpenGLTextTexture;
 
 /// DOCME
-typedef std::map<int,OpenGLTextGlyph> glyphMap;
+typedef boost::container::map<int,OpenGLTextGlyph> glyphMap;
 
 /// DOCME
 /// @class OpenGLText

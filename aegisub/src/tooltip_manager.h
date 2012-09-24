@@ -33,7 +33,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <list>
+#include <boost/container/list.hpp>
 #endif
 
 struct ToolTipBinding;
@@ -52,7 +52,7 @@ class ToolTipManager {
 	ToolTipManager(ToolTipManager const&);
 	ToolTipManager& operator=(ToolTipManager const&);
 
-	std::list<ToolTipBinding> tips;
+	boost::container::list<ToolTipBinding> tips;
 
 public:
 	static void Bind(wxWindow *window, wxString tooltip, const char *context, const char *command);

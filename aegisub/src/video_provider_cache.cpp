@@ -63,7 +63,7 @@ const AegiVideoFrame VideoProviderCache::GetFrame(int n) {
 	size_t total_size = 0;
 
 	// See if frame is cached
-	for (std::list<CachedFrame>::iterator cur = cache.begin(); cur != cache.end(); ++cur) {
+	for (boost::container::list<CachedFrame>::iterator cur = cache.begin(); cur != cache.end(); ++cur) {
 		if (cur->frame_number == n) {
 			cache.push_front(*cur);
 			cache.erase(cur);

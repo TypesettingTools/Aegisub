@@ -33,7 +33,8 @@
 ///
 
 #ifndef AGI_PRE
-#include <list>
+#include <boost/container/list.hpp>
+
 #include <set>
 #include <vector>
 
@@ -55,8 +56,8 @@ typedef std::list<AssEntry*>::iterator entryIter;
 ///
 /// DOCME
 class AssFile {
-	std::list<AssFile> UndoStack;
-	std::list<AssFile> RedoStack;
+	boost::container::list<AssFile> UndoStack;
+	boost::container::list<AssFile> RedoStack;
 	wxString undoDescription;
 	/// Revision counter for undo coalescing and modified state tracking
 	int commitId;

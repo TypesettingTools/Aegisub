@@ -27,7 +27,7 @@
 class VisualToolDragDraggableFeature : public VisualDraggableFeature {
 public:
 	int time;
-	std::list<VisualToolDragDraggableFeature>::iterator parent;
+	boost::container::list<VisualToolDragDraggableFeature>::iterator parent;
 	VisualToolDragDraggableFeature() : VisualDraggableFeature(), time(0) { }
 };
 

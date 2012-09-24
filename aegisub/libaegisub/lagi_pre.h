@@ -59,6 +59,10 @@
 #include <tr1/memory>
 #endif
 
+// Boost
+#include <boost/container/list.hpp>
+#include <boost/container/map.hpp>
+
 #ifdef __DEPRECATED // Dodge GCC warnings
 # undef __DEPRECATED
 # include <strstream>

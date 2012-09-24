@@ -161,8 +161,8 @@ template<class FeatureType>
 class VisualTool : public VisualToolBase {
 protected:
 	typedef FeatureType Feature;
-	typedef typename std::list<FeatureType>::iterator feature_iterator;
-	typedef typename std::list<FeatureType>::const_iterator feature_const_iterator;
+	typedef typename boost::container::list<FeatureType>::iterator feature_iterator;
+	typedef typename boost::container::list<FeatureType>::const_iterator feature_const_iterator;
 
 private:
 	struct ltaddr {
@@ -172,7 +172,7 @@ private:
 		}
 	};
 
-	std::list<agi::signal::Connection> slots;
+	boost::container::list<agi::signal::Connection> slots;
 
 	typedef typename std::set<feature_iterator, ltaddr>::iterator selection_iterator;
 
@@ -203,7 +203,7 @@ protected:
 	feature_iterator active_feature;
 	/// List of features which are drawn and can be clicked on
 	/// List is used here for the iterator invalidation properties
-	std::list<FeatureType> features;
+	boost::container::list<FeatureType> features;
 
 	/// Draw all of the features in the list
 	void DrawAllFeatures();

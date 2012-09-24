@@ -19,13 +19,13 @@
 #pragma once
 
 #ifndef LAGI_PRE
+#include <boost/container/map.hpp>
+
 #ifdef _WIN32
 #include <functional>
-#include <map>
 #include <memory>
 #else
 #include <tr1/functional>
-#include <map>
 #include <tr1/memory>
 #endif
 #endif
@@ -141,7 +141,7 @@ namespace detail {
 	template<class Slot>
 	class SignalBaseImpl : public SignalBase {
 	protected:
-		typedef std::map<ConnectionToken*, Slot> SlotMap;
+		typedef boost::container::map<ConnectionToken*, Slot> SlotMap;
 
 		SlotMap slots; /// Signals currently connected to this slot
 

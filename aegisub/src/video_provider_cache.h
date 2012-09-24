@@ -33,7 +33,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <list>
+#include <boost/container/list.hpp>
 #endif
 
 #include "include/aegisub/video_provider.h"
@@ -55,7 +55,7 @@ class VideoProviderCache : public VideoProvider {
 	const size_t max_cache_size;
 
 	/// Cache of video frames with the most recently used ones at the front
-	std::list<CachedFrame> cache;
+	boost::container::list<CachedFrame> cache;
 
 public:
 	VideoProviderCache(VideoProvider *master);
