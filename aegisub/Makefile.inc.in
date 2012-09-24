@@ -31,7 +31,7 @@ LDFLAGS             = @LDFLAGS@
 INSTALL_FLAGS       = -m 664
 CCACHE_ENV          = CCACHE_SLOPPINESS=time_macros
 LIB_SHARED_LINK     = -shared -Wl,-soname -Wl,$(LIB_SHARED_FULL)
-LIB_SHARED_LINK_OSX = -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -compatibility_version $(LIB_VERSION) -current_version $(LIB_VERSION) -Wl,-single_module -mmacosx-version-min=10.5 -install_name ${CURDIR}/$(LIB_SHARED_FULL)
+LIB_SHARED_LINK_OSX = -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -compatibility_version $(LIB_VERSION) -current_version $(LIB_VERSION) -Wl,-single_module -mmacosx-version-min=10.7 -install_name ${CURDIR}/$(LIB_SHARED_FULL)
 
 #########
 # STRINGS
