@@ -179,6 +179,7 @@
 #include <wx/string.h>
 #include <wx/sysopt.h>
 #include <wx/textctrl.h>
+#include <wx/textdlg.h>
 #include <wx/textfile.h>
 #include <wx/tglbtn.h>
 #include <wx/thread.h>
