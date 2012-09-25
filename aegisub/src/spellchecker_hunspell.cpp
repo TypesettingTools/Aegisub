@@ -86,7 +86,7 @@ void HunspellSpellChecker::AddWord(std::string const& word) {
 				++agi::line_iterator<std::string>(*stream),
 				agi::line_iterator<std::string>(),
 				inserter(words, words.end()),
-				mem_fun_ref(&std::string::empty));
+				[](std::string const& str) { return str.empty(); });
 		}
 		catch (agi::FileNotFoundError&) {
 			LOG_I("dictionary/hunspell/add") << "User dictionary not found; creating it";

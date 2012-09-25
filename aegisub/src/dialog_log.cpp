@@ -59,7 +59,7 @@ public:
 	: text_ctrl(t)
 	{
 		const agi::log::Sink *sink = agi::log::log->GetSink();
-		for_each(sink->begin(), sink->end(), bind(&EmitLog::log, this, std::placeholders::_1));
+		for_each(sink->begin(), sink->end(), std::bind(&EmitLog::log, this, std::placeholders::_1));
 	}
 
 	void log(agi::log::SinkMessage *sm) {

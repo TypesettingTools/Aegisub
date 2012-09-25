@@ -405,7 +405,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Style Editor"), wxID_HELP);
 
 	for (int i = 0; i < 4; ++i)
-		colorButton[i]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleEditor::OnSetColor, this, i + 1, std::placeholders::_1));
+		colorButton[i]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogStyleEditor::OnSetColor, this, i + 1, std::placeholders::_1));
 }
 
 DialogStyleEditor::~DialogStyleEditor() {

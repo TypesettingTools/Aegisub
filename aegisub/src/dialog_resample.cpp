@@ -248,7 +248,7 @@ void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
 	if (settings.change_ar)
 		state.ar = state.rx / state.ry;
 
-	for_each(ass->Line.begin(), ass->Line.end(), bind(resample_line, &state, std::placeholders::_1));
+	for_each(ass->Line.begin(), ass->Line.end(), std::bind(resample_line, &state, std::placeholders::_1));
 
 	ass->SetScriptInfo("PlayResX", wxString::Format("%d", settings.script_x));
 	ass->SetScriptInfo("PlayResY", wxString::Format("%d", settings.script_y));

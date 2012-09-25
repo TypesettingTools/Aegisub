@@ -58,8 +58,8 @@ public:
 	}
 
 	bool EOS() {
-		m_iStr.peek(); // apparently eof flag isn't set until a character read is attempted. whatever.
-		return m_iStr.eof();
+		// libc++ doesn't set eof when a peek fails
+		return m_iStr.peek() == EOF || m_iStr.eof();
 	}
 
 	Location const& GetLocation() const { return m_Location; }

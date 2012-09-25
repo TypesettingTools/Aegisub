@@ -272,7 +272,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	if (preserve_selected_rows) {
 		sel_rows.reserve(selection.size());
 		transform(selection.begin(), selection.end(), back_inserter(sel_rows),
-			std::bind(&BaseGrid::GetDialogueIndex, this));
+			[this](AssDialogue *diag) { return GetDialogueIndex(diag); });
 	}
 
 	index_line_map.clear();

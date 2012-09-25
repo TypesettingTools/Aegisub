@@ -218,9 +218,9 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 	if (dragging) {
 		// continue drag
 		if (event.LeftIsDown()) {
-			for_each(sel_features, bind(&FeatureType::UpdateDrag, _1,
+			for_each(sel_features, std::bind(&FeatureType::UpdateDrag, _1,
 				mouse_pos - drag_start, shift_down));
-			for_each(sel_features, bind(&VisualTool<FeatureType>::UpdateDrag, this, _1));
+			for_each(sel_features, std::bind(&VisualTool<FeatureType>::UpdateDrag, this, _1));
 			Commit();
 			need_render = true;
 		}
@@ -273,7 +273,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 				c->selectionController->SetActiveLine(active_feature->line);
 
 			if (InitializeDrag(active_feature)) {
-				for_each(sel_features, bind(&VisualDraggableFeature::StartDrag, _1));
+				for_each(sel_features, std::bind(&VisualDraggableFeature::StartDrag, _1));
 				dragging = true;
 				parent->CaptureMouse();
 			}
@@ -553,7 +553,7 @@ wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &
 
 void VisualToolBase::SetSelectedOverride(wxString const& tag, wxString const& value) {
 	for_each(c->selectionController->GetSelectedSet(),
-		bind(&VisualToolBase::SetOverride, this, _1, tag, value));
+		std::bind(&VisualToolBase::SetOverride, this, _1, tag, value));
 }
 
 void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxString const& value) {

@@ -140,8 +140,8 @@ void DialogAutomation::RebuildList()
 	script_info.clear();
 	list->DeleteAllItems();
 
-	for_each(local_manager->GetScripts(), bind(&DialogAutomation::AddScript, this, _1, false));
-	for_each(global_manager->GetScripts(), bind(&DialogAutomation::AddScript, this, _1, true));
+	for_each(local_manager->GetScripts(), std::bind(&DialogAutomation::AddScript, this, _1, false));
+	for_each(global_manager->GetScripts(), std::bind(&DialogAutomation::AddScript, this, _1, true));
 
 	UpdateDisplay();
 }
@@ -182,7 +182,7 @@ template<class Container>
 static bool has_file(Container const& c, wxFileName const& fn)
 {
 	return find_if(c.begin(), c.end(),
-		bind(&wxFileName::SameAs, fn, bind(&Automation4::Script::GetFilename, _1), wxPATH_NATIVE)) != c.end();
+		std::bind(&wxFileName::SameAs, fn, std::bind(&Automation4::Script::GetFilename, _1), wxPATH_NATIVE)) != c.end();
 }
 
 void DialogAutomation::OnAdd(wxCommandEvent &)
@@ -276,7 +276,7 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 			ei->script->GetFilename(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
 
-		transform(ei->script->GetMacros(), append_info, bind(cmd_to_str, _1, context));
+		transform(ei->script->GetMacros(), append_info, std::bind(cmd_to_str, _1, context));
 		transform(ei->script->GetFilters(), append_info, filt_to_str);
 		transform(ei->script->GetFormats(), append_info, form_to_str);
 	}

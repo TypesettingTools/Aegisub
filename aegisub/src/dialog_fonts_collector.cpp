@@ -78,7 +78,7 @@ class FontsCollectorThread : public wxThread {
 	void Collect() {
 		using namespace std::placeholders;
 
-		FontCollectorStatusCallback callback(bind(&FontsCollectorThread::AppendText, this, _1, _2));
+		FontCollectorStatusCallback callback(std::bind(&FontsCollectorThread::AppendText, this, _1, _2));
 
 #ifdef WITH_FONTCONFIG
 		FontConfigFontFileLister lister(callback);

@@ -476,16 +476,16 @@ void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
 
 void DialogStyleManager::PasteToCurrent() {
 	add_styles(
-		bind(&AssFile::GetStyle, c->ass, _1),
-		bind(&AssFile::InsertStyle, c->ass, _1));
+		std::bind(&AssFile::GetStyle, c->ass, _1),
+		std::bind(&AssFile::InsertStyle, c->ass, _1));
 
 	c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
 }
 
 void DialogStyleManager::PasteToStorage() {
 	add_styles(
-		bind(&AssStyleStorage::GetStyle, &Store, _1),
-		bind(&AssStyleStorage::push_back, &Store, _1));
+		std::bind(&AssStyleStorage::GetStyle, &Store, _1),
+		std::bind(&AssStyleStorage::push_back, &Store, _1));
 
 	UpdateStorage();
 	StorageList->SetStringSelection(Store.back()->name);
@@ -516,7 +516,7 @@ void DialogStyleManager::OnStorageCopy() {
 	if (sel == -1) return;
 
 	ShowStorageEditor(Store[sel],
-		unique_name(bind(&AssStyleStorage::GetStyle, &Store, _1), Store[sel]->name));
+		unique_name(std::bind(&AssStyleStorage::GetStyle, &Store, _1), Store[sel]->name));
 }
 
 void DialogStyleManager::OnStorageDelete() {
@@ -554,7 +554,7 @@ void DialogStyleManager::OnCurrentCopy() {
 	if (sel == -1) return;
 
 	ShowCurrentEditor(styleMap[sel],
-		unique_name(bind(&AssFile::GetStyle, c->ass, _1), styleMap[sel]->name));
+		unique_name(std::bind(&AssFile::GetStyle, c->ass, _1), styleMap[sel]->name));
 }
 
 void DialogStyleManager::OnCurrentDelete() {

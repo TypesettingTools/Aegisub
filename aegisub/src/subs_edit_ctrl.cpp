@@ -197,7 +197,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 
 	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this);
 	static wxStyledTextEvent evt;
-	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this, ref(evt));
+	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this, std::ref(evt));
 }
 
 SubsTextEditCtrl::~SubsTextEditCtrl() {
@@ -269,7 +269,7 @@ void SubsTextEditCtrl::SetStyles() {
 void SubsTextEditCtrl::UpdateStyle() {
 	StartStyling(0,255);
 
-	std::string text = GetTextRaw();
+	std::string text = GetTextRaw().data();
 
 	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
 		SetStyling(text.size(), 0);

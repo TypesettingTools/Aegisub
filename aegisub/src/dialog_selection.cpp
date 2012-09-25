@@ -82,17 +82,17 @@ std::function<bool (wxString)> get_predicate(int mode, wxRegEx *re, bool match_c
 
 	switch (mode) {
 		case MODE_REGEXP:
-			return bind(static_cast<bool (wxRegEx::*)(wxString const&,int) const>(&wxRegEx::Matches), re, _1, 0);
+			return [=](wxString str) { return re->Matches(str); };
 		case MODE_EXACT:
 			if (match_case)
-				return bind(std::equal_to<wxString>(), match_text, _1);
+				return std::bind(std::equal_to<wxString>(), match_text, _1);
 			else
-				return bind(std::equal_to<wxString>(), match_text.Lower(), bind(&wxString::Lower, _1));
+				return bind(std::equal_to<wxString>(), match_text.Lower(), std::bind(&wxString::Lower, _1));
 		case MODE_CONTAINS:
 			if (match_case)
-				return bind(&wxString::Contains, _1, match_text);
+				return std::bind(&wxString::Contains, _1, match_text);
 			else
-				return bind(&wxString::Contains, bind(&wxString::Lower, _1), match_text.Lower());
+				return bind(&wxString::Contains, std::bind(&wxString::Lower, _1), match_text.Lower());
 			break;
 		default: throw agi::InternalError("Bad mode", 0);
 	}

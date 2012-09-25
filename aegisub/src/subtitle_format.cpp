@@ -244,7 +244,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->End = curdlg->Start;
 			newdlg->Text = prevdlg->Text;
 
-			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		// Overlapping A+B part
@@ -255,7 +255,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			// Put an ASS format hard linewrap between lines
 			newdlg->Text = curdlg->Text + "\\N" + prevdlg->Text;
 
-			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		// Is there an A part after the overlap?
@@ -266,7 +266,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->End = prevdlg->End;
 			newdlg->Text = prevdlg->Text;
 
-			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		// Is there a B part after the overlap?
@@ -277,7 +277,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->End = curdlg->End;
 			newdlg->Text = curdlg->Text;
 
-			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		next--;
@@ -335,12 +335,12 @@ SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 
 const SubtitleFormat *SubtitleFormat::GetReader(wxString const& filename) {
 	LoadFormats();
-	return find_or_throw(formats, bind(&SubtitleFormat::CanReadFile, _1, filename));
+	return find_or_throw(formats, std::bind(&SubtitleFormat::CanReadFile, _1, filename));
 }
 
 const SubtitleFormat *SubtitleFormat::GetWriter(wxString const& filename) {
 	LoadFormats();
-	return find_or_throw(formats, bind(&SubtitleFormat::CanWriteFile, _1, filename));
+	return find_or_throw(formats, std::bind(&SubtitleFormat::CanWriteFile, _1, filename));
 }
 
 wxString SubtitleFormat::GetWildcards(int mode) {
@@ -355,7 +355,7 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 		wxArrayString cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
 		if (cur.empty()) continue;
 
-		for_each(cur.begin(), cur.end(), bind(&wxString::Prepend, _1, "*."));
+		for_each(cur.begin(), cur.end(), std::bind(&wxString::Prepend, _1, "*."));
 		copy(cur.begin(), cur.end(), std::back_inserter(all));
 		final += "|" + format->GetName() + " (" + wxJoin(cur, ',') + ")|" + wxJoin(cur, ';');
 	}

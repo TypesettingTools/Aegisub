@@ -90,12 +90,6 @@ static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *
 	return ps->IsCancelled();
 }
 
-/// A wrapper around FFMS_DoIndexing to make the signature void -> void
-static void DoIndexingWrapper(FFMS_Index **Ret, FFMS_Indexer *Indexer, int IndexMask, int ErrorHandling, void *ICPrivate, FFMS_ErrorInfo *ErrorInfo) {
-	*Ret = FFMS_DoIndexing(Indexer, IndexMask, FFMS_TRACKMASK_NONE, NULL, NULL, ErrorHandling,
-		UpdateIndexingProgress, ICPrivate, ErrorInfo);
-}
-
 /// @brief Does indexing of a source file
 /// @param Indexer		A pointer to the indexer object representing the file to be indexed
 /// @param CacheName    The filename of the output index file
@@ -117,7 +111,9 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 
 	// index all audio tracks
 	FFMS_Index *Index;
-	Progress.Run(std::bind(DoIndexingWrapper, &Index, Indexer, Trackmask, IndexEH, std::placeholders::_1, &ErrInfo));
+	Progress.Run([&](agi::ProgressSink *ps) {
+		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, nullptr, nullptr, IndexEH, UpdateIndexingProgress, ps, &ErrInfo);
+	});
 
 	if (Index == NULL) {
 		MsgString.Append("Failed to index: ").Append(wxString(ErrInfo.Buffer, wxConvUTF8));
