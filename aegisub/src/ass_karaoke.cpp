@@ -151,9 +151,9 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 				syls[i].start_time = start_time + scale_factor * (syls[i].start_time - start_time);
 			}
 
-			for (int i = size() - 1; i > 0; --i) {
-				syls[i].duration = end_time - syls[i].start_time;
-				end_time = syls[i].start_time;
+			for (int i = size(); i > 0; --i) {
+				syls[i - 1].duration = end_time - syls[i - 1].start_time;
+				end_time = syls[i - 1].start_time;
 			}
 		}
 	}
