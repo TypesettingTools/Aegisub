@@ -295,6 +295,8 @@ void AudioTimingControllerKaraoke::AddLeadOut() {
 }
 
 void AudioTimingControllerKaraoke::ApplyLead(bool announce_primary) {
+	active_line->Start = (int)start_marker;
+	active_line->End = (int)end_marker;
 	kara->SetLineTimes(start_marker, end_marker);
 	if (!announce_primary)
 		AnnounceUpdatedStyleRanges();
