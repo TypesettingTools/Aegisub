@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include <stdint.h>
+#include <cstdint>
 #endif
 
 #include <libaegisub/exception.h>

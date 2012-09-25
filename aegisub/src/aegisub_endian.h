@@ -71,7 +71,7 @@
 #endif
 
 #ifndef AGI_PRE
-#include <stdint.h>
+#include <cstdint>
 #endif
 
 

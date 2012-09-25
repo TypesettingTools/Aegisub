@@ -18,7 +18,7 @@
 
 #ifndef LAGI_PRE
 #include <errno.h>
-#include <stdint.h>
+#include <cstdint>
 
 #include <cassert>
 #include <map>

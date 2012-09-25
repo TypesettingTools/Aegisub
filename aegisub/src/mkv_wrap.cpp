@@ -36,7 +36,7 @@
 
 #ifndef AGI_PRE
 #include <errno.h>
-#include <stdint.h>
+#include <cstdint>
 #include <stdio.h>
 
 #include <algorithm>

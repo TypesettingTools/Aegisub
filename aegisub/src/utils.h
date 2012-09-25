@@ -36,7 +36,7 @@
 #pragma once
 
 #ifndef AGI_PRE
-#include <stdint.h>
+#include <cstdint>
 
 #include <algorithm>
 #include <utility>

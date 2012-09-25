@@ -40,7 +40,7 @@
 
 #ifndef AGI_PRE
 #include <cassert>
-#include <stdint.h>
+#include <cstdint>
 
 #include <algorithm>
 

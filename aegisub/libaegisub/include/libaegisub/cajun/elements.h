@@ -9,13 +9,12 @@ Author: Terry Caton
 #pragma once
 
 #ifndef LAGI_PRE
+#include <cstdint>
 #include <deque>
 #include <list>
 #include <map>
 #include <string>
 #include <stdexcept>
-
-#include "stdint.h"
 #endif
 
 namespace json

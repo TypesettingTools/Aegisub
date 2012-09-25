@@ -37,7 +37,7 @@
 
 #ifndef AGI_PRE
 #include <assert.h>
-#include <stdint.h>
+#include <cstdint>
 #ifndef __WINDOWS__
 #include <sys/fcntl.h>
 #include <sys/mman.h>

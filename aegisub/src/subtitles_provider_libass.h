@@ -37,7 +37,7 @@
 #include "include/aegisub/subtitles_provider.h"
 extern "C" {
 #ifdef __VISUALC__
-#include "stdint.h"
+#include "cstdint"
 #endif
 
 #include <ass/ass.h>

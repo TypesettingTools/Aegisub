@@ -33,7 +33,7 @@
 
 
 #ifndef AGI_PRE
-#include <stdint.h>
+#include <cstdint>
 #include <wx/pen.h>
 #endif
 

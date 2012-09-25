@@ -9,8 +9,8 @@
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdint>
 #include <cstring>
-#include <stdint.h>
 #include <sys/stat.h>
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>

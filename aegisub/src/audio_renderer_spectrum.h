@@ -34,7 +34,7 @@
 /// Calculate and render a frequency-power spectrum for PCM audio data.
 
 #ifndef AGI_PRE
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 #endif
 

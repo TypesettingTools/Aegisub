@@ -37,7 +37,7 @@
 #include <memory>
 #include <vector>
 #include <set>
-#include <stdint.h>
+#include <cstdint>
 #include <assert.h>
 #include <wx/event.h>
 #include <wx/string.h>

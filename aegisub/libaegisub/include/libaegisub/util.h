@@ -17,7 +17,7 @@
 /// @ingroup libaegisub
 
 #ifndef LAGI_PRE
-#include <stdint.h>
+#include <cstdint>
 
 #include <string>
 #include <algorithm>

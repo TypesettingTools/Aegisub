@@ -23,7 +23,7 @@
 #include <memory>
 #include <sstream>
 
-#include <stdint.h>
+#include <cstdint>
 #endif
 
 #include <libaegisub/charset_conv.h>
