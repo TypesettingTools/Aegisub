@@ -73,7 +73,7 @@ struct TimecodeRange {
 	int start;
 	int end;
 	double fps;
-	bool operator<(TimecodeRange cmp) {
+	bool operator<(TimecodeRange const& cmp) const {
 		return start < cmp.start;
 	}
 	TimecodeRange() : fps(0.) { }
