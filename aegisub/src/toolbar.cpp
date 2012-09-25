@@ -137,9 +137,6 @@ namespace {
 
 				last_was_sep = false;
 
-				wxBitmap const& bitmap = command->Icon(icon_size);
-				// this hack is needed because ???
-				wxBitmap icon = bitmap.GetSubBitmap(wxRect(0, 0, bitmap.GetWidth(), bitmap.GetHeight()));
 
 				int flags = command->Type();
 				wxItemKind kind =
@@ -147,7 +144,8 @@ namespace {
 					flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 					wxITEM_NORMAL;
 
-				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), icon, GetTooltip(command), kind);
+				wxBitmap const& bitmap = command->Icon(icon_size);
+				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), bitmap, GetTooltip(command), kind);
 
 				commands.push_back(command);
 				needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;
