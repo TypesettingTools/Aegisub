@@ -66,7 +66,7 @@
 
 // Enable FFMS2 video and audio providers
 // Requires: FFMS2 SDK
-//#define WITH_FFMS2
+#define WITH_FFMS2
 #ifdef WITH_FFMS2
 #pragma comment(lib, "ffms2.lib")
 #endif
@@ -107,7 +107,7 @@
 // FFTW <http://fftw.org/> is a very fast library for computing the discrete fourier transform, but is a bit
 // tricky to get working on Windows, and has the additional problem of being GPL licensed.
 // Enable this option to use FFTW to get faster rendering of the audio spectrogram
-//#define WITH_FFTW3
+#define WITH_FFTW3
 #ifdef WITH_FFTW3
 #pragma comment(lib,libfftw.lib)
 #endif
@@ -130,14 +130,14 @@
 
 // Enable FontConfig
 // Requires: fontconfig
-//#define WITH_FONTCONFIG
+#define WITH_FONTCONFIG
 #ifdef WITH_FONTCONFIG
 #pragma comment(lib,"libfontconfig.lib")
 #endif
 
 // Enable libass
 // Requires: libass
-//#define WITH_LIBASS
+#define WITH_LIBASS
 #ifdef WITH_LIBASS
 #pragma comment(lib, "libass.lib")
 #endif
