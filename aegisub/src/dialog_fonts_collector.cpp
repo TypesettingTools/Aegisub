@@ -226,7 +226,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 		,_("Symlink fonts to folder")
 #endif
 	};
-	collection_mode = new wxRadioBox(this, -1, "Action", wxDefaultPosition, wxDefaultSize, countof(modes), modes, 1);
+	collection_mode = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, countof(modes), modes, 1);
 	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 4));
 
 	if (!subs->filename)

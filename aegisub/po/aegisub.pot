@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-16 18:52-0700\n"
+"POT-Creation-Date: 2012-09-27 16:45-0700\n"
 "PO-Revision-Date: 2005-2012-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -887,7 +887,7 @@ msgid "&Cinematic (2.35)"
 msgstr ""
 
 #: ../src/command/video.cpp:92
-msgid "Cinematic (235)"
+msgid "Cinematic (2.35)"
 msgstr ""
 
 #: ../src/command/video.cpp:93
@@ -3098,6 +3098,10 @@ msgstr ""
 msgid "Symlink fonts to folder"
 msgstr ""
 
+#: ../src/dialog_fonts_collector.cpp:229 ../src/dialog_selection.cpp:176
+msgid "Action"
+msgstr ""
+
 #: ../src/dialog_fonts_collector.cpp:235
 msgid "Destination"
 msgstr ""
@@ -3190,11 +3194,11 @@ msgstr ""
 msgid "(Un)Load files?"
 msgstr ""
 
-#: ../src/frame_main.cpp:771
+#: ../src/frame_main.cpp:775
 msgid "Untitled"
 msgstr ""
 
-#: ../src/frame_main.cpp:773
+#: ../src/frame_main.cpp:777
 msgid "untitled"
 msgstr ""
 
@@ -4028,7 +4032,7 @@ msgid "&Accept Line"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:672 ../src/dialog_automation.cpp:81
-#: ../src/dialog_attachments.cpp:88 ../src/dialog_version_check.cpp:522
+#: ../src/dialog_attachments.cpp:88 ../src/dialog_version_check.cpp:530
 msgid "&Close"
 msgstr ""
 
@@ -4346,10 +4350,6 @@ msgstr ""
 
 #: ../src/dialog_selection.cpp:175
 msgid "Intersect &with selection"
-msgstr ""
-
-#: ../src/dialog_selection.cpp:176
-msgid "Action"
 msgstr ""
 
 #: ../src/dialog_selection.cpp:237
@@ -5597,40 +5597,40 @@ msgstr ""
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:380 ../src/dialog_version_check.cpp:403
+#: ../src/dialog_version_check.cpp:387 ../src/dialog_version_check.cpp:411
 msgid "Could not connect to updates server."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:382 ../src/dialog_version_check.cpp:407
+#: ../src/dialog_version_check.cpp:389 ../src/dialog_version_check.cpp:415
 msgid "Could not download from updates server."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:410
+#: ../src/dialog_version_check.cpp:418
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:488
+#: ../src/dialog_version_check.cpp:496
 msgid "Version Checker"
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:515
+#: ../src/dialog_version_check.cpp:523
 msgid "&Auto Check for Updates"
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:520
+#: ../src/dialog_version_check.cpp:528
 msgid "Remind me again in a &week"
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:570
+#: ../src/dialog_version_check.cpp:578
 msgid "An update to Aegisub was found."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:574
+#: ../src/dialog_version_check.cpp:582
 msgid "Several possible updates to Aegisub were found."
 msgstr ""
 
-#: ../src/dialog_version_check.cpp:578
+#: ../src/dialog_version_check.cpp:586
 msgid "There are no updates to Aegisub."
 msgstr ""
 
