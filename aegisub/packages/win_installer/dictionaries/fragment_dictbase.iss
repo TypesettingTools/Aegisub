@@ -68,7 +68,7 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
-WelcomeLabel2=This will install {#LANGNAME} dictionaries for Aegisub 3.0.x on your computer.
+WelcomeLabel2=This will install {#LANGNAME} dictionaries for Aegisub 3.0 on your computer.
 
 [Files]
 ; small bitmaps (used by beautify code)

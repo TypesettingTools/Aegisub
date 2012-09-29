@@ -36,7 +36,7 @@
 
 [Setup]
 OutputBaseFilename=Aegisub-3.0-dict-{#LANGCODE}
-VersionInfoDescription=Aegisub 3.0.x {#LANGNAME} dictionary
+VersionInfoDescription=Aegisub 3.0 {#LANGNAME} dictionary
 
 
 [Files]
