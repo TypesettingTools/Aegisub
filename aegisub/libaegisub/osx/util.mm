@@ -84,7 +84,7 @@ std::string OSX_GetBundleAuxillaryExecutablePath(std::string const& executableNa
 void OSX_OpenLocation(std::string const& location) {
 	@autoreleasepool {
 		NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:location.c_str()]];
-		LSOpenCFURLRef((__bridge CFURLRef)url, NULL);
+		LSOpenCFURLRef((CFURLRef)url, NULL);
 	}
 }
 

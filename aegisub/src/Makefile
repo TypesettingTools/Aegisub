@@ -20,7 +20,6 @@ LDFLAGS += $(LDFLAGS_CCMALLOC)
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += osx_utils.mm
-osx_utils.o: OBJCXXFLAGS += -fobjc-arc
 endif
 
 ###############

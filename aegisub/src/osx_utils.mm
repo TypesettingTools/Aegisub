@@ -23,14 +23,6 @@
 
 #include "config.h"
 
-// This bit of awfulness is to disable some ARC-incompatible stuff in window.h
-// that we don't need
-#include <wx/brush.h>
-#undef wxOSX_USE_COCOA_OR_IPHONE
-#define wxOSX_USE_COCOA_OR_IPHONE 0
-class WXDLLIMPEXP_FWD_CORE wxWidgetImpl;
-typedef wxWidgetImpl wxOSXWidgetImpl;
-
 #include <wx/window.h>
 
 #import <AppKit/AppKit.h>
@@ -46,7 +38,7 @@ void AddFullScreenButton(wxWindow *window) {
 }
 
 void SetFloatOnParent(wxWindow *window) {
-    __unsafe_unretained NSWindow *nsWindow = [window->GetHandle() window];
+    __block NSWindow *nsWindow = [window->GetHandle() window];
     [nsWindow setLevel:NSFloatingWindowLevel];
 
     if (!([nsWindow collectionBehavior] & NSWindowCollectionBehaviorFullScreenPrimary))

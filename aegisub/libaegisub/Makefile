@@ -44,7 +44,6 @@ SRC += \
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += osx/util.mm
-osx/util.o: OBJCXXFLAGS += -fobjc-arc
 endif
 
 HEADER += \
