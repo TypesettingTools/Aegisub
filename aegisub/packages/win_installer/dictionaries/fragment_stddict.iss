@@ -40,11 +40,11 @@ VersionInfoDescription=Aegisub 3.0 {#LANGNAME} dictionary
 
 
 [Files]
-Source: src\{#LANGCODE}.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/{#LANGCODE}
-Source: src\{#LANGCODE}.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/{#LANGCODE}
+Source: src\dictionaries\{#LANGCODE}.aff; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/{#LANGCODE}
+Source: src\dictionaries\{#LANGCODE}.dic; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: dic/{#LANGCODE}
 #ifndef NOTHES
-Source: src\th_{#LANGCODE}.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/{#LANGCODE}
-Source: src\th_{#LANGCODE}.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/{#LANGCODE}
+Source: src\dictionaries\th_{#LANGCODE}.dat; DestDir: {app}\dictionaries; Flags: ignoreversion solidbreak; Components: th/{#LANGCODE}
+Source: src\dictionaries\th_{#LANGCODE}.idx; DestDir: {app}\dictionaries; Flags: ignoreversion; Components: th/{#LANGCODE}
 #endif
 
 [Components]

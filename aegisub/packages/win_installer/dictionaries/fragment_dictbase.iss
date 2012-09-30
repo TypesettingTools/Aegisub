@@ -60,8 +60,8 @@ UsePreviousTasks=no
 UninstallDisplayIcon={app}\aegisub32.exe
 ; Default to a large welcome bitmap, suitable for large fonts
 ; The normal fonts version is selected by code below
-WizardImageFile=..\welcome-large.bmp
-WizardSmallImageFile=..\aegisub-large.bmp
+WizardImageFile=welcome-large.bmp
+WizardSmallImageFile=aegisub-large.bmp
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -72,8 +72,8 @@ WelcomeLabel2=This will install {#LANGNAME} dictionaries for Aegisub 3.0 on your
 
 [Files]
 ; small bitmaps (used by beautify code)
-DestDir: {tmp}; Flags: dontcopy; Source: ..\welcome.bmp
-DestDir: {tmp}; Flags: dontcopy; Source: ..\aegisub.bmp
+DestDir: {tmp}; Flags: dontcopy; Source: welcome.bmp
+DestDir: {tmp}; Flags: dontcopy; Source: aegisub.bmp
 
 
 [Code]
