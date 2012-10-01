@@ -97,6 +97,10 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	/// Left x coordinate of each character in spaced_text in pixels
 	std::vector<int> char_x;
 
+	int scroll_x;
+	int scroll_dir;
+	wxTimer scroll_timer;
+
 	int char_height; ///< Maximum character height in pixels
 	int char_width; ///< Maximum character width in pixels
 	int mouse_pos; ///< Last x coordinate of the mouse
@@ -142,6 +146,7 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 	void OnAudioOpened();
 	void OnAudioClosed();
+	void OnScrollTimer(wxTimerEvent &event);
 
 public:
 	/// Constructor

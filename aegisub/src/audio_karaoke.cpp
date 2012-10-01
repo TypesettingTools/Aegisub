@@ -52,6 +52,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
+#include "utils.h"
 
 template<class Container, class Value>
 static inline size_t last_lt_or_eq(Container const& c, Value const& v) {
@@ -70,10 +71,10 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , audio_closed(c->audioController->AddAudioCloseListener(&AudioKaraoke::OnAudioClosed, this))
 , active_line(0)
 , kara(new AssKaraoke)
+, scroll_x(0)
 , enabled(false)
 {
 	using std::tr1::bind;
-
 
 	cancel_button = new wxBitmapButton(this, -1, GETIMAGE(kara_split_cancel_16));
 	cancel_button->SetToolTip(_("Discard all uncommitted splits"));
@@ -102,6 +103,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 	split_area->Bind(wxEVT_MOTION, &AudioKaraoke::OnMouse, this);
 	split_area->Bind(wxEVT_LEAVE_WINDOW, &AudioKaraoke::OnMouse, this);
 	split_area->Bind(wxEVT_CONTEXT_MENU, &AudioKaraoke::OnContextMenu, this);
+	scroll_timer.Bind(wxEVT_TIMER, &AudioKaraoke::OnScrollTimer, this);
 
 	c->selectionController->AddSelectionListener(this);
 
@@ -141,8 +143,6 @@ void AudioKaraoke::SetEnabled(bool en) {
 	enabled = en;
 
 	c->audioBox->ShowKaraokeBar(enabled);
-	split_area->SetSize(GetSize().GetWidth(), -1);
-
 	if (enabled) {
 		LoadFromLine();
 		c->audioController->SetTimingController(CreateKaraokeTimingController(c, kara.get(), file_changed));
@@ -166,19 +166,54 @@ void AudioKaraoke::OnPaint(wxPaintEvent &) {
 	wxMemoryDC bmp_dc(rendered_line);
 
 	// Draw the text and split lines
-	dc.Blit(0, 0, w, h, &bmp_dc, 0, 0);
+	dc.Blit(-scroll_x, 0, rendered_line.GetWidth(), h, &bmp_dc, 0, 0);
 
 	// Draw the split line under the mouse
 	dc.SetPen(*wxRED);
 	dc.DrawLine(mouse_pos, 0, mouse_pos, h);
+
+	dc.SetPen(*wxTRANSPARENT_PEN);
+
+	int width_past_bmp = w + scroll_x - rendered_line.GetWidth();
+	dc.SetBrush(*wxWHITE_BRUSH);
+	if (width_past_bmp > 0)
+		dc.DrawRectangle(w - width_past_bmp, 0, width_past_bmp, h);
+
+	// Draw scroll arrows if needed
+	if (scroll_x > 0) {
+		dc.DrawRectangle(0, 0, 20, h);
+
+		wxPoint triangle[] = {
+			wxPoint(10, h / 2 - 6),
+			wxPoint(4, h / 2),
+			wxPoint(10, h / 2 + 6)
+		};
+		dc.SetBrush(*wxBLACK_BRUSH);
+		dc.DrawPolygon(3, triangle);
+	}
+
+	if (rendered_line.GetWidth() - scroll_x > w) {
+		dc.SetBrush(*wxWHITE_BRUSH);
+		dc.DrawRectangle(w - 20, 0, 20, h);
+
+		wxPoint triangle[] = {
+			wxPoint(w - 10, h / 2 - 6),
+			wxPoint(w - 4, h / 2),
+			wxPoint(w - 10, h / 2 + 6)
+		};
+		dc.SetBrush(*wxBLACK_BRUSH);
+		dc.DrawPolygon(3, triangle);
+	}
 }
 
 void AudioKaraoke::RenderText() {
-	int w, h;
-	split_area->GetClientSize(&w, &h);
+	wxSize bmp_size = split_area->GetClientSize();
+	int line_width = spaced_text.size() * char_width + 5;
+	if (line_width > bmp_size.GetWidth())
+		bmp_size.SetWidth(line_width);
 
-	if (!rendered_line.IsOk() || split_area->GetClientSize() != rendered_line.GetSize()) {
-		rendered_line = wxBitmap(w, h);
+	if (!rendered_line.IsOk() || bmp_size != rendered_line.GetSize()) {
+		rendered_line = wxBitmap(bmp_size);
 	}
 
 	wxMemoryDC dc(rendered_line);
@@ -186,13 +221,13 @@ void AudioKaraoke::RenderText() {
 	// Draw background
 	dc.SetBrush(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.DrawRectangle(0, 0, w, h);
+	dc.DrawRectangle(wxPoint(), bmp_size);
 
 	dc.SetFont(split_font);
 	dc.SetTextForeground(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
 
 	// Draw each character in the line
-	int y = (h - char_height) / 2;
+	int y = (bmp_size.GetHeight() - char_height) / 2;
 	for (size_t i = 0; i < spaced_text.size(); ++i) {
 		dc.DrawText(spaced_text[i], char_x[i], y);
 	}
@@ -200,7 +235,7 @@ void AudioKaraoke::RenderText() {
 	// Draw the lines between each syllable
 	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
 	for (size_t i = 0; i < syl_lines.size(); ++i) {
-		dc.DrawLine(syl_lines[i], 0, syl_lines[i], h);
+		dc.DrawLine(syl_lines[i], 0, syl_lines[i], bmp_size.GetHeight());
 	}
 }
 
@@ -228,8 +263,45 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 	mouse_pos = event.GetX();
 
-	if (event.Leaving())
+	if (event.Leaving()) {
 		mouse_pos = -1;
+		split_area->Refresh(false);
+		return;
+	}
+
+	if (scroll_timer.IsRunning() || split_area->HasCapture()) {
+		if (event.LeftUp()) {
+			scroll_timer.Stop();
+			split_area->ReleaseMouse();
+		}
+		return;
+	}
+
+	// Check if the mouse is over a scroll arrow
+	int client_width = split_area->GetClientSize().GetWidth();
+	if (scroll_x > 0 && mouse_pos < 20) {
+		scroll_dir = -1;
+	}
+	else if (scroll_x + client_width < rendered_line.GetWidth() && mouse_pos > client_width - 20) {
+		scroll_dir = 1;
+	}
+	else {
+		scroll_dir = 0;
+	}
+
+	if (scroll_dir) {
+		mouse_pos = -1;
+		if (event.LeftDown()) {
+			split_area->Refresh(false);
+			scroll_timer.Start(50);
+			split_area->CaptureMouse();
+			wxTimerEvent evt;
+			OnScrollTimer(evt);
+		}
+		return;
+	}
+
+	int shifted_pos = mouse_pos + scroll_x;
 
 	if (!event.LeftDown()) {
 		// Erase the old line and draw the new one
@@ -238,14 +310,14 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	}
 
 	// Character to insert the new split point before
-	int split_pos = std::min<int>((mouse_pos - char_width / 2) / char_width, spaced_text.size());
+	int split_pos = std::min<int>((shifted_pos - char_width / 2) / char_width, spaced_text.size());
 
 	// Syllable this character is in
 	int syl = last_lt_or_eq(syl_start_points, split_pos);
 
 	// If the click is sufficiently close to a line of a syllable split,
 	// remove that split rather than adding a new one
-	if ((syl > 0 && mouse_pos <= syl_lines[syl - 1] + 2) || (syl < (int)syl_lines.size() && mouse_pos >= syl_lines[syl] - 2)) {
+	if ((syl > 0 && shifted_pos <= syl_lines[syl - 1] + 2) || (syl < (int)syl_lines.size() && shifted_pos >= syl_lines[syl] - 2)) {
 		kara->RemoveSplit(syl);
 	}
 	else {
@@ -258,7 +330,21 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	split_area->Refresh(false);
 }
 
+void AudioKaraoke::OnScrollTimer(wxTimerEvent &) {
+	scroll_x += scroll_dir * char_width * 3;
+
+	int max_scroll = rendered_line.GetWidth() + 20 - split_area->GetClientSize().GetWidth();
+	if (scroll_x < 0 || scroll_x > max_scroll) {
+		scroll_x = mid(0, scroll_x, max_scroll);
+		scroll_timer.Stop();
+	}
+
+	split_area->Refresh(false);
+}
+
 void AudioKaraoke::LoadFromLine() {
+	scroll_x = 0;
+	scroll_timer.Stop();
 	kara->SetLine(active_line, true);
 	SetDisplayText();
 	accept_button->Enable(kara->GetText() != active_line->Text);
