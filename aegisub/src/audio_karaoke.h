@@ -138,6 +138,7 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	void OnFileChanged(int type);
 	void OnMouse(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
+	void OnSize(wxSizeEvent &event);
 	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 	void OnAudioOpened();
 	void OnAudioClosed();

@@ -95,7 +95,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 	split_font.SetFaceName(OPT_GET("Audio/Karaoke/Font Face")->GetString());
 	split_font.SetPointSize(OPT_GET("Audio/Karaoke/Font Size")->GetInt());
 
-	Bind(wxEVT_SIZE, bind(&AudioKaraoke::Refresh, this, false, (const wxRect*)0));
+	split_area->Bind(wxEVT_SIZE, &AudioKaraoke::OnSize, this);
 	split_area->Bind(wxEVT_PAINT, &AudioKaraoke::OnPaint, this);
 	split_area->Bind(wxEVT_LEFT_DOWN, &AudioKaraoke::OnMouse, this);
 	split_area->Bind(wxEVT_LEFT_UP, &AudioKaraoke::OnMouse, this);
@@ -151,6 +151,11 @@ void AudioKaraoke::SetEnabled(bool en) {
 	else {
 		c->audioController->SetTimingController(CreateDialogueTimingController(c));
 	}
+}
+
+void AudioKaraoke::OnSize(wxSizeEvent &evt) {
+	RenderText();
+	Refresh(false);
 }
 
 void AudioKaraoke::OnPaint(wxPaintEvent &) {
