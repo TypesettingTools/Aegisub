@@ -285,6 +285,7 @@ struct audio_stop : public Command {
 
 	void operator()(agi::Context *c) {
 		c->audioController->Stop();
+		c->videoController->Stop();
 	}
 };
 
