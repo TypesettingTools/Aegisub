@@ -34,22 +34,15 @@
 /// @ingroup utility
 ///
 
-#include <libaegisub/scoped_ptr.h>
-
-class wxLocale;
-
 /// DOCME
 /// @class AegisubLocale
 /// @brief DOCME
 ///
 /// DOCME
 class AegisubLocale {
-	agi::scoped_ptr<wxLocale> locale;
-	wxArrayInt GetAvailableLanguages();
-	int EnglishId() const;
-
+	wxString active_language;
 public:
-	~AegisubLocale();
-	void Init(int language);
-	int PickLanguage();
+	AegisubLocale();
+	void Init(wxString const& language);
+	wxString PickLanguage();
 };

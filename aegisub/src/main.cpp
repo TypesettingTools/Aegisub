@@ -233,10 +233,10 @@ bool AegisubApp::OnInit() {
 		StartupLog("Initialize final locale");
 
 		// Set locale
-		int lang = OPT_GET("App/Locale")->GetInt();
-		if (lang == -1) {
+		wxString lang = lagi_wxString(OPT_GET("App/Language")->GetString());
+		if (!lang) {
 			lang = locale.PickLanguage();
-			OPT_SET("App/Locale")->SetInt(lang);
+			OPT_SET("App/Language")->SetString(STD_STR(lang));
 		}
 		locale.Init(lang);
 

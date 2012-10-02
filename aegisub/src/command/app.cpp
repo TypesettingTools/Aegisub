@@ -50,6 +50,7 @@
 #include "../main.h"
 
 #include "../audio_controller.h"
+#include "../compat.h"
 #include "../dialog_about.h"
 #include "../dialog_detached_video.h"
 #include "../dialog_manager.h"
@@ -185,19 +186,17 @@ struct app_language : public Command {
 
 	void operator()(agi::Context *c) {
 		// Get language
-		int newCode = wxGetApp().locale.PickLanguage();
-		// Is OK?
-		if (newCode != -1) {
-			// Set code
-			OPT_SET("App/Locale")->SetInt(newCode);
+		wxString new_language = wxGetApp().locale.PickLanguage();
+		if (!new_language) return;
 
-			// Ask to restart program
-			int result = wxMessageBox("Aegisub needs to be restarted so that the new language can be applied. Restart now?", "Restart Aegisub?", wxYES_NO | wxICON_QUESTION |  wxCENTER);
-			if (result == wxYES) {
-				// Restart Aegisub
-				if (wxGetApp().frame->Close()) {
-					RestartAegisub();
-				}
+		OPT_SET("App/Language")->SetString(STD_STR(new_language));
+
+		// Ask to restart program
+		int result = wxMessageBox("Aegisub needs to be restarted so that the new language can be applied. Restart now?", "Restart Aegisub?", wxYES_NO | wxICON_QUESTION |  wxCENTER);
+		if (result == wxYES) {
+			// Restart Aegisub
+			if (wxGetApp().frame->Close()) {
+				RestartAegisub();
 			}
 		}
 	}

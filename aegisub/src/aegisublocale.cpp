@@ -36,6 +36,8 @@
 
 #include "config.h"
 
+#include "aegisublocale.h"
+
 #ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
@@ -48,97 +50,59 @@
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 #endif
 
-#include "aegisublocale.h"
 #include "standard_paths.h"
 
-AegisubLocale::~AegisubLocale() {
-}
-
-int AegisubLocale::EnglishId() const {
-	static const int english_ids[] = {
-		wxLANGUAGE_ENGLISH,
-		wxLANGUAGE_ENGLISH_US,
-		wxLANGUAGE_ENGLISH_UK,
-		wxLANGUAGE_ENGLISH_AUSTRALIA,
-		wxLANGUAGE_ENGLISH_BELIZE,
-		wxLANGUAGE_ENGLISH_BOTSWANA,
-		wxLANGUAGE_ENGLISH_CANADA,
-		wxLANGUAGE_ENGLISH_CARIBBEAN,
-		wxLANGUAGE_ENGLISH_DENMARK,
-		wxLANGUAGE_ENGLISH_EIRE,
-		wxLANGUAGE_ENGLISH_JAMAICA,
-		wxLANGUAGE_ENGLISH_NEW_ZEALAND,
-		wxLANGUAGE_ENGLISH_PHILIPPINES,
-		wxLANGUAGE_ENGLISH_SOUTH_AFRICA,
-		wxLANGUAGE_ENGLISH_TRINIDAD,
-		wxLANGUAGE_ENGLISH_ZIMBABWE,
-		0
-	};
-
-	for (const int *id = english_ids; *id; ++id) {
-		if (wxLocale::IsAvailable(*id)) {
-			return *id;
-		}
-	}
-
-	return -1;
-}
-
-void AegisubLocale::Init(int language) {
-	if (language == -1)
-		language = EnglishId();
-
-	if (!wxLocale::IsAvailable(language))
-		language = wxLANGUAGE_UNKNOWN;
-
-	locale.reset(new wxLocale(language));
-
-#ifdef __WINDOWS__
-	locale->AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/"));
-	locale->AddCatalog("aegisub");
-#else
-	locale->AddCatalog(AEGISUB_CATALOG);
+#ifndef AEGISUB_CATALOG
+#define AEGISUB_CATALOG "aegisub"
 #endif
 
-	locale->AddCatalog("wxstd");
-	setlocale(LC_NUMERIC, "C");
-	setlocale(LC_CTYPE, "C");
+AegisubLocale::AegisubLocale() {
+	wxTranslations::Set(new wxTranslations);
+	wxFileTranslationsLoader::AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/"));
 }
 
-int AegisubLocale::PickLanguage() {
-	wxArrayInt langs = GetAvailableLanguages();
+void AegisubLocale::Init(wxString const& language) {
+	wxTranslations *translations = wxTranslations::Get();
+	translations->SetLanguage(language);
+	translations->AddCatalog(AEGISUB_CATALOG);
+	translations->AddStdCatalog();
 
-	// Check if english is in it, else add it
-	if (langs.Index(wxLANGUAGE_ENGLISH) == wxNOT_FOUND) {
-		int id = EnglishId();
-		if (id)
-			langs.Insert(id, 0);
-	}
+	setlocale(LC_NUMERIC, "C");
+	setlocale(LC_CTYPE, "C");
+	active_language = language;
+}
+
+wxString AegisubLocale::PickLanguage() {
+	wxArrayString langs = wxTranslations::Get()->GetAvailableTranslations(AEGISUB_CATALOG);
+	langs.insert(langs.begin(), "en_US");
 
 	// Check if user local language is available, if so, make it first
-	int user = wxLocale::GetSystemLanguage();
-	if (langs.Index(user) != wxNOT_FOUND) {
-		langs.Remove(user);
-		langs.Insert(user, 0);
+	const wxLanguageInfo *info = wxLocale::GetLanguageInfo(wxLocale::GetSystemLanguage());
+	if (info) {
+		wxArrayString::iterator it = std::find(langs.begin(), langs.end(), info->CanonicalName);
+		if (it != langs.end())
+			std::rotate(langs.begin(), it, it + 1);
 	}
 
-	// Remove languages which won't work due to the locale not being  installed
-	langs.erase(remove_if(langs.begin(), langs.end(), not1(std::ptr_fun(&wxLocale::IsAvailable))), langs.end());
-
 	// Nothing to pick
-	if (langs.empty()) return -1;
+	if (langs.empty()) return "";
 
 	// Only one language, so don't bother asking the user
-	if (langs.size() == 1 && !locale)
+	if (langs.size() == 1 && !active_language)
 		return langs[0];
 
 	// Generate names
 	wxArrayString langNames;
-	for (size_t i = 0; i < langs.size(); ++i)
-		langNames.Add(wxLocale::GetLanguageName(langs[i]));
+	for (size_t i = 0; i < langs.size(); ++i) {
+		const wxLanguageInfo *info = wxLocale::FindLanguageInfo(langs[i]);
+		if (info)
+			langNames.push_back(wxLocale::GetLanguageName(info->Language));
+		else
+			langNames.push_back(langs[i]);
+	}
 
 	long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxOK | wxCENTRE;
-	if (locale)
+	if (!active_language.empty())
 		style |= wxCANCEL;
 
 	wxSingleChoiceDialog dialog(NULL, "Please choose a language:", "Language", langNames,
@@ -150,75 +114,9 @@ int AegisubLocale::PickLanguage() {
 			style);
 	if (dialog.ShowModal() == wxID_OK) {
 		int picked = dialog.GetSelection();
-		if (locale && langs[picked] == locale->GetLanguage())
-			return -1;
-		return langs[picked];
+		if (langs[picked] != active_language)
+			return langs[picked];
 	}
 
-	return -1;
-}
-
-wxArrayInt AegisubLocale::GetAvailableLanguages() {
-	wxArrayInt final;
-
-#ifdef __WINDOWS__
-	// Open directory
-	wxString folder = StandardPaths::DecodePath("?data/locale/");
-	wxDir dir;
-	if (!dir.Exists(folder)) return final;
-	if (!dir.Open(folder)) return final;
-
-	// Enumerate folders
-	wxString temp1;
-	for (bool cont = dir.GetFirst(&temp1, "", wxDIR_DIRS); cont; cont = dir.GetNext(&temp1)) {
-		// Check if .so exists inside folder
-		if (wxFileName::FileExists(folder + temp1 + "/aegisub.mo")) {
-			const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(temp1);
-			if (lang) {
-				final.Add(lang->Language);
-			}
-		}
-	}
-#else
-	const char* langs[] = {
-		"ca",
-		"cs",
-		"da",
-		"de",
-		"el",
-		"es",
-		"eu",
-		"fa",
-		"fi",
-		"fr_FR",
-		"hu",
-		"id",
-		"it",
-		"ja",
-		"ko",
-		"pl",
-		"pt_BR",
-		"pt_PT",
-		"ru",
-		"sr_RS",
-		"sr_RS@latin",
-		"sr_YU",
-		"sr_YU@latin",
-		"vi",
-		"zh_CN",
-		"zh_TW"
-	};
-
-	size_t len = sizeof(langs)/sizeof(char*);
-	for (size_t i=0; i<len; i++) {
-		const wxLanguageInfo *lang = wxLocale::FindLanguageInfo(langs[i]);
-
-		// If the locale file doesn't exist then don't list it as an option.
-		wxString locDir = wxStandardPaths::Get().GetLocalizedResourcesDir(langs[i], wxStandardPathsBase::ResourceCat_Messages);
-		wxFileName file(wxString::Format("%s/%s.mo", locDir, AEGISUB_CATALOG));
-		if (lang && file.FileExists()) final.Add(lang->Language);
-	}
-#endif
-
-	return final;
+	return "";
 }
