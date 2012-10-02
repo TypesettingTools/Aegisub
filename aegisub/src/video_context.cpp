@@ -291,11 +291,11 @@ void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
 }
 
 void VideoContext::GetFrameAsync(int n) {
-	provider->RequestFrame(n, videoFPS.TimeAtFrame(n) / 1000.0);
+	provider->RequestFrame(n, TimeAtFrame(n) / 1000.0);
 }
 
 std::tr1::shared_ptr<AegiVideoFrame> VideoContext::GetFrame(int n, bool raw) {
-	return provider->GetFrame(n, videoFPS.TimeAtFrame(n) / 1000.0, raw);
+	return provider->GetFrame(n, TimeAtFrame(n) / 1000.0, raw);
 }
 
 int VideoContext::GetWidth() const {
