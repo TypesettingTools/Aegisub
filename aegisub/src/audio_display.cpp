@@ -589,8 +589,8 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	Bind(wxEVT_MIDDLE_UP, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_RIGHT_UP, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOTION, &AudioDisplay::OnMouseEvent, this);
-	Bind(wxEVT_ENTER_WINDOW, &AudioDisplay::OnMouseEvent, this);
-	Bind(wxEVT_LEAVE_WINDOW, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_ENTER_WINDOW, &AudioDisplay::OnMouseEnter, this);
+	Bind(wxEVT_LEAVE_WINDOW, &AudioDisplay::OnMouseLeave, this);
 	Bind(wxEVT_PAINT, &AudioDisplay::OnPaint, this);
 	Bind(wxEVT_SIZE, &AudioDisplay::OnSize, this);
 	Bind(wxEVT_KILL_FOCUS, &AudioDisplay::OnFocus, this);
@@ -985,6 +985,18 @@ void AudioDisplay::RemoveTrackCursor()
 	SetTrackCursor(-1, false);
 }
 
+void AudioDisplay::OnMouseEnter(wxMouseEvent&)
+{
+	if (OPT_GET("Audio/Auto/Focus")->GetBool())
+		SetFocus();
+}
+
+void AudioDisplay::OnMouseLeave(wxMouseEvent&)
+{
+	if (!controller->IsPlaying())
+		RemoveTrackCursor();
+}
+
 void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 {
 	// If we have focus, we get mouse move events on Mac even when the mouse is
@@ -995,89 +1007,46 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		return;
 	}
 
-	if (event.IsButton() || (event.Entering() && OPT_GET("Audio/Auto/Focus")->GetBool()))
+	if (event.IsButton())
 		SetFocus();
 
-	// Handle any ongoing drag
-	if (dragged_object && HasCapture())
-	{
-		if (!dragged_object->OnMouseEvent(event))
-		{
-			scroll_timer.Stop();
-			SetDraggedObject(0);
-			SetCursor(wxNullCursor);
-		}
+	if (ForwardMouseEvent(event))
 		return;
-	}
-	else
-	{
-		// Something is wrong, we might have lost capture somehow.
-		// Fix state and pretend it didn't happen.
-		SetDraggedObject(0);
-		SetCursor(wxNullCursor);
-	}
 
-	wxPoint mousepos = event.GetPosition();
-
-	AudioDisplayInteractionObject *new_obj = 0;
-	// Check for scrollbar action
-	if (scrollbar->GetBounds().Contains(mousepos))
-	{
-		new_obj = scrollbar.get();
-	}
-	// Check for timeline action
-	else if (timeline->GetBounds().Contains(mousepos))
-	{
-		SetCursor(wxCursor(wxCURSOR_SIZEWE));
-		new_obj = timeline.get();
-	}
-
-	if (new_obj)
-	{
-		if (!controller->IsPlaying())
-			RemoveTrackCursor();
-		if (new_obj->OnMouseEvent(event))
-			SetDraggedObject(new_obj);
-		return;
-	}
-
-	if (event.Leaving() && !controller->IsPlaying())
-	{
-		RemoveTrackCursor();
-		return;
-	}
+	const int mouse_x = event.GetPosition().x;
 
 	if (event.MiddleIsDown())
 	{
-		context->videoController->JumpToTime(TimeFromRelativeX(mousepos.x), agi::vfr::EXACT);
+		context->videoController->JumpToTime(TimeFromRelativeX(mouse_x), agi::vfr::EXACT);
 		return;
 	}
 
 	if (event.Moving() && !controller->IsPlaying())
 	{
-		SetTrackCursor(scroll_left + mousepos.x, OPT_GET("Audio/Display/Draw/Cursor Time")->GetBool());
+		SetTrackCursor(scroll_left + mouse_x, OPT_GET("Audio/Display/Draw/Cursor Time")->GetBool());
 	}
 
 	AudioTimingController *timing = controller->GetTimingController();
 	if (!timing) return;
-	int drag_sensitivity = int(OPT_GET("Audio/Start Drag Sensitivity")->GetInt() * ms_per_pixel);
-	int snap_sensitivity = OPT_GET("Audio/Snap/Enable")->GetBool() != event.ShiftDown() ? int(OPT_GET("Audio/Snap/Distance")->GetInt() * ms_per_pixel) : 0;
+	const int drag_sensitivity = int(OPT_GET("Audio/Start Drag Sensitivity")->GetInt() * ms_per_pixel);
+	const int snap_sensitivity = OPT_GET("Audio/Snap/Enable")->GetBool() != event.ShiftDown() ? int(OPT_GET("Audio/Snap/Distance")->GetInt() * ms_per_pixel) : 0;
 
 	// Not scrollbar, not timeline, no button action
 	if (event.Moving())
 	{
-		int timepos = TimeFromRelativeX(mousepos.x);
+		const int timepos = TimeFromRelativeX(mouse_x);
 
 		if (timing->IsNearbyMarker(timepos, drag_sensitivity))
 			SetCursor(wxCursor(wxCURSOR_SIZEWE));
 		else
 			SetCursor(wxNullCursor);
+		return;
 	}
 
-	int old_scroll_pos = scroll_left;
+	const int old_scroll_pos = scroll_left;
 	if (event.LeftDown() || event.RightDown())
 	{
-		int timepos = TimeFromRelativeX(mousepos.x);
+		const int timepos = TimeFromRelativeX(mouse_x);
 		std::vector<AudioMarker*> markers = event.LeftDown() ?
 			timing->OnLeftClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity) :
 			timing->OnRightClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity);
@@ -1093,6 +1062,51 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 			return;
 		}
 	}
+}
+
+bool AudioDisplay::ForwardMouseEvent(wxMouseEvent &event) {
+	// Handle any ongoing drag
+	if (dragged_object && HasCapture())
+	{
+		if (!dragged_object->OnMouseEvent(event))
+		{
+			scroll_timer.Stop();
+			SetDraggedObject(0);
+			SetCursor(wxNullCursor);
+		}
+		return true;
+	}
+	else
+	{
+		// Something is wrong, we might have lost capture somehow.
+		// Fix state and pretend it didn't happen.
+		SetDraggedObject(0);
+		SetCursor(wxNullCursor);
+	}
+
+	const wxPoint mousepos = event.GetPosition();
+	AudioDisplayInteractionObject *new_obj = 0;
+	// Check for scrollbar action
+	if (scrollbar->GetBounds().Contains(mousepos))
+	{
+		new_obj = scrollbar.get();
+	}
+	// Check for timeline action
+	else if (timeline->GetBounds().Contains(mousepos))
+	{
+		SetCursor(wxCursor(wxCURSOR_SIZEWE));
+		new_obj = timeline.get();
+	}
+	else
+	{
+		return false;
+	}
+
+	if (!controller->IsPlaying())
+		RemoveTrackCursor();
+	if (new_obj->OnMouseEvent(event))
+		SetDraggedObject(new_obj);
+	return true;
 }
 
 void AudioDisplay::OnKeyDown(wxKeyEvent& event)

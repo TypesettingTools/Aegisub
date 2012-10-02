@@ -207,6 +207,10 @@ class AudioDisplay: public wxWindow {
 	/// @param dc DC to paint to
 	void PaintTrackCursor(wxDC &dc);
 
+	/// Forward the mouse event to the appropriate child control, if any
+	/// @return Was the mouse event forwarded somewhere?
+	bool ForwardMouseEvent(wxMouseEvent &event);
+
 	/// wxWidgets paint event
 	void OnPaint(wxPaintEvent &event);
 	/// wxWidgets mouse input event
@@ -218,6 +222,8 @@ class AudioDisplay: public wxWindow {
 	/// wxWidgets keypress event
 	void OnKeyDown(wxKeyEvent& event);
 	void OnScrollTimer(wxTimerEvent &event);
+	void OnMouseEnter(wxMouseEvent&);
+	void OnMouseLeave(wxMouseEvent&);
 
 	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);
