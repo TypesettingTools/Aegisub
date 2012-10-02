@@ -1010,10 +1010,22 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	if (event.IsButton())
 		SetFocus();
 
+	const int mouse_x = event.GetPosition().x;
+
+	// Scroll the display after a mouse-up near one of the edges
+	if ((event.LeftUp() || event.RightUp()) && OPT_GET("Audio/Auto/Scroll")->GetBool())
+	{
+		const int width = GetClientSize().GetWidth();
+		if (mouse_x < width / 20) {
+			ScrollBy(-width / 3);
+		}
+		else if (width - mouse_x < width / 20) {
+			ScrollBy(width / 3);
+		}
+	}
+
 	if (ForwardMouseEvent(event))
 		return;
-
-	const int mouse_x = event.GetPosition().x;
 
 	if (event.MiddleIsDown())
 	{
