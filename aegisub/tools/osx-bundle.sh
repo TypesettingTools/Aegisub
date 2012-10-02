@@ -43,7 +43,7 @@ if ! test -f "tools/osx-bundle.sed"; then
   exit 1
 fi
 
-find po -name *.po | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/' > languages
+find po -name *.po | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/; s/RS/YU/' > languages
 
 find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
 cp ${SKEL_DIR}/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
