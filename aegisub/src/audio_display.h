@@ -231,7 +231,6 @@ public:
 	AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context);
 	~AudioDisplay();
 
-
 	/// @brief Scroll the audio display
 	/// @param pixel_amount Number of pixels to scroll the view
 	///
@@ -296,7 +295,7 @@ public:
 	/// @return The zoom level
 	///
 	/// See SetZoomLevel for a description of zoom levels.
-	int GetZoomLevel() const;
+	int GetZoomLevel() const { return zoom_level; }
 
 	/// @brief Get a textual description of a zoom level
 	/// @param level The zoom level to describe
@@ -317,7 +316,6 @@ public:
 	/// Too negative numbers get clamped.
 	static int GetZoomLevelFactor(int level);
 
-
 	/// @brief Set amplitude scale factor
 	/// @param scale New amplitude scale factor, 1.0 is no scaling
 	void SetAmplitudeScale(float scale);
@@ -330,7 +328,4 @@ public:
 	int RelativeXFromTime(int ms) const { return int(ms / ms_per_pixel) - scroll_left; }
 	/// Get an absolute X coordinate from a time in milliseconds
 	int AbsoluteXFromTime(int ms) const { return int(ms / ms_per_pixel); }
-
-
-	DECLARE_EVENT_TABLE()
 };

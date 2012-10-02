@@ -591,20 +591,23 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	Bind(wxEVT_MOTION, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_ENTER_WINDOW, &AudioDisplay::OnMouseEvent, this);
 	Bind(wxEVT_LEAVE_WINDOW, &AudioDisplay::OnMouseEvent, this);
+	Bind(wxEVT_PAINT, &AudioDisplay::OnPaint, this);
+	Bind(wxEVT_SIZE, &AudioDisplay::OnSize, this);
+	Bind(wxEVT_KILL_FOCUS, &AudioDisplay::OnFocus, this);
+	Bind(wxEVT_SET_FOCUS, &AudioDisplay::OnFocus, this);
+	Bind(wxEVT_CHAR_HOOK, &AudioDisplay::OnKeyDown, this);
+	Bind(wxEVT_KEY_DOWN, &AudioDisplay::OnKeyDown, this);
 	scroll_timer.Bind(wxEVT_TIMER, &AudioDisplay::OnScrollTimer, this);
 }
-
 
 AudioDisplay::~AudioDisplay()
 {
 }
 
-
 void AudioDisplay::ScrollBy(int pixel_amount)
 {
 	ScrollPixelToLeft(scroll_left + pixel_amount);
 }
-
 
 void AudioDisplay::ScrollPixelToLeft(int pixel_position)
 {
@@ -620,7 +623,6 @@ void AudioDisplay::ScrollPixelToLeft(int pixel_position)
 	timeline->SetPosition(scroll_left);
 	Refresh();
 }
-
 
 void AudioDisplay::ScrollTimeRangeInView(const TimeRange &range)
 {
@@ -689,13 +691,6 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 	}
 }
 
-
-int AudioDisplay::GetZoomLevel() const
-{
-	return zoom_level;
-}
-
-
 wxString AudioDisplay::GetZoomLevelDescription(int level) const
 {
 	const int factor = GetZoomLevelFactor(level);
@@ -704,7 +699,6 @@ wxString AudioDisplay::GetZoomLevelDescription(int level) const
 
 	return wxString::Format(_("%d%%, %d pixel/second"), factor, second_pixels);
 }
-
 
 int AudioDisplay::GetZoomLevelFactor(int level)
 {
@@ -728,7 +722,6 @@ int AudioDisplay::GetZoomLevelFactor(int level)
 
 	return factor;
 }
-
 
 void AudioDisplay::SetAmplitudeScale(float scale)
 {
@@ -774,18 +767,6 @@ void AudioDisplay::ReloadRenderingSettings()
 
 	Refresh();
 }
-
-
-
-BEGIN_EVENT_TABLE(AudioDisplay, wxWindow)
-	EVT_PAINT(AudioDisplay::OnPaint)
-	EVT_SIZE(AudioDisplay::OnSize)
-	EVT_SET_FOCUS(AudioDisplay::OnFocus)
-	EVT_KILL_FOCUS(AudioDisplay::OnFocus)
-	EVT_CHAR_HOOK(AudioDisplay::OnKeyDown)
-	EVT_KEY_DOWN(AudioDisplay::OnKeyDown)
-END_EVENT_TABLE()
-
 
 void AudioDisplay::OnPaint(wxPaintEvent&)
 {
@@ -999,12 +980,10 @@ void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 	}
 }
 
-
 void AudioDisplay::RemoveTrackCursor()
 {
 	SetTrackCursor(-1, false);
 }
-
 
 void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 {
@@ -1051,7 +1030,6 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	{
 		SetCursor(wxCursor(wxCURSOR_SIZEWE));
 		new_obj = timeline.get();
-
 	}
 
 	if (new_obj)
@@ -1146,13 +1124,11 @@ void AudioDisplay::OnSize(wxSizeEvent &)
 	Refresh();
 }
 
-
 void AudioDisplay::OnFocus(wxFocusEvent &)
 {
 	// The scrollbar indicates focus so repaint that
 	RefreshRect(scrollbar->GetBounds(), false);
 }
-
 
 void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 {
