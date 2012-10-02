@@ -76,8 +76,8 @@ Source: src\mo\pl.mo;          DestDir: {app}\locale\pl;    DestName: aegisub.mo
 Source: src\mo\wxstd-pl.mo;    DestDir: {app}\locale\pl;    DestName: wxstd.mo;   Flags: ignoreversion
 Source: src\mo\ru.mo;          DestDir: {app}\locale\ru;    DestName: aegisub.mo; Flags: ignoreversion
 Source: src\mo\wxstd-ru.mo;    DestDir: {app}\locale\ru;    DestName: wxstd.mo;   Flags: ignoreversion
-Source: src\mo\sr_RS.mo;       DestDir: {app}\locale\sr_HS; DestName: aegisub.mo; Flags: ignoreversion
-Source: src\mo\sr_RS@latin.mo; DestDir: {app}\locale\sr_HS@latin; DestName: aegisub.mo; Flags: ignoreversion
+Source: src\mo\sr_RS.mo;       DestDir: {app}\locale\sr_RS; DestName: aegisub.mo; Flags: ignoreversion
+Source: src\mo\sr_RS@latin.mo; DestDir: {app}\locale\sr_RS@latin; DestName: aegisub.mo; Flags: ignoreversion
 ; Missing wxstd for Serbian
 Source: src\mo\vi.mo;          DestDir: {app}\locale\vi;    DestName: aegisub.mo; Flags: ignoreversion
 Source: src\mo\wxstd-vi.mo;    DestDir: {app}\locale\vi;    DestName: wxstd.mo;   Flags: ignoreversion
