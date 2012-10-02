@@ -35,13 +35,9 @@
 
 [Files]
 ; ASSDraw3
-Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion solidbreak; Components: assdraw
-Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw and docs
+Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion solidbreak
+Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion
 
 [Icons]
-Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons and assdraw; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles
-
-[Components]
-; AssDraw
-Name: assdraw; Description: ai-chan's ASSDraw3 for ASS vector drawing; Types: full
+Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles
 

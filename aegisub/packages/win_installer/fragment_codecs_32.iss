@@ -35,18 +35,13 @@
 
 [Files]
 ; avisynth
-DestDir: {app}; Source: src\devil.dll; Flags: ignoreversion solidbreak; Components: codec
-DestDir: {app}; Source: src\avisynth.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion; Components: codec
+DestDir: {app}; Source: src\devil.dll; Flags: ignoreversion solidbreak
+DestDir: {app}; Source: src\avisynth.dll; Flags: ignoreversion
+DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion
 ; ffmpegsource
-DestDir: {app}; Source: ..\..\bin\ffms2.dll; Flags: ignoreversion; Components: codec
-DestDir: {app}; Source: ..\..\bin\ffms2.pdb; Flags: ignoreversion; Components: codec and main/pdb
+DestDir: {app}; Source: ..\..\bin\ffms2.dll; Flags: ignoreversion
+DestDir: {app}; Source: ..\..\bin\ffms2.pdb; Flags: ignoreversion
 ; vsfilter
-DestDir: {app}\csri; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion; Components: codec/vsfilter
-DestDir: {app}\csri; Source: src\xy-vsfilter-aegisub.dll; Flags: ignoreversion; Components: codec/vsfilter
-
-[Components]
-Name: codec; Description: Media formats support; Flags: fixed; Types: custom compact full
-Name: codec/vsfilter; Description: VSFilter-Aegisub 2.41; Types: compact full custom; Flags: fixed
-
+DestDir: {app}\csri; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion
+DestDir: {app}\csri; Source: src\xy-vsfilter-aegisub.dll; Flags: ignoreversion
 

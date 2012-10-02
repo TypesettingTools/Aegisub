@@ -36,10 +36,6 @@
 ; This file declares all installables related to spell checking and thesaurii in Aegisub
 
 [Files]
-Source: src\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/en_US
-Source: src\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion; Components: dic/en_US
+Source: src\dictionaries\en_US.aff; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion
+Source: src\dictionaries\en_US.dic; DestDir: {app}\dictionaries; Flags: skipifsourcedoesntexist ignoreversion
 
-[Components]
-; Languages support
-Name: dic;       Description: Spell checker; Types: full
-Name: dic/en_US; Description: American English dictionary; Types: full

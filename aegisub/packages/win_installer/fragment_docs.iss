@@ -34,10 +34,5 @@
 
 [Files]
 ; documentation
-Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs solidbreak; Components: docs; Excludes: *svn
-
-[Components]
-; Docs
-Name: docs; Description: User manual; Types: custom compact full
-
+Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs solidbreak; Excludes: *svn
 

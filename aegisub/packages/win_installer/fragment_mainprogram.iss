@@ -32,19 +32,17 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-
 [Components]
 ; Actual program
 Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
-Name: main/pdb; Description: Debug database (helps diagnose crashes); Types: full
 Name: main/icons; Description: Start menu icon; Types: custom compact full
 Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 
 [Files]
 ; main
-DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.exe; Flags: ignoreversion solidbreak; Components: main
-DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.pdb; Flags: ignoreversion; Components: main/pdb
-DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: ; Components: main
+DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.exe; Flags: ignoreversion solidbreak
+DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.pdb; Flags: ignoreversion
+DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: 
 
 [Icons]
 Name: {commonprograms}\Aegisub; Filename: {app}\aegisub{#ARCH}.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Create and edit subtitle files

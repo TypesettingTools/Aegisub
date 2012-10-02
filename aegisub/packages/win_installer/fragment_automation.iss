@@ -37,29 +37,24 @@
 
 [Files]
 ; auto4 main
-DestDir: {app}\automation\include; Source: ..\..\automation\include\cleantags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: ..\..\automation\include\clipboard.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: ..\..\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: ..\..\automation\include\karaskel.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: ..\..\automation\include\re.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: ..\..\automation\include\unicode.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: ..\..\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
-DestDir: {app}\automation\include; Source: ..\..\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\cleantags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\clipboard.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\karaskel-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\karaskel.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\re.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\unicode.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\include; Source: ..\..\automation\include\utils.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
 
 ; Sample macros
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\kara-templater.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\karaoke-auto-leadin.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\select-overlaps.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\strip-tags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\demos; Source: ..\..\automation\demos\future-windy-blur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\demos; Source: ..\..\automation\demos\raytracer-test1.ass; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
-DestDir: {app}\automation\demos; Source: ..\..\automation\demos\raytracer.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Components: auto/lua/samples; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\kara-templater.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\karaoke-auto-leadin.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\macro-1-edgeblur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\macro-2-mkfullwitdh.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\select-overlaps.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\strip-tags.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\demos; Source: ..\..\automation\demos\future-windy-blur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\demos; Source: ..\..\automation\demos\raytracer-test1.ass; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
+DestDir: {app}\automation\demos; Source: ..\..\automation\demos\raytracer.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
 
-[Components]
-; Automation
-Name: auto; Description: Automation 4 scripting support; Types: compact full
-Name: auto/lua; Description: Lua; Types: compact full; Flags: checkablealone; Languages:
-Name: auto/lua/samples; Description: Lua sample scripts; Types: full

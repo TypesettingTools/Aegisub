@@ -34,7 +34,7 @@
 
 
 [Files]
-DestDir: {commontemplates}; Source: template.ass; DestName: Aegisub.ass; Components: main
+DestDir: {commontemplates}; Source: template.ass; DestName: Aegisub.ass
 
 [Registry]
 ; File type registration
