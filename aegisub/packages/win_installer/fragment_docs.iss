@@ -34,5 +34,5 @@
 
 [Files]
 ; documentation
-Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs solidbreak; Excludes: *svn
+Source: src\docs\*; DestDir: {app}\docs; Flags: ignoreversion recursesubdirs; Excludes: *svn
 

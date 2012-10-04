@@ -35,7 +35,7 @@
 
 [Files]
 ; avisynth
-DestDir: {app}; Source: src\devil.dll; Flags: ignoreversion solidbreak
+DestDir: {app}; Source: src\devil.dll; Flags: ignoreversion
 DestDir: {app}; Source: src\avisynth.dll; Flags: ignoreversion
 DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion
 ; ffmpegsource

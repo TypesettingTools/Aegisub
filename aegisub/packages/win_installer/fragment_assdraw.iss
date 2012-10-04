@@ -35,7 +35,7 @@
 
 [Files]
 ; ASSDraw3
-Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion solidbreak
+Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion
 Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion
 
 [Icons]

@@ -37,7 +37,7 @@
 
 [Files]
 ; localization (commented out ones are out of date; some don't have wxstd.mo)
-Source: src\mo\ca.mo;          DestDir: {app}\locale\ca;    DestName: aegisub.mo; Flags: ignoreversion solidbreak
+Source: src\mo\ca.mo;          DestDir: {app}\locale\ca;    DestName: aegisub.mo; Flags: ignoreversion
 Source: src\mo\wxstd-ca.mo;    DestDir: {app}\locale\ca;    DestName: wxstd.mo;   Flags: ignoreversion
 Source: src\mo\cs.mo;          DestDir: {app}\locale\cs;    DestName: aegisub.mo; Flags: ignoreversion
 Source: src\mo\wxstd-cs.mo;    DestDir: {app}\locale\cs;    DestName: wxstd.mo;   Flags: ignoreversion
