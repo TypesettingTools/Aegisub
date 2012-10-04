@@ -390,6 +390,7 @@ public:
 	wxString GetWarningMessage() const;
 	TimeRange GetIdealVisibleTimeRange() const;
 	TimeRange GetPrimaryPlaybackRange() const;
+	TimeRange GetActiveLineRange() const;
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
 	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const { }
 	void Next(NextMode mode);
@@ -495,6 +496,11 @@ TimeRange AudioTimingControllerDialogue::GetIdealVisibleTimeRange() const
 }
 
 TimeRange AudioTimingControllerDialogue::GetPrimaryPlaybackRange() const
+{
+	return active_line;
+}
+
+TimeRange AudioTimingControllerDialogue::GetActiveLineRange() const
 {
 	return active_line;
 }

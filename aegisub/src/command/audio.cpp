@@ -241,6 +241,21 @@ struct audio_play_current_selection : public validate_audio_open {
 	}
 };
 
+/// Play the current line
+struct audio_play_current_line : public validate_audio_open {
+	CMD_NAME("audio/play/line")
+	STR_MENU("Play current line")
+	STR_DISP("Play current line")
+	STR_HELP("Play current line")
+
+	void operator()(agi::Context *c) {
+		c->videoController->Stop();
+		AudioTimingController *tc = c->audioController->GetTimingController();
+		if (tc)
+			c->audioController->PlayRange(tc->GetActiveLineRange());
+	}
+};
+
 /// Play the current audio selection
 struct audio_play_selection : public validate_audio_open {
 	CMD_NAME("audio/play/selection")
@@ -593,6 +608,7 @@ namespace cmd {
 		reg(new audio_play_begin);
 		reg(new audio_play_end);
 		reg(new audio_play_current_selection);
+		reg(new audio_play_current_line);
 		reg(new audio_play_selection);
 		reg(new audio_play_to_end);
 		reg(new audio_play_toggle);

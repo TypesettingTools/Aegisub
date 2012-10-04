@@ -124,6 +124,7 @@ public:
 	TimeRange GetIdealVisibleTimeRange() const;
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
 	TimeRange GetPrimaryPlaybackRange() const;
+	TimeRange GetActiveLineRange() const;
 	void GetLabels(const TimeRange &range, std::vector<AudioLabel> &out_labels) const;
 	void Next(NextMode mode);
 	void Prev();
@@ -227,8 +228,12 @@ TimeRange AudioTimingControllerKaraoke::GetPrimaryPlaybackRange() const {
 		cur_syl < markers.size() ? markers[cur_syl] : end_marker);
 }
 
-TimeRange AudioTimingControllerKaraoke::GetIdealVisibleTimeRange() const {
+TimeRange AudioTimingControllerKaraoke::GetActiveLineRange() const {
 	return TimeRange(start_marker, end_marker);
+}
+
+TimeRange AudioTimingControllerKaraoke::GetIdealVisibleTimeRange() const {
+	return GetActiveLineRange();
 }
 
 void AudioTimingControllerKaraoke::GetMarkers(TimeRange const& range, AudioMarkerVector &out) const {
