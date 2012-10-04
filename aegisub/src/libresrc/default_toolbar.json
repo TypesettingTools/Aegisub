@@ -3,6 +3,7 @@
         "time/prev",
         "time/next",
         "audio/play/selection",
+        "audio/play/line",
         "audio/stop",
         "",
         "audio/play/selection/before",
