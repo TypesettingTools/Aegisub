@@ -56,13 +56,17 @@
 #define AEGISUB_CATALOG "aegisub"
 #endif
 
-AegisubLocale::AegisubLocale() {
-	wxTranslations::Set(new wxTranslations);
-	wxFileTranslationsLoader::AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/"));
+wxTranslations *AegisubLocale::GetTranslations() {
+	wxTranslations *translations = wxTranslations::Get();
+	if (!translations) {
+		wxTranslations::Set(translations = new wxTranslations);
+		wxFileTranslationsLoader::AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/"));
+	}
+	return translations;
 }
 
 void AegisubLocale::Init(wxString const& language) {
-	wxTranslations *translations = wxTranslations::Get();
+	wxTranslations *translations = GetTranslations();
 	translations->SetLanguage(language);
 	translations->AddCatalog(AEGISUB_CATALOG);
 	translations->AddStdCatalog();
@@ -73,7 +77,7 @@ void AegisubLocale::Init(wxString const& language) {
 }
 
 wxString AegisubLocale::PickLanguage() {
-	wxArrayString langs = wxTranslations::Get()->GetAvailableTranslations(AEGISUB_CATALOG);
+	wxArrayString langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
 	langs.insert(langs.begin(), "en_US");
 
 	// Check if user local language is available, if so, make it first
