@@ -49,6 +49,12 @@ namespace {
 		{ 0 }
 	};
 
+	const char *removed_commands_7035[] = { 0 };
+	const char *added_hotkeys_7035[][4] = {
+		{ "audio/play/line", "Audio", "R", 0 },
+		{ 0 }
+	};
+
 	void migrate_hotkeys(const char *removed[], const char *added[][4]) {
 		agi::hotkey::Hotkey::HotkeyMap hk_map = hotkey::inst->GetHotkeyMap();
 
@@ -119,6 +125,8 @@ void init() {
 		migrate_hotkeys(removed_commands_6294, added_hotkeys_6294);
 	if (last_version < 6933)
 		rename_commands();
+	if (last_version < 7035)
+		migrate_hotkeys(removed_commands_7035, added_hotkeys_7035);
 }
 
 void clear() {

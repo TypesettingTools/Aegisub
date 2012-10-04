@@ -303,6 +303,12 @@
 	},
 
 	"Audio" : {
+		"audio/play/line" : [
+			{
+				"modifiers" : [],
+				"key" : "R"
+			}
+		],
 		"audio/play/selection" : [
 			{
 				"modifiers" : [],
