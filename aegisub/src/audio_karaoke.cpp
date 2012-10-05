@@ -315,9 +315,9 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 	// If the click is sufficiently close to a line of a syllable split,
 	// remove that split rather than adding a new one
-	click_will_remove_split =
-		(syl > 0 && shifted_pos <= syl_lines[syl - 1] + 3) ||
-		(syl < (int)syl_lines.size() && shifted_pos >= syl_lines[syl] - 3);
+	bool click_right = (syl > 0 && shifted_pos <= syl_lines[syl - 1] + 3);
+	bool click_left = (syl < (int)syl_lines.size() && shifted_pos >= syl_lines[syl] - 3);
+	click_will_remove_split = click_left || click_right;
 
 	if (!event.LeftDown()) {
 		// Erase the old line and draw the new one
@@ -326,7 +326,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	}
 
 	if (click_will_remove_split) {
-		kara->RemoveSplit(syl);
+		kara->RemoveSplit(syl + (click_left && !click_right));
 	}
 	else {
 		kara->AddSplit(syl, split_pos - syl_start_points[syl]);
