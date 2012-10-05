@@ -267,7 +267,7 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 			replace_word->Remove(0, -1);
 #endif
 
-			SelectionController<AssDialogue>::Selection sel;
+			SubtitleSelection sel;
 			sel.insert(active_line);
 			context->selectionController->SetSelectionAndActive(sel, active_line);
 			SetWord(word);

@@ -67,6 +67,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(c)
 , file_change_connection(c->ass->AddCommitListener(&DialogTranslation::OnExternalCommit, this))
+, active_line_connection(c->selectionController->AddActiveLineListener(&DialogTranslation::OnActiveLineChanged, this))
 , active_line(c->selectionController->GetActiveLine())
 , cur_block(0)
 , line_count(count_if(c->ass->Line.begin(), c->ass->Line.end(), cast<AssDialogue*>()))
@@ -167,12 +168,9 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	}
 	else
 		UpdateDisplay();
-
-	c->selectionController->AddSelectionListener(this);
 }
 
 DialogTranslation::~DialogTranslation() {
-	c->selectionController->RemoveSelectionListener(this);
 }
 
 void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {

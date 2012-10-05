@@ -149,12 +149,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	slots.push_back(context->videoController->AddTimecodesListener(&VideoBox::UpdateTimeBoxes, this));
 	slots.push_back(context->videoController->AddVideoOpenListener(&VideoBox::UpdateTimeBoxes, this));
 	slots.push_back(context->ass->AddCommitListener(&VideoBox::UpdateTimeBoxes, this));
-
-	context->selectionController->AddSelectionListener(this);
-}
-
-VideoBox::~VideoBox() {
-	context->selectionController->RemoveSelectionListener(this);
+	slots.push_back(context->selectionController->AddSelectionListener(&VideoBox::UpdateTimeBoxes, this));
 }
 
 void VideoBox::UpdateTimeBoxes() {

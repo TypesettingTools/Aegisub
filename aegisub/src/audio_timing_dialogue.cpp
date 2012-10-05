@@ -289,7 +289,7 @@ void DialogueTimingMarker::SetPosition(int new_position) {
 /// addition, any markers for inactive lines that start/end at the same time
 /// as the active line starts/ends can optionally be dragged along with the
 /// active line's markers, updating those lines as well.
-class AudioTimingControllerDialogue : public AudioTimingController, private SelectionListener<AssDialogue> {
+class AudioTimingControllerDialogue : public AudioTimingController {
 	/// The rendering style for the active line's start marker
 	Pen style_left;
 	/// The rendering style for the active line's end marker
@@ -338,6 +338,8 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	agi::signal::Connection audio_open_connection;
 	agi::signal::Connection inactive_line_mode_connection;
 	agi::signal::Connection inactive_line_comment_connection;
+	agi::signal::Connection active_line_connection;
+	agi::signal::Connection selection_connection;
 
 	/// Update the audio controller's selection
 	void UpdateSelection();
@@ -349,7 +351,7 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 	void RegenerateSelectedLines();
 
 	/// Add a line to the list of timeable inactive lines
-	void AddInactiveLine(Selection const& sel, AssDialogue *diag);
+	void AddInactiveLine(SubtitleSelection const& sel, AssDialogue *diag);
 
 	/// Regenerate the list of active and inactive line markers
 	void RegenerateMarkers();
@@ -377,7 +379,7 @@ class AudioTimingControllerDialogue : public AudioTimingController, private Sele
 
 	// SubtitleSelectionListener interface
 	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+	void OnSelectedSetChanged(const SubtitleSelection &lines_added, const SubtitleSelection &lines_removed);
 
 	// AssFile events
 	void OnFileChanged(int type);
@@ -409,8 +411,6 @@ public:
 	/// Constructor
 	/// @param c Project context
 	AudioTimingControllerDialogue(agi::Context *c);
-	/// Destructor
-	~AudioTimingControllerDialogue();
 };
 
 AudioTimingController *CreateDialogueTimingController(agi::Context *c)
@@ -434,19 +434,14 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , commit_connection(c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this))
 , inactive_line_mode_connection(OPT_SUB("Audio/Inactive Lines Display Mode", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 , inactive_line_comment_connection(OPT_SUB("Audio/Display/Draw/Inactive Comments", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
+, active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::OnActiveLineChanged, this))
+, selection_connection(c->selectionController->AddSelectionListener(&AudioTimingControllerDialogue::OnSelectedSetChanged, this))
 {
-	c->selectionController->AddSelectionListener(this);
 	keyframes_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	video_position_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 	seconds_provider.AddMarkerMovedListener(std::tr1::bind(std::tr1::ref(AnnounceMarkerMoved)));
 
 	Revert();
-}
-
-
-AudioTimingControllerDialogue::~AudioTimingControllerDialogue()
-{
-	context->selectionController->RemoveSelectionListener(this);
 }
 
 void AudioTimingControllerDialogue::GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const
@@ -471,7 +466,7 @@ void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
 	Revert();
 }
 
-void AudioTimingControllerDialogue::OnSelectedSetChanged(Selection const&, Selection const&)
+void AudioTimingControllerDialogue::OnSelectedSetChanged(SubtitleSelection const&, SubtitleSelection const&)
 {
 	RegenerateSelectedLines();
 	RegenerateInactiveLines();
@@ -746,7 +741,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
 
-	Selection sel = context->selectionController->GetSelectedSet();
+	SubtitleSelection sel = context->selectionController->GetSelectedSet();
 
 	switch (int mode = inactive_line_mode->GetInt())
 	{
@@ -796,7 +791,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	RegenerateMarkers();
 }
 
-void AudioTimingControllerDialogue::AddInactiveLine(Selection const& sel, AssDialogue *diag)
+void AudioTimingControllerDialogue::AddInactiveLine(SubtitleSelection const& sel, AssDialogue *diag)
 {
 	if (sel.count(diag)) return;
 
@@ -810,8 +805,8 @@ void AudioTimingControllerDialogue::RegenerateSelectedLines()
 	selected_lines.clear();
 
 	AssDialogue *active = context->selectionController->GetActiveLine();
-	Selection sel = context->selectionController->GetSelectedSet();
-	for (Selection::iterator it = sel.begin(); it != sel.end(); ++it)
+	SubtitleSelection sel = context->selectionController->GetSelectedSet();
+	for (SubtitleSelection::iterator it = sel.begin(); it != sel.end(); ++it)
 	{
 		if (*it == active) continue;
 

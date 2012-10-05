@@ -69,7 +69,7 @@ namespace {
 	struct validate_adjoinable : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) {
-			SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+			SubtitleSelection sel = c->selectionController->GetSelectedSet();
 			if (sel.size() < 2) return false;
 
 			size_t found = 0;
@@ -131,15 +131,15 @@ struct time_frame_current : public validate_video_loaded {
 	void operator()(agi::Context *c) {
 		if (!c->videoController->IsLoaded()) return;
 
-		std::set<AssDialogue*> sel = c->selectionController->GetSelectedSet();
-		AssDialogue *active_line = c->selectionController->GetActiveLine();
+		SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+		const AssDialogue *active_line = c->selectionController->GetActiveLine();
 
 		if (sel.empty() || !active_line) return;
 
 		int target_start = std::max(0, c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START));
 		int shift_by = target_start - active_line->Start;
 
-		for (std::set<AssDialogue*>::iterator it = sel.begin(); it != sel.end(); ++it) {
+		for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
 			(*it)->Start = (*it)->Start + shift_by;
 			(*it)->End = (*it)->End + shift_by;
 		}
@@ -162,14 +162,14 @@ struct time_shift : public Command {
 };
 
 static void snap_subs_video(agi::Context *c, bool set_start) {
-	std::set<AssDialogue*> sel = c->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 
 	if (!c->videoController->IsLoaded() || sel.empty()) return;
 
 	int start = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START);
 	int end = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::END);
 
-	for (std::set<AssDialogue*>::iterator it = sel.begin(); it != sel.end(); ++it) {
+	for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
 		if (set_start || (*it)->Start > start)
 			(*it)->Start = start;
 		if (!set_start || (*it)->End < end)

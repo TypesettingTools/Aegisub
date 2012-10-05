@@ -167,6 +167,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 : wxDialog(context->parent, -1, _("Styles Manager"))
 , c(context)
 , commit_connection(c->ass->AddCommitListener(&DialogStyleManager::LoadCurrentStyles, this))
+, active_line_connection(c->selectionController->AddActiveLineListener(&DialogStyleManager::OnActiveLineChanged, this))
 {
 	using std::tr1::bind;
 	SetIcon(GETICON(style_toolbutton_16));
@@ -276,12 +277,9 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, bind(&DialogStyleManager::UpdateButtons, this));
 	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, bind(&DialogStyleManager::OnCurrentEdit, this));
-
-	c->selectionController->AddSelectionListener(this);
 }
 
 DialogStyleManager::~DialogStyleManager() {
-	c->selectionController->RemoveSelectionListener(this);
 }
 
 void DialogStyleManager::LoadCurrentStyles(int commit_type) {

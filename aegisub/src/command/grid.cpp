@@ -414,7 +414,7 @@ struct grid_swap : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+		SubtitleSelection sel = c->selectionController->GetSelectedSet();
 		if (sel.size() == 2) {
 			entryIter a = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.begin());
 			entryIter b = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.rbegin());

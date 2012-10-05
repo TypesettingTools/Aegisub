@@ -21,7 +21,7 @@ struct Context {
 
 	// Controllers
 	AudioController *audioController;
-	SelectionController<AssDialogue> *selectionController;
+	SelectionController<AssDialogue *> *selectionController;
 	VideoContext *videoController;
 
 	// Things that should probably be in some sort of UI-context-model

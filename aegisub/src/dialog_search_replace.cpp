@@ -362,7 +362,7 @@ void SearchReplaceEngine::ReplaceAll() {
 		reg.Compile(LookFor, regFlags);
 
 	// Selection
-	std::set<AssDialogue*> sel = context->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 	bool hasSelection = !sel.empty();
 	bool inSel = affect == 1;
 

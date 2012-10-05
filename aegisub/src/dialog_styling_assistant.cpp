@@ -57,6 +57,7 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wx
 DialogStyling::DialogStyling(agi::Context *context)
 : wxDialog(context->parent, -1, _("Styling Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(context)
+, active_line_connection(context->selectionController->AddActiveLineListener(&DialogStyling::OnActiveLineChanged, this))
 , active_line(0)
 {
 	SetIcon(GETICON(styling_toolbutton_16));
@@ -136,12 +137,10 @@ DialogStyling::DialogStyling(agi::Context *context)
 		main_sizer->Add(button_sizer, 0, wxEXPAND | wxBOTTOM | wxLEFT | wxRIGHT, 5);
 	}
 
-	main_sizer->SetSizeHints(this);
-	SetSizer(main_sizer);
+	SetSizerAndFit(main_sizer);
 
 	persist.reset(new PersistLocation(this, "Tool/Styling Assistant"));
 
-	c->selectionController->AddSelectionListener(this);
 	Bind(wxEVT_ACTIVATE, &DialogStyling::OnActivate, this);
 	Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);
 	style_name->Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);
@@ -156,7 +155,6 @@ DialogStyling::DialogStyling(agi::Context *context)
 }
 
 DialogStyling::~DialogStyling () {
-	c->selectionController->RemoveSelectionListener(this);
 }
 
 void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {

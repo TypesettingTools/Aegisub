@@ -42,8 +42,6 @@
 
 #include <libaegisub/signal.h>
 
-#include "selection_controller.h"
-
 namespace agi { struct Context; }
 class AssDialogue;
 class wxComboBox;
@@ -51,7 +49,7 @@ class wxTextCtrl;
 
 /// @class VideoBox
 /// @brief The box containing the video display and associated controls
-class VideoBox : public wxPanel, private SelectionListener<AssDialogue> {
+class VideoBox : public wxPanel {
 	std::list<agi::signal::Connection> slots;
 	agi::Context *context;     ///< Project context
 	wxTextCtrl *VideoPosition; ///< Current frame/time
@@ -60,10 +58,6 @@ class VideoBox : public wxPanel, private SelectionListener<AssDialogue> {
 	/// Update VideoPosition and VideoSubsPos
 	void UpdateTimeBoxes();
 
-	void OnSelectedSetChanged(Selection const&, Selection const&) { }
-	void OnActiveLineChanged(AssDialogue*) { UpdateTimeBoxes(); }
-
 public:
 	VideoBox(wxWindow *parent, bool isDetached, agi::Context *context);
-	~VideoBox();
 };

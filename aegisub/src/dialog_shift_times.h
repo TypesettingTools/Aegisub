@@ -50,13 +50,14 @@ namespace json {
 /// @brief DOCME
 ///
 /// DOCME
-class DialogShiftTimes : public wxDialog, private SelectionListener<AssDialogue> {
+class DialogShiftTimes : public wxDialog {
 	agi::Context *context;
 
 	std::string history_filename;
 	agi::scoped_ptr<json::Array> history;
 	agi::vfr::Framerate fps;
 	agi::signal::Connection timecodes_loaded_slot;
+	agi::signal::Connection selected_set_changed_slot;
 
 	TimeEdit *shift_time;
 	wxTextCtrl *shift_frames;
@@ -78,8 +79,7 @@ class DialogShiftTimes : public wxDialog, private SelectionListener<AssDialogue>
 	void OnByFrames(wxCommandEvent&);
 	void OnHistoryClick(wxCommandEvent&);
 
-	void OnActiveLineChanged(AssDialogue*) { }
-	void OnSelectedSetChanged(Selection const&, Selection const&);
+	void OnSelectedSetChanged();
 	void OnTimecodesLoaded(agi::vfr::Framerate const& new_fps);
 
 public:

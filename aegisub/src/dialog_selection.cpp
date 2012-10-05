@@ -224,7 +224,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 
 	int action = selection_change_type->GetSelection();
 
-	SelectionController<AssDialogue>::Selection old_sel, new_sel;
+	SubtitleSelection old_sel, new_sel;
 	if (action != ACTION_SET)
 		con->selectionController->GetSelectedSet(old_sel);
 

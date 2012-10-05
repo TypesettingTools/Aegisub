@@ -309,7 +309,7 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 	sorted.reserve(c->ass->Line.size());
 
 	if (onlySelection->IsChecked()) {
-		SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+		SubtitleSelection sel = c->selectionController->GetSelectedSet();
 		remove_copy_if(sel.begin(), sel.end(), back_inserter(sorted),
 			bind(bad_line, &styles, _1));
 	}

@@ -53,6 +53,7 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 , button_is_move(true)
 {
 	c->selectionController->GetSelectedSet(selection);
+	connections.push_back(c->selectionController->AddSelectionListener(&VisualToolDrag::OnSelectedSetChanged, this));
 }
 
 void VisualToolDrag::SetToolbar(wxToolBar *tb) {
@@ -82,7 +83,7 @@ void VisualToolDrag::UpdateToggleButtons() {
 void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 	// Toggle \move <-> \pos
 	VideoContext *vc = c->videoController;
-	for (Selection::const_iterator cur = selection.begin(); cur != selection.end(); ++cur) {
+	for (SubtitleSelection::const_iterator cur = selection.begin(); cur != selection.end(); ++cur) {
 		AssDialogue *line = *cur;
 		Vector2D p1, p2;
 		int t1, t2;
@@ -164,7 +165,7 @@ template<class C, class T> static bool line_not_present(C const& set, T const& i
 	return find_if(set.begin(), set.end(), bind(cmp_line<T>, it, std::tr1::placeholders::_1)) == set.end();
 }
 
-void VisualToolDrag::OnSelectedSetChanged(const Selection &added, const Selection &removed) {
+void VisualToolDrag::OnSelectedSetChanged(const SubtitleSelection &added, const SubtitleSelection &removed) {
 	c->selectionController->GetSelectedSet(selection);
 
 	bool any_changed = false;
@@ -310,8 +311,8 @@ void VisualToolDrag::UpdateDrag(feature_iterator feature) {
 void VisualToolDrag::OnDoubleClick() {
 	Vector2D d = ToScriptCoords(mouse_pos) - (primary ? ToScriptCoords(primary->pos) : GetLinePosition(active_line));
 
-	Selection sel = c->selectionController->GetSelectedSet();
-	for (Selection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
 		Vector2D p1, p2;
 		int t1, t2;
 		if (GetLineMove(*it, p1, p2, t1, t2)) {

@@ -42,8 +42,8 @@ VisualToolCross::~VisualToolCross() {
 void VisualToolCross::OnDoubleClick() {
 	Vector2D d = ToScriptCoords(mouse_pos) - GetLinePosition(active_line);
 
-	Selection sel = c->selectionController->GetSelectedSet();
-	for (Selection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
 		Vector2D p1, p2;
 		int t1, t2;
 		if (GetLineMove(*it, p1, p2, t1, t2)) {

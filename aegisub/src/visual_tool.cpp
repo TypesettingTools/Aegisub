@@ -72,13 +72,12 @@ VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 	c->ass->GetResolution(script_w, script_h);
 	script_res = Vector2D(script_w, script_h);
 	active_line = GetActiveDialogueLine();
-	c->selectionController->AddSelectionListener(this);
+	connections.push_back(c->selectionController->AddActiveLineListener(&VisualToolBase::OnActiveLineChanged, this));
 	connections.push_back(c->videoController->AddSeekListener(&VisualToolBase::OnSeek, this));
 	parent->Bind(wxEVT_MOUSE_CAPTURE_LOST, &VisualToolBase::OnMouseCaptureLost, this);
 }
 
 VisualToolBase::~VisualToolBase() {
-	c->selectionController->RemoveSelectionListener(this);
 }
 
 void VisualToolBase::OnCommit(int type) {
@@ -285,7 +284,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		else {
 			if (!alt_down && features.size() > 1) {
 				sel_features.clear();
-				Selection sel;
+				SubtitleSelection sel;
 				sel.insert(c->selectionController->GetActiveLine());
 				c->selectionController->SetSelectedSet(sel);
 				need_render = true;
@@ -328,7 +327,7 @@ void VisualTool<FeatureType>::SetSelection(feature_iterator feat, bool clear) {
 		sel_features.clear();
 
 	if (sel_features.insert(feat).second && feat->line) {
-		Selection sel;
+		SubtitleSelection sel;
 		if (!clear)
 			sel = c->selectionController->GetSelectedSet();
 		if (sel.insert(feat->line).second)
@@ -344,7 +343,7 @@ void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 		if ((*it)->line == feat->line) return;
 	}
 
-	Selection sel = c->selectionController->GetSelectedSet();
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
 	// Don't deselect the only selected line
 	if (sel.size() <= 1) return;

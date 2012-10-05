@@ -43,8 +43,9 @@ class wxTextCtrl;
 /// @brief DOCME
 ///
 /// DOCME
-class DialogStyling : public wxDialog, public SelectionListener<AssDialogue> {
+class DialogStyling : public wxDialog {
 	agi::Context *c;
+	agi::signal::Connection active_line_connection;
 
 	wxButton *play_audio;
 	wxButton *play_video;
@@ -63,7 +64,6 @@ class DialogStyling : public wxDialog, public SelectionListener<AssDialogue> {
 	void OnStyleBoxModified(wxCommandEvent &evt);
 
 	void OnActiveLineChanged(AssDialogue *);
-	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 
 	AssDialogue *active_line;
 

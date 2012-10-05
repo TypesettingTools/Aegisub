@@ -842,7 +842,7 @@ namespace Automation4 {
 
 	static int transform_selection(lua_State *L, const agi::Context *c)
 	{
-		std::set<AssDialogue*> sel = c->selectionController->GetSelectedSet();
+		SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
 
 		lua_newtable(L);

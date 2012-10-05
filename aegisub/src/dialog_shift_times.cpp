@@ -105,6 +105,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 , history_filename(STD_STR(StandardPaths::DecodePath("?user/shift_history.json")))
 , history(new json::Array)
 , timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
+, selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))
 {
 	SetIcon(GETICON(shift_times_toolbutton_16));
 
@@ -129,7 +130,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	shift_backward = new wxRadioButton(this, -1, _("&Backward"));
 	shift_backward->SetToolTip(_("Shifts subs backward, making them appear earlier. Use if they are appearing too late."));
 
-	wxString selection_mode_vals[] = { _("&All rows"), _("Selected &rows"), _("Selection &onward") };
+	wxString selection_mode_vals[] = { _("&All rows"), _("Selected &rows"), _("SubtitleSelection &onward") };
 	selection_mode = new wxRadioBox(this, -1, _("Affect"), wxDefaultPosition, wxDefaultSize, 3, selection_mode_vals, 1);
 
 	wxString time_field_vals[] = { _("Start a&nd End times"), _("&Start times only"), _("&End times only") };
@@ -142,7 +143,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 
 	// Set initial control states
 	OnTimecodesLoaded(context->videoController->FPS());
-	OnSelectedSetChanged(Selection(), Selection());
+	OnSelectedSetChanged();
 	LoadHistory();
 
 	shift_time->SetTime(OPT_GET("Tool/Shift Times/Time")->GetInt());
@@ -196,7 +197,6 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&HelpButton::OpenPage, "Shift Times"), wxID_HELP);
 	shift_time->Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogShiftTimes::Process, this);
 	history_box->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogShiftTimes::OnHistoryClick, this);
-	context->selectionController->AddSelectionListener(this);
 }
 
 DialogShiftTimes::~DialogShiftTimes() {
@@ -209,8 +209,6 @@ DialogShiftTimes::~DialogShiftTimes() {
 	OPT_SET("Tool/Shift Times/Type")->SetInt(time_fields->GetSelection());
 	OPT_SET("Tool/Shift Times/Affect")->SetInt(selection_mode->GetSelection());
 	OPT_SET("Tool/Shift Times/Direction")->SetBool(shift_backward->GetValue());
-
-	context->selectionController->RemoveSelectionListener(this);
 }
 
 void DialogShiftTimes::OnTimecodesLoaded(agi::vfr::Framerate const& new_fps) {
@@ -226,7 +224,7 @@ void DialogShiftTimes::OnTimecodesLoaded(agi::vfr::Framerate const& new_fps) {
 	}
 }
 
-void DialogShiftTimes::OnSelectedSetChanged(Selection const&, Selection const&) {
+void DialogShiftTimes::OnSelectedSetChanged() {
 	if (context->selectionController->GetSelectedSet().empty()) {
 		selection_mode->Enable(1, false);
 		selection_mode->Enable(2, false);
@@ -335,7 +333,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	bool start = type != 2;
 	bool end = type != 1;
 
-	Selection sel = context->selectionController->GetSelectedSet();
+	SubtitleSelection sel = context->selectionController->GetSelectedSet();
 
 	long shift;
 	if (by_time) {

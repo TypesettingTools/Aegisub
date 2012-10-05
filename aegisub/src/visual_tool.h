@@ -56,9 +56,7 @@ namespace agi {
 /// different VisualTool<T>s are unrelated types otherwise. In addition, as much
 /// functionality as possible is implemented here to avoid having four copies
 /// of each method for no good reason (and four times as many error messages)
-class VisualToolBase : protected SelectionListener<AssDialogue> {
-	std::deque<agi::signal::Connection> connections;
-
+class VisualToolBase {
 	void OnCommit(int type);
 	void OnSeek(int new_frame);
 
@@ -70,7 +68,6 @@ class VisualToolBase : protected SelectionListener<AssDialogue> {
 
 	// SubtitleSelectionListener implementation
 	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const Selection &, const Selection &) { }
 
 	// Below here are the virtuals that must be implemented
 
@@ -92,6 +89,8 @@ class VisualToolBase : protected SelectionListener<AssDialogue> {
 	virtual void DoRefresh() { }
 
 protected:
+	std::deque<agi::signal::Connection> connections;
+
 	OpenGLWrapper gl;
 
 	/// Called when the user double-clicks

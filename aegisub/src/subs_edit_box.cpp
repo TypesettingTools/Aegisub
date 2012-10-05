@@ -246,13 +246,13 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	wxSizeEvent evt;
 	OnSize(evt);
 
-	c->selectionController->AddSelectionListener(this);
 	file_changed_slot = c->ass->AddCommitListener(&SubsEditBox::OnCommit, this);
-	context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this);
+	connections.push_back(context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this));
+	connections.push_back(context->selectionController->AddActiveLineListener(&SubsEditBox::OnActiveLineChanged, this));
+	connections.push_back(context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this));
 }
 
 SubsEditBox::~SubsEditBox() {
-	c->selectionController->RemoveSelectionListener(this);
 }
 
 wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&)) {
@@ -398,7 +398,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 		}
 	}
 }
-void SubsEditBox::OnSelectedSetChanged(const Selection &, const Selection &) {
+void SubsEditBox::OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &) {
 	sel = c->selectionController->GetSelectedSet();
 	initialTimes.clear();
 }
@@ -456,7 +456,7 @@ void SubsEditBox::CommitText(wxString desc) {
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
-	for (Selection::iterator cur = sel.begin(); cur != sel.end(); ++cur) {
+	for (SubtitleSelection::iterator cur = sel.begin(); cur != sel.end(); ++cur) {
 		AssDialogue *d = *cur;
 
 		if (!initialTimes.count(d))

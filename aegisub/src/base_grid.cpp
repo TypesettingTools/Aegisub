@@ -1104,12 +1104,11 @@ void BaseGrid::NextLine() {
 	}
 }
 
-
 void BaseGrid::AnnounceActiveLineChanged(AssDialogue *new_line) {
 	if (batch_level > 0)
 		batch_active_line_changed = true;
 	else
-		BaseSelectionController<AssDialogue>::AnnounceActiveLineChanged(new_line);
+		SubtitleSelectionController::AnnounceActiveLineChanged(new_line);
 }
 
 void BaseGrid::AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) {
@@ -1129,6 +1128,6 @@ void BaseGrid::AnnounceSelectedSetChanged(const Selection &lines_added, const Se
 		batch_selection_removed.insert(lines_removed.begin(), lines_removed.end());
 	}
 	else {
-		BaseSelectionController<AssDialogue>::AnnounceSelectedSetChanged(lines_added, lines_removed);
+		SubtitleSelectionController::AnnounceSelectedSetChanged(lines_added, lines_removed);
 	}
 }

@@ -172,7 +172,7 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 		}
 
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
-		SelectionController<AssDialogue>::Selection sel;
+		SubtitleSelection sel;
 		sel.insert(new_line);
 		c->selectionController->SetSelectionAndActive(sel, new_line);
 	}
@@ -219,7 +219,7 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 		}
 
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
-		SelectionController<AssDialogue>::Selection sel;
+		SubtitleSelection sel;
 		sel.insert(new_line);
 		c->selectionController->SetSelectionAndActive(sel, new_line);
 	}
@@ -385,7 +385,7 @@ struct subtitle_select_all : public Command {
 	STR_HELP("Selects all dialogue lines")
 
 	void operator()(agi::Context *c) {
-		SelectionController<AssDialogue>::Selection sel;
+		SubtitleSelection sel;
 		transform(c->ass->Line.begin(), c->ass->Line.end(),
 			inserter(sel, sel.begin()), cast<AssDialogue*>());
 		sel.erase(0);

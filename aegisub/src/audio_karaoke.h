@@ -33,8 +33,6 @@
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
-#include "selection_controller.h"
-
 class AssDialogue;
 class AssKaraoke;
 class wxButton;
@@ -72,11 +70,12 @@ namespace agi { struct Context; }
 /// actually updated until the line is committed (which if auto-commit timing
 /// changes is on, will happen as soon as the user adjusts the timing of the
 /// new syllable).
-class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
+class AudioKaraoke : public wxWindow {
 	agi::Context *c; ///< Project context
 	agi::signal::Connection file_changed; ///< File changed slot
 	agi::signal::Connection audio_opened; ///< Audio opened connection
 	agi::signal::Connection audio_closed; ///< Audio closed connection
+	agi::signal::Connection active_line_changed;
 
 	/// Currently active dialogue line
 	AssDialogue *active_line;
@@ -145,7 +144,6 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	void OnMouse(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
-	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 	void OnAudioOpened();
 	void OnAudioClosed();
 	void OnScrollTimer(wxTimerEvent &event);

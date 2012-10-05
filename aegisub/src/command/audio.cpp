@@ -58,7 +58,6 @@
 #include "../video_context.h"
 
 namespace {
-	typedef SelectionController<AssDialogue>::Selection Selection;
 	using cmd::Command;
 
 	struct validate_audio_open : public Command {
@@ -219,11 +218,11 @@ struct audio_save_clip : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		Selection sel = c->selectionController->GetSelectedSet();
+		SubtitleSelection sel = c->selectionController->GetSelectedSet();
 		if (sel.empty()) return;
 
 		AssTime start = INT_MAX, end = 0;
-		for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {
+		for (SubtitleSelection::iterator it = sel.begin(); it != sel.end(); ++it) {
 			start = std::min(start, (*it)->Start);
 			end = std::max(end, (*it)->End);
 		}

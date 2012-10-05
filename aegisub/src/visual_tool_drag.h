@@ -36,7 +36,6 @@ public:
 class wxBitmapButton;
 class wxToolBar;
 
-/// DOCME
 /// @class VisualToolDrag
 /// @brief Moveable features for the positions of each visible line
 class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
@@ -48,7 +47,7 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	/// longer exists
 	Feature *primary;
 	/// The last announced selection set
-	Selection selection;
+	SubtitleSelection selection;
 
 	/// When the button is pressed, will it convert the line to a move (vs. from
 	/// move to pos)? Used to avoid changing the button's icon unnecessarily
@@ -60,8 +59,7 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	void MakeFeatures(AssDialogue *diag, feature_iterator pos);
 	void MakeFeatures(AssDialogue *diag);
 
-	// Overriding SubtitleSelectionListener inherited from base VisualTool<>
-	void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+	void OnSelectedSetChanged(SubtitleSelection const& lines_added, SubtitleSelection const& lines_removed);
 
 	void OnFrameChanged();
 	void OnFileChanged();

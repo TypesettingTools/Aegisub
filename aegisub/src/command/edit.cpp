@@ -223,7 +223,7 @@ struct edit_line_duplicate_shift : public Command {
 };
 
 static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDialogue *), wxString const& message) {
-	SelectionController<AssDialogue>::Selection sel = c->selectionController->GetSelectedSet();
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
 	AssDialogue *first = 0;
 	entryIter out = c->ass->Line.begin();

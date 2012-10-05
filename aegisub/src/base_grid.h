@@ -55,16 +55,12 @@ namespace agi {
 }
 class AssDialogue;
 
-typedef SelectionController<AssDialogue> SubtitleSelectionController;
-typedef SelectionListener<AssDialogue> SubtitleSelectionListener;
-
-
 /// DOCME
 /// @class BaseGrid
 /// @brief DOCME
 ///
 /// DOCME
-class BaseGrid : public wxWindow, public BaseSelectionController<AssDialogue> {
+class BaseGrid : public wxWindow, public SubtitleSelectionController {
 	int lineHeight;         ///< Height of a line in pixels in the current font
 	bool holding;           ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font

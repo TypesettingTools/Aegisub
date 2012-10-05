@@ -28,8 +28,6 @@
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
-#include "selection_controller.h"
-
 namespace agi { struct Context; }
 class AssDialogue;
 class PersistLocation;
@@ -42,10 +40,11 @@ class wxCheckBox;
 /// @brief Assistant for translating subtitles in one language to another language
 ///
 /// DOCME
-class DialogTranslation : public wxDialog, private SelectionListener<AssDialogue> {
+class DialogTranslation : public wxDialog {
 	agi::Context *c;
 
 	agi::signal::Connection file_change_connection;
+	agi::signal::Connection active_line_connection;
 
 	/// The active line
 	AssDialogue *active_line;
@@ -74,7 +73,6 @@ class DialogTranslation : public wxDialog, private SelectionListener<AssDialogue
 
 	void UpdateDisplay();
 
-	void OnSelectedSetChanged(Selection const&, Selection const&) { }
 	void OnActiveLineChanged(AssDialogue *new_line);
 
 public:

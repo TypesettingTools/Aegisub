@@ -39,30 +39,7 @@
 #include <set>
 #endif
 
-/// @class SelectionListener
-/// @brief Abstract interface for classes wanting to subtitle selection change notifications
-template <typename ItemDataType>
-class SelectionListener {
-public:
-	typedef std::set<ItemDataType*> Selection;
-
-	/// Virtual destructor for safety
-	virtual ~SelectionListener() { }
-
-	/// @brief Called when the active line changes
-	/// @param new_line The line that is now the active line
-	///
-	/// In case new_line is 0, the active line was changed to none.
-	virtual void OnActiveLineChanged(ItemDataType *new_line) = 0;
-
-	/// @brief Called when the selected set changes
-	/// @param lines_added   Lines added to the selection
-	/// @param lines_removed Lines removed from the selection
-	///
-	/// The two sets must not intersect.
-	virtual void OnSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) = 0;
-};
-
+#include <libaegisub/signal.h>
 
 /// @class SelectionController
 /// @brief Abstract interface for selection controllers
@@ -88,8 +65,13 @@ public:
 template <typename ItemDataType>
 class SelectionController {
 public:
-	typedef std::set<ItemDataType*> Selection;
+	typedef std::set<ItemDataType> Selection;
 
+protected:
+	agi::signal::Signal<ItemDataType> AnnounceActiveLineChanged;
+	agi::signal::Signal<Selection const&, Selection const&> AnnounceSelectedSetChanged;
+
+public:
 	/// Virtual destructor for safety
 	virtual ~SelectionController() { }
 
@@ -103,11 +85,11 @@ public:
 	/// the active line was actually changed.
 	///
 	/// This method must not affect the selected set.
-	virtual void SetActiveLine(ItemDataType *new_line) = 0;
+	virtual void SetActiveLine(ItemDataType new_line) = 0;
 
 	/// @brief Obtain the active line
 	/// @return The active line or NULL if there is none
-	virtual ItemDataType * GetActiveLine() const = 0;
+	virtual ItemDataType GetActiveLine() const = 0;
 
 	/// @brief Change the selected set
 	/// @param new_selection The set of subtitle lines to become the new selected set
@@ -136,7 +118,7 @@ public:
 	/// This sets both the active line and selected set before announcing the
 	/// change to either of them, and is guaranteed to announce the active line
 	/// change before the selection change.
-	virtual void SetSelectionAndActive(Selection const& new_selection, ItemDataType *new_line) = 0;
+	virtual void SetSelectionAndActive(Selection const& new_selection, ItemDataType new_line) = 0;
 
 	/// @brief Change the active line to the next in sequence
 	///
@@ -152,78 +134,10 @@ public:
 	/// the active line was changed.
 	virtual void PrevLine() = 0;
 
-	/// @brief Subscribe an object to receive change notifications
-	/// @param listener Object to subscribe to change notifications
-	virtual void AddSelectionListener(SelectionListener<ItemDataType> *listener) = 0;
-
-	/// @brief Unsubscribe an object from change notifications
-	/// @param listener Object to unsubscribe from change notifications
-	virtual void RemoveSelectionListener(SelectionListener<ItemDataType> *listener) = 0;
+	DEFINE_SIGNAL_ADDERS(AnnounceSelectedSetChanged, AddSelectionListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceActiveLineChanged, AddActiveLineListener)
 };
 
-
-/// @class BaseSelectionController
-/// @brief Base-implementation of SelectionController
-///
-/// This class implements adding and removing listeners for selection change
-/// notifications, and provides protected functions to announce selection changes.
-///
-/// This class should be derived from for most real-world uses, but might not
-/// be desirable in some special cases such as test drivers.
-template <typename ItemDataType>
-class BaseSelectionController : public SelectionController<ItemDataType> {
-public:
-	typedef typename SelectionController<ItemDataType>::Selection Selection;
-private:
-	typedef std::set<SelectionListener<ItemDataType> *> SelectionListenerSet;
-	SelectionListenerSet listeners;
-
-protected:
-	/// Call OnActiveLineChanged on all listeners
-	void AnnounceActiveLineChanged(ItemDataType *new_line)
-	{
-		for (typename SelectionListenerSet::iterator listener = listeners.begin(); listener != listeners.end(); ++listener)
-		{
-			(*listener)->OnActiveLineChanged(new_line);
-		}
-	}
-
-	/// Call OnSelectedSetChangedon all listeners
-	void AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed)
-	{
-		for (typename SelectionListenerSet::iterator listener = listeners.begin(); listener != listeners.end(); ++listener)
-		{
-			(*listener)->OnSelectedSetChanged(lines_added, lines_removed);
-		}
-	}
-
-public:
-	virtual ~BaseSelectionController() { }
-
-	virtual void AddSelectionListener(SelectionListener<ItemDataType> *listener)
-	{
-		listeners.insert(listener);
-	}
-
-	virtual void RemoveSelectionListener(SelectionListener<ItemDataType> *listener)
-	{
-		listeners.erase(listener);
-	}
-};
-
-/// Do-nothing selection controller, can be considered to always operate on an empty subtitle file
-template <typename ItemDataType>
-class DummySelectionController : public SelectionController<ItemDataType> {
-public:
-	typedef typename SelectionController<ItemDataType>::Selection Selection;
-	virtual ~DummySelectionController() { }
-	virtual void SetActiveLine(ItemDataType *new_line) { }
-	virtual ItemDataType * GetActiveLine() const { return 0; }
-	virtual void SetSelectedSet(const Selection &new_selection) { }
-	virtual void GetSelectedSet(Selection &selection) const { }
-	virtual void SetSelectionAndActive(Selection const& new_selection, ItemDataType *new_line) { }
-	virtual void NextLine() { }
-	virtual void PrevLine() { }
-	virtual void AddSelectionListener(SelectionListener<ItemDataType> *listener) { }
-	virtual void RemoveSelectionListener(SelectionListener<ItemDataType> *listener) { }
-};
+class AssDialogue;
+typedef SelectionController<AssDialogue *> SubtitleSelectionController;
+typedef SubtitleSelectionController::Selection SubtitleSelection;

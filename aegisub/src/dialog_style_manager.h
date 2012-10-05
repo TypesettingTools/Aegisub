@@ -47,7 +47,6 @@
 #include <libaegisub/signal.h>
 
 #include "ass_style_storage.h"
-#include "selection_controller.h"
 
 namespace agi { struct Context; }
 class AssDialogue;
@@ -61,11 +60,12 @@ class PersistLocation;
 /// @brief DOCME
 ///
 /// DOCME
-class DialogStyleManager : public wxDialog, private SelectionListener<AssDialogue> {
+class DialogStyleManager : public wxDialog {
 	agi::Context *c; ///< Project context
 	agi::scoped_ptr<PersistLocation> persist;
 
 	agi::signal::Connection commit_connection;
+	agi::signal::Connection active_line_connection;
 
 	/// Styles in the current subtitle file
 	std::vector<AssStyle*> styleMap;
@@ -152,7 +152,6 @@ class DialogStyleManager : public wxDialog, private SelectionListener<AssDialogu
 	void CopyToClipboard(wxListBox *list, T const& v);
 
 	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const Selection &, const Selection &) { }
 
 public:
 	DialogStyleManager(agi::Context *context);

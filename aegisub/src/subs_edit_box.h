@@ -35,6 +35,7 @@
 ///
 
 #ifndef AGI_PRE
+#include <deque>
 #include <map>
 #include <vector>
 
@@ -71,17 +72,19 @@ template<class Base> class Placeholder;
 /// @brief Main subtitle edit box
 ///
 /// Controls the text edit and all surrounding controls
-class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
+class SubsEditBox : public wxPanel {
 	enum TimeField {
 		TIME_START = 0,
 		TIME_END,
 		TIME_DURATION
 	};
 
+	std::deque<agi::signal::Connection> connections;
+
 	/// Currently active dialogue line
 	AssDialogue *line;
 	/// Last seen grid selection
-	Selection sel;
+	SubtitleSelection sel;
 
 	/// Are the buttons currently split into two lines?
 	bool splitLineMode;
@@ -149,7 +152,7 @@ class SubsEditBox : public wxPanel, protected SelectionListener<AssDialogue> {
 	void OnKeyDown(wxKeyEvent &event);
 
 	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const Selection &, const Selection &);
+	void OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &);
 
 	void OnFrameTimeRadio(wxCommandEvent &event);
 	void OnStyleChange(wxCommandEvent &event);

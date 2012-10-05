@@ -69,6 +69,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , file_changed(c->ass->AddCommitListener(&AudioKaraoke::OnFileChanged, this))
 , audio_opened(c->audioController->AddAudioOpenListener(&AudioKaraoke::OnAudioOpened, this))
 , audio_closed(c->audioController->AddAudioCloseListener(&AudioKaraoke::OnAudioClosed, this))
+, active_line_changed(c->selectionController->AddActiveLineListener(&AudioKaraoke::OnActiveLineChanged, this))
 , active_line(0)
 , kara(new AssKaraoke)
 , scroll_x(0)
@@ -106,15 +107,12 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 	split_area->Bind(wxEVT_CONTEXT_MENU, &AudioKaraoke::OnContextMenu, this);
 	scroll_timer.Bind(wxEVT_TIMER, &AudioKaraoke::OnScrollTimer, this);
 
-	c->selectionController->AddSelectionListener(this);
-
 	accept_button->Enable(false);
 	cancel_button->Enable(false);
 	enabled = false;
 }
 
 AudioKaraoke::~AudioKaraoke() {
-	c->selectionController->RemoveSelectionListener(this);
 }
 
 void AudioKaraoke::OnActiveLineChanged(AssDialogue *new_line) {
