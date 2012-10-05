@@ -97,13 +97,14 @@ class AudioKaraoke : public wxWindow, private SelectionListener<AssDialogue> {
 	/// Left x coordinate of each character in spaced_text in pixels
 	std::vector<int> char_x;
 
-	int scroll_x;
-	int scroll_dir;
-	wxTimer scroll_timer;
+	int scroll_x; ///< Distance the display has been shifted to the left in pixels
+	int scroll_dir; ///< Direction the display will be scrolled on scroll_timer ticks (+/- 1)
+	wxTimer scroll_timer; ///< Timer to scroll every 50ms when user holds down scroll button
 
 	int char_height; ///< Maximum character height in pixels
 	int char_width; ///< Maximum character width in pixels
 	int mouse_pos; ///< Last x coordinate of the mouse
+	bool click_will_remove_split; ///< If true a click at mouse_pos will remove a split rather than adding one
 
 	wxFont split_font; ///< Font used in the split/join interface
 

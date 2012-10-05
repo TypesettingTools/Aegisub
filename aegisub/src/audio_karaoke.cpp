@@ -72,6 +72,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , active_line(0)
 , kara(new AssKaraoke)
 , scroll_x(0)
+, click_will_remove_split(false)
 , enabled(false)
 {
 	using std::tr1::bind;
@@ -169,7 +170,10 @@ void AudioKaraoke::OnPaint(wxPaintEvent &) {
 	dc.Blit(-scroll_x, 0, rendered_line.GetWidth(), h, &bmp_dc, 0, 0);
 
 	// Draw the split line under the mouse
-	dc.SetPen(*wxRED);
+	if (click_will_remove_split)
+		dc.SetPen(*wxRED);
+	else
+		dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
 	dc.DrawLine(mouse_pos, 0, mouse_pos, h);
 
 	dc.SetPen(*wxTRANSPARENT_PEN);
@@ -303,12 +307,6 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 	int shifted_pos = mouse_pos + scroll_x;
 
-	if (!event.LeftDown()) {
-		// Erase the old line and draw the new one
-		split_area->Refresh(false);
-		return;
-	}
-
 	// Character to insert the new split point before
 	int split_pos = std::min<int>((shifted_pos - char_width / 2) / char_width, spaced_text.size());
 
@@ -317,7 +315,17 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 	// If the click is sufficiently close to a line of a syllable split,
 	// remove that split rather than adding a new one
-	if ((syl > 0 && shifted_pos <= syl_lines[syl - 1] + 2) || (syl < (int)syl_lines.size() && shifted_pos >= syl_lines[syl] - 2)) {
+	click_will_remove_split =
+		(syl > 0 && shifted_pos <= syl_lines[syl - 1] + 2) ||
+		(syl < (int)syl_lines.size() && shifted_pos >= syl_lines[syl] - 2);
+
+	if (!event.LeftDown()) {
+		// Erase the old line and draw the new one
+		split_area->Refresh(false);
+		return;
+	}
+
+	if (click_will_remove_split) {
 		kara->RemoveSplit(syl);
 	}
 	else {
