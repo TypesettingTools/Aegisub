@@ -490,7 +490,7 @@ wxString AssFile::GetScriptInfo(wxString key) const {
 	return "";
 }
 
-int AssFile::GetScriptInfoAsInt(const wxString key) const {
+int AssFile::GetScriptInfoAsInt(wxString const& key) const {
 	long temp = 0;
 	GetScriptInfo(key).ToLong(&temp);
 	return temp;
@@ -585,8 +585,8 @@ wxArrayString AssFile::GetStyles() const {
 	return styles;
 }
 
-AssStyle *AssFile::GetStyle(wxString name) {
-	for (entryIter cur=Line.begin();cur!=Line.end();cur++) {
+AssStyle *AssFile::GetStyle(wxString const& name) {
+	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
 		AssStyle *curstyle = dynamic_cast<AssStyle*>(*cur);
 		if (curstyle && curstyle->name == name)
 			return curstyle;
@@ -594,7 +594,7 @@ AssStyle *AssFile::GetStyle(wxString name) {
 	return NULL;
 }
 
-void AssFile::AddToRecent(wxString file) {
+void AssFile::AddToRecent(wxString const& file) const {
 	config::mru->Add("Subtitle", STD_STR(file));
 	wxFileName filepath(file);
 	OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
@@ -602,12 +602,12 @@ void AssFile::AddToRecent(wxString file) {
 
 wxString AssFile::GetWildcardList(int mode) {
 	if (mode == 0) return SubtitleFormat::GetWildcards(0);
-	else if (mode == 1) return "Advanced Substation Alpha (*.ass)|*.ass";
-	else if (mode == 2) return SubtitleFormat::GetWildcards(1);
-	else return "";
+	if (mode == 1) return "Advanced Substation Alpha (*.ass)|*.ass";
+	if (mode == 2) return SubtitleFormat::GetWildcards(1);
+	return "";
 }
 
-int AssFile::Commit(wxString desc, int type, int amendId, AssEntry *single_line) {
+int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *single_line) {
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change

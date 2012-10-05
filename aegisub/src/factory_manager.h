@@ -83,7 +83,7 @@ public:
 		if (!classes) return list;
 		std::string cmp;
 		std::transform(favourite.begin(), favourite.end(), favourite.begin(), ::tolower);
-		for (iterator cur=classes->begin();cur!=classes->end();cur++) {
+		for (iterator cur = classes->begin(); cur != classes->end(); ++cur) {
 			cmp.clear();
 			std::transform(cur->first.begin(), cur->first.end(), std::back_inserter(cmp), ::tolower);
 			if (cmp == favourite) list.insert(list.begin(), cur->first);

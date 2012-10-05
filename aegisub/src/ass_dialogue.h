@@ -178,11 +178,11 @@ public:
 	void SetEntryData(wxString const&) { }
 
 	template<int which>
-	void SetMarginString(const wxString value) { SetMarginString(value, which);}
+	void SetMarginString(wxString const& value) { SetMarginString(value, which);}
 	/// @brief Set a margin
 	/// @param value New value of the margin
 	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
-	void SetMarginString(const wxString value,int which);
+	void SetMarginString(wxString const& value, int which);
 	/// @brief Get a margin
 	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
 	/// @param pad Pad the number to four digits

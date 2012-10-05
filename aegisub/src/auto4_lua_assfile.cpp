@@ -544,8 +544,8 @@ namespace Automation4 {
 		int n = lua_gettop(L);
 
 		if (last_entry_ptr != lines.begin()) {
-			last_entry_ptr--;
-			last_entry_id--;
+			--last_entry_ptr;
+			--last_entry_id;
 		}
 
 		for (int i = 1; i <= n; i++) {

@@ -108,7 +108,7 @@ wxArrayString AssExporter::GetAllFilterNames() const {
 AssFile *AssExporter::ExportTransform(wxWindow *export_dialog, bool copy) {
 	AssFile *subs = copy ? new AssFile(*c->ass) : c->ass;
 
-	for (filter_iterator cur = filters.begin(); cur != filters.end(); cur++) {
+	for (filter_iterator cur = filters.begin(); cur != filters.end(); ++cur) {
 		(*cur)->LoadSettings(is_default, c);
 		(*cur)->ProcessSubs(subs, export_dialog);
 	}

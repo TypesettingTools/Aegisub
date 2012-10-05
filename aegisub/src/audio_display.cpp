@@ -425,7 +425,7 @@ public:
 				double mark_time = next_scale_mark * scale_minor_divisor / 1000.0;
 				int mark_hour = (int)(mark_time / 3600);
 				int mark_minute = (int)(mark_time / 60) % 60;
-				double mark_second = mark_time - mark_hour*3600 - mark_minute*60;
+				double mark_second = mark_time - mark_hour*3600.0 - mark_minute*60.0;
 
 				wxString time_string;
 				bool changed_hour = mark_hour != last_hour;
@@ -677,7 +677,7 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 	if (ms_per_pixel != new_ms_per_pixel)
 	{
 		int client_width = GetClientSize().GetWidth();
-		double center_time = (scroll_left + client_width / 2) * ms_per_pixel;
+		double center_time = (scroll_left + client_width / 2.0) * ms_per_pixel;
 
 		ms_per_pixel = new_ms_per_pixel;
 		pixel_audio_width = std::max(1, int(controller->GetDuration() / ms_per_pixel));

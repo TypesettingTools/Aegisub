@@ -119,7 +119,7 @@ public:
 	/// @brief Get a style by name
 	/// @param name Style name
 	/// @return Pointer to style or NULL
-	AssStyle *GetStyle(wxString name);
+	AssStyle *GetStyle(wxString const& name);
 
 	void swap(AssFile &) throw();
 
@@ -144,7 +144,7 @@ public:
 	/// @param[out] dst Destination vector
 	void SaveMemory(std::vector<char> &dst);
 	/// Add file name to the MRU list
-	void AddToRecent(wxString file);
+	void AddToRecent(wxString const& file) const;
 	/// Can the file be saved in its current format?
 	bool CanSave() const;
 	/// @brief Get the list of wildcards supported
@@ -156,7 +156,7 @@ public:
 	/// @param[in] h Height
 	void GetResolution(int &w,int &h) const;
 	/// Get the value in a [Script Info] key as int, or 0 if it is not present
-	int GetScriptInfoAsInt(const wxString key) const;
+	int GetScriptInfoAsInt(wxString const& key) const;
 	/// Get the value in a [Script Info] key as string.
 	wxString GetScriptInfo(wxString key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
@@ -209,7 +209,7 @@ public:
 	/// @param commitId    Commit to amend rather than pushing a new commit
 	/// @param single_line Line which was changed, if only one line was
 	/// @return Unique identifier for the new undo group
-	int Commit(wxString desc, int type, int commitId = -1, AssEntry *single_line = 0);
+	int Commit(wxString const& desc, int type, int commitId = -1, AssEntry *single_line = 0);
 	/// @brief Undo the last set of changes to the file
 	void Undo();
 	/// @brief Redo the last undone changes

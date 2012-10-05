@@ -56,7 +56,7 @@ AssDialogue::AssDialogue()
 , End(5000)
 , Style("Default")
 {
-	for (int i=0;i<4;i++) Margin[i] = 0;
+	memset(Margin, 0, sizeof Margin);
 }
 
 AssDialogue::AssDialogue(AssDialogue const& that)
@@ -274,7 +274,7 @@ std::vector<AssDialogueBlock*> AssDialogue::ParseTags() const {
 
 				// Look for \p in block
 				std::vector<AssOverrideTag*>::iterator curTag;
-				for (curTag = block->Tags.begin();curTag != block->Tags.end();curTag++) {
+				for (curTag = block->Tags.begin(); curTag != block->Tags.end(); ++curTag) {
 					if ((*curTag)->Name == "\\p") {
 						drawingLevel = (*curTag)->Params[0]->Get<int>(0);
 					}
@@ -318,24 +318,25 @@ void AssDialogue::StripTags () {
 }
 
 void AssDialogue::StripTag (wxString tagName) {
-	using std::list;
-	using std::vector;
 	ParseASSTags();
 	wxString final;
 
 	// Look for blocks
-	for (vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
-		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
-			AssDialogueBlockOverride *over = dynamic_cast<AssDialogueBlockOverride*>(*cur);
-			wxString temp;
-			for (size_t i=0;i<over->Tags.size();i++) {
-				if (over->Tags[i]->Name != tagName) temp += *over->Tags[i];
-			}
-
-			// Insert
-			if (!temp.IsEmpty()) final += "{" + temp + "}";
+	for (std::vector<AssDialogueBlock*>::iterator cur = Blocks.begin(); cur != Blocks.end(); ++cur) {
+		if ((*cur)->GetType() != BLOCK_OVERRIDE) {
+			final += (*cur)->GetText();
+			continue;
 		}
-		else final += (*cur)->GetText();
+
+		AssDialogueBlockOverride *over = dynamic_cast<AssDialogueBlockOverride*>(*cur);
+		wxString temp;
+		for (size_t i = 0; i < over->Tags.size(); ++i) {
+			if (over->Tags[i]->Name != tagName)
+				temp += *over->Tags[i];
+		}
+
+		if (!temp.empty())
+			final += "{" + temp + "}";
 	}
 
 	ClearBlocks();
@@ -345,7 +346,7 @@ void AssDialogue::StripTag (wxString tagName) {
 void AssDialogue::UpdateText () {
 	if (Blocks.empty()) return;
 	Text.clear();
-	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
+	for (std::vector<AssDialogueBlock*>::iterator cur = Blocks.begin(); cur != Blocks.end(); ++cur) {
 		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
 			Text += "{";
 			Text += (*cur)->GetText();
@@ -355,16 +356,16 @@ void AssDialogue::UpdateText () {
 	}
 }
 
-void AssDialogue::SetMarginString(const wxString origvalue,int which) {
+void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
 
 	// Make it numeric
 	wxString strvalue = origvalue;
 	if (!strvalue.IsNumber()) {
 		strvalue.clear();
-		for (size_t i=0;i<origvalue.Length();i++) {
-			if (origvalue.Mid(i,1).IsNumber()) {
-				strvalue += origvalue.Mid(i,1);
+		for (size_t i = 0; i < origvalue.Length(); ++i) {
+			if (origvalue.Mid(i, 1).IsNumber()) {
+				strvalue += origvalue.Mid(i, 1);
 			}
 		}
 	}
@@ -377,22 +378,16 @@ void AssDialogue::SetMarginString(const wxString origvalue,int which) {
 
 wxString AssDialogue::GetMarginString(int which,bool pad) const {
 	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
-	int value = Margin[which];
-	if (pad) return wxString::Format("%04i",value);
-	else return wxString::Format("%i",value);
+	return wxString::Format(pad ? "%04d" : "%d", Margin[which]);
 }
 
 void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
 	// Apply for all override blocks
-	AssDialogueBlockOverride *curBlock;
-	//ParseASSTags();
-	for (std::vector<AssDialogueBlock*>::iterator cur=Blocks.begin();cur!=Blocks.end();cur++) {
+	for (std::vector<AssDialogueBlock*>::iterator cur = Blocks.begin(); cur != Blocks.end(); ++cur) {
 		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
-			curBlock = static_cast<AssDialogueBlockOverride*> (*cur);
-			curBlock->ProcessParameters(callback,userData);
+			static_cast<AssDialogueBlockOverride*>(*cur)->ProcessParameters(callback, userData);
 		}
 	}
-	//ClearBlocks();
 }
 
 bool AssDialogue::CollidesWith(const AssDialogue *target) const {
@@ -401,9 +396,9 @@ bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 }
 
 wxString AssDialogue::GetStrippedText() const {
-	static wxRegEx reg("\\{[^\\{]*\\}",wxRE_ADVANCED);
+	static const wxRegEx reg("\\{[^\\{]*\\}", wxRE_ADVANCED);
 	wxString txt(Text);
-	reg.Replace(&txt,"");
+	reg.Replace(&txt, "");
 	return txt;
 }
 

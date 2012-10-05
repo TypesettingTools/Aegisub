@@ -97,22 +97,22 @@ void AssDialogueBlockOverride::AddTag(wxString const& tag) {
 
 wxString AssDialogueBlockOverride::GetText() {
 	text.clear();
-	for (std::vector<AssOverrideTag*>::iterator cur=Tags.begin();cur!=Tags.end();cur++) {
+	for (std::vector<AssOverrideTag*>::iterator cur = Tags.begin(); cur != Tags.end(); ++cur) {
 		text += **cur;
 	}
 	return text;
 }
 
 void AssDialogueBlockOverride::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
-	for (std::vector<AssOverrideTag*>::iterator cur=Tags.begin();cur!=Tags.end();cur++) {
+	for (std::vector<AssOverrideTag*>::iterator cur = Tags.begin(); cur != Tags.end(); ++cur) {
 		AssOverrideTag *curTag = *cur;
 
 		// Find parameters
-		for (unsigned n = 0; n < curTag->Params.size(); n++) {
+		for (size_t n = 0; n < curTag->Params.size(); ++n) {
 			AssOverrideParameter *curPar = curTag->Params[n];
 
 			if (curPar->GetType() != VARDATA_NONE && !curPar->omitted) {
-				(*callback)(curTag->Name,n,curPar,userData);
+				(*callback)(curTag->Name, n, curPar, userData);
 
 				// Go recursive if it's a block parameter
 				if (curPar->GetType() == VARDATA_BLOCK) {
@@ -291,7 +291,7 @@ void AssOverrideTag::Clear() {
 
 void AssOverrideTag::SetText(const wxString &text) {
 	load_protos();
-	for (AssOverrideTagProto::iterator cur=proto.begin();cur!=proto.end();cur++) {
+	for (AssOverrideTagProto::iterator cur = proto.begin(); cur != proto.end(); ++cur) {
 		if (text.StartsWith(cur->name)) {
 			Name = cur->name;
 			ParseParameters(text.Mid(Name.length()), cur);
@@ -452,7 +452,7 @@ AssOverrideTag::operator wxString() const {
 
 	// Add parameters
 	bool any = false;
-	for (std::vector<AssOverrideParameter*>::const_iterator cur=Params.begin();cur!=Params.end();cur++) {
+	for (std::vector<AssOverrideParameter*>::const_iterator cur = Params.begin(); cur != Params.end(); ++cur) {
 		if ((*cur)->GetType() != VARDATA_NONE && !(*cur)->omitted) {
 			result += (*cur)->Get<wxString>();
 			result += ",";

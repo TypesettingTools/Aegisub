@@ -67,9 +67,9 @@ AssEntry *AssAttachment::Clone() const {
 }
 
 const wxString AssAttachment::GetEntryData() const {
-	int pos = 0;
-	int size = data->size();
-	int written = 0;
+	size_t pos = 0;
+	size_t size = data->size();
+	size_t written = 0;
 	unsigned char src[3];
 	unsigned char dst[4];
 
@@ -82,7 +82,7 @@ const wxString AssAttachment::GetEntryData() const {
 	// Read three bytes
 	while (pos < size) {
 		// Number to read
-		int read = size - pos;
+		size_t read = size - pos;
 		if (read > 3) read = 3;
 
 		// Read source
@@ -100,10 +100,10 @@ const wxString AssAttachment::GetEntryData() const {
 		dst[3] = src[2] & 0x3F;
 
 		// Number to write
-		int toWrite = read+1;
+		size_t toWrite = read+1;
 
 		// Convert to text
-		for (int i=0;i<toWrite;i++) {
+		for (size_t i=0;i<toWrite;i++) {
 			entryData += dst[i]+33;
 			written++;
 
