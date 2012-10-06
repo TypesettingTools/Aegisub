@@ -34,6 +34,10 @@
 /// @ingroup utility
 ///
 
+#ifndef AGI_PRE
+#include <wx/string.h>
+#endif
+
 class wxTranslations;
 
 /// DOCME

@@ -26,6 +26,7 @@
 #include <vector>
 
 #include <wx/bitmap.h>
+#include <wx/timer.h>
 #include <wx/window.h>
 #endif
 
