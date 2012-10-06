@@ -631,14 +631,14 @@ void AudioDisplay::ScrollTimeRangeInView(const TimeRange &range)
 	int range_end = AbsoluteXFromTime(range.end());
 	int range_len = range_end - range_begin;
 
-	// Is everything already in view?
-	if (range_begin >= scroll_left && range_end <= scroll_left+client_width)
-		return;
-
-	// For the rest of the calculation, remove 5 % from each side of the client area.
-	// The leftadjust is the amount to subtract from the final scroll_left value.
+	// Remove 5 % from each side of the client area.
 	int leftadjust = client_width / 20;
+	int client_left = scroll_left + leftadjust;
 	client_width = client_width * 9 / 10;
+
+	// Is everything already in view?
+	if (range_begin >= client_left && range_end <= client_left+client_width)
+		return;
 
 	// The entire range can fit inside the view, center it
 	if (range_len < client_width)
@@ -647,13 +647,13 @@ void AudioDisplay::ScrollTimeRangeInView(const TimeRange &range)
 	}
 
 	// Range doesn't fit in view and we're viewing a middle part of it, just leave it alone
-	else if (range_begin < scroll_left+leftadjust && range_end > scroll_left+leftadjust+client_width)
+	else if (range_begin < client_left && range_end > client_left+client_width)
 	{
 		// nothing
 	}
 
 	// Right edge is in view, scroll it as far to the right as possible
-	else if (range_end >= scroll_left+leftadjust && range_end < scroll_left+leftadjust+client_width)
+	else if (range_end >= client_left && range_end < client_left+client_width)
 	{
 		ScrollPixelToLeft(range_end - client_width - leftadjust);
 	}
