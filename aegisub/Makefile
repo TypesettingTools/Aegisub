@@ -40,7 +40,7 @@ EXTRA_DIST = \
 	configure.in \
 	acconf.h.in\
 	configure \
-	svn_revision \
+	build/git_version.h \
 	config.log \
 	config.sub \
 	config.guess \
@@ -78,7 +78,7 @@ DISTCLEANFILES += \
 	acconf.h \
 	configure \
 	acconf.h.in~ \
-	svn_revision \
+	build/git_version.h \
 	Makefile.inc \
 	config.log \
 	acconf.h.in \
