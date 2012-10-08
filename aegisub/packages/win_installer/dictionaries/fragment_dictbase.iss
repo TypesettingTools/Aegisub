@@ -35,13 +35,13 @@
 [Setup]
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 AppName=Aegisub
-AppVerName=Aegisub 3.0.1
-AppVersion=3.0.1
+AppVerName=Aegisub 3.0.2
+AppVersion=3.0.2
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
 AppCopyright=© 2005-2012 The Aegisub Team
-VersionInfoVersion=3.0.1
+VersionInfoVersion=3.0.2
 DefaultDirName={pf}\Aegisub
 DefaultGroupName=Aegisub
 AllowNoIcons=true

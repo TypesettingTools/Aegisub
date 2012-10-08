@@ -1,8 +1,8 @@
 Path=.\Aegisub portable
-Title=Aegisub 3.0.1 Portable
+Title=Aegisub 3.0.2 Portable
 Text
 {
-<h1 style="font-family: Tahoma; font-size: 20px; text-align: center;">Aegisub 3.0.1 Portable</h1>
+<h1 style="font-family: Tahoma; font-size: 20px; text-align: center;">Aegisub 3.0.2 Portable</h1>
 <p style="font-family: Tahoma; font-size: 12px;">This archive contains a
 "portable" version of Aegisub, suitable for running from USB pen drives or on
 machines which you cannot install software on. To reduce the size several
