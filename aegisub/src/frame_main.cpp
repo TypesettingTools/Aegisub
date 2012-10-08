@@ -389,7 +389,6 @@ void FrameMain::InitContents() {
 
 	StartupLog("Create subtitle editing box");
 	SubsEditBox *EditBox = new SubsEditBox(Panel, context.get());
-	context->editBox = EditBox->TextEdit;
 
 	StartupLog("Arrange main sizers");
 	ToolsSizer = new wxBoxSizer(wxVERTICAL);
@@ -406,8 +405,6 @@ void FrameMain::InitContents() {
 
 	StartupLog("Perform layout");
 	Layout();
-	StartupLog("Set focus to edting box");
-	EditBox->TextEdit->SetFocus();
 	StartupLog("Leaving InitContents");
 }
 

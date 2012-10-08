@@ -64,6 +64,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "placeholder_ctrl.h"
+#include "scintilla_text_selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"
@@ -250,6 +251,10 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	connections.push_back(context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this));
 	connections.push_back(context->selectionController->AddActiveLineListener(&SubsEditBox::OnActiveLineChanged, this));
 	connections.push_back(context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this));
+
+	textSelectionController.reset(new ScintillaTextSelectionController(TextEdit));
+	context->textSelectionController = textSelectionController.get();
+	TextEdit->SetFocus();
 }
 
 SubsEditBox::~SubsEditBox() {

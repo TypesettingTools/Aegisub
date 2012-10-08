@@ -1832,7 +1832,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\scintilla_text_selection_controller.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\scintilla_text_selection_controller.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\selection_controller.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\text_selection_controller.h"
 				>
 			</File>
 		</Filter>

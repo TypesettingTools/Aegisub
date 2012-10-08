@@ -43,6 +43,7 @@
 #include <wx/timer.h>
 #endif
 
+#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 #include "selection_controller.h"
@@ -54,6 +55,7 @@ class AssDialogue;
 class AssStyle;
 class AssTime;
 class SubsTextEditCtrl;
+class TextSelectionController;
 class TimeEdit;
 class wxButton;
 class wxCheckBox;
@@ -216,9 +218,11 @@ class SubsEditBox : public wxPanel {
 
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming(agi::vfr::Framerate const& fps);
-public:
-	SubsTextEditCtrl *TextEdit;
 
+	SubsTextEditCtrl *TextEdit;
+	agi::scoped_ptr<TextSelectionController> textSelectionController;
+
+public:
 	/// @brief Constructor
 	/// @param parent Parent window
 	SubsEditBox(wxWindow *parent, agi::Context *context);

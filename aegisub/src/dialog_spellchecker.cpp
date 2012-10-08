@@ -45,6 +45,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
+#include "text_selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "utils.h"
 
@@ -208,7 +209,7 @@ bool DialogSpellChecker::FindNext() {
 		start_line = active_line;
 	}
 
-	int start_pos = context->editBox->GetReverseUnicodePosition(context->editBox->GetCurrentPos());
+	int start_pos = context->textSelectionController->GetInsertionPoint();
 	int commit_id = -1;
 
 	if (CheckLine(active_line, start_pos, &commit_id))
@@ -288,7 +289,7 @@ void DialogSpellChecker::Replace() {
 	if (active_line->Text.Mid(word_start, word_end - word_start) == orig_word->GetValue()) {
 		active_line->Text = active_line->Text.Left(word_start) + replace_word->GetValue() + active_line->Text.Mid(word_end);
 		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
-		context->editBox->SetCurrentPos(context->editBox->GetUnicodePosition(word_start + replace_word->GetValue().size()));
+		context->textSelectionController->SetInsertionPoint(word_start + replace_word->GetValue().size());
 	}
 }
 
@@ -300,8 +301,8 @@ void DialogSpellChecker::SetWord(wxString const& word) {
 	suggest_list->Clear();
 	suggest_list->Append(suggestions);
 
-	context->editBox->SetSelectionU(word_start, word_end);
-	context->editBox->SetCurrentPos(context->editBox->GetUnicodePosition(word_end));
+	context->textSelectionController->SetSelection(word_start, word_end);
+	context->textSelectionController->SetInsertionPoint(word_end);
 
 	add_button->Enable(spellchecker->CanAddWord(word));
 }

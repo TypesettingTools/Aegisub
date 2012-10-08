@@ -51,6 +51,7 @@
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
+#include "text_selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "video_context.h"
@@ -334,8 +335,8 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		context->subsGrid->SelectRow(curLine,false);
 		context->subsGrid->MakeCellVisible(curLine,0);
 		if (field == 0) {
-			context->subsGrid->SetActiveLine(context->subsGrid->GetDialogue(curLine));
-			context->editBox->SetSelectionU(pos,pos+replaceLen);
+			context->selectionController->SetActiveLine(context->subsGrid->GetDialogue(curLine));
+			context->textSelectionController->SetSelection(pos, pos + replaceLen);
 		}
 
 		// Update video

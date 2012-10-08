@@ -7,6 +7,7 @@ class DialogManager;
 template<class T> class SelectionController;
 class SubsTextEditCtrl;
 class SubtitlesGrid;
+class TextSelectionController;
 class VideoContext;
 class VideoDisplay;
 class wxWindow;
@@ -22,6 +23,7 @@ struct Context {
 	// Controllers
 	AudioController *audioController;
 	SelectionController<AssDialogue *> *selectionController;
+	TextSelectionController *textSelectionController;
 	VideoContext *videoController;
 
 	// Things that should probably be in some sort of UI-context-model
@@ -33,7 +35,6 @@ struct Context {
 	AudioBox *audioBox;
 	AudioKaraoke *karaoke;
 	DialogManager *dialog;
-	SubsTextEditCtrl *editBox;
 	SubtitlesGrid *subsGrid;
 	VideoDisplay *videoDisplay;
 };

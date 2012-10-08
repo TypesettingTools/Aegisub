@@ -212,6 +212,7 @@ SRC += \
 	preferences.cpp \
 	preferences_base.cpp \
 	scintilla_text_ctrl.cpp \
+	scintilla_text_selection_controller.cpp \
 	spellchecker.cpp \
 	spline.cpp \
 	spline_curve.cpp \
