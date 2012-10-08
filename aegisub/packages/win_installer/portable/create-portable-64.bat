@@ -15,8 +15,8 @@ xcopy ..\src\x64\Microsoft.VC90.CRT\* aegisub-portable\Microsoft.VC90.CRT\ > NUL
 xcopy config.json aegisub-portable\ > NUL
 
 echo Creating SFX
-del ..\output\aegisub-3.0.2-portable-64.exe
-WinRAR a -sfx -s -m5 -ep1 -r -zportable-comment.txt -iimgside-logo.bmp -iiconicon.ico ..\output\aegisub-3.0.2-portable-64.exe aegisub-portable\
+del ..\output\aegisub-3.1.0-portable-64.exe
+WinRAR a -sfx -s -m5 -ep1 -r -zportable-comment.txt -iimgside-logo.bmp -iiconicon.ico ..\output\aegisub-3.1.0-portable-64.exe aegisub-portable\
 
 echo Removing temp dir
 rmdir /S /Q aegisub-portable > NUL
