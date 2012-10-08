@@ -89,13 +89,6 @@
 /* Define to 1 if you have the <locale.h> header file. */
 #define HAVE_LOCALE_H 1
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#define HAVE_MALLOC 1
-
-/* Define to 1 if you have the <malloc.h> header file. */
-#define HAVE_MALLOC_H 1
-
 /* Define to 1 if you have the `memchr' function. */
 #define HAVE_MEMCHR 1
 
@@ -190,7 +183,7 @@
 #undef HUNSPELL_EXPERIMENTAL
 
 /* "Define if you need warning messages" */
-#undef HUNSPELL_WARNING_ON
+#define HUNSPELL_WARNING_ON
 
 /* Define as const if the declaration of iconv() needs const. */
 #define ICONV_CONST 1
@@ -211,5 +204,5 @@
 #define PACKAGE_TARNAME
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.1.11"
-#define VERSION "1.1.11"
+#define PACKAGE_VERSION "1.3.2"
+#define VERSION "1.3.2"

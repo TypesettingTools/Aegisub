@@ -1,8 +1,6 @@
 #ifndef _HTYPES_HXX_
 #define _HTYPES_HXX_
 
-#define MAXDELEN    8192
-
 #define ROTATE_LEN   5
 
 #define ROTATE(v,q) \
@@ -13,10 +11,8 @@
 #define H_OPT_ALIASM (1 << 1)
 #define H_OPT_PHON   (1 << 2)
 
-#define HENTRY_WORD(h) &(h->word)
-#define HENTRY_DATA(h) (h->var ? ((h->var & H_OPT_ALIASM) ? \
-    *((char **) (&(h->word) + h->blen + 1)) : &(h->word) + h->blen + 1) : NULL)
-#define HENTRY_FIND(h,p) (HENTRY_DATA(h) ? strstr(HENTRY_DATA(h), p) : NULL)
+// see also csutil.hxx
+#define HENTRY_WORD(h) &(h->word[0])
 
 // approx. number  of user defined words
 #define USERWORD 1000
@@ -30,7 +26,7 @@ struct hentry
   struct   hentry * next; // next word with same hash code
   struct   hentry * next_homonym; // next homonym word (with same hash code)
   char     var;       // variable fields (only for special pronounciation yet)
-  char     word;      // variable-length word (8-bit or UTF-8 encoding)
+  char     word[1];   // variable-length word (8-bit or UTF-8 encoding)
 };
 
 #endif

@@ -11,7 +11,7 @@ using namespace std;
 #endif
 
 static struct {
-	char * pat[2];
+	const char * pat[2];
 	int arg;
 } PATTERN[] = {
 	{ { "\\(", "\\)" } , 0 },
@@ -21,6 +21,7 @@ static struct {
 	{ { "\\[", "\\]" } , 0 },
 	{ { "\\begin{displaymath}", "\\end{displaymath}" } , 0 },
 	{ { "\\begin{equation}", "\\end{equation}" } , 0 },
+	{ { "\\begin{equation*}", "\\end{equation*}" } , 0 },
 	{ { "\\cite", NULL } , 1 },
 	{ { "\\nocite", NULL } , 1 },
 	{ { "\\index", NULL } , 1 },
@@ -79,10 +80,14 @@ static struct {
 	{ { "\\fcolorbox", NULL } , 2 },
 	{ { "\\declaregraphicsextensions", NULL } , 1 },
 	{ { "\\psfig", NULL } , 1 },
-	{ { "\\url", NULL } , 1 }
+	{ { "\\url", NULL } , 1 },
+	{ { "\\eqref", NULL } , 1 },
+	{ { "\\vskip", NULL } , 1 },
+	{ { "\\vglue", NULL } , 1 },
+	{ { "\'\'", NULL } , 1 }
 };
 
-#define PATTERN_LEN (sizeof(PATTERN) / ((sizeof(char *) * 2) + sizeof(int)))
+#define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
 
 LaTeXParser::LaTeXParser(const char * wordchars)
 {
@@ -102,7 +107,7 @@ int LaTeXParser::look_pattern(int col)
 {
 	for (unsigned int i = 0; i < PATTERN_LEN; i++) {
 		char * j = line[actual] + head;
-		char * k = PATTERN[i].pat[col];
+		const char * k = PATTERN[i].pat[col];
 		if (! k) continue;
 		while ((*k != '\0') && (tolower(*j) == *k)) {
 			j++;
@@ -130,6 +135,7 @@ char * LaTeXParser::next_token()
 {
 	int i;
 	int slash = 0;
+	int apostrophe;
 	for (;;) {
 		// fprintf(stderr,"depth: %d, state: %d, , arg: %d, token: %s\n",depth,state,arg,line[actual]+head);
 		
@@ -164,9 +170,12 @@ char * LaTeXParser::next_token()
 			}
 			break;
 		case 1: // wordchar
-			if (! is_wordchar(line[actual] + head)) {
+			apostrophe = 0;
+			if (! is_wordchar(line[actual] + head) ||
+			  (line[actual][head] == '\'' && line[actual][head+1] == '\'' && ++apostrophe)) {
 				state = 0;
 				char * t = alloc_token(token, &head);
+				if (apostrophe) head += 2;
 				if (t) return t;
 			}
 			break;

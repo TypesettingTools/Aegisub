@@ -393,6 +393,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\hunspell\filemgr.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\filemgr.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\hunspell\hashmgr.cxx"
 				>
 			</File>
@@ -417,6 +425,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\hunspell\hunvisapi.h"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\hunzip.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\hunzip.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\hunspell\langnum.hxx"
 				>
 			</File>
@@ -429,15 +449,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\hunspell\replist.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\hunspell\replist.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\hunspell\suggestmgr.cxx"
 				>
 			</File>
 			<File
 				RelativePath="..\hunspell\suggestmgr.hxx"
-				>
-			</File>
-			<File
-				RelativePath="..\hunspell\utf_info.cxx"
 				>
 			</File>
 		</Filter>

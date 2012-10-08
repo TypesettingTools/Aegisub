@@ -1,40 +1,29 @@
+#include "hunvisapi.h"
+
 #include "hashmgr.hxx"
 #include "affixmgr.hxx"
 #include "suggestmgr.hxx"
-#include "csutil.hxx"
 #include "langnum.hxx"
 
-#define  SPELL_COMPOUND  (1 << 0)
-#define  SPELL_FORBIDDEN (1 << 1)
-#define  SPELL_ALLCAP    (1 << 2)
-#define  SPELL_NOCAP     (1 << 3)
-#define  SPELL_INITCAP   (1 << 4)
+#define  SPELL_XML "<?xml?>"
 
+#define MAXDIC 20
 #define MAXSUGGESTION 15
 #define MAXSHARPS 5
+
+#define HUNSPELL_OK       (1 << 0)
+#define HUNSPELL_OK_WARN  (1 << 1)
 
 #ifndef _MYSPELLMGR_HXX_
 #define _MYSPELLMGR_HXX_
 
-#ifdef HUNSPELL_STATIC
-	#define DLLEXPORT
-#else
-	#ifdef HUNSPELL_EXPORTS
-		#define DLLEXPORT  __declspec( dllexport )
-	#else
-		#define DLLEXPORT  __declspec( dllimport )
-	#endif
-#endif
-
-#ifdef W32
-class DLLEXPORT Hunspell
-#else
 class Hunspell
-#endif
 {
   AffixMgr*       pAMgr;
-  HashMgr*        pHMgr;
+  HashMgr*        pHMgr[MAXDIC];
+  int             maxdic;
   SuggestMgr*     pSMgr;
+  char *          affixpath;
   char *          encoding;
   struct cs_info * csconv;
   int             langnum;
@@ -47,10 +36,12 @@ public:
   /* Hunspell(aff, dic) - constructor of Hunspell class
    * input: path of affix file and dictionary file
    */
-  
-  Hunspell(const char * affpath, const char * dpath);
 
+  Hunspell(const char * affpath, const char * dpath, const char * key = NULL);
   ~Hunspell();
+
+  /* load extra dictionaries (only dic files) */
+  int add_dic(const char * dpath, const char * key = NULL);
 
   /* spell(word) - spellcheck word
    * output: 0 = bad word, not 0 = good word
@@ -74,6 +65,10 @@ public:
 
   int suggest(char*** slst, const char * word);
 
+  /* deallocate suggestion lists */
+
+  void free_list(char *** slst, int n);
+
   char * get_dic_encoding();
 
  /* morphological functions */
@@ -89,8 +84,8 @@ public:
  /* stem(result, analysis, n) - get stems from a morph. analysis
   * example:
   * char ** result, result2;
-  * int n1 = analyze(result, "words");
-  * int n2 = stem(result2, result, n1);   
+  * int n1 = analyze(&result, "words");
+  * int n2 = stem(&result2, result, n1);   
   */
  
   int stem(char*** slst, char ** morph, int n);
@@ -103,7 +98,7 @@ public:
   * example:
   * char ** result;
   * char * affix = "is:plural"; // description depends from dictionaries, too
-  * int n = generate(result, "word", &affix, 1);
+  * int n = generate(&result, "word", &affix, 1);
   * for (int i = 0; i < n; i++) printf("%s\n", result[i]);
   */
 
@@ -123,7 +118,6 @@ public:
   int add_with_affix(const char * word, const char * example);
 
   /* remove word from the run-time dictionary */
-  /* NOTE: not implemented yet */
 
   int remove(const char * word);
 
@@ -135,6 +129,8 @@ public:
 
   struct cs_info * get_csconv();
   const char * get_version();
+
+  int get_langnum() const;
   
   /* experimental and deprecated functions */
 
@@ -146,7 +142,6 @@ public:
   /* spec. suggestions */
   int suggest_auto(char*** slst, const char * word);
   int suggest_pos_stems(char*** slst, const char * word);
-  char * get_possible_root();
 #endif
 
 private:
@@ -164,8 +159,13 @@ private:
    hentry * spellsharps(char * base, char *, int, int, char * tmp, int * info, char **root);
    int    is_keepcase(const hentry * rv);
    int    insert_sug(char ***slst, char * word, int ns);
-   char * cat_result(char * result, char * st);
+   void   cat_result(char * result, char * st);
    char * stem_description(const char * desc);
+   int    spellml(char*** slst, const char * word);
+   int    get_xml_par(char * dest, const char * par, int maxl);
+   const char * get_xml_pos(const char * s, const char * attr);
+   int    get_xml_list(char ***slst, char * list, const char * tag);
+   int    check_xml_par(const char * q, const char * attr, const char * value);
 
 };
 

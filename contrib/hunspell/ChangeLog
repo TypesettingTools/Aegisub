@@ -1,3 +1,709 @@
+2011-02-16 Németh László <nemeth at numbertext dot org>:
+        * src/*/Makefile.am: fix library versioning, the probem reported by
+          Rene Engerhald and Simon Brouwer.
+
+	* man/hunspell.4: new version based on the revised version of Ruud Baars
+
+2011-02-02 Németh László <nemeth at OOo>:
+	* suggestngr.cxx: fix ngram PHONE suggestion for input words with
+	  diacritics using UTF-8 encoded dictionaries (add byte length to the
+	  8-bit phonet() argument instead of character length)
+
+	* suggestmgr.cxx: fix missing csconv problem with UTF-8 encoding
+	  dictionares, when the input contains non-BMP characters
+	- tests/utf8_nonbmp.sug: test file
+
+	* suggestmgr.cxx: mixed and keyboard based character suggestions
+	  don't forbid ngram suggestion search (optimized tests/suggestiontest)
+
+	* affixmgr.cxx: fix hun#2999225: interfering compounding mechanisms,
+	  tested on Dutch word list and reported by Ruud Baars
+
+	* affixmgr.cxx: allomorph fix for hun#2970240 (Hungarian 
+	  compound "vadász+gép" was analyzed as vad+ász+gép, and rejected
+	  by the ss->s rep rule (verb "vadássz"), but the analysis
+	  didn't continue for the longer word parts (vadász+gép).
+
+	* csutil.cxx: add lang code "az_AZ", "hu_HU", "tr_TR" for back
+	  compatibility (fixing Azeri and Turkish casing conversion, also
+	  Hungarian compound handling)
+
+	* affixmgr.cxx: fix morphological analysis
+
+2011-01-26 Németh László <nemeth at OOo>:
+	* affixmgr.cxx: fix for moz#626195 (memcheck problem with FULLSTRIP).
+
+	* affixmgr.*, suggestmgr.cxx: FORBIDWARN parameter (see manual)
+
+2011-01-24 Németh László <nemeth at OOo>:
+	* suffixmgr.cxx: fix bad suggestion of forbidden compound words, eg. 
+	  "termijndoel" with the Dutch dictionary. Reported by Ruud Baars.
+
+	* latexparser.cxx: fix double apostrophe TeX quoation mark tokenization
+	  (hun#3119776), reported by Wybodekker at SF.net.
+
+	* tests/suggestiontest/*: multilanguage and single Hunspell version, see README
+	* tests/suggestiontest/prepare2: for make -f Makefile.orig single
+
+2011-01-22 Németh László <nemeth at OOo>:
+	* affixmgr.*, suggestmgr.*: new features
+	  ONLYMAXDIFF: remove all bad ngram suggestions (default mode keeps one)
+	  NONGRAMSUGGEST: similar to NOSUGGEST, but it forbids to use the word
+	  in ngram based (more, than 1-character distance) suggestions.
+
+2011-01-21 Németh László <nemeth at OOo>:
+	* suggestmgr.*: limit wild suggestions (hun#2970237 by Ruud Baars)
+	- limited compound word suggestions
+	- improved and limited ngram based suggestions
+	* tests/*.sug: modified test files
+	- feature MAXCPDSUGS:
+	  MAXCPDSUGS 0 : no compound suggestion, suggested by
+	  Finn Gruwier Larsen in hunfeat#2836033
+	  MAXCPDSUGS n : max. ~n compound suggestions
+	- feature MAXDIFF: differency limit for ngram suggestions: 0-10 
+	  eg. MAXDIFF 5: normal (default) limit
+	  MAXDIFF 0: only one ngram suggestion
+	  MAXDIFF 10: ~maxngramsugs ngram suggestions 
+
+	* affixmgr.*, hunspell.*: add flag FORCEUCASE (hun#2999228), force
+	  capitalization of compound words, see Hunspell 4 manual),
+	  suggested by Ruud Baars
+	  test/forceucase.*: test files
+
+	* affixmgr.*, hunspell.*: add flag WARN (hun#1808861), optional warning feature
+	  for rare words, suggested by Ruud Baars
+	  tests/warn: test files
+	* tools/hunspell.cxx: add option -r for optional filtering of rare words
+
+	* affixmgr.cxx: fix hun#3161359 (gcc warnings) reported by Ryan VanderMeulen.
+
+2011-01-17 Németh László <nemeth at OOo>:
+	* suggestmgr.cxx: fix hun#3158994 and hun#3159027 (missing csconv table
+	  using awkward 8bit capitalization of UTF-8 encoded dictionary words with PHONE
+	  suggestion, reported by benjarobin and dicollecte at SF.net).
+
+2011-01-13 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: ONLYINCOMPOUND fix for hun#2999224 (fogemorphene
+          was allowed in end position of compoundings). Reported by Ruud Baars.
+        * tests/onlyincompound2.*: test files
+
+2011-01-10 Ingo H. de Boer <idb_winshell at SF.net>:
+	* win_api/{hunspell,libhunspell, testparser}.vcproj: updated project
+	  files for the library and the executables. Compiling problem
+	  also reported by Don Walker.
+
+2011-01-06 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: fix freedesktop#32850 (program halt during Hungarian
+          spell checking of the word "6csillagocska6", reported by András Tímár)
+
+        * tools/hunspell.cxx: add Mac OS X Hunspell dictionary paths, asked by
+          Vidar Gundersen in hunfeat#3142010
+
+2011-01-05 Caolán McNamara <cmc at OOo>:
+	* moz#620626 NS_UNICHARUTIL_CID doesn't support
+	  case conversion
+
+2011-01-03 Németh László <nemeth at OOo>:
+	* NEWS and THANKS: update for release 1.2.13
+
+2010-12-20 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: hun#3140784
+
+2010-12-16 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: 
+        - improved fix of hun#2970242 (supporting
+          zero affixes, reported by Ruud Baars
+        - tests/opentaal_cpdpat{,2}: test files
+
+        - switching off default BREAK parameters by BREAK 0,
+          reported by Ruud Baars
+
+        - hun#2999225: interfering compounding mechanisms, reported by Ruud Baars
+
+2010-12-11 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: fix hun#2970242 (CHECKCOMPOUNDPATTERN only with flags),
+          the bug reported by Ruud Baars
+        * tests/2970242.*: test files
+
+        * tests/2970240.*: test files for CHECKCOMPOUNDPATTERN fix (check all
+          boundaries in compound words, fixed by the previous CHECKCOMPOUNDREP
+          fix), the bug reported by Ruud Baars
+
+        * win_api/Makefile.cygwin: update
+
+2010-12-09 Caolán McNamara <cmc at OOo>:
+	* moz#617953 fix leak
+
+2010-11-08 Caolán McNamara <cmc at OOo>:
+	* rhbz#650503 crash in arabic dictionary
+
+2010-11-05 Caolán McNamara <cmc at OOo>:
+	* rhbz#648740 don't warn on empty flagvector
+
+2010-11-03 Caolán McNamara <cmc at OOo>:
+	* logically we shouldn't need a csconv table in utf-8 mode
+
+2010-10-27 Németh László <nemeth at OOo>:
+	* hun#3000055 (requested by Ruud Baars) add REP boundary specifiation:
+	  REP ^word$ xxxx
+	  REP ^wordstarting xxxx
+	  REP wordending$ xxxx
+
+	* hun#3008434 (requested by Adrián Chaves Fernández) and
+	  hun#3018929 (requested by Ruud Baars): REP with more than 2 words:
+	  REP morethantwo more_than_two
+
+	* suggestmgr.cxx: fix incomplete suggestion list for capitalized words,
+	  eg. missing Machtstrijd->Machtsstrijd in the Dutch dictionary
+	  (reported by Ruud Bars)
+
+	* tests, man: related updates
+
+2010-10-12 Caolán McNamara <cmc at OOo>:
+	* moz#603311 HashMgr::load_tables leaks dict when decode_flags fails
+	* fix mem leak found with new tests
+	* hun#3084340 allow underscores in html entity names
+
+2010-10-07 Németh László <nemeth at OOo>:
+	* affixmgr.cxx: 
+	- hun#2970239 fix bad suggestion of forbidden compound words
+	- hun#2999224 fix keepcase feature on compound words (only partial
+	  fix for COMPOUNDRULE based compounding)
+	- fix checkcompoundrep feature in compound words (check all boundaries,
+	  not only the last one)
+	  Problems reported by Ruud Baars.
+	  
+	* tests/opentaal_forbiddenword[12]*, tests/opentaal_keepcase*:
+	  new test files for the previous fixes
+	* tests/checkcompoundrep: extended test file.
+
+2010-09-05 Caolán McNamara <cmc at OOo>:
+	* moz#583582 fix double buffer gcc fortify issue
+
+2010-08-13 Caolán McNamara <cmc at OOo>:
+	* moz#586671 AffixMgr::parse_convtable leaks pattern/pattern2 if it
+	can't create both
+	* moz#586686 tidy up get_xml_list and friends
+
+2010-08-10 Caolán McNamara <cmc at OOo>:
+	* hun#3022860 fix remove duplicate code
+
+2010-07-17 Caolán McNamara <cmc at OOo>:
+	* remove ununsed get_default_enc and avoid potential misrecognition of
+	three letter language ids
+	* normalize encoding names before lookup
+
+2010-07-05 Caolán McNamara <cmc at OOo>:
+	* hun#2286060 add Hangul syllables to unicode tables
+
+2010-06-26 Caolán McNamara <cmc at OOo>:
+	* moz#571728 keep new[]/delete[] wrappers in sync for embedded in moz
+	case
+
+2010-06-13 Caolán McNamara <cmc at OOo>:
+	* moz#571728 keep new[]/delete[] wrappers in sync for embedded in moz
+	case
+
+2010-06-02 Caolán McNamara <cmc at OOo>:
+	* moz#569611 compile cleanly under win64
+
+2010-05-22 Caolán McNamara <cmc at OOo>:
+	* moz#525581 apply mozilla's current preferred get_current_cs impl
+
+2010-05-17 Németh László <nemeth at OOo>:
+	* affixmgr.cxx: fix bad limitation of parenthesized flags at
+	  COMPOUNDRULEs. Windows crash reported by Ruud Baars and Simon Brouwer.
+
+2010-05-05 Caolán McNamara <cmc at OOo>:
+	* rhbz#589326 malloc of int that should have been of char**
+	* hun#2997388 fix ironic misspellings
+
+2010-04-28 Caolán McNamara <cmc at OOo>:
+	* moz#550942 get_xml_list doesn't handle failure from get_xml_par
+
+2010-04-27 Caolán McNamara <cmc at OOo>:
+	* moz#465612 mozilla-specific code leaks
+	* moz#430900 phone is dereferenced before oom check
+	* moz#418348 ckey_utf alloc is used unchecked in SuggestMgr::badcharkey_utf
+	* CID#1487 pointer "rl" dereferenced before NULL check
+	* CID#1464 Returned without freeing storage "ptr"
+	* CID#1459 Avoid duplicate strchr
+	* CID#1443 Avoid any chance of dereferencing *slst
+	* CID#1442 Unsafe to have a null morph
+	* CID#1440 Avoid null filenames
+	* CID#1302 Dereferencing NULL value "apostrophe"
+	* CID#1441 Avoid deferencing null ppfx
+
+2010-04-16 Caolán McNamara <cmc at OOo>:
+	* hun#2344123 fix U)ncap in utf-8 locale
+	* fix up hunspell text UI and lines wider than terminal
+
+2010-04-15 Caolán McNamara <cmc at OOo>:
+	* hun#2613701 fix small leak in FileMgr::FileMgr
+	* fix small leak in tools/hunspell
+	* hun#2871300 avoid crash if def and words are NULL
+	* hun#2904479 fix length of hzip file
+	* hun#2986756 mingw build fix
+	* hun#2986756 fix double-free
+	* hun#2059896 fix crash in interactive mode without nls
+	* hun#2917914 add some extra words to the latexparser
+	* make some structs static
+	* C-api has duped symbol names
+	* regenerate gettext/intl with recent version
+	* hun#2796772 build a .dll under MinGW
+	* rhbz#502387 allow cross-compiling for MinGW target
+	* hun#2467643 update .vcproj files to include replist.?xx
+	* unify visiblity/dll_export support across platforms
+	* hun#2831289 sizeof(short) typo
+	* hun#2986756 add -u3 gcc style output
+
+2010-04-14 Caolán McNamara <cmc at OOo>:
+	* hun#2813804 fix segfault on hu_HU stemming
+
+2010-04-13 Caolán McNamara <cmc at OOo>:
+	* hun#2806689 fix ironic misspellings
+	* hun#2836240 add Italian translations
+
+2010-04-09 Caolán McNamara <cmc at OOo>:
+	* fix titchy possible leak in command-line spellchecker
+
+2010-04-07 Caolán McNamara <cmc at OOo>:
+	* hun#2973827 apply win64 patch
+	* hun#2005643 fix broken mystrdup
+
+2010-03-04 Caolán McNamara <cmc at OOo>:
+	* ooo#107768 fix crash in long strings in spellml mode
+	* hun#1999737 add some malloc checks
+	* hun#1999769 drop old buffer on realloc failure
+	* hun#2005643 tidy string functions
+	* hun#2005643 micro-opt
+	* hun#2006077 free strings on failed dict parse
+	* hun#2110783 ispell-alike verbose mode implementation
+
+2010-03-03 Németh László <nemeth at OOo>:
+	* hunspell/(affixmgr, suggestmgr).cxx: add character sequence
+	  support for MAP suggestion, using parenthesized character groups
+	  in the syntax, eg. MAP ß(ss).
+	* man/hunspell.4, tests/map*: documentation and test files
+
+2010-02-25 Németh László <nemeth at OOo>:
+	* hunspell/hunspell.cxx: add recursion limit for BREAK (fix OOo Issue 106267)
+
+	* hunspell/hunspell.cxx: fix crash in morphological analysis of
+	  capitalized words with ending dashes
+
+	* affixmgr.cxx: fix morphological analysis of long numbers combined with dash,
+	  eg. 45-00000045 (reported by a@freeblog.hu).
+
+2010-02-23 Caolán McNamara <cmc at OOo>:
+	* hun#2314461 improve ispell-alike mode
+	* hun#2784983 improve default language detection
+	* hun#2812045 fix some compiler warnings
+	* hun#2910695 survive missing HOME dir
+	* hun#2934195 fix suggestmgr crash
+	* hun#2921129 remove unused variables
+	* hun#2826164 make sure make check uses the in-tree libhunspell
+	* bump toolchain to support --disable-rpath
+	* hun#2843984 fix coverity warning
+	* hun#2843986 fix coverity warning
+	* hun#2077630 add iconv lib
+	* make gcc strict-aliasing warning free
+	* make cppcheck warning free
+
+2008-11-01 Németh László <nemeth at OOo>:
+	* replist.*, hunspell.cxx, affixmgr.cxx: new input and output
+          conversion support, see ICONV and OCONV keywords in the Hunspell(4)
+          manual page and the test examples. The input/output conversion
+          problem of syllabic languages reported by Daniel Yacob and
+          Shewangizaw Gulilat.
+        - tests/{iconv,oconv}.*: test examples
+
+	* tools/wordforms: word generation script for dictionary developers
+          (Hunspell version of the unmunch program)
+
+	* hunspell/hunspell.cxx: extended BREAK feature: ^ and $ mean in break
+          patterns the beginning and end of the word.
+	- tests/BREAK.*: modified examples.
+
+	* hunspell/hunspell.cxx: set default break at hyphen characters. 
+	  The associated problem reported by S Page in Hunspell Bug 2174061.
+          See Mozilla Bug ID 355178 and OOo Issue 64400, too.
+	- tests/breakdefault.*: test data
+	  The following definition is equivalent of the default word break:
+
+	  BREAK 3
+          BREAK -
+          BREAK ^-
+          BREAK -$
+
+	* affixmgr.cxx: SIMPLIFIEDTRIPLE is a new affix file keyword to allow
+          simplified forms of the compound words with triple repeating letters.
+	  It is useful for Swedish and Norwegian languages.
+ 
+	* affixmgr.cxx: extend CHECKCOMPOUNDPATTERN to support
+          alternations of compound words for example by sandhi
+          feature of Indian and other languages. The problem reported
+          by Kiran Chittella associated with Telugu writing system
+          (see Telugu example in tests/checkcompoundpattern4.test).
+          The new optional field of CHECKCOMPOUNDPATTERN definition is the
+          replacement of the compound boundary defined by the previous fields:
+	  CHECKCOMPOUNDPATTERN ff f ff
+	  means ff|f compound boundary has been replaced by "ff", like in
+          the (prereform) German Schiffahrt (Schiff+fahrt).
+        - CHECKCOMPOUNDPATTERN supports also optional flag conditions now:
+	  CHECKCOMPOUNDPATTERN ff/A f/B ff
+          means that the first word of the compound needs flag "A" and
+          the second word of the compound needs flag "B" to the operation.
+
+	* tools/hunspell.cxx: add empty lines as separators to the output of
+          the stemming and morphological analysis.
+
+	* affixmgr.cxx: fix condition checking algorithm. Bad suggestion
+          generation reported by Mehmet Akin in SF.net Bug 2124186 with help of
+          Eleonora Goldman.
+
+	* affixmgr,cxx: fix COMPOUNDWORDMAX feature. The problem and its
+          code details reported by Göran Andersson under SF.net Bug ID 2138001.
+
+	* csutil.cxx: fix bad conditional code for Mozilla compilation.
+          Patch by Serge Gautherie. The problem reported by Ryan VanderMeulen.
+
+	* hunspell/hunspell.cxx: add missing ngram suggestion for HUHINITCAP
+          (capitalized mixed case) words.
+
+	* w_char.hxx: use GCC conditions for GCC related code. Patch by
+          Ryan VanderMeulen.
+
+	* affixmgr.cxx: check morphological description in morphgen()
+	  (fix potential program fault by incomplete morphological
+	   description of affix rules)
+
+	* src/win_api: config.h: switch on warning messages on Windows
+
+	* tools/affixcompress: extended help for -h (use LC_ALL=C sort
+          for input word list)
+
+	* man/hunspell.4: updated manual:
+        - new and modified features (SIMPLIFIEDTRIPLE, ICONV, OCONV,
+          BREAK, CHECKCOMPOUNDPATTERN).
+        - note about costs of zero affixes, suggested by Olivier Ronez.
+
+	* hunspell/hunspell.cxx: remove deprecated word breaking codes.
+
+2008-08-15 Németh László <nemeth at OOo>:
+	* affentry.cxx: add FULLSTRIP option. With FULLSTRIP, affix rules can
+	  strip full words, not only one less characters. Suggested by
+	  Davide Prina and other developers in OOo Issue 80145.
+	* tests/fullstrip.*: Test data based on Davide Prina's example.
+	* tools/unmunch.cxx: modified for FULLSTRIP.
+
+	* affixmgr.cxx: COMPOUNDRULE now works with long and numerical flag
+	  types by parenthesized flags. Syntax: (flag)*, (flag)(flag)?(flag)*.
+	* tests/compoundrule[78].*: tests with parenthesized COMPOUNDRULE
+	  definitions.
+
+	* suggestmgr.cxx: modified badchar*(), forgotchar*() and extrachar*()
+	  1-character distance suggestion algorithms: search a TRY character
+	  in all position instead of all TRY characters in a character position
+	  (it can give more readable suggestion order, also better suggestions
+	  in the first positions, when TRY characters are sorted by frequency.)
+	  For example, suggestions for "moze":
+	  ooze, doze, Roze, maze, more etc. (Hunspell 1.2.6),
+	  maze, more, mote, ooze, mole etc. (Hunspell 1.2.7).
+
+	* suggestmgr.cxx: extended compound word checking for better COMPOUNDRULE
+	  related suggestions, for example English ordinal numbers: 121323th ->
+	  121323rd (it needs also a th->rd REP definition).
+
+	* phonet.cxx: cast unsigned char parameter of isdigit() and fix
+	  isalpha by myisalpha() (potential problems in Windows environment).
+	  Reported by Thomas Lange in OOo Issue 92736.
+
+	* hunspell/csutil.*,hunspell/{affentry,affixmgr,hunspell,suggestmgr}.cxx:
+	  fix potential buffer overloading under morphological analysis by the
+	  new mystrcat() function. Reported by Molnár Andor (dolhpy at true
+	  dot hu) in SF.net Bug 2026203.
+
+	* affixmgr.cxx: add recursion limit to defcpd(). Fix OOo Issue 76067:
+	  crash-like deceleration by checking hexadecimal numbers with long FFF
+	  sequence (combinatory explosion by the en_US words "f" and "ff").
+	  Missing fix reported by Mathias Bauer.
+
+	* affixmgr.cxx: fix the difference in the Unicode and non-Unicode
+	  parts of cpdcase_check(). Bug report by Brett Wilson.
+
+	* filemgr.*, affixmgr.cxx, csutil.*, hashmgr.*: warning messages now
+	  contain line numbers (use --with-warnings configure option for
+	  warning messages).
+
+	* hunspell.cxx: analyze(): fix case conversion of stemming and
+	  morphological analysis of UTF-8 encoded input. Reported by Ferenc Godó.
+
+	* tools/hunspell.cxx: fix LaTeX Unicode support in filter mode.
+	  Reported by Jan Seeger in SF.net Bug 2039990.
+
+	* affixmgr.hxx: 0.5 or in 64 bit environment, 1 MB (virtual) memory
+	  saving using only the requested size for sFlag and pFlag arrays.
+	  Bug report by Brett Wilson.
+
+	* affixmgr.cxx,tools/hunspell.cxx: get_version() returns with full
+	  VERSION affix parameter instead of its first word. Fixes for
+	  Hunspell's header. Some problems with Hunspell header reported in
+	  SF.net Bug 2043080.
+
+2008-07-15 Németh László <nemeth at OOo>:
+	* affentry.cxx: fixes of the affix rule matching algorithm (affected
+	  only the sk_SK dictionary from all OpenOffice.org dictionaries):
+	- fix dot pattern + accented letters matching (in non Unicode encoding)
+	- word-length conditions work again
+	* tests/condition.*: extended test for the fix.
+
+	* hashmgr.cxx: load multiword expressions: spaces may be parts
+	  of the dictionary words again (but spaces also work as morphological
+	  field separators: word word2 -> "word word2", word po:noun -> "word").
+	* man/hunspell.4: updated manual
+
+	* tools/hunspell.cxx: add iconv character conversion support to
+	  stemming and morphological analysis
+
+	* tools/hunspell.cxx: add /usr/share/myspell/dicts search path for
+	  Ubuntu support
+
+2008-07-09 Németh László <nemeth at OOo>:
+        * affentry.cxx: fixes of the affix rule matching algorithm:
+	- right ASCII character handling in bracket expression;
+	- fault-tolerant nextchar() for bad rules.
+          Problem with the en_GB dictionary and nextchar() with a detailed
+	  code analysis reported by John Winters in SF.net Bug ID 2012753.
+	* tests/condition.*: extended test for the fix.
+
+	* hunspell/hunspell.*, parsers/*, tools/hunspell.cxx: fix compiler
+	  warnings (deprecated const-free char consts)
+
+	* win_api/hunspelldll.*: add hunspell_free_list(), the problem
+	  reported by Laurier Mercer.
+
+2008-06-30 Török László <torok_laszlo at users dot SF dot net>:
+	* tests/affixmgr.cxx: fix morphological analysis: strcat() on
+	  an uninitialized char array in suffix_check_morph(). 
+
+2008-06-18 Németh László <nemeth at OOo>:
+        * src/hunspell/affixmgr.cxx: fix GCC compiler warnings
+          (comparisons with string literal results in unspecified behaviour).
+          The problem reported by Ladislav Michnovič.
+
+2008-06-17 Németh László <nemeth at OOo>:
+        * src/hunspell/{hunspell.cxx,hunspell.h}: add free_list() to the C and
+          C++ interface to deallocate suggestion lists. The problem
+          reported by Laurie Mercer and Christophe Paris.
+        * csutil.cxx: fix freelist() to deallocate non-NULL list, when n = 0.
+        * tools/{analyze,example,chmorph,hunspell}.cxx: use free_list().
+
+        * tools/hunspell.cxx: fix only --with-readline compiling problem.
+          Reported by Volkov Peter in SF.net Bug 1995842.
+          
+        * man/hunspell.3,hunspell.hxx: fix analyze and generate examples in
+          the manual and comments (using char*** parameter instead of char**).
+        
+        * tools/example.cxx: fix suggestion example.
+
+2008-06-17 Németh László <nemeth at OOo>:
+        * affentry.cxx: fix the new affix rule matching algorithm of
+          Hunspell 1.2. Arabic dictionary problem reported by Khaled Hosny
+          in SF.net Bug ID 1975530. Mohamed Kebdani also sent a
+          prepared test data.
+        * tests/{1975530,condition*}: tests for the fix
+
+2008-06-13 Ingo H. de Boer <idb_winshell at SF.net>:
+        * src/hunspell/{affixmgr.cxx,hunspell.cxx}: add missing type 
+          cast to strstr() calls for VC8 compatibility.
+
+2008-06-13 Németh László <nemeth at OOo>:
+        * suggestmgr.cxx: add also part1-part2 suggestion with dash
+          for bad part1part2 word forms, suggested by Ruud Baars.
+          For example, now suggestion of "parttime": "part time"
+          and "part-time".          
+          NOTE: this feature will work only when the TRY definition
+          contains "-" or the letter "a".
+
+        * hunspell.cxx: new XML API in spell() and suggest() (see hunspell(3)).
+
+        * src/hunspell/*: fixes for OpenOffice.org build environment.
+
+        * man/{hunspell.3,hzip.1,hunzip.1}: add new manual pages for
+          Hunspell programming API and dictionary compression and
+          encryption utilities.
+          
+        * src/hunspell/*: handle failed mystrdup() calls and other potential
+          insufficient memory problems. The problem reported by Elio Voci
+          in OpenOffice.org Issue 90604 and others.
+
+        * src/tools/affixmgr.cxx: restore original behaviour of get_wordchars
+          without conditional code. Problem reported by Ingo H. de Boer
+          in SF.net Bug 1763105.
+
+        * win_api/hunspelldll.h: put_word() renamed to add() in the (old)
+          Windows DLL API bug reported in SF.net Bug 1943236. Also reported
+          by Bartkó Zoltán.
+  
+        * tools/hunspell.cxx: fix chench() for environments without
+          native language support (ENABLE_NLS 0 in config.h),
+          PHP system_exec() bug reported by Michel Weimerskirch in
+          SF.net Bug 1951087.
+        
+        * hunspell.cxx, affixmgr.cxx: remove "result" from the
+          (result && *result) conditions, when "result" is a static variable.
+          The problem and a possible solution reported by Ladislav Michnovič.
+
+        * affixmgr.cxx: parse_affix(): print line instead of NULL in
+          the warning message, when affix class header is bad.
+          The problem reported by Ladislav Michnovič.
+
+2008-06-01 Christian Lohmaier <cloph at OOo>
+        * configure.ac: patch to fix --with-readline, --with-ui logic.
+          Reported in the SF.net Bug 981395.
+
+2008-05-04: Volkov Peter <volkov_peter at users sourceforge net>
+        * configure.ac: fix LibTool 2.22 incompatibility by removing
+          unused LT_* macros. Report and patch in SF.net Bug 1957383.
+          The problem reported and fixed by Ladislav Michnovič, too.
+
+2008-04-23: Ladislav Michnovič <lmichnovic at suse cz>
+        * hunspell.pc.in: fix wrongly set directories.
+
+2008-04-12 Németh László <nemeth at OOo>:
+        * src/tools/hunspell.cxx: 
+        - Multilingual spell checking and special dictionary support with -d.
+          Multilingual spell checking suggested by Khaled Hosny (SF.net
+          Bug 1834280). Example for the new syntax:
+          
+          -d en_US,en_geo,en_med,de_DE,de_med
+          
+          en_US and de_DE are base dictionaries, and en_geo, en_med, de_med
+          are special dictionaries (dictionaries without affix file).
+          Special dictionaries are optional extension of the base dictionaries.
+          There is no explicit naming convention for special dictionaries,
+          only the ".dic" extension: dictionaries without affix file will
+          be an extension of the preceding base dictionary. First dictionary
+          in -d parameter must have an affix file (it must be a base
+          dictionary).
+
+        - new options for debugging, morphological analysis and stemming:
+          -m: morphological analysis or flag debug mode (without affix
+          rule data it signs the flag of the affix rules)
+          -s: stemming mode
+          -D: show also available dictionaries and search path
+              (suggested by Aaron Digulla in SF.net Bug 1902133)
+
+        - add missing refresh() to print bad words before the slower suggestion
+          search in UI (better user experience)
+          
+        - fix tabulator problems (reported by ugli-kid-joe AT sf DOT net)
+
+        - fix different encoding of dic and input, and suggestions
+
+        - add per mille sign to LANG hu_HU section.
+
+        - rewrite program messages. Concatenating multiple printfs for
+          easier translation suggested by András Tímár and Gábor Kelemen.
+
+        * src/hunspell/csutil.cxx: set static encds variable. Patch by
+          Rene Engerhald. SF.net Bug 1896207 and 1939988.
+        
+        * src/hunspell/w_char.hxx,csutil.hxx: reorganizing
+          w_char typedef and HENTRY_DATA, HENTRY_FIND consts
+
+        * src/hunspell/hunzip.cxx: fopen(): using rb options instead of r (fix
+          for Windows)
+          
+        * src/tools/affixmgr.cxx: restore original behaviour of get_wordchars
+          in an #ifdef WINSHELL section. Problem reported by Ingo H. de Boer
+          in SF.net Bug 1763105.
+
+        * src/tools/chmorph.cxx: remove the experimental modifications
+
+        * src/tools/hzip.c: fopen(): using wb options instead of w (fix
+          for Windows)
+
+        * src/tools/hunzip.cxx: add missing MOZILLA_CLIENT. Reported
+          by Ryan VanderMeulen.
+
+        * man/*, man/hu/*: updated manual
+
+        * man/hunspell.4: fix formatting problem (missing header)
+        
+        * tools/makealias: now works with the extra data fields.
+
+        * phonet.cxx: use HASHSIZE const
+
+        * tests/rep.aff: fix REP count
+        
+        * src/win_api/Makefile.cygwin, README: native Windows compilation
+          in Cygwin environment without cygwin1.dll dependency (see README
+          for compiling instructions).
+
+2008-04-08 Roland Smith <rsmith AT xs4all DOT nl>:
+        * src/parsers/latexparser.cxx: fix PATTERN_LEN for AMD64 and
+          other platforms with different struct padding (SF.net Bug 1937995).
+
+2008-04-03 Kelemen Gábor <kelemeng AT gnome DOT hu>:
+        * po/POTFILES.in: fix path of the source file
+
+        * po/Makevars: add --from-code=UTF-8 gettext option 
+        
+        * hunspell.cxx: add comments for shortkey translation
+
+2008-02-04 Flemming Frandsen <flfr AT stibo DOT com>
+        * src/hunspell.h: fix Windows DLL support
+        - this patch also reported by Zoltán Bartkó.
+
+2008-01-30 Mark McClain <marc_mcclain AT users DOT sf DOT net>
+        * src/hunspell.cxx: stem(): fix function call side effect
+          for PPC platform (SF.net Bug 1882105).
+
+2008-01-30 Németh László <nemeth at OOo>:
+        * hunspell.cxx, csutil.cxx, hunspelldll.c: fix
+          SF.et Bug 1851246, patch also by Ingo H. de Boer.
+
+        * hunspell.h: fix SF.net Bug 1856572 (C prototype problem),
+          patch by Mark de Does.
+
+        * hunspell.pc.in: fix SF.net Bug 1857450 wrong prefix, reported
+          by Mark de Does.
+
+        * hunspell.pc.in: reset numbering scheme: libhunspell-1.2.
+          Fix SF.net Bug 1857512 reported by Mark de Does,
+          also by Rene Engelhard.
+
+        * csutil.cxx: patches for ARM platform, signed_chars.dpatch
+          by Rene Engelhard and arm_structure_alignment.dpatch by
+          Steinar H. Gunderson <sesse@debian.org>
+
+        * hunzip.*, hzip.c: new hzip compression format
+
+        * tools/affixcompressor: affix compressor utility (similar to
+          munch, but it generates affix table automatically), works
+          with million-words dictionaries of agglutinative languages.
+
+        * README: fix problems reported by Pham Ngoc Khanh.
+
+        * csutil.cxx, suggestmgr: Warning-free in OOo builds.
+
+        * hashmgr.*, csutil.*: fix protected memory problems with
+          stored pointers on several not x86 platforms by
+          store_pointer(), get_stored_pointer().
+
+        * src/tools/hunspell.cxx: fix iconv support on Solaris platform.
+
+        * tests/IJ.good: add missing test file
+
+        * csutil.cxx: fix const char* related errors. Compiling bug
+          with Visual C++ reported by Ryan VanderMeulen and Ingo H. de Boer.
+
+2008-01-03 Caolan McNamara <cmc at OO.o>:
+        * csutil.cxx: SF.net Bug 1863239, notrailingcomma patch and
+          optimization of get_currect_cs().
+
 2007-11-01 Németh László <nemeth at OOo>:
         * hunspell/*: new feature: morphological generation,
           also fix experimental morphological analysis and stemming.
@@ -57,7 +763,7 @@
 2007-09-05 Németh László <nemeth at OOo>:
 	* win_api/Hunspell.vproj, parsers/testparser.cxx,textparser.hxx:
 	  warning fixes and removing unnecessary Windows project file.
-	  Reported by Ingo H. De Boer.
+	  Reported by Ingo H. de Boer.
 
 	* hashmgr.*, {affixmgr,suggestmgr}.cxx: optimized data structure
 	  for variable-count fields (only "ph" transliteration field in
@@ -93,7 +799,7 @@ Marseille	ph:maarsayl
 	* suggestmgr.cxx: fix twowords() for last UTF-8 multibyte character.
 	  (conditional jump or move depended on uninitialised value).
 
-2007-08-29 Ingo H. De Boer <idb_winshell at SF.net>:
+2007-08-29 Ingo H. de Boer <idb_winshell at SF.net>:
 	* win_api/{hunspell,libhunspell, testparser}.vcproj: new project
 	  files for the library and the executables.
 	
@@ -101,26 +807,26 @@ Marseille	ph:maarsayl
 	  Version number problem also reported by András Tímár.
 
 2007-08-27 Németh László <nemeth at OOo>:
-	* suggestmgr.hxx: put fixed version. Bug report by Ingo H. De Boer.
+	* suggestmgr.hxx: put fixed version. Bug report by Ingo H. de Boer.
 
 	* suggestmgr.cxx: remove variable-length local character array
-	  reported by Ingo H. De Boer.
+	  reported by Ingo H. de Boer.
 
 2007-08-27 Németh László <nemeth at OOo>:
 	* suggestmgr.hxx: change bad time_t to clock_t in header, too.
-	  Bug reports or patches by Ingo H. De Boer under SF.net
+	  Bug reports or patches by Ingo H. de Boer under SF.net
 	  Bug ID 1781951, János Mohácsi and Gábor Zahemszky, András Tímár,
 	  OMax3 at SF.net under SF.net Bug ID 1781592.
 
 	* phonet.*: change variable-length local character array to
 	  portable fixed size character array. Problem reported by
-	  Ingo H. De Boer under SF.net Bug ID 1781951 and
+	  Ingo H. de Boer under SF.net Bug ID 1781951 and
 	  Ryan VanderMeulen.
 
 	* suggestmgr.cxx: remove debug message (also by
-	  Ingo H. De Boer).
+	  Ingo H. de Boer).
 
-2007-08-26 Ingo H. De Boer <idb_winshell at SF.net>:
+2007-08-26 Ingo H. de Boer <idb_winshell at SF.net>:
 	* win_api/Hunspell.vcproj: updated version (with phonet.*)
 
 2007-08-23 Németh László <nemeth at OOo>:
@@ -209,7 +915,7 @@ Marseille	ph:maarsayl
          will be recognised with affixes of Simpson (Foo's etc.)."
 
 2007-07-18 Németh László <nemeth at OOo>:
-	* src/win_api/: add missing resource files, reported by Ingo H. De Boer.
+	* src/win_api/: add missing resource files, reported by Ingo H. de Boer.
 
 2007-07-16 Németh László <nemeth at OOo>:
 	* hunspell.cxx: fix dot removing from UTF-8 encoded words in cleanword2()
@@ -254,7 +960,7 @@ Marseille	ph:maarsayl
 	* {dictmgr,csutil,hashmgr,suggestmgr}.cxx: check memory allocation.
 	  Sf.net Bug ID 1747507, based on the patch by Jose da Silva.
 
-2007-07-13 Ingo H. De Boer <idb_winshell at SF.net>:
+2007-07-13 Ingo H. de Boer <idb_winshell at SF.net>:
 	* atypes.cxx: fix Visual C compatibility: Using
 	"HUNSPELL_WARNING(a,b,...} {}" macro instead of empty "X(a,b...)".
 	

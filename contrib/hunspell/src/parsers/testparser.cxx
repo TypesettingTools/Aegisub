@@ -16,7 +16,7 @@ main(int argc, char** argv)
     FILE * f;
   /* first parse the command line options */
 
-  if (! argv[1]) {
+  if (argc < 2) {
     fprintf(stderr,"correct syntax is:\n"); 
     fprintf(stderr,"testparser file\n");
     fprintf(stderr,"example: testparser /dev/stdin\n");
@@ -47,6 +47,7 @@ main(int argc, char** argv)
     }
 
     delete p;
+    fclose(f);
     return 0;
 }
 

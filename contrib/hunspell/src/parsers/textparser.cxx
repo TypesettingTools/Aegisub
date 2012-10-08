@@ -12,7 +12,7 @@ using namespace std;
 
 // ISO-8859-1 HTML character entities
 
-static char * LATIN1[] = {
+static const char * LATIN1[] = {
 	"&Agrave;",
 	"&Atilde;",
 	"&Aring;",
@@ -78,7 +78,7 @@ int TextParser::is_wordchar(char * w)
 	}
 }
 
-char * TextParser::get_latin1(char * s)
+const char * TextParser::get_latin1(char * s)
 {
 	if (s[0] == '&') {
 		unsigned int i = 0;
@@ -159,7 +159,7 @@ char * TextParser::get_line()
 
 char * TextParser::next_token()
 {
-	char * latin1;
+	const char * latin1;
 	
 	for (;;) {
 		switch (state)

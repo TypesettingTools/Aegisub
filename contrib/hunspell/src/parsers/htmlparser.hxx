@@ -30,7 +30,7 @@ public:
 
 private:
 
-  int                 look_pattern(char * p[][2], unsigned int len, int column);
+  int                 look_pattern(const char * p[][2], unsigned int len, int column);
   int                 pattern_num;
   int                 pattern2_num;
   int		      prevstate;

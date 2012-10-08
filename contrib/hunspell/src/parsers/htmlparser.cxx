@@ -13,7 +13,7 @@ using namespace std;
 
 enum { ST_NON_WORD, ST_WORD, ST_TAG, ST_CHAR_ENTITY, ST_OTHER_TAG, ST_ATTRIB };
 
-static char * PATTERN[][2] = {
+static const char * PATTERN[][2] = {
 	{ "<script", "</script>" },
 	{ "<style", "</style>" },
 	{ "<code", "</code>" },
@@ -30,7 +30,7 @@ static char * PATTERN[][2] = {
 
 #define PATTERN_LEN (sizeof(PATTERN) / (sizeof(char *) * 2))
 
-static char * PATTERN2[][2] = {
+static const char * PATTERN2[][2] = {
 	{ "<img", "alt=" }, // ALT and TITLE attrib handled spec.
 	{ "<img", "title=" },
 	{ "<a ", "title=" }
@@ -53,11 +53,11 @@ HTMLParser::~HTMLParser()
 }
 
 
-int HTMLParser::look_pattern(char * p[][2], unsigned int len, int column)
+int HTMLParser::look_pattern(const char * p[][2], unsigned int len, int column)
 {
 	for (unsigned int i = 0; i < len; i++) {
 		char * j = line[actual] + head;
-		char * k = p[i][column];
+		const char * k = p[i][column];
 		while ((*k != '\0') && (tolower(*j) == *k)) {
 			j++;
 			k++;
@@ -75,7 +75,7 @@ int HTMLParser::look_pattern(char * p[][2], unsigned int len, int column)
 
 char * HTMLParser::next_token()
 {
-	char * latin1;
+	const char * latin1;
 
 	for (;;) {
 		//fprintf(stderr, "%d:%c:%s\n", state, line[actual][head], line[actual]);
@@ -141,7 +141,7 @@ char * HTMLParser::next_token()
 			} 			
 			break;
 		case ST_CHAR_ENTITY: // SGML element
-			if ((tolower(line[actual][head]) < 'a') || (tolower(line[actual][head]) > 'z')) {
+			if ((tolower(line[actual][head]) == ';')) {
 				state = prevstate;
 				head--;
 			}

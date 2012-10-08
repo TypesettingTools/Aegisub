@@ -8,6 +8,7 @@
 #define MAX_GUESS 200
 #define MAXNGRAMSUGS 4
 #define MAXPHONSUGS 2
+#define MAXCOMPOUNDSUGS 3
 
 // timelimit: max ~1/4 sec (process time on Linux) for a time consuming function
 #define TIMELIMIT (CLOCKS_PER_SEC >> 2)
@@ -17,6 +18,9 @@
 #define NGRAM_LONGER_WORSE  (1 << 0)
 #define NGRAM_ANY_MISMATCH  (1 << 1)
 #define NGRAM_LOWERING      (1 << 2)
+#define NGRAM_WEIGHTED      (1 << 3)
+
+#include "hunvisapi.h"
 
 #include "atypes.hxx"
 #include "affixmgr.hxx"
@@ -26,7 +30,7 @@
 
 enum { LCS_UP, LCS_LEFT, LCS_UPLEFT };
 
-class SuggestMgr
+class LIBHUNSPELL_DLL_EXPORTED SuggestMgr
 {
   char *          ckey;
   int             ckeyl;
@@ -43,6 +47,7 @@ class SuggestMgr
   int             langnum;
   int             nosplitsugs;
   int             maxngramsugs;
+  int             maxcpdsugs;
   int             complexprefixes;
 
 
@@ -51,7 +56,7 @@ public:
   ~SuggestMgr();
 
   int suggest(char*** slst, const char * word, int nsug, int * onlycmpdsug);
-  int ngsuggest(char ** wlst, char * word, int ns, HashMgr* pHMgr);
+  int ngsuggest(char ** wlst, char * word, int ns, HashMgr** pHMgr, int md);
   int suggest_auto(char*** slst, const char * word, int nsug);
   int suggest_stems(char*** slst, const char * word, int nsug);
   int suggest_pos_stems(char*** slst, const char * word, int nsug);
@@ -90,8 +95,7 @@ private:
    int movechar_utf(char **, const w_char *, int, int, int);
 
    int mapchars(char**, const char *, int, int);
-   int map_related(const char *, int, char ** wlst, int, int, const mapentry*, int, int *, clock_t *);
-   int map_related_utf(w_char *, int, int, int, char ** wlst, int, const mapentry*, int, int *, clock_t *);
+   int map_related(const char *, char *, int, int, char ** wlst, int, int, const mapentry*, int, int *, clock_t *);
    int ngram(int n, char * s1, const char * s2, int opt);
    int mystrlen(const char * word);
    int leftcommonsubstring(char * s1, const char * s2);
