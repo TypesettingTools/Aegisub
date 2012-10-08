@@ -59,12 +59,12 @@ P_SHAREDSTATE = @sharedstatedir@
 P_LOCALSTATE  = @localstatedir@
 P_INCLUDE     = @includedir@
 P_LIB         = @libdir@
-P_LOCALE      = $(P_DATAROOT)/locale
+P_LOCALE      = @localedir@
 
 P_DESKTOP     = @P_DESKTOP@
 P_ICON        = @P_ICON@
 P_DATA        = $(P_DATAROOT)/aegisub/
-P_DOC         = $(P_DATAROOT)/doc/aegisub/
+P_DOC         = @docdir@
 
 ###############
 # LIBRARY FLAGS
