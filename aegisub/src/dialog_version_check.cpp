@@ -333,8 +333,7 @@ static wxString GetSystemLanguage()
 
 static wxString GetAegisubLanguage()
 {
-	const wxLanguageInfo *info = wxLocale::GetLanguageInfo(OPT_GET("App/Locale")->GetInt());
-	return info ? info->CanonicalName : "unknown";
+	return lagi_wxString(OPT_GET("App/Language")->GetString());
 }
 
 template<class OutIter>
