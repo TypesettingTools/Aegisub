@@ -31,11 +31,9 @@
 
 #ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #else
 #include <GL/gl.h>
-#include <GL/glu.h>
 #include "gl/glext.h"
 #endif
 #endif

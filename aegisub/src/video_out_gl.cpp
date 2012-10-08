@@ -46,10 +46,8 @@
 // These must be included before local headers.
 #ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
 #else
 #include <GL/gl.h>
-#include <GL/glu.h>
 #endif
 
 #include "video_out_gl.h"
