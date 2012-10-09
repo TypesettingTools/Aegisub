@@ -46,6 +46,6 @@ install-icons:
 	$(BIN_CP) $(ICON_SCALABLE) $(DESTDIR)$(P_ICON)/hicolor/$(ICON_SCALABLE)
 
 
-CLEANFILES = aegisub.desktop
+DISTCLEANFILES = aegisub.desktop
 
 include ../Makefile.target
