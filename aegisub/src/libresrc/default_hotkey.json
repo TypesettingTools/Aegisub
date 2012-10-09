@@ -603,6 +603,30 @@
 				"modifiers" : [],
 				"key" : "Enter"
 			}
+		],
+		"edit/color/primary" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "1"
+			}
+		],
+		"edit/color/secondary" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "2"
+			}
+		],
+		"edit/color/outline" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "3"
+			}
+		],
+		"edit/color/shadow" : [
+			{
+				"modifiers" : [ "Alt" ],
+				"key" : "4"
+			}
 		]
 	},
 
