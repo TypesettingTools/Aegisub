@@ -35,25 +35,17 @@
 ///
 
 #ifndef AGI_PRE
+#include <tr1/functional>
+
 #include <wx/colour.h>
 #endif
-
-/// Callback function for GetColorFromUser
-typedef void (*ColorCallback)(void* userdata, wxColor color);
-
-/// Wrapper used by templated version of GetColorFromUser
-template<class T, void (T::*method)(wxColor)>
-void ColorCallbackWrapper(void* obj, wxColor color) {
-	(static_cast<T*>(obj)->*method)(color);
-}
 
 /// @brief Get a color from the user via a color picker dialog
 /// @param parent Parent window
 /// @param original Initial color to select
-/// @param callback Function called whenever the selected color changes if not NULL
-/// @param userdata Passed to callback function
-/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was cancelled
-wxColor GetColorFromUser(wxWindow* parent, wxColor original, ColorCallback callback = NULL, void* userdata = NULL);
+/// @param callback Function called whenever the selected color changes
+/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was canceled
+wxColour GetColorFromUser(wxWindow* parent, wxColour original, std::tr1::function<void (wxColour)> callback);
 
 /// @brief Get a color from the user via a color picker dialog
 /// @param T Class which the callback method belongs to
@@ -61,8 +53,8 @@ wxColor GetColorFromUser(wxWindow* parent, wxColor original, ColorCallback callb
 /// @param parent Parent window
 /// @param original Initial color to select
 /// @param callbackObj Object to call callback method on. Must be of type T.
-/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was cancelled
-template<class T, void (T::*method)(wxColor)>
-wxColor GetColorFromUser(wxWindow* parent, wxColor original, T* callbackObj) {
-	return GetColorFromUser(parent, original, &ColorCallbackWrapper<T, method>, callbackObj);
+/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was canceled
+template<class T, void (T::*method)(wxColour)>
+wxColour GetColorFromUser(wxWindow* parent, wxColour original, T* callbackObj) {
+	return GetColorFromUser(parent, original, bind(method, callbackObj, std::tr1::placeholders::_1));
 }

@@ -54,10 +54,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
-#include "ass_style.h"
 #include "command/command.h"
-#include "dialog_colorpicker.h"
 #include "dialog_search_replace.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
@@ -81,41 +78,6 @@ struct field_setter : public std::binary_function<AssDialogue*, T, void> {
 		obj->*field = value;
 	}
 };
-
-/// @brief Get the value of a tag at a specified position in a line
-/// @param line    Line to get the value from
-/// @param blockn  Block number in the line
-/// @param initial Value from style to use if the tag does not exist
-/// @param tag     Tag to get the value of
-/// @param alt     Alternate name of the tag, if any
-template<class T>
-static T get_value(AssDialogue const& line, int blockn, T initial, wxString tag, wxString alt = wxString()) {
-	for (int i = blockn; i >= 0; i--) {
-		AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(line.Blocks[i]);
-		if (!ovr) continue;
-
-		for (int j = (int)ovr->Tags.size() - 1; j >= 0; j--) {
-			if (ovr->Tags[j]->Name == tag || ovr->Tags[j]->Name == alt) {
-				return ovr->Tags[j]->Params[0]->Get<T>(initial);
-			}
-		}
-	}
-	return initial;
-}
-
-/// Get the block index in the text of the position
-int block_at_pos(wxString const& text, int pos) {
-	int n = 0;
-	int max = text.size() - 1;
-	for (int i = 0; i <= pos && i <= max; ++i) {
-		if (i > 0 && text[i] == '{')
-			n++;
-		if (text[i] == '}' && i != max && i != pos && i != pos -1 && (i+1 == max || text[i+1] != '{'))
-			n++;
-	}
-
-	return n;
-}
 
 /// Work around wxGTK's fondness for generating events from ChangeValue
 void change_value(wxTextCtrl *ctrl, wxString const& value) {
@@ -189,18 +151,18 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	// Middle-bottom controls
 	MiddleBotSizer = new wxBoxSizer(wxHORIZONTAL);
-	MakeButton(GETIMAGE(button_bold_16), _("Bold"), bind(&SubsEditBox::OnFlagButton, this, &AssStyle::bold, "\\b", _("toggle bold")));
-	MakeButton(GETIMAGE(button_italics_16), _("Italics"), bind(&SubsEditBox::OnFlagButton, this, &AssStyle::italic, "\\i", _("toggle italic")));
-	MakeButton(GETIMAGE(button_underline_16), _("Underline"), bind(&SubsEditBox::OnFlagButton, this, &AssStyle::underline, "\\u", _("toggle underline")));
-	MakeButton(GETIMAGE(button_strikeout_16), _("Strikeout"), bind(&SubsEditBox::OnFlagButton, this, &AssStyle::strikeout, "\\s", _("toggle strikeout")));
-	MakeButton(GETIMAGE(button_fontname_16), _("Font Face"), bind(&SubsEditBox::OnFontButton, this));
+	MakeButton("edit/style/bold");
+	MakeButton("edit/style/italic");
+	MakeButton("edit/style/underline");
+	MakeButton("edit/style/strikeout");
+	MakeButton("edit/font");
 	MiddleBotSizer->AddSpacer(5);
-	MakeButton(GETIMAGE(button_color_one_16), _("Primary color"), bind(&SubsEditBox::OnColorButton, this, &AssStyle::primary, "\\c", "\\1c"));
-	MakeButton(GETIMAGE(button_color_two_16), _("Secondary color"), bind(&SubsEditBox::OnColorButton, this, &AssStyle::secondary, "\\2c", ""));
-	MakeButton(GETIMAGE(button_color_three_16), _("Outline color"), bind(&SubsEditBox::OnColorButton, this, &AssStyle::outline, "\\3c", ""));
-	MakeButton(GETIMAGE(button_color_four_16), _("Shadow color"), bind(&SubsEditBox::OnColorButton, this, &AssStyle::shadow, "\\4c", ""));
+	MakeButton("edit/color/primary");
+	MakeButton("edit/color/secondary");
+	MakeButton("edit/color/outline");
+	MakeButton("edit/color/shadow");
 	MiddleBotSizer->AddSpacer(5);
-	MakeButton(GETIMAGE(button_audio_commit_16), _("Commits the text (Enter)"), bind(&cmd::call, "grid/line/next/create", c));
+	MakeButton("grid/line/next/create");
 	MiddleBotSizer->AddSpacer(10);
 
 	ByTime = MakeRadio(_("T&ime"), true, _("Time by h:mm:ss.cs"));
@@ -227,7 +189,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	TextEdit->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT | wxSTC_STARTACTION);
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnLayerEnter, this, Layer->GetId());
-	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerChange, this, Layer->GetId());
+	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerEnter, this, Layer->GetId());
 	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, CommentBox->GetId());
 
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
@@ -267,13 +229,13 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(bool end, wxString const& tooltip, void (Sub
 	return ctrl;
 }
 
-template<class Handler>
-void SubsEditBox::MakeButton(wxBitmap const& icon, wxString const& tooltip, Handler const& handler) {
-	wxBitmapButton *btn = new wxBitmapButton(this, -1, icon);
-	btn->SetToolTip(tooltip);
+void SubsEditBox::MakeButton(const char *cmd_name) {
+	cmd::Command *command = cmd::get(cmd_name);
+	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(16));
+	btn->SetToolTip(command->StrHelp());
 
 	MiddleBotSizer->Add(btn, wxSizerFlags().Center().Expand());
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, handler, btn->GetId());
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(cmd::call, cmd_name, c));
 }
 
 wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip) {
@@ -445,7 +407,7 @@ void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString desc,
 	SetSelectedRows(field_setter<T>(field), value, desc, type, amend);
 }
 
-void SubsEditBox::CommitText(wxString desc) {
+void SubsEditBox::CommitText(wxString const& desc) {
 	SetSelectedRows(&AssDialogue::Text, TextEdit->GetText(), desc, AssFile::COMMIT_DIAG_TEXT, true);
 }
 
@@ -537,7 +499,6 @@ void SubsEditBox::SetControlsState(bool state) {
 	}
 }
 
-
 void SubsEditBox::OnStyleChange(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Style, StyleBox->GetValue(), _("style change"), AssFile::COMMIT_DIAG_META);
 }
@@ -546,10 +507,6 @@ void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
 	SetSelectedRows(&AssDialogue::Actor, ActorBox->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateActorList();
-}
-
-void SubsEditBox::OnLayerChange(wxSpinEvent &event) {
-	OnLayerEnter(event);
 }
 
 void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
@@ -567,6 +524,7 @@ void SubsEditBox::OnEndTimeChange(wxCommandEvent &) {
 void SubsEditBox::OnDurationChange(wxCommandEvent &) {
 	CommitTimes(TIME_DURATION);
 }
+
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {
 	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<0>), MarginL->GetValue(), _("MarginL change"), AssFile::COMMIT_DIAG_META);
 	if (line) change_value(MarginL, line->GetMarginString(0, false));
@@ -593,172 +551,4 @@ void SubsEditBox::OnEffectChange(wxCommandEvent &) {
 
 void SubsEditBox::OnCommentChange(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Comment, CommentBox->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
-}
-
-void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
-	assert(line);
-	if (line->Blocks.empty())
-		line->ParseASSTags();
-
-	int sel_start = c->textSelectionController->GetSelectionStart();
-	int sel_end = c->textSelectionController->GetSelectionEnd();
-	int start = atEnd ? sel_end : sel_start;
-	int blockn = block_at_pos(line->Text, start);
-
-	AssDialogueBlockPlain *plain = 0;
-	AssDialogueBlockOverride *ovr = 0;
-	while (blockn >= 0) {
-		AssDialogueBlock *block = line->Blocks[blockn];
-		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
-			--blockn;
-		else if ((plain = dynamic_cast<AssDialogueBlockPlain*>(block))) {
-			// Cursor is in a comment block, so try the previous block instead
-			if (plain->GetText().StartsWith("{")) {
-				--blockn;
-				start = line->Text.rfind('{', start);
-			}
-			else
-				break;
-		}
-		else {
-			ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
-			assert(ovr);
-			break;
-		}
-	}
-
-	// If we didn't hit a suitable block for inserting the override just put
-	// it at the beginning of the line
-	if (blockn < 0)
-		start = 0;
-
-	wxString insert = tag + value;
-	int shift = insert.size();
-	if (plain || blockn < 0) {
-		line->Text = line->Text.Left(start) + "{" + insert + "}" + line->Text.Mid(start);
-		shift += 2;
-		line->ParseASSTags();
-	}
-	else if(ovr) {
-		wxString alt;
-		if (tag == "\\c") alt = "\\1c";
-		// Remove old of same
-		bool found = false;
-		for (size_t i = 0; i < ovr->Tags.size(); i++) {
-			wxString name = ovr->Tags[i]->Name;
-			if (tag == name || alt == name) {
-				shift -= ((wxString)*ovr->Tags[i]).size();
-				if (found) {
-					delete ovr->Tags[i];
-					ovr->Tags.erase(ovr->Tags.begin() + i);
-					i--;
-				}
-				else {
-					ovr->Tags[i]->Params[0]->Set(value);
-					ovr->Tags[i]->Params[0]->omitted = false;
-					found = true;
-				}
-			}
-		}
-		if (!found) {
-			ovr->AddTag(insert);
-		}
-
-		line->UpdateText();
-	}
-	else
-		assert(false);
-
-	TextEdit->SetTextTo(line->Text);
-	if (!atEnd) c->textSelectionController->SetSelection(sel_start + shift, sel_end + shift);
-	TextEdit->SetFocus();
-}
-
-void SubsEditBox::OnFlagButton(bool (AssStyle::*field), const char *tag, wxString const& undo_msg) {
-	AssStyle *style = c->ass->GetStyle(line->Style);
-	bool state = style ? style->*field : AssStyle().*field;
-
-	line->ParseASSTags();
-	int sel_start = c->textSelectionController->GetSelectionStart();
-	int sel_end = c->textSelectionController->GetSelectionEnd();
-	int blockn = block_at_pos(line->Text, sel_start);
-
-	state = get_value(*line, blockn, state, tag);
-
-	SetTag(tag, state ? "0" : "1");
-	if (sel_start != sel_end)
-		SetTag(tag, state ? "1" : "0", true);
-
-	line->ClearBlocks();
-	commitId = -1;
-	CommitText(undo_msg);
-}
-
-void SubsEditBox::OnFontButton() {
-	line->ParseASSTags();
-	int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
-
-	AssStyle *style = c->ass->GetStyle(line->Style);
-	AssStyle defStyle;
-	if (!style) style = &defStyle;
-
-	wxFont startfont(
-		get_value(*line, blockn, (int)style->fontsize, "\\fs"),
-		wxFONTFAMILY_DEFAULT,
-		get_value(*line, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-		get_value(*line, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-		get_value(*line, blockn, style->underline, "\\u"),
-		get_value(*line, blockn, style->font, "\\fn"));
-
-	wxFont font = wxGetFontFromUser(this, startfont);
-	if (!font.Ok() || font == startfont) {
-		line->ClearBlocks();
-		return;
-	}
-
-	if (font.GetFaceName() != startfont.GetFaceName())
-		SetTag("\\fn", font.GetFaceName());
-	if (font.GetPointSize() != startfont.GetPointSize())
-		SetTag("\\fs", wxString::Format("%d", font.GetPointSize()));
-	if (font.GetWeight() != startfont.GetWeight())
-		SetTag("\\b", wxString::Format("%d", font.GetWeight() == wxFONTWEIGHT_BOLD));
-	if (font.GetStyle() != startfont.GetStyle())
-		SetTag("\\i", wxString::Format("%d", font.GetStyle() == wxFONTSTYLE_ITALIC));
-	if (font.GetUnderlined() != startfont.GetUnderlined())
-		SetTag("\\i", wxString::Format("%d", font.GetUnderlined()));
-
-	line->ClearBlocks();
-	commitId = -1;
-	CommitText(_("set font"));
-}
-
-void SubsEditBox::OnColorButton(AssColor (AssStyle::*field), const char *tag, const char *alt) {
-	AssStyle *style = c->ass->GetStyle(line->Style);
-	wxColor color = (style ? style->*field : AssStyle().*field).GetWXColor();
-
-	colorTag = tag;
-	commitId = -1;
-
-	line->ParseASSTags();
-
-	int sel_start = c->textSelectionController->GetSelectionStart();
-	int sel_end = c->textSelectionController->GetSelectionEnd();
-	int blockn = block_at_pos(line->Text, sel_start);
-
-	color = get_value(*line, blockn, color, colorTag, alt);
-	wxColor newColor = GetColorFromUser<SubsEditBox, &SubsEditBox::SetColorCallback>(c->parent, color, this);
-	line->ClearBlocks();
-	CommitText(_("set color"));
-
-	if (!newColor.IsOk()) {
-		c->ass->Undo();
-		c->textSelectionController->SetSelection(sel_start, sel_end);
-	}
-}
-
-void SubsEditBox::SetColorCallback(wxColor newColor) {
-	if (newColor.Ok()) {
-		SetTag(colorTag, AssColor(newColor).GetASSFormatted(false));
-		CommitText(_("set color"));
-	}
 }

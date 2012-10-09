@@ -49,10 +49,14 @@
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../ass_karaoke.h"
+#include "../ass_override.h"
+#include "../ass_style.h"
+#include "../dialog_colorpicker.h"
 #include "../dialog_search_replace.h"
 #include "../include/aegisub/context.h"
 #include "../subs_edit_ctrl.h"
 #include "../subs_grid.h"
+#include "../text_selection_controller.h"
 #include "../video_context.h"
 
 namespace {
@@ -74,16 +78,319 @@ struct validate_sel_multiple : public Command {
 	}
 };
 
+template<class T>
+T get_value(AssDialogue const& line, int blockn, T initial, wxString const& tag, wxString alt = wxString()) {
+	for (int i = blockn; i >= 0; i--) {
+		AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(line.Blocks[i]);
+		if (!ovr) continue;
+
+		for (int j = (int)ovr->Tags.size() - 1; j >= 0; j--) {
+			if (ovr->Tags[j]->Name == tag || ovr->Tags[j]->Name == alt) {
+				return ovr->Tags[j]->Params[0]->Get<T>(initial);
+			}
+		}
+	}
+	return initial;
+}
+
+/// Get the block index in the text of the position
+int block_at_pos(wxString const& text, int pos) {
+	int n = 0;
+	int max = text.size() - 1;
+	for (int i = 0; i <= pos && i <= max; ++i) {
+		if (i > 0 && text[i] == '{')
+			n++;
+		if (text[i] == '}' && i != max && i != pos && i != pos -1 && (i+1 == max || text[i+1] != '{'))
+			n++;
+	}
+
+	return n;
+}
+
+void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, bool at_end = false) {
+	AssDialogue * const line = c->selectionController->GetActiveLine();
+	if (line->Blocks.empty())
+		line->ParseASSTags();
+
+	int sel_start = c->textSelectionController->GetSelectionStart();
+	int sel_end = c->textSelectionController->GetSelectionEnd();
+	int start = at_end ? sel_end : sel_start;
+	int blockn = block_at_pos(line->Text, start);
+
+	AssDialogueBlockPlain *plain = 0;
+	AssDialogueBlockOverride *ovr = 0;
+	while (blockn >= 0) {
+		AssDialogueBlock *block = line->Blocks[blockn];
+		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
+			--blockn;
+		else if ((plain = dynamic_cast<AssDialogueBlockPlain*>(block))) {
+			// Cursor is in a comment block, so try the previous block instead
+			if (plain->GetText().StartsWith("{")) {
+				--blockn;
+				start = line->Text.rfind('{', start);
+			}
+			else
+				break;
+		}
+		else {
+			ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
+			assert(ovr);
+			break;
+		}
+	}
+
+	// If we didn't hit a suitable block for inserting the override just put
+	// it at the beginning of the line
+	if (blockn < 0)
+		start = 0;
+
+	wxString insert = tag + value;
+	int shift = insert.size();
+	if (plain || blockn < 0) {
+		line->Text = line->Text.Left(start) + "{" + insert + "}" + line->Text.Mid(start);
+		shift += 2;
+		line->ParseASSTags();
+	}
+	else if(ovr) {
+		wxString alt;
+		if (tag == "\\c") alt = "\\1c";
+		// Remove old of same
+		bool found = false;
+		for (size_t i = 0; i < ovr->Tags.size(); i++) {
+			wxString name = ovr->Tags[i]->Name;
+			if (tag == name || alt == name) {
+				shift -= ((wxString)*ovr->Tags[i]).size();
+				if (found) {
+					delete ovr->Tags[i];
+					ovr->Tags.erase(ovr->Tags.begin() + i);
+					i--;
+				}
+				else {
+					ovr->Tags[i]->Params[0]->Set(value);
+					ovr->Tags[i]->Params[0]->omitted = false;
+					found = true;
+				}
+			}
+		}
+		if (!found)
+			ovr->AddTag(insert);
+
+		line->UpdateText();
+	}
+	else
+		assert(false);
+
+	if (!at_end)
+		c->textSelectionController->SetSelection(sel_start + shift, sel_end + shift);
+}
+
+void set_text(AssDialogue *line, wxString const& value) {
+	line->Text = value;
+}
+
+void commit_text(agi::Context const * const c, wxString const& desc, int *commit_id = 0) {
+	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+	for_each(sel.begin(), sel.end(),
+		bind(set_text, std::tr1::placeholders::_1, c->selectionController->GetActiveLine()->Text));
+	int new_commit_id = c->ass->Commit(desc, AssFile::COMMIT_DIAG_TEXT, commit_id ? *commit_id : -1, sel.size() == 1 ? *sel.begin() : 0);
+	if (commit_id)
+		*commit_id = new_commit_id;
+}
+
+void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const char *tag, wxString const& undo_msg) {
+	AssDialogue *const line = c->selectionController->GetActiveLine();
+	AssStyle const* const style = c->ass->GetStyle(line->Style);
+	bool state = style ? style->*field : AssStyle().*field;
+
+	line->ParseASSTags();
+	int sel_start = c->textSelectionController->GetSelectionStart();
+	int sel_end = c->textSelectionController->GetSelectionEnd();
+	int blockn = block_at_pos(line->Text, sel_start);
+
+	state = get_value(*line, blockn, state, tag);
+
+	set_tag(c, tag, state ? "0" : "1");
+	if (sel_start != sel_end)
+		set_tag(c, tag, state ? "1" : "0", true);
+
+	line->ClearBlocks();
+	commit_text(c, undo_msg);
+}
+
+void got_color(const agi::Context *c, const char *tag, int *commit_id, wxColour new_color) {
+	if (new_color.Ok()) {
+		set_tag(c, tag, AssColor(new_color).GetASSFormatted(false));
+		commit_text(c, _("set color"), commit_id);
+	}
+}
+
+void show_color_picker(const agi::Context *c, AssColor (AssStyle::*field), const char *tag, const char *alt) {
+	AssDialogue *const line = c->selectionController->GetActiveLine();
+	AssStyle const* const style = c->ass->GetStyle(line->Style);
+	wxColor color = (style ? style->*field : AssStyle().*field).GetWXColor();
+
+	line->ParseASSTags();
+
+	int sel_start = c->textSelectionController->GetSelectionStart();
+	int sel_end = c->textSelectionController->GetSelectionEnd();
+	int blockn = block_at_pos(line->Text, sel_start);
+
+	color = get_value(*line, blockn, color, tag, alt);
+	int commit_id = -1;
+	const wxColor newColor = GetColorFromUser(c->parent, color, bind(got_color, c, tag, &commit_id, std::tr1::placeholders::_1));
+	line->ClearBlocks();
+	commit_text(c, _("set color"), &commit_id);
+
+	if (!newColor.IsOk()) {
+		c->ass->Undo();
+		c->textSelectionController->SetSelection(sel_start, sel_end);
+	}
+}
+
+struct edit_color_primary : public Command {
+	CMD_NAME("edit/color/primary")
+	STR_MENU("Primary Color...")
+	STR_DISP("Primary Color")
+	STR_HELP("Primary Color")
+
+	void operator()(agi::Context *c) {
+		show_color_picker(c, &AssStyle::primary, "\\c", "\\1c");
+	}
+};
+
+struct edit_color_secondary : public Command {
+	CMD_NAME("edit/color/secondary")
+	STR_MENU("Secondary Color...")
+	STR_DISP("Secondary Color")
+	STR_HELP("Secondary Color")
+
+	void operator()(agi::Context *c) {
+		show_color_picker(c, &AssStyle::secondary, "\\c", "\\1c");
+	}
+};
+
+struct edit_color_outline : public Command {
+	CMD_NAME("edit/color/outline")
+	STR_MENU("Outline Color...")
+	STR_DISP("Outline Color")
+	STR_HELP("Outline Color")
+
+	void operator()(agi::Context *c) {
+		show_color_picker(c, &AssStyle::outline, "\\c", "\\1c");
+	}
+};
+
+struct edit_color_shadow : public Command {
+	CMD_NAME("edit/color/shadow")
+	STR_MENU("Shadow Color...")
+	STR_DISP("Shadow Color")
+	STR_HELP("Shadow Color")
+
+	void operator()(agi::Context *c) {
+		show_color_picker(c, &AssStyle::shadow, "\\c", "\\1c");
+	}
+};
+
+struct edit_style_bold : public Command {
+	CMD_NAME("edit/style/bold")
+	STR_MENU("Bold")
+	STR_DISP("Bold")
+	STR_HELP("Bold")
+
+	void operator()(agi::Context *c) {
+		toggle_override_tag(c, &AssStyle::bold, "\\b", _("toggle bold"));
+	}
+};
+
+struct edit_style_italic : public Command {
+	CMD_NAME("edit/style/italic")
+	STR_MENU("Italics")
+	STR_DISP("Italics")
+	STR_HELP("Italics")
+
+	void operator()(agi::Context *c) {
+		toggle_override_tag(c, &AssStyle::italic, "\\i", _("toggle italic"));
+	}
+};
+
+struct edit_style_underline : public Command {
+	CMD_NAME("edit/style/underline")
+	STR_MENU("Underline")
+	STR_DISP("Underline")
+	STR_HELP("Underline")
+
+	void operator()(agi::Context *c) {
+		toggle_override_tag(c, &AssStyle::underline, "\\u", _("toggle underline"));
+	}
+};
+
+struct edit_style_strikeout : public Command {
+	CMD_NAME("edit/style/strikeout")
+	STR_MENU("Strikeout")
+	STR_DISP("Strikeout")
+	STR_HELP("Strikeout")
+
+	void operator()(agi::Context *c) {
+		toggle_override_tag(c, &AssStyle::strikeout, "\\s", _("toggle strikeout"));
+	}
+};
+
+struct edit_font : public Command {
+	CMD_NAME("edit/font")
+	STR_MENU("Font Face...")
+	STR_DISP("Font Face")
+	STR_HELP("Font Face")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *const line = c->selectionController->GetActiveLine();
+		line->ParseASSTags();
+		const int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
+
+		const AssStyle *style = c->ass->GetStyle(line->Style);
+		const AssStyle default_style;
+		if (!style)
+			style = &default_style;
+
+		const wxFont startfont(
+			get_value(*line, blockn, (int)style->fontsize, "\\fs"),
+			wxFONTFAMILY_DEFAULT,
+			get_value(*line, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+			get_value(*line, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+			get_value(*line, blockn, style->underline, "\\u"),
+			get_value(*line, blockn, style->font, "\\fn"));
+
+		const wxFont font = wxGetFontFromUser(c->parent, startfont);
+		if (!font.Ok() || font == startfont) {
+			line->ClearBlocks();
+			return;
+		}
+
+		if (font.GetFaceName() != startfont.GetFaceName())
+			set_tag(c, "\\fn", font.GetFaceName());
+		if (font.GetPointSize() != startfont.GetPointSize())
+			set_tag(c, "\\fs", wxString::Format("%d", font.GetPointSize()));
+		if (font.GetWeight() != startfont.GetWeight())
+			set_tag(c, "\\b", wxString::Format("%d", font.GetWeight() == wxFONTWEIGHT_BOLD));
+		if (font.GetStyle() != startfont.GetStyle())
+			set_tag(c, "\\i", wxString::Format("%d", font.GetStyle() == wxFONTSTYLE_ITALIC));
+		if (font.GetUnderlined() != startfont.GetUnderlined())
+			set_tag(c, "\\i", wxString::Format("%d", font.GetUnderlined()));
+
+		line->ClearBlocks();
+		commit_text(c, _("set font"));
+	}
+};
+
 /// Find and replace words in subtitles.
 struct edit_find_replace : public Command {
 	CMD_NAME("edit/find_replace")
-		STR_MENU("Find and R&eplace...")
-		STR_DISP("Find and Replace")
-		STR_HELP("Find and replace words in subtitles")
+	STR_MENU("Find and R&eplace...")
+	STR_DISP("Find and Replace")
+	STR_HELP("Find and replace words in subtitles")
 
-		void operator()(agi::Context *c) {
-			c->videoController->Stop();
-			Search.OpenDialog(true);
+	void operator()(agi::Context *c) {
+		c->videoController->Stop();
+		Search.OpenDialog(true);
 	}
 };
 
@@ -432,6 +739,11 @@ struct edit_undo : public Command {
 
 namespace cmd {
 	void init_edit() {
+		reg(new edit_color_primary);
+		reg(new edit_color_secondary);
+		reg(new edit_color_outline);
+		reg(new edit_color_shadow);
+		reg(new edit_font);
 		reg(new edit_find_replace);
 		reg(new edit_line_copy);
 		reg(new edit_line_cut);
@@ -445,6 +757,10 @@ namespace cmd {
 		reg(new edit_line_paste_over);
 		reg(new edit_line_recombine);
 		reg(new edit_line_split_by_karaoke);
+		reg(new edit_style_bold);
+		reg(new edit_style_italic);
+		reg(new edit_style_underline);
+		reg(new edit_style_strikeout);
 		reg(new edit_redo);
 		reg(new edit_undo);
 	}

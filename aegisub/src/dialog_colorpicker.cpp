@@ -267,11 +267,10 @@ class DialogColorPicker : public wxDialog {
 	void OnMouse(wxMouseEvent &evt);
 	void OnCaptureLost(wxMouseCaptureLostEvent&);
 
-	ColorCallback callback;
-	void *callbackUserdata;
+	std::tr1::function<void (wxColour)> callback;
 
 public:
-	DialogColorPicker(wxWindow *parent, wxColour initial_color, ColorCallback callback = NULL, void *userdata = NULL);
+	DialogColorPicker(wxWindow *parent, wxColour initial_color, std::tr1::function<void (wxColour)> callback);
 	~DialogColorPicker();
 
 	void SetColor(wxColour new_color);
@@ -625,15 +624,15 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y)
 	Refresh(false);
 }
 
-wxColour GetColorFromUser(wxWindow *parent, wxColour original, ColorCallback callback, void* userdata)
+wxColour GetColorFromUser(wxWindow* parent, wxColour original, std::tr1::function<void (wxColour)> callback)
 {
-	DialogColorPicker dialog(parent, original, callback, userdata);
+	DialogColorPicker dialog(parent, original, callback);
 	if (dialog.ShowModal() == wxID_OK)
 		original = dialog.GetColor();
 	else
 		original = wxNullColour;
-	if (callback)
-		callback(userdata, original);
+
+	callback(original);
 	return original;
 }
 
@@ -650,10 +649,9 @@ static wxBitmap *make_rgb_image(int width, int offset) {
 	return new wxBitmap(img);
 }
 
-DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, ColorCallback callback, void* userdata)
+DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, std::tr1::function<void (wxColour)> callback)
 : wxDialog(parent, -1, _("Select Color"))
 , callback(callback)
-, callbackUserdata(userdata)
 {
 	memset(rgb_spectrum, 0, sizeof rgb_spectrum);
 	hsl_spectrum = 0;
@@ -1035,7 +1033,7 @@ void DialogColorPicker::UpdateSpectrumDisplay()
 	}
 	preview_box->SetBitmap(tempBmp);
 
-	if (callback) callback(callbackUserdata, cur_color);
+	callback(cur_color);
 }
 
 wxBitmap *DialogColorPicker::MakeGBSpectrum()

@@ -50,9 +50,7 @@
 
 namespace agi { namespace vfr { class Framerate; } }
 namespace agi { struct Context; }
-struct AssColor;
 class AssDialogue;
-class AssStyle;
 class AssTime;
 class SubsTextEditCtrl;
 class TextSelectionController;
@@ -123,7 +121,7 @@ class SubsEditBox : public wxPanel {
 	void CommitTimes(TimeField field);
 	/// @brief Commits the current edit box contents
 	/// @param desc Undo description to use
-	void CommitText(wxString desc);
+	void CommitText(wxString const& desc);
 
 	/// Last commit ID for undo coalescing
 	int commitId;
@@ -145,8 +143,7 @@ class SubsEditBox : public wxPanel {
 	// Constructor helpers
 	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));
 	TimeEdit *MakeTimeCtrl(bool end, wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));
-	template<class Handler>
-	void MakeButton(wxBitmap const& icon, wxString const& tooltip, Handler const& handler);
+	void MakeButton(const char *cmd_name);
 	wxComboBox *MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip);
 	wxRadioButton *MakeRadio(wxString const& text, bool start, wxString const& tooltip);
 
@@ -160,7 +157,6 @@ class SubsEditBox : public wxPanel {
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
 	void OnLayerEnter(wxCommandEvent &event);
-	void OnLayerChange(wxSpinEvent &event);
 	void OnStartTimeChange(wxCommandEvent &);
 	void OnEndTimeChange(wxCommandEvent &);
 	void OnDurationChange(wxCommandEvent &);
@@ -172,24 +168,7 @@ class SubsEditBox : public wxPanel {
 	void OnSize(wxSizeEvent &event);
 	void OnUndoTimer(wxTimerEvent&);
 
-	void OnFlagButton(bool (AssStyle::*field), const char *tag, wxString const& undo_msg);
-	void OnColorButton(AssColor (AssStyle::*field), const char *tag, const char *alt);
-	void OnFontButton();
-
 	void SetPlaceholderCtrl(wxControl *ctrl, wxString const& value);
-
-	/// @brief Set the value of a tag for the currently selected text
-	/// @param tag   Tag to set
-	/// @param value New value of tag
-	/// @param atEnd Set the value at the end of the selection rather than beginning
-	void SetTag(wxString tag, wxString value, bool atEnd = false);
-
-	/// @brief Callback function for the color picker
-	/// @param newColor New color selected in the picker
-	void SetColorCallback(wxColor newColor);
-
-	/// Which color is currently being set
-	wxString colorTag;
 
 	/// @brief Set a field in each selected line to a specified value
 	/// @param set   Callable which does the setting
