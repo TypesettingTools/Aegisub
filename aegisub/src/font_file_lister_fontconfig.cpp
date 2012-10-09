@@ -30,7 +30,12 @@
 
 #include "compat.h"
 
+#include <libaegisub/log.h>
 #include <libaegisub/util.h>
+
+#ifdef __APPLE__
+#include <libaegisub/util_osx.h>
+#endif
 
 #ifndef AGI_PRE
 #include <wx/intl.h>
@@ -67,10 +72,23 @@ namespace {
 		agi::util::str_lower(b);
 		return a.compare(b);
 	}
+
+	FcConfig *init_fontconfig() {
+#ifdef __APPLE__
+		FcConfig *config = FcConfigCreate();
+		std::string conf_path = agi::util::OSX_GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf";
+		if (FcConfigParseAndLoad(config, (unsigned char *)conf_path.c_str(), FcTrue))
+			return config;
+
+		LOG_E("font_collector/fontconfig") << "Loading fontconfig configuration file failed";
+		FcConfigDestroy(config);
+#endif
+		return FcInitLoadConfig();
+	}
 }
 
 FontConfigFontFileLister::FontConfigFontFileLister(FontCollectorStatusCallback cb)
-: config(FcInitLoadConfig(), FcConfigDestroy)
+: config(init_fontconfig(), FcConfigDestroy)
 {
 	cb(_("Updating font cache\n"), 0);
 	FcConfigBuildFonts(config);
