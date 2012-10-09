@@ -54,6 +54,7 @@ P_BINDIR      = @bindir@
 P_SBINDIR     = @sbindir@
 P_LIBEXEC     = @libexecdir@
 P_DATAROOT    = @datarootdir@
+datarootdir   = ${P_DATAROOT}
 P_SYSCONF     = @sysconfdir@
 P_SHAREDSTATE = @sharedstatedir@
 P_LOCALSTATE  = @localstatedir@
