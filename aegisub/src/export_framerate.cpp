@@ -139,8 +139,8 @@ void AssTransformFramerateFilter::LoadSettings(bool is_default, agi::Context *c)
 	this->c = c;
 
 	if (is_default) {
-		Input = &c->videoController->VFR_Input;
-		Output = &c->videoController->VFR_Output;
+		Input = &c->videoController->VideoFPS();
+		Output = &c->videoController->FPS();
 	}
 	else {
 		double temp;
@@ -152,7 +152,7 @@ void AssTransformFramerateFilter::LoadSettings(bool is_default, agi::Context *c)
 			t2 = temp;
 			Output = &t2;
 		}
-		else Output = &c->videoController->VFR_Output;
+		else Output = &c->videoController->FPS();
 
 		if (Reverse->IsChecked()) {
 			std::swap(Input, Output);

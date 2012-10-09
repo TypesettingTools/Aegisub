@@ -150,9 +150,6 @@ class VideoContext : public wxEvtHandler {
 	void Reset();
 
 public:
-	const agi::vfr::Framerate &VFR_Input;
-	const agi::vfr::Framerate &VFR_Output;
-
 	VideoContext();
 	~VideoContext();
 
@@ -261,6 +258,7 @@ public:
 	bool TimecodesLoaded() const { return videoFPS.IsLoaded() || ovrFPS.IsLoaded(); };
 
 	const agi::vfr::Framerate& FPS() const { return ovrFPS.IsLoaded() ? ovrFPS : videoFPS; }
+	const agi::vfr::Framerate& VideoFPS() const { return videoFPS; }
 
 	int TimeAtFrame(int frame, agi::vfr::Time type = agi::vfr::EXACT) const;
 	int FrameAtTime(int time, agi::vfr::Time type = agi::vfr::EXACT) const;

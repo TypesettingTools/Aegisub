@@ -78,8 +78,6 @@ VideoContext::VideoContext()
 , arType(0)
 , hasSubtitles(false)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
-, VFR_Input(videoFPS)
-, VFR_Output(ovrFPS)
 {
 	Bind(EVT_VIDEO_ERROR, &VideoContext::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
