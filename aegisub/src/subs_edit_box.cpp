@@ -442,7 +442,7 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, 
 	lastCommitType = desc;
 	lastTimeCommitType = -1;
 	initialTimes.clear();
-	undoTimer.Start(10000, wxTIMER_ONE_SHOT);
+	undoTimer.Start(30000, wxTIMER_ONE_SHOT);
 }
 
 template<class T>
