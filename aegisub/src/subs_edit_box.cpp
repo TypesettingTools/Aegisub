@@ -65,6 +65,7 @@
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
 #include "timeedit_ctrl.h"
+#include "tooltip_manager.h"
 #include "utils.h"
 #include "validators.h"
 #include "video_context.h"
@@ -232,7 +233,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(bool end, wxString const& tooltip, void (Sub
 void SubsEditBox::MakeButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
 	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(16));
-	btn->SetToolTip(command->StrHelp());
+	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	MiddleBotSizer->Add(btn, wxSizerFlags().Center().Expand());
 	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(cmd::call, cmd_name, c));
