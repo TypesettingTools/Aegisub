@@ -82,17 +82,6 @@ struct field_setter : public std::binary_function<AssDialogue*, T, void> {
 	}
 };
 
-/// @brief Get the selection from a text edit
-/// @return Pair of selection start and end positions
-std::pair<int, int> get_selection(SubsTextEditCtrl *TextEdit) {
-	int start, end;
-	TextEdit->GetSelection(&start, &end);
-	int len = TextEdit->GetText().size();
-	return std::make_pair(
-		mid(0, TextEdit->GetReverseUnicodePosition(start), len),
-		mid(0, TextEdit->GetReverseUnicodePosition(end), len));
-}
-
 /// @brief Get the value of a tag at a specified position in a line
 /// @param line    Line to get the value from
 /// @param blockn  Block number in the line
@@ -611,8 +600,9 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 	if (line->Blocks.empty())
 		line->ParseASSTags();
 
-	std::pair<int, int> sel = get_selection(TextEdit);
-	int start = atEnd ? sel.second : sel.first;
+	int sel_start = c->textSelectionController->GetSelectionStart();
+	int sel_end = c->textSelectionController->GetSelectionEnd();
+	int start = atEnd ? sel_end : sel_start;
 	int blockn = block_at_pos(line->Text, start);
 
 	AssDialogueBlockPlain *plain = 0;
@@ -680,7 +670,7 @@ void SubsEditBox::SetTag(wxString tag, wxString value, bool atEnd) {
 		assert(false);
 
 	TextEdit->SetTextTo(line->Text);
-	if (!atEnd) TextEdit->SetSelectionU(sel.first+shift,sel.second+shift);
+	if (!atEnd) c->textSelectionController->SetSelection(sel_start + shift, sel_end + shift);
 	TextEdit->SetFocus();
 }
 
@@ -689,13 +679,14 @@ void SubsEditBox::OnFlagButton(bool (AssStyle::*field), const char *tag, wxStrin
 	bool state = style ? style->*field : AssStyle().*field;
 
 	line->ParseASSTags();
-	std::pair<int, int> sel = get_selection(TextEdit);
-	int blockn = block_at_pos(line->Text, sel.first);
+	int sel_start = c->textSelectionController->GetSelectionStart();
+	int sel_end = c->textSelectionController->GetSelectionEnd();
+	int blockn = block_at_pos(line->Text, sel_start);
 
 	state = get_value(*line, blockn, state, tag);
 
 	SetTag(tag, state ? "0" : "1");
-	if (sel.first != sel.second)
+	if (sel_start != sel_end)
 		SetTag(tag, state ? "1" : "0", true);
 
 	line->ClearBlocks();
@@ -705,7 +696,7 @@ void SubsEditBox::OnFlagButton(bool (AssStyle::*field), const char *tag, wxStrin
 
 void SubsEditBox::OnFontButton() {
 	line->ParseASSTags();
-	int blockn = block_at_pos(line->Text, get_selection(TextEdit).first);
+	int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
 
 	AssStyle *style = c->ass->GetStyle(line->Style);
 	AssStyle defStyle;
@@ -750,8 +741,9 @@ void SubsEditBox::OnColorButton(AssColor (AssStyle::*field), const char *tag, co
 
 	line->ParseASSTags();
 
-	std::pair<int, int> sel = get_selection(TextEdit);
-	int blockn = block_at_pos(line->Text, sel.first);
+	int sel_start = c->textSelectionController->GetSelectionStart();
+	int sel_end = c->textSelectionController->GetSelectionEnd();
+	int blockn = block_at_pos(line->Text, sel_start);
 
 	color = get_value(*line, blockn, color, colorTag, alt);
 	wxColor newColor = GetColorFromUser<SubsEditBox, &SubsEditBox::SetColorCallback>(c->parent, color, this);
@@ -760,7 +752,7 @@ void SubsEditBox::OnColorButton(AssColor (AssStyle::*field), const char *tag, co
 
 	if (!newColor.IsOk()) {
 		c->ass->Undo();
-		TextEdit->SetSelectionU(sel.first, sel.second);
+		c->textSelectionController->SetSelection(sel_start, sel_end);
 	}
 }
 
