@@ -1337,11 +1337,11 @@ msgstr "Suche und ersetze Wörter im Skript"
 
 #: ../src/command/edit.cpp:93
 msgid "&Copy Lines"
-msgstr "Kopierte Zeilen"
+msgstr "Kopiere Zeilen"
 
 #: ../src/command/edit.cpp:94
 msgid "Copy Lines"
-msgstr "Kopierte Zeilen"
+msgstr "Kopiere Zeilen"
 
 #: ../src/command/edit.cpp:95
 msgid "Copy subtitles"
@@ -2105,11 +2105,11 @@ msgstr "Wechsle die Hauptwerkzeugleiste"
 
 #: ../src/command/app.cpp:274
 msgid "Hide Toolbar"
-msgstr "Verstecke Toolbar"
+msgstr "Symbolleiste ausblenden"
 
 #: ../src/command/app.cpp:275
 msgid "Show Toolbar"
-msgstr "Schattenfarbe"
+msgstr "Symbolleiste einblenden"
 
 #: ../src/command/app.cpp:291
 msgid "&Check for Updates..."
