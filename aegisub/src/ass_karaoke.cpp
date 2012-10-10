@@ -40,7 +40,7 @@ wxString AssKaraoke::Syllable::GetText(bool k_tag) const {
 	wxString ret;
 
 	if (k_tag)
-		ret = wxString::Format("{%s%d}", tag_type, duration / 10);
+		ret = wxString::Format("{%s%d}", tag_type, (duration + 5) / 10);
 
 	size_t idx = 0;
 	for (std::map<size_t, wxString>::const_iterator ovr = ovr_tags.begin(); ovr != ovr_tags.end(); ++ovr) {

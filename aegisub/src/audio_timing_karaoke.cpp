@@ -375,7 +375,7 @@ int AudioTimingControllerKaraoke::MoveMarker(KaraokeMarker *marker, int new_posi
 	marker->Move(new_position);
 
 	size_t syl = marker - &markers.front() + 1;
-	kara->SetStartTime(syl, new_position);
+	kara->SetStartTime(syl, (new_position + 5) / 10 * 10);
 
 	labels[syl - 1].range = TimeRange(labels[syl - 1].range.begin(), new_position);
 	labels[syl].range = TimeRange(new_position, labels[syl].range.end());
