@@ -412,6 +412,7 @@ void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 		ByTime->SetValue(true);
 		StartTime->SetByFrame(false);
 		EndTime->SetByFrame(false);
+		Duration->SetByFrame(false);
 		c->subsGrid->SetByFrame(false);
 	}
 }
