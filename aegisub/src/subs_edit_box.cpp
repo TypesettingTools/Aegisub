@@ -316,10 +316,6 @@ void SubsEditBox::PopulateActorList() {
 		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*it))
 			actors.insert(diag->Actor);
 	}
-#ifdef __APPLE__
-	// OSX doesn't like combo boxes that are empty.
-	actors.insert("Actor");
-#endif
 	actors.erase("");
 	wxArrayString arrstr;
 	arrstr.reserve(actors.size());

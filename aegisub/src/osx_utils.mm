@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include <wx/window.h>
+#include <wx/osx/core/cfstring.h>
 
 #import <AppKit/AppKit.h>
 
@@ -53,4 +54,12 @@ void SetFloatOnParent(wxWindow *window) {
                     object:nsWindow
                      queue:nil
                 usingBlock:^(NSNotification *) { [nsWindow setLevel:NSFloatingWindowLevel]; }];
+}
+
+void SetPlaceholderText(wxWindow *window, wxString const& placeholder) {
+    id nsWindow = window->GetHandle();
+    if ([nsWindow respondsToSelector:@selector(cell)]) {
+        NSTextFieldCell *cell = [nsWindow cell];
+        cell.placeholderString = wxCFStringRef(placeholder).AsNSString();
+    }
 }
