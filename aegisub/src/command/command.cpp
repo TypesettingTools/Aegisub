@@ -63,7 +63,7 @@ namespace cmd {
 			cmd(c);
 	}
 
-	wxBitmap const& Command::Icon(int size) {
+	wxBitmap const& Command::Icon(int size) const {
 		return icon::get(name(), size);
 	}
 
