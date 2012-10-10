@@ -265,7 +265,7 @@ struct edit_color_secondary : public Command {
 	STR_HELP("Secondary Color")
 
 	void operator()(agi::Context *c) {
-		show_color_picker(c, &AssStyle::secondary, "\\c", "\\1c");
+		show_color_picker(c, &AssStyle::secondary, "\\2c", "");
 	}
 };
 
@@ -276,7 +276,7 @@ struct edit_color_outline : public Command {
 	STR_HELP("Outline Color")
 
 	void operator()(agi::Context *c) {
-		show_color_picker(c, &AssStyle::outline, "\\c", "\\1c");
+		show_color_picker(c, &AssStyle::outline, "\\3c", "");
 	}
 };
 
@@ -287,7 +287,7 @@ struct edit_color_shadow : public Command {
 	STR_HELP("Shadow Color")
 
 	void operator()(agi::Context *c) {
-		show_color_picker(c, &AssStyle::shadow, "\\c", "\\1c");
+		show_color_picker(c, &AssStyle::shadow, "\\4c", "");
 	}
 };
 
