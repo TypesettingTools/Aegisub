@@ -51,9 +51,7 @@ enum ASS_BlockType {
 class AssOverrideParameter;
 class AssOverrideTag;
 
-/// DOCME
 /// @class AssDialogueBlock
-
 /// @brief AssDialogue Blocks
 ///
 /// A block is each group in the text field of an AssDialogue
@@ -85,23 +83,14 @@ public:
 	virtual wxString GetText() { return text; }
 };
 
-/// @class AssDialogueBlockPlain
-/// @brief DOCME
-///
-/// DOCME
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
 	ASS_BlockType GetType() const { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 };
 
-/// @class AssDialogueBlockDrawing
-/// @brief DOCME
-///
-/// DOCME
 class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
-	/// DOCME
 	int Scale;
 
 	ASS_BlockType GetType() const { return BLOCK_DRAWING; }
@@ -109,25 +98,16 @@ public:
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
-/// @class AssDialogueBlockOverride
-/// @brief DOCME
-///
-/// DOCME
 class AssDialogueBlockOverride : public AssDialogueBlock {
 public:
 	AssDialogueBlockOverride(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 	~AssDialogueBlockOverride();
 
-	/// DOCME
 	std::vector<AssOverrideTag*> Tags;
 
-
-	/// @brief DOCME
-	/// @return
-	///
 	ASS_BlockType GetType() const { return BLOCK_OVERRIDE; }
 	wxString GetText();
-	void ParseTags();		// Parses tags
+	void ParseTags();
 	void AddTag(wxString const& tag);
 
 	/// Type of callback function passed to ProcessParameters
@@ -138,17 +118,9 @@ public:
 	void ProcessParameters(ProcessParametersCallback callback,void *userData);
 };
 
-
-
-/// DOCME
-/// @class AssDialogue
-/// @brief DOCME
-///
-/// DOCME
 class AssDialogue : public AssEntry {
 	wxString GetData(bool ssa) const;
 public:
-
 	/// Contains information about each block of text
 	std::vector<AssDialogueBlock*> Blocks;
 
