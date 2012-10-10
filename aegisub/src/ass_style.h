@@ -94,9 +94,8 @@ public:
 	double outline_w; ///< Outline width in pixels
 	double shadow_w;  ///< Shadow distance in pixels
 	int alignment;    ///< \an-style line alignment
-	int Margin[4];    ///< Left/Right/Vertical/Unused margins in pixels
+	int Margin[3];    ///< Left/Right/Vertical
 	int encoding;     ///< ASS font encoding needed for some non-unicode fonts
-	int relativeTo;   ///< ASS2 extension; do not use
 
 	/// Update the raw line data after one or more of the public members have been changed
 	void UpdateData();

@@ -203,7 +203,6 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	colorAlpha[3] = spin_ctrl(this, style->shadow.a, 255);
 	for (int i = 0; i < 3; i++)
 		margin[i] = spin_ctrl(this, style->Margin[i], 9999);
-	margin[3] = 0;
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	Outline = num_text_ctrl(this, style->outline_w, wxSize(50, -1));
 	Shadow = num_text_ctrl(this, style->shadow_w, wxSize(50, -1));
@@ -508,9 +507,8 @@ void DialogStyleEditor::UpdateWorkStyle() {
 
 	work->alignment = ControlToAlign(Alignment->GetSelection());
 
-	for (int i=0;i<3;i++)
+	for (size_t i = 0; i < 3; ++i)
 		work->Margin[i] = margin[i]->GetValue();
-	work->Margin[3] = margin[2]->GetValue();
 
 	work->primary.a = colorAlpha[0]->GetValue();
 	work->secondary.a = colorAlpha[1]->GetValue();

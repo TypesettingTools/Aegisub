@@ -128,8 +128,8 @@ public:
 	bool Comment;
 	/// Layer number
 	int Layer;
-	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical), 3 = Bottom
-	int Margin[4];
+	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical)
+	int Margin[3];
 	/// Starting time
 	AssTime Start;
 	/// Ending time
@@ -147,9 +147,8 @@ public:
 
 	/// @brief Parse raw ASS data into everything else
 	/// @param data ASS line
-	/// @param version ASS version to try first (4, 4+, ASS2)
 	/// @return Did it successfully parse?
-	bool Parse(wxString data,int version=1);
+	bool Parse(wxString const& data);
 
 	/// Parse text as ASS to generate block information
 	void ParseASSTags();
@@ -181,12 +180,12 @@ public:
 	void SetMarginString(wxString const& value) { SetMarginString(value, which);}
 	/// @brief Set a margin
 	/// @param value New value of the margin
-	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
+	/// @param which 0 = left, 1 = right, 2 = vertical
 	void SetMarginString(wxString const& value, int which);
 	/// @brief Get a margin
-	/// @param which 0 = left, 1 = right, 2 = vertical/top, 3 = bottom
+	/// @param which 0 = left, 1 = right, 2 = vertical
 	/// @param pad Pad the number to four digits
-	wxString GetMarginString(int which,bool pad=true) const;
+	wxString GetMarginString(int which, bool pad=true) const;
 	/// Get the line as SSA rather than ASS
 	wxString GetSSAText() const;
 	/// Does this line collide with the passed line?
@@ -196,6 +195,6 @@ public:
 
 	AssDialogue();
 	AssDialogue(AssDialogue const&);
-	AssDialogue(wxString data,int version=1);
+	AssDialogue(wxString const& data);
 	~AssDialogue();
 };

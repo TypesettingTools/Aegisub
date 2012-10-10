@@ -81,7 +81,7 @@ void SubtitlesPreview::SetStyle(AssStyle const& newStyle) {
 	*style = newStyle;
 	style->name = "Default";
 	style->alignment = 5;
-	memset(style->Margin, 0, 4 * sizeof(int));
+	memset(style->Margin, 0, sizeof style->Margin);
 	style->UpdateData();
 	UpdateBitmap();
 }

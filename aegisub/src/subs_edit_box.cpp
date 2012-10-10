@@ -536,13 +536,8 @@ void SubsEditBox::OnMarginRChange(wxCommandEvent &) {
 	if (line) change_value(MarginR, line->GetMarginString(1, false));
 }
 
-static void set_margin_v(AssDialogue* diag, wxString value) {
-	diag->SetMarginString(value, 2);
-	diag->SetMarginString(value, 3);
-}
-
 void SubsEditBox::OnMarginVChange(wxCommandEvent &) {
-	SetSelectedRows(set_margin_v, MarginV->GetValue(), _("MarginV change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<2>), MarginV->GetValue(), _("MarginV change"), AssFile::COMMIT_DIAG_META);
 	if (line) change_value(MarginV, line->GetMarginString(2, false));
 }
 

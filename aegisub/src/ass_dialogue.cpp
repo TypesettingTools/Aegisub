@@ -70,13 +70,10 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 , Effect(that.Effect)
 , Text(that.Text)
 {
-	for (int i=0;i<4;i++) Margin[i] = that.Margin[i];
+	memmove(Margin, that.Margin, sizeof Margin);
 }
 
-/// @brief DOCME
-/// @param _data
-/// @param version
-AssDialogue::AssDialogue(wxString _data,int version)
+AssDialogue::AssDialogue(wxString const& data)
 : AssEntry(wxString(), "[Events]")
 , Comment(false)
 , Layer(0)
@@ -84,18 +81,7 @@ AssDialogue::AssDialogue(wxString _data,int version)
 , End(5000)
 , Style("Default")
 {
-	bool valid = false;
-	// Try parsing in different ways
-	int count = 0;
-	while (!valid && count < 3) {
-		valid = Parse(_data,version);
-		count++;
-		version++;
-		if (version > 2) version = 0;
-	}
-
-	// Not valid
-	if (!valid)
+	if (!Parse(data))
 		throw "Failed parsing line.";
 }
 
@@ -107,7 +93,7 @@ void AssDialogue::ClearBlocks() {
 	delete_clear(Blocks);
 }
 
-bool AssDialogue::Parse(wxString rawData, int version) {
+bool AssDialogue::Parse(wxString const& rawData) {
 	size_t pos = 0;
 	wxString temp;
 
@@ -127,11 +113,11 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 
 	// Get first token and see if it has "Marked=" in it
 	temp = tkn.GetNextToken().Trim(false).Trim(true);
-	if (temp.Lower().StartsWith("marked=")) version = 0;
-	else if (version == 0) version = 1;
+	bool ssa = temp.Lower().StartsWith("marked=");
 
 	// Get layer number
-	if (version == 0) Layer = 0;
+	if (ssa)
+		Layer = 0;
 	else {
 		long templ;
 		temp.ToLong(&templ);
@@ -158,43 +144,19 @@ bool AssDialogue::Parse(wxString rawData, int version) {
 	Actor.Trim(true);
 	Actor.Trim(false);
 
-	// Get left margin
-	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),0);
-
-	// Get right margin
-	if (!tkn.HasMoreTokens()) return false;
-	SetMarginString(tkn.GetNextToken().Trim(false).Trim(true),1);
-
-	// Get top margin
-	if (!tkn.HasMoreTokens()) return false;
-	temp = tkn.GetNextToken().Trim(false).Trim(true);
-	SetMarginString(temp,2);
-	if (version == 1) SetMarginString(temp,3);
-
-	// Get bottom margin
-	bool rollBack = false;
-	if (version == 2) {
+	// Get margins
+	for (int i = 0; i < 3; ++i) {
 		if (!tkn.HasMoreTokens()) return false;
-		wxString oldTemp = temp;
-		temp = tkn.GetNextToken().Trim(false).Trim(true);
-		if (!temp.IsNumber()) {
-			version = 1;
-			rollBack = true;
-		}
+		SetMarginString(tkn.GetNextToken().Trim(false).Trim(true), i);
 	}
 
-	// Get effect
-	if (!rollBack) {
-		if (!tkn.HasMoreTokens()) return false;
-		temp = tkn.GetNextToken();
-	}
-	Effect = temp;
+	if (!tkn.HasMoreTokens()) return false;
+	Effect = tkn.GetNextToken();
 	Effect.Trim(true);
 	Effect.Trim(false);
 
 	// Get text
-	Text = rawData.Mid(pos+tkn.GetPosition());
+	Text = rawData.Mid(pos + tkn.GetPosition());
 
 	return true;
 }
@@ -357,7 +319,7 @@ void AssDialogue::UpdateText () {
 }
 
 void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
-	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
+	if (which < 0 || which > 2) throw Aegisub::InvalidMarginIdError();
 
 	// Make it numeric
 	wxString strvalue = origvalue;
@@ -376,8 +338,8 @@ void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
 	Margin[which] = mid<int>(0, value, 9999);
 }
 
-wxString AssDialogue::GetMarginString(int which,bool pad) const {
-	if (which < 0 || which >= 4) throw Aegisub::InvalidMarginIdError();
+wxString AssDialogue::GetMarginString(int which, bool pad) const {
+	if (which < 0 || which > 2) throw Aegisub::InvalidMarginIdError();
 	return wxString::Format(pad ? "%04d" : "%d", Margin[which]);
 }
 

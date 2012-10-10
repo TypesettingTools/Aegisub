@@ -280,10 +280,6 @@ void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {
 			data = "[V4+ Styles]";
 			*version = 1;
 		}
-		else if (low == "[v4++ styles]") {
-			data = "[V4+ Styles]";
-			*version = 2;
-		}
 
 		Line.push_back(new AssEntry(data, data));
 		return;
@@ -305,7 +301,7 @@ void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {
 	// Dialogue
 	else if (lowGroup == "[events]") {
 		if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))
-			Line.push_back(new AssDialogue(data, *version));
+			Line.push_back(new AssDialogue(data));
 		else if (data.StartsWith("Format:"))
 			Line.push_back(new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", group));
 	}
@@ -332,14 +328,10 @@ void AssFile::AddLine(wxString data, int *version, AssAttachment **attach) {
 				trueVersion = 0;
 			else if (versionString == "v4.00+")
 				trueVersion = 1;
-			else if (versionString == "v4.00++")
-				trueVersion = 2;
-			else throw
-				"Unknown SSA file format version";
+			else
+				throw "Unknown SSA file format version";
 			if (trueVersion != *version) {
-				if (!(trueVersion == 2 && *version == 1)) {
-					wxLogMessage("Warning: File has the wrong extension.");
-				}
+				wxLogMessage("Warning: File has the wrong extension.");
 				*version = trueVersion;
 			}
 		}

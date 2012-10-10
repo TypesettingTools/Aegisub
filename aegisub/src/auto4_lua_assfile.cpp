@@ -229,7 +229,7 @@ namespace Automation4 {
 			set_field(L, "margin_l", dia->Margin[0]);
 			set_field(L, "margin_r", dia->Margin[1]);
 			set_field(L, "margin_t", dia->Margin[2]);
-			set_field(L, "margin_b", dia->Margin[3]);
+			set_field(L, "margin_b", dia->Margin[2]);
 
 			set_field(L, "text", dia->Text);
 
@@ -267,7 +267,7 @@ namespace Automation4 {
 			set_field(L, "margin_l", sty->Margin[0]);
 			set_field(L, "margin_r", sty->Margin[1]);
 			set_field(L, "margin_t", sty->Margin[2]);
-			set_field(L, "margin_b", sty->Margin[3]);
+			set_field(L, "margin_b", sty->Margin[2]);
 
 			set_field(L, "encoding", sty->encoding);
 
@@ -340,7 +340,6 @@ namespace Automation4 {
 				sty->Margin[0] = get_int_field(L, "margin_l", "style");
 				sty->Margin[1] = get_int_field(L, "margin_r", "style");
 				sty->Margin[2] = get_int_field(L, "margin_t", "style");
-				sty->Margin[3] = get_int_field(L, "margin_b", "style");
 				sty->encoding = get_int_field(L, "encoding", "style");
 				sty->UpdateData();
 			}
@@ -357,7 +356,6 @@ namespace Automation4 {
 				dia->Margin[0] = get_int_field(L, "margin_l", "dialogue");
 				dia->Margin[1] = get_int_field(L, "margin_r", "dialogue");
 				dia->Margin[2] = get_int_field(L, "margin_t", "dialogue");
-				dia->Margin[3] = get_int_field(L, "margin_b", "dialogue");
 				dia->Effect = get_string_field(L, "effect", "dialogue");
 				dia->Text = get_string_field(L, "text", "dialogue");
 			}

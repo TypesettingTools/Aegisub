@@ -164,7 +164,6 @@ AssStyle::AssStyle()
 , shadow_w(2.)
 , alignment(2)
 , encoding(1)
-, relativeTo(1)
 {
 	for (int i = 0; i < 4; i++)
 		Margin[i] = 10;
@@ -255,14 +254,8 @@ AssStyle::AssStyle(wxString rawData, int version)
 	// Read right margin
 	Margin[1] = mid(0, get_next_int(tkn), 9999);
 
-	// Read top margin
+	// Read vertical margin
 	Margin[2] = mid(0, get_next_int(tkn), 9999);
-
-	// Read bottom margin
-	if (version == 2)
-		Margin[3] = mid(0, get_next_int(tkn), 9999);
-	else
-		Margin[3] = Margin[2];
 
 	// Skip alpha level
 	if (version == 0)
@@ -270,10 +263,6 @@ AssStyle::AssStyle(wxString rawData, int version)
 
 	// Read encoding
 	encoding = get_next_int(tkn);
-
-	// Read relative to
-	if (version == 2)
-		relativeTo = get_next_int(tkn);
 
 	if (tkn.HasMoreTokens())
 		throw "Malformed style: too many fields";
@@ -305,7 +294,6 @@ AssStyle& AssStyle::operator=(AssStyle const& rgt) {
 	shadow_w = rgt.shadow_w;
 	alignment = rgt.alignment;
 	encoding = rgt.encoding;
-	relativeTo = rgt.relativeTo;
 
 	memcpy(Margin, rgt.Margin, sizeof(Margin));
 

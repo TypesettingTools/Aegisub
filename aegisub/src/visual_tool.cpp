@@ -404,13 +404,13 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 	if (Vector2D ret = vec_or_bad(find_tag(diag, "\\move"), 0, 1)) return ret;
 
 	// Get default position
-	int margin[4];
-	std::copy(diag->Margin, diag->Margin + 4, margin);
+	int margin[3];
+	memcpy(margin, diag->Margin, sizeof margin);
 	int align = 2;
 
 	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
 		align = style->alignment;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 3; i++) {
 			if (margin[i] == 0)
 				margin[i] = style->Margin[i];
 		}

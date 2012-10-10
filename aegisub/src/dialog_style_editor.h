@@ -102,7 +102,7 @@ class DialogStyleEditor : public wxDialog {
 	wxSpinCtrl *colorAlpha[4];
 
 	/// DOCME
-	wxSpinCtrl *margin[4];
+	wxSpinCtrl *margin[3];
 
 	/// DOCME
 	wxRadioBox *Alignment;
