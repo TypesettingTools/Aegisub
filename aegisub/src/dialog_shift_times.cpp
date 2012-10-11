@@ -130,7 +130,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	shift_backward = new wxRadioButton(this, -1, _("&Backward"));
 	shift_backward->SetToolTip(_("Shifts subs backward, making them appear earlier. Use if they are appearing too late."));
 
-	wxString selection_mode_vals[] = { _("&All rows"), _("Selected &rows"), _("SubtitleSelection &onward") };
+	wxString selection_mode_vals[] = { _("&All rows"), _("Selected &rows"), _("Selection &onward") };
 	selection_mode = new wxRadioBox(this, -1, _("Affect"), wxDefaultPosition, wxDefaultSize, 3, selection_mode_vals, 1);
 
 	wxString time_field_vals[] = { _("Start a&nd End times"), _("&Start times only"), _("&End times only") };
