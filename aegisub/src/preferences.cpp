@@ -116,7 +116,7 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 	OptionAdd(general, _("Undo Levels"), "Limits/Undo Levels", 2);
 
 	wxFlexGridSizer *recent = PageSizer(_("Recently Used Lists"));
-	OptionAdd(recent, _("Files"), "Limits/MRU");
+	OptionAdd(recent, _("Files"), "Limits/MRU", 0, 16);
 	OptionAdd(recent, _("Find/Replace"), "Limits/Find Replace");
 
 	SetSizerAndFit(sizer);

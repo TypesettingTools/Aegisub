@@ -33,6 +33,10 @@ namespace json {
 }
 
 namespace agi {
+	class Options;
+}
+
+namespace agi {
 
 DEFINE_BASE_EXCEPTION_NOINNER(MRUError,Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorInvalidKey, MRUError, "mru/invalid")
@@ -47,14 +51,13 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorIndexOutOfRange, MRUError, "mru/invalid"
 /// If a file fails to open, Remove() should be called.
 ///
 class MRUManager {
-
 public:
 	/// @brief Map for time->value pairs.
-	typedef std::list<std::string> MRUListMap;
+	typedef std::list<const std::string> MRUListMap;
 
 	/// @brief Constructor
 	/// @param config File to load MRU values from
-	MRUManager(const std::string &config, const std::string &default_config);
+	MRUManager(std::string const& config, std::string const& default_config, agi::Options *options = 0);
 
 	/// Destructor
 	~MRUManager();
@@ -63,32 +66,34 @@ public:
 	/// @param key List name
 	/// @param entry Entry to add
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	void Add(const std::string &key, const std::string &entry);
+	void Add(std::string const& key, std::string const& entry);
 
 	/// @brief Remove entry from the list.
 	/// @param key List name
 	/// @param entry Entry to add
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	void Remove(const std::string &key, const std::string &entry);
+	void Remove(std::string const& key, std::string const& entry);
 
 	/// @brief Return list
 	/// @param key List name
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	const MRUListMap* Get(const std::string &key);
+	const MRUListMap* Get(std::string const& key);
 
 	/// @brief Return A single entry in a list.
 	/// @param key List name
 	/// @param entry 0-base position of entry
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	std::string const& GetEntry(const std::string &key, size_t entry);
+	std::string const& GetEntry(std::string const& key, const size_t entry);
 
 	/// Write MRU lists to disk.
 	void Flush();
 
 private:
-
 	/// Internal name of the config file, set during object construction.
 	const std::string config_name;
+
+	/// User preferences object for maximum number of items to list
+	agi::Options *const options;
 
 	/// @brief Map for MRUListMap values.
 	/// @param std::string Name
@@ -98,8 +103,11 @@ private:
 	/// Internal MRUMap values.
 	MRUMap mru;
 
-	void Load(const std::string &key, const ::json::Array& array);
-	inline void Prune(MRUListMap& map);
+	/// Map from MRU name to option name
+	std::map<const std::string, std::string> option_names;
+
+	void Load(std::string const& key, ::json::Array const& array);
+	void Prune(std::string const& key, MRUListMap& map) const;
 	MRUListMap &Find(std::string const& key);
 };
 

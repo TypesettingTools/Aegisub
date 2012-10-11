@@ -203,7 +203,7 @@ bool AegisubApp::OnInit() {
 	icon::icon_init();
 
 	StartupLog("Load MRU");
-	config::mru = new agi::MRUManager(STD_STR(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru));
+	config::mru = new agi::MRUManager(STD_STR(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru), config::opt);
 
 #ifdef __VISUALC__
 	SetThreadName((DWORD) -1,"AegiMain");

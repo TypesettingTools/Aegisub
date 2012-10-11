@@ -20,23 +20,37 @@
 
 #include "../config.h"
 
+#include "libaegisub/mru.h"
+
 #include "libaegisub/cajun/writer.h"
 
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
-#include "libaegisub/mru.h"
+#include "libaegisub/option.h"
+#include "libaegisub/option_value.h"
 
 namespace agi {
 
-MRUManager::MRUManager(const std::string &config, const std::string &default_config): config_name(config) {
+MRUManager::MRUManager(std::string const& config, std::string const& default_config, agi::Options *options)
+: config_name(config)
+, options(options)
+{
+	option_names["Audio"] = "Limits/MRU";
+	option_names["Keyframes"] = "Limits/MRU";
+	option_names["Subtitles"] = "Limits/MRU";
+	option_names["Timecodes"] = "Limits/MRU";
+	option_names["Video"] = "Limits/MRU";
+
+	option_names["Find"] = "Limits/Find Replace";
+	option_names["Replace"] = "Limits/Find Replace";
+
 	LOG_D("agi/mru") << "Loading MRU List";
 
 	json::Object root(json_util::file(config, default_config));
 	for (json::Object::const_iterator it(root.begin()); it != root.end(); ++it)
 		Load(it->first, it->second);
 }
-
 
 MRUManager::~MRUManager() {
 }
@@ -48,30 +62,27 @@ MRUManager::MRUListMap &MRUManager::Find(std::string const& key) {
 	return index->second;
 }
 
-
-void MRUManager::Add(const std::string &key, const std::string &entry) {
+void MRUManager::Add(std::string const& key, std::string const& entry) {
 	MRUListMap &map = Find(key);
 	map.remove(entry);
 	map.push_front(entry);
-	Prune(map);
+	Prune(key, map);
 
 	Flush();
 }
 
-
-void MRUManager::Remove(const std::string &key, const std::string &entry) {
+void MRUManager::Remove(std::string const& key, std::string const& entry) {
 	Find(key).remove(entry);
 
 	Flush();
 }
 
-
-const MRUManager::MRUListMap* MRUManager::Get(const std::string &key) {
+const MRUManager::MRUListMap* MRUManager::Get(std::string const& key) {
 	return &Find(key);
 }
 
-std::string const& MRUManager::GetEntry(const std::string &key, size_t entry) {
-	const MRUManager::MRUListMap *map = Get(key);
+std::string const& MRUManager::GetEntry(std::string const& key, const size_t entry) {
+	const MRUManager::MRUListMap *const map = Get(key);
 
 	if (entry >= map->size())
 		throw MRUErrorIndexOutOfRange("Requested element index is out of range.");
@@ -80,7 +91,6 @@ std::string const& MRUManager::GetEntry(const std::string &key, size_t entry) {
 	advance(index, entry);
 	return *index;
 }
-
 
 void MRUManager::Flush() {
 	json::Object out;
@@ -93,24 +103,29 @@ void MRUManager::Flush() {
 	json::Writer::Write(out, io::Save(config_name).Get());
 }
 
-
 /// @brief Prune MRUListMap to the desired length.
 /// This uses the user-set values for MRU list length.
-inline void MRUManager::Prune(MRUListMap& map) {
-	map.resize(std::min<size_t>(16, map.size()));
+void MRUManager::Prune(std::string const& key, MRUListMap& map) const {
+	size_t limit = 16u;
+	if (options) {
+		std::map<const std::string, std::string>::const_iterator it = option_names.find(key);
+		if (it != option_names.end())
+			limit = (size_t)options->Get(it->second)->GetInt();
+	}
+	map.resize(std::min(limit, map.size()));
 }
 
 /// @brief Load MRU Lists.
 /// @param key List name.
 /// @param array json::Array of values.
-void MRUManager::Load(const std::string &key, const json::Array& array) {
+void MRUManager::Load(std::string const& key, const json::Array& array) {
 	try {
 		copy(array.begin(), array.end(), back_inserter(mru[key]));
 	}
 	catch (json::Exception const&) {
 		// Out of date MRU file; just discard the data and skip it
 	}
-	Prune(mru[key]);
+	Prune(key, mru[key]);
 }
 
 }
