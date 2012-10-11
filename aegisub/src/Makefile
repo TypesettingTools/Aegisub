@@ -204,6 +204,7 @@ SRC += \
 	help_button.cpp \
 	hotkey.cpp \
 	hotkey_data_view_model.cpp \
+	initial_line_state.cpp \
 	kana_table.cpp \
 	main.cpp \
 	menu.cpp \

@@ -187,6 +187,7 @@
     <ClInclude Include="$(SrcDir)include\aegisub\subtitles_provider.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\toolbar.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\video_provider.h" />
+    <ClInclude Include="$(SrcDir)initial_line_state.h" />
     <ClInclude Include="$(SrcDir)kana_table.h" />
     <ClInclude Include="$(SrcDir)main.h" />
     <ClInclude Include="$(SrcDir)mkv_wrap.h" />
@@ -450,6 +451,7 @@
     <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
     <ClCompile Include="$(SrcDir)dialog_autosave.cpp" />
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
+    <ClCompile Include="$(SrcDir)initial_line_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />

@@ -55,6 +55,7 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
+#include "initial_line_state.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "placeholder_ctrl.h"
@@ -166,17 +167,33 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	by_frame = MakeRadio(_("F&rame"), false, _("Time by frame number"));
 	by_frame->Enable(false);
 
-	// Text editor
-	edit_ctrl = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
-	edit_ctrl->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
-	Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
+	split_box = new wxCheckBox(this,-1,_("Split"));
+	split_box->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnSplit, this);
+	middle_right_sizer->Add(split_box, wxSizerFlags().Center().Left());
 
 	// Main sizer
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(top_sizer,0,wxEXPAND | wxALL,3);
 	main_sizer->Add(middle_left_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 	main_sizer->Add(middle_right_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+
+	// Text editor
+	edit_ctrl = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
+	edit_ctrl->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
+
+	secondary_editor = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(300,50), wxBORDER_SUNKEN | wxTE_MULTILINE);
+	secondary_editor->Enable(false);
+
+	main_sizer->Add(secondary_editor,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 	main_sizer->Add(edit_ctrl,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+	main_sizer->Hide(secondary_editor);
+
+	bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
+	bottom_sizer->Add(MakeBottomButton("edit/revert"));
+	bottom_sizer->Add(MakeBottomButton("edit/clear"));
+	bottom_sizer->Add(MakeBottomButton("edit/insert_original"));
+	main_sizer->Add(bottom_sizer);
+	main_sizer->Hide(bottom_sizer);
 
 	SetSizerAndFit(main_sizer);
 
@@ -187,6 +204,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerEnter, this, layer->GetId());
 	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, comment_box->GetId());
 
+	Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
 	Bind(wxEVT_TIMER, [=](wxTimerEvent&) { commit_id = -1; });
 
@@ -197,6 +215,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	connections.push_back(context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this));
 	connections.push_back(context->selectionController->AddActiveLineListener(&SubsEditBox::OnActiveLineChanged, this));
 	connections.push_back(context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this));
+	connections.push_back(context->initialLineState->AddChangeListener(&SubsEditBox::OnLineInitialTextChanged, this));
 
 	textSelectionController.reset(new ScintillaTextSelectionController(edit_ctrl));
 	context->textSelectionController = textSelectionController.get();
@@ -237,6 +256,15 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 
 	middle_right_sizer->Add(btn, wxSizerFlags().Center().Expand());
 	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
+}
+
+wxButton *SubsEditBox::MakeBottomButton(const char *cmd_name) {
+	cmd::Command *command = cmd::get(cmd_name);
+	wxButton *btn = new wxButton(this, -1, command->StrDisplay(c));
+	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
+
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
+	return btn;
 }
 
 wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip) {
@@ -354,6 +382,11 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 void SubsEditBox::OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &) {
 	sel = c->selectionController->GetSelectedSet();
 	initial_times.clear();
+}
+
+void SubsEditBox::OnLineInitialTextChanged(wxString const& new_text) {
+	if (split_box->IsChecked())
+		secondary_editor->SetValue(new_text);
 }
 
 void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
@@ -489,6 +522,19 @@ void SubsEditBox::SetControlsState(bool state) {
 		wxEventBlocker blocker(this);
 		edit_ctrl->SetTextTo("");
 	}
+}
+
+void SubsEditBox::OnSplit(wxCommandEvent&) {
+	Freeze();
+	GetSizer()->Show(secondary_editor, split_box->IsChecked());
+	GetSizer()->Show(bottom_sizer, split_box->IsChecked());
+	Fit();
+	SetMinSize(GetSize());
+	GetParent()->GetSizer()->Layout();
+	Thaw();
+
+	if (split_box->IsChecked())
+		secondary_editor->SetValue(c->initialLineState->GetInitialText());
 }
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &) {

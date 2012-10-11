@@ -5,6 +5,7 @@ class AssDialogue;
 class AudioKaraoke;
 class DialogManager;
 class SearchReplaceEngine;
+class InitialLineState;
 template<class T> class SelectionController;
 class SubsTextEditCtrl;
 class SubtitlesGrid;
@@ -20,6 +21,7 @@ struct Context {
 	// Models
 	AssFile *ass;
 	Automation4::ScriptManager *local_scripts;
+	InitialLineState *initialLineState;
 
 	// Controllers
 	AudioController *audioController;

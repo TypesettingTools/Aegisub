@@ -53,6 +53,7 @@
 #include "../dialog_paste_over.h"
 #include "../dialog_search_replace.h"
 #include "../include/aegisub/context.h"
+#include "../initial_line_state.h"
 #include "../options.h"
 #include "../search_replace_engine.h"
 #include "../subs_edit_ctrl.h"
@@ -918,6 +919,48 @@ struct edit_undo : public Command {
 	}
 };
 
+struct edit_revert : public Command {
+	CMD_NAME("edit/revert")
+	STR_DISP("Revert")
+	STR_MENU("Revert")
+	STR_HELP("Revert the active line to its initial state")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *line = c->selectionController->GetActiveLine();
+		line->Text = c->initialLineState->GetInitialText();
+		c->ass->Commit(_("revert line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+	}
+};
+
+struct edit_clear : public Command {
+	CMD_NAME("edit/clear")
+	STR_DISP("Clear")
+	STR_MENU("Clear")
+	STR_HELP("Clear the current line's text")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *line = c->selectionController->GetActiveLine();
+		line->Text = "";
+		c->ass->Commit(_("clear line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+	}
+};
+
+struct edit_insert_original : public Command {
+	CMD_NAME("edit/insert_original")
+	STR_DISP("Insert Original")
+	STR_MENU("Insert Original")
+	STR_HELP("Insert the original line text at the cursor")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *line = c->selectionController->GetActiveLine();
+		int sel_start = c->textSelectionController->GetSelectionStart();
+		int sel_end = c->textSelectionController->GetSelectionEnd();
+
+		line->Text = line->Text.Left(sel_start) + c->initialLineState->GetInitialText() + line->Text.Mid(sel_end);
+		c->ass->Commit(_("insert original"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+	}
+};
+
 }
 /// @}
 
@@ -949,5 +992,8 @@ namespace cmd {
 		reg(new edit_style_strikeout);
 		reg(new edit_redo);
 		reg(new edit_undo);
+		reg(new edit_revert);
+		reg(new edit_insert_original);
+		reg(new edit_clear);
 	}
 }

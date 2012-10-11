@@ -61,6 +61,7 @@
 #include "dialog_manager.h"
 #include "dialog_version_check.h"
 #include "help_button.h"
+#include "initial_line_state.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
@@ -377,6 +378,7 @@ void FrameMain::InitContents() {
 	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel, context.get());
 	context->selectionController = context->subsGrid;
 	context->search = new SearchReplaceEngine(context.get());
+	context->initialLineState = new InitialLineState(context.get());
 
 	StartupLog("Create video box");
 	videoBox = new VideoBox(Panel, false, context.get());

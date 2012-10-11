@@ -678,17 +678,17 @@
     <ClInclude Include="$(SrcDir)dialog_autosave.h">
       <Filter>Features\Autosave</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)ass_info.h">
       <Filter>ASS</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)options.h">
       <Filter>Preferences</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)search_replace_engine.h">
       <Filter>Features\Search-replace</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)initial_line_state.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1237,6 +1237,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp">
       <Filter>Features\Search-replace</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)initial_line_state.cpp">
+      <Filter>Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

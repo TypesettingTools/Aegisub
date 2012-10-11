@@ -104,10 +104,12 @@ class SubsEditBox : public wxPanel {
 	wxRadioButton *by_time;
 	wxRadioButton *by_frame;
 	wxTextCtrl *char_count;
+	wxCheckBox *split_box;
 
 	wxSizer *top_sizer;
 	wxSizer *middle_right_sizer;
 	wxSizer *middle_left_sizer;
+	wxSizer *bottom_sizer;
 
 	void SetControlsState(bool state);
 	/// @brief Update times of selected lines
@@ -138,6 +140,7 @@ class SubsEditBox : public wxPanel {
 	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, int margin, wxString const& commit_msg);
 	TimeEdit *MakeTimeCtrl(wxString const& tooltip, TimeField field);
 	void MakeButton(const char *cmd_name);
+	wxButton *MakeBottomButton(const char *cmd_name);
 	wxComboBox *MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip);
 	wxRadioButton *MakeRadio(wxString const& text, bool start, wxString const& tooltip);
 
@@ -146,6 +149,7 @@ class SubsEditBox : public wxPanel {
 
 	void OnActiveLineChanged(AssDialogue *new_line);
 	void OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &);
+	void OnLineInitialTextChanged(wxString const& new_text);
 
 	void OnFrameTimeRadio(wxCommandEvent &event);
 	void OnStyleChange(wxCommandEvent &event);
@@ -154,6 +158,7 @@ class SubsEditBox : public wxPanel {
 	void OnCommentChange(wxCommandEvent &);
 	void OnEffectChange(wxCommandEvent &);
 	void OnSize(wxSizeEvent &event);
+	void OnSplit(wxCommandEvent&);
 
 	void SetPlaceholderCtrl(wxControl *ctrl, wxString const& value);
 
@@ -191,6 +196,7 @@ class SubsEditBox : public wxPanel {
 	void CallCommand(const char *cmd_name);
 
 	SubsTextEditCtrl *edit_ctrl;
+	wxTextCtrl *secondary_editor;
 	agi::scoped_ptr<TextSelectionController> textSelectionController;
 
 public:
