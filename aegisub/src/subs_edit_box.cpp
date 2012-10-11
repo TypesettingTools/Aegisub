@@ -75,7 +75,7 @@ template<class T>
 struct field_setter : public std::binary_function<AssDialogue*, T, void> {
 	T AssDialogue::*field;
 	field_setter(T AssDialogue::*field) : field(field) { }
-	void operator()(AssDialogue* obj, T value) {
+	void operator()(AssDialogue* obj, T const& value) {
 		obj->*field = value;
 	}
 };
@@ -236,7 +236,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	MiddleBotSizer->Add(btn, wxSizerFlags().Center().Expand());
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(cmd::call, cmd_name, c));
+	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::tr1::bind(&SubsEditBox::CallCommand, this, cmd_name));
 }
 
 wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip) {
@@ -543,4 +543,9 @@ void SubsEditBox::OnEffectChange(wxCommandEvent &) {
 
 void SubsEditBox::OnCommentChange(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Comment, CommentBox->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
+}
+
+void SubsEditBox::CallCommand(const char *cmd_name) {
+	cmd::call(cmd_name, c);
+	TextEdit->SetFocus();
 }

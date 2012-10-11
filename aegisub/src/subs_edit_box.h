@@ -198,6 +198,9 @@ class SubsEditBox : public wxPanel {
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming(agi::vfr::Framerate const& fps);
 
+	/// Call a command the restore focus to the edit box
+	void CallCommand(const char *cmd_name);
+
 	SubsTextEditCtrl *TextEdit;
 	agi::scoped_ptr<TextSelectionController> textSelectionController;
 
