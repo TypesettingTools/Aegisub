@@ -220,11 +220,17 @@ struct audio_save_clip : public Command {
 
 	void operator()(agi::Context *c) {
 		Selection sel = c->selectionController->GetSelectedSet();
+		if (sel.empty()) return;
+
+		AssTime start = INT_MAX, end = 0;
 		for (Selection::iterator it = sel.begin(); it != sel.end(); ++it) {
-			c->audioController->SaveClip(
-				wxFileSelector(_("Save audio clip"), "", "", "wav", "", wxFD_SAVE|wxFD_OVERWRITE_PROMPT, c->parent),
-				TimeRange((*it)->Start, (*it)->End));
+			start = std::min(start, (*it)->Start);
+			end = std::max(end, (*it)->End);
 		}
+
+		c->audioController->SaveClip(
+			wxFileSelector(_("Save audio clip"), "", "", "wav", "", wxFD_SAVE|wxFD_OVERWRITE_PROMPT, c->parent),
+			TimeRange(start, end));
 	}
 };
 
