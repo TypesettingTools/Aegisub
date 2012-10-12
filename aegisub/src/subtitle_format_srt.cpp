@@ -431,7 +431,7 @@ found_timestamps:
 				line->Start = ReadSRTTime(timestamp_regex.GetMatch(text_line, 1));
 				line->End = ReadSRTTime(timestamp_regex.GetMatch(text_line, 2));
 				// store pointer to subtitle, we'll continue working on it
-				target->Line.push_back(line);
+				target->Line.push_back(*line);
 				// next we're reading the text
 				state = 3;
 				break;
@@ -500,19 +500,19 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	// Convert to SRT
 	AssFile copy(*src);
 	copy.Sort();
-	StripComments(copy.Line);
-	RecombineOverlaps(copy.Line);
-	MergeIdentical(copy.Line);
+	StripComments(copy);
+	RecombineOverlaps(copy);
+	MergeIdentical(copy);
 #ifdef _WIN32
-	ConvertNewlines(copy.Line, "\r\n", false);
+	ConvertNewlines(copy, "\r\n", false);
 #else
-	ConvertNewlines(copy.Line, "\n", false);
+	ConvertNewlines(copy, "\n", false);
 #endif
 
 	// Write lines
 	int i=1;
-	for (LineList::const_iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
+	for (constEntryIter cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
+		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&*cur)) {
 			file.WriteLineToFile(wxString::Format("%d", i++));
 			file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
 			file.WriteLineToFile(ConvertTags(current));
@@ -525,18 +525,18 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	wxString supported_tags[] = { "\\b", "\\i", "\\s", "\\u" };
 
 	AssStyle defstyle;
-	for (std::list<AssEntry*>::const_iterator cur = file->Line.begin(); cur != file->Line.end(); ++cur) {
+	for (constEntryIter cur = file->Line.begin(); cur != file->Line.end(); ++cur) {
 		// Check style, if anything non-default is found, return false
-		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(*cur)) {
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&*cur)) {
 			if (curstyle->GetEntryData() != defstyle.GetEntryData())
 				return false;
 		}
 
 		// Check for attachments, if any is found, return false
-		if (dynamic_cast<const AssAttachment*>(*cur)) return false;
+		if (dynamic_cast<const AssAttachment*>(&*cur)) return false;
 
 		// Check dialogue
-		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(*cur)) {
+		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&*cur)) {
 			std::vector<AssDialogueBlock*> blocks = curdiag->ParseTags();
 			for (size_t i = 0; i < blocks.size(); ++i) {
 				AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(blocks[i]);
@@ -557,7 +557,7 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	return true;
 }
 
-wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
+wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 	wxString final;
 	std::map<char, bool> tag_states;
 	tag_states['i'] = false;
@@ -565,10 +565,10 @@ wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
 	tag_states['u'] = false;
 	tag_states['s'] = false;
 
-	diag->ParseAssTags();
+	std::vector<AssDialogueBlock *> blocks = diag->ParseTags();
 
-	for (size_t i = 0; i < diag->Blocks.size(); ++i) {
-		if (AssDialogueBlockOverride* block = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks[i])) {
+	for (size_t i = 0; i < blocks.size(); ++i) {
+		if (AssDialogueBlockOverride* block = dynamic_cast<AssDialogueBlockOverride*>(blocks[i])) {
 			// Iterate through overrides
 			for (size_t j = 0; j < block->Tags.size(); j++) {
 				AssOverrideTag *tag = block->Tags[j];
@@ -586,7 +586,7 @@ wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
 			}
 		}
 		// Plain text
-		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(diag->Blocks[i])) {
+		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(blocks[i])) {
 			final += plain->GetText();
 		}
 	}
@@ -598,7 +598,7 @@ wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
 			final += wxString::Format("</%c>", it->first);
 	}
 
-	diag->ClearBlocks();
+	delete_clear(blocks);
 
 	return final;
 }

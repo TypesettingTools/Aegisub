@@ -117,7 +117,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename,
 			diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
 			diag->End = fps.TimeAtFrame(f2, agi::vfr::END);
 			diag->Text = text;
-			target->Line.push_back(diag);
+			target->Line.push_back(*diag);
 		}
 	}
 }
@@ -128,11 +128,11 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filen
 
 	AssFile copy(*src);
 	copy.Sort();
-	StripComments(copy.Line);
-	RecombineOverlaps(copy.Line);
-	MergeIdentical(copy.Line);
-	StripTags(copy.Line);
-	ConvertNewlines(copy.Line, "|");
+	StripComments(copy);
+	RecombineOverlaps(copy);
+	MergeIdentical(copy);
+	StripTags(copy);
+	ConvertNewlines(copy, "|");
 
 	TextFileWriter file(filename, encoding);
 
@@ -142,8 +142,8 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filen
 	}
 
 	// Write lines
-	for (LineList::const_iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
+	for (constEntryIter cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
+		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&*cur)) {
 			int start = fps.FrameAtTime(current->Start, agi::vfr::START);
 			int end = fps.FrameAtTime(current->End, agi::vfr::END);
 

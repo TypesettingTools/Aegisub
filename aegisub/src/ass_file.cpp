@@ -33,6 +33,8 @@
 
 #include "config.h"
 
+#include "ass_file.h"
+
 #ifndef AGI_PRE
 #include <algorithm>
 #include <fstream>
@@ -46,7 +48,6 @@
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
-#include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
 #include "compat.h"
@@ -87,7 +88,7 @@ void AssFile::Load(const wxString &_filename, wxString const& charset) {
 
 		// Check if the file has at least one style and at least one dialogue line
 		for (entryIter it = temp.Line.begin(); it != temp.Line.end(); ++it) {
-			AssEntryType type = (*it)->GetType();
+			AssEntryType type = it->GetType();
 			if (type == ENTRY_STYLE) found_style = true;
 			if (type == ENTRY_DIALOGUE) found_dialogue = true;
 			if (found_style && found_dialogue) break;
@@ -180,7 +181,7 @@ void AssFile::SaveMemory(std::vector<char> &dst) {
 
 	// Write file
 	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
-		wxCharBuffer buffer = ((*cur)->GetEntryData() + "\r\n").utf8_str();
+		wxCharBuffer buffer = (cur->GetEntryData() + "\r\n").utf8_str();
 		copy(buffer.data(), buffer.data() + buffer.length(), back_inserter(dst));
 	}
 }
@@ -208,25 +209,25 @@ void AssFile::LoadDefault(bool defline) {
 	Clear();
 
 	// Write headers
-	Line.push_back(new AssEntry("[Script Info]", "[Script Info]"));
-	Line.push_back(new AssEntry("Title: Default Aegisub file", "[Script Info]"));
-	Line.push_back(new AssEntry("ScriptType: v4.00+", "[Script Info]"));
-	Line.push_back(new AssEntry("WrapStyle: 0", "[Script Info]"));
-	Line.push_back(new AssEntry("ScaledBorderAndShadow: yes", "[Script Info]"));
-	Line.push_back(new AssEntry("Collisions: Normal", "[Script Info]"));
+	Line.push_back(*new AssEntry("[Script Info]", "[Script Info]"));
+	Line.push_back(*new AssEntry("Title: Default Aegisub file", "[Script Info]"));
+	Line.push_back(*new AssEntry("ScriptType: v4.00+", "[Script Info]"));
+	Line.push_back(*new AssEntry("WrapStyle: 0", "[Script Info]"));
+	Line.push_back(*new AssEntry("ScaledBorderAndShadow: yes", "[Script Info]"));
+	Line.push_back(*new AssEntry("Collisions: Normal", "[Script Info]"));
 	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
-		Line.push_back(new AssEntry(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()), "[Script Info]"));
-		Line.push_back(new AssEntry(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()), "[Script Info]"));
+		Line.push_back(*new AssEntry(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()), "[Script Info]"));
+		Line.push_back(*new AssEntry(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()), "[Script Info]"));
 	}
-	Line.push_back(new AssEntry("YCbCr Matrix: None", "[Script Info]"));
+	Line.push_back(*new AssEntry("YCbCr Matrix: None", "[Script Info]"));
 
 	InsertStyle(new AssStyle);
 
-	Line.push_back(new AssEntry("[Events]", "[Events]"));
-	Line.push_back(new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
+	Line.push_back(*new AssEntry("[Events]", "[Events]"));
+	Line.push_back(*new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
 
 	if (defline)
-		Line.push_back(new AssDialogue);
+		Line.push_back(*new AssDialogue);
 
 	autosavedCommitId = savedCommitId = commitId + 1;
 	Commit("", COMMIT_NEW);
@@ -237,10 +238,11 @@ void AssFile::LoadDefault(bool defline) {
 
 void AssFile::swap(AssFile &that) throw() {
 	// Intentionally does not swap undo stack related things
-	std::swap(loaded, that.loaded);
-	std::swap(commitId, that.commitId);
-	std::swap(undoDescription, that.undoDescription);
-	std::swap(Line, that.Line);
+	using std::swap;
+	swap(loaded, that.loaded);
+	swap(commitId, that.commitId);
+	swap(undoDescription, that.undoDescription);
+	swap(Line, that.Line);
 }
 
 AssFile::AssFile(const AssFile &from)
@@ -249,22 +251,22 @@ AssFile::AssFile(const AssFile &from)
 , filename(from.filename)
 , loaded(from.loaded)
 {
-	std::transform(from.Line.begin(), from.Line.end(), std::back_inserter(Line), std::mem_fun(&AssEntry::Clone));
+	Line.clone_from(from.Line, std::mem_fun_ref(&AssEntry::Clone), delete_ptr());
 }
 AssFile& AssFile::operator=(AssFile from) {
 	std::swap(*this, from);
 	return *this;
 }
 
-static bool try_insert(std::list<AssEntry*> &lines, AssEntry *entry) {
+static bool try_insert(EntryList &lines, AssEntry *entry) {
 	if (lines.empty()) return false;
 
 	// Search for insertion point
-	std::list<AssEntry*>::iterator it = lines.end();
+	entryIter it = lines.end();
 	do {
 		--it;
-		if ((*it)->group == entry->group) {
-			lines.insert(++it, entry);
+		if (it->group == entry->group) {
+			lines.insert(++it, *entry);
 			return true;
 		}
 	} while (it != lines.begin());
@@ -276,17 +278,17 @@ void AssFile::InsertStyle(AssStyle *style) {
 	if (try_insert(Line, style)) return;
 
 	// No styles found, add them
-	Line.push_back(new AssEntry("[V4+ Styles]", "[V4+ Styles]"));
-	Line.push_back(new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", "[V4+ Styles]"));
-	Line.push_back(style);
+	Line.push_back(*new AssEntry("[V4+ Styles]", "[V4+ Styles]"));
+	Line.push_back(*new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", "[V4+ Styles]"));
+	Line.push_back(*style);
 }
 
 void AssFile::InsertAttachment(AssAttachment *attach) {
 	if (try_insert(Line, attach)) return;
 
 	// Didn't find a group of the appropriate type so create it
-	Line.push_back(new AssEntry(attach->group, attach->group));
-	Line.push_back(attach);
+	Line.push_back(*new AssEntry(attach->group, attach->group));
+	Line.push_back(*attach);
 }
 
 void AssFile::InsertAttachment(wxString filename) {
@@ -306,9 +308,9 @@ void AssFile::InsertDialogue(AssDialogue *diag) {
 	if (try_insert(Line, diag)) return;
 
 	// Didn't find a group of the appropriate type so create it
-	Line.push_back(new AssEntry("[Events]", "[Events]"));
-	Line.push_back(new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
-	Line.push_back(diag);
+	Line.push_back(*new AssEntry("[Events]", "[Events]"));
+	Line.push_back(*new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
+	Line.push_back(*diag);
 }
 
 wxString AssFile::GetScriptInfo(wxString key) const {
@@ -316,10 +318,10 @@ wxString AssFile::GetScriptInfo(wxString key) const {
 	key += ":";
 	bool GotIn = false;
 
-	for (std::list<AssEntry*>::const_iterator cur = Line.begin(); cur != Line.end(); ++cur) {
-		if ((*cur)->group == "[Script Info]") {
+	for (constEntryIter cur = Line.begin(); cur != Line.end(); ++cur) {
+		if (cur->group == "[Script Info]") {
 			GotIn = true;
-			wxString curText = (*cur)->GetEntryData();
+			wxString curText = cur->GetEntryData();
 			if (curText.Lower().StartsWith(key))
 				return curText.Mid(key.size()).Trim(true).Trim(false);
 		}
@@ -338,21 +340,21 @@ int AssFile::GetScriptInfoAsInt(wxString const& key) const {
 void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 	wxString search_key = key.Lower() + ":";
 	size_t key_size = search_key.size();
-	std::list<AssEntry*>::iterator script_info_end;
+	entryIter script_info_end;
 	bool found_script_info = false;
 
-	for (std::list<AssEntry*>::iterator cur = Line.begin(); cur != Line.end(); ++cur) {
-		if ((*cur)->group == "[Script Info]") {
+	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
+		if (cur->group == "[Script Info]") {
 			found_script_info = true;
-			wxString cur_text = (*cur)->GetEntryData().Left(key_size).Lower();
+			wxString cur_text = cur->GetEntryData().Left(key_size).Lower();
 
 			if (cur_text == search_key) {
 				if (value.empty()) {
-					delete *cur;
+					delete &*cur;
 					Line.erase(cur);
 				}
 				else {
-					(*cur)->SetEntryData(key + ": " + value);
+					cur->SetEntryData(key + ": " + value);
 				}
 				return;
 			}
@@ -360,7 +362,7 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 		}
 		else if (found_script_info) {
 			if (value.size())
-				Line.insert(script_info_end, new AssEntry(key + ": " + value, "[Script Info]"));
+				Line.insert(script_info_end, *new AssEntry(key + ": " + value, "[Script Info]"));
 			return;
 		}
 	}
@@ -368,11 +370,11 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 	// Found a script info section, but not this key or anything after it,
 	// so add it at the end of the file
 	if (found_script_info)
-		Line.push_back(new AssEntry(key + ": " + value, "[Script Info]"));
+		Line.push_back(*new AssEntry(key + ": " + value, "[Script Info]"));
 	// Script info section not found, so add it at the beginning of the file
 	else {
-		Line.push_front(new AssEntry(key + ": " + value, "[Script Info]"));
-		Line.push_front(new AssEntry("[Script Info]", "[Script Info]"));
+		Line.push_front(*new AssEntry(key + ": " + value, "[Script Info]"));
+		Line.push_front(*new AssEntry("[Script Info]", "[Script Info]"));
 	}
 }
 
@@ -400,8 +402,8 @@ void AssFile::GetResolution(int &sw,int &sh) const {
 
 wxArrayString AssFile::GetStyles() const {
 	wxArrayString styles;
-	for (std::list<AssEntry*>::const_iterator cur = Line.begin(); cur != Line.end(); ++cur) {
-		if (AssStyle *curstyle = dynamic_cast<AssStyle*>(*cur))
+	for (constEntryIter cur = Line.begin(); cur != Line.end(); ++cur) {
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&*cur))
 			styles.Add(curstyle->name);
 	}
 	return styles;
@@ -409,7 +411,7 @@ wxArrayString AssFile::GetStyles() const {
 
 AssStyle *AssFile::GetStyle(wxString const& name) {
 	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
-		AssStyle *curstyle = dynamic_cast<AssStyle*>(*cur);
+		AssStyle *curstyle = dynamic_cast<AssStyle*>(&*cur);
 		if (curstyle && curstyle->name == name)
 			return curstyle;
 	}
@@ -430,12 +432,12 @@ int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *singl
 		// If only one line changed just modify it instead of copying the file
 		if (single_line) {
 			entryIter this_it = Line.begin(), undo_it = UndoStack.back().Line.begin();
-			while (*this_it != single_line) {
+			while (&*this_it != single_line) {
 				++this_it;
 				++undo_it;
 			}
-			delete *undo_it;
-			*undo_it = single_line->Clone();
+			UndoStack.back().Line.insert(undo_it, *single_line->Clone());
+			delete &*undo_it;
 		}
 		else {
 			UndoStack.back() = *this;
@@ -467,7 +469,7 @@ void AssFile::Undo() {
 	if (UndoStack.size() <= 1) return;
 
 	RedoStack.push_back(AssFile());
-	std::swap(RedoStack.back(), *this);
+	swap(RedoStack.back());
 	UndoStack.pop_back();
 	*this = UndoStack.back();
 
@@ -477,7 +479,7 @@ void AssFile::Undo() {
 void AssFile::Redo() {
 	if (RedoStack.empty()) return;
 
-	std::swap(*this, RedoStack.back());
+	swap(RedoStack.back());
 	UndoStack.push_back(*this);
 	RedoStack.pop_back();
 
@@ -515,10 +517,10 @@ void AssFile::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
 	Sort(Line, comp, limit);
 }
 namespace {
-	struct AssEntryComp : public std::binary_function<const AssEntry*, const AssEntry*, bool> {
+	struct AssEntryComp : public std::binary_function<AssEntry, AssEntry, bool> {
 		AssFile::CompFunc comp;
-		bool operator()(const AssEntry* a, const AssEntry* b) const {
-			return comp(static_cast<const AssDialogue*>(a), static_cast<const AssDialogue*>(b));
+		bool operator()(AssEntry const&a, AssEntry const&b) const {
+			return comp(static_cast<const AssDialogue*>(&a), static_cast<const AssDialogue*>(&b));
 		}
 	};
 
@@ -527,26 +529,24 @@ namespace {
 		return d && (limit.empty() || limit.count(d));
 	}
 }
-void AssFile::Sort(std::list<AssEntry*> &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
+
+void AssFile::Sort(EntryList &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
 	AssEntryComp compE;
 	compE.comp = comp;
 	// Sort each block of AssDialogues separately, leaving everything else untouched
 	for (entryIter begin = lst.begin(); begin != lst.end(); ++begin) {
-		if (!is_dialogue(*begin, limit)) continue;
+		if (!is_dialogue(&*begin, limit)) continue;
 		entryIter end = begin;
-		while (end != lst.end() && is_dialogue(*end, limit)) ++end;
+		while (end != lst.end() && is_dialogue(&*end, limit)) ++end;
 
 		// used instead of std::list::sort for partial list sorting
-		std::list<AssEntry*> tmp;
+		EntryList tmp;
 		tmp.splice(tmp.begin(), lst, begin, end);
 		tmp.sort(compE);
 		lst.splice(end, tmp);
 
 		begin = --end;
 	}
-}
-void AssFile::Sort(std::list<AssDialogue*> &lst, CompFunc comp) {
-	lst.sort(comp);
 }
 
 AssFile *AssFile::top;

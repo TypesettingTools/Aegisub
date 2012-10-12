@@ -209,7 +209,7 @@ void AssTransformFramerateFilter::TransformTimeTags(wxString name,int n,AssOverr
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	if (!Input->IsLoaded() || !Output->IsLoaded()) return;
 	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(*cur);
+		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(&*cur);
 
 		if (curDialogue) {
 			line = curDialogue;

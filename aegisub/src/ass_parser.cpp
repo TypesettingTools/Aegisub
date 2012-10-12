@@ -51,7 +51,7 @@ void AssParser::ParseAttachmentLine(wxString const& data) {
 	// Data is over, add attachment to the file
 	if (!valid_data || is_filename) {
 		attach->Finish();
-		target->Line.push_back(attach.release());
+		target->Line.push_back(*attach.release());
 		AddLine(data);
 	}
 	else {
@@ -60,7 +60,7 @@ void AssParser::ParseAttachmentLine(wxString const& data) {
 		// Done building
 		if (data.Length() < 80) {
 			attach->Finish();
-			target->Line.push_back(attach.release());
+			target->Line.push_back(*attach.release());
 		}
 	}
 }
@@ -68,7 +68,7 @@ void AssParser::ParseAttachmentLine(wxString const& data) {
 void AssParser::ParseScriptInfoLine(wxString const& data) {
 	// If the first nonblank line isn't a header pretend it starts with [Script Info]
 	if (target->Line.empty())
-		target->Line.push_back(new AssEntry("[Script Info]", "[Script Info]"));
+		target->Line.push_back(*new AssEntry("[Script Info]", "[Script Info]"));
 
 	if (data.StartsWith(";")) {
 		// Skip stupid comments added by other programs
@@ -91,21 +91,21 @@ void AssParser::ParseScriptInfoLine(wxString const& data) {
 		}
 	}
 
-	target->Line.push_back(new AssEntry(data, "[Script Info]"));
+	target->Line.push_back(*new AssEntry(data, "[Script Info]"));
 }
 
 void AssParser::ParseEventLine(wxString const& data) {
 	if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))
-		target->Line.push_back(new AssDialogue(data));
+		target->Line.push_back(*new AssDialogue(data));
 	else if (data.StartsWith("Format:"))
-		target->Line.push_back(new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
+		target->Line.push_back(*new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
 }
 
 void AssParser::ParseStyleLine(wxString const& data) {
 	if (data.StartsWith("Style:"))
-		target->Line.push_back(new AssStyle(data, version));
+		target->Line.push_back(*new AssStyle(data, version));
 	else if (data.StartsWith("Format:"))
-		target->Line.push_back(new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", "[V4+ Styles]"));
+		target->Line.push_back(*new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", "[V4+ Styles]"));
 }
 
 void AssParser::ParseFontLine(wxString const& data) {
@@ -121,7 +121,7 @@ void AssParser::ParseGraphicsLine(wxString const& data) {
 }
 
 void AssParser::AppendUnknownLine(wxString const& data) {
-	target->Line.push_back(new AssEntry(data, target->Line.back()->group));
+	target->Line.push_back(*new AssEntry(data, target->Line.back().group));
 }
 
 void AssParser::AddLine(wxString const& data) {
@@ -166,7 +166,7 @@ void AssParser::AddLine(wxString const& data) {
 			state = &AssParser::AppendUnknownLine;
 		}
 
-		target->Line.push_back(new AssEntry(header, header));
+		target->Line.push_back(*new AssEntry(header, header));
 		return;
 	}
 

@@ -353,7 +353,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	json::Array shifted_blocks;
 
 	for (entryIter it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it) {
-		AssDialogue *line = dynamic_cast<AssDialogue*>(*it);
+		AssDialogue *line = dynamic_cast<AssDialogue*>(&*it);
 		if (!line) continue;
 		++row_number;
 

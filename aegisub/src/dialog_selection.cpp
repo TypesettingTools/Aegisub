@@ -114,7 +114,7 @@ static std::set<AssDialogue*> process(wxString match_text, bool match_case, int 
 
 	std::set<AssDialogue*> matches;
 	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (!diag) continue;
 		if (diag->Comment && !comments) continue;
 		if (!diag->Comment && !dialogue) continue;

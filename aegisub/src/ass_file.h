@@ -41,14 +41,19 @@
 #include <wx/arrstr.h>
 #endif
 
+#include <boost/intrusive/list.hpp>
+
 #include <libaegisub/signal.h>
+
+#include "ass_entry.h"
 
 class AssDialogue;
 class AssStyle;
 class AssAttachment;
-class AssEntry;
 
-typedef std::list<AssEntry*>::iterator entryIter;
+typedef boost::intrusive::make_list<AssEntry, boost::intrusive::constant_time_size<false> >::type EntryList;
+typedef EntryList::iterator entryIter;
+typedef EntryList::const_iterator constEntryIter;
 
 /// DOCME
 /// @class AssFile
@@ -78,7 +83,7 @@ class AssFile {
 
 public:
 	/// The lines in the file
-	std::list<AssEntry*> Line;
+	EntryList Line;
 	/// The filename of this file, if any
 	wxString filename;
 	/// Is the file loaded?
@@ -229,8 +234,5 @@ public:
 	/// @brief Sort the dialogue lines in the given list
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
 	/// @param limit If non-empty, only lines in this set are sorted
-	static void Sort(std::list<AssEntry*>& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
-	/// @brief Sort the dialogue lines in the given list
-	/// @param comp Comparison function to use. Defaults to sorting by start time.
-	static void Sort(std::list<AssDialogue*>& lst, CompFunc comp = CompStart);
+	static void Sort(EntryList& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 };

@@ -40,6 +40,8 @@
 #include <assert.h>
 
 #include <algorithm>
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/algorithm_ext.hpp>
 
 #include <wx/log.h>
 #endif
@@ -660,14 +662,14 @@ namespace Automation4 {
 		// Apply any pending commits
 		for (std::deque<PendingCommit>::iterator it = pending_commits.begin(); it != pending_commits.end(); ++it) {
 			ass->Line.clear();
-			ass->Line.insert(ass->Line.end(), it->lines.begin(), it->lines.end());
+			boost::push_back(ass->Line, it->lines | boost::adaptors::indirected);
 			ass->Commit(it->mesage, it->modification_type);
 		}
 
 		// Commit any changes after the last undo point was set
 		if (modification_type) {
 			ass->Line.clear();
-			ass->Line.insert(ass->Line.end(), lines.begin(), lines.end());
+			boost::push_back(ass->Line, lines | boost::adaptors::indirected);
 		}
 		if (modification_type && can_set_undo && !undo_description.empty())
 			ass->Commit(undo_description, modification_type);
@@ -691,8 +693,10 @@ namespace Automation4 {
 	, can_set_undo(can_set_undo)
 	, modification_type(0)
 	, references(2)
-	, lines(ass->Line.begin(), ass->Line.end())
 	{
+		for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it)
+			lines.push_back(&*it);
+
 		// prepare userdata object
 		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile*))) = this;
 

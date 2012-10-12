@@ -102,10 +102,8 @@ void DialogAttachments::UpdateList() {
 	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
 
 	// Fill list
-	AssAttachment *attach;
-	for (std::list<AssEntry*>::iterator cur = ass->Line.begin();cur != ass->Line.end();cur++) {
-		attach = dynamic_cast<AssAttachment*>(*cur);
-		if (attach) {
+	for (entryIter cur = ass->Line.begin();cur != ass->Line.end();cur++) {
+		if (AssAttachment *attach = dynamic_cast<AssAttachment*>(&*cur)) {
 			// Add item
 			int row = listView->GetItemCount();
 			listView->InsertItem(row,attach->GetFileName(true));
@@ -210,19 +208,19 @@ void DialogAttachments::OnDelete(wxCommandEvent &) {
 	if (i == -1) return;
 
 	while (i != -1) {
-		ass->Line.remove((AssEntry*)wxUIntToPtr(listView->GetItemData(i)));
+		delete (AssEntry*)wxUIntToPtr(listView->GetItemData(i));
 		i = listView->GetNextSelected(i);
 	}
 
 	// Remove empty attachment sections in the file
-	for (std::list<AssEntry*>::iterator it = ass->Line.begin(); it != ass->Line.end(); ) {
-		if ((*it)->GetType() == ENTRY_BASE && ((*it)->group == "[Fonts]" || (*it)->group == "[Graphics]")) {
-			wxString group = (*it)->group;
-			std::list<AssEntry*>::iterator header = it;
+	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ) {
+		if (it->GetType() == ENTRY_BASE && (it->group == "[Fonts]" || it->group == "[Graphics]")) {
+			wxString group = it->group;
+			entryIter header = it;
 
 			bool has_attachments = false;
-			for (++it; it != ass->Line.end() && (*it)->group == group; ++it) {
-				if ((*it)->GetType() == ENTRY_ATTACHMENT) {
+			for (++it; it != ass->Line.end() && it->group == group; ++it) {
+				if (it->GetType() == ENTRY_ATTACHMENT) {
 					has_attachments = true;
 					break;
 				}
@@ -230,10 +228,8 @@ void DialogAttachments::OnDelete(wxCommandEvent &) {
 
 			// Empty group found, delete it
 			if (!has_attachments) {
-				while (header != it) {
-					delete *header;
-					ass->Line.erase(header++);
-				}
+				while (header != it)
+					delete &*header++;
 			}
 		}
 		else

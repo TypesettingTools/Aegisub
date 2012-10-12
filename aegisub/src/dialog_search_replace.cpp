@@ -379,8 +379,8 @@ void SearchReplaceEngine::ReplaceAll() {
 	bool inSel = affect == 1;
 
 	// Scan
-	for (std::list<AssEntry*>::iterator it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+	for (entryIter it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (!diag) continue;
 
 		// Check if row is selected

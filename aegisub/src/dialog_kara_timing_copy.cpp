@@ -629,15 +629,13 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 }
 
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
-: wxDialog(c->parent,-1,_("Kanji timing"),wxDefaultPosition)
+: wxDialog(c->parent, -1, _("Kanji timing"))
+, subs(c->ass)
+, currentSourceLine(0)
+, currentDestinationLine(0)
 {
 	SetIcon(GETICON(kara_timing_copier_16));
 
-	subs = c->ass;
-	currentSourceLine = subs->Line.begin();
-	currentDestinationLine = subs->Line.begin();
-
-	//Sizers
 	wxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
 	wxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
 	wxFlexGridSizer *StylesGridSizer = new wxFlexGridSizer(2, 2, 6, 6);
@@ -744,8 +742,8 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &) {
 	else if (SourceStyle->GetValue() == DestStyle->GetValue())
 		wxMessageBox(_("The source and destination styles must be different."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else {
-		currentSourceLine = FindNextStyleMatch(subs->Line.begin(), SourceStyle->GetValue());
-		currentDestinationLine = FindNextStyleMatch(subs->Line.begin(), DestStyle->GetValue());
+		currentSourceLine = FindNextStyleMatch(&*subs->Line.begin(), SourceStyle->GetValue());
+		currentDestinationLine = FindNextStyleMatch(&*subs->Line.begin(), DestStyle->GetValue());
 		ResetForNewLine();
 	}
 	LinesToChange.clear();
@@ -784,11 +782,11 @@ void DialogKanjiTimer::OnGoBack(wxCommandEvent &) {
 }
 
 void DialogKanjiTimer::OnAccept(wxCommandEvent &) {
-	if (currentDestinationLine == subs->Line.end()) return;
+	if (!currentDestinationLine) return;
 
 	if (display->GetRemainingSource() > 0)
 		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
-	else if (AssDialogue *destLine = dynamic_cast<AssDialogue*>(*currentDestinationLine)) {
+	else if (AssDialogue *destLine = dynamic_cast<AssDialogue*>(currentDestinationLine)) {
 		LinesToChange.push_back(std::make_pair(destLine, display->GetOutputLine()));
 
 		currentSourceLine = FindNextStyleMatch(currentSourceLine, SourceStyle->GetValue());
@@ -834,10 +832,10 @@ void DialogKanjiTimer::ResetForNewLine()
 	AssDialogue *src = 0;
 	AssDialogue *dst = 0;
 
-	if (currentSourceLine != subs->Line.end())
-		src = dynamic_cast<AssDialogue*>(*currentSourceLine);
-	if (currentDestinationLine != subs->Line.end())
-		dst = dynamic_cast<AssDialogue*>(*currentDestinationLine);
+	if (currentSourceLine)
+		src = dynamic_cast<AssDialogue*>(currentSourceLine);
+	if (currentDestinationLine)
+		dst = dynamic_cast<AssDialogue*>(currentDestinationLine);
 
 	if (src == 0 || dst == 0)
 	{
@@ -858,30 +856,30 @@ void DialogKanjiTimer::TryAutoMatch()
 		display->AutoMatchJapanese();
 }
 
-entryIter DialogKanjiTimer::FindNextStyleMatch(entryIter search_from, const wxString &search_style)
+AssEntry *DialogKanjiTimer::FindNextStyleMatch(AssEntry *search_from, const wxString &search_style)
 {
-	if (search_from == subs->Line.end()) return search_from;
+	if (!search_from) return search_from;
 
-	while (++search_from != subs->Line.end())
+	for (entryIter it = subs->Line.iterator_to(*search_from); it != subs->Line.end(); ++it)
 	{
-		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*search_from);
+		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*it);
 		if (dlg && dlg->Style == search_style)
-			break;
+			return dlg;
 	}
 
-	return search_from;
+	return 0;
 }
 
-entryIter DialogKanjiTimer::FindPrevStyleMatch(entryIter search_from, const wxString &search_style)
+AssEntry *DialogKanjiTimer::FindPrevStyleMatch(AssEntry *search_from, const wxString &search_style)
 {
-	if (search_from == subs->Line.begin()) return search_from;
+	if (!search_from) return search_from;
 
-	while (--search_from != subs->Line.begin())
+	for (EntryList::reverse_iterator it = EntryList::reverse_iterator(subs->Line.iterator_to(*search_from)); it != subs->Line.rend(); ++it)
 	{
-		AssDialogue *dlg = dynamic_cast<AssDialogue*>(*search_from);
+		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*it);
 		if (dlg && dlg->Style == search_style)
-			break;
+			return dlg;
 	}
 
-	return search_from;
+	return 0;
 }

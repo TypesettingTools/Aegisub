@@ -91,7 +91,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxS
 		if (child->GetName() == "TextSample") {
 			if ((diag = ProcessLine(child, diag, version))) {
 				lines++;
-				target->Line.push_back(diag);
+				target->Line.push_back(*diag);
 			}
 		}
 		// Header
@@ -102,7 +102,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxS
 
 	// No lines?
 	if (lines == 0)
-		target->Line.push_back(new AssDialogue);
+		target->Line.push_back(*new AssDialogue);
 }
 
 AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const {
@@ -175,9 +175,9 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename,
 	WriteHeader(root);
 
 	// Create lines
-	AssDialogue *prev = 0;
-	for (LineList::iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
-		AssDialogue *current = dynamic_cast<AssDialogue*>(*cur);
+	const AssDialogue *prev = 0;
+	for (constEntryIter cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
+		const AssDialogue *current = dynamic_cast<const AssDialogue*>(&*cur);
 		if (current && !current->Comment) {
 			WriteLine(root, prev, current);
 			prev = current;
@@ -240,7 +240,7 @@ void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) const {
 	root->AddChild(node);
 }
 
-void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *prev, AssDialogue *line) const {
+void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, const AssDialogue *prev, const AssDialogue *line) const {
 	// If it doesn't start at the end of previous, add blank
 	if (prev && prev->End != line->Start) {
 		wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
@@ -260,16 +260,16 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *prev, AssDialog
 
 void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 	file.Sort();
-	StripComments(file.Line);
-	RecombineOverlaps(file.Line);
-	MergeIdentical(file.Line);
-	StripTags(file.Line);
-	ConvertNewlines(file.Line, "\r\n");
+	StripComments(file);
+	RecombineOverlaps(file);
+	MergeIdentical(file);
+	StripTags(file);
+	ConvertNewlines(file, "\r\n");
 
 	// Find last line
 	AssTime lastTime;
-	for (LineList::reverse_iterator cur = file.Line.rbegin(); cur != file.Line.rend(); ++cur) {
-		if (AssDialogue *prev = dynamic_cast<AssDialogue*>(*cur)) {
+	for (EntryList::reverse_iterator cur = file.Line.rbegin(); cur != file.Line.rend(); ++cur) {
+		if (AssDialogue *prev = dynamic_cast<AssDialogue*>(&*cur)) {
 			lastTime = prev->End;
 			break;
 		}
@@ -279,5 +279,5 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 	AssDialogue *diag = new AssDialogue;
 	diag->Start = lastTime;
 	diag->End = lastTime+OPT_GET("Timing/Default Duration")->GetInt();
-	file.Line.push_back(diag);
+	file.Line.push_back(*diag);
 }

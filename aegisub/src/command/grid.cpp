@@ -85,8 +85,8 @@ struct grid_line_next_create : public Command {
 			newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
 			newline->Style = cur->Style;
 
-			entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), cur);
-			c->ass->Line.insert(++pos, newline);
+			entryIter pos = c->ass->Line.iterator_to(*cur);
+			c->ass->Line.insert(++pos, *newline);
 			c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 			c->selectionController->NextLine();
 		}
@@ -353,13 +353,12 @@ static bool move_one(T begin, T end, U const& value) {
 	size_t move_count = 0;
 	T prev = end;
 	for (; begin != end; ++begin) {
-		typename U::key_type cur = dynamic_cast<typename U::key_type>(*begin);
+		typename U::key_type cur = dynamic_cast<typename U::key_type>(&*begin);
 		bool in_set = !!value.count(cur);
 		if (!in_set && cur)
 			prev = begin;
 		else if (in_set && prev != end) {
-			using std::swap;
-			swap(*begin, *prev);
+			begin->swap_nodes(*prev);
 			prev = begin;
 			if (++move_count == value.size())
 				break;
@@ -420,11 +419,7 @@ struct grid_swap : public Command {
 	void operator()(agi::Context *c) {
 		SubtitleSelection sel = c->selectionController->GetSelectedSet();
 		if (sel.size() == 2) {
-			entryIter a = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.begin());
-			entryIter b = find(c->ass->Line.begin(), c->ass->Line.end(), *sel.rbegin());
-
-			using std::swap;
-			swap(*a, *b);
+			(*sel.begin())->swap_nodes(**sel.rbegin());
 			c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);
 		}
 	}

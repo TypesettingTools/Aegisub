@@ -53,32 +53,17 @@ class wxCheckBox;
 ///
 /// DOCME
 class DialogKanjiTimer : public wxDialog {
-	typedef std::list<AssEntry*>::iterator entryIter;
-
-	/// DOCME
 	AssFile *subs;
 
-
-	/// DOCME
 	KaraokeLineMatchDisplay *display;
 
-	/// DOCME
-
-	/// DOCME
 	wxComboBox *SourceStyle, *DestStyle;
-
-	/// DOCME
 	wxCheckBox *Interpolate;
 
-
-	/// DOCME
 	std::vector<std::pair<AssDialogue*, wxString> > LinesToChange;
 
-	/// DOCME
-	entryIter currentSourceLine;
-
-	/// DOCME
-	entryIter currentDestinationLine;
+	AssEntry *currentSourceLine;
+	AssEntry *currentDestinationLine;
 
 	void OnClose(wxCommandEvent &event);
 	void OnStart(wxCommandEvent &event);
@@ -93,8 +78,8 @@ class DialogKanjiTimer : public wxDialog {
 	void ResetForNewLine();
 	void TryAutoMatch();
 
-	entryIter FindNextStyleMatch(entryIter search_from, const wxString &search_style);
-	entryIter FindPrevStyleMatch(entryIter search_from, const wxString &search_style);
+	AssEntry *FindNextStyleMatch(AssEntry *search_from, const wxString &search_style);
+	AssEntry *FindPrevStyleMatch(AssEntry *search_from, const wxString &search_style);
 
 public:
 	DialogKanjiTimer(agi::Context *context);

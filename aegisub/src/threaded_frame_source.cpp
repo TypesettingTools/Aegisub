@@ -35,8 +35,10 @@
 #include "threaded_frame_source.h"
 
 #ifndef AGI_PRE
-#include <iterator>
 #include <functional>
+
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/algorithm_ext.hpp>
 #endif
 
 #include "ass_dialogue.h"
@@ -49,11 +51,11 @@
 #include "video_provider_manager.h"
 
 // Test if a line is a dialogue line which is not visible at the given time
-struct invisible_line : public std::unary_function<const AssEntry*, bool> {
+struct invisible_line : public std::unary_function<AssEntry const&, bool> {
 	double time;
 	invisible_line(double time) : time(time * 1000.) { }
-	bool operator()(const AssEntry *entry) const {
-		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(entry);
+	bool operator()(AssEntry const& entry) const {
+		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&entry);
 		return diag && (diag->Start > time || diag->End <= time);
 	}
 };
@@ -101,17 +103,20 @@ std::tr1::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum
 					// Copying a nontrivially sized AssFile is fairly slow, so
 					// instead muck around with its innards to just temporarily
 					// remove the non-visible lines without deleting them
-					std::list<AssEntry*> visible;
-					std::remove_copy_if(subs->Line.begin(), subs->Line.end(),
-						std::back_inserter(visible),
-						invisible_line(time));
+					std::deque<AssEntry*> full;
+					for (entryIter it = subs->Line.begin(); it != subs->Line.end(); ++it)
+						full.push_back(&*it);
+					subs->Line.remove_if(invisible_line(time));
+
 					try {
-						std::swap(subs->Line, visible);
 						provider->LoadSubtitles(subs.get());
-						std::swap(subs->Line, visible);
+
+						subs->Line.clear();
+						boost::push_back(subs->Line, full | boost::adaptors::indirected);
 					}
 					catch(...) {
-						std::swap(subs->Line, visible);
+						subs->Line.clear();
+						boost::push_back(subs->Line, full | boost::adaptors::indirected);
 						throw;
 					}
 				}

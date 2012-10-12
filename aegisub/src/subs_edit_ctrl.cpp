@@ -853,7 +853,7 @@ void SubsTextEditCtrl::SplitLine(bool estimateTimes) {
 
 	AssDialogue *n1 = context->selectionController->GetActiveLine();
 	AssDialogue *n2 = new AssDialogue(*n1);
-	context->ass->Line.insert(++find(context->ass->Line.begin(), context->ass->Line.end(), n1), n2);
+	context->ass->Line.insert(++context->ass->Line.iterator_to(*n1), *n2);
 
 	wxString orig = n1->Text;
 	n1->Text = orig.Left(from).Trim(true); // Trim off trailing whitespace

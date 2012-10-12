@@ -62,11 +62,11 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filenam
 	// Convert to encore
 	AssFile copy(*src);
 	copy.Sort();
-	StripComments(copy.Line);
-	RecombineOverlaps(copy.Line);
-	MergeIdentical(copy.Line);
-	StripTags(copy.Line);
-	ConvertNewlines(copy.Line, "\r\n");
+	StripComments(copy);
+	RecombineOverlaps(copy);
+	MergeIdentical(copy);
+	StripTags(copy);
+	ConvertNewlines(copy, "\r\n");
 
 
 	// Encode wants ; for NTSC and : for PAL
@@ -77,8 +77,8 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filenam
 	// Write lines
 	int i = 0;
 	TextFileWriter file(filename, "UTF-8");
-	for (LineList::const_iterator cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
+	for (constEntryIter cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
+		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&*cur)) {
 			++i;
 			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start), ft.ToSMPTE(current->End), current->Text));
 		}

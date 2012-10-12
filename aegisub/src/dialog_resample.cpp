@@ -200,8 +200,8 @@ namespace {
 			cur->Set<int>((cur->Get<int>() + shift) * resizer + 0.5);
 	}
 
-	void resample_line(resample_state *state, AssEntry *line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(line);
+	void resample_line(resample_state *state, AssEntry &line) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 		if (diag && !(diag->Comment && (diag->Effect.StartsWith("template") || diag->Effect.StartsWith("code")))) {
 			diag->ParseAssTags();
 			diag->ProcessParameters(resample_tags, state);
@@ -217,7 +217,7 @@ namespace {
 			diag->UpdateText();
 			diag->ClearBlocks();
 		}
-		else if (AssStyle *style = dynamic_cast<AssStyle*>(line)) {
+		else if (AssStyle *style = dynamic_cast<AssStyle*>(&line)) {
 			style->fontsize = int(style->fontsize * state->ry + 0.5);
 			style->outline_w *= state->ry;
 			style->shadow_w *= state->ry;

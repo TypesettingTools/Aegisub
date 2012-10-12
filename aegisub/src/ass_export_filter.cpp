@@ -39,7 +39,6 @@
 #endif
 
 #include "ass_export_filter.h"
-#include "ass_file.h"
 #include "utils.h"
 
 AssExportFilter::AssExportFilter(wxString const& name, wxString const& description, int priority, bool auto_apply)

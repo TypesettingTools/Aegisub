@@ -129,10 +129,10 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
 	def->Style = c->selectionController->GetActiveLine()->Style;
 
-	entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), c->selectionController->GetActiveLine());
+	entryIter pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
 	if (after) ++pos;
 
-	c->ass->Line.insert(pos, def);
+	c->ass->Line.insert(pos, *def);
 	c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 
 	SubtitleSelection sel;
@@ -156,7 +156,7 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 		new_line->End = new_line->Start + OPT_GET("Timing/Default Duration")->GetInt();
 
 		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 
 			// Limit the line to the available time
 			if (diag && diag->Start >= new_line->Start)
@@ -165,7 +165,7 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 			// If we just hit the active line, insert the new line after it
 			if (diag == active_line) {
 				++it;
-				c->ass->Line.insert(it, new_line);
+				c->ass->Line.insert(it, *new_line);
 				--it;
 			}
 		}
@@ -206,7 +206,7 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 		new_line->Start = new_line->End - OPT_GET("Timing/Default Duration")->GetInt();
 
 		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 
 			// Limit the line to the available time
 			if (diag && diag->End <= new_line->End)
@@ -214,7 +214,7 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 
 			// If we just hit the active line, insert the new line before it
 			if (diag == active_line)
-				c->ass->Line.insert(it, new_line);
+				c->ass->Line.insert(it, *new_line);
 		}
 
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
@@ -408,7 +408,7 @@ struct subtitle_select_visible : public Command {
 		int frame = c->videoController->GetFrameN();
 
 		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 			if (diag &&
 				c->videoController->FrameAtTime(diag->Start, agi::vfr::START) <= frame &&
 				c->videoController->FrameAtTime(diag->End, agi::vfr::END) >= frame)

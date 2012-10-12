@@ -316,7 +316,7 @@ void SubsEditBox::PopulateList(wxComboBox *combo, wxString AssDialogue::*field) 
 
 	std::set<wxString> values;
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*it))
+		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it))
 			values.insert(diag->*field);
 	}
 	values.erase("");

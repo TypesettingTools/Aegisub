@@ -47,7 +47,7 @@ class TTXTSubtitleFormat : public SubtitleFormat {
 	void ProcessHeader(wxXmlNode *node) const;
 
 	void WriteHeader(wxXmlNode *root) const;
-	void WriteLine(wxXmlNode *root, AssDialogue *prev, AssDialogue *line) const;
+	void WriteLine(wxXmlNode *root, const AssDialogue *prev, const AssDialogue *line) const;
 
 	void ConvertToTTXT(AssFile &file) const;
 

@@ -138,8 +138,7 @@ void SetClipboard(wxBitmap const& new_value);
 
 /// Polymorphic delete functor
 struct delete_ptr {
-	template<class T>
-	void operator()(T* ptr) const {
+	template<class T> void operator()(T* ptr) const {
 		delete ptr;
 	}
 };
@@ -158,7 +157,7 @@ template<class Container>
 class BackgroundDeleter : public wxThread {
 	Container cont;
 	wxThread::ExitCode Entry() {
-		delete_clear(cont);
+		cont.clear_and_dispose(delete_ptr());
 		return (wxThread::ExitCode)0;
 	}
 public:
@@ -186,7 +185,12 @@ void background_delete_clear(T& container) {
 template<class Out>
 struct cast {
 	template<class In>
-	Out operator()(In in) const {
+	Out operator()(In *in) const {
 		return dynamic_cast<Out>(in);
+	}
+
+	template<class In>
+	Out operator()(In &in) const {
+		return dynamic_cast<Out>(&in);
 	}
 };

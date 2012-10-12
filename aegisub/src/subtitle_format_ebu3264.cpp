@@ -370,10 +370,10 @@ namespace
 
 	std::vector<EbuSubtitle> convert_subtitles(AssFile &copy, EbuExportSettings const& export_settings)
 	{
-		SubtitleFormat::StripComments(copy.Line);
+		SubtitleFormat::StripComments(copy);
 		copy.Sort();
-		SubtitleFormat::RecombineOverlaps(copy.Line);
-		SubtitleFormat::MergeIdentical(copy.Line);
+		SubtitleFormat::RecombineOverlaps(copy);
+		SubtitleFormat::MergeIdentical(copy);
 
 		int line_wrap_type = copy.GetScriptInfoAsInt("WrapStyle");
 
@@ -388,7 +388,7 @@ namespace
 		// convert to intermediate format
 		for (entryIter orgline = copy.Line.begin(); orgline != copy.Line.end(); ++orgline)
 		{
-			AssDialogue *line = dynamic_cast<AssDialogue*>(*orgline);
+			AssDialogue *line = dynamic_cast<AssDialogue*>(&*orgline);
 			if (!line) continue;
 
 			// add a new subtitle and work on it

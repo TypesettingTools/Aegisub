@@ -116,7 +116,7 @@ void VisualToolDrag::OnFileChanged() {
 	active_feature = features.end();
 
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (diag && IsDisplayed(diag))
 			MakeFeatures(diag);
 	}
@@ -132,7 +132,7 @@ void VisualToolDrag::OnFrameChanged() {
 	feature_iterator end = features.end();
 
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (!diag) continue;
 
 		if (IsDisplayed(diag)) {

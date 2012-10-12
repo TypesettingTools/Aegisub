@@ -79,18 +79,18 @@ bool SubtitleFormat::CanWriteFile(wxString const& filename) const {
 
 bool SubtitleFormat::CanSave(const AssFile *subs) const {
 	AssStyle defstyle;
-	for (std::list<AssEntry*>::const_iterator cur = subs->Line.begin(); cur != subs->Line.end(); ++cur) {
+	for (constEntryIter cur = subs->Line.begin(); cur != subs->Line.end(); ++cur) {
 		// Check style, if anything non-default is found, return false
-		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(*cur)) {
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&*cur)) {
 			if (curstyle->GetEntryData() != defstyle.GetEntryData())
 				return false;
 		}
 
 		// Check for attachments, if any is found, return false
-		if (dynamic_cast<const AssAttachment*>(*cur)) return false;
+		if (dynamic_cast<const AssAttachment*>(&*cur)) return false;
 
 		// Check dialog
-		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(*cur)) {
+		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&*cur)) {
 			if (curdiag->GetStrippedText() != curdiag->Text)
 				return false;
 		}
@@ -163,17 +163,17 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
 	return Framerate();
 }
 
-void SubtitleFormat::StripTags(LineList &lines) {
-	for (LineList::iterator cur = lines.begin(); cur != lines.end(); ++cur) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
+void SubtitleFormat::StripTags(AssFile &file) {
+	for (entryIter cur = file.Line.begin(); cur != file.Line.end(); ++cur) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&*cur)) {
 			current->StripTags();
 		}
 	}
 }
 
-void SubtitleFormat::ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks) {
-	for (LineList::iterator cur = lines.begin(); cur != lines.end(); ++cur) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(*cur)) {
+void SubtitleFormat::ConvertNewlines(AssFile &file, wxString const& newline, bool mergeLineBreaks) {
+	for (entryIter cur = file.Line.begin(); cur != file.Line.end(); ++cur) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&*cur)) {
 			current->Text.Replace("\\h", " ");
 			current->Text.Replace("\\n", newline);
 			current->Text.Replace("\\N", newline);
@@ -184,59 +184,57 @@ void SubtitleFormat::ConvertNewlines(LineList &lines, wxString const& newline, b
 	}
 }
 
-void SubtitleFormat::StripComments(LineList &lines) {
-	for (LineList::iterator it = lines.begin(); it != lines.end(); ) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+void SubtitleFormat::StripComments(AssFile &file) {
+	for (entryIter it = file.Line.begin(); it != file.Line.end(); ) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (!diag || (!diag->Comment && diag->Text.size()))
 			++it;
 		else {
-			delete *it;
-			lines.erase(it++);
+			delete &*it++;
 		}
 	}
 }
 
-void SubtitleFormat::StripNonDialogue(LineList &lines) {
-	for (LineList::iterator it = lines.begin(); it != lines.end(); ) {
-		if (dynamic_cast<AssDialogue*>(*it))
+void SubtitleFormat::StripNonDialogue(AssFile &file) {
+	for (entryIter it = file.Line.begin(); it != file.Line.end(); ) {
+		if (dynamic_cast<AssDialogue*>(&*it))
 			++it;
 		else {
-			delete *it;
-			lines.erase(it++);
+			delete &*it++;
 		}
 	}
 }
 
-static bool dialog_start_lt(AssEntry *pos, AssDialogue *to_insert) {
-	AssDialogue *diag = dynamic_cast<AssDialogue*>(pos);
+static bool dialog_start_lt(AssEntry &pos, AssDialogue *to_insert) {
+	AssDialogue *diag = dynamic_cast<AssDialogue*>(&pos);
 	return diag && diag->Start > to_insert->Start;
 }
 
 /// @brief Split and merge lines so there are no overlapping lines
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-void SubtitleFormat::RecombineOverlaps(LineList &lines) {
-	LineList::iterator cur, next = lines.begin();
+void SubtitleFormat::RecombineOverlaps(AssFile &file) {
+	entryIter cur, next = file.Line.begin();
 	cur = next++;
 
-	for (; next != lines.end(); cur = next++) {
-		AssDialogue *prevdlg = dynamic_cast<AssDialogue*>(*cur);
-		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*next);
+	for (; next != file.Line.end(); cur = next++) {
+		AssDialogue *prevdlg = dynamic_cast<AssDialogue*>(&*cur);
+		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(&*next);
 
 		if (!curdlg || !prevdlg) continue;
 		if (prevdlg->End <= curdlg->Start) continue;
 
 		// Use names like in the algorithm description and prepare for erasing
 		// old dialogues from the list
-		LineList::iterator prev = cur;
+		entryIter prev = cur;
 		cur = next;
 		next++;
 
 		// std::list::insert() inserts items before the given iterator, so
 		// we need 'next' for inserting. 'prev' and 'cur' can safely be erased
 		// from the list now.
-		lines.erase(prev);
-		lines.erase(cur);
+		file.Line.erase(prev);
+		file.Line.erase(cur);
 
 		//Is there an A part before the overlap?
 		if (curdlg->Start > prevdlg->Start) {
@@ -246,7 +244,7 @@ void SubtitleFormat::RecombineOverlaps(LineList &lines) {
 			newdlg->End = curdlg->Start;
 			newdlg->Text = prevdlg->Text;
 
-			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		// Overlapping A+B part
@@ -257,7 +255,7 @@ void SubtitleFormat::RecombineOverlaps(LineList &lines) {
 			// Put an ASS format hard linewrap between lines
 			newdlg->Text = curdlg->Text + "\\N" + prevdlg->Text;
 
-			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		// Is there an A part after the overlap?
@@ -268,7 +266,7 @@ void SubtitleFormat::RecombineOverlaps(LineList &lines) {
 			newdlg->End = prevdlg->End;
 			newdlg->Text = prevdlg->Text;
 
-			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		// Is there a B part after the overlap?
@@ -279,7 +277,7 @@ void SubtitleFormat::RecombineOverlaps(LineList &lines) {
 			newdlg->End = curdlg->End;
 			newdlg->Text = curdlg->Text;
 
-			lines.insert(find_if(next, lines.end(), bind(dialog_start_lt, _1, newdlg)), newdlg);
+			file.Line.insert(find_if(next, file.Line.end(), bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
 
 		next--;
@@ -287,13 +285,13 @@ void SubtitleFormat::RecombineOverlaps(LineList &lines) {
 }
 
 /// @brief Merge identical lines that follow each other
-void SubtitleFormat::MergeIdentical(LineList &lines) {
-	LineList::iterator cur, next = lines.begin();
+void SubtitleFormat::MergeIdentical(AssFile &file) {
+	entryIter cur, next = file.Line.begin();
 	cur = next++;
 
-	for (; next != lines.end(); cur = next++) {
-		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(*cur);
-		AssDialogue *nextdlg = dynamic_cast<AssDialogue*>(*next);
+	for (; next != file.Line.end(); cur = next++) {
+		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(&*cur);
+		AssDialogue *nextdlg = dynamic_cast<AssDialogue*>(&*next);
 
 		if (curdlg && nextdlg && curdlg->End == nextdlg->Start && curdlg->Text == nextdlg->Text) {
 			// Merge timing
@@ -301,8 +299,7 @@ void SubtitleFormat::MergeIdentical(LineList &lines) {
 			nextdlg->End = std::max(nextdlg->End, curdlg->End);
 
 			// Remove duplicate line
-			delete *cur;
-			lines.erase(cur);
+			delete curdlg;
 		}
 	}
 }

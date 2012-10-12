@@ -275,7 +275,7 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 		styleMap.clear();
 
 		for (entryIter cur = c->ass->Line.begin(); cur != c->ass->Line.end(); ++cur) {
-			if (AssStyle *style = dynamic_cast<AssStyle*>(*cur)) {
+			if (AssStyle *style = dynamic_cast<AssStyle*>(&*cur)) {
 				CurrentList->Append(style->name);
 				styleMap.push_back(style);
 			}
@@ -562,10 +562,8 @@ void DialogStyleManager::OnCurrentDelete() {
 	int n = CurrentList->GetSelections(selections);
 
 	if (confirm_delete(n, this, _("Confirm delete from current")) == wxYES) {
-		for (int i=0;i<n;i++) {
-			AssStyle *temp = styleMap.at(selections[i]);
-			c->ass->Line.remove(temp);
-			delete temp;
+		for (int i = 0; i < n; i++) {
+			delete styleMap.at(selections[i]);
 		}
 		c->ass->Commit(_("style delete"), AssFile::COMMIT_STYLES);
 	}
@@ -780,8 +778,8 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		for (entryIter cur = c->ass->Line.begin(); cur != c->ass->Line.end(); cur = next) {
 			next = cur;
 			next++;
-			if (dynamic_cast<AssStyle*>(*cur)) {
-				c->ass->Line.insert(cur, styleMap[curn]);
+			if (dynamic_cast<AssStyle*>(&*cur)) {
+				c->ass->Line.insert(cur, *styleMap[curn]);
 				c->ass->Line.erase(cur);
 				curn++;
 			}

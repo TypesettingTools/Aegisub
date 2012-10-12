@@ -36,7 +36,6 @@
 
 #include "subtitle_format_ass.h"
 
-#include "ass_entry.h"
 #include "ass_file.h"
 #include "ass_parser.h"
 #include "compat.h"
@@ -92,14 +91,14 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 
 	bool ssa = filename.Right(4).Lower() == ".ssa";
 
-	wxString group = src->Line.front()->group;
-	for (LineList::const_iterator cur = src->Line.begin(); cur != src->Line.end(); ++cur) {
+	wxString group = src->Line.front().group;
+	for (constEntryIter cur = src->Line.begin(); cur != src->Line.end(); ++cur) {
 		// Add a blank line between each group
-		if ((*cur)->group != group) {
+		if (cur->group != group) {
 			file.WriteLineToFile("");
-			group = (*cur)->group;
+			group = cur->group;
 		}
 
-		file.WriteLineToFile(ssa ? (*cur)->GetSSAText() : (*cur)->GetEntryData(), true);
+		file.WriteLineToFile(ssa ? cur->GetSSAText() : cur->GetEntryData(), true);
 	}
 }

@@ -32,12 +32,13 @@
 /// @ingroup subs_storage
 ///
 
-
 #pragma once
 
 #ifndef AGI_PRE
 #include <wx/string.h>
 #endif
+
+#include <boost/intrusive/list_hook.hpp>
 
 enum AssEntryType {
 	ENTRY_BASE,
@@ -46,7 +47,7 @@ enum AssEntryType {
 	ENTRY_ATTACHMENT
 };
 
-class AssEntry {
+class AssEntry : public boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink> >::type {
 	/// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
 	wxString data;
 

@@ -68,15 +68,15 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& fi
 	// Convert to TranStation
 	AssFile copy(*src);
 	copy.Sort();
-	StripComments(copy.Line);
-	RecombineOverlaps(copy.Line);
-	MergeIdentical(copy.Line);
+	StripComments(copy);
+	RecombineOverlaps(copy);
+	MergeIdentical(copy);
 
 	SmpteFormatter ft(fps);
 	TextFileWriter file(filename, encoding);
 	AssDialogue *prev = 0;
-	for (std::list<AssEntry*>::iterator it = copy.Line.begin(); it != copy.Line.end(); ++it) {
-		AssDialogue *cur = dynamic_cast<AssDialogue*>(*it);
+	for (entryIter it = copy.Line.begin(); it != copy.Line.end(); ++it) {
+		AssDialogue *cur = dynamic_cast<AssDialogue*>(&*it);
 
 		if (prev && cur) {
 			file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, cur->Start));

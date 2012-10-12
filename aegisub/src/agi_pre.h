@@ -71,9 +71,7 @@
 #include <windows.h>
 #include <objbase.h>
 #include <mmsystem.h>
-
 #else
-
 #include <sys/fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -81,6 +79,9 @@
 #include <sys/param.h>
 #include <unistd.h>
 #endif
+
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/algorithm_ext.hpp>
 
 /////////////////////
 // wxWidgets headers

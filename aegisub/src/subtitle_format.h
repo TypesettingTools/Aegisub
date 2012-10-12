@@ -64,24 +64,22 @@ class SubtitleFormat {
 	static std::list<SubtitleFormat*> formats;
 
 public:
-	typedef std::list<AssEntry*> LineList;
-
 	/// Strip override tags
-	static void StripTags(LineList &lines);
+	static void StripTags(AssFile &file);
 	/// Convert newlines to the specified character(s)
 	/// @param lineEnd newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
-	static void ConvertNewlines(LineList &lines, wxString const& newline, bool mergeLineBreaks = true);
+	static void ConvertNewlines(AssFile &file, wxString const& newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
-	static void StripComments(LineList &lines);
+	static void StripComments(AssFile &file);
 	/// Remove everything but the dialogue lines
-	static void StripNonDialogue(LineList &lines);
+	static void StripNonDialogue(AssFile &file);
 	/// @brief Split and merge lines so there are no overlapping lines
 	///
 	/// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-	static void RecombineOverlaps(LineList &lines);
+	static void RecombineOverlaps(AssFile &file);
 	/// Merge sequential identical lines
-	static void MergeIdentical(LineList &lines);
+	static void MergeIdentical(AssFile &file);
 
 	/// Prompt the user for a frame rate to use
 	/// @param allow_vfr Include video frame rate as an option even if it's vfr

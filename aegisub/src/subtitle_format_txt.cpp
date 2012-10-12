@@ -43,8 +43,8 @@
 #include "main.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
+#include "utils.h"
 #include "version.h"
-
 
 TXTSubtitleFormat::TXTSubtitleFormat()
 : SubtitleFormat("Plain-Text")
@@ -121,7 +121,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 		line->End = 0;
 
 		// Adds line
-		target->Line.push_back(line);
+		target->Line.push_back(*line);
 	}
 }
 
@@ -129,8 +129,8 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (LineList::const_iterator l = src->Line.begin(); l != src->Line.end(); ++l) {
-		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
+	for (constEntryIter l = src->Line.begin(); l != src->Line.end(); ++l) {
+		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&*l);
 		if (dia && !dia->Comment) {
 			num_dialogue_lines++;
 			if (!dia->Actor.empty())
@@ -146,43 +146,34 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	file.WriteLineToFile(wxString("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (LineList::const_iterator l = src->Line.begin(); l != src->Line.end(); ++l) {
-		AssDialogue *dia = dynamic_cast<AssDialogue*>(*l);
+	for (constEntryIter l = src->Line.begin(); l != src->Line.end(); ++l) {
+		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&*l);
+		if (!dia) continue;
 
-		if (dia) {
-			wxString out_line;
+		wxString out_line;
 
-			if (dia->Comment) {
-				out_line = "# ";
-			}
+		if (dia->Comment)
+			out_line = "# ";
 
-			if (write_actors) {
-				out_line += dia->Actor + ": ";
-			}
+		if (write_actors)
+			out_line += dia->Actor + ": ";
 
-			wxString out_text;
-			if (strip_formatting) {
-				dia->ParseAssTags();
-				for (std::vector<AssDialogueBlock*>::iterator block = dia->Blocks.begin(); block != dia->Blocks.end(); ++block) {
-					if ((*block)->GetType() == BLOCK_PLAIN) {
-						out_text += (*block)->GetText();
-					}
+		wxString out_text;
+		if (strip_formatting) {
+			std::vector<AssDialogueBlock*> blocks = dia->ParseTags();
+			for (std::vector<AssDialogueBlock*>::iterator block = blocks.begin(); block != blocks.end(); ++block) {
+				if ((*block)->GetType() == BLOCK_PLAIN) {
+					out_text += (*block)->GetText();
 				}
-				dia->ClearBlocks();
 			}
-			else {
-				out_text = dia->Text;
-			}
-			out_line += out_text;
-
-			if (!out_text.empty()) {
-				file.WriteLineToFile(out_line);
-			}
+			delete_clear(blocks);
 		}
 		else {
-			// Not a dialogue line
-			// TODO: should any non-dia lines cause blank lines in output?
-			//file.WriteLineToFile("");
+			out_text = dia->Text;
 		}
+		out_line += out_text;
+
+		if (!out_text.empty())
+			file.WriteLineToFile(out_line);
 	}
 }

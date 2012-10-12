@@ -88,7 +88,7 @@ class StyleRenamer {
 		do_replace = replace;
 
 		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 			if (!diag) continue;
 
 			if (diag->Style == source_name) {

@@ -843,7 +843,7 @@ namespace Automation4 {
 		int row = 1;
 		int idx = 1;
 		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it, ++row) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 			if (!diag) continue;
 
 			if (diag == active_line) active_idx = row;
@@ -935,7 +935,7 @@ namespace Automation4 {
 
 						advance(it, cur - last_idx);
 
-						AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+						AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 						if (!diag) {
 							wxLogError("Selected row %d is not a dialogue line", cur);
 							break;

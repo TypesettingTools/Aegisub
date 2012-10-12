@@ -31,8 +31,8 @@
 #include <wx/string.h>
 #endif
 
-class AssEntry;
 class AssDialogue;
+class AssFile;
 
 typedef std::tr1::function<void (wxString, int)> FontCollectorStatusCallback;
 
@@ -91,7 +91,7 @@ class FontCollector {
 	int missing_glyphs;
 
 	/// Gather all of the unique styles with text on a line
-	void ProcessDialogueLine(AssDialogue *line, int index);
+	void ProcessDialogueLine(const AssDialogue *line, int index);
 
 	/// Get the font for a single style
 	void ProcessChunk(std::pair<StyleInfo, UsageData> const& style);
@@ -109,5 +109,5 @@ public:
 	/// @param file Lines in the subtitle file to check
 	/// @param status Callback function for messages
 	/// @return List of paths to fonts
-	std::vector<wxString> GetFontPaths(std::list<AssEntry*> const& file);
+	std::vector<wxString> GetFontPaths(const AssFile *file);
 };

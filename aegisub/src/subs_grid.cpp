@@ -91,20 +91,17 @@ void SubtitlesGrid::RecombineLines() {
 		// 1, 1+2 (or 2+1), 2 gets turned into 1, 2, 2 so kill the duplicate
 		if (d1->Text == (*d2)->Text) {
 			expand_times(d1, *d2);
-			context->ass->Line.remove(d1);
 			delete d1;
 			continue;
 		}
 
 		// 1, 1+2, 1 turns into 1, 2, [empty]
 		if (d1->Text.empty()) {
-			context->ass->Line.remove(d1);
 			delete d1;
 			continue;
 		}
 		// If d2 is the last line in the selection it'll never hit the above test
 		if (d2 == end && (*d2)->Text.empty()) {
-			context->ass->Line.remove(*d2);
 			delete *d2;
 			continue;
 		}

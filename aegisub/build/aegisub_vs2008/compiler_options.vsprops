@@ -6,7 +6,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalOptions="/Zm130"
+		AdditionalOptions="/Zm150"
 		Optimization="3"
 		EnableIntrinsicFunctions="true"
 		FavorSizeOrSpeed="2"

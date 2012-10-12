@@ -86,7 +86,7 @@ void paste_lines(agi::Context *c, bool paste_over) {
 	if (!data) return;
 
 	AssDialogue *rel_line = c->selectionController->GetActiveLine();
-	entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), rel_line);
+	entryIter pos = c->ass->Line.iterator_to(*rel_line);
 
 	AssDialogue *first = 0;
 	SubtitleSelection newsel;
@@ -118,7 +118,7 @@ void paste_lines(agi::Context *c, bool paste_over) {
 
 		if (!paste_over) {
 			newsel.insert(curdiag);
-			c->ass->Line.insert(pos, curdiag);
+			c->ass->Line.insert(pos, *curdiag);
 		}
 		else {
 			// Get list of options to paste over, if not asked yet
@@ -131,7 +131,7 @@ void paste_lines(agi::Context *c, bool paste_over) {
 				pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
 			}
 
-			AssDialogue *line = static_cast<AssDialogue *>(*pos);
+			AssDialogue *line = static_cast<AssDialogue *>(&*pos);
 			if (pasteOverOptions[0]) line->Layer = curdiag->Layer;
 			if (pasteOverOptions[1]) line->Start = curdiag->Start;
 			if (pasteOverOptions[2]) line->End = curdiag->End;
@@ -147,7 +147,7 @@ void paste_lines(agi::Context *c, bool paste_over) {
 
 			do {
 				++pos;
-			} while (pos != c->ass->Line.end() && !dynamic_cast<AssDialogue*>(*pos));
+			} while (pos != c->ass->Line.end() && !dynamic_cast<AssDialogue*>(&*pos));
 			if (pos == c->ass->Line.end())
 				break;
 		}
@@ -488,7 +488,7 @@ static void copy_lines(agi::Context *c) {
 	wxString data;
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (diag && sel.count(diag)) {
 			if (!data.empty())
 				data += "\r\n";
@@ -508,7 +508,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	bool hit_active = false;
 
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (!diag) continue;
 
 		if (diag == active) {
@@ -524,10 +524,8 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 
 	// Delete selected lines
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ) {
-		if (sel.count(static_cast<AssDialogue*>(*it))) {
-			delete *it;
-			c->ass->Line.erase(it++);
-		}
+		if (sel.count(static_cast<AssDialogue*>(&*it)))
+			delete &*it++;
 		else
 			++it;
 	}
@@ -598,12 +596,12 @@ struct edit_line_delete : public validate_sel_nonempty {
 	}
 };
 
-struct in_selection : public std::unary_function<AssEntry*, bool> {
+struct in_selection : public std::unary_function<AssEntry, bool> {
 	SubtitleSelectionController::Selection const& sel;
 	in_selection(SubtitleSelectionController::Selection const& sel) : sel(sel) { }
-	bool operator()(AssEntry *e) const {
-		AssDialogue *d = dynamic_cast<AssDialogue*>(e);
-		return d && sel.count(d);
+	bool operator()(AssEntry const& e) const {
+		const AssDialogue *d = dynamic_cast<const AssDialogue*>(&e);
+		return d && sel.count(const_cast<AssDialogue *>(d));
 	}
 };
 
@@ -612,24 +610,24 @@ static void duplicate_lines(agi::Context *c, bool shift) {
 	SubtitleSelectionController::Selection new_sel;
 	AssDialogue *new_active = 0;
 
-	std::list<AssEntry*>::iterator start = c->ass->Line.begin();
-	std::list<AssEntry*>::iterator end = c->ass->Line.end();
+	entryIter start = c->ass->Line.begin();
+	entryIter end = c->ass->Line.end();
 	while (start != end) {
 		// Find the first line in the selection
 		start = find_if(start, end, sel);
 		if (start == end) break;
 
 		// And the last line in this contiguous selection
-		std::list<AssEntry*>::iterator insert_pos = find_if(start, end, std::not1(sel));
-		std::list<AssEntry*>::iterator last = insert_pos;
+		entryIter insert_pos = find_if(start, end, std::not1(sel));
+		entryIter last = insert_pos;
 		--last;
 
 		// Duplicate each of the selected lines, inserting them in a block
 		// after the selected block
 		do {
-			AssDialogue *new_diag = static_cast<AssDialogue*>((*start)->Clone());
+			AssDialogue *new_diag = static_cast<AssDialogue*>(start->Clone());
 
-			c->ass->Line.insert(insert_pos, new_diag);
+			c->ass->Line.insert(insert_pos, *new_diag);
 			new_sel.insert(new_diag);
 			if (!new_active)
 				new_active = new_diag;
@@ -686,26 +684,20 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
 	AssDialogue *first = 0;
-	entryIter out = c->ass->Line.begin();
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
-		if (!diag || !sel.count(diag)) {
-			*out++ = *it;
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it++);
+		if (!diag || !sel.count(diag))
 			continue;
-		}
 		if (!first) {
 			first = diag;
-			*out++ = *it;
 			continue;
 		}
 
 		combiner(first, diag);
-
 		first->End = std::max(first->End, diag->End);
 		delete diag;
 	}
 
-	c->ass->Line.erase(out, c->ass->Line.end());
 	sel.clear();
 	sel.insert(first);
 	c->selectionController->SetSelectionAndActive(sel, first);

@@ -213,7 +213,7 @@ bool DialogSpellChecker::FindNext() {
 	if (CheckLine(active_line, start_pos, &commit_id))
 		return true;
 
-	std::list<AssEntry*>::iterator it = find(context->ass->Line.begin(), context->ass->Line.end(), active_line);
+	entryIter it = context->ass->Line.iterator_to(*active_line);
 
 	// Note that it is deliberate that the start line is checked twice, as if
 	// the cursor is past the first misspelled word in the current line, that
@@ -225,7 +225,7 @@ bool DialogSpellChecker::FindNext() {
 				it = context->ass->Line.begin();
 				has_looped = true;
 			}
-		} while (!(active_line = dynamic_cast<AssDialogue*>(*it)));
+		} while (!(active_line = dynamic_cast<AssDialogue*>(&*it)));
 
 		if (CheckLine(active_line, 0, &commit_id))
 			return true;

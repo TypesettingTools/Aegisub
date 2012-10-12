@@ -24,9 +24,10 @@
 #include "font_file_lister.h"
 
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "ass_override.h"
 #include "ass_style.h"
-
+#include "utils.h"
 
 #ifndef AGI_PRE
 #include <algorithm>
@@ -44,17 +45,17 @@ FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFi
 {
 }
 
-void FontCollector::ProcessDialogueLine(AssDialogue *line, int index) {
+void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	if (line->Comment) return;
 
-	line->ParseAssTags();
+	std::vector<AssDialogueBlock*> blocks = line->ParseTags();
 	StyleInfo style = styles[line->Style];
 	StyleInfo initial = style;
 
 	bool overriden = false;
 
-	for (size_t i = 0; i < line->Blocks.size(); ++i) {
-		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(line->Blocks[i])) {
+	for (size_t i = 0; i < blocks.size(); ++i) {
+		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(blocks[i])) {
 			for (size_t j = 0; j < ovr->Tags.size(); ++j) {
 				AssOverrideTag *tag = ovr->Tags[j];
 				wxString name = tag->Name;
@@ -77,7 +78,7 @@ void FontCollector::ProcessDialogueLine(AssDialogue *line, int index) {
 				}
 			}
 		}
-		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(line->Blocks[i])) {
+		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(blocks[i])) {
 			wxString text = txt->GetText();
 
 			if (text.empty() || (text.size() >= 2 && text.StartsWith("{") && text.EndsWith("}")))
@@ -102,7 +103,7 @@ void FontCollector::ProcessDialogueLine(AssDialogue *line, int index) {
 		}
 		// Do nothing with drawing blocks
 	}
-	line->ClearBlocks();
+	delete_clear(blocks);
 }
 
 void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
@@ -148,22 +149,22 @@ void FontCollector::PrintUsage(UsageData const& data) {
 	status_callback("\n", 2);
 }
 
-std::vector<wxString> FontCollector::GetFontPaths(std::list<AssEntry*> const& file) {
+std::vector<wxString> FontCollector::GetFontPaths(const AssFile *file) {
 	missing = 0;
 	missing_glyphs = 0;
 
 	status_callback(_("Parsing file\n"), 0);
 
 	int index = 0;
-	for (std::list<AssEntry*>::const_iterator cur = file.begin(); cur != file.end(); ++cur) {
-		if (AssStyle *style = dynamic_cast<AssStyle*>(*cur)) {
+	for (constEntryIter cur = file->Line.begin(); cur != file->Line.end(); ++cur) {
+		if (const AssStyle *style = dynamic_cast<const AssStyle*>(&*cur)) {
 			StyleInfo &info = styles[style->name];
 			info.facename = style->font;
 			info.bold     = style->bold;
 			info.italic   = style->italic;
 			used_styles[info].styles.insert(style->name);
 		}
-		else if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*cur))
+		else if (const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&*cur))
 			ProcessDialogueLine(diag, ++index);
 	}
 

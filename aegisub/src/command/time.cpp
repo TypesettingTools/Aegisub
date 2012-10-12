@@ -72,7 +72,7 @@ namespace {
 
 			size_t found = 0;
 			for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-				AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+				AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 				if (!diag) continue;
 
 				if (sel.count(diag)) {

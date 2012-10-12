@@ -279,7 +279,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	line_index_map.clear();
 
 	for (entryIter cur = context->ass->Line.begin(); cur != context->ass->Line.end(); ++cur) {
-		if (AssDialogue *curdiag = dynamic_cast<AssDialogue*>(*cur)) {
+		if (AssDialogue *curdiag = dynamic_cast<AssDialogue*>(&*cur)) {
 			line_index_map[curdiag] = (int)index_line_map.size();
 			index_line_map.push_back(curdiag);
 		}

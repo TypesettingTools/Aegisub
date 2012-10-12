@@ -88,7 +88,7 @@ class FontsCollectorThread : public wxThread {
 			std::vector<wxString> GetFontPaths(wxString const&, int, bool, std::set<wxUniChar> const&) { return std::vector<wxString>(); }
 		} lister;
 #endif
-		std::vector<wxString> paths = FontCollector(callback, lister).GetFontPaths(subs->Line);
+		std::vector<wxString> paths = FontCollector(callback, lister).GetFontPaths(subs);
 		if (paths.empty()) return;
 
 		// Copy fonts
