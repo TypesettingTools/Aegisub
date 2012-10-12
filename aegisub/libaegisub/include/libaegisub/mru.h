@@ -53,7 +53,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorIndexOutOfRange, MRUError, "mru/invalid"
 class MRUManager {
 public:
 	/// @brief Map for time->value pairs.
-	typedef std::list<const std::string> MRUListMap;
+	typedef std::list<std::string> MRUListMap;
 
 	/// @brief Constructor
 	/// @param config File to load MRU values from
