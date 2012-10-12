@@ -34,11 +34,7 @@
 /// @ingroup subs_storage
 ///
 
-
-#pragma once
-
 #ifndef AGI_PRE
-#include <fstream>
 #include <list>
 #include <set>
 #include <vector>
