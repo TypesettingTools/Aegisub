@@ -56,6 +56,7 @@
 #include "compat.h"
 #include "dialog_progress.h"
 #include "MatroskaParser.h"
+#include "subtitle_format_ass.h"
 
 class MkvStdIO : public InputStream {
 public:
@@ -137,7 +138,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 	int version = ssa;
 	AssAttachment *attach = 0;
 	for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
-		target->AddLine(it->second, &version, &attach);
+		ASSSubtitleFormat::AddLine(target, it->second, &version, &attach);
 	}
 }
 
@@ -208,7 +209,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 			AssAttachment *attach = 0;
 			wxStringTokenizer token(privString, "\r\n", wxTOKEN_STRTOK);
 			while (token.HasMoreTokens())
-				target->AddLine(token.GetNextToken(), &version, &attach);
+				ASSSubtitleFormat::AddLine(target, token.GetNextToken(), &version, &attach);
 		}
 		// Load default if it's SRT
 		else {

@@ -163,11 +163,6 @@ public:
 	void SetScriptInfo(wxString const& key, wxString const& value);
 	// Add a ";" comment in the [Script Info] section
 	void AddComment(wxString comment);
-	/// @brief Add a line to the file
-	/// @param data Full text of ASS line
-	/// @param[in,out] version ASS version the line was parsed as
-	/// @param[in,out] attach Accumulator for attachment parsing
-	void AddLine(wxString data, int *version, AssAttachment **attach);
 
 	/// Type of changes made in a commit
 	enum CommitType {
