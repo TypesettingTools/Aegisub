@@ -362,6 +362,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\ass_parser.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ass_parser.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\ass_style.cpp"
 				>
 			</File>

@@ -36,8 +36,6 @@
 
 #include "subtitle_format.h"
 
-class AssAttachment;
-
 /// DOCME
 /// @class ASSSubtitleFormat
 /// @brief DOCME
@@ -55,6 +53,4 @@ public:
 
 	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
 	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
-
-	static void AddLine(AssFile *target, wxString data, int *version, AssAttachment **attach);
 };

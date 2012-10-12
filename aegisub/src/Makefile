@@ -131,6 +131,7 @@ SRC += \
 	ass_file.cpp \
 	ass_karaoke.cpp \
 	ass_override.cpp \
+	ass_parser.cpp \
 	ass_style.cpp \
 	ass_style_storage.cpp \
 	ass_time.cpp \
