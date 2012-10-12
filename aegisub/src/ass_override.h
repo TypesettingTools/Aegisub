@@ -41,7 +41,7 @@
 #include "variable_data.h"
 
 /// Type of parameter; probably only used by the resample tool
-enum ASS_ParameterClass {
+enum AssParameterClass {
 	PARCLASS_NORMAL,
 	PARCLASS_ABSOLUTE_SIZE,
 	PARCLASS_ABSOLUTE_POS_X,
@@ -58,7 +58,7 @@ enum ASS_ParameterClass {
 /// indicated number. Note that only arguments not at the end need to be marked
 /// as optional; this is just to know which parameters to skip when there are
 /// earlier optional arguments
-enum ASS_ParameterOptional {
+enum AssParameterOptional {
 	NOT_OPTIONAL = 0xFF,
 	OPTIONAL_1 = 0x01,
 	OPTIONAL_2 = 0x02,
@@ -75,7 +75,7 @@ enum ASS_ParameterOptional {
 class AssOverrideParameter : public VariableData {
 public:
 	/// Type of parameter
-	ASS_ParameterClass classification;
+	AssParameterClass classification;
 
 	/// Is the parameter's value actually given?
 	bool omitted;
@@ -96,9 +96,9 @@ struct AssOverrideParamProto {
 	VariableDataType type;
 
 	/// Semantic type of this parameter
-	ASS_ParameterClass classification;
+	AssParameterClass classification;
 
-	AssOverrideParamProto (VariableDataType type, int opt=NOT_OPTIONAL, ASS_ParameterClass classi=PARCLASS_NORMAL);
+	AssOverrideParamProto (VariableDataType type, int opt=NOT_OPTIONAL, AssParameterClass classi=PARCLASS_NORMAL);
 };
 
 /// DOCME
@@ -115,13 +115,13 @@ struct AssOverrideTagProto {
 	/// @param type Data type of the parameter
 	/// @param classi Semantic type of the parameter
 	/// @param opt Situations in which this parameter is present
-	void AddParam(VariableDataType type, ASS_ParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
+	void AddParam(VariableDataType type, AssParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
 	/// @brief Convenience function for single-argument tags
 	/// @param name Name of the tag, with slash
 	/// @param type Data type of the parameter
 	/// @param classi Semantic type of the parameter
 	/// @param opt Situations in which this parameter is present
-	void Set(wxString name, VariableDataType type, ASS_ParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
+	void Set(wxString name, VariableDataType type, AssParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
 };
 
 /// DOCME

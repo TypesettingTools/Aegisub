@@ -203,7 +203,7 @@ void VisualToolVectorClip::Save() {
 	wxString value = "(";
 	if (spline.GetScale() != 1)
 		value += wxString::Format("%d,", spline.GetScale());
-	value += spline.EncodeToASS() + ")";
+	value += spline.EncodeToAss() + ")";
 
 	SetOverride(active_line, tag, value);
 }
@@ -398,7 +398,7 @@ void VisualToolVectorClip::DoRefresh() {
 	int scale;
 	vect = GetLineVectorClip(active_line, scale, inverse);
 	spline.SetScale(scale);
-	spline.DecodeFromASS(vect);
+	spline.DecodeFromAss(vect);
 
 	MakeFeatures();
 	SelectAll();

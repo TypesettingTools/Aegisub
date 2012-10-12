@@ -123,17 +123,17 @@ void AssDialogueBlockOverride::ProcessParameters(AssDialogueBlockOverride::Proce
 	}
 }
 
-AssOverrideParamProto::AssOverrideParamProto(VariableDataType type,int opt,ASS_ParameterClass classi)
+AssOverrideParamProto::AssOverrideParamProto(VariableDataType type,int opt,AssParameterClass classi)
 : optional(opt)
 , type(type)
 , classification(classi)
 {
 }
 
-void AssOverrideTagProto::AddParam(VariableDataType type, ASS_ParameterClass classi, int opt) {
+void AssOverrideTagProto::AddParam(VariableDataType type, AssParameterClass classi, int opt) {
 	params.push_back(AssOverrideParamProto(type, opt, classi));
 }
-void AssOverrideTagProto::Set(wxString newName, VariableDataType type, ASS_ParameterClass classi, int opt) {
+void AssOverrideTagProto::Set(wxString newName, VariableDataType type, AssParameterClass classi, int opt) {
 	name = newName;
 	params.push_back(AssOverrideParamProto(type, opt, classi));
 }

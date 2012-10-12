@@ -173,8 +173,8 @@ wxString AssDialogue::GetData(bool ssa) const {
 		"%s: %s,%s,%s,%s,%s,%d,%d,%d,%s,%s",
 		Comment ? "Comment" : "Dialogue",
 		ssa ? "Marked=0" : wxString::Format("%01d", Layer),
-		Start.GetASSFormated(),
-		End.GetASSFormated(),
+		Start.GetAssFormated(),
+		End.GetAssFormated(),
 		s, a,
 		Margin[0], Margin[1], Margin[2],
 		e,
@@ -270,7 +270,7 @@ std::vector<AssDialogueBlock*> AssDialogue::ParseTags() const {
 	return Blocks;
 }
 
-void AssDialogue::ParseASSTags() {
+void AssDialogue::ParseAssTags() {
 	ClearBlocks();
 	Blocks = ParseTags();
 }
@@ -280,7 +280,7 @@ void AssDialogue::StripTags () {
 }
 
 void AssDialogue::StripTag (wxString tagName) {
-	ParseASSTags();
+	ParseAssTags();
 	wxString final;
 
 	// Look for blocks

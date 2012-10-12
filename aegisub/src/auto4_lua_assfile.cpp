@@ -241,10 +241,10 @@ namespace Automation4 {
 			set_field(L, "fontname", sty->font);
 			set_field(L, "fontsize", sty->fontsize);
 
-			set_field(L, "color1", sty->primary.GetASSFormatted(true));
-			set_field(L, "color2", sty->secondary.GetASSFormatted(true));
-			set_field(L, "color3", sty->outline.GetASSFormatted(true));
-			set_field(L, "color4", sty->shadow.GetASSFormatted(true));
+			set_field(L, "color1", sty->primary.GetAssFormatted(true));
+			set_field(L, "color2", sty->secondary.GetAssFormatted(true));
+			set_field(L, "color3", sty->outline.GetAssFormatted(true));
+			set_field(L, "color4", sty->shadow.GetAssFormatted(true));
 
 			set_field(L, "bold", sty->bold);
 			set_field(L, "italic", sty->italic);

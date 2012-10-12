@@ -221,7 +221,7 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 			newEnd = trunc_cs(ConvertTime(curDialogue->End) + 9);
 
 			// Process stuff
-			curDialogue->ParseASSTags();
+			curDialogue->ParseAssTags();
 			curDialogue->ProcessParameters(TransformTimeTags, this);
 			curDialogue->Start = newStart;
 			curDialogue->End = newEnd;

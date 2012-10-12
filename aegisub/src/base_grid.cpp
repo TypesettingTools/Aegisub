@@ -597,8 +597,8 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 		if (paint_columns[3]) strings[3] = wxString::Format("%d", context->videoController->FrameAtTime(line->End, agi::vfr::END));
 	}
 	else {
-		if (paint_columns[2]) strings[2] = line->Start.GetASSFormated();
-		if (paint_columns[3]) strings[3] = line->End.GetASSFormated();
+		if (paint_columns[2]) strings[2] = line->Start.GetAssFormated();
+		if (paint_columns[3]) strings[3] = line->End.GetAssFormated();
 	}
 	if (paint_columns[4]) strings[4] = line->Style;
 	if (paint_columns[5]) strings[5] = line->Actor;
@@ -833,7 +833,7 @@ void BaseGrid::SetColumnWidths() {
 	int startLen = 0;
 	int endLen = 0;
 	if (!byFrame)
-		startLen = endLen = dc.GetTextExtent(AssTime().GetASSFormated()).GetWidth();
+		startLen = endLen = dc.GetTextExtent(AssTime().GetAssFormated()).GetWidth();
 
 	// O(n) widths
 	bool showMargin[3] = { false, false, false };

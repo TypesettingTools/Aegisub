@@ -61,7 +61,7 @@ AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize)
 
 void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 	active_line = line;
-	line->ParseASSTags();
+	line->ParseAssTags();
 
 	syls.clear();
 	Syllable syl;

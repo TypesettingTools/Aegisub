@@ -238,7 +238,7 @@ class DialogColorPicker : public wxDialog {
 	/// Update all other controls as a result of modifying an HSV control
 	void UpdateFromHSV(bool dirty = true);
 	/// Update all other controls as a result of modifying the ASS format control
-	void UpdateFromASS();
+	void UpdateFromAss();
 	/// Update all other controls as a result of modifying the HTML format control
 	void UpdateFromHTML();
 
@@ -472,7 +472,7 @@ wxString ColorPickerRecent::StoreToString()
 {
 	wxString res;
 	for (int i = 0; i < rows*cols; i++) {
-		res << AssColor(colors[i]).GetASSFormatted(false, false, false) << " ";
+		res << AssColor(colors[i]).GetAssFormatted(false, false, false) << " ";
 	}
 	return res.Trim(true);
 }
@@ -502,7 +502,7 @@ void ColorPickerRecent::OnClick(wxMouseEvent &evt)
 
 	if (i >= 0 && i < (int)colors.size()) {
 		wxCommandEvent evnt(EVT_RECENT_SELECT, GetId());
-		evnt.SetString(AssColor(colors[i]).GetASSFormatted(false, false, false));
+		evnt.SetString(AssColor(colors[i]).GetAssFormatted(false, false, false));
 		AddPendingEvent(evnt);
 	}
 }
@@ -576,7 +576,7 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 		wxColour color(pdi.Red(), pdi.Green(), pdi.Blue(), wxALPHA_OPAQUE);
 
 		wxCommandEvent evnt(EVT_DROPPER_SELECT, GetId());
-		evnt.SetString(AssColor(color).GetASSFormatted(false, false, false));
+		evnt.SetString(AssColor(color).GetAssFormatted(false, false, false));
 		AddPendingEvent(evnt);
 	}
 }
@@ -792,7 +792,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, wxColour initial_color, s
 		hsv_input[i]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromHSV, this, true));
 		hsv_input[i]->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromHSV, this, true));
 	}
-	ass_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromASS, this));
+	ass_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromAss, this));
 	html_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromHTML, this));
 
 	screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
@@ -901,7 +901,7 @@ void DialogColorPicker::UpdateFromRGB(bool dirty)
 	SetHSL(r, g, b);
 	SetHSV(r, g, b);
 	cur_color = wxColour(r, g, b, wxALPHA_OPAQUE);
-	ass_input->ChangeValue(AssColor(cur_color).GetASSFormatted(false, false, false));
+	ass_input->ChangeValue(AssColor(cur_color).GetAssFormatted(false, false, false));
 	html_input->ChangeValue(color_to_html(cur_color));
 
 	if (dirty)
@@ -920,7 +920,7 @@ void DialogColorPicker::UpdateFromHSL(bool dirty)
 	SetRGB(r, g, b);
 	SetHSV(r, g, b);
 
-	ass_input->ChangeValue(AssColor(cur_color).GetASSFormatted(false, false, false));
+	ass_input->ChangeValue(AssColor(cur_color).GetAssFormatted(false, false, false));
 	html_input->ChangeValue(color_to_html(cur_color));
 
 	if (dirty)
@@ -938,7 +938,7 @@ void DialogColorPicker::UpdateFromHSV(bool dirty)
 	hsv_to_rgb(h, s, v, &r, &g, &b);
 	SetRGB(r, g, b);
 	SetHSL(r, g, b);
-	ass_input->ChangeValue(AssColor(cur_color).GetASSFormatted(false, false, false));
+	ass_input->ChangeValue(AssColor(cur_color).GetAssFormatted(false, false, false));
 	html_input->ChangeValue(color_to_html(cur_color));
 
 	if (dirty)
@@ -947,7 +947,7 @@ void DialogColorPicker::UpdateFromHSV(bool dirty)
 }
 
 /// @brief Use the value entered in the ASS hex control to update the other controls
-void DialogColorPicker::UpdateFromASS()
+void DialogColorPicker::UpdateFromAss()
 {
 	unsigned char r, g, b;
 	AssColor ass;
@@ -975,7 +975,7 @@ void DialogColorPicker::UpdateFromHTML()
 	SetRGB(r, g, b);
 	SetHSL(r, g, b);
 	SetHSV(r, g, b);
-	ass_input->ChangeValue(AssColor(cur_color).GetASSFormatted(false, false, false));
+	ass_input->ChangeValue(AssColor(cur_color).GetAssFormatted(false, false, false));
 
 	spectrum_dirty = true;
 	UpdateSpectrumDisplay();

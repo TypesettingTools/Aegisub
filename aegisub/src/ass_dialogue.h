@@ -41,7 +41,7 @@
 #include "ass_entry.h"
 #include "ass_time.h"
 
-enum ASS_BlockType {
+enum AssBlockType {
 	BLOCK_BASE,
 	BLOCK_PLAIN,
 	BLOCK_OVERRIDE,
@@ -79,13 +79,13 @@ public:
 	AssDialogueBlock(wxString const& text) : text(text) { }
 	virtual ~AssDialogueBlock() { }
 
-	virtual ASS_BlockType GetType() const = 0;
+	virtual AssBlockType GetType() const = 0;
 	virtual wxString GetText() { return text; }
 };
 
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
-	ASS_BlockType GetType() const { return BLOCK_PLAIN; }
+	AssBlockType GetType() const { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 };
 
@@ -93,7 +93,7 @@ class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
 	int Scale;
 
-	ASS_BlockType GetType() const { return BLOCK_DRAWING; }
+	AssBlockType GetType() const { return BLOCK_DRAWING; }
 	AssDialogueBlockDrawing(wxString const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
@@ -105,7 +105,7 @@ public:
 
 	std::vector<AssOverrideTag*> Tags;
 
-	ASS_BlockType GetType() const { return BLOCK_OVERRIDE; }
+	AssBlockType GetType() const { return BLOCK_OVERRIDE; }
 	wxString GetText();
 	void ParseTags();
 	void AddTag(wxString const& tag);
@@ -143,7 +143,7 @@ public:
 	/// Raw text data
 	wxString Text;
 
-	ASS_EntryType GetType() const { return ENTRY_DIALOGUE; }
+	AssEntryType GetType() const { return ENTRY_DIALOGUE; }
 
 	/// @brief Parse raw ASS data into everything else
 	/// @param data ASS line
@@ -151,7 +151,7 @@ public:
 	bool Parse(wxString const& data);
 
 	/// Parse text as ASS to generate block information
-	void ParseASSTags();
+	void ParseAssTags();
 
 	/// Parse text as ASS and return block information
 	std::vector<AssDialogueBlock*> ParseTags() const;

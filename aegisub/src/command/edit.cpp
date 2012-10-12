@@ -202,7 +202,7 @@ int block_at_pos(wxString const& text, int pos) {
 void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, int &sel_start, int &sel_end, bool at_end = false) {
 	AssDialogue * const line = c->selectionController->GetActiveLine();
 	if (line->Blocks.empty())
-		line->ParseASSTags();
+		line->ParseAssTags();
 
 	int start = at_end ? sel_end : sel_start;
 	int blockn = block_at_pos(line->Text, start);
@@ -239,7 +239,7 @@ void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, 
 	if (plain || blockn < 0) {
 		line->Text = line->Text.Left(start) + "{" + insert + "}" + line->Text.Mid(start);
 		shift += 2;
-		line->ParseASSTags();
+		line->ParseAssTags();
 	}
 	else if(ovr) {
 		wxString alt;
@@ -296,7 +296,7 @@ void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const c
 	AssStyle const* const style = c->ass->GetStyle(line->Style);
 	bool state = style ? style->*field : AssStyle().*field;
 
-	line->ParseASSTags();
+	line->ParseAssTags();
 	int sel_start = c->textSelectionController->GetSelectionStart();
 	int sel_end = c->textSelectionController->GetSelectionEnd();
 	int blockn = block_at_pos(line->Text, sel_start);
@@ -315,7 +315,7 @@ void got_color(const agi::Context *c, const char *tag, int *commit_id, wxColour 
 	if (new_color.Ok()) {
 		int sel_start = c->textSelectionController->GetSelectionStart();
 		int sel_end = c->textSelectionController->GetSelectionEnd();
-		set_tag(c, tag, AssColor(new_color).GetASSFormatted(false), sel_start, sel_end);
+		set_tag(c, tag, AssColor(new_color).GetAssFormatted(false), sel_start, sel_end);
 		commit_text(c, _("set color"), sel_start, sel_end, commit_id);
 	}
 }
@@ -325,7 +325,7 @@ void show_color_picker(const agi::Context *c, AssColor (AssStyle::*field), const
 	AssStyle const* const style = c->ass->GetStyle(line->Style);
 	wxColor color = (style ? style->*field : AssStyle().*field).GetWXColor();
 
-	line->ParseASSTags();
+	line->ParseAssTags();
 
 	int sel_start = c->textSelectionController->GetSelectionStart();
 	int sel_end = c->textSelectionController->GetSelectionEnd();
@@ -439,7 +439,7 @@ struct edit_font : public Command {
 
 	void operator()(agi::Context *c) {
 		AssDialogue *const line = c->selectionController->GetActiveLine();
-		line->ParseASSTags();
+		line->ParseAssTags();
 		const int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
 
 		const AssStyle *style = c->ass->GetStyle(line->Style);

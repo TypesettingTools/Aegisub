@@ -268,7 +268,7 @@ namespace
 			// Helper for finding special characters
 			wxRegEx special_char_search("\\\\[nN]| ", wxRE_ADVANCED);
 
-			line->ParseASSTags();
+			line->ParseAssTags();
 
 			text_rows.clear();
 			text_rows.push_back(EbuTextRow());

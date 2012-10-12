@@ -47,7 +47,7 @@ class AssDialogue;
 class AssStyle;
 class AssAttachment;
 
-enum ASS_EntryType {
+enum AssEntryType {
 	ENTRY_BASE,
 	ENTRY_DIALOGUE,
 	ENTRY_STYLE,
@@ -89,7 +89,7 @@ public:
 	virtual AssEntry *Clone() const;
 
 	/// Get this entry's fully-derived type
-	virtual ASS_EntryType GetType() const { return ENTRY_BASE; }
+	virtual AssEntryType GetType() const { return ENTRY_BASE; }
 
 	/// @brief Get this line's raw entry data in ASS format
 	virtual const wxString GetEntryData() const { return data; }

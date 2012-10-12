@@ -313,7 +313,7 @@ std::list<SubtitleFormat*> SubtitleFormat::formats;
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
-		new ASSSubtitleFormat;
+		new AssSubtitleFormat;
 		new Ebu3264SubtitleFormat;
 		new EncoreSubtitleFormat;
 		new MKVSubtitleFormat;

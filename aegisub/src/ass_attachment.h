@@ -76,7 +76,7 @@ public:
 	wxString GetFileName(bool raw=false) const;
 
 	const wxString GetEntryData() const;
-	ASS_EntryType GetType() const { return ENTRY_ATTACHMENT; }
+	AssEntryType GetType() const { return ENTRY_ATTACHMENT; }
 	AssEntry *Clone() const;
 
 	AssAttachment(wxString const& name, wxString const& group);

@@ -164,7 +164,7 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 
 			wxString out_text;
 			if (strip_formatting) {
-				dia->ParseASSTags();
+				dia->ParseAssTags();
 				for (std::vector<AssDialogueBlock*>::iterator block = dia->Blocks.begin(); block != dia->Blocks.end(); ++block) {
 					if ((*block)->GetType() == BLOCK_PLAIN) {
 						out_text += (*block)->GetText();

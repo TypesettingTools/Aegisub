@@ -100,7 +100,7 @@ class StyleRenamer {
 					found_any = true;
 			}
 
-			diag->ParseASSTags();
+			diag->ParseAssTags();
 			diag->ProcessParameters(&StyleRenamer::ProcessTag, this);
 			if (replace)
 				diag->UpdateText();

@@ -79,7 +79,7 @@ AssTime::AssTime(wxString const& text)
 	time = mid(0, time, 10 * 60 * 60 * 1000 - 1);
 }
 
-wxString AssTime::GetASSFormated(bool msPrecision) const {
+wxString AssTime::GetAssFormated(bool msPrecision) const {
 	wxChar ret[] = {
 		'0' + GetTimeHours(),
 		':',

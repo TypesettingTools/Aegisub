@@ -366,7 +366,7 @@ typedef const std::vector<AssOverrideParameter*> * param_vec;
 // Parse line on creation and unparse at the end of scope
 struct scoped_tag_parse {
 	AssDialogue *diag;
-	scoped_tag_parse(AssDialogue *diag) : diag(diag) { diag->ParseASSTags(); }
+	scoped_tag_parse(AssDialogue *diag) : diag(diag) { diag->ParseAssTags(); }
 	~scoped_tag_parse() { diag->ClearBlocks(); }
 };
 
@@ -572,7 +572,7 @@ void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxStrin
 	wxString insert = tag + value;
 
 	// Get block at start
-	line->ParseASSTags();
+	line->ParseAssTags();
 	AssDialogueBlock *block = line->Blocks.front();
 
 	// Get current block as plain or override

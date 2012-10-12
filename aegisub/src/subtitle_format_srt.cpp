@@ -215,7 +215,7 @@ public:
 						else if (attr_name == "color")
 						{
 							wxColour wxcl = html_to_color(attr_value);
-							wxString colorstr = AssColor(wxcl).GetASSFormatted(false, false, false);
+							wxString colorstr = AssColor(wxcl).GetAssFormatted(false, false, false);
 							new_attribs.color = wxString::Format("{\\c%s}", colorstr);
 						}
 						// remove this attribute to prepare for the next
@@ -567,7 +567,7 @@ wxString SRTSubtitleFormat::ConvertTags(AssDialogue *diag) const {
 	tag_states['u'] = false;
 	tag_states['s'] = false;
 
-	diag->ParseASSTags();
+	diag->ParseAssTags();
 
 	for (size_t i = 0; i < diag->Blocks.size(); ++i) {
 		if (AssDialogueBlockOverride* block = dynamic_cast<AssDialogueBlockOverride*>(diag->Blocks[i])) {

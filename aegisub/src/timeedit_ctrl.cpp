@@ -87,7 +87,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxStr
 	SetValidator(val);
 
 	// Other stuff
-	if (!value) SetValue(time.GetASSFormated());
+	if (!value) SetValue(time.GetAssFormated());
 
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
@@ -136,7 +136,7 @@ void TimeEdit::UpdateText() {
 	if (byFrame)
 		ChangeValue(wxString::Format("%d", c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
-		ChangeValue(time.GetASSFormated());
+		ChangeValue(time.GetAssFormated());
 }
 
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
@@ -197,7 +197,7 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 
 	// Overwrite the digit
 	time = text.Left(start) + (char)key + text.Mid(start + 1);
-	SetValue(time.GetASSFormated());
+	SetValue(time.GetAssFormated());
 	SetInsertionPoint(start + 1);
 }
 
@@ -246,7 +246,7 @@ void TimeEdit::PasteTime() {
 		wxTheClipboard->Close();
 
 		AssTime tempTime(text);
-		if (tempTime.GetASSFormated() == text) {
+		if (tempTime.GetAssFormated() == text) {
 			SetTime(tempTime);
 			SetSelection(0, GetValue().size());
 

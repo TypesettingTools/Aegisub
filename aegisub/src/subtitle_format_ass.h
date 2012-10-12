@@ -43,9 +43,9 @@ class AssAttachment;
 /// @brief DOCME
 ///
 /// DOCME
-class ASSSubtitleFormat : public SubtitleFormat {
+class AssSubtitleFormat : public SubtitleFormat {
 public:
-	ASSSubtitleFormat();
+	AssSubtitleFormat();
 
 	wxArrayString GetReadWildcards() const;
 	wxArrayString GetWriteWildcards() const;

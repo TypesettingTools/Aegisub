@@ -117,7 +117,7 @@ void AssColor::SetWXColor(const wxColor &color) {
 /// @param stripped
 /// @param isStyle
 /// @return
-wxString AssColor::GetASSFormatted(bool alpha,bool stripped,bool isStyle) const {
+wxString AssColor::GetAssFormatted(bool alpha,bool stripped,bool isStyle) const {
 	wxString work;
 	if (!stripped) work += "&H";
 	if (alpha) work += wxString::Format("%02X",a);
@@ -311,10 +311,10 @@ void AssStyle::UpdateData() {
 
 	final = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
 					  name, font, fontsize,
-					  primary.GetASSFormatted(true,false,true),
-					  secondary.GetASSFormatted(true,false,true),
-					  outline.GetASSFormatted(true,false,true),
-					  shadow.GetASSFormatted(true,false,true),
+					  primary.GetAssFormatted(true,false,true),
+					  secondary.GetAssFormatted(true,false,true),
+					  outline.GetAssFormatted(true,false,true),
+					  shadow.GetAssFormatted(true,false,true),
 					  (bold? -1 : 0), (italic ? -1 : 0),
 					  (underline?-1:0),(strikeout?-1:0),
 					  scalex,scaley,spacing,angle,

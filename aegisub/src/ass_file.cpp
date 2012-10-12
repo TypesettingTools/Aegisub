@@ -95,7 +95,7 @@ void AssFile::Load(const wxString &_filename, wxString charset, bool addToRecent
 
 		// Check if the file has at least one style and at least one dialogue line
 		for (entryIter it = temp.Line.begin(); it != temp.Line.end(); ++it) {
-			ASS_EntryType type = (*it)->GetType();
+			AssEntryType type = (*it)->GetType();
 			if (type == ENTRY_STYLE) found_style = true;
 			if (type == ENTRY_DIALOGUE) found_dialogue = true;
 			if (found_style && found_dialogue) break;

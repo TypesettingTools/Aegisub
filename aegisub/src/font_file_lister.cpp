@@ -49,7 +49,7 @@ FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFi
 void FontCollector::ProcessDialogueLine(AssDialogue *line, int index) {
 	if (line->Comment) return;
 
-	line->ParseASSTags();
+	line->ParseAssTags();
 	StyleInfo style = styles[line->Style];
 	StyleInfo initial = style;
 

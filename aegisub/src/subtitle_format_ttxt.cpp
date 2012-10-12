@@ -246,7 +246,7 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *prev, AssDialog
 	// If it doesn't start at the end of previous, add blank
 	if (prev && prev->End != line->Start) {
 		wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
-		node->AddAttribute("sampleTime", "0" + prev->End.GetASSFormated(true));
+		node->AddAttribute("sampleTime", "0" + prev->End.GetAssFormated(true));
 		node->AddAttribute("xml:space", "preserve");
 		root->AddChild(node);
 		node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", ""));
@@ -254,7 +254,7 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, AssDialogue *prev, AssDialog
 
 	// Generate and insert node
 	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
-	node->AddAttribute("sampleTime", "0" + line->Start.GetASSFormated(true));
+	node->AddAttribute("sampleTime", "0" + line->Start.GetAssFormated(true));
 	node->AddAttribute("xml:space", "preserve");
 	root->AddChild(node);
 	node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", line->Text));

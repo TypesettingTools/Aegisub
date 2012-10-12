@@ -161,7 +161,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 
 	Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
 
-	active_line->ParseASSTags();
+	active_line->ParseAssTags();
 	if (bad_block(active_line->Blocks[0])) {
 		if (!NextBlock())
 			throw NothingToTranslate(STD_STR(_("There is nothing to translate in the file.")));
@@ -177,7 +177,7 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 	if (switching_lines) return;
 
 	active_line = new_line;
-	active_line->ParseASSTags();
+	active_line->ParseAssTags();
 	cur_block = 0;
 	line_number = count_if(c->ass->Line.begin(), find(c->ass->Line.begin(), c->ass->Line.end(), active_line), cast<AssDialogue*>()) + 1;
 
@@ -207,7 +207,7 @@ bool DialogTranslation::NextBlock() {
 
 			active_line->ClearBlocks();
 			active_line = new_line;
-			active_line->ParseASSTags();
+			active_line->ParseAssTags();
 			cur_block = 0;
 			++line_number;
 		}
@@ -230,7 +230,7 @@ bool DialogTranslation::PrevBlock() {
 
 			active_line->ClearBlocks();
 			active_line = new_line;
-			active_line->ParseASSTags();
+			active_line->ParseAssTags();
 			cur_block = active_line->Blocks.size() - 1;
 			--line_number;
 		}

@@ -67,7 +67,7 @@ void Spline::SetScale(int new_scale) {
 	scale = 1 << (raw_scale - 1);
 }
 
-wxString Spline::EncodeToASS() const {
+wxString Spline::EncodeToAss() const {
 	wxString result;
 	result.reserve(size() * 10);
 	char last = 0;
@@ -107,7 +107,7 @@ wxString Spline::EncodeToASS() const {
 	return result;
 }
 
-void Spline::DecodeFromASS(wxString str) {
+void Spline::DecodeFromAss(wxString str) {
 	// Clear current
 	clear();
 	std::vector<float> stack;

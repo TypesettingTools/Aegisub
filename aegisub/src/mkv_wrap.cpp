@@ -117,11 +117,11 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			blockString.BeforeFirst(',', &afterOrder).ToLong(&order);
 			afterOrder.BeforeFirst(',', &afterLayer).ToLong(&layer);
 
-			subList[order] = wxString::Format("Dialogue: %d,%s,%s,%s", (int)layer, subStart.GetASSFormated(), subEnd.GetASSFormated(), afterLayer);
+			subList[order] = wxString::Format("Dialogue: %d,%s,%s,%s", (int)layer, subStart.GetAssFormated(), subEnd.GetAssFormated(), afterLayer);
 		}
 		// Process SRT
 		else {
-			blockString = wxString::Format("Dialogue: 0,%s,%s,%s", subStart.GetASSFormated(), subEnd.GetASSFormated(), blockString);
+			blockString = wxString::Format("Dialogue: 0,%s,%s,%s", subStart.GetAssFormated(), subEnd.GetAssFormated(), blockString);
 			blockString.Replace("\r\n","\\N");
 			blockString.Replace("\r","\\N");
 			blockString.Replace("\n","\\N");
@@ -138,7 +138,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 	int version = ssa;
 	AssAttachment *attach = 0;
 	for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
-		ASSSubtitleFormat::AddLine(target, it->second, &version, &attach);
+		AssSubtitleFormat::AddLine(target, it->second, &version, &attach);
 	}
 }
 
@@ -209,7 +209,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 			AssAttachment *attach = 0;
 			wxStringTokenizer token(privString, "\r\n", wxTOKEN_STRTOK);
 			while (token.HasMoreTokens())
-				ASSSubtitleFormat::AddLine(target, token.GetNextToken(), &version, &attach);
+				AssSubtitleFormat::AddLine(target, token.GetNextToken(), &version, &attach);
 		}
 		// Load default if it's SRT
 		else {

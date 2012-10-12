@@ -69,7 +69,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 
 	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, NumValidator((int)jumpframe));
 	JumpFrame->SetMaxLength(maxLength.size());
-	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetASSFormated(), wxSize(-1,-1));
+	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetAssFormated(), wxSize(-1,-1));
 
 	wxGridSizer *TimesSizer = new wxGridSizer(2, 5, 5);
 

@@ -205,7 +205,7 @@ namespace {
 	void resample_line(resample_state *state, AssEntry *line) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(line);
 		if (diag && !(diag->Comment && (diag->Effect.StartsWith("template") || diag->Effect.StartsWith("code")))) {
-			diag->ParseASSTags();
+			diag->ParseAssTags();
 			diag->ProcessParameters(resample_tags, state);
 
 			for (size_t i = 0; i < diag->Blocks.size(); ++i) {

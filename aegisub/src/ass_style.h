@@ -61,7 +61,7 @@ struct AssColor {
 	wxColor GetWXColor() const;				// Return as a wxColor
 	void SetWXColor(const wxColor &color);	// Sets from a wxColor
 	void Parse(wxString  const& value);		// Parse SSA or ASS-style color
-	wxString GetASSFormatted(bool alpha,bool stripped=false,bool isStyle=false) const;	// Gets color formated in ASS format
+	wxString GetAssFormatted(bool alpha,bool stripped=false,bool isStyle=false) const;	// Gets color formated in ASS format
 	wxString GetSSAFormatted() const;
 };
 
@@ -108,7 +108,7 @@ public:
 	AssStyle& operator=(AssStyle const&);
 
 	wxString GetSSAText() const;
-	ASS_EntryType GetType() const { return ENTRY_STYLE; }
+	AssEntryType GetType() const { return ENTRY_STYLE; }
 	AssEntry *Clone() const;
 
 	/// Convert an ASS alignment to the equivalent SSA alignment

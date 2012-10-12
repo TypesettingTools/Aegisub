@@ -66,7 +66,7 @@ public:
 
 	/// Return the time as a string
 	/// @param ms Use milliseconds precision, for non-ASS formats
-	wxString GetASSFormated(bool ms=false) const;
+	wxString GetAssFormated(bool ms=false) const;
 };
 
 /// @class SmpteFormatter

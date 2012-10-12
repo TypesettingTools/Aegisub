@@ -48,26 +48,26 @@
 
 DEFINE_SIMPLE_EXCEPTION(AssParseError, SubtitleFormatParseError, "subtitle_io/parse/ass")
 
-ASSSubtitleFormat::ASSSubtitleFormat()
+AssSubtitleFormat::AssSubtitleFormat()
 : SubtitleFormat("Advanced Substation Alpha")
 {
 }
 
-wxArrayString ASSSubtitleFormat::GetReadWildcards() const {
+wxArrayString AssSubtitleFormat::GetReadWildcards() const {
 	wxArrayString formats;
 	formats.Add("ass");
 	formats.Add("ssa");
 	return formats;
 }
 
-wxArrayString ASSSubtitleFormat::GetWriteWildcards() const {
+wxArrayString AssSubtitleFormat::GetWriteWildcards() const {
 	wxArrayString formats;
 	formats.Add("ass");
 	formats.Add("ssa");
 	return formats;
 }
 
-void ASSSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
+void AssSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
 	target->Clear();
 
 	TextFileReader file(filename, encoding);
@@ -86,7 +86,7 @@ void ASSSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 	}
 }
 
-void ASSSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
+void AssSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	TextFileWriter file(filename, encoding);
 	bool ssa = filename.Right(4).Lower() == ".ssa";
 
@@ -102,7 +102,7 @@ void ASSSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	}
 }
 
-void ASSSubtitleFormat::AddLine(AssFile *target, wxString data, int *version, AssAttachment **attach) {
+void AssSubtitleFormat::AddLine(AssFile *target, wxString data, int *version, AssAttachment **attach) {
 	// Is this line an attachment filename?
 	bool isFilename = data.StartsWith("fontname: ") || data.StartsWith("filename: ");
 

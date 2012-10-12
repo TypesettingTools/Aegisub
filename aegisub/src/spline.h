@@ -64,10 +64,10 @@ public:
 	Spline(const VisualToolBase &scale);
 
 	/// Encode to an ASS vector drawing
-	wxString EncodeToASS() const;
+	wxString EncodeToAss() const;
 
 	/// Decode an ASS vector drawing
-	void DecodeFromASS(wxString str);
+	void DecodeFromAss(wxString str);
 
 	/// Set the scale
 	/// @param new_scale Power-of-two to scale coordinates by
