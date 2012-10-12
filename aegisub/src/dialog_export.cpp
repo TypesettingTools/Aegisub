@@ -52,6 +52,7 @@
 #include "charset_conv.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "subtitle_format.h"
 
 DialogExport::DialogExport(agi::Context *c)
 : wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
@@ -143,7 +144,7 @@ DialogExport::~DialogExport() {
 void DialogExport::OnProcess(wxCommandEvent &) {
 	if (!TransferDataFromWindow()) return;
 
-	wxString filename = wxFileSelector(_("Export subtitles file"), "", "", "", AssFile::GetWildcardList(2), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
+	wxString filename = wxFileSelector(_("Export subtitles file"), "", "", "", SubtitleFormat::GetWildcards(1), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
 	if (filename.empty()) return;
 
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {

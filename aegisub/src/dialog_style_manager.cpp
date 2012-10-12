@@ -66,6 +66,7 @@
 #include "persist_location.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
+#include "subtitle_format.h"
 
 using std::tr1::placeholders::_1;
 
@@ -590,7 +591,7 @@ void DialogStyleManager::OnCurrentDelete() {
 void DialogStyleManager::OnCurrentImport() {
 	// Get file name
 	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
-	wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename) return;
 
 	OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(wxFileName(filename).GetPath()));

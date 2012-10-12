@@ -475,13 +475,6 @@ void AssFile::AddToRecent(wxString const& file) const {
 	OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
 }
 
-wxString AssFile::GetWildcardList(int mode) {
-	if (mode == 0) return SubtitleFormat::GetWildcards(0);
-	if (mode == 1) return "Advanced Substation Alpha (*.ass)|*.ass";
-	if (mode == 2) return SubtitleFormat::GetWildcards(1);
-	return "";
-}
-
 int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *single_line) {
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been

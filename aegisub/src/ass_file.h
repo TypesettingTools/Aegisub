@@ -147,9 +147,6 @@ public:
 	void AddToRecent(wxString const& file) const;
 	/// Can the file be saved in its current format?
 	bool CanSave() const;
-	/// @brief Get the list of wildcards supported
-	/// @param mode 0 = open, 1 = save, 2 = export
-	static wxString GetWildcardList(int mode);
 
 	/// @brief Get the script resolution
 	/// @param[out] w Width

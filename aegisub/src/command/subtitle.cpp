@@ -60,6 +60,7 @@
 #include "../include/aegisub/context.h"
 #include "../main.h"
 #include "../subs_grid.h"
+#include "../subtitle_format.h"
 #include "../video_context.h"
 #include "../utils.h"
 
@@ -262,7 +263,7 @@ struct subtitle_open : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
-		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			wxGetApp().frame->LoadSubtitles(filename);
 		}
@@ -282,7 +283,7 @@ struct subtitle_open_charset : public Command {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 
 		// Get options and load
-		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",AssFile::GetWildcardList(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
 			if (!charset.empty()) {
@@ -329,7 +330,7 @@ static void save_subtitles(agi::Context *c, wxString filename) {
 		c->videoController->Stop();
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxFileName origPath(c->ass->filename);
-		filename = wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", AssFile::GetWildcardList(1), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
+		filename = wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", "Advanced Substation Alpha (*.ass)|*.ass", wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
 		if (filename.empty()) return;
 	}
 
