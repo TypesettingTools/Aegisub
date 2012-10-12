@@ -5,18 +5,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Aegisub 2.1.9\n"
+"Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-22 17:02-0700\n"
-"PO-Revision-Date: 2012-09-14 22:27+0700\n"
-"Last-Translator: Rahmat Bambang <doplank@gmx.com>\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2012-09-27 16:45-0700\n"
+"PO-Revision-Date: 2012-10-13 01:48+0700\n"
+"Last-Translator: doplank <doplank@gmx.com>\n"
+"Language-Team:  <doplank@gmx.com>\n"
 "Language: id_ID\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
-"X-Generator: Poedit 1.5.3\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../src/base_grid.cpp:507 ../src/base_grid.cpp:909
 msgid "#"
@@ -124,7 +124,7 @@ msgstr "dari %d kedepan"
 msgid "sel "
 msgstr "baris "
 
-#: ../src/dialog_shift_times.cpp:103 ../src/command/time.cpp:155
+#: ../src/dialog_shift_times.cpp:103 ../src/command/time.cpp:156
 msgid "Shift Times"
 msgstr "Penggeser Waktu"
 
@@ -220,7 +220,7 @@ msgstr "Geser dengan"
 msgid "Load from history"
 msgstr "Riwayat"
 
-#: ../src/dialog_shift_times.cpp:383
+#: ../src/dialog_shift_times.cpp:384
 msgid "shifting"
 msgstr "penggeseran"
 
@@ -1494,24 +1494,24 @@ msgstr "Tidak perlu mengulang"
 msgid "Redo %s"
 msgstr "Ulangi %s"
 
-#: ../src/command/edit.cpp:408
+#: ../src/command/edit.cpp:407
 msgid "Undoes last action"
 msgstr "Urungkan satu langkah terakhir"
 
-#: ../src/command/edit.cpp:413
+#: ../src/command/edit.cpp:412
 msgid "Nothing to &undo"
 msgstr "Tidak perlu di&urungkan"
 
-#: ../src/command/edit.cpp:414
+#: ../src/command/edit.cpp:413
 #, c-format
 msgid "&Undo %s"
 msgstr "&Urungkan %s"
 
-#: ../src/command/edit.cpp:418
+#: ../src/command/edit.cpp:417
 msgid "Nothing to undo"
 msgstr "Tidak perlu diurungkan"
 
-#: ../src/command/edit.cpp:419
+#: ../src/command/edit.cpp:418
 #, c-format
 msgid "Undo %s"
 msgstr "Urungkan %s"
@@ -1698,7 +1698,7 @@ msgstr "Properti"
 
 #: ../src/command/subtitle.cpp:319
 msgid "Open script properties window"
-msgstr "Buka properti  skrip"
+msgstr "Buka properti skrip"
 
 #: ../src/command/subtitle.cpp:332
 msgid "Save subtitles file"
@@ -1893,8 +1893,8 @@ msgstr "Baris Sela&njutnya"
 
 #: ../src/command/tool.cpp:275 ../src/command/grid.cpp:59
 #: ../src/command/grid.cpp:60 ../src/command/grid.cpp:71
-#: ../src/command/grid.cpp:72 ../src/command/time.cpp:363
-#: ../src/command/time.cpp:364
+#: ../src/command/grid.cpp:72 ../src/command/time.cpp:364
+#: ../src/command/time.cpp:365
 msgid "Next Line"
 msgstr "Baris Selanjutnya"
 
@@ -1907,8 +1907,8 @@ msgid "&Previous Line"
 msgstr "Ba&ris Sebelumnya"
 
 #: ../src/command/tool.cpp:287 ../src/command/grid.cpp:95
-#: ../src/command/grid.cpp:96 ../src/command/time.cpp:375
-#: ../src/command/time.cpp:376
+#: ../src/command/grid.cpp:96 ../src/command/time.cpp:376
+#: ../src/command/time.cpp:377
 msgid "Previous Line"
 msgstr "Baris Sebelumnya"
 
@@ -2359,134 +2359,134 @@ msgstr "Geser seleksi ke Frame saat ini"
 msgid "Shift selection so that the active line starts at current frame"
 msgstr "Geser seleksi sesuai dengan frame pada video"
 
-#: ../src/command/time.cpp:146
+#: ../src/command/time.cpp:147
 msgid "shift to frame"
 msgstr "geser seleksi ke frame"
 
-#: ../src/command/time.cpp:154
+#: ../src/command/time.cpp:155
 msgid "S&hift Times..."
 msgstr "Pen&ggeser Waktu..."
 
-#: ../src/command/time.cpp:156
+#: ../src/command/time.cpp:157
 msgid "Shift subtitles by time or frames"
 msgstr "Geser takarir dengan waktu atau frame"
 
-#: ../src/command/time.cpp:178 ../src/audio_timing_dialogue.cpp:556
+#: ../src/command/time.cpp:179 ../src/audio_timing_dialogue.cpp:556
 #: ../src/audio_timing_dialogue.cpp:562
 msgid "timing"
 msgstr "pengatur waktu"
 
-#: ../src/command/time.cpp:184
+#: ../src/command/time.cpp:185
 msgid "Snap &End to Video"
 msgstr "Jepret sebagai A&khir Video"
 
-#: ../src/command/time.cpp:185
+#: ../src/command/time.cpp:186
 msgid "Snap End to Video"
 msgstr "Tandai sebagai akhir video"
 
-#: ../src/command/time.cpp:186
+#: ../src/command/time.cpp:187
 msgid "Set end of selected subtitles to current video frame"
 msgstr "Tandai sebagai akhir video sesuai dengan waktu video"
 
-#: ../src/command/time.cpp:196
+#: ../src/command/time.cpp:197
 msgid "Snap to S&cene"
 msgstr "Jepret Adegan"
 
-#: ../src/command/time.cpp:197
+#: ../src/command/time.cpp:198
 msgid "Snap to Scene"
 msgstr "Tandai Adegan"
 
-#: ../src/command/time.cpp:198
+#: ../src/command/time.cpp:199
 msgid ""
 "Set start and end of subtitles to the keyframes around current video frame"
 msgstr "Sunting waktu awal dan akhir takarir sesuai dengan jarak keyframe"
 
-#: ../src/command/time.cpp:243
+#: ../src/command/time.cpp:244
 msgid "snap to scene"
 msgstr "jepret ke adegan"
 
-#: ../src/command/time.cpp:249 ../src/command/time.cpp:250
-#: ../src/command/time.cpp:251
+#: ../src/command/time.cpp:250 ../src/command/time.cpp:251
+#: ../src/command/time.cpp:252
 msgid "Add lead in and out"
 msgstr "Tambah transisi awal dan akhir"
 
-#: ../src/command/time.cpp:262 ../src/command/time.cpp:263
-#: ../src/command/time.cpp:264
+#: ../src/command/time.cpp:263 ../src/command/time.cpp:264
+#: ../src/command/time.cpp:265
 msgid "Add lead in"
 msgstr "Tambah transisi awal"
 
-#: ../src/command/time.cpp:273 ../src/command/time.cpp:274
-#: ../src/command/time.cpp:275
+#: ../src/command/time.cpp:274 ../src/command/time.cpp:275
+#: ../src/command/time.cpp:276
 msgid "Add lead out"
 msgstr "Tambah transisi akhir"
 
-#: ../src/command/time.cpp:284 ../src/command/time.cpp:285
+#: ../src/command/time.cpp:285 ../src/command/time.cpp:286
 msgid "Increase length"
 msgstr "Tingkatkan panjang"
 
-#: ../src/command/time.cpp:286
+#: ../src/command/time.cpp:287
 msgid "Increase the length of the current timing unit"
 msgstr "Tingkatkan panjang dari unit timing saat ini"
 
-#: ../src/command/time.cpp:295 ../src/command/time.cpp:296
+#: ../src/command/time.cpp:296 ../src/command/time.cpp:297
 msgid "Increase length and shift"
 msgstr "Tingkatkan panjang dan geser"
 
-#: ../src/command/time.cpp:297
+#: ../src/command/time.cpp:298
 msgid ""
 "Increase the length of the current timing unit and shift the following items"
 msgstr "Tingkatkan panjang dari unit timing saat ini dan geser selanjutnya"
 
-#: ../src/command/time.cpp:306 ../src/command/time.cpp:307
+#: ../src/command/time.cpp:307 ../src/command/time.cpp:308
 msgid "Decrease length"
 msgstr "Kurangi panjang"
 
-#: ../src/command/time.cpp:308
+#: ../src/command/time.cpp:309
 msgid "Decrease the length of the current timing unit"
 msgstr "Kurangi panjang dari unit timing saat ini"
 
-#: ../src/command/time.cpp:317 ../src/command/time.cpp:318
+#: ../src/command/time.cpp:318 ../src/command/time.cpp:319
 msgid "Decrease length and shift"
 msgstr "Kurangi panjang dan geser"
 
-#: ../src/command/time.cpp:319
+#: ../src/command/time.cpp:320
 msgid ""
 "Decrease the length of the current timing unit and shift the following items"
 msgstr "Kurangi panjang dari unit timing saat ini dan geser selanjutnya"
 
-#: ../src/command/time.cpp:328 ../src/command/time.cpp:329
+#: ../src/command/time.cpp:329 ../src/command/time.cpp:330
 msgid "Shift start time forward"
 msgstr "Geser waktu awal kedepan"
 
-#: ../src/command/time.cpp:330
+#: ../src/command/time.cpp:331
 msgid "Shift the start time of the current timing unit forward"
 msgstr "Geser waktu awal dari unit timing kedepan"
 
-#: ../src/command/time.cpp:339 ../src/command/time.cpp:340
+#: ../src/command/time.cpp:340 ../src/command/time.cpp:341
 msgid "Shift start time backward"
 msgstr "Geser awal waktu kebelakang"
 
-#: ../src/command/time.cpp:341
+#: ../src/command/time.cpp:342
 msgid "Shift the start time of the current timing unit backward"
 msgstr "Geser awal waktu dari timing saat ini"
 
-#: ../src/command/time.cpp:351
+#: ../src/command/time.cpp:352
 msgid "Snap &Start to Video"
 msgstr "Jepret sebagai &Awal Video"
 
-#: ../src/command/time.cpp:352
+#: ../src/command/time.cpp:353
 msgid "Snap Start to Video"
 msgstr "Tandai sebagai awal video"
 
-#: ../src/command/time.cpp:353
+#: ../src/command/time.cpp:354
 msgid "Set start of selected subtitles to current video frame"
 msgstr "Tandai sebagai awal video sesuai dengan waktu video"
 
-#: ../src/command/time.cpp:365
+#: ../src/command/time.cpp:366
 msgid "Next line or syllable"
 msgstr "Baris atau suku kata selanjutnya"
 
-#: ../src/command/time.cpp:377
+#: ../src/command/time.cpp:378
 msgid "Previous line or syllable"
 msgstr "Baris atau suku kata sebelumnya"
 
@@ -2625,7 +2625,7 @@ msgstr "Mode Gelombang"
 
 #: ../src/command/audio.cpp:197
 msgid "Display audio as a linear amplitude graph"
-msgstr "Tampilkan audio dengan mode amplitude linear"
+msgstr "Tampilkan audio dengan mode gelombang"
 
 #: ../src/command/audio.cpp:212 ../src/command/audio.cpp:213
 msgid "Create audio clip"
@@ -2657,11 +2657,11 @@ msgstr "Jalankan audio sampai akhir dari seleksi"
 
 #: ../src/command/audio.cpp:260 ../src/command/audio.cpp:261
 msgid "Play audio selection or stop"
-msgstr "Jalankan seleksi audio ata berhenti"
+msgstr "Jalankan seleksi audio atau berhenti"
 
 #: ../src/command/audio.cpp:262
 msgid "Play selection or stop playback if it's already playing"
-msgstr "Jalankan seleksi atau hentikan video yang sudah dijalankan"
+msgstr "Jalankan atau hentikan seleksi jika sudah diputar"
 
 #: ../src/command/audio.cpp:277 ../src/command/audio.cpp:278
 msgid "Stop playing"
@@ -2787,7 +2787,7 @@ msgstr "&Pencari Bug..."
 
 #: ../src/command/help.cpp:62
 msgid "Bug Tracker"
-msgstr "Pencari Bug..."
+msgstr "Pencari Bug"
 
 #: ../src/command/help.cpp:63
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
@@ -2800,7 +2800,7 @@ msgstr "&Konten"
 
 #: ../src/command/help.cpp:84
 msgid "Contents"
-msgstr "Konten..."
+msgstr "Konten"
 
 #: ../src/command/help.cpp:85
 msgid "Help topics"
@@ -2816,7 +2816,7 @@ msgstr "Sumber Berkas"
 
 #: ../src/command/help.cpp:109
 msgid "&Forums"
-msgstr "Forum"
+msgstr "&Forum"
 
 #: ../src/command/help.cpp:110
 msgid "Forums"
@@ -2882,6 +2882,10 @@ msgstr "Buka Keyframe"
 msgid "Opens a keyframe list file"
 msgstr "Buka daftar berkas keyframe"
 
+#: ../src/command/keyframe.cpp:87
+msgid "Open keyframes file"
+msgstr "Buka berkas Keyframe"
+
 #: ../src/command/keyframe.cpp:104
 msgid "Save Keyframes..."
 msgstr "Simpan Keyframe..."
@@ -2893,6 +2897,10 @@ msgstr "Simpan Keyframe"
 #: ../src/command/keyframe.cpp:106
 msgid "Saves the current keyframe list"
 msgstr "Simpan daftar keyframe saat ini"
+
+#: ../src/command/keyframe.cpp:115
+msgid "Save keyframes file"
+msgstr "Simpan berkas Keyframe"
 
 #: ../src/dialog_selected_choices.cpp:48 ../src/dialog_export.cpp:84
 msgid "Select &None"
@@ -2992,7 +3000,7 @@ msgstr "Penyunting:"
 
 #: ../src/dialog_properties.cpp:71
 msgid "Timing:"
-msgstr "Pengatur waktu"
+msgstr "Pengatur Waktu"
 
 #: ../src/dialog_properties.cpp:72
 msgid "Synch point:"
@@ -3139,6 +3147,10 @@ msgstr "Salin font ke arsip zipped"
 msgid "Symlink fonts to folder"
 msgstr "Sinkronisasi font ke folder"
 
+#: ../src/dialog_fonts_collector.cpp:229 ../src/dialog_selection.cpp:176
+msgid "Action"
+msgstr "Aksi"
+
 #: ../src/dialog_fonts_collector.cpp:235
 msgid "Destination"
 msgstr "Tujuan"
@@ -3165,7 +3177,7 @@ msgstr "Salah destinasi."
 #: ../src/dialog_kara_timing_copy.cpp:747
 #: ../src/dialog_kara_timing_copy.cpp:792
 msgid "Error"
-msgstr "Kesalahan"
+msgstr "Galat"
 
 #: ../src/dialog_fonts_collector.cpp:312
 msgid "Could not create destination folder."
@@ -3199,7 +3211,7 @@ msgid ""
 "folder is entered, a default name will be used."
 msgstr "Ketik nama berkas zip font yang akan dibuat."
 
-#: ../src/frame_main.cpp:215
+#: ../src/frame_main.cpp:299
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
@@ -3207,38 +3219,38 @@ msgstr ""
 "Apakah anda ingin Aegisub melakukan pemeriksaan setiap kali dimulai? Anda "
 "bisa melakukannya secara manual melalui menu Bantuan."
 
-#: ../src/frame_main.cpp:215
+#: ../src/frame_main.cpp:299
 msgid "Check for updates?"
 msgstr "Ingin cek pemutakhiran?"
 
-#: ../src/frame_main.cpp:373
+#: ../src/frame_main.cpp:459
 #, c-format
 msgid "Do you want to save changes to %s?"
 msgstr "Apakah kamu ingin menyimpan berkas %s?"
 
-#: ../src/frame_main.cpp:373
+#: ../src/frame_main.cpp:459
 msgid "Unsaved changes"
 msgstr "Perubahan yang belum disimpan"
 
-#: ../src/frame_main.cpp:628
+#: ../src/frame_main.cpp:654
 #, c-format
 msgid "File backup saved as \"%s\"."
 msgstr "Berkas cadangan disimpan di  \"%s\"."
 
-#: ../src/frame_main.cpp:680
+#: ../src/frame_main.cpp:706
 msgid "Do you want to load/unload the associated files?"
 msgstr ""
 "Apakah anda ingin membuka/menutup berkas yang berhubungan dengan berkas ini?"
 
-#: ../src/frame_main.cpp:680
+#: ../src/frame_main.cpp:706
 msgid "(Un)Load files?"
 msgstr "Berkas (Tidak) Terbuka?"
 
-#: ../src/frame_main.cpp:741
+#: ../src/frame_main.cpp:775
 msgid "Untitled"
 msgstr "Tak berjudul"
 
-#: ../src/frame_main.cpp:743
+#: ../src/frame_main.cpp:777
 msgid "untitled"
 msgstr "tak berjudul"
 
@@ -3286,11 +3298,11 @@ msgstr "Salah fps atau panjang durasi"
 #: ../src/preferences.cpp:107 ../src/preferences.cpp:108
 #: ../src/preferences.cpp:480 ../src/preferences.cpp:504
 msgid "General"
-msgstr "Keseluruhan"
+msgstr "Umum"
 
 #: ../src/preferences.cpp:109
 msgid "Check for updates on startup"
-msgstr "Cek pemutakhiran setiap kali mulai"
+msgstr "Selalu cek pemutakhiran"
 
 #: ../src/preferences.cpp:110
 msgid "Show main toolbar"
@@ -3318,7 +3330,7 @@ msgstr "Otomatis buka berkas yang berhubungan"
 
 #: ../src/preferences.cpp:116
 msgid "Undo Levels"
-msgstr "Tingkat \"Batalkan\""
+msgstr "Tingkat \"Urungkan\""
 
 #: ../src/preferences.cpp:118
 msgid "Recently Used Lists"
@@ -3578,7 +3590,7 @@ msgstr "Parameter"
 
 #: ../src/preferences.cpp:242
 msgid "Error Background"
-msgstr "Kesalahan di belakang"
+msgstr "Galat di Background"
 
 #: ../src/preferences.cpp:243
 msgid "Line Break"
@@ -3955,7 +3967,7 @@ msgstr "Tambahkan \"%s\" ke kamus"
 
 #: ../src/subs_edit_ctrl.cpp:794
 msgid "Spell checker language"
-msgstr "Cek bahasa ejaan"
+msgstr "Cek ejaan bahasa"
 
 #: ../src/subs_edit_ctrl.cpp:834
 #, c-format
@@ -3964,11 +3976,11 @@ msgstr "Saran kamus untuk \"%s\""
 
 #: ../src/subs_edit_ctrl.cpp:837
 msgid "No thesaurus suggestions"
-msgstr "Tidak ada saran"
+msgstr "Tidak ada saran Tesaurus"
 
 #: ../src/subs_edit_ctrl.cpp:840
 msgid "Thesaurus language"
-msgstr "Bahasa Kamus"
+msgstr "Bahasa Tesaurus"
 
 #: ../src/subs_edit_ctrl.cpp:849
 msgid "Disable"
@@ -3992,9 +4004,7 @@ msgstr "Tidak ada makro otomatisasi yang dibuka"
 
 #: ../src/dialog_about.cpp:104
 msgid "Translated into LANGUAGE by PERSON\n"
-msgstr ""
-"Diterjemahkan ke Bahasa Indonesia oleh Rahmat Bambang dan Angga Mahardika "
-"Syahrul Putra serta dibantu oleh Himawan Indra\n"
+msgstr "Diterjemahkan ke Bahasa Indonesia oleh Rahmat Bambang\n"
 
 #: ../src/dialog_about.cpp:145
 msgid ""
@@ -4086,7 +4096,7 @@ msgid "&Accept Line"
 msgstr "&Terapkan Baris"
 
 #: ../src/dialog_kara_timing_copy.cpp:672 ../src/dialog_automation.cpp:81
-#: ../src/dialog_attachments.cpp:88 ../src/dialog_version_check.cpp:503
+#: ../src/dialog_attachments.cpp:88 ../src/dialog_version_check.cpp:530
 msgid "&Close"
 msgstr "&Keluar"
 
@@ -4138,7 +4148,7 @@ msgstr "&Waktu"
 msgid "T&ext"
 msgstr "T&eks"
 
-#: ../src/main.cpp:325
+#: ../src/main.cpp:323
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -4157,9 +4167,9 @@ msgstr ""
 "\n"
 "Aegisub akan keluar."
 
-#: ../src/main.cpp:350 ../src/main.cpp:359
+#: ../src/main.cpp:348 ../src/main.cpp:357
 msgid "Program error"
-msgstr "Program error"
+msgstr "Program galat"
 
 #: ../src/subs_edit_box.cpp:162
 msgid "&Comment"
@@ -4416,10 +4426,6 @@ msgstr "Pilih baris s&ebaliknya dari baris yang terpilih"
 #: ../src/dialog_selection.cpp:175
 msgid "Intersect &with selection"
 msgstr "Pilih baris dari semua  &baris yang terpilih"
-
-#: ../src/dialog_selection.cpp:176
-msgid "Action"
-msgstr "Aksi"
 
 #: ../src/dialog_selection.cpp:237
 msgid "Selection was set to no lines"
@@ -4871,7 +4877,7 @@ msgid ""
 "If you want Aegisub to no longer be associated with a file type, you must "
 "tell another program to take over the file type."
 msgstr ""
-"Aegisub tidak dapat mengambil alih tipe berkas yang diinginkan.\n"
+"Aegisub dapat mengambil alih tipe berkas yang diinginkan.\n"
 "\n"
 "Jika Anda ingin Aegisub untuk tidak mendukung tipe berkas yang diinginkan, "
 "Anda harus memberi tahu program lain untuk mengambil alih."
@@ -4906,7 +4912,7 @@ msgstr ""
 
 #: ../src/dialog_associations.cpp:479
 msgid "Always perform this check when Aegisub starts"
-msgstr "Selalu lakukan pemeriksaan ketika Aegisub dimulai."
+msgstr "Selalu lakukan pengecekan ketika Aegisub dimulai."
 
 #: ../src/dialog_associations.cpp:534
 msgid "&Yes"
@@ -5234,12 +5240,12 @@ msgid ""
 "You already have timecodes loaded. Would you like to replace them with "
 "timecodes from the video file?"
 msgstr ""
-"Kamu sudah mempunyai timecode. Apa kamu ingin menggantinya dengan timecode "
+"Kamu sudah membuka timecode. Apa kamu ingin menggantinya dengan timecode "
 "dari berkas video ini?"
 
 #: ../src/video_context.cpp:189
 msgid "Replace timecodes?"
-msgstr "Ganti timecode?"
+msgstr "Timpa timecode?"
 
 #: ../src/video_context.cpp:229
 msgid "change script resolution"
@@ -5450,7 +5456,7 @@ msgstr ""
 msgid "Update script?"
 msgstr "Perbaharui skrip?"
 
-#: ../src/audio_provider.cpp:158
+#: ../src/audio_provider.cpp:204
 msgid "Load audio"
 msgstr "Buka audio"
 
@@ -5548,7 +5554,7 @@ msgstr "Abaikan baris yang terlalu panjang"
 
 #: ../src/dialog_export_ebu3264.cpp:149
 msgid "Translate alignments"
-msgstr "Translate alignments"
+msgstr "Terjemahkan penjajaran"
 
 #: ../src/dialog_export_ebu3264.cpp:154
 msgid "Open subtitles"
@@ -5568,7 +5574,7 @@ msgstr "Maks. panjang baris"
 
 #: ../src/dialog_export_ebu3264.cpp:166
 msgid "Time code offset:"
-msgstr "Time code offset:"
+msgstr "Imbangi time code:"
 
 #: ../src/dialog_export_ebu3264.cpp:169
 msgid "Text formatting"
@@ -5703,11 +5709,11 @@ msgstr "Imbangi penjajaran"
 msgid "x"
 msgstr "x"
 
-#: ../src/dialog_resample.cpp:256
+#: ../src/dialog_resample.cpp:259
 msgid "resolution resampling"
 msgstr "reka ulang resolusi"
 
-#: ../src/dialog_version_check.cpp:189
+#: ../src/dialog_version_check.cpp:193
 #, c-format
 msgid ""
 "There was an error checking for updates to Aegisub:\n"
@@ -5716,49 +5722,49 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
-"Terjadi kesalahan pada saat pemeriksaan versi Aegisub:\n"
+"Terjadi galat pada saat pemeriksaan versi Aegisub:\n"
 "%s\n"
 "\n"
 "Jika Anda dapat mengakses internet, mungkin saat ini server kami sedang mati."
 
-#: ../src/dialog_version_check.cpp:193
+#: ../src/dialog_version_check.cpp:197
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr "Terjadi kesalahan ketika melakukan pemeriksaan versi terbaru Aegisub."
+msgstr "Terjadi galat ketika melakukan pemeriksaan versi terbaru Aegisub."
 
-#: ../src/dialog_version_check.cpp:361 ../src/dialog_version_check.cpp:384
+#: ../src/dialog_version_check.cpp:387 ../src/dialog_version_check.cpp:411
 msgid "Could not connect to updates server."
 msgstr "Tidak dapat terhubung ke server pemutakhiran."
 
-#: ../src/dialog_version_check.cpp:363 ../src/dialog_version_check.cpp:388
+#: ../src/dialog_version_check.cpp:389 ../src/dialog_version_check.cpp:415
 msgid "Could not download from updates server."
 msgstr "Tidak dapat mengunduh pemutakhiran dari server."
 
-#: ../src/dialog_version_check.cpp:391
+#: ../src/dialog_version_check.cpp:418
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr "Permintaan HTTP gagal, dapat respon HTTP %d."
+msgstr "Permintaan HTTP gagal, mendapat respon HTTP %d."
 
-#: ../src/dialog_version_check.cpp:469
+#: ../src/dialog_version_check.cpp:496
 msgid "Version Checker"
 msgstr "Informasi"
 
-#: ../src/dialog_version_check.cpp:496
+#: ../src/dialog_version_check.cpp:523
 msgid "&Auto Check for Updates"
 msgstr "Otom&atis Cek Pemutakhiran"
 
-#: ../src/dialog_version_check.cpp:501
+#: ../src/dialog_version_check.cpp:528
 msgid "Remind me again in a &week"
 msgstr "Ingatkan aku lagi dalam &minggu"
 
-#: ../src/dialog_version_check.cpp:551
+#: ../src/dialog_version_check.cpp:578
 msgid "An update to Aegisub was found."
-msgstr "Ditemukan versi terbaru Aegisub"
+msgstr "Versi terbaru Aegisub tersedia."
 
-#: ../src/dialog_version_check.cpp:555
+#: ../src/dialog_version_check.cpp:582
 msgid "Several possible updates to Aegisub were found."
 msgstr "Ada beberapa pemutakhiran Aegisub yang ditemukan."
 
-#: ../src/dialog_version_check.cpp:559
+#: ../src/dialog_version_check.cpp:586
 msgid "There are no updates to Aegisub."
 msgstr "Tidak ada pemutakhiran untuk Aegisub."
 
@@ -5868,7 +5874,7 @@ msgstr "Kotak Sunting Takarir "
 
 #: ../automation/autoload/select-overlaps.lua:19
 msgid "Select overlaps"
-msgstr "Pilih overlap"
+msgstr "Select overlaps"
 
 #: ../automation/autoload/select-overlaps.lua:20
 msgid "Select lines which begin while another non-comment line is active"
@@ -5980,6 +5986,9 @@ msgstr "Penyunting Takarir"
 #: aegisub.desktop:6
 msgid "Create and edit subtitles for film and videos."
 msgstr "Buat dan sunting takarir untuk film dan video."
+
+#~ msgid "Cinematic (235)"
+#~ msgstr "Cinematic (235)"
 
 #~ msgid "Seek bar"
 #~ msgstr "Garis durasi"
