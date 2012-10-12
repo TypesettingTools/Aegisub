@@ -213,9 +213,8 @@ namespace {
 					block->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
 			}
 
-			for (size_t i = 0; i < 4; ++i)
+			for (size_t i = 0; i < 3; ++i)
 				diag->Margin[i] = int((diag->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
-
 
 			diag->UpdateText();
 			diag->ClearBlocks();
@@ -226,7 +225,7 @@ namespace {
 			style->shadow_w *= state->ry;
 			style->spacing *= state->rx;
 			style->scalex *= state->ar;
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 3; i++)
 				style->Margin[i] = int((style->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
 			style->UpdateData();
 		}
