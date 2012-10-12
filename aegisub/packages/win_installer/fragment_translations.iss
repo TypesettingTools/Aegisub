@@ -37,6 +37,8 @@
 
 [Files]
 ; localization (commented out ones are out of date; some don't have wxstd.mo)
+Source: src\mo\ar.mo;          DestDir: {app}\locale\ar;    DestName: aegisub.mo; Flags: ignoreversion
+Source: src\mo\wxstd-ar.mo;    DestDir: {app}\locale\ar;    DestName: wxstd.mo;   Flags: ignoreversion
 Source: src\mo\ca.mo;          DestDir: {app}\locale\ca;    DestName: aegisub.mo; Flags: ignoreversion
 Source: src\mo\wxstd-ca.mo;    DestDir: {app}\locale\ca;    DestName: wxstd.mo;   Flags: ignoreversion
 Source: src\mo\cs.mo;          DestDir: {app}\locale\cs;    DestName: aegisub.mo; Flags: ignoreversion

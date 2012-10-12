@@ -3,6 +3,7 @@ include ../Makefile.inc
 .SUFFIXES: .po .mo
 
 PO = \
+	ar.po \
 	ca.po \
 	cs.po \
 	da.po \
