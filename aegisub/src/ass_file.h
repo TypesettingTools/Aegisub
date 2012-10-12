@@ -147,8 +147,6 @@ public:
 	wxString GetScriptInfo(wxString key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
 	void SetScriptInfo(wxString const& key, wxString const& value);
-	// Add a ";" comment in the [Script Info] section
-	void AddComment(wxString comment);
 
 	/// Type of changes made in a commit
 	enum CommitType {
