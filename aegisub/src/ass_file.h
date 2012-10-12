@@ -48,13 +48,9 @@
 
 #include <libaegisub/signal.h>
 
-class FrameRate;
 class AssDialogue;
 class AssStyle;
 class AssAttachment;
-class AssDialogueBlock;
-class AssDialogueBlockOverride;
-class AssDialogueBlockPlain;
 class AssEntry;
 
 typedef std::list<AssEntry*>::iterator entryIter;

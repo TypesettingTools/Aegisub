@@ -436,12 +436,15 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 		return;
 	}
 	catch (const char *err) {
-		wxMessageBox(wxString(err), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
 	}
 	catch (wxString const& err) {
 		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
+	}
+	catch (agi::Exception const& err) {
+		wxMessageBox(lagi_wxString(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
 		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
