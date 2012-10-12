@@ -122,8 +122,7 @@ public:
 	/// @brief Load from a file
 	/// @param file File name
 	/// @param charset Character set of file or empty to autodetect
-	/// @param addToRecent Should the file be added to the MRU list?
-	void Load(const wxString &file,wxString charset="",bool addToRecent=true);
+	void Load(const wxString &file, wxString const& charset="");
 
 	/// @brief Save to a file
 	/// @param file Path to save to

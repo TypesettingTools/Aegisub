@@ -598,7 +598,7 @@ void DialogStyleManager::OnCurrentImport() {
 
 	AssFile temp;
 	try {
-		temp.Load(filename, "", false);
+		temp.Load(filename);
 	}
 	catch (const char *err) {
 		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);

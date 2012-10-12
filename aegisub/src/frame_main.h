@@ -146,7 +146,7 @@ public:
 	/// @param enableCancel Should the user be able to cancel the close?
 	int TryToCloseSubs(bool enableCancel=true);
 
-	void LoadSubtitles(wxString filename,wxString charset="");
+	void LoadSubtitles(wxString const& filename, wxString const& charset="");
 
 	DECLARE_EVENT_TABLE()
 };

@@ -408,7 +408,7 @@ void FrameMain::InitContents() {
 	StartupLog("Leaving InitContents");
 }
 
-void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
+void FrameMain::LoadSubtitles(wxString const& filename, wxString const& charset) {
 	if (context->ass->loaded) {
 		if (TryToCloseSubs() == wxCANCEL) return;
 	}
@@ -416,7 +416,7 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 	try {
 		// Make sure that file isn't actually a timecode file
 		try {
-			TextFileReader testSubs(filename,charset);
+			TextFileReader testSubs(filename, charset);
 			wxString cur = testSubs.ReadLineFromFile();
 			if (cur.Left(10) == "# timecode") {
 				context->videoController->LoadTimecodes(filename);
@@ -428,7 +428,27 @@ void FrameMain::LoadSubtitles(wxString filename,wxString charset) {
 			// safe to assume that it is in fact not a timecode file
 		}
 
-		context->ass->Load(filename,charset);
+		context->ass->Load(filename, charset);
+
+		wxFileName file(filename);
+		StandardPaths::SetPathValue("?script", file.GetPath());
+		config::mru->Add("Subtitle", STD_STR(filename));
+		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(file.GetPath()));
+
+		// Save backup of file
+		if (context->ass->CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
+			if (file.FileExists()) {
+				wxString path = lagi_wxString(OPT_GET("Path/Auto/Backup")->GetString());
+				if (path.empty()) path = file.GetPath();
+				wxFileName dstpath(StandardPaths::DecodePath(path + "/"));
+				if (!dstpath.DirExists())
+					wxMkdir(dstpath.GetPath());
+
+				dstpath.SetFullName(file.GetName() + ".ORIGINAL." + file.GetExt());
+
+				wxCopyFile(file.GetFullPath(), dstpath.GetFullPath(), true);
+			}
+		}
 	}
 	catch (agi::FileNotFoundError const&) {
 		wxMessageBox(filename + " not found.", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
