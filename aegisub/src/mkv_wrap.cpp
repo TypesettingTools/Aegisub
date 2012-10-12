@@ -77,7 +77,7 @@ public:
 #define std_ftell ftello
 #endif
 
-static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, bool ssa, double totalTime, AssFile *target) {
+static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, double totalTime, AssParser *parser) {
 	std::map<int, wxString> subList;
 	char *readBuf = 0;
 	size_t readBufSize = 0;
@@ -135,9 +135,8 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 	delete[] readBuf;
 
 	// Insert into file
-	AssParser parser(target, ssa);
 	for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
-		parser.AddLine(it->second);
+		parser->AddLine(it->second);
 	}
 }
 
@@ -197,6 +196,8 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		bool srt = CodecID == "S_TEXT/UTF8";
 		bool ssa = CodecID == "S_TEXT/SSA";
 
+		AssParser parser(target, !ssa);
+
 		// Read private data if it's ASS/SSA
 		if (!srt) {
 			// Read raw data
@@ -204,7 +205,6 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 			wxString privString((const char *)trackInfo->CodecPrivate, wxConvUTF8, trackInfo->CodecPrivateSize);
 
 			// Load into file
-			AssParser parser(target, !ssa);
 			wxStringTokenizer token(privString, "\r\n", wxTOKEN_STRTOK);
 			while (token.HasMoreTokens())
 				parser.AddLine(token.GetNextToken());
@@ -221,7 +221,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		// Progress bar
 		double totalTime = double(segInfo->Duration) / timecodeScale;
 		DialogProgress progress(NULL, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
-		progress.Run(bind(read_subtitles, std::tr1::placeholders::_1, file, &input, srt, ssa, totalTime, target));
+		progress.Run(bind(read_subtitles, std::tr1::placeholders::_1, file, &input, srt, totalTime, &parser));
 	}
 	catch (...) {
 		mkv_Close(file);

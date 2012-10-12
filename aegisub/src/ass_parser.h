@@ -25,6 +25,15 @@ class AssParser {
 	AssFile *target;
 	int version;
 	std::auto_ptr<AssAttachment> attach;
+	void (AssParser::*state)(wxString const&);
+
+	void ParseAttachmentLine(wxString const& data);
+	void ParseEventLine(wxString const& data);
+	void ParseStyleLine(wxString const& data);
+	void ParseScriptInfoLine(wxString const& data);
+	void ParseFontLine(wxString const& data);
+	void ParseGraphicsLine(wxString const& data);
+	void AppendUnknownLine(wxString const& data);
 public:
 	AssParser(AssFile *target, int version);
 	~AssParser();
