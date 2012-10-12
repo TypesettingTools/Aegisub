@@ -55,7 +55,7 @@ namespace Automation4 {
 		struct PendingCommit {
 			wxString mesage;
 			int modification_type;
-			std::list<AssEntry*> lines;
+			std::vector<AssEntry*> lines;
 		};
 
 		/// Pointer to file being modified
@@ -70,6 +70,8 @@ namespace Automation4 {
 		bool can_set_undo;
 		/// throws an error if modification is disallowed
 		void CheckAllowModify();
+		/// throws an error if the line index is out of bounds
+		void CheckBounds(int idx);
 
 		/// How ass file been modified by the script since the last commit
 		int modification_type;
@@ -79,18 +81,11 @@ namespace Automation4 {
 		int references;
 
 		/// Set of subtitle lines being modified; initially a shallow copy of ass->Line
-		std::list<AssEntry*> lines;
+		std::vector<AssEntry*> lines;
 		/// Commits to apply once processing completes successfully
 		std::deque<PendingCommit> pending_commits;
 		/// Lines to delete once processing complete successfully
 		std::deque<AssEntry*> lines_to_delete;
-
-		/// Cursor for last access into file
-		std::list<AssEntry*>::iterator last_entry_ptr;
-		/// Index for last access into file
-		int last_entry_id;
-		/// Move last_entry_ptr to 1-based index n
-		void SeekCursorTo(int n);
 
 		int ObjectIndexRead(lua_State *L);
 		void ObjectIndexWrite(lua_State *L);
