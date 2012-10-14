@@ -52,7 +52,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "dialog_paste_over.h"
 #include "main.h"
 #include "utils.h"
 #include "video_context.h"
@@ -207,106 +206,6 @@ void SubtitlesGrid::CutLines(wxArrayInt target) {
 	BeginBatch();
 	CopyLines(target);
 	DeleteLines(target);
-	EndBatch();
-}
-
-/// @brief Paste lines from clipboard
-/// @param n
-/// @param pasteOver
-void SubtitlesGrid::PasteLines(int n,bool pasteOver) {
-	BeginBatch();
-
-	// Prepare text
-	wxString data;
-
-	// Read from clipboard
-	if (wxTheClipboard->Open()) {
-		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
-			wxTextDataObject rawdata;
-			wxTheClipboard->GetData(rawdata);
-			data = rawdata.GetText();
-		}
-		wxTheClipboard->Close();
-	}
-
-	// Check if it actually got anything
-	if (!data.empty()) {
-		// Insert data
-		int inserted = 0;
-		std::vector<bool> pasteOverOptions;
-		wxStringTokenizer token (data,"\r\n",wxTOKEN_STRTOK);
-		while (token.HasMoreTokens()) {
-			// Convert data into an AssDialogue
-			wxString curdata = token.GetNextToken();
-			curdata.Trim(true);
-			curdata.Trim(false);
-			AssDialogue *curdiag;
-			try {
-				// Try to interpret the line as an ASS line
-				curdiag = new AssDialogue(curdata);
-			}
-			catch (...) {
-				// Line didn't parse correctly, assume it's plain text that
-				// should be pasted in the Text field only
-				curdiag = new AssDialogue();
-				curdiag->Text = curdata;
-				// Make sure pasted plain-text lines always are blank-timed
-				curdiag->Start = 0;
-				curdiag->End = 0;
-			}
-
-			// Paste over
-			if (pasteOver) {
-				if (n+inserted < GetRows()) {
-					// Get list of options to paste over, if not asked yet
-					if (pasteOverOptions.empty()) {
-						DialogPasteOver diag(context->parent);
-						if (diag.ShowModal()) {
-							delete curdiag;
-							EndBatch();
-							return;
-						}
-						pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
-					}
-
-					// Paste over
-					AssDialogue *target = GetDialogue(n+inserted);
-					if (pasteOverOptions[0]) target->Layer = curdiag->Layer;
-					if (pasteOverOptions[1]) target->Start = curdiag->Start;
-					if (pasteOverOptions[2]) target->End = curdiag->End;
-					if (pasteOverOptions[3]) target->Style = curdiag->Style;
-					if (pasteOverOptions[4]) target->Actor = curdiag->Actor;
-					if (pasteOverOptions[5]) target->Margin[0] = curdiag->Margin[0];
-					if (pasteOverOptions[6]) target->Margin[1] = curdiag->Margin[1];
-					if (pasteOverOptions[7]) target->Margin[2] = curdiag->Margin[2];
-					if (pasteOverOptions[8]) target->Effect = curdiag->Effect;
-					if (pasteOverOptions[9]) target->Text = curdiag->Text;
-				}
-				delete curdiag;
-			}
-
-			// Paste normally
-			else InsertLine(curdiag,n+inserted,false,false);
-
-			// Increment insertion
-			inserted++;
-		}
-
-		// Update data post-insertion
-		if (inserted > 0) {
-			context->ass->Commit(_("paste"), pasteOver ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_ADDREM);
-
-			// Set selection
-			if (!pasteOver) {
-				Selection newsel;
-				for (int i=n;i<n+inserted;i++) {
-					newsel.insert(GetDialogue(i));
-				}
-				SetSelectedSet(newsel);
-				SetActiveLine(GetDialogue(GetFirstSelRow()));
-			}
-		}
-	}
 	EndBatch();
 }
 
