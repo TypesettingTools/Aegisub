@@ -154,7 +154,6 @@ public:
 	void SetByFrame(bool state);
 
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
-	int GetFirstSelRow() const;
 	wxArrayInt GetSelection() const;
 
 	void ClearMaps();

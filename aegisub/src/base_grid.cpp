@@ -424,20 +424,6 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	RefreshRect(wxRect(0, (row + 1 - yPos) * lineHeight, w, lineHeight), false);
 }
 
-int BaseGrid::GetFirstSelRow() const {
-	if (selection.empty()) return -1;
-
-	Selection::const_iterator it = selection.begin();
-
-	int index = GetDialogueIndex(*it);
-	for (; it != selection.end(); ++it) {
-		int other_index = GetDialogueIndex(*it);
-		if (other_index < index) index = other_index;
-	}
-
-	return index;
-}
-
 wxArrayInt BaseGrid::GetSelection() const {
 	wxArrayInt res;
 	res.reserve(selection.size());
