@@ -49,7 +49,9 @@
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../ass_karaoke.h"
+#include "../dialog_paste_over.h"
 #include "../dialog_search_replace.h"
+#include "../main.h"
 #include "../include/aegisub/context.h"
 #include "../subs_edit_ctrl.h"
 #include "../subs_grid.h"
@@ -73,6 +75,94 @@ struct validate_sel_multiple : public Command {
 		return c->selectionController->GetSelectedSet().size() > 1;
 	}
 };
+
+void paste_lines(agi::Context *c, bool paste_over) {
+	wxString data;
+	if (wxTheClipboard->Open()) {
+		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+			wxTextDataObject rawdata;
+			wxTheClipboard->GetData(rawdata);
+			data = rawdata.GetText();
+		}
+		wxTheClipboard->Close();
+	}
+	if (!data) return;
+
+	AssDialogue *rel_line = c->selectionController->GetActiveLine();
+	entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), rel_line);
+
+	AssDialogue *first = 0;
+	std::set<AssDialogue *> newsel;
+
+	std::vector<bool> pasteOverOptions;
+	wxStringTokenizer token (data,"\r\n",wxTOKEN_STRTOK);
+	while (token.HasMoreTokens()) {
+		// Convert data into an AssDialogue
+		wxString curdata = token.GetNextToken();
+		curdata.Trim(true);
+		curdata.Trim(false);
+		AssDialogue *curdiag;
+		try {
+			// Try to interpret the line as an ASS line
+			curdiag = new AssDialogue(curdata);
+		}
+		catch (...) {
+			// Line didn't parse correctly, assume it's plain text that
+			// should be pasted in the Text field only
+			curdiag = new AssDialogue();
+			curdiag->Text = curdata;
+			// Make sure pasted plain-text lines always are blank-timed
+			curdiag->Start = 0;
+			curdiag->End = 0;
+		}
+
+		if (!first)
+			first = curdiag;
+
+		if (!paste_over) {
+			newsel.insert(curdiag);
+			c->ass->Line.insert(pos, curdiag);
+		}
+		else {
+			// Get list of options to paste over, if not asked yet
+			if (pasteOverOptions.empty()) {
+				DialogPasteOver diag(c->parent);
+				if (diag.ShowModal()) {
+					delete curdiag;
+					return;
+				}
+				pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
+			}
+
+			AssDialogue *line = static_cast<AssDialogue *>(*pos);
+			if (pasteOverOptions[0]) line->Layer = curdiag->Layer;
+			if (pasteOverOptions[1]) line->Start = curdiag->Start;
+			if (pasteOverOptions[2]) line->End = curdiag->End;
+			if (pasteOverOptions[3]) line->Style = curdiag->Style;
+			if (pasteOverOptions[4]) line->Actor = curdiag->Actor;
+			if (pasteOverOptions[5]) line->Margin[0] = curdiag->Margin[0];
+			if (pasteOverOptions[6]) line->Margin[1] = curdiag->Margin[1];
+			if (pasteOverOptions[7]) line->Margin[2] = curdiag->Margin[2];
+			if (pasteOverOptions[8]) line->Effect = curdiag->Effect;
+			if (pasteOverOptions[9]) line->Text = curdiag->Text;
+
+			delete curdiag;
+
+			do {
+				++pos;
+			} while (pos != c->ass->Line.end() && !dynamic_cast<AssDialogue*>(*pos));
+			if (pos == c->ass->Line.end())
+				break;
+		}
+	}
+
+	if (first) {
+		c->ass->Commit(_("paste"), paste_over ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_ADDREM);
+
+		if (!paste_over)
+			c->selectionController->SetSelectionAndActive(newsel, first);
+	}
+}
 
 /// Find and replace words in subtitles.
 struct edit_find_replace : public Command {
@@ -322,7 +412,7 @@ struct edit_line_paste : public Command {
 		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
 			ctrl->Paste();
 		else
-			c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow());
+			paste_lines(c, false);
 	}
 };
 
@@ -345,7 +435,7 @@ struct edit_line_paste_over : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->PasteLines(c->subsGrid->GetFirstSelRow(),true);
+		paste_lines(c, true);
 	}
 };
 

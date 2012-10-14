@@ -70,7 +70,6 @@ public:
 	/// @brief Cut to clipboard
 	/// @param target Lines to cut
 	void CutLines(wxArrayInt lines);
-	void PasteLines(int pos,bool over=false);
 
 	void RecombineLines();
 
