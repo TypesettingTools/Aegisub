@@ -124,21 +124,21 @@ struct subtitle_find_next : public Command {
 };
 
 static void insert_subtitle_at_video(agi::Context *c, bool after) {
-	int n = c->subsGrid->GetFirstSelRow();
-
-	// Create line to add
 	AssDialogue *def = new AssDialogue;
 	int video_ms = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START);
 	def->Start = video_ms;
 	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
-	def->Style = c->subsGrid->GetDialogue(n)->Style;
+	def->Style = c->selectionController->GetActiveLine()->Style;
 
-	// Insert it
-	c->subsGrid->BeginBatch();
-	c->subsGrid->InsertLine(def, n, after);
-	c->subsGrid->SelectRow(n + (int)after);
-	c->subsGrid->SetActiveLine(def);
-	c->subsGrid->EndBatch();
+	entryIter pos = find(c->ass->Line.begin(), c->ass->Line.end(), c->selectionController->GetActiveLine());
+	if (after) ++pos;
+
+	c->ass->Line.insert(pos, def);
+	c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+
+	SubtitleSelection sel;
+	sel.insert(def);
+	c->selectionController->SetSelectionAndActive(sel, def);
 }
 
 /// Inserts a line after current.
