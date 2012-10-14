@@ -1031,7 +1031,7 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 
 		SetSelectedSet(newsel);
 
-		MakeCellVisible(extendRow, 0, false);
+		MakeCellVisible(next, 0, false);
 		return;
 	}
 }
