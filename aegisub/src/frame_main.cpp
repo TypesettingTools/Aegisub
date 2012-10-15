@@ -377,7 +377,7 @@ void FrameMain::InitContents() {
 	wxPanel *Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create subtitles grid");
-	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel,context.get(),wxSize(600,100),wxWANTS_CHARS | wxSUNKEN_BORDER,"Subs grid");
+	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel, context.get());
 	context->selectionController = context->subsGrid;
 	Search.context = context.get();
 

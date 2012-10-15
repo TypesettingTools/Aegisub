@@ -56,8 +56,8 @@
 #include "utils.h"
 #include "video_context.h"
 
-SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context,  const wxSize& size, long style, const wxString& name)
-: BaseGrid(parent,context,size,style,name)
+SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context)
+: BaseGrid(parent, context, wxDefaultSize, wxWANTS_CHARS | wxSUNKEN_BORDER)
 {
 }
 
@@ -159,86 +159,6 @@ void SubtitlesGrid::RecombineLines() {
 	SetSelectionAndActive(newSel, activeLine);
 
 	context->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
-}
-
-/// @brief Insert a line
-/// @param line
-/// @param n
-/// @param after
-/// @param update
-void SubtitlesGrid::InsertLine(AssDialogue *line,int n,bool after,bool update) {
-	AssDialogue *rel_line = GetDialogue(n);
-	entryIter pos = std::find(context->ass->Line.begin(), context->ass->Line.end(), rel_line);
-	if (after) ++pos;
-
-	context->ass->Line.insert(pos,line);
-
-	// Update
-	if (update) {
-		context->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
-	}
-	else {
-		UpdateMaps();
-	}
-}
-
-void SubtitlesGrid::CopyLines(wxArrayInt target) {
-	// Prepare text
-	wxString data;
-	AssDialogue *cur;
-	int nrows = target.Count();
-	bool first = true;
-	for (int i=0;i<nrows;i++) {
-		if (!first) data += "\r\n";
-		first = false;
-		cur = GetDialogue(target[i]);
-		data += cur->GetEntryData();
-	}
-
-	// Send to clipboard
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxTextDataObject(data));
-		wxTheClipboard->Close();
-	}
-}
-
-void SubtitlesGrid::CutLines(wxArrayInt target) {
-	BeginBatch();
-	CopyLines(target);
-	DeleteLines(target);
-	EndBatch();
-}
-
-void SubtitlesGrid::DeleteLines(wxArrayInt target, bool flagModified) {
-	entryIter before_first = std::find_if(context->ass->Line.begin(), context->ass->Line.end(), cast<AssDialogue*>()); --before_first;
-
-	int row = -1;
-	size_t deleted = 0;
-	for (entryIter cur = context->ass->Line.begin(); cur != context->ass->Line.end();) {
-		if (dynamic_cast<AssDialogue*>(*cur) && ++row == target[deleted]) {
-			delete *cur;
-			cur = context->ass->Line.erase(cur);
-			++deleted;
-			if (deleted == target.size()) break;
-		}
-		else {
-			++cur;
-		}
-	}
-
-	// Add default line if file was wiped
-	if ((size_t)GetRows() == deleted) {
-		AssDialogue *def = new AssDialogue;
-		++before_first;
-		context->ass->Line.insert(before_first, def);
-	}
-
-	if (flagModified) {
-		context->ass->Commit(_("delete"), AssFile::COMMIT_DIAG_ADDREM);
-	}
-	else {
-		UpdateMaps();
-	}
 }
 
 void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {

@@ -484,6 +484,71 @@ struct edit_find_replace : public Command {
 	}
 };
 
+static void copy_lines(agi::Context *c) {
+	wxString data;
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (diag && sel.count(diag)) {
+			if (!data.empty())
+				data += "\r\n";
+			data += diag->GetEntryData();
+		}
+	}
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(data));
+		wxTheClipboard->Close();
+	}
+}
+
+static void delete_lines(agi::Context *c, wxString const& commit_message) {
+	AssDialogue *active = c->selectionController->GetActiveLine();
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+
+	// Find a line near the active line not being deleted to make the new active line
+	AssDialogue *new_active = 0;
+	bool hit_active = false;
+
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(*it);
+		if (!diag) continue;
+
+		if (diag == active) {
+			hit_active = true;
+			if (new_active) break;
+		}
+
+		if (!sel.count(diag)) {
+			new_active = diag;
+			if (hit_active) break;
+		}
+	}
+
+	// Delete selected lines
+	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ) {
+		if (sel.count(static_cast<AssDialogue*>(*it))) {
+			delete *it;
+			c->ass->Line.erase(it++);
+		}
+		else
+			++it;
+	}
+
+	// If we didn't get a new active line then we just deleted all the dialogue
+	// lines, so make a new one
+	if (!new_active) {
+		new_active = new AssDialogue;
+		c->ass->InsertDialogue(new_active);
+	}
+
+	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);
+
+	sel.clear();
+	sel.insert(new_active);
+	c->selectionController->SetSelectionAndActive(sel, new_active);
+}
+
 /// Copy subtitles.
 struct edit_line_copy : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
@@ -501,11 +566,11 @@ struct edit_line_copy : public validate_sel_nonempty {
 
 		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
 			ctrl->Copy();
-		else
-			c->subsGrid->CopyLines(c->subsGrid->GetSelection());
+		else {
+			copy_lines(c);
+		}
 	}
 };
-
 
 /// Cut subtitles.
 struct edit_line_cut: public validate_sel_nonempty {
@@ -517,11 +582,12 @@ struct edit_line_cut: public validate_sel_nonempty {
 	void operator()(agi::Context *c) {
 		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
 			ctrl->Cut();
-		else
-			c->subsGrid->CutLines(c->subsGrid->GetSelection());
+		else {
+			copy_lines(c);
+			delete_lines(c, _("cut lines"));
+		}
 	}
 };
-
 
 /// Delete currently selected lines.
 struct edit_line_delete : public validate_sel_nonempty {
@@ -531,7 +597,7 @@ struct edit_line_delete : public validate_sel_nonempty {
 	STR_HELP("Delete currently selected lines")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->DeleteLines(c->subsGrid->GetSelection());
+		delete_lines(c, _("delete lines"));
 	}
 };
 

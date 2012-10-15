@@ -50,26 +50,13 @@
 /// DOCME
 class SubtitlesGrid: public BaseGrid {
 public:
-	SubtitlesGrid(wxWindow *parent, agi::Context *context, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
+	SubtitlesGrid(wxWindow *parent, agi::Context *context);
 
 	/// @brief Adjoins selected lines, setting each line's start time to the previous line's end time
 	/// @param n1       First line to adjoin
 	/// @param n2       Last line to adjoin
 	/// @param setStart Set the start times (rather than end times)
 	void AdjoinLines(int first,int last,bool setStart);
-
-	void InsertLine(AssDialogue *line,int position,bool insertAfter,bool update=true);
-	/// @brief Delete selected lines
-	/// @param target       Lines to delete
-	/// @param flagModified Commit the file afterwards
-	void DeleteLines(wxArrayInt lines, bool flagModified=true);
-
-	/// @brief Copy to clipboard
-	/// @param target Lines to copy
-	void CopyLines(wxArrayInt lines);
-	/// @brief Cut to clipboard
-	/// @param target Lines to cut
-	void CutLines(wxArrayInt lines);
 
 	void RecombineLines();
 
