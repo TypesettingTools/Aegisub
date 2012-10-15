@@ -183,7 +183,7 @@ class SecondsMarkerProvider : public AudioMarkerProvider {
 		Pen *style;
 		int position;
 
-		Marker(Pen *style) : style(style) { }
+		Marker(Pen *style) : style(style), position(0) { }
 		int GetPosition() const { return position; }
 		FeetStyle GetFeet() const { return Feet_None; }
 		bool CanSnap() const { return false; }

@@ -60,8 +60,11 @@
 #include "utils.h"
 
 PCMAudioProvider::PCMAudioProvider(const wxString &filename)
+: current_mapping(0)
+, mapping_start(0)
+, mapping_length(0)
 #ifdef _WIN32
-: file_handle(0, CloseHandle)
+, file_handle(0, CloseHandle)
 , file_mapping(0, CloseHandle)
 {
 	file_handle = CreateFile(
@@ -91,11 +94,8 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 
 	if (file_mapping == 0)
 		throw agi::AudioProviderOpenError("Failed creating file mapping", 0);
-
-	current_mapping = 0;
-
 #else
-: file_handle(open(filename.mb_str(*wxConvFileName), O_RDONLY), close)
+, file_handle(open(filename.mb_str(*wxConvFileName), O_RDONLY), close)
 {
 	if (file_handle == -1)
 		throw agi::FileNotFoundError(STD_STR(filename));
@@ -107,8 +107,6 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		throw agi::AudioProviderOpenError("Could not stat file to get size", 0);
 	}
 	file_size = filestats.st_size;
-
-	current_mapping = 0;
 #endif
 	float_samples = false;
 }

@@ -187,7 +187,9 @@ ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *p
 , provider(get_subs_provider(parent))
 , videoProvider(VideoProviderFactory::GetProvider(videoFileName))
 , parent(parent)
+, nextFrame(-1)
 , nextTime(-1.)
+, singleFrame(-1)
 , jobReady(jobMutex)
 , run(true)
 {

@@ -56,19 +56,19 @@
 ///
 /// DOCME
 class PCMAudioProvider : public AudioProvider {
-#ifdef _WIN32
-	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_handle;
-	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_mapping;
-
 	mutable void *current_mapping;
 
+#ifdef _WIN32
 	mutable int64_t mapping_start;
 	mutable size_t mapping_length;
+
+	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_handle;
+	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_mapping;
 #else
-	agi::scoped_holder<int, int(*)(int)> file_handle;
-	mutable void *current_mapping;
 	mutable off_t mapping_start;
 	mutable size_t mapping_length;
+
+	agi::scoped_holder<int, int(*)(int)> file_handle;
 #endif
 
 protected:

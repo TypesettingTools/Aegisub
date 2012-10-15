@@ -75,20 +75,16 @@ static void expand_times(AssDialogue *src, AssDialogue *dst) {
 
 /// @brief Recombine
 void SubtitlesGrid::RecombineLines() {
-	using namespace std;
-
 	Selection selectedSet = GetSelectedSet();
 	if (selectedSet.size() < 2) return;
 
 	AssDialogue *activeLine = GetActiveLine();
 
-	vector<AssDialogue*> sel;
-	sel.reserve(selectedSet.size());
-	copy(selectedSet.begin(), selectedSet.end(), back_inserter(sel));
+	std::vector<AssDialogue*> sel(selectedSet.begin(), selectedSet.end());
 	for_each(sel.begin(), sel.end(), trim_text);
 	sort(sel.begin(), sel.end(), &AssFile::CompStart);
 
-	typedef vector<AssDialogue*>::iterator diag_iter;
+	typedef std::vector<AssDialogue*>::iterator diag_iter;
 	diag_iter end = sel.end() - 1;
 	for (diag_iter cur = sel.begin(); cur != end; ++cur) {
 		AssDialogue *d1 = *cur;
@@ -97,21 +93,21 @@ void SubtitlesGrid::RecombineLines() {
 		// 1, 1+2 (or 2+1), 2 gets turned into 1, 2, 2 so kill the duplicate
 		if (d1->Text == (*d2)->Text) {
 			expand_times(d1, *d2);
-			delete d1;
 			context->ass->Line.remove(d1);
+			delete d1;
 			continue;
 		}
 
 		// 1, 1+2, 1 turns into 1, 2, [empty]
 		if (d1->Text.empty()) {
-			delete d1;
 			context->ass->Line.remove(d1);
+			delete d1;
 			continue;
 		}
 		// If d2 is the last line in the selection it'll never hit the above test
 		if (d2 == end && (*d2)->Text.empty()) {
-			delete *d2;
 			context->ass->Line.remove(*d2);
+			delete *d2;
 			continue;
 		}
 

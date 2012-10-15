@@ -134,7 +134,7 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 	void CheckFileFormat();
 	void ParseFileHeader(const std::vector<wxString>& tags);
 	Y4M_FrameFlags ParseFrameHeader(const std::vector<wxString>& tags);
-	std::vector<wxString> ReadHeader(int64_t startpos, bool reset_pos=false);
+	std::vector<wxString> ReadHeader(int64_t startpos);
 	int IndexFile();
 
 public:

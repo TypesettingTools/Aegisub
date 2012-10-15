@@ -169,14 +169,17 @@ void VisualToolDrag::OnSelectedSetChanged(const SubtitleSelection &added, const 
 	c->selectionController->GetSelectedSet(selection);
 
 	bool any_changed = false;
-	for (feature_iterator it = features.begin(); it != features.end(); ++it) {
+	for (feature_iterator it = features.begin(); it != features.end(); ) {
 		if (removed.count(it->line)) {
-			sel_features.erase(it);
+			sel_features.erase(it++);
 			any_changed = true;
 		}
-		else if (added.count(it->line) && it->type == DRAG_START && line_not_present(sel_features, it)) {
-			sel_features.insert(it);
-			any_changed = true;
+		else {
+			if (added.count(it->line) && it->type == DRAG_START && line_not_present(sel_features, it)) {
+				sel_features.insert(it);
+				any_changed = true;
+			}
+			++it;
 		}
 	}
 

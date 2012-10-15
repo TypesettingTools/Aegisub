@@ -343,7 +343,10 @@ class HotkeyRenderer : public wxDataViewCustomRenderer {
 	wxTextCtrl *ctrl;
 
 public:
-	HotkeyRenderer() : wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_EDITABLE) { }
+	HotkeyRenderer()
+	: wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_EDITABLE)
+	, ctrl(0)
+	{ }
 
 	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& var) {
 		ctrl = new wxTextCtrl(parent, -1, var.GetString(), label_rect.GetPosition(), label_rect.GetSize(), wxTE_PROCESS_ENTER);

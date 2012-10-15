@@ -218,9 +218,23 @@ void DialogSearchReplace::UpdateDropDowns() {
 	}
 }
 
-/// @brief Constructor  SearchReplaceEngine ///////////////////////
-SearchReplaceEngine::SearchReplaceEngine () {
-	CanContinue = false;
+SearchReplaceEngine::SearchReplaceEngine()
+: curLine(0)
+, pos(0)
+, matchLen(0)
+, replaceLen(0)
+, Modified(0)
+, LastWasFind(true)
+, hasReplace(false)
+, isReg(false)
+, matchCase(false)
+, updateVideo(false)
+, CanContinue(false)
+, hasFocus(false)
+, field(0)
+, affect(0)
+, context(0)
+{
 }
 
 void SearchReplaceEngine::FindNext() {
@@ -228,7 +242,6 @@ void SearchReplaceEngine::FindNext() {
 }
 
 
-/// @brief Find & Replace next instance
 void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	if (!CanContinue) {
 		OpenDialog(DoReplace);

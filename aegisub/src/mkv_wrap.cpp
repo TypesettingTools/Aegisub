@@ -334,7 +334,9 @@ longlong StdIoGetFileSize(InputStream *_st) {
 	return epos;
 }
 
-MkvStdIO::MkvStdIO(wxString filename) {
+MkvStdIO::MkvStdIO(wxString filename)
+: error(0)
+{
 	read = StdIoRead;
 	scan = StdIoScan;
 	getcachesize = StdIoGetCacheSize;

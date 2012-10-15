@@ -377,6 +377,11 @@ void OpenGLTextGlyph::Draw(float x, float y) const {
 /// @brief DOCME
 OpenGLTextGlyph::OpenGLTextGlyph(int value, wxFont const& font)
 : str(wxChar(value))
+, tex(0)
+, x1(0)
+, x2(0)
+, y1(0)
+, y2(0)
 , font(font)
 {
 	wxCoord desc,lead;

@@ -81,7 +81,7 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 
 		CheckFileFormat();
 
-		ParseFileHeader(ReadHeader(0, false));
+		ParseFileHeader(ReadHeader(0));
 
 		if (w <= 0 || h <= 0)
 			throw VideoOpenError("Invalid resolution");
@@ -145,8 +145,7 @@ void YUV4MPEGVideoProvider::CheckFileFormat() {
 /// @param startpos		The byte offset at where to start reading
 /// @param reset_pos	If true, the function will reset the file position to what it was before the function call before returning
 /// @return				A list of parameters
-std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool reset_pos) {
-	int64_t oldpos = ftello(sf);
+std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos) {
 	std::vector<wxString> tags;
 	wxString curtag;
 	int bytesread = 0;
@@ -159,12 +158,8 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 	while ((buf = fgetc(sf)) != 0x0A) {
 		if (ferror(sf))
 			throw VideoOpenError("ReadHeader: Failed to read from file");
-		if (feof(sf)) {
-			// you know, this is one of the places where it would be really nice
-			// to be able to throw an exception object that tells the caller that EOF was reached
-			LOG_D("provider/video/yuv4mpeg") << "ReadHeader: Reached EOF, returning";
-			break;
-		}
+		if (feof(sf))
+			throw VideoOpenError("ReadHeader: Reached eof while reading header");
 
 		// some basic low-effort sanity checking
 		if (buf == 0x00)
@@ -186,9 +181,6 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos, bool r
 		tags.push_back(curtag);
 		curtag.Clear();
 	}
-
-	if (reset_pos)
-		fseeko(sf, oldpos, SEEK_SET);
 
 	return tags;
 }
@@ -313,9 +305,14 @@ int YUV4MPEGVideoProvider::IndexFile() {
 	// the file header for us and set the seek position correctly
 	while (true) {
 		int64_t curpos = ftello(sf); // update position
+		if (curpos < 0)
+			throw VideoOpenError("IndexFile: ftello failed");
+
 		// continue reading headers until no more are found
-		std::vector<wxString> tags = ReadHeader(curpos, false);
+		std::vector<wxString> tags = ReadHeader(curpos);
 		curpos = ftello(sf);
+		if (curpos < 0)
+			throw VideoOpenError("IndexFile: ftello failed");
 
 		if (tags.empty())
 			break; // no more headers

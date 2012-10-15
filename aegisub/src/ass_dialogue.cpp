@@ -290,7 +290,7 @@ void AssDialogue::StripTag (wxString tagName) {
 			continue;
 		}
 
-		AssDialogueBlockOverride *over = dynamic_cast<AssDialogueBlockOverride*>(*cur);
+		AssDialogueBlockOverride *over = static_cast<AssDialogueBlockOverride*>(*cur);
 		wxString temp;
 		for (size_t i = 0; i < over->Tags.size(); ++i) {
 			if (over->Tags[i]->Name != tagName)

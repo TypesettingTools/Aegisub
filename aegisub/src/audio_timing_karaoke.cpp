@@ -62,7 +62,13 @@ public:
 	{
 	}
 
-	KaraokeMarker(int position) : position(position) { }
+	KaraokeMarker(int position)
+	: position(position)
+	, pen(0)
+	, style(Feet_None)
+	{
+	}
+
 	operator int() const { return position; }
 };
 

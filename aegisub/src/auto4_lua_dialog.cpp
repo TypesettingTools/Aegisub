@@ -177,6 +177,7 @@ namespace Automation4 {
 			Edit(lua_State *L)
 			: LuaDialogControl(L)
 			, text(get_field(L, "value"))
+			, cw(0)
 			{
 				// Undocumented behaviour, 'value' is also accepted as key for text,
 				// mostly so a text control can stand in for other things.
@@ -290,6 +291,7 @@ namespace Automation4 {
 
 			IntEdit(lua_State *L)
 			: Edit(L)
+			, cw(0)
 			, value(get_field(L, "value", 0))
 			, min(get_field(L, "min", INT_MIN))
 			, max(get_field(L, "max", INT_MAX))
@@ -415,6 +417,7 @@ namespace Automation4 {
 			Dropdown(lua_State *L)
 			: LuaDialogControl(L)
 			, value(get_field(L, "value"))
+			, cw(0)
 			{
 				lua_getfield(L, -1, "items");
 				read_string_array(L, items);
@@ -455,6 +458,7 @@ namespace Automation4 {
 			: LuaDialogControl(L)
 			, label(get_field(L, "label"))
 			, value(get_field(L, "value", false))
+			, cw(0)
 			{
 			}
 
@@ -491,6 +495,7 @@ namespace Automation4 {
 	LuaDialog::LuaDialog(lua_State *L, bool include_buttons)
 	: use_buttons(include_buttons)
 	, button_pushed(0)
+	, window(0)
 	{
 		LOG_D("automation/lua/dialog") << "creating LuaDialoug, addr: " << this;
 

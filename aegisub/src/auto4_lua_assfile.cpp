@@ -716,7 +716,7 @@ namespace Automation4 {
 	, last_entry_id(1)
 	{
 		// prepare userdata object
-		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile**))) = this;
+		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile*))) = this;
 
 		// make the metatable
 		lua_newtable(L);

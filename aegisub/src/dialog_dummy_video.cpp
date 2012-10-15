@@ -70,14 +70,8 @@ enum {
 
 /// DOCME
 struct ResolutionShortcut {
-
-	/// DOCME
 	const char *name;
-
-	/// DOCME
 	int width;
-
-	/// DOCME
 	int height;
 };
 
@@ -95,13 +89,6 @@ static ResolutionShortcut resolutions[] = {
 	{0, 0, 0}
 };
 
-
-
-/// @brief DOCME
-/// @param parent
-/// @param out_filename
-/// @return
-///
 bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename)
 {
 	DialogDummyVideo dlg(parent);
@@ -156,9 +143,6 @@ bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename
 	}
 }
 
-/// @brief DOCME
-/// @param parent
-///
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 : wxDialog(parent, -1, _("Dummy video options"),wxDefaultPosition,wxDefaultSize)
 {
@@ -204,9 +188,6 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 
 	main_sizer->Add(new wxStaticLine(this,wxHORIZONTAL),0,wxALL|wxEXPAND,5);
 	main_sizer->Add(btnSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,5);
-//	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
-//	ok_button = static_cast<wxButton*>(FindWindow(wxID_OK));
-//	cancel_button = static_cast<wxButton*>(FindWindow(wxID_CANCEL));
 
 	// Initialise controls
 	int lastwidth, lastheight, lastres = 0;
@@ -219,11 +200,6 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 		lastres++;
 	}
 	pattern->SetValue(OPT_GET("Video/Dummy/Pattern")->GetBool());
-	/*fps->Append("23.976");
-	fps->Append("29.97");
-	fps->Append("24");
-	fps->Append("25");
-	fps->Append("30");*/
 	width->ChangeValue(AegiIntegerToString(OPT_GET("Video/Dummy/Last/Width")->GetInt()));
 	height->ChangeValue(AegiIntegerToString(OPT_GET("Video/Dummy/Last/Height")->GetInt()));
 	length->SetRange(0, 0x10000000);
@@ -235,10 +211,6 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	CenterOnParent();
 }
 
-
-
-/// @brief DOCME
-///
 DialogDummyVideo::~DialogDummyVideo()
 {
 }
@@ -251,11 +223,6 @@ BEGIN_EVENT_TABLE(DialogDummyVideo,wxDialog)
 	EVT_TEXT(Dummy_Video_Length, DialogDummyVideo::OnLengthChange)
 END_EVENT_TABLE()
 
-
-
-/// @brief DOCME
-/// @param evt
-///
 void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &)
 {
 	int rs = resolution_shortcuts->GetSelection();
@@ -263,40 +230,21 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &)
 	height->ChangeValue(wxString::Format("%d", resolutions[rs].height));
 }
 
-
-
-/// @brief DOCME
-/// @param evt
-///
 void DialogDummyVideo::OnFpsChange(wxCommandEvent &)
 {
 	UpdateLengthDisplay();
 }
 
-
-
-/// @brief DOCME
-/// @param evt
-///
 void DialogDummyVideo::OnLengthSpin(wxSpinEvent &)
 {
 	UpdateLengthDisplay();
 }
 
-
-
-/// @brief DOCME
-/// @param evt
-///
 void DialogDummyVideo::OnLengthChange(wxCommandEvent &)
 {
 	UpdateLengthDisplay();
 }
 
-
-
-/// @brief DOCME
-///
 void DialogDummyVideo::UpdateLengthDisplay()
 {
 	double fpsval;
@@ -323,5 +271,3 @@ void DialogDummyVideo::UpdateLengthDisplay()
 		ok_button->Disable();
 	}
 }
-
-

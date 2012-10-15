@@ -760,6 +760,7 @@ namespace Automation4 {
 	// LuaFeature
 	LuaFeature::LuaFeature(lua_State *L)
 	: L(L)
+	, myid(0)
 	{
 	}
 

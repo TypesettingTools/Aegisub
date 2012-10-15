@@ -41,6 +41,8 @@ using namespace std::tr1::placeholders;
 FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister)
 : status_callback(status_callback)
 , lister(lister)
+, missing(0)
+, missing_glyphs(0)
 {
 }
 

@@ -112,11 +112,11 @@ namespace
 	typedef std::vector<EbuFormattedText> EbuTextRow;
 
 	/// Formatting character constants
-	const char EBU_FORMAT_ITALIC[]     = "\x81\x80";
-	const char EBU_FORMAT_UNDERLINE[]  = "\x83\x82";
-	const char EBU_FORMAT_BOXING[]     = "\x85\x84";
-	const char EBU_FORMAT_LINEBREAK    = '\x8a';
-	const char EBU_FORMAT_UNUSED_SPACE = '\x8f';
+	const unsigned char EBU_FORMAT_ITALIC[]     = "\x81\x80";
+	const unsigned char EBU_FORMAT_UNDERLINE[]  = "\x83\x82";
+	const unsigned char EBU_FORMAT_BOXING[]     = "\x85\x84";
+	const unsigned char EBU_FORMAT_LINEBREAK    = '\x8a';
+	const unsigned char EBU_FORMAT_UNUSED_SPACE = '\x8f';
 
 	/// intermediate format
 	class EbuSubtitle

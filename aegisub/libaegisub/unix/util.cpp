@@ -78,7 +78,7 @@ uint64_t freespace(std::string const& path, PathType type) {
 	acs::CheckDirRead(check);
 
 	if ((statvfs(check.c_str(), &fs)) == 0) {
-		return fs.f_bsize * fs.f_bavail;
+		return (uint64_t)fs.f_bsize * fs.f_bavail;
 	} else {
 		/// @todo We need a collective set of exceptions for ENOTDIR, EIO etc.
 		throw("Failed getting free space");

@@ -869,7 +869,7 @@ void SubsTextEditCtrl::SplitLine(bool estimateTimes) {
 	n1->Text = orig.Left(from).Trim(true); // Trim off trailing whitespace
 	n2->Text = orig.Mid(from).Trim(false); // Trim off leading whitespace
 
-	if (estimateTimes) {
+	if (estimateTimes && orig.size()) {
 		double splitPos = double(from) / orig.size();
 		n2->Start = n1->End = (int)((n1->End - n1->Start) * splitPos) + n1->Start;
 	}

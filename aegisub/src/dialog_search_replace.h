@@ -45,66 +45,27 @@
 
 namespace agi { struct Context; }
 
-
-/// DOCME
-/// @class SearchReplaceEngine
-/// @brief DOCME
-///
-/// DOCME
 class SearchReplaceEngine {
-	/// DOCME
 	int curLine;
-
-	/// DOCME
 	size_t pos;
-
-	/// DOCME
 	size_t matchLen;
-
-	/// DOCME
 	size_t replaceLen;
-
-	/// DOCME
 	bool Modified;
-
-	/// DOCME
 	bool LastWasFind;
-
-	/// DOCME
 	bool hasReplace;
-
-	/// DOCME
 	bool isReg;
-
-	/// DOCME
 	bool matchCase;
-
-	/// DOCME
 	bool updateVideo;
-
-	/// DOCME
 	bool CanContinue;
-
-	/// DOCME
 	bool hasFocus;
-
-	/// DOCME
 	int field;
-
-	/// DOCME
 	int affect;
-
-	/// DOCME
 	wxString LookFor;
-
-	/// DOCME
 	wxString ReplaceWith;
-
 
 	wxString *GetText(AssDialogue *cur, int field);
 
 public:
-	/// DOCME
 	agi::Context *context;
 
 	void FindNext();
@@ -123,37 +84,17 @@ public:
 // Instance
 extern SearchReplaceEngine Search;
 
-/// DOCME
-/// @class DialogSearchReplace
-/// @brief DOCME
-///
-/// DOCME
 class DialogSearchReplace : public wxDialog {
 	friend class SearchReplaceEngine;
 
-	/// DOCME
 	bool hasReplace;
 
-
-	/// DOCME
 	wxComboBox *FindEdit;
-
-	/// DOCME
 	wxComboBox *ReplaceEdit;
-
-	/// DOCME
 	wxCheckBox *CheckMatchCase;
-
-	/// DOCME
 	wxCheckBox *CheckRegExp;
-
-	/// DOCME
 	wxCheckBox *CheckUpdateVideo;
-
-	/// DOCME
 	wxRadioBox *Affect;
-
-	/// DOCME
 	wxRadioBox *Field;
 
 	void UpdateDropDowns();

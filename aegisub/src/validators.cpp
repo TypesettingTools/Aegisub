@@ -44,12 +44,13 @@
 #include "validators.h"
 
 NumValidator::NumValidator(wxString val, bool isfloat, bool issigned)
-: isFloat(isfloat)
+: fValue(0)
+, iValue(0)
+, isFloat(isfloat)
 , isSigned(issigned)
 {
 	if (isFloat) {
-		if (!val.ToDouble(&fValue))
-			fValue = 0;
+		val.ToDouble(&fValue);
 	}
 	else {
 		long tLong = 0;
@@ -59,14 +60,16 @@ NumValidator::NumValidator(wxString val, bool isfloat, bool issigned)
 }
 
 NumValidator::NumValidator(int val, bool issigned)
-: iValue(val)
+: fValue(0)
+, iValue(val)
 , isFloat(false)
 , isSigned(issigned)
 {
 }
 
 NumValidator::NumValidator(int64_t val, bool issigned)
-: iValue((int)val)
+: fValue(0)
+, iValue((int)val)
 , isFloat(false)
 , isSigned(issigned)
 {
@@ -74,6 +77,7 @@ NumValidator::NumValidator(int64_t val, bool issigned)
 
 NumValidator::NumValidator(double val, bool issigned)
 : fValue(val)
+, iValue(0)
 , isFloat(true)
 , isSigned(issigned)
 {

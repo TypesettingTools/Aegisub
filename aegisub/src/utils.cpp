@@ -93,9 +93,9 @@ wxString PrettySize(int bytes) {
 	const char *suffix[] = { "", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
 	// Set size
-	int i = 0;
+	size_t i = 0;
 	double size = bytes;
-	while (size > 1024 && i < 9) {
+	while (size > 1024 && i + 1 < sizeof(suffix) / sizeof(suffix[0])) {
 		size /= 1024.0;
 		i++;
 	}

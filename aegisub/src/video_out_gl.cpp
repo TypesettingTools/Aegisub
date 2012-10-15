@@ -94,18 +94,19 @@ static bool TestTexture(int width, int height, GLint format) {
 }
 
 VideoOutGL::VideoOutGL()
-:	maxTextureSize(0),
-	supportsRectangularTextures(false),
-	internalFormat(0),
-	frameWidth(0),
-	frameHeight(0),
-	frameFormat(0),
-	frameFlipped(false),
-	textureIdList(),
-	textureList(),
-	textureCount(0),
-	textureRows(0),
-	textureCols(0)
+: maxTextureSize(0)
+, supportsRectangularTextures(false)
+, internalFormat(0)
+, frameWidth(0)
+, frameHeight(0)
+, frameFormat(0)
+, frameFlipped(false)
+, textureIdList()
+, textureList()
+, dl(0)
+, textureCount(0)
+, textureRows(0)
+, textureCols(0)
 { }
 
 /// @brief Runtime detection of required OpenGL capabilities

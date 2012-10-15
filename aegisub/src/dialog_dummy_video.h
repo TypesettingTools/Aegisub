@@ -55,35 +55,15 @@ class DialogDummyVideo : public wxDialog {
 	DialogDummyVideo(wxWindow *parent);
 	~DialogDummyVideo();
 
-	/// DOCME
 	wxComboBox *resolution_shortcuts;
-
-	/// DOCME
 	wxTextCtrl *width;
-
-	/// DOCME
 	wxTextCtrl *height;
-
-	/// DOCME
 	ColourButton *colour;
-
-	/// DOCME
 	wxCheckBox *pattern;
-
-	/// DOCME
 	wxTextCtrl *fps;
-
-	/// DOCME
 	wxSpinCtrl *length;
-
-	/// DOCME
 	wxStaticText *length_display;
-
-	/// DOCME
 	wxButton *ok_button;
-
-	/// DOCME
-	wxButton *cancel_button;
 
 	void OnResolutionShortcut(wxCommandEvent &evt);
 	void OnFpsChange(wxCommandEvent &evt);
