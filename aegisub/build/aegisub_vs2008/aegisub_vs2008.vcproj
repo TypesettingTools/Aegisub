@@ -1616,10 +1616,6 @@
 			Name="Config"
 			>
 			<File
-				RelativePath="..\..\src\config\config_unix.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\config\config_windows.h"
 				>
 			</File>
