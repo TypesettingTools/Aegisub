@@ -59,10 +59,4 @@ public:
 	void AdjoinLines(int first,int last,bool setStart);
 
 	void RecombineLines();
-
-	/// Retrieve a list of selected lines in the actual ASS file (i.e. not as displayed in the grid but as represented in the file)
-	std::vector<int> GetAbsoluteSelection() const;
-	/// @brief Update list of selected lines from absolute selection
-	/// @param selection Sorted list of selections
-	void SetSelectionFromAbsolute(std::vector<int> &selection);
 };
