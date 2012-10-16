@@ -144,11 +144,12 @@ void ConfigVisitor::AddOptionValue(OptionValue* opt) {
 		return;
 	}
 
-	if (!values.count(name))
+	OptionValueMap::iterator it = values.find(name);
+	if (it == values.end())
 		values[name] = opt;
 	else if (replace) {
-		delete values[name];
-		values[name] = opt;
+		delete it->second;
+		it->second = opt;
 	}
 	else {
 		try {
