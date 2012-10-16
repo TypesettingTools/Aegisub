@@ -143,17 +143,15 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 		if (last_end < end_time)
 			syls.back().duration += end_time - last_end;
 		else if (last_end > end_time) {
-			// Shrink each syllable proportionately
-			int start_time = active_line->Start;
-			double scale_factor = double(end_time - start_time) / (last_end - start_time);
-
+			// Truncate any syllables that extend past the end of the line
 			for (size_t i = 0; i < size(); ++i) {
-				syls[i].start_time = start_time + scale_factor * (syls[i].start_time - start_time);
-			}
-
-			for (int i = size(); i > 0; --i) {
-				syls[i - 1].duration = end_time - syls[i - 1].start_time;
-				end_time = syls[i - 1].start_time;
+				if (syls[i].start_time > end_time) {
+					syls[i].start_time = end_time;
+					syls[i].duration = 0;
+				}
+				else {
+					syls[i].duration = std::min(syls[i].duration, end_time - syls[i].start_time);
+				}
 			}
 		}
 	}
