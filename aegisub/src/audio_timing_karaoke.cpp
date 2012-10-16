@@ -142,7 +142,7 @@ public:
 	void ModifyStart(int delta);
 	bool IsNearbyMarker(int ms, int sensitivity) const;
 	std::vector<AudioMarker*> OnLeftClick(int ms, bool, int sensitivity, int);
-	std::vector<AudioMarker*> OnRightClick(int, bool, int, int) { return std::vector<AudioMarker*>(); }
+	std::vector<AudioMarker*> OnRightClick(int ms, bool, int, int);
 	void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int);
 
 	AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
@@ -364,6 +364,16 @@ std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool
 
 	AnnounceUpdatedPrimaryRange();
 	AnnounceUpdatedStyleRanges();
+
+	return std::vector<AudioMarker*>();
+}
+
+std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnRightClick(int ms, bool, int, int) {
+	cur_syl = distance(markers.begin(), lower_bound(markers.begin(), markers.end(), ms));
+
+	AnnounceUpdatedPrimaryRange();
+	AnnounceUpdatedStyleRanges();
+	c->audioController->PlayPrimaryRange();
 
 	return std::vector<AudioMarker*>();
 }
