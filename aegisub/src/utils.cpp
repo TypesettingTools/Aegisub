@@ -378,7 +378,12 @@ class cache_cleaner : public wxThread {
 				break;
 
 			int64_t fsize = i->second.GetSize().GetValue();
-			if (!wxRemoveFile(i->second.GetFullPath())) {
+#ifdef __WXMSW__
+			int res = wxRemove(i->second.GetFullPath());
+#else
+			int res = unlink(i->second.GetFullPath().fn_str());
+#endif
+			if (res) {
 				LOG_D("utils/clean_cache") << "failed to remove file " << STD_STR(i->second.GetFullPath());
 				continue;
 			}
