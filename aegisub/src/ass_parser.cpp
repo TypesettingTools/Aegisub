@@ -21,6 +21,10 @@
 #include "ass_file.h"
 #include "ass_style.h"
 
+#ifndef AGI_PRE
+#include <wx/log.h>
+#endif
+
 AssParser::AssParser(AssFile *target, int version)
 : target(target)
 , version(version)
