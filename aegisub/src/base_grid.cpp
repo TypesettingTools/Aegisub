@@ -787,31 +787,37 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 
 void BaseGrid::ScrollTo(int y) {
 	int h = GetClientSize().GetHeight();
-	int nextY = mid(0, y, GetRows() + 2 - h / lineHeight);
+	int nextY = mid(0, y, GetRows() - 1);
 	if (yPos != nextY) {
 		yPos = nextY;
-		if (scrollBar->IsEnabled()) scrollBar->SetThumbPosition(yPos);
+		scrollBar->SetThumbPosition(yPos);
 		Refresh(false);
 	}
 }
 
 void BaseGrid::AdjustScrollbar() {
-	int w,h,sw,sh;
-	GetClientSize(&w,&h);
-	int drawPerScreen = h/lineHeight;
-	int rows = GetRows();
-	bool barToEnable = drawPerScreen < rows+2;
-
-	yPos = mid(0,yPos,rows - drawPerScreen);
+	wxSize clientSize = GetClientSize();
+	wxSize scrollbarSize = scrollBar->GetSize();
 
 	scrollBar->Freeze();
-	scrollBar->GetSize(&sw,&sh);
-	scrollBar->SetSize(w-sw,0,sw,h);
+	scrollBar->SetSize(clientSize.GetWidth() - scrollbarSize.GetWidth(), 0, scrollbarSize.GetWidth(), clientSize.GetHeight());
 
-	if (barToEnable != scrollBar->IsEnabled()) scrollBar->Enable(barToEnable);
-	if (barToEnable) {
-		scrollBar->SetScrollbar(yPos,drawPerScreen,rows+2,drawPerScreen-2,true);
+	if (GetRows() <= 1) {
+		scrollBar->Enable(false);
+		scrollBar->Thaw();
+		return;
 	}
+
+	if (!scrollBar->IsEnabled()) {
+		scrollBar->Enable(true);
+	}
+
+	int drawPerScreen = clientSize.GetHeight() / lineHeight;
+	int rows = GetRows();
+
+	yPos = mid(0, yPos, rows - 1);
+
+	scrollBar->SetScrollbar(yPos, drawPerScreen, rows + drawPerScreen - 1, drawPerScreen - 2, true);
 	scrollBar->Thaw();
 }
 
