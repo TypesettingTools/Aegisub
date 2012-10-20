@@ -31,8 +31,10 @@
 #include "config.h"
 
 #include "ass_dialogue.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
+#include "selection_controller.h"
 #include "utils.h"
 
 /// Button IDs
@@ -199,13 +201,18 @@ void VisualToolVectorClip::MakeFeatures() {
 }
 
 void VisualToolVectorClip::Save() {
-	wxString tag = inverse ? "\\iclip" : "\\clip";
 	wxString value = "(";
 	if (spline.GetScale() != 1)
 		value += wxString::Format("%d,", spline.GetScale());
 	value += spline.EncodeToAss() + ")";
 
-	SetOverride(active_line, tag, value);
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	for (SubtitleSelection::iterator it = sel.begin(); it != sel.end(); ++it) {
+		// This check is technically not correct as it could be outside of an
+		// override block... but that's rather unlikely
+		bool has_iclip = (*it)->Text.find("\\iclip") != wxString::npos;
+		SetOverride(*it, has_iclip ? "\\iclip" : "\\clip", value);
+	}
 }
 
 void VisualToolVectorClip::UpdateDrag(feature_iterator feature) {
