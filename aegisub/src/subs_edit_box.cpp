@@ -127,8 +127,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());
 	TopSizer->Add(ActorBox, wxSizerFlags(2).Center().Border(wxRIGHT));
 
-	Effect = new Placeholder<wxTextCtrl>(this, _("Effect"), wxSize(80,-1), wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	Effect = new Placeholder<wxComboBox>(this, _("Effect"), wxSize(80,-1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
+	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
 	TopSizer->Add(Effect, 3, wxALIGN_CENTER, 5);
 
 	// Middle controls
@@ -270,7 +271,8 @@ void SubsEditBox::OnCommit(int type) {
 
 	if (type == AssFile::COMMIT_NEW) {
 		/// @todo maybe preserve selection over undo?
-		PopulateActorList();
+		PopulateList(Effect, &AssDialogue::Effect);
+		PopulateList(ActorBox, &AssDialogue::Actor);
 
 		TextEdit->SetSelection(0,0);
 		return;
@@ -298,38 +300,41 @@ void SubsEditBox::OnCommit(int type) {
 		change_value(MarginL, line->GetMarginString(0,false));
 		change_value(MarginR, line->GetMarginString(1,false));
 		change_value(MarginV, line->GetMarginString(2,false));
-		Effect->ChangeValue(line->Effect);
 		CommentBox->SetValue(line->Comment);
 		StyleBox->Select(StyleBox->FindString(line->Style));
 
-		PopulateActorList();
+		PopulateList(Effect, &AssDialogue::Effect);
+		Effect->ChangeValue(line->Effect);
+		Effect->SetStringSelection(line->Effect);
+
+		PopulateList(ActorBox, &AssDialogue::Actor);
 		ActorBox->ChangeValue(line->Actor);
 		ActorBox->SetStringSelection(line->Actor);
 	}
 }
 
-void SubsEditBox::PopulateActorList() {
+void SubsEditBox::PopulateList(wxComboBox *combo, wxString AssDialogue::*field) {
 	wxEventBlocker blocker(this);
 
-	std::set<wxString> actors;
+	std::set<wxString> values;
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
 		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(*it))
-			actors.insert(diag->Actor);
+			values.insert(diag->*field);
 	}
-	actors.erase("");
+	values.erase("");
 	wxArrayString arrstr;
-	arrstr.reserve(actors.size());
-	copy(actors.begin(), actors.end(), std::back_inserter(arrstr));
+	arrstr.reserve(values.size());
+	copy(values.begin(), values.end(), std::back_inserter(arrstr));
 
-	ActorBox->Freeze();
-	long pos = ActorBox->GetInsertionPoint();
-	wxString value = ActorBox->GetValue();
+	combo->Freeze();
+	long pos = combo->GetInsertionPoint();
+	wxString value = combo->GetValue();
 
-	ActorBox->Set(arrstr);
-	ActorBox->ChangeValue(value);
-	ActorBox->SetStringSelection(value);
-	ActorBox->SetInsertionPoint(pos);
-	ActorBox->Thaw();
+	combo->Set(arrstr);
+	combo->ChangeValue(value);
+	combo->SetStringSelection(value);
+	combo->SetInsertionPoint(pos);
+	combo->Thaw();
 }
 
 void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
@@ -503,7 +508,7 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &) {
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
 	SetSelectedRows(&AssDialogue::Actor, ActorBox->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
-	PopulateActorList();
+	PopulateList(ActorBox, &AssDialogue::Actor);
 }
 
 void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
@@ -537,8 +542,10 @@ void SubsEditBox::OnMarginVChange(wxCommandEvent &) {
 	if (line) change_value(MarginV, line->GetMarginString(2, false));
 }
 
-void SubsEditBox::OnEffectChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META, true);
+void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
+	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
+	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
+	PopulateList(Effect, &AssDialogue::Effect);
 }
 
 void SubsEditBox::OnCommentChange(wxCommandEvent &) {

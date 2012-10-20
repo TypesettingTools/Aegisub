@@ -106,7 +106,7 @@ class SubsEditBox : public wxPanel {
 	wxTextCtrl *MarginL;
 	wxTextCtrl *MarginR;
 	wxTextCtrl *MarginV;
-	Placeholder<wxTextCtrl> *Effect;
+	Placeholder<wxComboBox> *Effect;
 	wxRadioButton *ByTime;
 	wxRadioButton *ByFrame;
 
@@ -192,8 +192,8 @@ class SubsEditBox : public wxPanel {
 	/// @param type AssFile::CommitType
 	void OnCommit(int type);
 
-	/// Regenerate the contents of the actor dropdown list
-	void PopulateActorList();
+	/// Regenerate a dropdown list with the unique values of a dialogue field
+	void PopulateList(wxComboBox *combo, wxString AssDialogue::*field);
 
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming(agi::vfr::Framerate const& fps);
