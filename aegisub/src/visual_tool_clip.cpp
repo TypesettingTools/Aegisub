@@ -28,6 +28,9 @@
 
 #include "visual_tool_clip.h"
 
+#include "ass_dialogue.h"
+#include "include/aegisub/context.h"
+#include "selection_controller.h"
 #include "utils.h"
 
 VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
@@ -113,8 +116,15 @@ void VisualToolClip::UpdateHold() {
 }
 
 void VisualToolClip::CommitHold() {
-	SetOverride(active_line, inverse ? "\\iclip" : "\\clip",
-		wxString::Format("(%s,%s)", ToScriptCoords(cur_1.Min(cur_2)).Str(), ToScriptCoords(cur_1.Max(cur_2)).Str()));
+	wxString value = wxString::Format("(%s,%s)", ToScriptCoords(cur_1.Min(cur_2)).Str(), ToScriptCoords(cur_1.Max(cur_2)).Str());
+
+	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	for (SubtitleSelection::iterator it = sel.begin(); it != sel.end(); ++it) {
+		// This check is technically not correct as it could be outside of an
+		// override block... but that's rather unlikely
+		bool has_iclip = (*it)->Text.find("\\iclip") != wxString::npos;
+		SetOverride(*it, has_iclip ? "\\iclip" : "\\clip", value);
+	}
 }
 
 bool VisualToolClip::InitializeDrag(feature_iterator) {
