@@ -36,6 +36,7 @@ std::ifstream* Open(const std::string &file, bool binary = false);
 class Save {
 	std::ofstream *fp;
 	const std::string file_name;
+	const std::string tmp_name;
 
 public:
 	Save(const std::string& file, bool binary = false);

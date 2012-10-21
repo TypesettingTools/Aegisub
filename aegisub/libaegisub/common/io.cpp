@@ -30,6 +30,16 @@
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
 
+namespace {
+	std::string make_temp_name(std::string const& filename) {
+		std::string::size_type pos = filename.rfind('.');
+		if (pos == std::string::npos)
+			return filename + "_tmp";
+
+		return filename.substr(0, pos) + "_tmp" + filename.substr(pos);
+	}
+}
+
 namespace agi {
 	namespace io {
 
@@ -53,7 +63,10 @@ std::ifstream* Open(const std::string &file, bool binary) {
 	return stream;
 }
 
-Save::Save(const std::string& file, bool binary): file_name(file) {
+Save::Save(const std::string& file, bool binary)
+: file_name(file)
+, tmp_name(make_temp_name(file))
+{
 	LOG_D("agi/io/save/file") << file;
 	const std::string pwd = util::DirName(file);
 
@@ -68,12 +81,12 @@ Save::Save(const std::string& file, bool binary): file_name(file) {
 		std::ofstream fp_touch(ConvertW(file).c_str());
 	}
 
-	fp = new std::ofstream(ConvertW(file + "_tmp").c_str(), binary ? std::ios::binary : std::ios::out);
+	fp = new std::ofstream(ConvertW(tmp_name).c_str(), binary ? std::ios::binary : std::ios::out);
 }
 
 Save::~Save() {
 	delete fp;
-	util::Rename(file_name + "_tmp", file_name);
+	util::Rename(tmp_name, file_name);
 }
 
 std::ofstream& Save::Get() {
