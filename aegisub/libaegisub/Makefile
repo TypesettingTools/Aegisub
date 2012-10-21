@@ -25,6 +25,7 @@ SRC += \
 	common/charset_conv.cpp \
 	common/charset_ucd.cpp \
 	common/hotkey.cpp \
+	common/io.cpp \
 	common/json.cpp \
 	common/mru.cpp \
 	common/option.cpp \
@@ -37,7 +38,6 @@ SRC += \
 	common/validator.cpp \
 	common/vfr.cpp \
 	unix/util.cpp \
-	unix/io.cpp \
 	unix/access.cpp \
 	unix/log.cpp \
 	unix/path.cpp
