@@ -11,12 +11,10 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
 
 /// @file io.cpp
 /// @brief Windows IO methods.
-/// @ingroup libaegisub windows
+/// @ingroup libaegisub
 
 #ifndef LAGI_PRE
 #include <sys/stat.h>
@@ -32,17 +30,20 @@
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
 
-
 namespace agi {
 	namespace io {
 
 using agi::charset::ConvertW;
 
+#ifndef _WIN32
+#define ConvertW
+#endif
+
 std::ifstream* Open(const std::string &file, bool binary) {
 	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
-	std::ifstream *stream = new std::ifstream(ConvertW(file).c_str(), std::ios::in | (binary ? std::ios::binary : 0));
+	std::ifstream *stream = new std::ifstream(ConvertW(file).c_str(), (binary ? std::ios::binary : std::ios::in));
 
 	if (stream->fail()) {
 		delete stream;
@@ -51,7 +52,6 @@ std::ifstream* Open(const std::string &file, bool binary) {
 
 	return stream;
 }
-
 
 Save::Save(const std::string& file, bool binary): file_name(file) {
 	LOG_D("agi/io/save/file") << file;
@@ -68,10 +68,6 @@ Save::Save(const std::string& file, bool binary): file_name(file) {
 		std::ofstream fp_touch(ConvertW(file).c_str());
 	}
 
-	/// @todo This is a temp hack, proper implementation needs to come after
-	///       Windows support is added.  The code in the destructor needs fixing
-	///       as well.
-	// This will open to file.XXXX. (tempfile)
 	fp = new std::ofstream(ConvertW(file + "_tmp").c_str(), binary ? std::ios::binary : std::ios::out);
 }
 
@@ -83,7 +79,6 @@ Save::~Save() {
 std::ofstream& Save::Get() {
 	return *fp;
 }
-
 
 	} // namespace io
 } // namespace agi
