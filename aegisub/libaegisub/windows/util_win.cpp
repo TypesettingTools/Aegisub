@@ -57,7 +57,8 @@ void Rename(const std::string& from, const std::string& to) {
 		acs::CheckDirWrite(DirName(to));
 	}
 
-	MoveFileEx(ConvertW(from).c_str(), ConvertW(to).c_str(), MOVEFILE_REPLACE_EXISTING);
+	if (!MoveFileEx(ConvertW(from).c_str(), ConvertW(to).c_str(), MOVEFILE_REPLACE_EXISTING))
+		throw agi::FileNotAccessibleError("Can not overwrite file: " + ErrorString(GetLastError()));
 }
 
 std::string ErrorString(DWORD error) {
