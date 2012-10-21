@@ -78,10 +78,14 @@ Save::Save(const std::string& file, bool binary)
 		// If the file doesn't exist we create a 0 byte file, this so so
 		// util::Rename will find it, and to let users know something went
 		// wrong by leaving a 0 byte file.
-		std::ofstream fp_touch(ConvertW(file).c_str());
+		std::ofstream(ConvertW(file).c_str());
 	}
 
 	fp = new std::ofstream(ConvertW(tmp_name).c_str(), binary ? std::ios::binary : std::ios::out);
+	if (!fp->good()) {
+		delete fp;
+		throw agi::FileNotAccessibleError("Could not create temporary file at: " + tmp_name);
+	}
 }
 
 Save::~Save() {
