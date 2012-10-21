@@ -30,13 +30,20 @@
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
 
+#ifdef _WIN32
+#define snprintf sprintf_s
+#endif
+
 namespace {
 	std::string make_temp_name(std::string const& filename) {
+		char tmp[1024];
+		snprintf(tmp, sizeof tmp, "_tmp_%lld", (long long)time(0));
+
 		std::string::size_type pos = filename.rfind('.');
 		if (pos == std::string::npos)
-			return filename + "_tmp";
+			return filename + tmp;
 
-		return filename.substr(0, pos) + "_tmp" + filename.substr(pos);
+		return filename.substr(0, pos) + tmp + filename.substr(pos);
 	}
 }
 
