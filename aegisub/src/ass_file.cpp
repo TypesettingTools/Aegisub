@@ -164,10 +164,9 @@ wxString AssFile::AutoSave() {
 		wxMkdir(path);
 
 	wxString name = origfile.GetName();
-	if (name.empty())
-		dstpath.SetFullName("Untitled.AUTOSAVE.ass");
-	else
-		dstpath.SetFullName(name + ".AUTOSAVE.ass");
+	if (!name)
+		name = "Untitled";
+	dstpath.SetFullName(wxString::Format("%s.%s.AUTOSAVE.ass", name, wxDateTime::Now().Format("%Y-%m-%d-%H-%M-%S")));
 
 	Save(dstpath.GetFullPath(), false, false);
 

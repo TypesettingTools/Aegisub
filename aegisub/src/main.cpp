@@ -282,15 +282,14 @@ bool AegisubApp::OnInit() {
 	}
 #endif
 
+	StartupLog("Clean old autosave files");
+	wxString autosave_path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
+	CleanCache(autosave_path, "*.AUTOSAVE.ass", 100, 1000);
+
 	StartupLog("Initialization complete");
 	return true;
 }
 
-
-
-/// @brief Exit
-/// @return
-///
 int AegisubApp::OnExit() {
 	if (frame)
 		delete frame;
