@@ -82,7 +82,6 @@
 namespace config {
 	agi::Options *opt = 0;
 	agi::MRUManager *mru = 0;
-	agi::Path *path = 0;
 }
 
 
@@ -189,9 +188,6 @@ bool AegisubApp::OnInit() {
 	catch (agi::Exception const& err) {
 		wxMessageBox("Configuration file is invalid. Error reported:\n" + lagi_wxString(err.GetMessage()), "Error");
 	}
-
-	std::string path(agi::Path::Config());
-	config::path = new agi::Path(path.append("path.json"), GET_DEFAULT_CONFIG(default_path));
 
 	// Init commands.
 	cmd::init_builtin_commands();
@@ -305,7 +301,6 @@ int AegisubApp::OnExit() {
 	delete config::opt;
 	delete config::mru;
 	hotkey::clear();
-	delete config::path;
 	cmd::clear();
 
 	delete global_scripts;
@@ -363,7 +358,6 @@ void AegisubApp::OnUnhandledException() {
 	UnhandledExeception(false);
 }
 
-
 /// @brief Called during a fatal exception.
 void AegisubApp::OnFatalException() {
 	UnhandledExeception(true);
@@ -388,8 +382,6 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 	}
 #undef SHOW_EXCEPTION
 }
-
-
 
 #if wxUSE_STACKWALKER == 1
 /// @brief Called at the start of walking the stack.
@@ -421,7 +413,6 @@ StackWalker::StackWalker(wxString cause) {
 	}
 }
 
-
 /// @brief Callback to format a single frame
 /// @param frame frame to parse.
 ///
@@ -444,12 +435,9 @@ void StackWalker::OnStackFrame(const wxStackFrame &frame) {
 	}
 }
 
-
 /// @brief Called at the end of walking the stack.
 StackWalker::~StackWalker() {
-
 	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
-
 		crash_text->Write("End of stack dump.\n");
 		crash_text->Write("----------------------------------------\n\n");
 
@@ -463,10 +451,6 @@ StackWalker::~StackWalker() {
 }
 #endif
 
-
-/// @brief Call main loop
-/// @return
-///
 int AegisubApp::OnRun() {
 	wxString error;
 
@@ -510,13 +494,7 @@ int AegisubApp::OnRun() {
 	return 1;
 }
 
-////////////////
-// Apple events
 #ifdef __WXMAC__
-
-/// @brief DOCME
-/// @param filename
-///
 void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame != NULL && !filename.empty()) {
 		frame->LoadSubtitles(filename);

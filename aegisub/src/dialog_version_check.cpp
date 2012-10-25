@@ -80,6 +80,7 @@
 #include "version.h"
 
 #include <libaegisub/exception.h>
+#include <libaegisub/scoped_ptr.h>
 
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>

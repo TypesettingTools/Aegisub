@@ -45,12 +45,10 @@
 #include <libaegisub/mru.h>
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>
-#include <libaegisub/path.h>
 
 #ifndef wxUSE_EXCEPTIONS
 #error wxWidgets is compiled without exceptions support. Aegisub requires exceptions support in wxWidgets to run safely.
 #endif
-
 
 class FrameMain;
 class PluginManager;
@@ -59,10 +57,8 @@ class PluginManager;
 namespace config {
 	extern agi::Options *opt; 		///< Options
 	extern agi::MRUManager *mru;	///< Most Recently Used
-	extern agi::Path *path;			///< Paths
 }
 
-/// DOCME
 namespace Automation4 { class AutoloadScriptManager; }
 
 /// Macro to get OptionValue object.
@@ -74,23 +70,7 @@ namespace Automation4 { class AutoloadScriptManager; }
 /// Macro to subscribe to OptionValue changes
 #define OPT_SUB(x, ...) config::opt->Get(x)->Subscribe(__VA_ARGS__)
 
-/// Macro to unsubscribe from OptionValue changes
-#define OPT_UNSUB(x, ...) config::opt->Get(x)->Unsubscribe(__VA_ARGS__)
-
-/// Macro to get a path.
-#define PATH_GET(x) AegisubApp::Get()->path->Get(x)
-
-/// Macro to set a path.
-#define PATH_SET(x, y) AegisubApp::Get()->path->Set(x, y)
-
-
-/// DOCME
-/// @class AegisubApp
-/// @brief DOCME
-///
-/// DOCME
 class AegisubApp: public wxApp {
-	/// DOCME
 	PluginManager *plugins;
 
 	bool OnInit();
@@ -113,13 +93,8 @@ class AegisubApp: public wxApp {
 	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
 
 public:
-	/// DOCME
 	AegisubLocale locale;
-
-	/// DOCME
 	FrameMain *frame;
-
-	/// DOCME
 	Automation4::AutoloadScriptManager *global_scripts;
 
 #ifdef __WXMAC__
@@ -130,15 +105,8 @@ public:
 
 wxDECLARE_APP(AegisubApp);
 
-
 #if wxUSE_STACKWALKER == 1
-/// @class StackWalker
-/// @brief DOCME
-///
-/// DOCME
 class StackWalker: public wxStackWalker {
-private:
-
 	wxFile *crash_text;	// FP to the crash text file.
 	wxFile *crash_xml;	// FP to the crash xml file.
 

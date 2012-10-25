@@ -320,19 +320,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\common\path.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libaegisub\common\thesaurus.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\common\util.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libaegisub\common\validator.cpp"
 				>
 			</File>
 			<File
@@ -391,10 +383,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\windows\log_win.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libaegisub\windows\path_win.cpp"
 				>
 			</File>
 			<File
@@ -482,10 +470,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\path.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\scoped_ptr.h"
 				>
 			</File>
@@ -507,10 +491,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\util_win.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\validator.h"
 				>
 			</File>
 			<File
