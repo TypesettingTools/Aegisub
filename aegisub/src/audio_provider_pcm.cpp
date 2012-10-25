@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file audio_provider_pcm.cpp
 /// @brief PCM WAV and WAV64 audio provider

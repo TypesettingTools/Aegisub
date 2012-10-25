@@ -27,8 +27,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file ass_override.cpp
 /// @brief Parse and modify ASSA style overrides

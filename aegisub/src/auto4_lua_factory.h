@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file auto4_lua_factory.h
 /// @brief Factory-class for Lua 5.1-based scripting engine

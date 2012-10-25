@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file video_slider.h
 /// @see video_slider.cpp

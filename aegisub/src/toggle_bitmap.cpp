@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file toggle_bitmap.cpp
 /// @brief Toggle-button rendered as a bitmap on a coloured background

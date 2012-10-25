@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file spline_curve.cpp
 /// @brief Handle bicubic splines (Bezier curves) in vector drawings

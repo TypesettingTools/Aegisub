@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file mkv_wrap.cpp
 /// @brief High-level interface for obtaining various data from Matroska files

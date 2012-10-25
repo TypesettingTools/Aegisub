@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file config/config_windows0.h
 /// @brief Base configuration for Windows builds, to be copied to config_windows.h and edited by the developer

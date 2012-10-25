@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file subtitles_provider_csri.cpp
 /// @brief Wrapper for CSRI-based subtitle renderers

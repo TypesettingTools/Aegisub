@@ -25,8 +25,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file aegisub_endian.h
 /// @brief Convert numbers between various endianness

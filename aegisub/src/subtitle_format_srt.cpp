@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file subtitle_format_srt.cpp
 /// @brief Reading/writing SubRip format subtitles (.SRT)

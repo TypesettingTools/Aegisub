@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id: audio_player_portaudio.h 4719 2010-08-02 08:03:58Z plorkyeran $
 
 /// @file audio_player_portaudio.h
 /// @see audio_player_portaudio.cpp

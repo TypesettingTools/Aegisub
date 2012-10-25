@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file subtitle_format_txt.cpp
 /// @brief Importing/exporting subtitles to untimed plain text

@@ -13,8 +13,6 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file visual_tool_vector_clip.cpp
 /// @brief Vector clipping visual typesetting tool

@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file subtitle_format_microdvd.cpp
 /// @brief Reading/writing MicroDVD subtitle format (.SUB)

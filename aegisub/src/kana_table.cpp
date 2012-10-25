@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file kana_table.cpp
 /// @brief Data about the Japanese kana syllabary used by kanji karaoke timing copying

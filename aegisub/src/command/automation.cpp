@@ -28,8 +28,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file automation.cpp
 /// @brief am/ (automation) commands

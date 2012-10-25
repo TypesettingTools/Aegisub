@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file dialog_selected_choices.cpp
 /// @brief wxMultiChoiceDialog with Select All and Select None

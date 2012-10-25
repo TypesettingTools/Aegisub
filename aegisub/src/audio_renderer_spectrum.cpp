@@ -27,8 +27,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file audio_renderer_spectrum.cpp
 /// @brief Caching frequency-power spectrum renderer for audio display

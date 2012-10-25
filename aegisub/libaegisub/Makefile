@@ -1,4 +1,3 @@
-# $Id$
 include ../Makefile.inc
 
 LIB = libaegisub.a

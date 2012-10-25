@@ -13,8 +13,6 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file vector2d.h
 /// @see vector2d.cpp

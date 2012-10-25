@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file subtitle_format_mkv.cpp
 /// @brief Importing subtitles (plain, SSA, ASS) from Matroska files

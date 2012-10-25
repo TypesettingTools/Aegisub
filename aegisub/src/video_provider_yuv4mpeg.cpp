@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file video_provider_yuv4mpeg.cpp
 /// @brief Video provider reading YUV4MPEG files directly without depending on external libraries

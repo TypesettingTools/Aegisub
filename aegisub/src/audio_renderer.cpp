@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file audio_renderer.cpp
 /// @brief Base classes for audio renderers (spectrum, waveform, ...)

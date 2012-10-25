@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file colour_button.cpp
 /// @brief Push-button that displays a colour for label, and brings up colour selection dialogue when pressed

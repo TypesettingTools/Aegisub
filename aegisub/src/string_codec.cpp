@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file string_codec.cpp
 /// @brief Encode and decode strings so they can safely be stored inside fields in SSA/ASS files

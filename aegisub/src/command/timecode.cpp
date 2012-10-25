@@ -28,8 +28,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file timecode.cpp
 /// @brief timecode/ commands.

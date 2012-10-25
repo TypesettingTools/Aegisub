@@ -27,8 +27,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file dialog_kara_timing_copy.cpp
 /// @brief Karaoke timing copier dialogue box and logic

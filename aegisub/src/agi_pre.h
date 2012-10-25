@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file agi_pre.h
 /// @brief Precompiled headers include file, including all headers that should be precompiled

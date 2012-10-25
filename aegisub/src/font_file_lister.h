@@ -13,8 +13,6 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file font_file_lister.h
 /// @see font_file_lister.cpp

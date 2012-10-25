@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file video_provider_ffmpegsource.h
 /// @see video_provider_ffmpegsource.cpp

@@ -26,8 +26,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file MatroskaParser.c
 /// @brief Haali's low-level Matroska-parsing library

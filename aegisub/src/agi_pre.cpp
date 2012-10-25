@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file agi_pre.cpp
 /// @brief Precompiled headers control file, including stdwx.h only to generate precompiled header data

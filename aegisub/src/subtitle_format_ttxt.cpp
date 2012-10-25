@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file subtitle_format_ttxt.cpp
 /// @brief Reading/writing MPEG-4 Timed Text subtitles in TTXT XML format

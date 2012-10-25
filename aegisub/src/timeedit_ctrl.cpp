@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file timeedit_ctrl.cpp
 /// @brief Edit-control for editing SSA-format timestamps

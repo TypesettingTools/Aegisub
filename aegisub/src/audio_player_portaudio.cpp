@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id: audio_player_portaudio.cpp 5897 2011-11-20 03:43:52Z plorkyeran $
 
 /// @file audio_player_portaudio.cpp
 /// @brief PortAudio v18-based audio output

@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file tooltip_manager.cpp
 /// @brief Generate tooltips for controls by combining a base text and any hotkeys found for the function

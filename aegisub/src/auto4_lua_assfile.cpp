@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file auto4_lua_assfile.cpp
 /// @brief Lua 5.1-based scripting engine (interface to subtitle files)

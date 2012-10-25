@@ -26,8 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file subs_preview.cpp
 /// @brief Preview control using a dummy video provider and subtitles provider to render a preview

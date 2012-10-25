@@ -27,8 +27,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file audio_display.cpp
 /// @brief Display audio in the main UI

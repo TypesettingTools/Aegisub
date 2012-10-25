@@ -13,8 +13,6 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file gl_wrap.cpp
 /// @brief Convenience functions for drawing various geometric primitives on an OpenGL surface

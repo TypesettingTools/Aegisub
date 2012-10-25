@@ -24,8 +24,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-//
-// $Id$
 
 /// @file audio_player_oss.cpp
 /// @brief Open Sound System audio output
