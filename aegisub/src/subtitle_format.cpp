@@ -331,21 +331,21 @@ void SubtitleFormat::DestroyFormats() {
 }
 
 template<class Cont, class Pred>
-SubtitleFormat *find_or_null(Cont &container, Pred pred) {
+SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	typename Cont::iterator it = find_if(container.begin(), container.end(), pred);
 	if (it == container.end())
-		return 0;
+		throw UnknownSubtitleFormatError("Subtitle format for extension not found", 0);
 	return *it;
 }
 
 const SubtitleFormat *SubtitleFormat::GetReader(wxString const& filename) {
 	LoadFormats();
-	return find_or_null(formats, bind(&SubtitleFormat::CanReadFile, _1, filename));
+	return find_or_throw(formats, bind(&SubtitleFormat::CanReadFile, _1, filename));
 }
 
 const SubtitleFormat *SubtitleFormat::GetWriter(wxString const& filename) {
 	LoadFormats();
-	return find_or_null(formats, bind(&SubtitleFormat::CanWriteFile, _1, filename));
+	return find_or_throw(formats, bind(&SubtitleFormat::CanWriteFile, _1, filename));
 }
 
 wxString SubtitleFormat::GetWildcards(int mode) {

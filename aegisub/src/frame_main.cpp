@@ -455,14 +455,6 @@ void FrameMain::LoadSubtitles(wxString const& filename, wxString const& charset)
 		config::mru->Remove("Subtitle", STD_STR(filename));
 		return;
 	}
-	catch (const char *err) {
-		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		return;
-	}
-	catch (wxString const& err) {
-		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		return;
-	}
 	catch (agi::Exception const& err) {
 		wxMessageBox(lagi_wxString(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 	}

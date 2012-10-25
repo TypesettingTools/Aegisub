@@ -79,11 +79,9 @@ AssFile::~AssFile() {
 
 /// @brief Load generic subs
 void AssFile::Load(const wxString &_filename, wxString const& charset) {
-	try {
-		// Get proper format reader
-		const SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
-		if (!reader) throw "Unknown file type";
+	const SubtitleFormat *reader = SubtitleFormat::GetReader(_filename);
 
+	try {
 		AssFile temp;
 		reader->ReadFile(&temp, _filename, charset);
 

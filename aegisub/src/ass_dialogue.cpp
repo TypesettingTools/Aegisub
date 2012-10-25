@@ -46,6 +46,8 @@
 
 #include "ass_dialogue.h"
 #include "ass_override.h"
+#include "compat.h"
+#include "subtitle_format.h"
 #include "utils.h"
 
 AssDialogue::AssDialogue()
@@ -82,7 +84,7 @@ AssDialogue::AssDialogue(wxString const& data)
 , Style("Default")
 {
 	if (!Parse(data))
-		throw "Failed parsing line.";
+		throw SubtitleFormatParseError(STD_STR("Failed parsing line: " + data), 0);
 }
 
 AssDialogue::~AssDialogue () {

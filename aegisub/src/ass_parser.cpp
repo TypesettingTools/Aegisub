@@ -20,6 +20,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "subtitle_format.h"
 
 #ifndef AGI_PRE
 #include <wx/log.h>
@@ -83,7 +84,7 @@ void AssParser::ParseScriptInfoLine(wxString const& data) {
 		else if (versionString == "v4.00+")
 			trueVersion = 1;
 		else
-			throw "Unknown SSA file format version";
+			throw SubtitleFormatParseError("Unknown SSA file format version", 0);
 		if (trueVersion != version) {
 			wxLogMessage("Warning: File has the wrong extension.");
 			version = trueVersion;

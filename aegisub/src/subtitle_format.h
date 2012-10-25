@@ -146,3 +146,4 @@ public:
 };
 
 DEFINE_SIMPLE_EXCEPTION(SubtitleFormatParseError, agi::InvalidInputException, "subtitle_io/parse/generic")
+DEFINE_SIMPLE_EXCEPTION(UnknownSubtitleFormatError, agi::InvalidInputException, "subtitle_io/unknown")

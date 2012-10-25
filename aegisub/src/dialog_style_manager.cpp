@@ -600,14 +600,6 @@ void DialogStyleManager::OnCurrentImport() {
 	try {
 		temp.Load(filename);
 	}
-	catch (const char *err) {
-		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		return;
-	}
-	catch (wxString const& err) {
-		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		return;
-	}
 	catch (agi::Exception const& err) {
 		wxMessageBox(lagi_wxString(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
