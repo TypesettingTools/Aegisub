@@ -34,7 +34,6 @@
 /// @ingroup main
 ///
 
-
 #ifndef AGI_PRE
 #include <wx/app.h>
 #include <wx/file.h>
@@ -113,6 +112,8 @@ class AegisubApp: public wxApp {
 	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
 
 public:
+	AegisubApp();
+
 	/// DOCME
 	AegisubLocale locale;
 
