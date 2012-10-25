@@ -67,6 +67,7 @@
 #include "selection_controller.h"
 #include "standard_paths.h"
 #include "subtitle_format.h"
+#include "utils.h"
 
 using std::tr1::placeholders::_1;
 
@@ -121,22 +122,9 @@ wxString unique_name(Func name_checker, wxString const& source_name) {
 	return source_name;
 }
 
-wxString get_clipboard_text() {
-	wxString text;
-	if (wxTheClipboard->Open()) {
-		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
-			wxTextDataObject rawdata;
-			wxTheClipboard->GetData(rawdata);
-			text = rawdata.GetText();
-		}
-		wxTheClipboard->Close();
-	}
-	return text;
-}
-
 template<class Func1, class Func2>
 void add_styles(Func1 name_checker, Func2 style_adder) {
-	wxStringTokenizer st(get_clipboard_text(), '\n');
+	wxStringTokenizer st(GetClipboard(), '\n');
 	while (st.HasMoreTokens()) {
 		try {
 			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
@@ -485,10 +473,7 @@ void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
 		data += s->GetEntryData();
 	}
 
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxTextDataObject(data));
-		wxTheClipboard->Close();
-	}
+	SetClipboard(data);
 }
 
 void DialogStyleManager::PasteToCurrent() {

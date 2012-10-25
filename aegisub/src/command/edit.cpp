@@ -61,6 +61,7 @@
 #include "../subs_edit_ctrl.h"
 #include "../subs_grid.h"
 #include "../text_selection_controller.h"
+#include "../utils.h"
 #include "../video_context.h"
 
 namespace {
@@ -83,15 +84,7 @@ struct validate_sel_multiple : public Command {
 };
 
 void paste_lines(agi::Context *c, bool paste_over) {
-	wxString data;
-	if (wxTheClipboard->Open()) {
-		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
-			wxTextDataObject rawdata;
-			wxTheClipboard->GetData(rawdata);
-			data = rawdata.GetText();
-		}
-		wxTheClipboard->Close();
-	}
+	wxString data = GetClipboard();
 	if (!data) return;
 
 	AssDialogue *rel_line = c->selectionController->GetActiveLine();
@@ -505,10 +498,7 @@ static void copy_lines(agi::Context *c) {
 		}
 	}
 
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxTextDataObject(data));
-		wxTheClipboard->Close();
-	}
+	SetClipboard(data);
 }
 
 static void delete_lines(agi::Context *c, wxString const& commit_message) {
@@ -782,12 +772,12 @@ struct edit_line_paste : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *) {
+		bool can_paste = false;
 		if (wxTheClipboard->Open()) {
-			bool can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
 			wxTheClipboard->Close();
-			return can_paste;
 		}
-		return false;
+		return can_paste;
 	}
 
 	void operator()(agi::Context *c) {
@@ -808,12 +798,12 @@ struct edit_line_paste_over : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
-		if (wxTheClipboard->Open()) {
-			bool can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+		bool can_paste = !c->selectionController->GetSelectedSet().empty();
+		if (can_paste && wxTheClipboard->Open()) {
+			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
 			wxTheClipboard->Close();
-			return can_paste && c->selectionController->GetSelectedSet().size();
 		}
-		return false;
+		return can_paste;
 	}
 
 	void operator()(agi::Context *c) {

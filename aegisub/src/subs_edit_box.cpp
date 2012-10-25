@@ -292,7 +292,7 @@ void SubsEditBox::OnCommit(int type) {
 	}
 
 	if (type & AssFile::COMMIT_DIAG_TEXT) {
-		TextEdit->SetTextTo(line->Text);
+		TextEdit->SetValue(line->Text);
 	}
 
 	if (type & AssFile::COMMIT_DIAG_META) {
@@ -497,7 +497,7 @@ void SubsEditBox::SetControlsState(bool state) {
 	Enable(state);
 	if (!state) {
 		wxEventBlocker blocker(this);
-		TextEdit->SetTextTo("");
+		TextEdit->SetValue("");
 	}
 }
 

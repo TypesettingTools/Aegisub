@@ -703,15 +703,7 @@ void SubsTextEditCtrl::SetTextTo(wxString text) {
 
 
 void SubsTextEditCtrl::Paste() {
-	wxString data;
-	if (wxTheClipboard->Open()) {
-		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
-			wxTextDataObject rawdata;
-			wxTheClipboard->GetData(rawdata);
-			data = rawdata.GetText();
-		}
-		wxTheClipboard->Close();
-	}
+	wxString data = GetClipboard();
 
 	data.Replace("\r\n", "\\N");
 	data.Replace("\n", "\\N");

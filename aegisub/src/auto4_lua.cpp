@@ -281,18 +281,11 @@ namespace {
 
 	int clipboard_get(lua_State *L)
 	{
-		if (wxTheClipboard->Open()) {
-			if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
-				wxTextDataObject rawdata;
-				wxTheClipboard->GetData(rawdata);
-				lua_pushstring(L, rawdata.GetText().utf8_str());
-			}
-			else
-				lua_pushnil(L);
-			wxTheClipboard->Close();
-		}
-		else
+		wxString data = GetClipboard();
+		if (!data)
 			lua_pushnil(L);
+		else
+			lua_pushstring(L, data.utf8_str());
 		return 1;
 	}
 

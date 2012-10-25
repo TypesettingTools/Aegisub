@@ -121,6 +121,12 @@ template <typename T> T tabs(T x) { return x < 0 ? -x : x; }
 /// @precondition a <= c
 template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
+/// Get the text contents of the clipboard, or empty string on failure
+wxString GetClipboard();
+/// Try to set the clipboard to the given string
+void SetClipboard(wxString const& new_value);
+void SetClipboard(wxBitmap const& new_value);
+
 #ifndef FORCEINLINE
 #ifdef __VISUALC__
 #define FORCEINLINE __forceinline

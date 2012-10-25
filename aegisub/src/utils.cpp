@@ -311,6 +311,38 @@ bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
 	return false;
 }
 
+wxString GetClipboard() {
+	wxString data;
+	wxClipboard *cb = wxClipboard::Get();
+	if (cb->Open()) {
+		if (cb->IsSupported(wxDF_TEXT)) {
+			wxTextDataObject raw_data;
+			cb->GetData(raw_data);
+			data = raw_data.GetText();
+		}
+		cb->Close();
+	}
+	return data;
+}
+
+void SetClipboard(wxString const& new_data) {
+	wxClipboard *cb = wxClipboard::Get();
+	if (cb->Open()) {
+		cb->SetData(new wxTextDataObject(new_data));
+		cb->Close();
+		cb->Flush();
+	}
+}
+
+void SetClipboard(wxBitmap const& new_data) {
+	wxClipboard *cb = wxClipboard::Get();
+	if (cb->Open()) {
+		cb->SetData(new wxBitmapDataObject(new_data));
+		cb->Close();
+		cb->Flush();
+	}
+}
+
 namespace {
 class cache_cleaner : public wxThread {
 	wxString directory;

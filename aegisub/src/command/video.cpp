@@ -241,10 +241,7 @@ struct video_copy_coordinates : public validator_video_loaded {
 	STR_HELP("Copy the current coordinates of the mouse over the video to the clipboard")
 
 	void operator()(agi::Context *c) {
-		if (wxTheClipboard->Open()) {
-			wxTheClipboard->SetData(new wxTextDataObject(c->videoDisplay->GetMousePosition().Str()));
-			wxTheClipboard->Close();
-		}
+		SetClipboard(c->videoDisplay->GetMousePosition().Str());
 	}
 };
 
@@ -308,10 +305,7 @@ struct video_frame_copy : public validator_video_loaded {
 	STR_HELP("Copy the currently displayed frame to the clipboard")
 
 	void operator()(agi::Context *c) {
-		if (wxTheClipboard->Open()) {
-			wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN())->GetImage(),24)));
-			wxTheClipboard->Close();
-		}
+		SetClipboard(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN())->GetImage(), 24));
 	}
 };
 
@@ -323,10 +317,7 @@ struct video_frame_copy_raw : public validator_video_loaded {
 	STR_HELP("Copy the currently displayed frame to the clipboard, without the subtitles")
 
 	void operator()(agi::Context *c) {
-		if (wxTheClipboard->Open()) {
-			wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN(), true)->GetImage(),24)));
-			wxTheClipboard->Close();
-		}
+		SetClipboard(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN(), true)->GetImage(), 24));
 	}
 };
 

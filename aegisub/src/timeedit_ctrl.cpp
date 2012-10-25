@@ -51,6 +51,7 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "main.h"
+#include "utils.h"
 #include "video_context.h"
 
 #define TimeEditWindowStyle
@@ -224,10 +225,7 @@ void TimeEdit::OnFocusLost(wxFocusEvent &evt) {
 }
 
 void TimeEdit::CopyTime() {
-	if (wxTheClipboard->Open()) {
-		wxTheClipboard->SetData(new wxTextDataObject(GetValue()));
-		wxTheClipboard->Close();
-	}
+	SetClipboard(GetValue());
 }
 
 void TimeEdit::PasteTime() {
@@ -236,23 +234,16 @@ void TimeEdit::PasteTime() {
 		return;
 	}
 
-	if (wxTheClipboard->Open()) {
-		wxString text;
-		if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
-			wxTextDataObject data;
-			wxTheClipboard->GetData(data);
-			text = data.GetText().Trim(false).Trim(true);
-		}
-		wxTheClipboard->Close();
+	wxString text = GetClipboard();
+	if (!text) return;
 
-		AssTime tempTime(text);
-		if (tempTime.GetAssFormated() == text) {
-			SetTime(tempTime);
-			SetSelection(0, GetValue().size());
+	AssTime tempTime(text);
+	if (tempTime.GetAssFormated() == text) {
+		SetTime(tempTime);
+		SetSelection(0, GetValue().size());
 
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, GetId());
-			evt.SetEventObject(this);
-			HandleWindowEvent(evt);
-		}
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, GetId());
+		evt.SetEventObject(this);
+		HandleWindowEvent(evt);
 	}
 }
