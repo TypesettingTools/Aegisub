@@ -131,6 +131,11 @@ void AegisubApp::OnAssertFailure(const wxChar *file, int line, const wxChar *fun
 	wxApp::OnAssertFailure(file, line, func, cond, msg);
 }
 
+AegisubApp::AegisubApp() {
+	// http://trac.wxwidgets.org/ticket/14302
+	wxSetEnv("UBUNTU_MENUPROXY", "0");
+}
+
 /// @brief Gets called when application starts.
 /// @return bool
 bool AegisubApp::OnInit() {
