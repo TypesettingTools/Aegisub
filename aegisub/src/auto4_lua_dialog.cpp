@@ -222,7 +222,7 @@ namespace Automation4 {
 
 				bool TransferFromWindow()
 				{
-					*text = static_cast<ColourButton*>(GetWindow())->GetColour().GetAsString(wxC2S_HTML_SYNTAX);
+					*text = to_wx(static_cast<ColourButton*>(GetWindow())->GetColor().GetHexFormatted());
 					return true;
 				}
 			};
@@ -247,9 +247,8 @@ namespace Automation4 {
 
 			wxControl *Create(wxWindow *parent)
 			{
-				AssColor colour;
-				colour.Parse(text);
-				wxControl *cw = new ColourButton(parent, -1, wxSize(50*width,10*height), colour.GetWXColor());
+				agi::Color colour(from_wx(text));
+				wxControl *cw = new ColourButton(parent, -1, wxSize(50*width,10*height), colour);
 				cw->SetValidator(ColorValidator(&text));
 				cw->SetToolTip(hint);
 				return cw;

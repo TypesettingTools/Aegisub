@@ -37,11 +37,11 @@
 #include "video_provider_dummy.h"
 
 #ifndef AGI_PRE
-#include <wx/colour.h>
 #include <wx/tokenzr.h>
 #endif
 
 #include "colorspace.h"
+#include <libaegisub/color.h>
 
 void DummyVideoProvider::Create(double fps, int frames, int width, int height, unsigned char red, unsigned char green, unsigned char blue, bool pattern) {
 	this->framecount = frames;
@@ -111,14 +111,14 @@ DummyVideoProvider::DummyVideoProvider(wxString const& filename) {
 	Create(fps, frames, width, height, red, green, blue, pattern);
 }
 
-DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, const wxColour &colour, bool pattern) {
-	Create(fps, frames, width, height, colour.Red(), colour.Green(), colour.Blue(), pattern);
+DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
+	Create(fps, frames, width, height, colour.r, colour.g, colour.b, pattern);
 }
 
 DummyVideoProvider::~DummyVideoProvider() {
 	frame.Clear();
 }
 
-wxString DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, const wxColour &colour, bool pattern) {
-	return wxString::Format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, colour.Red(), colour.Green(), colour.Blue(), pattern ? "c" : "");
+wxString DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
+	return wxString::Format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, colour.r, colour.g, colour.b, pattern ? "c" : "");
 }

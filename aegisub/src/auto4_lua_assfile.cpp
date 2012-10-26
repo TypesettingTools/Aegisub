@@ -112,12 +112,22 @@ namespace {
 		return BadField(std::string("Invalid or missing field '") + name + "' in '" + line_clasee + "' class subtitle line (expected " + expected_type + ")");
 	}
 
-	wxString get_string_field(lua_State *L, const char *name, const char *line_class)
+	wxString get_wxstring_field(lua_State *L, const char *name, const char *line_class)
 	{
 		lua_getfield(L, -1, name);
 		if (!lua_isstring(L, -1))
 			throw bad_field("string", name, line_class);
 		wxString ret(lua_tostring(L, -1), wxConvUTF8);
+		lua_pop(L, 1);
+		return ret;
+	}
+
+	std::string get_string_field(lua_State *L, const char *name, const char *line_class)
+	{
+		lua_getfield(L, -1, name);
+		if (!lua_isstring(L, -1))
+			throw bad_field("string", name, line_class);
+		std::string ret(lua_tostring(L, -1));
 		lua_pop(L, 1);
 		return ret;
 	}
@@ -247,10 +257,10 @@ namespace Automation4 {
 			set_field(L, "fontname", sty->font);
 			set_field(L, "fontsize", sty->fontsize);
 
-			set_field(L, "color1", sty->primary.GetAssFormatted(true));
-			set_field(L, "color2", sty->secondary.GetAssFormatted(true));
-			set_field(L, "color3", sty->outline.GetAssFormatted(true));
-			set_field(L, "color4", sty->shadow.GetAssFormatted(true));
+			set_field(L, "color1", sty->primary.GetAssStyleFormatted() + "&");
+			set_field(L, "color2", sty->secondary.GetAssStyleFormatted() + "&");
+			set_field(L, "color3", sty->outline.GetAssStyleFormatted() + "&");
+			set_field(L, "color4", sty->shadow.GetAssStyleFormatted() + "&");
 
 			set_field(L, "bold", sty->bold);
 			set_field(L, "italic", sty->italic);
@@ -305,16 +315,16 @@ namespace Automation4 {
 		AssEntry *result = 0;
 
 		try {
-			wxString section = get_string_field(L, "section", "common");
+			wxString section = get_wxstring_field(L, "section", "common");
 
 			if (lclass == "clear")
 				result = new AssEntry("", "");
 			else if (lclass == "comment")
-				result = new AssEntry(";" + get_string_field(L, "text", "comment"), section);
+				result = new AssEntry(";" + get_wxstring_field(L, "text", "comment"), section);
 			else if (lclass == "head")
 				result = new AssEntry(section, section);
 			else if (lclass == "info") {
-				result = new AssEntry(wxString::Format("%s: %s", get_string_field(L, "key", "info"), get_string_field(L, "value", "info")), "[Script Info]");
+				result = new AssEntry(wxString::Format("%s: %s", get_wxstring_field(L, "key", "info"), get_wxstring_field(L, "value", "info")), "[Script Info]");
 			}
 			else if (lclass == "format") {
 				// ohshi- ...
@@ -324,13 +334,13 @@ namespace Automation4 {
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;
 				result = sty;
-				sty->name = get_string_field(L, "name", "style");
-				sty->font = get_string_field(L, "fontname", "style");
+				sty->name = get_wxstring_field(L, "name", "style");
+				sty->font = get_wxstring_field(L, "fontname", "style");
 				sty->fontsize = get_double_field(L, "fontsize", "style");
-				sty->primary.Parse(get_string_field(L, "color1", "style"));
-				sty->secondary.Parse(get_string_field(L, "color2", "style"));
-				sty->outline.Parse(get_string_field(L, "color3", "style"));
-				sty->shadow.Parse(get_string_field(L, "color4", "style"));
+				sty->primary = get_string_field(L, "color1", "style");
+				sty->secondary = get_string_field(L, "color2", "style");
+				sty->outline = get_string_field(L, "color3", "style");
+				sty->shadow = get_string_field(L, "color4", "style");
 				sty->bold = get_bool_field(L, "bold", "style");
 				sty->italic = get_bool_field(L, "italic", "style");
 				sty->underline = get_bool_field(L, "underline", "style");
@@ -357,13 +367,13 @@ namespace Automation4 {
 				dia->Layer = get_int_field(L, "layer", "dialogue");
 				dia->Start = get_int_field(L, "start_time", "dialogue");
 				dia->End = get_int_field(L, "end_time", "dialogue");
-				dia->Style = get_string_field(L, "style", "dialogue");
-				dia->Actor = get_string_field(L, "actor", "dialogue");
+				dia->Style = get_wxstring_field(L, "style", "dialogue");
+				dia->Actor = get_wxstring_field(L, "actor", "dialogue");
 				dia->Margin[0] = get_int_field(L, "margin_l", "dialogue");
 				dia->Margin[1] = get_int_field(L, "margin_r", "dialogue");
 				dia->Margin[2] = get_int_field(L, "margin_t", "dialogue");
-				dia->Effect = get_string_field(L, "effect", "dialogue");
-				dia->Text = get_string_field(L, "text", "dialogue");
+				dia->Effect = get_wxstring_field(L, "effect", "dialogue");
+				dia->Text = get_wxstring_field(L, "text", "dialogue");
 			}
 			else {
 				luaL_error(L, "Found line with unknown class: %s", lclass.utf8_str().data());

@@ -32,76 +32,34 @@
 /// @ingroup utility subs_storage
 ///
 
-
 #pragma once
 
+namespace agi { struct Color; }
 
-///////////
-// Headers
-#ifndef AGI_PRE
-#include <wx/colour.h>
-#endif
-
-
-/// DOCME
 enum VariableDataType {
-
-	/// DOCME
 	VARDATA_NONE,
-
-	/// DOCME
 	VARDATA_INT,
-
-	/// DOCME
 	VARDATA_FLOAT,
-
-	/// DOCME
 	VARDATA_TEXT,
-
-	/// DOCME
 	VARDATA_BOOL,
-
-	/// DOCME
 	VARDATA_COLOUR,
-
-	/// DOCME
 	VARDATA_BLOCK
 };
 
 class AssDialogueBlockOverride;
 
-
-/// DOCME
-/// @class VariableData
-/// @brief DOCME
-///
-/// DOCME
 class VariableData {
 private:
 	union {
-		/// DOCME
 		void *value;
-
-		/// DOCME
 		int *value_int;
-
-		/// DOCME
 		double *value_float;
-
-		/// DOCME
 		bool *value_bool;
-
-		/// DOCME
 		wxString *value_text;
-
-		/// DOCME
-		wxColour *value_colour;
-
-		/// DOCME
+		agi::Color *value_colour;
 		AssDialogueBlockOverride **value_block;
 	};
 
-	/// DOCME
 	VariableDataType type;
 
 protected:

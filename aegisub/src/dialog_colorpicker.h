@@ -34,16 +34,17 @@
 
 #ifndef AGI_PRE
 #include <tr1/functional>
-
-#include <wx/colour.h>
 #endif
+
+namespace agi { struct Color; }
+class wxWindow;
 
 /// @brief Get a color from the user via a color picker dialog
 /// @param parent Parent window
 /// @param original Initial color to select
 /// @param callback Function called whenever the selected color changes
-/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was canceled
-wxColour GetColorFromUser(wxWindow* parent, wxColour original, std::tr1::function<void (wxColour)> callback);
+/// @return Did the user accept the new color?
+bool GetColorFromUser(wxWindow* parent, agi::Color original, std::tr1::function<void (agi::Color)> callback);
 
 /// @brief Get a color from the user via a color picker dialog
 /// @param T Class which the callback method belongs to
@@ -51,8 +52,8 @@ wxColour GetColorFromUser(wxWindow* parent, wxColour original, std::tr1::functio
 /// @param parent Parent window
 /// @param original Initial color to select
 /// @param callbackObj Object to call callback method on. Must be of type T.
-/// @return Last selected color when dialog is closed, or wxNullColour if the dialog was canceled
-template<class T, void (T::*method)(wxColour)>
-wxColour GetColorFromUser(wxWindow* parent, wxColour original, T* callbackObj) {
+/// @return Did the user accept the new color?
+template<class T, void (T::*method)(agi::Color)>
+bool GetColorFromUser(wxWindow* parent, agi::Color original, T* callbackObj) {
 	return GetColorFromUser(parent, original, bind(method, callbackObj, std::tr1::placeholders::_1));
 }

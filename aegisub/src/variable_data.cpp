@@ -31,29 +31,27 @@
 /// @brief A variant-type implementation
 /// @ingroup utility subs_storage
 
-////////////
-// Includes
 #include "config.h"
+
+#include "variable_data.h"
 
 #include "ass_dialogue.h"
 #include "ass_style.h"
+#include "compat.h"
 #include "utils.h"
-#include "variable_data.h"
 
-/// @brief Constructor
+#include <libaegisub/color.h>
+
 VariableData::VariableData() {
 	type = VARDATA_NONE;
 	value = NULL;
 }
 
-/// @brief Destructor
 VariableData::~VariableData() {
-	DeleteValue ();
+	DeleteValue();
 }
 
-/// @brief Deletes the stored value
-/// @return
-void VariableData::DeleteValue () {
+void VariableData::DeleteValue() {
 	if (!value) return;
 	if (type == VARDATA_NONE) return;
 	switch (type) {
@@ -86,7 +84,7 @@ template<> inline VariableDataType get_type<bool>() {
 template<> inline VariableDataType get_type<wxString>() {
 	return VARDATA_TEXT;
 }
-template<> inline VariableDataType get_type<wxColour>() {
+template<> inline VariableDataType get_type<agi::Color>() {
 	return VARDATA_COLOUR;
 }
 template<> inline VariableDataType get_type<AssDialogueBlockOverride *>() {
@@ -104,7 +102,7 @@ template void VariableData::Set<float>(float param);
 template void VariableData::Set<double>(double param);
 template void VariableData::Set<bool>(bool param);
 template void VariableData::Set(wxString param);
-template void VariableData::Set<wxColour>(wxColour param);
+template void VariableData::Set<agi::Color>(agi::Color param);
 template void VariableData::Set<AssDialogueBlockOverride *>(AssDialogueBlockOverride * param);
 
 /// @brief Resets a value with a string, preserving current type
@@ -128,11 +126,7 @@ void VariableData::ResetWith(wxString value) {
 			else Set(false);
 			break;
 		case VARDATA_COLOUR: {
-			long r=0,g=0,b=0;
-			value.Mid(1,2).ToLong(&r,16);
-			value.Mid(3,2).ToLong(&g,16);
-			value.Mid(5,2).ToLong(&b,16);
-			Set(wxColour(r,g,b));
+			Set(agi::Color(from_wx(value)));
 			break;
 		}
 		default:
@@ -141,8 +135,6 @@ void VariableData::ResetWith(wxString value) {
 	}
 }
 
-/// @brief Reads as an int
-/// @return
 template<> int VariableData::Get<int>() const {
 	if (!value) throw "Null parameter";
 	if (type == VARDATA_BOOL) return !!(*value_bool);
@@ -152,8 +144,6 @@ template<> int VariableData::Get<int>() const {
 	throw "Wrong parameter type, should be int";
 }
 
-/// @brief Reads as a float
-/// @return
 template<> float VariableData::Get<float>() const {
 	if (!value) throw "Null parameter";
 	if (type == VARDATA_FLOAT) return (float)*value_float;
@@ -169,8 +159,6 @@ template<> double VariableData::Get<double>() const {
 	throw "Wrong parameter type, should be float";
 }
 
-/// @brief Reads as a bool
-/// @return
 template<> bool VariableData::Get<bool>() const {
 	if (!value) throw "Null parameter";
 	if (type == VARDATA_BOOL) return *value_bool;
@@ -180,35 +168,27 @@ template<> bool VariableData::Get<bool>() const {
 	throw "Wrong parameter type, should be bool";
 }
 
-/// @brief Reads as a colour
-/// @return
-template<> wxColour VariableData::Get<wxColour>() const {
+template<> agi::Color VariableData::Get<agi::Color>() const {
 	if (!value) throw "Null parameter";
-	if (type == VARDATA_COLOUR)	return *value_colour;
+	if (type == VARDATA_COLOUR) return *value_colour;
 	else if (type == VARDATA_TEXT) {
-		AssColor color;
-		color.Parse(*value_text);
-		return color.GetWXColor();
+		return agi::Color(from_wx(*value_text));
 	}
 	else throw "Wrong parameter type, should be colour";
 }
 
-/// @brief Reads as a block
-/// @return
 template<> AssDialogueBlockOverride *VariableData::Get<AssDialogueBlockOverride *>() const {
 	if (!value) throw "Null parameter";
 	if (type != VARDATA_BLOCK) throw "Wrong parameter type, should be block";
 	return *value_block;
 }
 
-/// @brief Reads as a string
-/// @return
 template<> wxString VariableData::Get<wxString>() const {
 	if (!value) throw "Null parameter";
 	if (type != VARDATA_TEXT) {
 		if (type == VARDATA_INT) return wxString::Format("%i",*value_int);
 		else if (type == VARDATA_FLOAT) return wxString::Format("%g",*value_float);
-		else if (type == VARDATA_COLOUR) return wxString::Format("#%02X%02X%02X",value_colour->Red(),value_colour->Green(),value_colour->Blue());
+		else if (type == VARDATA_COLOUR) return to_wx(value_colour->GetHexFormatted());
 		else if (type == VARDATA_BOOL) return *value_bool ? "1" : "0";
 		else if (type == VARDATA_BLOCK) return (*value_block)->GetText();
 		else throw "Wrong parameter type, should be text";
@@ -216,21 +196,17 @@ template<> wxString VariableData::Get<wxString>() const {
 	return *value_text;
 }
 
-/// @brief Gets type
-/// @return
 VariableDataType VariableData::GetType() const {
 	return type;
 }
 
-/// @brief Copy
-/// @param param
 void VariableData::operator= (const VariableData &param) {
 	switch(param.GetType()) {
 		case VARDATA_INT: Set(param.Get<int>()); break;
 		case VARDATA_FLOAT: Set(param.Get<double>()); break;
 		case VARDATA_TEXT: Set(param.Get<wxString>()); break;
 		case VARDATA_BOOL: Set(param.Get<bool>()); break;
-		case VARDATA_COLOUR: Set(param.Get<wxColor>()); break;
+		case VARDATA_COLOUR: Set(param.Get<agi::Color>()); break;
 		case VARDATA_BLOCK: Set(param.Get<AssDialogueBlockOverride*>()); break;
 		default: DeleteValue();
 	}

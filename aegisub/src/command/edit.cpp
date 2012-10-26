@@ -302,19 +302,17 @@ void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const c
 	commit_text(c, undo_msg, sel_start, sel_end);
 }
 
-void got_color(const agi::Context *c, const char *tag, int *commit_id, wxColour new_color) {
-	if (new_color.Ok()) {
-		int sel_start = c->textSelectionController->GetSelectionStart();
-		int sel_end = c->textSelectionController->GetSelectionEnd();
-		set_tag(c, tag, AssColor(new_color).GetAssFormatted(false), sel_start, sel_end);
-		commit_text(c, _("set color"), sel_start, sel_end, commit_id);
-	}
+void got_color(const agi::Context *c, const char *tag, int *commit_id, agi::Color new_color) {
+	int sel_start = c->textSelectionController->GetSelectionStart();
+	int sel_end = c->textSelectionController->GetSelectionEnd();
+	set_tag(c, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
+	commit_text(c, _("set color"), sel_start, sel_end, commit_id);
 }
 
-void show_color_picker(const agi::Context *c, AssColor (AssStyle::*field), const char *tag, const char *alt) {
+void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), const char *tag, const char *alt) {
 	AssDialogue *const line = c->selectionController->GetActiveLine();
 	AssStyle const* const style = c->ass->GetStyle(line->Style);
-	wxColor color = (style ? style->*field : AssStyle().*field).GetWXColor();
+	agi::Color color = (style ? style->*field : AssStyle().*field);
 
 	line->ParseAssTags();
 
@@ -324,11 +322,11 @@ void show_color_picker(const agi::Context *c, AssColor (AssStyle::*field), const
 
 	color = get_value(*line, blockn, color, tag, alt);
 	int commit_id = -1;
-	const wxColor newColor = GetColorFromUser(c->parent, color, bind(got_color, c, tag, &commit_id, std::tr1::placeholders::_1));
+	bool ok = GetColorFromUser(c->parent, color, bind(got_color, c, tag, &commit_id, std::tr1::placeholders::_1));
 	line->ClearBlocks();
 	commit_text(c, _("set color"), -1, -1, &commit_id);
 
-	if (!newColor.IsOk()) {
+	if (!ok) {
 		c->ass->Undo();
 		c->textSelectionController->SetSelection(sel_start, sel_end);
 	}

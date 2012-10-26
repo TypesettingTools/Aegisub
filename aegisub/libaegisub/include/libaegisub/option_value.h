@@ -23,7 +23,7 @@
 #include <vector>
 #endif
 
-#include <libaegisub/colour.h>
+#include <libaegisub/color.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/signal.h>
 
@@ -59,12 +59,12 @@ public:
 		Type_String = 0,		///< String
 		Type_Int = 1,			///< Integer
 		Type_Double = 2,		///< Double
-		Type_Colour = 3,		///< Colour
+		Type_Color = 3,		///< Color
 		Type_Bool = 4,			///< Bool
 		Type_List_String = 100,	///< List of Strings
 		Type_List_Int = 101,	///< List of Integers
 		Type_List_Double = 102,	///< List of Doubles
-		Type_List_Colour = 103,	///< List of Colours
+		Type_List_Color = 103,	///< List of Colors
 		Type_List_Bool = 104	///< List of Bools
 	};
 
@@ -76,38 +76,38 @@ public:
 	virtual std::string GetString() const { throw TypeError("string"); }
 	virtual int64_t GetInt() const { throw TypeError("int"); }
 	virtual double GetDouble() const { throw TypeError("double"); }
-	virtual Colour GetColour() const { throw TypeError("colour"); }
+	virtual Color GetColor() const { throw TypeError("color"); }
 	virtual bool GetBool() const { throw TypeError("bool"); }
 
 	virtual void SetString(const std::string) { throw TypeError("string", " set "); }
 	virtual void SetInt(const int64_t) { throw TypeError("int", " set "); }
 	virtual void SetDouble(const double) { throw TypeError("double", " set "); }
-	virtual void SetColour(const Colour) { throw TypeError("colour", " set "); }
+	virtual void SetColor(const Color) { throw TypeError("color", " set "); }
 	virtual void SetBool(const bool) { throw TypeError("bool", " set "); }
 
 	virtual std::string GetDefaultString() const { throw TypeError("string"); }
 	virtual int64_t GetDefaultInt() const { throw TypeError("int"); }
 	virtual double GetDefaultDouble() const { throw TypeError("double"); }
-	virtual Colour GetDefaultColour() const { throw TypeError("colour"); }
+	virtual Color GetDefaultColor() const { throw TypeError("color"); }
 	virtual bool GetDefaultBool() const { throw TypeError("bool"); }
 
 
 	virtual std::vector<std::string> const& GetListString() const { throw ListTypeError("string"); }
 	virtual std::vector<int64_t> const& GetListInt() const { throw ListTypeError("int"); }
 	virtual std::vector<double> const& GetListDouble() const { throw ListTypeError("double"); }
-	virtual std::vector<Colour> const& GetListColour() const { throw ListTypeError("colour"); }
+	virtual std::vector<Color> const& GetListColor() const { throw ListTypeError("color"); }
 	virtual std::vector<bool> const& GetListBool() const { throw ListTypeError("string"); }
 
 	virtual void SetListString(const std::vector<std::string>&) { throw ListTypeError("string", " set "); }
 	virtual void SetListInt(const std::vector<int64_t>&) { throw ListTypeError("int", " set "); }
 	virtual void SetListDouble(const std::vector<double>&) { throw ListTypeError("double", " set "); }
-	virtual void SetListColour(const std::vector<Colour>&) { throw ListTypeError("colour", " set "); }
+	virtual void SetListColor(const std::vector<Color>&) { throw ListTypeError("color", " set "); }
 	virtual void SetListBool(const std::vector<bool>&) { throw ListTypeError("string", " set "); }
 
 	virtual std::vector<std::string> const& GetDefaultListString() const { throw ListTypeError("string"); }
 	virtual std::vector<int64_t> const& GetDefaultListInt() const { throw ListTypeError("int"); }
 	virtual std::vector<double> const& GetDefaultListDouble() const { throw ListTypeError("double"); }
-	virtual std::vector<Colour> const& GetDefaultListColour() const { throw ListTypeError("colour"); }
+	virtual std::vector<Color> const& GetDefaultListColor() const { throw ListTypeError("color"); }
 	virtual std::vector<bool> const& GetDefaultListBool() const { throw ListTypeError("string"); }
 
 	virtual void Set(const OptionValue *new_value)=0;
@@ -136,7 +136,7 @@ public:
 CONFIG_OPTIONVALUE(String, std::string)
 CONFIG_OPTIONVALUE(Int, int64_t)
 CONFIG_OPTIONVALUE(Double, double)
-CONFIG_OPTIONVALUE(Colour, Colour)
+CONFIG_OPTIONVALUE(Color, Color)
 CONFIG_OPTIONVALUE(Bool, bool)
 
 #define CONFIG_OPTIONVALUE_LIST(type_name, type)                                              \
@@ -161,7 +161,7 @@ CONFIG_OPTIONVALUE(Bool, bool)
 CONFIG_OPTIONVALUE_LIST(String, std::string)
 CONFIG_OPTIONVALUE_LIST(Int, int64_t)
 CONFIG_OPTIONVALUE_LIST(Double, double)
-CONFIG_OPTIONVALUE_LIST(Colour, Colour)
+CONFIG_OPTIONVALUE_LIST(Color, Color)
 CONFIG_OPTIONVALUE_LIST(Bool, bool)
 
 } // namespace agi

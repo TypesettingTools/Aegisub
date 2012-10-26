@@ -191,10 +191,10 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
 	BoxUnderline = new wxCheckBox(this, -1, _("&Underline"));
 	BoxStrikeout = new wxCheckBox(this, -1, _("&Strikeout"));
-	colorButton[0] = new ColourButton(this, -1, wxSize(55, 16), style->primary.GetWXColor());
-	colorButton[1] = new ColourButton(this, -1, wxSize(55, 16), style->secondary.GetWXColor());
-	colorButton[2] = new ColourButton(this, -1, wxSize(55, 16), style->outline.GetWXColor());
-	colorButton[3] = new ColourButton(this, -1, wxSize(55, 16), style->shadow.GetWXColor());
+	colorButton[0] = new ColourButton(this, -1, wxSize(55, 16), style->primary);
+	colorButton[1] = new ColourButton(this, -1, wxSize(55, 16), style->secondary);
+	colorButton[2] = new ColourButton(this, -1, wxSize(55, 16), style->outline);
+	colorButton[3] = new ColourButton(this, -1, wxSize(55, 16), style->shadow);
 	colorAlpha[0] = spin_ctrl(this, style->primary.a, 255);
 	colorAlpha[1] = spin_ctrl(this, style->secondary.a, 255);
 	colorAlpha[2] = spin_ctrl(this, style->outline.a, 255);
@@ -330,8 +330,8 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	ColourButton *previewButton = 0;
 	if (!SubtitlesProviderFactory::GetClasses().empty()) {
 		PreviewText = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
-		previewButton = new ColourButton(this, -1, wxSize(45, 16), lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
-		SubsPreview = new SubtitlesPreview(this, wxSize(100, 60), wxSUNKEN_BORDER, lagi_wxColour(OPT_GET("Colour/Style Editor/Background/Preview")->GetColour()));
+		previewButton = new ColourButton(this, -1, wxSize(45, 16), OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
+		SubsPreview = new SubtitlesPreview(this, wxSize(100, 60), wxSUNKEN_BORDER, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
 
 		SubsPreview->SetToolTip(_("Preview of current style"));
 		SubsPreview->SetStyle(*style);
@@ -521,27 +521,25 @@ void DialogStyleEditor::UpdateWorkStyle() {
 
 /// @brief Sets color for one of the four color buttons
 /// @param n Colour to set
-void DialogStyleEditor::OnSetColor (int n, wxCommandEvent& evt) {
+void DialogStyleEditor::OnSetColor(int n, wxCommandEvent& evt) {
 	ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
 	if (!btn) {
 		evt.Skip();
 		return;
 	}
 
-	AssColor *modify;
 	switch (n) {
-		case 1: modify = &work->primary; break;
-		case 2: modify = &work->secondary; break;
-		case 3: modify = &work->outline; break;
-		case 4: modify = &work->shadow; break;
+		case 1: work->primary = btn->GetColor(); break;
+		case 2: work->secondary = btn->GetColor(); break;
+		case 3: work->outline = btn->GetColor(); break;
+		case 4: work->shadow = btn->GetColor(); break;
 		default: throw agi::InternalError("attempted setting colour id outside range", 0);
 	}
-	modify->SetWXColor(btn->GetColour());
 	if (SubsPreview)
 		SubsPreview->SetStyle(*work);
 }
 
-void DialogStyleEditor::OnChildFocus (wxChildFocusEvent &event) {
+void DialogStyleEditor::OnChildFocus(wxChildFocusEvent &event) {
 	UpdateWorkStyle();
 	if (SubsPreview)
 		SubsPreview->SetStyle(*work);
@@ -559,8 +557,8 @@ void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &evt) {
 	if (!btn)
 		evt.Skip();
 	else {
-		SubsPreview->SetColour(btn->GetColour());
-		OPT_SET("Colour/Style Editor/Background/Preview")->SetColour(STD_STR(btn->GetColour().GetAsString(wxC2S_CSS_SYNTAX)));
+		SubsPreview->SetColour(btn->GetColor());
+		OPT_SET("Colour/Style Editor/Background/Preview")->SetColor(btn->GetColor());
 	}
 }
 

@@ -23,6 +23,7 @@ SRC += \
 	common/charset_6937.cpp \
 	common/charset_conv.cpp \
 	common/charset_ucd.cpp \
+	common/color.cpp \
 	common/hotkey.cpp \
 	common/io.cpp \
 	common/json.cpp \

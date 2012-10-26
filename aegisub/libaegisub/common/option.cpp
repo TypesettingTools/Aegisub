@@ -63,7 +63,7 @@ namespace {
 		json::Array array;
 		for (typename std::vector<T>::const_iterator it = value.begin(); it != value.end(); ++it) {
 			array.push_back(json::Object());
-			static_cast<json::Object&>(array.back())[element_key] = *it;
+			static_cast<json::Object&>(array.back())[element_key] = (json::UnknownElement)*it;
 		}
 
 		put_option(obj, path, array);
@@ -151,8 +151,8 @@ void Options::Flush() {
 				put_option(obj_out, i->first, i->second->GetDouble());
 				break;
 
-			case OptionValue::Type_Colour:
-				put_option(obj_out, i->first, i->second->GetColour());
+			case OptionValue::Type_Color:
+				put_option(obj_out, i->first, i->second->GetColor().GetRgbFormatted());
 				break;
 
 			case OptionValue::Type_Bool:
@@ -171,8 +171,8 @@ void Options::Flush() {
 				put_array(obj_out, i->first, "double", i->second->GetListDouble());
 				break;
 
-			case OptionValue::Type_List_Colour:
-				put_array(obj_out, i->first, "colour", i->second->GetListColour());
+			case OptionValue::Type_List_Color:
+				put_array(obj_out, i->first, "color", i->second->GetListColor());
 				break;
 
 			case OptionValue::Type_List_Bool:

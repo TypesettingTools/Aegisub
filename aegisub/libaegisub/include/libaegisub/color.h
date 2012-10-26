@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -12,18 +12,33 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file colour.h
-/// @brief Colourspace class and functions.
-/// @ingroup libaegisub
+#pragma once
 
 #ifndef LAGI_PRE
 #include <string>
 #endif
 
-// This file is a stub for now.
-
 namespace agi {
+	struct Color {
+		unsigned char r;	///< Red component
+		unsigned char g;	///< Green component
+		unsigned char b;	///< Blue component
+		unsigned char a;	///< Alpha component
 
-typedef std::string Colour;
+		Color();
+		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);
+		Color(std::string const& str);
+		Color(const char *str);
 
-} // namespace agi
+		bool operator==(Color const& col) const;
+		bool operator!=(Color const& col) const;
+
+		std::string GetAssStyleFormatted() const;
+		std::string GetAssOverrideFormatted() const;
+		std::string GetSsaFormatted() const;
+		std::string GetHexFormatted() const;
+		std::string GetRgbFormatted() const;
+
+		operator std::string() const { return GetRgbFormatted(); }
+	};
+}

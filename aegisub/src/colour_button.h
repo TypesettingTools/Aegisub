@@ -36,22 +36,18 @@
 #include <wx/bmpbuttn.h>
 #endif
 
+#include <libaegisub/color.h>
 
-/// DOCME
-/// @class ColourButton
-/// @brief DOCME
-///
-/// DOCME
 class ColourButton: public wxBitmapButton {
-private:
 	wxBitmap bmp; /// The button's bitmap label
-	wxColour colour; /// The current colour
+	agi::Color colour; /// The current colour
+
+	void Paint();
 	void OnClick(wxCommandEvent &event);
-	void SetColour(wxColour colour);
+	void SetColour(agi::Color colour);
 
 public:
-	ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col=wxColour(0,0,0));
-	~ColourButton();
+	ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, agi::Color col = agi::Color());
 
-	wxColour GetColour();
+	agi::Color GetColor();
 };

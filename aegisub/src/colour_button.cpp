@@ -39,41 +39,34 @@
 #endif
 
 #include "colour_button.h"
-#include "config.h"
+
+#include "compat.h"
 #include "dialog_colorpicker.h"
 
-ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, wxColour col)
+ColourButton::ColourButton(wxWindow* parent, wxWindowID id, const wxSize& size, agi::Color col)
 : wxBitmapButton(parent, id, wxBitmap(size), wxDefaultPosition, wxSize(size.GetWidth() + 6, size.GetHeight() + 6))
 , bmp(GetBitmapLabel())
 , colour(col)
 {
-	{
-		wxMemoryDC dc;
-		dc.SelectObject(bmp);
-		dc.SetBrush(wxBrush(colour));
-		dc.DrawRectangle(0,0,bmp.GetWidth(),bmp.GetHeight());
-	}
+	Paint();
 	SetBitmapLabel(bmp);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &ColourButton::OnClick, this);
 }
 
-ColourButton::~ColourButton() {
+void ColourButton::Paint() {
+	wxMemoryDC dc;
+	dc.SelectObject(bmp);
+	dc.SetBrush(wxBrush(to_wx(colour)));
+	dc.DrawRectangle(0,0,bmp.GetWidth(),bmp.GetHeight());
 }
 
 /// @brief Callback for the color picker dialog
 /// @param col New color
-void ColourButton::SetColour(wxColour col) {
-	if (!col.IsOk()) return;
-
+void ColourButton::SetColour(agi::Color col) {
 	colour = col;
 
 	// Draw colour
-	{
-		wxMemoryDC dc;
-		dc.SelectObject(bmp);
-		dc.SetBrush(wxBrush(colour));
-		dc.DrawRectangle(0,0,bmp.GetWidth(),bmp.GetHeight());
-	}
+	Paint();
 	SetBitmapLabel(bmp);
 
 	// Trigger a click event on this as some stuff relies on that to know
@@ -84,18 +77,14 @@ void ColourButton::SetColour(wxColour col) {
 	AddPendingEvent(evt);
 }
 
-wxColour ColourButton::GetColour() {
+agi::Color ColourButton::GetColor() {
 	return colour;
 }
 
-/// @brief Click handler
-/// @param event
 void ColourButton::OnClick(wxCommandEvent &event) {
 	if (event.GetClientData() == this)
 		event.Skip();
 	else {
-		wxColour initial = colour;
-		if (!GetColorFromUser<ColourButton, &ColourButton::SetColour>(GetParent(), colour, this).IsOk())
-			SetColour(initial);
+		GetColorFromUser<ColourButton, &ColourButton::SetColour>(GetParent(), colour, this);
 	}
 }

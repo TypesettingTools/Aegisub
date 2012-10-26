@@ -64,10 +64,3 @@ void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, unsigned char *oL);
 
 void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, unsigned char *oV);
-
-
-/// Convert a wxColour to a HTML hex string
-wxString color_to_html(wxColour color);
-
-/// Convert a HTML hex string to a wxColour
-wxColour html_to_color(wxString html);

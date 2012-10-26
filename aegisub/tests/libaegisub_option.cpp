@@ -132,7 +132,7 @@ TEST_F(lagi_option, flush_roundtrip) {
 		EXPECT_NO_THROW(opt.Get("Integer")->SetInt(1));
 		EXPECT_NO_THROW(opt.Get("Double")->SetDouble(1.1));
 		EXPECT_NO_THROW(opt.Get("String")->SetString("hello"));
-		EXPECT_NO_THROW(opt.Get("Colour")->SetColour("rgb(255,255,255)"));
+		EXPECT_NO_THROW(opt.Get("Color")->SetColor("rgb(255,255,255)"));
 		EXPECT_NO_THROW(opt.Get("Boolean")->SetBool(true));
 
 		std::vector<int64_t> int_arr; int_arr.push_back(1);
@@ -141,8 +141,8 @@ TEST_F(lagi_option, flush_roundtrip) {
 		EXPECT_NO_THROW(opt.Get("Array/Double")->SetListDouble(double_arr));
 		std::vector<std::string> str_arr; str_arr.push_back("hello");
 		EXPECT_NO_THROW(opt.Get("Array/String")->SetListString(str_arr));
-		std::vector<agi::Colour> clr_arr; clr_arr.push_back("rgb(255,255,255)");
-		EXPECT_NO_THROW(opt.Get("Array/Colour")->SetListColour(clr_arr));
+		std::vector<agi::Color> clr_arr; clr_arr.push_back("rgb(255,255,255)");
+		EXPECT_NO_THROW(opt.Get("Array/Color")->SetListColor(clr_arr));
 		std::vector<bool> bool_arr; bool_arr.push_back(true);
 		EXPECT_NO_THROW(opt.Get("Array/Boolean")->SetListBool(bool_arr));
 	}
@@ -154,19 +154,19 @@ TEST_F(lagi_option, flush_roundtrip) {
 		EXPECT_EQ(1, opt.Get("Integer")->GetInt());
 		EXPECT_EQ(1.1, opt.Get("Double")->GetDouble());
 		EXPECT_STREQ("hello", opt.Get("String")->GetString().c_str());
-		EXPECT_STREQ("rgb(255,255,255)", opt.Get("Colour")->GetColour().c_str());
+		EXPECT_STREQ("rgb(255, 255, 255)", opt.Get("Color")->GetColor().GetRgbFormatted().c_str());
 		EXPECT_EQ(true, opt.Get("Boolean")->GetBool());
 
 		EXPECT_EQ(1, opt.Get("Array/Integer")->GetListInt().size());
 		EXPECT_EQ(1, opt.Get("Array/Double")->GetListDouble().size());
 		EXPECT_EQ(1, opt.Get("Array/String")->GetListString().size());
-		EXPECT_EQ(1, opt.Get("Array/Colour")->GetListColour().size());
+		EXPECT_EQ(1, opt.Get("Array/Color")->GetListColor().size());
 		EXPECT_EQ(1, opt.Get("Array/Boolean")->GetListBool().size());
 
 		EXPECT_EQ(1, opt.Get("Array/Integer")->GetListInt().front());
 		EXPECT_EQ(1.1, opt.Get("Array/Double")->GetListDouble().front());
 		EXPECT_STREQ("hello", opt.Get("Array/String")->GetListString().front().c_str());
-		EXPECT_STREQ("rgb(255,255,255)", opt.Get("Array/Colour")->GetListColour().front().c_str());
+		EXPECT_STREQ("rgb(255, 255, 255)", opt.Get("Array/Color")->GetListColor().front().GetRgbFormatted().c_str());
 		EXPECT_EQ(true, opt.Get("Array/Boolean")->GetListBool().front());
 	}
 }
@@ -215,7 +215,7 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 		empty_arr_options opt;
 		EXPECT_NO_THROW(opt.Get("arr")->GetListBool());
 
-		EXPECT_THROW(opt.Get("arr")->GetListColour(), agi::OptionValueErrorInvalidListType);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::OptionValueErrorInvalidListType);
@@ -223,7 +223,7 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 
 	{
 		empty_arr_options opt;
-		EXPECT_NO_THROW(opt.Get("arr")->GetListColour());
+		EXPECT_NO_THROW(opt.Get("arr")->GetListColor());
 
 		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidListType);
@@ -236,7 +236,7 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 		EXPECT_NO_THROW(opt.Get("arr")->GetListDouble());
 
 		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidListType);
-		EXPECT_THROW(opt.Get("arr")->GetListColour(), agi::OptionValueErrorInvalidListType);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::OptionValueErrorInvalidListType);
 	}
@@ -246,7 +246,7 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 		EXPECT_NO_THROW(opt.Get("arr")->GetListInt());
 
 		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidListType);
-		EXPECT_THROW(opt.Get("arr")->GetListColour(), agi::OptionValueErrorInvalidListType);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::OptionValueErrorInvalidListType);
 	}
@@ -256,7 +256,7 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 		EXPECT_NO_THROW(opt.Get("arr")->GetListString());
 
 		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidListType);
-		EXPECT_THROW(opt.Get("arr")->GetListColour(), agi::OptionValueErrorInvalidListType);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidListType);
 	}

@@ -160,8 +160,8 @@ void VideoBox::UpdateTimeBoxes() {
 	VideoPosition->SetValue(wxString::Format("%s - %d", AssTime(time).GetAssFormated(true), frame));
 	if (binary_search(context->videoController->GetKeyFrames().begin(), context->videoController->GetKeyFrames().end(), frame)) {
 		// Set the background color to indicate this is a keyframe
-		VideoPosition->SetBackgroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColour()));
-		VideoPosition->SetForegroundColour(lagi_wxColour(OPT_GET("Colour/Subtitle Grid/Selection")->GetColour()));
+		VideoPosition->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColor()));
+		VideoPosition->SetForegroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Selection")->GetColor()));
 	}
 	else {
 		VideoPosition->SetBackgroundColour(wxNullColour);

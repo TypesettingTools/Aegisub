@@ -284,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\common\color.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\common\hotkey.cpp"
 				>
 			</File>
@@ -418,7 +422,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libaegisub\include\libaegisub\colour.h"
+				RelativePath="..\..\libaegisub\include\libaegisub\color.h"
 				>
 			</File>
 			<File

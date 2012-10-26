@@ -71,7 +71,7 @@ public:
 	void operator()(wxCommandEvent& evt) {
 		ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
 		if (btn)
-			parent->SetOption(new agi::OptionValueColour(name, STD_STR(btn->GetColour().GetAsString(wxC2S_CSS_SYNTAX))));
+			parent->SetOption(new agi::OptionValueColor(name, btn->GetColor()));
 		evt.Skip();
 	}
 };
@@ -162,8 +162,8 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 			return text;
 		}
 
-		case agi::OptionValue::Type_Colour: {
-			ColourButton *cb = new ColourButton(this, -1, wxSize(40,10), lagi_wxColour(opt->GetColour()));
+		case agi::OptionValue::Type_Color: {
+			ColourButton *cb = new ColourButton(this, -1, wxSize(40,10), opt->GetColor());
 			cb->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ColourUpdater(opt_name, parent));
 			Add(flex, name, cb);
 			return cb;

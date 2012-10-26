@@ -90,55 +90,54 @@ static ResolutionShortcut resolutions[] = {
 bool DialogDummyVideo::CreateDummyVideo(wxWindow *parent, wxString &out_filename)
 {
 	DialogDummyVideo dlg(parent);
-	if (dlg.ShowModal() == wxID_OK) {
-		double fps;
-		long width, height, length;
-		wxColour colour;
-		bool pattern;
-
-		// Read back values and check sensibility
-		if (!dlg.fps->GetValue().ToDouble(&fps) || fps <= 0) {
-			wxLogWarning("Invalid framerate specified, assuming 23.976");
-			fps = 24/1.001;
-		}
-		if (!dlg.width->GetValue().ToLong(&width) || width <= 0) {
-			wxLogWarning("Invalid width specified");
-			width = 0;
-		}
-		if (!dlg.height->GetValue().ToLong(&height) || height <= 0) {
-			wxLogWarning("Invalid height specified");
-			height = 0;
-		}
-		if (width == 0 && height == 0) {
-			wxLogWarning("Assuming 640x480");
-			width = 640; height = 480;
-		} else if (width == 0) {
-			width = height * 4 / 3;
-			wxLogWarning("Assuming 4:3 fullscreen, %dx%d", width, height);
-		} else if (height == 0) {
-			height = width * 3 / 4;
-			wxLogWarning("Assuming 4:3 fullscreen, %dx%d", width, height);
-		}
-		if ((length = dlg.length->GetValue()) <= 0) {
-			wxLogWarning("Invalid duration, assuming 2 frames");
-			length = 2;
-		}
-		colour = dlg.colour->GetColour();
-		pattern = dlg.pattern->GetValue();
-
-		// Write to options
-		OPT_SET("Video/Dummy/FPS")->SetDouble(fps);
-		OPT_SET("Video/Dummy/Last/Width")->SetInt(width);
-		OPT_SET("Video/Dummy/Last/Height")->SetInt(height);
-		OPT_SET("Video/Dummy/Last/Length")->SetInt(length);
-		OPT_SET("Colour/Video Dummy/Last Colour")->SetColour(STD_STR(colour.GetAsString(wxC2S_CSS_SYNTAX)));
-		OPT_SET("Video/Dummy/Pattern")->SetBool(pattern);
-
-		out_filename = DummyVideoProvider::MakeFilename(fps, length, width, height, colour, pattern);
-		return true;
-	} else {
+	if (dlg.ShowModal() != wxID_OK)
 		return false;
+
+	double fps;
+	long width, height, length;
+	agi::Color colour;
+	bool pattern;
+
+	// Read back values and check sensibility
+	if (!dlg.fps->GetValue().ToDouble(&fps) || fps <= 0) {
+		wxLogWarning("Invalid framerate specified, assuming 23.976");
+		fps = 24/1.001;
 	}
+	if (!dlg.width->GetValue().ToLong(&width) || width <= 0) {
+		wxLogWarning("Invalid width specified");
+		width = 0;
+	}
+	if (!dlg.height->GetValue().ToLong(&height) || height <= 0) {
+		wxLogWarning("Invalid height specified");
+		height = 0;
+	}
+	if (width == 0 && height == 0) {
+		wxLogWarning("Assuming 640x480");
+		width = 640; height = 480;
+	} else if (width == 0) {
+		width = height * 4 / 3;
+		wxLogWarning("Assuming 4:3 fullscreen, %dx%d", width, height);
+	} else if (height == 0) {
+		height = width * 3 / 4;
+		wxLogWarning("Assuming 4:3 fullscreen, %dx%d", width, height);
+	}
+	if ((length = dlg.length->GetValue()) <= 0) {
+		wxLogWarning("Invalid duration, assuming 2 frames");
+		length = 2;
+	}
+	colour = dlg.colour->GetColor();
+	pattern = dlg.pattern->GetValue();
+
+	// Write to options
+	OPT_SET("Video/Dummy/FPS")->SetDouble(fps);
+	OPT_SET("Video/Dummy/Last/Width")->SetInt(width);
+	OPT_SET("Video/Dummy/Last/Height")->SetInt(height);
+	OPT_SET("Video/Dummy/Last/Length")->SetInt(length);
+	OPT_SET("Colour/Video Dummy/Last Colour")->SetColor(colour);
+	OPT_SET("Video/Dummy/Pattern")->SetBool(pattern);
+
+	out_filename = DummyVideoProvider::MakeFilename(fps, length, width, height, colour, pattern);
+	return true;
 }
 
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
@@ -151,7 +150,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	resolution_shortcuts = new wxComboBox(this, Dummy_Video_Resolution_Shortcut, "", wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY);
 	width = new wxTextCtrl(this, -1);
 	height = new wxTextCtrl(this, -1);
-	colour = new ColourButton(this, -1, wxSize(30, 17), lagi_wxColour(OPT_GET("Colour/Video Dummy/Last Colour")->GetColour()));
+	colour = new ColourButton(this, -1, wxSize(30, 17), OPT_GET("Colour/Video Dummy/Last Colour")->GetColor());
 	pattern = new wxCheckBox(this, -1, _("Checkerboard &pattern"));
 	fps = new wxTextCtrl(this, Dummy_Video_FPS, wxString::Format("%f", OPT_GET("Video/Dummy/FPS")->GetDouble()));
 	length = new wxSpinCtrl(this, Dummy_Video_Length, "", wxDefaultPosition, wxDefaultSize, 4096|wxALIGN_LEFT);
@@ -212,7 +211,6 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 DialogDummyVideo::~DialogDummyVideo()
 {
 }
-
 
 BEGIN_EVENT_TABLE(DialogDummyVideo,wxDialog)
 	EVT_COMBOBOX(Dummy_Video_Resolution_Shortcut, DialogDummyVideo::OnResolutionShortcut)

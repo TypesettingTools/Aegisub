@@ -35,7 +35,7 @@
 #include "include/aegisub/video_provider.h"
 #include "video_frame.h"
 
-class wxColour;
+namespace agi { struct Color; }
 
 /// @class DummyVideoProvider
 /// @brief A dummy video provider for when opening a file is just too much effort
@@ -73,14 +73,14 @@ public:
 	/// @param height Height in pixels of the dummy video
 	/// @param colour Primary colour of the dummy video
 	/// @param pattern Use a checkerboard pattern rather than a solid colour
-	DummyVideoProvider(double fps, int frames, int width, int height, wxColour const& colour, bool pattern);
+	DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
 	/// Destructor
 	~DummyVideoProvider();
 
 	/// Make a fake filename which when passed to the constructor taking a
 	/// string will result in a video with the given parameters
-	static wxString MakeFilename(double fps, int frames, int width, int height, wxColour const& colour, bool pattern);
+	static wxString MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
 	const AegiVideoFrame GetFrame(int n)  { return frame; }
 	int GetFrameCount()             const { return framecount; }

@@ -26,7 +26,7 @@
 #include <cmath>
 #endif
 
-#include <libaegisub/colour.h>
+#include <libaegisub/color.h>
 #include <libaegisub/log.h>
 #include <libaegisub/option_value.h>
 #include <libaegisub/scoped_ptr.h>
@@ -78,7 +78,7 @@ OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const&
 			return 0;
 		}
 
-		arr.push_back(obj.begin()->second);
+		arr.push_back(ValueType(obj.begin()->second));
 	}
 
 	return new OptionValueType(name, arr);
@@ -106,8 +106,8 @@ void ConfigVisitor::Visit(const json::Array& array) {
 		AddOptionValue(ReadArray(array, array_type, &OptionValueListDouble::SetListDouble));
 	else if (array_type == "bool")
 		AddOptionValue(ReadArray(array, array_type, &OptionValueListBool::SetListBool));
-	else if (array_type == "colour")
-		AddOptionValue(ReadArray(array, array_type, &OptionValueListColour::SetListColour));
+	else if (array_type == "color")
+		AddOptionValue(ReadArray(array, array_type, &OptionValueListColor::SetListColor));
 	else
 		Error<OptionJsonValueArray>("Array type not handled");
 }
@@ -121,8 +121,8 @@ void ConfigVisitor::Visit(const json::Double& number) {
 }
 
 void ConfigVisitor::Visit(const json::String& string) {
-	if (string.find("rgb(") == 0) {
-		AddOptionValue(new OptionValueColour(name, string));
+	if (string.size() && (string.find("rgb(") == 0 || string[0] == '#' || string[0] == '&')) {
+		AddOptionValue(new OptionValueColor(name, string));
 	} else {
 		AddOptionValue(new OptionValueString(name, string));
 	}

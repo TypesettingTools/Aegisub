@@ -48,7 +48,7 @@
 #include "include/aegisub/subtitles_provider.h"
 #include "video_provider_dummy.h"
 
-SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, wxColour col)
+SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, agi::Color col)
 : wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
 , style(new AssStyle)
 , backColour(col)
@@ -92,7 +92,7 @@ void SubtitlesPreview::SetText(wxString text) {
 	}
 }
 
-void SubtitlesPreview::SetColour(wxColour col) {
+void SubtitlesPreview::SetColour(agi::Color col) {
 	if (col != backColour) {
 		backColour = col;
 		vid.reset(new DummyVideoProvider(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), backColour, true));

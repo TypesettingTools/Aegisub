@@ -40,25 +40,7 @@
 
 #include "ass_entry.h"
 
-struct AssColor {
-	int r;	///< Red component
-	int g;	///< Green component
-	int b;	///< Blue component
-	int a;	///< Alpha component
-
-	AssColor();
-	AssColor(int r, int g, int b, int a = 0);
-	AssColor(const wxColour &color);
-
-	bool operator==(const AssColor &col) const;
-	bool operator!=(const AssColor &col) const;
-
-	wxColor GetWXColor() const;				// Return as a wxColor
-	void SetWXColor(const wxColor &color);	// Sets from a wxColor
-	void Parse(wxString  const& value);		// Parse SSA or ASS-style color
-	wxString GetAssFormatted(bool alpha,bool stripped=false,bool isStyle=false) const;	// Gets color formated in ASS format
-	wxString GetSSAFormatted() const;
-};
+#include <libaegisub/color.h>
 
 class AssStyle : public AssEntry {
 public:
@@ -66,10 +48,10 @@ public:
 	wxString font;   ///< Font face name
 	double fontsize; ///< Font size
 
-	AssColor primary;   ///< Default text color
-	AssColor secondary; ///< Text color for not-yet-reached karaoke syllables
-	AssColor outline;   ///< Outline color
-	AssColor shadow;    ///< Shadow color
+	agi::Color primary;   ///< Default text color
+	agi::Color secondary; ///< Text color for not-yet-reached karaoke syllables
+	agi::Color outline;   ///< Outline color
+	agi::Color shadow;    ///< Shadow color
 
 	bool bold;
 	bool italic;

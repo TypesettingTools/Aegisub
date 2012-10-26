@@ -86,14 +86,14 @@ public:
 	void SetColourScheme(std::string const& name)
 	{
 		std::string opt_prefix = "Colour/Schemes/" + name + "/UI/";
-		light_colour = lagi_wxColour(OPT_GET(opt_prefix + "Light")->GetColour());
-		dark_colour = lagi_wxColour(OPT_GET(opt_prefix + "Dark")->GetColour());
-		sel_colour = lagi_wxColour(OPT_GET(opt_prefix + "Selection")->GetColour());
+		light_colour = to_wx(OPT_GET(opt_prefix + "Light")->GetColor());
+		dark_colour = to_wx(OPT_GET(opt_prefix + "Dark")->GetColor());
+		sel_colour = to_wx(OPT_GET(opt_prefix + "Selection")->GetColor());
 
 		opt_prefix = "Colour/Schemes/" + name + "/UI Focused/";
-		light_focused_colour = lagi_wxColour(OPT_GET(opt_prefix + "Light")->GetColour());
-		dark_focused_colour = lagi_wxColour(OPT_GET(opt_prefix + "Dark")->GetColour());
-		sel_focused_colour = lagi_wxColour(OPT_GET(opt_prefix + "Selection")->GetColour());
+		light_focused_colour = to_wx(OPT_GET(opt_prefix + "Light")->GetColor());
+		dark_focused_colour = to_wx(OPT_GET(opt_prefix + "Dark")->GetColor());
+		sel_focused_colour = to_wx(OPT_GET(opt_prefix + "Selection")->GetColor());
 	}
 
 	/// Set whether to use the focused or unfocused colours

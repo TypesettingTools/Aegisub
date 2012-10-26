@@ -212,9 +212,7 @@ public:
 						}
 						else if (attr_name == "color")
 						{
-							wxColour wxcl = html_to_color(attr_value);
-							wxString colorstr = AssColor(wxcl).GetAssFormatted(false, false, false);
-							new_attribs.color = wxString::Format("{\\c%s}", colorstr);
+							new_attribs.color = wxString::Format("{\\c%s}", to_wx(agi::Color(from_wx(attr_value)).GetAssOverrideFormatted()));
 						}
 						// remove this attribute to prepare for the next
 						size_t attr_pos, attr_len;

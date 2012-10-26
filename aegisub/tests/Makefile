@@ -19,6 +19,7 @@ SRC = \
 		util_unix.cpp \
 		libaegisub_access.cpp \
 		libaegisub_cajun.cpp \
+		libaegisub_color.cpp \
 		libaegisub_hotkey.cpp \
 		libaegisub_iconv.cpp \
 		libaegisub_keyframe.cpp \

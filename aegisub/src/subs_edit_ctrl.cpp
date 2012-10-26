@@ -248,10 +248,10 @@ enum {
 void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& name) {
 	StyleSetFont(id, font);
 	StyleSetBold(id, OPT_GET("Colour/Subtitle/Syntax/Bold/" + name)->GetBool());
-	StyleSetForeground(id, lagi_wxColour(OPT_GET("Colour/Subtitle/Syntax/" + name)->GetColour()));
+	StyleSetForeground(id, to_wx(OPT_GET("Colour/Subtitle/Syntax/" + name)->GetColor()));
 	const agi::OptionValue *background = OPT_GET("Colour/Subtitle/Syntax/Background/" + name);
-	if (background->GetType() == agi::OptionValue::Type_Colour)
-		StyleSetBackground(id, lagi_wxColour(background->GetColour()));
+	if (background->GetType() == agi::OptionValue::Type_Color)
+		StyleSetBackground(id, to_wx(background->GetColor()));
 }
 
 void SubsTextEditCtrl::SetStyles() {

@@ -2,13 +2,13 @@
     "Integer" : 0,
     "Double" : 0.1,
     "String" : "",
-    "Colour" : "rgb(0, 0, 0)",
+    "Color" : "rgb(0, 0, 0)",
     "Boolean" : false,
     "Array" : {
         "Integer" : [ { "int" : 0 }, {"int" : 0 } ],
-        "Double" :  [ { "double" : 0.1 }, {"double" : 0.1 } ],
-        "String" :  [ { "string" : "" }, {"string" : "" } ],
-        "Colour" :  [ { "colour" : "rgb(0,0,0)" }, {"colour" : "rgb(0,0,0)" } ],
+        "Double"  : [ { "double" : 0.1 }, {"double" : 0.1 } ],
+        "String"  : [ { "string" : "" }, {"string" : "" } ],
+        "Color"   : [ { "color" : "rgb(0,0,0)" }, {"color" : "rgb(0,0,0)" } ],
         "Boolean" : [ { "bool" : false }, {"bool" : false } ]
     }
 }

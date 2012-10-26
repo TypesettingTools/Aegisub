@@ -57,7 +57,7 @@ class SubtitlesPreview : public wxWindow {
 	/// Video provider to render into
 	agi::scoped_ptr<VideoProvider> vid;
 	/// Current background color
-	wxColour backColour;
+	agi::Color backColour;
 	/// Subtitle file containing the style and displayed line
 	agi::scoped_ptr<AssFile> subFile;
 	/// Line used to render the specified text
@@ -76,8 +76,8 @@ public:
 	/// Set the text to display
 	void SetText(wxString text);
 	/// Set the background color
-	void SetColour(wxColour col);
+	void SetColour(agi::Color col);
 
-	SubtitlesPreview(wxWindow *parent, wxSize size, int style, wxColour colour);
+	SubtitlesPreview(wxWindow *parent, wxSize size, int style, agi::Color colour);
 	~SubtitlesPreview();
 };
