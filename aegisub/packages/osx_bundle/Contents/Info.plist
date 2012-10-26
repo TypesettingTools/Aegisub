@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Aegisub</string>
+	<string>aegisub</string>
 	<key>CFBundleIconFile</key>
 	<string>Aegisub</string>
 	<key>CFBundleIdentifier</key>
