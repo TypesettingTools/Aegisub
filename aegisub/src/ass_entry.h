@@ -39,12 +39,6 @@
 #include <wx/string.h>
 #endif
 
-#include <libaegisub/exception.h>
-
-class AssDialogue;
-class AssStyle;
-class AssAttachment;
-
 enum AssEntryType {
 	ENTRY_BASE,
 	ENTRY_DIALOGUE,
@@ -52,26 +46,6 @@ enum AssEntryType {
 	ENTRY_ATTACHMENT
 };
 
-/// @see aegisub.h
-namespace Aegisub {
-
-	/// DOCME
-	/// @class InvalidMarginIdError
-	/// @brief DOCME
-	///
-	/// DOCME
-	class InvalidMarginIdError : public agi::InternalError {
-	public:
-		InvalidMarginIdError() : InternalError("Invalid margin id", 0) { }
-		const char *GetName() const { return "internal_error/invalid_margin_id"; }
-	};
-}
-
-/// DOCME
-/// @class AssEntry
-/// @brief DOCME
-///
-/// DOCME
 class AssEntry {
 	/// Raw data, exactly the same line that appears on the .ass (note that this will be in ass even if source wasn't)
 	wxString data;

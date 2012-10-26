@@ -39,6 +39,8 @@
 #include "ass_entry.h"
 #include "ass_time.h"
 
+#include <libaegisub/exception.h>
+
 enum AssBlockType {
 	BLOCK_BASE,
 	BLOCK_PLAIN,
@@ -195,4 +197,10 @@ public:
 	AssDialogue(AssDialogue const&);
 	AssDialogue(wxString const& data);
 	~AssDialogue();
+};
+
+class InvalidMarginIdError : public agi::InternalError {
+public:
+	InvalidMarginIdError() : InternalError("Invalid margin id", 0) { }
+	const char *GetName() const { return "internal_error/invalid_margin_id"; }
 };

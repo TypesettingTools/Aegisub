@@ -319,7 +319,7 @@ void AssDialogue::UpdateText () {
 }
 
 void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
-	if (which < 0 || which > 2) throw Aegisub::InvalidMarginIdError();
+	if (which < 0 || which > 2) throw InvalidMarginIdError();
 
 	// Make it numeric
 	wxString strvalue = origvalue;
@@ -339,7 +339,7 @@ void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
 }
 
 wxString AssDialogue::GetMarginString(int which, bool pad) const {
-	if (which < 0 || which > 2) throw Aegisub::InvalidMarginIdError();
+	if (which < 0 || which > 2) throw InvalidMarginIdError();
 	return wxString::Format(pad ? "%04d" : "%d", Margin[which]);
 }
 
