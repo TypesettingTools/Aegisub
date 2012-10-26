@@ -78,7 +78,7 @@ class AssEntry {
 
 public:
 	/// Group it belongs to, e.g. "[Events]"
-	const wxString group;
+	wxString group;
 
 	AssEntry(wxString const& data, wxString const& group) : data(data), group(group) { }
 	virtual ~AssEntry() { }

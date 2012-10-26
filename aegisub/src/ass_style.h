@@ -33,16 +33,13 @@
 ///
 
 #ifndef AGI_PRE
+#include <tr1/array>
+
 #include <wx/colour.h>
 #endif
 
 #include "ass_entry.h"
 
-/// DOCME
-/// @class AssColor
-/// @brief DOCME
-///
-/// DOCME
 struct AssColor {
 	int r;	///< Red component
 	int g;	///< Green component
@@ -63,11 +60,6 @@ struct AssColor {
 	wxString GetSSAFormatted() const;
 };
 
-/// DOCME
-/// @class AssStyle
-/// @brief DOCME
-///
-/// DOCME
 class AssStyle : public AssEntry {
 public:
 	wxString name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
@@ -92,7 +84,7 @@ public:
 	double outline_w; ///< Outline width in pixels
 	double shadow_w;  ///< Shadow distance in pixels
 	int alignment;    ///< \an-style line alignment
-	int Margin[3];    ///< Left/Right/Vertical
+	std::tr1::array<int, 3> Margin; ///< Left/Right/Vertical
 	int encoding;     ///< ASS font encoding needed for some non-unicode fonts
 
 	/// Update the raw line data after one or more of the public members have been changed
@@ -103,7 +95,6 @@ public:
 
 	AssStyle();
 	AssStyle(wxString data, int version=1);
-	AssStyle& operator=(AssStyle const&);
 
 	wxString GetSSAText() const;
 	AssEntryType GetType() const { return ENTRY_STYLE; }
