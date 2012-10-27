@@ -132,7 +132,7 @@ TEST_F(lagi_option, flush_roundtrip) {
 		EXPECT_NO_THROW(opt.Get("Integer")->SetInt(1));
 		EXPECT_NO_THROW(opt.Get("Double")->SetDouble(1.1));
 		EXPECT_NO_THROW(opt.Get("String")->SetString("hello"));
-		EXPECT_NO_THROW(opt.Get("Color")->SetColor("rgb(255,255,255)"));
+		EXPECT_NO_THROW(opt.Get("Color")->SetColor(agi::Color("rgb(255,255,255)")));
 		EXPECT_NO_THROW(opt.Get("Boolean")->SetBool(true));
 
 		std::vector<int64_t> int_arr; int_arr.push_back(1);
@@ -141,7 +141,7 @@ TEST_F(lagi_option, flush_roundtrip) {
 		EXPECT_NO_THROW(opt.Get("Array/Double")->SetListDouble(double_arr));
 		std::vector<std::string> str_arr; str_arr.push_back("hello");
 		EXPECT_NO_THROW(opt.Get("Array/String")->SetListString(str_arr));
-		std::vector<agi::Color> clr_arr; clr_arr.push_back("rgb(255,255,255)");
+		std::vector<agi::Color> clr_arr; clr_arr.push_back(agi::Color("rgb(255,255,255)"));
 		EXPECT_NO_THROW(opt.Get("Array/Color")->SetListColor(clr_arr));
 		std::vector<bool> bool_arr; bool_arr.push_back(true);
 		EXPECT_NO_THROW(opt.Get("Array/Boolean")->SetListBool(bool_arr));

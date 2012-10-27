@@ -12,32 +12,30 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#pragma once
-
 #ifndef LAGI_PRE
 #include <string>
 #endif
 
 namespace agi {
-	struct Color {
-		unsigned char r;	///< Red component
-		unsigned char g;	///< Green component
-		unsigned char b;	///< Blue component
-		unsigned char a;	///< Alpha component
+	struct Color;
 
-		Color();
-		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);
-		Color(std::string const& str);
-
-		bool operator==(Color const& col) const;
-		bool operator!=(Color const& col) const;
-
-		std::string GetAssStyleFormatted() const;
-		std::string GetAssOverrideFormatted() const;
-		std::string GetSsaFormatted() const;
-		std::string GetHexFormatted() const;
-		std::string GetRgbFormatted() const;
-
-		operator std::string() const { return GetRgbFormatted(); }
-	};
+	namespace parser {
+		/// Try to parse a string as a color
+		/// @param[out] dst Color struct to populate with the parsed result
+		/// @param str String to parse
+		/// @return Was the string successfully parsed as a color?
+		///
+		/// If this function returns false, the contents of dst is undefined. It
+		/// may contain partially-parsed garbage.
+		///
+		/// This function supports the following formats:
+		///  * SSA colors (i.e. a decimal number representing a bgr value)
+		///  * ASS override and style formats (a (a)bgr hex number possibly with
+		///    some ampersands and an H somewhere)
+		///  * CSS-style #rrggbb and #rgb
+		///  * CSS-style rgb(r,g,b)
+		///
+		/// CSS's rgb(r%,g%,b%) format is not currently supported.
+		bool parse(Color &dst, std::string const& str);
+	}
 }

@@ -27,10 +27,11 @@ SRC += \
 	common/hotkey.cpp \
 	common/io.cpp \
 	common/json.cpp \
+	common/keyframe.cpp \
 	common/mru.cpp \
 	common/option.cpp \
 	common/option_visit.cpp \
-	common/keyframe.cpp \
+	common/parser.cpp \
 	common/util.cpp \
 	common/log.cpp \
 	common/thesaurus.cpp \

@@ -413,14 +413,14 @@
 		"Colour Picker" : {
 			"Mode" : 4,
 			"Recent Colours" : [
-				"&H000000&",
-				"&H0000FF&",
-				"&H00FFFF&",
-				"&H00FF00&",
-				"&HFFFF00&",
-				"&HFF0000&",
-				"&HFF00FF&",
-				"&HFFFFFF&"
+				{"color" : "&H000000&"},
+				{"color" : "&H0000FF&"},
+				{"color" : "&H00FFFF&"},
+				{"color" : "&H00FF00&"},
+				{"color" : "&HFFFF00&"},
+				{"color" : "&HFF0000&"},
+				{"color" : "&HFF00FF&"},
+				{"color" : "&HFFFFFF&"}
 			],
 			"Last" : {
 				"X" : -1,

@@ -44,11 +44,11 @@ TEST(lagi_color, hex) {
 }
 
 TEST(lagi_color, rgb) {
-	EXPECT_EQ(agi::Color(0, 0, 0), "rgb(0, 0, 0)");
-	EXPECT_EQ(agi::Color(255, 255, 255), "rgb(255, 255, 255)");
-	EXPECT_EQ(agi::Color(255, 255, 255), "rgb(255,255,255)");
-	EXPECT_EQ(agi::Color(255, 0, 127), "rgb(255, 0, 127)");
-	EXPECT_EQ(agi::Color(16, 32, 48), "rgb(  16  , 32  , 48  )");
+	EXPECT_EQ(agi::Color(0, 0, 0), agi::Color("rgb(0, 0, 0)"));
+	EXPECT_EQ(agi::Color(255, 255, 255), agi::Color("rgb(255, 255, 255)"));
+	EXPECT_EQ(agi::Color(255, 255, 255), agi::Color("rgb(255,255,255)"));
+	EXPECT_EQ(agi::Color(255, 0, 127), agi::Color("rgb(255, 0, 127)"));
+	EXPECT_EQ(agi::Color(16, 32, 48), agi::Color("rgb(  16  , 32  , 48  )"));
 
 	EXPECT_EQ("rgb(0, 0, 0)", agi::Color(0, 0, 0).GetRgbFormatted());
 	EXPECT_EQ("rgb(255, 255, 255)", agi::Color(255, 255, 255).GetRgbFormatted());
