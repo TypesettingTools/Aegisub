@@ -20,6 +20,7 @@ SRC = \
 		libaegisub_access.cpp \
 		libaegisub_cajun.cpp \
 		libaegisub_color.cpp \
+		libaegisub_dialogue_lexer.cpp \
 		libaegisub_hotkey.cpp \
 		libaegisub_iconv.cpp \
 		libaegisub_keyframe.cpp \

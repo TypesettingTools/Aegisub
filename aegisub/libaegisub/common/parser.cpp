@@ -17,12 +17,15 @@
 #include "parser.h"
 
 #include "libaegisub/color.h"
+#include "libaegisub/ass/dialogue_parser.h"
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
+#include <boost/spirit/include/lex_lexertl.hpp>
+#include <boost/spirit/home/phoenix/statement.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
 	agi::Color,
@@ -96,13 +99,95 @@ struct color_grammar : qi::grammar<Iterator, agi::Color()> {
 	}
 };
 
+template <typename Lexer>
+struct dialogue_tokens : lex::lexer<Lexer> {
+	int paren_depth;
+
+	dialogue_tokens() : paren_depth(0) {
+		using lex::_state;
+		using lex::char_;
+		using lex::string;
+		using namespace boost::phoenix;
+		using namespace agi::ass::DialogueTokenType;
+
+		this->self
+			= string("\\\\[nNh]", LINE_BREAK)
+			| char_('{', OVR_BEGIN)[ref(paren_depth) = 0, _state = "OVR"]
+			| string(".", TEXT)
+			;
+
+		this->self("OVR")
+			= char_('{', ERROR)
+			| char_('}', OVR_END)[_state = "INITIAL"]
+			| char_('\\', TAG_START)[_state = "TAGSTART"]
+			| string("\\s+", WHITESPACE)
+			| string(".", COMMENT)
+			;
+
+		this->self("ARG")
+			= char_('{', ERROR)
+			| char_('}', OVR_END)[_state = "INITIAL"]
+			| char_('(', OPEN_PAREN)[++ref(paren_depth)]
+			| char_(')', CLOSE_PAREN)[--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"]]
+			| char_('\\', TAG_START)[_state = "TAGSTART"]
+			| char_(',', ARG_SEP)
+			| string("\\s+", WHITESPACE)
+			| string(".", ARG)
+			;
+
+		this->self("TAGSTART")
+			= string("\\s+", WHITESPACE)
+			| string("r|fn", TAG_NAME)[_state = "ARG"]
+			| char_('\\', TAG_START)
+			| char_('}', OVR_END)[_state = "INITIAL"]
+			| string("[a-z0-9]", TAG_NAME)[_state = "TAGNAME"]
+			| string(".", COMMENT)[_state = "OVR"]
+			;
+
+		this->self("TAGNAME")
+			= string("[a-z]+", TAG_NAME)[_state = "ARG"]
+			| char_('(', OPEN_PAREN)[++ref(paren_depth), _state = "ARG"]
+			| char_(')', CLOSE_PAREN)[--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"]]
+			| char_('}', OVR_END)[_state = "INITIAL"]
+			| char_('\\', TAG_START)[_state = "TAGSTART"]
+			| string(".", ARG)[_state = "ARG"]
+			;
+	}
+};
+
 }
 
-namespace agi { namespace parser {
+namespace agi {
+namespace parser {
 	bool parse(Color &dst, std::string const& str) {
 		std::string::const_iterator begin = str.begin();
 		bool parsed = parse(begin, str.end(), color_grammar<std::string::const_iterator>(), dst);
 		return parsed && begin == str.end();
+	}
+}
+
+namespace ass {
+	std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str) {
+		dialogue_tokens<lex::lexertl::actor_lexer<> > tokenizer;
+
+		char const* first = str.c_str();
+		char const* last = first + str.size();
+		std::vector<DialogueToken> data;
+		dialogue_tokens<lex::lexertl::actor_lexer<> >::iterator_type
+			it = tokenizer.begin(first, last),
+			end = tokenizer.end();
+
+		for (; it != end && token_is_valid(*it); ++it) {
+			int id = it->id();
+			ptrdiff_t len = it->value().end() - it->value().begin();
+			assert(len > 0);
+			if (data.empty() || data.back().type != id)
+				data.push_back(DialogueToken(id, len));
+			else
+				data.back().length += len;
+		}
+
+		return data;
 	}
 }
 }

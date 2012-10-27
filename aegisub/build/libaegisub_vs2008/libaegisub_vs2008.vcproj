@@ -542,6 +542,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="ASS"
+			>
+			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\ass\dialogue_parser.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\libaegisub\lagi_pre.h"
 			>
