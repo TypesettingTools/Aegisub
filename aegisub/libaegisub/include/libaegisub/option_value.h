@@ -146,7 +146,6 @@ CONFIG_OPTIONVALUE(Bool, bool)
 		std::vector<type> array_default;                                                      \
 		std::string name;                                                                     \
 	public:                                                                                   \
-	virtual std::string GetString() const { return "";}                                       \
 		OptionValueList##type_name(std::string const& name, std::vector<type> const& value = std::vector<type>()) \
 		: array(value), array_default(value), name(name) { }                                  \
 		std::vector<type> const& GetList##type_name() const { return array; }                 \
