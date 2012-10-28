@@ -320,8 +320,11 @@ void VideoDisplay::UpdateSize() {
 	if (freeSize) {
 		wxWindow *top = GetParent();
 		while (!top->IsTopLevel()) top = top->GetParent();
-		top->SetSize(top->GetSize() + videoSize - GetClientSize());
-		SetClientSize(videoSize);
+
+		wxSize cs = GetClientSize();
+		wxSize oldSize = top->GetSize();
+		top->SetSize(top->GetSize() + videoSize - cs);
+		SetClientSize(cs + top->GetSize() - oldSize);
 	}
 	else {
 		SetMinClientSize(videoSize);
@@ -380,7 +383,7 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 
 void VideoDisplay::SetZoom(double value) {
 	zoomValue = std::max(value, .125);
-	size_t selIndex = value / .125 - 1;
+	size_t selIndex = zoomValue / .125 - 1;
 	if (selIndex < zoomBox->GetCount())
 		zoomBox->SetSelection(selIndex);
 	zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
