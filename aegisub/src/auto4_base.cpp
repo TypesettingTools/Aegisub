@@ -39,7 +39,6 @@
 #ifndef AGI_PRE
 #ifdef __WINDOWS__
 #include <tchar.h>
-#include <windows.h>
 #endif
 
 #include <wx/button.h>
@@ -54,6 +53,8 @@
 #endif
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include <tuple>
 #else
 #include <tr1/tuple>

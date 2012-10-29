@@ -20,15 +20,15 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #endif
 
 #include "libaegisub/log.h"
 
 #include "libaegisub/charset_conv_win.h"
 #include "libaegisub/util.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 namespace agi {
 	namespace log {

@@ -20,11 +20,6 @@
 
 // Windows C
 #ifdef _WIN32
-// "Lean and mean" causes windows.h to include less stuff, mostly rarely-used things.
-// We can't build without being "lean and mean", some of the things included by it has
-// macros that clash with variable names around Aegisub causing strange build errors.
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <io.h>
 #endif
 
