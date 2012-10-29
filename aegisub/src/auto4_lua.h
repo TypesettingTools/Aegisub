@@ -96,8 +96,6 @@ namespace Automation4 {
 		void ObjectInsert(lua_State *L);
 		void ObjectGarbageCollect(lua_State *L);
 
-		int LuaParseTagData(lua_State *L);
-		int LuaUnparseTagData(lua_State *L);
 		int LuaParseKaraokeData(lua_State *L);
 
 		void LuaSetUndoPoint(lua_State *L);
