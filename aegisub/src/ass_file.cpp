@@ -189,8 +189,12 @@ void AssFile::SaveMemory(std::vector<char> &dst) {
 }
 
 bool AssFile::CanSave() const {
-	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
-	return writer && writer->CanSave(this);
+	try {
+		return SubtitleFormat::GetWriter(filename)->CanSave(this);
+	}
+	catch (...) {
+		return false;
+	}
 }
 
 void AssFile::Clear() {
