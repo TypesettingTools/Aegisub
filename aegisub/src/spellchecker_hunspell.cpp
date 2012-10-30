@@ -1,31 +1,17 @@
-// Copyright (c) 2010, Thomas Goyne <plorkyeran@aegisub.org>
-// All rights reserved.
+// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-// Aegisub Project http://www.aegisub.org/
 
 /// @file spellchecker_hunspell.cpp
 /// @brief Hunspell-based spell checker implementation
@@ -68,10 +54,10 @@ HunspellSpellChecker::HunspellSpellChecker()
 HunspellSpellChecker::~HunspellSpellChecker() {
 }
 
-bool HunspellSpellChecker::CanAddWord(wxString word) {
+bool HunspellSpellChecker::CanAddWord(std::string const& word) {
 	if (!hunspell) return false;
 	try {
-		conv->Convert(STD_STR(word));
+		conv->Convert(word);
 		return true;
 	}
 	catch (agi::charset::ConvError const&) {
@@ -79,13 +65,11 @@ bool HunspellSpellChecker::CanAddWord(wxString word) {
 	}
 }
 
-void HunspellSpellChecker::AddWord(wxString word) {
+void HunspellSpellChecker::AddWord(std::string const& word) {
 	if (!hunspell) return;
 
-	std::string sword = STD_STR(word);
-
 	// Add it to the in-memory dictionary
-	hunspell->add(conv->Convert(sword).c_str());
+	hunspell->add(conv->Convert(word).c_str());
 
 	std::set<std::string> words;
 
@@ -110,7 +94,7 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	}
 
 	// Add the word
-	words.insert(sword);
+	words.insert(word);
 
 	// Write the new dictionary
 	{
@@ -126,29 +110,28 @@ void HunspellSpellChecker::AddWord(wxString word) {
 	lang_listener.Unblock();
 }
 
-bool HunspellSpellChecker::CheckWord(wxString word) {
+bool HunspellSpellChecker::CheckWord(std::string const& word) {
 	if (!hunspell) return true;
 	try {
-		return hunspell->spell(conv->Convert(STD_STR(word)).c_str()) == 1;
+		return hunspell->spell(conv->Convert(word).c_str()) == 1;
 	}
 	catch (agi::charset::ConvError const&) {
 		return false;
 	}
 }
 
-wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
-	wxArrayString suggestions;
+std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const& word) {
+	std::vector<std::string> suggestions;
 	if (!hunspell) return suggestions;
 
-	// Grab raw from Hunspell
 	char **results;
-	int n = hunspell->suggest(&results,conv->Convert(STD_STR(word)).c_str());
+	int n = hunspell->suggest(&results, conv->Convert(word).c_str());
 
 	suggestions.reserve(n);
-	// Convert each
+	// Convert suggestions to UTF-8
 	for (int i = 0; i < n; ++i) {
 		try {
-			suggestions.Add(lagi_wxString(rconv->Convert(results[i])));
+			suggestions.push_back(rconv->Convert(results[i]));
 		}
 		catch (agi::charset::ConvError const&) {
 			// Shouldn't ever actually happen...
@@ -161,7 +144,7 @@ wxArrayString HunspellSpellChecker::GetSuggestions(wxString word) {
 	return suggestions;
 }
 
-wxArrayString HunspellSpellChecker::GetLanguageList() {
+std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 	if (!languages.empty()) return languages;
 
 	wxArrayString dic, aff;
@@ -172,12 +155,12 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 		wxDir::GetAllFiles(path, &dic, "*.dic", wxDIR_FILES);
 		wxDir::GetAllFiles(path, &aff, "*.aff", wxDIR_FILES);
 	}
-	path = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()) + "/");
+	path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()) + "/");
 	if (wxFileName::DirExists(path)) {
 		wxDir::GetAllFiles(path, &dic, "*.dic", wxDIR_FILES);
 		wxDir::GetAllFiles(path, &aff, "*.aff", wxDIR_FILES);
 	}
-	if (aff.empty()) return wxArrayString();
+	if (aff.empty()) return std::vector<std::string>();
 
 	dic.Sort();
 	aff.Sort();
@@ -194,7 +177,7 @@ wxArrayString HunspellSpellChecker::GetLanguageList() {
 		else {
 			// Don't insert a language twice if it's in both the user dir and
 			// the app's dir
-			wxString name = wxFileName(aff[j]).GetName();
+			std::string name = from_wx(wxFileName(aff[j]).GetName());
 			if (languages.empty() || name != languages.back())
 				languages.push_back(name);
 			++i;
@@ -210,7 +193,7 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	std::string language = OPT_GET("Tool/Spell Checker/Language")->GetString();
 	if (language.empty()) return;
 
-	wxString custDicRoot = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()));
+	wxString custDicRoot = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()));
 	wxString dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
 
 	// If the user has a dic/aff pair in their dictionary path for this language

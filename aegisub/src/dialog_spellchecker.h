@@ -24,13 +24,14 @@
 #include <set>
 
 #include <wx/dialog.h>
+#include <wx/arrstr.h>
 #endif
 
 #include <libaegisub/scoped_ptr.h>
 
 namespace agi { struct Context; }
+namespace agi { class SpellChecker; }
 class AssDialogue;
-class SpellChecker;
 class wxButton;
 class wxCheckBox;
 class wxComboBox;
@@ -44,7 +45,7 @@ class wxTextCtrl;
 /// DOCME
 class DialogSpellChecker : public wxDialog {
 	agi::Context *context; ///< The project context
-	agi::scoped_ptr<SpellChecker> spellchecker; ///< The spellchecking engine
+	agi::scoped_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine
 
 	/// Words which the user has indicated should always be corrected
 	std::map<wxString,wxString> auto_replace;

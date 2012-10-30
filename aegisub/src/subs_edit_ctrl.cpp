@@ -58,6 +58,8 @@
 #include "thesaurus.h"
 #include "utils.h"
 
+#include <libaegisub/spellchecker.h>
+
 /// Event ids
 enum {
 	EDIT_MENU_SPLIT_PRESERVE = 1400,
@@ -670,7 +672,7 @@ void SubsTextEditCtrl::StyleSpellCheck() {
 		wxString curWord = text.Mid(s,e-s);
 
 		// Check if it's valid
-		if (!spellchecker->CheckWord(curWord)) {
+		if (!spellchecker->CheckWord(from_wx(curWord))) {
 			StartUnicodeStyling(s,32);
 			SetUnicodeStyling(s,e-s,32);
 		}
@@ -730,7 +732,7 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	}
 
 	currentWordPos = GetReverseUnicodePosition(activePos);
-	currentWord = GetWordAtPosition(currentWordPos);
+	currentWord = from_wx(GetWordAtPosition(currentWordPos));
 
 	wxMenu menu;
 	if (!currentWord.empty()) {
@@ -764,9 +766,9 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 		else {
 			wxMenu *subMenu = new wxMenu;
 			for (size_t i = 0; i < sugs.size(); ++i)
-				subMenu->Append(EDIT_MENU_SUGGESTIONS+i, sugs[i]);
+				subMenu->Append(EDIT_MENU_SUGGESTIONS+i, to_wx(sugs[i]));
 
-			menu.Append(-1, wxString::Format(_("Spell checker suggestions for \"%s\""),currentWord), subMenu);
+			menu.Append(-1, wxString::Format(_("Spell checker suggestions for \"%s\""), to_wx(currentWord)), subMenu);
 		}
 	}
 	else {
@@ -774,17 +776,17 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 			menu.Append(EDIT_MENU_SUGGESTION,_("No correction suggestions"))->Enable(false);
 
 		for (size_t i = 0; i < sugs.size(); ++i)
-			menu.Append(EDIT_MENU_SUGGESTIONS+i, sugs[i]);
+			menu.Append(EDIT_MENU_SUGGESTIONS+i, to_wx(sugs[i]));
 
 		// Append "add word"
-		menu.Append(EDIT_MENU_ADD_TO_DICT, wxString::Format(_("Add \"%s\" to dictionary"), currentWord))->Enable(spellchecker->CanAddWord(currentWord));
+		menu.Append(EDIT_MENU_ADD_TO_DICT, wxString::Format(_("Add \"%s\" to dictionary"), to_wx(currentWord)))->Enable(spellchecker->CanAddWord(currentWord));
 	}
 
 	// Append language list
 	menu.Append(-1,_("Spell checker language"), GetLanguagesMenu(
 		EDIT_MENU_DIC_LANGS,
 		lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()),
-		spellchecker->GetLanguageList()));
+		to_wx(spellchecker->GetLanguageList())));
 	menu.AppendSeparator();
 }
 
@@ -821,7 +823,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 			}
 		}
 
-		menu.Append(-1, wxString::Format(_("Thesaurus suggestions for \"%s\""), currentWord), thesMenu);
+		menu.Append(-1, wxString::Format(_("Thesaurus suggestions for \"%s\""), to_wx(currentWord)), thesMenu);
 	}
 	else
 		menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);
@@ -830,7 +832,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 	menu.Append(-1,_("Thesaurus language"), GetLanguagesMenu(
 		EDIT_MENU_THES_LANGS,
 		lagi_wxString(OPT_GET("Tool/Thesaurus/Language")->GetString()),
-		thesaurus->GetLanguageList()));
+		to_wx(thesaurus->GetLanguageList())));
 	menu.AppendSeparator();
 }
 
@@ -874,7 +876,7 @@ void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {
 }
 
 void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
-	wxString suggestion;
+	std::string suggestion;
 	int sugIdx = event.GetId() - EDIT_MENU_THESAURUS_SUGS;
 	if (sugIdx >= 0) {
 		suggestion = lagi_wxString(thesSugs[sugIdx]);
@@ -883,33 +885,32 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 		suggestion = sugs[event.GetId() - EDIT_MENU_SUGGESTIONS];
 	}
 
-	// Stripe suggestion of parenthesis
-	int pos = suggestion.Find("(");
-	if (pos != wxNOT_FOUND) {
-		suggestion = suggestion.Left(pos-1);
-	}
+	// Strip suggestion of parenthesis
+	size_t pos = suggestion.find("(");
+	if (pos != suggestion.npos)
+		suggestion.resize(pos - 1);
 
 	// Get boundaries of text being replaced
 	int start, end;
 	GetBoundsOfWordAtPosition(currentWordPos, start, end);
 
 	wxString text = GetText();
-	SetText(text.Left(std::max(0, start)) + suggestion + text.Mid(end));
+	SetText(text.Left(std::max(0, start)) + to_wx(suggestion) + text.Mid(end));
 
 	// Set selection
-	SetSelectionU(start,start+suggestion.Length());
+	SetSelectionU(start, start+suggestion.size());
 	SetFocus();
 }
 
 void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
-	wxArrayString langs = spellchecker->GetLanguageList();
+	std::vector<std::string> langs = spellchecker->GetLanguageList();
 
 	int index = event.GetId() - EDIT_MENU_DIC_LANGS - 1;
-	wxString lang;
+	std::string lang;
 	if (index >= 0)
 		lang = langs[index];
 
-	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(lang));
+	OPT_SET("Tool/Spell Checker/Language")->SetString(lang);
 
 	UpdateStyle();
 }
@@ -917,12 +918,12 @@ void SubsTextEditCtrl::OnSetDicLanguage(wxCommandEvent &event) {
 void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 	if (!thesaurus) return;
 
-	wxArrayString langs = thesaurus->GetLanguageList();
+	std::vector<std::string> langs = thesaurus->GetLanguageList();
 
 	int index = event.GetId() - EDIT_MENU_THES_LANGS - 1;
-	wxString lang;
+	std::string lang;
 	if (index >= 0) lang = langs[index];
-	OPT_SET("Tool/Thesaurus/Language")->SetString(STD_STR(lang));
+	OPT_SET("Tool/Thesaurus/Language")->SetString(lang);
 
 	UpdateStyle();
 }

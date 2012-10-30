@@ -42,11 +42,7 @@
 #include "include/aegisub/spellchecker.h"
 #include "main.h"
 
-/// @brief Get spell checker
-/// @return
-///
-SpellChecker *SpellCheckerFactory::GetSpellChecker() {
-	// List of providers
+agi::SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Tool/Spell Checker/Backend")->GetString());
 	if (list.empty()) return NULL;
 
@@ -54,7 +50,7 @@ SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	wxString error;
 	for (unsigned int i=0;i<list.size();i++) {
 		try {
-			SpellChecker *checker = Create(list[i]);
+			agi::SpellChecker *checker = Create(list[i]);
 			if (checker) return checker;
 		}
 		catch (wxString const& err) { error += list[i] + " factory: " + err + "\n"; }
@@ -62,16 +58,13 @@ SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 		catch (...) { error += list[i] + " factory: Unknown error\n"; }
 	}
 
-	// Failed
 	throw error;
 }
 
-/// @brief Register all providers
-///
 void SpellCheckerFactory::RegisterProviders() {
 #ifdef WITH_HUNSPELL
 	Register<HunspellSpellChecker>("Hunspell");
 #endif
 }
 
-template<> SpellCheckerFactory::map *FactoryBase<SpellChecker *(*)()>::classes = NULL;
+template<> SpellCheckerFactory::map *FactoryBase<agi::SpellChecker *(*)()>::classes = NULL;

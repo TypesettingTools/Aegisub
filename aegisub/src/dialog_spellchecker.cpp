@@ -48,6 +48,7 @@
 #include "utils.h"
 
 #include <libaegisub/exception.h>
+#include <libaegisub/spellchecker.h>
 
 static void save_skip_comments(wxCommandEvent &evt) {
 	OPT_SET("Tool/Spell Checker/Skip Comments")->SetBool(!!evt.GetInt());
@@ -97,7 +98,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 			throw agi::UserCancelException("No spellchecker available");
 		}
 
-		dictionary_lang_codes = spellchecker->GetLanguageList();
+		dictionary_lang_codes = to_wx(spellchecker->GetLanguageList());
 		if (dictionary_lang_codes.empty()) {
 			wxMessageBox("No spellchecker dictionaries available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
 			throw agi::UserCancelException("No spellchecker dictionaries available");
@@ -183,7 +184,7 @@ void DialogSpellChecker::OnIgnoreAll(wxCommandEvent&) {
 }
 
 void DialogSpellChecker::OnAdd(wxCommandEvent&) {
-	spellchecker->AddWord(orig_word->GetValue());
+	spellchecker->AddWord(from_wx(orig_word->GetValue()));
 	FindNext();
 }
 
@@ -256,7 +257,7 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 		word_end = results[j].second + shift;
 		wxString word = active_line->Text.Mid(word_start, word_end - word_start);
 
-		if (auto_ignore.count(word) || spellchecker->CheckWord(word)) continue;
+		if (auto_ignore.count(word) || spellchecker->CheckWord(from_wx(word))) continue;
 
 		std::map<wxString, wxString>::const_iterator auto_rep = auto_replace.find(word);
 		if (auto_rep == auto_replace.end()) {
@@ -294,7 +295,7 @@ void DialogSpellChecker::Replace() {
 void DialogSpellChecker::SetWord(wxString const& word) {
 	orig_word->SetValue(word);
 
-	wxArrayString suggestions = spellchecker->GetSuggestions(word);
+	wxArrayString suggestions = to_wx(spellchecker->GetSuggestions(from_wx(word)));
 	replace_word->SetValue(suggestions.size() ? suggestions[0] : word);
 	suggest_list->Clear();
 	suggest_list->Append(suggestions);
@@ -302,5 +303,5 @@ void DialogSpellChecker::SetWord(wxString const& word) {
 	context->textSelectionController->SetSelection(word_start, word_end);
 	context->textSelectionController->SetInsertionPoint(word_end);
 
-	add_button->Enable(spellchecker->CanAddWord(word));
+	add_button->Enable(spellchecker->CanAddWord(from_wx(word)));
 }

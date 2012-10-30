@@ -41,16 +41,18 @@
 
 #include <libaegisub/scoped_ptr.h>
 
-class SpellChecker;
 class SubsEditBox;
 class Thesaurus;
-namespace agi { struct Context; }
+namespace agi {
+	class SpellChecker;
+	struct Context;
+}
 
 /// @class SubsTextEditCtrl
 /// @brief A Scintilla control with spell checking and syntax highlighting
 class SubsTextEditCtrl : public ScintillaTextCtrl {
 	/// Backend spellchecker to use
-	agi::scoped_ptr<SpellChecker> spellchecker;
+	agi::scoped_ptr<agi::SpellChecker> spellchecker;
 
 	/// Backend thesaurus to use
 	agi::scoped_ptr<Thesaurus> thesaurus;
@@ -59,13 +61,13 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	agi::Context *context;
 
 	/// The word right-clicked on, used for spellchecker replacing
-	wxString currentWord;
+	std::string currentWord;
 
 	/// The beginning of the word right-clicked on, for spellchecker replacing
 	int currentWordPos;
 
 	/// Spellchecker suggestions for the last right-clicked word
-	wxArrayString sugs;
+	std::vector<std::string> sugs;
 
 	/// Thesaurus suggestions for the last right-clicked word
 	std::vector<std::string> thesSugs;

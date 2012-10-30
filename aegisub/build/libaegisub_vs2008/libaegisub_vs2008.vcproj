@@ -490,6 +490,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libaegisub\include\libaegisub\spellchecker.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\thesaurus.h"
 				>
 			</File>
