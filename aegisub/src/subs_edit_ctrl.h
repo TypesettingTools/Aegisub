@@ -95,10 +95,6 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 
 	void UpdateStyle();
 
-	/// Split the line at the current cursor position
-	/// @param estimateTimes Adjust the times based on the lengths of the halves
-	void SplitLine(bool estimateTimes);
-
 	/// Add the thesaurus suggestions to a menu
 	void AddThesaurusEntries(wxMenu &menu);
 

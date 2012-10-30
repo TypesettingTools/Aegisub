@@ -50,6 +50,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "command/command.h"
 #include "compat.h"
 #include "main.h"
 #include "include/aegisub/context.h"
@@ -175,8 +176,8 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SelectAll, this), EDIT_MENU_SELECT_ALL);
 
 	if (context) {
-		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, false), EDIT_MENU_SPLIT_PRESERVE);
-		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&SubsTextEditCtrl::SplitLine, this, true), EDIT_MENU_SPLIT_ESTIMATE);
+		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&cmd::call, "edit/line/split/preserve", context), EDIT_MENU_SPLIT_PRESERVE);
+		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&cmd::call, "edit/line/split/estimate", context), EDIT_MENU_SPLIT_ESTIMATE);
 	}
 
 	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
@@ -665,27 +666,6 @@ wxMenu *SubsTextEditCtrl::GetLanguagesMenu(int base_id, wxString const& curLang,
 	}
 
 	return languageMenu;
-}
-
-void SubsTextEditCtrl::SplitLine(bool estimateTimes) {
-	int from, to;
-	GetSelection(&from, &to);
-	from = GetReverseUnicodePosition(from);
-
-	AssDialogue *n1 = context->selectionController->GetActiveLine();
-	AssDialogue *n2 = new AssDialogue(*n1);
-	context->ass->Line.insert(++context->ass->Line.iterator_to(*n1), *n2);
-
-	wxString orig = n1->Text;
-	n1->Text = orig.Left(from).Trim(true); // Trim off trailing whitespace
-	n2->Text = orig.Mid(from).Trim(false); // Trim off leading whitespace
-
-	if (estimateTimes && orig.size()) {
-		double splitPos = double(from) / orig.size();
-		n2->Start = n1->End = (int)((n1->End - n1->Start) * splitPos) + n1->Start;
-	}
-
-	context->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | (estimateTimes ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_TEXT));
 }
 
 void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {

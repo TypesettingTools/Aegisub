@@ -825,6 +825,47 @@ struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	}
 };
 
+void split_lines(agi::Context *c, bool estimate) {
+	int pos = c->textSelectionController->GetSelectionStart();
+
+	AssDialogue *n1 = c->selectionController->GetActiveLine();
+	AssDialogue *n2 = new AssDialogue(*n1);
+	c->ass->Line.insert(++c->ass->Line.iterator_to(*n1), *n2);
+
+	wxString orig = n1->Text;
+	n1->Text = orig.Left(pos).Trim(true); // Trim off trailing whitespace
+	n2->Text = orig.Mid(pos).Trim(false); // Trim off leading whitespace
+
+	if (estimate && orig.size()) {
+		double splitPos = double(pos) / orig.size();
+		n2->Start = n1->End = (int)((n1->End - n1->Start) * splitPos) + n1->Start;
+	}
+
+	c->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | (estimate ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_TEXT));
+}
+
+struct edit_line_split_estimate : public validate_sel_nonempty {
+	CMD_NAME("edit/line/split/estimate")
+	STR_MENU("Split at cursor (estimate times)")
+	STR_DISP("Split at cursor (estimate times)")
+	STR_HELP("Split the current line at the cursor, dividing the original line's duration between the new ones")
+
+	void operator()(agi::Context *c) {
+		split_lines(c, true);
+	}
+};
+
+struct edit_line_split_preserve : public validate_sel_nonempty {
+	CMD_NAME("edit/line/split/preserve")
+	STR_MENU("Split at cursor (preserve times)")
+	STR_DISP("Split at cursor (preserve times)")
+	STR_HELP("Split the current line at the cursor, setting both lines to the original line's times")
+
+	void operator()(agi::Context *c) {
+		split_lines(c, false);
+	}
+};
+
 /// Redoes last action.
 struct edit_redo : public Command {
 	CMD_NAME("edit/redo")
@@ -900,6 +941,8 @@ namespace cmd {
 		reg(new edit_line_paste_over);
 		reg(new edit_line_recombine);
 		reg(new edit_line_split_by_karaoke);
+		reg(new edit_line_split_estimate);
+		reg(new edit_line_split_preserve);
 		reg(new edit_style_bold);
 		reg(new edit_style_italic);
 		reg(new edit_style_underline);
