@@ -550,6 +550,10 @@
 			Name="ASS"
 			>
 			<File
+				RelativePath="..\..\libaegisub\ass\dialogue_parser.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libaegisub\include\libaegisub\ass\dialogue_parser.h"
 				>
 			</File>

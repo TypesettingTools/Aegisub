@@ -58,6 +58,7 @@
 #include "thesaurus.h"
 #include "utils.h"
 
+#include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/spellchecker.h>
 
 /// Event ids
@@ -233,20 +234,6 @@ void SubsTextEditCtrl::OnKeyDown(wxKeyEvent &event) {
 	event.Skip();
 }
 
-enum {
-	STYLE_NORMAL = 0,
-	STYLE_COMMENT,
-	STYLE_DRAWING,
-	STYLE_OVERRIDE,
-	STYLE_PUNCTUATION,
-	STYLE_TAG,
-	STYLE_ERROR,
-	STYLE_PARAMETER,
-	STYLE_LINE_BREAK,
-	STYLE_KARAOKE_TEMPLATE,
-	STYLE_KARAOKE_VARIABLE
-};
-
 void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& name) {
 	StyleSetFont(id, font);
 	StyleSetBold(id, OPT_GET("Colour/Subtitle/Syntax/Bold/" + name)->GetBool());
@@ -263,17 +250,18 @@ void SubsTextEditCtrl::SetStyles() {
 	if (!fontname.empty()) font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Edit Box/Font Size")->GetInt());
 
-	SetSyntaxStyle(STYLE_NORMAL, font, "Normal");
-	SetSyntaxStyle(STYLE_COMMENT, font, "Comment");
-	SetSyntaxStyle(STYLE_DRAWING, font, "Drawing");
-	SetSyntaxStyle(STYLE_OVERRIDE, font, "Brackets");
-	SetSyntaxStyle(STYLE_PUNCTUATION, font, "Slashes");
-	SetSyntaxStyle(STYLE_TAG, font, "Tags");
-	SetSyntaxStyle(STYLE_ERROR, font, "Error");
-	SetSyntaxStyle(STYLE_PARAMETER, font, "Parameters");
-	SetSyntaxStyle(STYLE_LINE_BREAK, font, "Line Break");
-	SetSyntaxStyle(STYLE_KARAOKE_TEMPLATE, font, "Karaoke Template");
-	SetSyntaxStyle(STYLE_KARAOKE_VARIABLE, font, "Karaoke Variable");
+	namespace ss = agi::ass::SyntaxStyle;
+	SetSyntaxStyle(ss::NORMAL, font, "Normal");
+	SetSyntaxStyle(ss::COMMENT, font, "Comment");
+	SetSyntaxStyle(ss::DRAWING, font, "Drawing");
+	SetSyntaxStyle(ss::OVERRIDE, font, "Brackets");
+	SetSyntaxStyle(ss::PUNCTUATION, font, "Slashes");
+	SetSyntaxStyle(ss::TAG, font, "Tags");
+	SetSyntaxStyle(ss::ERROR, font, "Error");
+	SetSyntaxStyle(ss::PARAMETER, font, "Parameters");
+	SetSyntaxStyle(ss::LINE_BREAK, font, "Line Break");
+	SetSyntaxStyle(ss::KARAOKE_TEMPLATE, font, "Karaoke Template");
+	SetSyntaxStyle(ss::KARAOKE_VARIABLE, font, "Karaoke Variable");
 
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
@@ -292,154 +280,14 @@ void SubsTextEditCtrl::UpdateStyle() {
 
 	if (text.empty()) return;
 
-	// Check if it's a template line
 	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
-	bool templateLine = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
+	bool template_line = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
 
-	size_t last_template = 0;
-	if (templateLine)
-		last_template = text.rfind('!');
-	size_t last_ovr_end = text.rfind('}');
-	if (last_ovr_end == text.npos)
-		last_ovr_end = 0;
-
-	bool in_parens = false;
-	bool in_unparened_arg = false;
-	bool in_draw_mode = false;
-	bool in_ovr = false;
-	bool in_karaoke_template = false;
-
-	int range_len = 0;
-	int style = STYLE_NORMAL;
-
-	char cur_char = 0;
-	char next_char = text[0];
-
-	size_t eat_chars = 0;
-
-	for (size_t i = 0; i < text.size(); ++i) {
-		// Current/previous characters
-		char prev_char = cur_char;
-		cur_char = next_char;
-		next_char = i + 1 < text.size() ? text[i + 1] : 0;
-
-		if (eat_chars > 0) {
-			++range_len;
-			--eat_chars;
-			continue;
-		}
-
-		int new_style = style;
-
-		// Start karaoke template variable
-		if (templateLine && cur_char == '$') {
-			new_style = STYLE_KARAOKE_VARIABLE;
-		}
-		// Continue karaoke template variable
-		else if (style == STYLE_KARAOKE_VARIABLE && ((cur_char >= 'A' && cur_char <= 'Z') || (cur_char >= 'a' && cur_char <= 'z') || cur_char == '_')) {
-			// Do nothing and just continue the karaoke variable style
-		}
-		// Start karaoke template
-		else if (templateLine && !in_karaoke_template && cur_char == '!' && i < last_template) {
-			new_style = STYLE_KARAOKE_TEMPLATE;
-			in_karaoke_template = true;
-		}
-		// End karaoke template
-		else if (in_karaoke_template && cur_char == '!') {
-			new_style = STYLE_KARAOKE_TEMPLATE;
-			in_karaoke_template = false;
-		}
-		// Continue karaoke template
-		else if (in_karaoke_template) {
-			new_style = STYLE_KARAOKE_TEMPLATE;
-		}
-		// Start override block
-		else if (cur_char == '{' && i < last_ovr_end) {
-			new_style = in_ovr ? STYLE_ERROR : STYLE_OVERRIDE;
-			in_ovr = true;
-		}
-		// End override block
-		else if (cur_char == '}') {
-			new_style = in_ovr ? STYLE_OVERRIDE : STYLE_ERROR;
-			in_ovr = false;
-
-			in_parens = false;
-			in_unparened_arg = false;
-		}
-		// Plain text
-		else if (!in_ovr) {
-			// Is \n, \N or \h?
-			if (cur_char == '\\' && (next_char == 'n' || next_char == 'N' || next_char == 'h')) {
-				new_style = STYLE_LINE_BREAK;
-				eat_chars = 1;
-			}
-			else if (in_draw_mode)
-				new_style = STYLE_DRAWING;
-			else
-				new_style = STYLE_NORMAL;
-		}
-		// Inside override tag
-		else {
-			// Special character
-			if (cur_char == '\\' || cur_char == '(' || cur_char == ')' || cur_char == ',') {
-				new_style = STYLE_PUNCTUATION;
-				in_unparened_arg = false;
-
-				if (style == STYLE_TAG && cur_char == '(')
-					in_parens = true;
-				// This is technically wrong for nested tags, but it doesn't
-				// matter as \t doesn't have any arguments after the subtag(s)
-				else if (cur_char == ')')
-					in_parens = false;
-			}
-			// Beginning of a tag
-			else if (prev_char == '\\') {
-				new_style = STYLE_TAG;
-				// \r and \fn are special as their argument is an
-				// unparenthesized string
-				if (cur_char == 'r')
-					in_unparened_arg = true;
-				else if (cur_char == 'f' && next_char == 'n') {
-					eat_chars = 1;
-					in_unparened_arg = true;
-				}
-				// For \p we need to check if it's entering or leaving draw mode
-				// Luckily draw mode can't be set in the style, so no argument
-				// always means leave draw mode
-				else if (cur_char == 'p' && (next_char < 'a' || next_char > 'z')) {
-					in_draw_mode = false;
-					for (size_t idx = i + 1; idx < text.size(); ++idx) {
-						char c = text[idx];
-						// I have no idea why one would use leading zeros for
-						// the scale, but vsfilter allows it
-						if (c >= '1' && c <= '9')
-							in_draw_mode = true;
-						else if (c != '0')
-							break;
-					}
-				}
-				// All tags start with letters or numbers
-				else if (cur_char < '0' || (cur_char > '9' && cur_char < 'A') || (cur_char > 'Z' && cur_char < 'a') || cur_char > 'z')
-					new_style = STYLE_ERROR;
-			}
-			else if ((in_parens && style != STYLE_TAG) || in_unparened_arg || (style == STYLE_TAG && ((cur_char < 'A' || cur_char > 'z') || (cur_char > 'Z' && cur_char < 'a')))) {
-				new_style = STYLE_PARAMETER;
-			}
-			else if (style != STYLE_TAG && style != STYLE_PARAMETER && style != STYLE_ERROR) {
-				new_style = STYLE_COMMENT;
-			}
-		}
-
-		if (new_style != style) {
-			SetStyling(range_len, style);
-			style = new_style;
-			range_len = 0;
-		}
-
-		++range_len;
+	std::vector<agi::ass::DialogueToken> tokens = agi::ass::TokenizeDialogueBody(text);
+	std::vector<agi::ass::DialogueToken> style_ranges = agi::ass::SyntaxHighlight(text, tokens, template_line, spellchecker.get());
+	for (size_t i = 0; i < style_ranges.size(); ++i) {
+		SetStyling(style_ranges[i].length, style_ranges[i].type);
 	}
-	SetStyling(range_len, style);
-	StyleSpellCheck();
 }
 
 /// @brief Update call tip
@@ -653,35 +501,6 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 	if (!CallTipActive() || tipProtoN != protoN) CallTipShow(GetUnicodePosition(tagStart),cleanProto);
 	tipProtoN = protoN;
 	CallTipSetHighlight(highStart,highEnd);
-}
-
-void SubsTextEditCtrl::StyleSpellCheck() {
-	if (!spellchecker) return;
-
-	// Results
-	wxString text = GetText();
-	IntPairVector results;
-	GetWordBoundaries(text,results);
-
-	// Style
-	int count = results.size();
-	for (int i=0;i<count;i++) {
-		// Get current word
-		int s = results[i].first;
-		int e = results[i].second;
-		wxString curWord = text.Mid(s,e-s);
-
-		// Check if it's valid
-		if (!spellchecker->CheckWord(from_wx(curWord))) {
-			StartUnicodeStyling(s,32);
-			SetUnicodeStyling(s,e-s,32);
-		}
-	}
-
-	// It seems like wxStyledTextCtrl wants you to finish styling at the end of the text.
-	// I don't really understand why, it's not documented anywhere I can find, but this fixes bug #595.
-	StartUnicodeStyling(text.Length(), 0);
-	SetUnicodeStyling(text.Length(), 0, 0);
 }
 
 void SubsTextEditCtrl::SetTextTo(wxString text) {

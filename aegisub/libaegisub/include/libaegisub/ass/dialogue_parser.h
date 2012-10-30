@@ -11,12 +11,18 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
 #ifndef LAGI_PRE
 #include <vector>
 #endif
 
+#undef ERROR
+
 namespace agi {
+	class SpellChecker;
+
 	namespace ass {
 		namespace DialogueTokenType {
 			enum {
@@ -36,6 +42,24 @@ namespace agi {
 			};
 		}
 
+		namespace SyntaxStyle {
+			enum {
+				NORMAL = 0,
+				COMMENT,
+				DRAWING,
+				OVERRIDE,
+				PUNCTUATION,
+				TAG,
+				ERROR,
+				PARAMETER,
+				LINE_BREAK,
+				KARAOKE_TEMPLATE,
+				KARAOKE_VARIABLE,
+
+				SPELLING = 32
+			};
+		}
+
 		struct DialogueToken {
 			int type;
 			size_t length;
@@ -43,5 +67,7 @@ namespace agi {
 		};
 
 		std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str);
+
+		std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, bool template_line, SpellChecker *spellchecker);
 	}
 }
