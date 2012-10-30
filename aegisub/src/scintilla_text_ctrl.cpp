@@ -50,7 +50,7 @@ int ScintillaTextCtrl::GetUnicodePosition(int pos) {
 
 /// @brief Reverse unicode-compatible position
 int ScintillaTextCtrl::GetReverseUnicodePosition(int pos) {
-	wxCharBuffer buffer = GetText().utf8_str();
+	wxCharBuffer buffer = GetTextRaw();
 
 	// Limit position to it
 	if (pos > (signed)buffer.length()) pos = buffer.length();

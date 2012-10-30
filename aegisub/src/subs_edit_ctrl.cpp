@@ -281,7 +281,7 @@ void SubsTextEditCtrl::SetStyles() {
 void SubsTextEditCtrl::UpdateStyle() {
 	StartStyling(0,255);
 
-	std::string text = STD_STR(GetText());
+	std::string text = GetTextRaw();
 
 	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
 		SetStyling(text.size(), 0);
