@@ -67,6 +67,21 @@ int main(int argc, const char *argv[]) {
 	std::ofstream file_cpp(argv[2]);
 	std::ofstream file_h(argv[3]);
 
+	if (!file_manifest.good()) {
+		std::cout << "Failed to open manifest" << std::endl;
+		return 1;
+	}
+
+	if (!file_cpp.good()) {
+		std::cout << "Failed to open output CPP file" << std::endl;
+		return 1;
+	}
+
+	if (!file_h.good()) {
+		std::cout << "Failed to open output H file" << std::endl;
+		return 1;
+	}
+
 	// If the manifest has a path use that as the base for finding files.
 	std::string manifest(argv[1]);
 	std::string path_base;
