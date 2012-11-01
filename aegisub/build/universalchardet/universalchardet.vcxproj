@@ -38,7 +38,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\..\universalchardet\</SrcDir>
+    <SrcDir>..\..\universalchardet\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
