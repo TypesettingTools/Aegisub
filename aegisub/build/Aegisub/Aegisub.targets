@@ -31,15 +31,22 @@
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-
-
   <!-- Build credit text -->
-  <PropertyGroup Condition="'$(AegisubBuildCredit)'==''">
-    <AegisubBuildCredit>Anonymous</AegisubBuildCredit>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(AegisubBuildCredit)'!=''">
+  <ItemDefinitionGroup Condition="'$(AegisubBuildCredit)'==''">
     <ClCompile>
       <PreprocessorDefinitions>BUILD_CREDIT="$(AegisubBuildCredit)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Update checker -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseUpdateChecker)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>
+        WITH_UPDATE_CHECKER;
+        UPDATE_CHECKER_SERVER="$(UpdateCheckerServer)";
+        UPDATE_CHECKER_BASE_URL="$(UpdateCheckerURL)";
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
 
