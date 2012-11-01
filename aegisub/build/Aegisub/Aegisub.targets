@@ -32,47 +32,6 @@
   $Id$
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- Update svn revision data file-target -->
-  <PropertyGroup>
-    <TSVNDir Condition="'$(TSVNDir)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\TortoiseSVN@Directory)</TSVNDir>
-    <TSVNDir Condition="'$(TSVNDir)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\TortoiseSVN@Directory)</TSVNDir>
-    <SubWCRevExe Condition="'$(SubWCRevExe)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\SubWCRev.exe)</SubWCRevExe>
-    <SubWCRevExe Condition="'$(SubWCRevExe)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\App Paths\SubWCRev.exe)</SubWCRevExe>
-    <SubWCRevExe Condition="'$(SubWCRevExe)'==''">$(TSVNDir)\bin\SubWCRev.exe</SubWCRevExe>
-  </PropertyGroup>
-  <Target
-    Name="SubWCRev"
-    BeforeTargets="ClCompile"
-    DependsOnTargets="PrepareForBuild"
-    >
-    <Error
-      Condition="!Exists('$(SubWCRevExe)')"
-      Text="The SubWCRev.exe program was not found. If you already have TortoiseSVN installed, override the SubWCRevExe property to the location of the program."
-      />
-    <Error
-      Condition="!Exists('%(SubWCRev.Repository)')"
-      Text="The working copy was not found. Location specified: %(SubWCRev.Repository)"
-      />
-    <Error
-      Condition="!Exists('%(SubWCRev.InputFile)')"
-      Text="The template file was not found. Location specified: %(SubWCRev.InputFile)"
-      />
-    <Exec
-      Command="&quot;$(SubWCRevExe)&quot; &quot;%(SubWCRev.Repository)&quot; &quot;%(SubWCRev.InputFile)&quot; &quot;%(SubWCRev.OutputFile)&quot;"
-      Outputs="%(SubWCRevExe.Output)"
-      />
-  </Target>
-  <ItemDefinitionGroup>
-    <SubWCRev>
-      <InputFile >$(AegisubSourceBase)build\svn-revision-base.h</InputFile>
-      <OutputFile>$(AegisubSourceBase)build\svn-revision.h</OutputFile>
-      <Repository>$(AegisubSourceBase)\.</Repository>
-    </SubWCRev>
-  </ItemDefinitionGroup>
-  <ItemGroup>
-    <SubWCRev Include="$(AegisubSourceBase)build\svn-revision-base.h" />
-  </ItemGroup>
-
 
   <!-- Create build configuration file if it does not exist-target -->
   <Target
