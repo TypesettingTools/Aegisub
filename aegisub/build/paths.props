@@ -6,7 +6,7 @@
 	
 	<PropertyGroup>
 		<!-- Base for Aegisub source code -->
-		<AegisubSourceBase Condition="'$(AegisubSourceBase)'==''">$(MSBuildThisFileDirectory)..\..\</AegisubSourceBase>
+		<AegisubSourceBase Condition="'$(AegisubSourceBase)'==''">$(MSBuildThisFileDirectory)..\</AegisubSourceBase>
 		<!-- Base for contrib libraries source code -->
 		<AegisubContribBase Condition="'$(AegisubContribBase)'==''">$(AegisubSourceBase)..\contrib\</AegisubContribBase>
 		<!-- Base for built files -->
