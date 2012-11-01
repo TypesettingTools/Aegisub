@@ -36,7 +36,6 @@
   <!-- Default settings for build-time options -->
 
   <PropertyGroup>
-    <AegisubUseConfigWindowsH Condition="'$(AegisubUseConfigWindowsH)'==''">true</AegisubUseConfigWindowsH>
     <AegisubUseDSound Condition="'$(AegisubUseDSound)'==''">true</AegisubUseDSound>
     <DirectXSDKPath Condition="'$(DirectXSDKPath)'==''">$(DXSDK_DIR)</DirectXSDKPath>
     <AegisubUseAvisynth Condition="'$(AegisubUseAvisynth)|$(Platform)'=='|Win32'">true</AegisubUseAvisynth>

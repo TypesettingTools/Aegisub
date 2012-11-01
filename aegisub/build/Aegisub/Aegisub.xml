@@ -46,13 +46,6 @@
     <Category Name="Paths" DisplayName="Library paths" Description="Configure third-party library paths" />
     <Category Name="BuildInfo" DisplayName="Build information" Description="Embed build information" />
   </Rule.Categories>
-  
-  <BoolProperty
-    Name="AegisubUseConfigWindowsH"
-    Category="Features"
-    DisplayName="Use config_windows.h"
-    Description="Specify whether to use config_windows.h or the configuration on this page to control features. The settings on this page still control automatic compiler and link settings for the features."
-    />
 
   <BoolProperty
     Name="AegisubUseDSound"

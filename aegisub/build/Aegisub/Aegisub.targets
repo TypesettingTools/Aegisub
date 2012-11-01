@@ -61,13 +61,12 @@
       />
   </Target>
 
-
   <!-- Default configuration -->
   <Import Project="$(MSBuildThisFileDirectory)Aegisub.DefaultConfiguration.props" />
 
 
   <!-- Build credit text -->
-  <PropertyGroup Condition="'$(AegisubUseConfigWindowsH)'=='false' and '$(AegisubBuildCredit)'==''">
+  <PropertyGroup Condition="'$(AegisubBuildCredit)'==''">
     <AegisubBuildCredit>Anonymous</AegisubBuildCredit>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(AegisubBuildCredit)'!=''">
@@ -76,24 +75,10 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
-  <!-- Skip config_windows.h support -->
-  <ItemDefinitionGroup Condition="'$(AegisubUseConfigWindowsH)'=='false'">
-    <ClCompile>
-      <PreprocessorDefinitions>BUILD_SKIP_CONFIG_WINDOWS_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <!-- Use config_windows.h support -->
-  <ItemGroup Condition="'$(AegisubUseConfigWindowsH)'!='false'">
-    <CreateDefaultConfigurationHeader Include="$(AegisubSourceBase)src\config\config_windows.h">
-      <TemplateFile>$(AegisubSourceBase)src\config\config_windows0.h</TemplateFile>
-      <TargetFile>$(AegisubSourceBase)src\config\config_windows.h</TargetFile>
-    </CreateDefaultConfigurationHeader>
-  </ItemGroup>
-
   <!-- Automation Lua support -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AUTO4_LUA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_AUTO4_LUA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(AegisubContribBase)lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -101,7 +86,7 @@
   <!-- Hunspell support -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_HUNSPELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_HUNSPELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(AegisubContribBase)hunspell\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -109,14 +94,14 @@
   <!-- CSRI helper library support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseCsri)'=='HelperLibrary'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_CSRI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_CSRI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
 
   <!-- CSRI external library support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseCsri)'=='External'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_CSRI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_CSRI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(CsriLibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -127,7 +112,7 @@
   <!-- libass support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseLibass)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_LIBASS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_LIBASS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LibassIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -139,7 +124,7 @@
   <!-- Freetype 2 support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFreetype2)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FREETYPE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_FREETYPE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(Ft2IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -151,7 +136,7 @@
   <!-- FFmpegSource support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFMS2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_FFMS2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(FFmpegSourceIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -163,14 +148,14 @@
   <!-- Avisynth support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseAvisynth)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AVISYNTH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_AVISYNTH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
 
   <!-- FFTW support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFftw)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_FFTW3;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_FFTW3;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(FftwIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -185,7 +170,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(AegisubUseDSound)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_DIRECTSOUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_DIRECTSOUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -205,7 +190,7 @@
   </ItemGroup>
 
   <!-- Special builds -->
-  <ItemDefinitionGroup Condition="'$(AegisubUseConfigWindowsH)'=='false'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='FinalRelease'">FINAL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='StartupLog'">WITH_STARTUPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
