@@ -20,6 +20,7 @@ SRC += \
 	common/cajun/elements.cpp \
 	common/cajun/reader.cpp \
 	common/cajun/writer.cpp \
+	common/calltip_provider.cpp \
 	common/charset.cpp \
 	common/charset_6937.cpp \
 	common/charset_conv.cpp \

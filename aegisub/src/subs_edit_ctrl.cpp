@@ -57,6 +57,7 @@
 #include "utils.h"
 
 #include <libaegisub/ass/dialogue_parser.h>
+#include <libaegisub/calltip_provider.h>
 #include <libaegisub/spellchecker.h>
 
 /// Event ids
@@ -82,6 +83,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 : ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
 , context(context)
+, calltip_position(0)
 {
 	// Set properties
 	SetWrapMode(wxSTC_WRAP_WORD);
@@ -100,68 +102,6 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	CmdKeyClear('T',wxSTC_SCMOD_CTRL);
 	CmdKeyClear('T',wxSTC_SCMOD_CTRL | wxSTC_SCMOD_SHIFT);
 	CmdKeyClear('U',wxSTC_SCMOD_CTRL);
-
-	// Prototypes for call tips
-	tipProtoN = -1;
-	proto.Add("move(x1,y1,x2,y2)");
-	proto.Add("move(x1,y1,x2,y2,startTime,endTime)");
-	proto.Add("fn;FontName");
-	proto.Add("bord;Width");
-	proto.Add("xbord;Width");
-	proto.Add("ybord;Width");
-	proto.Add("shad;Depth");
-	proto.Add("xshad;Depth");
-	proto.Add("yshad;Depth");
-	proto.Add("be;Strength");
-	proto.Add("blur;Strength");
-	proto.Add("fscx;Scale");
-	proto.Add("fscy;Scale");
-	proto.Add("fsp;Spacing");
-	proto.Add("fs;FontSize");
-	proto.Add("fe;Encoding");
-	proto.Add("frx;Angle");
-	proto.Add("fry;Angle");
-	proto.Add("frz;Angle");
-	proto.Add("fr;Angle");
-	proto.Add("pbo;Offset");
-	proto.Add("clip(command)");
-	proto.Add("clip(scale,command)");
-	proto.Add("clip(x1,y1,x2,y2)");
-	proto.Add("iclip(command)");
-	proto.Add("iclip(scale,command)");
-	proto.Add("iclip(x1,y1,x2,y2)");
-	proto.Add("t(acceleration,tags)");
-	proto.Add("t(startTime,endTime,tags)");
-	proto.Add("t(startTime,endTime,acceleration,tags)");
-	proto.Add("pos(x,y)");
-	proto.Add("p;Exponent");
-	proto.Add("org(x,y)");
-	proto.Add("fade(startAlpha,middleAlpha,endAlpha,startIn,endIn,startOut,endOut)");
-	proto.Add("fad(startTime,endTime)");
-	proto.Add("c;Colour");
-	proto.Add("1c;Colour");
-	proto.Add("2c;Colour");
-	proto.Add("3c;Colour");
-	proto.Add("4c;Colour");
-	proto.Add("alpha;Alpha");
-	proto.Add("1a;Alpha");
-	proto.Add("2a;Alpha");
-	proto.Add("3a;Alpha");
-	proto.Add("4a;Alpha");
-	proto.Add("an;Alignment");
-	proto.Add("a;Alignment");
-	proto.Add("b;Weight");
-	proto.Add("i;1/0");
-	proto.Add("u;1/0");
-	proto.Add("s;1/0");
-	proto.Add("kf;Duration");
-	proto.Add("ko;Duration");
-	proto.Add("k;Duration");
-	proto.Add("K;Duration");
-	proto.Add("q;WrapStyle");
-	proto.Add("r;Style");
-	proto.Add("fax;Factor");
-	proto.Add("fay;Factor");
 
 	using std::bind;
 
@@ -292,211 +232,27 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 
 	if (!OPT_GET("App/Call Tips")->GetBool()) return;
 
-	// Get position and text
-	const unsigned int pos = GetReverseUnicodePosition(GetCurrentPos());
-	wxString text = GetText();
+	if (!calltip_provider)
+		calltip_provider.reset(new agi::CalltipProvider);
 
-	// Find the start and end of current tag
-	wxChar prevChar = 0;
-	int depth = 0;
-	int inDepth = 0;
-	int tagStart = -1;
-	int tagEnd = -1;
-	for (unsigned int i=0;i<text.Length()+1;i++) {
-		wxChar curChar = i < text.size() ? text[i] : 0;
+	std::string text = GetTextRaw().data();
+	auto tokens = agi::ass::TokenizeDialogueBody(text);
+	int pos = GetCurrentPos();
 
-		// Change depth
-		if (curChar == '{') {
-			depth++;
-			continue;
-		}
-		if (curChar == '}') {
-			depth--;
-			if (i >= pos && depth == 0) {
-				tagEnd = i-1;
-				break;
-			}
-			continue;
-		}
+	agi::Calltip new_calltip = calltip_provider->GetCalltip(tokens, text, GetCurrentPos());
 
-		// Outside
-		if (depth == 0) {
-			tagStart = -1;
-			if (i == pos) break;
-			continue;
-		}
-
-		// Inside overrides
-		if (depth == 1) {
-			// Inner depth
-			if (tagStart != -1) {
-				if (curChar == '(') inDepth++;
-				else if (curChar == ')') inDepth--;
-			}
-
-			// Not inside parenthesis
-			if (inDepth == 0) {
-				if (prevChar == '\\') {
-					// Found start
-					if (i <= pos) tagStart = i;
-
-					// Found end
-					else {
-						tagEnd = i-2;
-						break;
-					}
-				}
-			}
-		}
-
-		// Previous character
-		prevChar = curChar;
-	}
-
-	// Calculate length
-	int len;
-	if (tagEnd != -1) len = tagEnd - tagStart + 1;
-	else len = text.Length() - tagStart;
-
-	// No tag available
-	int textLen = text.Length();
-	unsigned int posInTag = pos - tagStart;
-	if (tagStart+len > textLen || len <= 0 || tagStart < 0) {
+	if (new_calltip.text.empty()) {
 		CallTipCancel();
 		return;
 	}
 
-	// Current tag
-	wxString tag = text.Mid(tagStart,len);
+	if (!CallTipActive() || calltip_position != new_calltip.tag_position || calltip_text != new_calltip.text)
+		CallTipShow(new_calltip.tag_position, to_wx(new_calltip.text));
 
-	// Metrics in tag
-	int tagCommas = 0;
-	int tagParenthesis = 0;
-	int parN = 0;
-	int parPos = -1;
-	bool gotName = false;
-	wxString tagName = tag;
-	for (unsigned int i=0;i<tag.Length();i++) {
-		wxChar curChar = tag[i];
-		bool isEnd = false;
+	calltip_position = new_calltip.tag_position;
+	calltip_text = new_calltip.text;
 
-		// Commas
-		if (curChar == ',') {
-			tagCommas++;
-			parN++;
-		}
-
-		// Parenthesis
-		else if (curChar == '(') {
-			tagParenthesis++;
-			parN++;
-		}
-		else if (curChar == ')') {
-			tagParenthesis++;
-			parN++;
-			isEnd = true;
-		}
-
-		// Tag name
-		if (parN == 1 && !gotName) {
-			tagName = tag.Left(i);
-			gotName = true;
-		}
-
-		// Parameter it's on
-		if (i == posInTag) {
-			parPos = parN;
-			if (curChar == ',' || curChar == '(' || curChar == ')') {
-				parPos--;
-			}
-		}
-		else if (isEnd) {
-			parN = 1000;
-			break;
-		}
-	}
-	if (parPos == -1) parPos = parN;
-
-	// Tag name
-	if (tagName.IsEmpty()) {
-		CallTipCancel();
-		return;
-	}
-
-	// Find matching prototype
-	wxString useProto;
-	wxString cleanProto;
-	wxString protoName;
-	int protoN = 0;
-	bool semiProto = false;
-	for (unsigned int i=0;i<proto.Count();i++) {
-		// Get prototype name
-		int div = proto[i].Find(';');
-		if (div != wxNOT_FOUND) protoName = proto[i].Left(div);
-		else {
-			div = proto[i].Find('(');
-			protoName = proto[i].Left(div);
-		}
-
-		// Fix name
-		semiProto = false;
-		cleanProto = proto[i];
-		if (cleanProto.Freq(';') > 0) {
-			cleanProto.Replace(";","");
-			semiProto = true;
-		}
-
-		// Prototype match
-		wxString temp;
-		if (semiProto) temp = tagName.Left(protoName.Length());
-		else temp = tagName;
-		if (protoName == temp) {
-			// Parameter count match
-			if (proto[i].Freq(',') >= tagCommas) {
-				// Found
-				useProto = proto[i];
-				protoN = i;
-				break;
-			}
-		}
-	}
-
-	// No matching prototype
-	if (useProto.IsEmpty()) {
-		CallTipCancel();
-		return;
-	}
-
-	// Parameter number for tags without "(),"
-	if (semiProto && parPos == 0 && posInTag >= protoName.Length()) parPos = 1;
-
-	// Highlight start/end
-	int highStart = useProto.Length();
-	int highEnd = -1;
-	parN = 0;
-	int delta = 0;
-	for (unsigned int i=0;i<useProto.Length();i++) {
-		wxChar curChar = useProto[i];
-		if (i == 0 || curChar == ',' || curChar == ';' || curChar == '(' || curChar == ')') {
-			if (curChar == ';') delta++;
-			if (parN == parPos) highStart = i+1-delta;
-			else if (parN == parPos+1) highEnd = i;
-			parN++;
-		}
-	}
-	if (highStart <= 1) highStart = 0;
-	if (highEnd == -1) highEnd = useProto.Length();
-
-	// Calltip is over
-	if (highStart == (signed) useProto.Length()) {
-		CallTipCancel();
-		return;
-	}
-
-	// Show calltip
-	if (!CallTipActive() || tipProtoN != protoN) CallTipShow(GetUnicodePosition(tagStart),cleanProto);
-	tipProtoN = protoN;
-	CallTipSetHighlight(highStart,highEnd);
+	CallTipSetHighlight(new_calltip.highlight_start, new_calltip.highlight_end);
 }
 
 void SubsTextEditCtrl::SetTextTo(wxString text) {

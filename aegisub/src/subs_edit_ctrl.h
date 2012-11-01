@@ -44,6 +44,7 @@
 class SubsEditBox;
 class Thesaurus;
 namespace agi {
+	class CalltipProvider;
 	class SpellChecker;
 	struct Context;
 }
@@ -56,6 +57,8 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 
 	/// Backend thesaurus to use
 	agi::scoped_ptr<Thesaurus> thesaurus;
+
+	agi::scoped_ptr<agi::CalltipProvider> calltip_provider;
 
 	/// Project context, for splitting lines
 	agi::Context *context;
@@ -72,11 +75,12 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	/// Thesaurus suggestions for the last right-clicked word
 	std::vector<std::string> thesSugs;
 
-	/// Calltip prototypes
-	wxArrayString proto;
+	/// Text of the currently shown calltip, to avoid flickering from
+	/// pointlessly reshowing the current tip
+	std::string calltip_text;
 
-	/// Last show calltip, to avoid flickering the currently active one
-	int tipProtoN;
+	/// Position of the currently show calltip
+	size_t calltip_position;
 
 	void OnContextMenu(wxContextMenuEvent &);
 	void OnAddToDictionary(wxCommandEvent &event);

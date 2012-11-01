@@ -137,6 +137,9 @@
     <ClInclude Include="..\..\libaegisub\include\libaegisub\of_type_adaptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\libaegisub\include\libaegisub\calltip_provider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -218,6 +221,9 @@
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\libaegisub\common\io.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libaegisub\common\calltip_provider.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>

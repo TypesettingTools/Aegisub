@@ -59,7 +59,8 @@ class SyntaxHighlighter {
 		char *outptr = (char *)&chr;
 		size_t outlen = sizeof chr;
 
-		if (iconv(utf8_to_utf32, &inptr, &inlen, &outptr, &outlen) != 1)
+		iconv(utf8_to_utf32, &inptr, &inlen, &outptr, &outlen);
+		if (outlen != 0)
 			return 0;
 
 		char_len = len - inlen;
@@ -105,7 +106,7 @@ public:
 	SyntaxHighlighter(std::string const& text, agi::SpellChecker *spellchecker)
 	: text(text)
 	, spellchecker(spellchecker)
-	, utf8_to_utf32(iconv_open("utf-32", "utf-8"), iconv_close)
+	, utf8_to_utf32(iconv_open("utf-32le", "utf-8"), iconv_close)
 	{ }
 
 	TokenVec Highlight(TokenVec const& tokens, bool template_line) {
