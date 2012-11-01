@@ -34,22 +34,25 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Default settings for build-time options -->
-
   <PropertyGroup>
-    <AegisubUseDSound Condition="'$(AegisubUseDSound)'==''">true</AegisubUseDSound>
-    <DirectXSDKPath Condition="'$(DirectXSDKPath)'==''">$(DXSDK_DIR)</DirectXSDKPath>
+    <AegisubUseDSound>true</AegisubUseDSound>
+    <DirectXSDKPath>$(DXSDK_DIR)</DirectXSDKPath>
     <AegisubUseAvisynth Condition="'$(AegisubUseAvisynth)|$(Platform)'=='|Win32'">true</AegisubUseAvisynth>
     <AegisubUseAvisynth Condition="'$(AegisubUseAvisynth)|$(Platform)'=='|x64'">false</AegisubUseAvisynth>
-    <AegisubUseFfms Condition="'$(AegisubUseFfms)'==''">true</AegisubUseFfms>
-    <FFmpegSourceIncludePath Condition="'$(FFmpegSourceIncludePath)'==''">$(AegisubSourceBase)libffms\include\</FFmpegSourceIncludePath>
-    <FFmpegSourceLibraryPath Condition="'$(FFmpegSourceLibraryPath)'==''">$(AegisubSourceBase)libffms\lib\</FFmpegSourceLibraryPath>
-    <FFmpegSourceLibraryName Condition="'$(FFmpegSourceLibraryName)'==''">ffms2.lib</FFmpegSourceLibraryName>
-    <AegisubUseFt2 Condition="'$(AegisubUseFt2)'==''">true</AegisubUseFt2>
-    <AegisubUseFftw Condition="'$(AegisubUseFftw)'==''">false</AegisubUseFftw>
-    <AegisubUseLibass Condition="'$(AegisubUseLibass)'==''">false</AegisubUseLibass>
-    <AegisubUseCsri Condition="'$(AegisubUseCsri)'==''">HelperLibrary</AegisubUseCsri>
-    <CsriLibraryName Condition="'$(CsriLibraryName)'==''">vsfilter.lib</CsriLibraryName>
-    <AegisubSpecialBuild Condition="'$(AegisubSpecialBuild)'==''">false</AegisubSpecialBuild>
+    <AegisubUseFfms>true</AegisubUseFfms>
+    <FFmpegSourceIncludePath>$(AegisubSourceBase)libffms\include\</FFmpegSourceIncludePath>
+    <FFmpegSourceLibraryPath>$(AegisubSourceBase)libffms\lib\</FFmpegSourceLibraryPath>
+    <FFmpegSourceLibraryName>ffms2.lib</FFmpegSourceLibraryName>
+    <AegisubUseFreetype2>true</AegisubUseFreetype2>
+    <AegisubUseFftw>false</AegisubUseFftw>
+    <AegisubUseLibass>false</AegisubUseLibass>
+    <AegisubUseCsri>HelperLibrary</AegisubUseCsri>
+    <CsriLibraryName>vsfilter.lib</CsriLibraryName>
+    <StartupLog>false</StartupLog>
+    <AegisubBuildCredit>Anonymous</AegisubBuildCredit>
+    <AegisubUseUpdateChecker>true</AegisubUseUpdateChecker>
+    <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
+    <UpdateCheckerURL>/trunk</UpdateCheckerURL>
   </PropertyGroup>
 
 </Project>
