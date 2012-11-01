@@ -31,10 +31,12 @@
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>exe</AegisubProjectType>
     <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
-    <AegisubUseFreetype>true</AegisubUseFreetype>
-    <AegisubUseDSound>true</AegisubUseDSound>
     <SrcDir>..\..\src\</SrcDir>
   </PropertyGroup>
+
+  <!-- Default configuration -->
+  <Import Project="$(MSBuildThisFileDirectory)Aegisub.DefaultConfiguration.props" />
+
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
