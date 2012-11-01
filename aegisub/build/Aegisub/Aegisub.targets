@@ -73,7 +73,7 @@
     <SubWCRev Include="$(AegisubSourceBase)build\svn-revision-base.h" />
   </ItemGroup>
 
-  
+
   <!-- Create build configuration file if it does not exist-target -->
   <Target
     Name="CreateDefaultConfigurationHeader"
@@ -101,8 +101,8 @@
       Text="Created %(CreateDefaultConfigurationHeader.TargetFile)"
       />
   </Target>
-  
-  
+
+
   <!-- Default configuration -->
   <Import Project="$(MSBuildThisFileDirectory)Aegisub.DefaultConfiguration.props" />
 
@@ -116,7 +116,7 @@
       <PreprocessorDefinitions>BUILD_CREDIT="$(AegisubBuildCredit)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  
+
   <!-- Skip config_windows.h support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseConfigWindowsH)'=='false'">
     <ClCompile>
@@ -130,39 +130,30 @@
       <TargetFile>$(AegisubSourceBase)src\config\config_windows.h</TargetFile>
     </CreateDefaultConfigurationHeader>
   </ItemGroup>
-  
+
   <!-- Automation Lua support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseAutomationLua)'=='true'">
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AUTO4_LUA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(AegisubContribBase)lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
-  
+
   <!-- Hunspell support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseHunspell)'=='true'">
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_HUNSPELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(AegisubContribBase)hunspell\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>hunspell.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
-  
+
   <!-- CSRI helper library support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseCsri)'=='HelperLibrary'">
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_CSRI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>csrihelper.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
-  
+
   <!-- CSRI external library support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseCsri)'=='External'">
     <ClCompile>
@@ -173,7 +164,7 @@
       <AdditionalDependencies>$(CsriLibraryName);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  
+
   <!-- libass support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseLibass)'=='true'">
     <ClCompile>
@@ -197,7 +188,7 @@
 			<AdditionalDependencies>$(Ft2LibraryName);%(AdditionalDependencies)</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
-  
+
   <!-- FFmpegSource support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
     <ClCompile>
@@ -209,14 +200,14 @@
       <AdditionalDependencies>$(FFmpegSourceLibraryName);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  
+
   <!-- Avisynth support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseAvisynth)'=='true'">
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AVISYNTH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  
+
   <!-- FFTW support -->
 	<ItemDefinitionGroup Condition="'$(AegisubUseFftw)'=='true'">
     <ClCompile>
@@ -253,7 +244,7 @@
 	<ItemGroup Condition="'$(AegisubUseDSound)'=='true'">
 		<AegisubCheckDirectXSDK Include="dsound" />
 	</ItemGroup>
-  
+
   <!-- Special builds -->
   <ItemDefinitionGroup Condition="'$(AegisubUseConfigWindowsH)'=='false'">
     <ClCompile>
@@ -261,7 +252,7 @@
       <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='StartupLog'">WITH_STARTUPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  
+
   <!-- General configuration, always required libraries -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -274,18 +265,7 @@
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-        libiconv.lib;
-        libresrc.lib;
-        libaegisub.lib;
-        universalchardet.lib;
-        %(AdditionalDependencies)
-      </AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
-  
 
   <!-- Add property pages -->
   <ItemGroup>
