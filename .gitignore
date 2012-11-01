@@ -34,13 +34,14 @@
 *.zip
 *~
 
+bin
+lib
+obj
+
 .lvimrc
 .syntastic_cpp_config
 BuildLog.htm
-Debug
 Makefile.inc
-Release
-Win32
 acconf.h
 acconf.h.in
 aclocal.m4
