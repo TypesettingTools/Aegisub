@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ResPack Include="..\..\..\src\libresrc\manifest.respack">
+    <ResPack Include="..\..\src\libresrc\manifest.respack">
       <Filter>Resource Files</Filter>
     </ResPack>
-    <ResPack Include="..\..\..\src\bitmaps\manifest.respack">
+    <ResPack Include="..\..\src\bitmaps\manifest.respack">
       <Filter>Resource Files</Filter>
     </ResPack>
   </ItemGroup>
