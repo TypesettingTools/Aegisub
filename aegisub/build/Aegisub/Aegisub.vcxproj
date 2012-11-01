@@ -41,7 +41,7 @@
     <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
     <AegisubUseFreetype>true</AegisubUseFreetype>
     <AegisubUseDSound>true</AegisubUseDSound>
-    <SrcDir>..\..\..\src\</SrcDir>
+    <SrcDir>..\..\src\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
