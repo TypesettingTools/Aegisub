@@ -31,37 +31,8 @@
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- Create build configuration file if it does not exist-target -->
-  <Target
-    Name="CreateDefaultConfigurationHeader"
-    BeforeTargets="PrepareForBuild"
-    Condition="'@(CreateDefaultConfigurationHeader)' != ''"
-    >
-    <PropertyGroup>
-      <AegisubMustCreateConfigurationHeader Condition="!Exists('%(CreateDefaultConfigurationHeader.TargetFile)')">true</AegisubMustCreateConfigurationHeader>
-    </PropertyGroup>
-    <Warning
-      Condition="'$(AegisubMustCreateConfigurationHeader)'=='true'"
-      Text="Creating default configuration file. You should edit this file to customise the build."
-      />
-    <Error
-      Condition="!Exists('%(CreateDefaultConfigurationHeader.TemplateFile)') and '$(AegisubMustCreateConfigurationHeader)'=='true'"
-      Text="The configuration file template was not found."
-      />
-    <Copy
-      Condition="'$(AegisubMustCreateConfigurationHeader)'=='true'"
-      SourceFiles="%(CreateDefaultConfigurationHeader.TemplateFile)"
-      DestinationFiles="%(CreateDefaultConfigurationHeader.TargetFile)"
-      />
-    <Message
-      Condition="'$(AegisubMustCreateConfigurationHeader)'=='true'"
-      Text="Created %(CreateDefaultConfigurationHeader.TargetFile)"
-      />
-  </Target>
-
   <!-- Default configuration -->
   <Import Project="$(MSBuildThisFileDirectory)Aegisub.DefaultConfiguration.props" />
-
 
   <!-- Build credit text -->
   <PropertyGroup Condition="'$(AegisubBuildCredit)'==''">
@@ -212,7 +183,7 @@
   <!-- Add property pages -->
   <ItemGroup>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.xml" />
-    <ProjectTools Include="AegisubConfig;CreateDefaultConfigurationHeader" />
+    <ProjectTools Include="AegisubConfig" />
   </ItemGroup>
 
 </Project>
