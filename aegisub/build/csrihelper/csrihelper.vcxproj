@@ -38,7 +38,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\..\..\contrib\csri\</SrcDir>
+    <SrcDir>..\..\..\contrib\csri\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
