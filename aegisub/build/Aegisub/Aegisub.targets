@@ -28,8 +28,6 @@
   POSSIBILITY OF SUCH DAMAGE.
 
   Aegisub Project http://www.aegisub.org/
-
-  $Id$
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
@@ -192,7 +190,7 @@
   <!-- Special builds -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='StartupLog'">WITH_STARTUPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(StartupLog)'=='true'">WITH_STARTUPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
 
@@ -214,7 +212,7 @@
   <!-- Add property pages -->
   <ItemGroup>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.xml" />
-    <ProjectTools Include="SubWCRev;CreateDefaultConfigurationHeader" />
+    <ProjectTools Include="AegisubConfig;CreateDefaultConfigurationHeader" />
   </ItemGroup>
 
 </Project>

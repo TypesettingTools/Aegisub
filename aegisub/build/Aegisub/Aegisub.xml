@@ -28,12 +28,10 @@
   POSSIBILITY OF SUCH DAMAGE.
 
   Aegisub Project http://www.aegisub.org/
-
-  $Id$
 -->
-<Rule Name="SubWCRev" 
-    DisplayName="Aegisub" 
-    Order="1" 
+<Rule Name="AegisubConfig"
+    DisplayName="Aegisub"
+    Order="1"
     PageTemplate="tool"
     xmlns="http://schemas.microsoft.com/build/2009/properties">
 
@@ -42,9 +40,9 @@
   </Rule.DataSource>
 
   <Rule.Categories>
-    <Category Name="Features" DisplayName="Features" Description="Control features to build" />
+    <Category Name="Config" DisplayName="Configuration" Description="General build configuration" />
+    <Category Name="Features" DisplayName="External libraries" Description="Control which optional external libraries to use" />
     <Category Name="Paths" DisplayName="Library paths" Description="Configure third-party library paths" />
-    <Category Name="BuildInfo" DisplayName="Build information" Description="Embed build information" />
   </Rule.Categories>
 
   <BoolProperty
@@ -87,22 +85,14 @@
     Category="Paths"
     DisplayName="FFmpegSource2 library path"
     Description="Location of FFmpegSource2 library files"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
   <StringProperty
     Subtype="file"
     Name="FFmpegSourceLibraryName"
     Category="Paths"
     DisplayName="FFmpegSource2 library name"
     Description="Name of FFmpegSource2 library"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
 
   <BoolProperty
     Name="AegisubUseFreetype2"
@@ -123,22 +113,14 @@
     Category="Paths"
     DisplayName="Freetype 2 library path"
     Description="Location of Freetype 2 library files"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
   <StringProperty
     Subtype="file"
     Name="Ft2LibraryName"
     Category="Paths"
     DisplayName="Freetype 2 library name"
     Description="Name of Freetype 2 library"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
 
   <BoolProperty
     Name="AegisubUseFftw"
@@ -159,22 +141,14 @@
     Category="Paths"
     DisplayName="FFTW library path"
     Description="Location of FFTW library files"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
   <StringProperty
     Subtype="file"
     Name="FftwLibraryName"
     Category="Paths"
     DisplayName="FFTW library name"
     Description="Name of FFTW library"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
 
   <BoolProperty
     Name="AegisubUseLibass"
@@ -195,22 +169,14 @@
     Category="Paths"
     DisplayName="libass library path"
     Description="Location of libass library files"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
   <StringProperty
     Subtype="file"
     Name="LibassLibraryName"
     Category="Paths"
     DisplayName="libass library name"
     Description="Name of libass library"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
 
   <EnumProperty
     Name="AegisubUseCsri"
@@ -228,43 +194,46 @@
     Category="Paths"
     DisplayName="External CSRI library path"
     Description="Location of external CSRI library files, for when not using the CSRI helper library."
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
   <StringProperty
     Subtype="file"
     Name="CsriLibraryName"
     Category="Paths"
     DisplayName="External CSRI library name"
     Description="Name of external CSRI library, for when not using the CSRI helper library"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
 
-  <EnumProperty
-    Name="AegisubSpecialBuild"
-    DisplayName="Special build"
-    Description="Make a special build of Aegisub, either enabling StartupLog to help end-users debug startup issues, or a Final Release whch displays version information differently."
-    Category="Features"
-    >
-    <EnumValue Name="false" DisplayName="Make a regular build" Description="A regular developer build is made" />
-    <EnumValue Name="StartupLog" DisplayName="Start-up logging" Description="Show messages during start-up to figure out where an error occurs" />
-  </EnumProperty>
+  <BoolProperty
+    Name="StartupLog"
+    DisplayName="Start-up logging"
+    Description="Enable verbose startup logging to help figuration out where an error occurs"
+    Category="Config"
+    />
 
   <StringProperty
     Name="AegisubBuildCredit"
-    Category="BuildInfo"
+    Category="Config"
     DisplayName="Build credit"
     Description="Name the build should be credited to. Appears in the about box, and in the title bar of development builds."
-    Default="Anonymous"
-    >
-    <StringProperty.DataSource>
-      <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="false" />
-    </StringProperty.DataSource>
-  </StringProperty>
+    />
+
+    <BoolProperty
+     Name="AegisubUseUpdateChecker"
+     Category="Config"
+     DisplayName="Enable Update Checker"
+     Description="Specify whether to enable the update checker. Should be disabled if you will be distributing builds via something that has its own update checking functionality."
+     />
+   <StringProperty
+     Name="UpdateCheckerServer"
+     Category="Config"
+     DisplayName="Update Checker Server"
+     Description="Server name to connect to for updates."
+     />
+   <StringProperty
+     Name="UpdateCheckerURL"
+     Category="Config"
+     DisplayName="Update Checker URL"
+     Description="URL to get for updates."
+     />
 
 </Rule>
