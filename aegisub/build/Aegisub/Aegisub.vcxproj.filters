@@ -279,9 +279,6 @@
     <ClInclude Include="$(SrcDir)font_file_lister.h">
       <Filter>Features\Font collector</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)font_file_lister_freetype.h">
-      <Filter>Features\Font collector</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)font_file_lister_fontconfig.h">
       <Filter>Features\Font collector</Filter>
     </ClInclude>
@@ -480,9 +477,6 @@
     <ClInclude Include="$(SrcDir)MatroskaParser.h">
       <Filter>AV support</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)keyframe.h">
-      <Filter>Video</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)mkv_wrap.h">
       <Filter>AV support</Filter>
     </ClInclude>
@@ -638,6 +632,27 @@
     </ClInclude>
     <ClInclude Include="$(SrcDir)pen.h">
       <Filter>Utilities\UI utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)text_selection_controller.h">
+      <Filter>Main UI\Edit box</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)ass_parser.h">
+      <Filter>ASS</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h">
+      <Filter>Main UI\Edit box</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)audio_provider_lock.h">
+      <Filter>Audio\Providers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)dialog_manager.h">
+      <Filter>Utilities\UI utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)time_range.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)placeholder_ctrl.h">
+      <Filter>Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -875,9 +890,6 @@
     <ClCompile Include="$(SrcDir)font_file_lister_fontconfig.cpp">
       <Filter>Features\Font collector</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)font_file_lister_freetype.cpp">
-      <Filter>Features\Font collector</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_fonts_collector.cpp">
       <Filter>Features\Font collector</Filter>
     </ClCompile>
@@ -994,9 +1006,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)MatroskaParser.c">
       <Filter>AV support</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)command\keyframe.cpp">
-      <Filter>Video</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp">
       <Filter>AV support</Filter>
@@ -1180,6 +1189,18 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)pen.cpp">
       <Filter>Utilities\UI utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)ass_parser.cpp">
+      <Filter>ASS</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp">
+      <Filter>Main UI\Edit box</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio_provider_lock.cpp">
+      <Filter>Audio\Providers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)command\keyframe.cpp">
+      <Filter>Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
