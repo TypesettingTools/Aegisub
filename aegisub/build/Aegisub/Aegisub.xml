@@ -45,6 +45,28 @@
     <Category Name="Paths" DisplayName="Library paths" Description="Configure third-party library paths" />
   </Rule.Categories>
 
+  <StringProperty
+    Subtype="folder"
+    Name="WxBasePath"
+    Category="Paths"
+    DisplayName="wxWidgets root"
+    Description="Root directory of the wxWidgets installation to use"
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="WxLibraryPath"
+    Category="Paths"
+    DisplayName="wxWidgets library path"
+    Description="Location of compiled wxWidgets library files"
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="WxIncludePath"
+    Category="Paths"
+    DisplayName="wxWidgets include path"
+    Description="Location of wxWidgets header files"
+    />
+
   <BoolProperty
     Name="AegisubUseDSound"
     Category="Features"

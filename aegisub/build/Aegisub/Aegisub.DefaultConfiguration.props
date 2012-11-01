@@ -53,6 +53,10 @@
     <AegisubUseUpdateChecker>true</AegisubUseUpdateChecker>
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>
+    <WxBasePath>$(AegisubSourceBase)wxlib</WxBasePath>
+    <WxLibraryPath Condition="'$(Platform)'=='Win32'">$(WxBasePath)\lib32</WxLibraryPath>
+    <WxLibraryPath Condition="'$(Platform)'=='x64'">$(WxBasePath)\lib64</WxLibraryPath>
+    <WxIncludePath>$(WxBasePath)\include</WxIncludePath>
   </PropertyGroup>
 
 </Project>
