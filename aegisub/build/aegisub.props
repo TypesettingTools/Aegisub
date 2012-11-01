@@ -28,4 +28,5 @@
 
 	<!-- The standard targets need to go last for all paths to be proper -->
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+	<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Label="LocalAppDataPlatform" />
 </Project>
