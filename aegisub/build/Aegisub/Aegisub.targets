@@ -174,7 +174,12 @@
   <!-- General configuration, always required libraries -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>HAVE_LITTLE_ENDIAN;__STDC_FORMAT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+        HAVE_LITTLE_ENDIAN;
+        __STDC_FORMAT_MACROS;
+        NOMINMAX;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
         $(SrcDir)include\;
         $(SrcDir)msvc\;
