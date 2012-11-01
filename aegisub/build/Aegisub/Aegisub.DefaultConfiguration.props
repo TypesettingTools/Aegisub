@@ -37,7 +37,6 @@
 
   <PropertyGroup>
     <AegisubUseConfigWindowsH Condition="'$(AegisubUseConfigWindowsH)'==''">true</AegisubUseConfigWindowsH>
-    <AegisubUseAutomationLua Condition="'$(AegisubUseAutomationLua)'==''">true</AegisubUseAutomationLua>
     <AegisubUseDSound Condition="'$(AegisubUseDSound)'==''">true</AegisubUseDSound>
     <DirectXSDKPath Condition="'$(DirectXSDKPath)'==''">$(DXSDK_DIR)</DirectXSDKPath>
     <AegisubUseAvisynth Condition="'$(AegisubUseAvisynth)|$(Platform)'=='|Win32'">true</AegisubUseAvisynth>
@@ -47,7 +46,6 @@
     <FFmpegSourceLibraryPath Condition="'$(FFmpegSourceLibraryPath)'==''">$(AegisubSourceBase)libffms\lib\</FFmpegSourceLibraryPath>
     <FFmpegSourceLibraryName Condition="'$(FFmpegSourceLibraryName)'==''">ffms2.lib</FFmpegSourceLibraryName>
     <AegisubUseFt2 Condition="'$(AegisubUseFt2)'==''">true</AegisubUseFt2>
-    <AegisubUseHunspell Condition="'$(AegisubUseHunspell)'==''">true</AegisubUseHunspell>
     <AegisubUseFftw Condition="'$(AegisubUseFftw)'==''">false</AegisubUseFftw>
     <AegisubUseLibass Condition="'$(AegisubUseLibass)'==''">false</AegisubUseLibass>
     <AegisubUseCsri Condition="'$(AegisubUseCsri)'==''">HelperLibrary</AegisubUseCsri>

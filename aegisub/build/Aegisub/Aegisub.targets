@@ -132,7 +132,7 @@
   </ItemGroup>
 
   <!-- Automation Lua support -->
-  <ItemDefinitionGroup Condition="'$(AegisubUseAutomationLua)'=='true'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_AUTO4_LUA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(AegisubContribBase)lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
 
   <!-- Hunspell support -->
-  <ItemDefinitionGroup Condition="'$(AegisubUseHunspell)'=='true'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(AegisubUseConfigWindowsH)'=='false'">WITH_HUNSPELL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(AegisubContribBase)hunspell\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

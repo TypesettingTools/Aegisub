@@ -55,13 +55,6 @@
     />
 
   <BoolProperty
-    Name="AegisubUseAutomationLua"
-    Category="Features"
-    DisplayName="Use Automation 4 Lua"
-    Description="Specify whether to include Automation 4 support and the Lua engine. This is included and requires no configuration."
-    />
-
-  <BoolProperty
     Name="AegisubUseDSound"
     Category="Features"
     DisplayName="Use DirectSound"
@@ -153,13 +146,6 @@
       <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="true" />
     </StringProperty.DataSource>
   </StringProperty>
-
-  <BoolProperty
-    Name="AegisubUseHunspell"
-    Category="Features"
-    DisplayName="Use Hunspell"
-    Description="Specify whether to use the Hunspell spell checker library. This is included and requires no configuration."
-    />
 
   <BoolProperty
     Name="AegisubUseFftw"
