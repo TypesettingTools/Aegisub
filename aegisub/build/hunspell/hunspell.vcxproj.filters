@@ -122,5 +122,14 @@
     <ClCompile Include="$(SrcDir)win_api\hunspelldll.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\filemgr.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\hunzip.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\replist.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

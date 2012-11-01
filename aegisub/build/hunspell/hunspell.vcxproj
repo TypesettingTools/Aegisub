@@ -38,7 +38,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\..\..\contrib\hunspell\src\</SrcDir>
+    <SrcDir>..\..\..\contrib\hunspell\src\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -92,5 +92,8 @@
       <!-- Why is this file named .c when it's obviously C++ code -->
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
+    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\filemgr.cxx" />
+    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\hunzip.cxx" />
+    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\replist.cxx" />
   </ItemGroup>
 </Project>
