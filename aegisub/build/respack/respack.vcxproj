@@ -15,12 +15,7 @@
     <ProjectGuid>{08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8}</ProjectGuid>
     <RootNamespace>respack</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PlatformToolset>v110</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <PlatformToolset>v110</PlatformToolset>
-  </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>exe</AegisubProjectType>
@@ -28,25 +23,24 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <PropertyGroup>
     <OutDir>$(ProjectDir)</OutDir>
-    <TargetName>respack</TargetName>
-    <TargetName Condition="'$(Platform)'=='x64'">%(TargetName)64</TargetName>
-    <TargetName Condition="'$(Configuration)'=='Debug'">%(TargetName)d</TargetName>
+    <TargetName>respack$(AegisubPlatformSuffix)</TargetName>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
+
   <!-- Source file -->
   <ItemGroup>
-    <ClCompile Include="..\..\..\tools\common-respack.cpp" />
+    <ClCompile Include="..\..\tools\common-respack.cpp" />
   </ItemGroup>
 </Project>

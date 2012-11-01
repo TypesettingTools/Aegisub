@@ -33,9 +33,9 @@
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<ResPackExe Condition="'$(ResPackExe)' == ''">$(MSBuildThisFileDirectory)respack.exe</ResPackExe>
+		<ResPackExe Condition="'$(ResPackExe)' == ''">$(AegisubBinaryDir)respack$(AegisubPlatformSuffix).exe</ResPackExe>
 	</PropertyGroup>
-	
+
 	<Target
 		Name="ResPackGenerate"
 		BeforeTargets="ClCompile"
@@ -54,7 +54,7 @@
 			WorkingDirectory="@(ResPack -> '%(RootDir)%(Directory)')"
 			/>
 	</Target>
-	
+
 	<Target
 		Name="ResPack"
 		BeforeTargets="ClCompile"
