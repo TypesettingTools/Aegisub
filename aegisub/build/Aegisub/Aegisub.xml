@@ -253,7 +253,6 @@
     >
     <EnumValue Name="false" DisplayName="Make a regular build" Description="A regular developer build is made" />
     <EnumValue Name="StartupLog" DisplayName="Start-up logging" Description="Show messages during start-up to figure out where an error occurs" />
-    <EnumValue Name="FinalRelease" DisplayName="Final release" Description="Shows version information in a manner suited for stable releases for general distribution." />
   </EnumProperty>
 
   <StringProperty

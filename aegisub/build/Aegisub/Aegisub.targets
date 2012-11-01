@@ -192,7 +192,6 @@
   <!-- Special builds -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='FinalRelease'">FINAL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(AegisubSpecialBuild)'=='StartupLog'">WITH_STARTUPLOG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
