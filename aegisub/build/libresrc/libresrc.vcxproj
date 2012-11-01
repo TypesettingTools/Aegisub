@@ -24,15 +24,19 @@
     <RootNamespace>libresrc</RootNamespace>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
     <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
     <SrcDir>..\..\src\libresrc\</SrcDir>
   </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\Aegisub\Aegisub.DefaultConfiguration.props" />
+  <Import Project="$(MSBuildThisFileDirectory)..\Aegisub\Aegisub.vcxproj.user" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
