@@ -15,32 +15,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-	<ResPack Include="..\..\..\src\libresrc\manifest.respack">
+    <ResPack Include="..\..\..\src\libresrc\manifest.respack">
       <Filter>Resource Files</Filter>
-	</ResPack>
-	<ResPack Include="..\..\..\src\bitmaps\manifest.respack">
+    </ResPack>
+    <ResPack Include="..\..\..\src\bitmaps\manifest.respack">
       <Filter>Resource Files</Filter>
-	</ResPack>
+    </ResPack>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\libresrc\bitmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\libresrc\default_config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\libresrc\libresrc.cpp">
+    <ClCompile Include="$(SrcDir)libresrc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\libresrc\bitmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\libresrc\default_config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\libresrc\libresrc.h">
+    <ClInclude Include="$(SrcDir)libresrc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

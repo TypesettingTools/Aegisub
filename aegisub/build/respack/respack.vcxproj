@@ -15,6 +15,12 @@
     <ProjectGuid>{08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8}</ProjectGuid>
     <RootNamespace>respack</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>exe</AegisubProjectType>
@@ -26,7 +32,7 @@
   <PropertyGroup>
     <OutDir>$(ProjectDir)</OutDir>
     <TargetName>respack</TargetName>
-	<TargetName Condition="'$(Platform)'=='x64'">%(TargetName)64</TargetName>
+    <TargetName Condition="'$(Platform)'=='x64'">%(TargetName)64</TargetName>
     <TargetName Condition="'$(Configuration)'=='Debug'">%(TargetName)d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>

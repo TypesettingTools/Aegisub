@@ -15,48 +15,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\contrib\csri\include\subhelp.h">
+    <ClInclude Include="$(SrcDir)include\csri\csri.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\include\visibility.h">
+    <ClInclude Include="$(SrcDir)include\csri\fmtids.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\include\csri\csri.h">
+    <ClInclude Include="$(SrcDir)include\csri\logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\include\csri\fmtids.h">
+    <ClInclude Include="$(SrcDir)include\csri\openerr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\include\csri\logging.h">
+    <ClInclude Include="$(SrcDir)include\csri\stream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\include\csri\openerr.h">
+    <ClInclude Include="$(SrcDir)include\subhelp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\include\csri\stream.h">
+    <ClInclude Include="$(SrcDir)include\visibility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\lib\csrilib.h">
+    <ClInclude Include="$(SrcDir)lib\csrilib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\contrib\csri\lib\win32\csrilib_os.h">
+    <ClInclude Include="$(SrcDir)lib\win32\csrilib_os.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\contrib\csri\lib\list.c">
+    <ClCompile Include="$(SrcDir)lib\list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\contrib\csri\lib\wrap.c">
+    <ClCompile Include="$(SrcDir)lib\win32\enumerate.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\contrib\csri\lib\win32\enumerate.c">
+    <ClCompile Include="$(SrcDir)lib\wrap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\contrib\csri\subhelp\logging.c">
+    <ClCompile Include="$(SrcDir)subhelp\logging.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\contrib\csri\subhelp\win32\openfile.c">
+    <ClCompile Include="$(SrcDir)subhelp\win32\openfile.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
