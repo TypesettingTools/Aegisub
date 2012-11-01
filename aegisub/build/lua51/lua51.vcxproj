@@ -37,8 +37,8 @@
   </PropertyGroup>
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
-    <AegisubProjectType>dll</AegisubProjectType>
-    <SrcDir>..\..\..\..\contrib\lua51\src\</SrcDir>
+    <AegisubProjectType>lib</AegisubProjectType>
+    <SrcDir>..\..\..\contrib\lua51\src\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
