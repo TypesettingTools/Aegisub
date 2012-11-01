@@ -18,6 +18,9 @@
     <Filter Include="cajun">
       <UniqueIdentifier>{1d2e187a-1681-4c30-8912-a4b5a5d0ab9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ASS">
+      <UniqueIdentifier>{c97bd8a3-ebb7-4c43-9ca0-4ab8479d9388}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)common\charset_6937.h">
@@ -44,9 +47,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv_win.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\libaegisub\colour.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -71,9 +71,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\option_value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\libaegisub\path.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\util_win.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)include\libaegisub\validator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h">
@@ -125,6 +119,21 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\signal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\background_runner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\spellchecker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\ass\dialogue_parser.h">
+      <Filter>ASS</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)common\parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -148,9 +157,6 @@
     <ClCompile Include="$(SrcDir)common\charset_ucd.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\io.cpp">
-      <Filter>Source Files\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)windows\log_win.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
@@ -169,17 +175,11 @@
     <ClCompile Include="$(SrcDir)common\option_visit.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)common\path.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)common\thesaurus.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)windows\util_win.cpp">
       <Filter>Source Files\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\validator.cpp">
-      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\vfr.cpp">
       <Filter>Source Files\Common</Filter>
@@ -193,9 +193,6 @@
     <ClCompile Include="$(SrcDir)common\keyframe.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)windows\path_win.cpp">
-      <Filter>Source Files\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)common\util.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -207,6 +204,18 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\cajun\writer.cpp">
       <Filter>cajun</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)ass\dialogue_parser.cpp">
+      <Filter>ASS</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\color.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\parser.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\libaegisub\common\io.cpp">
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
