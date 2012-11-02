@@ -131,6 +131,13 @@
     />
 
   <BoolProperty
+    Name="AegisubUseFontconfig"
+    Category="Features"
+    DisplayName="Use Fontconfig"
+    Description="Specify whether to use Fontconfig for font enumeration in the Font Collector. You will need to configure the location of the Fontconfig library on the Library paths page."
+    />
+
+  <BoolProperty
     Name="AegisubUseLibass"
     Category="Features"
     DisplayName="Use libass"

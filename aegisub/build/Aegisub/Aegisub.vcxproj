@@ -57,6 +57,8 @@
 
   <!-- External user files to check which are enabled -->
   <Import Project="..\fftw\fftw.vcxproj.user" />
+  <Import Project="..\freetype2\freetype.vcxproj.user" />
+  <Import Project="..\fontconfig\fontconfig.vcxproj.user" />
 
   <!-- Project References -->
   <ItemGroup>
@@ -68,6 +70,9 @@
     </ProjectReference>
     <ProjectReference Include="..\freetype2\freetype.vcxproj" Condition="Exists('$(Freetype2SrcDir)')">
       <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\fontconfig\fontconfig.vcxproj" Condition="Exists('$(FontconfigSrcDir)')">
+      <Project>{ad56899e-961b-47b7-bd0f-14d0da50d141}</Project>
     </ProjectReference>
     <ProjectReference Include="..\hunspell\hunspell.vcxproj">
       <Project>{cc791693-6b28-40ac-879d-64a6c16468e3}</Project>

@@ -103,6 +103,13 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <!-- Fontconfig support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseFontconfig)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>WITH_FONTCONFIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
   <!-- FFmpegSource support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
     <ClCompile>

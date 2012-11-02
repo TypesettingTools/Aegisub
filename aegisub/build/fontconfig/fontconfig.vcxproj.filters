@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b4c15893-ec11-491d-9507-0ac184f9cc78}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\FT_MODULES">
+      <UniqueIdentifier>{4d3e4eff-3fbc-4b20-b413-2743b23b7109}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{e6cf6a0f-0404-4024-8bf8-ff5b29f35657}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FontconfigSrcDir)\win32\src\dirent.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcatomic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcblanks.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccfg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccharset.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdbg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdefault.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdir.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcformat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcfreetype.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcinit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fclang.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fclist.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcmatch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcmatrix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcname.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcpat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcserialize.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcstr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcxml.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\ftglue.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\dirent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcdeprecate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcftint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\ftglue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

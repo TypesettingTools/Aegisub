@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AD56899E-961B-47B7-BD0F-14D0DA50D141}</ProjectGuid>
+    <RootNamespace>fontconfig</RootNamespace>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+
+  <!-- Project configuration -->
+  <ItemGroup>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)config.xml" />
+    <ProjectTools Include="ExternalSourceLocation" />
+  </ItemGroup>
+
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
+  </PropertyGroup>
+
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>
+        $(FontconfigSrcDir);
+        $(FontconfigSrcDir)\win32\include;
+        $(AegisubSourceBase)\include;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>
+        HAVE_CONFIG_H;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>
+        md $(AegisubSourceBase)\include\fontconfig 2&gt; NUL
+        copy $(FontconfigSrcDir)\fontconfig\*.h $(AegisubSourceBase)\include\fontconfig
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <ClCompile Include="$(FontconfigSrcDir)\win32\src\dirent.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcatomic.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcblanks.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccache.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccfg.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccharset.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdbg.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdefault.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdir.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcformat.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcfreetype.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcfs.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcinit.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fclang.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fclist.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcmatch.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcmatrix.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcname.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcpat.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcserialize.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcstat.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcstr.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcxml.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\ftglue.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\config.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\dirent.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcdeprecate.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcftint.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcint.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\ftglue.h" />
+  </ItemGroup>
+</Project>

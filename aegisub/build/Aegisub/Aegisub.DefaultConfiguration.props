@@ -44,6 +44,7 @@
     <FFmpegSourceLibraryPath>$(AegisubSourceBase)libffms\lib\</FFmpegSourceLibraryPath>
     <FFmpegSourceLibraryName>ffms2.lib</FFmpegSourceLibraryName>
     <AegisubUseFreetype2>true</AegisubUseFreetype2>
+    <AegisubUseFontconfig>true</AegisubUseFontconfig>
     <AegisubUseFftw>false</AegisubUseFftw>
     <AegisubUseLibass>false</AegisubUseLibass>
     <AegisubUseCsri>HelperLibrary</AegisubUseCsri>
