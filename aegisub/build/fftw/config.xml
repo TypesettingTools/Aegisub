@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Rule Name="ExternalSourceLocation"
+    DisplayName="Source Location"
+    Order="1"
+    PageTemplate="tool"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <Rule.DataSource>
+    <DataSource Persistence="UserFile" ItemType="" HasConfigurationCondition="false" />
+  </Rule.DataSource>
+
+  <StringProperty
+    Subtype="folder"
+    Name="FftwSrcDir"
+    DisplayName="A directory containing a copy of FFTW3, or empty to disable FFTW3. Changes to this property do not take effect until the project is reloaded."
+    />
+</Rule>
