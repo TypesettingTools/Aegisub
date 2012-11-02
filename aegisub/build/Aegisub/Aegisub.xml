@@ -150,27 +150,6 @@
     DisplayName="Use FFTW"
     Description="Specify whether to use the FFTW fourier transformation library to speed up audio spectrum rendering. You will need to configure the location of the FFTW library on the Library paths page."
     />
-  <StringProperty
-    Subtype="folder"
-    Name="FftwIncludePath"
-    Category="Paths"
-    DisplayName="FFTW include path"
-    Description="Location of FFTW include files"
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="FftwLibraryPath"
-    Category="Paths"
-    DisplayName="FFTW library path"
-    Description="Location of FFTW library files"
-    />
-  <StringProperty
-    Subtype="file"
-    Name="FftwLibraryName"
-    Category="Paths"
-    DisplayName="FFTW library name"
-    Description="Name of FFTW library"
-    />
 
   <BoolProperty
     Name="AegisubUseLibass"

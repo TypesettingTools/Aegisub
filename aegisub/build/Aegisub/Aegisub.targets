@@ -131,12 +131,7 @@
   <ItemDefinitionGroup Condition="'$(AegisubUseFftw)'=='true'">
     <ClCompile>
       <PreprocessorDefinitions>WITH_FFTW3;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(FftwIncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>$(FftwLibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(FftwLibraryName);%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
 
   <!-- DirectSound support -->
