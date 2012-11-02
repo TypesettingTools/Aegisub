@@ -186,6 +186,7 @@
         $(AegisubContribBase)iconv\include;
         $(AegisubSourceBase)libaegisub\include;
         $(AegisubSourceBase)build;
+        $(AegisubSourceBase)include;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
     </ClCompile>

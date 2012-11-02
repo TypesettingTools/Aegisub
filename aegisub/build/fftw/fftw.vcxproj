@@ -60,6 +60,12 @@
       <OpenMPSupport>true</OpenMPSupport>
       <StructMemberAlignment>Default</StructMemberAlignment>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>
+        md $(AegisubSourceBase)\include 2&gt; NUL
+        copy $(FftwSrcDir)\api\fftw3.h $(AegisubSourceBase)\include
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
 
   <!-- Source files -->
