@@ -15,7 +15,7 @@
 	</PropertyGroup>
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<ObjectFileName>$(IntDir)</ObjectFileName>
+			<ObjectFileName>$(IntDir)/%(Directory)</ObjectFileName>
 		</ClCompile>
 		<Link>
 			<OutputFile>$(AegisubBinaryDir)$(TargetName)$(TargetExt)</OutputFile>
