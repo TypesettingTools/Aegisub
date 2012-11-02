@@ -55,6 +55,37 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <!-- External user files to check which are enabled -->
+  <Import Project="..\fftw\fftw.vcxproj.user" />
+
+  <!-- Project References -->
+  <ItemGroup>
+    <ProjectReference Include="..\csrihelper\csrihelper.vcxproj">
+      <Project>{c832eaf3-860d-4373-a02c-933626b47a5e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\fftw\fftw.vcxproj" Condition="Exists('$(FftwSrcDir)')">
+      <Project>{ea3dcc95-2423-4ea0-a508-7a427b4c0594}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\hunspell\hunspell.vcxproj">
+      <Project>{cc791693-6b28-40ac-879d-64a6c16468e3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libaegisub\libaegisub.vcxproj">
+      <Project>{bb3fed86-db7a-4dc7-964a-260fb86cde61}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libiconv\libiconv.vcxproj">
+      <Project>{965054d2-44f2-4eb2-9879-051cc3d7ef08}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libresrc\libresrc.vcxproj">
+      <Project>{bd00d65f-24da-4784-8860-3b972ea125fc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\lua51\lua51.vcxproj">
+      <Project>{5391a8b1-9c70-4dc4-92ad-d3e34c6b803f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
+      <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)aegisublocale.h" />
@@ -423,28 +454,5 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\csrihelper\csrihelper.vcxproj">
-      <Project>{c832eaf3-860d-4373-a02c-933626b47a5e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\hunspell\hunspell.vcxproj">
-      <Project>{cc791693-6b28-40ac-879d-64a6c16468e3}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libaegisub\libaegisub.vcxproj">
-      <Project>{bb3fed86-db7a-4dc7-964a-260fb86cde61}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libiconv\libiconv.vcxproj">
-      <Project>{965054d2-44f2-4eb2-9879-051cc3d7ef08}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libresrc\libresrc.vcxproj">
-      <Project>{bd00d65f-24da-4784-8860-3b972ea125fc}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\lua51\lua51.vcxproj">
-      <Project>{5391a8b1-9c70-4dc4-92ad-d3e34c6b803f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
-      <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
-    </ProjectReference>
   </ItemGroup>
 </Project>
