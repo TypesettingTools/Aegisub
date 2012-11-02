@@ -11,8 +11,8 @@
 
   <StringProperty
     Subtype="folder"
-    Name="FftwSrcDir"
+    Name="Freetype2SrcDir"
     DisplayName="Source Location"
-    Description="A directory containing a copy of FFTW3, or empty to disable FFTW3. Changes to this property do not take effect until the project is reloaded."
+    Description="A directory containing a copy of FreeType2, or empty to disable FreeType2. Changes to this property do not take effect until the project is reloaded."
     />
 </Rule>

@@ -100,12 +100,7 @@
   <ItemDefinitionGroup Condition="'$(AegisubUseFreetype2)'=='true'">
     <ClCompile>
       <PreprocessorDefinitions>WITH_FREETYPE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(Ft2IncludePath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>$(Ft2LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(Ft2LibraryName);%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
 
   <!-- FFmpegSource support -->

@@ -66,6 +66,9 @@
     <ProjectReference Include="..\fftw\fftw.vcxproj" Condition="Exists('$(FftwSrcDir)')">
       <Project>{ea3dcc95-2423-4ea0-a508-7a427b4c0594}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\freetype2\freetype.vcxproj" Condition="Exists('$(Freetype2SrcDir)')">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\hunspell\hunspell.vcxproj">
       <Project>{cc791693-6b28-40ac-879d-64a6c16468e3}</Project>
     </ProjectReference>

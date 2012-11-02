@@ -122,27 +122,6 @@
     DisplayName="Use Freetype 2"
     Description="Specify whether to use Freetype 2 for font enumeration in the Font Collector. You will need to configure the location of the Freetype 2 library on the Library paths page."
     />
-  <StringProperty
-    Subtype="folder"
-    Name="Ft2IncludePath"
-    Category="Paths"
-    DisplayName="Freetype 2 include path"
-    Description="Location of Freetype 2 include files"
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="Ft2LibraryPath"
-    Category="Paths"
-    DisplayName="Freetype 2 library path"
-    Description="Location of Freetype 2 library files"
-    />
-  <StringProperty
-    Subtype="file"
-    Name="Ft2LibraryName"
-    Category="Paths"
-    DisplayName="Freetype 2 library name"
-    Description="Name of Freetype 2 library"
-    />
 
   <BoolProperty
     Name="AegisubUseFftw"
