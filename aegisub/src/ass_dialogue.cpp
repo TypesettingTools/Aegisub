@@ -49,12 +49,15 @@
 
 using namespace boost::adaptors;
 
+static int next_id = 0;
+
 std::size_t hash_value(wxString const& s) {
 	return wxStringHash()(s);
 }
 
 AssDialogue::AssDialogue()
-: Comment(false)
+: Id(++next_id)
+, Comment(false)
 , Layer(0)
 , Start(0)
 , End(5000)
@@ -64,7 +67,8 @@ AssDialogue::AssDialogue()
 }
 
 AssDialogue::AssDialogue(AssDialogue const& that)
-: Comment(that.Comment)
+: Id(++next_id)
+, Comment(that.Comment)
 , Layer(that.Layer)
 , Start(that.Start)
 , End(that.End)
@@ -77,7 +81,8 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 }
 
 AssDialogue::AssDialogue(wxString const& data)
-: Comment(false)
+: Id(++next_id)
+, Comment(false)
 , Layer(0)
 , Start(0)
 , End(5000)
@@ -325,7 +330,9 @@ wxString AssDialogue::GetStrippedText() const {
 }
 
 AssEntry *AssDialogue::Clone() const {
-	return new AssDialogue(*this);
+	AssDialogue *clone = new AssDialogue(*this);
+	*const_cast<int *>(&clone->Id) = Id;
+	return clone;
 }
 
 void AssDialogueBlockDrawing::TransformCoords(int mx, int my, double x, double y) {

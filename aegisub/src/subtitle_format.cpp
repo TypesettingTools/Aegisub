@@ -228,7 +228,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 		//Is there an A part before the overlap?
 		if (curdlg->Start > prevdlg->Start) {
 			// Produce new entry with correct values
-			AssDialogue *newdlg = static_cast<AssDialogue*>(prevdlg->Clone());
+			AssDialogue *newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = prevdlg->Start;
 			newdlg->End = curdlg->Start;
 			newdlg->Text = prevdlg->Text;
@@ -238,7 +238,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 
 		// Overlapping A+B part
 		{
-			AssDialogue *newdlg = static_cast<AssDialogue*>(prevdlg->Clone());
+			AssDialogue *newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = curdlg->Start;
 			newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
 			// Put an ASS format hard linewrap between lines
@@ -250,7 +250,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 		// Is there an A part after the overlap?
 		if (prevdlg->End > curdlg->End) {
 			// Produce new entry with correct values
-			AssDialogue *newdlg = static_cast<AssDialogue*>(prevdlg->Clone());
+			AssDialogue *newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = curdlg->End;
 			newdlg->End = prevdlg->End;
 			newdlg->Text = prevdlg->Text;
@@ -261,7 +261,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 		// Is there a B part after the overlap?
 		if (curdlg->End > prevdlg->End) {
 			// Produce new entry with correct values
-			AssDialogue *newdlg = static_cast<AssDialogue*>(prevdlg->Clone());
+			AssDialogue *newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = prevdlg->End;
 			newdlg->End = curdlg->End;
 			newdlg->Text = curdlg->Text;

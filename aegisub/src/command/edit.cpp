@@ -585,7 +585,7 @@ static void duplicate_lines(agi::Context *c, bool shift) {
 		// Duplicate each of the selected lines, inserting them in a block
 		// after the selected block
 		do {
-			AssDialogue *new_diag = static_cast<AssDialogue*>(start->Clone());
+			AssDialogue *new_diag = new AssDialogue(*static_cast<AssDialogue*>(&*start));
 
 			c->ass->Line.insert(insert_pos, *new_diag);
 			new_sel.insert(new_diag);

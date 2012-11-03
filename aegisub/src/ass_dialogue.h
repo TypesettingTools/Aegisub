@@ -127,6 +127,11 @@ public:
 class AssDialogue : public AssEntry {
 	wxString GetData(bool ssa) const;
 public:
+	/// Unique ID of this line. Copies of the line for Undo/Redo purposes
+	/// preserve the unique ID, so that the equivalent lines can be found in
+	/// the different versions of the file.
+	const int Id;
+
 	/// Is this a comment line?
 	bool Comment;
 	/// Layer number
