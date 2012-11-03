@@ -113,6 +113,7 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 
 	bool auto_commit; ///< Should changes be automatically commited?
 	int commit_id;    ///< Last commit id used for an autocommit
+	bool pending_changes; ///< Are there any pending changes to be committed?
 
 	void OnAutoCommitChange(agi::OptionValue const& opt);
 
@@ -258,10 +259,11 @@ void AudioTimingControllerKaraoke::DoCommit() {
 	file_changed_slot.Block();
 	commit_id = c->ass->Commit(_("karaoke timing"), AssFile::COMMIT_DIAG_TEXT, commit_id, active_line);
 	file_changed_slot.Unblock();
+	pending_changes = false;
 }
 
 void AudioTimingControllerKaraoke::Commit() {
-	if (!auto_commit)
+	if (!auto_commit && pending_changes)
 		DoCommit();
 }
 
@@ -270,6 +272,7 @@ void AudioTimingControllerKaraoke::Revert() {
 
 	cur_syl = 0;
 	commit_id = -1;
+	pending_changes = false;
 
 	start_marker.Move(active_line->Start);
 	end_marker.Move(active_line->End);
@@ -409,8 +412,10 @@ void AudioTimingControllerKaraoke::AnnounceChanges(int syl) {
 
 	if (auto_commit)
 		DoCommit();
-	else
+	else {
+		pending_changes = true;
 		commit_id = -1;
+	}
 }
 
 void AudioTimingControllerKaraoke::OnMarkerDrag(std::vector<AudioMarker*> const& m, int new_position, int) {
