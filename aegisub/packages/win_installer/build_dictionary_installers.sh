@@ -32,6 +32,7 @@ for aff in src/dictionaries/*.aff; do
 		fr_FR) langname="French" ;;
 		hu_HU) langname="Hungarian" ;;
 		it_IT) langname="Italian" ;;
+		ms_MY) langname="Malay" ;;
 		nl_NL) langname="Dutch" ;;
 		pl_PL) langname="Polish" ;;
 		pt_BR) langname="Brazilian Portuguese" ;;
