@@ -27,10 +27,15 @@ InitialLineState::InitialLineState(agi::Context *c)
 }
 
 void InitialLineState::OnActiveLineChanged(AssDialogue *new_line) {
-	if (new_line)
+	if (new_line) {
+		if (new_line->Id == line_id) return;
+		line_id = new_line->Id;
 		initial_text = new_line->Text;
-	else
+	}
+	else {
+		line_id = 0;
 		initial_text.clear();
+	}
 
 	InitialStateChanged(initial_text);
 }

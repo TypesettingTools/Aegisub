@@ -24,6 +24,7 @@ class AssDialogue;
 class InitialLineState {
 	agi::signal::Connection active_line_connection;
 	wxString initial_text;
+	int line_id;
 
 	agi::signal::Signal<wxString const&> InitialStateChanged;
 	void OnActiveLineChanged(AssDialogue *new_line);
