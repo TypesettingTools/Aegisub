@@ -42,6 +42,8 @@
 
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
+#include "../audio_controller.h"
+#include "../audio_timing.h"
 #include "../include/aegisub/context.h"
 #include "../main.h"
 #include "../frame_main.h"
@@ -73,6 +75,10 @@ struct grid_line_next_create : public Command {
 	STR_HELP("Move to the next subtitle line, creating a new one if needed")
 
 	void operator()(agi::Context *c) {
+		AudioTimingController *tc = c->audioController->GetTimingController();
+		if (tc)
+			tc->Commit();
+
 		AssDialogue *cur = c->selectionController->GetActiveLine();
 		c->selectionController->NextLine();
 		if (cur == c->selectionController->GetActiveLine()) {
