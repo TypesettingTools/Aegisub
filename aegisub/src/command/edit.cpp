@@ -65,8 +65,10 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/format.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/sliced.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 #include <libaegisub/of_type_adaptor.h>
 
@@ -945,6 +947,24 @@ struct edit_clear : public Command {
 	}
 };
 
+wxString get_text(AssDialogueBlock &d) { return d.GetText(); }
+struct edit_clear_text : public Command {
+	CMD_NAME("edit/clear/text")
+	STR_DISP("Clear Text")
+	STR_MENU("Clear Text")
+	STR_HELP("Clear the current line's text, leaving override tags")
+
+	void operator()(agi::Context *c) {
+		AssDialogue *line = c->selectionController->GetActiveLine();
+		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
+		line->Text = join(blocks
+			| filtered([](AssDialogueBlock const& b) { return b.GetType() != BLOCK_PLAIN; })
+			| transformed(get_text),
+			wxS(""));
+		c->ass->Commit(_("clear line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+	}
+};
+
 struct edit_insert_original : public Command {
 	CMD_NAME("edit/insert_original")
 	STR_DISP("Insert Original")
@@ -956,7 +976,7 @@ struct edit_insert_original : public Command {
 		int sel_start = c->textSelectionController->GetSelectionStart();
 		int sel_end = c->textSelectionController->GetSelectionEnd();
 
-		line->Text = line->Text.Left(sel_start) + c->initialLineState->GetInitialText() + line->Text.Mid(sel_end);
+		line->Text = line->Text.get().Left(sel_start) + c->initialLineState->GetInitialText() + line->Text.get().Mid(sel_end);
 		c->ass->Commit(_("insert original"), AssFile::COMMIT_DIAG_TEXT, -1, line);
 	}
 };
@@ -995,5 +1015,6 @@ namespace cmd {
 		reg(new edit_revert);
 		reg(new edit_insert_original);
 		reg(new edit_clear);
+		reg(new edit_clear_text);
 	}
 }

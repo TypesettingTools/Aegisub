@@ -86,6 +86,7 @@ public:
 
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
+	using AssDialogueBlock::text;
 	AssBlockType GetType() const override { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 };
