@@ -278,8 +278,8 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	index_line_map.clear();
 	line_index_map.clear();
 
-	for (entryIter cur = context->ass->Line.begin(); cur != context->ass->Line.end(); ++cur) {
-		if (AssDialogue *curdiag = dynamic_cast<AssDialogue*>(&*cur)) {
+	for (auto& line : context->ass->Line) {
+		if (AssDialogue *curdiag = dynamic_cast<AssDialogue*>(&line)) {
 			line_index_map[curdiag] = (int)index_line_map.size();
 			index_line_map.push_back(curdiag);
 		}
@@ -290,15 +290,14 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 
 		// If the file shrank enough that no selected rows are left, select the
 		// last row
-		if (sel_rows.empty()) {
+		if (sel_rows.empty())
 			sel_rows.push_back(index_line_map.size() - 1);
-		}
-		else if (sel_rows[0] >= (int)index_line_map.size()) {
+		else if (sel_rows[0] >= (int)index_line_map.size())
 			sel_rows[0] = index_line_map.size() - 1;
-		}
-		for (size_t i = 0; i < sel_rows.size(); i++) {
-			if (sel_rows[i] >= (int)index_line_map.size()) break;
-			sel.insert(index_line_map[sel_rows[i]]);
+
+		for (int row : sel_rows) {
+			if (row >= (int)index_line_map.size()) break;
+			sel.insert(index_line_map[row]);
 		}
 
 		SetSelectedSet(sel);

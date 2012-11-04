@@ -206,9 +206,9 @@ namespace {
 			diag->ParseAssTags();
 			diag->ProcessParameters(resample_tags, state);
 
-			for (size_t i = 0; i < diag->Blocks.size(); ++i) {
-				if (AssDialogueBlockDrawing *block = dynamic_cast<AssDialogueBlockDrawing*>(diag->Blocks[i]))
-					block->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
+			for (auto block : diag->Blocks) {
+				if (AssDialogueBlockDrawing *drawing = dynamic_cast<AssDialogueBlockDrawing*>(block))
+					drawing->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
 			}
 
 			for (size_t i = 0; i < 3; ++i)

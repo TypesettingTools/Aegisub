@@ -133,8 +133,8 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 	delete[] readBuf;
 
 	// Insert into file
-	for (std::map<int, wxString>::iterator it = subList.begin(); it != subList.end(); ++it) {
-		parser->AddLine(it->second);
+	for (auto order_value_pair : subList) {
+		parser->AddLine(order_value_pair.second);
 	}
 }
 

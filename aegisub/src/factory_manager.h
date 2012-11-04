@@ -58,9 +58,8 @@ protected:
 			classes->insert(std::make_pair(name, std::make_pair(hide, function)));
 		}
 		else {
-			for (size_t i = 0; i < subtypes.size(); i++) {
-				classes->insert(std::make_pair(name + '/' + subtypes[i], std::make_pair(hide, function)));
-			}
+			for (auto const& subtype : subtypes)
+				classes->insert(std::make_pair(name + '/' + subtype, std::make_pair(hide, function)));
 		}
 	}
 
@@ -81,11 +80,11 @@ public:
 		if (!classes) return list;
 		std::string cmp;
 		std::transform(favourite.begin(), favourite.end(), favourite.begin(), ::tolower);
-		for (iterator cur = classes->begin(); cur != classes->end(); ++cur) {
+		for (auto const& cls : *classes) {
 			cmp.clear();
-			std::transform(cur->first.begin(), cur->first.end(), std::back_inserter(cmp), ::tolower);
-			if (cmp == favourite) list.insert(list.begin(), cur->first);
-			else if (!cur->second.first) list.push_back(cur->first);
+			std::transform(cls.first.begin(), cls.first.end(), std::back_inserter(cmp), ::tolower);
+			if (cmp == favourite) list.insert(list.begin(), cls.first);
+			else if (!cls.second.first) list.push_back(cls.first);
 		}
 		return list;
 	}

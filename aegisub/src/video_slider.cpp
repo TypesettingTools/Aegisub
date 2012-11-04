@@ -204,8 +204,8 @@ void VideoSlider::OnPaint(wxPaintEvent &) {
 	int curX;
 	if (OPT_GET("Video/Slider/Show Keyframes")->GetBool()) {
 		dc.SetPen(wxPen(shad));
-		for (size_t i=0;i<keyframes.size();i++) {
-			curX = GetXAtValue(keyframes[i]);
+		for (int frame : keyframes) {
+			curX = GetXAtValue(frame);
 			dc.DrawLine(curX,2,curX,8);
 		}
 	}

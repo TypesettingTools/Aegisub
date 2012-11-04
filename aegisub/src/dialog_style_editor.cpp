@@ -87,8 +87,8 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
-		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+		for (auto& line : c->ass->Line) {
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 			if (!diag) continue;
 
 			if (diag->Style == source_name) {
@@ -425,9 +425,9 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 		wxArrayString styles = store ? store->GetNames() : c->ass->GetStyles();
 
 		// Check if style name is unique
-		for (unsigned int i=0;i<styles.Count();i++) {
-			if (newStyleName.CmpNoCase(styles[i]) == 0) {
-				if ((store && store->GetStyle(styles[i]) != style) || (!store && c->ass->GetStyle(styles[i]) != style)) {
+		for (auto const& style_name : styles) {
+			if (newStyleName.CmpNoCase(style_name) == 0) {
+				if ((store && store->GetStyle(style_name) != style) || (!store && c->ass->GetStyle(style_name) != style)) {
 					wxMessageBox("There is already a style with this name. Please choose another name.", "Style name conflict.", wxOK | wxICON_ERROR | wxCENTER);
 					return;
 				}

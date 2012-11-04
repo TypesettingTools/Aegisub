@@ -75,8 +75,8 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& fi
 	SmpteFormatter ft(fps);
 	TextFileWriter file(filename, encoding);
 	AssDialogue *prev = 0;
-	for (entryIter it = copy.Line.begin(); it != copy.Line.end(); ++it) {
-		AssDialogue *cur = dynamic_cast<AssDialogue*>(&*it);
+	for (auto& line : copy.Line) {
+		AssDialogue *cur = dynamic_cast<AssDialogue*>(&line);
 
 		if (prev && cur) {
 			file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, cur->Start));

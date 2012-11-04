@@ -101,9 +101,9 @@ namespace {
 			name_map[renamed_commands[i][0]] = renamed_commands[i][1];
 
 		bool renamed_any = false;
-		agi::hotkey::Hotkey::HotkeyMap hk_map = hotkey::inst->GetHotkeyMap();
-		for (agi::hotkey::Hotkey::HotkeyMap::iterator it = hk_map.begin(); it != hk_map.end(); ) {
-			std::map<std::string, const char *>::iterator ren = name_map.find(it->first);
+		auto hk_map = hotkey::inst->GetHotkeyMap();
+		for (auto it = hk_map.begin(); it != hk_map.end(); ) {
+			auto ren = name_map.find(it->first);
 			if (ren != name_map.end()) {
 				hk_map.insert(make_pair(std::string(ren->second),
 					agi::hotkey::Combo(it->second.Context(), ren->second, it->second.Get())));

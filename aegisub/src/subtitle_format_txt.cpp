@@ -129,8 +129,8 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (constEntryIter l = src->Line.begin(); l != src->Line.end(); ++l) {
-		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&*l);
+	for (auto const& line : src->Line) {
+		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&line);
 		if (dia && !dia->Comment) {
 			num_dialogue_lines++;
 			if (!dia->Actor.empty())
@@ -146,8 +146,8 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	file.WriteLineToFile(wxString("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (constEntryIter l = src->Line.begin(); l != src->Line.end(); ++l) {
-		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&*l);
+	for (auto const& line : src->Line) {
+		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&line);
 		if (!dia) continue;
 
 		wxString out_line;
@@ -161,10 +161,9 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 		wxString out_text;
 		if (strip_formatting) {
 			std::vector<AssDialogueBlock*> blocks = dia->ParseTags();
-			for (std::vector<AssDialogueBlock*>::iterator block = blocks.begin(); block != blocks.end(); ++block) {
-				if ((*block)->GetType() == BLOCK_PLAIN) {
-					out_text += (*block)->GetText();
-				}
+			for (auto block : blocks) {
+				if (block->GetType() == BLOCK_PLAIN)
+					out_text += block->GetText();
 			}
 			delete_clear(blocks);
 		}

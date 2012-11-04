@@ -251,10 +251,10 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 	GetWordBoundaries(active_line->Text, results);
 
 	int shift = 0;
-	for (size_t j = 0; j < results.size(); ++j) {
-		word_start = results[j].first + shift;
+	for (auto const& result : results) {
+		word_start = result.first + shift;
 		if (word_start < start_pos) continue;
-		word_end = results[j].second + shift;
+		word_end = result.second + shift;
 		wxString word = active_line->Text.Mid(word_start, word_end - word_start);
 
 		if (auto_ignore.count(word) || spellchecker->CheckWord(from_wx(word))) continue;

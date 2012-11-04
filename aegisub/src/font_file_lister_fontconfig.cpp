@@ -205,9 +205,9 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString
 
 	FcCharSet *charset;
 	if (FcPatternGetCharSet(rpat, FC_CHARSET, 0, &charset) == FcResultMatch) {
-		for (std::set<wxUniChar>::const_iterator it = characters.begin(); it != characters.end(); ++it) {
-			if (!FcCharSetHasChar(charset, *it))
-				ret.missing += *it;
+		for (wxUniChar chr : characters) {
+			if (!FcCharSetHasChar(charset, chr))
+				ret.missing += chr;
 		}
 	}
 

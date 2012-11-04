@@ -64,32 +64,32 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 	bool fileSupported = false;
 	std::string errors;
 	errors.reserve(1024);
-	for (int i = 0; i < (signed)list.size(); ++i) {
+	for (auto const& factory : list) {
 		std::string err;
 		try {
-			VideoProvider *provider = Create(list[i], video);
-			LOG_I("manager/video/provider") << list[i] << ": opened " << STD_STR(video);
+			VideoProvider *provider = Create(factory, video);
+			LOG_I("manager/video/provider") << factory << ": opened " << STD_STR(video);
 			if (provider->WantsCaching()) {
 				return new VideoProviderCache(provider);
 			}
 			return provider;
 		}
 		catch (agi::FileNotFoundError const&) {
-			err = list[i] + ": file not found.";
+			err = factory + ": file not found.";
 			// Keep trying other providers as this one may just not be able to
 			// open a valid path
 		}
 		catch (VideoNotSupported const&) {
 			fileFound = true;
-			err = list[i] + ": video is not in a supported format.";
+			err = factory + ": video is not in a supported format.";
 		}
 		catch (VideoOpenError const& ex) {
 			fileSupported = true;
-			err = list[i] + ": " + ex.GetMessage();
+			err = factory + ": " + ex.GetMessage();
 		}
 		catch (agi::vfr::Error const& ex) {
 			fileSupported = true;
-			err = list[i] + ": " + ex.GetMessage();
+			err = factory + ": " + ex.GetMessage();
 		}
 		errors += err;
 		errors += "\n";

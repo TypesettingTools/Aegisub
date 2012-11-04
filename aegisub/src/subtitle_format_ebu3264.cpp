@@ -123,9 +123,8 @@ namespace
 	{
 		void ProcessOverrides(AssDialogueBlockOverride *ob, bool &underline, bool &italic, int &align, bool style_underline, bool style_italic)
 		{
-			for (std::vector<AssOverrideTag*>::iterator tag = ob->Tags.begin(); tag != ob->Tags.end(); ++tag)
+			for (auto t : ob->Tags)
 			{
-				AssOverrideTag *t = *tag;
 				if (t->Name == "\\u")
 					underline = t->Params[0]->Get<bool>(style_underline);
 				else if (t->Name == "\\i")
@@ -203,15 +202,15 @@ namespace
 			std::vector<EbuTextRow> new_text;
 			new_text.reserve(text_rows.size());
 
-			for (std::vector<EbuTextRow>::iterator row = text_rows.begin(); row != text_rows.end(); ++row)
+			for (auto const& row : text_rows)
 			{
 				// Get lengths of each word
 				std::vector<size_t> word_lengths;
-				for (EbuTextRow::iterator cur_block = row->begin(); cur_block != row->end(); ++cur_block)
+				for (auto const& cur_block : row)
 				{
-					if (cur_block->word_start)
+					if (cur_block.word_start)
 						word_lengths.push_back(0);
-					word_lengths.back() += cur_block->text.size();
+					word_lengths.back() += cur_block.text.size();
 				}
 
 				std::vector<size_t> split_points = agi::get_wrap_points(word_lengths, (size_t)max_width, (agi::WrapMode)split_type);
@@ -219,7 +218,7 @@ namespace
 				if (split_points.empty())
 				{
 					// Line doesn't need splitting, so copy straight over
-					new_text.push_back(*row);
+					new_text.push_back(row);
 					continue;
 				}
 
@@ -227,9 +226,9 @@ namespace
 				new_text.push_back(EbuTextRow());
 				size_t cur_word = 0;
 				size_t split_point = 0;
-				for (EbuTextRow::iterator cur_block = row->begin(); cur_block != row->end(); ++cur_block)
+				for (auto const& cur_block : row)
 				{
-					if (cur_block->word_start && split_point < split_points.size())
+					if (cur_block.word_start && split_point < split_points.size())
 					{
 						if (split_points[split_point] == cur_word)
 						{
@@ -239,7 +238,7 @@ namespace
 						++cur_word;
 					}
 
-					new_text.back().push_back(*cur_block);
+					new_text.back().push_back(cur_block);
 				}
 			}
 
@@ -249,11 +248,11 @@ namespace
 
 		bool CheckLineLengths(int max_width) const
 		{
-			for (std::vector<EbuTextRow>::const_iterator row = text_rows.begin(); row != text_rows.end(); ++row)
+			for (auto const& row : text_rows)
 			{
 				int line_length = 0;
-				for (EbuTextRow::const_iterator it = row->begin(); it != row->end(); ++it)
-					line_length += it->text.size();
+				for (auto const& block : row)
+					line_length += block.text.size();
 
 				if (line_length > max_width)
 					// early return as soon as any line is over length
@@ -281,9 +280,8 @@ namespace
 
 			bool underline = style_underline, italic = style_italic;
 
-			for (std::vector<AssDialogueBlock*>::iterator bl = line->Blocks.begin(); bl != line->Blocks.end(); ++bl)
+			for (auto b : line->Blocks)
 			{
-				AssDialogueBlock *b = *bl;
 				switch (b->GetType())
 				{
 					case BLOCK_PLAIN:
@@ -386,9 +384,9 @@ namespace
 		subs_list.reserve(copy.Line.size());
 
 		// convert to intermediate format
-		for (entryIter orgline = copy.Line.begin(); orgline != copy.Line.end(); ++orgline)
+		for (auto& orgline : copy.Line)
 		{
-			AssDialogue *line = dynamic_cast<AssDialogue*>(&*orgline);
+			AssDialogue *line = dynamic_cast<AssDialogue*>(&orgline);
 			if (!line) continue;
 
 			// add a new subtitle and work on it
@@ -455,35 +453,33 @@ namespace
 		return reinterpret_cast<const char *>(str.wx_str());
 	}
 
-	std::string convert_subtitle_line(std::vector<EbuSubtitle>::const_iterator sub, agi::charset::IconvWrapper *encoder, bool enable_formatting)
+	std::string convert_subtitle_line(EbuSubtitle const& sub, agi::charset::IconvWrapper *encoder, bool enable_formatting)
 	{
 		std::string fullstring;
-		for (std::vector<EbuTextRow>::const_iterator row = sub->text_rows.begin(); row != sub->text_rows.end(); ++row)
+		for (auto const& row : sub.text_rows)
 		{
+			if (!fullstring.empty())
+				fullstring += EBU_FORMAT_LINEBREAK;
+
 			// formatting is reset at the start of every row, so keep track per row
 			bool underline = false, italic = false;
-			for (std::vector<EbuFormattedText>::const_iterator block = row->begin(); block != row->end(); ++block)
+			for (auto const& block : row)
 			{
 				if (enable_formatting)
 				{
 					// insert codes for changed formatting
-					if (underline != block->underline)
-						fullstring += EBU_FORMAT_UNDERLINE[block->underline];
-					if (italic != block->italic)
-						fullstring += EBU_FORMAT_ITALIC[block->italic];
+					if (underline != block.underline)
+						fullstring += EBU_FORMAT_UNDERLINE[block.underline];
+					if (italic != block.italic)
+						fullstring += EBU_FORMAT_ITALIC[block.italic];
 
-					underline = block->underline;
-					italic = block->italic;
+					underline = block.underline;
+					italic = block.italic;
 				}
 
 				// convert text to specified encoding
-				fullstring += encoder->Convert(std::string(wx_str(block->text), buffer_size(block->text)));
+				fullstring += encoder->Convert(std::string(wx_str(block.text), buffer_size(block.text)));
 			}
-
-			// check that this is not the last row
-			if (row+1 != sub->text_rows.end())
-				// insert linebreak for non-final lines
-				fullstring += EBU_FORMAT_LINEBREAK;
 		}
 		return fullstring;
 	}
@@ -515,33 +511,33 @@ namespace
 
 		std::vector<BlockTTI> tti;
 		tti.reserve(subs_list.size());
-		for (std::vector<EbuSubtitle>::const_iterator sub = subs_list.begin(); sub != subs_list.end(); ++sub)
+		for (auto const& sub : subs_list)
 		{
 			std::string fullstring = convert_subtitle_line(sub, encoder.get(),
 				export_settings.display_standard == EbuExportSettings::DSC_Open);
 
 			// construct a base block that can be copied and filled
 			BlockTTI base;
-			base.sgn = sub->group_number;
+			base.sgn = sub.group_number;
 			base.sn = Endian::MachineToLittle(subtitle_number++);
 			base.ebn = 255;
-			base.cf = sub->comment_flag;
+			base.cf = sub.comment_flag;
 			memset(base.tf, EBU_FORMAT_UNUSED_SPACE, sizeof(base.tf));
-			smpte_at_frame(fps, sub->time_in, base.tci);
-			smpte_at_frame(fps, sub->time_out, base.tco);
-			base.cs = sub->cumulative_status;
+			smpte_at_frame(fps, sub.time_in, base.tci);
+			smpte_at_frame(fps, sub.time_out, base.tco);
+			base.cs = sub.cumulative_status;
 
 			if (export_settings.translate_alignments)
 			{
 				// vertical position
-				if (sub->vertical_position == EbuSubtitle::PositionTop)
+				if (sub.vertical_position == EbuSubtitle::PositionTop)
 					base.vp = min_row;
-				else if (sub->vertical_position == EbuSubtitle::PositionMiddle)
-					base.vp = std::min<uint8_t>(min_row, max_row / 2 - (max_row / 5 * sub->text_rows.size()));
-				else //if (sub->vertical_position == EbuSubtitle::PositionBottom)
+				else if (sub.vertical_position == EbuSubtitle::PositionMiddle)
+					base.vp = std::min<uint8_t>(min_row, max_row / 2 - (max_row / 5 * sub.text_rows.size()));
+				else //if (sub.vertical_position == EbuSubtitle::PositionBottom)
 					base.vp = max_row - 1;
 
-				base.jc = sub->justification_code;
+				base.jc = sub.justification_code;
 			}
 			else
 			{
@@ -687,8 +683,6 @@ void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, wxString const& filena
 	// write file
 	agi::io::Save f(STD_STR(filename), true);
 	f.Get().write((const char *)&gsi, sizeof(gsi));
-	for (std::vector<BlockTTI>::iterator block = tti.begin(); block != tti.end(); ++block)
-	{
-		f.Get().write((const char *)&*block, sizeof(*block));
-	}
+	for (auto const& block : tti)
+		f.Get().write((const char *)&block, sizeof(block));
 }

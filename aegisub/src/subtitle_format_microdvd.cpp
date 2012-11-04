@@ -142,8 +142,8 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filen
 	}
 
 	// Write lines
-	for (constEntryIter cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
-		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&*cur)) {
+	for (auto const& line : copy.Line) {
+		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&line)) {
 			int start = fps.FrameAtTime(current->Start, agi::vfr::START);
 			int end = fps.FrameAtTime(current->End, agi::vfr::END);
 

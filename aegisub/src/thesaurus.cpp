@@ -75,8 +75,8 @@ std::vector<std::string> Thesaurus::GetLanguageList() const {
 	dat.Sort();
 
 	// Drop extensions and the th_ prefix
-	for (size_t i = 0; i < idx.size(); ++i) idx[i] = idx[i].Mid(3, idx[i].size() - 7);
-	for (size_t i = 0; i < dat.size(); ++i) dat[i] = dat[i].Mid(3, dat[i].size() - 7);
+	for (auto& fn : idx) fn = fn.Mid(3, fn.size() - 7);
+	for (auto& fn : dat) fn = fn.Mid(3, fn.size() - 7);
 
 	// Verify that each idx has a dat
 	for (size_t i = 0, j = 0; i < idx.size() && j < dat.size(); ) {

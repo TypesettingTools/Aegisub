@@ -64,16 +64,16 @@ AssExporter::~AssExporter () {
 
 void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 	is_default = false;
-	for (filter_iterator cur = filter_list_begin(); cur != filter_list_end(); ++cur) {
+	for (auto filter : *AssExportFilterChain::GetFilterList()) {
 		// Make sure to construct static box sizer first, so it won't overlap
 		// the controls on wxMac.
-		wxSizer *box = new wxStaticBoxSizer(wxVERTICAL, parent, (*cur)->GetName());
-		wxWindow *window = (*cur)->GetConfigDialogWindow(parent, c);
+		wxSizer *box = new wxStaticBoxSizer(wxVERTICAL, parent, filter->GetName());
+		wxWindow *window = filter->GetConfigDialogWindow(parent, c);
 		if (window) {
 			box->Add(window, 0, wxEXPAND, 0);
 			target_sizer->Add(box, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 			target_sizer->Show(box, false);
-			Sizers[(*cur)->GetName()] = box;
+			Sizers[filter->GetName()] = box;
 		}
 		else {
 			delete box;
@@ -90,9 +90,9 @@ void AssExporter::AddFilter(wxString const& name) {
 }
 
 void AssExporter::AddAutoFilters() {
-	for (filter_iterator it = filter_list_begin(); it != filter_list_end(); ++it) {
-		if ((*it)->GetAutoApply())
-			filters.push_back(*it);
+	for (auto filter : *AssExportFilterChain::GetFilterList()) {
+		if (filter->GetAutoApply())
+			filters.push_back(filter);
 	}
 }
 
@@ -106,9 +106,9 @@ wxArrayString AssExporter::GetAllFilterNames() const {
 AssFile *AssExporter::ExportTransform(wxWindow *export_dialog, bool copy) {
 	AssFile *subs = copy ? new AssFile(*c->ass) : c->ass;
 
-	for (filter_iterator cur = filters.begin(); cur != filters.end(); ++cur) {
-		(*cur)->LoadSettings(is_default, c);
-		(*cur)->ProcessSubs(subs, export_dialog);
+	for (auto filter : filters) {
+		filter->LoadSettings(is_default, c);
+		filter->ProcessSubs(subs, export_dialog);
 	}
 
 	return subs;

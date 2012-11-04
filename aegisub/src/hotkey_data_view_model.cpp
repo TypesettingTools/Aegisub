@@ -117,8 +117,7 @@ public:
 			wxArrayString toks = wxSplit(variant.GetString(), '-');
 			std::vector<std::string> keys;
 			keys.resize(toks.size());
-			for (size_t i = 0; i < toks.size(); ++i)
-				keys[i] = STD_STR(toks[i]);
+			transform(toks.begin(), toks.end(), back_inserter(keys), (std::string(*)(wxString const&))&from_wx);
 			combo = Combo(combo.Context(), combo.CmdName(), keys);
 			cmd_str = combo.Str();
 			return true;
@@ -155,7 +154,7 @@ public:
 	}
 
 	void Delete(wxDataViewItem const& item) {
-		for (std::list<HotkeyModelCombo>::iterator it = children.begin(); it != children.end(); ++it) {
+		for (auto it = children.begin(); it != children.end(); ++it) {
 			if (&*it == item.GetID()) {
 				model->ItemDeleted(wxDataViewItem(this), wxDataViewItem((void*)&*it));
 				children.erase(it);
@@ -165,30 +164,30 @@ public:
 	}
 
 	void Apply(Hotkey::HotkeyMap *hk_map) {
-		for_each(children.begin(), children.end(),
-			bind(&HotkeyModelCombo::Apply, std::placeholders::_1, hk_map));
+		for (auto& combo : children)
+			combo.Apply(hk_map);
 	}
 
 	void SetFilter(wxRegEx const& new_filter) {
 		std::set<HotkeyModelCombo*> old_visible;
-		for (size_t i = 0; i < visible_items.size(); ++i)
-			old_visible.insert(static_cast<HotkeyModelCombo*>(visible_items[i].GetID()));
+		for (auto item : visible_items)
+			old_visible.insert(static_cast<HotkeyModelCombo*>(item.GetID()));
 
 		visible_items.clear();
 
 		wxDataViewItemArray added;
 		wxDataViewItemArray removed;
 
-		for (std::list<HotkeyModelCombo>::iterator it = children.begin(); it != children.end(); ++it) {
-			bool was_visible = old_visible.count(&*it) > 0;
-			bool is_visible = it->IsVisible(new_filter);
+		for (auto& combo : children) {
+			bool was_visible = old_visible.count(&combo) > 0;
+			bool is_visible = combo.IsVisible(new_filter);
 
 			if (is_visible)
-				visible_items.push_back(wxDataViewItem(&*it));
+				visible_items.push_back(wxDataViewItem(&combo));
 			if (was_visible && !is_visible)
-				removed.push_back(wxDataViewItem(&*it));
+				removed.push_back(wxDataViewItem(&combo));
 			if (is_visible && !was_visible)
-				added.push_back(wxDataViewItem(&*it));
+				added.push_back(wxDataViewItem(&combo));
 		}
 
 		if (!added.empty())
@@ -222,10 +221,10 @@ public:
 		Hotkey::HotkeyMap const& hk_map = hotkey::inst->GetHotkeyMap();
 		std::map<std::string, HotkeyModelCategory*> cat_map;
 
-		for (Hotkey::HotkeyMap::const_iterator it = hk_map.begin(); it != hk_map.end(); ++it) {
-			std::string cat_name = it->second.Context();
+		for (auto const& category : hk_map) {
+			std::string cat_name = category.second.Context();
 			HotkeyModelCategory *cat;
-			std::map<std::string, HotkeyModelCategory*>::iterator cat_it = cat_map.find(cat_name);
+			auto cat_it = cat_map.find(cat_name);
 			if (cat_it != cat_map.end())
 				cat = cat_it->second;
 			else {
@@ -233,7 +232,7 @@ public:
 				cat = cat_map[cat_name] = &categories.back();
 			}
 
-			cat->AddChild(it->second);
+			cat->AddChild(category.second);
 		}
 	}
 
@@ -260,8 +259,8 @@ public:
 
 	unsigned int GetChildren(wxDataViewItemArray &out) const {
 		out.reserve(categories.size());
-		for (std::list<HotkeyModelCategory>::const_iterator it = categories.begin(); it != categories.end(); ++it)
-			out.push_back(wxDataViewItem((void*)&*it));
+		for (auto const& category : categories)
+			out.push_back(wxDataViewItem((void*)&category));
 		return out.size();
 	}
 };

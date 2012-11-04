@@ -144,8 +144,8 @@ void DialogProperties::AddProperty(wxSizer *sizer, wxString const& label, wxStri
 
 void DialogProperties::OnOK(wxCommandEvent &) {
 	int count = 0;
-	for (size_t i = 0; i < properties.size(); ++i)
-		count += SetInfoIfDifferent(properties[i].first, properties[i].second->GetValue());
+	for (auto const& prop : properties)
+		count += SetInfoIfDifferent(prop.first, prop.second->GetValue());
 
 	count += SetInfoIfDifferent("PlayResX", ResX->GetValue());
 	count += SetInfoIfDifferent("PlayResY", ResY->GetValue());

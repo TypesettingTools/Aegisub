@@ -95,16 +95,13 @@ void AssDialogueBlockOverride::AddTag(wxString const& tag) {
 
 wxString AssDialogueBlockOverride::GetText() {
 	text.clear();
-	for (std::vector<AssOverrideTag*>::iterator cur = Tags.begin(); cur != Tags.end(); ++cur) {
-		text += **cur;
-	}
+	for (auto tag : Tags)
+		text += *tag;
 	return text;
 }
 
 void AssDialogueBlockOverride::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
-	for (std::vector<AssOverrideTag*>::iterator cur = Tags.begin(); cur != Tags.end(); ++cur) {
-		AssOverrideTag *curTag = *cur;
-
+	for (auto curTag : Tags) {
 		// Find parameters
 		for (size_t n = 0; n < curTag->Params.size(); ++n) {
 			AssOverrideParameter *curPar = curTag->Params[n];
@@ -371,16 +368,14 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 	}
 
 	unsigned curPar = 0;
-	for (size_t n = 0; n < proto_it->params.size(); n++) {
-		AssOverrideParamProto *curproto = &proto_it->params[n];
-
+	for (auto& curproto : proto_it->params) {
 		// Create parameter
 		AssOverrideParameter *newparam = new AssOverrideParameter;
-		newparam->classification = curproto->classification;
+		newparam->classification = curproto.classification;
 		Params.push_back(newparam);
 
 		// Check if it's optional and not present
-		if (!(curproto->optional & parsFlag) || curPar >= totalPars) {
+		if (!(curproto.optional & parsFlag) || curPar >= totalPars) {
 			newparam->omitted = true;
 			continue;
 		}
@@ -393,42 +388,42 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 		}
 
 		wxChar firstChar = curtok[0];
-		bool auto4 = (firstChar == '!' || firstChar == '$' || firstChar == '%') && curproto->type != VARDATA_BLOCK;
+		bool auto4 = (firstChar == '!' || firstChar == '$' || firstChar == '%') && curproto.type != VARDATA_BLOCK;
 		if (auto4) {
 			newparam->Set(curtok);
+			continue;
 		}
-		else {
-			switch (curproto->type) {
-				case VARDATA_INT: {
-					long temp;
-					curtok.ToLong(&temp);
-					newparam->Set<int>(temp);
-					break;
-				}
-				case VARDATA_FLOAT: {
-					double temp;
-					curtok.ToDouble(&temp);
-					newparam->Set(temp);
-					break;
-				}
-				case VARDATA_TEXT:
-					newparam->Set(curtok);
-					break;
-				case VARDATA_BOOL: {
-					long temp;
-					curtok.ToLong(&temp);
-					newparam->Set<bool>(temp != 0);
-					break;
-				}
-				case VARDATA_BLOCK: {
-					AssDialogueBlockOverride *temp = new AssDialogueBlockOverride(curtok);
-					temp->ParseTags();
-					newparam->Set(temp);
-					break;
-				}
-				default:
-					break;
+
+		switch (curproto.type) {
+			case VARDATA_INT: {
+				long temp;
+				curtok.ToLong(&temp);
+				newparam->Set<int>(temp);
+				break;
 			}
+			case VARDATA_FLOAT: {
+				double temp;
+				curtok.ToDouble(&temp);
+				newparam->Set(temp);
+				break;
+			}
+			case VARDATA_TEXT:
+				newparam->Set(curtok);
+				break;
+			case VARDATA_BOOL: {
+				long temp;
+				curtok.ToLong(&temp);
+				newparam->Set<bool>(temp != 0);
+				break;
+			}
+			case VARDATA_BLOCK: {
+				AssDialogueBlockOverride *temp = new AssDialogueBlockOverride(curtok);
+				temp->ParseTags();
+				newparam->Set(temp);
+				break;
+			}
+			default:
+				break;
 		}
 	}
 }
@@ -450,14 +445,14 @@ AssOverrideTag::operator wxString() const {
 
 	// Add parameters
 	bool any = false;
-	for (std::vector<AssOverrideParameter*>::const_iterator cur = Params.begin(); cur != Params.end(); ++cur) {
-		if ((*cur)->GetType() != VARDATA_NONE && !(*cur)->omitted) {
-			result += (*cur)->Get<wxString>();
+	for (auto param : Params) {
+		if (param->GetType() != VARDATA_NONE && !param->omitted) {
+			result += param->Get<wxString>();
 			result += ",";
 			any = true;
 		}
 	}
-	if (any) result = result.Left(result.Length()-1);
+	if (any) result.resize(result.size() - 1);
 
 	if (parentheses) result += ")";
 	return result;

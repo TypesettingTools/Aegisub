@@ -113,8 +113,8 @@ static std::set<AssDialogue*> process(wxString match_text, bool match_case, int 
 	std::function<bool (wxString)> pred = get_predicate(mode, &re, match_case, match_text);
 
 	std::set<AssDialogue*> matches;
-	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+	for (auto& line : ass->Line) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 		if (!diag) continue;
 		if (diag->Comment && !comments) continue;
 		if (!diag->Comment && !dialogue) continue;

@@ -104,8 +104,8 @@ std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, dou
 					// instead muck around with its innards to just temporarily
 					// remove the non-visible lines without deleting them
 					std::deque<AssEntry*> full;
-					for (entryIter it = subs->Line.begin(); it != subs->Line.end(); ++it)
-						full.push_back(&*it);
+					for (auto& line : subs->Line)
+						full.push_back(&line);
 					subs->Line.remove_if(invisible_line(time));
 
 					try {

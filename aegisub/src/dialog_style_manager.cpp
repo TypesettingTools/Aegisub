@@ -274,8 +274,8 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 		CurrentList->Clear();
 		styleMap.clear();
 
-		for (entryIter cur = c->ass->Line.begin(); cur != c->ass->Line.end(); ++cur) {
-			if (AssStyle *style = dynamic_cast<AssStyle*>(&*cur)) {
+		for (auto& line : c->ass->Line) {
+			if (AssStyle *style = dynamic_cast<AssStyle*>(&line)) {
 				CurrentList->Append(style->name);
 				styleMap.push_back(style);
 			}
@@ -306,8 +306,8 @@ void DialogStyleManager::UpdateStorage() {
 	Store.Save();
 
 	StorageList->Clear();
-	for (AssStyleStorage::iterator cur = Store.begin(); cur != Store.end(); ++cur)
-		StorageList->Append((*cur)->name);
+	for (auto style : Store)
+		StorageList->Append(style->name);
 
 	UpdateButtons();
 }
@@ -360,9 +360,9 @@ void DialogStyleManager::OnCatalogNew() {
 	// Remove bad characters from the name
 	wxString badchars = wxFileName::GetForbiddenChars(wxPATH_DOS);
 	int badchars_removed = 0;
-	for (size_t i = 0; i < name.size(); ++i) {
-		if (badchars.find(name[i]) != badchars.npos) {
-			name[i] = '_';
+	for (wxUniCharRef chr : name) {
+		if (badchars.find(chr) != badchars.npos) {
+			chr = '_';
 			++badchars_removed;
 		}
 	}
@@ -420,8 +420,8 @@ void DialogStyleManager::OnCopyToStorage() {
 	}
 
 	UpdateStorage();
-	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name)
-		StorageList->SetStringSelection(*name, true);
+	for (auto const& style_name : copied)
+		StorageList->SetStringSelection(style_name, true);
 
 	UpdateButtons();
 }
@@ -434,7 +434,7 @@ void DialogStyleManager::OnCopyToCurrent() {
 		wxString styleName = StorageList->GetString(selections[i]);
 		bool addStyle = true;
 
-		for (std::vector<AssStyle *>::iterator style = styleMap.begin(); style != styleMap.end(); ++style) {
+		for (auto style = styleMap.begin(); style != styleMap.end(); ++style) {
 			if ((*style)->name.CmpNoCase(styleName) == 0) {
 				addStyle = false;
 				if (wxYES == wxMessageBox(wxString::Format(_("There is already a style with the name \"%s\" in the current script. Overwrite?"), styleName), _("Style name collision"), wxYES_NO)) {
@@ -453,8 +453,8 @@ void DialogStyleManager::OnCopyToCurrent() {
 	c->ass->Commit(_("style copy"), AssFile::COMMIT_STYLES);
 
 	CurrentList->DeselectAll();
-	for (std::list<wxString>::iterator name = copied.begin(); name != copied.end(); ++name)
-		CurrentList->SetStringSelection(*name, true);
+	for (auto const& style_name : copied) 
+		CurrentList->SetStringSelection(style_name, true);
 	UpdateButtons();
 }
 
@@ -603,12 +603,12 @@ void DialogStyleManager::OnCurrentImport() {
 	bool modified = false;
 
 	// Loop through selection
-	for (size_t i = 0; i < selections.size(); ++i) {
+	for (auto const& sel : selections) {
 		// Check if there is already a style with that name
-		int test = CurrentList->FindString(styles[selections[i]], false);
+		int test = CurrentList->FindString(styles[sel], false);
 		if (test != wxNOT_FOUND) {
 			int answer = wxMessageBox(
-				wxString::Format(_("There is already a style with the name \"%s\" in the current script. Overwrite?"), styles[selections[i]]),
+				wxString::Format(_("There is already a style with the name \"%s\" in the current script. Overwrite?"), styles[sel]),
 				_("Style name collision"),
 				wxYES_NO);
 			if (answer == wxYES) {
@@ -617,7 +617,7 @@ void DialogStyleManager::OnCurrentImport() {
 				// The result of GetString is used rather than the name
 				// itself to deal with that AssFile::GetStyle is
 				// case-sensitive, but style names are case insensitive
-				*c->ass->GetStyle(CurrentList->GetString(test)) = *temp.GetStyle(styles[selections[i]]);
+				*c->ass->GetStyle(CurrentList->GetString(test)) = *temp.GetStyle(styles[sel]);
 			}
 			continue;
 		}
@@ -625,7 +625,7 @@ void DialogStyleManager::OnCurrentImport() {
 		// Copy
 		modified = true;
 		AssStyle *tempStyle = new AssStyle;
-		*tempStyle = *temp.GetStyle(styles[selections[i]]);
+		*tempStyle = *temp.GetStyle(styles[sel]);
 		c->ass->InsertStyle(tempStyle);
 	}
 

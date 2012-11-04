@@ -41,10 +41,10 @@ wxString AssKaraoke::Syllable::GetText(bool k_tag) const {
 		ret = wxString::Format("{%s%d}", tag_type, (duration + 5) / 10);
 
 	size_t idx = 0;
-	for (std::map<size_t, wxString>::const_iterator ovr = ovr_tags.begin(); ovr != ovr_tags.end(); ++ovr) {
-		ret += text.Mid(idx, ovr->first - idx);
-		ret += ovr->second;
-		idx = ovr->first;
+	for (auto const& ovr : ovr_tags) {
+		ret += text.Mid(idx, ovr.first - idx);
+		ret += ovr.second;
+		idx = ovr.first;
 	}
 	ret += text.Mid(idx);
 	return ret;
@@ -67,8 +67,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 	syl.duration = 0;
 	syl.tag_type = "\\k";
 
-	for (size_t i = 0; i < line->Blocks.size(); ++i) {
-		AssDialogueBlock *block = line->Blocks[i];
+	for (auto block : line->Blocks) {
 		wxString text = block->GetText();
 
 		if (dynamic_cast<AssDialogueBlockPlain*>(block)) {
@@ -85,9 +84,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 		}
 		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
 			bool in_tag = false;
-			for (size_t j = 0; j < ovr->Tags.size(); ++j) {
-				AssOverrideTag *tag = ovr->Tags[j];
-
+			for (auto tag : ovr->Tags) {
 				if (tag->IsValid() && tag->Name.Left(2).Lower() == "\\k") {
 					if (in_tag) {
 						syl.ovr_tags[syl.text.size()] += "}";
@@ -112,7 +109,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 				else {
 					wxString& otext = syl.ovr_tags[syl.text.size()];
 					// Merge adjacent override tags
-					if (j == 0 && otext.size())
+					if (otext.size() && otext.Last() == '}')
 						otext.RemoveLast();
 					else if (!in_tag)
 						otext += "{";
@@ -142,13 +139,13 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 			syls.back().duration += end_time - last_end;
 		else if (last_end > end_time) {
 			// Truncate any syllables that extend past the end of the line
-			for (size_t i = 0; i < size(); ++i) {
-				if (syls[i].start_time > end_time) {
-					syls[i].start_time = end_time;
-					syls[i].duration = 0;
+			for (auto& syl : syls) {
+				if (syl.start_time > end_time) {
+					syl.start_time = end_time;
+					syl.duration = 0;
 				}
 				else {
-					syls[i].duration = std::min(syls[i].duration, end_time - syls[i].start_time);
+					syl.duration = std::min(syl.duration, end_time - syl.start_time);
 				}
 			}
 		}
@@ -170,9 +167,8 @@ wxString AssKaraoke::GetText() const {
 	wxString text;
 	text.reserve(size() * 10);
 
-	for (iterator it = begin(); it != end(); ++it) {
-		text += it->GetText(true);
-	}
+	for (auto const& syl : syls)
+		text += syl.GetText(true);
 
 	return text;
 }
@@ -182,9 +178,8 @@ wxString AssKaraoke::GetTagType() const {
 }
 
 void AssKaraoke::SetTagType(wxString const& new_type) {
-	for (size_t i = 0; i < size(); ++i) {
-		syls[i].tag_type = new_type;
-	}
+	for (auto& syl : syls)
+		syl.tag_type = new_type;
 }
 
 void AssKaraoke::AddSplit(size_t syl_idx, size_t pos) {

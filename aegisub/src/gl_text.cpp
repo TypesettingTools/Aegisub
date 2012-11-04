@@ -156,13 +156,10 @@ void OpenGLText::Print(const wxString &text,int x,int y) {
 }
 
 void OpenGLText::DrawString(const wxString &text,int x,int y) {
-	size_t len = text.Length();
 	lineHeight = 0;
 	int dx=x,dy=y;
 
-	for (size_t i=0;i<len;i++) {
-		int curChar = text[i];
-
+	for (int curChar : text) {
 		// Handle carriage returns
 		if (curChar == '\n') {
 			dx = x;
@@ -180,17 +177,13 @@ void OpenGLText::DrawString(const wxString &text,int x,int y) {
 }
 
 void OpenGLText::GetExtent(wxString const& text, int &w, int &h) {
-	size_t len = text.Length();
 	lineHeight = 0;
 	int dx=0,dy=0;
 	w = 0;
 	h = 0;
 
 	// Simulate drawing of string
-	for (size_t i=0;i<len;i++) {
-		// Get current character
-		int curChar = text[i];
-
+	for (int curChar : text) {
 		// Handle carriage returns
 		if (curChar == '\n') {
 			if (dx > w) w = dx;
@@ -224,8 +217,8 @@ OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
 
 	// Insert into some texture
 	bool ok = false;
-	for (unsigned int i=0;i<textures.size();i++) {
-		if (textures[i]->TryToInsert(glyph)) {
+	for (auto texture : textures) {
+		if (texture->TryToInsert(glyph)) {
 			ok = true;
 			break;
 		}
@@ -239,9 +232,6 @@ OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
 	return glyph;
 }
 
-/// @brief Texture constructor
-/// @param w
-/// @param h
 OpenGLTextTexture::OpenGLTextTexture(OpenGLTextGlyph &glyph) {
 	x = y = nextY = 0;
 	width = std::max(SmallestPowerOf2(glyph.w), 64);

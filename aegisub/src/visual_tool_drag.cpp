@@ -81,8 +81,7 @@ void VisualToolDrag::UpdateToggleButtons() {
 void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 	// Toggle \move <-> \pos
 	VideoContext *vc = c->videoController;
-	for (SubtitleSelection::const_iterator cur = selection.begin(); cur != selection.end(); ++cur) {
-		AssDialogue *line = *cur;
+	for (auto line : selection) {
 		Vector2D p1, p2;
 		int t1, t2;
 
@@ -115,8 +114,8 @@ void VisualToolDrag::OnFileChanged() {
 	primary = 0;
 	active_feature = features.end();
 
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+	for (auto& line : c->ass->Line) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 		if (diag && IsDisplayed(diag))
 			MakeFeatures(diag);
 	}
@@ -131,8 +130,8 @@ void VisualToolDrag::OnFrameChanged() {
 	feature_iterator feat = features.begin();
 	feature_iterator end = features.end();
 
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+	for (auto& line : c->ass->Line) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 		if (!diag) continue;
 
 		if (IsDisplayed(diag)) {
@@ -282,9 +281,8 @@ bool VisualToolDrag::InitializeDrag(feature_iterator feature) {
 		int time = c->videoController->TimeAtFrame(frame_number) - feature->line->Start;
 		int change = time - feature->time;
 
-		for (sel_iterator cur = sel_features.begin(); cur != sel_features.end(); ++cur) {
-			(*cur)->time += change;
-		}
+		for (auto feat : sel_features)
+			feat->time += change;
 	}
 	return true;
 }
@@ -312,21 +310,20 @@ void VisualToolDrag::UpdateDrag(feature_iterator feature) {
 void VisualToolDrag::OnDoubleClick() {
 	Vector2D d = ToScriptCoords(mouse_pos) - (primary ? ToScriptCoords(primary->pos) : GetLinePosition(active_line));
 
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
-	for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+	for (auto line : c->selectionController->GetSelectedSet()) {
 		Vector2D p1, p2;
 		int t1, t2;
-		if (GetLineMove(*it, p1, p2, t1, t2)) {
+		if (GetLineMove(line, p1, p2, t1, t2)) {
 			if (t1 > 0 || t2 > 0)
-				SetOverride(*it, "\\move", wxString::Format("(%s,%s,%d,%d)", (p1 + d).Str(), (p2 + d).Str(), t1, t2));
+				SetOverride(line, "\\move", wxString::Format("(%s,%s,%d,%d)", (p1 + d).Str(), (p2 + d).Str(), t1, t2));
 			else
-				SetOverride(*it, "\\move", wxString::Format("(%s,%s)", (p1 + d).Str(), (p2 + d).Str()));
+				SetOverride(line, "\\move", wxString::Format("(%s,%s)", (p1 + d).Str(), (p2 + d).Str()));
 		}
 		else
-			SetOverride(*it, "\\pos", (GetLinePosition(*it) + d).PStr());
+			SetOverride(line, "\\pos", (GetLinePosition(line) + d).PStr());
 
-		if (Vector2D org = GetLineOrigin(*it))
-			SetOverride(*it, "\\org", (org + d).PStr());
+		if (Vector2D org = GetLineOrigin(line))
+			SetOverride(line, "\\org", (org + d).PStr());
 	}
 
 	Commit(_("positioning"));

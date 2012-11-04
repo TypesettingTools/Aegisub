@@ -48,14 +48,14 @@ agi::SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 
 	// Get provider
 	wxString error;
-	for (unsigned int i=0;i<list.size();i++) {
+	for (auto const& name : list) {
 		try {
-			agi::SpellChecker *checker = Create(list[i]);
+			agi::SpellChecker *checker = Create(name);
 			if (checker) return checker;
 		}
-		catch (wxString const& err) { error += list[i] + " factory: " + err + "\n"; }
-		catch (const char *err) { error += list[i] + " factory: " + wxString(err) + "\n"; }
-		catch (...) { error += list[i] + " factory: Unknown error\n"; }
+		catch (wxString const& err) { error += name + " factory: " + err + "\n"; }
+		catch (const char *err) { error += name + " factory: " + wxString(err) + "\n"; }
+		catch (...) { error += name + " factory: Unknown error\n"; }
 	}
 
 	throw error;

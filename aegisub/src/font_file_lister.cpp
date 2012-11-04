@@ -54,10 +54,9 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 
 	bool overriden = false;
 
-	for (size_t i = 0; i < blocks.size(); ++i) {
-		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(blocks[i])) {
-			for (size_t j = 0; j < ovr->Tags.size(); ++j) {
-				AssOverrideTag *tag = ovr->Tags[j];
+	for (auto block : blocks) {
+		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(block)) {
+			for (auto tag : ovr->Tags) {
 				wxString name = tag->Name;
 
 				if (name == "\\r") {
@@ -78,7 +77,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				}
 			}
 		}
-		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(blocks[i])) {
+		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(block)) {
 			wxString text = txt->GetText();
 
 			if (text.empty() || (text.size() >= 2 && text.StartsWith("{") && text.EndsWith("}")))
@@ -136,14 +135,14 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 void FontCollector::PrintUsage(UsageData const& data) {
 	if (data.styles.size()) {
 		status_callback(wxString::Format(_("Used in styles:\n")), 2);
-		for (std::set<wxString>::const_iterator it = data.styles.begin(); it != data.styles.end(); ++it)
-			status_callback(wxString::Format("  - %s\n", *it), 2);
+		for (auto const& style : data.styles)
+			status_callback(wxString::Format("  - %s\n", style), 2);
 	}
 
 	if (data.lines.size()) {
 		status_callback(wxString::Format(_("Used on lines:")), 2);
-		for (std::set<int>::const_iterator it = data.lines.begin(); it != data.lines.end(); ++it)
-			status_callback(wxString::Format(" %d", *it), 2);
+		for (int line : data.lines)
+			status_callback(wxString::Format(" %d", line), 2);
 		status_callback("\n", 2);
 	}
 	status_callback("\n", 2);
@@ -156,15 +155,15 @@ std::vector<wxString> FontCollector::GetFontPaths(const AssFile *file) {
 	status_callback(_("Parsing file\n"), 0);
 
 	int index = 0;
-	for (constEntryIter cur = file->Line.begin(); cur != file->Line.end(); ++cur) {
-		if (const AssStyle *style = dynamic_cast<const AssStyle*>(&*cur)) {
+	for (auto const& line : file->Line) {
+		if (const AssStyle *style = dynamic_cast<const AssStyle*>(&line)) {
 			StyleInfo &info = styles[style->name];
 			info.facename = style->font;
 			info.bold     = style->bold;
 			info.italic   = style->italic;
 			used_styles[info].styles.insert(style->name);
 		}
-		else if (const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&*cur))
+		else if (const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&line))
 			ProcessDialogueLine(diag, ++index);
 	}
 

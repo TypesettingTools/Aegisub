@@ -135,13 +135,13 @@ AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev,
 		finalText.reserve(text.size());
 		bool in = false;
 		bool first = true;
-		for (size_t i = 0; i < text.size(); ++i) {
-			if (text[i] == '\'') {
+		for (auto chr : text) {
+			if (chr == '\'') {
 				if (!in && !first) finalText += "\\N";
 				first = false;
 				in = !in;
 			}
-			else if (in) finalText += text[i];
+			else if (in) finalText += chr;
 		}
 		diag->Text = finalText;
 	}
@@ -176,8 +176,8 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename,
 
 	// Create lines
 	const AssDialogue *prev = 0;
-	for (constEntryIter cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
-		const AssDialogue *current = dynamic_cast<const AssDialogue*>(&*cur);
+	for (auto const& line : copy.Line) {
+		const AssDialogue *current = dynamic_cast<const AssDialogue*>(&line);
 		if (current && !current->Comment) {
 			WriteLine(root, prev, current);
 			prev = current;

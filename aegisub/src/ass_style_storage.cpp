@@ -58,8 +58,8 @@ void AssStyleStorage::Save() const {
 		throw "Failed creating directory for style catalogs";
 
 	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/" + storage_name + ".sty"), "UTF-8");
-	for (const_iterator cur = begin(); cur != end(); ++cur)
-		file.WriteLineToFile((*cur)->GetEntryData());
+	for (const AssStyle *cur : style)
+		file.WriteLineToFile(cur->GetEntryData());
 }
 
 void AssStyleStorage::Load(wxString const& name) {
@@ -96,15 +96,15 @@ void AssStyleStorage::Delete(int idx) {
 
 wxArrayString AssStyleStorage::GetNames() {
 	wxArrayString names;
-	for (iterator cur = begin(); cur != end(); ++cur)
-		names.Add((*cur)->name);
+	for (const AssStyle *cur : style)
+		names.Add(cur->name);
 	return names;
 }
 
 AssStyle *AssStyleStorage::GetStyle(wxString const& name) {
-	for (iterator cur = begin(); cur != end(); ++cur) {
-		if ((*cur)->name.CmpNoCase(name) == 0)
-			return *cur;
+	for (AssStyle *cur : style) {
+		if (cur->name.CmpNoCase(name) == 0)
+			return cur;
 	}
 	return 0;
 }

@@ -98,10 +98,7 @@ public:
 		}
 
 		int i = 0;
-		for (agi::MRUManager::MRUListMap::const_iterator it = mru->begin();
-			it != mru->end();
-			++it, ++i)
-		{
+		for (auto it = mru->begin(); it != mru->end(); ++it, ++i) {
 			items[i]->SetItemLabel(wxString::Format("%s%d %s",
 				i <= 9 ? "&" : "", i + 1,
 				wxFileName(lagi_wxString(*it)).GetFullName()));
@@ -209,8 +206,7 @@ public:
 
 	/// Unregister a dynamic menu item
 	void Remove(wxMenuItem *item) {
-		std::deque<std::pair<std::string, wxMenuItem*> >::iterator it =
-			find_if(dynamic_items.begin(), dynamic_items.end(), menu_item_cmp(item));
+		auto it = find_if(dynamic_items.begin(), dynamic_items.end(), menu_item_cmp(item));
 		if (it != dynamic_items.end())
 			dynamic_items.erase(it);
 		it = find_if(static_items.begin(), static_items.end(), menu_item_cmp(item));
@@ -442,17 +438,17 @@ namespace menu {
 		menu_items const& items = get_menu(name);
 
 		std::auto_ptr<CommandMenuBar> menu(new CommandMenuBar(c));
-		for (menu_items::const_iterator it = items.begin(); it != items.end(); ++it) {
+		for (auto const& item : items) {
 			std::string submenu, disp;
-			read_entry(*it, "submenu", &submenu);
-			read_entry(*it, "text", &disp);
+			read_entry(item, "submenu", &submenu);
+			read_entry(item, "text", &disp);
 			if (!submenu.empty()) {
-				menu->Append(build_menu(submenu, c, &menu->cm), _(lagi_wxString(disp)));
+				menu->Append(build_menu(submenu, c, &menu->cm), _(to_wx(disp)));
 			}
 			else {
-				read_entry(*it, "special", &submenu);
+				read_entry(item, "special", &submenu);
 				if (submenu == "automation")
-					menu->Append(new AutomationMenu(c, &menu->cm), _(lagi_wxString(disp)));
+					menu->Append(new AutomationMenu(c, &menu->cm), _(to_wx(disp)));
 			}
 		}
 

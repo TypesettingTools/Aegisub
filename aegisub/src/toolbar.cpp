@@ -114,9 +114,7 @@ namespace {
 			bool needs_onidle = false;
 			bool last_was_sep = false;
 
-			for (json::Array::const_iterator it = arr.begin(); it != arr.end(); ++it) {
-				json::String const& command_name = *it;
-
+			for (json::String const& command_name : arr) {
 				if (command_name.empty()) {
 					if (!last_was_sep)
 						AddSeparator();

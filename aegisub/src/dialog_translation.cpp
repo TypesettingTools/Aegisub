@@ -247,8 +247,8 @@ void DialogTranslation::UpdateDisplay() {
 	original_text->SetReadOnly(false);
 	original_text->ClearAll();
 
-	for (size_t i = 0; i < active_line->Blocks.size(); ++i) {
-		AssDialogueBlock *block = active_line->Blocks[i];
+	size_t i = 0;
+	for (auto block : active_line->Blocks) {
 		if (block->GetType() == BLOCK_PLAIN) {
 			int cur_size = original_text->GetReverseUnicodePosition(original_text->GetLength());
 			original_text->AppendText(block->GetText());
@@ -259,6 +259,7 @@ void DialogTranslation::UpdateDisplay() {
 		}
 		else if (block->GetType() == BLOCK_OVERRIDE)
 			original_text->AppendText("{" + block->GetText() + "}");
+		++i;
 	}
 
 	original_text->SetReadOnly(true);

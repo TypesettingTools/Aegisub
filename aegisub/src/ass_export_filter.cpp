@@ -89,9 +89,9 @@ void AssExportFilterChain::Clear() {
 }
 
 AssExportFilter *AssExportFilterChain::GetFilter(wxString const& name) {
-	for (FilterList::iterator it = filters()->begin(); it != filters()->end(); ++it) {
-		if ((*it)->name == name)
-			return *it;
+	for (auto filter : *filters()) {
+		if (filter->name == name)
+			return filter;
 	}
 	return 0;
 }

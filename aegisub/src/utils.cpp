@@ -402,19 +402,19 @@ class cache_cleaner : public wxThread {
 		}
 
 		int deleted = 0;
-		for (std::multimap<int64_t,wxFileName>::iterator i = cachefiles.begin(); i != cachefiles.end(); i++) {
+		for (auto const& i : cachefiles) {
 			// stop cleaning?
 			if ((total_size <= max_size && cachefiles.size() - deleted <= max_files) || cachefiles.size() - deleted < 2)
 				break;
 
-			int64_t fsize = i->second.GetSize().GetValue();
+			int64_t fsize = i.second.GetSize().GetValue();
 #ifdef __WXMSW__
-			int res = wxRemove(i->second.GetFullPath());
+			int res = wxRemove(i.second.GetFullPath());
 #else
-			int res = unlink(i->second.GetFullPath().fn_str());
+			int res = unlink(i.second.GetFullPath().fn_str());
 #endif
 			if (res) {
-				LOG_D("utils/clean_cache") << "failed to remove file " << STD_STR(i->second.GetFullPath());
+				LOG_D("utils/clean_cache") << "failed to remove file " << STD_STR(i.second.GetFullPath());
 				continue;
 			}
 

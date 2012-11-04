@@ -360,9 +360,9 @@ void AudioKaraoke::SetDisplayText() {
 	spaced_text.clear();
 	syl_start_points.clear();
 	syl_start_points.reserve(kara->size());
-	for (AssKaraoke::iterator it = kara->begin(); it != kara->end(); ++it) {
+	for (auto const& syl : *kara) {
 		syl_start_points.push_back(spaced_text.size());
-		spaced_text += " " + it->text;
+		spaced_text += " " + syl.text;
 	}
 
 	// Get the x-coordinates of the right edge of each character

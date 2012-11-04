@@ -87,8 +87,8 @@ void AssFile::Load(const wxString &_filename, wxString const& charset) {
 		bool found_dialogue = false;
 
 		// Check if the file has at least one style and at least one dialogue line
-		for (entryIter it = temp.Line.begin(); it != temp.Line.end(); ++it) {
-			AssEntryType type = it->GetType();
+		for (auto const& line : temp.Line) {
+			AssEntryType type = line.GetType();
 			if (type == ENTRY_STYLE) found_style = true;
 			if (type == ENTRY_DIALOGUE) found_dialogue = true;
 			if (found_style && found_dialogue) break;
@@ -180,8 +180,8 @@ void AssFile::SaveMemory(std::vector<char> &dst) {
 	dst.reserve(0x4000);
 
 	// Write file
-	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
-		wxCharBuffer buffer = (cur->GetEntryData() + "\r\n").utf8_str();
+	for (auto const& line : Line) {
+		wxCharBuffer buffer = (line.GetEntryData() + "\r\n").utf8_str();
 		copy(buffer.data(), buffer.data() + buffer.length(), back_inserter(dst));
 	}
 }
@@ -318,10 +318,10 @@ wxString AssFile::GetScriptInfo(wxString key) const {
 	key += ":";
 	bool GotIn = false;
 
-	for (constEntryIter cur = Line.begin(); cur != Line.end(); ++cur) {
-		if (cur->group == "[Script Info]") {
+	for (auto const& line : Line) {
+		if (line.group == "[Script Info]") {
 			GotIn = true;
-			wxString curText = cur->GetEntryData();
+			wxString curText = line.GetEntryData();
 			if (curText.Lower().StartsWith(key))
 				return curText.Mid(key.size()).Trim(true).Trim(false);
 		}
@@ -343,22 +343,19 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 	entryIter script_info_end;
 	bool found_script_info = false;
 
-	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
-		if (cur->group == "[Script Info]") {
+	for (auto& line : Line) {
+		if (line.group == "[Script Info]") {
 			found_script_info = true;
-			wxString cur_text = cur->GetEntryData().Left(key_size).Lower();
+			wxString cur_text = line.GetEntryData().Left(key_size).Lower();
 
 			if (cur_text == search_key) {
-				if (value.empty()) {
-					delete &*cur;
-					Line.erase(cur);
-				}
-				else {
-					cur->SetEntryData(key + ": " + value);
-				}
+				if (value.empty())
+					delete &line;
+				else
+					line.SetEntryData(key + ": " + value);
 				return;
 			}
-			script_info_end = cur;
+			script_info_end = Line.iterator_to(line);
 		}
 		else if (found_script_info) {
 			if (value.size())
@@ -402,16 +399,16 @@ void AssFile::GetResolution(int &sw,int &sh) const {
 
 wxArrayString AssFile::GetStyles() const {
 	wxArrayString styles;
-	for (constEntryIter cur = Line.begin(); cur != Line.end(); ++cur) {
-		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&*cur))
+	for (auto const& line : Line) {
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&line))
 			styles.Add(curstyle->name);
 	}
 	return styles;
 }
 
 AssStyle *AssFile::GetStyle(wxString const& name) {
-	for (entryIter cur = Line.begin(); cur != Line.end(); ++cur) {
-		AssStyle *curstyle = dynamic_cast<AssStyle*>(&*cur);
+	for (auto& line : Line) {
+		AssStyle *curstyle = dynamic_cast<AssStyle*>(&line);
 		if (curstyle && curstyle->name == name)
 			return curstyle;
 	}

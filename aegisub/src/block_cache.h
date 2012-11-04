@@ -138,11 +138,10 @@ class DataBlockCache {
 		if (mb.blocks.empty())
 			return;
 
-		for (size_t bi = 0; bi < mb.blocks.size(); ++bi)
+		for (auto block : mb.blocks)
 		{
-			BlockT *b = mb.blocks[bi];
-			if (b)
-				factory.DisposeBlock(b);
+			if (block)
+				factory.DisposeBlock(block);
 		}
 
 		mb.blocks.clear();
@@ -205,10 +204,8 @@ public:
 		// Quick way out: get rid of everything
 		if (max_size == 0)
 		{
-			for (size_t mbi = 0; mbi < data.size(); ++mbi)
-			{
-				KillMacroBlock(data[mbi]);
-			}
+			for (auto& mb : data)
+				KillMacroBlock(mb);
 			return;
 		}
 

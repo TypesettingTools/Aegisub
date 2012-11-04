@@ -670,10 +670,10 @@ namespace Automation4 {
 	void LuaAssFile::ProcessingComplete(wxString const& undo_description)
 	{
 		// Apply any pending commits
-		for (std::deque<PendingCommit>::iterator it = pending_commits.begin(); it != pending_commits.end(); ++it) {
+		for (auto const& pc : pending_commits) {
 			ass->Line.clear();
-			boost::push_back(ass->Line, it->lines | boost::adaptors::indirected);
-			ass->Commit(it->mesage, it->modification_type);
+			boost::push_back(ass->Line, pc.lines | boost::adaptors::indirected);
+			ass->Commit(pc.mesage, pc.modification_type);
 		}
 
 		// Commit any changes after the last undo point was set
@@ -704,8 +704,8 @@ namespace Automation4 {
 	, modification_type(0)
 	, references(2)
 	{
-		for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ++it)
-			lines.push_back(&*it);
+		for (auto& line : ass->Line)
+			lines.push_back(&line);
 
 		// prepare userdata object
 		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile*))) = this;

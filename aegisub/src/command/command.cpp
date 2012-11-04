@@ -68,8 +68,8 @@ namespace cmd {
 	std::vector<std::string> get_registered_commands() {
 		std::vector<std::string> ret;
 		ret.reserve(cmd_map.size());
-		for (iterator it = cmd_map.begin(); it != cmd_map.end(); ++it)
-			ret.push_back(it->first);
+		for (auto const& it : cmd_map)
+			ret.push_back(it.first);
 		return ret;
 	}
 
@@ -110,9 +110,8 @@ namespace cmd {
 	}
 
 	void clear() {
-		for (std::map<std::string, Command*>::iterator it = cmd_map.begin(); it != cmd_map.end(); ++it) {
-			delete it->second;
-		}
+		for (auto& it : cmd_map)
+			delete it.second;
 		cmd_map.clear();
 	}
 }

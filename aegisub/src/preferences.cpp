@@ -449,8 +449,8 @@ void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
 	if (!quick_search->GetValue().empty()) {
 		wxDataViewItemArray contexts;
 		model->GetChildren(wxDataViewItem(0), contexts);
-		for (size_t i = 0; i < contexts.size(); ++i)
-			dvc->Expand(contexts[i]);
+		for (auto const& context : contexts)
+			dvc->Expand(context);
 	}
 }
 
@@ -635,14 +635,14 @@ void Preferences::OnOK(wxCommandEvent &event) {
 }
 
 void Preferences::OnApply(wxCommandEvent &) {
-	for (std::map<std::string, agi::OptionValue*>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
-		OPT_SET(cur->first)->Set(cur->second);
-		delete cur->second;
+	for (auto const& change : pending_changes) {
+		OPT_SET(change.first)->Set(change.second);
+		delete change.second;
 	}
 	pending_changes.clear();
 
-	for (std::deque<Thunk>::iterator it = pending_callbacks.begin(); it != pending_callbacks.end(); ++it)
-		(*it)();
+	for (auto const& thunk : pending_callbacks)
+		thunk();
 	pending_callbacks.clear();
 
 	applyButton->Enable(false);
@@ -653,8 +653,8 @@ void Preferences::OnResetDefault(wxCommandEvent&) {
 	if (wxYES != wxMessageBox(_("Are you sure that you want to restore the defaults? All your settings will be overridden."), _("Restore defaults?"), wxYES_NO))
 		return;
 
-	for (std::deque<std::string>::iterator it = option_names.begin(); it != option_names.end(); ++it) {
-		agi::OptionValue *opt = OPT_SET(*it);
+	for (auto const& opt_name : option_names) {
+		agi::OptionValue *opt = OPT_SET(opt_name);
 		if (!opt->IsDefault())
 			opt->Reset();
 	}
@@ -719,7 +719,6 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 }
 
 Preferences::~Preferences() {
-	for (std::map<std::string, agi::OptionValue*>::iterator cur = pending_changes.begin(); cur != pending_changes.end(); ++cur) {
-		delete cur->second;
-	}
+	for (auto& change : pending_changes)
+		delete change.second;
 }

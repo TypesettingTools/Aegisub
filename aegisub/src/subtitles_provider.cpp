@@ -46,34 +46,28 @@
 #include "include/aegisub/subtitles_provider.h"
 #endif
 
-/// @brief Get provider
-/// @return
-///
 SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Subtitle/Provider")->GetString());
 	if (list.empty()) throw wxString("No subtitle providers are available.");
 
 	// Get provider
 	wxString error;
-	for (unsigned int i=0;i<list.size();i++) {
+	for (auto const& factory : list) {
 		try {
-			size_t pos = list[i].find('/');
-			std::string subType = pos < list[i].size() - 1 ? list[i].substr(pos + 1) : "";
-			SubtitlesProvider *provider = Create(list[i], subType);
+			size_t pos = factory.find('/');
+			std::string subType = pos < factory.size() - 1 ? factory.substr(pos + 1) : "";
+			SubtitlesProvider *provider = Create(factory, subType);
 			if (provider) return provider;
 		}
 		catch (agi::UserCancelException const&) { throw; }
-		catch (wxString const& err) { error += list[i] + " factory: " + err + "\n"; }
-		catch (const char *err) { error += list[i] + " factory: " + wxString(err) + "\n"; }
-		catch (...) { error += list[i] + " factory: Unknown error\n"; }
+		catch (wxString const& err) { error += factory + " factory: " + err + "\n"; }
+		catch (const char *err) { error += factory + " factory: " + wxString(err) + "\n"; }
+		catch (...) { error += factory + " factory: Unknown error\n"; }
 	}
 
-	// Failed
 	throw error;
 }
 
-/// @brief Register providers
-///
 void SubtitlesProviderFactory::RegisterProviders() {
 #ifdef WITH_CSRI
 	std::vector<std::string> csri_providers(CSRISubtitlesProvider::GetSubTypes());

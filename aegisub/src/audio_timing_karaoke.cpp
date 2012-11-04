@@ -345,8 +345,8 @@ void AudioTimingControllerKaraoke::ModifyStart(int delta) {
 bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity) const {
 	TimeRange range(ms - sensitivity, ms + sensitivity);
 
-	for (size_t i = 0; i < markers.size(); ++i)
-		if (range.contains(markers[i]))
+	for (auto const& marker : markers)
+		if (range.contains(marker))
 			return true;
 
 	return false;
@@ -424,8 +424,8 @@ void AudioTimingControllerKaraoke::OnMarkerDrag(std::vector<AudioMarker*> const&
 }
 
 void AudioTimingControllerKaraoke::GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const {
-	for (size_t i = 0; i < labels.size(); ++i) {
-		if (range.overlaps(labels[i].range))
-			out.push_back(labels[i]);
+	for (auto const& label : labels) {
+		if (range.overlaps(label.range))
+			out.push_back(label);
 	}
 }

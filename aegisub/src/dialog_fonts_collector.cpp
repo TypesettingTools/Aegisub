@@ -117,9 +117,9 @@ class FontsCollectorThread : public wxThread {
 
 		int64_t total_size = 0;
 		bool allOk = true;
-		for (std::vector<wxString>::iterator cur = paths.begin(); cur != paths.end(); ++cur) {
+		for (wxString const& path : paths) {
 			int ret = 0;
-			wxFileName cur_fn(*cur);
+			wxFileName cur_fn(path);
 			total_size += cur_fn.GetSize().GetValue();
 
 			switch (oper) {
@@ -139,12 +139,12 @@ class FontsCollectorThread : public wxThread {
 					}
 #endif
 					else
-						ret = wxCopyFile(*cur, dest, true);
+						ret = wxCopyFile(path, dest, true);
 				}
 				break;
 
 				case CopyToZip: {
-					wxFFileInputStream in(*cur);
+					wxFFileInputStream in(path);
 					if (!in.IsOk())
 						ret = false;
 					else {
@@ -156,13 +156,13 @@ class FontsCollectorThread : public wxThread {
 			}
 
 			if (ret == 1)
-				AppendText(wxString::Format(_("* Copied %s.\n"), *cur), 1);
+				AppendText(wxString::Format(_("* Copied %s.\n"), path), 1);
 			else if (ret == 2)
-				AppendText(wxString::Format(_("* %s already exists on destination.\n"), wxFileName(*cur).GetFullName()), 3);
+				AppendText(wxString::Format(_("* %s already exists on destination.\n"), wxFileName(path).GetFullName()), 3);
 			else if (ret == 3)
-				AppendText(wxString::Format(_("* Symlinked %s.\n"), *cur), 1);
+				AppendText(wxString::Format(_("* Symlinked %s.\n"), path), 1);
 			else {
-				AppendText(wxString::Format(_("* Failed to copy %s.\n"), *cur), 2);
+				AppendText(wxString::Format(_("* Failed to copy %s.\n"), path), 2);
 				allOk = false;
 			}
 		}

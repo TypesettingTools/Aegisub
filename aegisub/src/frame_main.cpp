@@ -146,8 +146,7 @@ static void get_files_to_load(wxArrayString const& list, wxString &subs, wxStrin
 	};
 
 	// Scan list
-	for (size_t i = 0; i < list.size(); ++i) {
-		wxFileName file(list[i]);
+	for (wxFileName file : list) {
 		if (file.IsRelative()) file.MakeAbsolute();
 		if (!file.FileExists()) continue;
 

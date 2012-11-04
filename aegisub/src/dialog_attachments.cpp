@@ -102,9 +102,8 @@ void DialogAttachments::UpdateList() {
 	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
 
 	// Fill list
-	for (entryIter cur = ass->Line.begin();cur != ass->Line.end();cur++) {
-		if (AssAttachment *attach = dynamic_cast<AssAttachment*>(&*cur)) {
-			// Add item
+	for (auto& line : ass->Line) {
+		if (AssAttachment *attach = dynamic_cast<AssAttachment*>(&line)) {
 			int row = listView->GetItemCount();
 			listView->InsertItem(row,attach->GetFileName(true));
 			listView->SetItem(row,1,PrettySize(attach->GetSize()));

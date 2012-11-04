@@ -106,9 +106,9 @@ public:
 	}
 
 	~DialogManager() {
-		for (DialogMap::iterator it = created_dialogs.begin(); it != created_dialogs.end(); ++it) {
-			it->second->Unbind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose, this);
-			it->second->Destroy();
+		for (auto const& it : created_dialogs) {
+			it.second->Unbind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose, this);
+			it.second->Destroy();
 		}
 		created_dialogs.clear();
 	}

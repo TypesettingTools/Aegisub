@@ -88,10 +88,10 @@ void ScintillaTextCtrl::GetBoundsOfWordAtPosition(int pos,int &start,int &end) {
 	GetWordBoundaries(GetText(), results);
 
 	// Get boundaries
-	for (size_t i = 0; i < results.size(); i++) {
-		if (results[i].first <= pos && results[i].second >= pos) {
-			start = results[i].first;
-			end = results[i].second;
+	for (auto const& result : results) {
+		if (result.first <= pos && result.second >= pos) {
+			start = result.first;
+			end = result.second;
 			return;
 		}
 	}

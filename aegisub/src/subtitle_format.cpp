@@ -79,18 +79,18 @@ bool SubtitleFormat::CanWriteFile(wxString const& filename) const {
 
 bool SubtitleFormat::CanSave(const AssFile *subs) const {
 	AssStyle defstyle;
-	for (constEntryIter cur = subs->Line.begin(); cur != subs->Line.end(); ++cur) {
+	for (auto const& line : subs->Line) {
 		// Check style, if anything non-default is found, return false
-		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&*cur)) {
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&line)) {
 			if (curstyle->GetEntryData() != defstyle.GetEntryData())
 				return false;
 		}
 
 		// Check for attachments, if any is found, return false
-		if (dynamic_cast<const AssAttachment*>(&*cur)) return false;
+		if (dynamic_cast<const AssAttachment*>(&line)) return false;
 
 		// Check dialog
-		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&*cur)) {
+		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&line)) {
 			if (curdiag->GetStrippedText() != curdiag->Text)
 				return false;
 		}
@@ -164,16 +164,16 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
 }
 
 void SubtitleFormat::StripTags(AssFile &file) {
-	for (entryIter cur = file.Line.begin(); cur != file.Line.end(); ++cur) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&*cur)) {
+	for (auto &line : file.Line) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&line)) {
 			current->StripTags();
 		}
 	}
 }
 
 void SubtitleFormat::ConvertNewlines(AssFile &file, wxString const& newline, bool mergeLineBreaks) {
-	for (entryIter cur = file.Line.begin(); cur != file.Line.end(); ++cur) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&*cur)) {
+	for (auto &line : file.Line) {
+		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&line)) {
 			current->Text.Replace("\\h", " ");
 			current->Text.Replace("\\n", newline);
 			current->Text.Replace("\\N", newline);
@@ -321,13 +321,13 @@ void SubtitleFormat::LoadFormats() {
 }
 
 void SubtitleFormat::DestroyFormats() {
-	for (std::list<SubtitleFormat*>::iterator it = formats.begin(); it != formats.end(); )
+	for (auto it = formats.begin(); it != formats.end(); )
 		delete *it++;
 }
 
 template<class Cont, class Pred>
 SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
-	typename Cont::iterator it = find_if(container.begin(), container.end(), pred);
+	auto it = find_if(container.begin(), container.end(), pred);
 	if (it == container.end())
 		throw UnknownSubtitleFormatError("Subtitle format for extension not found", 0);
 	return *it;
@@ -349,9 +349,7 @@ wxString SubtitleFormat::GetWildcards(int mode) {
 	wxArrayString all;
 	wxString final;
 
-	std::list<SubtitleFormat*>::iterator curIter;
-	for (curIter=formats.begin();curIter!=formats.end();curIter++) {
-		SubtitleFormat *format = *curIter;
+	for (auto format : formats) {
 		wxArrayString cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
 		if (cur.empty()) continue;
 

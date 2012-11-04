@@ -133,10 +133,10 @@ void VisualToolVectorClip::Draw() {
 
 	// Draw lines connecting the bicubic features
 	gl.SetLineColour(colour[3], 0.9f, 1);
-	for (Spline::iterator cur = spline.begin(); cur != spline.end(); ++cur) {
-		if (cur->type == SplineCurve::BICUBIC) {
-			gl.DrawDashedLine(cur->p1, cur->p2, 6);
-			gl.DrawDashedLine(cur->p3, cur->p4, 6);
+	for (auto const& curve : spline) {
+		if (curve.type == SplineCurve::BICUBIC) {
+			gl.DrawDashedLine(curve.p1, curve.p2, 6);
+			gl.DrawDashedLine(curve.p3, curve.p4, 6);
 		}
 	}
 
@@ -204,12 +204,11 @@ void VisualToolVectorClip::Save() {
 		value += wxString::Format("%d,", spline.GetScale());
 	value += spline.EncodeToAss() + ")";
 
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
-	for (SubtitleSelection::iterator it = sel.begin(); it != sel.end(); ++it) {
+	for (auto line : c->selectionController->GetSelectedSet()) {
 		// This check is technically not correct as it could be outside of an
 		// override block... but that's rather unlikely
-		bool has_iclip = (*it)->Text.find("\\iclip") != wxString::npos;
-		SetOverride(*it, has_iclip ? "\\iclip" : "\\clip", value);
+		bool has_iclip = line->Text.find("\\iclip") != wxString::npos;
+		SetOverride(line, has_iclip ? "\\iclip" : "\\clip", value);
 	}
 }
 

@@ -436,7 +436,7 @@ std::vector<agi::Color> ColorPickerRecent::Save() const
 
 void ColorPickerRecent::AddColor(agi::Color color)
 {
-	std::vector<agi::Color>::iterator existing = find(colors.begin(), colors.end(), color);
+	auto existing = find(colors.begin(), colors.end(), color);
 	if (existing != colors.end())
 		rotate(colors.begin(), existing, existing + 1);
 	else {

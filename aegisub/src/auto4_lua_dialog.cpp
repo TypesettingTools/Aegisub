@@ -560,10 +560,8 @@ namespace Automation4 {
 		window = new wxPanel(parent);
 		wxGridBagSizer *s = new wxGridBagSizer(4, 4);
 
-		for (size_t i = 0; i < controls.size(); ++i) {
-			LuaDialogControl *c = controls[i];
+		for (auto c : controls)
 			s->Add(c->Create(window), wxGBPosition(c->y, c->x), wxGBSpan(c->height, c->width), c->GetSizerFlags());
-		}
 
 		if (use_buttons) {
 			wxStdDialogButtonSizer *bs = new wxStdDialogButtonSizer();
@@ -616,9 +614,9 @@ namespace Automation4 {
 
 		// Then read controls back
 		lua_newtable(L);
-		for (size_t i = 0; i < controls.size(); ++i) {
-			controls[i]->LuaReadBack(L);
-			lua_setfield(L, -2, controls[i]->name.utf8_str());
+		for (auto control : controls) {
+			control->LuaReadBack(L);
+			lua_setfield(L, -2, control->name.utf8_str());
 		}
 
 		if (use_buttons) {
@@ -633,10 +631,10 @@ namespace Automation4 {
 		wxString res;
 
 		// Format into "name1:value1|name2:value2|name3:value3|"
-		for (size_t i = 0; i < controls.size(); ++i) {
-			if (controls[i]->CanSerialiseValue()) {
-				wxString sn = inline_string_encode(controls[i]->name);
-				wxString sv = controls[i]->SerialiseValue();
+		for (auto control : controls) {
+			if (control->CanSerialiseValue()) {
+				wxString sn = inline_string_encode(control->name);
+				wxString sv = control->SerialiseValue();
 				res += wxString::Format("%s:%s|", sn, sv);
 			}
 		}
@@ -659,10 +657,9 @@ namespace Automation4 {
 			wxString value = pair.AfterFirst(':');
 
 			// Hand value to all controls matching name
-			for (size_t i = 0; i < controls.size(); ++i) {
-				if (controls[i]->name == name && controls[i]->CanSerialiseValue()) {
-					controls[i]->UnserialiseValue(value);
-				}
+			for (auto control : controls) {
+				if (control->name == name && control->CanSerialiseValue())
+					control->UnserialiseValue(value);
 			}
 		}
 	}

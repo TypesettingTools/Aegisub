@@ -835,9 +835,8 @@ void AudioDisplay::PaintMarkers(wxDC &dc, TimeRange updtime)
 
 	wxDCPenChanger pen_retainer(dc, wxPen());
 	wxDCBrushChanger brush_retainer(dc, wxBrush());
-	for (AudioMarkerVector::iterator marker_i = markers.begin(); marker_i != markers.end(); ++marker_i)
+	for (const auto marker : markers)
 	{
-		const AudioMarker *marker = *marker_i;
 		int marker_x = RelativeXFromTime(marker->GetPosition());
 
 		dc.SetPen(marker->GetStyle());
@@ -874,23 +873,23 @@ void AudioDisplay::PaintLabels(wxDC &dc, TimeRange updtime)
 	font.SetWeight(wxFONTWEIGHT_BOLD);
 	dc.SetFont(font);
 	dc.SetTextForeground(*wxWHITE);
-	for (size_t i = 0; i < labels.size(); ++i)
+	for (auto const& label : labels)
 	{
-		wxSize extent = dc.GetTextExtent(labels[i].text);
-		int left = RelativeXFromTime(labels[i].range.begin());
-		int width = AbsoluteXFromTime(labels[i].range.length());
+		wxSize extent = dc.GetTextExtent(label.text);
+		int left = RelativeXFromTime(label.range.begin());
+		int width = AbsoluteXFromTime(label.range.length());
 
 		// If it doesn't fit, truncate
 		if (width < extent.GetWidth())
 		{
 			dc.SetClippingRegion(left, audio_top + 4, width, extent.GetHeight());
-			dc.DrawText(labels[i].text, left, audio_top + 4);
+			dc.DrawText(label.text, left, audio_top + 4);
 			dc.DestroyClippingRegion();
 		}
 		// Otherwise center in the range
 		else
 		{
-			dc.DrawText(labels[i].text, left + (width - extent.GetWidth()) / 2, audio_top + 4);
+			dc.DrawText(label.text, left + (width - extent.GetWidth()) / 2, audio_top + 4);
 		}
 	}
 }

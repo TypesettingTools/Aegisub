@@ -408,8 +408,8 @@ namespace Automation4 {
 			lua_pushstring(L, "path");
 			lua_gettable(L, -3);
 
-			for (size_t i = 0; i < include_path.size(); ++i) {
-				wxCharBuffer p = include_path[i].utf8_str();
+			for (wxString const& path : include_path) {
+				wxCharBuffer p = path.utf8_str();
 				lua_pushfstring(L, ";%s/?.lua;%s/?/init.lua", p.data(), p.data());
 				lua_concat(L, 2);
 			}
@@ -527,8 +527,8 @@ namespace Automation4 {
 
 	void LuaScript::RegisterCommand(LuaCommand *command)
 	{
-		for (size_t i = 0; i < macros.size(); ++i) {
-			if (macros[i]->name() == command->name()) {
+		for (auto macro : macros) {
+			if (macro->name() == command->name()) {
 				luaL_error(L,
 					"A macro named '%s' is already defined in script '%s'",
 					command->StrDisplay(0).utf8_str().data(), name.utf8_str().data());
@@ -840,10 +840,11 @@ namespace Automation4 {
 		lua_newtable(L);
 		int active_idx = -1;
 
-		int row = 1;
+		int row = 0;
 		int idx = 1;
-		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it, ++row) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+		for (auto& line : c->ass->Line) {
+			++row;
+			AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 			if (!diag) continue;
 
 			if (diag == active_line) active_idx = row;

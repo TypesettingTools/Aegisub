@@ -235,10 +235,9 @@ std::vector<AssDialogueBlock*> AssDialogue::ParseTags() const {
 				Blocks.push_back(block);
 
 				// Look for \p in block
-				std::vector<AssOverrideTag*>::iterator curTag;
-				for (curTag = block->Tags.begin(); curTag != block->Tags.end(); ++curTag) {
-					if ((*curTag)->Name == "\\p") {
-						drawingLevel = (*curTag)->Params[0]->Get<int>(0);
+				for (auto tag : block->Tags) {
+					if (tag->Name == "\\p") {
+						drawingLevel = tag->Params[0]->Get<int>(0);
 					}
 				}
 			}
@@ -284,17 +283,17 @@ void AssDialogue::StripTag (wxString tagName) {
 	wxString final;
 
 	// Look for blocks
-	for (std::vector<AssDialogueBlock*>::iterator cur = Blocks.begin(); cur != Blocks.end(); ++cur) {
-		if ((*cur)->GetType() != BLOCK_OVERRIDE) {
-			final += (*cur)->GetText();
+	for (auto block : Blocks) {
+		if (block->GetType() != BLOCK_OVERRIDE) {
+			final += block->GetText();
 			continue;
 		}
 
-		AssDialogueBlockOverride *over = static_cast<AssDialogueBlockOverride*>(*cur);
+		AssDialogueBlockOverride *over = static_cast<AssDialogueBlockOverride*>(block);
 		wxString temp;
-		for (size_t i = 0; i < over->Tags.size(); ++i) {
-			if (over->Tags[i]->Name != tagName)
-				temp += *over->Tags[i];
+		for (auto tag : over->Tags) {
+			if (tag->Name != tagName)
+				temp += *tag;
 		}
 
 		if (!temp.empty())
@@ -308,13 +307,13 @@ void AssDialogue::StripTag (wxString tagName) {
 void AssDialogue::UpdateText () {
 	if (Blocks.empty()) return;
 	Text.clear();
-	for (std::vector<AssDialogueBlock*>::iterator cur = Blocks.begin(); cur != Blocks.end(); ++cur) {
-		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
+	for (auto block : Blocks) {
+		if (block->GetType() == BLOCK_OVERRIDE) {
 			Text += "{";
-			Text += (*cur)->GetText();
+			Text += block->GetText();
 			Text += "}";
 		}
-		else Text += (*cur)->GetText();
+		else Text += block->GetText();
 	}
 }
 
@@ -345,9 +344,9 @@ wxString AssDialogue::GetMarginString(int which, bool pad) const {
 
 void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
 	// Apply for all override blocks
-	for (std::vector<AssDialogueBlock*>::iterator cur = Blocks.begin(); cur != Blocks.end(); ++cur) {
-		if ((*cur)->GetType() == BLOCK_OVERRIDE) {
-			static_cast<AssDialogueBlockOverride*>(*cur)->ProcessParameters(callback, userData);
+	for (auto block : Blocks) {
+		if (block->GetType() == BLOCK_OVERRIDE) {
+			static_cast<AssDialogueBlockOverride*>(block)->ProcessParameters(callback, userData);
 		}
 	}
 }

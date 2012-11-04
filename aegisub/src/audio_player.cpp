@@ -57,12 +57,12 @@ AudioPlayer* AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider) {
 	if (list.empty()) throw agi::NoAudioPlayersError("No audio players are available.", 0);
 
 	std::string error;
-	for (size_t i = 0; i < list.size(); ++i) {
+	for (auto const& factory_name : list) {
 		try {
-			return Create(list[i], provider);
+			return Create(factory_name, provider);
 		}
 		catch (agi::AudioPlayerOpenError const& err) {
-			error += list[i] + " factory: " + err.GetChainedMessage() + "\n";
+			error += factory_name + " factory: " + err.GetChainedMessage() + "\n";
 		}
 	}
 	throw agi::AudioPlayerOpenError(error, 0);

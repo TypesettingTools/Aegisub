@@ -220,9 +220,9 @@ struct audio_save_clip : public Command {
 		if (sel.empty()) return;
 
 		AssTime start = INT_MAX, end = 0;
-		for (SubtitleSelection::iterator it = sel.begin(); it != sel.end(); ++it) {
-			start = std::min(start, (*it)->Start);
-			end = std::max(end, (*it)->End);
+		for (auto line : sel) {
+			start = std::min(start, line->Start);
+			end = std::max(end, line->End);
 		}
 
 		c->audioController->SaveClip(

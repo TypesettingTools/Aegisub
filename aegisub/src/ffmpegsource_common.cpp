@@ -157,9 +157,9 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
 
-	for (std::map<int,wxString>::const_iterator i = TrackList.begin(); i != TrackList.end(); i++) {
-		Choices.Add(wxString::Format(_("Track %02d: %s"), i->first, i->second));
-		TrackNumbers.push_back(i->first);
+	for (auto const& track : TrackList) {
+		Choices.Add(wxString::Format(_("Track %02d: %s"), track.first, track.second));
+		TrackNumbers.push_back(track.first);
 	}
 
 	int Choice = wxGetSingleChoiceIndex(

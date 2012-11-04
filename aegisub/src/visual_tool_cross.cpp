@@ -40,21 +40,20 @@ VisualToolCross::~VisualToolCross() {
 void VisualToolCross::OnDoubleClick() {
 	Vector2D d = ToScriptCoords(mouse_pos) - GetLinePosition(active_line);
 
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
-	for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+	for (auto line : c->selectionController->GetSelectedSet()) {
 		Vector2D p1, p2;
 		int t1, t2;
-		if (GetLineMove(*it, p1, p2, t1, t2)) {
+		if (GetLineMove(line, p1, p2, t1, t2)) {
 			if (t1 > 0 || t2 > 0)
-				SetOverride(*it, "\\move", wxString::Format("(%s,%s,%d,%d)", Text(p1 + d), Text(p2 + d), t1, t2));
+				SetOverride(line, "\\move", wxString::Format("(%s,%s,%d,%d)", Text(p1 + d), Text(p2 + d), t1, t2));
 			else
-				SetOverride(*it, "\\move", wxString::Format("(%s,%s)", Text(p1 + d), Text(p2 + d)));
+				SetOverride(line, "\\move", wxString::Format("(%s,%s)", Text(p1 + d), Text(p2 + d)));
 		}
 		else
-			SetOverride(*it, "\\pos", "(" + Text(GetLinePosition(*it) + d) + ")");
+			SetOverride(line, "\\pos", "(" + Text(GetLinePosition(line) + d) + ")");
 
-		if (Vector2D org = GetLineOrigin(*it))
-			SetOverride(*it, "\\org", "(" + Text(org + d) + ")");
+		if (Vector2D org = GetLineOrigin(line))
+			SetOverride(line, "\\org", "(" + Text(org + d) + ")");
 	}
 
 	Commit(_("positioning"));

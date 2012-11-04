@@ -281,11 +281,9 @@ void SubsTextEditCtrl::UpdateStyle() {
 	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
 	bool template_line = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
 
-	std::vector<agi::ass::DialogueToken> tokens = agi::ass::TokenizeDialogueBody(text);
-	std::vector<agi::ass::DialogueToken> style_ranges = agi::ass::SyntaxHighlight(text, tokens, template_line, spellchecker.get());
-	for (size_t i = 0; i < style_ranges.size(); ++i) {
-		SetStyling(style_ranges[i].length, style_ranges[i].type);
-	}
+	auto tokens = agi::ass::TokenizeDialogueBody(text);
+	for (auto const& style_range : agi::ass::SyntaxHighlight(text, tokens, template_line, spellchecker.get()))
+		SetStyling(style_range.length, style_range.type);
 }
 
 /// @brief Update call tip
@@ -611,32 +609,32 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 	if (!thesaurus)
 		thesaurus.reset(new Thesaurus);
 
-	std::vector<Thesaurus::Entry> result;
-	thesaurus->Lookup(currentWord, &result);
+	std::vector<Thesaurus::Entry> results;
+	thesaurus->Lookup(currentWord, &results);
 
 	thesSugs.clear();
 
-	if (result.size()) {
+	if (results.size()) {
 		wxMenu *thesMenu = new wxMenu;
 
 		int curThesEntry = 0;
-		for (size_t i = 0; i < result.size(); ++i) {
+		for (auto const& result : results) {
 			// Single word, insert directly
-			if (result[i].second.size() == 1) {
-				thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, lagi_wxString(result[i].first));
-				thesSugs.push_back(result[i].first);
+			if (result.second.size() == 1) {
+				thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, lagi_wxString(result.first));
+				thesSugs.push_back(result.first);
 				++curThesEntry;
 			}
 			// Multiple, create submenu
 			else {
 				wxMenu *subMenu = new wxMenu;
-				for (size_t j = 0; j < result[i].second.size(); ++j) {
-					subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, lagi_wxString(result[i].second[j]));
-					thesSugs.push_back(result[i].second[j]);
+				for (auto const& sug : result.second) {
+					subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, to_wx(sug));
+					thesSugs.push_back(sug);
 					++curThesEntry;
 				}
 
-				thesMenu->Append(-1, lagi_wxString(result[i].first), subMenu);
+				thesMenu->Append(-1, to_wx(result.first), subMenu);
 			}
 		}
 

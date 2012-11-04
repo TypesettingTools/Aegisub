@@ -41,8 +41,8 @@ void AssParser::ParseAttachmentLine(wxString const& data) {
 	bool is_filename = data.StartsWith("fontname: ") || data.StartsWith("filename: ");
 
 	bool valid_data = data.size() > 0 && data.size() <= 80;
-	for (size_t i = 0; i < data.size(); ++i) {
-		if (data[i] < 33 || data[i] >= 97) {
+	for (auto byte : data) {
+		if (byte < 33 || byte >= 97) {
 			valid_data = false;
 			break;
 		}

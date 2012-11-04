@@ -53,34 +53,32 @@ namespace CharSetDetect {
 
 wxString GetEncoding(wxString const& filename) {
 	agi::charset::CharsetListDetected list;
-	agi::charset::CharsetListDetected::const_iterator i_lst;
 
 	try {
-		agi::charset::DetectAll(STD_STR(filename), list);
+		agi::charset::DetectAll(from_wx(filename), list);
 	} catch (const agi::charset::UnknownCharset&) {
 		/// @todo If the charset is unknown we need to display a complete list of character sets.
 	}
 
-	if (list.size() > 1) {
-		// Get choice from user
-		wxArrayString choices;
-
-		std::string log_choice;
-		for (i_lst = list.begin(); i_lst != list.end(); ++i_lst) {
-			choices.Add(lagi_wxString(i_lst->second));
-			log_choice.append(" " + i_lst->second);
-		}
-
-		LOG_I("charset/file") << filename << " (" << log_choice << ")";
-
-		int choice = wxGetSingleChoiceIndex(_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),_("Choose character set"),choices);
-		if (choice == -1) throw "Canceled";
-		return choices.Item(choice);
+	if (list.size() == 1) {
+		auto charset = list.begin();
+		LOG_I("charset/file") << filename << " (" << charset->second << ")";
+		return charset->second;
 	}
 
-	i_lst = list.begin();
-	LOG_I("charset/file") << filename << " (" << i_lst->second << ")";
-	return i_lst->second;
+	wxArrayString choices;
+	std::string log_choice;
+
+	for (auto const& charset : list) {
+		choices.push_back(to_wx(charset.second));
+		log_choice.append(" " + charset.second);
+	}
+
+	LOG_I("charset/file") << filename << " (" << log_choice << ")";
+
+	int choice = wxGetSingleChoiceIndex(_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),_("Choose character set"),choices);
+	if (choice == -1) throw "Canceled";
+	return choices[choice];
 }
 
 }

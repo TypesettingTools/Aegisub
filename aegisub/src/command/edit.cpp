@@ -485,8 +485,8 @@ struct edit_find_replace : public Command {
 static void copy_lines(agi::Context *c) {
 	wxString data;
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+	for (auto& line : c->ass->Line) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 		if (diag && sel.count(diag)) {
 			if (!data.empty())
 				data += "\r\n";
@@ -505,8 +505,8 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	AssDialogue *new_active = 0;
 	bool hit_active = false;
 
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+	for (auto& line : c->ass->Line) {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 		if (!diag) continue;
 
 		if (diag == active) {

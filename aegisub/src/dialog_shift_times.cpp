@@ -308,8 +308,8 @@ void DialogShiftTimes::LoadHistory() {
 		json::Reader::Read(root, *file);
 		*history = root;
 
-		for (json::Array::iterator it = history->begin(); it != history->end(); ++it)
-			history_box->Append(get_history_string(*it));
+		for (auto& history_entry : *history)
+			history_box->Append(get_history_string(history_entry));
 	}
 	catch (agi::FileSystemError const& e) {
 		LOG_D("dialog_shift_times/load_history") << "Cannot load shift times history: " << e.GetChainedMessage();
@@ -352,8 +352,8 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	int block_start = 0;
 	json::Array shifted_blocks;
 
-	for (entryIter it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it) {
-		AssDialogue *line = dynamic_cast<AssDialogue*>(&*it);
+	for (auto& entry : context->ass->Line) {
+		AssDialogue *line = dynamic_cast<AssDialogue*>(&entry);
 		if (!line) continue;
 		++row_number;
 

@@ -315,8 +315,8 @@ void SubsEditBox::PopulateList(wxComboBox *combo, wxString AssDialogue::*field) 
 	wxEventBlocker blocker(this);
 
 	std::set<wxString> values;
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it))
+	for (auto& line : c->ass->Line) {
+		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(&line))
 			values.insert(diag->*field);
 	}
 	values.erase("");
@@ -412,9 +412,7 @@ void SubsEditBox::CommitText(wxString const& desc) {
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
-	for (SubtitleSelection::iterator cur = sel.begin(); cur != sel.end(); ++cur) {
-		AssDialogue *d = *cur;
-
+	for (AssDialogue *d : sel) {
 		if (!initialTimes.count(d))
 			initialTimes[d] = std::make_pair(d->Start, d->End);
 

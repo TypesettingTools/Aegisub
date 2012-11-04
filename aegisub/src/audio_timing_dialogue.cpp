@@ -651,8 +651,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 	{
 		// The use of GetPosition here is important, as otherwise it'll start
 		// after lines ending at the same time as the active line begins
-		std::vector<DialogueTimingMarker*>::iterator it =
-			lower_bound(markers.begin(), markers.end(), clicked->GetPosition(), marker_ptr_cmp());
+		auto it = lower_bound(markers.begin(), markers.end(), clicked->GetPosition(), marker_ptr_cmp());
 		for(; it != markers.end() && !(*clicked < **it); ++it)
 			ret.push_back(*it);
 	}
@@ -692,21 +691,20 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 	// is effected.
 	int min_ms = ms;
 	int max_ms = ms;
-	for (size_t i = 0; i < upd_markers.size(); ++i)
+	for (AudioMarker *upd_marker : upd_markers)
 	{
-		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_markers[i]);
+		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_marker);
 		min_ms = std::min<int>(*marker, min_ms);
 		max_ms = std::max<int>(*marker, max_ms);
 	}
 
-	std::vector<DialogueTimingMarker*>::iterator
-		begin = lower_bound(markers.begin(), markers.end(), min_ms, marker_ptr_cmp()),
-		end = upper_bound(begin, markers.end(), max_ms, marker_ptr_cmp());
+	auto begin = lower_bound(markers.begin(), markers.end(), min_ms, marker_ptr_cmp());
+	auto end = upper_bound(begin, markers.end(), max_ms, marker_ptr_cmp());
 
 	// Update the markers
-	for (size_t i = 0; i < upd_markers.size(); ++i)
+	for (AudioMarker *upd_marker : upd_markers)
 	{
-		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_markers[i]);
+		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_marker);
 		marker->SetPosition(ms);
 		modified_lines.insert(marker->GetLine());
 	}
@@ -768,10 +766,10 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	case 3: // All inactive lines
 	{
 		AssDialogue *active_line = context->selectionController->GetActiveLine();
-		for (entryIter it = context->ass->Line.begin(); it != context->ass->Line.end(); ++it)
+		for (auto& line : context->ass->Line)
 		{
-			if (&*it != active_line && predicate(*it))
-				AddInactiveLine(sel, static_cast<AssDialogue*>(&*it));
+			if (&line != active_line && predicate(line))
+				AddInactiveLine(sel, static_cast<AssDialogue*>(&line));
 		}
 		break;
 	}
@@ -803,12 +801,12 @@ void AudioTimingControllerDialogue::RegenerateSelectedLines()
 
 	AssDialogue *active = context->selectionController->GetActiveLine();
 	SubtitleSelection sel = context->selectionController->GetSelectedSet();
-	for (SubtitleSelection::iterator it = sel.begin(); it != sel.end(); ++it)
+	for (auto line : sel)
 	{
-		if (*it == active) continue;
+		if (line == active) continue;
 
 		selected_lines.push_back(TimeableLine(AudioStyle_Selected, &style_inactive, &style_inactive));
-		selected_lines.back().SetLine(*it);
+		selected_lines.back().SetLine(line);
 	}
 
 	if (!selected_lines.empty() || !was_empty)
@@ -864,14 +862,14 @@ int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range, st
 	const AudioMarker *snap_marker = 0;
 	AudioMarkerVector potential_snaps;
 	GetMarkers(snap_time_range, potential_snaps);
-	for (AudioMarkerVector::iterator mi = potential_snaps.begin(); mi != potential_snaps.end(); ++mi)
+	for (auto marker : potential_snaps)
 	{
-		if ((*mi)->CanSnap() && find(exclude.begin(), exclude.end(), *mi) == exclude.end())
+		if (marker->CanSnap() && find(exclude.begin(), exclude.end(), marker) == exclude.end())
 		{
 			if (!snap_marker)
-				snap_marker = *mi;
-			else if (tabs((*mi)->GetPosition() - position) < tabs(snap_marker->GetPosition() - position))
-				snap_marker = *mi;
+				snap_marker = marker;
+			else if (tabs(marker->GetPosition() - position) < tabs(snap_marker->GetPosition() - position))
+				snap_marker = marker;
 		}
 	}
 

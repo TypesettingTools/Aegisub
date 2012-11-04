@@ -208,24 +208,23 @@ void AssTransformFramerateFilter::TransformTimeTags(wxString name,int n,AssOverr
 
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	if (!Input->IsLoaded() || !Output->IsLoaded()) return;
-	for (entryIter cur=subs->Line.begin();cur!=subs->Line.end();cur++) {
-		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(&*cur);
+	for (auto& entry : subs->Line) {
+		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(&entry);
+		if (!curDialogue) continue;
 
-		if (curDialogue) {
-			line = curDialogue;
-			newK = 0;
-			oldK = 0;
-			newStart = trunc_cs(ConvertTime(curDialogue->Start));
-			newEnd = trunc_cs(ConvertTime(curDialogue->End) + 9);
+		line = curDialogue;
+		newK = 0;
+		oldK = 0;
+		newStart = trunc_cs(ConvertTime(curDialogue->Start));
+		newEnd = trunc_cs(ConvertTime(curDialogue->End) + 9);
 
-			// Process stuff
-			curDialogue->ParseAssTags();
-			curDialogue->ProcessParameters(TransformTimeTags, this);
-			curDialogue->Start = newStart;
-			curDialogue->End = newEnd;
-			curDialogue->UpdateText();
-			curDialogue->ClearBlocks();
-		}
+		// Process stuff
+		curDialogue->ParseAssTags();
+		curDialogue->ProcessParameters(TransformTimeTags, this);
+		curDialogue->Start = newStart;
+		curDialogue->End = newEnd;
+		curDialogue->UpdateText();
+		curDialogue->ClearBlocks();
 	}
 }
 

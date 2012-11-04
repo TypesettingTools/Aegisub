@@ -255,9 +255,8 @@ bool AegisubApp::OnInit() {
 		// Get parameter subs
 		StartupLog("Parse command line");
 		wxArrayString subs;
-		for (int i=1;i<argc;i++) {
-			subs.Add(argv[i]);
-		}
+		for (int i = 1; i < argc; ++i)
+			subs.push_back(argv[i]);
 
 		// Open main frame
 		StartupLog("Create main window");
@@ -475,12 +474,7 @@ int AegisubApp::OnRun() {
 			file << std::endl << timeStr.mb_str(csConvLocal);
 			file << "\nVER - " << GetAegisubLongVersionString();
 			file << "\nEXC - Aegisub has crashed with unhandled exception \"" << error.mb_str(csConvLocal) <<"\".\n";
-			int formatLen = timeStr.Length();
-			char dashes[1024];
-			int i = 0;
-			for (i=0;i<formatLen;i++) dashes[i] = '-';
-			dashes[i] = 0;
-			file << dashes;
+			file << wxString('-', timeStr.size());
 			file << "\n";
 			file.close();
 		}

@@ -353,7 +353,7 @@ namespace Automation4 {
 
 	void ScriptManager::Remove(Script *script)
 	{
-		std::vector<Script*>::iterator i = find(scripts.begin(), scripts.end(), script);
+		auto i = find(scripts.begin(), scripts.end(), script);
 		if (i != scripts.end()) {
 			delete *i;
 			scripts.erase(i);
@@ -380,8 +380,8 @@ namespace Automation4 {
 	const std::vector<cmd::Command*>& ScriptManager::GetMacros()
 	{
 		macros.clear();
-		for (std::vector<Script*>::iterator i = scripts.begin(); i != scripts.end(); ++i) {
-			std::vector<cmd::Command*> sfs = (*i)->GetMacros();
+		for (auto script : scripts) {
+			std::vector<cmd::Command*> sfs = script->GetMacros();
 			copy(sfs.begin(), sfs.end(), back_inserter(macros));
 		}
 		return macros;
@@ -500,10 +500,8 @@ namespace Automation4 {
 		wxString scripts_string;
 		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
 
-		for (size_t i = 0; i < GetScripts().size(); i++) {
-			Script *script = GetScripts()[i];
-
-			if (i != 0)
+		for (auto script : GetScripts()) {
+			if (!scripts_string.empty())
 				scripts_string += "|";
 
 			wxString autobase_rel, assfile_rel;
@@ -541,7 +539,7 @@ namespace Automation4 {
 
 	void ScriptFactory::Unregister(ScriptFactory *factory)
 	{
-		std::vector<ScriptFactory*>::iterator i = find(Factories().begin(), Factories().end(), factory);
+		auto i = find(Factories().begin(), Factories().end(), factory);
 		if (i != Factories().end()) {
 			delete *i;
 			Factories().erase(i);
@@ -550,8 +548,8 @@ namespace Automation4 {
 
 	Script* ScriptFactory::CreateFromFile(wxString const& filename, bool log_errors)
 	{
-		for (std::vector<ScriptFactory*>::iterator i = Factories().begin(); i != Factories().end(); ++i) {
-			Script *s = (*i)->Produce(filename);
+		for (auto factory : Factories()) {
+			Script *s = factory->Produce(filename);
 			if (s) {
 				if (!s->GetLoadedState() && log_errors) {
 					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename, s->GetDescription());
@@ -590,8 +588,7 @@ namespace Automation4 {
 	wxString ScriptFactory::GetWildcardStr()
 	{
 		wxString fnfilter, catchall;
-		for (size_t i = 0; i < Factories().size(); ++i) {
-			const ScriptFactory *fact = Factories()[i];
+		for (auto fact : Factories()) {
 			if (fact->GetEngineName().empty() || fact->GetFilenamePattern().empty())
 				continue;
 

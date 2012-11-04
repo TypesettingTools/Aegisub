@@ -199,16 +199,16 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 	wxArrayString fnames;
 	diag.GetPaths(fnames);
 
-	for (size_t i = 0; i < fnames.size(); ++i) {
-		wxFileName fnpath(fnames[i]);
+	for (auto const& fname : fnames) {
+		wxFileName fnpath(fname);
 		OPT_SET("Path/Last/Automation")->SetString(STD_STR(fnpath.GetPath()));
 
 		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
-			wxLogError("Script '%s' is already loaded", fnames[i]);
+			wxLogError("Script '%s' is already loaded", fname);
 			continue;
 		}
 
-		local_manager->Add(Automation4::ScriptFactory::CreateFromFile(fnames[i], true));
+		local_manager->Add(Automation4::ScriptFactory::CreateFromFile(fname, true));
 	}
 }
 

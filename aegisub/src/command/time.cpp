@@ -71,8 +71,8 @@ namespace {
 			if (sel.size() < 2) return false;
 
 			size_t found = 0;
-			for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-				AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+			for (auto& line : c->ass->Line) {
+				AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 				if (!diag) continue;
 
 				if (sel.count(diag)) {
@@ -137,9 +137,9 @@ struct time_frame_current : public validate_video_loaded {
 		int target_start = std::max(0, c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START));
 		int shift_by = target_start - active_line->Start;
 
-		for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
-			(*it)->Start = (*it)->Start + shift_by;
-			(*it)->End = (*it)->End + shift_by;
+		for (auto line : sel) {
+			line->Start = line->Start + shift_by;
+			line->End = line->End + shift_by;
 		}
 
 		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_DIAG_TIME);
@@ -167,11 +167,11 @@ static void snap_subs_video(agi::Context *c, bool set_start) {
 	int start = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START);
 	int end = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::END);
 
-	for (SubtitleSelection::const_iterator it = sel.begin(); it != sel.end(); ++it) {
-		if (set_start || (*it)->Start > start)
-			(*it)->Start = start;
-		if (!set_start || (*it)->End < end)
-			(*it)->End = end;
+	for (auto line : sel) {
+		if (set_start || line->Start > start)
+			line->Start = start;
+		if (!set_start || line->End < end)
+			line->End = end;
 	}
 
 	c->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
@@ -201,7 +201,6 @@ struct time_snap_scene : public validate_video_loaded {
 		if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
 
 		// Get frames
-		wxArrayInt sel = c->subsGrid->GetSelection();
 		int curFrame = con->GetFrameN();
 		int prev = 0;
 		int next = 0;
@@ -229,13 +228,11 @@ struct time_snap_scene : public validate_video_loaded {
 		// Get times
 		int start_ms = con->TimeAtFrame(prev,agi::vfr::START);
 		int end_ms = con->TimeAtFrame(next-1,agi::vfr::END);
-		AssDialogue *cur;
 
 		// Update rows
-		for (size_t i=0;i<sel.Count();i++) {
-			cur = c->subsGrid->GetDialogue(sel[i]);
-			cur->Start = start_ms;
-			cur->End = end_ms;
+		for (auto line : c->selectionController->GetSelectedSet()) {
+			line->Start = start_ms;
+			line->End = end_ms;
 		}
 
 		// Commit

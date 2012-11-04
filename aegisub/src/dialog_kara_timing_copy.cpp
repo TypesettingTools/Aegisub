@@ -240,9 +240,8 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 	// Draw matched groups
 	int this_total_matchgroup_render_width = 0;
 	bool scroll_arrows_drawn = false;
-	for (size_t i = 0; i < matched_groups.size(); ++i)
+	for (auto& grp : matched_groups)
 	{
-		MatchGroup &grp = matched_groups[i];
 		int prev_x = next_x;
 
 		// Skip groups that would cause the input part to be too far right
@@ -273,10 +272,8 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 
 		// Matched source syllables
 		int syl_x = next_x;
-		for (size_t j = 0; j < grp.src.size(); ++j)
-		{
-			syl_x += DrawBoxedText(dc, grp.src[j].text, syl_x, y_line1);
-		}
+		for (auto const& syl : grp.src)
+			syl_x += DrawBoxedText(dc, syl.text, syl_x, y_line1);
 
 		// Matched destination text
 		{
@@ -371,14 +368,11 @@ wxString KaraokeLineMatchDisplay::GetOutputLine() const
 {
 	wxString res;
 
-	for (size_t i = 0; i < matched_groups.size(); ++i)
+	for (auto const& match : matched_groups)
 	{
-		const MatchGroup &match = matched_groups[i];
 		int duration = 0;
-		for (size_t j = 0; j < match.src.size(); ++j)
-		{
-			duration += match.src[j].duration;
-		}
+		for (auto const& syl : match.src)
+			duration += syl.duration;
 		res = wxString::Format("%s{\\k%d}%s", res, duration / 10, match.dst);
 	}
 
@@ -539,12 +533,12 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 		// For the magic number 5, see big comment block above
 		int src_lookahead_max = (lookahead+1)*5;
 		int src_lookahead_pos = 0;
-		for (std::deque<MatchSyllable>::iterator ss = unmatched_source.begin(); ss != unmatched_source.end(); ++ss)
+		for (auto const& syl : unmatched_source)
 		{
 			// Check if we've gone too far ahead in the source
 			if (src_lookahead_pos++ >= src_lookahead_max) break;
 			// Otherwise look for a match
-			if (ss->text.StartsWith(matched_roma))
+			if (syl.text.StartsWith(matched_roma))
 			{
 				// Yay! Time to interpolate.
 				// Special case: If the last source syllable before the matching one is
@@ -725,9 +719,8 @@ END_EVENT_TABLE()
 void DialogKanjiTimer::OnClose(wxCommandEvent &) {
 	OPT_SET("Tool/Kanji Timer/Interpolation")->SetBool(Interpolate->IsChecked());
 
-	for (size_t i = 0; i < LinesToChange.size(); ++i) {
-		LinesToChange[i].first->Text = LinesToChange[i].second;
-	}
+	for (auto& line : LinesToChange)
+		line.first->Text = line.second;
 
 	if (LinesToChange.size()) {
 		subs->Commit(_("kanji timing"), AssFile::COMMIT_DIAG_TEXT);

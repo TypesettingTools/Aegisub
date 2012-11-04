@@ -337,8 +337,8 @@ template<class FeatureType>
 void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 	if (!sel_features.erase(feat) || !feat->line) return;
 
-	for (selection_iterator it = sel_features.begin(); it != sel_features.end(); ++it) {
-		if ((*it)->line == feat->line) return;
+	for (auto sel : sel_features) {
+		if (sel->line == feat->line) return;
 	}
 
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
@@ -370,13 +370,13 @@ struct scoped_tag_parse {
 
 // Find a tag's parameters in a line or return NULL if it's not found
 static param_vec find_tag(const AssDialogue *line, wxString tag_name) {
-	for (size_t i = 0; i < line->Blocks.size(); ++i) {
-		const AssDialogueBlockOverride *ovr = dynamic_cast<const AssDialogueBlockOverride*>(line->Blocks[i]);
+	for (auto block : line->Blocks) {
+		const AssDialogueBlockOverride *ovr = dynamic_cast<const AssDialogueBlockOverride*>(block);
 		if (!ovr) continue;
 
-		for (size_t j = 0; j < ovr->Tags.size(); ++j) {
-			if (ovr->Tags[j]->Name == tag_name)
-				return &ovr->Tags[j]->Params;
+		for (auto tag : ovr->Tags) {
+			if (tag->Name == tag_name)
+				return &tag->Params;
 		}
 	}
 

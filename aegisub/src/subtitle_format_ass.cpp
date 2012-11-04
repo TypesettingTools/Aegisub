@@ -92,13 +92,13 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	bool ssa = filename.Right(4).Lower() == ".ssa";
 
 	wxString group = src->Line.front().group;
-	for (constEntryIter cur = src->Line.begin(); cur != src->Line.end(); ++cur) {
+	for (auto const& line : src->Line) {
 		// Add a blank line between each group
-		if (cur->group != group) {
+		if (line.group != group) {
 			file.WriteLineToFile("");
-			group = cur->group;
+			group = line.group;
 		}
 
-		file.WriteLineToFile(ssa ? cur->GetSSAText() : cur->GetEntryData(), true);
+		file.WriteLineToFile(ssa ? line.GetSSAText() : line.GetEntryData(), true);
 	}
 }

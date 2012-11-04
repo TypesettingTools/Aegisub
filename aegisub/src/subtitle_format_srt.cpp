@@ -509,8 +509,8 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 
 	// Write lines
 	int i=1;
-	for (constEntryIter cur = copy.Line.begin(); cur != copy.Line.end(); ++cur) {
-		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&*cur)) {
+	for (auto const& line : copy.Line) {
+		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&line)) {
 			file.WriteLineToFile(wxString::Format("%d", i++));
 			file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
 			file.WriteLineToFile(ConvertTags(current));
@@ -523,26 +523,26 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	wxString supported_tags[] = { "\\b", "\\i", "\\s", "\\u" };
 
 	AssStyle defstyle;
-	for (constEntryIter cur = file->Line.begin(); cur != file->Line.end(); ++cur) {
+	for (auto const& line : file->Line) {
 		// Check style, if anything non-default is found, return false
-		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&*cur)) {
+		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&line)) {
 			if (curstyle->GetEntryData() != defstyle.GetEntryData())
 				return false;
 		}
 
 		// Check for attachments, if any is found, return false
-		if (dynamic_cast<const AssAttachment*>(&*cur)) return false;
+		if (dynamic_cast<const AssAttachment*>(&line)) return false;
 
 		// Check dialogue
-		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&*cur)) {
+		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&line)) {
 			std::vector<AssDialogueBlock*> blocks = curdiag->ParseTags();
-			for (size_t i = 0; i < blocks.size(); ++i) {
-				AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(blocks[i]);
+			for (auto block : blocks) {
+				AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
 				if (!ovr) continue;
 
 				// Verify that all overrides used are supported
-				for (size_t j = 0; j < ovr->Tags.size(); ++j) {
-					if (!std::binary_search(supported_tags, supported_tags + 4, ovr->Tags[j]->Name)) {
+				for (auto tag : ovr->Tags) {
+					if (!std::binary_search(supported_tags, std::end(supported_tags), tag->Name)) {
 						delete_clear(blocks);
 						return false;
 					}
@@ -565,13 +565,12 @@ wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 
 	std::vector<AssDialogueBlock *> blocks = diag->ParseTags();
 
-	for (size_t i = 0; i < blocks.size(); ++i) {
-		if (AssDialogueBlockOverride* block = dynamic_cast<AssDialogueBlockOverride*>(blocks[i])) {
+	for (auto block : blocks) {
+		if (AssDialogueBlockOverride* ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
 			// Iterate through overrides
-			for (size_t j = 0; j < block->Tags.size(); j++) {
-				AssOverrideTag *tag = block->Tags[j];
+			for (auto tag : ovr->Tags) {
 				if (tag->IsValid() && tag->Name.size() == 2) {
-					std::map<char, bool>::iterator it = tag_states.find(tag->Name[1]);
+					auto it = tag_states.find(tag->Name[1]);
 					if (it != tag_states.end()) {
 						bool temp = tag->Params[0]->Get(false);
 						if (temp && !it->second)
@@ -584,16 +583,16 @@ wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 			}
 		}
 		// Plain text
-		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(blocks[i])) {
+		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(block)) {
 			final += plain->GetText();
 		}
 	}
 
 	// Ensure all tags are closed
 	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
-	for (std::map<char, bool>::iterator it = tag_states.begin(); it != tag_states.end(); ++it) {
-		if (it->second)
-			final += wxString::Format("</%c>", it->first);
+	for (auto it : tag_states) {
+		if (it.second)
+			final += wxString::Format("</%c>", it.first);
 	}
 
 	delete_clear(blocks);
