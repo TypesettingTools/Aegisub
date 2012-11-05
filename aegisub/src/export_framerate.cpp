@@ -54,6 +54,8 @@
 #include "utils.h"
 #include "video_context.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 AssTransformFramerateFilter::AssTransformFramerateFilter()
 : AssExportFilter(_("Transform Framerate"), _("Transform subtitle times, including those in override tags, from an input framerate to an output framerate.\n\nThis is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\nIt can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup."), 1000)
 , c(0)
@@ -208,10 +210,7 @@ void AssTransformFramerateFilter::TransformTimeTags(wxString name,int n,AssOverr
 
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	if (!Input->IsLoaded() || !Output->IsLoaded()) return;
-	for (auto& entry : subs->Line) {
-		AssDialogue *curDialogue = dynamic_cast<AssDialogue*>(&entry);
-		if (!curDialogue) continue;
-
+	for (auto curDialogue : subs->Line | agi::of_type<AssDialogue>()) {
 		line = curDialogue;
 		newK = 0;
 		oldK = 0;

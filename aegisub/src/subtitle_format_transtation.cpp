@@ -46,6 +46,8 @@
 #include "ass_time.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 TranStationSubtitleFormat::TranStationSubtitleFormat()
 : SubtitleFormat("TranStation")
 {
@@ -75,16 +77,13 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& fi
 	SmpteFormatter ft(fps);
 	TextFileWriter file(filename, encoding);
 	AssDialogue *prev = 0;
-	for (auto& line : copy.Line) {
-		AssDialogue *cur = dynamic_cast<AssDialogue*>(&line);
-
-		if (prev && cur) {
+	for (auto cur : copy.Line | agi::of_type<AssDialogue>()) {
+		if (prev) {
 			file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, cur->Start));
 			file.WriteLineToFile("");
 		}
 
-		if (cur)
-			prev = cur;
+		prev = cur;
 	}
 
 	// flush last line

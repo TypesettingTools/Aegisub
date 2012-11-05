@@ -63,6 +63,8 @@
 #include "video_context.h"
 #include "video_slider.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 enum {
 	GRID_SCROLLBAR = 1730,
 	MENU_SHOW_COL = 1250 // Needs 15 IDs after this
@@ -278,12 +280,10 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	index_line_map.clear();
 	line_index_map.clear();
 
-	for (auto& line : context->ass->Line) {
-		if (AssDialogue *curdiag = dynamic_cast<AssDialogue*>(&line)) {
-			line_index_map[curdiag] = (int)index_line_map.size();
-			index_line_map.push_back(curdiag);
-		}
-	}
+	for (auto curdiag : context->ass->Line | agi::of_type<AssDialogue>()) {
+		line_index_map[curdiag] = (int)index_line_map.size();
+		index_line_map.push_back(curdiag);
+}
 
 	if (preserve_selected_rows) {
 		Selection sel;

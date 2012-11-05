@@ -92,6 +92,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\background_runner.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\color.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\spellchecker.h" />
+    <ClInclude Include="..\..\libaegisub\include\libaegisub\of_type_adaptor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">

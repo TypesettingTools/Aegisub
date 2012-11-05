@@ -63,6 +63,8 @@
 #include "utils.h"
 #include "validators.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 /// Style rename helper that walks a file searching for a style and optionally
 /// updating references to it
 class StyleRenamer {
@@ -87,10 +89,7 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
-		for (auto& line : c->ass->Line) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-			if (!diag) continue;
-
+		for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
 			if (diag->Style == source_name) {
 				if (replace)
 					diag->Style = new_name;

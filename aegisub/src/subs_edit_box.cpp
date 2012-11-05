@@ -68,6 +68,8 @@
 #include "validators.h"
 #include "video_context.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 namespace {
 template<class T>
 struct field_setter : public std::binary_function<AssDialogue*, T, void> {
@@ -315,10 +317,8 @@ void SubsEditBox::PopulateList(wxComboBox *combo, wxString AssDialogue::*field) 
 	wxEventBlocker blocker(this);
 
 	std::set<wxString> values;
-	for (auto& line : c->ass->Line) {
-		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(&line))
-			values.insert(diag->*field);
-	}
+	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>())
+		values.insert(diag->*field);
 	values.erase("");
 	wxArrayString arrstr;
 	arrstr.reserve(values.size());

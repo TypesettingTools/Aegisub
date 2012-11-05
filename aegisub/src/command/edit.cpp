@@ -62,6 +62,10 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <boost/range/adaptor/reversed.hpp>
+
+#include <libaegisub/of_type_adaptor.h>
+
 namespace {
 	using cmd::Command;
 /// @defgroup cmd-edit Editing commands.
@@ -163,14 +167,10 @@ void paste_lines(agi::Context *c, bool paste_over) {
 
 template<class T>
 T get_value(AssDialogue const& line, int blockn, T initial, wxString const& tag, wxString alt = wxString()) {
-	for (int i = blockn; i >= 0; i--) {
-		AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(line.Blocks[i]);
-		if (!ovr) continue;
-
-		for (int j = (int)ovr->Tags.size() - 1; j >= 0; j--) {
-			if (ovr->Tags[j]->Name == tag || ovr->Tags[j]->Name == alt) {
-				return ovr->Tags[j]->Params[0]->Get<T>(initial);
-			}
+	for (auto ovr : line.Blocks | boost::adaptors::reversed | agi::of_type<AssDialogueBlockOverride>()) {
+		for (auto tag : ovr->Tags | boost::adaptors::reversed) {
+			if (tag->Name == tag || tag->Name == alt)
+				return tag->Params[0]->Get<T>(initial);
 		}
 	}
 	return initial;
@@ -485,9 +485,8 @@ struct edit_find_replace : public Command {
 static void copy_lines(agi::Context *c) {
 	wxString data;
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
-	for (auto& line : c->ass->Line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (diag && sel.count(diag)) {
+	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+		if (sel.count(diag)) {
 			if (!data.empty())
 				data += "\r\n";
 			data += diag->GetEntryData();
@@ -505,10 +504,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	AssDialogue *new_active = 0;
 	bool hit_active = false;
 
-	for (auto& line : c->ass->Line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (!diag) continue;
-
+	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
 		if (diag == active) {
 			hit_active = true;
 			if (new_active) break;

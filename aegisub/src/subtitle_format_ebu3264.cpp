@@ -33,6 +33,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_wrap.h>
+#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/scoped_ptr.h>
 
 #include "aegisub_endian.h"
@@ -384,11 +385,8 @@ namespace
 		subs_list.reserve(copy.Line.size());
 
 		// convert to intermediate format
-		for (auto& orgline : copy.Line)
+		for (auto line : copy.Line | agi::of_type<AssDialogue>())
 		{
-			AssDialogue *line = dynamic_cast<AssDialogue*>(&orgline);
-			if (!line) continue;
-
 			// add a new subtitle and work on it
 			subs_list.push_back(EbuSubtitle());
 			EbuSubtitle &imline = subs_list.back();

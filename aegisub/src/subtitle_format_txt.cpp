@@ -46,6 +46,8 @@
 #include "utils.h"
 #include "version.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 TXTSubtitleFormat::TXTSubtitleFormat()
 : SubtitleFormat("Plain-Text")
 {
@@ -129,9 +131,8 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (auto const& line : src->Line) {
-		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&line);
-		if (dia && !dia->Comment) {
+	for (auto dia : src->Line | agi::of_type<AssDialogue>()) {
+		if (!dia->Comment) {
 			num_dialogue_lines++;
 			if (!dia->Actor.empty())
 				num_actor_names++;
@@ -146,10 +147,7 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	file.WriteLineToFile(wxString("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (auto const& line : src->Line) {
-		const AssDialogue *dia = dynamic_cast<const AssDialogue*>(&line);
-		if (!dia) continue;
-
+	for (auto dia : src->Line | agi::of_type<AssDialogue>()) {
 		wxString out_line;
 
 		if (dia->Comment)
@@ -161,10 +159,8 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 		wxString out_text;
 		if (strip_formatting) {
 			std::vector<AssDialogueBlock*> blocks = dia->ParseTags();
-			for (auto block : blocks) {
-				if (block->GetType() == BLOCK_PLAIN)
-					out_text += block->GetText();
-			}
+			for (auto block : blocks | agi::of_type<AssDialogueBlockPlain>())
+				out_text += block->GetText();
 			delete_clear(blocks);
 		}
 		else {

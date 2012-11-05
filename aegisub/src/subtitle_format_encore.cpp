@@ -40,6 +40,8 @@
 #include "ass_file.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 EncoreSubtitleFormat::EncoreSubtitleFormat()
 : SubtitleFormat("Adobe Encore")
 {
@@ -77,10 +79,8 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filenam
 	// Write lines
 	int i = 0;
 	TextFileWriter file(filename, "UTF-8");
-	for (auto const& line : copy.Line) {
-		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&line)) {
-			++i;
-			file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start), ft.ToSMPTE(current->End), current->Text));
-		}
+	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
+		++i;
+		file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start), ft.ToSMPTE(current->End), current->Text));
 	}
 }

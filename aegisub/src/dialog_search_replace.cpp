@@ -54,6 +54,8 @@
 #include "subs_grid.h"
 #include "video_context.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 enum {
 	BUTTON_FIND_NEXT,
 	BUTTON_REPLACE_NEXT,
@@ -378,11 +380,7 @@ void SearchReplaceEngine::ReplaceAll() {
 	bool hasSelection = !sel.empty();
 	bool inSel = affect == 1;
 
-	// Scan
-	for (auto& line : context->ass->Line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (!diag) continue;
-
+	for (auto diag : context->ass->Line | agi::of_type<AssDialogue>()) {
 		// Check if row is selected
 		if (inSel && hasSelection && !sel.count(diag))
 			continue;

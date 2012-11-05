@@ -47,6 +47,8 @@
 #include "text_file_writer.h"
 #include "video_context.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 MicroDVDSubtitleFormat::MicroDVDSubtitleFormat()
 : SubtitleFormat("MicroDVD")
 {
@@ -142,12 +144,10 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filen
 	}
 
 	// Write lines
-	for (auto const& line : copy.Line) {
-		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&line)) {
-			int start = fps.FrameAtTime(current->Start, agi::vfr::START);
-			int end = fps.FrameAtTime(current->End, agi::vfr::END);
+	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
+		int start = fps.FrameAtTime(current->Start, agi::vfr::START);
+		int end = fps.FrameAtTime(current->End, agi::vfr::END);
 
-			file.WriteLineToFile(wxString::Format("{%i}{%i}%s", start, end, current->Text));
-		}
+		file.WriteLineToFile(wxString::Format("{%i}{%i}%s", start, end, current->Text));
 	}
 }

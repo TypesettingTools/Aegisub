@@ -45,6 +45,8 @@
 #include "main.h"
 #include "selection_controller.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 enum {
 	ACTION_SET = 0,
 	ACTION_ADD,
@@ -113,9 +115,7 @@ static std::set<AssDialogue*> process(wxString match_text, bool match_case, int 
 	std::function<bool (wxString)> pred = get_predicate(mode, &re, match_case, match_text);
 
 	std::set<AssDialogue*> matches;
-	for (auto& line : ass->Line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (!diag) continue;
+	for (auto diag : ass->Line | agi::of_type<AssDialogue>()) {
 		if (diag->Comment && !comments) continue;
 		if (!diag->Comment && !dialogue) continue;
 

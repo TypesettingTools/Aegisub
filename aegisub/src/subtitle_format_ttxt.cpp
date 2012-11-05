@@ -46,6 +46,9 @@
 #include "compat.h"
 #include "main.h"
 
+#include <libaegisub/of_type_adaptor.h>
+#include <boost/range/adaptor/reversed.hpp>
+
 DEFINE_SIMPLE_EXCEPTION(TTXTParseError, SubtitleFormatParseError, "subtitle_io/parse/ttxt")
 
 TTXTSubtitleFormat::TTXTSubtitleFormat()
@@ -176,14 +179,9 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename,
 
 	// Create lines
 	const AssDialogue *prev = 0;
-	for (auto const& line : copy.Line) {
-		const AssDialogue *current = dynamic_cast<const AssDialogue*>(&line);
-		if (current && !current->Comment) {
-			WriteLine(root, prev, current);
-			prev = current;
-		}
-		else
-			throw TTXTParseError("Unexpected line type in TTXT file", 0);
+	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
+		WriteLine(root, prev, current);
+		prev = current;
 	}
 
 	// Save XML
@@ -268,11 +266,9 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 
 	// Find last line
 	AssTime lastTime;
-	for (EntryList::reverse_iterator cur = file.Line.rbegin(); cur != file.Line.rend(); ++cur) {
-		if (AssDialogue *prev = dynamic_cast<AssDialogue*>(&*cur)) {
-			lastTime = prev->End;
-			break;
-		}
+	for (auto line : file.Line | boost::adaptors::reversed | agi::of_type<AssDialogue>()) {
+		lastTime = line->End;
+		break;
 	}
 
 	// Insert blank line at the end

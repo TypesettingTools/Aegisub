@@ -34,14 +34,17 @@
 
 #include "config.h"
 
+#include "export_fixstyle.h"
+
 #ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
 #endif
 
-#include "export_fixstyle.h"
 #include "ass_file.h"
 #include "ass_dialogue.h"
+
+#include <libaegisub/of_type_adaptor.h>
 
 AssFixStylesFilter::AssFixStylesFilter()
 : AssExportFilter(_("Fix Styles"), _("Fixes styles by replacing any style that isn't available on file with Default."), -5000, true)
@@ -53,10 +56,8 @@ void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	for_each(styles.begin(), styles.end(), std::mem_fun_ref(&wxString::MakeLower));
 	styles.Sort();
 
-	for (auto& line : subs->Line) {
-		if (AssDialogue *diag = dynamic_cast<AssDialogue*>(&line)) {
-			if (!std::binary_search(styles.begin(), styles.end(), diag->Style.Lower()))
-				diag->Style = "Default";
-		}
+	for (auto diag : subs->Line | agi::of_type<AssDialogue>()) {
+		if (!std::binary_search(styles.begin(), styles.end(), diag->Style.Lower()))
+			diag->Style = "Default";
 	}
 }

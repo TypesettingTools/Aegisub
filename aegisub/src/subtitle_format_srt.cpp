@@ -51,6 +51,8 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/parse/srt")
 
 namespace {
@@ -508,14 +510,12 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 #endif
 
 	// Write lines
-	int i=1;
-	for (auto const& line : copy.Line) {
-		if (const AssDialogue *current = dynamic_cast<const AssDialogue*>(&line)) {
-			file.WriteLineToFile(wxString::Format("%d", i++));
-			file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
-			file.WriteLineToFile(ConvertTags(current));
-			file.WriteLineToFile("");
-		}
+	int i=0;
+	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
+		file.WriteLineToFile(wxString::Format("%d", ++i));
+		file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
+		file.WriteLineToFile(ConvertTags(current));
+		file.WriteLineToFile("");
 	}
 }
 
@@ -536,10 +536,7 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 		// Check dialogue
 		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&line)) {
 			std::vector<AssDialogueBlock*> blocks = curdiag->ParseTags();
-			for (auto block : blocks) {
-				AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
-				if (!ovr) continue;
-
+			for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 				// Verify that all overrides used are supported
 				for (auto tag : ovr->Tags) {
 					if (!std::binary_search(supported_tags, std::end(supported_tags), tag->Name)) {

@@ -42,6 +42,8 @@
 #include "libresrc/libresrc.h"
 #include "video_context.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 enum {
 	LEFT = 0,
 	RIGHT = 1,
@@ -206,10 +208,8 @@ namespace {
 			diag->ParseAssTags();
 			diag->ProcessParameters(resample_tags, state);
 
-			for (auto block : diag->Blocks) {
-				if (AssDialogueBlockDrawing *drawing = dynamic_cast<AssDialogueBlockDrawing*>(block))
-					drawing->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
-			}
+			for (auto drawing : diag->Blocks | agi::of_type<AssDialogueBlockDrawing>())
+				drawing->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
 
 			for (size_t i = 0; i < 3; ++i)
 				diag->Margin[i] = int((diag->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);

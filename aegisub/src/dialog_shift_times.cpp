@@ -38,6 +38,7 @@
 
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
+#include <libaegisub/of_type_adaptor.h>
 
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/cajun/reader.h>
@@ -352,9 +353,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	int block_start = 0;
 	json::Array shifted_blocks;
 
-	for (auto& entry : context->ass->Line) {
-		AssDialogue *line = dynamic_cast<AssDialogue*>(&entry);
-		if (!line) continue;
+	for (auto line : context->ass->Line | agi::of_type<AssDialogue>()) {
 		++row_number;
 
 		if (!sel.count(line)) {

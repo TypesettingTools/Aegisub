@@ -58,6 +58,8 @@
 #include "text_file_writer.h"
 #include "utils.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 namespace std {
 	template<>
 	void swap(AssFile &lft, AssFile &rgt) {
@@ -399,20 +401,17 @@ void AssFile::GetResolution(int &sw,int &sh) const {
 
 wxArrayString AssFile::GetStyles() const {
 	wxArrayString styles;
-	for (auto const& line : Line) {
-		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&line))
-			styles.Add(curstyle->name);
-	}
+	for (auto style : Line | agi::of_type<AssStyle>())
+		styles.push_back(style->name);
 	return styles;
 }
 
 AssStyle *AssFile::GetStyle(wxString const& name) {
-	for (auto& line : Line) {
-		AssStyle *curstyle = dynamic_cast<AssStyle*>(&line);
-		if (curstyle && curstyle->name == name)
-			return curstyle;
+	for (auto style : Line | agi::of_type<AssStyle>()) {
+		if (style->name == name)
+			return style;
 	}
-	return NULL;
+	return nullptr;
 }
 
 void AssFile::AddToRecent(wxString const& file) const {

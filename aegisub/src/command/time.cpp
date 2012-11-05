@@ -54,6 +54,8 @@
 #include "../subs_grid.h"
 #include "../video_context.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 namespace {
 	using cmd::Command;
 
@@ -71,10 +73,7 @@ namespace {
 			if (sel.size() < 2) return false;
 
 			size_t found = 0;
-			for (auto& line : c->ass->Line) {
-				AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-				if (!diag) continue;
-
+			for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
 				if (sel.count(diag)) {
 					++found;
 					if (found == sel.size())

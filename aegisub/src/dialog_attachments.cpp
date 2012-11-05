@@ -53,6 +53,8 @@
 #include "main.h"
 #include "utils.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 enum {
 	BUTTON_ATTACH_FONT = 1300,
 	BUTTON_ATTACH_GRAPHICS,
@@ -102,14 +104,12 @@ void DialogAttachments::UpdateList() {
 	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
 
 	// Fill list
-	for (auto& line : ass->Line) {
-		if (AssAttachment *attach = dynamic_cast<AssAttachment*>(&line)) {
-			int row = listView->GetItemCount();
-			listView->InsertItem(row,attach->GetFileName(true));
-			listView->SetItem(row,1,PrettySize(attach->GetSize()));
-			listView->SetItem(row,2,attach->group);
-			listView->SetItemPtrData(row,wxPtrToUInt(attach));
-		}
+	for (auto attach : ass->Line | agi::of_type<AssAttachment>()) {
+		int row = listView->GetItemCount();
+		listView->InsertItem(row,attach->GetFileName(true));
+		listView->SetItem(row,1,PrettySize(attach->GetSize()));
+		listView->SetItem(row,2,attach->group);
+		listView->SetItemPtrData(row,wxPtrToUInt(attach));
 	}
 }
 

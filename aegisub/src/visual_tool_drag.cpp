@@ -39,6 +39,8 @@
 #include "video_context.h"
 #include "video_display.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
 static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
@@ -114,9 +116,8 @@ void VisualToolDrag::OnFileChanged() {
 	primary = 0;
 	active_feature = features.end();
 
-	for (auto& line : c->ass->Line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (diag && IsDisplayed(diag))
+	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+		if (IsDisplayed(diag))
 			MakeFeatures(diag);
 	}
 
@@ -130,10 +131,7 @@ void VisualToolDrag::OnFrameChanged() {
 	feature_iterator feat = features.begin();
 	feature_iterator end = features.end();
 
-	for (auto& line : c->ass->Line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (!diag) continue;
-
+	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
 		if (IsDisplayed(diag)) {
 			// Features don't exist and should
 			if (feat == end || feat->line != diag)

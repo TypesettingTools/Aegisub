@@ -42,10 +42,7 @@
 #include "visual_tool_drag.h"
 #include "visual_tool_vector_clip.h"
 
-template<class C, class F>
-static void for_each(C &range, F func) {
-	std::for_each(range.begin(), range.end(), func);
-}
+#include <libaegisub/of_type_adaptor.h>
 
 using std::placeholders::_1;
 
@@ -218,9 +215,10 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 	if (dragging) {
 		// continue drag
 		if (event.LeftIsDown()) {
-			for_each(sel_features, std::bind(&FeatureType::UpdateDrag, _1,
-				mouse_pos - drag_start, shift_down));
-			for_each(sel_features, std::bind(&VisualTool<FeatureType>::UpdateDrag, this, _1));
+			for (auto sel : sel_features)
+				sel->UpdateDrag(mouse_pos - drag_start, shift_down);
+			for (auto sel : sel_features)
+				UpdateDrag(sel);
 			Commit();
 			need_render = true;
 		}
@@ -273,7 +271,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 				c->selectionController->SetActiveLine(active_feature->line);
 
 			if (InitializeDrag(active_feature)) {
-				for_each(sel_features, std::bind(&VisualDraggableFeature::StartDrag, _1));
+				for (auto sel : sel_features) sel->StartDrag();
 				dragging = true;
 				parent->CaptureMouse();
 			}
@@ -370,10 +368,7 @@ struct scoped_tag_parse {
 
 // Find a tag's parameters in a line or return NULL if it's not found
 static param_vec find_tag(const AssDialogue *line, wxString tag_name) {
-	for (auto block : line->Blocks) {
-		const AssDialogueBlockOverride *ovr = dynamic_cast<const AssDialogueBlockOverride*>(block);
-		if (!ovr) continue;
-
+	for (auto ovr : line->Blocks | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto tag : ovr->Tags) {
 			if (tag->Name == tag_name)
 				return &tag->Params;
@@ -552,8 +547,8 @@ wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &
 }
 
 void VisualToolBase::SetSelectedOverride(wxString const& tag, wxString const& value) {
-	for_each(c->selectionController->GetSelectedSet(),
-		std::bind(&VisualToolBase::SetOverride, this, _1, tag, value));
+	for (auto line : c->selectionController->GetSelectedSet())
+		SetOverride(line, tag, value);
 }
 
 void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxString const& value) {

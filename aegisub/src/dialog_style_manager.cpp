@@ -67,6 +67,8 @@
 #include "subtitle_format.h"
 #include "utils.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 using std::placeholders::_1;
 
 namespace {
@@ -274,11 +276,9 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 		CurrentList->Clear();
 		styleMap.clear();
 
-		for (auto& line : c->ass->Line) {
-			if (AssStyle *style = dynamic_cast<AssStyle*>(&line)) {
-				CurrentList->Append(style->name);
-				styleMap.push_back(style);
-			}
+		for (auto style : c->ass->Line | agi::of_type<AssStyle>()) {
+			CurrentList->Append(style->name);
+			styleMap.push_back(style);
 		}
 	}
 

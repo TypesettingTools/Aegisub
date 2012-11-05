@@ -57,6 +57,8 @@
 #include "utils.h"
 #include "video_context.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 using namespace std::placeholders;
 
 SubtitleFormat::SubtitleFormat(wxString const& name)
@@ -164,22 +166,17 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
 }
 
 void SubtitleFormat::StripTags(AssFile &file) {
-	for (auto &line : file.Line) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&line)) {
-			current->StripTags();
-		}
-	}
+	for (auto current : file.Line | agi::of_type<AssDialogue>())
+		current->StripTags();
 }
 
 void SubtitleFormat::ConvertNewlines(AssFile &file, wxString const& newline, bool mergeLineBreaks) {
-	for (auto &line : file.Line) {
-		if (AssDialogue *current = dynamic_cast<AssDialogue*>(&line)) {
-			current->Text.Replace("\\h", " ");
-			current->Text.Replace("\\n", newline);
-			current->Text.Replace("\\N", newline);
-			if (mergeLineBreaks) {
-				while (current->Text.Replace(newline+newline, newline));
-			}
+	for (auto current : file.Line | agi::of_type<AssDialogue>()) {
+		current->Text.Replace("\\h", " ");
+		current->Text.Replace("\\n", newline);
+		current->Text.Replace("\\N", newline);
+		if (mergeLineBreaks) {
+			while (current->Text.Replace(newline+newline, newline));
 		}
 	}
 }
