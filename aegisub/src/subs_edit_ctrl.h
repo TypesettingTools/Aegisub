@@ -47,6 +47,7 @@ namespace agi {
 	class CalltipProvider;
 	class SpellChecker;
 	struct Context;
+	namespace ass { struct DialogueToken; }
 }
 
 /// @class SubsTextEditCtrl
@@ -82,6 +83,16 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	/// Position of the currently show calltip
 	size_t calltip_position;
 
+	/// Cursor position which the current calltip is for
+	int cursor_pos;
+
+	/// The last seen line text, used to avoid reparsing the line for syntax
+	/// highlighting when possible
+	std::string line_text;
+
+	/// Tokenized version of line_text
+	std::vector<agi::ass::DialogueToken> tokenized_line;
+
 	void OnContextMenu(wxContextMenuEvent &);
 	void OnAddToDictionary(wxCommandEvent &event);
 	void OnUseSuggestion(wxCommandEvent &event);
@@ -94,7 +105,7 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	void Subscribe(std::string const& name);
 
 	void StyleSpellCheck();
-	void UpdateCallTip(wxStyledTextEvent &);
+	void UpdateCallTip();
 	void SetStyles();
 
 	void UpdateStyle();
@@ -115,7 +126,7 @@ public:
 	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, agi::Context *context);
 	~SubsTextEditCtrl();
 
-	void SetTextTo(wxString text);
+	void SetTextTo(wxString const& text);
 	void Paste();
 
 	DECLARE_EVENT_TABLE()

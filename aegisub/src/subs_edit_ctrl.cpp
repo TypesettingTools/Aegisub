@@ -118,9 +118,9 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&cmd::call, "edit/line/split/estimate", context), EDIT_MENU_SPLIT_ESTIMATE);
 	}
 
-	Bind(wxEVT_STC_STYLENEEDED, &SubsTextEditCtrl::UpdateCallTip, this);
-
+	Bind(wxEVT_STC_STYLENEEDED, std::bind(&SubsTextEditCtrl::UpdateStyle, this));
 	Bind(wxEVT_CONTEXT_MENU, &SubsTextEditCtrl::OnContextMenu, this);
+	Bind(wxEVT_IDLE, std::bind(&SubsTextEditCtrl::UpdateCallTip, this));
 
 	OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this);
@@ -137,8 +137,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	Subscribe("Karaoke Variable");
 
 	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this);
-	static wxStyledTextEvent evt;
-	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this, std::ref(evt));
+	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this);
 }
 
 SubsTextEditCtrl::~SubsTextEditCtrl() {
@@ -208,39 +207,43 @@ void SubsTextEditCtrl::SetStyles() {
 }
 
 void SubsTextEditCtrl::UpdateStyle() {
+	{
+		std::string text = GetTextRaw().data();
+		if (text == line_text) return;
+		line_text = move(text);
+	}
+	tokenized_line = agi::ass::TokenizeDialogueBody(line_text);
+
+	cursor_pos = -1;
+	UpdateCallTip();
+
 	StartStyling(0,255);
 
-	std::string text = GetTextRaw().data();
-
 	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
-		SetStyling(text.size(), 0);
+		SetStyling(line_text.size(), 0);
 		return;
 	}
 
-	if (text.empty()) return;
+	if (line_text.empty()) return;
 
 	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
 	bool template_line = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
 
-	auto tokens = agi::ass::TokenizeDialogueBody(text);
-	for (auto const& style_range : agi::ass::SyntaxHighlight(text, tokens, template_line, spellchecker.get()))
+	for (auto const& style_range : agi::ass::SyntaxHighlight(line_text, tokenized_line, template_line, spellchecker.get()))
 		SetStyling(style_range.length, style_range.type);
 }
 
-/// @brief Update call tip
-void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
-	UpdateStyle();
-
+void SubsTextEditCtrl::UpdateCallTip() {
 	if (!OPT_GET("App/Call Tips")->GetBool()) return;
+
+	int pos = GetCurrentPos();
+	if (!pos == cursor_pos) return;
+	cursor_pos = pos;
 
 	if (!calltip_provider)
 		calltip_provider.reset(new agi::CalltipProvider);
 
-	std::string text = GetTextRaw().data();
-	auto tokens = agi::ass::TokenizeDialogueBody(text);
-	int pos = GetCurrentPos();
-
-	agi::Calltip new_calltip = calltip_provider->GetCalltip(tokens, text, GetCurrentPos());
+	agi::Calltip new_calltip = calltip_provider->GetCalltip(tokenized_line, line_text, pos);
 
 	if (new_calltip.text.empty()) {
 		CallTipCancel();
@@ -256,15 +259,15 @@ void SubsTextEditCtrl::UpdateCallTip(wxStyledTextEvent &) {
 	CallTipSetHighlight(new_calltip.highlight_start, new_calltip.highlight_end);
 }
 
-void SubsTextEditCtrl::SetTextTo(wxString text) {
+void SubsTextEditCtrl::SetTextTo(wxString const& text) {
 	SetEvtHandlerEnabled(false);
 	Freeze();
 
 	int from=0,to=0;
 	GetSelection(&from,&to);
 
+	line_text.clear();
 	SetText(text);
-	UpdateStyle();
 
 	// Restore selection
 	SetSelectionU(GetReverseUnicodePosition(from), GetReverseUnicodePosition(to));
@@ -290,7 +293,6 @@ void SubsTextEditCtrl::Paste() {
 	int sel_start = GetUnicodePosition(from + data.size());
 	SetSelectionStart(sel_start);
 	SetSelectionEnd(sel_start);
-	UpdateStyle();
 }
 
 void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
