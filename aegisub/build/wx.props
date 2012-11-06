@@ -4,10 +4,18 @@
     <_PropertySheetDisplayName>wxWidgets support</_PropertySheetDisplayName>
   </PropertyGroup>
 
-  <!-- Some helper affixes -->
   <PropertyGroup>
+    <!-- Some helper affixes -->
     <WxLibDbgSuffix Condition="'$(Configuration)'=='Debug'">d</WxLibDbgSuffix>
     <WxLibDbgSuffix Condition="'$(Configuration)'=='Release'"></WxLibDbgSuffix>
+
+    <!-- The derived paths are set here rather than the defaults as otherwise
+         the base path is expanded before it's overridden by the user value -->
+    <WxIncludePath Condition="'$(WxIncludePath)'==''">$(WxBasePath)\include</WxIncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(WxLibraryPath)'==''">
+    <WxLibraryPath Condition="'$(Platform)'=='Win32'">$(WxBasePath)\lib32</WxLibraryPath>
+    <WxLibraryPath Condition="'$(Platform)'=='x64'">$(WxBasePath)\lib64</WxLibraryPath>
   </PropertyGroup>
 
   <ItemDefinitionGroup>

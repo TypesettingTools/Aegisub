@@ -22,15 +22,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}</ProjectGuid>
     <RootNamespace>freetype</RootNamespace>
-    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
 
   <!-- Project configuration -->
-  <ItemGroup>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)config.xml" />
-    <ProjectTools Include="ExternalSourceLocation" />
-  </ItemGroup>
-
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
   </PropertyGroup>

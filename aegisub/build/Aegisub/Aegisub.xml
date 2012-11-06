@@ -45,151 +45,7 @@
     <Category Name="Paths" DisplayName="Library paths" Description="Configure third-party library paths" />
   </Rule.Categories>
 
-  <StringProperty
-    Subtype="folder"
-    Name="WxBasePath"
-    Category="Paths"
-    DisplayName="wxWidgets root"
-    Description="Root directory of the wxWidgets installation to use"
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="WxLibraryPath"
-    Category="Paths"
-    DisplayName="wxWidgets library path"
-    Description="Location of compiled wxWidgets library files"
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="WxIncludePath"
-    Category="Paths"
-    DisplayName="wxWidgets include path"
-    Description="Location of wxWidgets header files"
-    />
-
-  <BoolProperty
-    Name="AegisubUseDSound"
-    Category="Features"
-    DisplayName="Use DirectSound"
-    Description="Specify whether to use the DirectSound-based audio player. This requires the DirectX SDK installed."
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="DirectXSDKPath"
-    Category="Paths"
-    DisplayName="DirectX SDK root path"
-    Description="Location of DirectX SDK installation for DirectSound support, this is usually auto-detected."
-    />
-
-  <BoolProperty
-    Name="AegisubUseAvisynth"
-    Category="Features"
-    DisplayName="Use Avisynth"
-    Description="Specify whether to support Avisynth for video and audio providers. This is experimental on x64."
-    />
-
-  <BoolProperty
-    Name="AegisubUseFfms"
-    Category="Features"
-    DisplayName="Use FFmpegSource2"
-    Description="Specify whether to support FFmpegSource2 for video and audio providers. You may need to configure the location of the library on the Library paths page."
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="FFmpegSourceIncludePath"
-    Category="Paths"
-    DisplayName="FFmpegSource2 include path"
-    Description="Location of FFmpegSource2 include files"
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="FFmpegSourceLibraryPath"
-    Category="Paths"
-    DisplayName="FFmpegSource2 library path"
-    Description="Location of FFmpegSource2 library files"
-    />
-  <StringProperty
-    Subtype="file"
-    Name="FFmpegSourceLibraryName"
-    Category="Paths"
-    DisplayName="FFmpegSource2 library name"
-    Description="Name of FFmpegSource2 library"
-    />
-
-  <BoolProperty
-    Name="AegisubUseFreetype2"
-    Category="Features"
-    DisplayName="Use Freetype 2"
-    Description="Specify whether to use Freetype 2 for font enumeration in the Font Collector. You will need to configure the location of the Freetype 2 library on the Library paths page."
-    />
-
-  <BoolProperty
-    Name="AegisubUseFftw"
-    Category="Features"
-    DisplayName="Use FFTW"
-    Description="Specify whether to use the FFTW fourier transformation library to speed up audio spectrum rendering. You will need to configure the location of the FFTW library on the Library paths page."
-    />
-
-  <BoolProperty
-    Name="AegisubUseFontconfig"
-    Category="Features"
-    DisplayName="Use Fontconfig"
-    Description="Specify whether to use Fontconfig for font enumeration in the Font Collector. You will need to configure the location of the Fontconfig library on the Library paths page."
-    />
-
-  <BoolProperty
-    Name="AegisubUseLibass"
-    Category="Features"
-    DisplayName="Use libass"
-    Description="Specify whether to include support for the libass subtitle rendering library. You will need to configure the location of libass on the Library paths page."
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="LibassIncludePath"
-    Category="Paths"
-    DisplayName="libass include path"
-    Description="Location of libass include files"
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="LibassLibraryPath"
-    Category="Paths"
-    DisplayName="libass library path"
-    Description="Location of libass library files"
-    />
-  <StringProperty
-    Subtype="file"
-    Name="LibassLibraryName"
-    Category="Paths"
-    DisplayName="libass library name"
-    Description="Name of libass library"
-    />
-
-  <EnumProperty
-    Name="AegisubUseCsri"
-    DisplayName="Use CSRI subtitle renderer"
-    Description="Specify whether to include support for CSRI subtitle rendering. The included helper library dynamically loads CSRI renderers, while linking another library allows you to e.g. link VSFilter.dll directly."
-    Category="Features"
-    >
-    <EnumValue Name="HelperLibrary" DisplayName="Use included helper library" Description="Use the included helper library to dynamically load CSRI renderers." />
-    <EnumValue Name="External" DisplayName="Link other library" Description="Use another CSRI renderer" />
-    <EnumValue Name="false" DisplayName="No CSRI support" Description="Do not use CSRI" />
-  </EnumProperty>
-  <StringProperty
-    Subtype="folder"
-    Name="CsriLibraryPath"
-    Category="Paths"
-    DisplayName="External CSRI library path"
-    Description="Location of external CSRI library files, for when not using the CSRI helper library."
-    />
-  <StringProperty
-    Subtype="file"
-    Name="CsriLibraryName"
-    Category="Paths"
-    DisplayName="External CSRI library name"
-    Description="Name of external CSRI library, for when not using the CSRI helper library"
-    />
-
+  <!-- Config -->
   <BoolProperty
     Name="StartupLog"
     DisplayName="Start-up logging"
@@ -223,4 +79,159 @@
      Description="URL to get for updates."
      />
 
+   <!-- External Libraries -->
+  <BoolProperty
+    Name="AegisubUseAvisynth"
+    Category="Features"
+    DisplayName="Avisynth"
+    Description="Enable the Avisynth audio and video providers. This is experimental on x64. This has no external build dependencies."
+    />
+
+  <EnumProperty
+    Name="AegisubUseCsri"
+    DisplayName="Use CSRI subtitle renderer"
+    Description="Specify whether to include support for CSRI subtitle rendering. The included helper library dynamically loads CSRI renderers, while linking another library allows you to e.g. link VSFilter.dll directly."
+    Category="Features"
+    >
+    <EnumValue Name="HelperLibrary" DisplayName="Use included helper library" Description="Use the included helper library to dynamically load CSRI renderers." />
+    <EnumValue Name="External" DisplayName="Link other library" Description="Use another CSRI renderer" />
+    <EnumValue Name="false" DisplayName="No CSRI support" Description="Do not use CSRI" />
+  </EnumProperty>
+
+  <BoolProperty
+    Name="AegisubUseDSound"
+    Category="Features"
+    DisplayName="DirectSound"
+    Description="Enable the DirectSound-based audio player. This requires the DirectX SDK."
+    />
+
+  <BoolProperty
+    Name="AegisubUseFfms"
+    Category="Features"
+    DisplayName="FFMS2"
+    Description="Enable the FFMS2 audio and video providers. Requires copies of the FFMS2 and FFmpeg/libav source"
+    />
+
+  <BoolProperty
+    Name="AegisubUseFftw"
+    Category="Features"
+    DisplayName="FFTW"
+    Description="A high-speed fourier transformation library which improves the spectograph speed and quality. Requires a copy of the FFTW 3.2 source."
+    />
+
+  <BoolProperty
+    Name="AegisubUseFontconfig"
+    Category="Features"
+    DisplayName="Fontconfig"
+    Description="Required for the font collector and libass. Requires Freetype 2 and a copy of the Fontconfig source."
+    />
+
+  <BoolProperty
+    Name="AegisubUseLibass"
+    Category="Features"
+    DisplayName="libass"
+    Description="An alternative subtitle renderer which is often faster than VSFilter. Requires Fontconfig, Freetype 2, Fribidi, and a copy of the libass source."
+    />
+
+   <!-- Library Paths -->
+  <StringProperty
+    Subtype="folder"
+    Name="WxBasePath"
+    Category="Paths"
+    DisplayName="wxWidgets root"
+    Description="Root directory of the wxWidgets installation to use"
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="WxLibraryPath"
+    Category="Paths"
+    DisplayName="wxWidgets library path"
+    Description="Location of compiled wxWidgets library files. Defaults to $(WxBasePath)\lib32 or $(WxBasePath)\lib64."
+    />
+  <StringProperty
+    Subtype="folder"
+    Name="WxIncludePath"
+    Category="Paths"
+    DisplayName="wxWidgets include path"
+    Description="Location of wxWidgets header files. Defaults to $(WxBasePath)\include"
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="CsriLibraryPath"
+    Category="Paths"
+    DisplayName="External CSRI library path"
+    Description="Location of external CSRI library files, for when not using the CSRI helper library."
+    />
+  <StringProperty
+    Subtype="file"
+    Name="CsriLibraryName"
+    Category="Paths"
+    DisplayName="External CSRI library name"
+    Description="Name of external CSRI library, for when not using the CSRI helper library"
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="DirectXSDKPath"
+    Category="Paths"
+    DisplayName="DirectX SDK root path"
+    Description="Location of DirectX SDK installation for DirectSound support. This is usually auto-detected."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="FfmsSrcDir"
+    Category="Paths"
+    DisplayName="FFMS2 source path"
+    Description="Location of FFMS2 source code."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="FfmpegSrcDir"
+    Category="Paths"
+    DisplayName="FFmpeg/libav source path"
+    Description="Location of FFmpeg or libav source code. Required for FFMS2."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="FftwSrcDir"
+    Category="Paths"
+    DisplayName="FFTW 3 source path"
+    Description="Location of FFTW 3 source code."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="Freetype2SrcDir"
+    Category="Paths"
+    DisplayName="Freetype 2 source path"
+    Description="Location of Freetype 2 source code. Required for libass and fontconfig."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="FribidiSrcDir"
+    Category="Paths"
+    DisplayName="Fribidi source path"
+    Description="Location of Fribidi source code. Required for libass."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="FontconfigSrcDir"
+    Category="Paths"
+    DisplayName="Fontconfig source path"
+    Description="Location of Fontconfig source code."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="LibassSrcDir"
+    Category="Paths"
+    DisplayName="libass source path"
+    Description="Location of libass source code."
+    />
 </Rule>

@@ -17,6 +17,7 @@
 			<MinimalRebuild>false</MinimalRebuild>
 			<WarningLevel>Level3</WarningLevel>
 			<PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<AdditionalIncludeDirectories>$(AegisubSourceBase)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 		</ClCompile>
 		<Link>
 			<SubSystem>Windows</SubSystem>

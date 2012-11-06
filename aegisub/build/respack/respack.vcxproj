@@ -28,7 +28,6 @@
   <PropertyGroup>
     <OutDir>$(ProjectDir)</OutDir>
     <TargetName>respack$(AegisubPlatformSuffix)</TargetName>
-    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

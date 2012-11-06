@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- VC boilerplate -->
   <ItemGroup Label="ProjectConfigurations">
@@ -22,15 +22,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AD56899E-961B-47B7-BD0F-14D0DA50D141}</ProjectGuid>
     <RootNamespace>fontconfig</RootNamespace>
-    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
 
   <!-- Project configuration -->
-  <ItemGroup>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)config.xml" />
-    <ProjectTools Include="ExternalSourceLocation" />
-  </ItemGroup>
-
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
   </PropertyGroup>
@@ -45,7 +39,6 @@
       <AdditionalIncludeDirectories>
         $(FontconfigSrcDir);
         $(FontconfigSrcDir)\win32\include;
-        $(AegisubSourceBase)\include;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <PreprocessorDefinitions>

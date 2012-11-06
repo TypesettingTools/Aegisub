@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<_PropertySheetDisplayName>Aegisub project</_PropertySheetDisplayName>
-	</PropertyGroup>
+  <PropertyGroup>
+    <_PropertySheetDisplayName>Aegisub project</_PropertySheetDisplayName>
+  </PropertyGroup>
 
-	<!-- Base configuration for VC projects -->
-	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-	<PropertyGroup Label="Configuration">
-		<ConfigurationType        Condition="'$(AegisubProjectType)'=='lib'">StaticLibrary</ConfigurationType>
-		<ConfigurationType        Condition="'$(AegisubProjectType)'=='dll'">DynamicLibrary</ConfigurationType>
-		<ConfigurationType        Condition="'$(AegisubProjectType)'=='exe'">Application</ConfigurationType>
-		<UseDebugLibraries        Condition="'$(Configuration)'=='Debug'"   >true</UseDebugLibraries>
-		<UseDebugLibraries        Condition="'$(Configuration)'=='Release'" >false</UseDebugLibraries>
-		<WholeProgramOptimization Condition="'$(Configuration)'=='Release'" >true</WholeProgramOptimization>
-		<CharacterSet                                                       >Unicode</CharacterSet>
-	</PropertyGroup>
-	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-	
-	<ImportGroup Label="PropertySheets">
-		<Import Project="$(MSBuildThisFileDirectory)userconfig\*.props" />
-		<Import Project="$(MSBuildThisFileDirectory)paths.props" />
-		<Import Project="$(MSBuildThisFileDirectory)Aegisub\standard-libraries.props" />
-		<Import Project="$(MSBuildThisFileDirectory)standard-settings.props" />
-		<Import Project="$(MSBuildThisFileDirectory)standard-outdirs.props" />
-		<Import Project="$(MSBuildThisFileDirectory)wx.props" Condition="'$(AegisubUseWxWidgets)' == 'true'" />
-	</ImportGroup>
+  <!-- Base configuration for VC projects -->
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType        Condition="'$(AegisubProjectType)'=='lib'">StaticLibrary</ConfigurationType>
+    <ConfigurationType        Condition="'$(AegisubProjectType)'=='dll'">DynamicLibrary</ConfigurationType>
+    <ConfigurationType        Condition="'$(AegisubProjectType)'=='exe'">Application</ConfigurationType>
+    <UseDebugLibraries        Condition="'$(Configuration)'=='Debug'"   >true</UseDebugLibraries>
+    <UseDebugLibraries        Condition="'$(Configuration)'=='Release'" >false</UseDebugLibraries>
+    <WholeProgramOptimization Condition="'$(Configuration)'=='Release'" >true</WholeProgramOptimization>
+    <CharacterSet                                                       >Unicode</CharacterSet>
+    <PlatformToolset                                                    >v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
 
-	<!-- The standard targets need to go last for all paths to be proper -->
-	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-	<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Label="LocalAppDataPlatform" />
+  <!-- Default configuration -->
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(MSBuildThisFileDirectory)\DefaultConfiguration.props" />
+    <!-- Import the Aegisub user config file for non-Aegisub projects since
+         there doesn't seem to be any sort of solution-wide config file -->
+    <Import Project="$(MSBuildThisFileDirectory)\Aegisub\Aegisub.vcxproj.user"
+            Condition="'$(MSBuildProjectName)'!='Aegisub'" />
+  </ImportGroup>
+
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)userconfig\*.props" />
+    <Import Project="$(MSBuildThisFileDirectory)paths.props" />
+    <Import Project="$(MSBuildThisFileDirectory)Aegisub\standard-libraries.props" />
+    <Import Project="$(MSBuildThisFileDirectory)standard-settings.props" />
+    <Import Project="$(MSBuildThisFileDirectory)standard-outdirs.props" />
+  </ImportGroup>
+
+  <!-- The standard targets need to go last for all paths to be proper -->
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Label="LocalAppDataPlatform" />
+
+    <!-- If this comes before the Microsoft.Cpp.targets include the
+         AdditionalLibraryDirectories value gets cleared (but nothing else).
+         I'm not sure why. -->
+    <Import Project="$(MSBuildThisFileDirectory)wx.props" Condition="'$(AegisubUseWxWidgets)' == 'true'" />
 </Project>

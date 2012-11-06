@@ -22,7 +22,6 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BD00D65F-24DA-4784-8860-3B972EA125FC}</ProjectGuid>
     <RootNamespace>libresrc</RootNamespace>
-    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
 
   <!-- Aegisub project configuration -->
@@ -31,8 +30,6 @@
     <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
     <SrcDir>..\..\src\libresrc\</SrcDir>
   </PropertyGroup>
-  <Import Project="$(MSBuildThisFileDirectory)..\Aegisub\Aegisub.DefaultConfiguration.props" />
-  <Import Project="$(MSBuildThisFileDirectory)..\Aegisub\Aegisub.vcxproj.user" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>

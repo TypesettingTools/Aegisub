@@ -35,29 +35,22 @@
 
   <!-- Default settings for build-time options -->
   <PropertyGroup>
-    <AegisubUseDSound>true</AegisubUseDSound>
-    <DirectXSDKPath>$(DXSDK_DIR)</DirectXSDKPath>
+    <AegisubBuildCredit>Anonymous</AegisubBuildCredit>
     <AegisubUseAvisynth Condition="'$(AegisubUseAvisynth)|$(Platform)'=='|Win32'">true</AegisubUseAvisynth>
     <AegisubUseAvisynth Condition="'$(AegisubUseAvisynth)|$(Platform)'=='|x64'">false</AegisubUseAvisynth>
-    <AegisubUseFfms>true</AegisubUseFfms>
-    <FFmpegSourceIncludePath>$(AegisubSourceBase)libffms\include\</FFmpegSourceIncludePath>
-    <FFmpegSourceLibraryPath>$(AegisubSourceBase)libffms\lib\</FFmpegSourceLibraryPath>
-    <FFmpegSourceLibraryName>ffms2.lib</FFmpegSourceLibraryName>
-    <AegisubUseFreetype2>true</AegisubUseFreetype2>
-    <AegisubUseFontconfig>true</AegisubUseFontconfig>
-    <AegisubUseFftw>false</AegisubUseFftw>
-    <AegisubUseLibass>false</AegisubUseLibass>
     <AegisubUseCsri>HelperLibrary</AegisubUseCsri>
-    <CsriLibraryName>vsfilter.lib</CsriLibraryName>
-    <StartupLog>false</StartupLog>
-    <AegisubBuildCredit>Anonymous</AegisubBuildCredit>
+    <AegisubUseDSound>true</AegisubUseDSound>
+    <AegisubUseFfms>true</AegisubUseFfms>
+    <AegisubUseFftw>false</AegisubUseFftw>
+    <AegisubUseFontconfig>true</AegisubUseFontconfig>
+    <AegisubUseFreetype2>true</AegisubUseFreetype2>
+    <AegisubUseLibass>false</AegisubUseLibass>
     <AegisubUseUpdateChecker>true</AegisubUseUpdateChecker>
+    <CsriLibraryName>vsfilter.lib</CsriLibraryName>
+    <DirectXSDKPath>$(DXSDK_DIR)</DirectXSDKPath>
+    <StartupLog>false</StartupLog>
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>
     <WxBasePath>$(AegisubSourceBase)wxlib</WxBasePath>
-    <WxLibraryPath Condition="'$(Platform)'=='Win32'">$(WxBasePath)\lib32</WxLibraryPath>
-    <WxLibraryPath Condition="'$(Platform)'=='x64'">$(WxBasePath)\lib64</WxLibraryPath>
-    <WxIncludePath>$(WxBasePath)\include</WxIncludePath>
   </PropertyGroup>
-
 </Project>

@@ -23,9 +23,6 @@
     <ProjectGuid>{9DDDB9E5-E4A1-423D-A224-F6D4E5AAC06A}</ProjectGuid>
     <RootNamespace>Aegisub</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration">
-    <PlatformToolset>v110</PlatformToolset>
-  </PropertyGroup>
 
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
@@ -34,15 +31,11 @@
     <SrcDir>..\..\src\</SrcDir>
   </PropertyGroup>
 
-  <!-- Default configuration -->
-  <Import Project="$(MSBuildThisFileDirectory)Aegisub.DefaultConfiguration.props" />
-
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
   <!-- Project specific configuration -->
-  <Import Project="$(MSBuildThisFileDirectory)Aegisub.targets" />
   <PropertyGroup>
     <TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
   </PropertyGroup>
@@ -54,11 +47,6 @@
       <AdditionalOptions>/Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
-
-  <!-- External user files to check which are enabled -->
-  <Import Project="..\fftw\fftw.vcxproj.user" />
-  <Import Project="..\freetype2\freetype.vcxproj.user" />
-  <Import Project="..\fontconfig\fontconfig.vcxproj.user" />
 
   <!-- Project References -->
   <ItemGroup>
@@ -463,4 +451,8 @@
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />
   </ItemGroup>
+
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(MSBuildThisFileDirectory)Aegisub.targets" />
+  </ImportGroup>
 </Project>
