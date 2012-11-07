@@ -180,6 +180,9 @@ endif
 %.o: %.cxx
 	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
+%.o: %.cc
+	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+
 %.o: %.mm
 	$(CXX_ENV) $(BIN_CXX) $(CFLAGS_DEP) $(CPPFLAGS) $(OBJCXXFLAGS) -c -o $@ $<
 
