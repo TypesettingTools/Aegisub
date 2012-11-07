@@ -3,10 +3,10 @@ include ../Makefile.inc
 
 PROGRAM = run
 
-LIBS += -L../libaegisub -laegisub  -lgtest -L../universalchardet -luniversalchardet
+LIBS += -L../libaegisub -laegisub -L../universalchardet -luniversalchardet
 LDFLAGS += -Wl,-rpath $(CURDIR)/../libaegisub $(LDFLAGS_ICONV)
 
-CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV)
+CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_ROOT} -I${GTEST_ROOT}/include
 CXXFLAGS += -Wno-unused-value
 
 ifeq (yes, $(BUILD_DARWIN))
@@ -32,7 +32,8 @@ SRC = \
 		libaegisub_thesaurus.cpp \
 		libaegisub_util.cpp \
 		libaegisub_vfr.cpp \
-		libaegisub_word_split.cpp
+		libaegisub_word_split.cpp \
+		${GTEST_ROOT}/src/gtest-all.cc
 
 HEADER = \
 	*.h
