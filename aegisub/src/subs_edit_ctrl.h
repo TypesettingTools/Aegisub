@@ -68,7 +68,7 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	std::string currentWord;
 
 	/// The beginning of the word right-clicked on, for spellchecker replacing
-	int currentWordPos;
+	std::pair<int, int> currentWordPos;
 
 	/// Spellchecker suggestions for the last right-clicked word
 	std::vector<std::string> sugs;
@@ -128,6 +128,8 @@ public:
 
 	void SetTextTo(wxString const& text);
 	void Paste();
+
+	std::pair<int, int> GetBoundsOfWordAtPosition(int pos);
 
 	DECLARE_EVENT_TABLE()
 };

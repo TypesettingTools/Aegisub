@@ -34,6 +34,8 @@
 
 #ifndef AGI_PRE
 #include <wx/stc/stc.h>
+
+#include <string>
 #endif
 
 /// DOCME
@@ -46,8 +48,6 @@ class ScintillaTextCtrl : public wxStyledTextCtrl {
 
 	void OnMouseWheel(wxMouseEvent& evt);
 public:
-	wxString GetWordAtPosition(int pos);
-	void GetBoundsOfWordAtPosition(int pos,int &start,int &end);
 	int GetUnicodePosition(int pos);
 	int GetReverseUnicodePosition(int pos);
 

@@ -213,6 +213,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 		line_text = move(text);
 	}
 	tokenized_line = agi::ass::TokenizeDialogueBody(line_text);
+	agi::ass::SplitWords(line_text, tokenized_line);
 
 	cursor_pos = -1;
 	UpdateCallTip();
@@ -298,15 +299,13 @@ void SubsTextEditCtrl::Paste() {
 void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	wxPoint pos = event.GetPosition();
 	int activePos;
-	if (pos == wxDefaultPosition) {
+	if (pos == wxDefaultPosition)
 		activePos = GetCurrentPos();
-	}
-	else {
+	else
 		activePos = PositionFromPoint(ScreenToClient(pos));
-	}
 
-	currentWordPos = GetReverseUnicodePosition(activePos);
-	currentWord = from_wx(GetWordAtPosition(currentWordPos));
+	currentWordPos = GetBoundsOfWordAtPosition(activePos);
+	currentWord = line_text.substr(currentWordPos.first, currentWordPos.second);
 
 	wxMenu menu;
 	if (!currentWord.empty()) {
@@ -431,27 +430,22 @@ void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {
 void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	std::string suggestion;
 	int sugIdx = event.GetId() - EDIT_MENU_THESAURUS_SUGS;
-	if (sugIdx >= 0) {
-		suggestion = lagi_wxString(thesSugs[sugIdx]);
-	}
-	else {
+	if (sugIdx >= 0)
+		suggestion = from_wx(thesSugs[sugIdx]);
+	else
 		suggestion = sugs[event.GetId() - EDIT_MENU_SUGGESTIONS];
-	}
 
 	// Strip suggestion of parenthesis
 	size_t pos = suggestion.find("(");
 	if (pos != suggestion.npos)
 		suggestion.resize(pos - 1);
 
-	// Get boundaries of text being replaced
-	int start, end;
-	GetBoundsOfWordAtPosition(currentWordPos, start, end);
+	// line_text needs to get cleared before SetTextRaw to ensure it gets reparsed
+	std::string new_text;
+	swap(line_text, new_text);
+	SetTextRaw(new_text.replace(currentWordPos.first, currentWordPos.second, suggestion).c_str());
 
-	wxString text = GetText();
-	SetText(text.Left(std::max(0, start)) + to_wx(suggestion) + text.Mid(end));
-
-	// Set selection
-	SetSelectionU(start, start+suggestion.size());
+	SetSelection(currentWordPos.first, currentWordPos.first + suggestion.size());
 	SetFocus();
 }
 
@@ -479,4 +473,18 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 	OPT_SET("Tool/Thesaurus/Language")->SetString(lang);
 
 	UpdateStyle();
+}
+
+std::pair<int, int> SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos) {
+	int len = 0;
+	for (auto const& tok : tokenized_line) {
+		if ((int)tok.length > pos) {
+			if (tok.type == agi::ass::DialogueTokenType::WORD)
+				return std::make_pair(len, tok.length);
+			return std::make_pair(0, 0);
+		}
+		len += tok.length;
+	}
+
+	return std::make_pair(0, 0);
 }

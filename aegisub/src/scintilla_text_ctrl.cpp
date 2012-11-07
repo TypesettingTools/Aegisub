@@ -82,32 +82,6 @@ void ScintillaTextCtrl::SetUnicodeStyling(int start,int length,int style) {
 	SetStyling(len,style);
 }
 
-/// @brief Get boundaries of word at position
-void ScintillaTextCtrl::GetBoundsOfWordAtPosition(int pos,int &start,int &end) {
-	IntPairVector results;
-	GetWordBoundaries(GetText(), results);
-
-	// Get boundaries
-	for (auto const& result : results) {
-		if (result.first <= pos && result.second >= pos) {
-			start = result.first;
-			end = result.second;
-			return;
-		}
-	}
-
-	// Word not found
-	start = 0;
-	end = 0;
-}
-
-/// @brief Get word at specified position
-wxString ScintillaTextCtrl::GetWordAtPosition(int pos) {
-	int start,end;
-	GetBoundsOfWordAtPosition(pos, start, end);
-	return GetText().Mid(start, end - start);
-}
-
 /// @brief Set selection, unicode-aware
 void ScintillaTextCtrl::SetSelectionU(int start, int end) {
 	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));

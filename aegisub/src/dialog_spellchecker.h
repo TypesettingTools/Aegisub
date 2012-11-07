@@ -48,16 +48,16 @@ class DialogSpellChecker : public wxDialog {
 	agi::scoped_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine
 
 	/// Words which the user has indicated should always be corrected
-	std::map<wxString,wxString> auto_replace;
+	std::map<std::string, std::string> auto_replace;
 
 	/// Words which the user has temporarily added to the dictionary
-	std::set<wxString> auto_ignore;
+	std::set<std::string> auto_ignore;
 
 	/// Dictionaries available
 	wxArrayString dictionary_lang_codes;
 
 	int word_start; ///< Start index of the current misspelled word
-	int word_end;   ///< End index of the current misspelled word
+	int word_len;   ///< Length of the current misspelled word
 
 	wxTextCtrl *orig_word;    ///< The word being corrected
 	wxTextCtrl *replace_word; ///< The replacement that will be used if "Replace" is clicked
@@ -83,7 +83,7 @@ class DialogSpellChecker : public wxDialog {
 	bool CheckLine(AssDialogue *active_line, int start_pos, int *commit_id);
 
 	/// Set the current word to be corrected
-	void SetWord(wxString const& word);
+	void SetWord(std::string const& word);
 	/// Correct the currently selected word
 	void Replace();
 

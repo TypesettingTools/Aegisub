@@ -26,49 +26,76 @@
 namespace {
 
 typedef std::vector<agi::ass::DialogueToken> TokenVec;
-namespace dt = agi::ass::DialogueTokenType;
-namespace ss = agi::ass::SyntaxStyle;
+using namespace agi::ass;
+namespace dt = DialogueTokenType;
+namespace ss = SyntaxStyle;
 
 class SyntaxHighlighter {
 	TokenVec ranges;
 	std::string const& text;
 	agi::SpellChecker *spellchecker;
-	agi::scoped_holder<iconv_t, int(&)(iconv_t)> utf8_to_utf32;
 
 	void SetStyling(int len, int type) {
 		if (ranges.size() && ranges.back().type == type)
 			ranges.back().length += len;
 		else
-			ranges.push_back(agi::ass::DialogueToken(type, len));
+			ranges.push_back(DialogueToken(type, len));
 	}
 
-	void CheckWord(int start, int end) {
-		int len = end - start;
-		if (!len) return;
+public:
+	SyntaxHighlighter(std::string const& text, agi::SpellChecker *spellchecker)
+	: text(text)
+	, spellchecker(spellchecker)
+	{ }
 
-		if (!spellchecker->CheckWord(text.substr(start, len)))
-			SetStyling(len, ss::SPELLING);
-		else
-			SetStyling(len, ss::NORMAL);
+	TokenVec Highlight(TokenVec const& tokens, bool template_line) {
+		if (tokens.empty()) return ranges;
+
+		size_t pos = 0;
+
+		for (size_t i = 0; i < tokens.size(); ++i) {
+			size_t len = tokens[i].length;
+			switch (tokens[i].type) {
+				case dt::LINE_BREAK: SetStyling(len, ss::LINE_BREAK); break;
+				case dt::ERROR:      SetStyling(len, ss::ERROR);      break;
+				case dt::ARG:        SetStyling(len, ss::PARAMETER);  break;
+				case dt::COMMENT:    SetStyling(len, ss::COMMENT);    break;
+				case dt::WHITESPACE: SetStyling(len, ss::NORMAL);     break;
+				case dt::DRAWING:    SetStyling(len, ss::DRAWING);    break;
+				case dt::TEXT:       SetStyling(len, ss::NORMAL);     break;
+				case dt::TAG_NAME:   SetStyling(len, ss::TAG);        break;
+				case dt::OPEN_PAREN: case dt::CLOSE_PAREN: case dt::ARG_SEP: case dt::TAG_START:
+					SetStyling(len, ss::PUNCTUATION);
+					break;
+				case dt::OVR_BEGIN: case dt::OVR_END:
+					SetStyling(len, ss::OVERRIDE);
+					break;
+				case dt::WORD:
+					if (spellchecker && !spellchecker->CheckWord(text.substr(pos, len)))
+						SetStyling(len, ss::SPELLING);
+					else
+						SetStyling(len, ss::NORMAL);
+					break;
+			}
+
+			pos += len;
+			// karaoke templater
+		}
+
+		return ranges;
 	}
+};
 
-	int NextChar(int pos, int len, int& char_len) {
-		int chr = 0;
-		char *inptr = const_cast<char *>(&text[pos]);
-		size_t inlen = len;
-		char *outptr = (char *)&chr;
-		size_t outlen = sizeof chr;
+class WordSplitter {
+	std::string const& text;
+	std::vector<DialogueToken> &tokens;
+	agi::scoped_holder<iconv_t, int(&)(iconv_t)> utf8_to_utf32;
+	size_t last_ovr_end;
+	size_t pos;
+	bool in_drawing;
 
-		iconv(utf8_to_utf32, &inptr, &inlen, &outptr, &outlen);
-		if (outlen != 0)
-			return 0;
-
-		char_len = len - inlen;
-		return chr;
-	}
-
-	void StyleSpellCheck(int pos, int len) {
-		const int delims[] = {
+	bool IsWordSep(int chr) {
+		static const int delims[] = {
 			0x0020, 0x0021, 0x0022, 0x0023, 0x0024, 0x0025, 0x0026, 0x0028,
 			0x0029, 0x002a, 0x002b, 0x002c, 0x002d, 0x002e, 0x002f, 0x003a,
 			0x003b, 0x003d, 0x003f, 0x0040, 0x005b, 0x005c, 0x005d, 0x005e,
@@ -86,38 +113,72 @@ class SyntaxHighlighter {
 			0xff5b, 0xff5d, 0xff5e
 		};
 
-		int chrlen = 0;
-		int start = pos;
-		for (; len > 0; pos += chrlen, len -= chrlen) {
-			int chr = NextChar(pos, len, chrlen);
-			if (!chr) return;
+		return std::binary_search(std::begin(delims), std::end(delims), chr);
+	}
 
-			if (std::binary_search(std::begin(delims), std::end(delims), chr)) {
-				CheckWord(start, pos);
-				SetStyling(1, ss::NORMAL);
-				start = pos + 1;
-			}
+	int NextChar(int pos, int len, int& char_len) {
+		int chr = 0;
+		char *inptr = const_cast<char *>(&text[pos]);
+		size_t inlen = len;
+		char *outptr = (char *)&chr;
+		size_t outlen = sizeof chr;
+
+		iconv(utf8_to_utf32, &inptr, &inlen, &outptr, &outlen);
+		if (outlen != 0)
+			return 0;
+
+		char_len = len - inlen;
+		return chr;
+	}
+
+	void SwitchTo(size_t &i, int type, int len) {
+		if (tokens[i].type == type) return;
+
+		if (tokens[i].length == (size_t)len)
+			tokens[i].type = type;
+		else {
+			tokens.insert(tokens.begin() + i + 1, DialogueToken(type, len));
+			tokens[i].length -= len;
+			++i;
+			++last_ovr_end;
+		}
+	}
+
+	void SplitText(size_t &i) {
+		if (in_drawing) {
+			tokens[i].type = dt::DRAWING;
+			return;
 		}
 
-		CheckWord(start, pos);
+		int chrlen = 0;
+		int len = tokens[i].length;
+		int tpos = pos;
+		for (; len > 0; tpos += chrlen, len -= chrlen) {
+			int chr = NextChar(tpos, len, chrlen);
+			if (!chr) return;
+
+			if (IsWordSep(chr))
+				SwitchTo(i, dt::TEXT, len);
+			else
+				SwitchTo(i, dt::WORD, len);
+		}
 	}
 
 public:
-	SyntaxHighlighter(std::string const& text, agi::SpellChecker *spellchecker)
+	WordSplitter(std::string const& text, std::vector<DialogueToken> &tokens)
 	: text(text)
-	, spellchecker(spellchecker)
+	, tokens(tokens)
 	, utf8_to_utf32(iconv_open("utf-32le", "utf-8"), iconv_close)
+	, last_ovr_end(0)
+	, pos(0)
+	, in_drawing(false)
 	{ }
 
-	TokenVec Highlight(TokenVec const& tokens, bool template_line) {
-		if (tokens.empty()) return ranges;
-
-		bool in_drawing = false;
-		size_t pos = 0;
+	void SplitWords() {
+		if (tokens.empty()) return;
 
 		// VSFilter treats unclosed override blocks as plain text, so pretend
 		// all tokens after the last override block are TEXT
-		size_t last_ovr_end = 0;
 		for (size_t i = tokens.size(); i > 0; --i) {
 			if (tokens[i - 1].type == dt::OVR_END) {
 				last_ovr_end = i - 1;
@@ -127,30 +188,14 @@ public:
 
 		for (size_t i = 0; i < tokens.size(); ++i) {
 			size_t len = tokens[i].length;
-			switch (i > last_ovr_end ? dt::TEXT : tokens[i].type) {
-				case dt::LINE_BREAK: SetStyling(len, ss::LINE_BREAK); break;
-				case dt::ERROR:      SetStyling(len, ss::ERROR); break;
-				case dt::ARG:        SetStyling(len, ss::PARAMETER); break;
-				case dt::COMMENT:    SetStyling(len, ss::COMMENT); break;
-				case dt::WHITESPACE: SetStyling(len, ss::NORMAL); break;
-				case dt::OPEN_PAREN: case dt::CLOSE_PAREN: case dt::ARG_SEP: case dt::TAG_START:
-					SetStyling(len, ss::PUNCTUATION);
-					break;
-				case dt::OVR_BEGIN: case dt::OVR_END:
-					SetStyling(len, ss::OVERRIDE);
-					break;
-
-				case dt::TEXT:
-					if (in_drawing)
-						SetStyling(len, ss::DRAWING);
-					else if (spellchecker)
-						StyleSpellCheck(pos, len);
-					else
-						SetStyling(len, ss::NORMAL);
-					break;
-
+			switch (tokens[i].type) {
+				case dt::LINE_BREAK: break;
+				case dt::TEXT: SplitText(i); break;
 				case dt::TAG_NAME:
-					SetStyling(len, ss::TAG);
+					if (i > last_ovr_end) {
+						SplitText(i);
+						break;
+					}
 
 					if (len != 1 || i + 1 >= tokens.size() || text[pos] != 'p')
 						break;
@@ -170,13 +215,14 @@ public:
 							break;
 					}
 					break;
+				default:
+					if (i > last_ovr_end)
+						SplitText(i);
+					break;
 			}
 
 			pos += len;
-			// karaoke templater
 		}
-
-		return ranges;
 	}
 };
 }
@@ -186,6 +232,10 @@ namespace ass {
 
 std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, bool template_line, SpellChecker *spellchecker) {
 	return SyntaxHighlighter(text, spellchecker).Highlight(tokens, template_line);
+}
+
+void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens) {
+	WordSplitter(str, tokens).SplitWords();
 }
 
 }

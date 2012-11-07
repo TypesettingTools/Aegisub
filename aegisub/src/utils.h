@@ -49,8 +49,6 @@
 class wxMouseEvent;
 class wxWindow;
 
-typedef std::vector<std::pair<int,int> > IntPairVector;
-
 /// @brief Make a path relative to reference
 wxString MakeRelativePath(wxString path,wxString reference);
 /// @brief Extract original path from relative
@@ -63,16 +61,6 @@ wxString PrettySize(int bytes);
 ///
 /// Algorithm from http://bob.allegronetwork.com/prog/tricks.html
 int SmallestPowerOf2(int x);
-
-/// Get the indices in text which are the beginnings of words
-/// @param text Text to split into words
-/// @param[out] results Vector of indices which are the beginnings of words
-/// @param start First index in text to check
-/// @param end Last index in text to check, or -1 for end
-///
-/// This is ASS-specific and not a general purpose word boundary finder; words
-/// within override blocks or drawing blocks are ignored
-void GetWordBoundaries(wxString const& text, IntPairVector &results, int start=0, int end=-1);
 
 /// Check if wchar 'c' is a whitespace character
 bool IsWhitespace(wchar_t c);

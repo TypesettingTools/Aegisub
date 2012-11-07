@@ -27,6 +27,7 @@ namespace agi {
 		namespace DialogueTokenType {
 			enum {
 				TEXT = 1000,
+				WORD,
 				LINE_BREAK,
 				OVR_BEGIN,
 				OVR_END,
@@ -38,7 +39,8 @@ namespace agi {
 				ARG,
 				ERROR,
 				COMMENT,
-				WHITESPACE
+				WHITESPACE,
+				DRAWING
 			};
 		}
 
@@ -66,7 +68,12 @@ namespace agi {
 			DialogueToken(int type, size_t length) : type(type), length(length) { }
 		};
 
+		/// Tokenize the passed string as the body of a dialogue line
 		std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str);
+
+		/// Split the words in the TEXT tokens of the lexed line into their
+		/// own tokens and convert the body of drawings to DRAWING tokens
+		void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens);
 
 		std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, bool template_line, SpellChecker *spellchecker);
 	}

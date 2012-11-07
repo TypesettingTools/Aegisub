@@ -47,6 +47,7 @@
 #include "subs_edit_ctrl.h"
 #include "utils.h"
 
+#include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/spellchecker.h>
 
@@ -168,7 +169,7 @@ void DialogSpellChecker::OnReplace(wxCommandEvent&) {
 }
 
 void DialogSpellChecker::OnReplaceAll(wxCommandEvent&) {
-	auto_replace[orig_word->GetValue()] = replace_word->GetValue();
+	auto_replace[from_wx(orig_word->GetValue())] = from_wx(replace_word->GetValue());
 
 	Replace();
 	FindNext();
@@ -179,7 +180,7 @@ void DialogSpellChecker::OnIgnore(wxCommandEvent&) {
 }
 
 void DialogSpellChecker::OnIgnoreAll(wxCommandEvent&) {
-	auto_ignore.insert(orig_word->GetValue());
+	auto_ignore.emplace(from_wx(orig_word->GetValue()));
 	FindNext();
 }
 
@@ -247,19 +248,22 @@ bool DialogSpellChecker::FindNext() {
 bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int *commit_id) {
 	if (active_line->Comment && skip_comments->GetValue()) return false;
 
-	IntPairVector results;
-	GetWordBoundaries(active_line->Text, results);
+	std::string text = from_wx(active_line->Text);
+	auto tokens = agi::ass::TokenizeDialogueBody(text);
+	agi::ass::SplitWords(text, tokens);
 
-	int shift = 0;
-	for (auto const& result : results) {
-		word_start = result.first + shift;
+	word_start = 0;
+	for (auto const& tok : tokens) {
+		word_start += tok.length;
+		if (tok.type != agi::ass::DialogueTokenType::WORD) continue;
 		if (word_start < start_pos) continue;
-		word_end = result.second + shift;
-		wxString word = active_line->Text.Mid(word_start, word_end - word_start);
 
-		if (auto_ignore.count(word) || spellchecker->CheckWord(from_wx(word))) continue;
+		word_len = tok.length;
+		std::string word = text.substr(word_start, word_len);
 
-		std::map<wxString, wxString>::const_iterator auto_rep = auto_replace.find(word);
+		if (auto_ignore.count(word) || spellchecker->CheckWord(word)) continue;
+
+		auto auto_rep = auto_replace.find(word);
 		if (auto_rep == auto_replace.end()) {
 #ifdef __WXGTK__
 			// http://trac.wxwidgets.org/ticket/14369
@@ -274,9 +278,10 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 			return true;
 		}
 
-		active_line->Text = active_line->Text.Left(word_start) + auto_rep->second + active_line->Text.Mid(word_end);
+		text.replace(word_start, word_len, auto_rep->second);
+		active_line->Text = from_wx(text);
 		*commit_id = context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
-		shift += auto_rep->second.size() - auto_rep->first.size();
+		word_start += auto_rep->second.size() - auto_rep->first.size();
 	}
 	return false;
 }
@@ -285,23 +290,23 @@ void DialogSpellChecker::Replace() {
 	AssDialogue *active_line = context->selectionController->GetActiveLine();
 
 	// Only replace if the user hasn't changed the selection to something else
-	if (active_line->Text.Mid(word_start, word_end - word_start) == orig_word->GetValue()) {
-		active_line->Text = active_line->Text.Left(word_start) + replace_word->GetValue() + active_line->Text.Mid(word_end);
+	if (active_line->Text.Mid(word_start, word_len) == orig_word->GetValue()) {
+		active_line->Text.replace(word_start, word_len, replace_word->GetValue());
 		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
 		context->textSelectionController->SetInsertionPoint(word_start + replace_word->GetValue().size());
 	}
 }
 
-void DialogSpellChecker::SetWord(wxString const& word) {
-	orig_word->SetValue(word);
+void DialogSpellChecker::SetWord(std::string const& word) {
+	orig_word->SetValue(to_wx(word));
 
-	wxArrayString suggestions = to_wx(spellchecker->GetSuggestions(from_wx(word)));
-	replace_word->SetValue(suggestions.size() ? suggestions[0] : word);
+	wxArrayString suggestions = to_wx(spellchecker->GetSuggestions(word));
+	replace_word->SetValue(suggestions.size() ? suggestions[0] : to_wx(word));
 	suggest_list->Clear();
 	suggest_list->Append(suggestions);
 
-	context->textSelectionController->SetSelection(word_start, word_end);
-	context->textSelectionController->SetInsertionPoint(word_end);
+	context->textSelectionController->SetSelection(word_start, word_start + word_len);
+	context->textSelectionController->SetInsertionPoint(word_start + word_len);
 
-	add_button->Enable(spellchecker->CanAddWord(from_wx(word)));
+	add_button->Enable(spellchecker->CanAddWord(word));
 }
