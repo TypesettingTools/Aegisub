@@ -326,7 +326,7 @@ TEST_F(lagi_cajun, ReaderParserErrors) {
 	std::istringstream missing_comma("[1 2]");
 	EXPECT_THROW(json::Reader::Read(ue, missing_comma), json::Exception);
 
-	std::istringstream garbage_after_number("123eee");
+	std::istringstream garbage_after_number("123!");
 	EXPECT_THROW(json::Reader::Read(ue, garbage_after_number), json::Exception);
 
 	std::istringstream unexpected_eof("[");
