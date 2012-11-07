@@ -68,3 +68,6 @@ svn-revision.h
 svn_revision
 svnmove.txt
 git_version.h
+aegisub/tests/data
+aegisub/tests/run
+aegisub/tests/*.json
