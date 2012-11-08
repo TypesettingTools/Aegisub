@@ -188,9 +188,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	main_sizer->Hide(secondary_editor);
 
 	bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
-	bottom_sizer->Add(MakeBottomButton("edit/revert"));
-	bottom_sizer->Add(MakeBottomButton("edit/clear"));
-	bottom_sizer->Add(MakeBottomButton("edit/clear/text"));
+	bottom_sizer->Add(MakeBottomButton("edit/revert"), wxSizerFlags().Border(wxRIGHT));
+	bottom_sizer->Add(MakeBottomButton("edit/clear"), wxSizerFlags().Border(wxRIGHT));
+	bottom_sizer->Add(MakeBottomButton("edit/clear/text"), wxSizerFlags().Border(wxRIGHT));
 	bottom_sizer->Add(MakeBottomButton("edit/insert_original"));
 	main_sizer->Add(bottom_sizer);
 	main_sizer->Hide(bottom_sizer);
