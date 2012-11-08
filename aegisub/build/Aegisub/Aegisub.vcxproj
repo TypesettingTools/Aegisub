@@ -23,18 +23,15 @@
     <ProjectGuid>{9DDDB9E5-E4A1-423D-A224-F6D4E5AAC06A}</ProjectGuid>
     <RootNamespace>Aegisub</RootNamespace>
   </PropertyGroup>
-
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>exe</AegisubProjectType>
     <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
     <SrcDir>..\..\src\</SrcDir>
   </PropertyGroup>
-
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
-
   <!-- Project specific configuration -->
   <PropertyGroup>
     <TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
@@ -47,7 +44,6 @@
       <AdditionalOptions>/Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
-
   <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\csrihelper\csrihelper.vcxproj">
@@ -81,7 +77,6 @@
       <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
     </ProjectReference>
   </ItemGroup>
-
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)aegisublocale.h" />
@@ -253,13 +248,15 @@
     <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h" />
     <ClInclude Include="$(SrcDir)text_selection_controller.h" />
     <ClInclude Include="$(SrcDir)time_range.h" />
+    <ClInclude Include="..\..\src\dialog_autosave.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
     <ClCompile Include="$(SrcDir)agi_pre.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>agi_pre.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles></ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass_attachment.cpp" />
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp" />
@@ -372,11 +369,13 @@
     <ClCompile Include="$(SrcDir)main.cpp" />
     <ClCompile Include="$(SrcDir)MatroskaParser.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles></ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="$(SrcDir)md5.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles></ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="$(SrcDir)menu.cpp" />
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />
@@ -447,11 +446,11 @@
     <ClCompile Include="$(SrcDir)audio_provider_lock.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
+    <ClCompile Include="..\..\src\dialog_autosave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />
   </ItemGroup>
-
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(MSBuildThisFileDirectory)Aegisub.targets" />
   </ImportGroup>

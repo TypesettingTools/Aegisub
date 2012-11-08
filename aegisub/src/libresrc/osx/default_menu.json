@@ -42,6 +42,7 @@
         { "command" : "subtitle/open" },
         { "command" : "subtitle/open/charset" },
         { "command" : "subtitle/open/video" },
+        { "command" : "subtitle/open/autosave" },
         { "recent" : "Subtitle" },
         { "command" : "subtitle/save" },
         { "command" : "subtitle/save/as" },

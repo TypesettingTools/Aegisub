@@ -164,6 +164,7 @@ SRC += \
 	dialog_about.cpp \
 	dialog_attachments.cpp \
 	dialog_automation.cpp \
+	dialog_autosave.cpp \
 	dialog_colorpicker.cpp \
 	dialog_detached_video.cpp \
 	dialog_dummy_video.cpp \

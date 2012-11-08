@@ -145,6 +145,9 @@
     <Filter Include="Preferences">
       <UniqueIdentifier>{39646be7-5dce-471c-ab93-1e3f7f6f9fe1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Features\Autosave">
+      <UniqueIdentifier>{fde3be82-3653-4519-88f5-8c16ddfb1531}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)ass_time.h">
@@ -653,6 +656,9 @@
     </ClInclude>
     <ClInclude Include="$(SrcDir)placeholder_ctrl.h">
       <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dialog_autosave.h">
+      <Filter>Features\Autosave</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1201,6 +1207,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)command\keyframe.cpp">
       <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dialog_autosave.cpp">
+      <Filter>Features\Autosave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

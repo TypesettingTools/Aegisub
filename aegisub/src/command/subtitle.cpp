@@ -50,6 +50,7 @@
 #include "../ass_file.h"
 #include "../compat.h"
 #include "../dialog_attachments.h"
+#include "../dialog_autosave.h"
 #include "../dialog_manager.h"
 #include "../dialog_properties.h"
 #include "../dialog_search_replace.h"
@@ -268,6 +269,19 @@ struct subtitle_open : public Command {
 	}
 };
 
+struct subtitle_open_autosave : public Command {
+	CMD_NAME("subtitle/open/autosave")
+	STR_MENU("Open A&utosaved Subtitles...")
+	STR_DISP("Open Autosaved Subtitles")
+	STR_HELP("Open a previous version of a file which was autosaved by Aegisub")
+
+	void operator()(agi::Context *c) {
+		DialogAutosave dialog(c->parent);
+		if (dialog.ShowModal() == wxID_OK)
+			wxGetApp().frame->LoadSubtitles(dialog.ChosenFile());
+	}
+};
+
 
 /// Opens a subtitles file with a specific charset.
 struct subtitle_open_charset : public Command {
@@ -455,6 +469,7 @@ namespace cmd {
 		reg(new subtitle_insert_before_videotime);
 		reg(new subtitle_new);
 		reg(new subtitle_open);
+		reg(new subtitle_open_autosave);
 		reg(new subtitle_open_charset);
 		reg(new subtitle_open_video);
 		reg(new subtitle_properties);
