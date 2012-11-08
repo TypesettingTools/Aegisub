@@ -32,7 +32,7 @@
 #endif
 
 DialogAutosave::DialogAutosave(wxWindow *parent)
-: wxDialog(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350))
+: wxDialog(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
 	SetIcon(GETICON(open_toolbutton_16));
 
