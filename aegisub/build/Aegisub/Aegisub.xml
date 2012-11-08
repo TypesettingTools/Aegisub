@@ -133,7 +133,15 @@
     Description="An alternative subtitle renderer which is often faster than VSFilter. Requires Fontconfig, Freetype 2, Fribidi, and a copy of the libass source."
     />
 
-   <!-- Library Paths -->
+  <!-- Library Paths -->
+  <StringProperty
+    Subtype="folder"
+    Name="MsysBasePath"
+    Category="Paths"
+    DisplayName="MSYS root"
+    Description="Root directory of a copy of msys with git installed. Only required if it is not on your PATH."
+    />
+
   <StringProperty
     Subtype="folder"
     Name="WxBasePath"
