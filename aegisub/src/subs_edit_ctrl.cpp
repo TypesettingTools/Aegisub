@@ -277,7 +277,6 @@ void SubsTextEditCtrl::SetTextTo(wxString const& text) {
 	Thaw();
 }
 
-
 void SubsTextEditCtrl::Paste() {
 	wxString data = GetClipboard();
 
@@ -308,11 +307,17 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	currentWord = line_text.substr(currentWordPos.first, currentWordPos.second);
 
 	wxMenu menu;
-	if (!currentWord.empty()) {
-		if (spellchecker)
-			AddSpellCheckerEntries(menu);
-		AddThesaurusEntries(menu);
-	}
+	if (spellchecker)
+		AddSpellCheckerEntries(menu);
+
+	// Append language list
+	menu.Append(-1,_("Spell checker language"), GetLanguagesMenu(
+		EDIT_MENU_DIC_LANGS,
+		lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()),
+		to_wx(spellchecker->GetLanguageList())));
+	menu.AppendSeparator();
+
+	AddThesaurusEntries(menu);
 
 	// Standard actions
 	menu.Append(EDIT_MENU_CUT,_("Cu&t"))->Enable(GetSelectionStart()-GetSelectionEnd() != 0);
@@ -332,6 +337,8 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 }
 
 void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
+	if (currentWord.empty()) return;
+
 	sugs = spellchecker->GetSuggestions(currentWord);
 	if (spellchecker->CheckWord(currentWord)) {
 		if (sugs.empty())
@@ -354,16 +361,11 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 		// Append "add word"
 		menu.Append(EDIT_MENU_ADD_TO_DICT, wxString::Format(_("Add \"%s\" to dictionary"), to_wx(currentWord)))->Enable(spellchecker->CanAddWord(currentWord));
 	}
-
-	// Append language list
-	menu.Append(-1,_("Spell checker language"), GetLanguagesMenu(
-		EDIT_MENU_DIC_LANGS,
-		lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()),
-		to_wx(spellchecker->GetLanguageList())));
-	menu.AppendSeparator();
 }
 
 void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
+	if (currentWord.empty()) return;
+
 	if (!thesaurus)
 		thesaurus.reset(new Thesaurus);
 
