@@ -325,7 +325,7 @@ static void UnhandledExeception(bool stackWalk) {
 		if (!file.DirExists()) file.Mkdir();
 
 		// Save file
-		wxString filename = wxString::Format("%s/%s_%s.ass", file.GetPath(), wxDateTime::Now().Format("%Y-%m-%d-%H%M%S"), file.GetName());
+		wxString filename = wxString::Format("%s/%s.%s.ass", file.GetPath(), file.GetName(), wxDateTime::Now().Format("%Y-%m-%d-%H-%M-%S"));
 		AssFile::top->Save(filename,false,false);
 
 #if wxUSE_STACKWALKER == 1
