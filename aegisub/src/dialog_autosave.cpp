@@ -19,6 +19,7 @@
 #include "dialog_autosave.h"
 
 #include "compat.h"
+#include "libresrc/libresrc.h"
 #include "main.h"
 #include "standard_paths.h"
 
@@ -33,6 +34,8 @@
 DialogAutosave::DialogAutosave(wxWindow *parent)
 : wxDialog(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350))
 {
+	SetIcon(GETICON(open_toolbutton_16));
+
 	wxSizer *files_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Files"));
 	file_list = new wxListBox(this, -1);
 	file_list->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &DialogAutosave::OnSelectFile, this);
