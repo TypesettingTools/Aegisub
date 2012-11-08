@@ -16,6 +16,7 @@
 
 #ifndef AGI_PRE
 #include <cstdint>
+#include <string>
 #include <vector>
 
 #include <wx/dialog.h>
@@ -28,8 +29,9 @@ class DialogAutosave : public wxDialog {
 	struct Version {
 		wxString filename;
 		wxDateTime date;
-		Version(wxString const& filename, wxDateTime const& date)
-		: filename(filename), date(date) { }
+		wxString display;
+		Version(wxString const& filename, wxDateTime const& date, wxString const& display)
+		: filename(filename), date(date), display(display) { }
 	};
 
 	struct AutosaveFile {
@@ -38,13 +40,12 @@ class DialogAutosave : public wxDialog {
 		AutosaveFile(wxString const& name) : name(name) { }
 	};
 
-	wxString directory;
 	std::vector<AutosaveFile> files;
 
 	wxListBox *file_list;
 	wxListBox *version_list;
 
-	void Populate();
+	void Populate(std::map<wxString, AutosaveFile> &files_map, std::string const& path, wxString const& filter, wxString const& name_fmt);
 	void OnSelectFile(wxCommandEvent&);
 
 public:

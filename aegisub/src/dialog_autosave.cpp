@@ -32,7 +32,6 @@
 
 DialogAutosave::DialogAutosave(wxWindow *parent)
 : wxDialog(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350))
-, directory(StandardPaths::DecodePath(to_wx(OPT_GET("Path/Auto/Save")->GetString())))
 {
 	wxSizer *files_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Files"));
 	file_list = new wxListBox(this, -1);
@@ -56,34 +55,10 @@ DialogAutosave::DialogAutosave(wxWindow *parent)
 	main_sizer->Add(btn_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	SetSizer(main_sizer);
 
-	Populate();
-	if (file_list->IsEmpty())
-		btn_sizer->GetAffirmativeButton()->Disable();
-}
-
-void DialogAutosave::Populate() {
-	wxDir dir;
-	if (!dir.Open(directory)) return;
-
-	wxString fn;
-	if (!dir.GetFirst(&fn, "*.AUTOSAVE.ass", wxDIR_FILES))
-		return;
-
 	std::map<wxString, AutosaveFile> files_map;
-	do {
-		wxString date_str;
-		wxString name = fn.Left(fn.size() - 13).BeforeLast('.', &date_str);
-		if (!name) continue;
-
-		wxDateTime date;
-		if (!date.ParseFormat(date_str, "%Y-%m-%d-%H-%M-%S"))
-			continue;
-
-		auto it = files_map.find(name);
-		if (it == files_map.end())
-			it = files_map.emplace(name, name).first;
-		it->second.versions.emplace_back(fn, date);
-	} while (dir.GetNext(&fn));
+	Populate(files_map, OPT_GET("Path/Auto/Save")->GetString(), ".AUTOSAVE.ass", "%s");
+	Populate(files_map, OPT_GET("Path/Auto/Backup")->GetString(), ".ORIGINAL.ass", _("%s [ORIGINAL BACKUP]"));
+	Populate(files_map, "?user/recovered", ".ass", _("%s [RECOVERED]"));
 
 	for (auto& file : files_map | boost::adaptors::map_values)
 		files.emplace_back(std::move(file));
@@ -98,10 +73,45 @@ void DialogAutosave::Populate() {
 
 	for (auto const& file : files)
 		file_list->Append(file.name);
-	file_list->SetSelection(0);
 
-	wxCommandEvent evt;
-	OnSelectFile(evt);
+	if (file_list->IsEmpty())
+		btn_sizer->GetAffirmativeButton()->Disable();
+	else {
+		file_list->SetSelection(0);
+		wxCommandEvent evt;
+		OnSelectFile(evt);
+	}
+}
+
+void DialogAutosave::Populate(std::map<wxString, AutosaveFile> &files_map, std::string const& path, wxString const& filter, wxString const& name_fmt) {
+	wxString directory(StandardPaths::DecodePath(to_wx(path)));
+
+	wxDir dir;
+	if (!dir.Open(directory)) return;
+
+	wxString fn;
+	if (!dir.GetFirst(&fn, "*" + filter, wxDIR_FILES))
+		return;
+
+	do {
+		wxDateTime date;
+
+		wxString date_str;
+		wxString name = fn.Left(fn.size() - filter.size()).BeforeLast('.', &date_str);
+		if (!name)
+			name = date_str;
+		else {
+			if (!date.ParseFormat(date_str, "%Y-%m-%d-%H-%M-%S"))
+				name += "." + date_str;
+		}
+		if (!date.IsValid())
+			date = wxFileName(directory, fn).GetModificationTime();
+
+		auto it = files_map.find(name);
+		if (it == files_map.end())
+			it = files_map.emplace(name, name).first;
+		it->second.versions.emplace_back(wxFileName(directory, fn).GetFullPath(), date, wxString::Format(name_fmt, date.Format()));
+	} while (dir.GetNext(&fn));
 }
 
 void DialogAutosave::OnSelectFile(wxCommandEvent&) {
@@ -110,7 +120,7 @@ void DialogAutosave::OnSelectFile(wxCommandEvent&) {
 	if (sel_file < 0) return;
 
 	for (auto const& version : files[sel_file].versions)
-		version_list->Append(version.date.Format());
+		version_list->Append(version.display);
 	version_list->SetSelection(0);
 }
 
@@ -121,5 +131,5 @@ wxString DialogAutosave::ChosenFile() const {
 	int sel_version = version_list->GetSelection();
 	if (sel_version < 0) return "";
 
-	return wxFileName(directory, files[sel_file].versions[sel_version].filename).GetFullPath();
+	return files[sel_file].versions[sel_version].filename;
 }
