@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FB8E8D19-A4D6-4181-943C-282075F49B41}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="MsysPath" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+
+  <PropertyGroup Label="ConfigArgs">
+    <CfgEnableDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug</CfgEnableDebug>
+    <CfgEnableDebug Condition="'$(Configuration)' == 'Release'">--disable-debug</CfgEnableDebug>
+    <CfgArgs>--enable-static --disable-shared --disable-dependency-tracking --without-glib $(CfgEnableDebug)</CfgArgs>
+  </PropertyGroup>
+
+  <Target Name="Configure">
+    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="$(AegisubObjectDir)\temp">
+      <Output TaskParameter="Result" PropertyName="CfgPrefix" />
+    </MsysPath>
+
+    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../include">
+      <Output TaskParameter="Result" PropertyName="CfgIncludePrefix" />
+    </MsysPath>
+
+    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../lib/$(Platform)/$(Configuration)">
+      <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
+    </MsysPath>
+
+    <ExecShellScript
+      Script="$(FribidiSrcDir)\configure"
+      Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --includedir=$(CfgIncludePrefix)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+
+    <!-- fribidi defines the symbols to export twice, which causes errors -->
+    <UpdateFile File="$(AegisubObjectDir)lib\Makefile" Find=" %24(am__append_1)" Replacement="" />
+    <!-- We only want the library and the docs want c2man, so remove
+         unused stuff from SUBDIRS -->
+    <UpdateFile File="$(AegisubObjectDir)Makefile" Find=" bin doc test" Replacement="" />
+  </Target>
+
+  <Target Name="Build">
+    <Error Condition="!Exists('$(FribidiSrcDir)')" Text="Fribidi source not found at '$(FribidiSrcDir)'" />
+
+    <ExecShellScript
+      Condition="!Exists('$(FribidiSrcDir)\configure')"
+      Script="$(FribidiSrcDir)\bootstrap"
+      WorkingDirectory="$(FribidiSrcDir)"
+      />
+
+    <CallTarget Targets="Configure" Condition="!Exists('$(AegisubObjectDir)\Makefile')" />
+
+    <ExecShellScript
+      Command="make"
+      Arguments="-j$(NUMBER_OF_PROCESSORS)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+
+    <ExecShellScript
+      Command="make install"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+  </Target>
+</Project>
