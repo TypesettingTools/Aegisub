@@ -44,6 +44,11 @@
       <AdditionalOptions>/Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
+  <!-- Update git_version.h -->
+  <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)\BuildTasks.dll" />
+  <Target Name="UpdateVersion" BeforeTargets="ClCompile">
+    <ExecShellScript Command="build/version.sh .." />
+  </Target>
   <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\csrihelper\csrihelper.vcxproj">
