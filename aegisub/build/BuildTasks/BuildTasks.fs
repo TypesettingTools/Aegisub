@@ -22,15 +22,6 @@ open Microsoft.Build.Evaluation
 open Microsoft.Build.Framework
 open Microsoft.Build.Utilities
 
-/// Search the executable path for the directory containing the given file and
-/// return it or empty string if not found
-let searchPath file =
-  Environment.GetEnvironmentVariable("path").Split ';'
-  |> Seq.map (fun p -> IO.Path.Combine(p, file))
-  |> Seq.filter IO.File.Exists
-  |> Seq.append [""]
-  |> Seq.nth 1
-
 /// Read all of the defined properties from the calling project file and stuff
 /// them in a Map
 let propertyMap (be : IBuildEngine) =
@@ -56,62 +47,72 @@ let mungePath projectDir path =
   | _ -> failwith <| sprintf "Bad path: '%s' '%s'" projectDir path
 
 type ShellWrapper(props : Map<String, String>) =
-  let setPath msysRoot =
-    Environment.SetEnvironmentVariable("path", msysRoot + "\\bin;" + props.["NativeExecutablePath"])
-    Environment.SetEnvironmentVariable("CC", "cl")
-    Environment.SetEnvironmentVariable("INCLUDE", props.["IncludePath"])
-    Environment.SetEnvironmentVariable("LIB", props.["LibraryPath"])
-
-  let sh =
-    match props.TryFind "MsysBasePath" with
-    | None | Some "" -> searchPath "sh.exe"
-    | Some path -> setPath path; sprintf "%s\\bin\\sh.exe" path
+  inherit ToolTask()
 
   let cwd = function
   | null | "" -> props.["AegisubSourceBase"]
   | x -> if not <| IO.Directory.Exists x then ignore <| IO.Directory.CreateDirectory(x)
          x
 
-  member this.call args workingDir =
-    if not <| IO.File.Exists sh then
+  member val Arguments = "" with get, set
+  member val WorkingDirectory = "" with get, set
+
+  member this.callScript scriptName args =
+    this.Arguments <- sprintf "%s %s" (mungePath props.["ProjectDir"] scriptName) args
+    this.Execute()
+
+  // ToolTask overrides
+  override val ToolName = "sh.exe" with get
+  override this.GenerateFullPathToTool() = sprintf "%s\\bin\\sh.exe" props.["MsysBasePath"]
+  override this.GenerateCommandLineCommands() = this.Arguments
+  override this.GetWorkingDirectory() = this.WorkingDirectory
+
+  override this.Execute() =
+    if this.GenerateFullPathToTool() |> IO.File.Exists |> not then
       failwith "sh.exe not found. Make sure the MSYS root is set to a correct location."
 
-    let info = new ProcessStartInfo(FileName = sh
-                                  , Arguments = args
-                                  , WorkingDirectory = cwd workingDir
-                                  , RedirectStandardOutput = true
-                                  , UseShellExecute = false)
+    this.WorkingDirectory <- cwd this.WorkingDirectory
+    this.UseCommandProcessor <- false
+    this.StandardOutputImportance <- "High"
+    this.EnvironmentVariables <- [|
+      "CC=cl";
+      "CPP=cl -E";
+      "CFLAGS=-nologo";
+      "PATH=" + props.["MsysBasePath"] + "\\bin;" + props.["NativeExecutablePath"];
+      "INCLUDE=" + props.["AegisubSourceBase"] + "//include;" + props.["IncludePath"];
+      "LIB=" + props.["AegisubLibraryDir"] + ";" + props.["LibraryPath"];
+      "PKG_CONFIG_PATH=" + (mungePath props.["ProjectDir"] props.["AegisubLibraryDir"]) + "/pkgconfig"
+    |]
 
-    use p = new Process(StartInfo = info)
-    ignore(p.Start())
-    let output = p.StandardOutput.ReadToEnd()
-    p.WaitForExit()
-    if p.ExitCode <> 0 then
-      failwith output
-
-  member this.callScript scriptName args workingDir =
-    this.call (sprintf "%s %s" (mungePath props.["ProjectDir"] scriptName) args) workingDir
+    base.Execute()
 
 type ExecShellScript() =
   inherit Task()
 
+  // Task arguments
   member val WorkingDirectory = "" with get, set
   member val Command = "" with get, set
   member val Script = "" with get, set
   member val Arguments = "" with get, set
 
+  member private this.realArgs (props : Map<String, String>) =
+    if this.Script.Length > 0
+    then sprintf "%s %s" (mungePath props.["ProjectDir"] this.Script) this.Arguments
+    else sprintf "-c '%s %s'" this.Command this.Arguments
+
   override this.Execute() =
     try
-      let sw = ShellWrapper (propertyMap this.BuildEngine)
-      if this.Script.Length > 0
-      then this.Log.LogMessage("Calling '{0}' {1}", this.Script, this.Arguments);
-           sw.callScript this.Script this.Arguments this.WorkingDirectory
-      else this.Log.LogMessage("Calling '{0}' {1}", this.Command, this.Arguments);
-           sw.call (sprintf "-c '%s %s'" this.Command this.Arguments) this.WorkingDirectory
-      true
-    with Failure(e) ->
-      this.Log.LogError(e)
-      false
+      let props = propertyMap this.BuildEngine
+      let sw = ShellWrapper(props,
+                            BuildEngine = this.BuildEngine,
+                            HostObject = this.HostObject,
+                            Arguments = this.realArgs props,
+                            WorkingDirectory = this.WorkingDirectory)
+
+      sw.Execute()
+    with
+    | Failure(e) -> this.Log.LogError(e); false
+    | e -> this.Log.LogErrorFromException(e); false
 
 type MsysPath() =
   inherit Task()
