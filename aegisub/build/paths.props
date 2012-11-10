@@ -10,7 +10,7 @@
 		<!-- Base for contrib libraries source code -->
 		<AegisubContribBase Condition="'$(AegisubContribBase)'==''">$(AegisubSourceBase)..\contrib\</AegisubContribBase>
 		<!-- Base for built files -->
-		<AegisubOutputBase Condition="'$(AegisubOutputBase)'==''">$(SolutionDir)</AegisubOutputBase>
+		<AegisubOutputBase Condition="'$(AegisubOutputBase)'==''">$(AegisubSourceBase)</AegisubOutputBase>
 		<!-- Directory for built executables -->
 		<AegisubBinaryDir Condition="'$(AegisubBinaryDir)'==''">$(AegisubOutputBase)bin\</AegisubBinaryDir>
 		<!-- Directory for built static libraries and link libraries -->
