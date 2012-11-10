@@ -89,4 +89,12 @@
       WorkingDirectory="$(AegisubObjectDir)"
       />
   </Target>
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(AegisubObjectDir)" ContinueOnError="WarnAndContinue" />
+  </Target>
+
+  <Target Name="Rebuild">
+    <CallTarget Targets="Clean;Build" />
+  </Target>
 </Project>
