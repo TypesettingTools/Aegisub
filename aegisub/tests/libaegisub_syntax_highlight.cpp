@@ -35,10 +35,10 @@ TEST(lagi_syntax, empty) {
 	std::string text;
 	std::vector<DialogueToken> tokens;
 
-	EXPECT_TRUE(SyntaxHighlight(text, tokens, false, 0).empty());
+	EXPECT_TRUE(SyntaxHighlight(text, tokens, 0).empty());
 
 	tokens.emplace_back(dt::TEXT, 0);
-	auto syntax = SyntaxHighlight(text, tokens, false, 0);
+	auto syntax = SyntaxHighlight(text, tokens, 0);
 	EXPECT_EQ(1u, syntax.size());
 	EXPECT_EQ(ss::NORMAL, syntax[0].type);
 }
@@ -46,9 +46,9 @@ TEST(lagi_syntax, empty) {
 #define tok_str(arg1, template_line, ...) do { \
 	MockSpellChecker spellchecker; \
 	std::string str = arg1; \
-	std::vector<DialogueToken> tok = TokenizeDialogueBody(str); \
+	std::vector<DialogueToken> tok = TokenizeDialogueBody(str, template_line); \
 	SplitWords(str, tok); \
-	std::vector<DialogueToken> styles = SyntaxHighlight(str, tok, template_line, &spellchecker); \
+	std::vector<DialogueToken> styles = SyntaxHighlight(str, tok, &spellchecker); \
 	size_t token_index = 0; \
 	__VA_ARGS__ \
 	EXPECT_EQ(token_index, styles.size()); \
@@ -157,5 +157,97 @@ TEST(lagi_syntax, fn_space) {
 		expect_style(ss::TAG, 2u);
 		expect_style(ss::PARAMETER, 13u);
 		expect_style(ss::OVERRIDE, 1u);
+	);
+}
+
+TEST(lagi_syntax, templater_variable_nontmpl) {
+	tok_str("{\\pos($x, $y)\\fs!10 + 10!}abc", false,
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::TAG, 3u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::PARAMETER, 2u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::PARAMETER, 2u);
+		expect_style(ss::PUNCTUATION, 2u);
+		expect_style(ss::TAG, 2u);
+		expect_style(ss::PARAMETER, 9u);
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::NORMAL, 3u);
+	);
+}
+
+TEST(lagi_syntax, templater_variable) {
+	tok_str("$a", true,
+		expect_style(ss::KARAOKE_VARIABLE, 2u);
+	);
+
+	tok_str("{\\pos($x,$y)}a", true,
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::TAG, 3u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::KARAOKE_VARIABLE, 2u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::KARAOKE_VARIABLE, 2u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::NORMAL, 1u);
+	);
+
+	tok_str("{\\fn$fn}a", true,
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::TAG, 2u);
+		expect_style(ss::KARAOKE_VARIABLE, 3u);
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::NORMAL, 1u);
+	);
+
+	tok_str("{foo$bar}", true,
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::COMMENT, 3u);
+		expect_style(ss::KARAOKE_VARIABLE, 4u);
+		expect_style(ss::OVERRIDE, 1u);
+	);
+
+	tok_str("{foo$bar", true,
+		expect_style(ss::NORMAL, 4u);
+		expect_style(ss::KARAOKE_VARIABLE, 4u);
+	);
+}
+
+TEST(lagi_syntax, templater_expression) {
+	tok_str("!5!", true,
+		expect_style(ss::KARAOKE_TEMPLATE, 3u);
+	);
+
+	tok_str("!5", true,
+		expect_style(ss::NORMAL, 2u);
+	);
+
+	tok_str("!x * 10!", true,
+		expect_style(ss::KARAOKE_TEMPLATE, 8u);
+	);
+
+	tok_str("{\\pos(!x + 1!, $y)}a", true,
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::TAG, 3u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::KARAOKE_TEMPLATE, 7u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::KARAOKE_VARIABLE, 2u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::NORMAL, 1u);
+	);
+
+	tok_str("{\\b1!'}'!a", true,
+		expect_style(ss::NORMAL, 4u);
+		expect_style(ss::KARAOKE_TEMPLATE, 5u);
+		expect_style(ss::NORMAL, 1u);
 	);
 }

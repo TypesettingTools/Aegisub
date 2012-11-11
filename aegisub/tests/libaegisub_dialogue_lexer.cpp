@@ -26,9 +26,9 @@ TEST(lagi_dialogue_lexer, empty) {
 	ASSERT_TRUE(TokenizeDialogueBody("").empty());
 }
 
-#define tok_str(arg1, ...) do { \
+#define tok_str(arg1, ktemplate, ...) do { \
 	std::string str = arg1; \
-	std::vector<DialogueToken> tok = TokenizeDialogueBody(str); \
+	std::vector<DialogueToken> tok = TokenizeDialogueBody(str, ktemplate); \
 	size_t token_index = 0; \
 	__VA_ARGS__ \
 	EXPECT_EQ(token_index, tok.size()); \
@@ -44,17 +44,17 @@ TEST(lagi_dialogue_lexer, empty) {
 } while(false)
 
 TEST(lagi_dialogue_lexer, plain_text) {
-	tok_str("hello there",
+	tok_str("hello there", false,
 		expect_tok(TEXT, 11);
 	);
 
-	tok_str("hello\\Nthere",
+	tok_str("hello\\Nthere", false,
 		expect_tok(TEXT, 5);
 		expect_tok(LINE_BREAK, 2);
 		expect_tok(TEXT, 5);
 	);
 
-	tok_str("hello\\n\\h\\kthere",
+	tok_str("hello\\n\\h\\kthere", false,
 		expect_tok(TEXT, 5);
 		expect_tok(LINE_BREAK, 4);
 		expect_tok(TEXT, 7);
@@ -62,7 +62,7 @@ TEST(lagi_dialogue_lexer, plain_text) {
 }
 
 TEST(lagi_dialogue_lexer, basic_override_tags) {
-	tok_str("{\\b1}bold text{\\b0}",
+	tok_str("{\\b1}bold text{\\b0}", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 1);
@@ -76,7 +76,7 @@ TEST(lagi_dialogue_lexer, basic_override_tags) {
 		expect_tok(OVR_END, 1);
 	);
 
-	tok_str("{\\fnComic Sans MS}text",
+	tok_str("{\\fnComic Sans MS}text", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 2);
@@ -89,7 +89,7 @@ TEST(lagi_dialogue_lexer, basic_override_tags) {
 		expect_tok(TEXT, 4);
 	);
 
-	tok_str("{\\pos(0,0)}a",
+	tok_str("{\\pos(0,0)}a", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 3);
@@ -102,7 +102,7 @@ TEST(lagi_dialogue_lexer, basic_override_tags) {
 		expect_tok(TEXT, 1);
 	);
 
-	tok_str("{\\pos( 0 , 0 )}a",
+	tok_str("{\\pos( 0 , 0 )}a", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 3);
@@ -119,7 +119,7 @@ TEST(lagi_dialogue_lexer, basic_override_tags) {
 		expect_tok(TEXT, 1);
 	);
 
-	tok_str("{\\c&HFFFFFF&\\2c&H0000FF&\\3c&H000000&}a",
+	tok_str("{\\c&HFFFFFF&\\2c&H0000FF&\\3c&H000000&}a", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 1);
@@ -134,7 +134,7 @@ TEST(lagi_dialogue_lexer, basic_override_tags) {
 		expect_tok(TEXT, 1);
 	);
 
-	tok_str("{\\t(0,100,\\clip(1, m 0 0 l 10 10 10 20))}a",
+	tok_str("{\\t(0,100,\\clip(1, m 0 0 l 10 10 10 20))}a", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 1);
@@ -171,7 +171,7 @@ TEST(lagi_dialogue_lexer, basic_override_tags) {
 }
 
 TEST(lagi_dialogue_lexer, merging) {
-	tok_str("{\\b\\b",
+	tok_str("{\\b\\b", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 1);
@@ -181,7 +181,7 @@ TEST(lagi_dialogue_lexer, merging) {
 }
 
 TEST(lagi_dialogue_lexer, whitespace) {
-	tok_str("{ \\ fn Comic Sans MS }asd",
+	tok_str("{ \\ fn Comic Sans MS }asd", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(WHITESPACE, 1);
 		expect_tok(TAG_START, 1);
@@ -200,14 +200,14 @@ TEST(lagi_dialogue_lexer, whitespace) {
 }
 
 TEST(lagi_dialogue_lexer, comment) {
-	tok_str("{a}b",
+	tok_str("{a}b", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(COMMENT, 1);
 		expect_tok(OVR_END, 1);
 		expect_tok(TEXT, 1);
 	);
 
-	tok_str("{a\\b}c",
+	tok_str("{a\\b}c", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(COMMENT, 1);
 		expect_tok(TAG_START, 1);
@@ -218,16 +218,16 @@ TEST(lagi_dialogue_lexer, comment) {
 }
 
 TEST(lagi_dialogue_lexer, malformed) {
-	tok_str("}",
+	tok_str("}", false,
 		expect_tok(TEXT, 1);
 	);
 
-	tok_str("{{",
+	tok_str("{{", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(ERROR, 1);
 	);
 
-	tok_str("{\\pos(0,0}a",
+	tok_str("{\\pos(0,0}a", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 3);
@@ -239,7 +239,7 @@ TEST(lagi_dialogue_lexer, malformed) {
 		expect_tok(TEXT, 1);
 	);
 
-	tok_str("{\\b1\\}asdf",
+	tok_str("{\\b1\\}asdf", false,
 		expect_tok(OVR_BEGIN, 1);
 		expect_tok(TAG_START, 1);
 		expect_tok(TAG_NAME, 1);
@@ -247,5 +247,115 @@ TEST(lagi_dialogue_lexer, malformed) {
 		expect_tok(TAG_START, 1);
 		expect_tok(OVR_END, 1);
 		expect_tok(TEXT, 4);
+	);
+}
+
+TEST(lagi_dialogue_lexer, templater_variable_nontmpl) {
+	tok_str("{\\pos($x, $y)\\fs!10 + 10!}abc", false,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(TAG_START, 1u);
+		expect_tok(TAG_NAME, 3u);
+		expect_tok(OPEN_PAREN, 1);
+		expect_tok(ARG, 2u);
+		expect_tok(ARG_SEP, 1u);
+		expect_tok(WHITESPACE, 1u);
+		expect_tok(ARG, 2u);
+		expect_tok(CLOSE_PAREN, 1);
+		expect_tok(TAG_START, 1u);
+		expect_tok(TAG_NAME, 2u);
+		expect_tok(ARG, 3u);
+		expect_tok(WHITESPACE, 1u);
+		expect_tok(ARG, 1u);
+		expect_tok(WHITESPACE, 1u);
+		expect_tok(ARG, 3u);
+		expect_tok(OVR_END, 1u);
+		expect_tok(TEXT, 3u);
+	);
+
+	tok_str("{\\b1!'}'!a", false,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(TAG_START, 1u);
+		expect_tok(TAG_NAME, 1u);
+		expect_tok(ARG, 3u);
+		expect_tok(OVR_END, 1u);
+		expect_tok(TEXT, 3u);
+	);
+}
+
+TEST(lagi_dialogue_lexer, templater_variable) {
+	tok_str("$a", true,
+		expect_tok(KARAOKE_VARIABLE, 2u);
+	);
+
+	tok_str("{\\pos($x,$y)}a", true,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(TAG_START, 1u);
+		expect_tok(TAG_NAME, 3u);
+		expect_tok(OPEN_PAREN, 1u);
+		expect_tok(KARAOKE_VARIABLE, 2u);
+		expect_tok(ARG_SEP, 1u);
+		expect_tok(KARAOKE_VARIABLE, 2u);
+		expect_tok(CLOSE_PAREN, 1u);
+		expect_tok(OVR_END, 1u);
+		expect_tok(TEXT, 1u);
+	);
+
+	tok_str("{\\fn$fn}a", true,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(TAG_START, 1u);
+		expect_tok(TAG_NAME, 2u);
+		expect_tok(KARAOKE_VARIABLE, 3u);
+		expect_tok(OVR_END, 1u);
+		expect_tok(TEXT, 1u);
+	);
+
+	tok_str("{foo$bar}", true,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(COMMENT, 3u);
+		expect_tok(KARAOKE_VARIABLE, 4u);
+		expect_tok(OVR_END, 1u);
+	);
+
+	tok_str("{foo$bar", true,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(COMMENT, 3u);
+		expect_tok(KARAOKE_VARIABLE, 4u);
+	);
+}
+
+TEST(lagi_dialogue_lexer, templater_expression) {
+	tok_str("!5!", true,
+		expect_tok(KARAOKE_TEMPLATE, 3u);
+	);
+
+	tok_str("!5", true,
+		expect_tok(TEXT, 2u);
+	);
+
+	tok_str("!x * 10!", true,
+		expect_tok(KARAOKE_TEMPLATE, 8u);
+	);
+
+	tok_str("{\\pos(!x + 1!, $y)}a", true,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(TAG_START, 1u);
+		expect_tok(TAG_NAME, 3u);
+		expect_tok(OPEN_PAREN, 1u);
+		expect_tok(KARAOKE_TEMPLATE, 7u);
+		expect_tok(ARG_SEP, 1u);
+		expect_tok(WHITESPACE, 1u);
+		expect_tok(KARAOKE_VARIABLE, 2u);
+		expect_tok(CLOSE_PAREN, 1u);
+		expect_tok(OVR_END, 1u);
+		expect_tok(TEXT, 1u);
+	);
+
+	tok_str("{\\b1!'}'!a", true,
+		expect_tok(OVR_BEGIN, 1u);
+		expect_tok(TAG_START, 1u);
+		expect_tok(TAG_NAME, 1u);
+		expect_tok(ARG, 1u);
+		expect_tok(KARAOKE_TEMPLATE, 5u);
+		expect_tok(ARG, 1u);
 	);
 }

@@ -48,43 +48,43 @@ public:
 	, spellchecker(spellchecker)
 	{ }
 
-	TokenVec Highlight(TokenVec const& tokens, bool template_line) {
+	TokenVec Highlight(TokenVec const& tokens) {
 		if (tokens.empty()) return ranges;
 
 		size_t pos = 0;
 
-		for (size_t i = 0; i < tokens.size(); ++i) {
-			size_t len = tokens[i].length;
-			switch (tokens[i].type) {
-				case dt::LINE_BREAK: SetStyling(len, ss::LINE_BREAK); break;
-				case dt::ERROR:      SetStyling(len, ss::ERROR);      break;
-				case dt::ARG:        SetStyling(len, ss::PARAMETER);  break;
-				case dt::COMMENT:    SetStyling(len, ss::COMMENT);    break;
-				case dt::DRAWING:    SetStyling(len, ss::DRAWING);    break;
-				case dt::TEXT:       SetStyling(len, ss::NORMAL);     break;
-				case dt::TAG_NAME:   SetStyling(len, ss::TAG);        break;
+		for (auto tok : tokens) {
+			switch (tok.type) {
+				case dt::KARAOKE_TEMPLATE: SetStyling(tok.length, ss::KARAOKE_TEMPLATE); break;
+				case dt::KARAOKE_VARIABLE: SetStyling(tok.length, ss::KARAOKE_VARIABLE); break;
+				case dt::LINE_BREAK: SetStyling(tok.length, ss::LINE_BREAK); break;
+				case dt::ERROR:      SetStyling(tok.length, ss::ERROR);      break;
+				case dt::ARG:        SetStyling(tok.length, ss::PARAMETER);  break;
+				case dt::COMMENT:    SetStyling(tok.length, ss::COMMENT);    break;
+				case dt::DRAWING:    SetStyling(tok.length, ss::DRAWING);    break;
+				case dt::TEXT:       SetStyling(tok.length, ss::NORMAL);     break;
+				case dt::TAG_NAME:   SetStyling(tok.length, ss::TAG);        break;
 				case dt::OPEN_PAREN: case dt::CLOSE_PAREN: case dt::ARG_SEP: case dt::TAG_START:
-					SetStyling(len, ss::PUNCTUATION);
+					SetStyling(tok.length, ss::PUNCTUATION);
 					break;
 				case dt::OVR_BEGIN: case dt::OVR_END:
-					SetStyling(len, ss::OVERRIDE);
+					SetStyling(tok.length, ss::OVERRIDE);
 					break;
 				case dt::WHITESPACE:
 					if (ranges.size() && ranges.back().type == ss::PARAMETER)
-						SetStyling(len, ss::PARAMETER);
+						SetStyling(tok.length, ss::PARAMETER);
 					else
-						SetStyling(len, ss::NORMAL);
+						SetStyling(tok.length, ss::NORMAL);
 					break;
 				case dt::WORD:
-					if (spellchecker && !spellchecker->CheckWord(text.substr(pos, len)))
-						SetStyling(len, ss::SPELLING);
+					if (spellchecker && !spellchecker->CheckWord(text.substr(pos, tok.length)))
+						SetStyling(tok.length, ss::SPELLING);
 					else
-						SetStyling(len, ss::NORMAL);
+						SetStyling(tok.length, ss::NORMAL);
 					break;
 			}
 
-			pos += len;
-			// karaoke templater
+			pos += tok.length;
 		}
 
 		return ranges;
@@ -194,6 +194,8 @@ public:
 		for (size_t i = 0; i < tokens.size(); ++i) {
 			size_t len = tokens[i].length;
 			switch (tokens[i].type) {
+				case dt::KARAOKE_TEMPLATE: break;
+				case dt::KARAOKE_VARIABLE: break;
 				case dt::LINE_BREAK: break;
 				case dt::TEXT: SplitText(i); break;
 				case dt::TAG_NAME:
@@ -235,8 +237,8 @@ public:
 namespace agi {
 namespace ass {
 
-std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, bool template_line, SpellChecker *spellchecker) {
-	return SyntaxHighlighter(text, spellchecker).Highlight(tokens, template_line);
+std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, SpellChecker *spellchecker) {
+	return SyntaxHighlighter(text, spellchecker).Highlight(tokens);
 }
 
 void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens) {

@@ -212,7 +212,11 @@ void SubsTextEditCtrl::UpdateStyle() {
 		if (text == line_text) return;
 		line_text = move(text);
 	}
-	tokenized_line = agi::ass::TokenizeDialogueBody(line_text);
+
+	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
+	bool template_line = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
+
+	tokenized_line = agi::ass::TokenizeDialogueBody(line_text, template_line);
 	agi::ass::SplitWords(line_text, tokenized_line);
 
 	cursor_pos = -1;
@@ -227,10 +231,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 
 	if (line_text.empty()) return;
 
-	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
-	bool template_line = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
-
-	for (auto const& style_range : agi::ass::SyntaxHighlight(line_text, tokenized_line, template_line, spellchecker.get()))
+	for (auto const& style_range : agi::ass::SyntaxHighlight(line_text, tokenized_line, spellchecker.get()))
 		SetStyling(style_range.length, style_range.type);
 }
 

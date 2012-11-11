@@ -40,7 +40,9 @@ namespace agi {
 				ERROR,
 				COMMENT,
 				WHITESPACE,
-				DRAWING
+				DRAWING,
+				KARAOKE_TEMPLATE,
+				KARAOKE_VARIABLE
 			};
 		}
 
@@ -69,12 +71,12 @@ namespace agi {
 		};
 
 		/// Tokenize the passed string as the body of a dialogue line
-		std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str);
+		std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str, bool karaoke_templater=false);
 
 		/// Split the words in the TEXT tokens of the lexed line into their
 		/// own tokens and convert the body of drawings to DRAWING tokens
 		void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens);
 
-		std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, bool template_line, SpellChecker *spellchecker);
+		std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, SpellChecker *spellchecker);
 	}
 }
