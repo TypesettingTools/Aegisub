@@ -176,8 +176,8 @@ AS_IF([test x$enable_compiler_flags != xno], [
     AC_C_FLAG([-O0])
     AC_CXX_FLAG([-O0])
   ], [
-    AC_C_FLAG([-O2])
-    AC_CXX_FLAG([-O2])
+    AC_C_FLAG([-O3])
+    AC_CXX_FLAG([-O3])
   ])
 ])
 
