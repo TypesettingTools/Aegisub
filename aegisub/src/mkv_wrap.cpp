@@ -210,6 +210,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		// Load default if it's SRT
 		else {
 			target->LoadDefault(false);
+			parser.AddLine("[Events]");
 		}
 
 		// Read timecode scale
