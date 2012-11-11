@@ -111,7 +111,12 @@ public:
 	}
 
 	wxThread::ExitCode Entry() {
-		task(ps);
+		try {
+			task(ps);
+		}
+		catch (agi::Exception const& e) {
+			ps->Log(e.GetChainedMessage());
+		}
 		wxQueueEvent(dialog, new wxThreadEvent(EVT_COMPLETE));
 		return 0;
 	}
