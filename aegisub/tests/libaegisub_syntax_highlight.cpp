@@ -43,12 +43,12 @@ TEST(lagi_syntax, empty) {
 	EXPECT_EQ(ss::NORMAL, syntax[0].type);
 }
 
-#define tok_str(arg1, ...) do { \
+#define tok_str(arg1, template_line, ...) do { \
 	MockSpellChecker spellchecker; \
 	std::string str = arg1; \
 	std::vector<DialogueToken> tok = TokenizeDialogueBody(str); \
 	SplitWords(str, tok); \
-	std::vector<DialogueToken> styles = SyntaxHighlight(str, tok, false, &spellchecker); \
+	std::vector<DialogueToken> styles = SyntaxHighlight(str, tok, template_line, &spellchecker); \
 	size_t token_index = 0; \
 	__VA_ARGS__ \
 	EXPECT_EQ(token_index, styles.size()); \
@@ -64,7 +64,7 @@ TEST(lagi_syntax, empty) {
 } while(false)
 
 TEST(lagi_syntax, spellcheck) {
-	tok_str("correct incorrect correct",
+	tok_str("correct incorrect correct", false,
 		expect_style(ss::NORMAL, 8u);
 		expect_style(ss::SPELLING, 9u);
 		expect_style(ss::NORMAL, 8u);
@@ -72,7 +72,7 @@ TEST(lagi_syntax, spellcheck) {
 }
 
 TEST(lagi_syntax, drawing) {
-	tok_str("incorrect{\\p1}m 10 10{\\p}correct",
+	tok_str("incorrect{\\p1}m 10 10{\\p}correct", false,
 		expect_style(ss::SPELLING, 9u);
 		expect_style(ss::OVERRIDE, 1u);
 		expect_style(ss::PUNCTUATION, 1u);
@@ -89,7 +89,7 @@ TEST(lagi_syntax, drawing) {
 }
 
 TEST(lagi_syntax, transform) {
-	tok_str("{\\t(0, 0, \\clip(0,0,10,10)}clipped text",
+	tok_str("{\\t(0, 0, \\clip(0,0,10,10)}clipped text", false,
 		expect_style(ss::OVERRIDE, 1u);
 		expect_style(ss::PUNCTUATION, 1u);
 		expect_style(ss::TAG, 1u);
@@ -117,7 +117,7 @@ TEST(lagi_syntax, transform) {
 }
 
 TEST(lagi_syntax, unclosed) {
-	tok_str("{\\incorrect}{\\incorrect",
+	tok_str("{\\incorrect}{\\incorrect", false,
 		expect_style(ss::OVERRIDE, 1u);
 		expect_style(ss::PUNCTUATION, 1u);
 		expect_style(ss::TAG, 9u);
@@ -128,7 +128,7 @@ TEST(lagi_syntax, unclosed) {
 }
 
 TEST(lagi_syntax, comment) {
-	tok_str("abc{def}ghi",
+	tok_str("abc{def}ghi", false,
 		expect_style(ss::NORMAL, 3u);
 		expect_style(ss::OVERRIDE, 1u);
 		expect_style(ss::COMMENT, 3u);
@@ -138,7 +138,7 @@ TEST(lagi_syntax, comment) {
 }
 
 TEST(lagi_syntax, linebreak) {
-	tok_str("a\\Nb\\nc\\hd\\N\\N",
+	tok_str("a\\Nb\\nc\\hd\\N\\N", false,
 		expect_style(ss::NORMAL, 1u);
 		expect_style(ss::LINE_BREAK, 2u);
 		expect_style(ss::NORMAL, 1u);
@@ -147,5 +147,15 @@ TEST(lagi_syntax, linebreak) {
 		expect_style(ss::LINE_BREAK, 2u);
 		expect_style(ss::NORMAL, 1u);
 		expect_style(ss::LINE_BREAK, 4u);
+	);
+}
+
+TEST(lagi_syntax, fn_space) {
+	tok_str("{\\fnComic Sans MS}", false,
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::TAG, 2u);
+		expect_style(ss::PARAMETER, 13u);
+		expect_style(ss::OVERRIDE, 1u);
 	);
 }

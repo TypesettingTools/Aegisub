@@ -60,7 +60,6 @@ public:
 				case dt::ERROR:      SetStyling(len, ss::ERROR);      break;
 				case dt::ARG:        SetStyling(len, ss::PARAMETER);  break;
 				case dt::COMMENT:    SetStyling(len, ss::COMMENT);    break;
-				case dt::WHITESPACE: SetStyling(len, ss::NORMAL);     break;
 				case dt::DRAWING:    SetStyling(len, ss::DRAWING);    break;
 				case dt::TEXT:       SetStyling(len, ss::NORMAL);     break;
 				case dt::TAG_NAME:   SetStyling(len, ss::TAG);        break;
@@ -69,6 +68,12 @@ public:
 					break;
 				case dt::OVR_BEGIN: case dt::OVR_END:
 					SetStyling(len, ss::OVERRIDE);
+					break;
+				case dt::WHITESPACE:
+					if (ranges.size() && ranges.back().type == ss::PARAMETER)
+						SetStyling(len, ss::PARAMETER);
+					else
+						SetStyling(len, ss::NORMAL);
 					break;
 				case dt::WORD:
 					if (spellchecker && !spellchecker->CheckWord(text.substr(pos, len)))
