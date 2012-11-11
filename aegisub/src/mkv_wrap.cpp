@@ -119,7 +119,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 		}
 		// Process SRT
 		else {
-			blockString = wxString::Format("Dialogue: 0,%s,%s,%s", subStart.GetAssFormated(), subEnd.GetAssFormated(), blockString);
+			blockString = wxString::Format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s", subStart.GetAssFormated(), subEnd.GetAssFormated(), blockString);
 			blockString.Replace("\r\n","\\N");
 			blockString.Replace("\r","\\N");
 			blockString.Replace("\n","\\N");
