@@ -88,7 +88,7 @@ TEST(lagi_color, ass_style) {
 
 TEST(lagi_color, ssa) {
 	EXPECT_EQ(agi::Color(255, 255, 255), agi::Color("16777215"));
-	EXPECT_EQ(agi::Color(255, 255, 255), agi::Color("-1"));
+	EXPECT_EQ(agi::Color(255, 255, 255, 255), agi::Color("-1"));
 	EXPECT_EQ(agi::Color(127, 0, 255), agi::Color("16711807"));
 	EXPECT_EQ(agi::Color(48, 32, 16), agi::Color("1056816"));
 
