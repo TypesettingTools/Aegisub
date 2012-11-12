@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F934AB7B-186B-4E96-B20C-A58C38C1B819}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="MsysPath" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+
+  <PropertyGroup Label="ConfigArgs">
+    <CfgEnableDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-stripping</CfgEnableDebug>
+    <CfgEnableDebug Condition="'$(Configuration)' == 'Release'">--disable-debug</CfgEnableDebug>
+    <CfgArgs>
+      --disable-avfilter
+      --disable-avresample
+      --disable-bzlib
+      --disable-devices
+      --disable-doc
+      --disable-encoders
+      --disable-ffmpeg
+      --disable-ffplay
+      --disable-ffprobe
+      --disable-ffserver
+      --disable-filters
+      --disable-hwaccels
+      --disable-muxers
+      --disable-network
+      --disable-postproc
+      --disable-pthreads
+      --disable-shared
+      --disable-swresample
+      --enable-gpl
+      --enable-runtime-cpudetect
+      --enable-static
+      --extra-cflags=-D_SYSCRT
+      --toolchain=msvc
+      $(CfgEnableDebug)
+    </CfgArgs>
+  </PropertyGroup>
+
+  <Target Name="Configure">
+    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="$(AegisubObjectDir)\temp">
+      <Output TaskParameter="Result" PropertyName="CfgPrefix" />
+    </MsysPath>
+
+    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../include">
+      <Output TaskParameter="Result" PropertyName="CfgIncludePrefix" />
+    </MsysPath>
+
+    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../lib/$(Platform)/$(Configuration)">
+      <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
+    </MsysPath>
+
+    <ExecShellScript
+      Script="$(FfmpegSrcDir)\configure"
+      Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --incdir=$(CfgIncludePrefix)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+  </Target>
+
+  <Target Name="Build">
+    <Error Condition="!Exists('$(FfmpegSrcDir)')" Text="FFmpeg source not found at '$(FfmpegSrcDir)'" />
+
+    <CallTarget Targets="Configure" Condition="!Exists('$(AegisubObjectDir)\Makefile')" />
+
+    <ExecShellScript
+      Command="make"
+      Arguments="-j$(NUMBER_OF_PROCESSORS)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+
+    <ExecShellScript
+      Command="make install"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+  </Target>
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(AegisubObjectDir)" ContinueOnError="WarnAndContinue" />
+  </Target>
+
+  <Target Name="Rebuild">
+    <CallTarget Targets="Clean;Build" />
+  </Target>
+</Project>

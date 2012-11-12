@@ -96,9 +96,10 @@ type ExecShellScript() =
   member val Arguments = "" with get, set
 
   member private this.realArgs (props : Map<String, String>) =
+    let cleanArgs = this.Arguments.Replace("\r", "").Replace('\n', ' ')
     if this.Script.Length > 0
-    then sprintf "%s %s" (mungePath props.["ProjectDir"] this.Script) this.Arguments
-    else sprintf "-c '%s %s'" this.Command this.Arguments
+    then sprintf "%s %s" (mungePath props.["ProjectDir"] this.Script) cleanArgs
+    else sprintf "-c '%s %s'" this.Command cleanArgs
 
   override this.Execute() =
     try
