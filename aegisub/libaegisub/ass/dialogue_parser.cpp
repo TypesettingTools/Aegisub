@@ -186,7 +186,7 @@ public:
 		// all tokens after the last override block are TEXT
 		for (size_t i = tokens.size(); i > 0; --i) {
 			if (tokens[i - 1].type == dt::OVR_END) {
-				last_ovr_end = i - 1;
+				last_ovr_end = i;
 				break;
 			}
 		}
@@ -197,7 +197,7 @@ public:
 				case dt::LINE_BREAK: break;
 				case dt::TEXT: SplitText(i); break;
 				case dt::TAG_NAME:
-					if (i > last_ovr_end) {
+					if (i + 1 > last_ovr_end) {
 						SplitText(i);
 						break;
 					}
@@ -221,7 +221,7 @@ public:
 					}
 					break;
 				default:
-					if (i > last_ovr_end)
+					if (i + 1 > last_ovr_end)
 						SplitText(i);
 					break;
 			}

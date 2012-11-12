@@ -131,5 +131,13 @@ TEST(lagi_word_split, unclosed_ovr) {
 	EXPECT_EQ(dt::TEXT, tokens[1].type);
 	EXPECT_EQ(dt::TEXT, tokens[2].type);
 	EXPECT_EQ(dt::WORD, tokens[3].type);
+
+	text = "{";
+	tokens.clear();
+	tokens.emplace_back(dt::OVR_BEGIN, 1);
+
+	SplitWords(text, tokens);
+	ASSERT_EQ(1u, tokens.size());
+	EXPECT_EQ(dt::TEXT, tokens[0].type);
 }
 
