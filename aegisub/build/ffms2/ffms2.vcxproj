@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AA137613-96A1-4388-8905-71345B4F8F87}</ProjectGuid>
+    <RootNamespace>ffms2</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>dll</AegisubProjectType>
+  </PropertyGroup>
+
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>
+        $(FfmsSrcDir)\include;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>
+        FFMS_EXPORTS;
+        HAALISOURCE;
+        _CRT_SECURE_NO_WARNINGS;
+        _CRT_NONSTDC_NO_DEPRECATE;
+        _SCL_SECURE_NO_WARNINGS;
+        __STDC_CONSTANT_MACROS;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <Target Name="CopyHeaders" AfterTargets="ClCompile">
+    <Copy
+      SourceFiles="$(FfmsSrcDir)\include\ffms.h;$(FfmsSrcDir)\include\ffmscompat.h"
+      DestinationFolder="$(AegisubSourceBase)include"
+      SkipUnchangedFiles="true"
+      />
+  </Target>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <None Include="$(FfmsSrcDir)\src\avisynth\*.cpp" />
+    <None Include="$(FfmsSrcDir)\src\avisynth\*.h" />
+    <None Include="$(FfmsSrcDir)\src\vapoursynth\*.cpp" />
+    <None Include="$(FfmsSrcDir)\src\vapoursynth\*.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FfmsSrcDir)\src\config\libs.cpp" />
+    <ClCompile Include="$(FfmsSrcDir)\src\core\*.cpp" />
+    <ClCompile Include="$(FfmsSrcDir)\src\core\*.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FfmsSrcDir)\include\ffms.h" />
+    <ClInclude Include="$(FfmsSrcDir)\include\ffmscompat.h" />
+    <ClInclude Include="$(FfmsSrcDir)\src\config\msvc-config.h" />
+    <ClInclude Include="$(FfmsSrcDir)\src\core\*.h" />
+  </ItemGroup>
+</Project>

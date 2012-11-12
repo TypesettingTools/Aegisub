@@ -54,6 +54,9 @@
     <ProjectReference Include="..\csrihelper\csrihelper.vcxproj">
       <Project>{c832eaf3-860d-4373-a02c-933626b47a5e}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\ffms2\ffms2.vcxproj">
+      <Project>{aa137613-96a1-4388-8905-71345b4f8f87}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\fftw\fftw.vcxproj" Condition="Exists('$(FftwSrcDir)')">
       <Project>{ea3dcc95-2423-4ea0-a508-7a427b4c0594}</Project>
     </ProjectReference>
