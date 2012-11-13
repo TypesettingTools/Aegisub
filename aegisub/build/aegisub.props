@@ -43,4 +43,8 @@
          AdditionalLibraryDirectories value gets cleared (but nothing else).
          I'm not sure why. -->
     <Import Project="$(MSBuildThisFileDirectory)wx.props" Condition="'$(AegisubUseWxWidgets)' == 'true'" />
+
+    <ImportGroup Label="Targets">
+      <Import Project="$(MSBuildThisFileDirectory)install.targets" />
+    </ImportGroup>
 </Project>

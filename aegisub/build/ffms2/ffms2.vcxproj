@@ -68,15 +68,11 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
-  <Target Name="CopyHeaders" AfterTargets="ClCompile">
-    <Copy
-      SourceFiles="$(FfmsSrcDir)\include\ffms.h;$(FfmsSrcDir)\include\ffmscompat.h"
-      DestinationFolder="$(AegisubSourceBase)include"
-      SkipUnchangedFiles="true"
-      />
-  </Target>
-
   <!-- Source files -->
+  <ItemGroup>
+    <InstallHeader Include="$(FfmsSrcDir)\include\ffms.h" />
+    <InstallHeader Include="$(FfmsSrcDir)\include\ffmscompat.h" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="$(FfmsSrcDir)\src\avisynth\*.cpp" />
     <None Include="$(FfmsSrcDir)\src\avisynth\*.h" />

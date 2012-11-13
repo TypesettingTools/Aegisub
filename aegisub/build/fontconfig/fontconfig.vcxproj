@@ -46,15 +46,14 @@
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
     </ClCompile>
-    <PostBuildEvent>
-      <Command>
-        md $(AegisubSourceBase)\include\fontconfig 2&gt; NUL
-        copy $(FontconfigSrcDir)\fontconfig\*.h $(AegisubSourceBase)\include\fontconfig
-      </Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
 
   <!-- Source files -->
+  <ItemGroup>
+    <InstallHeader Include="$(FontconfigSrcDir)\fontconfig\*.h">
+      <Destination>fontconfig\</Destination>
+    </InstallHeader>
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(FontconfigSrcDir)\win32\src\dirent.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcatomic.c" />
