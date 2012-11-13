@@ -46,8 +46,8 @@ MRUManager::MRUManager(std::string const& config, std::string const& default_con
 	LOG_D("agi/mru") << "Loading MRU List";
 
 	json::Object root(json_util::file(config, default_config));
-	for (json::Object::const_iterator it(root.begin()); it != root.end(); ++it)
-		Load(it->first, it->second);
+	for (auto const& it : root)
+		Load(it.first, it.second);
 }
 
 MRUManager::~MRUManager() {
@@ -93,9 +93,9 @@ std::string const& MRUManager::GetEntry(std::string const& key, const size_t ent
 void MRUManager::Flush() {
 	json::Object out;
 
-	for (MRUMap::const_iterator i = mru.begin(); i != mru.end(); ++i) {
-		json::Array &array = out[i->first];
-		copy(i->second.begin(), i->second.end(), std::back_inserter(array));
+	for (auto const& mru_map : mru) {
+		json::Array &array = out[mru_map.first];
+		array.insert(array.end(), mru_map.second.begin(), mru_map.second.end());
 	}
 
 	json::Writer::Write(out, io::Save(config_name).Get());
@@ -106,7 +106,7 @@ void MRUManager::Flush() {
 void MRUManager::Prune(std::string const& key, MRUListMap& map) const {
 	size_t limit = 16u;
 	if (options) {
-		std::map<const std::string, std::string>::const_iterator it = option_names.find(key);
+		auto it = option_names.find(key);
 		if (it != option_names.end())
 			limit = (size_t)options->Get(it->second)->GetInt();
 	}

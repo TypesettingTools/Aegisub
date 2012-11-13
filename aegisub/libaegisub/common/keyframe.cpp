@@ -30,6 +30,9 @@
 #include "libaegisub/keyframe.h"
 #include "libaegisub/vfr.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/algorithm.hpp>
+
 namespace {
 std::vector<int> agi_keyframes(std::istream &file) {
 	double fps;
@@ -37,9 +40,7 @@ std::vector<int> agi_keyframes(std::istream &file) {
 	file >> fps_str;
 	file >> fps;
 
-	std::vector<int> ret;
-	copy(std::istream_iterator<int>(file), std::istream_iterator<int>(), back_inserter(ret));
-	return ret;
+	return std::vector<int>(std::istream_iterator<int>(file), std::istream_iterator<int>());
 }
 
 std::vector<int> other_keyframes(std::istream &file, char (*func)(std::string const&)) {
@@ -48,12 +49,10 @@ std::vector<int> other_keyframes(std::istream &file, char (*func)(std::string co
 	agi::line_iterator<std::string> end;
 	for (agi::line_iterator<std::string> iter(file); iter != end; ++iter) {
 		char c = tolower(func(*iter));
-		if (c == 'i') {
+		if (c == 'i')
 			ret.push_back(count++);
-		}
-		else if (c == 'p' || c == 'b') {
+		else if (c == 'p' || c == 'b')
 			++count;
-		}
 	}
 	return ret;
 }
@@ -77,34 +76,28 @@ char x264(std::string const& line) {
 	if (pos == line.npos || pos + 5 >= line.size()) return 0;
 	return line[pos + 5];
 }
-
-template<int N>
-bool starts_with(std::string const& str, const char (&test)[N]) {
-	if (str.size() < N) return false;
-	return std::mismatch(str.begin(), str.begin() + N - 1, test).first == str.begin() + N - 1;
-}
 }
 
 namespace agi { namespace keyframe {
-	void Save(std::string const& filename, std::vector<int> const& keyframes) {
+void Save(std::string const& filename, std::vector<int> const& keyframes) {
 	io::Save file(filename);
 	std::ofstream& of = file.Get();
 	of << "# keyframe format v1" << std::endl;
 	of << "fps " << 0 << std::endl;
-	copy(keyframes.begin(), keyframes.end(), std::ostream_iterator<int>(of, "\n"));
+	boost::copy(keyframes, std::ostream_iterator<int>(of, "\n"));
 }
 
 std::vector<int> Load(std::string const& filename) {
-	std::auto_ptr<std::ifstream> file(io::Open(filename));
-	std::istream &is(*file.get());
+	std::unique_ptr<std::ifstream> file(io::Open(filename));
+	std::istream &is(*file);
 
 	std::string header;
-	std::getline(is, header);
+	getline(is, header);
 
 	if (header == "# keyframe format v1") return agi_keyframes(is);
-	if (starts_with(header, "# XviD 2pass stat file")) return other_keyframes(is, xvid);
-	if (starts_with(header, "##map version")) return other_keyframes(is, divx);
-	if (starts_with(header, "#options:")) return other_keyframes(is, x264);
+	if (boost::starts_with(header, "# XviD 2pass stat file")) return other_keyframes(is, xvid);
+	if (boost::starts_with(header, "##map version")) return other_keyframes(is, divx);
+	if (boost::starts_with(header, "#options:")) return other_keyframes(is, x264);
 
 	throw Error("Unknown keyframe format");
 }

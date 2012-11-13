@@ -22,13 +22,11 @@ namespace agi {
 	namespace charset {
 
 std::string Detect(const std::string &file) {
-	UCDetect ucd(file);
-	return ucd.Single();
+	return UCDetect(file).Single();
 }
 
 void DetectAll(const std::string& file, CharsetListDetected &list) {
-	UCDetect ucd(file);
-	ucd.List(list);
+	UCDetect(file).List(list);
 }
 
 	} // namespace util

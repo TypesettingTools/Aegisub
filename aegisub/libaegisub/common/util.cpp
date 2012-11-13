@@ -24,31 +24,26 @@
 #include <locale>
 #endif
 
-
 #include "libaegisub/util.h"
+
+#include <boost/algorithm/string/case_conv.hpp>
 
 namespace agi {
 	namespace util {
 
-
 void str_lower(std::string &str) {
-	std::locale loc;
-	for (size_t i=0; i < str.length(); ++i) {
-		str[i] = std::tolower(str[i], loc);
-	}
+	boost::to_lower(str);
 }
-
 
 int strtoi(std::string &str) {
 	errno = 0;
-	long l = strtol(str.c_str(), NULL, 10);
+	long l = strtol(str.c_str(), nullptr, 10);
 
 	if ((errno == ERANGE) || (l < INT_MIN) || (l > INT_MAX))
 		return 0;
 
 	return (int)l;
 }
-
 
 	} // namespace util
 } // namespace agi

@@ -105,7 +105,7 @@ void Check(const std::string &file, acs::Type type) {
 
 	SECURITY_INFORMATION info = OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION;
 	DWORD len = 0;
-	GetFileSecurity(wfile.c_str(), info, NULL, 0, &len);
+	GetFileSecurity(wfile.c_str(), info, nullptr, 0, &len);
 	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 		LOG_W("acs/check") << "GetFileSecurity: fatal: " << util::ErrorString(GetLastError());
 

@@ -60,9 +60,9 @@ void Rename(const std::string& from, const std::string& to) {
 }
 
 std::string ErrorString(DWORD error) {
-	LPWSTR lpstr = NULL;
+	LPWSTR lpstr = nullptr;
 
-	if(FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, error, 0, reinterpret_cast<LPWSTR>(&lpstr), 0, NULL) == 0) {
+	if(FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, error, 0, reinterpret_cast<LPWSTR>(&lpstr), 0, nullptr) == 0) {
 		/// @todo Return the actual 'unknown error' string from windows.
 		return "Unknown Error";
 	}

@@ -33,18 +33,14 @@
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
 
+#include <boost/algorithm/string/join.hpp>
+#include <boost/range/adaptor/map.hpp>
+
 namespace agi {
 	namespace hotkey {
 
 std::string Combo::Str() const {
-	if (key_map.empty()) return "";
-
-	std::string str(key_map[0]);
-	str.reserve(str.size() + (key_map.size() - 1) * 2);
-	for (unsigned int i=1; i < key_map.size(); i++) {
-		str.append("-" + key_map[i]);
-	}
-	return str;
+	return boost::algorithm::join(key_map, "-");
 }
 
 std::string Combo::StrMenu() const {
@@ -52,8 +48,8 @@ std::string Combo::StrMenu() const {
 }
 
 void Hotkey::ComboInsert(Combo const& combo) {
-	str_map.insert(std::make_pair(combo.Str(), combo));
-	cmd_map.insert(std::make_pair(combo.CmdName(), combo));
+	str_map.insert(make_pair(combo.Str(), combo));
+	cmd_map.insert(make_pair(combo.CmdName(), combo));
 }
 
 Hotkey::Hotkey(const std::string &file, const std::string &default_config)
@@ -62,29 +58,28 @@ Hotkey::Hotkey(const std::string &file, const std::string &default_config)
 	LOG_D("hotkey/init") << "Generating hotkeys.";
 
 	json::Object object(agi::json_util::file(config_file, default_config));
-	for (json::Object::const_iterator index(object.begin()); index != object.end(); ++index)
-		BuildHotkey(index->first, index->second);
+	for (auto const& hotkey_context : object)
+		BuildHotkey(hotkey_context.first, hotkey_context.second);
 }
 
+void Hotkey::BuildHotkey(std::string const& context, json::Object const& hotkeys) {
+	for (auto const& command : hotkeys) {
+		const json::Array& command_hotkeys = command.second;
 
-void Hotkey::BuildHotkey(std::string const& context, const json::Object& object) {
-	for (json::Object::const_iterator index(object.begin()); index != object.end(); ++index) {
-		const json::Array& array = index->second;
-
-		for (json::Array::const_iterator arr_index(array.begin()); arr_index != array.end(); ++arr_index) {
+		for (auto const& hotkey : command_hotkeys) {
 			std::vector<std::string> keys;
 
 			try {
-				const json::Array& arr_mod = (*arr_index)["modifiers"];
+				const json::Array& arr_mod = hotkey["modifiers"];
 				keys.reserve(arr_mod.size() + 1);
 				copy(arr_mod.begin(), arr_mod.end(), back_inserter(keys));
-				keys.push_back((*arr_index)["key"]);
+				keys.push_back(hotkey["key"]);
 			}
 			catch (json::Exception const& e) {
-				LOG_E("agi/hotkey/load") << "Failed loading hotkey for command '" << index->first << "': " << e.what();
+				LOG_E("agi/hotkey/load") << "Failed loading hotkey for command '" << command.first << "': " << e.what();
 			}
 
-			ComboInsert(Combo(context, index->first, keys));
+			ComboInsert(Combo(context, command.first, keys));
 		}
 	}
 }
@@ -151,18 +146,16 @@ std::string Hotkey::GetHotkey(const std::string &context, const std::string &com
 void Hotkey::Flush() {
 	json::Object root;
 
-	for (HotkeyMap::iterator index = str_map.begin(); index != str_map.end(); ++index) {
-		std::vector<std::string> const& combo_map(index->second.Get());
-
+	for (auto const& combo : str_map | boost::adaptors::map_values) {
 		json::Object hotkey;
-		if (combo_map.size()) {
-			hotkey["key"] = combo_map.back();
+		if (combo.Get().size()) {
+			hotkey["key"] = combo.Get().back();
 			json::Array& modifiers = hotkey["modifiers"];
-			copy(combo_map.begin(), combo_map.end() - 1, std::back_inserter(modifiers));
+			modifiers.insert(modifiers.end(), combo.Get().begin(), combo.Get().end() - 1);
 		}
 
-		json::Array& combo_array = root[index->second.Context()][index->second.CmdName()];
-		combo_array.push_back(hotkey);
+		json::Array& combo_array = root[combo.Context()][combo.CmdName()];
+		combo_array.push_back(std::move(hotkey));
 	}
 
 	io::Save file(config_file);
@@ -173,8 +166,8 @@ void Hotkey::SetHotkeyMap(HotkeyMap const& new_map) {
 	cmd_map = new_map;
 
 	str_map.clear();
-	for (HotkeyMap::iterator it = cmd_map.begin(); it != cmd_map.end(); ++it)
-		str_map.insert(make_pair(it->second.Str(), it->second));
+	for (auto const& combo : cmd_map | boost::adaptors::map_values)
+		str_map.insert(make_pair(combo.Str(), combo));
 
 	Flush();
 	HotkeysChanged();

@@ -65,7 +65,7 @@ namespace {
 #			undef ADD
 		}
 
-		std::map<const char*, const char*, ltstr>::iterator real = pretty_names.find(name);
+		auto real = pretty_names.find(name);
 		if (real != pretty_names.end())
 			return real->second;
 		return name;
@@ -146,16 +146,14 @@ namespace {
 		{
 			const char *dstEnc = get_real_encoding_name(destEncoding);
 			cd = iconv_open(dstEnc, "UTF-8");
-			if (cd == iconv_invalid) {
+			if (cd == iconv_invalid)
 				throw agi::charset::UnsupportedConversion(std::string(dstEnc) + " is not a supported character set");
-			}
 
 			bomSize = get_bom_size(cd);
 			iconv_close(cd);
 			cd = iconv_open(dstEnc, get_real_encoding_name(sourceEncoding));
-			if (cd == iconv_invalid) {
+			if (cd == iconv_invalid)
 				throw agi::charset::UnsupportedConversion(std::string("Cannot convert from ") + sourceEncoding + " to " + destEncoding);
-			}
 		}
 		~ConverterImpl() {
 			if (cd != iconv_invalid) iconv_close(cd);
@@ -232,10 +230,10 @@ namespace {
 
 			if (subst) {
 				data = this;
-				mb_to_uc_fallback = NULL;
-				mb_to_wc_fallback = NULL;
+				mb_to_uc_fallback = nullptr;
+				mb_to_wc_fallback = nullptr;
 				uc_to_mb_fallback = fallback;
-				wc_to_mb_fallback = NULL;
+				wc_to_mb_fallback = nullptr;
 
 				int transliterate = 1;
 				iconvctl(cd, ICONV_SET_TRANSLITERATE, &transliterate);
@@ -316,7 +314,7 @@ void IconvWrapper::Convert(std::string const& source, std::string &dest) {
 		char *dst = buff;
 		size_t dstLen = sizeof(buff);
 		res = conv->Convert(&src, &srcLen, &dst, &dstLen);
-		if (res == 0) conv->Convert(NULL, NULL, &dst, &dstLen);
+		if (res == 0) conv->Convert(nullptr, nullptr, &dst, &dstLen);
 
 		dest.append(buff, sizeof(buff) - dstLen);
 	} while (res == iconv_failed && errno == E2BIG);
@@ -341,13 +339,11 @@ void IconvWrapper::Convert(std::string const& source, std::string &dest) {
 }
 
 size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, size_t destSize) {
-	if (sourceSize == (size_t)-1) {
+	if (sourceSize == (size_t)-1)
 		sourceSize = SrcStrLen(source);
-	}
 
-	
 	size_t res = conv->Convert(&source, &sourceSize, &dest, &destSize);
-	if (res == 0) res = conv->Convert(NULL, NULL, &dest, &destSize);
+	if (res == 0) res = conv->Convert(nullptr, nullptr, &dest, &destSize);
 
 	if (res == iconv_failed) {
 		switch (errno) {
@@ -390,7 +386,7 @@ size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
 		char* dst = buff;
 		size_t dstSize = sizeof(buff);
 		res = conv->Convert(&src, &srcLen, &dst, &dstSize);
-		conv->Convert(NULL, NULL, &dst, &dstSize);
+		conv->Convert(nullptr, nullptr, &dst, &dstSize);
 
 		charsWritten += dst - buff;
 	} while (res == iconv_failed && errno == E2BIG);

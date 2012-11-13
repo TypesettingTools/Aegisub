@@ -115,7 +115,7 @@ namespace detail {
 		/// Used by the signal when the signal wishes to end a connection (such
 		/// as if the signal is being destroyed while slots are still connected
 		/// to it)
-		void DisconnectToken(ConnectionToken *tok) { tok->signal = NULL; }
+		void DisconnectToken(ConnectionToken *tok) { tok->signal = nullptr; }
 
 		/// @brief Has a token been claimed by a scoped connection object?
 		bool TokenClaimed(ConnectionToken *tok) { return tok->claimed; }
@@ -129,7 +129,7 @@ namespace detail {
 
 	inline void ConnectionToken::Disconnect() {
 		if (signal) signal->Disconnect(this);
-		signal = NULL;
+		signal = nullptr;
 	}
 
 	/// @brief Templated common code for signals
@@ -176,7 +176,7 @@ namespace detail {
 }
 
 #define SIGNALS_H_FOR_EACH_SIGNAL(...) \
-	for (typename super::SlotMap::iterator cur = slots.begin(); cur != slots.end();) { \
+	for (auto cur = slots.begin(); cur != slots.end();) { \
 		if (Blocked(cur->first)) \
 			++cur; \
 		else \
@@ -261,16 +261,11 @@ class Signal<void> : public detail::SignalBaseImpl<std::function<void ()> > {
 	using super::slots;
 public:
 	Signal() { }
-// Work around compilters that can't tell this is a template context due to it
-// being fully specified, making typename invalid here.
-#define typename
-
 	/// @brief Trigger this signal
 	///
 	/// The order in which connected slots are called is undefined and should
 	/// not be relied on
 	void operator()() { SIGNALS_H_FOR_EACH_SIGNAL() }
-#undef typename
 };
 
 #undef SIGNALS_H_FOR_EACH_SIGNAL

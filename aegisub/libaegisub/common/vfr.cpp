@@ -32,6 +32,8 @@
 #include "libaegisub/line_iterator.h"
 #include "libaegisub/scoped_ptr.h"
 
+#include <boost/range/algorithm.hpp>
+
 namespace std {
 	template<> void swap(agi::vfr::Framerate &lft, agi::vfr::Framerate &rgt) {
 		lft.swap(rgt);
@@ -43,27 +45,20 @@ static const int64_t default_denominator = 1000000000;
 namespace agi {
 namespace vfr {
 
-static int is_increasing(int prev, int cur) {
-	if (prev > cur)
-		throw UnorderedTimecodes("Timecodes are out of order");
-	return cur;
-}
-
 /// @brief Verify that timecodes monotonically increase
 /// @param timecodes List of timecodes to check
 static void validate_timecodes(std::vector<int> const& timecodes) {
-	if (timecodes.size() <= 1) {
+	if (timecodes.size() <= 1)
 		throw TooFewTimecodes("Must have at least two timecodes to do anything useful");
-	}
-	std::accumulate(timecodes.begin()+1, timecodes.end(), timecodes.front(), is_increasing);
+	if (!is_sorted(timecodes.begin(), timecodes.end()))
+		throw UnorderedTimecodes("Timecodes are out of order");
 }
 
 /// @brief Shift timecodes so that frame 0 starts at time 0
 /// @param timecodes List of timecodes to normalize
 static void normalize_timecodes(std::vector<int> &timecodes) {
-	if (int front = timecodes.front()) {
-		std::transform(timecodes.begin(), timecodes.end(), timecodes.begin(), std::bind2nd(std::minus<int>(), front));
-	}
+	if (int front = timecodes.front())
+		boost::for_each(timecodes, [=](int &tc) { tc -= front; });
 }
 
 // A "start,end,fps" line in a v1 timecode file
@@ -74,7 +69,8 @@ struct TimecodeRange {
 	bool operator<(TimecodeRange const& cmp) const {
 		return start < cmp.start;
 	}
-	TimecodeRange() : fps(0.) { }
+	TimecodeRange(int start=0, int end=0, double fps=0.)
+	: start(start), end(end), fps(fps) { }
 };
 
 /// @brief Parse a single line of a v1 timecode file
@@ -87,29 +83,19 @@ static TimecodeRange v1_parse_line(std::string const& str) {
 	TimecodeRange range;
 	char comma1, comma2;
 	ss >> range.start >> comma1 >> range.end >> comma2 >> range.fps;
-	if (ss.fail() || comma1 != ',' || comma2 != ',' || !ss.eof()) {
+	if (ss.fail() || comma1 != ',' || comma2 != ',' || !ss.eof())
 		throw MalformedLine(str);
-	}
-	if (range.start < 0 || range.end < 0) {
+	if (range.start < 0 || range.end < 0)
 		throw UnorderedTimecodes("Cannot specify frame rate for negative frames.");
-	}
-	if (range.end < range.start) {
+	if (range.end < range.start)
 		throw UnorderedTimecodes("End frame must be greater than or equal to start frame");
-	}
-	if (range.fps <= 0.) {
+	if (range.fps <= 0.)
 		throw BadFPS("FPS must be greater than zero");
-	}
-	if (range.fps > 1000.) {
+	if (range.fps > 1000.)
 		// This is our limitation, not mkvmerge's
 		// mkvmerge uses nanoseconds internally
 		throw BadFPS("FPS must be at most 1000");
-	}
 	return range;
-}
-
-/// @brief Is the timecode range a comment line?
-static bool v1_invalid_timecode(TimecodeRange const& range) {
-	return range.fps == 0.;
 }
 
 /// @brief Generate override ranges for all frames with assumed fpses
@@ -117,27 +103,18 @@ static bool v1_invalid_timecode(TimecodeRange const& range) {
 /// @param fps    Assumed fps to use for gaps
 static void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
 	// Range for frames between start and first override
-	if (ranges.empty() || ranges.front().start > 0) {
-		TimecodeRange range;
-		range.fps = fps;
-		range.start = 0;
-		range.end = ranges.empty() ? 0 : ranges.front().start - 1;
-		ranges.push_front(range);
-	}
+	if (ranges.empty() || ranges.front().start > 0)
+		ranges.emplace_front(0, ranges.empty() ? 0 : ranges.front().start - 1, fps);
+
 	std::list<TimecodeRange>::iterator cur = ++ranges.begin();
 	std::list<TimecodeRange>::iterator prev = ranges.begin();
 	for (; cur != ranges.end(); ++cur, ++prev) {
-		if (prev->end >= cur->start) {
+		if (prev->end >= cur->start)
 			// mkvmerge allows overlapping timecode ranges, but does completely
 			// broken things with them
 			throw UnorderedTimecodes("Override ranges must not overlap");
-		}
 		if (prev->end + 1 < cur->start) {
-			TimecodeRange range;
-			range.fps = fps;
-			range.start = prev->end + 1;
-			range.end = cur->start - 1;
-			ranges.insert(cur, range);
+			ranges.emplace(cur, prev->end + 1, cur->start -1, fps);
 			++prev;
 		}
 	}
@@ -150,24 +127,23 @@ static void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
 /// @param[out] last      Unrounded time of the last frame
 /// @return Assumed fps times one million
 static int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<int> &timecodes, int64_t &last) {
-	using namespace std;
 	double fps = atof(line.substr(7).c_str());
 	if (fps <= 0.) throw BadFPS("Assumed FPS must be greater than zero");
 	if (fps > 1000.) throw BadFPS("Assumed FPS must not be greater than 1000");
 
-	list<TimecodeRange> ranges;
-	transform(file, line_iterator<string>(), back_inserter(ranges), v1_parse_line);
-	ranges.erase(remove_if(ranges.begin(), ranges.end(), v1_invalid_timecode), ranges.end());
+	std::list<TimecodeRange> ranges;
+	transform(file, line_iterator<std::string>(), back_inserter(ranges), v1_parse_line);
+	ranges.erase(boost::remove_if(ranges, [](TimecodeRange const& r) { return r.fps == 0; }), ranges.end());
 
 	ranges.sort();
 	v1_fill_range_gaps(ranges, fps);
 	timecodes.reserve(ranges.back().end);
 
 	double time = 0.;
-	for (list<TimecodeRange>::iterator cur = ranges.begin(); cur != ranges.end(); ++cur) {
-		for (int frame = cur->start; frame <= cur->end; frame++) {
+	for (auto const& range : ranges) {
+		for (int frame = range.start; frame <= range.end; ++frame) {
 			timecodes.push_back(int(time + .5));
-			time += 1000. / cur->fps;
+			time += 1000. / range.fps;
 		}
 	}
 	timecodes.push_back(int(time + .5));
@@ -229,20 +205,18 @@ Framerate::Framerate(std::string const& filename)
 : denominator(default_denominator)
 , numerator(0)
 {
-	using namespace std;
-	scoped_ptr<ifstream> file(agi::io::Open(filename));
-	string encoding = agi::charset::Detect(filename);
-	string line = *line_iterator<string>(*file, encoding);
+	scoped_ptr<std::ifstream> file(agi::io::Open(filename));
+	std::string encoding = agi::charset::Detect(filename);
+	std::string line = *line_iterator<std::string>(*file, encoding);
 	if (line == "# timecode format v2") {
 		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
 		SetFromTimecodes();
 		return;
 	}
 	if (line == "# timecode format v1" || line.substr(0, 7) == "Assume ") {
-		if (line[0] == '#') {
-			line = *line_iterator<string>(*file, encoding);
-		}
-		numerator = v1_parse(line_iterator<string>(*file, encoding), line, timecodes, last);
+		if (line[0] == '#')
+			line = *line_iterator<std::string>(*file, encoding);
+		numerator = v1_parse(line_iterator<std::string>(*file, encoding), line, timecodes, last);
 		return;
 	}
 
@@ -254,10 +228,9 @@ void Framerate::Save(std::string const& filename, int length) const {
 	std::ofstream &out = file.Get();
 
 	out << "# timecode format v2\n";
-	std::copy(timecodes.begin(), timecodes.end(), std::ostream_iterator<int>(out, "\n"));
-	for (int written = (int)timecodes.size(); written < length; ++written) {
+	boost::copy(timecodes, std::ostream_iterator<int>(out, "\n"));
+	for (int written = (int)timecodes.size(); written < length; ++written)
 		out << TimeAtFrame(written) << std::endl;
-	}
 }
 
 int Framerate::FrameAtTime(int ms, Time type) const {
@@ -274,12 +247,10 @@ int Framerate::FrameAtTime(int ms, Time type) const {
 	// Combining these allows us to easily calculate START and END in terms of
 	// EXACT
 
-	if (type == START) {
+	if (type == START)
 		return FrameAtTime(ms - 1) + 1;
-	}
-	if (type == END) {
+	if (type == END)
 		return FrameAtTime(ms - 1);
-	}
 
 	if (ms < 0)
 		return int((ms * numerator / denominator - 999) / 1000);

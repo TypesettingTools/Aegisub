@@ -34,6 +34,8 @@
 #include "libaegisub/types.h"
 #include "libaegisub/util.h"
 
+#include <boost/range/algorithm.hpp>
+
 namespace agi {
 	namespace log {
 
@@ -53,7 +55,7 @@ SinkMessage::SinkMessage(const char *section, Severity severity,
 , func(func)
 , line(line)
 , tv(tv)
-, message(NULL)
+, message(nullptr)
 , len(0)
 {
 }
@@ -75,11 +77,7 @@ LogSink::~LogSink() {
 
 void LogSink::log(SinkMessage *sm) {
 	sink.push_back(sm);
-
-	for_each(
-		emitters.begin(),
-		emitters.end(),
-		bind2nd(std::mem_fun(&Emitter::log), sm));
+	boost::for_each(emitters, [=](Emitter *em) { em->log(sm); });
 }
 
 void LogSink::Subscribe(Emitter *em) {
@@ -139,7 +137,7 @@ JsonEmitter::~JsonEmitter() {
 		entry["line"]     = sink[i]->line;
 		entry["message"]  = std::string(sink[i]->message, sink[i]->len);
 
-		array.push_back(entry);
+		array.push_back(std::move(entry));
 	}
 
 	json::Array &timeval_open = root["timeval"]["open"];

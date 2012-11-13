@@ -50,14 +50,12 @@ void ConfigVisitor::Error(const char *message) {
 }
 
 void ConfigVisitor::Visit(const json::Object& object) {
-	json::Object::const_iterator index(object.begin()), index_end(object.end());
-
 	if (!name.empty())
 		name += "/";
 
-	for (; index != index_end; ++index) {
-		ConfigVisitor config_visitor(values, name + index->first, ignore_errors, replace);
-		index->second.Accept(config_visitor);
+	for (auto const& obj : object) {
+		ConfigVisitor config_visitor(values, name + obj.first, ignore_errors, replace);
+		obj.second.Accept(config_visitor);
 	}
 }
 
@@ -66,9 +64,7 @@ OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const&
 	std::vector<ValueType> arr;
 	arr.reserve(src.size());
 
-	for (json::Array::const_iterator it = src.begin(); it != src.end(); ++it) {
-		json::Object const& obj = *it;
-
+	for (json::Object const& obj : src) {
 		if (obj.size() != 1) {
 			Error<OptionJsonValueArray>("Invalid array member");
 			return 0;

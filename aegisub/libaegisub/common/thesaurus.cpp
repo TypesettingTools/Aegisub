@@ -22,22 +22,15 @@
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
 
+#include <boost/algorithm/string.hpp>
+#include <boost/phoenix/operator/comparison.hpp>
+#include <boost/phoenix/core/argument.hpp>
+
 #ifndef LAGI_PRE
 #include <cstdlib>
 #endif
 
-template<class String, class Char, class Container>
-static void split(String const& str, Char sep, Container *out) {
-	typename String::size_type pos, prev = 0;
-	out->reserve(2);
-	while ((pos = str.find(sep, prev)) != String::npos) {
-		if (pos > prev)
-			out->push_back(str.substr(prev, pos - prev));
-		prev = pos + 1;
-	}
-	if (prev < str.size())
-		out->push_back(str.substr(prev));
-}
+using boost::phoenix::placeholders::_1;
 
 namespace agi {
 
@@ -54,10 +47,9 @@ Thesaurus::Thesaurus(std::string const& dat_path, std::string const& idx_path)
 	// Read the list of words and file offsets for those words
 	for (line_iterator<std::string> iter(*idx, encoding_name), end; iter != end; ++iter) {
 		std::vector<std::string> chunks;
-		split(*iter, '|', &chunks);
-		if (chunks.size() == 2) {
+		boost::split(chunks, *iter, _1 == '|');
+		if (chunks.size() == 2)
 			offsets[chunks[0]] = atoi(chunks[1].c_str());
-		}
 	}
 
 	conv.reset(new charset::IconvWrapper(encoding_name.c_str(), "utf-8"));
@@ -67,9 +59,10 @@ Thesaurus::~Thesaurus() { }
 
 void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	out->clear();
+	if (!dat.get()) return;
 
 	std::map<std::string, int>::const_iterator it = offsets.find(word);
-	if (!dat.get() || it == offsets.end()) return;
+	if (it == offsets.end()) return;
 
 	dat->seekg(it->second, std::ios::beg);
 	if (!dat->good()) return;
@@ -78,7 +71,7 @@ void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	std::string temp;
 	getline(*dat, temp);
 	std::vector<std::string> header;
-	split(conv->Convert(temp), '|', &header);
+	boost::split(header, conv->Convert(temp), _1 == '|');
 	if (header.size() != 2) return;
 	int meanings = atoi(header[1].c_str());
 
@@ -86,7 +79,7 @@ void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	for (int i = 0; i < meanings; ++i) {
 		std::vector<std::string> line;
 		getline(*dat, temp);
-		split(conv->Convert(temp), '|', &line);
+		boost::split(line, conv->Convert(temp), _1 == '|');
 
 		// The "definition" is just the part of speech plus the word it's
 		// giving synonyms for (which may not be the passed word)

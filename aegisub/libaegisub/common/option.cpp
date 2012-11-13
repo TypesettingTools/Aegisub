@@ -38,6 +38,8 @@
 
 #include "option_visit.h"
 
+#include <boost/range/adaptor/map.hpp>
+
 namespace {
 	/// @brief Write an option to a json object
 	/// @param[out] obj  Parent object
@@ -50,12 +52,8 @@ namespace {
 			assert(obj.find(path) == obj.end());
 			obj[path] = value;
 		}
-		else {
-			put_option(
-				obj[path.substr(0, pos)],
-				path.substr(pos + 1),
-				value);
-		}
+		else
+			put_option(obj[path.substr(0, pos)], path.substr(pos + 1), value);
 	}
 
 	template<class T>
@@ -80,13 +78,11 @@ Options::Options(const std::string &file, const std::string& default_config, con
 }
 
 Options::~Options() {
-	if ((setting & FLUSH_SKIP) != FLUSH_SKIP) {
+	if ((setting & FLUSH_SKIP) != FLUSH_SKIP)
 		Flush();
-	}
 
-	for (OptionValueMap::iterator i = values.begin(); i != values.end(); i++) {
-		delete i->second;
-	}
+	for (auto option_value : values | boost::adaptors::map_values)
+		delete option_value;
 }
 
 void Options::ConfigNext(std::istream& stream) {
@@ -94,7 +90,7 @@ void Options::ConfigNext(std::istream& stream) {
 }
 
 void Options::ConfigUser() {
-	std::auto_ptr<std::istream> stream;
+	std::unique_ptr<std::istream> stream;
 
 	try {
 		stream.reset(agi::io::Open(config_file));
@@ -125,9 +121,8 @@ void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
 }
 
 OptionValue* Options::Get(const std::string &name) {
-	OptionValueMap::iterator index;
-
-	if ((index = values.find(name)) != values.end())
+	auto index = values.find(name);
+	if (index != values.end())
 		return index->second;
 
 	LOG_E("option/get") << "agi::Options::Get Option not found: (" << name << ")";
@@ -137,46 +132,46 @@ OptionValue* Options::Get(const std::string &name) {
 void Options::Flush() {
 	json::Object obj_out;
 
-	for (OptionValueMap::const_iterator i = values.begin(); i != values.end(); ++i) {
-		switch (i->second->GetType()) {
+	for (auto const& ov : values) {
+		switch (ov.second->GetType()) {
 			case OptionValue::Type_String:
-				put_option(obj_out, i->first, i->second->GetString());
+				put_option(obj_out, ov.first, ov.second->GetString());
 				break;
 
 			case OptionValue::Type_Int:
-				put_option(obj_out, i->first, i->second->GetInt());
+				put_option(obj_out, ov.first, ov.second->GetInt());
 				break;
 
 			case OptionValue::Type_Double:
-				put_option(obj_out, i->first, i->second->GetDouble());
+				put_option(obj_out, ov.first, ov.second->GetDouble());
 				break;
 
 			case OptionValue::Type_Color:
-				put_option(obj_out, i->first, i->second->GetColor().GetRgbFormatted());
+				put_option(obj_out, ov.first, ov.second->GetColor().GetRgbFormatted());
 				break;
 
 			case OptionValue::Type_Bool:
-				put_option(obj_out, i->first, i->second->GetBool());
+				put_option(obj_out, ov.first, ov.second->GetBool());
 				break;
 
 			case OptionValue::Type_List_String:
-				put_array(obj_out, i->first, "string", i->second->GetListString());
+				put_array(obj_out, ov.first, "string", ov.second->GetListString());
 				break;
 
 			case OptionValue::Type_List_Int:
-				put_array(obj_out, i->first, "int", i->second->GetListInt());
+				put_array(obj_out, ov.first, "int", ov.second->GetListInt());
 				break;
 
 			case OptionValue::Type_List_Double:
-				put_array(obj_out, i->first, "double", i->second->GetListDouble());
+				put_array(obj_out, ov.first, "double", ov.second->GetListDouble());
 				break;
 
 			case OptionValue::Type_List_Color:
-				put_array(obj_out, i->first, "color", i->second->GetListColor());
+				put_array(obj_out, ov.first, "color", ov.second->GetListColor());
 				break;
 
 			case OptionValue::Type_List_Bool:
-				put_array(obj_out, i->first, "bool", i->second->GetListBool());
+				put_array(obj_out, ov.first, "bool", ov.second->GetListBool());
 				break;
 		}
 	}
