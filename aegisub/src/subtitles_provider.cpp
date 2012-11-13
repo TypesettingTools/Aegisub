@@ -80,4 +80,4 @@ void SubtitlesProviderFactory::RegisterProviders() {
 #endif
 }
 
-template<> SubtitlesProviderFactory::map *FactoryBase<SubtitlesProvider *(*)(std::string)>::classes = NULL;
+template<> SubtitlesProviderFactory::map *FactoryBase<SubtitlesProvider *(*)(std::string)>::classes = nullptr;

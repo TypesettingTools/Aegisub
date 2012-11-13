@@ -146,7 +146,7 @@ void OSSPlayer::Stop()
     }
 
     // errors can be ignored here
-    ioctl(dspdev, SNDCTL_DSP_RESET, NULL);
+    ioctl(dspdev, SNDCTL_DSP_RESET, nullptr);
 
     // Reset data
     playing = false;
@@ -160,7 +160,7 @@ void OSSPlayer::SetEndPosition(int64_t pos)
     end_frame = pos;
 
     if (pos <= GetCurrentPosition()) {
-        ioctl(dspdev, SNDCTL_DSP_RESET, NULL);
+        ioctl(dspdev, SNDCTL_DSP_RESET, nullptr);
         if (thread && thread->IsAlive())
             thread->Delete();
     }

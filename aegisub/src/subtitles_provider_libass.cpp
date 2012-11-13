@@ -81,22 +81,22 @@ class FontConfigCacheThread : public wxThread {
 	ASS_Renderer *ass_renderer;
 	FontConfigCacheThread** thisPtr;
 	ExitCode Entry() {
-		const char *config_path = NULL;
+		const char *config_path = nullptr;
 #ifdef __APPLE__
 		std::string conf_path = agi::util::OSX_GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf";
 		config_path = conf_path.c_str();
 #endif
 
 		if (ass_library) ass_renderer = ass_renderer_init(ass_library);
-		ass_set_fonts(ass_renderer, NULL, "Sans", 1, config_path, true);
+		ass_set_fonts(ass_renderer, nullptr, "Sans", 1, config_path, true);
 		if (ass_library) ass_renderer_done(ass_renderer);
-		*thisPtr = NULL;
+		*thisPtr = nullptr;
 		return EXIT_SUCCESS;
 	}
 public:
 	FontConfigCacheThread(ASS_Library *ass_library, FontConfigCacheThread **thisPtr)
 		: ass_library(ass_library)
-		, ass_renderer(NULL)
+		, ass_renderer(nullptr)
 		, thisPtr(thisPtr)
 	{
 		*thisPtr = this;
@@ -104,7 +104,7 @@ public:
 		Run();
 	}
 	FontConfigCacheThread(ASS_Renderer *ass_renderer, FontConfigCacheThread **thisPtr)
-		: ass_library(NULL)
+		: ass_library(nullptr)
 		, ass_renderer(ass_renderer)
 		, thisPtr(thisPtr)
 	{
@@ -133,7 +133,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	wait_for_cache_thread(&cache_worker);
 
 	// Initialize renderer
-	ass_track = NULL;
+	ass_track = nullptr;
 	ass_renderer = ass_renderer_init(ass_library);
 	if (!ass_renderer) throw "ass_renderer_init failed";
 	ass_set_font_scale(ass_renderer, 1.);
@@ -185,7 +185,7 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	ass_set_frame_size(ass_renderer, frame.w, frame.h);
 
 	// Get frame
-	ASS_Image* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), NULL);
+	ASS_Image* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), nullptr);
 
 	// libass actually returns several alpha-masked monochrome images.
 	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.
@@ -240,12 +240,12 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 
 void LibassSubtitlesProvider::CacheFonts() {
 	ass_library = ass_library_init();
-	ass_set_message_cb(ass_library, msg_callback, NULL);
+	ass_set_message_cb(ass_library, msg_callback, nullptr);
 	new FontConfigCacheThread(ass_library, &cache_worker);
 }
 
 /// DOCME
 ASS_Library* LibassSubtitlesProvider::ass_library;
-FontConfigCacheThread* LibassSubtitlesProvider::cache_worker = NULL;
+FontConfigCacheThread* LibassSubtitlesProvider::cache_worker = nullptr;
 
 #endif // WITH_LIBASS

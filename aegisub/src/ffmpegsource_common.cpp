@@ -67,7 +67,7 @@ FFmpegSourceProvider::FFmpegSourceProvider()
 : COMInited(false, deinit_com)
 {
 #ifdef WIN32
-	HRESULT res = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+	HRESULT res = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 	if (SUCCEEDED(res))
 		COMInited = true;
 	else if (res != RPC_E_CHANGED_MODE)
@@ -95,7 +95,7 @@ static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *
 /// @param CacheName    The filename of the output index file
 /// @param Trackmask    A binary mask of the track numbers to index
 /// @param IgnoreDecodeErrors	True if audio decoding errors will be tolerated, false otherwise
-/// @return				Returns the index object on success, NULL otherwise
+/// @return				Returns the index object on success, nullptr otherwise
 ///
 FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxString &CacheName, int Trackmask, FFMS_IndexErrorHandling IndexEH) {
 	char FFMSErrMsg[1024];
@@ -115,7 +115,7 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, nullptr, nullptr, IndexEH, UpdateIndexingProgress, ps, &ErrInfo);
 	});
 
-	if (Index == NULL) {
+	if (Index == nullptr) {
 		MsgString.Append("Failed to index: ").Append(wxString(ErrInfo.Buffer, wxConvUTF8));
 		throw MsgString;
 	}

@@ -43,8 +43,8 @@
 // Allocate storage for and initialise static members
 namespace {
 	int avs_refcount = 0;
-	HINSTANCE hLib = NULL;
-	IScriptEnvironment *env = NULL;
+	HINSTANCE hLib = nullptr;
+	IScriptEnvironment *env = nullptr;
 	wxMutex AviSynthMutex;
 }
 

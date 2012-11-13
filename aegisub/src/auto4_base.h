@@ -257,7 +257,7 @@ namespace Automation4 {
 		wxString engine_name;
 		wxString filename_pattern;
 
-		/// Load a file, or return NULL if the file is not in a supported
+		/// Load a file, or return nullptr if the file is not in a supported
 		/// format. If the file is in a supported format but is invalid, a
 		/// script should be returned which returns false from IsLoaded and
 		/// an appropriate error message from GetDescription.

@@ -118,4 +118,4 @@ void VideoProviderFactory::RegisterProviders() {
 	Register<YUV4MPEGVideoProvider>("YUV4MPEG", true);
 }
 
-template<> VideoProviderFactory::map *FactoryBase<VideoProvider *(*)(wxString)>::classes = NULL;
+template<> VideoProviderFactory::map *FactoryBase<VideoProvider *(*)(wxString)>::classes = nullptr;

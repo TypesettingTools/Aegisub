@@ -87,7 +87,7 @@ namespace config {
 // wxWidgets macro
 IMPLEMENT_APP(AegisubApp)
 
-static const char *LastStartupState = NULL;
+static const char *LastStartupState = nullptr;
 
 #ifdef WITH_STARTUPLOG
 #define StartupLog(a) MessageBox(0, L ## a, L"Aegisub startup log", 0)
@@ -209,11 +209,11 @@ bool AegisubApp::OnInit() {
 #endif
 
 	StartupLog("Inside OnInit");
-	frame = NULL;
+	frame = nullptr;
 	try {
 		// Initialize randomizer
 		StartupLog("Initialize random generator");
-		srand(time(NULL));
+		srand(time(nullptr));
 
 		// locale for loading options
 		StartupLog("Set initial locale");
@@ -336,7 +336,7 @@ static void UnhandledExeception(bool stackWalk) {
 #endif
 
 		// Inform user of crash.
-		wxMessageBox(wxString::Format(exception_message, filename), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, NULL);
+		wxMessageBox(wxString::Format(exception_message, filename), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, nullptr);
 	}
 	else if (LastStartupState) {
 #if wxUSE_STACKWALKER == 1
@@ -488,7 +488,7 @@ int AegisubApp::OnRun() {
 
 #ifdef __WXMAC__
 void AegisubApp::MacOpenFile(const wxString &filename) {
-	if (frame != NULL && !filename.empty()) {
+	if (frame != nullptr && !filename.empty()) {
 		frame->LoadSubtitles(filename);
 		wxFileName filepath(filename);
 		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));

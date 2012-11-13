@@ -46,7 +46,7 @@
 #include "main.h"
 
 DialogTextImport::DialogTextImport()
-: wxDialog(NULL , -1, _("Text import options"))
+: wxDialog(nullptr , -1, _("Text import options"))
 {
 	// Main controls
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 5);

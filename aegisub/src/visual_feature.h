@@ -64,7 +64,7 @@ public:
 	DraggableFeatureType type; ///< Shape of feature
 	Vector2D pos;              ///< Position of this feature
 	int layer;                 ///< Layer; Higher = above
-	AssDialogue* line;         ///< The dialogue line this feature is for; may be NULL
+	AssDialogue* line;         ///< The dialogue line this feature is for; may be nullptr
 
 	/// @brief Is the given point over this feature?
 	/// @param mouse_pos Position of the mouse

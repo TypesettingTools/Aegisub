@@ -41,7 +41,7 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	wxToolBar *toolbar;
 	/// The feature last clicked on for the double-click handler
 	/// Equal to curFeature during drags; possibly different at all other times
-	/// NNULL if no features have been clicked on or the last clicked on one no
+	/// nullptr if no features have been clicked on or the last clicked on one no
 	/// longer exists
 	Feature *primary;
 	/// The last announced selection set

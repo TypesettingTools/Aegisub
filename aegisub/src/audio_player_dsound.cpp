@@ -60,7 +60,7 @@ DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider)
 {
 	// Initialize the DirectSound object
 	HRESULT res;
-	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,NULL); // TODO: support selecting audio device
+	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,nullptr); // TODO: support selecting audio device
 	if (FAILED(res)) throw agi::AudioPlayerOpenError("Failed initializing DirectSound", 0);
 
 	// Set DirectSound parameters
@@ -91,7 +91,7 @@ DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider)
 
 	// Create the buffer
 	IDirectSoundBuffer *buf;
-	res = directSound->CreateSoundBuffer(&desc,&buf,NULL);
+	res = directSound->CreateSoundBuffer(&desc,&buf,nullptr);
 	if (res != DS_OK) throw agi::AudioPlayerOpenError("Failed creating DirectSound buffer", 0);
 
 	// Copy interface to buffer
@@ -108,13 +108,13 @@ DirectSoundPlayer::~DirectSoundPlayer() {
 	// Unref the DirectSound buffer
 	if (buffer) {
 		buffer->Release();
-		buffer = NULL;
+		buffer = nullptr;
 	}
 
 	// Unref the DirectSound object
 	if (directSound) {
 		directSound->Release();
-		directSound = NULL;
+		directSound = nullptr;
 	}
 }
 
@@ -138,7 +138,7 @@ bool DirectSoundPlayer::FillBuffer(bool fill) {
 	}
 	else {
 		DWORD bufplay;
-		res = buffer->GetCurrentPosition(&bufplay, NULL);
+		res = buffer->GetCurrentPosition(&bufplay, nullptr);
 		if (FAILED(res)) return false;
 		toWrite = (int)bufplay - (int)offset;
 		if (toWrite < 0) toWrite += bufSize;
@@ -255,7 +255,7 @@ void DirectSoundPlayer::Stop() {
 			thread->Stop();
 			thread->Wait();
 		}
-		thread = NULL;
+		thread = nullptr;
 	}
 	// The thread is now guaranteed dead and there are no concurrency problems to worry about
 
@@ -304,7 +304,7 @@ int64_t DirectSoundPlayer::GetCurrentPosition() {
 ///
 DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
-	stopnotify = CreateEvent(NULL, true, false, NULL);
+	stopnotify = CreateEvent(nullptr, true, false, nullptr);
 }
 
 /// @brief Thread destructor
@@ -336,7 +336,7 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 		DWORD size1, size2;
 		DWORD playpos;
 		HRESULT res;
-		res = parent->buffer->GetCurrentPosition(&playpos, NULL);
+		res = parent->buffer->GetCurrentPosition(&playpos, nullptr);
 		if (FAILED(res)) break;
 		int toWrite = playpos - parent->offset;
 		while (toWrite < 0) toWrite += parent->bufSize;

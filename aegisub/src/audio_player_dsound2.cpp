@@ -75,7 +75,7 @@ struct COMInitialization {
 	{
 		if (!inited)
 		{
-			if (FAILED(CoInitialize(NULL)))
+			if (FAILED(CoInitialize(nullptr)))
 				throw std::exception();
 			inited = true;
 		}
@@ -290,7 +290,7 @@ void DirectSoundPlayer2Thread::Run()
 
 	// Create DirectSound object
 	COMObjectRetainer<IDirectSound8> ds;
-	if (FAILED(DirectSoundCreate8(&DSDEVID_DefaultPlayback, &ds.obj, NULL)))
+	if (FAILED(DirectSoundCreate8(&DSDEVID_DefaultPlayback, &ds.obj, nullptr)))
 		REPORT_ERROR("Cound not create DirectSound object")
 
 

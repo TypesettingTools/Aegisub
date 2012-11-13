@@ -74,7 +74,7 @@ public:
 
 	/// Get the style with the given name
 	/// @param name Case-insensitive style name
-	/// @return Style or NULL if the requested style is not found
+	/// @return Style or nullptr if the requested style is not found
 	AssStyle *GetStyle(wxString const& name);
 
 	/// Save stored styles to a file

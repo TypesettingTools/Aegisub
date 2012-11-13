@@ -119,7 +119,7 @@ struct menu_item_cmp {
 /// @brief Event dispatcher to update menus on open and handle click events
 ///
 /// Some of what the class does could be dumped off on wx, but wxEVT_MENU_OPEN
-/// is super buggy (GetMenu() often returns NULL and it outright doesn't trigger
+/// is super buggy (GetMenu() often returns nullptr and it outright doesn't trigger
 /// on submenus in many cases, and registering large numbers of wxEVT_UPDATE_UI
 /// handlers makes everything involves events unusably slow.
 class CommandManager {

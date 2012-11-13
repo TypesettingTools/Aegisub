@@ -135,7 +135,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	wxString time_field_vals[] = { _("Start a&nd End times"), _("&Start times only"), _("&End times only") };
 	time_fields = new wxRadioBox(this, -1, _("Times"), wxDefaultPosition, wxDefaultSize, 3, time_field_vals, 1);
 
-	history_box = new wxListBox(this, -1, wxDefaultPosition, wxSize(350, 100), 0, NULL, wxLB_HSCROLL);
+	history_box = new wxListBox(this, -1, wxDefaultPosition, wxSize(350, 100), 0, nullptr, wxLB_HSCROLL);
 
 	wxButton *clear_button = new wxButton(this, -1, _("&Clear"));
 	clear_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::OnClear, this);

@@ -58,8 +58,8 @@
 /// @brief Constructor
 /// @param filename The filename to open
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) try
-: VideoSource(NULL, FFMS_DestroyVideoSource)
-, VideoInfo(NULL)
+: VideoSource(nullptr, FFMS_DestroyVideoSource)
+, VideoInfo(nullptr)
 , Width(-1)
 , Height(-1)
 , FrameNumber(-1)
@@ -112,7 +112,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		Index(FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo), FFMS_DestroyIndex);
 
 	if (Index && FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo))
-		Index = NULL;
+		Index = nullptr;
 
 	// time to examine the index and check if the track we want is indexed
 	// technically this isn't really needed since all video tracks should always be indexed,
@@ -120,7 +120,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	if (Index && TrackNumber >= 0) {
 		FFMS_Track *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
 		if (FFMS_GetNumFrames(TempTrackData) <= 0)
-			Index = NULL;
+			Index = nullptr;
 	}
 
 	// moment of truth
@@ -224,10 +224,10 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 
 	// get frame info data
 	FFMS_Track *FrameData = FFMS_GetTrackFromVideo(VideoSource);
-	if (FrameData == NULL)
+	if (FrameData == nullptr)
 		throw VideoOpenError("failed to get frame data");
 	const FFMS_TrackTimeBase *TimeBase = FFMS_GetTimeBase(FrameData);
-	if (TimeBase == NULL)
+	if (TimeBase == nullptr)
 		throw VideoOpenError("failed to get track time base");
 
 	const FFMS_FrameInfo *CurFrameData;
@@ -236,7 +236,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	std::vector<int> TimecodesVector;
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
-		if (CurFrameData == NULL) {
+		if (CurFrameData == nullptr) {
 			throw VideoOpenError(STD_STR(wxString::Format("Couldn't get info about frame %d", CurFrameNum)));
 		}
 
@@ -261,7 +261,7 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
 
 	// decode frame
 	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, FrameNumber, &ErrInfo);
-	if (SrcFrame == NULL) {
+	if (SrcFrame == nullptr) {
 		throw VideoDecodeError(std::string("Failed to retrieve frame: ") +  ErrInfo.Buffer);
 	}
 

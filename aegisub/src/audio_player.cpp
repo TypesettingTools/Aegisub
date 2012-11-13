@@ -90,4 +90,4 @@ void AudioPlayerFactory::RegisterProviders() {
 #endif
 }
 
-template<> AudioPlayerFactory::map *FactoryBase<AudioPlayer *(*)(AudioProvider*)>::classes = NULL;
+template<> AudioPlayerFactory::map *FactoryBase<AudioPlayer *(*)(AudioProvider*)>::classes = nullptr;

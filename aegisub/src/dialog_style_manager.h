@@ -112,12 +112,12 @@ class DialogStyleManager : public wxDialog {
 	void MoveStyles(bool storage, int type);
 
 	/// Open the style editor for the given style on the script
-	/// @param style Style to edit, or NULL for new
+	/// @param style Style to edit, or nullptr for new
 	/// @param new_name Default new name for copies
 	void ShowCurrentEditor(AssStyle *style, wxString const& new_name = "");
 
 	/// Open the style editor for the given style in the storage
-	/// @param style Style to edit, or NULL for new
+	/// @param style Style to edit, or nullptr for new
 	/// @param new_name Default new name for copies
 	void ShowStorageEditor(AssStyle *style, wxString const& new_name = "");
 

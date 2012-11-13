@@ -80,7 +80,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider)
 	pa_context_set_state_callback(context, (pa_context_notify_cb_t)pa_context_notify, this);
 
 	// Connect the context
-	pa_context_connect(context, NULL, PA_CONTEXT_NOAUTOSPAWN, NULL);
+	pa_context_connect(context, nullptr, PA_CONTEXT_NOAUTOSPAWN, nullptr);
 
 	// Wait for connection
 	while (true) {
@@ -120,7 +120,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider)
 	pa_stream_set_write_callback(stream, (pa_stream_request_cb_t)pa_stream_write, this);
 
 	// Connect stream
-	paerror = pa_stream_connect_playback(stream, NULL, NULL, (pa_stream_flags_t)(PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE), NULL, NULL);
+	paerror = pa_stream_connect_playback(stream, nullptr, nullptr, (pa_stream_flags_t)(PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE), nullptr, nullptr);
 	if (paerror) {
 		LOG_E("audio/player/pulse") << "Stream connection failed: " << pa_strerror(paerror) << "(" << paerror << ")";
 		throw agi::AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror), 0);
@@ -269,7 +269,7 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 	if (thread->cur_frame >= thread->end_frame + thread->provider->GetSampleRate()) {
 		// More than a second past end of stream
 		thread->is_playing = false;
-		pa_operation *op = pa_stream_drain(p, NULL, NULL);
+		pa_operation *op = pa_stream_drain(p, nullptr, nullptr);
 		pa_operation_unref(op);
 		return;
 

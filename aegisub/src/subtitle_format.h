@@ -131,9 +131,9 @@ public:
 	/// @param mode 0: load 1: save
 	static wxString GetWildcards(int mode);
 
-	/// Get a subtitle format that can read the given file or NULL if none can
+	/// Get a subtitle format that can read the given file or nullptr if none can
 	static const SubtitleFormat *GetReader(wxString const& filename);
-	/// Get a subtitle format that can write the given file or NULL if none can
+	/// Get a subtitle format that can write the given file or nullptr if none can
 	static const SubtitleFormat *GetWriter(wxString const& filename);
 	/// Initialize subtitle formats
 	static void LoadFormats();

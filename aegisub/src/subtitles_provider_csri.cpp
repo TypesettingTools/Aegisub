@@ -86,7 +86,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 		subs->SaveMemory(data);
 
 		wxMutexLocker lock(csri_mutex);
-		instance = csri_open_mem(renderer, &data[0], data.size(), NULL);
+		instance = csri_open_mem(renderer, &data[0], data.size(), nullptr);
 	}
 	// Open from disk
 	else {
@@ -98,7 +98,7 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 		subs->Save(tempfile, false, false, wxSTRING_ENCODING);
 
 		wxMutexLocker lock(csri_mutex);
-		instance = csri_open_file(renderer, tempfile.utf8_str(), NULL);
+		instance = csri_open_file(renderer, tempfile.utf8_str(), nullptr);
 	}
 }
 

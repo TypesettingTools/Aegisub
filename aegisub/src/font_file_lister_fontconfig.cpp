@@ -154,7 +154,7 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString
 	if (!FcConfigSubstitute(config, pat, FcMatchPattern)) return ret;
 
 	FcResult result;
-	agi::scoped_holder<FcFontSet*> fsorted(FcFontSort(config, pat, true, NULL, &result), FcFontSetDestroy);
+	agi::scoped_holder<FcFontSet*> fsorted(FcFontSort(config, pat, true, nullptr, &result), FcFontSetDestroy);
 	agi::scoped_holder<FcFontSet*> ffullname(MatchFullname(family.c_str(), weight, slant), FcFontSetDestroy);
 	if (!fsorted || !ffullname) return ret;
 

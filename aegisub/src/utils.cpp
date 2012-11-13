@@ -315,7 +315,7 @@ class cache_cleaner : public wxThread {
 		do {
 			wxFileName curfn(directory, curfn_str);
 			wxDateTime curatime;
-			curfn.GetTimes(&curatime, NULL, NULL);
+			curfn.GetTimes(&curatime, nullptr, nullptr);
 			cachefiles.insert(std::make_pair(curatime.GetTicks(), curfn));
 			total_size += curfn.GetSize().GetValue();
 

@@ -250,7 +250,7 @@ OpenGLTextTexture::OpenGLTextTexture(OpenGLTextGlyph &glyph) {
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
 
 	// Allocate texture
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,width,height,0,GL_ALPHA,GL_UNSIGNED_BYTE,NULL);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,width,height,0,GL_ALPHA,GL_UNSIGNED_BYTE,nullptr);
 	if (glGetError()) throw "Internal OpenGL text renderer error: Could not allocate Text Texture";
 
 	TryToInsert(glyph);

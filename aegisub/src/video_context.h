@@ -77,7 +77,7 @@ class VideoContext : public wxEvtHandler {
 
 	agi::Context *context;
 
-	/// The video provider owned by the threaded frame source, or NULL if no
+	/// The video provider owned by the threaded frame source, or nullptr if no
 	/// video is open
 	VideoProvider *videoProvider;
 

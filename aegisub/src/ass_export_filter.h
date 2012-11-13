@@ -64,7 +64,7 @@ public:
 	static void Unregister(AssExportFilter *filter);
 	/// Unregister and delete all export filters
 	static void Clear();
-	/// Get a filter by name or NULL if it doesn't exist
+	/// Get a filter by name or nullptr if it doesn't exist
 	static AssExportFilter *GetFilter(wxString const& name);
 
 	/// Get the list of registered filters

@@ -44,7 +44,7 @@
 
 agi::SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Tool/Spell Checker/Backend")->GetString());
-	if (list.empty()) return NULL;
+	if (list.empty()) return nullptr;
 
 	// Get provider
 	wxString error;
@@ -67,4 +67,4 @@ void SpellCheckerFactory::RegisterProviders() {
 #endif
 }
 
-template<> SpellCheckerFactory::map *FactoryBase<agi::SpellChecker *(*)()>::classes = NULL;
+template<> SpellCheckerFactory::map *FactoryBase<agi::SpellChecker *(*)()>::classes = nullptr;

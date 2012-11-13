@@ -36,9 +36,9 @@ class HotkeyDataViewModel : public wxDataViewModel {
 	Preferences *parent;
 	bool has_pending_changes;
 
-	/// Get the real item from the wrapper, or root if it's wrapping NULL
+	/// Get the real item from the wrapper, or root if it's wrapping nullptr
 	const HotkeyModelItem *get(wxDataViewItem const& item) const;
-	/// Get the real item from the wrapper, or root if it's wrapping NULL
+	/// Get the real item from the wrapper, or root if it's wrapping nullptr
 	HotkeyModelItem *get(wxDataViewItem const& item);
 public:
 	HotkeyDataViewModel(Preferences *parent);

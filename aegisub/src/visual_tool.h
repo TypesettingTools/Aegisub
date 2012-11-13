@@ -61,7 +61,7 @@ class VisualToolBase {
 	void OnMouseCaptureLost(wxMouseCaptureLostEvent &);
 
 	/// @brief Get the dialogue line currently in the edit box
-	/// @return NULL if the line is not active on the current frame
+	/// @return nullptr if the line is not active on the current frame
 	AssDialogue *GetActiveDialogueLine();
 
 	// SubtitleSelectionListener implementation
@@ -100,7 +100,7 @@ protected:
 	VideoDisplay *parent;
 
 	bool holding; ///< Is a hold currently in progress?
-	AssDialogue *active_line; ///< Active dialogue line; NULL if it is not visible on the current frame
+	AssDialogue *active_line; ///< Active dialogue line; nullptr if it is not visible on the current frame
 	bool dragging; ///< Is a drag currently in progress?
 
 	int frame_number; ///< Current frame number

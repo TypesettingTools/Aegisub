@@ -98,7 +98,7 @@ public:
 
 	/// Get the dialog of the given type
 	/// @tparam DialogType Type of dialog to get
-	/// @return A pointer to a DialogType or NULL if no dialog of the given type has been created
+	/// @return A pointer to a DialogType or nullptr if no dialog of the given type has been created
 	template<class DialogType>
 	DialogType *Get() const {
 		DialogMap::const_iterator it = created_dialogs.find(&typeid(DialogType));

@@ -153,7 +153,7 @@ void PortAudioPlayer::OpenStream() {
 		pa_output_p.channelCount = provider->GetChannels();
 		pa_output_p.sampleFormat = paInt16;
 		pa_output_p.suggestedLatency = device_info->defaultLowOutputLatency;
-		pa_output_p.hostApiSpecificStreamInfo = NULL;
+		pa_output_p.hostApiSpecificStreamInfo = nullptr;
 
 		LOG_D("audio/player/portaudio") << "OpenStream:"
 			<< " output channels: " << pa_output_p.channelCount
@@ -161,7 +161,7 @@ void PortAudioPlayer::OpenStream() {
 			<< " sample rate: " << provider->GetSampleRate()
 			<< " sample format: " << pa_output_p.sampleFormat;
 
-		PaError err = Pa_OpenStream(&stream, NULL, &pa_output_p, provider->GetSampleRate(), 0, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
+		PaError err = Pa_OpenStream(&stream, nullptr, &pa_output_p, provider->GetSampleRate(), 0, paPrimeOutputBuffersUsingStreamCallback, paCallback, this);
 
 		if (err == paNoError) {
 			LOG_D("audo/player/portaudio") << "Using device " << pa_output_p.device << " " << device_info->name << " " << Pa_GetHostApiInfo(device_info->hostApi)->name;

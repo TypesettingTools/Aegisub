@@ -219,7 +219,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 
 		// Progress bar
 		double totalTime = double(segInfo->Duration) / timecodeScale;
-		DialogProgress progress(NULL, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
+		DialogProgress progress(nullptr, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
 		progress.Run([&](agi::ProgressSink *ps) { read_subtitles(ps, file, &input, srt, totalTime, &parser); });
 	}
 	catch (...) {
@@ -352,7 +352,7 @@ MkvStdIO::MkvStdIO(wxString filename)
 	fp = fopen(fname.GetFullPath().utf8_str(), "rb");
 #endif
 	if (fp) {
-		setvbuf(fp, NULL, _IOFBF, CACHESIZE);
+		setvbuf(fp, nullptr, _IOFBF, CACHESIZE);
 	}
 	else {
 		throw agi::FileNotFoundError(STD_STR(filename));

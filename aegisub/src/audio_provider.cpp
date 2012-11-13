@@ -221,4 +221,4 @@ void AudioProviderFactory::RegisterProviders() {
 #endif
 }
 
-template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(wxString)>::classes = NULL;
+template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(wxString)>::classes = nullptr;

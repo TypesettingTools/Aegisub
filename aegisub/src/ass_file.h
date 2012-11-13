@@ -114,7 +114,7 @@ public:
 	wxArrayString GetStyles() const;
 	/// @brief Get a style by name
 	/// @param name Style name
-	/// @return Pointer to style or NULL
+	/// @return Pointer to style or nullptr
 	AssStyle *GetStyle(wxString const& name);
 
 	void swap(AssFile &) throw();

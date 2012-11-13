@@ -324,8 +324,8 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	MiscBox->Add(MiscBoxBottom, wxSizerFlags().Expand().Center().Border(wxTOP));
 
 	// Preview
-	SubsPreview = NULL;
-	PreviewText = NULL;
+	SubsPreview = nullptr;
+	PreviewText = nullptr;
 	ColourButton *previewButton = 0;
 	if (!SubtitlesProviderFactory::GetClasses().empty()) {
 		PreviewText = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));

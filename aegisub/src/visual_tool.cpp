@@ -366,7 +366,7 @@ struct scoped_tag_parse {
 	~scoped_tag_parse() { diag->ClearBlocks(); }
 };
 
-// Find a tag's parameters in a line or return NULL if it's not found
+// Find a tag's parameters in a line or return nullptr if it's not found
 static param_vec find_tag(const AssDialogue *line, wxString tag_name) {
 	for (auto ovr : line->Blocks | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto tag : ovr->Tags) {
@@ -569,7 +569,7 @@ void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxStrin
 	AssDialogueBlock *block = line->Blocks.front();
 
 	// Get current block as plain or override
-	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == NULL);
+	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == nullptr);
 
 	if (dynamic_cast<AssDialogueBlockPlain*>(block))
 		line->Text = "{" + insert + "}" + line->Text;

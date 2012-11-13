@@ -265,7 +265,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	int start = curLine;
 	int nrows = context->subsGrid->GetRows();
 	bool found = false;
-	wxString *Text = NULL;
+	wxString *Text = nullptr;
 	size_t tempPos;
 	int regFlags = wxRE_ADVANCED;
 	if (!matchCase) {
@@ -452,7 +452,7 @@ void SearchReplaceEngine::OnDialogOpen() {
 }
 
 void SearchReplaceEngine::OpenDialog (bool replace) {
-	static DialogSearchReplace *diag = NULL;
+	static DialogSearchReplace *diag = nullptr;
 
 	// already opened
 	if (diag) {

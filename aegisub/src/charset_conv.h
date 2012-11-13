@@ -48,7 +48,7 @@ public:
 	// wxMBConv implementation; see strconv.h for usage details
 	size_t ToWChar(wchar_t *dst, size_t dstLen, const char *src, size_t srcLen = wxNO_LEN) const;
 	size_t FromWChar(char *dst, size_t dstLen, const wchar_t *src, size_t srcLen = wxNO_LEN) const;
-	wxMBConv *Clone() const { return NULL; };
+	wxMBConv *Clone() const { return nullptr; };
 
 protected:
 	AegisubCSConv();

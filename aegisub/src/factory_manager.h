@@ -64,11 +64,11 @@ protected:
 	}
 
 	static func Find(std::string name) {
-		if (!classes) return NULL;
+		if (!classes) return nullptr;
 
 		iterator factory = classes->find(name);
 		if (factory != classes->end()) return factory->second.second;
-		return NULL;
+		return nullptr;
 	}
 
 public:
@@ -107,7 +107,7 @@ public:
 			return factory();
 		}
 		else {
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -131,7 +131,7 @@ public:
 			return factory(a1);
 		}
 		else {
-			return NULL;
+			return nullptr;
 		}
 	}
 

@@ -97,7 +97,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , active_line(0)
 , batch_level(0)
 , batch_active_line_changed(false)
-, seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL)))
+, seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, nullptr)))
 , context_menu(0)
 , yPos(0)
 , context(context)
@@ -134,7 +134,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	OPT_SUB("Colour/Subtitle Grid/Lines", &BaseGrid::UpdateStyle, this);
 	OPT_SUB("Colour/Subtitle Grid/Selection", &BaseGrid::UpdateStyle, this);
 	OPT_SUB("Colour/Subtitle Grid/Standard", &BaseGrid::UpdateStyle, this);
-	OPT_SUB("Subtitle/Grid/Hide Overrides", std::bind(&BaseGrid::Refresh, this, false, (wxRect*)NULL));
+	OPT_SUB("Subtitle/Grid/Hide Overrides", std::bind(&BaseGrid::Refresh, this, false, nullptr));
 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
 }
@@ -229,7 +229,7 @@ void BaseGrid::UpdateStyle() {
 		wxClientDC dc(this);
 		dc.SetFont(font);
 		int fw,fh;
-		dc.GetTextExtent("#TWFfgGhH", &fw, &fh, NULL, NULL, &font);
+		dc.GetTextExtent("#TWFfgGhH", &fw, &fh, nullptr, nullptr, &font);
 		lineHeight = fh + 4;
 	}
 

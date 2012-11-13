@@ -76,7 +76,7 @@ public:
 	/// @brief Change the active line
 	/// @param new_line Subtitle line to become the new active line
 	///
-	/// The active line may be changed to NULL, in which case there is no longer an
+	/// The active line may be changed to nullptr, in which case there is no longer an
 	/// active line.
 	///
 	/// Calling this method should only cause a change notification to be sent if
@@ -86,7 +86,7 @@ public:
 	virtual void SetActiveLine(ItemDataType new_line) = 0;
 
 	/// @brief Obtain the active line
-	/// @return The active line or NULL if there is none
+	/// @return The active line or nullptr if there is none
 	virtual ItemDataType GetActiveLine() const = 0;
 
 	/// @brief Change the selected set

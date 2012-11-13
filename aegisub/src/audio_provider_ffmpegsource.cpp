@@ -53,7 +53,7 @@
 /// @brief Constructor
 /// @param filename The filename to open
 FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) try
-: AudioSource(NULL, FFMS_DestroyAudioSource)
+: AudioSource(nullptr, FFMS_DestroyAudioSource)
 {
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -99,7 +99,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		Index(FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo), FFMS_DestroyIndex);
 
 	if (Index && FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo))
-		Index = NULL;
+		Index = nullptr;
 
 	// index valid but track number still not set?
 	if (Index) {
@@ -113,7 +113,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 		// but do we have indexing info for the desired audio track?
 		FFMS_Track *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
 		if (FFMS_GetNumFrames(TempTrackData) <= 0)
-			Index = NULL;
+			Index = nullptr;
 	}
 	// no valid index exists and the file only has one audio track, index it
 	else if (TrackNumber < 0)
@@ -124,7 +124,7 @@ void FFmpegSourceAudioProvider::LoadAudio(wxString filename) {
 	FFMS_IndexErrorHandling ErrorHandling = GetErrorHandlingMode();
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (2 << 8) | 0)
 	if (Index && FFMS_GetErrorHandling(Index) != ErrorHandling)
-		Index = NULL;
+		Index = nullptr;
 #endif
 
 	// moment of truth

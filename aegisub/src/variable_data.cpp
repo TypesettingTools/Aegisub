@@ -44,7 +44,7 @@
 
 VariableData::VariableData() {
 	type = VARDATA_NONE;
-	value = NULL;
+	value = nullptr;
 }
 
 VariableData::~VariableData() {
@@ -64,7 +64,7 @@ void VariableData::DeleteValue() {
 		default: break;
 	}
 	type = VARDATA_NONE;
-	value = NULL;
+	value = nullptr;
 }
 
 template<class T> static inline VariableDataType get_type();

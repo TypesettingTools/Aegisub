@@ -107,7 +107,7 @@ wxString AegisubLocale::PickLanguage() {
 	if (!active_language.empty())
 		style |= wxCANCEL;
 
-	wxSingleChoiceDialog dialog(NULL, "Please choose a language:", "Language", langNames,
+	wxSingleChoiceDialog dialog(nullptr, "Please choose a language:", "Language", langNames,
 #if wxCHECK_VERSION(2, 9, 4)
 			(void **)0,
 #else

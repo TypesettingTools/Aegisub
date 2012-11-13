@@ -170,7 +170,7 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename,
 
 	// Create XML structure
 	wxXmlDocument doc;
-	wxXmlNode *root = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "TextStream");
+	wxXmlNode *root = new wxXmlNode(nullptr, wxXML_ELEMENT_NODE, "TextStream");
 	root->AddAttribute("version", "1.1");
 	doc.SetRoot(root);
 

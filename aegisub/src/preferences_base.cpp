@@ -67,7 +67,7 @@ class ColourUpdater {
 	const char *name;
 	Preferences *parent;
 public:
-	ColourUpdater(const char *n = "", Preferences *p = NULL) : name(n), parent(p) { }
+	ColourUpdater(const char *n = "", Preferences *p = nullptr) : name(n), parent(p) { }
 	void operator()(wxCommandEvent& evt) {
 		ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
 		if (btn)

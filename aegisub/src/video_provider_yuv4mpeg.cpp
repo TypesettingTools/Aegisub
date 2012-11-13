@@ -54,7 +54,7 @@
 /// @brief Constructor
 /// @param filename The filename to open
 YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
-: sf(NULL)
+: sf(nullptr)
 , inited(false)
 , w (0)
 , h (0)
@@ -75,7 +75,7 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 		sf = fopen(filename.utf8_str(), "rb");
 #endif
 
-		if (sf == NULL) throw agi::FileNotFoundError(STD_STR(fname));
+		if (sf == nullptr) throw agi::FileNotFoundError(STD_STR(fname));
 
 		CheckFileFormat();
 
