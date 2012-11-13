@@ -570,8 +570,8 @@ namespace Automation4 {
 	{
 		using std::placeholders::_1;
 		// Just make this always return true to bitch about unknown script formats in autoload
-		return find_if(Factories().begin(), Factories().end(),
-			[&](ScriptFactory *sf) { return filename.Matches(sf->GetFilenamePattern()); }) != Factories().end();
+		return any_of(Factories().begin(), Factories().end(),
+			[&](ScriptFactory *sf) { return filename.Matches(sf->GetFilenamePattern()); });
 	}
 
 	std::vector<ScriptFactory*>& ScriptFactory::Factories()

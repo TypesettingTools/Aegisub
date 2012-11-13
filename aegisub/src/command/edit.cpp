@@ -612,7 +612,7 @@ static void duplicate_lines(agi::Context *c, bool shift) {
 		if (start == end) break;
 
 		// And the last line in this contiguous selection
-		entryIter insert_pos = find_if(start, end, std::not1(sel));
+		entryIter insert_pos = find_if_not(start, end, sel);
 		entryIter last = insert_pos;
 		--last;
 
