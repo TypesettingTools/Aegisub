@@ -307,8 +307,8 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 
 	if (onlySelection->IsChecked()) {
 		SubtitleSelection sel = c->selectionController->GetSelectedSet();
-		remove_copy_if(sel.begin(), sel.end(), back_inserter(sorted),
-			bind(bad_line, &styles, _1));
+		copy_if(sel.begin(), sel.end(), back_inserter(sorted),
+			[&](AssDialogue *d) { return !d->Comment && styles.count(d->Style); });
 	}
 	else {
 		transform(c->ass->Line.begin(), c->ass->Line.end(), back_inserter(sorted), cast<AssDialogue*>());

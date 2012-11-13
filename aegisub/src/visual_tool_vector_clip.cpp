@@ -94,10 +94,6 @@ void VisualToolVectorClip::SetMode(int new_mode) {
 	mode = new_mode;
 }
 
-static bool is_move(SplineCurve const& c) {
-	return c.type == SplineCurve::POINT;
-}
-
 void VisualToolVectorClip::Draw() {
 	if (!active_line) return;
 	if (spline.empty()) return;
@@ -145,7 +141,8 @@ void VisualToolVectorClip::Draw() {
 	// Draw preview of inserted line
 	if (mode == 1 || mode == 2) {
 		if (spline.size() && mouse_pos) {
-			Spline::reverse_iterator c0 = std::find_if(spline.rbegin(), spline.rend(), is_move);
+			auto c0 = std::find_if(spline.rbegin(), spline.rend(),
+				[](SplineCurve const& s) { return s.type == SplineCurve::POINT; });
 			SplineCurve *c1 = &spline.back();
 			gl.DrawDashedLine(mouse_pos, c0->p1, 6);
 			gl.DrawDashedLine(mouse_pos, c1->EndPoint(), 6);

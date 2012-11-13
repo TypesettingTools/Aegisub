@@ -181,8 +181,8 @@ void DialogAutomation::UpdateDisplay()
 template<class Container>
 static bool has_file(Container const& c, wxFileName const& fn)
 {
-	return find_if(c.begin(), c.end(),
-		std::bind(&wxFileName::SameAs, fn, std::bind(&Automation4::Script::GetFilename, _1), wxPATH_NATIVE)) != c.end();
+	return any_of(c.begin(), c.end(),
+		[&](const Automation4::Script *s) { return fn.SameAs(s->GetFilename()); });
 }
 
 void DialogAutomation::OnAdd(wxCommandEvent &)

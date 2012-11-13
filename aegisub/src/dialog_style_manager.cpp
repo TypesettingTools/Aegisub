@@ -702,10 +702,6 @@ void DialogStyleManager::UpdateButtons() {
 	CurrentSort->Enable(itemsCurr > 1);
 }
 
-static bool cmp_style_name(const AssStyle *lft, const AssStyle *rgt) {
-	return lft->name < rgt->name;
-}
-
 template<class Cont>
 static void do_move(Cont& styls, int type, int& first, int& last, bool storage) {
 	typename Cont::iterator begin = styls.begin();
@@ -744,7 +740,9 @@ static void do_move(Cont& styls, int type, int& first, int& last, bool storage) 
 			if (res == wxNO) return;
 		}
 
-		sort(styls.begin(), styls.end(), cmp_style_name);
+		sort(styls.begin(), styls.end(), [](const AssStyle *lft, const AssStyle *rgt) {
+			return lft->name < rgt->name;
+		});
 
 		first = 0;
 		last = 0;

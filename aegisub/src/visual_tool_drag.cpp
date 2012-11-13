@@ -152,12 +152,8 @@ void VisualToolDrag::OnFrameChanged() {
 	}
 }
 
-template<class T> static bool cmp_line(T const& lft, T const& rgt) {
-	return lft->line == rgt->line;
-}
-
 template<class C, class T> static bool line_not_present(C const& set, T const& it) {
-	return find_if(set.begin(), set.end(), bind(cmp_line<T>, it, std::placeholders::_1)) == set.end();
+	return std::none_of(set.begin(), set.end(), [&](T const& cmp) { return cmp->line == it->line; });
 }
 
 void VisualToolDrag::OnSelectedSetChanged(const SubtitleSelection &added, const SubtitleSelection &removed) {
