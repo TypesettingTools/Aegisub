@@ -66,7 +66,33 @@
     </CfgArgs>
   </PropertyGroup>
 
-  <Target Name="Configure">
+  <ItemGroup>
+    <ConfigureInput Include="$(FfmpegSrcDir)\configure" />
+
+    <ConfigureOutput Include="$(AegisubObjectDir)config.*" />
+    <ConfigureOutput Include="$(AegisubObjectDir)Makefile" />
+    <ConfigureOutput Include="$(AegisubObjectDir)libavutil\avconfig.h" />
+
+    <CompileInput Include="$(FfmpegSrcDir)\*.mak" />
+    <CompileInput Include="$(FfmpegSrcDir)\**\*.c" />
+    <CompileInput Include="$(FfmpegSrcDir)\**\*.asm" />
+    <CompileInput Include="$(FfmpegSrcDir)\**\Makefile" />
+
+    <CompileOutput Include="$(AegisubObjectDir)libavcodec\libavcodec.a" />
+    <CompileOutput Include="$(AegisubObjectDir)libavformat\libavformat.a" />
+    <CompileOutput Include="$(AegisubObjectDir)libavutil\libavutil.a" />
+    <CompileOutput Include="$(AegisubObjectDir)libswscale\libswscale.a" />
+
+    <InstallOutput Include="$(AegisubLibraryDir)libavcodec.a" />
+    <InstallOutput Include="$(AegisubLibraryDir)libavformat.a" />
+    <InstallOutput Include="$(AegisubLibraryDir)libavutil.a" />
+    <InstallOutput Include="$(AegisubLibraryDir)libswscale.a" />
+  </ItemGroup>
+
+  <Target Name="Configure"
+    Inputs="@(ConfigureInput)"
+    Outputs="@(ConfigureOutput)"
+    >
     <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="$(AegisubObjectDir)\temp">
       <Output TaskParameter="Result" PropertyName="CfgPrefix" />
     </MsysPath>
@@ -84,23 +110,39 @@
       Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --incdir=$(CfgIncludePrefix)"
       WorkingDirectory="$(AegisubObjectDir)"
       />
+
+    <!-- Ensure that Makefile has a recent modified time to avoid
+         rerunning configure pointlessly -->
+    <Touch Files="@(ConfigureOutput)" />
   </Target>
 
-  <Target Name="Build">
-    <Error Condition="!Exists('$(FfmpegSrcDir)')" Text="FFmpeg source not found at '$(FfmpegSrcDir)'" />
-
-    <CallTarget Targets="Configure" Condition="!Exists('$(AegisubObjectDir)\Makefile')" />
-
+  <Target Name="Compile"
+    Inputs="@(ConfigureOutput);@(CompileInput)"
+    Outputs="@(CompileOutput)"
+    >
     <ExecShellScript
       Command="make"
       Arguments="-j$(NUMBER_OF_PROCESSORS)"
       WorkingDirectory="$(AegisubObjectDir)"
       />
+  </Target>
 
+  <Target Name="Install"
+    Inputs="@(CompileOutput)"
+    Outputs="@(InstallOutput)"
+    >
     <ExecShellScript
       Command="make install"
       WorkingDirectory="$(AegisubObjectDir)"
       />
+  </Target>
+
+  <Target Name="Build">
+    <Error Condition="!Exists('$(FfmpegSrcDir)')" Text="FFmpeg source not found at '$(FfmpegSrcDir)'" />
+
+    <CallTarget Targets="Configure" />
+    <CallTarget Targets="Compile" />
+    <CallTarget Targets="Install" />
   </Target>
 
   <Target Name="Clean">
