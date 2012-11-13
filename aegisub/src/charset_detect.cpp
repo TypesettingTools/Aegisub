@@ -55,7 +55,7 @@ wxString GetEncoding(wxString const& filename) {
 	agi::charset::CharsetListDetected list;
 
 	try {
-		agi::charset::DetectAll(from_wx(filename), list);
+		list = agi::charset::DetectAll(from_wx(filename));
 	} catch (const agi::charset::UnknownCharset&) {
 		/// @todo If the charset is unknown we need to display a complete list of character sets.
 	}

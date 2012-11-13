@@ -19,8 +19,8 @@
 #ifndef LAGI_PRE
 #include <fstream>
 #include <functional>
-#include <map>
 #include <string>
+#include <vector>
 #endif
 #include <libaegisub/exception.h>
 
@@ -32,18 +32,17 @@ DEFINE_BASE_EXCEPTION_NOINNER(CharsetError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(UnknownCharset, CharsetError, "charset/unknown")
 
 /// List of detected encodings.
-typedef std::map<float, std::string, std::greater_equal<float> > CharsetListDetected;
+typedef std::vector<std::pair<float, std::string>> CharsetListDetected;
 
 /// @brief Return a complete list of detected character sets ordered by precedence.
 /// @param file File to check
-/// @param[out] list Map to load detected list into.
-void DetectAll(const std::string &file, CharsetListDetected &list);
+/// @return List of possible charsets sorted by probability
+CharsetListDetected DetectAll(std::string const& file);
 
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check
 /// @return Detected character set.
 std::string Detect(const std::string &file);
-
 
 	} // namespace util
 } // namespace agi

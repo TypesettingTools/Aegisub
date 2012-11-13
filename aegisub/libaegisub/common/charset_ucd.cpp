@@ -23,11 +23,14 @@
 
 #include "../../universalchardet/nsCharSetProber.h"
 
+#include <boost/range/algorithm.hpp>
 
 namespace agi {
 	namespace charset {
 
-UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) {
+UCDetect::UCDetect(const std::string &file)
+: nsUniversalDetector(NS_FILTER_ALL)
+{
 	{
 		agi::scoped_ptr<std::ifstream> fp(io::Open(file, true));
 
@@ -35,7 +38,7 @@ UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) 
 		// be able to do anything useful with it anyway
 		fp->seekg(0, std::ios::end);
 		if (fp->tellg() > 100 * 1024 * 1024) {
-			list.insert(CLDPair(1.f, "binary"));
+			list.emplace_back(1.f, "binary");
 			return;
 		}
 		fp->seekg(0, std::ios::beg);
@@ -58,7 +61,7 @@ UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) 
 				}
 
 				if (binaryish > bytes / 8) {
-					list.insert(CLDPair(1.f, "binary"));
+					list.emplace_back(1.f, "binary");
 					return;
 				}
 			}
@@ -67,49 +70,40 @@ UCDetect::UCDetect(const std::string &file): nsUniversalDetector(NS_FILTER_ALL) 
 
 	DataEnd();
 
-	if (mDetectedCharset) {
-		list.insert(CLDPair(1.f, mDetectedCharset));
-	} else {
-
+	if (mDetectedCharset)
+		list.emplace_back(1.f, mDetectedCharset);
+	else {
 		switch (mInputState) {
 			case eHighbyte: {
 				for (PRInt32 i=0; i<NUM_OF_CHARSET_PROBERS; i++) {
-					if (mCharSetProbers[i]) {
-						float conf = mCharSetProbers[i]->GetConfidence();
-						if (conf > 0.01f) {
-							list.insert(CLDPair(conf, mCharSetProbers[i]->GetCharSetName()));
-						}
-					}
+					if (!mCharSetProbers[i]) continue;
+
+					float conf = mCharSetProbers[i]->GetConfidence();
+					if (conf > 0.01f)
+						list.emplace_back(conf, mCharSetProbers[i]->GetCharSetName());
 				}
 
 				break;
 			}
 			case ePureAscii:
-				list.insert(CLDPair(1.f, "US-ASCII"));
+				list.emplace_back(1.f, "US-ASCII");
 				break;
 
 			default:
-				throw UnknownCharset("Unknown chararacter set.");
+				throw UnknownCharset("Unknown character set.");
 		}
 
 		if (list.empty() && (mInputState == eHighbyte))
-			throw UnknownCharset("Unknown chararacter set.");
+			throw UnknownCharset("Unknown character set.");
 
-
-	} // if mDetectedCharset else
-}
-
-std::string UCDetect::Single() {
-	/// @todo Add a debug log here since this shouldn't happen.
-	if (list.empty()) {
-		throw UnknownCharset("Unknown chararacter set.");
+		typedef std::pair<float, std::string> const& result;
+		boost::sort(list, [](result lft, result rgt) { return lft.first > rgt.first; });
 	}
-
-	CharsetListDetected::const_iterator i_lst = list.begin();
-	return i_lst->second;
 }
 
-
+std::string UCDetect::Single() const {
+	return list.front().second;
+}
 
 	} // namespace util
 } // namespace agi

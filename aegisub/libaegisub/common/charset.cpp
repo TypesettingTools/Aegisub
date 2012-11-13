@@ -25,8 +25,8 @@ std::string Detect(const std::string &file) {
 	return UCDetect(file).Single();
 }
 
-void DetectAll(const std::string& file, CharsetListDetected &list) {
-	UCDetect(file).List(list);
+CharsetListDetected DetectAll(const std::string& file) {
+	return UCDetect(file).List();
 }
 
 	} // namespace util
