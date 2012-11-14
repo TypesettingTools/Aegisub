@@ -56,18 +56,6 @@
     </Link>
   </ItemDefinitionGroup>
 
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
-    <ClCompile>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-    </ClCompile>
-  </ItemDefinitionGroup>
-
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
-    <ClCompile>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-    </ClCompile>
-  </ItemDefinitionGroup>
-
   <!-- Source files -->
   <ItemGroup>
     <InstallHeader Include="$(FfmsSrcDir)\include\ffms.h" />
@@ -89,5 +77,14 @@
     <ClInclude Include="$(FfmsSrcDir)\include\ffmscompat.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\config\msvc-config.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\*.h" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ffmpeg\ffmpeg.vcxproj">
+      <Project>{f934ab7b-186b-4e96-b20c-a58c38c1b819}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\zlib\zlib.vcxproj">
+      <Project>{10f22a5a-dd9e-44a1-ba2e-2a9a7c78b0ee}</Project>
+    </ProjectReference>
   </ItemGroup>
 </Project>

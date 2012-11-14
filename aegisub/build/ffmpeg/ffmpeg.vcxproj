@@ -36,8 +36,8 @@
   <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
 
   <PropertyGroup Label="ConfigArgs">
-    <CfgEnableDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-stripping</CfgEnableDebug>
-    <CfgEnableDebug Condition="'$(Configuration)' == 'Release'">--disable-debug</CfgEnableDebug>
+    <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-stripping --extra-cflags=-MDd</CfgDebug>
+    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug --extra-cflags=-MD</CfgDebug>
     <CfgArgs>
       --disable-avfilter
       --disable-avresample
@@ -61,6 +61,9 @@
       --enable-runtime-cpudetect
       --enable-static
       --extra-cflags=-D_SYSCRT
+      --extra-cflags=-wd4005
+      --extra-cflags=-wd4189
+      --extra-cflags=-FI$(MSBuildThisFileDirectory)dynamic_msvcrt.h
       --toolchain=msvc
       $(CfgEnableDebug)
     </CfgArgs>

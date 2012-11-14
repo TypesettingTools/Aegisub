@@ -77,7 +77,7 @@ type ShellWrapper(props : Map<String, String>) =
     this.EnvironmentVariables <- [|
       "CC=cl";
       "CPP=cl -E";
-      "CFLAGS=-nologo";
+      "CFLAGS=-nologo"
       "PATH=" + props.["MsysBasePath"] + "\\bin;" + props.["NativeExecutablePath"];
       "INCLUDE=" + props.["AegisubSourceBase"] + "//include;" + props.["IncludePath"];
       "LIB=" + props.["AegisubLibraryDir"] + ";" + props.["LibraryPath"];
