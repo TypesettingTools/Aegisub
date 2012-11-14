@@ -248,4 +248,12 @@
     DisplayName="libass source path"
     Description="Location of libass source code."
     />
+
+  <StringProperty
+    Subtype="folder"
+    Name="ZlibSrcDir"
+    Category="Paths"
+    DisplayName="zlib source path"
+    Description="Location of zlib source code. Required for FFMS2."
+    />
 </Rule>
