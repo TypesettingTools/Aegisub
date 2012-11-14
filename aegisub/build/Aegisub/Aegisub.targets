@@ -185,4 +185,15 @@
     <ProjectTools Include="AegisubConfig" />
   </ItemGroup>
 
+  <!-- Compile translations if msgfmt is available -->
+  <Target Name="Translations"
+    AfterTargets="ClCompile"
+    Condition="'$(MsgFmtPath)'!=''"
+    Inputs="@(MsgFmt)"
+    Outputs="$(AegisubBinaryDir)locale\%(Filename)\aegisub.mo"
+    >
+    <Error Condition="!Exists($(MsgFmtPath))" Text="$(MsgFmtPath) not found" />
+    <MakeDir Directories="$(AegisubBinaryDir)locale\%(MsgFmt.Filename)" />
+    <Exec Command="$(MsgFmtPath) -o $(AegisubBinaryDir)locale\%(MsgFmt.Filename)\aegisub.mo %(MsgFmt.Identity)" />
+  </Target>
 </Project>

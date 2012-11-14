@@ -78,6 +78,12 @@
      DisplayName="Update Checker URL"
      Description="URL to get for updates."
      />
+   <StringProperty
+     Name="MsgFmtPath"
+     Category="Config"
+     DisplayName="msgfmt.exe location"
+     Description="Location of msgfmt.exe, for compiling translations"
+     />
 
    <!-- External Libraries -->
   <BoolProperty

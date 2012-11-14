@@ -459,6 +459,9 @@
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <MsgFmt Include="$(AegisubSourceBase)po\*.po" />
+  </ItemGroup>
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(MSBuildThisFileDirectory)Aegisub.targets" />
   </ImportGroup>
