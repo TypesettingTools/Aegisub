@@ -41,7 +41,25 @@
     <CfgArgs>--enable-static --disable-shared --disable-dependency-tracking --without-glib $(CfgEnableDebug)</CfgArgs>
   </PropertyGroup>
 
-  <Target Name="Configure">
+  <ItemGroup>
+    <AutomakeFiles Include="$(FribidiSrcDir)\**\*.am" />
+    <SourceFiles Include="$(FribidiSrcDir)\**\*.c" />
+    <SourceFiles Include="$(FribidiSrcDir)\**\*.h" />
+  </ItemGroup>
+  <Target Name="Bootstrap"
+    Inputs="$(FribidiSrcDir)\configure.ac;@(AutomakeFiles)"
+    Outputs="$(FribidiSrcDir)\configure"
+    >
+    <ExecShellScript
+      Script="$(FribidiSrcDir)\bootstrap"
+      WorkingDirectory="$(FribidiSrcDir)"
+      />
+  </Target>
+
+  <Target Name="Configure"
+    Inputs="$(FribidiSrcDir)\configure"
+    Outputs="$(AegisubObjectDir)Makefile"
+    >
     <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="$(AegisubObjectDir)\temp">
       <Output TaskParameter="Result" PropertyName="CfgPrefix" />
     </MsysPath>
@@ -67,27 +85,31 @@
     <UpdateFile File="$(AegisubObjectDir)Makefile" Find=" bin doc test" Replacement="" />
   </Target>
 
-  <Target Name="Build">
-    <Error Condition="!Exists('$(FribidiSrcDir)')" Text="Fribidi source not found at '$(FribidiSrcDir)'" />
-
-    <ExecShellScript
-      Condition="!Exists('$(FribidiSrcDir)\configure')"
-      Script="$(FribidiSrcDir)\bootstrap"
-      WorkingDirectory="$(FribidiSrcDir)"
-      />
-
-    <CallTarget Targets="Configure" Condition="!Exists('$(AegisubObjectDir)\Makefile')" />
-
+  <Target Name="Compile"
+    Inputs="$(AegisubObjectDir)Makefile;@(SourceFiles)"
+    Outputs="$(AegisubObjectDir)lib\.libs\fribidi.lib"
+    >
     <ExecShellScript
       Command="make"
       Arguments="-j$(NUMBER_OF_PROCESSORS)"
       WorkingDirectory="$(AegisubObjectDir)"
       />
+    <Touch Files="$(AegisubObjectDir)lib\.libs\fribidi.lib" />
+  </Target>
 
+  <Target Name="Install"
+    Inputs="$(AegisubObjectDir)lib\.libs\fribidi.lib"
+    Outputs="$(AegisubLibraryDir)fribidi.lib"
+    >
     <ExecShellScript
       Command="make install"
       WorkingDirectory="$(AegisubObjectDir)"
       />
+  </Target>
+
+  <Target Name="Build">
+    <Error Condition="!Exists('$(FribidiSrcDir)')" Text="Fribidi source not found at '$(FribidiSrcDir)'" />
+    <CallTarget Targets="Bootstrap;Configure;Compile;Install" />
   </Target>
 
   <Target Name="Clean">
