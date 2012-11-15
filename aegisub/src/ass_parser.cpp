@@ -29,7 +29,7 @@
 AssParser::AssParser(AssFile *target, int version)
 : target(target)
 , version(version)
-, attach(0)
+, attach(nullptr)
 , state(&AssParser::ParseScriptInfoLine)
 {
 }

@@ -300,7 +300,7 @@ void AssFile::InsertAttachment(wxString filename) {
 	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb")
 		group = "[Fonts]";
 
-	std::auto_ptr<AssAttachment> newAttach(new AssAttachment(wxFileName(filename).GetFullName(), group));
+	std::unique_ptr<AssAttachment> newAttach(new AssAttachment(wxFileName(filename).GetFullName(), group));
 	newAttach->Import(filename);
 
 	InsertAttachment(newAttach.release());

@@ -60,10 +60,10 @@ class ThreadedFrameSource : public wxThread {
 
 	int nextFrame;   ///< Next queued frame, or -1 for none
 	double nextTime; ///< Next queued time
-	std::auto_ptr<AssFile> nextSubs; ///< Next queued AssFile
+	std::unique_ptr<AssFile> nextSubs; ///< Next queued AssFile
 
 	/// Subtitles to be loaded the next time a frame is requested
-	std::auto_ptr<AssFile> subs;
+	std::unique_ptr<AssFile> subs;
 	/// If subs is set and this is not -1, frame which subs was limited to when
 	/// it was last sent to the subtitle provider
 	int singleFrame;

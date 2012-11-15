@@ -47,7 +47,7 @@
 /// @class TextFileReader
 /// @brief A line-based text file reader
 class TextFileReader {
-	std::auto_ptr<std::ifstream> file;
+	std::unique_ptr<std::ifstream> file;
 	bool trim;
 	agi::line_iterator<wxString> iter;
 

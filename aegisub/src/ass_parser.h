@@ -24,7 +24,7 @@ class AssFile;
 class AssParser {
 	AssFile *target;
 	int version;
-	std::auto_ptr<AssAttachment> attach;
+	std::unique_ptr<AssAttachment> attach;
 	void (AssParser::*state)(wxString const&);
 
 	void ParseAttachmentLine(wxString const& data);

@@ -437,7 +437,7 @@ namespace menu {
 	void GetMenuBar(std::string const& name, wxFrame *window, agi::Context *c) {
 		menu_items const& items = get_menu(name);
 
-		std::auto_ptr<CommandMenuBar> menu(new CommandMenuBar(c));
+		std::unique_ptr<CommandMenuBar> menu(new CommandMenuBar(c));
 		for (auto const& item : items) {
 			std::string submenu, disp;
 			read_entry(item, "submenu", &submenu);
