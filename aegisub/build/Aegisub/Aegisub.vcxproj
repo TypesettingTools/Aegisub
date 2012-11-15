@@ -45,9 +45,12 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <!-- Update git_version.h -->
-  <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)\BuildTasks.dll" />
   <Target Name="UpdateVersion" BeforeTargets="ClCompile">
-    <ExecShellScript Script="../../build/version.sh" Arguments=".." />
+    <ExecShellScript
+      Command="$(MSBuildThisFileDirectory)..\version.sh"
+      WorkingDirectory="$(AegisubSourceBase)"
+      Configuration="@(ExecShellScript)"
+      Arguments=".." />
   </Target>
   <!-- Project References -->
   <ItemGroup>

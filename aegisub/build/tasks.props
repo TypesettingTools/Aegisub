@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PropertySheetDisplayName>Custom Tasks</_PropertySheetDisplayName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ExecShellScript Include=".">
+      <CC>cl</CC>
+      <CPP>cl -E</CPP>
+      <CFLAGS>-nologo</CFLAGS>
+      <PATH>$(MsysBasePath)\bin;$(NativeExecutablePath)</PATH>
+      <INCLUDE>$(MSBuildProjectDirectory);$(AegisubSourceBase)\include;$(IncludePath)</INCLUDE>
+      <LIB>$(AegisubLibraryDir);$(LibraryPath)</LIB>
+      <Configuration>$(Configuration)</Configuration>
+      <Platform>$(Platform)</Platform>
+      <Sh>$(MsysBasePath)\bin\sh.exe</Sh>
+    </ExecShellScript>
+  </ItemGroup>
+
+  <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="MsysPath" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+</Project>
+

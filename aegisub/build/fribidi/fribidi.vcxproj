@@ -31,51 +31,56 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
-  <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
-  <UsingTask TaskName="MsysPath" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
-  <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
-
   <PropertyGroup Label="ConfigArgs">
-    <CfgEnableDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug</CfgEnableDebug>
-    <CfgEnableDebug Condition="'$(Configuration)' == 'Release'">--disable-debug</CfgEnableDebug>
-    <CfgArgs>--enable-static --disable-shared --disable-dependency-tracking --without-glib $(CfgEnableDebug)</CfgArgs>
+    <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug CFLAGS=-MDd</CfgDebug>
+    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug CFLAGS=-MD</CfgDebug>
+    <CfgArgs>
+      --enable-static
+      --disable-shared
+      --disable-dependency-tracking
+      --without-glib
+      $(CfgEnableDebug)
+    </CfgArgs>
+    <AbsSrcDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(FribidiSrcDir)'))</AbsSrcDir>
   </PropertyGroup>
 
   <ItemGroup>
-    <AutomakeFiles Include="$(FribidiSrcDir)\**\*.am" />
-    <SourceFiles Include="$(FribidiSrcDir)\**\*.c" />
-    <SourceFiles Include="$(FribidiSrcDir)\**\*.h" />
+    <AutomakeFiles Include="$(AbsSrcDir)\**\*.am" />
+    <SourceFiles Include="$(AbsSrcDir)\**\*.c" />
+    <SourceFiles Include="$(AbsSrcDir)\**\*.h" />
   </ItemGroup>
   <Target Name="Bootstrap"
-    Inputs="$(FribidiSrcDir)\configure.ac;@(AutomakeFiles)"
-    Outputs="$(FribidiSrcDir)\configure"
+    Inputs="$(AbsSrcDir)\configure.ac;@(AutomakeFiles)"
+    Outputs="$(AbsSrcDir)\configure"
     >
     <ExecShellScript
-      Script="$(FribidiSrcDir)\bootstrap"
-      WorkingDirectory="$(FribidiSrcDir)"
+      Command="$(AbsSrcDir)\bootstrap"
+      WorkingDirectory="$(AbsSrcDir)"
+      Configuration="@(ExecShellScript)"
       />
   </Target>
 
   <Target Name="Configure"
-    Inputs="$(FribidiSrcDir)\configure"
+    Inputs="$(AbsSrcDir)\configure"
     Outputs="$(AegisubObjectDir)Makefile"
     >
-    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="$(AegisubObjectDir)\temp">
+    <MsysPath Path="$(AegisubObjectDir)\temp">
       <Output TaskParameter="Result" PropertyName="CfgPrefix" />
     </MsysPath>
 
-    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../include">
+    <MsysPath Path="$(MSBuildThisFileDirectory)../../include">
       <Output TaskParameter="Result" PropertyName="CfgIncludePrefix" />
     </MsysPath>
 
-    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../lib/$(Platform)/$(Configuration)">
+    <MsysPath Path="$(AegisubLibraryDir)">
       <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
     </MsysPath>
 
     <ExecShellScript
-      Script="$(FribidiSrcDir)\configure"
+      Command="$(AbsSrcDir)\configure"
       Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --includedir=$(CfgIncludePrefix)"
       WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
       />
 
     <!-- fribidi defines the symbols to export twice, which causes errors -->
@@ -93,6 +98,7 @@
       Command="make"
       Arguments="-j$(NUMBER_OF_PROCESSORS)"
       WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
       />
     <Touch Files="$(AegisubObjectDir)lib\.libs\fribidi.lib" />
   </Target>
@@ -104,11 +110,12 @@
     <ExecShellScript
       Command="make install"
       WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
       />
   </Target>
 
   <Target Name="Build">
-    <Error Condition="!Exists('$(FribidiSrcDir)')" Text="Fribidi source not found at '$(FribidiSrcDir)'" />
+    <Error Condition="!Exists('$(AbsSrcDir)')" Text="Fribidi source not found at '$(AbsSrcDir)'" />
     <CallTarget Targets="Bootstrap;Configure;Compile;Install" />
   </Target>
 

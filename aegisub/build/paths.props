@@ -3,10 +3,10 @@
 	<PropertyGroup>
 		<_PropertySheetDisplayName>Path definitions</_PropertySheetDisplayName>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
 		<!-- Base for Aegisub source code -->
-		<AegisubSourceBase Condition="'$(AegisubSourceBase)'==''">$(MSBuildThisFileDirectory)..\</AegisubSourceBase>
+		<AegisubSourceBase Condition="'$(AegisubSourceBase)'==''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</AegisubSourceBase>
 		<!-- Base for contrib libraries source code -->
 		<AegisubContribBase Condition="'$(AegisubContribBase)'==''">$(AegisubSourceBase)..\contrib\</AegisubContribBase>
 		<!-- Base for built files -->

@@ -33,6 +33,7 @@
     <Import Project="$(MSBuildThisFileDirectory)Aegisub\standard-libraries.props" />
     <Import Project="$(MSBuildThisFileDirectory)standard-settings.props" />
     <Import Project="$(MSBuildThisFileDirectory)standard-outdirs.props" />
+    <Import Project="$(MSBuildThisFileDirectory)tasks.props" />
   </ImportGroup>
 
   <!-- The standard targets need to go last for all paths to be proper -->

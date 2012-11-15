@@ -31,10 +31,6 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
-  <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
-  <UsingTask TaskName="MsysPath" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
-  <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
-
   <PropertyGroup Label="ConfigArgs">
     <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-stripping --extra-cflags=-MDd</CfgDebug>
     <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug --extra-cflags=-MD</CfgDebug>
@@ -63,23 +59,24 @@
       --extra-cflags=-D_SYSCRT
       --extra-cflags=-wd4005
       --extra-cflags=-wd4189
-      --extra-cflags=-FI$(MSBuildThisFileDirectory)dynamic_msvcrt.h
+      --extra-cflags=-FIdynamic_msvcrt.h
       --toolchain=msvc
-      $(CfgEnableDebug)
+      $(CfgDebug)
     </CfgArgs>
+    <AbsSrcDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(FfmpegSrcDir)'))</AbsSrcDir>
   </PropertyGroup>
 
   <ItemGroup>
-    <ConfigureInput Include="$(FfmpegSrcDir)\configure" />
+    <ConfigureInput Include="$(AbsSrcDir)\configure" />
 
     <ConfigureOutput Include="$(AegisubObjectDir)config.*" />
     <ConfigureOutput Include="$(AegisubObjectDir)Makefile" />
     <ConfigureOutput Include="$(AegisubObjectDir)libavutil\avconfig.h" />
 
-    <CompileInput Include="$(FfmpegSrcDir)\*.mak" />
-    <CompileInput Include="$(FfmpegSrcDir)\**\*.c" />
-    <CompileInput Include="$(FfmpegSrcDir)\**\*.asm" />
-    <CompileInput Include="$(FfmpegSrcDir)\**\Makefile" />
+    <CompileInput Include="$(AbsSrcDir)\*.mak" />
+    <CompileInput Include="$(AbsSrcDir)\**\*.c" />
+    <CompileInput Include="$(AbsSrcDir)\**\*.asm" />
+    <CompileInput Include="$(AbsSrcDir)\**\Makefile" />
 
     <CompileOutput Include="$(AegisubObjectDir)libavcodec\libavcodec.a" />
     <CompileOutput Include="$(AegisubObjectDir)libavformat\libavformat.a" />
@@ -96,22 +93,23 @@
     Inputs="@(ConfigureInput)"
     Outputs="@(ConfigureOutput)"
     >
-    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="$(AegisubObjectDir)\temp">
+    <MsysPath Path="$(AegisubObjectDir)\temp">
       <Output TaskParameter="Result" PropertyName="CfgPrefix" />
     </MsysPath>
 
-    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../include">
+    <MsysPath Path="$(MSBuildThisFileDirectory)../../include">
       <Output TaskParameter="Result" PropertyName="CfgIncludePrefix" />
     </MsysPath>
 
-    <MsysPath ProjectDir="$(MSBuildThisFileDirectory)" Path="../../lib/$(Platform)/$(Configuration)">
+    <MsysPath Path="$(AegisubLibraryDir)">
       <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
     </MsysPath>
 
     <ExecShellScript
-      Script="$(FfmpegSrcDir)\configure"
+      Command="$(AbsSrcDir)\configure"
       Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --incdir=$(CfgIncludePrefix)"
       WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
       />
 
     <!-- Ensure that Makefile has a recent modified time to avoid
@@ -127,6 +125,7 @@
       Command="make"
       Arguments="-j$(NUMBER_OF_PROCESSORS)"
       WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
       />
   </Target>
 
@@ -137,11 +136,12 @@
     <ExecShellScript
       Command="make install"
       WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
       />
   </Target>
 
   <Target Name="Build">
-    <Error Condition="!Exists('$(FfmpegSrcDir)')" Text="FFmpeg source not found at '$(FfmpegSrcDir)'" />
+    <Error Condition="!Exists('$(AbsSrcDir)')" Text="FFmpeg source not found at '$(AbsSrcDir)'" />
 
     <CallTarget Targets="Configure" />
     <CallTarget Targets="Compile" />

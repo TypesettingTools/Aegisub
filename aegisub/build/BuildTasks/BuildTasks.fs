@@ -34,36 +34,26 @@ let propertyMap (be : IBuildEngine) =
   |> Seq.map (fun x -> (x.Name, x.EvaluatedValue))
   |> Map.ofSeq
 
-/// Convert a windows path possibly relative to the Aegisub project file to an
-/// absolute msys path
-let mungePath projectDir path =
+/// Convert an absolute windows path to an msys path
+let mungePath path =
   let matchre pat str =
     let m = System.Text.RegularExpressions.Regex.Match(str, pat)
     if m.Success
     then List.tail [ for g in m.Groups -> g.Value ]
     else []
-  match IO.Path.Combine(projectDir, path) |> matchre  "([A-Za-z]):\\\\(.*)" with
+  match matchre "([A-Za-z]):\\\\(.*)" path with
   | drive :: path :: [] -> sprintf "/%s/%s" drive (path.Replace('\\', '/'))
-  | _ -> failwith <| sprintf "Bad path: '%s' '%s'" projectDir path
+  | _ -> path
 
-type ShellWrapper(props : Map<String, String>) =
+type ShellWrapper(conf : ITaskItem) =
   inherit ToolTask()
-
-  let cwd = function
-  | null | "" -> props.["AegisubSourceBase"]
-  | x -> if not <| IO.Directory.Exists x then ignore <| IO.Directory.CreateDirectory(x)
-         x
 
   member val Arguments = "" with get, set
   member val WorkingDirectory = "" with get, set
 
-  member this.callScript scriptName args =
-    this.Arguments <- sprintf "%s %s" (mungePath props.["ProjectDir"] scriptName) args
-    this.Execute()
-
   // ToolTask overrides
   override val ToolName = "sh.exe" with get
-  override this.GenerateFullPathToTool() = sprintf "%s\\bin\\sh.exe" props.["MsysBasePath"]
+  override this.GenerateFullPathToTool() = conf.GetMetadata "Sh"
   override this.GenerateCommandLineCommands() = this.Arguments
   override this.GetWorkingDirectory() = this.WorkingDirectory
 
@@ -71,43 +61,33 @@ type ShellWrapper(props : Map<String, String>) =
     if this.GenerateFullPathToTool() |> IO.File.Exists |> not then
       failwith "sh.exe not found. Make sure the MSYS root is set to a correct location."
 
-    this.WorkingDirectory <- cwd this.WorkingDirectory
+    if not <| IO.Directory.Exists this.WorkingDirectory then ignore <| IO.Directory.CreateDirectory this.WorkingDirectory
+
     this.UseCommandProcessor <- false
     this.StandardOutputImportance <- "High"
-    this.EnvironmentVariables <- [|
-      "CC=cl";
-      "CPP=cl -E";
-      "CFLAGS=-nologo"
-      "PATH=" + props.["MsysBasePath"] + "\\bin;" + props.["NativeExecutablePath"];
-      "INCLUDE=" + props.["AegisubSourceBase"] + "//include;" + props.["IncludePath"];
-      "LIB=" + props.["AegisubLibraryDir"] + ";" + props.["LibraryPath"];
-      "PKG_CONFIG_PATH=" + (mungePath props.["ProjectDir"] props.["AegisubLibraryDir"]) + "/pkgconfig"
-    |]
-
+    this.EnvironmentVariables <- [| for x in ["CC"; "CPP"; "CFLAGS"; "PATH"; "INCLUDE"; "LIB"]
+                                    -> sprintf "%s=%s" <| x <| conf.GetMetadata x |]
     base.Execute()
 
 type ExecShellScript() =
   inherit Task()
 
   // Task arguments
-  member val WorkingDirectory = "" with get, set
-  member val Command = "" with get, set
-  member val Script = "" with get, set
+  [<Required>] member val WorkingDirectory = "" with get, set
+  [<Required>] member val Command = "" with get, set
+  [<Required>] member val Configuration : ITaskItem = null with get, set
   member val Arguments = "" with get, set
 
-  member private this.realArgs (props : Map<String, String>) =
+  member private this.realArgs () =
     let cleanArgs = this.Arguments.Replace("\r", "").Replace('\n', ' ')
-    if this.Script.Length > 0
-    then sprintf "%s %s" (mungePath props.["ProjectDir"] this.Script) cleanArgs
-    else sprintf "-c '%s %s'" this.Command cleanArgs
+    sprintf "-c '%s %s'" (mungePath this.Command) cleanArgs
 
   override this.Execute() =
     try
-      let props = propertyMap this.BuildEngine
-      let sw = ShellWrapper(props,
+      let sw = ShellWrapper(this.Configuration,
                             BuildEngine = this.BuildEngine,
                             HostObject = this.HostObject,
-                            Arguments = this.realArgs props,
+                            Arguments = this.realArgs(),
                             WorkingDirectory = this.WorkingDirectory)
 
       sw.Execute()
@@ -118,15 +98,12 @@ type ExecShellScript() =
 type MsysPath() =
   inherit Task()
 
-  member val ProjectDir = "" with get, set
   member val Path = "" with get, set
-
-  [<Output>]
-  member val Result = "" with get, set
+  [<Output>] member val Result = "" with get, set
 
   override this.Execute() =
     try
-      this.Result <- mungePath this.ProjectDir this.Path
+      this.Result <- mungePath this.Path
       true
     with Failure(e) ->
       this.Log.LogError(e)
