@@ -71,7 +71,8 @@ void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	std::string temp;
 	getline(*dat, temp);
 	std::vector<std::string> header;
-	boost::split(header, conv->Convert(temp), _1 == '|');
+	std::string converted(conv->Convert(temp));
+	boost::split(header, converted, _1 == '|');
 	if (header.size() != 2) return;
 	int meanings = atoi(header[1].c_str());
 
@@ -79,7 +80,8 @@ void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	for (int i = 0; i < meanings; ++i) {
 		std::vector<std::string> line;
 		getline(*dat, temp);
-		boost::split(line, conv->Convert(temp), _1 == '|');
+		std::string converted(conv->Convert(temp));
+		boost::split(line, converted, _1 == '|');
 
 		// The "definition" is just the part of speech plus the word it's
 		// giving synonyms for (which may not be the passed word)

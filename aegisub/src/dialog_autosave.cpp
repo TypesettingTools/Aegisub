@@ -112,7 +112,7 @@ void DialogAutosave::Populate(std::map<wxString, AutosaveFile> &files_map, std::
 
 		auto it = files_map.find(name);
 		if (it == files_map.end())
-			it = files_map.emplace(name, name).first;
+			it = files_map.insert(std::make_pair(name, name)).first;
 		it->second.versions.emplace_back(wxFileName(directory, fn).GetFullPath(), date, wxString::Format(name_fmt, date.Format()));
 	} while (dir.GetNext(&fn));
 }

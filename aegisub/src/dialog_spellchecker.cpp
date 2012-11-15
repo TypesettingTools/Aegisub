@@ -180,7 +180,7 @@ void DialogSpellChecker::OnIgnore(wxCommandEvent&) {
 }
 
 void DialogSpellChecker::OnIgnoreAll(wxCommandEvent&) {
-	auto_ignore.emplace(from_wx(orig_word->GetValue()));
+	auto_ignore.insert(from_wx(orig_word->GetValue()));
 	FindNext();
 }
 

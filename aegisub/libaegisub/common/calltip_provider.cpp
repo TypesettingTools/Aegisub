@@ -116,7 +116,7 @@ CalltipProvider::CalltipProvider() {
 		if (proto.has_parens)
 			p.text.back() = ')';
 
-		protos.emplace(std::move(tag_name), std::move(p));
+		protos.insert(make_pair(tag_name, p));
 	}
 }
 

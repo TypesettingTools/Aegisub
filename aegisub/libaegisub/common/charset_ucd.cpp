@@ -23,8 +23,6 @@
 
 #include "../../universalchardet/nsCharSetProber.h"
 
-#include <boost/range/algorithm.hpp>
-
 namespace agi {
 	namespace charset {
 
@@ -97,7 +95,7 @@ UCDetect::UCDetect(const std::string &file)
 			throw UnknownCharset("Unknown character set.");
 
 		typedef std::pair<float, std::string> const& result;
-		boost::sort(list, [](result lft, result rgt) { return lft.first > rgt.first; });
+		sort(begin(list), end(list), [](result lft, result rgt) { return lft.first > rgt.first; });
 	}
 }
 
