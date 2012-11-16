@@ -69,9 +69,16 @@ type GitProject() =
       ignore <| IO.Directory.CreateDirectory root
 
       callGit root (sprintf "clone %s" url.ItemSpec)
+
+      let dir = (sprintf "%s\\%s" root projectName)
       let branch = url.GetMetadata("Branch")
       if branch.Length > 0
-      then callGit (sprintf "%s\\%s" root projectName) (sprintf "checkout %s" branch)
+      then callGit dir (sprintf "checkout %s" branch)
+
+      let autocrlf = url.GetMetadata "AutoCrlf"
+      if autocrlf.Length > 0
+      then callGit dir (sprintf "config --local core.autocrlf %s" autocrlf)
+           callGit dir "reset --hard"
 
     let updateGit (url : ITaskItem) =
       let projectName = Uri(url.ItemSpec).Segments.Last().Replace(".git", "")
