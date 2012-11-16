@@ -48,7 +48,9 @@
         $(FftwSrcDir)\rdft\scalar;
         $(FftwSrcDir)\reodft;
         $(FftwSrcDir)\simd-support;
-        $(FftwSrcDir)\threads
+        $(FftwSrcDir)\threads;
+        $(MSBuildThisFileDirectory);
+        %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <OpenMPSupport>true</OpenMPSupport>
