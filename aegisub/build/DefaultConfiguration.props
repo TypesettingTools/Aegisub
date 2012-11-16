@@ -62,4 +62,12 @@
     <LibassSrcDir>..\..\..\deps\libass</LibassSrcDir>
     <ZlibSrcDir>..\..\..\deps\zlib</ZlibSrcDir>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MsysBasePath)' == ''">
+    <MsysBasePath Condition="Exists('c:\msys\bin\git.exe')">c:\msys</MsysBasePath>
+    <MsysBasePath Condition="Exists('c:\msysgit\bin\git.exe')">c:\msysgit</MsysBasePath>
+    <MsysBasePath Condition="Exists('%PROGRAMFILES%\Git\bin\git.exe')">%PROGRAMFILES%\Git</MsysBasePath>
+    <MsysBasePath Condition="Exists('%PROGRAMFILES(X86)%\Git\bin\git.exe')">%PROGRAMFILES(X86)%\Git</MsysBasePath>
+    <MsysBasePath Condition="Exists('%PROGRAMW6432%\Git\bin\git.exe')">%PROGRAMW6432%\Git</MsysBasePath>
+  </PropertyGroup>
 </Project>
