@@ -41,7 +41,7 @@
     <AegisubUseCsri>HelperLibrary</AegisubUseCsri>
     <AegisubUseDSound>true</AegisubUseDSound>
     <AegisubUseFfms>true</AegisubUseFfms>
-    <AegisubUseFftw>false</AegisubUseFftw>
+    <AegisubUseFftw>true</AegisubUseFftw>
     <AegisubUseFontconfig>true</AegisubUseFontconfig>
     <AegisubUseFreetype2>true</AegisubUseFreetype2>
     <AegisubUseLibass>false</AegisubUseLibass>
@@ -52,5 +52,14 @@
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>
     <WxBasePath>$(AegisubSourceBase)wxlib</WxBasePath>
+
+    <FfmsSrcDir>..\..\..\deps\ffms2</FfmsSrcDir>
+    <FfmpegSrcDir>..\..\..\deps\ffmpeg</FfmpegSrcDir>
+    <FftwSrcDir>..\..\..\deps\fftw</FftwSrcDir>
+    <Freetype2SrcDir>..\..\..\deps\freetype2</Freetype2SrcDir>
+    <FribidiSrcDir>..\..\..\deps\fribidi</FribidiSrcDir>
+    <FontconfigSrcDir>..\..\..\deps\fontconfig</FontconfigSrcDir>
+    <LibassSrcDir>..\..\..\deps\libass</LibassSrcDir>
+    <ZlibSrcDir>..\..\..\deps\zlib</ZlibSrcDir>
   </PropertyGroup>
 </Project>
