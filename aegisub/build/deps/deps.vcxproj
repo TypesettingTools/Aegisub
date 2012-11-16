@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
+
+Permission to use, copy, modify, and distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+Aegisub Project http://www.aegisub.org/
+-->
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{472212DF-99E8-4B73-9736-8500616D8A80}</ProjectGuid>
+    <ProjectName>! Update Dependencies</ProjectName>
+  </PropertyGroup>
+
+  <ItemGroup Label="git">
+    <GitProject Include="git://anongit.freedesktop.org/fribidi/fribidi" />
+    <GitProject Include="git://git.sv.nongnu.org/freetype/freetype2.git" />
+    <GitProject Include="git://github.com/madler/zlib.git" />
+    <GitProject Include="git://source.ffmpeg.org/ffmpeg.git" />
+    <GitProject Include="git://github.com/tgoyne/ffms2.git">
+      <Branch>trunk</Branch>
+    </GitProject>
+    <GitProject Include="git://github.com/tgoyne/fontconfig.git">
+      <Branch>msvc</Branch>
+    </GitProject>
+    <GitProject Include="git://github.com/tgoyne/libass.git">
+      <Branch>msvc</Branch>
+    </GitProject>
+  </ItemGroup>
+
+  <ItemGroup Label="tarball">
+    <TarballProject Include="fftw">
+      <Version>3.3.2</Version>
+      <Url>http://www.fftw.org/fftw-3.3.2.tar.gz</Url>
+    </TarballProject>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)\..\aegisub.props" />
+  <UsingTask TaskName="GitProject" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="TarballProject" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+
+  <Target Name="Build">
+    <GitProject
+      Projects="@(GitProject)"
+      Root="$(MSBuildThisFileDirectory)\..\..\..\deps"
+      GitPath="$(MsysBasePath)\bin\git.exe"
+      />
+
+    <TarballProject Projects="@(TarballProject)" Root="$(MSBuildThisFileDirectory)..\..\..\deps" />
+  </Target>
+</Project>

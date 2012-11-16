@@ -71,3 +71,7 @@ git_version.h
 aegisub/tests/data
 aegisub/tests/run
 aegisub/tests/*.json
+
+/packages
+/deps
+.nuget
