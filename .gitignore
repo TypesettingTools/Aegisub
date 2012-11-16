@@ -22,7 +22,6 @@
 *.pch
 *.pdb
 *.sdf
-*.sln
 *.so
 *.srt
 *.suo
