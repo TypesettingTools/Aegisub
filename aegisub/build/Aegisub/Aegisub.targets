@@ -169,7 +169,6 @@
       </PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
         $(SrcDir)include\;
-        $(SrcDir)msvc\;
         $(AegisubContribBase)iconv\include;
         $(AegisubSourceBase)libaegisub\include;
         $(AegisubSourceBase)build;

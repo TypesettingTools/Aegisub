@@ -10,7 +10,7 @@
       <CPP>cl -E</CPP>
       <CFLAGS>-nologo</CFLAGS>
       <PATH>$(MsysBasePath)\bin;$(NativeExecutablePath)</PATH>
-      <INCLUDE>$(MSBuildProjectDirectory);$(AegisubSourceBase)\include;$(IncludePath)</INCLUDE>
+      <INCLUDE>$(MSBuildProjectDirectory);$(AegisubSourceBase)\src\msvc;$(AegisubSourceBase)\include;$(IncludePath)</INCLUDE>
       <LIB>$(AegisubLibraryDir);$(LibraryPath)</LIB>
       <Configuration>$(Configuration)</Configuration>
       <Platform>$(Platform)</Platform>
