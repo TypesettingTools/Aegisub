@@ -16,6 +16,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "aegisub\build\l
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libresrc", "aegisub\build\libresrc\libresrc.vcxproj", "{BD00D65F-24DA-4784-8860-3B972EA125FC}"
 	ProjectSection(ProjectDependencies) = postProject
+		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC} = {0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}
 		{08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8} = {08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8}
 	EndProjectSection
 EndProject

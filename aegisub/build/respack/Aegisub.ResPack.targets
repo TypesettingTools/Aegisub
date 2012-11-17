@@ -42,7 +42,7 @@
 		DependsOnTargets="PrepareForBuild"
 		Condition="'@(ResPack)' != ''"
 		Inputs="@(ResPack)"
-		Outputs="%(ResPack.OutputDir)%(ResPack.OutputName);%(ResPack.OutputDir)%(Respack.OutputHeader')"
+		Outputs="%(ResPack.OutputDir)%(ResPack.OutputName);%(ResPack.OutputDir)%(Respack.OutputHeader)"
 		>
 		<Error
 			Condition="!Exists('$(ResPackExe)')"

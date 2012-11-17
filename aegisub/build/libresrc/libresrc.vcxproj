@@ -41,13 +41,19 @@
     <ResPack>
       <OutputDir>$(MSBuildThisFileDirectory)..\..\src\libresrc\</OutputDir>
     </ResPack>
-    <PreBuildEvent>
-      <Command>copy "$(SrcDir)default_config_win.json" "$(SrcDir)default_config_platform.json"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(MSBuildThisFileDirectory)..\respack\Aegisub.ResPack.targets" />
   </ImportGroup>
+
+  <Target Name="DefaultConfig" BeforeTargets="ClCompile">
+    <Copy
+      SourceFiles="$(SrcDir)default_config_win.json"
+      DestinationFiles="$(SrcDir)default_config_platform.json"
+      SkipUnchangedFiles="true"
+      />
+  </Target>
+
   <!-- Source files -->
   <ItemGroup>
     <ResPack Include="..\..\src\libresrc\manifest.respack">
@@ -59,18 +65,11 @@
       <OutputHeader>bitmap.h</OutputHeader>
     </ResPack>
   </ItemGroup>
+
   <ItemGroup>
     <ClCompile Include="$(SrcDir)libresrc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)libresrc.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\respack\respack.vcxproj">
-      <Project>{08af2bcc-fcdd-4f0e-8b41-59a6e634f2e8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\wx\wxWidgets.vcxproj">
-      <Project>{0518d6c0-7bf6-4fd1-91fb-191bd10db2ac}</Project>
-    </ProjectReference>
   </ItemGroup>
 </Project>

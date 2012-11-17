@@ -56,7 +56,7 @@
     <ProjectReference Include="..\csrihelper\csrihelper.vcxproj">
       <Project>{c832eaf3-860d-4373-a02c-933626b47a5e}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\ffms2\ffms2.vcxproj">
+    <ProjectReference Include="..\ffms2\ffms2.vcxproj" Condition="Exists('$(FfmsSrcDir)')">
       <Project>{aa137613-96a1-4388-8905-71345b4f8f87}</Project>
     </ProjectReference>
     <ProjectReference Include="..\fftw\fftw.vcxproj" Condition="Exists('$(FftwSrcDir)')">
@@ -85,9 +85,6 @@
     </ProjectReference>
     <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
       <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\wx\wxWidgets.vcxproj">
-      <Project>{0518d6c0-7bf6-4fd1-91fb-191bd10db2ac}</Project>
     </ProjectReference>
   </ItemGroup>
   <!-- Source files -->
