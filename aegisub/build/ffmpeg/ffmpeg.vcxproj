@@ -72,21 +72,6 @@
     <ConfigureOutput Include="$(AegisubObjectDir)config.*" />
     <ConfigureOutput Include="$(AegisubObjectDir)Makefile" />
     <ConfigureOutput Include="$(AegisubObjectDir)libavutil\avconfig.h" />
-
-    <CompileInput Include="$(AbsSrcDir)\*.mak" />
-    <CompileInput Include="$(AbsSrcDir)\**\*.c" />
-    <CompileInput Include="$(AbsSrcDir)\**\*.asm" />
-    <CompileInput Include="$(AbsSrcDir)\**\Makefile" />
-
-    <CompileOutput Include="$(AegisubObjectDir)libavcodec\libavcodec.a" />
-    <CompileOutput Include="$(AegisubObjectDir)libavformat\libavformat.a" />
-    <CompileOutput Include="$(AegisubObjectDir)libavutil\libavutil.a" />
-    <CompileOutput Include="$(AegisubObjectDir)libswscale\libswscale.a" />
-
-    <InstallOutput Include="$(AegisubLibraryDir)libavcodec.a" />
-    <InstallOutput Include="$(AegisubLibraryDir)libavformat.a" />
-    <InstallOutput Include="$(AegisubLibraryDir)libavutil.a" />
-    <InstallOutput Include="$(AegisubLibraryDir)libswscale.a" />
   </ItemGroup>
 
   <Target Name="Configure"
@@ -105,6 +90,8 @@
       <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
     </MsysPath>
 
+    <Delete Files="$(AegisubObjectDir)build.timestamp" />
+
     <ExecShellScript
       Command="$(AbsSrcDir)\configure"
       Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --incdir=$(CfgIncludePrefix)"
@@ -118,8 +105,8 @@
   </Target>
 
   <Target Name="Compile"
-    Inputs="@(ConfigureOutput);@(CompileInput)"
-    Outputs="@(CompileOutput)"
+    Inputs="$(FfmpegSrcDir)"
+    Outputs="$(AegisubObjectDir)build.timestamp"
     >
     <ExecShellScript
       Command="make"
@@ -127,17 +114,14 @@
       WorkingDirectory="$(AegisubObjectDir)"
       Configuration="@(ExecShellScript)"
       />
-  </Target>
 
-  <Target Name="Install"
-    Inputs="@(CompileOutput)"
-    Outputs="@(InstallOutput)"
-    >
     <ExecShellScript
       Command="make install"
       WorkingDirectory="$(AegisubObjectDir)"
       Configuration="@(ExecShellScript)"
       />
+
+    <Touch Files="$(AegisubObjectDir)build.timestamp" AlwaysCreate="true" />
   </Target>
 
   <Target Name="Build">
@@ -145,7 +129,6 @@
 
     <CallTarget Targets="Configure" />
     <CallTarget Targets="Compile" />
-    <CallTarget Targets="Install" />
   </Target>
 
   <Target Name="Clean">
