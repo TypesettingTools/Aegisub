@@ -27,7 +27,6 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
     <SrcDir>..\..\src\libresrc\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
@@ -65,5 +64,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)libresrc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\respack\respack.vcxproj">
+      <Project>{08af2bcc-fcdd-4f0e-8b41-59a6e634f2e8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\wx\wxWidgets.vcxproj">
+      <Project>{0518d6c0-7bf6-4fd1-91fb-191bd10db2ac}</Project>
+    </ProjectReference>
   </ItemGroup>
 </Project>

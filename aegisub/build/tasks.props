@@ -7,7 +7,6 @@
   <ItemGroup>
     <ExecShellScript Include=".">
       <CC>cl</CC>
-      <CPP>cl -E</CPP>
       <CFLAGS>-nologo</CFLAGS>
       <PATH>$(MsysBasePath)\bin;$(NativeExecutablePath)</PATH>
       <INCLUDE>$(MSBuildProjectDirectory);$(AegisubSourceBase)\src\msvc;$(AegisubSourceBase)\include;$(IncludePath)</INCLUDE>

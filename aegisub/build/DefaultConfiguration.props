@@ -51,7 +51,6 @@
     <StartupLog>false</StartupLog>
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>
-    <WxBasePath>$(AegisubSourceBase)wxlib</WxBasePath>
 
     <FfmsSrcDir>..\..\..\deps\ffms2</FfmsSrcDir>
     <FfmpegSrcDir>..\..\..\deps\ffmpeg</FfmpegSrcDir>
@@ -60,6 +59,7 @@
     <FribidiSrcDir>..\..\..\deps\fribidi</FribidiSrcDir>
     <FontconfigSrcDir>..\..\..\deps\fontconfig</FontconfigSrcDir>
     <LibassSrcDir>..\..\..\deps\libass</LibassSrcDir>
+    <WxSrcDir>..\..\..\deps\wxWidgets</WxSrcDir>
     <ZlibSrcDir>..\..\..\deps\zlib</ZlibSrcDir>
   </PropertyGroup>
 

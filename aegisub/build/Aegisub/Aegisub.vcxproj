@@ -26,7 +26,6 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>exe</AegisubProjectType>
-    <AegisubUseWxWidgets>true</AegisubUseWxWidgets>
     <SrcDir>..\..\src\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
@@ -86,6 +85,9 @@
     </ProjectReference>
     <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
       <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\wx\wxWidgets.vcxproj">
+      <Project>{0518d6c0-7bf6-4fd1-91fb-191bd10db2ac}</Project>
     </ProjectReference>
   </ItemGroup>
   <!-- Source files -->

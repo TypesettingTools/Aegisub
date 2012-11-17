@@ -40,12 +40,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Label="LocalAppDataPlatform" />
 
-    <!-- If this comes before the Microsoft.Cpp.targets include the
-         AdditionalLibraryDirectories value gets cleared (but nothing else).
-         I'm not sure why. -->
-    <Import Project="$(MSBuildThisFileDirectory)wx.props" Condition="'$(AegisubUseWxWidgets)' == 'true'" />
-
-    <ImportGroup Label="Targets">
-      <Import Project="$(MSBuildThisFileDirectory)install.targets" />
-    </ImportGroup>
+  <ImportGroup Label="Targets">
+    <Import Project="$(MSBuildThisFileDirectory)install.targets" />
+  </ImportGroup>
 </Project>

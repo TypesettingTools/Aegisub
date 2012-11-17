@@ -176,6 +176,9 @@
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
     </ClCompile>
+		<Link>
+			<AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+		</Link>
   </ItemDefinitionGroup>
 
   <!-- Add property pages -->

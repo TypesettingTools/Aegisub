@@ -150,28 +150,6 @@
 
   <StringProperty
     Subtype="folder"
-    Name="WxBasePath"
-    Category="Paths"
-    DisplayName="wxWidgets root"
-    Description="Root directory of the wxWidgets installation to use"
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="WxLibraryPath"
-    Category="Paths"
-    DisplayName="wxWidgets library path"
-    Description="Location of compiled wxWidgets library files. Defaults to $(WxBasePath)\lib32 or $(WxBasePath)\lib64."
-    />
-  <StringProperty
-    Subtype="folder"
-    Name="WxIncludePath"
-    Category="Paths"
-    DisplayName="wxWidgets include path"
-    Description="Location of wxWidgets header files. Defaults to $(WxBasePath)\include"
-    />
-
-  <StringProperty
-    Subtype="folder"
     Name="CsriLibraryPath"
     Category="Paths"
     DisplayName="External CSRI library path"
@@ -247,6 +225,14 @@
     Category="Paths"
     DisplayName="libass source path"
     Description="Location of libass source code."
+    />
+
+  <StringProperty
+    Subtype="folder"
+    Name="WxSrcDir"
+    Category="Paths"
+    DisplayName="wxWidgets source path"
+    Description="Location of wxWidgets source code."
     />
 
   <StringProperty

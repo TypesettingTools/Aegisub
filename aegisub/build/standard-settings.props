@@ -19,6 +19,9 @@
 			<PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 			<AdditionalIncludeDirectories>$(AegisubSourceBase)src\msvc;$(AegisubSourceBase)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 		</ClCompile>
+		<ResourceCompile>
+			<AdditionalIncludeDirectories>$(AegisubSourceBase)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+		</ResourceCompile>
 		<Link>
 			<SubSystem>Windows</SubSystem>
 			<GenerateDebugInformation>true</GenerateDebugInformation>

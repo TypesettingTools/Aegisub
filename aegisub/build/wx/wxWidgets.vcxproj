@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <PropertyGroup Label="wx">
+    <WxTargetCpu Condition="$(Platform) == 'Win32'">X86</WxTargetCpu>
+    <WxTargetCpu Condition="$(Platform) == 'x64'">X64</WxTargetCpu>
+    <WxBuild Condition="$(Configuration) == 'Debug'">debug</WxBuild>
+    <WxBuild Condition="$(Configuration) == 'Release'">release</WxBuild>
+    <NMakeArgs>LIBDIRNAME=$(AegisubLibraryDir) OBJS=$(AegisubObjectDir) SHARED=0 UNICODE=0 USE_OPENGL=1 VENDOR=aegisub TARGET_CPU=$(WxTargetCpu) BUILD=$(WxBuild)</NMakeArgs>
+    <LibraryNameSuffix Condition="$(Configuration) == 'Debug'">d</LibraryNameSuffix>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <WxHeader Include="$(WxSrcDir)\src\png\png.h" />
+    <WxHeader Include="$(WxSrcDir)\src\png\pngconf.h" />
+    <WxHeader Include="$(WxSrcDir)\include\**\*.h" />
+    <WxHeader Include="$(WxSrcDir)\include\**\*.rc" />
+    <WxHeader Include="$(WxSrcDir)\include\**\*.cur" />
+    <WxHeader Include="$(WxSrcDir)\include\**\*.bmp" />
+    <WxHeader Include="$(WxSrcDir)\include\**\*.ico" />
+
+    <WxSource Include="$(WxSrcDir)\src\**\*.cpp" />
+    <WxSource Include="$(WxSrcDir)\src\**\*.cxx" />
+    <WxSource Include="$(WxSrcDir)\src\**\*.c" />
+
+    <!-- Specifically list one of them to ensure there's an output listed for
+         a clean build -->
+    <WxLibrary Include="$(AegisubLibraryDir)\wxbase29$(LibraryNameSuffix).lib" />
+    <WxLibrary Include="$(AegisubLibraryDir)\wx*.lib" />
+  </ItemGroup>
+
+  <Target Name="Build"
+    Inputs="@(WxHeader);@(WxSource)"
+    Outputs="@(WxLibrary)"
+    >
+    <Copy
+      SourceFiles="setup.h"
+      DestinationFolder="$(WxSrcDir)\include\wx\msw"
+      SkipUnchangedFiles="true"
+      />
+    <Exec
+      Command="nmake -f makefile.vc $(NMakeArgs)"
+      WorkingDirectory="$(WxSrcDir)\build\msw"
+      />
+
+    <Copy
+      SourceFiles="@(WxHeader)"
+      DestinationFolder="$(AegisubSourceBase)include\%(RecursiveDir)"
+      SkipUnchangedFiles="true"
+      />
+    <Copy
+      SourceFiles="setup-installed.h"
+      DestinationFiles="$(AegisubSourceBase)include\wx\setup.h"
+      SkipUnchangedFiles="true"
+      />
+  </Target>
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(AegisubObjectDir)" ContinueOnError="WarnAndContinue" />
+  </Target>
+
+  <Target Name="Rebuild">
+    <CallTarget Targets="Clean;Build" />
+  </Target>
+</Project>
