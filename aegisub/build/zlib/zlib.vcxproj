@@ -44,7 +44,7 @@
   <!-- Source files -->
   <ItemGroup>
     <InstallHeader Include="$(ZlibSrcDir)\zlib.h" />
-    <InstallHeader Include="$(ZlibSrcDir)\zconf.h" />
+    <InstallHeader Include="$(MSBuildThisFileDirectory)\zconf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(ZlibSrcDir)\*.c" />
