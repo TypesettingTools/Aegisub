@@ -65,6 +65,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CEAEFC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxWidgets", "aegisub\build\wx\wxWidgets.vcxproj", "{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass", "aegisub\build\libass\libass.vcxproj", "{8804F253-DA67-4CC4-926B-0CD2AEE5778D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -221,6 +223,14 @@ Global
 		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}.Release|Win32.Build.0 = Release|Win32
 		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}.Release|x64.ActiveCfg = Release|x64
 		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}.Release|x64.Build.0 = Release|x64
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Debug|Win32.Build.0 = Debug|Win32
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Debug|x64.ActiveCfg = Debug|x64
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Debug|x64.Build.0 = Debug|x64
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Release|Win32.ActiveCfg = Release|Win32
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Release|Win32.Build.0 = Release|Win32
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Release|x64.ActiveCfg = Release|x64
+		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

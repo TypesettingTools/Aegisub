@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- VC boilerplate -->
   <ItemGroup Label="ProjectConfigurations">
@@ -73,6 +73,9 @@
     </ProjectReference>
     <ProjectReference Include="..\libaegisub\libaegisub.vcxproj">
       <Project>{bb3fed86-db7a-4dc7-964a-260fb86cde61}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libass\libass.vcxproj" Condition="Exists('$(LibassSrcDir)')">
+      <Project>{8804f253-da67-4cc4-926b-0cd2aee5778d}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libiconv\libiconv.vcxproj">
       <Project>{965054d2-44f2-4eb2-9879-051cc3d7ef08}</Project>

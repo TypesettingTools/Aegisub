@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_bitmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_cache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_cache_template.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_drawing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_fontconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_library.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_parse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_shaper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\win32\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\enca.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\inttypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\stdint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\strings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\unistd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_bitmap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_cache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_drawing.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_font.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_fontconfig.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_library.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_parse.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_render.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_render_api.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_shaper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_strtod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

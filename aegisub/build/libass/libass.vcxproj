@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- VC boilerplate -->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8804F253-DA67-4CC4-926B-0CD2AEE5778D}</ProjectGuid>
+    <RootNamespace>libass</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
+  </PropertyGroup>
+
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>
+        $(LibassSrcDir)\libass;
+        $(LibassSrcDir)\win32;
+        $(LibassSrcDir)\win32\headers;
+        $(AegisubContribBase)iconv\include;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>
+        inline=__inline;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+    </ClCompile>
+    <InstallHeader>
+      <Destination>ass\</Destination>
+    </InstallHeader>
+  </ItemDefinitionGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <InstallHeader Include="$(LibassSrcDir)\libass\ass.h" />
+    <InstallHeader Include="$(LibassSrcDir)\libass\ass_types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_bitmap.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_cache.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_cache_template.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_drawing.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_font.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_fontconfig.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_library.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_parse.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_render.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_shaper.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_types.h" />
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_utils.h" />
+    <ClInclude Include="$(LibassSrcDir)\win32\config.h" />
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\enca.h" />
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\inttypes.h" />
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\stdint.h" />
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\strings.h" />
+    <ClInclude Include="$(LibassSrcDir)\win32\headers\unistd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_bitmap.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_cache.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_drawing.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_font.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_fontconfig.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_library.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_parse.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_render.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_render_api.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_shaper.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_strtod.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_utils.c" />
+  </ItemGroup>
+
+  <!-- Project References -->
+  <ItemGroup>
+    <ProjectReference Include="..\fontconfig\fontconfig.vcxproj">
+      <Project>{ad56899e-961b-47b7-bd0f-14d0da50d141}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\freetype2\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\fribidi\fribidi.vcxproj">
+      <Project>{fb8e8d19-a4d6-4181-943c-282075f49b41}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libiconv\libiconv.vcxproj">
+      <Project>{965054d2-44f2-4eb2-9879-051cc3d7ef08}</Project>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
