@@ -109,6 +109,9 @@ type TarballProject() =
       with | :? IO.IOException -> true
 
     let update directory (project : ITaskItem) version =
+      let dirname url =
+        Uri(url).Segments.Last().Replace(".tar.gz", "")
+
       try IO.Directory.Delete(directory, true) with | :? IO.IOException -> ()
 
       this.Log.LogMessage ("Downloading {0} {1} from {2}", project.ItemSpec, version, project.GetMetadata "Url")
@@ -119,7 +122,7 @@ type TarballProject() =
       use tarArchive = ICSharpCode.SharpZipLib.Tar.TarArchive.CreateInputTarArchive tarStream
 
       sprintf @"%s\.." directory |> tarArchive.ExtractContents
-      IO.Directory.Move(sprintf @"%s\..\%s-%s" directory project.ItemSpec version, directory)
+      IO.Directory.Move(project.GetMetadata "Url" |> dirname |> sprintf @"%s\..\%s" directory, directory)
 
       IO.File.WriteAllText(sprintf @"%s\version.aegisub" directory, version)
 

@@ -54,6 +54,10 @@ Aegisub Project http://www.aegisub.org/
       <Version>3.3.2</Version>
       <Url>http://www.fftw.org/fftw-3.3.2.tar.gz</Url>
     </TarballProject>
+    <TarballProject Include="boost">
+      <Version>1.52.0</Version>
+      <Url>http://downloads.sourceforge.net/project/boost/boost/1.52.0/boost_1_52_0.tar.gz</Url>
+    </TarballProject>
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)\..\aegisub.props" />
