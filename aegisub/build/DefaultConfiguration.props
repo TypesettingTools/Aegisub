@@ -52,6 +52,7 @@
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>
 
+    <BoostPath>..\..\..\deps\boost</BoostPath>
     <FfmsSrcDir>..\..\..\deps\ffms2</FfmsSrcDir>
     <FfmpegSrcDir>..\..\..\deps\ffmpeg</FfmpegSrcDir>
     <FftwSrcDir>..\..\..\deps\fftw</FftwSrcDir>

@@ -17,7 +17,12 @@
 			<MinimalRebuild>false</MinimalRebuild>
 			<WarningLevel>Level3</WarningLevel>
 			<PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-			<AdditionalIncludeDirectories>$(AegisubSourceBase)src\msvc;$(AegisubSourceBase)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>
+				$(AegisubSourceBase)src\msvc;
+				$(AegisubSourceBase)\include;
+				$(BoostPath);
+				%(AdditionalIncludeDirectories)
+			</AdditionalIncludeDirectories>
 		</ClCompile>
 		<ResourceCompile>
 			<AdditionalIncludeDirectories>$(AegisubSourceBase)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

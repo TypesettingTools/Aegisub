@@ -150,6 +150,14 @@
 
   <StringProperty
     Subtype="folder"
+    Name="BoostPath"
+    Category="Paths"
+    DisplayName="Boost root path"
+    Description="Location of a copy of boost."
+    />
+
+  <StringProperty
+    Subtype="folder"
     Name="CsriLibraryPath"
     Category="Paths"
     DisplayName="External CSRI library path"
