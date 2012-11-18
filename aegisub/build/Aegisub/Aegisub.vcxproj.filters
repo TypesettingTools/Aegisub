@@ -549,8 +549,32 @@
     <ClInclude Include="$(SrcDir)hotkey_data_view_model.h">
       <Filter>Preferences</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)hotkeys.h">
+    <ClInclude Include="$(SrcDir)include\aegisub\audio_player.h">
+      <Filter>Audio\Players</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\audio_provider.h">
+      <Filter>Audio\Providers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\context.h">
       <Filter>Main UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h">
+      <Filter>Main UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\menu.h">
+      <Filter>Main UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\spellchecker.h">
+      <Filter>Features\Spell checker</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\subtitles_provider.h">
+      <Filter>Video\Subtitle renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\toolbar.h">
+      <Filter>Main UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\video_provider.h">
+      <Filter>Video\Providers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)command\icon.h">
       <Filter>Utilities</Filter>
@@ -657,7 +681,7 @@
     <ClInclude Include="$(SrcDir)placeholder_ctrl.h">
       <Filter>Controls</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dialog_autosave.h">
+    <ClInclude Include="$(SrcDir)dialog_autosave.h">
       <Filter>Features\Autosave</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1208,7 +1232,7 @@
     <ClCompile Include="$(SrcDir)command\keyframe.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dialog_autosave.cpp">
+    <ClCompile Include="$(SrcDir)dialog_autosave.cpp">
       <Filter>Features\Autosave</Filter>
     </ClCompile>
   </ItemGroup>

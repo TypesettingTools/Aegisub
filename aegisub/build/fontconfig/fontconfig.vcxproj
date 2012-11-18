@@ -81,8 +81,8 @@
     <ClCompile Include="$(FontconfigSrcDir)\src\ftglue.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\config.h" />
-    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\dirent.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\win32\include\config.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\win32\include\dirent.h" />
     <ClInclude Include="$(FontconfigSrcDir)\src\fcdeprecate.h" />
     <ClInclude Include="$(FontconfigSrcDir)\src\fcftint.h" />
     <ClInclude Include="$(FontconfigSrcDir)\src\fcint.h" />

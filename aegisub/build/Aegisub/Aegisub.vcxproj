@@ -95,17 +95,19 @@
   </ItemGroup>
   <!-- Source files -->
   <ItemGroup>
-    <ClInclude Include="$(SrcDir)aegisublocale.h" />
+    <ClInclude Include="$(SrcDir)MatroskaParser.h" />
     <ClInclude Include="$(SrcDir)aegisub_endian.h" />
+    <ClInclude Include="$(SrcDir)aegisublocale.h" />
     <ClInclude Include="$(SrcDir)agi_pre.h" />
     <ClInclude Include="$(SrcDir)ass_attachment.h" />
     <ClInclude Include="$(SrcDir)ass_dialogue.h" />
     <ClInclude Include="$(SrcDir)ass_entry.h" />
-    <ClInclude Include="$(SrcDir)ass_exporter.h" />
     <ClInclude Include="$(SrcDir)ass_export_filter.h" />
+    <ClInclude Include="$(SrcDir)ass_exporter.h" />
     <ClInclude Include="$(SrcDir)ass_file.h" />
     <ClInclude Include="$(SrcDir)ass_karaoke.h" />
     <ClInclude Include="$(SrcDir)ass_override.h" />
+    <ClInclude Include="$(SrcDir)ass_parser.h" />
     <ClInclude Include="$(SrcDir)ass_style.h" />
     <ClInclude Include="$(SrcDir)ass_style_storage.h" />
     <ClInclude Include="$(SrcDir)ass_time.h" />
@@ -127,6 +129,7 @@
     <ClInclude Include="$(SrcDir)audio_provider_dummy.h" />
     <ClInclude Include="$(SrcDir)audio_provider_ffmpegsource.h" />
     <ClInclude Include="$(SrcDir)audio_provider_hd.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_lock.h" />
     <ClInclude Include="$(SrcDir)audio_provider_pcm.h" />
     <ClInclude Include="$(SrcDir)audio_provider_ram.h" />
     <ClInclude Include="$(SrcDir)audio_renderer.h" />
@@ -152,6 +155,7 @@
     <ClInclude Include="$(SrcDir)dialog_about.h" />
     <ClInclude Include="$(SrcDir)dialog_attachments.h" />
     <ClInclude Include="$(SrcDir)dialog_automation.h" />
+    <ClInclude Include="$(SrcDir)dialog_autosave.h" />
     <ClInclude Include="$(SrcDir)dialog_colorpicker.h" />
     <ClInclude Include="$(SrcDir)dialog_detached_video.h" />
     <ClInclude Include="$(SrcDir)dialog_dummy_video.h" />
@@ -161,6 +165,7 @@
     <ClInclude Include="$(SrcDir)dialog_jumpto.h" />
     <ClInclude Include="$(SrcDir)dialog_kara_timing_copy.h" />
     <ClInclude Include="$(SrcDir)dialog_log.h" />
+    <ClInclude Include="$(SrcDir)dialog_manager.h" />
     <ClInclude Include="$(SrcDir)dialog_paste_over.h" />
     <ClInclude Include="$(SrcDir)dialog_progress.h" />
     <ClInclude Include="$(SrcDir)dialog_properties.h" />
@@ -189,19 +194,29 @@
     <ClInclude Include="$(SrcDir)gl_text.h" />
     <ClInclude Include="$(SrcDir)gl_wrap.h" />
     <ClInclude Include="$(SrcDir)help_button.h" />
-    <ClInclude Include="$(SrcDir)hotkeys.h" />
     <ClInclude Include="$(SrcDir)hotkey_data_view_model.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\audio_player.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\audio_provider.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\context.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\menu.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\spellchecker.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\subtitles_provider.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\toolbar.h" />
+    <ClInclude Include="$(SrcDir)include\aegisub\video_provider.h" />
     <ClInclude Include="$(SrcDir)kana_table.h" />
     <ClInclude Include="$(SrcDir)main.h" />
-    <ClInclude Include="$(SrcDir)MatroskaParser.h" />
     <ClInclude Include="$(SrcDir)md5.h" />
     <ClInclude Include="$(SrcDir)mkv_wrap.h" />
-    <ClInclude Include="$(SrcDir)persist_location.h" />
     <ClInclude Include="$(SrcDir)pen.h" />
+    <ClInclude Include="$(SrcDir)persist_location.h" />
+    <ClInclude Include="$(SrcDir)placeholder_ctrl.h" />
     <ClInclude Include="$(SrcDir)plugin_manager.h" />
     <ClInclude Include="$(SrcDir)preferences.h" />
     <ClInclude Include="$(SrcDir)preferences_base.h" />
     <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h" />
+    <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h" />
     <ClInclude Include="$(SrcDir)selection_controller.h" />
     <ClInclude Include="$(SrcDir)spellchecker_hunspell.h" />
     <ClInclude Include="$(SrcDir)spline.h" />
@@ -212,8 +227,6 @@
     <ClInclude Include="$(SrcDir)subs_edit_ctrl.h" />
     <ClInclude Include="$(SrcDir)subs_grid.h" />
     <ClInclude Include="$(SrcDir)subs_preview.h" />
-    <ClInclude Include="$(SrcDir)subtitles_provider_csri.h" />
-    <ClInclude Include="$(SrcDir)subtitles_provider_libass.h" />
     <ClInclude Include="$(SrcDir)subtitle_format.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_ass.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_ebu3264.h" />
@@ -224,10 +237,14 @@
     <ClInclude Include="$(SrcDir)subtitle_format_transtation.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_ttxt.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_txt.h" />
+    <ClInclude Include="$(SrcDir)subtitles_provider_csri.h" />
+    <ClInclude Include="$(SrcDir)subtitles_provider_libass.h" />
     <ClInclude Include="$(SrcDir)text_file_reader.h" />
     <ClInclude Include="$(SrcDir)text_file_writer.h" />
+    <ClInclude Include="$(SrcDir)text_selection_controller.h" />
     <ClInclude Include="$(SrcDir)thesaurus.h" />
     <ClInclude Include="$(SrcDir)threaded_frame_source.h" />
+    <ClInclude Include="$(SrcDir)time_range.h" />
     <ClInclude Include="$(SrcDir)timeedit_ctrl.h" />
     <ClInclude Include="$(SrcDir)toggle_bitmap.h" />
     <ClInclude Include="$(SrcDir)tooltip_manager.h" />
@@ -257,14 +274,6 @@
     <ClInclude Include="$(SrcDir)visual_tool_rotatez.h" />
     <ClInclude Include="$(SrcDir)visual_tool_scale.h" />
     <ClInclude Include="$(SrcDir)visual_tool_vector_clip.h" />
-    <ClInclude Include="$(SrcDir)ass_parser.h" />
-    <ClInclude Include="$(SrcDir)audio_provider_lock.h" />
-    <ClInclude Include="$(SrcDir)dialog_manager.h" />
-    <ClInclude Include="$(SrcDir)placeholder_ctrl.h" />
-    <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h" />
-    <ClInclude Include="$(SrcDir)text_selection_controller.h" />
-    <ClInclude Include="$(SrcDir)time_range.h" />
-    <ClInclude Include="..\..\src\dialog_autosave.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
@@ -462,7 +471,7 @@
     <ClCompile Include="$(SrcDir)audio_provider_lock.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
-    <ClCompile Include="..\..\src\dialog_autosave.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_autosave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />
