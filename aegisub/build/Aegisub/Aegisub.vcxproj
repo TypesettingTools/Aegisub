@@ -68,6 +68,9 @@
     <ProjectReference Include="..\fontconfig\fontconfig.vcxproj" Condition="Exists('$(FontconfigSrcDir)')">
       <Project>{ad56899e-961b-47b7-bd0f-14d0da50d141}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\fribidi\fribidi.vcxproj">
+      <Project>{fb8e8d19-a4d6-4181-943c-282075f49b41}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\hunspell\hunspell.vcxproj">
       <Project>{cc791693-6b28-40ac-879d-64a6c16468e3}</Project>
     </ProjectReference>

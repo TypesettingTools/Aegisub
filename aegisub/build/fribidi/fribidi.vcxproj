@@ -32,14 +32,15 @@
   </ImportGroup>
 
   <PropertyGroup Label="ConfigArgs">
-    <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug CFLAGS=-MDd</CfgDebug>
-    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug CFLAGS=-MD</CfgDebug>
+    <Cflags>-nologo -DFRIBIDI_ENTRY=\"\"</Cflags>
+    <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug CFLAGS="-MDd $(Cflags)"</CfgDebug>
+    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug CFLAGS="-MD $(Cflags)"</CfgDebug>
     <CfgArgs>
       --enable-static
       --disable-shared
       --disable-dependency-tracking
       --without-glib
-      $(CfgEnableDebug)
+      $(CfgDebug)
     </CfgArgs>
     <AbsSrcDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(FribidiSrcDir)'))</AbsSrcDir>
   </PropertyGroup>

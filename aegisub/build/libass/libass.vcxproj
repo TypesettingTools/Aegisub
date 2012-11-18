@@ -45,6 +45,7 @@
       </AdditionalIncludeDirectories>
       <PreprocessorDefinitions>
         inline=__inline;
+        FRIBIDI_ENTRY=;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
     </ClCompile>
