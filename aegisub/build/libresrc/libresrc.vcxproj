@@ -46,7 +46,7 @@
     <Import Project="$(MSBuildThisFileDirectory)..\respack\Aegisub.ResPack.targets" />
   </ImportGroup>
 
-  <Target Name="DefaultConfig" BeforeTargets="ClCompile">
+  <Target Name="DefaultConfig" BeforeTargets="ResPackGenerate">
     <Copy
       SourceFiles="$(SrcDir)default_config_win.json"
       DestinationFiles="$(SrcDir)default_config_platform.json"
