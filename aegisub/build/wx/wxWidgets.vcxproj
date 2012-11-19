@@ -64,8 +64,8 @@
     Outputs="@(WxLibrary)"
     >
     <Copy
-      SourceFiles="setup.h"
-      DestinationFolder="$(WxSrcDir)\include\wx\msw"
+      SourceFiles="setup-build.h"
+      DestinationFiles="$(WxSrcDir)\include\wx\msw\setup.h"
       SkipUnchangedFiles="true"
       />
     <Exec
