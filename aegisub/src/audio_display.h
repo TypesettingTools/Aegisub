@@ -35,6 +35,7 @@
 
 #ifndef AGI_PRE
 #include <list>
+#include <map>
 #include <cstdint>
 
 #include <wx/gdicmn.h>

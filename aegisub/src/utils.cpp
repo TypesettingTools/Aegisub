@@ -42,6 +42,7 @@
 #endif
 #include <map>
 
+#include <wx/clipbrd.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>

@@ -33,6 +33,7 @@
 ///
 
 #ifndef AGI_PRE
+#include <map>
 #include <wx/string.h>
 #endif
 

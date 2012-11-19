@@ -35,6 +35,7 @@
 #include "threaded_frame_source.h"
 
 #ifndef AGI_PRE
+#include <deque>
 #include <functional>
 
 #include <boost/range/adaptor/indirected.hpp>

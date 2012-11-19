@@ -16,6 +16,7 @@
 
 #ifndef AGI_PRE
 #include <cstdint>
+#include <map>
 #include <string>
 #include <vector>
 

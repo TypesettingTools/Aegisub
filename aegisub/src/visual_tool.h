@@ -27,6 +27,8 @@
 #include <set>
 #include <vector>
 
+#include <boost/container/list.hpp>
+
 #include <wx/log.h>
 #include <wx/event.h>
 #include <wx/button.h>

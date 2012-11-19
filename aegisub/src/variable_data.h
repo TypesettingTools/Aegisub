@@ -35,6 +35,7 @@
 #pragma once
 
 namespace agi { struct Color; }
+class wxString;
 
 enum VariableDataType {
 	VARDATA_NONE,

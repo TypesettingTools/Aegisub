@@ -28,6 +28,11 @@
 #ifndef AGI_PRE
 #include <map>
 
+#include <wx/button.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
+#include <wx/listbox.h>
+#include <wx/sizer.h>
 #include <wx/statbox.h>
 #endif
 

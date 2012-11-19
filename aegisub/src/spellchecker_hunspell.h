@@ -26,6 +26,10 @@
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
+#ifndef AGI_PRE
+#include <wx/string.h>
+#endif
+
 namespace agi { namespace charset { class IconvWrapper; } }
 class Hunspell;
 
