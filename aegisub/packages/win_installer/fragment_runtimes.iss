@@ -42,6 +42,9 @@
 [Files]
 DestDir: {tmp}; Source: src\vcredist_{#SUFFIX}.exe; Flags: nocompression deleteafterinstall; Check: RuntimesRequired
 
+[Components]
+Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
+
 [Run]
 Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: Installing runtime libraries...; Check: RuntimesRequired; Parameters: "/q"
 
