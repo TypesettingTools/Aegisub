@@ -39,8 +39,8 @@ DestDir: {app}; Source: src\devil.dll; Flags: ignoreversion
 DestDir: {app}; Source: src\avisynth.dll; Flags: ignoreversion
 DestDir: {app}; Source: src\DirectShowSource.dll; Flags: ignoreversion
 ; ffmpegsource
-DestDir: {app}; Source: ..\..\bin\ffms2.dll; Flags: ignoreversion
-DestDir: {app}; Source: ..\..\bin\ffms2.pdb; Flags: ignoreversion
+DestDir: {app}; Source: ..\..\bin\ffms2_32.dll; Flags: ignoreversion
+DestDir: {app}; Source: ..\..\bin\ffms2_32.pdb; Flags: ignoreversion
 ; vsfilter
 DestDir: {app}\csri; Source: src\vsfilter-aegisub32.dll; Flags: ignoreversion
 DestDir: {app}\csri; Source: src\xy-vsfilter-aegisub.dll; Flags: ignoreversion
