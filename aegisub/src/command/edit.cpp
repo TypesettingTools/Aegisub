@@ -166,10 +166,10 @@ void paste_lines(agi::Context *c, bool paste_over) {
 }
 
 template<class T>
-T get_value(AssDialogue const& line, int blockn, T initial, wxString const& tag, wxString alt = wxString()) {
+T get_value(AssDialogue const& line, int blockn, T initial, wxString const& tag_name, wxString alt = wxString()) {
 	for (auto ovr : line.Blocks | boost::adaptors::reversed | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto tag : ovr->Tags | boost::adaptors::reversed) {
-			if (tag->Name == tag || tag->Name == alt)
+			if (tag->Name == tag_name || tag->Name == alt)
 				return tag->Params[0]->Get<T>(initial);
 		}
 	}
