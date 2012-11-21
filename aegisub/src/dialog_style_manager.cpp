@@ -771,16 +771,14 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		do_move(styleMap, type, first, last, false);
 
 		// Replace styles
-		entryIter next;
 		int curn = 0;
-		for (entryIter cur = c->ass->Line.begin(); cur != c->ass->Line.end(); cur = next) {
-			next = cur;
-			next++;
-			if (dynamic_cast<AssStyle*>(&*cur)) {
-				c->ass->Line.insert(cur, *styleMap[curn]);
-				c->ass->Line.erase(cur);
-				curn++;
-			}
+		for (auto it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+			if (!dynamic_cast<AssStyle*>(&*it)) continue;
+
+			auto new_style_at_pos = c->ass->Line.iterator_to(*styleMap[curn]);
+			EntryList::node_algorithms::swap_nodes(it.pointed_node(), new_style_at_pos.pointed_node());
+			if (++curn == styleMap.size()) break;
+			it = new_style_at_pos;
 		}
 
 		c->ass->Commit(_("style move"), AssFile::COMMIT_STYLES);
