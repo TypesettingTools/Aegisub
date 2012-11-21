@@ -40,33 +40,8 @@
 #endif
 
 [Files]
-DestDir: {tmp}; Source: src\vcredist_{#SUFFIX}.exe; Flags: nocompression deleteafterinstall; Check: RuntimesRequired
-
-[Components]
-Name: main/runtime; Description: Runtime libraries; Flags: fixed; Types: custom compact full; ExtraDiskSpaceRequired: 4630528
+DestDir: {tmp}; Source: src\vcredist_{#SUFFIX}.exe; Flags: nocompression deleteafterinstall
 
 [Run]
-Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: Installing runtime libraries...; Check: RuntimesRequired; Parameters: "/q"
-
-[Code]
-function RuntimesRequired: Boolean;
-var
-  DisplayVersion: string;
-begin
-  // Check for uninstall entry for runtimes, don't bother installing if it can be uninstalled now
-  // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}
-  // Check: DisplayVersion = "9.0.30729"
-  try
-    DisplayVersion := '';
-    Result := RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}',
-        'DisplayVersion', DisplayVersion);
-    Result := Result and (DisplayVersion = '9.0.30729');
-  except
-    // If the check fails take the safe route
-    Result := False;
-  end;
-
-  Result := not Result;
-end;
-[/Code]
+Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: Installing runtime libraries...; Parameters: "/q"
 
