@@ -161,9 +161,9 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 
 			// Subtitle track
 			if (trackInfo->Type == 0x11) {
-				wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
-				wxString TrackName = wxString(trackInfo->Name,*wxConvCurrent);
-				wxString TrackLanguage = wxString(trackInfo->Language,*wxConvCurrent);
+				wxString CodecID = wxString::FromUTF8(trackInfo->CodecID);
+				wxString TrackName = wxString::FromUTF8(trackInfo->Name);
+				wxString TrackLanguage = wxString::FromUTF8(trackInfo->Language);
 
 				// Known subtitle format
 				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
@@ -185,7 +185,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		else {
 			int choice = wxGetSingleChoiceIndex(_("Choose which track to read:"), _("Multiple subtitle tracks found"), tracksNames);
 			if (choice == -1)
-				throw agi::UserCancelException("cancelled");
+				throw agi::UserCancelException("canceled");
 
 			trackToRead = tracksFound[choice];
 		}
@@ -193,7 +193,7 @@ void MatroskaWrapper::GetSubtitles(wxString const& filename, AssFile *target) {
 		// Picked track
 		mkv_SetTrackMask(file, ~(1 << trackToRead));
 		trackInfo = mkv_GetTrackInfo(file,trackToRead);
-		wxString CodecID = wxString(trackInfo->CodecID,*wxConvCurrent);
+		wxString CodecID = wxString::FromUTF8(trackInfo->CodecID);
 		bool srt = CodecID == "S_TEXT/UTF8";
 		bool ssa = CodecID == "S_TEXT/SSA";
 
@@ -243,7 +243,7 @@ bool MatroskaWrapper::HasSubtitles(wxString const& filename) {
 			TrackInfo *trackInfo = mkv_GetTrackInfo(file, track);
 
 			if (trackInfo->Type == 0x11) {
-				wxString CodecID = wxString(trackInfo->CodecID, *wxConvCurrent);
+				wxString CodecID = wxString::FromUTF8(trackInfo->CodecID);
 				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
 					mkv_Close(file);
 					return true;
