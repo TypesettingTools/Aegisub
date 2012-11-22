@@ -920,7 +920,7 @@ void DialogColorPicker::UpdateFromHTML()
 	SetRGB(color);
 	SetHSL(color.r, color.g, color.b);
 	SetHSV(color.r, color.g, color.b);
-	html_input->ChangeValue(to_wx(cur_color.GetHexFormatted()));
+	ass_input->ChangeValue(to_wx(cur_color.GetAssOverrideFormatted()));
 
 	spectrum_dirty = true;
 	UpdateSpectrumDisplay();
