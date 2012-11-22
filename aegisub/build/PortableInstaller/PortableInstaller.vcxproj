@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5B0E9978-E76F-4BBC-8194-228323F59B53}</ProjectGuid>
+    <RootNamespace>PortableInstaller</RootNamespace>
+  </PropertyGroup>
+
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+    <Import Project="$(MSBuildThisFileDirectory)..\git_version.xml" />
+  </ImportGroup>
+
+  <PropertyGroup>
+    <PlatformName Condition="$(Platform) == 'Win32'">x86</PlatformName>
+    <PlatformName Condition="$(Platform) == 'x64'">x64</PlatformName>
+    <FileName>aegisub-$(GitVersionString)-portable-$(AegisubPlatformSuffix)</FileName>
+    <OutputFile>$(AegisubSourceBase)packages\win_installer\output\$(FileName).exe</OutputFile>
+  </PropertyGroup>
+
+  <Target Name="Build">
+    <Error
+      Condition="!Exists($(WinRarPath))"
+      Text="WinRAR.exe not found. Please set the path to it."
+      />
+
+    <MakeDir Directories="$(AegisubObjectDir)\$(FileName)" />
+
+    <Copy
+      SourceFiles="@(RarContents)"
+      DestinationFiles="$(AegisubObjectDir)$(FileName)\%(RarContents.OutputPath)%(Filename)%(Extension)"
+      SkipUnchangedFiles="true"
+      />
+
+    <Copy
+      SourceFiles="@(RarMetafiles)"
+      DestinationFolder="$(AegisubObjectDir)"
+      SkipUnchangedFiles="true"
+      />
+
+    <Delete Files="$(OutputFile)" />
+
+    <Exec
+      Command="&quot;$(WinRarPath)&quot; a -sfx -s -m5 -ep1 -r -zportable-comment.txt -iimgside-logo.bmp -iiconicon.ico $(OutputFile) $(FileName)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+  </Target>
+
+  <ItemGroup>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\clean-info.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\cleantags-autoload.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\kara-templater.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\karaoke-auto-leadin.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\macro-1-edgeblur.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\macro-2-mkfullwitdh.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\select-overlaps.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\strip-tags.lua">
+      <OutputPath>automation\autoload\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\demos\future-windy-blur.lua">
+      <OutputPath>automation\demos\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\demos\raytracer.lua">
+      <OutputPath>automation\demos\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\cleantags.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\clipboard.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\karaskel-auto4.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\karaskel.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\re.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\unicode.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\utils-auto4.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\utils.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\appended-lines.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\basic-export-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\basic-tests.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\config-dialog-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\gen-absurd-t-line.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\hello-world.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\karaoke-parse-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\progress-reporting-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\selection-set-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-filter-name-clash.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-furi.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-tablecopy-recursive.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-text_extents.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\text-extents-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\trace-level-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\unicode-test.lua">
+      <OutputPath>automation\tests\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\AssDraw3.chm" />
+    <RarContents Include="$(AegisubSourceBase)bin\AssDraw3.exe" />
+    <RarContents Include="$(AegisubSourceBase)bin\DirectShowSource.dll" Condition="'$(AegisubUseAvisynth)' == 'true'" />
+    <RarContents Include="$(AegisubSourceBase)bin\aegisub$(AegisubPlatformSuffix).exe" />
+    <RarContents Include="$(AegisubSourceBase)bin\avisynth.dll" Condition="'$(AegisubUseAvisynth)' == 'true'" />
+    <RarContents Include="$(AegisubSourceBase)bin\csri\vsfilter-aegisub$(PlatformArchitecture).dll" Condition="'$(AegisubUseCsri)' == 'HelperLibrary'">
+      <OutputPath>csri\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\csri\xy-vsfilter-aegisub$(PlatformArchitecture).dll" Condition="'$(AegisubUseCsri)' == 'HelperLibrary'">
+      <OutputPath>csri\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\devil.dll" Condition="'$(AegisubUseAvisynth)' == 'true'" />
+    <RarContents Include="$(AegisubSourceBase)bin\ffms2_$(AegisubPlatformSuffix).dll" Condition="'$(AegisubUseFfms)' == 'true'" />
+    <RarContents Include="$(AegisubSourceBase)packages\win_installer\portable\config.json" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcp110.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcr110.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfc110u.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfcm110u.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <RarMetafiles Include="$(AegisubSourceBase)packages\win_installer\portable\icon.ico" />
+    <RarMetafiles Include="$(AegisubSourceBase)packages\win_installer\portable\side-logo.bmp" />
+    <RarMetafiles Include="$(AegisubSourceBase)packages\win_installer\portable\portable-comment.txt" />
+  </ItemGroup>
+</Project>

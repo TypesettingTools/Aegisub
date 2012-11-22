@@ -150,6 +150,14 @@
 
   <StringProperty
     Subtype="folder"
+    Name="WinRarPath"
+    Category="Paths"
+    DisplayName="WinRAR.exe location"
+    Description="Location of a copy of WinRAR.exe. Required to build the portable installer."
+    />
+
+  <StringProperty
+    Subtype="folder"
     Name="BoostPath"
     Category="Paths"
     DisplayName="Boost root path"

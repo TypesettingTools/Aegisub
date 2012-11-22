@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Aegisub", "aegisub\build\Aegisub\Aegisub.vcxproj", "{9DDDB9E5-E4A1-423D-A224-F6D4E5AAC06A}"
@@ -66,6 +65,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxWidgets", "aegisub\build\wx\wxWidgets.vcxproj", "{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass", "aegisub\build\libass\libass.vcxproj", "{8804F253-DA67-4CC4-926B-0CD2AEE5778D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PortableInstaller", "aegisub\build\PortableInstaller\PortableInstaller.vcxproj", "{5B0E9978-E76F-4BBC-8194-228323F59B53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -231,6 +232,10 @@ Global
 		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Release|Win32.Build.0 = Release|Win32
 		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Release|x64.ActiveCfg = Release|x64
 		{8804F253-DA67-4CC4-926B-0CD2AEE5778D}.Release|x64.Build.0 = Release|x64
+		{5B0E9978-E76F-4BBC-8194-228323F59B53}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5B0E9978-E76F-4BBC-8194-228323F59B53}.Debug|x64.ActiveCfg = Debug|x64
+		{5B0E9978-E76F-4BBC-8194-228323F59B53}.Release|Win32.ActiveCfg = Release|Win32
+		{5B0E9978-E76F-4BBC-8194-228323F59B53}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
