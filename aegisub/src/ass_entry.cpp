@@ -37,15 +37,7 @@
 #include "ass_entry.h"
 
 wxString AssEntry::GetSSAText() const {
-	wxString lower = data.Lower();
-
-	// Special cases
-	if (lower == "[v4+ styles]") return "[V4 Styles]";
-	if (lower == "scripttype: v4.00+") return "ScriptType: v4.00";
-	if (lower.Left(7) == "format:") {
-		if (group.Lower() == "[events]") return "Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text";
-		if (group.Lower() == "[v4+ styles]") return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding";
-	}
+	if (data.Lower() == "scripttype: v4.00+") return "ScriptType: v4.00";
 	return GetEntryData();
 }
 

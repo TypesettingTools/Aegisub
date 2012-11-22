@@ -142,7 +142,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& group, wx
 			delete newAttach;
 			return;
 		}
-		ass->InsertAttachment(newAttach);
+		ass->InsertLine(newAttach);
 	}
 
 	ass->Commit(commit_msg, AssFile::COMMIT_ATTACHMENT);
@@ -209,30 +209,6 @@ void DialogAttachments::OnDelete(wxCommandEvent &) {
 	while (i != -1) {
 		delete (AssEntry*)wxUIntToPtr(listView->GetItemData(i));
 		i = listView->GetNextSelected(i);
-	}
-
-	// Remove empty attachment sections in the file
-	for (entryIter it = ass->Line.begin(); it != ass->Line.end(); ) {
-		if (it->GetType() == ENTRY_BASE && (it->group == "[Fonts]" || it->group == "[Graphics]")) {
-			wxString group = it->group;
-			entryIter header = it;
-
-			bool has_attachments = false;
-			for (++it; it != ass->Line.end() && it->group == group; ++it) {
-				if (it->GetType() == ENTRY_ATTACHMENT) {
-					has_attachments = true;
-					break;
-				}
-			}
-
-			// Empty group found, delete it
-			if (!has_attachments) {
-				while (header != it)
-					delete &*header++;
-			}
-		}
-		else
-			++it;
 	}
 
 	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);

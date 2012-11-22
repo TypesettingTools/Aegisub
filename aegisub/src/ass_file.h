@@ -102,14 +102,10 @@ public:
 	/// @brief Load default file
 	/// @param defline Add a blank line to the file
 	void LoadDefault(bool defline=true);
-	/// Add a style to the file
-	void InsertStyle(AssStyle *style);
-	/// Add an attachment to the file
-	void InsertAttachment(AssAttachment *attach);
+	/// Add a line to the file at the end of the appropriate section
+	void InsertLine(AssEntry *line);
 	/// Attach a file to the ass file
 	void InsertAttachment(wxString filename);
-	/// Add a dialogue line to the file
-	void InsertDialogue(AssDialogue *diag);
 	/// Get the names of all of the styles available
 	wxArrayString GetStyles() const;
 	/// @brief Get a style by name

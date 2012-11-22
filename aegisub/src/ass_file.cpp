@@ -98,9 +98,9 @@ void AssFile::Load(const wxString &_filename, wxString const& charset) {
 
 		// And if it doesn't add defaults for each
 		if (!found_style)
-			temp.InsertStyle(new AssStyle);
+			temp.InsertLine(new AssStyle);
 		if (!found_dialogue)
-			temp.InsertDialogue(new AssDialogue);
+			temp.InsertLine(new AssDialogue);
 
 		swap(temp);
 	}
@@ -171,20 +171,29 @@ wxString AssFile::AutoSave() {
 	return dstpath.GetFullPath();
 }
 
+static void write_line(wxString const& line, std::vector<char>& dst) {
+	wxCharBuffer buffer = (line + "\r\n").utf8_str();
+	copy(buffer.data(), buffer.data() + buffer.length(), back_inserter(dst));
+}
+
 void AssFile::SaveMemory(std::vector<char> &dst) {
 	// Check if subs contain at least one style
 	// Add a default style if they don't for compatibility with libass/asa
-	if (GetStyles().Count() == 0)
-		InsertStyle(new AssStyle);
+	if (GetStyles().empty())
+		InsertLine(new AssStyle);
 
 	// Prepare vector
 	dst.clear();
 	dst.reserve(0x4000);
 
 	// Write file
+	wxString group;
 	for (auto const& line : Line) {
-		wxCharBuffer buffer = (line.GetEntryData() + "\r\n").utf8_str();
-		copy(buffer.data(), buffer.data() + buffer.length(), back_inserter(dst));
+		if (group != line.group) {
+			group = line.group;
+			write_line(group, dst);
+		}
+		write_line(line.GetEntryData(), dst);
 	}
 }
 
@@ -211,7 +220,6 @@ void AssFile::LoadDefault(bool defline) {
 	Clear();
 
 	// Write headers
-	Line.push_back(*new AssEntry("[Script Info]", "[Script Info]"));
 	Line.push_back(*new AssEntry("Title: Default Aegisub file", "[Script Info]"));
 	Line.push_back(*new AssEntry("ScriptType: v4.00+", "[Script Info]"));
 	Line.push_back(*new AssEntry("WrapStyle: 0", "[Script Info]"));
@@ -223,10 +231,7 @@ void AssFile::LoadDefault(bool defline) {
 	}
 	Line.push_back(*new AssEntry("YCbCr Matrix: None", "[Script Info]"));
 
-	InsertStyle(new AssStyle);
-
-	Line.push_back(*new AssEntry("[Events]", "[Events]"));
-	Line.push_back(*new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
+	Line.push_back(*new AssStyle);
 
 	if (defline)
 		Line.push_back(*new AssDialogue);
@@ -260,37 +265,23 @@ AssFile& AssFile::operator=(AssFile from) {
 	return *this;
 }
 
-static bool try_insert(EntryList &lines, AssEntry *entry) {
-	if (lines.empty()) return false;
+void AssFile::InsertLine( AssEntry *entry) {
+	if (Line.empty()) {
+		Line.push_back(*entry);
+		return;
+	}
 
 	// Search for insertion point
-	entryIter it = lines.end();
+	entryIter it = Line.end();
 	do {
 		--it;
 		if (it->group == entry->group) {
-			lines.insert(++it, *entry);
-			return true;
+			Line.insert(++it, *entry);
+			return;
 		}
-	} while (it != lines.begin());
+	} while (it != Line.begin());
 
-	return false;
-}
-
-void AssFile::InsertStyle(AssStyle *style) {
-	if (try_insert(Line, style)) return;
-
-	// No styles found, add them
-	Line.push_back(*new AssEntry("[V4+ Styles]", "[V4+ Styles]"));
-	Line.push_back(*new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", "[V4+ Styles]"));
-	Line.push_back(*style);
-}
-
-void AssFile::InsertAttachment(AssAttachment *attach) {
-	if (try_insert(Line, attach)) return;
-
-	// Didn't find a group of the appropriate type so create it
-	Line.push_back(*new AssEntry(attach->group, attach->group));
-	Line.push_back(*attach);
+	Line.push_back(*entry);
 }
 
 void AssFile::InsertAttachment(wxString filename) {
@@ -303,16 +294,7 @@ void AssFile::InsertAttachment(wxString filename) {
 	std::unique_ptr<AssAttachment> newAttach(new AssAttachment(wxFileName(filename).GetFullName(), group));
 	newAttach->Import(filename);
 
-	InsertAttachment(newAttach.release());
-}
-
-void AssFile::InsertDialogue(AssDialogue *diag) {
-	if (try_insert(Line, diag)) return;
-
-	// Didn't find a group of the appropriate type so create it
-	Line.push_back(*new AssEntry("[Events]", "[Events]"));
-	Line.push_back(*new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
-	Line.push_back(*diag);
+	InsertLine(newAttach.release());
 }
 
 wxString AssFile::GetScriptInfo(wxString key) const {
@@ -373,7 +355,6 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 	// Script info section not found, so add it at the beginning of the file
 	else {
 		Line.push_front(*new AssEntry(key + ": " + value, "[Script Info]"));
-		Line.push_front(*new AssEntry("[Script Info]", "[Script Info]"));
 	}
 }
 

@@ -60,7 +60,7 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, 
 	SetStyle(*style);
 
 	subFile->LoadDefault();
-	subFile->InsertStyle(style);
+	subFile->InsertLine(style);
 	subFile->Line.push_back(*line);
 
 	SetSizeHints(size.GetWidth(), size.GetHeight(), -1, -1);

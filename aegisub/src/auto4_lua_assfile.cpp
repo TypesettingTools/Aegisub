@@ -213,22 +213,10 @@ namespace Automation4 {
 		if (StringEmptyOrWhitespace(raw)) {
 			set_field(L, "class", "clear");
 		}
-		else if (raw[0] == ';') {
-			// "text" field, same as "raw" but with semicolon stripped
-			set_field(L, "text", raw.Mid(1));
-			set_field(L, "class", "comment");
-		}
-		else if (raw[0] == '[') {
-			set_field(L, "class", "head");
-		}
 		else if (e->group.Lower() == "[script info]") {
 			set_field(L, "key", raw.BeforeFirst(':'));
 			set_field(L, "value", raw.AfterFirst(':'));
 			set_field(L, "class", "info");
-		}
-		else if (raw.Left(7).Lower() == "format:") {
-			// TODO: parse the format line; just use a tokenizer
-			set_field(L, "class", "format");
 		}
 		else if (AssDialogue *dia = dynamic_cast<AssDialogue*>(e)) {
 			set_field(L, "comment", dia->Comment);
@@ -317,19 +305,8 @@ namespace Automation4 {
 		try {
 			wxString section = get_wxstring_field(L, "section", "common");
 
-			if (lclass == "clear")
-				result = new AssEntry("", "");
-			else if (lclass == "comment")
-				result = new AssEntry(";" + get_wxstring_field(L, "text", "comment"), section);
-			else if (lclass == "head")
-				result = new AssEntry(section, section);
-			else if (lclass == "info") {
+			if (lclass == "info") {
 				result = new AssEntry(wxString::Format("%s: %s", get_wxstring_field(L, "key", "info"), get_wxstring_field(L, "value", "info")), "[Script Info]");
-			}
-			else if (lclass == "format") {
-				// ohshi- ...
-				// *FIXME* maybe ignore the actual data and just put some default stuff based on section?
-				result = new AssEntry("Format: Auto4,Is,Broken", section);
 			}
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;
@@ -559,17 +536,11 @@ namespace Automation4 {
 			if (it == lines.end() || (*it)->group != e->group) {
 				// The new entry belongs to a group that doesn't exist yet, so
 				// create it at the end of the file
-				if (e->GetEntryData() != e->group) {
-					// Add the header if the entry being added isn't a header
-					lines.push_back(new AssEntry(e->group, e->group));
-				}
-
 				lines.push_back(e);
 			}
 			else {
 				// Append the entry to the end of the existing group
-				++it;
-				lines.insert(it, e);
+				lines.insert(++it, e);
 			}
 		}
 	}

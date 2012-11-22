@@ -445,7 +445,7 @@ void DialogStyleManager::OnCopyToCurrent() {
 			}
 		}
 		if (addStyle) {
-			c->ass->InsertStyle(new AssStyle(*Store[selections[i]]));
+			c->ass->InsertLine(new AssStyle(*Store[selections[i]]));
 			copied.push_back(styleName);
 		}
 	}
@@ -477,7 +477,7 @@ void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
 void DialogStyleManager::PasteToCurrent() {
 	add_styles(
 		std::bind(&AssFile::GetStyle, c->ass, _1),
-		std::bind(&AssFile::InsertStyle, c->ass, _1));
+		std::bind(&AssFile::InsertLine, c->ass, _1));
 
 	c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
 }
@@ -626,7 +626,7 @@ void DialogStyleManager::OnCurrentImport() {
 		modified = true;
 		AssStyle *tempStyle = new AssStyle;
 		*tempStyle = *temp.GetStyle(styles[sel]);
-		c->ass->InsertStyle(tempStyle);
+		c->ass->InsertLine(tempStyle);
 	}
 
 	// Update

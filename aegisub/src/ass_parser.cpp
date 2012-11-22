@@ -72,10 +72,6 @@ void AssParser::ParseScriptInfoLine(wxString const& data) {
 		return;
 	}
 
-	// If the first nonblank line isn't a header pretend it starts with [Script Info]
-	if (target->Line.empty())
-		target->Line.push_back(*new AssEntry("[Script Info]", "[Script Info]"));
-
 	if (data.StartsWith("ScriptType:")) {
 		wxString versionString = data.Mid(11).Trim(true).Trim(false).Lower();
 		int trueVersion;
@@ -97,15 +93,11 @@ void AssParser::ParseScriptInfoLine(wxString const& data) {
 void AssParser::ParseEventLine(wxString const& data) {
 	if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))
 		target->Line.push_back(*new AssDialogue(data));
-	else if (data.StartsWith("Format:"))
-		target->Line.push_back(*new AssEntry("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text", "[Events]"));
 }
 
 void AssParser::ParseStyleLine(wxString const& data) {
 	if (data.StartsWith("Style:"))
 		target->Line.push_back(*new AssStyle(data, version));
-	else if (data.StartsWith("Format:"))
-		target->Line.push_back(*new AssEntry("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding", "[V4+ Styles]"));
 }
 
 void AssParser::ParseFontLine(wxString const& data) {
@@ -150,23 +142,16 @@ void AssParser::AddLine(wxString const& data) {
 			version = 1;
 			state = &AssParser::ParseStyleLine;
 		}
-		else if (low == "[events]") {
+		else if (low == "[events]")
 			state = &AssParser::ParseEventLine;
-		}
-		else if (low == "[script info]") {
+		else if (low == "[script info]")
 			state = &AssParser::ParseScriptInfoLine;
-		}
-		else if (low == "[graphics]") {
+		else if (low == "[graphics]")
 			state = &AssParser::ParseGraphicsLine;
-		}
-		else if (low == "[fonts]") {
+		else if (low == "[fonts]")
 			state = &AssParser::ParseFontLine;
-		}
-		else {
+		else
 			state = &AssParser::AppendUnknownLine;
-		}
-
-		target->Line.push_back(*new AssEntry(header, header));
 		return;
 	}
 

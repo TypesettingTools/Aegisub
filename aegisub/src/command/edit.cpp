@@ -528,7 +528,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	// lines, so make a new one
 	if (!new_active) {
 		new_active = new AssDialogue;
-		c->ass->InsertDialogue(new_active);
+		c->ass->InsertLine(new_active);
 	}
 
 	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);

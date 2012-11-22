@@ -83,6 +83,36 @@ void AssSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 	}
 }
 
+static inline wxString header(wxString const& group, bool ssa) {
+	if (ssa && group == "[V4+ Styles]")
+		return "[V4 Styles]";
+	return group;
+}
+
+#ifdef _WIN32
+#define LINEBREAK "\r\n"
+#else
+#define LINEBREAK "\n"
+#endif
+
+static inline wxString format(wxString const& group, bool ssa) {
+	if (group == "[Events]") {
+		if (ssa)
+			return "Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text" LINEBREAK;
+		else
+			return "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text" LINEBREAK;
+	}
+
+	if (group == "[v4+ styles]") {
+		if (ssa)
+			return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding" LINEBREAK;
+		else
+			return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding" LINEBREAK;
+	}
+
+	return wxS("");
+}
+
 void AssSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
 	TextFileWriter file(filename, encoding);
 
@@ -90,15 +120,20 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	file.WriteLineToFile("; http://www.aegisub.org/");
 
 	bool ssa = filename.Right(4).Lower() == ".ssa";
+	wxString group;
 
-	wxString group = src->Line.front().group;
 	for (auto const& line : src->Line) {
-		// Add a blank line between each group
 		if (line.group != group) {
-			file.WriteLineToFile("");
+			// Add a blank line between each group
+			if (!group.empty())
+				file.WriteLineToFile("");
+
+			file.WriteLineToFile(header(line.group, ssa));
+			file.WriteLineToFile(format(line.group, ssa), false);
+
 			group = line.group;
 		}
 
-		file.WriteLineToFile(ssa ? line.GetSSAText() : line.GetEntryData(), true);
+		file.WriteLineToFile(ssa ? line.GetSSAText() : line.GetEntryData());
 	}
 }

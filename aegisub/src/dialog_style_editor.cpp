@@ -465,7 +465,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 			if (store)
 				store->push_back(style);
 			else
-				c->ass->InsertStyle(style);
+				c->ass->InsertLine(style);
 			is_new = false;
 		}
 		if (!store)
