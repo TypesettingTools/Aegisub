@@ -855,7 +855,7 @@ void DialogColorPicker::UpdateFromRGB(bool dirty)
 	SetHSL(r, g, b);
 	SetHSV(r, g, b);
 	cur_color = agi::Color(r, g, b);
-	ass_input->ChangeValue(to_wx(cur_color.GetAssStyleFormatted()));
+	ass_input->ChangeValue(to_wx(cur_color.GetAssOverrideFormatted()));
 	html_input->ChangeValue(to_wx(cur_color.GetHexFormatted()));
 
 	if (dirty)
@@ -874,7 +874,7 @@ void DialogColorPicker::UpdateFromHSL(bool dirty)
 	SetRGB(agi::Color(r, g, b));
 	SetHSV(r, g, b);
 
-	ass_input->ChangeValue(to_wx(cur_color.GetAssStyleFormatted()));
+	ass_input->ChangeValue(to_wx(cur_color.GetAssOverrideFormatted()));
 	html_input->ChangeValue(to_wx(cur_color.GetHexFormatted()));
 
 	if (dirty)
@@ -892,7 +892,7 @@ void DialogColorPicker::UpdateFromHSV(bool dirty)
 	hsv_to_rgb(h, s, v, &r, &g, &b);
 	SetRGB(agi::Color(r, g, b));
 	SetHSL(r, g, b);
-	ass_input->ChangeValue(to_wx(cur_color.GetAssStyleFormatted()));
+	ass_input->ChangeValue(to_wx(cur_color.GetAssOverrideFormatted()));
 	html_input->ChangeValue(to_wx(cur_color.GetHexFormatted()));
 
 	if (dirty)
