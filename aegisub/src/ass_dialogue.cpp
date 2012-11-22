@@ -209,20 +209,19 @@ std::vector<AssDialogueBlock*> AssDialogue::ParseTags() const {
 	for (size_t len = Text.size(), cur = 0; cur < len; ) {
 		// Overrides block
 		if (Text[cur] == '{') {
+			size_t end = Text.find('}', cur);
+
+			// VSFilter requires that override blocks be closed, while libass
+			// does not. We match VSFilter here.
+			if (end == wxString::npos)
+				goto plain;
+
 			++cur;
 			// Get contents of block
-			wxString work;
-			size_t end = Text.find("}", cur);
-			if (end == wxString::npos) {
-				work = Text.substr(cur);
-				cur = len;
-			}
-			else {
-				work = Text.substr(cur, end - cur);
-				cur = end + 1;
-			}
+			wxString work = Text.substr(cur, end - cur);
+			cur = end + 1;
 
-			if (work.size() && work.Find("\\") == wxNOT_FOUND) {
+			if (work.size() && work.find('\\') == wxString::npos) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
 				//Currently we'll treat this as a plain text block, but feel free to create a new class
@@ -236,34 +235,31 @@ std::vector<AssDialogueBlock*> AssDialogue::ParseTags() const {
 
 				// Look for \p in block
 				for (auto tag : block->Tags) {
-					if (tag->Name == "\\p") {
+					if (tag->Name == "\\p")
 						drawingLevel = tag->Params[0]->Get<int>(0);
-					}
 				}
 			}
-		}
-		// Plain-text/drawing block
-		else {
-			wxString work;
-			size_t end = Text.find("{",cur);
-			if (end == wxString::npos) {
-				work = Text.substr(cur);
-				cur = len;
-			}
-			else {
-				work = Text.substr(cur, end - cur);
-				cur = end;
-			}
 
-			// Plain-text
-			if (drawingLevel == 0) {
-				Blocks.push_back(new AssDialogueBlockPlain(work));
-			}
-			// Drawing
-			else {
-				Blocks.push_back(new AssDialogueBlockDrawing(work, drawingLevel));
-			}
+			continue;
 		}
+
+		// Plain-text/drawing block
+plain:
+		wxString work;
+		size_t end = Text.find('{', cur + 1);
+		if (end == wxString::npos) {
+			work = Text.substr(cur);
+			cur = len;
+		}
+		else {
+			work = Text.substr(cur, end - cur);
+			cur = end;
+		}
+
+		if (drawingLevel == 0)
+			Blocks.push_back(new AssDialogueBlockPlain(work));
+		else
+			Blocks.push_back(new AssDialogueBlockDrawing(work, drawingLevel));
 	}
 
 	return Blocks;
