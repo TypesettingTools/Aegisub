@@ -51,7 +51,7 @@ void AssParser::ParseAttachmentLine(wxString const& data) {
 	// Data is over, add attachment to the file
 	if (!valid_data || is_filename) {
 		attach->Finish();
-		target->Line.push_back(*attach.release());
+		InsertLine(attach.release());
 		AddLine(data);
 	}
 	else {
@@ -60,7 +60,7 @@ void AssParser::ParseAttachmentLine(wxString const& data) {
 		// Done building
 		if (data.Length() < 80) {
 			attach->Finish();
-			target->Line.push_back(*attach.release());
+			InsertLine(attach.release());
 		}
 	}
 }
@@ -87,33 +87,27 @@ void AssParser::ParseScriptInfoLine(wxString const& data) {
 		}
 	}
 
-	target->Line.push_back(*new AssEntry(data, "[Script Info]"));
+	InsertLine(new AssEntry(data, "[Script Info]"));
 }
 
 void AssParser::ParseEventLine(wxString const& data) {
 	if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))
-		target->Line.push_back(*new AssDialogue(data));
+		InsertLine(new AssDialogue(data));
 }
 
 void AssParser::ParseStyleLine(wxString const& data) {
 	if (data.StartsWith("Style:"))
-		target->Line.push_back(*new AssStyle(data, version));
+		InsertLine(new AssStyle(data, version));
 }
 
 void AssParser::ParseFontLine(wxString const& data) {
-	if (data.StartsWith("fontname: ")) {
+	if (data.StartsWith("fontname: "))
 		attach.reset(new AssAttachment(data.Mid(10), "[Fonts]"));
-	}
 }
 
 void AssParser::ParseGraphicsLine(wxString const& data) {
-	if (data.StartsWith("filename: ")) {
+	if (data.StartsWith("filename: "))
 		attach.reset(new AssAttachment(data.Mid(10), "[Graphics]"));
-	}
-}
-
-void AssParser::AppendUnknownLine(wxString const& data) {
-	target->Line.push_back(*new AssEntry(data, target->Line.back().group));
 }
 
 void AssParser::AddLine(wxString const& data) {
@@ -151,9 +145,18 @@ void AssParser::AddLine(wxString const& data) {
 		else if (low == "[fonts]")
 			state = &AssParser::ParseFontLine;
 		else
-			state = &AssParser::AppendUnknownLine;
+			state = &AssParser::UnknownLine;
 		return;
 	}
 
 	(this->*state)(data);
+}
+
+void AssParser::InsertLine(AssEntry *entry) {
+	auto it = insertion_positions.find(entry->group);
+	if (it == insertion_positions.end())
+		target->Line.push_back(*entry);
+	else
+		target->Line.insert(++target->Line.iterator_to(*it->second), *entry);
+	insertion_positions[entry->group] = entry;
 }
