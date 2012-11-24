@@ -625,8 +625,8 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 : wxDialog(c->parent, -1, _("Kanji timing"))
 , subs(c->ass)
-, currentSourceLine(0)
-, currentDestinationLine(0)
+, currentSourceLine(nullptr)
+, currentDestinationLine(nullptr)
 {
 	SetIcon(GETICON(kara_timing_copier_16));
 
@@ -822,17 +822,17 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 
 void DialogKanjiTimer::ResetForNewLine()
 {
-	AssDialogue *src = 0;
-	AssDialogue *dst = 0;
+	AssDialogue *src = nullptr;
+	AssDialogue *dst = nullptr;
 
 	if (currentSourceLine)
 		src = dynamic_cast<AssDialogue*>(currentSourceLine);
 	if (currentDestinationLine)
 		dst = dynamic_cast<AssDialogue*>(currentDestinationLine);
 
-	if (src == 0 || dst == 0)
+	if (!src || !dst)
 	{
-		src = dst = 0;
+		src = dst = nullptr;
 		wxBell();
 	}
 
@@ -849,30 +849,26 @@ void DialogKanjiTimer::TryAutoMatch()
 		display->AutoMatchJapanese();
 }
 
-AssEntry *DialogKanjiTimer::FindNextStyleMatch(AssEntry *search_from, const wxString &search_style)
-{
-	if (!search_from) return search_from;
-
-	for (entryIter it = subs->Line.iterator_to(*search_from); it != subs->Line.end(); ++it)
+template<typename Iterator>
+static AssEntry *find_next(Iterator from, Iterator to, wxString const& style_name) {
+	for (++from; from != to; ++from)
 	{
-		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*it);
-		if (dlg && dlg->Style == search_style)
+		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*from);
+		if (dlg && dlg->Style == style_name)
 			return dlg;
 	}
 
-	return 0;
+	return nullptr;
+}
+
+AssEntry *DialogKanjiTimer::FindNextStyleMatch(AssEntry *search_from, const wxString &search_style)
+{
+	if (!search_from) return search_from;
+	return find_next(subs->Line.iterator_to(*search_from), subs->Line.end(), search_style);
 }
 
 AssEntry *DialogKanjiTimer::FindPrevStyleMatch(AssEntry *search_from, const wxString &search_style)
 {
 	if (!search_from) return search_from;
-
-	for (EntryList::reverse_iterator it = EntryList::reverse_iterator(subs->Line.iterator_to(*search_from)); it != subs->Line.rend(); ++it)
-	{
-		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*it);
-		if (dlg && dlg->Style == search_style)
-			return dlg;
-	}
-
-	return 0;
+	return find_next(EntryList::reverse_iterator(subs->Line.iterator_to(*search_from)), subs->Line.rend(), search_style);
 }
