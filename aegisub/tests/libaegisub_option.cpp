@@ -1,4 +1,4 @@
-	// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -260,4 +260,22 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidListType);
 		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidListType);
 	}
+}
+
+#define CHECK_TYPE(str, type) \
+	do { \
+		agi::Options opt("", "{ \"" str "\" : \"" str "\" }", agi::Options::FLUSH_SKIP); \
+		EXPECT_NO_THROW(opt.Get(str)->Get##type()); \
+	} while (false)
+
+TEST_F(lagi_option, color_vs_string) {
+	CHECK_TYPE("#", String);
+	CHECK_TYPE("#a", String);
+	CHECK_TYPE("#abc", Color);
+	CHECK_TYPE("#aabbcc", Color);
+	CHECK_TYPE("#aabb", String);
+
+	CHECK_TYPE("&", String);
+	CHECK_TYPE("&H000000&", Color);
+	CHECK_TYPE("&H00000000", Color);
 }

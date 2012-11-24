@@ -31,6 +31,8 @@
 #include <libaegisub/option_value.h>
 #include <libaegisub/scoped_ptr.h>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 namespace agi {
 
 ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name, bool ignore_errors, bool replace)
@@ -117,7 +119,12 @@ void ConfigVisitor::Visit(const json::Double& number) {
 }
 
 void ConfigVisitor::Visit(const json::String& string) {
-	if (string.size() && (string.find("rgb(") == 0 || string[0] == '#' || string[0] == '&')) {
+	size_t size = string.size();
+	if ((size == 4 && string[0] == '#') ||
+		(size == 7 && string[0] == '#') ||
+		(size >= 10 && boost::starts_with(string, "rgb(")) ||
+		((size == 9 || size == 10) && boost::starts_with(string, "&H")))
+	{
 		AddOptionValue(new OptionValueColor(name, string));
 	} else {
 		AddOptionValue(new OptionValueString(name, string));
