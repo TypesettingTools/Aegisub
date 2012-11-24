@@ -168,8 +168,6 @@ AS_IF([test x$enable_compiler_flags != xno], [
   AC_CXX_FLAG([-pipe])
   AC_CXX_FLAG([-g])
   AC_CXX_FLAG([-std=c++11])
-  AC_CXX_FLAG([-stdlib=libc++])
-  AC_LD_FLAG([-stdlib=libc++])
 
   # -O* messes with debugging.
   AS_IF([test x$enable_debug = xyes], [
@@ -179,6 +177,26 @@ AS_IF([test x$enable_compiler_flags != xno], [
     AC_C_FLAG([-O3])
     AC_CXX_FLAG([-O3])
   ])
+])
+
+AC_ARG_WITH([libc++], AS_HELP_STRING([--with-libc++],[Use libc++ rather than libstdc++. [auto]]))
+AS_IF([test x$with_libc__ != xno], [
+  AC_LANG_PUSH(C++)
+  ac_ld_flag_save="$LDFLAGS"
+  LDFLAGS="$LDFLAGS -stdlib=libc++"
+  AC_MSG_CHECKING([[whether $CXX supports -stdlib=libc++]])
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[]])], [
+    AC_MSG_RESULT([yes])
+    CXXFLAGS="$CXXFLAGS -stdlib=libc++"
+  ], [
+    AS_IF([test x$with_libc__ = xyes], [
+      AC_MSG_FAILURE([no])
+    ], [
+      LDFLAGS="$ac_ld_flag_save"
+      AC_MSG_RESULT([no])
+    ])
+  ])
+  AC_LANG_POP(C++)
 ])
 
 ######################################
