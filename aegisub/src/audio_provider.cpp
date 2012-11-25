@@ -80,56 +80,45 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 	}
 }
 
-void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
-	if (start+count > num_samples) {
-		int64_t oldcount = count;
-		count = num_samples-start;
-		if (count < 0) count = 0;
+void AudioProvider::ZeroFill(void *buf, int64_t count) const {
+	if (bytes_per_sample == 1)
+		// 8 bit formats are usually unsigned with bias 127
+		memset(buf, 127, count * channels);
+	else
+		// While everything else is signed
+		memset(buf, 0, count * bytes_per_sample * channels);
+}
 
-		// Fill beyond with zero
-		if (bytes_per_sample == 1) {
-			char *temp = (char *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
-		if (bytes_per_sample == 2) {
-			short *temp = (short *) buf;
-			for (int i=count;i<oldcount;i++) {
-				temp[i] = 0;
-			}
-		}
+void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
+	if (start < 0) {
+		ZeroFill(buf, std::min(-start, count));
+		buf = static_cast<char *>(buf) + -start * bytes_per_sample * channels;
+		count += start;
+		start = 0;
 	}
 
 	if (start + count > num_samples) {
 		int64_t zero_count = std::min(count, start + count - num_samples);
 		count -= zero_count;
-		char *zero_buf = static_cast<char *>(buf) + count * bytes_per_sample * channels;
-
-		if (bytes_per_sample == 1)
-			// 8 bit formats are usually unsigned with bias 127
-			memset(zero_buf, 127, zero_count * channels);
-		else
-			// While everything else is signed
-			memset(zero_buf, 0, zero_count * bytes_per_sample * channels);
+		ZeroFill(static_cast<char *>(buf) + count * bytes_per_sample * channels, zero_count);
 	}
 
-	if (count > 0) {
-		try {
-			FillBuffer(buf, start, count);
-		}
-		catch (AudioDecodeError const& e) {
-			LOG_E("audio_provider") << e.GetChainedMessage();
-			memset(buf, 0, count*bytes_per_sample);
-			return;
-		}
-		catch (...) {
-			// FIXME: Poor error handling though better than none, to patch issue #800.
-			// Just return blank audio if real provider fails.
-			LOG_E("audio_provider") << "Unknown audio decoding error";
-			memset(buf, 0, count*bytes_per_sample);
-			return;
-		}
+	if (count <= 0) return;
+
+	try {
+		FillBuffer(buf, start, count);
+	}
+	catch (AudioDecodeError const& e) {
+		LOG_E("audio_provider") << e.GetChainedMessage();
+		ZeroFill(buf, count);
+		return;
+	}
+	catch (...) {
+		// FIXME: Poor error handling though better than none, to patch issue #800.
+		// Just return blank audio if real provider fails.
+		LOG_E("audio_provider") << "Unknown audio decoding error";
+		ZeroFill(buf, count);
+		return;
 	}
 }
 

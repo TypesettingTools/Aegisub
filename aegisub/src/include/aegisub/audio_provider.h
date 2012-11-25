@@ -69,6 +69,8 @@ protected:
 
 	virtual void FillBuffer(void *buf, int64_t start, int64_t count) const = 0;
 
+	void ZeroFill(void *buf, int64_t count) const;
+
 public:
 	virtual ~AudioProvider() { }
 
