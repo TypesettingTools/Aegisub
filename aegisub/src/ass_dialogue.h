@@ -143,7 +143,7 @@ public:
 	/// Raw text data
 	wxString Text;
 
-	AssEntryType GetType() const { return ENTRY_DIALOGUE; }
+	AssEntryGroup Group() const { return ENTRY_DIALOGUE; }
 
 	/// @brief Parse raw ASS data into everything else
 	/// @param data ASS line

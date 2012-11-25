@@ -41,6 +41,8 @@ class wxListEvent;
 #include <wx/dialog.h>
 #endif
 
+#include "ass_entry.h"
+
 /// DOCME
 /// @class DialogAttachments
 /// @brief DOCME
@@ -65,7 +67,7 @@ class DialogAttachments : public wxDialog {
 	void OnListClick(wxListEvent &event);
 
 	void UpdateList();
-	void AttachFile(wxFileDialog &diag, wxString const& group, wxString const& commit_msg);
+	void AttachFile(wxFileDialog &diag, AssEntryGroup group, wxString const& commit_msg);
 
 public:
 	DialogAttachments(wxWindow *parent, AssFile *ass);

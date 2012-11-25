@@ -23,6 +23,8 @@
 #include "subtitle_format.h"
 
 #ifndef AGI_PRE
+#include <algorithm>
+
 #include <wx/log.h>
 #endif
 
@@ -32,6 +34,7 @@ AssParser::AssParser(AssFile *target, int version)
 , attach(nullptr)
 , state(&AssParser::ParseScriptInfoLine)
 {
+	std::fill(begin(insertion_positions), end(insertion_positions), nullptr);
 }
 
 AssParser::~AssParser() {
@@ -87,7 +90,7 @@ void AssParser::ParseScriptInfoLine(wxString const& data) {
 		}
 	}
 
-	InsertLine(new AssEntry(data, "[Script Info]"));
+	InsertLine(new AssEntry(data));
 }
 
 void AssParser::ParseEventLine(wxString const& data) {
@@ -102,12 +105,12 @@ void AssParser::ParseStyleLine(wxString const& data) {
 
 void AssParser::ParseFontLine(wxString const& data) {
 	if (data.StartsWith("fontname: "))
-		attach.reset(new AssAttachment(data.Mid(10), "[Fonts]"));
+		attach.reset(new AssAttachment(data.Mid(10), ENTRY_FONT));
 }
 
 void AssParser::ParseGraphicsLine(wxString const& data) {
 	if (data.StartsWith("filename: "))
-		attach.reset(new AssAttachment(data.Mid(10), "[Graphics]"));
+		attach.reset(new AssAttachment(data.Mid(10), ENTRY_GRAPHIC));
 }
 
 void AssParser::AddLine(wxString const& data) {
@@ -153,10 +156,10 @@ void AssParser::AddLine(wxString const& data) {
 }
 
 void AssParser::InsertLine(AssEntry *entry) {
-	auto it = insertion_positions.find(entry->group);
-	if (it == insertion_positions.end())
-		target->Line.push_back(*entry);
+	AssEntry *position = insertion_positions[entry->Group()];
+	if (position)
+		target->Line.insert(++target->Line.iterator_to(*position), *entry);
 	else
-		target->Line.insert(++target->Line.iterator_to(*it->second), *entry);
-	insertion_positions[entry->group] = entry;
+		target->Line.push_back(*entry);
+	insertion_positions[entry->Group()] = entry;
 }

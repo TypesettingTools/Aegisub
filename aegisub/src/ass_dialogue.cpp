@@ -49,7 +49,7 @@
 #include "utils.h"
 
 AssDialogue::AssDialogue()
-: AssEntry(wxString(), "[Events]")
+: AssEntry(wxString())
 , Comment(false)
 , Layer(0)
 , Start(0)
@@ -60,7 +60,7 @@ AssDialogue::AssDialogue()
 }
 
 AssDialogue::AssDialogue(AssDialogue const& that)
-: AssEntry(wxString(), that.group)
+: AssEntry(wxString())
 , Comment(that.Comment)
 , Layer(that.Layer)
 , Start(that.Start)
@@ -74,7 +74,7 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 }
 
 AssDialogue::AssDialogue(wxString const& data)
-: AssEntry(wxString(), "[Events]")
+: AssEntry(wxString())
 , Comment(false)
 , Layer(0)
 , Start(0)

@@ -13,14 +13,16 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #ifndef AGI_PRE
+#include <array>
 #include <map>
 #include <memory>
 
 #include <wx/string.h>
 #endif
 
+#include "ass_entry.h"
+
 class AssAttachment;
-class AssEntry;
 class AssFile;
 
 class AssParser {
@@ -28,7 +30,7 @@ class AssParser {
 	int version;
 	std::unique_ptr<AssAttachment> attach;
 	void (AssParser::*state)(wxString const&);
-	std::map<wxString, AssEntry*> insertion_positions;
+	std::array<AssEntry*, ENTRY_GROUP_MAX> insertion_positions;
 
 	void InsertLine(AssEntry *entry);
 

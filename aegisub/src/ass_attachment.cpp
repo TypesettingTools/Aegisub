@@ -47,10 +47,11 @@
 #include <libaegisub/io.h>
 #include <libaegisub/scoped_ptr.h>
 
-AssAttachment::AssAttachment(wxString const& name, wxString const& group)
-: AssEntry(wxString(), group)
+AssAttachment::AssAttachment(wxString const& name, AssEntryGroup group)
+: AssEntry(wxString())
 , data(new std::vector<char>)
 , filename(name)
+, group(group)
 {
 	wxFileName fname(filename);
 	wxString ext = fname.GetExt().Lower();
@@ -72,10 +73,7 @@ const wxString AssAttachment::GetEntryData() const {
 	unsigned char dst[4];
 
 	// Write header
-	wxString entryData;
-	if (group == "[Fonts]") entryData = "fontname: ";
-	else entryData = "filename: ";
-	entryData += filename + "\r\n";
+	wxString entryData = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename + "\r\n";
 
 	// Read three bytes
 	while (pos < size) {

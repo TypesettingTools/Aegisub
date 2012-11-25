@@ -108,7 +108,7 @@ void DialogAttachments::UpdateList() {
 		int row = listView->GetItemCount();
 		listView->InsertItem(row,attach->GetFileName(true));
 		listView->SetItem(row,1,PrettySize(attach->GetSize()));
-		listView->SetItem(row,2,attach->group);
+		listView->SetItem(row,2,attach->GroupHeader());
 		listView->SetItemPtrData(row,wxPtrToUInt(attach));
 	}
 }
@@ -123,7 +123,7 @@ BEGIN_EVENT_TABLE(DialogAttachments,wxDialog)
 	EVT_LIST_ITEM_FOCUSED(ATTACHMENT_LIST,DialogAttachments::OnListClick)
 END_EVENT_TABLE()
 
-void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& group, wxString const& commit_msg) {
+void DialogAttachments::AttachFile(wxFileDialog &diag, AssEntryGroup group, wxString const& commit_msg) {
 	if (diag.ShowModal() == wxID_CANCEL) return;
 
 	wxArrayString filenames;
@@ -156,7 +156,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &) {
 		lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf",
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
-	AttachFile(diag, "[Fonts]", _("attach font file"));
+	AttachFile(diag, ENTRY_FONT, _("attach font file"));
 }
 
 void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
@@ -166,7 +166,7 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
 		"Graphic Files (*.bmp,*.gif,*.jpg,*.ico,*.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf",
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
-	AttachFile(diag, "[Graphics]", _("attach graphics file"));
+	AttachFile(diag, ENTRY_GRAPHIC, _("attach graphics file"));
 }
 
 void DialogAttachments::OnExtract(wxCommandEvent &) {

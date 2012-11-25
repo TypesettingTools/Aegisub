@@ -178,12 +178,13 @@ namespace {
 
 	int modification_mask(AssEntry *e)
 	{
-		switch (e->GetType())
+		switch (e->Group())
 		{
 			case ENTRY_DIALOGUE: return AssFile::COMMIT_DIAG_ADDREM;
-			case ENTRY_STYLE: return AssFile::COMMIT_STYLES;
-			case ENTRY_ATTACHMENT: return AssFile::COMMIT_ATTACHMENT;
-			default: return AssFile::COMMIT_SCRIPTINFO;
+			case ENTRY_STYLE:    return AssFile::COMMIT_STYLES;
+			case ENTRY_FONT:     return AssFile::COMMIT_ATTACHMENT;
+			case ENTRY_GRAPHIC:  return AssFile::COMMIT_ATTACHMENT;
+			default:             return AssFile::COMMIT_SCRIPTINFO;
 		}
 	}
 }
@@ -207,13 +208,10 @@ namespace Automation4 {
 
 		wxString raw(e->GetEntryData());
 
-		set_field(L, "section", e->group);
+		set_field(L, "section", e->GroupHeader());
 		set_field(L, "raw", raw);
 
-		if (StringEmptyOrWhitespace(raw)) {
-			set_field(L, "class", "clear");
-		}
-		else if (e->group.Lower() == "[script info]") {
+		if (e->Group() == ENTRY_INFO) {
 			set_field(L, "key", raw.BeforeFirst(':'));
 			set_field(L, "value", raw.AfterFirst(':'));
 			set_field(L, "class", "info");
@@ -280,6 +278,7 @@ namespace Automation4 {
 			set_field(L, "class", "style");
 		}
 		else {
+			// Attachments
 			set_field(L, "class", "unknown");
 		}
 	}
@@ -306,7 +305,7 @@ namespace Automation4 {
 			wxString section = get_wxstring_field(L, "section", "common");
 
 			if (lclass == "info") {
-				result = new AssEntry(wxString::Format("%s: %s", get_wxstring_field(L, "key", "info"), get_wxstring_field(L, "value", "info")), "[Script Info]");
+				result = new AssEntry(wxString::Format("%s: %s", get_wxstring_field(L, "key", "info"), get_wxstring_field(L, "value", "info")));
 			}
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;
@@ -530,10 +529,10 @@ namespace Automation4 {
 				do {
 					--it;
 				}
-				while (it != lines.begin() && (*it)->group != e->group);
+				while (it != lines.begin() && (*it)->Group() != e->Group());
 			}
 
-			if (it == lines.end() || (*it)->group != e->group) {
+			if (it == lines.end() || (*it)->Group() != e->Group()) {
 				// The new entry belongs to a group that doesn't exist yet, so
 				// create it at the end of the file
 				lines.push_back(e);

@@ -90,7 +90,7 @@ void AssFile::Load(const wxString &_filename, wxString const& charset) {
 
 		// Check if the file has at least one style and at least one dialogue line
 		for (auto const& line : temp.Line) {
-			AssEntryType type = line.GetType();
+			AssEntryGroup type = line.Group();
 			if (type == ENTRY_STYLE) found_style = true;
 			if (type == ENTRY_DIALOGUE) found_dialogue = true;
 			if (found_style && found_dialogue) break;
@@ -187,11 +187,11 @@ void AssFile::SaveMemory(std::vector<char> &dst) {
 	dst.reserve(0x4000);
 
 	// Write file
-	wxString group;
+	AssEntryGroup group = ENTRY_GROUP_MAX;
 	for (auto const& line : Line) {
-		if (group != line.group) {
-			group = line.group;
-			write_line(group, dst);
+		if (group != line.Group()) {
+			group = line.Group();
+			write_line(line.GroupHeader(), dst);
 		}
 		write_line(line.GetEntryData(), dst);
 	}
@@ -220,16 +220,16 @@ void AssFile::LoadDefault(bool defline) {
 	Clear();
 
 	// Write headers
-	Line.push_back(*new AssEntry("Title: Default Aegisub file", "[Script Info]"));
-	Line.push_back(*new AssEntry("ScriptType: v4.00+", "[Script Info]"));
-	Line.push_back(*new AssEntry("WrapStyle: 0", "[Script Info]"));
-	Line.push_back(*new AssEntry("ScaledBorderAndShadow: yes", "[Script Info]"));
-	Line.push_back(*new AssEntry("Collisions: Normal", "[Script Info]"));
+	Line.push_back(*new AssEntry("Title: Default Aegisub file"));
+	Line.push_back(*new AssEntry("ScriptType: v4.00+"));
+	Line.push_back(*new AssEntry("WrapStyle: 0"));
+	Line.push_back(*new AssEntry("ScaledBorderAndShadow: yes"));
+	Line.push_back(*new AssEntry("Collisions: Normal"));
 	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
-		Line.push_back(*new AssEntry(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt()), "[Script Info]"));
-		Line.push_back(*new AssEntry(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt()), "[Script Info]"));
+		Line.push_back(*new AssEntry(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt())));
+		Line.push_back(*new AssEntry(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt())));
 	}
-	Line.push_back(*new AssEntry("YCbCr Matrix: None", "[Script Info]"));
+	Line.push_back(*new AssEntry("YCbCr Matrix: None"));
 
 	Line.push_back(*new AssStyle);
 
@@ -275,7 +275,7 @@ void AssFile::InsertLine( AssEntry *entry) {
 	entryIter it = Line.end();
 	do {
 		--it;
-		if (it->group == entry->group) {
+		if (it->Group() == entry->Group()) {
 			Line.insert(++it, *entry);
 			return;
 		}
@@ -285,11 +285,11 @@ void AssFile::InsertLine( AssEntry *entry) {
 }
 
 void AssFile::InsertAttachment(wxString filename) {
-	wxString group("[Graphics]");
+	AssEntryGroup group = ENTRY_GRAPHIC;
 
 	wxString ext = filename.Right(4).Lower();
 	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb")
-		group = "[Fonts]";
+		group = ENTRY_FONT;
 
 	std::unique_ptr<AssAttachment> newAttach(new AssAttachment(wxFileName(filename).GetFullName(), group));
 	newAttach->Import(filename);
@@ -303,7 +303,7 @@ wxString AssFile::GetScriptInfo(wxString key) const {
 	bool GotIn = false;
 
 	for (auto const& line : Line) {
-		if (line.group == "[Script Info]") {
+		if (line.Group() == ENTRY_INFO) {
 			GotIn = true;
 			wxString curText = line.GetEntryData();
 			if (curText.Lower().StartsWith(key))
@@ -328,7 +328,7 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 	bool found_script_info = false;
 
 	for (auto& line : Line) {
-		if (line.group == "[Script Info]") {
+		if (line.Group() == ENTRY_INFO) {
 			found_script_info = true;
 			wxString cur_text = line.GetEntryData().Left(key_size).Lower();
 
@@ -343,7 +343,7 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 		}
 		else if (found_script_info) {
 			if (value.size())
-				Line.insert(script_info_end, *new AssEntry(key + ": " + value, "[Script Info]"));
+				Line.insert(script_info_end, *new AssEntry(key + ": " + value));
 			return;
 		}
 	}
@@ -351,10 +351,10 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 	// Found a script info section, but not this key or anything after it,
 	// so add it at the end of the file
 	if (found_script_info)
-		Line.push_back(*new AssEntry(key + ": " + value, "[Script Info]"));
+		Line.push_back(*new AssEntry(key + ": " + value));
 	// Script info section not found, so add it at the beginning of the file
 	else {
-		Line.push_front(*new AssEntry(key + ": " + value, "[Script Info]"));
+		Line.push_front(*new AssEntry(key + ": " + value));
 	}
 }
 

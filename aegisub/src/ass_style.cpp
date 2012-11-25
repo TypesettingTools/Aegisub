@@ -47,7 +47,7 @@
 #include "utils.h"
 
 AssStyle::AssStyle()
-: AssEntry(wxString(), wxS("[V4+ Styles]"))
+: AssEntry(wxString())
 , name("Default")
 , font("Arial")
 , fontsize(20.)
@@ -92,7 +92,7 @@ static double get_next_double(wxStringTokenizer &tok) {
 }
 
 AssStyle::AssStyle(wxString rawData, int version)
-: AssEntry(wxString(), wxS("[V4+ Styles]"))
+: AssEntry(wxString())
 {
 	wxStringTokenizer tkn(rawData.Trim(false).Mid(6), ",", wxTOKEN_RET_EMPTY_ALL);
 
@@ -174,9 +174,8 @@ AssStyle::AssStyle(wxString rawData, int version)
 void AssStyle::UpdateData() {
 	wxString final;
 
-	//name.Replace(",",";");
-	//font.Replace(",",";");
-
+	name.Replace(",",";");
+	font.Replace(",",";");
 
 	final = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
 					  name, font, fontsize,

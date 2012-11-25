@@ -51,6 +51,8 @@ class AssAttachment : public AssEntry {
 	/// Name of the attached file, with SSA font mangling if it is a ttf
 	wxString filename;
 
+	AssEntryGroup group;
+
 public:
 	/// Get the size of the attached file in bytes
 	size_t GetSize() const { return data->size(); }
@@ -74,8 +76,8 @@ public:
 	wxString GetFileName(bool raw=false) const;
 
 	const wxString GetEntryData() const;
-	AssEntryType GetType() const { return ENTRY_ATTACHMENT; }
+	AssEntryGroup Group() const { return group; }
 	AssEntry *Clone() const;
 
-	AssAttachment(wxString const& name, wxString const& group);
+	AssAttachment(wxString const& name, AssEntryGroup group);
 };

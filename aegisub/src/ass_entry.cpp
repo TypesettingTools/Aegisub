@@ -42,5 +42,27 @@ wxString AssEntry::GetSSAText() const {
 }
 
 AssEntry *AssEntry::Clone() const {
-	return new AssEntry(data, group);
+	return new AssEntry(data);
+}
+
+wxString const& AssEntry::GroupHeader(bool ssa) const {
+	static wxString ass_headers[] = {
+		"[Script Info]",
+		"[Events]",
+		"[V4+ Styles]"
+		"[Fonts]",
+		"[Graphics]",
+		""
+	};
+
+	static wxString ssa_headers[] = {
+		"[Script Info]",
+		"[Events]",
+		"[V4 Styles]"
+		"[Fonts]",
+		"[Graphics]",
+		""
+	};
+
+	return (ssa ? ssa_headers : ass_headers)[Group()];
 }

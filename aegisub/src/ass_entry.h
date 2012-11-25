@@ -40,11 +40,13 @@
 
 #include <boost/intrusive/list_hook.hpp>
 
-enum AssEntryType {
-	ENTRY_BASE,
+enum AssEntryGroup {
+	ENTRY_INFO = 0,
 	ENTRY_DIALOGUE,
 	ENTRY_STYLE,
-	ENTRY_ATTACHMENT
+	ENTRY_FONT,
+	ENTRY_GRAPHIC,
+	ENTRY_GROUP_MAX
 };
 
 class AssEntry : public boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink> >::type {
@@ -52,17 +54,17 @@ class AssEntry : public boost::intrusive::make_list_base_hook<boost::intrusive::
 	wxString data;
 
 public:
-	/// Group it belongs to, e.g. "[Events]"
-	wxString group;
-
-	AssEntry(wxString const& data, wxString const& group) : data(data), group(group) { }
+	AssEntry(wxString const& data) : data(data) { }
 	virtual ~AssEntry() { }
 
 	/// Create a copy of this entry
 	virtual AssEntry *Clone() const;
 
-	/// Get this entry's fully-derived type
-	virtual AssEntryType GetType() const { return ENTRY_BASE; }
+	/// Section of the file this entry belongs to
+	virtual AssEntryGroup Group() const { return ENTRY_INFO; }
+
+	/// ASS or SSA Section header for this entry's group
+	wxString const& GroupHeader(bool ssa=false) const;
 
 	/// @brief Get this line's raw entry data in ASS format
 	virtual const wxString GetEntryData() const { return data; }
