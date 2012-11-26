@@ -247,7 +247,7 @@ public:
 	~DialogColorPicker();
 
 	void SetColor(agi::Color new_color);
-	agi::Color GetColor();
+	void AddColorToRecent();
 };
 
 static const int spectrum_horz_vert_arrow_size = 4;
@@ -589,6 +589,8 @@ bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void 
 	bool ok = dialog.ShowModal() == wxID_OK;
 	if (!ok)
 		callback(original);
+	else
+		dialog.AddColorToRecent();
 	return ok;
 }
 
@@ -805,12 +807,10 @@ void DialogColorPicker::SetColor(agi::Color new_color)
 	UpdateFromRGB();
 }
 
-/// @brief Get the currently selected color
-agi::Color DialogColorPicker::GetColor()
+void DialogColorPicker::AddColorToRecent()
 {
 	recent_box->AddColor(cur_color);
 	OPT_SET("Tool/Colour Picker/Recent Colours")->SetListColor(recent_box->Save());
-	return cur_color;
 }
 
 static void change_value(wxSpinCtrl *ctrl, int value)
