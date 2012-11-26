@@ -223,9 +223,6 @@ namespace Automation4 {
 	}
 
 	// ProgressSink
-	wxDEFINE_EVENT(EVT_SHOW_DIALOG, wxThreadEvent);
-	wxDEFINE_EVENT(EVT_SHOW_SCRIPT_DIALOG, wxThreadEvent);
-
 	ProgressSink::ProgressSink(agi::ProgressSink *impl, BackgroundScriptRunner *bsr)
 	: impl(impl)
 	, bsr(bsr)
@@ -235,72 +232,33 @@ namespace Automation4 {
 
 	void ProgressSink::ShowDialog(ScriptDialog *config_dialog)
 	{
-		wxSemaphore sema(0, 1);
-		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_SCRIPT_DIALOG);
-		evt->SetPayload(std::make_pair(config_dialog, &sema));
-		bsr->QueueEvent(evt);
-		sema.Wait();
+		InvokeOnMainThread([=] {
+			wxDialog w; // container dialog box
+			w.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+			w.Create(bsr->GetParentWindow(), -1, bsr->GetTitle());
+			wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
+			wxWindow *ww = config_dialog->CreateWindow(&w); // generate actual dialog contents
+			s->Add(ww, 0, wxALL, 5); // add contents to dialog
+			w.SetSizerAndFit(s);
+			w.CenterOnParent();
+			w.ShowModal();
+		});
 	}
 
 	int ProgressSink::ShowDialog(wxDialog *dialog)
 	{
 		int ret = 0;
-		wxSemaphore sema(0, 1);
-		wxThreadEvent *evt = new wxThreadEvent(EVT_SHOW_DIALOG);
-		evt->SetPayload(std::make_tuple(dialog, &sema, &ret));
-		bsr->QueueEvent(evt);
-		sema.Wait();
+		InvokeOnMainThread([&] { ret = dialog->ShowModal(); });
 		return ret;
 	}
 
 	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, wxString const& title)
 	: impl(new DialogProgress(parent, title))
 	{
-		impl->Bind(EVT_SHOW_DIALOG, &BackgroundScriptRunner::OnDialog, this);
-		impl->Bind(EVT_SHOW_SCRIPT_DIALOG, &BackgroundScriptRunner::OnScriptDialog, this);
 	}
 
 	BackgroundScriptRunner::~BackgroundScriptRunner()
 	{
-	}
-
-	void BackgroundScriptRunner::OnScriptDialog(wxThreadEvent &evt)
-	{
-		std::pair<ScriptDialog*, wxSemaphore*> payload = evt.GetPayload<std::pair<ScriptDialog*, wxSemaphore*> >();
-
-		wxDialog w; // container dialog box
-		w.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-		w.Create(impl.get(), -1, impl->GetTitle());
-		wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
-		wxWindow *ww = payload.first->CreateWindow(&w); // generate actual dialog contents
-		s->Add(ww, 0, wxALL, 5); // add contents to dialog
-		w.SetSizerAndFit(s);
-		w.CenterOnParent();
-		w.ShowModal();
-
-		// Tell the calling thread it can wake up now
-		payload.second->Post();
-	}
-
-	void BackgroundScriptRunner::OnDialog(wxThreadEvent &evt)
-	{
-		using namespace std;
-		tuple<wxDialog*, wxSemaphore*, int*> payload = evt.GetPayload<tuple<wxDialog*, wxSemaphore*, int*> >();
-		*get<2>(payload) = get<0>(payload)->ShowModal();
-		get<1>(payload)->Post();
-	}
-
-	void BackgroundScriptRunner::QueueEvent(wxEvent *evt)
-	{
-		wxQueueEvent(impl.get(), evt);
-	}
-
-	// Convert a function taking an Automation4::ProgressSink to one taking an
-	// agi::ProgressSink so that we can pass it to an agi::BackgroundWorker
-	static void progress_sink_wrapper(std::function<void (ProgressSink*)> task, agi::ProgressSink *ps, BackgroundScriptRunner *bsr)
-	{
-		ProgressSink aps(ps, bsr);
-		task(&aps);
 	}
 
 	void BackgroundScriptRunner::Run(std::function<void (ProgressSink*)> task)
@@ -311,12 +269,20 @@ namespace Automation4 {
 		else if (prio == 2) prio = 10; // lowest
 		else prio = 50; // fallback normal
 
-		impl->Run(bind(progress_sink_wrapper, task, std::placeholders::_1, this), prio);
+		impl->Run([&](agi::ProgressSink *ps) {
+			ProgressSink aps(ps, this);
+			task(&aps);
+		}, prio);
 	}
 
 	wxWindow *BackgroundScriptRunner::GetParentWindow() const
 	{
 		return impl.get();
+	}
+
+	wxString BackgroundScriptRunner::GetTitle() const
+	{
+		return impl->GetTitle();
 	}
 
 	// Script

@@ -124,11 +124,9 @@ namespace Automation4 {
 	class BackgroundScriptRunner {
 		agi::scoped_ptr<DialogProgress> impl;
 
-		void OnDialog(wxThreadEvent &evt);
-		void OnScriptDialog(wxThreadEvent &evt);
 	public:
-		void QueueEvent(wxEvent *evt);
 		wxWindow *GetParentWindow() const;
+		wxString GetTitle() const;
 
 		void Run(std::function<void(ProgressSink*)> task);
 

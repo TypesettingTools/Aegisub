@@ -39,9 +39,11 @@
 #include <cstdint>
 
 #include <algorithm>
+#include <functional>
 #include <utility>
 #include <vector>
 
+#include <wx/app.h>
 #include <wx/icon.h>
 #include <wx/thread.h>
 #endif
@@ -182,3 +184,19 @@ struct cast {
 		return dynamic_cast<Out>(&in);
 	}
 };
+
+wxDECLARE_EVENT(EVT_CALL_THUNK, wxThreadEvent);
+
+template<typename Function>
+void InvokeOnMainThreadAsync(Function const& f) {
+	wxThreadEvent *evt = new wxThreadEvent(EVT_CALL_THUNK);
+	evt->SetPayload<std::function<void()>>(f);
+	wxTheApp->QueueEvent(evt);
+}
+
+template<typename Function>
+void InvokeOnMainThread(Function const& f) {
+	wxSemaphore sema(0, 1);
+	InvokeOnMainThreadAsync([&] { f(); sema.Post(); });
+	sema.Wait();
+}

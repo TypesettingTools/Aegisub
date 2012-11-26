@@ -144,6 +144,10 @@ bool AegisubApp::OnInit() {
 	SetAppName("aegisub");
 #endif
 
+	Bind(EVT_CALL_THUNK, [](wxThreadEvent &evt) {
+		evt.GetPayload<std::function<void()>>()();
+	});
+
 	// logging.
 	agi::log::log = new agi::log::LogSink;
 

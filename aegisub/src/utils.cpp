@@ -58,6 +58,8 @@
 #include "compat.h"
 #include "main.h"
 
+wxDEFINE_EVENT(EVT_CALL_THUNK, wxThreadEvent);
+
 wxString MakeRelativePath(wxString _path, wxString reference) {
 	if (_path.empty() || _path[0] == '?') return _path;
 	wxFileName path(_path);
