@@ -61,13 +61,12 @@ struct invisible_line : public std::unary_function<AssEntry const&, bool> {
 	}
 };
 
-static void delete_frame(AegiVideoFrame *frame) {
-	frame->Clear();
-	delete frame;
-}
-
 std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, double time, bool raw) {
-	std::shared_ptr<AegiVideoFrame> frame(new AegiVideoFrame, delete_frame);
+	std::shared_ptr<AegiVideoFrame> frame(new AegiVideoFrame, [](AegiVideoFrame *frame) {
+		frame->Clear();
+		delete frame;
+	});
+
 	{
 		wxMutexLocker locker(providerMutex);
 		try {

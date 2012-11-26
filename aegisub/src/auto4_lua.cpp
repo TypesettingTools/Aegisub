@@ -722,28 +722,25 @@ namespace Automation4 {
 		return lua_error(L);
 	}
 
-	static void lua_threaded_call(ProgressSink *ps, lua_State *L, int nargs, int nresults, bool can_open_config, bool *failed)
-	{
-		LuaProgressSink lps(L, ps, can_open_config);
-
-		if (lua_pcall(L, nargs, nresults, 0)) {
-			if (!lua_isnil(L, -1)) {
-				// if the call failed, log the error here
-				ps->Log("\n\nLua reported a runtime error:\n");
-				ps->Log(lua_tostring(L, -1));
-			}
-			lua_pop(L, 1);
-			*failed = true;
-		}
-
-		lua_gc(L, LUA_GCCOLLECT, 0);
-	}
-
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config)
 	{
 		bool failed = false;
 		BackgroundScriptRunner bsr(parent, title);
-		bsr.Run([&](ProgressSink *ps) { lua_threaded_call(ps, L, nargs, nresults, can_open_config, &failed); });
+		bsr.Run([&](ProgressSink *ps) {
+			LuaProgressSink lps(L, ps, can_open_config);
+
+			if (lua_pcall(L, nargs, nresults, 0)) {
+				if (!lua_isnil(L, -1)) {
+					// if the call failed, log the error here
+					ps->Log("\n\nLua reported a runtime error:\n");
+					ps->Log(lua_tostring(L, -1));
+				}
+				lua_pop(L, 1);
+				failed = true;
+			}
+
+			lua_gc(L, LUA_GCCOLLECT, 0);
+		});
 		if (failed)
 			throw agi::UserCancelException("Script threw an error");
 	}

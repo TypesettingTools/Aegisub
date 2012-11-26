@@ -51,10 +51,6 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/spellchecker.h>
 
-static void save_skip_comments(wxCommandEvent &evt) {
-	OPT_SET("Tool/Spell Checker/Skip Comments")->SetBool(!!evt.GetInt());
-}
-
 DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 : wxDialog(context->parent, -1, _("Spell Checker"))
 , context(context)
@@ -129,7 +125,8 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		skip_comments = new wxCheckBox(this, -1, _("&Skip Comments"));
 		actions_sizer->Add(skip_comments, button_flags);
 		skip_comments->SetValue(OPT_GET("Tool/Spell Checker/Skip Comments")->GetBool());
-		skip_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, save_skip_comments);
+		skip_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED,
+			[](wxCommandEvent &evt) { OPT_SET("Tool/Spell Checker/Skip Comments")->SetBool(!!evt.GetInt()); });
 
 		wxButton *button;
 
