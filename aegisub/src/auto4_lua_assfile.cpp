@@ -67,42 +67,36 @@
 #endif
 
 namespace {
-	void set_field(lua_State *L, const char *name, wxString const& value)
-	{
+	void push_value(lua_State *L, wxString const& value) {
 		lua_pushstring(L, value.utf8_str());
-		lua_setfield(L, -2, name);
 	}
 
-	void set_field(lua_State *L, const char *name, const char *value)
-	{
+	void push_value(lua_State *L, const char *value) {
 		lua_pushstring(L, value);
-		lua_setfield(L, -2, name);
 	}
 
 	// Userdata object must be just above the target table
-	void set_field(lua_State *L, const char *name, lua_CFunction value)
-	{
+	void push_value(lua_State *L, lua_CFunction value) {
 		assert(lua_type(L, -2) == LUA_TUSERDATA);
 		lua_pushvalue(L, -2);
 		lua_pushcclosure(L, value, 1);
-		lua_setfield(L, -2, name);
 	}
 
-	void set_field(lua_State *L, const char *name, bool value)
-	{
+	void push_value(lua_State *L, bool value) {
 		lua_pushboolean(L, value);
-		lua_setfield(L, -2, name);
 	}
 
-	void set_field(lua_State *L, const char *name, double value)
-	{
+	void push_value(lua_State *L, double value) {
 		lua_pushnumber(L, value);
-		lua_setfield(L, -2, name);
 	}
 
-	void set_field(lua_State *L, const char *name, int value)
-	{
+	void push_value(lua_State *L, int value) {
 		lua_pushinteger(L, value);
+	}
+
+	template<typename T>
+	void set_field(lua_State *L, const char *name, T value) {
+		push_value(L, value);
 		lua_setfield(L, -2, name);
 	}
 
