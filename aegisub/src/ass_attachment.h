@@ -75,9 +75,9 @@ public:
 	/// @param raw If false, remove the SSA filename mangling
 	wxString GetFileName(bool raw=false) const;
 
-	const wxString GetEntryData() const;
-	AssEntryGroup Group() const { return group; }
-	AssEntry *Clone() const;
+	const wxString GetEntryData() const override;
+	AssEntryGroup Group() const override { return group; }
+	AssEntry *Clone() const override;
 
 	AssAttachment(wxString const& name, AssEntryGroup group);
 };

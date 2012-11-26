@@ -85,7 +85,7 @@ public:
 
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
-	AssBlockType GetType() const { return BLOCK_PLAIN; }
+	AssBlockType GetType() const override { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 };
 
@@ -93,7 +93,7 @@ class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
 	int Scale;
 
-	AssBlockType GetType() const { return BLOCK_DRAWING; }
+	AssBlockType GetType() const override { return BLOCK_DRAWING; }
 	AssDialogueBlockDrawing(wxString const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
@@ -105,8 +105,8 @@ public:
 
 	std::vector<AssOverrideTag*> Tags;
 
-	AssBlockType GetType() const { return BLOCK_OVERRIDE; }
-	wxString GetText();
+	AssBlockType GetType() const override { return BLOCK_OVERRIDE; }
+	wxString GetText() override;
 	void ParseTags();
 	void AddTag(wxString const& tag);
 
@@ -143,7 +143,7 @@ public:
 	/// Raw text data
 	wxString Text;
 
-	AssEntryGroup Group() const { return ENTRY_DIALOGUE; }
+	AssEntryGroup Group() const override { return ENTRY_DIALOGUE; }
 
 	/// @brief Parse raw ASS data into everything else
 	/// @param data ASS line
@@ -172,9 +172,9 @@ public:
 
 	/// If blocks have been parsed, update the text from their current value
 	void UpdateText();
-	const wxString GetEntryData() const;
+	const wxString GetEntryData() const override;
 	/// Do nothing
-	void SetEntryData(wxString const&) { }
+	void SetEntryData(wxString const&) override { }
 
 	template<int which>
 	void SetMarginString(wxString const& value) { SetMarginString(value, which);}
@@ -187,7 +187,7 @@ public:
 	/// @param pad Pad the number to four digits
 	wxString GetMarginString(int which, bool pad=true) const;
 	/// Get the line as SSA rather than ASS
-	wxString GetSSAText() const;
+	wxString GetSSAText() const override;
 	/// Does this line collide with the passed line?
 	bool CollidesWith(const AssDialogue *target) const;
 

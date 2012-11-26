@@ -78,9 +78,9 @@ public:
 	AssStyle();
 	AssStyle(wxString data, int version=1);
 
-	wxString GetSSAText() const;
-	AssEntryGroup Group() const { return ENTRY_STYLE; }
-	AssEntry *Clone() const;
+	wxString GetSSAText() const override;
+	AssEntryGroup Group() const override { return ENTRY_STYLE; }
+	AssEntry *Clone() const override;
 
 	/// Convert an ASS alignment to the equivalent SSA alignment
 	static int AssToSsa(int ass_align);
