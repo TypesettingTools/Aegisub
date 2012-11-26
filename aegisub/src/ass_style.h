@@ -79,7 +79,7 @@ public:
 	AssStyle(wxString data, int version=1);
 
 	wxString GetSSAText() const;
-	AssEntryGroup GetType() const { return ENTRY_STYLE; }
+	AssEntryGroup Group() const { return ENTRY_STYLE; }
 	AssEntry *Clone() const;
 
 	/// Convert an ASS alignment to the equivalent SSA alignment
