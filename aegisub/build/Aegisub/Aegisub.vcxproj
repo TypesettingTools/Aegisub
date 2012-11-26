@@ -134,6 +134,7 @@
     <ClInclude Include="$(SrcDir)auto4_lua.h" />
     <ClInclude Include="$(SrcDir)auto4_lua_factory.h" />
     <ClInclude Include="$(SrcDir)auto4_lua_scriptreader.h" />
+    <ClInclude Include="$(SrcDir)auto4_lua_utils.h" />
     <ClInclude Include="$(SrcDir)avisynth.h" />
     <ClInclude Include="$(SrcDir)avisynth_wrap.h" />
     <ClInclude Include="$(SrcDir)base_grid.h" />

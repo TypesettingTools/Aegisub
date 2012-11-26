@@ -687,6 +687,9 @@
     <ClInclude Include="$(SrcDir)subs_controller.h">
       <Filter>ASS</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)auto4_lua_utils.h">
+      <Filter>Automation\Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">

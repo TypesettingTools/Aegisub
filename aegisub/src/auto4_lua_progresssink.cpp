@@ -35,17 +35,11 @@
 #include "config.h"
 
 #ifdef WITH_AUTO4_LUA
-
 #include "auto4_lua.h"
 
-#include <wx/filedlg.h>
+#include "auto4_lua_utils.h"
 
-#ifdef __WINDOWS__
-#include "../../contrib/lua51/src/lua.h"
-#include "../../contrib/lua51/src/lauxlib.h"
-#else
-#include <lua.hpp>
-#endif
+#include <wx/filedlg.h>
 
 namespace {
 	void set_field_to_closure(lua_State *L, const char *name, lua_CFunction fn, int ps_idx = -3)
@@ -59,11 +53,6 @@ namespace {
 	{
 		lua_pushnil(L);
 		lua_setfield(L, idx, name);
-	}
-
-	inline wxString check_wxstring(lua_State *L, int idx)
-	{
-		return wxString::FromUTF8(luaL_checkstring(L, idx));
 	}
 }
 

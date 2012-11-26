@@ -38,6 +38,7 @@
 
 #include "auto4_lua.h"
 
+#include "auto4_lua_utils.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -53,8 +54,6 @@
 #include "utils.h"
 
 #include <libaegisub/access.h>
-#include <libaegisub/fs.h>
-#include <libaegisub/log.h>
 #include <libaegisub/path.h>
 #include <libaegisub/scoped_ptr.h>
 
@@ -75,78 +74,7 @@
 #include <wx/regex.h>
 #include <wx/window.h>
 
-// This must be below the headers above.
-#ifdef __WINDOWS__
-#include "../../contrib/lua51/src/lualib.h"
-#include "../../contrib/lua51/src/lauxlib.h"
-#else
-#include <lua.hpp>
-#endif
-
 namespace {
-	inline void push_value(lua_State *L, lua_CFunction fn) {
-		lua_pushcfunction(L, fn);
-	}
-
-	inline void push_value(lua_State *L, int n) {
-		lua_pushinteger(L, n);
-	}
-
-	inline void push_value(lua_State *L, void *p) {
-		lua_pushlightuserdata(L, p);
-	}
-
-	inline void push_value(lua_State *L, agi::fs::path const& p) {
-		lua_pushstring(L, p.string().c_str());
-	}
-
-	inline void push_value(lua_State *L, wxString const& s) {
-		lua_pushstring(L, s.utf8_str());
-	}
-
-	inline void push_value(lua_State *L, std::string const& s) {
-		lua_pushstring(L, s.c_str());
-	}
-
-	inline void push_value(lua_State *L, const char *s) {
-		lua_pushstring(L, s);
-	}
-
-	template<class T>
-	inline void set_field(lua_State *L, const char *name, T value)
-	{
-		push_value(L, value);
-		lua_setfield(L, -2, name);
-	}
-
-	inline wxString get_wxstring(lua_State *L, int idx)
-	{
-		return wxString::FromUTF8(lua_tostring(L, idx));
-	}
-
-	inline wxString check_wxstring(lua_State *L, int idx)
-	{
-		return wxString::FromUTF8(luaL_checkstring(L, idx));
-	}
-
-	std::string get_string_or_default(lua_State *L, int idx)
-	{
-		const char *str = lua_tostring(L, idx);
-		if (!str)
-			str = "<not a string>";
-		return str;
-	}
-
-	std::string get_global_string(lua_State *L, const char *name)
-	{
-		lua_getglobal(L, name);
-		std::string ret;
-		if (lua_isstring(L, -1))
-			ret = lua_tostring(L, -1);
-		lua_pop(L, 1);
-		return ret;
-	}
-
 	void set_context(lua_State *L, const agi::Context *c)
 	{
 		// Explicit cast is needed to discard the const
@@ -344,47 +272,6 @@ namespace {
 		return 1;
 	}
 }
-
-	// LuaStackcheck
-#ifdef _DEBUG
-	struct LuaStackcheck {
-		lua_State *L;
-		int startstack;
-		void check_stack(int additional)
-		{
-			int top = lua_gettop(L);
-			if (top - additional != startstack) {
-				LOG_D("automation/lua") << "lua stack size mismatch.";
-				dump();
-				assert(top - additional == startstack);
-			}
-		}
-		void dump()
-		{
-			int top = lua_gettop(L);
-			LOG_D("automation/lua/stackdump") << "--- dumping lua stack...";
-			for (int i = top; i > 0; i--) {
-				lua_pushvalue(L, i);
-				std::string type(lua_typename(L, lua_type(L, -1)));
-				if (lua_isstring(L, i)) {
-					LOG_D("automation/lua/stackdump") << type << ": " << lua_tostring(L, -1);
-				} else {
-					LOG_D("automation/lua/stackdump") << type;
-				}
-				lua_pop(L, 1);
-			}
-			LOG_D("automation/lua") << "--- end dump";
-		}
-		LuaStackcheck(lua_State *L) : L(L) { startstack = lua_gettop(L); }
-		~LuaStackcheck() { check_stack(0); }
-	};
-#else
-	struct LuaStackcheck {
-		void check_stack(int) { }
-		void dump() { }
-		LuaStackcheck(lua_State*) { }
-	};
-#endif
 
 namespace Automation4 {
 	// LuaScript
