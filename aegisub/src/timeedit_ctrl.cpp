@@ -93,7 +93,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxStr
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::tr1::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
 	Bind(wxEVT_CONTEXT_MENU, &TimeEdit::OnContextMenu, this);
-	Bind(wxEVT_KEY_DOWN, &TimeEdit::OnKeyDown, this);
+	Bind(wxEVT_CHAR_HOOK, &TimeEdit::OnKeyDown, this);
 	Bind(wxEVT_KILL_FOCUS, &TimeEdit::OnFocusLost, this);
 }
 
