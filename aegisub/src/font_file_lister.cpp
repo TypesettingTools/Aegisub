@@ -29,6 +29,8 @@
 #include "ass_style.h"
 #include "utils.h"
 
+#include <libaegisub/of_type_adaptor.h>
+
 #ifndef AGI_PRE
 #include <algorithm>
 
@@ -154,18 +156,17 @@ std::vector<wxString> FontCollector::GetFontPaths(const AssFile *file) {
 
 	status_callback(_("Parsing file\n"), 0);
 
-	int index = 0;
-	for (auto const& line : file->Line) {
-		if (const AssStyle *style = dynamic_cast<const AssStyle*>(&line)) {
-			StyleInfo &info = styles[style->name];
-			info.facename = style->font;
-			info.bold     = style->bold;
-			info.italic   = style->italic;
-			used_styles[info].styles.insert(style->name);
-		}
-		else if (const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&line))
-			ProcessDialogueLine(diag, ++index);
+	for (auto style : file->Line | agi::of_type<const AssStyle>()) {
+		StyleInfo &info = styles[style->name];
+		info.facename = style->font;
+		info.bold     = style->bold;
+		info.italic   = style->italic;
+		used_styles[info].styles.insert(style->name);
 	}
+
+	int index = 0;
+	for (auto diag : file->Line | agi::of_type<const AssDialogue>())
+		ProcessDialogueLine(diag, ++index);
 
 	status_callback(_("Searching for font files\n"), 0);
 	for_each(used_styles.begin(), used_styles.end(), bind(&FontCollector::ProcessChunk, this, _1));
