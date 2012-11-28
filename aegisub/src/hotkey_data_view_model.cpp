@@ -116,7 +116,7 @@ public:
 		if (col == 0) {
 			wxArrayString toks = wxSplit(variant.GetString(), '-');
 			std::vector<std::string> keys;
-			keys.resize(toks.size());
+			keys.reserve(toks.size());
 			transform(toks.begin(), toks.end(), back_inserter(keys), (std::string(*)(wxString const&))&from_wx);
 			combo = Combo(combo.Context(), combo.CmdName(), keys);
 			cmd_str = combo.Str();
