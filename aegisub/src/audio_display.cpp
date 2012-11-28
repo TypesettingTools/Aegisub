@@ -1172,7 +1172,7 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 	{
 		if (connections.empty())
 		{
-			connections.push_back(controller->AddAudioCloseListener(&AudioDisplay::OnAudioOpen, this, (AudioProvider*)0));
+			connections.push_back(controller->AddAudioCloseListener(&AudioDisplay::OnAudioOpen, this, nullptr));
 			connections.push_back(controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this));
 			connections.push_back(controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this));
 			connections.push_back(controller->AddTimingControllerListener(&AudioDisplay::OnTimingController, this));

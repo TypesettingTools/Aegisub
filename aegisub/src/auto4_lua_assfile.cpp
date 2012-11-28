@@ -555,7 +555,7 @@ namespace Automation4 {
 		}
 
 		int n = lua_gettop(L);
-		std::vector<AssEntry *> new_entries(n - 1, (AssEntry *)0);
+		std::vector<AssEntry *> new_entries(n - 1, nullptr);
 		for (int i = 2; i <= n; i++) {
 			lua_pushvalue(L, i);
 			AssEntry *e = LuaToAssEntry(L);

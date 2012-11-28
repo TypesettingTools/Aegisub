@@ -216,7 +216,7 @@ public:
 		for (; it != age.end() && cur_size < max_size; ++it)
 		{
 			BlockArray &ba = (*it)->blocks;
-			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), (BlockT*)0)) * block_size;
+			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * block_size;
 		}
 		// Hit max, clear all remaining blocks
 		for (; it != age.end();)
