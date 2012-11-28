@@ -517,12 +517,9 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	}
 
 	// Delete selected lines
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ) {
-		if (sel.count(static_cast<AssDialogue*>(&*it)))
-			delete &*it++;
-		else
-			++it;
-	}
+	c->ass->Line.remove_and_dispose_if([&sel](AssEntry const& e) {
+		return sel.count(const_cast<AssDialogue *>(static_cast<const AssDialogue*>(&e)));
+	}, [](AssEntry *e) { delete e; });
 
 	// If we didn't get a new active line then we just deleted all the dialogue
 	// lines, so make a new one

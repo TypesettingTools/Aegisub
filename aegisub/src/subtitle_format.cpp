@@ -182,24 +182,16 @@ void SubtitleFormat::ConvertNewlines(AssFile &file, wxString const& newline, boo
 }
 
 void SubtitleFormat::StripComments(AssFile &file) {
-	for (entryIter it = file.Line.begin(); it != file.Line.end(); ) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
-		if (!diag || (!diag->Comment && diag->Text.size()))
-			++it;
-		else {
-			delete &*it++;
-		}
-	}
+	file.Line.remove_and_dispose_if([](AssEntry const& e) {
+		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e);
+		return diag && (diag->Comment || !diag->Text);
+	}, [](AssEntry *e) { delete e; });
 }
 
 void SubtitleFormat::StripNonDialogue(AssFile &file) {
-	for (entryIter it = file.Line.begin(); it != file.Line.end(); ) {
-		if (dynamic_cast<AssDialogue*>(&*it))
-			++it;
-		else {
-			delete &*it++;
-		}
-	}
+	file.Line.remove_and_dispose_if([](AssEntry const& e) {
+		return e.Group() != ENTRY_DIALOGUE;
+	}, [](AssEntry *e) { delete e; });
 }
 
 static bool dialog_start_lt(AssEntry &pos, AssDialogue *to_insert) {
@@ -318,8 +310,7 @@ void SubtitleFormat::LoadFormats() {
 }
 
 void SubtitleFormat::DestroyFormats() {
-	for (auto it = formats.begin(); it != formats.end(); )
-		delete *it++;
+	delete_clear(formats);
 }
 
 template<class Cont, class Pred>
