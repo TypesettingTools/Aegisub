@@ -32,12 +32,10 @@
 /// @ingroup scripting
 ///
 
-
 #pragma once
 
-
 #ifndef AGI_PRE
-#include <list>
+#include <deque>
 #include <vector>
 
 #include <wx/dialog.h>
@@ -232,7 +230,7 @@ namespace Automation4 {
 
 	/// Manager for scripts specified by a subtitle file
 	class LocalScriptManager : public ScriptManager {
-		std::list<agi::signal::Connection> slots;
+		std::deque<agi::signal::Connection> slots;
 		agi::Context *context;
 
 		void OnSubtitlesSave();

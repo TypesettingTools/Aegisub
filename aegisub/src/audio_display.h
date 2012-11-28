@@ -34,7 +34,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <list>
+#include <deque>
 #include <map>
 #include <cstdint>
 
@@ -103,7 +103,7 @@ public:
 class AudioDisplay: public wxWindow {
 	agi::signal::Connection audio_open_connection;
 
-	std::list<agi::signal::Connection> connections;
+	std::deque<agi::signal::Connection> connections;
 	agi::Context *context;
 
 	/// The audio renderer manager

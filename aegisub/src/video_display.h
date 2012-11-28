@@ -34,7 +34,7 @@
 
 
 #ifndef AGI_PRE
-#include <list>
+#include <deque>
 #include <memory>
 
 #include <wx/glcanvas.h>
@@ -66,7 +66,7 @@ namespace agi {
 /// @brief DOCME
 class VideoDisplay : public wxGLCanvas {
 	/// Signals the display is connected to
-	std::list<agi::signal::Connection> slots;
+	std::deque<agi::signal::Connection> slots;
 
 	const agi::OptionValue* autohideTools;
 

@@ -33,7 +33,7 @@
 ///
 
 #ifndef AGI_PRE
-#include <list>
+#include <deque>
 
 #include <wx/panel.h>
 #endif
@@ -48,7 +48,7 @@ class wxTextCtrl;
 /// @class VideoBox
 /// @brief The box containing the video display and associated controls
 class VideoBox : public wxPanel {
-	std::list<agi::signal::Connection> slots;
+	std::deque<agi::signal::Connection> slots;
 	agi::Context *context;     ///< Project context
 	wxTextCtrl *VideoPosition; ///< Current frame/time
 	wxTextCtrl *VideoSubsPos;  ///< Time relative to the active subtitle line
