@@ -35,8 +35,8 @@
 #pragma once
 
 #ifndef AGI_PRE
-#include <list>
 #include <memory>
+#include <vector>
 
 #include <wx/string.h>
 #include <wx/window.h>
@@ -47,8 +47,7 @@ class AssExportFilter;
 
 namespace agi { struct Context; }
 
-/// DOCME
-typedef std::list<AssExportFilter*> FilterList;
+typedef std::vector<AssExportFilter*> FilterList;
 
 /// DOCME
 /// @class AssExportFilterChain

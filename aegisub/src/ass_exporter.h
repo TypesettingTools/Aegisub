@@ -37,15 +37,15 @@
 #include <wx/sizer.h>
 #include <wx/string.h>
 
-#include <list>
 #include <map>
+#include <vector>
 #endif
 
 class AssExportFilter;
 class AssFile;
 namespace agi { struct Context; }
 
-typedef std::list<AssExportFilter*> FilterList;
+typedef std::vector<AssExportFilter*> FilterList;
 
 /// DOCME
 /// @class AssExporter

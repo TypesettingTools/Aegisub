@@ -401,9 +401,10 @@ void DialogStyleManager::OnCatalogDelete() {
 }
 
 void DialogStyleManager::OnCopyToStorage() {
-	std::list<wxString> copied;
 	wxArrayInt selections;
 	int n = CurrentList->GetSelections(selections);
+	wxArrayString copied;
+	copied.reserve(n);
 	for (int i = 0; i < n; i++) {
 		wxString styleName = CurrentList->GetString(selections[i]);
 
@@ -427,9 +428,10 @@ void DialogStyleManager::OnCopyToStorage() {
 }
 
 void DialogStyleManager::OnCopyToCurrent() {
-	std::list<wxString> copied;
 	wxArrayInt selections;
 	int n = StorageList->GetSelections(selections);
+	wxArrayString copied;
+	copied.reserve(n);
 	for (int i = 0; i < n; i++) {
 		wxString styleName = StorageList->GetString(selections[i]);
 		bool addStyle = true;

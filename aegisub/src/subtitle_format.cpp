@@ -68,7 +68,7 @@ SubtitleFormat::SubtitleFormat(wxString const& name)
 }
 
 SubtitleFormat::~SubtitleFormat() {
-	formats.remove(this);
+	formats.erase(remove(begin(formats), end(formats), this));
 }
 
 bool SubtitleFormat::CanReadFile(wxString const& filename) const {
@@ -301,7 +301,7 @@ void SubtitleFormat::MergeIdentical(AssFile &file) {
 	}
 }
 
-std::list<SubtitleFormat*> SubtitleFormat::formats;
+std::vector<SubtitleFormat*> SubtitleFormat::formats;
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {

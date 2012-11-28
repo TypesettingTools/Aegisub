@@ -35,7 +35,7 @@
 #pragma once
 
 #ifndef AGI_PRE
-#include <list>
+#include <vector>
 
 #include <wx/arrstr.h>
 #include <wx/string.h>
@@ -61,7 +61,7 @@ class SubtitleFormat {
 	virtual wxArrayString GetWriteWildcards() const { return wxArrayString(); }
 
 	/// List of loaded subtitle formats
-	static std::list<SubtitleFormat*> formats;
+	static std::vector<SubtitleFormat*> formats;
 
 public:
 	/// Strip override tags

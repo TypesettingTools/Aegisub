@@ -69,10 +69,11 @@ void AssExportFilterChain::Register(AssExportFilter *filter) {
 }
 
 void AssExportFilterChain::Unregister(AssExportFilter *filter) {
-	if (find(filters()->begin(), filters()->end(), filter) == filters()->end())
+	auto it = remove(begin(*filters()), end(*filters()), filter);
+	if (it == end(*filters()))
 		throw wxString::Format("Unregister export filter: name \"%s\" is not registered.", filter->name);
 
-	filters()->remove(filter);
+	filters()->pop_back();
 }
 
 FilterList *AssExportFilterChain::filters() {
