@@ -790,7 +790,7 @@ void AudioTimingControllerDialogue::AddInactiveLine(SubtitleSelection const& sel
 {
 	if (sel.count(diag)) return;
 
-	inactive_lines.push_back(TimeableLine(AudioStyle_Inactive, &style_inactive, &style_inactive));
+	inactive_lines.emplace_back(AudioStyle_Inactive, &style_inactive, &style_inactive);
 	inactive_lines.back().SetLine(diag);
 }
 
@@ -805,7 +805,7 @@ void AudioTimingControllerDialogue::RegenerateSelectedLines()
 	{
 		if (line == active) continue;
 
-		selected_lines.push_back(TimeableLine(AudioStyle_Selected, &style_inactive, &style_inactive));
+		selected_lines.emplace_back(AudioStyle_Selected, &style_inactive, &style_inactive);
 		selected_lines.back().SetLine(line);
 	}
 

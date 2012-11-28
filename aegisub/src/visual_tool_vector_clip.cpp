@@ -323,7 +323,7 @@ bool VisualToolVectorClip::InitializeHold() {
 		features.clear();
 		active_feature = features.end();
 		spline.clear();
-		spline.push_back(SplineCurve(mouse_pos));
+		spline.emplace_back(mouse_pos);
 		return true;
 	}
 
@@ -367,7 +367,7 @@ void VisualToolVectorClip::UpdateHold() {
 		Vector2D const& last = spline.back().EndPoint();
 		float len = (last - mouse_pos).SquareLen();
 		if ((mode == 6 && len >= 900) || (mode == 7 && len >= 3600)) {
-			spline.push_back(SplineCurve(last, mouse_pos));
+			spline.emplace_back(last, mouse_pos);
 			MakeFeature(--spline.end());
 		}
 		else

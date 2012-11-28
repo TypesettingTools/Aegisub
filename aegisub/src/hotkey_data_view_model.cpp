@@ -147,8 +147,8 @@ public:
 	}
 
 	wxDataViewItem AddChild(Combo const& combo) {
-		children.push_back(HotkeyModelCombo(this, combo));
-		visible_items.push_back(wxDataViewItem(&children.back()));
+		children.emplace_back(this, combo);
+		visible_items.emplace_back(&children.back());
 		model->ItemAdded(wxDataViewItem(this), wxDataViewItem(&children.back()));
 		return wxDataViewItem(&children.back());
 	}
@@ -183,11 +183,11 @@ public:
 			bool is_visible = combo.IsVisible(new_filter);
 
 			if (is_visible)
-				visible_items.push_back(wxDataViewItem(&combo));
+				visible_items.emplace_back(&combo);
 			if (was_visible && !is_visible)
-				removed.push_back(wxDataViewItem(&combo));
+				removed.emplace_back(&combo);
 			if (is_visible && !was_visible)
-				added.push_back(wxDataViewItem(&combo));
+				added.emplace_back(&combo);
 		}
 
 		if (!added.empty())
@@ -228,7 +228,7 @@ public:
 			if (cat_it != cat_map.end())
 				cat = cat_it->second;
 			else {
-				categories.push_back(HotkeyModelCategory(model, cat_name));
+				categories.emplace_back(model, cat_name);
 				cat = cat_map[cat_name] = &categories.back();
 			}
 
@@ -260,7 +260,7 @@ public:
 	unsigned int GetChildren(wxDataViewItemArray &out) const {
 		out.reserve(categories.size());
 		for (auto const& category : categories)
-			out.push_back(wxDataViewItem((void*)&category));
+			out.emplace_back((void*)&category);
 		return out.size();
 	}
 };

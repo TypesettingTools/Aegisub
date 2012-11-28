@@ -62,7 +62,7 @@ AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_nam
 {
 	colors.reserve(AudioStyle_MAX);
 	for (int i = 0; i < AudioStyle_MAX; ++i)
-		colors.push_back(AudioColorScheme(6, color_scheme_name, i));
+		colors.emplace_back(6, color_scheme_name, i);
 }
 
 AudioWaveformRenderer::~AudioWaveformRenderer()

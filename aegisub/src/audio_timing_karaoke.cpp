@@ -285,8 +285,8 @@ void AudioTimingControllerKaraoke::Revert() {
 
 	for (AssKaraoke::iterator it = kara->begin(); it != kara->end(); ++it) {
 		if (it != kara->begin())
-			markers.push_back(KaraokeMarker(it->start_time, &separator_pen, AudioMarker::Feet_None));
-		labels.push_back(AudioLabel(it->text, TimeRange(it->start_time, it->start_time + it->duration)));
+			markers.emplace_back(it->start_time, &separator_pen, AudioMarker::Feet_None);
+		labels.emplace_back(it->text, TimeRange(it->start_time, it->start_time + it->duration));
 	}
 
 	AnnounceUpdatedPrimaryRange();

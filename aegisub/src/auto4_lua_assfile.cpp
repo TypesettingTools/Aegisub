@@ -614,7 +614,7 @@ namespace Automation4 {
 			luaL_error(L, "Attempt to set an undo point in a context where it makes no sense to do so.");
 
 		if (modification_type) {
-			pending_commits.push_back(PendingCommit());
+			pending_commits.emplace_back();
 			PendingCommit& back = pending_commits.back();
 
 			back.modification_type = modification_type;

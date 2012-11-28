@@ -117,6 +117,8 @@ public:
 	using std::list<SplineCurve>::push_back;
 	using std::list<SplineCurve>::pop_front;
 	using std::list<SplineCurve>::pop_back;
+	using std::list<SplineCurve>::emplace_front;
+	using std::list<SplineCurve>::emplace_back;
 	using std::list<SplineCurve>::insert;
 	using std::list<SplineCurve>::erase;
 	using std::list<SplineCurve>::clear;

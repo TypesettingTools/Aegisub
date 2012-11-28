@@ -243,7 +243,7 @@ void Spline::GetClosestParametricPoint(Vector2D reference,iterator &curve,float 
 	if (empty()) return;
 
 	// Close the shape
-	push_back(SplineCurve(back().EndPoint(), front().p1));
+	emplace_back(back().EndPoint(), front().p1);
 
 	float closest = std::numeric_limits<float>::infinity();
 	for (iterator cur = begin(); cur != end(); ++cur) {

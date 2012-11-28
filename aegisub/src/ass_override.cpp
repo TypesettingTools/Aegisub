@@ -126,11 +126,12 @@ AssOverrideParamProto::AssOverrideParamProto(VariableDataType type,int opt,AssPa
 }
 
 void AssOverrideTagProto::AddParam(VariableDataType type, AssParameterClass classi, int opt) {
-	params.push_back(AssOverrideParamProto(type, opt, classi));
+	params.emplace_back(type, opt, classi);
 }
+
 void AssOverrideTagProto::Set(wxString newName, VariableDataType type, AssParameterClass classi, int opt) {
 	name = newName;
-	params.push_back(AssOverrideParamProto(type, opt, classi));
+	params.emplace_back(type, opt, classi);
 }
 
 static std::vector<AssOverrideTagProto> proto;

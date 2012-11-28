@@ -224,7 +224,7 @@ namespace
 				}
 
 				// Apply the splits
-				new_text.push_back(EbuTextRow());
+				new_text.emplace_back();
 				size_t cur_word = 0;
 				size_t split_point = 0;
 				for (auto const& cur_block : row)
@@ -233,7 +233,7 @@ namespace
 					{
 						if (split_points[split_point] == cur_word)
 						{
-							new_text.push_back(EbuTextRow());
+							new_text.emplace_back();
 							++split_point;
 						}
 						++cur_word;
@@ -271,13 +271,13 @@ namespace
 			line->ParseAssTags();
 
 			text_rows.clear();
-			text_rows.push_back(EbuTextRow());
+			text_rows.emplace_back();
 
 			// current row being worked on
 			EbuTextRow *cur_row = &text_rows.back();
 
 			// create initial text part
-			cur_row->push_back(EbuFormattedText("", style_underline, style_italic, true));
+			cur_row->emplace_back("", style_underline, style_italic, true);
 
 			bool underline = style_underline, italic = style_italic;
 
@@ -309,14 +309,14 @@ namespace
 							if (substr == "\\N" || (wrap_mode == 1 && substr == "\\n"))
 							{
 								// create a new row with current style
-								text_rows.push_back(EbuTextRow());
+								text_rows.emplace_back();
 								cur_row = &text_rows.back();
-								cur_row->push_back(EbuFormattedText("", underline, italic, true));
+								cur_row->emplace_back("", underline, italic, true);
 							}
 							else // if (substr == " " || substr == "\\h" || substr == "\\n")
 							{
 								cur_row->back().text.append(" ");
-								cur_row->push_back(EbuFormattedText("", underline, italic, true));
+								cur_row->emplace_back("", underline, italic, true);
 							}
 
 							text = text.Mid(start+len);
@@ -388,7 +388,7 @@ namespace
 		for (auto line : copy.Line | agi::of_type<AssDialogue>())
 		{
 			// add a new subtitle and work on it
-			subs_list.push_back(EbuSubtitle());
+			subs_list.emplace_back();
 			EbuSubtitle &imline = subs_list.back();
 
 			// some defaults for compatibility
@@ -429,9 +429,9 @@ namespace
 		// (it still has to contain a space to not get ignored)
 		if (subs_list.empty())
 		{
-			subs_list.push_back(EbuSubtitle());
-			subs_list.back().text_rows.push_back(EbuTextRow());
-			subs_list.back().text_rows.back().push_back(EbuFormattedText(" "));
+			subs_list.emplace_back();
+			subs_list.back().text_rows.emplace_back();
+			subs_list.back().text_rows.back().emplace_back(" ");
 		}
 
 		return subs_list;

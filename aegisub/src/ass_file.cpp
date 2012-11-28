@@ -445,7 +445,7 @@ int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *singl
 void AssFile::Undo() {
 	if (UndoStack.size() <= 1) return;
 
-	RedoStack.push_back(AssFile());
+	RedoStack.emplace_back();
 	swap(RedoStack.back());
 	UndoStack.pop_back();
 	*this = UndoStack.back();
