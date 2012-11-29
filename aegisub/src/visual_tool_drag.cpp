@@ -235,7 +235,7 @@ void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_iterator pos) {
 	feat.line = diag;
 	feat.parent = features.end();
 	features.insert(pos, feat);
-	feature_iterator cur = pos; --cur;
+	feature_iterator cur = prev(pos);
 	feat.parent = cur;
 	if (selection.count(diag))
 		sel_features.insert(cur);
@@ -252,7 +252,7 @@ void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_iterator pos) {
 		feat.time = t2;
 		feat.line = diag;
 		features.insert(pos, feat);
-		feat.parent->parent = --pos; ++pos;
+		feat.parent->parent = prev(pos);
 	}
 
 	// Create org feature

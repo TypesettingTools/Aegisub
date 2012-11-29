@@ -164,10 +164,8 @@ void Spline::DecodeFromAss(wxString str) {
 }
 
 void Spline::MovePoint(iterator curve,int point,Vector2D pos) {
-	iterator prev = curve;
-	if (curve != begin()) --prev;
-	iterator next = curve;
-	++next;
+	iterator prev = std::prev(curve, curve != begin());
+	iterator next = std::next(curve);
 	if (next != end() && next->type == SplineCurve::POINT)
 		next = end();
 
@@ -279,14 +277,12 @@ void Spline::Smooth(float smooth) {
 	if (size() < 3) return;
 
 	// Smooth curve
-	iterator cur_curve = end();
-	--cur_curve;
-	for (iterator cur = begin(); cur != end(); ) {
-		iterator prev_curve = cur_curve;
-		cur_curve = cur;
-		++cur;
-		iterator next_curve = cur == end() ? begin() : cur;
+	for (iterator cur = begin(); cur != end(); ++cur) {
+		iterator prev_curve = prev(cur == begin() ? cur : end());
+		iterator next_curve = next(cur);
+		if (next_curve == end())
+			next_curve = begin();
 
-		cur_curve->Smooth(prev_curve->p1, next_curve->EndPoint(), smooth);
+		cur->Smooth(prev_curve->p1, next_curve->EndPoint(), smooth);
 	}
 }

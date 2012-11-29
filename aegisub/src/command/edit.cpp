@@ -610,8 +610,7 @@ static void duplicate_lines(agi::Context *c, bool shift) {
 
 		// And the last line in this contiguous selection
 		entryIter insert_pos = find_if_not(start, end, sel);
-		entryIter last = insert_pos;
-		--last;
+		entryIter last = std::prev(insert_pos);
 
 		// Duplicate each of the selected lines, inserting them in a block
 		// after the selected block

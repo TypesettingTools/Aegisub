@@ -223,8 +223,7 @@ bool VisualToolVectorClip::InitializeDrag(feature_iterator feature) {
 		feature->curve->p2 = feature->curve->p4;
 	}
 	else {
-		Spline::iterator next = feature->curve;
-		next++;
+		Spline::iterator next = std::next(feature->curve);
 		if (next != spline.end()) {
 			if (feature->curve->type == SplineCurve::POINT) {
 				next->p1 = next->EndPoint();
