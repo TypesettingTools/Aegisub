@@ -310,7 +310,8 @@ void SubtitleFormat::LoadFormats() {
 }
 
 void SubtitleFormat::DestroyFormats() {
-	delete_clear(formats);
+	while (!formats.empty())
+		delete formats.back();
 }
 
 template<class Cont, class Pred>
