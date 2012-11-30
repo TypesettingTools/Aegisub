@@ -38,6 +38,9 @@
 #include <deque>
 #endif
 
+#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/sliced.hpp>
+
 /// @class KaraokeMarker
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke
 class KaraokeMarker : public AudioMarker {
@@ -344,22 +347,28 @@ void AudioTimingControllerKaraoke::ModifyStart(int delta) {
 
 bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity) const {
 	TimeRange range(ms - sensitivity, ms + sensitivity);
-
-	for (auto const& marker : markers)
-		if (range.contains(marker))
-			return true;
-
-	return false;
+	return any_of(markers.begin(), markers.end(), [&](KaraokeMarker const& km) {
+		return range.contains(km);
+	});
 }
 
-std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool, int sensitivity, int) {
+template<typename Out, typename In>
+static std::vector<Out *> copy_ptrs(In &vec, size_t start, size_t end) {
+	std::vector<Out *> ret;
+	ret.reserve(end - start);
+	for (; start < end; ++start)
+		ret.push_back(&vec[start]);
+	return ret;
+}
+
+std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool ctrl_down, int sensitivity, int) {
 	TimeRange range(ms - sensitivity, ms + sensitivity);
 
 	size_t syl = distance(markers.begin(), lower_bound(markers.begin(), markers.end(), ms));
 	if (syl < markers.size() && range.contains(markers[syl]))
-		return std::vector<AudioMarker*>(1, &markers[syl]);
+		return copy_ptrs<AudioMarker>(markers, syl, ctrl_down ? markers.size() : syl + 1);
 	if (syl > 0 && range.contains(markers[syl - 1]))
-		return std::vector<AudioMarker*>(1, &markers[syl - 1]);
+		return copy_ptrs<AudioMarker>(markers, syl - 1, ctrl_down ? markers.size() : syl);
 
 	cur_syl = syl;
 
@@ -419,13 +428,22 @@ void AudioTimingControllerKaraoke::AnnounceChanges(int syl) {
 }
 
 void AudioTimingControllerKaraoke::OnMarkerDrag(std::vector<AudioMarker*> const& m, int new_position, int) {
-	assert(m.size() == 1);
-	AnnounceChanges(MoveMarker(static_cast<KaraokeMarker*>(m[0]), new_position));
+	int old_position = m[0]->GetPosition();
+	int syl = MoveMarker(static_cast<KaraokeMarker *>(m[0]), new_position);
+	if (syl < 0) return;
+
+	if (m.size() > 1) {
+		int delta = m[0]->GetPosition() - old_position;
+		for (AudioMarker *marker : m | boost::adaptors::sliced(1, m.size()))
+			MoveMarker(static_cast<KaraokeMarker *>(marker), marker->GetPosition() + delta);
+		syl = cur_syl;
+	}
+
+	AnnounceChanges(syl);
 }
 
 void AudioTimingControllerKaraoke::GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const {
-	for (auto const& label : labels) {
-		if (range.overlaps(label.range))
-			out.push_back(label);
-	}
+	push_back(out, labels | boost::adaptors::filtered([&](AudioLabel const& l) {
+		return range.overlaps(l.range);
+	}));
 }
