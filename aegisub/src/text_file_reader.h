@@ -34,13 +34,11 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <fstream>
 #include <memory>
 
 #include <wx/dynarray.h>
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/line_iterator.h>
 

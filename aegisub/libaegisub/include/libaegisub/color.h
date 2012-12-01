@@ -14,9 +14,7 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
 #include <string>
-#endif
 
 namespace agi {
 	struct Color {

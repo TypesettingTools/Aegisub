@@ -32,10 +32,8 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 #include <wx/bitmap.h>
 #include <wx/control.h>
-#endif
 
 namespace agi { struct Context; }
 namespace cmd { class Command; }

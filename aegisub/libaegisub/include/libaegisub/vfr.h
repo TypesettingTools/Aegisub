@@ -18,12 +18,10 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
 #include <string>
 #include <vector>
 
 #include <cstdint>
-#endif
 
 #include <libaegisub/exception.h>
 

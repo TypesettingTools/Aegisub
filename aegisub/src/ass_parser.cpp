@@ -22,11 +22,9 @@
 #include "ass_style.h"
 #include "subtitle_format.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/log.h>
-#endif
 
 AssParser::AssParser(AssFile *target, int version)
 : target(target)

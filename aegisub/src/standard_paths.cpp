@@ -34,10 +34,8 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
-#endif
 
 #include "standard_paths.h"
 

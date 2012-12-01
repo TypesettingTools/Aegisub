@@ -33,9 +33,7 @@
 ///
 
 #ifdef WITH_FFMS2
-#ifndef AGI_PRE
 #include <vector>
-#endif
 
 #include "ffmpegsource_common.h"
 #include "include/aegisub/video_provider.h"

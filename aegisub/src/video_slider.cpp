@@ -34,10 +34,8 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/dcbuffer.h>
 #include <wx/settings.h>
-#endif
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"

@@ -34,13 +34,11 @@
 
 #include "threaded_frame_source.h"
 
-#ifndef AGI_PRE
 #include <deque>
 #include <functional>
 
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/algorithm_ext.hpp>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_exporter.h"

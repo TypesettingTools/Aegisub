@@ -32,10 +32,8 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 #include <wx/window.h>
 #include <wx/bitmap.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

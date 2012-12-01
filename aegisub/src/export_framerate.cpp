@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <utility>
 
 #include <wx/button.h>
@@ -44,7 +43,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

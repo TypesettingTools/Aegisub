@@ -23,9 +23,7 @@
 
 #include <libaegisub/log.h>
 
-#ifndef AGI_PRE
 #include <wx/intl.h>
-#endif
 
 namespace cmd {
 	static std::map<std::string, Command*> cmd_map;

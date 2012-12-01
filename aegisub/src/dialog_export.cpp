@@ -34,13 +34,11 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 #include <wx/stattext.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include "dialog_export.h"
 

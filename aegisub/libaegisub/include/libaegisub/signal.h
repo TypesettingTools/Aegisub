@@ -18,12 +18,10 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
 #include <boost/container/map.hpp>
 
 #include <functional>
 #include <memory>
-#endif
 
 namespace agi {
 	namespace signal {

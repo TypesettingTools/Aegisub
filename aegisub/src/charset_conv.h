@@ -32,11 +32,9 @@
 /// @ingroup utility
 ///
 
-#ifndef AGI_PRE
 #include <wx/string.h>
 #include <wx/strconv.h>
 #include <wx/thread.h>
-#endif
 
 #include <libaegisub/charset_conv.h>
 

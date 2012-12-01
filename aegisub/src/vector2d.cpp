@@ -23,9 +23,7 @@
 
 #include "vector2d.h"
 
-#ifndef AGI_PRE
 #include <limits>
-#endif
 
 Vector2D::Vector2D()
 : x(std::numeric_limits<float>::min())

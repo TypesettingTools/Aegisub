@@ -16,13 +16,11 @@
 /// @brief Unix utility methods.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <errno.h>
 
 #include <climits>
 #include <cstdio>
 #include <locale>
-#endif
 
 #include "libaegisub/util.h"
 

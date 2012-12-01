@@ -33,14 +33,12 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <fstream>
 #include <list>
 #include <vector>
 
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_override.h"

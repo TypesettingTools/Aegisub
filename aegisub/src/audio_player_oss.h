@@ -33,11 +33,9 @@
 ///
 
 #ifdef WITH_OSS
-#ifndef AGI_PRE
 #include <sys/ioctl.h>
 
 #include <wx/thread.h>
-#endif
 
 #include <fcntl.h>
 #ifdef HAVE_SOUNDCARD_H

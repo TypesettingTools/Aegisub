@@ -1,9 +1,7 @@
 #include "compat.h"
 #include "main.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
-#endif
 
 wxArrayString lagi_MRU_wxAS(const wxString &list) {
 	const agi::MRUManager::MRUListMap *map = config::mru->Get(STD_STR(list));

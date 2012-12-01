@@ -34,11 +34,9 @@
 
 
 
-#ifndef AGI_PRE
 #include <fstream>
 
 #include <wx/string.h>
-#endif
 
 namespace agi {
 	namespace charset {

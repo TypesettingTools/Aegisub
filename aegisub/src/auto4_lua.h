@@ -32,12 +32,10 @@
 /// @ingroup scripting
 ///
 
-#ifndef AGI_PRE
 #include <deque>
 
 #include <wx/event.h>
 #include <wx/thread.h>
-#endif
 
 #include "auto4_base.h"
 

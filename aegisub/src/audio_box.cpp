@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <cmath>
 
 #include <wx/bmpbuttn.h>
@@ -49,7 +48,6 @@
 #include <wx/tglbtn.h>
 #include <wx/toolbar.h>
 #include <wx/laywin.h> // Keep this last so wxSW_3D is set.
-#endif
 
 #include <libaegisub/log.h>
 

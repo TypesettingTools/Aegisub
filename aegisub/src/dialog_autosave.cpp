@@ -25,7 +25,6 @@
 
 #include <boost/range/adaptor/map.hpp>
 
-#ifndef AGI_PRE
 #include <map>
 
 #include <wx/button.h>
@@ -34,7 +33,6 @@
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 #include <wx/statbox.h>
-#endif
 
 DialogAutosave::DialogAutosave(wxWindow *parent)
 : wxDialog(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)

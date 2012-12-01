@@ -18,11 +18,9 @@
 
 #include "config.h"
 
-#ifndef LAGI_PRE
 #include <cstdio>
 #include <ctime>
 #include <cstring>
-#endif
 
 #include <unistd.h>
 

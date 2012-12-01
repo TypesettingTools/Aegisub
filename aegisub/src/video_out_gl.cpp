@@ -34,10 +34,8 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <utility>
-#endif
 
 #include <libaegisub/log.h>
 

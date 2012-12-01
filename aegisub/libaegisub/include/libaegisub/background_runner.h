@@ -18,11 +18,9 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
 #include <cstdint>
 #include <functional>
 #include <string>
-#endif
 
 namespace agi {
 	/// @class ProgressSink

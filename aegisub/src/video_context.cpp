@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <cstring>
 
 #include <wx/clipbrd.h>
@@ -42,7 +41,6 @@
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/msgdlg.h>
-#endif
 
 #include <libaegisub/keyframe.h>
 #include <libaegisub/log.h>

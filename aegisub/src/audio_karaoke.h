@@ -19,14 +19,12 @@
 /// @ingroup audio_ui
 ///
 
-#ifndef AGI_PRE
 #include <set>
 #include <vector>
 
 #include <wx/bitmap.h>
 #include <wx/timer.h>
 #include <wx/window.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

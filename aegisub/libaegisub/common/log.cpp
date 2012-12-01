@@ -18,14 +18,12 @@
 
 #include "../config.h"
 
-#ifndef LAGI_PRE
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <functional>
 #include <memory>
 #include <sstream>
-#endif
 
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/writer.h"

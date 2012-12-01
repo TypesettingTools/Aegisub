@@ -32,9 +32,7 @@
 /// @ingroup audio_input
 ///
 
-#ifndef AGI_PRE
 #include <iosfwd>
-#endif
 
 #include "include/aegisub/audio_provider.h"
 

@@ -32,10 +32,8 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 
 #include <wx/button.h>
-#endif
 
 /// DOCME
 /// @class HelpButton

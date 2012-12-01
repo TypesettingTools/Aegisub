@@ -34,14 +34,12 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <fstream>
 #include <list>
 
 #include <wx/arrstr.h>
 #include <wx/choicdlg.h>
 #include <wx/intl.h>
-#endif
 
 #include <libaegisub/charset.h>
 #include <libaegisub/log.h>

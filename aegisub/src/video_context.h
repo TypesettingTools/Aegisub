@@ -32,7 +32,6 @@
 /// @ingroup video
 ///
 
-#ifndef AGI_PRE
 #include <time.h>
 
 #include <list>
@@ -40,7 +39,6 @@
 
 #include <wx/timer.h>
 #include <wx/stopwatch.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

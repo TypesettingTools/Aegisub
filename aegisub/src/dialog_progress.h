@@ -17,10 +17,8 @@
 /// @ingroup utility
 ///
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
 #include <wx/timer.h>
-#endif
 
 #include <libaegisub/background_runner.h>
 #include <libaegisub/scoped_ptr.h>

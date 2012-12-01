@@ -32,9 +32,7 @@
 /// @ingroup utility
 ///
 
-#ifndef AGI_PRE
 #include <map>
-#endif
 
 
 /// DOCME

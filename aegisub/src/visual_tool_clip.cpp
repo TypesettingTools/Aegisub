@@ -20,9 +20,7 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <utility>
-#endif
 
 #include "visual_tool_clip.h"
 

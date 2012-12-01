@@ -34,14 +34,12 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/bmpbuttn.h>
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
 #include <wx/fontenum.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

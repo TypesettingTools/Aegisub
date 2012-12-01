@@ -24,14 +24,12 @@
 
 #include "spellchecker_hunspell.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <iterator>
 #include <set>
 
 #include <wx/dir.h>
 #include <wx/filename.h>
-#endif
 
 #include <hunspell/hunspell.hxx>
 

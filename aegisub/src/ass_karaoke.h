@@ -20,13 +20,11 @@
 ///
 
 
-#ifndef AGI_PRE
 #include <map>
 #include <set>
 #include <vector>
 
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/signal.h>
 

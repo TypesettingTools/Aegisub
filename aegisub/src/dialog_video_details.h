@@ -32,9 +32,7 @@
 /// @ingroup secondary_ui
 ///
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 namespace agi { struct Context; }
 

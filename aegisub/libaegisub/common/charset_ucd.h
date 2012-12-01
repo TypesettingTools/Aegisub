@@ -18,9 +18,7 @@
 
 #include "libaegisub/charset.h"
 
-#ifndef LAGI_PRE
 #include <string>
-#endif
 
 #ifndef _WIN32
 #define _X86_ 1

@@ -32,9 +32,7 @@
 /// @ingroup video_input
 ///
 
-#ifndef AGI_PRE
 #include <boost/container/list.hpp>
-#endif
 
 #include "include/aegisub/video_provider.h"
 

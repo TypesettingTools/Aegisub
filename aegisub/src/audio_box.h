@@ -32,9 +32,7 @@
 /// @ingroup audio_ui
 ///
 
-#ifndef AGI_PRE
 #include <wx/sashwin.h>
-#endif
 
 #include <libaegisub/signal.h>
 

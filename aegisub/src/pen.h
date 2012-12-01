@@ -14,9 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#ifndef AGI_PRE
 #include <wx/pen.h>
-#endif
 
 #include <libaegisub/signal.h>
 

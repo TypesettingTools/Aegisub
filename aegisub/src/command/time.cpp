@@ -36,9 +36,7 @@
 
 #include "../config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
-#endif
 
 #include "command.h"
 

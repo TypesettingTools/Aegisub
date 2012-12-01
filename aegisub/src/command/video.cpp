@@ -38,10 +38,8 @@
 
 #include "command.h"
 
-#ifndef AGI_PRE
 #include <wx/clipbrd.h>
 #include <wx/filename.h>
-#endif
 
 #include "../ass_dialogue.h"
 #include "../ass_time.h"

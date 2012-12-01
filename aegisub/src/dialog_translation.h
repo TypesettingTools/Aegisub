@@ -18,9 +18,7 @@
 /// @see dialog_translation.cpp
 /// @ingroup tools_ui
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>

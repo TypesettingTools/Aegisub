@@ -34,7 +34,6 @@
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <deque>
 #include <sstream>
@@ -45,7 +44,6 @@
 #include <wx/frame.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
-#endif
 
 namespace {
 /// Window ID of first menu item

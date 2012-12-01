@@ -36,10 +36,8 @@
 
 #include "export_fixstyle.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
-#endif
 
 #include "ass_file.h"
 #include "ass_dialogue.h"

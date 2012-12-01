@@ -32,11 +32,9 @@
 /// @ingroup main
 ///
 
-#ifndef AGI_PRE
 #include <wx/app.h>
 #include <wx/file.h>
 #include <wx/stackwalk.h>
-#endif
 
 #include "aegisublocale.h"
 #include <libaegisub/mru.h>

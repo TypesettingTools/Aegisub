@@ -39,7 +39,6 @@
 
 #include <libaegisub/scoped_ptr.h>
 
-#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/config.h>
 #include <wx/dirdlg.h>
@@ -54,7 +53,6 @@
 #include <wx/textctrl.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
-#endif
 
 enum FcMode {
 	CheckFontsOnly = 0,

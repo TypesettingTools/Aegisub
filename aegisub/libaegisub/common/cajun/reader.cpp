@@ -8,11 +8,9 @@ Author: Terry Caton
 
 #include "libaegisub/cajun/reader.h"
 
-#ifndef LAGI_PRE
 #include <cassert>
 #include <set>
 #include <sstream>
-#endif
 
 /*
 

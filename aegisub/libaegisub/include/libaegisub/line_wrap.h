@@ -15,12 +15,10 @@
 /// @file line_wrap.h
 /// @brief Generic paragraph formatting logic
 
-#ifndef LAGI_PRE
 #include <algorithm>
 #include <climits>
 #include <numeric>
 #include <vector>
-#endif
 
 namespace agi {
 	enum WrapMode {

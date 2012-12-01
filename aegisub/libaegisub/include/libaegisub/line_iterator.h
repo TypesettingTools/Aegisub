@@ -18,13 +18,11 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
 #include <iterator>
 #include <memory>
 #include <sstream>
 
 #include <cstdint>
-#endif
 
 #include <libaegisub/charset_conv.h>
 

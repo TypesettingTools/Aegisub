@@ -36,11 +36,9 @@
 
 #include "audio_renderer_waveform.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/dcmemory.h>
-#endif
 
 #include "audio_colorscheme.h"
 #include "block_cache.h"

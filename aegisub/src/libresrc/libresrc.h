@@ -12,14 +12,12 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef AGI_PRE
 #include <string>
 
 #include <wx/bitmap.h>
 #include <wx/icon.h>
 #include <wx/image.h>
 #include <wx/mstream.h>
-#endif
 
 #include "bitmap.h"
 #include "default_config.h"

@@ -24,11 +24,9 @@
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/string.h>
-#endif
 
 class AudioMarkerKeyframe;
 class Pen;

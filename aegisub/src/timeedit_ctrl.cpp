@@ -36,14 +36,12 @@
 
 #include "timeedit_ctrl.h"
 
-#ifndef AGI_PRE
 #include <functional>
 
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include <wx/menu.h>
 #include <wx/valtext.h>
-#endif
 
 #include "ass_time.h"
 #include "compat.h"

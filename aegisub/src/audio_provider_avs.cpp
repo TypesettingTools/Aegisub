@@ -36,12 +36,10 @@
 
 #ifdef WITH_AVISYNTH
 
-#ifndef AGI_PRE
 #include <Mmreg.h>
 #include <ctime>
 
 #include <wx/filename.h>
-#endif
 
 #include "audio_provider_avs.h"
 

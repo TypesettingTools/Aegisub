@@ -38,10 +38,8 @@
 
 #include "video_provider_avs.h"
 
-#ifndef AGI_PRE
 #include <wx/filename.h>
 #include <wx/msw/registry.h>
-#endif
 
 #ifdef _WIN32
 #include <vfw.h>

@@ -34,9 +34,7 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/dcmemory.h>
-#endif
 
 #include "colour_button.h"
 

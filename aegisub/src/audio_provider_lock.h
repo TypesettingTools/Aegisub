@@ -20,9 +20,7 @@
 
 #include <libaegisub/scoped_ptr.h>
 
-#ifndef AGI_PRE
 #include <wx/thread.h>
-#endif
 
 class LockAudioProvider : public AudioProvider {
 	agi::scoped_ptr<const AudioProvider> source;

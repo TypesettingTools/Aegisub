@@ -37,13 +37,11 @@
 
 #include "audio_renderer.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
 
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
-#endif
 
 #include "include/aegisub/audio_provider.h"
 

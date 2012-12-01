@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <utility>
 
@@ -42,7 +41,6 @@
 #include <wx/filename.h>
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include "subs_grid.h"
 

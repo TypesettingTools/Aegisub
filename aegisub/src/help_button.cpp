@@ -36,14 +36,12 @@
 
 #include "help_button.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
 #include <map>
 
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
-#endif
 
 #include <libaegisub/exception.h>
 

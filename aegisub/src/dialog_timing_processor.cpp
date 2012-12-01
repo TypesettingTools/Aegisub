@@ -36,7 +36,6 @@
 
 #include "dialog_timing_processor.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
 
@@ -50,7 +49,6 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/valnum.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

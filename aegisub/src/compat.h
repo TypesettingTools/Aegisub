@@ -1,11 +1,9 @@
-#ifndef AGI_PRE
 #include <string>
 #include <vector>
 
 #include <wx/colour.h>
 #include <wx/arrstr.h>
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/color.h>
 

@@ -34,13 +34,11 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <memory>
 #include <vector>
 
 #include <wx/string.h>
 #include <wx/window.h>
-#endif
 
 class AssFile;
 class AssExportFilter;

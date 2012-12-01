@@ -34,11 +34,9 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/dcbuffer.h>
 #include <wx/settings.h>
 #include <wx/tglbtn.h>
-#endif
 
 #include "toggle_bitmap.h"
 

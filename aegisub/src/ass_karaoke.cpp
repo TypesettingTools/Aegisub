@@ -29,9 +29,7 @@
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
 
-#ifndef AGI_PRE
 #include <wx/intl.h>
-#endif
 
 wxString AssKaraoke::Syllable::GetText(bool k_tag) const {
 	wxString ret;

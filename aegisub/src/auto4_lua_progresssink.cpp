@@ -38,9 +38,7 @@
 
 #include "auto4_lua.h"
 
-#ifndef AGI_PRE
 #include <wx/filedlg.h>
-#endif
 
 #ifdef __WINDOWS__
 #include "../../contrib/lua51/src/lua.h"

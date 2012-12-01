@@ -11,10 +11,8 @@ Author: Terry Caton
 
 #include "libaegisub/cajun/visitor.h"
 
-#ifndef LAGI_PRE
 #include <algorithm>
 #include <cassert>
-#endif
 
 namespace {
 	using namespace json;

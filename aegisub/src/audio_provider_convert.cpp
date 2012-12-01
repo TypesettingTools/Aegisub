@@ -29,9 +29,7 @@
 
 #include <libaegisub/scoped_ptr.h>
 
-#ifndef AGI_PRE
 #include <limits>
-#endif
 
 /// Base class for all wrapping converters
 class AudioProviderConverter : public AudioProvider {

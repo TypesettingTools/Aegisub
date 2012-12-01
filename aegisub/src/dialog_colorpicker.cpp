@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <cstdio>
 #include <vector>
 
@@ -59,7 +58,6 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

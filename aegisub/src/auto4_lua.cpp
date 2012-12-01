@@ -38,7 +38,6 @@
 
 #include "auto4_lua.h"
 
-#ifndef AGI_PRE
 #include <cassert>
 #include <cstdint>
 
@@ -52,7 +51,6 @@
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
 #include <wx/window.h>
-#endif
 
 #include <libaegisub/access.h>
 #include <libaegisub/log.h>

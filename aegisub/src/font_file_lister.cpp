@@ -31,11 +31,9 @@
 
 #include <libaegisub/of_type_adaptor.h>
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/intl.h>
-#endif
 
 using namespace std::placeholders;
 

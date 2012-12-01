@@ -35,7 +35,6 @@
 
 #include "dialog_style_manager.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
 
@@ -49,7 +48,6 @@
 #include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

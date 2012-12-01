@@ -34,9 +34,7 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/exception.h>
 #include "factory_manager.h"

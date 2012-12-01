@@ -32,11 +32,9 @@
 /// @ingroup subs_storage
 ///
 
-#ifndef AGI_PRE
 #include <array>
 
 #include <wx/colour.h>
-#endif
 
 #include "ass_entry.h"
 

@@ -32,14 +32,12 @@
 /// @ingroup subs_storage
 ///
 
-#ifndef AGI_PRE
 #include <boost/container/list.hpp>
 
 #include <set>
 #include <vector>
 
 #include <wx/arrstr.h>
-#endif
 
 #include <boost/intrusive/list.hpp>
 

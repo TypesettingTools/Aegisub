@@ -33,9 +33,7 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <set>
-#endif
 
 #include <libaegisub/signal.h>
 

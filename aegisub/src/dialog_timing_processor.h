@@ -32,11 +32,9 @@
 /// @ingroup tools_ui
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/dialog.h>
-#endif
 
 namespace agi { struct Context; }
 class AssDialogue;

@@ -25,9 +25,7 @@
 
 #include "subtitle_format_ebu3264.h"
 
-#ifndef AGI_PRE
 #include <wx/regex.h>
-#endif
 
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/exception.h>

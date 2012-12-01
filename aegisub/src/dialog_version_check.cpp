@@ -39,12 +39,6 @@
 
 #include "dialog_version_check.h"
 
-#ifndef AGI_PRE
-#ifdef WIN32
-// Congratulation wx, you forgot to include a header somewhere
-#include <winsock2.h>
-#endif
-
 #include <wx/app.h>
 #include <wx/button.h>
 #include <wx/checkbox.h>
@@ -68,7 +62,6 @@
 #include <memory>
 #include <set>
 #include <vector>
-#endif
 
 #include <wx/sstream.h>
 

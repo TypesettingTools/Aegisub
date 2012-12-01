@@ -39,7 +39,6 @@
 
 #include "auto4_lua.h"
 
-#ifndef AGI_PRE
 #include <cassert>
 
 #include <wx/button.h>
@@ -54,7 +53,6 @@
 #include <wx/valgen.h>
 #include <wx/valnum.h>
 #include <wx/window.h>
-#endif
 
 #include <cfloat>
 

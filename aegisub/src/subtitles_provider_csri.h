@@ -36,9 +36,7 @@
 
 #include "include/aegisub/subtitles_provider.h"
 
-#ifndef AGI_PRE
 #include <vector>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

@@ -16,12 +16,10 @@
 /// @brief Character set detection and manipulation utilities.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <fstream>
 #include <functional>
 #include <string>
 #include <vector>
-#endif
 #include <libaegisub/exception.h>
 
 namespace agi {

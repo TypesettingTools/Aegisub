@@ -17,9 +17,7 @@
 /// @ingroup libaegisub
 ///
 
-#ifndef LAGI_PRE
 #include <vector>
-#endif
 
 #include "exception.h"
 

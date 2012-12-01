@@ -18,14 +18,12 @@
 
 #include "libaegisub/vfr.h"
 
-#ifndef LAGI_PRE
 #include <algorithm>
 #include <cmath>
 #include <functional>
 #include <iterator>
 #include <list>
 #include <numeric>
-#endif
 
 #include "libaegisub/charset.h"
 #include "libaegisub/io.h"

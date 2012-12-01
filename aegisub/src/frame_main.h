@@ -32,7 +32,6 @@
 /// @ingroup main_ui
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/combobox.h>
@@ -42,7 +41,6 @@
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/timer.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

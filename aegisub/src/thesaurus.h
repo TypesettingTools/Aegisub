@@ -19,10 +19,8 @@
 /// @ingroup thesaurus
 ///
 
-#ifndef AGI_PRE
 #include <string>
 #include <vector>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

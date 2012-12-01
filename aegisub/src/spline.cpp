@@ -34,11 +34,9 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <limits>
 
 #include <wx/tokenzr.h>
-#endif
 
 #include "spline.h"
 

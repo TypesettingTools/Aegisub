@@ -16,12 +16,10 @@
 /// @brief Hotkey handler
 /// @ingroup hotkey menu event window
 
-#ifndef LAGI_PRE
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-#endif
 
 #include <libaegisub/signal.h>
 

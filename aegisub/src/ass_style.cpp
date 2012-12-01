@@ -34,12 +34,10 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <cctype>
 
 #include <wx/intl.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include "ass_style.h"
 #include "compat.h"

@@ -11,9 +11,7 @@ Author: Terry Caton
 #include "elements.h"
 #include "visitor.h"
 
-#ifndef LAGI_PRE
 #include <ostream>
-#endif
 
 namespace json {
 

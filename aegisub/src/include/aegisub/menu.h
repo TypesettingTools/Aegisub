@@ -16,9 +16,7 @@
 /// @brief Dynamic menu and toolbar generator.
 /// @ingroup menu toolbar
 
-#ifndef AGI_PRE
 #include <string>
-#endif
 
 #include <libaegisub/exception.h>
 

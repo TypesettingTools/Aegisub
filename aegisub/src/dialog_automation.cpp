@@ -35,7 +35,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/button.h>
@@ -44,7 +43,6 @@
 #include <wx/listctrl.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
-#endif
 
 #include "dialog_automation.h"
 

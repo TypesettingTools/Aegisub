@@ -1,7 +1,5 @@
 #include "config.h"
 
-#define LAGI_PRE
-
 // Common C
 #include <cassert>
 #include <cerrno>

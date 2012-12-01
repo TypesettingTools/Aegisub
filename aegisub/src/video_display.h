@@ -33,12 +33,10 @@
 ///
 
 
-#ifndef AGI_PRE
 #include <deque>
 #include <memory>
 
 #include <wx/glcanvas.h>
-#endif
 
 #include <typeinfo>
 

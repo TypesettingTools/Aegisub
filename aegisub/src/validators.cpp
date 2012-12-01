@@ -34,9 +34,7 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/textctrl.h>
-#endif
 
 #include "utils.h"
 #include "validators.h"

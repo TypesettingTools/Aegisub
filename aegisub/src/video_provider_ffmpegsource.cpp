@@ -36,7 +36,6 @@
 
 #ifdef WITH_FFMS2
 
-#ifndef AGI_PRE
 #ifdef __WINDOWS__
 #include <objbase.h>
 #endif
@@ -46,7 +45,6 @@
 #include <wx/choicdlg.h>
 #include <wx/msgdlg.h>
 #include <wx/utils.h>
-#endif
 
 #include "aegisub_endian.h"
 #include "compat.h"

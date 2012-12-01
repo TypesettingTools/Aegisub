@@ -36,11 +36,9 @@
 
 #include "dialog_text_import.h"
 
-#ifndef AGI_PRE
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#endif
 
 #include "compat.h"
 #include "main.h"

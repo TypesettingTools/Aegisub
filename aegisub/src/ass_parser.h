@@ -12,13 +12,11 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef AGI_PRE
 #include <array>
 #include <map>
 #include <memory>
 
 #include <wx/string.h>
-#endif
 
 #include "ass_entry.h"
 

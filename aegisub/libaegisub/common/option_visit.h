@@ -21,9 +21,7 @@
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/visitor.h"
 
-#ifndef LAGI_PRE
 #include <vector>
-#endif
 
 namespace agi {
 

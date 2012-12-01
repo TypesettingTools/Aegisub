@@ -32,13 +32,11 @@
 /// @ingroup secondary_ui
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/textctrl.h>
-#endif
 
 class AssFile;
 namespace agi { struct Context; }

@@ -50,8 +50,6 @@
 
 #include "../libaegisub/lagi_pre.h"
 
-#define AGI_PRE
-
 // General headers
 #include <array>
 #include <clocale>

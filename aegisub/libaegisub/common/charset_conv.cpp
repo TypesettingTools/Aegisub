@@ -16,13 +16,11 @@
 /// @brief Wrapper for libiconv to present a more C++-friendly API
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <errno.h>
 #include <cstdint>
 
 #include <cassert>
 #include <map>
-#endif
 
 #include "../config.h"
 

@@ -32,10 +32,8 @@
 /// @ingroup audio_ui
 
 
-#ifndef AGI_PRE
 #include <cstdint>
 #include <wx/pen.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

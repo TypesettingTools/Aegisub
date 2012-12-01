@@ -20,7 +20,6 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <deque>
 #include <list>
 #include <map>
@@ -32,7 +31,6 @@
 #include <wx/log.h>
 #include <wx/event.h>
 #include <wx/button.h>
-#endif
 
 #include <libaegisub/signal.h>
 

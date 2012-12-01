@@ -14,9 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#ifndef LAGI_PRE
 #include <vector>
-#endif
 
 #undef ERROR
 

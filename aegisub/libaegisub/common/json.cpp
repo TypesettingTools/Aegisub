@@ -18,10 +18,8 @@
 
 #include "../config.h"
 
-#ifndef LAGI_PRE
 #include <fstream>
 #include <sstream>
-#endif
 
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"

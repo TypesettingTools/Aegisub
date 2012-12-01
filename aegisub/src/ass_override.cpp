@@ -35,10 +35,8 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/log.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include <libaegisub/log.h>
 

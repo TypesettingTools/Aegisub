@@ -32,9 +32,7 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
-#endif
 
 #include <libaegisub/color.h>
 

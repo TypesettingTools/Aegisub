@@ -16,12 +16,10 @@
 /// @brief Manager for dialogs
 /// @ingroup utility
 
-#ifndef AGI_PRE
 #include <map>
 #include <typeinfo>
 
 #include <wx/dialog.h>
-#endif
 
 #include "utils.h"
 

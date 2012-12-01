@@ -32,7 +32,6 @@
 /// @ingroup export
 ///
 
-#ifndef AGI_PRE
 #include <map>
 
 #include <wx/checklst.h>
@@ -42,7 +41,6 @@
 #include <wx/sizer.h>
 #include <wx/string.h>
 #include <wx/textctrl.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

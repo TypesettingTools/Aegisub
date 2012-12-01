@@ -33,11 +33,9 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <list>
 #include <vector>
-#endif
 
 /// @class BasicDataBlockFactory
 /// @brief Simple factory for allocating blocks for DataBlockCache

@@ -17,14 +17,12 @@
 /// @ingroup command
 
 
-#ifndef AGI_PRE
 #include <map>
 #include <string>
 #include <vector>
 
 #include <wx/bitmap.h>
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/exception.h>
 

@@ -23,7 +23,6 @@
 
 #include "audio_karaoke.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <numeric>
 
@@ -36,7 +35,6 @@
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include "include/aegisub/context.h"
 

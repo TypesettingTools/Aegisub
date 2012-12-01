@@ -46,11 +46,9 @@
 #include "frame_main.h"
 #include "main.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <inttypes.h>
-#endif
 
 class PthreadMutexLocker {
 	pthread_mutex_t &mutex;

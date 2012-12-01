@@ -20,11 +20,9 @@
 
 #include "visual_tool_vector_clip.h"
 
-#ifndef AGI_PRE
 #include <wx/toolbar.h>
 
 #include <algorithm>
-#endif
 
 #include "config.h"
 

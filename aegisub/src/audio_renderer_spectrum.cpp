@@ -45,13 +45,11 @@
 
 #include <libaegisub/log.h>
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/image.h>
 #include <wx/rawbmp.h>
 #include <wx/dcmemory.h>
-#endif
 
 /// Allocates blocks of derived data for the audio spectrum
 struct AudioSpectrumCacheBlockFactory {

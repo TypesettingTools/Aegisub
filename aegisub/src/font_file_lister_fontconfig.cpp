@@ -37,9 +37,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 
-#ifndef AGI_PRE
 #include <wx/intl.h>
-#endif
 
 namespace {
 FcConfig *init_fontconfig() {

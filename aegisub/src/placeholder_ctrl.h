@@ -18,9 +18,7 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 #include <wx/settings.h>
-#endif
 
 /// @class Placeholder
 /// @brief A wrapper around a control to add placeholder text

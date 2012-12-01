@@ -34,9 +34,7 @@
 
 #include <libaegisub/exception.h>
 
-#ifndef AGI_PRE
 #include <vector>
-#endif
 
 #include "compat.h"
 

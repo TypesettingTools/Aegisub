@@ -35,13 +35,11 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <memory>
 #include <vector>
 
 #include <wx/dc.h>
 #include <wx/gdicmn.h>
-#endif
 
 #include "audio_rendering_style.h"
 #include "block_cache.h"

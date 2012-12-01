@@ -36,13 +36,11 @@
 
 #ifdef WITH_FFMS2
 
-#ifndef AGI_PRE
 #include <inttypes.h>
 #include <map>
 
 #include <wx/dir.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
-#endif
 
 #include <libaegisub/log.h>
 

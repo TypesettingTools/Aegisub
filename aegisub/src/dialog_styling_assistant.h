@@ -21,10 +21,8 @@
 
 #include "selection_controller.h"
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
 #include <wx/event.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

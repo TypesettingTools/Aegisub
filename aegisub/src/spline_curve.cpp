@@ -37,10 +37,8 @@
 #include "spline_curve.h"
 #include "utils.h"
 
-#ifndef AGI_PRE
 #include <limits>
 #include <numeric>
-#endif
 
 SplineCurve::SplineCurve(Vector2D p1) : p1(p1), type(POINT) { }
 SplineCurve::SplineCurve(Vector2D p1, Vector2D p2) : p1(p1), p2(p2), type(LINE) { }

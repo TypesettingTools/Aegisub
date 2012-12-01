@@ -35,7 +35,6 @@
 
 #include "frame_main.h"
 
-#ifndef AGI_PRE
 #include <wx/clipbrd.h>
 #include <wx/dnd.h>
 #include <wx/filename.h>
@@ -43,7 +42,6 @@
 #include <wx/statline.h>
 #include <wx/sysopt.h>
 #include <wx/tokenzr.h>
-#endif
 
 #include <libaegisub/log.h>
 

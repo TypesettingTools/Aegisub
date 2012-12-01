@@ -32,11 +32,9 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 #include <wx/stc/stc.h>
 
 #include <string>
-#endif
 
 /// DOCME
 /// @class ScintillaTextCtrl

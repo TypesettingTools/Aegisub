@@ -28,9 +28,7 @@
 /// When linking with this library, be sure to add '-framework CoreFoundation'
 /// to the GCC commandline.
 
-#ifndef LAGI_PRE
 #include <string>
-#endif
 
 namespace agi {
     namespace util {

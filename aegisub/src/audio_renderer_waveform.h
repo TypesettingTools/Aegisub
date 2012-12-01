@@ -33,10 +33,8 @@
 ///
 /// Render a waveform display of PCM audio data
 
-#ifndef AGI_PRE
 #include <cstdint>
 #include <vector>
-#endif
 
 class AudioColorScheme;
 

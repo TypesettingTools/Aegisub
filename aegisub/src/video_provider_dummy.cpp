@@ -36,9 +36,7 @@
 
 #include "video_provider_dummy.h"
 
-#ifndef AGI_PRE
 #include <wx/tokenzr.h>
-#endif
 
 #include "colorspace.h"
 #include <libaegisub/color.h>

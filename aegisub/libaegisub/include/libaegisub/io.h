@@ -16,10 +16,8 @@
 /// @brief Public interface for IO methods.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <string>
 #include <fstream>
-#endif
 
 #include <libaegisub/exception.h>
 

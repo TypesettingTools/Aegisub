@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <sstream>
 
 #include <wx/clipbrd.h>
@@ -45,7 +44,6 @@
 #include <wx/msgdlg.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
-#endif
 
 #include "include/aegisub/menu.h"
 #include "command/command.h"

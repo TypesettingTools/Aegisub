@@ -34,14 +34,12 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#endif
 
 #include "dialog_properties.h"
 

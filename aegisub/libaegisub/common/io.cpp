@@ -16,13 +16,11 @@
 /// @brief Windows IO methods.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <sys/stat.h>
 #include <errno.h>
 
 #include <iostream>
 #include <fstream>
-#endif
 
 #include <libaegisub/access.h>
 #include <libaegisub/charset_conv_win.h>

@@ -36,14 +36,12 @@
 
 #include "dialog_paste_over.h"
 
-#ifndef AGI_PRE
 #include <functional>
 
 #include <wx/button.h>
 #include <wx/checklst.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#endif
 
 #include "help_button.h"
 #include "main.h"

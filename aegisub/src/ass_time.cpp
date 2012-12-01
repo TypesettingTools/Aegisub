@@ -36,12 +36,10 @@
 
 #include "ass_time.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <cmath>
 
 #include <wx/tokenzr.h>
-#endif
 
 #include "utils.h"
 

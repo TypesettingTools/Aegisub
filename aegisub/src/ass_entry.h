@@ -34,9 +34,7 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <wx/string.h>
-#endif
 
 #include <boost/intrusive/list_hook.hpp>
 

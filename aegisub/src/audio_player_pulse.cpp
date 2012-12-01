@@ -36,11 +36,9 @@
 
 #ifdef WITH_LIBPULSE
 
-#ifndef AGI_PRE
 #include <cstdio>
 
 #include <wx/thread.h>
-#endif
 
 #include "audio_player_pulse.h"
 

@@ -32,14 +32,12 @@
 /// @ingroup main_ui
 ///
 
-#ifndef AGI_PRE
 #include <deque>
 #include <boost/container/map.hpp>
 #include <vector>
 
 #include <wx/panel.h>
 #include <wx/timer.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

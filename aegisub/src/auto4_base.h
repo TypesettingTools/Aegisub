@@ -34,7 +34,6 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <deque>
 #include <vector>
 
@@ -46,7 +45,6 @@
 #include <wx/string.h>
 #include <wx/textctrl.h>
 #include <wx/timer.h>
-#endif
 
 #include <libaegisub/background_runner.h>
 #include <libaegisub/exception.h>

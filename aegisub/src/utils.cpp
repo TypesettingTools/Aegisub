@@ -36,7 +36,6 @@
 
 #include "utils.h"
 
-#ifndef AGI_PRE
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
@@ -47,7 +46,6 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/window.h>
-#endif
 
 #include <libaegisub/log.h>
 

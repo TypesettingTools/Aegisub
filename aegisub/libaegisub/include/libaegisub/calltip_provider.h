@@ -14,11 +14,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#ifndef LAGI_PRE
 #include <map>
 #include <string>
 #include <vector>
-#endif
 
 namespace agi {
 	namespace ass { struct DialogueToken; }

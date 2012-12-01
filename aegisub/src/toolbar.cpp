@@ -26,13 +26,11 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 
-#ifndef AGI_PRE
 #include <sstream>
 #include <vector>
 
 #include <wx/frame.h>
 #include <wx/toolbar.h>
-#endif
 
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>

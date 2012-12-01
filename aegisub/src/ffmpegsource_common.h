@@ -34,12 +34,10 @@
 
 #ifdef WITH_FFMS2
 
-#ifndef AGI_PRE
 #include <map>
 
 #include <wx/filename.h>
 #include <wx/thread.h>
-#endif
 
 #include <ffms.h>
 

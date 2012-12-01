@@ -14,7 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#ifndef AGI_PRE
 #include <cstdint>
 #include <map>
 #include <string>
@@ -22,7 +21,6 @@
 
 #include <wx/dialog.h>
 #include <wx/string.h>
-#endif
 
 class wxListBox;
 

@@ -21,9 +21,7 @@
 
 #include "vector2d.h"
 
-#ifndef AGI_PRE
 #include <vector>
-#endif
 
 class wxColour;
 

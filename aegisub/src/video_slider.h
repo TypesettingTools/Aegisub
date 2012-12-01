@@ -32,11 +32,9 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/window.h>
-#endif
 
 #include <libaegisub/signal.h>
 

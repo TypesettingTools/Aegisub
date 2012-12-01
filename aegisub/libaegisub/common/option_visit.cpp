@@ -21,10 +21,8 @@
 
 #include "option_visit.h"
 
-#ifndef LAGI_PRE
 #include <cassert>
 #include <cmath>
-#endif
 
 #include <libaegisub/color.h>
 #include <libaegisub/log.h>

@@ -35,7 +35,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <cassert>
 #include <cstdint>
 #ifndef __WINDOWS__
@@ -47,7 +46,6 @@
 #include <wx/file.h>
 #include <wx/filename.h>
 #include <wx/log.h>
-#endif
 
 #include <libaegisub/log.h>
 

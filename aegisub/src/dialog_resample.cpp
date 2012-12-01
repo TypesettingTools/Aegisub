@@ -21,7 +21,6 @@
 
 #include "dialog_resample.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
 
@@ -31,7 +30,6 @@
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/valgen.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

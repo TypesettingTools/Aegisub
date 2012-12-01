@@ -49,10 +49,8 @@
 
 #include <libaegisub/of_type_adaptor.h>
 
-#ifndef AGI_PRE
 #include <map>
 #include <wx/regex.h>
-#endif
 
 DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/parse/srt")
 

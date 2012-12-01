@@ -40,9 +40,7 @@
 
 #include <libaegisub/hotkey.h>
 
-#ifndef AGI_PRE
 #include <wx/window.h>
-#endif
 
 #include <wx/weakref.h>
 

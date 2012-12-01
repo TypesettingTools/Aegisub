@@ -37,7 +37,6 @@
 
 #include "dialog_kara_timing_copy.h"
 
-#ifndef AGI_PRE
 #include <deque>
 
 #include <wx/checkbox.h>
@@ -50,7 +49,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/string.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

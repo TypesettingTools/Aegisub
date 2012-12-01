@@ -16,14 +16,12 @@
 /// @brief Platform specific types.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #ifdef HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #else
 #  include <time.h>
 #endif
 
-#endif // LAGI_PRE
 
 #pragma once
 

@@ -32,14 +32,12 @@
 /// @ingroup style_editor
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/button.h>
 #include <wx/combobox.h>
 #include <wx/dialog.h>
 #include <wx/listbox.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

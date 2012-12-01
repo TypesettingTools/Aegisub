@@ -21,11 +21,9 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <cmath>
 
 #include <wx/gdicmn.h>
-#endif
 
 /// DOCME
 /// @class Vector2D

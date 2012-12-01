@@ -20,13 +20,11 @@
 
 #include "libaegisub/access.h"
 
-#ifndef LAGI_PRE
 #include <sys/stat.h>
 #include <errno.h>
 
 #include <iostream>
 #include <fstream>
-#endif
 
 #include <unistd.h>
 

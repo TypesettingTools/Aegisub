@@ -32,11 +32,9 @@
 /// @ingroup style_editor
 ///
 
-#ifndef AGI_PRE
 #include <deque>
 
 #include <wx/arrstr.h>
-#endif
 
 class AssStyle;
 

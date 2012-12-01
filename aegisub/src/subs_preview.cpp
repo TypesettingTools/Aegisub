@@ -35,11 +35,9 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/msgdlg.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

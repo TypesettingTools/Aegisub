@@ -70,9 +70,7 @@
 # endif
 #endif
 
-#ifndef AGI_PRE
 #include <cstdint>
-#endif
 
 
 /// DOCME

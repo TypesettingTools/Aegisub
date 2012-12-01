@@ -23,10 +23,8 @@
 
 #include "thesaurus.h"
 
-#ifndef AGI_PRE
 #include <wx/dir.h>
 #include <wx/filename.h>
-#endif
 
 #include <libaegisub/log.h>
 #include <libaegisub/thesaurus.h>

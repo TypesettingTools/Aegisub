@@ -23,7 +23,6 @@
 
 #include "dialog_selection.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/checkbox.h>
@@ -33,7 +32,6 @@
 #include <wx/radiobut.h>
 #include <wx/regex.h>
 #include <wx/textctrl.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

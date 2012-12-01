@@ -20,9 +20,7 @@
 
 #include "icon.h"
 
-#ifndef AGI_PRE
 #include <map>
-#endif
 
 #include <libaegisub/log.h>
 

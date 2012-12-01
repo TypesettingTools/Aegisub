@@ -36,7 +36,6 @@
 
 #include "dialog_log.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <ctime>
 #include <functional>
@@ -46,7 +45,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#endif
 
 #include <libaegisub/log.h>
 

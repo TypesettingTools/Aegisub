@@ -19,13 +19,11 @@
 /// @ingroup spelling
 ///
 
-#ifndef AGI_PRE
 #include <map>
 #include <set>
 
 #include <wx/dialog.h>
 #include <wx/arrstr.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

@@ -26,13 +26,11 @@
 #include "compat.h"
 #include "utils.h"
 
-#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/gauge.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#endif
 
 wxDEFINE_EVENT(EVT_TITLE, wxThreadEvent);
 wxDEFINE_EVENT(EVT_MESSAGE, wxThreadEvent);

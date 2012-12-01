@@ -32,12 +32,10 @@
 /// @ingroup video
 ///
 
-#ifndef AGI_PRE
 #include <memory>
 
 #include <wx/event.h>
 #include <wx/thread.h>
-#endif
 
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>

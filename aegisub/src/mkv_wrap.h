@@ -32,10 +32,8 @@
 /// @ingroup video_input
 ///
 
-#ifndef AGI_PRE
 #include <map>
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/exception.h>
 

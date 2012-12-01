@@ -33,7 +33,6 @@
 /// @ingroup audio_ui
 ///
 
-#ifndef AGI_PRE
 #include <deque>
 #include <map>
 #include <cstdint>
@@ -42,7 +41,6 @@
 #include <wx/string.h>
 #include <wx/timer.h>
 #include <wx/window.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

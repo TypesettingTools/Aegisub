@@ -26,9 +26,7 @@
 #include <boost/phoenix/operator/comparison.hpp>
 #include <boost/phoenix/core/argument.hpp>
 
-#ifndef LAGI_PRE
 #include <cstdlib>
-#endif
 
 using boost::phoenix::placeholders::_1;
 

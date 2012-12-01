@@ -36,9 +36,7 @@
 
 #include "ass_style_storage.h"
 
-#ifndef AGI_PRE
 #include <functional>
-#endif
 
 #include "ass_style.h"
 #include "standard_paths.h"

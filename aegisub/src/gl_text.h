@@ -32,7 +32,6 @@
 /// @ingroup video_output
 ///
 
-#ifndef AGI_PRE
 #include <boost/container/map.hpp>
 
 #include <memory>
@@ -40,7 +39,6 @@
 
 #include <wx/colour.h>
 #include <wx/font.h>
-#endif
 
 struct OpenGLTextGlyph;
 class OpenGLTextTexture;

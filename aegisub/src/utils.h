@@ -35,7 +35,6 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <cstdint>
 
 #include <algorithm>
@@ -46,7 +45,6 @@
 #include <wx/app.h>
 #include <wx/icon.h>
 #include <wx/thread.h>
-#endif
 
 class wxMouseEvent;
 class wxWindow;

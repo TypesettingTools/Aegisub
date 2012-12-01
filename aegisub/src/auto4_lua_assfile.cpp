@@ -36,7 +36,6 @@
 
 #ifdef WITH_AUTO4_LUA
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <cassert>
 
@@ -44,7 +43,6 @@
 #include <boost/range/algorithm_ext.hpp>
 
 #include <wx/log.h>
-#endif
 
 #include <libaegisub/exception.h>
 #include <libaegisub/log.h>

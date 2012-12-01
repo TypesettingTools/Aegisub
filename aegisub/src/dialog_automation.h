@@ -32,11 +32,9 @@
 /// @ingroup secondary_ui
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/dialog.h>
-#endif
 
 #include <libaegisub/signal.h>
 

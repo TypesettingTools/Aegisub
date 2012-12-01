@@ -16,10 +16,8 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
 #include <string>
 #include <vector>
-#endif
 
 namespace agi {
 class SpellChecker {

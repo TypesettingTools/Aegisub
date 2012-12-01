@@ -28,7 +28,6 @@
 #include "main.h"
 #include "text_file_writer.h"
 
-#ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/msgdlg.h>
@@ -40,7 +39,6 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/valgen.h>
-#endif
 
 namespace {
 	const char timecode_regex[] = "([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2})";

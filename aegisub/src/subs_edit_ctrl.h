@@ -32,10 +32,8 @@
 /// @ingroup main_ui
 ///
 
-#ifndef AGI_PRE
 #include <string>
 #include <vector>
-#endif
 
 #include "scintilla_text_ctrl.h"
 

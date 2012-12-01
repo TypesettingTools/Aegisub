@@ -34,13 +34,11 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 #include <wx/image.h>
 
 #include <algorithm>
-#endif
 
 #include "gl_text.h"
 #include "utils.h"

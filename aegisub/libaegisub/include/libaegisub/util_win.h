@@ -16,9 +16,7 @@
 /// @brief Public interface for Windows utilities.
 /// @ingroup libaegisub windows
 
-#ifndef LAGI_PRE
 #include <string>
-#endif
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

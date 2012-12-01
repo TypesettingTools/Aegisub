@@ -19,9 +19,7 @@
 /// @ingroup tools_ui font_collector
 ///
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 namespace agi { struct Context; }
 

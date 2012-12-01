@@ -16,12 +16,10 @@
 /// @brief Windows access methods.
 /// @ingroup libaegisub windows
 
-#ifndef LAGI_PRE
 #include <windows.h>
 
 #include <iostream>
 #include <fstream>
-#endif
 
 #include <libaegisub/access.h>
 

@@ -32,9 +32,7 @@
 /// @ingroup custom_control
 ///
 
-#ifndef AGI_PRE
 #include <boost/container/list.hpp>
-#endif
 
 struct ToolTipBinding;
 

@@ -35,9 +35,7 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/thread.h>
-#endif
 
 #include "audio_controller.h"
 #ifdef WITH_AVISYNTH

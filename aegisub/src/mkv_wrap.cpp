@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <cerrno>
 #include <cstdint>
@@ -44,7 +43,6 @@
 #include <wx/filename.h>
 #include <wx/tokenzr.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
-#endif
 
 #include "mkv_wrap.h"
 

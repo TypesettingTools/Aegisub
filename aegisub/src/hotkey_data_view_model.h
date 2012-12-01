@@ -19,9 +19,7 @@
 /// @ingroup hotkey configuration_ui
 ///
 
-#ifndef AGI_PRE
 #include <wx/dataview.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

@@ -16,12 +16,10 @@
 /// @brief Hotkey handler
 /// @ingroup hotkey menu event window
 
-#ifndef AGI_PRE
 #include <string>
 #include <vector>
 
 #include <wx/event.h>
-#endif
 
 namespace agi {
 	struct Context;

@@ -32,9 +32,7 @@
 /// @ingroup configuration_ui
 ///
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 /// @class AboutScreen
 /// @brief About dialogue.

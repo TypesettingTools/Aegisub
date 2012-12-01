@@ -32,9 +32,7 @@
 /// @ingroup main_ui
 ///
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

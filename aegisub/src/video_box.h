@@ -32,11 +32,9 @@
 /// @ingroup main_ui video
 ///
 
-#ifndef AGI_PRE
 #include <deque>
 
 #include <wx/panel.h>
-#endif
 
 #include <libaegisub/signal.h>
 

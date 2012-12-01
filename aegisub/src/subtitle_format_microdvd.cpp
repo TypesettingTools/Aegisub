@@ -36,9 +36,7 @@
 
 #include "subtitle_format_microdvd.h"
 
-#ifndef AGI_PRE
 #include <wx/regex.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

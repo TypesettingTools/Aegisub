@@ -32,13 +32,11 @@
 /// @ingroup style_editor
 ///
 
-#ifndef AGI_PRE
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/radiobox.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

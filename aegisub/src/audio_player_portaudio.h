@@ -40,11 +40,9 @@ extern "C" {
 #include <portaudio.h>
 }
 
-#ifndef AGI_PRE
 #include <map>
 #include <string>
 #include <vector>
-#endif
 
 class wxArrayString;
 

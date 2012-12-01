@@ -32,12 +32,10 @@
 /// @ingroup visual_ts
 ///
 
-#ifndef AGI_PRE
 #include <list>
 #include <vector>
 
 #include <wx/gdicmn.h>
-#endif
 
 #include "spline_curve.h"
 

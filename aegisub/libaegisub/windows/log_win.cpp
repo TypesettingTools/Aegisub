@@ -16,11 +16,9 @@
 /// @brief Windows logging
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#endif
 
 #include "libaegisub/log.h"
 

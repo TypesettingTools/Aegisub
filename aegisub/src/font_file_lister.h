@@ -21,7 +21,6 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <list>
 #include <map>
 #include <functional>
@@ -29,7 +28,6 @@
 #include <vector>
 
 #include <wx/string.h>
-#endif
 
 class AssDialogue;
 class AssFile;

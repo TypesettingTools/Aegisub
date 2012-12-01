@@ -16,12 +16,10 @@
 /// @brief Public interface for MRU (Most Recently Used) lists.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <deque>
 #include <fstream>
 #include <list>
 #include <map>
-#endif
 
 #include <libaegisub/exception.h>
 

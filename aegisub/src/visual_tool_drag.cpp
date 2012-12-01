@@ -22,13 +22,11 @@
 
 #include "visual_tool_drag.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
 
 #include <wx/bmpbuttn.h>
 #include <wx/toolbar.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

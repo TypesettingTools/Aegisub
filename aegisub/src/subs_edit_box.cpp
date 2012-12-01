@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <functional>
 
 #include <wx/button.h>
@@ -46,7 +45,6 @@
 #include <wx/fontdlg.h>
 #include <wx/radiobut.h>
 #include <wx/spinctrl.h>
-#endif
 
 #include "subs_edit_box.h"
 

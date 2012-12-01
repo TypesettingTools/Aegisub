@@ -16,7 +16,6 @@
 /// @brief Windows utility methods.
 /// @ingroup libaegisub windows
 
-#ifndef LAGI_PRE
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -24,7 +23,6 @@
 #include <fstream>
 
 #include <windows.h>
-#endif
 
 #include "libaegisub/access.h"
 #include "libaegisub/charset_conv_win.h"

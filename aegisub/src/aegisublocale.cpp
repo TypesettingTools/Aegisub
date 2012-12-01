@@ -36,7 +36,6 @@
 
 #include "aegisublocale.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <clocale>
 #include <functional>
@@ -46,7 +45,6 @@
 #include <wx/intl.h>
 #include <wx/stdpaths.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
-#endif
 
 #include "standard_paths.h"
 

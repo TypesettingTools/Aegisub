@@ -17,9 +17,7 @@
 /// @ingroup scripting
 ///
 
-#ifndef AGI_PRE
 #include <istream>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 

@@ -24,7 +24,6 @@
 
 #include "gl_wrap.h"
 
-#ifndef AGI_PRE
 #include <wx/msgdlg.h>
 
 #ifdef HAVE_OPENGL_GL_H
@@ -33,7 +32,6 @@
 #else
 #include <GL/gl.h>
 #include "gl/glext.h"
-#endif
 #endif
 
 static const float deg2rad = 3.1415926536f / 180.f;

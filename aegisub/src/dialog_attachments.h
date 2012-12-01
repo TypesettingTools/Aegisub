@@ -37,9 +37,7 @@ class wxFileDialog;
 class wxListView;
 class wxListEvent;
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 #include "ass_entry.h"
 

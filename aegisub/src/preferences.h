@@ -17,13 +17,11 @@
 /// @see preferences.cpp
 /// @ingroup configuration_ui
 
-#ifndef AGI_PRE
 #include <deque>
 #include <functional>
 #include <map>
 
 #include <wx/dialog.h>
-#endif
 
 #include <libaegisub/exception.h>
 

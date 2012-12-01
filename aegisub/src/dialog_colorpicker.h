@@ -32,9 +32,7 @@
 /// @ingroup tools_ui
 ///
 
-#ifndef AGI_PRE
 #include <functional>
-#endif
 
 namespace agi { struct Color; }
 class wxWindow;

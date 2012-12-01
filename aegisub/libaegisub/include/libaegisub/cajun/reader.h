@@ -10,10 +10,8 @@ Author: Terry Caton
 
 #include "elements.h"
 
-#ifndef LAGI_PRE
 #include <iostream>
 #include <vector>
-#endif
 
 namespace json
 {

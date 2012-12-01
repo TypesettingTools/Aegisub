@@ -32,11 +32,9 @@
 /// @ingroup kara_timing_copy
 ///
 
-#ifndef AGI_PRE
 #include <list>
 
 #include <wx/string.h>
-#endif
 
 /// @class KanaEntry
 /// @brief Base class for Kana + Romaji tuples.

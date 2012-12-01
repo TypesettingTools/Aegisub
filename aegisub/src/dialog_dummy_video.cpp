@@ -37,7 +37,6 @@
 
 #include "dialog_dummy_video.h"
 
-#ifndef AGI_PRE
 #include <functional>
 
 #include <wx/checkbox.h>
@@ -50,7 +49,6 @@
 #include <wx/stattext.h>
 #include <wx/string.h>
 #include <wx/textctrl.h>
-#endif
 
 #include "colour_button.h"
 #include "compat.h"

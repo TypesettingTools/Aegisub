@@ -34,11 +34,9 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/filename.h>
 #include <wx/sizer.h>
 #include <wx/display.h> /// Must be included last.
-#endif
 
 #include "dialog_detached_video.h"
 

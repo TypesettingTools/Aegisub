@@ -37,13 +37,11 @@
 
 #include "audio_display.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/dcbuffer.h>
 #include <wx/dcclient.h>
 #include <wx/mousestate.h>
-#endif
 
 #include "ass_time.h"
 #include "audio_colorscheme.h"

@@ -36,9 +36,7 @@
 
 #ifdef WITH_CSRI
 
-#ifndef AGI_PRE
 #include <wx/thread.h>
-#endif
 
 #include "subtitles_provider_csri.h"
 

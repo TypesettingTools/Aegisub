@@ -32,14 +32,12 @@
 #include "include/aegisub/hotkey.h"
 #include "preferences.h"
 
-#ifndef AGI_PRE
 #include <wx/dataview.h>
 #include <wx/regex.h>
 
 #include <algorithm>
 #include <list>
 #include <set>
-#endif
 
 using namespace agi::hotkey;
 

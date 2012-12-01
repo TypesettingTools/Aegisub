@@ -28,9 +28,7 @@
 #include "pen.h"
 #include "video_context.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
-#endif
 
 class AudioMarkerKeyframe : public AudioMarker {
 	Pen *style;

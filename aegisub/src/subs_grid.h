@@ -32,12 +32,10 @@
 /// @ingroup main_ui
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/grid.h>
 #include <wx/wx.h>
-#endif
 
 #include "base_grid.h"
 

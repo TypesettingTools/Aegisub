@@ -32,14 +32,12 @@
 /// @ingroup export
 ///
 
-#ifndef AGI_PRE
 #include <wx/arrstr.h>
 #include <wx/sizer.h>
 #include <wx/string.h>
 
 #include <map>
 #include <vector>
-#endif
 
 class AssExportFilter;
 class AssFile;

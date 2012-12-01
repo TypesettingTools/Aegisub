@@ -34,9 +34,7 @@
 #include "pen.h"
 #include "utils.h"
 
-#ifndef AGI_PRE
 #include <deque>
-#endif
 
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/filtered.hpp>

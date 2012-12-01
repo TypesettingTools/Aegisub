@@ -39,10 +39,8 @@
 #include "main.h"
 #include "video_frame.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <functional>
-#endif
 
 /// A video frame and its frame number
 struct CachedFrame : public AegiVideoFrame {

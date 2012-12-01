@@ -33,7 +33,6 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <cassert>
 #include <cstdint>
 #include <memory>
@@ -45,7 +44,6 @@
 #include <wx/timer.h>
 #include <wx/pen.h>
 #include <wx/power.h>
-#endif
 
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>

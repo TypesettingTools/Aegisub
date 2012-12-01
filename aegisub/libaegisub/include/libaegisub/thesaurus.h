@@ -18,12 +18,10 @@
 
 #include <libaegisub/scoped_ptr.h>
 
-#ifndef LAGI_PRE
 #include <iosfwd>
 #include <map>
 #include <string>
 #include <vector>
-#endif
 
 namespace agi {
 

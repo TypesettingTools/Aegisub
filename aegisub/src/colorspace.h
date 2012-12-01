@@ -32,10 +32,8 @@
 /// @ingroup utility
 ///
 
-#ifndef AGI_PRE
 #include <wx/colour.h>
 #include <wx/string.h>
-#endif
 
 inline unsigned int clip_colorval(int val)
 {

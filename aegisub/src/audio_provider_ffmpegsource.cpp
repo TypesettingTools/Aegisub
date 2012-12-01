@@ -36,13 +36,11 @@
 
 #ifdef WITH_FFMS2
 
-#ifndef AGI_PRE
 #ifdef WIN32
 #include <objbase.h>
 #endif
 
 #include <map>
-#endif
 
 #include "audio_provider_ffmpegsource.h"
 

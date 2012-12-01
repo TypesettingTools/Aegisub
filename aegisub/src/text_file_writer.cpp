@@ -34,9 +34,7 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <fstream>
-#endif
 
 #include <libaegisub/io.h>
 

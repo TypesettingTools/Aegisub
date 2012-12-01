@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <cmath>
 #include <iterator>
@@ -44,7 +43,6 @@
 #include <wx/kbdstate.h>
 #include <wx/menu.h>
 #include <wx/sizer.h>
-#endif
 
 #include "base_grid.h"
 

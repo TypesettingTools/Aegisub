@@ -20,10 +20,8 @@
 
 #include "charset_6937.h"
 
-#ifndef LAGI_PRE
 #include <algorithm>
 #include <cerrno>
-#endif
 
 #include <iconv.h>
 

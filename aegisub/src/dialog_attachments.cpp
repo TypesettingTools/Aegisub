@@ -36,14 +36,12 @@
 
 #include "dialog_attachments.h"
 
-#ifndef AGI_PRE
 #include <wx/button.h>
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/listctrl.h>
 #include <wx/sizer.h>
-#endif
 
 #include "ass_attachment.h"
 #include "ass_file.h"

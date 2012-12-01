@@ -47,11 +47,9 @@
 #include <AL/alc.h>
 #endif
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/timer.h>
-#endif
 
 /// DOCME
 /// @class OpenALPlayer

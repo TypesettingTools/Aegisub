@@ -16,9 +16,7 @@
 /// @brief Icon for commands.
 /// @ingroup command
 
-#ifndef AGI_PRE
 #include <wx/bitmap.h>
-#endif
 
 #include <libaegisub/exception.h>
 

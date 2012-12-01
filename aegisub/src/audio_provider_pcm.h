@@ -32,12 +32,10 @@
 /// @ingroup audio_input
 ///
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/file.h>
 #include <wx/thread.h>
-#endif
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN

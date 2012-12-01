@@ -36,7 +36,6 @@
 
 #include "auto4_base.h"
 
-#ifndef AGI_PRE
 #ifdef __WINDOWS__
 #include <tchar.h>
 #define WIN32_LEAN_AND_MEAN
@@ -54,7 +53,6 @@
 #include <wx/tokenzr.h>
 
 #include <tuple>
-#endif
 
 #ifndef __WINDOWS__
 #include <ft2build.h>

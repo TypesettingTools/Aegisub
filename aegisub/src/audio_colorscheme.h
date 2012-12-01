@@ -34,11 +34,9 @@
 /// Manage colour schemes for the audio display
 
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/colour.h>
-#endif
 
 #include "utils.h"
 

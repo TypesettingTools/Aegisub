@@ -18,12 +18,10 @@
 
 #include "../config.h"
 
-#ifndef LAGI_PRE
 #include <algorithm>
 #include <cmath>
 #include <memory>
 #include <tuple>
-#endif
 
 #include "libaegisub/hotkey.h"
 

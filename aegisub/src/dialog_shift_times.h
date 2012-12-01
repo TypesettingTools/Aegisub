@@ -19,11 +19,9 @@
 /// @ingroup secondary_ui
 ///
 
-#ifndef AGI_PRE
 #include <deque>
 
 #include <wx/dialog.h>
-#endif
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>

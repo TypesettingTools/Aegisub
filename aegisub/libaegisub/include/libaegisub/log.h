@@ -16,7 +16,6 @@
 /// @brief Logging
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <cstdint>
 
 #include <cstdio>
@@ -31,7 +30,6 @@
 # include <strstream>
 #endif
 #include <vector>
-#endif
 #include <libaegisub/types.h>
 
 // These macros below aren't a perm solution, it will depend on how annoying they are through

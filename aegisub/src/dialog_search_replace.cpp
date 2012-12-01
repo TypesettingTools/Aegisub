@@ -34,12 +34,10 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <functional>
 
 #include <wx/regex.h>
 #include <wx/string.h>
-#endif
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

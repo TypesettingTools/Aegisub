@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/bmpbuttn.h>
 #include <wx/combobox.h>
 #include <wx/rawbmp.h>
@@ -44,7 +43,6 @@
 #include <wx/textctrl.h>
 #include <wx/tglbtn.h>
 #include <wx/toolbar.h>
-#endif
 
 #include "video_box.h"
 

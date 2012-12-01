@@ -18,7 +18,6 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <iterator>
 
 #include <wx/checkbox.h>
@@ -34,7 +33,6 @@
 #include <wx/stdpaths.h>
 #include <wx/treebook.h>
 #include <wx/treebook.h>
-#endif
 
 #include <libaegisub/exception.h>
 #include <libaegisub/hotkey.h>

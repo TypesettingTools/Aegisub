@@ -36,9 +36,7 @@
 
 #include "../config.h"
 
-#ifndef AGI_PRE
 #include <wx/utils.h>
-#endif
 
 #include "command.h"
 

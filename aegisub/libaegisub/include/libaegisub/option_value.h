@@ -16,12 +16,10 @@
 /// @brief Container for holding an actual option value.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <cstdint>
 
 #include <fstream>
 #include <vector>
-#endif
 
 #include <libaegisub/color.h>
 #include <libaegisub/exception.h>

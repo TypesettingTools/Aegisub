@@ -36,10 +36,8 @@
 
 #ifdef WITH_LIBASS
 
-#ifndef AGI_PRE
 #include <wx/filefn.h>
 #include <wx/utils.h>
-#endif
 
 #ifdef __APPLE__
 #include <sys/param.h>

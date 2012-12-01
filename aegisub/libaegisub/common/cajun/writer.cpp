@@ -8,11 +8,9 @@ Author: Terry Caton
 
 #include "libaegisub/cajun/writer.h"
 
-#ifndef LAGI_PRE
 #include <cmath>
 #include <iostream>
 #include <iomanip>
-#endif
 
 /*
 

@@ -18,11 +18,9 @@
 
 #pragma once
 
-#ifndef LAGI_PRE
 #include <cstring>
 #include <string>
 #include <vector>
-#endif
 
 #include <libaegisub/exception.h>
 #include <libaegisub/scoped_ptr.h>

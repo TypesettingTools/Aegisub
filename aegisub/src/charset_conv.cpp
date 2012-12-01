@@ -36,12 +36,10 @@
 
 #include "charset_conv.h"
 
-#ifndef AGI_PRE
 #include <cerrno>
 #include <cstdint>
 
 #include <wx/intl.h>
-#endif
 
 class AegisubCSConvImpl : public AegisubCSConv {
 public:

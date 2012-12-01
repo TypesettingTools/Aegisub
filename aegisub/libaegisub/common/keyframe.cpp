@@ -20,10 +20,8 @@
 
 #include "../config.h"
 
-#ifndef LAGI_PRE
 #include <algorithm>
 #include <fstream>
-#endif
 
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"

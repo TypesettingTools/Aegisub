@@ -35,13 +35,11 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <map>
 #include <vector>
 
 #include <wx/grid.h>
 #include <wx/scrolbar.h>
-#endif
 
 #include <libaegisub/signal.h>
 

@@ -32,10 +32,8 @@
 /// @ingroup subs_storage
 ///
 
-#ifndef AGI_PRE
 #include <memory>
 #include <vector>
-#endif
 
 #include "ass_entry.h"
 

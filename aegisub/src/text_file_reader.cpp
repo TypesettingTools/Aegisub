@@ -34,14 +34,12 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <cassert>
 #include <cerrno>
 #include <string>
 
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>

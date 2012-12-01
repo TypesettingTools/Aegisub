@@ -19,9 +19,7 @@
 /// @see dialog_export_ebu3264.cpp
 /// @ingroup subtitle_io export
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 #include <libaegisub/vfr.h>
 

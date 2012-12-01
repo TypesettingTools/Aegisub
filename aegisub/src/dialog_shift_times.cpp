@@ -23,7 +23,6 @@
 
 #include "dialog_shift_times.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <vector>
 
@@ -34,7 +33,6 @@
 #include <wx/radiobut.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
-#endif
 
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>

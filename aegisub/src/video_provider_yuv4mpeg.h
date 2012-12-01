@@ -33,14 +33,12 @@
 ///
 
 #include "include/aegisub/video_provider.h"
-#ifndef AGI_PRE
 #include <cstdio>
 
 #include <vector>
 
 #include <wx/filename.h>
 #include <wx/log.h>
-#endif
 
 /// the maximum allowed header length, in bytes
 #define YUV4MPEG_HEADER_MAXLEN 128

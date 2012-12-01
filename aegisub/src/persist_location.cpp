@@ -24,10 +24,8 @@
 
 #include "main.h"
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
 #include <wx/display.h>
-#endif
 
 PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix, bool size_too)
 : x_opt(OPT_SET(options_prefix + "/Last/X"))

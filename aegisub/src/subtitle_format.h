@@ -34,12 +34,10 @@
 
 #pragma once
 
-#ifndef AGI_PRE
 #include <vector>
 
 #include <wx/arrstr.h>
 #include <wx/string.h>
-#endif
 
 #include <libaegisub/exception.h>
 

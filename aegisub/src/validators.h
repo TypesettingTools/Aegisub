@@ -32,9 +32,7 @@
 /// @ingroup custom_control utility
 ///
 
-#ifndef AGI_PRE
 #include <wx/validate.h>
-#endif
 
 
 /// DOCME

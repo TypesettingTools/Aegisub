@@ -22,7 +22,6 @@
 
 #include "libaegisub/access.h"
 
-#ifndef LAGI_PRE
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/statvfs.h>
@@ -34,7 +33,6 @@
 
 #include <string>
 #include <fstream>
-#endif
 
 #include <string.h>
 

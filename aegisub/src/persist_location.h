@@ -23,9 +23,7 @@ class wxDialog;
 class wxMoveEvent;
 class wxSizeEvent;
 
-#ifndef AGI_PRE
 #include <string>
-#endif
 
 /// @class PersistLocation
 /// @brief Automatically save and restore the location of a dialog

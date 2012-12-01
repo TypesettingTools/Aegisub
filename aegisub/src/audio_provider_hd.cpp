@@ -34,10 +34,8 @@
 
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <wx/filefn.h>
 #include <wx/filename.h>
-#endif
 
 #include <libaegisub/background_runner.h>
 #include <libaegisub/io.h>

@@ -17,7 +17,6 @@
 /// @ingroup configuration_ui
 
 
-#ifndef AGI_PRE
 #include <wx/any.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -32,7 +31,6 @@
 #include <wx/stdpaths.h>
 #include <wx/treebook.h>
 #include <wx/treebook.h>
-#endif
 
 #include "preferences_base.h"
 

@@ -16,12 +16,10 @@
 /// @brief Public interface for general utilities.
 /// @ingroup libaegisub
 
-#ifndef LAGI_PRE
 #include <cstdint>
 
 #include <string>
 #include <algorithm>
-#endif // LAGI_PRE
 
 #include <libaegisub/types.h>
 

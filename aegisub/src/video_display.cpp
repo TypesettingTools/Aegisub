@@ -35,7 +35,6 @@
 // Includes
 #include "config.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 
 #include <wx/combobox.h>
@@ -44,7 +43,6 @@
 #include <wx/menu.h>
 #include <wx/textctrl.h>
 #include <wx/toolbar.h>
-#endif
 
 #ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>

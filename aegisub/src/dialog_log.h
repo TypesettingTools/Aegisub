@@ -32,9 +32,7 @@
 /// @ingroup libaegisub
 ///
 
-#ifndef AGI_PRE
 #include <wx/dialog.h>
-#endif
 
 namespace agi {
 	namespace log { class Emitter; }

@@ -16,9 +16,7 @@
 /// @brief Dynamic toolbar generator.
 /// @ingroup menu toolbar
 
-#ifndef AGI_PRE
 #include <string>
-#endif
 
 namespace agi { struct Context; }
 class wxFrame;

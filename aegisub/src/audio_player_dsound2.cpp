@@ -36,9 +36,7 @@
 
 #ifdef WITH_DIRECTSOUND
 
-#ifndef AGI_PRE
 #include <mmsystem.h>
-#endif
 #include <process.h>
 #include <dsound.h>
 

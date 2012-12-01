@@ -35,7 +35,6 @@
 
 #include "ass_file.h"
 
-#ifndef AGI_PRE
 #include <algorithm>
 #include <fstream>
 #include <inttypes.h>
@@ -44,7 +43,6 @@
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
-#endif
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"

@@ -20,13 +20,11 @@
 
 #include "libaegisub/option.h"
 
-#ifndef LAGI_PRE
 #include <cassert>
 #include <fstream>
 #include <map>
 #include <memory>
 #include <sstream>
-#endif
 
 #include "libaegisub/cajun/reader.h"
 #include "libaegisub/cajun/writer.h"

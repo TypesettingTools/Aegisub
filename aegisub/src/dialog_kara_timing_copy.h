@@ -32,12 +32,10 @@
 /// @ingroup tools_ui kara_timing_copy
 ///
 
-#ifndef AGI_PRE
 #include <list>
 #include <vector>
 
 #include <wx/dialog.h>
-#endif
 
 namespace agi { struct Context; }
 class AssDialogue;
