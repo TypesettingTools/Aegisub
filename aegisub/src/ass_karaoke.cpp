@@ -205,7 +205,7 @@ void AssKaraoke::AddSplit(size_t syl_idx, size_t pos) {
 	if (new_syl.text.empty())
 		new_syl.duration = 0;
 	else {
-		new_syl.duration = syl.duration * new_syl.text.size() / (syl.text.size() + new_syl.text.size());
+		new_syl.duration = (syl.duration * new_syl.text.size() / (syl.text.size() + new_syl.text.size()) + 5) / 10 * 10;
 		syl.duration -= new_syl.duration;
 	}
 
