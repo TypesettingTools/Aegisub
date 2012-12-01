@@ -34,7 +34,7 @@
 
 #include "include/aegisub/video_provider.h"
 #ifndef AGI_PRE
-#include <stdio.h>
+#include <cstdio>
 
 #include <vector>
 

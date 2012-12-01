@@ -34,13 +34,10 @@
 /// Most of this code was taken from http://www.codeproject.com/audio/waveInFFT.asp
 /// And rewriten by Rodrigo Braz Monteiro
 
-
-///////////
-// Headers
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <math.h>
+#include <cmath>
 #endif
 
 #include "fft.h"

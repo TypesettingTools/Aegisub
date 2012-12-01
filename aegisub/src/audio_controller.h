@@ -34,11 +34,12 @@
 #pragma once
 
 #ifndef AGI_PRE
-#include <memory>
-#include <vector>
-#include <set>
+#include <cassert>
 #include <cstdint>
-#include <assert.h>
+#include <memory>
+#include <set>
+#include <vector>
+
 #include <wx/event.h>
 #include <wx/string.h>
 #include <wx/timer.h>

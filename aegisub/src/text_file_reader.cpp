@@ -35,10 +35,9 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <assert.h>
-#include <errno.h>
-
 #include <algorithm>
+#include <cassert>
+#include <cerrno>
 #include <string>
 
 #include <wx/string.h>

@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <ctype.h>
+#include <cctype>
 
 #include <wx/intl.h>
 #include <wx/tokenzr.h>

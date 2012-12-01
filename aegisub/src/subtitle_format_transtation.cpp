@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <stdio.h>
+#include <cstdio>
 #endif
 
 #include "subtitle_format_transtation.h"

@@ -38,8 +38,8 @@
 
 #ifndef AGI_PRE
 #include <algorithm>
+#include <clocale>
 #include <functional>
-#include <locale.h>
 
 #include <wx/dir.h>
 #include <wx/filename.h>

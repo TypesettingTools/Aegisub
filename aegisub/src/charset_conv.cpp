@@ -37,7 +37,7 @@
 #include "charset_conv.h"
 
 #ifndef AGI_PRE
-#include <errno.h>
+#include <cerrno>
 #include <cstdint>
 
 #include <wx/intl.h>

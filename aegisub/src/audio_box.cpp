@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <math.h>
+#include <cmath>
 
 #include <wx/bmpbuttn.h>
 #include <wx/panel.h>

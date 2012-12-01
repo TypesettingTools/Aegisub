@@ -38,7 +38,7 @@
 
 #ifndef AGI_PRE
 #include <Mmreg.h>
-#include <time.h>
+#include <ctime>
 
 #include <wx/filename.h>
 #endif

@@ -37,9 +37,9 @@
 #ifdef WITH_AUTO4_LUA
 
 #ifndef AGI_PRE
-#include <assert.h>
-
 #include <algorithm>
+#include <cassert>
+
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/algorithm_ext.hpp>
 

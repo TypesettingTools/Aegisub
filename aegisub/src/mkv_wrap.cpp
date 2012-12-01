@@ -35,11 +35,10 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <errno.h>
-#include <cstdint>
-#include <stdio.h>
-
 #include <algorithm>
+#include <cerrno>
+#include <cstdint>
+#include <cstdio>
 #include <iterator>
 
 #include <wx/filename.h>

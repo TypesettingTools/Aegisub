@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
 
 #include <wx/bitmap.h>

@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifndef AGI_PRE
-#include <string.h>
+#include <cstring>
 
 #include <wx/clipbrd.h>
 #include <wx/config.h>
