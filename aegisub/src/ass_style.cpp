@@ -172,44 +172,31 @@ AssStyle::AssStyle(wxString rawData, int version)
 }
 
 void AssStyle::UpdateData() {
-	wxString final;
+	name.Replace(",", ";");
+	font.Replace(",", ";");
 
-	name.Replace(",",";");
-	font.Replace(",",";");
-
-	final = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
-					  name, font, fontsize,
-					  primary.GetAssStyleFormatted(),
-					  secondary.GetAssStyleFormatted(),
-					  outline.GetAssStyleFormatted(),
-					  shadow.GetAssStyleFormatted(),
-					  (bold? -1 : 0), (italic ? -1 : 0),
-					  (underline?-1:0),(strikeout?-1:0),
-					  scalex,scaley,spacing,angle,
-					  borderstyle,outline_w,shadow_w,alignment,
-					  Margin[0],Margin[1],Margin[2],encoding);
-
-	SetEntryData(final);
+	SetEntryData(wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
+		name, font, fontsize,
+		primary.GetAssStyleFormatted(),
+		secondary.GetAssStyleFormatted(),
+		outline.GetAssStyleFormatted(),
+		shadow.GetAssStyleFormatted(),
+		(bold? -1 : 0), (italic ? -1 : 0),
+		(underline?-1:0),(strikeout?-1:0),
+		scalex,scaley,spacing,angle,
+		borderstyle,outline_w,shadow_w,alignment,
+		Margin[0],Margin[1],Margin[2],encoding));
 }
 
 wxString AssStyle::GetSSAText() const {
-	wxString output;
-	int align = AssToSsa(alignment);
-	wxString n = name;
-	n.Replace(",", ";");
-	wxString f = font;
-	f.Replace(",", ";");
-
-	output = wxString::Format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i",
-				  n, f, fontsize,
-				  primary.GetSsaFormatted(),
-				  secondary.GetSsaFormatted(),
-				  shadow.GetSsaFormatted(),
-				  (bold? -1 : 0), (italic ? -1 : 0),
-				  borderstyle,outline_w,shadow_w,align,
-				  Margin[0],Margin[1],Margin[2],encoding);
-
-	return output;
+	return wxString::Format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i",
+		name, font, fontsize,
+		primary.GetSsaFormatted(),
+		secondary.GetSsaFormatted(),
+		shadow.GetSsaFormatted(),
+		(bold? -1 : 0), (italic ? -1 : 0),
+		borderstyle,outline_w,shadow_w,AssToSsa(alignment),
+		Margin[0],Margin[1],Margin[2],encoding);
 }
 
 AssEntry *AssStyle::Clone() const {
