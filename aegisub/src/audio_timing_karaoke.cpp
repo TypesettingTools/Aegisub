@@ -38,6 +38,7 @@
 #include <deque>
 #endif
 
+#include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/sliced.hpp>
 
@@ -443,7 +444,7 @@ void AudioTimingControllerKaraoke::OnMarkerDrag(std::vector<AudioMarker*> const&
 }
 
 void AudioTimingControllerKaraoke::GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const {
-	push_back(out, labels | boost::adaptors::filtered([&](AudioLabel const& l) {
+	copy(labels | boost::adaptors::filtered([&](AudioLabel const& l) {
 		return range.overlaps(l.range);
-	}));
+	}), back_inserter(out));
 }
