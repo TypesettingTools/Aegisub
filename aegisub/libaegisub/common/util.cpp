@@ -20,7 +20,6 @@
 
 #include <climits>
 #include <cstdio>
-#include <locale>
 
 #include "libaegisub/util.h"
 

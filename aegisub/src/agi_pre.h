@@ -52,13 +52,12 @@
 
 // General headers
 #include <array>
-#include <clocale>
-#include <cstdlib>
 #include <cctype>
 #include <fcntl.h>
-#include <iconv.h>
 #include <inttypes.h>
-#include <wchar.h>
+#include <limits>
+#include <typeinfo>
+#include <utility>
 
 #ifdef _WIN32
 #include <objbase.h>
@@ -67,24 +66,17 @@
 #include <sys/fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <sys/ioctl.h>
 #include <sys/param.h>
-#include <unistd.h>
 #endif
 
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/algorithm_ext.hpp>
 
-/////////////////////
 // wxWidgets headers
 #include <wx/wxprec.h> // Leave this first.
 
-// Windows
-#ifdef __WXMSW__
-#include <wx/msw/registry.h>
-#endif
-
-// All platforms.
 #include <wx/accel.h>
 #include <wx/app.h>
 #include <wx/arrstr.h>
@@ -97,7 +89,6 @@
 #include <wx/choice.h>
 #include <wx/choicebk.h>
 #include <wx/clipbrd.h>
-#include <wx/colordlg.h>
 #include <wx/colour.h>
 #include <wx/combobox.h>
 #include <wx/config.h>
@@ -125,7 +116,6 @@
 #include <wx/filesys.h>
 #include <wx/font.h>
 #include <wx/fontdlg.h>
-#include <wx/fontenum.h>
 #include <wx/frame.h>
 #include <wx/fs_inet.h>
 #include <wx/gauge.h>
@@ -134,11 +124,9 @@
 #include <wx/glcanvas.h>
 #include <wx/grid.h>
 #include <wx/hashmap.h>
-#include <wx/hyperlink.h>
 #include <wx/icon.h>
 #include <wx/image.h>
 #include <wx/intl.h>
-#include <wx/laywin.h>
 #include <wx/listbox.h>
 #include <wx/listctrl.h>
 #include <wx/log.h>
@@ -149,7 +137,6 @@
 #include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/power.h>
-#include <wx/protocol/http.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
 #include <wx/rawbmp.h>
@@ -161,7 +148,6 @@
 #include <wx/sizer.h>
 #include <wx/slider.h>
 #include <wx/spinctrl.h>
-#include <wx/srchctrl.h>
 #include <wx/stackwalk.h>
 #include <wx/statbmp.h>
 #include <wx/statbox.h>
@@ -183,24 +169,18 @@
 #include <wx/tokenzr.h>
 #include <wx/toolbar.h>
 #include <wx/treebook.h>
-#include <wx/txtstrm.h>
 #include <wx/utils.h>
 #include <wx/validate.h>
 #include <wx/valgen.h>
 #include <wx/valnum.h>
 #include <wx/valgen.h>
 #include <wx/valtext.h>
-#include <wx/wfstream.h>
 #include <wx/window.h>
-#include <wx/xml/xml.h>
-#include <wx/zipstrm.h>
 
 #ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
 #else
 #include <GL/gl.h>
-#include "gl/glext.h"
 #endif
 
 #ifndef _CRT_SECURE_NO_WARNINGS_DEFINED
