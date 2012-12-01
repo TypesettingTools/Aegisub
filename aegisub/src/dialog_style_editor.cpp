@@ -37,9 +37,10 @@
 #include <algorithm>
 
 #include <wx/bmpbuttn.h>
-#include <wx/colordlg.h>
-#include <wx/fontdlg.h>
 #include <wx/fontenum.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 
 #include "ass_dialogue.h"
 #include "ass_file.h"

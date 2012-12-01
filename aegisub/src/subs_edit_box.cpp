@@ -36,14 +36,12 @@
 
 #include <functional>
 
+#include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/checkbox.h>
-#include <wx/colordlg.h>
 #include <wx/combobox.h>
-#include <wx/dcclient.h>
-#include <wx/dcmemory.h>
-#include <wx/fontdlg.h>
 #include <wx/radiobut.h>
+#include <wx/sizer.h>
 #include <wx/spinctrl.h>
 
 #include "subs_edit_box.h"

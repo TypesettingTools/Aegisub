@@ -32,12 +32,9 @@
 /// @ingroup main_ui
 ///
 
-#include <vector>
-
-#include <wx/grid.h>
-#include <wx/wx.h>
-
 #include "base_grid.h"
+
+#include <vector>
 
 /// DOCME
 /// @class SubtitlesGrid

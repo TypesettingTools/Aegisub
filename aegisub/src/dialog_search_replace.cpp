@@ -36,7 +36,11 @@
 
 #include <functional>
 
+#include <wx/button.h>
+#include <wx/msgdlg.h>
 #include <wx/regex.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/string.h>
 
 #include "ass_dialogue.h"

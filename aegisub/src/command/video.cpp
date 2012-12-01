@@ -39,7 +39,10 @@
 #include "command.h"
 
 #include <wx/clipbrd.h>
+#include <wx/filedlg.h>
 #include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <wx/textdlg.h>
 
 #include "../ass_dialogue.h"
 #include "../ass_time.h"

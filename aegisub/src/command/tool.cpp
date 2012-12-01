@@ -36,6 +36,7 @@
 
 #include "../config.h"
 
+#include <wx/msgdlg.h>
 #include <wx/utils.h>
 
 #include "command.h"

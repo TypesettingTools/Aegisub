@@ -36,8 +36,9 @@
 
 #include "../config.h"
 
-#include <wx/filename.h>
 #include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 
 #include <libaegisub/charset_conv.h>
