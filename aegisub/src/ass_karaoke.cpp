@@ -19,7 +19,6 @@
 /// @ingroup subs_storage
 ///
 
-
 #include "config.h"
 
 #include "ass_karaoke.h"
@@ -59,13 +58,52 @@ AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize)
 
 void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 	active_line = line;
-	line->ParseAssTags();
 
 	syls.clear();
 	Syllable syl;
 	syl.start_time = line->Start;
 	syl.duration = 0;
 	syl.tag_type = "\\k";
+
+	ParseSyllables(line, syl);
+
+	if (normalize) {
+		// Normalize the syllables so that the total duration is equal to the line length
+		int end_time = active_line->End;
+		int last_end = syl.start_time + syl.duration;
+
+		// Total duration is shorter than the line length so just extend the last
+		// syllable; this has no effect on rendering but is easier to work with
+		if (last_end < end_time)
+			syls.back().duration += end_time - last_end;
+		else if (last_end > end_time) {
+			// Truncate any syllables that extend past the end of the line
+			for (auto& syl : syls) {
+				if (syl.start_time > end_time) {
+					syl.start_time = end_time;
+					syl.duration = 0;
+				}
+				else {
+					syl.duration = std::min(syl.duration, end_time - syl.start_time);
+				}
+			}
+		}
+	}
+
+	// Add karaoke splits at each space
+	if (auto_split && syls.size() == 1) {
+		size_t pos;
+		no_announce = true;
+		while ((pos = syls.back().text.find(' ')) != wxString::npos)
+			AddSplit(syls.size() - 1, pos + 1);
+		no_announce = false;
+	}
+
+	AnnounceSyllablesChanged();
+}
+
+void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
+	line->ParseAssTags();
 
 	for (auto block : line->Blocks) {
 		wxString text = block->GetText();
@@ -127,40 +165,6 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 	syls.push_back(syl);
 
 	line->ClearBlocks();
-
-	if (normalize) {
-		// Normalize the syllables so that the total duration is equal to the line length
-		int end_time = active_line->End;
-		int last_end = syl.start_time + syl.duration;
-
-		// Total duration is shorter than the line length so just extend the last
-		// syllable; this has no effect on rendering but is easier to work with
-		if (last_end < end_time)
-			syls.back().duration += end_time - last_end;
-		else if (last_end > end_time) {
-			// Truncate any syllables that extend past the end of the line
-			for (auto& syl : syls) {
-				if (syl.start_time > end_time) {
-					syl.start_time = end_time;
-					syl.duration = 0;
-				}
-				else {
-					syl.duration = std::min(syl.duration, end_time - syl.start_time);
-				}
-			}
-		}
-	}
-
-	// Add karaoke splits at each space
-	if (auto_split && syls.size() == 1) {
-		size_t pos;
-		no_announce = true;
-		while ((pos = syls.back().text.find(' ')) != wxString::npos)
-			AddSplit(syls.size() - 1, pos + 1);
-		no_announce = false;
-	}
-
-	AnnounceSyllablesChanged();
 }
 
 wxString AssKaraoke::GetText() const {
@@ -233,9 +237,8 @@ void AssKaraoke::RemoveSplit(size_t syl_idx) {
 	Syllable &prev = syls[syl_idx - 1];
 
 	prev.duration += syl.duration;
-	for (ovr_iterator it = syl.ovr_tags.begin(); it != syl.ovr_tags.end(); ++it) {
-		prev.ovr_tags[it->first + prev.text.size()] = it->second;
-	}
+	for (auto const& tag : syl.ovr_tags)
+		prev.ovr_tags[tag.first + prev.text.size()] = tag.second;
 	prev.text += syl.text;
 
 	syls.erase(syls.begin() + syl_idx);
@@ -263,12 +266,14 @@ void AssKaraoke::SetLineTimes(int start_time, int end_time) {
 	assert(end_time >= start_time);
 
 	size_t idx = 0;
+	// Chop off any portion of syllables starting before the new start_time
 	do {
 		int delta = start_time - syls[idx].start_time;
 		syls[idx].start_time = start_time;
 		syls[idx].duration = std::max(0, syls[idx].duration - delta);
 	} while (++idx < syls.size() && syls[idx].start_time < start_time);
 
+	// And truncate any syllabls ending after the new end_time
 	idx = syls.size() - 1;
 	while (syls[idx].start_time > end_time) {
 		syls[idx].start_time = end_time;
@@ -297,23 +302,22 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 
 		bool in_sel = sel.count(diag) > 0;
 
-		c->ass->Line.erase(it++);
-
-		for (iterator kit = kara.begin(); kit != kara.end(); ++kit) {
+		for (auto const& syl : kara) {
 			AssDialogue *new_line = new AssDialogue(*diag);
 
-			new_line->Start = kit->start_time;
-			new_line->End = kit->start_time + kit->duration;
-			new_line->Text = kit->GetText(false);
+			new_line->Start = syl.start_time;
+			new_line->End = syl.start_time + syl.duration;
+			new_line->Text = syl.GetText(false);
 
 			c->ass->Line.insert(it, *new_line);
 
 			if (in_sel)
 				sel.insert(new_line);
 		}
+
+		--it; // Move `it` to the last of the new lines
 		sel.erase(diag);
 		delete diag;
-		--it;
 
 		did_split = true;
 	}

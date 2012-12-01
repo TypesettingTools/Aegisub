@@ -58,6 +58,7 @@ private:
 	bool no_announce;
 
 	agi::signal::Signal<> AnnounceSyllablesChanged;
+	void ParseSyllables(AssDialogue *line, Syllable &syl);
 
 public:
 	/// Constructor
