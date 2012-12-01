@@ -93,7 +93,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString filename)
 					warning += "The file could not be opened. It might be in use by another application, or you do not have permission to access it.";
 					break;
 				case REGDB_E_CLASSNOTREG:
-					warning += "There is no handler installed for the file extension. This might indicate a fundameltal problem in your Video for Windows installation, and can be caused by extremely stripped Windows installations.";
+					warning += "There is no handler installed for the file extension. This might indicate a fundamental problem in your Video for Windows installation, and can be caused by extremely stripped Windows installations.";
 					break;
 				default:
 					warning += "Unknown error.";
