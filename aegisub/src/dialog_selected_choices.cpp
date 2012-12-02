@@ -32,7 +32,7 @@ SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& m
 	wxButton *selAll = new wxButton(this, -1, _("Select &All"));
 	wxButton *selNone = new wxButton(this, -1, _("Select &None"));
 	selAll->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SelectedChoicesDialog::SelectAll, this);
-	selNone->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SelectedChoicesDialog::SelectNone, this);
+	selNone->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetSelections(wxArrayInt()); });
 
 	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	buttonSizer->Add(selAll, wxSizerFlags(0).Left());
@@ -48,10 +48,6 @@ void SelectedChoicesDialog::SelectAll(wxCommandEvent&) {
 	sel[0] = 0;
 	std::partial_sum(sel.begin(), sel.end(), sel.begin());
 	SetSelections(sel);
-}
-
-void SelectedChoicesDialog::SelectNone(wxCommandEvent&) {
-	SetSelections(wxArrayInt());
 }
 
 int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const& message, wxString const& caption, wxArrayString const& choices) {

@@ -67,7 +67,4 @@ class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeat
 public:
 	VisualToolVectorClip(VideoDisplay *parent, agi::Context *context);
 	void SetToolbar(wxToolBar *tb);
-
-	/// Subtoolbar button click handler
-	void OnSubTool(wxCommandEvent &event);
 };

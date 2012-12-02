@@ -74,13 +74,9 @@ void VisualToolVectorClip::SetToolbar(wxToolBar *toolBar) {
 	toolBar->ToggleTool(BUTTON_DRAG, true);
 	toolBar->Realize();
 	toolBar->Show(true);
-	toolBar->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VisualToolVectorClip::OnSubTool, this);
+	toolBar->Bind(wxEVT_COMMAND_TOOL_CLICKED, [=](wxCommandEvent& e) { SetMode(e.GetId() - BUTTON_DRAG); });
 	SetMode(features.empty());
 #undef ICON
-}
-
-void VisualToolVectorClip::OnSubTool(wxCommandEvent &event) {
-	SetMode(event.GetId() - BUTTON_DRAG);
 }
 
 void VisualToolVectorClip::SetMode(int new_mode) {

@@ -85,7 +85,6 @@ class DialogSpellChecker : public wxDialog {
 
 	void OnReplace(wxCommandEvent&);
 	void OnReplaceAll(wxCommandEvent&);
-	void OnIgnore(wxCommandEvent&);
 	void OnIgnoreAll(wxCommandEvent&);
 	void OnAdd(wxCommandEvent&);
 

@@ -31,7 +31,6 @@ class SelectedChoicesDialog : public wxMultiChoiceDialog {
 	SelectedChoicesDialog& operator=(SelectedChoicesDialog const&);
 
 	void SelectAll(wxCommandEvent&);
-	void SelectNone(wxCommandEvent&);
 
 public:
 	SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices);

@@ -91,10 +91,7 @@ class Interface_Hotkeys : public OptionPage {
 	wxSearchCtrl *quick_search;
 
 	void OnNewButton(wxCommandEvent&);
-	void OnEditButton(wxCommandEvent&);
-	void OnDeleteButton(wxCommandEvent&);
 	void OnUpdateFilter(wxCommandEvent&);
-	void OnClearFilter(wxCommandEvent&);
 public:
 	Interface_Hotkeys(wxTreebook *book, Preferences *parent);
 };
@@ -376,6 +373,14 @@ public:
 	bool HasEditorCtrl() const { return true; }
 };
 
+static void edit_item(wxDataViewCtrl *dvc, wxDataViewItem item) {
+#if wxCHECK_VERSION(2, 9, 4)
+	dvc->EditItem(item, dvc->GetColumn(0));
+#else
+	dvc->StartEditor(item, 0);
+#endif
+}
+
 /// Interface Hotkeys preferences subpage
 Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 : OptionPage(book, parent, _("Hotkeys"), PAGE_SUB)
@@ -387,11 +392,11 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	wxButton *delete_button = new wxButton(this, -1, _("&Delete"));
 
 	new_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnNewButton, this);
-	edit_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnEditButton, this);
-	delete_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnDeleteButton, this);
+	edit_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { edit_item(dvc, dvc->GetSelection()); });
+	delete_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { model->Delete(dvc->GetSelection()); });
 
 	quick_search->Bind(wxEVT_COMMAND_TEXT_UPDATED, &Interface_Hotkeys::OnUpdateFilter, this);
-	quick_search->Bind(wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, &Interface_Hotkeys::OnClearFilter, this);
+	quick_search->Bind(wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, [=](wxCommandEvent&) { quick_search->SetValue(""); });
 
 	dvc = new wxDataViewCtrl(this, -1);
 	dvc->AssociateModel(model.get());
@@ -412,14 +417,6 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	SetSizerAndFit(sizer);
 }
 
-static void edit_item(wxDataViewCtrl *dvc, wxDataViewItem item) {
-#if wxCHECK_VERSION(2, 9, 4)
-	dvc->EditItem(item, dvc->GetColumn(0));
-#else
-	dvc->StartEditor(item, 0);
-#endif
-}
-
 void Interface_Hotkeys::OnNewButton(wxCommandEvent&) {
 	wxDataViewItem sel = dvc->GetSelection();
 	dvc->ExpandAncestors(sel);
@@ -433,14 +430,6 @@ void Interface_Hotkeys::OnNewButton(wxCommandEvent&) {
 	}
 }
 
-void Interface_Hotkeys::OnEditButton(wxCommandEvent&) {
-	edit_item(dvc, dvc->GetSelection());
-}
-
-void Interface_Hotkeys::OnDeleteButton(wxCommandEvent&) {
-	model->Delete(dvc->GetSelection());
-}
-
 void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
 	model->SetFilter(quick_search->GetValue());
 
@@ -450,10 +439,6 @@ void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
 		for (auto const& context : contexts)
 			dvc->Expand(context);
 	}
-}
-
-void Interface_Hotkeys::OnClearFilter(wxCommandEvent &) {
-	quick_search->SetValue("");
 }
 
 /// Backup preferences page

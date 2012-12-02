@@ -135,7 +135,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnReplaceAll, this);
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("&Ignore")), button_flags);
-		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnIgnore, this);
+		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { FindNext(); });
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore a&ll")), button_flags);
 		button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnIgnoreAll, this);
@@ -167,10 +167,6 @@ void DialogSpellChecker::OnReplaceAll(wxCommandEvent&) {
 	auto_replace[from_wx(orig_word->GetValue())] = from_wx(replace_word->GetValue());
 
 	Replace();
-	FindNext();
-}
-
-void DialogSpellChecker::OnIgnore(wxCommandEvent&) {
 	FindNext();
 }
 

@@ -65,11 +65,6 @@ class DialogExport : public wxDialog {
 	wxSizer *opt_sizer;
 
 	void OnProcess(wxCommandEvent &);
-	void OnMoveUp(wxCommandEvent &);
-	void OnMoveDown(wxCommandEvent &);
-	void OnSelectAll(wxCommandEvent &);
-	void OnSelectNone(wxCommandEvent &);
-	void OnCheck(wxCommandEvent &);
 	void OnChange(wxCommandEvent &);
 
 	/// Set all the checkboxes
