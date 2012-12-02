@@ -128,10 +128,10 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MiddleSizer->Add(Layer, wxSizerFlags().Center());
 	MiddleSizer->AddSpacer(5);
 
-	StartTime = MakeTimeCtrl(false, _("Start time"), &SubsEditBox::OnStartTimeChange);
-	EndTime   = MakeTimeCtrl(true, _("End time"), &SubsEditBox::OnEndTimeChange);
+	StartTime = MakeTimeCtrl(_("Start time"), TIME_START);
+	EndTime   = MakeTimeCtrl(_("End time"), TIME_END);
 	MiddleSizer->AddSpacer(5);
-	Duration  = MakeTimeCtrl(false, _("Line duration"), &SubsEditBox::OnDurationChange);
+	Duration  = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
 	MiddleSizer->AddSpacer(5);
 
 	MarginL = MakeMarginCtrl(_("Left Margin (0 = default)"), &SubsEditBox::OnMarginLChange);
@@ -210,10 +210,10 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, void (SubsEditB
 	return ctrl;
 }
 
-TimeEdit *SubsEditBox::MakeTimeCtrl(bool end, wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&)) {
-	TimeEdit *ctrl = new TimeEdit(this, -1, c, "", wxSize(75,-1), end);
+TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
+	TimeEdit *ctrl = new TimeEdit(this, -1, c, "", wxSize(75,-1), field == TIME_END);
 	ctrl->SetToolTip(tooltip);
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, handler, this, ctrl->GetId());
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) { CommitTimes(field); }, ctrl->GetId());
 	ctrl->Bind(wxEVT_CHAR_HOOK, time_edit_char_hook);
 	MiddleSizer->Add(ctrl, wxSizerFlags().Center());
 	return ctrl;
@@ -497,18 +497,6 @@ void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 
 void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Layer, Layer->GetValue(), _("layer change"), AssFile::COMMIT_DIAG_META);
-}
-
-void SubsEditBox::OnStartTimeChange(wxCommandEvent &) {
-	CommitTimes(TIME_START);
-}
-
-void SubsEditBox::OnEndTimeChange(wxCommandEvent &) {
-	CommitTimes(TIME_END);
-}
-
-void SubsEditBox::OnDurationChange(wxCommandEvent &) {
-	CommitTimes(TIME_DURATION);
 }
 
 void SubsEditBox::OnMarginLChange(wxCommandEvent &) {

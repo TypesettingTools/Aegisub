@@ -138,7 +138,7 @@ class SubsEditBox : public wxPanel {
 
 	// Constructor helpers
 	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));
-	TimeEdit *MakeTimeCtrl(bool end, wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));
+	TimeEdit *MakeTimeCtrl(wxString const& tooltip, TimeField field);
 	void MakeButton(const char *cmd_name);
 	wxComboBox *MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip);
 	wxRadioButton *MakeRadio(wxString const& text, bool start, wxString const& tooltip);
@@ -153,9 +153,6 @@ class SubsEditBox : public wxPanel {
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
 	void OnLayerEnter(wxCommandEvent &event);
-	void OnStartTimeChange(wxCommandEvent &);
-	void OnEndTimeChange(wxCommandEvent &);
-	void OnDurationChange(wxCommandEvent &);
 	void OnMarginLChange(wxCommandEvent &);
 	void OnMarginRChange(wxCommandEvent &);
 	void OnMarginVChange(wxCommandEvent &);
