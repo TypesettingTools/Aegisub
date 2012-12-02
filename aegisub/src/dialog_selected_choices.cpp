@@ -22,10 +22,6 @@
 
 #include <numeric>
 
-#ifdef __VISUALC__
-#pragma warning(disable:4996)
-#endif
-
 SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices) {
 	Create(parent, message, caption, choices);
 
@@ -44,9 +40,8 @@ SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& m
 }
 
 void SelectedChoicesDialog::SelectAll(wxCommandEvent&) {
-	wxArrayInt sel(m_listbox->GetCount(), 1);
-	sel[0] = 0;
-	std::partial_sum(sel.begin(), sel.end(), sel.begin());
+	wxArrayInt sel(m_listbox->GetCount());
+	std::iota(sel.begin(), sel.end(), 0);
 	SetSelections(sel);
 }
 
