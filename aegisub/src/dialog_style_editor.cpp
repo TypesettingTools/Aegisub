@@ -74,7 +74,7 @@ class StyleRenamer {
 	wxString new_name;
 
 	/// Process a single override parameter to check if it's \r with this style name
-	static void ProcessTag(wxString tag, int, AssOverrideParameter* param, void *userData) {
+	static void ProcessTag(wxString const& tag, AssOverrideParameter* param, void *userData) {
 		StyleRenamer *self = static_cast<StyleRenamer*>(userData);
 		if (tag == "\\r" && param->GetType() == VARDATA_TEXT && param->Get<wxString>() == self->source_name) {
 			if (self->do_replace)

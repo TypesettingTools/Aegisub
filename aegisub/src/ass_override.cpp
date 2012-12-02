@@ -98,20 +98,16 @@ wxString AssDialogueBlockOverride::GetText() {
 	return text;
 }
 
-void AssDialogueBlockOverride::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
-	for (auto curTag : Tags) {
-		// Find parameters
-		for (size_t n = 0; n < curTag->Params.size(); ++n) {
-			AssOverrideParameter *curPar = curTag->Params[n];
+void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callback, void *userData) {
+	for (auto tag : Tags) {
+		for (auto par : tag->Params) {
+			if (par->GetType() == VARDATA_NONE || par->omitted) continue;
 
-			if (curPar->GetType() != VARDATA_NONE && !curPar->omitted) {
-				(*callback)(curTag->Name, n, curPar, userData);
+			callback(tag->Name, par, userData);
 
-				// Go recursive if it's a block parameter
-				if (curPar->GetType() == VARDATA_BLOCK) {
-					curPar->Get<AssDialogueBlockOverride*>()->ProcessParameters(callback,userData);
-				}
-			}
+			// Go recursive if it's a block parameter
+			if (par->GetType() == VARDATA_BLOCK)
+				par->Get<AssDialogueBlockOverride*>()->ProcessParameters(callback, userData);
 		}
 	}
 }

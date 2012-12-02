@@ -153,7 +153,7 @@ namespace {
 		double ar;
 	};
 
-	void resample_tags(wxString name, int n, AssOverrideParameter *cur, void *ud) {
+	void resample_tags(wxString const& name, AssOverrideParameter *cur, void *ud) {
 		resample_state *state = static_cast<resample_state *>(ud);
 
 		double resizer = 1.0;

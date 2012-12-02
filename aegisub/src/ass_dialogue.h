@@ -110,11 +110,11 @@ public:
 	void AddTag(wxString const& tag);
 
 	/// Type of callback function passed to ProcessParameters
-	typedef void (*ProcessParametersCallback)(wxString,int,AssOverrideParameter*,void *);
+	typedef void (*ProcessParametersCallback)(wxString const&, AssOverrideParameter *, void *);
 	/// @brief Process parameters via callback
-	/// @param callback The callback function to call per tag paramer
+	/// @param callback The callback function to call per tag parameter
 	/// @param userData User data to pass to callback function
-	void ProcessParameters(ProcessParametersCallback callback,void *userData);
+	void ProcessParameters(ProcessParametersCallback callback, void *userData);
 };
 
 class AssDialogue : public AssEntry {
