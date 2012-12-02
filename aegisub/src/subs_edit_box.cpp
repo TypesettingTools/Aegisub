@@ -67,14 +67,6 @@
 #include <libaegisub/of_type_adaptor.h>
 
 namespace {
-template<class T>
-struct field_setter : public std::binary_function<AssDialogue*, T, void> {
-	T AssDialogue::*field;
-	field_setter(T AssDialogue::*field) : field(field) { }
-	void operator()(AssDialogue* obj, T const& value) {
-		obj->*field = value;
-	}
-};
 
 /// Work around wxGTK's fondness for generating events from ChangeValue
 void change_value(wxTextCtrl *ctrl, wxString const& value) {
@@ -386,7 +378,7 @@ void SubsEditBox::OnUndoTimer(wxTimerEvent&) {
 }
 
 template<class T, class setter>
-void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, bool amend) {
+void SubsEditBox::SetSelectedRows(setter set, T value, wxString const& desc, int type, bool amend) {
 	for_each(sel.begin(), sel.end(), bind(set, std::placeholders::_1, value));
 
 	file_changed_slot.Block();
@@ -399,8 +391,8 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString desc, int type, 
 }
 
 template<class T>
-void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString desc, int type, bool amend) {
-	SetSelectedRows(field_setter<T>(field), value, desc, type, amend);
+void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString const& desc, int type, bool amend) {
+	SetSelectedRows([=](AssDialogue *d, T const& v) { d->*field = v; }, value, desc, type, amend);
 }
 
 void SubsEditBox::CommitText(wxString const& desc) {
