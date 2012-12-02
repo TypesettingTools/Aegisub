@@ -134,9 +134,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	Duration  = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
 	MiddleSizer->AddSpacer(5);
 
-	MarginL = MakeMarginCtrl(_("Left Margin (0 = default)"), &SubsEditBox::OnMarginLChange);
-	MarginR = MakeMarginCtrl(_("Right Margin (0 = default)"), &SubsEditBox::OnMarginRChange);
-	MarginV = MakeMarginCtrl(_("Vertical Margin (0 = default)"), &SubsEditBox::OnMarginVChange);
+	MarginL = MakeMarginCtrl(_("Left Margin (0 = default)"), 0, _("left margin change"));
+	MarginR = MakeMarginCtrl(_("Right Margin (0 = default)"), 1, _("right margin change"));
+	MarginV = MakeMarginCtrl(_("Vertical Margin (0 = default)"), 2, _("vertical margin change"));
 	MiddleSizer->AddSpacer(5);
 
 	// Middle-bottom controls
@@ -201,12 +201,18 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 SubsEditBox::~SubsEditBox() {
 }
 
-wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&)) {
+wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxString const& commit_msg) {
 	wxTextCtrl *ctrl = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(40,-1), wxTE_CENTRE | wxTE_PROCESS_ENTER, NumValidator());
 	ctrl->SetMaxLength(4);
 	ctrl->SetToolTip(tooltip);
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, handler, this, ctrl->GetId());
 	MiddleSizer->Add(ctrl, wxSizerFlags().Center());
+
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) {
+		wxString value = ctrl->GetValue();
+		SetSelectedRows([&](AssDialogue *d) { d->SetMarginString(value, margin); }, commit_msg, AssFile::COMMIT_DIAG_META);
+		if (line) change_value(ctrl, line->GetMarginString(margin, false));
+	}, ctrl->GetId());
+
 	return ctrl;
 }
 
@@ -377,9 +383,9 @@ void SubsEditBox::OnUndoTimer(wxTimerEvent&) {
 	commitId = -1;
 }
 
-template<class T, class setter>
-void SubsEditBox::SetSelectedRows(setter set, T value, wxString const& desc, int type, bool amend) {
-	for_each(sel.begin(), sel.end(), bind(set, std::placeholders::_1, value));
+template<class setter>
+void SubsEditBox::SetSelectedRows(setter set, wxString const& desc, int type, bool amend) {
+	for_each(sel.begin(), sel.end(), set);
 
 	file_changed_slot.Block();
 	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1, sel.size() == 1 ? *sel.begin() : 0);
@@ -392,7 +398,7 @@ void SubsEditBox::SetSelectedRows(setter set, T value, wxString const& desc, int
 
 template<class T>
 void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString const& desc, int type, bool amend) {
-	SetSelectedRows([=](AssDialogue *d, T const& v) { d->*field = v; }, value, desc, type, amend);
+	SetSelectedRows([&](AssDialogue *d) { d->*field = value; }, desc, type, amend);
 }
 
 void SubsEditBox::CommitText(wxString const& desc) {
@@ -497,21 +503,6 @@ void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 
 void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Layer, Layer->GetValue(), _("layer change"), AssFile::COMMIT_DIAG_META);
-}
-
-void SubsEditBox::OnMarginLChange(wxCommandEvent &) {
-	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<0>), MarginL->GetValue(), _("MarginL change"), AssFile::COMMIT_DIAG_META);
-	if (line) change_value(MarginL, line->GetMarginString(0, false));
-}
-
-void SubsEditBox::OnMarginRChange(wxCommandEvent &) {
-	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<1>), MarginR->GetValue(), _("MarginR change"), AssFile::COMMIT_DIAG_META);
-	if (line) change_value(MarginR, line->GetMarginString(1, false));
-}
-
-void SubsEditBox::OnMarginVChange(wxCommandEvent &) {
-	SetSelectedRows(std::mem_fun(&AssDialogue::SetMarginString<2>), MarginV->GetValue(), _("MarginV change"), AssFile::COMMIT_DIAG_META);
-	if (line) change_value(MarginV, line->GetMarginString(2, false));
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {

@@ -137,7 +137,7 @@ class SubsEditBox : public wxPanel {
 	boost::container::map<AssDialogue *, std::pair<AssTime, AssTime> > initialTimes;
 
 	// Constructor helpers
-	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, void (SubsEditBox::*handler)(wxCommandEvent&));
+	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, int margin, wxString const& commit_msg);
 	TimeEdit *MakeTimeCtrl(wxString const& tooltip, TimeField field);
 	void MakeButton(const char *cmd_name);
 	wxComboBox *MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip);
@@ -153,9 +153,6 @@ class SubsEditBox : public wxPanel {
 	void OnStyleChange(wxCommandEvent &event);
 	void OnActorChange(wxCommandEvent &event);
 	void OnLayerEnter(wxCommandEvent &event);
-	void OnMarginLChange(wxCommandEvent &);
-	void OnMarginRChange(wxCommandEvent &);
-	void OnMarginVChange(wxCommandEvent &);
 	void OnCommentChange(wxCommandEvent &);
 	void OnEffectChange(wxCommandEvent &);
 	void OnSize(wxSizeEvent &event);
@@ -164,13 +161,12 @@ class SubsEditBox : public wxPanel {
 	void SetPlaceholderCtrl(wxControl *ctrl, wxString const& value);
 
 	/// @brief Set a field in each selected line to a specified value
-	/// @param set   Callable which does the setting
-	/// @param value Value to pass to set
+	/// @param set   Callable which updates a passed line
 	/// @param desc  Undo description to use
 	/// @param type  Commit type to use
 	/// @param amend Coalesce sequences of commits of the same type
-	template<class T, class setter>
-	void SetSelectedRows(setter set, T value, wxString const& desc, int type, bool amend = false);
+	template<class setter>
+	void SetSelectedRows(setter set, wxString const& desc, int type, bool amend = false);
 
 	/// @brief Set a field in each selected line to a specified value
 	/// @param field Field to set
