@@ -32,19 +32,9 @@
 /// @ingroup utility
 ///
 
+#include <cstdlib>
 
-
-
-#include <stdlib.h> // size_t
-
-
-/// DOCME
-/// @class FFT
-/// @brief DOCME
-///
-/// DOCME
 class FFT {
-private:
 	void DoTransform(size_t n_samples,float *input,float *output_r,float *output_i,bool inverse);
 
 public:

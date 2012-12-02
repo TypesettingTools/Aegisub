@@ -36,11 +36,6 @@
 
 class AssDialogue;
 
-/// DOCME
-/// @class SRTSubtitleFormat
-/// @brief DOCME
-///
-/// DOCME
 class SRTSubtitleFormat : public SubtitleFormat {
 	wxString ConvertTags(const AssDialogue *diag) const;
 public:

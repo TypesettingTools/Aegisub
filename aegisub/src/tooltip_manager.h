@@ -39,11 +39,6 @@ struct ToolTipBinding;
 class wxString;
 class wxWindow;
 
-/// DOCME
-/// @class ToolTipManager
-/// @brief DOCME
-///
-/// DOCME
 class ToolTipManager {
 	ToolTipManager();
 	~ToolTipManager();

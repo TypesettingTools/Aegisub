@@ -190,16 +190,13 @@ class DialogColorPicker : public wxDialog {
 	/// click the eyedropper or drag the eyedropper
 	wxPoint eyedropper_grab_point;
 
-	/// DOCME
 	bool eyedropper_is_grabbed;
 
 	wxStaticBitmap *preview_box; ///< A box which simply shows the current color
 	ColorPickerRecent *recent_box; ///< A grid of recently used colors
 
-	/// DOCME
 	ColorPickerScreenDropper *screen_dropper;
 
-	/// DOCME
 	wxStaticBitmap *screen_dropper_icon;
 
 	/// Update all other controls as a result of modifying an RGB control

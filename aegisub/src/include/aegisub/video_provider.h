@@ -41,15 +41,11 @@
 
 class AegiVideoFrame;
 
-/// @class VideoProvider
-/// @brief DOCME
-///
-/// DOCME
 class VideoProvider {
 public:
 	virtual ~VideoProvider() {}
 
-	// Override this method to actually get frames
+	/// Override this method to actually get frames
 	virtual const AegiVideoFrame GetFrame(int n)=0;
 
 	// Override the following methods to get video information:

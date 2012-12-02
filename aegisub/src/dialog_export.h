@@ -47,11 +47,6 @@
 class AssExporter;
 namespace agi { struct Context; }
 
-/// DOCME
-/// @class DialogExport
-/// @brief DOCME
-///
-/// DOCME
 class DialogExport : public wxDialog {
 	agi::Context *c;
 
@@ -67,7 +62,6 @@ class DialogExport : public wxDialog {
 	/// A list of available target charsets
 	wxChoice *charset_list;
 
-	/// DOCME
 	wxSizer *opt_sizer;
 
 	void OnProcess(wxCommandEvent &);

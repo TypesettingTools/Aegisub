@@ -43,11 +43,6 @@
 #include "main.h"
 #include "text_file_writer.h"
 
-
-/// @brief DOCME
-/// @param filename
-/// @param encoding
-///
 TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 : file(new agi::io::Save(STD_STR(filename), true))
 , conv()

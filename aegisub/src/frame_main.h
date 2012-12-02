@@ -60,11 +60,6 @@ class VideoZoomSlider;
 
 namespace agi { struct Context; class OptionValue; }
 
-/// DOCME
-/// @class FrameMain
-/// @brief DOCME
-///
-/// DOCME
 class FrameMain: public wxFrame {
 	friend class AegisubFileDropTarget;
 

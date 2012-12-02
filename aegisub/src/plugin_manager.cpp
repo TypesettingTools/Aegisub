@@ -47,11 +47,7 @@
 
 PluginManager::PluginManager() {
 	init = false;
-
-#ifdef WITH_AUTO4_LUA
 	lua = nullptr;
-#endif
-
 }
 
 PluginManager::~PluginManager() {

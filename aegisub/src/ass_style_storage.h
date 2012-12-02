@@ -38,11 +38,6 @@
 
 class AssStyle;
 
-/// DOCME
-/// @class AssStyleStorage
-/// @brief DOCME
-///
-/// DOCME
 class AssStyleStorage {
 	wxString storage_name;
 	std::deque<AssStyle*> style;

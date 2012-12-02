@@ -36,11 +36,6 @@
 
 class wxTranslations;
 
-/// DOCME
-/// @class AegisubLocale
-/// @brief DOCME
-///
-/// DOCME
 class AegisubLocale {
 	wxString active_language;
 	wxTranslations *GetTranslations();

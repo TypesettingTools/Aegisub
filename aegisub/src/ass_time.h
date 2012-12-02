@@ -38,11 +38,6 @@
 
 #include <libaegisub/vfr.h>
 
-/// DOCME
-/// @class AssTime
-/// @brief DOCME
-///
-/// DOCME
 class AssTime {
 	/// Time in milliseconds
 	int time;

@@ -56,9 +56,6 @@
 #include "video_context.h"
 #include "video_frame.h"
 
-
-/// @brief Handle libass messages
-///
 static void msg_callback(int level, const char *fmt, va_list args, void *) {
 	if (level >= 7) return;
 	char buf[1024];
@@ -135,16 +132,11 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	wait_for_cache_thread(&cache_worker);
 }
 
-/// @brief Destructor
-///
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 	if (ass_track) ass_free_track(ass_track);
 	if (ass_renderer) ass_renderer_done(ass_renderer);
 }
 
-/// @brief Load subtitles
-/// @param subs
-///
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	// Prepare subtitles
 	std::vector<char> data;
@@ -156,24 +148,11 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	if (!ass_track) throw "libass failed to load subtitles.";
 }
 
-/// DOCME
 #define _r(c)  ((c)>>24)
-
-/// DOCME
 #define _g(c)  (((c)>>16)&0xFF)
-
-/// DOCME
 #define _b(c)  (((c)>>8)&0xFF)
-
-/// DOCME
 #define _a(c)  ((c)&0xFF)
 
-
-/// @brief Draw subtitles
-/// @param frame
-/// @param time
-/// @return
-///
 void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	// Set size
 	ass_set_frame_size(ass_renderer, frame.w, frame.h);
@@ -238,7 +217,6 @@ void LibassSubtitlesProvider::CacheFonts() {
 	new FontConfigCacheThread(ass_library, &cache_worker);
 }
 
-/// DOCME
 ASS_Library* LibassSubtitlesProvider::ass_library;
 FontConfigCacheThread* LibassSubtitlesProvider::cache_worker = nullptr;
 

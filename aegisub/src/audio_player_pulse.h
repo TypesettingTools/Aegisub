@@ -39,81 +39,45 @@
 
 class PulseAudioPlayer;
 
-/// DOCME
-/// @class PulseAudioPlayer
-/// @brief DOCME
-///
-/// DOCME
 class PulseAudioPlayer : public AudioPlayer {
-	/// DOCME
 	float volume;
-
-	/// DOCME
 	bool is_playing;
 
-
-	/// DOCME
 	volatile unsigned long start_frame;
-
-	/// DOCME
 	volatile unsigned long cur_frame;
-
-	/// DOCME
 	volatile unsigned long end_frame;
 
-	/// DOCME
 	unsigned long bpf; // bytes per frame
 
 
-	/// DOCME
 	wxSemaphore context_notify;
-
-	/// DOCME
 	wxSemaphore context_success;
-
-	/// DOCME
 	volatile int context_success_val;
 
-	/// DOCME
 	wxSemaphore stream_notify;
-
-	/// DOCME
 	wxSemaphore stream_success;
-
-	/// DOCME
 	volatile int stream_success_val;
 
-
-	/// DOCME
 	pa_threaded_mainloop *mainloop; // pulseaudio mainloop handle
-
-	/// DOCME
 	pa_context *context; // connection context
-
-	/// DOCME
 	volatile pa_context_state_t cstate;
 
-	/// DOCME
 	pa_stream *stream;
-
-	/// DOCME
 	volatile pa_stream_state_t sstate;
 
-	/// DOCME
 	volatile pa_usec_t play_start_time; // timestamp when playback was started
 
-	/// DOCME
 	int paerror;
 
-	// Called by PA to notify about contetxt operation completion
+	/// Called by PA to notify about contetxt operation completion
 	static void pa_context_success(pa_context *c, int success, PulseAudioPlayer *thread);
-	// Called by PA to notify about other context-related stuff
+	/// Called by PA to notify about other context-related stuff
 	static void pa_context_notify(pa_context *c, PulseAudioPlayer *thread);
-	// Called by PA when a stream operation completes
+	/// Called by PA when a stream operation completes
 	static void pa_stream_success(pa_stream *p, int success, PulseAudioPlayer *thread);
-	// Called by PA to request more data written to stream
+	/// Called by PA to request more data written to stream
 	static void pa_stream_write(pa_stream *p, size_t length, PulseAudioPlayer *thread);
-	// Called by PA to notify about other stream-related stuff
+	/// Called by PA to notify about other stream-related stuff
 	static void pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread);
 
 public:

@@ -31,11 +31,6 @@ class wxStaticText;
 class wxTextCtrl;
 class wxThreadEvent;
 
-/// DOCME
-/// @class DialogFontsCollector
-/// @brief DOCME
-///
-/// DOCME
 class DialogFontsCollector : public wxDialog {
 	AssFile *subs;
 

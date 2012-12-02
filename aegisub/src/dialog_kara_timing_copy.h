@@ -45,11 +45,6 @@ class KaraokeLineMatchDisplay;
 class wxComboBox;
 class wxCheckBox;
 
-/// DOCME
-/// @class DialogKanjiTimer
-/// @brief DOCME
-///
-/// DOCME
 class DialogKanjiTimer : public wxDialog {
 	AssFile *subs;
 

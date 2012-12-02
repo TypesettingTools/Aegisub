@@ -47,11 +47,6 @@ class ColourButton;
 class PersistLocation;
 class SubtitlesPreview;
 
-/// DOCME
-/// @class DialogStyleEditor
-/// @brief DOCME
-///
-/// DOCME
 class DialogStyleEditor : public wxDialog {
 	agi::Context *c;
 	agi::scoped_ptr<PersistLocation> persist;
@@ -61,76 +56,36 @@ class DialogStyleEditor : public wxDialog {
 	/// the style
 	bool is_new;
 
-	/// DOCME
+	/// The style currently being edited
 	AssStyle *style;
 
-	/// DOCME
+	/// Copy of style passed to the subtitles preview to avoid making changes
+	/// before Apply is clicked
 	agi::scoped_ptr<AssStyle> work;
 
-	/// DOCME
+	/// The style storage style is in, if applicable
 	AssStyleStorage *store;
 
-	/// DOCME
 	wxTextCtrl *StyleName;
-
-	/// DOCME
 	wxComboBox *FontName;
-
-	/// DOCME
 	wxTextCtrl *FontSize;
-
-	/// DOCME
 	wxCheckBox *BoxBold;
-
-	/// DOCME
 	wxCheckBox *BoxItalic;
-
-	/// DOCME
 	wxCheckBox *BoxUnderline;
-
-	/// DOCME
 	wxCheckBox *BoxStrikeout;
-
-	/// DOCME
 	ColourButton *colorButton[4];
-
-	/// DOCME
 	wxSpinCtrl *colorAlpha[4];
-
-	/// DOCME
 	wxSpinCtrl *margin[3];
-
-	/// DOCME
 	wxRadioBox *Alignment;
-
-	/// DOCME
 	wxTextCtrl *Outline;
-
-	/// DOCME
 	wxTextCtrl *Shadow;
-
-	/// DOCME
 	wxCheckBox *OutlineType;
-
-	/// DOCME
 	wxTextCtrl *ScaleX;
-
-	/// DOCME
 	wxTextCtrl *ScaleY;
-
-	/// DOCME
 	wxTextCtrl *Angle;
-
-	/// DOCME
 	wxComboBox *Encoding;
-
-	/// DOCME
 	wxTextCtrl *Spacing;
-
-	/// DOCME
 	wxTextCtrl *PreviewText;
-
-	/// DOCME
 	SubtitlesPreview *SubsPreview;
 
 	void SetBitmapColor(int n,wxColour color);

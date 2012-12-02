@@ -39,19 +39,9 @@ namespace agi {
 	class ProgressSink;
 }
 
-/// DOCME
-/// @class RAMAudioProvider
-/// @brief DOCME
-///
-/// DOCME
 class RAMAudioProvider : public AudioProvider {
-	/// DOCME
 	char** blockcache;
-
-	/// DOCME
 	int blockcount;
-
-	/// DOCME
 	bool samples_native_endian;
 
 	void Clear();

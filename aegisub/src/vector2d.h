@@ -25,11 +25,6 @@
 
 #include <wx/gdicmn.h>
 
-/// DOCME
-/// @class Vector2D
-/// @brief DOCME
-///
-/// DOCME
 class Vector2D {
 	float x, y;
 

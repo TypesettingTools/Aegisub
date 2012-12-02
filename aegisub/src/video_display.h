@@ -60,8 +60,6 @@ namespace agi {
 	class OptionValue;
 }
 
-/// @class VideoDisplay
-/// @brief DOCME
 class VideoDisplay : public wxGLCanvas {
 	/// Signals the display is connected to
 	std::deque<agi::signal::Connection> slots;

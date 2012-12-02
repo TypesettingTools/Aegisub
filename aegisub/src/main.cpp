@@ -95,7 +95,6 @@ static const char *LastStartupState = nullptr;
 
 #ifdef __VISUALC__
 
-/// DOCME
 #define MS_VC_EXCEPTION 0x406d1388
 
 /// Parameters for setting the thread name

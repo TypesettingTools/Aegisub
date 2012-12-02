@@ -98,7 +98,6 @@ class DataBlockCache {
 	/// Type of an array of blocks
 	typedef std::vector<BlockT*> BlockArray;
 
-	/// DOCME
 	struct MacroBlock {
 		/// This macroblock's position in the age list
 		/// Is valid iff blocks.size() > 0

@@ -69,13 +69,8 @@ class AudioBox : public wxSashWindow {
 	/// The audio display in the box
 	AudioDisplay *audioDisplay;
 
-	/// DOCME
 	wxSlider *HorizontalZoom;
-
-	/// DOCME
 	wxSlider *VerticalZoom;
-
-	/// DOCME
 	wxSlider *VolumeBar;
 
 	// Mouse wheel zoom accumulator

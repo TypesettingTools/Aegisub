@@ -36,11 +36,6 @@
 
 #include <vector>
 
-/// DOCME
-/// @class SubtitlesGrid
-/// @brief DOCME
-///
-/// DOCME
 class SubtitlesGrid: public BaseGrid {
 public:
 	SubtitlesGrid(wxWindow *parent, agi::Context *context);

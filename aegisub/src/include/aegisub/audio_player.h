@@ -38,13 +38,8 @@
 
 class AudioProvider;
 
-/// @class AudioPlayer
-/// @brief DOCME
-///
-/// DOCME
 class AudioPlayer {
 protected:
-	/// DOCME
 	AudioProvider *provider;
 
 public:

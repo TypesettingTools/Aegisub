@@ -75,11 +75,6 @@ enum {
 	BUTTON_KTACCEPT
 };
 
-/// DOCME
-/// @class KaraokeLineMatchDisplay
-/// @brief DOCME
-///
-/// DOCME
 class KaraokeLineMatchDisplay : public wxControl {
 	typedef AssKaraoke::Syllable MatchSyllable;
 

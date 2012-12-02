@@ -34,11 +34,6 @@ class wxCheckBox;
 class wxListBox;
 class wxTextCtrl;
 
-/// DOCME
-/// @class DialogStyling
-/// @brief DOCME
-///
-/// DOCME
 class DialogStyling : public wxDialog {
 	agi::Context *c;
 	agi::signal::Connection active_line_connection;

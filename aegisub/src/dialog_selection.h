@@ -28,11 +28,6 @@ class wxRadioBox;
 class wxRadioButton;
 class wxTextCtrl;
 
-/// DOCME
-/// @class DialogSelection
-/// @brief DOCME
-///
-/// DOCME
 class DialogSelection : public wxDialog {
 	agi::Context *con; ///< Project context
 

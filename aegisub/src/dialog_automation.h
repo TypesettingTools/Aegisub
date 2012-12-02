@@ -50,11 +50,6 @@ class wxButton;
 class wxListEvent;
 class wxListView;
 
-/// DOCME
-/// @class DialogAutomation
-/// @brief DOCME
-///
-/// DOCME
 class DialogAutomation : public wxDialog {
 	agi::Context *context;
 

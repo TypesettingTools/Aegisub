@@ -34,11 +34,6 @@
 
 #include "subtitle_format.h"
 
-/// DOCME
-/// @class TXTSubtitleFormat
-/// @brief DOCME
-///
-/// DOCME
 class TXTSubtitleFormat : public SubtitleFormat {
 public:
 	TXTSubtitleFormat();

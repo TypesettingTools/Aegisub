@@ -41,9 +41,6 @@
 
 class VisualToolBase;
 
-/// DOCME
-/// @class Spline
-/// @brief DOCME
 class Spline : private std::list<SplineCurve> {
 	/// Visual tool to do the conversion between script and video pixels
 	const VisualToolBase &coord_translator;

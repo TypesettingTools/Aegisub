@@ -38,7 +38,6 @@
 #include "ass_entry.h"
 
 /// @class AssAttachment
-/// @brief DOCME
 class AssAttachment : public AssEntry {
 	/// Decoded file data
 	std::shared_ptr<std::vector<char> > data;

@@ -45,11 +45,6 @@ class AssEntry;
 class AssFile;
 namespace agi { namespace vfr { class Framerate; } }
 
-/// DOCME
-/// @class SubtitleFormat
-/// @brief DOCME
-///
-/// DOCME
 class SubtitleFormat {
 	wxString name;
 

@@ -35,10 +35,7 @@ class SubsTextEditCtrl;
 class wxStaticText;
 class wxCheckBox;
 
-/// @class DialogTranslation
-/// @brief Assistant for translating subtitles in one language to another language
-///
-/// DOCME
+/// Assistant for translating subtitles in one language to another language
 class DialogTranslation : public wxDialog {
 	agi::Context *c;
 

@@ -40,9 +40,6 @@ struct VisualToolVectorClipDraggableFeature : public VisualDraggableFeature {
 	{ }
 };
 
-/// DOCME
-/// @class VisualToolVectorClip
-/// @brief DOCME
 class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeature> {
 	Spline spline; /// The current spline
 	wxToolBar *toolBar; /// The subtoolbar

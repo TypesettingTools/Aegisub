@@ -47,11 +47,6 @@ namespace agi { struct Context; }
 
 typedef std::vector<AssExportFilter*> FilterList;
 
-/// DOCME
-/// @class AssExportFilterChain
-/// @brief DOCME
-///
-/// DOCME
 class AssExportFilterChain {
 	static FilterList *filters();
 public:
@@ -68,11 +63,6 @@ public:
 	static const FilterList *GetFilterList();
 };
 
-/// DOCME
-/// @class AssExportFilter
-/// @brief DOCME
-///
-/// DOCME
 class AssExportFilter {
 	/// The filter chain needs to be able to muck around with filter names when
 	/// they're registered to avoid duplicates

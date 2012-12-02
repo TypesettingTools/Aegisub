@@ -214,13 +214,11 @@ void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 	}
 }
 
-/// DOCME
 /// @class RiffWavPCMAudioProvider
 /// @brief RIFF WAV PCM provider
 ///
 /// Overview of RIFF WAV: <http://www.sonicspot.com/guide/wavefiles.html>
 class  RiffWavPCMAudioProvider : public PCMAudioProvider {
-	/// DOCME
 	struct ChunkHeader {
 		/// Always "RIFF"
 		char type[4];
@@ -228,19 +226,13 @@ class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 		uint32_t size;
 	};
 
-	/// DOCME
 	struct RIFFChunk {
-
-		/// DOCME
 		ChunkHeader ch;
-
 		/// Always "WAVE"
 		char format[4];
 	};
 
-	/// DOCME
 	struct fmtChunk {
-
 		/// compression format used
 		/// We support only PCM (0x1)
 		uint16_t compression;
@@ -383,7 +375,6 @@ static const uint8_t w64Guiddata[16] = {
 	0x64, 0x61, 0x74, 0x61, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 };
 
-/// DOCME
 /// @class Wave64AudioProvider
 /// @brief Sony Wave64 audio provider
 ///

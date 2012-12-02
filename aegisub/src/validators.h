@@ -34,12 +34,7 @@
 
 #include <wx/validate.h>
 
-
-/// DOCME
-/// @class NumValidator
-/// @brief wx validator that only allows valid numbers
-///
-/// DOCME
+/// A wx validator that only allows valid numbers
 class NumValidator : public wxValidator {
 	double fValue; ///< Value if isFloat is true
 	int iValue;    ///< Value if isFloat is false

@@ -39,28 +39,15 @@
 #include <libaegisub/exception.h>
 #include "factory_manager.h"
 
-/// @class AudioProvider
-/// @brief DOCME
-///
-/// DOCME
 class AudioProvider {
 protected:
-	/// DOCME
 	int channels;
 
 	/// for one channel, ie. number of PCM frames
 	int64_t num_samples;
-
-	/// DOCME
 	int sample_rate;
-
-	/// DOCME
 	int bytes_per_sample;
-
 	bool float_samples;
-
-
-	/// DOCME
 	wxString filename;
 
 	virtual void FillBuffer(void *buf, int64_t start, int64_t count) const = 0;
@@ -85,11 +72,6 @@ public:
 	virtual bool NeedsCache() const { return false; }
 };
 
-/// DOCME
-/// @class AudioProviderFactory
-/// @brief DOCME
-///
-/// DOCME
 class AudioProviderFactory : public Factory1<AudioProvider, wxString> {
 public:
 	static void RegisterProviders();

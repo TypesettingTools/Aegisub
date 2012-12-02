@@ -51,11 +51,6 @@ namespace agi {
 }
 class AssDialogue;
 
-/// DOCME
-/// @class BaseGrid
-/// @brief DOCME
-///
-/// DOCME
 class BaseGrid : public wxWindow, public SubtitleSelectionController {
 	int lineHeight;         ///< Height of a line in pixels in the current font
 	bool holding;           ///< Is a drag selection in process?

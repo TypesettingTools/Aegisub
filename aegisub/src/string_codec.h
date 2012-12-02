@@ -52,7 +52,6 @@
 ///
 /// The encoded string should be usable in any kind of field in an ASS file.
 
-
 #include <wx/string.h>
 
 wxString inline_string_encode(const wxString &input);

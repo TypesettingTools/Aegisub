@@ -25,11 +25,6 @@
 
 class wxColour;
 
-/// DOCME
-/// @class OpenGLWrapper
-/// @brief DOCME
-///
-/// DOCME
 class OpenGLWrapper {
 	float line_r, line_g, line_b, line_a;
 	float fill_r, fill_g, fill_b, fill_a;

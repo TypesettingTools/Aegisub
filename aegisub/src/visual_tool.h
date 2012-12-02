@@ -154,9 +154,7 @@ public:
 	virtual ~VisualToolBase();
 };
 
-/// @class VisualTool
-/// @brief Visual tool base class containing all common feature-related functionality
-/// DOCME
+/// Visual tool base class containing all common feature-related functionality
 template<class FeatureType>
 class VisualTool : public VisualToolBase {
 protected:

@@ -42,11 +42,6 @@ class PersistLocation;
 class VideoBox;
 class VideoDisplay;
 
-/// DOCME
-/// @class DialogDetachedVideo
-/// @brief DOCME
-///
-/// DOCME
 class DialogDetachedVideo : public wxDialog {
 	agi::Context *context;
 	VideoDisplay *old_display;

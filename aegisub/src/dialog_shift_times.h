@@ -41,11 +41,6 @@ namespace json {
 	typedef std::deque<UnknownElement> Array;
 }
 
-/// DOCME
-/// @class DialogShiftTimes
-/// @brief DOCME
-///
-/// DOCME
 class DialogShiftTimes : public wxDialog {
 	agi::Context *context;
 

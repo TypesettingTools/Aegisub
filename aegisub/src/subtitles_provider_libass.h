@@ -45,19 +45,9 @@ extern "C" {
 
 class FontConfigCacheThread;
 
-/// DOCME
-/// @class LibassSubtitlesProvider
-/// @brief DOCME
-///
-/// DOCME
 class LibassSubtitlesProvider : public SubtitlesProvider {
-	/// DOCME
 	static ASS_Library* ass_library;
-
-	/// DOCME
 	ASS_Renderer* ass_renderer;
-
-	/// DOCME
 	ASS_Track* ass_track;
 
 	static FontConfigCacheThread *cache_worker;

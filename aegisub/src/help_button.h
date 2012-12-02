@@ -32,14 +32,8 @@
 /// @ingroup custom_control
 ///
 
-
 #include <wx/button.h>
 
-/// DOCME
-/// @class HelpButton
-/// @brief DOCME
-///
-/// DOCME
 class HelpButton : public wxButton {
 public:
 	HelpButton(wxWindow *parent, wxString const& page="", wxPoint position=wxDefaultPosition, wxSize size=wxDefaultSize);

@@ -34,10 +34,10 @@
 
 #include "config.h"
 
+#include "standard_paths.h"
+
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
-
-#include "standard_paths.h"
 
 StandardPaths &StandardPaths::GetInstance() {
 	static StandardPaths instance;

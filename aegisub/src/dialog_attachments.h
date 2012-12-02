@@ -41,21 +41,11 @@ class wxListEvent;
 
 #include "ass_entry.h"
 
-/// DOCME
-/// @class DialogAttachments
-/// @brief DOCME
-///
-/// DOCME
 class DialogAttachments : public wxDialog {
 	AssFile *ass;
 
-	/// DOCME
 	wxListView *listView;
-
-	/// DOCME
 	wxButton *extractButton;
-
-	/// DOCME
 	wxButton *deleteButton;
 
 	void OnAttachFont(wxCommandEvent &event);

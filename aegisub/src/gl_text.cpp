@@ -360,7 +360,6 @@ void OpenGLTextGlyph::Draw(float x, float y) const {
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-/// @brief DOCME
 OpenGLTextGlyph::OpenGLTextGlyph(int value, wxFont const& font)
 : str(wxChar(value))
 , tex(0)

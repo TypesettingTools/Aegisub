@@ -46,11 +46,6 @@
 
 #include <libaegisub/scoped_ptr.h>
 
-/// DOCME
-/// @class PCMAudioProvider
-/// @brief DOCME
-///
-/// DOCME
 class PCMAudioProvider : public AudioProvider {
 	mutable void *current_mapping;
 

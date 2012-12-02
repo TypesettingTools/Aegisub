@@ -34,11 +34,6 @@
 
 #include "subtitle_format.h"
 
-/// DOCME
-/// @class MKVSubtitleFormat
-/// @brief DOCME
-///
-/// DOCME
 class MKVSubtitleFormat : public SubtitleFormat {
 public:
 	MKVSubtitleFormat();

@@ -41,11 +41,6 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(MatroskaException, agi::Exception, "matroksa_wra
 
 class AssFile;
 
-/// DOCME
-/// @class MatroskaWrapper
-/// @brief DOCME
-///
-/// DOCME
 class MatroskaWrapper {
 public:
 	/// Check if the file is a matroska file with at least one subtitle track

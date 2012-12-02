@@ -45,11 +45,6 @@ namespace agi { struct Context; }
 
 typedef std::vector<AssExportFilter*> FilterList;
 
-/// DOCME
-/// @class AssExporter
-/// @brief DOCME
-///
-/// DOCME
 class AssExporter {
 	typedef FilterList::const_iterator filter_iterator;
 

@@ -36,11 +36,6 @@
 
 class wxCheckListBox;
 
-/// DOCME
-/// @class DialogPasteOver
-/// @brief DOCME
-///
-/// DOCME
 class DialogPasteOver : public wxDialog {
 	wxCheckListBox *ListBox;
 

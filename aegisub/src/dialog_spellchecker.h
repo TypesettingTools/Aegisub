@@ -36,11 +36,6 @@ class wxComboBox;
 class wxListBox;
 class wxTextCtrl;
 
-/// DOCME
-/// @class DialogSpellChecker
-/// @brief DOCME
-///
-/// DOCME
 class DialogSpellChecker : public wxDialog {
 	agi::Context *context; ///< The project context
 	agi::scoped_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine

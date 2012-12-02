@@ -42,9 +42,7 @@ class AssStyle;
 class SubtitlesProvider;
 class VideoProvider;
 
-/// DOCME
-/// @class SubtitlesPreview
-/// @brief Preview window to show a short string with a given ass style
+/// Preview window to show a short string with a given ass style
 class SubtitlesPreview : public wxWindow {
 	/// The subtitle provider used to render the string
 	agi::scoped_ptr<SubtitlesProvider> provider;

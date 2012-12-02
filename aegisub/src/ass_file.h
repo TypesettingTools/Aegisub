@@ -53,11 +53,6 @@ typedef boost::intrusive::make_list<AssEntry, boost::intrusive::constant_time_si
 typedef EntryList::iterator entryIter;
 typedef EntryList::const_iterator constEntryIter;
 
-/// DOCME
-/// @class AssFile
-/// @brief DOCME
-///
-/// DOCME
 class AssFile {
 	boost::container::list<AssFile> UndoStack;
 	boost::container::list<AssFile> RedoStack;

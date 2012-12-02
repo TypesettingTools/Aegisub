@@ -43,47 +43,20 @@
 struct OpenGLTextGlyph;
 class OpenGLTextTexture;
 
-/// DOCME
 typedef boost::container::map<int,OpenGLTextGlyph> glyphMap;
 
-/// DOCME
-/// @class OpenGLText
-/// @brief DOCME
-///
-/// DOCME
 class OpenGLText {
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
-
-	/// DOCME
 	float r,g,b,a;
 
-	/// DOCME
 	int lineHeight;
-
-	/// DOCME
 	int fontSize;
-
-	/// DOCME
 	bool fontBold;
-
-	/// DOCME
 	bool fontItalics;
-
-	/// DOCME
 	wxString fontFace;
-
-	/// DOCME
 	wxFont font;
 
-
-	/// DOCME
 	glyphMap glyphs;
 
-	/// DOCME
 	std::vector<std::shared_ptr<OpenGLTextTexture> > textures;
 
 	OpenGLText(OpenGLText const&);

@@ -34,12 +34,6 @@
 
 #include "subtitle_format.h"
 
-
-/// DOCME
-/// @class EncoreSubtitleFormat
-/// @brief DOCME
-///
-/// DOCME
 class EncoreSubtitleFormat : public SubtitleFormat {
 public:
 	EncoreSubtitleFormat();

@@ -64,8 +64,6 @@ class wxTextCtrl;
 
 template<class Base> class Placeholder;
 
-/// DOCME
-/// @class SubsEditBox
 /// @brief Main subtitle edit box
 ///
 /// Controls the text edit and all surrounding controls

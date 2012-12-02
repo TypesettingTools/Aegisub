@@ -36,11 +36,6 @@
 
 #include <string>
 
-/// DOCME
-/// @class ScintillaTextCtrl
-/// @brief DOCME
-///
-/// DOCME
 class ScintillaTextCtrl : public wxStyledTextCtrl {
 	wxString text;
 

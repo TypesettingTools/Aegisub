@@ -51,11 +51,6 @@
 
 #include <wx/timer.h>
 
-/// DOCME
-/// @class OpenALPlayer
-/// @brief DOCME
-///
-/// DOCME
 class OpenALPlayer : public AudioPlayer, wxTimer {
 	/// Number of OpenAL buffers to use
 	static const ALsizei num_buffers = 8;
@@ -87,7 +82,6 @@ class OpenALPlayer : public AudioPlayer, wxTimer {
 	/// Number of buffers which have been fully played since playback was last started
 	ALsizei buffers_played;
 
-	/// DOCME
 	wxStopWatch playback_segment_timer;
 
 	/// Buffer to decode audio into

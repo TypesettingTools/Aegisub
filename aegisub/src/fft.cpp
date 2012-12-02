@@ -36,20 +36,11 @@
 
 #include "config.h"
 
-#include <cmath>
-
 #include "fft.h"
 
+#include <cmath>
 
-/// @brief Transform
-/// @param n_samples
-/// @param input
-/// @param output_r
-/// @param output_i
-/// @param inverse
-///
 void FFT::DoTransform (size_t n_samples,float *input,float *output_r,float *output_i,bool inverse) {
-	// Check if it's power of two
 	if (!IsPowerOfTwo(n_samples)) {
 		throw "FFT requires power of two input.";
 	}
@@ -127,47 +118,22 @@ void FFT::DoTransform (size_t n_samples,float *input,float *output_r,float *outp
 	}
 }
 
-
-
-/// @brief Transform wrappers
-/// @param n_samples
-/// @param input
-/// @param output_r
-/// @param output_i
-///
 void FFT::Transform(size_t n_samples,float *input,float *output_r,float *output_i) {
 	DoTransform(n_samples,input,output_r,output_i,false);
 }
 
-
-/// @brief DOCME
-/// @param n_samples
-/// @param input
-/// @param output_r
-/// @param output_i
-///
 void FFT::InverseTransform(size_t n_samples,float *input,float *output_r,float *output_i) {
 	DoTransform(n_samples,input,output_r,output_i,true);
 }
 
-
-
 /// @brief Checks if number is a power of two
-/// @param x
-/// @return
-///
 bool FFT::IsPowerOfTwo (unsigned int x) {
 	if (x < 2) return false;
 	if (x & (x-1)) return false;
     return true;
 }
 
-
-
 /// @brief Bits needed by the FFT
-/// @param n_samples
-/// @return
-///
 unsigned int FFT::NumberOfBitsNeeded (unsigned int n_samples) {
 	int i;
 
@@ -180,13 +146,7 @@ unsigned int FFT::NumberOfBitsNeeded (unsigned int n_samples) {
     }
 }
 
-
-
 /// @brief Get reversed bit position
-/// @param index
-/// @param bits
-/// @return
-///
 unsigned int FFT::ReverseBits (unsigned int index, unsigned int bits) {
 	unsigned int i, rev;
 
@@ -198,13 +158,7 @@ unsigned int FFT::ReverseBits (unsigned int index, unsigned int bits) {
 	return rev;
 }
 
-
-
 /// @brief Get frequency at index
-/// @param baseFreq
-/// @param n_samples
-/// @param index
-///
 float FFT::FrequencyAtIndex (unsigned int baseFreq, unsigned int n_samples, unsigned int index) {
 	if (index >= n_samples) return 0.0;
 	else if (index <= n_samples/2) {
@@ -214,5 +168,3 @@ float FFT::FrequencyAtIndex (unsigned int baseFreq, unsigned int n_samples, unsi
 		return (-(float)(n_samples-index) / (float)n_samples * baseFreq);
 	}
 }
-
-

@@ -65,8 +65,6 @@ class wxPathList;
 namespace agi { struct Context; }
 namespace cmd { class Command; }
 
-
-/// DOCME
 namespace Automation4 {
 	DEFINE_BASE_EXCEPTION_NOINNER(AutomationError, agi::Exception)
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(ScriptLoadError, AutomationError, "automation/load/generic")

@@ -41,11 +41,6 @@
 class AssFile;
 namespace agi { struct Context; }
 
-/// DOCME
-/// @class DialogProperties
-/// @brief DOCME
-///
-/// DOCME
 class DialogProperties : public wxDialog {
 	agi::Context *c; ///< Project this dialog is adjusting the properties of
 

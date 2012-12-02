@@ -22,19 +22,13 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
-/// @class ClipCorner
-/// @brief VisualDraggableFeature with siblings
+/// VisualDraggableFeature with siblings
 struct ClipCorner : public VisualDraggableFeature {
-	ClipCorner *horiz; /// Other corner on this corner's horizontal line
-	ClipCorner *vert;  /// Other corner on this corner's vertical line
+	ClipCorner *horiz; ///< Other corner on this corner's horizontal line
+	ClipCorner *vert;  ///< Other corner on this corner's vertical line
 	ClipCorner() : VisualDraggableFeature() , horiz(0) , vert(0) { }
 };
 
-/// DOCME
-/// @class VisualToolClip
-/// @brief DOCME
-///
-/// DOCME
 class VisualToolClip : public VisualTool<ClipCorner> {
 	Vector2D cur_1;
 	Vector2D cur_2;

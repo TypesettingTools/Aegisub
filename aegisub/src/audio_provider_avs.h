@@ -38,19 +38,10 @@
 #include "avisynth.h"
 #include "avisynth_wrap.h"
 
-
-/// DOCME
-/// @class AvisynthAudioProvider
-/// @brief DOCME
-///
-/// DOCME
 class AvisynthAudioProvider : public AudioProvider {
 	AviSynthWrapper avs_wrapper;
 
-	/// DOCME
 	wxString filename;
-
-	/// DOCME
 	PClip clip;
 
 	void LoadFromClip(AVSValue clip);

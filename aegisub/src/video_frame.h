@@ -36,11 +36,6 @@
 
 #include <wx/image.h>
 
-/// DOCME
-/// @class AegiVideoFrame
-/// @brief DOCME
-///
-/// DOCME
 class AegiVideoFrame {
 	/// Whether the object owns its buffer. If this is false, **data should never be modified
 	bool ownMem;

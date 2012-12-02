@@ -51,11 +51,6 @@ class AssStyle;
 class DialogStyleEditor;
 class PersistLocation;
 
-/// DOCME
-/// @class DialogStyleManager
-/// @brief DOCME
-///
-/// DOCME
 class DialogStyleManager : public wxDialog {
 	agi::Context *c; ///< Project context
 	agi::scoped_ptr<PersistLocation> persist;

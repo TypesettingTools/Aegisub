@@ -36,11 +36,6 @@
 
 class IScriptEnvironment;
 
-/// DOCME
-/// @class AviSynthWrapper
-/// @brief DOCME
-///
-/// DOCME
 class AviSynthWrapper {
 	AviSynthWrapper(AviSynthWrapper const&);
 public:

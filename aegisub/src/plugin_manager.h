@@ -34,20 +34,9 @@
 
 namespace Automation4 { class ScriptFactory; }
 
-/// DOCME
-/// @class PluginManager
-/// @brief DOCME
-///
-/// DOCME
 class PluginManager {
-private:
-
-	/// DOCME
 	bool init;
-
-#ifdef WITH_AUTO4_LUA
 	Automation4::ScriptFactory *lua;
-#endif
 
 public:
 	PluginManager();
@@ -55,5 +44,3 @@ public:
 
 	void RegisterBuiltInPlugins();
 };
-
-

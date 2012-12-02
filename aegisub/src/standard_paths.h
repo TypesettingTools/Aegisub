@@ -33,18 +33,12 @@
 ///
 
 #include <map>
+#include <wx/string.h>
 
-
-/// DOCME
-/// @class StandardPaths
-/// @brief DOCME
-///
-/// DOCME
 class StandardPaths {
 	static StandardPaths &GetInstance();
 
-	/// DOCME
-	std::map<wxString,wxString> paths;
+	std::map<wxString, wxString> paths;
 
 	StandardPaths();
 	StandardPaths(StandardPaths const&);

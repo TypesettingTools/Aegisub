@@ -43,18 +43,8 @@
 
 class DirectSoundPlayer;
 
-/// DOCME
-/// @class DirectSoundPlayerThread
-/// @brief DOCME
-///
-/// DOCME
 class DirectSoundPlayerThread : public wxThread {
-private:
-
-	/// DOCME
 	DirectSoundPlayer *parent;
-
-	/// DOCME
 	HANDLE stopnotify;
 
 public:
@@ -65,49 +55,23 @@ public:
 	wxThread::ExitCode Entry();
 };
 
-/// DOCME
-/// @class DirectSoundPlayer
-/// @brief DOCME
-///
-/// DOCME
 class DirectSoundPlayer : public AudioPlayer {
 	friend class DirectSoundPlayerThread;
 
-private:
-
-	/// DOCME
 	volatile bool playing;
-
-	/// DOCME
 	float volume;
-
-	/// DOCME
 	int offset;
 
-	/// DOCME
 	DWORD bufSize;
-
-	/// DOCME
 	volatile int64_t playPos;
-
-	/// DOCME
 	int64_t startPos;
-
-	/// DOCME
 	volatile int64_t endPos;
-
-	/// DOCME
 	DWORD startTime;
 
-	/// DOCME
 	IDirectSound8 *directSound;
-
-	/// DOCME
 	IDirectSoundBuffer8 *buffer;
 
 	bool FillBuffer(bool fill);
-
-	/// DOCME
 	DirectSoundPlayerThread *thread;
 
 public:

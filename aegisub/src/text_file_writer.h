@@ -39,27 +39,14 @@
 #include <wx/string.h>
 
 namespace agi {
-	namespace charset {
-		class IconvWrapper;
-	}
-	namespace io {
-		class Save;
-	}
+	namespace charset { class IconvWrapper; }
+	namespace io { class Save; }
 }
 
 #include <libaegisub/scoped_ptr.h>
 
-
-/// DOCME
-/// @class TextFileWriter
-/// @brief DOCME
-///
-/// DOCME
 class TextFileWriter {
-	/// DOCME
 	agi::scoped_ptr<agi::io::Save> file;
-
-	/// DOCME
 	agi::scoped_ptr<agi::charset::IconvWrapper> conv;
 
 public:

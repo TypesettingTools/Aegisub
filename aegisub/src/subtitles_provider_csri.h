@@ -43,11 +43,6 @@
 typedef void csri_rend;
 typedef void csri_inst;
 
-/// DOCME
-/// @class CSRISubtitlesProvider
-/// @brief DOCME
-///
-/// DOCME
 class CSRISubtitlesProvider : public SubtitlesProvider {
 	agi::scoped_holder<csri_inst*> instance;
 	csri_rend *renderer;

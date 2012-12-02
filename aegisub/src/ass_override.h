@@ -65,9 +65,7 @@ enum AssParameterOptional {
 	OPTIONAL_7 = 0x40
 };
 
-/// DOCME
-/// @class AssOverrideParameter
-/// @brief A single parameter to an override tag
+/// A single parameter to an override tag
 class AssOverrideParameter : public VariableData {
 public:
 	/// Type of parameter
@@ -81,9 +79,7 @@ public:
 	void operator=(const AssOverrideParameter &param);
 };
 
-/// DOCME
-/// @class AssOverrideParamProto
-/// @brief Prototype of a single override parameter
+/// Prototype of a single override parameter
 struct AssOverrideParamProto {
 	/// ASS_ParameterOptional
 	int optional;
@@ -97,9 +93,6 @@ struct AssOverrideParamProto {
 	AssOverrideParamProto (VariableDataType type, int opt=NOT_OPTIONAL, AssParameterClass classi=PARCLASS_NORMAL);
 };
 
-/// DOCME
-/// @class AssOverrideTagProto
-/// @brief DOCME
 struct AssOverrideTagProto {
 	/// Name of the tag, with slash
 	wxString name;
@@ -120,17 +113,12 @@ struct AssOverrideTagProto {
 	void Set(wxString name, VariableDataType type, AssParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
 };
 
-/// DOCME
-/// @class AssOverrideTag
-/// @brief DOCME
-///
-/// DOCME
 class AssOverrideTag {
 	bool valid;
 
 public:
 	wxString Name;
-	std::vector <AssOverrideParameter*> Params;
+	std::vector<AssOverrideParameter*> Params;
 
 	AssOverrideTag();
 	AssOverrideTag(wxString text);

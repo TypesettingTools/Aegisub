@@ -37,11 +37,6 @@
 class AssDialogue;
 class wxXmlNode;
 
-/// DOCME
-/// @class TTXTSubtitleFormat
-/// @brief DOCME
-///
-/// DOCME
 class TTXTSubtitleFormat : public SubtitleFormat {
 	AssDialogue *ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const;
 	void ProcessHeader(wxXmlNode *node) const;

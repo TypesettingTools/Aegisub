@@ -22,11 +22,6 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
-/// DOCME
-/// @class VisualToolRotateZ
-/// @brief DOCME
-///
-/// DOCME
 class VisualToolRotateZ : public VisualTool<VisualDraggableFeature> {
 	float angle; ///< Current Z rotation
 	float orig_angle; ///< Z rotation at the beginning of the current hold

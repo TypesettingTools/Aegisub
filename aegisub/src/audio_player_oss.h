@@ -51,9 +51,7 @@
 class AudioProvider;
 class OSSPlayer;
 
-/// DOCME
-/// @class OSSPlayerThread
-/// @brief Worker thread to asynchronously write audio data to the output device
+/// Worker thread to asynchronously write audio data to the output device
 class OSSPlayerThread : public wxThread {
     /// Parent player
     OSSPlayer *parent;
@@ -67,11 +65,6 @@ public:
     wxThread::ExitCode Entry();
 };
 
-/// DOCME
-/// @class OSSPlayer
-/// @brief DOCME
-///
-/// DOCME
 class OSSPlayer : public AudioPlayer {
     friend class OSSPlayerThread;
 

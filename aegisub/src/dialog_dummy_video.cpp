@@ -64,14 +64,12 @@ enum {
 	Dummy_Video_Length
 };
 
-/// DOCME
 struct ResolutionShortcut {
 	const char *name;
 	int width;
 	int height;
 };
 
-/// DOCME
 static ResolutionShortcut resolutions[] = {
 	{"640x480 (SD fullscreen)", 640, 480},
 	{"704x480 (SD anamorphic)", 704, 480},

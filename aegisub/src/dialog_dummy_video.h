@@ -42,11 +42,6 @@ class wxSpinCtrl;
 class wxStaticText;
 class wxTextCtrl;
 
-/// DOCME
-/// @class DialogDummyVideo
-/// @brief DOCME
-///
-/// DOCME
 class DialogDummyVideo : public wxDialog {
 	DialogDummyVideo(wxWindow *parent);
 	~DialogDummyVideo();

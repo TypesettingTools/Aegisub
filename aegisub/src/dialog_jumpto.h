@@ -35,11 +35,6 @@
 class TimeEdit;
 namespace agi { struct Context; }
 
-/// DOCME
-/// @class DialogJumpTo
-/// @brief DOCME
-///
-/// DOCME
 class DialogJumpTo : public wxDialog {
 	agi::Context *c;       ///< Project context
 	long jumpframe;        ///< Target frame to jump to

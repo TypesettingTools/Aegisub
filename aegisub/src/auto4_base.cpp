@@ -71,7 +71,6 @@
 #include "subtitle_format.h"
 #include "utils.h"
 
-/// DOCME
 namespace Automation4 {
 	bool CalculateTextExtents(AssStyle *style, wxString const& text, double &width, double &height, double &descent, double &extlead)
 	{

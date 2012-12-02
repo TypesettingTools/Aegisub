@@ -34,13 +34,7 @@
 
 #include "include/aegisub/audio_provider.h"
 
-/// DOCME
-/// @class DummyAudioProvider
-/// @brief DOCME
-///
-/// DOCME
 class DummyAudioProvider : public AudioProvider {
-	/// DOCME
 	bool noise;
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 

@@ -35,11 +35,6 @@
 #include "auto4_base.h"
 
 namespace Automation4 {
-	/// DOCME
-	/// @class LuaScriptFactory
-	/// @brief DOCME
-	///
-	/// DOCME
 	class LuaScriptFactory : public ScriptFactory {
 		Script* Produce(const wxString &filename) const;
 	public:

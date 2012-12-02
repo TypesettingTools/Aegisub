@@ -43,11 +43,6 @@ namespace agi {
 	class ProgressSink;
 }
 
-/// DOCME
-/// @class HDAudioProvider
-/// @brief DOCME
-///
-/// DOCME
 class HDAudioProvider : public AudioProvider {
 	/// Name of the file which the decoded audio is written to
 	wxString diskCacheFilename;

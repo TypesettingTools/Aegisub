@@ -22,9 +22,6 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
-/// DOCME
-/// @class VisualToolScale
-/// @brief DOCME
 class VisualToolScale : public VisualTool<VisualDraggableFeature> {
 	Vector2D scale; ///< The current scale
 	Vector2D initial_scale; ///< The scale at the beginning of the current hold

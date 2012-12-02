@@ -34,11 +34,6 @@
 
 #include "subtitle_format.h"
 
-/// DOCME
-/// @class MicroDVDSubtitleFormat
-/// @brief DOCME
-///
-/// DOCME
 class MicroDVDSubtitleFormat : public SubtitleFormat {
 public:
 	MicroDVDSubtitleFormat();

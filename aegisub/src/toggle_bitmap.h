@@ -38,11 +38,6 @@
 namespace agi { struct Context; }
 namespace cmd { class Command; }
 
-/// DOCME
-/// @class ToggleBitmap
-/// @brief DOCME
-///
-/// DOCME
 class ToggleBitmap : public wxControl {
 	agi::Context *context;
 	cmd::Command &command;

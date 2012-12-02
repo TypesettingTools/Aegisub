@@ -22,9 +22,6 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
-/// DOCME
-/// @class VisualToolRotateXY
-/// @brief DOCME
 class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
 	float angle_x; /// Current x rotation
 	float angle_y; /// Current y rotation

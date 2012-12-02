@@ -36,11 +36,6 @@
 
 #include <vector>
 
-/// DOCME
-/// @class SplineCurve
-/// @brief DOCME
-///
-/// DOCME
 class SplineCurve {
 	/// Closest t in segment p1-p2 to point p3
 	float GetClosestSegmentPart(Vector2D p1, Vector2D p2, Vector2D p3) const;
@@ -59,7 +54,6 @@ public:
 	Vector2D p3;
 	Vector2D p4;
 
-	/// DOCME
 	CurveType type;
 
 	SplineCurve(Vector2D p1 = Vector2D(0, 0));

@@ -39,28 +39,14 @@
 class AssFile;
 class AegiVideoFrame;
 
-/// @class SubtitlesProvider
-/// @brief DOCME
-///
-/// DOCME
 class SubtitlesProvider {
 public:
 	virtual ~SubtitlesProvider() { };
 
 	virtual void LoadSubtitles(AssFile *subs)=0;
-
-	/// @brief DOCME
-	/// @param dst
-	/// @param time
-	///
 	virtual void DrawSubtitles(AegiVideoFrame &dst,double time)=0;
 };
 
-/// DOCME
-/// @class SubtitlesProviderFactoryManager
-/// @brief DOCME
-///
-/// DOCME
 class SubtitlesProviderFactory : public Factory1<SubtitlesProvider, std::string> {
 public:
 	static SubtitlesProvider *GetProvider();
