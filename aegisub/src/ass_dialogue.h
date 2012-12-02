@@ -182,8 +182,7 @@ public:
 	void SetMarginString(wxString const& value, int which);
 	/// @brief Get a margin
 	/// @param which 0 = left, 1 = right, 2 = vertical
-	/// @param pad Pad the number to four digits
-	wxString GetMarginString(int which, bool pad=true) const;
+	wxString GetMarginString(int which) const;
 	/// Get the line as SSA rather than ASS
 	wxString GetSSAText() const override;
 	/// Does this line collide with the passed line?

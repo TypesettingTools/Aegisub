@@ -210,7 +210,7 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) {
 		wxString value = ctrl->GetValue();
 		SetSelectedRows([&](AssDialogue *d) { d->SetMarginString(value, margin); }, commit_msg, AssFile::COMMIT_DIAG_META);
-		if (line) change_value(ctrl, line->GetMarginString(margin, false));
+		if (line) change_value(ctrl, line->GetMarginString(margin));
 	}, ctrl->GetId());
 
 	return ctrl;
@@ -292,7 +292,7 @@ void SubsEditBox::OnCommit(int type) {
 	if (type & AssFile::COMMIT_DIAG_META) {
 		Layer->SetValue(line->Layer);
 		for (size_t i = 0; i < Margin.size(); ++i)
-			change_value(Margin[i], line->GetMarginString(i, false));
+			change_value(Margin[i], line->GetMarginString(i));
 		CommentBox->SetValue(line->Comment);
 		StyleBox->Select(StyleBox->FindString(line->Style));
 

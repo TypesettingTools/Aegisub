@@ -331,9 +331,9 @@ void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
 	Margin[which] = mid<int>(0, value, 9999);
 }
 
-wxString AssDialogue::GetMarginString(int which, bool pad) const {
+wxString AssDialogue::GetMarginString(int which) const {
 	if (which < 0 || which > 2) throw InvalidMarginIdError();
-	return wxString::Format(pad ? "%04d" : "%d", Margin[which]);
+	return wxString::Format("%d", Margin[which]);
 }
 
 void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
