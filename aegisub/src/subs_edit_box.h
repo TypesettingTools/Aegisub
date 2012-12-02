@@ -32,6 +32,7 @@
 /// @ingroup main_ui
 ///
 
+#include <array>
 #include <deque>
 #include <boost/container/map.hpp>
 #include <vector>
@@ -99,9 +100,7 @@ class SubsEditBox : public wxPanel {
 	TimeEdit *EndTime;
 	TimeEdit *Duration;
 	wxSpinCtrl *Layer;
-	wxTextCtrl *MarginL;
-	wxTextCtrl *MarginR;
-	wxTextCtrl *MarginV;
+	std::array<wxTextCtrl *, 3> Margin;
 	Placeholder<wxComboBox> *Effect;
 	wxRadioButton *ByTime;
 	wxRadioButton *ByFrame;

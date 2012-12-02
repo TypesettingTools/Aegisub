@@ -134,9 +134,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	Duration  = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
 	MiddleSizer->AddSpacer(5);
 
-	MarginL = MakeMarginCtrl(_("Left Margin (0 = default)"), 0, _("left margin change"));
-	MarginR = MakeMarginCtrl(_("Right Margin (0 = default)"), 1, _("right margin change"));
-	MarginV = MakeMarginCtrl(_("Vertical Margin (0 = default)"), 2, _("vertical margin change"));
+	Margin[0] = MakeMarginCtrl(_("Left Margin (0 = default)"), 0, _("left margin change"));
+	Margin[1] = MakeMarginCtrl(_("Right Margin (0 = default)"), 1, _("right margin change"));
+	Margin[2] = MakeMarginCtrl(_("Vertical Margin (0 = default)"), 2, _("vertical margin change"));
 	MiddleSizer->AddSpacer(5);
 
 	// Middle-bottom controls
@@ -291,9 +291,8 @@ void SubsEditBox::OnCommit(int type) {
 
 	if (type & AssFile::COMMIT_DIAG_META) {
 		Layer->SetValue(line->Layer);
-		change_value(MarginL, line->GetMarginString(0,false));
-		change_value(MarginR, line->GetMarginString(1,false));
-		change_value(MarginV, line->GetMarginString(2,false));
+		for (size_t i = 0; i < Margin.size(); ++i)
+			change_value(Margin[i], line->GetMarginString(i, false));
 		CommentBox->SetValue(line->Comment);
 		StyleBox->Select(StyleBox->FindString(line->Style));
 
