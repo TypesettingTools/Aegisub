@@ -183,7 +183,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, CommentBox->GetId());
 
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
-	Bind(wxEVT_TIMER, &SubsEditBox::OnUndoTimer, this);
+	Bind(wxEVT_TIMER, [=](wxTimerEvent&) { commitId = -1; });
 
 	wxSizeEvent evt;
 	OnSize(evt);
@@ -376,10 +376,6 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 			commitId = -1;
 		CommitText(_("modify text"));
 	}
-}
-
-void SubsEditBox::OnUndoTimer(wxTimerEvent&) {
-	commitId = -1;
 }
 
 template<class setter>

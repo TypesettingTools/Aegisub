@@ -155,7 +155,6 @@ class SubsEditBox : public wxPanel {
 	void OnCommentChange(wxCommandEvent &);
 	void OnEffectChange(wxCommandEvent &);
 	void OnSize(wxSizeEvent &event);
-	void OnUndoTimer(wxTimerEvent&);
 
 	void SetPlaceholderCtrl(wxControl *ctrl, wxString const& value);
 
