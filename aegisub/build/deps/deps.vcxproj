@@ -17,12 +17,6 @@ PERFORMANCE OF THIS SOFTWARE.
 Aegisub Project http://www.aegisub.org/
 -->
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{472212DF-99E8-4B73-9736-8500616D8A80}</ProjectGuid>
     <ProjectName>! Update Dependencies</ProjectName>
