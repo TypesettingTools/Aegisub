@@ -35,7 +35,6 @@
 
 #include <fstream>
 #include <list>
-#include <vector>
 
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
@@ -45,6 +44,8 @@
 #include "compat.h"
 #include "subtitle_format.h"
 #include "utils.h"
+
+#include <libaegisub/of_type_adaptor.h>
 
 AssDialogue::AssDialogue()
 : AssEntry(wxString())
@@ -84,11 +85,6 @@ AssDialogue::AssDialogue(wxString const& data)
 }
 
 AssDialogue::~AssDialogue () {
-	delete_clear(Blocks);
-}
-
-void AssDialogue::ClearBlocks() {
-	delete_clear(Blocks);
 }
 
 bool AssDialogue::Parse(wxString const& rawData) {
@@ -189,17 +185,17 @@ const wxString AssDialogue::GetEntryData() const {
 	return GetData(false);
 }
 
-wxString AssDialogue::GetSSAText () const {
+wxString AssDialogue::GetSSAText() const {
 	return GetData(true);
 }
 
-std::vector<AssDialogueBlock*> AssDialogue::ParseTags() const {
-	std::vector<AssDialogueBlock*> Blocks;
+std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() const {
+	boost::ptr_vector<AssDialogueBlock> Blocks;
 
 	// Empty line, make an empty block
 	if (Text.empty()) {
 		Blocks.push_back(new AssDialogueBlockPlain);
-		return Blocks;
+		return Blocks.release();
 	}
 
 	int drawingLevel = 0;
@@ -260,54 +256,46 @@ plain:
 			Blocks.push_back(new AssDialogueBlockDrawing(work, drawingLevel));
 	}
 
-	return Blocks;
+	return Blocks.release();
 }
 
-void AssDialogue::ParseAssTags() {
-	ClearBlocks();
-	Blocks = ParseTags();
-}
-
-void AssDialogue::StripTags () {
+void AssDialogue::StripTags() {
 	Text = GetStrippedText();
 }
 
-void AssDialogue::StripTag (wxString tagName) {
-	ParseAssTags();
-	wxString final;
+void AssDialogue::StripTag(wxString const& tag_name) {
+	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
+	Text.clear();
 
 	// Look for blocks
-	for (auto block : Blocks) {
-		if (block->GetType() != BLOCK_OVERRIDE) {
-			final += block->GetText();
+	for (auto& block : blocks) {
+		if (block.GetType() != BLOCK_OVERRIDE) {
+			Text += block.GetText();
 			continue;
 		}
 
-		AssDialogueBlockOverride *over = static_cast<AssDialogueBlockOverride*>(block);
+		AssDialogueBlockOverride *over = static_cast<AssDialogueBlockOverride*>(&block);
 		wxString temp;
 		for (auto tag : over->Tags) {
-			if (tag->Name != tagName)
+			if (tag->Name != tag_name)
 				temp += *tag;
 		}
 
 		if (!temp.empty())
-			final += "{" + temp + "}";
+			Text += "{" + temp + "}";
 	}
-
-	ClearBlocks();
-	Text = final;
 }
 
-void AssDialogue::UpdateText () {
-	if (Blocks.empty()) return;
+void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
+	if (blocks.empty()) return;
 	Text.clear();
-	for (auto block : Blocks) {
-		if (block->GetType() == BLOCK_OVERRIDE) {
+	for (auto& block : blocks) {
+		if (block.GetType() == BLOCK_OVERRIDE) {
 			Text += "{";
-			Text += block->GetText();
+			Text += block.GetText();
 			Text += "}";
 		}
-		else Text += block->GetText();
+		else Text += block.GetText();
 	}
 }
 
@@ -336,25 +324,17 @@ wxString AssDialogue::GetMarginString(int which) const {
 	return wxString::Format("%d", Margin[which]);
 }
 
-void AssDialogue::ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData) {
-	// Apply for all override blocks
-	for (auto block : Blocks) {
-		if (block->GetType() == BLOCK_OVERRIDE) {
-			static_cast<AssDialogueBlockOverride*>(block)->ProcessParameters(callback, userData);
-		}
-	}
-}
-
 bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 	if (!target) return false;
 	return ((Start < target->Start) ? (target->Start < End) : (Start < target->End));
 }
 
 wxString AssDialogue::GetStrippedText() const {
-	static const wxRegEx reg("\\{[^\\{]*\\}", wxRE_ADVANCED);
-	wxString txt(Text);
-	reg.Replace(&txt, "");
-	return txt;
+	wxString ret;
+	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
+	for (auto block : blocks | agi::of_type<AssDialogueBlockPlain>())
+		ret += block->GetText();
+	return ret;
 }
 
 AssEntry *AssDialogue::Clone() const {

@@ -156,16 +156,7 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 		if (write_actors)
 			out_line += dia->Actor + ": ";
 
-		wxString out_text;
-		if (strip_formatting) {
-			std::vector<AssDialogueBlock*> blocks = dia->ParseTags();
-			for (auto block : blocks | agi::of_type<AssDialogueBlockPlain>())
-				out_text += block->GetText();
-			delete_clear(blocks);
-		}
-		else {
-			out_text = dia->Text;
-		}
+		wxString out_text = strip_formatting ? dia->GetStrippedText() : dia->Text;
 		out_line += out_text;
 
 		if (!out_text.empty())

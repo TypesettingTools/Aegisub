@@ -48,14 +48,14 @@ FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFi
 void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	if (line->Comment) return;
 
-	std::vector<AssDialogueBlock*> blocks = line->ParseTags();
+	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 	StyleInfo style = styles[line->Style];
 	StyleInfo initial = style;
 
 	bool overriden = false;
 
-	for (auto block : blocks) {
-		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(block)) {
+	for (auto& block : blocks) {
+		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(&block)) {
 			for (auto tag : ovr->Tags) {
 				wxString name = tag->Name;
 
@@ -77,7 +77,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				}
 			}
 		}
-		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(block)) {
+		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(&block)) {
 			wxString text = txt->GetText();
 
 			if (text.empty() || (text.size() >= 2 && text.StartsWith("{") && text.EndsWith("}")))
@@ -102,7 +102,6 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 		}
 		// Do nothing with drawing blocks
 	}
-	delete_clear(blocks);
 }
 
 void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {

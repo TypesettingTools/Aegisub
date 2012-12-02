@@ -24,8 +24,11 @@
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
+#include <boost/ptr_container/ptr_vector.hpp>
+
 namespace agi { struct Context; }
 class AssDialogue;
+class AssDialogueBlock;
 class PersistLocation;
 class ScintillaTextCtrl;
 class SubsTextEditCtrl;
@@ -44,6 +47,8 @@ class DialogTranslation : public wxDialog {
 
 	/// The active line
 	AssDialogue *active_line;
+	/// The parsed dialogue blocks for the active line
+	boost::ptr_vector<AssDialogueBlock> blocks;
 	/// Which dialogue block in the active line is currently being translated
 	size_t cur_block;
 

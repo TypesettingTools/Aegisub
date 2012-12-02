@@ -51,9 +51,9 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wx
 }
 
 // Skip over override blocks, comments, and whitespace between blocks
-static bool bad_block(AssDialogueBlock *block) {
-	if (block->GetType() != BLOCK_PLAIN) return true;
-	wxString text = block->GetText();
+static bool bad_block(AssDialogueBlock &block) {
+	if (block.GetType() != BLOCK_PLAIN) return true;
+	wxString text = block.GetText();
 	if (text.Trim().Trim(false).empty()) return true;
 	if (text[0] == '{' && text.Last() == '}') return true;
 	return false;
@@ -157,8 +157,8 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 
 	Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
 
-	active_line->ParseAssTags();
-	if (bad_block(active_line->Blocks[0])) {
+	blocks = active_line->ParseTags();
+	if (bad_block(blocks[0])) {
 		if (!NextBlock())
 			throw NothingToTranslate(STD_STR(_("There is nothing to translate in the file.")));
 	}
@@ -173,11 +173,11 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 	if (switching_lines) return;
 
 	active_line = new_line;
-	active_line->ParseAssTags();
+	blocks = active_line->ParseTags();
 	cur_block = 0;
 	line_number = count_if(c->ass->Line.begin(), c->ass->Line.iterator_to(*new_line), cast<AssDialogue*>()) + 1;
 
-	if (bad_block(active_line->Blocks[cur_block]) && !NextBlock()) {
+	if (bad_block(blocks[cur_block]) && !NextBlock()) {
 		wxMessageBox(_("No more lines to translate."));
 		EndModal(1);
 	}
@@ -196,20 +196,19 @@ void DialogTranslation::OnExternalCommit(int commit_type) {
 bool DialogTranslation::NextBlock() {
 	switching_lines = true;
 	do {
-		if (cur_block == active_line->Blocks.size() - 1) {
+		if (cur_block == blocks.size() - 1) {
 			c->selectionController->NextLine();
 			AssDialogue *new_line = c->selectionController->GetActiveLine();
 			if (active_line == new_line || !new_line) return false;
 
-			active_line->ClearBlocks();
 			active_line = new_line;
-			active_line->ParseAssTags();
+			blocks = active_line->ParseTags();
 			cur_block = 0;
 			++line_number;
 		}
 		else
 			++cur_block;
-	} while (bad_block(active_line->Blocks[cur_block]));
+	} while (bad_block(blocks[cur_block]));
 	switching_lines = false;
 
 	UpdateDisplay();
@@ -224,15 +223,14 @@ bool DialogTranslation::PrevBlock() {
 			AssDialogue *new_line = c->selectionController->GetActiveLine();
 			if (active_line == new_line || !new_line) return false;
 
-			active_line->ClearBlocks();
 			active_line = new_line;
-			active_line->ParseAssTags();
-			cur_block = active_line->Blocks.size() - 1;
+			blocks = active_line->ParseTags();
+			cur_block = blocks.size() - 1;
 			--line_number;
 		}
 		else
 			--cur_block;
-	} while (bad_block(active_line->Blocks[cur_block]));
+	} while (bad_block(blocks[cur_block]));
 	switching_lines = false;
 
 	UpdateDisplay();
@@ -246,17 +244,17 @@ void DialogTranslation::UpdateDisplay() {
 	original_text->ClearAll();
 
 	size_t i = 0;
-	for (auto block : active_line->Blocks) {
-		if (block->GetType() == BLOCK_PLAIN) {
+	for (auto& block : blocks) {
+		if (block.GetType() == BLOCK_PLAIN) {
 			int cur_size = original_text->GetReverseUnicodePosition(original_text->GetLength());
-			original_text->AppendText(block->GetText());
+			original_text->AppendText(block.GetText());
 			if (i == cur_block) {
 				original_text->StartUnicodeStyling(cur_size);
-				original_text->SetUnicodeStyling(cur_size, block->GetText().size(), 1);
+				original_text->SetUnicodeStyling(cur_size, block.GetText().size(), 1);
 			}
 		}
-		else if (block->GetType() == BLOCK_OVERRIDE)
-			original_text->AppendText("{" + block->GetText() + "}");
+		else if (block.GetType() == BLOCK_OVERRIDE)
+			original_text->AppendText("{" + block.GetText() + "}");
 		++i;
 	}
 
@@ -273,8 +271,8 @@ void DialogTranslation::Commit(bool next) {
 	new_value.Replace("\r\n", "\\N");
 	new_value.Replace("\r", "\\N");
 	new_value.Replace("\n", "\\N");
-	*active_line->Blocks[cur_block] = AssDialogueBlockPlain(new_value);
-	active_line->UpdateText();
+	blocks[cur_block] = AssDialogueBlockPlain(new_value);
+	active_line->UpdateText(blocks);
 
 	file_change_connection.Block();
 	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_DIAG_TEXT);
@@ -292,7 +290,7 @@ void DialogTranslation::Commit(bool next) {
 }
 
 void DialogTranslation::InsertOriginal() {
-	translated_text->AddText(active_line->Blocks[cur_block]->GetText());
+	translated_text->AddText(blocks[cur_block].GetText());
 }
 
 

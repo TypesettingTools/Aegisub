@@ -357,16 +357,9 @@ void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 
 typedef const std::vector<AssOverrideParameter*> * param_vec;
 
-// Parse line on creation and unparse at the end of scope
-struct scoped_tag_parse {
-	AssDialogue *diag;
-	scoped_tag_parse(AssDialogue *diag) : diag(diag) { diag->ParseAssTags(); }
-	~scoped_tag_parse() { diag->ClearBlocks(); }
-};
-
 // Find a tag's parameters in a line or return nullptr if it's not found
-static param_vec find_tag(const AssDialogue *line, wxString tag_name) {
-	for (auto ovr : line->Blocks | agi::of_type<AssDialogueBlockOverride>()) {
+static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, wxString tag_name) {
+	for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto tag : ovr->Tags) {
 			if (tag->Name == tag_name)
 				return &tag->Params;
@@ -389,10 +382,10 @@ static Vector2D vec_or_bad(param_vec tag, size_t x_idx, size_t y_idx) {
 }
 
 Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
-	scoped_tag_parse parse(diag);
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
-	if (Vector2D ret = vec_or_bad(find_tag(diag, "\\pos"), 0, 1)) return ret;
-	if (Vector2D ret = vec_or_bad(find_tag(diag, "\\move"), 0, 1)) return ret;
+	if (Vector2D ret = vec_or_bad(find_tag(blocks, "\\pos"), 0, 1)) return ret;
+	if (Vector2D ret = vec_or_bad(find_tag(blocks, "\\move"), 0, 1)) return ret;
 
 	// Get default position
 	int margin[3];
@@ -409,9 +402,9 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 
 	param_vec align_tag;
 	int ovr_align = 0;
-	if ((align_tag = find_tag(diag, "\\an")) && !(*align_tag)[0]->omitted)
+	if ((align_tag = find_tag(blocks, "\\an")) && !(*align_tag)[0]->omitted)
 		ovr_align = (*align_tag)[0]->Get<int>();
-	else if ((align_tag = find_tag(diag, "\\a")))
+	else if ((align_tag = find_tag(blocks, "\\a")))
 		ovr_align = AssStyle::SsaToAss((*align_tag)[0]->Get<int>(2));
 
 	if (ovr_align > 0 && ovr_align <= 9)
@@ -441,14 +434,14 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 }
 
 Vector2D VisualToolBase::GetLineOrigin(AssDialogue *diag) {
-	scoped_tag_parse parse(diag);
-	return vec_or_bad(find_tag(diag, "\\org"), 0, 1);
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+	return vec_or_bad(find_tag(blocks, "\\org"), 0, 1);
 }
 
 bool VisualToolBase::GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, int &t1, int &t2) {
-	scoped_tag_parse parse(diag);
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
-	param_vec tag = find_tag(diag, "\\move");
+	param_vec tag = find_tag(blocks, "\\move");
 	if (!tag)
 		return false;
 
@@ -467,15 +460,15 @@ void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, fl
 	if (AssStyle *style = c->ass->GetStyle(diag->Style))
 		rz = style->angle;
 
-	scoped_tag_parse parse(diag);
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
-	if (param_vec tag = find_tag(diag, "\\frx"))
+	if (param_vec tag = find_tag(blocks, "\\frx"))
 		rx = tag->front()->Get<float>(rx);
-	if (param_vec tag = find_tag(diag, "\\fry"))
+	if (param_vec tag = find_tag(blocks, "\\fry"))
 		ry = tag->front()->Get<float>(ry);
-	if (param_vec tag = find_tag(diag, "\\frz"))
+	if (param_vec tag = find_tag(blocks, "\\frz"))
 		rz = tag->front()->Get<float>(rz);
-	else if ((tag = find_tag(diag, "\\fr")))
+	else if ((tag = find_tag(blocks, "\\fr")))
 		rz = tag->front()->Get<float>(rz);
 }
 
@@ -487,11 +480,11 @@ void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 		y = style->scaley;
 	}
 
-	scoped_tag_parse parse(diag);
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
-	if (param_vec tag = find_tag(diag, "\\fscx"))
+	if (param_vec tag = find_tag(blocks, "\\fscx"))
 		x = tag->front()->Get<float>(x);
-	if (param_vec tag = find_tag(diag, "\\fscy"))
+	if (param_vec tag = find_tag(blocks, "\\fscy"))
 		y = tag->front()->Get<float>(y);
 
 	scale = Vector2D(x, y);
@@ -500,12 +493,12 @@ void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 void VisualToolBase::GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, bool &inverse) {
 	inverse = false;
 
-	scoped_tag_parse parse(diag);
-	param_vec tag = find_tag(diag, "\\iclip");
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+	param_vec tag = find_tag(blocks, "\\iclip");
 	if (tag)
 		inverse = true;
 	else
-		tag = find_tag(diag, "\\clip");
+		tag = find_tag(blocks, "\\clip");
 
 	if (tag && tag->size() == 4) {
 		p1 = vec_or_bad(tag, 0, 1);
@@ -518,16 +511,16 @@ void VisualToolBase::GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, 
 }
 
 wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse) {
-	scoped_tag_parse parse(diag);
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
 	scale = 1;
 	inverse = false;
 
-	param_vec tag = find_tag(diag, "\\iclip");
+	param_vec tag = find_tag(blocks, "\\iclip");
 	if (tag)
 		inverse = true;
 	else
-		tag = find_tag(diag, "\\clip");
+		tag = find_tag(blocks, "\\clip");
 
 	if (tag && tag->size() == 4) {
 		return wxString::Format("m %d %d l %d %d %d %d %d %d",
@@ -563,8 +556,8 @@ void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxStrin
 	wxString insert = tag + value;
 
 	// Get block at start
-	line->ParseAssTags();
-	AssDialogueBlock *block = line->Blocks.front();
+	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
+	AssDialogueBlock *block = &blocks.front();
 
 	// Get current block as plain or override
 	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == nullptr);
@@ -574,7 +567,7 @@ void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxStrin
 	else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
 		// Remove old of same
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
-			wxString name = ovr->Tags[i]->Name;
+			wxString const& name = ovr->Tags[i]->Name;
 			if (tag == name || removeTag == name) {
 				delete ovr->Tags[i];
 				ovr->Tags.erase(ovr->Tags.begin() + i);
@@ -583,7 +576,7 @@ void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxStrin
 		}
 		ovr->AddTag(insert);
 
-		line->UpdateText();
+		line->UpdateText(blocks);
 	}
 }
 

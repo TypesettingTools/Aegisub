@@ -266,7 +266,7 @@ namespace
 			// Helper for finding special characters
 			wxRegEx special_char_search("\\\\[nN]| ", wxRE_ADVANCED);
 
-			line->ParseAssTags();
+			boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 
 			text_rows.clear();
 			text_rows.emplace_back();
@@ -279,14 +279,14 @@ namespace
 
 			bool underline = style_underline, italic = style_italic;
 
-			for (auto b : line->Blocks)
+			for (auto& b : blocks)
 			{
-				switch (b->GetType())
+				switch (b.GetType())
 				{
 					case BLOCK_PLAIN:
 					// find special characters and convert them
 					{
-						wxString text = b->GetText();
+						wxString text = b.GetText();
 
 						// Skip comments
 						if (text.size() > 1 && text[0] =='{' && text.Last() == '}')
@@ -332,7 +332,7 @@ namespace
 					case BLOCK_OVERRIDE:
 					// find relevant tags and process them
 					{
-						AssDialogueBlockOverride *ob = static_cast<AssDialogueBlockOverride*>(b);
+						AssDialogueBlockOverride *ob = static_cast<AssDialogueBlockOverride*>(&b);
 						ob->ParseTags();
 						ProcessOverrides(ob, underline, italic, align, style_underline, style_italic);
 
@@ -360,7 +360,6 @@ namespace
 				}
 			}
 
-			line->ClearBlocks();
 			SetAlignment(align);
 		}
 	};

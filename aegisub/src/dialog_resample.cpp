@@ -203,17 +203,18 @@ namespace {
 	void resample_line(resample_state *state, AssEntry &line) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
 		if (diag && !(diag->Comment && (diag->Effect.StartsWith("template") || diag->Effect.StartsWith("code")))) {
-			diag->ParseAssTags();
-			diag->ProcessParameters(resample_tags, state);
+			boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
-			for (auto drawing : diag->Blocks | agi::of_type<AssDialogueBlockDrawing>())
+			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
+				block->ProcessParameters(resample_tags, state);
+
+			for (auto drawing : blocks | agi::of_type<AssDialogueBlockDrawing>())
 				drawing->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
 
 			for (size_t i = 0; i < 3; ++i)
 				diag->Margin[i] = int((diag->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
 
-			diag->UpdateText();
-			diag->ClearBlocks();
+			diag->UpdateText(blocks);
 		}
 		else if (AssStyle *style = dynamic_cast<AssStyle*>(&line)) {
 			style->fontsize = int(style->fontsize * state->ry + 0.5);

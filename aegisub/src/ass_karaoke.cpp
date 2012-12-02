@@ -101,24 +101,24 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 }
 
 void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
-	line->ParseAssTags();
+	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 
-	for (auto block : line->Blocks) {
-		wxString text = block->GetText();
+	for (auto& block : blocks) {
+		wxString text = block.GetText();
 
-		if (dynamic_cast<AssDialogueBlockPlain*>(block)) {
+		if (dynamic_cast<AssDialogueBlockPlain*>(&block)) {
 			// treat comments as overrides rather than dialogue
 			if (text.size() && text[0] == '{')
 				syl.ovr_tags[syl.text.size()] += text;
 			else
 				syl.text += text;
 		}
-		else if (dynamic_cast<AssDialogueBlockDrawing*>(block)) {
+		else if (dynamic_cast<AssDialogueBlockDrawing*>(&block)) {
 			// drawings aren't override tags but they shouldn't show up in the
 			// stripped text so pretend they are
 			syl.ovr_tags[syl.text.size()] += text;
 		}
-		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
+		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(&block)) {
 			bool in_tag = false;
 			for (auto tag : ovr->Tags) {
 				if (tag->IsValid() && tag->Name.Left(2).Lower() == "\\k") {
@@ -161,8 +161,6 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 	}
 
 	syls.push_back(syl);
-
-	line->ClearBlocks();
 }
 
 wxString AssKaraoke::GetText() const {

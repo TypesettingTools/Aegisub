@@ -96,11 +96,11 @@ class StyleRenamer {
 					found_any = true;
 			}
 
-			diag->ParseAssTags();
-			diag->ProcessParameters(&StyleRenamer::ProcessTag, this);
+			boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
+				block->ProcessParameters(&StyleRenamer::ProcessTag, this);
 			if (replace)
-				diag->UpdateText();
-			diag->ClearBlocks();
+				diag->UpdateText(blocks);
 
 			if (found_any) return;
 		}

@@ -32,12 +32,13 @@
 /// @ingroup subs_storage
 ///
 
-#include <vector>
-
 #include "ass_entry.h"
 #include "ass_time.h"
 
 #include <libaegisub/exception.h>
+
+#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 
 enum AssBlockType {
 	BLOCK_BASE,
@@ -101,7 +102,7 @@ public:
 	AssDialogueBlockOverride(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 	~AssDialogueBlockOverride();
 
-	std::vector<AssOverrideTag*> Tags;
+	std::vector<AssOverrideTag *> Tags;
 
 	AssBlockType GetType() const override { return BLOCK_OVERRIDE; }
 	wxString GetText() override;
@@ -119,9 +120,6 @@ public:
 class AssDialogue : public AssEntry {
 	wxString GetData(bool ssa) const;
 public:
-	/// Contains information about each block of text
-	std::vector<AssDialogueBlock*> Blocks;
-
 	/// Is this a comment line?
 	bool Comment;
 	/// Layer number
@@ -148,28 +146,19 @@ public:
 	/// @return Did it successfully parse?
 	bool Parse(wxString const& data);
 
-	/// Parse text as ASS to generate block information
-	void ParseAssTags();
-
 	/// Parse text as ASS and return block information
-	std::vector<AssDialogueBlock*> ParseTags() const;
+	std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> ParseTags() const;
 
-	/// Clear all blocks, ALWAYS call this after you're done processing tags
-	void ClearBlocks();
-
-	/// @brief Process parameters via callback
-	/// @param callback The callback function to call per tag parameter
-	/// @param userData User data to pass to callback function
-	void ProcessParameters(AssDialogueBlockOverride::ProcessParametersCallback callback,void *userData=nullptr);
 	/// Strip all ASS tags from the text
 	void StripTags();
 	/// Strip a specific ASS tag from the text
-	void StripTag(wxString tagName);
+	/// @param tag_name Tag to strip, with leading slash
+	void StripTag(wxString const& tag_name);
 	/// Get text without tags
 	wxString GetStrippedText() const;
 
-	/// If blocks have been parsed, update the text from their current value
-	void UpdateText();
+	/// Update the text of the line from parsed blocks
+	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
 	const wxString GetEntryData() const override;
 	/// Do nothing
 	void SetEntryData(wxString const&) override { }

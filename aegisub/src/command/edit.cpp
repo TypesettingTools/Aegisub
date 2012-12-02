@@ -61,10 +61,12 @@
 #include "../video_context.h"
 
 #include <boost/range/adaptor/reversed.hpp>
+#include <boost/range/adaptor/sliced.hpp>
 
 #include <libaegisub/of_type_adaptor.h>
 
 namespace {
+	using namespace boost::adaptors;
 	using cmd::Command;
 /// @defgroup cmd-edit Editing commands.
 /// @{
@@ -164,9 +166,9 @@ void paste_lines(agi::Context *c, bool paste_over) {
 }
 
 template<class T>
-T get_value(AssDialogue const& line, int blockn, T initial, wxString const& tag_name, wxString alt = wxString()) {
-	for (auto ovr : line.Blocks | boost::adaptors::reversed | agi::of_type<AssDialogueBlockOverride>()) {
-		for (auto tag : ovr->Tags | boost::adaptors::reversed) {
+T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T initial, wxString const& tag_name, wxString alt = wxString()) {
+	for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {
+		for (auto tag : ovr->Tags | reversed) {
 			if (tag->Name == tag_name || tag->Name == alt)
 				return tag->Params[0]->Get<T>(initial);
 		}
@@ -188,10 +190,9 @@ int block_at_pos(wxString const& text, int pos) {
 	return n;
 }
 
-void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, int &sel_start, int &sel_end, bool at_end = false) {
-	AssDialogue * const line = c->selectionController->GetActiveLine();
-	if (line->Blocks.empty())
-		line->ParseAssTags();
+void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxString const& tag, wxString const& value, int &sel_start, int &sel_end, bool at_end = false) {
+	if (blocks.empty())
+		blocks = line->ParseTags();
 
 	int start = at_end ? sel_end : sel_start;
 	int blockn = block_at_pos(line->Text, start);
@@ -199,7 +200,7 @@ void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, 
 	AssDialogueBlockPlain *plain = 0;
 	AssDialogueBlockOverride *ovr = 0;
 	while (blockn >= 0) {
-		AssDialogueBlock *block = line->Blocks[blockn];
+		AssDialogueBlock *block = &blocks[blockn];
 		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
 			--blockn;
 		else if ((plain = dynamic_cast<AssDialogueBlockPlain*>(block))) {
@@ -228,9 +229,9 @@ void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, 
 	if (plain || blockn < 0) {
 		line->Text = line->Text.Left(start) + "{" + insert + "}" + line->Text.Mid(start);
 		shift += 2;
-		line->ParseAssTags();
+		blocks = line->ParseTags();
 	}
-	else if(ovr) {
+	else if (ovr) {
 		wxString alt;
 		if (tag == "\\c") alt = "\\1c";
 		// Remove old of same
@@ -254,7 +255,7 @@ void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, 
 		if (!found)
 			ovr->AddTag(insert);
 
-		line->UpdateText();
+		line->UpdateText(blocks);
 	}
 	else
 		assert(false);
@@ -265,14 +266,11 @@ void set_tag(const agi::Context *c, wxString const& tag, wxString const& value, 
 	}
 }
 
-void set_text(AssDialogue *line, wxString const& value) {
-	line->Text = value;
-}
-
 void commit_text(agi::Context const * const c, wxString const& desc, int sel_start = -1, int sel_end = -1, int *commit_id = 0) {
 	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
-	for_each(sel.begin(), sel.end(),
-		std::bind(set_text, std::placeholders::_1, c->selectionController->GetActiveLine()->Text));
+	wxString text = c->selectionController->GetActiveLine()->Text;
+	for_each(sel.begin(), sel.end(), [&](AssDialogue *d) { d->Text = text; });
+
 	int new_commit_id = c->ass->Commit(desc, AssFile::COMMIT_DIAG_TEXT, commit_id ? *commit_id : -1, sel.size() == 1 ? *sel.begin() : 0);
 	if (commit_id)
 		*commit_id = new_commit_id;
@@ -285,26 +283,18 @@ void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const c
 	AssStyle const* const style = c->ass->GetStyle(line->Style);
 	bool state = style ? style->*field : AssStyle().*field;
 
-	line->ParseAssTags();
+	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 	int sel_start = c->textSelectionController->GetSelectionStart();
 	int sel_end = c->textSelectionController->GetSelectionEnd();
 	int blockn = block_at_pos(line->Text, sel_start);
 
-	state = get_value(*line, blockn, state, tag);
+	state = get_value(blocks, blockn, state, tag);
 
-	set_tag(c, tag, state ? "0" : "1", sel_start, sel_end);
+	set_tag(line, blocks, tag, state ? "0" : "1", sel_start, sel_end);
 	if (sel_start != sel_end)
-		set_tag(c, tag, state ? "1" : "0", sel_start, sel_end, true);
+		set_tag(line, blocks, tag, state ? "1" : "0", sel_start, sel_end, true);
 
-	line->ClearBlocks();
 	commit_text(c, undo_msg, sel_start, sel_end);
-}
-
-void got_color(const agi::Context *c, const char *tag, int *commit_id, agi::Color new_color) {
-	int sel_start = c->textSelectionController->GetSelectionStart();
-	int sel_end = c->textSelectionController->GetSelectionEnd();
-	set_tag(c, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
-	commit_text(c, _("set color"), sel_start, sel_end, commit_id);
 }
 
 void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), const char *tag, const char *alt) {
@@ -312,21 +302,23 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 	AssStyle const* const style = c->ass->GetStyle(line->Style);
 	agi::Color color = (style ? style->*field : AssStyle().*field);
 
-	line->ParseAssTags();
-
+	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 	int sel_start = c->textSelectionController->GetSelectionStart();
 	int sel_end = c->textSelectionController->GetSelectionEnd();
 	int blockn = block_at_pos(line->Text, sel_start);
+	int initial_sel_start = sel_start, initial_sel_end = sel_end;
 
-	color = get_value(*line, blockn, color, tag, alt);
+	color = get_value(blocks, blockn, color, tag, alt);
 	int commit_id = -1;
-	bool ok = GetColorFromUser(c->parent, color, std::bind(got_color, c, tag, &commit_id, std::placeholders::_1));
-	line->ClearBlocks();
+	bool ok = GetColorFromUser(c->parent, color, [&](agi::Color new_color) {
+		set_tag(line, blocks, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
+		commit_text(c, _("set color"), sel_start, sel_end, &commit_id);
+	});
 	commit_text(c, _("set color"), -1, -1, &commit_id);
 
 	if (!ok) {
 		c->ass->Undo();
-		c->textSelectionController->SetSelection(sel_start, sel_end);
+		c->textSelectionController->SetSelection(initial_sel_start, initial_sel_end);
 	}
 }
 
@@ -426,7 +418,7 @@ struct edit_font : public Command {
 
 	void operator()(agi::Context *c) {
 		AssDialogue *const line = c->selectionController->GetActiveLine();
-		line->ParseAssTags();
+		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 		const int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
 
 		const AssStyle *style = c->ass->GetStyle(line->Style);
@@ -438,31 +430,27 @@ struct edit_font : public Command {
 		int sel_end = c->textSelectionController->GetSelectionEnd();
 
 		const wxFont startfont(
-			get_value(*line, blockn, (int)style->fontsize, "\\fs"),
+			get_value(blocks, blockn, (int)style->fontsize, "\\fs"),
 			wxFONTFAMILY_DEFAULT,
-			get_value(*line, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-			get_value(*line, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-			get_value(*line, blockn, style->underline, "\\u"),
-			get_value(*line, blockn, style->font, "\\fn"));
+			get_value(blocks, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+			get_value(blocks, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+			get_value(blocks, blockn, style->underline, "\\u"),
+			get_value(blocks, blockn, style->font, "\\fn"));
 
 		const wxFont font = wxGetFontFromUser(c->parent, startfont);
-		if (!font.Ok() || font == startfont) {
-			line->ClearBlocks();
-			return;
-		}
+		if (!font.Ok() || font == startfont) return;
 
 		if (font.GetFaceName() != startfont.GetFaceName())
-			set_tag(c, "\\fn", font.GetFaceName(), sel_start, sel_end);
+			set_tag(line, blocks, "\\fn", font.GetFaceName(), sel_start, sel_end);
 		if (font.GetPointSize() != startfont.GetPointSize())
-			set_tag(c, "\\fs", wxString::Format("%d", font.GetPointSize()), sel_start, sel_end);
+			set_tag(line, blocks, "\\fs", wxString::Format("%d", font.GetPointSize()), sel_start, sel_end);
 		if (font.GetWeight() != startfont.GetWeight())
-			set_tag(c, "\\b", wxString::Format("%d", font.GetWeight() == wxFONTWEIGHT_BOLD), sel_start, sel_end);
+			set_tag(line, blocks, "\\b", wxString::Format("%d", font.GetWeight() == wxFONTWEIGHT_BOLD), sel_start, sel_end);
 		if (font.GetStyle() != startfont.GetStyle())
-			set_tag(c, "\\i", wxString::Format("%d", font.GetStyle() == wxFONTSTYLE_ITALIC), sel_start, sel_end);
+			set_tag(line, blocks, "\\i", wxString::Format("%d", font.GetStyle() == wxFONTSTYLE_ITALIC), sel_start, sel_end);
 		if (font.GetUnderlined() != startfont.GetUnderlined())
-			set_tag(c, "\\i", wxString::Format("%d", font.GetUnderlined()), sel_start, sel_end);
+			set_tag(line, blocks, "\\i", wxString::Format("%d", font.GetUnderlined()), sel_start, sel_end);
 
-		line->ClearBlocks();
 		commit_text(c, _("set font"), sel_start, sel_end);
 	}
 };
