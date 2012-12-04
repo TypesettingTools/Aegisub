@@ -55,7 +55,7 @@ void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	styles.Sort();
 
 	for (auto diag : subs->Line | agi::of_type<AssDialogue>()) {
-		if (!std::binary_search(styles.begin(), styles.end(), diag->Style.Lower()))
+		if (!std::binary_search(styles.begin(), styles.end(), diag->Style.get().Lower()))
 			diag->Style = "Default";
 	}
 }

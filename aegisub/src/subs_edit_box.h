@@ -35,6 +35,7 @@
 #include <array>
 #include <deque>
 #include <boost/container/map.hpp>
+#include <boost/flyweight/flyweight_fwd.hpp>
 #include <vector>
 
 #include <wx/panel.h>
@@ -178,7 +179,7 @@ class SubsEditBox : public wxPanel {
 	void OnCommit(int type);
 
 	/// Regenerate a dropdown list with the unique values of a dialogue field
-	void PopulateList(wxComboBox *combo, wxString AssDialogue::*field);
+	void PopulateList(wxComboBox *combo, boost::flyweight<wxString> AssDialogue::*field);
 
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming(agi::vfr::Framerate const& fps);

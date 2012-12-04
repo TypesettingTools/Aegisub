@@ -281,8 +281,10 @@ void DialogSpellChecker::Replace() {
 	AssDialogue *active_line = context->selectionController->GetActiveLine();
 
 	// Only replace if the user hasn't changed the selection to something else
-	if (active_line->Text.Mid(word_start, word_len) == orig_word->GetValue()) {
-		active_line->Text.replace(word_start, word_len, replace_word->GetValue());
+	if (active_line->Text.get().Mid(word_start, word_len) == orig_word->GetValue()) {
+		wxString text = active_line->Text;
+		text.replace(word_start, word_len, replace_word->GetValue());
+		active_line->Text = text;
 		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
 		context->textSelectionController->SetInsertionPoint(word_start + replace_word->GetValue().size());
 	}

@@ -134,7 +134,7 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	for (auto dia : src->Line | agi::of_type<AssDialogue>()) {
 		if (!dia->Comment) {
 			num_dialogue_lines++;
-			if (!dia->Actor.empty())
+			if (!dia->Actor.get().empty())
 				num_actor_names++;
 		}
 	}

@@ -607,15 +607,15 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 
 		// Hidden overrides
 		if (replace) {
-			strings[10].reserve(line->Text.size());
+			strings[10].reserve(line->Text.get().size());
 			size_t start = 0, pos;
-			while ((pos = line->Text.find('{', start)) != wxString::npos) {
-				strings[10] += line->Text.Mid(start, pos - start);
+			while ((pos = line->Text.get().find('{', start)) != wxString::npos) {
+				strings[10] += line->Text.get().Mid(start, pos - start);
 				strings[10] += rep_char;
-				start = line->Text.find('}', pos);
+				start = line->Text.get().find('}', pos);
 				if (start != wxString::npos) ++start;
 			}
-			strings[10] += line->Text.Mid(start);
+			strings[10] += line->Text.get().Mid(start);
 		}
 
 		// Show overrides

@@ -70,7 +70,6 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filenam
 	StripTags(copy);
 	ConvertNewlines(copy, "\r\n");
 
-
 	// Encode wants ; for NTSC and : for PAL
 	// The manual suggests no other frame rates are supported
 	char sep = fps.NeedsDropFrames() ? ';' : ':';
@@ -79,8 +78,6 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filenam
 	// Write lines
 	int i = 0;
 	TextFileWriter file(filename, "UTF-8");
-	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
-		++i;
-		file.WriteLineToFile(wxString::Format("%i %s %s %s", i, ft.ToSMPTE(current->Start), ft.ToSMPTE(current->End), current->Text));
-	}
+	for (auto current : copy.Line | agi::of_type<AssDialogue>())
+		file.WriteLineToFile(wxString::Format("%i %s %s %s", ++i, ft.ToSMPTE(current->Start), ft.ToSMPTE(current->End), current->Text.get()));
 }

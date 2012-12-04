@@ -117,7 +117,7 @@ void VisualToolClip::CommitHold() {
 	for (auto line : c->selectionController->GetSelectedSet()) {
 		// This check is technically not correct as it could be outside of an
 		// override block... but that's rather unlikely
-		bool has_iclip = line->Text.find("\\iclip") != wxString::npos;
+		bool has_iclip = line->Text.get().find("\\iclip") != wxString::npos;
 		SetOverride(line, has_iclip ? "\\iclip" : "\\clip", value);
 	}
 }

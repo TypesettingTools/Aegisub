@@ -170,19 +170,21 @@ void SubtitleFormat::StripTags(AssFile &file) {
 
 void SubtitleFormat::ConvertNewlines(AssFile &file, wxString const& newline, bool mergeLineBreaks) {
 	for (auto current : file.Line | agi::of_type<AssDialogue>()) {
-		current->Text.Replace("\\h", " ");
-		current->Text.Replace("\\n", newline);
-		current->Text.Replace("\\N", newline);
+		wxString repl(current->Text);
+		repl.Replace("\\h", " ");
+		repl.Replace("\\n", newline);
+		repl.Replace("\\N", newline);
 		if (mergeLineBreaks) {
-			while (current->Text.Replace(newline+newline, newline));
+			while (repl.Replace(newline+newline, newline));
 		}
+		current->Text = repl;
 	}
 }
 
 void SubtitleFormat::StripComments(AssFile &file) {
 	file.Line.remove_and_dispose_if([](AssEntry const& e) {
 		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e);
-		return diag && (diag->Comment || !diag->Text);
+		return diag && (diag->Comment || !diag->Text.get());
 	}, [](AssEntry *e) { delete e; });
 }
 

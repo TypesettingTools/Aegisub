@@ -207,7 +207,7 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxS
 			// Cursor is in a comment block, so try the previous block instead
 			if (plain->GetText().StartsWith("{")) {
 				--blockn;
-				start = line->Text.rfind('{', start);
+				start = line->Text.get().rfind('{', start);
 			}
 			else
 				break;
@@ -227,7 +227,7 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxS
 	wxString insert = tag + value;
 	int shift = insert.size();
 	if (plain || blockn < 0) {
-		line->Text = line->Text.Left(start) + "{" + insert + "}" + line->Text.Mid(start);
+		line->Text = line->Text.get().Left(start) + "{" + insert + "}" + line->Text.get().Mid(start);
 		shift += 2;
 		blocks = line->ParseTags();
 	}
@@ -681,11 +681,11 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 }
 
 static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
-	first->Text += wxString::Format("{\\k%d}%s", (second->Start - first->End) / 10, second->Text);
+	first->Text = wxString::Format("%s{\\k%d}%s", first->Text.get(), (second->Start - first->End) / 10, second->Text.get());
 }
 
 static void combine_concat(AssDialogue *first, AssDialogue *second) {
-	first->Text += " " + second->Text;
+	first->Text = first->Text + " " + second->Text;
 }
 
 static void combine_drop(AssDialogue *, AssDialogue *) { }

@@ -159,7 +159,7 @@ void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {
 
 	current_line_text->SetValue(active_line->Text);
 	style_name->SetValue(active_line->Style);
-	style_name->SetSelection(0, active_line->Style.size());
+	style_name->SetSelection(0, active_line->Style.get().size());
 	style_name->SetFocus();
 
 	style_list->SetStringSelection(active_line->Style);

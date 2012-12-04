@@ -202,7 +202,7 @@ namespace {
 
 	void resample_line(resample_state *state, AssEntry &line) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (diag && !(diag->Comment && (diag->Effect.StartsWith("template") || diag->Effect.StartsWith("code")))) {
+		if (diag && !(diag->Comment && (diag->Effect.get().StartsWith("template") || diag->Effect.get().StartsWith("code")))) {
 			boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
 			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())

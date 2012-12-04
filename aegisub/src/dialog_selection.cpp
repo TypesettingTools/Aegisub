@@ -67,7 +67,7 @@ enum {
 
 DEFINE_SIMPLE_EXCEPTION(BadRegex, agi::InvalidInputException, "bad_regex")
 
-static wxString AssDialogue::* get_field(int field_n) {
+static boost::flyweight<wxString> AssDialogue::* get_field(int field_n) {
 	switch(field_n) {
 		case FIELD_TEXT:   return &AssDialogue::Text; break;
 		case FIELD_STYLE:  return &AssDialogue::Style; break;
@@ -109,7 +109,7 @@ static std::set<AssDialogue*> process(wxString match_text, bool match_case, int 
 		match_case = false;
 	}
 
-	wxString AssDialogue::*field = get_field(field_n);
+	boost::flyweight<wxString> AssDialogue::*field = get_field(field_n);
 	std::function<bool (wxString)> pred = get_predicate(mode, &re, match_case, match_text);
 
 	std::set<AssDialogue*> matches;

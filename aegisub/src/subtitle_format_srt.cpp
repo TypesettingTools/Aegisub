@@ -402,6 +402,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 	int line_num = 0;
 	int linebreak_debt = 0;
 	AssDialogue *line = 0;
+	wxString text;
 	while (file.HasMoreLines()) {
 		wxString text_line = file.ReadLineFromFile();
 		line_num++;
@@ -426,8 +427,8 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 found_timestamps:
 				if (line) {
 					// finalize active line
-					line->Text = tag_parser.ToAss(line->Text);
-					line = 0;
+					line->Text = tag_parser.ToAss(text);
+					text.clear();
 				}
 				// create new subtitle
 				line = new AssDialogue;
@@ -446,7 +447,7 @@ found_timestamps:
 					linebreak_debt = 0;
 					break;
 				}
-				line->Text.Append(text_line);
+				text.Append(text_line);
 				state = STATE_REST_OF_BODY;
 				break;
 			case STATE_REST_OF_BODY:
@@ -458,7 +459,7 @@ found_timestamps:
 					linebreak_debt = 1;
 					break;
 				}
-				line->Text.Append("\\N").Append(text_line);
+				text.Append("\\N").Append(text_line);
 				break;
 			case STATE_LAST_WAS_BLANK:
 				++linebreak_debt;
@@ -475,20 +476,19 @@ found_timestamps:
 				// assume it's a continuation of the subtitle text
 				// resolve our line break debt and append the line text
 				while (linebreak_debt-- > 0)
-					line->Text.Append("\\N");
-				line->Text.Append(text_line);
+					text.Append("\\N");
+				text.Append(text_line);
 				state = STATE_REST_OF_BODY;
 				break;
 		}
 	}
 
-	if (state == 1 || state == 2) {
+	if (state == 1 || state == 2)
 		throw SRTParseError("Parsing SRT: Incomplete file", 0);
-	}
 
 	if (line)
 		// an unfinalized line
-		line->Text = tag_parser.ToAss(line->Text);
+		line->Text = tag_parser.ToAss(text);
 }
 
 void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {

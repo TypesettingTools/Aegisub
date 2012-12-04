@@ -306,7 +306,7 @@ void SubsEditBox::OnCommit(int type) {
 	}
 }
 
-void SubsEditBox::PopulateList(wxComboBox *combo, wxString AssDialogue::*field) {
+void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<wxString> AssDialogue::*field) {
 	wxEventBlocker blocker(this);
 
 	std::set<wxString> values;
@@ -397,7 +397,7 @@ void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString const
 }
 
 void SubsEditBox::CommitText(wxString const& desc) {
-	SetSelectedRows(&AssDialogue::Text, TextEdit->GetText(), desc, AssFile::COMMIT_DIAG_TEXT, true);
+	SetSelectedRows(&AssDialogue::Text, boost::flyweight<wxString>(TextEdit->GetText()), desc, AssFile::COMMIT_DIAG_TEXT, true);
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
@@ -487,12 +487,12 @@ void SubsEditBox::SetControlsState(bool state) {
 }
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Style, StyleBox->GetValue(), _("style change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Style,  boost::flyweight<wxString>(StyleBox->GetValue()), _("style change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
-	SetSelectedRows(&AssDialogue::Actor, ActorBox->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(&AssDialogue::Actor, boost::flyweight<wxString>(ActorBox->GetValue()), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(ActorBox, &AssDialogue::Actor);
 }
 
@@ -502,7 +502,7 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
-	SetSelectedRows(&AssDialogue::Effect, Effect->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(&AssDialogue::Effect, boost::flyweight<wxString>(Effect->GetValue()), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(Effect, &AssDialogue::Effect);
 }
 

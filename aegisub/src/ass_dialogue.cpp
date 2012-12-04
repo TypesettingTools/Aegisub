@@ -33,6 +33,7 @@
 
 #include "config.h"
 
+#include <boost/algorithm/string/join.hpp>
 #include <fstream>
 #include <list>
 
@@ -46,6 +47,10 @@
 #include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
+
+std::size_t hash_value(wxString const& s) {
+	return wxStringHash()(s);
+}
 
 AssDialogue::AssDialogue()
 : AssEntry(wxString())
@@ -128,15 +133,11 @@ bool AssDialogue::Parse(wxString const& rawData) {
 
 	// Get style
 	if (!tkn.HasMoreTokens()) return false;
-	Style = tkn.GetNextToken();
-	Style.Trim(true);
-	Style.Trim(false);
+	Style = tkn.GetNextToken().Trim(true).Trim(false);
 
 	// Get actor
 	if (!tkn.HasMoreTokens()) return false;
-	Actor = tkn.GetNextToken();
-	Actor.Trim(true);
-	Actor.Trim(false);
+	Actor = tkn.GetNextToken().Trim(true).Trim(false);
 
 	// Get margins
 	for (int i = 0; i < 3; ++i) {
@@ -145,9 +146,7 @@ bool AssDialogue::Parse(wxString const& rawData) {
 	}
 
 	if (!tkn.HasMoreTokens()) return false;
-	Effect = tkn.GetNextToken();
-	Effect.Trim(true);
-	Effect.Trim(false);
+	Effect = tkn.GetNextToken().Trim(true).Trim(false);
 
 	// Get text
 	Text = rawData.Mid(pos + tkn.GetPosition());
@@ -172,7 +171,7 @@ wxString AssDialogue::GetData(bool ssa) const {
 		s, a,
 		Margin[0], Margin[1], Margin[2],
 		e,
-		Text);
+		Text.get());
 
 	// Make sure that final has no line breaks
 	str.Replace("\n", "");
@@ -193,17 +192,17 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 	boost::ptr_vector<AssDialogueBlock> Blocks;
 
 	// Empty line, make an empty block
-	if (Text.empty()) {
+	if (Text.get().empty()) {
 		Blocks.push_back(new AssDialogueBlockPlain);
 		return Blocks.release();
 	}
 
 	int drawingLevel = 0;
 
-	for (size_t len = Text.size(), cur = 0; cur < len; ) {
+	for (size_t len = Text.get().size(), cur = 0; cur < len; ) {
 		// Overrides block
-		if (Text[cur] == '{') {
-			size_t end = Text.find('}', cur);
+		if (Text.get()[cur] == '{') {
+			size_t end = Text.get().find('}', cur);
 
 			// VSFilter requires that override blocks be closed, while libass
 			// does not. We match VSFilter here.
@@ -212,7 +211,7 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 
 			++cur;
 			// Get contents of block
-			wxString work = Text.substr(cur, end - cur);
+			wxString work = Text.get().substr(cur, end - cur);
 			cur = end + 1;
 
 			if (work.size() && work.find('\\') == wxString::npos) {
@@ -240,13 +239,13 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 		// Plain-text/drawing block
 plain:
 		wxString work;
-		size_t end = Text.find('{', cur + 1);
+		size_t end = Text.get().find('{', cur + 1);
 		if (end == wxString::npos) {
-			work = Text.substr(cur);
+			work = Text.get().substr(cur);
 			cur = len;
 		}
 		else {
-			work = Text.substr(cur, end - cur);
+			work = Text.get().substr(cur, end - cur);
 			cur = end;
 		}
 
@@ -265,12 +264,12 @@ void AssDialogue::StripTags() {
 
 void AssDialogue::StripTag(wxString const& tag_name) {
 	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
-	Text.clear();
+	wxString new_text;
 
 	// Look for blocks
 	for (auto& block : blocks) {
 		if (block.GetType() != BLOCK_OVERRIDE) {
-			Text += block.GetText();
+			new_text += block.GetText();
 			continue;
 		}
 
@@ -282,15 +281,16 @@ void AssDialogue::StripTag(wxString const& tag_name) {
 		}
 
 		if (!temp.empty())
-			Text += "{" + temp + "}";
+			new_text += "{" + temp + "}";
 	}
+
+	Text = new_text;
 }
 
+static wxString get_text(AssDialogueBlock &d) { return d.GetText(); }
 void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
 	if (blocks.empty()) return;
-	Text.clear();
-	for (auto& block : blocks)
-		Text += block.GetText();
+	Text = join(blocks | boost::adaptors::transformed(get_text), wxS(""));
 }
 
 void AssDialogue::SetMarginString(wxString const& origvalue, int which) {

@@ -60,7 +60,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				wxString name = tag->Name;
 
 				if (name == "\\r") {
-					style = styles[tag->Params[0]->Get(line->Style)];
+					style = styles[tag->Params[0]->Get<wxString>(line->Style)];
 					overriden = false;
 				}
 				else if (name == "\\b") {

@@ -57,16 +57,35 @@ SubtitlesGrid::SubtitlesGrid(wxWindow *parent, agi::Context *context)
 {
 }
 
-static void trim_text(AssDialogue *diag) {
+static void trim_text(wxString *text) {
 	static wxRegEx start("^( |\t|\\\\[nNh])+");
 	static wxRegEx end("( |\t|\\\\[nNh])+$");
-	start.ReplaceFirst(&diag->Text, "");
-	end.ReplaceFirst(&diag->Text, "");
+	start.ReplaceFirst(text, "");
+	end.ReplaceFirst(text, "");
 }
 
 static void expand_times(AssDialogue *src, AssDialogue *dst) {
 	dst->Start = std::min(dst->Start, src->Start);
 	dst->End = std::max(dst->End, src->End);
+}
+
+static bool check_lines(AssDialogue *d1, AssDialogue *d2, bool (wxString::*pred)(wxString const&, wxString *) const) {
+	wxString rest;
+	if ((d1->Text.get().*pred)(d2->Text.get(), &rest)) {
+		trim_text(&rest);
+		d1->Text = rest;
+		expand_times(d1, d2);
+		return true;
+	}
+	return false;
+}
+
+static bool check_start(AssDialogue *d1, AssDialogue *d2) {
+	return check_lines(d1, d2, &wxString::StartsWith);
+}
+
+static bool check_end(AssDialogue *d1, AssDialogue *d2) {
+	return check_lines(d1, d2, &wxString::EndsWith);
 }
 
 /// @brief Recombine
@@ -77,14 +96,17 @@ void SubtitlesGrid::RecombineLines() {
 	AssDialogue *activeLine = GetActiveLine();
 
 	std::vector<AssDialogue*> sel(selectedSet.begin(), selectedSet.end());
-	for_each(sel.begin(), sel.end(), trim_text);
 	sort(sel.begin(), sel.end(), &AssFile::CompStart);
+	for (auto &diag : sel) {
+		wxString text = diag->Text;
+		trim_text(&text);
+		diag->Text = text;
+	}
 
-	typedef std::vector<AssDialogue*>::iterator diag_iter;
-	diag_iter end = sel.end() - 1;
-	for (diag_iter cur = sel.begin(); cur != end; ++cur) {
+	auto end = sel.end() - 1;
+	for (auto cur = sel.begin(); cur != end; ++cur) {
 		AssDialogue *d1 = *cur;
-		diag_iter d2 = cur + 1;
+		auto d2 = cur + 1;
 
 		// 1, 1+2 (or 2+1), 2 gets turned into 1, 2, 2 so kill the duplicate
 		if (d1->Text == (*d2)->Text) {
@@ -94,43 +116,32 @@ void SubtitlesGrid::RecombineLines() {
 		}
 
 		// 1, 1+2, 1 turns into 1, 2, [empty]
-		if (d1->Text.empty()) {
+		if (d1->Text.get().empty()) {
 			delete d1;
 			continue;
 		}
+
 		// If d2 is the last line in the selection it'll never hit the above test
-		if (d2 == end && (*d2)->Text.empty()) {
+		if (d2 == end && (*d2)->Text.get().empty()) {
 			delete *d2;
 			continue;
 		}
 
 		// 1, 1+2
-		while (d2 <= end && (*d2)->Text.StartsWith(d1->Text, &(*d2)->Text)) {
-			expand_times(*d2, d1);
-			trim_text(*d2);
+		while (d2 <= end && check_start(*d2, d1))
 			++d2;
-		}
 
 		// 1, 2+1
-		while (d2 <= end && (*d2)->Text.EndsWith(d1->Text, &(*d2)->Text)) {
-			expand_times(*d2, d1);
-			trim_text(*d2);
+		while (d2 <= end && check_end(*d2, d1))
 			++d2;
-		}
 
 		// 1+2, 2
-		while (d2 <= end && d1->Text.EndsWith((*d2)->Text, &d1->Text)) {
-			expand_times(d1, *d2);
-			trim_text(d1);
+		while (d2 <= end && check_end(d1, *d2))
 			++d2;
-		}
 
 		// 2+1, 2
-		while (d2 <= end && d1->Text.StartsWith((*d2)->Text, &d1->Text)) {
-			expand_times(d1, *d2);
-			trim_text(d1);
+		while (d2 <= end && check_start(d1, *d2))
 			++d2;
-		}
 	}
 
 	// Remove now non-existent lines from the selection

@@ -37,6 +37,7 @@
 
 #include <libaegisub/exception.h>
 
+#include <boost/flyweight.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <vector>
 
@@ -49,6 +50,8 @@ enum AssBlockType {
 
 class AssOverrideParameter;
 class AssOverrideTag;
+
+std::size_t hash_value(wxString const& s);
 
 /// @class AssDialogueBlock
 /// @brief AssDialogue Blocks
@@ -131,13 +134,13 @@ public:
 	/// Ending time
 	AssTime End;
 	/// Style name
-	wxString Style;
+	boost::flyweight<wxString> Style;
 	/// Actor name
-	wxString Actor;
+	boost::flyweight<wxString> Actor;
 	/// Effect name
-	wxString Effect;
+	boost::flyweight<wxString> Effect;
 	/// Raw text data
-	wxString Text;
+	boost::flyweight<wxString> Text;
 
 	AssEntryGroup Group() const override { return ENTRY_DIALOGUE; }
 

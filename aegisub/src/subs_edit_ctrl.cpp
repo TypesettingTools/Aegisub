@@ -212,7 +212,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 	}
 
 	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
-	bool template_line = diag && diag->Comment && diag->Effect.Lower().StartsWith("template");
+	bool template_line = diag && diag->Comment && diag->Effect.get().Lower().StartsWith("template");
 
 	tokenized_line = agi::ass::TokenizeDialogueBody(line_text, template_line);
 	agi::ass::SplitWords(line_text, tokenized_line);

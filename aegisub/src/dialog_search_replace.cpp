@@ -243,6 +243,13 @@ void SearchReplaceEngine::FindNext() {
 	ReplaceNext(false);
 }
 
+static boost::flyweight<wxString> *get_text(AssDialogue *cur, int field) {
+	if (field == 0) return &cur->Text;
+	else if (field == 1) return &cur->Style;
+	else if (field == 2) return &cur->Actor;
+	else if (field == 3) return &cur->Effect;
+	else throw wxString("Invalid field");
+}
 
 void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	if (!CanContinue) {
@@ -267,7 +274,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	int start = curLine;
 	int nrows = context->subsGrid->GetRows();
 	bool found = false;
-	wxString *Text = nullptr;
 	size_t tempPos;
 	int regFlags = wxRE_ADVANCED;
 	if (!matchCase) {
@@ -276,8 +282,9 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	}
 
 	// Search for it
+	boost::flyweight<wxString> *Text = nullptr;
 	while (!found) {
-		Text = GetText(context->subsGrid->GetDialogue(curLine), field);
+		Text = get_text(context->subsGrid->GetDialogue(curLine), field);
 		if (DoReplace && LastWasFind)
 			tempPos = pos;
 		else
@@ -287,7 +294,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		if (isReg) {
 			wxRegEx regex (LookFor,regFlags);
 			if (regex.IsValid()) {
-				if (regex.Matches(Text->Mid(tempPos))) {
+				if (regex.Matches(Text->get().Mid(tempPos))) {
 					size_t match_start;
 					regex.GetMatch(&match_start,&matchLen,0);
 					pos = match_start + tempPos;
@@ -298,7 +305,7 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		// Normal
 		else {
-			wxString src = Text->Mid(tempPos);
+			wxString src = Text->get().Mid(tempPos);
 			if (!matchCase) src.MakeLower();
 			int textPos = src.Find(LookFor);
 			if (textPos != -1) {
@@ -325,16 +332,16 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		if (DoReplace) {
 			// Replace with regular expressions
 			if (isReg) {
-				wxString toReplace = Text->Mid(pos,matchLen);
+				wxString toReplace = Text->get().Mid(pos,matchLen);
 				wxRegEx regex(LookFor,regFlags);
 				regex.ReplaceFirst(&toReplace,ReplaceWith);
-				*Text = Text->Left(pos) + toReplace + Text->Mid(pos+matchLen);
+				*Text = Text->get().Left(pos) + toReplace + Text->get().Mid(pos+matchLen);
 				replaceLen = toReplace.Length();
 			}
 
 			// Normal replace
 			else {
-				*Text = Text->Left(pos) + ReplaceWith + Text->Mid(pos+matchLen);
+				*Text = Text->get().Left(pos) + ReplaceWith + Text->get().Mid(pos+matchLen);
 				replaceLen = ReplaceWith.Length();
 			}
 
@@ -387,7 +394,7 @@ void SearchReplaceEngine::ReplaceAll() {
 		if (inSel && hasSelection && !sel.count(diag))
 			continue;
 
-		wxString *Text = GetText(diag, field);
+		boost::flyweight<wxString> *Text = get_text(diag, field);
 
 		// Regular expressions
 		if (isReg) {
@@ -398,7 +405,9 @@ void SearchReplaceEngine::ReplaceAll() {
 				// A zero length match (such as '$') will always be replaced
 				// maxMatches times, which is almost certainly not what the user
 				// wanted, so limit it to one replacement in that situation
-				count += reg.Replace(Text, ReplaceWith, len > 0 ? 1000 : 1);
+				wxString repl(*Text);
+				count += reg.Replace(&repl, ReplaceWith, len > 0 ? 1000 : 1);
+				*Text = repl;
 			}
 		}
 		// Normal replace
@@ -424,8 +433,10 @@ void SearchReplaceEngine::ReplaceAll() {
 					*Text = Left + Right;
 				}
 			}
-			else if(Text->Contains(LookFor)) {
-				count += Text->Replace(LookFor, ReplaceWith);
+			else if(Text->get().Contains(LookFor)) {
+				wxString repl(*Text);
+				count += repl.Replace(LookFor, ReplaceWith);
+				*Text = repl;
 			}
 		}
 	}
@@ -473,14 +484,6 @@ void SearchReplaceEngine::OpenDialog (bool replace) {
 	diag->FindEdit->SetFocus();
 	diag->Show();
 	hasReplace = replace;
-}
-
-wxString *SearchReplaceEngine::GetText(AssDialogue *cur, int field) {
-	if (field == 0) return &cur->Text;
-	else if (field == 1) return &cur->Style;
-	else if (field == 2) return &cur->Actor;
-	else if (field == 3) return &cur->Effect;
-	else throw wxString("Invalid field");
 }
 
 SearchReplaceEngine Search;

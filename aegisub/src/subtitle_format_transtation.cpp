@@ -71,6 +71,8 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& fi
 	StripComments(copy);
 	RecombineOverlaps(copy);
 	MergeIdentical(copy);
+	StripTags(copy);
+	ConvertNewlines(copy, "\r\n");
 
 	SmpteFormatter ft(fps);
 	TextFileWriter file(filename, encoding);
@@ -106,7 +108,7 @@ wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *curr
 
 	// Hack: If an italics-tag (\i1) appears anywhere in the line,
 	// make it all italics
-	if (current->Text.Find("\\i1") != wxNOT_FOUND) type = "I";
+	if (current->Text.get().Find("\\i1") != wxNOT_FOUND) type = "I";
 
 	// Write header
 	AssTime end = current->End;
@@ -118,14 +120,5 @@ wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *curr
 		end = fps.TimeAtFrame(fps.FrameAtTime(end, agi::vfr::END) - 1, agi::vfr::END);
 
 	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft.ToSMPTE(current->Start) + ">" + ft.ToSMPTE(end) + "]\r\n";
-
-	// Process text
-	wxString lineEnd = "\r\n";
-	current->StripTags();
-	current->Text.Replace("\\h", " ", true);
-	current->Text.Replace("\\n", lineEnd, true);
-	current->Text.Replace("\\N", lineEnd, true);
-	while (current->Text.Replace(lineEnd + lineEnd, lineEnd, true));
-
 	return header + current->Text;
 }
