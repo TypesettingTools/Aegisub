@@ -92,9 +92,10 @@ void AssDialogueBlockOverride::AddTag(wxString const& tag) {
 }
 
 wxString AssDialogueBlockOverride::GetText() {
-	text.clear();
+	text = "{";
 	for (auto tag : Tags)
 		text += *tag;
+	text += "}";
 	return text;
 }
 

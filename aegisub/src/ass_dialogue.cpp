@@ -289,14 +289,8 @@ void AssDialogue::StripTag(wxString const& tag_name) {
 void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
 	if (blocks.empty()) return;
 	Text.clear();
-	for (auto& block : blocks) {
-		if (block.GetType() == BLOCK_OVERRIDE) {
-			Text += "{";
-			Text += block.GetText();
-			Text += "}";
-		}
-		else Text += block.GetText();
-	}
+	for (auto& block : blocks)
+		Text += block.GetText();
 }
 
 void AssDialogue::SetMarginString(wxString const& origvalue, int which) {

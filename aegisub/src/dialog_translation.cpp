@@ -254,7 +254,7 @@ void DialogTranslation::UpdateDisplay() {
 			}
 		}
 		else if (block.GetType() == BLOCK_OVERRIDE)
-			original_text->AppendText("{" + block.GetText() + "}");
+			original_text->AppendText(block.GetText());
 		++i;
 	}
 
