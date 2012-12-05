@@ -106,7 +106,7 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 	wxString autoload_modes[] = { _("Never"), _("Always"), _("Ask") };
 	wxArrayString autoload_modes_arr(3, autoload_modes);
 	OptionChoice(general, _("Automatically load linked files"), autoload_modes_arr, "App/Auto/Load Linked Files");
-	OptionAdd(general, _("Undo Levels"), "Limits/Undo Levels", 2);
+	OptionAdd(general, _("Undo Levels"), "Limits/Undo Levels", 2, 10000);
 
 	wxFlexGridSizer *recent = PageSizer(_("Recently Used Lists"));
 	OptionAdd(recent, _("Files"), "Limits/MRU", 0, 16);
