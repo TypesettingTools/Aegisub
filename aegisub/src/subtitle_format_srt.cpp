@@ -375,6 +375,14 @@ wxArrayString SRTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
+enum ParseState {
+	STATE_INITIAL,
+	STATE_TIMESTAMP,
+	STATE_FIRST_LINE_OF_BODY,
+	STATE_REST_OF_BODY,
+	STATE_LAST_WAS_BLANK
+};
+
 void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
 	using namespace std;
 
@@ -390,7 +398,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 
 	SrtTagParser tag_parser;
 
-	int state = 1;
+	ParseState state = STATE_INITIAL;
 	int line_num = 0;
 	int linebreak_debt = 0;
 	AssDialogue *line = 0;
@@ -400,24 +408,20 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 		text_line.Trim(true).Trim(false);
 
 		switch (state) {
-			case 1:
-				// start of file, no subtitles found yet
-				if (text_line.empty())
-					// ignore blank lines
-					break;
+			case STATE_INITIAL:
+				// ignore leading blank lines
+				if (text_line.empty()) break;
 				if (text_line.IsNumber()) {
 					// found the line number, throw it away and hope for timestamps
-					state = 2;
+					state = STATE_TIMESTAMP;
 					break;
 				}
 				if (timestamp_regex.Matches(text_line))
 					goto found_timestamps;
 
 				throw SRTParseError(STD_STR(wxString::Format("Parsing SRT: Expected subtitle index at line %d", line_num)), 0);
-			case 2:
-				// want timestamps
-				if (timestamp_regex.Matches(text_line) == false)
-					// bad format
+			case STATE_TIMESTAMP:
+				if (!timestamp_regex.Matches(text_line))
 					throw SRTParseError(STD_STR(wxString::Format("Parsing SRT: Expected timestamp pair at line %d", line_num)), 0);
 found_timestamps:
 				if (line) {
@@ -432,41 +436,37 @@ found_timestamps:
 				// store pointer to subtitle, we'll continue working on it
 				target->Line.push_back(*line);
 				// next we're reading the text
-				state = 3;
+				state = STATE_FIRST_LINE_OF_BODY;
 				break;
-			case 3:
-				// reading first line of subtitle text
+			case STATE_FIRST_LINE_OF_BODY:
 				if (text_line.empty()) {
 					// that's not very interesting... blank subtitle?
-					state = 5;
+					state = STATE_LAST_WAS_BLANK;
 					// no previous line that needs a line break after
 					linebreak_debt = 0;
 					break;
 				}
 				line->Text.Append(text_line);
-				state = 4;
+				state = STATE_REST_OF_BODY;
 				break;
-			case 4:
-				// reading following line of subtitle text
+			case STATE_REST_OF_BODY:
 				if (text_line.empty()) {
-					// blank line, next may begin a new subtitle
-					state = 5;
-					// previous line needs a line break after
+					// Might be either the gap between two subtitles or just a
+					// blank line in the middle of a subtitle, so defer adding
+					// the line break until we check what's on the next line
+					state = STATE_LAST_WAS_BLANK;
 					linebreak_debt = 1;
 					break;
 				}
 				line->Text.Append("\\N").Append(text_line);
 				break;
-			case 5:
-				// blank line in subtitle text
-				linebreak_debt++;
-				if (text_line.empty())
-					// multiple blank lines in a row, just add a line break...
-					break;
+			case STATE_LAST_WAS_BLANK:
+				++linebreak_debt;
+				if (text_line.empty()) break;
 				if (text_line.IsNumber()) {
-					// must be a subtitle index!
-					// go for timestamps next
-					state = 2;
+					// Hopefully it's the start of a new subtitle, and the
+					// previous blank line(s) were the gap between subtitles
+					state = STATE_TIMESTAMP;
 					break;
 				}
 				if (timestamp_regex.Matches(text_line))
@@ -477,10 +477,8 @@ found_timestamps:
 				while (linebreak_debt-- > 0)
 					line->Text.Append("\\N");
 				line->Text.Append(text_line);
-				state = 4;
+				state = STATE_REST_OF_BODY;
 				break;
-			default:
-				throw agi::InternalError(STD_STR(wxString::Format("Parsing SRT: Reached unexpected state %d", state)), 0);
 		}
 	}
 
