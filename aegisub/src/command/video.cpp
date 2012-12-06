@@ -593,7 +593,7 @@ struct video_open : public Command {
 
 	void operator()(agi::Context *c) {
 		wxString path = lagi_wxString(OPT_GET("Path/Last/Video")->GetString());
-		wxString str = _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
+		wxString str = _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
 					 + _("All Files") + " (*.*)|*.*";
 		wxString filename = wxFileSelector(_("Open video file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
