@@ -103,6 +103,7 @@ static void get_files_to_load(wxArrayString const& list, wxString &subs, wxStrin
 		"avs",
 		"d2v",
 		"m2ts",
+		"m4v",
 		"mkv",
 		"mov",
 		"mp4",
