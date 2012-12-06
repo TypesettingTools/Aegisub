@@ -349,6 +349,7 @@
 	},
 
 	"Subtitle" : {
+		"Character Limit" : 40,
 		"Default Resolution" : {
 			"Auto" : true,
 			"Height" : 720,

@@ -199,6 +199,7 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 	OptionAdd(edit_box, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
 	OptionBrowse(edit_box, _("Dictionaries path"), "Path/Dictionary");
 	OptionFont(edit_box, "Subtitle/Edit Box/");
+	OptionAdd(edit_box, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
 
 	wxFlexGridSizer *grid = PageSizer(_("Grid"));
 	OptionAdd(grid, _("Allow grid to take focus"), "Subtitle/Grid/Focus Allow");

@@ -41,6 +41,7 @@
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/radiobut.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 
@@ -49,6 +50,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "command/command.h"
+#include "compat.h"
 #include "dialog_search_replace.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
@@ -119,6 +121,10 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
 	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
 	TopSizer->Add(Effect, 3, wxALIGN_CENTER, 5);
+
+	CharCount = new wxTextCtrl(this, -1, "0", wxDefaultPosition, wxSize(30, -1), wxTE_READONLY | wxTE_CENTER);
+	CharCount->SetToolTip(_("Number of characters in the longest line of this subtitle."));
+	TopSizer->Add(CharCount, 0, wxALIGN_CENTER, 5);
 
 	// Middle controls
 	MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -287,6 +293,7 @@ void SubsEditBox::OnCommit(int type) {
 
 	if (type & AssFile::COMMIT_DIAG_TEXT) {
 		TextEdit->SetTextTo(line->Text);
+		UpdateCharacterCount(line->Text);
 	}
 
 	if (type & AssFile::COMMIT_DIAG_META) {
@@ -375,6 +382,7 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 		if (event.GetModificationType() & wxSTC_STARTACTION)
 			commitId = -1;
 		CommitText(_("modify text"));
+		UpdateCharacterCount(line->Text);
 	}
 }
 
@@ -513,4 +521,14 @@ void SubsEditBox::OnCommentChange(wxCommandEvent &) {
 void SubsEditBox::CallCommand(const char *cmd_name) {
 	cmd::call(cmd_name, c);
 	TextEdit->SetFocus();
+}
+
+void SubsEditBox::UpdateCharacterCount(wxString const& text) {
+	size_t length = MaxLineLength(text);
+	CharCount->SetValue(wxString::Format("%lu", (unsigned long)length));
+	size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();
+	if (limit && length > limit)
+		CharCount->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColor()));
+	else
+		CharCount->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 }

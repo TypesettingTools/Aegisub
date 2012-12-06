@@ -391,6 +391,51 @@ void CleanCache(wxString const& directory, wxString const& file_type, int64_t ma
 	LOG_D("utils/clean_cache") << "thread started successfully";
 }
 
+size_t MaxLineLength(wxString const& text) {
+	size_t max_line_length = 0;
+	size_t current_line_length = 0;
+	bool last_was_slash = false;
+	bool in_ovr = false;
+
+	for (auto const& c : text) {
+		if (in_ovr) {
+			in_ovr = c != '}';
+			continue;
+		}
+
+		if (c == '\\') {
+			current_line_length += last_was_slash; // for the slash before this one
+			last_was_slash = true;
+			continue;
+		}
+
+		if (last_was_slash) {
+			last_was_slash = false;
+			if (c == 'h') {
+				++current_line_length;
+				continue;
+			}
+
+			if (c == 'n' || c == 'N') {
+				max_line_length = std::max(max_line_length, current_line_length);
+				current_line_length = 0;
+				continue;
+			}
+
+			// Not actually an escape so add the character for the slash and fall through
+			++current_line_length;
+		}
+
+		if (c == '{')
+			in_ovr = true;
+		else
+			++current_line_length;
+	}
+
+	current_line_length += last_was_slash;
+	return std::max(max_line_length, current_line_length);
+}
+
 // OS X implementation in osx_utils.mm
 #ifndef __WXOSX_COCOA__
 void AddFullScreenButton(wxWindow *) { }

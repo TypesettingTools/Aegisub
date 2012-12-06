@@ -74,6 +74,9 @@ bool StringEmptyOrWhitespace(const wxString &str);
 int AegiStringToInt(const wxString &str,int start=0,int end=-1);
 int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start=0,int end=-1);
 
+/// Get the length in characters of the longest line in the given text
+size_t MaxLineLength(wxString const& text);
+
 /// @brief Launch a new copy of Aegisub.
 ///
 /// Contrary to what the name suggests, this does not close the currently

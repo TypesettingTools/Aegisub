@@ -103,6 +103,7 @@ class SubsEditBox : public wxPanel {
 	Placeholder<wxComboBox> *Effect;
 	wxRadioButton *ByTime;
 	wxRadioButton *ByFrame;
+	wxTextCtrl *CharCount;
 
 	wxSizer *TopSizer;
 	wxSizer *MiddleBotSizer;
@@ -183,6 +184,9 @@ class SubsEditBox : public wxPanel {
 
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming(agi::vfr::Framerate const& fps);
+
+	/// Update the character count box for the given text
+	void UpdateCharacterCount(wxString const& text);
 
 	/// Call a command the restore focus to the edit box
 	void CallCommand(const char *cmd_name);
