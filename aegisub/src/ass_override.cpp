@@ -428,15 +428,7 @@ AssOverrideTag::operator wxString() const {
 	wxString result = Name;
 
 	// Determine if it needs parentheses
-	bool parentheses =
-		Name == "\\t" ||
-		Name == "\\pos" ||
-		Name == "\\fad" ||
-		Name == "\\org" ||
-		Name == "\\clip" ||
-		Name == "\\iclip" ||
-		Name == "\\move" ||
-		Name == "\\fade";
+	bool parentheses = Params.size() > 1;
 	if (parentheses) result += "(";
 
 	// Add parameters
