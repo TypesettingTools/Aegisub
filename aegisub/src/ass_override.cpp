@@ -35,14 +35,20 @@
 
 #include "config.h"
 
-#include <wx/log.h>
-#include <wx/tokenzr.h>
-
 #include <libaegisub/log.h>
 
 #include "ass_dialogue.h"
 #include "ass_override.h"
 #include "utils.h"
+
+#include <boost/algorithm/string/join.hpp>
+#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+#include <functional>
+#include <wx/log.h>
+#include <wx/tokenzr.h>
+
+using namespace boost::adaptors;
 
 AssOverrideParameter::AssOverrideParameter()
 : classification(PARCLASS_NORMAL)
@@ -91,11 +97,9 @@ void AssDialogueBlockOverride::AddTag(wxString const& tag) {
 	Tags.push_back(new AssOverrideTag(tag));
 }
 
+static wxString tag_str(AssOverrideTag *t) { return *t; }
 wxString AssDialogueBlockOverride::GetText() {
-	text = "{";
-	for (auto tag : Tags)
-		text += *tag;
-	text += "}";
+	text = "{" + join(Tags | transformed(tag_str), wxString()) + "}";
 	return text;
 }
 
@@ -424,6 +428,7 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 	}
 }
 
+static wxString param_str(AssOverrideParameter *p) { return p->Get<wxString>(); }
 AssOverrideTag::operator wxString() const {
 	wxString result = Name;
 
@@ -432,15 +437,10 @@ AssOverrideTag::operator wxString() const {
 	if (parentheses) result += "(";
 
 	// Add parameters
-	bool any = false;
-	for (auto param : Params) {
-		if (param->GetType() != VARDATA_NONE && !param->omitted) {
-			result += param->Get<wxString>();
-			result += ",";
-			any = true;
-		}
-	}
-	if (any) result.resize(result.size() - 1);
+	result += join(Params
+		| filtered([](AssOverrideParameter *p) { return p->GetType() != VARDATA_NONE && !p->omitted; })
+		| transformed(param_str),
+		wxS(","));
 
 	if (parentheses) result += ")";
 	return result;

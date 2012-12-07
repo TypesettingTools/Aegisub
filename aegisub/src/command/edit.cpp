@@ -60,6 +60,7 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/sliced.hpp>
 
@@ -468,18 +469,14 @@ struct edit_find_replace : public Command {
 	}
 };
 
+static wxString get_entry_data(AssDialogue *d) { return d->GetEntryData(); }
 static void copy_lines(agi::Context *c) {
-	wxString data;
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
-	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
-		if (sel.count(diag)) {
-			if (!data.empty())
-				data += "\r\n";
-			data += diag->GetEntryData();
-		}
-	}
-
-	SetClipboard(data);
+	SetClipboard(join(c->ass->Line
+		| agi::of_type<AssDialogue>()
+		| filtered([&](AssDialogue *d) { return sel.count(d); })
+		| transformed(get_entry_data),
+		wxS("")));
 }
 
 static void delete_lines(agi::Context *c, wxString const& commit_message) {

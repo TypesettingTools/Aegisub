@@ -48,6 +48,8 @@
 
 #include <libaegisub/of_type_adaptor.h>
 
+using namespace boost::adaptors;
+
 std::size_t hash_value(wxString const& s) {
 	return wxStringHash()(s);
 }
@@ -290,7 +292,7 @@ void AssDialogue::StripTag(wxString const& tag_name) {
 static wxString get_text(AssDialogueBlock &d) { return d.GetText(); }
 void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
 	if (blocks.empty()) return;
-	Text = join(blocks | boost::adaptors::transformed(get_text), wxS(""));
+	Text = join(blocks | transformed(get_text), wxS(""));
 }
 
 void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
@@ -323,12 +325,11 @@ bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 	return ((Start < target->Start) ? (target->Start < End) : (Start < target->End));
 }
 
+static wxString get_text_p(AssDialogueBlock *d) { return d->GetText(); }
 wxString AssDialogue::GetStrippedText() const {
 	wxString ret;
 	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
-	for (auto block : blocks | agi::of_type<AssDialogueBlockPlain>())
-		ret += block->GetText();
-	return ret;
+	return join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), wxS(""));
 }
 
 AssEntry *AssDialogue::Clone() const {
