@@ -35,11 +35,13 @@
 #include "config.h"
 
 #include <functional>
+#include <unordered_set>
 
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/hashset.h>
 #include <wx/radiobut.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
@@ -316,7 +318,7 @@ void SubsEditBox::OnCommit(int type) {
 void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<wxString> AssDialogue::*field) {
 	wxEventBlocker blocker(this);
 
-	std::set<wxString> values;
+	std::unordered_set<wxString, wxStringHash, wxStringEqual> values;
 	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>())
 		values.insert(diag->*field);
 	values.erase("");
