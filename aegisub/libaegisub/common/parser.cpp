@@ -167,7 +167,7 @@ struct dialogue_tokens : lex::lexer<Lexer> {
 		using namespace agi::ass::DialogueTokenType;
 
 		if (karaoke_templater)
-			init(string("!.*!", KARAOKE_TEMPLATE) | string("\\$[A-Za-z_]+", KARAOKE_VARIABLE));
+			init(string("![^!]*!", KARAOKE_TEMPLATE) | string("\\$[A-Za-z_]+", KARAOKE_VARIABLE));
 		else
 			init(lex::char_('\1'));
 	}

@@ -251,3 +251,11 @@ TEST(lagi_syntax, templater_expression) {
 		expect_style(ss::NORMAL, 1u);
 	);
 }
+
+TEST(lagi_syntax, multiple_templater_expressions) {
+	tok_str("!1!2!3!", true,
+		expect_style(ss::KARAOKE_TEMPLATE, 3u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::KARAOKE_TEMPLATE, 3u);
+	);
+}
