@@ -45,8 +45,7 @@
 #include "utils.h"
 
 AssStyle::AssStyle()
-: AssEntry(wxString())
-, name("Default")
+: name("Default")
 , font("Arial")
 , fontsize(20.)
 , primary(255, 255, 255)
@@ -89,9 +88,7 @@ static double get_next_double(wxStringTokenizer &tok) {
 	return temp;
 }
 
-AssStyle::AssStyle(wxString rawData, int version)
-: AssEntry(wxString())
-{
+AssStyle::AssStyle(wxString rawData, int version) {
 	wxStringTokenizer tkn(rawData.Trim(false).Mid(6), ",", wxTOKEN_RET_EMPTY_ALL);
 
 	name = get_next_string(tkn).Trim(true).Trim(false);
@@ -173,7 +170,7 @@ void AssStyle::UpdateData() {
 	name.Replace(",", ";");
 	font.Replace(",", ";");
 
-	SetEntryData(wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
+	data = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
 		name, font, fontsize,
 		primary.GetAssStyleFormatted(),
 		secondary.GetAssStyleFormatted(),
@@ -183,7 +180,7 @@ void AssStyle::UpdateData() {
 		(underline?-1:0),(strikeout?-1:0),
 		scalex,scaley,spacing,angle,
 		borderstyle,outline_w,shadow_w,alignment,
-		Margin[0],Margin[1],Margin[2],encoding));
+		Margin[0],Margin[1],Margin[2],encoding);
 }
 
 wxString AssStyle::GetSSAText() const {

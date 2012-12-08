@@ -46,6 +46,7 @@
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
+#include "ass_info.h"
 #include "ass_override.h"
 #include "ass_style.h"
 #include "compat.h"
@@ -218,16 +219,16 @@ void AssFile::LoadDefault(bool defline) {
 	Clear();
 
 	// Write headers
-	Line.push_back(*new AssEntry("Title: Default Aegisub file"));
-	Line.push_back(*new AssEntry("ScriptType: v4.00+"));
-	Line.push_back(*new AssEntry("WrapStyle: 0"));
-	Line.push_back(*new AssEntry("ScaledBorderAndShadow: yes"));
-	Line.push_back(*new AssEntry("Collisions: Normal"));
+	Line.push_back(*new AssInfo("Title", "Default Aegisub file"));
+	Line.push_back(*new AssInfo("ScriptType", "v4.00+"));
+	Line.push_back(*new AssInfo("WrapStyle", "0"));
+	Line.push_back(*new AssInfo("ScaledBorderAndShadow", "yes"));
+	Line.push_back(*new AssInfo("Collisions", "Normal"));
 	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
-		Line.push_back(*new AssEntry(wxString::Format("PlayResX: %" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt())));
-		Line.push_back(*new AssEntry(wxString::Format("PlayResY: %" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt())));
+		Line.push_back(*new AssInfo("PlayResX", wxString::Format("%" PRId64, OPT_GET("Subtitle/Default Resolution/Width")->GetInt())));
+		Line.push_back(*new AssInfo("PlayResY", wxString::Format("%" PRId64, OPT_GET("Subtitle/Default Resolution/Height")->GetInt())));
 	}
-	Line.push_back(*new AssEntry("YCbCr Matrix: None"));
+	Line.push_back(*new AssInfo("YCbCr Matrix", "None"));
 
 	Line.push_back(*new AssStyle);
 
@@ -263,7 +264,7 @@ AssFile& AssFile::operator=(AssFile from) {
 	return *this;
 }
 
-void AssFile::InsertLine( AssEntry *entry) {
+void AssFile::InsertLine(AssEntry *entry) {
 	if (Line.empty()) {
 		Line.push_back(*entry);
 		return;
@@ -297,17 +298,10 @@ void AssFile::InsertAttachment(wxString filename) {
 
 wxString AssFile::GetScriptInfo(wxString key) const {
 	key.MakeLower();
-	key += ":";
-	bool GotIn = false;
 
-	for (auto const& line : Line) {
-		if (line.Group() == ENTRY_INFO) {
-			GotIn = true;
-			wxString curText = line.GetEntryData();
-			if (curText.Lower().StartsWith(key))
-				return curText.Mid(key.size()).Trim(true).Trim(false);
-		}
-		else if (GotIn) return "";
+	for (const auto info : Line | agi::of_type<AssInfo>()) {
+		if (key == info->Key().Lower())
+			return info->Value();
 	}
 
 	return "";
@@ -320,40 +314,18 @@ int AssFile::GetScriptInfoAsInt(wxString const& key) const {
 }
 
 void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
-	wxString search_key = key.Lower() + ":";
-	size_t key_size = search_key.size();
-	entryIter script_info_end;
-	bool found_script_info = false;
-
-	for (auto& line : Line) {
-		if (line.Group() == ENTRY_INFO) {
-			found_script_info = true;
-			wxString cur_text = line.GetEntryData().Left(key_size).Lower();
-
-			if (cur_text == search_key) {
-				if (value.empty())
-					delete &line;
-				else
-					line.SetEntryData(key + ": " + value);
-				return;
-			}
-			script_info_end = Line.iterator_to(line);
-		}
-		else if (found_script_info) {
-			if (value.size())
-				Line.insert(script_info_end, *new AssEntry(key + ": " + value));
+	wxString lower_key = key.Lower();
+	for (auto info : Line | agi::of_type<AssInfo>()) {
+		if (lower_key == info->Key().Lower()) {
+			if (value.empty())
+				delete info;
+			else
+				info->SetValue(value);
 			return;
 		}
 	}
 
-	// Found a script info section, but not this key or anything after it,
-	// so add it at the end of the file
-	if (found_script_info)
-		Line.push_back(*new AssEntry(key + ": " + value));
-	// Script info section not found, so add it at the beginning of the file
-	else {
-		Line.push_front(*new AssEntry(key + ": " + value));
-	}
+	InsertLine(new AssInfo(key, value));
 }
 
 void AssFile::GetResolution(int &sw,int &sh) const {

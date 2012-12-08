@@ -41,6 +41,8 @@
 #include <libaegisub/color.h>
 
 class AssStyle : public AssEntry {
+	wxString data;
+
 public:
 	wxString name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
 	wxString font;   ///< Font face name
@@ -76,6 +78,7 @@ public:
 	AssStyle();
 	AssStyle(wxString data, int version=1);
 
+	const wxString GetEntryData() const override { return data; }
 	wxString GetSSAText() const override;
 	AssEntryGroup Group() const override { return ENTRY_STYLE; }
 	AssEntry *Clone() const override;

@@ -46,8 +46,7 @@
 #include <libaegisub/scoped_ptr.h>
 
 AssAttachment::AssAttachment(wxString const& name, AssEntryGroup group)
-: AssEntry(wxString())
-, data(new std::vector<char>)
+: data(new std::vector<char>)
 , filename(name)
 , group(group)
 {

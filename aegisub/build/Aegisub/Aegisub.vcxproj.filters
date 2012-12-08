@@ -684,6 +684,10 @@
     <ClInclude Include="$(SrcDir)dialog_autosave.h">
       <Filter>Features\Autosave</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
+    <ClInclude Include="$(SrcDir)ass_info.h">
+      <Filter>ASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">

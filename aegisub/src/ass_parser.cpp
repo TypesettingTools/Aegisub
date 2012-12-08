@@ -19,6 +19,7 @@
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "ass_info.h"
 #include "ass_style.h"
 #include "subtitle_format.h"
 
@@ -88,7 +89,7 @@ void AssParser::ParseScriptInfoLine(wxString const& data) {
 		}
 	}
 
-	InsertLine(new AssEntry(data));
+	InsertLine(new AssInfo(data));
 }
 
 void AssParser::ParseEventLine(wxString const& data) {

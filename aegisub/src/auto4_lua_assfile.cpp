@@ -49,6 +49,7 @@
 #include <libaegisub/scoped_ptr.h>
 
 #include "ass_dialogue.h"
+#include "ass_info.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "ass_override.h"
@@ -203,9 +204,9 @@ namespace Automation4 {
 		set_field(L, "section", e->GroupHeader());
 		set_field(L, "raw", raw);
 
-		if (e->Group() == ENTRY_INFO) {
-			set_field(L, "key", raw.BeforeFirst(':'));
-			set_field(L, "value", raw.AfterFirst(':'));
+		if (AssInfo *info = dynamic_cast<AssInfo*>(e)) {
+			set_field(L, "key", info->Key());
+			set_field(L, "value", info->Value());
 			set_field(L, "class", "info");
 		}
 		else if (AssDialogue *dia = dynamic_cast<AssDialogue*>(e)) {
@@ -297,7 +298,7 @@ namespace Automation4 {
 			wxString section = get_wxstring_field(L, "section", "common");
 
 			if (lclass == "info") {
-				result = new AssEntry(wxString::Format("%s: %s", get_wxstring_field(L, "key", "info"), get_wxstring_field(L, "value", "info")));
+				result = new AssInfo(get_wxstring_field(L, "key", "info"), get_wxstring_field(L, "value", "info"));
 			}
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;

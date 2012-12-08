@@ -14,33 +14,23 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_entry.cpp
-/// @brief Superclass for different kinds of lines in subtitles
-/// @ingroup subs_storage
-///
-
-#include "config.h"
-
 #include "ass_entry.h"
 
-wxString const& AssEntry::GroupHeader(bool ssa) const {
-	static wxString ass_headers[] = {
-		"[Script Info]",
-		"[Events]",
-		"[V4+ Styles]",
-		"[Fonts]",
-		"[Graphics]",
-		""
-	};
+class AssInfo : public AssEntry {
+	wxString key;
+	wxString value;
 
-	static wxString ssa_headers[] = {
-		"[Script Info]",
-		"[Events]",
-		"[V4 Styles]",
-		"[Fonts]",
-		"[Graphics]",
-		""
-	};
+public:
+	AssInfo(AssInfo const& o) : key(o.key), value(o.value) { }
+	AssInfo(wxString const& line) : key(line.BeforeFirst(':').Trim()), value(line.AfterFirst(':').Trim(false)) { }
+	AssInfo(wxString const& key, wxString const& value) : key(key), value(value) { }
 
-	return (ssa ? ssa_headers : ass_headers)[Group()];
-}
+	AssEntry *Clone() const override { return new AssInfo(*this); }
+	AssEntryGroup Group() const override { return ENTRY_INFO; }
+	const wxString GetEntryData() const override { return key + ":" + value; }
+	wxString GetSSAText() const override { return key.Lower() == "scripttype: v4.00+" ? "ScriptType: v4.00" : GetEntryData(); }
+
+	wxString Key() const { return key; }
+	wxString Value() const { return value; }
+	void SetValue(wxString const& new_value) { value = new_value; }
+};

@@ -55,8 +55,7 @@ std::size_t hash_value(wxString const& s) {
 }
 
 AssDialogue::AssDialogue()
-: AssEntry(wxString())
-, Comment(false)
+: Comment(false)
 , Layer(0)
 , Start(0)
 , End(5000)
@@ -66,8 +65,7 @@ AssDialogue::AssDialogue()
 }
 
 AssDialogue::AssDialogue(AssDialogue const& that)
-: AssEntry(wxString())
-, Comment(that.Comment)
+: Comment(that.Comment)
 , Layer(that.Layer)
 , Start(that.Start)
 , End(that.End)
@@ -80,8 +78,7 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 }
 
 AssDialogue::AssDialogue(wxString const& data)
-: AssEntry(wxString())
-, Comment(false)
+: Comment(false)
 , Layer(0)
 , Start(0)
 , End(5000)

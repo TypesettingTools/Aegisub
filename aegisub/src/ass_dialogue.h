@@ -163,8 +163,6 @@ public:
 	/// Update the text of the line from parsed blocks
 	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
 	const wxString GetEntryData() const override;
-	/// Do nothing
-	void SetEntryData(wxString const&) override { }
 
 	template<int which>
 	void SetMarginString(wxString const& value) { SetMarginString(value, which);}

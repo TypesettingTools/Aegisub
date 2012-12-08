@@ -256,6 +256,7 @@
     <ClInclude Include="$(SrcDir)visual_tool_rotatez.h" />
     <ClInclude Include="$(SrcDir)visual_tool_scale.h" />
     <ClInclude Include="$(SrcDir)visual_tool_vector_clip.h" />
+    <ClInclude Include="$(SrcDir)ass_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
