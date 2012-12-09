@@ -52,14 +52,12 @@ using namespace boost::adaptors;
 
 AssOverrideParameter::AssOverrideParameter()
 : classification(PARCLASS_NORMAL)
-, omitted(false)
 {
 }
 
 AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
 : VariableData(std::move(o))
 , classification(o.classification)
-, omitted(o.omitted)
 {
 }
 
@@ -101,7 +99,7 @@ wxString AssDialogueBlockOverride::GetText() {
 void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callback, void *userData) {
 	for (auto tag : Tags) {
 		for (auto& par : tag->Params) {
-			if (par.GetType() == VARDATA_NONE || par.omitted) continue;
+			if (par.GetType() == VARDATA_NONE) continue;
 
 			callback(tag->Name, &par, userData);
 
@@ -366,10 +364,8 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 		newparam->classification = curproto.classification;
 
 		// Check if it's optional and not present
-		if (!(curproto.optional & parsFlag) || curPar >= totalPars) {
-			newparam->omitted = true;
+		if (!(curproto.optional & parsFlag) || curPar >= totalPars)
 			continue;
-		}
 
 		wxString curtok = paramList[curPar++];
 
@@ -429,7 +425,7 @@ AssOverrideTag::operator wxString() const {
 
 	// Add parameters
 	result += join(Params
-		| filtered([](AssOverrideParameter const& p) { return p.GetType() != VARDATA_NONE && !p.omitted; })
+		| filtered([](AssOverrideParameter const& p) { return p.GetType() != VARDATA_NONE; })
 		| transformed(param_str),
 		wxS(","));
 

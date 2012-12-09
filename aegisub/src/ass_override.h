@@ -73,9 +73,6 @@ public:
 	/// Type of parameter
 	AssParameterClass classification;
 
-	/// Is the parameter's value actually given?
-	bool omitted;
-
 	AssOverrideParameter();
 };
 

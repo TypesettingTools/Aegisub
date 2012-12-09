@@ -248,7 +248,6 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxS
 				}
 				else {
 					ovr->Tags[i]->Params[0].Set(value);
-					ovr->Tags[i]->Params[0].omitted = false;
 					found = true;
 				}
 			}

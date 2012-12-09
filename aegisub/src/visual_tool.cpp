@@ -373,7 +373,6 @@ static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, wxString 
 static Vector2D vec_or_bad(param_vec tag, size_t x_idx, size_t y_idx) {
 	if (!tag ||
 		tag->size() <= x_idx || tag->size() <= y_idx ||
-		(*tag)[x_idx].omitted || (*tag)[y_idx].omitted ||
 		(*tag)[x_idx].GetType() == VARDATA_NONE || (*tag)[y_idx].GetType() == VARDATA_NONE)
 	{
 		return Vector2D();
@@ -402,7 +401,7 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 
 	param_vec align_tag;
 	int ovr_align = 0;
-	if ((align_tag = find_tag(blocks, "\\an")) && !(*align_tag)[0].omitted)
+	if ((align_tag = find_tag(blocks, "\\an")) && (*align_tag)[0].GetType() != VARDATA_NONE)
 		ovr_align = (*align_tag)[0].Get<int>();
 	else if ((align_tag = find_tag(blocks, "\\a")))
 		ovr_align = AssStyle::SsaToAss((*align_tag)[0].Get<int>(2));
