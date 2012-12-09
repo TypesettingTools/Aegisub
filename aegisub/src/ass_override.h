@@ -50,21 +50,6 @@ enum AssParameterClass {
 	PARCLASS_DRAWING
 };
 
-/// The parameter is absent unless the total number of parameters is the
-/// indicated number. Note that only arguments not at the end need to be marked
-/// as optional; this is just to know which parameters to skip when there are
-/// earlier optional arguments
-enum AssParameterOptional {
-	NOT_OPTIONAL = 0xFF,
-	OPTIONAL_1 = 0x01,
-	OPTIONAL_2 = 0x02,
-	OPTIONAL_3 = 0x04,
-	OPTIONAL_4 = 0x08,
-	OPTIONAL_5 = 0x10,
-	OPTIONAL_6 = 0x20,
-	OPTIONAL_7 = 0x40
-};
-
 /// A single parameter to an override tag
 class AssOverrideParameter : public VariableData {
 public:
@@ -74,40 +59,6 @@ public:
 	AssParameterClass classification;
 
 	AssOverrideParameter();
-};
-
-/// Prototype of a single override parameter
-struct AssOverrideParamProto {
-	/// ASS_ParameterOptional
-	int optional;
-
-	/// Type of this parameter
-	VariableDataType type;
-
-	/// Semantic type of this parameter
-	AssParameterClass classification;
-
-	AssOverrideParamProto (VariableDataType type, int opt=NOT_OPTIONAL, AssParameterClass classi=PARCLASS_NORMAL);
-};
-
-struct AssOverrideTagProto {
-	/// Name of the tag, with slash
-	wxString name;
-	/// Parameters to this tag
-	std::vector<AssOverrideParamProto> params;
-	typedef std::vector<AssOverrideTagProto>::iterator iterator;
-
-	/// @brief Add a parameter to this tag prototype
-	/// @param type Data type of the parameter
-	/// @param classi Semantic type of the parameter
-	/// @param opt Situations in which this parameter is present
-	void AddParam(VariableDataType type, AssParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
-	/// @brief Convenience function for single-argument tags
-	/// @param name Name of the tag, with slash
-	/// @param type Data type of the parameter
-	/// @param classi Semantic type of the parameter
-	/// @param opt Situations in which this parameter is present
-	void Set(wxString name, VariableDataType type, AssParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
 };
 
 class AssOverrideTag : boost::noncopyable {
@@ -121,9 +72,6 @@ public:
 	AssOverrideTag(wxString text);
 
 	bool IsValid() const { return valid; }
-	/// @brief Parses the parameters for the ass override tag
-	/// @param text All text between the name and the next \ or the end of the override block
-	void ParseParameters(const wxString &text, AssOverrideTagProto::iterator proto);
 	void Clear();
 	void SetText(const wxString &text);
 	operator wxString() const;
