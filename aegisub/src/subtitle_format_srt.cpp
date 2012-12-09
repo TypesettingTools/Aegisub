@@ -563,7 +563,7 @@ wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 				if (tag->IsValid() && tag->Name.size() == 2) {
 					auto it = tag_states.find(tag->Name[1]);
 					if (it != tag_states.end()) {
-						bool temp = tag->Params[0]->Get(false);
+						bool temp = tag->Params[0].Get(false);
 						if (temp && !it->second)
 							final += wxString::Format("<%c>", it->first);
 						if (!temp && it->second)

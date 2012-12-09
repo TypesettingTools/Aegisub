@@ -100,14 +100,14 @@ wxString AssDialogueBlockOverride::GetText() {
 
 void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callback, void *userData) {
 	for (auto tag : Tags) {
-		for (auto par : tag->Params) {
-			if (par->GetType() == VARDATA_NONE || par->omitted) continue;
+		for (auto& par : tag->Params) {
+			if (par.GetType() == VARDATA_NONE || par.omitted) continue;
 
-			callback(tag->Name, par, userData);
+			callback(tag->Name, &par, userData);
 
 			// Go recursive if it's a block parameter
-			if (par->GetType() == VARDATA_BLOCK)
-				par->Get<AssDialogueBlockOverride*>()->ProcessParameters(callback, userData);
+			if (par.GetType() == VARDATA_BLOCK)
+				par.Get<AssDialogueBlockOverride*>()->ProcessParameters(callback, userData);
 		}
 	}
 }
@@ -269,12 +269,8 @@ AssOverrideTag::AssOverrideTag(wxString text) {
 	SetText(text);
 }
 
-AssOverrideTag::~AssOverrideTag () {
-	delete_clear(Params);
-}
-
 void AssOverrideTag::Clear() {
-	delete_clear(Params);
+	Params.clear();
 	Params.reserve(6);
 	valid = false;
 }
@@ -365,9 +361,9 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 	unsigned curPar = 0;
 	for (auto& curproto : proto_it->params) {
 		// Create parameter
-		AssOverrideParameter *newparam = new AssOverrideParameter;
+		Params.emplace_back();
+		AssOverrideParameter *newparam = &Params.back();
 		newparam->classification = curproto.classification;
-		Params.push_back(newparam);
 
 		// Check if it's optional and not present
 		if (!(curproto.optional & parsFlag) || curPar >= totalPars) {
@@ -423,7 +419,7 @@ void AssOverrideTag::ParseParameters(const wxString &text, AssOverrideTagProto::
 	}
 }
 
-static wxString param_str(AssOverrideParameter *p) { return p->Get<wxString>(); }
+static wxString param_str(AssOverrideParameter const& p) { return p.Get<wxString>(); }
 AssOverrideTag::operator wxString() const {
 	wxString result = Name;
 
@@ -433,7 +429,7 @@ AssOverrideTag::operator wxString() const {
 
 	// Add parameters
 	result += join(Params
-		| filtered([](AssOverrideParameter *p) { return p->GetType() != VARDATA_NONE && !p->omitted; })
+		| filtered([](AssOverrideParameter const& p) { return p.GetType() != VARDATA_NONE && !p.omitted; })
 		| transformed(param_str),
 		wxS(","));
 

@@ -113,16 +113,15 @@ struct AssOverrideTagProto {
 	void Set(wxString name, VariableDataType type, AssParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
 };
 
-class AssOverrideTag {
+class AssOverrideTag : boost::noncopyable {
 	bool valid;
 
 public:
 	wxString Name;
-	std::vector<AssOverrideParameter*> Params;
+	std::vector<AssOverrideParameter> Params;
 
 	AssOverrideTag();
 	AssOverrideTag(wxString text);
-	~AssOverrideTag();
 
 	bool IsValid() const { return valid; }
 	/// @brief Parses the parameters for the ass override tag

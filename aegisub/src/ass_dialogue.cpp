@@ -228,7 +228,7 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 				// Look for \p in block
 				for (auto tag : block->Tags) {
 					if (tag->Name == "\\p")
-						drawingLevel = tag->Params[0]->Get<int>(0);
+						drawingLevel = tag->Params[0].Get<int>(0);
 				}
 			}
 

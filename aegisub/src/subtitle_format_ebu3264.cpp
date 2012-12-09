@@ -125,13 +125,13 @@ namespace
 			for (auto t : ob->Tags)
 			{
 				if (t->Name == "\\u")
-					underline = t->Params[0]->Get<bool>(style_underline);
+					underline = t->Params[0].Get<bool>(style_underline);
 				else if (t->Name == "\\i")
-					italic = t->Params[0]->Get<bool>(style_italic);
+					italic = t->Params[0].Get<bool>(style_italic);
 				else if (t->Name == "\\an")
-					align = t->Params[0]->Get<int>(align);
-				else if (t->Name == "\\a" && !t->Params[0]->omitted)
-					align = AssStyle::SsaToAss(t->Params[0]->Get<int>());
+					align = t->Params[0].Get<int>(align);
+				else if (t->Name == "\\a" && !t->Params[0].omitted)
+					align = AssStyle::SsaToAss(t->Params[0].Get<int>());
 			}
 		}
 

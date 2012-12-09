@@ -140,7 +140,7 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 
 					syl.tag_type = tag->Name;
 					syl.start_time += syl.duration;
-					syl.duration = tag->Params[0]->Get(0) * 10;
+					syl.duration = tag->Params[0].Get(0) * 10;
 				}
 				else {
 					wxString& otext = syl.ovr_tags[syl.text.size()];

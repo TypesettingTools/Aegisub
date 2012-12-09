@@ -355,7 +355,7 @@ void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 
 //////// PARSERS
 
-typedef const std::vector<AssOverrideParameter*> * param_vec;
+typedef const std::vector<AssOverrideParameter> * param_vec;
 
 // Find a tag's parameters in a line or return nullptr if it's not found
 static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, wxString tag_name) {
@@ -373,12 +373,12 @@ static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, wxString 
 static Vector2D vec_or_bad(param_vec tag, size_t x_idx, size_t y_idx) {
 	if (!tag ||
 		tag->size() <= x_idx || tag->size() <= y_idx ||
-		(*tag)[x_idx]->omitted || (*tag)[y_idx]->omitted ||
-		(*tag)[x_idx]->GetType() == VARDATA_NONE || (*tag)[y_idx]->GetType() == VARDATA_NONE)
+		(*tag)[x_idx].omitted || (*tag)[y_idx].omitted ||
+		(*tag)[x_idx].GetType() == VARDATA_NONE || (*tag)[y_idx].GetType() == VARDATA_NONE)
 	{
 		return Vector2D();
 	}
-	return Vector2D((*tag)[x_idx]->Get<float>(), (*tag)[y_idx]->Get<float>());
+	return Vector2D((*tag)[x_idx].Get<float>(), (*tag)[y_idx].Get<float>());
 }
 
 Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
@@ -402,10 +402,10 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 
 	param_vec align_tag;
 	int ovr_align = 0;
-	if ((align_tag = find_tag(blocks, "\\an")) && !(*align_tag)[0]->omitted)
-		ovr_align = (*align_tag)[0]->Get<int>();
+	if ((align_tag = find_tag(blocks, "\\an")) && !(*align_tag)[0].omitted)
+		ovr_align = (*align_tag)[0].Get<int>();
 	else if ((align_tag = find_tag(blocks, "\\a")))
-		ovr_align = AssStyle::SsaToAss((*align_tag)[0]->Get<int>(2));
+		ovr_align = AssStyle::SsaToAss((*align_tag)[0].Get<int>(2));
 
 	if (ovr_align > 0 && ovr_align <= 9)
 		align = ovr_align;
@@ -448,8 +448,8 @@ bool VisualToolBase::GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, 
 	p1 = vec_or_bad(tag, 0, 1);
 	p2 = vec_or_bad(tag, 2, 3);
 	// VSFilter actually defaults to -1, but it uses <= 0 to check for default and 0 seems less bug-prone
-	t1 = (*tag)[4]->Get<int>(0);
-	t2 = (*tag)[5]->Get<int>(0);
+	t1 = (*tag)[4].Get<int>(0);
+	t2 = (*tag)[5].Get<int>(0);
 
 	return p1 && p2;
 }
@@ -463,13 +463,13 @@ void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, fl
 	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
 	if (param_vec tag = find_tag(blocks, "\\frx"))
-		rx = tag->front()->Get<float>(rx);
+		rx = tag->front().Get<float>(rx);
 	if (param_vec tag = find_tag(blocks, "\\fry"))
-		ry = tag->front()->Get<float>(ry);
+		ry = tag->front().Get<float>(ry);
 	if (param_vec tag = find_tag(blocks, "\\frz"))
-		rz = tag->front()->Get<float>(rz);
+		rz = tag->front().Get<float>(rz);
 	else if ((tag = find_tag(blocks, "\\fr")))
-		rz = tag->front()->Get<float>(rz);
+		rz = tag->front().Get<float>(rz);
 }
 
 void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
@@ -483,9 +483,9 @@ void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
 	if (param_vec tag = find_tag(blocks, "\\fscx"))
-		x = tag->front()->Get<float>(x);
+		x = tag->front().Get<float>(x);
 	if (param_vec tag = find_tag(blocks, "\\fscy"))
-		y = tag->front()->Get<float>(y);
+		y = tag->front().Get<float>(y);
 
 	scale = Vector2D(x, y);
 }
@@ -524,14 +524,14 @@ wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &
 
 	if (tag && tag->size() == 4) {
 		return wxString::Format("m %d %d l %d %d %d %d %d %d",
-			(*tag)[0]->Get<int>(), (*tag)[1]->Get<int>(),
-			(*tag)[2]->Get<int>(), (*tag)[1]->Get<int>(),
-			(*tag)[2]->Get<int>(), (*tag)[3]->Get<int>(),
-			(*tag)[0]->Get<int>(), (*tag)[3]->Get<int>());
+			(*tag)[0].Get<int>(), (*tag)[1].Get<int>(),
+			(*tag)[2].Get<int>(), (*tag)[1].Get<int>(),
+			(*tag)[2].Get<int>(), (*tag)[3].Get<int>(),
+			(*tag)[0].Get<int>(), (*tag)[3].Get<int>());
 	}
 	if (tag) {
-		scale = std::max((*tag)[0]->Get(scale), 1);
-		return (*tag)[1]->Get<wxString>("");
+		scale = std::max((*tag)[0].Get(scale), 1);
+		return (*tag)[1].Get<wxString>("");
 	}
 
 	return "";

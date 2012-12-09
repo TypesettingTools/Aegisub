@@ -171,7 +171,7 @@ T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T ini
 	for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto tag : ovr->Tags | reversed) {
 			if (tag->Name == tag_name || tag->Name == alt)
-				return tag->Params[0]->Get<T>(initial);
+				return tag->Params[0].Get<T>(initial);
 		}
 	}
 	return initial;
@@ -247,8 +247,8 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxS
 					i--;
 				}
 				else {
-					ovr->Tags[i]->Params[0]->Set(value);
-					ovr->Tags[i]->Params[0]->omitted = false;
+					ovr->Tags[i]->Params[0].Set(value);
+					ovr->Tags[i]->Params[0].omitted = false;
 					found = true;
 				}
 			}
