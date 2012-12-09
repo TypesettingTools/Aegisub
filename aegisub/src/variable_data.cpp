@@ -187,11 +187,16 @@ template<> wxString VariableData::Get<wxString>() const {
 	if (!value) throw "Null parameter";
 	if (type != VARDATA_TEXT) {
 		if (type == VARDATA_INT) return wxString::Format("%i",*value_int);
-		else if (type == VARDATA_FLOAT) return wxString::Format("%g",*value_float);
-		else if (type == VARDATA_COLOUR) return to_wx(value_colour->GetHexFormatted());
-		else if (type == VARDATA_BOOL) return *value_bool ? "1" : "0";
-		else if (type == VARDATA_BLOCK) return (*value_block)->GetText();
-		else throw "Wrong parameter type, should be text";
+		if (type == VARDATA_FLOAT) return wxString::Format("%g",*value_float);
+		if (type == VARDATA_COLOUR) return to_wx(value_colour->GetHexFormatted());
+		if (type == VARDATA_BOOL) return *value_bool ? "1" : "0";
+		if (type == VARDATA_BLOCK) {
+			wxString str((*value_block)->GetText());
+			str.Replace("{", "");
+			str.Replace("}", "");
+			return str;
+		}
+		throw "Wrong parameter type, should be text";
 	}
 	return *value_text;
 }
