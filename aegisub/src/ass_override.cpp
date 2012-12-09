@@ -56,16 +56,11 @@ AssOverrideParameter::AssOverrideParameter()
 {
 }
 
-AssOverrideParameter::AssOverrideParameter(const AssOverrideParameter &param)
-: VariableData(param)
-, classification(param.classification)
-, omitted(param.omitted)
+AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
+: VariableData(std::move(o))
+, classification(o.classification)
+, omitted(o.omitted)
 {
-}
-
-void AssOverrideParameter::operator=(const AssOverrideParameter &param) {
-	DeleteValue();
-	new(this) AssOverrideParameter(param);
 }
 
 // From ass_dialogue.h
@@ -117,7 +112,7 @@ void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callb
 	}
 }
 
-AssOverrideParamProto::AssOverrideParamProto(VariableDataType type,int opt,AssParameterClass classi)
+AssOverrideParamProto::AssOverrideParamProto(VariableDataType type, int opt, AssParameterClass classi)
 : optional(opt)
 , type(type)
 , classification(classi)

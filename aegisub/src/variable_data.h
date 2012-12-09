@@ -34,6 +34,8 @@
 
 #pragma once
 
+#include <boost/noncopyable.hpp>
+
 namespace agi { struct Color; }
 class wxString;
 
@@ -49,7 +51,7 @@ enum VariableDataType {
 
 class AssDialogueBlockOverride;
 
-class VariableData {
+class VariableData : private boost::noncopyable {
 private:
 	union {
 		void *value;
@@ -68,6 +70,7 @@ protected:
 
 public:
 	VariableData();
+	VariableData(VariableData&& o);
 	virtual ~VariableData();
 
 	VariableDataType GetType() const { return type; }

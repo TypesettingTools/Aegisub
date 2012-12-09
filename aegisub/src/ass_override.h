@@ -68,6 +68,8 @@ enum AssParameterOptional {
 /// A single parameter to an override tag
 class AssOverrideParameter : public VariableData {
 public:
+	AssOverrideParameter(AssOverrideParameter&&);
+
 	/// Type of parameter
 	AssParameterClass classification;
 
@@ -75,8 +77,6 @@ public:
 	bool omitted;
 
 	AssOverrideParameter();
-	AssOverrideParameter(const AssOverrideParameter&);
-	void operator=(const AssOverrideParameter &param);
 };
 
 /// Prototype of a single override parameter

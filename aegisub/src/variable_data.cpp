@@ -47,6 +47,12 @@ VariableData::VariableData() {
 	value = nullptr;
 }
 
+VariableData::VariableData(VariableData&& o)
+: type(o.type)
+, value(o.value)
+{
+}
+
 VariableData::~VariableData() {
 	DeleteValue();
 }
