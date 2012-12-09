@@ -274,13 +274,13 @@ void AssFile::InsertLine(AssEntry *entry) {
 	entryIter it = Line.end();
 	do {
 		--it;
-		if (it->Group() == entry->Group()) {
+		if (it->Group() <= entry->Group()) {
 			Line.insert(++it, *entry);
 			return;
 		}
 	} while (it != Line.begin());
 
-	Line.push_back(*entry);
+	Line.push_front(*entry);
 }
 
 void AssFile::InsertAttachment(wxString filename) {

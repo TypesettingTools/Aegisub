@@ -26,19 +26,19 @@
 wxString const& AssEntry::GroupHeader(bool ssa) const {
 	static wxString ass_headers[] = {
 		"[Script Info]",
-		"[Events]",
 		"[V4+ Styles]",
 		"[Fonts]",
 		"[Graphics]",
+		"[Events]",
 		""
 	};
 
 	static wxString ssa_headers[] = {
 		"[Script Info]",
-		"[Events]",
 		"[V4 Styles]",
 		"[Fonts]",
 		"[Graphics]",
+		"[Events]",
 		""
 	};
 
