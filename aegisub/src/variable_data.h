@@ -70,13 +70,10 @@ public:
 	VariableData();
 	virtual ~VariableData();
 
-	VariableDataType GetType() const;
+	VariableDataType GetType() const { return type; }
 	template<class T> void Set(T param);
-	void ResetWith(wxString value);
 	template<class T> T Get() const;
 	template<class T> T Get(T def) const {
 		return value ? Get<T>() : def;
 	}
-
-	void operator= (const VariableData &param);
 };

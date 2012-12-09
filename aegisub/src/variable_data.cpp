@@ -105,36 +105,6 @@ template void VariableData::Set(wxString param);
 template void VariableData::Set<agi::Color>(agi::Color param);
 template void VariableData::Set<AssDialogueBlockOverride *>(AssDialogueBlockOverride * param);
 
-/// @brief Resets a value with a string, preserving current type
-/// @param value
-void VariableData::ResetWith(wxString value) {
-	switch (type) {
-		case VARDATA_INT: {
-			long temp = 0;
-			value.ToLong(&temp);
-			Set<int>(temp);
-			break;
-		}
-		case VARDATA_FLOAT: {
-			double temp = 0;
-			value.ToDouble(&temp);
-			Set(temp);
-			break;
-		}
-		case VARDATA_BOOL:
-			if (value == "1") Set(true);
-			else Set(false);
-			break;
-		case VARDATA_COLOUR: {
-			Set(agi::Color(from_wx(value)));
-			break;
-		}
-		default:
-			Set(value);
-			break;
-	}
-}
-
 template<> int VariableData::Get<int>() const {
 	if (!value) throw "Null parameter";
 	if (type == VARDATA_BOOL) return !!(*value_bool);
@@ -199,20 +169,4 @@ template<> wxString VariableData::Get<wxString>() const {
 		throw "Wrong parameter type, should be text";
 	}
 	return *value_text;
-}
-
-VariableDataType VariableData::GetType() const {
-	return type;
-}
-
-void VariableData::operator= (const VariableData &param) {
-	switch(param.GetType()) {
-		case VARDATA_INT: Set(param.Get<int>()); break;
-		case VARDATA_FLOAT: Set(param.Get<double>()); break;
-		case VARDATA_TEXT: Set(param.Get<wxString>()); break;
-		case VARDATA_BOOL: Set(param.Get<bool>()); break;
-		case VARDATA_COLOUR: Set(param.Get<agi::Color>()); break;
-		case VARDATA_BLOCK: Set(param.Get<AssDialogueBlockOverride*>()); break;
-		default: DeleteValue();
-	}
 }
