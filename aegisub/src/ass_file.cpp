@@ -325,7 +325,8 @@ void AssFile::SetScriptInfo(wxString const& key, wxString const& value) {
 		}
 	}
 
-	InsertLine(new AssInfo(key, value));
+	if (!value.empty())
+		InsertLine(new AssInfo(key, value));
 }
 
 void AssFile::GetResolution(int &sw,int &sh) const {
