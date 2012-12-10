@@ -93,105 +93,103 @@ void time_edit_char_hook(wxKeyEvent &event) {
 SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxRAISED_BORDER, "SubsEditBox")
 , line(0)
-, splitLineMode(true)
-, controlState(true)
+, button_bar_split(true)
+, controls_enabled(true)
 , c(context)
-, commitId(-1)
-, undoTimer(GetEventHandler())
+, commit_id(-1)
+, undo_timer(GetEventHandler())
 {
 	using std::bind;
 
 	// Top controls
-	TopSizer = new wxBoxSizer(wxHORIZONTAL);
+	top_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-	CommentBox = new wxCheckBox(this,-1,_("&Comment"));
-	CommentBox->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
+	comment_box = new wxCheckBox(this,-1,_("&Comment"));
+	comment_box->SetToolTip(_("Comment this line out. Commented lines don't show up on screen."));
 #ifdef __WXGTK__
 	// Only supported in wxgtk
-	CommentBox->SetCanFocus(false);
+	comment_box->SetCanFocus(false);
 #endif
-	TopSizer->Add(CommentBox, 0, wxRIGHT | wxALIGN_CENTER, 5);
+	top_sizer->Add(comment_box, 0, wxRIGHT | wxALIGN_CENTER, 5);
 
-	StyleBox = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
+	style_box = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
 
-	ActorBox = new Placeholder<wxComboBox>(this, _("Actor"), wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());
-	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnActorChange, this, ActorBox->GetId());
-	TopSizer->Add(ActorBox, wxSizerFlags(2).Center().Border(wxRIGHT));
+	actor_box = new Placeholder<wxComboBox>(this, _("Actor"), wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnActorChange, this, actor_box->GetId());
+	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnActorChange, this, actor_box->GetId());
+	top_sizer->Add(actor_box, wxSizerFlags(2).Center().Border(wxRIGHT));
 
-	Effect = new Placeholder<wxComboBox>(this, _("Effect"), wxSize(80,-1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
-	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnEffectChange, this, Effect->GetId());
-	TopSizer->Add(Effect, 3, wxALIGN_CENTER, 5);
+	effect_box = new Placeholder<wxComboBox>(this, _("Effect"), wxSize(80,-1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
+	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
+	top_sizer->Add(effect_box, 3, wxALIGN_CENTER, 5);
 
-	CharCount = new wxTextCtrl(this, -1, "0", wxDefaultPosition, wxSize(30, -1), wxTE_READONLY | wxTE_CENTER);
-	CharCount->SetToolTip(_("Number of characters in the longest line of this subtitle."));
-	TopSizer->Add(CharCount, 0, wxALIGN_CENTER, 5);
+	char_count = new wxTextCtrl(this, -1, "0", wxDefaultPosition, wxSize(30, -1), wxTE_READONLY | wxTE_CENTER);
+	char_count->SetToolTip(_("Number of characters in the longest line of this subtitle."));
+	top_sizer->Add(char_count, 0, wxALIGN_CENTER, 5);
 
 	// Middle controls
-	MiddleSizer = new wxBoxSizer(wxHORIZONTAL);
+	middle_left_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-	Layer = new wxSpinCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1), wxSP_ARROW_KEYS | wxTE_PROCESS_ENTER,0,0x7FFFFFFF,0);
-	Layer->SetToolTip(_("Layer number"));
-	MiddleSizer->Add(Layer, wxSizerFlags().Center());
-	MiddleSizer->AddSpacer(5);
+	layer = new wxSpinCtrl(this,-1,"",wxDefaultPosition,wxSize(50,-1), wxSP_ARROW_KEYS | wxTE_PROCESS_ENTER,0,0x7FFFFFFF,0);
+	layer->SetToolTip(_("Layer number"));
+	middle_left_sizer->Add(layer, wxSizerFlags().Center());
+	middle_left_sizer->AddSpacer(5);
 
-	StartTime = MakeTimeCtrl(_("Start time"), TIME_START);
-	EndTime   = MakeTimeCtrl(_("End time"), TIME_END);
-	MiddleSizer->AddSpacer(5);
-	Duration  = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
-	MiddleSizer->AddSpacer(5);
+	start_time = MakeTimeCtrl(_("Start time"), TIME_START);
+	end_time   = MakeTimeCtrl(_("End time"), TIME_END);
+	middle_left_sizer->AddSpacer(5);
+	duration   = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
+	middle_left_sizer->AddSpacer(5);
 
-	Margin[0] = MakeMarginCtrl(_("Left Margin (0 = default)"), 0, _("left margin change"));
-	Margin[1] = MakeMarginCtrl(_("Right Margin (0 = default)"), 1, _("right margin change"));
-	Margin[2] = MakeMarginCtrl(_("Vertical Margin (0 = default)"), 2, _("vertical margin change"));
-	MiddleSizer->AddSpacer(5);
+	margin[0] = MakeMarginCtrl(_("Left Margin (0 = default)"), 0, _("left margin change"));
+	margin[1] = MakeMarginCtrl(_("Right Margin (0 = default)"), 1, _("right margin change"));
+	margin[2] = MakeMarginCtrl(_("Vertical Margin (0 = default)"), 2, _("vertical margin change"));
+	middle_left_sizer->AddSpacer(5);
 
 	// Middle-bottom controls
-	MiddleBotSizer = new wxBoxSizer(wxHORIZONTAL);
+	middle_right_sizer = new wxBoxSizer(wxHORIZONTAL);
 	MakeButton("edit/style/bold");
 	MakeButton("edit/style/italic");
 	MakeButton("edit/style/underline");
 	MakeButton("edit/style/strikeout");
 	MakeButton("edit/font");
-	MiddleBotSizer->AddSpacer(5);
+	middle_right_sizer->AddSpacer(5);
 	MakeButton("edit/color/primary");
 	MakeButton("edit/color/secondary");
 	MakeButton("edit/color/outline");
 	MakeButton("edit/color/shadow");
-	MiddleBotSizer->AddSpacer(5);
+	middle_right_sizer->AddSpacer(5);
 	MakeButton("grid/line/next/create");
-	MiddleBotSizer->AddSpacer(10);
+	middle_right_sizer->AddSpacer(10);
 
-	ByTime = MakeRadio(_("T&ime"), true, _("Time by h:mm:ss.cs"));
-	ByFrame = MakeRadio(_("F&rame"), false, _("Time by frame number"));
-	ByFrame->Enable(false);
+	by_time = MakeRadio(_("T&ime"), true, _("Time by h:mm:ss.cs"));
+	by_frame = MakeRadio(_("F&rame"), false, _("Time by frame number"));
+	by_frame->Enable(false);
 
 	// Text editor
-	TextEdit = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
-	TextEdit->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
+	edit_ctrl = new SubsTextEditCtrl(this, wxSize(300,50), wxBORDER_SUNKEN, c);
+	edit_ctrl->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
 	Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
-	BottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	BottomSizer->Add(TextEdit,1,wxEXPAND,0);
 
 	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,3);
-	MainSizer->Add(MiddleSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
-	MainSizer->Add(MiddleBotSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
-	MainSizer->Add(BottomSizer,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	main_sizer->Add(top_sizer,0,wxEXPAND | wxALL,3);
+	main_sizer->Add(middle_left_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+	main_sizer->Add(middle_right_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+	main_sizer->Add(edit_ctrl,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 
-	SetSizerAndFit(MainSizer);
+	SetSizerAndFit(main_sizer);
 
-	TextEdit->Bind(wxEVT_STC_MODIFIED, &SubsEditBox::OnChange, this);
-	TextEdit->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT | wxSTC_STARTACTION);
+	edit_ctrl->Bind(wxEVT_STC_MODIFIED, &SubsEditBox::OnChange, this);
+	edit_ctrl->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT | wxSTC_STARTACTION);
 
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnLayerEnter, this, Layer->GetId());
-	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerEnter, this, Layer->GetId());
-	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, CommentBox->GetId());
+	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnLayerEnter, this, layer->GetId());
+	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerEnter, this, layer->GetId());
+	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, comment_box->GetId());
 
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
-	Bind(wxEVT_TIMER, [=](wxTimerEvent&) { commitId = -1; });
+	Bind(wxEVT_TIMER, [=](wxTimerEvent&) { commit_id = -1; });
 
 	wxSizeEvent evt;
 	OnSize(evt);
@@ -201,9 +199,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	connections.push_back(context->selectionController->AddActiveLineListener(&SubsEditBox::OnActiveLineChanged, this));
 	connections.push_back(context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this));
 
-	textSelectionController.reset(new ScintillaTextSelectionController(TextEdit));
+	textSelectionController.reset(new ScintillaTextSelectionController(edit_ctrl));
 	context->textSelectionController = textSelectionController.get();
-	TextEdit->SetFocus();
+	edit_ctrl->SetFocus();
 }
 
 SubsEditBox::~SubsEditBox() {
@@ -213,7 +211,7 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 	wxTextCtrl *ctrl = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(40,-1), wxTE_CENTRE | wxTE_PROCESS_ENTER, NumValidator());
 	ctrl->SetMaxLength(4);
 	ctrl->SetToolTip(tooltip);
-	MiddleSizer->Add(ctrl, wxSizerFlags().Center());
+	middle_left_sizer->Add(ctrl, wxSizerFlags().Center());
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) {
 		wxString value = ctrl->GetValue();
@@ -229,7 +227,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
 	ctrl->SetToolTip(tooltip);
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) { CommitTimes(field); }, ctrl->GetId());
 	ctrl->Bind(wxEVT_CHAR_HOOK, time_edit_char_hook);
-	MiddleSizer->Add(ctrl, wxSizerFlags().Center());
+	middle_left_sizer->Add(ctrl, wxSizerFlags().Center());
 	return ctrl;
 }
 
@@ -238,7 +236,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(16));
 	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
-	MiddleBotSizer->Add(btn, wxSizerFlags().Center().Expand());
+	middle_right_sizer->Add(btn, wxSizerFlags().Center().Expand());
 	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 }
 
@@ -246,7 +244,7 @@ wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, v
 	wxString styles[] = { "Default" };
 	wxComboBox *ctrl = new wxComboBox(this, -1, initial_text, wxDefaultPosition, wxSize(110,-1), 1, styles, style | wxTE_PROCESS_ENTER);
 	ctrl->SetToolTip(tooltip);
-	TopSizer->Add(ctrl, wxSizerFlags(2).Center().Border(wxRIGHT));
+	top_sizer->Add(ctrl, wxSizerFlags(2).Center().Border(wxRIGHT));
 	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, handler, this, ctrl->GetId());
 	return ctrl;
 }
@@ -255,32 +253,32 @@ wxRadioButton *SubsEditBox::MakeRadio(wxString const& text, bool start, wxString
 	wxRadioButton *ctrl = new wxRadioButton(this, -1, text, wxDefaultPosition, wxDefaultSize, start ? wxRB_GROUP : 0);
 	ctrl->SetToolTip(tooltip);
 	Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &SubsEditBox::OnFrameTimeRadio, this, ctrl->GetId());
-	MiddleBotSizer->Add(ctrl, wxSizerFlags().Center().Expand().Border(wxRIGHT));
+	middle_right_sizer->Add(ctrl, wxSizerFlags().Center().Expand().Border(wxRIGHT));
 	return ctrl;
 }
 
 void SubsEditBox::OnCommit(int type) {
 	wxEventBlocker blocker(this);
 
-	initialTimes.clear();
+	initial_times.clear();
 
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
-		wxString style = StyleBox->GetValue();
-		StyleBox->Clear();
-		StyleBox->Append(c->ass->GetStyles());
-		StyleBox->Select(StyleBox->FindString(style));
+		wxString style = style_box->GetValue();
+		style_box->Clear();
+		style_box->Append(c->ass->GetStyles());
+		style_box->Select(style_box->FindString(style));
 	}
 
 	if (type == AssFile::COMMIT_NEW) {
 		/// @todo maybe preserve selection over undo?
-		PopulateList(Effect, &AssDialogue::Effect);
-		PopulateList(ActorBox, &AssDialogue::Actor);
+		PopulateList(effect_box, &AssDialogue::Effect);
+		PopulateList(actor_box, &AssDialogue::Actor);
 
-		TextEdit->SetSelection(0,0);
+		edit_ctrl->SetSelection(0,0);
 		return;
 	}
 	else if (type & AssFile::COMMIT_STYLES)
-		StyleBox->Select(StyleBox->FindString(line->Style));
+		style_box->Select(style_box->FindString(line->Style));
 
 	if (!(type ^ AssFile::COMMIT_ORDER)) return;
 
@@ -288,30 +286,31 @@ void SubsEditBox::OnCommit(int type) {
 	if (!line) return;
 
 	if (type & AssFile::COMMIT_DIAG_TIME) {
-		StartTime->SetTime(line->Start);
-		EndTime->SetTime(line->End);
-		Duration->SetTime(line->End - line->Start);
+		start_time->SetTime(line->Start);
+		end_time->SetTime(line->End);
+		duration->SetTime(line->End - line->Start);
 	}
 
 	if (type & AssFile::COMMIT_DIAG_TEXT) {
-		TextEdit->SetTextTo(line->Text);
+		edit_ctrl->SetTextTo(line->Text);
 		UpdateCharacterCount(line->Text);
 	}
 
 	if (type & AssFile::COMMIT_DIAG_META) {
-		Layer->SetValue(line->Layer);
-		for (size_t i = 0; i < Margin.size(); ++i)
-			change_value(Margin[i], line->GetMarginString(i));
-		CommentBox->SetValue(line->Comment);
-		StyleBox->Select(StyleBox->FindString(line->Style));
+		layer->SetValue(line->Layer);
+		for (size_t i = 0; i < margin.size(); ++i)
+			change_value(margin[i], line->GetMarginString(i));
+		comment_box->SetValue(line->Comment);
+		style_box->Select(style_box->FindString(line->Style));
 
-		PopulateList(Effect, &AssDialogue::Effect);
-		Effect->ChangeValue(line->Effect);
-		Effect->SetStringSelection(line->Effect);
+		PopulateList(effect_box, &AssDialogue::Effect);
+		effect_box->ChangeValue(line->Effect);
+		effect_box->SetStringSelection(line->Effect);
 
-		PopulateList(ActorBox, &AssDialogue::Actor);
-		ActorBox->ChangeValue(line->Actor);
-		ActorBox->SetStringSelection(line->Actor);
+		PopulateList(actor_box, &AssDialogue::Actor);
+		actor_box->ChangeValue(line->Actor);
+		actor_box->SetStringSelection(line->Actor);
+		edit_ctrl->SetTextTo(line->Text);
 	}
 }
 
@@ -340,7 +339,7 @@ void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<wxString> Ass
 void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	wxEventBlocker blocker(this);
 	line = new_line;
-	commitId = -1;
+	commit_id = -1;
 
 	OnCommit(AssFile::COMMIT_DIAG_FULL);
 
@@ -356,21 +355,22 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 		}
 	}
 }
+
 void SubsEditBox::OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &) {
 	sel = c->selectionController->GetSelectedSet();
-	initialTimes.clear();
+	initial_times.clear();
 }
 
 void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 	if (fps.IsLoaded()) {
-		ByFrame->Enable(true);
+		by_frame->Enable(true);
 	}
 	else {
-		ByFrame->Enable(false);
-		ByTime->SetValue(true);
-		StartTime->SetByFrame(false);
-		EndTime->SetByFrame(false);
-		Duration->SetByFrame(false);
+		by_frame->Enable(false);
+		by_time->SetValue(true);
+		start_time->SetByFrame(false);
+		end_time->SetByFrame(false);
+		duration->SetByFrame(false);
 		c->subsGrid->SetByFrame(false);
 	}
 }
@@ -380,9 +380,9 @@ void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
 }
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {
-	if (line && TextEdit->GetText() != line->Text) {
+	if (line && edit_ctrl->GetText() != line->Text) {
 		if (event.GetModificationType() & wxSTC_STARTACTION)
-			commitId = -1;
+			commit_id = -1;
 		CommitText(_("modify text"));
 		UpdateCharacterCount(line->Text);
 	}
@@ -393,12 +393,12 @@ void SubsEditBox::SetSelectedRows(setter set, wxString const& desc, int type, bo
 	for_each(sel.begin(), sel.end(), set);
 
 	file_changed_slot.Block();
-	commitId = c->ass->Commit(desc, type, (amend && desc == lastCommitType) ? commitId : -1, sel.size() == 1 ? *sel.begin() : 0);
+	commit_id = c->ass->Commit(desc, type, (amend && desc == last_commit_type) ? commit_id : -1, sel.size() == 1 ? *sel.begin() : 0);
 	file_changed_slot.Unblock();
-	lastCommitType = desc;
-	lastTimeCommitType = -1;
-	initialTimes.clear();
-	undoTimer.Start(30000, wxTIMER_ONE_SHOT);
+	last_commit_type = desc;
+	last_time_commit_type = -1;
+	initial_times.clear();
+	undo_timer.Start(30000, wxTIMER_ONE_SHOT);
 }
 
 template<class T>
@@ -407,69 +407,69 @@ void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString const
 }
 
 void SubsEditBox::CommitText(wxString const& desc) {
-	SetSelectedRows(&AssDialogue::Text, boost::flyweight<wxString>(TextEdit->GetText()), desc, AssFile::COMMIT_DIAG_TEXT, true);
+	SetSelectedRows(&AssDialogue::Text, boost::flyweight<wxString>(edit_ctrl->GetText()), desc, AssFile::COMMIT_DIAG_TEXT, true);
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
 	for (AssDialogue *d : sel) {
-		if (!initialTimes.count(d))
-			initialTimes[d] = std::make_pair(d->Start, d->End);
+		if (!initial_times.count(d))
+			initial_times[d] = std::make_pair(d->Start, d->End);
 
 		switch (field) {
 			case TIME_START:
-				initialTimes[d].first = d->Start = StartTime->GetTime();
-				d->End = std::max(d->Start, initialTimes[d].second);
+				initial_times[d].first = d->Start = start_time->GetTime();
+				d->End = std::max(d->Start, initial_times[d].second);
 				break;
 
 			case TIME_END:
-				initialTimes[d].second = d->End = EndTime->GetTime();
-				d->Start = std::min(d->End, initialTimes[d].first);
+				initial_times[d].second = d->End = end_time->GetTime();
+				d->Start = std::min(d->End, initial_times[d].first);
 				break;
 
 			case TIME_DURATION:
-				if (ByFrame->GetValue())
-					d->End = c->videoController->TimeAtFrame(c->videoController->FrameAtTime(d->Start, agi::vfr::START) + Duration->GetFrame(), agi::vfr::END);
+				if (by_frame->GetValue())
+					d->End = c->videoController->TimeAtFrame(c->videoController->FrameAtTime(d->Start, agi::vfr::START) + duration->GetFrame(), agi::vfr::END);
 				else
-					d->End = d->Start + Duration->GetTime();
-				initialTimes[d].second = d->End;
+					d->End = d->Start + duration->GetTime();
+				initial_times[d].second = d->End;
 				break;
 		}
 	}
 
-	StartTime->SetTime(line->Start);
-	EndTime->SetTime(line->End);
+	start_time->SetTime(line->Start);
+	end_time->SetTime(line->End);
 
-	if (ByFrame->GetValue())
-		Duration->SetFrame(EndTime->GetFrame() - StartTime->GetFrame() + 1);
+	if (by_frame->GetValue())
+		duration->SetFrame(end_time->GetFrame() - start_time->GetFrame() + 1);
 	else
-		Duration->SetTime(EndTime->GetTime() - StartTime->GetTime());
+		duration->SetTime(end_time->GetTime() - start_time->GetTime());
 
-	if (field != lastTimeCommitType)
-		commitId = -1;
+	if (field != last_time_commit_type)
+		commit_id = -1;
 
-	lastTimeCommitType = field;
+	last_time_commit_type = field;
 	file_changed_slot.Block();
-	commitId = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, commitId, sel.size() == 1 ? *sel.begin() : 0);
+	commit_id = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, commit_id, sel.size() == 1 ? *sel.begin() : 0);
 	file_changed_slot.Unblock();
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {
 	int availableWidth = GetVirtualSize().GetWidth();
-	int midMin = MiddleSizer->GetMinSize().GetWidth();
-	int botMin = MiddleBotSizer->GetMinSize().GetWidth();
+	int midMin = middle_left_sizer->GetMinSize().GetWidth();
+	int botMin = middle_right_sizer->GetMinSize().GetWidth();
 
-	if (splitLineMode) {
+	if (button_bar_split) {
 		if (availableWidth > midMin + botMin) {
-			GetSizer()->Detach(MiddleBotSizer);
-			MiddleSizer->Add(MiddleBotSizer,0,wxALIGN_CENTER_VERTICAL);
-			splitLineMode = false;
+			GetSizer()->Detach(middle_right_sizer);
+			middle_left_sizer->Add(middle_right_sizer,0,wxALIGN_CENTER_VERTICAL);
+			button_bar_split = false;
 		}
 	}
 	else {
 		if (availableWidth < midMin) {
-			MiddleSizer->Detach(MiddleBotSizer);
-			GetSizer()->Insert(2,MiddleBotSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
-			splitLineMode = true;
+			middle_left_sizer->Detach(middle_right_sizer);
+			GetSizer()->Insert(2,middle_right_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+			button_bar_split = true;
 		}
 	}
 
@@ -477,60 +477,60 @@ void SubsEditBox::OnSize(wxSizeEvent &evt) {
 }
 
 void SubsEditBox::OnFrameTimeRadio(wxCommandEvent &event) {
-	bool byFrame = ByFrame->GetValue();
-	StartTime->SetByFrame(byFrame);
-	EndTime->SetByFrame(byFrame);
-	Duration->SetByFrame(byFrame);
+	bool byFrame = by_frame->GetValue();
+	start_time->SetByFrame(byFrame);
+	end_time->SetByFrame(byFrame);
+	duration->SetByFrame(byFrame);
 	c->subsGrid->SetByFrame(byFrame);
 	event.Skip();
 }
 
 void SubsEditBox::SetControlsState(bool state) {
-	if (state == controlState) return;
-	controlState = state;
+	if (state == controls_enabled) return;
+	controls_enabled = state;
 
 	Enable(state);
 	if (!state) {
 		wxEventBlocker blocker(this);
-		TextEdit->SetTextTo("");
+		edit_ctrl->SetTextTo("");
 	}
 }
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Style,  boost::flyweight<wxString>(StyleBox->GetValue()), _("style change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Style,  boost::flyweight<wxString>(style_box->GetValue()), _("style change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
-	SetSelectedRows(&AssDialogue::Actor, boost::flyweight<wxString>(ActorBox->GetValue()), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
-	PopulateList(ActorBox, &AssDialogue::Actor);
+	SetSelectedRows(&AssDialogue::Actor, boost::flyweight<wxString>(actor_box->GetValue()), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
+	PopulateList(actor_box, &AssDialogue::Actor);
 }
 
 void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Layer, Layer->GetValue(), _("layer change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Layer, layer->GetValue(), _("layer change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
-	SetSelectedRows(&AssDialogue::Effect, boost::flyweight<wxString>(Effect->GetValue()), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
-	PopulateList(Effect, &AssDialogue::Effect);
+	SetSelectedRows(&AssDialogue::Effect, boost::flyweight<wxString>(effect_box->GetValue()), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
+	PopulateList(effect_box, &AssDialogue::Effect);
 }
 
 void SubsEditBox::OnCommentChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Comment, CommentBox->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Comment, comment_box->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::CallCommand(const char *cmd_name) {
 	cmd::call(cmd_name, c);
-	TextEdit->SetFocus();
+	edit_ctrl->SetFocus();
 }
 
 void SubsEditBox::UpdateCharacterCount(wxString const& text) {
 	size_t length = MaxLineLength(text);
-	CharCount->SetValue(wxString::Format("%lu", (unsigned long)length));
+	char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
 	size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();
 	if (limit && length > limit)
-		CharCount->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColor()));
+		char_count->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColor()));
 	else
-		CharCount->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+		char_count->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 }

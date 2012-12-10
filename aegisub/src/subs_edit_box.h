@@ -83,32 +83,31 @@ class SubsEditBox : public wxPanel {
 	SubtitleSelection sel;
 
 	/// Are the buttons currently split into two lines?
-	bool splitLineMode;
+	bool button_bar_split;
 	/// Are the controls currently enabled?
-	bool controlState;
+	bool controls_enabled;
 
 	agi::Context *c;
 
 	agi::signal::Connection file_changed_slot;
 
 	// Box controls
-	wxCheckBox *CommentBox;
-	wxComboBox *StyleBox;
-	Placeholder<wxComboBox> *ActorBox;
-	TimeEdit *StartTime;
-	TimeEdit *EndTime;
-	TimeEdit *Duration;
-	wxSpinCtrl *Layer;
-	std::array<wxTextCtrl *, 3> Margin;
-	Placeholder<wxComboBox> *Effect;
-	wxRadioButton *ByTime;
-	wxRadioButton *ByFrame;
-	wxTextCtrl *CharCount;
+	wxCheckBox *comment_box;
+	wxComboBox *style_box;
+	Placeholder<wxComboBox> *actor_box;
+	TimeEdit *start_time;
+	TimeEdit *end_time;
+	TimeEdit *duration;
+	wxSpinCtrl *layer;
+	std::array<wxTextCtrl *, 3> margin;
+	Placeholder<wxComboBox> *effect_box;
+	wxRadioButton *by_time;
+	wxRadioButton *by_frame;
+	wxTextCtrl *char_count;
 
-	wxSizer *TopSizer;
-	wxSizer *MiddleBotSizer;
-	wxSizer *MiddleSizer;
-	wxSizer *BottomSizer;
+	wxSizer *top_sizer;
+	wxSizer *middle_right_sizer;
+	wxSizer *middle_left_sizer;
 
 	void SetControlsState(bool state);
 	/// @brief Update times of selected lines
@@ -119,21 +118,21 @@ class SubsEditBox : public wxPanel {
 	void CommitText(wxString const& desc);
 
 	/// Last commit ID for undo coalescing
-	int commitId;
+	int commit_id;
 
 	/// Last used commit message to avoid coalescing different types of changes
-	wxString lastCommitType;
+	wxString last_commit_type;
 
 	/// Last field to get a time commit, as they all have the same commit message
-	int lastTimeCommitType;
+	int last_time_commit_type;
 
 	/// Timer to stop coalescing changes after a break with no edits
-	wxTimer undoTimer;
+	wxTimer undo_timer;
 
 	/// The start and end times of the selected lines without changes made to
 	/// avoid negative durations, so that they can be restored if future changes
 	/// eliminate the negative durations
-	boost::container::map<AssDialogue *, std::pair<AssTime, AssTime>> initialTimes;
+	boost::container::map<AssDialogue *, std::pair<AssTime, AssTime>> initial_times;
 
 	// Constructor helpers
 	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, int margin, wxString const& commit_msg);
@@ -191,7 +190,7 @@ class SubsEditBox : public wxPanel {
 	/// Call a command the restore focus to the edit box
 	void CallCommand(const char *cmd_name);
 
-	SubsTextEditCtrl *TextEdit;
+	SubsTextEditCtrl *edit_ctrl;
 	agi::scoped_ptr<TextSelectionController> textSelectionController;
 
 public:
