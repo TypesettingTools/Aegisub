@@ -39,6 +39,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_override.h"
+#include "compat.h"
 #include "utils.h"
 
 #include <boost/algorithm/string/join.hpp>
@@ -49,6 +50,84 @@
 #include <wx/tokenzr.h>
 
 using namespace boost::adaptors;
+
+AssOverrideParameter::AssOverrideParameter(VariableDataType type, AssParameterClass classification)
+: type(type)
+, classification(classification)
+{
+}
+
+AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
+: value(std::move(o.value))
+, block(std::move(o.block))
+, type(o.type)
+, classification(o.classification)
+{
+}
+
+AssOverrideParameter::~AssOverrideParameter() {
+}
+
+template<> wxString AssOverrideParameter::Get<wxString>() const {
+	if (omitted) throw agi::InternalError("AssOverrideParameter::Get() called on omitted parameter", 0);
+	if (block.get()) {
+		wxString str(block->GetText());
+		str.Replace("{", "");
+		str.Replace("}", "");
+		return str;
+	}
+	return value;
+}
+
+template<> int AssOverrideParameter::Get<int>() const {
+	long v = 0;
+	Get<wxString>().ToLong(&v);
+	return v;
+}
+
+template<> double AssOverrideParameter::Get<double>() const {
+	double v = 0;
+	Get<wxString>().ToDouble(&v);
+	return v;
+}
+
+template<> float AssOverrideParameter::Get<float>() const {
+	return Get<double>();
+}
+
+template<> bool AssOverrideParameter::Get<bool>() const {
+	return Get<int>() != 0;
+}
+
+template<> agi::Color AssOverrideParameter::Get<agi::Color>() const {
+	return from_wx(Get<wxString>());
+}
+
+template<> AssDialogueBlockOverride *AssOverrideParameter::Get<AssDialogueBlockOverride*>() const {
+	if (!block.get()) {
+		block.reset(new AssDialogueBlockOverride(Get<wxString>()));
+		block->ParseTags();
+	}
+	return block.get();
+}
+
+template<> void AssOverrideParameter::Set<wxString>(wxString new_value) {
+	omitted = false;
+	value = new_value;
+	block.reset();
+}
+
+template<> void AssOverrideParameter::Set<int>(int new_value) {
+	Set(wxString::Format("%d", new_value));
+}
+
+template<> void AssOverrideParameter::Set<double>(double new_value) {
+	Set(wxString::Format("%g", new_value));
+}
+
+template<> void AssOverrideParameter::Set<bool>(bool new_value) {
+	Set<int>(new_value);
+}
 
 namespace {
 /// The parameter is absent unless the total number of parameters is the
@@ -324,73 +403,17 @@ void parse_parameters(AssOverrideTag *tag, const wxString &text, AssOverrideTagP
 	unsigned curPar = 0;
 	for (auto& curproto : proto_it->params) {
 		// Create parameter
-		tag->Params.emplace_back();
+		tag->Params.emplace_back(curproto.type, curproto.classification);
 		AssOverrideParameter *newparam = &tag->Params.back();
-		newparam->classification = curproto.classification;
 
 		// Check if it's optional and not present
 		if (!(curproto.optional & parsFlag) || curPar >= totalPars)
 			continue;
 
-		wxString curtok = paramList[curPar++];
-
-		if (curtok.empty()) {
-			curPar++;
-			continue;
-		}
-
-		wxChar firstChar = curtok[0];
-		bool auto4 = (firstChar == '!' || firstChar == '$' || firstChar == '%') && curproto.type != VARDATA_BLOCK;
-		if (auto4) {
-			newparam->Set(curtok);
-			continue;
-		}
-
-		switch (curproto.type) {
-			case VARDATA_INT: {
-				long temp;
-				curtok.ToLong(&temp);
-				newparam->Set<int>(temp);
-				break;
-			}
-			case VARDATA_FLOAT: {
-				double temp;
-				curtok.ToDouble(&temp);
-				newparam->Set(temp);
-				break;
-			}
-			case VARDATA_TEXT:
-				newparam->Set(curtok);
-				break;
-			case VARDATA_BOOL: {
-				long temp;
-				curtok.ToLong(&temp);
-				newparam->Set<bool>(temp != 0);
-				break;
-			}
-			case VARDATA_BLOCK: {
-				AssDialogueBlockOverride *temp = new AssDialogueBlockOverride(curtok);
-				temp->ParseTags();
-				newparam->Set(temp);
-				break;
-			}
-			default:
-				break;
-		}
+		tag->Params.back().Set(paramList[curPar++]);
 	}
 }
 
-}
-
-AssOverrideParameter::AssOverrideParameter()
-: classification(PARCLASS_NORMAL)
-{
-}
-
-AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
-: VariableData(std::move(o))
-, classification(o.classification)
-{
 }
 
 // From ass_dialogue.h
@@ -409,9 +432,8 @@ void AssDialogueBlockOverride::ParseTags() {
 		curTag += tkn.GetNextToken();
 
 		// Check for parenthesis matching for \t
-		while (curTag.Freq('(') > curTag.Freq(')') && tkn.HasMoreTokens()) {
+		while (curTag.Freq('(') > curTag.Freq(')') && tkn.HasMoreTokens())
 			curTag << "\\" << tkn.GetNextToken();
-		}
 
 		Tags.push_back(new AssOverrideTag(curTag));
 
@@ -431,7 +453,7 @@ wxString AssDialogueBlockOverride::GetText() {
 void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callback, void *userData) {
 	for (auto tag : Tags) {
 		for (auto& par : tag->Params) {
-			if (par.GetType() == VARDATA_NONE) continue;
+			if (par.omitted) continue;
 
 			callback(tag->Name, &par, userData);
 
@@ -478,7 +500,7 @@ AssOverrideTag::operator wxString() const {
 
 	// Add parameters
 	result += join(Params
-		| filtered([](AssOverrideParameter const& p) { return p.GetType() != VARDATA_NONE; })
+		| filtered([](AssOverrideParameter const& p) { return !p.omitted; } )
 		| transformed(param_str),
 		wxS(","));
 

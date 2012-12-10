@@ -232,7 +232,6 @@
     <ClInclude Include="$(SrcDir)tooltip_manager.h" />
     <ClInclude Include="$(SrcDir)utils.h" />
     <ClInclude Include="$(SrcDir)validators.h" />
-    <ClInclude Include="$(SrcDir)variable_data.h" />
     <ClInclude Include="$(SrcDir)vector2d.h" />
     <ClInclude Include="$(SrcDir)version.h" />
     <ClInclude Include="$(SrcDir)video_box.h" />
@@ -426,7 +425,6 @@
     <ClCompile Include="$(SrcDir)tooltip_manager.cpp" />
     <ClCompile Include="$(SrcDir)utils.cpp" />
     <ClCompile Include="$(SrcDir)validators.cpp" />
-    <ClCompile Include="$(SrcDir)variable_data.cpp" />
     <ClCompile Include="$(SrcDir)vector2d.cpp" />
     <ClCompile Include="$(SrcDir)version.cpp" />
     <ClCompile Include="$(SrcDir)video_box.cpp" />

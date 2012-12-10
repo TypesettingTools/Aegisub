@@ -630,9 +630,6 @@
     <ClInclude Include="$(SrcDir)validators.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)variable_data.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)tooltip_manager.h">
       <Filter>Features\Help</Filter>
     </ClInclude>
@@ -1177,9 +1174,6 @@
       <Filter>Commands</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)validators.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)variable_data.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)tooltip_manager.cpp">

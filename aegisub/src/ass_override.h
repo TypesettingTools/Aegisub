@@ -32,9 +32,12 @@
 /// @ingroup subs_storage
 ///
 
+#include <boost/noncopyable.hpp>
+#include <memory>
 #include <vector>
 
-#include "variable_data.h"
+class AssDialogueBlockOverride;
+class wxString;
 
 /// Type of parameter; probably only used by the resample tool
 enum AssParameterClass {
@@ -50,15 +53,37 @@ enum AssParameterClass {
 	PARCLASS_DRAWING
 };
 
+enum VariableDataType {
+	VARDATA_INT,
+	VARDATA_FLOAT,
+	VARDATA_TEXT,
+	VARDATA_BOOL,
+	VARDATA_BLOCK
+};
+
 /// A single parameter to an override tag
-class AssOverrideParameter : public VariableData {
+class AssOverrideParameter : boost::noncopyable {
+	wxString value;
+	mutable std::unique_ptr<AssDialogueBlockOverride> block;
+	VariableDataType type;
+
 public:
+	AssOverrideParameter(VariableDataType type, AssParameterClass classification);
 	AssOverrideParameter(AssOverrideParameter&&);
+	~AssOverrideParameter();
 
 	/// Type of parameter
 	AssParameterClass classification;
 
-	AssOverrideParameter();
+	/// Is this parameter actually present?
+	bool omitted;
+
+	VariableDataType GetType() const { return type; }
+	template<class T> void Set(T param);
+	template<class T> T Get() const;
+	template<class T> T Get(T def) const {
+		return !omitted ? Get<T>() : def;
+	}
 };
 
 class AssOverrideTag : boost::noncopyable {

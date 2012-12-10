@@ -130,7 +130,7 @@ namespace
 					italic = t->Params[0].Get<bool>(style_italic);
 				else if (t->Name == "\\an")
 					align = t->Params[0].Get<int>(align);
-				else if (t->Name == "\\a" && t->Params[0].GetType() != VARDATA_NONE)
+				else if (t->Name == "\\a" && !t->Params[0].omitted)
 					align = AssStyle::SsaToAss(t->Params[0].Get<int>());
 			}
 		}

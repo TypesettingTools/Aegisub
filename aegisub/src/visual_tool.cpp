@@ -373,7 +373,7 @@ static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, wxString 
 static Vector2D vec_or_bad(param_vec tag, size_t x_idx, size_t y_idx) {
 	if (!tag ||
 		tag->size() <= x_idx || tag->size() <= y_idx ||
-		(*tag)[x_idx].GetType() == VARDATA_NONE || (*tag)[y_idx].GetType() == VARDATA_NONE)
+		(*tag)[x_idx].omitted || (*tag)[y_idx].omitted)
 	{
 		return Vector2D();
 	}
@@ -401,8 +401,8 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 
 	param_vec align_tag;
 	int ovr_align = 0;
-	if ((align_tag = find_tag(blocks, "\\an")) && (*align_tag)[0].GetType() != VARDATA_NONE)
-		ovr_align = (*align_tag)[0].Get<int>();
+	if ((align_tag = find_tag(blocks, "\\an")))
+		ovr_align = (*align_tag)[0].Get<int>(ovr_align);
 	else if ((align_tag = find_tag(blocks, "\\a")))
 		ovr_align = AssStyle::SsaToAss((*align_tag)[0].Get<int>(2));
 
@@ -462,13 +462,13 @@ void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, fl
 	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
 	if (param_vec tag = find_tag(blocks, "\\frx"))
-		rx = tag->front().Get<float>(rx);
+		rx = tag->front().Get(rx);
 	if (param_vec tag = find_tag(blocks, "\\fry"))
-		ry = tag->front().Get<float>(ry);
+		ry = tag->front().Get(ry);
 	if (param_vec tag = find_tag(blocks, "\\frz"))
-		rz = tag->front().Get<float>(rz);
+		rz = tag->front().Get(rz);
 	else if ((tag = find_tag(blocks, "\\fr")))
-		rz = tag->front().Get<float>(rz);
+		rz = tag->front().Get(rz);
 }
 
 void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
@@ -482,9 +482,9 @@ void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
 	if (param_vec tag = find_tag(blocks, "\\fscx"))
-		x = tag->front().Get<float>(x);
+		x = tag->front().Get(x);
 	if (param_vec tag = find_tag(blocks, "\\fscy"))
-		y = tag->front().Get<float>(y);
+		y = tag->front().Get(y);
 
 	scale = Vector2D(x, y);
 }

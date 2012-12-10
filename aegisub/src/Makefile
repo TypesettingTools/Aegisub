@@ -245,7 +245,6 @@ SRC += \
 	tooltip_manager.cpp \
 	utils.cpp \
 	validators.cpp \
-	variable_data.cpp \
 	vector2d.cpp \
 	version.cpp \
 	video_box.cpp \
