@@ -163,7 +163,7 @@ namespace {
 
 	public:
 		Toolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& ht_context, bool vertical)
-		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | (vertical ? wxTB_VERTICAL :  wxTB_HORIZONTAL))
+		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_NODIVIDER | wxTB_FLAT | (vertical ? wxTB_VERTICAL :  wxTB_HORIZONTAL))
 		, name(name)
 		, context(c)
 		, ht_context(ht_context)

@@ -63,14 +63,6 @@
 #include "video_display.h"
 #include "video_slider.h"
 
-static void add_button(wxWindow *parent, wxSizer *sizer, const char *command, agi::Context *context) {
-	cmd::Command *c = cmd::get(command);
-	wxBitmapButton *btn = new wxBitmapButton(parent, -1, c->Icon(24));
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&cmd::Command::operator(), c, context));
-	ToolTipManager::Bind(btn, c->StrHelp(), "Video", command);
-	sizer->Add(btn, 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
-}
-
 VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 : wxPanel(parent,-1)
 , context(context)
@@ -80,11 +72,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	videoSlider->SetToolTip(_("Seek video"));
 
 	// Buttons
-	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	add_button(this, videoBottomSizer, "video/play", context);
-	add_button(this, videoBottomSizer, "video/play/line", context);
-	add_button(this, videoBottomSizer, "video/stop", context);
-	videoBottomSizer->Add(new ToggleBitmap(this, context, "video/opt/autoscroll", 24, "Video"), 0, wxTOP | wxLEFT | wxBOTTOM | wxALIGN_CENTER, 2);
+	wxToolBar *mainToolbar = toolbar::GetToolbar(this, "video", context, "Video", false);
 
 	// Position
 	VideoPosition = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
@@ -96,9 +84,8 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 
 	// Zoom box
 	wxArrayString choices;
-	for (int i = 1 ; i <= 24; ++i) {
+	for (int i = 1 ; i <= 24; ++i)
 		choices.Add(wxString::Format("%g%%", i * 12.5));
-	}
 	wxComboBox *zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
 	// Typesetting buttons
@@ -127,6 +114,9 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	// Sizers
 	wxSizer *videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
 	videoSliderSizer->Add(videoSlider, wxSizerFlags(1).Expand());
+
+	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	videoBottomSizer->Add(mainToolbar, wxSizerFlags(0).Center());
 	videoBottomSizer->Add(VideoPosition, wxSizerFlags(1).Center().Border(wxLEFT));
 	videoBottomSizer->Add(VideoSubsPos, wxSizerFlags(1).Center());
 	videoBottomSizer->Add(zoomBox, wxSizerFlags(0).Center());
@@ -135,7 +125,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	VideoSizer->Add(topSizer, 1, wxEXPAND, 0);
 	VideoSizer->Add(new wxStaticLine(this), 0, wxEXPAND, 0);
 	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
-	VideoSizer->Add(videoBottomSizer,0,wxEXPAND,0);
+	VideoSizer->Add(videoBottomSizer,0,wxEXPAND | wxBOTTOM,5);
 	SetSizer(VideoSizer);
 
 	UpdateTimeBoxes();

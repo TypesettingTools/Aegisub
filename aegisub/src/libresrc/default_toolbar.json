@@ -63,6 +63,12 @@
         "app/options",
         "grid/tag/cycle_hiding"
     ],
+    "video" : [
+        "video/play",
+        "video/play/line",
+        "video/stop",
+        "video/opt/autoscroll"
+    ],
     "visual_tools" : [
         "video/tool/cross",
         "video/tool/drag",
