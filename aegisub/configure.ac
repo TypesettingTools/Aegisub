@@ -371,9 +371,9 @@ AC_ARG_WITH(lua,
 
 AS_IF([test x$with_lua = xno], [$with_auto4_lua="no"; lua_disabled="(disabled)"], [
   # First try pkg-config with several names
-  PKG_CHECK_MODULES(LUA, lua     >= 5.1, [with_auto4_lua="yes"], [
-  PKG_CHECK_MODULES(LUA, lua5.1  >= 5.1, [with_auto4_lua="yes"], [
-  PKG_CHECK_MODULES(LUA, lua-5.1 >= 5.1, [with_auto4_lua="yes"], [
+  PKG_CHECK_MODULES(LUA, lua5.1  >= 5.1 lua5.1  < 5.2, [with_auto4_lua="yes"], [
+  PKG_CHECK_MODULES(LUA, lua-5.1 >= 5.1 lua-5.1 < 5.2, [with_auto4_lua="yes"], [
+  PKG_CHECK_MODULES(LUA, lua     >= 5.1 lua     < 5.2, [with_auto4_lua="yes"], [
     # Still not found so try to autodetect
     AS_IF([test -z "$LUA_CFLAGS"],
       [AGI_FIND_HEADER([LUA], [lua.hpp],
@@ -393,7 +393,7 @@ int main () {
   return !res;
 }])
     AS_IF([test x$agi_cv_with_lua = xno && test x$with_lua = xyes],
-          [AC_MSG_FAILURE([--with-lua was specified, but lua could not be found. Try setting LUA_CLFAGS and LUA_LIBS manually])])
+          [AC_MSG_FAILURE([--with-lua was specified, but lua 5.1 could not be found. Try setting LUA_CLFAGS and LUA_LIBS manually])])
     with_auto4_lua=$agi_cv_with_lua
   ])])])
 ])
