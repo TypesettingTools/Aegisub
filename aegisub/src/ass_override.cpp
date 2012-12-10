@@ -35,10 +35,10 @@
 
 #include "config.h"
 
+#include "ass_dialogue.h"
+
 #include <libaegisub/log.h>
 
-#include "ass_dialogue.h"
-#include "ass_override.h"
 #include "compat.h"
 #include "utils.h"
 
@@ -63,6 +63,14 @@ AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
 , type(o.type)
 , classification(o.classification)
 {
+}
+
+AssOverrideParameter& AssOverrideParameter::operator=(AssOverrideParameter&& rhs) {
+	value = std::move(rhs.value);
+	block = std::move(rhs.block);
+	type = rhs.type;
+	classification = rhs.classification;
+	return *this;
 }
 
 AssOverrideParameter::~AssOverrideParameter() {
@@ -178,7 +186,6 @@ struct AssOverrideTagProto {
 	/// @param opt Situations in which this parameter is present
 	void Set(wxString name, VariableDataType type, AssParameterClass classi = PARCLASS_NORMAL, int opt = NOT_OPTIONAL);
 };
-
 
 AssOverrideParamProto::AssOverrideParamProto(VariableDataType type, int opt, AssParameterClass classi)
 : optional(opt)
@@ -404,7 +411,6 @@ void parse_parameters(AssOverrideTag *tag, const wxString &text, AssOverrideTagP
 	for (auto& curproto : proto_it->params) {
 		// Create parameter
 		tag->Params.emplace_back(curproto.type, curproto.classification);
-		AssOverrideParameter *newparam = &tag->Params.back();
 
 		// Check if it's optional and not present
 		if (!(curproto.optional & parsFlag) || curPar >= totalPars)
@@ -418,11 +424,10 @@ void parse_parameters(AssOverrideTag *tag, const wxString &text, AssOverrideTagP
 
 // From ass_dialogue.h
 AssDialogueBlockOverride::~AssDialogueBlockOverride() {
-	delete_clear(Tags);
 }
 
 void AssDialogueBlockOverride::ParseTags() {
-	delete_clear(Tags);
+	Tags.clear();
 
 	wxStringTokenizer tkn(text, "\\", wxTOKEN_STRTOK);
 	wxString curTag;
@@ -435,27 +440,28 @@ void AssDialogueBlockOverride::ParseTags() {
 		while (curTag.Freq('(') > curTag.Freq(')') && tkn.HasMoreTokens())
 			curTag << "\\" << tkn.GetNextToken();
 
-		Tags.push_back(new AssOverrideTag(curTag));
+		Tags.emplace_back(curTag);
 
 		curTag = "\\";
 	}
 }
+
 void AssDialogueBlockOverride::AddTag(wxString const& tag) {
-	Tags.push_back(new AssOverrideTag(tag));
+	Tags.emplace_back(tag);
 }
 
-static wxString tag_str(AssOverrideTag *t) { return *t; }
+static wxString tag_str(AssOverrideTag const& t) { return t; }
 wxString AssDialogueBlockOverride::GetText() {
 	text = "{" + join(Tags | transformed(tag_str), wxString()) + "}";
 	return text;
 }
 
 void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callback, void *userData) {
-	for (auto tag : Tags) {
-		for (auto& par : tag->Params) {
+	for (auto& tag : Tags) {
+		for (auto& par : tag.Params) {
 			if (par.omitted) continue;
 
-			callback(tag->Name, &par, userData);
+			callback(tag.Name, &par, userData);
 
 			// Go recursive if it's a block parameter
 			if (par.GetType() == VARDATA_BLOCK)
@@ -465,8 +471,21 @@ void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callb
 }
 
 AssOverrideTag::AssOverrideTag() : valid(false) { }
-AssOverrideTag::AssOverrideTag(wxString text) {
+AssOverrideTag::AssOverrideTag(wxString const& text) {
 	SetText(text);
+}
+AssOverrideTag::AssOverrideTag(AssOverrideTag&& rhs)
+: valid(rhs.valid)
+, Name(std::move(rhs.Name))
+, Params(std::move(rhs.Params))
+{
+}
+
+AssOverrideTag& AssOverrideTag::operator=(AssOverrideTag&& rhs) {
+	valid = rhs.valid;
+	Name = std::move(rhs.Name);
+	Params = std::move(rhs.Params);
+	return *this;
 }
 
 void AssOverrideTag::Clear() {

@@ -52,7 +52,6 @@
 #include "ass_info.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
-#include "ass_override.h"
 #include "ass_style.h"
 #include "auto4_lua.h"
 #include "utils.h"

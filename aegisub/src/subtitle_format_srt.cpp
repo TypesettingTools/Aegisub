@@ -39,7 +39,6 @@
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
 #include "ass_style.h"
 #include "colorspace.h"
 #include "compat.h"
@@ -535,8 +534,8 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 			boost::ptr_vector<AssDialogueBlock> blocks(curdiag->ParseTags());
 			for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 				// Verify that all overrides used are supported
-				for (auto tag : ovr->Tags) {
-					if (!std::binary_search(supported_tags, std::end(supported_tags), tag->Name))
+				for (auto const& tag : ovr->Tags) {
+					if (!std::binary_search(supported_tags, std::end(supported_tags), tag.Name))
 						return false;
 				}
 			}
@@ -559,11 +558,11 @@ wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 	for (auto& block : blocks) {
 		if (AssDialogueBlockOverride* ovr = dynamic_cast<AssDialogueBlockOverride*>(&block)) {
 			// Iterate through overrides
-			for (auto tag : ovr->Tags) {
-				if (tag->IsValid() && tag->Name.size() == 2) {
-					auto it = tag_states.find(tag->Name[1]);
+			for (auto const& tag : ovr->Tags) {
+				if (tag.IsValid() && tag.Name.size() == 2) {
+					auto it = tag_states.find(tag.Name[1]);
 					if (it != tag_states.end()) {
-						bool temp = tag->Params[0].Get(false);
+						bool temp = tag.Params[0].Get(false);
 						if (temp && !it->second)
 							final += wxString::Format("<%c>", it->first);
 						if (!temp && it->second)

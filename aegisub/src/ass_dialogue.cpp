@@ -41,7 +41,6 @@
 #include <wx/tokenzr.h>
 
 #include "ass_dialogue.h"
-#include "ass_override.h"
 #include "compat.h"
 #include "subtitle_format.h"
 #include "utils.h"
@@ -226,9 +225,9 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 				Blocks.push_back(block);
 
 				// Look for \p in block
-				for (auto tag : block->Tags) {
-					if (tag->Name == "\\p")
-						drawingLevel = tag->Params[0].Get<int>(0);
+				for (auto const& tag : block->Tags) {
+					if (tag.Name == "\\p")
+						drawingLevel = tag.Params[0].Get<int>(0);
 				}
 			}
 
@@ -274,9 +273,9 @@ void AssDialogue::StripTag(wxString const& tag_name) {
 
 		AssDialogueBlockOverride *over = static_cast<AssDialogueBlockOverride*>(&block);
 		wxString temp;
-		for (auto tag : over->Tags) {
-			if (tag->Name != tag_name)
-				temp += *tag;
+		for (auto const& tag : over->Tags) {
+			if (tag.Name != tag_name)
+				temp += tag;
 		}
 
 		if (!temp.empty())

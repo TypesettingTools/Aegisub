@@ -47,7 +47,6 @@
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_info.h"
-#include "ass_override.h"
 #include "ass_style.h"
 #include "compat.h"
 #include "main.h"

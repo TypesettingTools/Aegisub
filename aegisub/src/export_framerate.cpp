@@ -46,7 +46,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
 #include "export_framerate.h"
 #include "include/aegisub/context.h"
 #include "utils.h"

@@ -47,7 +47,6 @@
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../ass_karaoke.h"
-#include "../ass_override.h"
 #include "../ass_style.h"
 #include "../dialog_colorpicker.h"
 #include "../dialog_paste_over.h"
@@ -169,9 +168,9 @@ void paste_lines(agi::Context *c, bool paste_over) {
 template<class T>
 T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T initial, wxString const& tag_name, wxString alt = wxString()) {
 	for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {
-		for (auto tag : ovr->Tags | reversed) {
-			if (tag->Name == tag_name || tag->Name == alt)
-				return tag->Params[0].Get<T>(initial);
+		for (auto const& tag : ovr->Tags | reversed) {
+			if (tag.Name == tag_name || tag.Name == alt)
+				return tag.Params[0].Get<T>(initial);
 		}
 	}
 	return initial;
@@ -238,16 +237,15 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxS
 		// Remove old of same
 		bool found = false;
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
-			wxString name = ovr->Tags[i]->Name;
+			wxString name = ovr->Tags[i].Name;
 			if (tag == name || alt == name) {
-				shift -= ((wxString)*ovr->Tags[i]).size();
+				shift -= ((wxString)ovr->Tags[i]).size();
 				if (found) {
-					delete ovr->Tags[i];
 					ovr->Tags.erase(ovr->Tags.begin() + i);
 					i--;
 				}
 				else {
-					ovr->Tags[i]->Params[0].Set(value);
+					ovr->Tags[i].Params[0].Set(value);
 					found = true;
 				}
 			}

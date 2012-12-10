@@ -26,7 +26,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
 #include "ass_style.h"
 #include "ass_time.h"
 #include "include/aegisub/context.h"
@@ -360,9 +359,9 @@ typedef const std::vector<AssOverrideParameter> * param_vec;
 // Find a tag's parameters in a line or return nullptr if it's not found
 static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, wxString tag_name) {
 	for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
-		for (auto tag : ovr->Tags) {
-			if (tag->Name == tag_name)
-				return &tag->Params;
+		for (auto const& tag : ovr->Tags) {
+			if (tag.Name == tag_name)
+				return &tag.Params;
 		}
 	}
 
@@ -566,9 +565,8 @@ void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxStrin
 	else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
 		// Remove old of same
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
-			wxString const& name = ovr->Tags[i]->Name;
+			wxString const& name = ovr->Tags[i].Name;
 			if (tag == name || removeTag == name) {
-				delete ovr->Tags[i];
 				ovr->Tags.erase(ovr->Tags.begin() + i);
 				i--;
 			}

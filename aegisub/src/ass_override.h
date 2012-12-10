@@ -70,6 +70,7 @@ class AssOverrideParameter : boost::noncopyable {
 public:
 	AssOverrideParameter(VariableDataType type, AssParameterClass classification);
 	AssOverrideParameter(AssOverrideParameter&&);
+	AssOverrideParameter& operator=(AssOverrideParameter&&);
 	~AssOverrideParameter();
 
 	/// Type of parameter
@@ -90,11 +91,13 @@ class AssOverrideTag : boost::noncopyable {
 	bool valid;
 
 public:
+	AssOverrideTag();
+	AssOverrideTag(AssOverrideTag&&);
+	AssOverrideTag(wxString const& text);
+	AssOverrideTag& operator=(AssOverrideTag&&);
+
 	wxString Name;
 	std::vector<AssOverrideParameter> Params;
-
-	AssOverrideTag();
-	AssOverrideTag(wxString text);
 
 	bool IsValid() const { return valid; }
 	void Clear();

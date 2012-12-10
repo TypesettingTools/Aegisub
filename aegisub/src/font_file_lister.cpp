@@ -25,7 +25,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
 #include "ass_style.h"
 #include "utils.h"
 
@@ -56,23 +55,23 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 
 	for (auto& block : blocks) {
 		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(&block)) {
-			for (auto tag : ovr->Tags) {
-				wxString name = tag->Name;
+			for (auto const& tag : ovr->Tags) {
+				wxString name = tag.Name;
 
 				if (name == "\\r") {
-					style = styles[tag->Params[0].Get<wxString>(line->Style)];
+					style = styles[tag.Params[0].Get<wxString>(line->Style)];
 					overriden = false;
 				}
 				else if (name == "\\b") {
-					style.bold = tag->Params[0].Get(initial.bold);
+					style.bold = tag.Params[0].Get(initial.bold);
 					overriden = true;
 				}
 				else if (name == "\\i") {
-					style.italic = tag->Params[0].Get(initial.italic);
+					style.italic = tag.Params[0].Get(initial.italic);
 					overriden = true;
 				}
 				else if (name == "\\fn") {
-					style.facename = tag->Params[0].Get(initial.facename);
+					style.facename = tag.Params[0].Get(initial.facename);
 					overriden = true;
 				}
 			}

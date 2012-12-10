@@ -33,7 +33,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
 #include "ass_style.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"

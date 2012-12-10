@@ -37,7 +37,6 @@
 #include "aegisub_endian.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
 #include "ass_style.h"
 #include "compat.h"
 #include "dialog_export_ebu3264.h"
@@ -122,16 +121,16 @@ namespace
 	{
 		void ProcessOverrides(AssDialogueBlockOverride *ob, bool &underline, bool &italic, int &align, bool style_underline, bool style_italic)
 		{
-			for (auto t : ob->Tags)
+			for (auto const& t : ob->Tags)
 			{
-				if (t->Name == "\\u")
-					underline = t->Params[0].Get<bool>(style_underline);
-				else if (t->Name == "\\i")
-					italic = t->Params[0].Get<bool>(style_italic);
-				else if (t->Name == "\\an")
-					align = t->Params[0].Get<int>(align);
-				else if (t->Name == "\\a" && !t->Params[0].omitted)
-					align = AssStyle::SsaToAss(t->Params[0].Get<int>());
+				if (t.Name == "\\u")
+					underline = t.Params[0].Get<bool>(style_underline);
+				else if (t.Name == "\\i")
+					italic = t.Params[0].Get<bool>(style_italic);
+				else if (t.Name == "\\an")
+					align = t.Params[0].Get<int>(align);
+				else if (t.Name == "\\a" && !t.Params[0].omitted)
+					align = AssStyle::SsaToAss(t.Params[0].Get<int>());
 			}
 		}
 

@@ -25,7 +25,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_override.h"
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
 
@@ -120,8 +119,8 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 		}
 		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(&block)) {
 			bool in_tag = false;
-			for (auto tag : ovr->Tags) {
-				if (tag->IsValid() && tag->Name.Left(2).Lower() == "\\k") {
+			for (auto& tag : ovr->Tags) {
+				if (tag.IsValid() && tag.Name.Left(2).Lower() == "\\k") {
 					if (in_tag) {
 						syl.ovr_tags[syl.text.size()] += "}";
 						in_tag = false;
@@ -129,7 +128,7 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 
 					// Dealing with both \K and \kf is mildly annoying so just
 					// convert them both to \kf
-					if (tag->Name == "\\K") tag->Name = "\\kf";
+					if (tag.Name == "\\K") tag.Name = "\\kf";
 
 					// Don't bother including zero duration zero length syls
 					if (syl.duration > 0 || !syl.text.empty()) {
@@ -138,9 +137,9 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 						syl.ovr_tags.clear();
 					}
 
-					syl.tag_type = tag->Name;
+					syl.tag_type = tag.Name;
 					syl.start_time += syl.duration;
-					syl.duration = tag->Params[0].Get(0) * 10;
+					syl.duration = tag.Params[0].Get(0) * 10;
 				}
 				else {
 					wxString& otext = syl.ovr_tags[syl.text.size()];
@@ -151,7 +150,7 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 						otext += "{";
 
 					in_tag = true;
-					otext += *tag;
+					otext += tag;
 				}
 			}
 

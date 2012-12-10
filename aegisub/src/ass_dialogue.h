@@ -33,6 +33,7 @@
 ///
 
 #include "ass_entry.h"
+#include "ass_override.h"
 #include "ass_time.h"
 
 #include <libaegisub/exception.h>
@@ -105,7 +106,7 @@ public:
 	AssDialogueBlockOverride(wxString const& text = wxString()) : AssDialogueBlock(text) { }
 	~AssDialogueBlockOverride();
 
-	std::vector<AssOverrideTag *> Tags;
+	std::vector<AssOverrideTag> Tags;
 
 	AssBlockType GetType() const override { return BLOCK_OVERRIDE; }
 	wxString GetText() override;

@@ -41,7 +41,6 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
-#include "ass_override.h"
 #include "audio_box.h"
 #include "audio_controller.h"
 #include "audio_timing.h"
