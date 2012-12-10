@@ -475,7 +475,7 @@ static void copy_lines(agi::Context *c) {
 		| agi::of_type<AssDialogue>()
 		| filtered([&](AssDialogue *d) { return sel.count(d); })
 		| transformed(get_entry_data),
-		wxS("")));
+		wxS("\r\n")));
 }
 
 static void delete_lines(agi::Context *c, wxString const& commit_message) {
