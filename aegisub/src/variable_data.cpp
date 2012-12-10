@@ -48,8 +48,8 @@ VariableData::VariableData() {
 }
 
 VariableData::VariableData(VariableData&& o)
-: type(o.type)
-, value(o.value)
+: value(o.value)
+, type(o.type)
 {
 }
 
