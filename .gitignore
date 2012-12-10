@@ -12,6 +12,7 @@
 *.gz
 *.idb
 *.ilk
+*.log
 *.manifest
 *.mkv
 *.mo
@@ -75,3 +76,4 @@ aegisub/tests/*.json
 /packages
 /deps
 .nuget
+/aegisub/include
