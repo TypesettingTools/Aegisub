@@ -27,7 +27,7 @@ public:
 
 	AssEntry *Clone() const override { return new AssInfo(*this); }
 	AssEntryGroup Group() const override { return ENTRY_INFO; }
-	const wxString GetEntryData() const override { return key + ":" + value; }
+	const wxString GetEntryData() const override { return key + ": " + value; }
 	wxString GetSSAText() const override { return key.Lower() == "scripttype: v4.00+" ? "ScriptType: v4.00" : GetEntryData(); }
 
 	wxString Key() const { return key; }
