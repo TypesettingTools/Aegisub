@@ -143,7 +143,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	textureIdList.resize(textureCount);
 	textureList.resize(textureCount);
 	CHECK_INIT_ERROR(glGenTextures(textureIdList.size(), &textureIdList[0]));
-	vector<pair<int, int> > textureSizes;
+	vector<pair<int, int>> textureSizes;
 	textureSizes.reserve(textureCount);
 
 	/* Unfortunately, we can't simply use one of the two standard ways to do

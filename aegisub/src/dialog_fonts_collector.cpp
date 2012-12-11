@@ -380,7 +380,7 @@ void DialogFontsCollector::OnRadio(wxCommandEvent &) {
 }
 
 void DialogFontsCollector::OnAddText(wxThreadEvent &event) {
-	std::pair<int, wxString> str = event.GetPayload<std::pair<int, wxString> >();
+	std::pair<int, wxString> str = event.GetPayload<std::pair<int, wxString>>();
 	collection_log->SetReadOnly(false);
 	int pos = collection_log->GetReverseUnicodePosition(collection_log->GetLength());
 	collection_log->AppendText(str.second);

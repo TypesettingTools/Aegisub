@@ -40,7 +40,7 @@
 /// @class AssAttachment
 class AssAttachment : public AssEntry {
 	/// Decoded file data
-	std::shared_ptr<std::vector<char> > data;
+	std::shared_ptr<std::vector<char>> data;
 
 	/// Encoded data which has been read from the script but not yet decoded
 	wxString buffer;

@@ -53,7 +53,7 @@ class DialogKanjiTimer : public wxDialog {
 	wxComboBox *SourceStyle, *DestStyle;
 	wxCheckBox *Interpolate;
 
-	std::vector<std::pair<AssDialogue*, wxString> > LinesToChange;
+	std::vector<std::pair<AssDialogue*, wxString>> LinesToChange;
 
 	AssEntry *currentSourceLine;
 	AssEntry *currentDestinationLine;

@@ -31,7 +31,7 @@
 template <class func>
 class FactoryBase {
 protected:
-	typedef std::map<std::string, std::pair<bool, func> > map;
+	typedef std::map<std::string, std::pair<bool, func>> map;
 	typedef typename map::iterator iterator;
 
 	static map *classes;

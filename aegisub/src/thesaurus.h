@@ -46,7 +46,7 @@ class Thesaurus {
 	void OnPathChanged();
 public:
 	/// A pair of a word and synonyms for that word
-	typedef std::pair<std::string, std::vector<std::string> > Entry;
+	typedef std::pair<std::string, std::vector<std::string>> Entry;
 
 	Thesaurus();
 	~Thesaurus();

@@ -49,7 +49,7 @@ class AssDialogue;
 class AssStyle;
 class AssAttachment;
 
-typedef boost::intrusive::make_list<AssEntry, boost::intrusive::constant_time_size<false> >::type EntryList;
+typedef boost::intrusive::make_list<AssEntry, boost::intrusive::constant_time_size<false>>::type EntryList;
 typedef EntryList::iterator entryIter;
 typedef EntryList::const_iterator constEntryIter;
 

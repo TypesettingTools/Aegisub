@@ -45,7 +45,7 @@ class DialogProperties : public wxDialog {
 	agi::Context *c; ///< Project this dialog is adjusting the properties of
 
 	/// Pairs of a script property and a text control for that property
-	std::vector<std::pair<wxString, wxTextCtrl*> > properties;
+	std::vector<std::pair<wxString, wxTextCtrl*>> properties;
 
 	// Things that effect rendering
 	wxComboBox *WrapStyle;   ///< Wrapping style for long lines

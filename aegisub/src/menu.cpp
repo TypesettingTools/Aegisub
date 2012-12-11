@@ -122,9 +122,9 @@ struct menu_item_cmp {
 /// handlers makes everything involves events unusably slow.
 class CommandManager {
 	/// Menu items which need to do something on menu open
-	std::deque<std::pair<std::string, wxMenuItem*> > dynamic_items;
+	std::deque<std::pair<std::string, wxMenuItem*>> dynamic_items;
 	/// Menu items which need to be updated only when hotkeys change
-	std::deque<std::pair<std::string, wxMenuItem*> > static_items;
+	std::deque<std::pair<std::string, wxMenuItem*>> static_items;
 	/// window id -> command map
 	std::vector<std::string> items;
 	/// MRU menus which need to be updated on menu open
