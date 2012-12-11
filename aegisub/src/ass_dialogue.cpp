@@ -260,31 +260,6 @@ void AssDialogue::StripTags() {
 	Text = GetStrippedText();
 }
 
-void AssDialogue::StripTag(wxString const& tag_name) {
-	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
-	wxString new_text;
-
-	// Look for blocks
-	for (auto& block : blocks) {
-		if (block.GetType() != BLOCK_OVERRIDE) {
-			new_text += block.GetText();
-			continue;
-		}
-
-		AssDialogueBlockOverride *over = static_cast<AssDialogueBlockOverride*>(&block);
-		wxString temp;
-		for (auto const& tag : over->Tags) {
-			if (tag.Name != tag_name)
-				temp += tag;
-		}
-
-		if (!temp.empty())
-			new_text += "{" + temp + "}";
-	}
-
-	Text = new_text;
-}
-
 static wxString get_text(AssDialogueBlock &d) { return d.GetText(); }
 void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
 	if (blocks.empty()) return;

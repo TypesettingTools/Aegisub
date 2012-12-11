@@ -156,8 +156,6 @@ public:
 	/// Strip all ASS tags from the text
 	void StripTags();
 	/// Strip a specific ASS tag from the text
-	/// @param tag_name Tag to strip, with leading slash
-	void StripTag(wxString const& tag_name);
 	/// Get text without tags
 	wxString GetStrippedText() const;
 
