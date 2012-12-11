@@ -57,9 +57,6 @@ AssExporter::AssExporter(agi::Context *c)
 {
 }
 
-AssExporter::~AssExporter () {
-}
-
 void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 	is_default = false;
 	for (auto filter : *AssExportFilterChain::GetFilterList()) {

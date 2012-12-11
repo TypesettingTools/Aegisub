@@ -143,12 +143,6 @@ public:
 	/// provider must be set before the audio renderer is functional.
 	AudioRenderer();
 
-	/// @brief Destructor
-	///
-	/// Only destroys internal data, audio provider and bitmap providers are
-	/// owned by the consumer of audio rendering.
-	~AudioRenderer();
-
 	/// @brief Set horizontal zoom
 	/// @param pixel_ms Milliseconds per pixel to render audio at
 	///

@@ -91,10 +91,6 @@ AudioRenderer::AudioRenderer()
 	SetHeight(1);
 }
 
-AudioRenderer::~AudioRenderer()
-{
-}
-
 void AudioRenderer::SetMillisecondsPerPixel(double new_pixel_ms)
 {
 	if (pixel_ms == new_pixel_ms) return;

@@ -39,5 +39,4 @@
 class AboutScreen: public wxDialog {
 public:
 	AboutScreen(wxWindow *parent);
-	~AboutScreen();
 };

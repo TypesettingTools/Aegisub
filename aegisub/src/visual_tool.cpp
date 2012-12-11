@@ -69,9 +69,6 @@ VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 	parent->Bind(wxEVT_MOUSE_CAPTURE_LOST, &VisualToolBase::OnMouseCaptureLost, this);
 }
 
-VisualToolBase::~VisualToolBase() {
-}
-
 void VisualToolBase::OnCommit(int type) {
 	holding = false;
 	dragging = false;

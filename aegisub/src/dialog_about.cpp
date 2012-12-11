@@ -32,9 +32,6 @@
 /// @ingroup configuration_ui
 ///
 
-
-////////////
-// Includes
 #include "config.h"
 
 #include <wx/button.h>
@@ -49,10 +46,6 @@
 #include "libresrc/libresrc.h"
 #include "version.h"
 
-
-/// @brief Constructor
-/// @param parent Parent frame.
-///
 AboutScreen::AboutScreen(wxWindow *parent)
 : wxDialog (parent, -1, _("About Aegisub"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX , _("About Aegisub"))
 {
@@ -157,11 +150,3 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	SetSizerAndFit(MainSizer);
 	CentreOnParent();
 }
-
-
-/// @brief Destructor
-///
-AboutScreen::~AboutScreen () {
-}
-
-

@@ -423,9 +423,6 @@ void parse_parameters(AssOverrideTag *tag, const wxString &text, AssOverrideTagP
 }
 
 // From ass_dialogue.h
-AssDialogueBlockOverride::~AssDialogueBlockOverride() {
-}
-
 void AssDialogueBlockOverride::ParseTags() {
 	Tags.clear();
 

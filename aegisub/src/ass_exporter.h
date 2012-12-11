@@ -63,7 +63,6 @@ class AssExporter {
 
 public:
 	AssExporter(agi::Context *c);
-	~AssExporter();
 
 	/// Get the names of all registered export filters
 	wxArrayString GetAllFilterNames() const;

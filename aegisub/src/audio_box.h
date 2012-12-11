@@ -86,7 +86,6 @@ class AudioBox : public wxSashWindow {
 
 public:
 	AudioBox(wxWindow *parent, agi::Context *context);
-	~AudioBox();
 
 	void ShowKaraokeBar(bool show);
 

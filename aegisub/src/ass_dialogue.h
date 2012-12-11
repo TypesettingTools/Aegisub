@@ -49,9 +49,6 @@ enum AssBlockType {
 	BLOCK_DRAWING
 };
 
-class AssOverrideParameter;
-class AssOverrideTag;
-
 std::size_t hash_value(wxString const& s);
 
 /// @class AssDialogueBlock
@@ -104,7 +101,6 @@ public:
 class AssDialogueBlockOverride : public AssDialogueBlock {
 public:
 	AssDialogueBlockOverride(wxString const& text = wxString()) : AssDialogueBlock(text) { }
-	~AssDialogueBlockOverride();
 
 	std::vector<AssOverrideTag> Tags;
 
