@@ -40,8 +40,10 @@
 #include <wx/colour.h>
 #include <wx/font.h>
 
+namespace {
 struct OpenGLTextGlyph;
 class OpenGLTextTexture;
+}
 
 typedef boost::container::map<int,OpenGLTextGlyph> glyphMap;
 
@@ -57,7 +59,7 @@ class OpenGLText {
 
 	glyphMap glyphs;
 
-	std::vector<std::shared_ptr<OpenGLTextTexture> > textures;
+	std::vector<OpenGLTextTexture> textures;
 
 	OpenGLText(OpenGLText const&);
 	OpenGLText& operator=(OpenGLText const&);
