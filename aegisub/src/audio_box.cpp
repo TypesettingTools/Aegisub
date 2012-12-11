@@ -120,10 +120,9 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	// Main sizer
 	wxBoxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
-	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"),0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
-	MainSizer->Add(context->karaoke,0,wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT,3);
+	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"),0,wxEXPAND|wxLEFT|wxRIGHT,3);
+	MainSizer->Add(context->karaoke,0,wxEXPAND|wxALL,3);
 	MainSizer->Show(context->karaoke, false);
-	MainSizer->AddSpacer(3);
 	panel->SetSizer(MainSizer);
 
 	wxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -187,7 +186,7 @@ void AudioBox::OnSashDrag(wxSashEvent &event) {
 	// Karaoke mode is always disabled when the audio box is first opened, so
 	// the initial height shouldn't include it
 	if (context->karaoke->IsEnabled())
-		new_height -= context->karaoke->GetSize().GetHeight() + 3;
+		new_height -= context->karaoke->GetSize().GetHeight() + 6;
 
 	OPT_SET("Audio/Display Height")->SetInt(new_height);
 }
@@ -235,7 +234,7 @@ void AudioBox::ShowKaraokeBar(bool show) {
 	if (panel_sizer->IsShown(context->karaoke) == show) return;
 
 	int new_height = GetSize().GetHeight();
-	int kara_height = context->karaoke->GetSize().GetHeight() + 3;
+	int kara_height = context->karaoke->GetSize().GetHeight() + 6;
 
 	if (show)
 		new_height += kara_height;
