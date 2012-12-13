@@ -21,15 +21,6 @@
 
 #include "config.h"
 
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/intl.h>
-#include <wx/listbox.h>
-#include <wx/msgdlg.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-
 #include "dialog_spellchecker.h"
 
 #include "ass_dialogue.h"
@@ -48,6 +39,15 @@
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/spellchecker.h>
+
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 : wxDialog(context->parent, -1, _("Spell Checker"))
@@ -245,14 +245,18 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 
 	word_start = 0;
 	for (auto const& tok : tokens) {
-		word_start += tok.length;
-		if (tok.type != agi::ass::DialogueTokenType::WORD) continue;
-		if (word_start < start_pos) continue;
+		if (tok.type != agi::ass::DialogueTokenType::WORD || word_start < start_pos) {
+			word_start += tok.length;
+			continue;
+		}
 
 		word_len = tok.length;
 		std::string word = text.substr(word_start, word_len);
 
-		if (auto_ignore.count(word) || spellchecker->CheckWord(word)) continue;
+		if (auto_ignore.count(word) || spellchecker->CheckWord(word)) {
+			word_start += tok.length;
+			continue;
+		}
 
 		auto auto_rep = auto_replace.find(word);
 		if (auto_rep == auto_replace.end()) {
@@ -272,7 +276,7 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 		text.replace(word_start, word_len, auto_rep->second);
 		active_line->Text = from_wx(text);
 		*commit_id = context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
-		word_start += auto_rep->second.size() - auto_rep->first.size();
+		word_start += auto_rep->second.size();
 	}
 	return false;
 }
