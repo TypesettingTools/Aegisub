@@ -215,7 +215,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 			t_h = (int)tmp_long1;
 		}
 		else if (tags[i].StartsWith("F", &tag)) {
-			if (!(tag.BeforeFirst(':')).ToLong(&tmp_long1) && tag.AfterFirst(':').ToLong(&tmp_long2))
+			if (!(tag.BeforeFirst(':').ToLong(&tmp_long1) && tag.AfterFirst(':').ToLong(&tmp_long2)))
 				throw VideoOpenError("ParseFileHeader: invalid framerate");
 			t_fps_num = (int)tmp_long1;
 			t_fps_den = (int)tmp_long2;
