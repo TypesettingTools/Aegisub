@@ -59,12 +59,8 @@ private:
 	/// Internal OptionValueMap
 	OptionValueMap values;
 
-	/// @brief Create option object.
-	/// @param path Path to store
-	::json::Object CreateObject(std::string path);
-
 	/// User config (file that will be written to disk)
-	std::string config_file;
+	const std::string config_file;
 
 	/// Settings.
 	const OptionSetting setting;
@@ -101,7 +97,7 @@ public:
 	void ConfigUser();
 
 	/// Write the user configuration to disk, throws an exception if something goes wrong.
-	void Flush();
+	void Flush() const;
 };
 
 } // namespace agi

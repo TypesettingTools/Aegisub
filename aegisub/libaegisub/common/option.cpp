@@ -21,8 +21,6 @@
 #include "libaegisub/option.h"
 
 #include <cassert>
-#include <fstream>
-#include <map>
 #include <memory>
 #include <sstream>
 
@@ -69,7 +67,9 @@ namespace {
 namespace agi {
 
 Options::Options(const std::string &file, const std::string& default_config, const OptionSetting setting)
-: config_file(file), setting(setting) {
+: config_file(file)
+, setting(setting)
+{
 	LOG_D("agi/options") << "New Options object";
 	std::istringstream stream(default_config);
 	LoadConfig(stream);
@@ -127,7 +127,7 @@ OptionValue* Options::Get(const std::string &name) {
 	throw OptionErrorNotFound("Option value not found: " + name);
 }
 
-void Options::Flush() {
+void Options::Flush() const {
 	json::Object obj_out;
 
 	for (auto const& ov : values) {
