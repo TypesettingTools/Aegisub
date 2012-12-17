@@ -123,6 +123,7 @@ void *ThreadedFrameSource::Entry() {
 		double time;
 		int frameNum;
 		std::unique_ptr<AssFile> newSubs;
+		std::deque<std::pair<size_t, std::unique_ptr<AssEntry>>> updates;
 		{
 			wxMutexLocker jobLocker(jobMutex);
 
@@ -138,11 +139,27 @@ void *ThreadedFrameSource::Entry() {
 			frameNum = nextFrame;
 			nextTime = -1.;
 			newSubs = move(nextSubs);
+			updates = move(changedSubs);
 		}
 
-		if (newSubs) {
+		if (newSubs || updates.size()) {
 			wxMutexLocker fileLocker(fileMutex);
-			subs = move(newSubs);
+
+			if (newSubs)
+				subs = move(newSubs);
+
+			if (updates.size()) {
+				size_t i = 0;
+				auto it = subs->Line.begin();
+				// Replace each changed line in subs with the updated version
+				for (auto& update : updates) {
+					advance(it, update.first - i);
+					i = update.first;
+					subs->Line.insert(it, *update.second.release());
+					delete &*it--;
+				}
+			}
+
 			singleFrame = -1;
 		}
 
@@ -194,13 +211,27 @@ ThreadedFrameSource::~ThreadedFrameSource() {
 	Wait();
 }
 
-void ThreadedFrameSource::LoadSubtitles(AssFile *subs) throw() {
-	subs = new AssFile(*subs);
+void ThreadedFrameSource::LoadSubtitles(const AssFile *subs) throw() {
+	AssFile *copy = new AssFile(*subs);
 	wxMutexLocker locker(jobMutex);
 	// Set nextSubs and let the worker thread move it to subs so that we don't
 	// have to lock fileMutex on the GUI thread, as that can be locked for
 	// extended periods of time with slow-rendering subtitles
-	nextSubs.reset(subs);
+	nextSubs.reset(copy);
+	changedSubs.clear();
+}
+
+void ThreadedFrameSource::UpdateSubtitles(const AssFile *subs, std::set<const AssEntry*> changes) throw() {
+	std::deque<std::pair<size_t, std::unique_ptr<AssEntry>>> changed;
+	size_t i = 0;
+	for (auto const& e : subs->Line) {
+		if (changes.count(&e))
+			changed.emplace_back(i, std::unique_ptr<AssEntry>(e.Clone()));
+		++i;
+	}
+
+	wxMutexLocker locker(jobMutex);
+	changedSubs = std::move(changed);
 }
 
 void ThreadedFrameSource::RequestFrame(int frame, double time) throw() {

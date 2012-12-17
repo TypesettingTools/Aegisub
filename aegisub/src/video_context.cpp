@@ -233,10 +233,13 @@ void VideoContext::Reload() {
 	}
 }
 
-void VideoContext::OnSubtitlesCommit() {
+void VideoContext::OnSubtitlesCommit(int type, std::set<const AssEntry *> const& changed) {
 	if (!IsLoaded()) return;
 
-	provider->LoadSubtitles(context->ass);
+	if (changed.empty())
+		provider->LoadSubtitles(context->ass);
+	else
+		provider->UpdateSubtitles(context->ass, changed);
 	if (!IsPlaying())
 		GetFrameAsync(frame_n);
 }
@@ -446,7 +449,7 @@ void VideoContext::LoadTimecodes(wxString filename) {
 		ovrFPS = agi::vfr::Framerate(STD_STR(filename));
 		ovrTimecodeFile = filename;
 		config::mru->Add("Timecodes", STD_STR(filename));
-		OnSubtitlesCommit();
+		OnSubtitlesCommit(0, std::set<const AssEntry*>());
 		TimecodesOpen(ovrFPS);
 	}
 	catch (const agi::FileSystemError&) {
@@ -469,7 +472,7 @@ void VideoContext::SaveTimecodes(wxString filename) {
 void VideoContext::CloseTimecodes() {
 	ovrFPS = agi::vfr::Framerate();
 	ovrTimecodeFile.clear();
-	OnSubtitlesCommit();
+	OnSubtitlesCommit(0, std::set<const AssEntry*>());
 	TimecodesOpen(videoFPS);
 }
 

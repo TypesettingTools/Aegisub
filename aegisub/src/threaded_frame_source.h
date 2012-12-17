@@ -19,7 +19,9 @@
 /// @ingroup video
 ///
 
+#include <deque>
 #include <memory>
+#include <set>
 
 #include <wx/event.h>
 #include <wx/thread.h>
@@ -28,6 +30,7 @@
 #include <libaegisub/scoped_ptr.h>
 
 class AegiVideoFrame;
+class AssEntry;
 class AssFile;
 class SubtitlesProvider;
 class VideoProvider;
@@ -46,6 +49,7 @@ class ThreadedFrameSource : public wxThread {
 	int nextFrame;   ///< Next queued frame, or -1 for none
 	double nextTime; ///< Next queued time
 	std::unique_ptr<AssFile> nextSubs; ///< Next queued AssFile
+	std::deque<std::pair<size_t, std::unique_ptr<AssEntry>>> changedSubs;
 
 	/// Subtitles to be loaded the next time a frame is requested
 	std::unique_ptr<AssFile> subs;
@@ -70,7 +74,15 @@ public:
 	///
 	/// This function blocks until is it is safe for the calling thread to
 	/// modify subs
-	void LoadSubtitles(AssFile *subs) throw();
+	void LoadSubtitles(const AssFile *subs) throw();
+
+	/// @brief Update a previously loaded subtitle file
+	/// @param subs Subtitle file which was last passed to LoadSubtitles
+	/// @param changes Set of lines which have changed
+	///
+	/// This function only supports changes to existing lines, and not
+	/// insertions or deletions.
+	void UpdateSubtitles(const AssFile *subs, std::set<const AssEntry *> changes) throw();
 
 	/// @brief Queue a request for a frame
 	/// @brief frame Frame number
