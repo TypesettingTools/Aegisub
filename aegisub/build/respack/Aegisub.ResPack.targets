@@ -68,6 +68,15 @@
 		</ItemGroup>
 	</Target>
 
+	<Target
+		Name="ResPackClean"
+		BeforeTargets="Clean"
+		DependsOnTargets="PrepareForBuild"
+		Condition="'@(ResPack)' != ''"
+		>
+		<Delete Files="%(ResPack.OutputDir)%(ResPack.OutputName);%(ResPack.OutputDir)%(ResPack.OutputHeader)" />
+	</Target>
+
 	<ItemGroup>
 		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.ResPack.ProjectItems.xml" />
 		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Aegisub.ResPack.xml" />
