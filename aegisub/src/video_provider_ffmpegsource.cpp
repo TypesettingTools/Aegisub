@@ -85,8 +85,12 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	wxString FileNameShort = wxFileName(filename).GetShortPath();
 
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), &ErrInfo);
-	if (!Indexer)
-		throw agi::FileNotFoundError(ErrInfo.Buffer);
+	if (!Indexer) {
+		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
+			throw agi::FileNotFoundError(ErrInfo.Buffer);
+		else
+			throw VideoNotSupported(ErrInfo.Buffer);
+	}
 
 	std::map<int,wxString> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_VIDEO);
 	if (TrackList.size() <= 0)
