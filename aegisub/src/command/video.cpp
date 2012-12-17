@@ -601,10 +601,9 @@ struct video_open_dummy : public Command {
 	STR_HELP("Opens a video clip with solid color")
 
 	void operator()(agi::Context *c) {
-		wxString fn;
-		if (DialogDummyVideo::CreateDummyVideo(c->parent, fn)) {
+		wxString fn = DialogDummyVideo::CreateDummyVideo(c->parent);
+		if (!fn.empty())
 			c->videoController->SetVideo(fn);
-		}
 	}
 };
 
