@@ -372,6 +372,10 @@ void AssFile::AddToRecent(wxString const& file) const {
 }
 
 int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *single_line) {
+	std::set<const AssEntry*> changed_lines;
+	if (single_line)
+		changed_lines.insert(single_line);
+
 	++commitId;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
@@ -389,7 +393,7 @@ int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *singl
 		else {
 			UndoStack.back() = *this;
 		}
-		AnnounceCommit(type);
+		AnnounceCommit(type, changed_lines);
 		return commitId;
 	}
 
@@ -408,7 +412,7 @@ int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *singl
 	if (UndoStack.size() > 1 && OPT_GET("App/Auto/Save on Every Change")->GetBool() && !filename.empty() && CanSave())
 		Save(filename);
 
-	AnnounceCommit(type);
+	AnnounceCommit(type, changed_lines);
 	return commitId;
 }
 
@@ -420,7 +424,7 @@ void AssFile::Undo() {
 	UndoStack.pop_back();
 	*this = UndoStack.back();
 
-	AnnounceCommit(COMMIT_NEW);
+	AnnounceCommit(COMMIT_NEW, std::set<const AssEntry*>());
 }
 
 void AssFile::Redo() {
@@ -430,7 +434,7 @@ void AssFile::Redo() {
 	UndoStack.push_back(*this);
 	RedoStack.pop_back();
 
-	AnnounceCommit(COMMIT_NEW);
+	AnnounceCommit(COMMIT_NEW, std::set<const AssEntry*>());
 }
 
 wxString AssFile::GetUndoDescription() const {

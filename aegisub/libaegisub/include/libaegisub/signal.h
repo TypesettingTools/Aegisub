@@ -215,6 +215,18 @@ public:
 	UnscopedConnection Connect(void (T::*func)(Arg1, Arg2), T* a1) {
 		return Connect(std::bind(func, a1, _1, _2));
 	}
+
+	/// @brief Connect a member function with the correct signature to this signal
+	/// @param func Function to connect
+	/// @param a1   Object
+	///
+	/// This overload is purely for convenience so that classes can do
+	/// sig.Connect(&Class::Foo, this) rather than
+	/// sig.Connect(&Class::Foo, this, _1)
+	template<class T>
+	UnscopedConnection Connect(void (T::*func)(Arg1), T* a1) {
+		return Connect(std::bind(func, a1, _1));
+	}
 };
 
 /// @class Signal

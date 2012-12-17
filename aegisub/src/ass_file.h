@@ -33,13 +33,11 @@
 ///
 
 #include <boost/container/list.hpp>
-
+#include <boost/intrusive/list.hpp>
 #include <set>
 #include <vector>
 
 #include <wx/arrstr.h>
-
-#include <boost/intrusive/list.hpp>
 
 #include <libaegisub/signal.h>
 
@@ -65,7 +63,7 @@ class AssFile {
 	int autosavedCommitId;
 
 	/// A set of changes has been committed to the file (AssFile::CommitType)
-	agi::signal::Signal<int> AnnounceCommit;
+	agi::signal::Signal<int, std::set<const AssEntry*> const&> AnnounceCommit;
 	/// A new file has been opened (filename)
 	agi::signal::Signal<wxString> FileOpen;
 	/// The file is about to be saved

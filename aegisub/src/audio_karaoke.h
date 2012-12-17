@@ -30,6 +30,7 @@
 #include <libaegisub/signal.h>
 
 class AssDialogue;
+class AssEntry;
 class AssKaraoke;
 class wxButton;
 
@@ -136,7 +137,7 @@ class AudioKaraoke : public wxWindow {
 	void OnActiveLineChanged(AssDialogue *new_line);
 	void OnContextMenu(wxContextMenuEvent&);
 	void OnEnableButton(wxCommandEvent &evt);
-	void OnFileChanged(int type);
+	void OnFileChanged(int type, std::set<const AssEntry *> const& changed);
 	void OnMouse(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
