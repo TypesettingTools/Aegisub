@@ -143,6 +143,9 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to &dictionary")), button_flags);
 		add_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnAdd, this);
 
+		actions_sizer->Add(remove_button = new wxButton(this, -1, _("Remove fro&m dictionary")), button_flags);
+		remove_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSpellChecker::OnRemove, this);
+
 		actions_sizer->Add(new HelpButton(this, "Spell Checker"), button_flags);
 
 		actions_sizer->Add(new wxButton(this, wxID_CANCEL), button_flags.Border(0));
@@ -177,6 +180,13 @@ void DialogSpellChecker::OnIgnoreAll(wxCommandEvent&) {
 
 void DialogSpellChecker::OnAdd(wxCommandEvent&) {
 	spellchecker->AddWord(from_wx(orig_word->GetValue()));
+	FindNext();
+}
+
+void DialogSpellChecker::OnRemove(wxCommandEvent&) {
+	// TODO pop-up dialog
+
+	spellchecker->RemoveWord(from_wx(replace_word->GetValue()));
 	FindNext();
 }
 

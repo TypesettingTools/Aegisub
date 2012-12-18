@@ -71,6 +71,45 @@ void HunspellSpellChecker::AddWord(std::string const& word) {
 
 	std::set<std::string> words;
 
+	try {
+		ReadUserDictionary(words);
+	}
+	catch (agi::FileNotFoundError&) {
+		LOG_I("dictionary/hunspell/add") << "User dictionary not found; creating it";
+	}
+
+	// Add the word
+	words.insert(word);
+
+	WriteUserDictionary(words);
+}
+
+void HunspellSpellChecker::RemoveWord(std::string const& word) {
+	if (!hunspell) return;
+
+	// Remove it from the in-memory dictionary
+	hunspell->remove(conv->Convert(word).c_str());
+
+	std::set<std::string> words;
+
+	try {
+		ReadUserDictionary(words);
+	}
+	catch (agi::FileNotFoundError&) {
+		LOG_I("dictionary/hunspell/remove") << "User dictionary not found; nothing to remove";
+		return;
+	}
+
+	auto word_iter = words.find(word);
+	if (word_iter != words.end()) {
+		words.erase(word_iter);
+
+		WriteUserDictionary(words);
+	}
+}
+
+void HunspellSpellChecker::ReadUserDictionary(std::set<std::string> &words)
+{
 	// Ensure that the path exists
 	wxFileName fn(userDicPath);
 	if (!fn.DirExists()) {
@@ -78,22 +117,17 @@ void HunspellSpellChecker::AddWord(std::string const& word) {
 	}
 	// Read the old contents of the user's dictionary
 	else {
-		try {
-			agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
-			remove_copy_if(
-				++agi::line_iterator<std::string>(*stream),
-				agi::line_iterator<std::string>(),
-				inserter(words, words.end()),
-				[](std::string const& str) { return str.empty(); });
-		}
-		catch (agi::FileNotFoundError&) {
-			LOG_I("dictionary/hunspell/add") << "User dictionary not found; creating it";
-		}
+		agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
+		remove_copy_if(
+			++agi::line_iterator<std::string>(*stream),
+			agi::line_iterator<std::string>(),
+			inserter(words, words.end()),
+			[](std::string const& str) { return str.empty(); });
 	}
+}
 
-	// Add the word
-	words.insert(word);
-
+void HunspellSpellChecker::WriteUserDictionary(std::set<std::string> const& words)
+{
 	// Write the new dictionary
 	{
 		agi::io::Save writer(STD_STR(userDicPath));
@@ -101,8 +135,8 @@ void HunspellSpellChecker::AddWord(std::string const& word) {
 		copy(words.begin(), words.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
 	}
 
-	// Announce a language change so that any other spellcheckers pick up the
-	// new word
+	// Announce a language change so that any other spellcheckers reload the
+	// current dictionary to get the addition/removal
 	lang_listener.Block();
 	OPT_SET("Tool/Spell Checker/Language")->SetString(OPT_GET("Tool/Spell Checker/Language")->GetString());
 	lang_listener.Unblock();

@@ -56,11 +56,17 @@ class HunspellSpellChecker : public agi::SpellChecker {
 	/// Dictionary path change handler
 	void OnPathChanged();
 
+	/// Load words from custom dictionary
+	void ReadUserDictionary(std::set<std::string> &words);
+	/// Save words to custom dictionary
+	void WriteUserDictionary(std::set<std::string> const& words);
+
 public:
 	HunspellSpellChecker();
 	~HunspellSpellChecker();
 
 	void AddWord(std::string const& word);
+	void RemoveWord(std::string const& word);
 	bool CanAddWord(std::string const& word);
 	bool CheckWord(std::string const& word);
 	std::vector<std::string> GetSuggestions(std::string const& word);

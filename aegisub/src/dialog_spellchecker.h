@@ -58,6 +58,7 @@ class DialogSpellChecker : public wxDialog {
 
 	wxComboBox *language;      ///< The list of available languages
 	wxButton *add_button;      ///< Add word to currently active dictionary
+	wxButton *remove_button;   ///< Remove word from currently active dictionary
 	wxCheckBox *skip_comments; ///< Skip over commented lines
 
 	AssDialogue *start_line;  ///< The first line checked
@@ -87,6 +88,7 @@ class DialogSpellChecker : public wxDialog {
 	void OnReplaceAll(wxCommandEvent&);
 	void OnIgnoreAll(wxCommandEvent&);
 	void OnAdd(wxCommandEvent&);
+	void OnRemove(wxCommandEvent&);
 
 public:
 	DialogSpellChecker(agi::Context *context);

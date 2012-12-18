@@ -28,6 +28,10 @@ public:
 	/// @param word Word to add
 	virtual void AddWord(std::string const& word)=0;
 
+	/// Remove word from the dictionary
+	/// @param word Word to remove
+	virtual void RemoveWord(std::string const& word)=0;
+
 	/// Can the word be added to the current dictionary?
 	/// @param word Word to check
 	/// @return Whether or not word can be added
