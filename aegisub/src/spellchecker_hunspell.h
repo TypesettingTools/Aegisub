@@ -26,6 +26,8 @@
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
+#include <set>
+
 #include <wx/string.h>
 
 namespace agi { namespace charset { class IconvWrapper; } }
@@ -46,6 +48,9 @@ class HunspellSpellChecker : public agi::SpellChecker {
 	/// Path to user-local dictionary.
 	wxString userDicPath;
 
+	/// Words in the custom user dictionary
+	std::set<std::string> customWords;
+
 	/// Dictionary language change connection
 	agi::signal::Connection lang_listener;
 	/// Dictionary language change handler
@@ -57,9 +62,9 @@ class HunspellSpellChecker : public agi::SpellChecker {
 	void OnPathChanged();
 
 	/// Load words from custom dictionary
-	void ReadUserDictionary(std::set<std::string> &words);
+	void ReadUserDictionary();
 	/// Save words to custom dictionary
-	void WriteUserDictionary(std::set<std::string> const& words);
+	void WriteUserDictionary();
 
 public:
 	HunspellSpellChecker();
@@ -68,6 +73,7 @@ public:
 	void AddWord(std::string const& word);
 	void RemoveWord(std::string const& word);
 	bool CanAddWord(std::string const& word);
+	bool CanRemoveWord(std::string const& word);
 	bool CheckWord(std::string const& word);
 	std::vector<std::string> GetSuggestions(std::string const& word);
 	std::vector<std::string> GetLanguageList();

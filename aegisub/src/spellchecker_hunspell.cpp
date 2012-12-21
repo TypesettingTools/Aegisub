@@ -63,25 +63,19 @@ bool HunspellSpellChecker::CanAddWord(std::string const& word) {
 	}
 }
 
+bool HunspellSpellChecker::CanRemoveWord(std::string const& word) {
+	return !!customWords.count(word);
+}
+
 void HunspellSpellChecker::AddWord(std::string const& word) {
 	if (!hunspell) return;
 
 	// Add it to the in-memory dictionary
 	hunspell->add(conv->Convert(word).c_str());
 
-	std::set<std::string> words;
-
-	try {
-		ReadUserDictionary(words);
-	}
-	catch (agi::FileNotFoundError&) {
-		LOG_I("dictionary/hunspell/add") << "User dictionary not found; creating it";
-	}
-
 	// Add the word
-	words.insert(word);
-
-	WriteUserDictionary(words);
+	if (customWords.insert(word).second)
+		WriteUserDictionary();
 }
 
 void HunspellSpellChecker::RemoveWord(std::string const& word) {
@@ -90,26 +84,17 @@ void HunspellSpellChecker::RemoveWord(std::string const& word) {
 	// Remove it from the in-memory dictionary
 	hunspell->remove(conv->Convert(word).c_str());
 
-	std::set<std::string> words;
+	auto word_iter = customWords.find(word);
+	if (word_iter != customWords.end()) {
+		customWords.erase(word_iter);
 
-	try {
-		ReadUserDictionary(words);
-	}
-	catch (agi::FileNotFoundError&) {
-		LOG_I("dictionary/hunspell/remove") << "User dictionary not found; nothing to remove";
-		return;
-	}
-
-	auto word_iter = words.find(word);
-	if (word_iter != words.end()) {
-		words.erase(word_iter);
-
-		WriteUserDictionary(words);
+		WriteUserDictionary();
 	}
 }
 
-void HunspellSpellChecker::ReadUserDictionary(std::set<std::string> &words)
-{
+void HunspellSpellChecker::ReadUserDictionary() {
+	customWords.clear();
+
 	// Ensure that the path exists
 	wxFileName fn(userDicPath);
 	if (!fn.DirExists()) {
@@ -118,21 +103,19 @@ void HunspellSpellChecker::ReadUserDictionary(std::set<std::string> &words)
 	// Read the old contents of the user's dictionary
 	else {
 		agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
-		remove_copy_if(
-			++agi::line_iterator<std::string>(*stream),
-			agi::line_iterator<std::string>(),
-			inserter(words, words.end()),
-			[](std::string const& str) { return str.empty(); });
+		copy_if(
+			++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
+			inserter(customWords, customWords.end()),
+			[](std::string const& str) { return !str.empty(); });
 	}
 }
 
-void HunspellSpellChecker::WriteUserDictionary(std::set<std::string> const& words)
-{
+void HunspellSpellChecker::WriteUserDictionary() {
 	// Write the new dictionary
 	{
 		agi::io::Save writer(STD_STR(userDicPath));
-		writer.Get() << words.size() << "\n";
-		copy(words.begin(), words.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
+		writer.Get() << customWords.size() << "\n";
+		copy(customWords.begin(), customWords.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
 	}
 
 	// Announce a language change so that any other spellcheckers reload the
@@ -252,24 +235,16 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	conv.reset(new agi::charset::IconvWrapper("utf-8", hunspell->get_dic_encoding()));
 	rconv.reset(new agi::charset::IconvWrapper(hunspell->get_dic_encoding(), "utf-8"));
 
-	try {
-		agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
-		agi::line_iterator<std::string> userDic(*stream);
-		agi::line_iterator<std::string> end;
-		++userDic; // skip entry count line
-		for (; userDic != end; ++userDic) {
-			if (userDic->empty()) continue;
-			try {
-				hunspell->add(conv->Convert(*userDic).c_str());
-			}
-			catch (agi::charset::ConvError const&) {
-				// Normally this shouldn't happen, but some versions of Aegisub
-				// wrote words in the wrong charset
-			}
+	ReadUserDictionary();
+
+	for (auto const& word : customWords) {
+		try {
+			hunspell->add(conv->Convert(word).c_str());
 		}
-	}
-	catch (agi::Exception const&) {
-		// File doesn't exist or we don't have permission to read it
+		catch (agi::charset::ConvError const&) {
+			// Normally this shouldn't happen, but some versions of Aegisub
+			// wrote words in the wrong charset
+		}
 	}
 }
 

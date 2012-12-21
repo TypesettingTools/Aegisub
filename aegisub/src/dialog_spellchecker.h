@@ -85,10 +85,6 @@ class DialogSpellChecker : public wxDialog {
 	void OnChangeSuggestion(wxCommandEvent&);
 
 	void OnReplace(wxCommandEvent&);
-	void OnReplaceAll(wxCommandEvent&);
-	void OnIgnoreAll(wxCommandEvent&);
-	void OnAdd(wxCommandEvent&);
-	void OnRemove(wxCommandEvent&);
 
 public:
 	DialogSpellChecker(agi::Context *context);

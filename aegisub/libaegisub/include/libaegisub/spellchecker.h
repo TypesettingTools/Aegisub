@@ -37,6 +37,11 @@ public:
 	/// @return Whether or not word can be added
 	virtual bool CanAddWord(std::string const& word)=0;
 
+	/// Can the word be removed from the current dictionary?
+	/// @param word Word to check
+	/// @return Whether or not word can be removed
+	virtual bool CanRemoveWord(std::string const& word)=0;
+
 	/// Check if the given word is spelled correctly
 	/// @param word Word to check
 	/// @return Whether or not the word is valid
