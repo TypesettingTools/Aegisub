@@ -117,9 +117,17 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&cmd::call, "edit/line/split/estimate", context), EDIT_MENU_SPLIT_ESTIMATE);
 	}
 
-	Bind(wxEVT_STC_STYLENEEDED, std::bind(&SubsTextEditCtrl::UpdateStyle, this));
 	Bind(wxEVT_CONTEXT_MENU, &SubsTextEditCtrl::OnContextMenu, this);
 	Bind(wxEVT_IDLE, std::bind(&SubsTextEditCtrl::UpdateCallTip, this));
+	Bind(wxEVT_STC_STYLENEEDED, [=](wxStyledTextEvent&) {
+		{
+			std::string text = GetTextRaw().data();
+			if (text == line_text) return;
+			line_text = move(text);
+		}
+
+		UpdateStyle();
+	});
 
 	OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this);
@@ -217,12 +225,6 @@ void SubsTextEditCtrl::SetStyles() {
 }
 
 void SubsTextEditCtrl::UpdateStyle() {
-	{
-		std::string text = GetTextRaw().data();
-		if (text == line_text) return;
-		line_text = move(text);
-	}
-
 	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
 	bool template_line = diag && diag->Comment && diag->Effect.get().Lower().StartsWith("template");
 
