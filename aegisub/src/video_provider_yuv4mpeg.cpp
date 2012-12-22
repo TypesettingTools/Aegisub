@@ -75,7 +75,7 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 		sf = fopen(filename.utf8_str(), "rb");
 #endif
 
-		if (sf == nullptr) throw agi::FileNotFoundError(STD_STR(fname));
+		if (sf == nullptr) throw agi::FileNotFoundError(from_wx(fname));
 
 		CheckFileFormat();
 
@@ -150,7 +150,7 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos) {
 	int buf;
 
 	if (fseeko(sf, startpos, SEEK_SET))
-		throw VideoOpenError(STD_STR(wxString::Format("YUV4MPEG video provider: ReadHeader: failed seeking to position %d", startpos)));
+		throw VideoOpenError(from_wx(wxString::Format("YUV4MPEG video provider: ReadHeader: failed seeking to position %d", startpos)));
 
 	// read header until terminating newline (0x0A) is found
 	while ((buf = fgetc(sf)) != 0x0A) {
@@ -247,7 +247,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 				throw VideoOpenError("ParseFileHeader: invalid or unknown interlacing mode");
 		}
 		else
-			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << STD_STR(tags[i]);
+			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << from_wx(tags[i]);
 	}
 
 	// The point of all this is to allow multiple YUV4MPEG2 headers in a single file
@@ -328,7 +328,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 			seek_table.push_back(curpos);
 			// seek to next frame header start position
 			if (fseeko(sf, frame_sz, SEEK_CUR))
-				throw VideoOpenError(STD_STR(wxString::Format("IndexFile: failed seeking to position %d", curpos + frame_sz)));
+				throw VideoOpenError(from_wx(wxString::Format("IndexFile: failed seeking to position %d", curpos + frame_sz)));
 		}
 		else {
 			/// @todo implement rff flags etc

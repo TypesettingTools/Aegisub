@@ -108,7 +108,7 @@ DEFINE_BASE_EXCEPTION_NOINNER(VideoOutException, agi::Exception)
 class VideoOutRenderException : public VideoOutException {
 public:
 	VideoOutRenderException(const char *func, int err)
-		: VideoOutException(STD_STR(wxString::Format("%s failed with error code %d", func, err)))
+		: VideoOutException(from_wx(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
 	const char * GetName() const { return "videoout/opengl/render"; }
 	Exception * Copy() const { return new VideoOutRenderException(*this); }
@@ -119,7 +119,7 @@ public:
 class VideoOutInitException : public VideoOutException {
 public:
 	VideoOutInitException(const char *func, int err)
-		: VideoOutException(STD_STR(wxString::Format("%s failed with error code %d", func, err)))
+		: VideoOutException(from_wx(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
 	VideoOutInitException(const char *err) : VideoOutException(err) { }
 	const char * GetName() const { return "videoout/opengl/init"; }

@@ -429,13 +429,13 @@ void FrameMain::LoadSubtitles(wxString const& filename, wxString const& charset)
 
 		wxFileName file(filename);
 		StandardPaths::SetPathValue("?script", file.GetPath());
-		config::mru->Add("Subtitle", STD_STR(filename));
-		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(file.GetPath()));
+		config::mru->Add("Subtitle", from_wx(filename));
+		OPT_SET("Path/Last/Subtitles")->SetString(from_wx(file.GetPath()));
 
 		// Save backup of file
 		if (context->ass->CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
 			if (file.FileExists()) {
-				wxString path = lagi_wxString(OPT_GET("Path/Auto/Backup")->GetString());
+				wxString path = to_wx(OPT_GET("Path/Auto/Backup")->GetString());
 				if (path.empty()) path = file.GetPath();
 				wxFileName dstpath(StandardPaths::DecodePath(path + "/"));
 				if (!dstpath.DirExists())
@@ -449,11 +449,11 @@ void FrameMain::LoadSubtitles(wxString const& filename, wxString const& charset)
 	}
 	catch (agi::FileNotFoundError const&) {
 		wxMessageBox(filename + " not found.", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		config::mru->Remove("Subtitle", STD_STR(filename));
+		config::mru->Remove("Subtitle", from_wx(filename));
 		return;
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(lagi_wxString(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
 		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
@@ -566,7 +566,7 @@ void FrameMain::OnVideoOpen() {
 			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " has no audio data: " << e.GetChainedMessage();
 		}
 		catch (agi::AudioOpenError const& err) {
-			wxMessageBox(lagi_wxString(err.GetMessage()), "Error loading audio", wxOK | wxICON_ERROR | wxCENTER);
+			wxMessageBox(to_wx(err.GetMessage()), "Error loading audio", wxOK | wxICON_ERROR | wxCENTER);
 		}
 	}
 }
@@ -663,7 +663,7 @@ void FrameMain::OnAutoSave(wxTimerEvent &) try {
 		StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn));
 }
 catch (const agi::Exception& err) {
-	StatusTimeout(lagi_wxString("Exception when attempting to autosave file: " + err.GetMessage()));
+	StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
 }
 catch (wxString err) {
 	StatusTimeout("Exception when attempting to autosave file: " + err);
@@ -759,8 +759,8 @@ void FrameMain::OnSubtitlesOpen() {
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::FileNotAccessibleError const& err) {
-			config::mru->Remove("Audio", STD_STR(curSubsAudio));
-			wxMessageBox(lagi_wxString(err.GetMessage()), "Error opening audio", wxOK | wxICON_ERROR | wxCENTER, this);
+			config::mru->Remove("Audio", from_wx(curSubsAudio));
+			wxMessageBox(to_wx(err.GetMessage()), "Error opening audio", wxOK | wxICON_ERROR | wxCENTER, this);
 		}
 	}
 

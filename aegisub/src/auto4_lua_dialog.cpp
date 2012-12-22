@@ -135,7 +135,7 @@ namespace Automation4 {
 	, width(get_field(L, "width", 1))
 	, height(get_field(L, "height", 1))
 	{
-		LOG_D("automation/lua/dialog") << "created control: '" << STD_STR(name) << "', (" << x << "," << y << ")(" << width << "," << height << "), "<< STD_STR(hint);
+		LOG_D("automation/lua/dialog") << "created control: '" << from_wx(name) << "', (" << x << "," << y << ")(" << width << "," << height << "), "<< from_wx(hint);
 	}
 
 	namespace LuaControl {
@@ -566,7 +566,7 @@ namespace Automation4 {
 			if (buttons.size() > 0) {
 				LOG_D("automation/lua/dialog") << "creating user buttons";
 				for (size_t i = 0; i < buttons.size(); ++i) {
-					LOG_D("automation/lua/dialog") << "button '" << STD_STR(buttons[i]) << "' gets id " << 1001+(wxWindowID)i;
+					LOG_D("automation/lua/dialog") << "button '" << from_wx(buttons[i]) << "' gets id " << 1001+(wxWindowID)i;
 
 					bs->Add(new wxButton(window, 1001+(wxWindowID)i, buttons[i]));
 				}
@@ -604,7 +604,7 @@ namespace Automation4 {
 				LOG_D("automation/lua/dialog") << "default buttons, button 1 bushed, Ok button";
 				lua_pushboolean(L, 1);
 			} else {
-				LOG_D("automation/lua/dialog") << "user button: " << STD_STR(buttons.at(btn-1));
+				LOG_D("automation/lua/dialog") << "user button: " << from_wx(buttons.at(btn-1));
 				// button_pushed is index+1 to reserve 0 for Cancel
 				lua_pushstring(L, buttons.at(btn-1).utf8_str());
 			}

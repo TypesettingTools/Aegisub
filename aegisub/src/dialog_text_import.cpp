@@ -49,8 +49,8 @@ DialogTextImport::DialogTextImport()
 	// Main controls
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 5);
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	edit_separator = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString()));
-	edit_comment = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Import/Text/Comment Starter")->GetString()));
+	edit_separator = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Import/Text/Actor Separator")->GetString()));
+	edit_comment = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Import/Text/Comment Starter")->GetString()));
 
 	// Dialog layout
 	fg->Add(new wxStaticText(this, -1, _("Actor separator:")), 0, wxALIGN_CENTRE_VERTICAL);
@@ -66,8 +66,8 @@ DialogTextImport::DialogTextImport()
 }
 
 void DialogTextImport::OnOK(wxCommandEvent &) {
-	OPT_SET("Tool/Import/Text/Actor Separator")->SetString(STD_STR(edit_separator->GetValue()));
-	OPT_SET("Tool/Import/Text/Comment Starter")->SetString(STD_STR(edit_comment->GetValue()));
+	OPT_SET("Tool/Import/Text/Actor Separator")->SetString(from_wx(edit_separator->GetValue()));
+	OPT_SET("Tool/Import/Text/Comment Starter")->SetString(from_wx(edit_comment->GetValue()));
 
 	EndModal(wxID_OK);
 }

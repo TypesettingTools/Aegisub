@@ -175,7 +175,7 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 
 /// @brief Set ffms2 log level according to setting in config.dat
 void FFmpegSourceProvider::SetLogLevel() {
-	wxString LogLevel = lagi_wxString(OPT_GET("Provider/FFmpegSource/Log Level")->GetString());
+	wxString LogLevel = to_wx(OPT_GET("Provider/FFmpegSource/Log Level")->GetString());
 
 	if (!LogLevel.CmpNoCase("panic"))
 		FFMS_SetLogLevel(FFMS_LOG_PANIC);
@@ -197,7 +197,7 @@ void FFmpegSourceProvider::SetLogLevel() {
 
 
 FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
-	wxString Mode = lagi_wxString(OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString());
+	wxString Mode = to_wx(OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString());
 
 	if (!Mode.CmpNoCase("ignore"))
 		return FFMS_IEH_IGNORE;

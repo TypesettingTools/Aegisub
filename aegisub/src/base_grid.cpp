@@ -216,7 +216,7 @@ void BaseGrid::OnHighlightVisibleChange(agi::OptionValue const& opt) {
 }
 
 void BaseGrid::UpdateStyle() {
-	wxString fontname = lagi_wxString(OPT_GET("Subtitle/Grid/Font Face")->GetString());
+	wxString fontname = to_wx(OPT_GET("Subtitle/Grid/Font Face")->GetString());
 	if (fontname.empty()) fontname = "Tahoma";
 	font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Grid/Font Size")->GetInt());
@@ -492,7 +492,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 	int override_mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 	wxString replace_char;
 	if (override_mode == 1)
-		replace_char = lagi_wxString(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
+		replace_char = to_wx(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString());
 
 	for (int i = 0; i < nDraw + 1; i++) {
 		int curRow = i + yPos - 1;

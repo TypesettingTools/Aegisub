@@ -145,7 +145,7 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match c&ase")), radio_flags);
 			match_sizer->Add(match_radio_line);
 		}
-		match_sizer->Add(match_text = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Select Lines/Text")->GetString())), main_flags);
+		match_sizer->Add(match_text = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Select Lines/Text")->GetString())), main_flags);
 
 		main_sizer->Add(match_sizer, main_flags);
 	}
@@ -193,7 +193,7 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 }
 
 DialogSelection::~DialogSelection() {
-	OPT_SET("Tool/Select Lines/Text")->SetString(STD_STR(match_text->GetValue()));
+	OPT_SET("Tool/Select Lines/Text")->SetString(from_wx(match_text->GetValue()));
 	OPT_SET("Tool/Select Lines/Condition")->SetInt(select_unmatching_lines->GetValue());
 	OPT_SET("Tool/Select Lines/Field")->SetInt(dialogue_field->GetSelection());
 	OPT_SET("Tool/Select Lines/Action")->SetInt(selection_change_type->GetSelection());

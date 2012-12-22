@@ -55,11 +55,11 @@
 #include "video_context.h"
 
 static wxString get_history_string(json::Object &obj) {
-	wxString filename = lagi_wxString(obj["filename"]);
+	wxString filename = to_wx(obj["filename"]);
 	if (filename.empty())
 		filename = _("unsaved");
 
-	wxString shift_amount(lagi_wxString(obj["amount"]));
+	wxString shift_amount(to_wx(obj["amount"]));
 	if (!obj["is by time"])
 		shift_amount = wxString::Format(_("%s frames"), shift_amount);
 
@@ -99,7 +99,7 @@ static wxString get_history_string(json::Object &obj) {
 DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
-, history_filename(STD_STR(StandardPaths::DecodePath("?user/shift_history.json")))
+, history_filename(from_wx(StandardPaths::DecodePath("?user/shift_history.json")))
 , history(new json::Array)
 , timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 , selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))
@@ -235,7 +235,7 @@ void DialogShiftTimes::OnSelectedSetChanged() {
 
 
 void DialogShiftTimes::OnClear(wxCommandEvent &) {
-	wxRemoveFile(lagi_wxString(history_filename));
+	wxRemoveFile(to_wx(history_filename));
 	history_box->Clear();
 	history->clear();
 }
@@ -256,12 +256,12 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 	json::Object& obj = (*history)[entry];
 	if (obj["is by time"]) {
-		shift_time->SetTime(AssTime(lagi_wxString(obj["amount"])));
+		shift_time->SetTime(AssTime(to_wx(obj["amount"])));
 		shift_by_time->SetValue(true);
 		OnByTime(evt);
 	}
 	else {
-		shift_frames->SetValue(lagi_wxString(obj["amount"]));
+		shift_frames->SetValue(to_wx(obj["amount"]));
 		if (shift_by_frames->IsEnabled()) {
 			shift_by_frames->SetValue(true);
 			OnByFrames(evt);
@@ -279,10 +279,10 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	json::Object new_entry;
-	new_entry["filename"] = STD_STR(wxFileName(context->ass->filename).GetFullName());
+	new_entry["filename"] = from_wx(wxFileName(context->ass->filename).GetFullName());
 	new_entry["is by time"] = shift_by_time->GetValue();
 	new_entry["is backward"] = shift_backward->GetValue();
-	new_entry["amount"] = STD_STR(shift_by_time->GetValue() ? shift_time->GetValue() : shift_frames->GetValue());
+	new_entry["amount"] = from_wx(shift_by_time->GetValue() ? shift_time->GetValue() : shift_frames->GetValue());
 	new_entry["fields"] = time_fields->GetSelection();
 	new_entry["mode"] = selection_mode->GetSelection();
 	new_entry["selection"] = shifted_blocks;

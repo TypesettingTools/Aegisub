@@ -73,7 +73,7 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) try
 	LoadVideo(filename);
 }
 catch (wxString const& err) {
-	throw VideoOpenError(STD_STR(err));
+	throw VideoOpenError(from_wx(err));
 }
 catch (const char * err) {
 	throw VideoOpenError(err);
@@ -239,7 +239,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
 		if (CurFrameData == nullptr) {
-			throw VideoOpenError(STD_STR(wxString::Format("Couldn't get info about frame %d", CurFrameNum)));
+			throw VideoOpenError(from_wx(wxString::Format("Couldn't get info about frame %d", CurFrameNum)));
 		}
 
 		// keyframe?

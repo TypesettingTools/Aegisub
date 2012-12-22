@@ -216,7 +216,7 @@ void RestartAegisub() {
 	std::string helper_path = agi::util::OSX_GetBundleAuxillaryExecutablePath("restart-helper");
 	if (bundle_path.empty() || helper_path.empty()) return;
 
-	wxString exec = wxString::Format("\"%s\" /usr/bin/open -n \"%s\"'", lagi_wxString(helper_path), lagi_wxString(bundle_path));
+	wxString exec = wxString::Format("\"%s\" /usr/bin/open -n \"%s\"'", to_wx(helper_path), to_wx(bundle_path));
 	LOG_I("util/restart/exec") << exec;
 	wxExecute(exec);
 #else
@@ -291,7 +291,7 @@ class cache_cleaner : public wxThread {
 
 		wxDir cachedir;
 		if (!cachedir.Open(directory)) {
-			LOG_D("utils/clean_cache") << "couldn't open cache directory " << STD_STR(directory);
+			LOG_D("utils/clean_cache") << "couldn't open cache directory " << from_wx(directory);
 			return (wxThread::ExitCode)1;
 		}
 
@@ -346,7 +346,7 @@ class cache_cleaner : public wxThread {
 			int res = unlink(i.second.GetFullPath().fn_str());
 #endif
 			if (res) {
-				LOG_D("utils/clean_cache") << "failed to remove file " << STD_STR(i.second.GetFullPath());
+				LOG_D("utils/clean_cache") << "failed to remove file " << from_wx(i.second.GetFullPath());
 				continue;
 			}
 

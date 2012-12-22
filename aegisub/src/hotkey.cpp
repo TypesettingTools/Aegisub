@@ -124,7 +124,7 @@ namespace hotkey {
 agi::hotkey::Hotkey *inst = 0;
 void init() {
 	inst = new agi::hotkey::Hotkey(
-		STD_STR(StandardPaths::DecodePath("?user/hotkey.json")),
+		from_wx(StandardPaths::DecodePath("?user/hotkey.json")),
 		GET_DEFAULT_CONFIG(default_hotkey));
 
 	int last_version = OPT_GET("Version/Last Version")->GetInt();

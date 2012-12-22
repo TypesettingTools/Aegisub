@@ -70,8 +70,8 @@ public:
 	HotkeyModelCombo(HotkeyModelCategory *parent, Combo const& combo)
 	: parent(parent)
 	, combo(combo)
-	, cmd_name(lagi_wxString(combo.CmdName()))
-	, cmd_str(lagi_wxString(combo.Str()))
+	, cmd_name(to_wx(combo.CmdName()))
+	, cmd_str(to_wx(combo.Str()))
 	{
 	}
 
@@ -103,7 +103,7 @@ public:
 				variant = cmd::get(combo.CmdName())->StrHelp();
 			}
 			catch (agi::Exception const& e) {
-				variant = lagi_wxString(e.GetChainedMessage());
+				variant = to_wx(e.GetChainedMessage());
 			}
 		}
 		else
@@ -123,7 +123,7 @@ public:
 		else if (col == 1) {
 			wxDataViewIconText text;
 			text << variant;
-			combo = Combo(combo.Context(), STD_STR(text.GetText()), combo.Get());
+			combo = Combo(combo.Context(), from_wx(text.GetText()), combo.Get());
 			cmd_name = text.GetText();
 			return true;
 		}
@@ -316,7 +316,7 @@ wxDataViewItem HotkeyDataViewModel::New(wxDataViewItem item) {
 	HotkeyModelCategory *ctx = static_cast<HotkeyModelCategory*>(item.GetID());
 	wxVariant name;
 	ctx->GetValue(name, 0);
-	return ctx->AddChild(Combo(STD_STR(name.GetString()), "", std::vector<std::string>()));
+	return ctx->AddChild(Combo(from_wx(name.GetString()), "", std::vector<std::string>()));
 }
 
 void HotkeyDataViewModel::Delete(wxDataViewItem const& item) {

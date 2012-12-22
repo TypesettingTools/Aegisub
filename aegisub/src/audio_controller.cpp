@@ -172,7 +172,7 @@ void AudioController::OpenAudio(const wxString &url)
 		throw;
 	}
 	catch (...) {
-		config::mru->Remove("Audio", STD_STR(url));
+		config::mru->Remove("Audio", from_wx(url));
 		throw;
 	}
 
@@ -192,7 +192,7 @@ void AudioController::OpenAudio(const wxString &url)
 
 	audio_url = url;
 
-	config::mru->Add("Audio", STD_STR(url));
+	config::mru->Add("Audio", from_wx(url));
 
 	try
 	{
@@ -408,7 +408,7 @@ void AudioController::SaveClip(wxString const& filename, TimeRange const& range)
 	int64_t end_sample = SamplesFromMilliseconds(range.end());
 	if (filename.empty() || start_sample > provider->GetNumSamples() || range.length() == 0) return;
 
-	agi::io::Save outfile(STD_STR(filename), true);
+	agi::io::Save outfile(from_wx(filename), true);
 	std::ofstream& out(outfile.Get());
 
 	size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();

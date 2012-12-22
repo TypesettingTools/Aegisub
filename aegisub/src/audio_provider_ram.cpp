@@ -71,7 +71,7 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br
 }
 
 void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {
-	ps->SetMessage(STD_STR(_("Reading into RAM")));
+	ps->SetMessage(from_wx(_("Reading into RAM")));
 
 	int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
 	for (size_t i = 0; i < blockcache.size(); i++) {

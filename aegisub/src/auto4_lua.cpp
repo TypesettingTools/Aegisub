@@ -461,7 +461,7 @@ namespace Automation4 {
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().utf8_str())) {
 				wxString err = wxString::Format("Error loading Lua script \"%s\":\n\n%s", GetPrettyFilename(), get_wxstring(L, -1));
 				lua_pop(L, 1);
-				throw ScriptLoadError(STD_STR(err));
+				throw ScriptLoadError(from_wx(err));
 			}
 			_stackcheck.check_stack(1);
 
@@ -472,7 +472,7 @@ namespace Automation4 {
 				// error occurred, assumed to be on top of Lua stack
 				wxString err = wxString::Format("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename(), get_wxstring(L, -1));
 				lua_pop(L, 1);
-				throw ScriptLoadError(STD_STR(err));
+				throw ScriptLoadError(from_wx(err));
 			}
 			_stackcheck.check_stack(0);
 
@@ -786,7 +786,7 @@ namespace Automation4 {
 	, cmd_type(cmd::COMMAND_NORMAL)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
-		cmd_name = STD_STR(wxString::Format("automation/lua/%s/%s", get_wxstring(L, -1), check_wxstring(L, 1)));
+		cmd_name = from_wx(wxString::Format("automation/lua/%s/%s", get_wxstring(L, -1), check_wxstring(L, 1)));
 
 		if (!lua_isfunction(L, 3))
 			luaL_error(L, "The macro processing function must be a function");

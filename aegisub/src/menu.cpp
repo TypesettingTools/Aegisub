@@ -65,7 +65,7 @@ class MruMenu : public wxMenu {
 		for (size_t i = GetMenuItemCount(); i < new_size; ++i) {
 			if (i >= items.size()) {
 				items.push_back(new wxMenuItem(this, MENU_ID_BASE + cmds->size(), "_"));
-				cmds->push_back(STD_STR(wxString::Format("recent/%s/%d", lagi_wxString(type).Lower(), (int)i)));
+				cmds->push_back(from_wx(wxString::Format("recent/%s/%d", to_wx(type).Lower(), (int)i)));
 			}
 			Append(items[i]);
 		}
@@ -99,7 +99,7 @@ public:
 		for (auto it = mru->begin(); it != mru->end(); ++it, ++i) {
 			items[i]->SetItemLabel(wxString::Format("%s%d %s",
 				i <= 9 ? "&" : "", i + 1,
-				wxFileName(lagi_wxString(*it)).GetFullName()));
+				wxFileName(to_wx(*it)).GetFullName()));
 			items[i]->Enable(true);
 		}
 	}
@@ -182,7 +182,7 @@ public:
 			flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 			wxITEM_NORMAL;
 
-		wxString menu_text = text.empty() ? co->StrMenu(context) : _(lagi_wxString(text));
+		wxString menu_text = text.empty() ? co->StrMenu(context) : _(to_wx(text));
 		menu_text += "\t" + hotkey::get_hotkey_str_first("Default", co->name());
 
 		wxMenuItem *item = new wxMenuItem(parent, MENU_ID_BASE + items.size(), menu_text, co->StrHelp(), kind);
@@ -332,7 +332,7 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 	read_entry(ele, "special", &special);
 
 	if (read_entry(ele, "submenu", &submenu) && read_entry(ele, "text", &text)) {
-		wxString tl_text = _(lagi_wxString(text));
+		wxString tl_text = _(to_wx(text));
 		parent->AppendSubMenu(build_menu(submenu, c, cm), tl_text);
 #ifdef __WXMAC__
 		if (special == "help")
@@ -368,7 +368,7 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 	}
 	catch (agi::Exception const& e) {
 #ifdef _DEBUG
-		parent->Append(-1, lagi_wxString(e.GetMessage()))->Enable(false);
+		parent->Append(-1, to_wx(e.GetMessage()))->Enable(false);
 #endif
 		LOG_W("menu/command/not_found") << "Skipping command " << command << ": " << e.GetMessage();
 	}

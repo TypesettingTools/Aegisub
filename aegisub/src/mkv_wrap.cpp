@@ -352,6 +352,6 @@ MkvStdIO::MkvStdIO(wxString filename)
 		setvbuf(fp, nullptr, _IOFBF, CACHESIZE);
 	}
 	else {
-		throw agi::FileNotFoundError(STD_STR(filename));
+		throw agi::FileNotFoundError(from_wx(filename));
 	}
 }

@@ -276,7 +276,7 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 		PortAudioPlayer player(0);
 
 		for (std::map<std::string, DeviceVec>::iterator it = player.devices.begin(); it != player.devices.end(); ++it)
-			list.push_back(lagi_wxString(it->first));
+			list.push_back(to_wx(it->first));
 	}
 	catch (PortAudioError const&) {
 		// No output devices, just return the list with only Default

@@ -82,7 +82,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxS
 	else if (verStr == "1.1")
 		version = 1;
 	else
-		throw TTXTParseError("Unknown TTXT version: " + STD_STR(verStr), 0);
+		throw TTXTParseError("Unknown TTXT version: " + from_wx(verStr), 0);
 
 	// Get children
 	AssDialogue *diag = 0;

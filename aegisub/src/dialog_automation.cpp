@@ -187,7 +187,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 {
 	wxFileDialog diag(this,
 		_("Add Automation script"),
-		lagi_wxString(OPT_GET("Path/Last/Automation")->GetString()),
+		to_wx(OPT_GET("Path/Last/Automation")->GetString()),
 		"",
 		Automation4::ScriptFactory::GetWildcardStr(),
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
@@ -199,7 +199,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 
 	for (auto const& fname : fnames) {
 		wxFileName fnpath(fname);
-		OPT_SET("Path/Last/Automation")->SetString(STD_STR(fnpath.GetPath()));
+		OPT_SET("Path/Last/Automation")->SetString(from_wx(fnpath.GetPath()));
 
 		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
 			wxLogError("Script '%s' is already loaded", fname);

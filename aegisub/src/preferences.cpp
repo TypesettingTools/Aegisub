@@ -62,12 +62,6 @@
 #include <ffms.h>
 #endif
 
-static wxArrayString vec_to_arrstr(std::vector<std::string> const& vec) {
-	wxArrayString arrstr;
-	transform(vec.begin(), vec.end(), std::back_inserter(arrstr), &lagi_wxString);
-	return arrstr;
-}
-
 #define CLASS_PAGE(name)                             \
 class name: public OptionPage {                  \
 public:                                          \
@@ -242,7 +236,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	main_sizer->Add(sizer, wxEXPAND);
 
 	wxFlexGridSizer *color_schemes = PageSizer(_("Audio Color Schemes"));
-	wxArrayString schemes = vec_to_arrstr(OPT_GET("Audio/Colour Schemes")->GetListString());
+	wxArrayString schemes = to_wx(OPT_GET("Audio/Colour Schemes")->GetListString());
 	OptionChoice(color_schemes, _("Spectrum"), schemes, "Colour/Audio Display/Spectrum");
 	OptionChoice(color_schemes, _("Waveform"), schemes, "Colour/Audio Display/Waveform");
 
@@ -351,7 +345,7 @@ public:
 	}
 
 	void OnKeyDown(wxKeyEvent &evt) {
-		ctrl->ChangeValue(lagi_wxString(hotkey::keypress_to_str(evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())));
+		ctrl->ChangeValue(to_wx(hotkey::keypress_to_str(evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())));
 	}
 
 	bool SetValue(wxVariant const& var) {
@@ -501,10 +495,10 @@ Advanced::Advanced(wxTreebook *book, Preferences *parent): OptionPage(book, pare
 Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Audio"), PAGE_SUB) {
 	wxFlexGridSizer *expert = PageSizer(_("Expert"));
 
-	wxArrayString ap_choice = vec_to_arrstr(AudioProviderFactory::GetClasses());
+	wxArrayString ap_choice = to_wx(AudioProviderFactory::GetClasses());
 	OptionChoice(expert, _("Audio provider"), ap_choice, "Audio/Provider");
 
-	wxArrayString apl_choice = vec_to_arrstr(AudioPlayerFactory::GetClasses());
+	wxArrayString apl_choice = to_wx(AudioPlayerFactory::GetClasses());
 	OptionChoice(expert, _("Audio player"), apl_choice, "Audio/Player");
 
 	wxFlexGridSizer *cache = PageSizer(_("Cache"));
@@ -564,10 +558,10 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Video"), PAGE_SUB) {
 	wxFlexGridSizer *expert = PageSizer(_("Expert"));
 
-	wxArrayString vp_choice = vec_to_arrstr(VideoProviderFactory::GetClasses());
+	wxArrayString vp_choice = to_wx(VideoProviderFactory::GetClasses());
 	OptionChoice(expert, _("Video provider"), vp_choice, "Video/Provider");
 
-	wxArrayString sp_choice = vec_to_arrstr(SubtitlesProviderFactory::GetClasses());
+	wxArrayString sp_choice = to_wx(SubtitlesProviderFactory::GetClasses());
 	OptionChoice(expert, _("Subtitles provider"), sp_choice, "Subtitle/Provider");
 
 	CellSkip(expert);

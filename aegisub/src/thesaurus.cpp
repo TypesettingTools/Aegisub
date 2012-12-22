@@ -62,7 +62,7 @@ std::vector<std::string> Thesaurus::GetLanguageList() const {
 		wxDir::GetAllFiles(path, &idx, "th_*.idx", wxDIR_FILES);
 		wxDir::GetAllFiles(path, &dat, "th_*.dat", wxDIR_FILES);
 	}
-	path = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()) + "/");
+	path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()) + "/");
 	if (wxFileName::DirExists(path)) {
 		wxDir::GetAllFiles(path, &idx, "th_*.idx", wxDIR_FILES);
 		wxDir::GetAllFiles(path, &dat, "th_*.dat", wxDIR_FILES);
@@ -100,7 +100,7 @@ void Thesaurus::OnLanguageChanged() {
 	std::string language = OPT_GET("Tool/Thesaurus/Language")->GetString();
 	if (language.empty()) return;
 
-	wxString path = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Dictionary")->GetString()) + "/");
+	wxString path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()) + "/");
 
 	// Get index and data paths
 	wxString idxpath = wxString::Format("%s/th_%s.idx", path, language);
@@ -117,7 +117,7 @@ void Thesaurus::OnLanguageChanged() {
 
 	LOG_I("thesaurus/file") << "Using thesaurus: " << datpath.c_str();
 
-	impl.reset(new agi::Thesaurus(STD_STR(datpath), STD_STR(idxpath)));
+	impl.reset(new agi::Thesaurus(from_wx(datpath), from_wx(idxpath)));
 }
 
 void Thesaurus::OnPathChanged() {

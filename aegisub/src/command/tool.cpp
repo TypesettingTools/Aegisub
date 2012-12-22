@@ -228,7 +228,7 @@ struct tool_translation_assistant : public Command {
 			c->dialog->ShowModal<DialogTranslation>(c);
 		}
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()));
+			wxMessageBox(to_wx(e.GetChainedMessage()));
 		}
 	}
 };

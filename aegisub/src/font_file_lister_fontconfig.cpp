@@ -91,7 +91,7 @@ FontConfigFontFileLister::FontConfigFontFileLister(FontCollectorStatusCallback c
 FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) {
 	CollectionResult ret;
 
-	std::string family = STD_STR(facename);
+	std::string family = from_wx(facename);
 	if (family[0] == '@')
 		family.erase(0, 1);
 	boost::to_lower(family);

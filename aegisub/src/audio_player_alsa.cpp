@@ -369,7 +369,7 @@ AlsaPlayer::AlsaPlayer(AudioProvider *provider)
 {
 	ps->provider = provider;
 
-	wxString device_name = lagi_wxString(OPT_GET("Player/Audio/ALSA/Device")->GetString());
+	wxString device_name = to_wx(OPT_GET("Player/Audio/ALSA/Device")->GetString());
 	ps->device_name = std::string(device_name.utf8_str());
 
 	if (pthread_create(&thread, 0, &playback_thread, ps.get()) != 0)

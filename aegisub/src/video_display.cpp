@@ -75,7 +75,7 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 class OpenGlException : public agi::Exception {
 public:
 	OpenGlException(const char *func, int err)
-		: agi::Exception(STD_STR(wxString::Format("%s failed with error code %d", func, err)))
+		: agi::Exception(from_wx(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
 	const char * GetName() const { return "video/opengl"; }
 	Exception * Copy() const { return new OpenGlException(*this); }

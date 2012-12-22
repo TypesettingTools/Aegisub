@@ -102,7 +102,7 @@ void HunspellSpellChecker::ReadUserDictionary() {
 	}
 	// Read the old contents of the user's dictionary
 	else {
-		agi::scoped_ptr<std::istream> stream(agi::io::Open(STD_STR(userDicPath)));
+		agi::scoped_ptr<std::istream> stream(agi::io::Open(from_wx(userDicPath)));
 		copy_if(
 			++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
 			inserter(customWords, customWords.end()),
@@ -113,7 +113,7 @@ void HunspellSpellChecker::ReadUserDictionary() {
 void HunspellSpellChecker::WriteUserDictionary() {
 	// Write the new dictionary
 	{
-		agi::io::Save writer(STD_STR(userDicPath));
+		agi::io::Save writer(from_wx(userDicPath));
 		writer.Get() << customWords.size() << "\n";
 		copy(customWords.begin(), customWords.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
 	}

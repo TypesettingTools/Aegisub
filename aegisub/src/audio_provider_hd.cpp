@@ -34,13 +34,13 @@
 
 #include "config.h"
 
+#include "audio_provider_hd.h"
+
 #include <wx/filefn.h>
 #include <wx/filename.h>
 
 #include <libaegisub/background_runner.h>
 #include <libaegisub/io.h>
-
-#include "audio_provider_hd.h"
 
 #include "audio_controller.h"
 #include "audio_provider_pcm.h"
@@ -51,7 +51,7 @@
 
 namespace {
 wxString cache_dir() {
-	wxString path = lagi_wxString(OPT_GET("Audio/Cache/HD/Location")->GetString());
+	wxString path = to_wx(OPT_GET("Audio/Cache/HD/Location")->GetString());
 	if (path == "default")
 		path = "?temp/";
 
@@ -59,7 +59,7 @@ wxString cache_dir() {
 }
 
 wxString cache_path() {
-	wxString pattern = lagi_wxString(OPT_GET("Audio/Cache/HD/Name")->GetString());
+	wxString pattern = to_wx(OPT_GET("Audio/Cache/HD/Name")->GetString());
 	if (pattern.Find("%02i") == wxNOT_FOUND) pattern = "audio%02i.tmp";
 
 	// Try from 00 to 99
@@ -113,14 +113,14 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) 
 	wxDiskspaceSize_t freespace;
 	if (wxGetDiskSpace(cache_dir(), 0, &freespace)) {
 		if (num_samples * channels * bytes_per_sample > freespace)
-			throw agi::AudioCacheOpenError("Not enough free disk space in " + STD_STR(cache_dir()) + " to cache the audio", 0);
+			throw agi::AudioCacheOpenError("Not enough free disk space in " + from_wx(cache_dir()) + " to cache the audio", 0);
 	}
 
 	diskCacheFilename = cache_path();
 
 	try {
 		{
-			agi::io::Save out(STD_STR(diskCacheFilename), true);
+			agi::io::Save out(from_wx(diskCacheFilename), true);
 			br->Run(bind(&HDAudioProvider::FillCache, this, src, &out.Get(), std::placeholders::_1));
 		}
 		cache_provider.reset(new RawAudioProvider(diskCacheFilename, src));
@@ -141,7 +141,7 @@ void HDAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const 
 }
 
 void HDAudioProvider::FillCache(AudioProvider *src, std::ofstream *out, agi::ProgressSink *ps) {
-	ps->SetMessage(STD_STR(_("Reading to Hard Disk cache")));
+	ps->SetMessage(from_wx(_("Reading to Hard Disk cache")));
 
 	int64_t block = 65536;
 	std::vector<char> read_buf;

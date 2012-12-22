@@ -62,7 +62,7 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(wxString filename) try
 	LoadAudio(filename);
 }
 catch (wxString const& err) {
-	throw agi::AudioProviderOpenError(STD_STR(err), 0);
+	throw agi::AudioProviderOpenError(from_wx(err), 0);
 }
 catch (const char *err) {
 	throw agi::AudioProviderOpenError(err, 0);

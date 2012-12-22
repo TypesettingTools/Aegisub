@@ -473,7 +473,7 @@ struct video_frame_prev_large : public validator_video_loaded {
 
 static void save_snapshot(agi::Context *c, bool raw) {
 	static const agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
-	wxString option = lagi_wxString(ssPath->GetString());
+	wxString option = to_wx(ssPath->GetString());
 	wxFileName videoFile(c->videoController->GetVideoName());
 	wxString basepath;
 
@@ -582,13 +582,13 @@ struct video_open : public Command {
 	STR_HELP("Opens a video file")
 
 	void operator()(agi::Context *c) {
-		wxString path = lagi_wxString(OPT_GET("Path/Last/Video")->GetString());
+		wxString path = to_wx(OPT_GET("Path/Last/Video")->GetString());
 		wxString str = _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
 					 + _("All Files") + " (*.*)|*.*";
 		wxString filename = wxFileSelector(_("Open video file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			c->videoController->SetVideo(filename);
-			OPT_SET("Path/Last/Video")->SetString(STD_STR(wxFileName(filename).GetPath()));
+			OPT_SET("Path/Last/Video")->SetString(from_wx(wxFileName(filename).GetPath()));
 		}
 	}
 };

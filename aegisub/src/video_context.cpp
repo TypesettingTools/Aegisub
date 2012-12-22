@@ -193,7 +193,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 			SetAspectRatio(4, dar);
 
 		// Set filename
-		config::mru->Add("Video", STD_STR(filename));
+		config::mru->Add("Video", from_wx(filename));
 		StandardPaths::SetPathValue("?video", wxFileName(filename).GetPath());
 
 		// Show warning
@@ -212,11 +212,11 @@ void VideoContext::SetVideo(const wxString &filename) {
 	}
 	catch (agi::UserCancelException const&) { }
 	catch (agi::FileNotAccessibleError const& err) {
-		config::mru->Remove("Video", STD_STR(filename));
-		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
+		config::mru->Remove("Video", from_wx(filename));
+		wxMessageBox(to_wx(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
 	}
 	catch (VideoProviderError const& err) {
-		wxMessageBox(lagi_wxString(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
+		wxMessageBox(to_wx(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
 	}
 
 	if (commit_subs)
@@ -414,24 +414,24 @@ void VideoContext::SetAspectRatio(int type, double value) {
 void VideoContext::LoadKeyframes(wxString filename) {
 	if (filename == keyFramesFilename || filename.empty()) return;
 	try {
-		keyFrames = agi::keyframe::Load(STD_STR(filename));
+		keyFrames = agi::keyframe::Load(from_wx(filename));
 		keyFramesFilename = filename;
 		KeyframesOpen(keyFrames);
-		config::mru->Add("Keyframes", STD_STR(filename));
+		config::mru->Add("Keyframes", from_wx(filename));
 	}
 	catch (agi::keyframe::Error const& err) {
 		wxMessageBox(err.GetMessage(), "Error opening keyframes file", wxOK | wxICON_ERROR | wxCENTER, context->parent);
-		config::mru->Remove("Keyframes", STD_STR(filename));
+		config::mru->Remove("Keyframes", from_wx(filename));
 	}
 	catch (agi::FileSystemError const&) {
 		wxLogError("Could not open file " + filename);
-		config::mru->Remove("Keyframes", STD_STR(filename));
+		config::mru->Remove("Keyframes", from_wx(filename));
 	}
 }
 
 void VideoContext::SaveKeyframes(wxString filename) {
-	agi::keyframe::Save(STD_STR(filename), GetKeyFrames());
-	config::mru->Add("Keyframes", STD_STR(filename));
+	agi::keyframe::Save(from_wx(filename), GetKeyFrames());
+	config::mru->Add("Keyframes", from_wx(filename));
 }
 
 void VideoContext::CloseKeyframes() {
@@ -446,15 +446,15 @@ void VideoContext::CloseKeyframes() {
 void VideoContext::LoadTimecodes(wxString filename) {
 	if (filename == ovrTimecodeFile || filename.empty()) return;
 	try {
-		ovrFPS = agi::vfr::Framerate(STD_STR(filename));
+		ovrFPS = agi::vfr::Framerate(from_wx(filename));
 		ovrTimecodeFile = filename;
-		config::mru->Add("Timecodes", STD_STR(filename));
+		config::mru->Add("Timecodes", from_wx(filename));
 		OnSubtitlesCommit(0, std::set<const AssEntry*>());
 		TimecodesOpen(ovrFPS);
 	}
 	catch (const agi::FileSystemError&) {
 		wxLogError("Could not open file " + filename);
-		config::mru->Remove("Timecodes", STD_STR(filename));
+		config::mru->Remove("Timecodes", from_wx(filename));
 	}
 	catch (const agi::vfr::Error& e) {
 		wxLogError("Timecode file parse error: %s", e.GetMessage());
@@ -462,8 +462,8 @@ void VideoContext::LoadTimecodes(wxString filename) {
 }
 void VideoContext::SaveTimecodes(wxString filename) {
 	try {
-		FPS().Save(STD_STR(filename), IsLoaded() ? GetLength() : -1);
-		config::mru->Add("Timecodes", STD_STR(filename));
+		FPS().Save(from_wx(filename), IsLoaded() ? GetLength() : -1);
+		config::mru->Add("Timecodes", from_wx(filename));
 	}
 	catch(const agi::FileSystemError&) {
 		wxLogError("Could not write to " + filename);
@@ -493,12 +493,12 @@ void VideoContext::OnVideoError(VideoProviderErrorEvent const& err) {
 	wxLogError(
 		"Failed seeking video. The video file may be corrupt or incomplete.\n"
 		"Error message reported: %s",
-		lagi_wxString(err.GetMessage()));
+		to_wx(err.GetMessage()));
 }
 void VideoContext::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
 	wxLogError(
 		"Failed rendering subtitles. Error message reported: %s",
-		lagi_wxString(err.GetMessage()));
+		to_wx(err.GetMessage()));
 }
 
 void VideoContext::OnExit() {

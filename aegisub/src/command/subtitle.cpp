@@ -260,7 +260,7 @@ struct subtitle_open : public Command {
 	STR_HELP("Opens a subtitles file")
 
 	void operator()(agi::Context *c) {
-		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
+		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			wxGetApp().frame->LoadSubtitles(filename);
@@ -291,7 +291,7 @@ struct subtitle_open_charset : public Command {
 
 	void operator()(agi::Context *c) {
 		// Initialize charsets
-		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
+		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
 
 		// Get options and load
 		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -339,7 +339,7 @@ struct subtitle_properties : public Command {
 static void save_subtitles(agi::Context *c, wxString filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
-		wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
+		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
 		wxFileName origPath(c->ass->filename);
 		filename = wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", "Advanced Substation Alpha (*.ass)|*.ass", wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
 		if (filename.empty()) return;
@@ -349,7 +349,7 @@ static void save_subtitles(agi::Context *c, wxString filename) {
 		c->ass->Save(filename, true, true);
 	}
 	catch (const agi::Exception& err) {
-		wxMessageBox(lagi_wxString(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 	}
 	catch (const char *err) {
 		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);

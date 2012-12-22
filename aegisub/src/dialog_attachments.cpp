@@ -151,7 +151,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, AssEntryGroup group, wxSt
 void DialogAttachments::OnAttachFont(wxCommandEvent &) {
 	wxFileDialog diag(this,
 		_("Choose file to be attached"),
-		lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf",
+		to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf",
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
 	AttachFile(diag, ENTRY_FONT, _("attach font file"));
@@ -176,13 +176,13 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 
 	// Multiple or single?
 	if (listView->GetNextSelected(i) != -1)
-		path = wxDirSelector(_("Select the path to save the files to:"),lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())) + "/";
+		path = wxDirSelector(_("Select the path to save the files to:"),to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString())) + "/";
 	else {
 		// Default path
 		wxString defPath = ((AssAttachment*)wxUIntToPtr(listView->GetItemData(i)))->GetFileName();
 		path = wxFileSelector(
 			_("Select the path to save the file to:"),
-			lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString()),
+			to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()),
 			defPath,
 			".ttf",
 			"Font Files (*.ttf)|*.ttf",

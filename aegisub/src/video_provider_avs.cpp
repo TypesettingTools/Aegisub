@@ -62,7 +62,7 @@ AvisynthVideoProvider::AvisynthVideoProvider(wxString filename)
 
 	wxFileName fname(filename);
 	if (!fname.FileExists())
-		throw agi::FileNotFoundError(STD_STR(filename));
+		throw agi::FileNotFoundError(from_wx(filename));
 
 	wxString extension = filename.Right(4).Lower();
 

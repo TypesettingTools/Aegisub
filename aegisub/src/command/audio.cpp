@@ -88,19 +88,19 @@ struct audio_open : public Command {
 
 	void operator()(agi::Context *c) {
 		try {
-			wxString path = lagi_wxString(OPT_GET("Path/Last/Audio")->GetString());
+			wxString path = to_wx(OPT_GET("Path/Last/Audio")->GetString());
 			wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
 						+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts|"
 						+ _("All Files") + " (*.*)|*.*";
 			wxString filename = wxFileSelector(_("Open Audio File"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 			if (!filename.empty()) {
 				c->audioController->OpenAudio(filename);
-				OPT_SET("Path/Last/Audio")->SetString(STD_STR(wxFileName(filename).GetPath()));
+				OPT_SET("Path/Last/Audio")->SetString(from_wx(wxFileName(filename).GetPath()));
 			}
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
@@ -118,7 +118,7 @@ struct audio_open_blank : public Command {
 			c->audioController->OpenAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
 		}
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
@@ -136,7 +136,7 @@ struct audio_open_noise : public Command {
 			c->audioController->OpenAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
 		}
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
@@ -160,7 +160,7 @@ struct audio_open_video : public Command {
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };

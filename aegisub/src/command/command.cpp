@@ -32,7 +32,7 @@ namespace cmd {
 	static iterator find_command(std::string const& name) {
 		iterator it = cmd_map.find(name);
 		if (it == cmd_map.end())
-			throw CommandNotFound(STD_STR(wxString::Format(_("'%s' is not a valid command name"), lagi_wxString(name))));
+			throw CommandNotFound(from_wx(wxString::Format(_("'%s' is not a valid command name"), to_wx(name))));
 		return it;
 	}
 

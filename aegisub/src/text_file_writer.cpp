@@ -44,10 +44,10 @@
 #include "text_file_writer.h"
 
 TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
-: file(new agi::io::Save(STD_STR(filename), true))
+: file(new agi::io::Save(from_wx(filename), true))
 , conv()
 {
-	if (encoding.empty()) encoding = lagi_wxString(OPT_GET("App/Save Charset")->GetString());
+	if (encoding.empty()) encoding = to_wx(OPT_GET("App/Save Charset")->GetString());
 	if (encoding.Lower() != wxSTRING_ENCODING)
 		conv.reset(new agi::charset::IconvWrapper(wxSTRING_ENCODING, encoding.utf8_str(), true));
 

@@ -148,7 +148,7 @@ wxString AssFile::AutoSave() {
 		return "";
 
 	wxFileName origfile(filename);
-	wxString path = lagi_wxString(OPT_GET("Path/Auto/Save")->GetString());
+	wxString path = to_wx(OPT_GET("Path/Auto/Save")->GetString());
 	if (!path)
 		path = origfile.GetPath();
 	path = StandardPaths::DecodePath(path + "/");
@@ -366,9 +366,9 @@ AssStyle *AssFile::GetStyle(wxString const& name) {
 }
 
 void AssFile::AddToRecent(wxString const& file) const {
-	config::mru->Add("Subtitle", STD_STR(file));
+	config::mru->Add("Subtitle", from_wx(file));
 	wxFileName filepath(file);
-	OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
+	OPT_SET("Path/Last/Subtitles")->SetString(from_wx(filepath.GetPath()));
 }
 
 int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *single_line) {

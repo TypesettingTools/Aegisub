@@ -3,17 +3,18 @@
 
 #include <algorithm>
 
+template<typename T>
+wxArrayString to_wxAS(T const& src) {
+	wxArrayString ret;
+	ret.reserve(src.size());
+	transform(src.begin(), src.end(), std::back_inserter(ret), (wxString (*)(std::string const&))to_wx);
+	return ret;
+}
+
 wxArrayString lagi_MRU_wxAS(const wxString &list) {
-	const agi::MRUManager::MRUListMap *map = config::mru->Get(STD_STR(list));
-	wxArrayString work;
-	work.reserve(map->size());
-	transform(map->begin(), map->end(), std::back_inserter(work), lagi_wxString);
-	return work;
+	return to_wxAS(*config::mru->Get(from_wx(list)));
 }
 
 wxArrayString to_wx(std::vector<std::string> const& vec) {
-	wxArrayString ret;
-	ret.reserve(vec.size());
-	transform(vec.begin(), vec.end(), std::back_inserter(ret), lagi_wxString);
-	return ret;
+	return to_wxAS(vec);
 }

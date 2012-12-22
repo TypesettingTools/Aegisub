@@ -419,10 +419,10 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 				if (timestamp_regex.Matches(text_line))
 					goto found_timestamps;
 
-				throw SRTParseError(STD_STR(wxString::Format("Parsing SRT: Expected subtitle index at line %d", line_num)), 0);
+				throw SRTParseError(from_wx(wxString::Format("Parsing SRT: Expected subtitle index at line %d", line_num)), 0);
 			case STATE_TIMESTAMP:
 				if (!timestamp_regex.Matches(text_line))
-					throw SRTParseError(STD_STR(wxString::Format("Parsing SRT: Expected timestamp pair at line %d", line_num)), 0);
+					throw SRTParseError(from_wx(wxString::Format("Parsing SRT: Expected timestamp pair at line %d", line_num)), 0);
 found_timestamps:
 				if (line) {
 					// finalize active line

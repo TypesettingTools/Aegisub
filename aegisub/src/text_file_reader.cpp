@@ -39,8 +39,8 @@ TextFileReader::TextFileReader(wxString const& filename, wxString encoding, bool
 : trim(trim)
 {
 	if (encoding.empty()) encoding = CharSetDetect::GetEncoding(filename);
-	file.reset(agi::io::Open(STD_STR(filename), true));
-	iter = agi::line_iterator<wxString>(*file, STD_STR(encoding));
+	file.reset(agi::io::Open(from_wx(filename), true));
+	iter = agi::line_iterator<wxString>(*file, from_wx(encoding));
 }
 
 TextFileReader::~TextFileReader() {

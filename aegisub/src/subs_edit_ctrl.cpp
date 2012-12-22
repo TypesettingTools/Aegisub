@@ -202,7 +202,7 @@ void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& n
 void SubsTextEditCtrl::SetStyles() {
 	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	font.SetEncoding(wxFONTENCODING_DEFAULT); // this solves problems with some fonts not working properly
-	wxString fontname = lagi_wxString(OPT_GET("Subtitle/Edit Box/Font Face")->GetString());
+	wxString fontname = to_wx(OPT_GET("Subtitle/Edit Box/Font Face")->GetString());
 	if (!fontname.empty()) font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Edit Box/Font Size")->GetInt());
 
@@ -326,7 +326,7 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	// Append language list
 	menu.Append(-1,_("Spell checker language"), GetLanguagesMenu(
 		EDIT_MENU_DIC_LANGS,
-		lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString()),
+		to_wx(OPT_GET("Tool/Spell Checker/Language")->GetString()),
 		to_wx(spellchecker->GetLanguageList())));
 	menu.AppendSeparator();
 
@@ -397,7 +397,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 		for (auto const& result : results) {
 			// Single word, insert directly
 			if (result.second.size() == 1) {
-				thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, lagi_wxString(result.first));
+				thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, to_wx(result.first));
 				thesSugs.push_back(result.first);
 				++curThesEntry;
 			}
@@ -422,7 +422,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 	// Append language list
 	menu.Append(-1,_("Thesaurus language"), GetLanguagesMenu(
 		EDIT_MENU_THES_LANGS,
-		lagi_wxString(OPT_GET("Tool/Thesaurus/Language")->GetString()),
+		to_wx(OPT_GET("Tool/Thesaurus/Language")->GetString()),
 		to_wx(thesaurus->GetLanguageList())));
 	menu.AppendSeparator();
 }

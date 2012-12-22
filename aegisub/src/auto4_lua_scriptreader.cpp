@@ -32,7 +32,7 @@
 namespace Automation4 {
 	LuaScriptReader::LuaScriptReader(wxString const& filename)
 	: conv(new agi::charset::IconvWrapper(CharSetDetect::GetEncoding(filename).c_str(), "utf-8", false))
-	, file(agi::io::Open(STD_STR(filename)))
+	, file(agi::io::Open(from_wx(filename)))
 	{
 	}
 

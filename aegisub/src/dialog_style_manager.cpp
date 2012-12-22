@@ -571,18 +571,18 @@ void DialogStyleManager::OnCurrentDelete() {
 
 void DialogStyleManager::OnCurrentImport() {
 	// Get file name
-	wxString path = lagi_wxString(OPT_GET("Path/Last/Subtitles")->GetString());
+	wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
 	wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename) return;
 
-	OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(wxFileName(filename).GetPath()));
+	OPT_SET("Path/Last/Subtitles")->SetString(from_wx(wxFileName(filename).GetPath()));
 
 	AssFile temp;
 	try {
 		temp.Load(filename);
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(lagi_wxString(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
 		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);

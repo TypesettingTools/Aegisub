@@ -415,7 +415,7 @@ namespace
 			else if (!imline.CheckLineLengths(export_settings.max_line_length))
 			{
 				if (export_settings.line_wrapping_mode == EbuExportSettings::AbortOverLength)
-					throw Ebu3264SubtitleFormat::ConversionFailed(STD_STR(wxString::Format(_("Line over maximum length: %s"), line->Text.get())), 0);
+					throw Ebu3264SubtitleFormat::ConversionFailed(from_wx(wxString::Format(_("Line over maximum length: %s"), line->Text.get())), 0);
 				else // skip over-long lines
 					subs_list.pop_back();
 			}
@@ -675,7 +675,7 @@ void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, wxString const& filena
 	snprintf(gsi.tns, 5, "%5u", (unsigned int)subs_list.size());
 
 	// write file
-	agi::io::Save f(STD_STR(filename), true);
+	agi::io::Save f(from_wx(filename), true);
 	f.Get().write((const char *)&gsi, sizeof(gsi));
 	for (auto const& block : tti)
 		f.Get().write((const char *)&block, sizeof(block));

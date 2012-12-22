@@ -184,7 +184,7 @@ void DialogSearchReplace::FindReplace(int mode) {
 		if (hasReplace) {
 			wxString ReplaceWith = ReplaceEdit->GetValue();
 			Search.ReplaceWith = ReplaceWith;
-			config::mru->Add("Replace", STD_STR(ReplaceWith));
+			config::mru->Add("Replace", from_wx(ReplaceWith));
 		}
 	}
 
@@ -194,11 +194,11 @@ void DialogSearchReplace::FindReplace(int mode) {
 		Search.ReplaceWith = ReplaceWith;
 		if (mode == 1) Search.ReplaceNext();
 		else Search.ReplaceAll();
-		config::mru->Add("Replace", STD_STR(ReplaceWith));
+		config::mru->Add("Replace", from_wx(ReplaceWith));
 	}
 
 	// Add to history
-	config::mru->Add("Find", STD_STR(LookFor));
+	config::mru->Add("Find", from_wx(LookFor));
 	UpdateDropDowns();
 }
 

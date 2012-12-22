@@ -110,7 +110,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		}
 
 		language = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, language_names, wxCB_DROPDOWN | wxCB_READONLY);
-		wxString cur_lang = lagi_wxString(OPT_GET("Tool/Spell Checker/Language")->GetString());
+		wxString cur_lang = to_wx(OPT_GET("Tool/Spell Checker/Language")->GetString());
 		int cur_lang_index = dictionary_lang_codes.Index(cur_lang);
 		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en");
 		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en_US");
@@ -185,7 +185,7 @@ void DialogSpellChecker::OnReplace(wxCommandEvent&) {
 
 void DialogSpellChecker::OnChangeLanguage(wxCommandEvent&) {
 	wxString code = dictionary_lang_codes[language->GetSelection()];
-	OPT_SET("Tool/Spell Checker/Language")->SetString(STD_STR(code));
+	OPT_SET("Tool/Spell Checker/Language")->SetString(from_wx(code));
 
 	FindNext();
 }

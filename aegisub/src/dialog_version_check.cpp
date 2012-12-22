@@ -325,7 +325,7 @@ static wxString GetSystemLanguage()
 
 static wxString GetAegisubLanguage()
 {
-	return lagi_wxString(OPT_GET("App/Language")->GetString());
+	return to_wx(OPT_GET("App/Language")->GetString());
 }
 
 template<class OutIter>
@@ -375,11 +375,11 @@ void AegisubVersionCheckerThread::DoCheck()
 			break;
 		case 6:
 		case 7:
-			throw VersionCheckError(STD_STR(_("Could not connect to updates server.")));
+			throw VersionCheckError(from_wx(_("Could not connect to updates server.")));
 		case 22:
-			throw VersionCheckError(STD_STR(_("Could not download from updates server.")));
+			throw VersionCheckError(from_wx(_("Could not download from updates server.")));
 		default:
-			throw VersionCheckError(STD_STR(wxString::Format("curl failed with error code %d", ret)));
+			throw VersionCheckError(from_wx(wxString::Format("curl failed with error code %d", ret)));
 	}
 
 	agi::scoped_ptr<wxStringInputStream> stream(new wxStringInputStream(update_str));
@@ -399,14 +399,14 @@ void AegisubVersionCheckerThread::DoCheck()
 	http.SetFlags(wxSOCKET_WAITALL | wxSOCKET_BLOCK);
 
 	if (!http.Connect(UPDATE_CHECKER_SERVER))
-		throw VersionCheckError(STD_STR(_("Could not connect to updates server.")));
+		throw VersionCheckError(from_wx(_("Could not connect to updates server.")));
 
 	agi::scoped_ptr<wxInputStream> stream(http.GetInputStream(path));
 	if (!stream) // check for null-pointer
-		throw VersionCheckError(STD_STR(_("Could not download from updates server.")));
+		throw VersionCheckError(from_wx(_("Could not download from updates server.")));
 
 	if (http.GetResponse() < 200 || http.GetResponse() >= 300) {
-		throw VersionCheckError(STD_STR(wxString::Format(_("HTTP request failed, got HTTP response %d."), http.GetResponse())));
+		throw VersionCheckError(from_wx(wxString::Format(_("HTTP request failed, got HTTP response %d."), http.GetResponse())));
 	}
 #endif
 	wxTextInputStream text(*stream);

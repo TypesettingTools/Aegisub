@@ -84,7 +84,7 @@ AssDialogue::AssDialogue(wxString const& data)
 , Style("Default")
 {
 	if (!Parse(data))
-		throw SubtitleFormatParseError(STD_STR("Failed parsing line: " + data), 0);
+		throw SubtitleFormatParseError(from_wx("Failed parsing line: " + data), 0);
 }
 
 AssDialogue::~AssDialogue () {

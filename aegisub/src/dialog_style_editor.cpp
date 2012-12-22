@@ -326,7 +326,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	PreviewText = nullptr;
 	ColourButton *previewButton = 0;
 	if (!SubtitlesProviderFactory::GetClasses().empty()) {
-		PreviewText = new wxTextCtrl(this, -1, lagi_wxString(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
+		PreviewText = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
 		previewButton = new ColourButton(this, -1, wxSize(45, 16), OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
 		SubsPreview = new SubtitlesPreview(this, wxSize(100, 60), wxSUNKEN_BORDER, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
 
@@ -476,7 +476,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 	if (close) {
 		EndModal(apply);
 		if (PreviewText)
-			OPT_SET("Tool/Style Editor/Preview Text")->SetString(STD_STR(PreviewText->GetValue()));
+			OPT_SET("Tool/Style Editor/Preview Text")->SetString(from_wx(PreviewText->GetValue()));
 	}
 }
 

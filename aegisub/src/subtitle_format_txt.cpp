@@ -77,8 +77,8 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 	target->LoadDefault(false);
 
 	wxString actor;
-	wxString separator = lagi_wxString(OPT_GET("Tool/Import/Text/Actor Separator")->GetString());
-	wxString comment = lagi_wxString(OPT_GET("Tool/Import/Text/Comment Starter")->GetString());
+	wxString separator = to_wx(OPT_GET("Tool/Import/Text/Actor Separator")->GetString());
+	wxString comment = to_wx(OPT_GET("Tool/Import/Text/Comment Starter")->GetString());
 
 	// Parse file
 	while (file.HasMoreLines()) {

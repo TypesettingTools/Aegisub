@@ -67,11 +67,11 @@ struct recent_audio_entry : public Command {
 
 	void operator()(agi::Context *c, int id) {
 		try {
-			c->audioController->OpenAudio(lagi_wxString(config::mru->GetEntry("Audio", id)));
+			c->audioController->OpenAudio(to_wx(config::mru->GetEntry("Audio", id)));
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
-			wxMessageBox(lagi_wxString(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
@@ -83,7 +83,7 @@ struct recent_keyframes_entry : public Command {
 	STR_HELP("Open recent keyframes")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->LoadKeyframes(lagi_wxString(config::mru->GetEntry("Keyframes", id)));
+		c->videoController->LoadKeyframes(to_wx(config::mru->GetEntry("Keyframes", id)));
 	}
 };
 
@@ -94,7 +94,7 @@ struct recent_subtitle_entry : public Command {
 	STR_HELP("Open recent subtitles")
 
 	void operator()(agi::Context *c, int id) {
-		wxGetApp().frame->LoadSubtitles(lagi_wxString(config::mru->GetEntry("Subtitle", id)));
+		wxGetApp().frame->LoadSubtitles(to_wx(config::mru->GetEntry("Subtitle", id)));
 	}
 };
 
@@ -105,7 +105,7 @@ struct recent_timecodes_entry : public Command {
 	STR_HELP("Open recent timecodes")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->LoadTimecodes(lagi_wxString(config::mru->GetEntry("Timecodes", id)));
+		c->videoController->LoadTimecodes(to_wx(config::mru->GetEntry("Timecodes", id)));
 	}
 };
 
@@ -116,7 +116,7 @@ struct recent_video_entry : public Command {
 	STR_HELP("Open recent videos")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->SetVideo(lagi_wxString(config::mru->GetEntry("Video", id)));
+		c->videoController->SetVideo(to_wx(config::mru->GetEntry("Video", id)));
 	}
 };
 

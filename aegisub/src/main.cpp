@@ -157,7 +157,7 @@ bool AegisubApp::OnInit() {
 #ifdef __WXMSW__
 	// Try loading configuration from the install dir if one exists there
 	try {
-		std::string conf_local(STD_STR(StandardPaths::DecodePath("?data/config.json")));
+		std::string conf_local(from_wx(StandardPaths::DecodePath("?data/config.json")));
 		agi::scoped_ptr<std::istream> localConfig(agi::io::Open(conf_local));
 		config::opt = new agi::Options(conf_local, GET_DEFAULT_CONFIG(default_config));
 
@@ -173,13 +173,13 @@ bool AegisubApp::OnInit() {
 	StartupLog("Create log writer");
 	wxString path_log = StandardPaths::DecodePath("?user/log/");
 	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
-	agi::log::log->Subscribe(new agi::log::JsonEmitter(STD_STR(path_log), agi::log::log));
+	agi::log::log->Subscribe(new agi::log::JsonEmitter(from_wx(path_log), agi::log::log));
 	CleanCache(path_log, "*.json", 10, 100);
 
 	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
-			config::opt = new agi::Options(STD_STR(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
+			config::opt = new agi::Options(from_wx(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
 		std::istringstream stream(GET_DEFAULT_CONFIG(default_config_platform));
 		config::opt->ConfigNext(stream);
 	} catch (agi::Exception& e) {
@@ -190,7 +190,7 @@ bool AegisubApp::OnInit() {
 		config::opt->ConfigUser();
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox("Configuration file is invalid. Error reported:\n" + lagi_wxString(err.GetMessage()), "Error");
+		wxMessageBox("Configuration file is invalid. Error reported:\n" + to_wx(err.GetMessage()), "Error");
 	}
 
 	// Init commands.
@@ -203,7 +203,7 @@ bool AegisubApp::OnInit() {
 	icon::icon_init();
 
 	StartupLog("Load MRU");
-	config::mru = new agi::MRUManager(STD_STR(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru), config::opt);
+	config::mru = new agi::MRUManager(from_wx(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru), config::opt);
 
 #ifdef __VISUALC__
 	SetThreadName((DWORD) -1,"AegiMain");
@@ -233,10 +233,10 @@ bool AegisubApp::OnInit() {
 		StartupLog("Initialize final locale");
 
 		// Set locale
-		wxString lang = lagi_wxString(OPT_GET("App/Language")->GetString());
+		wxString lang = to_wx(OPT_GET("App/Language")->GetString());
 		if (!lang) {
 			lang = locale.PickLanguage();
-			OPT_SET("App/Language")->SetString(STD_STR(lang));
+			OPT_SET("App/Language")->SetString(from_wx(lang));
 		}
 		locale.Init(lang);
 
@@ -246,7 +246,7 @@ bool AegisubApp::OnInit() {
 
 		// Load Automation scripts
 		StartupLog("Load global Automation scripts");
-		global_scripts = new Automation4::AutoloadScriptManager(lagi_wxString(OPT_GET("Path/Automation/Autoload")->GetString()));
+		global_scripts = new Automation4::AutoloadScriptManager(to_wx(OPT_GET("Path/Automation/Autoload")->GetString()));
 
 		// Load export filters
 		StartupLog("Register export filters");
@@ -282,7 +282,7 @@ bool AegisubApp::OnInit() {
 #endif
 
 	StartupLog("Clean old autosave files");
-	wxString autosave_path = StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Auto/Save")->GetString()));
+	wxString autosave_path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Auto/Save")->GetString()));
 	CleanCache(autosave_path, "*.AUTOSAVE.ass", 100, 1000);
 
 	StartupLog("Initialization complete");
@@ -367,7 +367,7 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 		wxApp::HandleEvent(handler, func, event);
 	}
 	catch (const agi::Exception &e) {
-		SHOW_EXCEPTION(lagi_wxString(e.GetChainedMessage()));
+		SHOW_EXCEPTION(to_wx(e.GetChainedMessage()));
 	}
 	catch (const std::exception &e) {
 		SHOW_EXCEPTION(wxString(e.what(), wxConvUTF8));
@@ -462,7 +462,7 @@ int AegisubApp::OnRun() {
 	catch (const wxString &err) { error = err; }
 	catch (const char *err) { error = err; }
 	catch (const std::exception &e) { error = wxString("std::exception: ") + wxString(e.what(),wxConvUTF8); }
-	catch (const agi::Exception &e) { error = "agi::exception: " + lagi_wxString(e.GetChainedMessage()); }
+	catch (const agi::Exception &e) { error = "agi::exception: " + to_wx(e.GetChainedMessage()); }
 	catch (...) { error = "Program terminated in error."; }
 
 	// Report errors
@@ -492,7 +492,7 @@ void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame != nullptr && !filename.empty()) {
 		frame->LoadSubtitles(filename);
 		wxFileName filepath(filename);
-		OPT_SET("Path/Last/Subtitles")->SetString(STD_STR(filepath.GetPath()));
+		OPT_SET("Path/Last/Subtitles")->SetString(from_wx(filepath.GetPath()));
 	}
 }
 #endif

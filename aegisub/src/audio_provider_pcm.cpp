@@ -73,7 +73,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		0);
 
 	if (file_handle == INVALID_HANDLE_VALUE)
-		throw agi::FileNotFoundError(STD_STR(filename));
+		throw agi::FileNotFoundError(from_wx(filename));
 
 	LARGE_INTEGER li_file_size = {0};
 	if (!GetFileSizeEx(file_handle, &li_file_size))
@@ -94,7 +94,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 , file_handle(open(filename.mb_str(*wxConvFileName), O_RDONLY), close)
 {
 	if (file_handle == -1)
-		throw agi::FileNotFoundError(STD_STR(filename));
+		throw agi::FileNotFoundError(from_wx(filename));
 
 	struct stat filestats;
 	memset(&filestats, 0, sizeof(filestats));

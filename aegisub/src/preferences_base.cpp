@@ -56,7 +56,7 @@
 		}                                                                   \
 	}
 
-OPTION_UPDATER(StringUpdater, wxCommandEvent, OptionValueString, STD_STR(evt.GetString()));
+OPTION_UPDATER(StringUpdater, wxCommandEvent, OptionValueString, from_wx(evt.GetString()));
 OPTION_UPDATER(IntUpdater, wxSpinEvent, OptionValueInt, evt.GetInt());
 OPTION_UPDATER(IntCBUpdater, wxCommandEvent, OptionValueInt, evt.GetInt());
 OPTION_UPDATER(DoubleUpdater, wxSpinEvent, OptionValueDouble, evt.GetInt());
@@ -154,7 +154,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 		}
 
 		case agi::OptionValue::Type_String: {
-			wxTextCtrl *text = new wxTextCtrl(this, -1 , lagi_wxString(opt->GetString()));
+			wxTextCtrl *text = new wxTextCtrl(this, -1 , to_wx(opt->GetString()));
 			text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
 			Add(flex, name, text);
 			return text;
@@ -187,7 +187,7 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 			break;
 		}
 		case agi::OptionValue::Type_String: {
-			wxString val(lagi_wxString(opt->GetString()));
+			wxString val(to_wx(opt->GetString()));
 			if (cb->FindString(val) != wxNOT_FOUND)
 				cb->SetStringSelection(val);
 			else if (!choices.empty())

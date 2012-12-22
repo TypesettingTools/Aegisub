@@ -289,7 +289,7 @@ namespace Automation4 {
 		// copied from auto3
 		include_path.clear();
 		include_path.EnsureFileAccessible(filename);
-		wxStringTokenizer toker(lagi_wxString(OPT_GET("Path/Automation/Include")->GetString()), "|", wxTOKEN_STRTOK);
+		wxStringTokenizer toker(to_wx(OPT_GET("Path/Automation/Include")->GetString()), "|", wxTOKEN_STRTOK);
 		while (toker.HasMoreTokens()) {
 			// todo? make some error reporting here
 			wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
@@ -421,7 +421,7 @@ namespace Automation4 {
 
 		wxStringTokenizer tok(local_scripts, "|", wxTOKEN_STRTOK);
 		wxFileName assfn(context->ass->filename);
-		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
+		wxString autobasefn(to_wx(OPT_GET("Path/Automation/Base")->GetString()));
 		while (tok.HasMoreTokens()) {
 			wxString trimmed = tok.GetNextToken().Trim(true).Trim(false);
 			char first_char = trimmed[0];
@@ -461,7 +461,7 @@ namespace Automation4 {
 		// 3. If step 2 failed, or absolute path is shorter than path relative to ass, use absolute path ("/")
 		// 4. Otherwise, use path relative to ass ("~")
 		wxString scripts_string;
-		wxString autobasefn(lagi_wxString(OPT_GET("Path/Automation/Base")->GetString()));
+		wxString autobasefn(to_wx(OPT_GET("Path/Automation/Base")->GetString()));
 
 		for (auto script : GetScripts()) {
 			if (!scripts_string.empty())

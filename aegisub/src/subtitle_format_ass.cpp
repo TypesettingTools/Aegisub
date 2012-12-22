@@ -78,7 +78,7 @@ void AssSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 		}
 		catch (const char *err) {
 			target->Clear();
-			throw AssParseError("Error processing line: " + STD_STR(line) + ": " + err, 0);
+			throw AssParseError("Error processing line: " + from_wx(line) + ": " + err, 0);
 		}
 	}
 }

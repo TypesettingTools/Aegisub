@@ -228,7 +228,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
 
 	dest_label = new wxStaticText(this, -1, " ");
-	dest_ctrl = new wxTextCtrl(this, -1, StandardPaths::DecodePath(lagi_wxString(OPT_GET("Path/Fonts Collector Destination")->GetString())));
+	dest_ctrl = new wxTextCtrl(this, -1, StandardPaths::DecodePath(to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString())));
 	dest_browse_button = new wxButton(this, -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -313,7 +313,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &) {
 	}
 
 	if (action != CheckFontsOnly)
-		OPT_SET("Path/Fonts Collector Destination")->SetString(STD_STR(dest));
+		OPT_SET("Path/Fonts Collector Destination")->SetString(from_wx(dest));
 
 	// Disable the UI while it runs as we don't support canceling
 	EnableCloseButton(false);

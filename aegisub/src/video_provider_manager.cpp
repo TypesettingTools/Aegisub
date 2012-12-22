@@ -68,7 +68,7 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 		std::string err;
 		try {
 			VideoProvider *provider = Create(factory, video);
-			LOG_I("manager/video/provider") << factory << ": opened " << STD_STR(video);
+			LOG_I("manager/video/provider") << factory << ": opened " << from_wx(video);
 			if (provider->WantsCaching()) {
 				return new VideoProviderCache(provider);
 			}
@@ -97,10 +97,10 @@ VideoProvider *VideoProviderFactory::GetProvider(wxString video) {
 	}
 
 	// No provider could open the file
-	LOG_E("manager/video/provider") << "Could not open " << STD_STR(video);
-	std::string msg = "Could not open " + STD_STR(video) + ":\n" + errors;
+	LOG_E("manager/video/provider") << "Could not open " << from_wx(video);
+	std::string msg = "Could not open " + from_wx(video) + ":\n" + errors;
 
-	if (!fileFound) throw agi::FileNotFoundError(STD_STR(video));
+	if (!fileFound) throw agi::FileNotFoundError(from_wx(video));
 	if (!fileSupported) throw VideoNotSupported(msg);
 	throw VideoOpenError(msg);
 }
