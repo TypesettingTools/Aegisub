@@ -338,10 +338,8 @@ void OpenGLText::GetExtent(wxString const& text, int &w, int &h) {
 }
 
 OpenGLTextGlyph const& OpenGLText::GetGlyph(int i) {
-	glyphMap::iterator res = glyphs.find(i);
-
-	if (res != glyphs.end()) return res->second;
-	return CreateGlyph(i);
+	auto res = glyphs.find(i);
+	return res != glyphs.end() ? res->second : CreateGlyph(i);
 }
 
 OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {

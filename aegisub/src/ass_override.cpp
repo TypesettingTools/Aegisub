@@ -493,7 +493,7 @@ void AssOverrideTag::Clear() {
 
 void AssOverrideTag::SetText(const wxString &text) {
 	load_protos();
-	for (AssOverrideTagProto::iterator cur = proto.begin(); cur != proto.end(); ++cur) {
+	for (auto cur = proto.begin(); cur != proto.end(); ++cur) {
 		if (text.StartsWith(cur->name)) {
 			Name = cur->name;
 			parse_parameters(this, text.Mid(Name.length()), cur);

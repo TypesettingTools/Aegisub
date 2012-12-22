@@ -209,7 +209,7 @@ public:
 		// Sum up data size until we hit the max
 		size_t cur_size = 0;
 		size_t block_size = factory.GetBlockSize();
-		typename AgeList::iterator it = age.begin();
+		auto it = age.begin();
 		for (; it != age.end() && cur_size < max_size; ++it)
 		{
 			BlockArray &ba = (*it)->blocks;

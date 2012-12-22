@@ -110,7 +110,7 @@ void PortAudioPlayer::GatherDevices(PaHostApiIndex host_idx) {
 		if (device_info->maxOutputChannels <= 0) continue;
 
 		// MME truncates device names so check for prefix rather than exact match
-		std::map<std::string, DeviceVec>::iterator dev_it = devices.lower_bound(device_info->name);
+		auto dev_it = devices.lower_bound(device_info->name);
 		if (dev_it == devices.end() || dev_it->first.find(device_info->name) != 0) {
 			devices[device_info->name];
 			--dev_it;
@@ -275,7 +275,7 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 	try {
 		PortAudioPlayer player(0);
 
-		for (std::map<std::string, DeviceVec>::iterator it = player.devices.begin(); it != player.devices.end(); ++it)
+		for (auto it = player.devices.begin(); it != player.devices.end(); ++it)
 			list.push_back(to_wx(it->first));
 	}
 	catch (PortAudioError const&) {

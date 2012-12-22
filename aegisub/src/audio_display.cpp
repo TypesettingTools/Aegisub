@@ -806,8 +806,8 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 
 void AudioDisplay::PaintAudio(wxDC &dc, TimeRange updtime, wxRect updrect)
 {
-	std::map<int, int>::iterator pt = style_ranges.upper_bound(updtime.begin());
-	std::map<int, int>::iterator pe = style_ranges.upper_bound(updtime.end());
+	auto pt = style_ranges.upper_bound(updtime.begin());
+	auto pe = style_ranges.upper_bound(updtime.end());
 
 	if (pt != style_ranges.begin())
 		--pt;

@@ -79,7 +79,7 @@ wxString AegisubLocale::PickLanguage() {
 	// Check if user local language is available, if so, make it first
 	const wxLanguageInfo *info = wxLocale::GetLanguageInfo(wxLocale::GetSystemLanguage());
 	if (info) {
-		wxArrayString::iterator it = std::find(langs.begin(), langs.end(), info->CanonicalName);
+		auto it = std::find(langs.begin(), langs.end(), info->CanonicalName);
 		if (it != langs.end())
 			std::rotate(langs.begin(), it, it + 1);
 	}

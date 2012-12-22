@@ -516,7 +516,7 @@ namespace Automation4 {
 			modification_type |= modification_mask(e);
 
 			// Find the appropriate place to put it
-			std::vector<AssEntry*>::iterator it = lines.end();
+			auto it = lines.end();
 			if (!lines.empty()) {
 				do {
 					--it;
@@ -592,14 +592,14 @@ namespace Automation4 {
 		lua_rawseti(L, -2, idx++);
 
 		AssKaraoke kara(dia, false, false);
-		for (AssKaraoke::iterator it = kara.begin(); it != kara.end(); ++it) {
+		for (auto const& syl : kara) {
 			lua_newtable(L);
-			set_field(L, "duration", it->duration);
-			set_field(L, "start_time", it->start_time - dia->Start);
-			set_field(L, "end_time", it->start_time + it->duration - dia->Start);
-			set_field(L, "tag", it->tag_type);
-			set_field(L, "text", it->GetText(false));
-			set_field(L, "text_stripped", it->text);
+			set_field(L, "duration", syl.duration);
+			set_field(L, "start_time", syl.start_time - dia->Start);
+			set_field(L, "end_time", syl.start_time + syl.duration - dia->Start);
+			set_field(L, "tag", syl.tag_type);
+			set_field(L, "text", syl.GetText(false));
+			set_field(L, "text_stripped", syl.text);
 			lua_rawseti(L, -2, idx++);
 		}
 

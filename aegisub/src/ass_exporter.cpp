@@ -115,9 +115,8 @@ void AssExporter::Export(wxString const& filename, wxString const& charset, wxWi
 }
 
 wxSizer *AssExporter::GetSettingsSizer(wxString const& name) {
-	std::map<wxString, wxSizer*>::iterator pos = Sizers.find(name);
-	if (pos == Sizers.end()) return 0;
-	return pos->second;
+	auto pos = Sizers.find(name);
+	return pos == Sizers.end() ? nullptr : pos->second;
 }
 
 wxString const& AssExporter::GetDescription(wxString const& name) const {

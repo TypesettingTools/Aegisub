@@ -47,7 +47,7 @@ class DialogManager {
 		wxDialog *dialog = static_cast<wxDialog*>(evt.GetEventObject());
 		dialog->Destroy();
 
-		for (DialogMap::iterator it = created_dialogs.begin(); it != created_dialogs.end(); ++it) {
+		for (auto it = created_dialogs.begin(); it != created_dialogs.end(); ++it) {
 			if (it->second == dialog) {
 				created_dialogs.erase(it);
 				return;
@@ -60,7 +60,7 @@ public:
 	/// @tparam DialogType Type of dialog to show
 	template<class DialogType>
 	void Show(agi::Context *c) {
-		DialogMap::iterator it = created_dialogs.find(&typeid(DialogType));
+		auto it = created_dialogs.find(&typeid(DialogType));
 
 		if (it != created_dialogs.end()) {
 			it->second->Show();

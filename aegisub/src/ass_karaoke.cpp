@@ -212,7 +212,7 @@ void AssKaraoke::AddSplit(size_t syl_idx, size_t pos) {
 
 	// Move all override tags after the split to the new syllable and fix the indices
 	size_t text_len = syl.text.size();
-	for (ovr_iterator it = syl.ovr_tags.begin(); it != syl.ovr_tags.end(); ) {
+	for (auto it = syl.ovr_tags.begin(); it != syl.ovr_tags.end(); ) {
 		if (it->first < text_len)
 			++it;
 		else {

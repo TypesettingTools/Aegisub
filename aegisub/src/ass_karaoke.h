@@ -49,7 +49,6 @@ public:
 		wxString GetText(bool k_tag) const;
 	};
 private:
-	typedef std::map<size_t, wxString>::iterator ovr_iterator;
 	std::vector<Syllable> syls;
 	AssDialogue *active_line;
 

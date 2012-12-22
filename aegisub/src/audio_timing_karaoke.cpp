@@ -285,7 +285,7 @@ void AudioTimingControllerKaraoke::Revert() {
 	markers.reserve(kara->size());
 	labels.reserve(kara->size());
 
-	for (AssKaraoke::iterator it = kara->begin(); it != kara->end(); ++it) {
+	for (auto it = kara->begin(); it != kara->end(); ++it) {
 		if (it != kara->begin())
 			markers.emplace_back(it->start_time, &separator_pen, AudioMarker::Feet_None);
 		labels.emplace_back(it->text, TimeRange(it->start_time, it->start_time + it->duration));

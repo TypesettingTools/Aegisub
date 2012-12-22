@@ -704,7 +704,7 @@ void DialogStyleManager::UpdateButtons() {
 
 template<class Cont>
 static void do_move(Cont& styls, int type, int& first, int& last, bool storage) {
-	typename Cont::iterator begin = styls.begin();
+	auto begin = styls.begin();
 
 	// Move up
 	if (type == 0) {

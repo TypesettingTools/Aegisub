@@ -315,7 +315,7 @@ FrameMain::FrameMain (wxArrayString args)
 static bool delete_children(wxWindow *window, wxWindow *keep) {
 	bool found = false;
 	while (window->GetChildren().size() > (size_t)found) {
-		wxWindowList::iterator it = window->GetChildren().begin();
+		auto it = window->GetChildren().begin();
 
 		if (*it == keep)
 			found = true;

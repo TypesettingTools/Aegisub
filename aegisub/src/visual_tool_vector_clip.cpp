@@ -185,7 +185,7 @@ void VisualToolVectorClip::MakeFeatures() {
 	sel_features.clear();
 	features.clear();
 	active_feature = features.end();
-	for (Spline::iterator it = spline.begin(); it != spline.end(); ++it)
+	for (auto it = spline.begin(); it != spline.end(); ++it)
 		MakeFeature(it);
 }
 
@@ -217,7 +217,7 @@ bool VisualToolVectorClip::InitializeDrag(feature_iterator feature) {
 		feature->curve->p2 = feature->curve->p4;
 	}
 	else {
-		Spline::iterator next = std::next(feature->curve);
+		auto next = std::next(feature->curve);
 		if (next != spline.end()) {
 			if (feature->curve->type == SplineCurve::POINT) {
 				next->p1 = next->EndPoint();

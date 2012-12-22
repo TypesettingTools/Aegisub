@@ -80,7 +80,7 @@ wxString StandardPaths::DoDecodePath(wxString path) {
 	}
 
 	// Replace ?part if valid
-	std::map<wxString,wxString>::iterator iter = paths.find(path1);
+	auto iter = paths.find(path1);
 	if (iter == paths.end()) return path;
 	wxString final = iter->second + "/" + path2;
 	final.Replace("//","/");
