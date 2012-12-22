@@ -28,6 +28,11 @@
 #endif
 
 // Common C++
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
+
 #include <algorithm>
 #include <deque>
 #include <fstream>
@@ -47,6 +52,9 @@
 #include <tuple>
 #include <vector>
 
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 // Boost
 #include <boost/container/list.hpp>

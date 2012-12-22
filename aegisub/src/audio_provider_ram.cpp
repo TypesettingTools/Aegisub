@@ -44,33 +44,22 @@
 #include <libaegisub/background_runner.h>
 #include <libaegisub/scoped_ptr.h>
 
-#define CacheBits ((22))
+#define CacheBits 22
+#define CacheBlockSize (1 << CacheBits)
 
-#define CacheBlockSize ((1 << CacheBits))
-
-RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) {
+RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br)
+{
 	agi::scoped_ptr<AudioProvider> source(src);
 
-	samples_native_endian = source->AreSamplesNativeEndian();
-
-	// Allocate cache
-	int64_t ssize = source->GetNumSamples() * source->GetBytesPerSample();
-	blockcount = (ssize + CacheBlockSize - 1) >> CacheBits;
-	blockcache = new char*[blockcount];
-	memset(blockcache, 0, blockcount * sizeof(char*));
-
-	// Allocate cache blocks
 	try {
-		for (int i = 0; i < blockcount; i++) {
-			blockcache[i] = new char[std::min<size_t>(CacheBlockSize, ssize - i * CacheBlockSize)];
-		}
+		blockcache.resize((src->GetNumSamples() * src->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 	}
 	catch (std::bad_alloc const&) {
-		Clear();
 		throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", 0);
 	}
 
 	// Copy parameters
+	samples_native_endian = source->AreSamplesNativeEndian();
 	bytes_per_sample = source->GetBytesPerSample();
 	num_samples = source->GetNumSamples();
 	channels = source->GetChannels();
@@ -81,51 +70,34 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br
 	br->Run(std::bind(&RAMAudioProvider::FillCache, this, src, std::placeholders::_1));
 }
 
-RAMAudioProvider::~RAMAudioProvider() {
-	Clear();
-}
-
 void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {
 	ps->SetMessage(STD_STR(_("Reading into RAM")));
 
 	int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
-	for (int i = 0; i < blockcount; i++) {
-		source->GetAudio((char*)blockcache[i], i * readsize, std::min(readsize, num_samples - i * readsize));
+	for (size_t i = 0; i < blockcache.size(); i++) {
+		source->GetAudio(&blockcache[i][0], i * readsize, std::min(readsize, num_samples - i * readsize));
 
-		ps->SetProgress(i, (blockcount - 1));
+		ps->SetProgress(i, blockcache.size() - 1);
 		if (ps->IsCancelled()) {
-			Clear();
 			return;
 		}
 	}
 }
 
-void RAMAudioProvider::Clear() {
-	// Free ram cache
-	if (blockcache) {
-		for (int i = 0; i < blockcount; i++) {
-			delete [] blockcache[i];
-		}
-		delete [] blockcache;
-	}
-}
-
 void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	// Prepare copy
-	char *charbuf = (char *)buf;
-	int i = (start*bytes_per_sample) >> CacheBits;
-	int start_offset = (start*bytes_per_sample) & (CacheBlockSize-1);
-	int64_t bytesremaining = count*bytes_per_sample;
+	char *charbuf = static_cast<char *>(buf);
+	int i = (start * bytes_per_sample) >> CacheBits;
+	int start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
+	int64_t bytesremaining = count * bytes_per_sample;
 
-	// Copy
 	while (bytesremaining) {
 		int readsize = std::min<int>(bytesremaining, CacheBlockSize - start_offset);
 
-		memcpy(charbuf,(char *)(blockcache[i++]+start_offset),readsize);
+		memcpy(charbuf, &blockcache[i++][start_offset], readsize);
 
-		charbuf+=readsize;
+		charbuf += readsize;
 
-		start_offset=0;
-		bytesremaining-=readsize;
+		start_offset = 0;
+		bytesremaining -= readsize;
 	}
 }

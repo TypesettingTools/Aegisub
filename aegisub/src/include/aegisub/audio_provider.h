@@ -68,6 +68,8 @@ public:
 	bool AreSamplesFloat() const  { return float_samples; }
 	virtual bool AreSamplesNativeEndian() const = 0;
 
+	virtual int64_t GetSamplesLoaded() const { return num_samples; }
+
 	/// @brief Does this provider benefit from external caching?
 	virtual bool NeedsCache() const { return false; }
 };

@@ -34,23 +34,22 @@
 
 #include "include/aegisub/audio_provider.h"
 
+#include <boost/container/stable_vector.hpp>
+
 namespace agi {
 	class BackgroundRunner;
 	class ProgressSink;
 }
 
 class RAMAudioProvider : public AudioProvider {
-	char** blockcache;
-	int blockcount;
+	boost::container::stable_vector<char[1 << 22]> blockcache;
 	bool samples_native_endian;
 
-	void Clear();
 	void FillCache(AudioProvider *source, agi::ProgressSink *ps);
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
 	RAMAudioProvider(AudioProvider *source, agi::BackgroundRunner *br);
-	~RAMAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return samples_native_endian; }
 };
