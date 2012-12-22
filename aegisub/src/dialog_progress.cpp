@@ -59,11 +59,11 @@ public:
 	}
 
 	void SetTitle(std::string const& title) {
-		SafeQueue(EVT_TITLE, lagi_wxString(title));
+		SafeQueue(EVT_TITLE, to_wx(title));
 	}
 
 	void SetMessage(std::string const& msg) {
-		SafeQueue(EVT_MESSAGE, lagi_wxString(msg));
+		SafeQueue(EVT_MESSAGE, to_wx(msg));
 	}
 
 	void SetProgress(int64_t cur, int64_t max) {
@@ -71,7 +71,7 @@ public:
 	}
 
 	void Log(std::string const& str) {
-		SafeQueue(EVT_LOG, lagi_wxString(str));
+		SafeQueue(EVT_LOG, to_wx(str));
 	}
 
 	bool IsCancelled() {
@@ -147,15 +147,15 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 	CenterOnParent();
 
 	Bind(wxEVT_SHOW, &DialogProgress::OnShow, this);
-	Bind(wxEVT_TIMER, &DialogProgress::OnPulseTimer, this);
+	Bind(wxEVT_TIMER, [=](wxTimerEvent&) { gauge->Pulse(); });
 	Bind(wxEVT_IDLE, &DialogProgress::OnIdle, this);
 
-	Bind(EVT_TITLE, &DialogProgress::OnSetTitle, this);
-	Bind(EVT_MESSAGE, &DialogProgress::OnSetMessage, this);
-	Bind(EVT_PROGRESS, &DialogProgress::OnSetProgress, this);
-	Bind(EVT_INDETERMINATE, &DialogProgress::OnSetIndeterminate, this);
+	Bind(EVT_TITLE, [=](wxThreadEvent& e) { title->SetLabelText(e.GetPayload<wxString>()); });
+	Bind(EVT_MESSAGE, [=](wxThreadEvent& e) { text->SetLabelText(e.GetPayload<wxString>()); });
+	Bind(EVT_PROGRESS, [=](wxThreadEvent& e) { gauge->SetValue(mid(0, e.GetPayload<int>(), 100)); });
+	Bind(EVT_INDETERMINATE, [=](wxThreadEvent &) { pulse_timer.Start(1000); });
 	Bind(EVT_COMPLETE, &DialogProgress::OnComplete, this);
-	Bind(EVT_LOG, &DialogProgress::OnLog, this);
+	Bind(EVT_LOG, [=](wxThreadEvent& e) { pending_log += e.GetPayload<wxString>(); });
 }
 
 void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int priority) {
@@ -197,22 +197,6 @@ void DialogProgress::OnIdle(wxIdleEvent&) {
 	pending_log.clear();
 }
 
-void DialogProgress::OnSetTitle(wxThreadEvent &evt) {
-	title->SetLabelText(evt.GetPayload<wxString>());
-}
-
-void DialogProgress::OnSetMessage(wxThreadEvent &evt) {
-	text->SetLabelText(evt.GetPayload<wxString>());
-}
-
-void DialogProgress::OnSetProgress(wxThreadEvent &evt) {
-	gauge->SetValue(mid(0, evt.GetPayload<int>(), 100));
-}
-
-void DialogProgress::OnSetIndeterminate(wxThreadEvent &) {
-	pulse_timer.Start(1000);
-}
-
 void DialogProgress::OnComplete(wxThreadEvent &) {
 	pulse_timer.Stop();
 
@@ -230,16 +214,8 @@ void DialogProgress::OnComplete(wxThreadEvent &) {
 		cancel_button->SetLabelText(_("Close"));
 }
 
-void DialogProgress::OnLog(wxThreadEvent &evt) {
-	pending_log += evt.GetPayload<wxString>();
-}
-
 void DialogProgress::OnCancel(wxCommandEvent &) {
 	ps->Cancel();
 	cancel_button->Enable(false);
 	cancel_button->SetLabelText(_("Cancelling..."));
-}
-
-void DialogProgress::OnPulseTimer(wxTimerEvent&) {
-	gauge->Pulse();
 }

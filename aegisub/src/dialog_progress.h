@@ -44,16 +44,10 @@ class DialogProgress : public wxDialog, public agi::BackgroundRunner {
 
 	wxString pending_log;
 
-	void OnSetTitle(wxThreadEvent &evt);
-	void OnSetMessage(wxThreadEvent &evt);
-	void OnSetProgress(wxThreadEvent &evt);
-	void OnSetIndeterminate(wxThreadEvent &evt);
-	void OnLog(wxThreadEvent &evt);
 	void OnComplete(wxThreadEvent &evt);
 
 	void OnShow(wxShowEvent&);
 	void OnCancel(wxCommandEvent &);
-	void OnPulseTimer(wxTimerEvent&);
 	void OnIdle(wxIdleEvent&);
 
 public:
