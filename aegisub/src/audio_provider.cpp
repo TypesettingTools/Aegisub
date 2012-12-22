@@ -35,45 +35,35 @@
 
 #include "config.h"
 
-#include <wx/thread.h>
+#include <cstdint>
 
-#include "audio_controller.h"
-#ifdef WITH_AVISYNTH
 #include "audio_provider_avs.h"
-#endif
 #include "audio_provider_convert.h"
-#ifdef WITH_FFMS2
 #include "audio_provider_ffmpegsource.h"
-#endif
 #include "audio_provider_hd.h"
 #include "audio_provider_lock.h"
 #include "audio_provider_pcm.h"
 #include "audio_provider_ram.h"
+
+#include "audio_controller.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
+#include "utils.h"
 
 #include <libaegisub/log.h>
 
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
-	GetAudio(buf,start,count);
+	GetAudio(buf, start, count);
 
 	if (volume == 1.0) return;
+	if (bytes_per_sample != 2)
+		throw agi::InternalError("GetAudioWithVolume called on unconverted audio stream", 0);
 
-	if (bytes_per_sample == 2) {
-		// Read raw samples
-		short *buffer = (short*) buf;
-		int value;
-
-		// Modify
-		for (size_t i = 0; i < (size_t)count; ++i) {
-			value = (int)(buffer[i]*volume+0.5);
-			if (value < -0x8000) value = -0x8000;
-			if (value > 0x7FFF) value = 0x7FFF;
-			buffer[i] = value;
-		}
-	}
+	short *buffer = static_cast<int16_t *>(buf);
+	for (size_t i = 0; i < (size_t)count; ++i)
+		buffer[i] = mid<int>(-0x8000, buffer[i] * volume + 0.5, 0x7FFF);
 }
 
 void AudioProvider::ZeroFill(void *buf, int64_t count) const {
@@ -118,60 +108,64 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	}
 }
 
-AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int cache) {
-	AudioProvider *provider = 0;
-	bool found_file = false;
-	bool found_audio = false;
+namespace {
+struct provider_creator {
+	bool found_file;
+	bool found_audio;
 	std::string msg;
 
-	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool()) {
-		// Try a PCM provider first
+	provider_creator() : found_file(false) , found_audio(false) { }
+
+	template<typename Factory>
+	AudioProvider *try_create(std::string const& name, Factory&& create) {
 		try {
-			provider = CreatePCMAudioProvider(filename);
-			LOG_D("audio_provider") << "Using PCM provider";
+			AudioProvider *provider = create();
+			if (provider)
+				LOG_I("audio_provider") << "Using audio provider: " << name;
+			return provider;
 		}
 		catch (agi::FileNotFoundError const& err) {
-			msg = "PCM audio provider: " + err.GetMessage() + " not found.\n";
+			msg += name + ": " + err.GetMessage() + " not found.\n";
+		}
+		catch (agi::AudioDataNotFoundError const& err) {
+			found_file = true;
+			msg += name + ": " + err.GetChainedMessage() + "\n";
 		}
 		catch (agi::AudioOpenError const& err) {
+			found_audio = true;
 			found_file = true;
-			msg += err.GetChainedMessage() + "\n";
+			msg += name + ": " + err.GetChainedMessage() + "\n";
 		}
+
+		return nullptr;
 	}
+};
+}
+
+AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename) {
+	provider_creator creator;
+	AudioProvider *provider = nullptr;
+
+	// Try a PCM provider first
+	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool())
+		provider = creator.try_create("PCM audio provider", [&]() { return CreatePCMAudioProvider(filename); });
 
 	if (!provider) {
 		std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
 		if (list.empty()) throw agi::NoAudioProvidersError("No audio providers are available.", 0);
 
-		for (size_t i = 0; i < list.size() ; ++i) {
-			try {
-				provider = Create(list[i], filename);
-				if (provider) {
-					LOG_D("audio_provider") << "Using audio provider: " << list[i];
-					break;
-				}
-			}
-			catch (agi::FileNotFoundError const& err) {
-				msg += list[i] + ": " + err.GetMessage() + " not found.\n";
-			}
-			catch (agi::AudioDataNotFoundError const& err) {
-				found_file = true;
-				msg += list[i] + ": " + err.GetChainedMessage() + "\n";
-			}
-			catch (agi::AudioOpenError const& err) {
-				found_audio = true;
-				found_file = true;
-				msg += list[i] + ": " + err.GetChainedMessage() + "\n";
-			}
+		for (auto const& name : list) {
+			provider = creator.try_create(name, [&]() { return Create(name, filename); });
+			if (provider) break;
 		}
 	}
 
 	if (!provider) {
-		if (found_audio)
-			throw agi::AudioProviderOpenError(msg, 0);
-		if (found_file)
-			throw agi::AudioDataNotFoundError(msg, 0);
-		throw agi::FileNotFoundError(STD_STR(filename));
+		if (creator.found_audio)
+			throw agi::AudioProviderOpenError(creator.msg, 0);
+		if (creator.found_file)
+			throw agi::AudioDataNotFoundError(creator.msg, 0);
+		throw agi::FileNotFoundError(from_wx(filename));
 	}
 
 	bool needsCache = provider->NeedsCache();
@@ -181,10 +175,9 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 		provider = CreateConvertAudioProvider(provider);
 
 	// Change provider to RAM/HD cache if needed
-	if (cache == -1) cache = OPT_GET("Audio/Cache/Type")->GetInt();
-	if (!cache || !needsCache) {
+	int cache = OPT_GET("Audio/Cache/Type")->GetInt();
+	if (!cache || !needsCache)
 		return new LockAudioProvider(provider);
-	}
 
 	DialogProgress progress(wxGetApp().frame, _("Load audio"));
 
@@ -197,8 +190,6 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename, int c
 	throw agi::AudioCacheOpenError("Unknown caching method", 0);
 }
 
-/// @brief Register all providers
-///
 void AudioProviderFactory::RegisterProviders() {
 #ifdef WITH_AVISYNTH
 	Register<AvisynthAudioProvider>("Avisynth");

@@ -78,8 +78,7 @@ public:
 
 	/// Get a provider for the file
 	/// @param filename URI to open
-	/// @param cache Caching mode
-	static AudioProvider *GetProvider(wxString const& filename, int cache=-1);
+	static AudioProvider *GetProvider(wxString const& filename);
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception)
