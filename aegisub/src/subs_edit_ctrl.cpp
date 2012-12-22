@@ -67,6 +67,7 @@ enum {
 	EDIT_MENU_PASTE,
 	EDIT_MENU_SELECT_ALL,
 	EDIT_MENU_ADD_TO_DICT,
+	EDIT_MENU_REMOVE_FROM_DICT,
 	EDIT_MENU_SUGGESTION,
 	EDIT_MENU_SUGGESTIONS,
 	EDIT_MENU_THESAURUS = 1450,
@@ -136,6 +137,18 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 
 	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this);
 	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this);
+
+	Bind(wxEVT_COMMAND_MENU_SELECTED, [=](wxCommandEvent&) {
+		if (spellchecker) spellchecker->AddWord(currentWord);
+		UpdateStyle();
+		SetFocus();
+	}, EDIT_MENU_ADD_TO_DICT);
+
+	Bind(wxEVT_COMMAND_MENU_SELECTED, [=](wxCommandEvent&) {
+		if (spellchecker) spellchecker->RemoveWord(currentWord);
+		UpdateStyle();
+		SetFocus();
+	}, EDIT_MENU_REMOVE_FROM_DICT);
 }
 
 SubsTextEditCtrl::~SubsTextEditCtrl() {
@@ -150,7 +163,6 @@ void SubsTextEditCtrl::Subscribe(std::string const& name) {
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
 	EVT_KILL_FOCUS(SubsTextEditCtrl::OnLoseFocus)
 
-	EVT_MENU(EDIT_MENU_ADD_TO_DICT,SubsTextEditCtrl::OnAddToDictionary)
 	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_THESAURUS-1,SubsTextEditCtrl::OnUseSuggestion)
 	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseSuggestion)
 	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
@@ -338,6 +350,9 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 	if (currentWord.empty()) return;
 
+	if (spellchecker->CanRemoveWord(currentWord))
+		menu.Append(EDIT_MENU_REMOVE_FROM_DICT, wxString::Format(_("Remove \"%s\" from dictionary"), to_wx(currentWord)));
+
 	sugs = spellchecker->GetSuggestions(currentWord);
 	if (spellchecker->CheckWord(currentWord)) {
 		if (sugs.empty())
@@ -420,12 +435,6 @@ wxMenu *SubsTextEditCtrl::GetLanguagesMenu(int base_id, wxString const& curLang,
 	}
 
 	return languageMenu;
-}
-
-void SubsTextEditCtrl::OnAddToDictionary(wxCommandEvent &) {
-	if (spellchecker) spellchecker->AddWord(currentWord);
-	UpdateStyle();
-	SetFocus();
 }
 
 void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
