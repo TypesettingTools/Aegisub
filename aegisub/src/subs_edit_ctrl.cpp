@@ -479,7 +479,7 @@ void SubsTextEditCtrl::OnSetThesLanguage(wxCommandEvent &event) {
 std::pair<int, int> SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos) {
 	int len = 0;
 	for (auto const& tok : tokenized_line) {
-		if ((int)tok.length > pos) {
+		if (len + (int)tok.length > pos) {
 			if (tok.type == agi::ass::DialogueTokenType::WORD)
 				return std::make_pair(len, tok.length);
 			return std::make_pair(0, 0);
