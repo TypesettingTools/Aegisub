@@ -37,24 +37,49 @@
 #include "audio_provider_dummy.h"
 #include "utils.h"
 
-DummyAudioProvider::DummyAudioProvider(unsigned long dur_ms, bool _noise) {
-	noise = _noise;
+#include <wx/uri.h>
+
+/*
+ * scheme            ::= "dummy-audio" ":" signal-specifier "?" signal-parameters
+ * signal-specifier  ::= "silence" | "noise" | "sine" "/" frequency
+ * frequency         ::= integer
+ * signal-parameters ::= signal-parameter [ "&" signal-parameters ]
+ * signal-parameter  ::= signal-parameter-name "=" integer
+ * signal-parameter-name ::= "sr" | "bd" | "ch" | "ln"
+ *
+ * Signal types:
+ * "silence", a silent signal is generated.
+ * "noise", a white noise signal is generated.
+ * "sine", a sine wave is generated at the specified frequency.
+ *
+ * Signal parameters:
+ * "sr", sample rate to generate signal at.
+ * "bd", bit depth to generate signal at (usually 16).
+ * "ch", number of channels to generate, usually 1 or 2. The same signal is generated
+ *       in every channel even if one would be LFE.
+ * "ln", length of signal in samples. ln/sr gives signal length in seconds.
+ */
+DummyAudioProvider::DummyAudioProvider(wxString uri)
+{
+	wxURI parsed(uri);
+	if (parsed.GetScheme() != "dummy-audio")
+		throw agi::FileNotFoundError("Not a dummy audio URI");
+
+	noise = parsed.GetPath() == "noise";
 	channels = 1;
 	sample_rate = 44100;
 	bytes_per_sample = 2;
 	float_samples = false;
-	num_samples = (int64_t)dur_ms * sample_rate / 1000;
+	num_samples = (int64_t)5*30*60*1000 * sample_rate / 1000;
 }
 
 void DummyAudioProvider::FillBuffer(void *buf, int64_t, int64_t count) const {
-	short *workbuf = (short*)buf;
-
 	if (noise) {
+		short *workbuf = (short*)buf;
 		while (count-- > 0)
 			*workbuf++ = (rand() - RAND_MAX/2) * 10000 / RAND_MAX;
 	}
 	else {
-		while (count-- > 0)
-			*workbuf++ = 0;
+		memset(buf, 0, count * bytes_per_sample);
 	}
 }

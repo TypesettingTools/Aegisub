@@ -163,78 +163,17 @@ void AudioController::OpenAudio(const wxString &url)
 	if (!url)
 		throw agi::InternalError("AudioController::OpenAudio() was passed an empty string. This must not happen.", 0);
 
-	wxString path_part;
-
 	AudioProvider *new_provider = 0;
-
-	if (url.StartsWith("dummy-audio:", &path_part))
-	{
-		/*
-		 * scheme            ::= "dummy-audio" ":" signal-specifier "?" signal-parameters
-		 * signal-specifier  ::= "silence" | "noise" | "sine" "/" frequency
-		 * frequency         ::= integer
-		 * signal-parameters ::= signal-parameter [ "&" signal-parameters ]
-		 * signal-parameter  ::= signal-parameter-name "=" integer
-		 * signal-parameter-name ::= "sr" | "bd" | "ch" | "ln"
-		 *
-		 * Signal types:
-		 * "silence", a silent signal is generated.
-		 * "noise", a white noise signal is generated.
-		 * "sine", a sine wave is generated at the specified frequency.
-		 *
-		 * Signal parameters:
-		 * "sr", sample rate to generate signal at.
-		 * "bd", bit depth to generate signal at (usually 16).
-		 * "ch", number of channels to generate, usually 1 or 2. The same signal is generated
-		 *       in every channel even if one would be LFE.
-		 * "ln", length of signal in samples. ln/sr gives signal length in seconds.
-		 */
-		new_provider = new DummyAudioProvider(5*30*60*1000, path_part.StartsWith("noise"));
+	try {
+		new_provider = AudioProviderFactory::GetProvider(url);
+		StandardPaths::SetPathValue("?audio", wxFileName(url).GetPath());
 	}
-	else if (url.StartsWith("video-audio:", &path_part))
-	{
-		/*
-		 * scheme      ::= "video-audio" ":" stream-type
-		 * stream-type ::= "stream" | "cache"
-		 *
-		 * Stream types:
-		 *
-		 * "stream", the audio is streamed as required directly from the video provider,
-		 * and cannot be used to drive an audio display. Seeking is unreliable.
-		 *
-		 * "cache", the entire audio is cached to memory or disk. Audio displays can be
-		 * driven and seeking is reliable. Opening takes longer because the entire audio
-		 * stream has to be decoded and stored.
-		 */
+	catch (agi::UserCancelException const&) {
+		throw;
 	}
-	else if (url.StartsWith("file:", &path_part))
-	{
-		/*
-		 * scheme    ::= "file" ":" "//" file-system-path
-		 *
-		 * On Unix-like systems, the file system path is regular. On Windows-systems, the
-		 * path uses forward slashes instead of back-slashes and the drive letter is
-		 * preceded by a slash.
-		 *
-		 * URL-encoding??
-		 */
-	}
-	else
-	{
-		/*
-		 * Assume it's not a URI but instead a filename in the platform's native format.
-		 */
-		try {
-			new_provider = AudioProviderFactory::GetProvider(url);
-			StandardPaths::SetPathValue("?audio", wxFileName(url).GetPath());
-		}
-		catch (agi::UserCancelException const&) {
-			throw;
-		}
-		catch (...) {
-			config::mru->Remove("Audio", STD_STR(url));
-			throw;
-		}
+	catch (...) {
+		config::mru->Remove("Audio", STD_STR(url));
+		throw;
 	}
 
 	CloseAudio();

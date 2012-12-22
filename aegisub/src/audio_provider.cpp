@@ -39,6 +39,7 @@
 
 #include "audio_provider_avs.h"
 #include "audio_provider_convert.h"
+#include "audio_provider_dummy.h"
 #include "audio_provider_ffmpegsource.h"
 #include "audio_provider_hd.h"
 #include "audio_provider_lock.h"
@@ -146,8 +147,10 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename) {
 	provider_creator creator;
 	AudioProvider *provider = nullptr;
 
+	provider = creator.try_create("Dummy audio provider", [&]() { return new DummyAudioProvider(filename); });
+
 	// Try a PCM provider first
-	if (!OPT_GET("Provider/Audio/PCM/Disable")->GetBool())
+	if (!provider && !OPT_GET("Provider/Audio/PCM/Disable")->GetBool())
 		provider = creator.try_create("PCM audio provider", [&]() { return CreatePCMAudioProvider(filename); });
 
 	if (!provider) {
