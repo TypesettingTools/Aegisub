@@ -57,10 +57,10 @@ protected:
 public:
 	virtual ~AudioProvider() { }
 
-	virtual wxString GetFilename() const { return filename; };
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;
 
+	wxString GetFilename() const  { return filename; };
 	int64_t GetNumSamples() const { return num_samples; }
 	int GetSampleRate() const     { return sample_rate; }
 	int GetBytesPerSample() const { return bytes_per_sample; }

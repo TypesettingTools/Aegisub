@@ -40,17 +40,13 @@
 
 class AvisynthAudioProvider : public AudioProvider {
 	AviSynthWrapper avs_wrapper;
-
-	wxString filename;
 	PClip clip;
 
 	void LoadFromClip(AVSValue clip);
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	AvisynthAudioProvider(wxString _filename);
-
-	wxString GetFilename() const { return filename; }
+	AvisynthAudioProvider(wxString filename);
 
 	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }

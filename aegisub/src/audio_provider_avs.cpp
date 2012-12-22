@@ -35,12 +35,6 @@
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
-
-#include <Mmreg.h>
-#include <ctime>
-
-#include <wx/filename.h>
-
 #include "audio_provider_avs.h"
 
 #include "audio_controller.h"
@@ -50,28 +44,23 @@
 #include "standard_paths.h"
 #include "utils.h"
 
-/// @brief Constructor
-/// @param _filename
-///
-AvisynthAudioProvider::AvisynthAudioProvider(wxString filename)
-: filename(filename)
-{
+#include <wx/filename.h>
+
+AvisynthAudioProvider::AvisynthAudioProvider(wxString filename) {
+	this->filename = filename;
+
+	wxMutexLocker lock(avs_wrapper.GetMutex());
+
+	wxFileName fn(filename);
+	if (!fn.FileExists())
+		throw agi::FileNotFoundError(from_wx(filename));
+
 	try {
-		AVSValue script;
-		wxMutexLocker lock(avs_wrapper.GetMutex());
-
-		wxFileName fn(filename);
-		if (!fn.FileExists())
-			throw agi::FileNotFoundError(STD_STR(filename));
-
 		IScriptEnvironment *env = avs_wrapper.GetEnv();
 
 		// Include
-		if (filename.EndsWith(".avs")) {
-			char *fname = env->SaveString(fn.GetShortPath().mb_str(csConvLocal));
-			script = env->Invoke("Import", fname);
-		}
-
+		if (filename.EndsWith(".avs"))
+			LoadFromClip(env->Invoke("Import", env->SaveString(fn.GetShortPath().mb_str(csConvLocal))));
 		// Use DirectShowSource
 		else {
 			const char * argnames[3] = { 0, "video", "audio" };
@@ -79,21 +68,16 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString filename)
 
 			// Load DirectShowSource.dll from app dir if it exists
 			wxFileName dsspath(StandardPaths::DecodePath("?data/DirectShowSource.dll"));
-			if (dsspath.FileExists()) {
-				env->Invoke("LoadPlugin",env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
-			}
+			if (dsspath.FileExists())
+				env->Invoke("LoadPlugin", env->SaveString(dsspath.GetShortPath().mb_str(csConvLocal)));
 
 			// Load audio with DSS if it exists
-			if (env->FunctionExists("DirectShowSource")) {
-				script = env->Invoke("DirectShowSource", AVSValue(args,3),argnames);
-			}
+			if (env->FunctionExists("DirectShowSource"))
+				LoadFromClip(env->Invoke("DirectShowSource", AVSValue(args, 3), argnames));
 			// Otherwise fail
-			else {
+			else
 				throw agi::AudioProviderOpenError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.", 0);
-			}
 		}
-
-		LoadFromClip(script);
 	}
 	catch (AvisynthError &err) {
 		std::string errmsg(err.msg);
@@ -104,22 +88,15 @@ AvisynthAudioProvider::AvisynthAudioProvider(wxString filename)
 	}
 }
 
-/// @brief Read from environment
-/// @param _clip
-///
-void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
-	AVSValue script;
-
+void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	// Check if it has audio
-	VideoInfo vi = _clip.AsClip()->GetVideoInfo();
+	VideoInfo vi = clip.AsClip()->GetVideoInfo();
 	if (!vi.HasAudio()) throw agi::AudioDataNotFoundError("No audio found.", 0);
 
 	IScriptEnvironment *env = avs_wrapper.GetEnv();
 
 	// Convert to one channel
-	char buffer[1024];
-	strcpy(buffer,lagi_wxString(OPT_GET("Audio/Downmixer")->GetString()).mb_str(csConvLocal));
-	script = env->Invoke(buffer, _clip);
+	AVSValue script = env->Invoke(OPT_GET("Audio/Downmixer")->GetString().c_str(), clip);
 
 	// Convert to 16 bits per sample
 	script = env->Invoke("ConvertAudioTo16bit", script);
@@ -127,10 +104,11 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 
 	// Convert sample rate
 	int setsample = OPT_GET("Provider/Audio/AVS/Sample Rate")->GetInt();
-	if (vi.SamplesPerSecond() < 32000) setsample = 44100;
+	if (setsample == 0 && vi.SamplesPerSecond() < 32000)
+		setsample = 44100;
 	if (setsample != 0) {
 		AVSValue args[2] = { script, setsample };
-		script = env->Invoke("ResampleAudio", AVSValue(args,2));
+		script = env->Invoke("ResampleAudio", AVSValue(args, 2));
 	}
 
 	// Set clip
@@ -144,10 +122,10 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue _clip) {
 	bytes_per_sample = vi.BytesPerAudioSample();
 	float_samples = false;
 
-	clip = tempclip;
+	this->clip = tempclip;
 }
 
 void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	clip->GetAudio(buf,start,count,avs_wrapper.GetEnv());
+	clip->GetAudio(buf, start, count, avs_wrapper.GetEnv());
 }
 #endif
