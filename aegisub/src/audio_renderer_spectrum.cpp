@@ -294,9 +294,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 				assert(px < imgdata + imgheight*stride);
 				int sample1 = std::max(0, maxband * y/imgheight + minband);
 				int sample2 = std::min((1<<derivation_size)-1, maxband * (y+1)/imgheight + minband);
-				float maxval = 0;
-				for (int samp = sample1; samp <= sample2; samp++)
-					if (power[samp] > maxval) maxval = power[samp];
+				float maxval = *std::max_element(&power[sample1], &power[sample2 + 1]);
 				pal->map(maxval*amplitude_scale, px);
 				px -= stride;
 			}
