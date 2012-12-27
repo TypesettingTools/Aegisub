@@ -22,6 +22,7 @@
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <PreprocessorDefinitions>
+        WITH_AVRESAMPLE;
         FFMS_EXPORTS;
         HAALISOURCE;
         _CRT_SECURE_NO_WARNINGS;

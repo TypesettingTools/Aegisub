@@ -33,6 +33,7 @@
       --disable-pthreads
       --disable-shared
       --disable-swresample
+      --enable-avresample
       --enable-gpl
       --enable-runtime-cpudetect
       --enable-static
