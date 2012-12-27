@@ -126,13 +126,16 @@ struct provider_creator {
 			return provider;
 		}
 		catch (agi::FileNotFoundError const& err) {
+			LOG_D("audio_provider") << err.GetChainedMessage();
 			msg += name + ": " + err.GetMessage() + " not found.\n";
 		}
 		catch (agi::AudioDataNotFoundError const& err) {
+			LOG_D("audio_provider") << err.GetChainedMessage();
 			found_file = true;
 			msg += name + ": " + err.GetChainedMessage() + "\n";
 		}
 		catch (agi::AudioOpenError const& err) {
+			LOG_D("audio_provider") << err.GetChainedMessage();
 			found_audio = true;
 			found_file = true;
 			msg += name + ": " + err.GetChainedMessage() + "\n";

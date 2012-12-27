@@ -28,6 +28,7 @@
 #include "include/aegisub/audio_provider.h"
 
 #include <libaegisub/scoped_ptr.h>
+#include <libaegisub/log.h>
 
 #include <limits>
 
@@ -214,21 +215,28 @@ AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
 
 	// Ensure 16-bit audio with proper endianness
 	if (provider->AreSamplesFloat()) {
+		LOG_D("audio_provider") << "Converting float to S16";
 		if (provider->GetBytesPerSample() == sizeof(float))
 			provider = new FloatConvertAudioProvider<float, int16_t>(provider);
 		else
 			provider = new FloatConvertAudioProvider<double, int16_t>(provider);
 	}
-	if (provider->GetBytesPerSample() != 2 || !provider->AreSamplesNativeEndian())
+	if (provider->GetBytesPerSample() != 2 || !provider->AreSamplesNativeEndian()) {
+		LOG_D("audio_provider") << "Converting " << provider->GetBytesPerSample() << " bytes per sample or wrong endian to S16";
 		provider = new BitdepthConvertAudioProvider<int16_t>(provider);
+	}
 
 	// We currently only support mono audio
-	if (provider->GetChannels() != 1)
+	if (provider->GetChannels() != 1) {
+		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels() << " channels";
 		provider = new DownmixAudioProvider(provider);
+	}
 
 	// Some players don't like low sample rate audio
-	while (provider->GetSampleRate() < 32000)
+	while (provider->GetSampleRate() < 32000) {
+		LOG_D("audio_provider") << "Doubling sample rate";
 		provider = new SampleDoublingAudioProvider(provider);
+	}
 
 	return provider;
 }
