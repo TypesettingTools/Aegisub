@@ -75,7 +75,7 @@ void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {
 
 	int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
 	for (size_t i = 0; i < blockcache.size(); i++) {
-		source->GetAudio(&blockcache[i][0], i * readsize, std::min(readsize, num_samples - i * readsize));
+		source->GetAudio(&blockcache[i][0], i * readsize, std::min<int64_t>(readsize, num_samples - i * readsize));
 
 		ps->SetProgress(i, blockcache.size() - 1);
 		if (ps->IsCancelled()) {
