@@ -54,6 +54,7 @@ using namespace boost::adaptors;
 AssOverrideParameter::AssOverrideParameter(VariableDataType type, AssParameterClass classification)
 : type(type)
 , classification(classification)
+, omitted(true)
 {
 }
 
@@ -62,6 +63,7 @@ AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
 , block(std::move(o.block))
 , type(o.type)
 , classification(o.classification)
+, omitted(o.omitted)
 {
 }
 
