@@ -124,6 +124,8 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(wxString
 	FcResult result;
 	FcFontSet *sets[] = { (FcFontSet*)fset };
 	agi::scoped_holder<FcPattern*> match(FcFontSetMatch(config, sets, 1, pat, &result), FcPatternDestroy);
+	if (!match)
+		return ret;
 
 	FcChar8 *file;
 	if(FcPatternGetString(match, FC_FILE, 0, &file) != FcResultMatch)
