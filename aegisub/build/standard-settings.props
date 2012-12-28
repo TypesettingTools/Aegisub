@@ -23,6 +23,7 @@
 				$(BoostPath);
 				%(AdditionalIncludeDirectories)
 			</AdditionalIncludeDirectories>
+			<DisableSpecificWarnings>4345</DisableSpecificWarnings>
 		</ClCompile>
 		<ResourceCompile>
 			<AdditionalIncludeDirectories>$(AegisubSourceBase)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
