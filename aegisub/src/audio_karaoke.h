@@ -118,9 +118,9 @@ class AudioKaraoke : public wxWindow {
 	void SetDisplayText();
 
 	/// Helper function for context menu creation
-	void AddMenuItem(wxMenu &menu, wxString const& tag, wxString const& help, wxString const& selected);
+	void AddMenuItem(wxMenu &menu, std::string const& tag, wxString const& help, std::string const& selected);
 	/// Set the karaoke tags for the selected syllables to the indicated one
-	void SetTagType(wxString new_type);
+	void SetTagType(std::string const& new_type);
 
 	/// Prerender the current line along with syllable split lines
 	void RenderText();

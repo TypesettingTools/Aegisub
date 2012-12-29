@@ -28,6 +28,7 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "utils.h"
@@ -354,7 +355,7 @@ void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
 typedef const std::vector<AssOverrideParameter> * param_vec;
 
 // Find a tag's parameters in a line or return nullptr if it's not found
-static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, wxString tag_name) {
+static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, std::string const& tag_name) {
 	for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto const& tag : ovr->Tags) {
 			if (tag.Name == tag_name)
@@ -526,29 +527,27 @@ wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &
 	}
 	if (tag) {
 		scale = std::max((*tag)[0].Get(scale), 1);
-		return (*tag)[1].Get<wxString>("");
+		return to_wx((*tag)[1].Get<std::string>(""));
 	}
 
 	return "";
 }
 
-void VisualToolBase::SetSelectedOverride(wxString const& tag, wxString const& value) {
+void VisualToolBase::SetSelectedOverride(std::string const& tag, wxString const& value) {
 	for (auto line : c->selectionController->GetSelectedSet())
 		SetOverride(line, tag, value);
 }
 
-void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxString const& value) {
+void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, wxString const& value) {
 	if (!line) return;
 
-	wxString removeTag;
+	std::string removeTag;
 	if (tag == "\\1c") removeTag = "\\c";
 	else if (tag == "\\frz") removeTag = "\\fr";
 	else if (tag == "\\pos") removeTag = "\\move";
 	else if (tag == "\\move") removeTag = "\\pos";
 	else if (tag == "\\clip") removeTag = "\\iclip";
 	else if (tag == "\\iclip") removeTag = "\\clip";
-
-	wxString insert = tag + value;
 
 	// Get block at start
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
@@ -558,17 +557,17 @@ void VisualToolBase::SetOverride(AssDialogue* line, wxString const& tag, wxStrin
 	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == nullptr);
 
 	if (dynamic_cast<AssDialogueBlockPlain*>(block))
-		line->Text = "{" + insert + "}" + line->Text;
+		line->Text = "{" + to_wx(tag) + value + "}" + line->Text;
 	else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
 		// Remove old of same
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
-			wxString const& name = ovr->Tags[i].Name;
+			std::string const& name = ovr->Tags[i].Name;
 			if (tag == name || removeTag == name) {
 				ovr->Tags.erase(ovr->Tags.begin() + i);
 				i--;
 			}
 		}
-		ovr->AddTag(insert);
+		ovr->AddTag(tag + from_wx(value));
 
 		line->UpdateText(blocks);
 	}

@@ -22,6 +22,7 @@
 
 #include <map>
 #include <set>
+#include <string>
 #include <vector>
 
 #include <wx/string.h>
@@ -39,14 +40,14 @@ public:
 	struct Syllable {
 		int start_time; ///< Start time relative to time zero (not line start) in milliseconds
 		int duration;   ///< Duration in milliseconds
-		wxString text;  ///< Stripped syllable text
-		wxString tag_type; ///< \k, \kf or \ko
+		std::string text; ///< Stripped syllable text
+		std::string tag_type; ///< \k, \kf or \ko
 		/// Non-karaoke override tags in this syllable. Key is an index in text
 		/// before which the value should be inserted
-		std::map<size_t, wxString> ovr_tags;
+		std::map<size_t, std::string> ovr_tags;
 
 		/// Get the text of this line with override tags and optionally the karaoke tag
-		wxString GetText(bool k_tag) const;
+		std::string GetText(bool k_tag) const;
 	};
 private:
 	std::vector<Syllable> syls;
@@ -87,9 +88,9 @@ public:
 
 	/// Get the karaoke tag type used, with leading slash
 	/// @returns "\k", "\kf", or "\ko"
-	wxString GetTagType() const;
+	std::string GetTagType() const;
 	/// Set the tag type for all karaoke tags in this line
-	void SetTagType(wxString const& new_type);
+	void SetTagType(std::string const& new_type);
 
 	/// Split lines so that each syllable is its own line
 	/// @param lines Lines to split

@@ -33,19 +33,19 @@
 
 #include "config.h"
 
-#include <boost/algorithm/string/join.hpp>
-#include <fstream>
-#include <list>
-
-#include <wx/regex.h>
-#include <wx/tokenzr.h>
-
 #include "ass_dialogue.h"
 #include "compat.h"
 #include "subtitle_format.h"
 #include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
+
+#include <boost/algorithm/string/join.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
+
+#include <wx/regex.h>
+#include <wx/tokenzr.h>
 
 using namespace boost::adaptors;
 
@@ -196,23 +196,24 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 	}
 
 	int drawingLevel = 0;
+	std::string text(from_wx(Text.get()));
 
-	for (size_t len = Text.get().size(), cur = 0; cur < len; ) {
+	for (size_t len = text.size(), cur = 0; cur < len; ) {
 		// Overrides block
-		if (Text.get()[cur] == '{') {
-			size_t end = Text.get().find('}', cur);
+		if (text[cur] == '{') {
+			size_t end = text.find('}', cur);
 
 			// VSFilter requires that override blocks be closed, while libass
 			// does not. We match VSFilter here.
-			if (end == wxString::npos)
+			if (end == std::string::npos)
 				goto plain;
 
 			++cur;
 			// Get contents of block
-			wxString work = Text.get().substr(cur, end - cur);
+			std::string work = text.substr(cur, end - cur);
 			cur = end + 1;
 
-			if (work.size() && work.find('\\') == wxString::npos) {
+			if (work.size() && work.find('\\') == std::string::npos) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
 				//Currently we'll treat this as a plain text block, but feel free to create a new class
@@ -236,14 +237,14 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 
 		// Plain-text/drawing block
 plain:
-		wxString work;
-		size_t end = Text.get().find('{', cur + 1);
-		if (end == wxString::npos) {
-			work = Text.get().substr(cur);
+		std::string work;
+		size_t end = text.find('{', cur + 1);
+		if (end == std::string::npos) {
+			work = text.substr(cur);
 			cur = len;
 		}
 		else {
-			work = Text.get().substr(cur, end - cur);
+			work = text.substr(cur, end - cur);
 			cur = end;
 		}
 
@@ -260,10 +261,10 @@ void AssDialogue::StripTags() {
 	Text = GetStrippedText();
 }
 
-static wxString get_text(AssDialogueBlock &d) { return d.GetText(); }
+static std::string get_text(AssDialogueBlock &d) { return d.GetText(); }
 void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
 	if (blocks.empty()) return;
-	Text = join(blocks | transformed(get_text), wxS(""));
+	Text = to_wx(join(blocks | transformed(get_text), ""));
 }
 
 void AssDialogue::SetMarginString(wxString const& origvalue, int which) {
@@ -296,52 +297,45 @@ bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 	return ((Start < target->Start) ? (target->Start < End) : (Start < target->End));
 }
 
-static wxString get_text_p(AssDialogueBlock *d) { return d->GetText(); }
+static std::string get_text_p(AssDialogueBlock *d) { return d->GetText(); }
 wxString AssDialogue::GetStrippedText() const {
 	wxString ret;
 	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
-	return join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), wxS(""));
+	return to_wx(join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), ""));
 }
 
 AssEntry *AssDialogue::Clone() const {
 	return new AssDialogue(*this);
 }
 
-void AssDialogueBlockDrawing::TransformCoords(int mx,int my,double x,double y) {
+void AssDialogueBlockDrawing::TransformCoords(int mx, int my, double x, double y) {
 	// HACK: Implement a proper parser ffs!!
 	// Could use Spline but it'd be slower and this seems to work fine
-	wxStringTokenizer tkn(GetText()," ",wxTOKEN_DEFAULT);
-	wxString cur;
-	wxString final;
-	bool isX = true;
-	long temp;
+	bool is_x = true;
+	std::string final;
 
-	// Process tokens
-	while (tkn.HasMoreTokens()) {
-		cur = tkn.GetNextToken().Lower();
-
-		// Number, process it
-		if (cur.IsNumber()) {
-			// Transform it
-			cur.ToLong(&temp);
-			if (isX) temp = (long int)((temp+mx)*x + 0.5);
-			else temp = (long int)((temp+my)*y + 0.5);
-
-			// Write back to list
-			final += wxString::Format("%i ",temp);
-
-			// Toggle X/Y
-			isX = !isX;
+	boost::char_separator<char> sep(" ");
+	for (auto const& cur : boost::tokenizer<boost::char_separator<char>>(text, sep)) {
+		if (std::all_of(begin(cur), end(cur), isdigit)) {
+			int val = boost::lexical_cast<int>(cur);
+			if (is_x)
+				val = (int)((val + mx) * x + .5);
+			else
+				val = (int)((val + my) * y + .5);
+			final += std::to_string(val);
+			final += ' ';
 		}
-
-		// Text
-		else {
-			if (cur == "m" || cur == "n" || cur == "l" || cur == "b" || cur == "s" || cur == "p" || cur == "c") isX = true;
-			final += cur + " ";
+		else if (cur.size() == 1) {
+			char c = tolower(cur[0]);
+			if (c == 'm' || c == 'n' || c == 'l' || c == 'b' || c == 's' || c == 'p' || c == 'c') {
+				is_x = true;
+				final += c;
+				final += ' ';
+			}
 		}
 	}
 
 	// Write back final
-	final = final.Left(final.Length()-1);
+	final.pop_back();
 	text = final;
 }

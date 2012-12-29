@@ -48,6 +48,7 @@
 #include "../ass_file.h"
 #include "../ass_karaoke.h"
 #include "../ass_style.h"
+#include "../compat.h"
 #include "../dialog_colorpicker.h"
 #include "../dialog_paste_over.h"
 #include "../dialog_search_replace.h"
@@ -59,6 +60,7 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/sliced.hpp>
@@ -166,7 +168,7 @@ void paste_lines(agi::Context *c, bool paste_over) {
 }
 
 template<class T>
-T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T initial, wxString const& tag_name, wxString alt = wxString()) {
+T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T initial, std::string const& tag_name, std::string alt = "") {
 	for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto const& tag : ovr->Tags | reversed) {
 			if (tag.Name == tag_name || tag.Name == alt)
@@ -190,7 +192,7 @@ int block_at_pos(wxString const& text, int pos) {
 	return n;
 }
 
-void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxString const& tag, wxString const& value, int &sel_start, int &sel_end, bool at_end = false) {
+void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std::string const& tag, std::string const& value, int &sel_start, int &sel_end, bool at_end = false) {
 	if (blocks.empty())
 		blocks = line->ParseTags();
 
@@ -205,7 +207,7 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxS
 			--blockn;
 		else if ((plain = dynamic_cast<AssDialogueBlockPlain*>(block))) {
 			// Cursor is in a comment block, so try the previous block instead
-			if (plain->GetText().StartsWith("{")) {
+			if (boost::starts_with(plain->GetText(), "{")) {
 				--blockn;
 				start = line->Text.get().rfind('{', start);
 			}
@@ -224,22 +226,22 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, wxS
 	if (blockn < 0)
 		start = 0;
 
-	wxString insert = tag + value;
+	std::string insert(tag + value);
 	int shift = insert.size();
 	if (plain || blockn < 0) {
-		line->Text = line->Text.get().Left(start) + "{" + insert + "}" + line->Text.get().Mid(start);
+		line->Text = line->Text.get().Left(start) + "{" + to_wx(insert) + "}" + line->Text.get().Mid(start);
 		shift += 2;
 		blocks = line->ParseTags();
 	}
 	else if (ovr) {
-		wxString alt;
+		std::string alt;
 		if (tag == "\\c") alt = "\\1c";
 		// Remove old of same
 		bool found = false;
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
-			wxString name = ovr->Tags[i].Name;
+			std::string const& name = ovr->Tags[i].Name;
 			if (tag == name || alt == name) {
-				shift -= ((wxString)ovr->Tags[i]).size();
+				shift -= ((std::string)ovr->Tags[i]).size();
 				if (found) {
 					ovr->Tags.erase(ovr->Tags.begin() + i);
 					i--;
@@ -433,21 +435,21 @@ struct edit_font : public Command {
 			get_value(blocks, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
 			get_value(blocks, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
 			get_value(blocks, blockn, style->underline, "\\u"),
-			get_value(blocks, blockn, style->font, "\\fn"));
+			to_wx(get_value(blocks, blockn, from_wx(style->font), "\\fn")));
 
 		const wxFont font = wxGetFontFromUser(c->parent, startfont);
 		if (!font.Ok() || font == startfont) return;
 
 		if (font.GetFaceName() != startfont.GetFaceName())
-			set_tag(line, blocks, "\\fn", font.GetFaceName(), sel_start, sel_end);
+			set_tag(line, blocks, "\\fn", from_wx(font.GetFaceName()), sel_start, sel_end);
 		if (font.GetPointSize() != startfont.GetPointSize())
-			set_tag(line, blocks, "\\fs", wxString::Format("%d", font.GetPointSize()), sel_start, sel_end);
+			set_tag(line, blocks, "\\fs", std::to_string(font.GetPointSize()), sel_start, sel_end);
 		if (font.GetWeight() != startfont.GetWeight())
-			set_tag(line, blocks, "\\b", wxString::Format("%d", font.GetWeight() == wxFONTWEIGHT_BOLD), sel_start, sel_end);
+			set_tag(line, blocks, "\\b", std::to_string(font.GetWeight() == wxFONTWEIGHT_BOLD), sel_start, sel_end);
 		if (font.GetStyle() != startfont.GetStyle())
-			set_tag(line, blocks, "\\i", wxString::Format("%d", font.GetStyle() == wxFONTSTYLE_ITALIC), sel_start, sel_end);
+			set_tag(line, blocks, "\\i", std::to_string(font.GetStyle() == wxFONTSTYLE_ITALIC), sel_start, sel_end);
 		if (font.GetUnderlined() != startfont.GetUnderlined())
-			set_tag(line, blocks, "\\i", wxString::Format("%d", font.GetUnderlined()), sel_start, sel_end);
+			set_tag(line, blocks, "\\i", std::to_string(font.GetUnderlined()), sel_start, sel_end);
 
 		commit_text(c, _("set font"), sel_start, sel_end);
 	}

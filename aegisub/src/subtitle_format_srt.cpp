@@ -516,7 +516,7 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 }
 
 bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
-	wxString supported_tags[] = { "\\b", "\\i", "\\s", "\\u" };
+	std::string supported_tags[] = { "\\b", "\\i", "\\s", "\\u" };
 
 	AssStyle defstyle;
 	for (auto const& line : file->Line) {
@@ -574,7 +574,7 @@ wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 		}
 		// Plain text
 		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(&block)) {
-			final += plain->GetText();
+			final += to_wx(plain->GetText());
 		}
 	}
 

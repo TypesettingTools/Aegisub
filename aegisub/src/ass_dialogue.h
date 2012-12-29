@@ -74,19 +74,19 @@ std::size_t hash_value(wxString const& s);
 class AssDialogueBlock {
 protected:
 	/// Text of this block
-	wxString text;
+	std::string text;
 public:
-	AssDialogueBlock(wxString const& text) : text(text) { }
+	AssDialogueBlock(std::string const& text) : text(text) { }
 	virtual ~AssDialogueBlock() { }
 
 	virtual AssBlockType GetType() const = 0;
-	virtual wxString GetText() { return text; }
+	virtual std::string GetText() { return text; }
 };
 
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
 	AssBlockType GetType() const override { return BLOCK_PLAIN; }
-	AssDialogueBlockPlain(wxString const& text = wxString()) : AssDialogueBlock(text) { }
+	AssDialogueBlockPlain(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 };
 
 class AssDialogueBlockDrawing : public AssDialogueBlock {
@@ -94,23 +94,23 @@ public:
 	int Scale;
 
 	AssBlockType GetType() const override { return BLOCK_DRAWING; }
-	AssDialogueBlockDrawing(wxString const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
+	AssDialogueBlockDrawing(std::string const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
 class AssDialogueBlockOverride : public AssDialogueBlock {
 public:
-	AssDialogueBlockOverride(wxString const& text = wxString()) : AssDialogueBlock(text) { }
+	AssDialogueBlockOverride(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 
 	std::vector<AssOverrideTag> Tags;
 
 	AssBlockType GetType() const override { return BLOCK_OVERRIDE; }
-	wxString GetText() override;
+	std::string GetText() override;
 	void ParseTags();
-	void AddTag(wxString const& tag);
+	void AddTag(std::string const& tag);
 
 	/// Type of callback function passed to ProcessParameters
-	typedef void (*ProcessParametersCallback)(wxString const&, AssOverrideParameter *, void *);
+	typedef void (*ProcessParametersCallback)(std::string const&, AssOverrideParameter *, void *);
 	/// @brief Process parameters via callback
 	/// @param callback The callback function to call per tag parameter
 	/// @param userData User data to pass to callback function

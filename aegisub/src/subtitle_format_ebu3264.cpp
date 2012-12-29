@@ -285,7 +285,7 @@ namespace
 					case BLOCK_PLAIN:
 					// find special characters and convert them
 					{
-						wxString text = b.GetText();
+						wxString text = to_wx(b.GetText());
 
 						// Skip comments
 						if (text.size() > 1 && text[0] =='{' && text.Last() == '}')

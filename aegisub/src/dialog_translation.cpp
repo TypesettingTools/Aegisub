@@ -39,6 +39,9 @@
 #include "utils.h"
 #include "video_context.h"
 
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+
 #include <wx/checkbox.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
@@ -53,9 +56,9 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wx
 // Skip over override blocks, comments, and whitespace between blocks
 static bool bad_block(AssDialogueBlock &block) {
 	if (block.GetType() != BLOCK_PLAIN) return true;
-	wxString text = block.GetText();
-	if (text.Trim().Trim(false).empty()) return true;
-	if (text[0] == '{' && text.Last() == '}') return true;
+	std::string text = block.GetText();
+	if (boost::all(text, boost::is_space())) return true;
+	if (boost::starts_with(text, "{") && boost::ends_with(text, "}")) return true;
 	return false;
 }
 
@@ -247,14 +250,14 @@ void DialogTranslation::UpdateDisplay() {
 	for (auto& block : blocks) {
 		if (block.GetType() == BLOCK_PLAIN) {
 			int cur_size = original_text->GetReverseUnicodePosition(original_text->GetLength());
-			original_text->AppendText(block.GetText());
+			original_text->AppendTextRaw(block.GetText().c_str());
 			if (i == cur_block) {
 				original_text->StartUnicodeStyling(cur_size);
 				original_text->SetUnicodeStyling(cur_size, block.GetText().size(), 1);
 			}
 		}
 		else if (block.GetType() == BLOCK_OVERRIDE)
-			original_text->AppendText(block.GetText());
+			original_text->AppendTextRaw(block.GetText().c_str());
 		++i;
 	}
 
@@ -271,7 +274,7 @@ void DialogTranslation::Commit(bool next) {
 	new_value.Replace("\r\n", "\\N");
 	new_value.Replace("\r", "\\N");
 	new_value.Replace("\n", "\\N");
-	blocks[cur_block] = AssDialogueBlockPlain(new_value);
+	blocks[cur_block] = AssDialogueBlockPlain(from_wx(new_value));
 	active_line->UpdateText(blocks);
 
 	file_change_connection.Block();
@@ -290,7 +293,7 @@ void DialogTranslation::Commit(bool next) {
 }
 
 void DialogTranslation::InsertOriginal() {
-	translated_text->AddText(blocks[cur_block].GetText());
+	translated_text->AddText(to_wx(blocks[cur_block].GetText()));
 }
 
 

@@ -135,8 +135,8 @@ protected:
 	void GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, bool &inverse);
 	wxString GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse);
 
-	void SetOverride(AssDialogue* line, wxString const& tag, wxString const& value);
-	void SetSelectedOverride(wxString const& tag, wxString const& value);
+	void SetOverride(AssDialogue* line, std::string const& tag, wxString const& value);
+	void SetSelectedOverride(std::string const& tag, wxString const& value);
 
 	VisualToolBase(VideoDisplay *parent, agi::Context *context);
 

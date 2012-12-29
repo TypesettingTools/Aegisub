@@ -152,7 +152,7 @@ namespace {
 		double ar;
 	};
 
-	void resample_tags(wxString const& name, AssOverrideParameter *cur, void *ud) {
+	void resample_tags(std::string const& name, AssOverrideParameter *cur, void *ud) {
 		resample_state *state = static_cast<resample_state *>(ud);
 
 		double resizer = 1.0;
@@ -182,7 +182,7 @@ namespace {
 				break;
 
 			case PARCLASS_DRAWING: {
-				AssDialogueBlockDrawing block(cur->Get<wxString>(), 1);
+				AssDialogueBlockDrawing block(cur->Get<std::string>(), 1);
 				block.TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
 				cur->Set(block.GetText());
 				return;

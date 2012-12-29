@@ -72,7 +72,7 @@ class AssTransformFramerateFilter : public AssExportFilter {
 	/// @param name Name of the tag
 	/// @param curParam Current parameter being processed
 	/// @param userdata Filter instance
-	static void TransformTimeTags(wxString const& name, AssOverrideParameter *curParam, void *userdata);
+	static void TransformTimeTags(std::string const& name, AssOverrideParameter *curParam, void *userdata);
 
 	/// @brief Convert a time from the input frame rate to the output frame rate
 	/// @param time Time in ms to convert

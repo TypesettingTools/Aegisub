@@ -26,6 +26,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "compat.h"
 #include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
@@ -59,7 +60,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				std::string const& name = tag.Name;
 
 				if (name == "\\r") {
-					style = styles[tag.Params[0].Get<wxString>(line->Style)];
+					style = styles[to_wx(tag.Params[0].Get(from_wx(line->Style)))];
 					overriden = false;
 				}
 				else if (name == "\\b") {
@@ -71,7 +72,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 					overriden = true;
 				}
 				else if (name == "\\fn") {
-					style.facename = tag.Params[0].Get(initial.facename);
+					style.facename = to_wx(tag.Params[0].Get(from_wx(initial.facename)));
 					overriden = true;
 				}
 			}

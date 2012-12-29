@@ -37,7 +37,6 @@
 #include <vector>
 
 class AssDialogueBlockOverride;
-class wxString;
 
 /// Type of parameter; probably only used by the resample tool
 enum AssParameterClass {
@@ -63,7 +62,7 @@ enum VariableDataType {
 
 /// A single parameter to an override tag
 class AssOverrideParameter : boost::noncopyable {
-	wxString value;
+	std::string value;
 	mutable std::unique_ptr<AssDialogueBlockOverride> block;
 	VariableDataType type;
 
@@ -93,14 +92,14 @@ class AssOverrideTag : boost::noncopyable {
 public:
 	AssOverrideTag();
 	AssOverrideTag(AssOverrideTag&&);
-	AssOverrideTag(wxString const& text);
+	AssOverrideTag(std::string const& text);
 	AssOverrideTag& operator=(AssOverrideTag&&);
 
-	wxString Name;
+	std::string Name;
 	std::vector<AssOverrideParameter> Params;
 
 	bool IsValid() const { return valid; }
 	void Clear();
-	void SetText(const wxString &text);
-	operator wxString() const;
+	void SetText(const std::string &text);
+	operator std::string() const;
 };

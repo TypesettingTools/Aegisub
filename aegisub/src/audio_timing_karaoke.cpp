@@ -29,6 +29,7 @@
 #include "audio_controller.h"
 #include "audio_renderer.h"
 #include "audio_timing.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "pen.h"

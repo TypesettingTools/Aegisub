@@ -26,16 +26,6 @@
 #include <algorithm>
 #include <numeric>
 
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/dcclient.h>
-#include <wx/dcmemory.h>
-#include <wx/menu.h>
-#include <wx/panel.h>
-#include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/tokenzr.h>
-
 #include "include/aegisub/context.h"
 
 #include "ass_dialogue.h"
@@ -44,10 +34,20 @@
 #include "audio_box.h"
 #include "audio_controller.h"
 #include "audio_timing.h"
+#include "compat.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "selection_controller.h"
 #include "utils.h"
+
+#include <wx/bmpbuttn.h>
+#include <wx/button.h>
+#include <wx/dcclient.h>
+#include <wx/dcmemory.h>
+#include <wx/menu.h>
+#include <wx/panel.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
 
 template<class Container, class Value>
 static inline size_t last_lt_or_eq(Container const& c, Value const& v) {
@@ -236,8 +236,8 @@ void AudioKaraoke::RenderText() {
 	}
 }
 
-void AudioKaraoke::AddMenuItem(wxMenu &menu, wxString const& tag, wxString const& help, wxString const& selected) {
-	wxMenuItem *item = menu.AppendCheckItem(-1, tag, help);
+void AudioKaraoke::AddMenuItem(wxMenu &menu, std::string const& tag, wxString const& help, std::string const& selected) {
+	wxMenuItem *item = menu.AppendCheckItem(-1, to_wx(tag), help);
 	menu.Bind(wxEVT_COMMAND_MENU_SELECTED, std::bind(&AudioKaraoke::SetTagType, this, tag), item->GetId());
 	item->Check(tag == selected);
 }
@@ -246,7 +246,7 @@ void AudioKaraoke::OnContextMenu(wxContextMenuEvent&) {
 	if (!enabled) return;
 
 	wxMenu context_menu(_("Karaoke tag"));
-	wxString type = kara->GetTagType();
+	std::string type = kara->GetTagType();
 
 	AddMenuItem(context_menu, "\\k", _("Change karaoke tag to \\k"), type);
 	AddMenuItem(context_menu, "\\kf", _("Change karaoke tag to \\kf"), type);
@@ -359,7 +359,7 @@ void AudioKaraoke::SetDisplayText() {
 	syl_start_points.reserve(kara->size());
 	for (auto const& syl : *kara) {
 		syl_start_points.push_back(spaced_text.size());
-		spaced_text += " " + syl.text;
+		spaced_text += to_wx(" " + syl.text);
 	}
 
 	// Get the x-coordinates of the right edge of each character
@@ -408,7 +408,7 @@ void AudioKaraoke::AcceptSplit() {
 	cancel_button->Enable(false);
 }
 
-void AudioKaraoke::SetTagType(wxString new_tag) {
+void AudioKaraoke::SetTagType(std::string const& new_tag) {
 	kara->SetTagType(new_tag);
 	AcceptSplit();
 }

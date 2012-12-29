@@ -167,7 +167,7 @@ int FORCEINLINE trunc_cs(int time) {
 	return (time / 10) * 10;
 }
 
-void AssTransformFramerateFilter::TransformTimeTags(wxString const& name, AssOverrideParameter *curParam, void *curData) {
+void AssTransformFramerateFilter::TransformTimeTags(std::string const& name, AssOverrideParameter *curParam, void *curData) {
 	VariableDataType type = curParam->GetType();
 	if (type != VARDATA_INT && type != VARDATA_FLOAT) return;
 

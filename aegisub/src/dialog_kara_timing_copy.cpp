@@ -53,6 +53,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
+#include "compat.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "kana_table.h"
@@ -266,7 +267,7 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 		// Matched source syllables
 		int syl_x = next_x;
 		for (auto const& syl : grp.src)
-			syl_x += DrawBoxedText(dc, syl.text, syl_x, y_line1);
+			syl_x += DrawBoxedText(dc, to_wx(syl.text), syl_x, y_line1);
 
 		// Matched destination text
 		{
@@ -305,7 +306,7 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 			dc.SetBrush(wxBrush(inner_back));
 		}
 
-		syl_x += DrawBoxedText(dc, unmatched_source[j].text, syl_x, y_line1);
+		syl_x += DrawBoxedText(dc, to_wx(unmatched_source[j].text), syl_x, y_line1);
 	}
 
 	// Remaining destination
@@ -413,7 +414,7 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 	}
 
 	// We'll first see if we can do something with the first unmatched source syllable
-	wxString src(unmatched_source[0].text.Lower());
+	wxString src(to_wx(unmatched_source[0].text).Lower());
 	wxString dst(unmatched_destination);
 	source_sel_length = 1; // we're working on the first, assume it was matched
 	destination_sel_length = 0;
@@ -531,12 +532,12 @@ void KaraokeLineMatchDisplay::AutoMatchJapanese()
 			// Check if we've gone too far ahead in the source
 			if (src_lookahead_pos++ >= src_lookahead_max) break;
 			// Otherwise look for a match
-			if (syl.text.StartsWith(matched_roma))
+			if (to_wx(syl.text).StartsWith(matched_roma))
 			{
 				// Yay! Time to interpolate.
 				// Special case: If the last source syllable before the matching one is
 				// empty or contains just whitespace, don't include that one.
-				if (src_lookahead_pos > 1 && StringEmptyOrWhitespace(unmatched_source[src_lookahead_pos-2].text))
+				if (src_lookahead_pos > 1 && StringEmptyOrWhitespace(to_wx(unmatched_source[src_lookahead_pos-2].text)))
 					src_lookahead_pos -= 1;
 				// Special case: Just one source syllable matching, pick all destination found
 				if (src_lookahead_pos == 2)

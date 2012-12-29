@@ -25,24 +25,28 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
 
+#include <boost/format.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <wx/intl.h>
 
-wxString AssKaraoke::Syllable::GetText(bool k_tag) const {
-	wxString ret;
+std::string AssKaraoke::Syllable::GetText(bool k_tag) const {
+	std::string ret;
 
 	if (k_tag)
-		ret = wxString::Format("{%s%d}", tag_type, (duration + 5) / 10);
+		ret = str(boost::format("{%s%d}") % tag_type % ((duration + 5) / 10));
 
 	size_t idx = 0;
 	for (auto const& ovr : ovr_tags) {
-		ret += text.Mid(idx, ovr.first - idx);
+		ret += text.substr(idx, ovr.first - idx);
 		ret += ovr.second;
 		idx = ovr.first;
 	}
-	ret += text.Mid(idx);
+	ret += text.substr(idx);
 	return ret;
 }
 
@@ -91,7 +95,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 	if (auto_split && syls.size() == 1) {
 		size_t pos;
 		no_announce = true;
-		while ((pos = syls.back().text.find(' ')) != wxString::npos)
+		while ((pos = syls.back().text.find(' ')) != std::string::npos)
 			AddSplit(syls.size() - 1, pos + 1);
 		no_announce = false;
 	}
@@ -103,11 +107,11 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 
 	for (auto& block : blocks) {
-		wxString text = block.GetText();
+		std::string text = block.GetText();
 
 		if (dynamic_cast<AssDialogueBlockPlain*>(&block)) {
 			// treat comments as overrides rather than dialogue
-			if (text.size() && text[0] == '{')
+			if (boost::starts_with(text, "{"))
 				syl.ovr_tags[syl.text.size()] += text;
 			else
 				syl.text += text;
@@ -120,7 +124,7 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(&block)) {
 			bool in_tag = false;
 			for (auto& tag : ovr->Tags) {
-				if (tag.IsValid() && tag.Name.Left(2).Lower() == "\\k") {
+				if (tag.IsValid() && boost::istarts_with(tag.Name, "\\k")) {
 					if (in_tag) {
 						syl.ovr_tags[syl.text.size()] += "}";
 						in_tag = false;
@@ -142,11 +146,10 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 					syl.duration = tag.Params[0].Get(0) * 10;
 				}
 				else {
-					wxString& otext = syl.ovr_tags[syl.text.size()];
+					std::string& otext = syl.ovr_tags[syl.text.size()];
 					// Merge adjacent override tags
-					if (otext.size() && otext.Last() == '}')
-						otext.RemoveLast();
-					else if (!in_tag)
+					boost::trim_right_if(text, boost::is_any_of("}"));
+					if (!in_tag)
 						otext += "{";
 
 					in_tag = true;
@@ -167,16 +170,16 @@ wxString AssKaraoke::GetText() const {
 	text.reserve(size() * 10);
 
 	for (auto const& syl : syls)
-		text += syl.GetText(true);
+		text += to_wx(syl.GetText(true));
 
 	return text;
 }
 
-wxString AssKaraoke::GetTagType() const {
+std::string AssKaraoke::GetTagType() const {
 	return begin()->tag_type;
 }
 
-void AssKaraoke::SetTagType(wxString const& new_type) {
+void AssKaraoke::SetTagType(std::string const& new_type) {
 	for (auto& syl : syls)
 		syl.tag_type = new_type;
 }
@@ -190,8 +193,8 @@ void AssKaraoke::AddSplit(size_t syl_idx, size_t pos) {
 	// character then pos will be out of bounds. Doing this is a bit goofy,
 	// but it's sometimes required for complex karaoke scripts
 	if (pos < syl.text.size()) {
-		new_syl.text = syl.text.Mid(pos);
-		syl.text = syl.text.Left(pos);
+		new_syl.text = syl.text.substr(pos);
+		syl.text = syl.text.substr(0, pos);
 	}
 
 	if (new_syl.text.empty())
@@ -302,7 +305,7 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 
 			new_line->Start = syl.start_time;
 			new_line->End = syl.start_time + syl.duration;
-			new_line->Text = syl.GetText(false);
+			new_line->Text = to_wx(syl.GetText(false));
 
 			c->ass->Line.insert(it, *new_line);
 
