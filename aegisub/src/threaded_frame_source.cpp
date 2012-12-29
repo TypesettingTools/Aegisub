@@ -36,6 +36,11 @@
 #include "video_frame.h"
 #include "video_provider_manager.h"
 
+enum {
+	NEW_SUBS_FILE = -1,
+	SUBS_FILE_ALREADY_LOADED = -2
+};
+
 // Test if a line is a dialogue line which is not visible at the given time
 struct invisible_line : public std::unary_function<AssEntry const&, bool> {
 	double time;
@@ -65,14 +70,18 @@ std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, dou
 	if (!raw && provider) {
 		try {
 			wxMutexLocker locker(fileMutex);
-			if (subs.get() && singleFrame != frameNum) {
+			if (subs && singleFrame != frameNum && singleFrame != SUBS_FILE_ALREADY_LOADED) {
 				// Generally edits and seeks come in groups; if the last thing done
 				// was seek it is more likely that the user will seek again and
 				// vice versa. As such, if this is the first frame requested after
 				// an edit, only export the currently visible lines (because the
 				// other lines will probably not be viewed before the file changes
 				// again), and if it's a different frame, export the entire file.
-				if (singleFrame == -1) {
+				if (singleFrame != NEW_SUBS_FILE) {
+					provider->LoadSubtitles(subs.get());
+					singleFrame = SUBS_FILE_ALREADY_LOADED;
+				}
+				else {
 					// This will crash if any of the export filters try to use
 					// anything but the subtitles, but that wouldn't be safe to
 					// do anyway
@@ -99,15 +108,11 @@ std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, dou
 						subs->Line.clear();
 						boost::push_back(subs->Line, full | boost::adaptors::indirected);
 					}
-					catch(...) {
+					catch (...) {
 						subs->Line.clear();
 						boost::push_back(subs->Line, full | boost::adaptors::indirected);
 						throw;
 					}
-				}
-				else {
-					provider->LoadSubtitles(subs.get());
-					subs.reset();
 				}
 			}
 		}
@@ -160,7 +165,7 @@ void *ThreadedFrameSource::Entry() {
 				}
 			}
 
-			singleFrame = -1;
+			singleFrame = NEW_SUBS_FILE;
 		}
 
 		try {
