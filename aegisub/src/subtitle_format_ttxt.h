@@ -48,9 +48,9 @@ class TTXTSubtitleFormat : public SubtitleFormat {
 
 public:
 	TTXTSubtitleFormat();
-	wxArrayString GetReadWildcards() const;
-	wxArrayString GetWriteWildcards() const;
+	wxArrayString GetReadWildcards() const override;
+	wxArrayString GetWriteWildcards() const override;
 
-	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
-	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
+	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const override;
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const override;
 };

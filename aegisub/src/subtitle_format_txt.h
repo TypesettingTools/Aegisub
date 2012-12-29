@@ -37,13 +37,13 @@
 class TXTSubtitleFormat : public SubtitleFormat {
 public:
 	TXTSubtitleFormat();
-	wxArrayString GetReadWildcards() const;
-	wxArrayString GetWriteWildcards() const;
+	wxArrayString GetReadWildcards() const override;
+	wxArrayString GetWriteWildcards() const override;
 
 	// TXT format supports so little that it should always require an export
-	bool CanSave(const AssFile*) const { return false; }
+	bool CanSave(const AssFile*) const override { return false; }
 
-	bool CanWriteFile(wxString const& filename) const;
-	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
-	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
+	bool CanWriteFile(wxString const& filename) const override;
+	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const override;
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const override;
 };

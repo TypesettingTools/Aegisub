@@ -37,7 +37,7 @@
 class MKVSubtitleFormat : public SubtitleFormat {
 public:
 	MKVSubtitleFormat();
-	wxArrayString GetReadWildcards() const;
+	wxArrayString GetReadWildcards() const override;
 
-	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const;
+	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const override;
 };

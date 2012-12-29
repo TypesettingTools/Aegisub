@@ -27,8 +27,8 @@
 class Ebu3264SubtitleFormat : public SubtitleFormat {
 public:
 	Ebu3264SubtitleFormat();
-	wxArrayString GetWriteWildcards() const;
-	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const;
+	wxArrayString GetWriteWildcards() const override;
+	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const override;
 
 	DEFINE_SIMPLE_EXCEPTION(ConversionFailed, agi::InvalidInputException, "subtitle_io/ebu3264/conversion_error")
 };
