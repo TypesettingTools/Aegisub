@@ -40,6 +40,8 @@
 #include <tchar.h>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+#include <libaegisub/charset_conv_win.h>
 #endif
 
 #include <wx/button.h>
@@ -97,7 +99,7 @@ namespace Automation4 {
 		lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
 		lf.lfQuality = ANTIALIASED_QUALITY;
 		lf.lfPitchAndFamily = DEFAULT_PITCH|FF_DONTCARE;
-		wcsncpy(lf.lfFaceName, style->font.wc_str(), 32);
+		wcsncpy(lf.lfFaceName, agi::charset::ConvertW(style->font).c_str(), 32);
 
 		HFONT thefont = CreateFontIndirect(&lf);
 		if (!thefont) return false;

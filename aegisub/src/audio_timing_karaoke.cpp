@@ -289,7 +289,7 @@ void AudioTimingControllerKaraoke::Revert() {
 	for (auto it = kara->begin(); it != kara->end(); ++it) {
 		if (it != kara->begin())
 			markers.emplace_back(it->start_time, &separator_pen, AudioMarker::Feet_None);
-		labels.emplace_back(it->text, TimeRange(it->start_time, it->start_time + it->duration));
+		labels.emplace_back(to_wx(it->text), TimeRange(it->start_time, it->start_time + it->duration));
 	}
 
 	AnnounceUpdatedPrimaryRange();

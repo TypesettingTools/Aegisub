@@ -33,8 +33,10 @@
 ///
 
 #include <deque>
+#include <string>
+#include <vector>
 
-#include <wx/arrstr.h>
+#include <wx/string.h>
 
 class AssStyle;
 
@@ -57,7 +59,7 @@ public:
 	size_t size() const { return style.size(); }
 
 	/// Get the names of all styles in this storage
-	wxArrayString GetNames();
+	std::vector<std::string> GetNames();
 
 	/// Delete all styles in this storage
 	void Clear();
@@ -68,7 +70,7 @@ public:
 	/// Get the style with the given name
 	/// @param name Case-insensitive style name
 	/// @return Style or nullptr if the requested style is not found
-	AssStyle *GetStyle(wxString const& name);
+	AssStyle *GetStyle(std::string const& name);
 
 	/// Save stored styles to a file
 	void Save() const;

@@ -69,6 +69,10 @@ namespace {
 		lua_pushstring(L, value.utf8_str());
 	}
 
+	void push_value(lua_State *L, std::string const& value) {
+		lua_pushstring(L, value.c_str());
+	}
+
 	void push_value(lua_State *L, const char *value) {
 		lua_pushstring(L, value);
 	}
@@ -302,8 +306,8 @@ namespace Automation4 {
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;
 				result = sty;
-				sty->name = get_wxstring_field(L, "name", "style");
-				sty->font = get_wxstring_field(L, "fontname", "style");
+				sty->name = get_string_field(L, "name", "style");
+				sty->font = get_string_field(L, "fontname", "style");
 				sty->fontsize = get_double_field(L, "fontsize", "style");
 				sty->primary = get_string_field(L, "color1", "style");
 				sty->secondary = get_string_field(L, "color2", "style");

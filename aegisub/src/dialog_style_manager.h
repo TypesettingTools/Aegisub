@@ -107,12 +107,12 @@ class DialogStyleManager : public wxDialog {
 	/// Open the style editor for the given style on the script
 	/// @param style Style to edit, or nullptr for new
 	/// @param new_name Default new name for copies
-	void ShowCurrentEditor(AssStyle *style, wxString const& new_name = "");
+	void ShowCurrentEditor(AssStyle *style, std::string const& new_name = "");
 
 	/// Open the style editor for the given style in the storage
 	/// @param style Style to edit, or nullptr for new
 	/// @param new_name Default new name for copies
-	void ShowStorageEditor(AssStyle *style, wxString const& new_name = "");
+	void ShowStorageEditor(AssStyle *style, std::string const& new_name = "");
 
 	/// Save the storage and update the view after a change
 	void UpdateStorage();

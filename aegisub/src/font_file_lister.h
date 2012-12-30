@@ -51,7 +51,7 @@ public:
 	/// @param italic Italic?
 	/// @param characters Characters in this style
 	/// @return Path to the matching font file(s), or empty if not found
-	virtual CollectionResult GetFontPaths(wxString const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) = 0;
+	virtual CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) = 0;
 };
 
 /// @class FontCollector
@@ -59,7 +59,7 @@ public:
 class FontCollector {
 	/// All data needed to find the font file used to render text
 	struct StyleInfo {
-		wxString facename;
+		std::string facename;
 		int bold;
 		bool italic;
 		bool operator<(StyleInfo const& rgt) const;
@@ -67,9 +67,9 @@ class FontCollector {
 
 	/// Data about where each style is used
 	struct UsageData {
-		std::set<wxUniChar> chars; ///< Characters used in this style which glyphs will be needed for
-		std::set<int> lines;       ///< Lines on which this style is used via overrides
-		std::set<wxString> styles; ///< ASS styles which use this style
+		std::set<wxUniChar> chars;    ///< Characters used in this style which glyphs will be needed for
+		std::set<int> lines;          ///< Lines on which this style is used via overrides
+		std::set<std::string> styles; ///< ASS styles which use this style
 	};
 
 	/// Message callback provider by caller
@@ -80,7 +80,7 @@ class FontCollector {
 	/// The set of all glyphs used in the file
 	std::map<StyleInfo, UsageData> used_styles;
 	/// Style name -> ASS style definition
-	std::map<wxString, StyleInfo> styles;
+	std::map<std::string, StyleInfo> styles;
 	/// Paths to found required font files
 	std::set<wxString> results;
 	/// Number of fonts which could not be found

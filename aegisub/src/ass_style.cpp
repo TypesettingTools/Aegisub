@@ -34,15 +34,18 @@
 
 #include "config.h"
 
-#include <cctype>
-
-#include <wx/intl.h>
-#include <wx/tokenzr.h>
-
 #include "ass_style.h"
 #include "compat.h"
 #include "subtitle_format.h"
 #include "utils.h"
+
+#include <algorithm>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/lexical_cast.hpp>
+#include <cctype>
+
+#include <wx/intl.h>
 
 AssStyle::AssStyle()
 : name("Default")
@@ -69,61 +72,105 @@ AssStyle::AssStyle()
 	UpdateData();
 }
 
-static wxString get_next_string(wxStringTokenizer &tok) {
-	if (!tok.HasMoreTokens()) throw SubtitleFormatParseError("Malformed style: not enough fields", 0);
-	return tok.GetNextToken();
+namespace {
+class parser {
+	typedef boost::iterator_range<std::string::const_iterator> string_range;
+	string_range str;
+	std::vector<string_range> tkns;
+	size_t tkn_idx;
+
+	string_range& next_tok() {
+		if (tkn_idx >= tkns.size())
+			throw SubtitleFormatParseError("Malformed style: not enough fields", 0);
+		return tkns[tkn_idx++];
+	}
+
+public:
+	parser(std::string const& str)
+	: tkn_idx(0)
+	{
+		auto pos = find(str.begin(), str.end(), ':');
+		if (pos != str.end()) {
+			this->str = string_range(pos + 1, str.end());
+			split(tkns, this->str, [](char c) { return c == ','; });
+		}
+	}
+
+	~parser() {
+		if (tkn_idx != tkns.size())
+			throw SubtitleFormatParseError("Malformed style: too many fields", 0);
+	}
+
+	std::string next_str() {
+		auto tkn = trim_copy(next_tok());
+		return std::string(begin(tkn), end(tkn));
+	}
+
+	agi::Color next_color() {
+		auto &tkn = next_tok();
+		return std::string(begin(tkn), end(tkn));
+	}
+
+	int next_int() {
+		try {
+			return boost::lexical_cast<int>(next_tok());
+		}
+		catch (boost::bad_lexical_cast const&) {
+			throw SubtitleFormatParseError("Malformed style: bad int field", 0);
+		}
+	}
+
+	double next_double() {
+		try {
+			return boost::lexical_cast<double>(next_tok());
+		}
+		catch (boost::bad_lexical_cast const&) {
+			throw SubtitleFormatParseError("Malformed style: bad double field", 0);
+		}
+	}
+
+	void skip_token() {
+		++tkn_idx;
+	}
+};
 }
 
-static int get_next_int(wxStringTokenizer &tok) {
-	long temp;
-	if (!get_next_string(tok).ToLong(&temp))
-		throw SubtitleFormatParseError("Malformed style: could not parse int field", 0);
-	return temp;
-}
+AssStyle::AssStyle(wxString const& rawData, int version) {
+	parser p(from_wx(rawData));
 
-static double get_next_double(wxStringTokenizer &tok) {
-	double temp;
-	if (!get_next_string(tok).ToDouble(&temp))
-		throw SubtitleFormatParseError("Malformed style: could not parse double field", 0);
-	return temp;
-}
-
-AssStyle::AssStyle(wxString rawData, int version) {
-	wxStringTokenizer tkn(rawData.Trim(false).Mid(6), ",", wxTOKEN_RET_EMPTY_ALL);
-
-	name = get_next_string(tkn).Trim(true).Trim(false);
-	font = get_next_string(tkn).Trim(true).Trim(false);
-	fontsize = get_next_double(tkn);
+	name = p.next_str();
+	font = p.next_str();
+	fontsize = p.next_double();
 
 	if (version != 0) {
-		primary = from_wx(get_next_string(tkn));
-		secondary = from_wx(get_next_string(tkn));
-		outline = from_wx(get_next_string(tkn));
-		shadow = from_wx(get_next_string(tkn));
+		primary = p.next_color();
+		secondary = p.next_color();
+		outline = p.next_color();
+		shadow = p.next_color();
 	}
 	else {
-		primary = from_wx(get_next_string(tkn));
-		secondary = from_wx(get_next_string(tkn));
+		primary = p.next_color();
+		secondary = p.next_color();
 
-		// Read and discard tertiary color
-		get_next_string(tkn);
+		// Skip tertiary color
+		p.skip_token();
 
 		// Read shadow/outline color
-		outline = from_wx(get_next_string(tkn));
+		outline = p.next_color();
 		shadow = outline;
 	}
 
-	bold = !!get_next_int(tkn);
-	italic = !!get_next_int(tkn);
+	bold = !!p.next_int();
+	italic = !!p.next_int();
 
 	if (version != 0) {
-		underline = !!get_next_int(tkn);
-		strikeout = !!get_next_int(tkn);
+		underline = !!p.next_int();
+		strikeout = !!p.next_int();
 
-		scalex = get_next_double(tkn);
-		scaley = get_next_double(tkn);
-		spacing = get_next_double(tkn);
-		angle = get_next_double(tkn);
+		scalex = p.next_double();
+		scaley = p.next_double();
+		spacing = p.next_double();
+		angle = p.next_double();
 	}
 	else {
 		// SSA defaults
@@ -136,42 +183,33 @@ AssStyle::AssStyle(wxString rawData, int version) {
 		angle = 0.0;
 	}
 
-	borderstyle = get_next_int(tkn);
-	outline_w = get_next_double(tkn);
-	shadow_w = get_next_double(tkn);
-	alignment = get_next_int(tkn);
+	borderstyle = p.next_int();
+	outline_w = p.next_double();
+	shadow_w = p.next_double();
+	alignment = p.next_int();
 
 	if (version == 0)
 		alignment = SsaToAss(alignment);
 
-	// Read left margin
-	Margin[0] = mid(0, get_next_int(tkn), 9999);
-
-	// Read right margin
-	Margin[1] = mid(0, get_next_int(tkn), 9999);
-
-	// Read vertical margin
-	Margin[2] = mid(0, get_next_int(tkn), 9999);
+	Margin[0] = mid(0, p.next_int(), 9999);
+	Margin[1] = mid(0, p.next_int(), 9999);
+	Margin[2] = mid(0, p.next_int(), 9999);
 
 	// Skip alpha level
 	if (version == 0)
-		get_next_string(tkn);
+		p.skip_token();
 
-	// Read encoding
-	encoding = get_next_int(tkn);
-
-	if (tkn.HasMoreTokens())
-		throw SubtitleFormatParseError("Malformed style: too many fields", 0);
+	encoding = p.next_int();
 
 	UpdateData();
 }
 
 void AssStyle::UpdateData() {
-	name.Replace(",", ";");
-	font.Replace(",", ";");
+	replace(name.begin(), name.end(), ',', ';');
+	replace(font.begin(), font.end(), ',', ';');
 
 	data = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
-		name, font, fontsize,
+		to_wx(name), to_wx(font), fontsize,
 		primary.GetAssStyleFormatted(),
 		secondary.GetAssStyleFormatted(),
 		outline.GetAssStyleFormatted(),
@@ -185,7 +223,7 @@ void AssStyle::UpdateData() {
 
 wxString AssStyle::GetSSAText() const {
 	return wxString::Format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i",
-		name, font, fontsize,
+		to_wx(name), to_wx(font), fontsize,
 		primary.GetSsaFormatted(),
 		secondary.GetSsaFormatted(),
 		shadow.GetSsaFormatted(),

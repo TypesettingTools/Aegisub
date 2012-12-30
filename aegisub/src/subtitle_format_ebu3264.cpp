@@ -400,7 +400,7 @@ namespace
 				imline.time_out -= 1;
 
 			// convert alignment from style
-			AssStyle *style = copy.GetStyle(line->Style);
+			AssStyle *style = copy.GetStyle(from_wx(line->Style));
 			if (!style)
 				style = &default_style;
 

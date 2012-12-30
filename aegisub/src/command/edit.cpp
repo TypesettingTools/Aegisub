@@ -280,7 +280,7 @@ void commit_text(agi::Context const * const c, wxString const& desc, int sel_sta
 
 void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const char *tag, wxString const& undo_msg) {
 	AssDialogue *const line = c->selectionController->GetActiveLine();
-	AssStyle const* const style = c->ass->GetStyle(line->Style);
+	AssStyle const* const style = c->ass->GetStyle(from_wx(line->Style));
 	bool state = style ? style->*field : AssStyle().*field;
 
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
@@ -299,7 +299,7 @@ void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const c
 
 void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), const char *tag, const char *alt) {
 	AssDialogue *const line = c->selectionController->GetActiveLine();
-	AssStyle const* const style = c->ass->GetStyle(line->Style);
+	AssStyle const* const style = c->ass->GetStyle(from_wx(line->Style));
 	agi::Color color = (style ? style->*field : AssStyle().*field);
 
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
@@ -421,7 +421,7 @@ struct edit_font : public Command {
 		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 		const int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
 
-		const AssStyle *style = c->ass->GetStyle(line->Style);
+		const AssStyle *style = c->ass->GetStyle(from_wx(line->Style));
 		const AssStyle default_style;
 		if (!style)
 			style = &default_style;

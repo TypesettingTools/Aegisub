@@ -388,7 +388,7 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 	memcpy(margin, diag->Margin, sizeof margin);
 	int align = 2;
 
-	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
+	if (AssStyle *style = c->ass->GetStyle(from_wx(diag->Style))) {
 		align = style->alignment;
 		for (int i = 0; i < 3; i++) {
 			if (margin[i] == 0)
@@ -453,7 +453,7 @@ bool VisualToolBase::GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, 
 void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, float &rz) {
 	rx = ry = rz = 0.f;
 
-	if (AssStyle *style = c->ass->GetStyle(diag->Style))
+	if (AssStyle *style = c->ass->GetStyle(from_wx(diag->Style)))
 		rz = style->angle;
 
 	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
@@ -471,7 +471,7 @@ void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, fl
 void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 	float x = 100.f, y = 100.f;
 
-	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
+	if (AssStyle *style = c->ass->GetStyle(from_wx(diag->Style))) {
 		x = style->scalex;
 		y = style->scaley;
 	}

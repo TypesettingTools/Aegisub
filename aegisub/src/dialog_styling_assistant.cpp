@@ -32,6 +32,7 @@
 #include "ass_style.h"
 #include "audio_controller.h"
 #include "command/command.h"
+#include "compat.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
@@ -70,7 +71,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 
 	{
 		wxSizer *styles_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Styles available"));
-		style_list = new wxListBox(this, -1, wxDefaultPosition, wxSize(150, 180), context->ass->GetStyles());
+		style_list = new wxListBox(this, -1, wxDefaultPosition, wxSize(150, 180), to_wx(context->ass->GetStyles()));
 		styles_box->Add(style_list, 1, wxEXPAND, 0);
 		bottom_sizer->Add(styles_box, 1, wxEXPAND | wxRIGHT, 5);
 	}
@@ -169,7 +170,7 @@ void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {
 }
 
 void DialogStyling::Commit(bool next) {
-	if (!c->ass->GetStyle(style_name->GetValue())) return;
+	if (!c->ass->GetStyle(from_wx(style_name->GetValue()))) return;
 
 	active_line->Style = style_name->GetValue();
 	c->ass->Commit(_("styling assistant"), AssFile::COMMIT_DIAG_META);
@@ -183,7 +184,7 @@ void DialogStyling::OnActivate(wxActivateEvent &) {
 	play_video->Enable(c->videoController->IsLoaded());
 	play_audio->Enable(c->audioController->IsAudioOpen());
 
-	style_list->Set(c->ass->GetStyles());
+	style_list->Set(to_wx(c->ass->GetStyles()));
 
 	if (auto_seek->IsChecked())
 		c->videoController->JumpToTime(active_line->Start);

@@ -265,7 +265,7 @@ void SubsEditBox::OnCommit(int type) {
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
 		wxString style = style_box->GetValue();
 		style_box->Clear();
-		style_box->Append(c->ass->GetStyles());
+		style_box->Append(to_wx(c->ass->GetStyles()));
 		style_box->Select(style_box->FindString(style));
 	}
 

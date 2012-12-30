@@ -49,7 +49,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	if (line->Comment) return;
 
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
-	StyleInfo style = styles[line->Style];
+	StyleInfo style = styles[from_wx(line->Style)];
 	StyleInfo initial = style;
 
 	bool overriden = false;
@@ -60,7 +60,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				std::string const& name = tag.Name;
 
 				if (name == "\\r") {
-					style = styles[to_wx(tag.Params[0].Get(from_wx(line->Style)))];
+					style = styles[tag.Params[0].Get(from_wx(line->Style))];
 					overriden = false;
 				}
 				else if (name == "\\b") {
@@ -72,7 +72,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 					overriden = true;
 				}
 				else if (name == "\\fn") {
-					style.facename = to_wx(tag.Params[0].Get(from_wx(initial.facename)));
+					style.facename = tag.Params[0].Get(initial.facename);
 					overriden = true;
 				}
 			}

@@ -53,6 +53,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
+#include "compat.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -117,7 +118,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 
 	// Styles box
 	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
-	StyleList = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(150,150), c->ass->GetStyles());
+	StyleList = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->ass->GetStyles()));
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 
 	wxButton *all = new wxButton(this,-1,_("&All"));

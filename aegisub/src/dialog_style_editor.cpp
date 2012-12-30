@@ -69,15 +69,15 @@ class StyleRenamer {
 	agi::Context *c;
 	bool found_any;
 	bool do_replace;
-	wxString source_name;
-	wxString new_name;
+	std::string source_name;
+	std::string new_name;
 
 	/// Process a single override parameter to check if it's \r with this style name
 	static void ProcessTag(std::string const& tag, AssOverrideParameter* param, void *userData) {
 		StyleRenamer *self = static_cast<StyleRenamer*>(userData);
-		if (tag == "\\r" && param->GetType() == VARDATA_TEXT && to_wx(param->Get<std::string>()) == self->source_name) {
+		if (tag == "\\r" && param->GetType() == VARDATA_TEXT && param->Get<std::string>() == self->source_name) {
 			if (self->do_replace)
-				param->Set(from_wx(self->new_name));
+				param->Set(self->new_name);
 			else
 				self->found_any = true;
 		}
@@ -87,10 +87,13 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
+		wxString wx_old(to_wx(source_name));
+		wxString wx_new(to_wx(new_name));
+
 		for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
-			if (diag->Style == source_name) {
+			if (diag->Style == wx_old) {
 				if (replace)
-					diag->Style = new_name;
+					diag->Style = wx_new;
 				else
 					found_any = true;
 			}
@@ -106,7 +109,7 @@ class StyleRenamer {
 	}
 
 public:
-	StyleRenamer(agi::Context *c, wxString const& source_name, wxString const& new_name)
+	StyleRenamer(agi::Context *c, std::string const& source_name, std::string const& new_name)
 	: c(c)
 	, found_any(false)
 	, do_replace(false)
@@ -140,7 +143,7 @@ static wxTextCtrl *num_text_ctrl(wxWindow *parent, double value, wxSize size = w
 	return new wxTextCtrl(parent, -1, "", wxDefaultPosition, size, 0, NumValidator(value));
 }
 
-DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, wxString const& new_name)
+DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name)
 : wxDialog (parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , c(c)
 , is_new(false)
@@ -181,8 +184,8 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Preview"));
 
 	// Create controls
-	StyleName = new wxTextCtrl(this, -1, style->name);
-	FontName = new wxComboBox(this, -1, style->font, wxDefaultPosition, wxSize(150, -1), 0, 0, wxCB_DROPDOWN);
+	StyleName = new wxTextCtrl(this, -1, to_wx(style->name));
+	FontName = new wxComboBox(this, -1, to_wx(style->font), wxDefaultPosition, wxSize(150, -1), 0, 0, wxCB_DROPDOWN);
 	FontSize =  num_text_ctrl(this, style->fontsize, wxSize(50, -1));
 	BoxBold = new wxCheckBox(this, -1, _("&Bold"));
 	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
@@ -240,7 +243,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	// Fill font face list box
 	FontName->Freeze();
 	FontName->Append(fontList);
-	FontName->SetValue(style->font);
+	FontName->SetValue(to_wx(style->font));
 	FontName->Thaw();
 
 	// Set encoding value
@@ -410,32 +413,29 @@ DialogStyleEditor::~DialogStyleEditor() {
 		delete style;
 }
 
-wxString DialogStyleEditor::GetStyleName() const {
+std::string DialogStyleEditor::GetStyleName() const {
 	return style->name;
 }
 
 void DialogStyleEditor::Apply(bool apply, bool close) {
 	if (apply) {
-		wxString newStyleName = StyleName->GetValue();
+		std::string new_name = from_wx(StyleName->GetValue());
 
 		// Get list of existing styles
-		wxArrayString styles = store ? store->GetNames() : c->ass->GetStyles();
+		std::vector<std::string> styles = store ? store->GetNames() : c->ass->GetStyles();
 
 		// Check if style name is unique
-		for (auto const& style_name : styles) {
-			if (newStyleName.CmpNoCase(style_name) == 0) {
-				if ((store && store->GetStyle(style_name) != style) || (!store && c->ass->GetStyle(style_name) != style)) {
-					wxMessageBox("There is already a style with this name. Please choose another name.", "Style name conflict.", wxOK | wxICON_ERROR | wxCENTER);
-					return;
-				}
-			}
+		AssStyle *existing = store ? store->GetStyle(new_name) : c->ass->GetStyle(new_name);
+		if (existing && existing != style) {
+			wxMessageBox(_("There is already a style with this name. Please choose another name."), _("Style name conflict"), wxOK | wxICON_ERROR | wxCENTER);
+			return;
 		}
 
 		// Style name change
 		bool did_rename = false;
-		if (work->name != newStyleName) {
+		if (work->name != new_name) {
 			if (!store && !is_new) {
-				StyleRenamer renamer(c, work->name, newStyleName);
+				StyleRenamer renamer(c, work->name, new_name);
 				if (renamer.NeedsReplace()) {
 					// See if user wants to update style name through script
 					int answer = wxMessageBox(
@@ -452,7 +452,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 				}
 			}
 
-			work->name = newStyleName;
+			work->name = new_name;
 		}
 
 		UpdateWorkStyle();
@@ -482,7 +482,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 
 /// @brief Update work style
 void DialogStyleEditor::UpdateWorkStyle() {
-	work->font = FontName->GetValue();
+	work->font = from_wx(FontName->GetValue());
 	FontSize->GetValue().ToDouble(&(work->fontsize));
 
 	ScaleX->GetValue().ToDouble(&(work->scalex));

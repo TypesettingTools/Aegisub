@@ -32,20 +32,19 @@
 /// @ingroup subs_storage
 ///
 
-#include <array>
-
-#include <wx/colour.h>
-
 #include "ass_entry.h"
 
 #include <libaegisub/color.h>
+
+#include <array>
+#include <wx/arrstr.h>
 
 class AssStyle : public AssEntry {
 	wxString data;
 
 public:
-	wxString name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
-	wxString font;   ///< Font face name
+	std::string name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
+	std::string font;   ///< Font face name
 	double fontsize; ///< Font size
 
 	agi::Color primary;   ///< Default text color
@@ -76,7 +75,7 @@ public:
 	static void GetEncodings(wxArrayString &encodingStrings);
 
 	AssStyle();
-	AssStyle(wxString data, int version=1);
+	AssStyle(wxString const& data, int version=1);
 
 	const wxString GetEntryData() const override { return data; }
 	wxString GetSSAText() const override;

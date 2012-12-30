@@ -36,6 +36,7 @@
 #include "ass_file.h"
 
 #include <algorithm>
+#include <boost/algorithm/string/predicate.hpp>
 #include <fstream>
 #include <inttypes.h>
 #include <list>
@@ -350,16 +351,16 @@ void AssFile::GetResolution(int &sw,int &sh) const {
 	}
 }
 
-wxArrayString AssFile::GetStyles() const {
-	wxArrayString styles;
+std::vector<std::string> AssFile::GetStyles() const {
+	std::vector<std::string> styles;
 	for (auto style : Line | agi::of_type<AssStyle>())
 		styles.push_back(style->name);
 	return styles;
 }
 
-AssStyle *AssFile::GetStyle(wxString const& name) {
+AssStyle *AssFile::GetStyle(std::string const& name) {
 	for (auto style : Line | agi::of_type<AssStyle>()) {
-		if (style->name == name)
+		if (boost::iequals(style->name, name))
 			return style;
 	}
 	return nullptr;

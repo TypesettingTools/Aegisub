@@ -42,6 +42,7 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
+#include "compat.h"
 #include "text_file_writer.h"
 
 #include <libaegisub/of_type_adaptor.h>
@@ -98,7 +99,7 @@ wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *curr
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style
-	if (AssStyle *style = file->GetStyle(current->Style)) {
+	if (AssStyle *style = file->GetStyle(from_wx(current->Style))) {
 		if (style->alignment >= 4) valign = 4;
 		if (style->alignment >= 7) valign = 9;
 		if (style->alignment == 1 || style->alignment == 4 || style->alignment == 7) halign = "L";
