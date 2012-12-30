@@ -277,7 +277,7 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 		}
 
 		text.replace(word_start, word_len, auto_rep->second);
-		active_line->Text = from_wx(text);
+		active_line->Text = to_wx(text);
 		*commit_id = context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
 		word_start += auto_rep->second.size();
 	}

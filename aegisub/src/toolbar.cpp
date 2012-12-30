@@ -21,6 +21,7 @@
 #include "include/aegisub/toolbar.h"
 
 #include "command/command.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
@@ -156,7 +157,7 @@ namespace {
 
 			std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(ht_context, command->name());
 			if (!hotkeys.empty())
-				ret += " (" + boost::join(hotkeys, "/") + ")";
+				ret += to_wx(" (" + boost::join(hotkeys, "/") + ")");
 
 			return ret;
 		}

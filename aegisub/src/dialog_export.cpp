@@ -34,21 +34,26 @@
 
 #include "config.h"
 
-#include <wx/button.h>
-#include <wx/filedlg.h>
-#include <wx/msgdlg.h>
-#include <wx/stattext.h>
-#include <wx/tokenzr.h>
-
 #include "dialog_export.h"
 
 #include "ass_exporter.h"
 #include "ass_file.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "charset_conv.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "subtitle_format.h"
+
+#include <wx/button.h>
+#include <wx/checklst.h>
+#include <wx/choice.h>
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/tokenzr.h>
 
 // Swap the items at idx and idx + 1
 static void swap(wxCheckListBox *list, int idx, int sel_dir) {
@@ -64,7 +69,6 @@ static void swap(wxCheckListBox *list, int idx, int sel_dir) {
 	list->SetSelection(idx + sel_dir);
 	list->Thaw();
 }
-
 
 DialogExport::DialogExport(agi::Context *c)
 : wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
@@ -178,7 +182,7 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(err.GetMessage(), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
 		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);

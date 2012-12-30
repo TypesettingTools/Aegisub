@@ -61,7 +61,7 @@ wxString GetEncoding(wxString const& filename) {
 	if (list.size() == 1) {
 		auto charset = list.begin();
 		LOG_I("charset/file") << filename << " (" << charset->second << ")";
-		return charset->second;
+		return to_wx(charset->second);
 	}
 
 	wxArrayString choices;

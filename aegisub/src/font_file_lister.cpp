@@ -56,7 +56,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	for (auto& block : blocks) {
 		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(&block)) {
 			for (auto const& tag : ovr->Tags) {
-				wxString name = tag.Name;
+				std::string const& name = tag.Name;
 
 				if (name == "\\r") {
 					style = styles[tag.Params[0].Get<wxString>(line->Style)];
@@ -77,7 +77,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 			}
 		}
 		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(&block)) {
-			wxString text = txt->GetText();
+			wxString text(to_wx(txt->GetText()));
 
 			if (text.empty() || (text.size() >= 2 && text.StartsWith("{") && text.EndsWith("}")))
 				continue;

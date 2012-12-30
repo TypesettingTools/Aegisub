@@ -268,10 +268,8 @@ class CommandRenderer : public wxDataViewCustomRenderer {
 public:
 	CommandRenderer()
 	: wxDataViewCustomRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE)
+	, autocomplete(to_wx(cmd::get_registered_commands()))
 	{
-		std::vector<std::string> cmd_names = cmd::get_registered_commands();
-		autocomplete.reserve(cmd_names.size());
-		copy(cmd_names.begin(), cmd_names.end(), std::back_inserter(autocomplete));
 	}
 
 	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) {

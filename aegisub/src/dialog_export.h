@@ -32,20 +32,16 @@
 /// @ingroup export
 ///
 
-#include <map>
-
-#include <wx/checklst.h>
-#include <wx/choice.h>
 #include <wx/dialog.h>
-#include <wx/panel.h>
-#include <wx/sizer.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
 
 #include <libaegisub/scoped_ptr.h>
 
 class AssExporter;
 namespace agi { struct Context; }
+class wxCheckListBox;
+class wxChoice;
+class wxSizer;
+class wxTextCtrl;
 
 class DialogExport : public wxDialog {
 	agi::Context *c;

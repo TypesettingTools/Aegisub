@@ -498,7 +498,7 @@ namespace Automation4 {
 		catch (agi::Exception const& e) {
 			Destroy();
 			name = GetPrettyFilename();
-			description = e.GetChainedMessage();
+			description = to_wx(e.GetChainedMessage());
 		}
 	}
 

@@ -36,13 +36,13 @@
 
 #include "tooltip_manager.h"
 
+#include "compat.h"
 #include "include/aegisub/hotkey.h"
 
 #include <libaegisub/hotkey.h>
 
-#include <wx/window.h>
-
 #include <wx/weakref.h>
+#include <wx/window.h>
 
 struct ToolTipBinding {
 	wxWeakRef<wxWindow> window;
@@ -96,6 +96,6 @@ void ToolTipBinding::Update() {
 		window->SetToolTip(toolTip);
 	}
 	else {
-		window->SetToolTip(toolTip + " (" + str + ")");
+		window->SetToolTip(toolTip + to_wx(" (" + str + ")"));
 	}
 }

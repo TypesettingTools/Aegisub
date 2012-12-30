@@ -420,7 +420,7 @@ void VideoContext::LoadKeyframes(wxString filename) {
 		config::mru->Add("Keyframes", from_wx(filename));
 	}
 	catch (agi::keyframe::Error const& err) {
-		wxMessageBox(err.GetMessage(), "Error opening keyframes file", wxOK | wxICON_ERROR | wxCENTER, context->parent);
+		wxMessageBox(to_wx(err.GetMessage()), "Error opening keyframes file", wxOK | wxICON_ERROR | wxCENTER, context->parent);
 		config::mru->Remove("Keyframes", from_wx(filename));
 	}
 	catch (agi::FileSystemError const&) {

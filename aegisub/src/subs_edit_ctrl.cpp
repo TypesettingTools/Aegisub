@@ -443,7 +443,7 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	std::string suggestion;
 	int sugIdx = event.GetId() - EDIT_MENU_THESAURUS_SUGS;
 	if (sugIdx >= 0)
-		suggestion = from_wx(thesSugs[sugIdx]);
+		suggestion = thesSugs[sugIdx];
 	else
 		suggestion = sugs[event.GetId() - EDIT_MENU_SUGGESTIONS];
 

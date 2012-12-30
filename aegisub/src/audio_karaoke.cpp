@@ -90,7 +90,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 	SetSizerAndFit(main_sizer);
 
 	/// @todo subscribe
-	split_font.SetFaceName(OPT_GET("Audio/Karaoke/Font Face")->GetString());
+	split_font.SetFaceName(to_wx(OPT_GET("Audio/Karaoke/Font Face")->GetString()));
 	split_font.SetPointSize(OPT_GET("Audio/Karaoke/Font Size")->GetInt());
 
 	split_area->Bind(wxEVT_SIZE, &AudioKaraoke::OnSize, this);
