@@ -71,6 +71,9 @@ namespace agi {
 		/// Tokenize the passed string as the body of a dialogue line
 		std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str, bool karaoke_templater=false);
 
+		/// Convert the body of drawings to DRAWING tokens
+		void MarkDrawings(std::string const& str, std::vector<DialogueToken> &tokens);
+
 		/// Split the words in the TEXT tokens of the lexed line into their
 		/// own tokens and convert the body of drawings to DRAWING tokens
 		void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens);

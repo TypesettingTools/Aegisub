@@ -95,9 +95,7 @@ class WordSplitter {
 	std::string const& text;
 	std::vector<DialogueToken> &tokens;
 	agi::scoped_holder<iconv_t, int(&)(iconv_t)> utf8_to_utf32;
-	size_t last_ovr_end;
 	size_t pos;
-	bool in_drawing;
 
 	bool IsWordSep(int chr) {
 		static const int delims[] = {
@@ -145,16 +143,10 @@ class WordSplitter {
 			tokens.insert(tokens.begin() + i + 1, DialogueToken(type, len));
 			tokens[i].length -= len;
 			++i;
-			++last_ovr_end;
 		}
 	}
 
 	void SplitText(size_t &i) {
-		if (in_drawing) {
-			tokens[i].type = dt::DRAWING;
-			return;
-		}
-
 		int chrlen = 0;
 		int len = tokens[i].length;
 		int tpos = pos;
@@ -174,60 +166,16 @@ public:
 	: text(text)
 	, tokens(tokens)
 	, utf8_to_utf32(iconv_open("utf-32le", "utf-8"), iconv_close)
-	, last_ovr_end(0)
 	, pos(0)
-	, in_drawing(false)
 	{ }
 
 	void SplitWords() {
 		if (tokens.empty()) return;
 
-		// VSFilter treats unclosed override blocks as plain text, so pretend
-		// all tokens after the last override block are TEXT
-		for (size_t i = tokens.size(); i > 0; --i) {
-			if (tokens[i - 1].type == dt::OVR_END) {
-				last_ovr_end = i;
-				break;
-			}
-		}
-
 		for (size_t i = 0; i < tokens.size(); ++i) {
 			size_t len = tokens[i].length;
-			switch (tokens[i].type) {
-				case dt::KARAOKE_TEMPLATE: break;
-				case dt::KARAOKE_VARIABLE: break;
-				case dt::LINE_BREAK: break;
-				case dt::TEXT: SplitText(i); break;
-				case dt::TAG_NAME:
-					if (i + 1 > last_ovr_end) {
-						SplitText(i);
-						break;
-					}
-
-					if (len != 1 || i + 1 >= tokens.size() || text[pos] != 'p')
-						break;
-
-					in_drawing = false;
-
-					if (tokens[i + 1].type != dt::ARG)
-						break;
-
-					for (size_t j = pos + len; j < pos + len + tokens[i + 1].length; ++j) {
-						char c = text[j];
-						// I have no idea why one would use leading zeros for
-						// the scale, but vsfilter allows it
-						if (c >= '1' && c <= '9')
-							in_drawing = true;
-						else if (c != '0')
-							break;
-					}
-					break;
-				default:
-					if (i + 1 > last_ovr_end)
-						SplitText(i);
-					break;
-			}
-
+			if (tokens[i].type == dt::TEXT)
+					SplitText(i);
 			pos += len;
 		}
 	}
@@ -241,7 +189,73 @@ std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<
 	return SyntaxHighlighter(text, spellchecker).Highlight(tokens);
 }
 
+void MarkDrawings(std::string const& str, std::vector<DialogueToken> &tokens) {
+	if (tokens.empty()) return;
+
+	size_t last_ovr_end = 0;
+	for (size_t i = tokens.size(); i > 0; --i) {
+		if (tokens[i - 1].type == dt::OVR_END) {
+			last_ovr_end = i;
+			break;
+		}
+	}
+
+	size_t pos = 0;
+	bool in_drawing = false;
+
+	for (size_t i = 0; i < last_ovr_end; ++i) {
+		size_t len = tokens[i].length;
+		switch (tokens[i].type) {
+			case dt::TEXT:
+				if (in_drawing)
+					tokens[i].type = dt::DRAWING;
+				break;
+			case dt::TAG_NAME:
+				if (len != 1 || i + 1 >= tokens.size() || str[pos] != 'p')
+					break;
+
+				in_drawing = false;
+
+				if (i + 1 == last_ovr_end || tokens[i + 1].type != dt::ARG)
+					break;
+
+				for (size_t j = pos + len; j < pos + len + tokens[i + 1].length; ++j) {
+					char c = str[j];
+					// I have no idea why one would use leading zeros for
+					// the scale, but vsfilter allows it
+					if (c >= '1' && c <= '9')
+						in_drawing = true;
+					else if (c != '0')
+						break;
+				}
+				break;
+			default: break;
+		}
+
+		pos += len;
+	}
+
+	// VSFilter treats unclosed override blocks as plain text, so merge all
+	// the tokens after the last override block into a single TEXT (or DRAWING)
+	// token
+	for (size_t i = last_ovr_end; i < tokens.size(); ++i) {
+		switch (tokens[i].type) {
+			case dt::KARAOKE_TEMPLATE: break;
+			case dt::KARAOKE_VARIABLE: break;
+			case dt::LINE_BREAK: break;
+			default:
+				tokens[i].type = in_drawing ? dt::DRAWING : dt::TEXT;
+				if (i > 0 && tokens[i - 1].type == tokens[i].type) {
+					tokens[i - 1].length += tokens[i].length;
+					tokens.erase(tokens.begin() + i);
+					--i;
+				}
+		}
+	}
+}
+
 void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens) {
+	MarkDrawings(str, tokens);
 	WordSplitter(str, tokens).SplitWords();
 }
 
