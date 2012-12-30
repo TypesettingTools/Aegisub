@@ -80,7 +80,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(&block)) {
 			wxString text(to_wx(txt->GetText()));
 
-			if (text.empty() || (text.size() >= 2 && text.StartsWith("{") && text.EndsWith("}")))
+			if (text.empty())
 				continue;
 
 			if (overriden)
@@ -100,7 +100,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				chars.insert(cur);
 			}
 		}
-		// Do nothing with drawing blocks
+		// Do nothing with drawing and comment blocks
 	}
 }
 

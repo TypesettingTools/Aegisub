@@ -553,12 +553,7 @@ void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, wxSt
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 	AssDialogueBlock *block = &blocks.front();
 
-	// Get current block as plain or override
-	assert(dynamic_cast<AssDialogueBlockDrawing*>(block) == nullptr);
-
-	if (dynamic_cast<AssDialogueBlockPlain*>(block))
-		line->Text = "{" + to_wx(tag) + value + "}" + line->Text;
-	else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
+	if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
 		// Remove old of same
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
 			std::string const& name = ovr->Tags[i].Name;
@@ -571,6 +566,8 @@ void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, wxSt
 
 		line->UpdateText(blocks);
 	}
+	else
+		line->Text = "{" + to_wx(tag) + value + "}" + line->Text;
 }
 
 // If only export worked

@@ -45,6 +45,7 @@
 enum AssBlockType {
 	BLOCK_BASE,
 	BLOCK_PLAIN,
+	BLOCK_COMMENT,
 	BLOCK_OVERRIDE,
 	BLOCK_DRAWING
 };
@@ -87,6 +88,12 @@ class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
 	AssBlockType GetType() const override { return BLOCK_PLAIN; }
 	AssDialogueBlockPlain(std::string const& text = std::string()) : AssDialogueBlock(text) { }
+};
+
+class AssDialogueBlockComment : public AssDialogueBlock {
+public:
+	AssBlockType GetType() const override { return BLOCK_COMMENT; }
+	AssDialogueBlockComment(std::string const& text = std::string()) : AssDialogueBlock("{" + text + "}") { }
 };
 
 class AssDialogueBlockDrawing : public AssDialogueBlock {

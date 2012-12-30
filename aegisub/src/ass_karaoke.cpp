@@ -109,18 +109,14 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 	for (auto& block : blocks) {
 		std::string text = block.GetText();
 
-		if (dynamic_cast<AssDialogueBlockPlain*>(&block)) {
-			// treat comments as overrides rather than dialogue
-			if (boost::starts_with(text, "{"))
-				syl.ovr_tags[syl.text.size()] += text;
-			else
-				syl.text += text;
-		}
-		else if (dynamic_cast<AssDialogueBlockDrawing*>(&block)) {
+		if (dynamic_cast<AssDialogueBlockPlain*>(&block))
+			syl.text += text;
+		else if (dynamic_cast<AssDialogueBlockComment*>(&block))
+			syl.ovr_tags[syl.text.size()] += text;
+		else if (dynamic_cast<AssDialogueBlockDrawing*>(&block))
 			// drawings aren't override tags but they shouldn't show up in the
 			// stripped text so pretend they are
 			syl.ovr_tags[syl.text.size()] += text;
-		}
 		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(&block)) {
 			bool in_tag = false;
 			for (auto& tag : ovr->Tags) {

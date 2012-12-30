@@ -205,15 +205,13 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std
 		AssDialogueBlock *block = &blocks[blockn];
 		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
 			--blockn;
-		else if ((plain = dynamic_cast<AssDialogueBlockPlain*>(block))) {
+		else if (dynamic_cast<AssDialogueBlockComment*>(block)) {
 			// Cursor is in a comment block, so try the previous block instead
-			if (boost::starts_with(plain->GetText(), "{")) {
-				--blockn;
-				start = line->Text.get().rfind('{', start);
-			}
-			else
-				break;
+			--blockn;
+			start = line->Text.get().rfind('{', start);
 		}
+		else if ((plain = dynamic_cast<AssDialogueBlockPlain*>(block)))
+			break;
 		else {
 			ovr = dynamic_cast<AssDialogueBlockOverride*>(block);
 			assert(ovr);

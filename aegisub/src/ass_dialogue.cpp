@@ -216,8 +216,7 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 			if (work.size() && work.find('\\') == std::string::npos) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
-				//Currently we'll treat this as a plain text block, but feel free to create a new class
-				Blocks.push_back(new AssDialogueBlockPlain("{" + work + "}"));
+				Blocks.push_back(new AssDialogueBlockComment(work));
 			}
 			else {
 				// Create block

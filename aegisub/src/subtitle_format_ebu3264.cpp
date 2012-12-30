@@ -287,10 +287,6 @@ namespace
 					{
 						wxString text = to_wx(b.GetText());
 
-						// Skip comments
-						if (text.size() > 1 && text[0] =='{' && text.Last() == '}')
-							continue;
-
 						text.Replace("\\t", " ");
 
 						while (special_char_search.Matches(text))
@@ -354,7 +350,7 @@ namespace
 					break;
 
 				default:
-					// ignore block, we don't want to output it (drawing or unknown)
+					// ignore block, we don't want to output it (drawing or comment)
 					break;
 				}
 			}
