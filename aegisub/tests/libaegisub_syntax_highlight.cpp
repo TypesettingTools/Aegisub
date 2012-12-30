@@ -19,7 +19,9 @@
 
 class MockSpellChecker : public agi::SpellChecker {
 	void AddWord(std::string const&) { }
+	void RemoveWord(std::string const&) { }
 	bool CanAddWord(std::string const&) { return false; }
+	bool CanRemoveWord(std::string const&) { return false; }
 	std::vector<std::string> GetSuggestions(std::string const&) { return std::vector<std::string>(); }
 	std::vector<std::string> GetLanguageList() { return std::vector<std::string>(); }
 	bool CheckWord(std::string const& word) { return word != "incorrect"; }
