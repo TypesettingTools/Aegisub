@@ -95,22 +95,25 @@ void HunspellSpellChecker::RemoveWord(std::string const& word) {
 void HunspellSpellChecker::ReadUserDictionary() {
 	customWords.clear();
 
-	// Ensure that the path exists
-	wxFileName fn(userDicPath);
-	if (!fn.DirExists()) {
-		wxFileName::Mkdir(fn.GetPath());
-	}
 	// Read the old contents of the user's dictionary
-	else {
+	try {
 		agi::scoped_ptr<std::istream> stream(agi::io::Open(from_wx(userDicPath)));
 		copy_if(
 			++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
 			inserter(customWords, customWords.end()),
 			[](std::string const& str) { return !str.empty(); });
 	}
+	catch (agi::FileNotFoundError const&) {
+		// Not an error; user dictionary just doesn't exist
+	}
 }
 
 void HunspellSpellChecker::WriteUserDictionary() {
+	// Ensure that the path exists
+	wxFileName fn(userDicPath);
+	if (!fn.DirExists())
+		wxFileName::Mkdir(fn.GetPath());
+
 	// Write the new dictionary
 	{
 		agi::io::Save writer(from_wx(userDicPath));
