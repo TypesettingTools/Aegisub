@@ -269,6 +269,10 @@ bool AegisubApp::OnInit() {
 		wxMessageBox(err,"Fatal error while initializing");
 		return false;
 	}
+	catch (wxString const& err) {
+		wxMessageBox(err, "Fatal error while initializing");
+		return false;
+	}
 	catch (agi::Exception const& e) {
 		wxMessageBox(to_wx(e.GetMessage()),"Fatal error while initializing");
 		return false;
