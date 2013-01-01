@@ -25,8 +25,6 @@
 
 namespace agi {
 	namespace util {
-
-
 	/// Whether the path is a file or directory.
 	enum PathType {
 		TypeFile,		///< File
@@ -55,7 +53,10 @@ namespace agi {
 
 	// Convert a string to Integer.
 	// @param str Input string
-	int strtoi(std::string &str);
+	int strtoi(std::string const& str);
+
+	bool try_parse(std::string const& str, double *out);
+	bool try_parse(std::string const& str, int *out);
 
 	/// Check for amount of free space on a Path.
 	// @param path[in] Path to check

@@ -32,7 +32,7 @@ void str_lower(std::string &str) {
 	boost::to_lower(str);
 }
 
-int strtoi(std::string &str) {
+int strtoi(std::string const& str) {
 	errno = 0;
 	long l = strtol(str.c_str(), nullptr, 10);
 

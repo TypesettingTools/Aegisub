@@ -173,6 +173,21 @@ struct dialogue_tokens : lex::lexer<Lexer> {
 	}
 };
 
+template<typename Parser, typename T>
+bool do_try_parse(std::string const& str, Parser parser, T *out) {
+	using namespace boost::spirit::qi;
+	T res;
+	char const* cstr = str.c_str();
+
+	bool parsed = parse(cstr, cstr + str.size(), parser, res);
+	if (parsed && cstr == &str[str.size()]) {
+		*out = res;
+		return true;
+	}
+
+	return false;
+}
+
 }
 
 namespace agi {
@@ -204,6 +219,17 @@ namespace ass {
 		}
 
 		return data;
+	}
+}
+
+namespace util {
+	// from util.h
+	bool try_parse(std::string const& str, double *out) {
+		return do_try_parse(str, boost::spirit::qi::double_, out);
+	}
+
+	bool try_parse(std::string const& str, int *out) {
+		return do_try_parse(str, boost::spirit::qi::int_, out);
 	}
 }
 }
