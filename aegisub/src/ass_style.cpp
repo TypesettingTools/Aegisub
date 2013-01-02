@@ -79,10 +79,10 @@ class parser {
 	std::vector<string_range> tkns;
 	size_t tkn_idx;
 
-	string_range& next_tok() {
+	string_range next_tok() {
 		if (tkn_idx >= tkns.size())
 			throw SubtitleFormatParseError("Malformed style: not enough fields", 0);
-		return tkns[tkn_idx++];
+		return trim_copy(tkns[tkn_idx++]);
 	}
 
 public:
@@ -102,12 +102,12 @@ public:
 	}
 
 	std::string next_str() {
-		auto tkn = trim_copy(next_tok());
+		auto tkn = next_tok();
 		return std::string(begin(tkn), end(tkn));
 	}
 
 	agi::Color next_color() {
-		auto &tkn = next_tok();
+		auto tkn = next_tok();
 		return std::string(begin(tkn), end(tkn));
 	}
 
