@@ -96,7 +96,7 @@ public:
 		}
 	}
 
-	~parser() {
+	void check_done() const {
 		if (tkn_idx != tkns.size())
 			throw SubtitleFormatParseError("Malformed style: too many fields", 0);
 	}
@@ -136,7 +136,8 @@ public:
 }
 
 AssStyle::AssStyle(wxString const& rawData, int version) {
-	parser p(from_wx(rawData));
+	std::string str(from_wx(rawData));
+	parser p(str);
 
 	name = p.next_str();
 	font = p.next_str();
@@ -200,6 +201,8 @@ AssStyle::AssStyle(wxString const& rawData, int version) {
 		p.skip_token();
 
 	encoding = p.next_int();
+
+	p.check_done();
 
 	UpdateData();
 }
