@@ -57,6 +57,14 @@ void Rename(const std::string& from, const std::string& to) {
 		throw agi::FileNotAccessibleError("Can not overwrite file: " + ErrorString(GetLastError()));
 }
 
+void Remove(std::string const& path) {
+	if (!DeleteFile(ConvertW(path).c_str())) {
+		DWORD err = GetLastError();
+		if (err != ERROR_FILE_NOT_FOUND)
+			throw agi::FileNotAccessibleError("Can not remove file: " + ErrorString(err));
+	}
+}
+
 std::string ErrorString(DWORD error) {
 	LPWSTR lpstr = nullptr;
 

@@ -62,6 +62,21 @@ TEST(lagi_util, UtilRenameExNotFound) {
 	EXPECT_THROW(util::Rename("./data/nonexistent", ""), FileNotFoundError);
 }
 
+TEST(lagi_util, RemoveExisting) {
+	std::ofstream("./data/file_to_remove");
+	EXPECT_NO_THROW(util::Remove("./data/file_to_remove"));
+	std::ifstream check("./data/file_to_remove");
+	EXPECT_FALSE(check.good());
+}
+
+TEST(lagi_util, RemoveNonExisting) {
+	EXPECT_NO_THROW(util::Remove("./data/nonexistent"));
+}
+
+TEST(lagi_util, RemoveReadOnly) {
+	EXPECT_THROW(util::Remove("./data/file_read_only"), FileNotAccessibleError);
+}
+
 TEST(lagi_util, Utilstr_lower) {
 	std::string str("-!ABCDEFGHIJKLMNOPQRSTUVWXYZ123");
 	util::str_lower(str);

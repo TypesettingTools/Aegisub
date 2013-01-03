@@ -60,6 +60,11 @@ void Rename(const std::string& from, const std::string& to) {
 	rename(from.c_str(), to.c_str());
 }
 
+void Remove(std::string const& path) {
+	if (!remove(path.c_str()) && errno != ENOENT)
+		throw agi::FileNotAccessibleError("Can not remove file: " + path);
+}
+
 void time_log(timeval &tv) {
 	gettimeofday(&tv, (struct timezone *)NULL);
 }

@@ -31,36 +31,41 @@ namespace agi {
 		TypeDir			///< Directory
 	};
 
-	// Calculate midpoint from a list of Integers
+	/// Clamp `b` to the range [`a`,`c`]
 	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
-	// Get the parent directory of a path.
-	// @param path Path to process.
+	/// Get the parent directory of a path.
+	/// @param path Path to process.
 	const std::string DirName(const std::string& path);
 
-	// Rename a file.
-	// @param from Source.
-	// @param to   Destination.
+	/// Rename a file.
+	/// @param from Source.
+	/// @param to   Destination.
 	void Rename(const std::string& from, const std::string& to);
 
-	// Get time sutable for logging mechinisms.
-	// @param tv timeval
+	/// Delete a file
+	/// @param path Path to file to delete
+	/// @throws agi::FileNotAccessibleError if file exists but could not be deleted
+	void Remove(std::string const& path);
+
+	/// Get time suitable for logging mechanisms.
+	/// @param tv timeval
 	void time_log(agi_timeval &tv);
 
-	// Make all alphabetic characters lowercase.
-	// @param str Input string
+	/// Make all alphabetic characters lowercase.
+	/// @param str Input string
 	void str_lower(std::string &str);
 
-	// Convert a string to Integer.
-	// @param str Input string
+	/// Convert a string to Integer.
+	/// @param str Input string
 	int strtoi(std::string const& str);
 
 	bool try_parse(std::string const& str, double *out);
 	bool try_parse(std::string const& str, int *out);
 
 	/// Check for amount of free space on a Path.
-	// @param path[in] Path to check
-	// @param type     PathType (default is TypeDir)
+	/// @param path[in] Path to check
+	/// @param type     PathType (default is TypeDir)
 	uint64_t freespace(std::string const& path, PathType type=TypeDir);
 
 	struct delete_ptr {
