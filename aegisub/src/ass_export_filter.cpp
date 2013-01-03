@@ -84,7 +84,12 @@ const FilterList *AssExportFilterChain::GetFilterList() {
 }
 
 void AssExportFilterChain::Clear() {
-	delete_clear(*filters());
+	while (filters()->size() > 0) {
+		AssExportFilter *f = filters()->back();
+		delete f;
+		if (filters()->size() && filters()->back() == f)
+			filters()->pop_back();
+	}
 }
 
 AssExportFilter *AssExportFilterChain::GetFilter(wxString const& name) {
