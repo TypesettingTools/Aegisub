@@ -71,10 +71,6 @@ public:
 	/// @throws wxString if filter is not found
 	void AddFilter(wxString const& name);
 
-	/// Add all export filters which have indicated they should apply in
-	/// non-transform contexts
-	void AddAutoFilters();
-
 	/// Run all added export filters
 	/// @param parent_window Parent window the filters should use when opening dialogs
 	/// @param copy Should the file be copied rather than transformed in-place?

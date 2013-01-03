@@ -84,13 +84,6 @@ void AssExporter::AddFilter(wxString const& name) {
 	filters.push_back(filter);
 }
 
-void AssExporter::AddAutoFilters() {
-	for (auto filter : *AssExportFilterChain::GetFilterList()) {
-		if (filter->GetAutoApply())
-			filters.push_back(filter);
-	}
-}
-
 wxArrayString AssExporter::GetAllFilterNames() const {
 	wxArrayString names;
 	transform(filter_list_begin(), filter_list_end(),

@@ -28,9 +28,9 @@
 #include <boost/range/algorithm_ext.hpp>
 
 #include "ass_dialogue.h"
-#include "ass_exporter.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "export_fixstyle.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
@@ -82,16 +82,7 @@ std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, dou
 					singleFrame = SUBS_FILE_ALREADY_LOADED;
 				}
 				else {
-					// This will crash if any of the export filters try to use
-					// anything but the subtitles, but that wouldn't be safe to
-					// do anyway
-					agi::Context c;
-					memset(&c, 0, sizeof c);
-					c.ass = subs.get();
-
-					AssExporter exporter(&c);
-					exporter.AddAutoFilters();
-					exporter.ExportTransform();
+					AssFixStylesFilter().ProcessSubs(subs.get(), nullptr);
 
 					singleFrame = frameNum;
 					// Copying a nontrivially sized AssFile is fairly slow, so

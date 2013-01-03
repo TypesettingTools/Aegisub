@@ -77,17 +77,12 @@ class AssExportFilter {
 	/// User-visible description of this filter
 	wxString description;
 
-	/// Should this filter be automatically applied when sending subtitles to
-	/// the renderer and exporting to non-ASS formats
-	bool auto_apply;
-
 public:
-	AssExportFilter(wxString const& name, wxString const& description, int priority = 0, bool auto_apply = false);
+	AssExportFilter(wxString const& name, wxString const& description, int priority = 0);
 	virtual ~AssExportFilter() { };
 
 	wxString const& GetName() const { return name; }
 	wxString const& GetDescription() const { return description; }
-	bool GetAutoApply() const { return auto_apply; }
 
 	/// Process subtitles
 	/// @param subs Subtitles to process

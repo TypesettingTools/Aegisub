@@ -39,11 +39,10 @@
 #include "ass_export_filter.h"
 #include "utils.h"
 
-AssExportFilter::AssExportFilter(wxString const& name, wxString const& description, int priority, bool auto_apply)
+AssExportFilter::AssExportFilter(wxString const& name, wxString const& description, int priority)
 : name(name)
 , priority(priority)
 , description(description)
-, auto_apply(auto_apply)
 {
 }
 
