@@ -16,54 +16,17 @@
 /// @brief Windows utility methods.
 /// @ingroup libaegisub windows
 
-#include <stdarg.h>
-#include <stdio.h>
+#include "libaegisub/util_win.h"
 
 #include <string>
-#include <fstream>
 
-#include <windows.h>
-
-#include "libaegisub/access.h"
 #include "libaegisub/charset_conv_win.h"
 #include "libaegisub/types.h"
-#include "libaegisub/util.h"
-#include "libaegisub/util_win.h"
 
 namespace agi {
 	namespace util {
 
 using agi::charset::ConvertW;
-
-const std::string DirName(const std::string& path) {
-	std::string::size_type pos = path.rfind('/');
-
-	if (pos == std::string::npos) pos = path.rfind('\\');
-	if (pos == std::string::npos) return ".";
-
-	return path.substr(0, pos+1);
-}
-
-void Rename(const std::string& from, const std::string& to) {
-	acs::CheckFileWrite(from);
-
-	try {
-		acs::CheckFileWrite(to);
-	} catch (FileNotFoundError const&) {
-		acs::CheckDirWrite(DirName(to));
-	}
-
-	if (!MoveFileEx(ConvertW(from).c_str(), ConvertW(to).c_str(), MOVEFILE_REPLACE_EXISTING))
-		throw agi::FileNotAccessibleError("Can not overwrite file: " + ErrorString(GetLastError()));
-}
-
-void Remove(std::string const& path) {
-	if (!DeleteFile(ConvertW(path).c_str())) {
-		DWORD err = GetLastError();
-		if (err != ERROR_FILE_NOT_FOUND)
-			throw agi::FileNotAccessibleError("Can not remove file: " + ErrorString(err));
-	}
-}
 
 std::string ErrorString(DWORD error) {
 	LPWSTR lpstr = nullptr;
@@ -114,20 +77,6 @@ void time_log(agi_timeval &tv) {
 	// The modulus picks up the microseconds.
 	tv.tv_sec = (long)(tmpres / 1000000UL);
 	tv.tv_usec = (long)(tmpres % 1000000UL);
-}
-
-uint64_t freespace(std::string const& path, PathType type) {
-	if (type == TypeFile)
-		return freespace(DirName(path));
-
-	ULARGE_INTEGER bytes_available;
-	if (GetDiskFreeSpaceEx(ConvertW(path).c_str(), &bytes_available, 0, 0))
-		return bytes_available.QuadPart;
-
-	acs::CheckDirRead(path);
-
-	/// @todo GetLastError -> Exception mapping
-	throw "Unknown error getting free space";
 }
 
 	} // namespace io

@@ -23,16 +23,19 @@
 
 #include "dialog_export_ebu3264.h"
 
-#include <libaegisub/charset_conv.h>
-
+#include "compat.h"
 #include "options.h"
 #include "text_file_writer.h"
+
+#include <libaegisub/charset_conv.h>
+
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/msgdlg.h>
 #include <wx/radiobox.h>
-#include <wx/regex.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/statbox.h>
@@ -41,11 +44,10 @@
 #include <wx/valgen.h>
 
 namespace {
-	const char timecode_regex[] = "([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2})";
+	const boost::regex timecode_regex("([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2})");
 
 	/// Validator for SMPTE timecodes
 	class TimecodeValidator : public wxValidator {
-		wxRegEx re;
 		EbuTimecode *value;
 
 		wxTextCtrl *GetCtrl() const { return dynamic_cast<wxTextCtrl*>(GetWindow()); }
@@ -61,29 +63,24 @@ namespace {
 			wxTextCtrl *ctrl = GetCtrl();
 			if (!ctrl) return false;
 
-			wxString str = ctrl->GetValue();
+			std::string str = from_wx(ctrl->GetValue());
+			boost::smatch result;
+			if (!regex_match(str, result, timecode_regex))
+				return false;
 
-			if (re.Matches(str)) {
-				long h, m, s, f;
-				re.GetMatch(str, 1).ToLong(&h);
-				re.GetMatch(str, 2).ToLong(&m);
-				re.GetMatch(str, 3).ToLong(&s);
-				re.GetMatch(str, 4).ToLong(&f);
-				value->h = h;
-				value->m = m;
-				value->s = s;
-				value->f = f;
-				return true;
-			}
+			value->h = boost::lexical_cast<int>(result.str(1));
+			value->m = boost::lexical_cast<int>(result.str(2));
+			value->s = boost::lexical_cast<int>(result.str(3));
+			value->f = boost::lexical_cast<int>(result.str(4));
 
-			return false;
+			return true;
 		}
 
 		bool Validate(wxWindow *parent) {
 			wxTextCtrl *ctrl = GetCtrl();
 			if (!ctrl) return false;
 
-			if (!re.Matches(ctrl->GetValue())) {
+			if (!regex_match(from_wx(ctrl->GetValue()), timecode_regex)) {
 				wxMessageBox(_("Time code offset in incorrect format. Ensure it is entered as four groups of two digits separated by colons."), _("EBU STL export"), wxICON_EXCLAMATION);
 				return false;
 			}
@@ -93,19 +90,8 @@ namespace {
 		wxObject *Clone() const { return new TimecodeValidator(*this); }
 
 	public:
-		TimecodeValidator(EbuTimecode *target)
-		: re(timecode_regex)
-		, value(target)
-		{
-			assert(target);
-		}
-
-		TimecodeValidator(TimecodeValidator const& other)
-		: wxValidator()
-		, re(timecode_regex)
-		, value(other.value)
-		{
-		}
+		TimecodeValidator(EbuTimecode *target) : value(target) { assert(target); }
+		TimecodeValidator(TimecodeValidator const& other) : value(other.value) { }
 	};
 } // namespace {
 
@@ -228,13 +214,13 @@ agi::vfr::Framerate EbuExportSettings::GetFramerate() const {
 
 agi::charset::IconvWrapper *EbuExportSettings::GetTextEncoder() const {
 	switch (text_encoding) {
-		case iso6937_2: return new agi::charset::IconvWrapper(wxSTRING_ENCODING, "ISO-6937-2");
-		case iso8859_5: return new agi::charset::IconvWrapper(wxSTRING_ENCODING, "ISO-8859-5");
-		case iso8859_6: return new agi::charset::IconvWrapper(wxSTRING_ENCODING, "ISO-8859-6");
-		case iso8859_7: return new agi::charset::IconvWrapper(wxSTRING_ENCODING, "ISO-8859-7");
-		case iso8859_8: return new agi::charset::IconvWrapper(wxSTRING_ENCODING, "ISO-8859-8");
-		case utf8:      return new agi::charset::IconvWrapper(wxSTRING_ENCODING, "utf-8");
-		default:        return new agi::charset::IconvWrapper(wxSTRING_ENCODING, "ISO-8859-1");
+		case iso6937_2: return new agi::charset::IconvWrapper("utf-8", "ISO-6937-2");
+		case iso8859_5: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-5");
+		case iso8859_6: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-6");
+		case iso8859_7: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-7");
+		case iso8859_8: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-8");
+		case utf8:      return new agi::charset::IconvWrapper("utf-8", "utf-8");
+		default:        return new agi::charset::IconvWrapper("utf-8", "ISO-8859-1");
 	}
 }
 

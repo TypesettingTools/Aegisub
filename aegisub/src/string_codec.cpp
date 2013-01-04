@@ -39,41 +39,30 @@
 
 #include "string_codec.h"
 
-wxString inline_string_encode(const wxString &input)
-{
-	const size_t inlen = input.length();
-	wxString output("");
-	output.Alloc(inlen);
-	for (size_t i = 0; i < inlen; i++) {
-		wxChar c = input[i];
-		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C) {
-			output << wxString::Format("#%02X", c);
-		} else {
-			output << c;
-		}
+#include <boost/format.hpp>
+
+std::string inline_string_encode(const std::string &input) {
+	std::string output;
+	output.reserve(input.size());
+	auto format = boost::format("#%02X");
+	for (char c : input) {
+		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
+			output += str(format % c);
+		else
+			output += c;
 	}
 	return output;
 }
 
-wxString inline_string_decode(const wxString &input)
-{
-	const size_t inlen = input.length();
-	wxString output("");
-	output.Alloc(inlen);
-	size_t i = 0;
-	while (i < inlen) {
-		if (input[i] == '#') {
-			// check if there's actually enough extra characters at the end of the string
-			if (inlen - i < 3)
-				break;
-			wxString charcode = input.Mid(i+1, 2);
-			long c;
-			if (charcode.ToLong(&c, 16)) {
-				output << (wchar_t)c;
-			}
-			i += 3;
-		} else {
-			output << input[i++];
+std::string inline_string_decode(const std::string &input) {
+	std::string output;
+	output.reserve(input.size());
+	for (size_t i = 0; i < input.size() - 2; ++i) {
+		if (input[i] != '#')
+			output += input[i];
+		else {
+			output += (char)strtol(input.substr(i + 1, 2).c_str(), nullptr, 16);
+			i += 2;
 		}
 	}
 	return output;

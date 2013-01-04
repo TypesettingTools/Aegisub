@@ -20,27 +20,26 @@
 
 #include "config.h"
 
-#include <algorithm>
-
 #include "visual_tool.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
-#include "compat.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_display.h"
-#include "video_provider_manager.h"
 #include "visual_feature.h"
 #include "visual_tool_clip.h"
 #include "visual_tool_drag.h"
 #include "visual_tool_vector_clip.h"
 
 #include <libaegisub/of_type_adaptor.h>
+
+#include <algorithm>
+#include <boost/format.hpp>
 
 using std::placeholders::_1;
 
@@ -388,7 +387,7 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 	memcpy(margin, diag->Margin, sizeof margin);
 	int align = 2;
 
-	if (AssStyle *style = c->ass->GetStyle(from_wx(diag->Style))) {
+	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
 		align = style->alignment;
 		for (int i = 0; i < 3; i++) {
 			if (margin[i] == 0)
@@ -453,7 +452,7 @@ bool VisualToolBase::GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, 
 void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, float &rz) {
 	rx = ry = rz = 0.f;
 
-	if (AssStyle *style = c->ass->GetStyle(from_wx(diag->Style)))
+	if (AssStyle *style = c->ass->GetStyle(diag->Style))
 		rz = style->angle;
 
 	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
@@ -471,7 +470,7 @@ void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, fl
 void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 	float x = 100.f, y = 100.f;
 
-	if (AssStyle *style = c->ass->GetStyle(from_wx(diag->Style))) {
+	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
 		x = style->scalex;
 		y = style->scaley;
 	}
@@ -506,7 +505,7 @@ void VisualToolBase::GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, 
 	}
 }
 
-wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse) {
+std::string VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse) {
 	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
 
 	scale = 1;
@@ -519,26 +518,26 @@ wxString VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, bool &
 		tag = find_tag(blocks, "\\clip");
 
 	if (tag && tag->size() == 4) {
-		return wxString::Format("m %d %d l %d %d %d %d %d %d",
-			(*tag)[0].Get<int>(), (*tag)[1].Get<int>(),
-			(*tag)[2].Get<int>(), (*tag)[1].Get<int>(),
-			(*tag)[2].Get<int>(), (*tag)[3].Get<int>(),
-			(*tag)[0].Get<int>(), (*tag)[3].Get<int>());
+		return str(boost::format("m %d %d l %d %d %d %d %d %d")
+			% (*tag)[0].Get<int>() % (*tag)[1].Get<int>()
+			% (*tag)[2].Get<int>() % (*tag)[1].Get<int>()
+			% (*tag)[2].Get<int>() % (*tag)[3].Get<int>()
+			% (*tag)[0].Get<int>() % (*tag)[3].Get<int>());
 	}
 	if (tag) {
 		scale = std::max((*tag)[0].Get(scale), 1);
-		return to_wx((*tag)[1].Get<std::string>(""));
+		return (*tag)[1].Get<std::string>("");
 	}
 
 	return "";
 }
 
-void VisualToolBase::SetSelectedOverride(std::string const& tag, wxString const& value) {
+void VisualToolBase::SetSelectedOverride(std::string const& tag, std::string const& value) {
 	for (auto line : c->selectionController->GetSelectedSet())
 		SetOverride(line, tag, value);
 }
 
-void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, wxString const& value) {
+void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, std::string const& value) {
 	if (!line) return;
 
 	std::string removeTag;
@@ -562,12 +561,12 @@ void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, wxSt
 				i--;
 			}
 		}
-		ovr->AddTag(tag + from_wx(value));
+		ovr->AddTag(tag + value);
 
 		line->UpdateText(blocks);
 	}
 	else
-		line->Text = "{" + to_wx(tag) + value + "}" + line->Text;
+		line->Text = "{" + tag + value + "}" + line->Text.get();
 }
 
 // If only export worked

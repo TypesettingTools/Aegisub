@@ -33,19 +33,19 @@
 ///
 
 #include <vector>
-
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/textctrl.h>
+#include <wx/dialog.h>
 
 class AssFile;
 namespace agi { struct Context; }
+class wxCheckBox;
+class wxComboBox;
+class wxTextCtrl;
 
 class DialogProperties : public wxDialog {
 	agi::Context *c; ///< Project this dialog is adjusting the properties of
 
 	/// Pairs of a script property and a text control for that property
-	std::vector<std::pair<wxString, wxTextCtrl*>> properties;
+	std::vector<std::pair<std::string, wxTextCtrl*>> properties;
 
 	// Things that effect rendering
 	wxComboBox *WrapStyle;   ///< Wrapping style for long lines
@@ -62,13 +62,13 @@ class DialogProperties : public wxDialog {
 	/// @param key Name of field
 	/// @param value New value
 	/// @return Did the value actually need to be changed?
-	int SetInfoIfDifferent(wxString key, wxString value);
+	int SetInfoIfDifferent(std::string const& key, std::string const& value);
 
 	/// Add a property with label and text box for updating the property
 	/// @param sizer Sizer to add the label and control to
 	/// @param label Label text to use
 	/// @param property Script info property name
-	void AddProperty(wxSizer *sizer, wxString const& label, wxString const& property);
+	void AddProperty(wxSizer *sizer, wxString const& label, std::string const& property);
 
 public:
 	/// Constructor

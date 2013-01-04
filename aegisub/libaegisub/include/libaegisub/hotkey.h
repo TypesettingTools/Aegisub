@@ -16,11 +16,13 @@
 /// @brief Hotkey handler
 /// @ingroup hotkey menu event window
 
+#include <boost/filesystem/path.hpp>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
 namespace json {
@@ -75,9 +77,9 @@ public:
 	/// Map to hold Combo instances
 	typedef std::multimap<std::string, Combo> HotkeyMap;
 private:
-	HotkeyMap str_map;             ///< String representation -> Combo
-	HotkeyMap cmd_map;             ///< Command name -> Combo
-	const std::string config_file; ///< Default user config location.
+	HotkeyMap str_map;               ///< String representation -> Combo
+	HotkeyMap cmd_map;               ///< Command name -> Combo
+	const agi::fs::path config_file; ///< Default user config location.
 
 	/// Build hotkey map.
 	/// @param context Context being parsed.
@@ -97,7 +99,7 @@ public:
 	/// Constructor
 	/// @param file           Location of user config file.
 	/// @param default_config Default config.
-	Hotkey(const std::string &file, const std::string &default_config);
+	Hotkey(agi::fs::path const& file, const std::string &default_config);
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.

@@ -20,72 +20,10 @@
 
 #include "libaegisub/util.h"
 
-#include "libaegisub/access.h"
-
-#include <stdarg.h>
-#include <stdio.h>
-#include <sys/statvfs.h>
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-
-#include <string>
-#include <fstream>
-
-#include <string.h>
-
-namespace agi {
-	namespace util {
-
-
-const std::string DirName(const std::string& path) {
-    if (path.find('/') == std::string::npos) {
-		return ".";
-	}
-
-	return path.substr(0, path.rfind("/")+1);
-}
-
-void Rename(const std::string& from, const std::string& to) {
-	acs::CheckFileWrite(from);
-
-	try {
-		acs::CheckFileWrite(to);
-	} catch (FileNotFoundError const&) {
-		acs::CheckDirWrite(DirName(to));
-	}
-
-	rename(from.c_str(), to.c_str());
-}
-
-void Remove(std::string const& path) {
-	if (!remove(path.c_str()) && errno != ENOENT)
-		throw agi::FileNotAccessibleError("Can not remove file: " + path);
-}
+namespace agi { namespace util {
 
 void time_log(timeval &tv) {
 	gettimeofday(&tv, (struct timezone *)NULL);
 }
 
-uint64_t freespace(std::string const& path, PathType type) {
-	struct statvfs fs;
-	std::string check(path);
-
-	if (type == TypeFile)
-		check.assign(DirName(path));
-
-	acs::CheckDirRead(check);
-
-	if ((statvfs(check.c_str(), &fs)) == 0) {
-		return (uint64_t)fs.f_bsize * fs.f_bavail;
-	} else {
-		/// @todo We need a collective set of exceptions for ENOTDIR, EIO etc.
-		throw("Failed getting free space");
-	}
-}
-
-
-	} // namespace io
-} // namespace agi
+} }

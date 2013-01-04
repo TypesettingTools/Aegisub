@@ -34,14 +34,15 @@
 
 #include "config.h"
 
-#include <limits>
-
-#include <wx/tokenzr.h>
-
 #include "spline.h"
 
 #include "utils.h"
 #include "visual_tool.h"
+
+#include <libaegisub/util.h>
+
+#include <boost/tokenizer.hpp>
+#include <limits>
 
 Spline::Spline(const VisualToolBase &tl)
 : coord_translator(tl)
@@ -63,8 +64,8 @@ void Spline::SetScale(int new_scale) {
 	scale = 1 << (raw_scale - 1);
 }
 
-wxString Spline::EncodeToAss() const {
-	wxString result;
+std::string Spline::EncodeToAss() const {
+	std::string result;
 	result.reserve(size() * 10);
 	char last = 0;
 
@@ -103,7 +104,7 @@ wxString Spline::EncodeToAss() const {
 	return result;
 }
 
-void Spline::DecodeFromAss(wxString str) {
+void Spline::DecodeFromAss(std::string const& str) {
 	// Clear current
 	clear();
 	std::vector<float> stack;
@@ -113,11 +114,10 @@ void Spline::DecodeFromAss(wxString str) {
 	Vector2D pt(0, 0);
 
 	// Tokenize the string
-	wxStringTokenizer tkn(str, " ");
-	while (tkn.HasMoreTokens()) {
-		wxString token = tkn.GetNextToken();
+	boost::char_separator<char> sep("|");
+	for (auto const& token : boost::tokenizer<boost::char_separator<char>>(str, sep)) {
 		double n;
-		if (token.ToCDouble(&n)) {
+		if (agi::util::try_parse(token, &n)) {
 			stack.push_back(n);
 
 			// Move
@@ -149,7 +149,6 @@ void Spline::DecodeFromAss(wxString str) {
 				stack.clear();
 			}
 		}
-
 		// Got something else
 		else if (token.size() == 1) {
 			command = token[0];

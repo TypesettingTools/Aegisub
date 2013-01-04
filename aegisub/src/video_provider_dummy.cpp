@@ -36,10 +36,16 @@
 
 #include "video_provider_dummy.h"
 
-#include <wx/tokenzr.h>
-
 #include "colorspace.h"
+
 #include <libaegisub/color.h>
+#include <libaegisub/fs.h>
+#include <libaegisub/util.h>
+
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/format.hpp>
 
 void DummyVideoProvider::Create(double fps, int frames, int width, int height, unsigned char red, unsigned char green, unsigned char blue, bool pattern) {
 	this->framecount = frames;
@@ -77,34 +83,30 @@ void DummyVideoProvider::Create(double fps, int frames, int width, int height, u
 	}
 }
 
-static long get_long(wxStringTokenizer &t, const char *err) {
-	long ret;
-	if (!t.GetNextToken().ToLong(&ret))
-		throw VideoOpenError(err);
-	return ret;
-}
+DummyVideoProvider::DummyVideoProvider(agi::fs::path const& filename) {
+	if (!boost::starts_with(filename.string(), "?dummy"))
+		throw agi::fs::FileNotFound(std::string("Attempted creating dummy video provider with non-dummy filename"));
 
-DummyVideoProvider::DummyVideoProvider(wxString const& filename) {
-	wxString params;
-	if (!filename.StartsWith("?dummy:", &params))
-		throw agi::FileNotFoundError("Attempted creating dummy video provider with non-dummy filename");
-
-	wxStringTokenizer t(params, ":");
-	if (t.CountTokens() < 7)
+	std::vector<std::string> toks;
+	auto const& fields = filename.string().substr(7);
+	boost::split(toks, fields, boost::is_any_of(":"));
+	if (toks.size() != 8)
 		throw VideoOpenError("Too few fields in dummy video parameter list");
 
+	size_t i = 0;
 	double fps;
-	if (!t.GetNextToken().ToDouble(&fps))
-		throw VideoOpenError("Unable to parse fps field in dummy video parameter list");
+	int frames, width, height, red, green, blue;
 
-	long frames = get_long(t, "Unable to parse framecount field in dummy video parameter list");
-	long width  = get_long(t, "Unable to parse width field in dummy video parameter list");
-	long height = get_long(t, "Unable to parse height field in dummy video parameter list");
-	long red    = get_long(t, "Unable to parse red colour field in dummy video parameter list");
-	long green  = get_long(t, "Unable to parse green colour field in dummy video parameter list");
-	long blue   = get_long(t, "Unable to parse blue colour field in dummy video parameter list");
+	using agi::util::try_parse;
+	if (!try_parse(toks[i++], &fps))    throw VideoOpenError("Unable to parse fps field in dummy video parameter list");
+	if (!try_parse(toks[i++], &frames)) throw VideoOpenError("Unable to parse framecount field in dummy video parameter list");
+	if (!try_parse(toks[i++], &width))  throw VideoOpenError("Unable to parse width field in dummy video parameter list");
+	if (!try_parse(toks[i++], &height)) throw VideoOpenError("Unable to parse height field in dummy video parameter list");
+	if (!try_parse(toks[i++], &red))    throw VideoOpenError("Unable to parse red colour field in dummy video parameter list");
+	if (!try_parse(toks[i++], &green))  throw VideoOpenError("Unable to parse green colour field in dummy video parameter list");
+	if (!try_parse(toks[i++], &blue))   throw VideoOpenError("Unable to parse blue colour field in dummy video parameter list");
 
-	bool pattern = t.GetNextToken() == "c";
+	bool pattern = toks[i] == "c";
 
 	Create(fps, frames, width, height, red, green, blue, pattern);
 }
@@ -117,6 +119,6 @@ DummyVideoProvider::~DummyVideoProvider() {
 	frame.Clear();
 }
 
-wxString DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
-	return wxString::Format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, colour.r, colour.g, colour.b, pattern ? "c" : "");
+std::string DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
+	return str(boost::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s") % fps % frames % width % height % (int)colour.r % (int)colour.g % (int)colour.b % (pattern ? "c" : ""));
 }

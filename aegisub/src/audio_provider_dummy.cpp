@@ -37,7 +37,9 @@
 #include "audio_provider_dummy.h"
 #include "utils.h"
 
-#include <wx/uri.h>
+#include <libaegisub/fs.h>
+
+#include <boost/algorithm/string/predicate.hpp>
 
 /*
  * scheme            ::= "dummy-audio" ":" signal-specifier "?" signal-parameters
@@ -59,13 +61,11 @@
  *       in every channel even if one would be LFE.
  * "ln", length of signal in samples. ln/sr gives signal length in seconds.
  */
-DummyAudioProvider::DummyAudioProvider(wxString uri)
-{
-	wxURI parsed(uri);
-	if (parsed.GetScheme() != "dummy-audio")
-		throw agi::FileNotFoundError("Not a dummy audio URI");
+DummyAudioProvider::DummyAudioProvider(agi::fs::path const& uri) {
+	if (!boost::starts_with(uri.string(), "dummy-audio:"))
+		throw agi::fs::FileNotFound(std::string("Not a dummy audio URI"));
 
-	noise = parsed.GetPath() == "noise";
+	noise = boost::contains(uri.string(), ":noise?");
 	channels = 1;
 	sample_rate = 44100;
 	bytes_per_sample = 2;

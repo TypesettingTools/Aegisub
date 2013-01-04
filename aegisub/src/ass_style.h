@@ -40,7 +40,7 @@
 #include <wx/arrstr.h>
 
 class AssStyle : public AssEntry {
-	wxString data;
+	std::string data;
 
 public:
 	std::string name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
@@ -75,10 +75,10 @@ public:
 	static void GetEncodings(wxArrayString &encodingStrings);
 
 	AssStyle();
-	AssStyle(wxString const& data, int version=1);
+	AssStyle(std::string const& data, int version=1);
 
-	const wxString GetEntryData() const override { return data; }
-	wxString GetSSAText() const override;
+	const std::string GetEntryData() const override { return data; }
+	std::string GetSSAText() const override;
 	AssEntryGroup Group() const override { return ENTRY_STYLE; }
 	AssEntry *Clone() const override;
 

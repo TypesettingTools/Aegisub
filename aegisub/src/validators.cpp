@@ -34,10 +34,15 @@
 
 #include "config.h"
 
-#include <wx/textctrl.h>
-
-#include "utils.h"
 #include "validators.h"
+
+#include "compat.h"
+#include "utils.h"
+
+#include <libaegisub/exception.h>
+
+#include <wx/combobox.h>
+#include <wx/textctrl.h>
 
 NumValidator::NumValidator(wxString val, bool isfloat, bool issigned)
 : fValue(0)
@@ -200,5 +205,27 @@ bool NumValidator::TransferFromWindow() {
 		iValue = tLong;
 	}
 
+	return true;
+}
+
+bool StringBinder::TransferFromWindow() {
+	wxWindow *window = GetWindow();
+	if (wxTextCtrl *ctrl = dynamic_cast<wxTextCtrl*>(window))
+		*value = from_wx(ctrl->GetValue());
+	else if (wxComboBox *ctrl = dynamic_cast<wxComboBox*>(window))
+		*value = from_wx(ctrl->GetValue());
+	else
+		throw agi::InternalError("Unsupported control type", 0);
+	return true;
+}
+
+bool StringBinder::TransferToWindow() {
+	wxWindow *window = GetWindow();
+	if (wxTextCtrl *ctrl = dynamic_cast<wxTextCtrl*>(window))
+		ctrl->SetValue(to_wx(*value));
+	else if (wxComboBox *ctrl = dynamic_cast<wxComboBox*>(window))
+		ctrl->SetValue(to_wx(*value));
+	else
+		throw agi::InternalError("Unsupported control type", 0);
 	return true;
 }

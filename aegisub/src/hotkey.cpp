@@ -24,7 +24,6 @@
 
 #include "libresrc/libresrc.h"
 #include "command/command.h"
-#include "compat.h"
 #include "options.h"
 #include "standard_paths.h"
 
@@ -124,7 +123,7 @@ namespace hotkey {
 agi::hotkey::Hotkey *inst = 0;
 void init() {
 	inst = new agi::hotkey::Hotkey(
-		from_wx(StandardPaths::DecodePath("?user/hotkey.json")),
+		StandardPaths::DecodePath("?user/hotkey.json"),
 		GET_DEFAULT_CONFIG(default_hotkey));
 
 	int last_version = OPT_GET("Version/Last Version")->GetInt();

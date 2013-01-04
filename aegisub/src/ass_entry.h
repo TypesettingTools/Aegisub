@@ -34,9 +34,8 @@
 
 #pragma once
 
-#include <wx/string.h>
-
 #include <boost/intrusive/list_hook.hpp>
+#include <string>
 
 enum AssEntryGroup {
 	ENTRY_INFO = 0,
@@ -58,11 +57,11 @@ public:
 	virtual AssEntryGroup Group() const=0;
 
 	/// ASS or SSA Section header for this entry's group
-	wxString const& GroupHeader(bool ssa=false) const;
+	std::string const& GroupHeader(bool ssa=false) const;
 
 	/// @brief Get this line's raw entry data in ASS format
-	virtual const wxString GetEntryData() const=0;
+	virtual const std::string GetEntryData() const=0;
 
 	/// Get this line in SSA format
-	virtual wxString GetSSAText() const { return GetEntryData(); }
+	virtual std::string GetSSAText() const { return GetEntryData(); }
 };

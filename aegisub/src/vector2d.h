@@ -22,7 +22,7 @@
 #pragma once
 
 #include <cmath>
-
+#include <string>
 #include <wx/gdicmn.h>
 
 class Vector2D {
@@ -71,11 +71,11 @@ public:
 	float Angle() const { return atan2(y, x); }
 
 	/// Get as string with given separator
-	wxString Str(char sep = ',') const;
+	std::string Str(char sep = ',') const;
 	/// Get as string surrounded by parentheses with given separator
-	wxString PStr(char sep = ',') const;
+	std::string PStr(char sep = ',') const;
 	/// Get as string with given separator with values rounded to ints
-	wxString DStr(char sep = ',') const;
+	std::string DStr(char sep = ',') const;
 
 	static Vector2D FromAngle(float angle) { return Vector2D(cos(-angle), sin(-angle)); }
 };

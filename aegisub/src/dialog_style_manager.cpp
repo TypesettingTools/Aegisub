@@ -35,20 +35,6 @@
 
 #include "dialog_style_manager.h"
 
-#include <algorithm>
-#include <functional>
-
-#include <wx/bmpbuttn.h>
-#include <wx/clipbrd.h>
-#include <wx/dir.h>
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/intl.h>
-#include <wx/msgdlg.h>
-#include <wx/textdlg.h>
-#include <wx/tokenzr.h>
-#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -65,7 +51,22 @@
 #include "subtitle_format.h"
 #include "utils.h"
 
+#include <libaegisub/fs.h>
 #include <libaegisub/of_type_adaptor.h>
+
+#include <algorithm>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/tokenizer.hpp>
+#include <functional>
+
+#include <wx/bmpbuttn.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
+#include <wx/textdlg.h>
+#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
 using std::placeholders::_1;
 
@@ -122,10 +123,11 @@ std::string unique_name(Func name_checker, std::string const& source_name) {
 
 template<class Func1, class Func2>
 void add_styles(Func1 name_checker, Func2 style_adder) {
-	wxStringTokenizer st(GetClipboard(), '\n');
-	while (st.HasMoreTokens()) {
+	boost::char_separator<char> sep("\n");
+	for (auto tok : boost::tokenizer<boost::char_separator<char>>(GetClipboard(), sep)) {
+		boost::trim(tok);
 		try {
-			AssStyle *s = new AssStyle(st.GetNextToken().Trim(true));
+			AssStyle *s = new AssStyle(tok);
 			s->name = unique_name(name_checker, s->name);
 			style_adder(s);
 		}
@@ -284,7 +286,7 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 		AssDialogue *dia = c->selectionController->GetActiveLine();
 		CurrentList->DeselectAll();
 		if (dia && commit_type != AssFile::COMMIT_NEW)
-			CurrentList->SetStringSelection(dia->Style);
+			CurrentList->SetStringSelection(to_wx(dia->Style));
 		else
 			CurrentList->SetSelection(0);
 	}
@@ -295,7 +297,7 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 void DialogStyleManager::OnActiveLineChanged(AssDialogue *new_line) {
 	if (new_line) {
 		CurrentList->DeselectAll();
-		CurrentList->SetStringSelection(new_line->Style);
+		CurrentList->SetStringSelection(to_wx(new_line->Style));
 		UpdateButtons();
 	}
 }
@@ -310,8 +312,9 @@ void DialogStyleManager::UpdateStorage() {
 }
 
 void DialogStyleManager::OnChangeCatalog() {
-	c->ass->SetScriptInfo("Last Style Storage", CatalogList->GetStringSelection());
-	Store.Load(CatalogList->GetStringSelection());
+	std::string catalog(from_wx(CatalogList->GetStringSelection()));
+	c->ass->SetScriptInfo("Last Style Storage", catalog);
+	Store.Load(catalog);
 	UpdateStorage();
 }
 
@@ -319,14 +322,8 @@ void DialogStyleManager::LoadCatalog() {
 	CatalogList->Clear();
 
 	// Get saved style catalogs
-	wxDir dir(StandardPaths::DecodePath("?user/catalog/"));
-	if (dir.IsOpened()) {
-		wxString curfile;
-		if (dir.GetFirst(&curfile, "*.sty", wxDIR_FILES))
-			CatalogList->Append(wxFileName(curfile).GetName());
-		while (dir.GetNext(&curfile))
-			CatalogList->Append(wxFileName(curfile).GetName());
-	}
+	for (auto const& file : agi::fs::DirectoryIterator(StandardPaths::DecodePath("?user/catalog/"), "*.sty"))
+		CatalogList->Append(agi::fs::path(file).stem().wstring());
 
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty()) {
@@ -337,11 +334,11 @@ void DialogStyleManager::LoadCatalog() {
 	}
 
 	// Set to default if available
-	wxString pickStyle = c->ass->GetScriptInfo("Last Style Storage");
+	std::string pickStyle = c->ass->GetScriptInfo("Last Style Storage");
 	if (pickStyle.empty())
 		pickStyle = "Default";
 
-	int opt = CatalogList->FindString(pickStyle, false);
+	int opt = CatalogList->FindString(to_wx(pickStyle), false);
 	if (opt != wxNOT_FOUND)
 		CatalogList->SetSelection(opt);
 	else
@@ -390,7 +387,7 @@ void DialogStyleManager::OnCatalogDelete() {
 	wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name);
 	int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
 	if (option == wxYES) {
-		wxRemoveFile(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"));
+		agi::fs::Remove(StandardPaths::DecodePath("?user/catalog/" + from_wx(name) + ".sty"));
 		CatalogList->Delete(CatalogList->GetSelection());
 		CatalogList->SetSelection(0);
 		OnChangeCatalog();
@@ -462,7 +459,7 @@ void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
 		if (i) data += "\r\n";
 		AssStyle *s = v[selections[i]];
 		s->UpdateData();
-		data += s->GetEntryData();
+		data += to_wx(s->GetEntryData());
 	}
 
 	SetClipboard(data);
@@ -566,14 +563,14 @@ void DialogStyleManager::OnCurrentDelete() {
 void DialogStyleManager::OnCurrentImport() {
 	// Get file name
 	wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
-	wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxString filename = wxFileSelector(_("Open subtitles file"), path, "", "", to_wx(SubtitleFormat::GetWildcards(0)), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (!filename) return;
 
 	OPT_SET("Path/Last/Subtitles")->SetString(from_wx(wxFileName(filename).GetPath()));
 
 	AssFile temp;
 	try {
-		temp.Load(filename);
+		temp.Load(from_wx(filename));
 	}
 	catch (agi::Exception const& err) {
 		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
@@ -758,7 +755,7 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		do_move(styleMap, type, first, last, false);
 
 		// Replace styles
-		int curn = 0;
+		size_t curn = 0;
 		for (auto it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
 			if (!dynamic_cast<AssStyle*>(&*it)) continue;
 

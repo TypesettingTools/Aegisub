@@ -191,8 +191,8 @@ void BaseGrid::OnSubtitlesOpen() {
 }
 
 void BaseGrid::OnSubtitlesSave() {
-	context->ass->SetScriptInfo("Scroll Position", wxString::Format("%d", yPos));
-	context->ass->SetScriptInfo("Active Line", wxString::Format("%d", GetDialogueIndex(active_line)));
+	context->ass->SetScriptInfo("Scroll Position", std::to_string(yPos));
+	context->ass->SetScriptInfo("Active Line", std::to_string(GetDialogueIndex(active_line)));
 }
 
 void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
@@ -592,15 +592,15 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 		if (paint_columns[3]) strings[3] = wxString::Format("%d", context->videoController->FrameAtTime(line->End, agi::vfr::END));
 	}
 	else {
-		if (paint_columns[2]) strings[2] = line->Start.GetAssFormated();
-		if (paint_columns[3]) strings[3] = line->End.GetAssFormated();
+		if (paint_columns[2]) strings[2] = to_wx(line->Start.GetAssFormated());
+		if (paint_columns[3]) strings[3] = to_wx(line->End.GetAssFormated());
 	}
-	if (paint_columns[4]) strings[4] = line->Style;
-	if (paint_columns[5]) strings[5] = line->Actor;
-	if (paint_columns[6]) strings[6] = line->Effect;
-	if (paint_columns[7]) strings[7] = line->GetMarginString(0);
-	if (paint_columns[8]) strings[8] = line->GetMarginString(1);
-	if (paint_columns[9]) strings[9] = line->GetMarginString(2);
+	if (paint_columns[4]) strings[4] = to_wx(line->Style);
+	if (paint_columns[5]) strings[5] = to_wx(line->Actor);
+	if (paint_columns[6]) strings[6] = to_wx(line->Effect);
+	if (paint_columns[7]) strings[7] = to_wx(line->GetMarginString(0));
+	if (paint_columns[8]) strings[8] = to_wx(line->GetMarginString(1));
+	if (paint_columns[9]) strings[9] = to_wx(line->GetMarginString(2));
 
 	if (paint_columns[10]) {
 		strings[10].clear();
@@ -609,18 +609,19 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 		if (replace) {
 			strings[10].reserve(line->Text.get().size());
 			size_t start = 0, pos;
-			while ((pos = line->Text.get().find('{', start)) != wxString::npos) {
-				strings[10] += line->Text.get().Mid(start, pos - start);
+			while ((pos = line->Text.get().find('{', start)) != std::string::npos) {
+				strings[10] += to_wx(line->Text.get().substr(start, pos - start));
 				strings[10] += rep_char;
 				start = line->Text.get().find('}', pos);
-				if (start != wxString::npos) ++start;
+				if (start != std::string::npos) ++start;
 			}
-			strings[10] += line->Text.get().Mid(start);
+			if (start != std::string::npos)
+				strings[10] += to_wx(line->Text.get().substr(start));
 		}
 
 		// Show overrides
 		else
-			strings[10] = line->Text;
+			strings[10] = to_wx(line->Text);
 
 		// Cap length and set text
 		if (strings[10].size() > 512)
@@ -833,7 +834,7 @@ void BaseGrid::SetColumnWidths() {
 	int startLen = 0;
 	int endLen = 0;
 	if (!byFrame)
-		startLen = endLen = dc.GetTextExtent(AssTime().GetAssFormated()).GetWidth();
+		startLen = endLen = dc.GetTextExtent(to_wx(AssTime().GetAssFormated())).GetWidth();
 
 	// O(n) widths
 	bool showMargin[3] = { false, false, false };
@@ -847,9 +848,9 @@ void BaseGrid::SetColumnWidths() {
 		AssDialogue *curDiag = GetDialogue(i);
 
 		maxLayer = std::max(maxLayer, curDiag->Layer);
-		actorLen = std::max(actorLen, dc.GetTextExtent(curDiag->Actor).GetWidth());
-		styleLen = std::max(styleLen, dc.GetTextExtent(curDiag->Style).GetWidth());
-		effectLen = std::max(effectLen, dc.GetTextExtent(curDiag->Effect).GetWidth());
+		actorLen = std::max(actorLen, dc.GetTextExtent(to_wx(curDiag->Actor)).GetWidth());
+		styleLen = std::max(styleLen, dc.GetTextExtent(to_wx(curDiag->Style)).GetWidth());
+		effectLen = std::max(effectLen, dc.GetTextExtent(to_wx(curDiag->Effect)).GetWidth());
 
 		// Margins
 		for (int j = 0; j < 3; j++) {

@@ -37,13 +37,13 @@
 class TXTSubtitleFormat : public SubtitleFormat {
 public:
 	TXTSubtitleFormat();
-	wxArrayString GetReadWildcards() const override;
-	wxArrayString GetWriteWildcards() const override;
+	std::vector<std::string> GetReadWildcards() const override;
+	std::vector<std::string> GetWriteWildcards() const override;
 
 	// TXT format supports so little that it should always require an export
 	bool CanSave(const AssFile*) const override { return false; }
 
-	bool CanWriteFile(wxString const& filename) const override;
-	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const override;
-	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const override;
+	bool CanWriteFile(agi::fs::path const& filename) const override;
+	void ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& forceEncoding) const override;
+	void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const override;
 };

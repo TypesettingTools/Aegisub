@@ -32,10 +32,7 @@
 /// @ingroup audio_input
 ///
 
-
 #include "config.h"
-
-#include <cstdint>
 
 #include "audio_provider_avs.h"
 #include "audio_provider_convert.h"
@@ -47,13 +44,13 @@
 #include "audio_provider_ram.h"
 
 #include "audio_controller.h"
-#include "compat.h"
 #include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
 #include "options.h"
 #include "utils.h"
 
+#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
@@ -126,7 +123,7 @@ struct provider_creator {
 				LOG_I("audio_provider") << "Using audio provider: " << name;
 			return provider;
 		}
-		catch (agi::FileNotFoundError const& err) {
+		catch (agi::fs::FileNotFound const& err) {
 			LOG_D("audio_provider") << err.GetChainedMessage();
 			msg += name + ": " + err.GetMessage() + " not found.\n";
 		}
@@ -147,7 +144,7 @@ struct provider_creator {
 };
 }
 
-AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename) {
+AudioProvider *AudioProviderFactory::GetProvider(agi::fs::path const& filename) {
 	provider_creator creator;
 	AudioProvider *provider = nullptr;
 
@@ -172,7 +169,7 @@ AudioProvider *AudioProviderFactory::GetProvider(wxString const& filename) {
 			throw agi::AudioProviderOpenError(creator.msg, 0);
 		if (creator.found_file)
 			throw agi::AudioDataNotFoundError(creator.msg, 0);
-		throw agi::FileNotFoundError(from_wx(filename));
+		throw agi::fs::FileNotFound(filename);
 	}
 
 	bool needsCache = provider->NeedsCache();
@@ -206,4 +203,4 @@ void AudioProviderFactory::RegisterProviders() {
 #endif
 }
 
-template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(wxString)>::classes = nullptr;
+template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(agi::fs::path)>::classes = nullptr;

@@ -39,7 +39,7 @@ class DummyAudioProvider : public AudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	DummyAudioProvider(wxString uri);
+	DummyAudioProvider(agi::fs::path const& uri);
 
 	bool AreSamplesNativeEndian() const { return true; }
 };

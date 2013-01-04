@@ -22,11 +22,9 @@
 #pragma once
 
 #include <algorithm>
-#include <cctype>
 #include <map>
+#include <string>
 #include <vector>
-
-#include <wx/string.h>
 
 template <class func>
 class FactoryBase {

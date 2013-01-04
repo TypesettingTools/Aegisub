@@ -16,17 +16,18 @@
 /// @brief Windows access methods.
 /// @ingroup libaegisub windows
 
-#include <windows.h>
-
-#include <iostream>
-#include <fstream>
 
 #include <libaegisub/access.h>
 
-#include <libaegisub/charset_conv_win.h>
+#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 #include <libaegisub/util_win.h>
+
+#include <boost/filesystem.hpp>
+#include <boost/format.hpp>
+
+#include <windows.h>
 
 namespace {
 	bool check_permission(bool is_read, SECURITY_DESCRIPTOR *sd, HANDLE client_token) {
@@ -48,43 +49,23 @@ namespace {
 namespace agi {
 	namespace acs {
 
-void CheckFileRead(const std::string &file) {
-	Check(file, acs::FileRead);
-}
-
-void CheckFileWrite(const std::string &file) {
-	Check(file, acs::FileWrite);
-}
-
-void CheckDirRead(const std::string &dir) {
-	Check(dir, acs::DirRead);
-}
-
-void CheckDirWrite(const std::string &dir) {
-	Check(dir, acs::DirWrite);
-}
-
 /*
 This function is still a proof of concept, it's probably rife with bugs, below
 is a short (and incomplete) todo
  * "Basic" checks (Read/Write/File/Dir) checks for FAT32 filesystems which
    requires detecting the filesystem being used.
 */
-void Check(const std::string &file, acs::Type type) {
-	std::wstring wfile = agi::charset::ConvertW(file);
-
-	DWORD file_attr = GetFileAttributes(wfile.c_str());
+void Check(fs::path const& file, acs::Type type) {
+	DWORD file_attr = GetFileAttributes(file.c_str());
 	if ((file_attr & INVALID_FILE_ATTRIBUTES) == INVALID_FILE_ATTRIBUTES) {
 		switch (GetLastError()) {
 			case ERROR_FILE_NOT_FOUND:
 			case ERROR_PATH_NOT_FOUND:
-				throw FileNotFoundError(file);
-
+				throw fs::FileNotFound(file);
 			case ERROR_ACCESS_DENIED:
-				throw Read("Access denied to file or path component");
-
+				throw fs::ReadDenied(file);
 			default:
-				throw Fatal("Fatal I/O error occurred.");
+				throw fs::FileSystemUnknownError(str(boost::format("Unexpected error when getting attributes for \"%s\": %s") % file % util::ErrorString(GetLastError())));
 		}
 	}
 
@@ -92,25 +73,25 @@ void Check(const std::string &file, acs::Type type) {
 		case FileRead:
 		case FileWrite:
 			if ((file_attr & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-				throw NotAFile(file + " is not a file");
+				throw fs::NotAFile(file);
 			break;
 		case DirRead:
 		case DirWrite:
 			if ((file_attr & FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY)
-				throw NotADirectory(file + " is not a directory");
+				throw fs::NotADirectory(file);
 			break;
 	}
 
 	SECURITY_INFORMATION info = OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION;
 	DWORD len = 0;
-	GetFileSecurity(wfile.c_str(), info, nullptr, 0, &len);
+	GetFileSecurity(file.c_str(), info, nullptr, 0, &len);
 	if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
 		LOG_W("acs/check") << "GetFileSecurity: fatal: " << util::ErrorString(GetLastError());
 
 	std::vector<uint8_t> sd_buff(len);
 	SECURITY_DESCRIPTOR *sd = (SECURITY_DESCRIPTOR *)&sd_buff[0];
 
-	if (!GetFileSecurity(wfile.c_str(), info, sd, len, &len))
+	if (!GetFileSecurity(file.c_str(), info, sd, len, &len))
 		LOG_W("acs/check") << "GetFileSecurity failed: " << util::ErrorString(GetLastError());
 
 	ImpersonateSelf(SecurityImpersonation);
@@ -119,9 +100,9 @@ void Check(const std::string &file, acs::Type type) {
 		LOG_W("acs/check") << "OpenThreadToken failed: " << util::ErrorString(GetLastError());
 
 	if (!check_permission(true, sd, client_token))
-		throw Read("File or directory is not readable");
+		throw fs::ReadDenied(file);
 	if ((type == DirWrite || type == FileWrite) && !check_permission(false, sd, client_token))
-		throw Write("File or directory is not writable");
+		throw fs::WriteDenied(file);
 }
 
 	} // namespace Access

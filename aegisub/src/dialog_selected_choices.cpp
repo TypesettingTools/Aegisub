@@ -21,6 +21,9 @@
 #include "dialog_selected_choices.h"
 
 #include <numeric>
+#include <wx/button.h>
+#include <wx/listbox.h>
+#include <wx/sizer.h>
 
 SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices) {
 	Create(parent, message, caption, choices);

@@ -34,14 +34,9 @@
 
 #include "config.h"
 
-#include <algorithm>
-
-#include <wx/filename.h>
-
-#include <libaegisub/io.h>
+#include "audio_controller.h"
 
 #include "ass_file.h"
-#include "audio_controller.h"
 #include "audio_provider_dummy.h"
 #include "audio_timing.h"
 #include "compat.h"
@@ -51,9 +46,13 @@
 #include "pen.h"
 #include "options.h"
 #include "selection_controller.h"
-#include "standard_paths.h"
 #include "utils.h"
 #include "video_context.h"
+
+#include <libaegisub/io.h>
+#include <libaegisub/path.h>
+
+#include <algorithm>
 
 AudioController::AudioController(agi::Context *context)
 : context(context)
@@ -81,12 +80,10 @@ AudioController::AudioController(agi::Context *context)
 #endif
 }
 
-
 AudioController::~AudioController()
 {
 	CloseAudio();
 }
-
 
 void AudioController::OnPlaybackTimer(wxTimerEvent &)
 {
@@ -105,7 +102,6 @@ void AudioController::OnPlaybackTimer(wxTimerEvent &)
 	}
 }
 
-
 #ifdef wxHAS_POWER_EVENTS
 void AudioController::OnComputerSuspending(wxPowerEvent &)
 {
@@ -113,7 +109,6 @@ void AudioController::OnComputerSuspending(wxPowerEvent &)
 	delete player;
 	player = 0;
 }
-
 
 void AudioController::OnComputerResuming(wxPowerEvent &)
 {
@@ -154,25 +149,25 @@ void AudioController::OnAudioProviderChanged()
 {
 	if (IsAudioOpen())
 		// url is cloned because CloseAudio clears it and OpenAudio takes a const reference
-		OpenAudio(audio_url.Clone());
+		OpenAudio(agi::fs::path(audio_url));
 }
 
 
-void AudioController::OpenAudio(const wxString &url)
+void AudioController::OpenAudio(agi::fs::path const& url)
 {
-	if (!url)
+	if (url.empty())
 		throw agi::InternalError("AudioController::OpenAudio() was passed an empty string. This must not happen.", 0);
 
 	AudioProvider *new_provider = 0;
 	try {
 		new_provider = AudioProviderFactory::GetProvider(url);
-		StandardPaths::SetPathValue("?audio", wxFileName(url).GetPath());
+		config::path->SetToken("?audio", url);
 	}
 	catch (agi::UserCancelException const&) {
 		throw;
 	}
 	catch (...) {
-		config::mru->Remove("Audio", from_wx(url));
+		config::mru->Remove("Audio", url);
 		throw;
 	}
 
@@ -192,11 +187,10 @@ void AudioController::OpenAudio(const wxString &url)
 
 	audio_url = url;
 
-	config::mru->Add("Audio", from_wx(url));
+	config::mru->Add("Audio", url);
 
 	try
 	{
-		// Tell listeners about this.
 		AnnounceAudioOpen(provider);
 	}
 	catch (...)
@@ -205,7 +199,6 @@ void AudioController::OpenAudio(const wxString &url)
 		throw;
 	}
 }
-
 
 void AudioController::CloseAudio()
 {
@@ -218,7 +211,7 @@ void AudioController::CloseAudio()
 
 	audio_url.clear();
 
-	StandardPaths::SetPathValue("?audio", "");
+	config::path->SetToken("?audio", "");
 
 	AnnounceAudioClose();
 }
@@ -227,12 +220,6 @@ void AudioController::CloseAudio()
 bool AudioController::IsAudioOpen() const
 {
 	return player && provider;
-}
-
-
-wxString AudioController::GetAudioURL() const
-{
-	return audio_url;
 }
 
 void AudioController::SetTimingController(AudioTimingController *new_controller)
@@ -259,13 +246,9 @@ void AudioController::OnTimingControllerUpdatedPrimaryRange()
 void AudioController::OnSubtitlesSave()
 {
 	if (IsAudioOpen())
-	{
-		context->ass->SetScriptInfo("Audio URI", MakeRelativePath(audio_url, context->ass->filename));
-	}
+		context->ass->SetScriptInfo("Audio URI", config::path->MakeRelative(audio_url, "?script").generic_string());
 	else
-	{
 		context->ass->SetScriptInfo("Audio URI", "");
-	}
 }
 
 void AudioController::PlayRange(const TimeRange &range)
@@ -402,13 +385,13 @@ int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
 	return millisamples / sr;
 }
 
-void AudioController::SaveClip(wxString const& filename, TimeRange const& range) const
+void AudioController::SaveClip(agi::fs::path const& filename, TimeRange const& range) const
 {
 	int64_t start_sample = SamplesFromMilliseconds(range.begin());
 	int64_t end_sample = SamplesFromMilliseconds(range.end());
 	if (filename.empty() || start_sample > provider->GetNumSamples() || range.length() == 0) return;
 
-	agi::io::Save outfile(from_wx(filename), true);
+	agi::io::Save outfile(filename, true);
 	std::ofstream& out(outfile.Get());
 
 	size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();

@@ -43,6 +43,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "compat.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_ebu3264.h"
 #include "subtitle_format_encore.h"
@@ -55,11 +56,17 @@
 #include "utils.h"
 #include "video_context.h"
 
+#include <libaegisub/fs.h>
 #include <libaegisub/of_type_adaptor.h>
+
+#include <algorithm>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 using namespace std::placeholders;
 
-SubtitleFormat::SubtitleFormat(wxString const& name)
+SubtitleFormat::SubtitleFormat(std::string const& name)
 : name(name)
 {
 	formats.push_back(this);
@@ -69,12 +76,16 @@ SubtitleFormat::~SubtitleFormat() {
 	formats.erase(remove(begin(formats), end(formats), this));
 }
 
-bool SubtitleFormat::CanReadFile(wxString const& filename) const {
-	return GetReadWildcards().Index(filename.AfterLast('.'), false) != wxNOT_FOUND;
+bool SubtitleFormat::CanReadFile(agi::fs::path const& filename) const {
+	auto wildcards = GetReadWildcards();
+	return any_of(begin(wildcards), end(wildcards),
+		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
-bool SubtitleFormat::CanWriteFile(wxString const& filename) const {
-	return GetWriteWildcards().Index(filename.AfterLast('.'), false) != wxNOT_FOUND;
+bool SubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
+	auto wildcards = GetWriteWildcards();
+	return any_of(begin(wildcards), end(wildcards),
+		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
 bool SubtitleFormat::CanSave(const AssFile *subs) const {
@@ -168,14 +179,16 @@ void SubtitleFormat::StripTags(AssFile &file) {
 		current->StripTags();
 }
 
-void SubtitleFormat::ConvertNewlines(AssFile &file, wxString const& newline, bool mergeLineBreaks) {
+void SubtitleFormat::ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks) {
 	for (auto current : file.Line | agi::of_type<AssDialogue>()) {
-		wxString repl(current->Text);
-		repl.Replace("\\h", " ");
-		repl.Replace("\\n", newline);
-		repl.Replace("\\N", newline);
+		std::string repl = current->Text;
+		boost::replace_all(repl, "\\h", " ");
+		boost::ireplace_all(repl, "\\n", newline);
 		if (mergeLineBreaks) {
-			while (repl.Replace(newline+newline, newline));
+			std::string dbl(newline + newline);
+			size_t pos = 0;
+			while ((pos = repl.find(dbl, pos)) != std::string::npos)
+				boost::replace_all(repl, dbl, newline);
 		}
 		current->Text = repl;
 	}
@@ -184,7 +197,7 @@ void SubtitleFormat::ConvertNewlines(AssFile &file, wxString const& newline, boo
 void SubtitleFormat::StripComments(AssFile &file) {
 	file.Line.remove_and_dispose_if([](AssEntry const& e) {
 		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e);
-		return diag && (diag->Comment || !diag->Text.get());
+		return diag && (diag->Comment || diag->Text.get().empty());
 	}, [](AssEntry *e) { delete e; });
 }
 
@@ -242,7 +255,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->Start = curdlg->Start;
 			newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
 			// Put an ASS format hard linewrap between lines
-			newdlg->Text = curdlg->Text + "\\N" + prevdlg->Text;
+			newdlg->Text = curdlg->Text.get() + "\\N" + prevdlg->Text.get();
 
 			file.Line.insert(find_if(next, file.Line.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
 		}
@@ -322,32 +335,30 @@ SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	return *it;
 }
 
-const SubtitleFormat *SubtitleFormat::GetReader(wxString const& filename) {
+const SubtitleFormat *SubtitleFormat::GetReader(agi::fs::path const& filename) {
 	LoadFormats();
 	return find_or_throw(formats, std::bind(&SubtitleFormat::CanReadFile, _1, filename));
 }
 
-const SubtitleFormat *SubtitleFormat::GetWriter(wxString const& filename) {
+const SubtitleFormat *SubtitleFormat::GetWriter(agi::fs::path const& filename) {
 	LoadFormats();
 	return find_or_throw(formats, std::bind(&SubtitleFormat::CanWriteFile, _1, filename));
 }
 
-wxString SubtitleFormat::GetWildcards(int mode) {
+std::string SubtitleFormat::GetWildcards(int mode) {
 	LoadFormats();
 
-	wxArrayString all;
-	wxString final;
+	std::vector<std::string> all;
+	std::string final;
 
 	for (auto format : formats) {
-		wxArrayString cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
+		std::vector<std::string> cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
 		if (cur.empty()) continue;
 
-		for_each(cur.begin(), cur.end(), std::bind(&wxString::Prepend, _1, "*."));
-		copy(cur.begin(), cur.end(), std::back_inserter(all));
-		final += "|" + format->GetName() + " (" + wxJoin(cur, ',') + ")|" + wxJoin(cur, ';');
+		for_each(cur.begin(), cur.end(), [](std::string &str) { str.insert(0, "*."); });
+		all.insert(all.end(), begin(cur), end(cur));
+		final += "|" + format->GetName() + " (" + boost::join(cur, ",") + ")|" + boost::join(cur, ";");
 	}
 
-	final.Prepend(_("All Supported Formats") + " (" + wxJoin(all, ',') + ")|" + wxJoin(all, ';'));
-
-	return final;
+	return from_wx(_("All Supported Formats")) + " (" + boost::join(all, ",") + ")|" + boost::join(all, ";") + final;
 }

@@ -64,7 +64,7 @@ class DummyVideoProvider : public VideoProvider {
 
 public:
 	/// Create a dummy video from a string returned from MakeFilename
-	DummyVideoProvider(wxString const& filename);
+	DummyVideoProvider(agi::fs::path const& filename);
 
 	/// Create a dummy video from separate parameters
 	/// @param fps Frame rate of the dummy video
@@ -80,7 +80,7 @@ public:
 
 	/// Make a fake filename which when passed to the constructor taking a
 	/// string will result in a video with the given parameters
-	static wxString MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
+	static std::string MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
 	const AegiVideoFrame GetFrame(int n)  { return frame; }
 	int GetFrameCount()             const { return framecount; }
@@ -89,6 +89,6 @@ public:
 	double GetDAR()                 const { return 0; }
 	agi::vfr::Framerate GetFPS()    const { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); }
-	wxString GetColorSpace()        const { return "None"; }
-	wxString GetDecoderName()       const { return "Dummy Video Provider"; }
+	std::string GetColorSpace()     const { return "None"; }
+	std::string GetDecoderName()    const { return "Dummy Video Provider"; }
 };

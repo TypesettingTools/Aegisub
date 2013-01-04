@@ -16,21 +16,22 @@
 
 #include "ass_entry.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 class AssInfo : public AssEntry {
-	wxString key;
-	wxString value;
+	std::string key;
+	std::string value;
 
 public:
 	AssInfo(AssInfo const& o) : key(o.key), value(o.value) { }
-	AssInfo(wxString const& line) : key(line.BeforeFirst(':').Trim()), value(line.AfterFirst(':').Trim(false)) { }
-	AssInfo(wxString const& key, wxString const& value) : key(key), value(value) { }
+	AssInfo(std::string const& key, std::string const& value) : key(key), value(value) { }
 
 	AssEntry *Clone() const override { return new AssInfo(*this); }
 	AssEntryGroup Group() const override { return ENTRY_INFO; }
-	const wxString GetEntryData() const override { return key + ": " + value; }
-	wxString GetSSAText() const override { return key.Lower() == "scripttype: v4.00+" ? "ScriptType: v4.00" : GetEntryData(); }
+	const std::string GetEntryData() const override { return key + ": " + value; }
+	std::string GetSSAText() const override { return boost::iequals(key, "scripttype: v4.00+") ? "ScriptType: v4.00" : GetEntryData(); }
 
-	wxString Key() const { return key; }
-	wxString Value() const { return value; }
-	void SetValue(wxString const& new_value) { value = new_value; }
+	std::string Key() const { return key; }
+	std::string Value() const { return value; }
+	void SetValue(std::string const& new_value) { value = new_value; }
 };

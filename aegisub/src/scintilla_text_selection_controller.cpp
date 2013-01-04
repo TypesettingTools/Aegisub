@@ -26,21 +26,21 @@ ScintillaTextSelectionController::ScintillaTextSelectionController(ScintillaText
 }
 
 void ScintillaTextSelectionController::SetInsertionPoint(int position) {
-	ctrl->SetInsertionPoint(ctrl->GetUnicodePosition(position));
+	ctrl->SetInsertionPoint(position);
 }
 
 int ScintillaTextSelectionController::GetInsertionPoint() const {
-	return ctrl->GetReverseUnicodePosition(ctrl->GetInsertionPoint());
+	return ctrl->GetInsertionPoint();
 }
 
 void ScintillaTextSelectionController::SetSelection(int start, int end) {
-	ctrl->SetSelectionU(start, end);
+	ctrl->SetSelection(start, end);
 }
 
 int ScintillaTextSelectionController::GetSelectionStart() const {
-	return ctrl->GetReverseUnicodePosition(ctrl->GetSelectionStart());
+	return ctrl->GetSelectionStart();
 }
 
 int ScintillaTextSelectionController::GetSelectionEnd() const {
-	return ctrl->GetReverseUnicodePosition(ctrl->GetSelectionEnd());
+	return ctrl->GetSelectionEnd();
 }

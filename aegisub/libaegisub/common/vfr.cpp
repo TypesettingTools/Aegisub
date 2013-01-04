@@ -16,10 +16,13 @@
 /// @brief Framerate handling of all sorts
 /// @ingroup libaegisub video_input
 
+#include "../config.h"
+
 #include "libaegisub/vfr.h"
 
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <functional>
 #include <iterator>
 #include <list>
@@ -199,7 +202,7 @@ Framerate &Framerate::operator=(double fps) {
 	return *this = Framerate(fps);
 }
 
-Framerate::Framerate(std::string const& filename)
+Framerate::Framerate(fs::path const& filename)
 : denominator(default_denominator)
 , numerator(0)
 {
@@ -221,7 +224,7 @@ Framerate::Framerate(std::string const& filename)
 	throw UnknownFormat(line);
 }
 
-void Framerate::Save(std::string const& filename, int length) const {
+void Framerate::Save(fs::path const& filename, int length) const {
 	agi::io::Save file(filename);
 	std::ofstream &out = file.Get();
 

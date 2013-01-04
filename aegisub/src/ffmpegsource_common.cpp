@@ -45,15 +45,20 @@
 #include "standard_paths.h"
 #include "utils.h"
 
+#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/crc.hpp>
+#include <boost/filesystem.hpp>
 #include <inttypes.h>
 
-#include <wx/dir.h>
+#include <wx/config.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
-#ifdef WIN32
+#ifdef _WIN32
+#include <objbase.h>
+
 static void deinit_com(bool) {
 	CoUninitialize();
 }
@@ -64,7 +69,7 @@ static void deinit_com(bool) { }
 FFmpegSourceProvider::FFmpegSourceProvider()
 : COMInited(false, deinit_com)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	HRESULT res = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 	if (SUCCEEDED(res))
 		COMInited = true;
@@ -76,18 +81,6 @@ FFmpegSourceProvider::FFmpegSourceProvider()
 	FFMS_Init(0, 1);
 }
 
-/// @brief Callback function that updates the indexing progress dialog
-/// @param Current	The current file positition in bytes
-/// @param Total	The total file size in bytes
-/// @param Private	A pointer to the progress sink to update
-/// @return			Returns non-0 if indexing is cancelled, 0 otherwise.
-///
-static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *Private) {
-	agi::ProgressSink *ps = static_cast<agi::ProgressSink*>(Private);
-	ps->SetProgress(Current, Total);
-	return ps->IsCancelled();
-}
-
 /// @brief Does indexing of a source file
 /// @param Indexer		A pointer to the indexer object representing the file to be indexed
 /// @param CacheName    The filename of the output index file
@@ -95,14 +88,14 @@ static int FFMS_CC UpdateIndexingProgress(int64_t Current, int64_t Total, void *
 /// @param IgnoreDecodeErrors	True if audio decoding errors will be tolerated, false otherwise
 /// @return				Returns the index object on success, nullptr otherwise
 ///
-FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxString &CacheName, int Trackmask, FFMS_IndexErrorHandling IndexEH) {
+FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::path const& CacheName, int Trackmask, FFMS_IndexErrorHandling IndexEH) {
 	char FFMSErrMsg[1024];
 	FFMS_ErrorInfo ErrInfo;
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
 	ErrInfo.ErrorType	= FFMS_ERROR_SUCCESS;
 	ErrInfo.SubType		= FFMS_ERROR_SUCCESS;
-	wxString MsgString;
+	std::string MsgString;
 
 	// set up progress dialog callback
 	DialogProgress Progress(wxGetApp().frame, _("Indexing"), _("Reading timecodes and frame/sample data"));
@@ -110,22 +103,23 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 	// index all audio tracks
 	FFMS_Index *Index;
 	Progress.Run([&](agi::ProgressSink *ps) {
-		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, nullptr, nullptr, IndexEH, UpdateIndexingProgress, ps, &ErrInfo);
+		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, nullptr, nullptr, IndexEH,
+			static_cast<TIndexCallback>([](int64_t Current, int64_t Total, void *Private) -> int {
+				agi::ProgressSink *ps = static_cast<agi::ProgressSink*>(Private);
+				ps->SetProgress(Current, Total);
+				return ps->IsCancelled();
+			}),
+			ps, &ErrInfo);
 	});
 
 	if (Index == nullptr) {
-		MsgString.Append("Failed to index: ").Append(wxString(ErrInfo.Buffer, wxConvUTF8));
+		MsgString += "Failed to index: ";
+		MsgString += ErrInfo.Buffer;
 		throw MsgString;
 	}
 
 	// write index to disk for later use
-	// ignore write errors for now
-	FFMS_WriteIndex(CacheName.utf8_str(), Index, &ErrInfo);
-	/*if (FFMS_WriteIndex(CacheName.char_str(), Index, FFMSErrMsg, MsgSize)) {
-		wxString temp(FFMSErrMsg, wxConvUTF8);
-		MsgString << "Failed to write index: " << temp;
-		throw MsgString;
-	} */
+	FFMS_WriteIndex(CacheName.string().c_str(), Index, &ErrInfo);
 
 	return Index;
 }
@@ -134,14 +128,14 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, const wxStri
 /// @param Indexer	The indexer object representing the source file
 /// @param Type		The track type to look for
 /// @return			Returns a std::map with the track numbers as keys and the codec names as values.
-std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type) {
-	std::map<int,wxString> TrackList;
+std::map<int, std::string> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type) {
+	std::map<int,std::string> TrackList;
 	int NumTracks = FFMS_GetNumTracksI(Indexer);
 
 	for (int i=0; i<NumTracks; i++) {
 		if (FFMS_GetTrackTypeI(Indexer, i) == Type) {
-			wxString CodecName(FFMS_GetCodecNameI(Indexer, i), wxConvUTF8);
-			TrackList.insert(std::pair<int,wxString>(i, CodecName));
+			std::string CodecName(FFMS_GetCodecNameI(Indexer, i));
+			TrackList.insert(std::pair<int,std::string>(i, CodecName));
 		}
 	}
 	return TrackList;
@@ -151,12 +145,12 @@ std::map<int,wxString> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Index
 /// @param TrackList	A std::map with the track numbers as keys and codec names as values
 /// @param Type			The track type to ask about
 /// @return				Returns the track number chosen (an integer >= 0) on success, or a negative integer if the user cancelled.
-int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &TrackList, FFMS_TrackType Type) {
+int FFmpegSourceProvider::AskForTrackSelection(const std::map<int, std::string> &TrackList, FFMS_TrackType Type) {
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
 
 	for (auto const& track : TrackList) {
-		Choices.Add(wxString::Format(_("Track %02d: %s"), track.first, track.second));
+		Choices.Add(wxString::Format(_("Track %02d: %s"), track.first, to_wx(track.second)));
 		TrackNumbers.push_back(track.first);
 	}
 
@@ -173,37 +167,36 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 
 /// @brief Set ffms2 log level according to setting in config.dat
 void FFmpegSourceProvider::SetLogLevel() {
-	wxString LogLevel = to_wx(OPT_GET("Provider/FFmpegSource/Log Level")->GetString());
+	std::string LogLevel = OPT_GET("Provider/FFmpegSource/Log Level")->GetString();
 
-	if (!LogLevel.CmpNoCase("panic"))
+	if (boost::iequals(LogLevel, "panic"))
 		FFMS_SetLogLevel(FFMS_LOG_PANIC);
-	else if (!LogLevel.CmpNoCase("fatal"))
+	else if (boost::iequals(LogLevel, "fatal"))
 		FFMS_SetLogLevel(FFMS_LOG_FATAL);
-	else if (!LogLevel.CmpNoCase("error"))
+	else if (boost::iequals(LogLevel, "error"))
 		FFMS_SetLogLevel(FFMS_LOG_ERROR);
-	else if (!LogLevel.CmpNoCase("warning"))
+	else if (boost::iequals(LogLevel, "warning"))
 		FFMS_SetLogLevel(FFMS_LOG_WARNING);
-	else if (!LogLevel.CmpNoCase("info"))
+	else if (boost::iequals(LogLevel, "info"))
 		FFMS_SetLogLevel(FFMS_LOG_INFO);
-	else if (!LogLevel.CmpNoCase("verbose"))
+	else if (boost::iequals(LogLevel, "verbose"))
 		FFMS_SetLogLevel(FFMS_LOG_VERBOSE);
-	else if (!LogLevel.CmpNoCase("debug"))
+	else if (boost::iequals(LogLevel, "debug"))
 		FFMS_SetLogLevel(FFMS_LOG_DEBUG);
 	else
 		FFMS_SetLogLevel(FFMS_LOG_QUIET);
 }
 
-
 FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
-	wxString Mode = to_wx(OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString());
+	std::string Mode = OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString();
 
-	if (!Mode.CmpNoCase("ignore"))
+	if (boost::iequals(Mode, "ignore"))
 		return FFMS_IEH_IGNORE;
-	else if (!Mode.CmpNoCase("clear"))
+	else if (boost::iequals(Mode, "clear"))
 		return FFMS_IEH_CLEAR_TRACK;
-	else if (!Mode.CmpNoCase("stop"))
+	else if (boost::iequals(Mode, "stop"))
 		return FFMS_IEH_STOP_TRACK;
-	else if (!Mode.CmpNoCase("abort"))
+	else if (boost::iequals(Mode, "abort"))
 		return FFMS_IEH_ABORT;
 	else
 		return FFMS_IEH_STOP_TRACK; // questionable default?
@@ -212,34 +205,21 @@ FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist
 /// @param filename	The name of the source file
 /// @return			Returns the generated filename.
-wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename) {
+agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filename) {
 	// Get the size of the file to be hashed
-	wxFileOffset len = 0;
-	{
-		wxFile file(_filename,wxFile::read);
-		if (file.IsOpened()) len = file.Length();
-	}
-
-	wxFileName filename(_filename);
+	uintmax_t len = agi::fs::Size(filename);
 
 	// Get the hash of the filename
-	wxString toHash = filename.GetFullName();
 	boost::crc_32_type hash;
-	hash.process_bytes(toHash.wc_str(), toHash.size() * sizeof(wchar_t));
+	hash.process_bytes(filename.string().c_str(), filename.string().size());
 
 	// Generate the filename
-	wxString result = wxString::Format("?local/ffms2cache/%u_%" PRId64 "_%" PRId64 ".ffindex", hash.checksum(), len, (int64_t)filename.GetModificationTime().GetTicks());
-	result = StandardPaths::DecodePath(result);
+	auto result = StandardPaths::DecodePath("?local/ffms2cache/" + std::to_string(hash.checksum()) + "_" + std::to_string(len) + "_" + std::to_string(agi::fs::ModifiedTime(filename)) + ".ffindex");
 
 	// Ensure that folder exists
-	wxFileName fn(result);
-	wxString dir = fn.GetPath();
-	if (!wxFileName::DirExists(dir)) {
-		wxFileName::Mkdir(dir);
-	}
+	agi::fs::CreateDirectory(result.parent_path());
 
-	wxFileName dirfn(dir);
-	return dirfn.GetShortPath() + "/" + fn.GetFullName();
+	return result;
 }
 
 /// @brief		Starts the cache cleaner thread

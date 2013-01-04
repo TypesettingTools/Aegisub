@@ -11,13 +11,8 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
 
-/// @file libaegisub_option.cpp
-/// @brief Option class
-/// @ingroup option
-
+#include <libaegisub/fs.h>
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>
 
@@ -56,7 +51,7 @@ TEST_F(lagi_option, get_nonexistant_option) {
 }
 
 TEST_F(lagi_option, flush_skip) {
-	util::copy("data/options/string.json", "data/options/tmp");
+	agi::fs::Copy("data/options/string.json", "data/options/tmp");
 	{
 		agi::Options opt("data/options/tmp", default_opt, agi::Options::FLUSH_SKIP);
 		ASSERT_NO_THROW(opt.Get("Valid")->SetString(""));
@@ -65,7 +60,7 @@ TEST_F(lagi_option, flush_skip) {
 }
 
 TEST_F(lagi_option, flush_no_skip) {
-	util::copy("data/options/string.json", "data/options/tmp");
+	agi::fs::Copy("data/options/string.json", "data/options/tmp");
 	{
 		agi::Options opt("data/options/tmp", default_opt);
 		ASSERT_NO_THROW(opt.Get("Valid")->SetString(""));
@@ -124,7 +119,7 @@ TEST_F(lagi_option, heterogeneous_arrays_rejected) {
 }
 
 TEST_F(lagi_option, flush_roundtrip) {
-	util::remove("data/options/tmp");
+	agi::fs::Remove("data/options/tmp");
 
 	{
 		agi::Options opt("data/options/tmp", "{}");

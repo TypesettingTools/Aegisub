@@ -16,10 +16,11 @@
 /// @brief MyThes-compatible thesaurus implementation
 /// @ingroup libaegisub thesaurus
 
-#include <libaegisub/scoped_ptr.h>
+#include "fs_fwd.h"
 
 #include <iosfwd>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -31,9 +32,9 @@ class Thesaurus {
 	/// Map of word -> byte position in the data file
 	std::map<std::string, int> offsets;
 	/// Read handle to the data file
-	scoped_ptr<std::ifstream> dat;
+	std::unique_ptr<std::istream> dat;
 	/// Converter from the data file's charset to UTF-8
-	scoped_ptr<charset::IconvWrapper> conv;
+	std::unique_ptr<charset::IconvWrapper> conv;
 
 public:
 	/// A pair of a word and synonyms for that word
@@ -42,7 +43,7 @@ public:
 	/// Constructor
 	/// @param dat_path Path to data file
 	/// @param idx_path Path to index file
-	Thesaurus(std::string const& dat_path, std::string const& idx_path);
+	Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path);
 	~Thesaurus();
 
 	/// Look up synonyms for a word

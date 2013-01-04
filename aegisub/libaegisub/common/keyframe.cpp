@@ -17,16 +17,15 @@
 /// @ingroup libaegisub
 ///
 
-
 #include "../config.h"
+
+#include "libaegisub/keyframe.h"
 
 #include <algorithm>
 #include <fstream>
 
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
-#include "libaegisub/keyframe.h"
-#include "libaegisub/vfr.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/algorithm.hpp>
@@ -77,7 +76,7 @@ char x264(std::string const& line) {
 }
 
 namespace agi { namespace keyframe {
-void Save(std::string const& filename, std::vector<int> const& keyframes) {
+void Save(agi::fs::path const& filename, std::vector<int> const& keyframes) {
 	io::Save file(filename);
 	std::ofstream& of = file.Get();
 	of << "# keyframe format v1" << std::endl;
@@ -85,7 +84,7 @@ void Save(std::string const& filename, std::vector<int> const& keyframes) {
 	boost::copy(keyframes, std::ostream_iterator<int>(of, "\n"));
 }
 
-std::vector<int> Load(std::string const& filename) {
+std::vector<int> Load(agi::fs::path const& filename) {
 	std::unique_ptr<std::ifstream> file(io::Open(filename));
 	std::istream &is(*file);
 

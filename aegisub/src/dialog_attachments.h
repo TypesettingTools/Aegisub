@@ -39,8 +39,6 @@ class wxListEvent;
 
 #include <wx/dialog.h>
 
-#include "ass_entry.h"
-
 class DialogAttachments : public wxDialog {
 	AssFile *ass;
 
@@ -55,10 +53,8 @@ class DialogAttachments : public wxDialog {
 	void OnListClick(wxListEvent &event);
 
 	void UpdateList();
-	void AttachFile(wxFileDialog &diag, AssEntryGroup group, wxString const& commit_msg);
+	void AttachFile(wxFileDialog &diag, wxString const& commit_msg);
 
 public:
 	DialogAttachments(wxWindow *parent, AssFile *ass);
-
-	DECLARE_EVENT_TABLE()
 };

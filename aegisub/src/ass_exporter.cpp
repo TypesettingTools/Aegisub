@@ -34,14 +34,16 @@
 
 #include "config.h"
 
-#include "ass_export_filter.h"
 #include "ass_exporter.h"
+
+#include "ass_export_filter.h"
 #include "ass_file.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 
-#include <libaegisub/scoped_ptr.h>
-
 #include <algorithm>
+#include <memory>
+#include <wx/sizer.h>
 
 static inline FilterList::const_iterator filter_list_begin() {
 	return AssExportFilterChain::GetFilterList()->begin();
@@ -62,7 +64,7 @@ void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 	for (auto filter : *AssExportFilterChain::GetFilterList()) {
 		// Make sure to construct static box sizer first, so it won't overlap
 		// the controls on wxMac.
-		wxSizer *box = new wxStaticBoxSizer(wxVERTICAL, parent, filter->GetName());
+		wxSizer *box = new wxStaticBoxSizer(wxVERTICAL, parent, to_wx(filter->GetName()));
 		wxWindow *window = filter->GetConfigDialogWindow(parent, c);
 		if (window) {
 			box->Add(window, 0, wxEXPAND, 0);
@@ -76,18 +78,18 @@ void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 	}
 }
 
-void AssExporter::AddFilter(wxString const& name) {
+void AssExporter::AddFilter(std::string const& name) {
 	AssExportFilter *filter = AssExportFilterChain::GetFilter(name);
 
-	if (!filter) throw wxString::Format("Filter not found: %s", name);
+	if (!filter) throw "Filter not found: " + name;
 
 	filters.push_back(filter);
 }
 
-wxArrayString AssExporter::GetAllFilterNames() const {
-	wxArrayString names;
+std::vector<std::string> AssExporter::GetAllFilterNames() const {
+	std::vector<std::string> names;
 	transform(filter_list_begin(), filter_list_end(),
-		std::back_inserter(names), std::mem_fun(&AssExportFilter::GetName));
+		back_inserter(names), std::mem_fun(&AssExportFilter::GetName));
 	return names;
 }
 
@@ -102,19 +104,19 @@ AssFile *AssExporter::ExportTransform(wxWindow *export_dialog, bool copy) {
 	return subs;
 }
 
-void AssExporter::Export(wxString const& filename, wxString const& charset, wxWindow *export_dialog) {
-	agi::scoped_ptr<AssFile> subs(ExportTransform(export_dialog, true));
+void AssExporter::Export(agi::fs::path const& filename, std::string const& charset, wxWindow *export_dialog) {
+	std::unique_ptr<AssFile> subs(ExportTransform(export_dialog, true));
 	subs->Save(filename, false, false, charset);
 }
 
-wxSizer *AssExporter::GetSettingsSizer(wxString const& name) {
+wxSizer *AssExporter::GetSettingsSizer(std::string const& name) {
 	auto pos = Sizers.find(name);
 	return pos == Sizers.end() ? nullptr : pos->second;
 }
 
-wxString const& AssExporter::GetDescription(wxString const& name) const {
+std::string const& AssExporter::GetDescription(std::string const& name) const {
 	AssExportFilter *filter = AssExportFilterChain::GetFilter(name);
 	if (filter)
 		return filter->GetDescription();
-	throw wxString::Format("Filter not found: %s", name);
+	throw "Filter not found: " + name;
 }

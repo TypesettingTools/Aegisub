@@ -34,6 +34,8 @@
 
 #include <libaegisub/exception.h>
 
+#include <string>
+
 #include <wx/radiobox.h>
 #include <wx/validate.h>
 
@@ -123,3 +125,15 @@ template<typename T>
 EnumBinder<T> MakeEnumBinder(T *value) {
 	return EnumBinder<T>(value);
 }
+
+class StringBinder : public wxValidator {
+	std::string *value;
+
+	wxObject* Clone() const { return new StringBinder(value); }
+	bool Validate(wxWindow*) { return true;}
+	bool TransferToWindow();
+	bool TransferFromWindow();
+
+public:
+	explicit StringBinder(std::string *value) : value(value) { }
+};

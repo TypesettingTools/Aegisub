@@ -33,12 +33,9 @@
 ///
 
 #include "include/aegisub/video_provider.h"
+
 #include <cstdio>
-
 #include <vector>
-
-#include <wx/filename.h>
-#include <wx/log.h>
 
 /// the maximum allowed header length, in bytes
 #define YUV4MPEG_HEADER_MAXLEN 128
@@ -103,7 +100,6 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 		Y4M_FFLAG_C_UNKNOWN = 0x0800	/// unknown (only allowed for non-4:2:0 sampling)
 	};
 
-
 	FILE *sf;		/// source file
 	bool inited;	/// initialization state
 
@@ -128,13 +124,13 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 	std::vector<int64_t> seek_table;
 
 	void CheckFileFormat();
-	void ParseFileHeader(const std::vector<wxString>& tags);
-	Y4M_FrameFlags ParseFrameHeader(const std::vector<wxString>& tags);
-	std::vector<wxString> ReadHeader(int64_t startpos);
+	void ParseFileHeader(const std::vector<std::string>& tags);
+	Y4M_FrameFlags ParseFrameHeader(const std::vector<std::string>& tags);
+	std::vector<std::string> ReadHeader(int64_t startpos);
 	int IndexFile();
 
 public:
-	YUV4MPEGVideoProvider(wxString filename);
+	YUV4MPEGVideoProvider(agi::fs::path const& filename);
 	~YUV4MPEGVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
@@ -145,7 +141,7 @@ public:
 	double GetDAR() const                 { return 0; }
 	agi::vfr::Framerate GetFPS() const    { return fps; }
 	std::vector<int> GetKeyFrames() const { return std::vector<int>(); }
-	wxString GetColorSpace() const        { return "TV.601"; }
-	wxString GetDecoderName() const       { return "YU4MPEG"; }
+	std::string GetColorSpace() const     { return "TV.601"; }
+	std::string GetDecoderName() const    { return "YU4MPEG"; }
 	bool WantsCaching() const             { return true; }
 };

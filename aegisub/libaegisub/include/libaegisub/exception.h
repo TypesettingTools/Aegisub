@@ -37,10 +37,7 @@
 #include <memory>
 #include <string>
 
-/// @see aegisub.h
 namespace agi {
-
-
 	/// @class Exception
 	/// @brief Base class for all exceptions in Aegisub.
 	///
@@ -90,7 +87,6 @@ namespace agi {
 	/// could not be opened for reading". This is the purpose of the "inner"
 	/// exceptions.
 	class Exception {
-
 		/// The error message
 		std::string message;
 
@@ -98,16 +94,13 @@ namespace agi {
 		std::shared_ptr<Exception> inner;
 
 	protected:
-
 		/// @brief Protected constructor initialising members
 		/// @param msg The error message
 		/// @param inr The inner exception, optional
 		///
 		/// Deriving classes should always use this constructor for initialising
 		/// the base class.
-		Exception(const std::string &msg, const Exception *inr = 0)
-			: message(msg)
-		{
+		Exception(const std::string &msg, const Exception *inr = 0) : message(msg) {
 			if (inr)
 				inner.reset(inr->Copy());
 		}
@@ -120,9 +113,7 @@ namespace agi {
 
 	public:
 		/// @brief Destructor
-		virtual ~Exception()
-		{
-		}
+		virtual ~Exception() { }
 
 		/// @brief Get the outer exception error message
 		/// @return Error message
@@ -147,7 +138,6 @@ namespace agi {
 		/// level are [a-z0-9_].
 		virtual const char * GetName() const = 0;
 
-
 		/// @brief Convert to char array as the error message
 		/// @return The error message
 		operator const char * () { return GetMessage().c_str(); }
@@ -164,15 +154,11 @@ namespace agi {
 		virtual Exception *Copy() const = 0;
 	};
 
-
-
 /// @brief Convenience macro to include the current location in code
 ///
 /// Intended for use in error messages where it can sometimes be convenient to
 /// indicate the exact position the error occurred at.
 #define AG_WHERE " (at " __FILE__ ":" #__LINE__ ")"
-
-
 
 /// @brief Convenience macro for declaring exceptions with no support for inner exception
 /// @param classname   Name of the exception class to declare
@@ -231,7 +217,6 @@ namespace agi {
 		classname(const std::string &msg, Exception *inner) : baseclass(msg, inner) { } \
 	};
 
-
 	/// @class agi::UserCancelException
 	/// @extends agi::Exception
 	/// @brief Exception for "user cancel" events
@@ -246,7 +231,6 @@ namespace agi {
 	/// code in question.
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(UserCancelException,Exception,"nonerror/user_cancel")
 
-
 	/// @class agi::InternalError
 	/// @extends agi:Exception
 	/// @brief Errors that should never happen and point to some invalid assumption in the code
@@ -258,42 +242,17 @@ namespace agi {
 	/// and eventually cause an abort().
 	DEFINE_SIMPLE_EXCEPTION(InternalError, Exception, "internal_error")
 
-
-	/// @class agi::FileSystemError
-	/// @extends agi::Exception
-	/// @brief Base class for errors related to the file system
+	/// @class agi::EnvironmentError
+	/// @extends agi:Exception
+	/// @brief The execution environment is broken in some fundamental way
 	///
-	/// This base class can not be instantiated.
-	/// File system errors do not support inner exceptions, as they are always originating
-	/// causes for errors.
-	DEFINE_BASE_EXCEPTION_NOINNER(FileSystemError,Exception)
-
-	/// @class agi::FileNotAccessibleError
-	/// @extends agi::FileSystemError
-	/// @brief A file can't be accessed for some reason
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(FileNotAccessibleError,FileSystemError,"filesystem/not_accessible")
-
-
-	/// @class FileNotFoundError
-	/// @brief A file can't be accessed because there's no file by the given name
-	class FileNotFoundError : public FileNotAccessibleError {
-	public:
-
-		/// @brief Constructor, automatically builds the error message
-		/// @param filename Name of the file that could not be found
-		FileNotFoundError(const std::string &filename) : FileNotAccessibleError(std::string("File not found: ") + filename) { }
-
-		// Not documented, see  agi::Exception class
-		const char * GetName() const { return "filesystem/not_accessible/not_found"; }
-
-		// Not documented, see  agi::Exception class
-		Exception * Copy() const { return new FileNotFoundError(*this); }
-	};
-
+	/// Throw an environment error when a call to the platform API has failed
+	/// in some way that should normally never happen or suggests that the
+	/// runtime environment is too insane to support.
+	DEFINE_SIMPLE_EXCEPTION_NOINNER(EnvironmentError, Exception, "environment_error")
 
 	/// @class agi::InvalidInputException
 	/// @extends agi::Exception
 	/// @brief Some input data were invalid and could not be processed
-	DEFINE_BASE_EXCEPTION(InvalidInputException,Exception)
-
+	DEFINE_BASE_EXCEPTION(InvalidInputException, Exception)
 }

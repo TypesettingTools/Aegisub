@@ -46,5 +46,5 @@ class DialogDummyVideo : public wxDialog {
 	void UpdateLengthDisplay();
 
 public:
-	static wxString CreateDummyVideo(wxWindow *parent);
+	static std::string CreateDummyVideo(wxWindow *parent);
 };

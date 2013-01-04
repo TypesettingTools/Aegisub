@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 
@@ -36,61 +23,64 @@
 
 #include "ass_time.h"
 
-#include <algorithm>
-#include <cmath>
-
-#include <wx/tokenzr.h>
-
 #include "utils.h"
+
+#include <libaegisub/util.h>
+
+#include <algorithm>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/format.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 
 AssTime::AssTime(int time) : time(mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
 
-AssTime::AssTime(wxString const& text)
+AssTime::AssTime(std::string const& text)
 : time(0)
 {
-	size_t pos = 0, end = 0;
-
-	int colons = text.Freq(':');
-
-	// Set start so that there are only two colons at most
-	for (; colons > 2; --colons) pos = text.find(':', pos) + 1;
-
-	// Hours
-	if (colons == 2) {
-		while (text[end++] != ':') { }
-		time += AegiStringToInt(text, pos, end) * 60 * 60 * 1000;
-		pos = end;
+	int after_decimal = -1;
+	int current = 0;
+	for (char c : text | boost::adaptors::filtered(boost::is_any_of(":0123456789."))) {
+		if (c == ':') {
+			time = time * 60 + current;
+			current = 0;
+		}
+		else if (c == '.') {
+			time = (time * 60 + current) * 1000;
+			current = 0;
+			after_decimal = 100;
+		}
+		else if (after_decimal < 0) {
+			current *= 10;
+			current += c - '0';
+		}
+		else {
+			time += (c - '0') * after_decimal;
+			after_decimal /= 10;
+		}
 	}
 
-	// Minutes
-	if (colons >= 1) {
-		while (text[end++] != ':') { }
-		time += AegiStringToInt(text, pos, end) * 60 * 1000;
-	}
-
-	// Milliseconds (includes seconds)
-	time += AegiStringToFix(text, 3, end, text.size());
+	// Never saw a decimal, so convert now to ms
+	if (after_decimal < 0)
+		time = (time * 60 + current) * 1000;
 
 	// Limit to the valid range
 	time = mid(0, time, 10 * 60 * 60 * 1000 - 1);
 }
 
-wxString AssTime::GetAssFormated(bool msPrecision) const {
-	wxChar ret[] = {
-		'0' + GetTimeHours(),
-		':',
-		'0' + (time % (60 * 60 * 1000)) / (60 * 1000 * 10),
-		'0' + (time % (10 * 60 * 1000)) / (60 * 1000),
-		':',
-		'0' + (time % (60 * 1000)) / (1000 * 10),
-		'0' + (time % (10 * 1000)) / 1000,
-		'.',
-		'0' + (time % 1000) / 100,
-		'0' + (time % 100) / 10,
-		'0' + time % 10
-	};
-
-	return wxString(ret, msPrecision ? 11 : 10);
+std::string AssTime::GetAssFormated(bool msPrecision) const {
+	std::string ret(10 + msPrecision, ':');
+	ret[0] = '0' + GetTimeHours();
+	ret[2] = '0' + (time % (60 * 60 * 1000)) / (60 * 1000 * 10);
+	ret[3] = '0' + (time % (10 * 60 * 1000)) / (60 * 1000);
+	ret[5] = '0' + (time % (60 * 1000)) / (1000 * 10);
+	ret[6] = '0' + (time % (10 * 1000)) / 1000;
+	ret[7] = '.';
+	ret[8] = '0' + (time % 1000) / 100;
+	ret[9] = '0' + (time % 100) / 10;
+	if (msPrecision)
+		ret[10] = '0' + time % 10;
+	return ret;
 }
 
 int AssTime::GetTimeHours() const { return time / 3600000; }
@@ -99,25 +89,27 @@ int AssTime::GetTimeSeconds() const { return (time % 60000) / 1000; }
 int AssTime::GetTimeMiliseconds() const { return (time % 1000); }
 int AssTime::GetTimeCentiseconds() const { return (time % 1000) / 10; }
 
-SmpteFormatter::SmpteFormatter(agi::vfr::Framerate fps, char sep)
+SmpteFormatter::SmpteFormatter(agi::vfr::Framerate fps, std::string const& sep)
 : fps(fps)
 , sep(sep)
 {
 }
 
-wxString SmpteFormatter::ToSMPTE(AssTime time) const {
+std::string SmpteFormatter::ToSMPTE(AssTime time) const {
 	int h=0, m=0, s=0, f=0;
 	fps.SmpteAtTime(time, &h, &m, &s, &f);
-	return wxString::Format("%02d%c%02d%c%02d%c%02d", h, sep, m, sep, s, sep, f);
+	return str(boost::format("%02d%s%02d%s%02d%c%02d") % h % sep % m % sep % s % sep % f);
 }
 
-AssTime SmpteFormatter::FromSMPTE(wxString const& str) const {
-	long h, m, s, f;
-	wxArrayString toks = wxStringTokenize(str, sep);
+AssTime SmpteFormatter::FromSMPTE(std::string const& str) const {
+	std::vector<std::string> toks;
+	boost::split(toks, str, boost::is_any_of(sep));
 	if (toks.size() != 4) return 0;
-	toks[0].ToLong(&h);
-	toks[1].ToLong(&m);
-	toks[2].ToLong(&s);
-	toks[3].ToLong(&f);
+
+	int h, m, s, f;
+	agi::util::try_parse(toks[0], &h);
+	agi::util::try_parse(toks[1], &m);
+	agi::util::try_parse(toks[2], &s);
+	agi::util::try_parse(toks[3], &f);
 	return fps.TimeAtSmpte(h, m, s, f);
 }

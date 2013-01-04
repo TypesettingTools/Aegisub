@@ -34,26 +34,33 @@
 
 #include "config.h"
 
-#include <wx/filename.h>
-
-#include <istream>
-
 #include "ass_attachment.h"
 
-#include "compat.h"
-
 #include <libaegisub/io.h>
-#include <libaegisub/scoped_ptr.h>
 
-AssAttachment::AssAttachment(wxString const& name, AssEntryGroup group)
+#include <boost/algorithm/string/predicate.hpp>
+#include <fstream>
+
+AssAttachment::AssAttachment(std::string const& name, AssEntryGroup group)
 : data(new std::vector<char>)
 , filename(name)
 , group(group)
 {
-	wxFileName fname(filename);
-	wxString ext = fname.GetExt().Lower();
-	if (ext == "ttf")
-		filename = fname.GetName() + "_0." + ext;
+}
+
+AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
+: data(new std::vector<char>)
+, filename(name.filename().string())
+, group(group)
+{
+	if (boost::iends_with(filename, ".ttf"))
+		filename = filename.substr(0, filename.size() - 4) + "_0" + filename.substr(filename.size() - 4);
+
+	std::unique_ptr<std::istream> file(agi::io::Open(name, true));
+	file->seekg(0, std::ios::end);
+	data->resize(file->tellg());
+	file->seekg(0, std::ios::beg);
+	file->read(&(*data)[0], data->size());
 }
 
 AssEntry *AssAttachment::Clone() const {
@@ -62,46 +69,27 @@ AssEntry *AssAttachment::Clone() const {
 	return clone;
 }
 
-const wxString AssAttachment::GetEntryData() const {
-	size_t pos = 0;
+const std::string AssAttachment::GetEntryData() const {
 	size_t size = data->size();
 	size_t written = 0;
-	unsigned char src[3];
-	unsigned char dst[4];
 
-	// Write header
-	wxString entryData = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename + "\r\n";
+	std::string entryData = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename + "\r\n";
+	entryData.reserve(size * 4 / 3 + size / 80 * 2 + entryData.size() + 2);
 
-	// Read three bytes
-	while (pos < size) {
-		// Number to read
-		size_t read = size - pos;
-		if (read > 3) read = 3;
+	for (size_t pos = 0; pos < size; pos += 3) {
+		unsigned char src[3] = { '\0', '\0', '\0' };
+		memcpy(src, &(*data)[pos], std::min<size_t>(3u, size - pos));
 
-		// Read source
-		src[0] = (*data)[pos];
-		if (read >= 2) src[1] = (*data)[pos+1];
-		else src[1] = 0;
-		if (read == 3) src[2] = (*data)[pos+2];
-		else src[2] = 0;
-		pos += read;
-
-		// Codify
+		unsigned char dst[4];
 		dst[0] = src[0] >> 2;
 		dst[1] = ((src[0] & 0x3) << 4) | ((src[1] & 0xF0) >> 4);
 		dst[2] = ((src[1] & 0xF) << 2) | ((src[2] & 0xC0) >> 6);
 		dst[3] = src[2] & 0x3F;
 
-		// Number to write
-		size_t toWrite = read+1;
+		for (size_t i = 0; i < std::min<size_t>(size - pos + 1, 4u); ++i) {
+			entryData += dst[i] + 33;
 
-		// Convert to text
-		for (size_t i=0;i<toWrite;i++) {
-			entryData += dst[i]+33;
-			written++;
-
-			// Line break
-			if (written == 80 && pos < size) {
+			if (++written == 80 && pos + 3 < size) {
 				written = 0;
 				entryData += "\r\n";
 			}
@@ -111,39 +99,28 @@ const wxString AssAttachment::GetEntryData() const {
 	return entryData;
 }
 
-void AssAttachment::Extract(wxString const& filename) const {
-	agi::io::Save(from_wx(filename), true).Get().write(&(*data)[0], data->size());
+void AssAttachment::Extract(agi::fs::path const& filename) const {
+	agi::io::Save(filename, true).Get().write(&(*data)[0], data->size());
 }
 
-void AssAttachment::Import(wxString const& filename) {
-	agi::scoped_ptr<std::istream> file(agi::io::Open(from_wx(filename), true));
-	file->seekg(0, std::ios::end);
-	data->resize(file->tellg());
-	file->seekg(0, std::ios::beg);
-	file->read(&(*data)[0], data->size());
-}
-
-wxString AssAttachment::GetFileName(bool raw) const {
-	if (raw || filename.Right(4).Lower() != ".ttf") return filename;
+std::string AssAttachment::GetFileName(bool raw) const {
+	if (raw || !boost::iends_with(filename, ".ttf")) return filename;
 
 	// Remove stuff after last underscore if it's a font
-	wxString::size_type last_under = filename.rfind('_');
-	if (last_under == wxString::npos)
+	std::string::size_type last_under = filename.rfind('_');
+	if (last_under == std::string::npos)
 		return filename;
 
-	return filename.Left(last_under) + ".ttf";
+	return filename.substr(0, last_under) + ".ttf";
 }
 
 void AssAttachment::Finish() {
-	// Source and dest buffers
 	unsigned char src[4];
 	unsigned char dst[3];
 
 	data->reserve(buffer.size() * 3 / 4);
 
-	// Read buffer
 	for(size_t pos = 0; pos + 1 < buffer.size(); ) {
-		// Find characters left
 		size_t read = std::min<size_t>(buffer.size() - pos, 4);
 
 		// Move 4 bytes from buffer to src
@@ -157,11 +134,9 @@ void AssAttachment::Finish() {
 		dst[1] = ((src[1] & 0xF) << 4) | (src[2] >> 2);
 		dst[2] = ((src[2] & 0x3) << 6) | (src[3]);
 
-		// Push into vector
 		copy(dst, dst + read - 1, back_inserter(*data));
 	}
 
-	// Clear buffer
 	buffer.clear();
-	buffer.Shrink();
+	buffer.shrink_to_fit();
 }

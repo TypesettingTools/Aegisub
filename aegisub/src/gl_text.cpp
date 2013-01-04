@@ -36,13 +36,16 @@
 
 #include "gl_text.h"
 
+#include "compat.h"
+#include "utils.h"
+
+#include <libaegisub/color.h>
+
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 
 #include <algorithm>
 #include <boost/noncopyable.hpp>
-
-#include "utils.h"
 
 #ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
@@ -231,7 +234,6 @@ OpenGLText::OpenGLText()
 , g(1.f)
 , b(1.f)
 , a(1.f)
-, lineHeight(0)
 , fontSize(0)
 , fontBold(false)
 , fontItalics(false)
@@ -241,7 +243,7 @@ OpenGLText::OpenGLText()
 OpenGLText::~OpenGLText() {
 }
 
-void OpenGLText::SetFont(wxString face, int size, bool bold, bool italics) {
+void OpenGLText::SetFont(std::string const& face, int size, bool bold, bool italics) {
 	// No change required
 	if (size == fontSize && face == fontFace && bold == fontBold && italics == fontItalics) return;
 
@@ -250,7 +252,7 @@ void OpenGLText::SetFont(wxString face, int size, bool bold, bool italics) {
 	fontSize = size;
 	fontBold = bold;
 	fontItalics = italics;
-	font.SetFaceName(fontFace);
+	font.SetFaceName(to_wx(fontFace));
 	font.SetPointSize(size);
 	font.SetWeight(bold ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL);
 
@@ -259,14 +261,14 @@ void OpenGLText::SetFont(wxString face, int size, bool bold, bool italics) {
 	glyphs.clear();
 }
 
-void OpenGLText::SetColour(wxColour col, float alpha) {
-	r = col.Red()   / 255.f;
-	g = col.Green() / 255.f;
-	b = col.Blue()  / 255.f;
-	a = alpha;
+void OpenGLText::SetColour(agi::Color col) {
+	r = col.r / 255.f;
+	g = col.g / 255.f;
+	b = col.b / 255.f;
+	a = col.a / 255.f;
 }
 
-void OpenGLText::Print(const wxString &text, int x, int y) {
+void OpenGLText::Print(const std::string &text, int x, int y) {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -287,54 +289,22 @@ void OpenGLText::Print(const wxString &text, int x, int y) {
 	glDisable(GL_BLEND);
 }
 
-void OpenGLText::DrawString(const wxString &text, int x, int y) {
-	lineHeight = 0;
-	int dx=x, dy=y;
-
-	for (int curChar : text) {
-		// Handle carriage returns
-		if (curChar == '\n') {
-			dx = x;
-			dy += lineHeight;
-		}
-
-		// Handle normal glyphs
-		else {
-			OpenGLTextGlyph const& glyph = GetGlyph(curChar);
-			glyph.Draw(dx, dy);
-			dx += glyph.w;
-			if (glyph.h > lineHeight) lineHeight = glyph.h;
-		}
+void OpenGLText::DrawString(const std::string &text, int x, int y) {
+	for (char curChar : text) {
+		OpenGLTextGlyph const& glyph = GetGlyph(curChar);
+		glyph.Draw(x, y);
+		x += glyph.w;
 	}
 }
 
-void OpenGLText::GetExtent(wxString const& text, int &w, int &h) {
-	lineHeight = 0;
-	int dx=0, dy=0;
-	w = 0;
-	h = 0;
+void OpenGLText::GetExtent(std::string const& text, int &w, int &h) {
+	w = h = 0;
 
-	// Simulate drawing of string
-	for (int curChar : text) {
-		// Handle carriage returns
-		if (curChar == '\n') {
-			if (dx > w) w = dx;
-			dx = 0;
-			dy += lineHeight;
-			lineHeight = 0;
-		}
-
-		// Handle normal glyphs
-		else {
-			OpenGLTextGlyph const& glyph = GetGlyph(curChar);
-			dx += glyph.w;
-			if (glyph.h > lineHeight) lineHeight = glyph.h;
-		}
+	for (char curChar : text) {
+		OpenGLTextGlyph const& glyph = GetGlyph(curChar);
+		w += glyph.w;
+		h = std::max(h, glyph.h);
 	}
-
-	// Return results
-	if (dx > w) w = dx;
-	h = dy+lineHeight;
 }
 
 OpenGLTextGlyph const& OpenGLText::GetGlyph(int i) {

@@ -38,11 +38,11 @@ class AssDialogue;
 class SmpteFormatter;
 
 class TranStationSubtitleFormat : public SubtitleFormat {
-	wxString ConvertLine(AssFile *file, AssDialogue *line, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const;
+	std::string ConvertLine(AssFile *file, AssDialogue *line, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const;
 
 public:
 	TranStationSubtitleFormat();
-	bool CanWriteFile(wxString const& filename) const override;
-	wxArrayString GetWriteWildcards() const override;
-	void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const override;
+	bool CanWriteFile(agi::fs::path const& filename) const override;
+	std::vector<std::string> GetWriteWildcards() const override;
+	void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const override;
 };

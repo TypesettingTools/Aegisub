@@ -37,7 +37,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
 
-#include <wx/string.h>
+#include <string>
 
 class AegiVideoFrame;
 
@@ -59,13 +59,13 @@ public:
 	/// Get the source colorspace of the video before it was converted to RGB
 	/// @return A string describing the source colorspace or "None" if it is
 	///         unknown or meaningless
-	virtual wxString GetColorSpace() const = 0;
+	virtual std::string GetColorSpace() const = 0;
 
 	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
-	virtual wxString GetWarning() const { return ""; }
+	virtual std::string GetWarning() const { return ""; }
 
 	/// @brief Name of decoder, e.g. "Avisynth/FFMpegSource"
-	virtual wxString GetDecoderName() const = 0;
+	virtual std::string GetDecoderName() const = 0;
 
 	/// @brief Does this provider want Aegisub to cache video frames?
 	/// @return Returns true if caching is desired, false otherwise.

@@ -34,24 +34,20 @@
 
 #pragma once
 
-#include <deque>
-#include <vector>
-
-#include <wx/dialog.h>
-#include <wx/filename.h>
-#include <wx/gauge.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#include <wx/timer.h>
-
 #include <libaegisub/background_runner.h>
 #include <libaegisub/exception.h>
-#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
 #include "ass_export_filter.h"
+#include "compat.h"
+
+#include <boost/filesystem/path.hpp>
+#include <deque>
+#include <memory>
+#include <vector>
+
+#include <wx/dialog.h>
 
 class AssFile;
 class AssStyle;
@@ -59,8 +55,6 @@ class DialogProgress;
 class SubtitleFormat;
 class wxWindow;
 class wxDialog;
-class wxStopWatch;
-class wxPathList;
 
 namespace agi { struct Context; }
 namespace cmd { class Command; }
@@ -71,21 +65,21 @@ namespace Automation4 {
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(MacroRunError, AutomationError, "automation/macro/generic")
 
 	// Calculate the extents of a text string given a style
-	bool CalculateTextExtents(AssStyle *style, wxString const& text, double &width, double &height, double &descent, double &extlead);
+	bool CalculateTextExtents(AssStyle *style, std::string const& text, double &width, double &height, double &descent, double &extlead);
 
 	class ScriptDialog;
 
 	class ExportFilter : public AssExportFilter {
-		agi::scoped_ptr<ScriptDialog> config_dialog;
+		std::unique_ptr<ScriptDialog> config_dialog;
 
 		/// subclasses should implement this, producing a new ScriptDialog
 		virtual ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) = 0;
 
 	protected:
-		wxString GetScriptSettingsIdentifier();
+		std::string GetScriptSettingsIdentifier();
 
 	public:
-		ExportFilter(wxString const& name, wxString const& description, int priority);
+		ExportFilter(std::string const& name, std::string const& description, int priority);
 		virtual ~ExportFilter();
 
 		wxWindow* GetConfigDialogWindow(wxWindow *parent, agi::Context *c);
@@ -106,25 +100,25 @@ namespace Automation4 {
 
 		/// Serialize the values of the controls in this dialog to a string
 		/// suitable for storage in the subtitle script
-		virtual wxString Serialise() { return ""; }
+		virtual std::string Serialise() { return ""; }
 
 		/// Restore the values of the controls in this dialog from a string
 		/// stored in the subtitle script
-		virtual void Unserialise(wxString const& serialised) { }
+		virtual void Unserialise(std::string const& serialised) { }
 	};
 
 	class ProgressSink;
 
 	class BackgroundScriptRunner {
-		agi::scoped_ptr<DialogProgress> impl;
+		std::unique_ptr<DialogProgress> impl;
 
 	public:
 		wxWindow *GetParentWindow() const;
-		wxString GetTitle() const;
+		std::string GetTitle() const;
 
 		void Run(std::function<void(ProgressSink*)> task);
 
-		BackgroundScriptRunner(wxWindow *parent, wxString const& title);
+		BackgroundScriptRunner(wxWindow *parent, std::string const& title);
 		~BackgroundScriptRunner();
 	};
 
@@ -155,13 +149,13 @@ namespace Automation4 {
 	};
 
 	class Script {
-		wxString filename;
+		agi::fs::path filename;
 
 	protected:
 		/// The automation include path, consisting of the user-specified paths
 		/// along with the script's path
-		wxPathList include_path;
-		Script(wxString const& filename);
+		std::vector<agi::fs::path> include_path;
+		Script(agi::fs::path const& filename);
 
 	public:
 		virtual ~Script() { }
@@ -170,17 +164,17 @@ namespace Automation4 {
 		virtual void Reload() = 0;
 
 		/// The script's file name with path
-		wxString GetFilename() const { return filename; }
+		agi::fs::path GetFilename() const { return filename; }
 		/// The script's file name without path
-		wxString GetPrettyFilename() const { return wxFileName(filename).GetFullName(); }
+		agi::fs::path GetPrettyFilename() const { return filename.filename(); }
 		/// The script's name. Not required to be unique.
-		virtual wxString GetName() const=0;
+		virtual std::string GetName() const=0;
 		/// A short description of the script
-		virtual wxString GetDescription() const=0;
+		virtual std::string GetDescription() const=0;
 		/// The author of the script
-		virtual wxString GetAuthor() const=0;
+		virtual std::string GetAuthor() const=0;
 		/// A version string that should not be used for anything but display
-		virtual wxString GetVersion() const=0;
+		virtual std::string GetVersion() const=0;
 		/// Did the script load correctly?
 		virtual bool GetLoadedState() const=0;
 
@@ -237,17 +231,17 @@ namespace Automation4 {
 
 	/// Manager for scripts in the autoload directory
 	class AutoloadScriptManager : public ScriptManager {
-		wxString path;
+		std::string path;
 	public:
-		AutoloadScriptManager(wxString const& path);
+		AutoloadScriptManager(std::string const& path);
 		void Reload();
 	};
 
 	/// Both a base class for script factories and a manager of registered
 	/// script factories
 	class ScriptFactory {
-		wxString engine_name;
-		wxString filename_pattern;
+		std::string engine_name;
+		std::string filename_pattern;
 
 		/// Load a file, or return nullptr if the file is not in a supported
 		/// format. If the file is in a supported format but is invalid, a
@@ -256,35 +250,33 @@ namespace Automation4 {
 		///
 		/// This is private as it should only ever be called through
 		/// CreateFromFile
-		virtual Script* Produce(wxString const& filename) const = 0;
+		virtual Script* Produce(agi::fs::path const& filename) const = 0;
 
 		static inline std::vector<ScriptFactory*>& Factories();
 
 	protected:
-		ScriptFactory(wxString engine_name, wxString filename_pattern);
+		ScriptFactory(std::string const& engine_name, std::string const& filename_pattern);
 		virtual ~ScriptFactory() { }
 
 	public:
 		/// Name of this automation engine
-		const wxString& GetEngineName() const { return engine_name; }
+		const std::string& GetEngineName() const { return engine_name; }
 		/// Extension which this engine supports
-		const wxString& GetFilenamePattern() const { return filename_pattern; }
+		const std::string& GetFilenamePattern() const { return filename_pattern; }
 
 		/// Register an automation engine. Calling code retains ownership of pointer
 		static void Register(ScriptFactory *factory);
 		/// Unregister and delete an automation engine
 		static void Unregister(ScriptFactory *factory);
-		/// Is there an automation engine registered which can open the file?
-		static bool CanHandleScriptFormat(wxString const& filename);
 
 		/// Get the full wildcard string for all loaded engines
-		static wxString GetWildcardStr();
+		static std::string GetWildcardStr();
 
 		/// Load a script from a file
 		/// @param filename Script to load
 		/// @param log_errors Should load errors be displayed?
-		/// @return Always returns a valid Script, even if no engine could load the file
-		static Script* CreateFromFile(wxString const& filename, bool log_errors);
+		/// @param create_unknown Create a placeholder rather than returning nullptr if no script engine supports the file
+		static Script* CreateFromFile(agi::fs::path const& filename, bool log_errors, bool create_unknown=true);
 
 		static const std::vector<ScriptFactory*>& GetFactories();
 	};
@@ -293,14 +285,14 @@ namespace Automation4 {
 	/// automation engines
 	class UnknownScript : public Script {
 	public:
-		UnknownScript(wxString const& filename);
+		UnknownScript(agi::fs::path const& filename) : Script(filename) { }
 
 		void Reload() { }
 
-		wxString GetName() const { return wxFileName(GetFilename()).GetName(); }
-		wxString GetDescription() const { return _("File was not recognized as a script"); }
-		wxString GetAuthor() const { return ""; }
-		wxString GetVersion() const { return ""; }
+		std::string GetName() const { return GetFilename().stem().string(); }
+		std::string GetDescription() const { return from_wx(_("File was not recognized as a script")); }
+		std::string GetAuthor() const { return ""; }
+		std::string GetVersion() const { return ""; }
 		bool GetLoadedState() const { return false; }
 
 		std::vector<cmd::Command*> GetMacros() const { return std::vector<cmd::Command*>(); }

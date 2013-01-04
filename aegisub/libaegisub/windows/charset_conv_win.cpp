@@ -18,6 +18,18 @@
 
 #include <libaegisub/charset_conv_win.h>
 
+namespace {
+std::string from_w(agi::charset::IconvWrapper &w32Conv, std::wstring const& source) {
+	std::string dest;
+	size_t srcLen = source.size() * sizeof(wchar_t);
+	const char* src = reinterpret_cast<const char *>(source.c_str());
+	size_t len = w32Conv.RequiredBufferSize(src, srcLen);
+	dest.resize(len);
+	w32Conv.Convert(src, srcLen, &dest[0], len);
+	return dest;
+}
+}
+
 namespace agi {
 	namespace charset {
 
@@ -33,14 +45,12 @@ std::wstring ConvertW(std::string const& source) {
 
 std::string ConvertW(std::wstring const& source) {
 	static IconvWrapper w32Conv("utf-16le", "utf-8", false);
+	return from_w(w32Conv, source);
+}
 
-	std::string dest;
-	size_t srcLen = source.size() * sizeof(wchar_t);
-	const char* src = reinterpret_cast<const char *>(source.c_str());
-	size_t len = w32Conv.RequiredBufferSize(src, srcLen);
-	dest.resize(len);
-	w32Conv.Convert(src, srcLen, &dest[0], len);
-	return dest;
+std::string ConvertLocal(std::wstring const& source) {
+	static IconvWrapper w32Conv("utf-16le", "char", false);
+	return from_w(w32Conv, source);
 }
 
 	}

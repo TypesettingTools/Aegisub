@@ -35,13 +35,15 @@
 #include "config.h"
 
 #include "ass_style.h"
-#include "compat.h"
+
 #include "subtitle_format.h"
 #include "utils.h"
 
+#include <libaegisub/split.h>
+
 #include <algorithm>
-#include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cctype>
 
@@ -74,42 +76,28 @@ AssStyle::AssStyle()
 
 namespace {
 class parser {
-	typedef boost::iterator_range<std::string::const_iterator> string_range;
-	string_range str;
-	std::vector<string_range> tkns;
-	size_t tkn_idx;
+	boost::split_iterator<agi::StringRange::const_iterator> pos;
 
-	string_range next_tok() {
-		if (tkn_idx >= tkns.size())
+	std::string next_tok() {
+		if (pos.eof())
 			throw SubtitleFormatParseError("Malformed style: not enough fields", 0);
-		return trim_copy(tkns[tkn_idx++]);
+		return agi::str(trim_copy(*pos++));
 	}
 
 public:
-	parser(std::string const& str)
-	: tkn_idx(0)
-	{
-		auto pos = find(str.begin(), str.end(), ':');
-		if (pos != str.end()) {
-			this->str = string_range(pos + 1, str.end());
-			split(tkns, this->str, [](char c) { return c == ','; });
-		}
+	parser(std::string const& str) {
+		auto colon = find(str.begin(), str.end(), ':');
+		if (colon != str.end())
+			pos = agi::Split(agi::StringRange(colon + 1, str.end()), ',');
 	}
 
 	void check_done() const {
-		if (tkn_idx != tkns.size())
+		if (!pos.eof())
 			throw SubtitleFormatParseError("Malformed style: too many fields", 0);
 	}
 
-	std::string next_str() {
-		auto tkn = next_tok();
-		return std::string(begin(tkn), end(tkn));
-	}
-
-	agi::Color next_color() {
-		auto tkn = next_tok();
-		return std::string(begin(tkn), end(tkn));
-	}
+	std::string next_str() { return next_tok(); }
+	agi::Color next_color() { return next_tok(); }
 
 	int next_int() {
 		try {
@@ -130,13 +118,13 @@ public:
 	}
 
 	void skip_token() {
-		++tkn_idx;
+		if (!pos.eof())
+			++pos;
 	}
 };
 }
 
-AssStyle::AssStyle(wxString const& rawData, int version) {
-	std::string str(from_wx(rawData));
+AssStyle::AssStyle(std::string const& str, int version) {
 	parser p(str);
 
 	name = p.next_str();
@@ -211,28 +199,28 @@ void AssStyle::UpdateData() {
 	replace(name.begin(), name.end(), ',', ';');
 	replace(font.begin(), font.end(), ',', ';');
 
-	data = wxString::Format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
-		to_wx(name), to_wx(font), fontsize,
-		primary.GetAssStyleFormatted(),
-		secondary.GetAssStyleFormatted(),
-		outline.GetAssStyleFormatted(),
-		shadow.GetAssStyleFormatted(),
-		(bold? -1 : 0), (italic ? -1 : 0),
-		(underline?-1:0),(strikeout?-1:0),
-		scalex,scaley,spacing,angle,
-		borderstyle,outline_w,shadow_w,alignment,
-		Margin[0],Margin[1],Margin[2],encoding);
+	data = str(boost::format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i")
+		% name % font % fontsize
+		% primary.GetAssStyleFormatted()
+		% secondary.GetAssStyleFormatted()
+		% outline.GetAssStyleFormatted()
+		% shadow.GetAssStyleFormatted()
+		% (bold? -1 : 0) % (italic ? -1 : 0)
+		% (underline ? -1 : 0) % (strikeout ? -1 : 0)
+		% scalex % scaley % spacing % angle
+		% borderstyle % outline_w % shadow_w % alignment
+		% Margin[0] % Margin[1] % Margin[2] % encoding);
 }
 
-wxString AssStyle::GetSSAText() const {
-	return wxString::Format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i",
-		to_wx(name), to_wx(font), fontsize,
-		primary.GetSsaFormatted(),
-		secondary.GetSsaFormatted(),
-		shadow.GetSsaFormatted(),
-		(bold? -1 : 0), (italic ? -1 : 0),
-		borderstyle,outline_w,shadow_w,AssToSsa(alignment),
-		Margin[0],Margin[1],Margin[2],encoding);
+std::string AssStyle::GetSSAText() const {
+	return str(boost::format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i")
+		% name % font % fontsize
+		% primary.GetSsaFormatted()
+		% secondary.GetSsaFormatted()
+		% shadow.GetSsaFormatted()
+		% (bold? -1 : 0) % (italic ? -1 : 0)
+		% borderstyle % outline_w % shadow_w % AssToSsa(alignment)
+		% Margin[0] % Margin[1] % Margin[2] % encoding);
 }
 
 AssEntry *AssStyle::Clone() const {

@@ -26,6 +26,10 @@
 #include "include/aegisub/context.h"
 #include "video_display.h"
 
+#include <libaegisub/color.h>
+
+#include <boost/format.hpp>
+
 VisualToolCross::VisualToolCross(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)
 , gl_text(new OpenGLText)
@@ -45,9 +49,9 @@ void VisualToolCross::OnDoubleClick() {
 		int t1, t2;
 		if (GetLineMove(line, p1, p2, t1, t2)) {
 			if (t1 > 0 || t2 > 0)
-				SetOverride(line, "\\move", wxString::Format("(%s,%s,%d,%d)", Text(p1 + d), Text(p2 + d), t1, t2));
+				SetOverride(line, "\\move", str(boost::format("(%s,%s,%d,%d)") % Text(p1 + d) % Text(p2 + d) % t1 % t2));
 			else
-				SetOverride(line, "\\move", wxString::Format("(%s,%s)", Text(p1 + d), Text(p2 + d)));
+				SetOverride(line, "\\move", str(boost::format("(%s,%s)") % Text(p1 + d) % Text(p2 + d)));
 		}
 		else
 			SetOverride(line, "\\pos", "(" + Text(GetLinePosition(line) + d) + ")");
@@ -74,11 +78,11 @@ void VisualToolCross::Draw() {
 	gl.DrawLines(2, lines, 4);
 	gl.ClearInvert();
 
-	wxString mouse_text = Text(ToScriptCoords(shift_down ? video_res - mouse_pos : mouse_pos));
+	std::string mouse_text = Text(ToScriptCoords(shift_down ? video_res - mouse_pos : mouse_pos));
 
 	int tw, th;
 	gl_text->SetFont("Verdana", 12, true, false);
-	gl_text->SetColour(*wxWHITE, 1.f);
+	gl_text->SetColour(agi::Color(255, 255, 255, 255));
 	gl_text->GetExtent(mouse_text, tw, th);
 
 	// Place the text in the corner of the cross closest to the center of the video
@@ -97,6 +101,6 @@ void VisualToolCross::Draw() {
 	gl_text->Print(mouse_text, dx, dy);
 }
 
-wxString VisualToolCross::Text(Vector2D v) {
+std::string VisualToolCross::Text(Vector2D v) {
 	return video_res.X() > script_res.X() ? v.Str() : v.DStr();
 }

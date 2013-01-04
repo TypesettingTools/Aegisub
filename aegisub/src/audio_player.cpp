@@ -44,7 +44,6 @@
 #include "audio_player_pulse.h"
 
 #include "audio_controller.h"
-#include "compat.h"
 #include "options.h"
 
 AudioPlayer::AudioPlayer(AudioProvider *provider)

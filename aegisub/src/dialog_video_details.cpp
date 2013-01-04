@@ -34,16 +34,17 @@
 
 #include "config.h"
 
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-
 #include "dialog_video_details.h"
 
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_provider_manager.h"
+
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 
 static void make_field(wxWindow *parent, wxSizer *sizer, wxString const& name, wxString const& value) {
 	sizer->Add(new wxStaticText(parent, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
@@ -79,11 +80,11 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	double fps = c->videoController->FPS().FPS();
 
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
-	make_field(this, fg, _("File name:"), c->videoController->GetVideoName());
+	make_field(this, fg, _("File name:"), c->videoController->GetVideoName().wstring());
 	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps));
 	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%s)", width, height, pretty_ar(width, height)));
 	make_field(this, fg, _("Length:"), wxString::Format(_("%d frames (%s)"), framecount, pretty_time_stamp(framecount, fps)));
-	make_field(this, fg, _("Decoder:"), c->videoController->GetProvider()->GetDecoderName());
+	make_field(this, fg, _("Decoder:"), to_wx(c->videoController->GetProvider()->GetDecoderName()));
 
 	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Video"));
 	video_sizer->Add(fg);

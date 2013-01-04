@@ -18,11 +18,8 @@
 /// @brief wxMultiChoiceDialog with Select All and Select None
 /// @ingroup
 
-#include <wx/button.h>
+#include <wx/config.h>
 #include <wx/choicdlg.h>
-#include <wx/event.h>
-#include <wx/listbox.h>
-#include <wx/sizer.h>
 
 /// @class SelectedChoicesDialog
 /// @brief wxMultiChoiceDialog with Select All and Select None

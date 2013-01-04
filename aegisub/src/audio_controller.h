@@ -33,20 +33,16 @@
 
 #pragma once
 
-#include <cassert>
+#include <boost/filesystem/path.hpp>
 #include <cstdint>
 #include <memory>
-#include <set>
-#include <vector>
 
 #include <wx/event.h>
-#include <wx/string.h>
 #include <wx/timer.h>
-#include <wx/pen.h>
 #include <wx/power.h>
 
 #include <libaegisub/exception.h>
-#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
 class AudioPlayer;
@@ -96,10 +92,10 @@ class AudioController : public wxEvtHandler {
 	AudioProvider *provider;
 
 	/// The current timing mode, if any; owned by the audio controller
-	agi::scoped_ptr<AudioTimingController> timing_controller;
+	std::unique_ptr<AudioTimingController> timing_controller;
 
 	/// The URL of the currently open audio, if any
-	wxString audio_url;
+	agi::fs::path audio_url;
 
 
 	enum PlaybackMode {
@@ -157,13 +153,9 @@ public:
 	/// @brief Destructor
 	~AudioController();
 
-
 	/// @brief Open an audio stream
 	/// @param url URL of the stream to open
-	///
-	/// The URL can either be a plain filename (with no qualifiers) or one
-	/// recognised by various providers.
-	void OpenAudio(const wxString &url);
+	void OpenAudio(agi::fs::path const& url);
 
 	/// @brief Closes the current audio stream
 	void CloseAudio();
@@ -177,7 +169,7 @@ public:
 	///
 	/// The returned URL can be passed into OpenAudio() later to open the same
 	/// stream again.
-	wxString GetAudioURL() const;
+	agi::fs::path GetAudioURL() const { return audio_url; }
 
 
 	/// @brief Start or restart audio playback, playing a range
@@ -263,7 +255,7 @@ public:
 	/// @brief Save a portion of the decoded loaded audio to a wav file
 	/// @param filename File to save to
 	/// @param range Time range to save
-	void SaveClip(wxString const& filename, TimeRange const& range) const;
+	void SaveClip(agi::fs::path const& filename, TimeRange const& range) const;
 
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioOpen,               AddAudioOpenListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioClose,              AddAudioCloseListener)

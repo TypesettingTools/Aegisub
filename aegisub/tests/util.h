@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -12,11 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// $Id$
-
-/// @file util.cpp
-/// @brief Common utilities used in tests.
-/// @ingroup util
+// Aegisub Project http://www.aegisub.org/
 
 #include <string>
 #include <vector>
@@ -24,10 +20,7 @@
 #include <stdarg.h>
 
 namespace util {
-
-void copy(const std::string &from, const std::string &to);
-bool compare(const std::string &file1, const std::string &file2);
-void remove(const std::string& file);
+bool compare(std::string const& file1, std::string const& file2);
 
 template<typename T>
 static std::vector<T> make_vector(int len, ...) {
@@ -42,6 +35,4 @@ static std::vector<T> make_vector(int len, ...) {
 	return vec;
 }
 
-} // namespace util
-
-
+}

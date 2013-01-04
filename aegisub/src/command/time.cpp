@@ -36,8 +36,6 @@
 
 #include "../config.h"
 
-#include <algorithm>
-
 #include "command.h"
 
 #include "../ass_dialogue.h"
@@ -53,6 +51,8 @@
 #include "../video_context.h"
 
 #include <libaegisub/of_type_adaptor.h>
+
+#include <algorithm>
 
 namespace {
 	using cmd::Command;
@@ -73,8 +73,7 @@ namespace {
 			size_t found = 0;
 			for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
 				if (sel.count(diag)) {
-					++found;
-					if (found == sel.size())
+					if (++found == sel.size())
 						return true;
 				}
 				else if (found)
@@ -197,15 +196,13 @@ struct time_snap_scene : public validate_video_loaded {
 		VideoContext *con = c->videoController;
 		if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
 
-		// Get frames
 		int curFrame = con->GetFrameN();
 		int prev = 0;
 		int next = 0;
 
 		const std::vector<int> &keyframes = con->GetKeyFrames();
-		if (curFrame < keyframes.front()) {
+		if (curFrame < keyframes.front())
 			next = keyframes.front();
-		}
 		else if (curFrame >= keyframes.back()) {
 			prev = keyframes.back();
 			next = con->GetLength();
@@ -222,17 +219,14 @@ struct time_snap_scene : public validate_video_loaded {
 			}
 		}
 
-		// Get times
 		int start_ms = con->TimeAtFrame(prev,agi::vfr::START);
 		int end_ms = con->TimeAtFrame(next-1,agi::vfr::END);
 
-		// Update rows
 		for (auto line : c->selectionController->GetSelectedSet()) {
 			line->Start = start_ms;
 			line->End = end_ms;
 		}
 
-		// Commit
 		c->ass->Commit(_("snap to scene"), AssFile::COMMIT_DIAG_TIME);
 	}
 };

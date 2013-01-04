@@ -34,20 +34,10 @@
 
 #include "config.h"
 
-#include <cstring>
-
-#include <wx/clipbrd.h>
-#include <wx/config.h>
-#include <wx/filename.h>
-#include <wx/image.h>
-#include <wx/msgdlg.h>
-
-#include <libaegisub/keyframe.h>
-#include <libaegisub/log.h>
+#include "video_context.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_style.h"
 #include "ass_time.h"
 #include "audio_controller.h"
 #include "compat.h"
@@ -56,21 +46,25 @@
 #include "mkv_wrap.h"
 #include "options.h"
 #include "selection_controller.h"
-#include "standard_paths.h"
 #include "time_range.h"
 #include "threaded_frame_source.h"
 #include "utils.h"
-#include "video_context.h"
 #include "video_frame.h"
+
+#include <libaegisub/fs.h>
+#include <libaegisub/keyframe.h>
+#include <libaegisub/path.h>
+
+#include <wx/msgdlg.h>
 
 VideoContext::VideoContext()
 : playback(this)
-, startMS(0)
-, endFrame(0)
+, start_ms(0)
+, end_frame(0)
 , frame_n(0)
-, arValue(1.)
-, arType(0)
-, hasSubtitles(false)
+, ar_value(1.)
+, ar_type(0)
+, has_subtitles(false)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 , no_amend(false)
 {
@@ -99,24 +93,24 @@ VideoContext *VideoContext::Get() {
 }
 
 void VideoContext::Reset() {
-	StandardPaths::SetPathValue("?video", "");
+	config::path->SetToken("?video", "");
 
 	// Remove video data
 	Stop();
 	frame_n = 0;
 
 	// Clean up video data
-	videoFile.clear();
+	video_filename.clear();
 
 	// Remove provider
 	provider.reset();
-	videoProvider = 0;
+	video_provider = 0;
 
-	keyFrames.clear();
-	keyFramesFilename.clear();
-	videoFPS = agi::vfr::Framerate();
-	KeyframesOpen(keyFrames);
-	if (!ovrFPS.IsLoaded()) TimecodesOpen(videoFPS);
+	keyframes.clear();
+	keyframes_filename.clear();
+	video_fps = agi::vfr::Framerate();
+	KeyframesOpen(keyframes);
+	if (!ovr_fps.IsLoaded()) TimecodesOpen(video_fps);
 }
 
 void VideoContext::SetContext(agi::Context *context) {
@@ -125,7 +119,7 @@ void VideoContext::SetContext(agi::Context *context) {
 	context->ass->AddFileSaveListener(&VideoContext::OnSubtitlesSave, this);
 }
 
-void VideoContext::SetVideo(const wxString &filename) {
+void VideoContext::SetVideo(const agi::fs::path &filename) {
 	Reset();
 	if (filename.empty()) {
 		VideoOpen();
@@ -135,8 +129,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 	bool commit_subs = false;
 	try {
 		provider.reset(new ThreadedFrameSource(filename, this));
-		videoProvider = provider->GetVideoProvider();
-		videoFile = filename;
+		video_provider = provider->GetVideoProvider();
+		video_filename = filename;
 
 		// Check that the script resolution matches the video resolution
 		int sx = context->ass->GetScriptInfoAsInt("PlayResX");
@@ -147,8 +141,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 		// If the script resolution hasn't been set at all just force it to the
 		// video resolution
 		if (sx == 0 && sy == 0) {
-			context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vx));
-			context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vy));
+			context->ass->SetScriptInfo("PlayResX", std::to_string(vx));
+			context->ass->SetScriptInfo("PlayResY", std::to_string(vy));
 			commit_subs = true;
 		}
 		// If it has been set to something other than a multiple of the video
@@ -165,8 +159,8 @@ void VideoContext::SetVideo(const wxString &filename) {
 					break;
 				// Fallthrough to case 2
 			case 2: // Always change script res
-				context->ass->SetScriptInfo("PlayResX", wxString::Format("%d", vx));
-				context->ass->SetScriptInfo("PlayResY", wxString::Format("%d", vy));
+				context->ass->SetScriptInfo("PlayResX", std::to_string(vx));
+				context->ass->SetScriptInfo("PlayResY", std::to_string(vy));
 				commit_subs = true;
 				break;
 			default: // Never change
@@ -174,44 +168,44 @@ void VideoContext::SetVideo(const wxString &filename) {
 			}
 		}
 
-		keyFrames = videoProvider->GetKeyFrames();
+		keyframes = video_provider->GetKeyFrames();
 
 		// Set frame rate
-		videoFPS = videoProvider->GetFPS();
-		if (ovrFPS.IsLoaded()) {
+		video_fps = video_provider->GetFPS();
+		if (ovr_fps.IsLoaded()) {
 			int ovr = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"), _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
 			if (ovr == wxYES) {
-				ovrFPS = agi::vfr::Framerate();
-				ovrTimecodeFile.clear();
+				ovr_fps = agi::vfr::Framerate();
+				timecodes_filename.clear();
 			}
 		}
 
 		// Set aspect ratio
-		double dar = videoProvider->GetDAR();
+		double dar = video_provider->GetDAR();
 		if (dar > 0)
 			SetAspectRatio(4, dar);
 
 		// Set filename
-		config::mru->Add("Video", from_wx(filename));
-		StandardPaths::SetPathValue("?video", wxFileName(filename).GetPath());
+		config::mru->Add("Video", filename);
+		config::path->SetToken("?video", filename);
 
 		// Show warning
-		wxString warning = videoProvider->GetWarning();
-		if (!warning.empty()) wxMessageBox(warning, "Warning", wxICON_WARNING | wxOK);
+		std::string warning = video_provider->GetWarning();
+		if (!warning.empty())
+			wxMessageBox(to_wx(warning), "Warning", wxICON_WARNING | wxOK);
 
-		hasSubtitles = false;
-		if (filename.Right(4).Lower() == ".mkv") {
-			hasSubtitles = MatroskaWrapper::HasSubtitles(filename);
-		}
+		has_subtitles = false;
+		if (agi::fs::HasExtension(filename, "mkv"))
+			has_subtitles = MatroskaWrapper::HasSubtitles(filename);
 
 		provider->LoadSubtitles(context->ass);
 		VideoOpen();
-		KeyframesOpen(keyFrames);
+		KeyframesOpen(keyframes);
 		TimecodesOpen(FPS());
 	}
 	catch (agi::UserCancelException const&) { }
-	catch (agi::FileNotAccessibleError const& err) {
-		config::mru->Remove("Video", from_wx(filename));
+	catch (agi::fs::FileSystemError const& err) {
+		config::mru->Remove("Video", filename);
 		wxMessageBox(to_wx(err.GetMessage()), "Error setting video", wxOK | wxICON_ERROR | wxCENTER);
 	}
 	catch (VideoProviderError const& err) {
@@ -227,7 +221,7 @@ void VideoContext::SetVideo(const wxString &filename) {
 void VideoContext::Reload() {
 	if (IsLoaded()) {
 		int frame = frame_n;
-		SetVideo(videoFile.Clone());
+		SetVideo(agi::fs::path(video_filename)); // explicitly copy videoFile since it's cleared in SetVideo
 		JumpToFrame(frame);
 	}
 }
@@ -248,8 +242,8 @@ void VideoContext::OnSubtitlesCommit(int type, std::set<const AssEntry *> const&
 void VideoContext::OnSubtitlesSave() {
 	no_amend = true;
 
-	context->ass->SetScriptInfo("VFR File", MakeRelativePath(GetTimecodesName(), context->ass->filename));
-	context->ass->SetScriptInfo("Keyframes File", MakeRelativePath(GetKeyFramesName(), context->ass->filename));
+	context->ass->SetScriptInfo("VFR File", config::path->MakeRelative(GetTimecodesName(), "?script").generic_string());
+	context->ass->SetScriptInfo("Keyframes File", config::path->MakeRelative(GetKeyFramesName(), "?script").generic_string());
 
 	if (!IsLoaded()) {
 		context->ass->SetScriptInfo("Video File", "");
@@ -258,16 +252,16 @@ void VideoContext::OnSubtitlesSave() {
 		return;
 	}
 
-	wxString ar;
-	if (arType == 4)
-		ar = wxString::Format("c%g", arValue);
+	std::string ar;
+	if (ar_type == 4)
+		ar = "c" + std::to_string(ar_value);
 	else
-		ar = wxString::Format("%d", arType);
+		ar = "c" + std::to_string(ar_type);
 
-	context->ass->SetScriptInfo("Video File", MakeRelativePath(videoFile, context->ass->filename));
-	context->ass->SetScriptInfo("YCbCr Matrix", videoProvider->GetColorSpace());
+	context->ass->SetScriptInfo("Video File", config::path->MakeRelative(video_filename, "?script").generic_string());
+	context->ass->SetScriptInfo("YCbCr Matrix", video_provider->GetColorSpace());
 	context->ass->SetScriptInfo("Video Aspect Ratio", ar);
-	context->ass->SetScriptInfo("Video Position", wxString::Format("%d", frame_n));
+	context->ass->SetScriptInfo("Video Position", std::to_string(frame_n));
 }
 
 void VideoContext::JumpToFrame(int n) {
@@ -291,44 +285,33 @@ void VideoContext::JumpToTime(int ms, agi::vfr::Time end) {
 }
 
 void VideoContext::GetFrameAsync(int n) {
-	provider->RequestFrame(n, TimeAtFrame(n) / 1000.0);
+	provider->RequestFrame(n, TimeAtFrame(n));
 }
 
 std::shared_ptr<AegiVideoFrame> VideoContext::GetFrame(int n, bool raw) {
-	return provider->GetFrame(n, TimeAtFrame(n) / 1000.0, raw);
+	return provider->GetFrame(n, TimeAtFrame(n), raw);
 }
 
-int VideoContext::GetWidth() const {
-	return videoProvider->GetWidth();
-}
-int VideoContext::GetHeight() const {
-	return videoProvider->GetHeight();
-}
-
-int VideoContext::GetLength() const {
-	return videoProvider->GetFrameCount();
-}
+int VideoContext::GetWidth() const { return video_provider->GetWidth(); }
+int VideoContext::GetHeight() const { return video_provider->GetHeight(); }
+int VideoContext::GetLength() const { return video_provider->GetFrameCount(); }
 
 void VideoContext::NextFrame() {
-	if (!videoProvider || IsPlaying() || frame_n == videoProvider->GetFrameCount())
+	if (!video_provider || IsPlaying() || frame_n == video_provider->GetFrameCount())
 		return;
 
 	JumpToFrame(frame_n + 1);
-	// Start playing audio
-	if (playAudioOnStep->GetBool()) {
+	if (playAudioOnStep->GetBool())
 		context->audioController->PlayRange(TimeRange(TimeAtFrame(frame_n - 1), TimeAtFrame(frame_n)));
-	}
 }
 
 void VideoContext::PrevFrame() {
-	if (!videoProvider || IsPlaying() || frame_n == 0)
+	if (!video_provider || IsPlaying() || frame_n == 0)
 		return;
 
 	JumpToFrame(frame_n - 1);
-	// Start playing audio
-	if (playAudioOnStep->GetBool()) {
+	if (playAudioOnStep->GetBool())
 		context->audioController->PlayRange(TimeRange(TimeAtFrame(frame_n), TimeAtFrame(frame_n + 1)));
-	}
 }
 
 void VideoContext::Play() {
@@ -339,15 +322,12 @@ void VideoContext::Play() {
 
 	if (!IsLoaded()) return;
 
-	// Set variables
-	startMS = TimeAtFrame(frame_n);
-	endFrame = GetLength() - 1;
+	start_ms = TimeAtFrame(frame_n);
+	end_frame = GetLength() - 1;
 
-	// Start playing audio
-	context->audioController->PlayToEnd(startMS);
+	context->audioController->PlayToEnd(start_ms);
 
-	// Start timer
-	playTime.Start();
+	playback_start_time = std::chrono::steady_clock::now();
 	playback.Start(10);
 }
 
@@ -357,19 +337,16 @@ void VideoContext::PlayLine() {
 	AssDialogue *curline = context->selectionController->GetActiveLine();
 	if (!curline) return;
 
-	// Start playing audio
 	context->audioController->PlayRange(TimeRange(curline->Start, curline->End));
 
 	// Round-trip conversion to convert start to exact
-	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start,agi::vfr::START);
-	startMS = TimeAtFrame(startFrame);
-	endFrame = FrameAtTime(context->selectionController->GetActiveLine()->End,agi::vfr::END) + 1;
+	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start, agi::vfr::START);
+	start_ms = TimeAtFrame(startFrame);
+	end_frame = FrameAtTime(context->selectionController->GetActiveLine()->End, agi::vfr::END) + 1;
 
-	// Jump to start
 	JumpToFrame(startFrame);
 
-	// Start timer
-	playTime.Start();
+	playback_start_time = std::chrono::steady_clock::now();
 	playback.Start(10);
 }
 
@@ -381,21 +358,17 @@ void VideoContext::Stop() {
 }
 
 void VideoContext::OnPlayTimer(wxTimerEvent &) {
-	int nextFrame = FrameAtTime(startMS + playTime.Time());
+	using namespace std::chrono;
+	int next_frame = FrameAtTime(start_ms + duration_cast<milliseconds>(steady_clock::now() - playback_start_time).count());
+	if (next_frame == frame_n) return;
 
-	// Same frame
-	if (nextFrame == frame_n) return;
-
-	// End
-	if (nextFrame >= endFrame) {
+	if (next_frame >= end_frame)
 		Stop();
-		return;
+	else {
+		frame_n = next_frame;
+		GetFrameAsync(frame_n);
+		Seek(frame_n);
 	}
-
-	// Jump to next frame
-	frame_n = nextFrame;
-	GetFrameAsync(frame_n);
-	Seek(frame_n);
 }
 
 double VideoContext::GetARFromType(int type) const {
@@ -409,87 +382,83 @@ double VideoContext::GetARFromType(int type) const {
 void VideoContext::SetAspectRatio(int type, double value) {
 	if (type != 4) value = GetARFromType(type);
 
-	arType = type;
-	arValue = mid(.5, value, 5.);
-	ARChange(arType, arValue);
+	ar_type = type;
+	ar_value = mid(.5, value, 5.);
+	ARChange(ar_type, ar_value);
 }
 
-void VideoContext::LoadKeyframes(wxString filename) {
-	if (filename == keyFramesFilename || filename.empty()) return;
+void VideoContext::LoadKeyframes(agi::fs::path const& filename) {
+	if (filename == keyframes_filename || filename.empty()) return;
 	try {
-		keyFrames = agi::keyframe::Load(from_wx(filename));
-		keyFramesFilename = filename;
-		KeyframesOpen(keyFrames);
-		config::mru->Add("Keyframes", from_wx(filename));
+		keyframes = agi::keyframe::Load(filename);
+		keyframes_filename = filename;
+		KeyframesOpen(keyframes);
+		config::mru->Add("Keyframes", filename);
 	}
 	catch (agi::keyframe::Error const& err) {
 		wxMessageBox(to_wx(err.GetMessage()), "Error opening keyframes file", wxOK | wxICON_ERROR | wxCENTER, context->parent);
-		config::mru->Remove("Keyframes", from_wx(filename));
+		config::mru->Remove("Keyframes", filename);
 	}
-	catch (agi::FileSystemError const&) {
-		wxLogError("Could not open file " + filename);
-		config::mru->Remove("Keyframes", from_wx(filename));
+	catch (agi::fs::FileSystemError const& err) {
+		wxMessageBox(to_wx(err.GetMessage()), "Error opening keyframes file", wxOK | wxICON_ERROR | wxCENTER, context->parent);
+		config::mru->Remove("Keyframes", filename);
 	}
 }
 
-void VideoContext::SaveKeyframes(wxString filename) {
-	agi::keyframe::Save(from_wx(filename), GetKeyFrames());
-	config::mru->Add("Keyframes", from_wx(filename));
+void VideoContext::SaveKeyframes(agi::fs::path const& filename) {
+	agi::keyframe::Save(filename, GetKeyFrames());
+	config::mru->Add("Keyframes", filename);
 }
 
 void VideoContext::CloseKeyframes() {
-	keyFramesFilename.clear();
-	if (videoProvider)
-		keyFrames = videoProvider->GetKeyFrames();
+	keyframes_filename.clear();
+	if (video_provider)
+		keyframes = video_provider->GetKeyFrames();
 	else
-		keyFrames.clear();
-	KeyframesOpen(keyFrames);
+		keyframes.clear();
+	KeyframesOpen(keyframes);
 }
 
-void VideoContext::LoadTimecodes(wxString filename) {
-	if (filename == ovrTimecodeFile || filename.empty()) return;
+void VideoContext::LoadTimecodes(agi::fs::path const& filename) {
+	if (filename == timecodes_filename || filename.empty()) return;
 	try {
-		ovrFPS = agi::vfr::Framerate(from_wx(filename));
-		ovrTimecodeFile = filename;
-		config::mru->Add("Timecodes", from_wx(filename));
+		ovr_fps = agi::vfr::Framerate(filename);
+		timecodes_filename = filename;
+		config::mru->Add("Timecodes", filename);
 		OnSubtitlesCommit(0, std::set<const AssEntry*>());
-		TimecodesOpen(ovrFPS);
+		TimecodesOpen(ovr_fps);
 	}
-	catch (const agi::FileSystemError&) {
-		wxLogError("Could not open file " + filename);
-		config::mru->Remove("Timecodes", from_wx(filename));
+	catch (agi::fs::FileSystemError const& err) {
+		wxMessageBox(to_wx(err.GetMessage()), "Error opening timecodes file", wxOK | wxICON_ERROR | wxCENTER, context->parent);
+		config::mru->Remove("Timecodes", filename);
 	}
 	catch (const agi::vfr::Error& e) {
-		wxLogError("Timecode file parse error: %s", e.GetMessage());
+		wxLogError("Timecode file parse error: %s", to_wx(e.GetMessage()));
+		config::mru->Remove("Timecodes", filename);
 	}
 }
-void VideoContext::SaveTimecodes(wxString filename) {
+void VideoContext::SaveTimecodes(agi::fs::path const& filename) {
 	try {
-		FPS().Save(from_wx(filename), IsLoaded() ? GetLength() : -1);
-		config::mru->Add("Timecodes", from_wx(filename));
+		FPS().Save(filename, IsLoaded() ? GetLength() : -1);
+		config::mru->Add("Timecodes", filename);
 	}
-	catch(const agi::FileSystemError&) {
-		wxLogError("Could not write to " + filename);
+	catch (agi::fs::FileSystemError const& err) {
+		wxMessageBox(to_wx(err.GetMessage()), "Error saving timecodes", wxOK | wxICON_ERROR | wxCENTER, context->parent);
 	}
 }
 void VideoContext::CloseTimecodes() {
-	ovrFPS = agi::vfr::Framerate();
-	ovrTimecodeFile.clear();
+	ovr_fps = agi::vfr::Framerate();
+	timecodes_filename.clear();
 	OnSubtitlesCommit(0, std::set<const AssEntry*>());
-	TimecodesOpen(videoFPS);
+	TimecodesOpen(video_fps);
 }
 
 int VideoContext::TimeAtFrame(int frame, agi::vfr::Time type) const {
-	if (ovrFPS.IsLoaded()) {
-		return ovrFPS.TimeAtFrame(frame, type);
-	}
-	return videoFPS.TimeAtFrame(frame, type);
+	return (ovr_fps.IsLoaded() ? ovr_fps : video_fps).TimeAtFrame(frame, type);
 }
+
 int VideoContext::FrameAtTime(int time, agi::vfr::Time type) const {
-	if (ovrFPS.IsLoaded()) {
-		return ovrFPS.FrameAtTime(time, type);
-	}
-	return videoFPS.FrameAtTime(time, type);
+	return (ovr_fps.IsLoaded() ? ovr_fps : video_fps).FrameAtTime(time, type);
 }
 
 void VideoContext::OnVideoError(VideoProviderErrorEvent const& err) {
@@ -502,11 +471,4 @@ void VideoContext::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
 	wxLogError(
 		"Failed rendering subtitles. Error message reported: %s",
 		to_wx(err.GetMessage()));
-}
-
-void VideoContext::OnExit() {
-	// On unix wxThreadModule will shut down any still-running threads (and
-	// display a warning that it's doing so) before the destructor for
-	// VideoContext runs, so manually kill the thread
-	Get()->provider.reset();
 }

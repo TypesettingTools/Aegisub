@@ -16,11 +16,11 @@
 /// @brief Character set detection and manipulation utilities.
 /// @ingroup libaegisub
 
-#include <fstream>
-#include <functional>
+#include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
+
 #include <string>
 #include <vector>
-#include <libaegisub/exception.h>
 
 namespace agi {
 	/// Character set conversion and detection.
@@ -35,12 +35,12 @@ typedef std::vector<std::pair<float, std::string>> CharsetListDetected;
 /// @brief Return a complete list of detected character sets ordered by precedence.
 /// @param file File to check
 /// @return List of possible charsets sorted by probability
-CharsetListDetected DetectAll(std::string const& file);
+CharsetListDetected DetectAll(agi::fs::path const& file);
 
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check
 /// @return Detected character set.
-std::string Detect(const std::string &file);
+std::string Detect(agi::fs::path const& file);
 
 	} // namespace util
 } // namespace agi

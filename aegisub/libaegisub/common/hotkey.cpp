@@ -18,11 +18,6 @@
 
 #include "../config.h"
 
-#include <algorithm>
-#include <cmath>
-#include <memory>
-#include <tuple>
-
 #include "libaegisub/hotkey.h"
 
 #include "libaegisub/cajun/writer.h"
@@ -31,8 +26,12 @@
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
 
+#include <algorithm>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/map.hpp>
+#include <cmath>
+#include <fstream>
+#include <tuple>
 
 namespace agi {
 	namespace hotkey {
@@ -50,12 +49,12 @@ void Hotkey::ComboInsert(Combo const& combo) {
 	cmd_map.insert(make_pair(combo.CmdName(), combo));
 }
 
-Hotkey::Hotkey(const std::string &file, const std::string &default_config)
+Hotkey::Hotkey(agi::fs::path const& file, const std::string &default_config)
 : config_file(file)
 {
 	LOG_D("hotkey/init") << "Generating hotkeys.";
 
-	json::Object object(agi::json_util::file(config_file, default_config));
+	const json::Object object(agi::json_util::file(config_file, default_config));
 	for (auto const& hotkey_context : object)
 		BuildHotkey(hotkey_context.first, hotkey_context.second);
 }
@@ -118,7 +117,7 @@ std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const st
 	for (std::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
 		std::string ctext = it->second.Context();
 		if (ctext == "Always" || ctext == "Default" || ctext == context)
-			ret.push_back(it->second.StrMenu());
+			ret.emplace_back(it->second.StrMenu());
 	}
 
 	sort(ret.begin(), ret.end());

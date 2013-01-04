@@ -42,27 +42,29 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_time.h"
-#include "compat.h"
 #include "text_file_writer.h"
 
 #include <libaegisub/of_type_adaptor.h>
+
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/format.hpp>
 
 TranStationSubtitleFormat::TranStationSubtitleFormat()
 : SubtitleFormat("TranStation")
 {
 }
 
-wxArrayString TranStationSubtitleFormat::GetWriteWildcards() const {
-	wxArrayString formats;
-	formats.Add("transtation.txt");
+std::vector<std::string> TranStationSubtitleFormat::GetWriteWildcards() const {
+	std::vector<std::string> formats;
+	formats.push_back("transtation.txt");
 	return formats;
 }
 
-bool TranStationSubtitleFormat::CanWriteFile(wxString const& filename) const {
-	return filename.Lower().EndsWith(".transtation.txt");
+bool TranStationSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
+	return boost::iends_with(filename.string(), ".transtation.txt");
 }
 
-void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
+void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
 	agi::vfr::Framerate fps = AskForFPS(false, true);
 	if (!fps.IsLoaded()) return;
 
@@ -95,11 +97,11 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, wxString const& fi
 	file.WriteLineToFile("SUB[");
 }
 
-wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *current, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const {
+std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *current, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const {
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style
-	if (AssStyle *style = file->GetStyle(from_wx(current->Style))) {
+	if (AssStyle *style = file->GetStyle(current->Style)) {
 		if (style->alignment >= 4) valign = 4;
 		if (style->alignment >= 7) valign = 9;
 		if (style->alignment == 1 || style->alignment == 4 || style->alignment == 7) halign = "L";
@@ -109,7 +111,7 @@ wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *curr
 
 	// Hack: If an italics-tag (\i1) appears anywhere in the line,
 	// make it all italics
-	if (current->Text.get().Find("\\i1") != wxNOT_FOUND) type = "I";
+	if (current->Text.get().find("\\i1") != std::string::npos) type = "I";
 
 	// Write header
 	AssTime end = current->End;
@@ -120,6 +122,6 @@ wxString TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *curr
 	if (nextl_start > 0 && end == nextl_start)
 		end = fps.TimeAtFrame(fps.FrameAtTime(end, agi::vfr::END) - 1, agi::vfr::END);
 
-	wxString header = wxString::Format("SUB[%i%s%s ", valign, halign, type) + ft.ToSMPTE(current->Start) + ">" + ft.ToSMPTE(end) + "]\r\n";
-	return header + current->Text;
+	std::string header = str(boost::format("SUB[%i%s%s %s>%s]\r\n") % valign % halign % type % ft.ToSMPTE(current->Start) % ft.ToSMPTE(end));
+	return header + current->Text.get();
 }

@@ -32,8 +32,6 @@
 /// @ingroup audio_input
 ///
 
-#include <iosfwd>
-
 #include "include/aegisub/audio_provider.h"
 
 #include <libaegisub/scoped_ptr.h>
@@ -45,7 +43,7 @@ namespace agi {
 
 class HDAudioProvider : public AudioProvider {
 	/// Name of the file which the decoded audio is written to
-	wxString diskCacheFilename;
+	agi::fs::path diskCacheFilename;
 	/// Audio provider which reads from the decoded cache
 	agi::scoped_ptr<AudioProvider> cache_provider;
 

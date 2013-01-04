@@ -33,31 +33,22 @@
 ///
 
 #ifdef WITH_LIBASS
-
 #include "include/aegisub/subtitles_provider.h"
-extern "C" {
-#ifdef __VISUALC__
-#include "cstdint"
-#endif
 
+extern "C" {
 #include <ass/ass.h>
 }
 
-class FontConfigCacheThread;
-
 class LibassSubtitlesProvider : public SubtitlesProvider {
-	static ASS_Library* ass_library;
 	ASS_Renderer* ass_renderer;
 	ASS_Track* ass_track;
-
-	static FontConfigCacheThread *cache_worker;
 
 public:
 	LibassSubtitlesProvider(std::string);
 	~LibassSubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs);
-	void DrawSubtitles(AegiVideoFrame &dst,double time);
+	void DrawSubtitles(AegiVideoFrame &dst, double time);
 
 	static void CacheFonts();
 };

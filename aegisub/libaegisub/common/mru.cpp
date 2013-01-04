@@ -30,7 +30,7 @@
 
 namespace agi {
 
-MRUManager::MRUManager(std::string const& config, std::string const& default_config, agi::Options *options)
+MRUManager::MRUManager(agi::fs::path const& config, std::string const& default_config, agi::Options *options)
 : config_name(config)
 , options(options)
 {
@@ -60,16 +60,22 @@ MRUManager::MRUListMap &MRUManager::Find(std::string const& key) {
 	return index->second;
 }
 
-void MRUManager::Add(std::string const& key, std::string const& entry) {
+void MRUManager::Add(std::string const& key, agi::fs::path const& entry) {
 	MRUListMap &map = Find(key);
-	map.remove(entry);
-	map.push_front(entry);
-	Prune(key, map);
+	auto it = find(begin(map), end(map), entry);
+	if (it == begin(map) && it != end(map))
+		return;
+	if (it != end(map))
+		map.splice(begin(map), map, it);
+	else {
+		map.push_front(entry);
+		Prune(key, map);
+	}
 
 	Flush();
 }
 
-void MRUManager::Remove(std::string const& key, std::string const& entry) {
+void MRUManager::Remove(std::string const& key, agi::fs::path const& entry) {
 	Find(key).remove(entry);
 
 	Flush();
@@ -79,7 +85,7 @@ const MRUManager::MRUListMap* MRUManager::Get(std::string const& key) {
 	return &Find(key);
 }
 
-std::string const& MRUManager::GetEntry(std::string const& key, const size_t entry) {
+agi::fs::path const& MRUManager::GetEntry(std::string const& key, const size_t entry) {
 	const MRUManager::MRUListMap *const map = Get(key);
 
 	if (entry >= map->size())
@@ -93,7 +99,8 @@ void MRUManager::Flush() {
 
 	for (auto const& mru_map : mru) {
 		json::Array &array = out[mru_map.first];
-		array.insert(array.end(), mru_map.second.begin(), mru_map.second.end());
+		transform(begin(mru_map.second), end(mru_map.second),
+			back_inserter(array), [](agi::fs::path const& p) { return p.string(); });
 	}
 
 	json::Writer::Write(out, io::Save(config_name).Get());
@@ -116,7 +123,8 @@ void MRUManager::Prune(std::string const& key, MRUListMap& map) const {
 /// @param array json::Array of values.
 void MRUManager::Load(std::string const& key, const json::Array& array) {
 	try {
-		copy(array.begin(), array.end(), back_inserter(mru[key]));
+		transform(begin(array), end(array),
+			back_inserter(mru[key]), [](std::string const& s) { return s; });
 	}
 	catch (json::Exception const&) {
 		// Out of date MRU file; just discard the data and skip it

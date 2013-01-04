@@ -38,6 +38,7 @@
 #include <boost/flyweight/flyweight_fwd.hpp>
 #include <vector>
 
+#include <wx/combobox.h>
 #include <wx/panel.h>
 #include <wx/timer.h>
 
@@ -55,7 +56,6 @@ class TextSelectionController;
 class TimeEdit;
 class wxButton;
 class wxCheckBox;
-class wxComboBox;
 class wxRadioButton;
 class wxSizer;
 class wxSpinCtrl;
@@ -149,7 +149,7 @@ class SubsEditBox : public wxPanel {
 
 	void OnActiveLineChanged(AssDialogue *new_line);
 	void OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &);
-	void OnLineInitialTextChanged(wxString const& new_text);
+	void OnLineInitialTextChanged(std::string const& new_text);
 
 	void OnFrameTimeRadio(wxCommandEvent &event);
 	void OnStyleChange(wxCommandEvent &event);
@@ -179,18 +179,21 @@ class SubsEditBox : public wxPanel {
 	template<class T>
 	void SetSelectedRows(T AssDialogue::*field, T value, wxString const& desc, int type, bool amend = false);
 
+	template<class T>
+	void SetSelectedRows(T AssDialogue::*field, wxString const& value, wxString const& desc, int type, bool amend = false);
+
 	/// @brief Reload the current line from the file
 	/// @param type AssFile::CommitType
 	void OnCommit(int type);
 
 	/// Regenerate a dropdown list with the unique values of a dialogue field
-	void PopulateList(wxComboBox *combo, boost::flyweight<wxString> AssDialogue::*field);
+	void PopulateList(wxComboBox *combo, boost::flyweight<std::string> AssDialogue::*field);
 
 	/// @brief Enable or disable frame timing mode
 	void UpdateFrameTiming(agi::vfr::Framerate const& fps);
 
 	/// Update the character count box for the given text
-	void UpdateCharacterCount(wxString const& text);
+	void UpdateCharacterCount(std::string const& text);
 
 	/// Call a command the restore focus to the edit box
 	void CallCommand(const char *cmd_name);

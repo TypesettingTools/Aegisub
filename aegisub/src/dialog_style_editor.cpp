@@ -86,13 +86,10 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
-		wxString wx_old(to_wx(source_name));
-		wxString wx_new(to_wx(new_name));
-
 		for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
-			if (diag->Style == wx_old) {
+			if (diag->Style == source_name) {
 				if (replace)
-					diag->Style = wx_new;
+					diag->Style = new_name;
 				else
 					found_any = true;
 			}
@@ -328,7 +325,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 		SubsPreview->SetToolTip(_("Preview of current style"));
 		SubsPreview->SetStyle(*style);
-		SubsPreview->SetText(PreviewText->GetValue());
+		SubsPreview->SetText(from_wx(PreviewText->GetValue()));
 		PreviewText->SetToolTip(_("Text to be used for the preview"));
 		previewButton->SetToolTip(_("Color of preview background"));
 
@@ -524,7 +521,7 @@ void DialogStyleEditor::OnChildFocus(wxChildFocusEvent &event) {
 }
 
 void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
-	SubsPreview->SetText(PreviewText->GetValue());
+	SubsPreview->SetText(from_wx(PreviewText->GetValue()));
 	event.Skip();
 }
 

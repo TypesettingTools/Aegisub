@@ -52,17 +52,17 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 	int FrameNumber;                ///< current framenumber
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
-	wxString ColorSpace;            ///< Colorspace name
+	std::string ColorSpace;         ///< Colorspace name
 
 	AegiVideoFrame CurFrame;        ///< current video frame
 
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
 
-	void LoadVideo(wxString filename);
+	void LoadVideo(agi::fs::path const& filename);
 
 public:
-	FFmpegSourceVideoProvider(wxString filename);
+	FFmpegSourceVideoProvider(agi::fs::path const& filename);
 
 	const AegiVideoFrame GetFrame(int n);
 
@@ -72,12 +72,12 @@ public:
 	double GetDAR() const { return DAR; }
 	agi::vfr::Framerate GetFPS() const { return Timecodes; }
 
-	wxString GetColorSpace() const { return ColorSpace; }
+	std::string GetColorSpace() const { return ColorSpace; }
 
 	/// @brief Gets a list of keyframes
 	/// @return	Returns a wxArrayInt of keyframes.
 	std::vector<int> GetKeyFrames() const { return KeyFramesList; };
-	wxString GetDecoderName() const { return "FFmpegSource"; }
+	std::string GetDecoderName() const { return "FFmpegSource"; }
 	/// @brief Gets the desired cache behavior.
 	/// @return Returns true.
 	bool WantsCaching() const { return true; }

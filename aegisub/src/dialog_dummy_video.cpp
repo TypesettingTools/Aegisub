@@ -158,7 +158,7 @@ void DialogDummyVideo::UpdateLengthDisplay() {
 	length_display->SetLabel(wxString::Format(_("Resulting duration: %s"), AssTime(length / fps * 1000).GetAssFormated(true)));
 }
 
-wxString DialogDummyVideo::CreateDummyVideo(wxWindow *parent) {
+std::string DialogDummyVideo::CreateDummyVideo(wxWindow *parent) {
 	DialogDummyVideo dlg(parent);
 	if (dlg.ShowModal() != wxID_OK)
 		return "";

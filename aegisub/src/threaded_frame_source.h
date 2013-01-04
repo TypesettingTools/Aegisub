@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -19,15 +19,15 @@
 /// @ingroup video
 ///
 
+#include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
+
+#include <atomic>
 #include <deque>
 #include <memory>
 #include <set>
 
 #include <wx/event.h>
-#include <wx/thread.h>
-
-#include <libaegisub/exception.h>
-#include <libaegisub/scoped_ptr.h>
 
 class AegiVideoFrame;
 class AssEntry;
@@ -35,39 +35,41 @@ class AssFile;
 class SubtitlesProvider;
 class VideoProvider;
 class VideoProviderError;
+namespace agi { namespace dispatch { class Queue; } }
 
 /// @class ThreadedFrameSource
 /// @brief An asynchronous video decoding and subtitle rendering wrapper
-class ThreadedFrameSource : public wxThread {
+class ThreadedFrameSource {
+	/// Asynchronous work queue
+	std::unique_ptr<agi::dispatch::Queue> worker;
+
 	/// Subtitles provider
-	agi::scoped_ptr<SubtitlesProvider> provider;
+	std::unique_ptr<SubtitlesProvider> subs_provider;
 	/// Video provider
-	agi::scoped_ptr<VideoProvider> videoProvider;
+	std::unique_ptr<VideoProvider> video_provider;
 	/// Event handler to send FrameReady events to
 	wxEvtHandler *parent;
 
-	int nextFrame;   ///< Next queued frame, or -1 for none
-	double nextTime; ///< Next queued time
-	std::unique_ptr<AssFile> nextSubs; ///< Next queued AssFile
-	std::deque<std::pair<size_t, std::unique_ptr<AssEntry>>> changedSubs;
+	int frame_number; ///< Last frame number requested
+	double time; ///< Time of the frame to pass to the subtitle renderer
 
-	/// Subtitles to be loaded the next time a frame is requested
+	/// Copy of the subtitles file to avoid having to touch the project context
 	std::unique_ptr<AssFile> subs;
-	/// If subs is set and this is not -1, frame which subs was limited to when
-	/// it was last sent to the subtitle provider
-	int singleFrame;
 
-	wxMutex fileMutex;     ///< Mutex for subs and singleFrame
-	wxMutex jobMutex;      ///< Mutex for nextFrame, nextTime and nextSubs
-	wxMutex providerMutex; ///< Mutex for video provider
-	wxMutex evtMutex;      ///< Mutex for FrameReadyEvents associated with this
+	/// If >= 0, the subtitles provider current has just the lines visible on
+	/// that frame loaded. If -1, the entire file is loaded. If -2, the
+	/// currently loaded file is out of date.
+	int single_frame;
 
-	wxCondition jobReady;  ///< Signal for indicating that a frame has be requested
+	std::shared_ptr<AegiVideoFrame> ProcFrame(int frame, double time, bool raw = false);
 
-	bool run; ///< Should the thread continue to run
+	/// Produce a frame if req_version is still the current version
+	void ProcAsync(uint_fast32_t req_version);
 
-	void *Entry();
-	std::shared_ptr<AegiVideoFrame> ProcFrame(int frameNum, double time, bool raw = false);
+	/// Monotonic counter used to drop frames when changes arrive faster than
+	/// they can be rendered
+	std::atomic<uint_fast32_t> version;
+
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
@@ -82,7 +84,7 @@ public:
 	///
 	/// This function only supports changes to existing lines, and not
 	/// insertions or deletions.
-	void UpdateSubtitles(const AssFile *subs, std::set<const AssEntry *> changes) throw();
+	void UpdateSubtitles(const AssFile *subs, std::set<const AssEntry *> const& changes) throw();
 
 	/// @brief Queue a request for a frame
 	/// @brief frame Frame number
@@ -99,45 +101,40 @@ public:
 	std::shared_ptr<AegiVideoFrame> GetFrame(int frame, double time, bool raw = false);
 
 	/// Get a reference to the video provider this is using
-	VideoProvider *GetVideoProvider() const { return videoProvider.get(); }
+	VideoProvider *GetVideoProvider() const { return video_provider.get(); }
 
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to
-	ThreadedFrameSource(wxString videoFileName, wxEvtHandler *parent);
+	ThreadedFrameSource(agi::fs::path const& filename, wxEvtHandler *parent);
 	~ThreadedFrameSource();
 };
 
-/// @class FrameReadyEvent
-/// @brief Event which signals that a requested frame is ready
-class FrameReadyEvent : public wxEvent {
-public:
+/// Event which signals that a requested frame is ready
+struct FrameReadyEvent : public wxEvent {
 	/// Frame which is ready
 	std::shared_ptr<AegiVideoFrame> frame;
 	/// Time which was used for subtitle rendering
 	double time;
 	wxEvent *Clone() const { return new FrameReadyEvent(*this); };
 	FrameReadyEvent(std::shared_ptr<AegiVideoFrame> frame, double time)
-		: frame(frame), time(time) {
-	}
+	: frame(frame), time(time) { }
 };
 
 // These exceptions are wxEvents so that they can be passed directly back to
 // the parent thread as events
-class VideoProviderErrorEvent : public wxEvent, public agi::Exception {
-public:
+struct VideoProviderErrorEvent : public wxEvent, public agi::Exception {
 	const char * GetName() const { return "video/error"; }
 	wxEvent *Clone() const { return new VideoProviderErrorEvent(*this); };
 	agi::Exception *Copy() const { return new VideoProviderErrorEvent(*this); };
 	VideoProviderErrorEvent(VideoProviderError const& err);
 };
 
-class SubtitlesProviderErrorEvent : public wxEvent, public agi::Exception {
-public:
+struct SubtitlesProviderErrorEvent : public wxEvent, public agi::Exception {
 	const char * GetName() const { return "subtitles/error"; }
 	wxEvent *Clone() const { return new SubtitlesProviderErrorEvent(*this); };
 	agi::Exception *Copy() const { return new SubtitlesProviderErrorEvent(*this); };
-	SubtitlesProviderErrorEvent(wxString msg);
+	SubtitlesProviderErrorEvent(std::string const& msg);
 };
 
 wxDECLARE_EVENT(EVT_FRAME_READY, FrameReadyEvent);

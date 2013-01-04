@@ -37,7 +37,7 @@
 class EncoreSubtitleFormat : public SubtitleFormat {
 public:
 	EncoreSubtitleFormat();
-	wxArrayString GetWriteWildcards() const override;
-	bool CanWriteFile(wxString const& filename) const override;
-	void WriteFile(const AssFile *src, wxString const& filename, wxString const&) const override;
+	std::vector<std::string> GetWriteWildcards() const override;
+	bool CanWriteFile(agi::fs::path const& filename) const override;
+	void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const&) const override;
 };

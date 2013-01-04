@@ -32,16 +32,17 @@
 /// @ingroup export
 ///
 
-#include <wx/arrstr.h>
-#include <wx/sizer.h>
-#include <wx/string.h>
+#include <libaegisub/fs_fwd.h>
 
 #include <map>
+#include <string>
 #include <vector>
 
 class AssExportFilter;
 class AssFile;
 namespace agi { struct Context; }
+class wxSizer;
+class wxWindow;
 
 typedef std::vector<AssExportFilter*> FilterList;
 
@@ -49,7 +50,7 @@ class AssExporter {
 	typedef FilterList::const_iterator filter_iterator;
 
 	/// Sizers for configuration panels
-	std::map<wxString, wxSizer*> Sizers;
+	std::map<std::string, wxSizer*> Sizers;
 
 	/// Filters which will be applied to the subtitles
 	FilterList filters;
@@ -65,11 +66,11 @@ public:
 	AssExporter(agi::Context *c);
 
 	/// Get the names of all registered export filters
-	wxArrayString GetAllFilterNames() const;
+	std::vector<std::string> GetAllFilterNames() const;
 
 	/// Add the named filter to the list of filters to be run
-	/// @throws wxString if filter is not found
-	void AddFilter(wxString const& name);
+	/// @throws std::string if filter is not found
+	void AddFilter(std::string const& name);
 
 	/// Run all added export filters
 	/// @param parent_window Parent window the filters should use when opening dialogs
@@ -81,7 +82,7 @@ public:
 	/// @param file Target filename
 	/// @param charset Target charset
 	/// @param parent_window Parent window the filters should use when opening dialogs
-	void Export(wxString const& file, wxString const& charset, wxWindow *parent_window= 0);
+	void Export(agi::fs::path const& file, std::string const& charset, wxWindow *parent_window= 0);
 
 	/// Add configuration panels for all registered filters to the target sizer
 	/// @param parent Parent window for controls
@@ -89,9 +90,9 @@ public:
 	void DrawSettings(wxWindow *parent, wxSizer *target_sizer);
 
 	/// Get the sizer created by DrawSettings for a specific filter
-	wxSizer *GetSettingsSizer(wxString const& name);
+	wxSizer *GetSettingsSizer(std::string const& name);
 
 	/// Get the description of the named export filter
-	/// @throws wxString if filter is not found
-	wxString const& GetDescription(wxString const& name) const;
+	/// @throws std::string if filter is not found
+	std::string const& GetDescription(std::string const& name) const;
 };

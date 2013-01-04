@@ -34,8 +34,8 @@
 
 #ifdef WITH_FFMS2
 #include "include/aegisub/audio_provider.h"
-#include "ffmpegsource_common.h"
 
+#include "ffmpegsource_common.h"
 
 /// @class FFmpegSourceAudioProvider
 /// @brief Implements audio loading with the FFMS library.
@@ -46,11 +46,11 @@ class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 	mutable char FFMSErrMsg[1024];			///< FFMS error message
 	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
-	void LoadAudio(wxString filename);
+	void LoadAudio(agi::fs::path const& filename);
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	FFmpegSourceAudioProvider(wxString filename);
+	FFmpegSourceAudioProvider(agi::fs::path const& filename);
 
 	/// @brief Checks sample endianness
 	/// @return Returns true.

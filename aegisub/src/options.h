@@ -18,10 +18,15 @@
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>
 
+namespace agi {
+	class Path;
+}
+
 /// For holding all configuration-related objects and values.
 namespace config {
 	extern agi::Options *opt;    ///< Options
 	extern agi::MRUManager *mru; ///< Most Recently Used
+	extern agi::Path *path;
 }
 
 /// Macro to get OptionValue object

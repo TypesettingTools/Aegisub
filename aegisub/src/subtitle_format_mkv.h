@@ -37,7 +37,7 @@
 class MKVSubtitleFormat : public SubtitleFormat {
 public:
 	MKVSubtitleFormat();
-	wxArrayString GetReadWildcards() const override;
+	std::vector<std::string> GetReadWildcards() const override;
 
-	void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding) const override;
+	void ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& forceEncoding) const override;
 };

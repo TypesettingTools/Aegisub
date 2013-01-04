@@ -50,8 +50,6 @@ enum AssBlockType {
 	BLOCK_DRAWING
 };
 
-std::size_t hash_value(wxString const& s);
-
 /// @class AssDialogueBlock
 /// @brief AssDialogue Blocks
 ///
@@ -126,7 +124,11 @@ public:
 };
 
 class AssDialogue : public AssEntry {
-	wxString GetData(bool ssa) const;
+	std::string GetData(bool ssa) const;
+
+	/// @brief Parse raw ASS data into everything else
+	/// @param data ASS line
+	void Parse(std::string const& data);
 public:
 	/// Unique ID of this line. Copies of the line for Undo/Redo purposes
 	/// preserve the unique ID, so that the equivalent lines can be found in
@@ -144,20 +146,15 @@ public:
 	/// Ending time
 	AssTime End;
 	/// Style name
-	boost::flyweight<wxString> Style;
+	boost::flyweight<std::string> Style;
 	/// Actor name
-	boost::flyweight<wxString> Actor;
+	boost::flyweight<std::string> Actor;
 	/// Effect name
-	boost::flyweight<wxString> Effect;
+	boost::flyweight<std::string> Effect;
 	/// Raw text data
-	boost::flyweight<wxString> Text;
+	boost::flyweight<std::string> Text;
 
 	AssEntryGroup Group() const override { return ENTRY_DIALOGUE; }
-
-	/// @brief Parse raw ASS data into everything else
-	/// @param data ASS line
-	/// @return Did it successfully parse?
-	bool Parse(wxString const& data);
 
 	/// Parse text as ASS and return block information
 	std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> ParseTags() const;
@@ -166,23 +163,23 @@ public:
 	void StripTags();
 	/// Strip a specific ASS tag from the text
 	/// Get text without tags
-	wxString GetStrippedText() const;
+	std::string GetStrippedText() const;
 
 	/// Update the text of the line from parsed blocks
 	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
-	const wxString GetEntryData() const override;
+	const std::string GetEntryData() const override;
 
 	template<int which>
-	void SetMarginString(wxString const& value) { SetMarginString(value, which);}
+	void SetMarginString(std::string const& value) { SetMarginString(value, which);}
 	/// @brief Set a margin
 	/// @param value New value of the margin
 	/// @param which 0 = left, 1 = right, 2 = vertical
-	void SetMarginString(wxString const& value, int which);
+	void SetMarginString(std::string const& value, int which);
 	/// @brief Get a margin
 	/// @param which 0 = left, 1 = right, 2 = vertical
-	wxString GetMarginString(int which) const;
+	std::string GetMarginString(int which) const;
 	/// Get the line as SSA rather than ASS
-	wxString GetSSAText() const override;
+	std::string GetSSAText() const override;
 	/// Does this line collide with the passed line?
 	bool CollidesWith(const AssDialogue *target) const;
 
@@ -190,7 +187,7 @@ public:
 
 	AssDialogue();
 	AssDialogue(AssDialogue const&);
-	AssDialogue(wxString const& data);
+	AssDialogue(std::string const& data);
 	~AssDialogue();
 };
 

@@ -63,7 +63,7 @@ namespace {
 
 	inline wxString check_wxstring(lua_State *L, int idx)
 	{
-		return wxString(luaL_checkstring(L, idx), wxConvUTF8);
+		return wxString::FromUTF8(luaL_checkstring(L, idx));
 	}
 }
 

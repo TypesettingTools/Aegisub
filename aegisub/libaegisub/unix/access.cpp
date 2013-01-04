@@ -20,59 +20,30 @@
 
 #include "libaegisub/access.h"
 
+#include "libaegisub/fs.h"
+
 #include <sys/stat.h>
 #include <errno.h>
-
-#include <iostream>
-#include <fstream>
-
 #include <unistd.h>
 
-#include "libaegisub/util.h"
+#include <boost/filesystem/path.hpp>
 
 namespace agi {
 	namespace acs {
 
-
-void CheckFileRead(const std::string &file) {
-	Check(file, acs::FileRead);
-}
-
-
-void CheckFileWrite(const std::string &file) {
-	Check(file, acs::FileWrite);
-}
-
-
-void CheckDirRead(const std::string &dir) {
-	Check(dir, acs::DirRead);
-}
-
-
-void CheckDirWrite(const std::string &dir) {
-	Check(dir, acs::DirWrite);
-}
-
-
-void Check(const std::string &file, acs::Type type) {
+void Check(agi::fs::path const& file, acs::Type type) {
 	struct stat file_stat;
-	int file_status;
 
-	file_status = stat(file.c_str(), &file_stat);
+	int file_status = stat(file.c_str(), &file_stat);
 
 	if (file_status != 0) {
 		switch (errno) {
 			case ENOENT:
-				throw FileNotFoundError("File or path not found.");
-			break;
-
+				throw fs::FileNotFound(file);
 			case EACCES:
-				throw Read("Access Denied to file, path or path component.");
-			break;
-
+				throw fs::ReadDenied(file);
 			case EIO:
-				throw Fatal("Fatal I/O error occurred.");
-			break;
+				throw fs::FileSystemUnknownError("Fatal I/O error in 'stat' on path: " + file.string());
 		}
 	}
 
@@ -80,24 +51,24 @@ void Check(const std::string &file, acs::Type type) {
 		case FileRead:
 		case FileWrite:
 			if ((file_stat.st_mode & S_IFREG) == 0)
-				throw NotAFile("Not a file.");
+				throw fs::NotAFile(file);
 		break;
 
 		case DirRead:
 		case DirWrite:
 			if ((file_stat.st_mode & S_IFDIR) == 0)
-				throw NotADirectory("Not a directory.");
+				throw fs::NotADirectory(file);
 		break;
 	}
 
 	file_status = access(file.c_str(), R_OK);
 	if (file_status != 0)
-		throw Read("File or directory is not readable.");
+		throw fs::ReadDenied(file);
 
 	if (type == DirWrite || type == FileWrite) {
 		file_status = access(file.c_str(), W_OK);
 		if (file_status != 0)
-			throw Write("File or directory is not writable.");
+			throw fs::WriteDenied(file);
 	}
 }
 

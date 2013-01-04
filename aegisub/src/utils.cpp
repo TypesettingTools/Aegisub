@@ -36,48 +36,28 @@
 
 #include "utils.h"
 
+#include "compat.h"
+#include "options.h"
+
+#include <libaegisub/dispatch.h>
+#include <libaegisub/fs.h>
+#include <libaegisub/log.h>
+
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
+#include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 #include <map>
 
 #include <wx/clipbrd.h>
-#include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/window.h>
 
-#include <libaegisub/log.h>
-
 #ifdef __APPLE__
 #include <libaegisub/util_osx.h>
 #endif
-
-#include "compat.h"
-#include "options.h"
-
-wxDEFINE_EVENT(EVT_CALL_THUNK, wxThreadEvent);
-
-wxString MakeRelativePath(wxString _path, wxString reference) {
-	if (_path.empty() || _path[0] == '?') return _path;
-	wxFileName path(_path);
-	wxFileName refPath(reference);
-	path.MakeRelativeTo(refPath.GetPath());
-	return path.GetFullPath();
-}
-
-wxString DecodeRelativePath(wxString _path,wxString reference) {
-	if (_path.empty() || _path[0] == '?') return _path;
-	wxFileName path(_path);
-	wxFileName refPath(reference);
-	if (!path.IsAbsolute()) path.MakeAbsolute(refPath.GetPath());
-#ifdef __UNIX__
-	return path.GetFullPath(wxPATH_UNIX); // also works on windows
-										  // No, it doesn't, this ommits drive letter in Windows. ~ amz
-#else
-	return path.GetFullPath();
-#endif
-}
 
 wxString AegiFloatToString(double value) {
 	return wxString::Format("%g",value);
@@ -119,8 +99,7 @@ int SmallestPowerOf2(int x) {
 	return x;
 }
 
-bool IsWhitespace(wchar_t c)
-{
+bool IsWhitespace(wchar_t c) {
 	const wchar_t whitespaces[] = {
 		// http://en.wikipedia.org/wiki/Space_(punctuation)#Table_of_spaces
 		0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0,
@@ -128,81 +107,11 @@ bool IsWhitespace(wchar_t c)
 		0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x2028, 0x2029, 0x202F,
 		0x025F, 0x3000, 0xFEFF
 	};
-	const size_t num_chars = sizeof(whitespaces) / sizeof(whitespaces[0]);
-	return std::binary_search(whitespaces, whitespaces + num_chars, c);
+	return std::binary_search(whitespaces, std::end(whitespaces), c);
 }
 
-bool StringEmptyOrWhitespace(const wxString &str)
-{
-	for (size_t i = 0; i < str.size(); ++i)
-		if (!IsWhitespace(str[i]))
-			return false;
-
-	return true;
-}
-
-int AegiStringToInt(const wxString &str,int start,int end) {
-	// Initialize to zero and get length if end set to -1
-	int sign = 1;
-	int value = 0;
-	if (end == -1) end = str.Length();
-
-	for (int pos=start;pos<end;pos++) {
-		// Get value and check if it's a number
-		int val = (int)(str[pos]);
-		if (val == ' ' || val == '\t') continue;
-		if (val == '-') sign = -1;
-		if (val < '0' || val > '9') break;
-
-		// Shift value to next decimal place and increment the value just read
-		value = value * 10 + (val - '0');
-	}
-
-	return value*sign;
-}
-
-int AegiStringToFix(const wxString &str,size_t decimalPlaces,int start,int end) {
-	// Parts of the number
-	int sign = 1;
-	int major = 0;
-	int minor = 0;
-	if (end == -1) end = str.Length();
-	bool inMinor = false;
-	int *dst = &major;
-	size_t mCount = 0;
-
-	for (int pos=start;pos<end;pos++) {
-		// Get value and check if it's a number
-		int val = (int)(str[pos]);
-		if (val == ' ' || val == '\t') continue;
-		if (val == '-') sign = -1;
-
-		// Switch to minor
-		if (val == '.' || val == ',') {
-			if (inMinor) break;
-			inMinor = true;
-			dst = &minor;
-			mCount = 0;
-			continue;
-		}
-		if (val < '0' || val > '9') break;
-		*dst = (*dst * 10) + (val - '0');
-		mCount++;
-	}
-
-	// Change minor to have the right number of decimal places
-	while (mCount > decimalPlaces) {
-		minor /= 10;
-		mCount--;
-	}
-	while (mCount < decimalPlaces) {
-		minor *= 10;
-		mCount++;
-	}
-
-	// Shift major and return
-	for (size_t i=0;i<decimalPlaces;i++) major *= 10;
-	return (major + minor)*sign;
+bool StringEmptyOrWhitespace(const wxString &str) {
+	return std::all_of(str.begin(), str.end(), IsWhitespace);
 }
 
 void RestartAegisub() {
@@ -241,7 +150,7 @@ bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
 	return false;
 }
 
-wxString GetClipboard() {
+std::string GetClipboard() {
 	wxString data;
 	wxClipboard *cb = wxClipboard::Get();
 	if (cb->Open()) {
@@ -252,13 +161,13 @@ wxString GetClipboard() {
 		}
 		cb->Close();
 	}
-	return data;
+	return from_wx(data);
 }
 
-void SetClipboard(wxString const& new_data) {
+void SetClipboard(std::string const& new_data) {
 	wxClipboard *cb = wxClipboard::Get();
 	if (cb->Open()) {
-		cb->SetData(new wxTextDataObject(new_data));
+		cb->SetData(new wxTextDataObject(to_wx(new_data)));
 		cb->Close();
 		cb->Flush();
 	}
@@ -273,64 +182,28 @@ void SetClipboard(wxBitmap const& new_data) {
 	}
 }
 
-namespace {
-class cache_cleaner : public wxThread {
-	wxString directory;
-	wxString file_type;
-	int64_t max_size;
-	size_t max_files;
+void CleanCache(agi::fs::path const& directory, std::string const& file_type, uint64_t max_size, uint64_t max_files) {
+	static std::unique_ptr<agi::dispatch::Queue> queue;
+	if (!queue)
+		queue = agi::dispatch::Create();
 
-	ExitCode Entry() {
-		static wxMutex cleaning_mutex;
-		wxMutexLocker lock(cleaning_mutex);
-
-		if (!lock.IsOk()) {
-			LOG_D("utils/clean_cache") << "cleaning already in progress, thread exiting";
-			return (ExitCode)1;
+	max_size <<= 20;
+	if (max_files == 0)
+		max_files = std::numeric_limits<uint64_t>::max();
+	queue->Async([=]{
+		LOG_D("utils/clean_cache") << "cleaning " << directory/file_type;
+		uint64_t total_size = 0;
+		std::multimap<int64_t, agi::fs::path> cachefiles;
+		for (auto const& file : agi::fs::DirectoryIterator(directory, file_type)) {
+			agi::fs::path path = directory/file;
+			cachefiles.insert(std::make_pair(agi::fs::ModifiedTime(path), path));
+			total_size += agi::fs::Size(path);
 		}
-
-		wxDir cachedir;
-		if (!cachedir.Open(directory)) {
-			LOG_D("utils/clean_cache") << "couldn't open cache directory " << from_wx(directory);
-			return (wxThread::ExitCode)1;
-		}
-
-		// sleep for a bit so we (hopefully) don't thrash the disk too much while indexing is in progress
-		wxThread::This()->Sleep(2000);
-
-		if (!cachedir.HasFiles(file_type)) {
-			LOG_D("utils/clean_cache") << "no files of the checked type in directory, exiting";
-			return (wxThread::ExitCode)0;
-		}
-
-		// unusually paranoid sanity check
-		// (someone might have deleted the file(s) after we did HasFiles() above; does wxDir.Open() lock the dir?)
-		wxString curfn_str;
-		if (!cachedir.GetFirst(&curfn_str, file_type, wxDIR_FILES)) {
-			LOG_D("utils/clean_cache") << "undefined error";
-			return (wxThread::ExitCode)1;
-		}
-
-		int64_t total_size = 0;
-		std::multimap<int64_t,wxFileName> cachefiles;
-		do {
-			wxFileName curfn(directory, curfn_str);
-			wxDateTime curatime;
-			curfn.GetTimes(&curatime, nullptr, nullptr);
-			cachefiles.insert(std::make_pair(curatime.GetTicks(), curfn));
-			total_size += curfn.GetSize().GetValue();
-
-			wxThread::This()->Sleep(250);
-		} while (cachedir.GetNext(&curfn_str));
 
 		if (cachefiles.size() <= max_files && total_size <= max_size) {
-			LOG_D("utils/clean_cache")
-				<< "cache does not need cleaning (maxsize=" << max_size
-				<< ", cursize=" << total_size
-				<< "; maxfiles=" << max_files
-				<< ", numfiles=" << cachefiles.size()
-				<< "), exiting";
-			return (wxThread::ExitCode)0;
+			LOG_D("utils/clean_cache") << boost::format("cache does not need cleaning (maxsize=%d, cursize=%d, maxfiles=%d, numfiles=%d), exiting")
+				% max_size % total_size % max_files % cachefiles.size();
+			return;
 		}
 
 		int deleted = 0;
@@ -339,59 +212,25 @@ class cache_cleaner : public wxThread {
 			if ((total_size <= max_size && cachefiles.size() - deleted <= max_files) || cachefiles.size() - deleted < 2)
 				break;
 
-			int64_t fsize = i.second.GetSize().GetValue();
-#ifdef __WXMSW__
-			int res = wxRemove(i.second.GetFullPath());
-#else
-			int res = unlink(i.second.GetFullPath().fn_str());
-#endif
-			if (res) {
-				LOG_D("utils/clean_cache") << "failed to remove file " << from_wx(i.second.GetFullPath());
+			uint64_t size = agi::fs::Size(i.second);
+			try {
+				agi::fs::Remove(i.second);
+				LOG_D("utils/clean_cache") << "deleted " << i.second;
+			}
+			catch  (agi::Exception const& e) {
+				LOG_D("utils/clean_cache") << "failed to delete file " << i.second << ": " << e.GetChainedMessage();
 				continue;
 			}
 
-			total_size -= fsize;
+			total_size -= size;
 			++deleted;
-
-			wxThread::This()->Sleep(250);
 		}
 
 		LOG_D("utils/clean_cache") << "deleted " << deleted << " files, exiting";
-		return (wxThread::ExitCode)0;
-	}
-
-public:
-	cache_cleaner(wxString const& directory, wxString const& file_type, int64_t max_size, int64_t max_files)
-	: wxThread(wxTHREAD_DETACHED)
-	, directory(directory)
-	, file_type(file_type)
-	, max_size(max_size << 20)
-	{
-		if (max_files < 1)
-			this->max_files = (size_t)-1;
-		else
-			this->max_files = (size_t)max_files;
-	}
-};
+	});
 }
 
-void CleanCache(wxString const& directory, wxString const& file_type, int64_t max_size, int64_t max_files) {
-	LOG_D("utils/clean_cache") << "attempting to start cleaner thread";
-	wxThread *CleaningThread = new cache_cleaner(directory, file_type, max_size, max_files);
-
-	if (CleaningThread->Create() != wxTHREAD_NO_ERROR) {
-		LOG_D("utils/clean_cache") << "thread creation failed";
-		delete CleaningThread;
-	}
-	else if (CleaningThread->Run() != wxTHREAD_NO_ERROR) {
-		LOG_D("utils/clean_cache") << "failed to start thread";
-		delete CleaningThread;
-	}
-
-	LOG_D("utils/clean_cache") << "thread started successfully";
-}
-
-size_t MaxLineLength(wxString const& text) {
+size_t MaxLineLength(std::string const& text) {
 	size_t max_line_length = 0;
 	size_t current_line_length = 0;
 	bool last_was_slash = false;
@@ -441,3 +280,4 @@ size_t MaxLineLength(wxString const& text) {
 void AddFullScreenButton(wxWindow *) { }
 void SetFloatOnParent(wxWindow *) { }
 #endif
+

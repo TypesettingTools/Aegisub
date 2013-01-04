@@ -148,10 +148,10 @@ namespace Automation4 {
 	class LuaDialogControl {
 	public:
 		/// Name of this control in the output table
-		wxString name;
+		std::string name;
 
 		/// Tooltip of this control
-		wxString hint;
+		std::string hint;
 
 		int x, y, width, height;
 
@@ -170,10 +170,10 @@ namespace Automation4 {
 
 		/// Serialize the control's current value so that it can be stored
 		/// in the script
-		virtual wxString SerialiseValue() const { return ""; }
+		virtual std::string SerialiseValue() const { return ""; }
 
 		/// Restore the control's value from a saved value in the script
-		virtual void UnserialiseValue(const wxString &serialised) { }
+		virtual void UnserialiseValue(const std::string &serialised) { }
 
 		LuaDialogControl(lua_State *L);
 
@@ -186,7 +186,7 @@ namespace Automation4 {
 		/// Controls in this dialog
 		std::vector<LuaDialogControl*> controls;
 		/// The names of buttons in this dialog if non-default ones were used
-		std::vector<wxString> buttons;
+		std::vector<std::string> buttons;
 
 		/// Does the dialog contain any buttons
 		bool use_buttons;
@@ -208,8 +208,8 @@ namespace Automation4 {
 
 		// ScriptDialog implementation
 		wxWindow* CreateWindow(wxWindow *parent);
-		wxString Serialise();
-		void Unserialise(const wxString &serialised);
+		std::string Serialise();
+		void Unserialise(const std::string &serialised);
 	};
 
 	class LuaFeature {
@@ -233,7 +233,7 @@ namespace Automation4 {
 	/// @param parent Parent window for the progress dialog
 	/// @param can_open_config Can the function open its own dialogs?
 	/// @throws agi::UserCancelException if the function fails to run to completion (either due to cancelling or errors)
-	void LuaThreadedCall(lua_State *L, int nargs, int nresults, wxString const& title, wxWindow *parent, bool can_open_config);
+	void LuaThreadedCall(lua_State *L, int nargs, int nresults, std::string const& title, wxWindow *parent, bool can_open_config);
 
 	class LuaCommand : public cmd::Command, private LuaFeature {
 		std::string cmd_name;
@@ -278,10 +278,10 @@ namespace Automation4 {
 	class LuaScript : public Script {
 		lua_State *L;
 
-		wxString name;
-		wxString description;
-		wxString author;
-		wxString version;
+		std::string name;
+		std::string description;
+		std::string author;
+		std::string version;
 
 		std::vector<cmd::Command*> macros;
 		std::vector<ExportFilter*> filters;
@@ -302,7 +302,7 @@ namespace Automation4 {
 		static int LuaCancel(lua_State *L);
 
 	public:
-		LuaScript(const wxString &filename);
+		LuaScript(agi::fs::path const& filename);
 		~LuaScript();
 
 		void RegisterCommand(LuaCommand *command);
@@ -314,10 +314,10 @@ namespace Automation4 {
 		// Script implementation
 		void Reload();
 
-		wxString GetName() const { return name; }
-		wxString GetDescription() const { return description; }
-		wxString GetAuthor() const { return author; }
-		wxString GetVersion() const { return version; }
+		std::string GetName() const { return name; }
+		std::string GetDescription() const { return description; }
+		std::string GetAuthor() const { return author; }
+		std::string GetVersion() const { return version; }
 		bool GetLoadedState() const { return L != 0; }
 
 		std::vector<cmd::Command*> GetMacros() const { return macros; }

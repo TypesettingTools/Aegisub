@@ -17,23 +17,24 @@
 /// @ingroup scripting
 ///
 
-#include <istream>
+#include <libaegisub/fs_fwd.h>
 
-#include <libaegisub/scoped_ptr.h>
+#include <iosfwd>
+#include <memory>
+#include <string>
 
 struct lua_State;
 namespace agi { namespace charset { class IconvWrapper; } }
-class wxString;
 
 namespace Automation4 {
 	class LuaScriptReader {
-		agi::scoped_ptr<agi::charset::IconvWrapper> conv;
-		agi::scoped_ptr<std::istream> file;
+		std::unique_ptr<agi::charset::IconvWrapper> conv;
+		std::unique_ptr<std::istream> file;
 		char buf[512];
 
 		const char *Read(size_t *bytes_read);
 	public:
-		LuaScriptReader(wxString const& filename);
+		LuaScriptReader(agi::fs::path const& filename);
 		~LuaScriptReader();
 
 		static const char* reader_func(lua_State *, void *data, size_t *size);

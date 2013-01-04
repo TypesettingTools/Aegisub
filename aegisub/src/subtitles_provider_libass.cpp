@@ -35,28 +35,33 @@
 #include "config.h"
 
 #ifdef WITH_LIBASS
-
-#include <wx/filefn.h>
-#include <wx/utils.h>
+#include "subtitles_provider_libass.h"
 
 #ifdef __APPLE__
 #include <sys/param.h>
 #include <libaegisub/util_osx.h>
 #endif
 
-#include <libaegisub/log.h>
-
 #include "ass_file.h"
 #include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
-#include "standard_paths.h"
-#include "subtitles_provider_libass.h"
 #include "utils.h"
-#include "video_context.h"
 #include "video_frame.h"
 
-static void msg_callback(int level, const char *fmt, va_list args, void *) {
+#include <libaegisub/dispatch.h>
+#include <libaegisub/log.h>
+
+#include <boost/gil/gil_all.hpp>
+#include <memory>
+#include <mutex>
+#include <thread>
+
+namespace {
+std::unique_ptr<agi::dispatch::Queue> cache_queue;
+ASS_Library *library;
+
+void msg_callback(int level, const char *fmt, va_list args, void *) {
 	if (level >= 7) return;
 	char buf[1024];
 #ifdef _WIN32
@@ -71,65 +76,38 @@ static void msg_callback(int level, const char *fmt, va_list args, void *) {
 		LOG_D("subtitle/provider/libass") << buf;
 }
 
-class FontConfigCacheThread : public wxThread {
-	ASS_Library *ass_library;
-	ASS_Renderer *ass_renderer;
-	FontConfigCacheThread** thisPtr;
-	ExitCode Entry() {
-		const char *config_path = nullptr;
 #ifdef __APPLE__
-		std::string conf_path = agi::util::OSX_GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf";
-		config_path = conf_path.c_str();
+#define CONFIG_PATH (agi::util::OSX_GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf").c_str()
+#else
+#define CONFIG_PATH nullptr
 #endif
-
-		if (ass_library) ass_renderer = ass_renderer_init(ass_library);
-		ass_set_fonts(ass_renderer, nullptr, "Sans", 1, config_path, true);
-		if (ass_library) ass_renderer_done(ass_renderer);
-		*thisPtr = nullptr;
-		return EXIT_SUCCESS;
-	}
-public:
-	FontConfigCacheThread(ASS_Library *ass_library, FontConfigCacheThread **thisPtr)
-		: ass_library(ass_library)
-		, ass_renderer(nullptr)
-		, thisPtr(thisPtr)
-	{
-		*thisPtr = this;
-		Create();
-		Run();
-	}
-	FontConfigCacheThread(ASS_Renderer *ass_renderer, FontConfigCacheThread **thisPtr)
-		: ass_library(nullptr)
-		, ass_renderer(ass_renderer)
-		, thisPtr(thisPtr)
-	{
-		*thisPtr = this;
-		Create();
-		Run();
-	}
-};
-
-static void wait_for_cache_thread(FontConfigCacheThread const * const * const cache_worker) {
-	if (!*cache_worker) return;
-
-	DialogProgress progress(wxGetApp().frame, "Updating font index", "This may take several minutes");
-	progress.Run([=](agi::ProgressSink *ps) {
-		ps->SetIndeterminate();
-		while (*cache_worker && !ps->IsCancelled())
-			wxMilliSleep(100);
-	});
 }
 
-LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
-	wait_for_cache_thread(&cache_worker);
+LibassSubtitlesProvider::LibassSubtitlesProvider(std::string)
+: ass_renderer(nullptr)
+, ass_track(nullptr)
+{
+	auto done = std::make_shared<bool>(false);
+	auto renderer = std::make_shared<ASS_Renderer*>(nullptr);
+	cache_queue->Async([=]{
+		auto ass_renderer = ass_renderer_init(library);
+		if (ass_renderer) {
+			ass_set_font_scale(ass_renderer, 1.);
+			ass_set_fonts(ass_renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
+		}
+		*done = true;
+		*renderer = ass_renderer;
+	});
 
-	// Initialize renderer
-	ass_track = nullptr;
-	ass_renderer = ass_renderer_init(ass_library);
+	DialogProgress progress(wxGetApp().frame, _("Updating font index"), _("This may take several minutes"));
+	progress.Run([=](agi::ProgressSink *ps) {
+		ps->SetIndeterminate();
+		while (!*done && !ps->IsCancelled())
+			std::this_thread::sleep_for(std::chrono::milliseconds(250));
+	});
+
+	ass_renderer = *renderer;
 	if (!ass_renderer) throw "ass_renderer_init failed";
-	ass_set_font_scale(ass_renderer, 1.);
-	new FontConfigCacheThread(ass_renderer, &cache_worker);
-	wait_for_cache_thread(&cache_worker);
 }
 
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
@@ -138,37 +116,32 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 }
 
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
-	// Prepare subtitles
 	std::vector<char> data;
 	subs->SaveMemory(data);
 
-	// Load file
 	if (ass_track) ass_free_track(ass_track);
-	ass_track = ass_read_memory(ass_library, &data[0], data.size(),(char *)"UTF-8");
+	ass_track = ass_read_memory(library, &data[0], data.size(),(char *)"UTF-8");
 	if (!ass_track) throw "libass failed to load subtitles.";
 }
 
-#define _r(c)  ((c)>>24)
-#define _g(c)  (((c)>>16)&0xFF)
-#define _b(c)  (((c)>>8)&0xFF)
-#define _a(c)  ((c)&0xFF)
+#define _r(c) ((c)>>24)
+#define _g(c) (((c)>>16)&0xFF)
+#define _b(c) (((c)>>8)&0xFF)
+#define _a(c) ((c)&0xFF)
 
 void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
-	// Set size
 	ass_set_frame_size(ass_renderer, frame.w, frame.h);
 
-	// Get frame
 	ASS_Image* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), nullptr);
 
 	// libass actually returns several alpha-masked monochrome images.
 	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.
 	// This is repeated for all of them.
 	while (img) {
-		// Get colours
 		unsigned int opacity = 255 - ((unsigned int)_a(img->color));
 		unsigned int r = (unsigned int)_r(img->color);
 		unsigned int g = (unsigned int)_g(img->color);
-		unsigned int b = (unsigned int) _b(img->color);
+		unsigned int b = (unsigned int)_b(img->color);
 
 		// Prepare copy
 		int src_stride = img->stride;
@@ -206,18 +179,24 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 			src += src_stride;
 		}
 
-		// Next image
 		img = img->next;
 	}
 }
 
 void LibassSubtitlesProvider::CacheFonts() {
-	ass_library = ass_library_init();
-	ass_set_message_cb(ass_library, msg_callback, nullptr);
-	new FontConfigCacheThread(ass_library, &cache_worker);
-}
+	// Initialize the cache worker thread
+	cache_queue = agi::dispatch::Create();
 
-ASS_Library* LibassSubtitlesProvider::ass_library;
-FontConfigCacheThread* LibassSubtitlesProvider::cache_worker = nullptr;
+	// Initialize libass
+	library = ass_library_init();
+	ass_set_message_cb(library, msg_callback, nullptr);
+
+	// Initialize a renderer to force fontconfig to update its cache
+	cache_queue->Async([]{
+		auto ass_renderer = ass_renderer_init(library);
+		ass_set_fonts(ass_renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
+		ass_renderer_done(ass_renderer);
+	});
+}
 
 #endif // WITH_LIBASS

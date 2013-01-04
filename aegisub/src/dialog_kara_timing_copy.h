@@ -53,7 +53,7 @@ class DialogKanjiTimer : public wxDialog {
 	wxComboBox *SourceStyle, *DestStyle;
 	wxCheckBox *Interpolate;
 
-	std::vector<std::pair<AssDialogue*, wxString>> LinesToChange;
+	std::vector<std::pair<AssDialogue*, std::string>> LinesToChange;
 
 	AssEntry *currentSourceLine;
 	AssEntry *currentDestinationLine;
@@ -71,8 +71,8 @@ class DialogKanjiTimer : public wxDialog {
 	void ResetForNewLine();
 	void TryAutoMatch();
 
-	AssEntry *FindNextStyleMatch(AssEntry *search_from, const wxString &search_style);
-	AssEntry *FindPrevStyleMatch(AssEntry *search_from, const wxString &search_style);
+	AssEntry *FindNextStyleMatch(AssEntry *search_from, const std::string &search_style);
+	AssEntry *FindPrevStyleMatch(AssEntry *search_from, const std::string &search_style);
 
 public:
 	DialogKanjiTimer(agi::Context *context);

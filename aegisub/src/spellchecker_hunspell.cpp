@@ -21,26 +21,20 @@
 #include "config.h"
 
 #ifdef WITH_HUNSPELL
-
 #include "spellchecker_hunspell.h"
 
-#include <algorithm>
-#include <iterator>
-#include <set>
+#include "options.h"
+#include "standard_paths.h"
 
-#include <wx/dir.h>
-#include <wx/filename.h>
-
-#include <hunspell/hunspell.hxx>
-
+#include <libaegisub/charset_conv.h>
+#include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/log.h>
 
-#include "charset_conv.h"
-#include "compat.h"
-#include "options.h"
-#include "standard_paths.h"
+#include <hunspell/hunspell.hxx>
+
+#include <boost/format.hpp>
 
 HunspellSpellChecker::HunspellSpellChecker()
 : lang_listener(OPT_SUB("Tool/Spell Checker/Language", &HunspellSpellChecker::OnLanguageChanged, this))
@@ -97,26 +91,24 @@ void HunspellSpellChecker::ReadUserDictionary() {
 
 	// Read the old contents of the user's dictionary
 	try {
-		agi::scoped_ptr<std::istream> stream(agi::io::Open(from_wx(userDicPath)));
+		std::unique_ptr<std::istream> stream(agi::io::Open(userDicPath));
 		copy_if(
 			++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
 			inserter(customWords, customWords.end()),
 			[](std::string const& str) { return !str.empty(); });
 	}
-	catch (agi::FileNotFoundError const&) {
+	catch (agi::fs::FileNotFound const&) {
 		// Not an error; user dictionary just doesn't exist
 	}
 }
 
 void HunspellSpellChecker::WriteUserDictionary() {
 	// Ensure that the path exists
-	wxFileName fn(userDicPath);
-	if (!fn.DirExists())
-		wxFileName::Mkdir(fn.GetPath());
+	agi::fs::CreateDirectory(userDicPath.parent_path());
 
 	// Write the new dictionary
 	{
-		agi::io::Save writer(from_wx(userDicPath));
+		agi::io::Save writer(userDicPath);
 		writer.Get() << customWords.size() << "\n";
 		copy(customWords.begin(), customWords.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
 	}
@@ -165,23 +157,21 @@ std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const&
 std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 	if (!languages.empty()) return languages;
 
-	wxArrayString dic, aff;
+	std::vector<std::string> dic, aff;
 
 	// Get list of dictionaries
-	wxString path = StandardPaths::DecodePath("?data/dictionaries/");
-	if (wxFileName::DirExists(path)) {
-		wxDir::GetAllFiles(path, &dic, "*.dic", wxDIR_FILES);
-		wxDir::GetAllFiles(path, &aff, "*.aff", wxDIR_FILES);
-	}
-	path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()) + "/");
-	if (wxFileName::DirExists(path)) {
-		wxDir::GetAllFiles(path, &dic, "*.dic", wxDIR_FILES);
-		wxDir::GetAllFiles(path, &aff, "*.aff", wxDIR_FILES);
-	}
-	if (aff.empty()) return std::vector<std::string>();
+	auto path = StandardPaths::DecodePath("?data/dictionaries/");
+	agi::fs::DirectoryIterator(path, "*.dic").GetAll(dic);
+	agi::fs::DirectoryIterator(path, "*.aff").GetAll(aff);
 
-	dic.Sort();
-	aff.Sort();
+	path = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString());
+	agi::fs::DirectoryIterator(path, "*.dic").GetAll(dic);
+	agi::fs::DirectoryIterator(path, "*.aff").GetAll(aff);
+
+	if (dic.empty() || aff.empty()) return languages;
+
+	sort(begin(dic), end(dic));
+	sort(begin(aff), end(aff));
 
 	// Drop extensions
 	for (size_t i = 0; i < dic.size(); ++i) dic[i].resize(dic[i].size() - 4);
@@ -189,15 +179,14 @@ std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 
 	// Verify that each aff has a dic
 	for (size_t i = 0, j = 0; i < dic.size() && j < aff.size(); ) {
-		int cmp = dic[i].Cmp(aff[j]);
+		int cmp = dic[i].compare(aff[j]);
 		if (cmp < 0) ++i;
 		else if (cmp > 0) ++j;
 		else {
 			// Don't insert a language twice if it's in both the user dir and
 			// the app's dir
-			std::string name = from_wx(wxFileName(aff[j]).GetName());
-			if (languages.empty() || name != languages.back())
-				languages.push_back(name);
+			if (languages.empty() || aff[j] != languages.back())
+				languages.push_back(aff[j]);
 			++i;
 			++j;
 		}
@@ -208,31 +197,31 @@ std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 void HunspellSpellChecker::OnLanguageChanged() {
 	hunspell.reset();
 
-	std::string language = OPT_GET("Tool/Spell Checker/Language")->GetString();
+	auto language = OPT_GET("Tool/Spell Checker/Language")->GetString();
 	if (language.empty()) return;
 
-	wxString custDicRoot = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()));
-	wxString dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
+	auto custDicRoot = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString());
+	auto dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
 
 	// If the user has a dic/aff pair in their dictionary path for this language
 	// use that; otherwise use the one from Aegisub's install dir, adding words
 	// from the dic in the user's dictionary path if it exists
-	wxString affPath = wxString::Format("%s/%s.aff", custDicRoot, language);
-	wxString dicPath = wxString::Format("%s/%s.dic", custDicRoot, language);
-	userDicPath = wxString::Format("%s/user_%s.dic", StandardPaths::DecodePath("?user/dictionaries"), language);
-	if (!wxFileExists(affPath) || !wxFileExists(dicPath)) {
-		affPath = wxString::Format("%s/%s.aff", dataDicRoot, language);
-		dicPath = wxString::Format("%s/%s.dic", dataDicRoot, language);
+	auto affPath = custDicRoot/(language + ".aff");
+	auto dicPath = custDicRoot/(language + ".dic");
+	userDicPath = StandardPaths::DecodePath("?user/dictionaries")/str(boost::format("user_%s.dic") % language);
+	if (!agi::fs::FileExists(affPath) || !agi::fs::FileExists(dicPath)) {
+		affPath = dataDicRoot/(language + ".aff");
+		dicPath = dataDicRoot/(language + ".dic");
 	}
 
 	LOG_I("dictionary/file") << dicPath;
 
-	if (!wxFileExists(affPath) || !wxFileExists(dicPath)) {
+	if (!agi::fs::FileExists(affPath) || !agi::fs::FileExists(dicPath)) {
 		LOG_D("dictionary/file") << "Dictionary not found";
 		return;
 	}
 
-	hunspell.reset(new Hunspell(affPath.mb_str(csConvLocal), dicPath.mb_str(csConvLocal)));
+	hunspell.reset(new Hunspell(agi::fs::ShortName(affPath).c_str(), agi::fs::ShortName(dicPath).c_str()));
 	if (!hunspell) return;
 
 	conv.reset(new agi::charset::IconvWrapper("utf-8", hunspell->get_dic_encoding()));

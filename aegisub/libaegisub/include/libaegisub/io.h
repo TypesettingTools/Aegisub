@@ -16,10 +16,11 @@
 /// @brief Public interface for IO methods.
 /// @ingroup libaegisub
 
-#include <string>
-#include <fstream>
-
 #include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
+
+#include <boost/filesystem/path.hpp>
+#include <iosfwd>
 
 namespace agi {
 	namespace io {
@@ -27,15 +28,15 @@ namespace agi {
 DEFINE_BASE_EXCEPTION_NOINNER(IOError, Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(IOFatal, IOError, "io/fatal")
 
-std::ifstream* Open(const std::string &file, bool binary = false);
+std::ifstream* Open(fs::path const& file, bool binary = false);
 
 class Save {
 	std::ofstream *fp;
-	const std::string file_name;
-	const std::string tmp_name;
+	const fs::path file_name;
+	const fs::path tmp_name;
 
 public:
-	Save(const std::string& file, bool binary = false);
+	Save(fs::path const& file, bool binary = false);
 	~Save();
 	std::ofstream& Get();
 };

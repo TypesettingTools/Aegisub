@@ -20,14 +20,11 @@
 
 #include "libaegisub/option.h"
 
-#include <cassert>
-#include <memory>
-#include <sstream>
-
 #include "libaegisub/cajun/reader.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/cajun/elements.h"
 
+#include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 #include "libaegisub/option_value.h"
@@ -35,6 +32,9 @@
 #include "option_visit.h"
 
 #include <boost/range/adaptor/map.hpp>
+#include <cassert>
+#include <memory>
+#include <sstream>
 
 namespace {
 	/// @brief Write an option to a json object
@@ -66,7 +66,7 @@ namespace {
 
 namespace agi {
 
-Options::Options(const std::string &file, const std::string& default_config, const OptionSetting setting)
+Options::Options(agi::fs::path const& file, const std::string& default_config, const OptionSetting setting)
 : config_file(file)
 , setting(setting)
 {
@@ -88,21 +88,17 @@ void Options::ConfigNext(std::istream& stream) {
 }
 
 void Options::ConfigUser() {
-	std::unique_ptr<std::istream> stream;
-
 	try {
-		stream.reset(agi::io::Open(config_file));
-	} catch (const FileNotFoundError&) {
+		std::unique_ptr<std::istream> stream(io::Open(config_file));
+		LoadConfig(*stream, true);
+	}
+	catch (fs::FileNotFound const&) {
 		return;
 	}
-
 	/// @todo Handle other errors such as parsing and notifying the user.
-	LoadConfig(*stream, true);
 }
 
 void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
-	/// @todo Store all previously loaded configs in an array for bug report purposes,
-	///       this is just a temp stub.
 	json::UnknownElement config_root;
 
 	try {

@@ -43,14 +43,14 @@ MKVSubtitleFormat::MKVSubtitleFormat()
 {
 }
 
-wxArrayString MKVSubtitleFormat::GetReadWildcards() const {
-	wxArrayString formats;
-	formats.Add("mkv");
-	formats.Add("mka");
-	formats.Add("mks");
+std::vector<std::string> MKVSubtitleFormat::GetReadWildcards() const {
+	std::vector<std::string> formats;
+	formats.push_back("mkv");
+	formats.push_back("mka");
+	formats.push_back("mks");
 	return formats;
 }
 
-void MKVSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const&) const {
+void MKVSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, std::string const&) const {
 	MatroskaWrapper::GetSubtitles(filename, target);
 }

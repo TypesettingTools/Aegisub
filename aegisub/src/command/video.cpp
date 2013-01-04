@@ -38,12 +38,6 @@
 
 #include "command.h"
 
-#include <wx/clipbrd.h>
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
-#include <wx/textdlg.h>
-
 #include "../ass_dialogue.h"
 #include "../ass_time.h"
 #include "../compat.h"
@@ -57,13 +51,26 @@
 #include "../main.h"
 #include "../options.h"
 #include "../selection_controller.h"
-#include "../standard_paths.h"
 #include "../utils.h"
 #include "../video_box.h"
 #include "../video_context.h"
 #include "../video_display.h"
 #include "../video_frame.h"
 #include "../video_slider.h"
+
+#include <libaegisub/fs.h>
+#include <libaegisub/path.h>
+#include <libaegisub/util.h>
+
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/format.hpp>
+
+#include <wx/clipbrd.h>
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
+#include <wx/textdlg.h>
 
 namespace {
 	using cmd::Command;
@@ -118,46 +125,30 @@ struct video_aspect_custom : public validator_video_loaded {
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
 
-		wxString value = wxGetTextFromUser(_("Enter aspect ratio in either:\n  decimal (e.g. 2.35)\n  fractional (e.g. 16:9)\n  specific resolution (e.g. 853x480)"),_("Enter aspect ratio"),AegiFloatToString(c->videoController->GetAspectRatioValue()));
-		if (value.IsEmpty()) return;
+		std::string value = from_wx(wxGetTextFromUser(
+			_("Enter aspect ratio in either:\n  decimal (e.g. 2.35)\n  fractional (e.g. 16:9)\n  specific resolution (e.g. 853x480)"),
+			_("Enter aspect ratio"),
+			std::to_wstring(c->videoController->GetAspectRatioValue())));
+		if (value.empty()) return;
 
-		value.MakeLower();
-
-		// Process text
-		double numval;
-		if (value.ToDouble(&numval)) {
+		double numval = 0;
+		if (agi::util::try_parse(value, &numval)) {
 			//Nothing to see here, move along
 		}
 		else {
-			double a,b;
-			int pos=0;
-			bool scale=false;
-
-			//Why bloat using Contains when we can just check the output of Find?
-			pos = value.Find(':');
-			if (pos==wxNOT_FOUND) pos = value.Find('/');
-			if (pos==wxNOT_FOUND&&value.Contains('x')) {
-				pos = value.Find('x');
-				scale=true;
+			std::vector<std::string> chunks;
+			split(chunks, value, boost::is_any_of(":/xX"));
+			if (chunks.size() == 2) {
+				double num, den;
+				if (agi::util::try_parse(chunks[0], &num) && agi::util::try_parse(chunks[1], &den))
+					numval = num / den;
 			}
-
-			if (pos>0) {
-				wxString num = value.Left(pos);
-				wxString denum = value.Mid(pos+1);
-				if (num.ToDouble(&a) && denum.ToDouble(&b) && b!=0) {
-					numval = a/b;
-					if (scale) c->videoDisplay->SetZoom(b / c->videoController->GetHeight());
-				}
-			}
-			else numval = 0.0;
 		}
 
-		// Sanity check
-		if (numval < 0.5 || numval > 5.0) wxMessageBox(_("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_("Invalid Aspect Ratio"),wxOK | wxICON_ERROR | wxCENTER);
-
-		// Set value
+		if (numval < 0.5 || numval > 5.0)
+			wxMessageBox(_("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_("Invalid Aspect Ratio"),wxOK | wxICON_ERROR | wxCENTER);
 		else {
-			c->videoController->SetAspectRatio(4,numval);
+			c->videoController->SetAspectRatio(4, numval);
 			wxGetApp().frame->SetDisplayMode(1,-1);
 		}
 	}
@@ -473,19 +464,18 @@ struct video_frame_prev_large : public validator_video_loaded {
 
 static void save_snapshot(agi::Context *c, bool raw) {
 	static const agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
-	wxString option = to_wx(ssPath->GetString());
-	wxFileName videoFile(c->videoController->GetVideoName());
-	wxString basepath;
+	std::string option = ssPath->GetString();
+	agi::fs::path basepath;
 
 	// Is it a path specifier and not an actual fixed path?
 	if (option[0] == '?') {
 		// If dummy video is loaded, we can't save to the video location
-		if (option.StartsWith("?video") && (c->videoController->GetVideoName().Find("?dummy") != wxNOT_FOUND)) {
+		if (boost::starts_with(option, "?video") && boost::starts_with(c->videoController->GetVideoName().string(), "?dummy")) {
 			// So try the script location instead
 			option = "?script";
 		}
 		// Find out where the ?specifier points to
-		basepath = StandardPaths::DecodePath(option);
+		basepath = config::path->Decode(option);
 		// If where ever that is isn't defined, we can't save there
 		if ((basepath == "\\") || (basepath == "/")) {
 			// So save to the current user's home dir instead
@@ -493,17 +483,18 @@ static void save_snapshot(agi::Context *c, bool raw) {
 		}
 	}
 	// Actual fixed (possibly relative) path, decode it
-	else basepath = DecodeRelativePath(option,StandardPaths::DecodePath("?user/"));
-	basepath += "/" + videoFile.GetName();
+	else
+		basepath = config::path->MakeAbsolute(option, "?user/");
+	basepath /= c->videoController->GetVideoName().stem();
 
 	// Get full path
 	int session_shot_count = 1;
-	wxString path;
+	std::string path;
 	do {
-		path = wxString::Format("%s_%03d_%d.png", basepath, session_shot_count++, c->videoController->GetFrameN());
-	} while (wxFileName::FileExists(path));
+		path = str(boost::format("%s_%03d_%d.png") % basepath % session_shot_count++ % c->videoController->GetFrameN());
+	} while (agi::fs::FileExists(path));
 
-	c->videoController->GetFrame(c->videoController->GetFrameN(), raw)->GetImage().SaveFile(path,wxBITMAP_TYPE_PNG);
+	c->videoController->GetFrame(c->videoController->GetFrameN(), raw)->GetImage().SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
 }
 
 /// Save the current video frame, with subtitles (if any)
@@ -585,10 +576,10 @@ struct video_open : public Command {
 		wxString path = to_wx(OPT_GET("Path/Last/Video")->GetString());
 		wxString str = _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
 					 + _("All Files") + " (*.*)|*.*";
-		wxString filename = wxFileSelector(_("Open video file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		agi::fs::path filename = wxFileSelector(_("Open video file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 		if (!filename.empty()) {
 			c->videoController->SetVideo(filename);
-			OPT_SET("Path/Last/Video")->SetString(from_wx(wxFileName(filename).GetPath()));
+			OPT_SET("Path/Last/Video")->SetString(filename.parent_path().string());
 		}
 	}
 };
@@ -601,7 +592,7 @@ struct video_open_dummy : public Command {
 	STR_HELP("Opens a video clip with solid color")
 
 	void operator()(agi::Context *c) {
-		wxString fn = DialogDummyVideo::CreateDummyVideo(c->parent);
+		std::string fn = DialogDummyVideo::CreateDummyVideo(c->parent);
 		if (!fn.empty())
 			c->videoController->SetVideo(fn);
 	}

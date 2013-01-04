@@ -54,6 +54,7 @@
 
 #include "ass_file.h"
 #include "command/command.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/menu.h"
@@ -75,7 +76,7 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 class OpenGlException : public agi::Exception {
 public:
 	OpenGlException(const char *func, int err)
-		: agi::Exception(from_wx(wxString::Format("%s failed with error code %d", func, err)))
+	: agi::Exception(from_wx(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
 	const char * GetName() const { return "video/opengl"; }
 	Exception * Copy() const { return new OpenGlException(*this); }
@@ -432,5 +433,5 @@ void VideoDisplay::Unload() {
 }
 
 void VideoDisplay::OnSubtitlesSave() {
-	con->ass->SetScriptInfo("Video Zoom Percent", wxString::Format("%g", zoomValue));
+	con->ass->SetScriptInfo("Video Zoom Percent", std::to_string(zoomValue));
 }

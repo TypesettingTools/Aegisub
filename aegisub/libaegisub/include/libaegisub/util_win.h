@@ -23,9 +23,6 @@
 
 namespace agi {
 	namespace util {
-
-	std::string ErrorString(DWORD error);
-
-
+		std::string ErrorString(DWORD error);
 	} // namespace util
 } // namespace agi

@@ -20,14 +20,15 @@
 
 #include "config.h"
 
-#include <utility>
-
 #include "visual_tool_clip.h"
 
 #include "ass_dialogue.h"
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
 #include "utils.h"
+
+#include <boost/format.hpp>
+#include <utility>
 
 VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
 : VisualTool<ClipCorner>(parent, context)
@@ -112,12 +113,12 @@ void VisualToolClip::UpdateHold() {
 }
 
 void VisualToolClip::CommitHold() {
-	wxString value = wxString::Format("(%s,%s)", ToScriptCoords(cur_1.Min(cur_2)).Str(), ToScriptCoords(cur_1.Max(cur_2)).Str());
+	std::string value = str(boost::format("(%s,%s)") % ToScriptCoords(cur_1.Min(cur_2)).Str() % ToScriptCoords(cur_1.Max(cur_2)).Str());
 
 	for (auto line : c->selectionController->GetSelectedSet()) {
 		// This check is technically not correct as it could be outside of an
 		// override block... but that's rather unlikely
-		bool has_iclip = line->Text.get().find("\\iclip") != wxString::npos;
+		bool has_iclip = line->Text.get().find("\\iclip") != std::string::npos;
 		SetOverride(line, has_iclip ? "\\iclip" : "\\clip", value);
 	}
 }

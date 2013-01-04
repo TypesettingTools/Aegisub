@@ -40,10 +40,14 @@
 #include "ass_file.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
-#include "charset_conv.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "subtitle_format.h"
+
+#include <libaegisub/charset_conv.h>
+
+#include <algorithm>
+#include <boost/tokenizer.hpp>
 
 #include <wx/button.h>
 #include <wx/checklst.h>
@@ -53,7 +57,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/tokenzr.h>
 
 // Swap the items at idx and idx + 1
 static void swap(wxCheckListBox *list, int idx, int sel_dir) {
@@ -78,21 +81,18 @@ DialogExport::DialogExport(agi::Context *c)
 	SetIcon(GETICON(export_menu_16));
 	SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 
-	wxArrayString filters = exporter->GetAllFilterNames();
-	filter_list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(200, 100), filters);
+	std::vector<std::string> filters = exporter->GetAllFilterNames();
+	filter_list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(200, 100), to_wx(filters));
 	filter_list->Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, [=](wxCommandEvent&) { RefreshOptions(); });
 	filter_list->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &DialogExport::OnChange, this);
 
 	// Get selected filters
-	wxString selected = c->ass->GetScriptInfo("Export filters");
-	wxStringTokenizer token(selected, "|");
-	while (token.HasMoreTokens()) {
-		wxString cur = token.GetNextToken();
-		if (!cur.empty()) {
-			int idx = filters.Index(cur);
-			if (idx != wxNOT_FOUND)
-				filter_list->Check(idx);
-		}
+	std::string selected = c->ass->GetScriptInfo("Export filters");
+	boost::char_separator<char> sep("|");
+	for (auto const& token : boost::tokenizer<boost::char_separator<char>>(selected, sep)) {
+		auto it = find(begin(filters), end(filters), token);
+		if (it != end(filters))
+			filter_list->Check(distance(begin(filters), it));
 	}
 
 	wxButton *btn_up = new wxButton(this, -1, _("Move &Up"), wxDefaultPosition, wxSize(90, -1));
@@ -119,7 +119,7 @@ DialogExport::DialogExport(agi::Context *c)
 	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, wxSizerFlags().Center().Border(wxRIGHT));
 	charset_list_sizer->Add(charset_list, wxSizerFlags(1).Expand());
-	if (!charset_list->SetStringSelection(c->ass->GetScriptInfo("Export Encoding")))
+	if (!charset_list->SetStringSelection(to_wx(c->ass->GetScriptInfo("Export Encoding"))))
 		charset_list->SetStringSelection("Unicode (UTF-8)");
 
 	wxSizer *top_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Filters"));
@@ -148,30 +148,32 @@ DialogExport::DialogExport(agi::Context *c)
 }
 
 DialogExport::~DialogExport() {
-	wxString infoList;
+	std::string infoList;
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
-		if (filter_list->IsChecked(i))
-			infoList += filter_list->GetString(i) + "|";
+		if (filter_list->IsChecked(i)) {
+			if (!infoList.empty())
+				infoList += "|";
+			infoList += from_wx(filter_list->GetString(i));
+		}
 	}
-	if (!infoList.empty()) infoList.RemoveLast();
 	c->ass->SetScriptInfo("Export filters", infoList);
 }
 
 void DialogExport::OnProcess(wxCommandEvent &) {
 	if (!TransferDataFromWindow()) return;
 
-	wxString filename = wxFileSelector(_("Export subtitles file"), "", "", "", SubtitleFormat::GetWildcards(1), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
+	auto filename = wxFileSelector(_("Export subtitles file"), "", "", "", to_wx(SubtitleFormat::GetWildcards(1)), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
 	if (filename.empty()) return;
 
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
 		if (filter_list->IsChecked(i))
-			exporter->AddFilter(filter_list->GetString(i));
+			exporter->AddFilter(from_wx(filter_list->GetString(i)));
 	}
 
 	try {
 		wxBusyCursor busy;
-		c->ass->SetScriptInfo("Export Encoding", charset_list->GetStringSelection());
-		exporter->Export(filename, charset_list->GetStringSelection(), this);
+		c->ass->SetScriptInfo("Export Encoding", from_wx(charset_list->GetStringSelection()));
+		exporter->Export(from_wx(filename), from_wx(charset_list->GetStringSelection()), this);
 	}
 	catch (agi::UserCancelException const&) {
 	}
@@ -184,6 +186,9 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 	catch (agi::Exception const& err) {
 		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
+	catch (std::exception const& err) {
+		wxMessageBox(to_wx(err.what()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
+	}
 	catch (...) {
 		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
@@ -192,11 +197,9 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 }
 
 void DialogExport::OnChange(wxCommandEvent &) {
-	int n = filter_list->GetSelection();
-	if (n != wxNOT_FOUND) {
-		wxString name = filter_list->GetString(n);
-		filter_description->SetValue(exporter->GetDescription(name));
-	}
+	wxString sel = filter_list->GetStringSelection();
+	if (!sel.empty())
+		filter_description->SetValue(to_wx(exporter->GetDescription(from_wx(sel))));
 }
 
 void DialogExport::SetAll(bool new_value) {
@@ -210,7 +213,7 @@ void DialogExport::SetAll(bool new_value) {
 
 void DialogExport::RefreshOptions() {
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
-		if (wxSizer *sizer = exporter->GetSettingsSizer(filter_list->GetString(i)))
+		if (wxSizer *sizer = exporter->GetSettingsSizer(from_wx(filter_list->GetString(i))))
 			opt_sizer->Show(sizer, filter_list->IsChecked(i), true);
 	}
 	Layout();

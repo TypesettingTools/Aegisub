@@ -32,9 +32,12 @@
 /// @ingroup utility
 ///
 
+#include <libaegisub/fs_fwd.h>
+#include <string>
+
 namespace CharSetDetect {
 	/// @brief Get character set name.
 	/// @param filename File to check
 	/// @return Character set name
-	wxString GetEncoding(wxString const& filename);
+	std::string GetEncoding(agi::fs::path const& filename);
 }

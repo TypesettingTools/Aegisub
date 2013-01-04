@@ -1,5 +1,7 @@
 #include "config.h"
 
+#define WIN32_LEAN_AND_MEAN
+
 // Common C
 #include <cassert>
 #include <cerrno>

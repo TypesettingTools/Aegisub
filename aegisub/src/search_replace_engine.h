@@ -15,18 +15,18 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <functional>
-#include <wx/string.h>
+#include <boost/regex.hpp>
+#include <string>
 
 namespace agi { struct Context; }
 class AssDialogue;
-class wxRegEx;
 
 struct MatchState {
-	wxRegEx *re;
+	boost::regex *re;
 	size_t start, end;
 
 	MatchState() : re(nullptr), start(0), end(-1) { }
-	MatchState(size_t s, size_t e, wxRegEx *re) : re(re), start(s), end(e) { }
+	MatchState(size_t s, size_t e, boost::regex *re) : re(re), start(s), end(e) { }
 	operator bool() const { return end != (size_t)-1; }
 };
 
@@ -43,8 +43,8 @@ struct SearchReplaceSettings {
 		SELECTED
 	};
 
-	wxString find;
-	wxString replace_with;
+	std::string find;
+	std::string replace_with;
 
 	Field field;
 	Limit limit_to;
@@ -71,7 +71,7 @@ public:
 
 	void Configure(SearchReplaceSettings const& new_settings);
 
-	static std::function<MatchState (const AssDialogue*, size_t)> GetMatcher(SearchReplaceSettings const& settings, wxRegEx *regex);
+	static std::function<MatchState (const AssDialogue*, size_t)> GetMatcher(SearchReplaceSettings const& settings);
 
 	SearchReplaceEngine(agi::Context *c);
 };

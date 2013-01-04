@@ -18,10 +18,12 @@
 
 #pragma once
 
-#include <fstream>
+#include <boost/filesystem/path.hpp>
+#include <iosfwd>
 #include <map>
 
 #include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
 
 namespace json {
 	class UnknownElement;
@@ -60,7 +62,7 @@ private:
 	OptionValueMap values;
 
 	/// User config (file that will be written to disk)
-	const std::string config_file;
+	const agi::fs::path config_file;
 
 	/// Settings.
 	const OptionSetting setting;
@@ -74,7 +76,7 @@ public:
 	/// @brief Constructor
 	/// @param file User config that will be loaded from and written back to.
 	/// @param default_config Default configuration.
-	Options(const std::string &file, const std::string &default_config, const OptionSetting setting=NONE);
+	Options(agi::fs::path const& file, const std::string &default_config, const OptionSetting setting=NONE);
 
 	/// Destructor
 	~Options();

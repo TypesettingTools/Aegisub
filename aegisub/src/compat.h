@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <vector>
 
@@ -14,4 +16,4 @@ wxArrayString to_wx(std::vector<std::string> const& vec);
 inline agi::Color from_wx(wxColour color) { return agi::Color(color.Red(), color.Green(), color.Blue(), 255 - color.Alpha()); }
 inline std::string from_wx(wxString const& str) { return std::string(str.utf8_str()); }
 
-wxArrayString lagi_MRU_wxAS(const wxString &list);
+wxArrayString lagi_MRU_wxAS(std::string const& list);

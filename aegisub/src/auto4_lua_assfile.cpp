@@ -35,26 +35,24 @@
 #include "config.h"
 
 #ifdef WITH_AUTO4_LUA
-
-#include <algorithm>
-#include <cassert>
-
-#include <boost/range/adaptor/indirected.hpp>
-#include <boost/range/algorithm_ext.hpp>
-
-#include <wx/log.h>
-
-#include <libaegisub/exception.h>
-#include <libaegisub/log.h>
-#include <libaegisub/scoped_ptr.h>
+#include "auto4_lua.h"
 
 #include "ass_dialogue.h"
 #include "ass_info.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "ass_style.h"
-#include "auto4_lua.h"
 #include "utils.h"
+
+#include <libaegisub/exception.h>
+#include <libaegisub/log.h>
+#include <libaegisub/scoped_ptr.h>
+
+#include <algorithm>
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/algorithm_ext.hpp>
+#include <cassert>
 
 // This must be below the headers above.
 #ifdef __WINDOWS__
@@ -65,10 +63,6 @@
 #endif
 
 namespace {
-	void push_value(lua_State *L, wxString const& value) {
-		lua_pushstring(L, value.utf8_str());
-	}
-
 	void push_value(lua_State *L, std::string const& value) {
 		lua_pushstring(L, value.c_str());
 	}
@@ -106,16 +100,6 @@ namespace {
 	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
 	{
 		return BadField(std::string("Invalid or missing field '") + name + "' in '" + line_clasee + "' class subtitle line (expected " + expected_type + ")");
-	}
-
-	wxString get_wxstring_field(lua_State *L, const char *name, const char *line_class)
-	{
-		lua_getfield(L, -1, name);
-		if (!lua_isstring(L, -1))
-			throw bad_field("string", name, line_class);
-		wxString ret(lua_tostring(L, -1), wxConvUTF8);
-		lua_pop(L, 1);
-		return ret;
 	}
 
 	std::string get_string_field(lua_State *L, const char *name, const char *line_class)
@@ -202,10 +186,8 @@ namespace Automation4 {
 	{
 		lua_newtable(L);
 
-		wxString raw(e->GetEntryData());
-
 		set_field(L, "section", e->GroupHeader());
-		set_field(L, "raw", raw);
+		set_field(L, "raw", e->GetEntryData());
 
 		if (AssInfo *info = dynamic_cast<AssInfo*>(e)) {
 			set_field(L, "key", info->Key());
@@ -291,18 +273,15 @@ namespace Automation4 {
 		if (!lua_isstring(L, -1))
 			luaL_error(L, "Table lacks 'class' field, can't convert to AssEntry");
 
-		wxString lclass(lua_tostring(L, -1), wxConvUTF8);
-		lclass.MakeLower();
+		std::string lclass(lua_tostring(L, -1));
+		boost::to_lower(lclass);
 		lua_pop(L, 1);
 
 		AssEntry *result = 0;
 
 		try {
-			wxString section = get_wxstring_field(L, "section", "common");
-
-			if (lclass == "info") {
-				result = new AssInfo(get_wxstring_field(L, "key", "info"), get_wxstring_field(L, "value", "info"));
-			}
+			if (lclass == "info")
+				result = new AssInfo(get_string_field(L, "key", "info"), get_string_field(L, "value", "info"));
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;
 				result = sty;
@@ -339,16 +318,16 @@ namespace Automation4 {
 				dia->Layer = get_int_field(L, "layer", "dialogue");
 				dia->Start = get_int_field(L, "start_time", "dialogue");
 				dia->End = get_int_field(L, "end_time", "dialogue");
-				dia->Style = get_wxstring_field(L, "style", "dialogue");
-				dia->Actor = get_wxstring_field(L, "actor", "dialogue");
+				dia->Style = get_string_field(L, "style", "dialogue");
+				dia->Actor = get_string_field(L, "actor", "dialogue");
 				dia->Margin[0] = get_int_field(L, "margin_l", "dialogue");
 				dia->Margin[1] = get_int_field(L, "margin_r", "dialogue");
 				dia->Margin[2] = get_int_field(L, "margin_t", "dialogue");
-				dia->Effect = get_wxstring_field(L, "effect", "dialogue");
-				dia->Text = get_wxstring_field(L, "text", "dialogue");
+				dia->Effect = get_string_field(L, "effect", "dialogue");
+				dia->Text = get_string_field(L, "text", "dialogue");
 			}
 			else {
-				luaL_error(L, "Found line with unknown class: %s", lclass.utf8_str().data());
+				luaL_error(L, "Found line with unknown class: %s", lclass.c_str());
 				return 0;
 			}
 
@@ -620,7 +599,7 @@ namespace Automation4 {
 			PendingCommit& back = pending_commits.back();
 
 			back.modification_type = modification_type;
-			back.mesage = wxString(luaL_checkstring(L, 1), wxConvUTF8);
+			back.mesage = wxString::FromUTF8(luaL_checkstring(L, 1));
 			back.lines = lines;
 			modification_type = 0;
 		}

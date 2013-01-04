@@ -34,13 +34,18 @@
 
 #include "config.h"
 
-#include <libaegisub/log.h>
-
 #include "video_provider_yuv4mpeg.h"
 
 #include "compat.h"
 #include "utils.h"
 #include "video_frame.h"
+
+#include <libaegisub/fs.h>
+#include <libaegisub/log.h>
+#include <libaegisub/util.h>
+
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/filesystem/path.hpp>
 
 // All of this cstdio bogus is because of one reason and one reason only:
 // MICROSOFT'S IMPLEMENTATION OF STD::FSTREAM DOES NOT SUPPORT FILES LARGER THAN 2 GB.
@@ -53,7 +58,7 @@
 
 /// @brief Constructor
 /// @param filename The filename to open
-YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
+YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 : sf(nullptr)
 , inited(false)
 , w (0)
@@ -67,15 +72,13 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 	fps_rat.den = 1;
 
 	try {
-		wxString filename = wxFileName(fname).GetShortPath();
-
 #ifdef WIN32
-		sf = _wfopen(filename.wc_str(), L"rb");
+		sf = _wfopen(filename.c_str(), L"rb");
 #else
-		sf = fopen(filename.utf8_str(), "rb");
+		sf = fopen(filename.c_str(), "rb");
 #endif
 
-		if (sf == nullptr) throw agi::FileNotFoundError(from_wx(fname));
+		if (!sf) throw agi::fs::FileNotFound(filename);
 
 		CheckFileFormat();
 
@@ -120,10 +123,9 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(wxString fname)
 	}
 }
 
-
 /// @brief Destructor
 YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
-	if (sf) fclose(sf);
+	fclose(sf);
 }
 
 /// @brief Checks if the file is an YUV4MPEG file or not
@@ -143,14 +145,14 @@ void YUV4MPEGVideoProvider::CheckFileFormat() {
 /// @param startpos		The byte offset at where to start reading
 /// @param reset_pos	If true, the function will reset the file position to what it was before the function call before returning
 /// @return				A list of parameters
-std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos) {
-	std::vector<wxString> tags;
-	wxString curtag;
+std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos) {
+	std::vector<std::string> tags;
+	std::string curtag;
 	int bytesread = 0;
 	int buf;
 
 	if (fseeko(sf, startpos, SEEK_SET))
-		throw VideoOpenError(from_wx(wxString::Format("YUV4MPEG video provider: ReadHeader: failed seeking to position %d", startpos)));
+		throw VideoOpenError("YUV4MPEG video provider: ReadHeader: failed seeking to position " + std::to_string(startpos));
 
 	// read header until terminating newline (0x0A) is found
 	while ((buf = fgetc(sf)) != 0x0A) {
@@ -166,29 +168,27 @@ std::vector<wxString> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos) {
 			throw VideoOpenError("ReadHeader: Malformed header (no terminating newline found)");
 
 		// found a new tag
-		if (buf == 0x20) {
+		if (buf == 0x20 && !curtag.empty()) {
 			tags.push_back(curtag);
-			curtag.Clear();
+			curtag.clear();
 		}
 		else
-			curtag.Append(static_cast<wxChar>(buf));
+			curtag.push_back(buf);
 	}
 	// if only one tag with no trailing space was found (possible in the
 	// FRAME header case), make sure we get it
-	if (!curtag.IsEmpty()) {
+	if (!curtag.empty())
 		tags.push_back(curtag);
-		curtag.Clear();
-	}
 
 	return tags;
 }
 
 /// @brief Parses a list of parameters and sets reader state accordingly
 /// @param tags	The list of parameters to parse
-void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
+void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags) {
 	if (tags.size() <= 1)
 		throw VideoOpenError("ParseFileHeader: contentless header");
-	if (tags.front().Cmp("YUV4MPEG2"))
+	if (tags.front() != "YUV4MPEG2")
 		throw VideoOpenError("ParseFileHeader: malformed header (bad magic)");
 
 	// temporary stuff
@@ -200,30 +200,30 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 	Y4M_PixelFormat t_pixfmt	= Y4M_PIXFMT_NONE;
 
 	for (unsigned i = 1; i < tags.size(); i++) {
-		wxString tag;
-		long tmp_long1 = 0;
-		long tmp_long2 = 0;
+		char type = tags[i][0];
+		std::string tag = tags[i].substr(1);
 
-		if (tags[i].StartsWith("W", &tag)) {
-			if (!tag.ToLong(&tmp_long1))
+		if (type == 'W') {
+			if (!agi::util::try_parse(tag, &t_w))
 				throw VideoOpenError("ParseFileHeader: invalid width");
-			t_w = (int)tmp_long1;
 		}
-		else if (tags[i].StartsWith("H", &tag)) {
-			if (!tag.ToLong(&tmp_long1))
+		else if (type == 'H') {
+			if (!agi::util::try_parse(tag, &t_h))
 				throw VideoOpenError("ParseFileHeader: invalid height");
-			t_h = (int)tmp_long1;
 		}
-		else if (tags[i].StartsWith("F", &tag)) {
-			if (!(tag.BeforeFirst(':').ToLong(&tmp_long1) && tag.AfterFirst(':').ToLong(&tmp_long2)))
+		else if (type == 'F') {
+			size_t pos = tag.find(':');
+			if (pos == tag.npos)
 				throw VideoOpenError("ParseFileHeader: invalid framerate");
-			t_fps_num = (int)tmp_long1;
-			t_fps_den = (int)tmp_long2;
+
+			if (!agi::util::try_parse(tag.substr(0, pos), &t_fps_num) ||
+				!agi::util::try_parse(tag.substr(pos + 1), &t_fps_den))
+				throw VideoOpenError("ParseFileHeader: invalid framerate");
 		}
-		else if (tags[i].StartsWith("C", &tag)) {
+		else if (type == 'C') {
 			// technically this should probably be case sensitive,
 			// but being liberal in what you accept doesn't hurt
-			tag.MakeLower();
+			boost::to_lower(tag);
 			if (tag == "420")			t_pixfmt = Y4M_PIXFMT_420JPEG; // is this really correct?
 			else if (tag == "420jpeg")	t_pixfmt = Y4M_PIXFMT_420JPEG;
 			else if (tag == "420mpeg2")	t_pixfmt = Y4M_PIXFMT_420MPEG2;
@@ -236,8 +236,8 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 			else
 				throw VideoOpenError("ParseFileHeader: invalid or unknown colorspace");
 		}
-		else if (tags[i].StartsWith("I", &tag)) {
-			tag.MakeLower();
+		else if (type == 'I') {
+			boost::to_lower(tag);
 			if (tag == "p")			t_imode = Y4M_ILACE_PROGRESSIVE;
 			else if (tag == "t")	t_imode = Y4M_ILACE_TFF;
 			else if (tag == "b")	t_imode = Y4M_ILACE_BFF;
@@ -247,7 +247,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 				throw VideoOpenError("ParseFileHeader: invalid or unknown interlacing mode");
 		}
 		else
-			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << from_wx(tags[i]);
+			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << tags[i];
 	}
 
 	// The point of all this is to allow multiple YUV4MPEG2 headers in a single file
@@ -282,8 +282,8 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<wxString>& tags) {
 /// @param tags	The list of parameters to parse
 /// @return	The flags set, as a binary mask
 ///	This function is currently unimplemented (it will always return Y4M_FFLAG_NONE).
-YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<wxString>& tags) {
-	if (tags.front().Cmp("FRAME"))
+YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<std::string>& tags) {
+	if (tags.front() != "FRAME")
 		throw VideoOpenError("ParseFrameHeader: malformed frame header (bad magic)");
 
 	/// @todo implement parsing of frame flags
@@ -307,7 +307,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 			throw VideoOpenError("IndexFile: ftello failed");
 
 		// continue reading headers until no more are found
-		std::vector<wxString> tags = ReadHeader(curpos);
+		std::vector<std::string> tags = ReadHeader(curpos);
 		curpos = ftello(sf);
 		if (curpos < 0)
 			throw VideoOpenError("IndexFile: ftello failed");
@@ -316,11 +316,11 @@ int YUV4MPEGVideoProvider::IndexFile() {
 			break; // no more headers
 
 		Y4M_FrameFlags flags = Y4M_FFLAG_NOTSET;
-		if (!tags.front().Cmp("YUV4MPEG2")) {
+		if (tags.front() == "YUV4MPEG2") {
 			ParseFileHeader(tags);
 			continue;
 		}
-		else if (!tags.front().Cmp("FRAME"))
+		else if (tags.front() == "FRAME")
 			flags = ParseFrameHeader(tags);
 
 		if (flags == Y4M_FFLAG_NONE) {
@@ -328,7 +328,7 @@ int YUV4MPEGVideoProvider::IndexFile() {
 			seek_table.push_back(curpos);
 			// seek to next frame header start position
 			if (fseeko(sf, frame_sz, SEEK_CUR))
-				throw VideoOpenError(from_wx(wxString::Format("IndexFile: failed seeking to position %d", curpos + frame_sz)));
+				throw VideoOpenError("IndexFile: failed seeking to position " + std::to_string(curpos + frame_sz));
 		}
 		else {
 			/// @todo implement rff flags etc

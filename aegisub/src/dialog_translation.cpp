@@ -50,7 +50,7 @@
 
 static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wxString const& text) {
 	sizer->Add(new wxStaticText(parent, -1, text));
-	sizer->Add(new wxStaticText(parent, -1, hotkey::get_hotkey_str_first("Translation Assistant", command)));
+	sizer->Add(new wxStaticText(parent, -1, to_wx(hotkey::get_hotkey_str_first("Translation Assistant", command))));
 }
 
 // Skip over override blocks, comments, and whitespace between blocks

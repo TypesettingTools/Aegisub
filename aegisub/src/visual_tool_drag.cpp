@@ -22,12 +22,6 @@
 
 #include "visual_tool_drag.h"
 
-#include <algorithm>
-#include <functional>
-
-#include <wx/bmpbuttn.h>
-#include <wx/toolbar.h>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "include/aegisub/context.h"
@@ -38,6 +32,12 @@
 #include "video_display.h"
 
 #include <libaegisub/of_type_adaptor.h>
+
+#include <algorithm>
+#include <boost/format.hpp>
+#include <functional>
+
+#include <wx/toolbar.h>
 
 static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
@@ -94,7 +94,7 @@ void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 			// Round the start and end times to exact frames
 			int start = vc->TimeAtFrame(vc->FrameAtTime(line->Start, agi::vfr::START)) - line->Start;
 			int end = vc->TimeAtFrame(vc->FrameAtTime(line->Start, agi::vfr::END)) - line->Start;
-			SetOverride(line, "\\move", wxString::Format("(%s,%s,%d,%d)", p1.Str(), p1.Str(), start, end));
+			SetOverride(line, "\\move", str(boost::format("(%s,%s,%d,%d)") % p1.Str() % p1.Str() % start % end));
 		}
 	}
 
@@ -293,10 +293,10 @@ void VisualToolDrag::UpdateDrag(feature_iterator feature) {
 		SetOverride(feature->line, "\\pos", ToScriptCoords(feature->pos).PStr());
 	else
 		SetOverride(feature->line, "\\move",
-			wxString::Format("(%s,%s,%d,%d)",
-				ToScriptCoords(feature->pos).Str(),
-				ToScriptCoords(end_feature->pos).Str(),
-				feature->time, end_feature->time));
+			str(boost::format("(%s,%s,%d,%d)")
+				% ToScriptCoords(feature->pos).Str()
+				% ToScriptCoords(end_feature->pos).Str()
+				% feature->time % end_feature->time));
 }
 
 void VisualToolDrag::OnDoubleClick() {
@@ -307,9 +307,9 @@ void VisualToolDrag::OnDoubleClick() {
 		int t1, t2;
 		if (GetLineMove(line, p1, p2, t1, t2)) {
 			if (t1 > 0 || t2 > 0)
-				SetOverride(line, "\\move", wxString::Format("(%s,%s,%d,%d)", (p1 + d).Str(), (p2 + d).Str(), t1, t2));
+				SetOverride(line, "\\move", str(boost::format("(%s,%s,%d,%d)") % (p1 + d).Str() % (p2 + d).Str() % t1 % t2));
 			else
-				SetOverride(line, "\\move", wxString::Format("(%s,%s)", (p1 + d).Str(), (p2 + d).Str()));
+				SetOverride(line, "\\move", str(boost::format("(%s,%s)") % (p1 + d).Str() % (p2 + d).Str()));
 		}
 		else
 			SetOverride(line, "\\pos", (GetLinePosition(line) + d).PStr());

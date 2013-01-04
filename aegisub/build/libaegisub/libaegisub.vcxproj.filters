@@ -26,9 +26,6 @@
     <ClInclude Include="$(SrcDir)common\charset_6937.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)common\charset_ucd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)common\option_visit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -134,10 +131,25 @@
     <ClInclude Include="$(SrcDir)common\parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libaegisub\include\libaegisub\of_type_adaptor.h">
+    <ClInclude Include="$(SrcDir)include\libaegisub\of_type_adaptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libaegisub\include\libaegisub\calltip_provider.h">
+    <ClInclude Include="$(SrcDir)include\libaegisub\calltip_provider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\fs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\fs_fwd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\dispatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\split.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -159,9 +171,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp">
       <Filter>Source Files\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\charset_ucd.cpp">
-      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)windows\log_win.cpp">
       <Filter>Source Files\Windows</Filter>
@@ -220,10 +229,25 @@
     <ClCompile Include="$(SrcDir)common\parser.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libaegisub\common\io.cpp">
+    <ClCompile Include="$(SrcDir)common\io.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\libaegisub\common\calltip_provider.cpp">
+    <ClCompile Include="$(SrcDir)common\calltip_provider.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\path.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\path_win.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)windows\fs.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\fs.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\dispatch.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>

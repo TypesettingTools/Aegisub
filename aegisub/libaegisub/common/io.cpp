@@ -16,49 +16,25 @@
 /// @brief Windows IO methods.
 /// @ingroup libaegisub
 
-#include <sys/stat.h>
-#include <errno.h>
-
-#include <iostream>
-#include <fstream>
+#include "libaegisub/io.h"
 
 #include <libaegisub/access.h>
-#include <libaegisub/charset_conv_win.h>
-#include "libaegisub/io.h"
+#include "libaegisub/fs.h"
 #include "libaegisub/log.h"
+#include "libaegisub/path.h"
 #include "libaegisub/util.h"
 
-#ifdef _WIN32
-#define snprintf sprintf_s
-#endif
-
-namespace {
-	std::string make_temp_name(std::string const& filename) {
-		char tmp[1024];
-		snprintf(tmp, sizeof tmp, "_tmp_%lld", (long long)time(0));
-
-		std::string::size_type pos = filename.rfind('.');
-		if (pos == std::string::npos)
-			return filename + tmp;
-
-		return filename.substr(0, pos) + tmp + filename.substr(pos);
-	}
-}
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 namespace agi {
 	namespace io {
 
-using agi::charset::ConvertW;
-
-#ifndef _WIN32
-#define ConvertW
-#endif
-
-std::ifstream* Open(const std::string &file, bool binary) {
+std::ifstream* Open(fs::path const& file, bool binary) {
 	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
-	std::ifstream *stream = new std::ifstream(ConvertW(file).c_str(), (binary ? std::ios::binary : std::ios::in));
+	auto stream = new boost::filesystem::ifstream(file, (binary ? std::ios::binary : std::ios::in));
 
 	if (stream->fail()) {
 		delete stream;
@@ -68,34 +44,30 @@ std::ifstream* Open(const std::string &file, bool binary) {
 	return stream;
 }
 
-Save::Save(const std::string& file, bool binary)
+Save::Save(fs::path const& file, bool binary)
 : file_name(file)
-, tmp_name(make_temp_name(file))
+, tmp_name(unique_path(file.parent_path()/(file.stem().string() + "_tmp_%%%%." + file.extension().string())))
 {
 	LOG_D("agi/io/save/file") << file;
-	const std::string pwd = util::DirName(file);
-
-	acs::CheckDirWrite(pwd);
+	acs::CheckDirWrite(file.parent_path());
 
 	try {
 		acs::CheckFileWrite(file);
-	} catch (FileNotFoundError const&) {
-		// If the file doesn't exist we create a 0 byte file, this so so
-		// util::Rename will find it, and to let users know something went
-		// wrong by leaving a 0 byte file.
-		std::ofstream(ConvertW(file).c_str());
+	}
+	catch (fs::FileNotFound const&) {
+		// Not an error
 	}
 
-	fp = new std::ofstream(ConvertW(tmp_name).c_str(), binary ? std::ios::binary : std::ios::out);
+	fp = new boost::filesystem::ofstream(tmp_name, binary ? std::ios::binary : std::ios::out);
 	if (!fp->good()) {
 		delete fp;
-		throw agi::FileNotAccessibleError("Could not create temporary file at: " + tmp_name);
+		throw fs::WriteDenied(tmp_name);
 	}
 }
 
 Save::~Save() {
-	delete fp;
-	util::Rename(tmp_name, file_name);
+	delete fp; // Explicitly delete to unlock file on Windows
+	fs::Rename(tmp_name, file_name);
 }
 
 std::ofstream& Save::Get() {

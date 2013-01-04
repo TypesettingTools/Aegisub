@@ -32,6 +32,7 @@
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
+#include <tuple>
 
 #include <wx/intl.h>
 
@@ -49,7 +50,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	if (line->Comment) return;
 
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
-	StyleInfo style = styles[from_wx(line->Style)];
+	StyleInfo style = styles[line->Style];
 	StyleInfo initial = style;
 
 	bool overriden = false;
@@ -60,7 +61,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				std::string const& name = tag.Name;
 
 				if (name == "\\r") {
-					style = styles[tag.Params[0].Get(from_wx(line->Style))];
+					style = styles[tag.Params[0].Get(line->Style.get())];
 					overriden = false;
 				}
 				else if (name == "\\b") {
@@ -117,7 +118,7 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 	else {
 		for (size_t i = 0; i < res.paths.size(); ++i) {
 			if (results.insert(res.paths[i]).second)
-				status_callback(wxString::Format(_("Found '%s' at '%s'\n"), style.first.facename, res.paths[i]), 0);
+				status_callback(wxString::Format(_("Found '%s' at '%s'\n"), style.first.facename, res.paths[i].make_preferred().wstring()), 0);
 		}
 
 		if (res.missing.size()) {
@@ -147,7 +148,7 @@ void FontCollector::PrintUsage(UsageData const& data) {
 	status_callback("\n", 2);
 }
 
-std::vector<wxString> FontCollector::GetFontPaths(const AssFile *file) {
+std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 	missing = 0;
 	missing_glyphs = 0;
 
@@ -169,7 +170,7 @@ std::vector<wxString> FontCollector::GetFontPaths(const AssFile *file) {
 	for_each(used_styles.begin(), used_styles.end(), bind(&FontCollector::ProcessChunk, this, _1));
 	status_callback(_("Done\n\n"), 0);
 
-	std::vector<wxString> paths;
+	std::vector<agi::fs::path> paths;
 	paths.reserve(results.size());
 	paths.insert(paths.end(), results.begin(), results.end());
 
@@ -184,15 +185,5 @@ std::vector<wxString> FontCollector::GetFontPaths(const AssFile *file) {
 }
 
 bool FontCollector::StyleInfo::operator<(StyleInfo const& rgt) const {
-#define CMP(field) \
-	if (field < rgt.field) return true; \
-	if (field > rgt.field) return false
-
-	CMP(facename);
-	CMP(bold);
-	CMP(italic);
-
-#undef CMP
-
-	return false;
+	return std::tie(facename, bold, italic) < std::tie(rgt.facename, rgt.bold, rgt.italic);
 }

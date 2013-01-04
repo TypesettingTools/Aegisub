@@ -32,8 +32,9 @@
 /// @ingroup secondary_ui
 ///
 
-class TimeEdit;
 namespace agi { struct Context; }
+class TimeEdit;
+class wxTextCtrl;
 
 class DialogJumpTo : public wxDialog {
 	agi::Context *c;       ///< Project context

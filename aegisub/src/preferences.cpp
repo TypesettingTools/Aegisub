@@ -30,7 +30,6 @@
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
-#include <wx/stdpaths.h>
 #include <wx/treebook.h>
 #include <wx/treebook.h>
 

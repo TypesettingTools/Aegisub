@@ -40,25 +40,28 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "colorspace.h"
-#include "compat.h"
 #include "utils.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
 #include <libaegisub/of_type_adaptor.h>
 
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/format.hpp>
+#include <boost/regex.hpp>
 #include <map>
-#include <wx/regex.h>
 
 DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/parse/srt")
 
 namespace {
 class SrtTagParser {
 	struct FontAttribs {
-		wxString face;
-		wxString size;
-		wxString color;
+		std::string face;
+		std::string size;
+		std::string color;
 	};
 
 	enum TagType {
@@ -75,20 +78,17 @@ class SrtTagParser {
 		TAG_FONT_CLOSE
 	};
 
-	wxRegEx tag_matcher;
-	wxRegEx attrib_matcher;
-	std::map<wxString,TagType> tag_name_cases;
+	const boost::regex tag_matcher;
+	const boost::regex attrib_matcher;
+	const boost::regex is_quoted;
+	std::map<std::string, TagType> tag_name_cases;
 
 public:
 	SrtTagParser()
-	: tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", wxRE_ICASE|wxRE_ADVANCED)
-	, attrib_matcher("^[[:space:]]+(face|size|color)=('[^']*'|\"[^\"]*\"|[^[:space:]]+)", wxRE_ICASE|wxRE_ADVANCED)
+	: tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", boost::regex::icase)
+	, attrib_matcher("^[[:space:]]+(face|size|color)=('[^']*'|\"[^\"]*\"|[^[:space:]]+)", boost::regex::icase)
+	, is_quoted("^(['\"]).*\\1$")
 	{
-		if (!tag_matcher.IsValid())
-			throw agi::InternalError("Parsing SRT: Failed compiling tag matching regex", 0);
-		if (!attrib_matcher.IsValid())
-			throw agi::InternalError("Parsing SRT: Failed compiling tag attribute matching regex", 0);
-
 		tag_name_cases["b"]  = TAG_BOLD_OPEN;
 		tag_name_cases["/b"] = TAG_BOLD_CLOSE;
 		tag_name_cases["i"]  = TAG_ITALICS_OPEN;
@@ -101,7 +101,7 @@ public:
 		tag_name_cases["/font"] = TAG_FONT_CLOSE;
 	}
 
-	wxString ToAss(wxString srt)
+	std::string ToAss(std::string srt)
 	{
 		int bold_level = 0;
 		int italics_level = 0;
@@ -109,11 +109,12 @@ public:
 		int strikeout_level = 0;
 		std::vector<FontAttribs> font_stack;
 
-		wxString ass; // result to be built
+		std::string ass; // result to be built
 
 		while (!srt.empty())
 		{
-			if (!tag_matcher.Matches(srt))
+			boost::smatch result;
+			if (!regex_match(srt, result, tag_matcher))
 			{
 				// no more tags could be matched, end of string
 				ass.append(srt);
@@ -121,17 +122,18 @@ public:
 			}
 
 			// we found a tag, translate it
-			wxString pre_text  = tag_matcher.GetMatch(srt, 1);
-			wxString tag_name  = tag_matcher.GetMatch(srt, 2);
-			wxString tag_attrs = tag_matcher.GetMatch(srt, 3);
-			wxString post_text = tag_matcher.GetMatch(srt, 4);
+			std::string pre_text  = result.str(1);
+			std::string tag_name  = result.str(2);
+			std::string tag_attrs = result.str(3);
+			std::string post_text = result.str(4);
 
 			// the text before the tag goes through unchanged
 			ass.append(pre_text);
 			// the text after the tag is the input for next iteration
 			srt = post_text;
 
-			switch (tag_name_cases[tag_name.Lower()])
+			boost::to_lower(tag_name);
+			switch (tag_name_cases[tag_name])
 			{
 			case TAG_BOLD_OPEN:
 				if (bold_level == 0)
@@ -184,41 +186,33 @@ public:
 					FontAttribs old_attribs;
 					// start out with any previous ones on stack
 					if (font_stack.size() > 0)
-					{
 						old_attribs = font_stack.back();
-					}
 					new_attribs = old_attribs;
 					// now find all attributes on this font tag
-					while (attrib_matcher.Matches(tag_attrs))
+					boost::smatch result;
+					while (regex_search(tag_attrs, result, attrib_matcher))
 					{
 						// get attribute name and values
-						wxString attr_name = attrib_matcher.GetMatch(tag_attrs, 1);
-						wxString attr_value = attrib_matcher.GetMatch(tag_attrs, 2);
+						std::string attr_name = result.str(1);
+						std::string attr_value = result.str(2);
+
 						// clean them
-						attr_name.MakeLower();
-						if ((attr_value.StartsWith("'") && attr_value.EndsWith("'")) ||
-							(attr_value.StartsWith("\"") && attr_value.EndsWith("\"")))
-						{
-							attr_value = attr_value.Mid(1, attr_value.Len()-2);
-						}
+						boost::to_lower(attr_name);
+						if (regex_match(attr_value, is_quoted))
+							attr_value = attr_value.substr(1, attr_value.size() - 2);
+
 						// handle the attributes
 						if (attr_name == "face")
-						{
-							new_attribs.face = wxString::Format("{\\fn%s}", attr_value);
-						}
+							new_attribs.face = str(boost::format("{\\fn%s}") % attr_value);
 						else if (attr_name == "size")
-						{
-							new_attribs.size = wxString::Format("{\\fs%s}", attr_value);
-						}
+							new_attribs.size = str(boost::format("{\\fs%s}") % attr_value);
 						else if (attr_name == "color")
-						{
-							new_attribs.color = wxString::Format("{\\c%s}", to_wx(agi::Color(from_wx(attr_value)).GetAssOverrideFormatted()));
-						}
+							new_attribs.color = str(boost::format("{\\c%s}") % agi::Color(attr_value).GetAssOverrideFormatted());
+
 						// remove this attribute to prepare for the next
-						size_t attr_pos, attr_len;
-						attrib_matcher.GetMatch(&attr_pos, &attr_len, 0);
-						tag_attrs.erase(attr_pos, attr_len);
+						tag_attrs = result.suffix().str();
 					}
+
 					// the attributes changed from old are then written out
 					if (new_attribs.face != old_attribs.face)
 						ass.append(new_attribs.face);
@@ -226,6 +220,7 @@ public:
 						ass.append(new_attribs.size);
 					if (new_attribs.color != old_attribs.color)
 						ass.append(new_attribs.color);
+
 					// lastly dump the new attributes state onto the stack
 					font_stack.push_back(new_attribs);
 				}
@@ -275,13 +270,13 @@ public:
 		}
 
 		// make it a little prettier, join tag groups
-		ass.Replace("}{", "", true);
+		boost::replace_all(ass, "}{", "");
 
 		return ass;
 	}
 };
 
-AssTime ReadSRTTime(wxString const& ts)
+AssTime ReadSRTTime(std::string const& ts)
 {
 	// For the sake of your sanity, please do not read this function.
 
@@ -291,22 +286,12 @@ AssTime ReadSRTTime(wxString const& ts)
 	size_t ci = 0;
 	int ms_chars = 0;
 
-	for (; ci < ts.length(); ++ci)
+	for (; ci < ts.size(); ++ci)
 	{
-		char ch = ts[ci];
-		switch (ch)
+		switch (ts[ci])
 		{
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-			s = s * 10 + (ch - '0');
+		case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
+			s = s * 10 + (ts[ci] - '0');
 			break;
 		case ':':
 			d = h;
@@ -318,43 +303,27 @@ AssTime ReadSRTTime(wxString const& ts)
 			ci++;
 			goto milliseconds;
 		default:
-			goto allparsed;
+			ci = ts.size();
 		}
 	}
-	goto allparsed;
+
 milliseconds:
-	for (; ci < ts.length(); ++ci)
+	for (; ci < ts.size(); ++ci)
 	{
-		char ch = ts[ci];
-		switch (ch)
-		{
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-			ms = ms * 10 + (ch - '0');
-			ms_chars++;
-			break;
-		default:
-			goto allparsed;
-		}
+		if (!isdigit(ts[ci])) break;
+
+		ms = ms * 10 + (ts[ci] - '0');
+		ms_chars++;
 	}
-allparsed:
-	while (ms_chars < 3) ms *= 10, ms_chars++;
-	while (ms_chars > 3) ms /= 10, ms_chars--;
+
+	ms *= pow(10, 3 - ms_chars);
 
 	return ms + 1000*(s + 60*(m + 60*(h + d*24)));
 }
 
-wxString WriteSRTTime(AssTime const& ts)
+std::string WriteSRTTime(AssTime const& ts)
 {
-	return wxString::Format("%02d:%02d:%02d,%03d", ts.GetTimeHours(), ts.GetTimeMinutes(), ts.GetTimeSeconds(), ts.GetTimeMiliseconds());
+	return str(boost::format("%02d:%02d:%02d,%03d") % ts.GetTimeHours() % ts.GetTimeMinutes() % ts.GetTimeSeconds() % ts.GetTimeMiliseconds());
 }
 
 }
@@ -364,13 +333,13 @@ SRTSubtitleFormat::SRTSubtitleFormat()
 {
 }
 
-wxArrayString SRTSubtitleFormat::GetReadWildcards() const {
-	wxArrayString formats;
-	formats.Add("srt");
+std::vector<std::string> SRTSubtitleFormat::GetReadWildcards() const {
+	std::vector<std::string> formats;
+	formats.push_back("srt");
 	return formats;
 }
 
-wxArrayString SRTSubtitleFormat::GetWriteWildcards() const {
+std::vector<std::string> SRTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
@@ -382,7 +351,7 @@ enum ParseState {
 	STATE_LAST_WAS_BLANK
 };
 
-void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
+void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& encoding) const {
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
@@ -391,9 +360,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
 
 	// "hh:mm:ss,fff --> hh:mm:ss,fff" (e.g. "00:00:04,070 --> 00:00:10,04")
-	wxRegEx timestamp_regex("^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,})");
-	if (!timestamp_regex.IsValid())
-		throw agi::InternalError("Parsing SRT: Failed compiling regex", 0);
+	const boost::regex timestamp_regex("^([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,}) --> ([0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{1,})");
 
 	SrtTagParser tag_parser;
 
@@ -401,43 +368,47 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 	int line_num = 0;
 	int linebreak_debt = 0;
 	AssDialogue *line = 0;
-	wxString text;
+	std::string text;
 	while (file.HasMoreLines()) {
-		wxString text_line = file.ReadLineFromFile();
-		line_num++;
-		text_line.Trim(true).Trim(false);
+		std::string text_line = file.ReadLineFromFile();
+		++line_num;
+		boost::trim(text_line);
 
+		boost::smatch timestamp_match;
 		switch (state) {
 			case STATE_INITIAL:
 				// ignore leading blank lines
 				if (text_line.empty()) break;
-				if (text_line.IsNumber()) {
+				if (all(text_line, boost::is_digit())) {
 					// found the line number, throw it away and hope for timestamps
 					state = STATE_TIMESTAMP;
 					break;
 				}
-				if (timestamp_regex.Matches(text_line))
+				if (regex_match(text_line, timestamp_match, timestamp_regex))
 					goto found_timestamps;
 
-				throw SRTParseError(from_wx(wxString::Format("Parsing SRT: Expected subtitle index at line %d", line_num)), 0);
+				throw SRTParseError(str(boost::format("Parsing SRT: Expected subtitle index at line %d") % line_num), 0);
+
 			case STATE_TIMESTAMP:
-				if (!timestamp_regex.Matches(text_line))
-					throw SRTParseError(from_wx(wxString::Format("Parsing SRT: Expected timestamp pair at line %d", line_num)), 0);
+				if (!regex_match(text_line, timestamp_match, timestamp_regex))
+					throw SRTParseError(str(boost::format("Parsing SRT: Expected timestamp pair at line %d") % line_num), 0);
 found_timestamps:
 				if (line) {
 					// finalize active line
 					line->Text = tag_parser.ToAss(text);
 					text.clear();
 				}
+
 				// create new subtitle
 				line = new AssDialogue;
-				line->Start = ReadSRTTime(timestamp_regex.GetMatch(text_line, 1));
-				line->End = ReadSRTTime(timestamp_regex.GetMatch(text_line, 2));
+				line->Start = ReadSRTTime(timestamp_match.str(1));
+				line->End = ReadSRTTime(timestamp_match.str(2));
 				// store pointer to subtitle, we'll continue working on it
 				target->Line.push_back(*line);
 				// next we're reading the text
 				state = STATE_FIRST_LINE_OF_BODY;
 				break;
+
 			case STATE_FIRST_LINE_OF_BODY:
 				if (text_line.empty()) {
 					// that's not very interesting... blank subtitle?
@@ -446,9 +417,10 @@ found_timestamps:
 					linebreak_debt = 0;
 					break;
 				}
-				text.Append(text_line);
+				text.append(text_line);
 				state = STATE_REST_OF_BODY;
 				break;
+
 			case STATE_REST_OF_BODY:
 				if (text_line.empty()) {
 					// Might be either the gap between two subtitles or just a
@@ -458,25 +430,27 @@ found_timestamps:
 					linebreak_debt = 1;
 					break;
 				}
-				text.Append("\\N").Append(text_line);
+				text.append("\\N");
+				text.append(text_line);
 				break;
+
 			case STATE_LAST_WAS_BLANK:
 				++linebreak_debt;
 				if (text_line.empty()) break;
-				if (text_line.IsNumber()) {
+				if (all(text_line, boost::is_digit())) {
 					// Hopefully it's the start of a new subtitle, and the
 					// previous blank line(s) were the gap between subtitles
 					state = STATE_TIMESTAMP;
 					break;
 				}
-				if (timestamp_regex.Matches(text_line))
+				if (regex_match(text_line, timestamp_match, timestamp_regex))
 					goto found_timestamps;
 
 				// assume it's a continuation of the subtitle text
 				// resolve our line break debt and append the line text
 				while (linebreak_debt-- > 0)
-					text.Append("\\N");
-				text.Append(text_line);
+					text.append("\\N");
+				text.append(text_line);
 				state = STATE_REST_OF_BODY;
 				break;
 		}
@@ -485,12 +459,11 @@ found_timestamps:
 	if (state == 1 || state == 2)
 		throw SRTParseError("Parsing SRT: Incomplete file", 0);
 
-	if (line)
-		// an unfinalized line
+	if (line) // an unfinalized line
 		line->Text = tag_parser.ToAss(text);
 }
 
-void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
+void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
 	TextFileWriter file(filename, encoding);
 
 	// Convert to SRT
@@ -508,7 +481,7 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, 
 	// Write lines
 	int i=0;
 	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
-		file.WriteLineToFile(wxString::Format("%d", ++i));
+		file.WriteLineToFile(std::to_string(++i));
 		file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
 		file.WriteLineToFile(ConvertTags(current));
 		file.WriteLineToFile("");
@@ -545,8 +518,8 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	return true;
 }
 
-wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
-	wxString final;
+std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
+	std::string final;
 	std::map<char, bool> tag_states;
 	tag_states['i'] = false;
 	tag_states['b'] = false;
@@ -564,25 +537,24 @@ wxString SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 					if (it != tag_states.end()) {
 						bool temp = tag.Params[0].Get(false);
 						if (temp && !it->second)
-							final += wxString::Format("<%c>", it->first);
+							final += str(boost::format("<%c>") % it->first);
 						if (!temp && it->second)
-							final += wxString::Format("</%c>", it->first);
+							final += str(boost::format("</%c>") % it->first);
 						it->second = temp;
 					}
 				}
 			}
 		}
 		// Plain text
-		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(&block)) {
-			final += to_wx(plain->GetText());
-		}
+		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(&block))
+			final += plain->GetText();
 	}
 
 	// Ensure all tags are closed
 	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
 	for (auto it : tag_states) {
 		if (it.second)
-			final += wxString::Format("</%c>", it.first);
+			final += str(boost::format("</%c>") % it.first);
 	}
 
 	return final;

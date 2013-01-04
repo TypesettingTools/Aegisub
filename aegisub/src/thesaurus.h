@@ -19,10 +19,10 @@
 /// @ingroup thesaurus
 ///
 
+#include <memory>
 #include <string>
 #include <vector>
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 namespace agi { class Thesaurus; }
@@ -30,8 +30,8 @@ namespace agi { class Thesaurus; }
 /// @class Thesaurus
 /// @brief A wrapper around agi::Thesarus adding wx and Aegisub-specific stuff
 class Thesaurus {
-	/// The actual thesarus implementation
-	agi::scoped_ptr<agi::Thesaurus> impl;
+	/// The actual thesaurus implementation
+	std::unique_ptr<agi::Thesaurus> impl;
 	/// A cached list of languages available
 	mutable std::vector<std::string> languages;
 

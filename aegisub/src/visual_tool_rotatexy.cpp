@@ -20,9 +20,10 @@
 
 #include "config.h"
 
-#include <cmath>
-
 #include "visual_tool_rotatexy.h"
+
+#include <boost/format.hpp>
+#include <cmath>
 
 VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)
@@ -156,8 +157,8 @@ void VisualToolRotateXY::UpdateHold() {
 	angle_x = fmodf(angle_x + 360.f, 360.f);
 	angle_y = fmodf(angle_y + 360.f, 360.f);
 
-	SetSelectedOverride("\\frx", wxString::Format("%.4g", angle_x));
-	SetSelectedOverride("\\fry", wxString::Format("%.4g", angle_y));
+	SetSelectedOverride("\\frx", str(boost::format("%.4g") % angle_x));
+	SetSelectedOverride("\\fry", str(boost::format("%.4g") % angle_y));
 }
 
 void VisualToolRotateXY::UpdateDrag(feature_iterator feature) {

@@ -26,14 +26,13 @@
 
 #include <libaegisub/of_type_adaptor.h>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include <wx/msgdlg.h>
-#include <wx/regex.h>
 
 static const size_t bad_pos = -1;
 
 namespace {
-DEFINE_SIMPLE_EXCEPTION(BadRegex, agi::InvalidInputException, "bad_regex")
-
 auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDialogue::Text) {
 	switch (field) {
 		case SearchReplaceSettings::Field::TEXT: return &AssDialogue::Text;
@@ -47,28 +46,28 @@ auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDial
 typedef std::function<MatchState (const AssDialogue*, size_t)> matcher;
 
 class noop_accessor {
-	boost::flyweight<wxString> AssDialogue::*field;
+	boost::flyweight<std::string> AssDialogue::*field;
 	size_t start;
 
 public:
 	noop_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)), start(0) { }
 
-	wxString get(const AssDialogue *d, size_t s) {
+	std::string get(const AssDialogue *d, size_t s) {
 		start = s;
 		return (d->*field).get().substr(s);
 	}
 
-	MatchState make_match_state(size_t s, size_t e, wxRegEx *r = nullptr) {
+	MatchState make_match_state(size_t s, size_t e, boost::regex *r = nullptr) {
 		return MatchState(s + start, e + start, r);
 	}
 };
 
 class skip_tags_accessor {
-	boost::flyweight<wxString> AssDialogue::*field;
+	boost::flyweight<std::string> AssDialogue::*field;
 	std::vector<std::pair<size_t, size_t>> blocks;
 	size_t start;
 
-	void parse_str(wxString const& str) {
+	void parse_str(std::string const& str) {
 		blocks.clear();
 
 		size_t ovr_start = bad_pos;
@@ -87,11 +86,11 @@ class skip_tags_accessor {
 public:
 	skip_tags_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)), start(0) { }
 
-	wxString get(const AssDialogue *d, size_t s) {
+	std::string get(const AssDialogue *d, size_t s) {
 		auto const& str = (d->*field).get();
 		parse_str(str);
 
-		wxString out;
+		std::string out;
 
 		size_t last = s;
 		for (auto const& block : blocks) {
@@ -108,7 +107,7 @@ public:
 		return out;
 	}
 
-	MatchState make_match_state(size_t s, size_t e, wxRegEx *r = nullptr) {
+	MatchState make_match_state(size_t s, size_t e, boost::regex *r = nullptr) {
 		s += start;
 		e += start;
 
@@ -140,31 +139,28 @@ public:
 };
 
 template<typename Accessor>
-matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Accessor&& a) {
+matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 	if (settings.use_regex) {
-		int flags = wxRE_ADVANCED;
+		int flags = boost::regex::perl;
 		if (!settings.match_case)
-			flags |= wxRE_ICASE;
+			flags |= boost::regex::icase;
 
-		regex->Compile(settings.find, flags);
-		if (!regex->IsValid())
-			throw BadRegex("Invalid syntax in regular expression", nullptr);
+		boost::regex regex(settings.find, flags);
 
 		return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
-			if (!regex->Matches(a.get(diag, start)))
+			boost::smatch result;
+			auto const& str = a.get(diag, start);
+			if (!regex_search(str, result, regex, start > 0 ? boost::match_not_bol : boost::match_default))
 				return MatchState();
-
-			size_t match_start, match_len;
-			regex->GetMatch(&match_start, &match_len, 0);
-			return a.make_match_state(match_start, match_start + match_len, regex);
+			return a.make_match_state(result.position(), result.position() + result.length(), &regex);
 		};
 	}
 
 	bool full_match_only = settings.exact_match;
 	bool match_case = settings.match_case;
-	wxString look_for = settings.find;
+	std::string look_for = settings.find;
 	if (!settings.match_case)
-		look_for.MakeLower();
+		boost::to_lower(look_for);
 
 	return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
 		auto str = a.get(diag, start);
@@ -172,10 +168,10 @@ matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Acces
 			return MatchState();
 
 		if (!match_case)
-			str.MakeLower();
+			boost::to_lower(str);
 
 		size_t pos = str.find(look_for);
-		if (pos == wxString::npos)
+		if (pos == std::string::npos)
 			return MatchState();
 
 		return a.make_match_state(pos, pos + look_for.size());
@@ -192,10 +188,10 @@ Iterator circular_next(Iterator it, Container& c) {
 
 }
 
-std::function<MatchState (const AssDialogue*, size_t)> SearchReplaceEngine::GetMatcher(SearchReplaceSettings const& settings, wxRegEx *regex) {
+std::function<MatchState (const AssDialogue*, size_t)> SearchReplaceEngine::GetMatcher(SearchReplaceSettings const& settings) {
 	if (settings.skip_tags)
-		return get_matcher(settings, regex, skip_tags_accessor(settings.field));
-	return get_matcher(settings, regex, noop_accessor(settings.field));
+		return get_matcher(settings, skip_tags_accessor(settings.field));
+	return get_matcher(settings, noop_accessor(settings.field));
 }
 
 SearchReplaceEngine::SearchReplaceEngine(agi::Context *c)
@@ -208,11 +204,10 @@ void SearchReplaceEngine::Replace(AssDialogue *diag, MatchState &ms) {
 	auto& diag_field = diag->*get_dialogue_field(settings.field);
 	auto text = diag_field.get();
 
-	wxString replacement = settings.replace_with;
+	std::string replacement = settings.replace_with;
 	if (ms.re) {
-		wxString to_replace = text.substr(ms.start, ms.end - ms.start);
-		ms.re->ReplaceFirst(&to_replace, settings.replace_with);
-		replacement = to_replace;
+		auto to_replace = text.substr(ms.start, ms.end - ms.start);
+		replacement = regex_replace(to_replace, *ms.re, replacement, boost::format_first_only);
 	}
 
 	diag_field = text.substr(0, ms.start) + replacement + text.substr(ms.end);
@@ -223,8 +218,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 	if (!initialized)
 		return false;
 
-	wxRegEx r;
-	auto matches = GetMatcher(settings, &r);
+	auto matches = GetMatcher(settings);
 
 	AssDialogue *line = context->selectionController->GetActiveLine();
 	auto it = context->ass->Line.iterator_to(*line);
@@ -302,8 +296,7 @@ bool SearchReplaceEngine::ReplaceAll() {
 
 	size_t count = 0;
 
-	wxRegEx r;
-	auto matches = GetMatcher(settings, &r);
+	auto matches = GetMatcher(settings);
 
 	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
@@ -315,12 +308,9 @@ bool SearchReplaceEngine::ReplaceAll() {
 		if (settings.use_regex) {
 			if (MatchState ms = matches(diag, 0)) {
 				auto& diag_field = diag->*get_dialogue_field(settings.field);
-				auto text = diag_field.get();
-				// A zero length match (such as '$') will always be replaced
-				// maxMatches times, which is almost certainly not what the user
-				// wanted, so limit it to one replacement in that situation
-				count += ms.re->Replace(&text, settings.replace_with, ms.start == ms.end);
-				diag_field = text;
+				std::string const& text = diag_field.get();
+				count += distance(boost::sregex_iterator(begin(text), end(text), *ms.re), boost::sregex_iterator());
+				diag_field = regex_replace(text, *ms.re, settings.replace_with);
 			}
 			continue;
 		}

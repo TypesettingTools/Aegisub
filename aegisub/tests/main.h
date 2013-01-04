@@ -11,24 +11,9 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
-
-/// @file main.h
-/// @brief Main header
-/// @ingroup main
 
 #include <gtest/gtest.h>
 
-/// A small macro to silence "unused variable" warnings.
-#define unused(x) x = x
-
 namespace {
-
-class libagi : public ::testing::Test {
-protected:
-    // place holder for future code placement
-};
-
-}  // namespace
-
+class libagi : public ::testing::Test { };
+}

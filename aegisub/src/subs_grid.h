@@ -34,8 +34,6 @@
 
 #include "base_grid.h"
 
-#include <vector>
-
 class SubtitlesGrid: public BaseGrid {
 public:
 	SubtitlesGrid(wxWindow *parent, agi::Context *context);

@@ -36,12 +36,10 @@
 #include <string>
 #include <vector>
 
-#include <wx/string.h>
-
 class AssStyle;
 
 class AssStyleStorage {
-	wxString storage_name;
+	std::string storage_name;
 	std::deque<AssStyle*> style;
 
 public:
@@ -77,5 +75,5 @@ public:
 
 	/// Load stored styles from a file
 	/// @param name Catalog name (note: not file name)
-	void Load(wxString const& name);
+	void Load(std::string const& name);
 };

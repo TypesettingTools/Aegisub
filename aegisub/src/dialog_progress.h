@@ -21,7 +21,6 @@
 #include <wx/timer.h>
 
 #include <libaegisub/background_runner.h>
-#include <libaegisub/scoped_ptr.h>
 
 class DialogProgressSink;
 class wxButton;
@@ -32,6 +31,7 @@ class wxTextCtrl;
 /// @class DialogProgress
 /// @brief Progress-bar dialog box for displaying during long operations
 class DialogProgress : public wxDialog, public agi::BackgroundRunner {
+	friend class DialogProgressSink;
 	DialogProgressSink *ps;
 
 	wxStaticText *title;
@@ -43,8 +43,6 @@ class DialogProgress : public wxDialog, public agi::BackgroundRunner {
 	wxTimer pulse_timer;
 
 	wxString pending_log;
-
-	void OnComplete(wxThreadEvent &evt);
 
 	void OnShow(wxShowEvent&);
 	void OnCancel(wxCommandEvent &);

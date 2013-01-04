@@ -23,25 +23,6 @@
 
 #include "dialog_shift_times.h"
 
-#include <algorithm>
-#include <vector>
-
-#include <wx/filefn.h>
-#include <wx/filename.h>
-#include <wx/listbox.h>
-#include <wx/radiobox.h>
-#include <wx/radiobut.h>
-#include <wx/sizer.h>
-#include <wx/textctrl.h>
-
-#include <libaegisub/io.h>
-#include <libaegisub/log.h>
-#include <libaegisub/of_type_adaptor.h>
-
-#include <libaegisub/cajun/elements.h>
-#include <libaegisub/cajun/reader.h>
-#include <libaegisub/cajun/writer.h>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
@@ -53,6 +34,24 @@
 #include "standard_paths.h"
 #include "timeedit_ctrl.h"
 #include "video_context.h"
+
+#include <libaegisub/fs.h>
+#include <libaegisub/io.h>
+#include <libaegisub/log.h>
+#include <libaegisub/of_type_adaptor.h>
+
+#include <libaegisub/cajun/elements.h>
+#include <libaegisub/cajun/reader.h>
+#include <libaegisub/cajun/writer.h>
+
+#include <algorithm>
+#include <vector>
+
+#include <wx/listbox.h>
+#include <wx/radiobox.h>
+#include <wx/radiobut.h>
+#include <wx/sizer.h>
+#include <wx/textctrl.h>
 
 static wxString get_history_string(json::Object &obj) {
 	wxString filename = to_wx(obj["filename"]);
@@ -99,7 +98,7 @@ static wxString get_history_string(json::Object &obj) {
 DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
-, history_filename(from_wx(StandardPaths::DecodePath("?user/shift_history.json")))
+, history_filename(StandardPaths::DecodePath("?user/shift_history.json"))
 , history(new json::Array)
 , timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 , selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))
@@ -235,7 +234,7 @@ void DialogShiftTimes::OnSelectedSetChanged() {
 
 
 void DialogShiftTimes::OnClear(wxCommandEvent &) {
-	wxRemoveFile(to_wx(history_filename));
+	agi::fs::Remove(history_filename);
 	history_box->Clear();
 	history->clear();
 }
@@ -256,7 +255,7 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 	json::Object& obj = (*history)[entry];
 	if (obj["is by time"]) {
-		shift_time->SetTime(AssTime(to_wx(obj["amount"])));
+		shift_time->SetTime(AssTime((std::string)obj["amount"]));
 		shift_by_time->SetValue(true);
 		OnByTime(evt);
 	}
@@ -279,7 +278,7 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	json::Object new_entry;
-	new_entry["filename"] = from_wx(wxFileName(context->ass->filename).GetFullName());
+	new_entry["filename"] = context->ass->filename.filename().string();
 	new_entry["is by time"] = shift_by_time->GetValue();
 	new_entry["is backward"] = shift_backward->GetValue();
 	new_entry["amount"] = from_wx(shift_by_time->GetValue() ? shift_time->GetValue() : shift_frames->GetValue());
@@ -292,7 +291,7 @@ void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	try {
 		json::Writer::Write(*history, agi::io::Save(history_filename).Get());
 	}
-	catch (agi::FileSystemError const& e) {
+	catch (agi::fs::FileSystemError const& e) {
 		LOG_E("dialog_shift_times/save_history") << "Cannot save shift times history: " << e.GetChainedMessage();
 	}
 }
@@ -302,7 +301,7 @@ void DialogShiftTimes::LoadHistory() {
 	history_box->Freeze();
 
 	try {
-		agi::scoped_ptr<std::istream> file(agi::io::Open(history_filename));
+		std::unique_ptr<std::istream> file(agi::io::Open(history_filename));
 		json::UnknownElement root;
 		json::Reader::Read(root, *file);
 		*history = root;
@@ -310,7 +309,7 @@ void DialogShiftTimes::LoadHistory() {
 		for (auto& history_entry : *history)
 			history_box->Append(get_history_string(history_entry));
 	}
-	catch (agi::FileSystemError const& e) {
+	catch (agi::fs::FileSystemError const& e) {
 		LOG_D("dialog_shift_times/load_history") << "Cannot load shift times history: " << e.GetChainedMessage();
 	}
 	catch (...) {

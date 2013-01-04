@@ -24,7 +24,7 @@
 
 #include "gl_wrap.h"
 
-#include <wx/msgdlg.h>
+#include <wx/colour.h>
 
 #ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>

@@ -35,15 +35,17 @@
 #include "config.h"
 
 #ifdef WITH_CSRI
-
-#include <wx/thread.h>
-
 #include "subtitles_provider_csri.h"
 
 #include "ass_file.h"
-#include "text_file_writer.h"
+#include "standard_paths.h"
 #include "video_context.h"
 #include "video_frame.h"
+
+#include <libaegisub/fs.h>
+
+#include <boost/filesystem.hpp>
+#include <mutex>
 
 #ifdef WIN32
 #define CSRIAPI
@@ -52,13 +54,15 @@
 #include <csri/csri.h>
 #endif
 
-static wxMutex csri_mutex;
+// CSRI renderers are not required to be thread safe (and VSFilter very much
+// is not)
+static std::mutex csri_mutex;
 
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
 : can_open_mem(true)
-, instance(0, csri_close)
+, instance(nullptr, csri_close)
 {
-	wxMutexLocker lock(csri_mutex);
+	std::lock_guard<std::mutex> lock(csri_mutex);
 
 	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
 		if (type == csri_renderer_info(cur)->name) {
@@ -75,7 +79,7 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
 }
 
 CSRISubtitlesProvider::~CSRISubtitlesProvider() {
-	if (!tempfile.empty()) wxRemoveFile(tempfile);
+	agi::fs::Remove(tempfile);
 }
 
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
@@ -83,28 +87,22 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 		std::vector<char> data;
 		subs->SaveMemory(data);
 
-		wxMutexLocker lock(csri_mutex);
+		std::lock_guard<std::mutex> lock(csri_mutex);
 		instance = csri_open_mem(renderer, &data[0], data.size(), nullptr);
 	}
-	// Open from disk
 	else {
-		if (tempfile.empty()) {
-			tempfile = wxFileName::CreateTempFileName("aegisub");
-			wxRemoveFile(tempfile);
-			tempfile += ".ass";
-		}
-		subs->Save(tempfile, false, false, wxSTRING_ENCODING);
+		if (tempfile.empty())
+			tempfile = unique_path(StandardPaths::DecodePath("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));
+		subs->Save(tempfile, false, false, "utf-8");
 
-		wxMutexLocker lock(csri_mutex);
-		instance = csri_open_file(renderer, tempfile.utf8_str(), nullptr);
+		std::lock_guard<std::mutex> lock(csri_mutex);
+		instance = csri_open_file(renderer, tempfile.string().c_str(), nullptr);
 	}
 }
 
 void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
-	// Check if CSRI loaded properly
 	if (!instance) return;
 
-	// Load data into frame
 	csri_frame frame;
 	if (dst.flipped) {
 		frame.planes[0] = dst.data + (dst.h-1) * dst.pitch;
@@ -116,18 +114,11 @@ void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
 	}
 	frame.pixfmt = CSRI_F_BGR_;
 
-	// Set format
-	csri_fmt format;
-	format.width = dst.w;
-	format.height = dst.h;
-	format.pixfmt = frame.pixfmt;
+	csri_fmt format = { frame.pixfmt, dst.w, dst.h };
 
-	wxMutexLocker lock(csri_mutex);
-	int error = csri_request_fmt(instance, &format);
-	if (error) return;
-
-	// Render
-	csri_render(instance, &frame, time);
+	std::lock_guard<std::mutex> lock(csri_mutex);
+	if (!csri_request_fmt(instance, &format))
+		csri_render(instance, &frame, time);
 }
 
 std::vector<std::string> CSRISubtitlesProvider::GetSubTypes() {

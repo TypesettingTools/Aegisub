@@ -33,12 +33,14 @@
 ///
 
 #ifdef WITH_CSRI
-
 #include "include/aegisub/subtitles_provider.h"
 
 #include <vector>
 
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/scoped_ptr.h>
+
+#include <boost/filesystem/path.hpp>
 
 typedef void csri_rend;
 typedef void csri_inst;
@@ -53,13 +55,13 @@ class CSRISubtitlesProvider : public SubtitlesProvider {
 	bool can_open_mem;
 
 	/// Name of the file passed to renderers with can_open_mem false
-	wxString tempfile;
+	agi::fs::path tempfile;
 public:
 	CSRISubtitlesProvider(std::string subType);
 	~CSRISubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs);
-	void DrawSubtitles(AegiVideoFrame &dst,double time);
+	void DrawSubtitles(AegiVideoFrame &dst, double time);
 
 	static std::vector<std::string> GetSubTypes();
 };

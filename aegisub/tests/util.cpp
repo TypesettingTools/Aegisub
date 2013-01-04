@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -12,25 +12,14 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// $Id$
+// Aegisub Project http://www.aegisub.org/
 
-/// @file util.cpp
-/// @brief Common utilities used in tests.
-/// @ingroup util common
+#include "util.h"
 
 #include <fstream>
 #include <sstream>
-#include "util.h"
 
 namespace util {
-
-void copy(const std::string &from, const std::string &to) {
-	std::ifstream ifs(from.c_str(), std::ios::binary);
-	std::ofstream ofs(to.c_str(), std::ios::binary);
-
-	ofs << ifs.rdbuf();
-}
-
 bool compare(const std::string &file1, const std::string &file2) {
 	std::stringstream ss1, ss2;
 	std::ifstream if1(file1.c_str(), std::ios::binary), if2(file2.c_str(), std::ios::binary);
@@ -39,6 +28,4 @@ bool compare(const std::string &file1, const std::string &file2) {
 	return ss1.str() == ss2.str();
 }
 
-} // namespace util
-
-
+}

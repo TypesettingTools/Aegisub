@@ -33,10 +33,13 @@
 ///
 
 #include <boost/container/list.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/intrusive/list.hpp>
 #include <set>
 #include <vector>
+#include <wx/string.h>
 
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
 #include "ass_entry.h"
@@ -63,7 +66,7 @@ class AssFile {
 	/// A set of changes has been committed to the file (AssFile::CommitType)
 	agi::signal::Signal<int, std::set<const AssEntry*> const&> AnnounceCommit;
 	/// A new file has been opened (filename)
-	agi::signal::Signal<wxString> FileOpen;
+	agi::signal::Signal<agi::fs::path> FileOpen;
 	/// The file is about to be saved
 	/// This signal is intended for adding metadata such as video filename,
 	/// frame number, etc. Ideally this would all be done immediately rather
@@ -74,7 +77,7 @@ public:
 	/// The lines in the file
 	EntryList Line;
 	/// The filename of this file, if any
-	wxString filename;
+	agi::fs::path filename;
 	/// Is the file loaded?
 	bool loaded;
 
@@ -84,9 +87,7 @@ public:
 	~AssFile();
 
 	/// Does the file have unsaved changes?
-	bool IsModified() const {return commitId != savedCommitId; };
-	/// Clear the file
-	void Clear();
+	bool IsModified() const { return commitId != savedCommitId; };
 
 	/// @brief Load default file
 	/// @param defline Add a blank line to the file
@@ -94,7 +95,7 @@ public:
 	/// Add a line to the file at the end of the appropriate section
 	void InsertLine(AssEntry *line);
 	/// Attach a file to the ass file
-	void InsertAttachment(wxString filename);
+	void InsertAttachment(agi::fs::path const& filename);
 	/// Get the names of all of the styles available
 	std::vector<std::string> GetStyles() const;
 	/// @brief Get a style by name
@@ -107,24 +108,24 @@ public:
 	/// @brief Load from a file
 	/// @param file File name
 	/// @param charset Character set of file or empty to autodetect
-	void Load(const wxString &file, wxString const& charset="");
+	void Load(agi::fs::path const& file, std::string const& charset="");
 
 	/// @brief Save to a file
 	/// @param file Path to save to
 	/// @param setfilename Should the filename be changed to the passed path?
 	/// @param addToRecent Should the file be added to the MRU list?
 	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means "App/Save Charset")
-	void Save(wxString file,bool setfilename=false,bool addToRecent=true,const wxString encoding="");
+	void Save(agi::fs::path const& file, bool setfilename=false, bool addToRecent=true, std::string const& encoding="");
 
 	/// @brief Autosave the file if there have been any chances since the last autosave
 	/// @return File name used or empty if no save was performed
-	wxString AutoSave();
+	agi::fs::path AutoSave();
 
 	/// @brief Save to a memory buffer. Used for subtitle providers which support it
 	/// @param[out] dst Destination vector
 	void SaveMemory(std::vector<char> &dst);
 	/// Add file name to the MRU list
-	void AddToRecent(wxString const& file) const;
+	void AddToRecent(agi::fs::path const& file) const;
 	/// Can the file be saved in its current format?
 	bool CanSave() const;
 
@@ -133,11 +134,11 @@ public:
 	/// @param[in] h Height
 	void GetResolution(int &w,int &h) const;
 	/// Get the value in a [Script Info] key as int, or 0 if it is not present
-	int GetScriptInfoAsInt(wxString const& key) const;
+	int GetScriptInfoAsInt(std::string const& key) const;
 	/// Get the value in a [Script Info] key as string.
-	wxString GetScriptInfo(wxString key) const;
+	std::string GetScriptInfo(std::string const& key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
-	void SetScriptInfo(wxString const& key, wxString const& value);
+	void SetScriptInfo(std::string const& key, std::string const& value);
 
 	/// Type of changes made in a commit
 	enum CommitType {

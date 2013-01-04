@@ -134,7 +134,6 @@
     <ClInclude Include="$(SrcDir)avisynth_wrap.h" />
     <ClInclude Include="$(SrcDir)base_grid.h" />
     <ClInclude Include="$(SrcDir)block_cache.h" />
-    <ClInclude Include="$(SrcDir)charset_conv.h" />
     <ClInclude Include="$(SrcDir)charset_detect.h" />
     <ClInclude Include="$(SrcDir)colorspace.h" />
     <ClInclude Include="$(SrcDir)colour_button.h" />
@@ -321,7 +320,6 @@
     <ClCompile Include="$(SrcDir)auto4_lua_scriptreader.cpp" />
     <ClCompile Include="$(SrcDir)avisynth_wrap.cpp" />
     <ClCompile Include="$(SrcDir)base_grid.cpp" />
-    <ClCompile Include="$(SrcDir)charset_conv.cpp" />
     <ClCompile Include="$(SrcDir)charset_detect.cpp" />
     <ClCompile Include="$(SrcDir)colorspace.cpp" />
     <ClCompile Include="$(SrcDir)colour_button.cpp" />

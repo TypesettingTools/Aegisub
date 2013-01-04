@@ -34,19 +34,6 @@
 
 #include "config.h"
 
-#include <functional>
-#include <unordered_set>
-
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/hashset.h>
-#include <wx/radiobut.h>
-#include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/spinctrl.h>
-
 #include "subs_edit_box.h"
 
 #include "ass_dialogue.h"
@@ -70,6 +57,19 @@
 
 #include <libaegisub/of_type_adaptor.h>
 
+#include <boost/lexical_cast.hpp>
+#include <functional>
+#include <unordered_set>
+
+#include <wx/bmpbuttn.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/hashset.h>
+#include <wx/radiobut.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+
 namespace {
 
 /// Work around wxGTK's fondness for generating events from ChangeValue
@@ -92,7 +92,7 @@ void time_edit_char_hook(wxKeyEvent &event) {
 
 SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxRAISED_BORDER, "SubsEditBox")
-, line(0)
+, line(nullptr)
 , button_bar_split(true)
 , controls_enabled(true)
 , c(context)
@@ -232,9 +232,9 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 	middle_left_sizer->Add(ctrl, wxSizerFlags().Center());
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) {
-		wxString value = ctrl->GetValue();
-		SetSelectedRows([&](AssDialogue *d) { d->SetMarginString(value, margin); }, commit_msg, AssFile::COMMIT_DIAG_META);
-		if (line) change_value(ctrl, line->GetMarginString(margin));
+		int value = mid(0, boost::lexical_cast<int>(from_wx(ctrl->GetValue())), 9999);
+		SetSelectedRows([&](AssDialogue *d) { d->Margin[margin] = value; }, commit_msg, AssFile::COMMIT_DIAG_META);
+		if (line) change_value(ctrl, to_wx(line->GetMarginString(margin)));
 	}, ctrl->GetId());
 
 	return ctrl;
@@ -305,7 +305,7 @@ void SubsEditBox::OnCommit(int type) {
 		return;
 	}
 	else if (type & AssFile::COMMIT_STYLES)
-		style_box->Select(style_box->FindString(line->Style));
+		style_box->Select(style_box->FindString(to_wx(line->Style)));
 
 	if (!(type ^ AssFile::COMMIT_ORDER)) return;
 
@@ -319,38 +319,39 @@ void SubsEditBox::OnCommit(int type) {
 	}
 
 	if (type & AssFile::COMMIT_DIAG_TEXT) {
-		edit_ctrl->SetTextTo(line->Text);
+		edit_ctrl->SetTextTo(to_wx(line->Text));
 		UpdateCharacterCount(line->Text);
 	}
 
 	if (type & AssFile::COMMIT_DIAG_META) {
 		layer->SetValue(line->Layer);
 		for (size_t i = 0; i < margin.size(); ++i)
-			change_value(margin[i], line->GetMarginString(i));
+			change_value(margin[i], to_wx(line->GetMarginString(i)));
 		comment_box->SetValue(line->Comment);
-		style_box->Select(style_box->FindString(line->Style));
+		style_box->Select(style_box->FindString(to_wx(line->Style)));
 
 		PopulateList(effect_box, &AssDialogue::Effect);
-		effect_box->ChangeValue(line->Effect);
-		effect_box->SetStringSelection(line->Effect);
+		effect_box->ChangeValue(to_wx(line->Effect));
+		effect_box->SetStringSelection(to_wx(line->Effect));
 
 		PopulateList(actor_box, &AssDialogue::Actor);
-		actor_box->ChangeValue(line->Actor);
-		actor_box->SetStringSelection(line->Actor);
-		edit_ctrl->SetTextTo(line->Text);
+		actor_box->ChangeValue(to_wx(line->Actor));
+		actor_box->SetStringSelection(to_wx(line->Actor));
+		edit_ctrl->SetTextTo(to_wx(line->Text));
 	}
 }
 
-void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<wxString> AssDialogue::*field) {
+void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<std::string> AssDialogue::*field) {
 	wxEventBlocker blocker(this);
 
-	std::unordered_set<wxString, wxStringHash, wxStringEqual> values;
+	std::unordered_set<std::string> values;
 	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>())
 		values.insert(diag->*field);
 	values.erase("");
 	wxArrayString arrstr;
 	arrstr.reserve(values.size());
-	copy(values.begin(), values.end(), std::back_inserter(arrstr));
+	transform(values.begin(), values.end(), std::back_inserter(arrstr),
+		(wxString (*)(std::string const&))to_wx);
 
 	combo->Freeze();
 	long pos = combo->GetInsertionPoint();
@@ -384,9 +385,9 @@ void SubsEditBox::OnSelectedSetChanged(const SubtitleSelection &, const Subtitle
 	initial_times.clear();
 }
 
-void SubsEditBox::OnLineInitialTextChanged(wxString const& new_text) {
+void SubsEditBox::OnLineInitialTextChanged(std::string const& new_text) {
 	if (split_box->IsChecked())
-		secondary_editor->SetValue(new_text);
+		secondary_editor->SetValue(to_wx(new_text));
 }
 
 void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
@@ -408,7 +409,7 @@ void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
 }
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {
-	if (line && edit_ctrl->GetText() != line->Text) {
+	if (line && edit_ctrl->GetTextRaw().data() != line->Text.get()) {
 		if (event.GetModificationType() & wxSTC_STARTACTION)
 			commit_id = -1;
 		CommitText(_("modify text"));
@@ -434,8 +435,15 @@ void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString const
 	SetSelectedRows([&](AssDialogue *d) { d->*field = value; }, desc, type, amend);
 }
 
+template<class T>
+void SubsEditBox::SetSelectedRows(T AssDialogue::*field, wxString const& value, wxString const& desc, int type, bool amend) {
+	boost::flyweight<std::string> conv_value(from_wx(value));
+	SetSelectedRows([&](AssDialogue *d) { d->*field = conv_value; }, desc, type, amend);
+}
+
 void SubsEditBox::CommitText(wxString const& desc) {
-	SetSelectedRows(&AssDialogue::Text, boost::flyweight<wxString>(edit_ctrl->GetText()), desc, AssFile::COMMIT_DIAG_TEXT, true);
+	auto data = edit_ctrl->GetTextRaw();
+	SetSelectedRows(&AssDialogue::Text, boost::flyweight<std::string>(data.data(), data.length()), desc, AssFile::COMMIT_DIAG_TEXT, true);
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
@@ -534,16 +542,16 @@ void SubsEditBox::OnSplit(wxCommandEvent&) {
 	Thaw();
 
 	if (split_box->IsChecked())
-		secondary_editor->SetValue(c->initialLineState->GetInitialText());
+		secondary_editor->SetValue(to_wx(c->initialLineState->GetInitialText()));
 }
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Style,  boost::flyweight<wxString>(style_box->GetValue()), _("style change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Style, style_box->GetValue(), _("style change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
-	SetSelectedRows(&AssDialogue::Actor, boost::flyweight<wxString>(actor_box->GetValue()), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(&AssDialogue::Actor, actor_box->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(actor_box, &AssDialogue::Actor);
 }
 
@@ -553,7 +561,7 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
-	SetSelectedRows(&AssDialogue::Effect, boost::flyweight<wxString>(effect_box->GetValue()), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(&AssDialogue::Effect, effect_box->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(effect_box, &AssDialogue::Effect);
 }
 
@@ -566,7 +574,7 @@ void SubsEditBox::CallCommand(const char *cmd_name) {
 	edit_ctrl->SetFocus();
 }
 
-void SubsEditBox::UpdateCharacterCount(wxString const& text) {
+void SubsEditBox::UpdateCharacterCount(std::string const& text) {
 	size_t length = MaxLineLength(text);
 	char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
 	size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();

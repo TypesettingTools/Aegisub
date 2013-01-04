@@ -17,7 +17,15 @@
 /// @see preferences_base.cpp
 /// @ingroup configuration_ui
 
+#include <wx/panel.h>
+#include <wx/scrolwin.h>
+
 class Preferences;
+class wxControl;
+class wxFlexGridSizer;
+class wxSizer;
+class wxString;
+class wxTreebook;
 
 class OptionPage : public wxScrolled<wxPanel> {
 	template<class T>
@@ -31,7 +39,6 @@ protected:
 
 	wxSizer *sizer;
 	Preferences *parent;
-
 
 	wxFlexGridSizer* PageSizer(wxString name);
 

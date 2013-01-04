@@ -38,13 +38,15 @@
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
+#include <boost/algorithm/string/find.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/msgdlg.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
-#include <wx/regex.h>
+#include <wx/sizer.h>
 #include <wx/textctrl.h>
 
 enum {
@@ -60,12 +62,10 @@ enum {
 	MODE_REGEXP
 };
 
-static std::set<AssDialogue*> process(wxString const& match_text, bool match_case, int mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
-	wxRegEx re;
-
+static std::set<AssDialogue*> process(std::string const& match_text, bool match_case, int mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
 	SearchReplaceSettings settings = {
 		match_text,
-		wxString(),
+		std::string(),
 		static_cast<SearchReplaceSettings::Field>(field_n),
 		SearchReplaceSettings::Limit::ALL,
 		match_case,
@@ -75,7 +75,7 @@ static std::set<AssDialogue*> process(wxString const& match_text, bool match_cas
 		mode == MODE_EXACT
 	};
 
-	auto predicate = SearchReplaceEngine::GetMatcher(settings, &re);
+	auto predicate = SearchReplaceEngine::GetMatcher(settings);
 
 	std::set<AssDialogue*> matches;
 	for (auto diag : ass->Line | agi::of_type<AssDialogue>()) {
@@ -173,7 +173,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 
 	try {
 		matches = process(
-			match_text->GetValue(), case_sensitive->IsChecked(),
+			from_wx(match_text->GetValue()), case_sensitive->IsChecked(),
 			match_mode->GetSelection(), select_unmatching_lines->GetValue(),
 			apply_to_comments->IsChecked(), apply_to_dialogue->IsChecked(),
 			dialogue_field->GetSelection(), con->ass);

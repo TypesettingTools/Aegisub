@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 
@@ -34,7 +21,7 @@
 
 #pragma once
 
-#include <wx/string.h>
+#include <string>
 
 #include <libaegisub/vfr.h>
 
@@ -44,7 +31,7 @@ class AssTime {
 
 public:
 	AssTime(int ms = 0);
-	AssTime(wxString const& text);
+	AssTime(std::string const& text);
 
 	/// Get millisecond, rounded to centisecond precision
 	operator int() const { return time / 10 * 10; }
@@ -57,7 +44,7 @@ public:
 
 	/// Return the time as a string
 	/// @param ms Use milliseconds precision, for non-ASS formats
-	wxString GetAssFormated(bool ms=false) const;
+	std::string GetAssFormated(bool ms=false) const;
 };
 
 /// @class SmpteFormatter
@@ -66,13 +53,13 @@ class SmpteFormatter {
 	/// Frame rate to use
 	agi::vfr::Framerate fps;
 	/// Separator character
-	char sep;
+	std::string sep;
 
 public:
-	SmpteFormatter(agi::vfr::Framerate fps, char sep=':');
+	SmpteFormatter(agi::vfr::Framerate fps, std::string const& sep=":");
 
 	/// Convert an AssTime to a SMPTE timecode
-	wxString ToSMPTE(AssTime time) const;
+	std::string ToSMPTE(AssTime time) const;
 	/// Convert a SMPTE timecode to an AssTime
-	AssTime FromSMPTE(wxString const& str) const;
+	AssTime FromSMPTE(std::string const& str) const;
 };

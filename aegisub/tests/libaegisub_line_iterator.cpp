@@ -11,12 +11,6 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
-
-/// @file libaegisub_line_iterator.cpp
-/// @brief agi::line_iterator tests
-/// @ingroup 
 
 #include <libaegisub/line_iterator.h>
 

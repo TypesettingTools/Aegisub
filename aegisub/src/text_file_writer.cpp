@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 
@@ -34,26 +21,28 @@
 
 #include "config.h"
 
-#include <fstream>
-
-#include <libaegisub/io.h>
-
-#include "charset_conv.h"
-#include "compat.h"
-#include "options.h"
 #include "text_file_writer.h"
 
-TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
-: file(new agi::io::Save(from_wx(filename), true))
+#include "options.h"
+
+#include <libaegisub/io.h>
+#include <libaegisub/charset_conv.h>
+
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/filesystem.hpp>
+
+TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
+: file(new agi::io::Save(filename, true))
 , conv()
 {
-	if (encoding.empty()) encoding = to_wx(OPT_GET("App/Save Charset")->GetString());
-	if (encoding.Lower() != wxSTRING_ENCODING)
-		conv.reset(new agi::charset::IconvWrapper(wxSTRING_ENCODING, encoding.utf8_str(), true));
+	if (encoding.empty())
+		encoding = OPT_GET("App/Save Charset")->GetString();
+	if (boost::iequals(encoding, "utf-8"))
+		conv.reset(new agi::charset::IconvWrapper("utf-8", encoding.c_str(), true));
 
-	// Write the BOM
 	try {
-		WriteLineToFile(L"\uFEFF", false);
+		// Write the BOM
+		WriteLineToFile("\xEF\xBB\xBF", false);
 	}
 	catch (agi::charset::ConversionFailure&) {
 		// If the BOM could not be converted to the target encoding it isn't needed
@@ -61,29 +50,18 @@ TextFileWriter::TextFileWriter(wxString const& filename, wxString encoding)
 }
 
 TextFileWriter::~TextFileWriter() {
-	// Explicit empty destructor required with an auto_ptr to an incomplete class
+	// Explicit empty destructor required with a unique_ptr to an incomplete class
 }
 
-void TextFileWriter::WriteLineToFile(wxString line, bool addLineBreak) {
+void TextFileWriter::WriteLineToFile(std::string&& line, bool addLineBreak) {
+	if (addLineBreak)
 #ifdef _WIN32
-	if (addLineBreak) line += "\r\n";
+		line += "\r\n";
 #else
-	if (addLineBreak) line += "\n";
+		line += "\n";
 #endif
 
-	// On non-windows this cast does nothing
-	const char *data = reinterpret_cast<const char *>(line.wx_str());
-#if wxUSE_UNICODE_UTF8
-	size_t len = line.utf8_length();
-#else
-	size_t len = line.length() * sizeof(wxStringCharType);
-#endif
-
-	if (conv) {
-		std::string buf = conv->Convert(std::string(data, len));
-		file->Get().write(buf.data(), buf.size());
-	}
-	else {
-		file->Get().write(data, len);
-	}
+	if (conv)
+		line = conv->Convert(line);
+	file->Get().write(line.data(), line.size());
 }

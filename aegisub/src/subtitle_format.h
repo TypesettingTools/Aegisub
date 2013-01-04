@@ -34,24 +34,23 @@
 
 #pragma once
 
-#include <vector>
-
-#include <wx/arrstr.h>
-#include <wx/string.h>
-
 #include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
+
+#include <string>
+#include <vector>
 
 class AssEntry;
 class AssFile;
 namespace agi { namespace vfr { class Framerate; } }
 
 class SubtitleFormat {
-	wxString name;
+	std::string name;
 
 	/// Get this format's wildcards for a load dialog
-	virtual wxArrayString GetReadWildcards() const { return wxArrayString(); }
+	virtual std::vector<std::string> GetReadWildcards() const { return std::vector<std::string>(); }
 	/// Get this format's wildcards for a save dialog
-	virtual wxArrayString GetWriteWildcards() const { return wxArrayString(); }
+	virtual std::vector<std::string> GetWriteWildcards() const { return std::vector<std::string>(); }
 
 	/// List of loaded subtitle formats
 	static std::vector<SubtitleFormat*> formats;
@@ -62,7 +61,7 @@ public:
 	/// Convert newlines to the specified character(s)
 	/// @param lineEnd newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
-	static void ConvertNewlines(AssFile &file, wxString const& newline, bool mergeLineBreaks = true);
+	static void ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
 	static void StripComments(AssFile &file);
 	/// Remove everything but the dialogue lines
@@ -82,25 +81,25 @@ public:
 	/// Constructor
 	/// @param Subtitle format name
 	/// @note Automatically registers the format
-	SubtitleFormat(wxString const& name);
+	SubtitleFormat(std::string const& name);
 	/// Destructor
 	/// @note Automatically unregisters the format
 	virtual ~SubtitleFormat();
 
 	/// Get this format's name
-	wxString GetName() const { return name; }
+	std::string const& GetName() const { return name; }
 
 	/// @brief Check if the given file can be read by this format
 	///
 	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
-	virtual bool CanReadFile(wxString const& filename) const;
+	virtual bool CanReadFile(agi::fs::path const& filename) const;
 
 	/// @brief Check if the given file can be written by this format
 	///
 	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
-	virtual bool CanWriteFile(wxString const& filename) const;
+	virtual bool CanWriteFile(agi::fs::path const& filename) const;
 
 	/// @brief Check if the given subtitles can be losslessly written by this format
 	///
@@ -112,22 +111,22 @@ public:
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void ReadFile(AssFile *target, wxString const& filename, wxString const& forceEncoding="") const { }
+	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& forceEncoding="") const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
 	/// @param filename File to write to
 	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding="") const { }
+	virtual void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding="") const { }
 
 	/// Get the wildcards for a save or load dialog
 	/// @param mode 0: load 1: save
-	static wxString GetWildcards(int mode);
+	static std::string GetWildcards(int mode);
 
 	/// Get a subtitle format that can read the given file or nullptr if none can
-	static const SubtitleFormat *GetReader(wxString const& filename);
+	static const SubtitleFormat *GetReader(agi::fs::path const& filename);
 	/// Get a subtitle format that can write the given file or nullptr if none can
-	static const SubtitleFormat *GetWriter(wxString const& filename);
+	static const SubtitleFormat *GetWriter(agi::fs::path const& filename);
 	/// Initialize subtitle formats
 	static void LoadFormats();
 	/// Deinitialize subtitle formats

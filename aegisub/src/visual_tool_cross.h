@@ -34,7 +34,7 @@ class VisualToolCross : public VisualTool<VisualDraggableFeature> {
 
 	void OnDoubleClick();
 	void Draw();
-	wxString Text(Vector2D v);
+	std::string Text(Vector2D v);
 public:
 	VisualToolCross(VideoDisplay *parent, agi::Context *context);
 	~VisualToolCross();

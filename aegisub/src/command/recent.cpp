@@ -34,11 +34,6 @@
 
 #include "../config.h"
 
-#include <sstream>
-
-#include <wx/event.h>
-#include <wx/msgdlg.h>
-
 #include "command.h"
 
 #include "../audio_controller.h"
@@ -48,6 +43,9 @@
 #include "../main.h"
 #include "../options.h"
 #include "../video_context.h"
+
+#include <wx/event.h>
+#include <wx/msgdlg.h>
 
 namespace {
 	using cmd::Command;
@@ -68,7 +66,7 @@ struct recent_audio_entry : public Command {
 
 	void operator()(agi::Context *c, int id) {
 		try {
-			c->audioController->OpenAudio(to_wx(config::mru->GetEntry("Audio", id)));
+			c->audioController->OpenAudio(config::mru->GetEntry("Audio", id));
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
@@ -84,7 +82,7 @@ struct recent_keyframes_entry : public Command {
 	STR_HELP("Open recent keyframes")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->LoadKeyframes(to_wx(config::mru->GetEntry("Keyframes", id)));
+		c->videoController->LoadKeyframes(config::mru->GetEntry("Keyframes", id));
 	}
 };
 
@@ -95,7 +93,7 @@ struct recent_subtitle_entry : public Command {
 	STR_HELP("Open recent subtitles")
 
 	void operator()(agi::Context *c, int id) {
-		wxGetApp().frame->LoadSubtitles(to_wx(config::mru->GetEntry("Subtitle", id)));
+		wxGetApp().frame->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
 	}
 };
 
@@ -106,7 +104,7 @@ struct recent_timecodes_entry : public Command {
 	STR_HELP("Open recent timecodes")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->LoadTimecodes(to_wx(config::mru->GetEntry("Timecodes", id)));
+		c->videoController->LoadTimecodes(config::mru->GetEntry("Timecodes", id));
 	}
 };
 
@@ -117,7 +115,7 @@ struct recent_video_entry : public Command {
 	STR_HELP("Open recent videos")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->SetVideo(to_wx(config::mru->GetEntry("Video", id)));
+		c->videoController->SetVideo(config::mru->GetEntry("Video", id));
 	}
 };
 
@@ -132,12 +130,7 @@ public:
 	void operator()(agi::Context *c) {
 		T::operator()(c, id);
 	}
-	mru_wrapper(int id) : id(id) {
-		std::stringstream ss;
-		ss << T::name();
-		ss << id;
-		full_name = ss.str();
-	}
+	mru_wrapper(int id) : id(id) , full_name(T::name() + std::to_string(id)) { }
 };
 }
 /// @}

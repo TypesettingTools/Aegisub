@@ -16,12 +16,17 @@
 /// @brief Logging
 /// @ingroup libaegisub
 
-#include <cstdint>
+#include <libaegisub/fs_fwd.h>
+#include <libaegisub/types.h>
 
+#include <boost/filesystem/path.hpp>
+#include <cstdint>
 #include <cstdio>
 #include <ctime>
 #include <deque>
 #include <memory>
+#include <vector>
+
 #ifdef __DEPRECATED // Dodge GCC warnings
 # undef __DEPRECATED
 # include <strstream>
@@ -29,8 +34,6 @@
 #else
 # include <strstream>
 #endif
-#include <vector>
-#include <libaegisub/types.h>
 
 // These macros below aren't a perm solution, it will depend on how annoying they are through
 // actual usage, and also depends on msvc support.
@@ -144,7 +147,7 @@ class JsonEmitter : public Emitter {
 	agi_timeval time_start;
 
 	/// Directory to write the log file in
-	std::string directory;
+	agi::fs::path directory;
 
 	/// Parent sink to get messages from
 	const agi::log::LogSink *log_sink;
@@ -152,7 +155,7 @@ public:
 	/// Constructor
 	/// @param directory Directory to write the log file in
 	/// @param log_sink Parent sink to get messages from
-	JsonEmitter(std::string const& directory, const agi::log::LogSink *log_sink);
+	JsonEmitter(agi::fs::path const& directory, const agi::log::LogSink *log_sink);
 	/// Destructor
 	~JsonEmitter();
 

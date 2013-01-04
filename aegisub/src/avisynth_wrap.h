@@ -34,12 +34,15 @@
 
 #ifdef WITH_AVISYNTH
 
+#include <libaegisub/exception.h>
+
 class IScriptEnvironment;
+namespace std { class mutex; }
 
 class AviSynthWrapper {
 	AviSynthWrapper(AviSynthWrapper const&);
 public:
-	wxMutex& GetMutex() const;
+	std::mutex& GetMutex() const;
 	IScriptEnvironment *GetEnv() const;
 
 	AviSynthWrapper();

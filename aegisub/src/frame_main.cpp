@@ -35,16 +35,10 @@
 
 #include "frame_main.h"
 
-#include <wx/clipbrd.h>
-#include <wx/dnd.h>
-#include <wx/filename.h>
-#include <wx/image.h>
-#include <wx/msgdlg.h>
-#include <wx/statline.h>
-#include <wx/sysopt.h>
-#include <wx/tokenzr.h>
-
+#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/menu.h"
@@ -66,7 +60,6 @@
 #include "main.h"
 #include "options.h"
 #include "search_replace_engine.h"
-#include "standard_paths.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
@@ -79,10 +72,18 @@
 #include "video_provider_manager.h"
 #include "video_slider.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+
+#include <wx/dnd.h>
+#include <wx/filename.h>
+#include <wx/image.h>
+#include <wx/msgdlg.h>
+#include <wx/statline.h>
+#include <wx/sysopt.h>
+
 enum {
 	ID_APP_TIMER_AUTOSAVE					= 12001,
-	ID_APP_TIMER_STATUSCLEAR				= 12002,
-	ID_SASH_MAIN_AUDIO						= 14001
+	ID_APP_TIMER_STATUSCLEAR				= 12002
 };
 
 #ifdef WITH_STARTUPLOG
@@ -95,7 +96,7 @@ static void autosave_timer_changed(wxTimer *timer);
 
 wxDEFINE_EVENT(FILE_LIST_DROPPED, wxThreadEvent);
 
-static void get_files_to_load(wxArrayString const& list, wxString &subs, wxString &audio, wxString &video) {
+static void get_files_to_load(wxArrayString const& list, std::string &subs, std::string &audio, std::string &video) {
 	// Keep these lists sorted
 
 	// Video formats
@@ -155,11 +156,11 @@ static void get_files_to_load(wxArrayString const& list, wxString &subs, wxStrin
 		wxString ext = file.GetExt().Lower();
 
 		if (subs.empty() && std::binary_search(subsList, subsList + countof(subsList), ext))
-			subs = file.GetFullPath();
+			subs = from_wx(file.GetFullPath());
 		if (video.empty() && std::binary_search(videoList, videoList + countof(videoList), ext))
-			video = file.GetFullPath();
+			video = from_wx(file.GetFullPath());
 		if (audio.empty() && std::binary_search(audioList, audioList + countof(audioList), ext))
-			audio = file.GetFullPath();
+			audio = from_wx(file.GetFullPath());
 	}
 }
 
@@ -169,10 +170,10 @@ class AegisubFileDropTarget : public wxFileDropTarget {
 public:
 	AegisubFileDropTarget(FrameMain *parent) : parent(parent) { }
 	bool OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames) {
-		wxString subs, audio, video;
+		std::string subs, audio, video;
 		get_files_to_load(filenames, subs, audio, video);
 
-		if (!subs && !audio && !video)
+		if (subs.empty() && audio.empty() && video.empty())
 			return false;
 
 		wxThreadEvent *evt = new wxThreadEvent(FILE_LIST_DROPPED);
@@ -407,7 +408,7 @@ void FrameMain::InitContents() {
 	StartupLog("Leaving InitContents");
 }
 
-void FrameMain::LoadSubtitles(wxString const& filename, wxString const& charset) {
+void FrameMain::LoadSubtitles(agi::fs::path const& filename, std::string const& charset) {
 	if (context->ass->loaded) {
 		if (TryToCloseSubs() == wxCANCEL) return;
 	}
@@ -416,8 +417,8 @@ void FrameMain::LoadSubtitles(wxString const& filename, wxString const& charset)
 		// Make sure that file isn't actually a timecode file
 		try {
 			TextFileReader testSubs(filename, charset);
-			wxString cur = testSubs.ReadLineFromFile();
-			if (cur.Left(10) == "# timecode") {
+			std::string cur = testSubs.ReadLineFromFile();
+			if (boost::starts_with(cur, "# timecode")) {
 				context->videoController->LoadTimecodes(filename);
 				return;
 			}
@@ -429,29 +430,27 @@ void FrameMain::LoadSubtitles(wxString const& filename, wxString const& charset)
 
 		context->ass->Load(filename, charset);
 
-		wxFileName file(filename);
-		StandardPaths::SetPathValue("?script", file.GetPath());
-		config::mru->Add("Subtitle", from_wx(filename));
-		OPT_SET("Path/Last/Subtitles")->SetString(from_wx(file.GetPath()));
+		StandardPaths::SetPathValue("?script", filename);
+		config::mru->Add("Subtitle", filename);
+		OPT_SET("Path/Last/Subtitles")->SetString(filename.parent_path().string());
 
 		// Save backup of file
 		if (context->ass->CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
-			if (file.FileExists()) {
-				wxString path = to_wx(OPT_GET("Path/Auto/Backup")->GetString());
-				if (path.empty()) path = file.GetPath();
-				wxFileName dstpath(StandardPaths::DecodePath(path + "/"));
-				if (!dstpath.DirExists())
-					wxMkdir(dstpath.GetPath());
-
-				dstpath.SetFullName(file.GetName() + ".ORIGINAL." + file.GetExt());
-
-				wxCopyFile(file.GetFullPath(), dstpath.GetFullPath(), true);
+			if (agi::fs::FileExists(filename)) {
+				auto path_str = OPT_GET("Path/Auto/Backup")->GetString();
+				agi::fs::path path;
+				if (path_str.empty())
+					path = filename.parent_path();
+				else
+					path = StandardPaths::DecodePath(path_str);
+				agi::fs::CreateDirectory(path);
+				agi::fs::Copy(filename, path/(filename.stem().string() + ".ORIGINAL" + filename.extension().string()));
 			}
 		}
 	}
-	catch (agi::FileNotFoundError const&) {
-		wxMessageBox(filename + " not found.", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		config::mru->Remove("Subtitle", from_wx(filename));
+	catch (agi::fs::FileNotFound const&) {
+		wxMessageBox(filename.wstring() + " not found.", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		config::mru->Remove("Subtitle", filename);
 		return;
 	}
 	catch (agi::Exception const& err) {
@@ -561,7 +560,7 @@ void FrameMain::OnVideoOpen() {
 		catch (agi::UserCancelException const&) { }
 		// Opening a video with no audio data isn't an error, so just log
 		// and move on
-		catch (agi::FileNotAccessibleError const&) {
+		catch (agi::fs::FileNotFound const&) {
 			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " found by video provider but not audio provider";
 		}
 		catch (agi::AudioDataNotFoundError const& e) {
@@ -591,7 +590,7 @@ void FrameMain::OnFilesDropped(wxThreadEvent &evt) {
 }
 
 bool FrameMain::LoadList(wxArrayString list) {
-	wxString audio, video, subs;
+	std::string audio, video, subs;
 	get_files_to_load(list, subs, audio, video);
 
 	blockVideoLoad = !video.empty();
@@ -660,18 +659,12 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 }
 
 void FrameMain::OnAutoSave(wxTimerEvent &) try {
-	wxString fn = context->ass->AutoSave();
+	auto fn = context->ass->AutoSave();
 	if (!fn.empty())
-		StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn));
+		StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
 }
 catch (const agi::Exception& err) {
 	StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
-}
-catch (wxString err) {
-	StatusTimeout("Exception when attempting to autosave file: " + err);
-}
-catch (const char *err) {
-	StatusTimeout("Exception when attempting to autosave file: " + wxString(err));
 }
 catch (...) {
 	StatusTimeout("Unhandled exception when attempting to autosave file.");
@@ -696,15 +689,15 @@ void FrameMain::OnSubtitlesOpen() {
 	///       prompting for each file loaded/unloaded
 
 	// Load stuff from the new script
-	wxString curSubsVideo = DecodeRelativePath(context->ass->GetScriptInfo("Video File"), context->ass->filename);
-	wxString curSubsVFR = DecodeRelativePath(context->ass->GetScriptInfo("VFR File"), context->ass->filename);
-	wxString curSubsKeyframes = DecodeRelativePath(context->ass->GetScriptInfo("Keyframes File"), context->ass->filename);
-	wxString curSubsAudio = DecodeRelativePath(context->ass->GetScriptInfo("Audio URI"), context->ass->filename);
+	auto video     = config::path->MakeAbsolute(context->ass->GetScriptInfo("Video File"), "?script");
+	auto vfr       = config::path->MakeAbsolute(context->ass->GetScriptInfo("VFR File"), "?script");
+	auto keyframes = config::path->MakeAbsolute(context->ass->GetScriptInfo("Keyframes File"), "?script");
+	auto audio     = config::path->MakeAbsolute(context->ass->GetScriptInfo("Audio URI"), "?script");
 
-	bool videoChanged = !blockVideoLoad && curSubsVideo != context->videoController->GetVideoName();
-	bool timecodesChanged = curSubsVFR != context->videoController->GetTimecodesName();
-	bool keyframesChanged = curSubsKeyframes != context->videoController->GetKeyFramesName();
-	bool audioChanged = !blockAudioLoad && curSubsAudio != context->audioController->GetAudioURL();
+	bool videoChanged     = !blockVideoLoad && video != context->videoController->GetVideoName();
+	bool timecodesChanged = vfr != context->videoController->GetTimecodesName();
+	bool keyframesChanged = keyframes != context->videoController->GetKeyFramesName();
+	bool audioChanged     = !blockAudioLoad && audio != context->audioController->GetAudioURL();
 
 	// Check if there is anything to change
 	int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
@@ -725,43 +718,42 @@ void FrameMain::OnSubtitlesOpen() {
 
 	// Video
 	if (videoChanged) {
-		wxString arString = context->ass->GetScriptInfo("Video Aspect Ratio");
-		context->videoController->SetVideo(curSubsVideo);
+		context->videoController->SetVideo(video);
 		if (context->videoController->IsLoaded()) {
 			context->videoController->JumpToFrame(context->ass->GetScriptInfoAsInt("Video Position"));
 
-			long videoAr = 0;
+			int videoAr = 0;
 			double videoArValue = 0.;
-			if (arString.StartsWith("c")) {
+			std::string arString = context->ass->GetScriptInfo("Video Aspect Ratio");
+			if (boost::starts_with(arString, "c")) {
 				videoAr = 4;
-				arString.Mid(1).ToDouble(&videoArValue);
+				agi::util::try_parse(arString.substr(1), &videoArValue);
 			}
 			else
-				arString.ToLong(&videoAr);
+				agi::util::try_parse(arString.substr(1), &videoAr);
 
 			context->videoController->SetAspectRatio(videoAr, videoArValue);
 
 			double videoZoom = 0.;
-			if (context->ass->GetScriptInfo("Video Zoom Percent").ToDouble(&videoZoom))
+			if (agi::util::try_parse(context->ass->GetScriptInfo("Video Zoom Percent"), &videoZoom))
 				context->videoDisplay->SetZoom(videoZoom);
 		}
 	}
 
-	context->videoController->LoadTimecodes(curSubsVFR);
-	context->videoController->LoadKeyframes(curSubsKeyframes);
+	context->videoController->LoadTimecodes(vfr);
+	context->videoController->LoadKeyframes(keyframes);
 
 	// Audio
 	if (audioChanged) {
 		blockAudioLoad = false;
 		try {
-			if (!curSubsAudio)
+			if (audio.empty())
 				context->audioController->CloseAudio();
 			else
-				context->audioController->OpenAudio(curSubsAudio);
+				context->audioController->OpenAudio(audio);
 		}
 		catch (agi::UserCancelException const&) { }
-		catch (agi::FileNotAccessibleError const& err) {
-			config::mru->Remove("Audio", from_wx(curSubsAudio));
+		catch (agi::fs::FileSystemError const& err) {
 			wxMessageBox(to_wx(err.GetMessage()), "Error opening audio", wxOK | wxICON_ERROR | wxCENTER, this);
 		}
 	}
@@ -789,5 +781,5 @@ wxString FrameMain::GetScriptFileName() const {
 #endif
 	}
 	else
-		return wxFileName(context->ass->filename).GetFullName();
+		return context->ass->filename.filename().wstring();
 }

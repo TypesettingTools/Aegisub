@@ -11,18 +11,16 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
-
-/// @file main.cpp
-/// @brief Main
-/// @ingroup main
 
 #include <gtest/gtest.h>
 
+#include <libaegisub/dispatch.h>
+#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
 int main(int argc, char **argv) {
+	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
+
 	int retval;
 	agi::log::log = new agi::log::LogSink;
 	agi::log::log->Subscribe(new agi::log::JsonEmitter("./", agi::log::log));

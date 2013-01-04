@@ -16,8 +16,6 @@
 #include <map>
 #include <memory>
 
-#include <wx/string.h>
-
 #include "ass_entry.h"
 
 class AssAttachment;
@@ -27,20 +25,21 @@ class AssParser {
 	AssFile *target;
 	int version;
 	std::unique_ptr<AssAttachment> attach;
-	void (AssParser::*state)(wxString const&);
+	void (AssParser::*state)(std::string const&);
 	std::array<AssEntry*, ENTRY_GROUP_MAX> insertion_positions;
 
 	void InsertLine(AssEntry *entry);
 
-	void ParseAttachmentLine(wxString const& data);
-	void ParseEventLine(wxString const& data);
-	void ParseStyleLine(wxString const& data);
-	void ParseScriptInfoLine(wxString const& data);
-	void ParseFontLine(wxString const& data);
-	void ParseGraphicsLine(wxString const& data);
-	void UnknownLine(wxString const&) { }
+	void ParseAttachmentLine(std::string const& data);
+	void ParseEventLine(std::string const& data);
+	void ParseStyleLine(std::string const& data);
+	void ParseScriptInfoLine(std::string const& data);
+	void ParseFontLine(std::string const& data);
+	void ParseGraphicsLine(std::string const& data);
+	void UnknownLine(std::string const&) { }
 public:
 	AssParser(AssFile *target, int version);
 	~AssParser();
-	void AddLine(wxString const& data);
+
+	void AddLine(std::string const& data);
 };

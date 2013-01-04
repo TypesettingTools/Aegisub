@@ -38,17 +38,17 @@
 
 #include <functional>
 
-#include <wx/clipbrd.h>
-#include <wx/dataobj.h>
-#include <wx/menu.h>
-#include <wx/valtext.h>
-
 #include "ass_time.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "utils.h"
 #include "video_context.h"
+
+#include <wx/clipbrd.h>
+#include <wx/dataobj.h>
+#include <wx/menu.h>
+#include <wx/valtext.h>
 
 #define TimeEditWindowStyle
 
@@ -57,8 +57,8 @@ enum {
 	Time_Edit_Paste
 };
 
-TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxString& value, const wxSize& size, bool asEnd)
-: wxTextCtrl(parent, id, value, wxDefaultPosition, size, wxTE_CENTRE | wxTE_PROCESS_ENTER)
+TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::string& value, const wxSize& size, bool asEnd)
+: wxTextCtrl(parent, id, to_wx(value), wxDefaultPosition, size, wxTE_CENTRE | wxTE_PROCESS_ENTER)
 , c(c)
 , byFrame(false)
 , isEnd(asEnd)
@@ -84,7 +84,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const wxStr
 	SetValidator(val);
 
 	// Other stuff
-	if (!value) SetValue(time.GetAssFormated());
+	if (value.empty()) SetValue(to_wx(time.GetAssFormated()));
 
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
 	Bind(wxEVT_COMMAND_MENU_SELECTED, std::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
@@ -116,7 +116,6 @@ void TimeEdit::SetByFrame(bool enableByFrame) {
 	UpdateText();
 }
 
-
 void TimeEdit::OnModified(wxCommandEvent &event) {
 	event.Skip();
 	if (byFrame) {
@@ -125,15 +124,14 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 		time = c->videoController->TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START);
 	}
 	else if (insert)
-		time = GetValue();
+		time = from_wx(GetValue());
 }
-
 
 void TimeEdit::UpdateText() {
 	if (byFrame)
 		ChangeValue(wxString::Format("%d", c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
-		ChangeValue(time.GetAssFormated());
+		ChangeValue(to_wx(time.GetAssFormated()));
 }
 
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
@@ -168,17 +166,18 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 
 	event.Skip(false);
 
-	long start = GetInsertionPoint();
-	wxString text = GetValue();
-
 	// Delete does nothing
 	if (key == WXK_DELETE) return;
+
+	long start = GetInsertionPoint();
 	// Back just moves cursor back one without deleting
 	if (key == WXK_BACK) {
 		if (start > 0)
 			SetInsertionPoint(start - 1);
 		return;
 	}
+
+	std::string text = from_wx(GetValue());
 	// Cursor is at the end so do nothing
 	if (start >= (long)text.size()) return;
 
@@ -193,8 +192,9 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	}
 
 	// Overwrite the digit
-	time = text.Left(start) + (char)key + text.Mid(start + 1);
-	SetValue(time.GetAssFormated());
+	text[start] = (char)key;
+	time = text;
+	SetValue(to_wx(time.GetAssFormated()));
 	SetInsertionPoint(start + 1);
 }
 
@@ -221,7 +221,7 @@ void TimeEdit::OnFocusLost(wxFocusEvent &evt) {
 }
 
 void TimeEdit::CopyTime() {
-	SetClipboard(GetValue());
+	SetClipboard(from_wx(GetValue()));
 }
 
 void TimeEdit::PasteTime() {
@@ -230,8 +230,8 @@ void TimeEdit::PasteTime() {
 		return;
 	}
 
-	wxString text = GetClipboard();
-	if (!text) return;
+	std::string text(GetClipboard());
+	if (text.empty()) return;
 
 	AssTime tempTime(text);
 	if (tempTime.GetAssFormated() == text) {

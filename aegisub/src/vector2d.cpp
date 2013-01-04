@@ -23,6 +23,7 @@
 
 #include "vector2d.h"
 
+#include <boost/format.hpp>
 #include <limits>
 
 Vector2D::Vector2D()
@@ -77,21 +78,21 @@ Vector2D::operator unspecified_bool_type() const {
 	return *this == Vector2D() ? 0 : &Vector2D::x;
 }
 
-wxString Vector2D::PStr(char sep) const {
+std::string Vector2D::PStr(char sep) const {
 	return "(" + Str(sep) + ")";
 }
 
-wxString Vector2D::DStr(char sep) const {
-	return wxString::Format("%d%c%d", (int)x, sep, (int)y);
+std::string Vector2D::DStr(char sep) const {
+	return str(boost::format("%d%c%d") % (int)x % sep % (int)y);
 }
 
-static wxString float_to_string(float val) {
-	wxString s = wxString::Format("%.3f", val);
+static std::string float_to_string(float val) {
+	std::string s = str(boost::format("%.3f") % val);
 	size_t pos = s.find_last_not_of("0");
 	if (pos != s.find(".")) ++pos;
-	return s.Left(pos);
+	return s.substr(0, pos);
 }
 
-wxString Vector2D::Str(char sep) const {
+std::string Vector2D::Str(char sep) const {
 	return float_to_string(x) + sep + float_to_string(y);
 }

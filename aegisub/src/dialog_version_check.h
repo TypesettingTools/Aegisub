@@ -32,7 +32,7 @@
 /// @ingroup configuration_ui
 ///
 
-class wxMutex;
+#include <mutex>
 
 /// @brief Check whether a newer version is available and report to the user if there is
 /// @param interactive If true, always check and report all results, both success and failure.
@@ -40,10 +40,9 @@ class wxMutex;
 ///                    new version actually exists.
 void PerformVersionCheck(bool interactive);
 
-
 /// @brief Mutex that is taken while version checking is being performed.
 ///
 /// A new version check can't be performed while this mutex is locked, checking whether
 /// it is locked is a way to disable UI to invoke a version check while one is being
 /// performed.
-extern wxMutex VersionCheckLock;
+extern std::mutex VersionCheckLock;

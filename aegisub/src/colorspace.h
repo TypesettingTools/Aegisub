@@ -32,26 +32,11 @@
 /// @ingroup utility
 ///
 
-#include <wx/colour.h>
-#include <wx/string.h>
-
-inline unsigned int clip_colorval(int val)
-{
-	return std::max(0, std::min(val, 255));
-}
-
-
-/// Convert an YUV color to RGB; all values are expected to be in range 0..255
-void yuv_to_rgb(int Y, int U, int V, unsigned char *R, unsigned char *G, unsigned char *B);
-
 /// Convert a HSL color to RGB; all values are expected to be in range 0..255
 void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigned char *B);
 
 /// Convert a HSV color to RGB; all values are expected to be in range 0..255
 void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigned char *B);
-
-/// Convert an RGB color to YUV; all values are expected to be in range 0..255
-void rgb_to_yuv(int R, int G, int B, unsigned char *Y, unsigned char *U, unsigned char *V);
 
 /// Convert an RGB color to HSL; all values are expected to be in range 0..255
 void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *L);

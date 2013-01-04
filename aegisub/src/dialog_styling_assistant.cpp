@@ -48,7 +48,7 @@
 
 static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wxString const& text) {
 	sizer->Add(new wxStaticText(parent, -1, text));
-	sizer->Add(new wxStaticText(parent, -1, hotkey::get_hotkey_str_first("Styling Assistant", command)));
+	sizer->Add(new wxStaticText(parent, -1, to_wx(hotkey::get_hotkey_str_first("Styling Assistant", command))));
 }
 
 DialogStyling::DialogStyling(agi::Context *context)
@@ -158,12 +158,12 @@ void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {
 	if (!new_line) return;
 	active_line = new_line;
 
-	current_line_text->SetValue(active_line->Text);
-	style_name->SetValue(active_line->Style);
+	current_line_text->SetValue(to_wx(active_line->Text));
+	style_name->SetValue(to_wx(active_line->Style));
 	style_name->SetSelection(0, active_line->Style.get().size());
 	style_name->SetFocus();
 
-	style_list->SetStringSelection(active_line->Style);
+	style_list->SetStringSelection(to_wx(active_line->Style));
 
 	if (auto_seek->IsChecked() && IsActive())
 		c->videoController->JumpToTime(active_line->Start);
@@ -172,7 +172,7 @@ void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {
 void DialogStyling::Commit(bool next) {
 	if (!c->ass->GetStyle(from_wx(style_name->GetValue()))) return;
 
-	active_line->Style = style_name->GetValue();
+	active_line->Style = from_wx(style_name->GetValue());
 	c->ass->Commit(_("styling assistant"), AssFile::COMMIT_DIAG_META);
 
 	if (next) cmd::call("grid/line/next", c);

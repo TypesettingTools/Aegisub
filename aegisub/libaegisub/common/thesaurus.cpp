@@ -26,16 +26,16 @@
 #include <boost/phoenix/operator/comparison.hpp>
 #include <boost/phoenix/core/argument.hpp>
 
-#include <cstdlib>
+#include <fstream>
 
 using boost::phoenix::placeholders::_1;
 
 namespace agi {
 
-Thesaurus::Thesaurus(std::string const& dat_path, std::string const& idx_path)
+Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
 : dat(io::Open(dat_path))
 {
-	scoped_ptr<std::ifstream> idx(io::Open(idx_path));
+	std::unique_ptr<std::ifstream> idx(io::Open(idx_path));
 
 	std::string encoding_name;
 	getline(*idx, encoding_name);

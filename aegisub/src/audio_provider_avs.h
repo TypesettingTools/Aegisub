@@ -46,7 +46,7 @@ class AvisynthAudioProvider : public AudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	AvisynthAudioProvider(wxString filename);
+	AvisynthAudioProvider(agi::fs::path const& filename);
 
 	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }

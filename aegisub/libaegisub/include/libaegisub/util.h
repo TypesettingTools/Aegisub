@@ -16,57 +16,31 @@
 /// @brief Public interface for general utilities.
 /// @ingroup libaegisub
 
-#include <cstdint>
-
-#include <string>
 #include <algorithm>
+#include <cstdint>
+#include <string>
 
 #include <libaegisub/types.h>
 
+struct tm;
+
 namespace agi {
 	namespace util {
-	/// Whether the path is a file or directory.
-	enum PathType {
-		TypeFile,		///< File
-		TypeDir			///< Directory
-	};
-
 	/// Clamp `b` to the range [`a`,`c`]
 	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
-
-	/// Get the parent directory of a path.
-	/// @param path Path to process.
-	const std::string DirName(const std::string& path);
-
-	/// Rename a file.
-	/// @param from Source.
-	/// @param to   Destination.
-	void Rename(const std::string& from, const std::string& to);
-
-	/// Delete a file
-	/// @param path Path to file to delete
-	/// @throws agi::FileNotAccessibleError if file exists but could not be deleted
-	void Remove(std::string const& path);
 
 	/// Get time suitable for logging mechanisms.
 	/// @param tv timeval
 	void time_log(agi_timeval &tv);
 
-	/// Make all alphabetic characters lowercase.
-	/// @param str Input string
-	void str_lower(std::string &str);
-
-	/// Convert a string to Integer.
-	/// @param str Input string
-	int strtoi(std::string const& str);
-
 	bool try_parse(std::string const& str, double *out);
 	bool try_parse(std::string const& str, int *out);
 
-	/// Check for amount of free space on a Path.
-	/// @param path[in] Path to check
-	/// @param type     PathType (default is TypeDir)
-	uint64_t freespace(std::string const& path, PathType type=TypeDir);
+	/// strftime, but on std::string rather than a fixed buffer
+	/// @param fmt strftime format string
+	/// @param tmptr Time to format, or nullptr for current time
+	/// @return The strftime-formatted string
+	std::string strftime(const char *fmt, const tm *tmptr = nullptr);
 
 	struct delete_ptr {
 		template<class T>

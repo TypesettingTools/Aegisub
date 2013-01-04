@@ -18,21 +18,22 @@
 
 #include "../config.h"
 
+#include "libaegisub/json.h"
+
 #include <fstream>
+#include <memory>
 #include <sstream>
 
+#include "libaegisub/fs.h"
 #include "libaegisub/io.h"
-#include "libaegisub/json.h"
 #include "libaegisub/log.h"
-#include "libaegisub/scoped_ptr.h"
-
 
 namespace agi {
 	namespace json_util {
 
 json::UnknownElement parse(std::istream *stream) {
 	try {
-		agi::scoped_ptr<std::istream> stream_deleter(stream);
+		std::unique_ptr<std::istream> stream_deleter(stream);
 
 		json::UnknownElement root;
 		json::Reader::Read(root, *stream);
@@ -46,15 +47,15 @@ json::UnknownElement parse(std::istream *stream) {
 	}
 }
 
-json::UnknownElement file(const std::string &file) {
+json::UnknownElement file(agi::fs::path const& file) {
 	return parse(io::Open(file));
 }
 
-json::UnknownElement file(const std::string &file, const std::string &default_config) {
+json::UnknownElement file(agi::fs::path const& file, const std::string &default_config) {
 	try {
 		return parse(io::Open(file));
 	}
-	catch (FileNotFoundError const&) {
+	catch (fs::FileNotFound const&) {
 		// Not an error
 		return parse(new std::istringstream(default_config));
 	}

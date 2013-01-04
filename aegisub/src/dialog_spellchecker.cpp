@@ -242,7 +242,7 @@ bool DialogSpellChecker::FindNext() {
 bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int *commit_id) {
 	if (active_line->Comment && skip_comments->GetValue()) return false;
 
-	std::string text = from_wx(active_line->Text);
+	std::string text = active_line->Text;
 	auto tokens = agi::ass::TokenizeDialogueBody(text);
 	agi::ass::SplitWords(text, tokens);
 
@@ -277,7 +277,7 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 		}
 
 		text.replace(word_start, word_len, auto_rep->second);
-		active_line->Text = to_wx(text);
+		active_line->Text = text;
 		*commit_id = context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
 		word_start += auto_rep->second.size();
 	}
@@ -288,9 +288,9 @@ void DialogSpellChecker::Replace() {
 	AssDialogue *active_line = context->selectionController->GetActiveLine();
 
 	// Only replace if the user hasn't changed the selection to something else
-	if (active_line->Text.get().Mid(word_start, word_len) == orig_word->GetValue()) {
-		wxString text = active_line->Text;
-		text.replace(word_start, word_len, replace_word->GetValue());
+	if (to_wx(active_line->Text.get().substr(word_start, word_len)) == orig_word->GetValue()) {
+		std::string text = active_line->Text;
+		text.replace(word_start, word_len, from_wx(replace_word->GetValue()));
 		active_line->Text = text;
 		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
 		context->textSelectionController->SetInsertionPoint(word_start + replace_word->GetValue().size());

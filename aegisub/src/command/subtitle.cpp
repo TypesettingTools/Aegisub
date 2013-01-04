@@ -36,13 +36,6 @@
 
 #include "../config.h"
 
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
-#include <wx/choicdlg.h>
-
-#include <libaegisub/charset_conv.h>
-
 #include "command.h"
 
 #include "../ass_dialogue.h"
@@ -63,6 +56,12 @@
 #include "../subtitle_format.h"
 #include "../utils.h"
 #include "../video_context.h"
+
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
+#include <wx/choicdlg.h>
+
+#include <libaegisub/charset_conv.h>
 
 namespace {
 	using cmd::Command;
@@ -109,7 +108,6 @@ struct subtitle_find : public Command {
 		DialogSearchReplace::Show(c, false);
 	}
 };
-
 
 /// Find next match of last word.
 struct subtitle_find_next : public Command {
@@ -263,11 +261,15 @@ struct subtitle_open : public Command {
 	STR_HELP("Opens a subtitles file")
 
 	void operator()(agi::Context *c) {
-		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
-		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-		if (!filename.empty()) {
+		std::string filename = from_wx(wxFileSelector(
+			_("Open subtitles file"),
+			to_wx(OPT_GET("Path/Last/Subtitles")->GetString()),
+			"","",
+			to_wx(SubtitleFormat::GetWildcards(0)),
+			wxFD_OPEN | wxFD_FILE_MUST_EXIST));
+
+		if (!filename.empty())
 			wxGetApp().frame->LoadSubtitles(filename);
-		}
 	}
 };
 
@@ -284,7 +286,6 @@ struct subtitle_open_autosave : public Command {
 	}
 };
 
-
 /// Opens a subtitles file with a specific charset.
 struct subtitle_open_charset : public Command {
 	CMD_NAME("subtitle/open/charset")
@@ -293,20 +294,16 @@ struct subtitle_open_charset : public Command {
 	STR_HELP("Opens a subtitles file with a specific charset")
 
 	void operator()(agi::Context *c) {
-		// Initialize charsets
 		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
+		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",to_wx(SubtitleFormat::GetWildcards(0)),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		if (filename.empty()) return;
 
-		// Get options and load
-		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",SubtitleFormat::GetWildcards(0),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-		if (!filename.empty()) {
-			wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
-			if (!charset.empty()) {
-				wxGetApp().frame->LoadSubtitles(filename,charset);
-			}
-		}
+		wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
+		if (charset.empty()) return;
+
+		wxGetApp().frame->LoadSubtitles(from_wx(filename), from_wx(charset));
 	}
 };
-
 
 /// Opens the subtitles from the current video file.
 struct subtitle_open_video : public Command {
@@ -339,12 +336,14 @@ struct subtitle_properties : public Command {
 	}
 };
 
-static void save_subtitles(agi::Context *c, wxString filename) {
+static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
 		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
-		wxFileName origPath(c->ass->filename);
-		filename = wxFileSelector(_("Save subtitles file"), path, origPath.GetName() + ".ass", "ass", "Advanced Substation Alpha (*.ass)|*.ass", wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
+		filename = wxFileSelector(_("Save subtitles file"), path,
+			c->ass->filename.stem().wstring() + L".ass", "ass",
+			"Advanced Substation Alpha (*.ass)|*.ass",
+			wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
 		if (filename.empty()) return;
 	}
 
@@ -403,7 +402,7 @@ struct subtitle_select_all : public Command {
 		SubtitleSelection sel;
 		transform(c->ass->Line.begin(), c->ass->Line.end(),
 			inserter(sel, sel.begin()), cast<AssDialogue*>());
-		sel.erase(0);
+		sel.erase(nullptr);
 		c->selectionController->SetSelectedSet(sel);
 	}
 };

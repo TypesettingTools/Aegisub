@@ -525,9 +525,6 @@
     <ClInclude Include="$(SrcDir)charset_detect.h">
       <Filter>Features\Import</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)charset_conv.h">
-      <Filter>Features\Import</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)help_button.h">
       <Filter>Features\Help</Filter>
     </ClInclude>
@@ -1075,9 +1072,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)subs_grid.cpp">
       <Filter>Main UI\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)charset_conv.cpp">
-      <Filter>Features\Import</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)charset_detect.cpp">
       <Filter>Features\Import</Filter>

@@ -36,35 +36,9 @@
 
 #include "auto4_base.h"
 
-#ifdef __WINDOWS__
-#include <tchar.h>
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-#include <libaegisub/charset_conv_win.h>
-#endif
-
-#include <wx/button.h>
-#include <wx/dcmemory.h>
-#include <wx/dir.h>
-#include <wx/filefn.h>
-#include <wx/filename.h>
-#include <wx/log.h>
-#include <wx/msgdlg.h>
-#include <wx/thread.h>
-#include <wx/tokenzr.h>
-
-#include <tuple>
-
-#ifndef __WINDOWS__
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#endif
-
 #include "ass_file.h"
 #include "ass_style.h"
 #include "command/command.h"
-#include "compat.h"
 #include "dialog_progress.h"
 #include "include/aegisub/context.h"
 #include "options.h"
@@ -73,8 +47,28 @@
 #include "subtitle_format.h"
 #include "utils.h"
 
+#include <libaegisub/dispatch.h>
+#include <libaegisub/fs.h>
+#include <libaegisub/path.h>
+
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/format.hpp>
+#include <boost/tokenizer.hpp>
+
+#include <wx/dcmemory.h>
+#include <wx/log.h>
+#include <wx/sizer.h>
+#include <wx/msgdlg.h>
+
+#ifdef __WINDOWS__
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include <libaegisub/charset_conv_win.h>
+#endif
+
 namespace Automation4 {
-	bool CalculateTextExtents(AssStyle *style, wxString const& text, double &width, double &height, double &descent, double &extlead)
+	bool CalculateTextExtents(AssStyle *style, std::string const& text, double &width, double &height, double &descent, double &extlead)
 	{
 		width = height = descent = extlead = 0;
 
@@ -105,26 +99,21 @@ namespace Automation4 {
 		if (!thefont) return false;
 		SelectObject(thedc, thefont);
 
+		std::wstring wtext(agi::charset::ConvertW(text));
 		SIZE sz;
-		size_t thetextlen = text.length();
-		const TCHAR *thetext = text.wc_str();
 		if (spacing != 0 ) {
 			width = 0;
-			for (unsigned int i = 0; i < thetextlen; i++) {
-				GetTextExtentPoint32(thedc, &thetext[i], 1, &sz);
+			for (auto c : wtext) {
+				GetTextExtentPoint32(thedc, &c, 1, &sz);
 				width += sz.cx + spacing;
 				height = sz.cy;
 			}
-		} else {
-			GetTextExtentPoint32(thedc, thetext, (int)thetextlen, &sz);
+		}
+		else {
+			GetTextExtentPoint32(thedc, &wtext[0], (int)wtext.size(), &sz);
 			width = sz.cx;
 			height = sz.cy;
 		}
-
-		// HACKISH FIX! This seems to work, but why? It shouldn't be needed?!?
-		//fontsize = style->fontsize;
-		//width = (int)(width * fontsize/height + 0.5);
-		//height = (int)(fontsize + 0.5);
 
 		TEXTMETRIC tm;
 		GetTextMetrics(thedc, &tm);
@@ -150,17 +139,18 @@ namespace Automation4 {
 			style->italic ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
 			style->bold ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
 			style->underline,
-			style->font,
+			to_wx(style->font),
 			wxFONTENCODING_SYSTEM); // FIXME! make sure to get the right encoding here, make some translation table between windows and wx encodings
 		thedc.SetFont(thefont);
 
+		wxString wtext(to_wx(text));
 		if (spacing) {
 			// If there's inter-character spacing, kerning info must not be used, so calculate width per character
 			// NOTE: Is kerning actually done either way?!
-			for (unsigned int i = 0; i < text.length(); i++) {
+			for (auto const& wc : wtext) {
 				int a, b, c, d;
-				thedc.GetTextExtent(text[i], &a, &b, &c, &d);
-				double scaling = fontsize / (double)(b>0?b:1); // semi-workaround for missing OS/2 table data for scaling
+				thedc.GetTextExtent(wc, &a, &b, &c, &d);
+				double scaling = fontsize / (double)(b > 0 ? b : 1); // semi-workaround for missing OS/2 table data for scaling
 				width += (a + spacing)*scaling;
 				height = b > height ? b*scaling : height;
 				descent = c > descent ? c*scaling : descent;
@@ -169,8 +159,8 @@ namespace Automation4 {
 		} else {
 			// If the inter-character spacing should be zero, kerning info can (and must) be used, so calculate everything in one go
 			wxCoord lwidth, lheight, ldescent, lextlead;
-			thedc.GetTextExtent(text, &lwidth, &lheight, &ldescent, &lextlead);
-			double scaling = fontsize / (double)(lheight>0?lheight:1); // semi-workaround for missing OS/2 table data for scaling
+			thedc.GetTextExtent(wtext, &lwidth, &lheight, &ldescent, &lextlead);
+			double scaling = fontsize / (double)(lheight > 0 ? lheight : 1); // semi-workaround for missing OS/2 table data for scaling
 			width = lwidth*scaling; height = lheight*scaling; descent = ldescent*scaling; extlead = lextlead*scaling;
 		}
 #endif
@@ -184,7 +174,7 @@ namespace Automation4 {
 		return true;
 	}
 
-	ExportFilter::ExportFilter(wxString const& name, wxString const& description, int priority)
+	ExportFilter::ExportFilter(std::string const& name, std::string const& description, int priority)
 	: AssExportFilter(name, description, priority)
 	{
 		AssExportFilterChain::Register(this);
@@ -195,16 +185,16 @@ namespace Automation4 {
 		AssExportFilterChain::Unregister(this);
 	}
 
-	wxString ExportFilter::GetScriptSettingsIdentifier()
+	std::string ExportFilter::GetScriptSettingsIdentifier()
 	{
-		return inline_string_encode(wxString::Format("Automation Settings %s", GetName()));
+		return inline_string_encode("Automation Settings " + GetName());
 	}
 
 	wxWindow* ExportFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {
 		config_dialog.reset(GenerateConfigDialog(parent, c));
 
 		if (config_dialog) {
-			wxString val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());
+			std::string val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());
 			if (!val.empty())
 				config_dialog->Unserialise(val);
 			return config_dialog->CreateWindow(parent);
@@ -215,7 +205,7 @@ namespace Automation4 {
 
 	void ExportFilter::LoadSettings(bool is_default, agi::Context *c) {
 		if (config_dialog) {
-			wxString val = config_dialog->Serialise();
+			std::string val = config_dialog->Serialise();
 			if (!val.empty())
 				c->ass->SetScriptInfo(GetScriptSettingsIdentifier(), val);
 		}
@@ -231,10 +221,10 @@ namespace Automation4 {
 
 	void ProgressSink::ShowDialog(ScriptDialog *config_dialog)
 	{
-		InvokeOnMainThread([=] {
+		agi::dispatch::Main().Sync([=] {
 			wxDialog w; // container dialog box
 			w.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-			w.Create(bsr->GetParentWindow(), -1, bsr->GetTitle());
+			w.Create(bsr->GetParentWindow(), -1, to_wx(bsr->GetTitle()));
 			wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
 			wxWindow *ww = config_dialog->CreateWindow(&w); // generate actual dialog contents
 			s->Add(ww, 0, wxALL, 5); // add contents to dialog
@@ -247,12 +237,12 @@ namespace Automation4 {
 	int ProgressSink::ShowDialog(wxDialog *dialog)
 	{
 		int ret = 0;
-		InvokeOnMainThread([&] { ret = dialog->ShowModal(); });
+		agi::dispatch::Main().Sync([&] { ret = dialog->ShowModal(); });
 		return ret;
 	}
 
-	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, wxString const& title)
-	: impl(new DialogProgress(parent, title))
+	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, std::string const& title)
+	: impl(new DialogProgress(parent, to_wx(title)))
 	{
 	}
 
@@ -279,26 +269,23 @@ namespace Automation4 {
 		return impl.get();
 	}
 
-	wxString BackgroundScriptRunner::GetTitle() const
+	std::string BackgroundScriptRunner::GetTitle() const
 	{
-		return impl->GetTitle();
+		return from_wx(impl->GetTitle());
 	}
 
 	// Script
-	Script::Script(wxString const& filename)
+	Script::Script(agi::fs::path const& filename)
 	: filename(filename)
 	{
-		// copied from auto3
-		include_path.clear();
-		include_path.EnsureFileAccessible(filename);
-		wxStringTokenizer toker(to_wx(OPT_GET("Path/Automation/Include")->GetString()), "|", wxTOKEN_STRTOK);
-		while (toker.HasMoreTokens()) {
-			// todo? make some error reporting here
-			wxFileName path(StandardPaths::DecodePath(toker.GetNextToken()));
-			if (!path.IsOk()) continue;
-			if (path.IsRelative()) continue;
-			if (!path.DirExists()) continue;
-			include_path.Add(path.GetLongPath());
+		include_path.emplace_back(filename.parent_path());
+
+		std::string include_paths = OPT_GET("Path/Automation/Include")->GetString();
+		boost::char_separator<char> sep("|");
+		for (auto const& tok : boost::tokenizer<boost::char_separator<char>>(include_paths, sep)) {
+			auto path = StandardPaths::DecodePath(tok);
+			if (path.is_absolute() && agi::fs::DirectoryExists(path))
+				include_path.emplace_back(std::move(path));
 		}
 	}
 
@@ -352,9 +339,8 @@ namespace Automation4 {
 		return macros;
 	}
 
-
 	// AutoloadScriptManager
-	AutoloadScriptManager::AutoloadScriptManager(wxString const& path)
+	AutoloadScriptManager::AutoloadScriptManager(std::string const& path)
 	: path(path)
 	{
 		Reload();
@@ -366,31 +352,17 @@ namespace Automation4 {
 
 		int error_count = 0;
 
-		wxStringTokenizer tok(path, "|", wxTOKEN_STRTOK);
-		while (tok.HasMoreTokens()) {
-			wxDir dir;
-			wxString dirname = StandardPaths::DecodePath(tok.GetNextToken());
-			if (!dir.Exists(dirname)) {
-				//wxLogWarning("A directory was specified in the Automation autoload path, but it doesn't exist: %s", dirname.c_str());
-				continue;
-			}
-			if (!dir.Open(dirname)) {
-				//wxLogWarning("Failed to open a directory in the Automation autoload path: %s", dirname.c_str());
-				continue;
-			}
+		boost::char_separator<char> sep("|");
+		for (auto const& tok : boost::tokenizer<boost::char_separator<char>>(path, sep)) {
+			auto dirname = StandardPaths::DecodePath(tok);
+			if (!agi::fs::DirectoryExists(dirname)) continue;
 
-			wxString fn;
-			wxFileName script_path(dirname + "/", "");
-			bool more = dir.GetFirst(&fn, wxEmptyString, wxDIR_FILES);
-			while (more) {
-				script_path.SetName(fn);
-				wxString fullpath = script_path.GetFullPath();
-				if (ScriptFactory::CanHandleScriptFormat(fullpath)) {
-					Script *s = ScriptFactory::CreateFromFile(fullpath, true);
+			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*")) {
+				Script *s = ScriptFactory::CreateFromFile(dirname/filename, true);
+				if (s) {
 					scripts.push_back(s);
-					if (!s->GetLoadedState()) error_count++;
+					if (!s->GetLoadedState()) ++error_count;
 				}
-				more = dir.GetNext(&fn);
 			}
 		}
 
@@ -415,39 +387,37 @@ namespace Automation4 {
 	{
 		delete_clear(scripts);
 
-		wxString local_scripts = context->ass->GetScriptInfo("Automation Scripts");
+		auto local_scripts = context->ass->GetScriptInfo("Automation Scripts");
 		if (local_scripts.empty()) {
 			ScriptsChanged();
 			return;
 		}
 
-		wxStringTokenizer tok(local_scripts, "|", wxTOKEN_STRTOK);
-		wxFileName assfn(context->ass->filename);
-		wxString autobasefn(to_wx(OPT_GET("Path/Automation/Base")->GetString()));
-		while (tok.HasMoreTokens()) {
-			wxString trimmed = tok.GetNextToken().Trim(true).Trim(false);
-			char first_char = trimmed[0];
-			trimmed.Remove(0, 1);
+		auto autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
-			wxString basepath;
+		boost::char_separator<char> sep("|");
+		for (auto const& cur : boost::tokenizer<boost::char_separator<char>>(local_scripts, sep)) {
+			auto trimmed = boost::trim_copy(cur);
+			char first_char = trimmed[0];
+			trimmed.erase(0);
+
+			agi::fs::path basepath;
 			if (first_char == '~') {
-				basepath = assfn.GetPath();
+				basepath = context->ass->filename.parent_path();
 			} else if (first_char == '$') {
 				basepath = autobasefn;
 			} else if (first_char == '/') {
 			} else {
 				wxLogWarning("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %c\nFilename specified: %s",
-					first_char, trimmed);
+					first_char, to_wx(trimmed));
 				continue;
 			}
-			wxFileName sfname(trimmed);
-			sfname.MakeAbsolute(basepath);
-			if (sfname.FileExists()) {
-				scripts.push_back(Automation4::ScriptFactory::CreateFromFile(sfname.GetFullPath(), true));
-			}
+			auto sfname = basepath/trimmed;
+			if (agi::fs::FileExists(sfname))
+				scripts.push_back(Automation4::ScriptFactory::CreateFromFile(sfname, true));
 			else {
 				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
-					first_char, trimmed, basepath, sfname.GetFullPath());
+					first_char, to_wx(trimmed), basepath.wstring(), sfname.wstring());
 			}
 		}
 
@@ -462,24 +432,23 @@ namespace Automation4 {
 		// 2. Otherwise try making it relative to the ass filename
 		// 3. If step 2 failed, or absolute path is shorter than path relative to ass, use absolute path ("/")
 		// 4. Otherwise, use path relative to ass ("~")
-		wxString scripts_string;
-		wxString autobasefn(to_wx(OPT_GET("Path/Automation/Base")->GetString()));
+		std::string scripts_string;
+		agi::fs::path autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
 		for (auto script : GetScripts()) {
 			if (!scripts_string.empty())
 				scripts_string += "|";
 
-			wxString autobase_rel, assfile_rel;
-			wxString scriptfn(script->GetFilename());
-			autobase_rel = MakeRelativePath(scriptfn, autobasefn);
-			assfile_rel = MakeRelativePath(scriptfn, context->ass->filename);
+			auto scriptfn(script->GetFilename().string());
+			auto autobase_rel = config::path->MakeRelative(scriptfn, autobasefn);
+			auto assfile_rel = config::path->MakeRelative(scriptfn, "?script");
 
-			if (autobase_rel.size() <= scriptfn.size() && autobase_rel.size() <= assfile_rel.size()) {
-				scriptfn = "$" + autobase_rel;
-			} else if (assfile_rel.size() <= scriptfn.size() && assfile_rel.size() <= autobase_rel.size()) {
-				scriptfn = "~" + assfile_rel;
+			if (autobase_rel.string().size() <= scriptfn.size() && autobase_rel.string().size() <= assfile_rel.string().size()) {
+				scriptfn = "$" + autobase_rel.generic_string();
+			} else if (assfile_rel.string().size() <= scriptfn.size() && assfile_rel.string().size() <= autobase_rel.string().size()) {
+				scriptfn = "~" + assfile_rel.generic_string();
 			} else {
-				scriptfn = "/" + wxFileName(scriptfn).GetFullPath(wxPATH_UNIX);
+				scriptfn = "/" + script->GetFilename().generic_string();
 			}
 
 			scripts_string += scriptfn;
@@ -488,7 +457,7 @@ namespace Automation4 {
 	}
 
 	// ScriptFactory
-	ScriptFactory::ScriptFactory(wxString engine_name, wxString filename_pattern)
+	ScriptFactory::ScriptFactory(std::string const& engine_name, std::string const& filename_pattern)
 	: engine_name(engine_name)
 	, filename_pattern(filename_pattern)
 	{
@@ -511,32 +480,23 @@ namespace Automation4 {
 		}
 	}
 
-	Script* ScriptFactory::CreateFromFile(wxString const& filename, bool log_errors)
+	Script* ScriptFactory::CreateFromFile(agi::fs::path const& filename, bool log_errors, bool create_unknown)
 	{
 		for (auto factory : Factories()) {
 			Script *s = factory->Produce(filename);
 			if (s) {
 				if (!s->GetLoadedState() && log_errors) {
-					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename, s->GetDescription());
+					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename.wstring(), s->GetDescription());
 				}
 				return s;
 			}
 		}
 
 		if (log_errors) {
-			wxLogError(_("The file was not recognised as an Automation script: %s"), filename);
+			wxLogError(_("The file was not recognised as an Automation script: %s"), filename.wstring());
 		}
 
-
-		return new UnknownScript(filename);
-	}
-
-	bool ScriptFactory::CanHandleScriptFormat(wxString const& filename)
-	{
-		using std::placeholders::_1;
-		// Just make this always return true to bitch about unknown script formats in autoload
-		return any_of(Factories().begin(), Factories().end(),
-			[&](ScriptFactory *sf) { return filename.Matches(sf->GetFilenamePattern()); });
+		return create_unknown ? new UnknownScript(filename) : nullptr;
 	}
 
 	std::vector<ScriptFactory*>& ScriptFactory::Factories()
@@ -550,30 +510,24 @@ namespace Automation4 {
 		return Factories();
 	}
 
-	wxString ScriptFactory::GetWildcardStr()
+	std::string ScriptFactory::GetWildcardStr()
 	{
-		wxString fnfilter, catchall;
+		std::string fnfilter, catchall;
 		for (auto fact : Factories()) {
 			if (fact->GetEngineName().empty() || fact->GetFilenamePattern().empty())
 				continue;
 
-			fnfilter = wxString::Format("%s%s scripts (%s)|%s|", fnfilter, fact->GetEngineName(), fact->GetFilenamePattern(), fact->GetFilenamePattern());
+			fnfilter += str(boost::format("%s scripts (%s)|%s|") % fact->GetEngineName() % fact->GetFilenamePattern() % fact->GetFilenamePattern());
 			catchall += fact->GetFilenamePattern() + ";";
 		}
-		fnfilter += _("All Files") + " (*.*)|*.*";
+		fnfilter += from_wx(_("All Files")) + " (*.*)|*.*";
 
 		if (!catchall.empty())
-			catchall.RemoveLast();
+			catchall.pop_back();
 
 		if (Factories().size() > 1)
-			fnfilter = _("All Supported Formats") + "|" + catchall + "|" + fnfilter;
+			fnfilter = from_wx(_("All Supported Formats")) + "|" + catchall + "|" + fnfilter;
 
 		return fnfilter;
-	}
-
-	// UnknownScript
-	UnknownScript::UnknownScript(wxString const& filename)
-	: Script(filename)
-	{
 	}
 }

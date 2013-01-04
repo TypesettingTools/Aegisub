@@ -24,8 +24,9 @@
 #include "subtitle_format.h"
 
 #include <algorithm>
-
-#include <wx/log.h>
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 AssParser::AssParser(AssFile *target, int version)
 : target(target)
@@ -39,8 +40,8 @@ AssParser::AssParser(AssFile *target, int version)
 AssParser::~AssParser() {
 }
 
-void AssParser::ParseAttachmentLine(wxString const& data) {
-	bool is_filename = data.StartsWith("fontname: ") || data.StartsWith("filename: ");
+void AssParser::ParseAttachmentLine(std::string const& data) {
+	bool is_filename = boost::starts_with(data, "fontname: ") || boost::starts_with(data, "filename: ");
 
 	bool valid_data = data.size() > 0 && data.size() <= 80;
 	for (auto byte : data) {
@@ -60,59 +61,59 @@ void AssParser::ParseAttachmentLine(wxString const& data) {
 		attach->AddData(data);
 
 		// Done building
-		if (data.Length() < 80) {
+		if (data.size() < 80) {
 			attach->Finish();
 			InsertLine(attach.release());
 		}
 	}
 }
 
-void AssParser::ParseScriptInfoLine(wxString const& data) {
-	if (data.StartsWith(";")) {
+void AssParser::ParseScriptInfoLine(std::string const& data) {
+	if (boost::starts_with(data, ";")) {
 		// Skip stupid comments added by other programs
 		// Of course, we'll add our own in place later... ;)
 		return;
 	}
 
-	if (data.StartsWith("ScriptType:")) {
-		wxString versionString = data.Mid(11).Trim(true).Trim(false).Lower();
-		int trueVersion;
-		if (versionString == "v4.00")
-			trueVersion = 0;
-		else if (versionString == "v4.00+")
-			trueVersion = 1;
+	if (boost::starts_with(data, "ScriptType:")) {
+		std::string version_str = data.substr(11);
+		boost::trim(version_str);
+		boost::to_lower(version_str);
+		if (version_str == "v4.00")
+			version = 0;
+		else if (version_str == "v4.00+")
+			version = 1;
 		else
 			throw SubtitleFormatParseError("Unknown SSA file format version", 0);
-		if (trueVersion != version) {
-			wxLogMessage("Warning: File has the wrong extension.");
-			version = trueVersion;
-		}
 	}
 
-	InsertLine(new AssInfo(data));
+	size_t pos = data.find(':');
+	if (pos == data.npos) return;
+
+	InsertLine(new AssInfo(data.substr(0, pos), boost::trim_left_copy(data.substr(pos + 1))));
 }
 
-void AssParser::ParseEventLine(wxString const& data) {
-	if (data.StartsWith("Dialogue:") || data.StartsWith("Comment:"))
+void AssParser::ParseEventLine(std::string const& data) {
+	if (boost::starts_with(data, "Dialogue:") || boost::starts_with(data, "Comment:"))
 		InsertLine(new AssDialogue(data));
 }
 
-void AssParser::ParseStyleLine(wxString const& data) {
-	if (data.StartsWith("Style:"))
+void AssParser::ParseStyleLine(std::string const& data) {
+	if (boost::starts_with(data, "Style:"))
 		InsertLine(new AssStyle(data, version));
 }
 
-void AssParser::ParseFontLine(wxString const& data) {
-	if (data.StartsWith("fontname: "))
-		attach.reset(new AssAttachment(data.Mid(10), ENTRY_FONT));
+void AssParser::ParseFontLine(std::string const& data) {
+	if (boost::starts_with(data, "fontname: "))
+		attach.reset(new AssAttachment(data.substr(10), ENTRY_FONT));
 }
 
-void AssParser::ParseGraphicsLine(wxString const& data) {
-	if (data.StartsWith("filename: "))
-		attach.reset(new AssAttachment(data.Mid(10), ENTRY_GRAPHIC));
+void AssParser::ParseGraphicsLine(std::string const& data) {
+	if (boost::starts_with(data, "filename: "))
+		attach.reset(new AssAttachment(data.substr(10), ENTRY_GRAPHIC));
 }
 
-void AssParser::AddLine(wxString const& data) {
+void AssParser::AddLine(std::string const& data) {
 	// Special-case for attachments since a line could theoretically be both a
 	// valid attachment data line and a valid section header, and if an
 	// attachment is in progress it needs to be treated as that
@@ -124,10 +125,10 @@ void AssParser::AddLine(wxString const& data) {
 	if (data.empty()) return;
 
 	// Section header
-	if (data[0] == '[' && data.Last() == ']') {
+	if (data[0] == '[' && data.back() == ']') {
 		// Ugly hacks to allow intermixed v4 and v4+ style sections
-		const wxString low = data.Lower();
-		wxString header = data;
+		const std::string low = boost::to_lower_copy(data);
+		std::string header = data;
 		if (low == "[v4 styles]") {
 			header = "[V4+ Styles]";
 			version = 0;

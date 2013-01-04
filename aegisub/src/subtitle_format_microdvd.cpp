@@ -36,8 +36,6 @@
 
 #include "subtitle_format_microdvd.h"
 
-#include <wx/regex.h>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
@@ -45,40 +43,46 @@
 #include "text_file_writer.h"
 #include "video_context.h"
 
+#include <libaegisub/fs.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/util.h>
+
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 MicroDVDSubtitleFormat::MicroDVDSubtitleFormat()
 : SubtitleFormat("MicroDVD")
 {
 }
 
-wxArrayString MicroDVDSubtitleFormat::GetReadWildcards() const {
-	wxArrayString formats;
-	formats.Add("sub");
+std::vector<std::string> MicroDVDSubtitleFormat::GetReadWildcards() const {
+	std::vector<std::string> formats;
+	formats.push_back("sub");
 	return formats;
 }
 
-wxArrayString MicroDVDSubtitleFormat::GetWriteWildcards() const {
+std::vector<std::string> MicroDVDSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-bool MicroDVDSubtitleFormat::CanReadFile(wxString const& filename) const {
+static const boost::regex line_regex("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$");
+
+bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename) const {
 	// Return false immediately if extension is wrong
-	if (filename.Right(4).Lower() != ".sub") return false;
+	if (!agi::fs::HasExtension(filename, "sub")) return false;
 
 	// Since there is an infinity of .sub formats, load first line and check if it's valid
 	TextFileReader file(filename);
-	if (file.HasMoreLines()) {
-		wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$", wxRE_ADVANCED);
-		return exp.Matches(file.ReadLineFromFile());
-	}
+	if (file.HasMoreLines())
+		return regex_match(file.ReadLineFromFile(), line_regex);
 
 	return false;
 }
 
-void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
+void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& encoding) const {
 	TextFileReader file(filename, encoding);
-	wxRegEx exp("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$", wxRE_ADVANCED);
 
 	target->LoadDefault(false);
 
@@ -86,24 +90,21 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename,
 
 	bool isFirst = true;
 	while (file.HasMoreLines()) {
-		wxString line = file.ReadLineFromFile();
-		if (exp.Matches(line)) {
-			long f1, f2;
-			exp.GetMatch(line, 1).ToLong(&f1);
-			exp.GetMatch(line, 2).ToLong(&f2);
-			wxString text = exp.GetMatch(line, 3);
+		boost::smatch match;
+		std::string line = file.ReadLineFromFile();
+		if (regex_match(line, match, line_regex)) {
+			int f1 = boost::lexical_cast<int>(match[0]);
+			int f2 = boost::lexical_cast<int>(match[1]);
+			std::string text = match[2].str();
 
 			// If it's the first, check if it contains fps information
 			if (isFirst) {
 				isFirst = false;
 
-				if (f1 == 1 && f2 == 1) {
-					// Convert fps
-					double cfr;
-					if (text.ToDouble(&cfr)) {
-						fps = cfr;
-						continue;
-					}
+				double cfr;
+				if (agi::util::try_parse(text, &cfr)) {
+					fps = cfr;
+					continue;
 				}
 
 				// If it wasn't an fps line, ask the user for it
@@ -111,7 +112,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename,
 				if (!fps.IsLoaded()) return;
 			}
 
-			text.Replace("|", "\\N");
+			boost::replace_all(text, "|", "\\N");
 
 			AssDialogue *diag = new AssDialogue;
 			diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
@@ -122,7 +123,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, wxString const& filename,
 	}
 }
 
-void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
+void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
 	agi::vfr::Framerate fps = AskForFPS(true, false);
 	if (!fps.IsLoaded()) return;
 
@@ -137,15 +138,14 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, wxString const& filen
 	TextFileWriter file(filename, encoding);
 
 	// Write FPS line
-	if (!fps.IsVFR()) {
-		file.WriteLineToFile(wxString::Format("{1}{1}%.6f", fps.FPS()));
-	}
+	if (!fps.IsVFR())
+		file.WriteLineToFile(str(boost::format("{1}{1}%.6f") % fps.FPS()));
 
 	// Write lines
 	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
 		int start = fps.FrameAtTime(current->Start, agi::vfr::START);
 		int end = fps.FrameAtTime(current->End, agi::vfr::END);
 
-		file.WriteLineToFile(wxString::Format("{%i}{%i}%s", start, end, current->Text.get()));
+		file.WriteLineToFile(str(boost::format("{%i}{%i}%s") % start % end % boost::replace_all_copy(current->Text.get(), "\\N", "|")));
 	}
 }

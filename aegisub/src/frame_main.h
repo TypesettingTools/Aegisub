@@ -32,6 +32,9 @@
 /// @ingroup main_ui
 ///
 
+#include <libaegisub/fs_fwd.h>
+
+#include <memory>
 #include <vector>
 
 #include <wx/combobox.h>
@@ -41,8 +44,6 @@
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/timer.h>
-
-#include <libaegisub/scoped_ptr.h>
 
 class AegisubFileDropTarget;
 class AssFile;
@@ -63,7 +64,7 @@ namespace agi { struct Context; class OptionValue; }
 class FrameMain: public wxFrame {
 	friend class AegisubFileDropTarget;
 
-	agi::scoped_ptr<agi::Context> context;
+	std::unique_ptr<agi::Context> context;
 
     // XXX: Make Freeze()/Thaw() noops on GTK, this seems to be buggy
 #ifdef __WXGTK__
@@ -137,7 +138,7 @@ public:
 	/// @param enableCancel Should the user be able to cancel the close?
 	int TryToCloseSubs(bool enableCancel=true);
 
-	void LoadSubtitles(wxString const& filename, wxString const& charset="");
+	void LoadSubtitles(agi::fs::path const& filename, std::string const& charset="");
 
 	DECLARE_EVENT_TABLE()
 };

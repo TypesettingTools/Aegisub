@@ -42,8 +42,10 @@
 #include "text_file_writer.h"
 #include "utils.h"
 
+#include <libaegisub/fs.h>
+
 #include <boost/algorithm/string/predicate.hpp>
-#include <functional>
+#include <boost/filesystem.hpp>
 
 AssStyleStorage::~AssStyleStorage() {
 	delete_clear(style);
@@ -52,16 +54,14 @@ AssStyleStorage::~AssStyleStorage() {
 void AssStyleStorage::Save() const {
 	if (storage_name.empty()) return;
 
-	wxString dirname = StandardPaths::DecodePath("?user/catalog/");
-	if (!wxDirExists(dirname) && !wxMkdir(dirname))
-		throw "Failed creating directory for style catalogs";
+	agi::fs::CreateDirectory(StandardPaths::DecodePath("?user/catalog/"));
 
 	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/" + storage_name + ".sty"), "UTF-8");
 	for (const AssStyle *cur : style)
 		file.WriteLineToFile(cur->GetEntryData());
 }
 
-void AssStyleStorage::Load(wxString const& name) {
+void AssStyleStorage::Load(std::string const& name) {
 	storage_name = name;
 	Clear();
 
@@ -69,17 +69,14 @@ void AssStyleStorage::Load(wxString const& name) {
 		TextFileReader file(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"), "UTF-8");
 
 		while (file.HasMoreLines()) {
-			wxString data = file.ReadLineFromFile();
-			if (data.StartsWith("Style:")) {
-				try {
-					style.push_back(new AssStyle(data));
-				} catch(...) {
-					/* just ignore invalid lines for now */
-				}
+			try {
+				style.push_back(new AssStyle(file.ReadLineFromFile()));
+			} catch(...) {
+				/* just ignore invalid lines for now */
 			}
 		}
 	}
-	catch (agi::FileNotAccessibleError const&) {
+	catch (agi::fs::FileNotAccessible const&) {
 		// Just treat a missing file as an empty file
 	}
 }

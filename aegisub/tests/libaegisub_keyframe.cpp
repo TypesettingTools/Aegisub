@@ -11,13 +11,12 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
 
 /// @file libaegisub_keyframe.cpp
 /// @brief agi::keyframe tests
 /// @ingroup video_input
 
+#include <libaegisub/fs.h>
 #include <libaegisub/keyframe.h>
 
 #include <fstream>
@@ -41,7 +40,7 @@ TEST(lagi_keyframe, save) {
 }
 
 TEST(lagi_keyframe, bad_files) {
-	EXPECT_THROW(Load(""), agi::FileSystemError);
+	EXPECT_THROW(Load(""), agi::fs::FileSystemError);
 	EXPECT_THROW(Load("data/keyframe/empty.txt"), Error);
 	EXPECT_THROW(Load("data/keyframe/garbage.txt"), Error);
 }

@@ -157,7 +157,6 @@ SRC += \
 	auto4_base.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
-	charset_conv.cpp \
 	charset_detect.cpp \
 	colorspace.cpp \
 	colour_button.cpp \

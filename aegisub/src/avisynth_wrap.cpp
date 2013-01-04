@@ -40,12 +40,14 @@
 #include "avisynth.h"
 #include "options.h"
 
+#include <mutex>
+
 // Allocate storage for and initialise static members
 namespace {
 	int avs_refcount = 0;
 	HINSTANCE hLib = nullptr;
 	IScriptEnvironment *env = nullptr;
-	wxMutex AviSynthMutex;
+	std::mutex AviSynthMutex;
 }
 
 typedef IScriptEnvironment* __stdcall FUNC(int);
@@ -55,11 +57,11 @@ AviSynthWrapper::AviSynthWrapper() {
 		hLib = LoadLibrary(L"avisynth.dll");
 
 		if (!hLib)
-			throw wxString("Could not load avisynth.dll");
+			throw AvisynthError("Could not load avisynth.dll");
 
 		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
 		if (!CreateScriptEnv)
-			throw wxString("Failed to get address of CreateScriptEnv from avisynth.dll");
+			throw AvisynthError("Failed to get address of CreateScriptEnv from avisynth.dll");
 
 		// Require Avisynth 2.5.6+?
 		if (OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
@@ -68,11 +70,11 @@ AviSynthWrapper::AviSynthWrapper() {
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
 		if (!env)
-			throw wxString("Failed to create a new avisynth script environment. Avisynth is too old?");
+			throw AvisynthError("Failed to create a new avisynth script environment. Avisynth is too old?");
 
 		// Set memory limit
 		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();
-		if (memoryMax != 0)
+		if (memoryMax)
 			env->SetMemoryMax(memoryMax);
 	}
 }
@@ -84,7 +86,7 @@ AviSynthWrapper::~AviSynthWrapper() {
 	}
 }
 
-wxMutex& AviSynthWrapper::GetMutex() const {
+std::mutex& AviSynthWrapper::GetMutex() const {
 	return AviSynthMutex;
 }
 

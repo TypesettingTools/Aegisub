@@ -20,15 +20,14 @@
 ///
 
 #ifdef WITH_HUNSPELL
-
 #include <libaegisub/spellchecker.h>
 
-#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
+#include <boost/filesystem/path.hpp>
+#include <memory>
 #include <set>
-
-#include <wx/string.h>
 
 namespace agi { namespace charset { class IconvWrapper; } }
 class Hunspell;
@@ -36,17 +35,17 @@ class Hunspell;
 /// @brief Hunspell-based spell checker implementation
 class HunspellSpellChecker : public agi::SpellChecker {
 	/// Hunspell instance
-	agi::scoped_ptr<Hunspell> hunspell;
+	std::unique_ptr<Hunspell> hunspell;
 
 	/// Conversions between the dictionary charset and utf-8
-	agi::scoped_ptr<agi::charset::IconvWrapper> conv;
-	agi::scoped_ptr<agi::charset::IconvWrapper> rconv;
+	std::unique_ptr<agi::charset::IconvWrapper> conv;
+	std::unique_ptr<agi::charset::IconvWrapper> rconv;
 
 	/// Languages which we have dictionaries for
 	std::vector<std::string> languages;
 
 	/// Path to user-local dictionary.
-	wxString userDicPath;
+	agi::fs::path userDicPath;
 
 	/// Words in the custom user dictionary
 	std::set<std::string> customWords;

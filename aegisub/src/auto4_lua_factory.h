@@ -36,7 +36,7 @@
 
 namespace Automation4 {
 	class LuaScriptFactory : public ScriptFactory {
-		Script* Produce(const wxString &filename) const;
+		Script* Produce(agi::fs::path const& filename) const;
 	public:
 		LuaScriptFactory();
 	};

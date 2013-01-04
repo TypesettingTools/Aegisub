@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "exception.h"
+#include "fs_fwd.h"
 
 namespace agi {
 	namespace vfr { class Framerate; }
@@ -27,11 +28,12 @@ namespace agi {
 		/// @brief Load a keyframe file
 		/// @param filename File to load
 		/// @return List of frame numbers which are keyframes
-		std::vector<int> Load(std::string const& filename);
+		std::vector<int> Load(agi::fs::path const& filename);
+
 		/// @brief Save keyframes to a file
 		/// @param filename File to save to
 		/// @param keyframes List of keyframes to save
-		void Save(std::string const& filename, std::vector<int> const& keyframes);
+		void Save(agi::fs::path const& filename, std::vector<int> const& keyframes);
 
 		DEFINE_SIMPLE_EXCEPTION_NOINNER(Error, Exception, "keyframe/error")
 	}

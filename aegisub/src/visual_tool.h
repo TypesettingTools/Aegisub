@@ -28,9 +28,7 @@
 
 #include <boost/container/list.hpp>
 
-#include <wx/log.h>
 #include <wx/event.h>
-#include <wx/button.h>
 
 #include <libaegisub/signal.h>
 
@@ -133,10 +131,10 @@ protected:
 	void GetLineRotation(AssDialogue *diag, float &rx, float &ry, float &rz);
 	void GetLineScale(AssDialogue *diag, Vector2D &scale);
 	void GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, bool &inverse);
-	wxString GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse);
+	std::string GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse);
 
-	void SetOverride(AssDialogue* line, std::string const& tag, wxString const& value);
-	void SetSelectedOverride(std::string const& tag, wxString const& value);
+	void SetOverride(AssDialogue* line, std::string const& tag, std::string const& value);
+	void SetSelectedOverride(std::string const& tag, std::string const& value);
 
 	VisualToolBase(VideoDisplay *parent, agi::Context *context);
 

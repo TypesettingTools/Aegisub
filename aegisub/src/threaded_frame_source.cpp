@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -21,224 +21,188 @@
 
 #include "threaded_frame_source.h"
 
-#include <deque>
-#include <functional>
-
-#include <boost/range/adaptor/indirected.hpp>
-#include <boost/range/algorithm_ext.hpp>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "compat.h"
 #include "export_fixstyle.h"
-#include "include/aegisub/context.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
 #include "video_provider_manager.h"
+
+#include <libaegisub/dispatch.h>
+
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/algorithm_ext.hpp>
+#include <condition_variable>
+#include <functional>
+#include <mutex>
 
 enum {
 	NEW_SUBS_FILE = -1,
 	SUBS_FILE_ALREADY_LOADED = -2
 };
 
-// Test if a line is a dialogue line which is not visible at the given time
-struct invisible_line : public std::unary_function<AssEntry const&, bool> {
-	double time;
-	invisible_line(double time) : time(time * 1000.) { }
-	bool operator()(AssEntry const& entry) const {
-		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&entry);
-		return diag && (diag->Start > time || diag->End <= time);
-	}
-};
-
-std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frameNum, double time, bool raw) {
+std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, double time, bool raw) {
 	std::shared_ptr<AegiVideoFrame> frame(new AegiVideoFrame, [](AegiVideoFrame *frame) {
 		frame->Clear();
 		delete frame;
 	});
 
-	{
-		wxMutexLocker locker(providerMutex);
-		try {
-			frame->CopyFrom(videoProvider->GetFrame(frameNum));
-		}
-		catch (VideoProviderError const& err) { throw VideoProviderErrorEvent(err); }
+	try {
+		frame->CopyFrom(video_provider->GetFrame(frame_number));
 	}
+	catch (VideoProviderError const& err) { throw VideoProviderErrorEvent(err); }
 
-	// This deliberately results in a call to LoadSubtitles while a render
-	// is pending making the queued render use the new file
-	if (!raw && provider) {
-		try {
-			wxMutexLocker locker(fileMutex);
-			if (subs && singleFrame != frameNum && singleFrame != SUBS_FILE_ALREADY_LOADED) {
-				// Generally edits and seeks come in groups; if the last thing done
-				// was seek it is more likely that the user will seek again and
-				// vice versa. As such, if this is the first frame requested after
-				// an edit, only export the currently visible lines (because the
-				// other lines will probably not be viewed before the file changes
-				// again), and if it's a different frame, export the entire file.
-				if (singleFrame != NEW_SUBS_FILE) {
-					provider->LoadSubtitles(subs.get());
-					singleFrame = SUBS_FILE_ALREADY_LOADED;
+	if (raw || !subs_provider || !subs) return frame;
+
+	try {
+		if (single_frame != frame_number && single_frame != SUBS_FILE_ALREADY_LOADED) {
+			// Generally edits and seeks come in groups; if the last thing done
+			// was seek it is more likely that the user will seek again and
+			// vice versa. As such, if this is the first frame requested after
+			// an edit, only export the currently visible lines (because the
+			// other lines will probably not be viewed before the file changes
+			// again), and if it's a different frame, export the entire file.
+			if (single_frame != NEW_SUBS_FILE) {
+				subs_provider->LoadSubtitles(subs.get());
+				single_frame = SUBS_FILE_ALREADY_LOADED;
+			}
+			else {
+				AssFixStylesFilter().ProcessSubs(subs.get(), nullptr);
+
+				single_frame = frame_number;
+				// Copying a nontrivially sized AssFile is fairly slow, so
+				// instead muck around with its innards to just temporarily
+				// remove the non-visible lines without deleting them
+				std::deque<AssEntry*> full;
+				for (auto& line : subs->Line)
+					full.push_back(&line);
+				subs->Line.remove_if([=](AssEntry const& e) -> bool {
+					const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e);
+					return diag && (diag->Start > time || diag->End <= time);
+				});
+
+				try {
+					subs_provider->LoadSubtitles(subs.get());
+
+					subs->Line.clear();
+					boost::push_back(subs->Line, full | boost::adaptors::indirected);
 				}
-				else {
-					AssFixStylesFilter().ProcessSubs(subs.get(), nullptr);
-
-					singleFrame = frameNum;
-					// Copying a nontrivially sized AssFile is fairly slow, so
-					// instead muck around with its innards to just temporarily
-					// remove the non-visible lines without deleting them
-					std::deque<AssEntry*> full;
-					for (auto& line : subs->Line)
-						full.push_back(&line);
-					subs->Line.remove_if(invisible_line(time));
-
-					try {
-						provider->LoadSubtitles(subs.get());
-
-						subs->Line.clear();
-						boost::push_back(subs->Line, full | boost::adaptors::indirected);
-					}
-					catch (...) {
-						subs->Line.clear();
-						boost::push_back(subs->Line, full | boost::adaptors::indirected);
-						throw;
-					}
+				catch (...) {
+					subs->Line.clear();
+					boost::push_back(subs->Line, full | boost::adaptors::indirected);
+					throw;
 				}
 			}
 		}
-		catch (wxString const& err) { throw SubtitlesProviderErrorEvent(err); }
-
-		provider->DrawSubtitles(*frame, time);
 	}
+	catch (std::string const& err) { throw SubtitlesProviderErrorEvent(err); }
+
+	subs_provider->DrawSubtitles(*frame, time / 1000.);
+
 	return frame;
-}
-
-void *ThreadedFrameSource::Entry() {
-	while (!TestDestroy()) {
-		double time;
-		int frameNum;
-		std::unique_ptr<AssFile> newSubs;
-		std::deque<std::pair<size_t, std::unique_ptr<AssEntry>>> updates;
-		{
-			wxMutexLocker jobLocker(jobMutex);
-
-			if (!run)
-				return EXIT_SUCCESS;
-
-			if (nextTime == -1.) {
-				jobReady.Wait();
-				continue;
-			}
-
-			time = nextTime;
-			frameNum = nextFrame;
-			nextTime = -1.;
-			newSubs = move(nextSubs);
-			updates = move(changedSubs);
-		}
-
-		if (newSubs || updates.size()) {
-			wxMutexLocker fileLocker(fileMutex);
-
-			if (newSubs)
-				subs = move(newSubs);
-
-			if (updates.size()) {
-				size_t i = 0;
-				auto it = subs->Line.begin();
-				// Replace each changed line in subs with the updated version
-				for (auto& update : updates) {
-					advance(it, update.first - i);
-					i = update.first;
-					subs->Line.insert(it, *update.second.release());
-					delete &*it--;
-				}
-			}
-
-			singleFrame = NEW_SUBS_FILE;
-		}
-
-		try {
-			FrameReadyEvent *evt = new FrameReadyEvent(ProcFrame(frameNum, time), time);
-			evt->SetEventType(EVT_FRAME_READY);
-			parent->QueueEvent(evt);
-		}
-		catch (wxEvent const& err) {
-			// Pass error back to parent thread
-			parent->QueueEvent(err.Clone());
-		}
-	}
-
-	return EXIT_SUCCESS;
 }
 
 static SubtitlesProvider *get_subs_provider(wxEvtHandler *parent) {
 	try {
 		return SubtitlesProviderFactory::GetProvider();
 	}
-	catch (wxString const& err) {
+	catch (std::string const& err) {
 		parent->AddPendingEvent(SubtitlesProviderErrorEvent(err));
 		return 0;
 	}
 }
 
-ThreadedFrameSource::ThreadedFrameSource(wxString videoFileName, wxEvtHandler *parent)
-: wxThread(wxTHREAD_JOINABLE)
-, provider(get_subs_provider(parent))
-, videoProvider(VideoProviderFactory::GetProvider(videoFileName))
+ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, wxEvtHandler *parent)
+: worker(agi::dispatch::Create())
+, subs_provider(get_subs_provider(parent))
+, video_provider(VideoProviderFactory::GetProvider(video_filename))
 , parent(parent)
-, nextFrame(-1)
-, nextTime(-1.)
-, singleFrame(-1)
-, jobReady(jobMutex)
-, run(true)
+, frame_number(-1)
+, time(-1.)
+, single_frame(-1)
+, version(0)
 {
-	Create();
-	Run();
 }
 
 ThreadedFrameSource::~ThreadedFrameSource() {
-	{
-		wxMutexLocker locker(jobMutex);
-		run = false;
-		jobReady.Signal();
-	}
-	Wait();
 }
 
-void ThreadedFrameSource::LoadSubtitles(const AssFile *subs) throw() {
-	AssFile *copy = new AssFile(*subs);
-	wxMutexLocker locker(jobMutex);
-	// Set nextSubs and let the worker thread move it to subs so that we don't
-	// have to lock fileMutex on the GUI thread, as that can be locked for
-	// extended periods of time with slow-rendering subtitles
-	nextSubs.reset(copy);
-	changedSubs.clear();
+void ThreadedFrameSource::LoadSubtitles(const AssFile *new_subs) throw() {
+	uint_fast32_t req_version = ++version;
+
+	AssFile *copy = new AssFile(*new_subs);
+	worker->Async([=]{
+		subs.reset(copy);
+		single_frame = NEW_SUBS_FILE;
+		ProcAsync(req_version);
+	});
 }
 
-void ThreadedFrameSource::UpdateSubtitles(const AssFile *subs, std::set<const AssEntry*> changes) throw() {
-	std::deque<std::pair<size_t, std::unique_ptr<AssEntry>>> changed;
+void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<const AssEntry*> const& changes) throw() {
+	uint_fast32_t req_version = ++version;
+
+	// Copy just the lines which were changed, then replace the lines at the
+	// same indices in the worker's copy of the file with the new entries
+	std::deque<std::pair<size_t, AssEntry*>> changed;
 	size_t i = 0;
-	for (auto const& e : subs->Line) {
+	for (auto const& e : new_subs->Line) {
 		if (changes.count(&e))
-			changed.emplace_back(i, std::unique_ptr<AssEntry>(e.Clone()));
+			changed.emplace_back(i, e.Clone());
 		++i;
 	}
 
-	wxMutexLocker locker(jobMutex);
-	changedSubs = std::move(changed);
+	worker->Async([=]{
+		size_t i = 0;
+		auto it = subs->Line.begin();
+		for (auto& update : changed) {
+			advance(it, update.first - i);
+			i = update.first;
+			subs->Line.insert(it, *update.second);
+			delete &*it--;
+		}
+
+		single_frame = NEW_SUBS_FILE;
+		ProcAsync(req_version);
+	});
 }
 
-void ThreadedFrameSource::RequestFrame(int frame, double time) throw() {
-	wxMutexLocker locker(jobMutex);
-	nextTime  = time;
-	nextFrame = frame;
-	jobReady.Signal();
+void ThreadedFrameSource::RequestFrame(int new_frame, double new_time) throw() {
+	uint_fast32_t req_version = ++version;
+
+	worker->Async([=]{
+		time = new_time;
+		frame_number = new_frame;
+		ProcAsync(req_version);
+	});
+}
+
+void ThreadedFrameSource::ProcAsync(uint_fast32_t req_version) {
+	// Only actually produce the frame if there's no queued changes waiting
+	if (req_version < version || frame_number < 0) return;
+
+	try {
+		FrameReadyEvent *evt = new FrameReadyEvent(ProcFrame(frame_number, time), time);
+		evt->SetEventType(EVT_FRAME_READY);
+		parent->QueueEvent(evt);
+	}
+	catch (wxEvent const& err) {
+		// Pass error back to parent thread
+		parent->QueueEvent(err.Clone());
+	}
 }
 
 std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
-	return ProcFrame(frame, time, raw);
+	std::shared_ptr<AegiVideoFrame> ret;
+	std::mutex m;
+	std::condition_variable cv;
+	std::unique_lock<std::mutex> l(m);
+	worker->Async([&]{
+		std::unique_lock<std::mutex> l(m);
+		ret = ProcFrame(frame, time, raw);
+		cv.notify_all();
+	});
+	cv.wait(l, [&]{ return !!ret; }); // predicate is to deal with spurious wakeups
+	return ret;
 }
 
 wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);
@@ -250,8 +214,8 @@ VideoProviderErrorEvent::VideoProviderErrorEvent(VideoProviderError const& err)
 {
 	SetEventType(EVT_VIDEO_ERROR);
 }
-SubtitlesProviderErrorEvent::SubtitlesProviderErrorEvent(wxString err)
-: agi::Exception(from_wx(err), nullptr)
+SubtitlesProviderErrorEvent::SubtitlesProviderErrorEvent(std::string const& err)
+: agi::Exception(err, nullptr)
 {
 	SetEventType(EVT_SUBTITLES_ERROR);
 }

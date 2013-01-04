@@ -34,9 +34,6 @@
 
 #include <vector>
 
-#include <wx/file.h>
-#include <wx/thread.h>
-
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -63,7 +60,7 @@ class PCMAudioProvider : public AudioProvider {
 #endif
 
 protected:
-	PCMAudioProvider(const wxString &filename); // Create base object and open the file mapping
+	PCMAudioProvider(agi::fs::path const& filename); // Create base object and open the file mapping
 	virtual ~PCMAudioProvider(); // Closes the file mapping
 	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
 
@@ -84,4 +81,4 @@ protected:
 };
 
 // Construct the right PCM audio provider (if any) for the file
-AudioProvider *CreatePCMAudioProvider(const wxString &filename);
+AudioProvider *CreatePCMAudioProvider(agi::fs::path const& filename);

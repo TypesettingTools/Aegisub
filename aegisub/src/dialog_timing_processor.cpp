@@ -291,15 +291,15 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	EndModal(0);
 }
 
-static bool bad_line(std::set<wxString> *styles, AssDialogue *d) {
+static bool bad_line(std::set<std::string> *styles, AssDialogue *d) {
 	return !d || d->Comment || styles->find(d->Style) == styles->end();
 }
 
 std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
-	std::set<wxString> styles;
+	std::set<std::string> styles;
 	for (size_t i = 0; i < StyleList->GetCount(); ++i) {
 		if (StyleList->IsChecked(i))
-			styles.insert(StyleList->GetString(i));
+			styles.insert(from_wx(StyleList->GetString(i)));
 	}
 
 	std::vector<AssDialogue*> sorted;

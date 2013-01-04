@@ -20,11 +20,12 @@
 
 #include "config.h"
 
-#include <cmath>
-
 #include "visual_tool_rotatez.h"
 
 #include "utils.h"
+
+#include <boost/format.hpp>
+#include <cmath>
 
 static const float deg2rad = 3.1415926536f / 180.f;
 static const float rad2deg = 180.f / 3.1415926536f;
@@ -114,7 +115,7 @@ void VisualToolRotateZ::UpdateHold() {
 
 	angle = fmodf(angle + 360.f, 360.f);
 
-	SetSelectedOverride("\\frz", wxString::Format("%.4g", angle));
+	SetSelectedOverride("\\frz", str(boost::format("%.4g") % angle));
 }
 
 void VisualToolRotateZ::UpdateDrag(feature_iterator feature) {

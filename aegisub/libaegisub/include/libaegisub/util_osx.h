@@ -28,6 +28,8 @@
 /// When linking with this library, be sure to add '-framework CoreFoundation'
 /// to the GCC commandline.
 
+#ifdef __APPLE__
+
 #include <string>
 
 namespace agi {
@@ -91,3 +93,5 @@ std::string OSX_GetBundleAuxillaryExecutablePath(std::string const& executableNa
 void OSX_OpenLocation(std::string const& location);
     } // namespace io
 } // namespace agi
+
+#endif

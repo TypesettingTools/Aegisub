@@ -36,8 +36,6 @@
 
 #include <vector>
 
-#include "compat.h"
-
 class AegiVideoFrame;
 
 /// @class VideoOutGL
@@ -104,22 +102,22 @@ DEFINE_BASE_EXCEPTION_NOINNER(VideoOutException, agi::Exception)
 
 /// @class VideoOutRenderException
 /// @extends VideoOutException
-/// @brief An OpenGL error occured while uploading or displaying a frame
+/// @brief An OpenGL error occurred while uploading or displaying a frame
 class VideoOutRenderException : public VideoOutException {
 public:
 	VideoOutRenderException(const char *func, int err)
-		: VideoOutException(from_wx(wxString::Format("%s failed with error code %d", func, err)))
+	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))
 	{ }
 	const char * GetName() const { return "videoout/opengl/render"; }
 	Exception * Copy() const { return new VideoOutRenderException(*this); }
 };
 /// @class VideoOutOpenGLException
 /// @extends VideoOutException
-/// @brief An OpenGL error occured while setting up the video display
+/// @brief An OpenGL error occurred while setting up the video display
 class VideoOutInitException : public VideoOutException {
 public:
 	VideoOutInitException(const char *func, int err)
-		: VideoOutException(from_wx(wxString::Format("%s failed with error code %d", func, err)))
+	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))
 	{ }
 	VideoOutInitException(const char *err) : VideoOutException(err) { }
 	const char * GetName() const { return "videoout/opengl/init"; }

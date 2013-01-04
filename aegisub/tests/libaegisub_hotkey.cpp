@@ -11,13 +11,13 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
 
 #include "main.h"
-#include "util.h"
 
+#include <libaegisub/fs.h>
 #include <libaegisub/hotkey.h>
+
+#include <cstdarg>
 
 using namespace agi::hotkey;
 
@@ -147,9 +147,8 @@ static void insert_combo(Hotkey::HotkeyMap &hm, const char *ctx, const char *cmd
 
 	va_list argp;
 	va_start(argp, N);
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < N; ++i)
 		keys[i] = va_arg(argp, const char *);
-	}
 	va_end(argp);
 
 	hm.insert(make_pair(std::string(cmd), Combo(ctx, cmd, keys)));
@@ -158,7 +157,7 @@ static void insert_combo(Hotkey::HotkeyMap &hm, const char *ctx, const char *cmd
 static void set_var(bool *b) { *b = true; }
 
 TEST(lagi_hotkey, set_hotkey_map) {
-	util::remove("data/hotkey_tmp");
+	agi::fs::Remove("data/hotkey_tmp");
 	{
 		Hotkey h("data/hotkey_tmp", "{}");
 

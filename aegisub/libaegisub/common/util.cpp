@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,36 +11,26 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-/// @file util.cpp
-/// @brief Unix utility methods.
-/// @ingroup libaegisub
-
-#include <errno.h>
-
-#include <climits>
-#include <cstdio>
+#include "../config.h"
 
 #include "libaegisub/util.h"
 
-#include <boost/algorithm/string/case_conv.hpp>
+#include <ctime>
 
-namespace agi {
-	namespace util {
+namespace agi { namespace util {
 
-void str_lower(std::string &str) {
-	boost::to_lower(str);
+std::string strftime(const char *fmt, const tm *tmptr) {
+	if (!tmptr) {
+		time_t t = time(nullptr);
+		tmptr = localtime(&t);
+	}
+
+	char buff[65536];
+	::strftime(buff, sizeof buff, fmt, tmptr);
+	return buff;
 }
 
-int strtoi(std::string const& str) {
-	errno = 0;
-	long l = strtol(str.c_str(), nullptr, 10);
-
-	if ((errno == ERANGE) || (l < INT_MIN) || (l > INT_MAX))
-		return 0;
-
-	return (int)l;
-}
-
-	} // namespace util
-} // namespace agi
+} }

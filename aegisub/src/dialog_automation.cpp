@@ -32,7 +32,6 @@
 /// @ingroup secondary_ui
 ///
 
-
 #include "config.h"
 
 #include "dialog_automation.h"
@@ -51,10 +50,10 @@
 
 #include <wx/button.h>
 #include <wx/filedlg.h>
-#include <wx/filename.h>
 #include <wx/listctrl.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
+#include <wx/sizer.h>
 
 using std::placeholders::_1;
 
@@ -147,9 +146,9 @@ void DialogAutomation::RebuildList()
 
 void DialogAutomation::SetScriptInfo(int i, Automation4::Script *script)
 {
-	list->SetItem(i, 1, script->GetName());
-	list->SetItem(i, 2, wxFileName(script->GetFilename()).GetFullName());
-	list->SetItem(i, 3, script->GetDescription());
+	list->SetItem(i, 1, to_wx(script->GetName()));
+	list->SetItem(i, 2, script->GetPrettyFilename().wstring());
+	list->SetItem(i, 3, to_wx(script->GetDescription()));
 	if (!script->GetLoadedState())
 		list->SetItemBackgroundColour(i, wxColour(255,128,128));
 	else
@@ -178,10 +177,10 @@ void DialogAutomation::UpdateDisplay()
 }
 
 template<class Container>
-static bool has_file(Container const& c, wxFileName const& fn)
+static bool has_file(Container const& c, agi::fs::path const& fn)
 {
 	return any_of(c.begin(), c.end(),
-		[&](const Automation4::Script *s) { return fn.SameAs(s->GetFilename()); });
+		[&](const Automation4::Script *s) { return fn == s->GetFilename(); });
 }
 
 void DialogAutomation::OnAdd(wxCommandEvent &)
@@ -190,7 +189,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 		_("Add Automation script"),
 		to_wx(OPT_GET("Path/Last/Automation")->GetString()),
 		"",
-		Automation4::ScriptFactory::GetWildcardStr(),
+		to_wx(Automation4::ScriptFactory::GetWildcardStr()),
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
 	if (diag.ShowModal() == wxID_CANCEL) return;
@@ -199,15 +198,15 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 	diag.GetPaths(fnames);
 
 	for (auto const& fname : fnames) {
-		wxFileName fnpath(fname);
-		OPT_SET("Path/Last/Automation")->SetString(from_wx(fnpath.GetPath()));
+		agi::fs::path fnpath(fname);
+		OPT_SET("Path/Last/Automation")->SetString(fnpath.parent_path().string());
 
 		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
 			wxLogError("Script '%s' is already loaded", fname);
 			continue;
 		}
 
-		local_manager->Add(Automation4::ScriptFactory::CreateFromFile(fname, true));
+		local_manager->Add(Automation4::ScriptFactory::CreateFromFile(fnpath, true));
 	}
 }
 
@@ -234,19 +233,19 @@ void DialogAutomation::OnReload(wxCommandEvent &)
 }
 
 static wxString fac_to_str(const Automation4::ScriptFactory* f) {
-	return wxString::Format("- %s (%s)", f->GetEngineName(), f->GetFilenamePattern());
+	return wxString::Format("- %s (%s)", to_wx(f->GetEngineName()), to_wx(f->GetFilenamePattern()));
 }
 
 static wxString cmd_to_str(const cmd::Command *f, agi::Context *c) {
-	return wxString::Format(_("    Macro: %s (%s)"), f->StrDisplay(c), f->name());
+	return wxString::Format(_("    Macro: %s (%s)"), f->StrDisplay(c), to_wx(f->name()));
 }
 
 static wxString filt_to_str(const Automation4::ExportFilter* f) {
-	return wxString::Format(_("    Export filter: %s"), f->GetName());
+	return wxString::Format(_("    Export filter: %s"), to_wx(f->GetName()));
 }
 
 static wxString form_to_str(const SubtitleFormat* f) {
-	return wxString::Format(_("    Subtitle format handler: %s"), f->GetName());
+	return wxString::Format(_("    Subtitle format handler: %s"), to_wx(f->GetName()));
 }
 
 void DialogAutomation::OnInfo(wxCommandEvent &)
@@ -272,7 +271,7 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 			ei->script->GetDescription(),
 			ei->script->GetAuthor(),
 			ei->script->GetVersion(),
-			ei->script->GetFilename(),
+			ei->script->GetFilename().wstring(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
 
 		transform(ei->script->GetMacros(), append_info, std::bind(cmd_to_str, _1, context));

@@ -18,13 +18,9 @@
 /// @brief Vector clipping visual typesetting tool
 /// @ingroup visual_ts
 
-#include "visual_tool_vector_clip.h"
-
-#include <wx/toolbar.h>
-
-#include <algorithm>
-
 #include "config.h"
+
+#include "visual_tool_vector_clip.h"
 
 #include "ass_dialogue.h"
 #include "include/aegisub/context.h"
@@ -32,6 +28,9 @@
 #include "options.h"
 #include "selection_controller.h"
 #include "utils.h"
+
+#include <algorithm>
+#include <wx/toolbar.h>
 
 /// Button IDs
 enum {
@@ -190,15 +189,15 @@ void VisualToolVectorClip::MakeFeatures() {
 }
 
 void VisualToolVectorClip::Save() {
-	wxString value = "(";
+	std::string value = "(";
 	if (spline.GetScale() != 1)
-		value += wxString::Format("%d,", spline.GetScale());
+		value += std::to_string(spline.GetScale()) + ",";
 	value += spline.EncodeToAss() + ")";
 
 	for (auto line : c->selectionController->GetSelectedSet()) {
 		// This check is technically not correct as it could be outside of an
 		// override block... but that's rather unlikely
-		bool has_iclip = line->Text.get().find("\\iclip") != wxString::npos;
+		bool has_iclip = line->Text.get().find("\\iclip") != std::string::npos;
 		SetOverride(line, has_iclip ? "\\iclip" : "\\clip", value);
 	}
 }
@@ -388,9 +387,8 @@ void VisualToolVectorClip::UpdateHold() {
 void VisualToolVectorClip::DoRefresh() {
 	if (!active_line) return;
 
-	wxString vect;
 	int scale;
-	vect = GetLineVectorClip(active_line, scale, inverse);
+	std::string vect = GetLineVectorClip(active_line, scale, inverse);
 	spline.SetScale(scale);
 	spline.DecodeFromAss(vect);
 

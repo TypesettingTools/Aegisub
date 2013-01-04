@@ -36,21 +36,19 @@
 
 #include "../config.h"
 
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-
 #include "command.h"
 
-#include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../options.h"
 #include "../video_context.h"
+
+#include <boost/filesystem/path.hpp>
+#include <wx/filedlg.h>
 
 namespace {
 	using cmd::Command;
 /// @defgroup cmd-keyframed Keyframe commands.
 /// @{
-
 
 /// Closes the currently open keyframes list.
 struct keyframe_close : public Command {
@@ -78,21 +76,19 @@ struct keyframe_open : public Command {
 	STR_HELP("Opens a keyframe list file")
 
 	void operator()(agi::Context *c) {
-		wxString path = to_wx(OPT_GET("Path/Last/Keyframes")->GetString());
-		wxString filename = wxFileSelector(
+		agi::fs::path filename = wxFileSelector(
 			_("Open keyframes file"),
-			path,
+			to_wx(OPT_GET("Path/Last/Keyframes")->GetString()),
 			""
 			,".txt",
 			_("All Supported Formats") + " (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" + _("All Files") + " (*.*)|*.*",
 			wxFD_FILE_MUST_EXIST | wxFD_OPEN);
 
 		if (filename.empty()) return;
-		OPT_SET("Path/Last/Keyframes")->SetString(from_wx(wxFileName(filename).GetPath()));
+		OPT_SET("Path/Last/Keyframes")->SetString(filename.parent_path().string());
 		c->videoController->LoadKeyframes(filename);
 	}
 };
-
 
 /// Saves the current keyframe list.
 struct keyframe_save : public Command {
@@ -107,10 +103,10 @@ struct keyframe_save : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		wxString path = to_wx(OPT_GET("Path/Last/Keyframes")->GetString());
-		wxString filename = wxFileSelector(_("Save keyframes file"),path,"","*.key.txt","Text files (*.txt)|*.txt",wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
+		std::string path = OPT_GET("Path/Last/Keyframes")->GetString();
+		agi::fs::path filename = wxFileSelector(_("Save keyframes file"),to_wx(path),"","*.key.txt","Text files (*.txt)|*.txt",wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
 		if (filename.empty()) return;
-		OPT_SET("Path/Last/Keyframes")->SetString(from_wx(wxFileName(filename).GetPath()));
+		OPT_SET("Path/Last/Keyframes")->SetString(filename.parent_path().string());
 		c->videoController->SaveKeyframes(filename);
 	}
 };

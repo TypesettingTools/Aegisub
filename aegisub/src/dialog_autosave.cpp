@@ -90,7 +90,7 @@ DialogAutosave::DialogAutosave(wxWindow *parent)
 }
 
 void DialogAutosave::Populate(std::map<wxString, AutosaveFile> &files_map, std::string const& path, wxString const& filter, wxString const& name_fmt) {
-	wxString directory(StandardPaths::DecodePath(to_wx(path)));
+	wxString directory(StandardPaths::DecodePath(path).wstring());
 
 	wxDir dir;
 	if (!dir.Open(directory)) return;
@@ -130,12 +130,12 @@ void DialogAutosave::OnSelectFile(wxCommandEvent&) {
 	version_list->SetSelection(0);
 }
 
-wxString DialogAutosave::ChosenFile() const {
+std::string DialogAutosave::ChosenFile() const {
 	int sel_file = file_list->GetSelection();
 	if (sel_file < 0) return "";
 
 	int sel_version = version_list->GetSelection();
 	if (sel_version < 0) return "";
 
-	return files[sel_file].versions[sel_version].filename;
+	return from_wx(files[sel_file].versions[sel_version].filename);
 }

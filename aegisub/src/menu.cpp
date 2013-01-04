@@ -37,11 +37,9 @@
 
 #include <algorithm>
 #include <deque>
-#include <sstream>
 #include <vector>
 
 #include <wx/app.h>
-#include <wx/filename.h>
 #include <wx/frame.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
@@ -98,9 +96,12 @@ public:
 
 		int i = 0;
 		for (auto it = mru->begin(); it != mru->end(); ++it, ++i) {
+			wxString name = it->wstring();
+			if (!name.StartsWith("?"))
+				name = it->filename().wstring();
 			items[i]->SetItemLabel(wxString::Format("%s%d %s",
 				i <= 9 ? "&" : "", i + 1,
-				wxFileName(to_wx(*it)).GetFullName()));
+				name));
 			items[i]->Enable(true);
 		}
 	}
@@ -165,7 +166,7 @@ class CommandManager {
 			text = c->StrMenu(context);
 		else
 			text = item.second->GetItemLabel().BeforeFirst('\t');
-		item.second->SetItemLabel(text + "\t" + hotkey::get_hotkey_str_first("Default", c->name()));
+		item.second->SetItemLabel(text + to_wx("\t" + hotkey::get_hotkey_str_first("Default", c->name())));
 	}
 
 public:
@@ -184,7 +185,7 @@ public:
 			wxITEM_NORMAL;
 
 		wxString menu_text = text.empty() ? co->StrMenu(context) : _(to_wx(text));
-		menu_text += "\t" + hotkey::get_hotkey_str_first("Default", co->name());
+		menu_text += to_wx("\t" + hotkey::get_hotkey_str_first("Default", co->name()));
 
 		wxMenuItem *item = new wxMenuItem(parent, MENU_ID_BASE + items.size(), menu_text, co->StrHelp(), kind);
 #ifndef __WXMAC__
@@ -292,7 +293,7 @@ menu_map const& get_menus_root() {
 	if (!root.empty()) return root;
 
 	try {
-		root = agi::json_util::file(StandardPaths::DecodePath("?user/menu.json").utf8_str().data(), GET_DEFAULT_CONFIG(default_menu));
+		root = agi::json_util::file(StandardPaths::DecodePath("?user/menu.json"), GET_DEFAULT_CONFIG(default_menu));
 		return root;
 	}
 	catch (json::Reader::ParseException const& e) {

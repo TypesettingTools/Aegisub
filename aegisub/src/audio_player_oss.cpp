@@ -75,7 +75,7 @@ void OSSPlayer::OpenStream()
 
     // Open device
     wxString device = to_wx(OPT_GET("Player/Audio/OSS/Device")->GetString());
-    dspdev = ::open(device.mb_str(wxConvUTF8), O_WRONLY, 0);
+    dspdev = ::open(device.utf8_str(), O_WRONLY, 0);
     if (dspdev < 0) {
         throw OSSError("OSS player: opening device failed", 0);
     }

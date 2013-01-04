@@ -34,24 +34,18 @@
 
 #include "config.h"
 
-#include "main.h"
-
-#include "include/aegisub/menu.h"
 #include "command/command.h"
 #include "command/icon.h"
-#include "include/aegisub/toolbar.h"
 #include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
-#include "ass_export_filter.h"
 #include "ass_file.h"
-#include "audio_box.h"
 #include "auto4_base.h"
-#include "charset_conv.h"
 #include "compat.h"
 #include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"
+#include "main.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "plugin_manager.h"
@@ -61,25 +55,27 @@
 #include "video_context.h"
 #include "utils.h"
 
+#include <libaegisub/dispatch.h>
+#include <libaegisub/fs.h>
+#include <libaegisub/hotkey.h>
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
-#include <libaegisub/hotkey.h>
-#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
+#include <boost/filesystem/fstream.hpp>
+#include <boost/format.hpp>
 #include <sstream>
 
-#include <wx/clipbrd.h>
 #include <wx/config.h>
-#include <wx/datetime.h>
-#include <wx/filefn.h>
-#include <wx/filename.h>
 #include <wx/msgdlg.h>
-#include <wx/stdpaths.h>
+#include <wx/stackwalk.h>
 #include <wx/utils.h>
 
 namespace config {
-	agi::Options *opt = 0;
-	agi::MRUManager *mru = 0;
+	agi::Options *opt = nullptr;
+	agi::MRUManager *mru = nullptr;
+	agi::Path *path = nullptr;
 }
 
 IMPLEMENT_APP(AegisubApp)
@@ -133,6 +129,8 @@ AegisubApp::AegisubApp() {
 	wxSetEnv("UBUNTU_MENUPROXY", "0");
 }
 
+wxDEFINE_EVENT(EVT_CALL_THUNK, wxThreadEvent);
+
 /// @brief Gets called when application starts.
 /// @return bool
 bool AegisubApp::OnInit() {
@@ -143,13 +141,20 @@ bool AegisubApp::OnInit() {
 	SetAppName("aegisub");
 #endif
 
-	Bind(EVT_CALL_THUNK, [](wxThreadEvent &evt) {
+	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
+	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
+		wxThreadEvent *evt = new wxThreadEvent(EVT_CALL_THUNK);
+		evt->SetPayload(f);
+		wxTheApp->QueueEvent(evt);
+	});
+
+	wxTheApp->Bind(EVT_CALL_THUNK, [](wxThreadEvent &evt) {
 		evt.GetPayload<std::function<void()>>()();
 	});
 
-	// logging.
-	agi::log::log = new agi::log::LogSink;
+	config::path = new agi::Path;
 
+	agi::log::log = new agi::log::LogSink;
 #ifdef _DEBUG
 	agi::log::log->Subscribe(new agi::log::EmitSTDOUT());
 #endif
@@ -159,29 +164,29 @@ bool AegisubApp::OnInit() {
 #ifdef __WXMSW__
 	// Try loading configuration from the install dir if one exists there
 	try {
-		std::string conf_local(from_wx(StandardPaths::DecodePath("?data/config.json")));
-		agi::scoped_ptr<std::istream> localConfig(agi::io::Open(conf_local));
+		auto conf_local(StandardPaths::DecodePath("?data/config.json"));
+		std::unique_ptr<std::istream> localConfig(agi::io::Open(conf_local));
 		config::opt = new agi::Options(conf_local, GET_DEFAULT_CONFIG(default_config));
 
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
 		StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
 		StandardPaths::SetPathValue("?local", StandardPaths::DecodePath("?data"));
-	} catch (agi::FileNotAccessibleError const&) {
+	} catch (agi::fs::FileSystemError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
 	}
 #endif
 
 	StartupLog("Create log writer");
-	wxString path_log = StandardPaths::DecodePath("?user/log/");
-	wxFileName::Mkdir(path_log, 0777, wxPATH_MKDIR_FULL);
-	agi::log::log->Subscribe(new agi::log::JsonEmitter(from_wx(path_log), agi::log::log));
+	auto path_log = StandardPaths::DecodePath("?user/log/");
+	agi::fs::CreateDirectory(path_log);
+	agi::log::log->Subscribe(new agi::log::JsonEmitter(path_log, agi::log::log));
 	CleanCache(path_log, "*.json", 10, 100);
 
 	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
-			config::opt = new agi::Options(from_wx(StandardPaths::DecodePath("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
+			config::opt = new agi::Options(StandardPaths::DecodePath("?user/config.json"), GET_DEFAULT_CONFIG(default_config));
 		std::istringstream stream(GET_DEFAULT_CONFIG(default_config_platform));
 		config::opt->ConfigNext(stream);
 	} catch (agi::Exception& e) {
@@ -205,7 +210,7 @@ bool AegisubApp::OnInit() {
 	icon::icon_init();
 
 	StartupLog("Load MRU");
-	config::mru = new agi::MRUManager(from_wx(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru), config::opt);
+	config::mru = new agi::MRUManager(StandardPaths::DecodePath("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
 
 	SetThreadName(-1, "AegiMain");
 
@@ -246,7 +251,7 @@ bool AegisubApp::OnInit() {
 
 		// Load Automation scripts
 		StartupLog("Load global Automation scripts");
-		global_scripts = new Automation4::AutoloadScriptManager(to_wx(OPT_GET("Path/Automation/Autoload")->GetString()));
+		global_scripts = new Automation4::AutoloadScriptManager(OPT_GET("Path/Automation/Autoload")->GetString());
 
 		// Load export filters
 		StartupLog("Register export filters");
@@ -286,8 +291,7 @@ bool AegisubApp::OnInit() {
 #endif
 
 	StartupLog("Clean old autosave files");
-	wxString autosave_path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Auto/Save")->GetString()));
-	CleanCache(autosave_path, "*.AUTOSAVE.ass", 100, 1000);
+	CleanCache(StandardPaths::DecodePath(OPT_GET("Path/Auto/Save")->GetString()), "*.AUTOSAVE.ass", 100, 1000);
 
 	StartupLog("Initialization complete");
 	return true;
@@ -298,7 +302,6 @@ int AegisubApp::OnExit() {
 		delete frame;
 
 	SubtitleFormat::DestroyFormats();
-	VideoContext::OnExit();
 	delete plugins;
 	delete config::opt;
 	delete config::mru;
@@ -317,50 +320,44 @@ int AegisubApp::OnExit() {
 
 #if wxUSE_STACKWALKER == 1
 class StackWalker: public wxStackWalker {
-	wxFile *crash_text;	// FP to the crash text file.
+	boost::filesystem::ofstream fp;
 
 public:
-	StackWalker(wxString cause);
+	StackWalker(std::string const& cause);
 	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
+	void OnStackFrame(wxStackFrame const& frame);
 };
 
 /// @brief Called at the start of walking the stack.
 /// @param cause cause of the crash.
-///
-StackWalker::StackWalker(wxString cause) {
-	crash_text = new wxFile(StandardPaths::DecodePath("?user/crashlog.txt"), wxFile::write_append);
+StackWalker::StackWalker(std::string const& cause)
+: fp(StandardPaths::DecodePath("?user/crashlog.txt"), std::ios::app)
+{
+	if (!fp.good()) return;
 
-	if (crash_text->IsOpened()) {
-		wxDateTime time = wxDateTime::Now();
-
-		crash_text->Write(wxString::Format("--- %s ------------------\n", time.FormatISOCombined()));
-		crash_text->Write(wxString::Format("VER - %s\n", GetAegisubLongVersionString()));
-		crash_text->Write(wxString::Format("FTL - Beginning stack dump for \"%s\":\n", cause));
-	}
+	fp << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
+	fp << boost::format("VER - %s\n") % GetAegisubLongVersionString();
+	fp << boost::format("FTL - Beginning stack dump for \"%s\": \n") % cause;
 }
 
 /// @brief Callback to format a single frame
 /// @param frame frame to parse.
-///
-void StackWalker::OnStackFrame(const wxStackFrame &frame) {
-	if (crash_text->IsOpened()) {
-		wxString dst = wxString::Format("%03u - %p: ", (unsigned)frame.GetLevel(),frame.GetAddress()) + frame.GetName();
-		if (frame.HasSourceLocation())
-			dst = wxString::Format("%s on %s:%u", dst, frame.GetFileName(), (unsigned)frame.GetLine());
+void StackWalker::OnStackFrame(wxStackFrame const& frame) {
+	if (!fp.good()) return;
 
-		crash_text->Write(wxString::Format("%s\n", dst));
-	}
+	fp << boost::format("%03u - %p: %s") % frame.GetLevel() % frame.GetAddress();
+	if (frame.HasSourceLocation())
+		fp << boost::format(" on %s:%u") % frame.GetFileName(), frame.GetLine();
+
+	fp << "\n";
 }
 
 /// @brief Called at the end of walking the stack.
 StackWalker::~StackWalker() {
-	if (crash_text->IsOpened()) {
-		crash_text->Write("End of stack dump.\n");
-		crash_text->Write("----------------------------------------\n\n");
+	if (!fp.good()) return;
 
-		crash_text->Close();
-	}
+	fp << "End of stack dump.\n";
+	fp << "----------------------------------------\n\n";
 }
 #endif
 
@@ -370,17 +367,12 @@ const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn at
 static void UnhandledExeception(bool stackWalk) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	if (AssFile::top) {
-		// Current filename if any.
-		wxFileName file(AssFile::top->filename);
-		if (!file.HasName()) file.SetName("untitled");
+		auto path = StandardPaths::DecodePath("?user/recovered");
+		agi::fs::CreateDirectory(path);
 
-		// Set path and create if it doesn't exist.
-		file.SetPath(StandardPaths::DecodePath("?user/recovered"));
-		if (!file.DirExists()) file.Mkdir();
-
-		// Save file
-		wxString filename = wxString::Format("%s/%s.%s.ass", file.GetPath(), file.GetName(), wxDateTime::Now().Format("%Y-%m-%d-%H-%M-%S"));
-		AssFile::top->Save(filename,false,false);
+		auto filename = AssFile::top->filename.empty() ? "untitled" : AssFile::top->filename.stem().string();
+		path /= str(boost::format("%s.%s.ass") % filename % agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
+		AssFile::top->Save(path, false, false);
 
 #if wxUSE_STACKWALKER == 1
 		if (stackWalk) {
@@ -390,7 +382,7 @@ static void UnhandledExeception(bool stackWalk) {
 #endif
 
 		// Inform user of crash.
-		wxMessageBox(wxString::Format(exception_message, filename), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, nullptr);
+		wxMessageBox(wxString::Format(exception_message, path.wstring()), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, nullptr);
 	}
 	else if (LastStartupState) {
 #if wxUSE_STACKWALKER == 1
@@ -404,12 +396,10 @@ static void UnhandledExeception(bool stackWalk) {
 #endif
 }
 
-/// @brief Called during an unhandled exception
 void AegisubApp::OnUnhandledException() {
 	UnhandledExeception(false);
 }
 
-/// @brief Called during a fatal exception.
 void AegisubApp::OnFatalException() {
 	UnhandledExeception(true);
 }
@@ -423,10 +413,10 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 		SHOW_EXCEPTION(to_wx(e.GetChainedMessage()));
 	}
 	catch (const std::exception &e) {
-		SHOW_EXCEPTION(wxString(e.what(), wxConvUTF8));
+		SHOW_EXCEPTION(to_wx(e.what()));
 	}
 	catch (const char *e) {
-		SHOW_EXCEPTION(wxString(e, wxConvUTF8));
+		SHOW_EXCEPTION(to_wx(e));
 	}
 	catch (const wxString &e) {
 		SHOW_EXCEPTION(e);
@@ -435,33 +425,26 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 }
 
 int AegisubApp::OnRun() {
-	wxString error;
+	std::string error;
 
-	// Run program
 	try {
 		if (m_exitOnFrameDelete == Later) m_exitOnFrameDelete = Yes;
 		return MainLoop();
 	}
-
-	// Catch errors
-	catch (const wxString &err) { error = err; }
+	catch (const wxString &err) { error = from_wx(err); }
 	catch (const char *err) { error = err; }
-	catch (const std::exception &e) { error = wxString("std::exception: ") + wxString(e.what(),wxConvUTF8); }
-	catch (const agi::Exception &e) { error = "agi::exception: " + to_wx(e.GetChainedMessage()); }
+	catch (const std::exception &e) { error = std::string("std::exception: ") + e.what(); }
+	catch (const agi::Exception &e) { error = "agi::exception: " + e.GetChainedMessage(); }
 	catch (...) { error = "Program terminated in error."; }
 
 	// Report errors
-	if (!error.IsEmpty()) {
-		std::ofstream file;
-		file.open(wxString(StandardPaths::DecodePath("?user/crashlog.txt")).mb_str(),std::ios::out | std::ios::app);
+	if (!error.empty()) {
+		boost::filesystem::ofstream file(StandardPaths::DecodePath("?user/crashlog.txt"), std::ios::app);
 		if (file.is_open()) {
-			wxDateTime time = wxDateTime::Now();
-			wxString timeStr = "---" + time.FormatISODate() + " " + time.FormatISOTime() + "------------------";
-			file << std::endl << timeStr.mb_str(csConvLocal);
-			file << "\nVER - " << GetAegisubLongVersionString();
-			file << "\nEXC - Aegisub has crashed with unhandled exception \"" << error.mb_str(csConvLocal) <<"\".\n";
-			file << wxString('-', timeStr.size());
-			file << "\n";
+			file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
+			file << boost::format("VER - %s\n") % GetAegisubLongVersionString();
+			file << boost::format("EXC - Aegisub has crashed with unhandled exception \"%s\".\n") % error;
+			file << "----------------------------------------\n\n";
 			file.close();
 		}
 
@@ -474,7 +457,7 @@ int AegisubApp::OnRun() {
 
 void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame != nullptr && !filename.empty()) {
-		frame->LoadSubtitles(filename);
+		frame->LoadSubtitles(from_wx(filename));
 		wxFileName filepath(filename);
 		OPT_SET("Path/Last/Subtitles")->SetString(from_wx(filepath.GetPath()));
 	}

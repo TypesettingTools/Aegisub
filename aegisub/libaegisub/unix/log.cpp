@@ -44,8 +44,8 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->file,
 		sm->func,
 		sm->line,
-		(int)sm->len,
-		sm->message);
+		(int)sm->message.size(),
+		sm->message.c_str());
 	if (!isatty(fileno(stdout)))
 		fflush(stdout);
 }

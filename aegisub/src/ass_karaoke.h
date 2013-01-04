@@ -25,8 +25,6 @@
 #include <string>
 #include <vector>
 
-#include <wx/string.h>
-
 #include <libaegisub/signal.h>
 
 namespace agi { struct Context; }
@@ -84,7 +82,7 @@ public:
 	size_t size() const { return syls.size(); }
 
 	/// Get the line's text with k tags
-	wxString GetText() const;
+	std::string GetText() const;
 
 	/// Get the karaoke tag type used, with leading slash
 	/// @returns "\k", "\kf", or "\ko"

@@ -67,7 +67,7 @@ public:
 	double GetDAR() const                 { return master->GetDAR(); }
 	agi::vfr::Framerate GetFPS() const    { return master->GetFPS(); }
 	std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
-	wxString GetWarning() const           { return master->GetWarning(); }
-	wxString GetDecoderName() const       { return master->GetDecoderName(); }
-	wxString GetColorSpace() const        { return master->GetColorSpace(); }
+	std::string GetWarning() const        { return master->GetWarning(); }
+	std::string GetDecoderName() const    { return master->GetDecoderName(); }
+	std::string GetColorSpace() const     { return master->GetColorSpace(); }
 };

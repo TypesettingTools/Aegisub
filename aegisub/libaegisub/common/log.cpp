@@ -18,21 +18,20 @@
 
 #include "../config.h"
 
-#include <algorithm>
-#include <cstdio>
-#include <cstring>
-#include <functional>
-#include <memory>
-#include <sstream>
+#include "libaegisub/log.h"
 
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/io.h"
-#include "libaegisub/log.h"
 #include "libaegisub/types.h"
 #include "libaegisub/util.h"
 
+#include <algorithm>
 #include <boost/range/algorithm.hpp>
+#include <cstring>
+#include <fstream>
+#include <functional>
+#include <memory>
 
 namespace agi {
 	namespace log {
@@ -109,7 +108,7 @@ Message::~Message() {
 	agi::log::log->log(sm);
 }
 
-JsonEmitter::JsonEmitter(std::string const& directory, const agi::log::LogSink *log_sink)
+JsonEmitter::JsonEmitter(agi::fs::path const& directory, const agi::log::LogSink *log_sink)
 : directory(directory)
 , log_sink(log_sink)
 {
@@ -146,9 +145,7 @@ JsonEmitter::~JsonEmitter() {
 	timeval_close.push_back((int64_t)time_close.tv_sec);
 	timeval_close.push_back((int64_t)time_close.tv_usec);
 
-	std::stringstream str;
-	str << directory << time_start.tv_sec << ".json";
-	json::Writer::Write(root, io::Save(str.str()).Get());
+	json::Writer::Write(root, io::Save(directory/(std::to_string(time_start.tv_sec) + ".json")).Get());
 }
 
 	} // namespace log

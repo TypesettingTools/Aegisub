@@ -49,5 +49,5 @@ class DialogAutosave : public wxDialog {
 
 public:
 	DialogAutosave(wxWindow *parent);
-	wxString ChosenFile() const;
+	std::string ChosenFile() const;
 };

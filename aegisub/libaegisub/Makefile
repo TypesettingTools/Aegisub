@@ -25,23 +25,27 @@ SRC += \
 	common/charset.cpp \
 	common/charset_6937.cpp \
 	common/charset_conv.cpp \
-	common/charset_ucd.cpp \
 	common/color.cpp \
+	common/dispatch.cpp \
+	common/fs.cpp \
 	common/hotkey.cpp \
 	common/io.cpp \
 	common/json.cpp \
 	common/keyframe.cpp \
+	common/log.cpp \
 	common/mru.cpp \
 	common/option.cpp \
 	common/option_visit.cpp \
 	common/parser.cpp \
-	common/util.cpp \
-	common/log.cpp \
+	common/path.cpp \
 	common/thesaurus.cpp \
+	common/util.cpp \
 	common/vfr.cpp \
-	unix/util.cpp \
 	unix/access.cpp \
-	unix/log.cpp
+	unix/fs.cpp \
+	unix/log.cpp \
+	unix/path.cpp \
+	unix/util.cpp
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += osx/util.mm

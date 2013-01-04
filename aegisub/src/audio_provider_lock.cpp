@@ -29,6 +29,6 @@ LockAudioProvider::LockAudioProvider(AudioProvider *source) : source(source) {
 }
 
 void LockAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	wxMutexLocker lock(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 	source->GetAudio(buf, start, count);
 }

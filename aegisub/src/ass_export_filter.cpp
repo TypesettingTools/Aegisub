@@ -34,12 +34,19 @@
 
 #include "config.h"
 
-#include <algorithm>
-
 #include "ass_export_filter.h"
+
 #include "utils.h"
 
-AssExportFilter::AssExportFilter(wxString const& name, wxString const& description, int priority)
+#include <algorithm>
+#include <boost/format.hpp>
+
+static FilterList& filters() {
+	static FilterList instance;
+	return instance;
+}
+
+AssExportFilter::AssExportFilter(std::string const& name, std::string const& description, int priority)
 : name(name)
 , priority(priority)
 , description(description)
@@ -47,52 +54,44 @@ AssExportFilter::AssExportFilter(wxString const& name, wxString const& descripti
 }
 
 void AssExportFilterChain::Register(AssExportFilter *filter) {
-	// Remove pipes from name
-	filter->name.Replace("|", "");
-
 	int filter_copy = 1;
-	wxString name = filter->name;
+	std::string name = filter->name;
 	// Find a unique name
 	while (GetFilter(name))
-		name = wxString::Format("%s (%d)", filter->name, filter_copy++);
+		name = str(boost::format("%s (%d)") % filter->name % filter_copy++);
 
 	filter->name = name;
 
 	// Look for place to insert
-	FilterList::iterator begin = filters()->begin();
-	FilterList::iterator end = filters()->end();
+	auto begin(filters().begin()), end(filters().end());
 	while (begin != end && (*begin)->priority >= filter->priority) ++begin;
-	filters()->insert(begin, filter);
+	filters().insert(begin, filter);
 }
 
 void AssExportFilterChain::Unregister(AssExportFilter *filter) {
-	auto it = remove(begin(*filters()), end(*filters()), filter);
-	if (it == end(*filters()))
+	auto it = remove(begin(filters()), end(filters()), filter);
+	if (it == end(filters()))
 		throw wxString::Format("Unregister export filter: name \"%s\" is not registered.", filter->name);
 
-	filters()->pop_back();
+	filters().pop_back();
 }
 
-FilterList *AssExportFilterChain::filters() {
-	static FilterList instance;
-	return &instance;
-}
 
 const FilterList *AssExportFilterChain::GetFilterList() {
-	return filters();
+	return &filters();
 }
 
 void AssExportFilterChain::Clear() {
-	while (filters()->size() > 0) {
-		AssExportFilter *f = filters()->back();
+	while (filters().size() > 0) {
+		AssExportFilter *f = filters().back();
 		delete f;
-		if (filters()->size() && filters()->back() == f)
-			filters()->pop_back();
+		if (filters().size() && filters().back() == f)
+			filters().pop_back();
 	}
 }
 
-AssExportFilter *AssExportFilterChain::GetFilter(wxString const& name) {
-	for (auto filter : *filters()) {
+AssExportFilter *AssExportFilterChain::GetFilter(std::string const& name) {
+	for (auto filter : filters()) {
 		if (filter->name == name)
 			return filter;
 	}

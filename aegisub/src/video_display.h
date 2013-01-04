@@ -47,7 +47,7 @@
 
 // Prototypes
 class AegiVideoFrame;
-class FrameReadyEvent;
+struct FrameReadyEvent;
 class VideoContext;
 class VideoOutGL;
 class VisualToolBase;

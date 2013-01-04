@@ -146,6 +146,13 @@ public:
 	}
 };
 
+// Enable range-based for
+template<typename T>
+line_iterator<T>& begin(line_iterator<T>& it) { return it; }
+
+template<typename T>
+line_iterator<T> end(line_iterator<T>&) { return agi::line_iterator<T>(); }
+
 template<class OutputType>
 void line_iterator<OutputType>::getline(std::string &str) {
 	union {

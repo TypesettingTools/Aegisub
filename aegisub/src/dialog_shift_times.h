@@ -19,15 +19,17 @@
 /// @ingroup secondary_ui
 ///
 
-#include <deque>
+#include "selection_controller.h"
 
-#include <wx/dialog.h>
-
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 
-#include "selection_controller.h"
+#include <boost/filesystem/path.hpp>
+#include <deque>
+
+#include <wx/dialog.h>
 
 class AssDialogue;
 class TimeEdit;
@@ -44,7 +46,7 @@ namespace json {
 class DialogShiftTimes : public wxDialog {
 	agi::Context *context;
 
-	std::string history_filename;
+	agi::fs::path history_filename;
 	agi::scoped_ptr<json::Array> history;
 	agi::vfr::Framerate fps;
 	agi::signal::Connection timecodes_loaded_slot;

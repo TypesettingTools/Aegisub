@@ -32,30 +32,26 @@
 /// @ingroup audio_input
 ///
 
-
 #include "config.h"
+
+#include "audio_provider_pcm.h"
+
+#include "aegisub_endian.h"
+#include "audio_controller.h"
+#include "utils.h"
+
+#include <libaegisub/fs.h>
+#include <libaegisub/log.h>
 
 #include <cassert>
 #include <cstdint>
-#ifndef __WINDOWS__
+#ifndef _WIN32
 #include <sys/fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #endif
 
-#include <wx/file.h>
-#include <wx/filename.h>
-#include <wx/log.h>
-
-#include <libaegisub/log.h>
-
-#include "aegisub_endian.h"
-#include "audio_controller.h"
-#include "audio_provider_pcm.h"
-#include "compat.h"
-#include "utils.h"
-
-PCMAudioProvider::PCMAudioProvider(const wxString &filename)
+PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
 : current_mapping(0)
 , mapping_start(0)
 , mapping_length(0)
@@ -73,13 +69,7 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 		0);
 
 	if (file_handle == INVALID_HANDLE_VALUE)
-		throw agi::FileNotFoundError(from_wx(filename));
-
-	LARGE_INTEGER li_file_size = {0};
-	if (!GetFileSizeEx(file_handle, &li_file_size))
-		throw agi::AudioProviderOpenError("Failed getting file size", 0);
-
-	file_size = li_file_size.QuadPart;
+		throw agi::fs::FileNotFound(filename);
 
 	file_mapping = CreateFileMapping(
 		file_handle,
@@ -91,24 +81,22 @@ PCMAudioProvider::PCMAudioProvider(const wxString &filename)
 	if (file_mapping == 0)
 		throw agi::AudioProviderOpenError("Failed creating file mapping", 0);
 #else
-, file_handle(open(filename.mb_str(*wxConvFileName), O_RDONLY), close)
+, file_handle(open(filename.c_str(), O_RDONLY), close)
 {
 	if (file_handle == -1)
-		throw agi::FileNotFoundError(from_wx(filename));
-
-	struct stat filestats;
-	memset(&filestats, 0, sizeof(filestats));
-	if (fstat(file_handle, &filestats)) {
-		close(file_handle);
-		throw agi::AudioProviderOpenError("Could not stat file to get size", 0);
-	}
-	file_size = filestats.st_size;
+		throw agi::fs::FileNotFound(filename.string());
 #endif
 	float_samples = false;
+
+	try {
+		file_size = agi::fs::Size(filename);
+	}
+	catch (agi::Exception const& e) {
+		throw agi::AudioPlayerOpenError("Could not get file size", e.Copy());
+	}
 }
 
-PCMAudioProvider::~PCMAudioProvider()
-{
+PCMAudioProvider::~PCMAudioProvider() {
 #ifdef _WIN32
 	if (current_mapping)
 		UnmapViewOfFile(current_mapping);
@@ -118,11 +106,9 @@ PCMAudioProvider::~PCMAudioProvider()
 #endif
 }
 
-char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length) const
-{
-	if (range_start + range_length > file_size) {
+char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length) const {
+	if (range_start + range_length > file_size)
 		throw AudioDecodeError("Attempted to map beyond end of file");
-	}
 
 	// Check whether the requested range is already visible
 	if (!current_mapping || range_start < mapping_start || range_start+range_length > mapping_start+(int64_t)mapping_length) {
@@ -171,9 +157,8 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 		current_mapping = mmap(0, mapping_length, PROT_READ, MAP_PRIVATE, file_handle, mapping_start);
 #endif
 
-		if (!current_mapping) {
+		if (!current_mapping)
 			throw AudioDecodeError("Failed mapping a view of the file");
-		}
 	}
 
 	assert(current_mapping);
@@ -186,8 +171,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 	return ((char*)current_mapping) + rel_ofs;
 }
 
-void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
-{
+void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	// Read blocks from the file
 	size_t index = 0;
 	while (count > 0 && index < index_points.size()) {
@@ -268,10 +252,10 @@ class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 
 public:
 
-	RiffWavPCMAudioProvider(const wxString &_filename)
-	: PCMAudioProvider(_filename)
+	RiffWavPCMAudioProvider(agi::fs::path const& filename)
+	: PCMAudioProvider(filename)
 	{
-		filename = _filename;
+		this->filename = filename;
 
 		// Read header
 		void *filestart = EnsureRangeAccessible(0, sizeof(RIFFChunk));
@@ -345,8 +329,7 @@ public:
 		}
 	}
 
-	bool AreSamplesNativeEndian() const
-	{
+	bool AreSamplesNativeEndian() const {
 		// 8 bit samples don't consider endianness
 		if (bytes_per_sample < 2) return true;
 		// Otherwise test whether we're little endian
@@ -411,17 +394,16 @@ class Wave64AudioProvider : public PCMAudioProvider {
 		uint64_t chunk_size;
 	};
 
-	inline bool CheckGuid(const uint8_t *guid1, const uint8_t *guid2)
-	{
+	bool CheckGuid(const uint8_t *guid1, const uint8_t *guid2) {
 		return memcmp(guid1, guid2, 16) == 0;
 	}
 
 public:
 
-	Wave64AudioProvider(const wxString &_filename)
-	: PCMAudioProvider(_filename)
+	Wave64AudioProvider(agi::fs::path const& filename)
+	: PCMAudioProvider(filename)
 	{
-		filename = _filename;
+		this->filename = filename;
 
 		int64_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
@@ -496,8 +478,7 @@ public:
 		}
 	}
 
-	bool AreSamplesNativeEndian() const
-	{
+	bool AreSamplesNativeEndian() const {
 		// 8 bit samples don't consider endianness
 		if (bytes_per_sample < 2) return true;
 		// Otherwise test whether we're little endian
@@ -506,8 +487,7 @@ public:
 	}
 };
 
-AudioProvider *CreatePCMAudioProvider(const wxString &filename)
-{
+AudioProvider *CreatePCMAudioProvider(agi::fs::path const& filename) {
 	bool wrong_file_type = true;
 	std::string msg;
 

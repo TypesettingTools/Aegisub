@@ -35,9 +35,9 @@
 #include <boost/container/map.hpp>
 
 #include <memory>
+#include <string>
 #include <vector>
 
-#include <wx/colour.h>
 #include <wx/font.h>
 
 namespace {
@@ -45,16 +45,17 @@ struct OpenGLTextGlyph;
 class OpenGLTextTexture;
 }
 
-typedef boost::container::map<int,OpenGLTextGlyph> glyphMap;
+namespace agi { struct Color; }
+
+typedef boost::container::map<int, OpenGLTextGlyph> glyphMap;
 
 class OpenGLText {
 	float r,g,b,a;
 
-	int lineHeight;
 	int fontSize;
 	bool fontBold;
 	bool fontItalics;
-	wxString fontFace;
+	std::string fontFace;
 	wxFont font;
 
 	glyphMap glyphs;
@@ -71,7 +72,7 @@ class OpenGLText {
 	/// @brief Create a new glyph
 	OpenGLTextGlyph const& CreateGlyph(int chr);
 
-	void DrawString(const wxString &text,int x,int y);
+	void DrawString(const std::string &text,int x,int y);
 public:
 	/// @brief Get the currently active font
 	wxFont GetFont() const { return font; }
@@ -81,21 +82,20 @@ public:
 	/// @param size    Size in points of the desired font
 	/// @param bold    Should the font be bold?
 	/// @param italics Should the font be italic?
-	void SetFont(wxString face,int size,bool bold,bool italics);
+	void SetFont(std::string const& face, int size, bool bold, bool italics);
 	/// @brief Set the text color
 	/// @param col   Color
-	/// @param alpha Alpha value from 0.f-1.f
-	void SetColour(wxColour col,float alpha);
+	void SetColour(agi::Color col);
 	/// @brief Print a string on screen
 	/// @param text String to print
 	/// @param x    x coordinate
 	/// @param y    y coordinate
-	void Print(const wxString &text,int x,int y);
+	void Print(const std::string &text,int x,int y);
 	/// @brief Get the extents of a string printed with the current font in pixels
 	/// @param text String to get extends of
 	/// @param[out] w    Width
 	/// @param[out] h    Height
-	void GetExtent(const wxString &text,int &w,int &h);
+	void GetExtent(const std::string &text,int &w,int &h);
 
 	OpenGLText();
 	~OpenGLText();

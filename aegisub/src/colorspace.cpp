@@ -37,18 +37,10 @@
 #include "colorspace.h"
 #include "utils.h"
 
-
-// Matrix from http://forum.doom9.org/showthread.php?p=684080#post684080
-void yuv_to_rgb(int Y, int U, int V, unsigned char *R, unsigned char *G, unsigned char *B)
+static inline unsigned int clip_colorval(int val)
 {
-	U = U - 128;
-	V = V - 128;
-	*R = clip_colorval((Y*65536                        + int(1.140*65536) * V) / 65536);
-	*G = clip_colorval((Y*65536 - int(0.395*65536) * U - int(0.581*65536) * V) / 65536);
-	*B = clip_colorval((Y*65536 + int(2.032*65536) * U                       ) / 65536);
+	return mid(0, val, 255);
 }
-
-
 
 // Algorithm from http://130.113.54.154/~monger/hsl-rgb.html
 void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigned char *B)
@@ -251,14 +243,6 @@ void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigne
 	*R = clip_colorval(r/256);
 	*G = clip_colorval(g/256);
 	*B = clip_colorval(b/256);
-}
-
-// Matrix from http://forum.doom9.org/showthread.php?p=684080#post684080
-void rgb_to_yuv(int R, int G, int B, unsigned char *Y, unsigned char *U, unsigned char *V)
-{
-	*Y = clip_colorval(( int(0.299*65536) * R + int(0.587*65536) * G + int(0.114*65536) * B) / 65536);
-	*U = clip_colorval((-int(0.147*65536) * R - int(0.289*65536) * G + int(0.436*65536) * B) / 65536 + 128);
-	*V = clip_colorval(( int(0.615*65536) * R - int(0.515*65536) * G - int(0.100*65536) * B) / 65536 + 128);
 }
 
 /// Algorithm from http://130.113.54.154/~monger/hsl-rgb.html

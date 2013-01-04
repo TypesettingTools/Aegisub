@@ -12,26 +12,24 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#ifndef AGI_PRE
-#include <wx/string.h>
-#endif
-
 #include <libaegisub/signal.h>
+
+#include <string>
 
 namespace agi { struct Context; }
 class AssDialogue;
 
 class InitialLineState {
 	agi::signal::Connection active_line_connection;
-	wxString initial_text;
+	std::string initial_text;
 	int line_id;
 
-	agi::signal::Signal<wxString const&> InitialStateChanged;
+	agi::signal::Signal<std::string const&> InitialStateChanged;
 	void OnActiveLineChanged(AssDialogue *new_line);
 
 public:
 	InitialLineState(agi::Context *c);
 
-	wxString GetInitialText() const { return initial_text; }
+	std::string const& GetInitialText() const { return initial_text; }
 	DEFINE_SIGNAL_ADDERS(InitialStateChanged, AddChangeListener);
 };

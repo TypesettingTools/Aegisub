@@ -11,16 +11,11 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
 
-/// @file libaegisub_mru.cpp
-/// @brief agi::mru (Most Recently Used)
-/// @ingroup mru
-
+#include <libaegisub/fs.h>
 #include <libaegisub/mru.h>
+
 #include "main.h"
-#include "util.h"
 
 class lagi_mru : public libagi {
 protected:
@@ -34,56 +29,58 @@ protected:
 };
 
 
-TEST_F(lagi_mru, MRUConstructFromFile) {
+TEST_F(lagi_mru, load_from_file) {
 	ASSERT_NO_THROW(agi::MRUManager mru(conf_ok, default_mru));
 	agi::MRUManager mru(conf_ok, default_mru);
-	agi::MRUManager::MRUListMap::const_iterator entry = mru.Get("Valid")->begin();
-	EXPECT_STREQ("Entry One", (*entry++).c_str());
-	EXPECT_STREQ("Entry Two", (*entry++).c_str());
+	ASSERT_NO_THROW(mru.Get("Valid"));
+	ASSERT_EQ(2u, mru.Get("Valid")->size());
+	auto entry = mru.Get("Valid")->begin();
+	EXPECT_STREQ("Entry One", (*entry++).string().c_str());
+	EXPECT_STREQ("Entry Two", (*entry++).string().c_str());
 	EXPECT_TRUE(mru.Get("Valid")->end() == entry);
 }
 
-TEST_F(lagi_mru, MRUConstructFromString) {
-	util::remove("data/mru_tmp");
+TEST_F(lagi_mru, load_from_default_string) {
+	agi::fs::Remove("data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 }
 
-TEST_F(lagi_mru, MRUConstructInvalid) {
-	util::copy("data/mru_invalid.json", "data/mru_tmp");
+TEST_F(lagi_mru, load_from_invalid_file) {
+	agi::fs::Copy("data/mru_invalid.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_TRUE(mru.Get("Invalid")->empty());
 }
 
-TEST_F(lagi_mru, MRUEntryAdd) {
-	util::copy("data/mru_ok.json", "data/mru_tmp");
+TEST_F(lagi_mru, add_entry) {
+	agi::fs::Copy("data/mru_ok.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
-	EXPECT_STREQ("/path/to/file", mru.Get("Valid")->front().c_str());
+	EXPECT_STREQ("/path/to/file", mru.Get("Valid")->front().string().c_str());
 }
 
-TEST_F(lagi_mru, MRUEntryRemove) {
-	util::copy("data/mru_ok.json", "data/mru_tmp");
+TEST_F(lagi_mru, remove_entry) {
+	agi::fs::Copy("data/mru_ok.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
 	EXPECT_NO_THROW(mru.Remove("Valid", "/path/to/file"));
-	EXPECT_STRNE("/path/to/file", mru.Get("Valid")->front().c_str());
+	EXPECT_STRNE("/path/to/file", mru.Get("Valid")->front().string().c_str());
 }
 
-TEST_F(lagi_mru, MRUKeyInvalid) {
-	util::copy("data/mru_ok.json", "data/mru_tmp");
+TEST_F(lagi_mru, invalid_mru_key_throws) {
+	agi::fs::Copy("data/mru_ok.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_THROW(mru.Add("Invalid", "/path/to/file"), agi::MRUErrorInvalidKey);
 	EXPECT_THROW(mru.Get("Invalid"), agi::MRUErrorInvalidKey);
 }
 
-TEST_F(lagi_mru, MRUKeyValid) {
-	util::copy("data/mru_ok.json", "data/mru_tmp");
+TEST_F(lagi_mru, valid_mru_key_doesnt_throw) {
+	agi::fs::Copy("data/mru_ok.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 	EXPECT_NO_THROW(mru.Add("Valid", "/path/to/file"));
 }
 
-TEST_F(lagi_mru, MRUAddSeveral) {
-	util::remove("data/mru_tmp");
+TEST_F(lagi_mru, adding_existing_moves_to_front) {
+	agi::fs::Remove("data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
 
 	EXPECT_NO_THROW(mru.Add("Valid", "/file/1"));
@@ -93,9 +90,9 @@ TEST_F(lagi_mru, MRUAddSeveral) {
 	EXPECT_NO_THROW(mru.Add("Valid", "/file/1"));
 	EXPECT_NO_THROW(mru.Add("Valid", "/file/3"));
 
-	EXPECT_STREQ("/file/3", mru.GetEntry("Valid", 0).c_str());
-	EXPECT_STREQ("/file/1", mru.GetEntry("Valid", 1).c_str());
-	EXPECT_STREQ("/file/2", mru.GetEntry("Valid", 2).c_str());
+	EXPECT_STREQ("/file/3", mru.GetEntry("Valid", 0).string().c_str());
+	EXPECT_STREQ("/file/1", mru.GetEntry("Valid", 1).string().c_str());
+	EXPECT_STREQ("/file/2", mru.GetEntry("Valid", 2).string().c_str());
 	EXPECT_THROW(mru.GetEntry("Valid", 3), agi::MRUErrorIndexOutOfRange);
 }
 

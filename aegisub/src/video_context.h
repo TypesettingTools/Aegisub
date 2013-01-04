@@ -32,24 +32,25 @@
 /// @ingroup video
 ///
 
+#include <libaegisub/fs_fwd.h>
+#include <libaegisub/signal.h>
+#include <libaegisub/vfr.h>
+
+#include <boost/filesystem/path.hpp>
+#include <chrono>
 #include <ctime>
 #include <list>
 #include <memory>
 #include <set>
 
 #include <wx/timer.h>
-#include <wx/stopwatch.h>
-
-#include <libaegisub/scoped_ptr.h>
-#include <libaegisub/signal.h>
-#include <libaegisub/vfr.h>
 
 class AegiVideoFrame;
 class AssEntry;
-class SubtitlesProviderErrorEvent;
+struct SubtitlesProviderErrorEvent;
 class ThreadedFrameSource;
 class VideoProvider;
-class VideoProviderErrorEvent;
+struct VideoProviderErrorEvent;
 
 namespace agi {
 	struct Context;
@@ -78,33 +79,33 @@ class VideoContext : public wxEvtHandler {
 
 	/// The video provider owned by the threaded frame source, or nullptr if no
 	/// video is open
-	VideoProvider *videoProvider;
+	VideoProvider *video_provider;
 
 	/// Asynchronous provider of video frames
-	agi::scoped_ptr<ThreadedFrameSource> provider;
+	std::unique_ptr<ThreadedFrameSource> provider;
 
 	/// Filename of currently open video
-	wxString videoFile;
+	agi::fs::path video_filename;
 
 	/// List of frame numbers which are keyframes
-	std::vector<int> keyFrames;
+	std::vector<int> keyframes;
 
 	/// File name of the currently open keyframes or empty if keyframes are not overridden
-	wxString keyFramesFilename;
+	agi::fs::path keyframes_filename;
 
 	/// Playback timer used to periodically check if we should go to the next
 	/// frame while playing video
 	wxTimer playback;
 
-	/// Time since playback was last started
-	wxStopWatch playTime;
+	/// Time when playback was last started
+	std::chrono::steady_clock::time_point playback_start_time;
 
 	/// The start time of the first frame of the current playback; undefined if
 	/// video is not currently playing
-	int startMS;
+	int start_ms;
 
 	/// The last frame to play if video is currently playing
-	int endFrame;
+	int end_frame;
 
 	/// The frame number which was last requested from the video provider,
 	/// which may not be the same thing as the currently displayed frame
@@ -112,20 +113,20 @@ class VideoContext : public wxEvtHandler {
 
 	/// The picture aspect ratio of the video if the aspect ratio has been
 	/// overridden by the user
-	double arValue;
+	double ar_value;
 
 	/// @brief The current AR type
 	///
 	/// 0 is square pixels; 1-3 are predefined ARs; 4 is custom, where the real
 	/// AR is in arValue
-	int arType;
+	int ar_type;
 
 	/// Does the currently loaded video file have subtitles muxed into it?
-	bool hasSubtitles;
+	bool has_subtitles;
 
 	/// Filename of the currently loaded timecodes file, or empty if timecodes
 	/// have not been overridden
-	wxString ovrTimecodeFile;
+	agi::fs::path timecodes_filename;
 
 	/// Cached option for audio playing when frame stepping
 	const agi::OptionValue* playAudioOnStep;
@@ -139,9 +140,9 @@ class VideoContext : public wxEvtHandler {
 	void OnPlayTimer(wxTimerEvent &event);
 
 	/// The timecodes from the video file
-	agi::vfr::Framerate videoFPS;
+	agi::vfr::Framerate video_fps;
 	/// External timecode which have been loaded, if any
-	agi::vfr::Framerate ovrFPS;
+	agi::vfr::Framerate ovr_fps;
 
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
@@ -164,7 +165,7 @@ public:
 	void SetContext(agi::Context *context);
 
 	/// @brief Get the video provider used for the currently open video
-	VideoProvider *GetProvider() const { return videoProvider; }
+	VideoProvider *GetProvider() const { return video_provider; }
 
 	/// Synchronously get a video frame
 	/// @param n Frame number to get
@@ -177,16 +178,16 @@ public:
 	void GetFrameAsync(int n);
 
 	/// Is there a video loaded?
-	bool IsLoaded() const { return !!videoProvider; }
+	bool IsLoaded() const { return !!video_provider; }
 
 	/// Get the file name of the currently open video, if any
-	wxString GetVideoName() const { return videoFile; }
+	agi::fs::path GetVideoName() const { return video_filename; }
 
 	/// Is the video currently playing?
 	bool IsPlaying() const { return playback.IsRunning(); }
 
 	/// Does the video file loaded have muxed subtitles that we can load?
-	bool HasSubtitles() const { return hasSubtitles; }
+	bool HasSubtitles() const { return has_subtitles; }
 
 	/// Get the width of the currently open video
 	int GetWidth() const;
@@ -209,14 +210,14 @@ public:
 	void SetAspectRatio(int type, double value=1.0);
 
 	/// Get the current AR type
-	int GetAspectRatioType() const { return arType; }
+	int GetAspectRatioType() const { return ar_type; }
 
 	/// Get the current aspect ratio of the video
-	double GetAspectRatioValue() const { return arValue; }
+	double GetAspectRatioValue() const { return ar_value; }
 
 	/// @brief Open a new video
 	/// @param filename Video to open, or empty to close the current video
-	void SetVideo(const wxString &filename);
+	void SetVideo(const agi::fs::path &filename);
 	/// @brief Close and reopen the current video
 	void Reload();
 
@@ -245,27 +246,26 @@ public:
 	DEFINE_SIGNAL_ADDERS(TimecodesOpen, AddTimecodesListener)
 	DEFINE_SIGNAL_ADDERS(ARChange, AddARChangeListener)
 
-	const std::vector<int>& GetKeyFrames() const { return keyFrames; };
-	wxString GetKeyFramesName() const { return keyFramesFilename; }
-	void LoadKeyframes(wxString filename);
-	void SaveKeyframes(wxString filename);
+	const std::vector<int>& GetKeyFrames() const { return keyframes; };
+	agi::fs::path GetKeyFramesName() const { return keyframes_filename; }
+	void LoadKeyframes(agi::fs::path const& filename);
+	void SaveKeyframes(agi::fs::path const& filename);
 	void CloseKeyframes();
-	bool OverKeyFramesLoaded() const { return !keyFramesFilename.empty(); }
-	bool KeyFramesLoaded() const { return !keyFrames.empty(); }
+	bool OverKeyFramesLoaded() const { return !keyframes_filename.empty(); }
+	bool KeyFramesLoaded() const { return !keyframes.empty(); }
 
-	wxString GetTimecodesName() const { return ovrTimecodeFile; }
-	void LoadTimecodes(wxString filename);
-	void SaveTimecodes(wxString filename);
+	agi::fs::path GetTimecodesName() const { return timecodes_filename; }
+	void LoadTimecodes(agi::fs::path const& filename);
+	void SaveTimecodes(agi::fs::path const& filename);
 	void CloseTimecodes();
-	bool OverTimecodesLoaded() const { return ovrFPS.IsLoaded(); }
-	bool TimecodesLoaded() const { return videoFPS.IsLoaded() || ovrFPS.IsLoaded(); };
+	bool OverTimecodesLoaded() const { return ovr_fps.IsLoaded(); }
+	bool TimecodesLoaded() const { return video_fps.IsLoaded() || ovr_fps.IsLoaded(); };
 
-	const agi::vfr::Framerate& FPS() const { return ovrFPS.IsLoaded() ? ovrFPS : videoFPS; }
-	const agi::vfr::Framerate& VideoFPS() const { return videoFPS; }
+	const agi::vfr::Framerate& FPS() const { return ovr_fps.IsLoaded() ? ovr_fps : video_fps; }
+	const agi::vfr::Framerate& VideoFPS() const { return video_fps; }
 
 	int TimeAtFrame(int frame, agi::vfr::Time type = agi::vfr::EXACT) const;
 	int FrameAtTime(int time, agi::vfr::Time type = agi::vfr::EXACT) const;
 
 	static VideoContext *Get();
-	static void OnExit();
 };

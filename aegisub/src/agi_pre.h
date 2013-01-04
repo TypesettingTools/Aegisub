@@ -74,7 +74,6 @@
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/adaptor/reversed.hpp>
-#include <boost/range/algorithm_ext.hpp>
 
 // wxWidgets headers
 #include <wx/wxprec.h> // Leave this first.

@@ -18,13 +18,12 @@
 
 #include "include/aegisub/audio_provider.h"
 
-#include <libaegisub/scoped_ptr.h>
-
-#include <wx/thread.h>
+#include <memory>
+#include <mutex>
 
 class LockAudioProvider : public AudioProvider {
-	agi::scoped_ptr<const AudioProvider> source;
-	mutable wxMutex mutex;
+	std::unique_ptr<const AudioProvider> source;
+	mutable std::mutex mutex;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 public:

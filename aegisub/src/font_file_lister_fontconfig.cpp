@@ -26,8 +26,6 @@
 
 #include <fontconfig/fontconfig.h>
 
-#include "compat.h"
-
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
@@ -36,6 +34,7 @@
 #endif
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <wx/intl.h>
 
@@ -139,7 +138,7 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(std::str
 		}
 	}
 
-	ret.paths.push_back((const char *)file);
+	ret.paths.emplace_back((const char *)file);
 	return ret;
 }
 #endif

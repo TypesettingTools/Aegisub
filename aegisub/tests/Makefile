@@ -10,7 +10,7 @@ CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_R
 CXXFLAGS += -Wno-unused-value
 
 ifeq (yes, $(BUILD_DARWIN))
-LDFLAGS += -framework ApplicationServices
+LDFLAGS += -framework ApplicationServices -framework Foundation
 endif
 
 SRC = \
@@ -28,6 +28,7 @@ SRC = \
 		libaegisub_line_wrap.cpp \
 		libaegisub_mru.cpp \
 		libaegisub_option.cpp \
+		libaegisub_path.cpp \
 		libaegisub_signals.cpp \
 		libaegisub_syntax_highlight.cpp \
 		libaegisub_thesaurus.cpp \

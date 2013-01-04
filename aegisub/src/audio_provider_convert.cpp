@@ -46,7 +46,7 @@ public:
 	}
 
 	bool AreSamplesNativeEndian() const { return true; }
-	wxString GetFilename() const { return source->GetFilename(); }
+	agi::fs::path GetFilename() const { return source->GetFilename(); }
 };
 
 /// Anything integral -> 16 bit signed machine-endian audio converter

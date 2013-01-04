@@ -23,5 +23,8 @@ namespace agi {
 		/// Convert a UTF-8 string to a string suitable for use with Win32 API functions
 		std::wstring ConvertW(std::string const& src);
 		std::string ConvertW(std::wstring const& src);
+
+		/// Convert a UTF-16 string to the local charset
+		std::string ConvertLocal(std::wstring const& src);
 	}
 }

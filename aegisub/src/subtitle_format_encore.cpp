@@ -42,22 +42,25 @@
 
 #include <libaegisub/of_type_adaptor.h>
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/format.hpp>
+
 EncoreSubtitleFormat::EncoreSubtitleFormat()
 : SubtitleFormat("Adobe Encore")
 {
 }
 
-wxArrayString EncoreSubtitleFormat::GetWriteWildcards() const {
-	wxArrayString formats;
-	formats.Add("encore.txt");
+std::vector<std::string> EncoreSubtitleFormat::GetWriteWildcards() const {
+	std::vector<std::string> formats;
+	formats.push_back("encore.txt");
 	return formats;
 }
 
-bool EncoreSubtitleFormat::CanWriteFile(wxString const& filename) const {
-	return filename.EndsWith(".encore.txt");
+bool EncoreSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
+	return boost::iends_with(filename.string(), ".encore.txt");
 }
 
-void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const&) const {
+void EncoreSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const&) const {
 	agi::vfr::Framerate fps = AskForFPS(false, true);
 	if (!fps.IsLoaded()) return;
 
@@ -70,14 +73,13 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, wxString const& filenam
 	StripTags(copy);
 	ConvertNewlines(copy, "\r\n");
 
-	// Encode wants ; for NTSC and : for PAL
+	// Encore wants ; for NTSC and : for PAL
 	// The manual suggests no other frame rates are supported
-	char sep = fps.NeedsDropFrames() ? ';' : ':';
-	SmpteFormatter ft(fps, sep);
+	SmpteFormatter ft(fps, fps.NeedsDropFrames() ? ";" : ":");
 
 	// Write lines
 	int i = 0;
 	TextFileWriter file(filename, "UTF-8");
 	for (auto current : copy.Line | agi::of_type<AssDialogue>())
-		file.WriteLineToFile(wxString::Format("%i %s %s %s", ++i, ft.ToSMPTE(current->Start), ft.ToSMPTE(current->End), current->Text.get()));
+		file.WriteLineToFile(str(boost::format("%i %s %s %s") % ++i % ft.ToSMPTE(current->Start) % ft.ToSMPTE(current->End) % current->Text));
 }

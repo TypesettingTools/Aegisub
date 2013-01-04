@@ -54,22 +54,22 @@ TTXTSubtitleFormat::TTXTSubtitleFormat()
 {
 }
 
-wxArrayString TTXTSubtitleFormat::GetReadWildcards() const {
-	wxArrayString formats;
-	formats.Add("ttxt");
+std::vector<std::string> TTXTSubtitleFormat::GetReadWildcards() const {
+	std::vector<std::string> formats;
+	formats.push_back("ttxt");
 	return formats;
 }
 
-wxArrayString TTXTSubtitleFormat::GetWriteWildcards() const {
+std::vector<std::string> TTXTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-void TTXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxString const& encoding) const {
+void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& encoding) const {
 	target->LoadDefault(false);
 
 	// Load XML document
 	wxXmlDocument doc;
-	if (!doc.Load(filename)) throw TTXTParseError("Failed loading TTXT XML file.", 0);
+	if (!doc.Load(filename.wstring())) throw TTXTParseError("Failed loading TTXT XML file.", 0);
 
 	// Check root node name
 	if (doc.GetRoot()->GetName() != "TextStream") throw TTXTParseError("Invalid TTXT file.", 0);
@@ -109,7 +109,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxS
 AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const {
 	// Get time
 	wxString sampleTime = node->GetAttribute("sampleTime", "00:00:00.000");
-	AssTime time(sampleTime);
+	AssTime time(from_wx(sampleTime));
 
 	// Set end time of last line
 	if (prev)
@@ -144,14 +144,14 @@ AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev,
 			}
 			else if (in) finalText += chr;
 		}
-		diag->Text = finalText;
+		diag->Text = from_wx(finalText);
 	}
 
 	// Process text for 1.1
 	else {
 		text.Replace("\r", "");
 		text.Replace("\n", "\\N");
-		diag->Text = text;
+		diag->Text = from_wx(text);
 	}
 
 	return diag;
@@ -161,7 +161,7 @@ void TTXTSubtitleFormat::ProcessHeader(wxXmlNode *node) const {
 	// TODO
 }
 
-void TTXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const {
+void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
 	// Convert to TTXT
 	AssFile copy(*src);
 	ConvertToTTXT(copy);
@@ -183,7 +183,7 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, wxString const& filename,
 	}
 
 	// Save XML
-	doc.Save(filename);
+	doc.Save(filename.wstring());
 }
 
 void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) const {
@@ -240,7 +240,7 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, const AssDialogue *prev, con
 	// If it doesn't start at the end of previous, add blank
 	if (prev && prev->End != line->Start) {
 		wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
-		node->AddAttribute("sampleTime", "0" + prev->End.GetAssFormated(true));
+		node->AddAttribute("sampleTime", to_wx("0" + prev->End.GetAssFormated(true)));
 		node->AddAttribute("xml:space", "preserve");
 		root->AddChild(node);
 		node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", ""));
@@ -248,10 +248,10 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, const AssDialogue *prev, con
 
 	// Generate and insert node
 	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
-	node->AddAttribute("sampleTime", "0" + line->Start.GetAssFormated(true));
+	node->AddAttribute("sampleTime", to_wx("0" + line->Start.GetAssFormated(true)));
 	node->AddAttribute("xml:space", "preserve");
 	root->AddChild(node);
-	node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", line->Text));
+	node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", to_wx(line->Text)));
 }
 
 void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {

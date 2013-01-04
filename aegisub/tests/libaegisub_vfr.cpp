@@ -12,12 +12,9 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// $Id$
+// Aegisub Project http://www.aegisub.org/
 
-/// @file libaegisub_vfr.cpp
-/// @brief agi::vfr::Framerate tests
-/// @ingroup video_input
-
+#include <libaegisub/fs.h>
 #include <libaegisub/vfr.h>
 
 #include <climits>

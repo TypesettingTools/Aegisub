@@ -37,21 +37,18 @@
 #ifdef WITH_FFMS2
 #include "video_provider_ffmpegsource.h"
 
-#include <map>
-
-#include <wx/choicdlg.h>
-#include <wx/msgdlg.h>
-#include <wx/utils.h>
-
 #include "aegisub_endian.h"
 #include "compat.h"
 #include "options.h"
 #include "utils.h"
 #include "video_context.h"
 
-/// @brief Constructor
-/// @param filename The filename to open
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) try
+#include <libaegisub/fs.h>
+
+#include <wx/choicdlg.h>
+#include <wx/msgdlg.h>
+
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename) try
 : VideoSource(nullptr, FFMS_DestroyVideoSource)
 , VideoInfo(nullptr)
 , Width(-1)
@@ -65,30 +62,25 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(wxString filename) try
 
 	SetLogLevel();
 
-	// and here we go
 	LoadVideo(filename);
 }
-catch (wxString const& err) {
-	throw VideoOpenError(from_wx(err));
+catch (std::string const& err) {
+	throw VideoOpenError(err);
 }
 catch (const char * err) {
 	throw VideoOpenError(err);
 }
 
-/// @brief Opens video
-/// @param filename The filename to open
-void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
-	wxString FileNameShort = wxFileName(filename).GetShortPath();
-
-	FFMS_Indexer *Indexer = FFMS_CreateIndexer(FileNameShort.utf8_str(), &ErrInfo);
+void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename) {
+	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.string().c_str(), &ErrInfo);
 	if (!Indexer) {
 		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
-			throw agi::FileNotFoundError(ErrInfo.Buffer);
+			throw agi::fs::FileNotFound(std::string(ErrInfo.Buffer));
 		else
 			throw VideoNotSupported(ErrInfo.Buffer);
 	}
 
-	std::map<int,wxString> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_VIDEO);
+	std::map<int, std::string> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_VIDEO);
 	if (TrackList.size() <= 0)
 		throw VideoNotSupported("no video tracks found");
 
@@ -103,13 +95,13 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	}
 
 	// generate a name for the cache file
-	wxString CacheName = GetCacheFilename(filename);
+	auto CacheName = GetCacheFilename(filename);
 
 	// try to read index
 	agi::scoped_holder<FFMS_Index*, void (FFMS_CC*)(FFMS_Index*)>
-		Index(FFMS_ReadIndex(CacheName.utf8_str(), &ErrInfo), FFMS_DestroyIndex);
+		Index(FFMS_ReadIndex(CacheName.string().c_str(), &ErrInfo), FFMS_DestroyIndex);
 
-	if (Index && FFMS_IndexBelongsToFile(Index, FileNameShort.utf8_str(), &ErrInfo))
+	if (Index && FFMS_IndexBelongsToFile(Index, filename.string().c_str(), &ErrInfo))
 		Index = nullptr;
 
 	// time to examine the index and check if the track we want is indexed
@@ -133,7 +125,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	}
 
 	// update access time of index file so it won't get cleaned away
-	wxFileName(CacheName).Touch();
+	agi::fs::Touch(CacheName);
 
 	// we have now read the index and may proceed with cleaning the index cache
 	CleanCache();
@@ -159,7 +151,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	else
 		SeekMode = FFMS_SEEK_NORMAL;
 
-	VideoSource = FFMS_CreateVideoSource(FileNameShort.utf8_str(), TrackNumber, Index, Threads, SeekMode, &ErrInfo);
+	VideoSource = FFMS_CreateVideoSource(filename.string().c_str(), TrackNumber, Index, Threads, SeekMode, &ErrInfo);
 	if (!VideoSource)
 		throw VideoOpenError(std::string("Failed to open video track: ") + ErrInfo.Buffer);
 
@@ -178,7 +170,7 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 		DAR = double(Width) / Height;
 
 	// Assuming TV for unspecified
-	wxString ColorRange = TempFrame->ColorRange == FFMS_CR_JPEG ? "PC" : "TV";
+	ColorSpace = TempFrame->ColorRange == FFMS_CR_JPEG ? "PC" : "TV";
 
 	int CS = TempFrame->ColorSpace;
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
@@ -195,20 +187,20 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 			ColorSpace = "None";
 			break;
 		case FFMS_CS_BT709:
-			ColorSpace = wxString::Format("%s.709", ColorRange);
+			ColorSpace += ".709";
 			break;
 		case FFMS_CS_UNSPECIFIED:
-			ColorSpace = wxString::Format("%s.%s", ColorRange, Width > 1024 || Height >= 600 ? "709" : "601");
+			ColorSpace += Width > 1024 || Height >= 600 ? "709" : "601";
 			break;
 		case FFMS_CS_FCC:
-			ColorSpace = wxString::Format("%s.FCC", ColorRange);
+			ColorSpace += ".FCC";
 			break;
 		case FFMS_CS_BT470BG:
 		case FFMS_CS_SMPTE170M:
-			ColorSpace = wxString::Format("%s.601", ColorRange);
+			ColorSpace += ".601";
 			break;
 		case FFMS_CS_SMPTE240M:
-			ColorSpace = wxString::Format("%s.240M", ColorRange);
+			ColorSpace += ".240M";
 			break;
 		default:
 			throw VideoOpenError("Unknown video color space");
@@ -228,15 +220,12 @@ void FFmpegSourceVideoProvider::LoadVideo(wxString filename) {
 	if (TimeBase == nullptr)
 		throw VideoOpenError("failed to get track time base");
 
-	const FFMS_FrameInfo *CurFrameData;
-
 	// build list of keyframes and timecodes
 	std::vector<int> TimecodesVector;
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
-		CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
-		if (CurFrameData == nullptr) {
-			throw VideoOpenError(from_wx(wxString::Format("Couldn't get info about frame %d", CurFrameNum)));
-		}
+		const FFMS_FrameInfo *CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
+		if (!CurFrameData)
+			throw VideoOpenError("Couldn't get info about frame " + std::to_string(CurFrameNum));
 
 		// keyframe?
 		if (CurFrameData->KeyFrame)
@@ -259,9 +248,8 @@ const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
 
 	// decode frame
 	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, FrameNumber, &ErrInfo);
-	if (SrcFrame == nullptr) {
+	if (!SrcFrame)
 		throw VideoDecodeError(std::string("Failed to retrieve frame: ") +  ErrInfo.Buffer);
-	}
 
 	CurFrame.SetTo(SrcFrame->Data[0], Width, Height, SrcFrame->Linesize[0]);
 	return CurFrame;

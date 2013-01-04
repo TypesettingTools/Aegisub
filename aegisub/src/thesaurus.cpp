@@ -23,16 +23,15 @@
 
 #include "thesaurus.h"
 
-#include <wx/dir.h>
-#include <wx/filename.h>
-
-#include <libaegisub/log.h>
-#include <libaegisub/thesaurus.h>
-#include <libaegisub/util.h>
-
-#include "compat.h"
 #include "options.h"
 #include "standard_paths.h"
+
+#include <boost/format.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
+
+#include <libaegisub/fs.h>
+#include <libaegisub/log.h>
+#include <libaegisub/thesaurus.h>
 
 Thesaurus::Thesaurus()
 : lang_listener(OPT_SUB("Tool/Thesaurus/Language", &Thesaurus::OnLanguageChanged, this))
@@ -47,46 +46,43 @@ Thesaurus::~Thesaurus() {
 
 void Thesaurus::Lookup(std::string word, std::vector<Entry> *result) {
 	if (!impl.get()) return;
-	agi::util::str_lower(word);
+	boost::to_lower(word);
 	impl->Lookup(word, result);
 }
 
 std::vector<std::string> Thesaurus::GetLanguageList() const {
 	if (!languages.empty()) return languages;
 
-	wxArrayString idx, dat;
+	std::vector<std::string> idx, dat;
 
 	// Get list of dictionaries
-	wxString path = StandardPaths::DecodePath("?data/dictionaries/");
-	if (wxFileName::DirExists(path)) {
-		wxDir::GetAllFiles(path, &idx, "th_*.idx", wxDIR_FILES);
-		wxDir::GetAllFiles(path, &dat, "th_*.dat", wxDIR_FILES);
-	}
-	path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()) + "/");
-	if (wxFileName::DirExists(path)) {
-		wxDir::GetAllFiles(path, &idx, "th_*.idx", wxDIR_FILES);
-		wxDir::GetAllFiles(path, &dat, "th_*.dat", wxDIR_FILES);
-	}
+	auto path = StandardPaths::DecodePath("?data/dictionaries/");
+	agi::fs::DirectoryIterator(path, "th_*.idx").GetAll(idx);
+	agi::fs::DirectoryIterator(path, "th_*.dat").GetAll(dat);
+
+	path = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString());
+	agi::fs::DirectoryIterator(path, "th_*.idx").GetAll(idx);
+	agi::fs::DirectoryIterator(path, "th_*.dat").GetAll(dat);
+
 	if (idx.empty() || dat.empty()) return languages;
 
-	idx.Sort();
-	dat.Sort();
+	sort(begin(idx), end(idx));
+	sort(begin(dat), end(dat));
 
 	// Drop extensions and the th_ prefix
-	for (auto& fn : idx) fn = fn.Mid(3, fn.size() - 7);
-	for (auto& fn : dat) fn = fn.Mid(3, fn.size() - 7);
+	for (auto& fn : idx) fn = fn.substr(3, fn.size() - 7);
+	for (auto& fn : dat) fn = fn.substr(3, fn.size() - 7);
 
 	// Verify that each idx has a dat
 	for (size_t i = 0, j = 0; i < idx.size() && j < dat.size(); ) {
-		int cmp = idx[i].Cmp(dat[j]);
+		int cmp = idx[i].compare(dat[j]);
 		if (cmp < 0) ++i;
 		else if (cmp > 0) ++j;
 		else {
 			// Don't insert a language twice if it's in both the user dir and
 			// the app's dir
-			std::string name = from_wx(wxFileName(dat[j]).GetName().Mid(3));
-			if (languages.empty() || name != languages.back())
-				languages.push_back(name);
+			if (languages.empty() || dat[j] != languages.back())
+				languages.push_back(dat[j]);
 			++i;
 			++j;
 		}
@@ -97,27 +93,27 @@ std::vector<std::string> Thesaurus::GetLanguageList() const {
 void Thesaurus::OnLanguageChanged() {
 	impl.reset();
 
-	std::string language = OPT_GET("Tool/Thesaurus/Language")->GetString();
+	auto language = OPT_GET("Tool/Thesaurus/Language")->GetString();
 	if (language.empty()) return;
 
-	wxString path = StandardPaths::DecodePath(to_wx(OPT_GET("Path/Dictionary")->GetString()) + "/");
+	auto path = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString() + "/");
 
 	// Get index and data paths
-	wxString idxpath = wxString::Format("%s/th_%s.idx", path, language);
-	wxString datpath = wxString::Format("%s/th_%s.dat", path, language);
+	auto idxpath = path/str(boost::format("th_%s.idx") % language);
+	auto datpath = path/str(boost::format("th_%s.dat") % language);
 
 	// If they aren't in the user dictionary path, check the application directory
-	if (!wxFileExists(idxpath) || !wxFileExists(datpath)) {
+	if (!agi::fs::FileExists(idxpath) || !agi::fs::FileExists(datpath)) {
 		path = StandardPaths::DecodePath("?data/dictionaries/");
-		idxpath = wxString::Format("%s/th_%s.idx", path, language);
-		datpath = wxString::Format("%s/th_%s.dat", path, language);
+		idxpath = path/str(boost::format("th_%s.idx") % language);
+		datpath = path/str(boost::format("th_%s.dat") % language);
 
-		if (!wxFileExists(idxpath) || !wxFileExists(datpath)) return;
+		if (!agi::fs::FileExists(idxpath) || !agi::fs::FileExists(datpath)) return;
 	}
 
-	LOG_I("thesaurus/file") << "Using thesaurus: " << datpath.c_str();
+	LOG_I("thesaurus/file") << "Using thesaurus: " << datpath;
 
-	impl.reset(new agi::Thesaurus(from_wx(datpath), from_wx(idxpath)));
+	impl.reset(new agi::Thesaurus(datpath, idxpath));
 }
 
 void Thesaurus::OnPathChanged() {

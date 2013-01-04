@@ -90,13 +90,13 @@ public:
 
 	void GetValue(wxVariant &variant, unsigned int col) const {
 		if (col == 0)
-			variant = combo.Str();
+			variant = to_wx(combo.Str());
 		else if (col == 1) {
 			wxBitmap icon_bmp(icon::get(combo.CmdName(), 16));
 			wxIcon icon;
 			if (icon_bmp.IsOk())
 				icon.CopyFromBitmap(icon_bmp);
-			variant << wxDataViewIconText(combo.CmdName(), icon);
+			variant << wxDataViewIconText(to_wx(combo.CmdName()), icon);
 		}
 		else if (col == 2) {
 			try {
@@ -117,7 +117,7 @@ public:
 			keys.reserve(toks.size());
 			transform(toks.begin(), toks.end(), back_inserter(keys), (std::string(*)(wxString const&))&from_wx);
 			combo = Combo(combo.Context(), combo.CmdName(), keys);
-			cmd_str = combo.Str();
+			cmd_str = to_wx(combo.Str());
 			return true;
 		}
 		else if (col == 1) {
@@ -226,7 +226,7 @@ public:
 			if (cat_it != cat_map.end())
 				cat = cat_it->second;
 			else {
-				categories.emplace_back(model, cat_name);
+				categories.emplace_back(model, to_wx(cat_name));
 				cat = cat_map[cat_name] = &categories.back();
 			}
 

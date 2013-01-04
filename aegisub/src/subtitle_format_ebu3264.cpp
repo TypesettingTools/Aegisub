@@ -25,8 +25,6 @@
 
 #include "subtitle_format_ebu3264.h"
 
-#include <wx/regex.h>
-
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/io.h>
@@ -42,6 +40,8 @@
 #include "dialog_export_ebu3264.h"
 #include "options.h"
 #include "text_file_writer.h"
+
+#include <boost/algorithm/string/replace.hpp>
 
 namespace
 {
@@ -101,11 +101,11 @@ namespace
 	/// A block of text with basic formatting information
 	struct EbuFormattedText
 	{
-		wxString text;   ///< Text in this block
-		bool underline;  ///< Is this block underlined?
-		bool italic;     ///< Is this block italic?
-		bool word_start; ///< Is it safe to line-wrap between this block and the previous one?
-		EbuFormattedText(wxString const& t, bool u = false, bool i = false, bool ws = true) : text(t), underline(u), italic(i), word_start(ws) { }
+		std::string text; ///< Text in this block
+		bool underline;   ///< Is this block underlined?
+		bool italic;      ///< Is this block italic?
+		bool word_start;  ///< Is it safe to line-wrap between this block and the previous one?
+		EbuFormattedText(std::string const& t, bool u = false, bool i = false, bool ws = true) : text(t), underline(u), italic(i), word_start(ws) { }
 	};
 	typedef std::vector<EbuFormattedText> EbuTextRow;
 
@@ -262,9 +262,6 @@ namespace
 
 		void SetTextFromAss(AssDialogue *line, bool style_underline, bool style_italic, int align, int wrap_mode)
 		{
-			// Helper for finding special characters
-			wxRegEx special_char_search("\\\\[nN]| ", wxRE_ADVANCED);
-
 			boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 
 			text_rows.clear();
@@ -285,42 +282,42 @@ namespace
 					case BLOCK_PLAIN:
 					// find special characters and convert them
 					{
-						wxString text = to_wx(b.GetText());
+						std::string text = b.GetText();
 
-						text.Replace("\\t", " ");
+						boost::replace_all(text, "\\t", " ");
 
-						while (special_char_search.Matches(text))
+						size_t start = 0;
+						for (size_t i = 0; i < text.size(); ++i)
 						{
-							size_t start, len;
-							special_char_search.GetMatch(&start, &len);
+							if (text[i] != ' ' && (i + 1 >= text.size() || text[i] != '\\' || (text[i + 1] != 'N' && text[i + 1] != 'n')))
+								continue;
 
 							// add first part of text to current part
-							cur_row->back().text.append(text.Left(start));
+							cur_row->back().text.append(text.substr(start, i));
 
 							// process special character
-							wxString substr = text.Mid(start, len);
-							if (substr == "\\N" || (wrap_mode == 1 && substr == "\\n"))
+							if (text[i] == '\\' && (text[i + 1] == 'N' || wrap_mode == 1))
 							{
 								// create a new row with current style
 								text_rows.emplace_back();
 								cur_row = &text_rows.back();
 								cur_row->emplace_back("", underline, italic, true);
 							}
-							else // if (substr == " " || substr == "\\h" || substr == "\\n")
+							else // if (substr == " " || substr == "\\n")
 							{
 								cur_row->back().text.append(" ");
 								cur_row->emplace_back("", underline, italic, true);
 							}
 
-							text = text.Mid(start+len);
+							start = i + (text[i] == '\\');
 						}
 
 						// add the remaining text
-						cur_row->back().text.append(text);
+						cur_row->back().text.append(text.substr(start));
 
 						// convert \h to regular spaces
 						// done after parsing so that words aren't split on \h
-						cur_row->back().text.Replace("\\h", " ");
+						boost::replace_all(cur_row->back().text, "\\h", " ");
 					}
 					break;
 
@@ -334,7 +331,7 @@ namespace
 						// apply any changes
 						if (underline != cur_row->back().underline || italic != cur_row->back().italic)
 						{
-							if (!cur_row->back().text)
+							if (cur_row->back().text.empty())
 							{
 								// current part is empty, we can safely change formatting on it
 								cur_row->back().underline = underline;
@@ -343,7 +340,7 @@ namespace
 							else
 							{
 								// create a new empty part with new style
-								cur_row->push_back(EbuFormattedText("", underline, italic, false));
+								cur_row->emplace_back("", underline, italic, false);
 							}
 						}
 					}
@@ -396,7 +393,7 @@ namespace
 				imline.time_out -= 1;
 
 			// convert alignment from style
-			AssStyle *style = copy.GetStyle(from_wx(line->Style));
+			AssStyle *style = copy.GetStyle(line->Style);
 			if (!style)
 				style = &default_style;
 
@@ -429,20 +426,6 @@ namespace
 		return subs_list;
 	}
 
-	inline size_t buffer_size(wxString const& str)
-	{
-#if wxUSE_UNICODE_UTF8
-		return str.utf8_length();
-#else
-		return str.length() * sizeof(wxStringCharType);
-#endif
-	}
-
-	inline const char *wx_str(wxString const& str)
-	{
-		return reinterpret_cast<const char *>(str.wx_str());
-	}
-
 	std::string convert_subtitle_line(EbuSubtitle const& sub, agi::charset::IconvWrapper *encoder, bool enable_formatting)
 	{
 		std::string fullstring;
@@ -468,7 +451,7 @@ namespace
 				}
 
 				// convert text to specified encoding
-				fullstring += encoder->Convert(std::string(wx_str(block.text), buffer_size(block.text)));
+				fullstring += encoder->Convert(block.text);
 			}
 		}
 		return fullstring;
@@ -564,11 +547,11 @@ namespace
 
 	BlockGSI create_header(AssFile const& copy, EbuExportSettings const& export_settings)
 	{
-		wxString scriptinfo_title = copy.GetScriptInfo("Title");
-		wxString scriptinfo_translation = copy.GetScriptInfo("Original Translation");
-		wxString scriptinfo_editing = copy.GetScriptInfo("Original Editing");
+		std::string scriptinfo_title = copy.GetScriptInfo("Title");
+		std::string scriptinfo_translation = copy.GetScriptInfo("Original Translation");
+		std::string scriptinfo_editing = copy.GetScriptInfo("Original Editing");
 
-		agi::charset::IconvWrapper gsi_encoder(wxSTRING_ENCODING, "CP850");
+		agi::charset::IconvWrapper gsi_encoder("UTF-8", "CP850");
 
 		BlockGSI gsi;
 		memset(&gsi, 0x20, sizeof(gsi)); // fill with spaces
@@ -595,8 +578,8 @@ namespace
 		if (export_settings.text_encoding == EbuExportSettings::utf8)
 			memcpy(gsi.cct, "U8", 2);
 		memcpy(gsi.lc, "00", 2);
-		gsi_encoder.Convert(wx_str(scriptinfo_title), buffer_size(scriptinfo_title), gsi.opt, 32);
-		gsi_encoder.Convert(wx_str(scriptinfo_translation), buffer_size(scriptinfo_translation), gsi.tn, 32);
+		gsi_encoder.Convert(scriptinfo_title.c_str(), scriptinfo_title.size(), gsi.opt, 32);
+		gsi_encoder.Convert(scriptinfo_translation.c_str(), scriptinfo_translation.size(), gsi.tn, 32);
 		{
 			char buf[20];
 			time_t now;
@@ -618,7 +601,7 @@ namespace
 		gsi.tnd = '1';
 		gsi.dsn = '1';
 		memcpy(gsi.co, "NTZ", 3); // neutral zone!
-		gsi_encoder.Convert(wx_str(scriptinfo_editing), buffer_size(scriptinfo_editing), gsi.en, 32);
+		gsi_encoder.Convert(scriptinfo_editing.c_str(), scriptinfo_editing.size(), gsi.en, 32);
 		if (export_settings.text_encoding == EbuExportSettings::utf8)
 			strncpy(gsi.uda, "This file was exported by Aegisub using non-standard UTF-8 encoding for the subtitle blocks. The TTI.TF field contains UTF-8-encoded text interspersed with the standard formatting codes, which are not encoded. GSI.CCT is set to 'U8' to signify this.", sizeof(gsi.uda));
 
@@ -648,14 +631,14 @@ Ebu3264SubtitleFormat::Ebu3264SubtitleFormat()
 {
 }
 
-wxArrayString Ebu3264SubtitleFormat::GetWriteWildcards() const
+std::vector<std::string> Ebu3264SubtitleFormat::GetWriteWildcards() const
 {
-	wxArrayString formats;
-	formats.Add("stl");
+	std::vector<std::string> formats;
+	formats.push_back("stl");
 	return formats;
 }
 
-void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, wxString const& filename, wxString const& encoding) const
+void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const&) const
 {
 	// collect data from user
 	EbuExportSettings export_settings = get_export_config(0);
@@ -671,7 +654,7 @@ void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, wxString const& filena
 	snprintf(gsi.tns, 5, "%5u", (unsigned int)subs_list.size());
 
 	// write file
-	agi::io::Save f(from_wx(filename), true);
+	agi::io::Save f(filename, true);
 	f.Get().write((const char *)&gsi, sizeof(gsi));
 	for (auto const& block : tti)
 		f.Get().write((const char *)&block, sizeof(block));

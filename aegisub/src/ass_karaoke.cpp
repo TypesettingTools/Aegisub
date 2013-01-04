@@ -25,7 +25,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "compat.h"
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
 
@@ -161,12 +160,12 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 	syls.push_back(syl);
 }
 
-wxString AssKaraoke::GetText() const {
-	wxString text;
+std::string AssKaraoke::GetText() const {
+	std::string text;
 	text.reserve(size() * 10);
 
 	for (auto const& syl : syls)
-		text += to_wx(syl.GetText(true));
+		text += syl.GetText(true);
 
 	return text;
 }
@@ -301,7 +300,7 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 
 			new_line->Start = syl.start_time;
 			new_line->End = syl.start_time + syl.duration;
-			new_line->Text = to_wx(syl.GetText(false));
+			new_line->Text = syl.GetText(false);
 
 			c->ass->Line.insert(it, *new_line);
 

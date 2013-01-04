@@ -23,10 +23,9 @@
 
 #include <fstream>
 #include <memory>
+#include <string>
 
-#include <wx/dynarray.h>
-#include <wx/string.h>
-
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/line_iterator.h>
 
 /// @class TextFileReader
@@ -34,7 +33,7 @@
 class TextFileReader {
 	std::unique_ptr<std::ifstream> file;
 	bool trim;
-	agi::line_iterator<wxString> iter;
+	agi::line_iterator<std::string> iter;
 
 	TextFileReader(const TextFileReader&);
 	TextFileReader& operator=(const TextFileReader&);
@@ -44,13 +43,13 @@ public:
 	/// @param filename File to open
 	/// @param enc      Encoding to use, or empty to autodetect
 	/// @param trim     Whether to trim whitespace from lines read
-	TextFileReader(wxString const& filename,wxString encoding="", bool trim=true);
+	TextFileReader(agi::fs::path const& filename, std::string encoding="", bool trim=true);
 	/// @brief Destructor
 	~TextFileReader();
 
 	/// @brief Read a line from the file
 	/// @return The line, possibly trimmed
-	wxString ReadLineFromFile();
+	std::string ReadLineFromFile();
 	/// @brief Check if there are any more lines to read
-	bool HasMoreLines() const { return iter != agi::line_iterator<wxString>(); }
+	bool HasMoreLines() const { return iter != agi::line_iterator<std::string>(); }
 };

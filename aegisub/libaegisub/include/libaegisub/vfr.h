@@ -24,6 +24,7 @@
 #include <cstdint>
 
 #include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
 
 namespace agi {
 	/// Framerate handling.
@@ -92,7 +93,7 @@ public:
 	/// not the same thing as CFR X. When timecodes are loaded from a file,
 	/// mkvmerge-style rounding is applied, while setting a constant frame rate
 	/// uses truncation.
-	Framerate(std::string const& filename);
+	Framerate(fs::path const& filename);
 
 	/// @brief CFR constructor
 	/// @param fps Frames per second or 0 for unloaded
@@ -195,7 +196,7 @@ public:
 	/// CFR, but saving CFR timecodes is a bit silly). Extra timecodes generated
 	/// to hit length with v2 timecodes will monotonically increase but may not
 	/// be otherwise sensible.
-	void Save(std::string const& file, int length = -1) const;
+	void Save(fs::path const& file, int length = -1) const;
 
 	/// Is this frame rate possibly variable?
 	bool IsVFR() const {return timecodes.size() > 1; }

@@ -34,13 +34,6 @@
 
 #include "config.h"
 
-#include <functional>
-
-#include <wx/clipbrd.h>
-#include <wx/intl.h>
-#include <wx/menu.h>
-#include <wx/settings.h>
-
 #include "subs_edit_ctrl.h"
 
 #include "ass_dialogue.h"
@@ -57,6 +50,15 @@
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/calltip_provider.h>
 #include <libaegisub/spellchecker.h>
+
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/replace.hpp>
+#include <functional>
+
+#include <wx/clipbrd.h>
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
 
 /// Event ids
 enum {
@@ -226,7 +228,7 @@ void SubsTextEditCtrl::SetStyles() {
 
 void SubsTextEditCtrl::UpdateStyle() {
 	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
-	bool template_line = diag && diag->Comment && diag->Effect.get().Lower().StartsWith("template");
+	bool template_line = diag && diag->Comment && boost::istarts_with(diag->Effect.get(), "template");
 
 	tokenized_line = agi::ass::TokenizeDialogueBody(line_text, template_line);
 	agi::ass::SplitWords(line_text, tokenized_line);
@@ -291,19 +293,19 @@ void SubsTextEditCtrl::SetTextTo(wxString const& text) {
 }
 
 void SubsTextEditCtrl::Paste() {
-	wxString data = GetClipboard();
+	std::string data = GetClipboard();
 
-	data.Replace("\r\n", "\\N");
-	data.Replace("\n", "\\N");
-	data.Replace("\r", "\\N");
+	boost::replace_all(data, "\r\n", "\\N");
+	boost::replace_all(data, "\n", "\\N");
+	boost::replace_all(data, "\r", "\\N");
 
-	int from = GetReverseUnicodePosition(GetSelectionStart());
-	int to = GetReverseUnicodePosition(GetSelectionEnd());
+	wxCharBuffer old = GetTextRaw();
+	data.insert(0, old.data(), GetSelectionStart());
+	int sel_start = data.size();
+	data.append(old.data() + GetSelectionEnd());
 
-	wxString old = GetText();
-	SetText(old.Left(from) + data + old.Mid(to));
+	SetTextRaw(data.c_str());
 
-	int sel_start = GetUnicodePosition(from + data.size());
 	SetSelectionStart(sel_start);
 	SetSelectionEnd(sel_start);
 }

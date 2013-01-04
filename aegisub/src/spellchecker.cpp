@@ -34,27 +34,21 @@
 
 #include "config.h"
 
-#ifdef WITH_HUNSPELL
-#include "spellchecker_hunspell.h"
-#endif
-
-#include "compat.h"
 #include "include/aegisub/spellchecker.h"
+#include "spellchecker_hunspell.h"
+
 #include "options.h"
 
 agi::SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Tool/Spell Checker/Backend")->GetString());
 	if (list.empty()) return nullptr;
 
-	// Get provider
-	wxString error;
+	std::string error;
 	for (auto const& name : list) {
 		try {
 			agi::SpellChecker *checker = Create(name);
 			if (checker) return checker;
 		}
-		catch (wxString const& err) { error += name + " factory: " + err + "\n"; }
-		catch (const char *err) { error += name + " factory: " + wxString(err) + "\n"; }
 		catch (...) { error += name + " factory: Unknown error\n"; }
 	}
 

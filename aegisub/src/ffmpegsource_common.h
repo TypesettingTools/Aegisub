@@ -33,14 +33,11 @@
 ///
 
 #ifdef WITH_FFMS2
-
 #include <map>
-
-#include <wx/filename.h>
-#include <wx/thread.h>
 
 #include <ffms.h>
 
+#include <libaegisub/fs_fwd.h>
 #include <libaegisub/scoped_ptr.h>
 
 /// Index all tracks
@@ -72,10 +69,10 @@ public:
 
 	void CleanCache();
 
-	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, const wxString& Cachename, int Trackmask, FFMS_IndexErrorHandling IndexEH);
-	std::map<int,wxString> GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type);
-	int AskForTrackSelection(const std::map<int,wxString>& TrackList, FFMS_TrackType Type);
-	wxString GetCacheFilename(const wxString& filename);
+	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, agi::fs::path const& Cachename, int Trackmask, FFMS_IndexErrorHandling IndexEH);
+	std::map<int, std::string> GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type);
+	int AskForTrackSelection(const std::map<int, std::string>& TrackList, FFMS_TrackType Type);
+	agi::fs::path GetCacheFilename(agi::fs::path const& filename);
 	void SetLogLevel();
 	FFMS_IndexErrorHandling GetErrorHandlingMode();
 

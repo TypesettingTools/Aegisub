@@ -33,29 +33,30 @@
 ///
 
 #ifdef WITH_AVISYNTH
+#include "include/aegisub/video_provider.h"
+
 #include "avisynth.h"
 #include "avisynth_wrap.h"
-#include "include/aegisub/video_provider.h"
 #include "video_frame.h"
 
 class AvisynthVideoProvider: public VideoProvider {
 	AviSynthWrapper avs;
 	AegiVideoFrame iframe;
-	wxString decoderName;
+	std::string decoderName;
 	agi::vfr::Framerate fps;
 	std::vector<int> KeyFrames;
-	wxString warning;
-	wxString colorspace;
+	std::string warning;
+	std::string colorspace;
 
 	PClip RGB32Video;
 	VideoInfo vi;
 
 	int last_fnum;
 
-	AVSValue Open(wxFileName const& fname, wxString const& extension);
+	AVSValue Open(agi::fs::path const& filename);
 
 public:
-	AvisynthVideoProvider(wxString filename);
+	AvisynthVideoProvider(agi::fs::path const& filename);
 	~AvisynthVideoProvider();
 
 	const AegiVideoFrame GetFrame(int n);
@@ -66,8 +67,8 @@ public:
 	int GetHeight() const { return vi.height; };
 	double GetDAR() const { return 0; }
 	std::vector<int> GetKeyFrames() const { return KeyFrames; };
-	wxString GetWarning() const { return warning; }
-	wxString GetDecoderName() const { return decoderName; }
-	wxString GetColorSpace() const { return colorspace; }
+	std::string GetWarning() const { return warning; }
+	std::string GetDecoderName() const { return decoderName; }
+	std::string GetColorSpace() const { return colorspace; }
 };
 #endif

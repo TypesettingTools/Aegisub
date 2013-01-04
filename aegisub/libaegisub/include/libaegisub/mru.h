@@ -16,12 +16,13 @@
 /// @brief Public interface for MRU (Most Recently Used) lists.
 /// @ingroup libaegisub
 
+#include <boost/filesystem/path.hpp>
 #include <deque>
-#include <fstream>
 #include <list>
 #include <map>
 
 #include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
 
 namespace json {
 	class UnknownElement;
@@ -49,11 +50,11 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorIndexOutOfRange, MRUError, "mru/invalid"
 class MRUManager {
 public:
 	/// @brief Map for time->value pairs.
-	typedef std::list<std::string> MRUListMap;
+	typedef std::list<agi::fs::path> MRUListMap;
 
 	/// @brief Constructor
 	/// @param config File to load MRU values from
-	MRUManager(std::string const& config, std::string const& default_config, agi::Options *options = 0);
+	MRUManager(agi::fs::path const& config, std::string const& default_config, agi::Options *options = 0);
 
 	/// Destructor
 	~MRUManager();
@@ -62,13 +63,13 @@ public:
 	/// @param key List name
 	/// @param entry Entry to add
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	void Add(std::string const& key, std::string const& entry);
+	void Add(std::string const& key, agi::fs::path const& entry);
 
 	/// @brief Remove entry from the list.
 	/// @param key List name
 	/// @param entry Entry to add
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	void Remove(std::string const& key, std::string const& entry);
+	void Remove(std::string const& key, agi::fs::path const& entry);
 
 	/// @brief Return list
 	/// @param key List name
@@ -79,14 +80,14 @@ public:
 	/// @param key List name
 	/// @param entry 0-base position of entry
 	/// @exception MRUErrorInvalidKey thrown when an invalid key is used.
-	std::string const& GetEntry(std::string const& key, const size_t entry);
+	agi::fs::path const& GetEntry(std::string const& key, const size_t entry);
 
 	/// Write MRU lists to disk.
 	void Flush();
 
 private:
 	/// Internal name of the config file, set during object construction.
-	const std::string config_name;
+	const agi::fs::path config_name;
 
 	/// User preferences object for maximum number of items to list
 	agi::Options *const options;

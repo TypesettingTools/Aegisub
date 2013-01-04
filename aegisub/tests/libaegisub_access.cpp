@@ -11,92 +11,69 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
-
-/// @file libaegisub_access.cpp
-/// @brief agi::acs tests.
-/// @ingroup acs
-
-#include <libaegisub/access.h>
 
 #include "main.h"
 
+#include <libaegisub/access.h>
+#include <libaegisub/fs.h>
+
 using namespace agi;
 using namespace agi::acs;
-
-class lagi_acs : public libagi {
-
-protected:
-    // place holder for future code placement
-};
-
+using namespace agi::fs;
 
 // Yes, this is a horrifying use of macros, since these are all void static
 // methods I couldn't think of a better way to test these without massive code
 // duplication.
-#define EX_FileNotFoundError(func, pass) \
-	TEST_F(lagi_acs, func##ExFileNotFoundError) { \
-		EXPECT_THROW(func("data/nonexistent"), FileNotFoundError); \
+#define DO_TEST(func, name, fail, fail_ex, pass) \
+	TEST(lagi_acs, name) { \
+		EXPECT_THROW(func(fail), fail_ex); \
 		EXPECT_NO_THROW(func(pass)); \
 	}
+
+#define EX_FileNotFound(func, pass) \
+	DO_TEST(func, func##ExFileNotFound, "data/nonexistent", FileNotFound, pass)
 
 #define EX_Fatal(func, fail, pass) \
-	TEST_F(lagi_acs, func##ExFatal) { \
-		EXPECT_THROW(func(fail), Fatal); \
-		EXPECT_NO_THROW(func(pass)); \
-	}
+	DO_TEST(func, func##ExFatal, fail, Fatal, pass)
 
 #define EX_NotAFile(func, fail, pass) \
-	TEST_F(lagi_acs, func##ExNotAFile) { \
-		EXPECT_THROW(func(fail), NotAFile); \
-		EXPECT_NO_THROW(func(pass)); \
-	}
+	DO_TEST(func, func##ExNotAFile, fail, NotAFile, pass)
 
 #define EX_NotADirectory(func, fail, pass) \
-	TEST_F(lagi_acs, func##ExNotADirectory) { \
-		EXPECT_THROW(func(fail), NotADirectory); \
-		EXPECT_NO_THROW(func(pass)); \
-	}
+	DO_TEST(func, func##ExNotADirectory, fail, NotADirectory, pass)
 
 #define EX_Read(func, fail, pass) \
-	TEST_F(lagi_acs, func##ExRead) { \
-		EXPECT_THROW(func(fail), Read); \
-		EXPECT_NO_THROW(func(pass)); \
-	}
+	DO_TEST(func, func##ExReadDenied, fail, ReadDenied, pass)
 
 #define EX_Write(func, fail, pass) \
-	TEST_F(lagi_acs, func##ExWrite) { \
-		EXPECT_THROW(func(fail), Write); \
-		EXPECT_NO_THROW(func(pass)); \
-	}
+	DO_TEST(func, func##ExWriteDenied, fail, WriteDenied, pass)
 
-EX_FileNotFoundError(CheckFileRead, "data/file")
+EX_FileNotFound(CheckFileRead, "data/file")
 EX_Read(CheckFileRead, "data/file_access_denied", "data/file")
 EX_NotAFile(CheckFileRead, "data/dir", "data/file")
-TEST_F(lagi_acs, CheckFileRead) {
+TEST(lagi_acs, CheckFileRead) {
 	EXPECT_NO_THROW(CheckFileRead("data/file"));
 }
 
-EX_FileNotFoundError(CheckFileWrite, "data/file")
+EX_FileNotFound(CheckFileWrite, "data/file")
 EX_Read(CheckFileWrite, "data/file_access_denied", "data/file")
 EX_NotAFile(CheckFileWrite, "data/dir", "data/file")
 EX_Write(CheckFileWrite, "data/file_read_only", "data/file")
-TEST_F(lagi_acs, CheckFileWrite) {
+TEST(lagi_acs, CheckFileWrite) {
 	EXPECT_NO_THROW(CheckFileRead("data/file"));
 }
 
-EX_FileNotFoundError(CheckDirRead, "data/dir")
+EX_FileNotFound(CheckDirRead, "data/dir")
 EX_Read(CheckDirRead, "data/dir_access_denied", "data/dir")
 EX_NotADirectory(CheckDirRead, "data/file", "data/dir")
-TEST_F(lagi_acs, CheckDirRead) {
+TEST(lagi_acs, CheckDirRead) {
 	EXPECT_NO_THROW(CheckDirRead("data/dir"));
 }
 
-EX_FileNotFoundError(CheckDirWrite, "data/dir")
+EX_FileNotFound(CheckDirWrite, "data/dir")
 EX_Read(CheckDirWrite, "data/dir_access_denied", "data/dir")
 EX_NotADirectory(CheckDirWrite, "data/file", "data/dir")
 EX_Write(CheckDirWrite, "data/dir_read_only", "data/dir")
-TEST_F(lagi_acs, CheckDirWrite) {
+TEST(lagi_acs, CheckDirWrite) {
 	EXPECT_NO_THROW(CheckDirWrite("data/dir"));
 }

@@ -28,7 +28,6 @@
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
-#include <wx/stdpaths.h>
 #include <wx/treebook.h>
 #include <wx/treebook.h>
 
@@ -64,8 +63,7 @@ OPTION_UPDATER(BoolUpdater, wxCommandEvent, OptionValueBool, !!evt.GetInt());
 OPTION_UPDATER(ColourUpdater, wxThreadEvent, OptionValueColor, evt.GetPayload<agi::Color>());
 
 static void browse_button(wxTextCtrl *ctrl) {
-	wxString def = StandardPaths::DecodePath(ctrl->GetValue());
-	wxDirDialog dlg(0, _("Please choose the folder:"), def);
+	wxDirDialog dlg(0, _("Please choose the folder:"), StandardPaths::DecodePath(from_wx(ctrl->GetValue())).wstring());
 	if (dlg.ShowModal() == wxID_OK) {
 		wxString dir = dlg.GetPath();
 		if (!dir.empty())

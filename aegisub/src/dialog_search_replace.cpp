@@ -52,8 +52,8 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 
 	settings->field = static_cast<SearchReplaceSettings::Field>(OPT_GET("Tool/Search Replace/Field")->GetInt());
 	settings->limit_to = static_cast<SearchReplaceSettings::Limit>(OPT_GET("Tool/Search Replace/Affect")->GetInt());
-	settings->find = recent_find.empty() ? wxString() : recent_find.front();
-	settings->replace_with = recent_replace.empty() ? wxString() : recent_replace.front();
+	settings->find = recent_find.empty() ? std::string() : from_wx(recent_find.front());
+	settings->replace_with = recent_replace.empty() ? std::string() : from_wx(recent_replace.front());
 	settings->match_case = OPT_GET("Tool/Search Replace/Match Case")->GetBool();
 	settings->use_regex = OPT_GET("Tool/Search Replace/RegExp")->GetBool();
 	settings->ignore_comments = OPT_GET("Tool/Search Replace/Skip Comments")->GetBool();
@@ -61,12 +61,12 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 	settings->exact_match = false;
 
 	auto find_sizer = new wxFlexGridSizer(2, 2, 5, 15);
-	find_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), recent_find, wxCB_DROPDOWN, wxGenericValidator(&settings->find));
+	find_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), recent_find, wxCB_DROPDOWN, StringBinder(&settings->find));
 	find_sizer->Add(new wxStaticText(this, -1, _("Find what:")), wxSizerFlags().Center().Left());
 	find_sizer->Add(find_edit);
 
 	if (has_replace) {
-		replace_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), lagi_MRU_wxAS("Replace"), wxCB_DROPDOWN, wxGenericValidator(&settings->replace_with));
+		replace_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), lagi_MRU_wxAS("Replace"), wxCB_DROPDOWN, StringBinder(&settings->replace_with));
 		find_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), wxSizerFlags().Center().Left());
 		find_sizer->Add(replace_edit);
 	}
@@ -128,11 +128,17 @@ void DialogSearchReplace::FindReplace(bool (SearchReplaceEngine::*func)()) {
 		return;
 
 	c->search->Configure(*settings);
-	(c->search->*func)();
+	try {
+		(c->search->*func)();
+	}
+	catch (std::exception const& e) {
+		wxMessageBox(to_wx(e.what()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		return;
+	}
 
-	config::mru->Add("Find", from_wx(settings->find));
+	config::mru->Add("Find", settings->find);
 	if (has_replace)
-		config::mru->Add("Replace", from_wx(settings->replace_with));
+		config::mru->Add("Replace", settings->replace_with);
 
 	OPT_SET("Tool/Search Replace/Match Case")->SetBool(settings->match_case);
 	OPT_SET("Tool/Search Replace/RegExp")->SetBool(settings->use_regex);

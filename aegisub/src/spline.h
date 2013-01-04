@@ -33,9 +33,7 @@
 ///
 
 #include <list>
-#include <vector>
-
-#include <wx/gdicmn.h>
+#include <string>
 
 #include "spline_curve.h"
 
@@ -57,10 +55,10 @@ public:
 	Spline(const VisualToolBase &scale);
 
 	/// Encode to an ASS vector drawing
-	wxString EncodeToAss() const;
+	std::string EncodeToAss() const;
 
 	/// Decode an ASS vector drawing
-	void DecodeFromAss(wxString str);
+	void DecodeFromAss(std::string const& str);
 
 	/// Set the scale
 	/// @param new_scale Power-of-two to scale coordinates by

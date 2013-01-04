@@ -36,17 +36,15 @@
 
 #include "help_button.h"
 
-#include <algorithm>
+#include "standard_paths.h"
+
+#include <boost/filesystem/path.hpp>
 #include <functional>
 #include <map>
 
 #include <wx/filename.h>
-#include <wx/msgdlg.h>
 
 #include <libaegisub/exception.h>
-
-#include "standard_paths.h"
-#include "utils.h"
 
 static std::map<wxString,wxString> *pages = 0;
 
@@ -94,7 +92,7 @@ void HelpButton::OpenPage(wxString const& pageID) {
 	wxString section;
 	page = page.BeforeFirst('#', &section);
 
-	wxFileName docFile(StandardPaths::DecodePath("?data/docs/"), page, "html", wxPATH_NATIVE);
+	wxFileName docFile(StandardPaths::DecodePath("?data/docs/").wstring(), page, "html", wxPATH_NATIVE);
 
 	wxString url;
 	// If we can read a file by the constructed name, assume we have a local copy of the manual

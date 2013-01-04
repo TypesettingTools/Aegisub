@@ -23,8 +23,8 @@
 
 #include "ass_entry.h"
 
-wxString const& AssEntry::GroupHeader(bool ssa) const {
-	static wxString ass_headers[] = {
+std::string const& AssEntry::GroupHeader(bool ssa) const {
+	static std::string ass_headers[] = {
 		"[Script Info]",
 		"[V4+ Styles]",
 		"[Fonts]",
@@ -33,7 +33,7 @@ wxString const& AssEntry::GroupHeader(bool ssa) const {
 		""
 	};
 
-	static wxString ssa_headers[] = {
+	static std::string ssa_headers[] = {
 		"[Script Info]",
 		"[V4 Styles]",
 		"[Fonts]",
