@@ -390,28 +390,14 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 /// @param cause cause of the crash.
 ///
 StackWalker::StackWalker(wxString cause) {
-
-	wxFileName report_dir("");
-	report_dir.SetPath(StandardPaths::DecodePath("?user/reporter"));
-	if (!report_dir.DirExists()) report_dir.Mkdir();
-
 	crash_text = new wxFile(StandardPaths::DecodePath("?user/crashlog.txt"), wxFile::write_append);
-	crash_xml = new wxFile(StandardPaths::DecodePath("?user/reporter/crash.xml"), wxFile::write);
 
-	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
+	if (crash_text->IsOpened()) {
 		wxDateTime time = wxDateTime::Now();
 
 		crash_text->Write(wxString::Format("--- %s ------------------\n", time.FormatISOCombined()));
 		crash_text->Write(wxString::Format("VER - %s\n", GetAegisubLongVersionString()));
 		crash_text->Write(wxString::Format("FTL - Beginning stack dump for \"%s\":\n", cause));
-
-		crash_xml->Write(                 "<crash>\n");
-		crash_xml->Write(                 "  <info>\n");
-		crash_xml->Write(wxString::Format("    <cause>%s</cause>\n", cause));
-		crash_xml->Write(wxString::Format("    <time>%s</time>\n", time.FormatISOCombined()));
-		crash_xml->Write(wxString::Format("    <version>%s</version>\n", GetAegisubLongVersionString()));
-		crash_xml->Write(                 "  </info>\n");
-		crash_xml->Write(                 "  <trace>\n");
 	}
 }
 
@@ -419,36 +405,22 @@ StackWalker::StackWalker(wxString cause) {
 /// @param frame frame to parse.
 ///
 void StackWalker::OnStackFrame(const wxStackFrame &frame) {
-
-	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
-
+	if (crash_text->IsOpened()) {
 		wxString dst = wxString::Format("%03u - %p: ", (unsigned)frame.GetLevel(),frame.GetAddress()) + frame.GetName();
 		if (frame.HasSourceLocation())
 			dst = wxString::Format("%s on %s:%u", dst, frame.GetFileName(), (unsigned)frame.GetLine());
 
 		crash_text->Write(wxString::Format("%s\n", dst));
-
-		crash_xml->Write(wxString::Format("    <frame id='%u' loc='%p'>\n", (int)frame.GetLevel(), frame.GetAddress()));
-		crash_xml->Write(wxString::Format("      <name>%s</name>\n", frame.GetName()));
-		if (frame.HasSourceLocation())
-			crash_xml->Write(wxString::Format("      <file line='%u'>%s</file>\n", (unsigned)frame.GetLine(), frame.GetFileName()));
-		crash_xml->Write(wxString::Format("      <module><![CDATA[%s]]></module>\n", frame.GetModule()));
-		crash_xml->Write(                 "    </frame>\n");
 	}
 }
 
 /// @brief Called at the end of walking the stack.
 StackWalker::~StackWalker() {
-	if ((crash_text->IsOpened()) && (crash_xml->IsOpened())) {
+	if (crash_text->IsOpened()) {
 		crash_text->Write("End of stack dump.\n");
 		crash_text->Write("----------------------------------------\n\n");
 
 		crash_text->Close();
-
-		crash_xml->Write("  </trace>\n");
-		crash_xml->Write("</crash>\n");
-
-		crash_xml->Close();
 	}
 }
 #endif

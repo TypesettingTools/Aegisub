@@ -104,7 +104,6 @@ wxDECLARE_APP(AegisubApp);
 #if wxUSE_STACKWALKER == 1
 class StackWalker: public wxStackWalker {
 	wxFile *crash_text;	// FP to the crash text file.
-	wxFile *crash_xml;	// FP to the crash xml file.
 
 public:
 	StackWalker(wxString cause);
