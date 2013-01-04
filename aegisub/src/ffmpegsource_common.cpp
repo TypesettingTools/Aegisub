@@ -35,23 +35,22 @@
 #include "config.h"
 
 #ifdef WITH_FFMS2
-
-#include <inttypes.h>
-#include <map>
-
-#include <wx/dir.h>
-#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
-
-#include <libaegisub/log.h>
+#include "ffmpegsource_common.h"
 
 #include "compat.h"
 #include "dialog_progress.h"
-#include "ffmpegsource_common.h"
 #include "frame_main.h"
 #include "main.h"
-#include "md5.h"
 #include "standard_paths.h"
 #include "utils.h"
+
+#include <libaegisub/log.h>
+
+#include <boost/crc.hpp>
+#include <inttypes.h>
+
+#include <wx/dir.h>
+#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
 #ifdef WIN32
 static void deinit_com(bool) {
@@ -171,8 +170,6 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int,wxString> &Tra
 		return TrackNumbers[Choice];
 }
 
-
-
 /// @brief Set ffms2 log level according to setting in config.dat
 void FFmpegSourceProvider::SetLogLevel() {
 	wxString LogLevel = to_wx(OPT_GET("Provider/FFmpegSource/Log Level")->GetString());
@@ -211,12 +208,10 @@ FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
 		return FFMS_IEH_STOP_TRACK; // questionable default?
 }
 
-#include <inttypes.h>
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist
 /// @param filename	The name of the source file
 /// @return			Returns the generated filename.
-wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
-{
+wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename) {
 	// Get the size of the file to be hashed
 	wxFileOffset len = 0;
 	{
@@ -226,21 +221,13 @@ wxString FFmpegSourceProvider::GetCacheFilename(const wxString& _filename)
 
 	wxFileName filename(_filename);
 
-	// Generate string to be hashed
-	wxString toHash = wxString::Format("%s %" PRId64 " %" PRId64, filename.GetFullName(), len, (int64_t)filename.GetModificationTime().GetTicks());
-
-
-	// Get the MD5 digest of the string
-	const wchar_t *tmp = toHash.wc_str();
-	md5_state_t state;
-	md5_byte_t digest[16];
-	md5_init(&state);
-	md5_append(&state,(md5_byte_t*)tmp,toHash.Length()*sizeof(wchar_t));
-	md5_finish(&state,digest);
+	// Get the hash of the filename
+	wxString toHash = filename.GetFullName();
+	boost::crc_32_type hash;
+	hash.process_bytes(toHash.wc_str(), toHash.size() * sizeof(wchar_t));
 
 	// Generate the filename
-	unsigned int *md5 = (unsigned int*) digest;
-	wxString result = wxString::Format("?local/ffms2cache/%08X%08X%08X%08X.ffindex",md5[0],md5[1],md5[2],md5[3]);
+	wxString result = wxString::Format("?local/ffms2cache/%u_%" PRId64 "_%" PRId64 ".ffindex", hash.checksum(), len, (int64_t)filename.GetModificationTime().GetTicks());
 	result = StandardPaths::DecodePath(result);
 
 	// Ensure that folder exists

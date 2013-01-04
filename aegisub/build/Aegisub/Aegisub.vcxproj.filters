@@ -492,9 +492,6 @@
     <ClInclude Include="$(SrcDir)subs_preview.h">
       <Filter>Features\Style editor</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)md5.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)string_codec.h">
       <Filter>Utilities</Filter>
     </ClInclude>
@@ -1043,9 +1040,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)subs_preview.cpp">
       <Filter>Features\Style editor</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)md5.c">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)string_codec.cpp">
       <Filter>Utilities</Filter>

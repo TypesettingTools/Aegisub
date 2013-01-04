@@ -206,7 +206,6 @@ SRC += \
 	kana_table.cpp \
 	main.cpp \
 	menu.cpp \
-	md5.c \
 	mkv_wrap.cpp \
 	pen.cpp \
 	persist_location.cpp \
