@@ -47,7 +47,7 @@
 #include "ass_file.h"
 #include "command/command.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
 #include "selection_controller.h"

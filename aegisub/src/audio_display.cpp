@@ -54,7 +54,7 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
-#include "main.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "utils.h"
 #include "video_context.h"

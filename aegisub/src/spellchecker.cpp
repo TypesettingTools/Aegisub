@@ -40,7 +40,7 @@
 
 #include "compat.h"
 #include "include/aegisub/spellchecker.h"
-#include "main.h"
+#include "options.h"
 
 agi::SpellChecker *SpellCheckerFactory::GetSpellChecker() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Tool/Spell Checker/Backend")->GetString());

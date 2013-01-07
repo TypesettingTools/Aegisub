@@ -20,7 +20,7 @@
 
 #include "compat.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "standard_paths.h"
 
 #include <boost/range/adaptor/map.hpp>

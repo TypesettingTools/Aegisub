@@ -40,7 +40,7 @@
 
 #include "audio_rendering_style.h"
 #include "colorspace.h"
-#include "main.h"
+#include "options.h"
 
 #include <libaegisub/exception.h>
 

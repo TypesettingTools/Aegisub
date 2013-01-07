@@ -34,16 +34,7 @@
 
 #include "config.h"
 
-#include <sstream>
-
-#include <wx/clipbrd.h>
-#include <wx/config.h>
-#include <wx/datetime.h>
-#include <wx/filefn.h>
-#include <wx/filename.h>
-#include <wx/msgdlg.h>
-#include <wx/stdpaths.h>
-#include <wx/utils.h>
+#include "main.h"
 
 #include "include/aegisub/menu.h"
 #include "command/command.h"
@@ -61,8 +52,8 @@
 #include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"
-#include "main.h"
 #include "libresrc/libresrc.h"
+#include "options.h"
 #include "plugin_manager.h"
 #include "standard_paths.h"
 #include "subtitle_format.h"
@@ -74,6 +65,17 @@
 #include <libaegisub/log.h>
 #include <libaegisub/hotkey.h>
 #include <libaegisub/scoped_ptr.h>
+
+#include <sstream>
+
+#include <wx/clipbrd.h>
+#include <wx/config.h>
+#include <wx/datetime.h>
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <wx/stdpaths.h>
+#include <wx/utils.h>
 
 namespace config {
 	agi::Options *opt = 0;

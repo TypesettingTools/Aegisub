@@ -62,7 +62,7 @@
 #include "audio_timing.h"
 #include "command/command.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "toggle_bitmap.h"
 #include "selection_controller.h"
 #include "utils.h"

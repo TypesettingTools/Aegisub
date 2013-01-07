@@ -22,7 +22,7 @@
 
 #include "persist_location.h"
 
-#include "main.h"
+#include "options.h"
 
 #include <wx/dialog.h>
 #include <wx/display.h>

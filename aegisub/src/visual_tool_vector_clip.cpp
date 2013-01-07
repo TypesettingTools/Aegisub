@@ -29,7 +29,7 @@
 #include "ass_dialogue.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "utils.h"
 

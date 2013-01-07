@@ -42,9 +42,10 @@
 #include "../ass_file.h"
 #include "../audio_controller.h"
 #include "../audio_timing.h"
+#include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../main.h"
-#include "../frame_main.h"
+#include "../options.h"
 #include "../selection_controller.h"
 #include "../utils.h"
 

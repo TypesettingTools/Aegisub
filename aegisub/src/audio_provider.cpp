@@ -51,6 +51,7 @@
 #include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
+#include "options.h"
 #include "utils.h"
 
 #include <libaegisub/log.h>

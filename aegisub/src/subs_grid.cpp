@@ -48,7 +48,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "main.h"
+#include "options.h"
 #include "utils.h"
 #include "video_context.h"
 

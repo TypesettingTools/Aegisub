@@ -56,7 +56,7 @@
 #include "audio_box.h"
 #include "compat.h"
 #include "frame_main.h"
-#include "main.h"
+#include "options.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_slider.h"

@@ -44,7 +44,7 @@
 #include "block_cache.h"
 #include "colorspace.h"
 #include "include/aegisub/audio_provider.h"
-#include "main.h"
+#include "options.h"
 
 enum {
 	/// Only render the peaks

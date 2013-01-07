@@ -41,11 +41,12 @@
 
 #include "command.h"
 
-#include "../include/aegisub/context.h"
 #include "../audio_controller.h"
-#include "../main.h"
-#include "../frame_main.h"
 #include "../compat.h"
+#include "../frame_main.h"
+#include "../include/aegisub/context.h"
+#include "../main.h"
+#include "../options.h"
 #include "../video_context.h"
 
 namespace {

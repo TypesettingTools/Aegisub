@@ -44,6 +44,7 @@
 
 #include <wx/app.h>
 #include <wx/icon.h>
+#include <wx/event.h>
 #include <wx/thread.h>
 
 class wxMouseEvent;

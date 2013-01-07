@@ -49,7 +49,7 @@
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "standard_paths.h"
 #include "timeedit_ctrl.h"
 #include "video_context.h"

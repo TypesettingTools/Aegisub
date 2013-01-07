@@ -45,7 +45,7 @@
 #include "audio_controller.h"
 #include "audio_provider_pcm.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 #include "standard_paths.h"
 #include "utils.h"
 

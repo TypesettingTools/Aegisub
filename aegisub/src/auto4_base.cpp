@@ -67,7 +67,7 @@
 #include "compat.h"
 #include "dialog_progress.h"
 #include "include/aegisub/context.h"
-#include "main.h"
+#include "options.h"
 #include "standard_paths.h"
 #include "string_codec.h"
 #include "subtitle_format.h"

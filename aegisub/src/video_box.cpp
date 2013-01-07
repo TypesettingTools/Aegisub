@@ -54,7 +54,7 @@
 #include "command/command.h"
 #include "compat.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "toggle_bitmap.h"
 #include "tooltip_manager.h"

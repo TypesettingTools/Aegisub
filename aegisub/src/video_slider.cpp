@@ -39,7 +39,7 @@
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
-#include "main.h"
+#include "options.h"
 #include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"

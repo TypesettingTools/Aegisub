@@ -45,7 +45,7 @@
 
 #include "audio_controller.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 
 AudioPlayer::AudioPlayer(AudioProvider *provider)
 : provider(provider)

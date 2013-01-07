@@ -41,9 +41,9 @@
 
 #include "command.h"
 
-#include "../include/aegisub/context.h"
-#include "../main.h"
 #include "../compat.h"
+#include "../include/aegisub/context.h"
+#include "../options.h"
 #include "../video_context.h"
 
 namespace {

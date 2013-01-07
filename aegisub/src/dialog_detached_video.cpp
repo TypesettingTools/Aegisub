@@ -34,21 +34,21 @@
 
 #include "config.h"
 
-#include <wx/filename.h>
-#include <wx/sizer.h>
-#include <wx/display.h> /// Must be included last.
-
 #include "dialog_detached_video.h"
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 
-#include "main.h"
+#include "options.h"
 #include "persist_location.h"
 #include "utils.h"
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
+
+#include <wx/filename.h>
+#include <wx/sizer.h>
+#include <wx/display.h> /// Must be included last.
 
 DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 : wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, wxSize(400,300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)

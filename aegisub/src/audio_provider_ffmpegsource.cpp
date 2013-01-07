@@ -46,7 +46,7 @@
 
 #include "audio_controller.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 
 /// @brief Constructor
 /// @param filename The filename to open

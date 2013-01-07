@@ -54,7 +54,7 @@
 #endif
 
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 
 wxDEFINE_EVENT(EVT_CALL_THUNK, wxThreadEvent);
 

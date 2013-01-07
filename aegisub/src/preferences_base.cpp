@@ -39,7 +39,7 @@
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "preferences.h"
 #include "standard_paths.h"
 #include "video_provider_manager.h"

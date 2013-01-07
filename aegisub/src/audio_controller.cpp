@@ -49,7 +49,7 @@
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "pen.h"
-#include "main.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
 #include "utils.h"

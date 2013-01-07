@@ -41,10 +41,10 @@
 #include <libaegisub/util_osx.h>
 
 #include "command.h"
-#include "../include/aegisub/context.h"
 
-#include "../help_button.h" // help_contents
-#include "../main.h"
+#include "../help_button.h"
+#include "../include/aegisub/context.h"
+#include "../options.h"
 
 namespace {
 	using cmd::Command;

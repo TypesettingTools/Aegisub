@@ -38,7 +38,7 @@
 #include "avisynth_wrap.h"
 
 #include "avisynth.h"
-#include "main.h"
+#include "options.h"
 
 // Allocate storage for and initialise static members
 namespace {

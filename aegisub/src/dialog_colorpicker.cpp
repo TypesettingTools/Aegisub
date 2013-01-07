@@ -67,7 +67,7 @@
 #include "dialog_colorpicker.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "persist_location.h"
 #include "utils.h"
 

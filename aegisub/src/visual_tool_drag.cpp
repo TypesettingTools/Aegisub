@@ -32,7 +32,7 @@
 #include "ass_file.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_display.h"

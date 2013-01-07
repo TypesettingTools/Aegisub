@@ -35,7 +35,6 @@
 #include "config.h"
 
 #ifdef WITH_DIRECTSOUND
-
 #include <mmsystem.h>
 #include <process.h>
 #include <dsound.h>
@@ -48,6 +47,7 @@
 #include "include/aegisub/audio_provider.h"
 #include "frame_main.h"
 #include "main.h"
+#include "options.h"
 #include "utils.h"
 
 /// @brief RAII support class to init and de-init the COM library

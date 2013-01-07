@@ -39,13 +39,14 @@
 
 #include "command.h"
 
-#include "../main.h"
-#include "../include/aegisub/context.h"
+#include "../auto4_base.h"
 #include "../dialog_automation.h"
 #include "../dialog_manager.h"
-#include "../auto4_base.h"
-#include "../video_context.h"
 #include "../frame_main.h"
+#include "../include/aegisub/context.h"
+#include "../main.h"
+#include "../options.h"
+#include "../video_context.h"
 
 namespace {
 	using cmd::Command;

@@ -25,7 +25,7 @@
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>

@@ -23,6 +23,19 @@
 
 #include "dialog_selection.h"
 
+#include "ass_dialogue.h"
+#include "ass_file.h"
+#include "compat.h"
+#include "frame_main.h"
+#include "help_button.h"
+#include "include/aegisub/context.h"
+#include "libresrc/libresrc.h"
+#include "main.h"
+#include "options.h"
+#include "selection_controller.h"
+
+#include <libaegisub/of_type_adaptor.h>
+
 #include <algorithm>
 
 #include <wx/checkbox.h>
@@ -32,18 +45,6 @@
 #include <wx/radiobut.h>
 #include <wx/regex.h>
 #include <wx/textctrl.h>
-
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "compat.h"
-#include "frame_main.h"
-#include "help_button.h"
-#include "include/aegisub/context.h"
-#include "libresrc/libresrc.h"
-#include "main.h"
-#include "selection_controller.h"
-
-#include <libaegisub/of_type_adaptor.h>
 
 enum {
 	ACTION_SET = 0,

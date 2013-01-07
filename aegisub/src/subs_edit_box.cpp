@@ -57,7 +57,7 @@
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "placeholder_ctrl.h"
 #include "scintilla_text_selection_controller.h"
 #include "subs_edit_ctrl.h"

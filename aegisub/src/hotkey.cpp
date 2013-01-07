@@ -25,7 +25,7 @@
 #include "libresrc/libresrc.h"
 #include "command/command.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 #include "standard_paths.h"
 
 namespace {

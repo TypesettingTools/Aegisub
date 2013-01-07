@@ -30,7 +30,7 @@
 #include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "text_selection_controller.h"
 #include "subs_edit_ctrl.h"

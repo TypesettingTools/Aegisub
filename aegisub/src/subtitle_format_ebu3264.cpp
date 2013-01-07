@@ -40,7 +40,7 @@
 #include "ass_style.h"
 #include "compat.h"
 #include "dialog_export_ebu3264.h"
-#include "main.h"
+#include "options.h"
 #include "text_file_writer.h"
 
 namespace

@@ -25,7 +25,7 @@
 
 #include <libaegisub/charset_conv.h>
 
-#include "main.h"
+#include "options.h"
 #include "text_file_writer.h"
 
 #include <wx/checkbox.h>

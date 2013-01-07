@@ -42,17 +42,17 @@
 
 #include <libaegisub/log.h>
 
-#include "../include/aegisub/context.h"
-#include "../main.h"
-
 #include "../audio_controller.h"
 #include "../compat.h"
 #include "../dialog_about.h"
 #include "../dialog_detached_video.h"
-#include "../dialog_manager.h"
 #include "../dialog_log.h"
+#include "../dialog_manager.h"
 #include "../dialog_version_check.h"
 #include "../frame_main.h"
+#include "../include/aegisub/context.h"
+#include "../main.h"
+#include "../options.h"
 #include "../preferences.h"
 #include "../utils.h"
 #include "../video_context.h"

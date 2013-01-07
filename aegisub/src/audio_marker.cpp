@@ -24,7 +24,7 @@
 #include "audio_marker.h"
 
 #include "include/aegisub/context.h"
-#include "main.h"
+#include "options.h"
 #include "pen.h"
 #include "video_context.h"
 

@@ -42,7 +42,7 @@
 #include "ass_file.h"
 #include "ass_time.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 
 #include <libaegisub/of_type_adaptor.h>
 #include <boost/range/adaptor/reversed.hpp>

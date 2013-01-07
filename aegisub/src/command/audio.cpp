@@ -49,7 +49,7 @@
 #include "../audio_timing.h"
 #include "../compat.h"
 #include "../include/aegisub/context.h"
-#include "../main.h"
+#include "../options.h"
 #include "../selection_controller.h"
 #include "../video_context.h"
 

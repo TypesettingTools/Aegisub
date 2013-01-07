@@ -14,30 +14,21 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
+#include <libaegisub/mru.h>
+#include <libaegisub/option.h>
+#include <libaegisub/option_value.h>
 
-#include "pen.h"
-
-#include "compat.h"
-#include "options.h"
-
-void Pen::OnColourChanged(agi::OptionValue const& opt) {
-	impl.SetColour(to_wx(opt.GetColor()));
+/// For holding all configuration-related objects and values.
+namespace config {
+	extern agi::Options *opt;    ///< Options
+	extern agi::MRUManager *mru; ///< Most Recently Used
 }
 
-void Pen::OnWidthChanged(agi::OptionValue const& opt) {
-	impl.SetWidth(opt.GetInt());
-}
+/// Macro to get OptionValue object
+#define OPT_GET(x) const_cast<const agi::OptionValue*>(config::opt->Get(x))
 
-Pen::Pen(const char *colour_opt, const char *width_opt, wxPenStyle style)
-: impl(to_wx(OPT_GET(colour_opt)->GetColor()), OPT_GET(width_opt)->GetInt(), style)
-, colour_con(OPT_SUB(colour_opt, &Pen::OnColourChanged, this))
-, width_con(OPT_SUB(width_opt, &Pen::OnWidthChanged, this))
-{
-}
+/// Macro to set OptionValue object
+#define OPT_SET(x) config::opt->Get(x)
 
-Pen::Pen(const char *colour_opt, int width, wxPenStyle style)
-: impl(to_wx(OPT_GET(colour_opt)->GetColor()), width, style)
-, colour_con(OPT_SUB(colour_opt, &Pen::OnColourChanged, this))
-{
-}
+/// Macro to subscribe to OptionValue changes
+#define OPT_SUB(x, ...) config::opt->Get(x)->Subscribe(__VA_ARGS__)

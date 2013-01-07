@@ -41,7 +41,7 @@
 #include <wx/textctrl.h>
 
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 
 DialogTextImport::DialogTextImport()
 : wxDialog(nullptr , -1, _("Text import options"))

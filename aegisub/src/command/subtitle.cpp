@@ -57,10 +57,11 @@
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../main.h"
+#include "../options.h"
 #include "../subs_grid.h"
 #include "../subtitle_format.h"
-#include "../video_context.h"
 #include "../utils.h"
+#include "../video_context.h"
 
 namespace {
 	using cmd::Command;

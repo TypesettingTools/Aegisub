@@ -43,7 +43,7 @@
 #include "audio_controller.h"
 #include "compat.h"
 #include "include/aegisub/audio_provider.h"
-#include "main.h"
+#include "options.h"
 #include "utils.h"
 
 DEFINE_SIMPLE_EXCEPTION(OSSError, agi::AudioPlayerOpenError, "audio/player/open/oss")

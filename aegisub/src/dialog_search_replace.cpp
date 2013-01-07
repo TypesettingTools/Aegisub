@@ -49,7 +49,7 @@
 #include "compat.h"
 #include "dialog_search_replace.h"
 #include "include/aegisub/context.h"
-#include "main.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "text_selection_controller.h"
 #include "subs_edit_ctrl.h"

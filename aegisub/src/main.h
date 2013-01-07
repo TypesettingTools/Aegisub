@@ -37,9 +37,6 @@
 #include <wx/stackwalk.h>
 
 #include "aegisublocale.h"
-#include <libaegisub/mru.h>
-#include <libaegisub/option.h>
-#include <libaegisub/option_value.h>
 
 #ifndef wxUSE_EXCEPTIONS
 #error wxWidgets is compiled without exceptions support. Aegisub requires exceptions support in wxWidgets to run safely.
@@ -48,22 +45,7 @@
 class FrameMain;
 class PluginManager;
 
-/// For holding all configuration-related objects and values.
-namespace config {
-	extern agi::Options *opt; 		///< Options
-	extern agi::MRUManager *mru;	///< Most Recently Used
-}
-
 namespace Automation4 { class AutoloadScriptManager; }
-
-/// Macro to get OptionValue object.
-#define OPT_GET(x) const_cast<const agi::OptionValue*>(config::opt->Get(x))
-
-/// Macro to set OptionValue object.
-#define OPT_SET(x) config::opt->Get(x)
-
-/// Macro to subscribe to OptionValue changes
-#define OPT_SUB(x, ...) config::opt->Get(x)->Subscribe(__VA_ARGS__)
 
 class AegisubApp: public wxApp {
 	PluginManager *plugins;

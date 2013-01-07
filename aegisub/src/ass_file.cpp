@@ -50,7 +50,7 @@
 #include "ass_info.h"
 #include "ass_style.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 #include "standard_paths.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"

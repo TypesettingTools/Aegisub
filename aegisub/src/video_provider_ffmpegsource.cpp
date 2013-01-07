@@ -35,10 +35,7 @@
 #include "config.h"
 
 #ifdef WITH_FFMS2
-
-#ifdef __WINDOWS__
-#include <objbase.h>
-#endif
+#include "video_provider_ffmpegsource.h"
 
 #include <map>
 
@@ -48,10 +45,9 @@
 
 #include "aegisub_endian.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_provider_ffmpegsource.h"
 
 /// @brief Constructor
 /// @param filename The filename to open

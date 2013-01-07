@@ -35,15 +35,6 @@
 
 #include "config.h"
 
-#include <algorithm>
-
-#include <wx/button.h>
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/listctrl.h>
-#include <wx/log.h>
-#include <wx/msgdlg.h>
-
 #include "dialog_automation.h"
 
 #include "auto4_base.h"
@@ -52,8 +43,18 @@
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
+#include "options.h"
 #include "main.h"
 #include "subtitle_format.h"
+
+#include <algorithm>
+
+#include <wx/button.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/listctrl.h>
+#include <wx/log.h>
+#include <wx/msgdlg.h>
 
 using std::placeholders::_1;
 

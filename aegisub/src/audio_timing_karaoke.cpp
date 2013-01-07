@@ -31,7 +31,7 @@
 #include "audio_timing.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
-#include "main.h"
+#include "options.h"
 #include "pen.h"
 #include "utils.h"
 

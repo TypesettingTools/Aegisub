@@ -38,7 +38,7 @@
 
 #include "audio_controller.h"
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 #include "utils.h"
 
 #include <libaegisub/background_runner.h>

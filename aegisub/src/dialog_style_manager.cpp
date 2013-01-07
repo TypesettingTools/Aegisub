@@ -58,7 +58,7 @@
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "persist_location.h"
 #include "selection_controller.h"
 #include "standard_paths.h"

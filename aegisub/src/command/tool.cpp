@@ -41,22 +41,21 @@
 
 #include "command.h"
 
-#include "../include/aegisub/context.h"
-
-#include "../dialog_fonts_collector.h"
-#include "../standard_paths.h" // tool_assdraw
-#include "../video_context.h" // tool_font_collector
 #include "../compat.h"
 #include "../dialog_export.h"
+#include "../dialog_fonts_collector.h"
+#include "../dialog_kara_timing_copy.h"
 #include "../dialog_manager.h"
 #include "../dialog_resample.h"
 #include "../dialog_selection.h"
-#include "../dialog_styling_assistant.h"
 #include "../dialog_style_manager.h"
+#include "../dialog_styling_assistant.h"
 #include "../dialog_timing_processor.h"
 #include "../dialog_translation.h"
-#include "../dialog_kara_timing_copy.h"
+#include "../include/aegisub/context.h"
+#include "../standard_paths.h"
 #include "../subs_grid.h"
+#include "../video_context.h"
 
 namespace {
 	using cmd::Command;

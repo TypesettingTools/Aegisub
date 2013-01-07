@@ -37,7 +37,7 @@
 #include <libaegisub/log.h>
 
 #include "compat.h"
-#include "main.h"
+#include "options.h"
 
 #ifdef WITH_AVISYNTH
 #include "video_provider_avs.h"

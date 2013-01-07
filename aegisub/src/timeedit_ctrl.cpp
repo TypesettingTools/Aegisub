@@ -46,7 +46,7 @@
 #include "ass_time.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
-#include "main.h"
+#include "options.h"
 #include "utils.h"
 #include "video_context.h"
 

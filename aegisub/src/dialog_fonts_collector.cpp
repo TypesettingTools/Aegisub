@@ -31,7 +31,7 @@
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
+#include "options.h"
 #include "scintilla_text_ctrl.h"
 #include "selection_controller.h"
 #include "standard_paths.h"

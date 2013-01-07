@@ -682,6 +682,10 @@
     <ClInclude Include="$(SrcDir)ass_info.h">
       <Filter>ASS</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
+    <ClInclude Include="$(SrcDir)options.h">
+      <Filter>Preferences</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
