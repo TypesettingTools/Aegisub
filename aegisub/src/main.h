@@ -93,21 +93,8 @@ public:
 	FrameMain *frame;
 	Automation4::AutoloadScriptManager *global_scripts;
 
-#ifdef __WXMAC__
 	// Apple events
-	virtual void MacOpenFile(const wxString &filename);
-#endif
+	void MacOpenFile(const wxString &filename);
 };
 
 wxDECLARE_APP(AegisubApp);
-
-#if wxUSE_STACKWALKER == 1
-class StackWalker: public wxStackWalker {
-	wxFile *crash_text;	// FP to the crash text file.
-
-public:
-	StackWalker(wxString cause);
-	~StackWalker();
-	void OnStackFrame(const wxStackFrame& frame);
-};
-#endif // wxUSE_STACKWALKER

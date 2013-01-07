@@ -80,9 +80,6 @@ namespace config {
 	agi::MRUManager *mru = 0;
 }
 
-
-///////////////////
-// wxWidgets macro
 IMPLEMENT_APP(AegisubApp)
 
 static const char *LastStartupState = nullptr;
@@ -118,6 +115,9 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
 		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR *)&info);
 	}
 	__except (EXCEPTION_CONTINUE_EXECUTION) {}
+}
+#else
+void SetThreadName(int dwThreadID, const char *szThreadName) {
 }
 #endif
 
@@ -205,9 +205,7 @@ bool AegisubApp::OnInit() {
 	StartupLog("Load MRU");
 	config::mru = new agi::MRUManager(from_wx(StandardPaths::DecodePath("?user/mru.json")), GET_DEFAULT_CONFIG(default_mru), config::opt);
 
-#ifdef __VISUALC__
-	SetThreadName((DWORD) -1,"AegiMain");
-#endif
+	SetThreadName(-1, "AegiMain");
 
 	StartupLog("Inside OnInit");
 	frame = nullptr;
@@ -315,6 +313,55 @@ int AegisubApp::OnExit() {
 	return wxApp::OnExit();
 }
 
+#if wxUSE_STACKWALKER == 1
+class StackWalker: public wxStackWalker {
+	wxFile *crash_text;	// FP to the crash text file.
+
+public:
+	StackWalker(wxString cause);
+	~StackWalker();
+	void OnStackFrame(const wxStackFrame& frame);
+};
+
+/// @brief Called at the start of walking the stack.
+/// @param cause cause of the crash.
+///
+StackWalker::StackWalker(wxString cause) {
+	crash_text = new wxFile(StandardPaths::DecodePath("?user/crashlog.txt"), wxFile::write_append);
+
+	if (crash_text->IsOpened()) {
+		wxDateTime time = wxDateTime::Now();
+
+		crash_text->Write(wxString::Format("--- %s ------------------\n", time.FormatISOCombined()));
+		crash_text->Write(wxString::Format("VER - %s\n", GetAegisubLongVersionString()));
+		crash_text->Write(wxString::Format("FTL - Beginning stack dump for \"%s\":\n", cause));
+	}
+}
+
+/// @brief Callback to format a single frame
+/// @param frame frame to parse.
+///
+void StackWalker::OnStackFrame(const wxStackFrame &frame) {
+	if (crash_text->IsOpened()) {
+		wxString dst = wxString::Format("%03u - %p: ", (unsigned)frame.GetLevel(),frame.GetAddress()) + frame.GetName();
+		if (frame.HasSourceLocation())
+			dst = wxString::Format("%s on %s:%u", dst, frame.GetFileName(), (unsigned)frame.GetLine());
+
+		crash_text->Write(wxString::Format("%s\n", dst));
+	}
+}
+
+/// @brief Called at the end of walking the stack.
+StackWalker::~StackWalker() {
+	if (crash_text->IsOpened()) {
+		crash_text->Write("End of stack dump.\n");
+		crash_text->Write("----------------------------------------\n\n");
+
+		crash_text->Close();
+	}
+}
+#endif
+
 /// Message displayed when an exception has occurred.
 const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
@@ -385,46 +432,6 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 #undef SHOW_EXCEPTION
 }
 
-#if wxUSE_STACKWALKER == 1
-/// @brief Called at the start of walking the stack.
-/// @param cause cause of the crash.
-///
-StackWalker::StackWalker(wxString cause) {
-	crash_text = new wxFile(StandardPaths::DecodePath("?user/crashlog.txt"), wxFile::write_append);
-
-	if (crash_text->IsOpened()) {
-		wxDateTime time = wxDateTime::Now();
-
-		crash_text->Write(wxString::Format("--- %s ------------------\n", time.FormatISOCombined()));
-		crash_text->Write(wxString::Format("VER - %s\n", GetAegisubLongVersionString()));
-		crash_text->Write(wxString::Format("FTL - Beginning stack dump for \"%s\":\n", cause));
-	}
-}
-
-/// @brief Callback to format a single frame
-/// @param frame frame to parse.
-///
-void StackWalker::OnStackFrame(const wxStackFrame &frame) {
-	if (crash_text->IsOpened()) {
-		wxString dst = wxString::Format("%03u - %p: ", (unsigned)frame.GetLevel(),frame.GetAddress()) + frame.GetName();
-		if (frame.HasSourceLocation())
-			dst = wxString::Format("%s on %s:%u", dst, frame.GetFileName(), (unsigned)frame.GetLine());
-
-		crash_text->Write(wxString::Format("%s\n", dst));
-	}
-}
-
-/// @brief Called at the end of walking the stack.
-StackWalker::~StackWalker() {
-	if (crash_text->IsOpened()) {
-		crash_text->Write("End of stack dump.\n");
-		crash_text->Write("----------------------------------------\n\n");
-
-		crash_text->Close();
-	}
-}
-#endif
-
 int AegisubApp::OnRun() {
 	wxString error;
 
@@ -463,7 +470,6 @@ int AegisubApp::OnRun() {
 	return 1;
 }
 
-#ifdef __WXMAC__
 void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame != nullptr && !filename.empty()) {
 		frame->LoadSubtitles(filename);
@@ -471,4 +477,3 @@ void AegisubApp::MacOpenFile(const wxString &filename) {
 		OPT_SET("Path/Last/Subtitles")->SetString(from_wx(filepath.GetPath()));
 	}
 }
-#endif
