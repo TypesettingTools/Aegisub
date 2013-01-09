@@ -152,28 +152,49 @@ bool AssDialogue::Parse(wxString const& rawData) {
 	return true;
 }
 
-wxString AssDialogue::GetData(bool ssa) const {
-	wxString s = Style;
-	wxString a = Actor;
-	wxString e = Effect;
-	s.Replace(",",";");
-	a.Replace(",",";");
-	e.Replace(",",";");
+static void append_int(wxString &str, int v) {
+	str += std::to_wstring(v);
+	str += ',';
+}
 
-	wxString str = wxString::Format(
-		"%s: %s,%s,%s,%s,%s,%d,%d,%d,%s,%s",
-		Comment ? "Comment" : "Dialogue",
-		ssa ? "Marked=0" : wxString::Format("%01d", Layer),
-		Start.GetAssFormated(),
-		End.GetAssFormated(),
-		s, a,
-		Margin[0], Margin[1], Margin[2],
-		e,
-		Text.get());
+static void append_str(wxString &out, wxString const& str) {
+	out += str;
+	out += ',';
+}
+
+static void append_unsafe_str(wxString &out, wxString const& str) {
+	if (str.find(',') == str.npos)
+		out += str;
+	else {
+		wxString c = str;
+		c.Replace(wxS(","), wxS(";"));
+		out += c;
+	}
+	out += ',';
+}
+
+wxString AssDialogue::GetData(bool ssa) const {
+	wxString str = Comment ? wxS("Comment: ") : wxS("Dialogue: ");
+	str.reserve(51 + Style.get().size() + Actor.get().size() + Effect.get().size() + Text.get().size());
+
+	if (ssa)
+		append_str(str, wxS("Marked=0"));
+	else
+		append_int(str, Layer);
+	append_str(str, Start.GetAssFormated());
+	append_str(str, End.GetAssFormated());
+	append_unsafe_str(str, Style);
+	append_unsafe_str(str, Actor);
+	for (int i = 0; i < 3; ++i)
+		append_int(str, Margin[i]);
+	append_unsafe_str(str, Effect);
+	str += Text.get();
 
 	// Make sure that final has no line breaks
-	str.Replace("\n", "");
-	str.Replace("\r", "");
+	if (str.find('\n') != str.npos || str.find('\r') != str.npos) {
+		str.Replace("\n", "");
+		str.Replace("\r", "");
+	}
 
 	return str;
 }
