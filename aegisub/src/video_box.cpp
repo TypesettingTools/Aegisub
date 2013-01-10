@@ -118,8 +118,8 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	videoBottomSizer->Add(mainToolbar, wxSizerFlags(0).Center());
 	videoBottomSizer->Add(VideoPosition, wxSizerFlags(1).Center().Border(wxLEFT));
-	videoBottomSizer->Add(VideoSubsPos, wxSizerFlags(1).Center());
-	videoBottomSizer->Add(zoomBox, wxSizerFlags(0).Center());
+	videoBottomSizer->Add(VideoSubsPos, wxSizerFlags(1).Center().Border(wxLEFT));
+	videoBottomSizer->Add(zoomBox, wxSizerFlags(0).Center().Border(wxLEFT | wxRIGHT));
 
 	wxSizer *VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(topSizer, 1, wxEXPAND, 0);
