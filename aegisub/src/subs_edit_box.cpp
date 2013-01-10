@@ -223,7 +223,7 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 }
 
 TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
-	TimeEdit *ctrl = new TimeEdit(this, -1, c, "", wxSize(75,-1), field == TIME_END);
+	TimeEdit *ctrl = new TimeEdit(this, -1, c, "", wxSize(GetTextExtent(wxS(" 0:00:00.000 ")).GetWidth(),-1), field == TIME_END);
 	ctrl->SetToolTip(tooltip);
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) { CommitTimes(field); }, ctrl->GetId());
 	ctrl->Bind(wxEVT_CHAR_HOOK, time_edit_char_hook);
