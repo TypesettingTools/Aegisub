@@ -90,14 +90,9 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 
 	// Typesetting buttons
 	wxToolBar *visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
-	// Avoid ugly themed background on Vista and possibly also Win7
-	visualToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
-	visualToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	// Visual controls sub-toolbar
 	wxToolBar *visualSubToolBar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_BOTTOM | wxTB_FLAT);
-	visualSubToolBar->SetBackgroundStyle(wxBG_STYLE_COLOUR);
-	visualSubToolBar->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
 	VideoDisplay *videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
 	videoDisplay->MoveBeforeInTabOrder(videoSlider);
