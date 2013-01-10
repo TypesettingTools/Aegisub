@@ -34,14 +34,24 @@
 
 #include "config.h"
 
-#include <cstdio>
+#include "dialog_colorpicker.h"
+
+#include "ass_style.h"
+#include "colorspace.h"
+#include "compat.h"
+#include "help_button.h"
+#include "libresrc/libresrc.h"
+#include "options.h"
+#include "persist_location.h"
+#include "utils.h"
+
+#include <libaegisub/scoped_ptr.h>
+
 #include <vector>
 
 #include <wx/bitmap.h>
 #include <wx/button.h>
 #include <wx/choice.h>
-#include <wx/clipbrd.h>
-#include <wx/dataobj.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
@@ -57,19 +67,6 @@
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/tokenzr.h>
-
-#include <libaegisub/scoped_ptr.h>
-
-#include "ass_style.h"
-#include "colorspace.h"
-#include "compat.h"
-#include "dialog_colorpicker.h"
-#include "help_button.h"
-#include "libresrc/libresrc.h"
-#include "options.h"
-#include "persist_location.h"
-#include "utils.h"
 
 #ifdef __WXMAC__
 #include <ApplicationServices/ApplicationServices.h>
@@ -163,25 +160,26 @@ class DialogColorPicker : public wxDialog {
 	bool spectrum_dirty; ///< Does the spectrum image need to be regenerated?
 	ColorPickerSpectrum *spectrum; ///< The 2D color spectrum
 	ColorPickerSpectrum *slider; ///< The 1D slider for the color component not in the slider
+	ColorPickerSpectrum *alpha_slider;
 
 	wxChoice *colorspace_choice; ///< The dropdown list to select colorspaces
 
-	static const int slider_width = 10; ///< width in pixels of the color slider control
-
 	wxSpinCtrl *rgb_input[3];
-	wxBitmap *rgb_spectrum[3]; ///< x/y spectrum bitmap where color "i" is excluded from
-	wxBitmap *rgb_slider[3];   ///< z spectrum for color "i"
+	wxBitmap rgb_spectrum[3]; ///< x/y spectrum bitmap where color "i" is excluded from
+	wxBitmap rgb_slider[3];   ///< z spectrum for color "i"
 
 	wxSpinCtrl *hsl_input[3];
-	wxBitmap *hsl_spectrum; ///< h/s spectrum
-	wxBitmap *hsl_slider;   ///< l spectrum
+	wxBitmap hsl_spectrum; ///< h/s spectrum
+	wxBitmap hsl_slider;   ///< l spectrum
 
 	wxSpinCtrl *hsv_input[3];
-	wxBitmap *hsv_spectrum; ///< s/v spectrum
-	wxBitmap *hsv_slider;   ///< h spectrum
+	wxBitmap hsv_spectrum; ///< s/v spectrum
+	wxBitmap hsv_slider;   ///< h spectrum
+	wxBitmap alpha_slider_img;
 
 	wxTextCtrl *ass_input;
 	wxTextCtrl *html_input;
+	wxSpinCtrl *alpha_input;
 
 	/// The eyedropper is set to a blank icon when it's clicked, so store its normal bitmap
 	wxBitmap eyedropper_bitmap;
@@ -209,6 +207,7 @@ class DialogColorPicker : public wxDialog {
 	void UpdateFromAss();
 	/// Update all other controls as a result of modifying the HTML format control
 	void UpdateFromHTML();
+	void UpdateFromAlpha();
 
 	void SetRGB(agi::Color new_color);
 	void SetHSL(unsigned char r, unsigned char g, unsigned char b);
@@ -230,6 +229,7 @@ class DialogColorPicker : public wxDialog {
 	void OnChangeMode(wxCommandEvent &evt);
 	void OnSpectrumChange(wxCommandEvent &evt);
 	void OnSliderChange(wxCommandEvent &evt);
+	void OnAlphaSliderChange(wxCommandEvent &evt);
 	void OnRecentSelect(wxThreadEvent &evt); // also handles dropper pick
 	void OnDropperMouse(wxMouseEvent &evt);
 	void OnMouse(wxMouseEvent &evt);
@@ -269,8 +269,7 @@ ColorPickerSpectrum::ColorPickerSpectrum(wxWindow *parent, PickerDirection direc
 	Bind(wxEVT_PAINT, &ColorPickerSpectrum::OnPaint, this);
 }
 
-void ColorPickerSpectrum::SetXY(int xx, int yy)
-{
+void ColorPickerSpectrum::SetXY(int xx, int yy) {
 	if (x != xx || y != yy) {
 		x = xx;
 		y = yy;
@@ -281,18 +280,15 @@ void ColorPickerSpectrum::SetXY(int xx, int yy)
 /// @brief Set the background image for this spectrum
 /// @param new_background New background image
 /// @param force Repaint even if it appears to be the same image
-void ColorPickerSpectrum::SetBackground(wxBitmap *new_background, bool force)
-{
+void ColorPickerSpectrum::SetBackground(wxBitmap *new_background, bool force) {
 	if (background == new_background && !force) return;
 	background = new_background;
 	Refresh(false);
 }
 
-
 wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
 
-void ColorPickerSpectrum::OnPaint(wxPaintEvent &)
-{
+void ColorPickerSpectrum::OnPaint(wxPaintEvent &) {
 	if (!background) return;
 
 	int height = background->GetHeight();
@@ -368,8 +364,7 @@ void ColorPickerSpectrum::OnPaint(wxPaintEvent &)
 	dc.DrawRectangle(0, 0, background->GetWidth()+2, background->GetHeight()+2);
 }
 
-void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
-{
+void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt) {
 	evt.Skip();
 
 	// We only care about mouse move events during a drag
@@ -386,8 +381,9 @@ void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt)
 	}
 
 	if (evt.LeftDown() || (HasCapture() && evt.LeftIsDown())) {
-		int newx = mid(0, evt.GetX(), GetClientSize().x - 1);
-		int newy = mid(0, evt.GetY(), GetClientSize().y - 1);
+		// Adjust for the 1px black border around the control
+		int newx = mid(0, evt.GetX() - 1, GetClientSize().x - 3);
+		int newy = mid(0, evt.GetY() - 1, GetClientSize().y - 3);
 		SetXY(newx, newy);
 		wxCommandEvent evt2(EVT_SPECTRUM_CHANGE, GetId());
 		AddPendingEvent(evt2);
@@ -405,8 +401,7 @@ ColorPickerRecent::ColorPickerRecent(wxWindow *parent, int cols, int rows, int c
 , rows(rows)
 , cols(cols)
 , cellsize(cellsize)
-, background_valid(false)
-{
+, background_valid(false) {
 	colors.resize(rows * cols);
 	SetClientSize(cols*cellsize, rows*cellsize);
 	SetMinSize(GetSize());
@@ -418,19 +413,16 @@ ColorPickerRecent::ColorPickerRecent(wxWindow *parent, int cols, int rows, int c
 	Bind(wxEVT_SIZE, &ColorPickerRecent::OnSize, this);
 }
 
-void ColorPickerRecent::Load(std::vector<agi::Color> const& recent_colors)
-{
+void ColorPickerRecent::Load(std::vector<agi::Color> const& recent_colors) {
 	colors = recent_colors;
 	colors.resize(rows * cols);
 }
 
-std::vector<agi::Color> ColorPickerRecent::Save() const
-{
+std::vector<agi::Color> ColorPickerRecent::Save() const {
 	return colors;
 }
 
-void ColorPickerRecent::AddColor(agi::Color color)
-{
+void ColorPickerRecent::AddColor(agi::Color color) {
 	auto existing = find(colors.begin(), colors.end(), color);
 	if (existing != colors.end())
 		rotate(colors.begin(), existing, existing + 1);
@@ -446,8 +438,7 @@ void ColorPickerRecent::AddColor(agi::Color color)
 
 wxDEFINE_EVENT(EVT_RECENT_SELECT, wxThreadEvent);
 
-void ColorPickerRecent::OnClick(wxMouseEvent &evt)
-{
+void ColorPickerRecent::OnClick(wxMouseEvent &evt) {
 	wxSize cs = GetClientSize();
 	int cx = evt.GetX() * cols / cs.x;
 	int cy = evt.GetY() * rows / cs.y;
@@ -461,8 +452,7 @@ void ColorPickerRecent::OnClick(wxMouseEvent &evt)
 	}
 }
 
-void ColorPickerRecent::OnPaint(wxPaintEvent &)
-{
+void ColorPickerRecent::OnPaint(wxPaintEvent &) {
 	wxPaintDC pdc(this);
 	PrepareDC(pdc);
 
@@ -490,8 +480,7 @@ void ColorPickerRecent::OnPaint(wxPaintEvent &)
 	pdc.DrawBitmap(background, 0, 0, false);
 }
 
-void ColorPickerRecent::OnSize(wxSizeEvent &)
-{
+void ColorPickerRecent::OnSize(wxSizeEvent &) {
 	background_valid = false;
 	Refresh();
 }
@@ -501,8 +490,7 @@ ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, int resx, i
 , capture(resx * magnification, resy * magnification, wxNativePixelFormat::BitsPerPixel)
 , resx(resx)
 , resy(resy)
-, magnification(magnification)
-{
+, magnification(magnification) {
 	SetClientSize(resx*magnification, resy*magnification);
 	SetMinSize(GetSize());
 	SetMaxSize(GetSize());
@@ -519,8 +507,7 @@ ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, int resx, i
 
 wxDEFINE_EVENT(EVT_DROPPER_SELECT, wxThreadEvent);
 
-void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
-{
+void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt) {
 	int x = evt.GetX();
 	int y = evt.GetY();
 
@@ -535,13 +522,11 @@ void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt)
 	}
 }
 
-void ColorPickerScreenDropper::OnPaint(wxPaintEvent &)
-{
+void ColorPickerScreenDropper::OnPaint(wxPaintEvent &) {
 	wxPaintDC(this).DrawBitmap(capture, 0, 0);
 }
 
-void ColorPickerScreenDropper::DropFromScreenXY(int x, int y)
-{
+void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 	wxMemoryDC capdc(capture);
 	capdc.SetPen(*wxTRANSPARENT_PEN);
 #ifndef __WXMAC__
@@ -578,8 +563,7 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y)
 	Refresh(false);
 }
 
-bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback)
-{
+bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback) {
 	DialogColorPicker dialog(parent, original, callback);
 	bool ok = dialog.ShowModal() == wxID_OK;
 	if (!ok)
@@ -589,59 +573,55 @@ bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void 
 	return ok;
 }
 
-static wxBitmap *make_rgb_image(int width, int offset) {
-	unsigned char *oslid = (unsigned char *)calloc(width * 256 * 3, 1);
-	unsigned char *slid = oslid + offset;
-	for (int y = 0; y < 256; y++) {
-		for (int x = 0; x < width; x++) {
-			*slid = clip_colorval(y);
-			slid += 3;
-		}
-	}
-	wxImage img(width, 256, oslid);
-	return new wxBitmap(img);
+static const int slider_width = 10; ///< width in pixels of the color slider control
+static const int alpha_box_size = 5;
+
+template<typename Func>
+static wxBitmap make_slider(Func func) {
+	unsigned char *slid = (unsigned char *)calloc(slider_width * 256 * 3, 1);
+	func(slid);
+	wxImage img(slider_width, 256, slid);
+	return wxBitmap(img);
 }
 
 DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color, std::function<void (agi::Color)> callback)
 : wxDialog(parent, -1, _("Select Color"))
 , callback(callback)
 {
-	memset(rgb_spectrum, 0, sizeof rgb_spectrum);
-	hsl_spectrum = 0;
-	hsv_spectrum = 0;
-
 	// generate spectrum slider bar images
-	rgb_slider[0] = make_rgb_image(slider_width, 0);
-	rgb_slider[1] = make_rgb_image(slider_width, 1);
-	rgb_slider[2] = make_rgb_image(slider_width, 2);
-
-	// luminance
-	unsigned char *slid = (unsigned char *)malloc(slider_width*256*3);
-	for (int y = 0; y < 256; y++) {
-		memset(slid + y * slider_width * 3, y, slider_width * 3);
+	for (int i = 0; i < 3; ++i) {
+		rgb_slider[i] = make_slider([=](unsigned char *slid) {
+			for (int y = 0; y < 256; y++) {
+				for (int x = 0; x < slider_width; x++)
+					slid[y * slider_width + x * 3 + i] = y;
+			}
+		});
 	}
-	wxImage sliderimg(slider_width, 256, slid);
-	hsl_slider = new wxBitmap(sliderimg);
 
-	slid = (unsigned char *)malloc(slider_width*256*3);
-	for (int y = 0; y < 256; y++) {
-		unsigned char rgb[3];
-		hsv_to_rgb(y, 255, 255, rgb, rgb + 1, rgb + 2);
-		for (int x = 0; x < slider_width; x++) {
-			memcpy(slid + y * slider_width * 3 + x * 3, rgb, 3);
+	hsl_slider = make_slider([](unsigned char *slid) {
+		for (int y = 0; y < 256; ++y)
+			memset(slid + y * slider_width * 3, y, slider_width * 3);
+	});
+
+	hsv_slider = make_slider([](unsigned char *slid) {
+		for (int y = 0; y < 256; ++y) {
+			unsigned char rgb[3];
+			hsv_to_rgb(y, 255, 255, rgb, rgb + 1, rgb + 2);
+			for (int x = 0; x < slider_width; ++x)
+				memcpy(slid + y * slider_width * 3 + x * 3, rgb, 3);
 		}
-	}
-	sliderimg.SetData(slid);
-	hsv_slider = new wxBitmap(sliderimg);
+	});
 
 	// Create the controls for the dialog
 	wxSizer *spectrum_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Color spectrum"));
 	spectrum = new ColorPickerSpectrum(this, ColorPickerSpectrum::HorzVert, wxSize(256, 256));
 	slider = new ColorPickerSpectrum(this, ColorPickerSpectrum::Vert, wxSize(slider_width, 256));
+	alpha_slider = new ColorPickerSpectrum(this, ColorPickerSpectrum::Vert, wxSize(slider_width, 256));
 	wxString modes[] = { _("RGB/R"), _("RGB/G"), _("RGB/B"), _("HSL/L"), _("HSV/H") };
 	colorspace_choice = new wxChoice(this, -1, wxDefaultPosition, wxDefaultSize, 5, modes);
 
-	wxSize colorinput_size(70, -1);
+	wxSize colorinput_size = GetTextExtent(" &H10117B& ");
+	colorinput_size.SetHeight(-1);
 	wxSize colorinput_labelsize(40, -1);
 
 	wxSizer *rgb_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("RGB color"));
@@ -653,6 +633,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	ass_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
 	html_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
+	alpha_input = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 
 	for (int i = 0; i < 3; ++i)
 		hsl_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
@@ -674,18 +655,20 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	spectop_sizer->Add(colorspace_choice, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT);
 	spectop_sizer->Add(5, 5, 1, wxEXPAND);
 	spectop_sizer->Add(preview_box, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
-	wxSizer *spectrum_sizer = new wxFlexGridSizer(2, 5, 5);
+	wxSizer *spectrum_sizer = new wxFlexGridSizer(3, 5, 5);
 	spectrum_sizer->Add(spectop_sizer, wxEXPAND);
+	spectrum_sizer->AddStretchSpacer(1);
 	spectrum_sizer->AddStretchSpacer(1);
 	spectrum_sizer->Add(spectrum);
 	spectrum_sizer->Add(slider);
+	spectrum_sizer->Add(alpha_slider);
 	spectrum_box->Add(spectrum_sizer, 0, wxALL, 3);
 
 	wxString rgb_labels[] = { _("Red:"), _("Green:"), _("Blue:") };
 	rgb_box->Add(MakeColorInputSizer(rgb_labels, rgb_input), 1, wxALL|wxEXPAND, 3);
 
-	wxString ass_labels[] = { "ASS:", "HTML:" };
-	wxTextCtrl *ass_ctrls[] = { ass_input, html_input };
+	wxString ass_labels[] = { "ASS:", "HTML:", _("Alpha:") };
+	wxControl *ass_ctrls[] = { ass_input, html_input, alpha_input };
 	rgb_box->Add(MakeColorInputSizer(ass_labels, ass_ctrls), 0, wxALL|wxCENTER|wxEXPAND, 3);
 
 	wxString hsl_labels[] = { _("Hue:"), _("Sat.:"), _("Lum.:") };
@@ -747,6 +730,8 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	}
 	ass_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromAss, this));
 	html_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromHTML, this));
+	alpha_input->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromAlpha, this));
+	alpha_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromAlpha, this));
 
 	screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
 	screen_dropper_icon->Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnDropperMouse, this);
@@ -758,6 +743,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	spectrum->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSpectrumChange, this);
 	slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSliderChange, this);
+	alpha_slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnAlphaSliderChange, this);
 	recent_box->Bind(EVT_RECENT_SELECT, &DialogColorPicker::OnRecentSelect, this);
 	screen_dropper->Bind(EVT_DROPPER_SELECT, &DialogColorPicker::OnRecentSelect, this);
 
@@ -767,8 +753,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 }
 
 template<int N, class Control>
-wxSizer *DialogColorPicker::MakeColorInputSizer(wxString (&labels)[N], Control *(&inputs)[N])
-{
+wxSizer *DialogColorPicker::MakeColorInputSizer(wxString (&labels)[N], Control *(&inputs)[N]) {
 	wxFlexGridSizer * sizer = new wxFlexGridSizer(2, 5, 5);
 	for (int i = 0; i < N; ++i) {
 		sizer->Add(new wxStaticText(this, -1, labels[i]), wxSizerFlags(1).Center().Left());
@@ -778,52 +763,35 @@ wxSizer *DialogColorPicker::MakeColorInputSizer(wxString (&labels)[N], Control *
 	return sizer;
 }
 
-DialogColorPicker::~DialogColorPicker()
-{
-	delete rgb_spectrum[0];
-	delete rgb_spectrum[1];
-	delete rgb_spectrum[2];
-	delete hsl_spectrum;
-	delete hsv_spectrum;
-	delete rgb_slider[0];
-	delete rgb_slider[1];
-	delete rgb_slider[2];
-	delete hsl_slider;
-	delete hsv_slider;
-
+DialogColorPicker::~DialogColorPicker() {
 	if (screen_dropper_icon->HasCapture()) screen_dropper_icon->ReleaseMouse();
 }
 
-/// @brief Sets the currently selected color, and updates all controls
-void DialogColorPicker::SetColor(agi::Color new_color)
-{
+void DialogColorPicker::SetColor(agi::Color new_color) {
 	SetRGB(new_color);
 	spectrum_dirty = true;
 	UpdateFromRGB();
 }
 
-void DialogColorPicker::AddColorToRecent()
-{
+void DialogColorPicker::AddColorToRecent() {
 	recent_box->AddColor(cur_color);
 	OPT_SET("Tool/Colour Picker/Recent Colours")->SetListColor(recent_box->Save());
 }
 
-static void change_value(wxSpinCtrl *ctrl, int value)
-{
+static void change_value(wxSpinCtrl *ctrl, int value) {
 	wxEventBlocker blocker(ctrl);
 	ctrl->SetValue(value);
 }
 
-void DialogColorPicker::SetRGB(agi::Color new_color)
-{
+void DialogColorPicker::SetRGB(agi::Color new_color) {
 	change_value(rgb_input[0], new_color.r);
 	change_value(rgb_input[1], new_color.g);
 	change_value(rgb_input[2], new_color.b);
+	new_color.a = cur_color.a;
 	cur_color = new_color;
 }
 
-void DialogColorPicker::SetHSL(unsigned char r, unsigned char g, unsigned char b)
-{
+void DialogColorPicker::SetHSL(unsigned char r, unsigned char g, unsigned char b) {
 	unsigned char h, s, l;
 	rgb_to_hsl(r, g, b, &h, &s, &l);
 	change_value(hsl_input[0], h);
@@ -831,8 +799,7 @@ void DialogColorPicker::SetHSL(unsigned char r, unsigned char g, unsigned char b
 	change_value(hsl_input[2], l);
 }
 
-void DialogColorPicker::SetHSV(unsigned char r, unsigned char g, unsigned char b)
-{
+void DialogColorPicker::SetHSV(unsigned char r, unsigned char g, unsigned char b) {
 	unsigned char h, s, v;
 	rgb_to_hsv(r, g, b, &h, &s, &v);
 	change_value(hsv_input[0], h);
@@ -840,16 +807,13 @@ void DialogColorPicker::SetHSV(unsigned char r, unsigned char g, unsigned char b
 	change_value(hsv_input[2], v);
 }
 
-/// @brief Use the values entered in the RGB controls to update the other controls
-void DialogColorPicker::UpdateFromRGB(bool dirty)
-{
-	unsigned char r, g, b;
-	r = rgb_input[0]->GetValue();
-	g = rgb_input[1]->GetValue();
-	b = rgb_input[2]->GetValue();
+void DialogColorPicker::UpdateFromRGB(bool dirty) {
+	unsigned char r = rgb_input[0]->GetValue();
+	unsigned char g = rgb_input[1]->GetValue();
+	unsigned char b = rgb_input[2]->GetValue();
 	SetHSL(r, g, b);
 	SetHSV(r, g, b);
-	cur_color = agi::Color(r, g, b);
+	cur_color = agi::Color(r, g, b, cur_color.a);
 	ass_input->ChangeValue(to_wx(cur_color.GetAssOverrideFormatted()));
 	html_input->ChangeValue(to_wx(cur_color.GetHexFormatted()));
 
@@ -858,9 +822,7 @@ void DialogColorPicker::UpdateFromRGB(bool dirty)
 	UpdateSpectrumDisplay();
 }
 
-/// @brief Use the values entered in the HSL controls to update the other controls
-void DialogColorPicker::UpdateFromHSL(bool dirty)
-{
+void DialogColorPicker::UpdateFromHSL(bool dirty) {
 	unsigned char r, g, b, h, s, l;
 	h = hsl_input[0]->GetValue();
 	s = hsl_input[1]->GetValue();
@@ -877,9 +839,7 @@ void DialogColorPicker::UpdateFromHSL(bool dirty)
 	UpdateSpectrumDisplay();
 }
 
-/// @brief Use the values entered in the HSV controls to update the other controls
-void DialogColorPicker::UpdateFromHSV(bool dirty)
-{
+void DialogColorPicker::UpdateFromHSV(bool dirty) {
 	unsigned char r, g, b, h, s, v;
 	h = hsv_input[0]->GetValue();
 	s = hsv_input[1]->GetValue();
@@ -895,9 +855,7 @@ void DialogColorPicker::UpdateFromHSV(bool dirty)
 	UpdateSpectrumDisplay();
 }
 
-/// @brief Use the value entered in the ASS hex control to update the other controls
-void DialogColorPicker::UpdateFromAss()
-{
+void DialogColorPicker::UpdateFromAss() {
 	agi::Color color(from_wx(ass_input->GetValue()));
 	SetRGB(color);
 	SetHSL(color.r, color.g, color.b);
@@ -908,9 +866,7 @@ void DialogColorPicker::UpdateFromAss()
 	UpdateSpectrumDisplay();
 }
 
-/// @brief Use the value entered in the HTML hex control to update the other controls
-void DialogColorPicker::UpdateFromHTML()
-{
+void DialogColorPicker::UpdateFromHTML() {
 	agi::Color color(from_wx(html_input->GetValue()));
 	SetRGB(color);
 	SetHSL(color.r, color.g, color.b);
@@ -921,42 +877,37 @@ void DialogColorPicker::UpdateFromHTML()
 	UpdateSpectrumDisplay();
 }
 
-void DialogColorPicker::UpdateSpectrumDisplay()
-{
+void DialogColorPicker::UpdateFromAlpha() {
+	cur_color.a = alpha_input->GetValue();
+	alpha_slider->SetXY(0, cur_color.a);
+	callback(cur_color);
+}
+
+void DialogColorPicker::UpdateSpectrumDisplay() {
 	int i = colorspace_choice->GetSelection();
+	if (spectrum_dirty) {
+		switch (i) {
+			case 0: spectrum->SetBackground(MakeGBSpectrum(), true); break;
+			case 1: spectrum->SetBackground(MakeRBSpectrum(), true); break;
+			case 2: spectrum->SetBackground(MakeRGSpectrum(), true); break;
+			case 3: spectrum->SetBackground(MakeHSSpectrum(), true); break;
+			case 4: spectrum->SetBackground(MakeSVSpectrum(), true); break;
+		}
+	}
+
 	switch (i) {
-		case 0:
-			if (spectrum_dirty)
-				spectrum->SetBackground(MakeGBSpectrum(), true);
-			slider->SetBackground(rgb_slider[0]);
-			slider->SetXY(0, rgb_input[0]->GetValue());
-			spectrum->SetXY(rgb_input[2]->GetValue(), rgb_input[1]->GetValue());
-			break;
-		case 1:
-			if (spectrum_dirty)
-				spectrum->SetBackground(MakeRBSpectrum(), true);
-			slider->SetBackground(rgb_slider[1]);
-			slider->SetXY(0, rgb_input[1]->GetValue());
-			spectrum->SetXY(rgb_input[2]->GetValue(), rgb_input[0]->GetValue());
-			break;
-		case 2:
-			if (spectrum_dirty)
-				spectrum->SetBackground(MakeRGSpectrum(), true);
-			slider->SetBackground(rgb_slider[2]);
-			slider->SetXY(0, rgb_input[2]->GetValue());
-			spectrum->SetXY(rgb_input[1]->GetValue(), rgb_input[0]->GetValue());
+		case 0: case 1: case 2:
+			slider->SetBackground(&rgb_slider[i]);
+			slider->SetXY(0, rgb_input[i]->GetValue());
+			spectrum->SetXY(rgb_input[2 - (i == 2)]->GetValue(), rgb_input[1 == 0]->GetValue());
 			break;
 		case 3:
-			if (spectrum_dirty)
-				spectrum->SetBackground(MakeHSSpectrum(), true);
-			slider->SetBackground(hsl_slider);
+			slider->SetBackground(&hsl_slider);
 			slider->SetXY(0, hsl_input[2]->GetValue());
 			spectrum->SetXY(hsl_input[1]->GetValue(), hsl_input[0]->GetValue());
 			break;
 		case 4:
-			if (spectrum_dirty)
-				spectrum->SetBackground(MakeSVSpectrum(), true);
-			slider->SetBackground(hsv_slider);
+			slider->SetBackground(&hsv_slider);
 			slider->SetXY(0, hsv_input[0]->GetValue());
 			spectrum->SetXY(hsv_input[1]->GetValue(), hsv_input[2]->GetValue());
 			break;
@@ -973,145 +924,134 @@ void DialogColorPicker::UpdateSpectrumDisplay()
 	}
 	preview_box->SetBitmap(tempBmp);
 
+	alpha_slider_img = make_slider([=](unsigned char *slid) {
+		static_assert(slider_width % alpha_box_size == 0, "Slider width must be a multiple of alpha box width");
+
+		for (int y = 0; y < 256; ++y) {
+			unsigned char inv_y = 0xFF - y;
+
+			unsigned char box_colors[] = {
+				static_cast<unsigned char>(0x66 - inv_y * 0x66 / 0xFF),
+				static_cast<unsigned char>(0x99 - inv_y * 0x99 / 0xFF)
+			};
+
+			if ((y / alpha_box_size) & 1)
+				std::swap(box_colors[0], box_colors[1]);
+
+			unsigned char colors[2][3];
+			for (int i = 0; i < 2; ++i) {
+				colors[i][0] = cur_color.r * inv_y / 0xFF + box_colors[i];
+				colors[i][1] = cur_color.g * inv_y / 0xFF + box_colors[i];
+				colors[i][2] = cur_color.b * inv_y / 0xFF + box_colors[i];
+			}
+
+			for (int x = 0; x < slider_width; ++x) {
+				*slid++ = colors[x / alpha_box_size][0];
+				*slid++ = colors[x / alpha_box_size][1];
+				*slid++ = colors[x / alpha_box_size][2];
+			}
+		}
+	});
+	alpha_slider->SetBackground(&alpha_slider_img, true);
+
 	callback(cur_color);
 }
 
-wxBitmap *DialogColorPicker::MakeGBSpectrum()
-{
-	delete rgb_spectrum[0];
-
-	wxImage spectrum_image(256, 256, false);
-	unsigned char *ospec, *spec;
-
-	ospec = spec = (unsigned char *)malloc(256*256*3);
+template<typename Func>
+static wxBitmap *make_spectrum(wxBitmap *bitmap, Func func) {
+	unsigned char *spec = (unsigned char *)malloc(256*256*3);
 	if (!spec) throw std::bad_alloc();
 
-	for (int g = 0; g < 256; g++) {
-		for (int b = 0; b < 256; b++) {
-			*spec++ = cur_color.r;
-			*spec++ = g;
-			*spec++ = b;
-		}
-	}
-	spectrum_image.SetData(ospec);
+	func(spec);
 
-	return rgb_spectrum[0] = new wxBitmap(spectrum_image);
+	wxImage spectrum_image(256, 256, spec);
+	*bitmap = wxBitmap(spectrum_image);
+	return bitmap;
 }
 
-wxBitmap *DialogColorPicker::MakeRBSpectrum()
-{
-	delete rgb_spectrum[1];
-
-	unsigned char *ospec, *spec;
-	ospec = spec = (unsigned char *)malloc(256*256*3);
-	if (!spec) throw std::bad_alloc();
-
-	for (int r = 0; r < 256; r++) {
-		for (int b = 0; b < 256; b++) {
-			*spec++ = r;
-			*spec++ = cur_color.g;
-			*spec++ = b;
-		}
-	}
-
-	wxImage spectrum_image(256, 256, ospec);
-	return rgb_spectrum[1] = new wxBitmap(spectrum_image);
-}
-
-wxBitmap *DialogColorPicker::MakeRGSpectrum()
-{
-	delete rgb_spectrum[2];
-
-	unsigned char *ospec, *spec;
-	ospec = spec = (unsigned char *)malloc(256*256*3);
-	if (!spec) throw std::bad_alloc();
-
-	for (int r = 0; r < 256; r++) {
+wxBitmap *DialogColorPicker::MakeGBSpectrum() {
+	return make_spectrum(&rgb_spectrum[0], [=](unsigned char *spec) {
 		for (int g = 0; g < 256; g++) {
-			*spec++ = r;
-			*spec++ = g;
-			*spec++ = cur_color.b;
+			for (int b = 0; b < 256; b++) {
+				*spec++ = cur_color.r;
+				*spec++ = g;
+				*spec++ = b;
+			}
 		}
-	}
-
-	wxImage spectrum_image(256, 256, ospec);
-	return rgb_spectrum[2] = new wxBitmap(spectrum_image);
+	});
 }
 
-wxBitmap *DialogColorPicker::MakeHSSpectrum()
-{
-	delete hsl_spectrum;
+wxBitmap *DialogColorPicker::MakeRBSpectrum() {
+	return make_spectrum(&rgb_spectrum[1], [=](unsigned char *spec) {
+		for (int r = 0; r < 256; r++) {
+			for (int b = 0; b < 256; b++) {
+				*spec++ = r;
+				*spec++ = cur_color.g;
+				*spec++ = b;
+			}
+		}
+	});
+}
 
-	unsigned char *ospec, *spec;
-	ospec = spec = (unsigned char *)malloc(256*256*3);
-	if (!spec) throw std::bad_alloc();
+wxBitmap *DialogColorPicker::MakeRGSpectrum() {
+	return make_spectrum(&rgb_spectrum[2], [=](unsigned char *spec) {
+		for (int r = 0; r < 256; r++) {
+			for (int g = 0; g < 256; g++) {
+				*spec++ = r;
+				*spec++ = g;
+				*spec++ = cur_color.b;
+			}
+		}
+	});
+}
 
+wxBitmap *DialogColorPicker::MakeHSSpectrum() {
 	int l = hsl_input[2]->GetValue();
+	return make_spectrum(&hsl_spectrum, [=](unsigned char *spec) {
+		for (int h = 0; h < 256; h++) {
+			unsigned char maxr, maxg, maxb;
+			hsl_to_rgb(h, 255, l, &maxr, &maxg, &maxb);
 
-	for (int h = 0; h < 256; h++) {
-		unsigned char maxr, maxg, maxb;
-		hsl_to_rgb(h, 255, l, &maxr, &maxg, &maxb);
-
-		for (int s = 0; s < 256; s++) {
-			*spec++ = maxr * s / 256 + (255-s) * l / 256;
-			*spec++ = maxg * s / 256 + (255-s) * l / 256;
-			*spec++ = maxb * s / 256 + (255-s) * l / 256;
+			for (int s = 0; s < 256; s++) {
+				*spec++ = maxr * s / 256 + (255-s) * l / 256;
+				*spec++ = maxg * s / 256 + (255-s) * l / 256;
+				*spec++ = maxb * s / 256 + (255-s) * l / 256;
+			}
 		}
-	}
-
-	wxImage spectrum_image(256, 256, ospec);
-	return hsl_spectrum = new wxBitmap(spectrum_image);
+	});
 }
 
-wxBitmap *DialogColorPicker::MakeSVSpectrum()
-{
-	delete hsv_spectrum;
-
-	unsigned char *ospec, *spec;
-	ospec = spec = (unsigned char *)malloc(256*256*3);
-	if (!spec) throw std::bad_alloc();
-
+wxBitmap *DialogColorPicker::MakeSVSpectrum() {
 	int h = hsv_input[0]->GetValue();
 	unsigned char maxr, maxg, maxb;
 	hsv_to_rgb(h, 255, 255, &maxr, &maxg, &maxb);
 
-	for (int v = 0; v < 256; v++) {
-		int rr = (255-maxr) * v / 256;
-		int rg = (255-maxg) * v / 256;
-		int rb = (255-maxb) * v / 256;
-		for (int s = 0; s < 256; s++) {
-			*spec++ = 255 - rr * s / 256 - (255-v);
-			*spec++ = 255 - rg * s / 256 - (255-v);
-			*spec++ = 255 - rb * s / 256 - (255-v);
+	return make_spectrum(&hsv_spectrum, [=](unsigned char *spec) {
+		for (int v = 0; v < 256; v++) {
+			int rr = (255-maxr) * v / 256;
+			int rg = (255-maxg) * v / 256;
+			int rb = (255-maxb) * v / 256;
+			for (int s = 0; s < 256; s++) {
+				*spec++ = 255 - rr * s / 256 - (255-v);
+				*spec++ = 255 - rg * s / 256 - (255-v);
+				*spec++ = 255 - rb * s / 256 - (255-v);
+			}
 		}
-	}
-
-	wxImage spectrum_image(256, 256, ospec);
-	return hsv_spectrum = new wxBitmap(spectrum_image);
+	});
 }
 
-void DialogColorPicker::OnChangeMode(wxCommandEvent &)
-{
+void DialogColorPicker::OnChangeMode(wxCommandEvent &) {
 	spectrum_dirty = true;
 	OPT_SET("Tool/Colour Picker/Mode")->SetInt(colorspace_choice->GetSelection());
 	UpdateSpectrumDisplay();
 }
 
-void DialogColorPicker::OnSpectrumChange(wxCommandEvent &)
-{
+void DialogColorPicker::OnSpectrumChange(wxCommandEvent &) {
 	int i = colorspace_choice->GetSelection();
 	switch (i) {
-		case 0:
-			change_value(rgb_input[2], spectrum->GetX());
-			change_value(rgb_input[1], spectrum->GetY());
-			break;
-		case 1:
-			change_value(rgb_input[2], spectrum->GetX());
-			change_value(rgb_input[0], spectrum->GetY());
-			break;
-		case 2:
-			change_value(rgb_input[1], spectrum->GetX());
-			change_value(rgb_input[0], spectrum->GetY());
+		case 0: case 1: case 2:
+			change_value(rgb_input[2 - (i == 2)], spectrum->GetX());
+			change_value(rgb_input[i == 0], spectrum->GetY());
 			break;
 		case 3:
 			change_value(hsl_input[1], spectrum->GetX());
@@ -1136,8 +1076,7 @@ void DialogColorPicker::OnSpectrumChange(wxCommandEvent &)
 	}
 }
 
-void DialogColorPicker::OnSliderChange(wxCommandEvent &)
-{
+void DialogColorPicker::OnSliderChange(wxCommandEvent &) {
 	spectrum_dirty = true;
 	int i = colorspace_choice->GetSelection();
 	switch (i) {
@@ -1156,13 +1095,17 @@ void DialogColorPicker::OnSliderChange(wxCommandEvent &)
 	}
 }
 
-void DialogColorPicker::OnRecentSelect(wxThreadEvent &evt)
-{
+void DialogColorPicker::OnAlphaSliderChange(wxCommandEvent &) {
+	change_value(alpha_input, alpha_slider->GetY());
+	cur_color.a = alpha_slider->GetY();
+	callback(cur_color);
+}
+
+void DialogColorPicker::OnRecentSelect(wxThreadEvent &evt) {
 	SetColor(evt.GetPayload<agi::Color>());
 }
 
-void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt)
-{
+void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt) {
 	if (evt.LeftDown() && !screen_dropper_icon->HasCapture()) {
 #ifdef WIN32
 		screen_dropper_icon->SetCursor(wxCursor("eyedropper_cursor"));
@@ -1183,9 +1126,9 @@ void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt)
 			eyedropper_is_grabbed = false;
 			screen_dropper_icon->SetCursor(wxNullCursor);
 			screen_dropper_icon->SetBitmap(eyedropper_bitmap);
-		} else {
-			eyedropper_is_grabbed = true;
 		}
+		else
+			eyedropper_is_grabbed = true;
 	}
 
 	if (screen_dropper_icon->HasCapture()) {
@@ -1195,16 +1138,16 @@ void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt)
 }
 
 /// @brief Hack to redirect events to the screen dropper icon
-void DialogColorPicker::OnMouse(wxMouseEvent &evt)
-{
-	if (screen_dropper_icon->HasCapture()) {
-		wxPoint dropper_pos = screen_dropper_icon->ScreenToClient(ClientToScreen(evt.GetPosition()));
-		evt.m_x = dropper_pos.x;
-		evt.m_y = dropper_pos.y;
-		screen_dropper_icon->GetEventHandler()->ProcessEvent(evt);
-	}
-	else
+void DialogColorPicker::OnMouse(wxMouseEvent &evt) {
+	if (!screen_dropper_icon->HasCapture()) {
 		evt.Skip();
+		return;
+	}
+
+	wxPoint dropper_pos = screen_dropper_icon->ScreenToClient(ClientToScreen(evt.GetPosition()));
+	evt.m_x = dropper_pos.x;
+	evt.m_y = dropper_pos.y;
+	screen_dropper_icon->GetEventHandler()->ProcessEvent(evt);
 }
 
 void DialogColorPicker::OnCaptureLost(wxMouseCaptureLostEvent&) {

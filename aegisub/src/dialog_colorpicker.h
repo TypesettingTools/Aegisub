@@ -21,7 +21,8 @@
 
 #include <functional>
 
-namespace agi { struct Color; }
+#include <libaegisub/color.h>
+
 class wxWindow;
 
 /// @brief Get a color from the user via a color picker dialog

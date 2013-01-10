@@ -63,6 +63,7 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/join.hpp>
+#include <boost/format.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/sliced.hpp>
 
@@ -296,7 +297,7 @@ void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const c
 	commit_text(c, undo_msg, sel_start, sel_end);
 }
 
-void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), const char *tag, const char *alt) {
+void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), const char *tag, const char *alt, const char *alpha) {
 	AssDialogue *const line = c->selectionController->GetActiveLine();
 	AssStyle const* const style = c->ass->GetStyle(from_wx(line->Style));
 	agi::Color color = (style ? style->*field : AssStyle().*field);
@@ -311,6 +312,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 	int commit_id = -1;
 	bool ok = GetColorFromUser(c->parent, color, [&](agi::Color new_color) {
 		set_tag(line, blocks, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
+		set_tag(line, blocks, alpha, str(boost::format("&H%02X&") % (int)new_color.a), sel_start, sel_end);
 		commit_text(c, _("set color"), sel_start, sel_end, &commit_id);
 	});
 	commit_text(c, _("set color"), -1, -1, &commit_id);
@@ -328,7 +330,7 @@ struct edit_color_primary : public Command {
 	STR_HELP("Primary Color")
 
 	void operator()(agi::Context *c) {
-		show_color_picker(c, &AssStyle::primary, "\\c", "\\1c");
+		show_color_picker(c, &AssStyle::primary, "\\c", "\\1c", "\\1a");
 	}
 };
 
@@ -339,7 +341,7 @@ struct edit_color_secondary : public Command {
 	STR_HELP("Secondary Color")
 
 	void operator()(agi::Context *c) {
-		show_color_picker(c, &AssStyle::secondary, "\\2c", "");
+		show_color_picker(c, &AssStyle::secondary, "\\2c", "", "\\2a");
 	}
 };
 
@@ -350,7 +352,7 @@ struct edit_color_outline : public Command {
 	STR_HELP("Outline Color")
 
 	void operator()(agi::Context *c) {
-		show_color_picker(c, &AssStyle::outline, "\\3c", "");
+		show_color_picker(c, &AssStyle::outline, "\\3c", "", "\\3a");
 	}
 };
 
@@ -361,7 +363,7 @@ struct edit_color_shadow : public Command {
 	STR_HELP("Shadow Color")
 
 	void operator()(agi::Context *c) {
-		show_color_picker(c, &AssStyle::shadow, "\\4c", "");
+		show_color_picker(c, &AssStyle::shadow, "\\4c", "", "\\4a");
 	}
 };
 
