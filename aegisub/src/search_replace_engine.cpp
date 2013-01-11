@@ -1,29 +1,16 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 
@@ -42,18 +29,18 @@
 #include <wx/msgdlg.h>
 #include <wx/regex.h>
 
-SearchReplaceEngine::SearchReplaceEngine(agi::Context *c)
-: context(c)
-, cur_line(0)
-, pos(0)
-, match_len(0)
-, replace_len(0)
-, last_was_find(true)
-, initialized(false)
-{
-}
+struct MatchState {
+	wxRegEx *re;
+	size_t start, end;
 
-static boost::flyweight<wxString> *get_text(AssDialogue *cur, SearchReplaceSettings::Field field) {
+	MatchState() : re(nullptr), start(0), end(-1) { }
+	MatchState(size_t s, size_t e, wxRegEx *re = nullptr) : re(re), start(s), end(e) { }
+	operator bool() { return end != -1; }
+};
+
+namespace {
+template<typename AssDialogue>
+auto get_dialogue_field(AssDialogue *cur, SearchReplaceSettings::Field field) -> decltype(&cur->Text) {
 	switch (field) {
 		case SearchReplaceSettings::Field::TEXT: return &cur->Text;
 		case SearchReplaceSettings::Field::STYLE: return &cur->Style;
@@ -63,111 +50,146 @@ static boost::flyweight<wxString> *get_text(AssDialogue *cur, SearchReplaceSetti
 	throw agi::InternalError("Bad field for search", 0);
 }
 
+std::function<MatchState (const AssDialogue*, size_t)> get_matcher(SearchReplaceSettings::Field field, wxString look_for, bool use_regex, bool match_case, wxRegEx *regex) {
+	if (use_regex) {
+		int flags = wxRE_ADVANCED;
+		if (!match_case)
+			flags |= wxRE_ICASE;
+
+		regex->Compile(look_for, flags);
+		if (!regex->IsValid())
+			return [](const AssDialogue*, size_t) { return MatchState(); };
+
+		return [=](const AssDialogue *diag, size_t start) {
+			auto const& str = *get_dialogue_field(diag, field);
+			if (!regex->Matches(str.get().substr(start)))
+				return MatchState();
+
+			size_t match_start, match_len;
+			regex->GetMatch(&match_start, &match_len, 0);
+			return MatchState(match_start + start, match_start + match_len + start, regex);
+		};
+	}
+
+	if (!match_case)
+		look_for.MakeLower();
+
+	return [=](const AssDialogue *diag, size_t start) {
+		auto str = get_dialogue_field(diag, field)->get().substr(start);
+		if (!match_case)
+			str.MakeLower();
+
+		size_t pos = str.find(look_for);
+		if (pos == wxString::npos)
+			return MatchState();
+
+		return MatchState(pos + start, pos + look_for.size() + start);
+	};
+}
+
+template<typename Iterator, typename Container>
+Iterator circular_next(Iterator it, Container& c) {
+	++it;
+	if (it == c.end())
+		it = c.begin();
+	return it;
+}
+
+}
+
+SearchReplaceEngine::SearchReplaceEngine(agi::Context *c)
+: context(c)
+, initialized(false)
+{
+}
+
+void SearchReplaceEngine::Replace(AssDialogue *diag, MatchState &ms) {
+	auto diag_field = get_dialogue_field(diag, settings.field);
+	auto text = diag_field->get();
+
+	wxString replacement = settings.replace_with;
+	if (ms.re) {
+		wxString to_replace = text.substr(ms.start, ms.end - ms.start);
+		ms.re->ReplaceFirst(&to_replace, settings.replace_with);
+		replacement = to_replace;
+	}
+
+	*diag_field = text.substr(0, ms.start) + replacement + text.substr(ms.end);
+	ms.end = ms.start + replacement.size();
+}
+
 bool SearchReplaceEngine::FindReplace(bool replace) {
 	if (!initialized)
 		return false;
 
-	wxArrayInt sels = context->subsGrid->GetSelection();
-	int firstLine = sels.empty() ? 0 : sels.front();
+	wxRegEx r;
+	auto matches = get_matcher(settings.field, settings.find, settings.use_regex, settings.match_case, &r);
 
-	// if selection has changed reset values
-	if (firstLine != cur_line) {
-		cur_line = firstLine;
-		last_was_find = true;
-		pos = 0;
-		match_len = 0;
-		replace_len = 0;
-	}
+	AssDialogue *line = context->selectionController->GetActiveLine();
+	auto it = context->ass->Line.iterator_to(*line);
+	size_t pos = 0;
 
-	// Setup
-	int start = cur_line;
-	int nrows = context->subsGrid->GetRows();
-	bool found = false;
-	int regFlags = wxRE_ADVANCED;
-	if (!settings.match_case) {
-		if (settings.use_regex)
-			regFlags |= wxRE_ICASE;
-		else
-			settings.find.MakeLower();
-	}
-	wxRegEx regex;
-	if (settings.use_regex) {
-		regex.Compile(settings.find, regFlags);
+	MatchState replace_ms;
+	if (replace) {
+		if (settings.field == SearchReplaceSettings::Field::TEXT)
+			pos = context->textSelectionController->GetSelectionStart();
 
-		if (!regex.IsValid()) {
-			last_was_find = !replace;
-			return true;
-		}
-	}
+		if ((replace_ms = matches(line, pos))) {
+			size_t end = -1;
+			if (settings.field == SearchReplaceSettings::Field::TEXT)
+				end = context->textSelectionController->GetSelectionEnd();
 
-	// Search for it
-	boost::flyweight<wxString> *Text = nullptr;
-	while (!found) {
-		Text = get_text(context->subsGrid->GetDialogue(cur_line), settings.field);
-		size_t tempPos;
-		if (replace && last_was_find)
-			tempPos = pos;
-		else
-			tempPos = pos + replace_len;
-
-		if (settings.use_regex) {
-			if (regex.Matches(Text->get().substr(tempPos))) {
-				size_t match_start;
-				regex.GetMatch(&match_start, &match_len, 0);
-				pos = match_start + tempPos;
-				found = true;
-			}
-		}
-		else {
-			wxString src = Text->get().substr(tempPos);
-			if (!settings.match_case) src.MakeLower();
-			size_t textPos = src.find(settings.find);
-			if (textPos != src.npos) {
-				pos = tempPos+textPos;
-				found = true;
-				match_len = settings.find.size();
-			}
-		}
-
-		// Didn't find, go to next line
-		if (!found) {
-			cur_line = (cur_line + 1) % nrows;
-			pos = 0;
-			match_len = 0;
-			replace_len = 0;
-			if (cur_line == start) break;
-		}
-	}
-
-	if (found) {
-		if (!replace)
-			replace_len = match_len;
-		else {
-			if (settings.use_regex) {
-				wxString toReplace = Text->get().substr(pos,match_len);
-				regex.ReplaceFirst(&toReplace,settings.replace_with);
-				*Text = Text->get().Left(pos) + toReplace + Text->get().substr(pos+match_len);
-				replace_len = toReplace.size();
+			if (end != -1 || (pos == replace_ms.start && end == replace_ms.end)) {
+				Replace(line, replace_ms);
+				pos = replace_ms.end;
+				context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
 			}
 			else {
-				*Text = Text->get().Left(pos) + settings.replace_with + Text->get().substr(pos+match_len);
-				replace_len = settings.replace_with.size();
+				// The current line matches, but it wasn't already selected,
+				// so the match hasn't been "found" and displayed to the user
+				// yet, so do that rather than replacing
+				context->textSelectionController->SetSelection(replace_ms.start, replace_ms.end);
+				return true;
+			}
+		}
+	}
+	// Search from the end of the selection to avoid endless matching the same thing
+	else if (settings.field == SearchReplaceSettings::Field::TEXT)
+		pos = context->textSelectionController->GetSelectionEnd();
+	// For non-text fields we just look for matching lines rather than each
+	// match within the line, so move to the next line
+	else if (settings.field != SearchReplaceSettings::Field::TEXT)
+		it = circular_next(it, context->ass->Line);
+
+	auto const& sel = context->selectionController->GetSelectedSet();
+	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
+
+	do {
+		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+		if (!diag) continue;
+		if (selection_only && !sel.count(diag)) continue;
+
+		if (MatchState ms = matches(diag, pos)) {
+			if (selection_only)
+				// We're cycling through the selection, so don't muck with it
+				context->selectionController->SetActiveLine(diag);
+			else {
+				SubtitleSelection new_sel;
+				new_sel.insert(diag);
+				context->selectionController->SetSelectionAndActive(new_sel, diag);
 			}
 
-			context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
-		}
+			if (settings.field == SearchReplaceSettings::Field::TEXT)
+				context->textSelectionController->SetSelection(ms.start, ms.end);
 
-		context->subsGrid->SelectRow(cur_line,false);
-		context->subsGrid->MakeCellVisible(cur_line,0);
-		if (settings.field == SearchReplaceSettings::Field::TEXT) {
-			context->selectionController->SetActiveLine(context->subsGrid->GetDialogue(cur_line));
-			context->textSelectionController->SetSelection(pos, pos + replace_len);
+			return true;
 		}
-		// hAx to prevent double match on style/actor
-		else
-			replace_len = 99999;
-	}
-	last_was_find = !replace;
+	} while (pos = 0, &*(it = circular_next(it, context->ass->Line)) != line);
+
+	// Replaced something and didn't find another match, so select the newly
+	// inserted text
+	if (replace_ms && settings.field == SearchReplaceSettings::Field::TEXT)
+		context->textSelectionController->SetSelection(replace_ms.start, replace_ms.end);
 
 	return true;
 }
@@ -178,63 +200,33 @@ bool SearchReplaceEngine::ReplaceAll() {
 
 	size_t count = 0;
 
-	int regFlags = wxRE_ADVANCED;
-	if (!settings.match_case)
-		regFlags |= wxRE_ICASE;
-	wxRegEx reg;
-	if (settings.use_regex)
-		reg.Compile(settings.find, regFlags);
+	wxRegEx r;
+	auto matches = get_matcher(settings.field, settings.find, settings.use_regex, settings.match_case, &r);
 
 	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
-	bool hasSelection = !sel.empty();
-	bool inSel = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
+	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
 
 	for (auto diag : context->ass->Line | agi::of_type<AssDialogue>()) {
-		if (inSel && hasSelection && !sel.count(diag))
-			continue;
-
-		boost::flyweight<wxString> *Text = get_text(diag, settings.field);
+		if (selection_only && !sel.count(diag)) continue;
 
 		if (settings.use_regex) {
-			if (reg.Matches(*Text)) {
-				size_t start, len;
-				reg.GetMatch(&start, &len);
-
+			if (MatchState ms = matches(diag, 0)) {
+				auto diag_field = get_dialogue_field(diag, settings.field);
+				auto text = diag_field->get();
 				// A zero length match (such as '$') will always be replaced
 				// maxMatches times, which is almost certainly not what the user
 				// wanted, so limit it to one replacement in that situation
-				wxString repl(*Text);
-				count += reg.Replace(&repl, settings.replace_with, len > 0 ? 1000 : 1);
-				*Text = repl;
+				count += ms.re->Replace(&text, settings.replace_with, ms.start == ms.end);
+				*diag_field = text;
 			}
+			continue;
 		}
-		else {
-			if (!settings.match_case) {
-				bool replaced = false;
-				wxString Left, Right = *Text;
-				size_t pos = 0;
-				Left.reserve(Right.size());
-				while (pos + settings.find.size() <= Right.size()) {
-					if (Right.substr(pos, settings.find.size()).CmpNoCase(settings.find) == 0) {
-						Left.Append(Right.Left(pos)).Append(settings.replace_with);
-						Right = Right.substr(pos + settings.find.size());
-						++count;
-						replaced = true;
-						pos = 0;
-					}
-					else {
-						pos++;
-					}
-				}
-				if (replaced) {
-					*Text = Left + Right;
-				}
-			}
-			else if(Text->get().Contains(settings.find)) {
-				wxString repl(*Text);
-				count += repl.Replace(settings.find, settings.replace_with);
-				*Text = repl;
-			}
+
+		size_t pos = 0;
+		while (MatchState ms = matches(diag, pos)) {
+			++count;
+			Replace(diag, ms);
+			pos = ms.end;
 		}
 	}
 
@@ -245,20 +237,11 @@ bool SearchReplaceEngine::ReplaceAll() {
 	else {
 		wxMessageBox(_("No matches found."));
 	}
-	last_was_find = false;
 
 	return true;
 }
 
 void SearchReplaceEngine::Configure(SearchReplaceSettings const& new_settings) {
-	wxArrayInt sels = context->subsGrid->GetSelection();
-	cur_line = 0;
-	if (sels.size() > 0) cur_line = sels[0];
-
-	last_was_find = true;
-	pos = 0;
-	match_len = 0;
-	replace_len = 0;
-
 	settings = new_settings;
+	initialized = true;
 }

@@ -17,6 +17,8 @@
 #include <wx/string.h>
 
 namespace agi { struct Context; }
+class AssDialogue;
+struct MatchState;
 
 struct SearchReplaceSettings {
 	enum class Field {
@@ -43,17 +45,11 @@ struct SearchReplaceSettings {
 
 class SearchReplaceEngine {
 	agi::Context *context;
-
-	int cur_line;
-	size_t pos;
-	size_t match_len;
-	size_t replace_len;
-	bool last_was_find;
 	bool initialized;
-
 	SearchReplaceSettings settings;
 
 	bool FindReplace(bool replace);
+	void Replace(AssDialogue *line, MatchState &ms);
 
 public:
 	bool FindNext() { return FindReplace(false); }
