@@ -686,6 +686,10 @@
     <ClInclude Include="$(SrcDir)options.h">
       <Filter>Preferences</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
+    <ClInclude Include="$(SrcDir)search_replace_engine.h">
+      <Filter>Features\Search-replace</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1230,6 +1234,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_autosave.cpp">
       <Filter>Features\Autosave</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)search_replace_engine.cpp">
+      <Filter>Features\Search-replace</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

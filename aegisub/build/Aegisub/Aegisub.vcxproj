@@ -256,6 +256,7 @@
     <ClInclude Include="$(SrcDir)visual_tool_vector_clip.h" />
     <ClInclude Include="$(SrcDir)ass_info.h" />
     <ClInclude Include="$(SrcDir)options.h" />
+    <ClInclude Include="$(SrcDir)search_replace_engine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
@@ -448,6 +449,7 @@
     <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
     <ClCompile Include="$(SrcDir)dialog_autosave.cpp" />
+    <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />

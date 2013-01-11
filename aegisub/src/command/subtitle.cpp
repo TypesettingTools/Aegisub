@@ -58,6 +58,7 @@
 #include "../include/aegisub/context.h"
 #include "../main.h"
 #include "../options.h"
+#include "../search_replace_engine.h"
 #include "../subs_grid.h"
 #include "../subtitle_format.h"
 #include "../utils.h"
@@ -105,7 +106,7 @@ struct subtitle_find : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->search->OpenDialog(false);
+		DialogSearchReplace::Show(c, false);
 	}
 };
 
@@ -119,7 +120,8 @@ struct subtitle_find_next : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->search->FindNext();
+		if (!c->search->FindNext())
+			DialogSearchReplace::Show(c, false);
 	}
 };
 

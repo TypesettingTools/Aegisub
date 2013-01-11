@@ -14,33 +14,53 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_search_replace.h
-/// @see dialog_search_replace.cpp
-/// @ingroup secondary_ui
-///
-
-#include <libaegisub/scoped_ptr.h>
-
-#include <wx/dialog.h>
+#include <wx/string.h>
 
 namespace agi { struct Context; }
-class SearchReplaceEngine;
-struct SearchReplaceSettings;
-class wxComboBox;
 
-class DialogSearchReplace : public wxDialog {
-	agi::Context *c;
-	agi::scoped_ptr<SearchReplaceSettings> settings;
-	bool has_replace;
-	wxComboBox *find_edit;
-	wxComboBox *replace_edit;
+struct SearchReplaceSettings {
+	enum class Field {
+		TEXT = 0,
+		STYLE,
+		ACTOR,
+		EFFECT
+	};
 
-	void UpdateDropDowns();
-	void FindReplace(bool (SearchReplaceEngine::*func)());
+	enum class Limit {
+		ALL = 0,
+		SELECTED
+	};
+
+	wxString find;
+	wxString replace_with;
+
+	Field field;
+	Limit limit_to;
+
+	bool match_case;
+	bool use_regex;
+};
+
+class SearchReplaceEngine {
+	agi::Context *context;
+
+	int cur_line;
+	size_t pos;
+	size_t match_len;
+	size_t replace_len;
+	bool last_was_find;
+	bool initialized;
+
+	SearchReplaceSettings settings;
+
+	bool FindReplace(bool replace);
 
 public:
-	static void Show(agi::Context *context, bool with_replace);
+	bool FindNext() { return FindReplace(false); }
+	bool ReplaceNext() { return FindReplace(true); }
+	bool ReplaceAll();
 
-	DialogSearchReplace(agi::Context* c, bool with_replace);
-	~DialogSearchReplace();
+	void Configure(SearchReplaceSettings const& new_settings);
+
+	SearchReplaceEngine(agi::Context *c);
 };

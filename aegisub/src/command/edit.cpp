@@ -54,6 +54,7 @@
 #include "../dialog_search_replace.h"
 #include "../include/aegisub/context.h"
 #include "../options.h"
+#include "../search_replace_engine.h"
 #include "../subs_edit_ctrl.h"
 #include "../subs_grid.h"
 #include "../text_selection_controller.h"
@@ -462,7 +463,7 @@ struct edit_find_replace : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->search->OpenDialog(true);
+		DialogSearchReplace::Show(c, true);
 	}
 };
 

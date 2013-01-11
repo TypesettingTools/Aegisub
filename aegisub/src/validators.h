@@ -32,6 +32,9 @@
 /// @ingroup custom_control utility
 ///
 
+#include <libaegisub/exception.h>
+
+#include <wx/radiobox.h>
 #include <wx/validate.h>
 
 /// A wx validator that only allows valid numbers
@@ -88,3 +91,35 @@ public:
 
 	DECLARE_EVENT_TABLE()
 };
+
+template<typename T>
+class EnumBinder : public wxValidator {
+	T *value;
+
+	wxObject *Clone() const override { return new EnumBinder<T>(value); }
+
+	bool TransferFromWindow() override {
+		if (wxRadioBox *rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+			*value = static_cast<T>(rb->GetSelection());
+		else
+			throw agi::InternalError("Control type not supported by EnumBinder", 0);
+		return true;
+	}
+
+	bool TransferToWindow() override {
+		if (wxRadioBox *rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+			rb->SetSelection(static_cast<int>(*value));
+		else
+			throw agi::InternalError("Control type not supported by EnumBinder", 0);
+		return true;
+	}
+
+public:
+	explicit EnumBinder(T *value) : value(value) { }
+	EnumBinder(EnumBinder const& rhs) : value(rhs.value) { }
+};
+
+template<typename T>
+EnumBinder<T> MakeEnumBinder(T *value) {
+	return EnumBinder<T>(value);
+}

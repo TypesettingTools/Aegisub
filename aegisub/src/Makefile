@@ -213,6 +213,7 @@ SRC += \
 	plugin_manager.cpp \
 	preferences.cpp \
 	preferences_base.cpp \
+	search_replace_engine.cpp \
 	scintilla_text_ctrl.cpp \
 	scintilla_text_selection_controller.cpp \
 	spellchecker.cpp \
