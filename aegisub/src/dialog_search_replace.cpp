@@ -152,11 +152,9 @@ void DialogSearchReplace::UpdateSettings() {
 void DialogSearchReplace::FindReplace(int mode) {
 	if (mode < 0 || mode > 2) return;
 
-	// Variables
 	wxString LookFor = FindEdit->GetValue();
 	if (!LookFor) return;
 
-	// Setup
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
 	Search.LookFor = LookFor;
@@ -164,7 +162,6 @@ void DialogSearchReplace::FindReplace(int mode) {
 	Search.affect = Affect->GetSelection();
 	Search.field = Field->GetSelection();
 
-	// Find
 	if (mode == 0) {
 		Search.FindNext();
 		if (hasReplace) {
@@ -173,8 +170,6 @@ void DialogSearchReplace::FindReplace(int mode) {
 			config::mru->Add("Replace", from_wx(ReplaceWith));
 		}
 	}
-
-	// Replace
 	else {
 		wxString ReplaceWith = ReplaceEdit->GetValue();
 		Search.ReplaceWith = ReplaceWith;
@@ -183,7 +178,6 @@ void DialogSearchReplace::FindReplace(int mode) {
 		config::mru->Add("Replace", from_wx(ReplaceWith));
 	}
 
-	// Add to history
 	config::mru->Add("Find", from_wx(LookFor));
 	UpdateDropDowns();
 }
@@ -273,7 +267,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		else
 			tempPos = pos+replaceLen;
 
-		// RegExp
 		if (isReg) {
 			wxRegEx regex (LookFor,regFlags);
 			if (regex.IsValid()) {
@@ -285,8 +278,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 				}
 			}
 		}
-
-		// Normal
 		else {
 			wxString src = Text->get().Mid(tempPos);
 			if (!matchCase) src.MakeLower();
@@ -309,7 +300,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		}
 	}
 
-	// Found
 	if (found) {
 		if (!DoReplace)
 			replaceLen = matchLen;
@@ -352,19 +342,16 @@ void SearchReplaceEngine::ReplaceAll() {
 	if (isReg)
 		reg.Compile(LookFor, regFlags);
 
-	// Selection
 	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 	bool hasSelection = !sel.empty();
 	bool inSel = affect == 1;
 
 	for (auto diag : context->ass->Line | agi::of_type<AssDialogue>()) {
-		// Check if row is selected
 		if (inSel && hasSelection && !sel.count(diag))
 			continue;
 
 		boost::flyweight<wxString> *Text = get_text(diag, field);
 
-		// Regular expressions
 		if (isReg) {
 			if (reg.Matches(*Text)) {
 				size_t start, len;
@@ -378,7 +365,6 @@ void SearchReplaceEngine::ReplaceAll() {
 				*Text = repl;
 			}
 		}
-		// Normal replace
 		else {
 			if (!Search.matchCase) {
 				bool replaced = false;
@@ -424,7 +410,6 @@ void SearchReplaceEngine::OnDialogOpen() {
 	curLine = 0;
 	if (sels.Count() > 0) curLine = sels[0];
 
-	// Reset values
 	LastWasFind = true;
 	pos = 0;
 	matchLen = 0;
