@@ -32,14 +32,13 @@
 /// @ingroup secondary_ui
 ///
 
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/radiobox.h>
 #include <wx/string.h>
-#include <wx/textctrl.h>
 
 namespace agi { struct Context; }
+class wxCheckBox;
+class wxComboBox;
+class wxRadioBox;
 
 class SearchReplaceEngine {
 	int curLine;

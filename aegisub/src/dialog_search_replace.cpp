@@ -51,79 +51,82 @@
 #include <functional>
 
 #include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
 #include <wx/msgdlg.h>
+#include <wx/radiobox.h>
 #include <wx/regex.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include <wx/string.h>
+#include <wx/textctrl.h>
 
 enum {
 	BUTTON_FIND_NEXT,
 	BUTTON_REPLACE_NEXT,
-	BUTTON_REPLACE_ALL,
-	CHECK_MATCH_CASE,
-	CHECK_REGEXP,
-	CHECK_UPDATE_VIDEO
+	BUTTON_REPLACE_ALL
 };
 
 DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 : wxDialog(c->parent, -1, withReplace ? _("Replace") : _("Find"))
 , hasReplace(withReplace)
 {
-	wxSizer *FindSizer = new wxFlexGridSizer(2,2,5,15);
-	FindEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),lagi_MRU_wxAS("Find"),wxCB_DROPDOWN);
+	wxSizer *FindSizer = new wxFlexGridSizer(2, 2, 5, 15);
+	FindEdit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), lagi_MRU_wxAS("Find"), wxCB_DROPDOWN);
 	if (!FindEdit->IsListEmpty())
 		FindEdit->SetSelection(0);
-	FindSizer->Add(new wxStaticText(this,-1,_("Find what:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
-	FindSizer->Add(FindEdit,0,wxRIGHT,0);
+	FindSizer->Add(new wxStaticText(this, -1, _("Find what:")), 0, wxALIGN_CENTER_VERTICAL);
+	FindSizer->Add(FindEdit);
 	if (hasReplace) {
-		ReplaceEdit = new wxComboBox(this,-1,"",wxDefaultPosition,wxSize(300,-1),lagi_MRU_wxAS("Replace"),wxCB_DROPDOWN);
-		FindSizer->Add(new wxStaticText(this,-1,_("Replace with:")),0,wxRIGHT | wxALIGN_CENTER_VERTICAL,0);
-		FindSizer->Add(ReplaceEdit,0,wxRIGHT,0);
+		ReplaceEdit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), lagi_MRU_wxAS("Replace"), wxCB_DROPDOWN);
+		FindSizer->Add(new wxStaticText(this, -1, _("Replace with:")), 0, wxALIGN_CENTER_VERTICAL);
+		FindSizer->Add(ReplaceEdit);
 		if (!ReplaceEdit->IsListEmpty())
 			ReplaceEdit->SetSelection(0);
 	}
 
 	wxSizer *OptionsSizer = new wxBoxSizer(wxVERTICAL);
-	CheckMatchCase = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Match case"));
-	CheckRegExp = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Use regular expressions"));
+	CheckMatchCase = new wxCheckBox(this, -1, _("&Match case"));
+	CheckRegExp = new wxCheckBox(this, -1, _("&Use regular expressions"));
 	CheckMatchCase->SetValue(OPT_GET("Tool/Search Replace/Match Case")->GetBool());
 	CheckRegExp->SetValue(OPT_GET("Tool/Search Replace/RegExp")->GetBool());
-	OptionsSizer->Add(CheckMatchCase,0,wxBOTTOM,5);
-	OptionsSizer->Add(CheckRegExp,0,wxBOTTOM,5);
+	OptionsSizer->Add(CheckMatchCase, wxSizerFlags().Border(wxBOTTOM));
+	OptionsSizer->Add(CheckRegExp);
+
+	// Left sizer
+	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
+	LeftSizer->Add(FindSizer, wxSizerFlags().DoubleBorder(wxBOTTOM));
+	LeftSizer->Add(OptionsSizer);
 
 	// Limits sizer
 	wxString field[] = { _("Text"), _("Style"), _("Actor"), _("Effect") };
 	wxString affect[] = { _("All rows"), _("Selected rows") };
-	Field = new wxRadioBox(this,-1,_("In Field"),wxDefaultPosition,wxDefaultSize,countof(field), field);
-	Affect = new wxRadioBox(this,-1,_("Limit to"),wxDefaultPosition,wxDefaultSize,countof(affect), affect);
+	Field = new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition, wxDefaultSize, countof(field), field);
+	Affect = new wxRadioBox(this, -1, _("Limit to"), wxDefaultPosition, wxDefaultSize, countof(affect), affect);
 	wxSizer *LimitSizer = new wxBoxSizer(wxHORIZONTAL);
-	LimitSizer->Add(Field,1,wxEXPAND | wxRIGHT,5);
-	LimitSizer->Add(Affect,0,wxEXPAND | wxRIGHT,0);
+	LimitSizer->Add(Field, wxSizerFlags().Border(wxRIGHT));
+	LimitSizer->Add(Affect);
 	Field->SetSelection(OPT_GET("Tool/Search Replace/Field")->GetInt());
 	Affect->SetSelection(OPT_GET("Tool/Search Replace/Affect")->GetInt());
 
-	// Left sizer
-	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
-	LeftSizer->Add(FindSizer,0,wxBOTTOM,10);
-	LeftSizer->Add(OptionsSizer,0,wxBOTTOM,5);
-	LeftSizer->Add(LimitSizer,0,wxEXPAND | wxBOTTOM,0);
-
 	// Buttons
 	wxSizer *ButtonSizer = new wxBoxSizer(wxVERTICAL);
-	wxButton *FindNext = new wxButton(this,BUTTON_FIND_NEXT,_("&Find next"));
+	wxButton *FindNext = new wxButton(this, BUTTON_FIND_NEXT, _("&Find next"));
 	FindNext->SetDefault();
-	ButtonSizer->Add(FindNext,0,wxEXPAND | wxBOTTOM,3);
+	ButtonSizer->Add(FindNext, wxSizerFlags().Border(wxBOTTOM));
 	if (hasReplace) {
-		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_NEXT,_("Replace &next")),0,wxEXPAND | wxBOTTOM,3);
-		ButtonSizer->Add(new wxButton(this,BUTTON_REPLACE_ALL,_("Replace &all")),0,wxEXPAND | wxBOTTOM,3);
+		ButtonSizer->Add(new wxButton(this, BUTTON_REPLACE_NEXT, _("Replace &next")), wxSizerFlags().Border(wxBOTTOM));
+		ButtonSizer->Add(new wxButton(this, BUTTON_REPLACE_ALL, _("Replace &all")), wxSizerFlags().Border(wxBOTTOM));
 	}
-	ButtonSizer->Add(new wxButton(this,wxID_CANCEL),0,wxEXPAND | wxBOTTOM,20);
+	ButtonSizer->Add(new wxButton(this, wxID_CANCEL));
+
+	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
+	TopSizer->Add(LeftSizer, wxSizerFlags().Border());
+	TopSizer->Add(ButtonSizer, wxSizerFlags().Border());
 
 	// Main sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxHORIZONTAL);
-	MainSizer->Add(LeftSizer,0,wxEXPAND | wxALL,5);
-	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxALL,5);
+	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
+	MainSizer->Add(TopSizer);
+	MainSizer->Add(LimitSizer, wxSizerFlags().Border());
 	SetSizerAndFit(MainSizer);
 	CenterOnParent();
 
