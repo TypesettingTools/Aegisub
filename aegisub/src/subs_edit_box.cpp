@@ -53,7 +53,6 @@
 #include "ass_file.h"
 #include "command/command.h"
 #include "compat.h"
-#include "dialog_search_replace.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
@@ -345,11 +344,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 
 	/// @todo VideoContext should be doing this
 	if (c->videoController->IsLoaded()) {
-		bool sync;
-		if (Search.HasFocus()) sync = OPT_GET("Tool/Search Replace/Video Update")->GetBool();
-		else sync = OPT_GET("Video/Subtitle Sync")->GetBool();
-
-		if (sync) {
+		if (OPT_GET("Video/Subtitle Sync")->GetBool()) {
 			c->videoController->Stop();
 			c->videoController->JumpToTime(line->Start);
 		}

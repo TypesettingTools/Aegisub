@@ -463,7 +463,6 @@
 			"Field" : 0,
 			"Match Case" : false,
 			"RegExp" : false,
-			"Video Update" : false
 		},
 		"Select Lines" : {
 			"Action" : 0,

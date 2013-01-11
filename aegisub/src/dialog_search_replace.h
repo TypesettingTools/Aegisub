@@ -46,12 +46,10 @@ class SearchReplaceEngine {
 	size_t pos;
 	size_t matchLen;
 	size_t replaceLen;
-	bool Modified;
 	bool LastWasFind;
 	bool hasReplace;
 	bool isReg;
 	bool matchCase;
-	bool updateVideo;
 	bool CanContinue;
 	bool hasFocus;
 	int field;

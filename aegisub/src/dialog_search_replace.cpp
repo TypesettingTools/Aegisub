@@ -34,6 +34,20 @@
 
 #include "config.h"
 
+#include "dialog_search_replace.h"
+
+#include "ass_dialogue.h"
+#include "ass_file.h"
+#include "compat.h"
+#include "include/aegisub/context.h"
+#include "options.h"
+#include "selection_controller.h"
+#include "text_selection_controller.h"
+#include "subs_grid.h"
+#include "utils.h"
+
+#include <libaegisub/of_type_adaptor.h>
+
 #include <functional>
 
 #include <wx/button.h>
@@ -42,21 +56,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/string.h>
-
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "command/command.h"
-#include "compat.h"
-#include "dialog_search_replace.h"
-#include "include/aegisub/context.h"
-#include "options.h"
-#include "selection_controller.h"
-#include "text_selection_controller.h"
-#include "subs_edit_ctrl.h"
-#include "subs_grid.h"
-#include "video_context.h"
-
-#include <libaegisub/of_type_adaptor.h>
 
 enum {
 	BUTTON_FIND_NEXT,
@@ -88,26 +87,16 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 	wxSizer *OptionsSizer = new wxBoxSizer(wxVERTICAL);
 	CheckMatchCase = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Match case"));
 	CheckRegExp = new wxCheckBox(this,CHECK_MATCH_CASE,_("&Use regular expressions"));
-	CheckUpdateVideo = new wxCheckBox(this,CHECK_UPDATE_VIDEO,_("Update &Video"));
 	CheckMatchCase->SetValue(OPT_GET("Tool/Search Replace/Match Case")->GetBool());
 	CheckRegExp->SetValue(OPT_GET("Tool/Search Replace/RegExp")->GetBool());
-	CheckUpdateVideo->SetValue(OPT_GET("Tool/Search Replace/Video Update")->GetBool());
-	CheckUpdateVideo->Enable(c->videoController->IsLoaded());
 	OptionsSizer->Add(CheckMatchCase,0,wxBOTTOM,5);
 	OptionsSizer->Add(CheckRegExp,0,wxBOTTOM,5);
-	OptionsSizer->Add(CheckUpdateVideo,0,wxBOTTOM,0);
 
 	// Limits sizer
-	wxArrayString field;
-	field.Add(_("Text"));
-	field.Add(_("Style"));
-	field.Add(_("Actor"));
-	field.Add(_("Effect"));
-	wxArrayString affect;
-	affect.Add(_("All rows"));
-	affect.Add(_("Selected rows"));
-	Field = new wxRadioBox(this,-1,_("In Field"),wxDefaultPosition,wxDefaultSize,field);
-	Affect = new wxRadioBox(this,-1,_("Limit to"),wxDefaultPosition,wxDefaultSize,affect);
+	wxString field[] = { _("Text"), _("Style"), _("Actor"), _("Effect") };
+	wxString affect[] = { _("All rows"), _("Selected rows") };
+	Field = new wxRadioBox(this,-1,_("In Field"),wxDefaultPosition,wxDefaultSize,countof(field), field);
+	Affect = new wxRadioBox(this,-1,_("Limit to"),wxDefaultPosition,wxDefaultSize,countof(affect), affect);
 	wxSizer *LimitSizer = new wxBoxSizer(wxHORIZONTAL);
 	LimitSizer->Add(Field,1,wxEXPAND | wxRIGHT,5);
 	LimitSizer->Add(Affect,0,wxEXPAND | wxRIGHT,0);
@@ -154,10 +143,8 @@ DialogSearchReplace::~DialogSearchReplace() {
 void DialogSearchReplace::UpdateSettings() {
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
-	Search.updateVideo = CheckUpdateVideo->IsChecked() && CheckUpdateVideo->IsEnabled();
 	OPT_SET("Tool/Search Replace/Match Case")->SetBool(CheckMatchCase->IsChecked());
 	OPT_SET("Tool/Search Replace/RegExp")->SetBool(CheckRegExp->IsChecked());
-	OPT_SET("Tool/Search Replace/Video Update")->SetBool(CheckUpdateVideo->IsChecked());
 	OPT_SET("Tool/Search Replace/Field")->SetInt(Field->GetSelection());
 	OPT_SET("Tool/Search Replace/Affect")->SetInt(Affect->GetSelection());
 }
@@ -172,7 +159,6 @@ void DialogSearchReplace::FindReplace(int mode) {
 	// Setup
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
-	Search.updateVideo = CheckUpdateVideo->IsChecked() && CheckUpdateVideo->IsEnabled();
 	Search.LookFor = LookFor;
 	Search.CanContinue = true;
 	Search.affect = Affect->GetSelection();
@@ -225,12 +211,10 @@ SearchReplaceEngine::SearchReplaceEngine()
 , pos(0)
 , matchLen(0)
 , replaceLen(0)
-, Modified(0)
 , LastWasFind(true)
 , hasReplace(false)
 , isReg(false)
 , matchCase(false)
-, updateVideo(false)
 , CanContinue(false)
 , hasFocus(false)
 , field(0)
@@ -263,7 +247,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	// if selection has changed reset values
 	if (firstLine != curLine) {
 		curLine = firstLine;
-		Modified = false;
 		LastWasFind = true;
 		pos = 0;
 		matchLen = 0;
@@ -328,9 +311,9 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 	// Found
 	if (found) {
-		// If replacing
-		if (DoReplace) {
-			// Replace with regular expressions
+		if (!DoReplace)
+			replaceLen = matchLen;
+		else {
 			if (isReg) {
 				wxString toReplace = Text->get().Mid(pos,matchLen);
 				wxRegEx regex(LookFor,regFlags);
@@ -338,22 +321,14 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 				*Text = Text->get().Left(pos) + toReplace + Text->get().Mid(pos+matchLen);
 				replaceLen = toReplace.Length();
 			}
-
-			// Normal replace
 			else {
 				*Text = Text->get().Left(pos) + ReplaceWith + Text->get().Mid(pos+matchLen);
 				replaceLen = ReplaceWith.Length();
 			}
 
-			// Commit
 			context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
 		}
 
-		else {
-			replaceLen = matchLen;
-		}
-
-		// Select
 		context->subsGrid->SelectRow(curLine,false);
 		context->subsGrid->MakeCellVisible(curLine,0);
 		if (field == 0) {
@@ -361,19 +336,12 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			context->textSelectionController->SetSelection(pos, pos + replaceLen);
 		}
 
-		// Update video
-		if (updateVideo) {
-			cmd::call("video/jump/start", context);
-		}
-		else if (DoReplace) Modified = true;
-
 		// hAx to prevent double match on style/actor
 		if (field != 0) replaceLen = 99999;
 	}
 	LastWasFind = !DoReplace;
 }
 
-/// @brief Replace all instances
 void SearchReplaceEngine::ReplaceAll() {
 	size_t count = 0;
 
@@ -457,14 +425,13 @@ void SearchReplaceEngine::OnDialogOpen() {
 	if (sels.Count() > 0) curLine = sels[0];
 
 	// Reset values
-	Modified = false;
 	LastWasFind = true;
 	pos = 0;
 	matchLen = 0;
 	replaceLen = 0;
 }
 
-void SearchReplaceEngine::OpenDialog (bool replace) {
+void SearchReplaceEngine::OpenDialog(bool replace) {
 	static DialogSearchReplace *diag = nullptr;
 
 	// already opened
