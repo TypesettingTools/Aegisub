@@ -140,10 +140,6 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 }
 
 DialogSearchReplace::~DialogSearchReplace() {
-	UpdateSettings();
-}
-
-void DialogSearchReplace::UpdateSettings() {
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
 	OPT_SET("Tool/Search Replace/Match Case")->SetBool(CheckMatchCase->IsChecked());
@@ -165,42 +161,37 @@ void DialogSearchReplace::FindReplace(int mode) {
 	Search.affect = Affect->GetSelection();
 	Search.field = Field->GetSelection();
 
-	if (mode == 0) {
-		Search.FindNext();
-		if (hasReplace) {
-			wxString ReplaceWith = ReplaceEdit->GetValue();
-			Search.ReplaceWith = ReplaceWith;
-			config::mru->Add("Replace", from_wx(ReplaceWith));
-		}
-	}
-	else {
+	if (hasReplace) {
 		wxString ReplaceWith = ReplaceEdit->GetValue();
 		Search.ReplaceWith = ReplaceWith;
-		if (mode == 1) Search.ReplaceNext();
-		else Search.ReplaceAll();
 		config::mru->Add("Replace", from_wx(ReplaceWith));
 	}
+
+	if (mode == 0)
+		Search.FindNext();
+	else if (mode == 1)
+		Search.ReplaceNext();
+	else
+		Search.ReplaceAll();
 
 	config::mru->Add("Find", from_wx(LookFor));
 	UpdateDropDowns();
 }
 
-void DialogSearchReplace::UpdateDropDowns() {
-	FindEdit->Freeze();
-	FindEdit->Clear();
-	FindEdit->Append(lagi_MRU_wxAS("Find"));
-	if (!FindEdit->IsListEmpty())
-		FindEdit->SetSelection(0);
-	FindEdit->Thaw();
+static void update_mru(wxComboBox *cb, const char *mru_name) {
+	cb->Freeze();
+	cb->Clear();
+	cb->Append(lagi_MRU_wxAS(mru_name));
+	if (!cb->IsListEmpty())
+		cb->SetSelection(0);
+	cb->Thaw();
+}
 
-	if (hasReplace) {
-		ReplaceEdit->Freeze();
-		ReplaceEdit->Clear();
-		ReplaceEdit->Append(lagi_MRU_wxAS("Replace"));
-		if (!ReplaceEdit->IsListEmpty())
-			ReplaceEdit->SetSelection(0);
-		ReplaceEdit->Thaw();
-	}
+void DialogSearchReplace::UpdateDropDowns() {
+	update_mru(FindEdit, "Find");
+
+	if (hasReplace)
+		update_mru(ReplaceEdit, "Replace");
 }
 
 SearchReplaceEngine::SearchReplaceEngine()
@@ -257,8 +248,19 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	size_t tempPos;
 	int regFlags = wxRE_ADVANCED;
 	if (!matchCase) {
-		if (isReg) regFlags |= wxRE_ICASE;
-		else LookFor.MakeLower();
+		if (isReg)
+			regFlags |= wxRE_ICASE;
+		else
+			LookFor.MakeLower();
+	}
+	wxRegEx regex;
+	if (isReg) {
+		regex.Compile(LookFor, regFlags);
+
+		if (!regex.IsValid()) {
+			LastWasFind = !DoReplace;
+			return;
+		}
 	}
 
 	// Search for it
@@ -271,14 +273,11 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			tempPos = pos+replaceLen;
 
 		if (isReg) {
-			wxRegEx regex (LookFor,regFlags);
-			if (regex.IsValid()) {
-				if (regex.Matches(Text->get().Mid(tempPos))) {
-					size_t match_start;
-					regex.GetMatch(&match_start,&matchLen,0);
-					pos = match_start + tempPos;
-					found = true;
-				}
+			if (regex.Matches(Text->get().Mid(tempPos))) {
+				size_t match_start;
+				regex.GetMatch(&match_start,&matchLen,0);
+				pos = match_start + tempPos;
+				found = true;
 			}
 		}
 		else {
@@ -294,11 +293,10 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		// Didn't find, go to next line
 		if (!found) {
-			curLine++;
+			curLine = (curLine + 1) % nrows;
 			pos = 0;
 			matchLen = 0;
 			replaceLen = 0;
-			if (curLine == nrows) curLine = 0;
 			if (curLine == start) break;
 		}
 	}
@@ -309,7 +307,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 		else {
 			if (isReg) {
 				wxString toReplace = Text->get().Mid(pos,matchLen);
-				wxRegEx regex(LookFor,regFlags);
 				regex.ReplaceFirst(&toReplace,ReplaceWith);
 				*Text = Text->get().Left(pos) + toReplace + Text->get().Mid(pos+matchLen);
 				replaceLen = toReplace.Length();
@@ -422,20 +419,15 @@ void SearchReplaceEngine::OnDialogOpen() {
 void SearchReplaceEngine::OpenDialog(bool replace) {
 	static DialogSearchReplace *diag = nullptr;
 
-	// already opened
-	if (diag) {
-		// it's the right type so give focus
-		if(replace == hasReplace) {
-			diag->FindEdit->SetFocus();
-			diag->Show();
-			OnDialogOpen();
-			return;
-		}
-		// wrong type - destroy and create the right one
+	if (diag && replace != hasReplace) {
+		// Already opened, but wrong type - destroy and create the right one
 		diag->Destroy();
+		diag = nullptr;
 	}
-	// create new one
-	diag = new DialogSearchReplace(context, replace);
+
+	if (!diag)
+		diag = new DialogSearchReplace(context, replace);
+
 	diag->FindEdit->SetFocus();
 	diag->Show();
 	hasReplace = replace;

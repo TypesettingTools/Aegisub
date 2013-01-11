@@ -94,5 +94,4 @@ class DialogSearchReplace : public wxDialog {
 public:
 	DialogSearchReplace(agi::Context* c, bool withReplace);
 	~DialogSearchReplace();
-	void UpdateSettings();
 };
