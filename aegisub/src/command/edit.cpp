@@ -462,7 +462,7 @@ struct edit_find_replace : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		Search.OpenDialog(true);
+		c->search->OpenDialog(true);
 	}
 };
 

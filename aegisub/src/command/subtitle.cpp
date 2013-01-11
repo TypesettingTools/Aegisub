@@ -105,7 +105,7 @@ struct subtitle_find : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		Search.OpenDialog(false);
+		c->search->OpenDialog(false);
 	}
 };
 
@@ -119,7 +119,7 @@ struct subtitle_find_next : public Command {
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		Search.FindNext();
+		c->search->FindNext();
 	}
 };
 

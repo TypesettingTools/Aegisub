@@ -376,7 +376,7 @@ void FrameMain::InitContents() {
 	StartupLog("Create subtitles grid");
 	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel, context.get());
 	context->selectionController = context->subsGrid;
-	Search.context = context.get();
+	context->search = new SearchReplaceEngine(context.get());
 
 	StartupLog("Create video box");
 	videoBox = new VideoBox(Panel, false, context.get());

@@ -41,6 +41,8 @@ class wxComboBox;
 class wxRadioBox;
 
 class SearchReplaceEngine {
+	agi::Context *context;
+
 	int curLine;
 	size_t pos;
 	size_t matchLen;
@@ -56,23 +58,20 @@ class SearchReplaceEngine {
 	wxString ReplaceWith;
 
 public:
-	agi::Context *context;
-
 	void FindNext() { ReplaceNext(false); }
 	void ReplaceNext(bool DoReplace=true);
 	void ReplaceAll();
 	void OpenDialog(bool HasReplace);
 	void OnDialogOpen();
 
-	SearchReplaceEngine();
+	SearchReplaceEngine(agi::Context *c);
 	friend class DialogSearchReplace;
 };
 
-// Instance
-extern SearchReplaceEngine Search;
-
 class DialogSearchReplace : public wxDialog {
 	friend class SearchReplaceEngine;
+
+	agi::Context *c;
 
 	bool hasReplace;
 

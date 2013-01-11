@@ -80,6 +80,7 @@ enum {
 
 DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 : wxDialog(c->parent, -1, withReplace ? _("Replace") : _("Find"))
+, c(c)
 , hasReplace(withReplace)
 {
 	wxSizer *FindSizer = new wxFlexGridSizer(2, 2, 5, 15);
@@ -142,7 +143,7 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 	SetSizerAndFit(MainSizer);
 	CenterOnParent();
 
-	Search.OnDialogOpen();
+	c->search->OnDialogOpen();
 
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 0), BUTTON_FIND_NEXT);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 1), BUTTON_REPLACE_NEXT);
@@ -150,8 +151,8 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 }
 
 DialogSearchReplace::~DialogSearchReplace() {
-	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
-	Search.matchCase = CheckMatchCase->IsChecked();
+	c->search->isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
+	c->search->matchCase = CheckMatchCase->IsChecked();
 	OPT_SET("Tool/Search Replace/Match Case")->SetBool(CheckMatchCase->IsChecked());
 	OPT_SET("Tool/Search Replace/RegExp")->SetBool(CheckRegExp->IsChecked());
 	OPT_SET("Tool/Search Replace/Field")->SetInt(Field->GetSelection());
@@ -164,25 +165,25 @@ void DialogSearchReplace::FindReplace(int mode) {
 	wxString LookFor = FindEdit->GetValue();
 	if (!LookFor) return;
 
-	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
-	Search.matchCase = CheckMatchCase->IsChecked();
-	Search.LookFor = LookFor;
-	Search.initialized = true;
-	Search.affect = Affect->GetSelection();
-	Search.field = Field->GetSelection();
+	c->search->isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
+	c->search->matchCase = CheckMatchCase->IsChecked();
+	c->search->LookFor = LookFor;
+	c->search->initialized = true;
+	c->search->affect = Affect->GetSelection();
+	c->search->field = Field->GetSelection();
 
 	if (hasReplace) {
 		wxString ReplaceWith = ReplaceEdit->GetValue();
-		Search.ReplaceWith = ReplaceWith;
+		c->search->ReplaceWith = ReplaceWith;
 		config::mru->Add("Replace", from_wx(ReplaceWith));
 	}
 
 	if (mode == 0)
-		Search.FindNext();
+		c->search->FindNext();
 	else if (mode == 1)
-		Search.ReplaceNext();
+		c->search->ReplaceNext();
 	else
-		Search.ReplaceAll();
+		c->search->ReplaceAll();
 
 	config::mru->Add("Find", from_wx(LookFor));
 	UpdateDropDowns();
@@ -204,8 +205,9 @@ void DialogSearchReplace::UpdateDropDowns() {
 		update_mru(ReplaceEdit, "Replace");
 }
 
-SearchReplaceEngine::SearchReplaceEngine()
-: curLine(0)
+SearchReplaceEngine::SearchReplaceEngine(agi::Context *c)
+: context(c)
+, curLine(0)
 , pos(0)
 , matchLen(0)
 , replaceLen(0)
@@ -216,7 +218,6 @@ SearchReplaceEngine::SearchReplaceEngine()
 , initialized(false)
 , field(FIELD_TEXT)
 , affect(LIMIT_ALL)
-, context(nullptr)
 {
 }
 
@@ -373,7 +374,7 @@ void SearchReplaceEngine::ReplaceAll() {
 			}
 		}
 		else {
-			if (!Search.matchCase) {
+			if (!matchCase) {
 				bool replaced = false;
 				wxString Left, Right = *Text;
 				size_t pos = 0;
@@ -439,5 +440,3 @@ void SearchReplaceEngine::OpenDialog(bool replace) {
 	diag->Show();
 	hasReplace = replace;
 }
-
-SearchReplaceEngine Search;

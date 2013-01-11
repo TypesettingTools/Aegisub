@@ -4,6 +4,7 @@ class AudioController;
 class AssDialogue;
 class AudioKaraoke;
 class DialogManager;
+class SearchReplaceEngine;
 template<class T> class SelectionController;
 class SubsTextEditCtrl;
 class SubtitlesGrid;
@@ -25,6 +26,8 @@ struct Context {
 	SelectionController<AssDialogue *> *selectionController;
 	TextSelectionController *textSelectionController;
 	VideoContext *videoController;
+
+	SearchReplaceEngine *search;
 
 	// Things that should probably be in some sort of UI-context-model
 	wxWindow *parent;
