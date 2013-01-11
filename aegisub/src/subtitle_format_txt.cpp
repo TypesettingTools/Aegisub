@@ -117,7 +117,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, wxString const& filename, wxSt
 
 		// Sets line up
 		AssDialogue *line = new AssDialogue;
-		line->Actor = isComment ? "" : actor;
+		line->Actor = isComment ? wxEmptyString : actor;
 		line->Comment = isComment;
 		line->Text = value;
 		line->End = 0;
