@@ -49,8 +49,7 @@ class SearchReplaceEngine {
 	bool hasReplace;
 	bool isReg;
 	bool matchCase;
-	bool CanContinue;
-	bool hasFocus;
+	bool initialized;
 	int field;
 	int affect;
 	wxString LookFor;
@@ -64,9 +63,6 @@ public:
 	void ReplaceAll();
 	void OpenDialog(bool HasReplace);
 	void OnDialogOpen();
-
-	void SetFocus(bool focus) { hasFocus = focus; }
-	bool HasFocus() const { return hasFocus; }
 
 	SearchReplaceEngine();
 	friend class DialogSearchReplace;

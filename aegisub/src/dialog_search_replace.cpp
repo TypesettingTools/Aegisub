@@ -135,8 +135,6 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 0), BUTTON_FIND_NEXT);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 1), BUTTON_REPLACE_NEXT);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogSearchReplace::FindReplace, this, 2), BUTTON_REPLACE_ALL);
-	Bind(wxEVT_SET_FOCUS, std::bind(&SearchReplaceEngine::SetFocus, &Search, true));
-	Bind(wxEVT_KILL_FOCUS, std::bind(&SearchReplaceEngine::SetFocus, &Search, false));
 }
 
 DialogSearchReplace::~DialogSearchReplace() {
@@ -157,7 +155,7 @@ void DialogSearchReplace::FindReplace(int mode) {
 	Search.isReg = CheckRegExp->IsChecked() && CheckRegExp->IsEnabled();
 	Search.matchCase = CheckMatchCase->IsChecked();
 	Search.LookFor = LookFor;
-	Search.CanContinue = true;
+	Search.initialized = true;
 	Search.affect = Affect->GetSelection();
 	Search.field = Field->GetSelection();
 
@@ -203,8 +201,7 @@ SearchReplaceEngine::SearchReplaceEngine()
 , hasReplace(false)
 , isReg(false)
 , matchCase(false)
-, CanContinue(false)
-, hasFocus(false)
+, initialized(false)
 , field(0)
 , affect(0)
 , context(0)
@@ -224,7 +221,7 @@ static boost::flyweight<wxString> *get_text(AssDialogue *cur, int field) {
 }
 
 void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
-	if (!CanContinue) {
+	if (!initialized) {
 		OpenDialog(DoReplace);
 		return;
 	}
