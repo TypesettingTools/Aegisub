@@ -253,7 +253,6 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	int start = curLine;
 	int nrows = context->subsGrid->GetRows();
 	bool found = false;
-	size_t tempPos;
 	int regFlags = wxRE_ADVANCED;
 	if (!matchCase) {
 		if (isReg)
@@ -275,27 +274,28 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 	boost::flyweight<wxString> *Text = nullptr;
 	while (!found) {
 		Text = get_text(context->subsGrid->GetDialogue(curLine), field);
+		size_t tempPos;
 		if (DoReplace && LastWasFind)
 			tempPos = pos;
 		else
-			tempPos = pos+replaceLen;
+			tempPos = pos + replaceLen;
 
 		if (isReg) {
-			if (regex.Matches(Text->get().Mid(tempPos))) {
+			if (regex.Matches(Text->get().substr(tempPos))) {
 				size_t match_start;
-				regex.GetMatch(&match_start,&matchLen,0);
+				regex.GetMatch(&match_start, &matchLen, 0);
 				pos = match_start + tempPos;
 				found = true;
 			}
 		}
 		else {
-			wxString src = Text->get().Mid(tempPos);
+			wxString src = Text->get().substr(tempPos);
 			if (!matchCase) src.MakeLower();
-			int textPos = src.Find(LookFor);
-			if (textPos != -1) {
+			size_t textPos = src.find(LookFor);
+			if (textPos != src.npos) {
 				pos = tempPos+textPos;
 				found = true;
-				matchLen = LookFor.Length();
+				matchLen = LookFor.size();
 			}
 		}
 
@@ -314,14 +314,14 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 			replaceLen = matchLen;
 		else {
 			if (isReg) {
-				wxString toReplace = Text->get().Mid(pos,matchLen);
+				wxString toReplace = Text->get().substr(pos,matchLen);
 				regex.ReplaceFirst(&toReplace,ReplaceWith);
-				*Text = Text->get().Left(pos) + toReplace + Text->get().Mid(pos+matchLen);
-				replaceLen = toReplace.Length();
+				*Text = Text->get().Left(pos) + toReplace + Text->get().substr(pos+matchLen);
+				replaceLen = toReplace.size();
 			}
 			else {
-				*Text = Text->get().Left(pos) + ReplaceWith + Text->get().Mid(pos+matchLen);
-				replaceLen = ReplaceWith.Length();
+				*Text = Text->get().Left(pos) + ReplaceWith + Text->get().substr(pos+matchLen);
+				replaceLen = ReplaceWith.size();
 			}
 
 			context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
@@ -380,9 +380,9 @@ void SearchReplaceEngine::ReplaceAll() {
 				size_t pos = 0;
 				Left.reserve(Right.size());
 				while (pos + LookFor.size() <= Right.size()) {
-					if (Right.Mid(pos, LookFor.size()).CmpNoCase(LookFor) == 0) {
+					if (Right.substr(pos, LookFor.size()).CmpNoCase(LookFor) == 0) {
 						Left.Append(Right.Left(pos)).Append(ReplaceWith);
-						Right = Right.Mid(pos + LookFor.Len());
+						Right = Right.substr(pos + LookFor.size());
 						++count;
 						replaced = true;
 						pos = 0;
