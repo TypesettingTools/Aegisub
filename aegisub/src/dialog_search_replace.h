@@ -58,7 +58,7 @@ class SearchReplaceEngine {
 public:
 	agi::Context *context;
 
-	void FindNext();
+	void FindNext() { ReplaceNext(false); }
 	void ReplaceNext(bool DoReplace=true);
 	void ReplaceAll();
 	void OpenDialog(bool HasReplace);

@@ -66,6 +66,18 @@ enum {
 	BUTTON_REPLACE_ALL
 };
 
+enum {
+	FIELD_TEXT = 0,
+	FIELD_STYLE,
+	FIELD_ACTOR,
+	FIELD_EFFECT
+};
+
+enum {
+	LIMIT_ALL = 0,
+	LIMIT_SELECTED
+};
+
 DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool withReplace)
 : wxDialog(c->parent, -1, withReplace ? _("Replace") : _("Find"))
 , hasReplace(withReplace)
@@ -202,22 +214,20 @@ SearchReplaceEngine::SearchReplaceEngine()
 , isReg(false)
 , matchCase(false)
 , initialized(false)
-, field(0)
-, affect(0)
-, context(0)
+, field(FIELD_TEXT)
+, affect(LIMIT_ALL)
+, context(nullptr)
 {
 }
 
-void SearchReplaceEngine::FindNext() {
-	ReplaceNext(false);
-}
-
 static boost::flyweight<wxString> *get_text(AssDialogue *cur, int field) {
-	if (field == 0) return &cur->Text;
-	else if (field == 1) return &cur->Style;
-	else if (field == 2) return &cur->Actor;
-	else if (field == 3) return &cur->Effect;
-	else throw wxString("Invalid field");
+	switch (field) {
+		case FIELD_TEXT: return &cur->Text;
+		case FIELD_STYLE: return &cur->Style;
+		case FIELD_ACTOR: return &cur->Actor;
+		case FIELD_EFFECT: return &cur->Effect;
+		default: throw agi::InternalError("Bad find/replace field", 0);
+	}
 }
 
 void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
@@ -318,13 +328,13 @@ void SearchReplaceEngine::ReplaceNext(bool DoReplace) {
 
 		context->subsGrid->SelectRow(curLine,false);
 		context->subsGrid->MakeCellVisible(curLine,0);
-		if (field == 0) {
+		if (field == FIELD_TEXT) {
 			context->selectionController->SetActiveLine(context->subsGrid->GetDialogue(curLine));
 			context->textSelectionController->SetSelection(pos, pos + replaceLen);
 		}
-
 		// hAx to prevent double match on style/actor
-		if (field != 0) replaceLen = 99999;
+		else
+			replaceLen = 99999;
 	}
 	LastWasFind = !DoReplace;
 }
@@ -341,7 +351,7 @@ void SearchReplaceEngine::ReplaceAll() {
 
 	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 	bool hasSelection = !sel.empty();
-	bool inSel = affect == 1;
+	bool inSel = affect == LIMIT_SELECTED;
 
 	for (auto diag : context->ass->Line | agi::of_type<AssDialogue>()) {
 		if (inSel && hasSelection && !sel.count(diag))
