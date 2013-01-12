@@ -463,7 +463,8 @@
 			"Field" : 0,
 			"Match Case" : false,
 			"RegExp" : false,
-			"Skip Comments" : false
+			"Skip Comments" : false,
+			"Skip Tags" : false
 		},
 		"Select Lines" : {
 			"Action" : 0,
