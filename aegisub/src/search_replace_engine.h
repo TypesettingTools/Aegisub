@@ -41,6 +41,7 @@ struct SearchReplaceSettings {
 
 	bool match_case;
 	bool use_regex;
+	bool ignore_comments;
 };
 
 class SearchReplaceEngine {

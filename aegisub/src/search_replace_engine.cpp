@@ -168,6 +168,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (!diag) continue;
 		if (selection_only && !sel.count(diag)) continue;
+		if (settings.ignore_comments && diag->Comment) continue;
 
 		if (MatchState ms = matches(diag, pos)) {
 			if (selection_only)
@@ -208,6 +209,7 @@ bool SearchReplaceEngine::ReplaceAll() {
 
 	for (auto diag : context->ass->Line | agi::of_type<AssDialogue>()) {
 		if (selection_only && !sel.count(diag)) continue;
+		if (settings.ignore_comments && diag->Comment) continue;
 
 		if (settings.use_regex) {
 			if (MatchState ms = matches(diag, 0)) {

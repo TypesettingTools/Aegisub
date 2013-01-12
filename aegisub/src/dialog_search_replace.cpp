@@ -56,6 +56,7 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 	settings->replace_with = recent_replace.empty() ? wxString() : recent_replace.front();
 	settings->match_case = OPT_GET("Tool/Search Replace/Match Case")->GetBool();
 	settings->use_regex = OPT_GET("Tool/Search Replace/RegExp")->GetBool();
+	settings->ignore_comments = OPT_GET("Tool/Search Replace/Skip Comments")->GetBool();
 
 	auto find_sizer = new wxFlexGridSizer(2, 2, 5, 15);
 	find_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), recent_find, wxCB_DROPDOWN, wxGenericValidator(&settings->find));
@@ -70,7 +71,8 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 
 	auto options_sizer = new wxBoxSizer(wxVERTICAL);
 	options_sizer->Add(new wxCheckBox(this, -1, _("&Match case"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->match_case)), wxSizerFlags().Border(wxBOTTOM));
-	options_sizer->Add(new wxCheckBox(this, -1, _("&Use regular expressions"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->use_regex)));
+	options_sizer->Add(new wxCheckBox(this, -1, _("&Use regular expressions"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->use_regex)), wxSizerFlags().Border(wxBOTTOM));
+	options_sizer->Add(new wxCheckBox(this, -1, _("&Skip Comments"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->ignore_comments)));
 
 	auto left_sizer = new wxBoxSizer(wxVERTICAL);
 	left_sizer->Add(find_sizer, wxSizerFlags().DoubleBorder(wxBOTTOM));
@@ -131,6 +133,7 @@ void DialogSearchReplace::FindReplace(bool (SearchReplaceEngine::*func)()) {
 
 	OPT_SET("Tool/Search Replace/Match Case")->SetBool(settings->match_case);
 	OPT_SET("Tool/Search Replace/RegExp")->SetBool(settings->use_regex);
+	OPT_SET("Tool/Search Replace/Skip Comments")->SetBool(settings->ignore_comments);
 	OPT_SET("Tool/Search Replace/Field")->SetInt(static_cast<int>(settings->field));
 	OPT_SET("Tool/Search Replace/Affect")->SetInt(static_cast<int>(settings->limit_to));
 
