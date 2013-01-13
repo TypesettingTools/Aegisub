@@ -249,19 +249,13 @@ wxDEFINE_EVENT(EVT_RECENT_SELECT, wxThreadEvent);
 
 /// @class ColorPickerRecent
 /// @brief A grid of recently used colors which can be selected by clicking on them
-class ColorPickerRecent : public wxControl {
+class ColorPickerRecent : public wxStaticBitmap {
 	int rows;     ///< Number of rows of colors
 	int cols;     ///< Number of cols of colors
 	int cellsize; ///< Width/Height of each cell
 
 	/// The colors currently displayed in the control
 	std::vector<agi::Color> colors;
-
-	/// Does the background need to be regenerated?
-	bool background_valid;
-
-	/// Bitmap storing the cached background
-	wxBitmap background;
 
 	void OnClick(wxMouseEvent &evt) {
 		wxSize cs = GetClientSize();
@@ -277,48 +271,36 @@ class ColorPickerRecent : public wxControl {
 		}
 	}
 
-	void OnPaint(wxPaintEvent &evt) {
-		wxPaintDC pdc(this);
-		PrepareDC(pdc);
+	void UpdateBitmap() {
+		wxSize sz = GetClientSize();
 
-		if (!background_valid) {
-			wxSize sz = pdc.GetSize();
+		wxBitmap background(sz.x, sz.y);
+		wxMemoryDC dc(background);
 
-			background = wxBitmap(sz.x, sz.y);
-			wxMemoryDC dc(background);
+		dc.SetPen(*wxTRANSPARENT_PEN);
 
-			dc.SetPen(*wxTRANSPARENT_PEN);
+		for (int cy = 0; cy < rows; cy++) {
+			for (int cx = 0; cx < cols; cx++) {
+				int x = cx * cellsize;
+				int y = cy * cellsize;
 
-			for (int cy = 0; cy < rows; cy++) {
-				for (int cx = 0; cx < cols; cx++) {
-					int x = cx * cellsize;
-					int y = cy * cellsize;
-
-					dc.SetBrush(wxBrush(to_wx(colors[cy * cols + cx])));
-					dc.DrawRectangle(x, y, x+cellsize, y+cellsize);
-				}
+				dc.SetBrush(wxBrush(to_wx(colors[cy * cols + cx])));
+				dc.DrawRectangle(x, y, x+cellsize, y+cellsize);
 			}
-
-			background_valid = true;
 		}
 
-		pdc.DrawBitmap(background, 0, 0, false);
-	}
-
-	void OnSize(wxSizeEvent &evt) {
-		background_valid = false;
-		Refresh();
+		SetBitmap(background);
+		Refresh(false);
 	}
 
 	bool AcceptsFocusFromKeyboard() const { return false; }
 
 public:
 	ColorPickerRecent(wxWindow *parent, int cols, int rows, int cellsize)
-	: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
+	: wxStaticBitmap(parent, -1, wxBitmap(), wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
 	, rows(rows)
 	, cols(cols)
 	, cellsize(cellsize)
-	, background_valid(false)
 	{
 		colors.resize(rows * cols);
 		SetClientSize(cols*cellsize, rows*cellsize);
@@ -326,15 +308,15 @@ public:
 		SetMaxSize(GetSize());
 		SetCursor(*wxCROSS_CURSOR);
 
-		Bind(wxEVT_PAINT, &ColorPickerRecent::OnPaint, this);
 		Bind(wxEVT_LEFT_DOWN, &ColorPickerRecent::OnClick, this);
-		Bind(wxEVT_SIZE, &ColorPickerRecent::OnSize, this);
+		Bind(wxEVT_SIZE, [=](wxSizeEvent&) { UpdateBitmap(); });
 	}
 
 	/// Load the colors to show
 	void Load(std::vector<agi::Color> const& recent_colors) {
 		colors = recent_colors;
 		colors.resize(rows * cols);
+		UpdateBitmap();
 	}
 
 	/// Get the list of recent colors
@@ -350,9 +332,7 @@ public:
 			colors.pop_back();
 		}
 
-		background_valid = false;
-
-		Refresh(false);
+		UpdateBitmap();
 	}
 };
 
