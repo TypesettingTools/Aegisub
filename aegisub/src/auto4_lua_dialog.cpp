@@ -210,6 +210,7 @@ namespace Automation4 {
 		/// A color-picker button
 		class Color : public LuaDialogControl {
 			wxString text;
+			bool alpha;
 
 			struct ColorValidator : public wxValidator {
 				wxString *text;
@@ -225,9 +226,10 @@ namespace Automation4 {
 				}
 			};
 		public:
-			Color(lua_State *L)
+			Color(lua_State *L, bool alpha)
 			: LuaDialogControl(L)
 			, text(get_field(L, "value"))
+			, alpha(alpha)
 			{
 			}
 
@@ -246,7 +248,7 @@ namespace Automation4 {
 			wxControl *Create(wxWindow *parent)
 			{
 				agi::Color colour(from_wx(text));
-				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), false, colour, ColorValidator(&text));
+				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), alpha, colour, ColorValidator(&text));
 				cw->SetToolTip(hint);
 				return cw;
 			}
@@ -526,10 +528,9 @@ namespace Automation4 {
 			} else if (controlclass == "checkbox") {
 				ctl = new LuaControl::Checkbox(L);
 			} else if (controlclass == "color") {
-				ctl = new LuaControl::Color(L);
+				ctl = new LuaControl::Color(L, false);
 			} else if (controlclass == "coloralpha") {
-				// FIXME
-				ctl = new LuaControl::Edit(L);
+				ctl = new LuaControl::Color(L, true);
 			} else if (controlclass == "alpha") {
 				// FIXME
 				ctl = new LuaControl::Edit(L);
