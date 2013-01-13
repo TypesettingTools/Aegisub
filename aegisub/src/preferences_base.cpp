@@ -61,18 +61,7 @@ OPTION_UPDATER(IntUpdater, wxSpinEvent, OptionValueInt, evt.GetInt());
 OPTION_UPDATER(IntCBUpdater, wxCommandEvent, OptionValueInt, evt.GetInt());
 OPTION_UPDATER(DoubleUpdater, wxSpinEvent, OptionValueDouble, evt.GetInt());
 OPTION_UPDATER(BoolUpdater, wxCommandEvent, OptionValueBool, !!evt.GetInt());
-class ColourUpdater {
-	const char *name;
-	Preferences *parent;
-public:
-	ColourUpdater(const char *n = "", Preferences *p = nullptr) : name(n), parent(p) { }
-	void operator()(wxCommandEvent& evt) {
-		ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
-		if (btn)
-			parent->SetOption(new agi::OptionValueColor(name, btn->GetColor()));
-		evt.Skip();
-	}
-};
+OPTION_UPDATER(ColourUpdater, wxThreadEvent, OptionValueColor, evt.GetPayload<agi::Color>());
 
 static void browse_button(wxTextCtrl *ctrl) {
 	wxString def = StandardPaths::DecodePath(ctrl->GetValue());
@@ -161,8 +150,8 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 		}
 
 		case agi::OptionValue::Type_Color: {
-			ColourButton *cb = new ColourButton(this, -1, wxSize(40,10), opt->GetColor());
-			cb->Bind(wxEVT_COMMAND_BUTTON_CLICKED, ColourUpdater(opt_name, parent));
+			ColourButton *cb = new ColourButton(this, wxSize(40,10), opt->GetColor());
+			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(flex, name, cb);
 			return cb;
 		}

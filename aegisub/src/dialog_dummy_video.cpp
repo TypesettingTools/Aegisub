@@ -104,7 +104,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	res_sizer->Add(spin_ctrl(this, 1, 10000, &height), wxSizerFlags(1).Expand());
 
 	wxBoxSizer *color_sizer = new wxBoxSizer(wxHORIZONTAL);
-	ColourButton *color_btn = new ColourButton(this, -1, wxSize(30, 17), color);
+	ColourButton *color_btn = new ColourButton(this, wxSize(30, 17), color);
 	color_sizer->Add(color_btn, wxSizerFlags().DoubleBorder(wxRIGHT));
 	color_sizer->Add(new wxCheckBox(this, -1, _("Checkerboard &pattern"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&pattern)), wxSizerFlags(1).Center());
 
@@ -130,10 +130,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	CenterOnParent();
 
 	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &DialogDummyVideo::OnResolutionShortcut, this);
-	color_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent& e) {
-		color = color_btn->GetColor();
-		e.Skip();
-	});
+	color_btn->Bind(EVT_COLOR, [=](wxThreadEvent& e) { color = color_btn->GetColor(); });
 	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, [=](wxCommandEvent&) {
 		TransferDataFromWindow();
 		UpdateLengthDisplay();

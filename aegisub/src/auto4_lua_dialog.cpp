@@ -246,8 +246,7 @@ namespace Automation4 {
 			wxControl *Create(wxWindow *parent)
 			{
 				agi::Color colour(from_wx(text));
-				wxControl *cw = new ColourButton(parent, -1, wxSize(50*width,10*height), colour);
-				cw->SetValidator(ColorValidator(&text));
+				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), colour, ColorValidator(&text));
 				cw->SetToolTip(hint);
 				return cw;
 			}
@@ -678,8 +677,6 @@ namespace Automation4 {
 			button_pushed = evt.GetId() - 1000;
 
 			// hack to make sure the dialog will be closed
-			// only do this for non-colour buttons
-			if (dynamic_cast<ColourButton*> (evt.GetEventObject())) return;
 			evt.SetId(wxID_OK);
 		}
 		LOG_D("automation/lua/dialog") << "button_pushed set to: " << button_pushed;
