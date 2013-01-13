@@ -41,26 +41,28 @@ struct MatchState {
 };
 
 namespace {
-template<typename AssDialogue>
-auto get_dialogue_field(AssDialogue *cur, SearchReplaceSettings::Field field) -> decltype(&cur->Text) {
+auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDialogue::Text) {
 	switch (field) {
-		case SearchReplaceSettings::Field::TEXT: return &cur->Text;
-		case SearchReplaceSettings::Field::STYLE: return &cur->Style;
-		case SearchReplaceSettings::Field::ACTOR: return &cur->Actor;
-		case SearchReplaceSettings::Field::EFFECT: return &cur->Effect;
+		case SearchReplaceSettings::Field::TEXT: return &AssDialogue::Text;
+		case SearchReplaceSettings::Field::STYLE: return &AssDialogue::Style;
+		case SearchReplaceSettings::Field::ACTOR: return &AssDialogue::Actor;
+		case SearchReplaceSettings::Field::EFFECT: return &AssDialogue::Effect;
 	}
 	throw agi::InternalError("Bad field for search", 0);
 }
 
 typedef std::function<MatchState (const AssDialogue*, size_t)> matcher;
 
-struct noop_accessor {
-	SearchReplaceSettings::Field field;
+class noop_accessor {
+	boost::flyweight<wxString> AssDialogue::*field;
 	size_t start;
+
+public:
+	noop_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)), start(0) { }
 
 	wxString get(const AssDialogue *d, size_t s) {
 		start = s;
-		return get_dialogue_field(d, field)->get().substr(s);
+		return (d->*field).get().substr(s);
 	}
 
 	MatchState make_match_state(size_t s, size_t e, wxRegEx *r = nullptr) {
@@ -68,8 +70,8 @@ struct noop_accessor {
 	}
 };
 
-struct skip_tags_accessor {
-	SearchReplaceSettings::Field field;
+class skip_tags_accessor {
+	boost::flyweight<wxString> AssDialogue::*field;
 	std::vector<std::pair<size_t, size_t>> blocks;
 	size_t start;
 
@@ -89,8 +91,11 @@ struct skip_tags_accessor {
 		}
 	}
 
+public:
+	skip_tags_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)), start(0) { }
+
 	wxString get(const AssDialogue *d, size_t s) {
-		auto const& str = get_dialogue_field(d, field)->get();
+		auto const& str = (d->*field).get();
 		parse_str(str);
 
 		wxString out;
@@ -181,13 +186,9 @@ matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Acces
 }
 
 matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex) {
-	if (!settings.skip_tags) {
-		noop_accessor a = { settings.field };
-		return get_matcher(settings, regex, a);
-	}
-
-	skip_tags_accessor a = { settings.field };
-	return get_matcher(settings, regex, a);
+	if (settings.skip_tags)
+		return get_matcher(settings, regex, skip_tags_accessor(settings.field));
+	return get_matcher(settings, regex, noop_accessor(settings.field));
 }
 
 template<typename Iterator, typename Container>
@@ -207,8 +208,8 @@ SearchReplaceEngine::SearchReplaceEngine(agi::Context *c)
 }
 
 void SearchReplaceEngine::Replace(AssDialogue *diag, MatchState &ms) {
-	auto diag_field = get_dialogue_field(diag, settings.field);
-	auto text = diag_field->get();
+	auto& diag_field = diag->*get_dialogue_field(settings.field);
+	auto text = diag_field.get();
 
 	wxString replacement = settings.replace_with;
 	if (ms.re) {
@@ -217,7 +218,7 @@ void SearchReplaceEngine::Replace(AssDialogue *diag, MatchState &ms) {
 		replacement = to_replace;
 	}
 
-	*diag_field = text.substr(0, ms.start) + replacement + text.substr(ms.end);
+	diag_field = text.substr(0, ms.start) + replacement + text.substr(ms.end);
 	ms.end = ms.start + replacement.size();
 }
 
@@ -316,13 +317,13 @@ bool SearchReplaceEngine::ReplaceAll() {
 
 		if (settings.use_regex) {
 			if (MatchState ms = matches(diag, 0)) {
-				auto diag_field = get_dialogue_field(diag, settings.field);
-				auto text = diag_field->get();
+				auto& diag_field = diag->*get_dialogue_field(settings.field);
+				auto text = diag_field.get();
 				// A zero length match (such as '$') will always be replaced
 				// maxMatches times, which is almost certainly not what the user
 				// wanted, so limit it to one replacement in that situation
 				count += ms.re->Replace(&text, settings.replace_with, ms.start == ms.end);
-				*diag_field = text;
+				diag_field = text;
 			}
 			continue;
 		}
