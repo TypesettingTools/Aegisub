@@ -28,6 +28,7 @@ class wxWindow;
 /// @brief Get a color from the user via a color picker dialog
 /// @param parent Parent window
 /// @param original Initial color to select
+/// @param alpha Include controls for alpha
 /// @param callback Function called whenever the selected color changes
 /// @return Did the user accept the new color?
-bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback);
+bool GetColorFromUser(wxWindow* parent, agi::Color original, bool alpha, std::function<void (agi::Color)> callback);

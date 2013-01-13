@@ -25,14 +25,14 @@
 
 wxDEFINE_EVENT(EVT_COLOR, wxThreadEvent);
 
-ColourButton::ColourButton(wxWindow *parent, wxSize const& size, agi::Color col, wxValidator const& validator)
+ColourButton::ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi::Color col, wxValidator const& validator)
 : wxButton(parent, -1, "", wxDefaultPosition, wxSize(size.GetWidth() + 6, size.GetHeight() + 6), 0, validator)
 , bmp(size)
 , colour(col)
 {
 	UpdateBitmap();
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) {
-		GetColorFromUser(GetParent(), colour, [=](agi::Color new_color) {
+		GetColorFromUser(GetParent(), colour, alpha, [=](agi::Color new_color) {
 			colour = new_color;
 			UpdateBitmap();
 

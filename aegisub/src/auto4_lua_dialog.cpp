@@ -246,7 +246,7 @@ namespace Automation4 {
 			wxControl *Create(wxWindow *parent)
 			{
 				agi::Color colour(from_wx(text));
-				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), colour, ColorValidator(&text));
+				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), false, colour, ColorValidator(&text));
 				cw->SetToolTip(hint);
 				return cw;
 			}

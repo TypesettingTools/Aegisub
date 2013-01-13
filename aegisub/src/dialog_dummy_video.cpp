@@ -104,7 +104,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	res_sizer->Add(spin_ctrl(this, 1, 10000, &height), wxSizerFlags(1).Expand());
 
 	wxBoxSizer *color_sizer = new wxBoxSizer(wxHORIZONTAL);
-	ColourButton *color_btn = new ColourButton(this, wxSize(30, 17), color);
+	ColourButton *color_btn = new ColourButton(this, wxSize(30, 17), false, color);
 	color_sizer->Add(color_btn, wxSizerFlags().DoubleBorder(wxRIGHT));
 	color_sizer->Add(new wxCheckBox(this, -1, _("Checkerboard &pattern"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&pattern)), wxSizerFlags(1).Center());
 

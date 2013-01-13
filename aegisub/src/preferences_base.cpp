@@ -150,7 +150,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 		}
 
 		case agi::OptionValue::Type_Color: {
-			ColourButton *cb = new ColourButton(this, wxSize(40,10), opt->GetColor());
+			ColourButton *cb = new ColourButton(this, wxSize(40,10), false, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(flex, name, cb);
 			return cb;

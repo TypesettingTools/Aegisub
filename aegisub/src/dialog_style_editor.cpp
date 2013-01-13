@@ -191,10 +191,10 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
 	BoxUnderline = new wxCheckBox(this, -1, _("&Underline"));
 	BoxStrikeout = new wxCheckBox(this, -1, _("&Strikeout"));
-	colorButton[0] = new ColourButton(this, wxSize(55, 16), style->primary);
-	colorButton[1] = new ColourButton(this, wxSize(55, 16), style->secondary);
-	colorButton[2] = new ColourButton(this, wxSize(55, 16), style->outline);
-	colorButton[3] = new ColourButton(this, wxSize(55, 16), style->shadow);
+	colorButton[0] = new ColourButton(this, wxSize(55, 16), true, style->primary);
+	colorButton[1] = new ColourButton(this, wxSize(55, 16), true, style->secondary);
+	colorButton[2] = new ColourButton(this, wxSize(55, 16), true, style->outline);
+	colorButton[3] = new ColourButton(this, wxSize(55, 16), true, style->shadow);
 	for (int i = 0; i < 3; i++)
 		margin[i] = spin_ctrl(this, style->Margin[i], 9999);
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
@@ -324,7 +324,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	ColourButton *previewButton = 0;
 	if (!SubtitlesProviderFactory::GetClasses().empty()) {
 		PreviewText = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
-		previewButton = new ColourButton(this, wxSize(45, 16), OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
+		previewButton = new ColourButton(this, wxSize(45, 16), false, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
 		SubsPreview = new SubtitlesPreview(this, wxSize(100, 60), wxSUNKEN_BORDER, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
 
 		SubsPreview->SetToolTip(_("Preview of current style"));

@@ -310,7 +310,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 
 	color = get_value(blocks, blockn, color, tag, alt);
 	int commit_id = -1;
-	bool ok = GetColorFromUser(c->parent, color, [&](agi::Color new_color) {
+	bool ok = GetColorFromUser(c->parent, color, true, [&](agi::Color new_color) {
 		set_tag(line, blocks, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
 		set_tag(line, blocks, alpha, str(boost::format("&H%02X&") % (int)new_color.a), sel_start, sel_end);
 		commit_text(c, _("set color"), sel_start, sel_end, &commit_id);

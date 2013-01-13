@@ -35,8 +35,9 @@ public:
 	/// Constructor
 	/// @param parent Parent window
 	/// @param size Size of the bitmap (note: not the size of the button)
+	/// @param alpha Let the user adjust the color's alpha
 	/// @param color Initial color to display
-	ColourButton(wxWindow *parent, wxSize const& size, agi::Color color = agi::Color(), wxValidator const& validator = wxDefaultValidator);
+	ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi::Color color = agi::Color(), wxValidator const& validator = wxDefaultValidator);
 
 	/// Get the currently selected color
 	agi::Color GetColor() { return colour; }
