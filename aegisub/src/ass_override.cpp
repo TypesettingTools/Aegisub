@@ -42,7 +42,6 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <functional>
@@ -88,15 +87,15 @@ template<> std::string AssOverrideParameter::Get<std::string>() const {
 }
 
 template<> int AssOverrideParameter::Get<int>() const {
-	return boost::lexical_cast<int>(Get<std::string>());
+	return atoi(Get<std::string>().c_str());
 }
 
 template<> double AssOverrideParameter::Get<double>() const {
-	return boost::lexical_cast<double>(Get<std::string>());
+	return atof(Get<std::string>().c_str());
 }
 
 template<> float AssOverrideParameter::Get<float>() const {
-	return boost::lexical_cast<float>(Get<std::string>());
+	return atof(Get<std::string>().c_str());
 }
 
 template<> bool AssOverrideParameter::Get<bool>() const {
