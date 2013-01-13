@@ -80,6 +80,10 @@ enum class PickerDirection {
 	Vert
 };
 
+static const int spectrum_horz_vert_arrow_size = 4;
+
+wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
+
 class ColorPickerSpectrum : public wxControl {
 	int x;
 	int y;
@@ -87,19 +91,161 @@ class ColorPickerSpectrum : public wxControl {
 	wxBitmap *background;
 	PickerDirection direction;
 
-	void OnPaint(wxPaintEvent &evt);
-	void OnMouse(wxMouseEvent &evt);
+	void OnPaint(wxPaintEvent &evt) {
+		if (!background) return;
+
+		int height = background->GetHeight();
+		int width = background->GetWidth();
+		wxPaintDC dc(this);
+
+		wxMemoryDC memdc;
+		memdc.SelectObject(*background);
+		dc.Blit(1, 1, width, height, &memdc, 0, 0);
+
+		wxPoint arrow[3];
+		wxRect arrow_box;
+
+		wxPen invpen(*wxWHITE, 3);
+		invpen.SetCap(wxCAP_BUTT);
+		dc.SetLogicalFunction(wxXOR);
+		dc.SetPen(invpen);
+
+		switch (direction) {
+			case PickerDirection::HorzVert:
+				// Make a little cross
+				dc.DrawLine(x-4, y+1, x+7, y+1);
+				dc.DrawLine(x+1, y-4, x+1, y+7);
+				break;
+			case PickerDirection::Horz:
+				// Make a vertical line stretching all the way across
+				dc.DrawLine(x+1, 1, x+1, height+1);
+				// Points for arrow
+				arrow[0] = wxPoint(x+1, height+2);
+				arrow[1] = wxPoint(x+1-spectrum_horz_vert_arrow_size, height+2+spectrum_horz_vert_arrow_size);
+				arrow[2] = wxPoint(x+1+spectrum_horz_vert_arrow_size, height+2+spectrum_horz_vert_arrow_size);
+
+				arrow_box.SetLeft(0);
+				arrow_box.SetTop(height + 2);
+				arrow_box.SetRight(width + 1 + spectrum_horz_vert_arrow_size);
+				arrow_box.SetBottom(height + 2 + spectrum_horz_vert_arrow_size);
+				break;
+			case PickerDirection::Vert:
+				// Make a horizontal line stretching all the way across
+				dc.DrawLine(1, y+1, width+1, y+1);
+				// Points for arrow
+				arrow[0] = wxPoint(width+2, y+1);
+				arrow[1] = wxPoint(width+2+spectrum_horz_vert_arrow_size, y+1-spectrum_horz_vert_arrow_size);
+				arrow[2] = wxPoint(width+2+spectrum_horz_vert_arrow_size, y+1+spectrum_horz_vert_arrow_size);
+
+				arrow_box.SetLeft(width + 2);
+				arrow_box.SetTop(0);
+				arrow_box.SetRight(width + 2 + spectrum_horz_vert_arrow_size);
+				arrow_box.SetBottom(height + 1 + spectrum_horz_vert_arrow_size);
+				break;
+		}
+
+		if (direction == PickerDirection::Horz || direction == PickerDirection::Vert) {
+			wxBrush bgBrush;
+			bgBrush.SetColour(GetBackgroundColour());
+			dc.SetLogicalFunction(wxCOPY);
+			dc.SetPen(*wxTRANSPARENT_PEN);
+			dc.SetBrush(bgBrush);
+			dc.DrawRectangle(arrow_box);
+
+			// Arrow pointing at current point
+			dc.SetBrush(*wxBLACK_BRUSH);
+			dc.DrawPolygon(3, arrow);
+		}
+
+		// Border around the spectrum
+		wxPen blkpen(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), 1);
+		blkpen.SetCap(wxCAP_BUTT);
+
+		dc.SetLogicalFunction(wxCOPY);
+		dc.SetPen(blkpen);
+		dc.SetBrush(*wxTRANSPARENT_BRUSH);
+		dc.DrawRectangle(0, 0, background->GetWidth()+2, background->GetHeight()+2);
+	}
+
+	void OnMouse(wxMouseEvent &evt) {
+		evt.Skip();
+
+		// We only care about mouse move events during a drag
+		if (evt.Moving())
+			return;
+
+		if (evt.LeftDown()) {
+			CaptureMouse();
+			SetCursor(wxCursor(wxCURSOR_BLANK));
+		}
+		else if (evt.LeftUp() && HasCapture()) {
+			ReleaseMouse();
+			SetCursor(wxNullCursor);
+		}
+
+		if (evt.LeftDown() || (HasCapture() && evt.LeftIsDown())) {
+			// Adjust for the 1px black border around the control
+			int newx = mid(0, evt.GetX() - 1, GetClientSize().x - 3);
+			int newy = mid(0, evt.GetY() - 1, GetClientSize().y - 3);
+			SetXY(newx, newy);
+			wxCommandEvent evt2(EVT_SPECTRUM_CHANGE, GetId());
+			AddPendingEvent(evt2);
+		}
+	}
 
 	bool AcceptsFocusFromKeyboard() const { return false; }
 
 public:
-	ColorPickerSpectrum(wxWindow *parent, PickerDirection direction, wxSize size);
+	ColorPickerSpectrum(wxWindow *parent, PickerDirection direction, wxSize size)
+	: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE)
+	, x(-1)
+	, y(-1)
+	, background(0)
+	, direction(direction)
+	{
+		size.x += 2;
+		size.y += 2;
+
+		if (direction == PickerDirection::Vert) size.x += spectrum_horz_vert_arrow_size + 1;
+		if (direction == PickerDirection::Horz) size.y += spectrum_horz_vert_arrow_size + 1;
+
+		SetClientSize(size);
+		SetMinSize(GetSize());
+
+		Bind(wxEVT_LEFT_DOWN, &ColorPickerSpectrum::OnMouse, this);
+		Bind(wxEVT_LEFT_UP, &ColorPickerSpectrum::OnMouse, this);
+		Bind(wxEVT_MOTION, &ColorPickerSpectrum::OnMouse, this);
+		Bind(wxEVT_PAINT, &ColorPickerSpectrum::OnPaint, this);
+	}
 
 	int GetX() const { return x; }
 	int GetY() const { return y; }
-	void SetXY(int xx, int yy);
-	void SetBackground(wxBitmap *new_background, bool force = false);
+
+	void SetXY(int xx, int yy) {
+		if (x != xx || y != yy) {
+			x = xx;
+			y = yy;
+			Refresh(false);
+		}
+	}
+
+	/// @brief Set the background image for this spectrum
+	/// @param new_background New background image
+	/// @param force Repaint even if it appears to be the same image
+	void SetBackground(wxBitmap *new_background, bool force = false) {
+		if (background == new_background && !force) return;
+		background = new_background;
+		Refresh(false);
+	}
 };
+
+#ifdef WIN32
+#define STATIC_BORDER_FLAG wxSTATIC_BORDER
+#else
+#define STATIC_BORDER_FLAG wxSIMPLE_BORDER
+#endif
+
+wxDEFINE_EVENT(EVT_RECENT_SELECT, wxThreadEvent);
 
 /// @class ColorPickerRecent
 /// @brief A grid of recently used colors which can be selected by clicking on them
@@ -117,24 +263,100 @@ class ColorPickerRecent : public wxControl {
 	/// Bitmap storing the cached background
 	wxBitmap background;
 
-	void OnClick(wxMouseEvent &evt);
-	void OnPaint(wxPaintEvent &evt);
-	void OnSize(wxSizeEvent &evt);
+	void OnClick(wxMouseEvent &evt) {
+		wxSize cs = GetClientSize();
+		int cx = evt.GetX() * cols / cs.x;
+		int cy = evt.GetY() * rows / cs.y;
+		if (cx < 0 || cx > cols || cy < 0 || cy > rows) return;
+		int i = cols*cy + cx;
+
+		if (i >= 0 && i < (int)colors.size()) {
+			wxThreadEvent evnt(EVT_RECENT_SELECT, GetId());
+			evnt.SetPayload(colors[i]);
+			AddPendingEvent(evnt);
+		}
+	}
+
+	void OnPaint(wxPaintEvent &evt) {
+		wxPaintDC pdc(this);
+		PrepareDC(pdc);
+
+		if (!background_valid) {
+			wxSize sz = pdc.GetSize();
+
+			background = wxBitmap(sz.x, sz.y);
+			wxMemoryDC dc(background);
+
+			dc.SetPen(*wxTRANSPARENT_PEN);
+
+			for (int cy = 0; cy < rows; cy++) {
+				for (int cx = 0; cx < cols; cx++) {
+					int x = cx * cellsize;
+					int y = cy * cellsize;
+
+					dc.SetBrush(wxBrush(to_wx(colors[cy * cols + cx])));
+					dc.DrawRectangle(x, y, x+cellsize, y+cellsize);
+				}
+			}
+
+			background_valid = true;
+		}
+
+		pdc.DrawBitmap(background, 0, 0, false);
+	}
+
+	void OnSize(wxSizeEvent &evt) {
+		background_valid = false;
+		Refresh();
+	}
 
 	bool AcceptsFocusFromKeyboard() const { return false; }
 
 public:
-	ColorPickerRecent(wxWindow *parent, int cols, int rows, int cellsize);
+	ColorPickerRecent(wxWindow *parent, int cols, int rows, int cellsize)
+	: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
+	, rows(rows)
+	, cols(cols)
+	, cellsize(cellsize)
+	, background_valid(false)
+	{
+		colors.resize(rows * cols);
+		SetClientSize(cols*cellsize, rows*cellsize);
+		SetMinSize(GetSize());
+		SetMaxSize(GetSize());
+		SetCursor(*wxCROSS_CURSOR);
+
+		Bind(wxEVT_PAINT, &ColorPickerRecent::OnPaint, this);
+		Bind(wxEVT_LEFT_DOWN, &ColorPickerRecent::OnClick, this);
+		Bind(wxEVT_SIZE, &ColorPickerRecent::OnSize, this);
+	}
 
 	/// Load the colors to show
-	void Load(std::vector<agi::Color> const& recent_colors);
+	void Load(std::vector<agi::Color> const& recent_colors) {
+		colors = recent_colors;
+		colors.resize(rows * cols);
+	}
 
 	/// Get the list of recent colors
-	std::vector<agi::Color> Save() const;
+	std::vector<agi::Color> Save() const { return colors; }
 
 	/// Add a color to the beginning of the recent list
-	void AddColor(agi::Color color);
+	void AddColor(agi::Color color) {
+		auto existing = find(colors.begin(), colors.end(), color);
+		if (existing != colors.end())
+			rotate(colors.begin(), existing, existing + 1);
+		else {
+			colors.insert(colors.begin(), color);
+			colors.pop_back();
+		}
+
+		background_valid = false;
+
+		Refresh(false);
+	}
 };
+
+wxDEFINE_EVENT(EVT_DROPPER_SELECT, wxThreadEvent);
 
 class ColorPickerScreenDropper : public wxControl {
 	wxBitmap capture;
@@ -142,16 +364,89 @@ class ColorPickerScreenDropper : public wxControl {
 	int resx, resy;
 	int magnification;
 
-	void OnMouse(wxMouseEvent &evt);
-	void OnPaint(wxPaintEvent &evt);
+	void OnMouse(wxMouseEvent &evt) {
+		int x = evt.GetX();
+		int y = evt.GetY();
+
+		if (x >= 0 && x < capture.GetWidth() && y >= 0 && y < capture.GetHeight()) {
+			wxNativePixelData pd(capture, wxRect(x, y, 1, 1));
+			wxNativePixelData::Iterator pdi(pd.GetPixels());
+			agi::Color color(pdi.Red(), pdi.Green(), pdi.Blue(), 0);
+
+			wxThreadEvent evnt(EVT_DROPPER_SELECT, GetId());
+			evnt.SetPayload(color);
+			AddPendingEvent(evnt);
+		}
+	}
+
+	void OnPaint(wxPaintEvent &evt) {
+		wxPaintDC(this).DrawBitmap(capture, 0, 0);
+	}
 
 	bool AcceptsFocusFromKeyboard() const { return false; }
 
 public:
-	ColorPickerScreenDropper(wxWindow *parent, int resx, int resy, int magnification);
+	ColorPickerScreenDropper(wxWindow *parent, int resx, int resy, int magnification)
+	: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
+	, capture(resx * magnification, resy * magnification, wxNativePixelFormat::BitsPerPixel)
+	, resx(resx)
+	, resy(resy)
+	, magnification(magnification)
+	{
+		SetClientSize(resx*magnification, resy*magnification);
+		SetMinSize(GetSize());
+		SetMaxSize(GetSize());
+		SetCursor(*wxCROSS_CURSOR);
+
+		wxMemoryDC capdc(capture);
+		capdc.SetPen(*wxTRANSPARENT_PEN);
+		capdc.SetBrush(*wxWHITE_BRUSH);
+		capdc.DrawRectangle(0, 0, capture.GetWidth(), capture.GetHeight());
+
+		Bind(wxEVT_PAINT, &ColorPickerScreenDropper::OnPaint, this);
+		Bind(wxEVT_LEFT_DOWN, &ColorPickerScreenDropper::OnMouse, this);
+	}
 
 	void DropFromScreenXY(int x, int y);
 };
+
+void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
+	wxMemoryDC capdc(capture);
+	capdc.SetPen(*wxTRANSPARENT_PEN);
+#ifndef __WXMAC__
+	wxScreenDC screen;
+	capdc.StretchBlit(0, 0, resx * magnification, resy * magnification,
+		&screen, x - resx / 2, y - resy / 2, resx, resy);
+#else
+	// wxScreenDC doesn't work on recent versions of OS X so do it manually
+
+	// Doesn't bother handling the case where the rect overlaps two monitors
+	CGDirectDisplayID display_id;
+	uint32_t display_count;
+	CGGetDisplaysWithPoint(CGPointMake(x, y), 1, &display_id, &display_count);
+
+	agi::scoped_holder<CGImageRef> img(CGDisplayCreateImageForRect(display_id, CGRectMake(x - resx / 2, y - resy / 2, resx, resy)), CGImageRelease);
+	NSUInteger width = CGImageGetWidth(img);
+	NSUInteger height = CGImageGetHeight(img);
+	std::vector<uint8_t> imgdata(height * width * 4);
+
+	agi::scoped_holder<CGColorSpaceRef> colorspace(CGColorSpaceCreateDeviceRGB(), CGColorSpaceRelease);
+	agi::scoped_holder<CGContextRef> bmp_context(CGBitmapContextCreate(&imgdata[0], width, height, 8, 4 * width, colorspace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big), CGContextRelease);
+
+	CGContextDrawImage(bmp_context, CGRectMake(0, 0, width, height), img);
+
+	for (int x = 0; x < resx; x++) {
+		for (int y = 0; y < resy; y++) {
+			uint8_t *pixel = &imgdata[y * width * 4 + x * 4];
+			capdc.SetBrush(wxBrush(wxColour(pixel[0], pixel[1], pixel[2])));
+			capdc.DrawRectangle(x * magnification, y * magnification, magnification, magnification);
+		}
+	}
+#endif
+
+	Refresh(false);
+}
+
 
 class DialogColorPicker : public wxDialog {
 	agi::scoped_ptr<PersistLocation> persist;
@@ -245,324 +540,6 @@ public:
 	void SetColor(agi::Color new_color);
 	void AddColorToRecent();
 };
-
-static const int spectrum_horz_vert_arrow_size = 4;
-
-ColorPickerSpectrum::ColorPickerSpectrum(wxWindow *parent, PickerDirection direction, wxSize size)
-: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE)
-, x(-1)
-, y(-1)
-, background(0)
-, direction(direction)
-{
-	size.x += 2;
-	size.y += 2;
-
-	if (direction == PickerDirection::Vert) size.x += spectrum_horz_vert_arrow_size + 1;
-	if (direction == PickerDirection::Horz) size.y += spectrum_horz_vert_arrow_size + 1;
-
-	SetClientSize(size);
-	SetMinSize(GetSize());
-
-	Bind(wxEVT_LEFT_DOWN, &ColorPickerSpectrum::OnMouse, this);
-	Bind(wxEVT_LEFT_UP, &ColorPickerSpectrum::OnMouse, this);
-	Bind(wxEVT_MOTION, &ColorPickerSpectrum::OnMouse, this);
-	Bind(wxEVT_PAINT, &ColorPickerSpectrum::OnPaint, this);
-}
-
-void ColorPickerSpectrum::SetXY(int xx, int yy) {
-	if (x != xx || y != yy) {
-		x = xx;
-		y = yy;
-		Refresh(false);
-	}
-}
-
-/// @brief Set the background image for this spectrum
-/// @param new_background New background image
-/// @param force Repaint even if it appears to be the same image
-void ColorPickerSpectrum::SetBackground(wxBitmap *new_background, bool force) {
-	if (background == new_background && !force) return;
-	background = new_background;
-	Refresh(false);
-}
-
-wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
-
-void ColorPickerSpectrum::OnPaint(wxPaintEvent &) {
-	if (!background) return;
-
-	int height = background->GetHeight();
-	int width = background->GetWidth();
-	wxPaintDC dc(this);
-
-	wxMemoryDC memdc;
-	memdc.SelectObject(*background);
-	dc.Blit(1, 1, width, height, &memdc, 0, 0);
-
-	wxPoint arrow[3];
-	wxRect arrow_box;
-
-	wxPen invpen(*wxWHITE, 3);
-	invpen.SetCap(wxCAP_BUTT);
-	dc.SetLogicalFunction(wxXOR);
-	dc.SetPen(invpen);
-
-	switch (direction) {
-		case PickerDirection::HorzVert:
-			// Make a little cross
-			dc.DrawLine(x-4, y+1, x+7, y+1);
-			dc.DrawLine(x+1, y-4, x+1, y+7);
-			break;
-		case PickerDirection::Horz:
-			// Make a vertical line stretching all the way across
-			dc.DrawLine(x+1, 1, x+1, height+1);
-			// Points for arrow
-			arrow[0] = wxPoint(x+1, height+2);
-			arrow[1] = wxPoint(x+1-spectrum_horz_vert_arrow_size, height+2+spectrum_horz_vert_arrow_size);
-			arrow[2] = wxPoint(x+1+spectrum_horz_vert_arrow_size, height+2+spectrum_horz_vert_arrow_size);
-
-			arrow_box.SetLeft(0);
-			arrow_box.SetTop(height + 2);
-			arrow_box.SetRight(width + 1 + spectrum_horz_vert_arrow_size);
-			arrow_box.SetBottom(height + 2 + spectrum_horz_vert_arrow_size);
-			break;
-		case PickerDirection::Vert:
-			// Make a horizontal line stretching all the way across
-			dc.DrawLine(1, y+1, width+1, y+1);
-			// Points for arrow
-			arrow[0] = wxPoint(width+2, y+1);
-			arrow[1] = wxPoint(width+2+spectrum_horz_vert_arrow_size, y+1-spectrum_horz_vert_arrow_size);
-			arrow[2] = wxPoint(width+2+spectrum_horz_vert_arrow_size, y+1+spectrum_horz_vert_arrow_size);
-
-			arrow_box.SetLeft(width + 2);
-			arrow_box.SetTop(0);
-			arrow_box.SetRight(width + 2 + spectrum_horz_vert_arrow_size);
-			arrow_box.SetBottom(height + 1 + spectrum_horz_vert_arrow_size);
-			break;
-	}
-
-	if (direction == PickerDirection::Horz || direction == PickerDirection::Vert) {
-		wxBrush bgBrush;
-		bgBrush.SetColour(GetBackgroundColour());
-		dc.SetLogicalFunction(wxCOPY);
-		dc.SetPen(*wxTRANSPARENT_PEN);
-		dc.SetBrush(bgBrush);
-		dc.DrawRectangle(arrow_box);
-
-		// Arrow pointing at current point
-		dc.SetBrush(*wxBLACK_BRUSH);
-		dc.DrawPolygon(3, arrow);
-	}
-
-	// Border around the spectrum
-	wxPen blkpen(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), 1);
-	blkpen.SetCap(wxCAP_BUTT);
-
-	dc.SetLogicalFunction(wxCOPY);
-	dc.SetPen(blkpen);
-	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	dc.DrawRectangle(0, 0, background->GetWidth()+2, background->GetHeight()+2);
-}
-
-void ColorPickerSpectrum::OnMouse(wxMouseEvent &evt) {
-	evt.Skip();
-
-	// We only care about mouse move events during a drag
-	if (evt.Moving())
-		return;
-
-	if (evt.LeftDown()) {
-		CaptureMouse();
-		SetCursor(wxCursor(wxCURSOR_BLANK));
-	}
-	else if (evt.LeftUp() && HasCapture()) {
-		ReleaseMouse();
-		SetCursor(wxNullCursor);
-	}
-
-	if (evt.LeftDown() || (HasCapture() && evt.LeftIsDown())) {
-		// Adjust for the 1px black border around the control
-		int newx = mid(0, evt.GetX() - 1, GetClientSize().x - 3);
-		int newy = mid(0, evt.GetY() - 1, GetClientSize().y - 3);
-		SetXY(newx, newy);
-		wxCommandEvent evt2(EVT_SPECTRUM_CHANGE, GetId());
-		AddPendingEvent(evt2);
-	}
-}
-
-#ifdef WIN32
-#define STATIC_BORDER_FLAG wxSTATIC_BORDER
-#else
-#define STATIC_BORDER_FLAG wxSIMPLE_BORDER
-#endif
-
-ColorPickerRecent::ColorPickerRecent(wxWindow *parent, int cols, int rows, int cellsize)
-: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
-, rows(rows)
-, cols(cols)
-, cellsize(cellsize)
-, background_valid(false) {
-	colors.resize(rows * cols);
-	SetClientSize(cols*cellsize, rows*cellsize);
-	SetMinSize(GetSize());
-	SetMaxSize(GetSize());
-	SetCursor(*wxCROSS_CURSOR);
-
-	Bind(wxEVT_PAINT, &ColorPickerRecent::OnPaint, this);
-	Bind(wxEVT_LEFT_DOWN, &ColorPickerRecent::OnClick, this);
-	Bind(wxEVT_SIZE, &ColorPickerRecent::OnSize, this);
-}
-
-void ColorPickerRecent::Load(std::vector<agi::Color> const& recent_colors) {
-	colors = recent_colors;
-	colors.resize(rows * cols);
-}
-
-std::vector<agi::Color> ColorPickerRecent::Save() const {
-	return colors;
-}
-
-void ColorPickerRecent::AddColor(agi::Color color) {
-	auto existing = find(colors.begin(), colors.end(), color);
-	if (existing != colors.end())
-		rotate(colors.begin(), existing, existing + 1);
-	else {
-		colors.insert(colors.begin(), color);
-		colors.pop_back();
-	}
-
-	background_valid = false;
-
-	Refresh(false);
-}
-
-wxDEFINE_EVENT(EVT_RECENT_SELECT, wxThreadEvent);
-
-void ColorPickerRecent::OnClick(wxMouseEvent &evt) {
-	wxSize cs = GetClientSize();
-	int cx = evt.GetX() * cols / cs.x;
-	int cy = evt.GetY() * rows / cs.y;
-	if (cx < 0 || cx > cols || cy < 0 || cy > rows) return;
-	int i = cols*cy + cx;
-
-	if (i >= 0 && i < (int)colors.size()) {
-		wxThreadEvent evnt(EVT_RECENT_SELECT, GetId());
-		evnt.SetPayload(colors[i]);
-		AddPendingEvent(evnt);
-	}
-}
-
-void ColorPickerRecent::OnPaint(wxPaintEvent &) {
-	wxPaintDC pdc(this);
-	PrepareDC(pdc);
-
-	if (!background_valid) {
-		wxSize sz = pdc.GetSize();
-
-		background = wxBitmap(sz.x, sz.y);
-		wxMemoryDC dc(background);
-
-		dc.SetPen(*wxTRANSPARENT_PEN);
-
-		for (int cy = 0; cy < rows; cy++) {
-			for (int cx = 0; cx < cols; cx++) {
-				int x = cx * cellsize;
-				int y = cy * cellsize;
-
-				dc.SetBrush(wxBrush(to_wx(colors[cy * cols + cx])));
-				dc.DrawRectangle(x, y, x+cellsize, y+cellsize);
-			}
-		}
-
-		background_valid = true;
-	}
-
-	pdc.DrawBitmap(background, 0, 0, false);
-}
-
-void ColorPickerRecent::OnSize(wxSizeEvent &) {
-	background_valid = false;
-	Refresh();
-}
-
-ColorPickerScreenDropper::ColorPickerScreenDropper(wxWindow *parent, int resx, int resy, int magnification)
-: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, STATIC_BORDER_FLAG)
-, capture(resx * magnification, resy * magnification, wxNativePixelFormat::BitsPerPixel)
-, resx(resx)
-, resy(resy)
-, magnification(magnification) {
-	SetClientSize(resx*magnification, resy*magnification);
-	SetMinSize(GetSize());
-	SetMaxSize(GetSize());
-	SetCursor(*wxCROSS_CURSOR);
-
-	wxMemoryDC capdc(capture);
-	capdc.SetPen(*wxTRANSPARENT_PEN);
-	capdc.SetBrush(*wxWHITE_BRUSH);
-	capdc.DrawRectangle(0, 0, capture.GetWidth(), capture.GetHeight());
-
-	Bind(wxEVT_PAINT, &ColorPickerScreenDropper::OnPaint, this);
-	Bind(wxEVT_LEFT_DOWN, &ColorPickerScreenDropper::OnMouse, this);
-}
-
-wxDEFINE_EVENT(EVT_DROPPER_SELECT, wxThreadEvent);
-
-void ColorPickerScreenDropper::OnMouse(wxMouseEvent &evt) {
-	int x = evt.GetX();
-	int y = evt.GetY();
-
-	if (x >= 0 && x < capture.GetWidth() && y >= 0 && y < capture.GetHeight()) {
-		wxNativePixelData pd(capture, wxRect(x, y, 1, 1));
-		wxNativePixelData::Iterator pdi(pd.GetPixels());
-		agi::Color color(pdi.Red(), pdi.Green(), pdi.Blue(), 0);
-
-		wxThreadEvent evnt(EVT_DROPPER_SELECT, GetId());
-		evnt.SetPayload(color);
-		AddPendingEvent(evnt);
-	}
-}
-
-void ColorPickerScreenDropper::OnPaint(wxPaintEvent &) {
-	wxPaintDC(this).DrawBitmap(capture, 0, 0);
-}
-
-void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
-	wxMemoryDC capdc(capture);
-	capdc.SetPen(*wxTRANSPARENT_PEN);
-#ifndef __WXMAC__
-	wxScreenDC screen;
-	capdc.StretchBlit(0, 0, resx * magnification, resy * magnification,
-		&screen, x - resx / 2, y - resy / 2, resx, resy);
-#else
-	// wxScreenDC doesn't work on recent versions of OS X so do it manually
-
-	// Doesn't bother handling the case where the rect overlaps two monitors
-	CGDirectDisplayID display_id;
-	uint32_t display_count;
-	CGGetDisplaysWithPoint(CGPointMake(x, y), 1, &display_id, &display_count);
-
-	agi::scoped_holder<CGImageRef> img(CGDisplayCreateImageForRect(display_id, CGRectMake(x - resx / 2, y - resy / 2, resx, resy)), CGImageRelease);
-	NSUInteger width = CGImageGetWidth(img);
-	NSUInteger height = CGImageGetHeight(img);
-	std::vector<uint8_t> imgdata(height * width * 4);
-
-	agi::scoped_holder<CGColorSpaceRef> colorspace(CGColorSpaceCreateDeviceRGB(), CGColorSpaceRelease);
-	agi::scoped_holder<CGContextRef> bmp_context(CGBitmapContextCreate(&imgdata[0], width, height, 8, 4 * width, colorspace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big), CGContextRelease);
-
-	CGContextDrawImage(bmp_context, CGRectMake(0, 0, width, height), img);
-
-	for (int x = 0; x < resx; x++) {
-		for (int y = 0; y < resy; y++) {
-			uint8_t *pixel = &imgdata[y * width * 4 + x * 4];
-			capdc.SetBrush(wxBrush(wxColour(pixel[0], pixel[1], pixel[2])));
-			capdc.DrawRectangle(x * magnification, y * magnification, magnification, magnification);
-		}
-	}
-#endif
-
-	Refresh(false);
-}
 
 static const int slider_width = 10; ///< width in pixels of the color slider control
 static const int alpha_box_size = 5;
