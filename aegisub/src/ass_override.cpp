@@ -80,8 +80,8 @@ template<> std::string AssOverrideParameter::Get<std::string>() const {
 	if (omitted) throw agi::InternalError("AssOverrideParameter::Get() called on omitted parameter", 0);
 	if (block.get()) {
 		std::string str(block->GetText());
-		if (boost::starts_with(str, "{")) str.erase(0);
-		if (boost::ends_with(str, "}")) str.erase(str.size() - 1);
+		if (boost::starts_with(str, "{")) str.erase(begin(str));
+		if (boost::ends_with(str, "}")) str.erase(end(str) - 1);
 		return str;
 	}
 	return value;
