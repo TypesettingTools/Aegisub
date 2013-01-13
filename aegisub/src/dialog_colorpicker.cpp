@@ -72,6 +72,8 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
+namespace {
+
 class ColorPickerSpectrum : public wxControl {
 public:
 	enum PickerDirection {
@@ -561,16 +563,6 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 #endif
 
 	Refresh(false);
-}
-
-bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback) {
-	DialogColorPicker dialog(parent, original, callback);
-	bool ok = dialog.ShowModal() == wxID_OK;
-	if (!ok)
-		callback(original);
-	else
-		dialog.AddColorToRecent();
-	return ok;
 }
 
 static const int slider_width = 10; ///< width in pixels of the color slider control
@@ -1154,4 +1146,16 @@ void DialogColorPicker::OnCaptureLost(wxMouseCaptureLostEvent&) {
 	eyedropper_is_grabbed = false;
 	screen_dropper_icon->SetCursor(wxNullCursor);
 	screen_dropper_icon->SetBitmap(eyedropper_bitmap);
+}
+
+}
+
+bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback) {
+	DialogColorPicker dialog(parent, original, callback);
+	bool ok = dialog.ShowModal() == wxID_OK;
+	if (!ok)
+		callback(original);
+	else
+		dialog.AddColorToRecent();
+	return ok;
 }
