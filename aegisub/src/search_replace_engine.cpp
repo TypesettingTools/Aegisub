@@ -31,16 +31,9 @@
 
 static const size_t bad_pos = -1;
 
-struct MatchState {
-	wxRegEx *re;
-	size_t start, end;
-
-	MatchState() : re(nullptr), start(0), end(-1) { }
-	MatchState(size_t s, size_t e, wxRegEx *re) : re(re), start(s), end(e) { }
-	operator bool() { return end != bad_pos; }
-};
-
 namespace {
+DEFINE_SIMPLE_EXCEPTION(BadRegex, agi::InvalidInputException, "bad_regex")
+
 auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDialogue::Text) {
 	switch (field) {
 		case SearchReplaceSettings::Field::TEXT: return &AssDialogue::Text;
@@ -147,7 +140,7 @@ public:
 };
 
 template<typename Accessor>
-matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Accessor a) {
+matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Accessor&& a) {
 	if (settings.use_regex) {
 		int flags = wxRE_ADVANCED;
 		if (!settings.match_case)
@@ -155,7 +148,7 @@ matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Acces
 
 		regex->Compile(settings.find, flags);
 		if (!regex->IsValid())
-			return [](const AssDialogue*, size_t) { return MatchState(); };
+			throw BadRegex("Invalid syntax in regular expression", nullptr);
 
 		return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
 			if (!regex->Matches(a.get(diag, start)))
@@ -167,6 +160,7 @@ matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Acces
 		};
 	}
 
+	bool full_match_only = settings.exact_match;
 	bool match_case = settings.match_case;
 	wxString look_for = settings.find;
 	if (!settings.match_case)
@@ -174,6 +168,9 @@ matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Acces
 
 	return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
 		auto str = a.get(diag, start);
+		if (full_match_only && str.size() != look_for.size())
+			return MatchState();
+
 		if (!match_case)
 			str.MakeLower();
 
@@ -185,12 +182,6 @@ matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex, Acces
 	};
 }
 
-matcher get_matcher(SearchReplaceSettings const& settings, wxRegEx *regex) {
-	if (settings.skip_tags)
-		return get_matcher(settings, regex, skip_tags_accessor(settings.field));
-	return get_matcher(settings, regex, noop_accessor(settings.field));
-}
-
 template<typename Iterator, typename Container>
 Iterator circular_next(Iterator it, Container& c) {
 	++it;
@@ -199,6 +190,12 @@ Iterator circular_next(Iterator it, Container& c) {
 	return it;
 }
 
+}
+
+std::function<MatchState (const AssDialogue*, size_t)> SearchReplaceEngine::GetMatcher(SearchReplaceSettings const& settings, wxRegEx *regex) {
+	if (settings.skip_tags)
+		return get_matcher(settings, regex, skip_tags_accessor(settings.field));
+	return get_matcher(settings, regex, noop_accessor(settings.field));
 }
 
 SearchReplaceEngine::SearchReplaceEngine(agi::Context *c)
@@ -227,7 +224,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 		return false;
 
 	wxRegEx r;
-	auto matches = get_matcher(settings, &r);
+	auto matches = GetMatcher(settings, &r);
 
 	AssDialogue *line = context->selectionController->GetActiveLine();
 	auto it = context->ass->Line.iterator_to(*line);
@@ -306,7 +303,7 @@ bool SearchReplaceEngine::ReplaceAll() {
 	size_t count = 0;
 
 	wxRegEx r;
-	auto matches = get_matcher(settings, &r);
+	auto matches = GetMatcher(settings, &r);
 
 	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;

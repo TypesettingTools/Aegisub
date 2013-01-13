@@ -58,6 +58,7 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 	settings->use_regex = OPT_GET("Tool/Search Replace/RegExp")->GetBool();
 	settings->ignore_comments = OPT_GET("Tool/Search Replace/Skip Comments")->GetBool();
 	settings->skip_tags = OPT_GET("Tool/Search Replace/Skip Tags")->GetBool();
+	settings->exact_match = false;
 
 	auto find_sizer = new wxFlexGridSizer(2, 2, 5, 15);
 	find_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), recent_find, wxCB_DROPDOWN, wxGenericValidator(&settings->find));

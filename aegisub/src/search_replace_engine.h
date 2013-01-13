@@ -14,11 +14,21 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <functional>
 #include <wx/string.h>
 
 namespace agi { struct Context; }
 class AssDialogue;
-struct MatchState;
+class wxRegEx;
+
+struct MatchState {
+	wxRegEx *re;
+	size_t start, end;
+
+	MatchState() : re(nullptr), start(0), end(-1) { }
+	MatchState(size_t s, size_t e, wxRegEx *re) : re(re), start(s), end(e) { }
+	operator bool() const { return end != (size_t)-1; }
+};
 
 struct SearchReplaceSettings {
 	enum class Field {
@@ -43,6 +53,7 @@ struct SearchReplaceSettings {
 	bool use_regex;
 	bool ignore_comments;
 	bool skip_tags;
+	bool exact_match;
 };
 
 class SearchReplaceEngine {
@@ -59,6 +70,8 @@ public:
 	bool ReplaceAll();
 
 	void Configure(SearchReplaceSettings const& new_settings);
+
+	static std::function<MatchState (const AssDialogue*, size_t)> GetMatcher(SearchReplaceSettings const& settings, wxRegEx *regex);
 
 	SearchReplaceEngine(agi::Context *c);
 };

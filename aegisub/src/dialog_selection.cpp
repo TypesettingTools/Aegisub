@@ -32,6 +32,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
+#include "search_replace_engine.h"
 #include "selection_controller.h"
 
 #include <libaegisub/of_type_adaptor.h>
@@ -54,71 +55,34 @@ enum {
 };
 
 enum {
-	FIELD_TEXT = 0,
-	FIELD_STYLE,
-	FIELD_ACTOR,
-	FIELD_EFFECT
-};
-
-enum {
 	MODE_EXACT = 0,
 	MODE_CONTAINS,
 	MODE_REGEXP
 };
 
-DEFINE_SIMPLE_EXCEPTION(BadRegex, agi::InvalidInputException, "bad_regex")
-
-static boost::flyweight<wxString> AssDialogue::* get_field(int field_n) {
-	switch(field_n) {
-		case FIELD_TEXT:   return &AssDialogue::Text; break;
-		case FIELD_STYLE:  return &AssDialogue::Style; break;
-		case FIELD_ACTOR:  return &AssDialogue::Actor; break;
-		case FIELD_EFFECT: return &AssDialogue::Effect; break;
-		default: throw agi::InternalError("Bad field", 0);
-	}
-}
-
-std::function<bool (wxString)> get_predicate(int mode, wxRegEx *re, bool match_case, wxString const& match_text) {
-	using std::placeholders::_1;
-
-	switch (mode) {
-		case MODE_REGEXP:
-			return [=](wxString str) { return re->Matches(str); };
-		case MODE_EXACT:
-			if (match_case)
-				return std::bind(std::equal_to<wxString>(), match_text, _1);
-			else
-				return bind(std::equal_to<wxString>(), match_text.Lower(), std::bind(&wxString::Lower, _1));
-		case MODE_CONTAINS:
-			if (match_case)
-				return std::bind(&wxString::Contains, _1, match_text);
-			else
-				return bind(&wxString::Contains, std::bind(&wxString::Lower, _1), match_text.Lower());
-			break;
-		default: throw agi::InternalError("Bad mode", 0);
-	}
-}
-
-static std::set<AssDialogue*> process(wxString match_text, bool match_case, int mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
+static std::set<AssDialogue*> process(wxString const& match_text, bool match_case, int mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
 	wxRegEx re;
-	if (mode == MODE_REGEXP) {
-		int flags = wxRE_ADVANCED;
-		if (!match_case)
-			flags |= wxRE_ICASE;
-		if (!re.Compile(match_text, flags))
-			throw BadRegex("Syntax error in regular expression", 0);
-		match_case = false;
-	}
 
-	boost::flyweight<wxString> AssDialogue::*field = get_field(field_n);
-	std::function<bool (wxString)> pred = get_predicate(mode, &re, match_case, match_text);
+	SearchReplaceSettings settings = {
+		match_text,
+		wxString(),
+		static_cast<SearchReplaceSettings::Field>(field_n),
+		SearchReplaceSettings::Limit::ALL,
+		match_case,
+		mode == MODE_REGEXP,
+		false,
+		false,
+		mode == MODE_EXACT
+	};
+
+	auto predicate = SearchReplaceEngine::GetMatcher(settings, &re);
 
 	std::set<AssDialogue*> matches;
 	for (auto diag : ass->Line | agi::of_type<AssDialogue>()) {
 		if (diag->Comment && !comments) continue;
 		if (!diag->Comment && !dialogue) continue;
 
-		if (pred(diag->*field) != invert)
+		if (invert != predicate(diag, 0))
 			matches.insert(diag);
 	}
 
