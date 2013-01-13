@@ -32,7 +32,15 @@ ColourButton::ColourButton(wxWindow *parent, wxSize const& size, agi::Color col,
 {
 	UpdateBitmap();
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) {
-		GetColorFromUser<ColourButton, &ColourButton::SetColour>(GetParent(), colour, this);
+		GetColorFromUser(GetParent(), colour, [=](agi::Color new_color) {
+			colour = new_color;
+			UpdateBitmap();
+
+			wxThreadEvent evt(EVT_COLOR, GetId());
+			evt.SetEventObject(this);
+			evt.SetPayload(colour);
+			AddPendingEvent(evt);
+		});
 	});
 }
 
@@ -42,14 +50,4 @@ void ColourButton::UpdateBitmap() {
 	dc.SetBrush(wxBrush(to_wx(colour)));
 	dc.DrawRectangle(0, 0, bmp.GetWidth(), bmp.GetHeight());
 	SetBitmapLabel(bmp);
-}
-
-void ColourButton::SetColour(agi::Color new_color) {
-	colour = new_color;
-	UpdateBitmap();
-
-	wxThreadEvent evt(EVT_COLOR, GetId());
-	evt.SetEventObject(this);
-	evt.SetPayload(colour);
-	AddPendingEvent(evt);
 }

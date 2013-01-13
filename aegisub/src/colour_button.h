@@ -30,8 +30,6 @@ class ColourButton: public wxButton {
 
 	/// Update the bitmap label after the color is changed
 	void UpdateBitmap();
-	/// Callback for the colorpicker dialog
-	void SetColour(agi::Color colour);
 
 public:
 	/// Constructor

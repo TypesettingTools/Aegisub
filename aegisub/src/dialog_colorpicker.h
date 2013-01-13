@@ -31,15 +31,3 @@ class wxWindow;
 /// @param callback Function called whenever the selected color changes
 /// @return Did the user accept the new color?
 bool GetColorFromUser(wxWindow* parent, agi::Color original, std::function<void (agi::Color)> callback);
-
-/// @brief Get a color from the user via a color picker dialog
-/// @param T Class which the callback method belongs to
-/// @param method Callback method
-/// @param parent Parent window
-/// @param original Initial color to select
-/// @param callbackObj Object to call callback method on. Must be of type T.
-/// @return Did the user accept the new color?
-template<class T, void (T::*method)(agi::Color)>
-bool GetColorFromUser(wxWindow* parent, agi::Color original, T* callbackObj) {
-	return GetColorFromUser(parent, original, std::bind(method, callbackObj, std::placeholders::_1));
-}
