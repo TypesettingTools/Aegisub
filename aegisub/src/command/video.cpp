@@ -58,7 +58,6 @@
 #include "../options.h"
 #include "../selection_controller.h"
 #include "../standard_paths.h"
-#include "../subs_grid.h"
 #include "../utils.h"
 #include "../video_box.h"
 #include "../video_context.h"

@@ -21,7 +21,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "include/aegisub/context.h"
-#include "subs_grid.h"
+#include "selection_controller.h"
 #include "text_selection_controller.h"
 
 #include <libaegisub/of_type_adaptor.h>

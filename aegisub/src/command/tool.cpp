@@ -54,7 +54,6 @@
 #include "../dialog_translation.h"
 #include "../include/aegisub/context.h"
 #include "../standard_paths.h"
-#include "../subs_grid.h"
 #include "../video_context.h"
 
 namespace {

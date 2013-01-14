@@ -59,7 +59,7 @@
 #include "../main.h"
 #include "../options.h"
 #include "../search_replace_engine.h"
-#include "../subs_grid.h"
+#include "../selection_controller.h"
 #include "../subtitle_format.h"
 #include "../utils.h"
 #include "../video_context.h"

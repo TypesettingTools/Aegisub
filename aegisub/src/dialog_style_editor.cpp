@@ -56,7 +56,6 @@
 #include "options.h"
 #include "persist_location.h"
 #include "selection_controller.h"
-#include "subs_grid.h"
 #include "subs_preview.h"
 #include "utils.h"
 #include "validators.h"
