@@ -130,6 +130,12 @@ class VideoContext : public wxEvtHandler {
 	/// Cached option for audio playing when frame stepping
 	const agi::OptionValue* playAudioOnStep;
 
+	/// Amending the frame source's copy of the subtitle file requires that it
+	/// be kept in perfect sync. Saving the file can add lines to the file
+	/// without a commit, breaking this sync, so force a non-amend after each
+	/// save.
+	bool no_amend;
+
 	void OnPlayTimer(wxTimerEvent &event);
 
 	/// The timecodes from the video file

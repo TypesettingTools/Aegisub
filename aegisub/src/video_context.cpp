@@ -63,8 +63,6 @@
 #include "video_context.h"
 #include "video_frame.h"
 
-/// @brief Constructor
-///
 VideoContext::VideoContext()
 : playback(this)
 , startMS(0)
@@ -74,6 +72,7 @@ VideoContext::VideoContext()
 , arType(0)
 , hasSubtitles(false)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
+, no_amend(false)
 {
 	Bind(EVT_VIDEO_ERROR, &VideoContext::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
@@ -236,15 +235,19 @@ void VideoContext::Reload() {
 void VideoContext::OnSubtitlesCommit(int type, std::set<const AssEntry *> const& changed) {
 	if (!IsLoaded()) return;
 
-	if (changed.empty())
+	if (changed.empty() || no_amend)
 		provider->LoadSubtitles(context->ass);
 	else
 		provider->UpdateSubtitles(context->ass, changed);
 	if (!IsPlaying())
 		GetFrameAsync(frame_n);
+
+	no_amend = false;
 }
 
 void VideoContext::OnSubtitlesSave() {
+	no_amend = true;
+
 	context->ass->SetScriptInfo("VFR File", MakeRelativePath(GetTimecodesName(), context->ass->filename));
 	context->ass->SetScriptInfo("Keyframes File", MakeRelativePath(GetKeyFramesName(), context->ass->filename));
 
