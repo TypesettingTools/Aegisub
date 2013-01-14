@@ -89,23 +89,18 @@ struct validate_sel_multiple : public Command {
 	}
 };
 
-void paste_lines(agi::Context *c, bool paste_over) {
+template<typename Paster>
+void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 	wxString data = GetClipboard();
 	if (!data) return;
 
-	AssDialogue *rel_line = c->selectionController->GetActiveLine();
-	entryIter pos = c->ass->Line.iterator_to(*rel_line);
-
-	AssDialogue *first = 0;
+	AssDialogue *first = nullptr;
 	SubtitleSelection newsel;
 
-	std::vector<bool> pasteOverOptions;
-	wxStringTokenizer token (data,"\r\n",wxTOKEN_STRTOK);
+	wxStringTokenizer token(data, "\r\n", wxTOKEN_STRTOK);
 	while (token.HasMoreTokens()) {
 		// Convert data into an AssDialogue
-		wxString curdata = token.GetNextToken();
-		curdata.Trim(true);
-		curdata.Trim(false);
+		wxString curdata = token.GetNextToken().Trim(true).Trim(false);
 		AssDialogue *curdiag;
 		try {
 			// Try to interpret the line as an ASS line
@@ -114,51 +109,17 @@ void paste_lines(agi::Context *c, bool paste_over) {
 		catch (...) {
 			// Line didn't parse correctly, assume it's plain text that
 			// should be pasted in the Text field only
-			curdiag = new AssDialogue();
+			curdiag = new AssDialogue;
 			curdiag->Text = curdata;
-			// Make sure pasted plain-text lines always are blank-timed
-			curdiag->Start = 0;
-			curdiag->End = 0;
 		}
 
+		AssDialogue *inserted = paste_line(curdiag);
+		if (!inserted)
+			break;
+
+		newsel.insert(inserted);
 		if (!first)
-			first = curdiag;
-
-		if (!paste_over) {
-			newsel.insert(curdiag);
-			c->ass->Line.insert(pos, *curdiag);
-		}
-		else {
-			// Get list of options to paste over, if not asked yet
-			if (pasteOverOptions.empty()) {
-				DialogPasteOver diag(c->parent);
-				if (diag.ShowModal()) {
-					delete curdiag;
-					return;
-				}
-				pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
-			}
-
-			AssDialogue *line = static_cast<AssDialogue *>(&*pos);
-			if (pasteOverOptions[0]) line->Layer = curdiag->Layer;
-			if (pasteOverOptions[1]) line->Start = curdiag->Start;
-			if (pasteOverOptions[2]) line->End = curdiag->End;
-			if (pasteOverOptions[3]) line->Style = curdiag->Style;
-			if (pasteOverOptions[4]) line->Actor = curdiag->Actor;
-			if (pasteOverOptions[5]) line->Margin[0] = curdiag->Margin[0];
-			if (pasteOverOptions[6]) line->Margin[1] = curdiag->Margin[1];
-			if (pasteOverOptions[7]) line->Margin[2] = curdiag->Margin[2];
-			if (pasteOverOptions[8]) line->Effect = curdiag->Effect;
-			if (pasteOverOptions[9]) line->Text = curdiag->Text;
-
-			delete curdiag;
-
-			do {
-				++pos;
-			} while (pos != c->ass->Line.end() && !dynamic_cast<AssDialogue*>(&*pos));
-			if (pos == c->ass->Line.end())
-				break;
-		}
+			first = inserted;
 	}
 
 	if (first) {
@@ -167,6 +128,26 @@ void paste_lines(agi::Context *c, bool paste_over) {
 		if (!paste_over)
 			c->selectionController->SetSelectionAndActive(newsel, first);
 	}
+}
+
+AssDialogue *paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, AssDialogue *new_line, AssDialogue *old_line) {
+	if (pasteOverOptions.empty()) {
+		if (DialogPasteOver(parent).ShowModal()) return nullptr;
+		pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
+	}
+
+	if (pasteOverOptions[0]) old_line->Layer     = new_line->Layer;
+	if (pasteOverOptions[1]) old_line->Start     = new_line->Start;
+	if (pasteOverOptions[2]) old_line->End       = new_line->End;
+	if (pasteOverOptions[3]) old_line->Style     = new_line->Style;
+	if (pasteOverOptions[4]) old_line->Actor     = new_line->Actor;
+	if (pasteOverOptions[5]) old_line->Margin[0] = new_line->Margin[0];
+	if (pasteOverOptions[6]) old_line->Margin[1] = new_line->Margin[1];
+	if (pasteOverOptions[7]) old_line->Margin[2] = new_line->Margin[2];
+	if (pasteOverOptions[8]) old_line->Effect    = new_line->Effect;
+	if (pasteOverOptions[9]) old_line->Text      = new_line->Text;
+
+	return old_line;
 }
 
 template<class T>
@@ -728,7 +709,6 @@ struct edit_line_join_keep_first : public validate_sel_multiple {
 	}
 };
 
-
 /// Paste subtitles.
 struct edit_line_paste : public Command {
 	CMD_NAME("edit/line/paste")
@@ -749,11 +729,15 @@ struct edit_line_paste : public Command {
 	void operator()(agi::Context *c) {
 		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
 			ctrl->Paste();
-		else
-			paste_lines(c, false);
+		else {
+			auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
+			paste_lines(c, false, [=](AssDialogue *new_line) -> AssDialogue * {
+				c->ass->Line.insert(pos, *new_line);
+				return new_line;
+			});
+		}
 	}
 };
-
 
 /// Paste subtitles over others.
 struct edit_line_paste_over : public Command {
@@ -773,10 +757,46 @@ struct edit_line_paste_over : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		paste_lines(c, true);
+		auto const& sel = c->selectionController->GetSelectedSet();
+		std::vector<bool> pasteOverOptions;
+
+		// Only one line selected, so paste over downwards from the active line
+		if (sel.size() < 2) {
+			auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
+
+			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
+				std::unique_ptr<AssDialogue> deleter(new_line);
+				if (pos == c->ass->Line.end()) return nullptr;
+
+				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, static_cast<AssDialogue*>(&*pos));
+				if (ret)
+					pos = find_if(next(pos), c->ass->Line.end(), cast<AssDialogue*>());
+				return ret;
+			});
+		}
+		else {
+			// Multiple lines selected, so paste over the selection
+
+			// Sort the selection by grid order
+			std::vector<AssDialogue*> sorted_selection;
+			sorted_selection.reserve(sel.size());
+			for (auto& line : c->ass->Line) {
+				if (sel.count(static_cast<AssDialogue*>(&line)))
+					sorted_selection.push_back(static_cast<AssDialogue*>(&line));
+			}
+
+			auto pos = begin(sorted_selection);
+			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
+				std::unique_ptr<AssDialogue> deleter(new_line);
+				if (pos == end(sorted_selection)) return nullptr;
+
+				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, *pos);
+				if (ret) ++pos;
+				return ret;
+			});
+		}
 	}
 };
-
 
 /// Recombine subtitles when they have been split and merged.
 struct edit_line_recombine : public validate_sel_multiple {
