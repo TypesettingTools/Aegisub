@@ -38,7 +38,7 @@
 
 class AssDialogueBlockOverride;
 
-/// Type of parameter; probably only used by the resample tool
+/// Type of parameter
 enum AssParameterClass {
 	PARCLASS_NORMAL,
 	PARCLASS_ABSOLUTE_SIZE,
@@ -49,7 +49,8 @@ enum AssParameterClass {
 	PARCLASS_RELATIVE_TIME_START,
 	PARCLASS_RELATIVE_TIME_END,
 	PARCLASS_KARAOKE,
-	PARCLASS_DRAWING
+	PARCLASS_DRAWING,
+	PARCLASS_ALPHA
 };
 
 enum VariableDataType {

@@ -37,11 +37,14 @@
 
 #include "ass_dialogue.h"
 
+#include "utils.h"
+
 #include <libaegisub/color.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/format.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <functional>
@@ -87,6 +90,9 @@ template<> std::string AssOverrideParameter::Get<std::string>() const {
 }
 
 template<> int AssOverrideParameter::Get<int>() const {
+	if (classification == PARCLASS_ALPHA)
+		// &Hxx&, but vsfilter lets you leave everything out
+		return mid<int>(0, strtol(std::find_if(value.c_str(), value.c_str() + value.size(), isxdigit), nullptr, 16), 255);
 	return atoi(Get<std::string>().c_str());
 }
 
@@ -121,7 +127,10 @@ template<> void AssOverrideParameter::Set<std::string>(std::string new_value) {
 }
 
 template<> void AssOverrideParameter::Set<int>(int new_value) {
-	Set(std::to_string(new_value));
+	if (classification == PARCLASS_ALPHA)
+		Set(str(boost::format("&H%02X&") % mid(0, new_value, 255)));
+	else
+		Set(std::to_string(new_value));
 }
 
 template<> void AssOverrideParameter::Set<double>(double new_value) {
@@ -206,7 +215,7 @@ static void load_protos() {
 
 	// Longer tag names must appear before shorter tag names
 
-	proto[0].Set("\\alpha", VARDATA_TEXT); // \alpha
+	proto[0].Set("\\alpha", VARDATA_TEXT, PARCLASS_ALPHA); // \alpha&H<aa>&
 	proto[++i].Set("\\bord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \bord<depth>
 	proto[++i].Set("\\xbord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \xbord<depth>
 	proto[++i].Set("\\ybord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \ybord<depth>
@@ -296,10 +305,10 @@ static void load_protos() {
 	proto[++i].Set("\\2c", VARDATA_TEXT); // \2c&H<bbggrr>&
 	proto[++i].Set("\\3c", VARDATA_TEXT); // \3c&H<bbggrr>&
 	proto[++i].Set("\\4c", VARDATA_TEXT); // \4c&H<bbggrr>&
-	proto[++i].Set("\\1a", VARDATA_TEXT); // \1a&H<aa>&
-	proto[++i].Set("\\2a", VARDATA_TEXT); // \2a&H<aa>&
-	proto[++i].Set("\\3a", VARDATA_TEXT); // \3a&H<aa>&
-	proto[++i].Set("\\4a", VARDATA_TEXT); // \4a&H<aa>&
+	proto[++i].Set("\\1a", VARDATA_TEXT, PARCLASS_ALPHA); // \1a&H<aa>&
+	proto[++i].Set("\\2a", VARDATA_TEXT, PARCLASS_ALPHA); // \2a&H<aa>&
+	proto[++i].Set("\\3a", VARDATA_TEXT, PARCLASS_ALPHA); // \3a&H<aa>&
+	proto[++i].Set("\\4a", VARDATA_TEXT, PARCLASS_ALPHA); // \4a&H<aa>&
 	proto[++i].Set("\\fe", VARDATA_TEXT); // \fe<charset>
 	proto[++i].Set("\\ko", VARDATA_INT,PARCLASS_KARAOKE); // \ko<duration>
 	proto[++i].Set("\\kf", VARDATA_INT,PARCLASS_KARAOKE); // \kf<duration>
