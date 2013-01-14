@@ -722,7 +722,16 @@ DialogColorPicker::~DialogColorPicker() {
 	if (screen_dropper_icon->HasCapture()) screen_dropper_icon->ReleaseMouse();
 }
 
+static void change_value(wxSpinCtrl *ctrl, int value) {
+	wxEventBlocker blocker(ctrl);
+	ctrl->SetValue(value);
+}
+
 void DialogColorPicker::SetColor(agi::Color new_color) {
+	change_value(alpha_input, new_color.a);
+	alpha_slider->SetXY(0, new_color.a);
+	cur_color.a = new_color.a;
+
 	SetRGB(new_color);
 	spectrum_dirty = true;
 	UpdateFromRGB();
@@ -731,11 +740,6 @@ void DialogColorPicker::SetColor(agi::Color new_color) {
 void DialogColorPicker::AddColorToRecent() {
 	recent_box->AddColor(cur_color);
 	OPT_SET("Tool/Colour Picker/Recent Colours")->SetListColor(recent_box->Save());
-}
-
-static void change_value(wxSpinCtrl *ctrl, int value) {
-	wxEventBlocker blocker(ctrl);
-	ctrl->SetValue(value);
 }
 
 void DialogColorPicker::SetRGB(agi::Color new_color) {

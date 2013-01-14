@@ -289,7 +289,9 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 	int blockn = block_at_pos(line->Text, sel_start);
 	int initial_sel_start = sel_start, initial_sel_end = sel_end;
 
+	int a = get_value(blocks, blockn, (int)color.a, alpha, "\\alpha");
 	color = get_value(blocks, blockn, color, tag, alt);
+	color.a = a;
 	int commit_id = -1;
 	bool ok = GetColorFromUser(c->parent, color, true, [&](agi::Color new_color) {
 		set_tag(line, blocks, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
