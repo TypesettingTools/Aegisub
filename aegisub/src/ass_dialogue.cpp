@@ -82,11 +82,6 @@ AssDialogue::AssDialogue(AssDialogue const& that)
 
 AssDialogue::AssDialogue(wxString const& data)
 : Id(++next_id)
-, Comment(false)
-, Layer(0)
-, Start(0)
-, End(5000)
-, Style("Default")
 {
 	if (!Parse(data))
 		throw SubtitleFormatParseError(from_wx("Failed parsing line: " + data), 0);
