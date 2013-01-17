@@ -113,6 +113,7 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 			// Line didn't parse correctly, assume it's plain text that
 			// should be pasted in the Text field only
 			curdiag = new AssDialogue;
+			curdiag->End = 0;
 			curdiag->Text = curdata;
 		}
 
