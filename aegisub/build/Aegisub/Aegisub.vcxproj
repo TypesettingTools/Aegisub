@@ -5,6 +5,7 @@
     <ProjectGuid>{9DDDB9E5-E4A1-423D-A224-F6D4E5AAC06A}</ProjectGuid>
     <RootNamespace>Aegisub</RootNamespace>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>exe</AegisubProjectType>
@@ -13,6 +14,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <PropertyGroup>
     <TargetName>aegisub$(AegisubPlatformSuffix)</TargetName>
@@ -25,6 +27,7 @@
       <AdditionalOptions>/Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
+
   <!-- Update git_version.h -->
   <Target Name="UpdateVersion" BeforeTargets="ClCompile">
     <ExecShellScript
@@ -33,8 +36,12 @@
       Configuration="@(ExecShellScript)"
       Arguments=".." />
   </Target>
+
   <!-- Project References -->
   <ItemGroup>
+    <ProjectReference Include="..\boost\boost.vcxproj">
+      <Project>{a649d828-a399-4d81-adef-94cfdba7847f}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\csrihelper\csrihelper.vcxproj">
       <Project>{c832eaf3-860d-4373-a02c-933626b47a5e}</Project>
     </ProjectReference>
@@ -75,6 +82,7 @@
       <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
     </ProjectReference>
   </ItemGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)MatroskaParser.h" />

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A649D828-A399-4D81-ADEF-94CFDBA7847F}</ProjectGuid>
+    <RootNamespace>boost</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\cpp_regex_traits.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\cregex.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\c_regex_traits.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\fileiter.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\instances.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\posix_api.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\regex.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\regex_raw_buffer.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\regex_traits_defaults.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\static_mutex.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\usinstances.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\w32_regex_traits.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\wc_regex_traits.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\wide_posix_api.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\winstances.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\codecvt_error_category.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\operations.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\path.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\path_traits.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\portability.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\unique_path.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\utf8_codecvt_facet.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\system\src\error_code.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(BoostPath)\libs\regex\src\internals.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\system\src\local_free_on_destruction.hpp" />
+  </ItemGroup>
+</Project>

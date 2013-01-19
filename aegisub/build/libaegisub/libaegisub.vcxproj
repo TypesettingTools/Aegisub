@@ -4,6 +4,7 @@
     <ProjectGuid>{BB3FED86-DB7A-4DC7-964A-260FB86CDE61}</ProjectGuid>
     <RootNamespace>libaegisub</RootNamespace>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
@@ -12,6 +13,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -22,6 +24,7 @@
       <ForcedIncludeFiles>lagi_pre.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)lagi_pre.h" />

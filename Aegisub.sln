@@ -68,6 +68,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass", "aegisub\build\lib
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PortableInstaller", "aegisub\build\PortableInstaller\PortableInstaller.vcxproj", "{5B0E9978-E76F-4BBC-8194-228323F59B53}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "aegisub\build\boost\boost.vcxproj", "{A649D828-A399-4D81-ADEF-94CFDBA7847F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -284,6 +286,14 @@ Global
 		{5B0E9978-E76F-4BBC-8194-228323F59B53}.Debug-MinDep|x64.ActiveCfg = Debug|x64
 		{5B0E9978-E76F-4BBC-8194-228323F59B53}.Release|Win32.ActiveCfg = Release|Win32
 		{5B0E9978-E76F-4BBC-8194-228323F59B53}.Release|x64.ActiveCfg = Release|x64
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Debug|Win32.Build.0 = Debug|Win32
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Debug|x64.ActiveCfg = Debug|Win32
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Debug-MinDep|Win32.ActiveCfg = Debug|Win32
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Debug-MinDep|x64.ActiveCfg = Debug|Win32
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Release|Win32.ActiveCfg = Release|Win32
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Release|Win32.Build.0 = Release|Win32
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

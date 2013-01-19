@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="regex">
+      <UniqueIdentifier>{e091980d-4374-41b8-aa61-1b07695e1b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{be9f03e9-74a3-4705-97ee-105a404d8a10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="filesystem">
+      <UniqueIdentifier>{98abe5b9-aca6-4145-ab6d-e472e24eb522}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\c_regex_traits.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\cpp_regex_traits.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\cregex.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\fileiter.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\instances.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\posix_api.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\regex.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\regex_raw_buffer.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\regex_traits_defaults.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\static_mutex.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\usinstances.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\w32_regex_traits.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\wc_regex_traits.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\wide_posix_api.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\winstances.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\system\src\error_code.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\codecvt_error_category.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\operations.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\path.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\path_traits.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\portability.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\unique_path.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\utf8_codecvt_facet.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(BoostPath)\libs\regex\src\internals.hpp">
+      <Filter>regex</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BoostPath)\libs\system\src\local_free_on_destruction.hpp">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.hpp">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

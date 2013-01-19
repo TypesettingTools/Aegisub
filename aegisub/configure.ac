@@ -245,7 +245,10 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
                   [AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.])],
                   [AC_MSG_FAILURE([Aegisub requires fontconfig >= fontconfig_required_version])])
 
+libext=a
 BOOST_REQUIRE([boost_required_version])
+BOOST_FILESYSTEM
+BOOST_REGEX
 
 ########
 ## iconv
