@@ -57,6 +57,14 @@ namespace agi {
 	class OptionValue;
 }
 
+enum class AspectRatio {
+	Default = 0,
+	Fullscreen,
+	Widescreen,
+	Cinematic,
+	Custom
+};
+
 /// @class VideoContext
 /// @brief Manage a bunch of things vaguely related to video playback
 ///
@@ -73,7 +81,7 @@ class VideoContext : public wxEvtHandler {
 	/// New timecodes opened (new timecode data)
 	agi::signal::Signal<agi::vfr::Framerate const&> TimecodesOpen;
 	/// Aspect ratio was changed (type, value)
-	agi::signal::Signal<int, double> ARChange;
+	agi::signal::Signal<AspectRatio, double> ARChange;
 
 	agi::Context *context;
 
@@ -115,11 +123,8 @@ class VideoContext : public wxEvtHandler {
 	/// overridden by the user
 	double ar_value;
 
-	/// @brief The current AR type
-	///
-	/// 0 is square pixels; 1-3 are predefined ARs; 4 is custom, where the real
-	/// AR is in arValue
-	int ar_type;
+	/// The current AR type
+	AspectRatio ar_type;
 
 	/// Does the currently loaded video file have subtitles muxed into it?
 	bool has_subtitles;
@@ -202,15 +207,17 @@ public:
 	int GetFrameN() const { return frame_n; }
 
 	/// Get the actual aspect ratio from a predefined AR type
-	double GetARFromType(int type) const;
+	double GetARFromType(AspectRatio type) const;
 
 	/// Override the aspect ratio of the currently loaded video
-	/// @param type Aspect ratio type from 0-4
-	/// @param value If type is 4 (custom), the aspect ratio to use
-	void SetAspectRatio(int type, double value=1.0);
+	void SetAspectRatio(double value);
+
+	/// Override the aspect ratio of the currently loaded video
+	/// @param type Predefined type to set the AR to. Must not be Custom.
+	void SetAspectRatio(AspectRatio type);
 
 	/// Get the current AR type
-	int GetAspectRatioType() const { return ar_type; }
+	AspectRatio GetAspectRatioType() const { return ar_type; }
 
 	/// Get the current aspect ratio of the video
 	double GetAspectRatioValue() const { return ar_value; }

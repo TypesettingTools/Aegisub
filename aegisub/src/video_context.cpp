@@ -63,7 +63,7 @@ VideoContext::VideoContext()
 , end_frame(0)
 , frame_n(0)
 , ar_value(1.)
-, ar_type(0)
+, ar_type(AspectRatio::Default)
 , has_subtitles(false)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 , no_amend(false)
@@ -183,7 +183,7 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		// Set aspect ratio
 		double dar = video_provider->GetDAR();
 		if (dar > 0)
-			SetAspectRatio(4, dar);
+			SetAspectRatio(dar);
 
 		// Set filename
 		config::mru->Add("Video", filename);
@@ -253,10 +253,10 @@ void VideoContext::OnSubtitlesSave() {
 	}
 
 	std::string ar;
-	if (ar_type == 4)
+	if (ar_type == AspectRatio::Custom)
 		ar = "c" + std::to_string(ar_value);
 	else
-		ar = "c" + std::to_string(ar_type);
+		ar = std::to_string((int)ar_type);
 
 	context->ass->SetScriptInfo("Video File", config::path->MakeRelative(video_filename, "?script").generic_string());
 	context->ass->SetScriptInfo("YCbCr Matrix", video_provider->GetColorSpace());
@@ -371,19 +371,25 @@ void VideoContext::OnPlayTimer(wxTimerEvent &) {
 	}
 }
 
-double VideoContext::GetARFromType(int type) const {
-	if (type == 0) return (double)GetWidth()/(double)GetHeight();
-	if (type == 1) return 4.0/3.0;
-	if (type == 2) return 16.0/9.0;
-	if (type == 3) return 2.35;
-	return 1.0;  //error
+double VideoContext::GetARFromType(AspectRatio type) const {
+	switch (type) {
+		case AspectRatio::Default: return (double)GetWidth()/(double)GetHeight();
+		case AspectRatio::Fullscreen: return 4.0/3.0;
+		case AspectRatio::Widescreen: return 16.0/9.0;
+		case AspectRatio::Cinematic: return 2.35;
+	}
+	throw agi::InternalError("Bad AR type", nullptr);
 }
 
-void VideoContext::SetAspectRatio(int type, double value) {
-	if (type != 4) value = GetARFromType(type);
-
-	ar_type = type;
+void VideoContext::SetAspectRatio(double value) {
+	ar_type = AspectRatio::Custom;
 	ar_value = mid(.5, value, 5.);
+	ARChange(ar_type, ar_value);
+}
+
+void VideoContext::SetAspectRatio(AspectRatio type) {
+	ar_value = mid(.5, GetARFromType(type), 5.);
+	ar_type = type;
 	ARChange(ar_type, ar_value);
 }
 

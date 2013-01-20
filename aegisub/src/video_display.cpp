@@ -281,9 +281,9 @@ void VideoDisplay::PositionVideo() {
 		int vidW = con->videoController->GetWidth();
 		int vidH = con->videoController->GetHeight();
 
-		int arType = con->videoController->GetAspectRatioType();
+		AspectRatio arType = con->videoController->GetAspectRatioType();
 		double displayAr = double(viewport_width) / viewport_height;
-		double videoAr = arType == 0 ? double(vidW) / vidH : con->videoController->GetAspectRatioValue();
+		double videoAr = arType == AspectRatio::Default ? double(vidW) / vidH : con->videoController->GetAspectRatioValue();
 
 		// Window is wider than video, blackbox left/right
 		if (displayAr - videoAr > 0.01f) {
@@ -310,7 +310,7 @@ void VideoDisplay::UpdateSize() {
 
 	videoSize.Set(con->videoController->GetWidth(), con->videoController->GetHeight());
 	videoSize *= zoomValue;
-	if (con->videoController->GetAspectRatioType() != 0)
+	if (con->videoController->GetAspectRatioType() != AspectRatio::Default)
 		videoSize.SetWidth(videoSize.GetHeight() * con->videoController->GetAspectRatioValue());
 
 	wxEventBlocker blocker(this);

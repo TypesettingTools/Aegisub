@@ -100,12 +100,12 @@ struct video_aspect_cinematic : public validator_video_loaded {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoController->GetAspectRatioType() == 3;
+		return c->videoController->GetAspectRatioType() == AspectRatio::Cinematic;
 	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->videoController->SetAspectRatio(3);
+		c->videoController->SetAspectRatio(AspectRatio::Cinematic);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -119,7 +119,7 @@ struct video_aspect_custom : public validator_video_loaded {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoController->GetAspectRatioType() == 4;
+		return c->videoController->GetAspectRatioType() == AspectRatio::Custom;
 	}
 
 	void operator()(agi::Context *c) {
@@ -148,7 +148,7 @@ struct video_aspect_custom : public validator_video_loaded {
 		if (numval < 0.5 || numval > 5.0)
 			wxMessageBox(_("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_("Invalid Aspect Ratio"),wxOK | wxICON_ERROR | wxCENTER);
 		else {
-			c->videoController->SetAspectRatio(4, numval);
+			c->videoController->SetAspectRatio(numval);
 			wxGetApp().frame->SetDisplayMode(1,-1);
 		}
 	}
@@ -163,12 +163,12 @@ struct video_aspect_default : public validator_video_loaded {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoController->GetAspectRatioType() == 0;
+		return c->videoController->GetAspectRatioType() == AspectRatio::Default;
 	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->videoController->SetAspectRatio(0);
+		c->videoController->SetAspectRatio(AspectRatio::Default);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -182,12 +182,12 @@ struct video_aspect_full : public validator_video_loaded {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoController->GetAspectRatioType() == 1;
+		return c->videoController->GetAspectRatioType() == AspectRatio::Fullscreen;
 	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->videoController->SetAspectRatio(1);
+		c->videoController->SetAspectRatio(AspectRatio::Fullscreen);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
@@ -201,12 +201,12 @@ struct video_aspect_wide : public validator_video_loaded {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
-		return c->videoController->GetAspectRatioType() == 2;
+		return c->videoController->GetAspectRatioType() == AspectRatio::Widescreen;
 	}
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
-		c->videoController->SetAspectRatio(2);
+		c->videoController->SetAspectRatio(AspectRatio::Widescreen);
 		wxGetApp().frame->SetDisplayMode(1,-1);
 	}
 };
