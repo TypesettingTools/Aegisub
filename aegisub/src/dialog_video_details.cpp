@@ -36,6 +36,7 @@
 
 #include "dialog_video_details.h"
 
+#include "ass_time.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "utils.h"
@@ -62,38 +63,28 @@ static wxString pretty_ar(int width, int height) {
 	return wxString::Format("%d:%d", width, height);
 }
 
-static wxString pretty_time_stamp(int frames, double fps) {
-	int tt = int(frames / fps * 1000);
-	int cs = tt % 1000; tt /= 1000;
-	int s = tt % 60; tt /= 60;
-	int m = tt % 60; tt /= 60;
-	int h = tt;
-	return wxString::Format("%d:%02d:%02d.%03d", h, m, s, cs);
-}
-
 DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 : wxDialog(c->parent , -1, _("Video Details"))
 {
-	int width = c->videoController->GetWidth();
-	int height = c->videoController->GetHeight();
-	int framecount = c->videoController->GetLength();
-	double fps = c->videoController->FPS().FPS();
+	auto width = c->videoController->GetWidth();
+	auto height = c->videoController->GetHeight();
+	auto framecount = c->videoController->GetLength();
+	auto fps = c->videoController->FPS();
 
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
 	make_field(this, fg, _("File name:"), c->videoController->GetVideoName().wstring());
-	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps));
+	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps.FPS()));
 	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%s)", width, height, pretty_ar(width, height)));
-	make_field(this, fg, _("Length:"), wxString::Format(_("%d frames (%s)"), framecount, pretty_time_stamp(framecount, fps)));
+	make_field(this, fg, _("Length:"), wxString::Format(_("%d frames (%s)"), framecount, to_wx(AssTime(fps.TimeAtFrame(framecount - 1)).GetAssFormated(true))));
 	make_field(this, fg, _("Decoder:"), to_wx(c->videoController->GetProvider()->GetDecoderName()));
 
-	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Video"));
+	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Video"));
 	video_sizer->Add(fg);
 
 	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(video_sizer, 1, wxALL|wxEXPAND, 5);
 	main_sizer->Add(CreateSeparatedButtonSizer(wxOK), 0, wxALL|wxEXPAND, 5);
-	main_sizer->SetSizeHints(this);
-	SetSizer(main_sizer);
+	SetSizerAndFit(main_sizer);
 
 	CenterOnParent();
 }
