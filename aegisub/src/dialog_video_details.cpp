@@ -43,6 +43,8 @@
 #include "video_context.h"
 #include "video_provider_manager.h"
 
+#include <boost/rational.hpp>
+
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -52,17 +54,6 @@ static void make_field(wxWindow *parent, wxSizer *sizer, wxString const& name, w
 	sizer->Add(new wxTextCtrl(parent, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
 }
 
-static wxString pretty_ar(int width, int height) {
-	int limit = (int)ceil(sqrt(double(std::min(width, height))));
-	for (int i=2;i<=limit;i++) {
-		while (width % i == 0 && height % i == 0) {
-			width /= i;
-			height /= i;
-		}
-	}
-	return wxString::Format("%d:%d", width, height);
-}
-
 DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 : wxDialog(c->parent , -1, _("Video Details"))
 {
@@ -70,11 +61,12 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	auto height = c->videoController->GetHeight();
 	auto framecount = c->videoController->GetLength();
 	auto fps = c->videoController->FPS();
+	boost::rational<int> ar(width, height);
 
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
 	make_field(this, fg, _("File name:"), c->videoController->GetVideoName().wstring());
 	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps.FPS()));
-	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%s)", width, height, pretty_ar(width, height)));
+	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%d:%d)", width, height, ar.numerator(), ar.denominator()));
 	make_field(this, fg, _("Length:"), wxString::Format(_("%d frames (%s)"), framecount, to_wx(AssTime(fps.TimeAtFrame(framecount - 1)).GetAssFormated(true))));
 	make_field(this, fg, _("Decoder:"), to_wx(c->videoController->GetProvider()->GetDecoderName()));
 
