@@ -57,7 +57,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\signal.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\thesaurus.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\types.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_win.h" />
@@ -78,6 +77,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\fs_fwd.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\dispatch.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\split.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\time.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">

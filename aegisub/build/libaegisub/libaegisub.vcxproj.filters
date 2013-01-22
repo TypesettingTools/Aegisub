@@ -74,9 +74,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\thesaurus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\libaegisub\types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -150,6 +147,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\split.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

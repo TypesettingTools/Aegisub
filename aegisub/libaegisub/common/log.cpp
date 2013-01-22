@@ -23,7 +23,6 @@
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/io.h"
-#include "libaegisub/types.h"
 #include "libaegisub/util.h"
 
 #include <algorithm>
@@ -45,7 +44,7 @@ const char *Severity_ID = "EAWID";
 
 SinkMessage::SinkMessage(const char *section, Severity severity,
 						 const char *file, const char *func, int line,
-						 agi_timeval tv)
+						 timeval tv)
 : section(section)
 , severity(severity)
 , file(file)
@@ -97,9 +96,7 @@ Message::Message(const char *section,
 , buf(new char[len])
 , msg(buf, len)
 {
-	agi_timeval tv;
-	util::time_log(tv);
-	sm = new SinkMessage(section, severity, file, func, line, tv);
+	sm = new SinkMessage(section, severity, file, func, line, util::time_log());
 }
 
 Message::~Message() {
@@ -109,18 +106,17 @@ Message::~Message() {
 }
 
 JsonEmitter::JsonEmitter(agi::fs::path const& directory, const agi::log::LogSink *log_sink)
-: directory(directory)
+: time_start(util::time_log())
+, directory(directory)
 , log_sink(log_sink)
 {
-	util::time_log(time_start);
 }
 
 JsonEmitter::~JsonEmitter() {
 	json::Object root;
 	json::Array &array = root["log"];
 
-	agi_timeval time_close;
-	util::time_log(time_close);
+	auto time_close = util::time_log();
 
 	Sink const& sink = *log_sink->GetSink();
 	for (unsigned int i=0; i < sink.size(); i++) {

@@ -17,7 +17,7 @@
 /// @ingroup libaegisub
 
 #include <libaegisub/fs_fwd.h>
-#include <libaegisub/types.h>
+#include <libaegisub/time.h>
 
 #include <boost/filesystem/path.hpp>
 #include <cstdint>
@@ -80,8 +80,7 @@ public:
 	/// @param func     Function name
 	/// @param line     Source line
 	/// @param tv       Log time
-	SinkMessage(const char *section, Severity severity, const char *file,
-            const char *func, int line, agi_timeval tv);
+	SinkMessage(const char *section, Severity severity, const char *file, const char *func, int line, timeval tv);
 
 	/// Destructor
 	~SinkMessage();
@@ -144,10 +143,10 @@ public:
 /// A simple emitter which writes the log to a file in json format when it's destroyed
 class JsonEmitter : public Emitter {
 	/// Init time
-	agi_timeval time_start;
+	timeval time_start;
 
 	/// Directory to write the log file in
-	agi::fs::path directory;
+	const agi::fs::path directory;
 
 	/// Parent sink to get messages from
 	const agi::log::LogSink *log_sink;

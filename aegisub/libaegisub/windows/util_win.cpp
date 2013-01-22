@@ -16,12 +16,12 @@
 /// @brief Windows utility methods.
 /// @ingroup libaegisub windows
 
+#include "../config.h"
+
+#include "libaegisub/util.h"
 #include "libaegisub/util_win.h"
 
-#include <string>
-
 #include "libaegisub/charset_conv_win.h"
-#include "libaegisub/types.h"
 
 namespace agi {
 	namespace util {
@@ -44,13 +44,8 @@ std::string ErrorString(DWORD error) {
 /// @brief Get seconds and microseconds.
 /// @param tv[out] agi_timeval struct
 /// This code is from http://www.suacommunity.com/dictionary/gettimeofday-entry.php
-void time_log(agi_timeval &tv) {
-#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
+agi_timeval time_log() {
 #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
-#else
-#define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
-#endif
-
 	// Define a structure to receive the current Windows filetime
 	FILETIME ft;
 
@@ -75,8 +70,8 @@ void time_log(agi_timeval &tv) {
 
 	// Finally change microseconds to seconds and place in the seconds value.
 	// The modulus picks up the microseconds.
-	tv.tv_sec = (long)(tmpres / 1000000UL);
-	tv.tv_usec = (long)(tmpres % 1000000UL);
+	agi_timeval tv = { (long)(tmpres / 1000000UL), (long)(tmpres % 1000000UL) };
+	return tv;
 }
 
 	} // namespace io

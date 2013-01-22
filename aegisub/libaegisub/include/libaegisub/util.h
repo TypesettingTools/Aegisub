@@ -16,11 +16,11 @@
 /// @brief Public interface for general utilities.
 /// @ingroup libaegisub
 
+#include <libaegisub/time.h>
+
 #include <algorithm>
 #include <cstdint>
 #include <string>
-
-#include <libaegisub/types.h>
 
 struct tm;
 
@@ -30,8 +30,7 @@ namespace agi {
 	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
 
 	/// Get time suitable for logging mechanisms.
-	/// @param tv timeval
-	void time_log(agi_timeval &tv);
+	agi_timeval time_log();
 
 	bool try_parse(std::string const& str, double *out);
 	bool try_parse(std::string const& str, int *out);

@@ -22,8 +22,10 @@
 
 namespace agi { namespace util {
 
-void time_log(timeval &tv) {
-	gettimeofday(&tv, (struct timezone *)NULL);
+timeval time_log() {
+	timeval tv;
+	gettimeofday(&tv, nullptr);
+	return tv;
 }
 
 } }

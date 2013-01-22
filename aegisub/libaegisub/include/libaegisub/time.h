@@ -14,34 +14,21 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "../libaegisub/config.h"
+#pragma once
 
-#include <libaegisub/util.h>
+#ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+#else
+#  include <ctime>
+#endif
 
-#include "main.h"
-
-class lagi_util : public libagi { };
-
-namespace agi {
-TEST(lagi_util, try_parse_double) {
-	double d = 0.0;
-	EXPECT_TRUE(util::try_parse("1.0", &d));
-	EXPECT_EQ(1.0, d);
-
-	EXPECT_FALSE(util::try_parse("aaa", &d));
-	EXPECT_EQ(1.0, d);
-
-	EXPECT_FALSE(util::try_parse("2aaa", &d));
-	EXPECT_EQ(1.0, d);
-}
-
-TEST(lagi_util, try_parse_int) {
-	int i = 0;
-	EXPECT_TRUE(util::try_parse("1", &i));
-	EXPECT_EQ(1, i);
-
-	EXPECT_FALSE(util::try_parse("2.0", &i));
-	EXPECT_EQ(1.0, i);
-}
-
-}
+#ifdef _WIN32
+// timeval on windows is defined by winsock, which is a bit much to drag in for
+// a pair of longs
+struct agi_timeval {
+	long tv_sec;
+	long tv_usec;
+};
+#else
+typedef timeval agi_timeval;
+#endif
