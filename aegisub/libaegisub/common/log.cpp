@@ -26,6 +26,8 @@
 #include "libaegisub/util.h"
 
 #include <algorithm>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/range/algorithm.hpp>
 #include <cstring>
 #include <fstream>
@@ -90,43 +92,37 @@ Message::~Message() {
 	msg.freeze(false);
 }
 
-JsonEmitter::JsonEmitter(agi::fs::path const& directory, const agi::log::LogSink *log_sink)
-: time_start(util::time_log())
-, directory(directory)
-, log_sink(log_sink)
+JsonEmitter::JsonEmitter(fs::path const& directory)
+: fp(new boost::filesystem::ofstream(unique_path(directory/util::strftime("%Y-%m-%d-%H-%M-%S-%%%%%%%%.json"))))
 {
+	WriteTime("open");
 }
 
 JsonEmitter::~JsonEmitter() {
-	json::Object root;
-	json::Array &array = root["log"];
+	WriteTime("close");
+}
 
-	auto time_close = util::time_log();
+void JsonEmitter::log(SinkMessage *sm) {
+	json::Object entry;
+	entry["sec"]      = (int64_t)sm->tv.tv_sec;
+	entry["usec"]     = (int64_t)sm->tv.tv_usec;
+	entry["severity"] = sm->severity;
+	entry["section"]  = sm->section;
+	entry["file"]     = sm->file;
+	entry["func"]     = sm->func;
+	entry["line"]     = sm->line;
+	entry["message"]  = sm->message;
+	json::Writer::Write(entry, *fp);
+	fp->flush();
+}
 
-	Sink const& sink = *log_sink->GetSink();
-	for (unsigned int i=0; i < sink.size(); i++) {
-		json::Object entry;
-		entry["sec"]      = (int64_t)sink[i]->tv.tv_sec;
-		entry["usec"]     = (int64_t)sink[i]->tv.tv_usec;
-		entry["severity"] = sink[i]->severity;
-		entry["section"]  = sink[i]->section;
-		entry["file"]     = sink[i]->file;
-		entry["func"]     = sink[i]->func;
-		entry["line"]     = sink[i]->line;
-		entry["message"]  = sink[i]->message;
-
-		array.push_back(std::move(entry));
-	}
-
-	json::Array &timeval_open = root["timeval"]["open"];
-	timeval_open.push_back((int64_t)time_start.tv_sec);
-	timeval_open.push_back((int64_t)time_start.tv_usec);
-
-	json::Array &timeval_close = root["timeval"]["close"];
-	timeval_close.push_back((int64_t)time_close.tv_sec);
-	timeval_close.push_back((int64_t)time_close.tv_usec);
-
-	json::Writer::Write(root, io::Save(directory/(std::to_string(time_start.tv_sec) + ".json")).Get());
+void JsonEmitter::WriteTime(const char *key) {
+	auto time = util::time_log();
+	json::Object obj;
+	json::Array &timeval = obj[key];
+	timeval.push_back((int64_t)time.tv_sec);
+	timeval.push_back((int64_t)time.tv_usec);
+	json::Writer::Write(obj, *fp);
 }
 
 	} // namespace log

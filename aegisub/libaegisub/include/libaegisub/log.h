@@ -19,11 +19,9 @@
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/time.h>
 
-#include <boost/filesystem/path.hpp>
-#include <cstdint>
-#include <cstdio>
 #include <ctime>
 #include <deque>
+#include <iosfwd>
 #include <memory>
 #include <vector>
 
@@ -133,26 +131,20 @@ public:
 	virtual void log(SinkMessage *sm)=0;
 };
 
-/// A simple emitter which writes the log to a file in json format when it's destroyed
+/// A simple emitter which writes the log to a file in json format
 class JsonEmitter : public Emitter {
-	/// Init time
-	timeval time_start;
+	std::unique_ptr<std::ostream> fp;
 
-	/// Directory to write the log file in
-	const agi::fs::path directory;
+	void WriteTime(const char *key);
 
-	/// Parent sink to get messages from
-	const agi::log::LogSink *log_sink;
 public:
 	/// Constructor
 	/// @param directory Directory to write the log file in
-	/// @param log_sink Parent sink to get messages from
-	JsonEmitter(agi::fs::path const& directory, const agi::log::LogSink *log_sink);
+	JsonEmitter(fs::path const& directory);
 	/// Destructor
 	~JsonEmitter();
 
-	/// No-op log function as everything is done in the destructor
-	void log(SinkMessage *) { }
+	void log(SinkMessage *);
 };
 
 /// Generates a message and submits it to the log sink.

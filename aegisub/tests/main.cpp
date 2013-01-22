@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 
 	int retval;
 	agi::log::log = new agi::log::LogSink;
-	agi::log::log->Subscribe(new agi::log::JsonEmitter("./", agi::log::log));
+	agi::log::log->Subscribe(new agi::log::JsonEmitter("./"));
 	::testing::InitGoogleTest(&argc, argv);
 
 	retval = RUN_ALL_TESTS();

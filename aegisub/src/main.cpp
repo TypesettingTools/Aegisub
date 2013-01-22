@@ -180,7 +180,7 @@ bool AegisubApp::OnInit() {
 	StartupLog("Create log writer");
 	auto path_log = StandardPaths::DecodePath("?user/log/");
 	agi::fs::CreateDirectory(path_log);
-	agi::log::log->Subscribe(new agi::log::JsonEmitter(path_log, agi::log::log));
+	agi::log::log->Subscribe(new agi::log::JsonEmitter(path_log));
 	CleanCache(path_log, "*.json", 10, 100);
 
 	StartupLog("Load user configuration");
