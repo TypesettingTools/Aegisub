@@ -43,6 +43,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "subtitle_format.h"
+#include "utils.h"
 
 #include <libaegisub/charset_conv.h>
 
@@ -52,7 +53,6 @@
 #include <wx/button.h>
 #include <wx/checklst.h>
 #include <wx/choice.h>
-#include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -162,7 +162,7 @@ DialogExport::~DialogExport() {
 void DialogExport::OnProcess(wxCommandEvent &) {
 	if (!TransferDataFromWindow()) return;
 
-	auto filename = wxFileSelector(_("Export subtitles file"), "", "", "", to_wx(SubtitleFormat::GetWildcards(1)), wxFD_SAVE | wxFD_OVERWRITE_PROMPT, this);
+	auto filename = SaveFileSelector(_("Export subtitles file"), "", "", "", to_wx(SubtitleFormat::GetWildcards(1)), this);
 	if (filename.empty()) return;
 
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
@@ -173,7 +173,7 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 	try {
 		wxBusyCursor busy;
 		c->ass->SetScriptInfo("Export Encoding", from_wx(charset_list->GetStringSelection()));
-		exporter->Export(from_wx(filename), from_wx(charset_list->GetStringSelection()), this);
+		exporter->Export(filename, from_wx(charset_list->GetStringSelection()), this);
 	}
 	catch (agi::UserCancelException const&) {
 	}

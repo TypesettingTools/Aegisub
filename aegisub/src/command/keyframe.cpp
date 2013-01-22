@@ -40,10 +40,8 @@
 
 #include "../include/aegisub/context.h"
 #include "../options.h"
+#include "../utils.h"
 #include "../video_context.h"
-
-#include <boost/filesystem/path.hpp>
-#include <wx/filedlg.h>
 
 namespace {
 	using cmd::Command;
@@ -67,7 +65,6 @@ struct keyframe_close : public Command {
 	}
 };
 
-
 /// Opens a keyframe list file.
 struct keyframe_open : public Command {
 	CMD_NAME("keyframe/open")
@@ -76,17 +73,14 @@ struct keyframe_open : public Command {
 	STR_HELP("Opens a keyframe list file")
 
 	void operator()(agi::Context *c) {
-		agi::fs::path filename = wxFileSelector(
+		auto filename = OpenFileSelector(
 			_("Open keyframes file"),
-			to_wx(OPT_GET("Path/Last/Keyframes")->GetString()),
-			""
-			,".txt",
+			"Path/Last/Keyframes", "" ,".txt",
 			_("All Supported Formats") + " (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" + _("All Files") + " (*.*)|*.*",
-			wxFD_FILE_MUST_EXIST | wxFD_OPEN);
+			c->parent);
 
-		if (filename.empty()) return;
-		OPT_SET("Path/Last/Keyframes")->SetString(filename.parent_path().string());
-		c->videoController->LoadKeyframes(filename);
+		if (!filename.empty())
+			c->videoController->LoadKeyframes(filename);
 	}
 };
 
@@ -103,11 +97,9 @@ struct keyframe_save : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		std::string path = OPT_GET("Path/Last/Keyframes")->GetString();
-		agi::fs::path filename = wxFileSelector(_("Save keyframes file"),to_wx(path),"","*.key.txt","Text files (*.txt)|*.txt",wxFD_OVERWRITE_PROMPT | wxFD_SAVE);
-		if (filename.empty()) return;
-		OPT_SET("Path/Last/Keyframes")->SetString(filename.parent_path().string());
-		c->videoController->SaveKeyframes(filename);
+		auto filename = SaveFileSelector(_("Save keyframes file"), "Path/Last/Keyframes", "", "*.key.txt", "Text files (*.txt)|*.txt", c->parent);
+		if (!filename.empty())
+			c->videoController->SaveKeyframes(filename);
 	}
 };
 }

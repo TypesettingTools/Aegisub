@@ -47,10 +47,9 @@
 #include "../include/aegisub/context.h"
 #include "../options.h"
 #include "../selection_controller.h"
+#include "../utils.h"
 #include "../video_context.h"
 
-#include <boost/filesystem/path.hpp>
-#include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 
 namespace {
@@ -87,16 +86,14 @@ struct audio_open : public Command {
 	STR_HELP("Opens an audio file")
 
 	void operator()(agi::Context *c) {
+		wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
+					+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts|"
+					+ _("All Files") + " (*.*)|*.*";
+		auto filename = OpenFileSelector(_("Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
+		if (filename.empty()) return;
+
 		try {
-			wxString path = to_wx(OPT_GET("Path/Last/Audio")->GetString());
-			wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
-						+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts|"
-						+ _("All Files") + " (*.*)|*.*";
-			agi::fs::path filename = wxFileSelector(_("Open Audio File"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-			if (!filename.empty()) {
-				c->audioController->OpenAudio(filename);
-				OPT_SET("Path/Last/Audio")->SetString(filename.parent_path().string());
-			}
+			c->audioController->OpenAudio(filename);
 		}
 		catch (agi::UserCancelException const&) { }
 		catch (agi::Exception const& e) {
@@ -224,7 +221,7 @@ struct audio_save_clip : public Command {
 		}
 
 		c->audioController->SaveClip(
-			from_wx(wxFileSelector(_("Save audio clip"), "", "", "wav", "", wxFD_SAVE|wxFD_OVERWRITE_PROMPT, c->parent)),
+			SaveFileSelector(_("Save audio clip"), "", "", "wav", "", c->parent),
 			TimeRange(start, end));
 	}
 };

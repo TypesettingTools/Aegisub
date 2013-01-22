@@ -57,7 +57,6 @@
 #include "../utils.h"
 #include "../video_context.h"
 
-#include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 
@@ -261,13 +260,7 @@ struct subtitle_open : public Command {
 	STR_HELP("Opens a subtitles file")
 
 	void operator()(agi::Context *c) {
-		std::string filename = from_wx(wxFileSelector(
-			_("Open subtitles file"),
-			to_wx(OPT_GET("Path/Last/Subtitles")->GetString()),
-			"","",
-			to_wx(SubtitleFormat::GetWildcards(0)),
-			wxFD_OPEN | wxFD_FILE_MUST_EXIST));
-
+		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (!filename.empty())
 			wxGetApp().frame->LoadSubtitles(filename);
 	}
@@ -294,14 +287,13 @@ struct subtitle_open_charset : public Command {
 	STR_HELP("Opens a subtitles file with a specific charset")
 
 	void operator()(agi::Context *c) {
-		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
-		wxString filename = wxFileSelector(_("Open subtitles file"),path,"","",to_wx(SubtitleFormat::GetWildcards(0)),wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (filename.empty()) return;
 
 		wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
 		if (charset.empty()) return;
 
-		wxGetApp().frame->LoadSubtitles(from_wx(filename), from_wx(charset));
+		wxGetApp().frame->LoadSubtitles(filename, from_wx(charset));
 	}
 };
 
@@ -339,11 +331,9 @@ struct subtitle_properties : public Command {
 static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
-		wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
-		filename = wxFileSelector(_("Save subtitles file"), path,
-			c->ass->filename.stem().wstring() + L".ass", "ass",
-			"Advanced Substation Alpha (*.ass)|*.ass",
-			wxFD_SAVE | wxFD_OVERWRITE_PROMPT, c->parent);
+		filename = SaveFileSelector(_("Save subtitles file"), "Path/Last/Subtitles",
+			c->ass->filename.stem().string() + ".ass", "ass",
+			"Advanced Substation Alpha (*.ass)|*.ass", c->parent);
 		if (filename.empty()) return;
 	}
 

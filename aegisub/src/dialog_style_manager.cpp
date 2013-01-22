@@ -60,7 +60,6 @@
 #include <functional>
 
 #include <wx/bmpbuttn.h>
-#include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
 #include <wx/msgdlg.h>
@@ -561,16 +560,12 @@ void DialogStyleManager::OnCurrentDelete() {
 }
 
 void DialogStyleManager::OnCurrentImport() {
-	// Get file name
-	wxString path = to_wx(OPT_GET("Path/Last/Subtitles")->GetString());
-	wxString filename = wxFileSelector(_("Open subtitles file"), path, "", "", to_wx(SubtitleFormat::GetWildcards(0)), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (!filename) return;
-
-	OPT_SET("Path/Last/Subtitles")->SetString(from_wx(wxFileName(filename).GetPath()));
+	auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "", "", SubtitleFormat::GetWildcards(0), this);
+	if (filename.empty()) return;
 
 	AssFile temp;
 	try {
-		temp.Load(from_wx(filename));
+		temp.Load(filename);
 	}
 	catch (agi::Exception const& err) {
 		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
@@ -581,7 +576,7 @@ void DialogStyleManager::OnCurrentImport() {
 	}
 
 	// Get styles
-	std::vector<std::string> styles = temp.GetStyles();
+	auto styles = temp.GetStyles();
 	if (styles.empty()) {
 		wxMessageBox(_("The selected file has no available styles."), _("Error Importing Styles"));
 		return;

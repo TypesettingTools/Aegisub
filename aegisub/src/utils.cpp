@@ -51,7 +51,7 @@
 #include <map>
 
 #include <wx/clipbrd.h>
-#include <wx/filename.h>
+#include <wx/filedlg.h>
 #include <wx/stdpaths.h>
 #include <wx/window.h>
 
@@ -280,4 +280,22 @@ size_t MaxLineLength(std::string const& text) {
 void AddFullScreenButton(wxWindow *) { }
 void SetFloatOnParent(wxWindow *) { }
 #endif
+
+agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, int flags, wxWindow *parent) {
+	wxString path;
+	if (!option_name.empty())
+		path = to_wx(OPT_GET(option_name)->GetString());
+	agi::fs::path filename = wxFileSelector(message, path, to_wx(default_filename), to_wx(default_extension), wildcard, flags, parent).wx_str();
+	if (!filename.empty() && !option_name.empty())
+		OPT_SET(option_name)->SetString(filename.parent_path().string());
+	return filename;
+}
+
+agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent) {
+	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST, parent);
+}
+
+agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent) {
+	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent);
+}
 

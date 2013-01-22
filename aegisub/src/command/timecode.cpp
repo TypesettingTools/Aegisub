@@ -40,10 +40,8 @@
 
 #include "../include/aegisub/context.h"
 #include "../options.h"
+#include "../utils.h"
 #include "../video_context.h"
-
-#include <boost/filesystem/path.hpp>
-#include <wx/filedlg.h>
 
 namespace {
 	using cmd::Command;
@@ -76,13 +74,10 @@ struct timecode_open : public Command {
 	STR_HELP("Opens a VFR timecodes v1 or v2 file")
 
 	void operator()(agi::Context *c) {
-		wxString path = to_wx(OPT_GET("Path/Last/Timecodes")->GetString());
-		wxString str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
-		agi::fs::path filename = wxFileSelector(_("Open Timecodes File"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-		if (!filename.empty()) {
+		auto str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
+		auto filename = OpenFileSelector(_("Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
+		if (!filename.empty())
 			c->videoController->LoadTimecodes(filename);
-			OPT_SET("Path/Last/Timecodes")->SetString(filename.parent_path().string());
-		}
 	}
 };
 
@@ -99,13 +94,10 @@ struct timecode_save : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		wxString path = to_wx(OPT_GET("Path/Last/Timecodes")->GetString());
-		wxString str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
-		agi::fs::path filename = wxFileSelector(_("Save Timecodes File"),path,"","",str,wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		if (!filename.empty()) {
+		auto str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
+		auto filename = SaveFileSelector(_("Save Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
+		if (!filename.empty())
 			c->videoController->SaveTimecodes(filename);
-			OPT_SET("Path/Last/Timecodes")->SetString(filename.parent_path().string());
-		}
 	}
 };
 }

@@ -37,8 +37,8 @@
 #include "dialog_attachments.h"
 
 #include <wx/button.h>
-#include <wx/dirdlg.h>
 #include <wx/filedlg.h>
+#include <wx/dirdlg.h>
 #include <wx/listctrl.h>
 #include <wx/sizer.h>
 
@@ -145,21 +145,19 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 	int i = listView->GetFirstSelected();
 	if (i == -1) return;
 
-	std::string path;
+	agi::fs::path path;
 	bool fullPath = false;
 
 	// Multiple or single?
 	if (listView->GetNextSelected(i) != -1)
-		path = from_wx(wxDirSelector(_("Select the path to save the files to:"), to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()))) + "/";
+		path = wxDirSelector(_("Select the path to save the files to:"), to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()));
 	else {
-		path = from_wx(wxFileSelector(
+		path = SaveFileSelector(
 			_("Select the path to save the file to:"),
-			to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()),
-			to_wx(((AssAttachment*)wxUIntToPtr(listView->GetItemData(i)))->GetFileName()),
-			".ttf",
-			"Font Files (*.ttf)|*.ttf",
-			wxFD_SAVE | wxFD_OVERWRITE_PROMPT,
-			this));
+			"Path/Fonts Collector Destination",
+			((AssAttachment*)wxUIntToPtr(listView->GetItemData(i)))->GetFileName(),
+			".ttf", "Font Files (*.ttf)|*.ttf",
+			this);
 		fullPath = true;
 	}
 	if (path.empty()) return;
@@ -167,7 +165,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 	// Loop through items in list
 	while (i != -1) {
 		AssAttachment *attach = (AssAttachment*)wxUIntToPtr(listView->GetItemData(i));
-		attach->Extract(fullPath ? path : path + attach->GetFileName());
+		attach->Extract(fullPath ? path : path/attach->GetFileName());
 		i = listView->GetNextSelected(i);
 	}
 }

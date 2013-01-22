@@ -68,7 +68,6 @@
 #include <boost/format.hpp>
 
 #include <wx/clipbrd.h>
-#include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 
@@ -559,9 +558,8 @@ struct video_jump_start : public validator_video_loaded {
 	STR_HELP("Jumps the video to the start frame of current subtitle")
 
 	void operator()(agi::Context *c) {
-		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
+		if (AssDialogue *active_line = c->selectionController->GetActiveLine())
 			c->videoController->JumpToTime(active_line->Start);
-		}
 	}
 };
 
@@ -573,14 +571,11 @@ struct video_open : public Command {
 	STR_HELP("Opens a video file")
 
 	void operator()(agi::Context *c) {
-		wxString path = to_wx(OPT_GET("Path/Last/Video")->GetString());
-		wxString str = _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
-					 + _("All Files") + " (*.*)|*.*";
-		agi::fs::path filename = wxFileSelector(_("Open video file"),path,"","",str,wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-		if (!filename.empty()) {
+		auto str = _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
+		         + _("All Files") + " (*.*)|*.*";
+		auto filename = OpenFileSelector(_("Open video file"), "Path/Last/Video", "", "", str, c->parent);
+		if (!filename.empty())
 			c->videoController->SetVideo(filename);
-			OPT_SET("Path/Last/Video")->SetString(filename.parent_path().string());
-		}
 	}
 };
 
