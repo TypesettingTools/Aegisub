@@ -36,6 +36,11 @@
 
 #include "dialog_log.h"
 
+#include "compat.h"
+#include "include/aegisub/context.h"
+
+#include <libaegisub/log.h>
+
 #include <algorithm>
 #include <ctime>
 #include <functional>
@@ -45,10 +50,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-
-#include <libaegisub/log.h>
-
-#include "include/aegisub/context.h"
 
 class EmitLog : public agi::log::Emitter {
 	wxTextCtrl *text_ctrl;
@@ -74,7 +75,7 @@ public:
 			sm->file,
 			sm->func,
 			sm->line,
-			wxString::FromUTF8(sm->message, sm->len));
+			to_wx(sm->message));
 #else
 		wxString log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm->severity],
@@ -83,7 +84,7 @@ public:
 			sm->file,
 			sm->func,
 			sm->line,
-			wxString::FromUTF8(sm->message, sm->len));
+			to_wx(sm->message));
 #endif
 		text_ctrl->AppendText(log);
 	}

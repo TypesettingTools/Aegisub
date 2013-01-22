@@ -69,10 +69,7 @@ extern const char *Severity_ID;
 extern LogSink *log;
 
 /// Container to hold a single message
-class SinkMessage {
-	SinkMessage(SinkMessage const&);
-	SinkMessage& operator=(SinkMessage const&);
-public:
+struct SinkMessage {
 	/// @brief Constructor
 	/// @param section  Section info
 	/// @param severity Severity
@@ -82,17 +79,13 @@ public:
 	/// @param tv       Log time
 	SinkMessage(const char *section, Severity severity, const char *file, const char *func, int line, timeval tv);
 
-	/// Destructor
-	~SinkMessage();
-
 	const char *section;	///< Section info eg "video/open" "video/seek" etc
 	Severity severity;		///< Severity
 	const char *file;		///< Source file
 	const char *func;		///< Function name
 	int line;				///< Source line
 	agi_timeval tv;			///< Time at execution
-	char *message;			///< Formatted message
-	size_t len;				///< Message length
+	std::string message;	///< Formatted message
 };
 
 class Emitter;
@@ -164,28 +157,20 @@ public:
 
 /// Generates a message and submits it to the log sink.
 class Message {
-	const int len;
-	char *buf;
 	std::ostrstream msg;
 	SinkMessage *sm;
 
 public:
-	Message(const char *section,
-			Severity severity,
-			const char *file,
-			const char *func,
-			int line);
+	Message(const char *section, Severity severity, const char *file, const char *func, int line);
 	~Message();
 	std::ostream& stream() { return msg; }
 };
-
 
 /// Emit log entries to stdout.
 class EmitSTDOUT: public Emitter {
 public:
 	void log(SinkMessage *sm);
 };
-
 
 	} // namespace log
 } // namespace agi

@@ -30,7 +30,6 @@
 #include <cstring>
 #include <fstream>
 #include <functional>
-#include <memory>
 
 namespace agi {
 	namespace log {
@@ -42,22 +41,14 @@ LogSink *log;
 /// Keep this ordered the same as Severity
 const char *Severity_ID = "EAWID";
 
-SinkMessage::SinkMessage(const char *section, Severity severity,
-						 const char *file, const char *func, int line,
-						 timeval tv)
+SinkMessage::SinkMessage(const char *section, Severity severity, const char *file, const char *func, int line, timeval tv)
 : section(section)
 , severity(severity)
 , file(file)
 , func(func)
 , line(line)
 , tv(tv)
-, message(nullptr)
-, len(0)
 {
-}
-
-SinkMessage::~SinkMessage() {
-	delete [] message;
 }
 
 /// @todo The log files need to be trimmed after N amount.
@@ -87,22 +78,16 @@ void LogSink::Unsubscribe(Emitter *em) {
 	LOG_D("agi/log/emitter/unsubscribe") << "Un-Subscribe: " << this;
 }
 
-Message::Message(const char *section,
-				Severity severity,
-				const char *file,
-				const char *func,
-				int line)
-: len(1024)
-, buf(new char[len])
-, msg(buf, len)
+Message::Message(const char *section, Severity severity, const char *file, const char *func, int line)
+: msg(nullptr, 1024)
 {
 	sm = new SinkMessage(section, severity, file, func, line, util::time_log());
 }
 
 Message::~Message() {
-	sm->message = msg.str();
-	sm->len = (size_t)msg.pcount();
+	sm->message = std::string(msg.str(), (std::string::size_type)msg.pcount());
 	agi::log::log->log(sm);
+	msg.freeze(false);
 }
 
 JsonEmitter::JsonEmitter(agi::fs::path const& directory, const agi::log::LogSink *log_sink)
@@ -128,7 +113,7 @@ JsonEmitter::~JsonEmitter() {
 		entry["file"]     = sink[i]->file;
 		entry["func"]     = sink[i]->func;
 		entry["line"]     = sink[i]->line;
-		entry["message"]  = std::string(sink[i]->message, sink[i]->len);
+		entry["message"]  = sink[i]->message;
 
 		array.push_back(std::move(entry));
 	}

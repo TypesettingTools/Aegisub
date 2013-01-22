@@ -36,7 +36,7 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 	time_t time = sm->tv.tv_sec;
 	localtime_s(&tmtime, &time);
 
-	char buff[1024];
+	char buff[65536];
 	_snprintf_s(buff, _TRUNCATE, "%s (%d): %c %02d:%02d:%02d %-6ld <%-25s> [%s]  %.*s\n",
 		sm->file,
 		sm->line,
@@ -47,8 +47,8 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 		sm->tv.tv_usec,
 		sm->section,
 		sm->func,
-		sm->len,
-		sm->message);
+		sm->message.size(),
+		sm->message.c_str());
 	OutputDebugStringW(charset::ConvertW(buff).c_str());
 }
 	} // namespace log
