@@ -20,7 +20,7 @@
 #include <libaegisub/time.h>
 
 #include <ctime>
-#include <deque>
+#include <boost/circular_buffer.hpp>
 #include <iosfwd>
 #include <memory>
 #include <vector>
@@ -68,15 +68,6 @@ extern LogSink *log;
 
 /// Container to hold a single message
 struct SinkMessage {
-	/// @brief Constructor
-	/// @param section  Section info
-	/// @param severity Severity
-	/// @param file     File name
-	/// @param func     Function name
-	/// @param line     Source line
-	/// @param tv       Log time
-	SinkMessage(const char *section, Severity severity, const char *file, const char *func, int line, timeval tv);
-
 	const char *section;	///< Section info eg "video/open" "video/seek" etc
 	Severity severity;		///< Severity
 	const char *file;		///< Source file
@@ -88,23 +79,19 @@ struct SinkMessage {
 
 class Emitter;
 
-/// Message sink for holding all messages
-typedef std::deque<SinkMessage*> Sink;
-
 /// Log sink, single destination for all messages
 class LogSink {
-	/// Log sink
-	Sink sink;
+	boost::circular_buffer<SinkMessage> messages;
 
 	/// List of pointers to emitters
 	std::vector<Emitter*> emitters;
 
 public:
-	/// Destructor
+	LogSink() : messages(250) { }
 	~LogSink();
 
 	/// Insert a message into the sink.
-	void log(SinkMessage *sm);
+	void Log(SinkMessage const& sm);
 
 	/// @brief Subscribe an emitter
 	/// @param em Emitter to add
@@ -118,7 +105,7 @@ public:
 
 	/// @brief @get the complete (current) log.
 	/// @return Const pointer to internal sink.
-	const Sink* GetSink() const { return &sink; }
+	decltype(messages) const& GetSink() const { return messages; }
 };
 
 /// An emitter to produce human readable output for a log sink.
@@ -150,7 +137,7 @@ public:
 /// Generates a message and submits it to the log sink.
 class Message {
 	std::ostrstream msg;
-	SinkMessage *sm;
+	SinkMessage sm;
 
 public:
 	Message(const char *section, Severity severity, const char *file, const char *func, int line);

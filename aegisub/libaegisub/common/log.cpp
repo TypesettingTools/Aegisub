@@ -30,7 +30,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/range/algorithm.hpp>
 #include <cstring>
-#include <fstream>
 #include <functional>
 
 namespace agi {
@@ -43,30 +42,17 @@ LogSink *log;
 /// Keep this ordered the same as Severity
 const char *Severity_ID = "EAWID";
 
-SinkMessage::SinkMessage(const char *section, Severity severity, const char *file, const char *func, int line, timeval tv)
-: section(section)
-, severity(severity)
-, file(file)
-, func(func)
-, line(line)
-, tv(tv)
-{
-}
-
-/// @todo The log files need to be trimmed after N amount.
 LogSink::~LogSink() {
 	// The destructor for emitters may try to log messages, so disable all the
 	// emitters before destructing any
 	std::vector<Emitter*> emitters_temp;
 	swap(emitters_temp, emitters);
 	util::delete_clear(emitters_temp);
-
-	util::delete_clear(sink);
 }
 
-void LogSink::log(SinkMessage *sm) {
-	sink.push_back(sm);
-	boost::for_each(emitters, [=](Emitter *em) { em->log(sm); });
+void LogSink::Log(SinkMessage const& sm) {
+	messages.push_back(sm);
+	boost::for_each(emitters, [=](Emitter *em) { em->log(&messages.back()); });
 }
 
 void LogSink::Subscribe(Emitter *em) {
@@ -83,12 +69,17 @@ void LogSink::Unsubscribe(Emitter *em) {
 Message::Message(const char *section, Severity severity, const char *file, const char *func, int line)
 : msg(nullptr, 1024)
 {
-	sm = new SinkMessage(section, severity, file, func, line, util::time_log());
+	sm.section = section;
+	sm.severity = severity;
+	sm.file = file;
+	sm.func = func;
+	sm.line = line;
+	sm.tv = util::time_log();
 }
 
 Message::~Message() {
-	sm->message = std::string(msg.str(), (std::string::size_type)msg.pcount());
-	agi::log::log->log(sm);
+	sm.message = std::string(msg.str(), (std::string::size_type)msg.pcount());
+	agi::log::log->Log(sm);
 	msg.freeze(false);
 }
 

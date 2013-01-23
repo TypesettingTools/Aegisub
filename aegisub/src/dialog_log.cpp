@@ -57,15 +57,15 @@ public:
 	EmitLog(wxTextCtrl *t)
 	: text_ctrl(t)
 	{
-		const agi::log::Sink *sink = agi::log::log->GetSink();
-		for_each(sink->begin(), sink->end(), std::bind(&EmitLog::log, this, std::placeholders::_1));
+		for (auto sm : agi::log::log->GetSink())
+			log(&sm);
 	}
 
 	void log(agi::log::SinkMessage *sm) {
 #ifndef _WIN32
 		tm tmtime;
 		localtime_r(&sm->tv.tv_sec, &tmtime);
-		wxString log = wxString::Format("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %s\n",
+		auto log = wxString::Format("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm->severity],
 			(int)tmtime.tm_hour,
 			(int)tmtime.tm_min,
@@ -77,7 +77,7 @@ public:
 			sm->line,
 			to_wx(sm->message));
 #else
-		wxString log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
+		auto log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm->severity],
 			sm->tv.tv_usec,
 			sm->section,
