@@ -49,11 +49,6 @@ class CSRISubtitlesProvider : public SubtitlesProvider {
 	agi::scoped_holder<csri_inst*> instance;
 	csri_rend *renderer;
 
-	/// VSFilter's implementation of csri_open_mem writes the file to disk then
-	/// opens it with the standard file reader, and by writing the file ourselves
-	/// we can skip a few pointless charset conversions
-	bool can_open_mem;
-
 	/// Name of the file passed to renderers with can_open_mem false
 	agi::fs::path tempfile;
 public:

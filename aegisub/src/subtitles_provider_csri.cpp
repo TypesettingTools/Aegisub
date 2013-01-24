@@ -59,8 +59,7 @@
 static std::mutex csri_mutex;
 
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
-: can_open_mem(true)
-, instance(nullptr, csri_close)
+: instance(nullptr, csri_close)
 {
 	std::lock_guard<std::mutex> lock(csri_mutex);
 
@@ -73,9 +72,6 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
 
 	if (!renderer)
 		throw agi::InternalError("CSRI renderer vanished between initial list and creation?", 0);
-
-	std::string name(csri_renderer_info(renderer)->name);
-	can_open_mem = (name.find("vsfilter") == name.npos);
 }
 
 CSRISubtitlesProvider::~CSRISubtitlesProvider() {
@@ -83,21 +79,12 @@ CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 }
 
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
-	if (can_open_mem) {
-		std::vector<char> data;
-		subs->SaveMemory(data);
+	if (tempfile.empty())
+		tempfile = unique_path(StandardPaths::DecodePath("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));
+	subs->Save(tempfile, false, false, "utf-8");
 
-		std::lock_guard<std::mutex> lock(csri_mutex);
-		instance = csri_open_mem(renderer, &data[0], data.size(), nullptr);
-	}
-	else {
-		if (tempfile.empty())
-			tempfile = unique_path(StandardPaths::DecodePath("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));
-		subs->Save(tempfile, false, false, "utf-8");
-
-		std::lock_guard<std::mutex> lock(csri_mutex);
-		instance = csri_open_file(renderer, tempfile.string().c_str(), nullptr);
-	}
+	std::lock_guard<std::mutex> lock(csri_mutex);
+	instance = csri_open_file(renderer, tempfile.string().c_str(), nullptr);
 }
 
 void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
