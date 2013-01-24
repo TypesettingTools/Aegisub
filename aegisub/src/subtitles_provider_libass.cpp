@@ -137,49 +137,32 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	// libass actually returns several alpha-masked monochrome images.
 	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.
 	// This is repeated for all of them.
-	while (img) {
+
+	using namespace boost::gil;
+	auto dst = interleaved_view(frame.w, frame.h, (bgra8_pixel_t*)frame.data, frame.pitch);
+	if (frame.flipped)
+		dst = flipped_up_down_view(dst);
+
+	for (; img; img = img->next) {
 		unsigned int opacity = 255 - ((unsigned int)_a(img->color));
 		unsigned int r = (unsigned int)_r(img->color);
 		unsigned int g = (unsigned int)_g(img->color);
 		unsigned int b = (unsigned int)_b(img->color);
 
-		// Prepare copy
-		int src_stride = img->stride;
-		int dst_stride = frame.pitch;
-		const unsigned char *src = img->bitmap;
+		auto srcview = interleaved_view(img->w, img->h, (gray8_pixel_t*)img->bitmap, img->stride);
+		auto dstview = subimage_view(dst, img->dst_x, img->dst_y, img->w, img->h);
 
-		unsigned char *dst = frame.data;
-		if (frame.flipped) {
-			dst += dst_stride * (frame.h - 1);
-			dst_stride *= -1;
-		}
-		dst += (img->dst_y * dst_stride + img->dst_x * 4);
+		transform_pixels(dstview, srcview, dstview, [=](const bgra8_pixel_t frame, const gray8_pixel_t src) -> bgra8_pixel_t {
+			unsigned int k = ((unsigned)src) * opacity / 255;
+			unsigned int ck = 255 - k;
 
-		// Copy image to destination frame
-		for (int y = 0; y < img->h; y++) {
-			unsigned char *dstp = dst;
-
-			for (int x = 0; x < img->w; ++x) {
-				unsigned int k = ((unsigned)src[x]) * opacity / 255;
-				unsigned int ck = 255 - k;
-
-				*dstp = (k * b + ck * *dstp) / 255;
-				++dstp;
-
-				*dstp = (k * g + ck * *dstp) / 255;
-				++dstp;
-
-				*dstp = (k * r + ck * *dstp) / 255;
-				++dstp;
-
-				++dstp;
-			}
-
-			dst += dst_stride;
-			src += src_stride;
-		}
-
-		img = img->next;
+			bgra8_pixel_t ret;
+			ret[0] = (k * b + ck * frame[0]) / 255;
+			ret[1] = (k * g + ck * frame[1]) / 255;
+			ret[2] = (k * r + ck * frame[2]) / 255;
+			ret[3] = 0;
+			return ret;
+		});
 	}
 }
 
