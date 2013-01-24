@@ -8,11 +8,6 @@ CPPFLAGS += $(CPPFLAGS_BOOST)
 PRECOMPILED_HEADER_NAME = lagi_pre.h
 lagi_pre.h.gch: CXXFLAGS := $(CXXFLAGS)
 
-ifeq (yes, $(BUILD_DARWIN))
-CXXFLAGS += -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Headers/
-LIBS += -L../universalchardet -luniversalchardet
-endif
-
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=\"$(P_LOCALE)\"
 
