@@ -22,6 +22,7 @@
 
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/writer.h"
+#include "libaegisub/dispatch.h"
 #include "libaegisub/io.h"
 #include "libaegisub/util.h"
 
@@ -31,6 +32,7 @@
 #include <boost/range/algorithm.hpp>
 #include <cstring>
 #include <functional>
+#include <mutex>
 
 namespace agi {
 	namespace log {
@@ -42,28 +44,43 @@ LogSink *log;
 /// Keep this ordered the same as Severity
 const char *Severity_ID = "EAWID";
 
+LogSink::LogSink()
+: messages(250)
+, queue(dispatch::Create())
+{ }
+
 LogSink::~LogSink() {
 	// The destructor for emitters may try to log messages, so disable all the
 	// emitters before destructing any
 	std::vector<Emitter*> emitters_temp;
-	swap(emitters_temp, emitters);
+	queue->Sync([&]{ swap(emitters_temp, emitters); });
 	util::delete_clear(emitters_temp);
 }
 
 void LogSink::Log(SinkMessage const& sm) {
-	messages.push_back(sm);
-	boost::for_each(emitters, [=](Emitter *em) { em->log(&messages.back()); });
+	queue->Async([=]{
+		messages.push_back(sm);
+		boost::for_each(emitters, [=](Emitter *em) { em->log(&messages.back()); });
+	});
 }
 
 void LogSink::Subscribe(Emitter *em) {
 	LOG_D("agi/log/emitter/subscribe") << "Subscribe: " << this;
-	emitters.push_back(em);
+	queue->Sync([=] { emitters.push_back(em); });
 }
 
 void LogSink::Unsubscribe(Emitter *em) {
-	emitters.erase(remove(emitters.begin(), emitters.end(), em), emitters.end());
-	delete em;
+	queue->Sync([=] {
+		emitters.erase(remove(emitters.begin(), emitters.end(), em), emitters.end());
+		delete em;
+	});
 	LOG_D("agi/log/emitter/unsubscribe") << "Un-Subscribe: " << this;
+}
+
+decltype(LogSink::messages) LogSink::GetMessages() const {
+	decltype(LogSink::messages) ret;
+	queue->Sync([&] { ret = messages; });
+	return ret;
 }
 
 Message::Message(const char *section, Severity severity, const char *file, const char *func, int line)

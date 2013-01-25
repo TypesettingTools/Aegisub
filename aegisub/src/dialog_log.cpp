@@ -39,6 +39,7 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 
+#include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
 
 #include <algorithm>
@@ -57,7 +58,7 @@ public:
 	EmitLog(wxTextCtrl *t)
 	: text_ctrl(t)
 	{
-		for (auto sm : agi::log::log->GetSink())
+		for (auto sm : agi::log::log->GetMessages())
 			log(&sm);
 	}
 
@@ -86,7 +87,11 @@ public:
 			sm->line,
 			to_wx(sm->message));
 #endif
-		text_ctrl->AppendText(log);
+
+		if (wxIsMainThread())
+			text_ctrl->AppendText(log);
+		else
+			agi::dispatch::Main().Async([=]{ text_ctrl->AppendText(log); });
 	}
 };
 

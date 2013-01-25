@@ -47,6 +47,8 @@
 #define LOG_D_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Debug)
 
 namespace agi {
+	namespace dispatch { class Queue; }
+
 	namespace log {
 class LogSink;
 
@@ -82,12 +84,13 @@ class Emitter;
 /// Log sink, single destination for all messages
 class LogSink {
 	boost::circular_buffer<SinkMessage> messages;
+	std::unique_ptr<dispatch::Queue> queue;
 
 	/// List of pointers to emitters
 	std::vector<Emitter*> emitters;
 
 public:
-	LogSink() : messages(250) { }
+	LogSink();
 	~LogSink();
 
 	/// Insert a message into the sink.
@@ -105,7 +108,7 @@ public:
 
 	/// @brief @get the complete (current) log.
 	/// @return Const pointer to internal sink.
-	decltype(messages) const& GetSink() const { return messages; }
+	decltype(messages) GetMessages() const;
 };
 
 /// An emitter to produce human readable output for a log sink.
