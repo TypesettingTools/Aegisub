@@ -60,10 +60,10 @@
 #include "main.h"
 #include "options.h"
 #include "search_replace_engine.h"
+#include "subs_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "subs_grid.h"
-#include "text_file_reader.h"
 #include "utils.h"
 #include "version.h"
 #include "video_box.h"
@@ -213,17 +213,19 @@ FrameMain::FrameMain (wxArrayString args)
 
 	StartupLog("Initializing context models");
 	memset(context.get(), 0, sizeof(*context));
-	AssFile::top = context->ass = new AssFile;
-	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
-	context->ass->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
-	context->ass->AddFileSaveListener(&FrameMain::UpdateTitle, this);
-
-	context->local_scripts = new Automation4::LocalScriptManager(context.get());
+	context->ass = new AssFile;
 
 	StartupLog("Initializing context controls");
+	context->subsController = new SubsController(context.get());
+	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
+	context->subsController->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
+	context->subsController->AddFileSaveListener(&FrameMain::UpdateTitle, this);
+
 	context->audioController = new AudioController(context.get());
 	context->audioController->AddAudioOpenListener(&FrameMain::OnAudioOpen, this);
 	context->audioController->AddAudioCloseListener(&FrameMain::OnAudioClose, this);
+
+	context->local_scripts = new Automation4::LocalScriptManager(context.get());
 
 	// Initialized later due to that the selection controller is currently the subtitles grid
 	context->selectionController = 0;
@@ -280,7 +282,7 @@ FrameMain::FrameMain (wxArrayString args)
 	SetDropTarget(new AegisubFileDropTarget(this));
 
 	StartupLog("Load default file");
-	context->ass->LoadDefault();
+	context->subsController->Close();
 
 	StartupLog("Display main window");
 	AddFullScreenButton(this);
@@ -408,75 +410,6 @@ void FrameMain::InitContents() {
 	StartupLog("Leaving InitContents");
 }
 
-void FrameMain::LoadSubtitles(agi::fs::path const& filename, std::string const& charset) {
-	if (TryToCloseSubs() == wxCANCEL) return;
-
-	try {
-		// Make sure that file isn't actually a timecode file
-		try {
-			TextFileReader testSubs(filename, charset);
-			std::string cur = testSubs.ReadLineFromFile();
-			if (boost::starts_with(cur, "# timecode")) {
-				context->videoController->LoadTimecodes(filename);
-				return;
-			}
-		}
-		catch (...) {
-			// if trying to load the file as timecodes fails it's fairly
-			// safe to assume that it is in fact not a timecode file
-		}
-
-		context->ass->Load(filename, charset);
-
-		StandardPaths::SetPathValue("?script", filename);
-		config::mru->Add("Subtitle", filename);
-		OPT_SET("Path/Last/Subtitles")->SetString(filename.parent_path().string());
-
-		// Save backup of file
-		if (context->ass->CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
-			if (agi::fs::FileExists(filename)) {
-				auto path_str = OPT_GET("Path/Auto/Backup")->GetString();
-				agi::fs::path path;
-				if (path_str.empty())
-					path = filename.parent_path();
-				else
-					path = StandardPaths::DecodePath(path_str);
-				agi::fs::CreateDirectory(path);
-				agi::fs::Copy(filename, path/(filename.stem().string() + ".ORIGINAL" + filename.extension().string()));
-			}
-		}
-	}
-	catch (agi::fs::FileNotFound const&) {
-		wxMessageBox(filename.wstring() + " not found.", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		config::mru->Remove("Subtitle", filename);
-		return;
-	}
-	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-	}
-	catch (...) {
-		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
-		return;
-	}
-}
-
-int FrameMain::TryToCloseSubs(bool enableCancel) {
-	if (context->ass->IsModified()) {
-		int flags = wxYES_NO;
-		if (enableCancel) flags |= wxCANCEL;
-		int result = wxMessageBox(wxString::Format(_("Do you want to save changes to %s?"), GetScriptFileName()), _("Unsaved changes"), flags, this);
-		if (result == wxYES) {
-			cmd::call("subtitle/save", context.get());
-			// If it fails saving, return cancel anyway
-			return context->ass->IsModified() ? wxCANCEL : wxYES;
-		}
-		return result;
-	}
-	else {
-		return wxYES;
-	}
-}
-
 void FrameMain::SetDisplayMode(int video, int audio) {
 	if (!IsShownOnScreen()) return;
 
@@ -512,8 +445,8 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 
 void FrameMain::UpdateTitle() {
 	wxString newTitle;
-	if (context->ass->IsModified()) newTitle << "* ";
-	newTitle << GetScriptFileName();
+	if (context->subsController->IsModified()) newTitle << "* ";
+	newTitle << context->subsController->Filename().filename().wstring();
 
 #ifndef __WXMAC__
 	newTitle << " - Aegisub " << GetAegisubLongVersionString();
@@ -521,7 +454,7 @@ void FrameMain::UpdateTitle() {
 
 #if defined(__WXMAC__) && !defined(__LP64__)
 	// On Mac, set the mark in the close button
-	OSXSetModified(context->ass->IsModified());
+	OSXSetModified(context->subsController->IsModified());
 #endif
 
 	if (GetTitle() != newTitle) SetTitle(newTitle);
@@ -596,7 +529,7 @@ bool FrameMain::LoadList(wxArrayString list) {
 
 	// Load files
 	if (subs.size())
-		LoadSubtitles(subs);
+		context->subsController->Load(subs);
 
 	if (blockVideoLoad) {
 		blockVideoLoad = false;
@@ -634,21 +567,18 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
 END_EVENT_TABLE()
 
-void FrameMain::OnCloseWindow (wxCloseEvent &event) {
-	// Stop audio and video
+void FrameMain::OnCloseWindow(wxCloseEvent &event) {
 	context->videoController->Stop();
 	context->audioController->Stop();
 
 	// Ask user if he wants to save first
-	bool canVeto = event.CanVeto();
-	int result = TryToCloseSubs(canVeto);
-	if (canVeto && result == wxCANCEL) {
+	if (context->subsController->TryToClose(event.CanVeto()) == wxCANCEL) {
 		event.Veto();
 		return;
 	}
 
 	delete context->dialog;
-	context->dialog = 0;
+	context->dialog = nullptr;
 
 	// Store maximization state
 	OPT_SET("App/Maximized")->SetBool(IsMaximized());
@@ -657,7 +587,7 @@ void FrameMain::OnCloseWindow (wxCloseEvent &event) {
 }
 
 void FrameMain::OnAutoSave(wxTimerEvent &) try {
-	auto fn = context->ass->AutoSave();
+	auto fn = context->subsController->AutoSave();
 	if (!fn.empty())
 		StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
 }
@@ -765,19 +695,4 @@ void FrameMain::OnKeyDown(wxKeyEvent &event) {
 
 void FrameMain::OnMouseWheel(wxMouseEvent &evt) {
 	ForwardMouseWheelEvent(this, evt);
-}
-
-wxString FrameMain::GetScriptFileName() const {
-	if (context->ass->filename.empty()) {
-		// Apple HIG says "untitled" should not be capitalised
-		// and the window is a document window, it shouldn't contain the app name
-		// (The app name is already present in the menu bar)
-#ifndef __WXMAC__
-		return _("Untitled");
-#else
-		return _("untitled");
-#endif
-	}
-	else
-		return context->ass->filename.filename().wstring();
 }

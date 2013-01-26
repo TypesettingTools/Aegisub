@@ -50,6 +50,7 @@
 #include "../initial_line_state.h"
 #include "../options.h"
 #include "../search_replace_engine.h"
+#include "../subs_controller.h"
 #include "../subs_edit_ctrl.h"
 #include "../subs_grid.h"
 #include "../text_selection_controller.h"
@@ -307,7 +308,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 	commit_text(c, _("set color"), -1, -1, &commit_id);
 
 	if (!ok) {
-		c->ass->Undo();
+		c->subsController->Undo();
 		c->textSelectionController->SetSelection(initial_sel_start, initial_sel_end);
 	}
 }
@@ -876,22 +877,22 @@ struct edit_redo : public Command {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	wxString StrMenu(const agi::Context *c) const {
-		return c->ass->IsRedoStackEmpty() ?
+		return c->subsController->IsRedoStackEmpty() ?
 			_("Nothing to &redo") :
-		wxString::Format(_("&Redo %s"), c->ass->GetRedoDescription());
+		wxString::Format(_("&Redo %s"), c->subsController->GetRedoDescription());
 	}
 	wxString StrDisplay(const agi::Context *c) const {
-		return c->ass->IsRedoStackEmpty() ?
+		return c->subsController->IsRedoStackEmpty() ?
 			_("Nothing to redo") :
-		wxString::Format(_("Redo %s"), c->ass->GetRedoDescription());
+		wxString::Format(_("Redo %s"), c->subsController->GetRedoDescription());
 	}
 
 	bool Validate(const agi::Context *c) {
-		return !c->ass->IsRedoStackEmpty();
+		return !c->subsController->IsRedoStackEmpty();
 	}
 
 	void operator()(agi::Context *c) {
-		c->ass->Redo();
+		c->subsController->Redo();
 	}
 };
 
@@ -902,22 +903,22 @@ struct edit_undo : public Command {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	wxString StrMenu(const agi::Context *c) const {
-		return c->ass->IsUndoStackEmpty() ?
+		return c->subsController->IsUndoStackEmpty() ?
 			_("Nothing to &undo") :
-			wxString::Format(_("&Undo %s"), c->ass->GetUndoDescription());
+			wxString::Format(_("&Undo %s"), c->subsController->GetUndoDescription());
 	}
 	wxString StrDisplay(const agi::Context *c) const {
-		return c->ass->IsUndoStackEmpty() ?
+		return c->subsController->IsUndoStackEmpty() ?
 			_("Nothing to undo") :
-			wxString::Format(_("Undo %s"), c->ass->GetUndoDescription());
+			wxString::Format(_("Undo %s"), c->subsController->GetUndoDescription());
 	}
 
 	bool Validate(const agi::Context *c) {
-		return !c->ass->IsUndoStackEmpty();
+		return !c->subsController->IsUndoStackEmpty();
 	}
 
 	void operator()(agi::Context *c) {
-		c->ass->Undo();
+		c->subsController->Undo();
 	}
 };
 

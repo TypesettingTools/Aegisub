@@ -7,6 +7,7 @@ class DialogManager;
 class SearchReplaceEngine;
 class InitialLineState;
 template<class T> class SelectionController;
+class SubsController;
 class SubsTextEditCtrl;
 class SubtitlesGrid;
 class TextSelectionController;
@@ -26,6 +27,7 @@ struct Context {
 	// Controllers
 	AudioController *audioController;
 	SelectionController<AssDialogue *> *selectionController;
+	SubsController *subsController;
 	TextSelectionController *textSelectionController;
 	VideoContext *videoController;
 

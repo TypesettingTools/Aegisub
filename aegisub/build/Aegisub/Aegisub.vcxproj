@@ -265,6 +265,7 @@
     <ClInclude Include="$(SrcDir)ass_info.h" />
     <ClInclude Include="$(SrcDir)options.h" />
     <ClInclude Include="$(SrcDir)search_replace_engine.h" />
+    <ClInclude Include="$(SrcDir)subs_controller.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
@@ -458,6 +459,7 @@
     <ClCompile Include="$(SrcDir)dialog_autosave.cpp" />
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
     <ClCompile Include="$(SrcDir)initial_line_state.cpp" />
+    <ClCompile Include="$(SrcDir)subs_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />

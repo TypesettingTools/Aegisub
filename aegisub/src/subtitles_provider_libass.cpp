@@ -52,6 +52,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
 
+#include <boost/range/algorithm_ext/push_back.hpp>
 #include <boost/gil/gil_all.hpp>
 #include <memory>
 #include <mutex>
@@ -117,7 +118,17 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	std::vector<char> data;
-	subs->SaveMemory(data);
+	data.clear();
+	data.reserve(0x4000);
+
+	AssEntryGroup group = ENTRY_GROUP_MAX;
+	for (auto const& line : subs->Line) {
+		if (group != line.Group()) {
+			group = line.Group();
+			boost::push_back(data, line.GroupHeader() + "\r\n");
+		}
+		boost::push_back(data, line.GetEntryData() + "\r\n");
+	}
 
 	if (ass_track) ass_free_track(ass_track);
 	ass_track = ass_read_memory(library, &data[0], data.size(),(char *)"UTF-8");

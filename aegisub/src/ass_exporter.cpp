@@ -40,6 +40,7 @@
 #include "ass_file.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
+#include "subtitle_format.h"
 
 #include <algorithm>
 #include <memory>
@@ -106,7 +107,11 @@ AssFile *AssExporter::ExportTransform(wxWindow *export_dialog, bool copy) {
 
 void AssExporter::Export(agi::fs::path const& filename, std::string const& charset, wxWindow *export_dialog) {
 	std::unique_ptr<AssFile> subs(ExportTransform(export_dialog, true));
-	subs->Save(filename, false, false, charset);
+	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
+	if (!writer)
+		throw "Unknown file type.";
+
+	writer->WriteFile(subs.get(), filename, charset);
 }
 
 wxSizer *AssExporter::GetSettingsSizer(std::string const& name) {

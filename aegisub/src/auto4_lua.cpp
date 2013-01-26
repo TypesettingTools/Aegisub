@@ -47,6 +47,7 @@
 #include "include/aegisub/context.h"
 #include "main.h"
 #include "selection_controller.h"
+#include "subs_controller.h"
 #include "standard_paths.h"
 #include "video_context.h"
 #include "utils.h"
@@ -159,8 +160,8 @@ namespace {
 	int get_file_name(lua_State *L)
 	{
 		const agi::Context *c = get_context(L);
-		if (c && !c->ass->filename.empty())
-			push_value(L, c->ass->filename.filename());
+		if (c && !c->subsController->Filename().empty())
+			push_value(L, c->subsController->Filename().filename());
 		else
 			lua_pushnil(L);
 		return 1;

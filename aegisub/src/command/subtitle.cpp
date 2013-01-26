@@ -47,12 +47,12 @@
 #include "../dialog_properties.h"
 #include "../dialog_search_replace.h"
 #include "../dialog_spellchecker.h"
-#include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../main.h"
 #include "../options.h"
 #include "../search_replace_engine.h"
 #include "../selection_controller.h"
+#include "../subs_controller.h"
 #include "../subtitle_format.h"
 #include "../utils.h"
 #include "../video_context.h"
@@ -246,8 +246,8 @@ struct subtitle_new : public Command {
 	STR_HELP("New subtitles")
 
 	void operator()(agi::Context *c) {
-		if (wxGetApp().frame->TryToCloseSubs() != wxCANCEL)
-			c->ass->LoadDefault();
+		if (c->subsController->TryToClose() != wxCANCEL)
+			c->subsController->Close();
 	}
 };
 
@@ -262,7 +262,7 @@ struct subtitle_open : public Command {
 	void operator()(agi::Context *c) {
 		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (!filename.empty())
-			wxGetApp().frame->LoadSubtitles(filename);
+			c->subsController->Load(filename);
 	}
 };
 
@@ -275,7 +275,7 @@ struct subtitle_open_autosave : public Command {
 	void operator()(agi::Context *c) {
 		DialogAutosave dialog(c->parent);
 		if (dialog.ShowModal() == wxID_OK)
-			wxGetApp().frame->LoadSubtitles(dialog.ChosenFile());
+			c->subsController->Load(dialog.ChosenFile());
 	}
 };
 
@@ -293,7 +293,7 @@ struct subtitle_open_charset : public Command {
 		wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
 		if (charset.empty()) return;
 
-		wxGetApp().frame->LoadSubtitles(filename, from_wx(charset));
+		c->subsController->Load(filename, from_wx(charset));
 	}
 };
 
@@ -306,7 +306,7 @@ struct subtitle_open_video : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
-		wxGetApp().frame->LoadSubtitles(c->videoController->GetVideoName(), "binary");
+		c->subsController->Load(c->videoController->GetVideoName(), "binary");
 	}
 
 	bool Validate(const agi::Context *c) {
@@ -332,13 +332,13 @@ static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
 		filename = SaveFileSelector(_("Save subtitles file"), "Path/Last/Subtitles",
-			c->ass->filename.stem().string() + ".ass", "ass",
+			c->subsController->Filename().stem().string() + ".ass", "ass",
 			"Advanced Substation Alpha (*.ass)|*.ass", c->parent);
 		if (filename.empty()) return;
 	}
 
 	try {
-		c->ass->Save(filename, true, true);
+		c->subsController->Save(filename);
 	}
 	catch (const agi::Exception& err) {
 		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
@@ -360,11 +360,11 @@ struct subtitle_save : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
-		save_subtitles(c, c->ass->CanSave() ? c->ass->filename : "");
+		save_subtitles(c, c->subsController->CanSave() ? c->subsController->Filename() : "");
 	}
 
 	bool Validate(const agi::Context *c) {
-		return c->ass->IsModified();
+		return c->subsController->IsModified();
 	}
 };
 

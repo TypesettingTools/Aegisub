@@ -37,9 +37,8 @@
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"
 
-#include "ass_file.h"
+#include "subtitle_format.h"
 #include "standard_paths.h"
-#include "video_context.h"
 #include "video_frame.h"
 
 #include <libaegisub/fs.h>
@@ -81,7 +80,7 @@ CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	if (tempfile.empty())
 		tempfile = unique_path(StandardPaths::DecodePath("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));
-	subs->Save(tempfile, false, false, "utf-8");
+	SubtitleFormat::GetWriter(tempfile)->WriteFile(subs, tempfile, "utf-8");
 
 	std::lock_guard<std::mutex> lock(csri_mutex);
 	instance = csri_open_file(renderer, tempfile.string().c_str(), nullptr);

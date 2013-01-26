@@ -183,7 +183,7 @@ class SubsEditBox : public wxPanel {
 	void SetSelectedRows(T AssDialogue::*field, wxString const& value, wxString const& desc, int type, bool amend = false);
 
 	/// @brief Reload the current line from the file
-	/// @param type AssFile::CommitType
+	/// @param type AssFile::COMMITType
 	void OnCommit(int type);
 
 	/// Regenerate a dropdown list with the unique values of a dialogue field

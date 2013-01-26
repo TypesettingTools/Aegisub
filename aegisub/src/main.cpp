@@ -45,11 +45,13 @@
 #include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"
+#include "include/aegisub/context.h"
 #include "main.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "plugin_manager.h"
 #include "standard_paths.h"
+#include "subs_controller.h"
 #include "subtitle_format.h"
 #include "version.h"
 #include "video_context.h"
@@ -364,15 +366,15 @@ StackWalker::~StackWalker() {
 /// Message displayed when an exception has occurred.
 const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
-static void UnhandledExeception(bool stackWalk) {
+static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
-	if (AssFile::top) {
+	if (c->ass && c->subsController) {
 		auto path = StandardPaths::DecodePath("?user/recovered");
 		agi::fs::CreateDirectory(path);
 
-		auto filename = AssFile::top->filename.empty() ? "untitled" : AssFile::top->filename.stem().string();
+		auto filename = c->subsController->Filename().stem();
 		path /= str(boost::format("%s.%s.ass") % filename % agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
-		AssFile::top->Save(path, false, false);
+		c->subsController->Save(path);
 
 #if wxUSE_STACKWALKER == 1
 		if (stackWalk) {
@@ -397,11 +399,11 @@ static void UnhandledExeception(bool stackWalk) {
 }
 
 void AegisubApp::OnUnhandledException() {
-	UnhandledExeception(false);
+	UnhandledExeception(false, frame ? frame->context.get() : nullptr);
 }
 
 void AegisubApp::OnFatalException() {
-	UnhandledExeception(true);
+	UnhandledExeception(true, frame ? frame->context.get() : nullptr);
 }
 
 void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const {
@@ -456,9 +458,6 @@ int AegisubApp::OnRun() {
 }
 
 void AegisubApp::MacOpenFile(const wxString &filename) {
-	if (frame != nullptr && !filename.empty()) {
-		frame->LoadSubtitles(from_wx(filename));
-		wxFileName filepath(filename);
-		OPT_SET("Path/Last/Subtitles")->SetString(from_wx(filepath.GetPath()));
-	}
+	if (frame && !filename.empty())
+		frame->context->subsController->Load(agi::fs::path(filename));
 }

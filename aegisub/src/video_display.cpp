@@ -32,7 +32,6 @@
 /// @ingroup video main_ui
 ///
 
-// Includes
 #include "config.h"
 
 #include <algorithm>
@@ -60,6 +59,7 @@
 #include "include/aegisub/menu.h"
 #include "options.h"
 #include "spline_curve.h"
+#include "subs_controller.h"
 #include "threaded_frame_source.h"
 #include "utils.h"
 #include "video_out_gl.h"
@@ -111,7 +111,7 @@ VideoDisplay::VideoDisplay(
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::UpdateSize, this));
 	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
 
-	slots.push_back(con->ass->AddFileSaveListener(&VideoDisplay::OnSubtitlesSave, this));
+	slots.push_back(con->subsController->AddFileSaveListener(&VideoDisplay::OnSubtitlesSave, this));
 
 	Bind(wxEVT_PAINT, std::bind(&VideoDisplay::Render, this));
 	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);

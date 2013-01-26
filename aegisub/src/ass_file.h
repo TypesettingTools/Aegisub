@@ -32,60 +32,42 @@
 /// @ingroup subs_storage
 ///
 
-#include <boost/container/list.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/intrusive/list.hpp>
-#include <set>
-#include <vector>
-#include <wx/string.h>
+#include "ass_entry.h"
 
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
-#include "ass_entry.h"
+#include <boost/intrusive/list.hpp>
+#include <set>
+#include <vector>
 
 class AssDialogue;
 class AssStyle;
 class AssAttachment;
+class wxString;
 
 typedef boost::intrusive::make_list<AssEntry, boost::intrusive::constant_time_size<false>>::type EntryList;
 typedef EntryList::iterator entryIter;
 typedef EntryList::const_iterator constEntryIter;
 
+struct AssFileCommit {
+	wxString const& message;
+	int *commit_id;
+	AssEntry *single_line;
+};
+
 class AssFile {
-	boost::container::list<AssFile> UndoStack;
-	boost::container::list<AssFile> RedoStack;
-	wxString undoDescription;
-	/// Revision counter for undo coalescing and modified state tracking
-	int commitId;
-	/// Last saved version of this file
-	int savedCommitId;
-	/// Last autosaved version of this file
-	int autosavedCommitId;
-
-	/// A set of changes has been committed to the file (AssFile::CommitType)
+	/// A set of changes has been committed to the file (AssFile::COMMITType)
 	agi::signal::Signal<int, std::set<const AssEntry*> const&> AnnounceCommit;
-	/// A new file has been opened (filename)
-	agi::signal::Signal<agi::fs::path> FileOpen;
-	/// The file is about to be saved
-	/// This signal is intended for adding metadata such as video filename,
-	/// frame number, etc. Ideally this would all be done immediately rather
-	/// than waiting for a save, but that causes (more) issues with undo
-	agi::signal::Signal<> FileSave;
-
+	agi::signal::Signal<AssFileCommit> PushState;
 public:
 	/// The lines in the file
 	EntryList Line;
-	/// The filename of this file, if any
-	agi::fs::path filename;
 
-	AssFile();
+	AssFile() { }
 	AssFile(const AssFile &from);
 	AssFile& operator=(AssFile from);
 	~AssFile();
-
-	/// Does the file have unsaved changes?
-	bool IsModified() const { return commitId != savedCommitId; };
 
 	/// @brief Load default file
 	/// @param defline Add a blank line to the file
@@ -102,30 +84,6 @@ public:
 	AssStyle *GetStyle(std::string const& name);
 
 	void swap(AssFile &) throw();
-
-	/// @brief Load from a file
-	/// @param file File name
-	/// @param charset Character set of file or empty to autodetect
-	void Load(agi::fs::path const& file, std::string const& charset="");
-
-	/// @brief Save to a file
-	/// @param file Path to save to
-	/// @param setfilename Should the filename be changed to the passed path?
-	/// @param addToRecent Should the file be added to the MRU list?
-	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means "App/Save Charset")
-	void Save(agi::fs::path const& file, bool setfilename=false, bool addToRecent=true, std::string const& encoding="");
-
-	/// @brief Autosave the file if there have been any chances since the last autosave
-	/// @return File name used or empty if no save was performed
-	agi::fs::path AutoSave();
-
-	/// @brief Save to a memory buffer. Used for subtitle providers which support it
-	/// @param[out] dst Destination vector
-	void SaveMemory(std::vector<char> &dst);
-	/// Add file name to the MRU list
-	void AddToRecent(agi::fs::path const& file) const;
-	/// Can the file be saved in its current format?
-	bool CanSave() const;
 
 	/// @brief Get the script resolution
 	/// @param[out] w Width
@@ -169,8 +127,7 @@ public:
 	};
 
 	DEFINE_SIGNAL_ADDERS(AnnounceCommit, AddCommitListener)
-	DEFINE_SIGNAL_ADDERS(FileOpen, AddFileOpenListener)
-	DEFINE_SIGNAL_ADDERS(FileSave, AddFileSaveListener)
+	DEFINE_SIGNAL_ADDERS(PushState, AddUndoManager)
 
 	/// @brief Flag the file as modified and push a copy onto the undo stack
 	/// @param desc        Undo description
@@ -179,21 +136,6 @@ public:
 	/// @param single_line Line which was changed, if only one line was
 	/// @return Unique identifier for the new undo group
 	int Commit(wxString const& desc, int type, int commitId = -1, AssEntry *single_line = 0);
-	/// @brief Undo the last set of changes to the file
-	void Undo();
-	/// @brief Redo the last undone changes
-	void Redo();
-	/// Check if undo stack is empty
-	bool IsUndoStackEmpty() const { return UndoStack.size() <= 1; };
-	/// Check if redo stack is empty
-	bool IsRedoStackEmpty() const { return RedoStack.empty(); };
-	/// Get the description of the first undoable change
-	wxString GetUndoDescription() const;
-	/// Get the description of the first redoable change
-	wxString GetRedoDescription() const;
-
-	/// Current script file. It is "above" the stack.
-	static AssFile *top;
 
 	/// Comparison function for use when sorting
 	typedef bool (*CompFunc)(const AssDialogue* lft, const AssDialogue* rgt);

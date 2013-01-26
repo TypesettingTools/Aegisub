@@ -47,6 +47,7 @@
 #include "options.h"
 #include "persist_location.h"
 #include "selection_controller.h"
+#include "subs_controller.h"
 #include "standard_paths.h"
 #include "subtitle_format.h"
 #include "utils.h"
@@ -565,7 +566,11 @@ void DialogStyleManager::OnCurrentImport() {
 
 	AssFile temp;
 	try {
-		temp.Load(filename);
+		auto reader = SubtitleFormat::GetReader(filename);
+		if (!reader)
+			wxMessageBox("Unsupported subtitle format", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		else
+			reader->ReadFile(&temp, filename);
 	}
 	catch (agi::Exception const& err) {
 		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);

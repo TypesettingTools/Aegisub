@@ -38,10 +38,10 @@
 
 #include "../audio_controller.h"
 #include "../compat.h"
-#include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../main.h"
 #include "../options.h"
+#include "../subs_controller.h"
 #include "../video_context.h"
 
 #include <wx/event.h>
@@ -93,7 +93,7 @@ struct recent_subtitle_entry : public Command {
 	STR_HELP("Open recent subtitles")
 
 	void operator()(agi::Context *c, int id) {
-		wxGetApp().frame->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
+		c->subsController->Load(config::mru->GetEntry("Subtitle", id));
 	}
 };
 

@@ -40,23 +40,14 @@
 #include "ass_info.h"
 #include "ass_style.h"
 #include "options.h"
-#include "standard_paths.h"
-#include "subtitle_format.h"
-#include "text_file_reader.h"
-#include "text_file_writer.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
-#include <libaegisub/fs.h>
 #include <libaegisub/of_type_adaptor.h>
-#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/format.hpp>
-#include <boost/range/algorithm_ext/push_back.hpp>
-#include <list>
+#include <boost/filesystem/path.hpp>
 
 namespace std {
 	template<>
@@ -65,134 +56,10 @@ namespace std {
 	}
 }
 
-AssFile::AssFile ()
-: commitId(0)
-{
-}
-
 AssFile::~AssFile() {
 	auto copy = new EntryList;
 	copy->swap(Line);
 	agi::dispatch::Background().Async([=]{ delete copy; });
-}
-
-/// @brief Load generic subs
-void AssFile::Load(agi::fs::path const& filename, std::string const& charset) {
-	const SubtitleFormat *reader = SubtitleFormat::GetReader(filename);
-
-	try {
-		AssFile temp;
-		reader->ReadFile(&temp, filename, charset);
-
-		bool found_style = false;
-		bool found_dialogue = false;
-
-		// Check if the file has at least one style and at least one dialogue line
-		for (auto const& line : temp.Line) {
-			AssEntryGroup type = line.Group();
-			if (type == ENTRY_STYLE) found_style = true;
-			if (type == ENTRY_DIALOGUE) found_dialogue = true;
-			if (found_style && found_dialogue) break;
-		}
-
-		// And if it doesn't add defaults for each
-		if (!found_style)
-			temp.InsertLine(new AssStyle);
-		if (!found_dialogue)
-			temp.InsertLine(new AssDialogue);
-
-		swap(temp);
-	}
-	catch (agi::UserCancelException const&) {
-		return;
-	}
-
-	// Set general data
-	this->filename = filename;
-
-	// Add comments and set vars
-	SetScriptInfo("ScriptType", "v4.00+");
-
-	// Push the initial state of the file onto the undo stack
-	UndoStack.clear();
-	RedoStack.clear();
-	undoDescription.clear();
-	autosavedCommitId = savedCommitId = commitId + 1;
-	Commit("", COMMIT_NEW);
-
-	FileOpen(filename);
-}
-
-void AssFile::Save(agi::fs::path const& filename, bool setfilename, bool addToRecent, std::string const& encoding) {
-	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
-	if (!writer)
-		throw "Unknown file type.";
-
-	if (setfilename) {
-		autosavedCommitId = savedCommitId = commitId;
-		this->filename = filename;
-		StandardPaths::SetPathValue("?script", filename.parent_path());
-	}
-
-	FileSave();
-
-	writer->WriteFile(this, filename, encoding);
-
-	if (addToRecent)
-		AddToRecent(filename);
-}
-
-agi::fs::path AssFile::AutoSave() {
-	if (commitId == autosavedCommitId)
-		return "";
-
-	auto path = StandardPaths::DecodePath(OPT_GET("Path/Auto/Save")->GetString());
-	if (path.empty())
-		path = filename.parent_path();
-
-	agi::fs::CreateDirectory(path);
-
-	auto name = filename.filename();
-	if (name.empty())
-		name = "Untitled";
-
-	path /= str(boost::format("%s.%s.AUTOSAVE.ass") % name % agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
-
-	Save(path, false, false);
-
-	autosavedCommitId = commitId;
-
-	return path;
-}
-
-void AssFile::SaveMemory(std::vector<char> &dst) {
-	// Check if subs contain at least one style
-	// Add a default style if they don't for compatibility with libass/asa
-	if (GetStyles().empty())
-		InsertLine(new AssStyle);
-
-	// Prepare vector
-	dst.clear();
-	dst.reserve(0x4000);
-
-	// Write file
-	AssEntryGroup group = ENTRY_GROUP_MAX;
-	for (auto const& line : Line) {
-		if (group != line.Group()) {
-			group = line.Group();
-			boost::push_back(dst, line.GroupHeader() + "\r\n");
-		}
-		boost::push_back(dst, line.GetEntryData() + "\r\n");
-	}
-}
-
-bool AssFile::CanSave() const {
-	try {
-		return SubtitleFormat::GetWriter(filename)->CanSave(this);
-	}
-	catch (...) {
-		return false;
-	}
 }
 
 void AssFile::LoadDefault(bool defline) {
@@ -211,26 +78,13 @@ void AssFile::LoadDefault(bool defline) {
 
 	if (defline)
 		Line.push_back(*new AssDialogue);
-
-	autosavedCommitId = savedCommitId = commitId + 1;
-	Commit("", COMMIT_NEW);
-	StandardPaths::SetPathValue("?script", "");
-	FileOpen("");
 }
 
 void AssFile::swap(AssFile &that) throw() {
-	// Intentionally does not swap undo stack related things
-	using std::swap;
-	swap(commitId, that.commitId);
-	swap(undoDescription, that.undoDescription);
-	swap(Line, that.Line);
+	Line.swap(that.Line);
 }
 
-AssFile::AssFile(const AssFile &from)
-: undoDescription(from.undoDescription)
-, commitId(from.commitId)
-, filename(from.filename)
-{
+AssFile::AssFile(const AssFile &from) {
 	Line.clone_from(from.Line, std::mem_fun_ref(&AssEntry::Clone), delete_ptr());
 }
 AssFile& AssFile::operator=(AssFile from) {
@@ -332,83 +186,17 @@ AssStyle *AssFile::GetStyle(std::string const& name) {
 	return nullptr;
 }
 
-void AssFile::AddToRecent(agi::fs::path const& file) const {
-	config::mru->Add("Subtitle", file);
-	OPT_SET("Path/Last/Subtitles")->SetString(file.parent_path().string());
-}
+int AssFile::Commit(wxString const& desc, int type, int amend_id, AssEntry *single_line) {
+	AssFileCommit c = { desc, &amend_id, single_line };
+	PushState(c);
 
-int AssFile::Commit(wxString const& desc, int type, int amendId, AssEntry *single_line) {
 	std::set<const AssEntry*> changed_lines;
 	if (single_line)
 		changed_lines.insert(single_line);
 
-	++commitId;
-	// Allow coalescing only if it's the last change and the file has not been
-	// saved since the last change
-	if (commitId == amendId+1 && RedoStack.empty() && savedCommitId+1 != commitId && autosavedCommitId+1 != commitId) {
-		// If only one line changed just modify it instead of copying the file
-		if (single_line) {
-			entryIter this_it = Line.begin(), undo_it = UndoStack.back().Line.begin();
-			while (&*this_it != single_line) {
-				++this_it;
-				++undo_it;
-			}
-			UndoStack.back().Line.insert(undo_it, *single_line->Clone());
-			delete &*undo_it;
-		}
-		else {
-			UndoStack.back() = *this;
-		}
-		AnnounceCommit(type, changed_lines);
-		return commitId;
-	}
-
-	RedoStack.clear();
-
-	// Place copy on stack
-	undoDescription = desc;
-	UndoStack.push_back(*this);
-
-	// Cap depth
-	int depth = std::max<int>(OPT_GET("Limits/Undo Levels")->GetInt(), 2);
-	while ((int)UndoStack.size() > depth) {
-		UndoStack.pop_front();
-	}
-
-	if (UndoStack.size() > 1 && OPT_GET("App/Auto/Save on Every Change")->GetBool() && !filename.empty() && CanSave())
-		Save(filename);
-
 	AnnounceCommit(type, changed_lines);
-	return commitId;
-}
 
-void AssFile::Undo() {
-	if (UndoStack.size() <= 1) return;
-
-	RedoStack.emplace_back();
-	swap(RedoStack.back());
-	UndoStack.pop_back();
-	*this = UndoStack.back();
-
-	AnnounceCommit(COMMIT_NEW, std::set<const AssEntry*>());
-}
-
-void AssFile::Redo() {
-	if (RedoStack.empty()) return;
-
-	swap(RedoStack.back());
-	UndoStack.push_back(*this);
-	RedoStack.pop_back();
-
-	AnnounceCommit(COMMIT_NEW, std::set<const AssEntry*>());
-}
-
-wxString AssFile::GetUndoDescription() const {
-	return IsUndoStackEmpty() ? "" : UndoStack.back().undoDescription;
-}
-
-wxString AssFile::GetRedoDescription() const {
-	return IsRedoStackEmpty() ? "" : RedoStack.back().undoDescription;
+	return amend_id;
 }
 
 bool AssFile::CompStart(const AssDialogue* lft, const AssDialogue* rgt) {
@@ -434,13 +222,6 @@ void AssFile::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
 	Sort(Line, comp, limit);
 }
 namespace {
-	struct AssEntryComp : public std::binary_function<AssEntry, AssEntry, bool> {
-		AssFile::CompFunc comp;
-		bool operator()(AssEntry const&a, AssEntry const&b) const {
-			return comp(static_cast<const AssDialogue*>(&a), static_cast<const AssDialogue*>(&b));
-		}
-	};
-
 	inline bool is_dialogue(AssEntry *e, std::set<AssDialogue*> const& limit) {
 		AssDialogue *d = dynamic_cast<AssDialogue*>(e);
 		return d && (limit.empty() || limit.count(d));
@@ -448,8 +229,10 @@ namespace {
 }
 
 void AssFile::Sort(EntryList &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
-	AssEntryComp compE;
-	compE.comp = comp;
+	auto compE = [&](AssEntry const& a, AssEntry const& b) {
+		return comp(static_cast<const AssDialogue*>(&a), static_cast<const AssDialogue*>(&b));
+	};
+
 	// Sort each block of AssDialogues separately, leaving everything else untouched
 	for (entryIter begin = lst.begin(); begin != lst.end(); ++begin) {
 		if (!is_dialogue(&*begin, limit)) continue;
@@ -465,5 +248,3 @@ void AssFile::Sort(EntryList &lst, CompFunc comp, std::set<AssDialogue*> const& 
 		begin = --end;
 	}
 }
-
-AssFile *AssFile::top;

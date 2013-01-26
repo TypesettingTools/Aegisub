@@ -46,6 +46,7 @@
 #include "pen.h"
 #include "options.h"
 #include "selection_controller.h"
+#include "subs_controller.h"
 #include "utils.h"
 #include "video_context.h"
 
@@ -56,7 +57,7 @@
 
 AudioController::AudioController(agi::Context *context)
 : context(context)
-, subtitle_save_slot(context->ass->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
+, subtitle_save_slot(context->subsController->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
 , player(0)
 , provider(0)
 , playback_mode(PM_NotPlaying)
@@ -238,9 +239,7 @@ void AudioController::SetTimingController(AudioTimingController *new_controller)
 void AudioController::OnTimingControllerUpdatedPrimaryRange()
 {
 	if (playback_mode == PM_PrimaryRange)
-	{
 		player->SetEndPosition(SamplesFromMilliseconds(timing_controller->GetPrimaryPlaybackRange().end()));
-	}
 }
 
 void AudioController::OnSubtitlesSave()

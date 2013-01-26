@@ -48,6 +48,7 @@
 #include <libaegisub/charset_conv.h>
 
 #include <algorithm>
+#include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <wx/button.h>

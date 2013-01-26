@@ -221,6 +221,7 @@ SRC += \
 	spline_curve.cpp \
 	standard_paths.cpp \
 	string_codec.cpp \
+	subs_controller.cpp \
 	subs_edit_box.cpp \
 	subs_edit_ctrl.cpp \
 	subs_grid.cpp \

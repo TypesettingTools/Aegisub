@@ -47,6 +47,7 @@
 #include <libaegisub/of_type_adaptor.h>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
 
 TranStationSubtitleFormat::TranStationSubtitleFormat()

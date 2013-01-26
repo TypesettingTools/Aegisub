@@ -44,6 +44,7 @@
 #include "options.h"
 #include "standard_paths.h"
 #include "string_codec.h"
+#include "subs_controller.h"
 #include "subtitle_format.h"
 #include "utils.h"
 
@@ -379,8 +380,8 @@ namespace Automation4 {
 	LocalScriptManager::LocalScriptManager(agi::Context *c)
 	: context(c)
 	{
-		slots.push_back(c->ass->AddFileSaveListener(&LocalScriptManager::OnSubtitlesSave, this));
-		slots.push_back(c->ass->AddFileOpenListener(&LocalScriptManager::Reload, this));
+		slots.push_back(c->subsController->AddFileSaveListener(&LocalScriptManager::OnSubtitlesSave, this));
+		slots.push_back(c->subsController->AddFileOpenListener(&LocalScriptManager::Reload, this));
 	}
 
 	void LocalScriptManager::Reload()
@@ -403,7 +404,7 @@ namespace Automation4 {
 
 			agi::fs::path basepath;
 			if (first_char == '~') {
-				basepath = context->ass->filename.parent_path();
+				basepath = context->subsController->Filename().parent_path();
 			} else if (first_char == '$') {
 				basepath = autobasefn;
 			} else if (first_char == '/') {

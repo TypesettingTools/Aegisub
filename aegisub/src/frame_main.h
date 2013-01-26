@@ -45,6 +45,7 @@
 #include <wx/sizer.h>
 #include <wx/timer.h>
 
+class AegisubApp;
 class AegisubFileDropTarget;
 class AssFile;
 class AudioBox;
@@ -62,6 +63,7 @@ class VideoZoomSlider;
 namespace agi { struct Context; class OptionValue; }
 
 class FrameMain: public wxFrame {
+	friend class AegisubApp;
 	friend class AegisubFileDropTarget;
 
 	std::unique_ptr<agi::Context> context;
@@ -88,7 +90,6 @@ class FrameMain: public wxFrame {
 	void OnFilesDropped(wxThreadEvent &evt);
 	bool LoadList(wxArrayString list);
 	void UpdateTitle();
-	wxString GetScriptFileName() const;
 
 	void OnKeyDown(wxKeyEvent &event);
 	void OnMouseWheel(wxMouseEvent &evt);
@@ -133,12 +134,6 @@ public:
 
 	bool IsVideoShown() const { return showVideo; }
 	bool IsAudioShown() const { return showAudio; }
-
-	/// Close the currently open subs, asking the user if they want to save if there are unsaved changes
-	/// @param enableCancel Should the user be able to cancel the close?
-	int TryToCloseSubs(bool enableCancel=true);
-
-	void LoadSubtitles(agi::fs::path const& filename, std::string const& charset="");
 
 	DECLARE_EVENT_TABLE()
 };

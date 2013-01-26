@@ -58,6 +58,7 @@
 #include "frame_main.h"
 #include "options.h"
 #include "utils.h"
+#include "subs_controller.h"
 #include "video_context.h"
 #include "video_slider.h"
 
@@ -117,8 +118,8 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	OPT_SUB("Subtitle/Grid/Font Size", &BaseGrid::UpdateStyle, this);
 	OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &BaseGrid::OnHighlightVisibleChange, this);
 	context->ass->AddCommitListener(&BaseGrid::OnSubtitlesCommit, this);
-	context->ass->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this);
-	context->ass->AddFileSaveListener(&BaseGrid::OnSubtitlesSave, this);
+	context->subsController->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this);
+	context->subsController->AddFileSaveListener(&BaseGrid::OnSubtitlesSave, this);
 
 	OPT_SUB("Colour/Subtitle Grid/Active Border", &BaseGrid::UpdateStyle, this);
 	OPT_SUB("Colour/Subtitle Grid/Background/Background", &BaseGrid::UpdateStyle, this);

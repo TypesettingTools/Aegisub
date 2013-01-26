@@ -31,6 +31,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "subs_controller.h"
 #include "standard_paths.h"
 #include "timeedit_ctrl.h"
 #include "video_context.h"
@@ -278,7 +279,7 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	json::Object new_entry;
-	new_entry["filename"] = context->ass->filename.filename().string();
+	new_entry["filename"] = context->subsController->Filename().filename().string();
 	new_entry["is by time"] = shift_by_time->GetValue();
 	new_entry["is backward"] = shift_backward->GetValue();
 	new_entry["amount"] = from_wx(shift_by_time->GetValue() ? shift_time->GetValue() : shift_frames->GetValue());

@@ -687,6 +687,9 @@
     <ClInclude Include="$(SrcDir)initial_line_state.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)subs_controller.h">
+      <Filter>ASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1234,6 +1237,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)initial_line_state.cpp">
       <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)subs_controller.cpp">
+      <Filter>ASS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

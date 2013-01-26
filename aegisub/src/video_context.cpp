@@ -46,6 +46,7 @@
 #include "mkv_wrap.h"
 #include "options.h"
 #include "selection_controller.h"
+#include "subs_controller.h"
 #include "time_range.h"
 #include "threaded_frame_source.h"
 #include "utils.h"
@@ -116,7 +117,7 @@ void VideoContext::Reset() {
 void VideoContext::SetContext(agi::Context *context) {
 	this->context = context;
 	context->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
-	context->ass->AddFileSaveListener(&VideoContext::OnSubtitlesSave, this);
+	context->subsController->AddFileSaveListener(&VideoContext::OnSubtitlesSave, this);
 }
 
 void VideoContext::SetVideo(const agi::fs::path &filename) {

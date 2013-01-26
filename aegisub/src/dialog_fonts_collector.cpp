@@ -35,6 +35,7 @@
 #include "scintilla_text_ctrl.h"
 #include "selection_controller.h"
 #include "standard_paths.h"
+#include "subs_controller.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
