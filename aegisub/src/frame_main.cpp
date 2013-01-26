@@ -409,9 +409,7 @@ void FrameMain::InitContents() {
 }
 
 void FrameMain::LoadSubtitles(agi::fs::path const& filename, std::string const& charset) {
-	if (context->ass->loaded) {
-		if (TryToCloseSubs() == wxCANCEL) return;
-	}
+	if (TryToCloseSubs() == wxCANCEL) return;
 
 	try {
 		// Make sure that file isn't actually a timecode file

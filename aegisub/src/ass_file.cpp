@@ -67,7 +67,6 @@ namespace std {
 
 AssFile::AssFile ()
 : commitId(0)
-, loaded(false)
 {
 }
 
@@ -109,7 +108,6 @@ void AssFile::Load(agi::fs::path const& filename, std::string const& charset) {
 	}
 
 	// Set general data
-	loaded = true;
 	this->filename = filename;
 
 	// Add comments and set vars
@@ -145,7 +143,7 @@ void AssFile::Save(agi::fs::path const& filename, bool setfilename, bool addToRe
 }
 
 agi::fs::path AssFile::AutoSave() {
-	if (!loaded || commitId == autosavedCommitId)
+	if (commitId == autosavedCommitId)
 		return "";
 
 	auto path = StandardPaths::DecodePath(OPT_GET("Path/Auto/Save")->GetString());
@@ -216,7 +214,6 @@ void AssFile::LoadDefault(bool defline) {
 
 	autosavedCommitId = savedCommitId = commitId + 1;
 	Commit("", COMMIT_NEW);
-	loaded = true;
 	StandardPaths::SetPathValue("?script", "");
 	FileOpen("");
 }
@@ -224,7 +221,6 @@ void AssFile::LoadDefault(bool defline) {
 void AssFile::swap(AssFile &that) throw() {
 	// Intentionally does not swap undo stack related things
 	using std::swap;
-	swap(loaded, that.loaded);
 	swap(commitId, that.commitId);
 	swap(undoDescription, that.undoDescription);
 	swap(Line, that.Line);
@@ -234,7 +230,6 @@ AssFile::AssFile(const AssFile &from)
 : undoDescription(from.undoDescription)
 , commitId(from.commitId)
 , filename(from.filename)
-, loaded(from.loaded)
 {
 	Line.clone_from(from.Line, std::mem_fun_ref(&AssEntry::Clone), delete_ptr());
 }

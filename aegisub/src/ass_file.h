@@ -78,8 +78,6 @@ public:
 	EntryList Line;
 	/// The filename of this file, if any
 	agi::fs::path filename;
-	/// Is the file loaded?
-	bool loaded;
 
 	AssFile();
 	AssFile(const AssFile &from);
