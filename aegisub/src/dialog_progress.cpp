@@ -27,7 +27,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
 
-#include <mutex>
+#include <atomic>
 #include <wx/button.h>
 #include <wx/gauge.h>
 #include <wx/sizer.h>
@@ -38,8 +38,7 @@ using agi::dispatch::Main;
 
 class DialogProgressSink : public agi::ProgressSink {
 	DialogProgress *dialog;
-	bool cancelled;
-	std::mutex cancelled_mutex;
+	std::atomic<bool> cancelled;
 
 public:
 	DialogProgressSink(DialogProgress *dialog)
@@ -65,12 +64,10 @@ public:
 	}
 
 	bool IsCancelled() {
-		std::lock_guard<std::mutex> lock(cancelled_mutex);
 		return cancelled;
 	}
 
 	void Cancel() {
-		std::lock_guard<std::mutex> lock(cancelled_mutex);
 		cancelled = true;
 	}
 
