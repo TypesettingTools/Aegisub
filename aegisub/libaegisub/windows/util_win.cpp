@@ -23,6 +23,9 @@
 
 #include "libaegisub/charset_conv_win.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 namespace agi {
 	namespace util {
 
@@ -72,6 +75,28 @@ agi_timeval time_log() {
 	// The modulus picks up the microseconds.
 	agi_timeval tv = { (long)(tmpres / 1000000UL), (long)(tmpres % 1000000UL) };
 	return tv;
+}
+
+#define MS_VC_EXCEPTION 0x406d1388
+
+/// Parameters for setting the thread name
+struct THREADNAME_INFO {
+	DWORD dwType;     ///< must be 0x1000
+	LPCSTR szName;    ///< pointer to name (in same addr space)
+	DWORD dwThreadID; ///< thread ID (-1 caller thread)
+	DWORD dwFlags;    ///< reserved for future use, most be zero
+};
+
+void SetThreadName(LPCSTR szThreadName) {
+	THREADNAME_INFO info;
+	info.dwType = 0x1000;
+	info.szName = szThreadName;
+	info.dwThreadID = -1;
+	info.dwFlags = 0;
+	__try {
+		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR *)&info);
+	}
+	__except (EXCEPTION_CONTINUE_EXECUTION) {}
 }
 
 	} // namespace io

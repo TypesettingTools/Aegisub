@@ -90,37 +90,6 @@ static const char *LastStartupState = nullptr;
 #define StartupLog(a) LastStartupState = a
 #endif
 
-#ifdef __VISUALC__
-
-#define MS_VC_EXCEPTION 0x406d1388
-
-/// Parameters for setting the thread name
-struct THREADNAME_INFO {
-	DWORD dwType;     ///< must be 0x1000
-	LPCSTR szName;    ///< pointer to name (in same addr space)
-	DWORD dwThreadID; ///< thread ID (-1 caller thread)
-	DWORD dwFlags;    ///< reserved for future use, most be zero
-};
-
-/// Set the name of a thread in the visual studio debugger
-/// @param dwThreadID Thread ID, or -1 for caller
-/// @param szThreadName New name for the thread
-void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName) {
-	THREADNAME_INFO info;
-	info.dwType = 0x1000;
-	info.szName = szThreadName;
-	info.dwThreadID = dwThreadID;
-	info.dwFlags = 0;
-	__try {
-		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR *)&info);
-	}
-	__except (EXCEPTION_CONTINUE_EXECUTION) {}
-}
-#else
-void SetThreadName(int dwThreadID, const char *szThreadName) {
-}
-#endif
-
 void AegisubApp::OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) {
 	LOG_A("wx/assert") << file << ":" << line << ":" << func << "() " << cond << ": " << msg;
 	wxApp::OnAssertFailure(file, line, func, cond, msg);
@@ -214,7 +183,7 @@ bool AegisubApp::OnInit() {
 	StartupLog("Load MRU");
 	config::mru = new agi::MRUManager(StandardPaths::DecodePath("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
 
-	SetThreadName(-1, "AegiMain");
+	agi::util::SetThreadName("AegiMain");
 
 	StartupLog("Inside OnInit");
 	frame = nullptr;

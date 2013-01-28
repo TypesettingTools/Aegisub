@@ -18,6 +18,8 @@
 
 #include "libaegisub/dispatch.h"
 
+#include "libaegisub/util.h"
+
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 #include <condition_variable>
@@ -60,7 +62,10 @@ void Init(std::function<void (Thunk)> invoke_main) {
 	::invoke_main = invoke_main;
 
 	for (unsigned i = 0; i < std::max<unsigned>(1, std::thread::hardware_concurrency()); ++i)
-		std::thread([]{ ::service->run(); }).detach();
+		std::thread([]{
+			util::SetThreadName("Dispatch Worker");
+			::service->run();
+		}).detach();
 }
 
 void Queue::Async(Thunk thunk) {

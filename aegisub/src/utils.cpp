@@ -275,6 +275,7 @@ size_t MaxLineLength(std::string const& text) {
 	return std::max(max_line_length, current_line_length);
 }
 
+
 // OS X implementation in osx_utils.mm
 #ifndef __WXOSX_COCOA__
 void AddFullScreenButton(wxWindow *) { }

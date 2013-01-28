@@ -28,4 +28,6 @@ timeval time_log() {
 	return tv;
 }
 
+void SetThreadName(const char *) { }
+
 } }

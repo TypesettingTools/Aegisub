@@ -55,5 +55,9 @@ namespace agi {
 		}
 	}
 
+	/// Set the name of the calling thread in the Visual Studio debugger
+	/// @param name New name for the thread
+	void SetThreadName(const char *name);
+
 	} // namespace util
 } // namespace agi
