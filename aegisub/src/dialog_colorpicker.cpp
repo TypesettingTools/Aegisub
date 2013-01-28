@@ -525,11 +525,23 @@ static const int slider_width = 10; ///< width in pixels of the color slider con
 static const int alpha_box_size = 5;
 
 template<typename Func>
-static wxBitmap make_slider(Func func) {
+static wxBitmap make_slider_img(Func func) {
 	unsigned char *slid = (unsigned char *)calloc(slider_width * 256 * 3, 1);
 	func(slid);
 	wxImage img(slider_width, 256, slid);
 	return wxBitmap(img);
+}
+
+template<typename Func>
+static wxBitmap make_slider(Func func) {
+	return make_slider_img([&](unsigned char *slid) {
+		for (int y = 0; y < 256; ++y) {
+			unsigned char rgb[3];
+			func(y, rgb);
+			for (int x = 0; x < slider_width; ++x)
+				memcpy(slid + y * slider_width * 3 + x * 3, rgb, 3);
+		}
+	});
 }
 
 DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color, std::function<void (agi::Color)> callback, bool alpha)
@@ -538,27 +550,13 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 {
 	// generate spectrum slider bar images
 	for (int i = 0; i < 3; ++i) {
-		rgb_slider[i] = make_slider([=](unsigned char *slid) {
-			for (int y = 0; y < 256; y++) {
-				for (int x = 0; x < slider_width; x++)
-					slid[y * slider_width + x * 3 + i] = y;
-			}
+		rgb_slider[i] = make_slider([=](int y, unsigned char *rgb) {
+			memset(rgb, 0, 3);
+			rgb[i] = y;
 		});
 	}
-
-	hsl_slider = make_slider([](unsigned char *slid) {
-		for (int y = 0; y < 256; ++y)
-			memset(slid + y * slider_width * 3, y, slider_width * 3);
-	});
-
-	hsv_slider = make_slider([](unsigned char *slid) {
-		for (int y = 0; y < 256; ++y) {
-			unsigned char rgb[3];
-			hsv_to_rgb(y, 255, 255, rgb, rgb + 1, rgb + 2);
-			for (int x = 0; x < slider_width; ++x)
-				memcpy(slid + y * slider_width * 3 + x * 3, rgb, 3);
-		}
-	});
+	hsl_slider = make_slider([](int y, unsigned char *rgb) { memset(rgb, y, 3); });
+	hsv_slider = make_slider([](int y, unsigned char *rgb) { hsv_to_rgb(y, 255, 255, rgb, rgb + 1, rgb + 2); });
 
 	// Create the controls for the dialog
 	wxSizer *spectrum_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Color spectrum"));
@@ -883,7 +881,7 @@ void DialogColorPicker::UpdateSpectrumDisplay() {
 	}
 	preview_box->SetBitmap(tempBmp);
 
-	alpha_slider_img = make_slider([=](unsigned char *slid) {
+	alpha_slider_img = make_slider_img([=](unsigned char *slid) {
 		static_assert(slider_width % alpha_box_size == 0, "Slider width must be a multiple of alpha box width");
 
 		for (int y = 0; y < 256; ++y) {
