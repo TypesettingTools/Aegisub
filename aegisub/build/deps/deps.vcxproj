@@ -27,6 +27,7 @@ Aegisub Project http://www.aegisub.org/
     <GitProject Include="git://git.sv.nongnu.org/freetype/freetype2.git" />
     <GitProject Include="git://github.com/madler/zlib.git" />
     <GitProject Include="git://github.com/wxWidgets/wxWidgets.git" />
+    <GitProject Include="git://github.com/svn2github/googletest.git" />
     <GitProject Include="git://source.ffmpeg.org/ffmpeg.git">
       <!-- FFmpeg's build system manages to not work with Windows newlines, so
            disable autocrlf even if the user has it enabled globally -->
