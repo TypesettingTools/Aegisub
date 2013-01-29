@@ -72,6 +72,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "aegisub\build\boos
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icu", "aegisub\build\icu\icu.vcxproj", "{F934AB7B-186B-4E96-B20C-A58C38C1B818}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googletest", "aegisub\build\googletest\googletest.vcxproj", "{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -307,6 +309,14 @@ Global
 		{F934AB7B-186B-4E96-B20C-A58C38C1B818}.Release|Win32.Build.0 = Release|Win32
 		{F934AB7B-186B-4E96-B20C-A58C38C1B818}.Release|x64.ActiveCfg = Release|x64
 		{F934AB7B-186B-4E96-B20C-A58C38C1B818}.Release|x64.Build.0 = Release|x64
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Debug|Win32.Build.0 = Debug|Win32
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Debug|x64.ActiveCfg = Debug|Win32
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Debug-MinDep|Win32.ActiveCfg = Debug|Win32
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Debug-MinDep|x64.ActiveCfg = Debug|Win32
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Release|Win32.ActiveCfg = Release|Win32
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Release|Win32.Build.0 = Release|Win32
+		{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

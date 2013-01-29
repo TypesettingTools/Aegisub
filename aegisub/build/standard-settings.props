@@ -27,6 +27,7 @@
 				$(AegisubSourceBase)src\msvc;
 				$(AegisubSourceBase)\include;
 				$(BoostPath);
+				$(GtestSrcDir)\include;
 				$(IcuSrcDir)\include;
 				%(AdditionalIncludeDirectories)
 			</AdditionalIncludeDirectories>

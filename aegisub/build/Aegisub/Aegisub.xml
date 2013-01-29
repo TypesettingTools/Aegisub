@@ -245,6 +245,14 @@
 
   <StringProperty
     Subtype="folder"
+    Name="GtestSrcDir"
+    Category="Paths"
+    DisplayName="googletest source path"
+    Description="Location of googletest source code."
+    />
+
+  <StringProperty
+    Subtype="folder"
     Name="LibassSrcDir"
     Category="Paths"
     DisplayName="libass source path"
