@@ -15,18 +15,18 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <functional>
-#include <boost/regex.hpp>
+#include <boost/regex/icu.hpp>
 #include <string>
 
 namespace agi { struct Context; }
 class AssDialogue;
 
 struct MatchState {
-	boost::regex *re;
+	boost::u32regex *re;
 	size_t start, end;
 
 	MatchState() : re(nullptr), start(0), end(-1) { }
-	MatchState(size_t s, size_t e, boost::regex *re) : re(re), start(s), end(e) { }
+	MatchState(size_t s, size_t e, boost::u32regex *re) : re(re), start(s), end(e) { }
 	operator bool() const { return end != (size_t)-1; }
 };
 

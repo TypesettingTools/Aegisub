@@ -57,7 +57,7 @@ public:
 		return (d->*field).get().substr(s);
 	}
 
-	MatchState make_match_state(size_t s, size_t e, boost::regex *r = nullptr) {
+	MatchState make_match_state(size_t s, size_t e, boost::u32regex *r = nullptr) {
 		return MatchState(s + start, e + start, r);
 	}
 };
@@ -107,7 +107,7 @@ public:
 		return out;
 	}
 
-	MatchState make_match_state(size_t s, size_t e, boost::regex *r = nullptr) {
+	MatchState make_match_state(size_t s, size_t e, boost::u32regex *r = nullptr) {
 		s += start;
 		e += start;
 
@@ -141,16 +141,16 @@ public:
 template<typename Accessor>
 matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 	if (settings.use_regex) {
-		int flags = boost::regex::perl;
+		int flags = boost::u32regex::perl;
 		if (!settings.match_case)
-			flags |= boost::regex::icase;
+			flags |= boost::u32regex::icase;
 
-		boost::regex regex(settings.find, flags);
+		auto regex = boost::make_u32regex(settings.find, flags);
 
 		return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
 			boost::smatch result;
 			auto const& str = a.get(diag, start);
-			if (!regex_search(str, result, regex, start > 0 ? boost::match_not_bol : boost::match_default))
+			if (!u32regex_search(str, result, regex, start > 0 ? boost::match_not_bol : boost::match_default))
 				return MatchState();
 			return a.make_match_state(result.position(), result.position() + result.length(), &regex);
 		};
@@ -207,7 +207,7 @@ void SearchReplaceEngine::Replace(AssDialogue *diag, MatchState &ms) {
 	std::string replacement = settings.replace_with;
 	if (ms.re) {
 		auto to_replace = text.substr(ms.start, ms.end - ms.start);
-		replacement = regex_replace(to_replace, *ms.re, replacement, boost::format_first_only);
+		replacement = u32regex_replace(to_replace, *ms.re, replacement, boost::format_first_only);
 	}
 
 	diag_field = text.substr(0, ms.start) + replacement + text.substr(ms.end);
@@ -309,8 +309,10 @@ bool SearchReplaceEngine::ReplaceAll() {
 			if (MatchState ms = matches(diag, 0)) {
 				auto& diag_field = diag->*get_dialogue_field(settings.field);
 				std::string const& text = diag_field.get();
-				count += distance(boost::sregex_iterator(begin(text), end(text), *ms.re), boost::sregex_iterator());
-				diag_field = regex_replace(text, *ms.re, settings.replace_with);
+				count += distance(
+					boost::u32regex_iterator<std::string::const_iterator>(begin(text), end(text), *ms.re),
+					boost::u32regex_iterator<std::string::const_iterator>());
+				diag_field = u32regex_replace(text, *ms.re, settings.replace_with);
 			}
 			continue;
 		}
