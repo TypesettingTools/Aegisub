@@ -13,6 +13,25 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>
+        BOOST_LOCALE_WITH_ICONV=1;
+        BOOST_LOCALE_WITH_ICU=1;
+        BOOST_LOCALE_NO_STD_BACKEND=1;
+        BOOST_LOCALE_NO_WINAPI_BACKEND=1;
+        BOOST_LOCALE_NO_POSIX_BACKEND=1;
+        BOOST_THREAD_BUILD_LIB;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+        $(AegisubContribBase)iconv\include;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClCompile Include="$(BoostPath)\libs\regex\src\cpp_regex_traits.cpp" />
@@ -40,10 +59,58 @@
     <ClCompile Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.cpp" />
     <ClCompile Include="$(BoostPath)\libs\system\src\error_code.cpp" />
     <ClCompile Include="$(BoostPath)\libs\regex\src\icu.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\encoding\codepage.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\boundary.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\codecvt.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\collator.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\conversion.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\date_time.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\formatter.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\icu_backend.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\numeric.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\time_zone.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\date_time.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\format.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\formatting.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\generator.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\ids.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\localization_backend.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\message.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\shared\mo_lambda.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\util\codecvt_converter.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\util\default_locale.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\util\gregorian.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\util\info.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\locale\src\util\locale_data.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\thread\src\win32\thread.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\thread\src\win32\tss_pe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(BoostPath)\libs\regex\src\internals.hpp" />
     <ClInclude Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.hpp" />
     <ClInclude Include="$(BoostPath)\libs\system\src\local_free_on_destruction.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\encoding\conv.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\all_generator.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\cdata.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\codecvt.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\formatter.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\icu_backend.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\icu_util.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\predefined_formatters.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\time_zone.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\uconv.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\shared\ios_prop.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\shared\mo_hash.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\shared\mo_lambda.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\util\gregorian.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\util\iconv.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\util\locale_data.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\util\numeric.hpp" />
+    <ClInclude Include="$(BoostPath)\libs\locale\src\util\timezone.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(BoostPath)\libs\locale\src\encoding\iconv_codepage.ipp" />
+    <None Include="$(BoostPath)\libs\locale\src\encoding\uconv_codepage.ipp" />
+    <None Include="$(BoostPath)\libs\locale\src\encoding\wconv_codepage.ipp" />
   </ItemGroup>
 </Project>
