@@ -67,6 +67,7 @@
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/format.hpp>
+#include <boost/locale.hpp>
 #include <sstream>
 
 #include <wx/config.h>
@@ -111,6 +112,10 @@ bool AegisubApp::OnInit() {
 #else
 	SetAppName("aegisub");
 #endif
+
+	// Set the global locale to the utf-8 version of the current locale
+	std::locale::global(boost::locale::generator().generate(""));
+	boost::filesystem::path::imbue(std::locale());
 
 	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
 	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
