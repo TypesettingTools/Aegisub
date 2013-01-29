@@ -63,6 +63,9 @@
     <ProjectReference Include="..\hunspell\hunspell.vcxproj">
       <Project>{cc791693-6b28-40ac-879d-64a6c16468e3}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\icu\icu.vcxproj">
+      <Project>{f934ab7b-186b-4e96-b20c-a58c38c1b818}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libaegisub\libaegisub.vcxproj">
       <Project>{bb3fed86-db7a-4dc7-964a-260fb86cde61}</Project>
     </ProjectReference>

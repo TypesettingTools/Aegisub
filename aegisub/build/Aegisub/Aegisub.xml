@@ -237,6 +237,14 @@
 
   <StringProperty
     Subtype="folder"
+    Name="IcuSrcDir"
+    Category="Paths"
+    DisplayName="ICU source path"
+    Description="Location of ICU source code."
+    />
+
+  <StringProperty
+    Subtype="folder"
     Name="LibassSrcDir"
     Category="Paths"
     DisplayName="libass source path"

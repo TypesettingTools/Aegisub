@@ -1,0 +1,84 @@
+# ICU's mh-cygwin-msvc doesn't work with msys or Visual Studio 2012.
+# There's a whole bunch of incompatibilities, so this is a complete replacement
+# rather than just a patch.
+
+sbindir=$(bindir)
+CPPFLAGS += -DU_STATIC_IMPLEMENTATION -DUCONFIG_NO_LEGACY_CONVERSION=1 -DU_ENABLE_DYLOAD=0 -DUCONFIG_NO_FILE_IO=1 -DU_CHARSET_IS_UTF8=1
+
+ifeq ($(ENABLE_DEBUG),1)
+CPPFLAGS+=-D_DEBUG=1
+CFLAGS+=-Z7
+CXXFLAGS+=-Z7
+else
+CPPFLAGS+=-DU_RELEASE=1
+endif
+
+CFLAGS+=-GF -nologo
+CXXFLAGS+=-GF -nologo -EHsc -Zc:wchar_t
+CPPFLAGS+=-D_CRT_SECURE_NO_DEPRECATE
+DEFS+=-DWIN32 -DCYGWINMSVC
+LDFLAGS+=-nologo
+
+COMPILE.c=	$(CC) $(CPPFLAGS) $(DEFS) $(CFLAGS) -c
+COMPILE.cc=	$(CXX) $(CPPFLAGS) $(DEFS) $(CXXFLAGS) -c
+LINK.c=		LINK.EXE -subsystem:console $(LDFLAGS)
+LINK.cc=	LINK.EXE -subsystem:console $(LDFLAGS)
+
+OUTOPT = -out:
+
+LIBSICU = $(STATIC_PREFIX)$(ICUPREFIX)
+A = lib
+STATIC_O=o
+
+AR = LIB.EXE
+ARFLAGS := -nologo $(ARFLAGS:r=)
+RANLIB = ls -s
+AR_OUTOPT = -OUT:
+
+IMPORT_LIB_EXT = .lib
+
+LIBPREFIX=
+DEFAULT_LIBS = advapi32.lib
+
+DATA_STUBNAME = dt
+I18N_STUBNAME = in
+LIBICU = $(STATIC_PREFIX_WHEN_USED)$(ICUPREFIX)
+
+ifeq ($(wildcard $(LIBDIR)/$(LIBICU)$(DATA_STUBNAME)$(ICULIBSUFFIX).lib),)
+LIBICUDT=	$(top_builddir)/stubdata/$(LIBICU)$(DATA_STUBNAME)$(ICULIBSUFFIX).lib
+else
+LIBICUDT=	$(LIBDIR)/$(LIBICU)$(DATA_STUBNAME)$(ICULIBSUFFIX).lib
+endif
+LIBICUUC=	$(LIBDIR)/$(LIBICU)$(COMMON_STUBNAME)$(ICULIBSUFFIX).lib $(LIBICUDT)
+LIBICUI18N=	$(LIBDIR)/$(LIBICU)$(I18N_STUBNAME)$(ICULIBSUFFIX).lib
+LIBICULE=	$(LIBDIR)/$(LIBICU)$(LAYOUT_STUBNAME)$(ICULIBSUFFIX).lib
+LIBICULX=	$(LIBDIR)/$(LIBICU)$(LAYOUTEX_STUBNAME)$(ICULIBSUFFIX).lib
+LIBICUIO=	$(LIBDIR)/$(LIBICU)$(IO_STUBNAME)$(ICULIBSUFFIX).lib
+LIBICUTOOLUTIL=	$(LIBDIR)/$(LIBICU)$(TOOLUTIL_STUBNAME)$(ICULIBSUFFIX).lib
+
+LDFLAGSICUDT+=	/base:"0x4ad00000" -NOENTRY# The NOENTRY option is required for creating a resource-only DLL.
+LDFLAGSICUUC=	/base:"0x4a800000"# in-uc = 1MB
+LDFLAGSICUI18N=	/base:"0x4a900000"# io-in = 2MB
+LDFLAGSICUIO=	/base:"0x4ab00000"# le-io = 1MB
+LDFLAGSICULE=	/base:"0x4ac00000"# lx-le = 512KB
+LDFLAGSICULX=	/base:"0x4ac80000"
+LDFLAGSICUTOOLUTIL=	/base:"0x4ac00000"# Same as layout. Layout and tools probably won't mix.
+
+%.o: $(srcdir)/%.c
+	$(COMPILE.c) $(STATICCPPFLAGS) $(STATICCFLAGS) -Fo$@ $<
+
+%.o: $(srcdir)/%.cpp
+	$(COMPILE.cc) $(STATICCPPFLAGS) $(STATICCXXFLAGS) -Fo$@ $<
+
+%.res : $(srcdir)/%.rc
+	rc.exe -fo$@ $(CPPFLAGS) $<
+
+ICUPKGDATA_INSTALL_DIR = $(libdir)
+
+ICULIBSUFFIX_VERSION = $(LIB_VERSION_MAJOR)
+
+INSTALL-L=$(INSTALL_PROGRAM)
+
+LDLIBRARYPATH_ENVVAR = PATH
+
+PKGDATA_INVOKE_OPTS = MAKEFLAGS=

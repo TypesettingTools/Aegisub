@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F934AB7B-186B-4E96-B20C-A58C38C1B818}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+    <ConfigurationType>Makefile</ConfigurationType>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <PropertyGroup Label="ConfigArgs">
+    <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-release CFLAGS=-MDd CXXFLAGS=-MDd</CfgDebug>
+    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug --enable-release CFLAGS=-MD CXXFLAGS=-MD</CfgDebug>
+    <CfgArgs>
+      CC=cl
+      CXX=cl
+      --enable-static
+      --disable-shared
+      --disable-extras
+      --disable-icuio
+      --disable-layout
+      --disable-tests
+      --disable-samples
+      $(CfgDebug)
+    </CfgArgs>
+    <AbsSrcDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(IcuSrcDir)'))</AbsSrcDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ConfigureInput Include="$(AbsSrcDir)\configure" />
+    <ConfigureOutput Include="$(AegisubObjectDir)Makefile" />
+  </ItemGroup>
+
+  <Target Name="Configure"
+    Inputs="@(ConfigureInput)"
+    Outputs="@(ConfigureOutput)"
+    >
+    <Delete Files="$(AegisubObjectDir)build.timestamp" />
+
+    <Copy
+      SourceFiles="mh-msys-msvc"
+      DestinationFiles="$(IcuSrcDir)\config\mh-cygwin-msvc"
+      SkipUnchangedFiles="true"
+      />
+
+    <MsysPath Path="$(AegisubObjectDir)\temp">
+      <Output TaskParameter="Result" PropertyName="CfgPrefix" />
+    </MsysPath>
+
+    <MsysPath Path="$(MSBuildThisFileDirectory)../../include">
+      <Output TaskParameter="Result" PropertyName="CfgIncludePrefix" />
+    </MsysPath>
+
+    <MsysPath Path="$(AegisubLibraryDir)">
+      <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
+    </MsysPath>
+
+    <ExecShellScript
+      Command="$(AbsSrcDir)\configure"
+      Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --includedir=$(CfgIncludePrefix)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
+      />
+
+    <!-- Ensure that Makefile has a recent modified time to avoid
+         rerunning configure pointlessly -->
+    <Touch Files="@(ConfigureOutput)" />
+  </Target>
+
+  <ItemGroup>
+    <OutputLibraries Include="$(AegisubObjectDir)lib\*" />
+  </ItemGroup>
+
+  <Target Name="Compile"
+    Inputs="$(IcuSrcDir)"
+    Outputs="$(AegisubObjectDir)build.timestamp"
+    >
+    <ExecShellScript
+      Command="make"
+      Arguments="-j$(NUMBER_OF_PROCESSORS)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
+      />
+
+    <ExecShellScript
+      Command="make install"
+      WorkingDirectory="$(AegisubObjectDir)"
+      Configuration="@(ExecShellScript)"
+      />
+
+    <Touch Files="$(AegisubObjectDir)build.timestamp" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="Build">
+    <Error Condition="!Exists('$(AbsSrcDir)')" Text="ICU source not found at '$(AbsSrcDir)'" />
+
+    <CallTarget Targets="Configure" />
+    <CallTarget Targets="Compile" />
+  </Target>
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(AegisubObjectDir)" ContinueOnError="WarnAndContinue" />
+  </Target>
+
+  <Target Name="Rebuild">
+    <CallTarget Targets="Clean;Build" />
+  </Target>
+</Project>

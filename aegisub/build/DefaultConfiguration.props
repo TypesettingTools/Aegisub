@@ -59,6 +59,7 @@
     <Freetype2SrcDir>..\..\..\deps\freetype2</Freetype2SrcDir>
     <FribidiSrcDir>..\..\..\deps\fribidi</FribidiSrcDir>
     <FontconfigSrcDir>..\..\..\deps\fontconfig</FontconfigSrcDir>
+    <IcuSrcDir>..\..\..\deps\icu\source</IcuSrcDir>
     <LibassSrcDir>..\..\..\deps\libass</LibassSrcDir>
     <WxSrcDir>..\..\..\deps\wxWidgets</WxSrcDir>
     <ZlibSrcDir>..\..\..\deps\zlib</ZlibSrcDir>

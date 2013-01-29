@@ -25,6 +25,7 @@
 				$(AegisubSourceBase)src\msvc;
 				$(AegisubSourceBase)\include;
 				$(BoostPath);
+				$(IcuSrcDir)\include;
 				%(AdditionalIncludeDirectories)
 			</AdditionalIncludeDirectories>
 			<DisableSpecificWarnings>4345</DisableSpecificWarnings>
