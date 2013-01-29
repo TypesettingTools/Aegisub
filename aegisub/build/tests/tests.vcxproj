@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{49766286-2B5D-4177-A860-BD7CE1846EEF}</ProjectGuid>
+    <RootNamespace>tests</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>exe</AegisubProjectType>
+    <SrcDir>..\..\tests\</SrcDir>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>
+        GTEST_HAS_TR1_TUPLE=0;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+        $(AegisubSourceBase)libaegisub\include;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(SrcDir)setup.bat "$(AegisubBinaryDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)libaegisub_access.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_cajun.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_color.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_dialogue_lexer.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_hotkey.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_iconv.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_keyframe.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_line_iterator.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_line_wrap.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_mru.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_option.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_path.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_signals.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_syntax_highlight.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_thesaurus.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_util.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_vfr.cpp" />
+    <ClCompile Include="$(SrcDir)libaegisub_word_split.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)main.cpp" />
+    <ClCompile Include="$(SrcDir)util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)main.h" />
+    <ClInclude Include="$(SrcDir)util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SrcDir)setup.bat" />
+    <None Include="$(SrcDir)setup.sh" />
+  </ItemGroup>
+
+  <!-- Dependencies -->
+  <ItemGroup>
+    <ProjectReference Include="..\boost\boost.vcxproj">
+      <Project>{a649d828-a399-4d81-adef-94cfdba7847f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\googletest\googletest.vcxproj">
+      <Project>{fbe51b37-8b12-41e8-b5e0-f00a06b4bcd2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\icu\icu.vcxproj">
+      <Project>{f934ab7b-186b-4e96-b20c-a58c38c1b818}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libaegisub\libaegisub.vcxproj">
+      <Project>{bb3fed86-db7a-4dc7-964a-260fb86cde61}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libiconv\libiconv.vcxproj">
+      <Project>{965054d2-44f2-4eb2-9879-051cc3d7ef08}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
+      <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
