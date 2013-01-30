@@ -98,6 +98,7 @@
     <ClInclude Include="$(SrcDir)ass_export_filter.h" />
     <ClInclude Include="$(SrcDir)ass_exporter.h" />
     <ClInclude Include="$(SrcDir)ass_file.h" />
+    <ClInclude Include="$(SrcDir)ass_info.h" />
     <ClInclude Include="$(SrcDir)ass_karaoke.h" />
     <ClInclude Include="$(SrcDir)ass_override.h" />
     <ClInclude Include="$(SrcDir)ass_parser.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="$(SrcDir)kana_table.h" />
     <ClInclude Include="$(SrcDir)main.h" />
     <ClInclude Include="$(SrcDir)mkv_wrap.h" />
+    <ClInclude Include="$(SrcDir)options.h" />
     <ClInclude Include="$(SrcDir)pen.h" />
     <ClInclude Include="$(SrcDir)persist_location.h" />
     <ClInclude Include="$(SrcDir)placeholder_ctrl.h" />
@@ -208,11 +210,13 @@
     <ClInclude Include="$(SrcDir)preferences_base.h" />
     <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h" />
     <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h" />
+    <ClInclude Include="$(SrcDir)search_replace_engine.h" />
     <ClInclude Include="$(SrcDir)selection_controller.h" />
     <ClInclude Include="$(SrcDir)spellchecker_hunspell.h" />
     <ClInclude Include="$(SrcDir)spline.h" />
     <ClInclude Include="$(SrcDir)spline_curve.h" />
     <ClInclude Include="$(SrcDir)string_codec.h" />
+    <ClInclude Include="$(SrcDir)subs_controller.h" />
     <ClInclude Include="$(SrcDir)subs_edit_box.h" />
     <ClInclude Include="$(SrcDir)subs_edit_ctrl.h" />
     <ClInclude Include="$(SrcDir)subs_grid.h" />
@@ -263,10 +267,6 @@
     <ClInclude Include="$(SrcDir)visual_tool_rotatez.h" />
     <ClInclude Include="$(SrcDir)visual_tool_scale.h" />
     <ClInclude Include="$(SrcDir)visual_tool_vector_clip.h" />
-    <ClInclude Include="$(SrcDir)ass_info.h" />
-    <ClInclude Include="$(SrcDir)options.h" />
-    <ClInclude Include="$(SrcDir)search_replace_engine.h" />
-    <ClInclude Include="$(SrcDir)subs_controller.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
@@ -276,14 +276,19 @@
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)MatroskaParser.c">
+        <PrecompiledHeader>NotUsing</PrecompiledHeader>
+        <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)ass_attachment.cpp" />
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp" />
     <ClCompile Include="$(SrcDir)ass_entry.cpp" />
-    <ClCompile Include="$(SrcDir)ass_exporter.cpp" />
     <ClCompile Include="$(SrcDir)ass_export_filter.cpp" />
+    <ClCompile Include="$(SrcDir)ass_exporter.cpp" />
     <ClCompile Include="$(SrcDir)ass_file.cpp" />
     <ClCompile Include="$(SrcDir)ass_karaoke.cpp" />
     <ClCompile Include="$(SrcDir)ass_override.cpp" />
+    <ClCompile Include="$(SrcDir)ass_parser.cpp" />
     <ClCompile Include="$(SrcDir)ass_style.cpp" />
     <ClCompile Include="$(SrcDir)ass_style_storage.cpp" />
     <ClCompile Include="$(SrcDir)ass_time.cpp" />
@@ -307,6 +312,7 @@
     <ClCompile Include="$(SrcDir)audio_provider_dummy.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_ffmpegsource.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_hd.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_lock.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_pcm.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_ram.cpp" />
     <ClCompile Include="$(SrcDir)audio_renderer.cpp" />
@@ -333,6 +339,7 @@
     <ClCompile Include="$(SrcDir)command\grid.cpp" />
     <ClCompile Include="$(SrcDir)command\help.cpp" />
     <ClCompile Include="$(SrcDir)command\icon.cpp" />
+    <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
     <ClCompile Include="$(SrcDir)command\recent.cpp" />
     <ClCompile Include="$(SrcDir)command\subtitle.cpp" />
     <ClCompile Include="$(SrcDir)command\time.cpp" />
@@ -344,6 +351,7 @@
     <ClCompile Include="$(SrcDir)dialog_about.cpp" />
     <ClCompile Include="$(SrcDir)dialog_attachments.cpp" />
     <ClCompile Include="$(SrcDir)dialog_automation.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_autosave.cpp" />
     <ClCompile Include="$(SrcDir)dialog_colorpicker.cpp" />
     <ClCompile Include="$(SrcDir)dialog_detached_video.cpp" />
     <ClCompile Include="$(SrcDir)dialog_dummy_video.cpp" />
@@ -382,13 +390,9 @@
     <ClCompile Include="$(SrcDir)help_button.cpp" />
     <ClCompile Include="$(SrcDir)hotkey.cpp" />
     <ClCompile Include="$(SrcDir)hotkey_data_view_model.cpp" />
+    <ClCompile Include="$(SrcDir)initial_line_state.cpp" />
     <ClCompile Include="$(SrcDir)kana_table.cpp" />
     <ClCompile Include="$(SrcDir)main.cpp" />
-    <ClCompile Include="$(SrcDir)MatroskaParser.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)menu.cpp" />
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />
     <ClCompile Include="$(SrcDir)pen.cpp" />
@@ -397,18 +401,18 @@
     <ClCompile Include="$(SrcDir)preferences.cpp" />
     <ClCompile Include="$(SrcDir)preferences_base.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
+    <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
+    <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker_hunspell.cpp" />
     <ClCompile Include="$(SrcDir)spline.cpp" />
     <ClCompile Include="$(SrcDir)spline_curve.cpp" />
     <ClCompile Include="$(SrcDir)string_codec.cpp" />
+    <ClCompile Include="$(SrcDir)subs_controller.cpp" />
     <ClCompile Include="$(SrcDir)subs_edit_box.cpp" />
     <ClCompile Include="$(SrcDir)subs_edit_ctrl.cpp" />
     <ClCompile Include="$(SrcDir)subs_grid.cpp" />
     <ClCompile Include="$(SrcDir)subs_preview.cpp" />
-    <ClCompile Include="$(SrcDir)subtitles_provider.cpp" />
-    <ClCompile Include="$(SrcDir)subtitles_provider_csri.cpp" />
-    <ClCompile Include="$(SrcDir)subtitles_provider_libass.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_ass.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_ebu3264.cpp" />
@@ -419,6 +423,9 @@
     <ClCompile Include="$(SrcDir)subtitle_format_transtation.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_ttxt.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_txt.cpp" />
+    <ClCompile Include="$(SrcDir)subtitles_provider.cpp" />
+    <ClCompile Include="$(SrcDir)subtitles_provider_csri.cpp" />
+    <ClCompile Include="$(SrcDir)subtitles_provider_libass.cpp" />
     <ClCompile Include="$(SrcDir)text_file_reader.cpp" />
     <ClCompile Include="$(SrcDir)text_file_writer.cpp" />
     <ClCompile Include="$(SrcDir)thesaurus.cpp" />
@@ -452,14 +459,6 @@
     <ClCompile Include="$(SrcDir)visual_tool_rotatez.cpp" />
     <ClCompile Include="$(SrcDir)visual_tool_scale.cpp" />
     <ClCompile Include="$(SrcDir)visual_tool_vector_clip.cpp" />
-    <ClCompile Include="$(SrcDir)ass_parser.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_lock.cpp" />
-    <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
-    <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
-    <ClCompile Include="$(SrcDir)dialog_autosave.cpp" />
-    <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
-    <ClCompile Include="$(SrcDir)initial_line_state.cpp" />
-    <ClCompile Include="$(SrcDir)subs_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res.rc" />
