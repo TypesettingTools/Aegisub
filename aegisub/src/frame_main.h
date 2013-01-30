@@ -76,7 +76,6 @@ class FrameMain: public wxFrame {
 
 	bool showVideo;       ///< Is the video display shown?
 	bool showAudio;       ///< Is the audio display shown?
-	wxTimer AutoSave;     ///< Autosave timer
 	wxTimer StatusClear;  ///< Status bar timeout timer
 	/// Block video loading; used when both video and subtitles are opened at
 	/// the same time, so that the video associated with the subtitles (if any)
@@ -94,8 +93,6 @@ class FrameMain: public wxFrame {
 	void OnKeyDown(wxKeyEvent &event);
 	void OnMouseWheel(wxMouseEvent &evt);
 
-	/// @brief Autosave the currently open file, if any
-	void OnAutoSave(wxTimerEvent &event);
 	void OnStatusClear(wxTimerEvent &event);
 	void OnCloseWindow (wxCloseEvent &event);
 

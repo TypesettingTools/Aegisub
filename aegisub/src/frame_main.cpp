@@ -82,7 +82,6 @@
 #include <wx/sysopt.h>
 
 enum {
-	ID_APP_TIMER_AUTOSAVE					= 12001,
 	ID_APP_TIMER_STATUSCLEAR				= 12002
 };
 
@@ -91,8 +90,6 @@ enum {
 #else
 #define StartupLog(a) LOG_I("frame_main/init") << a
 #endif
-
-static void autosave_timer_changed(wxTimer *timer);
 
 wxDEFINE_EVENT(FILE_LIST_DROPPED, wxThreadEvent);
 
@@ -271,12 +268,6 @@ FrameMain::FrameMain (wxArrayString args)
 
 	StartupLog("Complete context initialization");
 	context->videoController->SetContext(context.get());
-
-	StartupLog("Set up Auto Save");
-	AutoSave.SetOwner(this, ID_APP_TIMER_AUTOSAVE);
-	autosave_timer_changed(&AutoSave);
-	OPT_SUB("App/Auto/Save", autosave_timer_changed, &AutoSave);
-	OPT_SUB("App/Auto/Save Every Seconds", autosave_timer_changed, &AutoSave);
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(this));
@@ -550,15 +541,7 @@ bool FrameMain::LoadList(wxArrayString list) {
 	return loaded_any;
 }
 
-static void autosave_timer_changed(wxTimer *timer) {
-	int freq = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
-	if (freq > 0 && OPT_GET("App/Auto/Save")->GetBool())
-		timer->Start(freq * 1000);
-	else
-		timer->Stop();
-}
 BEGIN_EVENT_TABLE(FrameMain, wxFrame)
-	EVT_TIMER(ID_APP_TIMER_AUTOSAVE, FrameMain::OnAutoSave)
 	EVT_TIMER(ID_APP_TIMER_STATUSCLEAR, FrameMain::OnStatusClear)
 
 	EVT_CLOSE(FrameMain::OnCloseWindow)
@@ -584,18 +567,6 @@ void FrameMain::OnCloseWindow(wxCloseEvent &event) {
 	OPT_SET("App/Maximized")->SetBool(IsMaximized());
 
 	Destroy();
-}
-
-void FrameMain::OnAutoSave(wxTimerEvent &) try {
-	auto fn = context->subsController->AutoSave();
-	if (!fn.empty())
-		StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
-}
-catch (const agi::Exception& err) {
-	StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
-}
-catch (...) {
-	StatusTimeout("Unhandled exception when attempting to autosave file.");
 }
 
 void FrameMain::OnStatusClear(wxTimerEvent &) {

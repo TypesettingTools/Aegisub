@@ -23,7 +23,9 @@
 #include "ass_style.h"
 #include "compat.h"
 #include "command/command.h"
+#include "frame_main.h"
 #include "include/aegisub/context.h"
+#include "main.h"
 #include "options.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"
@@ -36,6 +38,16 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/format.hpp>
 #include <wx/msgdlg.h>
+
+namespace {
+	void autosave_timer_changed(wxTimer *timer) {
+		int freq = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
+		if (freq > 0 && OPT_GET("App/Auto/Save")->GetBool())
+			timer->Start(freq * 1000);
+		else
+			timer->Stop();
+	}
+}
 
 struct SubsController::UndoInfo {
 	AssFile file;
@@ -51,6 +63,23 @@ SubsController::SubsController(agi::Context *context)
 , saved_commit_id(0)
 , autosaved_commit_id(0)
 {
+	autosave_timer_changed(&autosave_timer);
+	OPT_SUB("App/Auto/Save", autosave_timer_changed, &autosave_timer);
+	OPT_SUB("App/Auto/Save Every Seconds", autosave_timer_changed, &autosave_timer);
+
+	autosave_timer.Bind(wxEVT_TIMER, [=](wxTimerEvent&) {
+		try {
+			auto fn = AutoSave();
+			if (!fn.empty())
+				wxTheApp->frame->StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
+		}
+		catch (const agi::Exception& err) {
+			wxTheApp->frame->StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
+		}
+		catch (...) {
+			wxTheApp->frame->StatusTimeout("Unhandled exception when attempting to autosave file.");
+		}
+	});
 }
 
 void SubsController::Load(agi::fs::path const& filename, std::string const& charset) {

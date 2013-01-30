@@ -20,6 +20,7 @@
 #include <boost/container/list.hpp>
 #include <boost/filesystem/path.hpp>
 #include <set>
+#include <wx/timer.h>
 
 class AssEntry;
 class AssFile;
@@ -41,6 +42,9 @@ class SubsController {
 	int saved_commit_id;
 	/// Last autosaved version of this file
 	int autosaved_commit_id;
+
+	/// Timer for triggering autosaves
+	wxTimer autosave_timer;
 
 	/// A new file has been opened (filename)
 	agi::signal::Signal<agi::fs::path> FileOpen;
