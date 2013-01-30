@@ -34,12 +34,12 @@
 #include "options.h"
 #include "scintilla_text_ctrl.h"
 #include "selection_controller.h"
-#include "standard_paths.h"
 #include "subs_controller.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
+#include <libaegisub/path.h>
 
 #include <wx/button.h>
 #include <wx/config.h>
@@ -206,13 +206,13 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	collection_mode = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, countof(modes), modes, 1);
 	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 4));
 
-	if (StandardPaths::DecodePath("?script") == "?script")
+	if (config::path->Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
 
 	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
 
 	dest_label = new wxStaticText(this, -1, " ");
-	dest_ctrl = new wxTextCtrl(this, -1, StandardPaths::DecodePath(OPT_GET("Path/Fonts Collector Destination")->GetString()).wstring());
+	dest_ctrl = new wxTextCtrl(this, -1, config::path->Decode(OPT_GET("Path/Fonts Collector Destination")->GetString()).wstring());
 	dest_browse_button = new wxButton(this, -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -268,7 +268,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &) {
 	int action = collection_mode->GetSelection();
 	OPT_SET("Tool/Fonts Collector/Action")->SetInt(action);
 	if (action != CheckFontsOnly) {
-		dest = StandardPaths::DecodePath(action == CopyToScriptFolder ? "?script/" : from_wx(dest_ctrl->GetValue()));
+		dest = config::path->Decode(action == CopyToScriptFolder ? "?script/" : from_wx(dest_ctrl->GetValue()));
 
 		if (action != CopyToZip) {
 			if (agi::fs::FileExists(dest))
@@ -372,7 +372,7 @@ void DialogFontsCollector::OnCollectionComplete(wxThreadEvent &) {
 	start_btn->Enable();
 	close_btn->Enable();
 	collection_mode->Enable();
-	if (StandardPaths::DecodePath("?script") == "?script")
+	if (config::path->Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
 
 	wxCommandEvent evt;

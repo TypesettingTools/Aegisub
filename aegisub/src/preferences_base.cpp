@@ -16,6 +16,18 @@
 /// @brief Base preferences dialogue classes
 /// @ingroup configuration_ui
 
+#include "preferences_base.h"
+
+#include "colour_button.h"
+#include "compat.h"
+#include "include/aegisub/audio_player.h"
+#include "include/aegisub/audio_provider.h"
+#include "libresrc/libresrc.h"
+#include "options.h"
+#include "preferences.h"
+#include "video_provider_manager.h"
+
+#include <libaegisub/path.h>
 
 #include <wx/any.h>
 #include <wx/checkbox.h>
@@ -29,19 +41,6 @@
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
 #include <wx/treebook.h>
-#include <wx/treebook.h>
-
-#include "preferences_base.h"
-
-#include "colour_button.h"
-#include "compat.h"
-#include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
-#include "libresrc/libresrc.h"
-#include "options.h"
-#include "preferences.h"
-#include "standard_paths.h"
-#include "video_provider_manager.h"
 
 #define OPTION_UPDATER(type, evttype, opt, body)                            \
 	class type {                                                            \
@@ -63,7 +62,7 @@ OPTION_UPDATER(BoolUpdater, wxCommandEvent, OptionValueBool, !!evt.GetInt());
 OPTION_UPDATER(ColourUpdater, wxThreadEvent, OptionValueColor, evt.GetPayload<agi::Color>());
 
 static void browse_button(wxTextCtrl *ctrl) {
-	wxDirDialog dlg(0, _("Please choose the folder:"), StandardPaths::DecodePath(from_wx(ctrl->GetValue())).wstring());
+	wxDirDialog dlg(0, _("Please choose the folder:"), config::path->Decode(from_wx(ctrl->GetValue())).wstring());
 	if (dlg.ShowModal() == wxID_OK) {
 		wxString dir = dlg.GetPath();
 		if (!dir.empty())

@@ -46,15 +46,16 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "main.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
-#include "standard_paths.h"
 #include "video_context.h"
 #include "utils.h"
 
 #include <libaegisub/access.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/path.h>
 #include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
@@ -726,7 +727,7 @@ namespace Automation4 {
 	{
 		std::string path = luaL_checkstring(L, 1);
 		lua_pop(L, 1);
-		push_value(L, StandardPaths::DecodePath(path));
+		push_value(L, config::path->Decode(path));
 		return 1;
 	}
 

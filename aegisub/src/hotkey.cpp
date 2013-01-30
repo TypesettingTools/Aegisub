@@ -25,7 +25,8 @@
 #include "libresrc/libresrc.h"
 #include "command/command.h"
 #include "options.h"
-#include "standard_paths.h"
+
+#include <libaegisub/path.h>
 
 namespace {
 	const char *removed_commands_6294[] = {
@@ -123,7 +124,7 @@ namespace hotkey {
 agi::hotkey::Hotkey *inst = 0;
 void init() {
 	inst = new agi::hotkey::Hotkey(
-		StandardPaths::DecodePath("?user/hotkey.json"),
+		config::path->Decode("?user/hotkey.json"),
 		GET_DEFAULT_CONFIG(default_hotkey));
 
 	int last_version = OPT_GET("Version/Last Version")->GetInt();

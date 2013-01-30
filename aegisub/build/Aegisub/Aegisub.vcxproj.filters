@@ -582,9 +582,6 @@
     <ClInclude Include="$(SrcDir)spline.h">
       <Filter>Video\Visual tools</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)standard_paths.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)version.h">
       <Filter>Features\About box</Filter>
     </ClInclude>
@@ -1111,9 +1108,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)spline_curve.cpp">
       <Filter>Video\Visual tools</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)standard_paths.cpp">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)command\subtitle.cpp">
       <Filter>Commands</Filter>

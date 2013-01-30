@@ -24,13 +24,13 @@
 #include "spellchecker_hunspell.h"
 
 #include "options.h"
-#include "standard_paths.h"
 
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/log.h>
+#include <libaegisub/path.h>
 
 #include <hunspell/hunspell.hxx>
 
@@ -160,11 +160,11 @@ std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 	std::vector<std::string> dic, aff;
 
 	// Get list of dictionaries
-	auto path = StandardPaths::DecodePath("?data/dictionaries/");
+	auto path = config::path->Decode("?data/dictionaries/");
 	agi::fs::DirectoryIterator(path, "*.dic").GetAll(dic);
 	agi::fs::DirectoryIterator(path, "*.aff").GetAll(aff);
 
-	path = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString());
+	path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
 	agi::fs::DirectoryIterator(path, "*.dic").GetAll(dic);
 	agi::fs::DirectoryIterator(path, "*.aff").GetAll(aff);
 
@@ -200,15 +200,15 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	auto language = OPT_GET("Tool/Spell Checker/Language")->GetString();
 	if (language.empty()) return;
 
-	auto custDicRoot = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString());
-	auto dataDicRoot = StandardPaths::DecodePath("?data/dictionaries");
+	auto custDicRoot = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
+	auto dataDicRoot = config::path->Decode("?data/dictionaries");
 
 	// If the user has a dic/aff pair in their dictionary path for this language
 	// use that; otherwise use the one from Aegisub's install dir, adding words
 	// from the dic in the user's dictionary path if it exists
 	auto affPath = custDicRoot/(language + ".aff");
 	auto dicPath = custDicRoot/(language + ".dic");
-	userDicPath = StandardPaths::DecodePath("?user/dictionaries")/str(boost::format("user_%s.dic") % language);
+	userDicPath = config::path->Decode("?user/dictionaries")/str(boost::format("user_%s.dic") % language);
 	if (!agi::fs::FileExists(affPath) || !agi::fs::FileExists(dicPath)) {
 		affPath = dataDicRoot/(language + ".aff");
 		dicPath = dataDicRoot/(language + ".dic");

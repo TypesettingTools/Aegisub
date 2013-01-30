@@ -50,10 +50,11 @@
 #include "../dialog_timing_processor.h"
 #include "../dialog_translation.h"
 #include "../include/aegisub/context.h"
-#include "../standard_paths.h"
+#include "../options.h"
 #include "../video_context.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/path.h>
 
 #include <wx/msgdlg.h>
 #include <wx/utils.h>
@@ -72,7 +73,7 @@ struct tool_assdraw : public Command {
 	STR_HELP("Launch ASSDraw3 tool for vector drawing")
 
 	void operator()(agi::Context *) {
-		wxExecute("\"" + StandardPaths::DecodePath("?data/ASSDraw3.exe").wstring() + "\"");
+		wxExecute("\"" + config::path->Decode("?data/ASSDraw3.exe").wstring() + "\"");
 	}
 };
 
@@ -310,7 +311,7 @@ namespace cmd {
 		reg(new tool_time_postprocess);
 		reg(new tool_translation_assistant);
 #ifdef _WIN32
-		if (agi::fs::FileExists(StandardPaths::DecodePath("?data/ASSDraw3.exe")))
+		if (agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe")))
 			reg(new tool_assdraw);
 #endif
 		reg(new tool_translation_assistant_commit);

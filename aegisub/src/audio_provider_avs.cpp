@@ -39,12 +39,12 @@
 
 #include "audio_controller.h"
 #include "options.h"
-#include "standard_paths.h"
 #include "utils.h"
 
 #include <libaegisub/access.h>
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/fs.h>
+#include <libaegisub/path.h>
 
 #include <mutex>
 
@@ -67,7 +67,7 @@ AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 			AVSValue args[3] = { env->SaveString(agi::fs::ShortName(filename).c_str()), false, true };
 
 			// Load DirectShowSource.dll from app dir if it exists
-			agi::fs::path dsspath(StandardPaths::DecodePath("?data/DirectShowSource.dll"));
+			agi::fs::path dsspath(config::path->Decode("?data/DirectShowSource.dll"));
 			if (agi::fs::FileExists(dsspath))
 				env->Invoke("LoadPlugin", env->SaveString(agi::fs::ShortName(dsspath).c_str()));
 

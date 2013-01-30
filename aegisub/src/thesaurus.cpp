@@ -24,13 +24,13 @@
 #include "thesaurus.h"
 
 #include "options.h"
-#include "standard_paths.h"
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/path.h>
 #include <libaegisub/thesaurus.h>
 
 Thesaurus::Thesaurus()
@@ -56,11 +56,11 @@ std::vector<std::string> Thesaurus::GetLanguageList() const {
 	std::vector<std::string> idx, dat;
 
 	// Get list of dictionaries
-	auto path = StandardPaths::DecodePath("?data/dictionaries/");
+	auto path = config::path->Decode("?data/dictionaries/");
 	agi::fs::DirectoryIterator(path, "th_*.idx").GetAll(idx);
 	agi::fs::DirectoryIterator(path, "th_*.dat").GetAll(dat);
 
-	path = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString());
+	path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
 	agi::fs::DirectoryIterator(path, "th_*.idx").GetAll(idx);
 	agi::fs::DirectoryIterator(path, "th_*.dat").GetAll(dat);
 
@@ -96,7 +96,7 @@ void Thesaurus::OnLanguageChanged() {
 	auto language = OPT_GET("Tool/Thesaurus/Language")->GetString();
 	if (language.empty()) return;
 
-	auto path = StandardPaths::DecodePath(OPT_GET("Path/Dictionary")->GetString() + "/");
+	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
 
 	// Get index and data paths
 	auto idxpath = path/str(boost::format("th_%s.idx") % language);
@@ -104,7 +104,7 @@ void Thesaurus::OnLanguageChanged() {
 
 	// If they aren't in the user dictionary path, check the application directory
 	if (!agi::fs::FileExists(idxpath) || !agi::fs::FileExists(datpath)) {
-		path = StandardPaths::DecodePath("?data/dictionaries/");
+		path = config::path->Decode("?data/dictionaries/");
 		idxpath = path/str(boost::format("th_%s.idx") % language);
 		datpath = path/str(boost::format("th_%s.dat") % language);
 

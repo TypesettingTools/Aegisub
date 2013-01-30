@@ -36,10 +36,12 @@
 
 #include "aegisublocale.h"
 
-#include "standard_paths.h"
+#include "options.h"
+
+#include <libaegisub/path.h>
 
 #include <algorithm>
-#include <boost/filesystem/path.hpp>
+#include <boost/locale.hpp>
 #include <clocale>
 #include <functional>
 
@@ -54,7 +56,7 @@ wxTranslations *AegisubLocale::GetTranslations() {
 	wxTranslations *translations = wxTranslations::Get();
 	if (!translations) {
 		wxTranslations::Set(translations = new wxTranslations);
-		wxFileTranslationsLoader::AddCatalogLookupPathPrefix(StandardPaths::DecodePath("?data/locale/").wstring());
+		wxFileTranslationsLoader::AddCatalogLookupPathPrefix(config::path->Decode("?data/locale/").wstring());
 	}
 	return translations;
 }

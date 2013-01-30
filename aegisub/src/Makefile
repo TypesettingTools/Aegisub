@@ -219,7 +219,6 @@ SRC += \
 	spellchecker.cpp \
 	spline.cpp \
 	spline_curve.cpp \
-	standard_paths.cpp \
 	string_codec.cpp \
 	subs_controller.cpp \
 	subs_edit_box.cpp \

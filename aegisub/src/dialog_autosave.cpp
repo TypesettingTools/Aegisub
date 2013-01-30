@@ -21,7 +21,8 @@
 #include "compat.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
-#include "standard_paths.h"
+
+#include <libaegisub/path.h>
 
 #include <boost/range/adaptor/map.hpp>
 
@@ -90,7 +91,7 @@ DialogAutosave::DialogAutosave(wxWindow *parent)
 }
 
 void DialogAutosave::Populate(std::map<wxString, AutosaveFile> &files_map, std::string const& path, wxString const& filter, wxString const& name_fmt) {
-	wxString directory(StandardPaths::DecodePath(path).wstring());
+	wxString directory(config::path->Decode(path).wstring());
 
 	wxDir dir;
 	if (!dir.Open(directory)) return;

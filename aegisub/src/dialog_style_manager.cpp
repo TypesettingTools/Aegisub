@@ -48,11 +48,11 @@
 #include "persist_location.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
-#include "standard_paths.h"
 #include "subtitle_format.h"
 #include "utils.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/path.h>
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
@@ -322,7 +322,7 @@ void DialogStyleManager::LoadCatalog() {
 	CatalogList->Clear();
 
 	// Get saved style catalogs
-	for (auto const& file : agi::fs::DirectoryIterator(StandardPaths::DecodePath("?user/catalog/"), "*.sty"))
+	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
 		CatalogList->Append(agi::fs::path(file).stem().wstring());
 
 	// Create a default storage if there are none
@@ -387,7 +387,7 @@ void DialogStyleManager::OnCatalogDelete() {
 	wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name);
 	int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
 	if (option == wxYES) {
-		agi::fs::Remove(StandardPaths::DecodePath("?user/catalog/" + from_wx(name) + ".sty"));
+		agi::fs::Remove(config::path->Decode("?user/catalog/" + from_wx(name) + ".sty"));
 		CatalogList->Delete(CatalogList->GetSelection());
 		CatalogList->SetSelection(0);
 		OnChangeCatalog();

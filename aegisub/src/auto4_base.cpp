@@ -42,7 +42,6 @@
 #include "dialog_progress.h"
 #include "include/aegisub/context.h"
 #include "options.h"
-#include "standard_paths.h"
 #include "string_codec.h"
 #include "subs_controller.h"
 #include "subtitle_format.h"
@@ -284,7 +283,7 @@ namespace Automation4 {
 		std::string include_paths = OPT_GET("Path/Automation/Include")->GetString();
 		boost::char_separator<char> sep("|");
 		for (auto const& tok : boost::tokenizer<boost::char_separator<char>>(include_paths, sep)) {
-			auto path = StandardPaths::DecodePath(tok);
+			auto path = config::path->Decode(tok);
 			if (path.is_absolute() && agi::fs::DirectoryExists(path))
 				include_path.emplace_back(std::move(path));
 		}
@@ -355,7 +354,7 @@ namespace Automation4 {
 
 		boost::char_separator<char> sep("|");
 		for (auto const& tok : boost::tokenizer<boost::char_separator<char>>(path, sep)) {
-			auto dirname = StandardPaths::DecodePath(tok);
+			auto dirname = config::path->Decode(tok);
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
 			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*")) {

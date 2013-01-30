@@ -50,7 +50,6 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "plugin_manager.h"
-#include "standard_paths.h"
 #include "subs_controller.h"
 #include "subtitle_format.h"
 #include "version.h"
@@ -140,13 +139,13 @@ bool AegisubApp::OnInit() {
 #ifdef __WXMSW__
 	// Try loading configuration from the install dir if one exists there
 	try {
-		auto conf_local(StandardPaths::DecodePath("?data/config.json"));
+		auto conf_local(config::path->Decode("?data/config.json"));
 		std::unique_ptr<std::istream> localConfig(agi::io::Open(conf_local));
 		config::opt = new agi::Options(conf_local, GET_DEFAULT_CONFIG(default_config));
 
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
-		StandardPaths::SetPathValue("?user", StandardPaths::DecodePath("?data"));
-		StandardPaths::SetPathValue("?local", StandardPaths::DecodePath("?data"));
+		config::path->SetToken("?user", config::path->Decode("?data"));
+		config::path->SetToken("?local", config::path->Decode("?data"));
 	} catch (agi::fs::FileSystemError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
@@ -154,7 +153,7 @@ bool AegisubApp::OnInit() {
 #endif
 
 	StartupLog("Create log writer");
-	auto path_log = StandardPaths::DecodePath("?user/log/");
+	auto path_log = config::path->Decode("?user/log/");
 	agi::fs::CreateDirectory(path_log);
 	agi::log::log->Subscribe(new agi::log::JsonEmitter(path_log));
 	CleanCache(path_log, "*.json", 10, 100);
@@ -162,7 +161,7 @@ bool AegisubApp::OnInit() {
 	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
-			config::opt = new agi::Options(StandardPaths::DecodePath("?user/config.json"), GET_DEFAULT_CONFIG(default_config));
+			config::opt = new agi::Options(config::path->Decode("?user/config.json"), GET_DEFAULT_CONFIG(default_config));
 		std::istringstream stream(GET_DEFAULT_CONFIG(default_config_platform));
 		config::opt->ConfigNext(stream);
 	} catch (agi::Exception& e) {
@@ -186,7 +185,7 @@ bool AegisubApp::OnInit() {
 	icon::icon_init();
 
 	StartupLog("Load MRU");
-	config::mru = new agi::MRUManager(StandardPaths::DecodePath("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
+	config::mru = new agi::MRUManager(config::path->Decode("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
 
 	agi::util::SetThreadName("AegiMain");
 
@@ -267,7 +266,7 @@ bool AegisubApp::OnInit() {
 #endif
 
 	StartupLog("Clean old autosave files");
-	CleanCache(StandardPaths::DecodePath(OPT_GET("Path/Auto/Save")->GetString()), "*.AUTOSAVE.ass", 100, 1000);
+	CleanCache(config::path->Decode(OPT_GET("Path/Auto/Save")->GetString()), "*.AUTOSAVE.ass", 100, 1000);
 
 	StartupLog("Initialization complete");
 	return true;
@@ -307,7 +306,7 @@ public:
 /// @brief Called at the start of walking the stack.
 /// @param cause cause of the crash.
 StackWalker::StackWalker(std::string const& cause)
-: fp(StandardPaths::DecodePath("?user/crashlog.txt"), std::ios::app)
+: fp(config::path->Decode("?user/crashlog.txt"), std::ios::app)
 {
 	if (!fp.good()) return;
 
@@ -343,7 +342,7 @@ const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn at
 static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	if (c->ass && c->subsController) {
-		auto path = StandardPaths::DecodePath("?user/recovered");
+		auto path = config::path->Decode("?user/recovered");
 		agi::fs::CreateDirectory(path);
 
 		auto filename = c->subsController->Filename().stem();
@@ -415,7 +414,7 @@ int AegisubApp::OnRun() {
 
 	// Report errors
 	if (!error.empty()) {
-		boost::filesystem::ofstream file(StandardPaths::DecodePath("?user/crashlog.txt"), std::ios::app);
+		boost::filesystem::ofstream file(config::path->Decode("?user/crashlog.txt"), std::ios::app);
 		if (file.is_open()) {
 			file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
 			file << boost::format("VER - %s\n") % GetAegisubLongVersionString();

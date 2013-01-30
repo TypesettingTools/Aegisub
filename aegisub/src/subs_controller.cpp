@@ -25,12 +25,12 @@
 #include "command/command.h"
 #include "include/aegisub/context.h"
 #include "options.h"
-#include "standard_paths.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"
 #include "video_context.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -131,7 +131,7 @@ void SubsController::Load(agi::fs::path const& filename, std::string const& char
 		if (path_str.empty())
 			path = filename.parent_path();
 		else
-			path = StandardPaths::DecodePath(path_str);
+			path = config::path->Decode(path_str);
 		agi::fs::CreateDirectory(path);
 		agi::fs::Copy(filename, path/(filename.stem().string() + ".ORIGINAL" + filename.extension().string()));
 	}
@@ -148,10 +148,10 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 	try {
 		autosaved_commit_id = saved_commit_id = commit_id;
 
-		// Have to set these now for the sake of things that want to save paths
+		// Have to set this now for the sake of things that want to save paths
 		// relative to the script in the header
 		this->filename = filename;
-		StandardPaths::SetPathValue("?script", filename.parent_path());
+		config::path->SetToken("?script", filename.parent_path());
 
 		FileSave();
 
@@ -196,7 +196,7 @@ agi::fs::path SubsController::AutoSave() {
 	if (commit_id == autosaved_commit_id)
 		return "";
 
-	auto path = StandardPaths::DecodePath(OPT_GET("Path/Auto/Save")->GetString());
+	auto path = config::path->Decode(OPT_GET("Path/Auto/Save")->GetString());
 	if (path.empty())
 		path = filename.parent_path();
 
@@ -225,7 +225,7 @@ bool SubsController::CanSave() const {
 
 void SubsController::SetFileName(agi::fs::path const& path) {
 	filename = path;
-	StandardPaths::SetPathValue("?script", path.parent_path());
+	config::path->SetToken("?script", path.parent_path());
 	config::mru->Add("Subtitle", path);
 	OPT_SET("Path/Last/Subtitles")->SetString(filename.parent_path().string());
 }

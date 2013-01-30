@@ -35,16 +35,15 @@
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
-
 #include "video_provider_avs.h"
 
 #include "options.h"
-#include "standard_paths.h"
 
 #include <libaegisub/access.h>
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/path.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <mutex>
@@ -240,7 +239,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 
 	// Try loading DirectShowSource2
 	if (!env->FunctionExists("dss2")) {
-		auto dss2path(StandardPaths::DecodePath("?data/avss.dll"));
+		auto dss2path(config::path->Decode("?data/avss.dll"));
 		if (agi::fs::FileExists(dss2path))
 			env->Invoke("LoadPlugin", env->SaveString(agi::fs::ShortName(dss2path).c_str()));
 	}
@@ -254,7 +253,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 
 	// Try DirectShowSource
 	// Load DirectShowSource.dll from app dir if it exists
-	auto dsspath(StandardPaths::DecodePath("?data/DirectShowSource.dll"));
+	auto dsspath(config::path->Decode("?data/DirectShowSource.dll"));
 	if (agi::fs::FileExists(dsspath))
 		env->Invoke("LoadPlugin", env->SaveString(agi::fs::ShortName(dsspath).c_str()));
 

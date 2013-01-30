@@ -42,10 +42,10 @@
 #include "frame_main.h"
 #include "main.h"
 #include "options.h"
-#include "standard_paths.h"
 #include "utils.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/path.h>
 #include <libaegisub/log.h>
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -214,7 +214,7 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 	hash.process_bytes(filename.string().c_str(), filename.string().size());
 
 	// Generate the filename
-	auto result = StandardPaths::DecodePath("?local/ffms2cache/" + std::to_string(hash.checksum()) + "_" + std::to_string(len) + "_" + std::to_string(agi::fs::ModifiedTime(filename)) + ".ffindex");
+	auto result = config::path->Decode("?local/ffms2cache/" + std::to_string(hash.checksum()) + "_" + std::to_string(len) + "_" + std::to_string(agi::fs::ModifiedTime(filename)) + ".ffindex");
 
 	// Ensure that folder exists
 	agi::fs::CreateDirectory(result.parent_path());
@@ -224,7 +224,7 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 
 /// @brief		Starts the cache cleaner thread
 void FFmpegSourceProvider::CleanCache() {
-	::CleanCache(StandardPaths::DecodePath("?local/ffms2cache/"),
+	::CleanCache(config::path->Decode("?local/ffms2cache/"),
 		"*.ffindex",
 		OPT_GET("Provider/FFmpegSource/Cache/Size")->GetInt(),
 		OPT_GET("Provider/FFmpegSource/Cache/Files")->GetInt());

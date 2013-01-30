@@ -213,7 +213,6 @@
     <ClInclude Include="$(SrcDir)spellchecker_hunspell.h" />
     <ClInclude Include="$(SrcDir)spline.h" />
     <ClInclude Include="$(SrcDir)spline_curve.h" />
-    <ClInclude Include="$(SrcDir)standard_paths.h" />
     <ClInclude Include="$(SrcDir)string_codec.h" />
     <ClInclude Include="$(SrcDir)subs_edit_box.h" />
     <ClInclude Include="$(SrcDir)subs_edit_ctrl.h" />
@@ -403,7 +402,6 @@
     <ClCompile Include="$(SrcDir)spellchecker_hunspell.cpp" />
     <ClCompile Include="$(SrcDir)spline.cpp" />
     <ClCompile Include="$(SrcDir)spline_curve.cpp" />
-    <ClCompile Include="$(SrcDir)standard_paths.cpp" />
     <ClCompile Include="$(SrcDir)string_codec.cpp" />
     <ClCompile Include="$(SrcDir)subs_edit_box.cpp" />
     <ClCompile Include="$(SrcDir)subs_edit_ctrl.cpp" />

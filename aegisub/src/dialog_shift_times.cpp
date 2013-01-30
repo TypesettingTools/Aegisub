@@ -32,7 +32,6 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "subs_controller.h"
-#include "standard_paths.h"
 #include "timeedit_ctrl.h"
 #include "video_context.h"
 
@@ -40,6 +39,7 @@
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/path.h>
 
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/cajun/reader.h>
@@ -99,7 +99,7 @@ static wxString get_history_string(json::Object &obj) {
 DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
-, history_filename(StandardPaths::DecodePath("?user/shift_history.json"))
+, history_filename(config::path->Decode("?user/shift_history.json"))
 , history(new json::Array)
 , timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 , selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))

@@ -29,11 +29,11 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
-#include "standard_paths.h"
 
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
+#include <libaegisub/path.h>
 
 #include <algorithm>
 #include <deque>
@@ -293,7 +293,7 @@ menu_map const& get_menus_root() {
 	if (!root.empty()) return root;
 
 	try {
-		root = agi::json_util::file(StandardPaths::DecodePath("?user/menu.json"), GET_DEFAULT_CONFIG(default_menu));
+		root = agi::json_util::file(config::path->Decode("?user/menu.json"), GET_DEFAULT_CONFIG(default_menu));
 		return root;
 	}
 	catch (json::Reader::ParseException const& e) {

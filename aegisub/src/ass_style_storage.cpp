@@ -37,12 +37,13 @@
 #include "ass_style_storage.h"
 
 #include "ass_style.h"
-#include "standard_paths.h"
+#include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "utils.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/path.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
@@ -54,9 +55,9 @@ AssStyleStorage::~AssStyleStorage() {
 void AssStyleStorage::Save() const {
 	if (storage_name.empty()) return;
 
-	agi::fs::CreateDirectory(StandardPaths::DecodePath("?user/catalog/"));
+	agi::fs::CreateDirectory(config::path->Decode("?user/catalog/"));
 
-	TextFileWriter file(StandardPaths::DecodePath("?user/catalog/" + storage_name + ".sty"), "UTF-8");
+	TextFileWriter file(config::path->Decode("?user/catalog/" + storage_name + ".sty"), "UTF-8");
 	for (const AssStyle *cur : style)
 		file.WriteLineToFile(cur->GetEntryData());
 }
@@ -66,7 +67,7 @@ void AssStyleStorage::Load(std::string const& name) {
 	Clear();
 
 	try {
-		TextFileReader file(StandardPaths::DecodePath("?user/catalog/" + name + ".sty"), "UTF-8");
+		TextFileReader file(config::path->Decode("?user/catalog/" + name + ".sty"), "UTF-8");
 
 		while (file.HasMoreLines()) {
 			try {
