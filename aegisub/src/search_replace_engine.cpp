@@ -25,8 +25,9 @@
 #include "text_selection_controller.h"
 
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/util.h>
 
-#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/locale.hpp>
 
 #include <wx/msgdlg.h>
 
@@ -43,6 +44,14 @@ auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDial
 	throw agi::InternalError("Bad field for search", 0);
 }
 
+std::string const& get_normalized(const AssDialogue *diag, decltype(&AssDialogue::Text) field) {
+	auto& value = const_cast<AssDialogue*>(diag)->*field;
+	auto normalized = boost::locale::normalize(value.get());
+	if (normalized != value)
+		value = normalized;
+	return value.get();
+}
+
 typedef std::function<MatchState (const AssDialogue*, size_t)> matcher;
 
 class noop_accessor {
@@ -54,7 +63,7 @@ public:
 
 	std::string get(const AssDialogue *d, size_t s) {
 		start = s;
-		return (d->*field).get().substr(s);
+		return get_normalized(d, field).substr(s);
 	}
 
 	MatchState make_match_state(size_t s, size_t e, boost::u32regex *r = nullptr) {
@@ -87,7 +96,7 @@ public:
 	skip_tags_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)), start(0) { }
 
 	std::string get(const AssDialogue *d, size_t s) {
-		auto const& str = (d->*field).get();
+		auto const& str = get_normalized(d, field);
 		parse_str(str);
 
 		std::string out;
@@ -156,25 +165,25 @@ matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 		};
 	}
 
-	bool full_match_only = settings.exact_match;
-	bool match_case = settings.match_case;
+	const bool full_match_only = settings.exact_match;
+	const bool match_case = settings.match_case;
 	std::string look_for = settings.find;
+
 	if (!settings.match_case)
-		boost::to_lower(look_for);
+		look_for = boost::locale::fold_case(look_for);
 
 	return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
-		auto str = a.get(diag, start);
+		const auto str = a.get(diag, start);
 		if (full_match_only && str.size() != look_for.size())
 			return MatchState();
 
-		if (!match_case)
-			boost::to_lower(str);
+		if (match_case) {
+			const auto pos = str.find(look_for);
+			return pos == std::string::npos ? MatchState() : a.make_match_state(pos, pos + look_for.size());
+		}
 
-		size_t pos = str.find(look_for);
-		if (pos == std::string::npos)
-			return MatchState();
-
-		return a.make_match_state(pos, pos + look_for.size());
+		const auto pos = agi::util::ifind(str, look_for);
+		return pos.first == bad_pos ? MatchState() : a.make_match_state(pos.first, pos.second);
 	};
 }
 

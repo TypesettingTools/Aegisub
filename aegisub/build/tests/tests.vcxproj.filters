@@ -35,6 +35,9 @@
     <ClCompile Include="$(SrcDir)tests\iconv.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)tests\ifind.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)tests\keyframe.cpp">
       <Filter>Tests</Filter>
     </ClCompile>

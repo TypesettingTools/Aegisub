@@ -23,6 +23,7 @@ SRC = \
 		tests/dialogue_lexer.cpp \
 		tests/hotkey.cpp \
 		tests/iconv.cpp \
+		tests/ifind.cpp \
 		tests/keyframe.cpp \
 		tests/line_iterator.cpp \
 		tests/line_wrap.cpp \

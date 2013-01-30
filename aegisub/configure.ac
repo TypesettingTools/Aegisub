@@ -248,6 +248,7 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
 libext=a
 BOOST_REQUIRE([boost_required_version])
 BOOST_FILESYSTEM
+BOOST_LOCALE
 BOOST_REGEX
 
 ########

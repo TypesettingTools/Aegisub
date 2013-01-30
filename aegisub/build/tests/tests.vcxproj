@@ -44,6 +44,7 @@
     <ClCompile Include="$(SrcDir)tests\dialogue_lexer.cpp" />
     <ClCompile Include="$(SrcDir)tests\hotkey.cpp" />
     <ClCompile Include="$(SrcDir)tests\iconv.cpp" />
+    <ClCompile Include="$(SrcDir)tests\ifind.cpp" />
     <ClCompile Include="$(SrcDir)tests\keyframe.cpp" />
     <ClCompile Include="$(SrcDir)tests\line_iterator.cpp" />
     <ClCompile Include="$(SrcDir)tests\line_wrap.cpp" />

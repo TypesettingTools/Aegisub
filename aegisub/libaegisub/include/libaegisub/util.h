@@ -41,6 +41,16 @@ namespace agi {
 	/// @return The strftime-formatted string
 	std::string strftime(const char *fmt, const tm *tmptr = nullptr);
 
+	/// Case-insensitive find with proper case folding
+	/// @param haystack String to search
+	/// @param needle String to look for
+	/// @return make_pair(-1,-1) if `needle` could not be found, or a range equivalent to `needle` in `haystack` if it could
+	///
+	/// `needle` and `haystack` must both be in Normalization Form D. The size
+	/// of the match might be different from the size of `needle`, since it's
+	/// based on the unfolded length.
+	std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& needle);
+
 	struct delete_ptr {
 		template<class T>
 		void operator()(T* ptr) const {

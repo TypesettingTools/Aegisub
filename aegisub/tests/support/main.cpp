@@ -18,8 +18,11 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
+#include <boost/locale/generator.hpp>
+
 int main(int argc, char **argv) {
 	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
+	std::locale::global(boost::locale::generator().generate(""));
 
 	int retval;
 	agi::log::log = new agi::log::LogSink;
