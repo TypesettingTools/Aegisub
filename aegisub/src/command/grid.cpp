@@ -42,9 +42,7 @@
 #include "../ass_file.h"
 #include "../audio_controller.h"
 #include "../audio_timing.h"
-#include "../frame_main.h"
 #include "../include/aegisub/context.h"
-#include "../main.h"
 #include "../options.h"
 #include "../selection_controller.h"
 #include "../utils.h"
@@ -288,7 +286,7 @@ struct grid_tag_cycle_hiding : public Command {
 		if (tagMode == 0) message = _("ASS Override Tag mode set to show full tags.");
 		if (tagMode == 1) message = _("ASS Override Tag mode set to simplify tags.");
 		if (tagMode == 2) message = _("ASS Override Tag mode set to hide tags.");
-		wxGetApp().frame->StatusTimeout(message,10000);
+		StatusTimeout(message,10000);
 
 		// Set option
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(tagMode);

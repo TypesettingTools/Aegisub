@@ -46,6 +46,7 @@
 #include "../include/aegisub/context.h"
 #include "../main.h"
 #include "../options.h"
+#include "../utils.h"
 #include "../video_context.h"
 
 namespace {
@@ -62,7 +63,7 @@ struct reload_all : public Command {
 	void operator()(agi::Context *c) {
 		wxGetApp().global_scripts->Reload();
 		c->local_scripts->Reload();
-		wxGetApp().frame->StatusTimeout(_("Reloaded all Automation scripts"));
+		StatusTimeout(_("Reloaded all Automation scripts"));
 	}
 };
 
@@ -74,7 +75,7 @@ struct reload_autoload : public Command {
 
 	void operator()(agi::Context *c) {
 		wxGetApp().global_scripts->Reload();
-		wxGetApp().frame->StatusTimeout(_("Reloaded autoload Automation scripts"));
+		StatusTimeout(_("Reloaded autoload Automation scripts"));
 	}
 };
 

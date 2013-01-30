@@ -26,14 +26,13 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
-#include "frame_main.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
 #include "options.h"
 #include "search_replace_engine.h"
 #include "selection_controller.h"
+#include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
 
@@ -232,7 +231,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 	if (count == 0)
 		wxMessageBox(message, _("Selection"), wxOK | wxCENTER, this);
 	else
-		wxGetApp().frame->StatusTimeout(message);
+		StatusTimeout(message);
 
 	if (new_sel.size() && !new_sel.count(con->selectionController->GetActiveLine()))
 		con->selectionController->SetActiveLine(*new_sel.begin());

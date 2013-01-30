@@ -23,12 +23,11 @@
 #include "ass_style.h"
 #include "compat.h"
 #include "command/command.h"
-#include "frame_main.h"
 #include "include/aegisub/context.h"
-#include "main.h"
 #include "options.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"
+#include "utils.h"
 #include "video_context.h"
 
 #include <libaegisub/fs.h>
@@ -71,13 +70,13 @@ SubsController::SubsController(agi::Context *context)
 		try {
 			auto fn = AutoSave();
 			if (!fn.empty())
-				wxTheApp->frame->StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
+				StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
 		}
 		catch (const agi::Exception& err) {
-			wxTheApp->frame->StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
+			StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
 		}
 		catch (...) {
-			wxTheApp->frame->StatusTimeout("Unhandled exception when attempting to autosave file.");
+			StatusTimeout("Unhandled exception when attempting to autosave file.");
 		}
 	});
 }

@@ -54,6 +54,8 @@ wxString AegiFloatToString(double value);
 wxString AegiIntegerToString(int value);
 wxString PrettySize(int bytes);
 
+void StatusTimeout(wxString const& msg, int ms = 10000);
+
 /// @brief Get the smallest power of two that is greater or equal to x
 ///
 /// Algorithm from http://bob.allegronetwork.com/prog/tricks.html

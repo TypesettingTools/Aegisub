@@ -37,6 +37,8 @@
 #include "utils.h"
 
 #include "compat.h"
+#include "frame_main.h"
+#include "main.h"
 #include "options.h"
 
 #include <libaegisub/dispatch.h>
@@ -86,6 +88,10 @@ wxString PrettySize(int bytes) {
 	else if (size < 100)
 		fmt = "%1.f";
 	return wxString::Format(fmt, size) + " " + suffix[i];
+}
+
+void StatusTimeout(wxString const& msg, int ms) {
+	wxGetApp().frame->StatusTimeout(msg, ms);
 }
 
 int SmallestPowerOf2(int x) {
