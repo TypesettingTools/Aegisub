@@ -191,7 +191,6 @@
     <ClInclude Include="$(SrcDir)include\aegisub\audio_provider.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\context.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
-    <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\menu.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\spellchecker.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\subtitles_provider.h" />
