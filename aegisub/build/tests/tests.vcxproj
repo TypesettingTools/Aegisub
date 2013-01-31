@@ -23,6 +23,7 @@
       </PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
         $(AegisubSourceBase)libaegisub\include;
+        $(SrcDir)support;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
     </ClCompile>
@@ -37,32 +38,32 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <ClCompile Include="$(SrcDir)libaegisub_access.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_cajun.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_color.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_dialogue_lexer.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_hotkey.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_iconv.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_keyframe.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_line_iterator.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_line_wrap.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_mru.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_option.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_path.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_signals.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_syntax_highlight.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_thesaurus.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_util.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_vfr.cpp" />
-    <ClCompile Include="$(SrcDir)libaegisub_word_split.cpp">
+    <ClCompile Include="$(SrcDir)tests\access.cpp" />
+    <ClCompile Include="$(SrcDir)tests\cajun.cpp" />
+    <ClCompile Include="$(SrcDir)tests\color.cpp" />
+    <ClCompile Include="$(SrcDir)tests\dialogue_lexer.cpp" />
+    <ClCompile Include="$(SrcDir)tests\hotkey.cpp" />
+    <ClCompile Include="$(SrcDir)tests\iconv.cpp" />
+    <ClCompile Include="$(SrcDir)tests\keyframe.cpp" />
+    <ClCompile Include="$(SrcDir)tests\line_iterator.cpp" />
+    <ClCompile Include="$(SrcDir)tests\line_wrap.cpp" />
+    <ClCompile Include="$(SrcDir)tests\mru.cpp" />
+    <ClCompile Include="$(SrcDir)tests\option.cpp" />
+    <ClCompile Include="$(SrcDir)tests\path.cpp" />
+    <ClCompile Include="$(SrcDir)tests\signals.cpp" />
+    <ClCompile Include="$(SrcDir)tests\syntax_highlight.cpp" />
+    <ClCompile Include="$(SrcDir)tests\thesaurus.cpp" />
+    <ClCompile Include="$(SrcDir)tests\util.cpp" />
+    <ClCompile Include="$(SrcDir)tests\vfr.cpp" />
+    <ClCompile Include="$(SrcDir)tests\word_split.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)main.cpp" />
-    <ClCompile Include="$(SrcDir)util.cpp" />
+    <ClCompile Include="$(SrcDir)support\main.cpp" />
+    <ClCompile Include="$(SrcDir)support\util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(SrcDir)main.h" />
-    <ClInclude Include="$(SrcDir)util.h" />
+    <ClInclude Include="$(SrcDir)support\main.h" />
+    <ClInclude Include="$(SrcDir)support\util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SrcDir)setup.bat" />

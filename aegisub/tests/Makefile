@@ -6,7 +6,7 @@ PROGRAM = run
 LIBS += -L../libaegisub -laegisub -L../universalchardet -luniversalchardet
 LDFLAGS += -Wl,-rpath $(CURDIR)/../libaegisub $(LDFLAGS_ICONV)
 
-CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_ROOT} -I${GTEST_ROOT}/include
+CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_ROOT} -I${GTEST_ROOT}/include -I./support
 CXXFLAGS += -Wno-unused-value
 
 ifeq (yes, $(BUILD_DARWIN))
@@ -14,30 +14,29 @@ LDFLAGS += -framework ApplicationServices -framework Foundation
 endif
 
 SRC = \
-		main.cpp \
-		util.cpp \
-		util_unix.cpp \
-		libaegisub_access.cpp \
-		libaegisub_cajun.cpp \
-		libaegisub_color.cpp \
-		libaegisub_dialogue_lexer.cpp \
-		libaegisub_hotkey.cpp \
-		libaegisub_iconv.cpp \
-		libaegisub_keyframe.cpp \
-		libaegisub_line_iterator.cpp \
-		libaegisub_line_wrap.cpp \
-		libaegisub_mru.cpp \
-		libaegisub_option.cpp \
-		libaegisub_path.cpp \
-		libaegisub_signals.cpp \
-		libaegisub_syntax_highlight.cpp \
-		libaegisub_thesaurus.cpp \
-		libaegisub_util.cpp \
-		libaegisub_vfr.cpp \
-		libaegisub_word_split.cpp \
+		support/main.cpp \
+		support/util.cpp \
+		support/util_unix.cpp \
+		tests/access.cpp \
+		tests/cajun.cpp \
+		tests/color.cpp \
+		tests/dialogue_lexer.cpp \
+		tests/hotkey.cpp \
+		tests/iconv.cpp \
+		tests/keyframe.cpp \
+		tests/line_iterator.cpp \
+		tests/line_wrap.cpp \
+		tests/mru.cpp \
+		tests/option.cpp \
+		tests/path.cpp \
+		tests/signals.cpp \
+		tests/syntax_highlight.cpp \
+		tests/thesaurus.cpp \
+		tests/util.cpp \
+		tests/vfr.cpp \
+		tests/word_split.cpp \
 		${GTEST_ROOT}/src/gtest-all.cc
 
-HEADER = \
-	*.h
+HEADER = support/*.h tests/*.h
 
 include ../Makefile.target

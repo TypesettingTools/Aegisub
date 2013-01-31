@@ -11,72 +11,72 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(SrcDir)main.cpp">
+    <ClCompile Include="$(SrcDir)support\main.cpp">
       <Filter>Support</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)util.cpp">
+    <ClCompile Include="$(SrcDir)support\util.cpp">
       <Filter>Support</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_access.cpp">
+    <ClCompile Include="$(SrcDir)tests\access.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_cajun.cpp">
+    <ClCompile Include="$(SrcDir)tests\cajun.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_color.cpp">
+    <ClCompile Include="$(SrcDir)tests\color.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_dialogue_lexer.cpp">
+    <ClCompile Include="$(SrcDir)tests\dialogue_lexer.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_hotkey.cpp">
+    <ClCompile Include="$(SrcDir)tests\hotkey.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_iconv.cpp">
+    <ClCompile Include="$(SrcDir)tests\iconv.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_keyframe.cpp">
+    <ClCompile Include="$(SrcDir)tests\keyframe.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_line_iterator.cpp">
+    <ClCompile Include="$(SrcDir)tests\line_iterator.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_line_wrap.cpp">
+    <ClCompile Include="$(SrcDir)tests\line_wrap.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_mru.cpp">
+    <ClCompile Include="$(SrcDir)tests\mru.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_option.cpp">
+    <ClCompile Include="$(SrcDir)tests\option.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_path.cpp">
+    <ClCompile Include="$(SrcDir)tests\path.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_signals.cpp">
+    <ClCompile Include="$(SrcDir)tests\signals.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_syntax_highlight.cpp">
+    <ClCompile Include="$(SrcDir)tests\syntax_highlight.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_thesaurus.cpp">
+    <ClCompile Include="$(SrcDir)tests\thesaurus.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_util.cpp">
+    <ClCompile Include="$(SrcDir)tests\util.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_vfr.cpp">
+    <ClCompile Include="$(SrcDir)tests\vfr.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)libaegisub_word_split.cpp">
+    <ClCompile Include="$(SrcDir)tests\word_split.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(SrcDir)main.h">
+    <ClInclude Include="$(SrcDir)support\main.h">
       <Filter>Support</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)util.h">
+    <ClInclude Include="$(SrcDir)support\util.h">
       <Filter>Support</Filter>
     </ClInclude>
   </ItemGroup>
