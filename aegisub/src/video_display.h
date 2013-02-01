@@ -70,9 +70,6 @@ class VideoDisplay : public wxGLCanvas {
 
 	agi::scoped_ptr<wxMenu> context_menu;
 
-	/// The frame number currently being displayed
-	int currentFrame;
-
 	/// The size of the video in screen at the current zoom level, which may not
 	/// be the same as the actual client size of the display
 	wxSize videoSize;
