@@ -126,10 +126,11 @@ TEST(lagi_word_split, unclosed_ovr) {
 	};
 
 	SplitWords(text, tokens);
-	ASSERT_EQ(3u, tokens.size());
+	ASSERT_EQ(4u, tokens.size());
 	EXPECT_EQ(dt::WORD, tokens[0].type);
 	EXPECT_EQ(dt::TEXT, tokens[1].type);
-	EXPECT_EQ(dt::WORD, tokens[2].type);
+	EXPECT_EQ(dt::TEXT, tokens[2].type);
+	EXPECT_EQ(dt::WORD, tokens[3].type);
 
 	text = "{";
 	tokens.clear();
@@ -138,5 +139,24 @@ TEST(lagi_word_split, unclosed_ovr) {
 	SplitWords(text, tokens);
 	ASSERT_EQ(1u, tokens.size());
 	EXPECT_EQ(dt::TEXT, tokens[0].type);
+}
+
+TEST(lagi_word_split, several_words) {
+	std::string text = "a bb ccc dd e";
+	std::vector<DialogueToken> tokens = {
+		{dt::TEXT, 13},
+	};
+
+	SplitWords(text, tokens);
+	ASSERT_EQ(9u, tokens.size());
+	EXPECT_EQ(1, tokens[0].length);
+	EXPECT_EQ(1, tokens[1].length);
+	EXPECT_EQ(2, tokens[2].length);
+	EXPECT_EQ(1, tokens[3].length);
+	EXPECT_EQ(3, tokens[4].length);
+	EXPECT_EQ(1, tokens[5].length);
+	EXPECT_EQ(2, tokens[6].length);
+	EXPECT_EQ(1, tokens[7].length);
+	EXPECT_EQ(1, tokens[8].length);
 }
 
