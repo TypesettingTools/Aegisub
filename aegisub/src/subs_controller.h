@@ -74,7 +74,7 @@ public:
 	/// @brief Load from a file
 	/// @param file File name
 	/// @param charset Character set of file or empty to autodetect
-	void Load(agi::fs::path const& file, std::string const& charset="");
+	void Load(agi::fs::path const& file, std::string charset="");
 
 	/// @brief Save to a file
 	/// @param file Path to save to

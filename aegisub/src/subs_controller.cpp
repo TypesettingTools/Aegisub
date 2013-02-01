@@ -21,6 +21,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "charset_detect.h"
 #include "compat.h"
 #include "command/command.h"
 #include "include/aegisub/context.h"
@@ -81,21 +82,29 @@ SubsController::SubsController(agi::Context *context)
 	});
 }
 
-void SubsController::Load(agi::fs::path const& filename, std::string const& charset) {
+void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 	if (TryToClose() == wxCANCEL) return;
 
+	// TextFileReader does this automatically, but relying on that results in
+	// the user being prompted twice if it can't be auto-detected, since we
+	// open the file twice below.
+	if (charset.empty())
+		charset = CharSetDetect::GetEncoding(filename);
+
 	// Make sure that file isn't actually a timecode file
-	try {
-		TextFileReader testSubs(filename, charset);
-		std::string cur = testSubs.ReadLineFromFile();
-		if (boost::starts_with(cur, "# timecode")) {
-			context->videoController->LoadTimecodes(filename);
-			return;
+	if (charset != "binary") {
+		try {
+			TextFileReader testSubs(filename, charset);
+			std::string cur = testSubs.ReadLineFromFile();
+			if (boost::starts_with(cur, "# timecode")) {
+				context->videoController->LoadTimecodes(filename);
+				return;
+			}
 		}
-	}
-	catch (...) {
-		// if trying to load the file as timecodes fails it's fairly
-		// safe to assume that it is in fact not a timecode file
+		catch (...) {
+			// if trying to load the file as timecodes fails it's fairly
+			// safe to assume that it is in fact not a timecode file
+		}
 	}
 
 	const SubtitleFormat *reader = SubtitleFormat::GetReader(filename);
