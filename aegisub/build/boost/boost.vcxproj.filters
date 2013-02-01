@@ -84,6 +84,9 @@
     <ClCompile Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="$(BoostPath)\libs\regex\src\icu.cpp">
+      <Filter>regex</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(BoostPath)\libs\regex\src\internals.hpp">

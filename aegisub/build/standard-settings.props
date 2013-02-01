@@ -18,6 +18,8 @@
 			<WarningLevel>Level3</WarningLevel>
 			<PreprocessorDefinitions>
 				BOOST_ALL_NO_LIB;
+				BOOST_HAS_ICU;
+				U_STATIC_IMPLEMENTATION;
 				WIN32;
 				_WINDOWS;
 				%(PreprocessorDefinitions)</PreprocessorDefinitions>

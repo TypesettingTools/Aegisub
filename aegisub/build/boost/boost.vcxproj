@@ -39,6 +39,7 @@
     <ClCompile Include="$(BoostPath)\libs\filesystem\src\utf8_codecvt_facet.cpp" />
     <ClCompile Include="$(BoostPath)\libs\filesystem\src\windows_file_codecvt.cpp" />
     <ClCompile Include="$(BoostPath)\libs\system\src\error_code.cpp" />
+    <ClCompile Include="$(BoostPath)\libs\regex\src\icu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(BoostPath)\libs\regex\src\internals.hpp" />

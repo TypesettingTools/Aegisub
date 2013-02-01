@@ -7,7 +7,21 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalDependencies>Vfw32.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+        Vfw32.lib;
+        comctl32.lib;
+        rpcrt4.lib;
+        winmm.lib;
+        advapi32.lib;
+        wsock32.lib;
+        opengl32.lib;
+        sicudtd.lib;
+        sicuind.lib;
+        sicutestd.lib;
+        sicutud.lib;
+        sicuucd.lib;
+        %(AdditionalDependencies)
+      </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
