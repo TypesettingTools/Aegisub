@@ -33,10 +33,33 @@
 
 #include <algorithm>
 #include <tuple>
-
+#include <unicode/uchar.h>
 #include <wx/intl.h>
 
 using namespace std::placeholders;
+
+namespace {
+	wxString format_missing(wxString const& str) {
+		wxString printable;
+		wxString unprintable;
+		for (wxUniChar c : str) {
+			if (!u_isUWhiteSpace(c.GetValue()))
+				printable += c;
+			else {
+				unprintable += wxString::Format("\n - U+%04X ", c.GetValue());
+				UErrorCode ec;
+				char buf[1024];
+				auto len = u_charName(c.GetValue(), U_EXTENDED_CHAR_NAME, buf, sizeof buf, &ec);
+				if (len != 0 && U_SUCCESS(ec))
+					unprintable += to_wx(buf);
+				if (c.GetValue() == 0xA0)
+					unprintable += " (\\h)";
+			}
+		}
+
+		return printable + unprintable;
+	}
+}
 
 FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister)
 : status_callback(status_callback)
@@ -125,7 +148,7 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 			if (res.missing.size() > 50)
 				status_callback(wxString::Format(_("'%s' is missing %d glyphs used.\n"), style.first.facename, (int)res.missing.size()), 2);
 			else if (res.missing.size() > 0)
-				status_callback(wxString::Format(_("'%s' is missing the following glyphs used: %s\n"), style.first.facename, res.missing), 2);
+				status_callback(wxString::Format(_("'%s' is missing the following glyphs used: %s\n"), style.first.facename, format_missing(res.missing)), 2);
 			PrintUsage(style.second);
 			++missing_glyphs;
 		}
