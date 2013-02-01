@@ -464,8 +464,6 @@ class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
 	AudioTimingController *timing_controller;
 	// Audio display drag is happening on
 	AudioDisplay *display;
-	// Audio controller managing it all
-	AudioController *controller;
 	// Mouse button used to initiate the drag
 	wxMouseButton button_used;
 	// Default to snapping to snappable markers
@@ -474,11 +472,10 @@ class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
 	int snap_range;
 
 public:
-	AudioMarkerInteractionObject(std::vector<AudioMarker*> markers, AudioTimingController *timing_controller, AudioDisplay *display, AudioController *controller, wxMouseButton button_used)
+	AudioMarkerInteractionObject(std::vector<AudioMarker*> markers, AudioTimingController *timing_controller, AudioDisplay *display, wxMouseButton button_used)
 	: markers(markers)
 	, timing_controller(timing_controller)
 	, display(display)
-	, controller(controller)
 	, button_used(button_used)
 	, default_snap(OPT_GET("Audio/Snap/Enable")->GetBool())
 	, snap_range(OPT_GET("Audio/Snap/Distance")->GetInt())
@@ -1064,7 +1061,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		if (markers.size())
 		{
 			RemoveTrackCursor();
-			audio_marker.reset(new AudioMarkerInteractionObject(markers, timing, this, controller, (wxMouseButton)event.GetButton()));
+			audio_marker.reset(new AudioMarkerInteractionObject(markers, timing, this, (wxMouseButton)event.GetButton()));
 			SetDraggedObject(audio_marker.get());
 			return;
 		}
