@@ -36,38 +36,45 @@
 
 #include "dialog_text_import.h"
 
+#include "options.h"
+#include "validators.h"
+
+#include <wx/checkbox.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-
-#include "compat.h"
-#include "options.h"
+#include <wx/valgen.h>
 
 DialogTextImport::DialogTextImport()
 : wxDialog(nullptr , -1, _("Text import options"))
+, seperator(OPT_GET("Tool/Import/Text/Actor Separator")->GetString())
+, comment(OPT_GET("Tool/Import/Text/Comment Starter")->GetString())
+, include_blank(OPT_GET("Tool/Import/Text/Include Blank")->GetBool())
 {
-	// Main controls
-	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 5);
-	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	edit_separator = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Import/Text/Actor Separator")->GetString()));
-	edit_comment = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Import/Text/Comment Starter")->GetString()));
+	auto make_text_ctrl = [=](std::string *var) {
+		return new wxTextCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, 0, StringBinder(var));
+	};
 
-	// Dialog layout
+	auto fg = new wxFlexGridSizer(2, 5, 5);
 	fg->Add(new wxStaticText(this, -1, _("Actor separator:")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(edit_separator, 0, wxEXPAND);
+	fg->Add(make_text_ctrl(&seperator), 0, wxEXPAND);
 	fg->Add(new wxStaticText(this, -1, _("Comment starter:")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(edit_comment, 0, wxEXPAND);
+	fg->Add(make_text_ctrl(&comment), 0, wxEXPAND);
 
+	auto main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
+	main_sizer->Add(new wxCheckBox(this, -1, _("Include blank lines"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&include_blank)), 0, wxLEFT|wxRIGHT|wxALIGN_RIGHT, 5);
 	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
 	SetSizerAndFit(main_sizer);
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTextImport::OnOK, this, wxID_OK);
-}
 
-void DialogTextImport::OnOK(wxCommandEvent &) {
-	OPT_SET("Tool/Import/Text/Actor Separator")->SetString(from_wx(edit_separator->GetValue()));
-	OPT_SET("Tool/Import/Text/Comment Starter")->SetString(from_wx(edit_comment->GetValue()));
+	Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) {
+		TransferDataFromWindow();
 
-	EndModal(wxID_OK);
+		OPT_SET("Tool/Import/Text/Actor Separator")->SetString(seperator);
+		OPT_SET("Tool/Import/Text/Comment Starter")->SetString(comment);
+		OPT_SET("Tool/Import/Text/Include Blank")->SetBool(include_blank);
+
+		EndModal(wxID_OK);
+	}, wxID_OK);
 }

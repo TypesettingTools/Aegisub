@@ -34,18 +34,15 @@
 
 #include <wx/dialog.h>
 
-class wxTextCtrl;
-
 /// @class DialogTextImport
 /// @brief Plain text import separator character selection dialog
 ///
 /// A simple dialog to let the user select the format of a plain text file
 /// being imported into Aegisub
 class DialogTextImport : public wxDialog {
-	wxTextCtrl *edit_separator;
-	wxTextCtrl *edit_comment;
-
-	void OnOK(wxCommandEvent &);
+	std::string seperator;
+	std::string comment;
+	bool include_blank;
 
 public:
 	DialogTextImport();

@@ -85,7 +85,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	// Parse file
 	while (file.HasMoreLines()) {
 		std::string value = file.ReadLineFromFile();
-		if(value.empty()) continue;
+		if (value.empty() && !OPT_GET("Tool/Import/Text/Include Blank")->GetBool()) continue;
 
 		// Check if this isn't a timecodes file
 		if (boost::starts_with(value, "# timecode"))
@@ -99,7 +99,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		}
 
 		// Read actor data
-		if (!isComment && !separator.empty()) {
+		if (!isComment && !separator.empty() && !value.empty()) {
 			if (value[0] != ' ' && value[0] != '\t') {
 				size_t pos = value.find(separator);
 				if (pos != std::string::npos) {
