@@ -3,10 +3,10 @@ include ../Makefile.inc
 
 PROGRAM = run
 
-LIBS += -L../libaegisub -laegisub -L../universalchardet -luniversalchardet
+LIBS += -L../libaegisub -laegisub -L../universalchardet -luniversalchardet $(LIBS_BOOST) $(LIBS_ICU)
 LDFLAGS += -Wl,-rpath $(CURDIR)/../libaegisub $(LDFLAGS_ICONV)
 
-CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_ROOT} -I${GTEST_ROOT}/include -I./support
+CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_ROOT} -I${GTEST_ROOT}/include -I./support $(CPPFLAGS_BOOST)
 CXXFLAGS += -Wno-unused-value
 
 ifeq (yes, $(BUILD_DARWIN))
