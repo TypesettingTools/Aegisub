@@ -16,6 +16,7 @@
 
 #include "util.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 
@@ -26,6 +27,20 @@ bool compare(const std::string &file1, const std::string &file2) {
 	ss1 << if1.rdbuf();
 	ss2 << if2.rdbuf();
 	return ss1.str() == ss2.str();
+}
+
+int write_rand(const char *path) {
+	int value = rand();
+	std::ofstream of(path);
+	of << value;
+	return value;
+}
+
+int read_written_rand(const char *path) {
+	int value;
+	std::ifstream i(path);
+	i >> value;
+	return value;
 }
 
 }

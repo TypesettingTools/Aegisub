@@ -29,6 +29,9 @@
     <ClCompile Include="$(SrcDir)tests\dialogue_lexer.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)tests\fs.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)tests\hotkey.cpp">
       <Filter>Tests</Filter>
     </ClCompile>

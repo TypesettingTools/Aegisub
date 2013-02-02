@@ -19,6 +19,8 @@
 #include <libaegisub/log.h>
 
 #include <boost/locale/generator.hpp>
+#include <cstdlib>
+#include <ctime>
 
 int main(int argc, char **argv) {
 	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
@@ -28,6 +30,8 @@ int main(int argc, char **argv) {
 	agi::log::log = new agi::log::LogSink;
 	agi::log::log->Subscribe(new agi::log::JsonEmitter("./"));
 	::testing::InitGoogleTest(&argc, argv);
+
+	srand(time(nullptr));
 
 	retval = RUN_ALL_TESTS();
 

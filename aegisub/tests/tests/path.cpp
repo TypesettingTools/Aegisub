@@ -130,3 +130,43 @@ TEST(lagi_path, platform_paths_have_values_and_exist) {
 	TEST_PLATFORM_PATH_TOKEN("?local");
 	TEST_PLATFORM_PATH_TOKEN("?temp");
 }
+
+TEST(lagi_path, making_empty_absolute_gives_empty) {
+	Path p;
+	ASSERT_NO_THROW(p.MakeAbsolute("", "?data"));
+	EXPECT_TRUE(p.MakeAbsolute("", "?data").empty());
+}
+
+TEST(lagi_path, making_empty_relative_gives_empty) {
+	Path p;
+	ASSERT_NO_THROW(p.MakeRelative("", "?data"));
+	EXPECT_TRUE(p.MakeRelative("", "?data").empty());
+}
+
+#ifdef _WIN32
+TEST(lagi_path, make_absolute_on_network_path) {
+	Path p;
+	ASSERT_NO_THROW(p.MakeAbsolute("//foo/bar", "?data"));
+	EXPECT_STREQ("\\\\foo\\bar", p.MakeAbsolute("//foo/bar", "?data").string().c_str());
+}
+
+TEST(lagi_path, make_relative_on_network_path) {
+	Path p;
+	ASSERT_NO_THROW(p.MakeRelative("\\\\foo\\bar", "?data"));
+	EXPECT_STREQ("\\\\foo\\bar", p.MakeRelative("\\\\foo\\bar", "?data").string().c_str());
+}
+#endif
+
+#define EXPECT_UNCHANGED(url, func) EXPECT_STREQ(url, p.func(url, "?data").string().c_str())
+
+TEST(lagi_path, make_absolute_on_dummy_url) {
+	Path p;
+	EXPECT_UNCHANGED("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000", MakeAbsolute);
+	EXPECT_UNCHANGED("?dummy:23.976000:40000:1280:720:47:163:254:", MakeAbsolute);
+}
+
+TEST(lagi_path, make_relative_on_dummy_url) {
+	Path p;
+	EXPECT_UNCHANGED("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000", MakeRelative);
+	EXPECT_UNCHANGED("?dummy:23.976000:40000:1280:720:47:163:254:", MakeRelative);
+}

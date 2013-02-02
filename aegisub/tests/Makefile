@@ -21,6 +21,7 @@ SRC = \
 		tests/cajun.cpp \
 		tests/color.cpp \
 		tests/dialogue_lexer.cpp \
+		tests/fs.cpp \
 		tests/hotkey.cpp \
 		tests/iconv.cpp \
 		tests/ifind.cpp \

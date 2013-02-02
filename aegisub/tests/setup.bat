@@ -24,10 +24,17 @@ echo {"Valid" : ["Entry One", "Entry Two"]} > data/mru_ok.json
 
 echo {"Invalid" : [1, 3]} > data/mru_invalid.json
 
-echo > data/rename_me
+echo '1234567890' > data\ten_bytes
+echo '' > data\touch_mod_time
 
-echo > data/rename_me_overwrite
-echo > data/rename_me_overwrite_renamed
+mkdir data/options
+cp options/* data/options
+
+mkdir data\dir_iterator
+echo '' > data\dir_iterator\1.a
+echo '' > data\dir_iterator\2.a
+echo '' > data\dir_iterator\1.b
+echo '' > data\dir_iterator\2.b
 
 mkdir data\options
 xcopy "%~dp0\options" data\options

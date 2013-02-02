@@ -35,4 +35,7 @@ static std::vector<T> make_vector(int len, ...) {
 	return vec;
 }
 
+int write_rand(const char *path);
+int read_written_rand(const char *path);
+
 }
