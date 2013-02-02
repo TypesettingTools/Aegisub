@@ -7,7 +7,7 @@ LIBS += -L../libaegisub -laegisub -L../universalchardet -luniversalchardet $(LIB
 LDFLAGS += -Wl,-rpath $(CURDIR)/../libaegisub $(LDFLAGS_ICONV)
 
 CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_ROOT} -I${GTEST_ROOT}/include -I./support $(CPPFLAGS_BOOST)
-CXXFLAGS += -Wno-unused-value
+CXXFLAGS += -Wno-unused-value -Wno-sign-compare
 
 ifeq (yes, $(BUILD_DARWIN))
 LDFLAGS += -framework ApplicationServices -framework Foundation
