@@ -100,7 +100,9 @@ namespace agi { namespace fs {
 	}
 
 	bool HasExtension(path const& p, std::string const& ext) {
-		if (!p.has_extension()) return ext.empty();
-		return boost::iequals(p.extension().string().substr(1), ext);
+		auto filename = p.filename().string();
+		if (filename.size() < ext.size() + 1) return false;
+		if (filename[filename.size() - ext.size() - 1] != '.') return false;
+		return boost::iends_with(filename, ext);
 	}
 } }

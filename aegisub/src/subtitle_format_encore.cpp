@@ -57,10 +57,6 @@ std::vector<std::string> EncoreSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
-bool EncoreSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
-	return boost::iends_with(filename.string(), ".encore.txt");
-}
-
 void EncoreSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const&) const {
 	agi::vfr::Framerate fps = AskForFPS(false, true);
 	if (!fps.IsLoaded()) return;

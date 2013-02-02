@@ -42,7 +42,6 @@ class TranStationSubtitleFormat : public SubtitleFormat {
 
 public:
 	TranStationSubtitleFormat();
-	bool CanWriteFile(agi::fs::path const& filename) const override;
 	std::vector<std::string> GetWriteWildcards() const override;
 	void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const override;
 };

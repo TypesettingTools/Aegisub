@@ -61,10 +61,6 @@ std::vector<std::string> TranStationSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
-bool TranStationSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
-	return boost::iends_with(filename.string(), ".transtation.txt");
-}
-
 void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
 	agi::vfr::Framerate fps = AskForFPS(false, true);
 	if (!fps.IsLoaded()) return;

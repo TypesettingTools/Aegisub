@@ -38,6 +38,5 @@ class EncoreSubtitleFormat : public SubtitleFormat {
 public:
 	EncoreSubtitleFormat();
 	std::vector<std::string> GetWriteWildcards() const override;
-	bool CanWriteFile(agi::fs::path const& filename) const override;
 	void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const&) const override;
 };
