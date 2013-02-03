@@ -10,6 +10,7 @@ m4_define([fftw3_required_version], [3.3])
 m4_define([fontconfig_required_version], [2.4])
 m4_define([freetype_required_version], [9.7.0])
 m4_define([hunspell_required_version], [1.2.0])
+m4_define([icu_required_version], [4.8.1.1])
 m4_define([libass_required_version], [0.9.7])
 m4_define([libpulse_required_version], [0.5])
 m4_define([lua_auto4_required_version], [5.1])
@@ -252,8 +253,8 @@ AX_BOOST_LOCALE
 AX_BOOST_REGEX
 AX_BOOST_SYSTEM
 
-PKG_CHECK_MODULES(ICU_UC, icu-uc)
-PKG_CHECK_MODULES(ICU_I18N, icu-i18n)
+PKG_CHECK_MODULES(ICU_UC, icu-uc >= icu_required_version)
+PKG_CHECK_MODULES(ICU_I18N, icu-i18n >= icu_required_version)
 
 ########
 ## iconv
