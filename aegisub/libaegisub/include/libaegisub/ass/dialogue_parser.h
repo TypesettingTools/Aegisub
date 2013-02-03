@@ -14,6 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <string>
 #include <vector>
 
 #undef ERROR
