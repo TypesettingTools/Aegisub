@@ -3,7 +3,7 @@ AC_PREREQ(2.57)
 ###################
 # Required packages
 ###################
-m4_define([boost_required_version], [1.49.0])
+m4_define([boost_required_version], [1.50.0])
 m4_define([curl_required_version], [7.18.2])
 m4_define([ffms2_required_version], [2.16])
 m4_define([fftw3_required_version], [3.3])
