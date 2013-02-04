@@ -260,6 +260,7 @@ struct subtitle_open : public Command {
 	STR_HELP("Opens a subtitles file")
 
 	void operator()(agi::Context *c) {
+		if (c->subsController->TryToClose() == wxCANCEL) return;
 		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (!filename.empty())
 			c->subsController->Load(filename);
@@ -273,6 +274,7 @@ struct subtitle_open_autosave : public Command {
 	STR_HELP("Open a previous version of a file which was autosaved by Aegisub")
 
 	void operator()(agi::Context *c) {
+		if (c->subsController->TryToClose() == wxCANCEL) return;
 		DialogAutosave dialog(c->parent);
 		if (dialog.ShowModal() == wxID_OK)
 			c->subsController->Load(dialog.ChosenFile());
@@ -287,6 +289,8 @@ struct subtitle_open_charset : public Command {
 	STR_HELP("Opens a subtitles file with a specific charset")
 
 	void operator()(agi::Context *c) {
+		if (c->subsController->TryToClose() == wxCANCEL) return;
+
 		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (filename.empty()) return;
 
@@ -306,6 +310,7 @@ struct subtitle_open_video : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) {
+		if (c->subsController->TryToClose() == wxCANCEL) return;
 		c->subsController->Load(c->videoController->GetVideoName(), "binary");
 	}
 

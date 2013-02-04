@@ -83,8 +83,6 @@ SubsController::SubsController(agi::Context *context)
 }
 
 void SubsController::Load(agi::fs::path const& filename, std::string charset) {
-	if (TryToClose() == wxCANCEL) return;
-
 	// TextFileReader does this automatically, but relying on that results in
 	// the user being prompted twice if it can't be auto-detected, since we
 	// open the file twice below.
