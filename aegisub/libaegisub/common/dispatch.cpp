@@ -20,6 +20,7 @@
 
 #include "libaegisub/util.h"
 
+#include <atomic>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 #include <condition_variable>
@@ -29,6 +30,7 @@
 namespace {
 	boost::asio::io_service *service;
 	std::function<void (agi::dispatch::Thunk)> invoke_main;
+	std::atomic<uint_fast32_t> threads_running;
 
 	class MainQueue : public agi::dispatch::Queue {
 		void DoInvoke(agi::dispatch::Thunk thunk) {
@@ -51,21 +53,43 @@ namespace {
 	public:
 		SerialQueue() : strand(*service) { }
 	};
+
+	struct IOServiceThreadPool {
+		boost::asio::io_service io_service;
+		std::unique_ptr<boost::asio::io_service::work> work;
+		std::vector<std::thread> threads;
+
+		IOServiceThreadPool() : work(new boost::asio::io_service::work(io_service)) { }
+		~IOServiceThreadPool() {
+			work.reset();
+#ifndef _WIN32
+			for (auto& thread : threads) thread.join();
+#else
+			// Calling join() after main() returns deadlocks
+			// https://connect.microsoft.com/VisualStudio/feedback/details/747145
+			for (auto& thread : threads) thread.detach();
+			while (threads_running) std::this_thread::yield();
+#endif
+		}
+	};
 }
 
 namespace agi { namespace dispatch {
 
 void Init(std::function<void (Thunk)> invoke_main) {
-	static boost::asio::io_service service;
-	static boost::asio::io_service::work work(service);
-	::service = &service;
+	static IOServiceThreadPool thread_pool;
+	::service = &thread_pool.io_service;
 	::invoke_main = invoke_main;
 
-	for (unsigned i = 0; i < std::max<unsigned>(1, std::thread::hardware_concurrency()); ++i)
-		std::thread([]{
-			util::SetThreadName("Dispatch Worker");
-			::service->run();
-		}).detach();
+	thread_pool.threads.reserve(std::max<unsigned>(4, std::thread::hardware_concurrency()));
+	for (size_t i = 0; i < thread_pool.threads.capacity(); ++i) {
+		thread_pool.threads.emplace_back([]{
+			++threads_running;
+			agi::util::SetThreadName("Dispatch Worker");
+			service->run();
+			--threads_running;
+		});
+	}
 }
 
 void Queue::Async(Thunk thunk) {
