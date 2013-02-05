@@ -39,6 +39,7 @@
 #include "compat.h"
 
 #include <libaegisub/charset.h>
+#include <libaegisub/charset_conv.h>
 #include <libaegisub/log.h>
 
 #include <boost/filesystem/path.hpp>
@@ -55,7 +56,7 @@ std::string GetEncoding(agi::fs::path const& filename) {
 	try {
 		list = agi::charset::DetectAll(filename);
 	} catch (const agi::charset::UnknownCharset&) {
-		/// @todo If the charset is unknown we need to display a complete list of character sets.
+		// will be set to the full list of charsets below
 	}
 
 	if (list.size() == 1) {
@@ -74,11 +75,16 @@ std::string GetEncoding(agi::fs::path const& filename) {
 
 	LOG_I("charset/file") << filename << " (" << log_choice << ")";
 
+	if (choices.empty())
+		choices = agi::charset::GetEncodingsList<wxArrayString>();
+
 	int choice = wxGetSingleChoiceIndex(
 		_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),
 		_("Choose character set"),
 		choices);
 	if (choice == -1) throw agi::UserCancelException("Cancelled encoding selection");
+	if (list.empty())
+		return agi::charset::GetEncodingsList<std::vector<std::string>>()[choice];
 	return list[choice].second;
 }
 
