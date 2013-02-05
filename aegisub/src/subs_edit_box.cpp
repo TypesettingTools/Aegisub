@@ -55,6 +55,7 @@
 #include "validators.h"
 #include "video_context.h"
 
+#include <libaegisub/dispatch.h>
 #include <libaegisub/of_type_adaptor.h>
 
 #include <boost/lexical_cast.hpp>
@@ -575,11 +576,15 @@ void SubsEditBox::CallCommand(const char *cmd_name) {
 }
 
 void SubsEditBox::UpdateCharacterCount(std::string const& text) {
-	size_t length = MaxLineLength(text);
-	char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
-	size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();
-	if (limit && length > limit)
-		char_count->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColor()));
-	else
-		char_count->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+	agi::dispatch::Background().Async([=]{
+		size_t length = MaxLineLength(text);
+		agi::dispatch::Main().Async([=]{
+			char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
+			size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();
+			if (limit && length > limit)
+				char_count->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColor()));
+			else
+				char_count->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+		});
+	});
 }
