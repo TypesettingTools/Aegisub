@@ -41,6 +41,7 @@
 #include "main.h"
 #include "options.h"
 
+#include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
@@ -50,6 +51,8 @@
 #endif
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
+#include <boost/locale/boundary.hpp>
+#include <boost/range/algorithm_ext.hpp>
 #include <map>
 
 #include <wx/clipbrd.h>
@@ -237,47 +240,30 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 }
 
 size_t MaxLineLength(std::string const& text) {
+	auto tokens = agi::ass::TokenizeDialogueBody(text);
+	agi::ass::MarkDrawings(text, tokens);
+
+	size_t pos = 0;
 	size_t max_line_length = 0;
 	size_t current_line_length = 0;
-	bool last_was_slash = false;
-	bool in_ovr = false;
-
-	for (auto const& c : text) {
-		if (in_ovr) {
-			in_ovr = c != '}';
-			continue;
-		}
-
-		if (c == '\\') {
-			current_line_length += last_was_slash; // for the slash before this one
-			last_was_slash = true;
-			continue;
-		}
-
-		if (last_was_slash) {
-			last_was_slash = false;
-			if (c == 'h') {
-				++current_line_length;
-				continue;
-			}
-
-			if (c == 'n' || c == 'N') {
+	for (auto token : tokens) {
+		if (token.type == agi::ass::DialogueTokenType::LINE_BREAK) {
+			if (text[pos + 1] == 'h')
+				current_line_length += 1;
+			else { // N or n
 				max_line_length = std::max(max_line_length, current_line_length);
 				current_line_length = 0;
-				continue;
 			}
-
-			// Not actually an escape so add the character for the slash and fall through
-			++current_line_length;
+		}
+		else if (token.type == agi::ass::DialogueTokenType::TEXT) {
+			using namespace boost::locale::boundary;
+			const ssegment_index characters(character, begin(text) + pos, begin(text) + pos + token.length);
+			current_line_length += boost::distance(characters);
 		}
 
-		if (c == '{')
-			in_ovr = true;
-		else
-			++current_line_length;
+		pos += token.length;
 	}
 
-	current_line_length += last_was_slash;
 	return std::max(max_line_length, current_line_length);
 }
 
