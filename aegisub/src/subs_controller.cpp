@@ -86,8 +86,13 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 	// TextFileReader does this automatically, but relying on that results in
 	// the user being prompted twice if it can't be auto-detected, since we
 	// open the file twice below.
-	if (charset.empty())
-		charset = CharSetDetect::GetEncoding(filename);
+	try {
+		if (charset.empty())
+			charset = CharSetDetect::GetEncoding(filename);
+	}
+	catch (agi::UserCancelException const&) {
+		return;
+	}
 
 	// Make sure that file isn't actually a timecode file
 	if (charset != "binary") {
