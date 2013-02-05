@@ -233,16 +233,18 @@ bool AegisubApp::OnInit() {
 		AssExportFilterChain::Register(new AssFixStylesFilter);
 		AssExportFilterChain::Register(new AssTransformFramerateFilter);
 
+		// Open main frame
+		StartupLog("Create main window");
+		frame = new FrameMain;
+		SetTopWindow(frame);
+
 		// Get parameter subs
 		StartupLog("Parse command line");
 		wxArrayString subs;
 		for (int i = 1; i < argc; ++i)
 			subs.push_back(argv[i]);
-
-		// Open main frame
-		StartupLog("Create main window");
-		frame = new FrameMain(subs);
-		SetTopWindow(frame);
+		if (!subs.empty())
+			frame->LoadList(subs);
 	}
 
 	catch (const char *err) {

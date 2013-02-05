@@ -180,8 +180,8 @@ public:
 	}
 };
 
-FrameMain::FrameMain (wxArrayString args)
-: wxFrame(0,-1,"",wxDefaultPosition,wxSize(920,700),wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
+FrameMain::FrameMain()
+: wxFrame(nullptr, -1, "", wxDefaultPosition, wxSize(920,700), wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 , context(new agi::Context)
 , showVideo(true)
 , showAudio(true)
@@ -279,9 +279,6 @@ FrameMain::FrameMain (wxArrayString args)
 	AddFullScreenButton(this);
 	Show();
 	SetDisplayMode(1, 1);
-
-	StartupLog("Load files specified on command line");
-	LoadList(args);
 
 	// Version checker
 	StartupLog("Possibly perform automatic updates check");

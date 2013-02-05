@@ -87,7 +87,6 @@ class FrameMain: public wxFrame {
 	void InitContents();
 
 	void OnFilesDropped(wxThreadEvent &evt);
-	bool LoadList(wxArrayString list);
 	void UpdateTitle();
 
 	void OnKeyDown(wxKeyEvent &event);
@@ -116,7 +115,7 @@ class FrameMain: public wxFrame {
 	wxBoxSizer *ToolsSizer; ///< Arranges audio and editing areas top to bottom
 
 public:
-	FrameMain(wxArrayString args);
+	FrameMain();
 	~FrameMain();
 
 	/// Set the status bar text
@@ -131,6 +130,8 @@ public:
 
 	bool IsVideoShown() const { return showVideo; }
 	bool IsAudioShown() const { return showAudio; }
+
+	bool LoadList(wxArrayString list);
 
 	DECLARE_EVENT_TABLE()
 };
