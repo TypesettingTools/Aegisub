@@ -62,7 +62,7 @@ void StatusTimeout(wxString const& msg, int ms = 10000);
 int SmallestPowerOf2(int x);
 
 /// Check if wchar 'c' is a whitespace character
-bool IsWhitespace(wchar_t c);
+bool IsWhitespace(wxUniChar c);
 
 /// Check if every character in str is whitespace
 bool StringEmptyOrWhitespace(const wxString &str);

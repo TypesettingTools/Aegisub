@@ -54,6 +54,7 @@
 #include <boost/locale/boundary.hpp>
 #include <boost/range/algorithm_ext.hpp>
 #include <map>
+#include <unicode/uchar.h>
 
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
@@ -108,15 +109,8 @@ int SmallestPowerOf2(int x) {
 	return x;
 }
 
-bool IsWhitespace(wchar_t c) {
-	const wchar_t whitespaces[] = {
-		// http://en.wikipedia.org/wiki/Space_(punctuation)#Table_of_spaces
-		0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0,
-		0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005,
-		0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x2028, 0x2029, 0x202F,
-		0x025F, 0x3000, 0xFEFF
-	};
-	return std::binary_search(whitespaces, std::end(whitespaces), c);
+bool IsWhitespace(wxUniChar c) {
+	return !!u_isUWhiteSpace(c.GetValue());
 }
 
 bool StringEmptyOrWhitespace(const wxString &str) {
