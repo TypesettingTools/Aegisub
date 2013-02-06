@@ -56,8 +56,8 @@ Aegisub Project http://www.aegisub.org/
       <DirName>boost_1_52_0</DirName>
     </TarballProject>
     <TarballProject Include="icu">
-      <Version>50.1.1</Version>
-      <Url>http://download.icu-project.org/files/icu4c/50.1.1/icu4c-50_1_1-src.tgz</Url>
+      <Version>50.1.2</Version>
+      <Url>http://download.icu-project.org/files/icu4c/50.1.2/icu4c-50_1_2-src.tgz</Url>
     </TarballProject>
   </ItemGroup>
 
