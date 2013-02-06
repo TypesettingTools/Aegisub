@@ -95,6 +95,14 @@ type GitProject() =
       this.Log.LogErrorFromException e
       false
 
+let downloadArchive (url : String) unpackDest =
+  use wc = new Net.WebClient()
+  use downloadStream = wc.OpenRead url
+  use gzStream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream(downloadStream)
+  use tarStream = new ICSharpCode.SharpZipLib.Tar.TarInputStream(gzStream)
+  use tarArchive = ICSharpCode.SharpZipLib.Tar.TarArchive.CreateInputTarArchive tarStream
+  tarArchive.ExtractContents unpackDest
+
 type TarballProject() =
   inherit Task()
 
@@ -111,13 +119,8 @@ type TarballProject() =
       try IO.Directory.Delete(directory, true) with | :? IO.IOException -> ()
 
       this.Log.LogMessage ("Downloading {0} {1} from {2}", project.ItemSpec, version, project.GetMetadata "Url")
-      use wc = new Net.WebClient()
-      use downloadStream = project.GetMetadata "Url" |> wc.OpenRead
-      use gzStream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream(downloadStream)
-      use tarStream = new ICSharpCode.SharpZipLib.Tar.TarInputStream(gzStream)
-      use tarArchive = ICSharpCode.SharpZipLib.Tar.TarArchive.CreateInputTarArchive tarStream
+      downloadArchive (project.GetMetadata "Url") (sprintf @"%s\.." directory)
 
-      sprintf @"%s\.." directory |> tarArchive.ExtractContents
       let dirname = project.GetMetadata "DirName"
       if not <| String.IsNullOrWhiteSpace dirname
       then IO.Directory.Move(dirname |> sprintf @"%s\..\%s" directory, directory)
@@ -134,6 +137,31 @@ type TarballProject() =
 
     try
       this.Projects |> Array.map check |> ignore
+      true
+    with e ->
+      this.Log.LogErrorFromException e
+      false
+
+type DownloadTgzFile() =
+  inherit Task()
+
+  member val Url = "" with get, set
+  member val Destination = "" with get, set
+  member val OutputFile = "" with get, set
+  member val Hash = "" with get, set
+
+  override this.Execute() =
+    let needsDownload =
+      try
+        use fs = IO.File.OpenRead this.OutputFile
+        let sha = new Security.Cryptography.SHA1Managed ()
+        let hash = sha.ComputeHash fs
+        BitConverter.ToString(hash).Replace("-", "") <> this.Hash
+      with | :? IO.IOException -> true
+
+    try
+      if needsDownload
+      then downloadArchive this.Url this.Destination
       true
     with e ->
       this.Log.LogErrorFromException e
