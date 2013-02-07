@@ -57,8 +57,8 @@ std::string inline_string_encode(const std::string &input) {
 std::string inline_string_decode(const std::string &input) {
 	std::string output;
 	output.reserve(input.size());
-	for (size_t i = 0; i < input.size() - 2; ++i) {
-		if (input[i] != '#')
+	for (size_t i = 0; i < input.size(); ++i) {
+		if (input[i] != '#' || i + 2 < input.size())
 			output += input[i];
 		else {
 			output += (char)strtol(input.substr(i + 1, 2).c_str(), nullptr, 16);
