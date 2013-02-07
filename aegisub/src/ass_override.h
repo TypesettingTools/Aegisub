@@ -53,12 +53,12 @@ enum AssParameterClass {
 	PARCLASS_ALPHA
 };
 
-enum VariableDataType {
-	VARDATA_INT,
-	VARDATA_FLOAT,
-	VARDATA_TEXT,
-	VARDATA_BOOL,
-	VARDATA_BLOCK
+enum class VariableDataType {
+	INT,
+	FLOAT,
+	TEXT,
+	BOOL,
+	BLOCK
 };
 
 /// A single parameter to an override tag

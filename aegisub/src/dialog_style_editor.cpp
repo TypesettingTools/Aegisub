@@ -74,7 +74,7 @@ class StyleRenamer {
 	/// Process a single override parameter to check if it's \r with this style name
 	static void ProcessTag(std::string const& tag, AssOverrideParameter* param, void *userData) {
 		StyleRenamer *self = static_cast<StyleRenamer*>(userData);
-		if (tag == "\\r" && param->GetType() == VARDATA_TEXT && param->Get<std::string>() == self->source_name) {
+		if (tag == "\\r" && param->GetType() == VariableDataType::TEXT && param->Get<std::string>() == self->source_name) {
 			if (self->do_replace)
 				param->Set(self->new_name);
 			else

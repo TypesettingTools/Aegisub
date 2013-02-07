@@ -215,129 +215,129 @@ static void load_protos() {
 
 	// Longer tag names must appear before shorter tag names
 
-	proto[0].Set("\\alpha", VARDATA_TEXT, PARCLASS_ALPHA); // \alpha&H<aa>&
-	proto[++i].Set("\\bord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \bord<depth>
-	proto[++i].Set("\\xbord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \xbord<depth>
-	proto[++i].Set("\\ybord", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \ybord<depth>
-	proto[++i].Set("\\shad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \shad<depth>
-	proto[++i].Set("\\xshad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \xshad<depth>
-	proto[++i].Set("\\yshad", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \yshad<depth>
+	proto[0].Set("\\alpha", VariableDataType::TEXT, PARCLASS_ALPHA); // \alpha&H<aa>&
+	proto[++i].Set("\\bord", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \bord<depth>
+	proto[++i].Set("\\xbord", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \xbord<depth>
+	proto[++i].Set("\\ybord", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \ybord<depth>
+	proto[++i].Set("\\shad", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \shad<depth>
+	proto[++i].Set("\\xshad", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \xshad<depth>
+	proto[++i].Set("\\yshad", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \yshad<depth>
 
 	// \fade(<a1>,<a2>,<a3>,<t1>,<t2>,<t3>,<t4>)
 	i++;
 	proto[i].name = "\\fade";
-	proto[i].AddParam(VARDATA_INT);
-	proto[i].AddParam(VARDATA_INT);
-	proto[i].AddParam(VARDATA_INT);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
+	proto[i].AddParam(VariableDataType::INT);
+	proto[i].AddParam(VariableDataType::INT);
+	proto[i].AddParam(VariableDataType::INT);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START);
 
 	// \move(<x1>,<y1>,<x2>,<y2>[,<t1>,<t2>])
 	i++;
 	proto[i].name = "\\move";
-	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_Y);
-	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_Y);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
+	proto[i].AddParam(VariableDataType::FLOAT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::FLOAT, PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::FLOAT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::FLOAT, PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START);
 
 	// If these are rearranged, keep rect clip and vector clip adjacent in this order
 	// \clip(<x1>,<y1>,<x2>,<y2>)
 	i++;
 	proto[i].name = "\\clip";
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_Y);
 
 	// \clip([<scale>,]<some drawings>)
 	i++;
 	proto[i].name = "\\clip";
-	proto[i].AddParam(VARDATA_INT,PARCLASS_NORMAL,OPTIONAL_2);
-	proto[i].AddParam(VARDATA_TEXT,PARCLASS_DRAWING);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_NORMAL,OPTIONAL_2);
+	proto[i].AddParam(VariableDataType::TEXT, PARCLASS_DRAWING);
 
 	// \iclip(<x1>,<y1>,<x2>,<y2>)
 	i++;
 	proto[i].name = "\\iclip";
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_Y);
 
 	// \iclip([<scale>,]<some drawings>)
 	i++;
 	proto[i].name = "\\iclip";
-	proto[i].AddParam(VARDATA_INT,PARCLASS_NORMAL,OPTIONAL_2);
-	proto[i].AddParam(VARDATA_TEXT,PARCLASS_DRAWING);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_NORMAL,OPTIONAL_2);
+	proto[i].AddParam(VariableDataType::TEXT, PARCLASS_DRAWING);
 
-	proto[++i].Set("\\fscx", VARDATA_FLOAT,PARCLASS_RELATIVE_SIZE_X); // \fscx<percent>
-	proto[++i].Set("\\fscy", VARDATA_FLOAT,PARCLASS_RELATIVE_SIZE_Y); // \fscy<percent>
+	proto[++i].Set("\\fscx", VariableDataType::FLOAT, PARCLASS_RELATIVE_SIZE_X); // \fscx<percent>
+	proto[++i].Set("\\fscy", VariableDataType::FLOAT, PARCLASS_RELATIVE_SIZE_Y); // \fscy<percent>
 	// \pos(<x>,<y>)
 	i++;
 	proto[i].name = "\\pos";
-	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::FLOAT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::FLOAT, PARCLASS_ABSOLUTE_POS_Y);
 
 	// \org(<x>,<y>)
 	i++;
 	proto[i].name = "\\org";
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_X);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_ABSOLUTE_POS_Y);
 
-	proto[++i].Set("\\pbo", VARDATA_INT,PARCLASS_ABSOLUTE_POS_Y); // \pbo<y>
+	proto[++i].Set("\\pbo", VariableDataType::INT, PARCLASS_ABSOLUTE_POS_Y); // \pbo<y>
 	// \fad(<t1>,<t2>)
 	i++;
 	proto[i].name = "\\fad";
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_END);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_END);
 
-	proto[++i].Set("\\fsp", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \fsp<pixels>
-	proto[++i].Set("\\frx", VARDATA_FLOAT); // \frx<degrees>
-	proto[++i].Set("\\fry", VARDATA_FLOAT); // \fry<degrees>
-	proto[++i].Set("\\frz", VARDATA_FLOAT); // \frz<degrees>
-	proto[++i].Set("\\fr", VARDATA_FLOAT); // \fr<degrees>
-	proto[++i].Set("\\fax", VARDATA_FLOAT); // \fax<factor>
-	proto[++i].Set("\\fay", VARDATA_FLOAT); // \fay<factor>
-	proto[++i].Set("\\1c", VARDATA_TEXT); // \1c&H<bbggrr>&
-	proto[++i].Set("\\2c", VARDATA_TEXT); // \2c&H<bbggrr>&
-	proto[++i].Set("\\3c", VARDATA_TEXT); // \3c&H<bbggrr>&
-	proto[++i].Set("\\4c", VARDATA_TEXT); // \4c&H<bbggrr>&
-	proto[++i].Set("\\1a", VARDATA_TEXT, PARCLASS_ALPHA); // \1a&H<aa>&
-	proto[++i].Set("\\2a", VARDATA_TEXT, PARCLASS_ALPHA); // \2a&H<aa>&
-	proto[++i].Set("\\3a", VARDATA_TEXT, PARCLASS_ALPHA); // \3a&H<aa>&
-	proto[++i].Set("\\4a", VARDATA_TEXT, PARCLASS_ALPHA); // \4a&H<aa>&
-	proto[++i].Set("\\fe", VARDATA_TEXT); // \fe<charset>
-	proto[++i].Set("\\ko", VARDATA_INT,PARCLASS_KARAOKE); // \ko<duration>
-	proto[++i].Set("\\kf", VARDATA_INT,PARCLASS_KARAOKE); // \kf<duration>
-	proto[++i].Set("\\be", VARDATA_INT); // \be<strength>
-	proto[++i].Set("\\blur", VARDATA_FLOAT); // \blur<strength>
-	proto[++i].Set("\\fn", VARDATA_TEXT); // \fn<name>
-	proto[++i].Set("\\fs+", VARDATA_FLOAT); // \fs+<size>
-	proto[++i].Set("\\fs-", VARDATA_FLOAT); // \fs-<size>
-	proto[++i].Set("\\fs", VARDATA_FLOAT,PARCLASS_ABSOLUTE_SIZE); // \fs<size>
-	proto[++i].Set("\\an", VARDATA_INT); // \an<alignment>
-	proto[++i].Set("\\c", VARDATA_TEXT); // \c&H<bbggrr>&
-	proto[++i].Set("\\b", VARDATA_INT); // \b<0/1/weight>
-	proto[++i].Set("\\i", VARDATA_BOOL); // \i<0/1>
-	proto[++i].Set("\\u", VARDATA_BOOL); // \u<0/1>
-	proto[++i].Set("\\s", VARDATA_BOOL); // \s<0/1>
-	proto[++i].Set("\\a", VARDATA_INT); // \a<alignment>
-	proto[++i].Set("\\k", VARDATA_INT,PARCLASS_KARAOKE); // \k<duration>
-	proto[++i].Set("\\K", VARDATA_INT,PARCLASS_KARAOKE); // \K<duration>
-	proto[++i].Set("\\q", VARDATA_INT); // \q<0-3>
-	proto[++i].Set("\\p", VARDATA_INT); // \p<n>
-	proto[++i].Set("\\r", VARDATA_TEXT); // \r[<name>]
+	proto[++i].Set("\\fsp", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \fsp<pixels>
+	proto[++i].Set("\\frx", VariableDataType::FLOAT); // \frx<degrees>
+	proto[++i].Set("\\fry", VariableDataType::FLOAT); // \fry<degrees>
+	proto[++i].Set("\\frz", VariableDataType::FLOAT); // \frz<degrees>
+	proto[++i].Set("\\fr", VariableDataType::FLOAT); // \fr<degrees>
+	proto[++i].Set("\\fax", VariableDataType::FLOAT); // \fax<factor>
+	proto[++i].Set("\\fay", VariableDataType::FLOAT); // \fay<factor>
+	proto[++i].Set("\\1c", VariableDataType::TEXT); // \1c&H<bbggrr>&
+	proto[++i].Set("\\2c", VariableDataType::TEXT); // \2c&H<bbggrr>&
+	proto[++i].Set("\\3c", VariableDataType::TEXT); // \3c&H<bbggrr>&
+	proto[++i].Set("\\4c", VariableDataType::TEXT); // \4c&H<bbggrr>&
+	proto[++i].Set("\\1a", VariableDataType::TEXT, PARCLASS_ALPHA); // \1a&H<aa>&
+	proto[++i].Set("\\2a", VariableDataType::TEXT, PARCLASS_ALPHA); // \2a&H<aa>&
+	proto[++i].Set("\\3a", VariableDataType::TEXT, PARCLASS_ALPHA); // \3a&H<aa>&
+	proto[++i].Set("\\4a", VariableDataType::TEXT, PARCLASS_ALPHA); // \4a&H<aa>&
+	proto[++i].Set("\\fe", VariableDataType::TEXT); // \fe<charset>
+	proto[++i].Set("\\ko", VariableDataType::INT, PARCLASS_KARAOKE); // \ko<duration>
+	proto[++i].Set("\\kf", VariableDataType::INT, PARCLASS_KARAOKE); // \kf<duration>
+	proto[++i].Set("\\be", VariableDataType::INT); // \be<strength>
+	proto[++i].Set("\\blur", VariableDataType::FLOAT); // \blur<strength>
+	proto[++i].Set("\\fn", VariableDataType::TEXT); // \fn<name>
+	proto[++i].Set("\\fs+", VariableDataType::FLOAT); // \fs+<size>
+	proto[++i].Set("\\fs-", VariableDataType::FLOAT); // \fs-<size>
+	proto[++i].Set("\\fs", VariableDataType::FLOAT, PARCLASS_ABSOLUTE_SIZE); // \fs<size>
+	proto[++i].Set("\\an", VariableDataType::INT); // \an<alignment>
+	proto[++i].Set("\\c", VariableDataType::TEXT); // \c&H<bbggrr>&
+	proto[++i].Set("\\b", VariableDataType::INT); // \b<0/1/weight>
+	proto[++i].Set("\\i", VariableDataType::BOOL); // \i<0/1>
+	proto[++i].Set("\\u", VariableDataType::BOOL); // \u<0/1>
+	proto[++i].Set("\\s", VariableDataType::BOOL); // \s<0/1>
+	proto[++i].Set("\\a", VariableDataType::INT); // \a<alignment>
+	proto[++i].Set("\\k", VariableDataType::INT, PARCLASS_KARAOKE); // \k<duration>
+	proto[++i].Set("\\K", VariableDataType::INT, PARCLASS_KARAOKE); // \K<duration>
+	proto[++i].Set("\\q", VariableDataType::INT); // \q<0-3>
+	proto[++i].Set("\\p", VariableDataType::INT); // \p<n>
+	proto[++i].Set("\\r", VariableDataType::TEXT); // \r[<name>]
 
 	// \t([<t1>,<t2>,][<accel>,]<style modifiers>)
 	i++;
 	proto[i].name = "\\t";
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START,OPTIONAL_3 | OPTIONAL_4);
-	proto[i].AddParam(VARDATA_INT,PARCLASS_RELATIVE_TIME_START,OPTIONAL_3 | OPTIONAL_4);
-	proto[i].AddParam(VARDATA_FLOAT,PARCLASS_NORMAL,OPTIONAL_2 | OPTIONAL_4);
-	proto[i].AddParam(VARDATA_BLOCK);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START,OPTIONAL_3 | OPTIONAL_4);
+	proto[i].AddParam(VariableDataType::INT, PARCLASS_RELATIVE_TIME_START,OPTIONAL_3 | OPTIONAL_4);
+	proto[i].AddParam(VariableDataType::FLOAT, PARCLASS_NORMAL,OPTIONAL_2 | OPTIONAL_4);
+	proto[i].AddParam(VariableDataType::BLOCK);
 }
 
 std::vector<std::string> tokenize(const std::string &text) {
@@ -457,7 +457,7 @@ void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callb
 			callback(tag.Name, &par, userData);
 
 			// Go recursive if it's a block parameter
-			if (par.GetType() == VARDATA_BLOCK)
+			if (par.GetType() == VariableDataType::BLOCK)
 				par.Get<AssDialogueBlockOverride*>()->ProcessParameters(callback, userData);
 		}
 	}

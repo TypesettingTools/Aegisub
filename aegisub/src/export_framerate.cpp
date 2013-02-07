@@ -171,7 +171,7 @@ int FORCEINLINE trunc_cs(int time) {
 
 void AssTransformFramerateFilter::TransformTimeTags(std::string const& name, AssOverrideParameter *curParam, void *curData) {
 	VariableDataType type = curParam->GetType();
-	if (type != VARDATA_INT && type != VARDATA_FLOAT) return;
+	if (type != VariableDataType::INT && type != VariableDataType::FLOAT) return;
 
 	AssTransformFramerateFilter *instance = static_cast<AssTransformFramerateFilter*>(curData);
 	AssDialogue *curDiag = instance->line;

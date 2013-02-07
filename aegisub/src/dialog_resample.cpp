@@ -194,9 +194,9 @@ namespace {
 		}
 
 		VariableDataType curType = cur->GetType();
-		if (curType == VARDATA_FLOAT)
+		if (curType == VariableDataType::FLOAT)
 			cur->Set((cur->Get<double>() + shift) * resizer);
-		else if (curType == VARDATA_INT)
+		else if (curType == VariableDataType::INT)
 			cur->Set<int>((cur->Get<int>() + shift) * resizer + 0.5);
 	}
 
