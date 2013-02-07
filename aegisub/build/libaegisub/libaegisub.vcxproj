@@ -33,17 +33,30 @@
       <ForcedIncludeFiles>lagi_pre.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
+
   <!-- Source files -->
   <ItemGroup>
-    <ClInclude Include="$(SrcDir)lagi_pre.h" />
-    <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)common\charset_6937.h" />
     <ClInclude Include="$(SrcDir)common\option_visit.h" />
+    <ClInclude Include="$(SrcDir)common\parser.h" />
+    <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\access.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\ass\dialogue_parser.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\ass\uuencode.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\background_runner.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\elements.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\reader.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\visitor.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\writer.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\calltip_provider.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv_win.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\color.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\dispatch.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\exception.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\fs.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\fs_fwd.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\io.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\json.h" />
@@ -52,68 +65,58 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\line_wrap.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\log.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\mru.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\of_type_adaptor.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option_value.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\path.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\signal.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\spellchecker.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\split.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\thesaurus.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\time.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_win.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\elements.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\reader.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\visitor.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\cajun\writer.h" />
-    <ClInclude Include="$(SrcDir)common\parser.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\ass\dialogue_parser.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\background_runner.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\color.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\spellchecker.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\calltip_provider.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\fs.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\of_type_adaptor.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\path.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\fs_fwd.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\dispatch.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\split.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\time.h" />
+    <ClInclude Include="$(SrcDir)lagi_pre.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)ass\dialogue_parser.cpp" />
+    <ClCompile Include="$(SrcDir)ass\uuencode.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\elements.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\reader.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\writer.cpp" />
+    <ClCompile Include="$(SrcDir)common\calltip_provider.cpp" />
     <ClCompile Include="$(SrcDir)common\charset.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_6937.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_conv.cpp" />
+    <ClCompile Include="$(SrcDir)common\color.cpp" />
+    <ClCompile Include="$(SrcDir)common\dispatch.cpp" />
+    <ClCompile Include="$(SrcDir)common\fs.cpp" />
     <ClCompile Include="$(SrcDir)common\hotkey.cpp" />
+    <ClCompile Include="$(SrcDir)common\io.cpp" />
     <ClCompile Include="$(SrcDir)common\json.cpp" />
     <ClCompile Include="$(SrcDir)common\keyframe.cpp" />
     <ClCompile Include="$(SrcDir)common\log.cpp" />
     <ClCompile Include="$(SrcDir)common\mru.cpp" />
     <ClCompile Include="$(SrcDir)common\option.cpp" />
     <ClCompile Include="$(SrcDir)common\option_visit.cpp" />
+    <ClCompile Include="$(SrcDir)common\parser.cpp" />
+    <ClCompile Include="$(SrcDir)common\path.cpp" />
     <ClCompile Include="$(SrcDir)common\thesaurus.cpp" />
     <ClCompile Include="$(SrcDir)common\util.cpp" />
     <ClCompile Include="$(SrcDir)common\vfr.cpp" />
     <ClCompile Include="$(SrcDir)windows\access.cpp" />
     <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp" />
-    <ClCompile Include="$(SrcDir)windows\log_win.cpp" />
-    <ClCompile Include="$(SrcDir)windows\util_win.cpp" />
-    <ClCompile Include="$(SrcDir)ass\dialogue_parser.cpp" />
-    <ClCompile Include="$(SrcDir)common\color.cpp" />
-    <ClCompile Include="$(SrcDir)common\parser.cpp" />
-    <ClCompile Include="$(SrcDir)common\calltip_provider.cpp" />
-    <ClCompile Include="$(SrcDir)common\fs.cpp" />
-    <ClCompile Include="$(SrcDir)common\io.cpp" />
-    <ClCompile Include="$(SrcDir)common\path.cpp" />
     <ClCompile Include="$(SrcDir)windows\fs.cpp" />
+    <ClCompile Include="$(SrcDir)windows\log_win.cpp" />
     <ClCompile Include="$(SrcDir)windows\path_win.cpp" />
-    <ClCompile Include="$(SrcDir)common\dispatch.cpp" />
+    <ClCompile Include="$(SrcDir)windows\util_win.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SrcDir)include\libaegisub\charsets.def" />

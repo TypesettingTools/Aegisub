@@ -36,14 +36,14 @@
 
 #include "ass_attachment.h"
 
+#include <libaegisub/ass/uuencode.h>
 #include <libaegisub/io.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <fstream>
 
 AssAttachment::AssAttachment(std::string const& name, AssEntryGroup group)
-: data(new std::vector<char>)
-, filename(name)
+: filename(name)
 , group(group)
 {
 }
@@ -70,32 +70,9 @@ AssEntry *AssAttachment::Clone() const {
 }
 
 const std::string AssAttachment::GetEntryData() const {
-	size_t size = data->size();
-	size_t written = 0;
-
 	std::string entryData = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename + "\r\n";
-	entryData.reserve(size * 4 / 3 + size / 80 * 2 + entryData.size() + 2);
-
-	for (size_t pos = 0; pos < size; pos += 3) {
-		unsigned char src[3] = { '\0', '\0', '\0' };
-		memcpy(src, &(*data)[pos], std::min<size_t>(3u, size - pos));
-
-		unsigned char dst[4];
-		dst[0] = src[0] >> 2;
-		dst[1] = ((src[0] & 0x3) << 4) | ((src[1] & 0xF0) >> 4);
-		dst[2] = ((src[1] & 0xF) << 2) | ((src[2] & 0xC0) >> 6);
-		dst[3] = src[2] & 0x3F;
-
-		for (size_t i = 0; i < std::min<size_t>(size - pos + 1, 4u); ++i) {
-			entryData += dst[i] + 33;
-
-			if (++written == 80 && pos + 3 < size) {
-				written = 0;
-				entryData += "\r\n";
-			}
-		}
-	}
-
+	if (data)
+		entryData += agi::ass::UUEncode(*data);
 	return entryData;
 }
 
@@ -115,28 +92,7 @@ std::string AssAttachment::GetFileName(bool raw) const {
 }
 
 void AssAttachment::Finish() {
-	unsigned char src[4];
-	unsigned char dst[3];
-
-	data->reserve(buffer.size() * 3 / 4);
-
-	for(size_t pos = 0; pos + 1 < buffer.size(); ) {
-		size_t read = std::min<size_t>(buffer.size() - pos, 4);
-
-		// Move 4 bytes from buffer to src
-		for (size_t i = 0; i < read; ++i)
-			src[i] = (unsigned char)buffer[pos++] - 33;
-		for (size_t i = read; i < 4; ++i)
-			src[i] = 0;
-
-		// Convert the 4 bytes from source to 3 in dst
-		dst[0] = (src[0] << 2) | (src[1] >> 4);
-		dst[1] = ((src[1] & 0xF) << 4) | (src[2] >> 2);
-		dst[2] = ((src[2] & 0x3) << 6) | (src[3]);
-
-		copy(dst, dst + read - 1, back_inserter(*data));
-	}
-
+	data = std::make_shared<std::vector<char>>(agi::ass::UUDecode(buffer));
 	buffer.clear();
 	buffer.shrink_to_fit();
 }

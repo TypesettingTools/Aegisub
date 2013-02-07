@@ -152,6 +152,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\ass\uuencode.h">
+      <Filter>ASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -249,6 +252,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\dispatch.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)ass\uuencode.cpp">
+      <Filter>ASS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

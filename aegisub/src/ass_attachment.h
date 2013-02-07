@@ -45,7 +45,7 @@ class AssAttachment : public AssEntry {
 	std::shared_ptr<std::vector<char>> data;
 
 	/// Encoded data which has been read from the script but not yet decoded
-	std::vector<char> buffer;
+	std::string buffer;
 
 	/// Name of the attached file, with SSA font mangling if it is a ttf
 	std::string filename;
@@ -58,7 +58,7 @@ public:
 
 	/// Add a line of data (without newline) read from a subtitle file to the
 	/// buffer waiting to be decoded
-	void AddData(std::string const& data) { buffer.insert(buffer.end(), data.begin(), data.end()); }
+	void AddData(std::string const& data) { buffer += data; }
 	/// Decode all data passed with AddData
 	void Finish();
 

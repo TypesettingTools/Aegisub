@@ -13,6 +13,7 @@ unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=
 
 SRC += \
 	ass/dialogue_parser.cpp \
+	ass/uuencode.cpp \
 	common/cajun/elements.cpp \
 	common/cajun/reader.cpp \
 	common/cajun/writer.cpp \

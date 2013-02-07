@@ -77,6 +77,9 @@
     <ClCompile Include="$(SrcDir)tests\word_split.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)tests\uuencode.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)support\main.h">

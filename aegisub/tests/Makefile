@@ -35,6 +35,7 @@ SRC = \
 		tests/syntax_highlight.cpp \
 		tests/thesaurus.cpp \
 		tests/util.cpp \
+		tests/uuencode.cpp \
 		tests/vfr.cpp \
 		tests/word_split.cpp \
 		${GTEST_ROOT}/src/gtest-all.cc
