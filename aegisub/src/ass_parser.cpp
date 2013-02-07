@@ -53,7 +53,6 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 
 	// Data is over, add attachment to the file
 	if (!valid_data || is_filename) {
-		attach->Finish();
 		InsertLine(attach.release());
 		AddLine(data);
 	}
@@ -61,10 +60,8 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 		attach->AddData(data);
 
 		// Done building
-		if (data.size() < 80) {
-			attach->Finish();
+		if (data.size() < 80)
 			InsertLine(attach.release());
-		}
 	}
 }
 

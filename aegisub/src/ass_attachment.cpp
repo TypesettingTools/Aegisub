@@ -1,36 +1,18 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-
-/// @file ass_attachment.cpp
-/// @brief Manage files embedded in subtitles
-/// @ingroup subs_storage
-///
 
 #include "config.h"
 
@@ -49,50 +31,52 @@ AssAttachment::AssAttachment(std::string const& name, AssEntryGroup group)
 }
 
 AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
-: data(new std::vector<char>)
-, filename(name.filename().string())
+: filename(name.filename().string())
 , group(group)
 {
-	if (boost::iends_with(filename, ".ttf"))
-		filename = filename.substr(0, filename.size() - 4) + "_0" + filename.substr(filename.size() - 4);
+	// SSA stuffs some information about the font in the embeded filename, but
+	// nothing else uses it so just do the absolute minimum (0 is the encoding)
+	if (boost::iends_with(filename.get(), ".ttf"))
+		filename = filename.get().substr(0, filename.get().size() - 4) + "_0" + filename.get().substr(filename.get().size() - 4);
 
+	std::vector<char> data;
 	std::unique_ptr<std::istream> file(agi::io::Open(name, true));
 	file->seekg(0, std::ios::end);
-	data->resize(file->tellg());
+	data.resize(file->tellg());
 	file->seekg(0, std::ios::beg);
-	file->read(&(*data)[0], data->size());
+	file->read(&data[0], data.size());
+
+	entry_data = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
+	entry_data = entry_data.get() + agi::ass::UUEncode(data);
 }
 
 AssEntry *AssAttachment::Clone() const {
 	AssAttachment *clone = new AssAttachment(filename, group);
-	clone->data = data;
+	clone->entry_data = entry_data;
 	return clone;
 }
 
 const std::string AssAttachment::GetEntryData() const {
-	std::string entryData = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename + "\r\n";
-	if (data)
-		entryData += agi::ass::UUEncode(*data);
-	return entryData;
+	return entry_data;
+}
+
+size_t AssAttachment::GetSize() const {
+	auto header_end = entry_data.get().find('\n');
+	return entry_data.get().size() - header_end - 1;
 }
 
 void AssAttachment::Extract(agi::fs::path const& filename) const {
-	agi::io::Save(filename, true).Get().write(&(*data)[0], data->size());
+	auto header_end = entry_data.get().find('\n');
+	agi::io::Save(filename, true).Get().write(&entry_data.get()[header_end + 1], entry_data.get().size() - header_end - 1);
 }
 
 std::string AssAttachment::GetFileName(bool raw) const {
-	if (raw || !boost::iends_with(filename, ".ttf")) return filename;
+	if (raw || !boost::iends_with(filename.get(), ".ttf")) return filename;
 
 	// Remove stuff after last underscore if it's a font
-	std::string::size_type last_under = filename.rfind('_');
+	std::string::size_type last_under = filename.get().rfind('_');
 	if (last_under == std::string::npos)
 		return filename;
 
-	return filename.substr(0, last_under) + ".ttf";
-}
-
-void AssAttachment::Finish() {
-	data = std::make_shared<std::vector<char>>(agi::ass::UUDecode(buffer));
-	buffer.clear();
-	buffer.shrink_to_fit();
+	return filename.get().substr(0, last_under) + ".ttf";
 }
