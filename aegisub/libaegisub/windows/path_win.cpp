@@ -44,11 +44,10 @@ void Path::FillPlatformSpecificPaths() {
 	SetToken("?user", WinGetFolderPath(CSIDL_APPDATA)/"Aegisub");
 	SetToken("?local", WinGetFolderPath(CSIDL_LOCAL_APPDATA)/"Aegisub");
 
-	/// @todo error checking
-	int argc;
-	LPWSTR *argv = CommandLineToArgvW(L"", &argc);
-	SetToken("?data", argv[0]);
-	LocalFree(argv);
+	std::wstring filename(MAX_PATH + 1, L'\0');
+	while (static_cast<DWORD>(filename.size()) == GetModuleFileNameW(nullptr, &filename[0], filename.size()))
+		filename.resize(filename.size() * 2);
+	SetToken("?data", filename);
 
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 	//SetToken("?docs", Decode("?data/docs"));
