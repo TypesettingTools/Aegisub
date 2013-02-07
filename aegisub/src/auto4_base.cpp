@@ -358,7 +358,7 @@ namespace Automation4 {
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
 			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*")) {
-				Script *s = ScriptFactory::CreateFromFile(dirname/filename, true);
+				Script *s = ScriptFactory::CreateFromFile(dirname/filename, false, false);
 				if (s) {
 					scripts.push_back(s);
 					if (!s->GetLoadedState()) ++error_count;
@@ -480,19 +480,19 @@ namespace Automation4 {
 		}
 	}
 
-	Script* ScriptFactory::CreateFromFile(agi::fs::path const& filename, bool log_errors, bool create_unknown)
+	Script* ScriptFactory::CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown)
 	{
 		for (auto factory : Factories()) {
 			Script *s = factory->Produce(filename);
 			if (s) {
-				if (!s->GetLoadedState() && log_errors) {
+				if (!s->GetLoadedState()) {
 					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename.wstring(), s->GetDescription());
 				}
 				return s;
 			}
 		}
 
-		if (log_errors) {
+		if (complain_about_unrecognised) {
 			wxLogError(_("The file was not recognised as an Automation script: %s"), filename.wstring());
 		}
 

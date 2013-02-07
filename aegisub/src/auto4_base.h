@@ -274,9 +274,9 @@ namespace Automation4 {
 
 		/// Load a script from a file
 		/// @param filename Script to load
-		/// @param log_errors Should load errors be displayed?
+		/// @param complain_about_unrecognised Should an error be displayed for files that aren't automation scripts?
 		/// @param create_unknown Create a placeholder rather than returning nullptr if no script engine supports the file
-		static Script* CreateFromFile(agi::fs::path const& filename, bool log_errors, bool create_unknown=true);
+		static Script* CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown=true);
 
 		static const std::vector<ScriptFactory*>& GetFactories();
 	};
