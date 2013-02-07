@@ -314,7 +314,7 @@ void DialogStyleManager::UpdateStorage() {
 void DialogStyleManager::OnChangeCatalog() {
 	std::string catalog(from_wx(CatalogList->GetStringSelection()));
 	c->ass->SetScriptInfo("Last Style Storage", catalog);
-	Store.Load(catalog);
+	Store.Load(config::path->Decode("?user/catalog/" + catalog + ".sty"));
 	UpdateStorage();
 }
 
@@ -327,7 +327,7 @@ void DialogStyleManager::LoadCatalog() {
 
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty()) {
-		Store.Load("Default");
+		Store.Load(config::path->Decode("?user/catalog/Default.sty"));
 		Store.push_back(new AssStyle);
 		Store.Save();
 		CatalogList->Append("Default");

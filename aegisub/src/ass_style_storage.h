@@ -32,6 +32,9 @@
 /// @ingroup style_editor
 ///
 
+#include <libaegisub/fs_fwd.h>
+
+#include <boost/filesystem/path.hpp>
 #include <deque>
 #include <string>
 #include <vector>
@@ -39,7 +42,7 @@
 class AssStyle;
 
 class AssStyleStorage {
-	std::string storage_name;
+	agi::fs::path file;
 	std::deque<AssStyle*> style;
 
 public:
@@ -74,6 +77,6 @@ public:
 	void Save() const;
 
 	/// Load stored styles from a file
-	/// @param name Catalog name (note: not file name)
-	void Load(std::string const& name);
+	/// @param filename Catalog filename. Does not have to exist.
+	void Load(agi::fs::path const& filename);
 };

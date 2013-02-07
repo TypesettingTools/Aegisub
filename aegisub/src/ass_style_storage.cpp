@@ -37,41 +37,39 @@
 #include "ass_style_storage.h"
 
 #include "ass_style.h"
-#include "options.h"
-#include "text_file_reader.h"
-#include "text_file_writer.h"
-#include "utils.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/path.h>
+#include <libaegisub/io.h>
+#include <libaegisub/line_iterator.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem.hpp>
 
 AssStyleStorage::~AssStyleStorage() {
-	delete_clear(style);
+	agi::util::delete_clear(style);
 }
 
 void AssStyleStorage::Save() const {
-	if (storage_name.empty()) return;
+	if (file.empty()) return;
 
-	agi::fs::CreateDirectory(config::path->Decode("?user/catalog/"));
+	agi::fs::CreateDirectory(file.parent_path());
 
-	TextFileWriter file(config::path->Decode("?user/catalog/" + storage_name + ".sty"), "UTF-8");
+	agi::io::Save out(file);
+	out.Get() << "\xEF\xBB\xBF";
+
 	for (const AssStyle *cur : style)
-		file.WriteLineToFile(cur->GetEntryData());
+		out.Get() << cur->GetEntryData() << std::endl;
 }
 
-void AssStyleStorage::Load(std::string const& name) {
-	storage_name = name;
+void AssStyleStorage::Load(agi::fs::path const& filename) {
+	file = filename;
 	Clear();
 
 	try {
-		TextFileReader file(config::path->Decode("?user/catalog/" + name + ".sty"), "UTF-8");
-
-		while (file.HasMoreLines()) {
+		std::unique_ptr<std::ifstream> in(agi::io::Open(file));
+		for (auto const& line : agi::line_iterator<std::string>(*in)) {
 			try {
-				style.push_back(new AssStyle(file.ReadLineFromFile()));
+				style.push_back(new AssStyle(line));
 			} catch(...) {
 				/* just ignore invalid lines for now */
 			}
@@ -83,7 +81,7 @@ void AssStyleStorage::Load(std::string const& name) {
 }
 
 void AssStyleStorage::Clear() {
-	delete_clear(style);
+	agi::util::delete_clear(style);
 }
 
 void AssStyleStorage::Delete(int idx) {
