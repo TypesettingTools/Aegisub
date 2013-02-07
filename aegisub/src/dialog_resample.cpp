@@ -160,29 +160,29 @@ namespace {
 		int shift = 0;
 
 		switch (cur->classification) {
-			case PARCLASS_ABSOLUTE_SIZE:
+			case AssParameterClass::ABSOLUTE_SIZE:
 				resizer = state->ry;
 				break;
 
-			case PARCLASS_ABSOLUTE_POS_X:
+			case AssParameterClass::ABSOLUTE_POS_X:
 				resizer = state->rx;
 				shift = state->margin[LEFT];
 				break;
 
-			case PARCLASS_ABSOLUTE_POS_Y:
+			case AssParameterClass::ABSOLUTE_POS_Y:
 				resizer = state->ry;
 				shift = state->margin[TOP];
 				break;
 
-			case PARCLASS_RELATIVE_SIZE_X:
+			case AssParameterClass::RELATIVE_SIZE_X:
 				resizer = state->ar;
 				break;
 
-			case PARCLASS_RELATIVE_SIZE_Y:
+			case AssParameterClass::RELATIVE_SIZE_Y:
 				//resizer = ry;
 				break;
 
-			case PARCLASS_DRAWING: {
+			case AssParameterClass::DRAWING: {
 				AssDialogueBlockDrawing block(cur->Get<std::string>(), 1);
 				block.TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
 				cur->Set(block.GetText());

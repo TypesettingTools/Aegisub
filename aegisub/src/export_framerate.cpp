@@ -179,7 +179,7 @@ void AssTransformFramerateFilter::TransformTimeTags(std::string const& name, Ass
 	int parVal = curParam->Get<int>();
 
 	switch (curParam->classification) {
-		case PARCLASS_RELATIVE_TIME_START: {
+		case AssParameterClass::RELATIVE_TIME_START: {
 			int value = instance->ConvertTime(trunc_cs(curDiag->Start) + parVal) - instance->newStart;
 
 			// An end time of 0 is actually the end time of the line, so ensure
@@ -191,10 +191,10 @@ void AssTransformFramerateFilter::TransformTimeTags(std::string const& name, Ass
 			curParam->Set(value);
 			break;
 		}
-		case PARCLASS_RELATIVE_TIME_END:
+		case AssParameterClass::RELATIVE_TIME_END:
 			curParam->Set(instance->newEnd - instance->ConvertTime(trunc_cs(curDiag->End) - parVal));
 			break;
-		case PARCLASS_KARAOKE: {
+		case AssParameterClass::KARAOKE: {
 			int start = curDiag->Start / 10 + instance->oldK + parVal;
 			int value = (instance->ConvertTime(start * 10) - instance->newStart) / 10 - instance->newK;
 			instance->oldK += parVal;
