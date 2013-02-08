@@ -490,7 +490,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 	int session_shot_count = 1;
 	std::string path;
 	do {
-		path = str(boost::format("%s_%03d_%d.png") % basepath % session_shot_count++ % c->videoController->GetFrameN());
+		path = str(boost::format("%s_%03d_%d.png") % basepath.string() % session_shot_count++ % c->videoController->GetFrameN());
 	} while (agi::fs::FileExists(path));
 
 	c->videoController->GetFrame(c->videoController->GetFrameN(), raw)->GetImage().SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
