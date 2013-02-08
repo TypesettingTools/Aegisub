@@ -57,10 +57,10 @@ std::string UUEncode(std::vector<char> const& data) {
 		memcpy(src, &data[pos], std::min<size_t>(3u, data.size() - pos));
 
 		unsigned char dst[4] = {
-			src[0] >> 2,
-			((src[0] & 0x3) << 4) | ((src[1] & 0xF0) >> 4),
-			((src[1] & 0xF) << 2) | ((src[2] & 0xC0) >> 6),
-			src[2] & 0x3F
+			static_cast<unsigned char>(src[0] >> 2),
+			static_cast<unsigned char>(((src[0] & 0x3) << 4) | ((src[1] & 0xF0) >> 4)),
+			static_cast<unsigned char>(((src[1] & 0xF) << 2) | ((src[2] & 0xC0) >> 6)),
+			static_cast<unsigned char>(src[2] & 0x3F)
 		};
 
 		for (size_t i = 0; i < std::min<size_t>(data.size() - pos + 1, 4u); ++i) {
