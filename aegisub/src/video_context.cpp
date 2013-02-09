@@ -105,7 +105,7 @@ void VideoContext::Reset() {
 
 	// Remove provider
 	provider.reset();
-	video_provider = 0;
+	video_provider = nullptr;
 
 	keyframes.clear();
 	keyframes_filename.clear();

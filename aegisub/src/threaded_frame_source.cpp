@@ -125,6 +125,8 @@ ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, wx
 }
 
 ThreadedFrameSource::~ThreadedFrameSource() {
+	// Block until all currently queued jobs are complete
+	worker->Sync([]{});
 }
 
 void ThreadedFrameSource::LoadSubtitles(const AssFile *new_subs) throw() {
@@ -193,15 +195,9 @@ void ThreadedFrameSource::ProcAsync(uint_fast32_t req_version) {
 
 std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
 	std::shared_ptr<AegiVideoFrame> ret;
-	std::mutex m;
-	std::condition_variable cv;
-	std::unique_lock<std::mutex> l(m);
-	worker->Async([&]{
-		std::unique_lock<std::mutex> l(m);
+	worker->Sync([&]{
 		ret = ProcFrame(frame, time, raw);
-		cv.notify_all();
 	});
-	cv.wait(l, [&]{ return !!ret; }); // predicate is to deal with spurious wakeups
 	return ret;
 }
 
