@@ -114,7 +114,7 @@ void Spline::DecodeFromAss(std::string const& str) {
 	Vector2D pt(0, 0);
 
 	// Tokenize the string
-	boost::char_separator<char> sep("|");
+	boost::char_separator<char> sep(" ");
 	for (auto const& token : boost::tokenizer<boost::char_separator<char>>(str, sep)) {
 		double n;
 		if (agi::util::try_parse(token, &n)) {
