@@ -52,8 +52,6 @@ VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 , active_line(0)
 , dragging(false)
 , frame_number(c->videoController->GetFrameN())
-, left_click(false)
-, left_double(false)
 , shift_down(false)
 , ctrl_down(false)
 , alt_down(false)
@@ -103,7 +101,6 @@ void VisualToolBase::OnSeek(int new_frame) {
 void VisualToolBase::OnMouseCaptureLost(wxMouseCaptureLostEvent &) {
 	holding = false;
 	dragging = false;
-	left_click = false;
 }
 
 void VisualToolBase::OnActiveLineChanged(AssDialogue *new_line) {
@@ -151,6 +148,8 @@ void VisualToolBase::SetDisplayArea(int x, int y, int w, int h) {
 
 	holding = false;
 	dragging = false;
+	if (parent->HasCapture())
+		parent->ReleaseMouse();
 	OnCoordinateSystemsChanged();
 }
 
@@ -172,8 +171,8 @@ VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context)
 
 template<class FeatureType>
 void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
-	left_click = event.LeftDown();
-	left_double = event.LeftDClick();
+	bool left_click = event.LeftDown();
+	bool left_double = event.LeftDClick();
 	shift_down = event.ShiftDown();
 	ctrl_down = event.CmdDown();
 	alt_down = event.AltDown();
