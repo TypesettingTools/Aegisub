@@ -108,8 +108,6 @@ protected:
 
 	int frame_number; ///< Current frame number
 
-	bool left_click; ///< Is a left click event currently being processed?
-	bool left_double; ///< Is a left double click event currently being processed?
 	bool shift_down; ///< Is shift down?
 	bool ctrl_down; ///< Is ctrl down?
 	bool alt_down; ///< Is alt down?
