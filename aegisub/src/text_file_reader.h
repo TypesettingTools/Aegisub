@@ -22,7 +22,6 @@
 #pragma once
 
 #include <fstream>
-#include <memory>
 #include <string>
 
 #include <libaegisub/fs_fwd.h>
@@ -31,7 +30,7 @@
 /// @class TextFileReader
 /// @brief A line-based text file reader
 class TextFileReader {
-	std::unique_ptr<std::ifstream> file;
+	std::ifstream file;
 	bool trim;
 	agi::line_iterator<std::string> iter;
 

@@ -140,7 +140,7 @@ bool AegisubApp::OnInit() {
 	// Try loading configuration from the install dir if one exists there
 	try {
 		auto conf_local(config::path->Decode("?data/config.json"));
-		std::unique_ptr<std::istream> localConfig(agi::io::Open(conf_local));
+		std::ifstream localConfig(agi::io::Open(conf_local));
 		config::opt = new agi::Options(conf_local, GET_DEFAULT_CONFIG(default_config));
 
 		// Local config, make ?user mean ?data so all user settings are placed in install dir

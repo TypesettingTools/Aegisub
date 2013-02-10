@@ -206,18 +206,18 @@ Framerate::Framerate(fs::path const& filename)
 : denominator(default_denominator)
 , numerator(0)
 {
-	scoped_ptr<std::ifstream> file(agi::io::Open(filename));
+	std::ifstream file(agi::io::Open(filename));
 	std::string encoding = agi::charset::Detect(filename);
-	std::string line = *line_iterator<std::string>(*file, encoding);
+	std::string line = *line_iterator<std::string>(file, encoding);
 	if (line == "# timecode format v2") {
-		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
+		copy(line_iterator<int>(file, encoding), line_iterator<int>(), back_inserter(timecodes));
 		SetFromTimecodes();
 		return;
 	}
 	if (line == "# timecode format v1" || line.substr(0, 7) == "Assume ") {
 		if (line[0] == '#')
-			line = *line_iterator<std::string>(*file, encoding);
-		numerator = v1_parse(line_iterator<std::string>(*file, encoding), line, timecodes, last);
+			line = *line_iterator<std::string>(file, encoding);
+		numerator = v1_parse(line_iterator<std::string>(file, encoding), line, timecodes, last);
 		return;
 	}
 

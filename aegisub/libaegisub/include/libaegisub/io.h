@@ -28,7 +28,7 @@ namespace agi {
 DEFINE_BASE_EXCEPTION_NOINNER(IOError, Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(IOFatal, IOError, "io/fatal")
 
-std::ifstream* Open(fs::path const& file, bool binary = false);
+std::ifstream Open(fs::path const& file, bool binary = false);
 
 class Save {
 	std::ofstream *fp;

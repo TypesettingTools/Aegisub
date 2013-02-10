@@ -91,9 +91,9 @@ void HunspellSpellChecker::ReadUserDictionary() {
 
 	// Read the old contents of the user's dictionary
 	try {
-		std::unique_ptr<std::istream> stream(agi::io::Open(userDicPath));
+		std::ifstream stream(agi::io::Open(userDicPath));
 		copy_if(
-			++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
+			++agi::line_iterator<std::string>(stream), agi::line_iterator<std::string>(),
 			inserter(customWords, customWords.end()),
 			[](std::string const& str) { return !str.empty(); });
 	}

@@ -19,7 +19,7 @@
 
 #include <libaegisub/fs_fwd.h>
 
-#include <iosfwd>
+#include <fstream>
 #include <memory>
 #include <string>
 
@@ -29,7 +29,7 @@ namespace agi { namespace charset { class IconvWrapper; } }
 namespace Automation4 {
 	class LuaScriptReader {
 		std::unique_ptr<agi::charset::IconvWrapper> conv;
-		std::unique_ptr<std::istream> file;
+		std::ifstream file;
 		char buf[512];
 
 		const char *Read(size_t *bytes_read);

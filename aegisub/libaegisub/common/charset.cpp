@@ -48,24 +48,24 @@ public:
 	: nsUniversalDetector(NS_FILTER_ALL)
 	{
 		{
-			std::unique_ptr<std::ifstream> fp(agi::io::Open(file, true));
+			std::ifstream fp(agi::io::Open(file, true));
 
 			// If it's over 100 MB it's either binary or big enough that we won't
 			// be able to do anything useful with it anyway
-			fp->seekg(0, std::ios::end);
-			if (fp->tellg() > 100 * 1024 * 1024) {
+			fp.seekg(0, std::ios::end);
+			if (fp.tellg() > 100 * 1024 * 1024) {
 				list.emplace_back(1.f, "binary");
 				return;
 			}
-			fp->seekg(0, std::ios::beg);
+			fp.seekg(0, std::ios::beg);
 
 			std::streamsize binaryish = 0;
 			std::streamsize bytes = 0;
 
-			while (!mDone && *fp) {
+			while (!mDone && fp) {
 				char buf[4096];
-				fp->read(buf, sizeof(buf));
-				std::streamsize read = fp->gcount();
+				fp.read(buf, sizeof(buf));
+				std::streamsize read = fp.gcount();
 				HandleData(buf, (PRUint32)read);
 
 				// A dumb heuristic to detect binary files

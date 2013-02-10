@@ -40,11 +40,11 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 		filename = filename.get().substr(0, filename.get().size() - 4) + "_0" + filename.get().substr(filename.get().size() - 4);
 
 	std::vector<char> data;
-	std::unique_ptr<std::istream> file(agi::io::Open(name, true));
-	file->seekg(0, std::ios::end);
-	data.resize(file->tellg());
-	file->seekg(0, std::ios::beg);
-	file->read(&data[0], data.size());
+	std::ifstream file(agi::io::Open(name, true));
+	file.seekg(0, std::ios::end);
+	data.resize(file.tellg());
+	file.seekg(0, std::ios::beg);
+	file.read(&data[0], data.size());
 
 	entry_data = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
 	entry_data = entry_data.get() + agi::ass::UUEncode(data);

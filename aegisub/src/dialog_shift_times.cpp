@@ -302,9 +302,9 @@ void DialogShiftTimes::LoadHistory() {
 	history_box->Freeze();
 
 	try {
-		std::unique_ptr<std::istream> file(agi::io::Open(history_filename));
+		std::ifstream file(agi::io::Open(history_filename));
 		json::UnknownElement root;
-		json::Reader::Read(root, *file);
+		json::Reader::Read(root, file);
 		*history = root;
 
 		for (auto& history_entry : *history)

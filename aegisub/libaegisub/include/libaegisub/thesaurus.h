@@ -18,7 +18,7 @@
 
 #include "fs_fwd.h"
 
-#include <iosfwd>
+#include <fstream>
 #include <map>
 #include <memory>
 #include <string>
@@ -32,13 +32,13 @@ class Thesaurus {
 	/// Map of word -> byte position in the data file
 	std::map<std::string, int> offsets;
 	/// Read handle to the data file
-	std::unique_ptr<std::istream> dat;
+	std::ifstream dat;
 	/// Converter from the data file's charset to UTF-8
 	std::unique_ptr<charset::IconvWrapper> conv;
 
 public:
 	/// A pair of a word and synonyms for that word
-	typedef std::pair<std::string, std::vector<std::string> > Entry;
+	typedef std::pair<std::string, std::vector<std::string>> Entry;
 
 	/// Constructor
 	/// @param dat_path Path to data file
