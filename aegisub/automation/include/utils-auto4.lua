@@ -104,9 +104,9 @@ function extract_color(s)
 	end
 	
 	-- Ok how about HTML format then?
-	r, g, b, a = s:match("#(%x%x)(%x%x)?(%x%x)?(%x%x)?")
+	r, g, b, a = s:match("#(%x%x)(%x?%x?)(%x?%x?)(%x?%x?)")
 	if r then
-		return tonumber(r or 0, 16), tonumber(g or 0, 16), tonumber(b or 0, 16), tonumber(a or 0, 16)
+		return tonumber(r, 16), tonumber(g, 16) or 0, tonumber(b, 16) or 0, tonumber(a, 16) or 0
 	end
 	
 	-- Failed...
