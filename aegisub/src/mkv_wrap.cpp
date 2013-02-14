@@ -152,7 +152,11 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 			std::string CodecID(trackInfo->CodecID);
 			if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
 				tracksFound.push_back(track);
-				tracksNames.emplace_back(str(boost::format("%d (%s %s): %s") % track % CodecID % trackInfo->Language % trackInfo->Name));
+				tracksNames.emplace_back(str(boost::format("%d (%s %s)") % track % CodecID % trackInfo->Language));
+				if (trackInfo->Name) {
+					tracksNames.back() += ": ";
+					tracksNames.back() += trackInfo->Name;
+				}
 			}
 		}
 
