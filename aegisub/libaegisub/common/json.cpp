@@ -21,18 +21,22 @@
 #include "libaegisub/json.h"
 
 #include <fstream>
+#include <memory>
 #include <sstream>
 
 #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 
-namespace agi { namespace json_util {
+namespace agi {
+	namespace json_util {
 
-json::UnknownElement parse(std::istream&& stream) {
+json::UnknownElement parse(std::istream *stream) {
 	try {
+		std::unique_ptr<std::istream> stream_deleter(stream);
+
 		json::UnknownElement root;
-		json::Reader::Read(root, stream);
+		json::Reader::Read(root, *stream);
 		return root;
 	} catch (json::Reader::ParseException& e) {
 		LOG_E("json/parse") << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1;
@@ -53,16 +57,17 @@ json::UnknownElement file(agi::fs::path const& file, const std::string &default_
 	}
 	catch (fs::FileNotFound const&) {
 		// Not an error
-		return parse(std::istringstream(default_config));
+		return parse(new std::istringstream(default_config));
 	}
 	catch (json::Exception&) {
 		// Already logged in parse
-		return parse(std::istringstream(default_config));
+		return parse(new std::istringstream(default_config));
 	}
 	catch (agi::Exception& e) {
 		LOG_E("json/file") << "Unexpected error when reading config file " << file << ": " << e.GetMessage();
-		return parse(std::istringstream(default_config));
+		return parse(new std::istringstream(default_config));
 	}
 }
 
-} }
+	} // namespace json_util
+} // namespace agi

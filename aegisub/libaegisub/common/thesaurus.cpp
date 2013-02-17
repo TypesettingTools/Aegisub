@@ -35,15 +35,15 @@ namespace agi {
 Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
 : dat(io::Open(dat_path))
 {
-	std::ifstream idx(io::Open(idx_path));
+	std::unique_ptr<std::ifstream> idx(io::Open(idx_path));
 
 	std::string encoding_name;
-	getline(idx, encoding_name);
+	getline(*idx, encoding_name);
 	std::string unused_entry_count;
-	getline(idx, unused_entry_count);
+	getline(*idx, unused_entry_count);
 
 	// Read the list of words and file offsets for those words
-	for (line_iterator<std::string> iter(idx, encoding_name), end; iter != end; ++iter) {
+	for (line_iterator<std::string> iter(*idx, encoding_name), end; iter != end; ++iter) {
 		std::vector<std::string> chunks;
 		boost::split(chunks, *iter, _1 == '|');
 		if (chunks.size() == 2)
@@ -57,17 +57,17 @@ Thesaurus::~Thesaurus() { }
 
 void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	out->clear();
-	if (!dat) return;
+	if (!dat.get()) return;
 
 	std::map<std::string, int>::const_iterator it = offsets.find(word);
 	if (it == offsets.end()) return;
 
-	dat.seekg(it->second, std::ios::beg);
-	if (!dat.good()) return;
+	dat->seekg(it->second, std::ios::beg);
+	if (!dat->good()) return;
 
 	// First line is the word and meaning count
 	std::string temp;
-	getline(dat, temp);
+	getline(*dat, temp);
 	std::vector<std::string> header;
 	std::string converted(conv->Convert(temp));
 	boost::split(header, converted, _1 == '|');
@@ -77,7 +77,7 @@ void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	out->resize(meanings);
 	for (int i = 0; i < meanings; ++i) {
 		std::vector<std::string> line;
-		getline(dat, temp);
+		getline(*dat, temp);
 		std::string converted(conv->Convert(temp));
 		boost::split(line, converted, _1 == '|');
 

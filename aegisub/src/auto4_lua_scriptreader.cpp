@@ -28,6 +28,8 @@
 #include <libaegisub/io.h>
 #include <libaegisub/charset_conv.h>
 
+#include <fstream>
+
 namespace Automation4 {
 	LuaScriptReader::LuaScriptReader(agi::fs::path const& filename)
 	: conv(new agi::charset::IconvWrapper(CharSetDetect::GetEncoding(filename).c_str(), "utf-8", false))
@@ -39,11 +41,11 @@ namespace Automation4 {
 
 	const char *LuaScriptReader::Read(size_t *bytes_read) {
 		char in_buf[512];
-		file.read(in_buf, sizeof(in_buf));
+		file->read(in_buf, sizeof(in_buf));
 
 		const char *in = in_buf;
 		char *out = buf;
-		size_t in_bytes = file.gcount();
+		size_t in_bytes = file->gcount();
 		size_t out_bytes = sizeof(buf);
 
 		conv->Convert(&in, &in_bytes, &out, &out_bytes);

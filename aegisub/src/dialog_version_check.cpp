@@ -304,7 +304,7 @@ void DoCheck(bool interactive) {
 		throw VersionCheckError(from_wx(_("Could not connect to updates server.")));
 
 	stream << boost::format(
-		"GET %s.json?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s HTTP/1.0\r\n"
+		"GET %s?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s HTTP/1.0\r\n"
 		"User-Agent: Aegisub %s\r\n"
 		"Host: %s\r\n"
 		"Accept: */*\r\n"

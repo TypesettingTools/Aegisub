@@ -36,8 +36,8 @@ TextFileReader::TextFileReader(agi::fs::path const& filename, std::string encodi
 {
 	if (encoding.empty())
 		encoding = CharSetDetect::GetEncoding(filename);
-	file = agi::io::Open(filename, true);
-	iter = agi::line_iterator<std::string>(file, encoding);
+	file.reset(agi::io::Open(filename, true));
+	iter = agi::line_iterator<std::string>(*file, encoding);
 }
 
 TextFileReader::~TextFileReader() {

@@ -85,7 +85,8 @@ void Save(agi::fs::path const& filename, std::vector<int> const& keyframes) {
 }
 
 std::vector<int> Load(agi::fs::path const& filename) {
-	std::ifstream is(io::Open(filename));
+	std::unique_ptr<std::ifstream> file(io::Open(filename));
+	std::istream &is(*file);
 
 	std::string header;
 	getline(is, header);

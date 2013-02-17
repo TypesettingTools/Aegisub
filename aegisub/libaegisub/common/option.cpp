@@ -89,8 +89,8 @@ void Options::ConfigNext(std::istream& stream) {
 
 void Options::ConfigUser() {
 	try {
-		std::ifstream stream(io::Open(config_file));
-		LoadConfig(stream, true);
+		std::unique_ptr<std::istream> stream(io::Open(config_file));
+		LoadConfig(*stream, true);
 	}
 	catch (fs::FileNotFound const&) {
 		return;

@@ -43,7 +43,7 @@ namespace {
 	json::Object const& get_root() {
 		static json::Object root;
 		if (root.empty())
-			root = agi::json_util::parse(std::istringstream(GET_DEFAULT_CONFIG(default_toolbar)));
+			root = agi::json_util::parse(new std::istringstream(GET_DEFAULT_CONFIG(default_toolbar)));
 		return root;
 	}
 

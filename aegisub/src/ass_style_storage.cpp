@@ -66,8 +66,8 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 	Clear();
 
 	try {
-		std::ifstream in(agi::io::Open(file));
-		for (auto const& line : agi::line_iterator<std::string>(in)) {
+		std::unique_ptr<std::ifstream> in(agi::io::Open(file));
+		for (auto const& line : agi::line_iterator<std::string>(*in)) {
 			try {
 				style.push_back(new AssStyle(line));
 			} catch(...) {
