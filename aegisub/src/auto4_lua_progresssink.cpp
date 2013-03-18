@@ -133,13 +133,13 @@ namespace Automation4 {
 
 	int LuaProgressSink::LuaSetTask(lua_State *L)
 	{
-		GetObjPointer(L, lua_upvalueindex(1))->SetMessage(lua_tostring(L, 1));
+		GetObjPointer(L, lua_upvalueindex(1))->SetMessage(luaL_checkstring(L, 1));
 		return 0;
 	}
 
 	int LuaProgressSink::LuaSetTitle(lua_State *L)
 	{
-		GetObjPointer(L, lua_upvalueindex(1))->SetTitle(lua_tostring(L, 1));
+		GetObjPointer(L, lua_upvalueindex(1))->SetTitle(luaL_checkstring(L, 1));
 		return 0;
 	}
 

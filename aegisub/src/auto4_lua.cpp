@@ -129,6 +129,14 @@ namespace {
 		return wxString::FromUTF8(luaL_checkstring(L, idx));
 	}
 
+	std::string get_string_or_default(lua_State *L, int idx)
+	{
+		const char *str = lua_tostring(L, idx);
+		if (!str)
+			str = "<not a string>";
+		return str;
+	}
+
 	std::string get_global_string(lua_State *L, const char *name)
 	{
 		lua_getglobal(L, name);
@@ -477,7 +485,7 @@ namespace Automation4 {
 			// load user script
 			LuaScriptReader script_reader(GetFilename());
 			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().string().c_str())) {
-				std::string err = str(boost::format("Error loading Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % lua_tostring(L, -1));
+				std::string err = str(boost::format("Error loading Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % get_string_or_default(L, -1));
 				lua_pop(L, 1);
 				throw ScriptLoadError(err);
 			}
@@ -488,7 +496,7 @@ namespace Automation4 {
 			// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
 			if (lua_pcall(L, 0, 0, 0)) {
 				// error occurred, assumed to be on top of Lua stack
-				std::string err = str(boost::format("Error initialising Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % lua_tostring(L, -1));
+				std::string err = str(boost::format("Error initialising Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % get_string_or_default(L, -1));
 				lua_pop(L, 1);
 				throw ScriptLoadError(err);
 			}
@@ -600,14 +608,14 @@ namespace Automation4 {
 	int LuaScript::LuaModuleLoader(lua_State *L)
 	{
 		int pretop = lua_gettop(L);
-		std::string module(lua_tostring(L, -1));
+		std::string module(luaL_checkstring(L, -1));
 		boost::replace_all(module, ".", LUA_DIRSEP);
 
 		// Get the lua package include path (which the user may have modified)
 		lua_getglobal(L, "package");
 		push_value(L, "path");
 		lua_gettable(L, -2);
-		std::string package_paths(lua_tostring(L, -1));
+		std::string package_paths(luaL_checkstring(L, -1));
 		lua_pop(L, 2);
 
 		boost::char_separator<char> sep(";");
@@ -616,7 +624,7 @@ namespace Automation4 {
 			try {
 				LuaScriptReader script_reader(filename);
 				if (lua_load(L, script_reader.reader_func, &script_reader, filename.c_str()))
-					return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", filename.c_str(), lua_tostring(L, -1));
+					return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", filename.c_str(), luaL_checkstring(L, -1));
 				break;
 			}
 			catch (agi::fs::FileNotFound const&) {
@@ -656,7 +664,7 @@ namespace Automation4 {
 
 		LuaScriptReader script_reader(filepath);
 		if (lua_load(L, script_reader.reader_func, &script_reader, filename.c_str()))
-			return luaL_error(L, "Error loading Lua include \"%s\":\n\n%s", filename.c_str(), lua_tostring(L, -1));
+			return luaL_error(L, "Error loading Lua include \"%s\":\n\n%s", filename.c_str(), luaL_checkstring(L, -1));
 
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
 		lua_call(L, 0, LUA_MULTRET);
@@ -748,7 +756,7 @@ namespace Automation4 {
 				if (!lua_isnil(L, -1)) {
 					// if the call failed, log the error here
 					ps->Log("\n\nLua reported a runtime error:\n");
-					ps->Log(lua_tostring(L, -1));
+					ps->Log(get_string_or_default(L, -1));
 				}
 				lua_pop(L, 1);
 				failed = true;
@@ -803,7 +811,7 @@ namespace Automation4 {
 	, cmd_type(cmd::COMMAND_NORMAL)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
-		cmd_name = str(boost::format("automation/lua/%s/%s") % lua_tostring(L, -1) % luaL_checkstring(L, 1));
+		cmd_name = str(boost::format("automation/lua/%s/%s") % luaL_checkstring(L, -1) % luaL_checkstring(L, 1));
 
 		if (!lua_isfunction(L, 3))
 			luaL_error(L, "The macro processing function must be a function");
