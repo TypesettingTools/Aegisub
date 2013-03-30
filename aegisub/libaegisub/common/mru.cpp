@@ -38,7 +38,7 @@ MRUManager::MRUManager(std::string const& config, std::string const& default_con
 {
 	option_names["Audio"] = "Limits/MRU";
 	option_names["Keyframes"] = "Limits/MRU";
-	option_names["Subtitles"] = "Limits/MRU";
+	option_names["Subtitle"] = "Limits/MRU";
 	option_names["Timecodes"] = "Limits/MRU";
 	option_names["Video"] = "Limits/MRU";
 
