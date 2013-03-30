@@ -67,7 +67,6 @@ void AssFile::LoadDefault(bool defline) {
 	Line.push_back(*new AssInfo("ScriptType", "v4.00+"));
 	Line.push_back(*new AssInfo("WrapStyle", "0"));
 	Line.push_back(*new AssInfo("ScaledBorderAndShadow", "yes"));
-	Line.push_back(*new AssInfo("Collisions", "Normal"));
 	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
 		Line.push_back(*new AssInfo("PlayResX", std::to_string(OPT_GET("Subtitle/Default Resolution/Width")->GetInt())));
 		Line.push_back(*new AssInfo("PlayResY", std::to_string(OPT_GET("Subtitle/Default Resolution/Height")->GetInt())));

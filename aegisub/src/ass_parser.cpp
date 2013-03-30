@@ -84,6 +84,11 @@ void AssParser::ParseScriptInfoLine(std::string const& data) {
 			throw SubtitleFormatParseError("Unknown SSA file format version", 0);
 	}
 
+	// Nothing actually supports the Collisions property and malformed values
+	// crash VSFilter, so just remove it entirely
+	if (boost::starts_with(data, "Collisions:"))
+		return;
+
 	size_t pos = data.find(':');
 	if (pos == data.npos) return;
 
