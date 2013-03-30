@@ -107,12 +107,6 @@ DialogProperties::DialogProperties(agi::Context *c)
 	optionsGrid->Add(new wxStaticText(this,-1,_("Wrap Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
 	optionsGrid->Add(WrapStyle,1,wxEXPAND,0);
 
-	wxString coll_opts[] = { _("Normal"), _("Reverse") };
-	collision = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 2, coll_opts, wxCB_READONLY);
-	collision->SetSelection(boost::iequals(c->ass->GetScriptInfo("Collisions"), "reverse"));
-	optionsGrid->Add(new wxStaticText(this,-1,_("Collision: ")),0,wxALIGN_CENTER_VERTICAL,0);
-	optionsGrid->Add(collision,1,wxEXPAND,0);
-
 	ScaleBorder = new wxCheckBox(this,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
 	ScaleBorder->SetValue(boost::iequals(c->ass->GetScriptInfo("ScaledBorderAndShadow"), "yes"));
@@ -152,8 +146,6 @@ void DialogProperties::OnOK(wxCommandEvent &) {
 	count += SetInfoIfDifferent("PlayResX", from_wx(ResX->GetValue()));
 	count += SetInfoIfDifferent("PlayResY", from_wx(ResY->GetValue()));
 	count += SetInfoIfDifferent("WrapStyle", std::to_string(WrapStyle->GetSelection()));
-	const char *col[2] = { "Normal", "Reverse" };
-	count += SetInfoIfDifferent("Collisions", col[collision->GetSelection()]);
 	count += SetInfoIfDifferent("ScaledBorderAndShadow", ScaleBorder->GetValue() ? "yes" : "no");
 
 	if (count) c->ass->Commit(_("property changes"), AssFile::COMMIT_SCRIPTINFO);
