@@ -36,7 +36,7 @@ MRUManager::MRUManager(agi::fs::path const& config, std::string const& default_c
 {
 	option_names["Audio"] = "Limits/MRU";
 	option_names["Keyframes"] = "Limits/MRU";
-	option_names["Subtitles"] = "Limits/MRU";
+	option_names["Subtitle"] = "Limits/MRU";
 	option_names["Timecodes"] = "Limits/MRU";
 	option_names["Video"] = "Limits/MRU";
 
