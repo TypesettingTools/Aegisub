@@ -49,7 +49,6 @@ class DialogProperties : public wxDialog {
 
 	// Things that effect rendering
 	wxComboBox *WrapStyle;   ///< Wrapping style for long lines
-	wxComboBox *collision;   ///< Collision resolution method
 	wxTextCtrl *ResX;        ///< Script x resolution
 	wxTextCtrl *ResY;        ///< Script y resolution
 	wxCheckBox *ScaleBorder; ///< If script resolution != video resolution how should borders be handled
