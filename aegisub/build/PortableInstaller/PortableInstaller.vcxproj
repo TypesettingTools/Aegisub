@@ -24,6 +24,7 @@
       />
 
     <MakeDir Directories="$(AegisubObjectDir)\$(FileName)" />
+    <MakeDir Directories="$(AegisubSourceBase)\packages\win_installer\output" />
 
     <Copy
       SourceFiles="@(RarContents)"
