@@ -317,7 +317,7 @@ struct edit_color_primary : public Command {
 	CMD_NAME("edit/color/primary")
 	STR_MENU("Primary Color...")
 	STR_DISP("Primary Color")
-	STR_HELP("Primary Color")
+	STR_HELP("Set the primary fill color (\\c) at the cursor position")
 
 	void operator()(agi::Context *c) {
 		show_color_picker(c, &AssStyle::primary, "\\c", "\\1c", "\\1a");
@@ -328,7 +328,7 @@ struct edit_color_secondary : public Command {
 	CMD_NAME("edit/color/secondary")
 	STR_MENU("Secondary Color...")
 	STR_DISP("Secondary Color")
-	STR_HELP("Secondary Color")
+	STR_HELP("Set the secondary (karaoke) fill color (\\2c) at the cursor position")
 
 	void operator()(agi::Context *c) {
 		show_color_picker(c, &AssStyle::secondary, "\\2c", "", "\\2a");
@@ -339,7 +339,7 @@ struct edit_color_outline : public Command {
 	CMD_NAME("edit/color/outline")
 	STR_MENU("Outline Color...")
 	STR_DISP("Outline Color")
-	STR_HELP("Outline Color")
+	STR_HELP("Set the outline color (\\3c) at the cursor position")
 
 	void operator()(agi::Context *c) {
 		show_color_picker(c, &AssStyle::outline, "\\3c", "", "\\3a");
@@ -350,7 +350,7 @@ struct edit_color_shadow : public Command {
 	CMD_NAME("edit/color/shadow")
 	STR_MENU("Shadow Color...")
 	STR_DISP("Shadow Color")
-	STR_HELP("Shadow Color")
+	STR_HELP("Set the shadow color (\\4c) at the cursor position")
 
 	void operator()(agi::Context *c) {
 		show_color_picker(c, &AssStyle::shadow, "\\4c", "", "\\4a");
@@ -359,9 +359,9 @@ struct edit_color_shadow : public Command {
 
 struct edit_style_bold : public Command {
 	CMD_NAME("edit/style/bold")
-	STR_MENU("Bold")
-	STR_DISP("Bold")
-	STR_HELP("Bold")
+	STR_MENU("Toggle Bold")
+	STR_DISP("Toggle Bold")
+	STR_HELP("Toggle bold (\\b) for the current selection or at the current cursor position")
 
 	void operator()(agi::Context *c) {
 		toggle_override_tag(c, &AssStyle::bold, "\\b", _("toggle bold"));
@@ -370,9 +370,9 @@ struct edit_style_bold : public Command {
 
 struct edit_style_italic : public Command {
 	CMD_NAME("edit/style/italic")
-	STR_MENU("Italics")
-	STR_DISP("Italics")
-	STR_HELP("Italics")
+	STR_MENU("Toggle Italics")
+	STR_DISP("Toggle Italics")
+	STR_HELP("Toggle italics (\\i) for the current selection or at the current cursor position")
 
 	void operator()(agi::Context *c) {
 		toggle_override_tag(c, &AssStyle::italic, "\\i", _("toggle italic"));
@@ -381,9 +381,9 @@ struct edit_style_italic : public Command {
 
 struct edit_style_underline : public Command {
 	CMD_NAME("edit/style/underline")
-	STR_MENU("Underline")
-	STR_DISP("Underline")
-	STR_HELP("Underline")
+	STR_MENU("Toggle Underline")
+	STR_DISP("Toggle Underline")
+	STR_HELP("Toggle underline (\\u) for the current selection or at the current cursor position")
 
 	void operator()(agi::Context *c) {
 		toggle_override_tag(c, &AssStyle::underline, "\\u", _("toggle underline"));
@@ -392,9 +392,9 @@ struct edit_style_underline : public Command {
 
 struct edit_style_strikeout : public Command {
 	CMD_NAME("edit/style/strikeout")
-	STR_MENU("Strikeout")
-	STR_DISP("Strikeout")
-	STR_HELP("Strikeout")
+	STR_MENU("Toggle Strikeout")
+	STR_DISP("Toggle Strikeout")
+	STR_HELP("Toggle strikeout (\\s) for the current selection or at the current cursor position")
 
 	void operator()(agi::Context *c) {
 		toggle_override_tag(c, &AssStyle::strikeout, "\\s", _("toggle strikeout"));
@@ -405,7 +405,7 @@ struct edit_font : public Command {
 	CMD_NAME("edit/font")
 	STR_MENU("Font Face...")
 	STR_DISP("Font Face")
-	STR_HELP("Font Face")
+	STR_HELP("Select a font face and size")
 
 	void operator()(agi::Context *c) {
 		AssDialogue *const line = c->selectionController->GetActiveLine();
@@ -926,7 +926,7 @@ struct edit_revert : public Command {
 	CMD_NAME("edit/revert")
 	STR_DISP("Revert")
 	STR_MENU("Revert")
-	STR_HELP("Revert the active line to its initial state")
+	STR_HELP("Revert the active line to its initial state (shown in the upper editor)")
 
 	void operator()(agi::Context *c) {
 		AssDialogue *line = c->selectionController->GetActiveLine();

@@ -143,9 +143,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	duration   = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
 	middle_left_sizer->AddSpacer(5);
 
-	margin[0] = MakeMarginCtrl(_("Left Margin (0 = default)"), 0, _("left margin change"));
-	margin[1] = MakeMarginCtrl(_("Right Margin (0 = default)"), 1, _("right margin change"));
-	margin[2] = MakeMarginCtrl(_("Vertical Margin (0 = default)"), 2, _("vertical margin change"));
+	margin[0] = MakeMarginCtrl(_("Left Margin (0 = default from style)"), 0, _("left margin change"));
+	margin[1] = MakeMarginCtrl(_("Right Margin (0 = default from style)"), 1, _("right margin change"));
+	margin[2] = MakeMarginCtrl(_("Vertical Margin (0 = default from style)"), 2, _("vertical margin change"));
 	middle_left_sizer->AddSpacer(5);
 
 	// Middle-bottom controls
@@ -168,7 +168,8 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	by_frame = MakeRadio(_("F&rame"), false, _("Time by frame number"));
 	by_frame->Enable(false);
 
-	split_box = new wxCheckBox(this,-1,_("Split"));
+	split_box = new wxCheckBox(this,-1,_("Show Original"));
+	split_box->SetToolTip(_("Show the contents of the subtitle line when it was first selected above the edit box. This is sometimes useful when editing subtitles or translating subtitles into another language."));
 	split_box->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnSplit, this);
 	middle_right_sizer->Add(split_box, wxSizerFlags().Center().Left());
 
