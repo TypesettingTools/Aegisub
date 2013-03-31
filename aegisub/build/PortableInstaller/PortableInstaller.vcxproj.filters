@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Automation">
@@ -29,141 +29,142 @@
       <UniqueIdentifier>{63aff439-dbde-4092-8dad-905a01c4be6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="$(AegisubSourceBase)autoload/clean-info.lua">
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\clean-info.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)autoload/cleantags-autoload.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\cleantags-autoload.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)autoload/kara-templater.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\kara-templater.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)autoload/karaoke-auto-leadin.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\karaoke-auto-leadin.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)autoload/macro-1-edgeblur.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\macro-1-edgeblur.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)autoload/macro-2-mkfullwitdh.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\macro-2-mkfullwitdh.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)autoload/select-overlaps.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\select-overlaps.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)autoload/strip-tags.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\strip-tags.lua">
       <Filter>Automation\Autoload</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)demos/future-windy-blur.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\demos\future-windy-blur.lua">
       <Filter>Automation\Demos</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)demos/raytracer.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\demos\raytracer.lua">
       <Filter>Automation\Demos</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/cleantags.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\cleantags.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/clipboard.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\clipboard.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/karaskel-auto4.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\karaskel-auto4.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/karaskel.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\karaskel.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/re.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\re.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/unicode.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\unicode.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/utils-auto4.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\utils-auto4.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)include/utils.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\utils.lua">
       <Filter>Automation\Include</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/appended-lines.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\appended-lines.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/basic-export-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\basic-export-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/basic-tests.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\basic-tests.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/config-dialog-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\config-dialog-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/gen-absurd-t-line.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\gen-absurd-t-line.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/hello-world.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\hello-world.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/karaoke-parse-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\karaoke-parse-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/progress-reporting-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\progress-reporting-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/selection-set-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\selection-set-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/test-filter-name-clash.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-filter-name-clash.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/test-furi.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-furi.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/test-tablecopy-recursive.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-tablecopy-recursive.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/test-text_extents.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\test-text_extents.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/text-extents-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\text-extents-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/trace-level-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\trace-level-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)tests/unicode-test.lua">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\tests\unicode-test.lua">
       <Filter>Automation\Tests</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)bin\aegisub$(AegisubPlatformSuffix).exe" />
-    <None Include="$(AegisubSourceBase)bin\ffms2_$(AegisubPlatformSuffix).dll" />
-    <None Include="$(AegisubSourceBase)packages\win_installer\portable\config.json" />
-    <None Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfc110u.dll">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\aegisub$(AegisubPlatformSuffix).exe" />
+    <RarContents Include="$(AegisubSourceBase)bin\ffms2_$(AegisubPlatformSuffix).dll" />
+    <RarContents Include="$(AegisubSourceBase)packages\win_installer\portable\config.json" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfc110u.dll">
       <Filter>Runtime</Filter>
-    </None>
-    <None Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfcm110u.dll">
+    </RarContents>
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfcm110u.dll">
       <Filter>Runtime</Filter>
-    </None>
-    <None Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcp110.dll">
+    </RarContents>
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcp110.dll">
       <Filter>Runtime</Filter>
-    </None>
-    <None Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcr110.dll">
+    </RarContents>
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcr110.dll">
       <Filter>Runtime</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)bin\csri\xy-vsfilter-aegisub$(AegisubPlatformSuffix).dll">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\csri\xy-vsfilter-aegisub$(PlatformArchitecture).dll">
       <Filter>CSRI</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)bin\AssDraw3.chm">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\AssDraw3.chm">
       <Filter>AssDraw</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)bin\AssDraw3.exe">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\AssDraw3.exe">
       <Filter>AssDraw</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)bin\avisynth.dll">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\avisynth.dll">
       <Filter>Avisynth</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)bin\devil.dll">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\devil.dll">
       <Filter>Avisynth</Filter>
-    </None>
-    <None Include="$(AegisubSourceBase)bin\DirectShowSource.dll">
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\DirectShowSource.dll">
       <Filter>Avisynth</Filter>
-    </None>
+    </RarContents>
   </ItemGroup>
 </Project>
