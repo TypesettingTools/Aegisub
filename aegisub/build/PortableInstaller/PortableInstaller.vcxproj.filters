@@ -28,6 +28,9 @@
     <Filter Include="Avisynth">
       <UniqueIdentifier>{63aff439-dbde-4092-8dad-905a01c4be6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dictionaries">
+      <UniqueIdentifier>{baf7aa4e-709d-4a03-aee1-b54749006b82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 
   <ItemGroup>
@@ -165,6 +168,12 @@
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\DirectShowSource.dll">
       <Filter>Avisynth</Filter>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\dictionaries\en_US.aff">
+      <Filter>Dictionaries</Filter>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)bin\dictionaries\en_US.dic">
+      <Filter>Dictionaries</Filter>
     </RarContents>
   </ItemGroup>
 </Project>
