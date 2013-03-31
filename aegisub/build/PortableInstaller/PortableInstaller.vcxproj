@@ -154,9 +154,6 @@
     <RarContents Include="$(AegisubSourceBase)bin\DirectShowSource.dll" Condition="'$(AegisubUseAvisynth)' == 'true'" />
     <RarContents Include="$(AegisubSourceBase)bin\aegisub$(AegisubPlatformSuffix).exe" />
     <RarContents Include="$(AegisubSourceBase)bin\avisynth.dll" Condition="'$(AegisubUseAvisynth)' == 'true'" />
-    <RarContents Include="$(AegisubSourceBase)bin\csri\vsfilter-aegisub$(PlatformArchitecture).dll" Condition="'$(AegisubUseCsri)' == 'HelperLibrary'">
-      <OutputPath>csri\</OutputPath>
-    </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\csri\xy-vsfilter-aegisub$(PlatformArchitecture).dll" Condition="'$(AegisubUseCsri)' == 'HelperLibrary'">
       <OutputPath>csri\</OutputPath>
     </RarContents>

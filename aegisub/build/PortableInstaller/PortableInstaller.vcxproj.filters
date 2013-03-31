@@ -147,9 +147,6 @@
     <None Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcr110.dll">
       <Filter>Runtime</Filter>
     </None>
-    <None Include="$(AegisubSourceBase)bin\csri\vsfilter-aegisub$(AegisubPlatformSuffix).dll">
-      <Filter>CSRI</Filter>
-    </None>
     <None Include="$(AegisubSourceBase)bin\csri\xy-vsfilter-aegisub$(AegisubPlatformSuffix).dll">
       <Filter>CSRI</Filter>
     </None>
