@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -23,9 +23,6 @@
 
 #include "audio_karaoke.h"
 
-#include <algorithm>
-#include <numeric>
-
 #include "include/aegisub/context.h"
 
 #include "ass_dialogue.h"
@@ -39,6 +36,10 @@
 #include "options.h"
 #include "selection_controller.h"
 #include "utils.h"
+
+#include <algorithm>
+#include <boost/locale/boundary.hpp>
+#include <numeric>
 
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
@@ -65,9 +66,13 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , audio_opened(c->audioController->AddAudioOpenListener(&AudioKaraoke::OnAudioOpened, this))
 , audio_closed(c->audioController->AddAudioCloseListener(&AudioKaraoke::OnAudioClosed, this))
 , active_line_changed(c->selectionController->AddActiveLineListener(&AudioKaraoke::OnActiveLineChanged, this))
-, active_line(0)
+, active_line(nullptr)
 , kara(new AssKaraoke)
 , scroll_x(0)
+, scroll_dir(0)
+, char_height(0)
+, char_width(0)
+, mouse_pos(0)
 , click_will_remove_split(false)
 , enabled(false)
 {
@@ -209,9 +214,8 @@ void AudioKaraoke::RenderText() {
 	if (line_width > bmp_size.GetWidth())
 		bmp_size.SetWidth(line_width);
 
-	if (!rendered_line.IsOk() || bmp_size != rendered_line.GetSize()) {
+	if (!rendered_line.IsOk() || bmp_size != rendered_line.GetSize())
 		rendered_line = wxBitmap(bmp_size);
-	}
 
 	wxMemoryDC dc(rendered_line);
 
@@ -225,15 +229,13 @@ void AudioKaraoke::RenderText() {
 
 	// Draw each character in the line
 	int y = (bmp_size.GetHeight() - char_height) / 2;
-	for (size_t i = 0; i < spaced_text.size(); ++i) {
+	for (size_t i = 0; i < spaced_text.size(); ++i)
 		dc.DrawText(spaced_text[i], char_x[i], y);
-	}
 
 	// Draw the lines between each syllable
 	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
-	for (size_t i = 0; i < syl_lines.size(); ++i) {
+	for (size_t i = 0; i < syl_lines.size(); ++i)
 		dc.DrawLine(syl_lines[i], 0, syl_lines[i], bmp_size.GetHeight());
-	}
 }
 
 void AudioKaraoke::AddMenuItem(wxMenu &menu, std::string const& tag, wxString const& help, std::string const& selected) {
@@ -276,15 +278,12 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 
 	// Check if the mouse is over a scroll arrow
 	int client_width = split_area->GetClientSize().GetWidth();
-	if (scroll_x > 0 && mouse_pos < 20) {
+	if (scroll_x > 0 && mouse_pos < 20)
 		scroll_dir = -1;
-	}
-	else if (scroll_x + client_width < rendered_line.GetWidth() && mouse_pos > client_width - 20) {
+	else if (scroll_x + client_width < rendered_line.GetWidth() && mouse_pos > client_width - 20)
 		scroll_dir = 1;
-	}
-	else {
+	else
 		scroll_dir = 0;
-	}
 
 	if (scroll_dir) {
 		mouse_pos = -1;
@@ -301,7 +300,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	int shifted_pos = mouse_pos + scroll_x;
 
 	// Character to insert the new split point before
-	int split_pos = std::min<int>((shifted_pos - char_width / 2) / char_width, spaced_text.size());
+	int split_pos = std::min<int>((shifted_pos + char_width / 2) / char_width, spaced_text.size());
 
 	// Syllable this character is in
 	int syl = last_lt_or_eq(syl_start_points, split_pos);
@@ -318,12 +317,10 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 		return;
 	}
 
-	if (click_will_remove_split) {
+	if (click_will_remove_split)
 		kara->RemoveSplit(syl + (click_left && !click_right));
-	}
-	else {
-		kara->AddSplit(syl, split_pos - syl_start_points[syl]);
-	}
+	else
+		kara->AddSplit(syl, char_to_byte[split_pos] - 1);
 
 	SetDisplayText();
 	accept_button->Enable(true);
@@ -353,42 +350,70 @@ void AudioKaraoke::LoadFromLine() {
 }
 
 void AudioKaraoke::SetDisplayText() {
-	// Insert spaces between each syllable to avoid crowding
-	spaced_text.clear();
-	syl_start_points.clear();
-	syl_start_points.reserve(kara->size());
-	for (auto const& syl : *kara) {
-		syl_start_points.push_back(spaced_text.size());
-		spaced_text += to_wx(" " + syl.text);
-	}
+	using namespace boost::locale::boundary;
 
-	// Get the x-coordinates of the right edge of each character
 	wxMemoryDC dc;
 	dc.SetFont(split_font);
-	wxArrayInt p_char_x;
-	dc.GetPartialTextExtents(spaced_text, p_char_x);
 
-	// Convert the partial sub to the the width of each character
-	std::adjacent_difference(p_char_x.begin(), p_char_x.end(), p_char_x.begin());
+	auto get_char_width = [&](std::string const& character) -> int {
+		const auto it = char_widths.find(character);
+		if (it != end(char_widths))
+			return it->second;
 
-	// Get the maximum character width
-	char_width = *std::max_element(p_char_x.begin(), p_char_x.end());
+		const auto size = dc.GetTextExtent(to_wx(character));
+		char_height = std::max(char_height, size.GetHeight());
+		char_widths[character] = size.GetWidth();
+		return size.GetWidth();
+	};
+
+	char_width = get_char_width(" ");
+
+	// Width in pixels of each character in this string
+	std::vector<int> str_char_widths;
+
+	spaced_text.clear();
+	char_to_byte.clear();
+	syl_start_points.clear();
+	for (auto const& syl : *kara) {
+		// The last (and only the last) syllable needs the width of the final
+		// character in the syllable, so we unconditionally add it at the end
+		// of this loop, then remove the extra ones here
+		if (!char_to_byte.empty())
+			char_to_byte.pop_back();
+
+		syl_start_points.push_back(spaced_text.size());
+
+		// Add a space between each syllable to avoid crowding
+		spaced_text.emplace_back(wxS(" "));
+		str_char_widths.push_back(char_width);
+		char_to_byte.push_back(1);
+
+		size_t syl_idx = 1;
+		const ssegment_index characters(character, begin(syl.text), end(syl.text));
+		for (auto chr : characters) {
+			// Calculate the width in pixels of this character
+			const std::string character = chr.str();
+			const int width = get_char_width(character);
+			char_width = std::max(char_width, width);
+			str_char_widths.push_back(width);
+
+			spaced_text.emplace_back(to_wx(character));
+			char_to_byte.push_back(syl_idx);
+			syl_idx += character.size();
+		}
+
+		char_to_byte.push_back(syl_idx);
+	}
 
 	// Center each character within the space available to it
-	char_x.resize(p_char_x.size());
-	for (size_t i = 0; i < p_char_x.size(); ++i) {
-		char_x[i] =  i * char_width + (char_width - p_char_x[i]) / 2;
-	}
+	char_x.resize(str_char_widths.size());
+	for (size_t i = 0; i < str_char_widths.size(); ++i)
+		char_x[i] =  i * char_width + (char_width - str_char_widths[i]) / 2;
 
 	// Calculate the positions of the syllable divider lines
 	syl_lines.resize(syl_start_points.size() - 1);
-	for (size_t i = 1; i < syl_start_points.size(); ++i) {
+	for (size_t i = 1; i < syl_start_points.size(); ++i)
 		syl_lines[i - 1] = syl_start_points[i] * char_width + char_width / 2;
-	}
-
-	// Get line height
-	wxSize extents = dc.GetTextExtent(spaced_text);
-	char_height = extents.GetHeight();
 
 	RenderText();
 }

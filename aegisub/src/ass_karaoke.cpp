@@ -266,7 +266,7 @@ void AssKaraoke::SetLineTimes(int start_time, int end_time) {
 		syls[idx].duration = std::max(0, syls[idx].duration - delta);
 	} while (++idx < syls.size() && syls[idx].start_time < start_time);
 
-	// And truncate any syllabls ending after the new end_time
+	// And truncate any syllables ending after the new end_time
 	idx = syls.size() - 1;
 	while (syls[idx].start_time > end_time) {
 		syls[idx].start_time = end_time;

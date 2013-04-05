@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -19,15 +19,16 @@
 /// @ingroup audio_ui
 ///
 
+#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/signal.h>
+
 #include <set>
+#include <unordered_map>
 #include <vector>
 
 #include <wx/bitmap.h>
 #include <wx/timer.h>
 #include <wx/window.h>
-
-#include <libaegisub/scoped_ptr.h>
-#include <libaegisub/signal.h>
 
 class AssDialogue;
 class AssEntry;
@@ -80,7 +81,7 @@ class AudioKaraoke : public wxWindow {
 	agi::scoped_ptr<AssKaraoke> kara;
 
 	/// Current line's stripped text with spaces added between each syllable
-	wxString spaced_text;
+	std::vector<wxString> spaced_text;
 
 	/// spaced_text + syl_lines rendered to a bitmap
 	wxBitmap rendered_line;
@@ -93,6 +94,12 @@ class AudioKaraoke : public wxWindow {
 
 	/// Left x coordinate of each character in spaced_text in pixels
 	std::vector<int> char_x;
+
+	/// Mapping from character index to byte position in the relevant syllable's text
+	std::vector<size_t> char_to_byte;
+
+	/// Cached width of characters from GetTextExtent
+	std::unordered_map<std::string, int> char_widths;
 
 	int scroll_x; ///< Distance the display has been shifted to the left in pixels
 	int scroll_dir; ///< Direction the display will be scrolled on scroll_timer ticks (+/- 1)
