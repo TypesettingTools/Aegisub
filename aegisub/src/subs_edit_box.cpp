@@ -58,7 +58,6 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/of_type_adaptor.h>
 
-#include <boost/lexical_cast.hpp>
 #include <functional>
 #include <unordered_set>
 
@@ -234,9 +233,9 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 	middle_left_sizer->Add(ctrl, wxSizerFlags().Center());
 
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) {
-		int value = mid(0, boost::lexical_cast<int>(from_wx(ctrl->GetValue())), 9999);
-		SetSelectedRows([&](AssDialogue *d) { d->Margin[margin] = value; }, commit_msg, AssFile::COMMIT_DIAG_META);
-		if (line) change_value(ctrl, to_wx(line->GetMarginString(margin)));
+		int value = mid(0, atoi(ctrl->GetValue().utf8_str()), 9999);
+		SetSelectedRows([&](AssDialogue *d) { d->Margin[margin] = value; },
+			commit_msg, AssFile::COMMIT_DIAG_META);
 	}, ctrl->GetId());
 
 	return ctrl;
