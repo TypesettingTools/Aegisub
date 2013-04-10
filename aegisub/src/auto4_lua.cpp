@@ -71,7 +71,6 @@
 #include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
-#include <wx/regex.h>
 #include <wx/window.h>
 
 namespace {
@@ -108,125 +107,6 @@ namespace {
 	{
 		wxString str(check_wxstring(L, 1));
 		push_value(L, _(str));
-		return 1;
-	}
-
-	inline wxRegEx *get_regex(lua_State *L)
-	{
-		return static_cast<wxRegEx*>(luaL_checkudata(L, 1, "aegisub.regex"));
-	}
-
-	int regex_matches(lua_State *L)
-	{
-		lua_pushboolean(L, get_regex(L)->Matches(check_wxstring(L, 2)));
-		return 1;
-	}
-
-	int regex_match_count(lua_State *L)
-	{
-		wxRegEx *re = get_regex(L);
-		if (re->Matches(check_wxstring(L, 2)))
-			push_value(L, re->GetMatchCount());
-		else
-			push_value(L, 0);
-		return 1;
-	}
-
-	size_t utf8_len(wxString const& w)
-	{
-#if wxUSE_UNICODE_UTF8
-		return w.utf8_length();
-#else
-		return w.utf8_str().length();
-#endif
-	}
-
-	int regex_get_match(lua_State *L)
-	{
-		wxString str(check_wxstring(L, 2));
-		size_t start, len;
-		get_regex(L)->GetMatch(&start, &len, luaL_checkinteger(L, 3));
-		push_value(L, utf8_len(str.Left(start)) + 1);
-		push_value(L, utf8_len(str.Left(start + len)));
-		return 2;
-	}
-
-	int regex_replace(lua_State *L)
-	{
-		wxString str(check_wxstring(L, 3));
-		int reps = get_regex(L)->Replace(&str, check_wxstring(L, 2), luaL_checkinteger(L, 4));
-		push_value(L, str);
-		push_value(L, reps);
-		return 2;
-	}
-
-	int regex_compile(lua_State *L)
-	{
-		wxString pattern(check_wxstring(L, 1));
-		int flags = luaL_checkinteger(L, 2);
-		wxRegEx *re = static_cast<wxRegEx*>(lua_newuserdata(L, sizeof(wxRegEx)));
-		new(re) wxRegEx(pattern, wxRE_ADVANCED | flags);
-
-		luaL_getmetatable(L, "aegisub.regex");
-		lua_setmetatable(L, -2);
-
-		// return nil and handle the error in lua as it's a bit easier to
-		// report the actual call site from there
-		if (!re->IsValid()) {
-			lua_pop(L, 1);
-			lua_pushnil(L);
-		}
-
-		return 1;
-	}
-
-	int regex_gc(lua_State *L) {
-		get_regex(L)->~wxRegEx();
-		return 0;
-	}
-
-	int regex_process_flags(lua_State *L)
-	{
-		int ret = 0;
-		int nargs = lua_gettop(L);
-		for (int i = 1; i <= nargs; ++i) {
-			if (!lua_islightuserdata(L, i)) {
-				push_value(L, "Flags must follow all non-flag arguments");
-				return 1;
-			}
-			ret |= (int)(intptr_t)lua_touserdata(L, i);
-		}
-
-		push_value(L, ret);
-		return 1;
-	}
-
-	int regex_init_flags(lua_State *L)
-	{
-		lua_newtable(L);
-
-		set_field(L, "ICASE", (void*)wxRE_ICASE);
-		set_field(L, "NOSUB", (void*)wxRE_NOSUB);
-		set_field(L, "NEWLINE", (void*)wxRE_NEWLINE);
-
-		return 1;
-	}
-
-	int regex_init(lua_State *L)
-	{
-		if (luaL_newmetatable(L, "aegisub.regex")) {
-			set_field(L, "__gc", regex_gc);
-			lua_pop(L, 1);
-		}
-
-		lua_newtable(L);
-		set_field(L, "matches", regex_matches);
-		set_field(L, "match_count", regex_match_count);
-		set_field(L, "get_match", regex_get_match);
-		set_field(L, "replace", regex_replace);
-		set_field(L, "compile", regex_compile);
-		set_field(L, "process_flags", regex_process_flags);
-		set_field(L, "init_flags", regex_init_flags);
 		return 1;
 	}
 
@@ -274,6 +154,8 @@ namespace {
 }
 
 namespace Automation4 {
+	int regex_init(lua_State *L);
+
 	// LuaScript
 	LuaScript::LuaScript(agi::fs::path const& filename)
 	: Script(filename)

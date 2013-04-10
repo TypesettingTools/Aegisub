@@ -92,11 +92,11 @@ endif
 # AUTOMATION
 ############
 ifeq (yes, $(HAVE_AUTO4_LUA))
-auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_scriptreader.o: CXXFLAGS += $(CFLAGS_LUA)
+auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_regex.o auto4_lua_scriptreader.o: CXXFLAGS += $(CFLAGS_LUA)
 LIBS += $(LIBS_LUA)
-SRC += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_lua_scriptreader.cpp
+SRC += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_regex.cpp auto4_lua_scriptreader.cpp
 else
-EXTRA_DIST += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_lua_scriptreader.cpp
+EXTRA_DIST += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_regex.cpp auto4_lua_scriptreader.cpp
 endif
 
 ##############

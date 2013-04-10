@@ -1,301 +1,314 @@
-﻿-- Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
---
--- Permission to use, copy, modify, and distribute this software for any
--- purpose with or without fee is hereby granted, provided that the above
--- copyright notice and this permission notice appear in all copies.
---
--- THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
--- WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
--- MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
--- ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
--- WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
--- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
--- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
--- Get the wxRegex binding
 local regex = aegisub.__init_regex()
-
--- Compiled regular expression type protoype
-local re_proto = {}
-local re_proto_mt = { __index = re_proto }
-
--- Convert an iterator to an array
-local function to_table(...)
-    local arr = {}
-    local i = 1
-    for v in ... do
-        arr[i] = v
-        i = i + 1
-    end
-    return arr
+local select_first
+select_first = function(n, a, ...)
+  if n == 0 then
+    return 
+  end
+  return a, select_first(n - 1, ...)
 end
-
--- Return the first n elements from ...
-local function select_first(n, a, ...)
-    if n == 0 then return end
-    return a, select_first(n - 1, ...)
+local unpack_args
+unpack_args = function(...)
+  local userdata_start = nil
+  for i = 1, select('#', ...) do
+    local v = select(i, ...)
+    if type(v) == 'userdata' then
+      userdata_start = i
+      break
+    end
+  end
+  if not (userdata_start) then
+    return 0, ...
+  end
+  local flags = regex.process_flags(select(userdata_start, ...))
+  if type(flags) == 'string' then
+    error(flags, 3)
+  end
+  return flags, select_first(userdata_start - 1, ...)
 end
-
--- Extract the flags from ..., bitwise OR them together, and move them to the
--- front of ...
-local function unpack_args(...)
-    local n = select('#', ...)
-    local userdata_start = nil
-    for i = 1, n do
-        local v = select(i, ...)
-        if type(v) == "userdata" then
-            userdata_start = i
-            break
-        end
-    end
-
-    if not userdata_start then
-        return 0, ...
-    end
-
-    flags = regex.process_flags(select(userdata_start, ...))
-    if type(flags) == "string" then
-        error(flags, 3)
-    end
-
-    return flags, select_first(userdata_start - 1, ...)
+local check_arg
+check_arg = function(arg, expected_type, argn, func_name, level)
+  if type(arg) ~= expected_type then
+    return error("Argument " .. tostring(argn) .. " to " .. tostring(func_name) .. " should be a '" .. tostring(expected_type) .. "', is '" .. tostring(type(arg)) .. "' (" .. tostring(arg) .. ")", level + 1)
+  end
 end
-
--- Verify that a valid value was passed for self
-local function check_self(self)
-    if getmetatable(self) ~= re_proto_mt then
-        error("re method called with invalid self. You probably used . when : is needed.", 3)
-    end
+local replace_match
+replace_match = function(match, func, str, last, acc)
+  if last < match.last then
+    acc[#acc + 1] = str:sub(last, match.first - 1)
+  end
+  local repl = func(match.str, match.first, match.last)
+  if type(repl) == 'string' then
+    acc[#acc + 1] = repl
+  else
+    acc[#acc + 1] = match.str
+  end
+  return match.first, match.last + 1
 end
-
--- Typecheck a variable and throw an error if it fails
-local function check_arg(arg, expected_type, argn, func_name, level)
-    if type(arg) ~= expected_type then
-        error(
-            string.format("Argument %d to %s should be a '%s', is '%s' (%s)",
-                argn, func_name, expected_type, type(arg), tostring(arg)),
-            level + 1)
-    end
+local do_single_replace_fun
+do_single_replace_fun = function(re, func, str, acc, pos)
+  local matches = re:match(str, pos)
+  if not (matches) then
+    return pos
+  end
+  local start
+  if #matches == 1 then
+    start = 1
+  else
+    start = 2
+  end
+  local last = pos
+  local first
+  for i = start, #matches do
+    first, last = replace_match(matches[i], func, str, last, acc)
+  end
+  if first == last then
+    acc[#acc + 1] = str:sub(last, last)
+    last = last + 1
+  end
+  return last, matches[1].first <= str:len()
 end
-
-function re_proto.gsplit(self, str, skip_empty, max_split)
-    check_self(self)
-    check_arg(str, "string", 2, "gsplit", self._level)
-    if not max_split or max_split <= 0 then max_split = str:len() end
-
-    local function do_split()
+local do_replace_fun
+do_replace_fun = function(re, func, str, max)
+  local acc = { }
+  local pos = 1
+  local i
+  for i = 1, max do
+    local more
+    pos, more = do_single_replace_fun(re, func, str, acc, pos)
+    if not (more) then
+      max = i
+      break
+    end
+  end
+  return table.concat(acc, '') .. str:sub(pos)
+end
+local RegEx
+do
+  local start
+  local _parent_0 = nil
+  local _base_0 = {
+    _check_self = function(self)
+      if not (self.__class == RegEx) then
+        return error('re method called with invalid self. You probably used . when : is needed.', 3)
+      end
+    end,
+    gsplit = function(self, str, skip_empty, max_split)
+      self:_check_self()
+      check_arg(str, 'string', 2, 'gsplit', self._level)
+      if not max_split or max_split <= 0 then
+        max_split = str:len()
+      end
+      start = 1
+      local prev = 1
+      local do_split
+      do_split = function()
         if not str or str:len() == 0 then
-            return nil
+          return 
         end
-
-        if max_split == 0 or not regex.matches(self._regex, str) then
-            local ret = str
-            str = nil
-            return ret
+        local first, last
+        if max_split > 0 then
+          first, last = regex.search(self._regex, str, start)
         end
-
-        local first, last = regex.get_match(self._regex, str, 0)
-        local ret = str:sub(1, first - 1)
-        str = str:sub(last + 1)
-
+        if not first or first > str:len() then
+          local ret = str:sub(prev, str:len())
+          str = nil
+          return ret
+        end
+        local ret = str:sub(prev, first - 1)
+        prev = last + 1
+        start = 1 + (function()
+          if start >= last then
+            return start
+          else
+            return last
+          end
+        end)()
         if skip_empty and ret:len() == 0 then
-            return do_split()
+          return do_split()
         else
-            max_split = max_split - 1
-            return ret
+          max_split = max_split - 1
+          return ret
         end
-    end
-
-    return do_split
-end
-
-function re_proto.split(self, str, skip_empty, max_split)
-    check_self(self)
-    check_arg(str, "string", 2, "split", self._level)
-    return to_table(self:gsplit(str, skip_empty, max_split))
-end
-
-function re_proto.gfind(self, str)
-    check_self(self)
-    check_arg(str, "string", 2, "gfind", self._level)
-
-    local offset = 0
-    return function()
-        local has_matches = regex.matches(self._regex, str)
-        if not has_matches then return end
-
-        local first, last = regex.get_match(self._regex, str, 0)
-        local ret = str:sub(first, last)
-        str = str:sub(last + 1)
-
-        last = last + offset
-        offset = offset + first
-        return ret, offset, last
-    end
-end
-
-function re_proto.find(self, str)
-    check_self(self)
-    check_arg(str, "string", 2, "find", self._level)
-
-    local i = 1
-    local ret = {}
-    for s, f, l in self:gfind(str) do
-        ret[i] = {
-            str   = s,
+      end
+      return do_split
+    end,
+    split = function(self, str, skip_empty, max_split)
+      self:_check_self()
+      check_arg(str, 'string', 2, 'split', self._level)
+      return (function()
+        local _accum_0 = { }
+        local _len_0 = 1
+        for v in self:gsplit(str, skip_empty, max_split) do
+          _accum_0[_len_0] = v
+          _len_0 = _len_0 + 1
+        end
+        return _accum_0
+      end)()
+    end,
+    gfind = function(self, str)
+      self:_check_self()
+      check_arg(str, 'string', 2, 'gfind', self._level)
+      start = 1
+      return function()
+        local first, last = regex.search(self._regex, str, start)
+        if not (first) then
+          return 
+        end
+        if last >= start then
+          start = last + 1
+        else
+          start = start + 1
+        end
+        return str:sub(first, last), first, last
+      end
+    end,
+    find = function(self, str)
+      self:_check_self()
+      check_arg(str, 'string', 2, 'find', self._level)
+      local ret = (function()
+        local _accum_0 = { }
+        local _len_0 = 1
+        for s, f, l in self:gfind(str) do
+          _accum_0[_len_0] = {
+            str = s,
             first = f,
-            last  = l
-        }
+            last = l
+          }
+          _len_0 = _len_0 + 1
+        end
+        return _accum_0
+      end)()
+      return next(ret) and ret
+    end,
+    sub = function(self, str, repl, max_count)
+      self:_check_self()
+      check_arg(str, 'string', 2, 'sub', self._level)
+      if max_count ~= nil then
+        check_arg(max_count, 'number', 4, 'sub', self._level)
+      end
+      if not max_count or max_count == 0 then
+        max_count = str:len() + 1
+      end
+      if type(repl) == 'function' then
+        return do_replace_fun(self, repl, str, max_count)
+      elseif type(repl) == 'string' then
+        return regex.replace(self._regex, repl, str, max_count)
+      else
+        return error("Argument 2 to sub should be a string or function, is '" .. tostring(type(repl)) .. "' (" .. tostring(repl) .. ")", self._level)
+      end
+    end,
+    gmatch = function(self, str, start)
+      self:_check_self()
+      check_arg(str, 'string', 2, 'gmatch', self._level)
+      if start then
+        start = start - 1
+      else
+        start = 0
+      end
+      local match = regex.match(self._regex, str, start)
+      local i = 1
+      return function()
+        if not (match) then
+          return 
+        end
+        local first, last = regex.get_match(match, i)
+        if not (first) then
+          return 
+        end
         i = i + 1
-    end
-    return ret
-end
-
--- Replace a match with the value returned from func when passed the match
-local function replace_match(match, func, str, last, acc)
-    if last < match.last then
-        acc[#acc + 1] = str:sub(last, match.first - 1)
-    end
-
-    local ret = func(match.str, match.first, match.last)
-    if type(ret) == "string" then
-        acc[#acc + 1] = ret
-    else
-        -- If it didn't return a string just leave the old value
-        acc[#acc + 1] = match.str
-    end
-
-    return match.last + 1
-end
-
--- Replace all matches from a single iteration of the regexp
-local function do_single_replace_fun(re, func, str, acc)
-    local matches = re:match(str)
-
-    -- No more matches so just return what we have so far
-    if not matches then
-        return str
-    end
-
-    -- One match means no capturing groups, so pass the entire thing to
-    -- the replace function
-    if #matches == 1 then
-        local rest = replace_match(matches[1], func, str, 1, acc)
-        return str:sub(rest), true
-    end
-
-    -- Multiple matches means there were capture groups, so skip the first one
-    -- and pass the rest to the replace function
-    local last = 1
-    for i = 2, #matches do
-        last = replace_match(matches[i], func, str, last, acc)
-    end
-
-    return str:sub(last), true
-end
-
-local function do_replace_fun(re, func, str, max)
-    local acc = {}
-    local i
-    for i = 1, max do
-        str, continue = do_single_replace_fun(re, func, str, acc)
-        if not continue then max = i end
-    end
-    return table.concat(acc, "") .. str, max
-end
-
-function re_proto.sub(self, str, repl, count)
-    check_self(self)
-    check_arg(str, "string", 2, "sub", self._level)
-    if count ~= nil then
-        check_arg(count, "number", 4, "sub", self._level)
-    end
-
-    if not count or count == 0 then count = str:len() end
-
-    if type(repl) == "function" then
-       return do_replace_fun(self, repl, str, count)
-    elseif type(repl) == "string" then
-        return regex.replace(self._regex, repl, str, count)
-    else
-        error(
-            string.format("Argument 2 to sub should be a string or function, is '%s' (%s)",
-                type(repl), tostring(repl)),
-            self._level)
-    end
-end
-
-function re_proto.gmatch(self, str)
-    check_self(self)
-    check_arg(str, "string", 2, "gmatch", self._level)
-
-    local match_count = regex.match_count(self._regex, str)
-    local i = 0
-    return function()
-        if i == match_count then return end
-        i = i + 1
-        local first, last = regex.get_match(self._regex, str, i - 1)
         return {
-            str   = str:sub(first, last),
-            first = first,
-            last  = last
+          str = str:sub(first + start, last + start),
+          first = first + start,
+          last = last + start
         }
+      end
+    end,
+    match = function(self, str, start)
+      self:_check_self()
+      check_arg(str, 'string', 2, 'match', self._level)
+      local ret = (function()
+        local _accum_0 = { }
+        local _len_0 = 1
+        for v in self:gmatch(str, start) do
+          _accum_0[_len_0] = v
+          _len_0 = _len_0 + 1
+        end
+        return _accum_0
+      end)()
+      if next(ret) == nil then
+        return nil
+      end
+      return ret
     end
-end
-
-function re_proto.match(self, str)
-    check_self(self)
-    check_arg(str, "string", 2, "match", self._level)
-
-    local ret = to_table(self:gmatch(str))
-    -- Return nil rather than a empty table so that if re.match(...) works
-    if next(ret) == nil then return end
-    return ret
-end
-
--- Create a wxRegExp object from a pattern, flags, and error depth
-local function real_compile(pattern, level, flags, stored_level)
-    local regex = regex.compile(pattern, flags)
-    if not regex then
-        error("Bad syntax in regular expression", level + 1)
+  }
+  _base_0.__index = _base_0
+  if _parent_0 then
+    setmetatable(_base_0, _parent_0.__base)
+  end
+  local _class_0 = setmetatable({
+    __init = function(self, _regex, _level)
+      self._regex, self._level = _regex, _level
+    end,
+    __base = _base_0,
+    __name = "RegEx",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil and _parent_0 then
+        return _parent_0[name]
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
     end
-    return setmetatable({
-            _regex = regex,
-            _level = stored_level or level + 1
-        },
-        re_proto_mt)
+  })
+  _base_0.__class = _class_0
+  local self = _class_0
+  start = 1
+  if _parent_0 and _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  RegEx = _class_0
 end
-
--- Compile a pattern then invoke a method on it
-local function invoke(str, pattern, fn, flags, ...)
-    local comp = real_compile(pattern, 3, flags)
-    return comp[fn](comp, str, ...)
+local real_compile
+real_compile = function(pattern, level, flags, stored_level)
+  if pattern == '' then
+    error('Regular expression must not be empty', level + 1)
+  end
+  local re = regex.compile(pattern, flags)
+  if type(re) == 'string' then
+    error(regex, level + 1)
+  end
+  return RegEx(re, stored_level or level + 1)
 end
-
--- Generate a static version of a method with arg type checking
-local function gen_wrapper(impl_name)
-    return function(str, pattern, ...)
-        check_arg(str, "string", 1, impl_name, 2)
-        check_arg(pattern, "string", 2, impl_name, 2)
-        return invoke(str, pattern, impl_name, unpack_args(...))
-    end
+local invoke
+invoke = function(str, pattern, fn, flags, ...)
+  local compiled_regex = real_compile(pattern, 3, flags)
+  return compiled_regex[fn](compiled_regex, str, ...)
 end
-
--- And now at last the actual public API
+local gen_wrapper
+gen_wrapper = function(impl_name)
+  return function(str, pattern, ...)
+    check_arg(str, 'string', 1, impl_name, 2)
+    check_arg(pattern, 'string', 2, impl_name, 2)
+    return invoke(str, pattern, impl_name, unpack_args(...))
+  end
+end
 local re = regex.init_flags(re)
-
-function re.compile(pattern, ...)
-    check_arg(pattern, "string", 1, "compile", 2)
-    return real_compile(pattern, 2, regex.process_flags(...), 2)
+re.compile = function(pattern, ...)
+  check_arg(pattern, 'string', 1, 'compile', 2)
+  return real_compile(pattern, 2, regex.process_flags(...), 2)
 end
-
-re.split  = gen_wrapper("split")
-re.gsplit = gen_wrapper("gsplit")
-re.find   = gen_wrapper("find")
-re.gfind  = gen_wrapper("gfind")
-re.match  = gen_wrapper("match")
-re.gmatch = gen_wrapper("gmatch")
-re.sub    = gen_wrapper("sub")
-
-_G.re = re
-return _G.re
+re.split = gen_wrapper('split')
+re.gsplit = gen_wrapper('gsplit')
+re.find = gen_wrapper('find')
+re.gfind = gen_wrapper('gfind')
+re.match = gen_wrapper('match')
+re.gmatch = gen_wrapper('gmatch')
+re.sub = gen_wrapper('sub')
+return re

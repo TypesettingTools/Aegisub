@@ -33,6 +33,7 @@ inline void push_value(lua_State *L, const char *value) { lua_pushstring(L, valu
 inline void push_value(lua_State *L, double value) { lua_pushnumber(L, value); }
 inline void push_value(lua_State *L, int value) { lua_pushinteger(L, value); }
 inline void push_value(lua_State *L, size_t value) { lua_pushinteger(L, value); }
+inline void push_value(lua_State *L, long value) { lua_pushinteger(L, value); }
 inline void push_value(lua_State *L, void *p) { lua_pushlightuserdata(L, p); }
 
 inline void push_value(lua_State *L, wxString const& value) {
