@@ -16,7 +16,6 @@
 
 #include "config.h"
 
-#ifdef WITH_AUTO4_LUA
 #include "auto4_lua_utils.h"
 
 #include <boost/regex/icu.hpp>
@@ -205,4 +204,3 @@ int regex_init(lua_State *L) {
 	return 1;
 }
 }
-#endif

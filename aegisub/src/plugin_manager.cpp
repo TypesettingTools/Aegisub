@@ -40,10 +40,7 @@
 #include "include/aegisub/subtitles_provider.h"
 #include "plugin_manager.h"
 #include "video_provider_manager.h"
-
-#ifdef WITH_AUTO4_LUA
 #include "auto4_lua_factory.h"
-#endif
 
 PluginManager::PluginManager() {
 	init = false;
@@ -56,28 +53,19 @@ PluginManager::~PluginManager() {
 	AudioPlayerFactory::Clear();
 	SubtitlesProviderFactory::Clear();
 	SpellCheckerFactory::Clear();
-
-#ifdef WITH_AUTO4_LUA
 	Automation4::ScriptFactory::Unregister(lua);
-#endif
 }
 
 /// @brief Registers all built-in plugins
 void PluginManager::RegisterBuiltInPlugins() {
 	if (!init) {
-		// Managers
 		VideoProviderFactory::RegisterProviders();
 		AudioProviderFactory::RegisterProviders();
 		AudioPlayerFactory::RegisterProviders();
 		SubtitlesProviderFactory::RegisterProviders();
 		SpellCheckerFactory::RegisterProviders();
-
-		// Automation languages
-#ifdef WITH_AUTO4_LUA
 		lua = new Automation4::LuaScriptFactory();
-#endif
 	}
 
-	// Done
 	init = true;
 }

@@ -34,8 +34,6 @@
 
 #include "config.h"
 
-#ifdef WITH_AUTO4_LUA
-
 #include "auto4_lua.h"
 
 #include "ass_style.h"
@@ -586,5 +584,3 @@ namespace Automation4 {
 		evt.Skip();
 	}
 }
-
-#endif // WITH_AUTO4_LUA

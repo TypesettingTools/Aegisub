@@ -399,24 +399,19 @@ AGI_OPT_PKG(hunspell, [build without hunspell spell-checking [auto]], [Enable Hu
 ############
 # Automation
 ############
-AC_ARG_WITH(lua,
-            AS_HELP_STRING([--without-lua],
-                           [build without lua 5.1 (auto4)]))
+# First try pkg-config with several names
+PKG_CHECK_MODULES(LUA, lua5.1  >= 5.1 lua5.1  < 5.2, [], [
+PKG_CHECK_MODULES(LUA, lua-5.1 >= 5.1 lua-5.1 < 5.2, [], [
+PKG_CHECK_MODULES(LUA, lua     >= 5.1 lua     < 5.2, [], [
+# Still not found so try to autodetect
+AS_IF([test -z "$LUA_CFLAGS"],
+  [AGI_FIND_HEADER([LUA], [lua.hpp],
+                   [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include])])
 
-AS_IF([test x$with_lua = xno], [$with_auto4_lua="no"; lua_disabled="(disabled)"], [
-  # First try pkg-config with several names
-  PKG_CHECK_MODULES(LUA, lua5.1  >= 5.1 lua5.1  < 5.2, [with_auto4_lua="yes"], [
-  PKG_CHECK_MODULES(LUA, lua-5.1 >= 5.1 lua-5.1 < 5.2, [with_auto4_lua="yes"], [
-  PKG_CHECK_MODULES(LUA, lua     >= 5.1 lua     < 5.2, [with_auto4_lua="yes"], [
-    # Still not found so try to autodetect
-    AS_IF([test -z "$LUA_CFLAGS"],
-      [AGI_FIND_HEADER([LUA], [lua.hpp],
-                       [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include])])
+AS_IF([test -z "$LUA_LIBS"],
+  [AGI_FIND_LIB([LUA], [lua51 lua-5.1 lua5.1 lua], [])])
 
-    AS_IF([test -z "$LUA_LIBS"],
-      [AGI_FIND_LIB([LUA], [lua51 lua-5.1 lua5.1 lua], [])])
-
-    AC_AGI_COMPILE([Lua 5.1 (auto4)], [lua], [$LUA_CFLAGS], [$LUA_LIBS],[
+AC_AGI_COMPILE([Lua 5.1 (auto4)], [lua], [$LUA_CFLAGS], [$LUA_LIBS],[
 #include <lua.hpp>
 
 int main () {
@@ -426,15 +421,10 @@ int main () {
   lua_close(L);
   return !res;
 }])
-    AS_IF([test x$agi_cv_with_lua = xno && test x$with_lua = xyes],
-          [AC_MSG_FAILURE([--with-lua was specified, but lua 5.1 could not be found. Try setting LUA_CLFAGS and LUA_LIBS manually])])
-    with_auto4_lua=$agi_cv_with_lua
-  ])])])
-])
+    AS_IF([test x$agi_cv_with_lua = xno],
+          [AC_MSG_FAILURE([Lua 5.1 could not be found. Try setting LUA_CLFAGS and LUA_LIBS manually])])
+])])])
 
-AS_IF([test x$with_auto4_lua = xyes], AC_DEFINE(WITH_AUTO4_LUA, 1, [Enable Automation (auto4), requires lua]))
-
-AC_SUBST(with_auto4_lua)
 AC_SUBST(LUA_CFLAGS)
 AC_SUBST(LUA_LIBS)
 
@@ -718,9 +708,6 @@ Configure settings
 
 Default Settings
   Audio Player:          $DEFAULT_PLAYER_AUDIO
-
-Scripting Engines
-  auto4 Lua:             $with_auto4_lua $lua51_disabled
 
 Audio Players
   ALSA:                  $with_alsa $alsa_disabled

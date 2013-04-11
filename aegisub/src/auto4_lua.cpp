@@ -34,8 +34,6 @@
 
 #include "config.h"
 
-#ifdef WITH_AUTO4_LUA
-
 #include "auto4_lua.h"
 
 #include "auto4_lua_utils.h"
@@ -900,5 +898,3 @@ namespace Automation4 {
 			return 0;
 	}
 }
-
-#endif // WITH_AUTO4_LUA

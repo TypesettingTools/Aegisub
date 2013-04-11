@@ -55,9 +55,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += "    wxStyledTextCtrl - Copyright (c) Robin Dunn, Neil Hodgson;\n";
 	libString += "    Scintilla - Copyright (c) Neil Hodgson;\n";
 	libString += "    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n";
-#ifdef WITH_AUTO4_LUA
 	libString += "    Lua - Copyright (c) Lua.org, PUC-Rio;\n";
-#endif
 #ifdef WITH_HUNSPELL
 	libString += "    Hunspell - Copyright (c) Kevin Hendricks;\n";
 #endif

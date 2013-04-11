@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifdef WITH_AUTO4_LUA
 #include "auto4_lua.h"
 
 #include "auto4_lua_utils.h"
@@ -634,5 +633,3 @@ namespace Automation4 {
 		// Leaves userdata object on stack
 	}
 }
-
-#endif // WITH_AUTO4_LUA

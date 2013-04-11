@@ -2,7 +2,6 @@
 # AEGISUB FEATURE SUPPORT
 #########################
 HAVE_ALSA       = @with_alsa@
-HAVE_AUTO4_LUA  = @with_auto4_lua@
 HAVE_HUNSPELL   = @with_hunspell@
 HAVE_OPENAL     = @with_openal@
 HAVE_OSS        = @with_oss@

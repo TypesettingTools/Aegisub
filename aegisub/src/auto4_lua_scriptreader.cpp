@@ -19,8 +19,6 @@
 
 #include "config.h"
 
-#ifdef WITH_AUTO4_LUA
-
 #include "auto4_lua_scriptreader.h"
 
 #include "charset_detect.h"
@@ -65,5 +63,3 @@ namespace Automation4 {
 		return static_cast<LuaScriptReader*>(data)->Read(size);
 	}
 }
-
-#endif // WITH_AUTO4_LUA

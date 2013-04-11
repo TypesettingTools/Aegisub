@@ -10,11 +10,10 @@ AEGISUB_CFLAGS = -I. -I.. -Iinclude -I../libaegisub/include -I../build -DAEGISUB
 CFLAGS += $(AEGISUB_CFLAGS)
 CXXFLAGS += $(AEGISUB_CFLAGS) -D__STDC_FORMAT_MACROS $(CXXFLAGS_WX)
 
-LIBS := -L../libaegisub -laegisub $(LIBS)
-LIBS += $(LIBS_CCMALLOC) $(LIBS_EFENCE) $(LIBS_GL)
-LIBS += $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE)
-LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3)
-LIBS += $(LIBS_UCHARDET) $(LIBS_BOOST) $(LIBS_ICU)
+LIBS := -L../libaegisub -laegisub $(LIBS) $(LIBS_CCMALLOC) $(LIBS_EFENCE)
+LIBS += $(LIBS_GL) $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE)
+LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3) $(LIBS_UCHARDET) $(LIBS_BOOST)
+LIBS += $(LIBS_ICU) $(LIBS_LUA)
 
 LDFLAGS += $(LDFLAGS_CCMALLOC)
 
@@ -88,17 +87,6 @@ else
 EXTRA_DIST += subtitles_provider_libass.cpp
 endif
 
-############
-# AUTOMATION
-############
-ifeq (yes, $(HAVE_AUTO4_LUA))
-auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_regex.o auto4_lua_scriptreader.o: CXXFLAGS += $(CFLAGS_LUA)
-LIBS += $(LIBS_LUA)
-SRC += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_regex.cpp auto4_lua_scriptreader.cpp
-else
-EXTRA_DIST += auto4_lua.cpp auto4_lua_assfile.cpp auto4_lua_dialog.cpp auto4_lua_progresssink.cpp auto4_regex.cpp auto4_lua_scriptreader.cpp
-endif
-
 ##############
 # MISCELLANOUS
 ##############
@@ -120,6 +108,7 @@ charset_detect.o:              CXXFLAGS += -D_X86_
 font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG)
 text_file_reader.o:            CXXFLAGS += -D_X86_
 video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS2)
+auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_regex.o auto4_lua_scriptreader.o: CXXFLAGS += $(CFLAGS_LUA)
 
 SRC += \
 	MatroskaParser.c \
@@ -137,14 +126,15 @@ SRC += \
 	ass_style_storage.cpp \
 	ass_time.cpp \
 	audio_box.cpp \
-	audio_controller.cpp \
 	audio_colorscheme.cpp \
+	audio_controller.cpp \
 	audio_display.cpp \
 	audio_karaoke.cpp \
 	audio_marker.cpp \
 	audio_player.cpp \
 	audio_provider.cpp \
 	audio_provider_convert.cpp \
+	audio_provider_dummy.cpp \
 	audio_provider_hd.cpp \
 	audio_provider_lock.cpp \
 	audio_provider_pcm.cpp \
@@ -155,6 +145,12 @@ SRC += \
 	audio_timing_dialogue.cpp \
 	audio_timing_karaoke.cpp \
 	auto4_base.cpp \
+	auto4_lua.cpp \
+	auto4_lua_assfile.cpp \
+	auto4_lua_dialog.cpp \
+	auto4_lua_progresssink.cpp \
+	auto4_lua_scriptreader.cpp \
+	auto4_regex.cpp \
 	avisynth_wrap.cpp \
 	base_grid.cpp \
 	charset_detect.cpp \
@@ -191,7 +187,6 @@ SRC += \
 	dialog_translation.cpp \
 	dialog_version_check.cpp \
 	dialog_video_details.cpp \
-	audio_provider_dummy.cpp \
 	export_fixstyle.cpp \
 	export_framerate.cpp \
 	fft.cpp \
@@ -213,9 +208,9 @@ SRC += \
 	plugin_manager.cpp \
 	preferences.cpp \
 	preferences_base.cpp \
-	search_replace_engine.cpp \
 	scintilla_text_ctrl.cpp \
 	scintilla_text_selection_controller.cpp \
+	search_replace_engine.cpp \
 	spellchecker.cpp \
 	spline.cpp \
 	spline_curve.cpp \
@@ -239,8 +234,8 @@ SRC += \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
 	thesaurus.cpp \
-	timeedit_ctrl.cpp \
 	threaded_frame_source.cpp \
+	timeedit_ctrl.cpp \
 	toggle_bitmap.cpp \
 	toolbar.cpp \
 	tooltip_manager.cpp \
