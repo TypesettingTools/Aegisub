@@ -33,7 +33,7 @@
 #define wxUSE_FILE 1
 #define wxUSE_FFILE 1
 #define wxUSE_FSVOLUME 0
-#define wxUSE_STDPATHS 1
+#define wxUSE_STDPATHS 0
 #define wxUSE_TEXTBUFFER 1
 #define wxUSE_TEXTFILE 1
 #define wxUSE_INTL 1
@@ -62,10 +62,10 @@
 #define wxUSE_FONTENUM 1
 #define wxUSE_FONTMAP 1
 #define wxUSE_MIMETYPE 1
-#define wxUSE_PROTOCOL 1
+#define wxUSE_PROTOCOL 0
 #define wxUSE_PROTOCOL_FILE 0
 #define wxUSE_PROTOCOL_FTP 0
-#define wxUSE_PROTOCOL_HTTP 1
+#define wxUSE_PROTOCOL_HTTP 0
 #define wxUSE_URL 0
 #define wxUSE_URL_NATIVE 0
 #define wxUSE_VARIANT 1
@@ -161,7 +161,7 @@
 #define wxUSE_FONTDLG 1
 #define wxUSE_MSGDLG 1
 #define wxUSE_PROGRESSDLG 0
-#define wxUSE_STARTUP_TIPS 1
+#define wxUSE_STARTUP_TIPS 0
 #define wxUSE_TEXTDLG 1
 #define wxUSE_NUMBERDLG 1
 #define wxUSE_SPLASH 0
@@ -174,9 +174,9 @@
 #define wxUSE_DOC_VIEW_ARCHITECTURE 0
 #define wxUSE_MDI_ARCHITECTURE 0
 #define wxUSE_PRINTING_ARCHITECTURE 0
-#define wxUSE_HTML 1
+#define wxUSE_HTML 0
 #define wxUSE_GLCANVAS 1
-#define wxUSE_RICHTEXT 1
+#define wxUSE_RICHTEXT 0
 #define wxUSE_CLIPBOARD 1
 #define wxUSE_DATAOBJ 1
 #define wxUSE_DRAG_AND_DROP 1
@@ -219,9 +219,9 @@
 #define wxUSE_DIB_FOR_BITMAP 0
 #define wxUSE_WXDIB 1
 #define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 0
-#define wxUSE_REGKEY 1
-#define wxUSE_RICHEDIT 1
-#define wxUSE_RICHEDIT2 1
+#define wxUSE_REGKEY 0
+#define wxUSE_RICHEDIT 0
+#define wxUSE_RICHEDIT2 0
 #define wxUSE_OWNER_DRAWN 1
 #define wxUSE_TASKBARICON_BALLOONS 0
 #define wxUSE_UXTHEME 1
