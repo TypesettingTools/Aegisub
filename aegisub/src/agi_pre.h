@@ -142,7 +142,6 @@
 #include <wx/radiobut.h>
 #include <wx/rawbmp.h>
 #include <wx/recguard.h>
-#include <wx/regex.h>
 #include <wx/sashwin.h>
 #include <wx/scrolbar.h>
 #include <wx/settings.h>

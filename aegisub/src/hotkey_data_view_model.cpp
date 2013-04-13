@@ -33,7 +33,6 @@
 #include "preferences.h"
 
 #include <wx/dataview.h>
-#include <wx/regex.h>
 
 #include <algorithm>
 #include <list>
@@ -75,8 +74,8 @@ public:
 	{
 	}
 
-	bool IsVisible(wxRegEx const& filter) const {
-		return filter.Matches(cmd_name) || filter.Matches(cmd_str);
+	bool IsVisible(wxString const& filter) const {
+		return cmd_name.Lower().Contains(filter) || cmd_str.Contains(filter);
 	}
 
 	void Apply(Hotkey::HotkeyMap *hk_map) {
@@ -166,7 +165,7 @@ public:
 			combo.Apply(hk_map);
 	}
 
-	void SetFilter(wxRegEx const& new_filter) {
+	void SetFilter(wxString const& new_filter) {
 		std::set<HotkeyModelCombo*> old_visible;
 		for (auto item : visible_items)
 			old_visible.insert(static_cast<HotkeyModelCombo*>(item.GetID()));
@@ -235,19 +234,13 @@ public:
 	}
 
 	void Apply(Hotkey::HotkeyMap *hk_map) {
-		for_each(categories.begin(), categories.end(),
-			bind(&HotkeyModelCategory::Apply, std::placeholders::_1, hk_map));
+		for (auto& category : categories)
+			category.Apply(hk_map);
 	}
 
-	void SetFilter(wxString filter) {
-		// Escape any regular-expression special characters
-		static wxRegEx escape_meta("[-[\\]{}()*+?.,\\\\^$|#]", wxRE_ADVANCED);
-		escape_meta.Replace(&filter, "\\\\&");
-
-		// Using wxRegEx for case-insensitive contains
-		wxRegEx re(filter, wxRE_ADVANCED | wxRE_ICASE | wxRE_NOSUB);
-		for_each(categories.begin(), categories.end(),
-			bind(&HotkeyModelCategory::SetFilter, std::placeholders::_1, std::ref(re)));
+	void SetFilter(wxString const& filter) {
+		for (auto& category : categories)
+			category.SetFilter(filter);
 	}
 
 	wxDataViewItem GetParent() const { return wxDataViewItem(0); }
@@ -338,5 +331,5 @@ void HotkeyDataViewModel::Apply() {
 }
 
 void HotkeyDataViewModel::SetFilter(wxString const& filter) {
-	root->SetFilter(filter);
+	root->SetFilter(filter.Lower());
 }
