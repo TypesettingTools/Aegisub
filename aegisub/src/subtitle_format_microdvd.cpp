@@ -39,6 +39,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
+#include "charset_detect.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "video_context.h"
@@ -74,7 +75,10 @@ bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename) const {
 	if (!agi::fs::HasExtension(filename, "sub")) return false;
 
 	// Since there is an infinity of .sub formats, load first line and check if it's valid
-	TextFileReader file(filename);
+	auto encoding = CharSetDetect::GetEncoding(filename);
+	if (encoding == "binary") return false;
+
+	TextFileReader file(filename, encoding);
 	if (file.HasMoreLines())
 		return regex_match(file.ReadLineFromFile(), line_regex);
 

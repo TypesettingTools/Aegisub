@@ -23,8 +23,6 @@
 
 #include "text_file_reader.h"
 
-#include "charset_detect.h"
-
 #include <libaegisub/io.h>
 
 #include <algorithm>
@@ -32,12 +30,10 @@
 #include <boost/algorithm/string/trim.hpp>
 
 TextFileReader::TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim)
-: trim(trim)
+: file(agi::io::Open(filename, true))
+, trim(trim)
+, iter(agi::line_iterator<std::string>(*file, encoding))
 {
-	if (encoding.empty())
-		encoding = CharSetDetect::GetEncoding(filename);
-	file.reset(agi::io::Open(filename, true));
-	iter = agi::line_iterator<std::string>(*file, encoding);
 }
 
 TextFileReader::~TextFileReader() {

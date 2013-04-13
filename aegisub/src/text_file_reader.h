@@ -43,7 +43,7 @@ public:
 	/// @param filename File to open
 	/// @param enc      Encoding to use, or empty to autodetect
 	/// @param trim     Whether to trim whitespace from lines read
-	TextFileReader(agi::fs::path const& filename, std::string encoding="", bool trim=true);
+	TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim=true);
 	/// @brief Destructor
 	~TextFileReader();
 
