@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -21,40 +21,29 @@
 
 #include "auto4_lua_scriptreader.h"
 
-#include "charset_detect.h"
-
 #include <libaegisub/io.h>
-#include <libaegisub/charset_conv.h>
 
 #include <fstream>
 
 namespace Automation4 {
 	LuaScriptReader::LuaScriptReader(agi::fs::path const& filename)
-	: conv(new agi::charset::IconvWrapper(CharSetDetect::GetEncoding(filename).c_str(), "utf-8", false))
-	, file(agi::io::Open(filename))
+	: file(agi::io::Open(filename))
+	, first(true)
 	{
 	}
 
 	LuaScriptReader::~LuaScriptReader() { }
 
 	const char *LuaScriptReader::Read(size_t *bytes_read) {
-		char in_buf[512];
-		file->read(in_buf, sizeof(in_buf));
-
-		const char *in = in_buf;
-		char *out = buf;
-		size_t in_bytes = file->gcount();
-		size_t out_bytes = sizeof(buf);
-
-		conv->Convert(&in, &in_bytes, &out, &out_bytes);
-		if (in_bytes > 0 && in != in_buf)
-			file->seekg(-(std::streamoff)in_bytes, std::ios_base::cur);
-		*bytes_read = out - buf;
-
-		// Skip the bom
-		if (*bytes_read >= 3 && buf[0] == -17 && buf[1] == -69 && buf[2] == -65) {
-			*bytes_read -= 3;
-			return buf + 3;
+		file->read(buf, sizeof(buf));
+		*bytes_read = file->gcount();
+		if (first) {
+			first = false;
+			// Skip the bom
+			if (*bytes_read >= 3 && buf[0] == -17 && buf[1] == -69 && buf[2] == -65) {
+				*bytes_read -= 3;
+				return buf + 3;
+			}
 		}
 		return buf;
 	}

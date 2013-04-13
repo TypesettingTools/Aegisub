@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -24,12 +24,11 @@
 #include <string>
 
 struct lua_State;
-namespace agi { namespace charset { class IconvWrapper; } }
 
 namespace Automation4 {
 	class LuaScriptReader {
-		std::unique_ptr<agi::charset::IconvWrapper> conv;
 		std::unique_ptr<std::istream> file;
+		bool first;
 		char buf[512];
 
 		const char *Read(size_t *bytes_read);
