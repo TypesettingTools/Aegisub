@@ -70,7 +70,7 @@
 #define wxUSE_URL_NATIVE 0
 #define wxUSE_VARIANT 1
 #define wxUSE_ANY 1
-#define wxUSE_REGEX 1
+#define wxUSE_REGEX 0
 #define wxUSE_SYSTEM_OPTIONS 1
 #define wxUSE_SOUND 0
 #define wxUSE_MEDIACTRL 0
