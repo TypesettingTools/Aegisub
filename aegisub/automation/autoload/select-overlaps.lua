@@ -27,11 +27,13 @@ function select_overlaps(subs)
     for i = 1,#subs do
         local line = subs[i]
         if line.class == "dialogue" then
-            line.i = i - 1
+            line.i = i
             table.insert(dialogue, line)
         end
     end
-    table.sort(dialogue, function(a,b) return a.start_time < b.start_time end)
+    table.sort(dialogue, function(a,b)
+        return a.start_time < b.start_time or (a.start_time == b.start_time and a.i < b.i)
+    end)
 
     local end_time = 0
     local overlaps = {}
