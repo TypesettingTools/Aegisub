@@ -470,23 +470,22 @@ static void copy_lines(agi::Context *c) {
 }
 
 static void delete_lines(agi::Context *c, wxString const& commit_message) {
-	AssDialogue *active = c->selectionController->GetActiveLine();
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
 	// Find a line near the active line not being deleted to make the new active line
-	AssDialogue *new_active = 0;
-	bool hit_active = false;
+	AssDialogue *pre_sel = nullptr;
+	AssDialogue *post_sel = nullptr;
+	bool hit_selection = false;
 
 	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
-		if (diag == active) {
-			hit_active = true;
-			if (new_active) break;
+		if (sel.count(diag))
+			hit_selection = true;
+		else if (hit_selection && !post_sel) {
+			post_sel = diag;
+			break;
 		}
-
-		if (!sel.count(diag)) {
-			new_active = diag;
-			if (hit_active) break;
-		}
+		else
+			pre_sel = diag;
 	}
 
 	// Delete selected lines
@@ -494,6 +493,9 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 		return sel.count(const_cast<AssDialogue *>(static_cast<const AssDialogue*>(&e)));
 	}, [](AssEntry *e) { delete e; });
 
+	AssDialogue *new_active = post_sel;
+	if (!new_active)
+		new_active = pre_sel;
 	// If we didn't get a new active line then we just deleted all the dialogue
 	// lines, so make a new one
 	if (!new_active) {
