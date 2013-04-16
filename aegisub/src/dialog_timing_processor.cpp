@@ -36,7 +36,20 @@
 
 #include "dialog_timing_processor.h"
 
+#include "ass_dialogue.h"
+#include "ass_file.h"
+#include "ass_time.h"
+#include "compat.h"
+#include "help_button.h"
+#include "include/aegisub/context.h"
+#include "libresrc/libresrc.h"
+#include "options.h"
+#include "selection_controller.h"
+#include "utils.h"
+#include "video_context.h"
+
 #include <algorithm>
+#include <boost/range/algorithm.hpp>
 #include <functional>
 
 #include <wx/button.h>
@@ -49,18 +62,6 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/valnum.h>
-
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "ass_time.h"
-#include "compat.h"
-#include "help_button.h"
-#include "include/aegisub/context.h"
-#include "libresrc/libresrc.h"
-#include "options.h"
-#include "selection_controller.h"
-#include "utils.h"
-#include "video_context.h"
 
 namespace {
 using std::placeholders::_1;
@@ -260,12 +261,8 @@ void DialogTimingProcessor::UpdateControls() {
 	// Only enable the OK button if it'll actually do something
 	bool any_checked = false;
 	size_t len = StyleList->GetCount();
-	for (size_t i = 0; i < len; ++i) {
-		if (StyleList->IsChecked(i)) {
-			any_checked = true;
-			break;
-		}
-	}
+	for (size_t i = 0; !any_checked && i < len; ++i)
+		any_checked = StyleList->IsChecked(i);
 	ApplyButton->Enable(any_checked && (hasLeadIn->IsChecked() || hasLeadOut->IsChecked() || keysEnable->IsChecked() || adjsEnable->IsChecked()));
 }
 
@@ -311,14 +308,15 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 	}
 	else {
 		transform(c->ass->Line.begin(), c->ass->Line.end(), back_inserter(sorted), cast<AssDialogue*>());
-		sorted.erase(remove_if(sorted.begin(), sorted.end(), bind(bad_line, &styles, _1)), sorted.end());
+		sorted.erase(boost::remove_if(sorted, bind(bad_line, &styles, _1)), sorted.end());
 	}
 
 	// Check if rows are valid
-	for (size_t i = 0; i < sorted.size(); ++i) {
-		if (sorted[i]->Start > sorted[i]->End) {
+	for (auto diag : sorted) {
+		if (diag->Start > diag->End) {
+			int line = count_if(c->ass->Line.begin(), c->ass->Line.iterator_to(*diag), cast<const AssDialogue*>());
 			wxMessageBox(
-				wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."), i),
+				wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."), line),
 				_("Invalid script"),
 				wxOK | wxICON_ERROR | wxCENTER);
 			sorted.clear();
@@ -326,16 +324,16 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 		}
 	}
 
-	sort(sorted.begin(), sorted.end(), AssFile::CompStart);
+	boost::sort(sorted, AssFile::CompStart);
 	return sorted;
 }
 
 static int get_closest_kf(std::vector<int> const& kf, int frame) {
-	std::vector<int>::const_iterator pos = upper_bound(kf.begin(), kf.end(), frame);
+	const auto pos = boost::upper_bound(kf, frame);
 	// Return last keyframe if this is after the last one
-	if (pos == kf.end()) return kf.back();
+	if (pos == end(kf)) return kf.back();
 	// *pos is greater than frame, and *(pos - 1) is less than or equal to frame
-	return (pos == kf.begin() || *pos - frame < frame - *(pos - 1)) ? *pos : *(pos - 1);
+	return (pos == begin(kf) || *pos - frame < frame - *(pos - 1)) ? *pos : *(pos - 1);
 }
 
 template<class Iter, class Field>
