@@ -271,13 +271,10 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 
 		// Matched destination text
 		{
-			int adv = DrawBoxedText(dc, grp.dst, next_x, y_line2);
+			const int adv = DrawBoxedText(dc, grp.dst, next_x, y_line2);
 
 			// Adjust next_x here while we have the text_w
-			if (syl_x > next_x + adv)
-				next_x = syl_x;
-			else
-				next_x = next_x + adv;
+			next_x = syl_x > next_x + adv ? syl_x : next_x + adv;
 		}
 
 		// Spacing between groups
@@ -310,22 +307,20 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 	}
 
 	// Remaining destination
-	std::string txt = unmatched_destination.substr(0, destination_sel_length);
-	if (!txt.empty())
+	if (!unmatched_destination.empty())
 	{
 		dc.SetTextBackground(sel_back);
 		dc.SetTextForeground(sel_text);
 		dc.SetBrush(wxBrush(sel_back));
-		next_x += DrawBoxedText(dc, txt, next_x, y_line2);
+		next_x += DrawBoxedText(dc, unmatched_destination.substr(0, destination_sel_length), next_x, y_line2);
 	}
 
-	txt = unmatched_destination.substr(destination_sel_length);
-	if (!txt.empty())
+	if (destination_sel_length < unmatched_destination.size())
 	{
 		dc.SetTextBackground(inner_back);
 		dc.SetTextForeground(inner_text);
 		dc.SetBrush(wxBrush(inner_back));
-		DrawBoxedText(dc, txt, next_x, y_line2);
+		DrawBoxedText(dc, unmatched_destination.substr(destination_sel_length), next_x, y_line2);
 	}
 }
 
