@@ -96,34 +96,35 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& file
 	while (file.HasMoreLines()) {
 		boost::smatch match;
 		std::string line = file.ReadLineFromFile();
-		if (regex_match(line, match, line_regex)) {
-			int f1 = boost::lexical_cast<int>(match[0]);
-			int f2 = boost::lexical_cast<int>(match[1]);
-			std::string text = match[2].str();
+		if (!regex_match(line, match, line_regex)) continue;
 
-			// If it's the first, check if it contains fps information
-			if (isFirst) {
-				isFirst = false;
+		std::string text = match[2].str();
 
-				double cfr;
-				if (agi::util::try_parse(text, &cfr)) {
-					fps = cfr;
-					continue;
-				}
+		// If it's the first, check if it contains fps information
+		if (isFirst) {
+			isFirst = false;
 
-				// If it wasn't an fps line, ask the user for it
-				fps = AskForFPS(true, false);
-				if (!fps.IsLoaded()) return;
+			double cfr;
+			if (agi::util::try_parse(text, &cfr)) {
+				fps = cfr;
+				continue;
 			}
 
-			boost::replace_all(text, "|", "\\N");
-
-			AssDialogue *diag = new AssDialogue;
-			diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
-			diag->End = fps.TimeAtFrame(f2, agi::vfr::END);
-			diag->Text = text;
-			target->Line.push_back(*diag);
+			// If it wasn't an fps line, ask the user for it
+			fps = AskForFPS(true, false);
+			if (!fps.IsLoaded()) return;
 		}
+
+		int f1 = boost::lexical_cast<int>(match[0]);
+		int f2 = boost::lexical_cast<int>(match[1]);
+
+		boost::replace_all(text, "|", "\\N");
+
+		AssDialogue *diag = new AssDialogue;
+		diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
+		diag->End = fps.TimeAtFrame(f2, agi::vfr::END);
+		diag->Text = text;
+		target->Line.push_back(*diag);
 	}
 }
 
