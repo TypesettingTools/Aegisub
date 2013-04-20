@@ -165,10 +165,10 @@
     <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfc110u.dll" />
     <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfcm110u.dll" />
     <RarContents Include="$(AegisubSourceBase)bin\dictionaries\en_US.aff">
-      <OutputPath>dictionaries</OutputPath>
+      <OutputPath>dictionaries\</OutputPath>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\dictionaries\en_US.dic">
-      <OutputPath>dictionaries</OutputPath>
+      <OutputPath>dictionaries\</OutputPath>
     </RarContents>
   </ItemGroup>
   <ItemGroup>
