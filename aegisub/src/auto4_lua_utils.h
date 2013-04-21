@@ -16,12 +16,7 @@
 
 #include <libaegisub/log.h>
 
-#ifdef __WINDOWS__
-#include "../../contrib/lua51/src/lualib.h"
-#include "../../contrib/lua51/src/lauxlib.h"
-#else
 #include <lua.hpp>
-#endif
 
 #include <libaegisub/fs.h>
 

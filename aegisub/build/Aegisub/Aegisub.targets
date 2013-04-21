@@ -50,13 +50,6 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
-  <!-- Automation Lua support -->
-  <ItemDefinitionGroup>
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(AegisubContribBase)lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ClCompile>
-  </ItemDefinitionGroup>
-
   <!-- Hunspell support -->
   <ItemDefinitionGroup>
     <ClCompile>

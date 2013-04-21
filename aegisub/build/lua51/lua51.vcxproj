@@ -7,7 +7,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\..\contrib\lua51\src\</SrcDir>
+    <SrcDir>..\..\..\deps\lua\src\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -77,4 +77,12 @@
     <ClInclude Include="$(SrcDir)lvm.h" />
     <ClInclude Include="$(SrcDir)lzio.h" />
   </ItemGroup>
+
+  <Target Name="CopyHeaders" BeforeTargets="Build">
+    <Copy
+      SourceFiles="$(SrcDir)lua.h;$(SrcDir)lualib.h;$(SrcDir)lauxlib.h;$(SrcDir)luaconf.h;$(SrcDir)..\etc\lua.hpp"
+      DestinationFolder="$(AegisubSourceBase)include"
+      SkipUnchangedFiles="true"
+      />
+  </Target>
 </Project>
