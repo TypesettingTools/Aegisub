@@ -74,6 +74,5 @@ aegisub/tests/run
 aegisub/tests/*.json
 
 /packages
-/deps
 .nuget
 /aegisub/include
