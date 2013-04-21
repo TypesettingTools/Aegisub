@@ -4,6 +4,7 @@
     <ProjectGuid>{5391A8B1-9C70-4DC4-92AD-D3E34C6B803F}</ProjectGuid>
     <RootNamespace>lua51</RootNamespace>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
@@ -12,14 +13,14 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>LUA_BUILD_AS_DLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <CompileAs>CompileAsCpp</CompileAs>
-      <!-- We want to build Lua as C++ to get C++ name mangling -->
     </ClCompile>
   </ItemDefinitionGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClCompile Include="$(SrcDir)lapi.c" />
