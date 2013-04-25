@@ -57,6 +57,7 @@
 #include <inttypes.h>
 #include <limits>
 #include <typeinfo>
+#include <type_traits>
 #include <utility>
 
 #ifdef _WIN32

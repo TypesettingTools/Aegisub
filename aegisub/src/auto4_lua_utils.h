@@ -21,16 +21,18 @@
 #include <libaegisub/fs.h>
 
 #include <string>
+#include <type_traits>
 #include <wx/string.h>
 
 inline void push_value(lua_State *L, bool value) { lua_pushboolean(L, value); }
 inline void push_value(lua_State *L, const char *value) { lua_pushstring(L, value); }
 inline void push_value(lua_State *L, double value) { lua_pushnumber(L, value); }
 inline void push_value(lua_State *L, int value) { lua_pushinteger(L, value); }
-inline void push_value(lua_State *L, size_t value) { lua_pushinteger(L, value); }
-inline void push_value(lua_State *L, int64_t value) { lua_pushinteger(L, value); }
-inline void push_value(lua_State *L, long value) { lua_pushinteger(L, value); }
 inline void push_value(lua_State *L, void *p) { lua_pushlightuserdata(L, p); }
+
+template<typename Integer>
+typename std::enable_if<std::is_integral<Integer>::value>::type
+push_value(lua_State *L, Integer value) { lua_pushinteger(L, value); }
 
 inline void push_value(lua_State *L, wxString const& value) {
 	lua_pushstring(L, value.utf8_str());
