@@ -45,7 +45,7 @@
 				"Seconds" : false,
 				"Video Position" : false
 			},
-			"Waveform Style" : 1
+			"Waveform Style" : 0
 		},
 		"Downmixer" : "ConvertToMono",
 		"Drag Timing" : true,
