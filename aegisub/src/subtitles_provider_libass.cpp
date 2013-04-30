@@ -52,11 +52,11 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
 
-#include <boost/range/algorithm_ext/push_back.hpp>
 #include <boost/gil/gil_all.hpp>
+#include <boost/range/algorithm_ext/push_back.hpp>
+#include <boost/thread.hpp>
 #include <memory>
 #include <mutex>
-#include <thread>
 
 namespace {
 std::unique_ptr<agi::dispatch::Queue> cache_queue;
@@ -104,7 +104,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string)
 	progress.Run([=](agi::ProgressSink *ps) {
 		ps->SetIndeterminate();
 		while (!*done && !ps->IsCancelled())
-			std::this_thread::sleep_for(std::chrono::milliseconds(250));
+			boost::this_thread::sleep_for(boost::chrono::milliseconds(250));
 	});
 
 	ass_renderer = *renderer;
