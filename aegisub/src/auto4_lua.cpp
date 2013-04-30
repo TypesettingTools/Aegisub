@@ -193,6 +193,8 @@ namespace {
 	}
 }
 
+extern "C" int luaopen_lpeg (lua_State *L);
+
 namespace Automation4 {
 	int regex_init(lua_State *L);
 
@@ -220,12 +222,13 @@ namespace Automation4 {
 
 			// register standard libs
 			push_value(L, luaopen_base); lua_call(L, 0, 0);
+			push_value(L, luaopen_io); lua_call(L, 0, 0);
+			push_value(L, luaopen_lpeg); lua_call(L, 0, 0);
+			push_value(L, luaopen_math); lua_call(L, 0, 0);
+			push_value(L, luaopen_os); lua_call(L, 0, 0);
 			push_value(L, luaopen_package); lua_call(L, 0, 0);
 			push_value(L, luaopen_string); lua_call(L, 0, 0);
 			push_value(L, luaopen_table); lua_call(L, 0, 0);
-			push_value(L, luaopen_math); lua_call(L, 0, 0);
-			push_value(L, luaopen_io); lua_call(L, 0, 0);
-			push_value(L, luaopen_os); lua_call(L, 0, 0);
 			_stackcheck.check_stack(0);
 
 			// dofile and loadfile are replaced with include

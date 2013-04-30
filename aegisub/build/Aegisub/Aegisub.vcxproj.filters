@@ -690,6 +690,9 @@
     <ClInclude Include="$(SrcDir)auto4_lua_utils.h">
       <Filter>Automation\Lua</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)lpeg.h">
+      <Filter>Automation\Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1239,6 +1242,9 @@
       <Filter>ASS</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)auto4_regex.cpp">
+      <Filter>Automation\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)lpeg.c">
       <Filter>Automation\Lua</Filter>
     </ClCompile>
   </ItemGroup>
