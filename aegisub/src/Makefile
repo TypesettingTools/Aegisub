@@ -108,7 +108,7 @@ charset_detect.o:              CXXFLAGS += -D_X86_
 font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG)
 text_file_reader.o:            CXXFLAGS += -D_X86_
 video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS2)
-auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_regex.o auto4_lua_scriptreader.o: CXXFLAGS += $(CFLAGS_LUA)
+auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o auto4_lua_regex.o auto4_lua_scriptreader.o auto4_regex.o: CXXFLAGS += $(CFLAGS_LUA)
 
 SRC += \
 	MatroskaParser.c \
