@@ -154,12 +154,12 @@ AssDialogue *paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, A
 	return old_line;
 }
 
-template<class T>
+template<typename T>
 T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T initial, std::string const& tag_name, std::string alt = "") {
 	for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto const& tag : ovr->Tags | reversed) {
 			if (tag.Name == tag_name || tag.Name == alt)
-				return tag.Params[0].Get<T>(initial);
+				return tag.Params[0].template Get<T>(initial);
 		}
 	}
 	return initial;
