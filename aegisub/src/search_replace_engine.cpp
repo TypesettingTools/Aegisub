@@ -165,8 +165,8 @@ matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 		};
 	}
 
-	const bool full_match_only = settings.exact_match;
-	const bool match_case = settings.match_case;
+	bool full_match_only = settings.exact_match;
+	bool match_case = settings.match_case;
 	std::string look_for = settings.find;
 
 	if (!settings.match_case)
