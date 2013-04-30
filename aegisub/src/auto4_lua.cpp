@@ -191,6 +191,103 @@ namespace {
 		TableIter::init(L);
 		return 3;
 	}
+
+	int frame_from_ms(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		int ms = lua_tointeger(L, -1);
+		lua_pop(L, 1);
+		if (c && c->videoController->TimecodesLoaded())
+			push_value(L, c->videoController->FrameAtTime(ms, agi::vfr::START));
+		else
+			lua_pushnil(L);
+
+		return 1;
+	}
+
+	int ms_from_frame(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		int frame = lua_tointeger(L, -1);
+		lua_pop(L, 1);
+		if (c && c->videoController->TimecodesLoaded())
+			push_value(L, c->videoController->TimeAtFrame(frame, agi::vfr::START));
+		else
+			lua_pushnil(L);
+		return 1;
+	}
+
+	int video_size(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		if (c && c->videoController->IsLoaded()) {
+			push_value(L, c->videoController->GetWidth());
+			push_value(L, c->videoController->GetHeight());
+			push_value(L, c->videoController->GetAspectRatioValue());
+			push_value(L, (int)c->videoController->GetAspectRatioType());
+			return 4;
+		}
+		else {
+			lua_pushnil(L);
+			return 1;
+		}
+	}
+
+	int get_keyframes(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		if (!c) {
+			lua_pushnil(L);
+			return 1;
+		}
+
+		std::vector<int> const& kf = c->videoController->GetKeyFrames();
+
+		lua_newtable(L);
+		for (size_t i = 0; i < kf.size(); ++i) {
+			push_value(L, kf[i]);
+			lua_rawseti(L, -2, i);
+		}
+
+		return 1;
+	}
+
+	int decode_path(lua_State *L)
+	{
+		std::string path = luaL_checkstring(L, 1);
+		lua_pop(L, 1);
+		push_value(L, config::path->Decode(path));
+		return 1;
+	}
+
+	int cancel_script(lua_State *L)
+	{
+		lua_pushnil(L);
+		return lua_error(L);
+	}
+
+	int lua_text_textents(lua_State *L)
+	{
+		luaL_argcheck(L, lua_istable(L, 1), 1, "");
+		luaL_argcheck(L, lua_isstring(L, 2), 2, "");
+
+		lua_pushvalue(L, 1);
+		agi::scoped_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
+		AssStyle *st = dynamic_cast<AssStyle*>(et.get());
+		lua_pop(L, 1);
+		if (!st)
+			return luaL_error(L, "Not a style entry");
+
+		double width, height, descent, extlead;
+		if (!Automation4::CalculateTextExtents(st, luaL_checkstring(L, 2), width, height, descent, extlead))
+			return luaL_error(L, "Some internal error occurred calculating text_extents");
+
+		push_value(L, width);
+		push_value(L, height);
+		push_value(L, descent);
+		push_value(L, extlead);
+		return 4;
+	}
 }
 
 extern "C" int luaopen_lpeg (lua_State *L);
@@ -198,17 +295,54 @@ extern "C" int luaopen_lpeg (lua_State *L);
 namespace Automation4 {
 	int regex_init(lua_State *L);
 
-	// LuaScript
+	class LuaScript : public Script {
+		lua_State *L;
+
+		std::string name;
+		std::string description;
+		std::string author;
+		std::string version;
+
+		std::vector<cmd::Command*> macros;
+		std::vector<ExportFilter*> filters;
+
+		/// load script and create internal structures etc.
+		void Create();
+		/// destroy internal structures, unreg features and delete environment
+		void Destroy();
+
+		static int LuaInclude(lua_State *L);
+		static int LuaModuleLoader(lua_State *L);
+
+	public:
+		LuaScript(agi::fs::path const& filename);
+		~LuaScript() { Destroy(); }
+
+		void RegisterCommand(LuaCommand *command);
+		void UnregisterCommand(LuaCommand *command);
+		void RegisterFilter(LuaExportFilter *filter);
+
+		static LuaScript* GetScriptObject(lua_State *L);
+
+		// Script implementation
+		void Reload() { Create(); }
+
+		std::string GetName() const { return name; }
+		std::string GetDescription() const { return description; }
+		std::string GetAuthor() const { return author; }
+		std::string GetVersion() const { return version; }
+		bool GetLoadedState() const { return L != 0; }
+
+		std::vector<cmd::Command*> GetMacros() const { return macros; }
+		std::vector<ExportFilter*> GetFilters() const { return filters; }
+		std::vector<SubtitleFormat*> GetFormats() const { return std::vector<SubtitleFormat*>(); }
+	};
+
 	LuaScript::LuaScript(agi::fs::path const& filename)
 	: Script(filename)
-	, L(0)
+	, L(nullptr)
 	{
 		Create();
-	}
-
-	LuaScript::~LuaScript()
-	{
-		Destroy();
 	}
 
 	void LuaScript::Create()
@@ -283,13 +417,13 @@ namespace Automation4 {
 
 			set_field(L, "register_macro", LuaCommand::LuaRegister);
 			set_field(L, "register_filter", LuaExportFilter::LuaRegister);
-			set_field(L, "text_extents", LuaTextExtents);
-			set_field(L, "frame_from_ms", LuaFrameFromMs);
-			set_field(L, "ms_from_frame", LuaMsFromFrame);
-			set_field(L, "video_size", LuaVideoSize);
-			set_field(L, "keyframes", LuaGetKeyframes);
-			set_field(L, "decode_path", LuaDecodePath);
-			set_field(L, "cancel", LuaCancel);
+			set_field(L, "text_extents", lua_text_textents);
+			set_field(L, "frame_from_ms", frame_from_ms);
+			set_field(L, "ms_from_frame", ms_from_frame);
+			set_field(L, "video_size", video_size);
+			set_field(L, "keyframes", get_keyframes);
+			set_field(L, "decode_path", decode_path);
+			set_field(L, "cancel", cancel_script);
 			set_field(L, "lua_automation_version", 4);
 			set_field(L, "__init_regex", regex_init);
 			set_field(L, "__init_clipboard", clipboard_init);
@@ -301,8 +435,7 @@ namespace Automation4 {
 			_stackcheck.check_stack(0);
 
 			// load user script
-			LuaScriptReader script_reader(GetFilename());
-			if (lua_load(L, script_reader.reader_func, &script_reader, GetPrettyFilename().string().c_str())) {
+			if (!LoadFile(L, GetFilename())) {
 				std::string err = str(boost::format("Error loading Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % get_string_or_default(L, -1));
 				lua_pop(L, 1);
 				throw ScriptLoadError(err);
@@ -359,12 +492,7 @@ namespace Automation4 {
 		delete_clear(filters);
 
 		lua_close(L);
-		L = 0;
-	}
-
-	void LuaScript::Reload()
-	{
-		Create();
+		L = nullptr;
 	}
 
 	void LuaScript::RegisterCommand(LuaCommand *command)
@@ -397,29 +525,6 @@ namespace Automation4 {
 		return (LuaScript*)ptr;
 	}
 
-	int LuaScript::LuaTextExtents(lua_State *L)
-	{
-		luaL_argcheck(L, lua_istable(L, 1), 1, "");
-		luaL_argcheck(L, lua_isstring(L, 2), 2, "");
-
-		lua_pushvalue(L, 1);
-		agi::scoped_ptr<AssEntry> et(LuaAssFile::LuaToAssEntry(L));
-		AssStyle *st = dynamic_cast<AssStyle*>(et.get());
-		lua_pop(L, 1);
-		if (!st)
-			return luaL_error(L, "Not a style entry");
-
-		double width, height, descent, extlead;
-		if (!CalculateTextExtents(st, luaL_checkstring(L, 2), width, height, descent, extlead))
-			return luaL_error(L, "Some internal error occurred calculating text_extents");
-
-		push_value(L, width);
-		push_value(L, height);
-		push_value(L, descent);
-		push_value(L, extlead);
-		return 4;
-	}
-
 	/// @brief Module loader which uses our include rather than Lua's, for unicode file support
 	/// @param L The Lua state
 	/// @return Always 1 per loader_Lua?
@@ -431,18 +536,27 @@ namespace Automation4 {
 
 		// Get the lua package include path (which the user may have modified)
 		lua_getglobal(L, "package");
-		push_value(L, "path");
-		lua_gettable(L, -2);
+		lua_getfield(L, -1, "path");
 		std::string package_paths(luaL_checkstring(L, -1));
 		lua_pop(L, 2);
 
 		boost::char_separator<char> sep(";");
 		for (auto filename : boost::tokenizer<boost::char_separator<char>>(package_paths, sep)) {
 			boost::replace_all(filename, "?", module);
+
+			// If there's a .moon file at that path, load it instead of the
+			// .lua file
+			agi::fs::path path = filename;
+			if (agi::fs::HasExtension(path, "lua")) {
+				agi::fs::path moonpath = path;
+				moonpath.replace_extension("moon");
+				if (agi::fs::FileExists(moonpath))
+					path = moonpath;
+			}
+
 			try {
-				LuaScriptReader script_reader(filename);
-				if (lua_load(L, script_reader.reader_func, &script_reader, filename.c_str()))
-					return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", filename.c_str(), luaL_checkstring(L, -1));
+				if (!LoadFile(L, path))
+					return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", path.string().c_str(), luaL_checkstring(L, -1));
 				break;
 			}
 			catch (agi::fs::FileNotFound const&) {
@@ -452,7 +566,7 @@ namespace Automation4 {
 				// Not an error so swallow and continue on
 			}
 			catch (agi::Exception const& e) {
-				return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", filename.c_str(), e.GetChainedMessage().c_str());
+				return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", path.string().c_str(), e.GetChainedMessage().c_str());
 			}
 		}
 
@@ -480,87 +594,12 @@ namespace Automation4 {
 		if (!agi::fs::FileExists(filepath))
 			return luaL_error(L, "Lua include not found: %s", filename.c_str());
 
-		LuaScriptReader script_reader(filepath);
-		if (lua_load(L, script_reader.reader_func, &script_reader, filename.c_str()))
+		if (!LoadFile(L, filepath))
 			return luaL_error(L, "Error loading Lua include \"%s\":\n\n%s", filename.c_str(), luaL_checkstring(L, -1));
 
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
 		lua_call(L, 0, LUA_MULTRET);
 		return lua_gettop(L) - pretop;
-	}
-
-	int LuaScript::LuaFrameFromMs(lua_State *L)
-	{
-		const agi::Context *c = get_context(L);
-		int ms = lua_tointeger(L, -1);
-		lua_pop(L, 1);
-		if (c && c->videoController->TimecodesLoaded())
-			push_value(L, c->videoController->FrameAtTime(ms, agi::vfr::START));
-		else
-			lua_pushnil(L);
-
-		return 1;
-	}
-
-	int LuaScript::LuaMsFromFrame(lua_State *L)
-	{
-		const agi::Context *c = get_context(L);
-		int frame = lua_tointeger(L, -1);
-		lua_pop(L, 1);
-		if (c && c->videoController->TimecodesLoaded())
-			push_value(L, c->videoController->TimeAtFrame(frame, agi::vfr::START));
-		else
-			lua_pushnil(L);
-		return 1;
-	}
-
-	int LuaScript::LuaVideoSize(lua_State *L)
-	{
-		const agi::Context *c = get_context(L);
-		if (c && c->videoController->IsLoaded()) {
-			push_value(L, c->videoController->GetWidth());
-			push_value(L, c->videoController->GetHeight());
-			push_value(L, c->videoController->GetAspectRatioValue());
-			push_value(L, (int)c->videoController->GetAspectRatioType());
-			return 4;
-		}
-		else {
-			lua_pushnil(L);
-			return 1;
-		}
-	}
-
-	int LuaScript::LuaGetKeyframes(lua_State *L)
-	{
-		const agi::Context *c = get_context(L);
-		if (!c) {
-			lua_pushnil(L);
-			return 1;
-		}
-
-		std::vector<int> const& kf = c->videoController->GetKeyFrames();
-
-		lua_newtable(L);
-		for (size_t i = 0; i < kf.size(); ++i) {
-			push_value(L, kf[i]);
-			lua_rawseti(L, -2, i);
-		}
-
-		return 1;
-	}
-
-	int LuaScript::LuaDecodePath(lua_State *L)
-	{
-		std::string path = luaL_checkstring(L, 1);
-		lua_pop(L, 1);
-		push_value(L, config::path->Decode(path));
-		return 1;
-	}
-
-	int LuaScript::LuaCancel(lua_State *L)
-	{
-		lua_pushnil(L);
-		return lua_error(L);
 	}
 
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, std::string const& title, wxWindow *parent, bool can_open_config)
@@ -934,18 +973,15 @@ namespace Automation4 {
 	}
 
 	LuaScriptFactory::LuaScriptFactory()
-	: ScriptFactory("Lua", "*.lua")
+	: ScriptFactory("Lua", "*.lua,*.moon")
 	{
 		Register(this);
 	}
 
 	Script* LuaScriptFactory::Produce(agi::fs::path const& filename) const
 	{
-		// Just check if file extension is .lua
-		// Reject anything else
-		if (agi::fs::HasExtension(filename, "lua"))
+		if (agi::fs::HasExtension(filename, "lua") || agi::fs::HasExtension(filename, "moon"))
 			return new LuaScript(filename);
-		else
-			return 0;
+		return nullptr;
 	}
 }

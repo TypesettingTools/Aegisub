@@ -51,6 +51,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
@@ -517,8 +518,10 @@ namespace Automation4 {
 			if (fact->GetEngineName().empty() || fact->GetFilenamePattern().empty())
 				continue;
 
-			fnfilter += str(boost::format("%s scripts (%s)|%s|") % fact->GetEngineName() % fact->GetFilenamePattern() % fact->GetFilenamePattern());
-			catchall += fact->GetFilenamePattern() + ";";
+			std::string filter(fact->GetFilenamePattern());
+			boost::replace_all(filter, ",", ";");
+			fnfilter += str(boost::format("%s scripts (%s)|%s|") % fact->GetEngineName() % fact->GetFilenamePattern() % filter);
+			catchall += filter + ";";
 		}
 		fnfilter += from_wx(_("All Files")) + " (*.*)|*.*";
 

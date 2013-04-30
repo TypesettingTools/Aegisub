@@ -22,33 +22,41 @@
 #include "auto4_lua_scriptreader.h"
 
 #include <libaegisub/io.h>
+#include <libaegisub/fs.h>
 
 #include <fstream>
+#include <lua.hpp>
+#include <memory>
 
 namespace Automation4 {
-	LuaScriptReader::LuaScriptReader(agi::fs::path const& filename)
-	: file(agi::io::Open(filename))
-	, first(true)
-	{
-	}
+	bool LoadFile(lua_State *L, agi::fs::path const& filename) {
+		std::unique_ptr<std::istream> file(agi::io::Open(filename, true));
+		file->seekg(0, std::ios::end);
+		size_t size = file->tellg();
+		file->seekg(0, std::ios::beg);
 
-	LuaScriptReader::~LuaScriptReader() { }
+		std::string buff;
+		buff.resize(size);
 
-	const char *LuaScriptReader::Read(size_t *bytes_read) {
-		file->read(buf, sizeof(buf));
-		*bytes_read = file->gcount();
-		if (first) {
-			first = false;
-			// Skip the bom
-			if (*bytes_read >= 3 && buf[0] == -17 && buf[1] == -69 && buf[2] == -65) {
-				*bytes_read -= 3;
-				return buf + 3;
-			}
+		// Discard the BOM if present
+		file->read(&buff[0], 3);
+		size_t start = file->gcount();
+		if (start == 3 && buff[0] == -17 && buff[1] == -69 && buff[2] == -65) {
+			buff.resize(size - 3);
+			start = 0;
 		}
-		return buf;
-	}
 
-	const char* LuaScriptReader::reader_func(lua_State *, void *data, size_t *size) {
-		return static_cast<LuaScriptReader*>(data)->Read(size);
+		file->read(&buff[start], size - start);
+
+		if (!agi::fs::HasExtension(filename, "moon"))
+			return luaL_loadbuffer(L, &buff[0], buff.size(), filename.string().c_str()) == 0;
+
+		// We have a MoonScript file, so we need to load it with that
+		// It might be nice to have a dedicated lua state for compiling
+		// MoonScript to Lua
+		if (luaL_dostring(L, "return require('moonscript').loadstring"))
+			return false; // Leaves error message on stack
+		lua_pushlstring(L, &buff[0], buff.size());
+		return lua_pcall(L, 1, 1, 0) == 0; // Leaves script or error message on stack
 	}
 }

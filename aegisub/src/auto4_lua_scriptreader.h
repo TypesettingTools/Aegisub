@@ -19,23 +19,8 @@
 
 #include <libaegisub/fs_fwd.h>
 
-#include <iosfwd>
-#include <memory>
-#include <string>
-
 struct lua_State;
 
 namespace Automation4 {
-	class LuaScriptReader {
-		std::unique_ptr<std::istream> file;
-		bool first;
-		char buf[512];
-
-		const char *Read(size_t *bytes_read);
-	public:
-		LuaScriptReader(agi::fs::path const& filename);
-		~LuaScriptReader();
-
-		static const char* reader_func(lua_State *, void *data, size_t *size);
-	};
+	bool LoadFile(lua_State *L, agi::fs::path const& filename);
 }
