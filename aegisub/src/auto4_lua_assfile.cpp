@@ -512,6 +512,28 @@ namespace Automation4 {
 		LOG_D("automation/lua") << "Garbage collected LuaAssFile";
 	}
 
+	int LuaAssFile::ObjectIPairs(lua_State *L)
+	{
+		lua_pushvalue(L, lua_upvalueindex(1)); // push 'this' as userdata
+		lua_pushcclosure(L, closure_wrapper<&LuaAssFile::IterNext>, 1);
+		lua_pushnil(L);
+		push_value(L, 0);
+		return 3;
+	}
+
+	int LuaAssFile::IterNext(lua_State *L)
+	{
+		int i = luaL_checkint(L, 2);
+		if (i >= (int)lines.size()) {
+			lua_pushnil(L);
+			return 1;
+		}
+
+		push_value(L, i + 1);
+		AssEntryToLua(L, lines[i]);
+		return 2;
+	}
+
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
 		agi::scoped_ptr<AssEntry> e(LuaToAssEntry(L));
@@ -619,6 +641,7 @@ namespace Automation4 {
 		set_field(L, "__newindex", closure_wrapper_v<&LuaAssFile::ObjectIndexWrite>);
 		set_field(L, "__len", closure_wrapper<&LuaAssFile::ObjectGetLen>);
 		set_field(L, "__gc", closure_wrapper_v<&LuaAssFile::ObjectGarbageCollect>);
+		set_field(L, "__ipairs", closure_wrapper<&LuaAssFile::ObjectIPairs>);
 		lua_setmetatable(L, -2);
 
 		// register misc functions

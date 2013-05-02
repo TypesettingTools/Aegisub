@@ -93,6 +93,8 @@ namespace Automation4 {
 		void ObjectAppend(lua_State *L);
 		void ObjectInsert(lua_State *L);
 		void ObjectGarbageCollect(lua_State *L);
+		int ObjectIPairs(lua_State *L);
+		int IterNext(lua_State *L);
 
 		int LuaParseKaraokeData(lua_State *L);
 
