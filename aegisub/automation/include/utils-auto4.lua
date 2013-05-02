@@ -44,3 +44,6 @@ clamp = util.clamp
 interpolate = util.interpolate
 interpolate_color = util.interpolate_color
 interpolate_alpha = util.interpolate_alpha
+string.headtail = util.headtail
+string.trim = util.trim
+string.words = util.words
