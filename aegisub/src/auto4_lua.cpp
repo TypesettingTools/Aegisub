@@ -149,6 +149,48 @@ namespace {
 		set_field(L, "set", clipboard_set);
 		return 1;
 	}
+
+	struct table_pairs {
+		static void init(lua_State *L) { lua_pushnil(L); }
+		static int next(lua_State *L) {
+			luaL_checktype(L, 1, LUA_TTABLE);
+			lua_settop(L, 2);
+			if (lua_next(L, 1))
+				return 2;
+			lua_pushnil(L);
+			return 1;
+		}
+		static const char *method() { return "__pairs"; }
+	};
+
+	struct table_ipairs {
+		static void init(lua_State *L) { push_value(L, 1); }
+		static int next(lua_State *L) {
+			luaL_checktype(L, 1, LUA_TTABLE);
+			int i = luaL_checkint(L, 2) + 1;
+			lua_pushinteger(L, i);
+			lua_rawgeti(L, 1, i);
+			return lua_isnil(L, -1) ? 1 : 2;
+		}
+		static const char *method() { return "__ipairs"; }
+	};
+
+	template<typename TableIter>
+	int pairs(lua_State *L) {
+		// If the metamethod is defined, call it instead
+		if (luaL_getmetafield(L, 1, TableIter::method())) {
+			lua_pushvalue(L, 1);
+			lua_call(L, 1, 3);
+			return 3;
+		}
+
+		// No metamethod, so use the table iterators
+		luaL_checktype(L, 1, LUA_TTABLE);
+		lua_pushcfunction(L, &TableIter::next);
+		lua_pushvalue(L, 1);
+		TableIter::init(L);
+		return 3;
+	}
 }
 
 namespace Automation4 {
@@ -193,6 +235,12 @@ namespace Automation4 {
 			lua_setglobal(L, "loadfile");
 			push_value(L, LuaInclude);
 			lua_setglobal(L, "include");
+
+			// replace pairs and ipairs with lua 5.2-style versions
+			push_value(L, &pairs<table_pairs>);
+			lua_setglobal(L, "pairs");
+			push_value(L, &pairs<table_ipairs>);
+			lua_setglobal(L, "ipairs");
 
 			// add include_path to the module load path
 			lua_getglobal(L, "package");
