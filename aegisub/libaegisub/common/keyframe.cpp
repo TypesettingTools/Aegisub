@@ -37,15 +37,15 @@ std::vector<int> agi_keyframes(std::istream &file) {
 	file >> fps_str;
 	file >> fps;
 
-	return std::vector<int>(std::istream_iterator<int>(file), std::istream_iterator<int>());
+	return std::vector<int>(agi::line_iterator<int>(file), agi::line_iterator<int>());
 }
 
 std::vector<int> other_keyframes(std::istream &file, char (*func)(std::string const&)) {
 	int count = 0;
 	std::vector<int> ret;
 	agi::line_iterator<std::string> end;
-	for (agi::line_iterator<std::string> iter(file); iter != end; ++iter) {
-		char c = tolower(func(*iter));
+	for (auto line : agi::line_iterator<std::string>(file)) {
+		char c = tolower(func(line));
 		if (c == 'i')
 			ret.push_back(count++);
 		else if (c == 'p' || c == 'b')
