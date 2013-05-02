@@ -57,6 +57,7 @@
 #include <boost/thread.hpp>
 #include <memory>
 #include <mutex>
+#include <thread>
 
 namespace {
 std::unique_ptr<agi::dispatch::Queue> cache_queue;
@@ -104,7 +105,11 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(std::string)
 	progress.Run([=](agi::ProgressSink *ps) {
 		ps->SetIndeterminate();
 		while (!*done && !ps->IsCancelled())
+#ifdef _MSC_VER
+			std::this_thread::sleep_for(std::chrono::milliseconds(250));
+#else
 			boost::this_thread::sleep_for(boost::chrono::milliseconds(250));
+#endif
 	});
 
 	ass_renderer = *renderer;
