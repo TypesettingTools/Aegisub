@@ -33,7 +33,7 @@ select_overlaps = (subs) ->
     overlaps = {}
     for line in *dialogue
         if line.start_time >= end_time
-            end_time = line.start_time
+            end_time = line.end_time
         else
             table.insert overlaps, line.i
     overlaps

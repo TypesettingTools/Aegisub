@@ -21,7 +21,7 @@ select_overlaps = function(subs)
   for _index_0 = 1, #_list_0 do
     local line = _list_0[_index_0]
     if line.start_time >= end_time then
-      end_time = line.start_time
+      end_time = line.end_time
     else
       table.insert(overlaps, line.i)
     end
