@@ -164,13 +164,13 @@ namespace {
 	};
 
 	struct table_ipairs {
-		static void init(lua_State *L) { push_value(L, 1); }
+		static void init(lua_State *L) { push_value(L, 0); }
 		static int next(lua_State *L) {
 			luaL_checktype(L, 1, LUA_TTABLE);
 			int i = luaL_checkint(L, 2) + 1;
 			lua_pushinteger(L, i);
 			lua_rawgeti(L, 1, i);
-			return lua_isnil(L, -1) ? 1 : 2;
+			return lua_isnil(L, -1) ? 0 : 2;
 		}
 		static const char *method() { return "__ipairs"; }
 	};
