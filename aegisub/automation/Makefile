@@ -2,6 +2,7 @@ include ../Makefile.inc
 
 LIB_SHARED = aegisub.so
 LIB_VERSION = 0.1.0
+BUILD_LIB = no
 
 CXXFLAGS += -I../libaegisub/include -I../src $(CXXFLAGS_WX)
 CPPFLAGS += $(CPPFLAGS_BOOST)

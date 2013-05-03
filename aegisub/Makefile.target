@@ -4,8 +4,12 @@
 #       * Allow variables to be overridden on the CL.
 
 .PHONY: all install clean subdirs $(SUBDIRS)
-all: subdirs $(LIB) $(LIB_SHARED) $(PROGRAM)
+all: subdirs $(PROGRAM)
 .DEFAULT_GOAL := all
+
+ifneq (no, $(BUILD_LIB))
+all: $(LIB) $(LIB_SHARED)
+endif
 
 OBJ		= $(addsuffix .o, $(basename $(SRC)))
 DEP		= $(addsuffix .d, $(basename $(SRC)))
