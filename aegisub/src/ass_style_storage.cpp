@@ -44,6 +44,7 @@
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <fstream>
 
 AssStyleStorage::~AssStyleStorage() {
 	agi::util::delete_clear(style);
