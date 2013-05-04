@@ -65,7 +65,7 @@
     <RarContents Include="$(AegisubSourceBase)automation\autoload\macro-2-mkfullwitdh.lua">
       <OutputPath>automation\autoload\</OutputPath>
     </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\autoload\select-overlaps.lua">
+    <RarContents Include="$(AegisubSourceBase)automation\autoload\select-overlaps.moon">
       <OutputPath>automation\autoload\</OutputPath>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\autoload\strip-tags.lua">
@@ -76,6 +76,18 @@
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\demos\raytracer.lua">
       <OutputPath>automation\demos\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\clipboard.lua">
+      <OutputPath>automation\include\aegisub\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\re.moon">
+      <OutputPath>automation\include\aegisub\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\unicode.moon">
+      <OutputPath>automation\include\aegisub\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\util.moon">
+      <OutputPath>automation\include\aegisub\</OutputPath>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\include\cleantags.lua">
       <OutputPath>automation\include\</OutputPath>
@@ -89,7 +101,13 @@
     <RarContents Include="$(AegisubSourceBase)automation\include\karaskel.lua">
       <OutputPath>automation\include\</OutputPath>
     </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\moonscript.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\include\re.lua">
+      <OutputPath>automation\include\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\underscore.moon">
       <OutputPath>automation\include\</OutputPath>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\include\unicode.lua">
@@ -100,54 +118,6 @@
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\include\utils.lua">
       <OutputPath>automation\include\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\appended-lines.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\basic-export-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\basic-tests.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\config-dialog-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\gen-absurd-t-line.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\hello-world.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\karaoke-parse-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\progress-reporting-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\selection-set-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\test-filter-name-clash.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\test-furi.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\test-tablecopy-recursive.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\test-text_extents.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\text-extents-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\trace-level-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
-    </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\tests\unicode-test.lua">
-      <OutputPath>automation\tests\</OutputPath>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\AssDraw3.chm" />
     <RarContents Include="$(AegisubSourceBase)bin\AssDraw3.exe" />
