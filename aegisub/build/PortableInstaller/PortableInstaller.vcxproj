@@ -107,9 +107,6 @@
     <RarContents Include="$(AegisubSourceBase)automation\include\re.lua">
       <OutputPath>automation\include\</OutputPath>
     </RarContents>
-    <RarContents Include="$(AegisubSourceBase)automation\include\underscore.moon">
-      <OutputPath>automation\include\</OutputPath>
-    </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\include\unicode.lua">
       <OutputPath>automation\include\</OutputPath>
     </RarContents>

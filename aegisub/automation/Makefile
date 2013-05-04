@@ -25,12 +25,19 @@ DATA_AUTOMATION += \
 	autoload/karaoke-auto-leadin.lua \
 	autoload/macro-1-edgeblur.lua \
 	autoload/macro-2-mkfullwitdh.lua \
-	autoload/select-overlaps.lua \
+	autoload/select-overlaps.moon \
 	autoload/strip-tags.lua \
+	demos/future-windy-blur.lua \
+	demos/raytracer.lua \
+	include/aegisub/clipboard.lua \
+	include/aegisub/re.moon \
+	include/aegisub/unicode.moon \
+	include/aegisub/util.moon \
 	include/cleantags.lua \
 	include/clipboard.lua \
 	include/karaskel-auto4.lua \
 	include/karaskel.lua \
+	include/moonscript.lua \
 	include/re.lua \
 	include/unicode.lua \
 	include/utils-auto4.lua \
