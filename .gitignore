@@ -76,3 +76,4 @@ aegisub/tests/*.json
 /packages
 .nuget
 /aegisub/include
+/deps/fftw
