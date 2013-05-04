@@ -219,7 +219,7 @@
 #define wxUSE_DIB_FOR_BITMAP 0
 #define wxUSE_WXDIB 1
 #define wxUSE_POSTSCRIPT_ARCHITECTURE_IN_MSW 0
-#define wxUSE_REGKEY 0
+#define wxUSE_REGKEY 1
 #define wxUSE_RICHEDIT 0
 #define wxUSE_RICHEDIT2 0
 #define wxUSE_OWNER_DRAWN 1
