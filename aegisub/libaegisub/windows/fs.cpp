@@ -72,6 +72,23 @@ void Touch(path const& file) {
 		throw EnvironmentError("SetFileTime failed with error: " + util::ErrorString(GetLastError()));
 }
 
+void Copy(fs::path const& from, fs::path const& to) {
+	acs::CheckFileRead(from);
+	CreateDirectory(to.parent_path());
+	acs::CheckDirWrite(to.parent_path());
+
+	if (!CopyFile(from.wstring().c_str(), to.wstring().c_str(), false)) {
+		switch (GetLastError()) {
+		case ERROR_FILE_NOT_FOUND:
+			throw FileNotFound(from);
+		case ERROR_ACCESS_DENIED:
+			throw fs::WriteDenied("Could not overwrite " + to.string());
+		default:
+			throw fs::WriteDenied("Could not copy: " + util::ErrorString(GetLastError()));
+		}
+	}
+}
+
 struct DirectoryIterator::PrivData {
 	scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> h;
 	PrivData() : h(INVALID_HANDLE_VALUE, FindClose) { }

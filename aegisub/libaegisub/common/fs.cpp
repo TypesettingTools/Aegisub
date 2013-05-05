@@ -23,7 +23,9 @@
 #include "libaegisub/log.h"
 
 #include <boost/algorithm/string/predicate.hpp>
+#define BOOST_NO_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
+#undef BOOST_NO_SCOPED_ENUMS
 
 namespace bfs = boost::filesystem;
 namespace ec = boost::system::errc;
@@ -92,11 +94,6 @@ namespace agi { namespace fs {
 
 	void Rename(const path& from, const path& to) {
 		CHECKED_CALL(bfs::rename(from, to, ec), from, to);
-	}
-
-	void Copy(path const& from, path const& to) {
-		CreateDirectory(to.parent_path());
-		CHECKED_CALL(bfs::copy_file(from, to, bfs::copy_option::overwrite_if_exists, ec), from, to);
 	}
 
 	bool HasExtension(path const& p, std::string const& ext) {

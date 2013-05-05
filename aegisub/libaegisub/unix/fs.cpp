@@ -16,7 +16,9 @@
 
 #include "config.h"
 
+#include "libaegisub/access.h"
 #include "libaegisub/fs.h"
+#include "libaegisub/io.h"
 
 #include <boost/filesystem.hpp>
 #include <fcntl.h>
@@ -38,6 +40,15 @@ void Touch(path const& file) {
 		futimes(fd, nullptr);
 		close(fd);
 	}
+}
+
+void Copy(fs::path const& from, fs::path const& to) {
+	acs::CheckFileRead(from);
+	CreateDirectory(to.parent_path());
+	acs::CheckDirWrite(to.parent_path());
+
+	std::unique_ptr<std::istream> in(io::Open(from, true));
+	io::Save(to).Get() << in->rdbuf();
 }
 
 struct DirectoryIterator::PrivData {

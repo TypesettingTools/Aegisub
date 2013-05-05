@@ -61,6 +61,9 @@
 // Boost
 #include <boost/container/list.hpp>
 #include <boost/container/map.hpp>
+#define BOOST_NO_SCOPED_ENUMS
+#include <boost/filesystem.hpp>
+#undef BOOST_NO_SCOPED_ENUMS
 
 #ifdef __DEPRECATED // Dodge GCC warnings
 # undef __DEPRECATED
