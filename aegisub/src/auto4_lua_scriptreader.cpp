@@ -57,6 +57,7 @@ namespace Automation4 {
 		if (luaL_dostring(L, "return require('moonscript').loadstring"))
 			return false; // Leaves error message on stack
 		lua_pushlstring(L, &buff[0], buff.size());
-		return lua_pcall(L, 1, 1, 0) == 0; // Leaves script or error message on stack
+		lua_pushstring(L, filename.string().c_str());
+		return lua_pcall(L, 2, 1, 0) == 0; // Leaves script or error message on stack
 	}
 }
