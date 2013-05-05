@@ -14,6 +14,7 @@
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 sformat = string.format
+local *
 
 -- Make a shallow copy of a table
 copy = (tbl) -> {k, v for k, v in pairs tbl}
@@ -23,9 +24,9 @@ copy = (tbl) -> {k, v for k, v in pairs tbl}
 deep_copy = (tbl) ->
   seen = {}
   copy = (val) ->
-    return val if type(tbl) != 'table'
-    return seen[val] if seen[tbl]
-    seen[val] = tbl
+    return val if type(val) != 'table'
+    return seen[val] if seen[val]
+    seen[val] = val
     {k, copy(v) for k, v in pairs val}
   copy tbl
 
@@ -74,7 +75,7 @@ HSV_to_RGB = (H, S, V) ->
 
   -- Saturation is zero, make grey
   if S == 0
-    r = @clamp(V*255, 0, 255)
+    r = clamp(V*255, 0, 255)
     g = r
     b = r
 
