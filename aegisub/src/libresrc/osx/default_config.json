@@ -490,7 +490,8 @@
 		"Spell Checker" : {
 			"Backend" : "hunspell",
 			"Language" : "en_US",
-			"Skip Comments" : false
+			"Skip Comments" : false,
+			"Skip Uppercase" : false
 		},
 		"Style Editor" : {
 			"Last" : {

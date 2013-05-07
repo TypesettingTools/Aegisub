@@ -40,6 +40,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/spellchecker.h>
 
+#include <boost/locale/conversion.hpp>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/intl.h>
@@ -124,11 +125,16 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	{
 		wxSizerFlags button_flags = wxSizerFlags().Expand().Bottom().Border(wxBOTTOM, 5);
 
-		skip_comments = new wxCheckBox(this, -1, _("&Skip Comments"));
-		actions_sizer->Add(skip_comments, button_flags);
-		skip_comments->SetValue(OPT_GET("Tool/Spell Checker/Skip Comments")->GetBool());
-		skip_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED,
-			[](wxCommandEvent &evt) { OPT_SET("Tool/Spell Checker/Skip Comments")->SetBool(!!evt.GetInt()); });
+		auto make_checkbox = [&](wxString const& text, const char *opt) {
+			auto checkbox = new wxCheckBox(this, -1, text);
+			actions_sizer->Add(checkbox, button_flags);
+			checkbox->SetValue(OPT_GET(opt)->GetBool());
+			checkbox->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED,
+				[=](wxCommandEvent &evt) { OPT_SET(opt)->SetBool(!!evt.GetInt()); });
+		};
+
+		make_checkbox(_("&Skip Comments"), "Tool/Spell Checker/Skip Comments");
+		make_checkbox(_("Ignore &UPPERCASE words"), "Tool/Spell Checker/Skip Uppercase");
 
 		wxButton *button;
 
@@ -240,11 +246,13 @@ bool DialogSpellChecker::FindNext() {
 }
 
 bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int *commit_id) {
-	if (active_line->Comment && skip_comments->GetValue()) return false;
+	if (active_line->Comment && OPT_GET("Tool/Spell Checker/Skip Comments")->GetBool()) return false;
 
 	std::string text = active_line->Text;
 	auto tokens = agi::ass::TokenizeDialogueBody(text);
 	agi::ass::SplitWords(text, tokens);
+
+	bool ignore_uppercase = OPT_GET("Tool/Spell Checker/Skip Uppercase")->GetBool();
 
 	word_start = 0;
 	for (auto const& tok : tokens) {
@@ -256,7 +264,7 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 		word_len = tok.length;
 		std::string word = text.substr(word_start, word_len);
 
-		if (auto_ignore.count(word) || spellchecker->CheckWord(word)) {
+		if (auto_ignore.count(word) || spellchecker->CheckWord(word) || (ignore_uppercase && word == boost::locale::to_upper(word))) {
 			word_start += tok.length;
 			continue;
 		}

@@ -59,7 +59,6 @@ class DialogSpellChecker : public wxDialog {
 	wxComboBox *language;      ///< The list of available languages
 	wxButton *add_button;      ///< Add word to currently active dictionary
 	wxButton *remove_button;   ///< Remove word from currently active dictionary
-	wxCheckBox *skip_comments; ///< Skip over commented lines
 
 	AssDialogue *start_line;  ///< The first line checked
 	AssDialogue *active_line; ///< The most recently checked line
