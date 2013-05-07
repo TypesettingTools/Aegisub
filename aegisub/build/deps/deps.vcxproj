@@ -40,10 +40,10 @@ Aegisub Project http://www.aegisub.org/
     <!-- Generated with http://apps.icu-project.org/datacustom/ -->
     <!-- Includes Break Iterator and Collator data only -->
     <DownloadTgzFile
-      Url="http://www.aegisub.org/~plorkyeran/icudt50l.dat.tgz"
+      Url="http://www.aegisub.org/~plorkyeran/icudt51l.dat.tgz"
       Destination="$(MSBuildThisFileDirectory)..\..\..\deps\icu\source\data\in"
-      OutputFile="$(MSBuildThisFileDirectory)..\..\..\deps\icu\source\data\in\icudt50l.dat"
-      Hash="593aa12dc0413163b803582d22197c46804048c8"
+      OutputFile="$(MSBuildThisFileDirectory)..\..\..\deps\icu\source\data\in\icudt51l.dat"
+      Hash="0885a647fdd48645a6bba48a7f8957131882db02"
       />
   </Target>
 </Project>
