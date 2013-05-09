@@ -58,6 +58,16 @@ namespace Automation4 {
 			return false; // Leaves error message on stack
 		lua_pushlstring(L, &buff[0], buff.size());
 		lua_pushstring(L, filename.string().c_str());
-		return lua_pcall(L, 2, 1, 0) == 0; // Leaves script or error message on stack
+		if (lua_pcall(L, 2, 2, 0))
+			return false; // Leaves error message on stack
+
+		// loadstring returns nil, error on error or a function on success
+		if (lua_isnil(L, 1)) {
+			lua_remove(L, 1);
+			return false;
+		}
+
+		lua_pop(L, 1); // Remove the extra nil for the stackchecker
+		return true;
 	}
 }
