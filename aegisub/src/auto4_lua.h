@@ -187,8 +187,8 @@ namespace Automation4 {
 	class LuaDialog : public ScriptDialog {
 		/// Controls in this dialog
 		std::vector<LuaDialogControl*> controls;
-		/// The names of buttons in this dialog if non-default ones were used
-		std::vector<std::string> buttons;
+		/// The names and IDs of buttons in this dialog if non-default ones were used
+		std::vector<std::pair<int, std::string>> buttons;
 
 		/// Does the dialog contain any buttons
 		bool use_buttons;
@@ -197,8 +197,6 @@ namespace Automation4 {
 		int button_pushed;
 
 		wxWindow *window;
-
-		void OnButtonPush(wxCommandEvent &evt);
 
 	public:
 		LuaDialog(lua_State *L, bool include_buttons);

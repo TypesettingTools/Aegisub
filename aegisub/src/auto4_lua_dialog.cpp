@@ -46,9 +46,12 @@
 #include <libaegisub/log.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/range/adaptors.hpp>
+#include <boost/range/algorithm.hpp>
 #include <boost/tokenizer.hpp>
 #include <cassert>
 #include <cfloat>
+#include <unordered_map>
 
 #include <wx/button.h>
 #include <wx/checkbox.h>
@@ -98,15 +101,39 @@ namespace {
 		return get_field(L, name, std::string());
 	}
 
+	template<typename Func>
+	void lua_for_each(lua_State *L, Func&& func) {
+		lua_pushnil(L); // initial key
+		while (lua_next(L, -2)) {
+			func();
+			lua_pop(L, 1); // pop value, leave key
+		}
+		lua_pop(L, 1); // pop key
+	}
+
 	template<class T>
 	void read_string_array(lua_State *L, T &cont) {
-		lua_pushnil(L);
-		while (lua_next(L, -2)) {
+		lua_for_each(L, [&] {
 			if (lua_isstring(L, -1))
 				cont.push_back(lua_tostring(L, -1));
-			lua_pop(L, 1);
+		});
+	}
+
+	int string_to_wx_id(std::string const& str) {
+		static std::unordered_map<std::string, int> ids;
+		if (ids.empty()) {
+			ids["ok"] = wxID_OK;
+			ids["yes"] = wxID_YES;
+			ids["save"] = wxID_SAVE;
+			ids["apply"] = wxID_APPLY;
+			ids["close"] = wxID_CLOSE;
+			ids["no"] = wxID_NO;
+			ids["cancel"] = wxID_CANCEL;
+			ids["help"] = wxID_HELP;
+			ids["context_help"] = wxID_CONTEXT_HELP;
 		}
-		lua_pop(L, 1);
+		auto it = ids.find(str);
+		return it == end(ids) ? -1 : it->second;
 	}
 }
 
@@ -449,7 +476,31 @@ namespace Automation4 {
 
 		if (include_buttons && lua_istable(L, 2)) {
 			lua_pushvalue(L, 2);
-			read_string_array(L, buttons);
+			lua_for_each(L, [&]{
+				// String key: key is button ID, value is button label
+				// lua_isstring actually checks "is convertible to string"
+				if (lua_type(L, -2) == LUA_TSTRING)
+					buttons.emplace_back(
+						string_to_wx_id(lua_tostring(L, -2)),
+						luaL_checkstring(L, -1));
+
+				// Number key, string value: value is label
+				else if (lua_isstring(L, -1))
+					buttons.emplace_back(-1, lua_tostring(L, -1));
+
+				// Table value: Is a subtable that needs to be flatten.
+				// Used for ordered key-value pairs
+				else if (lua_istable(L, -1)) {
+					lua_pushvalue(L, -1);
+					lua_for_each(L, [&]{
+						buttons.emplace_back(
+							string_to_wx_id(luaL_checkstring(L, -2)),
+							luaL_checkstring(L, -1));
+					});
+				}
+				else
+					luaL_error(L, "Invalid entry in buttons table");
+			});
 		}
 	}
 
@@ -460,35 +511,57 @@ namespace Automation4 {
 	wxWindow* LuaDialog::CreateWindow(wxWindow *parent) {
 		window = new wxPanel(parent);
 
-		wxGridBagSizer *s = new wxGridBagSizer(4, 4);
+		auto s = new wxGridBagSizer(4, 4);
 		for (auto c : controls)
-			s->Add(c->Create(window), wxGBPosition(c->y, c->x), wxGBSpan(c->height, c->width), c->GetSizerFlags());
+			s->Add(c->Create(window), wxGBPosition(c->y, c->x),
+				wxGBSpan(c->height, c->width), c->GetSizerFlags());
 
-		if (!use_buttons)
+		if (!use_buttons) {
 			window->SetSizerAndFit(s);
-		else {
-			wxStdDialogButtonSizer *bs = new wxStdDialogButtonSizer;
-			if (buttons.size() > 0) {
-				LOG_D("automation/lua/dialog") << "creating user buttons";
-				for (size_t i = 0; i < buttons.size(); ++i) {
-					LOG_D("automation/lua/dialog") << "button '" << buttons[i] << "' gets id " << 1001+(wxWindowID)i;
-					bs->Add(new wxButton(window, 1001+(wxWindowID)i, to_wx(buttons[i])));
-				}
-			}
-			else {
-				LOG_D("automation/lua/dialog") << "creating default buttons";
-				bs->Add(new wxButton(window, wxID_OK));
-				bs->Add(new wxButton(window, wxID_CANCEL));
-			}
-			bs->Realize();
-
-			window->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &LuaDialog::OnButtonPush, this);
-
-			wxBoxSizer *ms = new wxBoxSizer(wxVERTICAL);
-			ms->Add(s, 0, wxBOTTOM, 5);
-			ms->Add(bs);
-			window->SetSizerAndFit(ms);
+			return window;
 		}
+
+		if (buttons.size() == 0) {
+			buttons.emplace_back(wxID_OK, "");
+			buttons.emplace_back(wxID_CANCEL, "");
+		}
+
+		auto dialog = static_cast<wxDialog *>(parent);
+		auto bs = new wxStdDialogButtonSizer;
+
+		auto make_button = [&](wxWindowID id, int button_pushed, wxString const& text) -> wxButton *{
+			auto button = new wxButton(window, id, text);
+			button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent &evt) {
+				this->button_pushed = button_pushed;
+				dialog->EndModal(0);
+			});
+
+			if (id == wxID_OK || id == wxID_YES || id == wxID_SAVE) {
+				button->SetFocus();
+				button->SetDefault();
+				dialog->SetAffirmativeId(id);
+			}
+
+			if (id == wxID_CLOSE || id == wxID_NO)
+				dialog->SetEscapeId(id);
+
+			return button;
+		};
+
+		if (boost::count(buttons | boost::adaptors::map_keys, -1) == 0) {
+			for (size_t i = 0; i < buttons.size(); ++i)
+				bs->AddButton(make_button(buttons[i].first, i, wxEmptyString));
+			bs->Realize();
+		}
+		else {
+			for (size_t i = 0; i < buttons.size(); ++i)
+				bs->Add(make_button(buttons[i].first, i, buttons[i].second));
+		}
+
+		auto ms = new wxBoxSizer(wxVERTICAL);
+		ms->Add(s, 0, wxBOTTOM, 5);
+		ms->Add(bs);
+		window->SetSizerAndFit(ms);
 
 		return window;
 	}
@@ -496,22 +569,10 @@ namespace Automation4 {
 	int LuaDialog::LuaReadBack(lua_State *L) {
 		// First read back which button was pressed, if any
 		if (use_buttons) {
-			LOG_D("automation/lua/dialog") << "reading back button_pushed";
-			int btn = button_pushed;
-			if (btn == 0) {
-				LOG_D("automation/lua/dialog") << "was zero, canceled";
-				// Always cancel/closed
-				lua_pushboolean(L, 0);
-			}
-			else if (buttons.size() == 0 && btn == 1) {
-				LOG_D("automation/lua/dialog") << "default buttons, button 1 bushed, Ok button";
-				lua_pushboolean(L, 1);
-			}
-			else {
-				LOG_D("automation/lua/dialog") << "user button: " << buttons.at(btn-1);
-				// button_pushed is index+1 to reserve 0 for Cancel
-				lua_pushstring(L, buttons.at(btn-1).c_str());
-			}
+			if (buttons[button_pushed].first == wxID_CANCEL)
+				lua_pushboolean(L, false);
+			else
+				lua_pushstring(L, buttons[button_pushed].second.c_str());
 		}
 
 		// Then read controls back
@@ -554,28 +615,5 @@ namespace Automation4 {
 					control->UnserialiseValue(value);
 			}
 		}
-	}
-
-	void LuaDialog::OnButtonPush(wxCommandEvent &evt) {
-		// Let button_pushed == 0 mean "cancelled", such that pushing Cancel or closing the dialog
-		// will both result in button_pushed == 0
-		if (evt.GetId() == wxID_OK) {
-			LOG_D("automation/lua/dialog") << "was wxID_OK";
-			button_pushed = 1;
-		}
-		else if (evt.GetId() == wxID_CANCEL) {
-			LOG_D("automation/lua/dialog") << "was wxID_CANCEL";
-			button_pushed = 0;
-		}
-		else {
-			LOG_D("automation/lua/dialog") << "was user button";
-			// Therefore, when buttons are numbered from 1001 to 1000+n, make sure to set it to i+1
-			button_pushed = evt.GetId() - 1000;
-
-			// hack to make sure the dialog will be closed
-			evt.SetId(wxID_OK);
-		}
-		LOG_D("automation/lua/dialog") << "button_pushed set to: " << button_pushed;
-		evt.Skip();
 	}
 }
