@@ -310,7 +310,11 @@ namespace Automation4 {
 				DoubleValidator(double *value) : value(value) { }
 				wxValidator *Clone() const { return new DoubleValidator(value); }
 				bool Validate(wxWindow*) { return true; }
-				bool TransferToWindow() { return true; }
+
+				bool TransferToWindow() {
+					static_cast<wxSpinCtrlDouble*>(GetWindow())->SetValue(*value);
+					return true;
+				}
 
 				bool TransferFromWindow() {
 					*value = static_cast<wxSpinCtrlDouble*>(GetWindow())->GetValue();
