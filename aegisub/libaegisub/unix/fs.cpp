@@ -23,6 +23,7 @@
 #include <boost/filesystem.hpp>
 #include <fcntl.h>
 #include <fnmatch.h>
+#include <fstream>
 #include <sys/time.h>
 
 namespace bfs = boost::filesystem;
