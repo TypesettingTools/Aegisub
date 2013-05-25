@@ -36,14 +36,13 @@
 
 #include "auto4_lua.h"
 
+#include "auto4_lua_utils.h"
 #include "ass_style.h"
 #include "colour_button.h"
 #include "compat.h"
 #include "string_codec.h"
 #include "utils.h"
 #include "validators.h"
-
-#include <libaegisub/log.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptors.hpp>
@@ -64,9 +63,6 @@
 #include <wx/valgen.h>
 #include <wx/valnum.h>
 #include <wx/window.h>
-
-// These must be after the headers above.
-#include <lua.hpp>
 
 namespace {
 	inline void get_if_right_type(lua_State *L, std::string &def) {
@@ -99,16 +95,6 @@ namespace {
 
 	inline std::string get_field(lua_State *L, const char *name) {
 		return get_field(L, name, std::string());
-	}
-
-	template<typename Func>
-	void lua_for_each(lua_State *L, Func&& func) {
-		lua_pushnil(L); // initial key
-		while (lua_next(L, -2)) {
-			func();
-			lua_pop(L, 1); // pop value, leave key
-		}
-		lua_pop(L, 1); // pop key
 	}
 
 	template<class T>
@@ -438,9 +424,7 @@ namespace Automation4 {
 			luaL_error(L, "Cannot create config dialog from something non-table");
 
 		// Ok, so there is a table with controls
-		lua_pushvalue(L, 1);
-		lua_pushnil(L); // initial key
-		while (lua_next(L, -2)) {
+		lua_for_each(L, [&] {
 			if (!lua_istable(L, -1))
 				luaL_error(L, "bad control table entry");
 
@@ -475,8 +459,7 @@ namespace Automation4 {
 				luaL_error(L, "bad control table entry");
 
 			controls.push_back(ctl);
-			lua_pop(L, 1);
-		}
+		});
 
 		if (include_buttons && lua_istable(L, 2)) {
 			lua_pushvalue(L, 2);

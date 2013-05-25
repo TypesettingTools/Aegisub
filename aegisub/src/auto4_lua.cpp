@@ -802,13 +802,12 @@ namespace Automation4 {
 				std::set<AssDialogue*> sel;
 				entryIter it = c->ass->Line.begin();
 				int last_idx = 1;
-				lua_pushnil(L);
-				while (lua_next(L, -2)) {
+				lua_for_each(L, [&] {
 					if (lua_isnumber(L, -1)) {
 						int cur = lua_tointeger(L, -1);
 						if (cur < 1 || cur > (int)c->ass->Line.size()) {
 							wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, c->ass->Line.size());
-							break;
+							throw LuaForEachBreak();
 						}
 
 						advance(it, cur - last_idx);
@@ -816,7 +815,7 @@ namespace Automation4 {
 						AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 						if (!diag) {
 							wxLogError("Selected row %d is not a dialogue line", cur);
-							break;
+							throw LuaForEachBreak();
 						}
 
 						sel.insert(diag);
@@ -824,17 +823,17 @@ namespace Automation4 {
 						if (!active_line || active_idx == cur)
 							active_line = diag;
 					}
-					lua_pop(L, 1);
-				}
+				});
 
 				AssDialogue *new_active = c->selectionController->GetActiveLine();
 				if (active_line && (active_idx > 0 || !sel.count(new_active)))
 					new_active = active_line;
 				c->selectionController->SetSelectionAndActive(sel, new_active);
 			}
+			else
+				lua_pop(L, 1);
 
-			stackcheck.check_stack(1);
-			lua_pop(L, 1);
+			stackcheck.check_stack(0);
 		}
 		catch (agi::UserCancelException const&) {
 			subsobj->Cancel();

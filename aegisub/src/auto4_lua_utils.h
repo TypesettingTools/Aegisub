@@ -85,6 +85,24 @@ inline std::string get_global_string(lua_State *L, const char *name) {
 	return ret;
 }
 
+struct LuaForEachBreak {};
+
+template<typename Func>
+void lua_for_each(lua_State *L, Func&& func) {
+	lua_pushnil(L); // initial key
+	while (lua_next(L, -2)) {
+		try {
+			func();
+		}
+		catch (LuaForEachBreak) {
+			lua_pop(L, 1);
+			break;
+		}
+		lua_pop(L, 1); // pop value, leave key
+	}
+	lua_pop(L, 1); // pop table
+}
+
 #ifdef _DEBUG
 struct LuaStackcheck {
 	lua_State *L;
