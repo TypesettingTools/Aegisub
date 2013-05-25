@@ -152,9 +152,13 @@ void AudioBox::OnMouseWheel(wxMouseEvent &evt) {
 	if (!zoom)
 	{
 		int amount = -evt.GetWheelRotation() * GetClientSize().GetWidth() / (evt.GetWheelDelta() * 3);
+
 		// If the user did a horizontal scroll the amount should be inverted
 		// for it to be natural.
+		// On OS X it's pre-flipped for some reason.
+#ifndef __APPLE__
 		if (evt.GetWheelAxis() == 1) amount = -amount;
+#endif
 
 		// Reset any accumulated zoom
 		mouse_zoom_accum = 0;
