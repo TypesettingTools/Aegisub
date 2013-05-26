@@ -521,6 +521,7 @@ namespace Automation4 {
 			auto button = new wxButton(window, id, text);
 			button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent &evt) {
 				this->button_pushed = button_pushed;
+				dialog->TransferDataFromWindow();
 				dialog->EndModal(0);
 			});
 
