@@ -424,6 +424,7 @@ namespace Automation4 {
 			luaL_error(L, "Cannot create config dialog from something non-table");
 
 		// Ok, so there is a table with controls
+		lua_pushvalue(L, 1);
 		lua_for_each(L, [&] {
 			if (!lua_istable(L, -1))
 				luaL_error(L, "bad control table entry");
