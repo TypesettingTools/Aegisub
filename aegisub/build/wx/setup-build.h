@@ -1,6 +1,8 @@
 #ifndef _WX_SETUP_H_
 #define _WX_SETUP_H_
+#ifndef wxUSE_GUI
 #define wxUSE_GUI 1
+#endif
 #define WXWIN_COMPATIBILITY_2_4 0
 #define WXWIN_COMPATIBILITY_2_6 0
 #define WXWIN_COMPATIBILITY_2_8 0
