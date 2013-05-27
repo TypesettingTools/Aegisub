@@ -40,7 +40,6 @@
       --extra-cflags=-D_SYSCRT
       --extra-cflags=-wd4005
       --extra-cflags=-wd4189
-      --extra-cflags=-FIdynamic_msvcrt.h
       --toolchain=msvc
       $(CfgDebug)
     </CfgArgs>
