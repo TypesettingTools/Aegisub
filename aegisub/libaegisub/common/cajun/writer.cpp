@@ -61,7 +61,9 @@ void Writer::Write(Object const& object) {
 
 		Object::const_iterator it(object.begin()), itend(object.end());
 		while (it != itend) {
-			m_ostr << std::string(tab_depth, '\t') << '"' << it->first << "\" : ";
+			m_ostr << std::string(tab_depth, '\t');
+			Write(it->first);
+			m_ostr << " : ";
 			Write(it->second);
 
 			if (++it != itend)
