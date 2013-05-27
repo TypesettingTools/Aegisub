@@ -526,7 +526,6 @@ namespace Automation4 {
 			});
 
 			if (id == wxID_OK || id == wxID_YES || id == wxID_SAVE) {
-				button->SetFocus();
 				button->SetDefault();
 				dialog->SetAffirmativeId(id);
 			}
