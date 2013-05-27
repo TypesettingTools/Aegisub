@@ -465,29 +465,20 @@ namespace Automation4 {
 		if (include_buttons && lua_istable(L, 2)) {
 			lua_pushvalue(L, 2);
 			lua_for_each(L, [&]{
-				// String key: key is button ID, value is button label
-				// lua_isstring actually checks "is convertible to string"
-				if (lua_type(L, -2) == LUA_TSTRING)
-					buttons.emplace_back(
-						string_to_wx_id(lua_tostring(L, -2)),
-						luaL_checkstring(L, -1));
+				buttons.emplace_back(-1, luaL_checkstring(L, -1));
+			});
+		}
 
-				// Number key, string value: value is label
-				else if (lua_isstring(L, -1))
-					buttons.emplace_back(-1, lua_tostring(L, -1));
-
-				// Table value: Is a subtable that needs to be flatten.
-				// Used for ordered key-value pairs
-				else if (lua_istable(L, -1)) {
-					lua_pushvalue(L, -1);
-					lua_for_each(L, [&]{
-						buttons.emplace_back(
-							string_to_wx_id(luaL_checkstring(L, -2)),
-							luaL_checkstring(L, -1));
-					});
-				}
-				else
-					luaL_error(L, "Invalid entry in buttons table");
+		if (include_buttons && lua_istable(L, 3)) {
+			lua_pushvalue(L, 3);
+			lua_for_each(L, [&]{
+				int id = string_to_wx_id(luaL_checkstring(L, -2));
+				std::string label = luaL_checkstring(L, -1);
+				auto btn = boost::find_if(buttons,
+					[&](std::pair<int, std::string>& btn) { return btn.second == label; });
+				if (btn == end(buttons))
+					luaL_error(L, "Invalid button for id %s", lua_tostring(L, -2));
+				btn->first = id;
 			});
 		}
 	}
