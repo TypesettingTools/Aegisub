@@ -149,8 +149,7 @@ void AudioBox::OnMouseWheel(wxMouseEvent &evt) {
 		return;
 
 	bool zoom = evt.CmdDown() != OPT_GET("Audio/Wheel Default to Zoom")->GetBool();
-	if (!zoom)
-	{
+	if (!zoom) {
 		int amount = -evt.GetWheelRotation() * GetClientSize().GetWidth() / (evt.GetWheelDelta() * 3);
 
 		// If the user did a horizontal scroll the amount should be inverted
@@ -165,15 +164,11 @@ void AudioBox::OnMouseWheel(wxMouseEvent &evt) {
 
 		audioDisplay->ScrollBy(amount);
 	}
-	else if (evt.GetWheelAxis() == 0)
-	{
+	else if (evt.GetWheelAxis() == 0) {
 		mouse_zoom_accum += evt.GetWheelRotation();
 		int zoom_delta = mouse_zoom_accum / evt.GetWheelDelta();
 		mouse_zoom_accum %= evt.GetWheelDelta();
-		int new_zoom = audioDisplay->GetZoomLevel() + zoom_delta;
-		audioDisplay->SetZoomLevel(new_zoom);
-		HorizontalZoom->SetValue(-new_zoom);
-		OPT_SET("Audio/Zoom/Horizontal")->SetInt(new_zoom);
+		SetHorizontalZoom(audioDisplay->GetZoomLevel() + zoom_delta);
 	}
 }
 
@@ -195,10 +190,15 @@ void AudioBox::OnSashDrag(wxSashEvent &event) {
 }
 
 void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
-	// Negate the value, we want zoom out to be on bottom and zoom in on top,
+	// Negate the value since we want zoom out to be on bottom and zoom in on top,
 	// but the control doesn't want negative on bottom and positive on top.
-	audioDisplay->SetZoomLevel(-event.GetPosition());
-	OPT_SET("Audio/Zoom/Horizontal")->SetInt(event.GetPosition());
+	SetHorizontalZoom(-event.GetPosition());
+}
+
+void AudioBox::SetHorizontalZoom(int new_zoom) {
+	audioDisplay->SetZoomLevel(new_zoom);
+	HorizontalZoom->SetValue(-new_zoom);
+	OPT_SET("Audio/Zoom/Horizontal")->SetInt(new_zoom);
 }
 
 void AudioBox::OnVerticalZoom(wxScrollEvent &event) {
