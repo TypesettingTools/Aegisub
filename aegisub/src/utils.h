@@ -50,8 +50,6 @@
 class wxMouseEvent;
 class wxWindow;
 
-wxString AegiFloatToString(double value);
-wxString AegiIntegerToString(int value);
 wxString PrettySize(int bytes);
 
 void StatusTimeout(wxString const& msg, int ms = 10000);

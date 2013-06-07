@@ -132,7 +132,7 @@ static void add_with_label(wxSizer *sizer, wxWindow *parent, wxString const& lab
 }
 
 static wxSpinCtrl *spin_ctrl(wxWindow *parent, float value, int max_value) {
-	return new wxSpinCtrl(parent, -1, AegiFloatToString(value), wxDefaultPosition, wxSize(60, -1), wxSP_ARROW_KEYS, 0, max_value, value);
+	return new wxSpinCtrl(parent, -1, wxString::Format("%g", value), wxDefaultPosition, wxSize(60, -1), wxSP_ARROW_KEYS, 0, max_value, value);
 }
 
 static wxTextCtrl *num_text_ctrl(wxWindow *parent, double value, bool allow_negative, wxSize size = wxSize(70, 20)) {
@@ -161,7 +161,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	SetIcon(GETICON(style_toolbutton_16));
 
 	// Prepare control values
-	wxString EncodingValue = AegiIntegerToString(style->encoding);
+	wxString EncodingValue = std::to_wstring(style->encoding);
 	wxString alignValues[9] = { "7", "8", "9", "4", "5", "6", "1", "2", "3" };
 	wxArrayString fontList = wxFontEnumerator::GetFacenames();
 	fontList.Sort();

@@ -65,14 +65,6 @@
 #include <libaegisub/util_osx.h>
 #endif
 
-wxString AegiFloatToString(double value) {
-	return wxString::Format("%g",value);
-}
-
-wxString AegiIntegerToString(int value) {
-	return wxString::Format("%i",value);
-}
-
 /// @brief There shall be no kiB, MiB stuff here Pretty reading of size
 wxString PrettySize(int bytes) {
 	const char *suffix[] = { "", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
