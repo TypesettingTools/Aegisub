@@ -152,11 +152,11 @@ static void get_files_to_load(wxArrayString const& list, std::string &subs, std:
 
 		wxString ext = file.GetExt().Lower();
 
-		if (subs.empty() && std::binary_search(subsList, subsList + countof(subsList), ext))
+		if (subs.empty() && std::binary_search(std::begin(subsList), std::end(subsList), ext))
 			subs = from_wx(file.GetFullPath());
-		if (video.empty() && std::binary_search(videoList, videoList + countof(videoList), ext))
+		if (video.empty() && std::binary_search(std::begin(videoList), std::end(videoList), ext))
 			video = from_wx(file.GetFullPath());
-		if (audio.empty() && std::binary_search(audioList, audioList + countof(audioList), ext))
+		if (audio.empty() && std::binary_search(std::begin(audioList), std::end(audioList), ext))
 			audio = from_wx(file.GetFullPath());
 	}
 }
