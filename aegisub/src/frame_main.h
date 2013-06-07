@@ -47,18 +47,10 @@
 
 class AegisubApp;
 class AegisubFileDropTarget;
-class AssFile;
 class AudioBox;
-class AudioController;
 class AudioProvider;
-class DialogDetachedVideo;
-class DialogStyling;
-class SubsEditBox;
 class SubtitlesGrid;
 class VideoBox;
-class VideoDisplay;
-class VideoSlider;
-class VideoZoomSlider;
 
 namespace agi { struct Context; class OptionValue; }
 
