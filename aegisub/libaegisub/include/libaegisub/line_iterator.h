@@ -162,12 +162,7 @@ void line_iterator<OutputType>::getline(std::string &str) {
 
 	for (;;) {
 		u.chr = 0;
-#if defined(_MSC_VER) && _MSC_VER < 1600
-		// This _s version is only available in Visual C++ 2005 and 2008, it was removed in VC 2010
-		std::streamsize read = stream->rdbuf()->_Sgetn_s(u.buf, sizeof(u.buf), width);
-#else
 		std::streamsize read = stream->rdbuf()->sgetn(u.buf, width);
-#endif
 		if (read < (std::streamsize)width) {
 			for (int i = 0; i < read; i++) {
 				str += u.buf[i];
