@@ -57,20 +57,14 @@ Save::Save(fs::path const& file, bool binary)
 		// Not an error
 	}
 
-	fp = new boost::filesystem::ofstream(tmp_name, binary ? std::ios::binary : std::ios::out);
-	if (!fp->good()) {
-		delete fp;
+	fp = util::make_unique<boost::filesystem::ofstream>(tmp_name, binary ? std::ios::binary : std::ios::out);
+	if (!fp->good())
 		throw fs::WriteDenied(tmp_name);
-	}
 }
 
 Save::~Save() {
-	delete fp; // Explicitly delete to unlock file on Windows
+	fp->close(); // Need to close before rename on Windows to unlock the file
 	fs::Rename(tmp_name, file_name);
-}
-
-std::ofstream& Save::Get() {
-	return *fp;
 }
 
 	} // namespace io

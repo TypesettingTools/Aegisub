@@ -32,14 +32,14 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(IOFatal, IOError, "io/fatal")
 std::unique_ptr<std::ifstream> Open(fs::path const& file, bool binary = false);
 
 class Save {
-	std::ofstream *fp;
+	std::unique_ptr<std::ofstream> fp;
 	const fs::path file_name;
 	const fs::path tmp_name;
 
 public:
 	Save(fs::path const& file, bool binary = false);
 	~Save();
-	std::ofstream& Get();
+	std::ofstream& Get() { return *fp; }
 };
 
 	} // namespace io

@@ -69,15 +69,20 @@ namespace agi {
 	/// @param name New name for the thread
 	void SetThreadName(const char *name);
 
-	template<typename T>
-	std::unique_ptr<T> make_unique() {
-		return std::unique_ptr<T>(new T);
+#ifdef _MSC_VER
+#define MAKE_UNIQUE(TEMPLATE_LIST, PADDING_LIST, LIST, COMMA, X1, X2, X3, X4) \
+	template<class T COMMA LIST(_CLASS_TYPE)> \
+	inline std::unique_ptr<T> make_unique(LIST(_TYPE_REFREF_ARG)) { \
+		return std::unique_ptr<T>(new T(LIST(_FORWARD_ARG))); \
 	}
-
-	template<typename T, typename A1>
-	std::unique_ptr<T> make_unique(A1&& a1) {
-		return std::unique_ptr<T>(new T(std::forward<A1>(a1)));
+	_VARIADIC_EXPAND_0X(MAKE_UNIQUE, , , , )
+#undef MAKE_UNIQUE
+#else
+	template<typename T, typename... Args>
+	std::unique_ptr<T> make_unique(Args&&... args) {
+		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 	}
+#endif
 
 	} // namespace util
 } // namespace agi
