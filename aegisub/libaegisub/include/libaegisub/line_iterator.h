@@ -81,12 +81,14 @@ public:
 		init();
 		++(*this);
 	}
+
 	/// @brief Invalid iterator constructor; use for end iterator
 	line_iterator()
 	: stream(0)
 	, valid(false)
 	{
 	}
+
 	/// @brief Copy constructor
 	/// @param that line_iterator to copy from
 	line_iterator(line_iterator<OutputType> const& that)
@@ -100,27 +102,22 @@ public:
 	, width(that.width)
 	{
 	}
-	OutputType const& operator*() const {
-		return value;
-	}
-	OutputType const* operator->() const {
-		return &value;
-	}
+
+	OutputType const& operator*() const { return value; }
+	OutputType const* operator->() const { return &value; }
+
 	line_iterator<OutputType>& operator++() {
 		next();
 		return *this;
 	}
 	line_iterator<OutputType> operator++(int) {
 		line_iterator<OutputType> tmp(*this);
-		++(*this);
+		++*this;
 		return tmp;
 	}
-	bool operator==(line_iterator<OutputType> const& rgt) const {
-		return valid == rgt.valid;
-	}
-	bool operator!=(line_iterator<OutputType> const& rgt) const {
-		return !operator==(rgt);
-	}
+
+	bool operator==(line_iterator<OutputType> const& rgt) const { return valid == rgt.valid; }
+	bool operator!=(line_iterator<OutputType> const& rgt) const { return !operator==(rgt); }
 
 	// typedefs needed by some stl algorithms
 	typedef OutputType* pointer;
@@ -133,6 +130,7 @@ public:
 		swap(*this, that);
 		return *this;
 	}
+
 	void swap(line_iterator<OutputType> &that) throw() {
 		using std::swap;
 		swap(stream, that.stream);
