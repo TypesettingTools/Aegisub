@@ -58,8 +58,6 @@
 AudioController::AudioController(agi::Context *context)
 : context(context)
 , subtitle_save_slot(context->subsController->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
-, player(0)
-, provider(0)
 , playback_mode(PM_NotPlaying)
 , playback_timer(this)
 {
@@ -107,8 +105,7 @@ void AudioController::OnPlaybackTimer(wxTimerEvent &)
 void AudioController::OnComputerSuspending(wxPowerEvent &)
 {
 	Stop();
-	delete player;
-	player = 0;
+	player.reset();
 }
 
 void AudioController::OnComputerResuming(wxPowerEvent &)
@@ -117,7 +114,7 @@ void AudioController::OnComputerResuming(wxPowerEvent &)
 	{
 		try
 		{
-			player = AudioPlayerFactory::GetAudioPlayer(provider);
+			player = AudioPlayerFactory::GetAudioPlayer(provider.get());
 		}
 		catch (...)
 		{
@@ -133,11 +130,11 @@ void AudioController::OnAudioPlayerChanged()
 
 	Stop();
 
-	delete player;
+	player.reset();
 
 	try
 	{
-		player = AudioPlayerFactory::GetAudioPlayer(provider);
+		player = AudioPlayerFactory::GetAudioPlayer(provider.get());
 	}
 	catch (...)
 	{
@@ -159,7 +156,7 @@ void AudioController::OpenAudio(agi::fs::path const& url)
 	if (url.empty())
 		throw agi::InternalError("AudioController::OpenAudio() was passed an empty string. This must not happen.", 0);
 
-	AudioProvider *new_provider = 0;
+	std::unique_ptr<AudioProvider> new_provider;
 	try {
 		new_provider = AudioProviderFactory::GetProvider(url);
 		config::path->SetToken("?audio", url);
@@ -173,16 +170,15 @@ void AudioController::OpenAudio(agi::fs::path const& url)
 	}
 
 	CloseAudio();
-	provider = new_provider;
+	provider = std::move(new_provider);
 
 	try
 	{
-		player = AudioPlayerFactory::GetAudioPlayer(provider);
+		player = AudioPlayerFactory::GetAudioPlayer(provider.get());
 	}
 	catch (...)
 	{
-		delete provider;
-		provider = 0;
+		provider.reset();
 		throw;
 	}
 
@@ -192,7 +188,7 @@ void AudioController::OpenAudio(agi::fs::path const& url)
 
 	try
 	{
-		AnnounceAudioOpen(provider);
+		AnnounceAudioOpen(provider.get());
 	}
 	catch (...)
 	{
@@ -205,8 +201,8 @@ void AudioController::CloseAudio()
 {
 	Stop();
 
-	delete player;
-	delete provider;
+	player.reset();
+	provider.reset();
 	player = 0;
 	provider = 0;
 

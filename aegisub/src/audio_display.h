@@ -33,16 +33,16 @@
 /// @ingroup audio_ui
 ///
 
+#include <cstdint>
 #include <deque>
 #include <map>
-#include <cstdint>
+#include <memory>
 
 #include <wx/gdicmn.h>
 #include <wx/string.h>
 #include <wx/timer.h>
 #include <wx/window.h>
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 namespace agi { struct Context; }
@@ -105,22 +105,22 @@ class AudioDisplay: public wxWindow {
 	agi::Context *context;
 
 	/// The audio renderer manager
-	agi::scoped_ptr<AudioRenderer> audio_renderer;
+	std::unique_ptr<AudioRenderer> audio_renderer;
 
 	/// The current audio renderer
-	agi::scoped_ptr<AudioRendererBitmapProvider> audio_renderer_provider;
+	std::unique_ptr<AudioRendererBitmapProvider> audio_renderer_provider;
 
 	/// The controller managing us
 	AudioController *controller;
 
 	/// Scrollbar helper object
-	agi::scoped_ptr<AudioDisplayScrollbar> scrollbar;
+	std::unique_ptr<AudioDisplayScrollbar> scrollbar;
 
 	/// Timeline helper object
-	agi::scoped_ptr<AudioDisplayTimeline> timeline;
+	std::unique_ptr<AudioDisplayTimeline> timeline;
 
 	/// The interaction object for the last-dragged audio marker
-	agi::scoped_ptr<AudioMarkerInteractionObject> audio_marker;
+	std::unique_ptr<AudioMarkerInteractionObject> audio_marker;
 
 
 	/// Current object on display being dragged, if any

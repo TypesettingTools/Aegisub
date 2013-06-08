@@ -81,4 +81,4 @@ protected:
 };
 
 // Construct the right PCM audio provider (if any) for the file
-AudioProvider *CreatePCMAudioProvider(agi::fs::path const& filename);
+std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename);

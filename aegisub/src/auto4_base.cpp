@@ -50,6 +50,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -178,12 +179,6 @@ namespace Automation4 {
 	ExportFilter::ExportFilter(std::string const& name, std::string const& description, int priority)
 	: AssExportFilter(name, description, priority)
 	{
-		AssExportFilterChain::Register(this);
-	}
-
-	ExportFilter::~ExportFilter()
-	{
-		AssExportFilterChain::Unregister(this);
 	}
 
 	std::string ExportFilter::GetScriptSettingsIdentifier()
@@ -293,47 +288,41 @@ namespace Automation4 {
 	// ScriptManager
 	ScriptManager::~ScriptManager()
 	{
-		delete_clear(scripts);
 	}
 
-	void ScriptManager::Add(Script *script)
+	void ScriptManager::Add(std::unique_ptr<Script>&& script)
 	{
 		if (find(scripts.begin(), scripts.end(), script) == scripts.end())
-			scripts.push_back(script);
+			scripts.emplace_back(std::move(script));
 
 		ScriptsChanged();
 	}
 
 	void ScriptManager::Remove(Script *script)
 	{
-		auto i = find(scripts.begin(), scripts.end(), script);
-		if (i != scripts.end()) {
-			delete *i;
+		auto i = find_if(scripts.begin(), scripts.end(), [&](std::unique_ptr<Script> const& s) { return s.get() == script; });
+		if (i != scripts.end())
 			scripts.erase(i);
-		}
 
 		ScriptsChanged();
 	}
 
 	void ScriptManager::RemoveAll()
 	{
-		delete_clear(scripts);
+		scripts.clear();
 		ScriptsChanged();
 	}
 
 	void ScriptManager::Reload(Script *script)
 	{
-		if (find(scripts.begin(), scripts.end(), script) != scripts.end())
-		{
-			script->Reload();
-			ScriptsChanged();
-		}
+		script->Reload();
+		ScriptsChanged();
 	}
 
 	const std::vector<cmd::Command*>& ScriptManager::GetMacros()
 	{
 		macros.clear();
-		for (auto script : scripts) {
+		for (auto& script : scripts) {
 			std::vector<cmd::Command*> sfs = script->GetMacros();
 			copy(sfs.begin(), sfs.end(), back_inserter(macros));
 		}
@@ -349,7 +338,7 @@ namespace Automation4 {
 
 	void AutoloadScriptManager::Reload()
 	{
-		delete_clear(scripts);
+		scripts.clear();
 
 		int error_count = 0;
 
@@ -359,10 +348,10 @@ namespace Automation4 {
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
 			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*")) {
-				Script *s = ScriptFactory::CreateFromFile(dirname/filename, false, false);
+				auto s = ScriptFactory::CreateFromFile(dirname/filename, false, false);
 				if (s) {
-					scripts.push_back(s);
 					if (!s->GetLoadedState()) ++error_count;
+					scripts.emplace_back(std::move(s));
 				}
 			}
 		}
@@ -386,7 +375,7 @@ namespace Automation4 {
 
 	void LocalScriptManager::Reload()
 	{
-		delete_clear(scripts);
+		scripts.clear();
 
 		auto local_scripts = context->ass->GetScriptInfo("Automation Scripts");
 		if (local_scripts.empty()) {
@@ -415,7 +404,7 @@ namespace Automation4 {
 			}
 			auto sfname = basepath/trimmed;
 			if (agi::fs::FileExists(sfname))
-				scripts.push_back(Automation4::ScriptFactory::CreateFromFile(sfname, true));
+				scripts.emplace_back(Automation4::ScriptFactory::CreateFromFile(sfname, true));
 			else {
 				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
 					first_char, to_wx(trimmed), basepath.wstring(), sfname.wstring());
@@ -436,7 +425,7 @@ namespace Automation4 {
 		std::string scripts_string;
 		agi::fs::path autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
-		for (auto script : GetScripts()) {
+		for (auto& script : GetScripts()) {
 			if (!scripts_string.empty())
 				scripts_string += "|";
 
@@ -464,27 +453,18 @@ namespace Automation4 {
 	{
 	}
 
-	void ScriptFactory::Register(ScriptFactory *factory)
+	void ScriptFactory::Register(std::unique_ptr<ScriptFactory>&& factory)
 	{
 		if (find(Factories().begin(), Factories().end(), factory) != Factories().end())
 			throw agi::InternalError("Automation 4: Attempt to register the same script factory multiple times. This should never happen.", 0);
 
-		Factories().push_back(factory);
+		Factories().emplace_back(std::move(factory));
 	}
 
-	void ScriptFactory::Unregister(ScriptFactory *factory)
+	std::unique_ptr<Script> ScriptFactory::CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown)
 	{
-		auto i = find(Factories().begin(), Factories().end(), factory);
-		if (i != Factories().end()) {
-			delete *i;
-			Factories().erase(i);
-		}
-	}
-
-	Script* ScriptFactory::CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown)
-	{
-		for (auto factory : Factories()) {
-			Script *s = factory->Produce(filename);
+		for (auto& factory : Factories()) {
+			auto s = factory->Produce(filename);
 			if (s) {
 				if (!s->GetLoadedState()) {
 					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename.wstring(), s->GetDescription());
@@ -497,16 +477,16 @@ namespace Automation4 {
 			wxLogError(_("The file was not recognised as an Automation script: %s"), filename.wstring());
 		}
 
-		return create_unknown ? new UnknownScript(filename) : nullptr;
+		return create_unknown ? agi::util::make_unique<UnknownScript>(filename) : nullptr;
 	}
 
-	std::vector<ScriptFactory*>& ScriptFactory::Factories()
+	std::vector<std::unique_ptr<ScriptFactory>>& ScriptFactory::Factories()
 	{
-		static std::vector<ScriptFactory*> factories;
+		static std::vector<std::unique_ptr<ScriptFactory>> factories;
 		return factories;
 	}
 
-	const std::vector<ScriptFactory*>& ScriptFactory::GetFactories()
+	const std::vector<std::unique_ptr<ScriptFactory>>& ScriptFactory::GetFactories()
 	{
 		return Factories();
 	}
@@ -514,7 +494,7 @@ namespace Automation4 {
 	std::string ScriptFactory::GetWildcardStr()
 	{
 		std::string fnfilter, catchall;
-		for (auto fact : Factories()) {
+		for (auto& fact : Factories()) {
 			if (fact->GetEngineName().empty() || fact->GetFilenamePattern().empty())
 				continue;
 

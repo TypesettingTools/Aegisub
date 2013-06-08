@@ -35,12 +35,6 @@
 #include "config.h"
 
 #ifdef WITH_DIRECTSOUND
-#include <mmsystem.h>
-#include <process.h>
-#include <dsound.h>
-
-#include <libaegisub/log.h>
-
 #include "audio_player_dsound2.h"
 
 #include "audio_controller.h"
@@ -49,6 +43,14 @@
 #include "main.h"
 #include "options.h"
 #include "utils.h"
+
+#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/log.h>
+#include <libaegisub/util.h>
+
+#include <mmsystem.h>
+#include <process.h>
+#include <dsound.h>
 
 /// @brief RAII support class to init and de-init the COM library
 struct COMInitialization {
@@ -812,7 +814,7 @@ DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider)
 
 	try
 	{
-		thread.reset(new DirectSoundPlayer2Thread(provider, WantedLatency, BufferLength));
+		thread = agi::util::make_unique<DirectSoundPlayer2Thread>(provider, WantedLatency, BufferLength);
 	}
 	catch (const char *msg)
 	{

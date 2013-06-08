@@ -49,6 +49,6 @@ public:
 
 class SubtitlesProviderFactory : public Factory1<SubtitlesProvider, std::string> {
 public:
-	static SubtitlesProvider *GetProvider();
+	static std::unique_ptr<SubtitlesProvider> GetProvider();
 	static void RegisterProviders();
 };

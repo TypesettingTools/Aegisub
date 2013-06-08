@@ -54,6 +54,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>
@@ -328,7 +329,7 @@ void DialogStyleManager::LoadCatalog() {
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty()) {
 		Store.Load(config::path->Decode("?user/catalog/Default.sty"));
-		Store.push_back(new AssStyle);
+		Store.push_back(agi::util::make_unique<AssStyle>());
 		Store.Save();
 		CatalogList->Append("Default");
 	}
@@ -409,7 +410,7 @@ void DialogStyleManager::OnCopyToStorage() {
 			}
 		}
 		else {
-			Store.push_back(new AssStyle(*styleMap.at(selections[i])));
+			Store.push_back(agi::util::make_unique<AssStyle>(*styleMap.at(selections[i])));
 			copied.push_back(styleName);
 		}
 	}
@@ -476,7 +477,7 @@ void DialogStyleManager::PasteToCurrent() {
 void DialogStyleManager::PasteToStorage() {
 	add_styles(
 		std::bind(&AssStyleStorage::GetStyle, &Store, _1),
-		std::bind(&AssStyleStorage::push_back, &Store, _1));
+		[=](AssStyle *s) { Store.push_back(std::unique_ptr<AssStyle>(s)); });
 
 	UpdateStorage();
 	StorageList->SetStringSelection(to_wx(Store.back()->name));
@@ -686,6 +687,11 @@ void DialogStyleManager::UpdateButtons() {
 	CurrentSort->Enable(itemsCurr > 1);
 }
 
+struct cmp_name {
+	template<typename T>
+	bool operator()(T const& lft, T const& rgt) const { return lft->name < rgt->name; }
+};
+
 template<class Cont>
 static void do_move(Cont& styls, int type, int& first, int& last, bool storage) {
 	auto begin = styls.begin();
@@ -724,9 +730,7 @@ static void do_move(Cont& styls, int type, int& first, int& last, bool storage) 
 			if (res == wxNO) return;
 		}
 
-		sort(styls.begin(), styls.end(), [](const AssStyle *lft, const AssStyle *rgt) {
-			return lft->name < rgt->name;
-		});
+		sort(styls.begin(), styls.end(), cmp_name());
 
 		first = 0;
 		last = 0;

@@ -47,8 +47,8 @@ struct CachedFrame : public AegiVideoFrame {
 	int frame_number;
 };
 
-VideoProviderCache::VideoProviderCache(VideoProvider *parent)
-: master(parent)
+VideoProviderCache::VideoProviderCache(std::unique_ptr<VideoProvider>&& parent)
+: master(std::move(parent))
 , max_cache_size(OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20) // convert MB to bytes
 {
 }

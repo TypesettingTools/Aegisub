@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -32,66 +33,54 @@ protected:
 	typedef std::map<std::string, std::pair<bool, func>> map;
 	typedef typename map::iterator iterator;
 
-	static map *classes;
+	static map& classes() {
+		static map classes;
+		return classes;
+	}
 
 	static void DoRegister(func function, std::string name, bool hide, std::vector<std::string> &subtypes) {
-		if (!classes) classes = new map;
-
-		if (subtypes.empty()) {
-			classes->insert(std::make_pair(name, std::make_pair(hide, function)));
-		}
+		if (subtypes.empty())
+			classes().insert(std::make_pair(name, std::make_pair(hide, function)));
 		else {
 			for (auto const& subtype : subtypes)
-				classes->insert(std::make_pair(name + '/' + subtype, std::make_pair(hide, function)));
+				classes().insert(std::make_pair(name + '/' + subtype, std::make_pair(hide, function)));
 		}
 	}
 
-	static func Find(std::string name) {
-		if (!classes) return nullptr;
-
-		iterator factory = classes->find(name);
-		if (factory != classes->end()) return factory->second.second;
-		return nullptr;
+	static func Find(std::string const& name) {
+		iterator factory = classes().find(name);
+		return factory != classes().end() ? factory->second.second : nullptr;
 	}
 
 public:
-	static void Clear() {
-		delete classes;
-	}
 	static std::vector<std::string> GetClasses(std::string favourite="") {
 		std::vector<std::string> list;
-		if (!classes) return list;
 		std::string cmp;
 		std::transform(favourite.begin(), favourite.end(), favourite.begin(), ::tolower);
-		for (auto const& cls : *classes) {
+		for (auto const& cls : classes()) {
 			cmp.clear();
 			std::transform(cls.first.begin(), cls.first.end(), std::back_inserter(cmp), ::tolower);
-			if (cmp == favourite) list.insert(list.begin(), cls.first);
-			else if (!cls.second.first) list.push_back(cls.first);
+			if (cmp == favourite)
+				list.insert(list.begin(), cls.first);
+			else if (!cls.second.first)
+				list.push_back(cls.first);
 		}
 		return list;
-	}
-	virtual ~FactoryBase() {
-		delete classes;
 	}
 };
 
 template<class Base>
-class Factory0 : public FactoryBase<Base *(*)()> {
-	typedef Base *(*func)();
+class Factory0 : public FactoryBase<std::unique_ptr<Base>(*)()> {
+	typedef std::unique_ptr<Base>(*func)();
 	template<class T>
-	static Base* create() {
-		return new T;
+	static std::unique_ptr<Base> create() {
+		return std::unique_ptr<Base>(new T);
 	}
+
 public:
-	static Base* Create(std::string name) {
+	static std::unique_ptr<Base> Create(std::string const& name) {
 		func factory = FactoryBase<func>::Find(name);
-		if (factory) {
-			return factory();
-		}
-		else {
-			return nullptr;
-		}
+		return factory ? factory() : nullptr;
 	}
 
 	template<class T>
@@ -101,21 +90,17 @@ public:
 };
 
 template<class Base, class Arg1>
-class Factory1 : public FactoryBase<Base *(*)(Arg1)> {
-	typedef Base *(*func)(Arg1);
+class Factory1 : public FactoryBase<std::unique_ptr<Base>(*)(Arg1)> {
+	typedef std::unique_ptr<Base>(*func)(Arg1);
 	template<class T>
-	static Base* create(Arg1 a1) {
-		return new T(a1);
+	static std::unique_ptr<Base> create(Arg1 a1) {
+		return std::unique_ptr<Base>(new T(a1));
 	}
+
 public:
-	static Base* Create(std::string name, Arg1 a1) {
+	static std::unique_ptr<Base> Create(std::string const& name, Arg1 a1) {
 		func factory = FactoryBase<func>::Find(name);
-		if (factory) {
-			return factory(a1);
-		}
-		else {
-			return nullptr;
-		}
+		return factory ? factory(a1) : nullptr;
 	}
 
 	template<class T>

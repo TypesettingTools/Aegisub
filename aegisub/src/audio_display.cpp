@@ -37,12 +37,6 @@
 
 #include "audio_display.h"
 
-#include <algorithm>
-
-#include <wx/dcbuffer.h>
-#include <wx/dcclient.h>
-#include <wx/mousestate.h>
-
 #include "ass_time.h"
 #include "audio_colorscheme.h"
 #include "audio_controller.h"
@@ -58,6 +52,14 @@
 #include "selection_controller.h"
 #include "utils.h"
 #include "video_context.h"
+
+#include <libaegisub/util.h>
+
+#include <algorithm>
+
+#include <wx/dcbuffer.h>
+#include <wx/dcclient.h>
+#include <wx/mousestate.h>
 
 /// @brief Colourscheme-based UI colour provider
 ///
@@ -729,7 +731,7 @@ void AudioDisplay::ReloadRenderingSettings()
 	if (OPT_GET("Audio/Spectrum")->GetBool())
 	{
 		colour_scheme_name = OPT_GET("Colour/Audio Display/Spectrum")->GetString();
-		AudioSpectrumRenderer *audio_spectrum_renderer = new AudioSpectrumRenderer(colour_scheme_name);
+		auto audio_spectrum_renderer = agi::util::make_unique<AudioSpectrumRenderer>(colour_scheme_name);
 
 		int64_t spectrum_quality = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
 #ifdef WITH_FFTW3
@@ -746,12 +748,12 @@ void AudioDisplay::ReloadRenderingSettings()
 			spectrum_width[spectrum_quality],
 			spectrum_distance[spectrum_quality]);
 
-		audio_renderer_provider.reset(audio_spectrum_renderer);
+		audio_renderer_provider = std::move(audio_spectrum_renderer);
 	}
 	else
 	{
 		colour_scheme_name = OPT_GET("Colour/Audio Display/Waveform")->GetString();
-		audio_renderer_provider.reset(new AudioWaveformRenderer(colour_scheme_name));
+		audio_renderer_provider = agi::util::make_unique<AudioWaveformRenderer>(colour_scheme_name);
 	}
 
 	audio_renderer->SetRenderer(audio_renderer_provider.get());
@@ -1061,7 +1063,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		if (markers.size())
 		{
 			RemoveTrackCursor();
-			audio_marker.reset(new AudioMarkerInteractionObject(markers, timing, this, (wxMouseButton)event.GetButton()));
+			audio_marker = agi::util::make_unique<AudioMarkerInteractionObject>(markers, timing, this, (wxMouseButton)event.GetButton());
 			SetDraggedObject(audio_marker.get());
 			return;
 		}

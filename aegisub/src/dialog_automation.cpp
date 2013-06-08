@@ -47,6 +47,7 @@
 #include "subtitle_format.h"
 
 #include <algorithm>
+#include <boost/range/algorithm.hpp>
 
 #include <wx/button.h>
 #include <wx/filedlg.h>
@@ -121,25 +122,13 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	RebuildList();
 }
 
-template<class Container, class Pred>
-static inline void for_each(Container const& c, Pred p)
-{
-	std::for_each(c.begin(), c.end(), p);
-}
-
-template<class Container, class Out, class Func>
-static inline void transform(Container const& c, Out o, Func f)
-{
-	std::transform(c.begin(), c.end(), o, f);
-}
-
 void DialogAutomation::RebuildList()
 {
 	script_info.clear();
 	list->DeleteAllItems();
 
-	for_each(local_manager->GetScripts(), std::bind(&DialogAutomation::AddScript, this, _1, false));
-	for_each(global_manager->GetScripts(), std::bind(&DialogAutomation::AddScript, this, _1, true));
+	for (auto& script : local_manager->GetScripts()) AddScript(script.get(), false);
+	for (auto& script : global_manager->GetScripts()) AddScript(script.get(), true);
 
 	UpdateDisplay();
 }
@@ -180,7 +169,7 @@ template<class Container>
 static bool has_file(Container const& c, agi::fs::path const& fn)
 {
 	return any_of(c.begin(), c.end(),
-		[&](const Automation4::Script *s) { return fn == s->GetFilename(); });
+		[&](std::unique_ptr<Automation4::Script> const& s) { return fn == s->GetFilename(); });
 }
 
 void DialogAutomation::OnAdd(wxCommandEvent &)
@@ -232,7 +221,7 @@ void DialogAutomation::OnReload(wxCommandEvent &)
 		local_manager->Reload(ei.script);
 }
 
-static wxString fac_to_str(const Automation4::ScriptFactory* f) {
+static wxString fac_to_str(std::unique_ptr<Automation4::ScriptFactory> const& f) {
 	return wxString::Format("- %s (%s)", to_wx(f->GetEngineName()), to_wx(f->GetFilenamePattern()));
 }
 
@@ -263,7 +252,7 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 		(int)local_manager->GetScripts().size()));
 
 	info.push_back(_("Scripting engines installed:"));
-	transform(Automation4::ScriptFactory::GetFactories(), append_info, fac_to_str);
+	boost::transform(Automation4::ScriptFactory::GetFactories(), append_info, fac_to_str);
 
 	if (ei) {
 		info.push_back(wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:"),
@@ -274,9 +263,9 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 			ei->script->GetFilename().wstring(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
 
-		transform(ei->script->GetMacros(), append_info, std::bind(cmd_to_str, _1, context));
-		transform(ei->script->GetFilters(), append_info, filt_to_str);
-		transform(ei->script->GetFormats(), append_info, form_to_str);
+		boost::transform(ei->script->GetMacros(), append_info, std::bind(cmd_to_str, _1, context));
+		boost::transform(ei->script->GetFilters(), append_info, filt_to_str);
+		boost::transform(ei->script->GetFormats(), append_info, form_to_str);
 	}
 
 	wxMessageBox(wxJoin(info, '\n', 0), _("Automation Script Info"));

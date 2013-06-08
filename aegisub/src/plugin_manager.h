@@ -27,20 +27,4 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file plugin_manager.h
-/// @see plugin_manager.cpp
-/// @ingroup main
-///
-
-namespace Automation4 { class ScriptFactory; }
-
-class PluginManager {
-	bool init;
-	Automation4::ScriptFactory *lua;
-
-public:
-	PluginManager();
-	~PluginManager();
-
-	void RegisterBuiltInPlugins();
-};
+void RegisterBuiltInPlugins();

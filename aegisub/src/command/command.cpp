@@ -26,8 +26,8 @@
 #include <wx/intl.h>
 
 namespace cmd {
-	static std::map<std::string, Command*> cmd_map;
-	typedef std::map<std::string, Command*>::iterator iterator;
+	static std::map<std::string, std::unique_ptr<Command>> cmd_map;
+	typedef std::map<std::string, std::unique_ptr<Command>>::iterator iterator;
 
 	static iterator find_command(std::string const& name) {
 		iterator it = cmd_map.find(name);
@@ -36,21 +36,16 @@ namespace cmd {
 		return it;
 	}
 
-	void reg(Command *cmd) {
-		std::string name = cmd->name();
-		if (cmd_map.count(name))
-			delete cmd_map[name];
-		cmd_map[name] = cmd;
+	void reg(std::unique_ptr<Command>&& cmd) {
+		cmd_map[cmd->name()] = std::move(cmd);
 	}
 
 	void unreg(std::string const& name) {
-		iterator it = find_command(name);
-		delete it->second;
-		cmd_map.erase(it);
+		cmd_map.erase(find_command(name));
 	}
 
 	Command *get(std::string const& name) {
-		return find_command(name)->second;
+		return find_command(name)->second.get();
 	}
 
 	void call(std::string const& name, agi::Context*c) {
@@ -108,8 +103,6 @@ namespace cmd {
 	}
 
 	void clear() {
-		for (auto& it : cmd_map)
-			delete it.second;
 		cmd_map.clear();
 	}
 }

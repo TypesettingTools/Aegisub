@@ -36,9 +36,6 @@
 
 #include "ass_export_filter.h"
 
-#include "utils.h"
-
-#include <algorithm>
 #include <boost/format.hpp>
 
 static FilterList& filters() {
@@ -53,7 +50,7 @@ AssExportFilter::AssExportFilter(std::string const& name, std::string const& des
 {
 }
 
-void AssExportFilterChain::Register(AssExportFilter *filter) {
+void AssExportFilterChain::Register(std::unique_ptr<AssExportFilter>&& filter) {
 	int filter_copy = 1;
 	std::string name = filter->name;
 	// Find a unique name
@@ -64,36 +61,22 @@ void AssExportFilterChain::Register(AssExportFilter *filter) {
 
 	// Look for place to insert
 	auto begin(filters().begin()), end(filters().end());
-	while (begin != end && (*begin)->priority >= filter->priority) ++begin;
-	filters().insert(begin, filter);
+	while (begin != end && begin->priority >= filter->priority) ++begin;
+	filters().insert(begin, *filter.release());
 }
 
-void AssExportFilterChain::Unregister(AssExportFilter *filter) {
-	auto it = remove(begin(filters()), end(filters()), filter);
-	if (it == end(filters()))
-		throw wxString::Format("Unregister export filter: name \"%s\" is not registered.", filter->name);
-
-	filters().pop_back();
-}
-
-
-const FilterList *AssExportFilterChain::GetFilterList() {
+FilterList *AssExportFilterChain::GetFilterList() {
 	return &filters();
 }
 
 void AssExportFilterChain::Clear() {
-	while (filters().size() > 0) {
-		AssExportFilter *f = filters().back();
-		delete f;
-		if (filters().size() && filters().back() == f)
-			filters().pop_back();
-	}
+	filters().clear_and_dispose([](AssExportFilter *f) { delete f; });
 }
 
 AssExportFilter *AssExportFilterChain::GetFilter(std::string const& name) {
-	for (auto filter : filters()) {
-		if (filter->name == name)
-			return filter;
+	for (auto& filter : filters()) {
+		if (filter.name == name)
+			return &filter;
 	}
-	return 0;
+	return nullptr;
 }

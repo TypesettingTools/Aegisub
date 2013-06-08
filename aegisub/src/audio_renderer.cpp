@@ -45,11 +45,6 @@
 
 #include "include/aegisub/audio_provider.h"
 
-template<class C, class F> static void for_each(C &container, F const& func)
-{
-	std::for_each(container.begin(), container.end(), func);
-}
-
 using std::placeholders::_1;
 
 AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer)
@@ -176,7 +171,7 @@ void AudioRenderer::ResetBlockCount()
 		double duration = provider->GetNumSamples() * 1000.0 / provider->GetSampleRate();
 		size_t rendered_width = (size_t)ceil(duration / pixel_ms);
 		cache_numblocks = rendered_width / cache_bitmap_width;
-		for_each(bitmaps, std::bind(&AudioRendererBitmapCache::SetBlockCount, _1, cache_numblocks));
+		for (auto& bmp : bitmaps) bmp.SetBlockCount(cache_numblocks);
 	}
 }
 
@@ -247,7 +242,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, Audi
 
 void AudioRenderer::Invalidate()
 {
-	for_each(bitmaps, std::bind(&AudioRendererBitmapCache::Age, _1, 0));
+	for (auto& bmp : bitmaps) bmp.Age(0);
 	needs_age = false;
 }
 

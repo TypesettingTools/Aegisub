@@ -45,8 +45,9 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
-VideoProvider *VideoProviderFactory::GetProvider(agi::fs::path const& video_file) {
+std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& video_file) {
 	std::vector<std::string> factories = GetClasses(OPT_GET("Video/Provider")->GetString());
 	factories.insert(factories.begin(), "YUV4MPEG");
 	factories.insert(factories.begin(), "Dummy");
@@ -59,9 +60,9 @@ VideoProvider *VideoProviderFactory::GetProvider(agi::fs::path const& video_file
 	for (auto const& factory : factories) {
 		std::string err;
 		try {
-			VideoProvider *provider = Create(factory, video_file);
+			auto provider = Create(factory, video_file);
 			LOG_I("manager/video/provider") << factory << ": opened " << video_file;
-			return provider->WantsCaching() ? new VideoProviderCache(provider) : provider;
+			return provider->WantsCaching() ? agi::util::make_unique<VideoProviderCache>(std::move(provider)) : std::move(provider);
 		}
 		catch (agi::fs::FileNotFound const&) {
 			err = "file not found.";
@@ -104,5 +105,3 @@ void VideoProviderFactory::RegisterProviders() {
 	Register<DummyVideoProvider>("Dummy", true);
 	Register<YUV4MPEGVideoProvider>("YUV4MPEG", true);
 }
-
-template<> VideoProviderFactory::map *FactoryBase<VideoProvider *(*)(agi::fs::path)>::classes = nullptr;

@@ -221,8 +221,7 @@ bool AegisubApp::OnInit() {
 		locale.Init(lang);
 
 		// Load plugins
-		plugins = new PluginManager();
-		plugins->RegisterBuiltInPlugins();
+		RegisterBuiltInPlugins();
 
 		// Load Automation scripts
 		StartupLog("Load global Automation scripts");
@@ -230,8 +229,8 @@ bool AegisubApp::OnInit() {
 
 		// Load export filters
 		StartupLog("Register export filters");
-		AssExportFilterChain::Register(new AssFixStylesFilter);
-		AssExportFilterChain::Register(new AssTransformFramerateFilter);
+		AssExportFilterChain::Register(agi::util::make_unique<AssFixStylesFilter>());
+		AssExportFilterChain::Register(agi::util::make_unique<AssTransformFramerateFilter>());
 
 		// Open main frame
 		StartupLog("Create main window");
@@ -279,7 +278,6 @@ int AegisubApp::OnExit() {
 		delete frame;
 
 	SubtitleFormat::DestroyFormats();
-	delete plugins;
 	delete config::opt;
 	delete config::mru;
 	hotkey::clear();

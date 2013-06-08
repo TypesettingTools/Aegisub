@@ -39,7 +39,7 @@
 #include "subtitles_provider_libass.h"
 #include "include/aegisub/subtitles_provider.h"
 
-SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
+std::unique_ptr<SubtitlesProvider> SubtitlesProviderFactory::GetProvider() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Subtitle/Provider")->GetString());
 	if (list.empty()) throw std::string("No subtitle providers are available.");
 
@@ -48,7 +48,7 @@ SubtitlesProvider* SubtitlesProviderFactory::GetProvider() {
 		try {
 			size_t pos = factory.find('/');
 			std::string subType = pos < factory.size() - 1 ? factory.substr(pos + 1) : "";
-			SubtitlesProvider *provider = Create(factory, subType);
+			auto provider = Create(factory, subType);
 			if (provider) return provider;
 		}
 		catch (agi::UserCancelException const&) { throw; }
@@ -71,5 +71,3 @@ void SubtitlesProviderFactory::RegisterProviders() {
 	LibassSubtitlesProvider::CacheFonts();
 #endif
 }
-
-template<> SubtitlesProviderFactory::map *FactoryBase<SubtitlesProvider *(*)(std::string)>::classes = nullptr;

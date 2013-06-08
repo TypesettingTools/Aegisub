@@ -39,14 +39,16 @@
 
 #include "options.h"
 
-agi::SpellChecker *SpellCheckerFactory::GetSpellChecker() {
+#include <libaegisub/spellchecker.h>
+
+std::unique_ptr<agi::SpellChecker> SpellCheckerFactory::GetSpellChecker() {
 	std::vector<std::string> list = GetClasses(OPT_GET("Tool/Spell Checker/Backend")->GetString());
 	if (list.empty()) return nullptr;
 
 	std::string error;
 	for (auto const& name : list) {
 		try {
-			agi::SpellChecker *checker = Create(name);
+			auto checker = Create(name);
 			if (checker) return checker;
 		}
 		catch (...) { error += name + " factory: Unknown error\n"; }
@@ -60,5 +62,3 @@ void SpellCheckerFactory::RegisterProviders() {
 	Register<HunspellSpellChecker>("Hunspell");
 #endif
 }
-
-template<> SpellCheckerFactory::map *FactoryBase<agi::SpellChecker *(*)()>::classes = nullptr;

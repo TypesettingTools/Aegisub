@@ -51,7 +51,7 @@ AudioPlayer::AudioPlayer(AudioProvider *provider)
 {
 }
 
-AudioPlayer* AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider) {
+std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider) {
 	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
 	if (list.empty()) throw agi::NoAudioPlayersError("No audio players are available.", 0);
 
@@ -88,5 +88,3 @@ void AudioPlayerFactory::RegisterProviders() {
 	Register<OSSPlayer>("OSS");
 #endif
 }
-
-template<> AudioPlayerFactory::map *FactoryBase<AudioPlayer *(*)(AudioProvider*)>::classes = nullptr;

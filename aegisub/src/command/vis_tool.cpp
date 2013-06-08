@@ -35,6 +35,8 @@
 #include "../visual_tool_scale.h"
 #include "../visual_tool_vector_clip.h"
 
+#include <libaegisub/util.h>
+
 namespace {
 	using cmd::Command;
 	/// @defgroup cmd-visual Visual typesetting tools commands
@@ -111,12 +113,12 @@ namespace {
 
 namespace cmd {
 	void init_visual_tools() {
-		reg(new visual_mode_cross);
-		reg(new visual_mode_drag);
-		reg(new visual_mode_rotate_z);
-		reg(new visual_mode_rotate_xy);
-		reg(new visual_mode_scale);
-		reg(new visual_mode_clip);
-		reg(new visual_mode_vector_clip);
+		reg(agi::util::make_unique<visual_mode_cross>());
+		reg(agi::util::make_unique<visual_mode_drag>());
+		reg(agi::util::make_unique<visual_mode_rotate_z>());
+		reg(agi::util::make_unique<visual_mode_rotate_xy>());
+		reg(agi::util::make_unique<visual_mode_scale>());
+		reg(agi::util::make_unique<visual_mode_clip>());
+		reg(agi::util::make_unique<visual_mode_vector_clip>());
 	}
 }

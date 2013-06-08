@@ -21,6 +21,6 @@
 
 class VideoProviderFactory : public Factory1<VideoProvider, agi::fs::path> {
 public:
-	static VideoProvider *GetProvider(agi::fs::path const& video_file);
+	static std::unique_ptr<VideoProvider> GetProvider(agi::fs::path const& video_file);
 	static void RegisterProviders();
 };

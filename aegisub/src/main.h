@@ -41,13 +41,10 @@
 #endif
 
 class FrameMain;
-class PluginManager;
 
 namespace Automation4 { class AutoloadScriptManager; }
 
 class AegisubApp: public wxApp {
-	PluginManager *plugins;
-
 	bool OnInit();
 	int OnExit();
 	int OnRun();

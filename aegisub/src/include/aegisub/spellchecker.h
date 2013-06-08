@@ -25,6 +25,6 @@ namespace agi { class SpellChecker; }
 
 class SpellCheckerFactory : public Factory0<agi::SpellChecker> {
 public:
-	static agi::SpellChecker *GetSpellChecker();
+	static std::unique_ptr<agi::SpellChecker> GetSpellChecker();
 	static void RegisterProviders();
 };

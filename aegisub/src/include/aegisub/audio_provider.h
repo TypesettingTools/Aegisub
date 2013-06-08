@@ -80,7 +80,7 @@ public:
 
 	/// Get a provider for the file
 	/// @param filename URI to open
-	static AudioProvider *GetProvider(agi::fs::path const& filename);
+	static std::unique_ptr<AudioProvider> GetProvider(agi::fs::path const& filename);
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception)

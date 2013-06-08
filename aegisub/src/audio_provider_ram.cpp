@@ -42,14 +42,11 @@
 #include "utils.h"
 
 #include <libaegisub/background_runner.h>
-#include <libaegisub/scoped_ptr.h>
 
 #define CacheBits 22
 #define CacheBlockSize (1 << CacheBits)
 
-RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br)
-{
-	agi::scoped_ptr<AudioProvider> source(src);
+RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider>&& src, agi::BackgroundRunner *br) {
 
 	try {
 		blockcache.resize((src->GetNumSamples() * src->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
@@ -59,15 +56,15 @@ RAMAudioProvider::RAMAudioProvider(AudioProvider *src, agi::BackgroundRunner *br
 	}
 
 	// Copy parameters
-	samples_native_endian = source->AreSamplesNativeEndian();
-	bytes_per_sample = source->GetBytesPerSample();
-	num_samples = source->GetNumSamples();
-	channels = source->GetChannels();
-	sample_rate = source->GetSampleRate();
-	filename = source->GetFilename();
-	float_samples = source->AreSamplesFloat();
+	samples_native_endian = src->AreSamplesNativeEndian();
+	bytes_per_sample = src->GetBytesPerSample();
+	num_samples = src->GetNumSamples();
+	channels = src->GetChannels();
+	sample_rate = src->GetSampleRate();
+	filename = src->GetFilename();
+	float_samples = src->AreSamplesFloat();
 
-	br->Run(std::bind(&RAMAudioProvider::FillCache, this, src, std::placeholders::_1));
+	br->Run(std::bind(&RAMAudioProvider::FillCache, this, src.get(), std::placeholders::_1));
 }
 
 void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {

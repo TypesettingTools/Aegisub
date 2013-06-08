@@ -32,10 +32,9 @@
 /// @ingroup custom_control
 ///
 
+#include <memory>
 #include <wx/window.h>
 #include <wx/bitmap.h>
-
-#include <libaegisub/scoped_ptr.h>
 
 class AssFile;
 class AssStyle;
@@ -45,17 +44,17 @@ class VideoProvider;
 /// Preview window to show a short string with a given ass style
 class SubtitlesPreview : public wxWindow {
 	/// The subtitle provider used to render the string
-	agi::scoped_ptr<SubtitlesProvider> provider;
+	std::unique_ptr<SubtitlesProvider> provider;
 	/// Bitmap to render into
-	agi::scoped_ptr<wxBitmap> bmp;
+	std::unique_ptr<wxBitmap> bmp;
 	/// The currently display style
 	AssStyle* style;
 	/// Video provider to render into
-	agi::scoped_ptr<VideoProvider> vid;
+	std::unique_ptr<VideoProvider> vid;
 	/// Current background color
-	agi::Color backColour;
+	agi::Color back_color;
 	/// Subtitle file containing the style and displayed line
-	agi::scoped_ptr<AssFile> subFile;
+	std::unique_ptr<AssFile> sub_file;
 	/// Line used to render the specified text
 	AssDialogue* line;
 

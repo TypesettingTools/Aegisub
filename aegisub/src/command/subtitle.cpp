@@ -57,10 +57,11 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <libaegisub/charset_conv.h>
+#include <libaegisub/util.h>
+
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
-
-#include <libaegisub/charset_conv.h>
 
 namespace {
 	using cmd::Command;
@@ -456,23 +457,23 @@ struct subtitle_spellcheck : public Command {
 
 namespace cmd {
 	void init_subtitle() {
-		reg(new subtitle_attachment);
-		reg(new subtitle_find);
-		reg(new subtitle_find_next);
-		reg(new subtitle_insert_after);
-		reg(new subtitle_insert_after_videotime);
-		reg(new subtitle_insert_before);
-		reg(new subtitle_insert_before_videotime);
-		reg(new subtitle_new);
-		reg(new subtitle_open);
-		reg(new subtitle_open_autosave);
-		reg(new subtitle_open_charset);
-		reg(new subtitle_open_video);
-		reg(new subtitle_properties);
-		reg(new subtitle_save);
-		reg(new subtitle_save_as);
-		reg(new subtitle_select_all);
-		reg(new subtitle_select_visible);
-		reg(new subtitle_spellcheck);
+		reg(agi::util::make_unique<subtitle_attachment>());
+		reg(agi::util::make_unique<subtitle_find>());
+		reg(agi::util::make_unique<subtitle_find_next>());
+		reg(agi::util::make_unique<subtitle_insert_after>());
+		reg(agi::util::make_unique<subtitle_insert_after_videotime>());
+		reg(agi::util::make_unique<subtitle_insert_before>());
+		reg(agi::util::make_unique<subtitle_insert_before_videotime>());
+		reg(agi::util::make_unique<subtitle_new>());
+		reg(agi::util::make_unique<subtitle_open>());
+		reg(agi::util::make_unique<subtitle_open_autosave>());
+		reg(agi::util::make_unique<subtitle_open_charset>());
+		reg(agi::util::make_unique<subtitle_open_video>());
+		reg(agi::util::make_unique<subtitle_properties>());
+		reg(agi::util::make_unique<subtitle_save>());
+		reg(agi::util::make_unique<subtitle_save_as>());
+		reg(agi::util::make_unique<subtitle_select_all>());
+		reg(agi::util::make_unique<subtitle_select_visible>());
+		reg(agi::util::make_unique<subtitle_spellcheck>());
 	}
 }

@@ -42,30 +42,13 @@
 #include "video_provider_manager.h"
 #include "auto4_lua_factory.h"
 
-PluginManager::PluginManager() {
-	init = false;
-	lua = nullptr;
-}
+#include <libaegisub/util.h>
 
-PluginManager::~PluginManager() {
-	VideoProviderFactory::Clear();
-	AudioProviderFactory::Clear();
-	AudioPlayerFactory::Clear();
-	SubtitlesProviderFactory::Clear();
-	SpellCheckerFactory::Clear();
-	Automation4::ScriptFactory::Unregister(lua);
-}
-
-/// @brief Registers all built-in plugins
-void PluginManager::RegisterBuiltInPlugins() {
-	if (!init) {
-		VideoProviderFactory::RegisterProviders();
-		AudioProviderFactory::RegisterProviders();
-		AudioPlayerFactory::RegisterProviders();
-		SubtitlesProviderFactory::RegisterProviders();
-		SpellCheckerFactory::RegisterProviders();
-		lua = new Automation4::LuaScriptFactory();
-	}
-
-	init = true;
+void RegisterBuiltInPlugins() {
+	VideoProviderFactory::RegisterProviders();
+	AudioProviderFactory::RegisterProviders();
+	AudioPlayerFactory::RegisterProviders();
+	SubtitlesProviderFactory::RegisterProviders();
+	SpellCheckerFactory::RegisterProviders();
+	Automation4::ScriptFactory::Register(agi::util::make_unique<Automation4::LuaScriptFactory>());
 }

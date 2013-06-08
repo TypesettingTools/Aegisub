@@ -28,8 +28,8 @@
 #include "video_provider_manager.h"
 
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
-#include <wx/any.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/dirdlg.h>
@@ -50,7 +50,7 @@
 		type(std::string const& n, Preferences *p) : name(n), parent(p) { } \
 		void operator()(evttype& evt) {                                     \
 			evt.Skip();                                                     \
-			parent->SetOption(new agi::opt(name, body));                    \
+			parent->SetOption(agi::util::make_unique<agi::opt>(name, body));\
 		}                                                                   \
 	}
 

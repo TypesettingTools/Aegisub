@@ -36,8 +36,6 @@
 
 #include "include/aegisub/audio_player.h"
 
-#include <libaegisub/scoped_ptr.h>
-
 class DirectSoundPlayer2Thread;
 
 /// @class DirectSoundPlayer2
@@ -48,7 +46,7 @@ class DirectSoundPlayer2Thread;
 /// send commands to the playback thread.
 class DirectSoundPlayer2 : public AudioPlayer {
 	/// The playback thread
-	agi::scoped_ptr<DirectSoundPlayer2Thread> thread;
+	std::unique_ptr<DirectSoundPlayer2Thread> thread;
 
 	/// Desired length in milliseconds to write ahead of the playback cursor
 	int WantedLatency;

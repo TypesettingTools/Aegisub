@@ -32,12 +32,11 @@
 /// @ingroup main_ui
 ///
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "scintilla_text_ctrl.h"
-
-#include <libaegisub/scoped_ptr.h>
 
 class SubsEditBox;
 class Thesaurus;
@@ -52,12 +51,12 @@ namespace agi {
 /// @brief A Scintilla control with spell checking and syntax highlighting
 class SubsTextEditCtrl : public ScintillaTextCtrl {
 	/// Backend spellchecker to use
-	agi::scoped_ptr<agi::SpellChecker> spellchecker;
+	std::unique_ptr<agi::SpellChecker> spellchecker;
 
 	/// Backend thesaurus to use
-	agi::scoped_ptr<Thesaurus> thesaurus;
+	std::unique_ptr<Thesaurus> thesaurus;
 
-	agi::scoped_ptr<agi::CalltipProvider> calltip_provider;
+	std::unique_ptr<agi::CalltipProvider> calltip_provider;
 
 	/// Project context, for splitting lines
 	agi::Context *context;

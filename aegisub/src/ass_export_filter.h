@@ -34,34 +34,17 @@
 
 #pragma once
 
+#include <boost/intrusive/list.hpp>
 #include <memory>
 #include <string>
-#include <vector>
 
 class AssFile;
-class AssExportFilter;
+class AssExportFilterChain;
 class wxWindow;
 
 namespace agi { struct Context; }
 
-typedef std::vector<AssExportFilter*> FilterList;
-
-class AssExportFilterChain {
-public:
-	/// Register an export filter
-	static void Register(AssExportFilter *filter);
-	/// Unregister an export filter; must have been registered
-	static void Unregister(AssExportFilter *filter);
-	/// Unregister and delete all export filters
-	static void Clear();
-	/// Get a filter by name or nullptr if it doesn't exist
-	static AssExportFilter *GetFilter(std::string const& name);
-
-	/// Get the list of registered filters
-	static const FilterList *GetFilterList();
-};
-
-class AssExportFilter {
+class AssExportFilter : public boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type {
 	/// The filter chain needs to be able to muck around with filter names when
 	/// they're registered to avoid duplicates
 	friend class AssExportFilterChain;
@@ -97,4 +80,19 @@ public:
 	/// @param is_default If true use default settings instead
 	/// @param c Project context
 	virtual void LoadSettings(bool is_default, agi::Context *c) { }
+};
+
+typedef boost::intrusive::make_list<AssExportFilter, boost::intrusive::constant_time_size<false>>::type FilterList;
+
+class AssExportFilterChain {
+public:
+	/// Register an export filter
+	static void Register(std::unique_ptr<AssExportFilter>&& filter);
+	/// Unregister and delete all export filters
+	static void Clear();
+	/// Get a filter by name or nullptr if it doesn't exist
+	static AssExportFilter *GetFilter(std::string const& name);
+
+	/// Get the list of registered filters
+	static FilterList *GetFilterList();
 };

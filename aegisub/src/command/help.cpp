@@ -36,15 +36,16 @@
 
 #include "../config.h"
 
-#include <wx/msgdlg.h>
-
-#include <libaegisub/util_osx.h>
-
 #include "command.h"
 
 #include "../help_button.h"
 #include "../include/aegisub/context.h"
 #include "../options.h"
+
+#include <libaegisub/util.h>
+#include <libaegisub/util_osx.h>
+
+#include <wx/msgdlg.h>
 
 namespace {
 	using cmd::Command;
@@ -152,14 +153,14 @@ struct help_website : public Command {
 
 namespace cmd {
 	void init_help() {
-		reg(new help_bugs);
-		reg(new help_contents);
+		reg(agi::util::make_unique<help_bugs>());
+		reg(agi::util::make_unique<help_contents>());
 #ifdef __WXMAC__
-		reg(new help_files);
+		reg(agi::util::make_unique<help_files>());
 #endif
-		reg(new help_forums);
-		reg(new help_irc);
-		reg(new help_video);
-		reg(new help_website);
+		reg(agi::util::make_unique<help_forums>());
+		reg(agi::util::make_unique<help_irc>());
+		reg(agi::util::make_unique<help_video>());
+		reg(agi::util::make_unique<help_website>());
 	}
 }

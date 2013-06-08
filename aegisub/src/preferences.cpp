@@ -590,11 +590,8 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	SetSizerAndFit(sizer);
 }
 
-void Preferences::SetOption(agi::OptionValue *new_value) {
-	std::string name = new_value->GetName();
-	if (pending_changes.count(name))
-		delete pending_changes[name];
-	pending_changes[name] = new_value;
+void Preferences::SetOption(std::unique_ptr<agi::OptionValue>&& new_value) {
+	pending_changes[new_value->GetName()] = std::move(new_value);
 	if (IsEnabled())
 		applyButton->Enable(true);
 }
@@ -615,10 +612,8 @@ void Preferences::OnOK(wxCommandEvent &event) {
 }
 
 void Preferences::OnApply(wxCommandEvent &) {
-	for (auto const& change : pending_changes) {
-		OPT_SET(change.first)->Set(change.second);
-		delete change.second;
-	}
+	for (auto const& change : pending_changes)
+		OPT_SET(change.first)->Set(change.second.get());
 	pending_changes.clear();
 
 	for (auto const& thunk : pending_callbacks)
@@ -699,6 +694,4 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 }
 
 Preferences::~Preferences() {
-	for (auto& change : pending_changes)
-		delete change.second;
 }

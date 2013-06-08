@@ -53,7 +53,7 @@
 
 #include <libaegisub/access.h>
 #include <libaegisub/path.h>
-#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
@@ -272,7 +272,7 @@ namespace {
 		luaL_argcheck(L, lua_isstring(L, 2), 2, "");
 
 		lua_pushvalue(L, 1);
-		agi::scoped_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
+		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
 		AssStyle *st = dynamic_cast<AssStyle*>(et.get());
 		lua_pop(L, 1);
 		if (!st)
@@ -657,7 +657,7 @@ namespace Automation4 {
 	// LuaFeatureMacro
 	int LuaCommand::LuaRegister(lua_State *L)
 	{
-		cmd::reg(new LuaCommand(L));
+		cmd::reg(agi::util::make_unique<LuaCommand>(L));
 		return 0;
 	}
 
@@ -900,8 +900,7 @@ namespace Automation4 {
 
 	int LuaExportFilter::LuaRegister(lua_State *L)
 	{
-		(void)new LuaExportFilter(L);
-
+		AssExportFilterChain::Register(agi::util::make_unique<LuaExportFilter>(L));
 		return 0;
 	}
 
@@ -974,13 +973,12 @@ namespace Automation4 {
 	LuaScriptFactory::LuaScriptFactory()
 	: ScriptFactory("Lua", "*.lua,*.moon")
 	{
-		Register(this);
 	}
 
-	Script* LuaScriptFactory::Produce(agi::fs::path const& filename) const
+	std::unique_ptr<Script> LuaScriptFactory::Produce(agi::fs::path const& filename) const
 	{
 		if (agi::fs::HasExtension(filename, "lua") || agi::fs::HasExtension(filename, "moon"))
-			return new LuaScript(filename);
+			return agi::util::make_unique<LuaScript>(filename);
 		return nullptr;
 	}
 }

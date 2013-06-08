@@ -42,6 +42,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
 #include <cassert>
 #include <cstdint>
@@ -487,12 +488,12 @@ public:
 	}
 };
 
-AudioProvider *CreatePCMAudioProvider(agi::fs::path const& filename) {
+std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename) {
 	bool wrong_file_type = true;
 	std::string msg;
 
 	try {
-		return new RiffWavPCMAudioProvider(filename);
+		return agi::util::make_unique<RiffWavPCMAudioProvider>(filename);
 	}
 	catch (agi::AudioDataNotFoundError const& err) {
 		msg = "RIFF PCM WAV audio provider: " + err.GetMessage();
@@ -503,7 +504,7 @@ AudioProvider *CreatePCMAudioProvider(agi::fs::path const& filename) {
 	}
 
 	try {
-		return new Wave64AudioProvider(filename);
+		return agi::util::make_unique<Wave64AudioProvider>(filename);
 	}
 	catch (agi::AudioDataNotFoundError const& err) {
 		msg += "\nWave64 audio provider: " + err.GetMessage();

@@ -44,16 +44,14 @@ namespace agi { struct Context; }
 class wxSizer;
 class wxWindow;
 
-typedef std::vector<AssExportFilter*> FilterList;
-
 class AssExporter {
-	typedef FilterList::const_iterator filter_iterator;
+	typedef std::vector<AssExportFilter*>::const_iterator filter_iterator;
 
 	/// Sizers for configuration panels
 	std::map<std::string, wxSizer*> Sizers;
 
 	/// Filters which will be applied to the subtitles
-	FilterList filters;
+	std::vector<AssExportFilter*> filters;
 
 	/// Input context
 	agi::Context *c;
@@ -71,12 +69,6 @@ public:
 	/// Add the named filter to the list of filters to be run
 	/// @throws std::string if filter is not found
 	void AddFilter(std::string const& name);
-
-	/// Run all added export filters
-	/// @param parent_window Parent window the filters should use when opening dialogs
-	/// @param copy Should the file be copied rather than transformed in-place?
-	/// @return The new subtitle file (which is the old one if copy is false)
-	AssFile *ExportTransform(wxWindow *parent_window = 0, bool copy = false);
 
 	/// Apply selected export filters and save with the given charset
 	/// @param file Target filename

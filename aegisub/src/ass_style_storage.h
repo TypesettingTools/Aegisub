@@ -35,7 +35,7 @@
 #include <libaegisub/fs_fwd.h>
 
 #include <boost/filesystem/path.hpp>
-#include <deque>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -43,27 +43,25 @@ class AssStyle;
 
 class AssStyleStorage {
 	agi::fs::path file;
-	std::deque<AssStyle*> style;
+	std::vector<std::unique_ptr<AssStyle>> style;
 
 public:
 	~AssStyleStorage();
 
-	typedef std::deque<AssStyle*>::iterator iterator;
-	typedef std::deque<AssStyle*>::const_iterator const_iterator;
+	typedef std::vector<std::unique_ptr<AssStyle>>::iterator iterator;
+	typedef std::vector<std::unique_ptr<AssStyle>>::const_iterator const_iterator;
 	iterator begin() { return style.begin(); }
 	iterator end() { return style.end(); }
 	const_iterator begin() const { return style.begin(); }
 	const_iterator end() const { return style.end(); }
-	void push_back(AssStyle *new_style) { style.push_back(new_style); }
-	AssStyle *back() { return style.back(); }
-	AssStyle *operator[](size_t idx) const { return style[idx]; }
+	void push_back(std::unique_ptr<AssStyle>&& new_style);
+	AssStyle *back() { return style.back().get(); }
+	AssStyle *operator[](size_t idx) const { return style[idx].get(); }
 	size_t size() const { return style.size(); }
+	void clear();
 
 	/// Get the names of all styles in this storage
 	std::vector<std::string> GetNames();
-
-	/// Delete all styles in this storage
-	void Clear();
 
 	/// Delete the style at the given index
 	void Delete(int idx);

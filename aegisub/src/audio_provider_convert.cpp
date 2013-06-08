@@ -27,17 +27,19 @@
 #include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
 #include <limits>
 
 /// Base class for all wrapping converters
 class AudioProviderConverter : public AudioProvider {
 protected:
-	agi::scoped_ptr<AudioProvider> source;
+	std::unique_ptr<AudioProvider> source;
 public:
-	AudioProviderConverter(AudioProvider *src) : source(src) {
+	AudioProviderConverter(std::unique_ptr<AudioProvider>&& src)
+	: source(std::move(src))
+	{
 		channels = source->GetChannels();
 		num_samples = source->GetNumSamples();
 		sample_rate = source->GetSampleRate();
@@ -55,11 +57,11 @@ class BitdepthConvertAudioProvider : public AudioProviderConverter {
 	int src_bytes_per_sample;
 	bool src_is_native_endian;
 public:
-	BitdepthConvertAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
+	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
 		if (bytes_per_sample > 8)
 			throw agi::AudioProviderOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported", 0);
 
-		src_is_native_endian = src->AreSamplesNativeEndian();
+		src_is_native_endian = source->AreSamplesNativeEndian();
 		src_bytes_per_sample = bytes_per_sample;
 		bytes_per_sample = sizeof(Target);
 	}
@@ -110,8 +112,8 @@ public:
 template<class Source, class Target>
 class FloatConvertAudioProvider : public AudioProviderConverter {
 public:
-	FloatConvertAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
-		if (!src->AreSamplesNativeEndian())
+	FloatConvertAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
+		if (!source->AreSamplesNativeEndian())
 			throw agi::AudioProviderOpenError("Audio format converter: Float audio with non-native endianness is currently unsupported.", 0);
 		bytes_per_sample = sizeof(Target);
 		float_samples = false;
@@ -144,7 +146,7 @@ public:
 class DownmixAudioProvider : public AudioProviderConverter {
 	int src_channels;
 public:
-	DownmixAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
+	DownmixAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
 		if (bytes_per_sample != 2)
 			throw agi::InternalError("DownmixAudioProvider requires 16-bit input", 0);
 		if (channels == 1)
@@ -170,14 +172,14 @@ public:
 	}
 };
 
-/// Sample doubler with linear interpolation for the new samples
+/// Sample doubler with linear interpolation for the agi::util::make_unique<samples>
 /// Requires 16-bit mono input
 class SampleDoublingAudioProvider : public AudioProviderConverter {
 public:
-	SampleDoublingAudioProvider(AudioProvider *src) : AudioProviderConverter(src) {
-		if (src->GetBytesPerSample() != 2)
+	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
+		if (source->GetBytesPerSample() != 2)
 			throw agi::InternalError("UpsampleAudioProvider requires 16-bit input", 0);
-		if (src->GetChannels() != 1)
+		if (source->GetChannels() != 1)
 			throw agi::InternalError("UpsampleAudioProvider requires mono input", 0);
 
 		sample_rate *= 2;
@@ -210,33 +212,31 @@ public:
 	}
 };
 
-AudioProvider *CreateConvertAudioProvider(AudioProvider *source_provider) {
-	AudioProvider *provider = source_provider;
-
+std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider>&& provider) {
 	// Ensure 16-bit audio with proper endianness
 	if (provider->AreSamplesFloat()) {
 		LOG_D("audio_provider") << "Converting float to S16";
 		if (provider->GetBytesPerSample() == sizeof(float))
-			provider = new FloatConvertAudioProvider<float, int16_t>(provider);
+			provider = agi::util::make_unique<FloatConvertAudioProvider<float, int16_t>>(std::move(provider));
 		else
-			provider = new FloatConvertAudioProvider<double, int16_t>(provider);
+			provider = agi::util::make_unique<FloatConvertAudioProvider<double, int16_t>>(std::move(provider));
 	}
 	if (provider->GetBytesPerSample() != 2 || !provider->AreSamplesNativeEndian()) {
 		LOG_D("audio_provider") << "Converting " << provider->GetBytesPerSample() << " bytes per sample or wrong endian to S16";
-		provider = new BitdepthConvertAudioProvider<int16_t>(provider);
+		provider = agi::util::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
 	}
 
 	// We currently only support mono audio
 	if (provider->GetChannels() != 1) {
 		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels() << " channels";
-		provider = new DownmixAudioProvider(provider);
+		provider = agi::util::make_unique<DownmixAudioProvider>(std::move(provider));
 	}
 
 	// Some players don't like low sample rate audio
 	while (provider->GetSampleRate() < 32000) {
 		LOG_D("audio_provider") << "Doubling sample rate";
-		provider = new SampleDoublingAudioProvider(provider);
+		provider = agi::util::make_unique<SampleDoublingAudioProvider>(std::move(provider));
 	}
 
-	return provider;
+	return std::move(provider);
 }

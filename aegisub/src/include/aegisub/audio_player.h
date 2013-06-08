@@ -63,5 +63,5 @@ public:
 class AudioPlayerFactory : public Factory1<AudioPlayer, AudioProvider*> {
 public:
 	static void RegisterProviders();
-	static AudioPlayer *GetAudioPlayer(AudioProvider *provider);
+	static std::unique_ptr<AudioPlayer> GetAudioPlayer(AudioProvider *provider);
 };

@@ -46,9 +46,9 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <fstream>
 
-AssStyleStorage::~AssStyleStorage() {
-	agi::util::delete_clear(style);
-}
+AssStyleStorage::~AssStyleStorage() { }
+void AssStyleStorage::clear() { style.clear(); }
+void AssStyleStorage::push_back( std::unique_ptr<AssStyle>&& new_style ) { style.emplace_back(std::move(new_style)); }
 
 void AssStyleStorage::Save() const {
 	if (file.empty()) return;
@@ -58,19 +58,19 @@ void AssStyleStorage::Save() const {
 	agi::io::Save out(file);
 	out.Get() << "\xEF\xBB\xBF";
 
-	for (const AssStyle *cur : style)
+	for (auto const& cur : style)
 		out.Get() << cur->GetEntryData() << std::endl;
 }
 
 void AssStyleStorage::Load(agi::fs::path const& filename) {
 	file = filename;
-	Clear();
+	clear();
 
 	try {
 		std::unique_ptr<std::ifstream> in(agi::io::Open(file));
 		for (auto const& line : agi::line_iterator<std::string>(*in)) {
 			try {
-				style.push_back(new AssStyle(line));
+				style.emplace_back(agi::util::make_unique<AssStyle>(line));
 			} catch(...) {
 				/* just ignore invalid lines for now */
 			}
@@ -81,26 +81,21 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 	}
 }
 
-void AssStyleStorage::Clear() {
-	agi::util::delete_clear(style);
-}
-
 void AssStyleStorage::Delete(int idx) {
-	delete style[idx];
 	style.erase(style.begin() + idx);
 }
 
 std::vector<std::string> AssStyleStorage::GetNames() {
 	std::vector<std::string> names;
-	for (const AssStyle *cur : style)
+	for (auto const& cur : style)
 		names.emplace_back(cur->name);
 	return names;
 }
 
 AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
-	for (AssStyle *cur : style) {
+	for (auto& cur : style) {
 		if (boost::iequals(cur->name, name))
-			return cur;
+			return cur.get();
 	}
 	return 0;
 }

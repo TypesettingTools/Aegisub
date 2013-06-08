@@ -36,15 +36,13 @@
 
 #include "include/aegisub/video_provider.h"
 
-#include <libaegisub/scoped_ptr.h>
-
 struct CachedFrame;
 
 /// @class VideoProviderCache
 /// @brief A wrapper around a video provider which provides LRU caching
 class VideoProviderCache : public VideoProvider {
 	/// The source provider to get frames from
-	agi::scoped_ptr<VideoProvider> master;
+	std::unique_ptr<VideoProvider> master;
 
 	/// @brief Maximum size of the cache in bytes
 	///
@@ -56,7 +54,7 @@ class VideoProviderCache : public VideoProvider {
 	boost::container::list<CachedFrame> cache;
 
 public:
-	VideoProviderCache(VideoProvider *master);
+	VideoProviderCache(std::unique_ptr<VideoProvider>&& master);
 	~VideoProviderCache();
 
 	const AegiVideoFrame GetFrame(int n);

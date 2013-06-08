@@ -43,6 +43,8 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <libaegisub/util.h>
+
 namespace {
 	using cmd::Command;
 /// @defgroup cmd-keyframed Keyframe commands.
@@ -107,8 +109,8 @@ struct keyframe_save : public Command {
 
 namespace cmd {
 	void init_keyframe() {
-		reg(new keyframe_close);
-		reg(new keyframe_open);
-		reg(new keyframe_save);
+		reg(agi::util::make_unique<keyframe_close>());
+		reg(agi::util::make_unique<keyframe_open>());
+		reg(agi::util::make_unique<keyframe_save>());
 	}
 }

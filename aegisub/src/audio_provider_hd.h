@@ -34,8 +34,6 @@
 
 #include "include/aegisub/audio_provider.h"
 
-#include <libaegisub/scoped_ptr.h>
-
 namespace agi {
 	class BackgroundRunner;
 	class ProgressSink;
@@ -45,7 +43,7 @@ class HDAudioProvider : public AudioProvider {
 	/// Name of the file which the decoded audio is written to
 	agi::fs::path diskCacheFilename;
 	/// Audio provider which reads from the decoded cache
-	agi::scoped_ptr<AudioProvider> cache_provider;
+	std::unique_ptr<AudioProvider> cache_provider;
 
 	/// Fill the cache with all of the data from the source audio provider
 	/// @param src Audio data to cache
@@ -56,7 +54,7 @@ class HDAudioProvider : public AudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	HDAudioProvider(AudioProvider *source, agi::BackgroundRunner *br);
+	HDAudioProvider(std::unique_ptr<AudioProvider>&& source, agi::BackgroundRunner *br);
 	~HDAudioProvider();
 
 	bool AreSamplesNativeEndian() const { return true; }

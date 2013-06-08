@@ -32,14 +32,14 @@
 /// @ingroup scripting
 ///
 
+#include "auto4_base.h"
+
+#include "command/command.h"
+
 #include <deque>
 
 #include <wx/event.h>
 #include <wx/thread.h>
-
-#include "auto4_base.h"
-
-#include "command/command.h"
 
 class AssEntry;
 class wxWindow;
@@ -241,8 +241,8 @@ namespace Automation4 {
 		wxString help;
 		int cmd_type;
 
-		LuaCommand(lua_State *L);
 	public:
+		LuaCommand(lua_State *L);
 		~LuaCommand();
 
 		const char* name() const { return cmd_name.c_str(); }
@@ -264,13 +264,11 @@ namespace Automation4 {
 		LuaDialog *config_dialog;
 
 	protected:
-		LuaExportFilter(lua_State *L);
-
 		ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c);
-	public:
-		static int LuaRegister(lua_State *L);
 
-		virtual ~LuaExportFilter() { }
+	public:
+		LuaExportFilter(lua_State *L);
+		static int LuaRegister(lua_State *L);
 
 		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
 	};

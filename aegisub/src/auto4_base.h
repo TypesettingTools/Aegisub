@@ -80,7 +80,6 @@ namespace Automation4 {
 
 	public:
 		ExportFilter(std::string const& name, std::string const& description, int priority);
-		virtual ~ExportFilter();
 
 		wxWindow* GetConfigDialogWindow(wxWindow *parent, agi::Context *c);
 		void LoadSettings(bool is_default, agi::Context *c);
@@ -189,7 +188,7 @@ namespace Automation4 {
 	/// A manager of loaded automation scripts
 	class ScriptManager {
 	protected:
-		std::vector<Script*> scripts;
+		std::vector<std::unique_ptr<Script>> scripts;
 		std::vector<cmd::Command*> macros;
 
 		agi::signal::Signal<> ScriptsChanged;
@@ -197,8 +196,8 @@ namespace Automation4 {
 	public:
 		/// Deletes all scripts managed
 		virtual ~ScriptManager();
-		/// Add a script to the manager. The ScriptManager takes ownership of the script and will automatically delete it.
-		void Add(Script *script);
+		/// Add a script to the manager.
+		void Add(std::unique_ptr<Script>&& script);
 		/// Remove a script from the manager, and delete the Script object.
 		void Remove(Script *script);
 		/// Deletes all scripts managed
@@ -209,7 +208,7 @@ namespace Automation4 {
 		virtual void Reload(Script *script);
 
 		/// Get all managed scripts (both loaded and invalid)
-		const std::vector<Script*>& GetScripts() const { return scripts; }
+		const std::vector<std::unique_ptr<Script>>& GetScripts() const { return scripts; }
 
 		const std::vector<cmd::Command*>& GetMacros();
 		// No need to have getters for the other kinds of features, I think.
@@ -250,24 +249,23 @@ namespace Automation4 {
 		///
 		/// This is private as it should only ever be called through
 		/// CreateFromFile
-		virtual Script* Produce(agi::fs::path const& filename) const = 0;
+		virtual std::unique_ptr<Script> Produce(agi::fs::path const& filename) const = 0;
 
-		static inline std::vector<ScriptFactory*>& Factories();
+		static std::vector<std::unique_ptr<ScriptFactory>>& Factories();
 
 	protected:
 		ScriptFactory(std::string const& engine_name, std::string const& filename_pattern);
-		virtual ~ScriptFactory() { }
 
 	public:
+		virtual ~ScriptFactory() { }
+
 		/// Name of this automation engine
 		const std::string& GetEngineName() const { return engine_name; }
 		/// Extension which this engine supports
 		const std::string& GetFilenamePattern() const { return filename_pattern; }
 
-		/// Register an automation engine. Calling code retains ownership of pointer
-		static void Register(ScriptFactory *factory);
-		/// Unregister and delete an automation engine
-		static void Unregister(ScriptFactory *factory);
+		/// Register an automation engine.
+		static void Register(std::unique_ptr<ScriptFactory>&& factory);
 
 		/// Get the full wildcard string for all loaded engines
 		static std::string GetWildcardStr();
@@ -276,9 +274,9 @@ namespace Automation4 {
 		/// @param filename Script to load
 		/// @param complain_about_unrecognised Should an error be displayed for files that aren't automation scripts?
 		/// @param create_unknown Create a placeholder rather than returning nullptr if no script engine supports the file
-		static Script* CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown=true);
+		static std::unique_ptr<Script> CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown=true);
 
-		static const std::vector<ScriptFactory*>& GetFactories();
+		static const std::vector<std::unique_ptr<ScriptFactory>>& GetFactories();
 	};
 
 	/// A script which represents a file not recognized by any registered

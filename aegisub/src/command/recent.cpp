@@ -44,6 +44,8 @@
 #include "../subs_controller.h"
 #include "../video_context.h"
 
+#include <libaegisub/util.h>
+
 #include <wx/event.h>
 #include <wx/msgdlg.h>
 
@@ -138,19 +140,19 @@ public:
 
 namespace cmd {
 	void init_recent() {
-		reg(new recent_audio);
-		reg(new recent_keyframes);
-		reg(new recent_subtitle);
-		reg(new recent_timecodes);
-		reg(new recent_video);
+		reg(agi::util::make_unique<recent_audio>());
+		reg(agi::util::make_unique<recent_keyframes>());
+		reg(agi::util::make_unique<recent_subtitle>());
+		reg(agi::util::make_unique<recent_timecodes>());
+		reg(agi::util::make_unique<recent_video>());
 
 		/// @todo 16 is an implementation detail that maybe needs to be exposed
 		for (int i = 0; i < 16; ++i) {
-			reg(new mru_wrapper<recent_audio_entry>(i));
-			reg(new mru_wrapper<recent_keyframes_entry>(i));
-			reg(new mru_wrapper<recent_subtitle_entry>(i));
-			reg(new mru_wrapper<recent_timecodes_entry>(i));
-			reg(new mru_wrapper<recent_video_entry>(i));
+			reg(agi::util::make_unique<mru_wrapper<recent_audio_entry>>(i));
+			reg(agi::util::make_unique<mru_wrapper<recent_keyframes_entry>>(i));
+			reg(agi::util::make_unique<mru_wrapper<recent_subtitle_entry>>(i));
+			reg(agi::util::make_unique<mru_wrapper<recent_timecodes_entry>>(i));
+			reg(agi::util::make_unique<mru_wrapper<recent_video_entry>>(i));
 		}
 	}
 }

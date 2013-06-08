@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
+#include <memory>
 #include <vector>
 
 #include <wx/string.h>
@@ -135,7 +135,7 @@ class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
 	std::vector<AudioMarkerKeyframe> markers;
 
 	/// Pen used for all keyframe markers, stored here for performance reasons
-	agi::scoped_ptr<Pen> style;
+	std::unique_ptr<Pen> style;
 
 	/// Regenerate the list of markers
 	void Update();
@@ -158,7 +158,7 @@ public:
 class VideoPositionMarkerProvider : public AudioMarkerProvider {
 	VideoContext *vc;
 
-	agi::scoped_ptr<VideoPositionMarker> marker;
+	std::unique_ptr<VideoPositionMarker> marker;
 
 	agi::signal::Connection video_seek_slot;
 	agi::signal::Connection enable_opt_changed_slot;
@@ -188,7 +188,7 @@ class SecondsMarkerProvider : public AudioMarkerProvider {
 	};
 
 	/// Pen used by all seconds markers, here for performance
-	agi::scoped_ptr<Pen> pen;
+	std::unique_ptr<Pen> pen;
 
 	/// Markers returned from last call to GetMarkers
 	mutable std::vector<Marker> markers;

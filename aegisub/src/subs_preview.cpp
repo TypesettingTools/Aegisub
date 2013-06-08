@@ -35,9 +35,6 @@
 
 #include "config.h"
 
-#include <wx/dcclient.h>
-#include <wx/msgdlg.h>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -45,20 +42,25 @@
 #include "include/aegisub/subtitles_provider.h"
 #include "video_provider_dummy.h"
 
+#include <libaegisub/util.h>
+
+#include <wx/dcclient.h>
+#include <wx/msgdlg.h>
+
 SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, agi::Color col)
 : wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
 , style(new AssStyle)
-, backColour(col)
-, subFile(new AssFile)
+, back_color(col)
+, sub_file(agi::util::make_unique<AssFile>())
 , line(new AssDialogue)
 {
 	line->Text = "{\\q2}preview";
 
 	SetStyle(*style);
 
-	subFile->LoadDefault();
-	subFile->InsertLine(style);
-	subFile->Line.push_back(*line);
+	sub_file->LoadDefault();
+	sub_file->InsertLine(style);
+	sub_file->Line.push_back(*line);
 
 	SetSizeHints(size.GetWidth(), size.GetHeight(), -1, -1);
 	wxSizeEvent evt(size);
@@ -72,8 +74,8 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, 
 SubtitlesPreview::~SubtitlesPreview() {
 }
 
-void SubtitlesPreview::SetStyle(AssStyle const& newStyle) {
-	*style = newStyle;
+void SubtitlesPreview::SetStyle(AssStyle const& new_style) {
+	*style = new_style;
 	style->name = "Default";
 	style->alignment = 5;
 	std::fill(style->Margin.begin(), style->Margin.end(), 0);
@@ -82,17 +84,17 @@ void SubtitlesPreview::SetStyle(AssStyle const& newStyle) {
 }
 
 void SubtitlesPreview::SetText(std::string const& text) {
-	std::string newText = "{\\q2}" + text;
-	if (newText != line->Text) {
-		line->Text = newText;
+	std::string new_text = "{\\q2}" + text;
+	if (new_text != line->Text) {
+		line->Text = new_text;
 		UpdateBitmap();
 	}
 }
 
 void SubtitlesPreview::SetColour(agi::Color col) {
-	if (col != backColour) {
-		backColour = col;
-		vid.reset(new DummyVideoProvider(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), backColour, true));
+	if (col != back_color) {
+		back_color = col;
+		vid.reset(new DummyVideoProvider(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), back_color, true));
 		UpdateBitmap();
 	}
 }
@@ -105,7 +107,7 @@ void SubtitlesPreview::UpdateBitmap() {
 
 	if (provider) {
 		try {
-			provider->LoadSubtitles(subFile.get());
+			provider->LoadSubtitles(sub_file.get());
 			provider->DrawSubtitles(frame, 0.1);
 		}
 		catch (...) { }
@@ -127,11 +129,11 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 	int w = evt.GetSize().GetWidth();
 	int h = evt.GetSize().GetHeight();
 
-	bmp.reset(new wxBitmap(w, h, -1));
-	vid.reset(new DummyVideoProvider(0.0, 10, w, h, backColour, true));
+	bmp = agi::util::make_unique<wxBitmap>(w, h, -1);
+	vid.reset(new DummyVideoProvider(0.0, 10, w, h, back_color, true));
 	try {
 		if (!provider)
-			provider.reset(SubtitlesProviderFactory::GetProvider());
+			provider = SubtitlesProviderFactory::GetProvider();
 	}
 	catch (...) {
 		wxMessageBox(
@@ -140,8 +142,8 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 			"No subtitles provider", wxOK | wxICON_ERROR | wxCENTER);
 	}
 
-	subFile->SetScriptInfo("PlayResX", std::to_string(w));
-	subFile->SetScriptInfo("PlayResY", std::to_string(h));
+	sub_file->SetScriptInfo("PlayResX", std::to_string(w));
+	sub_file->SetScriptInfo("PlayResY", std::to_string(h));
 
 	UpdateBitmap();
 }

@@ -49,6 +49,8 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <libaegisub/util.h>
+
 namespace {
 	using cmd::Command;
 /// @defgroup cmd-am Automation commands
@@ -113,9 +115,9 @@ struct meta : public Command {
 
 namespace cmd {
 	void init_automation() {
-		reg(new meta);
-		reg(new open_manager);
-		reg(new reload_all);
-		reg(new reload_autoload);
+		reg(agi::util::make_unique<meta>());
+		reg(agi::util::make_unique<open_manager>());
+		reg(agi::util::make_unique<reload_all>());
+		reg(agi::util::make_unique<reload_autoload>());
 	}
 }

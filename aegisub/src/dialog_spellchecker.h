@@ -20,12 +20,11 @@
 ///
 
 #include <map>
+#include <memory>
 #include <set>
 
 #include <wx/dialog.h>
 #include <wx/arrstr.h>
-
-#include <libaegisub/scoped_ptr.h>
 
 namespace agi { struct Context; }
 namespace agi { class SpellChecker; }
@@ -38,7 +37,7 @@ class wxTextCtrl;
 
 class DialogSpellChecker : public wxDialog {
 	agi::Context *context; ///< The project context
-	agi::scoped_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine
+	std::unique_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine
 
 	/// Words which the user has indicated should always be corrected
 	std::map<std::string, std::string> auto_replace;

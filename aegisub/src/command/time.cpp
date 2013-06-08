@@ -51,6 +51,7 @@
 #include "../video_context.h"
 
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 
@@ -373,23 +374,23 @@ struct time_prev : public Command {
 
 namespace cmd {
 	void init_time() {
-		reg(new time_add_lead_both);
-		reg(new time_add_lead_in);
-		reg(new time_add_lead_out);
-		reg(new time_continuous_end);
-		reg(new time_continuous_start);
-		reg(new time_frame_current);
-		reg(new time_length_decrease);
-		reg(new time_length_decrease_shift);
-		reg(new time_length_increase);
-		reg(new time_length_increase_shift);
-		reg(new time_next);
-		reg(new time_prev);
-		reg(new time_shift);
-		reg(new time_snap_end_video);
-		reg(new time_snap_scene);
-		reg(new time_snap_start_video);
-		reg(new time_start_decrease);
-		reg(new time_start_increase);
+		reg(agi::util::make_unique<time_add_lead_both>());
+		reg(agi::util::make_unique<time_add_lead_in>());
+		reg(agi::util::make_unique<time_add_lead_out>());
+		reg(agi::util::make_unique<time_continuous_end>());
+		reg(agi::util::make_unique<time_continuous_start>());
+		reg(agi::util::make_unique<time_frame_current>());
+		reg(agi::util::make_unique<time_length_decrease>());
+		reg(agi::util::make_unique<time_length_decrease_shift>());
+		reg(agi::util::make_unique<time_length_increase>());
+		reg(agi::util::make_unique<time_length_increase_shift>());
+		reg(agi::util::make_unique<time_next>());
+		reg(agi::util::make_unique<time_prev>());
+		reg(agi::util::make_unique<time_shift>());
+		reg(agi::util::make_unique<time_snap_end_video>());
+		reg(agi::util::make_unique<time_snap_scene>());
+		reg(agi::util::make_unique<time_snap_start_video>());
+		reg(agi::util::make_unique<time_start_decrease>());
+		reg(agi::util::make_unique<time_start_increase>());
 	}
 }

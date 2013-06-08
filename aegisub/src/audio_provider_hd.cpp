@@ -91,16 +91,15 @@ public:
 
 }
 
-HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) {
-	agi::scoped_ptr<AudioProvider> source(src);
+HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider>&& src, agi::BackgroundRunner *br) {
 	assert(src->AreSamplesNativeEndian()); // Byteswapping should be done before caching
 
-	bytes_per_sample = source->GetBytesPerSample();
-	num_samples      = source->GetNumSamples();
-	channels         = source->GetChannels();
-	sample_rate      = source->GetSampleRate();
-	filename         = source->GetFilename();
-	float_samples    = source->AreSamplesFloat();
+	bytes_per_sample = src->GetBytesPerSample();
+	num_samples      = src->GetNumSamples();
+	channels         = src->GetChannels();
+	sample_rate      = src->GetSampleRate();
+	filename         = src->GetFilename();
+	float_samples    = src->AreSamplesFloat();
 
 	// Check free space
 	if ((uint64_t)num_samples * channels * bytes_per_sample > agi::fs::FreeSpace(cache_dir()))
@@ -111,9 +110,9 @@ HDAudioProvider::HDAudioProvider(AudioProvider *src, agi::BackgroundRunner *br) 
 	try {
 		{
 			agi::io::Save out(diskCacheFilename, true);
-			br->Run(bind(&HDAudioProvider::FillCache, this, src, &out.Get(), std::placeholders::_1));
+			br->Run(bind(&HDAudioProvider::FillCache, this, src.get(), &out.Get(), std::placeholders::_1));
 		}
-		cache_provider.reset(new RawAudioProvider(diskCacheFilename, src));
+		cache_provider = agi::util::make_unique<RawAudioProvider>(diskCacheFilename, src.get());
 	}
 	catch (...) {
 		agi::fs::Remove(diskCacheFilename);

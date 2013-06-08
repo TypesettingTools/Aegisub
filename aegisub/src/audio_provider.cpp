@@ -52,6 +52,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
 	GetAudio(buf, start, count);
@@ -116,9 +117,9 @@ struct provider_creator {
 	provider_creator() : found_file(false) , found_audio(false) { }
 
 	template<typename Factory>
-	AudioProvider *try_create(std::string const& name, Factory&& create) {
+	std::unique_ptr<AudioProvider> try_create(std::string const& name, Factory&& create) {
 		try {
-			AudioProvider *provider = create();
+			std::unique_ptr<AudioProvider> provider = create();
 			if (provider)
 				LOG_I("audio_provider") << "Using audio provider: " << name;
 			return provider;
@@ -144,11 +145,13 @@ struct provider_creator {
 };
 }
 
-AudioProvider *AudioProviderFactory::GetProvider(agi::fs::path const& filename) {
+std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path const& filename) {
 	provider_creator creator;
-	AudioProvider *provider = nullptr;
+	std::unique_ptr<AudioProvider> provider;
 
-	provider = creator.try_create("Dummy audio provider", [&]() { return new DummyAudioProvider(filename); });
+	provider = creator.try_create("Dummy audio provider", [&]() {
+		return agi::util::make_unique<DummyAudioProvider>(filename);
+	});
 
 	// Try a PCM provider first
 	if (!provider && !OPT_GET("Provider/Audio/PCM/Disable")->GetBool())
@@ -176,20 +179,20 @@ AudioProvider *AudioProviderFactory::GetProvider(agi::fs::path const& filename) 
 
 	// Give it a converter if needed
 	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000 || provider->GetChannels() != 1)
-		provider = CreateConvertAudioProvider(provider);
+		provider = CreateConvertAudioProvider(std::move(provider));
 
 	// Change provider to RAM/HD cache if needed
 	int cache = OPT_GET("Audio/Cache/Type")->GetInt();
 	if (!cache || !needsCache)
-		return new LockAudioProvider(provider);
+		return agi::util::make_unique<LockAudioProvider>(std::move(provider));
 
 	DialogProgress progress(wxGetApp().frame, _("Load audio"));
 
 	// Convert to RAM
-	if (cache == 1) return new RAMAudioProvider(provider, &progress);
+	if (cache == 1) return agi::util::make_unique<RAMAudioProvider>(std::move(provider), &progress);
 
 	// Convert to HD
-	if (cache == 2) return new HDAudioProvider(provider, &progress);
+	if (cache == 2) return agi::util::make_unique<HDAudioProvider>(std::move(provider), &progress);
 
 	throw agi::AudioCacheOpenError("Unknown caching method", 0);
 }
@@ -202,5 +205,3 @@ void AudioProviderFactory::RegisterProviders() {
 	Register<FFmpegSourceAudioProvider>("FFmpegSource");
 #endif
 }
-
-template<> AudioProviderFactory::map *FactoryBase<AudioProvider *(*)(agi::fs::path)>::classes = nullptr;

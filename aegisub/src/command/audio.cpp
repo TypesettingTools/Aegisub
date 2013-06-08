@@ -50,6 +50,8 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <libaegisub/util.h>
+
 #include <wx/msgdlg.h>
 
 namespace {
@@ -587,36 +589,36 @@ struct audio_karaoke : public Command {
 
 namespace cmd {
 	void init_audio() {
-		reg(new audio_autocommit);
-		reg(new audio_autonext);
-		reg(new audio_autoscroll);
-		reg(new audio_close);
-		reg(new audio_commit);
-		reg(new audio_commit_default);
-		reg(new audio_commit_next);
-		reg(new audio_commit_stay);
-		reg(new audio_go_to);
-		reg(new audio_karaoke);
-		reg(new audio_open);
-		reg(new audio_open_blank);
-		reg(new audio_open_noise);
-		reg(new audio_open_video);
-		reg(new audio_play_after);
-		reg(new audio_play_before);
-		reg(new audio_play_begin);
-		reg(new audio_play_end);
-		reg(new audio_play_current_selection);
-		reg(new audio_play_current_line);
-		reg(new audio_play_selection);
-		reg(new audio_play_to_end);
-		reg(new audio_play_toggle);
-		reg(new audio_save_clip);
-		reg(new audio_scroll_left);
-		reg(new audio_scroll_right);
-		reg(new audio_stop);
-		reg(new audio_toggle_spectrum);
-		reg(new audio_vertical_link);
-		reg(new audio_view_spectrum);
-		reg(new audio_view_waveform);
+		reg(agi::util::make_unique<audio_autocommit>());
+		reg(agi::util::make_unique<audio_autonext>());
+		reg(agi::util::make_unique<audio_autoscroll>());
+		reg(agi::util::make_unique<audio_close>());
+		reg(agi::util::make_unique<audio_commit>());
+		reg(agi::util::make_unique<audio_commit_default>());
+		reg(agi::util::make_unique<audio_commit_next>());
+		reg(agi::util::make_unique<audio_commit_stay>());
+		reg(agi::util::make_unique<audio_go_to>());
+		reg(agi::util::make_unique<audio_karaoke>());
+		reg(agi::util::make_unique<audio_open>());
+		reg(agi::util::make_unique<audio_open_blank>());
+		reg(agi::util::make_unique<audio_open_noise>());
+		reg(agi::util::make_unique<audio_open_video>());
+		reg(agi::util::make_unique<audio_play_after>());
+		reg(agi::util::make_unique<audio_play_before>());
+		reg(agi::util::make_unique<audio_play_begin>());
+		reg(agi::util::make_unique<audio_play_end>());
+		reg(agi::util::make_unique<audio_play_current_selection>());
+		reg(agi::util::make_unique<audio_play_current_line>());
+		reg(agi::util::make_unique<audio_play_selection>());
+		reg(agi::util::make_unique<audio_play_to_end>());
+		reg(agi::util::make_unique<audio_play_toggle>());
+		reg(agi::util::make_unique<audio_save_clip>());
+		reg(agi::util::make_unique<audio_scroll_left>());
+		reg(agi::util::make_unique<audio_scroll_right>());
+		reg(agi::util::make_unique<audio_stop>());
+		reg(agi::util::make_unique<audio_toggle_spectrum>());
+		reg(agi::util::make_unique<audio_vertical_link>());
+		reg(agi::util::make_unique<audio_view_spectrum>());
+		reg(agi::util::make_unique<audio_view_waveform>());
 	}
 }

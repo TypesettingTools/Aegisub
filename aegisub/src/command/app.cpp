@@ -41,6 +41,7 @@
 #include "command.h"
 
 #include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
 #include "../audio_controller.h"
 #include "../compat.h"
@@ -297,20 +298,20 @@ struct app_updates : public Command {
 
 namespace cmd {
 	void init_app() {
-		reg(new app_about);
-		reg(new app_display_audio_subs);
-		reg(new app_display_full);
-		reg(new app_display_subs);
-		reg(new app_display_video_subs);
-		reg(new app_exit);
-		reg(new app_language);
-		reg(new app_log);
-		reg(new app_new_window);
-		reg(new app_options);
-		reg(new app_toggle_global_hotkeys);
-		reg(new app_toggle_toolbar);
+		reg(agi::util::make_unique<app_about>());
+		reg(agi::util::make_unique<app_display_audio_subs>());
+		reg(agi::util::make_unique<app_display_full>());
+		reg(agi::util::make_unique<app_display_subs>());
+		reg(agi::util::make_unique<app_display_video_subs>());
+		reg(agi::util::make_unique<app_exit>());
+		reg(agi::util::make_unique<app_language>());
+		reg(agi::util::make_unique<app_log>());
+		reg(agi::util::make_unique<app_new_window>());
+		reg(agi::util::make_unique<app_options>());
+		reg(agi::util::make_unique<app_toggle_global_hotkeys>());
+		reg(agi::util::make_unique<app_toggle_toolbar>());
 #ifdef WITH_UPDATE_CHECKER
-		reg(new app_updates);
+		reg(agi::util::make_unique<app_updates>());
 #endif
 	}
 }

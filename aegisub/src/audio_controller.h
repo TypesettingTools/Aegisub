@@ -86,10 +86,10 @@ class AudioController : public wxEvtHandler {
 	agi::signal::Signal<> AnnounceTimingControllerChanged;
 
 	/// The audio output object
-	AudioPlayer *player;
+	std::unique_ptr<AudioPlayer> player;
 
 	/// The audio provider
-	AudioProvider *provider;
+	std::unique_ptr<AudioProvider> provider;
 
 	/// The current timing mode, if any; owned by the audio controller
 	std::unique_ptr<AudioTimingController> timing_controller;

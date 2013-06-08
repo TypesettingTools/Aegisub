@@ -102,7 +102,7 @@ std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frame_number,
 	return frame;
 }
 
-static SubtitlesProvider *get_subs_provider(wxEvtHandler *parent) {
+static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *parent) {
 	try {
 		return SubtitlesProviderFactory::GetProvider();
 	}

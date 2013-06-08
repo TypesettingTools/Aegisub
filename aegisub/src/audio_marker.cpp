@@ -28,6 +28,8 @@
 #include "pen.h"
 #include "video_context.h"
 
+#include <libaegisub/util.h>
+
 #include <algorithm>
 
 class AudioMarkerKeyframe : public AudioMarker {
@@ -123,7 +125,7 @@ void VideoPositionMarkerProvider::Update(int frame_number) {
 void VideoPositionMarkerProvider::OptChanged(agi::OptionValue const& opt) {
 	if (opt.GetBool()) {
 		video_seek_slot.Unblock();
-		marker.reset(new VideoPositionMarker);
+		marker = agi::util::make_unique<VideoPositionMarker>();
 		marker->SetPosition(vc->GetFrameN());
 	}
 	else {

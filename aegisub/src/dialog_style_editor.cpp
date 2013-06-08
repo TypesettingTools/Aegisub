@@ -451,7 +451,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 		style->UpdateData();
 		if (is_new) {
 			if (store)
-				store->push_back(style);
+				store->push_back(std::unique_ptr<AssStyle>(style));
 			else
 				c->ass->InsertLine(style);
 			is_new = false;

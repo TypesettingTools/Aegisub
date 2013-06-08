@@ -55,6 +55,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include <wx/msgdlg.h>
 #include <wx/utils.h>
@@ -299,25 +300,25 @@ struct tool_translation_assistant_insert : public tool_translation_assistant_val
 
 namespace cmd {
 	void init_tool() {
-		reg(new tool_export);
-		reg(new tool_font_collector);
-		reg(new tool_line_select);
-		reg(new tool_resampleres);
-		reg(new tool_style_assistant);
-		reg(new tool_styling_assistant_commit);
-		reg(new tool_styling_assistant_preview);
-		reg(new tool_style_manager);
-		reg(new tool_time_kanji);
-		reg(new tool_time_postprocess);
-		reg(new tool_translation_assistant);
+		reg(agi::util::make_unique<tool_export>());
+		reg(agi::util::make_unique<tool_font_collector>());
+		reg(agi::util::make_unique<tool_line_select>());
+		reg(agi::util::make_unique<tool_resampleres>());
+		reg(agi::util::make_unique<tool_style_assistant>());
+		reg(agi::util::make_unique<tool_styling_assistant_commit>());
+		reg(agi::util::make_unique<tool_styling_assistant_preview>());
+		reg(agi::util::make_unique<tool_style_manager>());
+		reg(agi::util::make_unique<tool_time_kanji>());
+		reg(agi::util::make_unique<tool_time_postprocess>());
+		reg(agi::util::make_unique<tool_translation_assistant>());
 #ifdef _WIN32
 		if (agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe")))
-			reg(new tool_assdraw);
+			reg(agi::util::make_unique<tool_assdraw>());
 #endif
-		reg(new tool_translation_assistant_commit);
-		reg(new tool_translation_assistant_preview);
-		reg(new tool_translation_assistant_next);
-		reg(new tool_translation_assistant_prev);
-		reg(new tool_translation_assistant_insert);
+		reg(agi::util::make_unique<tool_translation_assistant_commit>());
+		reg(agi::util::make_unique<tool_translation_assistant_preview>());
+		reg(agi::util::make_unique<tool_translation_assistant_next>());
+		reg(agi::util::make_unique<tool_translation_assistant_prev>());
+		reg(agi::util::make_unique<tool_translation_assistant_insert>());
 	}
 }
