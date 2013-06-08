@@ -35,20 +35,15 @@
 
 #include <boost/range/algorithm.hpp>
 
-namespace std {
-	template<> void swap(agi::vfr::Framerate &lft, agi::vfr::Framerate &rgt) {
-		lft.swap(rgt);
-	}
-}
+namespace {
 
 static const int64_t default_denominator = 1000000000;
-
-namespace agi {
-namespace vfr {
+using agi::line_iterator;
+using namespace agi::vfr;
 
 /// @brief Verify that timecodes monotonically increase
 /// @param timecodes List of timecodes to check
-static void validate_timecodes(std::vector<int> const& timecodes) {
+void validate_timecodes(std::vector<int> const& timecodes) {
 	if (timecodes.size() <= 1)
 		throw TooFewTimecodes("Must have at least two timecodes to do anything useful");
 	if (!is_sorted(timecodes.begin(), timecodes.end()))
@@ -57,7 +52,7 @@ static void validate_timecodes(std::vector<int> const& timecodes) {
 
 /// @brief Shift timecodes so that frame 0 starts at time 0
 /// @param timecodes List of timecodes to normalize
-static void normalize_timecodes(std::vector<int> &timecodes) {
+void normalize_timecodes(std::vector<int> &timecodes) {
 	if (int front = timecodes.front())
 		boost::for_each(timecodes, [=](int &tc) { tc -= front; });
 }
@@ -67,9 +62,7 @@ struct TimecodeRange {
 	int start;
 	int end;
 	double fps;
-	bool operator<(TimecodeRange const& cmp) const {
-		return start < cmp.start;
-	}
+	bool operator<(TimecodeRange const& cmp) const { return start < cmp.start; }
 	TimecodeRange(int start=0, int end=0, double fps=0.)
 	: start(start), end(end), fps(fps) { }
 };
@@ -77,7 +70,7 @@ struct TimecodeRange {
 /// @brief Parse a single line of a v1 timecode file
 /// @param str Line to parse
 /// @return The line in TimecodeRange form, or TimecodeRange() if it's a comment
-static TimecodeRange v1_parse_line(std::string const& str) {
+TimecodeRange v1_parse_line(std::string const& str) {
 	if (str.empty() || str[0] == '#') return TimecodeRange();
 
 	std::istringstream ss(str);
@@ -102,14 +95,12 @@ static TimecodeRange v1_parse_line(std::string const& str) {
 /// @brief Generate override ranges for all frames with assumed fpses
 /// @param ranges List with ranges which is mutated
 /// @param fps    Assumed fps to use for gaps
-static void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
+void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
 	// Range for frames between start and first override
 	if (ranges.empty() || ranges.front().start > 0)
 		ranges.emplace_front(0, ranges.empty() ? 0 : ranges.front().start - 1, fps);
 
-	std::list<TimecodeRange>::iterator cur = ++ranges.begin();
-	std::list<TimecodeRange>::iterator prev = ranges.begin();
-	for (; cur != ranges.end(); ++cur, ++prev) {
+	for (auto cur = ++begin(ranges), prev = begin(ranges); cur != end(ranges); ++cur, ++prev) {
 		if (prev->end >= cur->start)
 			// mkvmerge allows overlapping timecode ranges, but does completely
 			// broken things with them
@@ -127,13 +118,13 @@ static void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
 /// @param[out] timecodes Vector filled with frame start times
 /// @param[out] last      Unrounded time of the last frame
 /// @return Assumed fps times one million
-static int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<int> &timecodes, int64_t &last) {
+int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<int> &timecodes, int64_t &last) {
 	double fps = atof(line.substr(7).c_str());
 	if (fps <= 0.) throw BadFPS("Assumed FPS must be greater than zero");
 	if (fps > 1000.) throw BadFPS("Assumed FPS must not be greater than 1000");
 
 	std::list<TimecodeRange> ranges;
-	transform(file, line_iterator<std::string>(), back_inserter(ranges), v1_parse_line);
+	transform(file, end(file), back_inserter(ranges), v1_parse_line);
 	ranges.erase(boost::remove_if(ranges, [](TimecodeRange const& r) { return r.fps == 0; }), ranges.end());
 
 	ranges.sort();
@@ -151,6 +142,11 @@ static int64_t v1_parse(line_iterator<std::string> file, std::string line, std::
 	last = int64_t(time * fps * default_denominator);
 	return int64_t(fps * default_denominator);
 }
+
+}
+
+namespace agi {
+namespace vfr {
 
 Framerate::Framerate(double fps)
 : denominator(default_denominator)
@@ -196,10 +192,6 @@ void Framerate::swap(Framerate &right) throw() {
 	swap(denominator, right.denominator);
 	swap(last, right.last);
 	swap(timecodes, right.timecodes);
-}
-
-Framerate &Framerate::operator=(double fps) {
-	return *this = Framerate(fps);
 }
 
 Framerate::Framerate(fs::path const& filename)

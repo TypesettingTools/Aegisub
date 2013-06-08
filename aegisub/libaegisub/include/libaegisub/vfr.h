@@ -109,8 +109,6 @@ public:
 	/// @param timecodes Vector of frame start times in milliseconds
 	Framerate(std::vector<int> const& timecodes);
 
-	/// Atomic CFR assignment operator
-	Framerate &operator=(double);
 	/// Helper function for the std::swap specialization
 	void swap(Framerate &right) throw();
 
