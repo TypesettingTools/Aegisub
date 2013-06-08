@@ -20,13 +20,15 @@
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/fs_fwd.h>
 
+#include <memory>
+
 namespace agi {
 	namespace json_util {
 
 /// Parse a JSON stream.
-/// @param stream JSON stream, this is deleted internally.
+/// @param stream JSON stream to parse
 /// @return json::UnknownElement
-json::UnknownElement parse(std::istream *stream);
+json::UnknownElement parse(std::unique_ptr<std::istream> stream);
 
 /// Parse a JSON file.
 /// @param file Path JSON to file

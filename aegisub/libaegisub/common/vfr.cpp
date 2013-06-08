@@ -198,9 +198,9 @@ Framerate::Framerate(fs::path const& filename)
 : denominator(default_denominator)
 , numerator(0)
 {
-	scoped_ptr<std::ifstream> file(agi::io::Open(filename));
-	std::string encoding = agi::charset::Detect(filename);
-	std::string line = *line_iterator<std::string>(*file, encoding);
+	auto file = agi::io::Open(filename);
+	auto encoding = agi::charset::Detect(filename);
+	auto line = *line_iterator<std::string>(*file, encoding);
 	if (line == "# timecode format v2") {
 		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
 		SetFromTimecodes();
@@ -218,7 +218,7 @@ Framerate::Framerate(fs::path const& filename)
 
 void Framerate::Save(fs::path const& filename, int length) const {
 	agi::io::Save file(filename);
-	std::ofstream &out = file.Get();
+	auto &out = file.Get();
 
 	out << "# timecode format v2\n";
 	boost::copy(timecodes, std::ostream_iterator<int>(out, "\n"));

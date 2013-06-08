@@ -27,14 +27,13 @@
 #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
+#include "libaegisub/util.h"
 
 namespace agi {
 	namespace json_util {
 
-json::UnknownElement parse(std::istream *stream) {
+json::UnknownElement parse(std::unique_ptr<std::istream> stream) {
 	try {
-		std::unique_ptr<std::istream> stream_deleter(stream);
-
 		json::UnknownElement root;
 		json::Reader::Read(root, *stream);
 		return root;
@@ -57,15 +56,15 @@ json::UnknownElement file(agi::fs::path const& file, const std::string &default_
 	}
 	catch (fs::FileNotFound const&) {
 		// Not an error
-		return parse(new std::istringstream(default_config));
+		return parse(util::make_unique<std::istringstream>(default_config));
 	}
 	catch (json::Exception&) {
 		// Already logged in parse
-		return parse(new std::istringstream(default_config));
+		return parse(util::make_unique<std::istringstream>(default_config));
 	}
 	catch (agi::Exception& e) {
 		LOG_E("json/file") << "Unexpected error when reading config file " << file << ": " << e.GetMessage();
-		return parse(new std::istringstream(default_config));
+		return parse(util::make_unique<std::istringstream>(default_config));
 	}
 }
 

@@ -31,6 +31,7 @@
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 #include <libaegisub/signal.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <sstream>
@@ -43,7 +44,7 @@ namespace {
 	json::Object const& get_root() {
 		static json::Object root;
 		if (root.empty())
-			root = agi::json_util::parse(new std::istringstream(GET_DEFAULT_CONFIG(default_toolbar)));
+			root = agi::json_util::parse(agi::util::make_unique<std::istringstream>(GET_DEFAULT_CONFIG(default_toolbar)));
 		return root;
 	}
 

@@ -69,5 +69,15 @@ namespace agi {
 	/// @param name New name for the thread
 	void SetThreadName(const char *name);
 
+	template<typename T>
+	std::unique_ptr<T> make_unique() {
+		return std::unique_ptr<T>(new T);
+	}
+
+	template<typename T, typename A1>
+	std::unique_ptr<T> make_unique(A1&& a1) {
+		return std::unique_ptr<T>(new T(std::forward<A1>(a1)));
+	}
+
 	} // namespace util
 } // namespace agi

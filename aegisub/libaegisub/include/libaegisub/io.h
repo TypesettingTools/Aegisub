@@ -21,6 +21,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <iosfwd>
+#include <memory>
 
 namespace agi {
 	namespace io {
@@ -28,7 +29,7 @@ namespace agi {
 DEFINE_BASE_EXCEPTION_NOINNER(IOError, Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(IOFatal, IOError, "io/fatal")
 
-std::ifstream* Open(fs::path const& file, bool binary = false);
+std::unique_ptr<std::ifstream> Open(fs::path const& file, bool binary = false);
 
 class Save {
 	std::ofstream *fp;

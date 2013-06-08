@@ -30,16 +30,15 @@
 namespace agi {
 	namespace io {
 
-std::ifstream* Open(fs::path const& file, bool binary) {
+std::unique_ptr<std::ifstream> Open(fs::path const& file, bool binary) {
 	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
-	auto stream = new boost::filesystem::ifstream(file, (binary ? std::ios::binary : std::ios::in));
+	std::unique_ptr<std::ifstream> stream(
+		new boost::filesystem::ifstream(file, (binary ? std::ios::binary : std::ios::in)));
 
-	if (stream->fail()) {
-		delete stream;
+	if (stream->fail())
 		throw IOFatal("Unknown fatal error as occurred");
-	}
 
 	return stream;
 }
