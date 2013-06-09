@@ -23,6 +23,7 @@
 #include <sstream>
 
 #include <cstdint>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include <libaegisub/charset_conv.h>
 
@@ -70,14 +71,14 @@ public:
 	, lf(0)
 	, width(0)
 	{
+		boost::to_lower(encoding);
 		agi::charset::IconvWrapper c("utf-8", encoding.c_str());
 		c.Convert("\r", 1, reinterpret_cast<char *>(&cr), sizeof(int));
 		c.Convert("\n", 1, reinterpret_cast<char *>(&lf), sizeof(int));
 		width = c.RequiredBufferSize("\n");
 
-		if (encoding != "utf-8") {
+		if (encoding != "utf-8")
 			conv.reset(new agi::charset::IconvWrapper(encoding.c_str(), "utf-8"));
-		}
 		init();
 		++(*this);
 	}
