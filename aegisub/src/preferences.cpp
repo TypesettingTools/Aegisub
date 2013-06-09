@@ -342,7 +342,7 @@ public:
 	}
 
 	void OnKeyDown(wxKeyEvent &evt) {
-		ctrl->ChangeValue(to_wx(hotkey::keypress_to_str(evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())));
+		ctrl->ChangeValue(to_wx(hotkey::keypress_to_str(evt.GetKeyCode(), evt.GetModifiers())));
 	}
 
 	bool SetValue(wxVariant const& var) {

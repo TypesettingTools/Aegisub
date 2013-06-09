@@ -47,15 +47,14 @@ namespace {
 	void migrate_hotkeys(const char *removed[], const char *added[][4]) {
 		agi::hotkey::Hotkey::HotkeyMap hk_map = hotkey::inst->GetHotkeyMap();
 
-		for (size_t i = 0; removed[i]; ++i) {
+		for (size_t i = 0; removed[i]; ++i)
 			hk_map.erase(removed[i]);
-		}
 
 		for (size_t i = 0; added[i] && added[i][0]; ++i) {
 			std::vector<std::string> keys;
-			keys.push_back(added[i][2]);
+			keys.emplace_back(added[i][2]);
 			if (added[i][3])
-				keys.push_back(added[i][3]);
+				keys.emplace_back(added[i][3]);
 			hk_map.insert(make_pair(
 				std::string(added[i][0]),
 				agi::hotkey::Combo(added[i][1], added[i][0], keys)));
@@ -100,7 +99,7 @@ static std::string const& keycode_name(int code) {
 	return keycode_names[code];
 }
 
-std::string keypress_to_str(int key_code, wchar_t key_char, int modifier) {
+std::string keypress_to_str(int key_code, int modifier) {
 	std::string combo;
 	if ((modifier != wxMOD_NONE)) {
 		if ((modifier & wxMOD_CMD) != 0) combo.append("Ctrl-");
@@ -113,24 +112,20 @@ std::string keypress_to_str(int key_code, wchar_t key_char, int modifier) {
 	return combo;
 }
 
-bool check(std::string const& context, agi::Context *c, int key_code, wchar_t key_char, int modifier) {
-	std::string combo = keypress_to_str(key_code, key_char, modifier);
+bool check(std::string const& context, agi::Context *c, int key_code, int modifier) {
+	std::string combo = keypress_to_str(key_code, modifier);
 	if (combo.empty()) return false;
 
 	std::string command = inst->Scan(context, combo, OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool());
 	if (!command.empty()) {
-		/// The bottom line should be removed after all the hotkey commands are fixed.
-		/// This is to avoid pointless exceptions.
-		if (command.find("/") != std::string::npos) {
-			cmd::call(command, c);
-			return true;
-		}
+		cmd::call(command, c);
+		return true;
 	}
 	return false;
 }
 
 bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
-	if (!hotkey::check(context, c, evt.GetKeyCode(), evt.GetUnicodeKey(), evt.GetModifiers())) {
+	if (!hotkey::check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
 		evt.Skip();
 		return false;
 	}
