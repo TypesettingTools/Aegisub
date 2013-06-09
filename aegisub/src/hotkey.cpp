@@ -28,6 +28,8 @@
 
 #include <libaegisub/path.h>
 
+#include <boost/range/algorithm/find.hpp>
+
 namespace {
 	const char *removed_commands_7035[] = { 0 };
 	const char *added_hotkeys_7035[][4] = {
@@ -72,11 +74,19 @@ void init() {
 		config::path->Decode("?user/hotkey.json"),
 		GET_DEFAULT_CONFIG(default_hotkey));
 
-	int last_version = OPT_GET("Version/Last Version")->GetInt();
-	if (last_version < 7035)
+	auto migrations = OPT_GET("App/Hotkey Migrations")->GetListString();
+
+	if (boost::find(migrations, "7035") == end(migrations)) {
 		migrate_hotkeys(removed_commands_7035, added_hotkeys_7035);
-	if (last_version < 7070)
+		migrations.emplace_back("7035");
+	}
+
+	if (boost::find(migrations, "7070") == end(migrations)) {
 		migrate_hotkeys(removed_commands_7070, added_hotkeys_7070);
+		migrations.emplace_back("7070");
+	}
+
+	OPT_SET("App/Hotkey Migrations")->SetListString(migrations);
 }
 
 void clear() {
