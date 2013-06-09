@@ -57,9 +57,12 @@ namespace {
 			keys.emplace_back(added[i][2]);
 			if (added[i][3])
 				keys.emplace_back(added[i][3]);
-			hk_map.insert(make_pair(
-				std::string(added[i][0]),
-				agi::hotkey::Combo(added[i][1], added[i][0], keys)));
+			agi::hotkey::Combo combo(added[i][1], added[i][0], keys);
+
+			if (hotkey::inst->HasHotkey(combo.Context(), combo.Str()))
+				continue;
+
+			hk_map.insert(make_pair(std::string(added[i][0]), combo));
 		}
 
 		hotkey::inst->SetHotkeyMap(hk_map);

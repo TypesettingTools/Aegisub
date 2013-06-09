@@ -110,6 +110,17 @@ std::string Hotkey::Scan(const std::string &context, const std::string &str, boo
 	return "";
 }
 
+bool Hotkey::HasHotkey(const std::string &context, const std::string &str) const {
+	HotkeyMap::const_iterator index, end;
+	for (std::tie(index, end) = str_map.equal_range(str); index != end; ++index) {
+		std::string const& ctext = index->second.Context();
+
+		if (ctext == context)
+			return true;
+	}
+	return false;
+}
+
 std::vector<std::string> Hotkey::GetHotkeys(const std::string &context, const std::string &command) const {
 	std::vector<std::string> ret;
 

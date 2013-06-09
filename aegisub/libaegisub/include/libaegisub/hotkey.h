@@ -108,6 +108,8 @@ public:
 	/// @return Name of command or "" if none match
 	std::string Scan(const std::string &context, const std::string &str, bool always) const;
 
+	bool HasHotkey(const std::string &context, const std::string &str) const;
+
 	/// Get the string representation of the hotkeys for the given command
 	/// @param context Context requested
 	/// @param command Command name
