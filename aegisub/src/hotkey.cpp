@@ -31,32 +31,33 @@
 #include <boost/range/algorithm/find.hpp>
 
 namespace {
-	const char *removed_commands_7035[] = { 0 };
-	const char *added_hotkeys_7035[][4] = {
-		{ "audio/play/line", "Audio", "R", 0 },
+	const char *added_hotkeys_7035[][5] = {
+		{ "audio/play/line", "Audio", "R", 0, 0 },
 		{ 0 }
 	};
 
-	const char *removed_commands_7070[] = { 0 };
-	const char *added_hotkeys_7070[][4] = {
-		{ "edit/color/primary", "Subtitle Edit Box", "Alt", "1" },
-		{ "edit/color/secondary", "Subtitle Edit Box", "Alt", "2" },
-		{ "edit/color/outline", "Subtitle Edit Box", "Alt", "3" },
-		{ "edit/color/shadow", "Subtitle Edit Box", "Alt", "4" },
+	const char *added_hotkeys_7070[][5] = {
+		{ "edit/color/primary", "Subtitle Edit Box", "Alt", "1", 0 },
+		{ "edit/color/secondary", "Subtitle Edit Box", "Alt", "2", 0 },
+		{ "edit/color/outline", "Subtitle Edit Box", "Alt", "3", 0 },
+		{ "edit/color/shadow", "Subtitle Edit Box", "Alt", "4", 0 },
 		{ 0 }
 	};
 
-	void migrate_hotkeys(const char *removed[], const char *added[][4]) {
+	const char *added_hotkeys_shift_back[][5] = {
+		{ "edit/line/duplicate/shift_back", "Default", "Ctrl", "Shift", "D" },
+		{ 0 }
+	};
+
+	void migrate_hotkeys(const char *added[][5]) {
 		agi::hotkey::Hotkey::HotkeyMap hk_map = hotkey::inst->GetHotkeyMap();
-
-		for (size_t i = 0; removed[i]; ++i)
-			hk_map.erase(removed[i]);
 
 		for (size_t i = 0; added[i] && added[i][0]; ++i) {
 			std::vector<std::string> keys;
-			keys.emplace_back(added[i][2]);
-			if (added[i][3])
-				keys.emplace_back(added[i][3]);
+			for (size_t j = 2; j < 5; ++j) {
+				if (added[i][j])
+					keys.emplace_back(added[i][j]);
+			}
 			agi::hotkey::Combo combo(added[i][1], added[i][0], keys);
 
 			if (hotkey::inst->HasHotkey(combo.Context(), combo.Str()))
@@ -80,13 +81,18 @@ void init() {
 	auto migrations = OPT_GET("App/Hotkey Migrations")->GetListString();
 
 	if (boost::find(migrations, "7035") == end(migrations)) {
-		migrate_hotkeys(removed_commands_7035, added_hotkeys_7035);
+		migrate_hotkeys(added_hotkeys_7035);
 		migrations.emplace_back("7035");
 	}
 
 	if (boost::find(migrations, "7070") == end(migrations)) {
-		migrate_hotkeys(removed_commands_7070, added_hotkeys_7070);
+		migrate_hotkeys(added_hotkeys_7070);
 		migrations.emplace_back("7070");
+	}
+
+	if (boost::find(migrations, "edit/line/duplicate/shift_back") == end(migrations)) {
+		migrate_hotkeys(added_hotkeys_shift_back);
+		migrations.emplace_back("edit/line/duplicate/shift_back");
 	}
 
 	OPT_SET("App/Hotkey Migrations")->SetListString(migrations);

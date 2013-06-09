@@ -112,6 +112,12 @@
 				"key" : "D"
 			}
 		],
+		"edit/line/duplicate/shift_back" : [
+			{
+				"modifiers" : [ "Ctrl", "Shift" ],
+				"key" : "D"
+			}
+		],
 		"edit/line/paste" : [
 			{
 				"modifiers" : [ "Ctrl" ],
