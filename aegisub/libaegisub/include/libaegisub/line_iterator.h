@@ -67,18 +67,19 @@ public:
 	: stream(&stream)
 	, valid(true)
 	, encoding(encoding)
-	, cr(0)
-	, lf(0)
-	, width(0)
+	, cr('\r')
+	, lf('\n')
+	, width(1)
 	{
 		boost::to_lower(encoding);
-		agi::charset::IconvWrapper c("utf-8", encoding.c_str());
-		c.Convert("\r", 1, reinterpret_cast<char *>(&cr), sizeof(int));
-		c.Convert("\n", 1, reinterpret_cast<char *>(&lf), sizeof(int));
-		width = c.RequiredBufferSize("\n");
+		if (encoding != "utf-8") {
+			agi::charset::IconvWrapper c("utf-8", encoding.c_str());
+			c.Convert("\r", 1, reinterpret_cast<char *>(&cr), sizeof(int));
+			c.Convert("\n", 1, reinterpret_cast<char *>(&lf), sizeof(int));
+			width = c.RequiredBufferSize("\n");
+			conv = std::make_shared<agi::charset::IconvWrapper>(encoding.c_str(), "utf-8");
+		}
 
-		if (encoding != "utf-8")
-			conv.reset(new agi::charset::IconvWrapper(encoding.c_str(), "utf-8"));
 		init();
 		++(*this);
 	}
