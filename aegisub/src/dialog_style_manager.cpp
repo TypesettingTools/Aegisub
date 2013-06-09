@@ -38,6 +38,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "charset_detect.h"
 #include "compat.h"
 #include "dialog_selected_choices.h"
 #include "dialog_style_editor.h"
@@ -565,13 +566,21 @@ void DialogStyleManager::OnCurrentImport() {
 	auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "", "", SubtitleFormat::GetWildcards(0), this);
 	if (filename.empty()) return;
 
+	std::string charset;
+	try {
+		charset = CharSetDetect::GetEncoding(filename);
+	}
+	catch (agi::UserCancelException const&) {
+		return;
+	}
+
 	AssFile temp;
 	try {
 		auto reader = SubtitleFormat::GetReader(filename);
 		if (!reader)
 			wxMessageBox("Unsupported subtitle format", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		else
-			reader->ReadFile(&temp, filename);
+			reader->ReadFile(&temp, filename, charset);
 	}
 	catch (agi::Exception const& err) {
 		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);

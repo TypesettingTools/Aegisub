@@ -110,8 +110,8 @@ public:
 	/// Load a subtitle file
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
-	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& forceEncoding="") const { }
+	/// @param encoding Encoding to use. May be ignored by the reader.
+	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& encoding) const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
