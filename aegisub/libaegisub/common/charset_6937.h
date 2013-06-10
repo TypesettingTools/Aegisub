@@ -17,6 +17,7 @@
 /// @ingroup libaegisub
 
 #include <libaegisub/charset_conv.h>
+#include <memory>
 
 namespace agi { namespace charset {
 
@@ -26,7 +27,7 @@ namespace agi { namespace charset {
 /// it's not used by anything but old subtitle formats
 class Converter6937 : public Converter {
 	/// Converter to UCS-4 so that we only have to deal with unicode codepoints
-	agi::scoped_ptr<IconvWrapper> to_ucs4;
+	std::unique_ptr<IconvWrapper> to_ucs4;
 
 	/// Should unsupported characters be replaced with '?'
 	const bool subst;

@@ -34,21 +34,6 @@
 
 #include "config.h"
 
-#include <algorithm>
-
-#include <wx/combobox.h>
-#include <wx/dataobj.h>
-#include <wx/dcclient.h>
-#include <wx/menu.h>
-#include <wx/textctrl.h>
-#include <wx/toolbar.h>
-
-#ifdef HAVE_OPENGL_GL_H
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
 #include "video_display.h"
 
 #include "ass_file.h"
@@ -66,6 +51,23 @@
 #include "video_context.h"
 #include "video_frame.h"
 #include "visual_tool.h"
+
+#include <libaegisub/util.h>
+
+#include <algorithm>
+
+#include <wx/combobox.h>
+#include <wx/dataobj.h>
+#include <wx/dcclient.h>
+#include <wx/menu.h>
+#include <wx/textctrl.h>
+#include <wx/toolbar.h>
+
+#ifdef HAVE_OPENGL_GL_H
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
@@ -147,9 +149,9 @@ bool VideoDisplay::InitContext() {
 		return false;
 
 	if (!glContext)
-		glContext.reset(new wxGLContext(this));
+		glContext = agi::util::make_unique<wxGLContext>(this);
 
-	SetCurrent(*glContext.get());
+	SetCurrent(*glContext);
 	return true;
 }
 
@@ -163,7 +165,7 @@ void VideoDisplay::Render() try {
 		return;
 
 	if (!videoOut)
-		videoOut.reset(new VideoOutGL);
+		videoOut = agi::util::make_unique<VideoOutGL>();
 
 	if (!tool)
 		cmd::call("video/tool/cross", con);
@@ -369,7 +371,7 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 }
 
 void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
-	if (!context_menu.get()) context_menu.reset(menu::GetMenu("video_context", con));
+	if (!context_menu.get()) context_menu = menu::GetMenu("video_context", con);
 	SetCursor(wxNullCursor);
 	menu::OpenPopupMenu(context_menu.get(), this);
 }
@@ -405,12 +407,12 @@ void VideoDisplay::SetZoomFromBoxText(wxCommandEvent &) {
 		SetZoom(value / 100.);
 }
 
-void VideoDisplay::SetTool(VisualToolBase *new_tool) {
+void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase>&& new_tool) {
 	toolBar->ClearTools();
 	toolBar->Realize();
 	toolBar->Show(false);
 
-	tool.reset(new_tool);
+	tool = std::move(new_tool);
 	tool->SetToolbar(toolBar);
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size

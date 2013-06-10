@@ -34,14 +34,6 @@
 
 #include "config.h"
 
-#include <algorithm>
-
-#include <wx/bmpbuttn.h>
-#include <wx/fontenum.h>
-#include <wx/msgdlg.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -61,6 +53,15 @@
 #include "validators.h"
 
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/util.h>
+
+#include <algorithm>
+
+#include <wx/bmpbuttn.h>
+#include <wx/fontenum.h>
+#include <wx/msgdlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 
 /// Style rename helper that walks a file searching for a style and optionally
 /// updating references to it
@@ -156,7 +157,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		style = this->style = new AssStyle;
 	}
 
-	work.reset(new AssStyle(*style));
+	work = agi::util::make_unique<AssStyle>(*style);
 
 	SetIcon(GETICON(style_toolbutton_16));
 
@@ -375,7 +376,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	StyleName->SetInsertionPoint(0);
 	StyleName->SetInsertionPoint(-1);
 
-	persist.reset(new PersistLocation(this, "Tool/Style Editor", true));
+	persist = agi::util::make_unique<PersistLocation>(this, "Tool/Style Editor", true);
 
 	Bind(wxEVT_CHILD_FOCUS, &DialogStyleEditor::OnChildFocus, this);
 

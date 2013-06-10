@@ -19,7 +19,7 @@
 /// @ingroup secondary_ui
 ///
 
-#include <libaegisub/scoped_ptr.h>
+#include <memory>
 
 #include <wx/dialog.h>
 
@@ -30,7 +30,7 @@ class wxComboBox;
 
 class DialogSearchReplace : public wxDialog {
 	agi::Context *c;
-	agi::scoped_ptr<SearchReplaceSettings> settings;
+	std::unique_ptr<SearchReplaceSettings> settings;
 	bool has_replace;
 	wxComboBox *find_edit;
 	wxComboBox *replace_edit;

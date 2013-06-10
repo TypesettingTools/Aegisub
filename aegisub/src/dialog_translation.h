@@ -21,10 +21,10 @@
 #include <wx/dialog.h>
 
 #include <libaegisub/exception.h>
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <memory>
 
 namespace agi { struct Context; }
 class AssDialogue;
@@ -62,7 +62,7 @@ class DialogTranslation : public wxDialog {
 	SubsTextEditCtrl *translated_text;
 	wxCheckBox *seek_video;
 
-	agi::scoped_ptr<PersistLocation> persist;
+	std::unique_ptr<PersistLocation> persist;
 
 	void OnPlayAudioButton(wxCommandEvent &);
 	void OnPlayVideoButton(wxCommandEvent &);

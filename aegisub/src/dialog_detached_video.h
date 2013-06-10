@@ -32,9 +32,9 @@
 /// @ingroup main_ui
 ///
 
+#include <memory>
 #include <wx/dialog.h>
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 namespace agi { struct Context; }
@@ -47,7 +47,7 @@ class DialogDetachedVideo : public wxDialog {
 	VideoDisplay *old_display;
 	wxWindow *old_slider;
 	agi::signal::Connection video_open;
-	agi::scoped_ptr<PersistLocation> persist;
+	std::unique_ptr<PersistLocation> persist;
 
 	void OnClose(wxCloseEvent &);
 	/// Minimize event handler to hack around a wx bug

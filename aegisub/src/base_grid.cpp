@@ -97,7 +97,6 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , batch_level(0)
 , batch_active_line_changed(false)
 , seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, nullptr)))
-, context_menu(0)
 , yPos(0)
 , context(context)
 {
@@ -140,7 +139,6 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 
 BaseGrid::~BaseGrid() {
 	ClearMaps();
-	delete context_menu;
 }
 
 BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
@@ -759,7 +757,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 	wxPoint pos = evt.GetPosition();
 	if (pos == wxDefaultPosition || ScreenToClient(pos).y > lineHeight) {
 		if (!context_menu) context_menu = menu::GetMenu("grid_context", context);
-		menu::OpenPopupMenu(context_menu, this);
+		menu::OpenPopupMenu(context_menu.get(), this);
 	}
 	else {
 		const wxString strings[] = {

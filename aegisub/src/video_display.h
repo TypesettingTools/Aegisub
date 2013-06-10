@@ -32,18 +32,14 @@
 /// @ingroup video main_ui
 ///
 
-
-#include <deque>
-#include <memory>
-
-#include <wx/glcanvas.h>
-
-#include <typeinfo>
-
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 #include "vector2d.h"
+
+#include <deque>
+#include <memory>
+#include <typeinfo>
+#include <wx/glcanvas.h>
 
 // Prototypes
 class AegiVideoFrame;
@@ -68,7 +64,7 @@ class VideoDisplay : public wxGLCanvas {
 
 	agi::Context *con;
 
-	agi::scoped_ptr<wxMenu> context_menu;
+	std::unique_ptr<wxMenu> context_menu;
 
 	/// The size of the video in screen at the current zoom level, which may not
 	/// be the same as the actual client size of the display
@@ -91,15 +87,15 @@ class VideoDisplay : public wxGLCanvas {
 	double zoomValue;
 
 	/// The video renderer
-	agi::scoped_ptr<VideoOutGL> videoOut;
+	std::unique_ptr<VideoOutGL> videoOut;
 
 	/// The active visual typesetting tool
-	agi::scoped_ptr<VisualToolBase> tool;
+	std::unique_ptr<VisualToolBase> tool;
 	/// The toolbar used by individual typesetting tools
 	wxToolBar* toolBar;
 
 	/// The OpenGL context for this display
-	agi::scoped_ptr<wxGLContext> glContext;
+	std::unique_ptr<wxGLContext> glContext;
 
 	/// The dropdown box for selecting zoom levels
 	wxComboBox *zoomBox;
@@ -164,7 +160,7 @@ public:
 	/// Get the last seen position of the mouse in script coordinates
 	Vector2D GetMousePosition() const;
 
-	void SetTool(VisualToolBase *new_tool);
+	void SetTool(std::unique_ptr<VisualToolBase>&& new_tool);
 
 	bool ToolIsType(std::type_info const& type) const;
 

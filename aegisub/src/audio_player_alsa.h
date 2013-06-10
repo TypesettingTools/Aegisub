@@ -33,17 +33,15 @@
 ///
 
 #ifdef WITH_ALSA
-
-#include <alsa/asoundlib.h>
-
 #include "include/aegisub/audio_player.h"
 
-#include <libaegisub/scoped_ptr.h>
+#include <alsa/asoundlib.h>
+#include <memory>
 
 struct PlaybackState;
 
 class AlsaPlayer : public AudioPlayer {
-	agi::scoped_ptr<PlaybackState> ps;
+	std::unique_ptr<PlaybackState> ps;
 	pthread_t thread;
 
 public:

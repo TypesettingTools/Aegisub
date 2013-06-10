@@ -19,7 +19,6 @@
 /// @ingroup tools_ui
 ///
 
-
 #include "config.h"
 
 #include "dialog_styling_assistant.h"
@@ -37,6 +36,8 @@
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
 #include "video_context.h"
+
+#include <libaegisub/util.h>
 
 #include <wx/checkbox.h>
 #include <wx/colour.h>
@@ -136,7 +137,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 
 	SetSizerAndFit(main_sizer);
 
-	persist.reset(new PersistLocation(this, "Tool/Styling Assistant"));
+	persist = agi::util::make_unique<PersistLocation>(this, "Tool/Styling Assistant");
 
 	Bind(wxEVT_ACTIVATE, &DialogStyling::OnActivate, this);
 	Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);

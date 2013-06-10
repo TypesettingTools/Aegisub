@@ -19,10 +19,10 @@
 /// @ingroup visual_ts
 ///
 
-#include <libaegisub/scoped_ptr.h>
-
 #include "visual_feature.h"
 #include "visual_tool.h"
+
+#include <memory>
 
 class OpenGLText;
 
@@ -30,7 +30,7 @@ class OpenGLText;
 /// @brief A crosshair which shows the current mouse position and on double-click
 ///        shifts the selected lines to the clicked point
 class VisualToolCross : public VisualTool<VisualDraggableFeature> {
-	agi::scoped_ptr<OpenGLText> gl_text;
+	std::unique_ptr<OpenGLText> gl_text;
 
 	void OnDoubleClick();
 	void Draw();

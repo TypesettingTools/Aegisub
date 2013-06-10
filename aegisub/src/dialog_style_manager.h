@@ -32,6 +32,7 @@
 /// @ingroup style_editor
 ///
 
+#include <memory>
 #include <vector>
 
 #include <wx/button.h>
@@ -39,7 +40,6 @@
 #include <wx/dialog.h>
 #include <wx/listbox.h>
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 #include "ass_style_storage.h"
@@ -53,7 +53,7 @@ class PersistLocation;
 
 class DialogStyleManager : public wxDialog {
 	agi::Context *c; ///< Project context
-	agi::scoped_ptr<PersistLocation> persist;
+	std::unique_ptr<PersistLocation> persist;
 
 	agi::signal::Connection commit_connection;
 	agi::signal::Connection active_line_connection;

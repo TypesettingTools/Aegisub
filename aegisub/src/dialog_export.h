@@ -32,9 +32,8 @@
 /// @ingroup export
 ///
 
+#include <memory>
 #include <wx/dialog.h>
-
-#include <libaegisub/scoped_ptr.h>
 
 class AssExporter;
 namespace agi { struct Context; }
@@ -47,7 +46,7 @@ class DialogExport : public wxDialog {
 	agi::Context *c;
 
 	/// The export transform engine
-	agi::scoped_ptr<AssExporter> exporter;
+	std::unique_ptr<AssExporter> exporter;
 
 	/// The description of the currently selected export filter
 	wxTextCtrl *filter_description;

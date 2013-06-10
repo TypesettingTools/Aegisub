@@ -28,6 +28,7 @@
 #include "text_file_writer.h"
 
 #include <libaegisub/charset_conv.h>
+#include <libaegisub/util.h>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -212,15 +213,16 @@ agi::vfr::Framerate EbuExportSettings::GetFramerate() const {
 	}
 }
 
-agi::charset::IconvWrapper *EbuExportSettings::GetTextEncoder() const {
+std::unique_ptr<agi::charset::IconvWrapper> EbuExportSettings::GetTextEncoder() const {
+	using namespace agi;
 	switch (text_encoding) {
-		case iso6937_2: return new agi::charset::IconvWrapper("utf-8", "ISO-6937-2");
-		case iso8859_5: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-5");
-		case iso8859_6: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-6");
-		case iso8859_7: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-7");
-		case iso8859_8: return new agi::charset::IconvWrapper("utf-8", "ISO-8859-8");
-		case utf8:      return new agi::charset::IconvWrapper("utf-8", "utf-8");
-		default:        return new agi::charset::IconvWrapper("utf-8", "ISO-8859-1");
+		case iso6937_2: return util::make_unique<charset::IconvWrapper>("utf-8", "ISO-6937-2");
+		case iso8859_5: return util::make_unique<charset::IconvWrapper>("utf-8", "ISO-8859-5");
+		case iso8859_6: return util::make_unique<charset::IconvWrapper>("utf-8", "ISO-8859-6");
+		case iso8859_7: return util::make_unique<charset::IconvWrapper>("utf-8", "ISO-8859-7");
+		case iso8859_8: return util::make_unique<charset::IconvWrapper>("utf-8", "ISO-8859-8");
+		case utf8:      return util::make_unique<charset::IconvWrapper>("utf-8", "utf-8");
+		default:        return util::make_unique<charset::IconvWrapper>("utf-8", "ISO-8859-1");
 	}
 }
 

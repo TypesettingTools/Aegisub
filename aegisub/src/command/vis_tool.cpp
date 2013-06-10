@@ -55,7 +55,7 @@ namespace {
 		}
 
 		void operator()(agi::Context *c) {
-			c->videoDisplay->SetTool(new T(c->videoDisplay, c));
+			c->videoDisplay->SetTool(agi::util::make_unique<T>(c->videoDisplay, c));
 		}
 	};
 

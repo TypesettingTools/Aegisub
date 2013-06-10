@@ -21,10 +21,9 @@
 
 #include "selection_controller.h"
 
+#include <memory>
 #include <wx/dialog.h>
 #include <wx/event.h>
-
-#include <libaegisub/scoped_ptr.h>
 
 namespace agi { struct Context; }
 class AssDialogue;
@@ -58,7 +57,7 @@ class DialogStyling : public wxDialog {
 
 	AssDialogue *active_line;
 
-	agi::scoped_ptr<PersistLocation> persist;
+	std::unique_ptr<PersistLocation> persist;
 
 public:
 	void Commit(bool next);

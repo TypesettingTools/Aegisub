@@ -220,7 +220,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	SetSizerAndFit(MainSizer);
 
 	// Position window
-	persist.reset(new PersistLocation(this, "Tool/Style Manager"));
+	persist = agi::util::make_unique<PersistLocation>(this, "Tool/Style Manager");
 
 	// Populate lists
 	LoadCatalog();

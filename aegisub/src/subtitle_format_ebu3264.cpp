@@ -25,13 +25,6 @@
 
 #include "subtitle_format_ebu3264.h"
 
-#include <libaegisub/charset_conv.h>
-#include <libaegisub/exception.h>
-#include <libaegisub/io.h>
-#include <libaegisub/line_wrap.h>
-#include <libaegisub/of_type_adaptor.h>
-#include <libaegisub/scoped_ptr.h>
-
 #include "aegisub_endian.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -40,6 +33,12 @@
 #include "dialog_export_ebu3264.h"
 #include "options.h"
 #include "text_file_writer.h"
+
+#include <libaegisub/charset_conv.h>
+#include <libaegisub/exception.h>
+#include <libaegisub/io.h>
+#include <libaegisub/line_wrap.h>
+#include <libaegisub/of_type_adaptor.h>
 
 #include <boost/algorithm/string/replace.hpp>
 
@@ -469,8 +468,8 @@ namespace
 
 	std::vector<BlockTTI> create_blocks(std::vector<EbuSubtitle> const& subs_list, EbuExportSettings const& export_settings)
 	{
-		agi::scoped_ptr<agi::charset::IconvWrapper> encoder(export_settings.GetTextEncoder());
-		agi::vfr::Framerate fps = export_settings.GetFramerate();
+		auto encoder = export_settings.GetTextEncoder();
+		auto fps = export_settings.GetFramerate();
 
 		// Teletext captions are 1-23; Open subtitles are 0-99
 		uint8_t min_row = 0;

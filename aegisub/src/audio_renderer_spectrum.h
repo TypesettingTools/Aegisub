@@ -34,11 +34,10 @@
 /// Calculate and render a frequency-power spectrum for PCM audio data.
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 #include "audio_renderer.h"
-
-#include <libaegisub/scoped_ptr.h>
 
 #ifdef WITH_FFTW3
 #include <fftw3.h>
@@ -57,7 +56,7 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	friend struct AudioSpectrumCacheBlockFactory;
 
 	/// Internal cache management for the spectrum
-	agi::scoped_ptr<AudioSpectrumCache> cache;
+	std::unique_ptr<AudioSpectrumCache> cache;
 
 	/// Colour tables used for rendering
 	std::vector<AudioColorScheme> colors;

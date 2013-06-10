@@ -27,7 +27,7 @@
 #include <libaegisub/color.h>
 #include <libaegisub/log.h>
 #include <libaegisub/option_value.h>
-#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -60,7 +60,7 @@ void ConfigVisitor::Visit(const json::Object& object) {
 }
 
 template<class OptionValueType, class ValueType>
-OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*)(const std::vector<ValueType>&)) {
+std::unique_ptr<OptionValue> ConfigVisitor::ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*)(const std::vector<ValueType>&)) {
 	std::vector<ValueType> arr;
 	arr.reserve(src.size());
 
@@ -77,7 +77,7 @@ OptionValue *ConfigVisitor::ReadArray(json::Array const& src, std::string const&
 		arr.push_back(ValueType(obj.begin()->second));
 	}
 
-	return new OptionValueType(name, arr);
+	return util::make_unique<OptionValueType>(name, arr);
 }
 
 void ConfigVisitor::Visit(const json::Array& array) {
@@ -109,11 +109,11 @@ void ConfigVisitor::Visit(const json::Array& array) {
 }
 
 void ConfigVisitor::Visit(const json::Integer& number) {
-	AddOptionValue(new OptionValueInt(name, number));
+	AddOptionValue(util::make_unique<OptionValueInt>(name, number));
 }
 
 void ConfigVisitor::Visit(const json::Double& number) {
-	AddOptionValue(new OptionValueDouble(name, number));
+	AddOptionValue(util::make_unique<OptionValueDouble>(name, number));
 }
 
 void ConfigVisitor::Visit(const json::String& string) {
@@ -123,39 +123,34 @@ void ConfigVisitor::Visit(const json::String& string) {
 		(size >= 10 && boost::starts_with(string, "rgb(")) ||
 		((size == 9 || size == 10) && boost::starts_with(string, "&H")))
 	{
-		AddOptionValue(new OptionValueColor(name, string));
+		AddOptionValue(util::make_unique<OptionValueColor>(name, string));
 	} else {
-		AddOptionValue(new OptionValueString(name, string));
+		AddOptionValue(util::make_unique<OptionValueString>(name, string));
 	}
 }
 
 void ConfigVisitor::Visit(const json::Boolean& boolean) {
-	AddOptionValue(new OptionValueBool(name, boolean));
+	AddOptionValue(util::make_unique<OptionValueBool>(name, boolean));
 }
 
 void ConfigVisitor::Visit(const json::Null& null) {
 	Error<OptionJsonValueNull>("Attempt to read null value");
 }
 
-void ConfigVisitor::AddOptionValue(OptionValue* opt) {
+void ConfigVisitor::AddOptionValue(std::unique_ptr<OptionValue>&& opt) {
 	if (!opt) {
 		assert(ignore_errors);
 		return;
 	}
 
-	OptionValueMap::iterator it = values.find(name);
+	auto it = values.find(name);
 	if (it == values.end())
-		values[name] = opt;
-	else if (replace) {
-		delete it->second;
-		it->second = opt;
-	}
+		values[name] = std::move(opt);
+	else if (replace)
+		it->second = std::move(opt);
 	else {
 		try {
-			// Ensure than opt is deleted at the end of this function even if the Set
-			// method throws
-			agi::scoped_ptr<OptionValue> auto_opt(opt);
-			values[name]->Set(opt);
+			values[name]->Set(opt.get());
 		}
 		catch (agi::OptionValueError const& e) {
 			if (ignore_errors)

@@ -21,6 +21,7 @@
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/visitor.h"
 
+#include <memory>
 #include <vector>
 
 namespace agi {
@@ -46,9 +47,9 @@ class ConfigVisitor : public json::ConstVisitor {
 	void Error(const char *message);
 
 	template<class OptionValueType, class ValueType>
-	OptionValue *ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*set_list)(const std::vector<ValueType>&));
+	std::unique_ptr<OptionValue> ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*set_list)(const std::vector<ValueType>&));
 
-	void AddOptionValue(OptionValue* opt);
+	void AddOptionValue(std::unique_ptr<OptionValue>&& opt);
 public:
 	ConfigVisitor(OptionValueMap &val, const std::string &member_name, bool ignore_errors = false, bool replace = false);
 

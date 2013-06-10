@@ -39,6 +39,8 @@
 #include "utils.h"
 #include "video_context.h"
 
+#include <libaegisub/util.h>
+
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -152,7 +154,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 
 	SetSizerAndFit(main_sizer);
 
-	persist.reset(new PersistLocation(this, "Tool/Translation Assistant"));
+	persist = agi::util::make_unique<PersistLocation>(this, "Tool/Translation Assistant");
 
 	Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
 

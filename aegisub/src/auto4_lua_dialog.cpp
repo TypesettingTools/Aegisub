@@ -44,6 +44,8 @@
 #include "utils.h"
 #include "validators.h"
 
+#include <libaegisub/util.h>
+
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptors.hpp>
 #include <boost/range/algorithm.hpp>
@@ -432,34 +434,34 @@ namespace Automation4 {
 			std::string controlclass = get_field(L, "class");
 			boost::to_lower(controlclass);
 
-			LuaDialogControl *ctl;
+			std::unique_ptr<LuaDialogControl> ctl;
 
 			// Check control class and create relevant control
 			if (controlclass == "label")
-				ctl = new LuaControl::Label(L);
+				ctl = agi::util::make_unique<LuaControl::Label>(L);
 			else if (controlclass == "edit")
-				ctl = new LuaControl::Edit(L);
+				ctl = agi::util::make_unique<LuaControl::Edit>(L);
 			else if (controlclass == "intedit")
-				ctl = new LuaControl::IntEdit(L);
+				ctl = agi::util::make_unique<LuaControl::IntEdit>(L);
 			else if (controlclass == "floatedit")
-				ctl = new LuaControl::FloatEdit(L);
+				ctl = agi::util::make_unique<LuaControl::FloatEdit>(L);
 			else if (controlclass == "textbox")
-				ctl = new LuaControl::Textbox(L);
+				ctl = agi::util::make_unique<LuaControl::Textbox>(L);
 			else if (controlclass == "dropdown")
-				ctl = new LuaControl::Dropdown(L);
+				ctl = agi::util::make_unique<LuaControl::Dropdown>(L);
 			else if (controlclass == "checkbox")
-				ctl = new LuaControl::Checkbox(L);
+				ctl = agi::util::make_unique<LuaControl::Checkbox>(L);
 			else if (controlclass == "color")
-				ctl = new LuaControl::Color(L, false);
+				ctl = agi::util::make_unique<LuaControl::Color>(L, false);
 			else if (controlclass == "coloralpha")
-				ctl = new LuaControl::Color(L, true);
+				ctl = agi::util::make_unique<LuaControl::Color>(L, true);
 			else if (controlclass == "alpha")
 				// FIXME
-				ctl = new LuaControl::Edit(L);
+				ctl = agi::util::make_unique<LuaControl::Edit>(L);
 			else
 				luaL_error(L, "bad control table entry");
 
-			controls.push_back(ctl);
+			controls.emplace_back(std::move(ctl));
 		});
 
 		if (include_buttons && lua_istable(L, 2)) {
@@ -483,15 +485,11 @@ namespace Automation4 {
 		}
 	}
 
-	LuaDialog::~LuaDialog() {
-		delete_clear(controls);
-	}
-
 	wxWindow* LuaDialog::CreateWindow(wxWindow *parent) {
 		window = new wxPanel(parent);
 
 		auto s = new wxGridBagSizer(4, 4);
-		for (auto c : controls)
+		for (auto& c : controls)
 			s->Add(c->Create(window), wxGBPosition(c->y, c->x),
 				wxGBSpan(c->height, c->width), c->GetSizerFlags());
 
@@ -556,7 +554,7 @@ namespace Automation4 {
 
 		// Then read controls back
 		lua_newtable(L);
-		for (auto control : controls) {
+		for (auto& control : controls) {
 			control->LuaReadBack(L);
 			lua_setfield(L, -2, control->name.c_str());
 		}
@@ -568,7 +566,7 @@ namespace Automation4 {
 		std::string res;
 
 		// Format into "name1:value1|name2:value2|name3:value3"
-		for (auto control : controls) {
+		for (auto& control : controls) {
 			if (control->CanSerialiseValue()) {
 				if (!res.empty())
 					res += "|";
@@ -589,7 +587,7 @@ namespace Automation4 {
 			std::string value = cur.substr(pos + 1);
 
 			// Hand value to all controls matching name
-			for (auto control : controls) {
+			for (auto& control : controls) {
 				if (control->name == name && control->CanSerialiseValue())
 					control->UnserialiseValue(value);
 			}

@@ -36,6 +36,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <vector>
 
 #include <wx/grid.h>
@@ -85,7 +86,7 @@ class BaseGrid : public wxWindow, public SubtitleSelectionController {
 	agi::signal::Connection seek_listener;
 
 	/// Cached grid body context menu
-	wxMenu *context_menu;
+	std::unique_ptr<wxMenu> context_menu;
 
 	void OnContextMenu(wxContextMenuEvent &evt);
 	void OnHighlightVisibleChange(agi::OptionValue const& opt);

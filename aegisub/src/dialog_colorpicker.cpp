@@ -46,7 +46,9 @@
 #include "utils.h"
 
 #include <libaegisub/scoped_ptr.h>
+#include <libaegisub/util.h>
 
+#include <memory>
 #include <vector>
 
 #include <wx/bitmap.h>
@@ -429,7 +431,7 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 
 
 class DialogColorPicker : public wxDialog {
-	agi::scoped_ptr<PersistLocation> persist;
+	std::unique_ptr<PersistLocation> persist;
 
 	agi::Color cur_color; ///< Currently selected colour
 
@@ -663,7 +665,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	SetSizerAndFit(main_sizer);
 
-	persist.reset(new PersistLocation(this, "Tool/Colour Picker"));
+	persist = agi::util::make_unique<PersistLocation>(this, "Tool/Colour Picker");
 
 	// Fill the controls
 	int mode = OPT_GET("Tool/Colour Picker/Mode")->GetInt();

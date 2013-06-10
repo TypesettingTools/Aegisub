@@ -108,7 +108,7 @@ namespace Automation4 {
 		/// makes a Lua representation of AssEntry and places on the top of the stack
 		static void AssEntryToLua(lua_State *L, AssEntry *e);
 		/// assumes a Lua representation of AssEntry on the top of the stack, and creates an AssEntry object of it
-		static AssEntry *LuaToAssEntry(lua_State *L);
+		static std::unique_ptr<AssEntry> LuaToAssEntry(lua_State *L);
 
 		/// @brief Signal that the script using this file is now done running
 		/// @param set_undo If there's any uncommitted changes to the file,
@@ -186,7 +186,7 @@ namespace Automation4 {
 	/// A lua-generated dialog or panel in the export options dialog
 	class LuaDialog : public ScriptDialog {
 		/// Controls in this dialog
-		std::vector<LuaDialogControl*> controls;
+		std::vector<std::unique_ptr<LuaDialogControl>> controls;
 		/// The names and IDs of buttons in this dialog if non-default ones were used
 		std::vector<std::pair<int, std::string>> buttons;
 
@@ -200,7 +200,6 @@ namespace Automation4 {
 
 	public:
 		LuaDialog(lua_State *L, bool include_buttons);
-		~LuaDialog();
 
 		/// Push the values of the controls in this dialog onto the lua stack
 		/// in a single table

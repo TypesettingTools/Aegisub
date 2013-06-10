@@ -34,6 +34,7 @@
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <deque>
@@ -437,7 +438,7 @@ namespace menu {
 	void GetMenuBar(std::string const& name, wxFrame *window, agi::Context *c) {
 		menu_items const& items = get_menu(name);
 
-		std::unique_ptr<CommandMenuBar> menu(new CommandMenuBar(c));
+		auto menu = agi::util::make_unique<CommandMenuBar>(c);
 		for (auto const& item : items) {
 			std::string submenu, disp;
 			read_entry(item, "submenu", &submenu);
@@ -475,12 +476,12 @@ namespace menu {
 		menu.release();
 	}
 
-	wxMenu *GetMenu(std::string const& name, agi::Context *c) {
+	std::unique_ptr<wxMenu> GetMenu(std::string const& name, agi::Context *c) {
 		CommandMenu *menu = new CommandMenu(c);
 		build_menu(name, c, &menu->cm, menu);
 		menu->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
 		menu->Bind(wxEVT_COMMAND_MENU_SELECTED, &CommandManager::OnMenuClick, &menu->cm);
-		return menu;
+		return std::unique_ptr<wxMenu>(menu);
 	}
 
 	void OpenPopupMenu(wxMenu *menu, wxWindow *parent_window) {

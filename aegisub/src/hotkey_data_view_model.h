@@ -19,9 +19,8 @@
 /// @ingroup hotkey configuration_ui
 ///
 
+#include <memory>
 #include <wx/dataview.h>
-
-#include <libaegisub/scoped_ptr.h>
 
 class HotkeyModelItem;
 class HotkeyModelRoot;
@@ -30,7 +29,7 @@ class Preferences;
 /// @class HotkeyDataViewModel
 /// @brief A wxDataViewModel for hotkeys
 class HotkeyDataViewModel : public wxDataViewModel {
-	agi::scoped_ptr<HotkeyModelRoot> root;
+	std::unique_ptr<HotkeyModelRoot> root;
 	Preferences *parent;
 	bool has_pending_changes;
 

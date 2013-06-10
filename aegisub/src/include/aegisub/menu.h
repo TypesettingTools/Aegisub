@@ -16,6 +16,7 @@
 /// @brief Dynamic menu and toolbar generator.
 /// @ingroup menu toolbar
 
+#include <memory>
 #include <string>
 
 #include <libaegisub/exception.h>
@@ -46,7 +47,7 @@ namespace menu {
 	/// Throws:
 	///     UnknownMenu if no menu with the given name was found
 	///     BadMenu if there is a menu with the given name, but it is invalid
-	wxMenu *GetMenu(std::string const& name, agi::Context *c);
+	std::unique_ptr<wxMenu> GetMenu(std::string const& name, agi::Context *c);
 
 	/// @brief Open a popup menu at the mouse
 	/// @param menu Menu to open

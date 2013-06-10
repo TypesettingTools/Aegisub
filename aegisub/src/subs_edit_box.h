@@ -36,13 +36,13 @@
 #include <deque>
 #include <boost/container/map.hpp>
 #include <boost/flyweight/flyweight_fwd.hpp>
+#include <memory>
 #include <vector>
 
 #include <wx/combobox.h>
 #include <wx/panel.h>
 #include <wx/timer.h>
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
 #include "selection_controller.h"
@@ -200,7 +200,7 @@ class SubsEditBox : public wxPanel {
 
 	SubsTextEditCtrl *edit_ctrl;
 	wxTextCtrl *secondary_editor;
-	agi::scoped_ptr<TextSelectionController> textSelectionController;
+	std::unique_ptr<TextSelectionController> textSelectionController;
 
 public:
 	/// @brief Constructor

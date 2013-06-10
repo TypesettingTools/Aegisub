@@ -19,9 +19,10 @@
 /// @see dialog_export_ebu3264.cpp
 /// @ingroup subtitle_io export
 
-#include <wx/dialog.h>
-
 #include <libaegisub/vfr.h>
+
+#include <memory>
+#include <wx/dialog.h>
 
 namespace agi { namespace charset { class IconvWrapper; } }
 
@@ -100,7 +101,7 @@ public:
 	agi::vfr::Framerate GetFramerate() const;
 
 	/// Get a charset encoder for the current text encoding
-	agi::charset::IconvWrapper *GetTextEncoder() const;
+	std::unique_ptr<agi::charset::IconvWrapper> GetTextEncoder() const;
 
 	/// Load saved export settings from options
 	/// @param prefix Option name prefix

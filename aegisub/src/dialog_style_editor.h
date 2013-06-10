@@ -32,13 +32,13 @@
 /// @ingroup style_editor
 ///
 
+#include <memory>
+
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/radiobox.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
-
-#include <libaegisub/scoped_ptr.h>
 
 namespace agi { struct Context; }
 class AssStyle;
@@ -49,7 +49,7 @@ class SubtitlesPreview;
 
 class DialogStyleEditor : public wxDialog {
 	agi::Context *c;
-	agi::scoped_ptr<PersistLocation> persist;
+	std::unique_ptr<PersistLocation> persist;
 
 	/// If true, the style was just created and so the user should not be
 	/// asked if they want to change any existing lines should they rename
@@ -61,7 +61,7 @@ class DialogStyleEditor : public wxDialog {
 
 	/// Copy of style passed to the subtitles preview to avoid making changes
 	/// before Apply is clicked
-	agi::scoped_ptr<AssStyle> work;
+	std::unique_ptr<AssStyle> work;
 
 	/// The style storage style is in, if applicable
 	AssStyleStorage *store;

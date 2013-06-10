@@ -21,6 +21,7 @@
 #include <boost/filesystem/path.hpp>
 #include <iosfwd>
 #include <map>
+#include <memory>
 
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
@@ -38,10 +39,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionErrorDuplicateKey, OptionError, "options/d
 
 class OptionValue;
 
-/// This is a cool trick: make a class un-copyable, in this case we always want
-/// to update our *original* map, this will ensure that it is always updated in
-/// every situation.
-class OptionValueMap : public std::map<std::string,OptionValue*> {
+class OptionValueMap : public std::map<std::string, std::unique_ptr<OptionValue>> {
 private:
 	OptionValueMap(const OptionValueMap& x);
 	OptionValueMap& operator=(const OptionValueMap& x);

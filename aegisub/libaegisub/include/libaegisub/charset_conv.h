@@ -19,11 +19,11 @@
 #pragma once
 
 #include <cstring>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <libaegisub/exception.h>
-#include <libaegisub/scoped_ptr.h>
 
 namespace agi {
 	namespace charset {
@@ -48,7 +48,7 @@ struct Converter {
 class IconvWrapper {
 	size_t toNulLen;
 	size_t fromNulLen;
-	agi::scoped_ptr<Converter> conv;
+	std::unique_ptr<Converter> conv;
 
 public:
 	/// @brief Create a converter

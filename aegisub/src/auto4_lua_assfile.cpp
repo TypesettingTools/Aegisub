@@ -45,13 +45,14 @@
 #include "utils.h"
 
 #include <libaegisub/exception.h>
-#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/algorithm_ext.hpp>
 #include <cassert>
+#include <memory>
 
 namespace {
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(BadField, Automation4::MacroRunError, "automation/macro/bad_field")
@@ -219,7 +220,7 @@ namespace Automation4 {
 		}
 	}
 
-	AssEntry *LuaAssFile::LuaToAssEntry(lua_State *L)
+	std::unique_ptr<AssEntry> LuaAssFile::LuaToAssEntry(lua_State *L)
 	{
 		// assume an assentry table is on the top of the stack
 		// convert it to a real AssEntry object, and pop the table from the stack
@@ -235,14 +236,14 @@ namespace Automation4 {
 		boost::to_lower(lclass);
 		lua_pop(L, 1);
 
-		AssEntry *result = 0;
+		std::unique_ptr<AssEntry> result;
 
 		try {
 			if (lclass == "info")
-				result = new AssInfo(get_string_field(L, "key", "info"), get_string_field(L, "value", "info"));
+				result = agi::util::make_unique<AssInfo>(get_string_field(L, "key", "info"), get_string_field(L, "value", "info"));
 			else if (lclass == "style") {
 				AssStyle *sty = new AssStyle;
-				result = sty;
+				result.reset(sty);
 				sty->name = get_string_field(L, "name", "style");
 				sty->font = get_string_field(L, "fontname", "style");
 				sty->fontsize = get_double_field(L, "fontsize", "style");
@@ -270,7 +271,7 @@ namespace Automation4 {
 			}
 			else if (lclass == "dialogue") {
 				AssDialogue *dia = new AssDialogue;
-				result = dia;
+				result.reset(dia);
 
 				dia->Comment = get_bool_field(L, "comment", "dialogue");
 				dia->Layer = get_int_field(L, "layer", "dialogue");
@@ -292,9 +293,8 @@ namespace Automation4 {
 			return result;
 		}
 		catch (agi::Exception const& e) {
-			delete result;
 			luaL_error(L, e.GetMessage().c_str());
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -373,11 +373,11 @@ namespace Automation4 {
 			// replace line at index n or delete
 			if (!lua_isnil(L, 3)) {
 				// insert
-				AssEntry *e = LuaToAssEntry(L);
-				modification_type |= modification_mask(e);
+				auto e = LuaToAssEntry(L);
+				modification_type |= modification_mask(e.get());
 				CheckBounds(n);
 				lines_to_delete.push_back(lines[n - 1]);
-				lines[n - 1] = e;
+				lines[n - 1] = e.release();
 			}
 			else {
 				// delete
@@ -453,8 +453,8 @@ namespace Automation4 {
 
 		for (int i = 1; i <= n; i++) {
 			lua_pushvalue(L, i);
-			AssEntry *e = LuaToAssEntry(L);
-			modification_type |= modification_mask(e);
+			auto e = LuaToAssEntry(L);
+			modification_type |= modification_mask(e.get());
 
 			// Find the appropriate place to put it
 			auto it = lines.end();
@@ -468,11 +468,11 @@ namespace Automation4 {
 			if (it == lines.end() || (*it)->Group() != e->Group()) {
 				// The new entry belongs to a group that doesn't exist yet, so
 				// create it at the end of the file
-				lines.push_back(e);
+				lines.push_back(e.release());
 			}
 			else {
 				// Append the entry to the end of the existing group
-				lines.insert(++it, e);
+				lines.insert(++it, e.release());
 			}
 		}
 	}
@@ -497,9 +497,9 @@ namespace Automation4 {
 		std::vector<AssEntry *> new_entries(n - 1, nullptr);
 		for (int i = 2; i <= n; i++) {
 			lua_pushvalue(L, i);
-			AssEntry *e = LuaToAssEntry(L);
-			modification_type |= modification_mask(e);
-			new_entries[i - 2] = e;
+			auto e = LuaToAssEntry(L);
+			modification_type |= modification_mask(e.get());
+			new_entries[i - 2] = e.release();
 			lua_pop(L, 1);
 		}
 		lines.insert(lines.begin() + before - 1, new_entries.begin(), new_entries.end());
@@ -536,7 +536,7 @@ namespace Automation4 {
 
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
-		agi::scoped_ptr<AssEntry> e(LuaToAssEntry(L));
+		auto e = LuaToAssEntry(L);
 		AssDialogue *dia = dynamic_cast<AssDialogue*>(e.get());
 		luaL_argcheck(L, dia, 1, "Subtitle line must be a dialogue line");
 

@@ -45,6 +45,8 @@
 #include "video_context.h"
 #include "video_display.h"
 
+#include <libaegisub/util.h>
+
 #include <boost/filesystem/path.hpp>
 
 #include <wx/sizer.h>
@@ -79,7 +81,7 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 	videoBox->SetMinSize(wxSize(1,1));
 	SetMinSize(wxSize(1,1));
 
-	persist.reset(new PersistLocation(this, "Video/Detached"));
+	persist = agi::util::make_unique<PersistLocation>(this, "Video/Detached");
 
 	int display_index = wxDisplay::GetFromWindow(this);
 	// Ensure that the dialog is no larger than the screen

@@ -118,7 +118,7 @@ namespace {
 	size_t nul_size(const char* encoding) {
 		// We need a character set to convert from with a known encoding of NUL
 		// UTF-8 seems like the obvious choice
-		agi::scoped_ptr<agi::charset::Converter> cd(get_converter(false, "UTF-8", encoding));
+		std::unique_ptr<agi::charset::Converter> cd(get_converter(false, "UTF-8", encoding));
 
 		char dbuff[4];
 		char sbuff[] = "";

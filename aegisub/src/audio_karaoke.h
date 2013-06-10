@@ -19,9 +19,9 @@
 /// @ingroup audio_ui
 ///
 
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 
+#include <memory>
 #include <set>
 #include <unordered_map>
 #include <vector>
@@ -78,7 +78,7 @@ class AudioKaraoke : public wxWindow {
 	/// Currently active dialogue line
 	AssDialogue *active_line;
 	/// Karaoke data
-	agi::scoped_ptr<AssKaraoke> kara;
+	std::unique_ptr<AssKaraoke> kara;
 
 	/// Current line's stripped text with spaces added between each syllable
 	std::vector<wxString> spaced_text;

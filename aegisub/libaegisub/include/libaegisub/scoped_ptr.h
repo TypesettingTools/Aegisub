@@ -19,33 +19,6 @@
 #pragma once
 
 namespace agi {
-
-/// @class scoped_ptr
-/// @brief auto_ptr without the transfer of ownership semantics
-template<class T>
-class scoped_ptr {
-	T* ptr;
-	scoped_ptr(scoped_ptr const&);
-	scoped_ptr& operator=(scoped_ptr const&);
-
-	typedef T *scoped_ptr<T>::*unspecified_bool_type;
-public:
-	typedef T element_type;
-
-	T& operator*() const {return *ptr; }
-	T* operator->() const { return ptr; }
-	T* get() const { return ptr; }
-	operator unspecified_bool_type() const { return ptr ? &scoped_ptr<T>::ptr : 0; }
-
-	void reset(T *p = 0) {
-		delete ptr;
-		ptr = p;
-	}
-
-	explicit scoped_ptr(T *ptr = 0) : ptr(ptr){ }
-	~scoped_ptr() { delete ptr; }
-};
-
 /// A generic scoped holder for non-pointer handles
 template<class T, class Del = void(*)(T)>
 class scoped_holder {
@@ -73,5 +46,4 @@ public:
 
 	~scoped_holder() { if (value) destructor(value); }
 };
-
 }

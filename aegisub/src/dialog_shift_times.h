@@ -22,12 +22,12 @@
 #include "selection_controller.h"
 
 #include <libaegisub/fs_fwd.h>
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 
 #include <boost/filesystem/path.hpp>
 #include <deque>
+#include <memory>
 
 #include <wx/dialog.h>
 
@@ -44,10 +44,11 @@ namespace json {
 }
 
 class DialogShiftTimes : public wxDialog {
+	wxDECLARE_NO_COPY_CLASS(DialogShiftTimes); // clang + libc++ herps a derp without this
 	agi::Context *context;
 
 	agi::fs::path history_filename;
-	agi::scoped_ptr<json::Array> history;
+	std::unique_ptr<json::Array> history;
 	agi::vfr::Framerate fps;
 	agi::signal::Connection timecodes_loaded_slot;
 	agi::signal::Connection selected_set_changed_slot;

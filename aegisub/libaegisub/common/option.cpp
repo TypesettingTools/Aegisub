@@ -78,9 +78,6 @@ Options::Options(agi::fs::path const& file, const std::string& default_config, c
 Options::~Options() {
 	if ((setting & FLUSH_SKIP) != FLUSH_SKIP)
 		Flush();
-
-	for (auto option_value : values | boost::adaptors::map_values)
-		delete option_value;
 }
 
 void Options::ConfigNext(std::istream& stream) {
@@ -117,7 +114,7 @@ void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
 OptionValue* Options::Get(const std::string &name) {
 	auto index = values.find(name);
 	if (index != values.end())
-		return index->second;
+		return index->second.get();
 
 	LOG_E("option/get") << "agi::Options::Get Option not found: (" << name << ")";
 	throw OptionErrorNotFound("Option value not found: " + name);

@@ -57,6 +57,7 @@
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/util.h>
 
 #include <functional>
 #include <unordered_set>
@@ -218,7 +219,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	connections.push_back(context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this));
 	connections.push_back(context->initialLineState->AddChangeListener(&SubsEditBox::OnLineInitialTextChanged, this));
 
-	textSelectionController.reset(new ScintillaTextSelectionController(edit_ctrl));
+	textSelectionController = agi::util::make_unique<ScintillaTextSelectionController>(edit_ctrl);
 	context->textSelectionController = textSelectionController.get();
 	edit_ctrl->SetFocus();
 }
