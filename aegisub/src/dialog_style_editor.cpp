@@ -188,10 +188,12 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
 	BoxUnderline = new wxCheckBox(this, -1, _("&Underline"));
 	BoxStrikeout = new wxCheckBox(this, -1, _("&Strikeout"));
-	colorButton[0] = new ColourButton(this, wxSize(55, 16), true, style->primary);
-	colorButton[1] = new ColourButton(this, wxSize(55, 16), true, style->secondary);
-	colorButton[2] = new ColourButton(this, wxSize(55, 16), true, style->outline);
-	colorButton[3] = new ColourButton(this, wxSize(55, 16), true, style->shadow);
+	ColourButton *colorButton[] = {
+		new ColourButton(this, wxSize(55, 16), true, style->primary, ColorValidator(&work->primary)),
+		new ColourButton(this, wxSize(55, 16), true, style->secondary, ColorValidator(&work->secondary)),
+		new ColourButton(this, wxSize(55, 16), true, style->outline, ColorValidator(&work->outline)),
+		new ColourButton(this, wxSize(55, 16), true, style->shadow, ColorValidator(&work->shadow))
+	};
 	for (int i = 0; i < 3; i++)
 		margin[i] = spin_ctrl(this, style->Margin[i], 9999);
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
@@ -267,28 +269,26 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	FontSizer->Add(FontSizerBottom, 1, wxTOP | wxEXPAND, 5);
 
 	// Colors sizer
-	wxSizer *ColorSizer[4];
 	wxString colorLabels[] = { _("Primary"), _("Secondary"), _("Outline"), _("Shadow") };
 	ColorsSizer->AddStretchSpacer(1);
-	for (int i=0;i<4;i++) {
-		ColorSizer[i] = new wxBoxSizer(wxVERTICAL);
-		ColorSizer[i]->Add(new wxStaticText(this, -1, colorLabels[i]), 0, wxBOTTOM | wxALIGN_CENTER, 5);
-		ColorSizer[i]->Add(colorButton[i], 0, wxBOTTOM | wxALIGN_CENTER, 5);
-		ColorsSizer->Add(ColorSizer[i], 0, wxLEFT, i?5:0);
+	for (int i = 0; i < 4; ++i) {
+		auto sizer = new wxBoxSizer(wxVERTICAL);
+		sizer->Add(new wxStaticText(this, -1, colorLabels[i]), 0, wxBOTTOM | wxALIGN_CENTER, 5);
+		sizer->Add(colorButton[i], 0, wxBOTTOM | wxALIGN_CENTER, 5);
+		ColorsSizer->Add(sizer, 0, wxLEFT, i?5:0);
 	}
 	ColorsSizer->AddStretchSpacer(1);
 
 	// Margins
 	wxString marginLabels[] = { _("Left"), _("Right"), _("Vert") };
 	MarginSizer->AddStretchSpacer(1);
-	wxSizer *marginSubSizer[3];
 	for (int i=0;i<3;i++) {
-		marginSubSizer[i] = new wxBoxSizer(wxVERTICAL);
-		marginSubSizer[i]->AddStretchSpacer(1);
-		marginSubSizer[i]->Add(new wxStaticText(this, -1, marginLabels[i]), 0, wxCENTER, 0);
-		marginSubSizer[i]->Add(margin[i], 0, wxTOP | wxCENTER, 5);
-		marginSubSizer[i]->AddStretchSpacer(1);
-		MarginSizer->Add(marginSubSizer[i], 0, wxEXPAND | wxLEFT, i?5:0);
+		auto sizer = new wxBoxSizer(wxVERTICAL);
+		sizer->AddStretchSpacer(1);
+		sizer->Add(new wxStaticText(this, -1, marginLabels[i]), 0, wxCENTER, 0);
+		sizer->Add(margin[i], 0, wxTOP | wxCENTER, 5);
+		sizer->AddStretchSpacer(1);
+		MarginSizer->Add(sizer, 0, wxEXPAND | wxLEFT, i?5:0);
 	}
 	MarginSizer->AddStretchSpacer(1);
 
@@ -396,7 +396,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Style Editor"), wxID_HELP);
 
 	for (int i = 0; i < 4; ++i)
-		colorButton[i]->Bind(EVT_COLOR, std::bind(&DialogStyleEditor::OnSetColor, this, i + 1, std::placeholders::_1));
+		colorButton[i]->Bind(EVT_COLOR, &DialogStyleEditor::OnSetColor, this);
 }
 
 DialogStyleEditor::~DialogStyleEditor() {
@@ -471,7 +471,6 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 	}
 }
 
-/// @brief Update work style
 void DialogStyleEditor::UpdateWorkStyle() {
 	work->font = from_wx(FontName->GetValue());
 	FontSize->GetValue().ToDouble(&(work->fontsize));
@@ -502,14 +501,8 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	work->strikeout = BoxStrikeout->IsChecked();
 }
 
-void DialogStyleEditor::OnSetColor(int n, wxThreadEvent& evt) {
-	switch (n) {
-		case 1: work->primary = evt.GetPayload<agi::Color>(); break;
-		case 2: work->secondary = evt.GetPayload<agi::Color>(); break;
-		case 3: work->outline = evt.GetPayload<agi::Color>(); break;
-		case 4: work->shadow = evt.GetPayload<agi::Color>(); break;
-		default: throw agi::InternalError("attempted setting colour id outside range", 0);
-	}
+void DialogStyleEditor::OnSetColor(wxThreadEvent&) {
+	TransferDataFromWindow();
 	if (SubsPreview)
 		SubsPreview->SetStyle(*work);
 }

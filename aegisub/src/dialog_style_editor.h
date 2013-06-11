@@ -43,7 +43,6 @@
 namespace agi { struct Context; }
 class AssStyle;
 class AssStyleStorage;
-class ColourButton;
 class PersistLocation;
 class SubtitlesPreview;
 
@@ -73,7 +72,6 @@ class DialogStyleEditor : public wxDialog {
 	wxCheckBox *BoxItalic;
 	wxCheckBox *BoxUnderline;
 	wxCheckBox *BoxStrikeout;
-	ColourButton *colorButton[4];
 	wxSpinCtrl *margin[3];
 	wxRadioBox *Alignment;
 	wxTextCtrl *Outline;
@@ -103,8 +101,7 @@ class DialogStyleEditor : public wxDialog {
 	/// @param close Should the dialog be closed?
 	void Apply(bool apply,bool close);
 	/// @brief Sets color for one of the four color buttons
-	/// @param n Colour to set
-	void OnSetColor(int n, wxThreadEvent& evt);
+	void OnSetColor(wxThreadEvent& evt);
 
 public:
 	DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store = 0, std::string const& new_name = "");
