@@ -34,7 +34,6 @@
 
 #include "config.h"
 
-#ifdef WITH_LIBASS
 #include "subtitles_provider_libass.h"
 
 #ifdef __APPLE__
@@ -197,5 +196,3 @@ void LibassSubtitlesProvider::CacheFonts() {
 		ass_renderer_done(ass_renderer);
 	});
 }
-
-#endif // WITH_LIBASS

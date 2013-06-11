@@ -78,14 +78,10 @@ endif
 ###########
 # SUBTITLES
 ###########
-ifeq (yes, $(HAVE_LIBASS))
 subtitles_provider_libass.o: CXXFLAGS += $(CFLAGS_LIBASS) -Wno-c++11-narrowing
 subtitles_provider.o: CXXFLAGS += $(CFLAGS_LIBASS)
 LIBS += $(LIBS_LIBASS)
 SRC += subtitles_provider_libass.cpp
-else
-EXTRA_DIST += subtitles_provider_libass.cpp
-endif
 
 ##############
 # MISCELLANOUS

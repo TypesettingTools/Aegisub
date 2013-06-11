@@ -76,30 +76,6 @@
     </Link>
   </ItemDefinitionGroup>
 
-  <!-- libass support -->
-  <ItemDefinitionGroup Condition="'$(AegisubUseLibass)'=='true'">
-    <ClCompile>
-      <PreprocessorDefinitions>WITH_LIBASS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>fribidi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-
-  <!-- Freetype 2 support -->
-  <ItemDefinitionGroup Condition="'$(AegisubUseFreetype2)'=='true'">
-    <ClCompile>
-      <PreprocessorDefinitions>WITH_FREETYPE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-
-  <!-- Fontconfig support -->
-  <ItemDefinitionGroup Condition="'$(AegisubUseFontconfig)'=='true'">
-    <ClCompile>
-      <PreprocessorDefinitions>WITH_FONTCONFIG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-
   <!-- FFmpegSource support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
     <ClCompile>

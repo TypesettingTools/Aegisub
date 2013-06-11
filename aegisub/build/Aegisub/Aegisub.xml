@@ -125,20 +125,6 @@
     Description="A high-speed fourier transformation library which improves the spectograph speed and quality. Requires a copy of the FFTW 3.2 source."
     />
 
-  <BoolProperty
-    Name="AegisubUseFontconfig"
-    Category="Features"
-    DisplayName="Fontconfig"
-    Description="Required for the font collector and libass. Requires Freetype 2 and a copy of the Fontconfig source."
-    />
-
-  <BoolProperty
-    Name="AegisubUseLibass"
-    Category="Features"
-    DisplayName="libass"
-    Description="An alternative subtitle renderer which is often faster than VSFilter. Requires Fontconfig, Freetype 2, Fribidi, and a copy of the libass source."
-    />
-
   <!-- Library Paths -->
   <StringProperty
     Subtype="folder"

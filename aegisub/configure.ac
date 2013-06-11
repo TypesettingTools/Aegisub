@@ -238,13 +238,9 @@ AS_IF([test x$no_gl = xyes], [AC_MSG_FAILURE([Aegisub requires GL support.])])
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
 
-PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version,
-                  AC_DEFINE(WITH_FREETYPE2, 1, [Enable FreeType 2 support.]),
-                  [AC_MSG_FAILURE([Aegisub requires >= FreeType2 freetype_required_version])])
-
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version,
-                  [AC_DEFINE(WITH_FONTCONFIG, 1, [Enable FontConfig support.])],
-                  [AC_MSG_FAILURE([Aegisub requires fontconfig >= fontconfig_required_version])])
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version)
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version)
+PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version)
 
 AX_BOOST_BASE([boost_required_version])
 AX_BOOST_ASIO
@@ -390,8 +386,6 @@ AGI_OPT_PKG(libpulse, [build without PulseAudio audio player [auto]], [Enable Pu
 AGI_OPT_PKG(portaudio-2.0, [build without PortAudio v19 audio player [auto]], [Enable PortAudio v19 support])
 
 AGI_OPT_PKG(ffms2, [build without ffms2 A/V provider [auto]], [Enable FFMS2 support])
-
-AGI_OPT_PKG(libass, [build without libass subtitle provider [auto]], [Enable libass support])
 
 AGI_OPT_PKG(fftw3, [build without fftw support [auto]], [Enable fftw support])
 AGI_OPT_PKG(hunspell, [build without hunspell spell-checking [auto]], [Enable Hunspell support])
@@ -718,9 +712,6 @@ Audio Players
 
 A/V Providers
   FFMS2:                 $with_ffms2 $ffms2_disabled
-
-Subtitle Providers:
-  libass                 $with_libass $libass_disabled
 
 Misc Packages
   Hunspell:              $with_hunspell $hunspell_disabled

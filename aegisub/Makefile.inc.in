@@ -8,7 +8,6 @@ HAVE_OSS        = @with_oss@
 HAVE_PORTAUDIO  = @with_portaudio@
 HAVE_FFMS2      = @with_ffms2@
 HAVE_LIBPULSE   = @with_libpulse@
-HAVE_LIBASS     = @with_libass@
 
 ###################
 # PLATFORM SETTINGS

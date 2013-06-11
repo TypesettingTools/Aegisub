@@ -42,9 +42,6 @@
     <AegisubUseDSound>true</AegisubUseDSound>
     <AegisubUseFfms>true</AegisubUseFfms>
     <AegisubUseFftw>true</AegisubUseFftw>
-    <AegisubUseFontconfig>true</AegisubUseFontconfig>
-    <AegisubUseFreetype2>true</AegisubUseFreetype2>
-    <AegisubUseLibass>true</AegisubUseLibass>
     <AegisubUseUpdateChecker>true</AegisubUseUpdateChecker>
     <CsriLibraryName>vsfilter.lib</CsriLibraryName>
     <DirectXSDKPath>$(DXSDK_DIR)</DirectXSDKPath>

@@ -75,14 +75,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 			collector->AddPendingEvent(event);
 		};
 
-#ifdef WITH_FONTCONFIG
 		FontConfigFontFileLister lister(AppendText);
-#else
-		AppendText(_("Aegisub was built without any font file listers enabled"), 2);
-		struct DummyLister : public FontFileLister {
-			CollectionResult GetFontPaths(std::string const&, int, bool, std::set<wxUniChar> const&) { return CollectionResult(); }
-		} lister;
-#endif
 		auto paths = FontCollector(AppendText, lister).GetFontPaths(subs);
 		if (paths.empty()) {
 			collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));

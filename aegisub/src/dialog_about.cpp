@@ -75,15 +75,11 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += "    vsfilter - Copyright (c) Gabest;\n";
 # endif
 #endif
-#ifdef WITH_LIBASS
 	libString += "    libass - Copyright (c) Evgeniy Stepanov, Grigori Goronzy;\n";
-#endif
 #ifdef __WINDOWS__
 	libString += "    Matroska Parser - Copyright (c) Mike Matsnev;\n";
 #endif
-#ifdef WITH_FREETYPE2
 	libString += "    Freetype - Copyright (c) David Turner, Robert Wilhelm, Werner Lemberg;\n";
-#endif
 #ifdef WITH_FFTW3
 	libString += "    FFTW - Copyright (c) Matteo Frigo, Massachusetts Institute of Technology;\n";
 #endif

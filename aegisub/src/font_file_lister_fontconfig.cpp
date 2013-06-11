@@ -21,7 +21,6 @@
 
 #include "config.h"
 
-#ifdef WITH_FONTCONFIG
 #include "font_file_lister_fontconfig.h"
 
 #include <fontconfig/fontconfig.h>
@@ -141,4 +140,3 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(std::str
 	ret.paths.emplace_back((const char *)file);
 	return ret;
 }
-#endif

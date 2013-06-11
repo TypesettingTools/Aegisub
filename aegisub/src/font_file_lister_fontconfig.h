@@ -19,8 +19,6 @@
 /// @ingroup font_collector
 ///
 
-#ifdef WITH_FONTCONFIG
-
 #include "font_file_lister.h"
 
 #include <libaegisub/scoped_ptr.h>
@@ -46,5 +44,3 @@ public:
 
 	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::set<wxUniChar> const& characters);
 };
-
-#endif

@@ -66,8 +66,6 @@ void SubtitlesProviderFactory::RegisterProviders() {
 	if (!csri_providers.empty())
 		Register<CSRISubtitlesProvider>("CSRI", false, csri_providers);
 #endif
-#ifdef WITH_LIBASS
 	Register<LibassSubtitlesProvider>("libass");
 	LibassSubtitlesProvider::CacheFonts();
-#endif
 }

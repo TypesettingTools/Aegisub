@@ -32,7 +32,6 @@
 /// @ingroup subtitle_rendering
 ///
 
-#ifdef WITH_LIBASS
 #include "include/aegisub/subtitles_provider.h"
 
 extern "C" {
@@ -52,4 +51,3 @@ public:
 
 	static void CacheFonts();
 };
-#endif

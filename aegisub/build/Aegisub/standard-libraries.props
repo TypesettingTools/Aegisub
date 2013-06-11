@@ -19,6 +19,7 @@
         sicuin.lib;
         sicutu.lib;
         sicuuc.lib;
+        fribidi.lib;
         %(AdditionalDependencies)
       </AdditionalDependencies>
     </Link>
