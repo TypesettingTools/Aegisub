@@ -42,3 +42,16 @@ public:
 	/// Get the currently selected color
 	agi::Color GetColor() { return colour; }
 };
+
+struct ColorValidator : public wxValidator {
+	agi::Color *color;
+	ColorValidator(agi::Color *color) : color(color) { }
+	wxValidator *Clone() const { return new ColorValidator(color); }
+	bool Validate(wxWindow*) { return true; }
+	bool TransferToWindow() { return true; }
+
+	bool TransferFromWindow() {
+		*color = static_cast<ColourButton*>(GetWindow())->GetColor();
+		return true;
+	}
+};

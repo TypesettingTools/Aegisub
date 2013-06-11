@@ -194,43 +194,29 @@ namespace Automation4 {
 
 		/// A color-picker button
 		class Color : public LuaDialogControl {
-			std::string text;
+			agi::Color color;
 			bool alpha;
-
-			struct ColorValidator : public wxValidator {
-				std::string *text;
-				ColorValidator(std::string *text) : text(text) { }
-				wxValidator *Clone() const { return new ColorValidator(text); }
-				bool Validate(wxWindow*) { return true; }
-				bool TransferToWindow() { return true; }
-
-				bool TransferFromWindow() {
-					*text = static_cast<ColourButton*>(GetWindow())->GetColor().GetHexFormatted();
-					return true;
-				}
-			};
 
 		public:
 			Color(lua_State *L, bool alpha)
 			: LuaDialogControl(L)
-			, text(get_field(L, "value"))
+			, color(get_field(L, "value"))
 			, alpha(alpha)
 			{
 			}
 
 			bool CanSerialiseValue() const { return true; }
-			std::string SerialiseValue() const { return inline_string_encode(text); }
-			void UnserialiseValue(const std::string &serialised) { text = inline_string_decode(serialised); }
+			std::string SerialiseValue() const { return inline_string_encode(color.GetHexFormatted()); }
+			void UnserialiseValue(const std::string &serialised) { color = inline_string_decode(serialised); }
 
 			wxControl *Create(wxWindow *parent) {
-				agi::Color colour(text);
-				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), alpha, colour, ColorValidator(&text));
+				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), alpha, color, ColorValidator(&color));
 				cw->SetToolTip(to_wx(hint));
 				return cw;
 			}
 
 			void LuaReadBack(lua_State *L) {
-				lua_pushstring(L, text.c_str());
+				lua_pushstring(L, color.GetHexFormatted().c_str());
 			}
 		};
 
