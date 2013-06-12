@@ -130,7 +130,9 @@ void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
 }
 
 void DialogDetachedVideo::OnVideoOpen() {
-	if (!context->videoController->IsLoaded()) {
+	if (context->videoController->IsLoaded())
+		SetTitle(wxString::Format(_("Video: %s"), context->videoController->GetVideoName().filename().wstring()));
+	else {
 		Close();
 		OPT_SET("Video/Detached/Enabled")->SetBool(true);
 	}
