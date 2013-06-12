@@ -128,14 +128,13 @@ namespace {
 		// OLE needs to be initialized on each thread that wants to write to
 		// the clipboard, which wx does not handle automatically
 		wxClipboard cb;
-		wxClipboard *theCB = &cb;
 #else
-		wxClipboard *theCB = wxTheClipboard;
+		wxClipboard &cb = *wxTheClipboard;
 #endif
-		if (theCB->Open()) {
-			succeeded = theCB->SetData(new wxTextDataObject(to_wx(str)));
-			theCB->Close();
-			theCB->Flush();
+		if (cb.Open()) {
+			succeeded = cb.SetData(new wxTextDataObject(to_wx(str)));
+			cb.Close();
+			cb.Flush();
 		}
 
 		lua_pushboolean(L, succeeded);
