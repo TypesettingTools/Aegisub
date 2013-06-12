@@ -107,12 +107,12 @@ void AssParser::ParseStyleLine(std::string const& data) {
 
 void AssParser::ParseFontLine(std::string const& data) {
 	if (boost::starts_with(data, "fontname: "))
-		attach.reset(new AssAttachment(data.substr(10), ENTRY_FONT));
+		attach.reset(new AssAttachment(data.substr(10), AssEntryGroup::FONT));
 }
 
 void AssParser::ParseGraphicsLine(std::string const& data) {
 	if (boost::starts_with(data, "filename: "))
-		attach.reset(new AssAttachment(data.substr(10), ENTRY_GRAPHIC));
+		attach.reset(new AssAttachment(data.substr(10), AssEntryGroup::GRAPHIC));
 }
 
 void AssParser::AddLine(std::string const& data) {
@@ -158,10 +158,10 @@ void AssParser::AddLine(std::string const& data) {
 }
 
 void AssParser::InsertLine(AssEntry *entry) {
-	AssEntry *position = insertion_positions[entry->Group()];
+	AssEntry *position = insertion_positions[(size_t)entry->Group()];
 	if (position)
 		target->Line.insert(++target->Line.iterator_to(*position), *entry);
 	else
 		target->Line.push_back(*entry);
-	insertion_positions[entry->Group()] = entry;
+	insertion_positions[(size_t)entry->Group()] = entry;
 }

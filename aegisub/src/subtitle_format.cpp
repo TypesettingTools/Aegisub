@@ -203,7 +203,7 @@ void SubtitleFormat::StripComments(AssFile &file) {
 
 void SubtitleFormat::StripNonDialogue(AssFile &file) {
 	file.Line.remove_and_dispose_if([](AssEntry const& e) {
-		return e.Group() != ENTRY_DIALOGUE;
+		return e.Group() != AssEntryGroup::DIALOGUE;
 	}, [](AssEntry *e) { delete e; });
 }
 

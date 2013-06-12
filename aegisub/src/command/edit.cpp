@@ -981,7 +981,7 @@ struct edit_clear_text : public Command {
 		AssDialogue *line = c->selectionController->GetActiveLine();
 		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 		line->Text = join(blocks
-			| filtered([](AssDialogueBlock const& b) { return b.GetType() != BLOCK_PLAIN; })
+			| filtered([](AssDialogueBlock const& b) { return b.GetType() != AssBlockType::PLAIN; })
 			| transformed(get_text),
 			"");
 		c->ass->Commit(_("clear line"), AssFile::COMMIT_DIAG_TEXT, -1, line);

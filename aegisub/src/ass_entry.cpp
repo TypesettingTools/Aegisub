@@ -42,5 +42,5 @@ std::string const& AssEntry::GroupHeader(bool ssa) const {
 		""
 	};
 
-	return (ssa ? ssa_headers : ass_headers)[Group()];
+	return (ssa ? ssa_headers : ass_headers)[(int)Group()];
 }

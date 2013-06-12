@@ -111,11 +111,11 @@ void AssFile::InsertLine(AssEntry *entry) {
 }
 
 void AssFile::InsertAttachment(agi::fs::path const& filename) {
-	AssEntryGroup group = ENTRY_GRAPHIC;
+	AssEntryGroup group = AssEntryGroup::GRAPHIC;
 
 	auto ext = boost::to_lower_copy(filename.extension().string());
 	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb")
-		group = ENTRY_FONT;
+		group = AssEntryGroup::FONT;
 
 	InsertLine(new AssAttachment(filename, group));
 }

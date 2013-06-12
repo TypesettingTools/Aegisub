@@ -46,7 +46,7 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 	file->seekg(0, std::ios::beg);
 	file->read(&data[0], data.size());
 
-	entry_data = (group == ENTRY_FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
+	entry_data = (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
 	entry_data = entry_data.get() + agi::ass::UUEncode(data);
 }
 

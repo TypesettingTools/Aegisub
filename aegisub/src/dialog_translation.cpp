@@ -57,7 +57,7 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wx
 
 // Skip over override blocks, comments, and whitespace between blocks
 static bool bad_block(AssDialogueBlock &block) {
-	return block.GetType() != BLOCK_PLAIN || boost::all(block.GetText(), boost::is_space());
+	return block.GetType() != AssBlockType::PLAIN || boost::all(block.GetText(), boost::is_space());
 }
 
 DialogTranslation::DialogTranslation(agi::Context *c)
@@ -246,7 +246,7 @@ void DialogTranslation::UpdateDisplay() {
 
 	size_t i = 0;
 	for (auto& block : blocks) {
-		if (block.GetType() == BLOCK_PLAIN) {
+		if (block.GetType() == AssBlockType::PLAIN) {
 			int cur_size = original_text->GetReverseUnicodePosition(original_text->GetLength());
 			original_text->AppendTextRaw(block.GetText().c_str());
 			if (i == cur_block) {

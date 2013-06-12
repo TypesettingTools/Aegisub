@@ -42,12 +42,12 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <vector>
 
-enum AssBlockType {
-	BLOCK_BASE,
-	BLOCK_PLAIN,
-	BLOCK_COMMENT,
-	BLOCK_OVERRIDE,
-	BLOCK_DRAWING
+enum class AssBlockType {
+	BASE,
+	PLAIN,
+	COMMENT,
+	OVERRIDE,
+	DRAWING
 };
 
 /// @class AssDialogueBlock
@@ -85,13 +85,13 @@ public:
 class AssDialogueBlockPlain : public AssDialogueBlock {
 public:
 	using AssDialogueBlock::text;
-	AssBlockType GetType() const override { return BLOCK_PLAIN; }
+	AssBlockType GetType() const override { return AssBlockType::PLAIN; }
 	AssDialogueBlockPlain(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 };
 
 class AssDialogueBlockComment : public AssDialogueBlock {
 public:
-	AssBlockType GetType() const override { return BLOCK_COMMENT; }
+	AssBlockType GetType() const override { return AssBlockType::COMMENT; }
 	AssDialogueBlockComment(std::string const& text = std::string()) : AssDialogueBlock("{" + text + "}") { }
 };
 
@@ -99,7 +99,7 @@ class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
 	int Scale;
 
-	AssBlockType GetType() const override { return BLOCK_DRAWING; }
+	AssBlockType GetType() const override { return AssBlockType::DRAWING; }
 	AssDialogueBlockDrawing(std::string const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
@@ -110,7 +110,7 @@ public:
 
 	std::vector<AssOverrideTag> Tags;
 
-	AssBlockType GetType() const override { return BLOCK_OVERRIDE; }
+	AssBlockType GetType() const override { return AssBlockType::OVERRIDE; }
 	std::string GetText() override;
 	void ParseTags();
 	void AddTag(std::string const& tag);
@@ -154,7 +154,7 @@ public:
 	/// Raw text data
 	boost::flyweight<std::string> Text;
 
-	AssEntryGroup Group() const override { return ENTRY_DIALOGUE; }
+	AssEntryGroup Group() const override { return AssEntryGroup::DIALOGUE; }
 
 	/// Parse text as ASS and return block information
 	std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> ParseTags() const;

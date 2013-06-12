@@ -79,7 +79,7 @@ public:
 
 	const std::string GetEntryData() const override { return data; }
 	std::string GetSSAText() const override;
-	AssEntryGroup Group() const override { return ENTRY_STYLE; }
+	AssEntryGroup Group() const override { return AssEntryGroup::STYLE; }
 	AssEntry *Clone() const override;
 
 	/// Convert an ASS alignment to the equivalent SSA alignment

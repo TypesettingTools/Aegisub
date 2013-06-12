@@ -277,7 +277,7 @@ namespace
 			{
 				switch (b.GetType())
 				{
-					case BLOCK_PLAIN:
+					case AssBlockType::PLAIN:
 					// find special characters and convert them
 					{
 						std::string text = b.GetText();
@@ -319,7 +319,7 @@ namespace
 					}
 					break;
 
-					case BLOCK_OVERRIDE:
+					case AssBlockType::OVERRIDE:
 					// find relevant tags and process them
 					{
 						AssDialogueBlockOverride *ob = static_cast<AssDialogueBlockOverride*>(&b);

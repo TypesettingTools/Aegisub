@@ -119,8 +119,8 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 		// Check if the file has at least one style and at least one dialogue line
 		for (auto const& line : temp.Line) {
 			AssEntryGroup type = line.Group();
-			if (type == ENTRY_STYLE) found_style = true;
-			if (type == ENTRY_DIALOGUE) found_dialogue = true;
+			if (type == AssEntryGroup::STYLE) found_style = true;
+			if (type == AssEntryGroup::DIALOGUE) found_dialogue = true;
 			if (found_style && found_dialogue) break;
 		}
 

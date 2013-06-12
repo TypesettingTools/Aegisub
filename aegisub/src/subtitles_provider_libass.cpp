@@ -125,7 +125,7 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	data.clear();
 	data.reserve(0x4000);
 
-	AssEntryGroup group = ENTRY_GROUP_MAX;
+	AssEntryGroup group = AssEntryGroup::GROUP_MAX;
 	for (auto const& line : subs->Line) {
 		if (group != line.Group()) {
 			group = line.Group();

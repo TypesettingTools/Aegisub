@@ -37,13 +37,13 @@
 #include <boost/intrusive/list_hook.hpp>
 #include <string>
 
-enum AssEntryGroup {
-	ENTRY_INFO = 0,
-	ENTRY_STYLE,
-	ENTRY_FONT,
-	ENTRY_GRAPHIC,
-	ENTRY_DIALOGUE,
-	ENTRY_GROUP_MAX
+enum class AssEntryGroup {
+	INFO = 0,
+	STYLE,
+	FONT,
+	GRAPHIC,
+	DIALOGUE,
+	GROUP_MAX
 };
 
 class AssEntry : public boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type {

@@ -26,7 +26,7 @@ class AssParser {
 	int version;
 	std::unique_ptr<AssAttachment> attach;
 	void (AssParser::*state)(std::string const&);
-	std::array<AssEntry*, ENTRY_GROUP_MAX> insertion_positions;
+	std::array<AssEntry*, (size_t)AssEntryGroup::GROUP_MAX> insertion_positions;
 
 	void InsertLine(AssEntry *entry);
 

@@ -88,14 +88,14 @@ void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 #endif
 
 static inline std::string format(AssEntryGroup group, bool ssa) {
-	if (group == ENTRY_DIALOGUE) {
+	if (group == AssEntryGroup::DIALOGUE) {
 		if (ssa)
 			return "Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text" LINEBREAK;
 		else
 			return "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text" LINEBREAK;
 	}
 
-	if (group == ENTRY_STYLE) {
+	if (group == AssEntryGroup::STYLE) {
 		if (ssa)
 			return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding" LINEBREAK;
 		else
@@ -113,7 +113,7 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	file.WriteLineToFile("; http://www.aegisub.org/");
 
 	bool ssa = agi::fs::HasExtension(filename, "ssa");
-	AssEntryGroup group = ENTRY_INFO;
+	AssEntryGroup group = AssEntryGroup::INFO;
 
 	for (auto const& line : src->Line) {
 		if (line.Group() != group) {

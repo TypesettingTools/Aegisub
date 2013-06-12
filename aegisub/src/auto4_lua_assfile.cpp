@@ -119,10 +119,10 @@ namespace {
 	{
 		switch (e->Group())
 		{
-			case ENTRY_DIALOGUE: return AssFile::COMMIT_DIAG_ADDREM;
-			case ENTRY_STYLE:    return AssFile::COMMIT_STYLES;
-			case ENTRY_FONT:     return AssFile::COMMIT_ATTACHMENT;
-			case ENTRY_GRAPHIC:  return AssFile::COMMIT_ATTACHMENT;
+			case AssEntryGroup::DIALOGUE: return AssFile::COMMIT_DIAG_ADDREM;
+			case AssEntryGroup::STYLE:    return AssFile::COMMIT_STYLES;
+			case AssEntryGroup::FONT:     return AssFile::COMMIT_ATTACHMENT;
+			case AssEntryGroup::GRAPHIC:  return AssFile::COMMIT_ATTACHMENT;
 			default:             return AssFile::COMMIT_SCRIPTINFO;
 		}
 	}
