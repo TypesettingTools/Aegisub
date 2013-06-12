@@ -34,14 +34,10 @@
 
 #include "config.h"
 
-#include <wx/bmpbuttn.h>
 #include <wx/combobox.h>
-#include <wx/rawbmp.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/textctrl.h>
-#include <wx/tglbtn.h>
 #include <wx/toolbar.h>
 
 #include "video_box.h"
@@ -56,9 +52,6 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "selection_controller.h"
-#include "toggle_bitmap.h"
-#include "tooltip_manager.h"
-#include "utils.h"
 #include "video_context.h"
 #include "video_display.h"
 #include "video_slider.h"
@@ -152,9 +145,8 @@ void VideoBox::UpdateTimeBoxes() {
 	}
 
 	AssDialogue *active_line = context->selectionController->GetActiveLine();
-	if (!active_line) {
+	if (!active_line)
 		VideoSubsPos->SetValue("");
-	}
 	else {
 		VideoSubsPos->SetValue(wxString::Format(
 			"%+dms; %+dms",
