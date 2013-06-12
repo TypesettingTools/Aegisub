@@ -20,8 +20,8 @@
 
 #include "audio_provider_lock.h"
 
-LockAudioProvider::LockAudioProvider(std::unique_ptr<AudioProvider>&& source)
-: source(std::move(source))
+LockAudioProvider::LockAudioProvider(std::unique_ptr<AudioProvider>&& src)
+: source(std::move(src))
 {
 	channels = source->GetChannels();
 	num_samples = source->GetNumSamples();
