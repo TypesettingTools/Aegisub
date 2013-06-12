@@ -25,7 +25,6 @@
 
 #include "subtitle_format_ebu3264.h"
 
-#include "aegisub_endian.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -491,7 +490,7 @@ namespace
 			// construct a base block that can be copied and filled
 			BlockTTI base;
 			base.sgn = sub.group_number;
-			base.sn = Endian::MachineToLittle(subtitle_number++);
+			base.sn = subtitle_number++;
 			base.ebn = 255;
 			base.cf = sub.comment_flag;
 			memset(base.tf, EBU_FORMAT_UNUSED_SPACE, sizeof(base.tf));

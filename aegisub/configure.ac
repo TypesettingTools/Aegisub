@@ -51,14 +51,6 @@ AC_SUBST(build_linux)
 AC_SUBST(build_darwin)
 AC_SUBST(build_default)
 
-# Handle endianess.
-AC_C_BIGENDIAN(
-  AC_DEFINE([HAVE_BIG_ENDIAN], [1], [Big Endian]),
-  AC_DEFINE([HAVE_LITTLE_ENDIAN], [1], [Little Endian]),
-  AC_DEFINE([HAVE_DYNAMIC_ENDIAN], [1], [Unknown endian]),
-  AC_DEFINE([HAVE_UNIVERSAL_ENDIAN], [1], [Universal Endian (MAC Universal PPC/Intel Binaries, uses HAVE_DYNAMIC_ENDIAN)])
-)
-
 ########################
 # Configurable variables
 ########################

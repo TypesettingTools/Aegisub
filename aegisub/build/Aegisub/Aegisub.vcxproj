@@ -89,7 +89,6 @@
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)MatroskaParser.h" />
-    <ClInclude Include="$(SrcDir)aegisub_endian.h" />
     <ClInclude Include="$(SrcDir)aegisublocale.h" />
     <ClInclude Include="$(SrcDir)agi_pre.h" />
     <ClInclude Include="$(SrcDir)ass_attachment.h" />

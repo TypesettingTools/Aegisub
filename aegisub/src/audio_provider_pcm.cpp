@@ -36,7 +36,6 @@
 
 #include "audio_provider_pcm.h"
 
-#include "aegisub_endian.h"
 #include "audio_controller.h"
 #include "utils.h"
 
@@ -270,7 +269,7 @@ public:
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
-		uint32_t data_left = Endian::LittleToMachine(header.ch.size) - 4;
+		uint32_t data_left = header.ch.size - 4;
 		// How far into the file we have processed.
 		// Must be incremented by the riff chunk size fields.
 		uint32_t filepos = sizeof(header);
@@ -294,13 +293,13 @@ public:
 
 				fmtChunk &fmt = *(fmtChunk*)EnsureRangeAccessible(filepos, sizeof(fmtChunk));
 
-				if (Endian::LittleToMachine(fmt.compression) != 1)
+				if (fmt.compression != 1)
 					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", 0);
 
 				// Set stuff inherited from the AudioProvider class
-				sample_rate = Endian::LittleToMachine(fmt.samplerate);
-				channels = Endian::LittleToMachine(fmt.channels);
-				bytes_per_sample = (Endian::LittleToMachine(fmt.significant_bits_sample) + 7) / 8; // round up to nearest whole byte
+				sample_rate = fmt.samplerate;
+				channels = fmt.channels;
+				bytes_per_sample = (fmt.significant_bits_sample + 7) / 8; // round up to nearest whole byte
 			}
 
 			else if (CheckFourcc(ch.type, "data")) {
@@ -309,7 +308,7 @@ public:
 
 				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", 0);
 
-				int64_t samples = Endian::LittleToMachine(ch.size) / bytes_per_sample;
+				int64_t samples = ch.size / bytes_per_sample;
 				int64_t frames = samples / channels;
 
 				IndexPoint ip;
@@ -325,17 +324,9 @@ public:
 
 			// Update counters
 			// Make sure they're word aligned
-			data_left -= (Endian::LittleToMachine(ch.size) + 1) & ~1;
-			filepos += (Endian::LittleToMachine(ch.size) + 1) & ~1;
+			data_left -= (ch.size + 1) & ~1;
+			filepos += (ch.size + 1) & ~1;
 		}
-	}
-
-	bool AreSamplesNativeEndian() const {
-		// 8 bit samples don't consider endianness
-		if (bytes_per_sample < 2) return true;
-		// Otherwise test whether we're little endian
-		uint32_t testvalue = 0x008800ff;
-		return testvalue == Endian::LittleToMachine(testvalue);
 	}
 };
 
@@ -424,7 +415,7 @@ public:
 			throw agi::AudioDataNotFoundError("File is not a Wave64 WAVE file", 0);
 
 		// Count how much more data we can have in the entire file
-		uint64_t data_left = Endian::LittleToMachine(header.file_size) - sizeof(RiffChunk);
+		uint64_t data_left = header.file_size - sizeof(RiffChunk);
 		// How far into the file we have processed.
 		// Must be incremented by the riff chunk size fields.
 		uint64_t filepos = sizeof(header);
@@ -437,7 +428,7 @@ public:
 		// Continue reading chunks until out of data
 		while (data_left) {
 			uint8_t *chunk_guid = (uint8_t*)EnsureRangeAccessible(filepos, 16);
-			uint64_t chunk_size = Endian::LittleToMachine(*(uint64_t*)EnsureRangeAccessible(filepos+16, sizeof(uint64_t)));
+			uint64_t chunk_size = *(uint64_t*)EnsureRangeAccessible(filepos+16, sizeof(uint64_t));
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
@@ -446,15 +437,15 @@ public:
 				FormatChunk &fmt = *(FormatChunk*)EnsureRangeAccessible(filepos, sizeof(FormatChunk));
 				got_fmt_header = true;
 
-				if (Endian::LittleToMachine(fmt.format.wFormatTag) == 3)
+				if (fmt.format.wFormatTag == 3)
 					throw agi::AudioProviderOpenError("File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.", 0);
-				if (Endian::LittleToMachine(fmt.format.wFormatTag) != 1)
+				if (fmt.format.wFormatTag != 1)
 					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", 0);
 
 				// Set stuff inherited from the AudioProvider class
-				sample_rate = Endian::LittleToMachine(fmt.format.nSamplesPerSec);
-				channels = Endian::LittleToMachine(fmt.format.nChannels);
-				bytes_per_sample = (Endian::LittleToMachine(fmt.format.wBitsPerSample) + 7) / 8; // round up to nearest whole byte
+				sample_rate = fmt.format.nSamplesPerSec;
+				channels = fmt.format.nChannels;
+				bytes_per_sample = (fmt.format.wBitsPerSample + 7) / 8; // round up to nearest whole byte
 			}
 			else if (CheckGuid(chunk_guid, w64Guiddata)) {
 				if (!got_fmt_header)
@@ -477,14 +468,6 @@ public:
 			data_left -= (chunk_size + 7) & ~7;
 			filepos += (chunk_size + 7) & ~7;
 		}
-	}
-
-	bool AreSamplesNativeEndian() const {
-		// 8 bit samples don't consider endianness
-		if (bytes_per_sample < 2) return true;
-		// Otherwise test whether we're little endian
-		uint32_t testvalue = 0x008800ff;
-		return testvalue == Endian::LittleToMachine(testvalue);
 	}
 };
 

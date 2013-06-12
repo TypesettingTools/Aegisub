@@ -52,10 +52,6 @@ class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 public:
 	FFmpegSourceAudioProvider(agi::fs::path const& filename);
 
-	/// @brief Checks sample endianness
-	/// @return Returns true.
-	/// FFMS always delivers native endian samples.
-	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }
 };
 #endif

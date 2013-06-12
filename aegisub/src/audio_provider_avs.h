@@ -48,7 +48,6 @@ class AvisynthAudioProvider : public AudioProvider {
 public:
 	AvisynthAudioProvider(agi::fs::path const& filename);
 
-	bool AreSamplesNativeEndian() const { return true; }
 	bool NeedsCache() const { return true; }
 };
 #endif

@@ -48,13 +48,10 @@ class RAMAudioProvider : public AudioProvider {
 #else
 	boost::container::stable_vector<std::array<char, 1 << 22>> blockcache;
 #endif
-	bool samples_native_endian;
 
 	void FillCache(AudioProvider *source, agi::ProgressSink *ps);
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
 	RAMAudioProvider(std::unique_ptr<AudioProvider>&& source, agi::BackgroundRunner *br);
-
-	bool AreSamplesNativeEndian() const { return samples_native_endian; }
 };

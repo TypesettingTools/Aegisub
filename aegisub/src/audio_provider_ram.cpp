@@ -47,7 +47,6 @@
 #define CacheBlockSize (1 << CacheBits)
 
 RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider>&& src, agi::BackgroundRunner *br) {
-
 	try {
 		blockcache.resize((src->GetNumSamples() * src->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 	}
@@ -56,7 +55,6 @@ RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider>&& src, agi::Ba
 	}
 
 	// Copy parameters
-	samples_native_endian = src->AreSamplesNativeEndian();
 	bytes_per_sample = src->GetBytesPerSample();
 	num_samples = src->GetNumSamples();
 	channels = src->GetChannels();

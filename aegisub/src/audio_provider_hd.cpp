@@ -85,15 +85,11 @@ public:
 		IndexPoint p = { 0, 0, num_samples };
 		index_points.push_back(p);
 	}
-
-	bool AreSamplesNativeEndian() const { return true; }
 };
 
 }
 
 HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider>&& src, agi::BackgroundRunner *br) {
-	assert(src->AreSamplesNativeEndian()); // Byteswapping should be done before caching
-
 	bytes_per_sample = src->GetBytesPerSample();
 	num_samples      = src->GetNumSamples();
 	channels         = src->GetChannels();

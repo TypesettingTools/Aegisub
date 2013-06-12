@@ -23,7 +23,6 @@
 
 #include "audio_provider_convert.h"
 
-#include "aegisub_endian.h"
 #include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
 
@@ -47,7 +46,6 @@ public:
 		float_samples = source->AreSamplesFloat();
 	}
 
-	bool AreSamplesNativeEndian() const { return true; }
 	agi::fs::path GetFilename() const { return source->GetFilename(); }
 };
 
@@ -55,13 +53,11 @@ public:
 template<class Target>
 class BitdepthConvertAudioProvider : public AudioProviderConverter {
 	int src_bytes_per_sample;
-	bool src_is_native_endian;
 public:
 	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
 		if (bytes_per_sample > 8)
 			throw agi::AudioProviderOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported", 0);
 
-		src_is_native_endian = source->AreSamplesNativeEndian();
 		src_bytes_per_sample = bytes_per_sample;
 		bytes_per_sample = sizeof(Target);
 	}
@@ -81,22 +77,8 @@ public:
 			// while everything else is assumed to be signed with zero bias
 			if (src_bytes_per_sample == 1)
 				*sample_ptr = static_cast<uint8_t>(*src) - 127;
-			else if (src_is_native_endian) {
-#ifdef HAVE_LITTLE_ENDIAN
+			else
 				memcpy(sample_ptr, src, src_bytes_per_sample);
-#else
-				memcpy(sample_ptr + sizeof(int64_t) - src_bytes_per_sample, src, src_bytes_per_sample);
-#endif
-			}
-			else {
-				for (int byte_index = 0; i < src_bytes_per_sample; ++i) {
-#ifdef HAVE_LITTLE_ENDIAN
-					sample_ptr[byte_index] = src[src_bytes_per_sample - byte_index - 1];
-#else
-					sample_ptr[sizeof(int64_t) - byte_index - 1] = src[byte_index];
-#endif
-				}
-			}
 
 			if (static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
 				sample >>= (src_bytes_per_sample - sizeof(Target)) * 8;
@@ -113,8 +95,6 @@ template<class Source, class Target>
 class FloatConvertAudioProvider : public AudioProviderConverter {
 public:
 	FloatConvertAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
-		if (!source->AreSamplesNativeEndian())
-			throw agi::AudioProviderOpenError("Audio format converter: Float audio with non-native endianness is currently unsupported.", 0);
 		bytes_per_sample = sizeof(Target);
 		float_samples = false;
 	}
@@ -221,7 +201,7 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 		else
 			provider = agi::util::make_unique<FloatConvertAudioProvider<double, int16_t>>(std::move(provider));
 	}
-	if (provider->GetBytesPerSample() != 2 || !provider->AreSamplesNativeEndian()) {
+	if (provider->GetBytesPerSample() != 2) {
 		LOG_D("audio_provider") << "Converting " << provider->GetBytesPerSample() << " bytes per sample or wrong endian to S16";
 		provider = agi::util::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
 	}

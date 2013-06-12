@@ -37,7 +37,6 @@
 #ifdef WITH_FFMS2
 #include "video_provider_ffmpegsource.h"
 
-#include "aegisub_endian.h"
 #include "compat.h"
 #include "options.h"
 #include "utils.h"

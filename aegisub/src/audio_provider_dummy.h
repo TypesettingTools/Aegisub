@@ -40,6 +40,4 @@ class DummyAudioProvider : public AudioProvider {
 
 public:
 	DummyAudioProvider(agi::fs::path const& uri);
-
-	bool AreSamplesNativeEndian() const { return true; }
 };

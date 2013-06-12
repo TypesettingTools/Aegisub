@@ -71,7 +71,6 @@ public:
 
 	/// @brief Does this provider benefit from external caching?
 	virtual bool NeedsCache() const { return false; }
-	virtual bool AreSamplesNativeEndian() const = 0;
 };
 
 class AudioProviderFactory : public Factory1<AudioProvider, agi::fs::path> {

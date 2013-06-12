@@ -255,9 +255,6 @@
     <ClInclude Include="$(SrcDir)audio_player_portaudio.h">
       <Filter>Audio\Players</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)aegisub_endian.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)block_cache.h">
       <Filter>Utilities</Filter>
     </ClInclude>

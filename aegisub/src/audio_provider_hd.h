@@ -56,6 +56,4 @@ class HDAudioProvider : public AudioProvider {
 public:
 	HDAudioProvider(std::unique_ptr<AudioProvider>&& source, agi::BackgroundRunner *br);
 	~HDAudioProvider();
-
-	bool AreSamplesNativeEndian() const { return true; }
 };
