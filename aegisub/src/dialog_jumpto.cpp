@@ -34,12 +34,6 @@
 
 #include "config.h"
 
-#include <wx/button.h>
-#include <wx/dialog.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-
 #include "dialog_jumpto.h"
 
 #include "include/aegisub/context.h"
@@ -49,6 +43,11 @@
 #include "validators.h"
 #include "video_context.h"
 
+#include <wx/button.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+
 DialogJumpTo::DialogJumpTo(agi::Context *c)
 : wxDialog(c->parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS)
 , c(c)
@@ -56,15 +55,11 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 {
 	SetIcon(GETICON(jumpto_button_16));
 
-	// Set initial values
-	wxString maxLength = wxString::Format("%i",c->videoController->GetLength() - 1);
-
-	// Times
-	wxStaticText *LabelFrame = new wxStaticText(this,-1,_("Frame: "));
-	wxStaticText *LabelTime = new wxStaticText(this,-1,_("Time: "));
+	auto LabelFrame = new wxStaticText(this, -1, _("Frame: "));
+	auto LabelTime = new wxStaticText(this, -1, _("Time: "));
 
 	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, NumValidator((int)jumpframe));
-	JumpFrame->SetMaxLength(maxLength.size());
+	JumpFrame->SetMaxLength(std::to_string(c->videoController->GetLength() - 1).size());
 	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetAssFormated(), wxSize(-1,-1));
 
 	wxGridSizer *TimesSizer = new wxGridSizer(2, 5, 5);
@@ -75,15 +70,12 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	TimesSizer->Add(LabelTime, 1, wxALIGN_CENTER_VERTICAL);
 	TimesSizer->Add(JumpTime, wxEXPAND);
 
-	// Buttons
-	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL);
+	auto ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL);
 
 	// General layout
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
+	auto MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TimesSizer, 0, wxALL | wxALIGN_CENTER, 5);
-	MainSizer->Add(ButtonSizer,0,wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,5);
-
-	// Set sizer
+	MainSizer->Add(ButtonSizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 5);
 	SetSizerAndFit(MainSizer);
 	CenterOnParent();
 

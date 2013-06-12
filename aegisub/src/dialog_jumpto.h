@@ -32,6 +32,8 @@
 /// @ingroup secondary_ui
 ///
 
+#include <wx/dialog.h>
+
 namespace agi { struct Context; }
 class TimeEdit;
 class wxTextCtrl;
