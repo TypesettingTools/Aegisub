@@ -39,7 +39,6 @@
 #include "ass_time.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
-#include "utils.h"
 #include "video_context.h"
 #include "video_provider_manager.h"
 
@@ -48,11 +47,6 @@
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-
-static void make_field(wxWindow *parent, wxSizer *sizer, wxString const& name, wxString const& value) {
-	sizer->Add(new wxStaticText(parent, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
-	sizer->Add(new wxTextCtrl(parent, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
-}
 
 DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 : wxDialog(c->parent , -1, _("Video Details"))
@@ -64,11 +58,15 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	boost::rational<int> ar(width, height);
 
 	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
-	make_field(this, fg, _("File name:"), c->videoController->GetVideoName().wstring());
-	make_field(this, fg, _("FPS:"), wxString::Format("%.3f", fps.FPS()));
-	make_field(this, fg, _("Resolution:"), wxString::Format("%dx%d (%d:%d)", width, height, ar.numerator(), ar.denominator()));
-	make_field(this, fg, _("Length:"), wxString::Format(_("%d frames (%s)"), framecount, to_wx(AssTime(fps.TimeAtFrame(framecount - 1)).GetAssFormated(true))));
-	make_field(this, fg, _("Decoder:"), to_wx(c->videoController->GetProvider()->GetDecoderName()));
+	auto make_field = [&](wxString const& name, wxString const& value) {
+		fg->Add(new wxStaticText(this, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
+		fg->Add(new wxTextCtrl(this, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
+	};
+	make_field(_("File name:"), c->videoController->GetVideoName().wstring());
+	make_field(_("FPS:"), wxString::Format("%.3f", fps.FPS()));
+	make_field(_("Resolution:"), wxString::Format("%dx%d (%d:%d)", width, height, ar.numerator(), ar.denominator()));
+	make_field(_("Length:"), wxString::Format(_("%d frames (%s)"), framecount, to_wx(AssTime(fps.TimeAtFrame(framecount - 1)).GetAssFormated(true))));
+	make_field(_("Decoder:"), to_wx(c->videoController->GetProvider()->GetDecoderName()));
 
 	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Video"));
 	video_sizer->Add(fg);
