@@ -95,7 +95,7 @@ class DialogStyleEditor : public wxDialog {
 	void OnCommandPreviewUpdate(wxCommandEvent &event);
 
 	void OnPreviewTextChange(wxCommandEvent &event);
-	void OnPreviewColourChange(wxCommandEvent &event);
+	void OnPreviewColourChange(wxThreadEvent &event);
 
 	/// @brief Maybe apply changes and maybe close the dialog
 	/// @param apply Should changes be applied?

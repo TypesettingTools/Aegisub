@@ -373,7 +373,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &DialogStyleEditor::OnCommandPreviewUpdate, this);
 	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &DialogStyleEditor::OnCommandPreviewUpdate, this);
 
-	previewButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyleEditor::OnPreviewColourChange, this);
+	previewButton->Bind(EVT_COLOR, &DialogStyleEditor::OnPreviewColourChange, this);
 	FontName->Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogStyleEditor::OnCommandPreviewUpdate, this);
 	PreviewText->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogStyleEditor::OnPreviewTextChange, this);
 
@@ -504,27 +504,18 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 	event.Skip();
 }
 
-/// @brief Change colour of preview's background
-void DialogStyleEditor::OnPreviewColourChange (wxCommandEvent &evt) {
-	ColourButton *btn = static_cast<ColourButton*>(evt.GetClientData());
-	if (!btn)
-		evt.Skip();
-	else {
-		SubsPreview->SetColour(btn->GetColor());
-		OPT_SET("Colour/Style Editor/Background/Preview")->SetColor(btn->GetColor());
-	}
+void DialogStyleEditor::OnPreviewColourChange(wxThreadEvent &evt) {
+	SubsPreview->SetColour(evt.GetPayload<agi::Color>());
+	OPT_SET("Colour/Style Editor/Background/Preview")->SetColor(evt.GetPayload<agi::Color>());
 }
 
-/// @brief Command event to update preview
-void DialogStyleEditor::OnCommandPreviewUpdate (wxCommandEvent &event) {
-	if (!IsShownOnScreen()) return;
+void DialogStyleEditor::OnCommandPreviewUpdate(wxCommandEvent &event) {
 	UpdateWorkStyle();
 	SubsPreview->SetStyle(*work);
 	event.Skip();
 }
 
-/// @brief Converts control value to alignment
-int DialogStyleEditor::ControlToAlign (int n) {
+int DialogStyleEditor::ControlToAlign(int n) {
 	switch (n) {
 		case 0: return 7;
 		case 1: return 8;
@@ -539,8 +530,7 @@ int DialogStyleEditor::ControlToAlign (int n) {
 	}
 }
 
-/// @brief Converts alignment value to control
-int DialogStyleEditor::AlignToControl (int n) {
+int DialogStyleEditor::AlignToControl(int n) {
 	switch (n) {
 		case 7: return 0;
 		case 8: return 1;
