@@ -87,7 +87,7 @@ class LogSink {
 	std::unique_ptr<dispatch::Queue> queue;
 
 	/// List of pointers to emitters
-	std::vector<Emitter*> emitters;
+	std::vector<std::unique_ptr<Emitter>> emitters;
 
 public:
 	LogSink();
@@ -98,9 +98,7 @@ public:
 
 	/// @brief Subscribe an emitter
 	/// @param em Emitter to add
-	///
-	/// LogSink takes ownership of the passed emitter
-	void Subscribe(Emitter *em);
+	void Subscribe(std::unique_ptr<Emitter> em);
 
 	/// @brief Unsubscribe and delete an emitter
 	/// @param em Emitter to delete

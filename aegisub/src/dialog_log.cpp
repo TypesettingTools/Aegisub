@@ -106,7 +106,7 @@ LogWindow::LogWindow(agi::Context *c)
 	sizer->Add(new wxButton(this, wxID_OK), wxSizerFlags(0).Border().Right());
 	SetSizerAndFit(sizer);
 
-	agi::log::log->Subscribe(emit_log = new EmitLog(text_ctrl));
+	agi::log::log->Subscribe(std::unique_ptr<agi::log::Emitter>(emit_log = new EmitLog(text_ctrl)));
 }
 
 LogWindow::~LogWindow() {

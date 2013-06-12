@@ -131,7 +131,7 @@ bool AegisubApp::OnInit() {
 
 	agi::log::log = new agi::log::LogSink;
 #ifdef _DEBUG
-	agi::log::log->Subscribe(new agi::log::EmitSTDOUT());
+	agi::log::log->Subscribe(agi::util::make_unique<agi::log::EmitSTDOUT>());
 #endif
 
 	// Set config file
@@ -155,7 +155,7 @@ bool AegisubApp::OnInit() {
 	StartupLog("Create log writer");
 	auto path_log = config::path->Decode("?user/log/");
 	agi::fs::CreateDirectory(path_log);
-	agi::log::log->Subscribe(new agi::log::JsonEmitter(path_log));
+	agi::log::log->Subscribe(agi::util::make_unique<agi::log::JsonEmitter>(path_log));
 	CleanCache(path_log, "*.json", 10, 100);
 
 	StartupLog("Load user configuration");

@@ -52,33 +52,34 @@ LogSink::LogSink()
 LogSink::~LogSink() {
 	// The destructor for emitters may try to log messages, so disable all the
 	// emitters before destructing any
-	std::vector<Emitter*> emitters_temp;
+	decltype(emitters) emitters_temp;
 	queue->Sync([&]{ swap(emitters_temp, emitters); });
-	util::delete_clear(emitters_temp);
 }
 
 void LogSink::Log(SinkMessage const& sm) {
 	queue->Async([=]{
 		messages.push_back(sm);
-		boost::for_each(emitters, [=](Emitter *em) { em->log(&messages.back()); });
+		for (auto& em : emitters) em->log(&messages.back());
 	});
 }
 
-void LogSink::Subscribe(Emitter *em) {
+void LogSink::Subscribe(std::unique_ptr<Emitter> em) {
 	LOG_D("agi/log/emitter/subscribe") << "Subscribe: " << this;
-	queue->Sync([=] { emitters.push_back(em); });
+	auto tmp = em.release();
+	queue->Sync([=] { emitters.emplace_back(tmp); });
 }
 
 void LogSink::Unsubscribe(Emitter *em) {
 	queue->Sync([=] {
-		emitters.erase(remove(emitters.begin(), emitters.end(), em), emitters.end());
-		delete em;
+		emitters.erase(
+			boost::remove_if(emitters, [=](std::unique_ptr<Emitter> const& e) { return e.get() == em; }),
+			emitters.end());
 	});
 	LOG_D("agi/log/emitter/unsubscribe") << "Un-Subscribe: " << this;
 }
 
 decltype(LogSink::messages) LogSink::GetMessages() const {
-	decltype(LogSink::messages) ret;
+	decltype(messages) ret;
 	queue->Sync([&] { ret = messages; });
 	return ret;
 }

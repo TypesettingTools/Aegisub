@@ -51,20 +51,6 @@ namespace agi {
 	/// based on the unfolded length.
 	std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& needle);
 
-	struct delete_ptr {
-		template<class T>
-		void operator()(T* ptr) const {
-			delete ptr;
-		}
-	};
-	template<class T>
-	void delete_clear(T& container) {
-		if (!container.empty()) {
-			std::for_each(container.begin(), container.end(), delete_ptr());
-			container.clear();
-		}
-	}
-
 	/// Set the name of the calling thread in the Visual Studio debugger
 	/// @param name New name for the thread
 	void SetThreadName(const char *name);
