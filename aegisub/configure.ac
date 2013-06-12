@@ -203,11 +203,6 @@ AS_IF([test x$with_libc__ != xno], [
 ######################################
 # Check Headers / Features / Libraries
 ######################################
-AC_HEADER_STDC
-AC_HEADER_STDBOOL
-AC_C_CONST
-AC_C_INLINE
-AC_C_VOLATILE
 AC_CHECK_LIB([m], [main])
 
 AC_AGI_COMPILE([pragma once], [pragma_once], [], [],[
@@ -491,90 +486,6 @@ AC_SUBST(enable_gcc_prec)
 AC_PCH_FLAG([-Winvalid-pch])
 AC_PCH_FLAG([-fpch-deps])
 AC_PCH_FLAG([-fpch-preprocess])
-
-###########
-# Profiling
-###########
-AC_ARG_VAR([PROFILE_FLAGS], [Profile flag(s) to use with --enable-profile [-pg]])
-
-AC_MSG_CHECKING([whether to turn on profiling])
-AC_ARG_ENABLE(profile, AS_HELP_STRING([--enable-profile],[enable profiling [no]]))
-AS_IF([test x$enable_profile = xyes], [
-  PROFILE_FLAGS=${PROFILE_FLAGS:--pg}
-  AC_MSG_RESULT([yes ($PROFILE_FLAGS)])
-  CFLAGS="$PROFILE_FLAGS $CFLAGS"
-], [
-  enable_profile="no"
-  AC_MSG_RESULT([no])
-])
-
-
-######
-# gcov
-######
-AC_ARG_VAR([GCOV_CFLAGS], [gcov cflag(s) to use with --enable-gcov [-ftest-coverage -fprofile-arcs]])
-AC_ARG_VAR([GCOV_LIBS], [gcov ldflag(s) to use with --enable-gcov [-lgcov]])
-
-AC_MSG_CHECKING([whether to turn on gcov])
-AC_ARG_ENABLE(gcov, AS_HELP_STRING([--enable-gcov],[enable gcov [no]]))
-
-AS_IF([test x$enable_gcov = xyes], [
-  GCOV_CFLAGS=${GCOV_CLFAGS:--fprofile-arcs -ftest-coverage}
-  GCOV_LIBS=${GCOV_LIBS:--lgcov}
-
-  AC_MSG_RESULT([yes ($GCOV_CFLAGS) ($GCOV_LIBS)])
-  CFLAGS="$CFLAGS $GCOV_CFLAGS"
-  LIBS="$LIBS $GCOV_LIBS"
-], [
-  enable_gcov="no"
-  AC_MSG_RESULT([no])
-])
-
-################
-# Electric Fence
-################
-AC_ARG_VAR([EFENCE_LIBS], [Electric Fence ldflag(s) to use with --enable-profile [-lefence]])
-
-AC_MSG_CHECKING([whether to turn on Electric Fence])
-AC_ARG_ENABLE(efence, AS_HELP_STRING([--enable-efence],[enable Electric Fence [no]]))
-AS_IF([test x$enable_efence = xyes], [
-  EFENCE_LIBS=${EFENCE_LIBS:--lefence}
-  AC_MSG_RESULT([yes ($EFENCE_LIBS)])
-], [
-  enable_efence="no"
-  AC_MSG_RESULT([no])
-])
-AC_SUBST(EFENCE_LIBS)
-
-##########
-# ccmalloc
-##########
-AC_ARG_VAR([CCMALLOC_LIBS], [ccmalloc libs(s) to use with --enable-ccmalloc [$prefix/lib/ccmalloc-c++.o]])
-AC_ARG_VAR([CCMALLOC_LDFLAGS], [ccmalloc ldflag(s) to use with --enable-ccmalloc [-lccmalloc]])
-
-AC_MSG_CHECKING([whether to turn on ccmalloc])
-AC_ARG_ENABLE(ccmalloc, AS_HELP_STRING([--enable-ccmalloc],[enable ccmalloc [no]]))
-AS_IF([test x$enable_ccmalloc = xyes], [
-  CCMALLOC_LIBS=${CCMALLOC_LIBS:-$prefix/lib/ccmalloc-c++.o}
-  CCMALLOC_LDFLAGS=${CCMALLOC_LDFLAGS:--lccmalloc}
-  AC_MSG_RESULT([yes ($CCMALLOC_LIBS $CCMALLOC_LDFLAGS)])
-], [
-  enable_ccmalloc="no"
-  AC_MSG_RESULT([no])
-])
-AC_SUBST(CCMALLOC_LDFLAGS)
-AC_SUBST(CCMALLOC_LIBS)
-
-AS_IF([test x$enable_efence = xyes && test x$enable_ccmalloc = xyes],
-      [AC_MSG_FAILURE([Please enable Electric Fence _or_ ccmalloc otherwise strange things will happen.])])
-
-########
-# ccache
-########
-AC_MSG_CHECKING([whether to enable ccache])
-AC_ARG_ENABLE(ccache, AS_HELP_STRING([--enable-ccache],[enable ccache [no]]))
-AC_MSG_RESULT(${enable_ccache:=no})
-AC_SUBST(enable_ccache)
 
 ##############################
 # Internationalisation support
