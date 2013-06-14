@@ -38,11 +38,5 @@ class SubtitlesGrid: public BaseGrid {
 public:
 	SubtitlesGrid(wxWindow *parent, agi::Context *context);
 
-	/// @brief Adjoins selected lines, setting each line's start time to the previous line's end time
-	/// @param n1       First line to adjoin
-	/// @param n2       Last line to adjoin
-	/// @param setStart Set the start times (rather than end times)
-	void AdjoinLines(int first,int last,bool setStart);
-
 	void RecombineLines();
 };

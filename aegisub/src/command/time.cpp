@@ -69,7 +69,7 @@ namespace {
 		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) {
 			SubtitleSelection sel = c->selectionController->GetSelectedSet();
-			if (sel.size() < 2) return false;
+			if (sel.size() < 2) return !sel.empty();
 
 			size_t found = 0;
 			for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
@@ -87,6 +87,34 @@ namespace {
 /// @defgroup cmd-time Time manipulation commands.
 /// @{
 
+static void adjoin_lines(agi::Context *c, bool set_start) {
+	auto sel = c->selectionController->GetSelectedSet();
+	AssDialogue *prev = nullptr;
+	size_t seen = 0;
+	bool prev_sel = false;
+	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+		bool cur_sel = !!sel.count(diag);
+		if (prev) {
+			// One row selections act as if the previous or next line was selected
+			if (set_start && cur_sel && (sel.size() == 1 || prev_sel))
+				diag->Start = prev->End;
+			else if (!set_start && prev_sel && (cur_sel || sel.size() == 1))
+				prev->End = diag->Start;
+		}
+
+		if (seen == sel.size())
+			break;
+
+		if (cur_sel)
+			++seen;
+
+		prev = diag;
+		prev_sel = cur_sel;
+	}
+
+	c->ass->Commit(_("adjoin"), AssFile::COMMIT_DIAG_TIME);
+}
+
 /// Changes times of subs so end times begin on next's start time.
 struct time_continuous_end : public validate_adjoinable {
 	CMD_NAME("time/continuous/end")
@@ -95,11 +123,9 @@ struct time_continuous_end : public validate_adjoinable {
 	STR_HELP("Changes times of subs so end times begin on next's start time")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->AdjoinLines(sels.front(), sels.back(), false);
+		adjoin_lines(c, false);
 	}
 };
-
 
 /// Changes times of subs so start times begin on previous's end time.
 struct time_continuous_start : public validate_adjoinable {
@@ -109,10 +135,8 @@ struct time_continuous_start : public validate_adjoinable {
 	STR_HELP("Changes times of subs so start times begin on previous's end time")
 
 	void operator()(agi::Context *c) {
-		wxArrayInt sels = c->subsGrid->GetSelection();
-		c->subsGrid->AdjoinLines(sels.front(), sels.back(), true);
+		adjoin_lines(c, true);
 	}
-
 };
 
 

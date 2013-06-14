@@ -151,39 +151,3 @@ void SubtitlesGrid::RecombineLines() {
 
 	context->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
-
-void SubtitlesGrid::AdjoinLines(int n1,int n2,bool setStart) {
-	if (n1 == n2) {
-		if (setStart) {
-			--n1;
-		}
-		else {
-			++n2;
-		}
-	}
-	// Set start
-	if (setStart) {
-		AssDialogue *prev = GetDialogue(n1);
-		AssDialogue *cur;
-		for (int i=n1+1;i<=n2;i++) {
-			cur = GetDialogue(i);
-			if (!cur) return;
-			cur->Start = prev->End;
-			prev = cur;
-		}
-	}
-
-	// Set end
-	else {
-		AssDialogue *next;
-		AssDialogue *cur = GetDialogue(n1);
-		for (int i=n1;i<n2;i++) {
-			next = GetDialogue(i+1);
-			if (!next) return;
-			cur->End = next->Start;
-			cur = next;
-		}
-	}
-
-	context->ass->Commit(_("adjoin"), AssFile::COMMIT_DIAG_TIME);
-}
