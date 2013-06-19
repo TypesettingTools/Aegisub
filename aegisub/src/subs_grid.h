@@ -37,6 +37,4 @@
 class SubtitlesGrid: public BaseGrid {
 public:
 	SubtitlesGrid(wxWindow *parent, agi::Context *context);
-
-	void RecombineLines();
 };

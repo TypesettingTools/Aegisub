@@ -61,10 +61,9 @@
 #include <libaegisub/util.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/range/algorithm.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/sliced.hpp>
@@ -826,6 +825,40 @@ struct edit_line_paste_over : public Command {
 	}
 };
 
+namespace {
+std::string trim_text(std::string text) {
+	boost::regex start("^( |\t|\\\\[nNh])+");
+	boost::regex end("( |\t|\\\\[nNh])+$");
+
+	regex_replace(text, start, "", boost::format_first_only);
+	regex_replace(text, end, "", boost::format_first_only);
+	return text;
+}
+
+void expand_times(AssDialogue *src, AssDialogue *dst) {
+	dst->Start = std::min(dst->Start, src->Start);
+	dst->End = std::max(dst->End, src->End);
+}
+
+bool check_lines(AssDialogue *d1, AssDialogue *d2, bool (*pred)(std::string const&, std::string const&)) {
+	if (pred(d1->Text.get(), d2->Text.get())) {
+		d1->Text = trim_text(d1->Text.get().substr(d2->Text.get().size()));
+		expand_times(d1, d2);
+		return true;
+	}
+	return false;
+}
+
+bool check_start(AssDialogue *d1, AssDialogue *d2) {
+	return check_lines(d1, d2, &boost::starts_with<std::string, std::string>);
+}
+
+bool check_end(AssDialogue *d1, AssDialogue *d2) {
+	return check_lines(d1, d2, &boost::ends_with<std::string, std::string>);
+}
+
+}
+
 /// Recombine subtitles when they have been split and merged.
 struct edit_line_recombine : public validate_sel_multiple {
 	CMD_NAME("edit/line/recombine")
@@ -834,7 +867,71 @@ struct edit_line_recombine : public validate_sel_multiple {
 	STR_HELP("Recombine subtitles when they have been split and merged")
 
 	void operator()(agi::Context *c) {
-		c->subsGrid->RecombineLines();
+		auto sel_set = c->selectionController->GetSelectedSet();
+		if (sel_set.size() < 2) return;
+
+		auto active_line = c->selectionController->GetActiveLine();
+
+		std::vector<AssDialogue*> sel(sel_set.begin(), sel_set.end());
+		boost::sort(sel, &AssFile::CompStart);
+		for (auto &diag : sel)
+			diag->Text = trim_text(diag->Text);
+
+		auto end = sel.end() - 1;
+		for (auto cur = sel.begin(); cur != end; ++cur) {
+			auto d1 = *cur;
+			auto d2 = cur + 1;
+
+			// 1, 1+2 (or 2+1), 2 gets turned into 1, 2, 2 so kill the duplicate
+			if (d1->Text == (*d2)->Text) {
+				expand_times(d1, *d2);
+				delete d1;
+				continue;
+			}
+
+			// 1, 1+2, 1 turns into 1, 2, [empty]
+			if (d1->Text.get().empty()) {
+				delete d1;
+				continue;
+			}
+
+			// If d2 is the last line in the selection it'll never hit the above test
+			if (d2 == end && (*d2)->Text.get().empty()) {
+				delete *d2;
+				continue;
+			}
+
+			// 1, 1+2
+			while (d2 <= end && check_start(*d2, d1))
+				++d2;
+
+			// 1, 2+1
+			while (d2 <= end && check_end(*d2, d1))
+				++d2;
+
+			// 1+2, 2
+			while (d2 <= end && check_end(d1, *d2))
+				++d2;
+
+			// 2+1, 2
+			while (d2 <= end && check_start(d1, *d2))
+				++d2;
+		}
+
+		// Remove now non-existent lines from the selection
+		SubtitleSelection lines, new_sel;
+		boost::copy(c->ass->Line | agi::of_type<AssDialogue>(), inserter(lines, lines.begin()));
+		boost::set_intersection(lines, sel_set, inserter(new_sel, new_sel.begin()));
+
+		if (new_sel.empty())
+			new_sel.insert(*lines.begin());
+
+		// Restore selection
+		if (!new_sel.count(active_line))
+			active_line = *new_sel.begin();
+		c->selectionController->SetSelectionAndActive(new_sel, active_line);
+
+		c->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 	}
 };
 
