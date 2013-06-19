@@ -49,7 +49,7 @@ class AegisubApp;
 class AegisubFileDropTarget;
 class AudioBox;
 class AudioProvider;
-class SubtitlesGrid;
+class BaseGrid;
 class VideoBox;
 
 namespace agi { struct Context; class OptionValue; }
@@ -98,7 +98,7 @@ class FrameMain: public wxFrame {
 
 	void EnableToolBar(agi::OptionValue const& opt);
 
-	SubtitlesGrid *SubsGrid; ///< The subtitle editing area
+	BaseGrid *SubsGrid; ///< The subtitle editing area
 	AudioBox *audioBox;      ///< The audio area
 	VideoBox *videoBox;      ///< The video area
 

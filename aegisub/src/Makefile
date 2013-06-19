@@ -214,7 +214,6 @@ SRC += \
 	subs_controller.cpp \
 	subs_edit_box.cpp \
 	subs_edit_ctrl.cpp \
-	subs_grid.cpp \
 	subs_preview.cpp \
 	subtitle_format.cpp \
 	subtitle_format_ass.cpp \

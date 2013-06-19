@@ -49,6 +49,7 @@
 #include "audio_controller.h"
 #include "audio_box.h"
 #include "auto4_base.h"
+#include "base_grid.h"
 #include "compat.h"
 #include "command/command.h"
 #include "dialog_detached_video.h"
@@ -63,7 +64,6 @@
 #include "subs_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "version.h"
 #include "video_box.h"
@@ -366,7 +366,7 @@ void FrameMain::InitContents() {
 	wxPanel *Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create subtitles grid");
-	context->subsGrid = SubsGrid = new SubtitlesGrid(Panel, context.get());
+	context->subsGrid = SubsGrid = new BaseGrid(Panel, context.get(), wxDefaultSize, wxWANTS_CHARS | wxSUNKEN_BORDER);
 	context->selectionController = context->subsGrid;
 	context->search = new SearchReplaceEngine(context.get());
 	context->initialLineState = new InitialLineState(context.get());

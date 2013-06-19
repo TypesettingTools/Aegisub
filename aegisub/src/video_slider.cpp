@@ -34,16 +34,17 @@
 
 #include "config.h"
 
-#include <wx/dcbuffer.h>
-#include <wx/settings.h>
+#include "video_slider.h"
 
+#include "base_grid.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "options.h"
-#include "subs_grid.h"
 #include "utils.h"
 #include "video_context.h"
-#include "video_slider.h"
+
+#include <wx/dcbuffer.h>
+#include <wx/settings.h>
 
 VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)

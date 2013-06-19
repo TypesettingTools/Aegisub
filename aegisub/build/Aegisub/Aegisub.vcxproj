@@ -220,7 +220,6 @@
     <ClInclude Include="$(SrcDir)subs_controller.h" />
     <ClInclude Include="$(SrcDir)subs_edit_box.h" />
     <ClInclude Include="$(SrcDir)subs_edit_ctrl.h" />
-    <ClInclude Include="$(SrcDir)subs_grid.h" />
     <ClInclude Include="$(SrcDir)subs_preview.h" />
     <ClInclude Include="$(SrcDir)subtitle_format.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_ass.h" />
@@ -417,7 +416,6 @@
     <ClCompile Include="$(SrcDir)subs_controller.cpp" />
     <ClCompile Include="$(SrcDir)subs_edit_box.cpp" />
     <ClCompile Include="$(SrcDir)subs_edit_ctrl.cpp" />
-    <ClCompile Include="$(SrcDir)subs_grid.cpp" />
     <ClCompile Include="$(SrcDir)subs_preview.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_ass.cpp" />

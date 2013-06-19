@@ -38,6 +38,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "base_grid.h"
 #include "command/command.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
@@ -48,7 +49,6 @@
 #include "placeholder_ctrl.h"
 #include "scintilla_text_selection_controller.h"
 #include "subs_edit_ctrl.h"
-#include "subs_grid.h"
 #include "timeedit_ctrl.h"
 #include "tooltip_manager.h"
 #include "utils.h"

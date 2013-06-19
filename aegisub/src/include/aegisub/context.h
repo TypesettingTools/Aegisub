@@ -9,7 +9,7 @@ class InitialLineState;
 template<class T> class SelectionController;
 class SubsController;
 class SubsTextEditCtrl;
-class SubtitlesGrid;
+class BaseGrid;
 class TextSelectionController;
 class VideoContext;
 class VideoDisplay;
@@ -42,7 +42,7 @@ struct Context {
 	AudioBox *audioBox;
 	AudioKaraoke *karaoke;
 	DialogManager *dialog;
-	SubtitlesGrid *subsGrid;
+	BaseGrid *subsGrid;
 	VideoDisplay *videoDisplay;
 };
 

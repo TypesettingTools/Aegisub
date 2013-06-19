@@ -47,7 +47,6 @@
 #include "../include/aegisub/context.h"
 #include "../options.h"
 #include "../selection_controller.h"
-#include "../subs_grid.h"
 #include "../video_context.h"
 
 #include <libaegisub/of_type_adaptor.h>
