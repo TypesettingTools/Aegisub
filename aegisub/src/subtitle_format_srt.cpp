@@ -384,13 +384,13 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 					state = STATE_TIMESTAMP;
 					break;
 				}
-				if (regex_match(text_line, timestamp_match, timestamp_regex))
+				if (regex_search(text_line, timestamp_match, timestamp_regex))
 					goto found_timestamps;
 
 				throw SRTParseError(str(boost::format("Parsing SRT: Expected subtitle index at line %d") % line_num), 0);
 
 			case STATE_TIMESTAMP:
-				if (!regex_match(text_line, timestamp_match, timestamp_regex))
+				if (!regex_search(text_line, timestamp_match, timestamp_regex))
 					throw SRTParseError(str(boost::format("Parsing SRT: Expected timestamp pair at line %d") % line_num), 0);
 found_timestamps:
 				if (line) {
@@ -443,7 +443,7 @@ found_timestamps:
 					state = STATE_TIMESTAMP;
 					break;
 				}
-				if (regex_match(text_line, timestamp_match, timestamp_regex))
+				if (regex_search(text_line, timestamp_match, timestamp_regex))
 					goto found_timestamps;
 
 				// assume it's a continuation of the subtitle text
