@@ -51,7 +51,7 @@ namespace Automation4 {
 
 		conv->Convert(&in, &in_bytes, &out, &out_bytes);
 		if (in_bytes > 0 && in != in_buf)
-			file.seekg(-(std::streamoff)in_bytes, std::ios_base::cur);
+			file->seekg(-(std::streamoff)in_bytes, std::ios_base::cur);
 		*bytes_read = out - buf;
 
 		// Skip the bom
