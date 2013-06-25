@@ -70,6 +70,8 @@ Source: src\mo\ja.mo;          DestDir: {app}\locale\ja;    DestName: aegisub.mo
 Source: src\mo\wxstd-ja.mo;    DestDir: {app}\locale\ja;    DestName: wxstd.mo;   Flags: ignoreversion
 Source: src\mo\ko.mo;          DestDir: {app}\locale\ko;    DestName: aegisub.mo; Flags: ignoreversion
 Source: src\mo\wxstd-ko_KR.mo; DestDir: {app}\locale\ko;    DestName: wxstd.mo;   Flags: ignoreversion
+Source: src\mo\nl.mo;          DestDir: {app}\locale\nl;    DestName: aegisub.mo; Flags: ignoreversion
+Source: src\mo\wxstd-nl.mo;    DestDir: {app}\locale\nl;    DestName: wxstd.mo;   Flags: ignoreversion
 Source: src\mo\pt_BR.mo;       DestDir: {app}\locale\pt_BR; DestName: aegisub.mo; Flags: ignoreversion
 Source: src\mo\wxstd-pt_BR.mo; DestDir: {app}\locale\pt_BR; DestName: wxstd.mo;   Flags: ignoreversion
 Source: src\mo\pt_PT.mo;       DestDir: {app}\locale\pt_PT; DestName: aegisub.mo; Flags: ignoreversion
