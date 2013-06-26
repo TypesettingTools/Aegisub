@@ -350,7 +350,10 @@ namespace Automation4 {
 
 				bool TransferFromWindow()
 				{
-					*value = static_cast<wxSpinCtrlDouble*>(GetWindow())->GetValue();
+					wxSpinCtrlDouble *ctrl = static_cast<wxSpinCtrlDouble*>(GetWindow());
+					wxFocusEvent evt;
+					ctrl->OnTextLostFocus(evt);
+					*value = ctrl->GetValue();
 					return true;
 				}
 			};
