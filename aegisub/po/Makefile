@@ -19,6 +19,7 @@ PO = \
 	it.po \
 	ja.po \
 	ko.po \
+	nl.po \
 	pl.po \
 	pt_BR.po \
 	pt_PT.po \
