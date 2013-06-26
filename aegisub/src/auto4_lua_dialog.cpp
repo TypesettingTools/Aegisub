@@ -292,8 +292,10 @@ namespace Automation4 {
 
 				bool TransferFromWindow() {
 					auto ctrl = static_cast<wxSpinCtrlDouble*>(GetWindow());
+#ifndef wxHAS_NATIVE_SPINCTRLDOUBLE
 					wxFocusEvent evt;
 					ctrl->OnTextLostFocus(evt);
+#endif
 					*value = ctrl->GetValue();
 					return true;
 				}
