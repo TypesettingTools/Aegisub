@@ -105,7 +105,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 				if (pos != std::string::npos) {
 					actor = value.substr(0, pos);
 					boost::trim(actor);
-					value.erase(0, pos);
+					value.erase(0, pos + 1);
 				}
 			}
 		}
