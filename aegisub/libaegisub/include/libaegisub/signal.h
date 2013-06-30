@@ -52,10 +52,12 @@ namespace detail {
 /// @class Connection
 /// @brief Object representing a connection to a signal
 class Connection {
-	std::shared_ptr<detail::ConnectionToken> token;
+	std::unique_ptr<detail::ConnectionToken> token;
 public:
 	Connection() { }
+	Connection(Connection&& that) : token(std::move(that.token)) { }
 	Connection(detail::ConnectionToken *token) : token(token) { token->claimed = true; }
+	Connection& operator=(Connection&& that) { token = std::move(that.token); return *this; }
 
 	/// @brief End this connection
 	///
