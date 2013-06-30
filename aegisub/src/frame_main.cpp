@@ -626,7 +626,7 @@ void FrameMain::OnSubtitlesOpen() {
 			}
 			else {
 				int ar = 0;
-				if (agi::util::try_parse(arString.substr(1), &ar) && ar >= 0 && ar < 4)
+				if (agi::util::try_parse(arString, &ar) && ar >= 0 && ar < 4)
 					context->videoController->SetAspectRatio((AspectRatio)ar);
 			}
 
