@@ -63,15 +63,14 @@ public:
 	/// automatically closed when all Connection objects referring to it are
 	/// gone. To temporarily enable or disable a connection, use Block/Unblock
 	/// instead
-	void Disconnect() { if (token.get()) token->Disconnect(); }
+	void Disconnect() { if (token) token->Disconnect(); }
 
 	/// @brief Disable this connection until Unblock is called
-	void Block() { if (token.get()) token->blocked = true; }
+	void Block() { if (token) token->blocked = true; }
 
 	/// @brief Reenable this connection after it was disabled by Block
-	void Unblock() { if (token.get()) token->blocked = false; }
+	void Unblock() { if (token) token->blocked = false; }
 };
-
 /// @class UnscopedConnection
 /// @brief A connection which is not automatically closed
 ///
@@ -144,9 +143,9 @@ namespace detail {
 
 		/// Protected destructor so that we don't need a virtual destructor
 		~SignalBaseImpl() {
-			for (typename SlotMap::iterator cur = slots.begin(); cur != slots.end(); ++cur) {
-				DisconnectToken(cur->first);
-				if (!TokenClaimed(cur->first)) delete cur->first;
+			for (auto& slot : slots) {
+				DisconnectToken(slot.first);
+				if (!TokenClaimed(slot.first)) delete slot.first;
 			}
 		}
 	public:
