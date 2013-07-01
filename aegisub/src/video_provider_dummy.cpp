@@ -37,6 +37,7 @@
 #include "video_provider_dummy.h"
 
 #include "colorspace.h"
+#include "video_frame.h"
 
 #include <libaegisub/color.h>
 #include <libaegisub/fs.h>
@@ -46,18 +47,21 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/format.hpp>
+#include <boost/gil/gil_all.hpp>
 
 void DummyVideoProvider::Create(double fps, int frames, int width, int height, unsigned char red, unsigned char green, unsigned char blue, bool pattern) {
 	this->framecount = frames;
 	this->fps = fps;
 	this->width = width;
 	this->height = height;
-	this->frame = AegiVideoFrame(width, height);
+	data.resize(width * height * 4);
 
-	unsigned char *dst = frame.data;
-	unsigned char colors[2][4] = {
-		{ blue, green, red, 0 },
-		{ 0, 0, 0, 0 }
+	using namespace boost::gil;
+	auto dst = interleaved_view(width, height, (bgra8_pixel_t*)data.data(), 4 * width);
+
+	bgra8_pixel_t colors[2] = {
+		bgra8_pixel_t(blue, green, red, 0),
+		bgra8_pixel_t(blue, green, red, 0)
 	};
 
 	if (pattern) {
@@ -66,20 +70,17 @@ void DummyVideoProvider::Create(double fps, int frames, int width, int height, u
 		rgb_to_hsl(red, blue, green, &h, &s, &l);
 		l += 24;
 		if (l < 24) l -= 48;
-		hsl_to_rgb(h, s, l, &colors[1][2], &colors[1][1], &colors[1][0]);
+		hsl_to_rgb(h, s, l, &red, &blue, &green);
+		colors[1] = bgra8_pixel_t(blue, green, red, 0);
 
 		// Divide into a 8x8 grid and use light colours when row % 2 != col % 2
-		int ppitch = frame.pitch / frame.GetBpp();
-		for (unsigned int y = 0; y < frame.h; ++y) {
-			for (int x = 0; x < ppitch; ++x) {
-				memcpy(dst, colors[((y / 8) & 1) != ((x / 8) & 1)], 4);
-				dst += 4;
-			}
-		}
+		auto out = dst.begin();
+		for (int y = 0; y < height; ++y)
+			for (int x = 0; x < width; ++x)
+				*out++ = colors[((y / 8) & 1) != ((x / 8) & 1)];
 	}
 	else {
-		for (int i = frame.pitch * frame.h / frame.GetBpp() - 1; i >= 0; --i)
-			memcpy(dst + i * 4, colors[0], 4);
+		fill_pixels(dst, colors[0]);
 	}
 }
 
@@ -115,10 +116,10 @@ DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int he
 	Create(fps, frames, width, height, colour.r, colour.g, colour.b, pattern);
 }
 
-DummyVideoProvider::~DummyVideoProvider() {
-	frame.Clear();
-}
-
 std::string DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
 	return str(boost::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s") % fps % frames % width % height % (int)colour.r % (int)colour.g % (int)colour.b % (pattern ? "c" : ""));
+}
+
+std::shared_ptr<VideoFrame> DummyVideoProvider::GetFrame(int) {
+	return std::make_shared<VideoFrame>(data.data(), width, height, width * 4, false);
 }

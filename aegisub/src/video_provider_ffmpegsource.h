@@ -33,11 +33,8 @@
 ///
 
 #ifdef WITH_FFMS2
-#include <vector>
-
 #include "ffmpegsource_common.h"
 #include "include/aegisub/video_provider.h"
-#include "video_frame.h"
 
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
@@ -49,12 +46,9 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 	int Width;                      ///< width in pixels
 	int Height;                     ///< height in pixels
 	double DAR;                     ///< display aspect ratio
-	int FrameNumber;                ///< current framenumber
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
 	std::string ColorSpace;         ///< Colorspace name
-
-	AegiVideoFrame CurFrame;        ///< current video frame
 
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
@@ -64,22 +58,16 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 public:
 	FFmpegSourceVideoProvider(agi::fs::path const& filename);
 
-	const AegiVideoFrame GetFrame(int n);
+	std::shared_ptr<VideoFrame> GetFrame(int n);
 
 	int GetFrameCount() const { return VideoInfo->NumFrames; }
 	int GetWidth() const { return Width; }
 	int GetHeight() const { return Height; }
 	double GetDAR() const { return DAR; }
 	agi::vfr::Framerate GetFPS() const { return Timecodes; }
-
 	std::string GetColorSpace() const { return ColorSpace; }
-
-	/// @brief Gets a list of keyframes
-	/// @return	Returns a wxArrayInt of keyframes.
 	std::vector<int> GetKeyFrames() const { return KeyFramesList; };
 	std::string GetDecoderName() const { return "FFmpegSource"; }
-	/// @brief Gets the desired cache behavior.
-	/// @return Returns true.
 	bool WantsCaching() const { return true; }
 };
 #endif /* WITH_FFMS2 */

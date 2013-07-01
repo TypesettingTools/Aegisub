@@ -33,7 +33,6 @@
 ///
 
 #include "include/aegisub/video_provider.h"
-#include "video_frame.h"
 
 namespace agi { struct Color; }
 
@@ -48,8 +47,8 @@ class DummyVideoProvider : public VideoProvider {
 	int width;               ///< Width in pixels
 	int height;              ///< Height in pixels
 
-	/// The single image which is returned for all frames
-	AegiVideoFrame frame;
+	/// The data for the image returned for all frames
+	std::vector<unsigned char> data;
 
 	/// Create the dummy frame from the given parameters
 	/// @param fps Frame rate of the dummy video
@@ -75,14 +74,12 @@ public:
 	/// @param pattern Use a checkerboard pattern rather than a solid colour
 	DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
-	/// Destructor
-	~DummyVideoProvider();
-
 	/// Make a fake filename which when passed to the constructor taking a
 	/// string will result in a video with the given parameters
 	static std::string MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
-	const AegiVideoFrame GetFrame(int n)  { return frame; }
+	std::shared_ptr<VideoFrame> GetFrame(int n);
+
 	int GetFrameCount()             const { return framecount; }
 	int GetWidth()                  const { return width; }
 	int GetHeight()                 const { return height; }

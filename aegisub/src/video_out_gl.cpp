@@ -265,19 +265,18 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	}
 }
 
-void VideoOutGL::UploadFrameData(const AegiVideoFrame& frame) {
-	if (frame.h == 0 || frame.w == 0) return;
+void VideoOutGL::UploadFrameData(VideoFrame const& frame) {
+	if (frame.height == 0 || frame.width == 0) return;
 
-	GLuint format = frame.invertChannels ? GL_BGRA_EXT : GL_RGBA;
-	InitTextures(frame.w, frame.h, format, frame.GetBpp(), frame.flipped);
+	InitTextures(frame.width, frame.height, GL_BGRA_EXT, 4, frame.flipped);
 
 	// Set the row length, needed to be able to upload partial rows
-	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, frame.pitch / frame.GetBpp()));
+	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, frame.pitch / 4));
 
 	for (auto& ti : textureList) {
 		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
 		CHECK_ERROR(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, ti.sourceW,
-			ti.sourceH, format, GL_UNSIGNED_BYTE, frame.data + ti.dataOffset));
+			ti.sourceH, GL_BGRA_EXT, GL_UNSIGNED_BYTE, &frame.data[ti.dataOffset]));
 	}
 
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));

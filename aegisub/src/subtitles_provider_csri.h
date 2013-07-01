@@ -56,7 +56,7 @@ public:
 	~CSRISubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs);
-	void DrawSubtitles(AegiVideoFrame &dst, double time);
+	void DrawSubtitles(VideoFrame &dst, double time);
 
 	static std::vector<std::string> GetSubTypes();
 };

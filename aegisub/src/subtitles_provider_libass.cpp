@@ -144,8 +144,8 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 #define _b(c) (((c)>>8)&0xFF)
 #define _a(c) ((c)&0xFF)
 
-void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
-	ass_set_frame_size(ass_renderer, frame.w, frame.h);
+void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
+	ass_set_frame_size(ass_renderer, frame.width, frame.height);
 
 	ASS_Image* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), nullptr);
 
@@ -154,7 +154,7 @@ void LibassSubtitlesProvider::DrawSubtitles(AegiVideoFrame &frame,double time) {
 	// This is repeated for all of them.
 
 	using namespace boost::gil;
-	auto dst = interleaved_view(frame.w, frame.h, (bgra8_pixel_t*)frame.data, frame.pitch);
+	auto dst = interleaved_view(frame.width, frame.height, (bgra8_pixel_t*)frame.data.data(), frame.width * 4);
 	if (frame.flipped)
 		dst = flipped_up_down_view(dst);
 

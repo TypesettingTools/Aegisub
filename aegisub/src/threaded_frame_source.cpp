@@ -41,14 +41,11 @@ enum {
 	SUBS_FILE_ALREADY_LOADED = -2
 };
 
-std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, double time, bool raw) {
-	std::shared_ptr<AegiVideoFrame> frame(new AegiVideoFrame, [](AegiVideoFrame *frame) {
-		frame->Clear();
-		delete frame;
-	});
+std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, double time, bool raw) {
+	std::shared_ptr<VideoFrame> frame;
 
 	try {
-		frame->CopyFrom(video_provider->GetFrame(frame_number));
+		frame = video_provider->GetFrame(frame_number);
 	}
 	catch (VideoProviderError const& err) { throw VideoProviderErrorEvent(err); }
 
@@ -193,8 +190,8 @@ void ThreadedFrameSource::ProcAsync(uint_fast32_t req_version) {
 	}
 }
 
-std::shared_ptr<AegiVideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
-	std::shared_ptr<AegiVideoFrame> ret;
+std::shared_ptr<VideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
+	std::shared_ptr<VideoFrame> ret;
 	worker->Sync([&]{
 		ret = ProcFrame(frame, time, raw);
 	});

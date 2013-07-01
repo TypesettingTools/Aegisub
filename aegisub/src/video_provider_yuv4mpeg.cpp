@@ -64,7 +64,6 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 , w (0)
 , h (0)
 , num_frames(-1)
-, cur_fn(-1)
 , pixfmt(Y4M_PIXFMT_NONE)
 , imode(Y4M_ILACE_NOTSET)
 {
@@ -113,7 +112,6 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 		num_frames = IndexFile();
 		if (num_frames <= 0 || seek_table.empty())
 			throw VideoOpenError("Unable to determine file length");
-		cur_fn = 0;
 
 		fseeko(sf, 0, SEEK_SET);
 	}
@@ -123,7 +121,6 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 	}
 }
 
-/// @brief Destructor
 YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
 	fclose(sf);
 }
@@ -347,11 +344,8 @@ static FORCEINLINE int clamp(int x) {
 	return x;
 }
 
-/// @brief	Gets a given frame
-/// @param n	The frame number to return
-/// @return		The video frame
-const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
-	cur_fn = mid(0, n, num_frames - 1);
+std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
+	n = mid(0, n, num_frames - 1);
 
 	int uv_width = w / 2;
 	switch (pixfmt) {
@@ -380,17 +374,12 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 			throw "YUV4MPEG video provider: GetFrame: failed to read chroma planes";
 	}
 
-	AegiVideoFrame dst_frame;
-	dst_frame.invertChannels = true;
-	dst_frame.w = w;
-	dst_frame.h = h;
-	dst_frame.pitch = w * 4;
-	dst_frame.Allocate();
-
 	const unsigned char *src_y = &planes[0][0];
 	const unsigned char *src_u = &planes[1][0];
 	const unsigned char *src_v = &planes[2][0];
-	unsigned char *dst = dst_frame.data;
+	std::vector<unsigned char> data;
+	data.resize(w * h * 4);
+	unsigned char *dst = &data[0];
 
 	for (int py = 0; py < h; ++py) {
 		for (int px = 0; px < w / 2; ++px) {
@@ -413,5 +402,5 @@ const AegiVideoFrame YUV4MPEGVideoProvider::GetFrame(int n) {
 		}
 	}
 
-	return dst_frame;
+	return std::make_shared<VideoFrame>(data.data(), w, h, w * 4, false);
 }

@@ -29,12 +29,12 @@
 
 #include <wx/event.h>
 
-class AegiVideoFrame;
 class AssEntry;
 class AssFile;
 class SubtitlesProvider;
 class VideoProvider;
 class VideoProviderError;
+struct VideoFrame;
 namespace agi { namespace dispatch { class Queue; } }
 
 /// @class ThreadedFrameSource
@@ -61,7 +61,7 @@ class ThreadedFrameSource {
 	/// currently loaded file is out of date.
 	int single_frame;
 
-	std::shared_ptr<AegiVideoFrame> ProcFrame(int frame, double time, bool raw = false);
+	std::shared_ptr<VideoFrame> ProcFrame(int frame, double time, bool raw = false);
 
 	/// Produce a frame if req_version is still the current version
 	void ProcAsync(uint_fast32_t req_version);
@@ -98,7 +98,7 @@ public:
 	/// @brief frame Frame number
 	/// @brief time  Exact start time of the frame in seconds
 	/// @brief raw   Get raw frame without subtitles
-	std::shared_ptr<AegiVideoFrame> GetFrame(int frame, double time, bool raw = false);
+	std::shared_ptr<VideoFrame> GetFrame(int frame, double time, bool raw = false);
 
 	/// Get a reference to the video provider this is using
 	VideoProvider *GetVideoProvider() const { return video_provider.get(); }
@@ -113,11 +113,11 @@ public:
 /// Event which signals that a requested frame is ready
 struct FrameReadyEvent : public wxEvent {
 	/// Frame which is ready
-	std::shared_ptr<AegiVideoFrame> frame;
+	std::shared_ptr<VideoFrame> frame;
 	/// Time which was used for subtitle rendering
 	double time;
 	wxEvent *Clone() const { return new FrameReadyEvent(*this); };
-	FrameReadyEvent(std::shared_ptr<AegiVideoFrame> frame, double time)
+	FrameReadyEvent(std::shared_ptr<VideoFrame> frame, double time)
 	: frame(frame), time(time) { }
 };
 

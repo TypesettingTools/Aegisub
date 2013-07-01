@@ -87,21 +87,21 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	instance = csri_open_file(renderer, tempfile.string().c_str(), nullptr);
 }
 
-void CSRISubtitlesProvider::DrawSubtitles(AegiVideoFrame &dst,double time) {
+void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst,double time) {
 	if (!instance) return;
 
 	csri_frame frame;
 	if (dst.flipped) {
-		frame.planes[0] = dst.data + (dst.h-1) * dst.pitch;
-		frame.strides[0] = -(signed)dst.pitch;
+		frame.planes[0] = dst.data.data() + (dst.height-1) * dst.width * 4;
+		frame.strides[0] = -(signed)dst.width * 4;
 	}
 	else {
-		frame.planes[0] = dst.data;
-		frame.strides[0] = dst.pitch;
+		frame.planes[0] = dst.data.data();
+		frame.strides[0] = dst.width * 4;
 	}
 	frame.pixfmt = CSRI_F_BGR_;
 
-	csri_fmt format = { frame.pixfmt, dst.w, dst.h };
+	csri_fmt format = { frame.pixfmt, dst.width, dst.height };
 
 	std::lock_guard<std::mutex> lock(csri_mutex);
 	if (!csri_request_fmt(instance, &format))

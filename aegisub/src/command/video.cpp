@@ -294,7 +294,7 @@ struct video_frame_copy : public validator_video_loaded {
 	STR_HELP("Copy the currently displayed frame to the clipboard")
 
 	void operator()(agi::Context *c) {
-		SetClipboard(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN())->GetImage(), 24));
+		SetClipboard(wxBitmap(GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN())), 24));
 	}
 };
 
@@ -306,7 +306,7 @@ struct video_frame_copy_raw : public validator_video_loaded {
 	STR_HELP("Copy the currently displayed frame to the clipboard, without the subtitles")
 
 	void operator()(agi::Context *c) {
-		SetClipboard(wxBitmap(c->videoController->GetFrame(c->videoController->GetFrameN(), true)->GetImage(), 24));
+		SetClipboard(wxBitmap(GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN(), true)), 24));
 	}
 };
 
@@ -493,7 +493,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 		path = str(boost::format("%s_%03d_%d.png") % basepath.string() % session_shot_count++ % c->videoController->GetFrameN());
 	} while (agi::fs::FileExists(path));
 
-	c->videoController->GetFrame(c->videoController->GetFrameN(), raw)->GetImage().SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
+	GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN(), raw)).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
 }
 
 /// Save the current video frame, with subtitles (if any)

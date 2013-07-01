@@ -37,16 +37,17 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
 
+#include <memory>
 #include <string>
 
-class AegiVideoFrame;
+struct VideoFrame;
 
 class VideoProvider {
 public:
 	virtual ~VideoProvider() {}
 
 	/// Override this method to actually get frames
-	virtual const AegiVideoFrame GetFrame(int n)=0;
+	virtual std::shared_ptr<VideoFrame> GetFrame(int n)=0;
 
 	// Override the following methods to get video information:
 	virtual int GetFrameCount() const=0;			///< Get total number of frames

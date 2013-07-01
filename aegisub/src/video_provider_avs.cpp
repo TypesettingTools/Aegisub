@@ -38,6 +38,7 @@
 #include "video_provider_avs.h"
 
 #include "options.h"
+#include "video_frame.h"
 
 #include <libaegisub/access.h>
 #include <libaegisub/charset_conv.h>
@@ -53,12 +54,8 @@
 #endif
 
 AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename)
-: last_fnum(-1)
 {
 	agi::acs::CheckFileRead(filename);
-
-	iframe.flipped = true;
-	iframe.invertChannels = true;
 
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
 
@@ -121,12 +118,12 @@ AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename)
 
 		for (size_t i = 0; i < avis.dwLength; i++) {
 			if (AVIStreamIsKeyFrame(ppavi, i))
-				KeyFrames.push_back(i);
+				keyframes.push_back(i);
 		}
 
 		// If every frame is a keyframe then just discard the keyframe data as it's useless
-		if (KeyFrames.size() == (size_t)avis.dwLength)
-			KeyFrames.clear();
+		if (keyframes.size() == (size_t)avis.dwLength)
+			keyframes.clear();
 
 		// Clean up
 stream_release:
@@ -170,10 +167,6 @@ file_exit:
 	}
 }
 
-AvisynthVideoProvider::~AvisynthVideoProvider() {
-	iframe.Clear();
-}
-
 AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	IScriptEnvironment *env = avs.GetEnv();
 	char *videoFilename = env->SaveString(agi::fs::ShortName(filename).c_str());
@@ -181,7 +174,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	// Avisynth file, just import it
 	if (agi::fs::HasExtension(filename, "avs")) {
 		LOG_I("avisynth/video") << "Opening .avs file with Import";
-		decoderName = "Avisynth/Import";
+		decoder_name = "Avisynth/Import";
 		return env->Invoke("Import", videoFilename);
 	}
 
@@ -191,7 +184,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 		try {
 			const char *argnames[2] = { 0, "audio" };
 			AVSValue args[2] = { videoFilename, false };
-			decoderName = "Avisynth/AviSource";
+			decoder_name = "Avisynth/AviSource";
 			return env->Invoke("AviSource", AVSValue(args,2), argnames);
 		}
 		// On Failure, fallback to DSS
@@ -205,7 +198,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	if (agi::fs::HasExtension(filename, "d2v") && env->FunctionExists("Mpeg2Dec3_Mpeg2Source")) {
 		LOG_I("avisynth/video") << "Opening .d2v file with Mpeg2Dec3_Mpeg2Source";
 		auto script = env->Invoke("Mpeg2Dec3_Mpeg2Source", videoFilename);
-		decoderName = "Avisynth/Mpeg2Dec3_Mpeg2Source";
+		decoder_name = "Avisynth/Mpeg2Dec3_Mpeg2Source";
 
 		//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
 		if (env->FunctionExists("SetPlanarLegacyAlignment")) {
@@ -218,7 +211,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	// If that fails, try opening it with DGDecode
 	if (agi::fs::HasExtension(filename, "d2v") && env->FunctionExists("DGDecode_Mpeg2Source")) {
 		LOG_I("avisynth/video") << "Opening .d2v file with DGDecode_Mpeg2Source";
-		decoderName = "DGDecode_Mpeg2Source";
+		decoder_name = "DGDecode_Mpeg2Source";
 		return env->Invoke("Avisynth/Mpeg2Source", videoFilename);
 
 		//note that DGDecode will also have issues like if the version is too
@@ -228,7 +221,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	if (agi::fs::HasExtension(filename, "d2v") && env->FunctionExists("Mpeg2Source")) {
 		LOG_I("avisynth/video") << "Opening .d2v file with other Mpeg2Source";
 		AVSValue script = env->Invoke("Mpeg2Source", videoFilename);
-		decoderName = "Avisynth/Mpeg2Source";
+		decoder_name = "Avisynth/Mpeg2Source";
 
 		//if avisynth is 2.5.7 beta 2 or newer old mpeg2decs will crash without this
 		if (env->FunctionExists("SetPlanarLegacyAlignment"))
@@ -247,7 +240,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	// If DSS2 loaded properly, try using it
 	if (env->FunctionExists("dss2")) {
 		LOG_I("avisynth/video") << "Opening file with DSS2";
-		decoderName = "Avisynth/DSS2";
+		decoder_name = "Avisynth/DSS2";
 		return env->Invoke("DSS2", videoFilename);
 	}
 
@@ -261,7 +254,7 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	if (env->FunctionExists("DirectShowSource")) {
 		const char *argnames[3] = { 0, "video", "audio" };
 		AVSValue args[3] = { videoFilename, true, false };
-		decoderName = "Avisynth/DirectShowSource";
+		decoder_name = "Avisynth/DirectShowSource";
 		warning = "Warning! The file is being opened using Avisynth's DirectShowSource, which has unreliable seeking. Frame numbers might not match the real number. PROCEED AT YOUR OWN RISK!";
 		LOG_I("avisynth/video") << "Opening file with DirectShowSource";
 		return env->Invoke("DirectShowSource", AVSValue(args,3), argnames);
@@ -272,21 +265,10 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	throw VideoNotSupported("No function suitable for opening the video found");
 }
 
-const AegiVideoFrame AvisynthVideoProvider::GetFrame(int n) {
-	if (n == last_fnum) return iframe;
-
+std::shared_ptr<VideoFrame> AvisynthVideoProvider::GetFrame(int n) {
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
 
 	auto frame = RGB32Video->GetFrame(n, avs.GetEnv());
-	iframe.pitch = frame->GetPitch();
-	iframe.w = frame->GetRowSize() / (vi.BitsPerPixel() / 8);
-	iframe.h = frame->GetHeight();
-
-	iframe.Allocate();
-
-	memcpy(iframe.data, frame->GetReadPtr(), iframe.pitch * iframe.h);
-
-	last_fnum = n;
-	return iframe;
+	return std::make_shared<VideoFrame>(frame->GetReadPtr(), frame->GetRowSize() / 4, frame->GetHeight(), frame->GetPitch(), true);
 }
 #endif // HAVE_AVISYNTH

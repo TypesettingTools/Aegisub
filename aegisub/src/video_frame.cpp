@@ -1,146 +1,43 @@
-// Copyright (c) 2007, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file video_frame.cpp
-/// @brief Wrapper around a frame of video data
-/// @ingroup video
-///
-
 #include "config.h"
 
-#include "utils.h"
 #include "video_frame.h"
 
-void AegiVideoFrame::Reset() {
-	// Zero variables
-	data = 0;
-	pitch = 0;
-	memSize = 0;
-	w = 0;
-	h = 0;
+#include <boost/gil/gil_all.hpp>
+#include <wx/image.h>
 
-	// Set properties
-	flipped = false;
-	invertChannels = true;
-	ownMem = true;
+VideoFrame::VideoFrame(const unsigned char *data, size_t width, size_t height, size_t pitch, bool flipped)
+: data(data, data + width * height * 4)
+, width(width)
+, height(height)
+, pitch(pitch)
+, flipped(flipped)
+{
 }
 
-AegiVideoFrame::AegiVideoFrame() {
-	Reset();
-}
+wxImage GetImage(VideoFrame const& frame) {
+	using namespace boost::gil;
 
-/// @brief Create a solid black frame of the request size and format
-/// @param width
-/// @param height
-AegiVideoFrame::AegiVideoFrame(unsigned int width, unsigned int height) {
-	assert(width  > 0 && width  < 10000);
-	assert(height > 0 && height < 10000);
-
-	Reset();
-
-	// Set format
-	w = width;
-	h = height;
-	pitch = w * GetBpp();
-
-	Allocate();
-	memset(data, 0, pitch * height);
-}
-
-void AegiVideoFrame::Allocate() {
-	assert(pitch > 0 && pitch < 10000);
-	assert(w     > 0 && w     < 10000);
-	assert(h     > 0 && h     < 10000);
-
-	unsigned int size = pitch * h;
-
-	// Reallocate, if necessary
-	if (memSize != size || !ownMem) {
-		if (ownMem) {
-			delete[] data;
-		}
-		data = new unsigned char[size];
-		memSize = size;
-	}
-
-	ownMem = true;
-}
-
-void AegiVideoFrame::Clear() {
-	if (ownMem) delete[] data;
-	Reset();
-}
-
-void AegiVideoFrame::CopyFrom(const AegiVideoFrame &source) {
-	w = source.w;
-	h = source.h;
-	pitch = source.pitch;
-	Allocate();
-	memcpy(data, source.data, memSize);
-	flipped = source.flipped;
-	invertChannels = source.invertChannels;
-}
-
-void AegiVideoFrame::SetTo(const unsigned char *source, unsigned int width, unsigned int height, unsigned int pitch) {
-	assert(pitch  > 0 && pitch  < 10000);
-	assert(width  > 0 && width  < 10000);
-	assert(height > 0 && height < 10000);
-
-	ownMem = false;
-	w = width;
-	h = height;
-	// Note that despite this cast, the contents of data should still never be modified
-	data = const_cast<unsigned char*>(source);
-	this->pitch = pitch;
-}
-
-wxImage AegiVideoFrame::GetImage() const {
-	unsigned char *buf = (unsigned char*)malloc(w*h*3);
-	if (!buf) throw std::bad_alloc();
-
-	int Bpp = GetBpp();
-
-	// Convert
-	for (unsigned int y=0;y<h;y++) {
-		unsigned char *dst = buf + y*w*3;
-		const unsigned char *src;
-		if (flipped) src = data + (h-y-1)*pitch;
-		else src = data + y*pitch;
-		for (unsigned int x=0;x<w;x++) {
-			*dst++ = *(src+2);
-			*dst++ = *(src+1);
-			*dst++ = *(src);
-			src += Bpp;
-		}
-	}
-
-	wxImage img(w,h);
-	img.SetData(buf);
+	wxImage img(frame.width, frame.height);
+	auto src = interleaved_view(frame.width, frame.height, (bgra8_pixel_t*)frame.data.data(), frame.pitch);
+	auto dst = interleaved_view(frame.width, frame.height, (rgb8_pixel_t*)img.GetData(), 3 * frame.width);
+	if (frame.flipped)
+		src = flipped_up_down_view(src);
+	copy_and_convert_pixels(src, dst);
 	return img;
 }

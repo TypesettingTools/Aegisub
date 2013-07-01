@@ -45,10 +45,10 @@
 
 #include <wx/timer.h>
 
-class AegiVideoFrame;
 class AssEntry;
 struct SubtitlesProviderErrorEvent;
 class ThreadedFrameSource;
+struct VideoFrame;
 class VideoProvider;
 struct VideoProviderErrorEvent;
 
@@ -176,7 +176,7 @@ public:
 	/// @param n Frame number to get
 	/// @param raw If true, subtitles are not rendered on the frame
 	/// @return The requested frame
-	std::shared_ptr<AegiVideoFrame> GetFrame(int n, bool raw = false);
+	std::shared_ptr<VideoFrame> GetFrame(int n, bool raw = false);
 
 	/// Asynchronously get a video frame, triggering a EVT_FRAME_READY event when it's ready
 	/// @param n Frame number to get

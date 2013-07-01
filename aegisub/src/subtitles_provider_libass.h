@@ -47,7 +47,7 @@ public:
 	~LibassSubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs);
-	void DrawSubtitles(AegiVideoFrame &dst, double time);
+	void DrawSubtitles(VideoFrame &dst, double time);
 
 	static void CacheFonts();
 };

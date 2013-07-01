@@ -108,7 +108,6 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 	int frame_sz;	/// size of each frame in bytes
 	int luma_sz;	/// size of the luma plane of each frame, in bytes
 	int chroma_sz;	/// size of one of the two chroma planes of each frame, in bytes
-	int cur_fn;		/// current frame number
 
 	Y4M_PixelFormat pixfmt;		/// colorspace/pixel format
 	Y4M_InterlacingMode imode;	/// interlacing mode (for the entire stream)
@@ -133,7 +132,7 @@ public:
 	YUV4MPEGVideoProvider(agi::fs::path const& filename);
 	~YUV4MPEGVideoProvider();
 
-	const AegiVideoFrame GetFrame(int n);
+	std::shared_ptr<VideoFrame> GetFrame(int n);
 
 	int GetFrameCount() const             { return num_frames; }
 	int GetWidth() const                  { return w; }

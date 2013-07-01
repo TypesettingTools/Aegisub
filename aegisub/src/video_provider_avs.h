@@ -35,40 +35,37 @@
 #ifdef WITH_AVISYNTH
 #include "include/aegisub/video_provider.h"
 
+#define VideoFrame AVSVideoFrame
 #include "avisynth.h"
+#undef VideoFrame
 #include "avisynth_wrap.h"
-#include "video_frame.h"
 
 class AvisynthVideoProvider: public VideoProvider {
 	AviSynthWrapper avs;
-	AegiVideoFrame iframe;
-	std::string decoderName;
+	std::string decoder_name;
 	agi::vfr::Framerate fps;
-	std::vector<int> KeyFrames;
+	std::vector<int> keyframes;
 	std::string warning;
 	std::string colorspace;
 
 	PClip RGB32Video;
 	VideoInfo vi;
 
-	int last_fnum;
-
 	AVSValue Open(agi::fs::path const& filename);
 
 public:
 	AvisynthVideoProvider(agi::fs::path const& filename);
-	~AvisynthVideoProvider();
 
-	const AegiVideoFrame GetFrame(int n);
+	std::shared_ptr<VideoFrame> GetFrame(int n);
 
-	int GetFrameCount() const { return vi.num_frames; };
-	agi::vfr::Framerate GetFPS() const { return fps; };
-	int GetWidth() const { return vi.width; };
-	int GetHeight() const { return vi.height; };
+	int GetFrameCount() const { return vi.num_frames; }
+	agi::vfr::Framerate GetFPS() const { return fps; }
+	int GetWidth() const { return vi.width; }
+	int GetHeight() const { return vi.height; }
 	double GetDAR() const { return 0; }
-	std::vector<int> GetKeyFrames() const { return KeyFrames; };
+	std::vector<int> GetKeyFrames() const { return keyframes; }
 	std::string GetWarning() const { return warning; }
-	std::string GetDecoderName() const { return decoderName; }
+	std::string GetDecoderName() const { return decoder_name; }
 	std::string GetColorSpace() const { return colorspace; }
 };
 #endif

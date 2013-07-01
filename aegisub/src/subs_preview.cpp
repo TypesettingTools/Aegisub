@@ -40,6 +40,7 @@
 #include "ass_style.h"
 #include "subs_preview.h"
 #include "include/aegisub/subtitles_provider.h"
+#include "video_frame.h"
 #include "video_provider_dummy.h"
 
 #include <libaegisub/util.h>
@@ -102,20 +103,18 @@ void SubtitlesPreview::SetColour(agi::Color col) {
 void SubtitlesPreview::UpdateBitmap() {
 	if (!vid) return;
 
-	AegiVideoFrame frame;
-	frame.CopyFrom(vid->GetFrame(0));
+	auto frame = vid->GetFrame(0);
 
 	if (provider) {
 		try {
 			provider->LoadSubtitles(sub_file.get());
-			provider->DrawSubtitles(frame, 0.1);
+			provider->DrawSubtitles(*frame, 0.1);
 		}
 		catch (...) { }
 	}
 
 	// Convert frame to bitmap
-	*bmp = static_cast<wxBitmap>(frame.GetImage());
-	frame.Clear();
+	*bmp = static_cast<wxBitmap>(GetImage(*frame));
 	Refresh();
 }
 

@@ -37,14 +37,14 @@
 #include "factory_manager.h"
 
 class AssFile;
-class AegiVideoFrame;
+struct VideoFrame;
 
 class SubtitlesProvider {
 public:
 	virtual ~SubtitlesProvider() { };
 
 	virtual void LoadSubtitles(AssFile *subs)=0;
-	virtual void DrawSubtitles(AegiVideoFrame &dst,double time)=0;
+	virtual void DrawSubtitles(VideoFrame &dst,double time)=0;
 };
 
 class SubtitlesProviderFactory : public Factory1<SubtitlesProvider, std::string> {

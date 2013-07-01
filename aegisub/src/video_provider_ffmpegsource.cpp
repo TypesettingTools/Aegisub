@@ -41,6 +41,7 @@
 #include "options.h"
 #include "utils.h"
 #include "video_context.h"
+#include "video_frame.h"
 
 #include <libaegisub/fs.h>
 
@@ -52,7 +53,6 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filena
 , VideoInfo(nullptr)
 , Width(-1)
 , Height(-1)
-, FrameNumber(-1)
 {
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -238,20 +238,16 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename) {
 		Timecodes = 25.0;
 	else
 		Timecodes = agi::vfr::Framerate(TimecodesVector);
-
-	FrameNumber = 0;
 }
 
-const AegiVideoFrame FFmpegSourceVideoProvider::GetFrame(int n) {
-	FrameNumber = mid(0, n, GetFrameCount() - 1);
+std::shared_ptr<VideoFrame> FFmpegSourceVideoProvider::GetFrame(int n) {
+	n = mid(0, n, GetFrameCount() - 1);
 
-	// decode frame
-	const FFMS_Frame *SrcFrame = FFMS_GetFrame(VideoSource, FrameNumber, &ErrInfo);
-	if (!SrcFrame)
+	auto frame = FFMS_GetFrame(VideoSource, n, &ErrInfo);
+	if (!frame)
 		throw VideoDecodeError(std::string("Failed to retrieve frame: ") +  ErrInfo.Buffer);
 
-	CurFrame.SetTo(SrcFrame->Data[0], Width, Height, SrcFrame->Linesize[0]);
-	return CurFrame;
+	return std::make_shared<VideoFrame>(frame->Data[0], Width, Height, frame->Linesize[0], false);
 }
 
 #endif /* WITH_FFMS2 */

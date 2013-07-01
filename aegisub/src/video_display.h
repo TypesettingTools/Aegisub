@@ -42,7 +42,6 @@
 #include <wx/glcanvas.h>
 
 // Prototypes
-class AegiVideoFrame;
 struct FrameReadyEvent;
 class VideoContext;
 class VideoOutGL;
@@ -50,6 +49,7 @@ class VisualToolBase;
 class wxComboBox;
 class wxTextCtrl;
 class wxToolBar;
+struct VideoFrame;
 
 namespace agi {
 	struct Context;
@@ -104,7 +104,7 @@ class VideoDisplay : public wxGLCanvas {
 	bool freeSize;
 
 	/// Frame which will replace the currently visible frame on the next render
-	std::shared_ptr<AegiVideoFrame> pending_frame;
+	std::shared_ptr<VideoFrame> pending_frame;
 
 	/// @brief Draw an overscan mask
 	/// @param horizontal_percent The percent of the video reserved horizontally
