@@ -104,7 +104,7 @@ DialogExport::DialogExport(agi::Context *c)
 	btn_up->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
 	btn_down->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
 	btn_all->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetAll(true); });
-	btn_none->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetAll(true); });
+	btn_none->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetAll(false); });
 
 	wxSizer *top_buttons = new wxBoxSizer(wxHORIZONTAL);
 	top_buttons->Add(btn_up, wxSizerFlags(1).Expand());
