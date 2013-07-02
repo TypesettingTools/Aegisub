@@ -25,7 +25,7 @@ wxDECLARE_EVENT(EVT_COLOR, wxThreadEvent);
 /// A button which displays a currently-selected color and lets the user pick
 /// a new color when clicked
 class ColourButton: public wxButton {
-	wxBitmap bmp;      ///< The button's bitmap label
+	wxImage bmp;       ///< The button's bitmap label
 	agi::Color colour; ///< The current colour
 
 	/// Update the bitmap label after the color is changed

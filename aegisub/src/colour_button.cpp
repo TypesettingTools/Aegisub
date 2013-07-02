@@ -21,7 +21,7 @@
 #include "compat.h"
 #include "dialog_colorpicker.h"
 
-#include <wx/dcmemory.h>
+#include <boost/gil/gil_all.hpp>
 
 wxDEFINE_EVENT(EVT_COLOR, wxThreadEvent);
 
@@ -45,9 +45,8 @@ ColourButton::ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi
 }
 
 void ColourButton::UpdateBitmap() {
-	wxMemoryDC dc;
-	dc.SelectObject(bmp);
-	dc.SetBrush(wxBrush(to_wx(colour)));
-	dc.DrawRectangle(0, 0, bmp.GetWidth(), bmp.GetHeight());
+	using namespace boost::gil;
+	fill_pixels(interleaved_view(bmp.GetWidth(), bmp.GetHeight(), (bgr8_pixel_t*)bmp.GetData(), 3 * bmp.GetWidth()),
+		bgr8_pixel_t(colour.r, colour.g, colour.b));
 	SetBitmapLabel(bmp);
 }
