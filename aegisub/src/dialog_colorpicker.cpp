@@ -918,12 +918,8 @@ void DialogColorPicker::UpdateSpectrumDisplay() {
 
 template<typename Func>
 static wxBitmap *make_spectrum(wxBitmap *bitmap, Func func) {
-	unsigned char *spec = (unsigned char *)malloc(256*256*3);
-	if (!spec) throw std::bad_alloc();
-
-	func(spec);
-
-	wxImage spectrum_image(256, 256, spec);
+	wxImage spectrum_image(256, 256);
+	func(spectrum_image.GetData());
 	*bitmap = wxBitmap(spectrum_image);
 	return bitmap;
 }
