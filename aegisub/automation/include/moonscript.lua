@@ -6,13 +6,18 @@ end
 package.preload['moonscript.compile.statement'] = function()
   local util = require("moonscript.util")
   local data = require("moonscript.data")
-  local reversed, unpack = util.reversed, util.unpack
+  local reversed, unpack
+  reversed, unpack = util.reversed, util.unpack
   local ntype
   do
-    local _table_0 = require("moonscript.types")
-    ntype = _table_0.ntype
+    local _obj_0 = require("moonscript.types")
+    ntype = _obj_0.ntype
   end
-  local concat, insert = table.concat, table.insert
+  local concat, insert
+  do
+    local _obj_0 = table
+    concat, insert = _obj_0.concat, _obj_0.insert
+  end
   local statement_compilers = {
     raw = function(self, node)
       return self:add(node[2])
@@ -33,9 +38,8 @@ package.preload['moonscript.compile.statement'] = function()
           _with_0:append_list((function()
             local _accum_0 = { }
             local _len_0 = 1
-            local _list_0 = undeclared
-            for _index_0 = 1, #_list_0 do
-              local name = _list_0[_index_0]
+            for _index_0 = 1, #undeclared do
+              local name = undeclared[_index_0]
               _accum_0[_len_0] = self:name(name)
               _len_0 = _len_0 + 1
             end
@@ -53,9 +57,8 @@ package.preload['moonscript.compile.statement'] = function()
         _with_0:append_list((function()
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_0 = names
-          for _index_0 = 1, #_list_0 do
-            local name = _list_0[_index_0]
+          for _index_0 = 1, #names do
+            local name = names[_index_0]
             _accum_0[_len_0] = self:name(name)
             _len_0 = _len_0 + 1
           end
@@ -87,9 +90,8 @@ package.preload['moonscript.compile.statement'] = function()
           _with_0:append_list((function()
             local _accum_0 = { }
             local _len_0 = 1
-            local _list_0 = names
-            for _index_0 = 1, #_list_0 do
-              local name = _list_0[_index_0]
+            for _index_0 = 1, #names do
+              local name = names[_index_0]
               _accum_0[_len_0] = self:value(name)
               _len_0 = _len_0 + 1
             end
@@ -100,9 +102,8 @@ package.preload['moonscript.compile.statement'] = function()
         _with_0:append_list((function()
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_0 = values
-          for _index_0 = 1, #_list_0 do
-            local v = _list_0[_index_0]
+          for _index_0 = 1, #values do
+            local v = values[_index_0]
             _accum_0[_len_0] = self:value(v)
             _len_0 = _len_0 + 1
           end
@@ -145,9 +146,8 @@ package.preload['moonscript.compile.statement'] = function()
         current.next = next
         current = next
       end
-      local _list_0 = node
-      for _index_0 = 4, #_list_0 do
-        cond = _list_0[_index_0]
+      for _index_0 = 4, #node do
+        cond = node[_index_0]
         add_clause(cond)
       end
       return root
@@ -196,9 +196,8 @@ package.preload['moonscript.compile.statement'] = function()
         loop:append_list((function()
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_0 = names
-          for _index_0 = 1, #_list_0 do
-            local name = _list_0[_index_0]
+          for _index_0 = 1, #names do
+            local name = names[_index_0]
             _accum_0[_len_0] = _with_0:name(name, false)
             _len_0 = _len_0 + 1
           end
@@ -208,9 +207,8 @@ package.preload['moonscript.compile.statement'] = function()
         loop:append_list((function()
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_0 = exps
-          for _index_0 = 1, #_list_0 do
-            local exp = _list_0[_index_0]
+          for _index_0 = 1, #exps do
+            local exp = exps[_index_0]
             _accum_0[_len_0] = self:value(exp)
             _len_0 = _len_0 + 1
           end
@@ -248,7 +246,8 @@ package.preload['moonscript.compile.statement'] = function()
         _with_0:stms(node[2])
         return _with_0
       end
-    end
+    end,
+    noop = function(self) end
   }
   return {
     statement_compilers = statement_compilers
@@ -260,16 +259,21 @@ package.preload['moonscript.compile.value'] = function()
   local data = require("moonscript.data")
   local ntype
   do
-    local _table_0 = require("moonscript.types")
-    ntype = _table_0.ntype
+    local _obj_0 = require("moonscript.types")
+    ntype = _obj_0.ntype
   end
   local user_error
   do
-    local _table_0 = require("moonscript.errors")
-    user_error = _table_0.user_error
+    local _obj_0 = require("moonscript.errors")
+    user_error = _obj_0.user_error
   end
-  local concat, insert = table.concat, table.insert
-  local unpack = util.unpack
+  local concat, insert
+  do
+    local _obj_0 = table
+    concat, insert = _obj_0.concat, _obj_0.insert
+  end
+  local unpack
+  unpack = util.unpack
   local table_delim = ","
   local string_chars = {
     ["\r"] = "\\r",
@@ -306,9 +310,8 @@ package.preload['moonscript.compile.value'] = function()
         _with_0:append_list((function()
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_0 = node
-          for _index_0 = 2, #_list_0 do
-            local v = _list_0[_index_0]
+          for _index_0 = 2, #node do
+            local v = node[_index_0]
             _accum_0[_len_0] = self:value(v)
             _len_0 = _len_0 + 1
           end
@@ -368,9 +371,8 @@ package.preload['moonscript.compile.value'] = function()
       local actions
       do
         local _with_0 = self:line()
-        local _list_0 = node
-        for _index_0 = 3, #_list_0 do
-          local action = _list_0[_index_0]
+        for _index_0 = 3, #node do
+          local action = node[_index_0]
           _with_0:append(chain_item(action))
         end
         actions = _with_0
@@ -381,12 +383,12 @@ package.preload['moonscript.compile.value'] = function()
       local _, args, whitelist, arrow, block = unpack(node)
       local default_args = { }
       local self_args = { }
-      local arg_names = (function()
+      local arg_names
+      do
         local _accum_0 = { }
         local _len_0 = 1
-        local _list_0 = args
-        for _index_0 = 1, #_list_0 do
-          local arg = _list_0[_index_0]
+        for _index_0 = 1, #args do
+          local arg = args[_index_0]
           local name, default_value = unpack(arg)
           if type(name) == "string" then
             name = name
@@ -403,8 +405,8 @@ package.preload['moonscript.compile.value'] = function()
           _accum_0[_len_0] = _value_0
           _len_0 = _len_0 + 1
         end
-        return _accum_0
-      end)()
+        arg_names = _accum_0
+      end
       if arrow == "fat" then
         insert(arg_names, 1, "self")
       end
@@ -413,14 +415,12 @@ package.preload['moonscript.compile.value'] = function()
         if #whitelist > 0 then
           _with_0:whitelist_names(whitelist)
         end
-        local _list_0 = arg_names
-        for _index_0 = 1, #_list_0 do
-          local name = _list_0[_index_0]
+        for _index_0 = 1, #arg_names do
+          local name = arg_names[_index_0]
           _with_0:put_name(name)
         end
-        local _list_1 = default_args
-        for _index_0 = 1, #_list_1 do
-          local default = _list_1[_index_0]
+        for _index_0 = 1, #default_args do
+          local default = default_args[_index_0]
           local name, value = unpack(default)
           if type(name) == "table" then
             name = name[2]
@@ -446,17 +446,17 @@ package.preload['moonscript.compile.value'] = function()
             }
           })
         end
-        local self_arg_values = (function()
+        local self_arg_values
+        do
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_2 = self_args
-          for _index_0 = 1, #_list_2 do
-            local arg = _list_2[_index_0]
+          for _index_0 = 1, #self_args do
+            local arg = self_args[_index_0]
             _accum_0[_len_0] = arg[2]
             _len_0 = _len_0 + 1
           end
-          return _accum_0
-        end)()
+          self_arg_values = _accum_0
+        end
         if #self_args > 0 then
           _with_0:stm({
             "assign",
@@ -466,17 +466,16 @@ package.preload['moonscript.compile.value'] = function()
         end
         _with_0:stms(block)
         if #args > #arg_names then
-          arg_names = (function()
+          do
             local _accum_0 = { }
             local _len_0 = 1
-            local _list_2 = args
-            for _index_0 = 1, #_list_2 do
-              local arg = _list_2[_index_0]
+            for _index_0 = 1, #args do
+              local arg = args[_index_0]
               _accum_0[_len_0] = arg[1]
               _len_0 = _len_0 + 1
             end
-            return _accum_0
-          end)()
+            arg_names = _accum_0
+          end
         end
         _with_0.header = "function(" .. concat(arg_names, ", ") .. ")"
         return _with_0
@@ -573,36 +572,40 @@ package.preload['moonscript.compile'] = function()
   local transform = require("moonscript.transform")
   local NameProxy, LocalName
   do
-    local _table_0 = require("moonscript.transform.names")
-    NameProxy, LocalName = _table_0.NameProxy, _table_0.LocalName
+    local _obj_0 = require("moonscript.transform.names")
+    NameProxy, LocalName = _obj_0.NameProxy, _obj_0.LocalName
   end
   local Set
   do
-    local _table_0 = require("moonscript.data")
-    Set = _table_0.Set
+    local _obj_0 = require("moonscript.data")
+    Set = _obj_0.Set
   end
   local ntype, has_value
   do
-    local _table_0 = require("moonscript.types")
-    ntype, has_value = _table_0.ntype, _table_0.has_value
+    local _obj_0 = require("moonscript.types")
+    ntype, has_value = _obj_0.ntype, _obj_0.has_value
   end
   local statement_compilers
   do
-    local _table_0 = require("moonscript.compile.statement")
-    statement_compilers = _table_0.statement_compilers
+    local _obj_0 = require("moonscript.compile.statement")
+    statement_compilers = _obj_0.statement_compilers
   end
   local value_compilers
   do
-    local _table_0 = require("moonscript.compile.value")
-    value_compilers = _table_0.value_compilers
+    local _obj_0 = require("moonscript.compile.value")
+    value_compilers = _obj_0.value_compilers
   end
-  local concat, insert = table.concat, table.insert
-  local pos_to_line, get_closest_line, trim, unpack = util.pos_to_line, util.get_closest_line, util.trim, util.unpack
+  local concat, insert
+  do
+    local _obj_0 = table
+    concat, insert = _obj_0.concat, _obj_0.insert
+  end
+  local pos_to_line, get_closest_line, trim, unpack
+  pos_to_line, get_closest_line, trim, unpack = util.pos_to_line, util.get_closest_line, util.trim, util.unpack
   local mtype = util.moon.type
   local indent_char = "  "
   local Line, DelayedLine, Lines, Block, RootBlock
   do
-    local _parent_0 = nil
     local _base_0 = {
       mark_pos = function(self, pos, line)
         if line == nil then
@@ -685,17 +688,14 @@ package.preload['moonscript.compile'] = function()
         local strip
         strip = function(t)
           if "table" == type(t) then
-            return (function()
-              local _accum_0 = { }
-              local _len_0 = 1
-              local _list_0 = t
-              for _index_0 = 1, #_list_0 do
-                local v = _list_0[_index_0]
-                _accum_0[_len_0] = strip(v)
-                _len_0 = _len_0 + 1
-              end
-              return _accum_0
-            end)()
+            local _accum_0 = { }
+            local _len_0 = 1
+            for _index_0 = 1, #t do
+              local v = t[_index_0]
+              _accum_0[_len_0] = strip(v)
+              _len_0 = _len_0 + 1
+            end
+            return _accum_0
           else
             return t
           end
@@ -704,25 +704,14 @@ package.preload['moonscript.compile'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self)
         self.posmap = { }
       end,
       __base = _base_0,
-      __name = "Lines",
-      __parent = _parent_0
+      __name = "Lines"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -730,13 +719,9 @@ package.preload['moonscript.compile'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     Lines = _class_0
   end
   do
-    local _parent_0 = nil
     local _base_0 = {
       pos = nil,
       _append_single = function(self, item)
@@ -744,9 +729,8 @@ package.preload['moonscript.compile'] = function()
           if not (self.pos) then
             self.pos = item.pos
           end
-          local _list_0 = item
-          for _index_0 = 1, #_list_0 do
-            local value = _list_0[_index_0]
+          for _index_0 = 1, #item do
+            local value = item[_index_0]
             self:_append_single(value)
           end
         else
@@ -780,14 +764,13 @@ package.preload['moonscript.compile'] = function()
           buffer:add(concat(current))
           return buffer:mark_pos(self.pos)
         end
-        local _list_0 = self
-        for _index_0 = 1, #_list_0 do
-          local chunk = _list_0[_index_0]
+        for _index_0 = 1, #self do
+          local chunk = self[_index_0]
           local _exp_0 = mtype(chunk)
           if Block == _exp_0 then
-            local _list_1 = chunk:render(Lines())
-            for _index_1 = 1, #_list_1 do
-              local block_chunk = _list_1[_index_1]
+            local _list_0 = chunk:render(Lines())
+            for _index_1 = 1, #_list_0 do
+              local block_chunk = _list_0[_index_1]
               if "string" == type(block_chunk) then
                 insert(current, block_chunk)
               else
@@ -810,27 +793,12 @@ package.preload['moonscript.compile'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
-      __init = function(self, ...)
-        if _parent_0 then
-          return _parent_0.__init(self, ...)
-        end
-      end,
+      __init = function() end,
       __base = _base_0,
-      __name = "Line",
-      __parent = _parent_0
+      __name = "Line"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -838,13 +806,9 @@ package.preload['moonscript.compile'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     Line = _class_0
   end
   do
-    local _parent_0 = nil
     local _base_0 = {
       prepare = function() end,
       render = function(self)
@@ -853,25 +817,14 @@ package.preload['moonscript.compile'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self, fn)
         self.prepare = fn
       end,
       __base = _base_0,
-      __name = "DelayedLine",
-      __parent = _parent_0
+      __name = "DelayedLine"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -879,13 +832,9 @@ package.preload['moonscript.compile'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     DelayedLine = _class_0
   end
   do
-    local _parent_0 = nil
     local _base_0 = {
       header = "do",
       footer = "end",
@@ -924,14 +873,14 @@ package.preload['moonscript.compile'] = function()
         end
       end,
       declare = function(self, names)
-        local undeclared = (function()
+        local undeclared
+        do
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_0 = names
-          for _index_0 = 1, #_list_0 do
+          for _index_0 = 1, #names do
             local _continue_0 = false
             repeat
-              local name = _list_0[_index_0]
+              local name = names[_index_0]
               local is_local = false
               local real_name
               local _exp_0 = mtype(name)
@@ -961,8 +910,8 @@ package.preload['moonscript.compile'] = function()
               break
             end
           end
-          return _accum_0
-        end)()
+          undeclared = _accum_0
+        end
         return undeclared
       end,
       whitelist_names = function(self, names)
@@ -998,6 +947,19 @@ package.preload['moonscript.compile'] = function()
         else
           return yes
         end
+      end,
+      is_local = function(self, node)
+        local t = mtype(node)
+        if t == "string" then
+          return self:has_name(node, false)
+        end
+        if t == NameProxy or t == LocalName then
+          return true
+        end
+        if t == "table" and node[1] == "chain" and #node == 2 then
+          return self:is_local(node[2])
+        end
+        return false
       end,
       free_name = function(self, prefix, dont_put)
         prefix = prefix or "moon"
@@ -1103,9 +1065,8 @@ package.preload['moonscript.compile'] = function()
           _with_0:append_list((function()
             local _accum_0 = { }
             local _len_0 = 1
-            local _list_0 = values
-            for _index_0 = 1, #_list_0 do
-              local v = _list_0[_index_0]
+            for _index_0 = 1, #values do
+              local v = values[_index_0]
               _accum_0[_len_0] = self:value(v)
               _len_0 = _len_0 + 1
             end
@@ -1153,10 +1114,7 @@ package.preload['moonscript.compile'] = function()
           error("deprecated stms call, use transformer")
         end
         local current_stms, current_stm_i
-        do
-          local _obj_0 = self
-          current_stms, current_stm_i = _obj_0.current_stms, _obj_0.current_stm_i
-        end
+        current_stms, current_stm_i = self.current_stms, self.current_stm_i
         self.current_stms = stms
         for i = 1, #stms do
           self.current_stm_i = i
@@ -1176,9 +1134,6 @@ package.preload['moonscript.compile'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self, parent, header, footer)
         self.parent, self.header, self.footer = parent, header, footer
@@ -1187,10 +1142,9 @@ package.preload['moonscript.compile'] = function()
         self._state = { }
         self._listeners = { }
         do
-          local _with_0 = transform
           self.transform = {
-            value = _with_0.Value:bind(self),
-            statement = _with_0.Statement:bind(self)
+            value = transform.Value:bind(self),
+            statement = transform.Statement:bind(self)
           }
         end
         if self.parent then
@@ -1207,17 +1161,9 @@ package.preload['moonscript.compile'] = function()
         end
       end,
       __base = _base_0,
-      __name = "Block",
-      __parent = _parent_0
+      __name = "Block"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -1225,9 +1171,6 @@ package.preload['moonscript.compile'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     Block = _class_0
   end
   do
@@ -1251,9 +1194,7 @@ package.preload['moonscript.compile'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
+    setmetatable(_base_0, _parent_0.__base)
     local _class_0 = setmetatable({
       __init = function(self, options)
         self.options = options
@@ -1266,7 +1207,7 @@ package.preload['moonscript.compile'] = function()
     }, {
       __index = function(cls, name)
         local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
+        if val == nil then
           return _parent_0[name]
         else
           return val
@@ -1279,7 +1220,7 @@ package.preload['moonscript.compile'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
+    if _parent_0.__inherited then
       _parent_0.__inherited(_parent_0, _class_0)
     end
     RootBlock = _class_0
@@ -1339,8 +1280,7 @@ package.preload['moonscript.compile'] = function()
     end
   end
   do
-    local _with_0 = require("moonscript.data")
-    local data = _with_0
+    local data = require("moonscript.data")
     for name, cls in pairs({
       Line = Line,
       Lines = Lines,
@@ -1359,20 +1299,22 @@ package.preload['moonscript.compile'] = function()
   
 end
 package.preload['moonscript.data'] = function()
-  local concat, remove, insert = table.concat, table.remove, table.insert
+  local concat, remove, insert
+  do
+    local _obj_0 = table
+    concat, remove, insert = _obj_0.concat, _obj_0.remove, _obj_0.insert
+  end
   local Set
   Set = function(items)
     local self = { }
-    local _list_0 = items
-    for _index_0 = 1, #_list_0 do
-      local key = _list_0[_index_0]
+    for _index_0 = 1, #items do
+      local key = items[_index_0]
       self[key] = true
     end
     return self
   end
   local Stack
   do
-    local _parent_0 = nil
     local _base_0 = {
       __tostring = function(self)
         return "<Stack {" .. concat(self, ", ") .. "}>"
@@ -1389,9 +1331,6 @@ package.preload['moonscript.data'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self, ...)
         local _list_0 = {
@@ -1404,17 +1343,9 @@ package.preload['moonscript.data'] = function()
         return nil
       end,
       __base = _base_0,
-      __name = "Stack",
-      __parent = _parent_0
+      __name = "Stack"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -1422,9 +1353,6 @@ package.preload['moonscript.data'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     Stack = _class_0
   end
   local lua_keywords = Set({
@@ -1469,17 +1397,17 @@ package.preload['moonscript.dump'] = function()
     if type(op) ~= "table" then
       return tostring(op)
     end
-    local items = (function()
+    local items
+    do
       local _accum_0 = { }
       local _len_0 = 1
-      local _list_0 = op
-      for _index_0 = 1, #_list_0 do
-        local item = _list_0[_index_0]
+      for _index_0 = 1, #op do
+        local item = op[_index_0]
         _accum_0[_len_0] = flat_value(item, depth + 1)
         _len_0 = _len_0 + 1
       end
-      return _accum_0
-    end)()
+      items = _accum_0
+    end
     local pos = op[-1]
     return "{" .. (pos and "[" .. pos .. "] " or "") .. table.concat(items, ", ") .. "}"
   end
@@ -1504,8 +1432,13 @@ end
 package.preload['moonscript.errors'] = function()
   local util = require("moonscript.util")
   local lpeg = require("lpeg")
-  local concat, insert = table.concat, table.insert
-  local split, pos_to_line = util.split, util.pos_to_line
+  local concat, insert
+  do
+    local _obj_0 = table
+    concat, insert = _obj_0.concat, _obj_0.insert
+  end
+  local split, pos_to_line
+  split, pos_to_line = util.split, util.pos_to_line
   local user_error
   user_error = function(...)
     return error({
@@ -1546,18 +1479,17 @@ package.preload['moonscript.errors'] = function()
       end
       stop = stop - 1
     end
-    traceback = (function()
+    do
       local _accum_0 = { }
       local _len_0 = 1
-      local _list_0 = traceback
       local _max_0 = stop
-      for _index_0 = 1, _max_0 < 0 and #_list_0 + _max_0 or _max_0 do
-        local t = _list_0[_index_0]
+      for _index_0 = 1, _max_0 < 0 and #traceback + _max_0 or _max_0 do
+        local t = traceback[_index_0]
         _accum_0[_len_0] = t
         _len_0 = _len_0 + 1
       end
-      return _accum_0
-    end)()
+      traceback = _accum_0
+    end
     local rep = "function '" .. chunk_func .. "'"
     traceback[#traceback] = traceback[#traceback]:gsub(rep, "main chunk")
     return concat(traceback, "\n")
@@ -1565,7 +1497,8 @@ package.preload['moonscript.errors'] = function()
   local rewrite_traceback
   rewrite_traceback = function(text, err)
     local line_tables = require("moonscript.line_tables")
-    local V, S, Ct, C = lpeg.V, lpeg.S, lpeg.Ct, lpeg.C
+    local V, S, Ct, C
+    V, S, Ct, C = lpeg.V, lpeg.S, lpeg.Ct, lpeg.C
     local header_text = "stack traceback:"
     local Header, Line = V("Header"), V("Line")
     local Break = lpeg.S("\n")
@@ -1611,18 +1544,23 @@ package.preload['moonscript.errors'] = function()
   return {
     rewrite_traceback = rewrite_traceback,
     truncate_traceback = truncate_traceback,
-    user_error = user_error
+    user_error = user_error,
+    reverse_line_number = reverse_line_number
   }
   
 end
 package.preload['moonscript'] = function()
   local compile = require("moonscript.compile")
   local parse = require("moonscript.parse")
-  local concat, insert = table.concat, table.insert
+  local concat, insert
+  do
+    local _obj_0 = table
+    concat, insert = _obj_0.concat, _obj_0.insert
+  end
   local split, dump, get_options, unpack
   do
-    local _table_0 = require("moonscript.util")
-    split, dump, get_options, unpack = _table_0.split, _table_0.dump, _table_0.get_options, _table_0.unpack
+    local _obj_0 = require("moonscript.util")
+    split, dump, get_options, unpack = _obj_0.split, _obj_0.dump, _obj_0.get_options, _obj_0.unpack
   end
   local lua = {
     loadstring = loadstring,
@@ -2144,9 +2082,9 @@ package.preload['moonscript.parse'] = function()
   
   		Local = key"local" * ((op"*" + op"^") / mark"declare_glob" + Ct(NameList) / mark"declare_with_shadows"),
   
-  		Import = key"import" *  Ct(ImportNameList) * key"from" * Exp / mark"import",
+  		Import = key"import" * Ct(ImportNameList) * SpaceBreak^0 * key"from" * Exp / mark"import",
   		ImportName = (sym"\\" * Ct(Cc"colon_stub" * Name) + Name),
-  		ImportNameList = ImportName * (sym"," * ImportName)^0,
+  		ImportNameList = SpaceBreak^0 * ImportName * ((SpaceBreak^1 + sym"," * SpaceBreak^0) * ImportName)^0,
   
   		NameList = Name * (sym"," * Name)^0,
   
@@ -2310,7 +2248,7 @@ package.preload['moonscript.parse'] = function()
   			op"*" + op"^" +
   			Ct(NameList) * (sym"=" * Ct(ExpListLow))^-1) / mark"export",
   
-  		KeyValue = (sym":" * Name) / self_assign + Ct((KeyName + sym"[" * Exp * sym"]" + DoubleString + SingleString) * symx":" * (Exp + TableBlock)),
+  		KeyValue = (sym":" * -SomeSpace *  Name) / self_assign + Ct((KeyName + sym"[" * Exp * sym"]" + DoubleString + SingleString) * symx":" * (Exp + TableBlock)),
   		KeyValueList = KeyValue * (sym"," * KeyValue)^0,
   		KeyValueLine = CheckIndent * KeyValueList * sym","^-1,
   
@@ -2396,51 +2334,53 @@ end
 package.preload['moonscript.transform.destructure'] = function()
   local ntype, mtype, build
   do
-    local _table_0 = require("moonscript.types")
-    ntype, mtype, build = _table_0.ntype, _table_0.mtype, _table_0.build
+    local _obj_0 = require("moonscript.types")
+    ntype, mtype, build = _obj_0.ntype, _obj_0.mtype, _obj_0.build
   end
   local NameProxy
   do
-    local _table_0 = require("moonscript.transform.names")
-    NameProxy = _table_0.NameProxy
+    local _obj_0 = require("moonscript.transform.names")
+    NameProxy = _obj_0.NameProxy
   end
-  local insert = table.insert
+  local insert
+  do
+    local _obj_0 = table
+    insert = _obj_0.insert
+  end
   local unpack
   do
-    local _table_0 = require("moonscript.util")
-    unpack = _table_0.unpack
+    local _obj_0 = require("moonscript.util")
+    unpack = _obj_0.unpack
   end
   local user_error
   do
-    local _table_0 = require("moonscript.errors")
-    user_error = _table_0.user_error
+    local _obj_0 = require("moonscript.errors")
+    user_error = _obj_0.user_error
   end
+  local util = require("moonscript.util")
   local join
   join = function(...)
     do
-      local _with_0 = { }
-      local out = _with_0
+      local out = { }
       local i = 1
       local _list_0 = {
         ...
       }
       for _index_0 = 1, #_list_0 do
         local tbl = _list_0[_index_0]
-        local _list_1 = tbl
-        for _index_1 = 1, #_list_1 do
-          local v = _list_1[_index_1]
+        for _index_1 = 1, #tbl do
+          local v = tbl[_index_1]
           out[i] = v
           i = i + 1
         end
       end
-      return _with_0
+      return out
     end
   end
   local has_destructure
   has_destructure = function(names)
-    local _list_0 = names
-    for _index_0 = 1, #_list_0 do
-      local n = _list_0[_index_0]
+    for _index_0 = 1, #names do
+      local n = names[_index_0]
       if ntype(n) == "table" then
         return true
       end
@@ -2474,10 +2414,15 @@ package.preload['moonscript.transform.destructure'] = function()
         local key = tuple[1]
         local s
         if ntype(key) == "key_literal" then
-          s = {
-            "dot",
-            key[2]
-          }
+          local key_name = key[2]
+          if ntype(key_name) == "colon_stub" then
+            s = key_name
+          else
+            s = {
+              "dot",
+              key_name
+            }
+          end
         else
           s = {
             "index",
@@ -2504,7 +2449,7 @@ package.preload['moonscript.transform.destructure'] = function()
     return accum
   end
   local build_assign
-  build_assign = function(destruct_literal, receiver)
+  build_assign = function(scope, destruct_literal, receiver)
     local extracted_names = extract_assign_names(destruct_literal)
     local names = { }
     local values = { }
@@ -2514,12 +2459,11 @@ package.preload['moonscript.transform.destructure'] = function()
       values
     }
     local obj
-    if mtype(receiver) == NameProxy then
+    if scope:is_local(receiver) then
       obj = receiver
     else
       do
-        local _with_0 = NameProxy("obj")
-        obj = _with_0
+        obj = NameProxy("obj")
         inner = build["do"]({
           build.assign_one(obj, receiver),
           {
@@ -2528,14 +2472,13 @@ package.preload['moonscript.transform.destructure'] = function()
             values
           }
         })
-        obj = _with_0
+        obj = obj
       end
     end
-    local _list_0 = extracted_names
-    for _index_0 = 1, #_list_0 do
-      local tuple = _list_0[_index_0]
+    for _index_0 = 1, #extracted_names do
+      local tuple = extracted_names[_index_0]
       insert(names, tuple[1])
-      insert(values, obj:chain(unpack(tuple[2])))
+      insert(values, NameProxy.chain(obj, unpack(tuple[2])))
     end
     return build.group({
       {
@@ -2546,7 +2489,7 @@ package.preload['moonscript.transform.destructure'] = function()
     })
   end
   local split_assign
-  split_assign = function(assign)
+  split_assign = function(scope, assign)
     local names, values = unpack(assign, 2)
     local g = { }
     local total_names = #names
@@ -2578,7 +2521,7 @@ package.preload['moonscript.transform.destructure'] = function()
             end)()
           })
         end
-        insert(g, build_assign(n, values[i]))
+        insert(g, build_assign(scope, n, values[i]))
         start = i + 1
       end
     end
@@ -2589,15 +2532,15 @@ package.preload['moonscript.transform.destructure'] = function()
           "_"
         }
       else
-        name_slice = (function()
+        do
           local _accum_0 = { }
           local _len_0 = 1
           for i = start, total_names do
             _accum_0[_len_0] = names[i]
             _len_0 = _len_0 + 1
           end
-          return _accum_0
-        end)()
+          name_slice = _accum_0
+        end
       end
       local value_slice
       if total_values < start then
@@ -2605,15 +2548,15 @@ package.preload['moonscript.transform.destructure'] = function()
           "nil"
         }
       else
-        value_slice = (function()
+        do
           local _accum_0 = { }
           local _len_0 = 1
           for i = start, total_values do
             _accum_0[_len_0] = values[i]
             _len_0 = _len_0 + 1
           end
-          return _accum_0
-        end)()
+          value_slice = _accum_0
+        end
       end
       insert(g, {
         "assign",
@@ -2633,43 +2576,31 @@ end
 package.preload['moonscript.transform.names'] = function()
   local build
   do
-    local _table_0 = require("moonscript.types")
-    build = _table_0.build
+    local _obj_0 = require("moonscript.types")
+    build = _obj_0.build
   end
   local unpack
   do
-    local _table_0 = require("moonscript.util")
-    unpack = _table_0.unpack
+    local _obj_0 = require("moonscript.util")
+    unpack = _obj_0.unpack
   end
   local LocalName
   do
-    local _parent_0 = nil
     local _base_0 = {
       get_name = function(self)
         return self.name
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self, name)
         self.name = name
         self[1] = "temp_name"
       end,
       __base = _base_0,
-      __name = "LocalName",
-      __parent = _parent_0
+      __name = "LocalName"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -2677,14 +2608,10 @@ package.preload['moonscript.transform.names'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     LocalName = _class_0
   end
   local NameProxy
   do
-    local _parent_0 = nil
     local _base_0 = {
       get_name = function(self, scope, dont_put)
         if dont_put == nil then
@@ -2696,7 +2623,8 @@ package.preload['moonscript.transform.names'] = function()
         return self.name
       end,
       chain = function(self, ...)
-        local items = (function(...)
+        local items
+        do
           local _accum_0 = { }
           local _len_0 = 1
           local _list_0 = {
@@ -2714,8 +2642,8 @@ package.preload['moonscript.transform.names'] = function()
             end
             _len_0 = _len_0 + 1
           end
-          return _accum_0
-        end)(...)
+          items = _accum_0
+        end
         return build.chain({
           base = self,
           unpack(items)
@@ -2739,26 +2667,15 @@ package.preload['moonscript.transform.names'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self, prefix)
         self.prefix = prefix
         self[1] = "temp_name"
       end,
       __base = _base_0,
-      __name = "NameProxy",
-      __parent = _parent_0
+      __name = "NameProxy"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -2766,9 +2683,6 @@ package.preload['moonscript.transform.names'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     NameProxy = _class_0
   end
   return {
@@ -2781,45 +2695,41 @@ package.preload['moonscript.transform'] = function()
   local types = require("moonscript.types")
   local util = require("moonscript.util")
   local data = require("moonscript.data")
-  local reversed, unpack = util.reversed, util.unpack
-  local ntype, mtype, build, smart_node, is_slice, value_is_singular = types.ntype, types.mtype, types.build, types.smart_node, types.is_slice, types.value_is_singular
-  local insert = table.insert
+  local reversed, unpack
+  reversed, unpack = util.reversed, util.unpack
+  local ntype, mtype, build, smart_node, is_slice, value_is_singular
+  ntype, mtype, build, smart_node, is_slice, value_is_singular = types.ntype, types.mtype, types.build, types.smart_node, types.is_slice, types.value_is_singular
+  local insert
+  do
+    local _obj_0 = table
+    insert = _obj_0.insert
+  end
   local NameProxy, LocalName
   do
-    local _table_0 = require("moonscript.transform.names")
-    NameProxy, LocalName = _table_0.NameProxy, _table_0.LocalName
+    local _obj_0 = require("moonscript.transform.names")
+    NameProxy, LocalName = _obj_0.NameProxy, _obj_0.LocalName
   end
   local destructure = require("moonscript.transform.destructure")
-  local implicitly_return
-  local Run
+  local NOOP = {
+    "noop"
+  }
+  local Run, apply_to_last, is_singular, extract_declarations, expand_elseif_assign, constructor_name, with_continue_listener, Transformer, construct_comprehension, Statement, Accumulator, default_accumulator, implicitly_return, Value
   do
-    local _parent_0 = nil
     local _base_0 = {
       call = function(self, state)
         return self.fn(state)
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self, fn)
         self.fn = fn
         self[1] = "run"
       end,
       __base = _base_0,
-      __name = "Run",
-      __parent = _parent_0
+      __name = "Run"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -2827,12 +2737,8 @@ package.preload['moonscript.transform'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     Run = _class_0
   end
-  local apply_to_last
   apply_to_last = function(stms, fn)
     local last_exp_id = 0
     for i = #stms, 1, -1 do
@@ -2847,7 +2753,11 @@ package.preload['moonscript.transform'] = function()
       local _len_0 = 1
       for i, stm in ipairs(stms) do
         if i == last_exp_id then
-          _accum_0[_len_0] = fn(stm)
+          _accum_0[_len_0] = {
+            "transform",
+            stm,
+            fn
+          }
         else
           _accum_0[_len_0] = stm
         end
@@ -2856,7 +2766,6 @@ package.preload['moonscript.transform'] = function()
       return _accum_0
     end)()
   end
-  local is_singular
   is_singular = function(body)
     if #body ~= 1 then
       return false
@@ -2867,7 +2776,6 @@ package.preload['moonscript.transform'] = function()
       return body[1]
     end
   end
-  local extract_declarations
   extract_declarations = function(self, body, start, out)
     if body == nil then
       body = self.current_stms
@@ -2908,7 +2816,6 @@ package.preload['moonscript.transform'] = function()
     end
     return out
   end
-  local expand_elseif_assign
   expand_elseif_assign = function(ifstm)
     for i = 4, #ifstm do
       local case = ifstm[i]
@@ -2932,8 +2839,7 @@ package.preload['moonscript.transform'] = function()
     end
     return ifstm
   end
-  local constructor_name = "new"
-  local with_continue_listener
+  constructor_name = "new"
   with_continue_listener = function(body)
     local continue_name = nil
     return {
@@ -2996,10 +2902,20 @@ package.preload['moonscript.transform'] = function()
       end)
     }
   end
-  local Transformer
   do
-    local _parent_0 = nil
     local _base_0 = {
+      transform_once = function(self, scope, node, ...)
+        if self.seen_nodes[node] then
+          return node
+        end
+        self.seen_nodes[node] = true
+        local transformer = self.transformers[ntype(node)]
+        if transformer then
+          return transformer(scope, node, ...) or node
+        else
+          return node
+        end
+      end,
       transform = function(self, scope, node, ...)
         if self.seen_nodes[node] then
           return node
@@ -3033,9 +2949,6 @@ package.preload['moonscript.transform'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
       __init = function(self, transformers)
         self.transformers = transformers
@@ -3044,17 +2957,9 @@ package.preload['moonscript.transform'] = function()
         })
       end,
       __base = _base_0,
-      __name = "Transformer",
-      __parent = _parent_0
+      __name = "Transformer"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -3062,12 +2967,8 @@ package.preload['moonscript.transform'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     Transformer = _class_0
   end
-  local construct_comprehension
   construct_comprehension = function(inner, clauses)
     local current_stms = inner
     for _, clause in reversed(clauses) do
@@ -3075,10 +2976,7 @@ package.preload['moonscript.transform'] = function()
       local _exp_0 = t
       if "for" == _exp_0 then
         local name, bounds
-        do
-          local _obj_0 = clause
-          _, name, bounds = _obj_0[1], _obj_0[2], _obj_0[3]
-        end
+        _, name, bounds = clause[1], clause[2], clause[3]
         current_stms = {
           "for",
           name,
@@ -3087,10 +2985,7 @@ package.preload['moonscript.transform'] = function()
         }
       elseif "foreach" == _exp_0 then
         local names, iter
-        do
-          local _obj_0 = clause
-          _, names, iter = _obj_0[1], _obj_0[2], _obj_0[3]
-        end
+        _, names, iter = clause[1], clause[2], clause[3]
         current_stms = {
           "foreach",
           names,
@@ -3101,10 +2996,7 @@ package.preload['moonscript.transform'] = function()
         }
       elseif "when" == _exp_0 then
         local cond
-        do
-          local _obj_0 = clause
-          _, cond = _obj_0[1], _obj_0[2]
-        end
+        _, cond = clause[1], clause[2]
         current_stms = {
           "if",
           cond,
@@ -3119,21 +3011,37 @@ package.preload['moonscript.transform'] = function()
     end
     return current_stms[1]
   end
-  local Statement = Transformer({
+  Statement = Transformer({
+    transform = function(self, tuple)
+      local _, node, fn
+      _, node, fn = tuple[1], tuple[2], tuple[3]
+      return fn(node)
+    end,
     root_stms = function(self, body)
       return apply_to_last(body, implicitly_return(self))
+    end,
+    ["return"] = function(self, node)
+      node[2] = Value:transform_once(self, node[2])
+      if "block_exp" == ntype(node[2]) then
+        local block_exp = node[2]
+        local block_body = block_exp[2]
+        local idx = #block_body
+        node[2] = block_body[idx]
+        block_body[idx] = node
+        return build.group(block_body)
+      end
+      return node
     end,
     declare_glob = function(self, node)
       local names = extract_declarations(self)
       if node[2] == "^" then
-        names = (function()
+        do
           local _accum_0 = { }
           local _len_0 = 1
-          local _list_0 = names
-          for _index_0 = 1, #_list_0 do
+          for _index_0 = 1, #names do
             local _continue_0 = false
             repeat
-              local name = _list_0[_index_0]
+              local name = names[_index_0]
               if not (name:match("^%u")) then
                 _continue_0 = true
                 break
@@ -3147,8 +3055,8 @@ package.preload['moonscript.transform'] = function()
               break
             end
           end
-          return _accum_0
-        end)()
+          names = _accum_0
+        end
       end
       return {
         "declare",
@@ -3157,8 +3065,34 @@ package.preload['moonscript.transform'] = function()
     end,
     assign = function(self, node)
       local names, values = unpack(node, 2)
+      local num_values = #values
+      local num_names = #values
+      if num_names == 1 and num_values == 1 then
+        local first_value = values[1]
+        local first_name = names[1]
+        local _exp_0 = ntype(first_value)
+        if "block_exp" == _exp_0 then
+          local block_body = first_value[2]
+          local idx = #block_body
+          block_body[idx] = build.assign_one(first_name, block_body[idx])
+          return build.group({
+            {
+              "declare",
+              {
+                first_name
+              }
+            },
+            {
+              "do",
+              block_body
+            }
+          })
+        elseif "comprehension" == _exp_0 or "tblcomprehension" == _exp_0 or "foreach" == _exp_0 or "for" == _exp_0 or "while" == _exp_0 then
+          return build.assign_one(first_name, Value:transform_once(self, first_value))
+        end
+      end
       local transformed
-      if #values == 1 then
+      if num_values == 1 then
         local value = values[1]
         local t = ntype(value)
         if t == "decorated" then
@@ -3191,7 +3125,7 @@ package.preload['moonscript.transform'] = function()
       end
       node = transformed or node
       if destructure.has_destructure(names) then
-        return destructure.split_assign(node)
+        return destructure.split_assign(self, node)
       end
       return node
     end,
@@ -3222,7 +3156,10 @@ package.preload['moonscript.transform'] = function()
           })
         else
           return build.group({
-            node,
+            {
+              "export",
+              node[2]
+            },
             build.assign({
               names = node[2],
               values = node[3]
@@ -3254,82 +3191,44 @@ package.preload['moonscript.transform'] = function()
     end,
     import = function(self, node)
       local _, names, source = unpack(node)
-      local stubs = (function()
+      local table_values
+      do
         local _accum_0 = { }
         local _len_0 = 1
-        local _list_0 = names
-        for _index_0 = 1, #_list_0 do
-          local name = _list_0[_index_0]
-          if type(name) == "table" then
-            _accum_0[_len_0] = name
+        for _index_0 = 1, #names do
+          local name = names[_index_0]
+          local dest_val
+          if ntype(name) == "colon_stub" then
+            dest_val = name[2]
           else
-            _accum_0[_len_0] = {
-              "dot",
-              name
-            }
+            dest_val = name
           end
+          local _value_0 = {
+            {
+              "key_literal",
+              name
+            },
+            dest_val
+          }
+          _accum_0[_len_0] = _value_0
           _len_0 = _len_0 + 1
         end
-        return _accum_0
-      end)()
-      local real_names = (function()
-        local _accum_0 = { }
-        local _len_0 = 1
-        local _list_0 = names
-        for _index_0 = 1, #_list_0 do
-          local name = _list_0[_index_0]
-          _accum_0[_len_0] = type(name) == "table" and name[2] or name
-          _len_0 = _len_0 + 1
-        end
-        return _accum_0
-      end)()
-      if type(source) == "string" then
-        return build.assign({
-          names = real_names,
-          values = (function()
-            local _accum_0 = { }
-            local _len_0 = 1
-            local _list_0 = stubs
-            for _index_0 = 1, #_list_0 do
-              local stub = _list_0[_index_0]
-              _accum_0[_len_0] = build.chain({
-                base = source,
-                stub
-              })
-              _len_0 = _len_0 + 1
-            end
-            return _accum_0
-          end)()
-        })
-      else
-        local source_name = NameProxy("table")
-        return build.group({
-          {
-            "declare",
-            real_names
-          },
-          build["do"]({
-            build.assign_one(source_name, source),
-            build.assign({
-              names = real_names,
-              values = (function()
-                local _accum_0 = { }
-                local _len_0 = 1
-                local _list_0 = stubs
-                for _index_0 = 1, #_list_0 do
-                  local stub = _list_0[_index_0]
-                  _accum_0[_len_0] = build.chain({
-                    base = source_name,
-                    stub
-                  })
-                  _len_0 = _len_0 + 1
-                end
-                return _accum_0
-              end)()
-            })
-          })
-        })
+        table_values = _accum_0
       end
+      local dest = {
+        "table",
+        table_values
+      }
+      return {
+        "assign",
+        {
+          dest
+        },
+        {
+          source
+        },
+        [-1] = node[-1]
+      }
     end,
     comprehension = function(self, node, action)
       local _, exp, clauses = unpack(node)
@@ -3426,7 +3325,7 @@ package.preload['moonscript.transform'] = function()
         if destructure.has_destructure(assign[2]) then
           local name = NameProxy("des")
           body = {
-            destructure.build_assign(assign[2][1], name),
+            destructure.build_assign(self, assign[2][1], name),
             build.group(node[3])
           }
           return build["do"]({
@@ -3463,28 +3362,38 @@ package.preload['moonscript.transform'] = function()
       return node
     end,
     with = function(self, node, ret)
-      local _, exp, block = unpack(node)
-      local scope_name = NameProxy("with")
-      local named_assign
+      local exp, block = unpack(node, 2)
+      local copy_scope = true
+      local scope_name, named_assign
       if ntype(exp) == "assign" then
         local names, values = unpack(exp, 2)
-        local assign_name = names[1]
-        exp = values[1]
-        values[1] = scope_name
-        named_assign = {
-          "assign",
-          names,
-          values
-        }
+        local first_name = names[1]
+        if ntype(first_name) == "value" then
+          scope_name = first_name
+          named_assign = exp
+          exp = values[1]
+          copy_scope = false
+        else
+          scope_name = NameProxy("with")
+          exp = values[1]
+          values[1] = scope_name
+          named_assign = {
+            "assign",
+            names,
+            values
+          }
+        end
+      elseif self:is_local(exp) then
+        scope_name = exp
+        copy_scope = false
       end
+      scope_name = scope_name or NameProxy("with")
       return build["do"]({
         Run(function(self)
           return self:set("scope_var", scope_name)
         end),
-        build.assign_one(scope_name, exp),
-        build.group({
-          named_assign
-        }),
+        copy_scope and build.assign_one(scope_name, exp) or NOOP,
+        named_assign or NOOP,
         build.group(block),
         (function()
           if ret then
@@ -3493,28 +3402,27 @@ package.preload['moonscript.transform'] = function()
         end)()
       })
     end,
-    foreach = function(self, node)
+    foreach = function(self, node, _)
       smart_node(node)
       local source = unpack(node.iter)
       local destructures = { }
-      node.names = (function()
+      do
         local _accum_0 = { }
         local _len_0 = 1
         for i, name in ipairs(node.names) do
           if ntype(name) == "table" then
             do
-              local _with_0 = NameProxy("des")
-              local proxy = _with_0
-              insert(destructures, destructure.build_assign(name, proxy))
-              _accum_0[_len_0] = _with_0
+              local proxy = NameProxy("des")
+              insert(destructures, destructure.build_assign(self, name, proxy))
+              _accum_0[_len_0] = proxy
             end
           else
             _accum_0[_len_0] = name
           end
           _len_0 = _len_0 + 1
         end
-        return _accum_0
-      end)()
+        node.names = _accum_0
+      end
       if next(destructures) then
         insert(destructures, build.group(node.body))
         node.body = destructures
@@ -3522,13 +3430,16 @@ package.preload['moonscript.transform'] = function()
       if ntype(source) == "unpack" then
         local list = source[2]
         local index_name = NameProxy("index")
-        local list_name = NameProxy("list")
+        local list_name = self:is_local(list) and list or NameProxy("list")
         local slice_var = nil
         local bounds
         if is_slice(list) then
           local slice = list[#list]
           table.remove(list)
           table.remove(slice, 1)
+          if self:is_local(list) then
+            list_name = list
+          end
           if slice[2] and slice[2] ~= "" then
             local max_tmp_name = NameProxy("max")
             slice_var = build.assign_one(max_tmp_name, slice[2])
@@ -3564,8 +3475,8 @@ package.preload['moonscript.transform'] = function()
           }
         end
         return build.group({
-          build.assign_one(list_name, list),
-          slice_var,
+          list_name ~= list and build.assign_one(list_name, list) or NOOP,
+          slice_var or NOOP,
           build["for"]({
             name = index_name,
             bounds = bounds,
@@ -3574,7 +3485,7 @@ package.preload['moonscript.transform'] = function()
                 "assign",
                 node.names,
                 {
-                  list_name:index(index_name)
+                  NameProxy.index(list_name, index_name)
                 }
               },
               build.group(node.body)
@@ -3635,9 +3546,8 @@ package.preload['moonscript.transform'] = function()
       local if_stm = {
         "if"
       }
-      local _list_0 = conds
-      for _index_0 = 1, #_list_0 do
-        local cond = _list_0[_index_0]
+      for _index_0 = 1, #conds do
+        local cond = conds[_index_0]
         local if_cond = convert_cond(cond)
         if first then
           first = false
@@ -3654,18 +3564,19 @@ package.preload['moonscript.transform'] = function()
     end,
     class = function(self, node, ret, parent_assign)
       local _, name, parent_val, body = unpack(node)
+      if parent_val == "" then
+        parent_val = nil
+      end
       local statements = { }
       local properties = { }
-      local _list_0 = body
-      for _index_0 = 1, #_list_0 do
-        local item = _list_0[_index_0]
+      for _index_0 = 1, #body do
+        local item = body[_index_0]
         local _exp_0 = item[1]
         if "stm" == _exp_0 then
           insert(statements, item[2])
         elseif "props" == _exp_0 then
-          local _list_1 = item
-          for _index_1 = 2, #_list_1 do
-            local tuple = _list_1[_index_1]
+          for _index_1 = 2, #item do
+            local tuple = item[_index_1]
             if ntype(tuple[1]) == "self" then
               insert(statements, build.assign_one(unpack(tuple)))
             else
@@ -3675,14 +3586,13 @@ package.preload['moonscript.transform'] = function()
         end
       end
       local constructor
-      properties = (function()
+      do
         local _accum_0 = { }
         local _len_0 = 1
-        local _list_1 = properties
-        for _index_0 = 1, #_list_1 do
+        for _index_0 = 1, #properties do
           local _continue_0 = false
           repeat
-            local tuple = _list_1[_index_0]
+            local tuple = properties[_index_0]
             local key = tuple[1]
             local _value_0
             if key[1] == "key_literal" and key[2] == constructor_name then
@@ -3700,37 +3610,36 @@ package.preload['moonscript.transform'] = function()
             break
           end
         end
-        return _accum_0
-      end)()
+        properties = _accum_0
+      end
       local parent_cls_name = NameProxy("parent")
       local base_name = NameProxy("base")
       local self_name = NameProxy("self")
       local cls_name = NameProxy("class")
       if not (constructor) then
-        constructor = build.fndef({
-          args = {
-            {
-              "..."
-            }
-          },
-          arrow = "fat",
-          body = {
-            build["if"]({
-              cond = parent_cls_name,
-              ["then"] = {
-                build.chain({
-                  base = "super",
-                  {
-                    "call",
-                    {
-                      "..."
-                    }
-                  }
-                })
+        if parent_val then
+          constructor = build.fndef({
+            args = {
+              {
+                "..."
               }
-            })
-          }
-        })
+            },
+            arrow = "fat",
+            body = {
+              build.chain({
+                base = "super",
+                {
+                  "call",
+                  {
+                    "..."
+                  }
+                }
+              })
+            }
+          })
+        else
+          constructor = build.fndef()
+        end
       end
       local real_name = name or parent_assign and parent_assign[2][1]
       local _exp_0 = ntype(real_name)
@@ -3770,56 +3679,60 @@ package.preload['moonscript.transform'] = function()
           "__name",
           real_name
         },
-        {
+        parent_val and {
           "__parent",
           parent_cls_name
-        }
+        } or nil
       })
-      local class_lookup = build["if"]({
-        cond = {
-          "exp",
-          "val",
-          "==",
-          "nil",
-          "and",
-          parent_cls_name
-        },
-        ["then"] = {
-          parent_cls_name:index("name")
-        }
-      })
-      insert(class_lookup, {
-        "else",
-        {
-          "val"
-        }
-      })
+      local class_index
+      if parent_val then
+        local class_lookup = build["if"]({
+          cond = {
+            "exp",
+            "val",
+            "==",
+            "nil"
+          },
+          ["then"] = {
+            parent_cls_name:index("name")
+          }
+        })
+        insert(class_lookup, {
+          "else",
+          {
+            "val"
+          }
+        })
+        class_index = build.fndef({
+          args = {
+            {
+              "cls"
+            },
+            {
+              "name"
+            }
+          },
+          body = {
+            build.assign_one(LocalName("val"), build.chain({
+              base = "rawget",
+              {
+                "call",
+                {
+                  base_name,
+                  "name"
+                }
+              }
+            })),
+            class_lookup
+          }
+        })
+      else
+        class_index = base_name
+      end
       local cls_mt = build.table({
         {
           "__index",
-          build.fndef({
-            args = {
-              {
-                "cls"
-              },
-              {
-                "name"
-              }
-            },
-            body = {
-              build.assign_one(LocalName("val"), build.chain({
-                base = "rawget",
-                {
-                  "call",
-                  {
-                    base_name,
-                    "name"
-                  }
-                }
-              })),
-              class_lookup
-            }
-          })
+          class_index
         },
         {
           "__call",
@@ -3870,7 +3783,6 @@ package.preload['moonscript.transform'] = function()
       })
       local value = nil
       do
-        local _with_0 = build
         local out_body = {
           Run(function(self)
             if name then
@@ -3878,17 +3790,17 @@ package.preload['moonscript.transform'] = function()
             end
             return self:set("super", function(block, chain)
               if chain then
-                local slice = (function()
+                local slice
+                do
                   local _accum_0 = { }
                   local _len_0 = 1
-                  local _list_1 = chain
-                  for _index_0 = 3, #_list_1 do
-                    local item = _list_1[_index_0]
+                  for _index_0 = 3, #chain do
+                    local item = chain[_index_0]
                     _accum_0[_len_0] = item
                     _len_0 = _len_0 + 1
                   end
-                  return _accum_0
-                end)()
+                  slice = _accum_0
+                end
                 local new_chain = {
                   "chain",
                   parent_cls_name
@@ -3932,9 +3844,8 @@ package.preload['moonscript.transform'] = function()
                     }
                   }
                 end
-                local _list_1 = slice
-                for _index_0 = 1, #_list_1 do
-                  local item = _list_1[_index_0]
+                for _index_0 = 1, #slice do
+                  local item = slice[_index_0]
                   insert(new_chain, item)
                 end
                 return new_chain
@@ -3947,48 +3858,41 @@ package.preload['moonscript.transform'] = function()
             "declare_glob",
             "*"
           },
-          _with_0.assign_one(parent_cls_name, parent_val == "" and "nil" or parent_val),
-          _with_0.assign_one(base_name, {
+          parent_val and build.assign_one(parent_cls_name, parent_val) or NOOP,
+          build.assign_one(base_name, {
             "table",
             properties
           }),
-          _with_0.assign_one(base_name:chain("__index"), base_name),
-          _with_0["if"]({
-            cond = parent_cls_name,
-            ["then"] = {
-              _with_0.chain({
-                base = "setmetatable",
-                {
-                  "call",
+          build.assign_one(base_name:chain("__index"), base_name),
+          parent_val and build.chain({
+            base = "setmetatable",
+            {
+              "call",
+              {
+                base_name,
+                build.chain({
+                  base = parent_cls_name,
                   {
-                    base_name,
-                    _with_0.chain({
-                      base = parent_cls_name,
-                      {
-                        "dot",
-                        "__base"
-                      }
-                    })
+                    "dot",
+                    "__base"
                   }
-                }
-              })
+                })
+              }
             }
-          }),
-          _with_0.assign_one(cls_name, cls),
-          _with_0.assign_one(base_name:chain("__class"), cls_name),
-          _with_0.group((function()
+          }) or NOOP,
+          build.assign_one(cls_name, cls),
+          build.assign_one(base_name:chain("__class"), cls_name),
+          build.group((function()
             if #statements > 0 then
               return {
-                _with_0.assign_one(LocalName("self"), cls_name),
-                _with_0.group(statements)
+                build.assign_one(LocalName("self"), cls_name),
+                build.group(statements)
               }
             end
           end)()),
-          _with_0["if"]({
+          parent_val and build["if"]({
             cond = {
               "exp",
-              parent_cls_name,
-              "and",
               parent_cls_name:chain("__inherited")
             },
             ["then"] = {
@@ -4000,11 +3904,11 @@ package.preload['moonscript.transform'] = function()
                 }
               })
             }
-          }),
-          _with_0.group((function()
+          }) or NOOP,
+          build.group((function()
             if name then
               return {
-                _with_0.assign_one(name, cls_name)
+                build.assign_one(name, cls_name)
               }
             end
           end)()),
@@ -4014,11 +3918,11 @@ package.preload['moonscript.transform'] = function()
             end
           end)()
         }
-        value = _with_0.group({
-          _with_0.group((function()
+        value = build.group({
+          build.group((function()
             if ntype(name) == "value" then
               return {
-                _with_0.declare({
+                build.declare({
                   names = {
                     name
                   }
@@ -4026,15 +3930,13 @@ package.preload['moonscript.transform'] = function()
               }
             end
           end)()),
-          _with_0["do"](out_body)
+          build["do"](out_body)
         })
       end
       return value
     end
   })
-  local Accumulator
   do
-    local _parent_0 = nil
     local _base_0 = {
       body_idx = {
         ["for"] = 4,
@@ -4046,12 +3948,15 @@ package.preload['moonscript.transform'] = function()
         node[index] = self:mutate_body(node[index])
         return self:wrap(node)
       end,
-      wrap = function(self, node)
-        return build.block_exp({
+      wrap = function(self, node, group_type)
+        if group_type == nil then
+          group_type = "block_exp"
+        end
+        return build[group_type]({
           build.assign_one(self.accum_name, build.table()),
           build.assign_one(self.len_name, 1),
           node,
-          self.accum_name
+          group_type == "block_exp" and self.accum_name or NOOP
         })
       end,
       mutate_body = function(self, body)
@@ -4079,7 +3984,7 @@ package.preload['moonscript.transform'] = function()
           val = self.value_name
         end
         local update = {
-          build.assign_one(self.accum_name:index(self.len_name), val),
+          build.assign_one(NameProxy.index(self.accum_name, self.len_name), val),
           {
             "update",
             self.len_name,
@@ -4092,27 +3997,16 @@ package.preload['moonscript.transform'] = function()
       end
     }
     _base_0.__index = _base_0
-    if _parent_0 then
-      setmetatable(_base_0, _parent_0.__base)
-    end
     local _class_0 = setmetatable({
-      __init = function(self)
+      __init = function(self, accum_name)
         self.accum_name = NameProxy("accum")
         self.value_name = NameProxy("value")
         self.len_name = NameProxy("len")
       end,
       __base = _base_0,
-      __name = "Accumulator",
-      __parent = _parent_0
+      __name = "Accumulator"
     }, {
-      __index = function(cls, name)
-        local val = rawget(_base_0, name)
-        if val == nil and _parent_0 then
-          return _parent_0[name]
-        else
-          return val
-        end
-      end,
+      __index = _base_0,
       __call = function(cls, ...)
         local _self_0 = setmetatable({}, _base_0)
         cls.__init(_self_0, ...)
@@ -4120,12 +4014,8 @@ package.preload['moonscript.transform'] = function()
       end
     })
     _base_0.__class = _class_0
-    if _parent_0 and _parent_0.__inherited then
-      _parent_0.__inherited(_parent_0, _class_0)
-    end
     Accumulator = _class_0
   end
-  local default_accumulator
   default_accumulator = function(self, node)
     return Accumulator():convert(node)
   end
@@ -4143,7 +4033,7 @@ package.preload['moonscript.transform'] = function()
         return scope.transform.statement(stm, fn)
       elseif types.manual_return[t] or not types.is_value(stm) then
         if is_top and t == "return" and stm[2] == "" then
-          return nil
+          return NOOP
         else
           return stm
         end
@@ -4160,7 +4050,7 @@ package.preload['moonscript.transform'] = function()
     end
     return fn
   end
-  local Value = Transformer({
+  Value = Transformer({
     ["for"] = default_accumulator,
     ["while"] = default_accumulator,
     foreach = default_accumulator,
@@ -4409,16 +4299,25 @@ package.preload['moonscript.transform'] = function()
 end
 package.preload['moonscript.types'] = function()
   local util = require("moonscript.util")
-  local data = require("moonscript.data")
-  local insert = table.insert
-  local unpack = util.unpack
-  local manual_return = data.Set({
+  local Set
+  do
+    local _obj_0 = require("moonscript.data")
+    Set = _obj_0.Set
+  end
+  local insert
+  do
+    local _obj_0 = table
+    insert = _obj_0.insert
+  end
+  local unpack
+  unpack = util.unpack
+  local manual_return = Set({
     "foreach",
     "for",
     "while",
     "return"
   })
-  local cascading = data.Set({
+  local cascading = Set({
     "if",
     "unless",
     "with",
@@ -4642,9 +4541,8 @@ package.preload['moonscript.types'] = function()
       if tbl == nil then
         tbl = { }
       end
-      local _list_0 = tbl
-      for _index_0 = 1, #_list_0 do
-        local tuple = _list_0[_index_0]
+      for _index_0 = 1, #tbl do
+        local tuple = tbl[_index_0]
         if type(tuple[1]) == "string" then
           tuple[1] = {
             "key_literal",
@@ -4669,9 +4567,8 @@ package.preload['moonscript.types'] = function()
         "chain",
         base
       }
-      local _list_0 = parts
-      for _index_0 = 1, #_list_0 do
-        local part = _list_0[_index_0]
+      for _index_0 = 1, #parts do
+        local part = parts[_index_0]
         insert(node, part)
       end
       return node
@@ -4725,7 +4622,11 @@ package.preload['moonscript.types'] = function()
   
 end
 package.preload['moonscript.util'] = function()
-  local concat = table.concat
+  local concat
+  do
+    local _obj_0 = table
+    concat = _obj_0.concat
+  end
   local unpack = unpack or table.unpack
   local type = type
   local moon = {
@@ -4800,15 +4701,13 @@ package.preload['moonscript.util'] = function()
       return { }
     end
     str = str .. delim
-    return (function()
-      local _accum_0 = { }
-      local _len_0 = 1
-      for m in str:gmatch("(.-)" .. delim) do
-        _accum_0[_len_0] = m
-        _len_0 = _len_0 + 1
-      end
-      return _accum_0
-    end)()
+    local _accum_0 = { }
+    local _len_0 = 1
+    for m in str:gmatch("(.-)" .. delim) do
+      _accum_0[_len_0] = m
+      _len_0 = _len_0 + 1
+    end
+    return _accum_0
   end
   local dump
   dump = function(what)
@@ -4827,15 +4726,16 @@ package.preload['moonscript.util'] = function()
         end
         seen[what] = true
         depth = depth + 1
-        local lines = (function()
+        local lines
+        do
           local _accum_0 = { }
           local _len_0 = 1
           for k, v in pairs(what) do
             _accum_0[_len_0] = (" "):rep(depth * 4) .. "[" .. tostring(k) .. "] = " .. _dump(v, depth)
             _len_0 = _len_0 + 1
           end
-          return _accum_0
-        end)()
+          lines = _accum_0
+        end
         seen[what] = false
         return "{\n" .. concat(lines) .. (" "):rep((depth - 1) * 4) .. "}\n"
       else
@@ -4846,7 +4746,8 @@ package.preload['moonscript.util'] = function()
   end
   local debug_posmap
   debug_posmap = function(posmap, moon_code, lua_code)
-    local tuples = (function()
+    local tuples
+    do
       local _accum_0 = { }
       local _len_0 = 1
       for k, v in pairs(posmap) do
@@ -4856,17 +4757,17 @@ package.preload['moonscript.util'] = function()
         }
         _len_0 = _len_0 + 1
       end
-      return _accum_0
-    end)()
+      tuples = _accum_0
+    end
     table.sort(tuples, function(a, b)
       return a[1] < b[1]
     end)
-    local lines = (function()
+    local lines
+    do
       local _accum_0 = { }
       local _len_0 = 1
-      local _list_0 = tuples
-      for _index_0 = 1, #_list_0 do
-        local pair = _list_0[_index_0]
+      for _index_0 = 1, #tuples do
+        local pair = tuples[_index_0]
         local lua_line, pos = unpack(pair)
         local moon_line = pos_to_line(moon_code, pos)
         local lua_text = get_line(lua_code, lua_line)
@@ -4875,8 +4776,8 @@ package.preload['moonscript.util'] = function()
         _accum_0[_len_0] = _value_0
         _len_0 = _len_0 + 1
       end
-      return _accum_0
-    end)()
+      lines = _accum_0
+    end
     return concat(lines, "\n")
   end
   local setfenv = setfenv or function(fn, env)
@@ -4943,7 +4844,7 @@ package.preload['moonscript.version'] = function()
   
   module("moonscript.version", package.seeall)
   
-  version = "0.2.3-2"
+  version = "0.2.4"
   function print_version()
   	print("MoonScript version "..version)
   end
