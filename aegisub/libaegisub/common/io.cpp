@@ -97,7 +97,22 @@ Save::Save(const std::string& file, bool binary)
 
 Save::~Save() {
 	delete fp;
+#ifndef _WIN32
 	util::Rename(tmp_name, file_name);
+#else
+	for (int i = 0; i < 10; ++i) {
+		try {
+			util::Rename(tmp_name, file_name);
+			return;
+		}
+		catch (agi::FileNotAccessibleError const&) {
+			// Retry up to ten times in case it's just locked by a poorly-written antivirus scanner
+			if (i == 9)
+				throw;
+			Sleep(100);
+		}
+	}
+#endif
 }
 
 std::ofstream& Save::Get() {
