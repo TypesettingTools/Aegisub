@@ -20,6 +20,8 @@
 
 #include "libaegisub/util.h"
 
+#include <boost/thread.hpp>
+
 namespace agi { namespace util {
 
 timeval time_log() {
@@ -29,5 +31,9 @@ timeval time_log() {
 }
 
 void SetThreadName(const char *) { }
+
+void sleep_for(int ms) {
+	boost::this_thread::sleep_for(boost::chrono::milliseconds(ms));
+}
 
 } }

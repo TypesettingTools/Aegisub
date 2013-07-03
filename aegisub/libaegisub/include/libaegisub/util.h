@@ -70,5 +70,10 @@ namespace agi {
 	}
 #endif
 
+	/// A thin wrapper around this_thread::sleep_for that uses std::thread on
+	/// Windows (to avoid having to compile boost.thread) and boost::thread
+	/// elsewhere (because libstcc++ 4.7 is missing it).
+	void sleep_for(int ms);
+
 	} // namespace util
 } // namespace agi

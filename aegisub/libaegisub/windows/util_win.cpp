@@ -23,6 +23,8 @@
 
 #include "libaegisub/charset_conv_win.h"
 
+#include <thread>
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
@@ -97,6 +99,10 @@ void SetThreadName(LPCSTR szThreadName) {
 		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR *)&info);
 	}
 	__except (EXCEPTION_CONTINUE_EXECUTION) {}
+}
+
+void sleep_for(int ms) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
 	} // namespace io
