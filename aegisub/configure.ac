@@ -161,6 +161,7 @@ AS_IF([test x$enable_compiler_flags != xno], [
   AC_CXX_FLAG([-pipe])
   AC_CXX_FLAG([-g])
   AC_CXX_FLAG([-std=c++11])
+  AC_CXX_FLAG([-Wno-c++11-narrowing])
 
   # -O* messes with debugging.
   AS_IF([test x$enable_debug = xyes], [
