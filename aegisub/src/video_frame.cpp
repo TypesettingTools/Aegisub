@@ -30,6 +30,20 @@ VideoFrame::VideoFrame(const unsigned char *data, size_t width, size_t height, s
 {
 }
 
+namespace {
+	// We actually have bgr_, not bgra, so we need a custom converter which ignores the alpha channel
+	struct color_converter {
+		template <typename P1, typename P2>
+		void operator()(P1 const& src, P2& dst) const {
+			using namespace boost::gil;
+			dst = rgb8_pixel_t(
+				get_color(src, red_t()),
+				get_color(src, green_t()),
+				get_color(src, blue_t()));
+		}
+	};
+}
+
 wxImage GetImage(VideoFrame const& frame) {
 	using namespace boost::gil;
 
@@ -38,6 +52,6 @@ wxImage GetImage(VideoFrame const& frame) {
 	auto dst = interleaved_view(frame.width, frame.height, (rgb8_pixel_t*)img.GetData(), 3 * frame.width);
 	if (frame.flipped)
 		src = flipped_up_down_view(src);
-	copy_and_convert_pixels(src, dst);
+	copy_and_convert_pixels(src, dst, color_converter());
 	return img;
 }
