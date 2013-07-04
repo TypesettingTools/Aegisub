@@ -169,12 +169,6 @@ public:
 	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
 	const std::string GetEntryData() const override;
 
-	template<int which>
-	void SetMarginString(std::string const& value) { SetMarginString(value, which);}
-	/// @brief Set a margin
-	/// @param value New value of the margin
-	/// @param which 0 = left, 1 = right, 2 = vertical
-	void SetMarginString(std::string const& value, int which);
 	/// @brief Get a margin
 	/// @param which 0 = left, 1 = right, 2 = vertical
 	std::string GetMarginString(int which) const;

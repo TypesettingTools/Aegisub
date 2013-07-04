@@ -269,11 +269,6 @@ void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
 	Text = join(blocks | transformed(get_text), "");
 }
 
-void AssDialogue::SetMarginString(std::string const& origvalue, int which) {
-	if (which < 0 || which > 2) throw InvalidMarginIdError();
-	Margin[which] = mid<int>(0, atoi(origvalue.c_str()), 9999);
-}
-
 std::string AssDialogue::GetMarginString(int which) const {
 	if (which < 0 || which > 2) throw InvalidMarginIdError();
 	return std::to_string(Margin[which]);
