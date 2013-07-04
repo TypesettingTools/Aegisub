@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Aegisub 3.0.0\n"
+"Project-Id-Version: Aegisub 3.0.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 16:45-0700\n"
-"PO-Revision-Date: 2012-10-07 23:22+0100\n"
+"PO-Revision-Date: 2013-06-29 18:04+0100\n"
 "Last-Translator: Xabier Aramendi (Azpidatziak) <azpidatziak@gmail.com>\n"
 "Language-Team: (EUS_Xabier Aramendi) <azpidatziak@gmail.com>\n"
 "Language: Euskara (Basque)\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.5.3\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #: ../src/base_grid.cpp:507 ../src/base_grid.cpp:909
 msgid "#"
@@ -881,7 +881,7 @@ msgstr "Agiri hau ez da eskript bat bezala ezagutzen"
 
 #: ../src/command/timecode.cpp:61 ../src/command/timecode.cpp:62
 msgid "Close Timecodes File"
-msgstr "Itxi Denbora-kode Agiria"
+msgstr "I&txi Denbora-kode Agiria"
 
 #: ../src/command/timecode.cpp:63
 msgid "Closes the currently open timecodes file"
@@ -889,7 +889,7 @@ msgstr "Orain irekita dagoen denbora-kode agiria isten du"
 
 #: ../src/command/timecode.cpp:79
 msgid "Open Timecodes File..."
-msgstr "Ireki Denbora-kode Agiria..."
+msgstr "Ireki &Denbora-kode Agiria..."
 
 #: ../src/command/timecode.cpp:80 ../src/command/timecode.cpp:86
 msgid "Open Timecodes File"
@@ -901,7 +901,7 @@ msgstr "VFR denbora-kode v1 edo v2 agiria irekitzen du"
 
 #: ../src/command/timecode.cpp:98
 msgid "Save Timecodes File..."
-msgstr "Gorde Denbora-kode Agiria..."
+msgstr "G&orde Denbora-kode Agiria..."
 
 #: ../src/command/timecode.cpp:99 ../src/command/timecode.cpp:110
 msgid "Save Timecodes File"
@@ -978,7 +978,7 @@ msgstr "Utzi bideoa jatorrizko ikuspegi mailan"
 
 #: ../src/command/video.cpp:189
 msgid "&Fullscreen (4:3)"
-msgstr "Ikusleiho-&osoa (4:3)"
+msgstr "&Ikusleiho-osoa (4:3)"
 
 #: ../src/command/video.cpp:190
 msgid "Fullscreen (4:3)"
@@ -990,7 +990,7 @@ msgstr "Bideoaren ikuspegi maila 4:3-ra behartzen du"
 
 #: ../src/command/video.cpp:208
 msgid "&Widescreen (16:9)"
-msgstr "&Ikusleiho-zabala (16:9)"
+msgstr "I&kusleiho-zabala (16:9)"
 
 #: ../src/command/video.cpp:209
 msgid "Widescreen (16:9)"
@@ -1389,7 +1389,7 @@ msgstr "Bikoiztu lerroak eta aldatu frame bat"
 
 #: ../src/command/edit.cpp:268
 msgid "As &Karaoke"
-msgstr "Karaoke &Bezala"
+msgstr "K&araoke Bezala"
 
 #: ../src/command/edit.cpp:269
 msgid "As Karaoke"
@@ -1474,7 +1474,7 @@ msgstr "Birnahastu azpidatziak banantzen edo batzen direnean"
 
 #: ../src/command/edit.cpp:369 ../src/command/edit.cpp:370
 msgid "Split Lines (by karaoke)"
-msgstr "Banandu Lerroak (karaokea)"
+msgstr "&Banandu Lerroak (karaokea)"
 
 #: ../src/command/edit.cpp:371
 msgid "Uses karaoke timing to split line into multiple smaller lines"
@@ -1615,7 +1615,7 @@ msgstr "lerro txertapena"
 
 #: ../src/command/subtitle.cpp:184 ../src/command/subtitle.cpp:185
 msgid "After Current, at Video Time"
-msgstr "Oraingoaren Ondoren, Bideo Denboran"
+msgstr "Oraingoaren O&ndoren, Bideo Denboran"
 
 #: ../src/command/subtitle.cpp:186
 msgid "Inserts a line after current, starting at video time"
@@ -1635,7 +1635,7 @@ msgstr "Lerro bat txertatzen du oraingoaren aurretik"
 
 #: ../src/command/subtitle.cpp:232 ../src/command/subtitle.cpp:233
 msgid "Before Current, at Video Time"
-msgstr "Oraingoaren Aurretik, Bideo Denboran"
+msgstr "Oraingoaren A&urretik, Bideo Denboran"
 
 #: ../src/command/subtitle.cpp:234
 msgid "Inserts a line before current, starting at video time"
@@ -1772,7 +1772,7 @@ msgstr "Ireki idaz egiaztatzailea"
 
 #: ../src/command/tool.cpp:73
 msgid "ASSDraw3..."
-msgstr "ASSDraw3..."
+msgstr "ASSDra&w3..."
 
 #: ../src/command/tool.cpp:74
 msgid "ASSDraw3"
@@ -1796,7 +1796,7 @@ msgstr "Azpidatzien kopia bat gordetzen du prozesapena ezarrita"
 
 #: ../src/command/tool.cpp:99
 msgid "&Fonts Collector..."
-msgstr "Hizki Bi&ltzailea..."
+msgstr "Hizki Bil&tzailea..."
 
 #: ../src/command/tool.cpp:100 ../src/dialog_fonts_collector.cpp:215
 msgid "Fonts Collector"
@@ -1820,7 +1820,7 @@ msgstr "Lerroak adierazitako irizpide bati jarraituz hautatzen ditu"
 
 #: ../src/command/tool.cpp:125
 msgid "&Resample Resolution..."
-msgstr "&Birlagindu Bereizmena..."
+msgstr "Birlagindu Bereiz&mena..."
 
 #: ../src/command/tool.cpp:126 ../src/dialog_resample.cpp:55
 msgid "Resample Resolution"
@@ -2037,7 +2037,7 @@ msgstr "Ikusi gertaera oharra"
 
 #: ../src/command/app.cpp:222
 msgid "New &Window"
-msgstr "Leiho &Berria"
+msgstr "&Leiho Berria"
 
 #: ../src/command/app.cpp:223
 msgid "New Window"
@@ -2070,7 +2070,7 @@ msgstr "Ezkutatu &Tresnabarra"
 
 #: ../src/command/app.cpp:275
 msgid "Show Toolbar"
-msgstr "Erakutsi Tresnabarra"
+msgstr "Erakutsi &Tresnabarra"
 
 #: ../src/command/app.cpp:291
 msgid "&Check for Updates..."
@@ -2098,7 +2098,7 @@ msgstr "Mugitu aurreko lerrora"
 
 #: ../src/command/grid.cpp:107 ../src/command/grid.cpp:128
 msgid "&Actor Name"
-msgstr "&Antzezle Izena"
+msgstr "A&ntzezle Izena"
 
 #: ../src/command/grid.cpp:108 ../src/command/grid.cpp:129
 msgid "Actor Name"
@@ -2135,7 +2135,7 @@ msgstr "Antolatu hautaturiko azpidatzi guztiak beren eraginez"
 
 #: ../src/command/grid.cpp:167 ../src/command/grid.cpp:180
 msgid "&End Time"
-msgstr "Amaiera &Denbora"
+msgstr "&Amaiera Denbora"
 
 #: ../src/command/grid.cpp:168 ../src/command/grid.cpp:181
 #: ../src/dialog_paste_over.cpp:64
@@ -2181,7 +2181,7 @@ msgstr "Antolatu azpidatzi guztiak beren hasiera denboraz"
 
 #: ../src/command/grid.cpp:245 ../src/command/grid.cpp:258
 msgid "St&yle Name"
-msgstr "Estilo &Izena"
+msgstr "E&stilo Izena"
 
 #: ../src/command/grid.cpp:246 ../src/command/grid.cpp:259
 #: ../src/dialog_style_editor.cpp:180
@@ -2230,7 +2230,7 @@ msgstr "Ezkutatu ezeztaturiko etiketak azpidatzi saretxoan"
 
 #: ../src/command/grid.cpp:315
 msgid "Sh&ow Tags"
-msgstr "Erakutsi Eti&ketak"
+msgstr "E&rakutsi Etiketak"
 
 #: ../src/command/grid.cpp:316
 msgid "Show Tags"
@@ -2242,7 +2242,7 @@ msgstr "Erakutsi ezeztaturiko etiketa denak azpidatzi saretxoan"
 
 #: ../src/command/grid.cpp:333
 msgid "S&implify Tags"
-msgstr "Etiketa A&rruntak"
+msgstr "Eti&keta Arruntak"
 
 #: ../src/command/grid.cpp:334
 msgid "Simplify Tags"
@@ -2276,7 +2276,7 @@ msgstr "Mugitu hautaturiko lerroak lerro bat behera"
 
 #: ../src/command/grid.cpp:407 ../src/command/grid.cpp:408
 msgid "Swap Lines"
-msgstr "Trukatu Lerroak"
+msgstr "&Trukatu Lerroak"
 
 #: ../src/command/grid.cpp:409
 msgid "Swaps the two selected lines"
@@ -2553,7 +2553,7 @@ msgstr "Klipa"
 
 #: ../src/command/vis_tool.cpp:101
 msgid "Clip subtitles to a rectangle"
-msgstr "Kllipatu azpidatziak laukiluze batera"
+msgstr "Klipatu azpidatziak laukiluze batera"
 
 #: ../src/command/vis_tool.cpp:106 ../src/command/vis_tool.cpp:107
 msgid "Vector Clip"
@@ -2593,7 +2593,7 @@ msgstr "Audio Heuskarriak"
 
 #: ../src/command/audio.cpp:117 ../src/command/audio.cpp:118
 msgid "Open 2h30 Blank Audio"
-msgstr "Ireki 2h30 Blank Audioa"
+msgstr "Ireki 2h30 &Blank Audioa"
 
 #: ../src/command/audio.cpp:119
 msgid "Open a 150 minutes blank audio clip, for debugging"
@@ -2601,7 +2601,7 @@ msgstr "Ireki 150 minutuko audio klip hutsa, garbiketarako"
 
 #: ../src/command/audio.cpp:135 ../src/command/audio.cpp:136
 msgid "Open 2h30 Noise Audio"
-msgstr "Ireki 2h30 Noise Audioa"
+msgstr "Ireki 2h30 &Noise Audioa"
 
 #: ../src/command/audio.cpp:137
 msgid "Open a 150 minutes noise-filled audio clip, for debugging"
@@ -2609,7 +2609,7 @@ msgstr "Ireki 150 minutuko zarataz-beteriko audio klipa, garbiketarako "
 
 #: ../src/command/audio.cpp:153
 msgid "Open Audio from &Video"
-msgstr "Ireki Audioa &Bideotik"
+msgstr "Ireki A&udioa Bideotik"
 
 #: ../src/command/audio.cpp:154
 msgid "Open Audio from Video"
@@ -2888,7 +2888,7 @@ msgstr "Ikusi Aegisub webgune ofiziala"
 
 #: ../src/command/keyframe.cpp:62 ../src/command/keyframe.cpp:63
 msgid "Close Keyframes"
-msgstr "Itxi Giltzaframeak"
+msgstr "Itxi Giltzaf&rameak"
 
 #: ../src/command/keyframe.cpp:64
 msgid "Closes the currently open keyframes list"
@@ -2896,7 +2896,7 @@ msgstr "Orain irekita dagoen giltzaframe zerrenda isten du"
 
 #: ../src/command/keyframe.cpp:80
 msgid "Open Keyframes..."
-msgstr "Ireki Giltzaframeak..."
+msgstr "Ireki Giltza&frameak..."
 
 #: ../src/command/keyframe.cpp:81
 msgid "Open Keyframes"
@@ -2912,7 +2912,7 @@ msgstr "Ireki giltzaframe agiria"
 
 #: ../src/command/keyframe.cpp:104
 msgid "Save Keyframes..."
-msgstr "Gorde Giltzaframeak..."
+msgstr "Gorde Gi&ltzaframeak..."
 
 #: ../src/command/keyframe.cpp:105
 msgid "Save Keyframes"
@@ -2956,7 +2956,7 @@ msgstr "&Ezikusi"
 
 #: ../src/dialog_spellchecker.cpp:144
 msgid "Ignore a&ll"
-msgstr "E&zikusi denak"
+msgstr "Ezi&kusi denak"
 
 #: ../src/dialog_spellchecker.cpp:147
 msgid "Add to &dictionary"
@@ -3045,7 +3045,7 @@ msgstr "Bereizmena"
 #: ../src/dialog_properties.cpp:85 ../src/export_framerate.cpp:79
 #: ../src/dialog_resample.cpp:81
 msgid "From &video"
-msgstr "&Bideotik"
+msgstr "B&ideotik"
 
 #: ../src/dialog_properties.cpp:100
 msgid "0: Smart wrapping, top line is wider"
@@ -3153,19 +3153,19 @@ msgstr ""
 
 #: ../src/dialog_fonts_collector.cpp:221
 msgid "Check fonts for availability"
-msgstr "Egiaztatu hizki eskuragarritasuna"
+msgstr "&Egiaztatu hizki eskuragarritasuna"
 
 #: ../src/dialog_fonts_collector.cpp:222
 msgid "Copy fonts to folder"
-msgstr "Kopiatu hizkiak agiritegira"
+msgstr "&Kopiatu hizkiak agiritegira"
 
 #: ../src/dialog_fonts_collector.cpp:223
 msgid "Copy fonts to subtitle file's folder"
-msgstr "Kopiatu hizkiak azpidatzi agiriaren agiritegira"
+msgstr "K&opiatu hizkiak azpidatzi agiriaren agiritegira"
 
 #: ../src/dialog_fonts_collector.cpp:224
 msgid "Copy fonts to zipped archive"
-msgstr "Kopiatu hizkiak zipaturiko agirira"
+msgstr "Ko&piatu hizkiak zipaturiko agirira"
 
 #: ../src/dialog_fonts_collector.cpp:226
 msgid "Symlink fonts to folder"
@@ -3631,7 +3631,7 @@ msgstr "Audio Margo Eskemak"
 
 #: ../src/preferences.cpp:252 ../src/preferences.cpp:533
 msgid "Spectrum"
-msgstr "Argilitza"
+msgstr "Argilitza:"
 
 #: ../src/preferences.cpp:253
 msgid "Waveform"
@@ -4380,15 +4380,15 @@ msgstr "Berdin"
 
 #: ../src/dialog_selection.cpp:147
 msgid "&Matches"
-msgstr "Ber&dinak"
+msgstr "Berdinak"
 
 #: ../src/dialog_selection.cpp:148
 msgid "&Doesn't Match"
-msgstr "E&z dago Berdinik"
+msgstr "Ez dago Berdinik"
 
 #: ../src/dialog_selection.cpp:149
 msgid "Match c&ase"
-msgstr "B&erdintasuna"
+msgstr "Berdintasuna"
 
 #: ../src/dialog_selection.cpp:158
 msgid "&Exact match"
@@ -4396,7 +4396,7 @@ msgstr "&Berdin zehatza"
 
 #: ../src/dialog_selection.cpp:158
 msgid "&Contains"
-msgstr "&Edukiak"
+msgstr "E&dukiak"
 
 #: ../src/dialog_selection.cpp:158
 msgid "&Regular Expression match"
@@ -4432,11 +4432,11 @@ msgstr "Elkarrizket/aipamen berdinak"
 
 #: ../src/dialog_selection.cpp:169
 msgid "D&ialogues"
-msgstr "E&lkarrizketak"
+msgstr "&Elkarrizketak"
 
 #: ../src/dialog_selection.cpp:170
 msgid "Comme&nts"
-msgstr "A&ipamenak"
+msgstr "Aipa&menak"
 
 #: ../src/dialog_selection.cpp:175
 msgid "Set se&lection"
@@ -4558,7 +4558,7 @@ msgstr ""
 
 #: ../src/export_framerate.cpp:60
 msgid "Transform Framerate"
-msgstr "Eraldaketa Frameneurria"
+msgstr "Eraldatu Frameneurria"
 
 #: ../src/export_framerate.cpp:60
 msgid ""
@@ -4580,11 +4580,11 @@ msgstr ""
 
 #: ../src/export_framerate.cpp:99
 msgid "V&ariable"
-msgstr "Al&dakorra"
+msgstr "Alda&korra"
 
 #: ../src/export_framerate.cpp:103
 msgid "&Constant: "
-msgstr "A&ldagaitza:"
+msgstr "Aldagai&tza:"
 
 #: ../src/export_framerate.cpp:115
 msgid "&Reverse transformation"
@@ -5079,11 +5079,11 @@ msgstr "RGB/U"
 
 #: ../src/dialog_colorpicker.cpp:690
 msgid "HSL/L"
-msgstr "HSL/L"
+msgstr "HSL/A"
 
 #: ../src/dialog_colorpicker.cpp:690
 msgid "HSV/H"
-msgstr "HSV/H"
+msgstr "HSV/N"
 
 #: ../src/dialog_colorpicker.cpp:696
 msgid "RGB color"
@@ -5257,7 +5257,7 @@ msgstr ""
 "Bideo bereizmena:\t%d x %d\n"
 "Eskript bereizmena:\t%d x %d\n"
 "\n"
-"Aldatu azpidatziaren bereizmena bideorenera?"
+"Aldatu azpidatziaren bereizmena bideoarenera?"
 
 #: ../src/video_context.cpp:168
 msgid "Resolution mismatch"
@@ -5869,7 +5869,7 @@ msgstr "&Laguntza"
 
 #: default_menu.json:0
 msgid "&Insert Lines"
-msgstr "&Txertatu Lerroak"
+msgstr "T&xertatu Lerroak"
 
 #: default_menu.json:0
 msgid "Join Lines"
