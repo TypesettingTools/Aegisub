@@ -97,11 +97,11 @@ public:
 
 class AssDialogueBlockDrawing : public AssDialogueBlock {
 public:
+	using AssDialogueBlock::text;
 	int Scale;
 
 	AssBlockType GetType() const override { return AssBlockType::DRAWING; }
 	AssDialogueBlockDrawing(std::string const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
-	void TransformCoords(int trans_x,int trans_y,double mult_x,double mult_y);
 };
 
 class AssDialogueBlockOverride : public AssDialogueBlock {

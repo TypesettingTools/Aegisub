@@ -209,6 +209,7 @@
     <ClInclude Include="$(SrcDir)plugin_manager.h" />
     <ClInclude Include="$(SrcDir)preferences.h" />
     <ClInclude Include="$(SrcDir)preferences_base.h" />
+    <ClInclude Include="$(SrcDir)resolution_resampler.h" />
     <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h" />
     <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h" />
     <ClInclude Include="$(SrcDir)search_replace_engine.h" />
@@ -405,6 +406,7 @@
     <ClCompile Include="$(SrcDir)plugin_manager.cpp" />
     <ClCompile Include="$(SrcDir)preferences.cpp" />
     <ClCompile Include="$(SrcDir)preferences_base.cpp" />
+    <ClCompile Include="$(SrcDir)resolution_resampler.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />

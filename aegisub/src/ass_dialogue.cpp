@@ -285,34 +285,3 @@ AssEntry *AssDialogue::Clone() const {
 	*const_cast<int *>(&clone->Id) = Id;
 	return clone;
 }
-
-void AssDialogueBlockDrawing::TransformCoords(int mx, int my, double x, double y) {
-	// HACK: Implement a proper parser ffs!!
-	// Could use Spline but it'd be slower and this seems to work fine
-	bool is_x = true;
-	std::string final;
-
-	for (auto const& cur : agi::Split(text, ' ')) {
-		if (std::all_of(begin(cur), end(cur), isdigit)) {
-			int val = boost::lexical_cast<int>(agi::str(cur));
-			if (is_x)
-				val = (int)((val + mx) * x + .5);
-			else
-				val = (int)((val + my) * y + .5);
-			final += std::to_string(val);
-			final += ' ';
-		}
-		else if (cur.size() == 1) {
-			char c = tolower(cur[0]);
-			if (c == 'm' || c == 'n' || c == 'l' || c == 'b' || c == 's' || c == 'p' || c == 'c') {
-				is_x = true;
-				final += c;
-				final += ' ';
-			}
-		}
-	}
-
-	// Write back final
-	final.pop_back();
-	text = final;
-}

@@ -21,19 +21,12 @@
 
 #include "dialog_resample.h"
 
-#include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_style.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
+#include "resolution_resampler.h"
 #include "video_context.h"
-
-#include <libaegisub/of_type_adaptor.h>
-
-#include <algorithm>
-#include <boost/algorithm/string/predicate.hpp>
-#include <functional>
 
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
@@ -143,114 +136,4 @@ void DialogResample::OnSymmetrical(wxCommandEvent &) {
 void DialogResample::OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst) {
 	if (symmetrical->IsChecked())
 		dst->SetValue(src->GetValue());
-}
-
-namespace {
-	struct resample_state {
-		const int *margin;
-		double rx;
-		double ry;
-		double ar;
-	};
-
-	void resample_tags(std::string const& name, AssOverrideParameter *cur, void *ud) {
-		resample_state *state = static_cast<resample_state *>(ud);
-
-		double resizer = 1.0;
-		int shift = 0;
-
-		switch (cur->classification) {
-			case AssParameterClass::ABSOLUTE_SIZE:
-				resizer = state->ry;
-				break;
-
-			case AssParameterClass::ABSOLUTE_POS_X:
-				resizer = state->rx;
-				shift = state->margin[LEFT];
-				break;
-
-			case AssParameterClass::ABSOLUTE_POS_Y:
-				resizer = state->ry;
-				shift = state->margin[TOP];
-				break;
-
-			case AssParameterClass::RELATIVE_SIZE_X:
-				resizer = state->ar;
-				break;
-
-			case AssParameterClass::RELATIVE_SIZE_Y:
-				//resizer = ry;
-				break;
-
-			case AssParameterClass::DRAWING: {
-				AssDialogueBlockDrawing block(cur->Get<std::string>(), 1);
-				block.TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
-				cur->Set(block.GetText());
-				return;
-			}
-
-			default:
-				return;
-		}
-
-		VariableDataType curType = cur->GetType();
-		if (curType == VariableDataType::FLOAT)
-			cur->Set((cur->Get<double>() + shift) * resizer);
-		else if (curType == VariableDataType::INT)
-			cur->Set<int>((cur->Get<int>() + shift) * resizer + 0.5);
-	}
-
-	void resample_line(resample_state *state, AssEntry &line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (diag && !(diag->Comment && (boost::starts_with(diag->Effect.get(), "template") || boost::starts_with(diag->Effect.get(), "code")))) {
-			boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
-
-			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
-				block->ProcessParameters(resample_tags, state);
-
-			for (auto drawing : blocks | agi::of_type<AssDialogueBlockDrawing>())
-				drawing->TransformCoords(state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
-
-			for (size_t i = 0; i < 3; ++i)
-				diag->Margin[i] = int((diag->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
-
-			diag->UpdateText(blocks);
-		}
-		else if (AssStyle *style = dynamic_cast<AssStyle*>(&line)) {
-			style->fontsize = int(style->fontsize * state->ry + 0.5);
-			style->outline_w *= state->ry;
-			style->shadow_w *= state->ry;
-			style->spacing *= state->rx;
-			style->scalex *= state->ar;
-			for (int i = 0; i < 3; i++)
-				style->Margin[i] = int((style->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
-			style->UpdateData();
-		}
-	}
-}
-
-void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
-	int src_x, src_y;
-	ass->GetResolution(src_x, src_y);
-
-	// Add margins to original resolution
-	src_x += settings.margin[LEFT] + settings.margin[RIGHT];
-	src_y += settings.margin[TOP] + settings.margin[BOTTOM];
-
-	resample_state state = {
-		settings.margin,
-		double(settings.script_x) / double(src_x),
-		double(settings.script_y) / double(src_y),
-		1.0
-	};
-
-	if (settings.change_ar)
-		state.ar = state.rx / state.ry;
-
-	for_each(ass->Line.begin(), ass->Line.end(), std::bind(resample_line, &state, std::placeholders::_1));
-
-	ass->SetScriptInfo("PlayResX", std::to_string(settings.script_x));
-	ass->SetScriptInfo("PlayResY", std::to_string(settings.script_y));
-
-	ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
 }

@@ -687,6 +687,9 @@
     <ClInclude Include="$(SrcDir)lpeg.h">
       <Filter>Automation\Lua</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)resolution_resampler.h">
+      <Filter>Features\Resolution resampler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1237,6 +1240,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)lpeg.c">
       <Filter>Automation\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)resolution_resampler.cpp">
+      <Filter>Features\Resolution resampler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

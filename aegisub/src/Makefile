@@ -204,6 +204,7 @@ SRC += \
 	plugin_manager.cpp \
 	preferences.cpp \
 	preferences_base.cpp \
+	resolution_resampler.cpp \
 	scintilla_text_ctrl.cpp \
 	scintilla_text_selection_controller.cpp \
 	search_replace_engine.cpp \

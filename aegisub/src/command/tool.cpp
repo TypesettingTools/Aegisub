@@ -51,6 +51,7 @@
 #include "../dialog_translation.h"
 #include "../include/aegisub/context.h"
 #include "../options.h"
+#include "../resolution_resampler.h"
 #include "../video_context.h"
 
 #include <libaegisub/fs.h>

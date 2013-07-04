@@ -23,23 +23,7 @@ namespace agi { struct Context; }
 class AssFile;
 class wxCheckBox;
 class wxSpinCtrl;
-
-/// Configuration parameters for a resample
-struct ResampleSettings {
-	/// Amount to add to each margin
-	int margin[4];
-	/// New X resolution
-	int script_x;
-	/// New Y resolution
-	int script_y;
-	/// Should the aspect ratio of the subs be changed?
-	bool change_ar;
-};
-
-/// Resample the subtitles in the project
-/// @param file Subtitles to resample
-/// @param settings Resample configuration settings
-void ResampleResolution(AssFile *file, ResampleSettings const& settings);
+struct ResampleSettings;
 
 /// @class DialogResample
 /// @brief Configuration dialog for resolution resampling
