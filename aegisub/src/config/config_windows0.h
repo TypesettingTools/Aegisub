@@ -124,7 +124,7 @@
 
 // Where the update checker should look for updates
 #define UPDATE_CHECKER_SERVER "updates.aegisub.org"
-#define UPDATE_CHECKER_BASE_URL "/3.0.3"
+#define UPDATE_CHECKER_BASE_URL "/3.0.4"
 
 ///////////// NOT RECOMMENDED /////////////
 
