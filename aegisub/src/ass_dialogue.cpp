@@ -269,11 +269,6 @@ void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
 	Text = join(blocks | transformed(get_text), "");
 }
 
-std::string AssDialogue::GetMarginString(int which) const {
-	if (which < 0 || which > 2) throw InvalidMarginIdError();
-	return std::to_string(Margin[which]);
-}
-
 bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 	if (!target) return false;
 	return ((Start < target->Start) ? (target->Start < End) : (Start < target->End));

@@ -328,7 +328,7 @@ void SubsEditBox::OnCommit(int type) {
 	if (type & AssFile::COMMIT_DIAG_META) {
 		layer->SetValue(line->Layer);
 		for (size_t i = 0; i < margin.size(); ++i)
-			change_value(margin[i], to_wx(line->GetMarginString(i)));
+			change_value(margin[i], std::to_wstring(line->Margin[i]));
 		comment_box->SetValue(line->Comment);
 		style_box->Select(style_box->FindString(to_wx(line->Style)));
 

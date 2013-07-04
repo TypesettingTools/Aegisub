@@ -169,9 +169,6 @@ public:
 	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
 	const std::string GetEntryData() const override;
 
-	/// @brief Get a margin
-	/// @param which 0 = left, 1 = right, 2 = vertical
-	std::string GetMarginString(int which) const;
 	/// Get the line as SSA rather than ASS
 	std::string GetSSAText() const override;
 	/// Does this line collide with the passed line?
@@ -183,10 +180,4 @@ public:
 	AssDialogue(AssDialogue const&);
 	AssDialogue(std::string const& data);
 	~AssDialogue();
-};
-
-class InvalidMarginIdError : public agi::InternalError {
-public:
-	InvalidMarginIdError() : InternalError("Invalid margin id", 0) { }
-	const char *GetName() const { return "internal_error/invalid_margin_id"; }
 };
