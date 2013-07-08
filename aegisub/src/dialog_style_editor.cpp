@@ -58,7 +58,6 @@
 #include <algorithm>
 
 #include <wx/bmpbuttn.h>
-#include <wx/fontenum.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -140,7 +139,7 @@ static wxTextCtrl *num_text_ctrl(wxWindow *parent, double value, bool allow_nega
 	return new wxTextCtrl(parent, -1, "", wxDefaultPosition, size, 0, NumValidator(value, allow_negative));
 }
 
-DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name)
+DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name, wxArrayString const& font_list)
 : wxDialog (parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , c(c)
 , is_new(false)
@@ -164,8 +163,6 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	// Prepare control values
 	wxString EncodingValue = std::to_wstring(style->encoding);
 	wxString alignValues[9] = { "7", "8", "9", "4", "5", "6", "1", "2", "3" };
-	wxArrayString fontList = wxFontEnumerator::GetFacenames();
-	fontList.Sort();
 
 	// Encoding options
 	wxArrayString encodingStrings;
@@ -236,7 +233,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Alignment->SetSelection(AlignToControl(style->alignment));
 	// Fill font face list box
 	FontName->Freeze();
-	FontName->Append(fontList);
+	FontName->Append(font_list);
 	FontName->SetValue(to_wx(style->font));
 	FontName->Thaw();
 

@@ -32,6 +32,7 @@
 /// @ingroup style_editor
 ///
 
+#include <future>
 #include <memory>
 #include <vector>
 
@@ -57,6 +58,8 @@ class DialogStyleManager : public wxDialog {
 
 	agi::signal::Connection commit_connection;
 	agi::signal::Connection active_line_connection;
+
+	std::shared_future<wxArrayString> font_list;
 
 	/// Styles in the current subtitle file
 	std::vector<AssStyle*> styleMap;

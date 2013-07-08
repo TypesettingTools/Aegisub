@@ -105,7 +105,7 @@ class DialogStyleEditor : public wxDialog {
 	void OnSetColor(wxThreadEvent& evt);
 
 public:
-	DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store = 0, std::string const& new_name = "");
+	DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name, wxArrayString const& font_list);
 	~DialogStyleEditor();
 
 	std::string GetStyleName() const;

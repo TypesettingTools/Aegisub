@@ -64,6 +64,7 @@
 
 #include <wx/bmpbuttn.h>
 #include <wx/filename.h>
+#include <wx/fontenum.h>
 #include <wx/intl.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
@@ -159,6 +160,11 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 , c(context)
 , commit_connection(c->ass->AddCommitListener(&DialogStyleManager::LoadCurrentStyles, this))
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogStyleManager::OnActiveLineChanged, this))
+, font_list(std::async(std::launch::async, []() -> wxArrayString {
+	wxArrayString fontList = wxFontEnumerator::GetFacenames();
+	fontList.Sort();
+	return fontList;
+}))
 {
 	using std::bind;
 	SetIcon(GETICON(style_toolbutton_16));
@@ -486,7 +492,7 @@ void DialogStyleManager::PasteToStorage() {
 }
 
 void DialogStyleManager::ShowStorageEditor(AssStyle *style, std::string const& new_name) {
-	DialogStyleEditor editor(this, style, c, &Store, new_name);
+	DialogStyleEditor editor(this, style, c, &Store, new_name, font_list.get());
 	if (editor.ShowModal()) {
 		UpdateStorage();
 		StorageList->SetStringSelection(to_wx(editor.GetStyleName()));
@@ -495,7 +501,7 @@ void DialogStyleManager::ShowStorageEditor(AssStyle *style, std::string const& n
 }
 
 void DialogStyleManager::OnStorageNew() {
-	ShowStorageEditor(0);
+	ShowStorageEditor(nullptr);
 }
 
 void DialogStyleManager::OnStorageEdit() {
@@ -524,7 +530,7 @@ void DialogStyleManager::OnStorageDelete() {
 }
 
 void DialogStyleManager::ShowCurrentEditor(AssStyle *style, std::string const& new_name) {
-	DialogStyleEditor editor(this, style, c, 0, new_name);
+	DialogStyleEditor editor(this, style, c, nullptr, new_name, font_list.get());
 	if (editor.ShowModal()) {
 		CurrentList->DeselectAll();
 		CurrentList->SetStringSelection(to_wx(editor.GetStyleName()));
@@ -533,7 +539,7 @@ void DialogStyleManager::ShowCurrentEditor(AssStyle *style, std::string const& n
 }
 
 void DialogStyleManager::OnCurrentNew() {
-	ShowCurrentEditor(0);
+	ShowCurrentEditor(nullptr);
 }
 
 void DialogStyleManager::OnCurrentEdit() {
