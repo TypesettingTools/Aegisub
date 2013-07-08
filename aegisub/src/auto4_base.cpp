@@ -56,6 +56,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
+#include <future>
 
 #include <wx/dcmemory.h>
 #include <wx/log.h>
@@ -340,19 +341,25 @@ namespace Automation4 {
 	{
 		scripts.clear();
 
-		int error_count = 0;
+		std::vector<std::future<std::unique_ptr<Script>>> script_futures;
 
 		boost::char_separator<char> sep("|");
 		for (auto const& tok : boost::tokenizer<boost::char_separator<char>>(path, sep)) {
 			auto dirname = config::path->Decode(tok);
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
-			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*")) {
-				auto s = ScriptFactory::CreateFromFile(dirname/filename, false, false);
-				if (s) {
-					if (!s->GetLoadedState()) ++error_count;
-					scripts.emplace_back(std::move(s));
-				}
+			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*"))
+				script_futures.emplace_back(std::async(std::launch::async, [=] {
+					return ScriptFactory::CreateFromFile(dirname/filename, false, false);
+				}));
+		}
+
+		int error_count = 0;
+		for (auto& future : script_futures) {
+			auto s = future.get();
+			if (s) {
+				if (!s->GetLoadedState()) ++error_count;
+				scripts.emplace_back(std::move(s));
 			}
 		}
 
