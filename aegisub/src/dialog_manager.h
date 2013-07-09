@@ -42,9 +42,11 @@ class DialogManager {
 	DialogMap created_dialogs;
 
 	/// Close handler which deletes and unregisters closed modeless dialogs
-	void OnClose(wxCloseEvent &evt) {
+	template<typename Event>
+	void OnClose(Event &evt) {
 		evt.Skip();
-		wxDialog *dialog = static_cast<wxDialog*>(evt.GetEventObject());
+		auto dialog = static_cast<wxWindow *>(evt.GetEventObject());
+		while (!dialog->IsTopLevel()) dialog = dialog->GetParent();
 		dialog->Destroy();
 
 		for (auto it = created_dialogs.begin(); it != created_dialogs.end(); ++it) {
@@ -70,7 +72,8 @@ public:
 			try {
 				wxDialog *d = new DialogType(c);
 				created_dialogs[&typeid(DialogType)] = d;
-				d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose, this);
+				d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose<wxCloseEvent>, this);
+				d->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
 				d->Show();
 				SetFloatOnParent(d);
 			}
@@ -105,7 +108,8 @@ public:
 
 	~DialogManager() {
 		for (auto const& it : created_dialogs) {
-			it.second->Unbind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose, this);
+			it.second->Unbind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose<wxCloseEvent>, this);
+			it.second->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
 			it.second->Destroy();
 		}
 		created_dialogs.clear();
