@@ -82,7 +82,6 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	Bind(wxEVT_INIT_DIALOG, &DialogJumpTo::OnInitDialog, this);
 	Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogJumpTo::OnOK, this);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogJumpTo::OnOK, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogJumpTo::EndModal, this, 0), wxID_CANCEL);
 	JumpTime->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditTime, this);
 	JumpFrame->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditFrame, this);
 }
