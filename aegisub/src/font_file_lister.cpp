@@ -134,21 +134,21 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 	FontFileLister::CollectionResult res = lister.GetFontPaths(style.first.facename, style.first.bold, style.first.italic, style.second.chars);
 
 	if (res.paths.empty()) {
-		status_callback(wxString::Format(_("Could not find font '%s'\n"), style.first.facename), 2);
+		status_callback(wxString::Format(_("Could not find font '%s'\n"), to_wx(style.first.facename)), 2);
 		PrintUsage(style.second);
 		++missing;
 	}
 	else {
 		for (size_t i = 0; i < res.paths.size(); ++i) {
 			if (results.insert(res.paths[i]).second)
-				status_callback(wxString::Format(_("Found '%s' at '%s'\n"), style.first.facename, res.paths[i].make_preferred().wstring()), 0);
+				status_callback(wxString::Format(_("Found '%s' at '%s'\n"), to_wx(style.first.facename), res.paths[i].make_preferred().wstring()), 0);
 		}
 
 		if (res.missing.size()) {
 			if (res.missing.size() > 50)
-				status_callback(wxString::Format(_("'%s' is missing %d glyphs used.\n"), style.first.facename, (int)res.missing.size()), 2);
+				status_callback(wxString::Format(_("'%s' is missing %d glyphs used.\n"), to_wx(style.first.facename), (int)res.missing.size()), 2);
 			else if (res.missing.size() > 0)
-				status_callback(wxString::Format(_("'%s' is missing the following glyphs used: %s\n"), style.first.facename, format_missing(res.missing)), 2);
+				status_callback(wxString::Format(_("'%s' is missing the following glyphs used: %s\n"), to_wx(style.first.facename), format_missing(res.missing)), 2);
 			PrintUsage(style.second);
 			++missing_glyphs;
 		}
