@@ -279,14 +279,13 @@ void SubsTextEditCtrl::SetTextTo(wxString const& text) {
 	SetEvtHandlerEnabled(false);
 	Freeze();
 
-	int from=0,to=0;
-	GetSelection(&from,&to);
+	int from = GetReverseUnicodePosition(GetSelectionStart());
+	int to = GetReverseUnicodePosition(GetSelectionEnd());
 
 	line_text.clear();
 	SetText(text);
 
-	// Restore selection
-	SetSelectionU(GetReverseUnicodePosition(from), GetReverseUnicodePosition(to));
+	SetSelectionU(from, to);
 
 	SetEvtHandlerEnabled(true);
 	Thaw();
