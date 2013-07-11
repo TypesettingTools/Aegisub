@@ -51,19 +51,7 @@ int ScintillaTextCtrl::GetUnicodePosition(int pos) {
 /// @brief Reverse unicode-compatible position
 int ScintillaTextCtrl::GetReverseUnicodePosition(int pos) {
 	wxCharBuffer buffer = GetTextRaw();
-
-	// Limit position to it
-	if (pos > (signed)buffer.length()) pos = buffer.length();
-
-	// Get UTF8 substring
-	char *buf2 = new char[pos+1];
-	memcpy(buf2,buffer,pos);
-	buf2[pos] = 0;
-
-	// Convert back and return its length
-	wxString buf3(buf2,wxConvUTF8);
-	delete[] buf2;
-	return buf3.Length();
+	return wxString::FromUTF8(buffer.data(), std::min<int>(pos, buffer.length())).length();
 }
 
 /// @brief Start unicode-safe styling
