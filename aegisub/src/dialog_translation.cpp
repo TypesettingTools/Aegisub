@@ -247,9 +247,10 @@ void DialogTranslation::UpdateDisplay() {
 	size_t i = 0;
 	for (auto& block : blocks) {
 		if (block.GetType() == AssBlockType::PLAIN) {
-			int cur_size = original_text->GetReverseUnicodePosition(original_text->GetLength());
+			int initial_pos = original_text->GetLength();
 			original_text->AppendTextRaw(block.GetText().c_str());
 			if (i == cur_block) {
+				int cur_size = original_text->GetReverseUnicodePosition(initial_pos);
 				original_text->StartUnicodeStyling(cur_size);
 				original_text->SetUnicodeStyling(cur_size, block.GetText().size(), 1);
 			}
