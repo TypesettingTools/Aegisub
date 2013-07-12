@@ -64,17 +64,6 @@
 #define TEXT_LABEL_SOURCE _("Source: ")
 #define TEXT_LABEL_DEST _("Dest: ")
 
-// IDs
-enum {
-	BUTTON_KTSTART = 2500,
-	BUTTON_KTLINK,
-	BUTTON_KTUNLINK,
-	BUTTON_KTSKIPSOURCE,
-	BUTTON_KTSKIPDEST,
-	BUTTON_KTGOBACK,
-	BUTTON_KTACCEPT
-};
-
 class KaraokeLineMatchDisplay : public wxControl {
 	typedef AssKaraoke::Syllable MatchSyllable;
 
@@ -133,7 +122,7 @@ KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(wxWindow *parent)
 , label_destination(TEXT_LABEL_DEST)
 {
 	InheritAttributes();
-	SetInputData(0, 0);
+	SetInputData(nullptr, nullptr);
 
 	wxSize best_size = GetBestSize();
 	SetMaxSize(wxSize(-1, best_size.GetHeight()));
@@ -624,13 +613,13 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
 	//Buttons
-	wxButton *Start = new wxButton(this,BUTTON_KTSTART,_("S&tart!"));
-	wxButton *Link = new wxButton(this,BUTTON_KTLINK,_("&Link"));
-	wxButton *Unlink = new wxButton(this,BUTTON_KTUNLINK,_("&Unlink"));
-	wxButton *SkipSourceLine = new wxButton(this,BUTTON_KTSKIPSOURCE,_("Skip &Source Line"));
-	wxButton *SkipDestLine = new wxButton(this,BUTTON_KTSKIPDEST,_("Skip &Dest Line"));
-	wxButton *GoBackLine = new wxButton(this,BUTTON_KTGOBACK,_("&Go Back a Line"));
-	wxButton *AcceptLine = new wxButton(this,BUTTON_KTACCEPT,_("&Accept Line"));
+	wxButton *Start = new wxButton(this, -1,_("S&tart!"));
+	wxButton *Link = new wxButton(this, -1,_("&Link"));
+	wxButton *Unlink = new wxButton(this, -1,_("&Unlink"));
+	wxButton *SkipSourceLine = new wxButton(this, -1,_("Skip &Source Line"));
+	wxButton *SkipDestLine = new wxButton(this, -1,_("Skip &Dest Line"));
+	wxButton *GoBackLine = new wxButton(this, -1,_("&Go Back a Line"));
+	wxButton *AcceptLine = new wxButton(this, -1,_("&Accept Line"));
 	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("&Close"));
 
 	//Frame: Text
@@ -673,20 +662,18 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	SetSizerAndFit(MainStackSizer);
 	CenterOnParent();
 
+	Bind(wxEVT_KEY_DOWN, &DialogKanjiTimer::OnKeyDown, this);
 	display->Bind(wxEVT_KEY_DOWN, &DialogKanjiTimer::OnKeyDown, this);
-}
 
-BEGIN_EVENT_TABLE(DialogKanjiTimer,wxDialog)
-	EVT_BUTTON(wxID_CLOSE,DialogKanjiTimer::OnClose)
-	EVT_BUTTON(BUTTON_KTSTART,DialogKanjiTimer::OnStart)
-	EVT_BUTTON(BUTTON_KTLINK,DialogKanjiTimer::OnLink)
-	EVT_BUTTON(BUTTON_KTUNLINK,DialogKanjiTimer::OnUnlink)
-	EVT_BUTTON(BUTTON_KTSKIPSOURCE,DialogKanjiTimer::OnSkipSource)
-	EVT_BUTTON(BUTTON_KTSKIPDEST,DialogKanjiTimer::OnSkipDest)
-	EVT_BUTTON(BUTTON_KTGOBACK,DialogKanjiTimer::OnGoBack)
-	EVT_BUTTON(BUTTON_KTACCEPT,DialogKanjiTimer::OnAccept)
-	EVT_KEY_DOWN(DialogKanjiTimer::OnKeyDown)
-END_EVENT_TABLE()
+	CloseKT->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnClose, this);
+	Start->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnStart, this);
+	Link->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnLink, this);
+	Unlink->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnUnlink, this);
+	SkipSourceLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnSkipSource, this);
+	SkipDestLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnSkipDest, this);
+	GoBackLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnGoBack, this);
+	AcceptLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnAccept, this);
+}
 
 void DialogKanjiTimer::OnClose(wxCommandEvent &) {
 	OPT_SET("Tool/Kanji Timer/Interpolation")->SetBool(Interpolate->IsChecked());

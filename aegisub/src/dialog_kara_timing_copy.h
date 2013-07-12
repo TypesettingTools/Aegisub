@@ -76,5 +76,4 @@ class DialogKanjiTimer : public wxDialog {
 
 public:
 	DialogKanjiTimer(agi::Context *context);
-	DECLARE_EVENT_TABLE()
 };
