@@ -28,6 +28,8 @@ SRC += \
 	common/hotkey.cpp \
 	common/io.cpp \
 	common/json.cpp \
+	common/kana_table.cpp \
+	common/karaoke_matcher.cpp \
 	common/keyframe.cpp \
 	common/log.cpp \
 	common/mru.cpp \

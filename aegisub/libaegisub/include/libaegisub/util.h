@@ -75,5 +75,11 @@ namespace agi {
 	/// elsewhere (because libstcc++ 4.7 is missing it).
 	void sleep_for(int ms);
 
+	// boost.range doesn't have wrappers for the C++11 stuff
+	template<typename Range, typename Predicate>
+	bool any_of(Range&& r, Predicate&& p) {
+		return std::any_of(std::begin(r), std::end(r), std::forward<Predicate>(p));
+	}
+
 	} // namespace util
 } // namespace agi

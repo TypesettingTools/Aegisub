@@ -194,7 +194,6 @@ SRC += \
 	hotkey.cpp \
 	hotkey_data_view_model.cpp \
 	initial_line_state.cpp \
-	kana_table.cpp \
 	lpeg.c \
 	main.cpp \
 	menu.cpp \

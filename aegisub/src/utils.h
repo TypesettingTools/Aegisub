@@ -61,12 +61,6 @@ void StatusTimeout(wxString const& msg, int ms = 10000);
 /// Algorithm from http://bob.allegronetwork.com/prog/tricks.html
 int SmallestPowerOf2(int x);
 
-/// Check if wchar 'c' is a whitespace character
-bool IsWhitespace(wxUniChar c);
-
-/// Check if every character in str is whitespace
-bool StringEmptyOrWhitespace(const wxString &str);
-
 /// Get the length in characters of the longest line in the given text
 size_t MaxLineLength(std::string const& text);
 

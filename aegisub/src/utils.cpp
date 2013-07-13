@@ -54,7 +54,6 @@
 #include <boost/locale/boundary.hpp>
 #include <boost/range/algorithm_ext.hpp>
 #include <map>
-#include <unicode/uchar.h>
 
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
@@ -107,14 +106,6 @@ int SmallestPowerOf2(int x) {
 	x |= (x >> 16);
 	x++;
 	return x;
-}
-
-bool IsWhitespace(wxUniChar c) {
-	return !!u_isUWhiteSpace(c.GetValue());
-}
-
-bool StringEmptyOrWhitespace(const wxString &str) {
-	return std::all_of(str.begin(), str.end(), IsWhitespace);
 }
 
 void RestartAegisub() {

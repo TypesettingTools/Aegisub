@@ -43,12 +43,17 @@
 #include "compat.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
-#include "kana_table.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "selection_controller.h"
 #include "utils.h"
 
+#include <libaegisub/karaoke_matcher.h>
+
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/locale/boundary.hpp>
+#include <boost/range/algorithm_ext.hpp>
 #include <deque>
 
 #include <wx/checkbox.h>
@@ -76,12 +81,13 @@ class KaraokeLineMatchDisplay : public wxControl {
 
 	std::vector<MatchGroup> matched_groups;
 	std::deque<MatchSyllable> unmatched_source;
-	std::string unmatched_destination;
+	std::string destination_str;
+	boost::locale::boundary::ssegment_index destination;
+	boost::locale::boundary::ssegment_index::iterator match_begin, match_end;
 
 	int last_total_matchgroup_render_width;
 
 	size_t source_sel_length;
-	size_t destination_sel_length;
 
 	void OnPaint(wxPaintEvent &event);
 
@@ -96,7 +102,7 @@ public:
 	/// Number of syllables not yet matched from source
 	size_t GetRemainingSource() const { return unmatched_source.size(); }
 	/// Number of characters not yet matched from destination
-	size_t GetRemainingDestination() const { return unmatched_destination.size(); }
+	size_t GetRemainingDestination() const { return distance(match_end, destination.end()); }
 
 	// Adjust source and destination match lengths
 	void IncreaseSourceMatch();
@@ -147,7 +153,7 @@ wxSize KaraokeLineMatchDisplay::GetBestSize() const
 	return wxSize(min_width * 2, h_src + h_dst + 7);
 }
 
-int DrawBoxedText(wxDC &dc, const std::string &txt, int x, int y)
+int DrawBoxedText(wxDC &dc, wxString const& txt, int x, int y)
 {
 	int tw, th;
 	// Assume the pen, brush and font properties have already been set in the DC.
@@ -164,10 +170,9 @@ int DrawBoxedText(wxDC &dc, const std::string &txt, int x, int y)
 	}
 	else
 	{
-		wxString wxtxt(to_wx(txt));
-		dc.GetTextExtent(wxtxt, &tw, &th);
+		dc.GetTextExtent(txt, &tw, &th);
 		dc.DrawRectangle(x, y-2, tw+4, th+4);
-		dc.DrawText(wxtxt, x+2, y);
+		dc.DrawText(txt, x+2, y);
 		return tw+3;
 	}
 }
@@ -256,11 +261,11 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 		// Matched source syllables
 		int syl_x = next_x;
 		for (auto const& syl : grp.src)
-			syl_x += DrawBoxedText(dc, syl.text, syl_x, y_line1);
+			syl_x += DrawBoxedText(dc, to_wx(syl.text), syl_x, y_line1);
 
 		// Matched destination text
 		{
-			const int adv = DrawBoxedText(dc, grp.dst, next_x, y_line2);
+			const int adv = DrawBoxedText(dc, to_wx(grp.dst), next_x, y_line2);
 
 			// Adjust next_x here while we have the text_w
 			next_x = syl_x > next_x + adv ? syl_x : next_x + adv;
@@ -292,24 +297,30 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 			dc.SetBrush(wxBrush(inner_back));
 		}
 
-		syl_x += DrawBoxedText(dc, unmatched_source[j].text, syl_x, y_line1);
+		syl_x += DrawBoxedText(dc, to_wx(unmatched_source[j].text), syl_x, y_line1);
 	}
 
 	// Remaining destination
-	if (!unmatched_destination.empty())
+	if (match_begin != match_end)
 	{
 		dc.SetTextBackground(sel_back);
 		dc.SetTextForeground(sel_text);
 		dc.SetBrush(wxBrush(sel_back));
-		next_x += DrawBoxedText(dc, unmatched_destination.substr(0, destination_sel_length), next_x, y_line2);
+		wxString str;
+		for (auto it = match_begin; it != match_end; ++it)
+			str += to_wx(it->str());
+		next_x += DrawBoxedText(dc, str, next_x, y_line2);
 	}
 
-	if (destination_sel_length < unmatched_destination.size())
+	if (match_end != destination.end())
 	{
 		dc.SetTextBackground(inner_back);
 		dc.SetTextForeground(inner_text);
 		dc.SetBrush(wxBrush(inner_back));
-		DrawBoxedText(dc, unmatched_destination.substr(destination_sel_length), next_x, y_line2);
+		wxString str;
+		for (auto it = match_end; it != destination.end(); ++it)
+			str += to_wx(it->str());
+		DrawBoxedText(dc, str, next_x, y_line2);
 	}
 }
 
@@ -328,8 +339,12 @@ void KaraokeLineMatchDisplay::SetInputData(AssDialogue *src, AssDialogue *dst)
 		source_sel_length = 1;
 	}
 
-	unmatched_destination = dst ? dst->GetStrippedText() : "";
-	destination_sel_length = std::max<size_t>(1, unmatched_destination.size());
+	destination_str = dst ? dst->GetStrippedText() : "";
+	using namespace boost::locale::boundary;
+	destination = ssegment_index(character, begin(destination_str), end(destination_str));
+	match_begin = match_end = destination.begin();
+	if (!destination_str.empty())
+		++match_end;
 
 	Refresh(true);
 }
@@ -363,182 +378,34 @@ void KaraokeLineMatchDisplay::DecreaseSourceMatch()
 
 void KaraokeLineMatchDisplay::IncreseDestinationMatch()
 {
-	destination_sel_length = std::min(destination_sel_length + 1, GetRemainingDestination());
-	Refresh(true);
+	if (match_end != destination.end()) {
+		++match_end;
+		Refresh(true);
+	}
 }
 
 void KaraokeLineMatchDisplay::DecreaseDestinationMatch()
 {
-	destination_sel_length = std::max<size_t>(destination_sel_length, 1) - 1;
-	Refresh(true);
+	if (match_end != match_begin) {
+		--match_end;
+		Refresh(true);
+	}
 }
-
-/// Kana interpolation, in characters, unset to disable
-#define KANA_SEARCH_DISTANCE 3
 
 void KaraokeLineMatchDisplay::AutoMatchJapanese()
 {
-	if (unmatched_source.size() < 1) return;
-
-	// Quick escape: If there's no destination left, take all remaining source.
-	// (Usually this means the user made a mistake.)
-	if (unmatched_destination.empty())
-	{
-		source_sel_length = unmatched_source.size();
-		destination_sel_length = 0;
-		return;
-	}
-
-	// We'll first see if we can do something with the first unmatched source syllable
-	wxString src(to_wx(unmatched_source[0].text).Lower());
-	wxString dst(to_wx(unmatched_destination));
-	source_sel_length = 1; // we're working on the first, assume it was matched
-	destination_sel_length = 0;
-
-	// Quick escape: If the source syllable is empty, return with first source syllable and empty destination
-	if (src.empty()) return;
-
-	// Try to match the next source syllable against the destination.  Do it
-	// "inverted": try all kana from the table and prefix-match them against
-	// the destination, then if it matches a prefix, try to match the hepburn
-	// for it agast the source; eat if it matches.  Keep trying to match as
-	// long as there's text left in the source syllable or matching fails.
-	while (src.size() > 0)
-	{
-		wxString dst_hira_rest, dst_kata_rest, src_rest;
-		bool matched = false;
-		for (const KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
-		{
-			if (src.StartsWith(ke->hepburn, &src_rest))
-			{
-				bool hira_matches = dst.StartsWith(ke->hiragana, &dst_hira_rest) && *ke->hiragana;
-				bool kata_matches = dst.StartsWith(ke->katakana, &dst_kata_rest);
-
-				if (hira_matches || kata_matches)
-				{
-					matched = true;
-					src = src_rest;
-					dst = hira_matches ? dst_hira_rest : dst_kata_rest;
-					destination_sel_length += wcslen(hira_matches ? ke->hiragana : ke->katakana);
-					break;
-				}
-			}
-		}
-		if (!matched) break;
-	}
-
-	// The source might be empty now: That's good!
-	// That means we managed to match it all against destination text
-	if (src.empty()) return;
-	// destination_sel_length already has the appropriate value
-	// and source_sel_length was already 1
-
-	// Now the source syllable might consist of just whitespace.
-	// Eat all whitespace at the start of the destination.
-	if (StringEmptyOrWhitespace(src))
-	{
-		wxString str(to_wx(unmatched_destination.substr(destination_sel_length)));
-		destination_sel_length += std::distance(str.begin(), std::find_if_not(str.begin(), str.end(), IsWhitespace));
-		// Now we've eaten all spaces in the destination as well
-		// so the selection lengths should be good
-		return;
-	}
-
-	// If there's just one character left in the destination at this point,
-	// (and the source doesn't begin with space syllables, see test above)
-	// assume it's safe to take all remaining source to match the single
-	// remaining destination.
-	if (unmatched_destination.size() == 1)
-	{
-		source_sel_length = unmatched_source.size();
-		destination_sel_length = 1;
-		return;
-	}
-
-#ifdef KANA_SEARCH_DISTANCE
-	// Try to look up to KANA_SEARCH_DISTANCE characters ahead in destination,
-	// see if any of those are recognised kana. If there are any within the
-	// range, see if it matches a following syllable, at most 5 source
-	// syllables per character in source we're ahead.
-	// The number 5 comes from the kanji with the longest readings:
-	// 'uketamawa.ru' and 'kokorozashi' which each have a reading consisting of
-	// five kana.
-	// Only match the found kana in destination against the beginning of source
-	// syllables, not the middle of them.
-	// If a match is found, make a guess at how much source and destination
-	// should be selected based on the distances it was found at.
-	dst = to_wx(unmatched_destination);
-	for (size_t lookahead = 0; lookahead < KANA_SEARCH_DISTANCE; ++lookahead)
-	{
-		// Eat dst at the beginning, don't test for the first character being kana
-		dst = dst.Mid(1);
-		// Find a position where hiragana or katakana matches
-		wxString matched_roma;
-		wxString matched_kana;
-		for (const KanaEntry *ke = KanaTable; ke->hiragana; ++ke)
-		{
-			if (*ke->hiragana && dst.StartsWith(ke->hiragana))
-			{
-				matched_roma = ke->hepburn;
-				matched_kana = ke->hiragana;
-				break;
-			}
-			if (*ke->katakana && dst.StartsWith(ke->katakana))
-			{
-				matched_roma = ke->hepburn;
-				matched_kana = ke->katakana;
-				break;
-			}
-		}
-		// If we didn't match any kana against dst, move to next char in dst
-		if (!matched_kana)
-			continue;
-		// Otherwise look for a match for the romaji
-		// For the magic number 5, see big comment block above
-		int src_lookahead_max = (lookahead+1)*5;
-		int src_lookahead_pos = 0;
-		for (auto const& syl : unmatched_source)
-		{
-			// Check if we've gone too far ahead in the source
-			if (src_lookahead_pos++ >= src_lookahead_max) break;
-			// Otherwise look for a match
-			if (to_wx(syl.text).StartsWith(matched_roma))
-			{
-				// Yay! Time to interpolate.
-				// Special case: If the last source syllable before the matching one is
-				// empty or contains just whitespace, don't include that one.
-				if (src_lookahead_pos > 1 && StringEmptyOrWhitespace(to_wx(unmatched_source[src_lookahead_pos-2].text)))
-					src_lookahead_pos -= 1;
-				// Special case: Just one source syllable matching, pick all destination found
-				if (src_lookahead_pos == 2)
-				{
-					source_sel_length = 1;
-					destination_sel_length = lookahead+1;
-					return;
-				}
-				// Otherwise try to split the eaten source syllables evenly between the eaten
-				// destination characters, and do a regular rounding.
-				float src_per_dst = (float)(src_lookahead_pos-1)/(float)(lookahead+1);
-				source_sel_length = (int)(src_per_dst + 0.5);
-				destination_sel_length = 1;
-				return;
-			}
-		}
-	}
-#endif
-
-	// Okay so we didn't match anything. Aww.
-	// Just fail...
-	// We know from earlier that we do have both some source and some destination.
-	source_sel_length = 1;
-	destination_sel_length = 1;
-	return;
+	std::vector<std::string> source;
+	for (auto const& syl : unmatched_source)
+		source.emplace_back(syl.text);
+	auto result = agi::auto_match_karaoke(source, match_begin == destination.end() ? "" : &*match_begin->begin());
+	source_sel_length = result.source_length;
+	match_end = std::next(match_begin, result.destination_length);
 }
 
 bool KaraokeLineMatchDisplay::AcceptMatch()
 {
 	// Completely empty match
-	if (source_sel_length == 0 && destination_sel_length == 0) return false;
+	if (source_sel_length == 0 && match_begin == match_end) return false;
 
 	MatchGroup match;
 
@@ -547,10 +414,8 @@ bool KaraokeLineMatchDisplay::AcceptMatch()
 	unmatched_source.erase(unmatched_source.begin(), unmatched_source.begin() + source_sel_length);
 	source_sel_length = 0;
 
-	assert(destination_sel_length <= unmatched_destination.size());
-	match.dst = unmatched_destination.substr(0, destination_sel_length);
-	unmatched_destination.erase(0, destination_sel_length);
-	destination_sel_length = 0;
+	match.dst = std::string(match_begin->begin(), match_end == destination.end() ? destination_str.end() : match_end->begin());
+	match_begin = match_end;
 
 	matched_groups.emplace_back(std::move(match));
 
@@ -569,12 +434,12 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 	MatchGroup &group = matched_groups.back();
 
 	source_sel_length = group.src.size();
-	destination_sel_length = group.dst.size();
-
 	copy(group.src.rbegin(), group.src.rend(), front_inserter(unmatched_source));
 	group.src.clear();
 
-	unmatched_destination = group.dst + unmatched_destination;
+	match_end = match_begin;
+	for (size_t size = group.dst.size(); size > 0; size -= match_begin->length())
+		--match_begin;
 
 	matched_groups.pop_back();
 

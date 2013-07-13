@@ -198,7 +198,6 @@
     <ClInclude Include="$(SrcDir)include\aegisub\toolbar.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\video_provider.h" />
     <ClInclude Include="$(SrcDir)initial_line_state.h" />
-    <ClInclude Include="$(SrcDir)kana_table.h" />
     <ClInclude Include="$(SrcDir)lpeg.h" />
     <ClInclude Include="$(SrcDir)main.h" />
     <ClInclude Include="$(SrcDir)mkv_wrap.h" />
@@ -393,7 +392,6 @@
     <ClCompile Include="$(SrcDir)hotkey.cpp" />
     <ClCompile Include="$(SrcDir)hotkey_data_view_model.cpp" />
     <ClCompile Include="$(SrcDir)initial_line_state.cpp" />
-    <ClCompile Include="$(SrcDir)kana_table.cpp" />
     <ClCompile Include="$(SrcDir)lpeg.c">
         <PrecompiledHeader>NotUsing</PrecompiledHeader>
         <ForcedIncludeFiles></ForcedIncludeFiles>

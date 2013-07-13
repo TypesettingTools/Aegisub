@@ -155,6 +155,12 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\ass\uuencode.h">
       <Filter>ASS</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\karaoke_matcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\kana_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -255,6 +261,12 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass\uuencode.cpp">
       <Filter>ASS</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\kana_table.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\karaoke_matcher.cpp">
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

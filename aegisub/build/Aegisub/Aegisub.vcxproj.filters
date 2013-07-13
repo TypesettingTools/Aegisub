@@ -339,9 +339,6 @@
     <ClInclude Include="$(SrcDir)gl_text.h">
       <Filter>Video\UI</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)kana_table.h">
-      <Filter>Features\Karaoke copier</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)subtitle_format.h">
       <Filter>Subtitle formats</Filter>
     </ClInclude>
@@ -991,9 +988,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)gl_wrap.cpp">
       <Filter>Video\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)kana_table.cpp">
-      <Filter>Features\Karaoke copier</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_spellchecker.cpp">
       <Filter>Features\Spell checker</Filter>

@@ -4,7 +4,6 @@
     <ProjectGuid>{BB3FED86-DB7A-4DC7-964A-260FB86CDE61}</ProjectGuid>
     <RootNamespace>libaegisub</RootNamespace>
   </PropertyGroup>
-
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
@@ -13,7 +12,6 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
-
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -33,7 +31,6 @@
       <ForcedIncludeFiles>lagi_pre.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
-
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)common\charset_6937.h" />
@@ -60,6 +57,8 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\io.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\json.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\kana_table.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\karaoke_matcher.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\keyframe.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\line_wrap.h" />
@@ -101,6 +100,8 @@
     <ClCompile Include="$(SrcDir)common\hotkey.cpp" />
     <ClCompile Include="$(SrcDir)common\io.cpp" />
     <ClCompile Include="$(SrcDir)common\json.cpp" />
+    <ClCompile Include="$(SrcDir)common\kana_table.cpp" />
+    <ClCompile Include="$(SrcDir)common\karaoke_matcher.cpp" />
     <ClCompile Include="$(SrcDir)common\keyframe.cpp" />
     <ClCompile Include="$(SrcDir)common\log.cpp" />
     <ClCompile Include="$(SrcDir)common\mru.cpp" />

@@ -25,6 +25,7 @@ SRC = \
 		tests/hotkey.cpp \
 		tests/iconv.cpp \
 		tests/ifind.cpp \
+		tests/karaoke_matcher.cpp \
 		tests/keyframe.cpp \
 		tests/line_iterator.cpp \
 		tests/line_wrap.cpp \
