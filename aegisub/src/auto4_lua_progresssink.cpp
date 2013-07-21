@@ -211,7 +211,7 @@ namespace Automation4 {
 
 		if (multiple) {
 			wxArrayString files;
-			diag.GetFilenames(files);
+			diag.GetPaths(files);
 
 			lua_newtable(L);
 			for (size_t i = 0; i < files.size(); ++i) {
@@ -222,7 +222,7 @@ namespace Automation4 {
 			return 1;
 		}
 
-		lua_pushstring(L, diag.GetFilename().utf8_str());
+		lua_pushstring(L, diag.GetPath().utf8_str());
 		return 1;
 	}
 
