@@ -86,6 +86,14 @@ wxString PrettySize(int bytes) {
 	return wxString::Format(fmt, size) + " " + suffix[i];
 }
 
+std::string float_to_string(double val) {
+	std::string s = str(boost::format("%.3f") % val);
+	size_t pos = s.find_last_not_of("0");
+	if (pos != s.find(".")) ++pos;
+	s.erase(begin(s) + pos, end(s));
+	return s;
+}
+
 void StatusTimeout(wxString const& msg, int ms) {
 	wxGetApp().frame->StatusTimeout(msg, ms);
 }

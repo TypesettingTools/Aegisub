@@ -23,6 +23,8 @@
 
 #include "vector2d.h"
 
+#include "utils.h"
+
 #include <boost/format.hpp>
 #include <limits>
 
@@ -84,13 +86,6 @@ std::string Vector2D::PStr(char sep) const {
 
 std::string Vector2D::DStr(char sep) const {
 	return str(boost::format("%d%c%d") % (int)x % sep % (int)y);
-}
-
-static std::string float_to_string(float val) {
-	std::string s = str(boost::format("%.3f") % val);
-	size_t pos = s.find_last_not_of("0");
-	if (pos != s.find(".")) ++pos;
-	return s.substr(0, pos);
 }
 
 std::string Vector2D::Str(char sep) const {

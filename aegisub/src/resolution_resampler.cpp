@@ -21,9 +21,11 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/split.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
@@ -44,14 +46,16 @@ namespace {
 		final.reserve(drawing.size());
 
 		for (auto const& cur : agi::Split(drawing, ' ')) {
-			if (std::all_of(begin(cur), end(cur), isdigit)) {
-				int val = boost::lexical_cast<int>(agi::str(cur));
+			double val;
+			if (agi::util::try_parse(agi::str(cur), &val)) {
 				if (is_x)
-					val = (int)((val + shift_x) * scale_x + .5);
+					val = (val + shift_x) * scale_x;
 				else
-					val = (int)((val + shift_y) * scale_y + .5);
-				final += std::to_string(val);
+					val = (val + shift_y) * scale_y;
+				val = int(val * 8 + .5) / 8.0; // round to eighth-pixels
+				final += float_to_string(val);
 				final += ' ';
+				is_x = !is_x;
 			}
 			else if (cur.size() == 1) {
 				char c = tolower(cur[0]);
