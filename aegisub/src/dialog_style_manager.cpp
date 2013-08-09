@@ -459,15 +459,15 @@ void DialogStyleManager::OnCopyToCurrent() {
 
 template<class T>
 void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
-	wxString data;
 	wxArrayInt selections;
 	list->GetSelections(selections);
 
+	std::string data;
 	for(size_t i = 0; i < selections.size(); ++i) {
 		if (i) data += "\r\n";
 		AssStyle *s = v[selections[i]];
 		s->UpdateData();
-		data += to_wx(s->GetEntryData());
+		data += s->GetEntryData();
 	}
 
 	SetClipboard(data);
