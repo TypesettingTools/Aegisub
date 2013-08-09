@@ -55,11 +55,11 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/tokenizer.hpp>
 #include <functional>
 
 #include <wx/bmpbuttn.h>
@@ -126,11 +126,12 @@ std::string unique_name(Func name_checker, std::string const& source_name) {
 
 template<class Func1, class Func2>
 void add_styles(Func1 name_checker, Func2 style_adder) {
-	boost::char_separator<char> sep("\n");
-	for (auto tok : boost::tokenizer<boost::char_separator<char>>(GetClipboard(), sep)) {
-		boost::trim(tok);
+	auto cb = GetClipboard();
+	for (auto tok : agi::Split(cb, '\n')) {
+		tok = boost::trim_copy(tok);
+		if (tok.empty()) continue;
 		try {
-			AssStyle *s = new AssStyle(tok);
+			AssStyle *s = new AssStyle(agi::str(tok));
 			s->name = unique_name(name_checker, s->name);
 			style_adder(s);
 		}
