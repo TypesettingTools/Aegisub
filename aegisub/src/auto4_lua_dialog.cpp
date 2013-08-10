@@ -516,15 +516,15 @@ namespace Automation4 {
 			return button;
 		};
 
-		bool only_wxID_buttons = true;
-		for (size_t i = 0; i < buttons.size(); ++i) {
-			bs->AddButton(make_button(buttons[i].first, i, buttons[i].second));
-			if (buttons[i].first == -1)
-				only_wxID_buttons = false;
-		}
-
-		if (only_wxID_buttons)
+		if (boost::count(buttons | boost::adaptors::map_keys, -1) == 0) {
+			for (size_t i = 0; i < buttons.size(); ++i)
+				bs->AddButton(make_button(buttons[i].first, i, buttons[i].second));
 			bs->Realize();
+		}
+		else {
+			for (size_t i = 0; i < buttons.size(); ++i)
+				bs->Add(make_button(buttons[i].first, i, buttons[i].second));
+		}
 
 		auto ms = new wxBoxSizer(wxVERTICAL);
 		ms->Add(s, 0, wxBOTTOM, 5);
