@@ -121,8 +121,7 @@ void RestartAegisub() {
 	config::opt->Flush();
 
 #if defined(__WXMSW__)
-	wxStandardPaths stand;
-	wxExecute("\"" + stand.GetExecutablePath() + "\"");
+	wxExecute("\"" + wxStandardPaths::Get().GetExecutablePath() + "\"");
 #elif defined(__WXMAC__)
 	std::string bundle_path = agi::util::OSX_GetBundlePath();
 	std::string helper_path = agi::util::OSX_GetBundleAuxillaryExecutablePath("restart-helper");
@@ -132,8 +131,7 @@ void RestartAegisub() {
 	LOG_I("util/restart/exec") << exec;
 	wxExecute(exec);
 #else
-	wxStandardPaths stand;
-	wxExecute(stand.GetExecutablePath());
+	wxExecute(wxStandardPaths::Get().GetExecutablePath());
 #endif
 }
 
