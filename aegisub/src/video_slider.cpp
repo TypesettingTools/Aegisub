@@ -170,13 +170,18 @@ void VideoSlider::OnCharHook(wxKeyEvent &event) {
 }
 
 void VideoSlider::OnKeyDown(wxKeyEvent &event) {
-	// Forward up/down to grid as those aren't yet handled by commands
-	if (event.GetKeyCode() == WXK_UP || event.GetKeyCode() == WXK_DOWN) {
-		c->subsGrid->GetEventHandler()->ProcessEvent(event);
-		c->subsGrid->SetFocus();
-	}
-	else {
-		event.Skip();
+	// Forward up/down/pgup/pgdn/home/end to grid as those aren't yet handled by commands
+	switch (event.GetKeyCode()) {
+		case WXK_UP:
+		case WXK_DOWN:
+		case WXK_PAGEUP:
+		case WXK_PAGEDOWN:
+		case WXK_HOME:
+		case WXK_END:
+			c->subsGrid->GetEventHandler()->ProcessEvent(event);
+			break;
+		default:
+			event.Skip();
 	}
 }
 
