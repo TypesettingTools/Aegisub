@@ -37,6 +37,7 @@
 #include "video_slider.h"
 
 #include "base_grid.h"
+#include "command/command.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "options.h"
@@ -143,6 +144,24 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		}
 
 		c->videoController->JumpToFrame(val);
+	}
+	else if (event.GetWheelRotation() != 0) {
+		// If mouse is over the slider, use wheel to step by frames or keyframes (when Shift is held)
+		if (GetClientRect().Contains(event.GetX(), event.GetY())) {
+			if (event.ShiftDown())
+				if (event.GetWheelRotation() < 0)
+					cmd::call("video/frame/next/keyframe", c);
+				else
+					cmd::call("video/frame/prev/keyframe", c);
+			else {
+				SetValue(val + (event.GetWheelRotation() > 0 ? -1 : 1));
+				c->videoController->JumpToFrame(val);
+			}
+		}
+		else
+			// Forward Wheel to subs grid to scroll by line/page
+			if (c->subsGrid->GetClientRect().Contains(event.GetX(), event.GetY()))
+				c->subsGrid->GetEventHandler()->ProcessEvent(event);
 	}
 }
 
