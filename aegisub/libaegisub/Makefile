@@ -12,6 +12,7 @@ common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=\"$(P_LOCALE)\"
 
 SRC += \
+	common/parser.cpp \
 	ass/dialogue_parser.cpp \
 	ass/uuencode.cpp \
 	common/cajun/elements.cpp \
@@ -32,7 +33,6 @@ SRC += \
 	common/mru.cpp \
 	common/option.cpp \
 	common/option_visit.cpp \
-	common/parser.cpp \
 	common/path.cpp \
 	common/thesaurus.cpp \
 	common/util.cpp \
