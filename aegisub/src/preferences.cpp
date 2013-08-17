@@ -195,7 +195,7 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 	OptionAdd(edit_box, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
 
 	wxFlexGridSizer *grid = PageSizer(_("Grid"));
-	OptionAdd(grid, _("Allow grid to take focus"), "Subtitle/Grid/Focus Allow");
+	OptionAdd(grid, _("Focus grid on click"), "Subtitle/Grid/Focus Allow");
 	OptionAdd(grid, _("Highlight visible subtitles"), "Subtitle/Grid/Highlight Subtitles in Frame");
 	OptionAdd(grid, _("Hide overrides symbol"), "Subtitle/Grid/Hide Overrides Char");
 	OptionFont(grid, "Subtitle/Grid/");
