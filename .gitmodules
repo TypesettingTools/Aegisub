@@ -24,8 +24,8 @@
 	ignore = dirty
 [submodule "deps/ffms2"]
 	path = deps/ffms2
-	url = git://github.com/tgoyne/ffms2.git
-	branch = trunk
+	url = git://github.com/FFMS/ffms2.git
+	branch = master
 	ignore = dirty
 [submodule "deps/fontconfig"]
 	path = deps/fontconfig
