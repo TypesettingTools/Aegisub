@@ -3,6 +3,9 @@
 #ifndef wxUSE_GUI
 #define wxUSE_GUI 1
 #endif
+#ifdef wxUSE_UNICODE
+#undef wxUSE_UNICODE
+#endif
 #define WXWIN_COMPATIBILITY_2_4 0
 #define WXWIN_COMPATIBILITY_2_6 0
 #define WXWIN_COMPATIBILITY_2_8 0
@@ -249,4 +252,5 @@
 #define wxUSE_WEBVIEW 0
 #define wxUSE_RICHTOOLTIP 0
 #define wxUSE_COMPILER_TLS 1
+#define wxUSE_PREFERENCES_EDITOR 0
 #endif
