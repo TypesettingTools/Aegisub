@@ -38,15 +38,15 @@
 	branch = msvc
 [submodule "deps/icu"]
 	path = deps/icu
-	url = git@github.com:sillsdev/icu4c.git
+	url = git://github.com/sillsdev/icu4c.git
 	branch = trunk
 	ignore = dirty
 [submodule "deps/boost"]
 	path = deps/boost
-	url = git@github.com:alexanderkjeldaas/boost-mirror.git
+	url = git://github.com/alexanderkjeldaas/boost-mirror.git
 	ignore = dirty
 [submodule "deps/lua"]
 	path = deps/lua
-	url = git@github.com:ittner/Lua-experimentation.git
+	url = git://github.com/ittner/Lua-experimentation.git
 	branch = lua51
 	ignore = dirty
