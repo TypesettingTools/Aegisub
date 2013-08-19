@@ -32,6 +32,22 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <Target Name="CopyHeaders" BeforeTargets="ClCompile">
+    <!-- All this cruft is to work around that despite what the documentation
+         claims, %(RecursiveDir) matches everything from the first * (not even
+         **) until the last / -->
+    <ItemGroup>
+      <BoostLibraries Include="$([System.IO.Directory]::GetDirectories(&quot;$(BoostPath)\libs&quot;))" />
+      <BoostIncludeDirs Include="%(BoostLibraries.Identity)\include\boost;$(BoostPath)\libs\numeric\conversion\include\boost" />
+      <Headers Include="%(BoostIncludeDirs.Identity)\**\*.*" />
+   </ItemGroup>
+    <Copy
+      SourceFiles="@(Headers)"
+      DestinationFiles="@(Headers->'$(AegisubSourceBase)include\boost\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      />
+  </Target>
+
   <!-- Source files -->
   <ItemGroup>
     <ClCompile Include="$(BoostPath)\libs\regex\src\cpp_regex_traits.cpp" />
