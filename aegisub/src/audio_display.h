@@ -242,22 +242,7 @@ public:
 
 	/// @brief Scroll the audio display
 	/// @param pixel_position Absolute pixel to put at left edge of the audio display
-	///
-	/// This is the principal scrolling function. All other scrolling functions eventually
-	/// call this function to perform the actual scrolling.
 	void ScrollPixelToLeft(int pixel_position);
-
-	/// @brief Scroll the audio display
-	/// @param pixel_position Absolute pixel to put in center of the audio display
-	void ScrollPixelToCenter(int pixel_position) { ScrollPixelToLeft(pixel_position - GetClientRect().GetWidth()/2); }
-
-	/// @brief Scroll the audio display
-	/// @param ms Time in milliseconds to put at left edge of the audio display
-	void ScrollTimeToLeft(int ms) { ScrollPixelToLeft(AbsoluteXFromTime(ms)); }
-
-	/// @brief Scroll the audio display
-	/// @param ms Time in milliseconds to put in center of the audio display
-	void ScrollTimeToCenter(int ms)  { ScrollPixelToCenter(AbsoluteXFromTime(ms)); }
 
 	/// @brief Scroll the audio display
 	/// @param range Time range to ensure is in view

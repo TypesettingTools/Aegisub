@@ -669,21 +669,21 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 	const double base_ms_per_pixel = 1000.0 / base_pixels_per_second;
 	const double new_ms_per_pixel = 100.0 * base_ms_per_pixel / factor;
 
-	if (ms_per_pixel != new_ms_per_pixel)
-	{
-		int client_width = GetClientSize().GetWidth();
-		double center_time = (scroll_left + client_width / 2.0) * ms_per_pixel;
+	if (ms_per_pixel == new_ms_per_pixel) return;
 
-		ms_per_pixel = new_ms_per_pixel;
-		pixel_audio_width = std::max(1, int(controller->GetDuration() / ms_per_pixel));
+	int client_width = GetClientSize().GetWidth();
+	double cursor_pos = track_cursor_pos >= 0 ? track_cursor_pos - scroll_left : client_width / 2.0;
+	double cursor_time = (scroll_left + cursor_pos) * ms_per_pixel;
 
-		audio_renderer->SetMillisecondsPerPixel(ms_per_pixel);
-		scrollbar->ChangeLengths(pixel_audio_width, client_width);
-		timeline->ChangeZoom(ms_per_pixel);
+	ms_per_pixel = new_ms_per_pixel;
+	pixel_audio_width = std::max(1, int(controller->GetDuration() / ms_per_pixel));
 
-		ScrollTimeToCenter(center_time);
-		Refresh();
-	}
+	audio_renderer->SetMillisecondsPerPixel(ms_per_pixel);
+	scrollbar->ChangeLengths(pixel_audio_width, client_width);
+	timeline->ChangeZoom(ms_per_pixel);
+
+	ScrollPixelToLeft(AbsoluteXFromTime(cursor_time) - cursor_pos);
+	Refresh();
 }
 
 wxString AudioDisplay::GetZoomLevelDescription(int level) const
@@ -948,29 +948,28 @@ void AudioDisplay::SetDraggedObject(AudioDisplayInteractionObject *new_obj)
 
 void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 {
-	if (new_pos != track_cursor_pos)
+	if (new_pos == track_cursor_pos) return;
+
+	int old_pos = track_cursor_pos;
+	track_cursor_pos = new_pos;
+
+	RefreshRect(wxRect(old_pos - scroll_left - 0, audio_top, 1, audio_height), false);
+	RefreshRect(wxRect(new_pos - scroll_left - 0, audio_top, 1, audio_height), false);
+
+	// Make sure the old label gets cleared away
+	RefreshRect(track_cursor_label_rect, false);
+
+	if (show_time)
 	{
-		int old_pos = track_cursor_pos;
-		track_cursor_pos = new_pos;
-
-		RefreshRect(wxRect(old_pos - scroll_left - 0, audio_top, 1, audio_height), false);
-		RefreshRect(wxRect(new_pos - scroll_left - 0, audio_top, 1, audio_height), false);
-
-		// Make sure the old label gets cleared away
+		AssTime new_label_time = TimeFromAbsoluteX(track_cursor_pos);
+		track_cursor_label = to_wx(new_label_time.GetAssFormated());
+		track_cursor_label_rect.x += new_pos - old_pos;
 		RefreshRect(track_cursor_label_rect, false);
-
-		if (show_time)
-		{
-			AssTime new_label_time = TimeFromAbsoluteX(track_cursor_pos);
-			track_cursor_label = to_wx(new_label_time.GetAssFormated());
-			track_cursor_label_rect.x += new_pos - old_pos;
-			RefreshRect(track_cursor_label_rect, false);
-		}
-		else
-		{
-			track_cursor_label_rect.SetSize(wxSize(0,0));
-			track_cursor_label.Clear();
-		}
+	}
+	else
+	{
+		track_cursor_label_rect.SetSize(wxSize(0,0));
+		track_cursor_label.Clear();
 	}
 }
 
