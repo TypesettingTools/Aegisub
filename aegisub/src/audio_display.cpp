@@ -683,6 +683,8 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 	timeline->ChangeZoom(ms_per_pixel);
 
 	ScrollPixelToLeft(AbsoluteXFromTime(cursor_time) - cursor_pos);
+	if (track_cursor_pos >= 0)
+		track_cursor_pos = AbsoluteXFromTime(cursor_time);
 	Refresh();
 }
 
