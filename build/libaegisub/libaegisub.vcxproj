@@ -84,6 +84,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\ycbcr_conv.h" />
     <ClInclude Include="$(SrcDir)lagi_pre.h" />
     <ClInclude Include="$(SrcDir)lua\modules\lpeg.h" />
   </ItemGroup>
@@ -120,6 +121,7 @@
     <ClCompile Include="$(SrcDir)common\thesaurus.cpp" />
     <ClCompile Include="$(SrcDir)common\util.cpp" />
     <ClCompile Include="$(SrcDir)common\vfr.cpp" />
+    <ClCompile Include="$(SrcDir)common\ycbcr_conv.cpp" />
     <ClCompile Include="$(SrcDir)lua\modules.cpp" />
     <ClCompile Include="$(SrcDir)lua\modules\lfs.cpp" />
     <ClCompile Include="$(SrcDir)lua\modules\lpeg.c">

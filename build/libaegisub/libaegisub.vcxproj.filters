@@ -191,6 +191,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\lua\modules.h">
       <Filter>Lua</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\ycbcr_conv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -321,6 +324,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)lua\modules\unicode.cpp">
       <Filter>Lua\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)common\ycbcr_conv.cpp">
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

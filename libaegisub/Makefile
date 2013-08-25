@@ -41,6 +41,7 @@ SRC += \
 	common/thesaurus.cpp \
 	common/util.cpp \
 	common/vfr.cpp \
+	common/ycbcr_conv.cpp \
 	lua/modules.cpp \
 	lua/modules/lfs.cpp \
 	lua/modules/lpeg.c \
