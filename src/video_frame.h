@@ -26,6 +26,7 @@ struct VideoFrame {
 	bool flipped;
 
 	VideoFrame(const unsigned char *data, size_t width, size_t height, size_t pitch, bool fipped);
+	VideoFrame(std::vector<unsigned char>&& data, size_t width, size_t height, size_t pitch, bool fipped);
 };
 
 wxImage GetImage(VideoFrame const& frame);

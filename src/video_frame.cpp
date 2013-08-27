@@ -28,6 +28,15 @@ VideoFrame::VideoFrame(const unsigned char *data, size_t width, size_t height, s
 {
 }
 
+VideoFrame::VideoFrame(std::vector<unsigned char>&& data, size_t width, size_t height, size_t pitch, bool flipped)
+: data(std::move(data))
+, width(width)
+, height(height)
+, pitch(pitch)
+, flipped(flipped)
+{
+}
+
 namespace {
 	// We actually have bgr_, not bgra, so we need a custom converter which ignores the alpha channel
 	struct color_converter {

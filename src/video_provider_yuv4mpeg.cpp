@@ -43,6 +43,7 @@
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
+#include <libaegisub/ycbcr_conv.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem/path.hpp>
@@ -129,6 +130,8 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 	} fps_rat;          /// framerate
 
 	agi::vfr::Framerate fps;
+
+	agi::ycbcr_converter conv{agi::ycbcr_matrix::bt601, agi::ycbcr_range::tv};
 
 	/// a list of byte positions detailing where in the file
 	/// each frame header can be found
@@ -390,15 +393,6 @@ int YUV4MPEGVideoProvider::IndexFile(uint64_t pos) {
 	return framecount;
 }
 
-// http://bob.allegronetwork.com/prog/tricks.html#clamp
-static FORCEINLINE int clamp(int x) {
-	x &= (~x) >> 31;
-	x -= 255;
-	x &= x >> 31;
-	x += 255;
-	return x;
-}
-
 std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 	n = mid(0, n, num_frames - 1);
 
@@ -422,15 +416,15 @@ std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 
 	for (int py = 0; py < h; ++py) {
 		for (int px = 0; px < w / 2; ++px) {
-			const int u = *src_u++ - 128;
-			const int v = *src_v++ - 128;
+			const uint8_t u = *src_u++;
+			const uint8_t v = *src_v++;
 			for (unsigned int i = 0; i < 2; ++i) {
-				const int y = (*src_y++ - 16) * 298;
-
-				*dst++ = clamp((y + 516 * u + 128) >> 8);			// Blue
-				*dst++ = clamp((y - 100 * u - 208 * v + 128) >> 8);	// Green
-				*dst++ = clamp((y + 409 * v + 128) >> 8);			// Red
-				*dst++ = 0;											// Alpha
+				const uint8_t y = *src_y++;
+				auto rgb = conv.ycbcr_to_rgb({{y, u, v}});
+				*dst++ = rgb[2];
+				*dst++ = rgb[1];
+				*dst++ = rgb[0];
+				*dst++ = 0;
 			}
 		}
 
@@ -441,7 +435,7 @@ std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 		}
 	}
 
-	return std::make_shared<VideoFrame>(data.data(), w, h, w * 4, false);
+	return std::make_shared<VideoFrame>(std::move(data), w, h, w * 4, false);
 }
 }
 
