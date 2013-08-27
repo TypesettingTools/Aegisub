@@ -80,7 +80,7 @@ public:
 #endif
 
 static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, double totalTime, AssParser *parser) {
-	std::map<int, std::string> subList;
+	std::vector<std::pair<int, std::string>> subList;
 	std::string readBuf;
 
 	// Load blocks
@@ -105,12 +105,13 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			std::vector<boost::iterator_range<std::string::iterator>> chunks;
 			boost::split(chunks, readBuf, boost::is_any_of(","));
 
-			subList[boost::lexical_cast<int>(chunks[0])] =
+			subList.emplace_back(
+				boost::lexical_cast<int>(chunks[0]),
 				str(boost::format("Dialogue: %d,%s,%s,%s")
 					% boost::lexical_cast<int>(chunks[1])
 					% subStart.GetAssFormated()
 					% subEnd.GetAssFormated()
-					% boost::make_iterator_range(begin(chunks[2]), readBuf.end()));
+					% boost::make_iterator_range(begin(chunks[2]), readBuf.end())));
 		}
 		// Process SRT
 		else {
@@ -119,13 +120,14 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			boost::replace_all(readBuf, "\r", "\\N");
 			boost::replace_all(readBuf, "\n", "\\N");
 
-			subList[subList.size()] = readBuf;
+			subList.emplace_back(subList.size(), readBuf);
 		}
 
 		ps->SetProgress(startTime / timecodeScaleLow, totalTime);
 	}
 
 	// Insert into file
+	sort(begin(subList), end(subList));
 	for (auto order_value_pair : subList)
 		parser->AddLine(order_value_pair.second);
 }
