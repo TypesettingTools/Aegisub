@@ -170,6 +170,7 @@ static void init_keycode_names() {
 		str[0] = i;
 		set_kc(keycode_names, i, str);
 	}
+	set_kc(keycode_names, WXK_BACK, "Backspace");
 	set_kc(keycode_names, WXK_TAB, "Tab");
 	set_kc(keycode_names, WXK_RETURN, "Enter");
 	set_kc(keycode_names, WXK_ESCAPE, "Escape");
