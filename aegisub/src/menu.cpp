@@ -457,11 +457,11 @@ namespace menu {
 		window->Bind(wxEVT_COMMAND_MENU_SELECTED, &CommandManager::OnMenuClick, &menu->cm);
 		window->SetMenuBar(menu.get());
 
-#ifdef __WXGTK__
-		// GTK silently swallows keypresses for accelerators whose associated
-		// menu items are disabled. As we don't update the menu until it's
-		// opened, this means that conditional hotkeys don't work if the menu
-		// hasn't been opened since they became valid.
+#if defined(__WXGTK__) && !wxCHECK_VERSION(2, 9, 5)
+		// Older versions of wxGTK silently swallow keypresses for accelerators
+		// whose associated menu items are disabled. As we don't update the
+		// menu until it's opened, this means that conditional hotkeys don't
+		// work if the menu hasn't been opened since they became valid.
 		//
 		// To work around this, we completely disable accelerators from menu
 		// item. wxGTK doesn't expose any way to do this other that at wx
