@@ -75,10 +75,8 @@ DialogProperties::DialogProperties(agi::Context *c)
 	TopSizer->Add(TopSizerGrid,1,wxALL | wxEXPAND,0);
 
 	// Resolution box
-	wxSizer *ResSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Resolution"));
 	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResX")));
 	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResY")));
-	wxStaticText *ResText = new wxStaticText(this,-1,"x");
 
 	wxButton *FromVideo = new wxButton(this,-1,_("From &video"));
 	if (!c->videoController->IsLoaded())
@@ -86,10 +84,29 @@ DialogProperties::DialogProperties(agi::Context *c)
 	else
 		FromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetFromVideo, this);
 
-	ResSizer->Add(ResX,1,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
-	ResSizer->Add(ResY,1,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
-	ResSizer->Add(FromVideo,1,0,0);
+	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
+	res_sizer->Add(ResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
+	res_sizer->Add(new wxStaticText(this, -1, "x"), 0, wxALIGN_CENTER | wxRIGHT, 5);
+	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
+	res_sizer->Add(FromVideo, 1, 0, 0);
+
+	wxString matricies[] = {
+		"None",
+		"TV.601", "PC.601",
+		"TV.709", "PC.709",
+		"TV.FCC", "PC.FCC",
+		"TV.240M", "PC.240M"
+	};
+	YCbCrMatrix = new wxComboBox(this, -1, c->ass->GetScriptInfo("YCbCr Matrix"),
+		 wxDefaultPosition, wxDefaultSize, boost::size(matricies), matricies, wxCB_READONLY);
+
+	auto matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
+	matrix_sizer->Add(new wxStaticText(this, -1, "YCbCr Matrix:"), wxSizerFlags().Center());
+	matrix_sizer->Add(YCbCrMatrix, wxSizerFlags(1).Expand().Border(wxLEFT));
+
+	auto res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Resolution"));
+	res_box->Add(res_sizer, wxSizerFlags().Expand());
+	res_box->Add(matrix_sizer, wxSizerFlags().Border(wxTOP).Expand());
 
 	// Options
 	wxSizer *optionsBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
@@ -121,7 +138,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(ResSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
+	MainSizer->Add(res_box,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 	MainSizer->Add(optionsBox,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 
@@ -145,6 +162,7 @@ void DialogProperties::OnOK(wxCommandEvent &) {
 	count += SetInfoIfDifferent("PlayResY", from_wx(ResY->GetValue()));
 	count += SetInfoIfDifferent("WrapStyle", std::to_string(WrapStyle->GetSelection()));
 	count += SetInfoIfDifferent("ScaledBorderAndShadow", ScaleBorder->GetValue() ? "yes" : "no");
+	count += SetInfoIfDifferent("YCbCr Matrix", from_wx(YCbCrMatrix->GetValue()));
 
 	if (count) c->ass->Commit(_("property changes"), AssFile::COMMIT_SCRIPTINFO);
 

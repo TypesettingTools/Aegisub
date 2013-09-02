@@ -52,6 +52,7 @@ class DialogProperties final : public wxDialog {
 	wxTextCtrl *ResX;        ///< Script x resolution
 	wxTextCtrl *ResY;        ///< Script y resolution
 	wxCheckBox *ScaleBorder; ///< If script resolution != video resolution how should borders be handled
+	wxComboBox *YCbCrMatrix;
 
 	/// OK button handler
 	void OnOK(wxCommandEvent &event);
