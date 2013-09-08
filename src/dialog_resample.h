@@ -32,17 +32,30 @@ struct ResampleSettings;
 class DialogResample final : public wxDialog {
 	agi::Context *c; ///< Project context
 
-	wxSpinCtrl *res_x;
-	wxSpinCtrl *res_y;
+	int script_w;
+	int script_h;
+	int video_w = 0;
+	int video_h = 0;
+
+	wxSpinCtrl *source_x;
+	wxSpinCtrl *source_y;
+	wxSpinCtrl *dest_x;
+	wxSpinCtrl *dest_y;
 	wxCheckBox *symmetrical;
+	wxCheckBox *change_ar;
 	wxSpinCtrl *margin_ctrl[4];
 
+	wxButton *from_script;
+	wxButton *from_video;
+
+	void SetSourceFromScript(wxCommandEvent &);
 	/// Set the destination resolution to the video's resolution
 	void SetDestFromVideo(wxCommandEvent &);
 	/// Symmetrical checkbox toggle handler
 	void OnSymmetrical(wxCommandEvent &);
 	/// Copy margin values over if symmetrical is enabled
 	void OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst);
+	void UpdateButtons();
 
 public:
 	/// Constructor

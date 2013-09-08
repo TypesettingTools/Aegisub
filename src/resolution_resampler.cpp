@@ -153,18 +153,15 @@ namespace {
 	}
 }
 
-void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
-	int src_x, src_y;
-	ass->GetResolution(src_x, src_y);
-
+void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 	// Add margins to original resolution
-	src_x += settings.margin[LEFT] + settings.margin[RIGHT];
-	src_y += settings.margin[TOP] + settings.margin[BOTTOM];
+	settings.source_x += settings.margin[LEFT] + settings.margin[RIGHT];
+	settings.source_y += settings.margin[TOP] + settings.margin[BOTTOM];
 
 	resample_state state = {
 		settings.margin,
-		double(settings.script_x) / double(src_x),
-		double(settings.script_y) / double(src_y),
+		double(settings.dest_x) / double(settings.source_x),
+		double(settings.dest_y) / double(settings.source_y),
 		1.0
 	};
 
@@ -176,8 +173,8 @@ void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
 	for (auto& line : ass->Events)
 		resample_line(&state, line);
 
-	ass->SetScriptInfo("PlayResX", std::to_string(settings.script_x));
-	ass->SetScriptInfo("PlayResY", std::to_string(settings.script_y));
+	ass->SetScriptInfo("PlayResX", std::to_string(settings.dest_x));
+	ass->SetScriptInfo("PlayResY", std::to_string(settings.dest_y));
 
 	ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
 }

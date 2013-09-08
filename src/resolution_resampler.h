@@ -18,17 +18,15 @@ class AssFile;
 
 /// Configuration parameters for a resample
 struct ResampleSettings {
-	/// Amount to add to each margin
-	int margin[4];
-	/// New X resolution
-	int script_x;
-	/// New Y resolution
-	int script_y;
-	/// Should the aspect ratio of the subs be changed?
-	bool change_ar;
+	int margin[4];  ///< Amount to add to each margin
+	int source_x;   ///< Original  X resolution
+	int source_y;   ///< Original Y resolution
+	int dest_x;     ///< New X resolution
+	int dest_y;     ///< New Y resolution
+	bool change_ar; ///< Should the aspect ratio of the subs be changed?
 };
 
 /// Resample the subtitles in the project
 /// @param file Subtitles to resample
 /// @param settings Resample configuration settings
-void ResampleResolution(AssFile *file, ResampleSettings const& settings);
+void ResampleResolution(AssFile *file, ResampleSettings settings);

@@ -26,6 +26,7 @@
 #include "resolution_resampler.h"
 #include "video_context.h"
 
+#include <boost/rational.hpp>
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
@@ -47,7 +48,18 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	SetIcon(GETICON(resample_toolbutton_16));
 
 	memset(&settings, 0, sizeof(settings));
-	c->ass->GetResolution(settings.script_x, settings.script_y);
+	c->ass->GetResolution(script_w, script_h);
+	settings.source_x = script_w;
+	settings.source_y = script_h;
+
+	if (c->videoController->IsLoaded()) {
+		settings.dest_x = video_w = c->videoController->GetWidth();
+		settings.dest_y = video_h = c->videoController->GetHeight();
+	}
+	else {
+		settings.dest_x = script_w;
+		settings.dest_y = script_h;
+	}
 
 	// Create all controls and set validators
 	for (size_t i = 0; i < 4; ++i) {
@@ -61,20 +73,27 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_ctrl[RIGHT]->Enable(false);
 	margin_ctrl[BOTTOM]->Enable(false);
 
-	res_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	res_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
 
-	res_x->SetValidator(wxGenericValidator(&settings.script_x));
-	res_y->SetValidator(wxGenericValidator(&settings.script_y));
+	source_x->SetValidator(wxGenericValidator(&settings.source_x));
+	source_y->SetValidator(wxGenericValidator(&settings.source_y));
+	dest_x->SetValidator(wxGenericValidator(&settings.dest_x));
+	dest_y->SetValidator(wxGenericValidator(&settings.dest_y));
 
-	wxButton *from_video = new wxButton(this, -1, _("From &video"));
-	from_video->Enable(c->videoController->IsLoaded());
+	from_video = new wxButton(this, -1, _("From &video"));
+	from_video->Enable(false);
+	from_script = new wxButton(this, -1, _("From s&cript"));
+	from_script->Enable(false);
 
-	wxCheckBox *change_ar = new wxCheckBox(this, -1, _("&Change aspect ratio"));
+	change_ar = new wxCheckBox(this, -1, _("&Change aspect ratio"));
 	change_ar->SetValidator(wxGenericValidator(&settings.change_ar));
+	change_ar->Enable(false);
 
 	// Position the controls
-	wxSizer *margin_sizer = new wxGridSizer(3, 3, 5, 5);
+	auto margin_sizer = new wxGridSizer(3, 3, 5, 5);
 	margin_sizer->AddSpacer(1);
 	margin_sizer->Add(margin_ctrl[TOP], wxSizerFlags(1).Expand());
 	margin_sizer->AddSpacer(1);
@@ -85,22 +104,29 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_sizer->Add(margin_ctrl[BOTTOM], wxSizerFlags(1).Expand());
 	margin_sizer->AddSpacer(1);
 
-	wxSizer *margin_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Margin offset"));
+	auto margin_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Margin offset"));
 	margin_box->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 
-	wxSizer *res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	res_sizer->Add(res_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
-	res_sizer->Add(res_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	res_sizer->Add(from_video, wxSizerFlags(1));
+	auto source_res_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Source Resolution"));
+	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	source_res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
+	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	source_res_sizer->Add(from_script, wxSizerFlags(1));
 
-	wxSizer *res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Resolution"));
-	res_box->Add(res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
-	res_box->Add(change_ar);
+	auto dest_res_sizer = new wxBoxSizer(wxHORIZONTAL);
+	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	dest_res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
+	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	dest_res_sizer->Add(from_video, wxSizerFlags(1));
 
-	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination Resolution"));
+	dest_res_box->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	dest_res_box->Add(change_ar);
+
+	auto main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
-	main_sizer->Add(res_box, wxSizerFlags(0).Expand().Border());
+	main_sizer->Add(source_res_sizer, wxSizerFlags(0).Expand().Border());
+	main_sizer->Add(dest_res_box, wxSizerFlags(0).Expand().Border());
 	main_sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	SetSizerAndFit(main_sizer);
 	CenterOnParent();
@@ -108,15 +134,32 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	// Bind events
 	using std::bind;
 	Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
+	Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) { UpdateButtons(); });
 	from_video->Bind(wxEVT_BUTTON, &DialogResample::SetDestFromVideo, this);
+	from_script->Bind(wxEVT_BUTTON, &DialogResample::SetSourceFromScript, this);
 	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);
 	margin_ctrl[LEFT]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[LEFT], margin_ctrl[RIGHT]));
 	margin_ctrl[TOP]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[TOP], margin_ctrl[BOTTOM]));
 }
 
 void DialogResample::SetDestFromVideo(wxCommandEvent &) {
-	res_x->SetValue(c->videoController->GetWidth());
-	res_y->SetValue(c->videoController->GetHeight());
+	dest_x->SetValue(video_w);
+	dest_y->SetValue(video_h);
+}
+
+void DialogResample::SetSourceFromScript(wxCommandEvent&) {
+	source_x->SetValue(script_w);
+	source_y->SetValue(script_h);
+}
+
+void DialogResample::UpdateButtons() {
+	from_video->Enable(c->videoController->IsLoaded() &&
+		(dest_x->GetValue() != video_w || dest_y->GetValue() != video_h));
+	from_script->Enable(source_x->GetValue() != script_w || source_y->GetValue() != script_h);
+
+	boost::rational<int> source_ar(source_x->GetValue(), source_y->GetValue());
+	boost::rational<int> dest_ar(dest_x->GetValue(), dest_y->GetValue());
+	change_ar->Enable(source_ar != dest_ar);
 }
 
 void DialogResample::OnSymmetrical(wxCommandEvent &) {
