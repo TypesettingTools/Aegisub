@@ -59,7 +59,10 @@ namespace std {
 AssFile::~AssFile() {
 	auto copy = new EntryList;
 	copy->swap(Line);
-	agi::dispatch::Background().Async([=]{ delete copy; });
+	agi::dispatch::Background().Async([=]{
+		copy->clear_and_dispose([](AssEntry *e) { delete e; });
+		delete copy;
+	});
 }
 
 void AssFile::LoadDefault(bool defline) {
