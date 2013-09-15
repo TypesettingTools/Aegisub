@@ -675,7 +675,7 @@ void DialogKanjiTimer::TryAutoMatch()
 
 template<typename Iterator>
 static AssEntry *find_next(Iterator from, Iterator to, std::string const& style_name) {
-	for (++from; from != to; ++from)
+	for (; from != to; ++from)
 	{
 		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*from);
 		if (dlg && dlg->Style == style_name)
@@ -688,7 +688,7 @@ static AssEntry *find_next(Iterator from, Iterator to, std::string const& style_
 AssEntry *DialogKanjiTimer::FindNextStyleMatch(AssEntry *search_from, const std::string &search_style)
 {
 	if (!search_from) return search_from;
-	return find_next(subs->Line.iterator_to(*search_from), subs->Line.end(), search_style);
+	return find_next(++subs->Line.iterator_to(*search_from), subs->Line.end(), search_style);
 }
 
 AssEntry *DialogKanjiTimer::FindPrevStyleMatch(AssEntry *search_from, const std::string &search_style)
