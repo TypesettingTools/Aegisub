@@ -736,6 +736,37 @@ struct edit_line_join_keep_first : public validate_sel_multiple {
 	}
 };
 
+static bool try_paste_lines(agi::Context *c) {
+	std::string data = GetClipboard();
+	boost::trim_left(data);
+	if (!boost::starts_with(data, "Dialogue:")) return false;
+
+	EntryList parsed;
+	boost::char_separator<char> sep("\r\n");
+	for (auto curdata : boost::tokenizer<boost::char_separator<char>>(data, sep)) {
+		boost::trim(curdata);
+		try {
+			parsed.push_back(*new AssDialogue(curdata));
+		}
+		catch (...) {
+			parsed.clear_and_dispose([](AssEntry *e) { delete e; });
+			return false;
+		}
+	}
+
+	AssDialogue *new_active = static_cast<AssDialogue *>(&*parsed.begin());
+	SubtitleSelection new_selection;
+	for (auto& line : parsed)
+		new_selection.insert(static_cast<AssDialogue *>(&line));
+
+	auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
+	c->ass->Line.splice(pos, parsed, parsed.begin(), parsed.end());
+	c->ass->Commit(_("paste"), AssFile::COMMIT_DIAG_ADDREM);
+	c->selectionController->SetSelectionAndActive(new_selection, new_active);
+
+	return true;
+}
+
 /// Paste subtitles.
 struct edit_line_paste : public Command {
 	CMD_NAME("edit/line/paste")
@@ -754,8 +785,10 @@ struct edit_line_paste : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
-			ctrl->Paste();
+		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus())) {
+			if (!try_paste_lines(c))
+				ctrl->Paste();
+		}
 		else {
 			auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
 			paste_lines(c, false, [=](AssDialogue *new_line) -> AssDialogue * {
