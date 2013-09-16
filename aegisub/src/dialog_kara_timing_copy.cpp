@@ -678,7 +678,7 @@ static AssEntry *find_next(Iterator from, Iterator to, std::string const& style_
 	for (; from != to; ++from)
 	{
 		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*from);
-		if (dlg && dlg->Style == style_name)
+		if (dlg && dlg->Style == style_name && !dlg->Text.get().empty())
 			return dlg;
 	}
 
