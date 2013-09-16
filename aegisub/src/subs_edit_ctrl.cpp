@@ -253,7 +253,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	if (!OPT_GET("App/Call Tips")->GetBool()) return;
 
 	int pos = GetCurrentPos();
-	if (!pos == cursor_pos) return;
+	if (pos == cursor_pos) return;
 	cursor_pos = pos;
 
 	if (!calltip_provider)
