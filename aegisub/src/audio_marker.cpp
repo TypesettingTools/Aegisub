@@ -78,9 +78,8 @@ void AudioMarkerProviderKeyframes::Update() {
 
 void AudioMarkerProviderKeyframes::GetMarkers(TimeRange const& range, AudioMarkerVector &out) const {
 	// Find first and last keyframes inside the range
-	std::vector<AudioMarkerKeyframe>::const_iterator
-		a = lower_bound(markers.begin(), markers.end(), range.begin()),
-		b = upper_bound(markers.begin(), markers.end(), range.end());
+	auto a = lower_bound(markers.begin(), markers.end(), range.begin());
+	auto b = upper_bound(markers.begin(), markers.end(), range.end());
 
 	// Place pointers to the markers in the output vector
 	for (; a != b; ++a)

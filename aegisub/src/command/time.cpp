@@ -224,7 +224,7 @@ struct time_snap_scene : public validate_video_loaded {
 		int prev = 0;
 		int next = 0;
 
-		const std::vector<int> &keyframes = con->GetKeyFrames();
+		auto const& keyframes = con->GetKeyFrames();
 		if (curFrame < keyframes.front())
 			next = keyframes.front();
 		else if (curFrame >= keyframes.back()) {
@@ -232,7 +232,7 @@ struct time_snap_scene : public validate_video_loaded {
 			next = con->GetLength();
 		}
 		else {
-			std::vector<int>::const_iterator kf = std::lower_bound(keyframes.begin(), keyframes.end(), curFrame);
+			auto kf = std::lower_bound(keyframes.begin(), keyframes.end(), curFrame);
 			if (*kf == curFrame) {
 				prev = *kf;
 				next = *(kf + 1);

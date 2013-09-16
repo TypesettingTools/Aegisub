@@ -81,7 +81,7 @@ static wxString get_history_string(json::Object &obj) {
 		lines = wxString::Format(_("from %d onward"), (int)(int64_t)sel.front()["start"]);
 	else {
 		lines += _("sel ");
-		for (json::Array::const_iterator it = sel.begin(); it != sel.end(); ++it) {
+		for (auto it = sel.begin(); it != sel.end(); ++it) {
 			int beg = (int64_t)(*it)["start"];
 			int end = (int64_t)(*it)["end"];
 			if (beg == end)

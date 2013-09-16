@@ -279,7 +279,7 @@ struct CommandMenuBar : public wxMenuBar {
 /// @param[out] value Output value to write to
 /// @return Was the requested index found
 bool read_entry(json::Object const& obj, const char *name, std::string *value) {
-	json::Object::const_iterator it = obj.find(name);
+	auto it = obj.find(name);
 	if (it == obj.end()) return false;
 	*value = static_cast<json::String const&>(it->second);
 	return true;
@@ -313,7 +313,7 @@ menu_map const& get_menus_root() {
 menu_items const& get_menu(std::string const& name) {
 	menu_map const& root = get_menus_root();
 
-	menu_map::const_iterator it = root.find(name);
+	auto it = root.find(name);
 	if (it == root.end()) throw menu::UnknownMenu("Menu named " + name + " not found");
 	return it->second;
 }

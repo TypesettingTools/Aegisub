@@ -360,8 +360,8 @@ struct video_frame_next_keyframe : public validator_video_loaded {
 	STR_HELP("Seek to the next keyframe")
 
 	void operator()(agi::Context *c) {
-		std::vector<int> const& kf = c->videoController->GetKeyFrames();
-		std::vector<int>::const_iterator pos = lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN() + 1);
+		auto const& kf = c->videoController->GetKeyFrames();
+		auto pos = lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN() + 1);
 
 		c->videoController->JumpToFrame(pos == kf.end() ? c->videoController->GetLength() - 1 : *pos);
 	}
@@ -431,14 +431,13 @@ struct video_frame_prev_keyframe : public validator_video_loaded {
 	STR_HELP("Seek to the previous keyframe")
 
 	void operator()(agi::Context *c) {
-		std::vector<int> const& kf = c->videoController->GetKeyFrames();
+		auto const& kf = c->videoController->GetKeyFrames();
 		if (kf.empty()) {
 			c->videoController->JumpToFrame(0);
 			return;
 		}
 
-		std::vector<int>::const_iterator pos =
-			lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN());
+		auto pos = lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN());
 
 		if (pos != kf.begin())
 			--pos;

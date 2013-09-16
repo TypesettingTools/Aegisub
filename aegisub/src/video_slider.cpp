@@ -127,7 +127,7 @@ void VideoSlider::OnMouse(wxMouseEvent &event) {
 		// Shift click to snap to keyframe
 		if (event.ShiftDown() && keyframes.size()) {
 			int clickedFrame = GetValueAtX(x);
-			std::vector<int>::const_iterator pos = lower_bound(keyframes.begin(), keyframes.end(), clickedFrame);
+			auto pos = lower_bound(keyframes.begin(), keyframes.end(), clickedFrame);
 			if (pos == keyframes.end())
 				--pos;
 			else if (pos + 1 != keyframes.end() && clickedFrame - *pos > (*pos + 1) - clickedFrame)

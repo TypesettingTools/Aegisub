@@ -69,14 +69,14 @@ std::string Spline::EncodeToAss() const {
 	result.reserve(size() * 10);
 	char last = 0;
 
-	for (const_iterator cur = begin(); cur != end(); ++cur) {
-		switch (cur->type) {
+	for (auto const& pt : *this) {
+		switch (pt.type) {
 			case SplineCurve::POINT:
 				if (last != 'm') {
 					result += "m ";
 					last = 'm';
 				}
-				result += ToScript(cur->p1).DStr(' ');
+				result += ToScript(pt.p1).DStr(' ');
 				break;
 
 			case SplineCurve::LINE:
@@ -84,7 +84,7 @@ std::string Spline::EncodeToAss() const {
 					result += "l ";
 					last = 'l';
 				}
-				result += ToScript(cur->p2).DStr(' ');
+				result += ToScript(pt.p2).DStr(' ');
 				break;
 
 			case SplineCurve::BICUBIC:
@@ -92,9 +92,9 @@ std::string Spline::EncodeToAss() const {
 					result += "b ";
 					last = 'b';
 				}
-				result += ToScript(cur->p2).DStr(' ') + " ";
-				result += ToScript(cur->p3).DStr(' ') + " ";
-				result += ToScript(cur->p4).DStr(' ');
+				result += ToScript(pt.p2).DStr(' ') + " ";
+				result += ToScript(pt.p3).DStr(' ') + " ";
+				result += ToScript(pt.p4).DStr(' ');
 				break;
 
 			default: break;

@@ -102,8 +102,8 @@ public:
 	/// @return A pointer to a DialogType or nullptr if no dialog of the given type has been created
 	template<class DialogType>
 	DialogType *Get() const {
-		DialogMap::const_iterator it = created_dialogs.find(&typeid(DialogType));
-		return it != created_dialogs.end() ? static_cast<DialogType*>(it->second) : 0;
+		auto it = created_dialogs.find(&typeid(DialogType));
+		return it != created_dialogs.end() ? static_cast<DialogType*>(it->second) : nullptr;
 	}
 
 	~DialogManager() {

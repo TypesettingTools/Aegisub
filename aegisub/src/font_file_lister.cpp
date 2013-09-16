@@ -110,7 +110,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 			if (overriden)
 				used_styles[style].lines.insert(index);
 			std::set<wxUniChar>& chars = used_styles[style].chars;
-			for (wxString::const_iterator it = text.begin(); it != text.end(); ++it) {
+			for (auto it = text.begin(); it != text.end(); ++it) {
 				wxUniChar cur = *it;
 				if (cur == L'\\' && it + 1 != text.end()) {
 					wxUniChar next = *++it;

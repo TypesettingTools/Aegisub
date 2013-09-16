@@ -101,7 +101,7 @@ namespace {
 		/// Populate the toolbar with buttons
 		void Populate() {
 			json::Object const& root = get_root();
-			json::Object::const_iterator root_it = root.find(name);
+			auto root_it = root.find(name);
 			if (root_it == root.end()) {
 				// Toolbar names are all hardcoded so this should never happen
 				throw agi::InternalError("Toolbar named " + name + " not found.", 0);
