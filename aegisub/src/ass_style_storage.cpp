@@ -48,7 +48,7 @@
 
 AssStyleStorage::~AssStyleStorage() { }
 void AssStyleStorage::clear() { style.clear(); }
-void AssStyleStorage::push_back( std::unique_ptr<AssStyle>&& new_style ) { style.emplace_back(std::move(new_style)); }
+void AssStyleStorage::push_back(std::unique_ptr<AssStyle> new_style) { style.emplace_back(std::move(new_style)); }
 
 void AssStyleStorage::Save() const {
 	if (file.empty()) return;

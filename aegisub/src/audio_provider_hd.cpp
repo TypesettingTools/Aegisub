@@ -89,7 +89,7 @@ public:
 
 }
 
-HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider>&& src, agi::BackgroundRunner *br) {
+HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br) {
 	bytes_per_sample = src->GetBytesPerSample();
 	num_samples      = src->GetNumSamples();
 	channels         = src->GetChannels();

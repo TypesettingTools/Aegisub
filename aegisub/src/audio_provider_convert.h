@@ -24,4 +24,4 @@
 class AudioProvider;
 
 /// Get an audio provider which supplies audio in a format supported by Aegisub's players
-std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider>&& source_provider);
+std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> source_provider);

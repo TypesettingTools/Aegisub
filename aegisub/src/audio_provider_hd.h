@@ -54,6 +54,6 @@ class HDAudioProvider : public AudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	HDAudioProvider(std::unique_ptr<AudioProvider>&& source, agi::BackgroundRunner *br);
+	HDAudioProvider(std::unique_ptr<AudioProvider> source, agi::BackgroundRunner *br);
 	~HDAudioProvider();
 };

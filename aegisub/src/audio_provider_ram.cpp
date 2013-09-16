@@ -46,7 +46,7 @@
 #define CacheBits 22
 #define CacheBlockSize (1 << CacheBits)
 
-RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider>&& src, agi::BackgroundRunner *br) {
+RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br) {
 	try {
 		blockcache.resize((src->GetNumSamples() * src->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 	}

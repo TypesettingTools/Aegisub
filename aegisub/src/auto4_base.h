@@ -197,7 +197,7 @@ namespace Automation4 {
 		/// Deletes all scripts managed
 		virtual ~ScriptManager();
 		/// Add a script to the manager.
-		void Add(std::unique_ptr<Script>&& script);
+		void Add(std::unique_ptr<Script> script);
 		/// Remove a script from the manager, and delete the Script object.
 		void Remove(Script *script);
 		/// Deletes all scripts managed
@@ -265,7 +265,7 @@ namespace Automation4 {
 		const std::string& GetFilenamePattern() const { return filename_pattern; }
 
 		/// Register an automation engine.
-		static void Register(std::unique_ptr<ScriptFactory>&& factory);
+		static void Register(std::unique_ptr<ScriptFactory> factory);
 
 		/// Get the full wildcard string for all loaded engines
 		static std::string GetWildcardStr();

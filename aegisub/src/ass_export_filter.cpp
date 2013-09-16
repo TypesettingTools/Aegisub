@@ -50,7 +50,7 @@ AssExportFilter::AssExportFilter(std::string const& name, std::string const& des
 {
 }
 
-void AssExportFilterChain::Register(std::unique_ptr<AssExportFilter>&& filter) {
+void AssExportFilterChain::Register(std::unique_ptr<AssExportFilter> filter) {
 	int filter_copy = 1;
 	std::string name = filter->name;
 	// Find a unique name

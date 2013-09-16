@@ -590,7 +590,7 @@ Advanced_Video::Advanced_Video(wxTreebook *book, Preferences *parent): OptionPag
 	SetSizerAndFit(sizer);
 }
 
-void Preferences::SetOption(std::unique_ptr<agi::OptionValue>&& new_value) {
+void Preferences::SetOption(std::unique_ptr<agi::OptionValue> new_value) {
 	pending_changes[new_value->GetName()] = std::move(new_value);
 	if (IsEnabled())
 		applyButton->Enable(true);

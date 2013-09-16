@@ -160,7 +160,7 @@ public:
 	/// Get the last seen position of the mouse in script coordinates
 	Vector2D GetMousePosition() const;
 
-	void SetTool(std::unique_ptr<VisualToolBase>&& new_tool);
+	void SetTool(std::unique_ptr<VisualToolBase> new_tool);
 
 	bool ToolIsType(std::type_info const& type) const;
 

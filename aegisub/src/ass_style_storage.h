@@ -54,7 +54,7 @@ public:
 	iterator end() { return style.end(); }
 	const_iterator begin() const { return style.begin(); }
 	const_iterator end() const { return style.end(); }
-	void push_back(std::unique_ptr<AssStyle>&& new_style);
+	void push_back(std::unique_ptr<AssStyle> new_style);
 	AssStyle *back() { return style.back().get(); }
 	AssStyle *operator[](size_t idx) const { return style[idx].get(); }
 	size_t size() const { return style.size(); }

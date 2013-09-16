@@ -53,5 +53,5 @@ class RAMAudioProvider : public AudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	RAMAudioProvider(std::unique_ptr<AudioProvider>&& source, agi::BackgroundRunner *br);
+	RAMAudioProvider(std::unique_ptr<AudioProvider> source, agi::BackgroundRunner *br);
 };

@@ -138,7 +138,7 @@ namespace cmd {
 
 	/// Register a command.
 	/// @param cmd Command object to register.
-	void reg(std::unique_ptr<Command>&& cmd);
+	void reg(std::unique_ptr<Command> cmd);
 
 	/// Unregister a command.
 	/// @param cmd Command name to unregister. The associated command object is deleted.

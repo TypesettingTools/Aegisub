@@ -87,7 +87,7 @@ typedef boost::intrusive::make_list<AssExportFilter, boost::intrusive::constant_
 class AssExportFilterChain {
 public:
 	/// Register an export filter
-	static void Register(std::unique_ptr<AssExportFilter>&& filter);
+	static void Register(std::unique_ptr<AssExportFilter> filter);
 	/// Unregister and delete all export filters
 	static void Clear();
 	/// Get a filter by name or nullptr if it doesn't exist

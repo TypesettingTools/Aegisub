@@ -36,7 +36,7 @@ namespace cmd {
 		return it;
 	}
 
-	void reg(std::unique_ptr<Command>&& cmd) {
+	void reg(std::unique_ptr<Command> cmd) {
 		cmd_map[cmd->name()] = std::move(cmd);
 	}
 

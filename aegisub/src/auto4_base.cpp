@@ -291,7 +291,7 @@ namespace Automation4 {
 	{
 	}
 
-	void ScriptManager::Add(std::unique_ptr<Script>&& script)
+	void ScriptManager::Add(std::unique_ptr<Script> script)
 	{
 		if (find(scripts.begin(), scripts.end(), script) == scripts.end())
 			scripts.emplace_back(std::move(script));
@@ -460,7 +460,7 @@ namespace Automation4 {
 	{
 	}
 
-	void ScriptFactory::Register(std::unique_ptr<ScriptFactory>&& factory)
+	void ScriptFactory::Register(std::unique_ptr<ScriptFactory> factory)
 	{
 		if (find(Factories().begin(), Factories().end(), factory) != Factories().end())
 			throw agi::InternalError("Automation 4: Attempt to register the same script factory multiple times. This should never happen.", 0);

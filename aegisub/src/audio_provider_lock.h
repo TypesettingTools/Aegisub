@@ -27,5 +27,5 @@ class LockAudioProvider : public AudioProvider {
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 public:
-	LockAudioProvider(std::unique_ptr<AudioProvider>&& source);
+	LockAudioProvider(std::unique_ptr<AudioProvider> source);
 };

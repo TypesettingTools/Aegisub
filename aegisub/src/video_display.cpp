@@ -407,7 +407,7 @@ void VideoDisplay::SetZoomFromBoxText(wxCommandEvent &) {
 		SetZoom(value / 100.);
 }
 
-void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase>&& new_tool) {
+void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	toolBar->ClearTools();
 	toolBar->Realize();
 	toolBar->Show(false);

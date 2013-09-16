@@ -36,7 +36,7 @@ class AudioProviderConverter : public AudioProvider {
 protected:
 	std::unique_ptr<AudioProvider> source;
 public:
-	AudioProviderConverter(std::unique_ptr<AudioProvider>&& src)
+	AudioProviderConverter(std::unique_ptr<AudioProvider> src)
 	: source(std::move(src))
 	{
 		channels = source->GetChannels();
@@ -54,7 +54,7 @@ template<class Target>
 class BitdepthConvertAudioProvider : public AudioProviderConverter {
 	int src_bytes_per_sample;
 public:
-	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
+	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderConverter(std::move(src)) {
 		if (bytes_per_sample > 8)
 			throw agi::AudioProviderOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported", 0);
 
@@ -94,7 +94,7 @@ public:
 template<class Source, class Target>
 class FloatConvertAudioProvider : public AudioProviderConverter {
 public:
-	FloatConvertAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
+	FloatConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderConverter(std::move(src)) {
 		bytes_per_sample = sizeof(Target);
 		float_samples = false;
 	}
@@ -126,7 +126,7 @@ public:
 class DownmixAudioProvider : public AudioProviderConverter {
 	int src_channels;
 public:
-	DownmixAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
+	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderConverter(std::move(src)) {
 		if (bytes_per_sample != 2)
 			throw agi::InternalError("DownmixAudioProvider requires 16-bit input", 0);
 		if (channels == 1)
@@ -156,7 +156,7 @@ public:
 /// Requires 16-bit mono input
 class SampleDoublingAudioProvider : public AudioProviderConverter {
 public:
-	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider>&& src) : AudioProviderConverter(std::move(src)) {
+	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderConverter(std::move(src)) {
 		if (source->GetBytesPerSample() != 2)
 			throw agi::InternalError("UpsampleAudioProvider requires 16-bit input", 0);
 		if (source->GetChannels() != 1)
@@ -192,7 +192,7 @@ public:
 	}
 };
 
-std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider>&& provider) {
+std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> provider) {
 	// Ensure 16-bit audio with proper endianness
 	if (provider->AreSamplesFloat()) {
 		LOG_D("audio_provider") << "Converting float to S16";
@@ -218,5 +218,5 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 		provider = agi::util::make_unique<SampleDoublingAudioProvider>(std::move(provider));
 	}
 
-	return std::move(provider);
+	return provider;
 }
