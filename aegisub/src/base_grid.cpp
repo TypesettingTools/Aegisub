@@ -630,7 +630,11 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 
 void BaseGrid::OnSize(wxSizeEvent &) {
 	AdjustScrollbar();
-	SetColumnWidths();
+
+	int w, h;
+	GetClientSize(&w, &h);
+	colWidth[10] = text_col_w = w - text_col_x;
+
 	Refresh(false);
 }
 
@@ -816,8 +820,6 @@ void BaseGrid::AdjustScrollbar() {
 }
 
 void BaseGrid::SetColumnWidths() {
-	if (!IsShownOnScreen()) return;
-
 	// Width/height
 	int w, h;
 	GetClientSize(&w,&h);
@@ -920,7 +922,7 @@ void BaseGrid::SetColumnWidths() {
 
 	// Set size of last
 	int total = std::accumulate(colWidth, colWidth + 10, 0);
-	colWidth[10] = w - total;
+	colWidth[10] = std::max(w - total, 0);
 
 	time_cols_x = colWidth[0] + colWidth[1];
 	time_cols_w = colWidth[2] + colWidth[3];
