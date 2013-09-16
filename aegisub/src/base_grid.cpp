@@ -34,16 +34,6 @@
 
 #include "config.h"
 
-#include <algorithm>
-#include <cmath>
-#include <iterator>
-#include <numeric>
-
-#include <wx/dcbuffer.h>
-#include <wx/kbdstate.h>
-#include <wx/menu.h>
-#include <wx/sizer.h>
-
 #include "base_grid.h"
 
 #include "include/aegisub/context.h"
@@ -63,6 +53,17 @@
 #include "video_slider.h"
 
 #include <libaegisub/of_type_adaptor.h>
+
+#include <algorithm>
+#include <cmath>
+#include <iterator>
+#include <numeric>
+#include <unordered_map>
+
+#include <wx/dcbuffer.h>
+#include <wx/kbdstate.h>
+#include <wx/menu.h>
+#include <wx/sizer.h>
 
 enum {
 	GRID_SCROLLBAR = 1730,
@@ -84,6 +85,15 @@ static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
 	std::set_difference(
 		src1.begin(), src1.end(), src2.begin(), src2.end(),
 		std::inserter(dst, dst.begin()));
+}
+
+namespace std {
+	template <typename T>
+	struct hash<boost::flyweight<T>> {
+		size_t operator()(boost::flyweight<T> const& ss) const {
+			return hash<const void*>()(&ss.get());
+		}
+	};
 }
 
 BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, long style, const wxString& name)
@@ -837,6 +847,15 @@ void BaseGrid::SetColumnWidths() {
 	if (!byFrame)
 		startLen = endLen = dc.GetTextExtent(to_wx(AssTime().GetAssFormated())).GetWidth();
 
+	std::unordered_map<boost::flyweight<std::string>, int> widths;
+	auto get_width = [&](boost::flyweight<std::string> const& str) -> int {
+		auto it = widths.find(str);
+		if (it != end(widths)) return it->second;
+		int width = dc.GetTextExtent(to_wx(str)).GetWidth();
+		widths[str] = width;
+		return width;
+	};
+
 	// O(n) widths
 	bool showMargin[3] = { false, false, false };
 	int styleLen = 0;
@@ -849,9 +868,9 @@ void BaseGrid::SetColumnWidths() {
 		AssDialogue *curDiag = GetDialogue(i);
 
 		maxLayer = std::max(maxLayer, curDiag->Layer);
-		actorLen = std::max(actorLen, dc.GetTextExtent(to_wx(curDiag->Actor)).GetWidth());
-		styleLen = std::max(styleLen, dc.GetTextExtent(to_wx(curDiag->Style)).GetWidth());
-		effectLen = std::max(effectLen, dc.GetTextExtent(to_wx(curDiag->Effect)).GetWidth());
+		actorLen = std::max(actorLen, get_width(curDiag->Actor));
+		styleLen = std::max(styleLen, get_width(curDiag->Style));
+		effectLen = std::max(effectLen, get_width(curDiag->Effect));
 
 		// Margins
 		for (int j = 0; j < 3; j++) {
