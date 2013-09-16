@@ -75,7 +75,7 @@ TimecodeRange v1_parse_line(std::string const& str) {
 
 	std::istringstream ss(str);
 	TimecodeRange range;
-	char comma1, comma2;
+	char comma1 = 0, comma2 = 0;
 	ss >> range.start >> comma1 >> range.end >> comma2 >> range.fps;
 	if (ss.fail() || comma1 != ',' || comma2 != ',' || !ss.eof())
 		throw MalformedLine(str);
