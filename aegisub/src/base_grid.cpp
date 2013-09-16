@@ -55,6 +55,7 @@
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
+#include <boost/range/algorithm.hpp>
 #include <cmath>
 #include <iterator>
 #include <numeric>
@@ -63,6 +64,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/kbdstate.h>
 #include <wx/menu.h>
+#include <wx/scrolbar.h>
 #include <wx/sizer.h>
 
 enum {
@@ -103,7 +105,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 , scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 , byFrame(false)
 , extendRow(-1)
-, active_line(0)
+, active_line(nullptr)
 , batch_level(0)
 , batch_active_line_changed(false)
 , seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, nullptr)))
@@ -208,7 +210,7 @@ void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
 	int item = event.GetId() - MENU_SHOW_COL;
 	showCol[item] = !showCol[item];
 
-	std::vector<bool> map(showCol, showCol + columns);
+	std::vector<bool> map(std::begin(showCol), std::end(showCol));
 	OPT_SET("Subtitle/Grid/Column")->SetListBool(map);
 
 	SetColumnWidths();
@@ -216,12 +218,10 @@ void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
 }
 
 void BaseGrid::OnHighlightVisibleChange(agi::OptionValue const& opt) {
-	if (opt.GetBool()) {
+	if (opt.GetBool())
 		seek_listener.Unblock();
-	}
-	else {
+	else
 		seek_listener.Block();
-	}
 }
 
 void BaseGrid::UpdateStyle() {
@@ -252,13 +252,12 @@ void BaseGrid::UpdateStyle() {
 
 	// Set column widths
 	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
-	assert(column_array.size() == (size_t)columns);
-	for (int i = 0; i < columns; ++i) showCol[i] = column_array[i];
+	assert(column_array.size() == boost::size(showCol));
+	boost::copy(column_array, std::begin(showCol));
 	SetColumnWidths();
 
-	// Update
 	AdjustScrollbar();
-	Refresh();
+	Refresh(false);
 }
 
 void BaseGrid::ClearMaps() {
@@ -290,7 +289,7 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	for (auto curdiag : context->ass->Line | agi::of_type<AssDialogue>()) {
 		line_index_map[curdiag] = (int)index_line_map.size();
 		index_line_map.push_back(curdiag);
-}
+	}
 
 	if (preserve_selected_rows) {
 		Selection sel;
@@ -325,19 +324,16 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 	// safe to touch the active line while processing a commit event which would
 	// cause this function to be called
 	AssDialogue *line = active_line;
-	active_line = 0;
+	active_line = nullptr;
 
 	// The active line may have ceased to exist; pick a new one if so
 	if (line_index_map.size() && line_index_map.find(line) == line_index_map.end()) {
-		if (active_row < (int)index_line_map.size()) {
+		if (active_row < (int)index_line_map.size())
 			SetActiveLine(index_line_map[active_row]);
-		}
-		else if (preserve_selected_rows && !selection.empty()) {
+		else if (preserve_selected_rows && !selection.empty())
 			SetActiveLine(index_line_map[sel_rows[0]]);
-		}
-		else {
+		else
 			SetActiveLine(index_line_map.back());
-		}
 	}
 	else {
 		SetActiveLine(line);
@@ -376,23 +372,13 @@ void BaseGrid::EndBatch() {
 	AdjustScrollbar();
 }
 
-void BaseGrid::MakeCellVisible(int row, int col, bool center) {
+void BaseGrid::MakeRowVisible(int row) {
 	int h = GetClientSize().GetHeight();
 
-	// Get min and max visible
-	int minVis = yPos+1;
-	int maxVis = yPos+h/lineHeight-3;
-
-	// Make visible
-	if (!center || row < minVis || row > maxVis) {
-		if (center) {
-			ScrollTo(row - h/lineHeight/2 + 1);
-		}
-		else {
-			if (row < minVis) ScrollTo(row - 1);
-			if (row > maxVis) ScrollTo(row - h/lineHeight + 3);
-		}
-	}
+	if (row < yPos + 1)
+		ScrollTo(row - 1);
+	else if (row > yPos + h/lineHeight - 3)
+		ScrollTo(row - h/lineHeight + 3);
 }
 
 void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
@@ -437,17 +423,14 @@ wxArrayInt BaseGrid::GetSelection() const {
 	return res;
 }
 
-
 void BaseGrid::OnPaint(wxPaintEvent &) {
 	// Get size and pos
 	wxSize cs = GetClientSize();
 	cs.SetWidth(cs.GetWidth() - scrollBar->GetSize().GetWidth());
 
 	// Find which columns need to be repainted
-	bool paint_columns[11];
-	memset(paint_columns, 0, sizeof paint_columns);
-	for (wxRegionIterator region(GetUpdateRegion()); region; ++region)
-	{
+	bool paint_columns[11] = {0};
+	for (wxRegionIterator region(GetUpdateRegion()); region; ++region) {
 		wxRect updrect = region.GetRect();
 		int x = 0;
 		for (size_t i = 0; i < 11; ++i) {
@@ -614,8 +597,11 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 	if (paint_columns[10]) {
 		strings[10].clear();
 
+		// Show overrides
+		if (!replace)
+			strings[10] = to_wx(line->Text);
 		// Hidden overrides
-		if (replace) {
+		else {
 			strings[10].reserve(line->Text.get().size());
 			size_t start = 0, pos;
 			while ((pos = line->Text.get().find('{', start)) != std::string::npos) {
@@ -627,10 +613,6 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 			if (start != std::string::npos)
 				strings[10] += to_wx(line->Text.get().substr(start));
 		}
-
-		// Show overrides
-		else
-			strings[10] = to_wx(line->Text);
 
 		// Cap length and set text
 		if (strings[10].size() > 512)
@@ -666,9 +648,8 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	bool click = event.LeftDown();
 	bool dclick = event.LeftDClick();
 	int row = event.GetY() / lineHeight + yPos - 1;
-	if (holding && !click) {
-		row = mid(0,row,GetRows()-1);
-	}
+	if (holding && !click)
+		row = mid(0, row, GetRows()-1);
 	AssDialogue *dlg = GetDialogue(row);
 	if (!dlg) row = 0;
 
@@ -678,7 +659,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 	if (holding) {
 		if (!event.LeftIsDown()) {
 			if (dlg)
-				MakeCellVisible(row, 0, false);
+				MakeRowVisible(row);
 			holding = false;
 			ReleaseMouse();
 		}
@@ -788,7 +769,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 		};
 
 		wxMenu menu;
-		for (int i = 0; i < columns; ++i)
+		for (size_t i = 0; i < boost::size(showCol); ++i)
 			menu.Append(MENU_SHOW_COL + i, strings[i], "", wxITEM_CHECK)->Check(showCol[i]);
 		PopupMenu(&menu);
 	}
@@ -816,9 +797,8 @@ void BaseGrid::AdjustScrollbar() {
 		return;
 	}
 
-	if (!scrollBar->IsEnabled()) {
+	if (!scrollBar->IsEnabled())
 		scrollBar->Enable(true);
-	}
 
 	int drawPerScreen = clientSize.GetHeight() / lineHeight;
 	int rows = GetRows();
@@ -830,9 +810,8 @@ void BaseGrid::AdjustScrollbar() {
 }
 
 void BaseGrid::SetColumnWidths() {
-	// Width/height
 	int w, h;
-	GetClientSize(&w,&h);
+	GetClientSize(&w, &h);
 
 	// DC for text extents test
 	wxClientDC dc(this);
@@ -907,7 +886,7 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[10] = 1;
 
 	// Hide columns
-	for (int i = 0; i < columns; i++) {
+	for (size_t i = 0; i < boost::size(showCol); ++i) {
 		if (!showCol[i])
 			colWidth[i] = 0;
 	}
@@ -955,17 +934,15 @@ AssDialogue *BaseGrid::GetDialogue(int n) const {
 }
 
 int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
-	std::map<AssDialogue*,int>::const_iterator it = line_index_map.find(diag);
-	if (it != line_index_map.end()) return it->second;
-	return -1;
+	auto it = line_index_map.find(diag);
+	return it != line_index_map.end() ? it->second : -1;
 }
 
 bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 	if (!context->videoController->IsLoaded()) return false;
 	int frame = context->videoController->GetFrameN();
-	return
-		context->videoController->FrameAtTime(line->Start,agi::vfr::START) <= frame &&
-		context->videoController->FrameAtTime(line->End,agi::vfr::END) >= frame;
+	return context->videoController->FrameAtTime(line->Start,agi::vfr::START) <= frame
+		&& context->videoController->FrameAtTime(line->End,agi::vfr::END) >= frame;
 }
 
 void BaseGrid::OnCharHook(wxKeyEvent &event) {
@@ -987,7 +964,7 @@ void BaseGrid::OnCharHook(wxKeyEvent &event) {
 
 void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 	int w,h;
-	GetClientSize(&w,&h);
+	GetClientSize(&w, &h);
 
 	int key = event.GetKeyCode();
 	bool ctrl = event.CmdDown();
@@ -1052,7 +1029,7 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 
 		SetSelectedSet(newsel);
 
-		MakeCellVisible(next, 0, false);
+		MakeRowVisible(next);
 		return;
 	}
 }
@@ -1078,7 +1055,7 @@ void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 		assert(new_line == 0 || line_index_map.count(new_line));
 		active_line = new_line;
 		AnnounceActiveLineChanged(active_line);
-		MakeCellVisible(GetDialogueIndex(active_line), 0, false);
+		MakeRowVisible(GetDialogueIndex(active_line));
 		Refresh(false);
 		extendRow = GetDialogueIndex(new_line);
 	}

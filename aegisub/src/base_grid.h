@@ -32,17 +32,14 @@
 /// @ingroup main_ui
 ///
 
-
 #pragma once
+
+#include <libaegisub/signal.h>
 
 #include <map>
 #include <memory>
 #include <vector>
-
-#include <wx/grid.h>
-#include <wx/scrolbar.h>
-
-#include <libaegisub/signal.h>
+#include <wx/window.h>
 
 #include "selection_controller.h"
 
@@ -106,15 +103,14 @@ class BaseGrid : public wxWindow, public SubtitleSelectionController {
 
 	void ScrollTo(int y);
 
-	int colWidth[16];      ///< Width in pixels of each column
+	int colWidth[13];      ///< Width in pixels of each column
 
 	int time_cols_x; ///< Left edge of the times columns
 	int time_cols_w; ///< Width of the two times columns
 	int text_col_x; ///< Left edge of the text column
 	int text_col_w; ///< Width of the text column
 
-	static const int columns = 10; ///< Total number of columns
-	bool showCol[columns]; ///< Column visibility mask
+	bool showCol[10]; ///< Column visibility mask
 
 	int yPos;
 
@@ -156,7 +152,7 @@ public:
 	void UpdateStyle();
 
 	int GetRows() const { return index_line_map.size(); }
-	void MakeCellVisible(int row, int col,bool center=true);
+	void MakeRowVisible(int row);
 
 	/// @brief Get dialogue by index
 	/// @param n Index to look up
