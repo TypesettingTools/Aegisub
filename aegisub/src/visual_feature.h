@@ -36,6 +36,8 @@
 
 #include "vector2d.h"
 
+#include <boost/intrusive/list_hook.hpp>
+
 class OpenGLWrapper;
 class AssDialogue;
 
@@ -54,7 +56,7 @@ enum DraggableFeatureType {
 ///
 /// By itself this class doesn't do much. It mostly just draws itself at a
 /// specified position and performs hit-testing.
-class VisualDraggableFeature {
+class VisualDraggableFeature : public boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type {
 	Vector2D start; ///< position before the last drag operation began
 
 public:

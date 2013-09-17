@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -43,7 +43,12 @@
 
 using std::placeholders::_1;
 
-const wxColour VisualToolBase::colour[4] = {wxColour(106,32,19), wxColour(255,169,40), wxColour(255,253,185), wxColour(187,0,0)};
+const wxColour VisualToolBase::colour[] = {
+	wxColour(106,32,19),
+	wxColour(255,169,40),
+	wxColour(255,253,185),
+	wxColour(187,0,0)
+};
 
 VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 : c(context)
@@ -165,8 +170,8 @@ template<class FeatureType>
 VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context)
 : VisualToolBase(parent, context)
 , sel_changed(false)
+, active_feature(nullptr)
 {
-	active_feature = features.begin();
 }
 
 template<class FeatureType>
@@ -179,30 +184,21 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 
 	mouse_pos = event.GetPosition();
 
-	bool need_render = false;
-
 	if (event.Leaving()) {
 		mouse_pos = Vector2D();
 		parent->Render();
 		return;
 	}
 
-	if (event.Entering() && OPT_GET("Tool/Visual/Autohide")->GetBool())
-		need_render = true;
-
 	if (!dragging) {
-		feature_iterator prev_feature = active_feature;
-
 		int max_layer = INT_MIN;
-		active_feature = features.end();
-		for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
-			if (cur->IsMouseOver(mouse_pos) && cur->layer >= max_layer) {
-				active_feature = cur;
-				max_layer = cur->layer;
+		active_feature = nullptr;
+		for (auto& feature : features) {
+			if (feature.IsMouseOver(mouse_pos) && feature.layer >= max_layer) {
+				active_feature = &feature;
+				max_layer = feature.layer;
 			}
 		}
-
-		need_render |= active_feature != prev_feature;
 	}
 
 	if (dragging) {
@@ -213,14 +209,13 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 			for (auto sel : sel_features)
 				UpdateDrag(sel);
 			Commit();
-			need_render = true;
 		}
 		// end drag
 		else {
 			dragging = false;
 
 			// mouse didn't move, fiddle with selection
-			if (active_feature != features.end() && !active_feature->HasMoved()) {
+			if (active_feature && !active_feature->HasMoved()) {
 				// Don't deselect stuff that was selected in this click's mousedown event
 				if (!sel_changed) {
 					if (ctrl_down)
@@ -230,7 +225,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 				}
 			}
 
-			active_feature = features.end();
+			active_feature = nullptr;
 			parent->ReleaseMouse();
 			parent->SetFocus();
 		}
@@ -244,7 +239,6 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		}
 
 		UpdateHold();
-		need_render = true;
 		Commit();
 
 	}
@@ -252,7 +246,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 		drag_start = mouse_pos;
 
 		// start drag
-		if (active_feature != features.end()) {
+		if (active_feature) {
 			if (!sel_features.count(active_feature)) {
 				sel_changed = true;
 				SetSelection(active_feature, !ctrl_down);
@@ -276,7 +270,6 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 				SubtitleSelection sel;
 				sel.insert(c->selectionController->GetActiveLine());
 				c->selectionController->SetSelectedSet(sel);
-				need_render = true;
 			}
 			if (active_line && InitializeHold()) {
 				holding = true;
@@ -288,8 +281,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 	if (active_line && left_double)
 		OnDoubleClick();
 
-	//if (need_render)
-		parent->Render();
+	parent->Render();
 
 	// Only coalesce the changes made in a single drag
 	if (!event.LeftIsDown())
@@ -299,19 +291,19 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 template<class FeatureType>
 void VisualTool<FeatureType>::DrawAllFeatures() {
 	gl.SetLineColour(colour[0], 1.0f, 2);
-	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
+	for (auto& feature : features) {
 		int fill = 1;
-		if (cur == active_feature)
+		if (&feature == active_feature)
 			fill = 2;
-		else if (sel_features.count(cur))
+		else if (sel_features.count(&feature))
 			fill = 3;
 		gl.SetFillColour(colour[fill], 0.6f);
-		cur->Draw(gl);
+		feature.Draw(gl);
 	}
 }
 
 template<class FeatureType>
-void VisualTool<FeatureType>::SetSelection(feature_iterator feat, bool clear) {
+void VisualTool<FeatureType>::SetSelection(FeatureType *feat, bool clear) {
 	if (clear)
 		sel_features.clear();
 
@@ -325,12 +317,10 @@ void VisualTool<FeatureType>::SetSelection(feature_iterator feat, bool clear) {
 }
 
 template<class FeatureType>
-void VisualTool<FeatureType>::RemoveSelection(feature_iterator feat) {
+void VisualTool<FeatureType>::RemoveSelection(FeatureType *feat) {
 	if (!sel_features.erase(feat) || !feat->line) return;
-
-	for (auto sel : sel_features) {
+	for (auto sel : sel_features)
 		if (sel->line == feat->line) return;
-	}
 
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 

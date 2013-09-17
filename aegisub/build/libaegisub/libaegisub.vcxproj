@@ -67,6 +67,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\of_type_adaptor.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option_value.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\owning_intrusive_list.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\path.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\scoped_ptr.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\signal.h" />

@@ -36,7 +36,7 @@ class VisualToolRotateZ : public VisualTool<VisualDraggableFeature> {
 	bool InitializeHold();
 	void UpdateHold();
 
-	void UpdateDrag(feature_iterator feature);
+	void UpdateDrag(Feature *feature);
 
 	void DoRefresh();
 

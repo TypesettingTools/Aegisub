@@ -27,8 +27,8 @@
 class VisualToolDragDraggableFeature : public VisualDraggableFeature {
 public:
 	int time;
-	boost::container::list<VisualToolDragDraggableFeature>::iterator parent;
-	VisualToolDragDraggableFeature() : VisualDraggableFeature(), time(0) { }
+	VisualToolDragDraggableFeature *parent;
+	VisualToolDragDraggableFeature() : VisualDraggableFeature(), time(0), parent(nullptr) { }
 };
 
 class wxBitmapButton;
@@ -54,7 +54,7 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	/// @brief Create the features for a line
 	/// @param diag Line to create the features for
 	/// @param pos Insertion point in the feature list
-	void MakeFeatures(AssDialogue *diag, feature_iterator pos);
+	void MakeFeatures(AssDialogue *diag, feature_list::iterator pos);
 	void MakeFeatures(AssDialogue *diag);
 
 	void OnSelectedSetChanged(SubtitleSelection const& lines_added, SubtitleSelection const& lines_removed);
@@ -64,8 +64,8 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	void OnLineChanged();
 	void OnCoordinateSystemsChanged() { OnFileChanged(); }
 
-	bool InitializeDrag(feature_iterator feature);
-	void UpdateDrag(feature_iterator feature);
+	bool InitializeDrag(Feature *feature);
+	void UpdateDrag(Feature *feature);
 	void Draw();
 	void OnDoubleClick();
 

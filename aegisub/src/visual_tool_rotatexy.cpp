@@ -33,9 +33,9 @@ VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *conte
 , orig_x(0)
 , orig_y(0)
 {
-	features.resize(1);
-	org = &features.back();
+	org = new Feature;
 	org->type = DRAG_BIG_TRIANGLE;
+	features.push_back(*org);
 }
 
 void VisualToolRotateXY::Draw() {
@@ -161,7 +161,7 @@ void VisualToolRotateXY::UpdateHold() {
 	SetSelectedOverride("\\fry", str(boost::format("%.4g") % angle_y));
 }
 
-void VisualToolRotateXY::UpdateDrag(feature_iterator feature) {
+void VisualToolRotateXY::UpdateDrag(Feature *feature) {
 	SetOverride(active_line, "\\org", ToScriptCoords(feature->pos).PStr());
 }
 

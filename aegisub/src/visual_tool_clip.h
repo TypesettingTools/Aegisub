@@ -26,7 +26,7 @@
 struct ClipCorner : public VisualDraggableFeature {
 	ClipCorner *horiz; ///< Other corner on this corner's horizontal line
 	ClipCorner *vert;  ///< Other corner on this corner's vertical line
-	ClipCorner() : VisualDraggableFeature() , horiz(0) , vert(0) { }
+	ClipCorner() : VisualDraggableFeature() , horiz(0) , vert(0) { type = DRAG_SMALL_CIRCLE; }
 };
 
 class VisualToolClip : public VisualTool<ClipCorner> {
@@ -42,8 +42,8 @@ class VisualToolClip : public VisualTool<ClipCorner> {
 	void DoRefresh();
 	void SetFeaturePositions();
 
-	bool InitializeDrag(feature_iterator feature);
-	void UpdateDrag(feature_iterator feature);
+	bool InitializeDrag(ClipCorner *feature) { return true; }
+	void UpdateDrag(ClipCorner *feature);
 
 	void Draw();
 public:

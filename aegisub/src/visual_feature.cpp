@@ -40,7 +40,7 @@
 VisualDraggableFeature::VisualDraggableFeature()
 : type(DRAG_NONE)
 , layer(0)
-, line(0)
+, line(nullptr)
 {
 }
 

@@ -161,6 +161,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\kana_table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\owning_intrusive_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">

@@ -35,8 +35,8 @@ struct VisualToolVectorClipDraggableFeature : public VisualDraggableFeature {
 	int point;
 	/// @brief Constructor
 	VisualToolVectorClipDraggableFeature()
-		: VisualDraggableFeature()
-		, point(0)
+	: VisualDraggableFeature()
+	, point(0)
 	{ }
 };
 
@@ -59,8 +59,8 @@ class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeat
 	bool InitializeHold();
 	void UpdateHold();
 
-	void UpdateDrag(feature_iterator feature);
-	bool InitializeDrag(feature_iterator feature);
+	void UpdateDrag(Feature *feature);
+	bool InitializeDrag(Feature *feature);
 
 	void DoRefresh();
 	void Draw();

@@ -36,9 +36,9 @@ VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, agi::Context *context
 , orig_angle(0)
 , rotation_x(0)
 , rotation_y(0)
+, org(new Feature)
 {
-	features.resize(1);
-	org = &features.back();
+	features.push_back(*org);
 	org->type = DRAG_BIG_TRIANGLE;
 }
 
@@ -118,7 +118,7 @@ void VisualToolRotateZ::UpdateHold() {
 	SetSelectedOverride("\\frz", str(boost::format("%.4g") % angle));
 }
 
-void VisualToolRotateZ::UpdateDrag(feature_iterator feature) {
+void VisualToolRotateZ::UpdateDrag(Feature *feature) {
 	SetOverride(active_line, "\\org", ToScriptCoords(feature->pos).PStr());
 }
 

@@ -29,6 +29,8 @@
 #include "selection_controller.h"
 #include "utils.h"
 
+#include <libaegisub/util.h>
+
 #include <algorithm>
 #include <wx/toolbar.h>
 
@@ -111,7 +113,7 @@ void VisualToolVectorClip::Draw() {
 	spline.GetClosestParametricPoint(mouse_pos, highlighted_curve, t, pt);
 
 	// Draw highlighted line
-	if ((mode == 3 || mode == 4) && active_feature == features.end() && points.size() > 2) {
+	if ((mode == 3 || mode == 4) && !active_feature && points.size() > 2) {
 		std::vector<float> highlighted_points;
 		spline.GetPointList(highlighted_points, highlighted_curve);
 		if (!highlighted_points.empty()) {
@@ -148,42 +150,47 @@ void VisualToolVectorClip::Draw() {
 }
 
 void VisualToolVectorClip::MakeFeature(Spline::iterator cur) {
-	Feature feat;
-	feat.curve = cur;
+	auto feat = agi::util::make_unique<Feature>();
+	feat->curve = cur;
 
 	if (cur->type == SplineCurve::POINT) {
-		feat.pos = cur->p1;
-		feat.type = DRAG_SMALL_CIRCLE;
-		feat.point = 0;
+		feat->pos = cur->p1;
+		feat->type = DRAG_SMALL_CIRCLE;
+		feat->point = 0;
 	}
 	else if (cur->type == SplineCurve::LINE) {
-		feat.pos = cur->p2;
-		feat.type = DRAG_SMALL_CIRCLE;
-		feat.point = 1;
+		feat->pos = cur->p2;
+		feat->type = DRAG_SMALL_CIRCLE;
+		feat->point = 1;
 	}
 	else if (cur->type == SplineCurve::BICUBIC) {
 		// Control points
-		feat.pos = cur->p2;
-		feat.point = 1;
-		feat.type = DRAG_SMALL_SQUARE;
-		features.push_back(feat);
+		feat->pos = cur->p2;
+		feat->point = 1;
+		feat->type = DRAG_SMALL_SQUARE;
+		features.push_back(*feat.release());
 
-		feat.pos = cur->p3;
-		feat.point = 2;
-		features.push_back(feat);
+		feat = agi::util::make_unique<Feature>();
+		feat->curve = cur;
+		feat->pos = cur->p3;
+		feat->point = 2;
+		feat->type = DRAG_SMALL_SQUARE;
+		features.push_back(*feat.release());
 
 		// End point
-		feat.pos = cur->p4;
-		feat.type = DRAG_SMALL_CIRCLE;
-		feat.point = 3;
+		feat = agi::util::make_unique<Feature>();
+		feat->curve = cur;
+		feat->pos = cur->p4;
+		feat->point = 3;
+		feat->type = DRAG_SMALL_CIRCLE;
 	}
-	features.push_back(feat);
+	features.push_back(*feat.release());
 }
 
 void VisualToolVectorClip::MakeFeatures() {
 	sel_features.clear();
 	features.clear();
-	active_feature = features.end();
+	active_feature = nullptr;
 	for (auto it = spline.begin(); it != spline.end(); ++it)
 		MakeFeature(it);
 }
@@ -202,12 +209,12 @@ void VisualToolVectorClip::Save() {
 	}
 }
 
-void VisualToolVectorClip::UpdateDrag(feature_iterator feature) {
+void VisualToolVectorClip::UpdateDrag(Feature *feature) {
 	spline.MovePoint(feature->curve, feature->point, feature->pos);
 	Save();
 }
 
-bool VisualToolVectorClip::InitializeDrag(feature_iterator feature) {
+bool VisualToolVectorClip::InitializeDrag(Feature *feature) {
 	if (mode != 5) return true;
 
 	if (feature->curve->type == SplineCurve::BICUBIC && (feature->point == 1 || feature->point == 2)) {
@@ -229,7 +236,7 @@ bool VisualToolVectorClip::InitializeDrag(feature_iterator feature) {
 
 		spline.erase(feature->curve);
 	}
-	active_feature = features.end();
+	active_feature = nullptr;
 
 	Save();
 	MakeFeatures();
@@ -313,16 +320,15 @@ bool VisualToolVectorClip::InitializeHold() {
 	if (mode == 6 || mode == 7) {
 		sel_features.clear();
 		features.clear();
-		active_feature = features.end();
+		active_feature = nullptr;
 		spline.clear();
 		spline.emplace_back(mouse_pos);
 		return true;
 	}
 
 	/// @todo box selection?
-	if (mode == 0) {
+	if (mode == 0)
 		return false;
-	}
 
 	// Nothing to do for mode 5 (remove)
 	return false;
@@ -398,6 +404,6 @@ void VisualToolVectorClip::DoRefresh() {
 
 void VisualToolVectorClip::SelectAll() {
 	sel_features.clear();
-	for (feature_iterator it = features.begin(); it != features.end(); ++it)
-		sel_features.insert(it);
+	for (auto& feature : features)
+		sel_features.insert(&feature);
 }

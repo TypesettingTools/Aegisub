@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -20,21 +20,16 @@
 
 #pragma once
 
-#include <deque>
-#include <list>
-#include <map>
-#include <set>
-#include <vector>
-
-#include <boost/container/list.hpp>
-
-#include <wx/event.h>
-
-#include <libaegisub/signal.h>
-
 #include "gl_wrap.h"
 #include "selection_controller.h"
 #include "vector2d.h"
+
+#include <libaegisub/owning_intrusive_list.h>
+#include <libaegisub/signal.h>
+
+#include <deque>
+#include <set>
+#include <wx/event.h>
 
 class AssDialogue;
 class SubtitlesGrid;
@@ -155,21 +150,9 @@ template<class FeatureType>
 class VisualTool : public VisualToolBase {
 protected:
 	typedef FeatureType Feature;
-	typedef typename boost::container::list<FeatureType>::iterator feature_iterator;
-	typedef typename boost::container::list<FeatureType>::const_iterator feature_const_iterator;
+	typedef agi::owning_intrusive_list<FeatureType> feature_list;
 
 private:
-	struct ltaddr {
-		template<class T>
-		bool operator()(T lft, T rgt) const {
-			return &*lft < &*rgt;
-		}
-	};
-
-	boost::container::list<agi::signal::Connection> slots;
-
-	typedef typename std::set<feature_iterator, ltaddr>::iterator selection_iterator;
-
 	bool sel_changed; /// Has the selection already been changed in the current click?
 
 	/// @brief Called when a hold is begun
@@ -181,23 +164,22 @@ private:
 	/// @brief Called at the beginning of a drag
 	/// @param feature The visual feature clicked on
 	/// @return Should the drag happen?
-	virtual bool InitializeDrag(feature_iterator feature) { return true; }
+	virtual bool InitializeDrag(FeatureType *feature) { return true; }
 	/// @brief Called on every mouse event during a drag
 	/// @param feature The current feature to process; not necessarily the one clicked on
-	virtual void UpdateDrag(feature_iterator feature) { }
+	virtual void UpdateDrag(FeatureType *feature) { }
 
 	/// @brief Draw stuff
 	virtual void Draw()=0;
 
 protected:
-	std::set<feature_iterator, ltaddr> sel_features; ///< Currently selected visual features
-	typedef typename std::set<feature_iterator, ltaddr>::const_iterator sel_iterator;
+	std::set<FeatureType *> sel_features; ///< Currently selected visual features
 
 	/// Topmost feature under the mouse; generally only valid during a drag
-	feature_iterator active_feature;
+	FeatureType *active_feature;
 	/// List of features which are drawn and can be clicked on
 	/// List is used here for the iterator invalidation properties
-	boost::container::list<FeatureType> features;
+	feature_list features;
 
 	/// Draw all of the features in the list
 	void DrawAllFeatures();
@@ -205,11 +187,11 @@ protected:
 	/// @brief Remove a feature from the selection
 	/// @param i Index in the feature list
 	/// Also deselects lines if all features for that line have been deselected
-	void RemoveSelection(feature_iterator feat);
+	void RemoveSelection(FeatureType *feat);
 
 	/// @brief Set the selection to a single feature, deselecting everything else
 	/// @param i Index in the feature list
-	void SetSelection(feature_iterator feat, bool clear);
+	void SetSelection(FeatureType *feat, bool clear);
 
 public:
 	/// @brief Handler for all mouse events

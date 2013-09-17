@@ -32,6 +32,7 @@
 #include "video_display.h"
 
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/format.hpp>
@@ -47,7 +48,7 @@ static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolDragDraggableFeature>(parent, context)
-, primary(0)
+, primary(nullptr)
 , button_is_move(true)
 {
 	c->selectionController->GetSelectedSet(selection);
@@ -112,7 +113,7 @@ void VisualToolDrag::OnFileChanged() {
 	features.clear();
 	sel_features.clear();
 	primary = 0;
-	active_feature = features.end();
+	active_feature = nullptr;
 
 	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
 		if (IsDisplayed(diag))
@@ -126,8 +127,8 @@ void VisualToolDrag::OnFrameChanged() {
 	if (primary && !IsDisplayed(primary->line))
 		primary = 0;
 
-	feature_iterator feat = features.begin();
-	feature_iterator end = features.end();
+	auto feat = features.begin();
+	auto end = features.end();
 
 	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
 		if (IsDisplayed(diag)) {
@@ -141,9 +142,9 @@ void VisualToolDrag::OnFrameChanged() {
 		else {
 			// Remove all features for this line (if any)
 			while (feat != end && feat->line == diag) {
-				if (feat == active_feature) active_feature = features.end();
-				feat->line = 0;
-				RemoveSelection(feat);
+				if (&*feat == active_feature) active_feature = nullptr;
+				feat->line = nullptr;
+				RemoveSelection(&*feat);
 				feat = features.erase(feat);
 			}
 		}
@@ -151,21 +152,23 @@ void VisualToolDrag::OnFrameChanged() {
 }
 
 template<class C, class T> static bool line_not_present(C const& set, T const& it) {
-	return std::none_of(set.begin(), set.end(), [&](T const& cmp) { return cmp->line == it->line; });
+	return std::none_of(set.begin(), set.end(), [&](typename C::value_type const& cmp) {
+		return cmp->line == it->line;
+	});
 }
 
 void VisualToolDrag::OnSelectedSetChanged(const SubtitleSelection &added, const SubtitleSelection &removed) {
 	c->selectionController->GetSelectedSet(selection);
 
 	bool any_changed = false;
-	for (feature_iterator it = features.begin(); it != features.end(); ) {
+	for (auto it = features.begin(); it != features.end(); ) {
 		if (removed.count(it->line)) {
-			sel_features.erase(it++);
+			sel_features.erase(&*it++);
 			any_changed = true;
 		}
 		else {
 			if (added.count(it->line) && it->type == DRAG_START && line_not_present(sel_features, it)) {
-				sel_features.insert(it);
+				sel_features.insert(&*it);
 				any_changed = true;
 			}
 			++it;
@@ -180,11 +183,11 @@ void VisualToolDrag::Draw() {
 	DrawAllFeatures();
 
 	// Draw connecting lines
-	for (feature_iterator cur = features.begin(); cur != features.end(); ++cur) {
-		if (cur->type == DRAG_START) continue;
+	for (auto& feature : features) {
+		if (feature.type == DRAG_START) continue;
 
-		feature_iterator p2 = cur;
-		feature_iterator p1 = cur->parent;
+		Feature *p2 = &feature;
+		Feature *p1 = feature.parent;
 
 		// Move end marker has an arrow; origin doesn't
 		bool has_arrow = p2->type == DRAG_END;
@@ -221,51 +224,54 @@ void VisualToolDrag::MakeFeatures(AssDialogue *diag) {
 	MakeFeatures(diag, features.end());
 }
 
-void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_iterator pos) {
+void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_list::iterator pos) {
 	Vector2D p1 = FromScriptCoords(GetLinePosition(diag));
 
 	// Create \pos feature
-	Feature feat;
-	feat.pos = p1;
-	feat.layer = 0;
-	feat.type = DRAG_START;
-	feat.time = 0;
-	feat.line = diag;
-	feat.parent = features.end();
-	features.insert(pos, feat);
-	feature_iterator cur = prev(pos);
-	feat.parent = cur;
+	auto feat = agi::util::make_unique<Feature>();
+	auto parent = feat.get();
+	feat->pos = p1;
+	feat->type = DRAG_START;
+	feat->line = diag;
+
 	if (selection.count(diag))
-		sel_features.insert(cur);
+		sel_features.insert(feat.get());
+	features.insert(pos, *feat.release());
 
 	Vector2D p2;
 	int t1, t2;
 
 	// Create move destination feature
 	if (GetLineMove(diag, p1, p2, t1, t2)) {
-		feat.pos = FromScriptCoords(p2);
-		feat.layer = 1;
-		feat.type = DRAG_END;
-		feat.parent->time = t1;
-		feat.time = t2;
-		feat.line = diag;
-		features.insert(pos, feat);
-		feat.parent->parent = prev(pos);
+		feat = agi::util::make_unique<Feature>();
+		feat->pos = FromScriptCoords(p2);
+		feat->layer = 1;
+		feat->type = DRAG_END;
+		feat->time = t2;
+		feat->line = diag;
+		feat->parent = parent;
+
+		parent->time = t1;
+		parent->parent = feat.get();
+
+		features.insert(pos, *feat.release());
 	}
 
 	// Create org feature
 	if (Vector2D org = GetLineOrigin(diag)) {
-		feat.pos = FromScriptCoords(org);
-		feat.layer = -1;
-		feat.type = DRAG_ORIGIN;
-		feat.time = 0;
-		feat.line = diag;
-		features.insert(pos, feat);
+		feat = agi::util::make_unique<Feature>();
+		feat->pos = FromScriptCoords(org);
+		feat->layer = -1;
+		feat->type = DRAG_ORIGIN;
+		feat->time = 0;
+		feat->line = diag;
+		feat->parent = parent;
+		features.insert(pos, *feat.release());
 	}
 }
 
-bool VisualToolDrag::InitializeDrag(feature_iterator feature) {
-	primary = &*feature;
+bool VisualToolDrag::InitializeDrag(Feature *feature) {
+	primary = feature;
 
 	// Set time of clicked feature to the current frame and shift all other
 	// selected features by the same amount
@@ -279,17 +285,17 @@ bool VisualToolDrag::InitializeDrag(feature_iterator feature) {
 	return true;
 }
 
-void VisualToolDrag::UpdateDrag(feature_iterator feature) {
+void VisualToolDrag::UpdateDrag(Feature *feature) {
 	if (feature->type == DRAG_ORIGIN) {
 		SetOverride(feature->line, "\\org", ToScriptCoords(feature->pos).PStr());
 		return;
 	}
 
-	feature_iterator end_feature = feature->parent;
+	Feature *end_feature = feature->parent;
 	if (feature->type == DRAG_END)
 		std::swap(feature, end_feature);
 
-	if (feature->parent == features.end())
+	if (!feature->parent)
 		SetOverride(feature->line, "\\pos", ToScriptCoords(feature->pos).PStr());
 	else
 		SetOverride(feature->line, "\\move",
