@@ -35,7 +35,7 @@
 
     <!-- Specifically list one of them to ensure there's an output listed for
          a clean build -->
-    <WxLibrary Include="$(AegisubLibraryDir)\wxbase29$(LibraryNameSuffix).lib" />
+    <WxLibrary Include="$(AegisubLibraryDir)\wxbase30$(LibraryNameSuffix).lib" />
     <WxLibrary Include="$(AegisubLibraryDir)\wx*.lib" />
   </ItemGroup>
 
