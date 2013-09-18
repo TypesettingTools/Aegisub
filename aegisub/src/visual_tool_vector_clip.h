@@ -46,6 +46,8 @@ class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeat
 	int mode; /// 0-7
 	bool inverse; /// is iclip?
 
+	std::set<Feature *> box_added;
+
 	/// @brief Set the mode
 	/// @param mode 0-7
 	void SetMode(int mode);

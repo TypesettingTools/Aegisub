@@ -32,6 +32,8 @@
 #include <libaegisub/util.h>
 
 #include <algorithm>
+#include <boost/range/algorithm/copy.hpp>
+#include <boost/range/algorithm/set_algorithm.hpp>
 #include <wx/toolbar.h>
 
 /// Button IDs
@@ -50,7 +52,7 @@ enum {
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolVectorClipDraggableFeature>(parent, context)
 , spline(*this)
-, toolBar(0)
+, toolBar(nullptr)
 , mode(0)
 , inverse(false)
 {
@@ -105,7 +107,18 @@ void VisualToolVectorClip::Draw() {
 	gl.SetLineColour(colour[3], 1.f, 2);
 	gl.SetFillColour(wxColour(0, 0, 0), 0.5f);
 
+	// draw the shade over clipped out areas and line showing the clip
 	gl.DrawMultiPolygon(points, start, count, video_pos, video_res, !inverse);
+
+	if (mode == 0 && holding && drag_start && mouse_pos) {
+		// Draw drag-select box
+		Vector2D top_left = drag_start.Min(mouse_pos);
+		Vector2D bottom_right = drag_start.Max(mouse_pos);
+		gl.DrawDashedLine(top_left, Vector2D(top_left.X(), bottom_right.Y()), 6);
+		gl.DrawDashedLine(Vector2D(top_left.X(), bottom_right.Y()), bottom_right, 6);
+		gl.DrawDashedLine(bottom_right, Vector2D(bottom_right.X(), top_left.Y()), 6);
+		gl.DrawDashedLine(Vector2D(bottom_right.X(), top_left.Y()), top_left, 6);
+	}
 
 	Vector2D pt;
 	float t;
@@ -246,6 +259,12 @@ bool VisualToolVectorClip::InitializeDrag(Feature *feature) {
 }
 
 bool VisualToolVectorClip::InitializeHold() {
+	// Box selection
+	if (mode == 0) {
+		box_added.clear();
+		return true;
+	}
+
 	// Insert line/bicubic
 	if (mode == 1 || mode == 2) {
 		SplineCurve curve;
@@ -326,16 +345,44 @@ bool VisualToolVectorClip::InitializeHold() {
 		return true;
 	}
 
-	/// @todo box selection?
-	if (mode == 0)
-		return false;
-
 	// Nothing to do for mode 5 (remove)
 	return false;
 }
 
+static bool in_box(Vector2D top_left, Vector2D bottom_right, Vector2D p) {
+	return p.X() >= top_left.X()
+		&& p.X() <= bottom_right.X()
+		&& p.Y() >= top_left.Y()
+		&& p.Y() <= bottom_right.Y();
+}
+
 void VisualToolVectorClip::UpdateHold() {
 	bool needs_save = true;
+
+	// Box selection
+	if (mode == 0) {
+		std::set<Feature *> boxed_features;
+		Vector2D p1 = drag_start.Min(mouse_pos);
+		Vector2D p2 = drag_start.Max(mouse_pos);
+		for (auto& feature : features) {
+			if (in_box(p1, p2, feature.pos))
+				boxed_features.insert(&feature);
+		}
+
+		// Keep track of which features were selected by the box selection so
+		// that only those are deselected if the user is holding ctrl
+		boost::set_difference(boxed_features, sel_features,
+			std::inserter(box_added, end(box_added)));
+
+		boost::copy(boxed_features, std::inserter(sel_features, end(sel_features)));
+
+		std::vector<Feature *> to_deselect;
+		boost::set_difference(box_added, boxed_features, std::back_inserter(to_deselect));
+		for (auto feature : to_deselect)
+			sel_features.erase(feature);
+
+		return;
+	}
 
 	if (mode == 1) {
 		spline.back().EndPoint() = mouse_pos;
