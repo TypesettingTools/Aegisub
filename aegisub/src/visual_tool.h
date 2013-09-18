@@ -113,7 +113,7 @@ protected:
 
 	/// @brief Commit the current file state
 	/// @param message Description of changes for undo
-	void Commit(wxString message = wxString());
+	virtual void Commit(wxString message = wxString());
 	bool IsDisplayed(AssDialogue *line) const;
 
 	/// Get the line's position if it's set, or it's default based on style if not

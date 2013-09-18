@@ -222,9 +222,13 @@ void VisualToolVectorClip::Save() {
 	}
 }
 
+void VisualToolVectorClip::Commit(wxString message) {
+	Save();
+	VisualToolBase::Commit(message);
+}
+
 void VisualToolVectorClip::UpdateDrag(Feature *feature) {
 	spline.MovePoint(feature->curve, feature->point, feature->pos);
-	Save();
 }
 
 bool VisualToolVectorClip::InitializeDrag(Feature *feature) {
@@ -251,7 +255,6 @@ bool VisualToolVectorClip::InitializeDrag(Feature *feature) {
 	}
 	active_feature = nullptr;
 
-	Save();
 	MakeFeatures();
 	Commit(_("delete control point"));
 
@@ -329,7 +332,6 @@ bool VisualToolVectorClip::InitializeHold() {
 			}
 		}
 
-		Save();
 		MakeFeatures();
 		Commit();
 		return false;
@@ -357,8 +359,6 @@ static bool in_box(Vector2D top_left, Vector2D bottom_right, Vector2D p) {
 }
 
 void VisualToolVectorClip::UpdateHold() {
-	bool needs_save = true;
-
 	// Box selection
 	if (mode == 0) {
 		std::set<Feature *> boxed_features;
@@ -415,20 +415,13 @@ void VisualToolVectorClip::UpdateHold() {
 			spline.emplace_back(last, mouse_pos);
 			MakeFeature(--spline.end());
 		}
-		else
-			needs_save = false;
 	}
 
 	if (mode == 3 || mode == 4) return;
 
 	// Smooth spline
-	if (!holding && mode == 7) {
+	if (!holding && mode == 7)
 		spline.Smooth();
-		needs_save = true;
-	}
-
-	if (needs_save)
-		Save();
 
 	// End freedraw
 	if (!holding && (mode == 6 || mode == 7)) {

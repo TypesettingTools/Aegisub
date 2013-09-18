@@ -53,6 +53,7 @@ class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeat
 	void SetMode(int mode);
 
 	void Save();
+	void Commit(wxString message="") override;
 
 	void SelectAll();
 	void MakeFeature(Spline::iterator cur);
