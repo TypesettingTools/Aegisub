@@ -275,7 +275,7 @@ void Spline::Smooth(float smooth) {
 
 	// Smooth curve
 	for (iterator cur = begin(); cur != end(); ++cur) {
-		iterator prev_curve = prev(cur == begin() ? cur : end());
+		iterator prev_curve = prev(cur != begin() ? cur : end());
 		iterator next_curve = next(cur);
 		if (next_curve == end())
 			next_curve = begin();
