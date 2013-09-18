@@ -126,7 +126,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 		}
 
 		case agi::OptionValue::Type_Int: {
-			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, wxString::Format("%d", (int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
+			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, std::to_wstring((int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
 			sc->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(opt_name, parent));
 			Add(flex, name, sc);
 			return sc;
@@ -240,7 +240,7 @@ void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 	font_name->SetMinSize(wxSize(160, -1));
 	font_name->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(face_opt->GetName().c_str(), parent));
 
-	wxSpinCtrl *font_size = new wxSpinCtrl(this, -1, wxString::Format("%d", (int)size_opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
+	wxSpinCtrl *font_size = new wxSpinCtrl(this, -1, std::to_wstring((int)size_opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
 	font_size->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(size_opt->GetName().c_str(), parent));
 
 	wxButton *pick_btn = new wxButton(this, -1, _("Choose..."));

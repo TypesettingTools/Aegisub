@@ -129,7 +129,7 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 
 void TimeEdit::UpdateText() {
 	if (byFrame)
-		ChangeValue(wxString::Format("%d", c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
+		ChangeValue(std::to_wstring(c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
 		ChangeValue(to_wx(time.GetAssFormated()));
 }

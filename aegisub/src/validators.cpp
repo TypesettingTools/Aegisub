@@ -184,7 +184,7 @@ bool NumValidator::TransferToWindow() {
 	if (isFloat)
 		ctrl->SetValue(wxString::Format("%g",fValue));
 	else
-		ctrl->SetValue(wxString::Format("%d",iValue));
+		ctrl->SetValue(std::to_wstring(iValue));
 
 	return true;
 }

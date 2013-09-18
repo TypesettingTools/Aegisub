@@ -162,6 +162,6 @@ int DialogProperties::SetInfoIfDifferent(std::string const& key, std::string con
 }
 
 void DialogProperties::OnSetFromVideo(wxCommandEvent &) {
-	ResX->SetValue(wxString::Format("%d", c->videoController->GetWidth()));
-	ResY->SetValue(wxString::Format("%d", c->videoController->GetHeight()));
+	ResX->SetValue(std::to_wstring(c->videoController->GetWidth()));
+	ResY->SetValue(std::to_wstring(c->videoController->GetHeight()));
 }

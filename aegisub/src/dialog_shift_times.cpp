@@ -85,7 +85,7 @@ static wxString get_history_string(json::Object &obj) {
 			int beg = (int64_t)(*it)["start"];
 			int end = (int64_t)(*it)["end"];
 			if (beg == end)
-				lines += wxString::Format("%d", beg);
+				lines += std::to_wstring(beg);
 			else
 				lines += wxString::Format("%d-%d", beg, end);
 			if (it + 1 != sel.end())

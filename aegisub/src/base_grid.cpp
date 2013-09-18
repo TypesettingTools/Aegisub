@@ -577,11 +577,11 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 }
 
 void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings, bool replace, wxString const& rep_char) const {
-	if (paint_columns[0]) strings[0] = wxString::Format("%d", row + 1);
-	if (paint_columns[1]) strings[1] = wxString::Format("%d", line->Layer);
+	if (paint_columns[0]) strings[0] = std::to_wstring(row + 1);
+	if (paint_columns[1]) strings[1] = std::to_wstring(line->Layer);
 	if (byFrame) {
-		if (paint_columns[2]) strings[2] = wxString::Format("%d", context->videoController->FrameAtTime(line->Start, agi::vfr::START));
-		if (paint_columns[3]) strings[3] = wxString::Format("%d", context->videoController->FrameAtTime(line->End, agi::vfr::END));
+		if (paint_columns[2]) strings[2] = std::to_wstring(context->videoController->FrameAtTime(line->Start, agi::vfr::START));
+		if (paint_columns[3]) strings[3] = std::to_wstring(context->videoController->FrameAtTime(line->End, agi::vfr::END));
 	}
 	else {
 		if (paint_columns[2]) strings[2] = to_wx(line->Start.GetAssFormated());
@@ -820,7 +820,7 @@ void BaseGrid::SetColumnWidths() {
 	// O(1) widths
 	int marginLen = dc.GetTextExtent("0000").GetWidth();
 
-	int labelLen = dc.GetTextExtent(wxString::Format("%d", GetRows())).GetWidth();
+	int labelLen = dc.GetTextExtent(std::to_wstring(GetRows())).GetWidth();
 	int startLen = 0;
 	int endLen = 0;
 	if (!byFrame)
@@ -865,12 +865,12 @@ void BaseGrid::SetColumnWidths() {
 	}
 
 	// Finish layer
-	int layerLen = maxLayer ? dc.GetTextExtent(wxString::Format("%d", maxLayer)).GetWidth() : 0;
+	int layerLen = maxLayer ? dc.GetTextExtent(std::to_wstring(maxLayer)).GetWidth() : 0;
 
 	// Finish times
 	if (byFrame) {
-		startLen = dc.GetTextExtent(wxString::Format("%d", maxStart)).GetWidth();
-		endLen = dc.GetTextExtent(wxString::Format("%d", maxEnd)).GetWidth();
+		startLen = dc.GetTextExtent(std::to_wstring(maxStart)).GetWidth();
+		endLen = dc.GetTextExtent(std::to_wstring(maxEnd)).GetWidth();
 	}
 
 	// Set column widths
