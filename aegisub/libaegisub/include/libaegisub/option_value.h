@@ -83,13 +83,6 @@ public:
 	virtual void SetColor(const Color) { throw TypeError("color", " set "); }
 	virtual void SetBool(const bool) { throw TypeError("bool", " set "); }
 
-	virtual std::string GetDefaultString() const { throw TypeError("string"); }
-	virtual int64_t GetDefaultInt() const { throw TypeError("int"); }
-	virtual double GetDefaultDouble() const { throw TypeError("double"); }
-	virtual Color GetDefaultColor() const { throw TypeError("color"); }
-	virtual bool GetDefaultBool() const { throw TypeError("bool"); }
-
-
 	virtual std::vector<std::string> const& GetListString() const { throw ListTypeError("string"); }
 	virtual std::vector<int64_t> const& GetListInt() const { throw ListTypeError("int"); }
 	virtual std::vector<double> const& GetListDouble() const { throw ListTypeError("double"); }
@@ -101,12 +94,6 @@ public:
 	virtual void SetListDouble(const std::vector<double>&) { throw ListTypeError("double", " set "); }
 	virtual void SetListColor(const std::vector<Color>&) { throw ListTypeError("color", " set "); }
 	virtual void SetListBool(const std::vector<bool>&) { throw ListTypeError("string", " set "); }
-
-	virtual std::vector<std::string> const& GetDefaultListString() const { throw ListTypeError("string"); }
-	virtual std::vector<int64_t> const& GetDefaultListInt() const { throw ListTypeError("int"); }
-	virtual std::vector<double> const& GetDefaultListDouble() const { throw ListTypeError("double"); }
-	virtual std::vector<Color> const& GetDefaultListColor() const { throw ListTypeError("color"); }
-	virtual std::vector<bool> const& GetDefaultListBool() const { throw ListTypeError("string"); }
 
 	virtual void Set(const OptionValue *new_value)=0;
 
@@ -123,7 +110,6 @@ public:
 			: value(member_value), value_default(member_value), name(member_name) {}          \
 		type Get##type_name() const { return value; }                                         \
 		void Set##type_name(const type new_val) { value = new_val; NotifyChanged(); }         \
-		type GetDefault##type_name() const { return value_default; }                          \
 		OptionType GetType() const { return OptionValue::Type_##type_name; }                  \
 		std::string GetName() const { return name; }                                          \
 		void Reset() { value = value_default; NotifyChanged(); }                              \
@@ -147,7 +133,6 @@ CONFIG_OPTIONVALUE(Bool, bool)
 		: array(value), array_default(value), name(name) { }                                  \
 		std::vector<type> const& GetList##type_name() const { return array; }                 \
 		void SetList##type_name(const std::vector<type>& val) { array = val; NotifyChanged(); } \
-		std::vector<type> const& GetDefaultList##type_name() const { return array_default; }  \
 		OptionType GetType() const { return OptionValue::Type_List_##type_name; }             \
 		std::string GetName() const { return name; }                                          \
 		void Reset() { array = array_default; NotifyChanged(); }                              \
