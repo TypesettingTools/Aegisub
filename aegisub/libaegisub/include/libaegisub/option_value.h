@@ -17,8 +17,6 @@
 /// @ingroup libaegisub
 
 #include <cstdint>
-
-#include <fstream>
 #include <vector>
 
 #include <libaegisub/color.h>
@@ -26,8 +24,6 @@
 #include <libaegisub/signal.h>
 
 namespace agi {
-
-
 DEFINE_BASE_EXCEPTION_NOINNER(OptionValueError, Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorNotFound, OptionValueError, "options/not_found")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidType, OptionValueError, "options/invalid_type")
@@ -37,6 +33,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidListType, OptionValueErro
 /// Holds an actual option.
 class OptionValue {
 	agi::signal::Signal<OptionValue const&> ValueChanged;
+	std::string name;
 protected:
 	void NotifyChanged() { ValueChanged(*this); }
 
@@ -47,9 +44,10 @@ protected:
 		return OptionValueErrorInvalidListType("Attempt to" + op + type + " with non-" + type + " list " + GetName());
 	}
 
+	OptionValue(std::string name) : name(std::move(name)) { }
+
 public:
 	virtual ~OptionValue() {};
-
 
 	/// Option type
 	/// No bitsets here.
@@ -66,8 +64,8 @@ public:
 		Type_List_Bool = 104	///< List of Bools
 	};
 
+	std::string GetName() const { return name; }
 	virtual OptionType GetType() const = 0;
-	virtual std::string GetName() const = 0;
 	virtual bool IsDefault() const = 0;
 	virtual void Reset() = 0;
 
@@ -104,14 +102,13 @@ public:
 	class OptionValue##type_name : public OptionValue {                                       \
 		type value;                                                                           \
 		type value_default;                                                                   \
-		std::string name;                                                                     \
 	public:                                                                                   \
 		OptionValue##type_name(std::string member_name, type member_value)                    \
-			: value(member_value), value_default(member_value), name(member_name) {}          \
+		: OptionValue(std::move(member_name))                                                 \
+		, value(member_value), value_default(member_value) { }                                \
 		type Get##type_name() const { return value; }                                         \
 		void Set##type_name(const type new_val) { value = new_val; NotifyChanged(); }         \
 		OptionType GetType() const { return OptionValue::Type_##type_name; }                  \
-		std::string GetName() const { return name; }                                          \
 		void Reset() { value = value_default; NotifyChanged(); }                              \
 		bool IsDefault() const { return value == value_default; }                             \
 		void Set(const OptionValue *new_val) { Set##type_name(new_val->Get##type_name()); }   \
@@ -129,17 +126,16 @@ CONFIG_OPTIONVALUE(Bool, bool)
 		std::vector<type> array_default;                                                      \
 		std::string name;                                                                     \
 	public:                                                                                   \
-		OptionValueList##type_name(std::string const& name, std::vector<type> const& value = std::vector<type>()) \
-		: array(value), array_default(value), name(name) { }                                  \
+		OptionValueList##type_name(std::string name, std::vector<type> const& value = std::vector<type>()) \
+		: OptionValue(std::move(name))                                                        \
+		, array(value), array_default(value) { }                                              \
 		std::vector<type> const& GetList##type_name() const { return array; }                 \
 		void SetList##type_name(const std::vector<type>& val) { array = val; NotifyChanged(); } \
 		OptionType GetType() const { return OptionValue::Type_List_##type_name; }             \
-		std::string GetName() const { return name; }                                          \
 		void Reset() { array = array_default; NotifyChanged(); }                              \
 		bool IsDefault() const { return array == array_default; }                             \
 		void Set(const OptionValue *nv) { SetList##type_name(nv->GetList##type_name()); }     \
 	};
-
 
 CONFIG_OPTIONVALUE_LIST(String, std::string)
 CONFIG_OPTIONVALUE_LIST(Int, int64_t)
