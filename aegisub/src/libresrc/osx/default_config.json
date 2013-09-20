@@ -350,6 +350,9 @@
 	},
 
 	"Subtitle" : {
+		"Character Counter" : {
+			"Ignore Whitespace" : false
+		},
 		"Character Limit" : 40,
 		"Default Resolution" : {
 			"Auto" : true,

@@ -62,7 +62,7 @@ void StatusTimeout(wxString const& msg, int ms = 10000);
 int SmallestPowerOf2(int x);
 
 /// Get the length in characters of the longest line in the given text
-size_t MaxLineLength(std::string const& text);
+size_t MaxLineLength(std::string const& text, bool ignore_whitespace);
 
 /// @brief Launch a new copy of Aegisub.
 ///

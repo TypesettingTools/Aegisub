@@ -18,24 +18,6 @@
 
 #include "config.h"
 
-#include <iterator>
-
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/event.h>
-#include <wx/filefn.h>
-#include <wx/listctrl.h>
-#include <wx/msgdlg.h>
-#include <wx/srchctrl.h>
-#include <wx/sizer.h>
-#include <wx/spinctrl.h>
-#include <wx/stattext.h>
-#include <wx/treebook.h>
-#include <wx/treebook.h>
-
-#include <libaegisub/exception.h>
-#include <libaegisub/hotkey.h>
-
 #include "preferences.h"
 
 #include "audio_renderer_waveform.h"
@@ -60,6 +42,23 @@
 #ifdef WITH_FFMS2
 #include <ffms.h>
 #endif
+
+#include <libaegisub/exception.h>
+#include <libaegisub/hotkey.h>
+
+#include <iterator>
+
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/event.h>
+#include <wx/filefn.h>
+#include <wx/listctrl.h>
+#include <wx/msgdlg.h>
+#include <wx/srchctrl.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include <wx/treebook.h>
 
 #define CLASS_PAGE(name)                             \
 class name: public OptionPage {                  \
@@ -192,7 +191,10 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 	OptionAdd(edit_box, _("Enable syntax highlighting"), "Subtitle/Highlight/Syntax");
 	OptionBrowse(edit_box, _("Dictionaries path"), "Path/Dictionary");
 	OptionFont(edit_box, "Subtitle/Edit Box/");
-	OptionAdd(edit_box, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
+
+	wxFlexGridSizer *character_count = PageSizer(_("Character Counter"));
+	OptionAdd(character_count, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
+	OptionAdd(character_count, _("Ignore whitespace"), "Subtitle/Character Counter/Ignore Whitespace");
 
 	wxFlexGridSizer *grid = PageSizer(_("Grid"));
 	OptionAdd(grid, _("Focus grid on click"), "Subtitle/Grid/Focus Allow");

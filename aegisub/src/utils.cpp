@@ -54,6 +54,8 @@
 #include <boost/locale/boundary.hpp>
 #include <boost/range/algorithm_ext.hpp>
 #include <map>
+#include <unicode/uchar.h>
+#include <unicode/utf8.h>
 
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
@@ -222,7 +224,7 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 	});
 }
 
-size_t MaxLineLength(std::string const& text) {
+size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 	auto tokens = agi::ass::TokenizeDialogueBody(text);
 	agi::ass::MarkDrawings(text, tokens);
 
@@ -231,8 +233,10 @@ size_t MaxLineLength(std::string const& text) {
 	size_t current_line_length = 0;
 	for (auto token : tokens) {
 		if (token.type == agi::ass::DialogueTokenType::LINE_BREAK) {
-			if (text[pos + 1] == 'h')
-				current_line_length += 1;
+			if (text[pos + 1] == 'h') {
+				if (!ignore_whitespace)
+					current_line_length += 1;
+			}
 			else { // N or n
 				max_line_length = std::max(max_line_length, current_line_length);
 				current_line_length = 0;
@@ -241,7 +245,18 @@ size_t MaxLineLength(std::string const& text) {
 		else if (token.type == agi::ass::DialogueTokenType::TEXT) {
 			using namespace boost::locale::boundary;
 			const ssegment_index characters(character, begin(text) + pos, begin(text) + pos + token.length);
-			current_line_length += boost::distance(characters);
+			if (!ignore_whitespace)
+				current_line_length += boost::distance(characters);
+			else {
+				// characters.rule(word_any) doesn't seem to work for character indexes (everything is word_none)
+				for (auto const& chr : characters) {
+					UChar32 c;
+					int i = 0;
+					U8_NEXT_UNSAFE(chr.begin(), i, c);
+					if (!u_isUWhiteSpace(c))
+						++current_line_length;
+				}
+			}
 		}
 
 		pos += token.length;
