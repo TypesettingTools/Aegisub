@@ -601,6 +601,52 @@ namespace Automation4 {
 		return lua_gettop(L) - pretop;
 	}
 
+	static int append_stack_trace(lua_State *L)
+	{
+		int level = 1;
+		if (lua_isnumber(L, 2)) {
+			level = (int)lua_tointeger(L, 2);
+			lua_pop(L, 1);
+		}
+
+		if (lua_gettop(L) == 0)
+			lua_pushliteral(L, ""); // No error message
+		else if (!lua_isstring(L, 1))
+			return 1; // Error message isn't a string
+		else
+			lua_pushliteral(L, "\n");
+
+		lua_Debug ar;
+		while (lua_getstack(L, level++, &ar)) {
+			lua_pushliteral(L, "\n");
+
+			lua_getinfo(L, "Snl", &ar);
+
+			if (ar.what[0] == 't') // tail
+				lua_pushfstring(L, "(tail call)");
+			else {
+				if (*ar.namewhat)
+					lua_pushfstring(L, "%s: ", ar.name);
+				else {
+					if (*ar.what == 'm') // main
+						lua_pushfstring(L, "[main]: ");
+					else if (*ar.what == 'C') // C
+						lua_pushliteral(L, "?: ");
+					else // Anonymous function
+						lua_pushfstring(L, "? <%d:%d>: ",  ar.linedefined, ar.lastlinedefined);
+				}
+
+				lua_pushfstring(L, "%s", ar.source + (ar.source[0] == '='));
+				if (ar.currentline > 0)
+					lua_pushfstring(L, ":%d", ar.currentline);
+			}
+
+			lua_concat(L, lua_gettop(L));
+		}
+		lua_concat(L, lua_gettop(L));
+		return 1;
+	}
+
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, std::string const& title, wxWindow *parent, bool can_open_config)
 	{
 		bool failed = false;
@@ -608,7 +654,11 @@ namespace Automation4 {
 		bsr.Run([&](ProgressSink *ps) {
 			LuaProgressSink lps(L, ps, can_open_config);
 
-			if (lua_pcall(L, nargs, nresults, 0)) {
+			// Insert our error handler under the function to call
+			lua_pushcclosure(L, append_stack_trace, 0);
+			lua_insert(L, -nargs - 2);
+
+			if (lua_pcall(L, nargs, nresults, -nargs - 2)) {
 				if (!lua_isnil(L, -1)) {
 					// if the call failed, log the error here
 					ps->Log("\n\nLua reported a runtime error:\n");
@@ -617,6 +667,7 @@ namespace Automation4 {
 				lua_pop(L, 1);
 				failed = true;
 			}
+			lua_pop(L, 1);
 
 			lua_gc(L, LUA_GCCOLLECT, 0);
 		});
