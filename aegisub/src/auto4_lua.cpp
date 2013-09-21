@@ -57,9 +57,12 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/format.hpp>
+#include <boost/range/adaptor/reversed.hpp>
+#include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
 #include <cassert>
 #include <cstdint>
@@ -601,7 +604,7 @@ namespace Automation4 {
 		return lua_gettop(L) - pretop;
 	}
 
-	static int append_stack_trace(lua_State *L)
+	static int add_stack_trace(lua_State *L)
 	{
 		int level = 1;
 		if (lua_isnumber(L, 2)) {
@@ -609,41 +612,43 @@ namespace Automation4 {
 			lua_pop(L, 1);
 		}
 
-		if (lua_gettop(L) == 0)
-			lua_pushliteral(L, ""); // No error message
-		else if (!lua_isstring(L, 1))
-			return 1; // Error message isn't a string
-		else
-			lua_pushliteral(L, "\n");
+		std::string message = get_string_or_default(L, 1);
+		if (lua_gettop(L))
+			lua_pop(L, 1);
+
+		// Strip the location from the error message since it's redundant with
+		// the stack trace
+		boost::regex location("^\\[string \".*\"\\]:[0-9]+: ");
+		message = regex_replace(message, location, "", boost::format_first_only);
+
+		std::vector<std::string> frames;
+		frames.emplace_back(std::move(message));
 
 		lua_Debug ar;
 		while (lua_getstack(L, level++, &ar)) {
-			lua_pushliteral(L, "\n");
-
 			lua_getinfo(L, "Snl", &ar);
 
-			if (ar.what[0] == 't') // tail
-				lua_pushfstring(L, "(tail call)");
+			if (ar.what[0] == 't')
+				frames.emplace_back("(tail call)");
 			else {
-				if (*ar.namewhat)
-					lua_pushfstring(L, "%s: ", ar.name);
-				else {
-					if (*ar.what == 'm') // main
-						lua_pushfstring(L, "[main]: ");
-					else if (*ar.what == 'C') // C
-						lua_pushliteral(L, "?: ");
-					else // Anonymous function
-						lua_pushfstring(L, "? <%d:%d>: ",  ar.linedefined, ar.lastlinedefined);
-				}
+				std::string file = ar.source;
+				if (file == "=[C]")
+					file = "<C function>";
 
-				lua_pushfstring(L, "%s", ar.source + (ar.source[0] == '='));
-				if (ar.currentline > 0)
-					lua_pushfstring(L, ":%d", ar.currentline);
+				std::string function = ar.name ? ar.name : "";
+				if (*ar.what == 'm')
+					function = "<main>";
+				else if (*ar.what == 'C')
+					function = '?';
+				else if (!*ar.namewhat)
+					function = str(boost::format("<anonymous function at lines %d-%d>") % ar.linedefined % ar.lastlinedefined);
+
+				frames.emplace_back(str(boost::format("    File \"%s\", line %d\n%s") % file % ar.currentline % function));
 			}
-
-			lua_concat(L, lua_gettop(L));
 		}
-		lua_concat(L, lua_gettop(L));
+
+		push_value(L, join(frames | boost::adaptors::reversed, "\n"));
+
 		return 1;
 	}
 
@@ -655,7 +660,7 @@ namespace Automation4 {
 			LuaProgressSink lps(L, ps, can_open_config);
 
 			// Insert our error handler under the function to call
-			lua_pushcclosure(L, append_stack_trace, 0);
+			lua_pushcclosure(L, add_stack_trace, 0);
 			lua_insert(L, -nargs - 2);
 
 			if (lua_pcall(L, nargs, nresults, -nargs - 2)) {
