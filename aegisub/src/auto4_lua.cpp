@@ -613,7 +613,10 @@ namespace Automation4 {
 			lua_pop(L, 1);
 		}
 
-		std::string message = get_string_or_default(L, 1);
+		const char *err = lua_tostring(L, 1);
+		if (!err) return 1;
+
+		std::string message = err;
 		if (lua_gettop(L))
 			lua_pop(L, 1);
 
