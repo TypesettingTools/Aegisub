@@ -438,7 +438,7 @@ namespace Automation4 {
 
 			// load user script
 			if (!LoadFile(L, GetFilename())) {
-				std::string err = str(boost::format("Error loading Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % get_string_or_default(L, 1));
+				std::string err = get_string_or_default(L, 1);
 				lua_pop(L, 1);
 				throw ScriptLoadError(err);
 			}
@@ -558,7 +558,7 @@ namespace Automation4 {
 
 			try {
 				if (!LoadFile(L, path))
-					return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", path.string().c_str(), luaL_checkstring(L, 1));
+					return luaL_error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), luaL_checkstring(L, 1));
 				break;
 			}
 			catch (agi::fs::FileNotFound const&) {
@@ -568,7 +568,7 @@ namespace Automation4 {
 				// Not an error so swallow and continue on
 			}
 			catch (agi::Exception const& e) {
-				return luaL_error(L, "Error loading Lua module \"%s\":\n\n%s", path.string().c_str(), e.GetChainedMessage().c_str());
+				return luaL_error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), e.GetChainedMessage().c_str());
 			}
 		}
 
@@ -597,7 +597,7 @@ namespace Automation4 {
 			return luaL_error(L, "Lua include not found: %s", filename.c_str());
 
 		if (!LoadFile(L, filepath))
-			return luaL_error(L, "Error loading Lua include \"%s\":\n\n%s", filename.c_str(), luaL_checkstring(L, 1));
+			return luaL_error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), luaL_checkstring(L, 1));
 
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
 		lua_call(L, 0, LUA_MULTRET);

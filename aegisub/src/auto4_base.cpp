@@ -474,7 +474,7 @@ namespace Automation4 {
 			auto s = factory->Produce(filename);
 			if (s) {
 				if (!s->GetLoadedState()) {
-					wxLogError(_("An Automation script failed to load. File name: '%s', error reported: %s"), filename.wstring(), s->GetDescription());
+					wxLogError(_("Failed to load Automation script '%s':\n%s"), filename.wstring(), s->GetDescription());
 				}
 				return s;
 			}
