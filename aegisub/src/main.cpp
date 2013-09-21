@@ -112,6 +112,10 @@ bool AegisubApp::OnInit() {
 	SetAppName("aegisub");
 #endif
 
+	// The logger isn't created on demand on background threads, so force it to
+	// be created now
+	(void)wxLog::GetActiveTarget();
+
 	// Set the global locale to the utf-8 version of the current locale
 	std::locale::global(boost::locale::generator().generate(""));
 	boost::filesystem::path::imbue(std::locale());
