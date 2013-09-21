@@ -66,6 +66,7 @@
 #include <boost/tokenizer.hpp>
 #include <cassert>
 #include <cstdint>
+#include <mutex>
 
 #include <wx/clipbrd.h>
 #include <wx/filefn.h>
@@ -712,7 +713,12 @@ namespace Automation4 {
 	// LuaFeatureMacro
 	int LuaCommand::LuaRegister(lua_State *L)
 	{
-		cmd::reg(agi::util::make_unique<LuaCommand>(L));
+		static std::mutex mutex;
+		auto command = agi::util::make_unique<LuaCommand>(L);
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			cmd::reg(std::move(command));
+		}
 		return 0;
 	}
 
@@ -955,7 +961,12 @@ namespace Automation4 {
 
 	int LuaExportFilter::LuaRegister(lua_State *L)
 	{
-		AssExportFilterChain::Register(agi::util::make_unique<LuaExportFilter>(L));
+		static std::mutex mutex;
+		auto filter = agi::util::make_unique<LuaExportFilter>(L);
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			AssExportFilterChain::Register(std::move(filter));
+		}
 		return 0;
 	}
 
