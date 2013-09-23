@@ -29,7 +29,9 @@
 #include <memory>
 
 namespace Automation4 {
-	bool LoadFile(lua_State *L, agi::fs::path const& filename) {
+	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
+		auto filename = agi::fs::Canonicalize(raw_filename);
+
 		std::unique_ptr<std::istream> file(agi::io::Open(filename, true));
 		file->seekg(0, std::ios::end);
 		size_t size = file->tellg();
