@@ -605,6 +605,43 @@ namespace Automation4 {
 		return lua_gettop(L) - pretop;
 	}
 
+	static int moon_line(lua_State *L, int lua_line, std::string const& file)
+	{
+		if (luaL_dostring(L, "return require 'moonscript.line_tables'")) {
+			lua_pop(L, 1); // pop error message
+			return lua_line;
+		}
+
+		push_value(L, file);
+		lua_rawget(L, -2);
+
+		if (!lua_istable(L, -1)) {
+			lua_pop(L, 2);
+			return lua_line;
+		}
+
+		lua_rawgeti(L, -1, lua_line);
+		if (!lua_isnumber(L, -1)) {
+			lua_pop(L, 3);
+			return lua_line;
+		}
+
+		auto char_pos = static_cast<size_t>(lua_tonumber(L, -1));
+		lua_pop(L, 3);
+
+		// The moonscript line tables give us a character offset into the file,
+		// so now we need to map that to a line number
+		lua_getfield(L, LUA_REGISTRYINDEX, ("raw moonscript: " + file).c_str());
+		if (!lua_isstring(L, -1)) {
+			lua_pop(L, 1);
+			return lua_line;
+		}
+
+		size_t moon_len;
+		auto moon = lua_tolstring(L, -1, &moon_len);
+		return std::count(moon, moon + std::min(moon_len, char_pos), '\n') + 1;
+	}
+
 	static int add_stack_trace(lua_State *L)
 	{
 		int level = 1;
@@ -635,9 +672,16 @@ namespace Automation4 {
 			if (ar.what[0] == 't')
 				frames.emplace_back("(tail call)");
 			else {
+				bool is_moon = false;
 				std::string file = ar.source;
 				if (file == "=[C]")
 					file = "<C function>";
+				else if (boost::ends_with(file, ".moon"))
+					is_moon = true;
+
+				auto real_line = [&](int line) {
+					return is_moon ? moon_line(L, line, file) : line;
+				};
 
 				std::string function = ar.name ? ar.name : "";
 				if (*ar.what == 'm')
@@ -645,9 +689,9 @@ namespace Automation4 {
 				else if (*ar.what == 'C')
 					function = '?';
 				else if (!*ar.namewhat)
-					function = str(boost::format("<anonymous function at lines %d-%d>") % ar.linedefined % ar.lastlinedefined);
+					function = str(boost::format("<anonymous function at lines %d-%d>") % real_line(ar.linedefined) % real_line(ar.lastlinedefined - 1));
 
-				frames.emplace_back(str(boost::format("    File \"%s\", line %d\n%s") % file % ar.currentline % function));
+				frames.emplace_back(str(boost::format("    File \"%s\", line %d\n%s") % file % real_line(ar.currentline) % function));
 			}
 		}
 

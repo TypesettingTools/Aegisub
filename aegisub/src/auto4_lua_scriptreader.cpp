@@ -21,8 +21,9 @@
 
 #include "auto4_lua_scriptreader.h"
 
+#include "auto4_lua_utils.h"
+
 #include <libaegisub/io.h>
-#include <libaegisub/fs.h>
 
 #include <fstream>
 #include <lua.hpp>
@@ -52,6 +53,11 @@ namespace Automation4 {
 
 		if (!agi::fs::HasExtension(filename, "moon"))
 			return luaL_loadbuffer(L, &buff[0], buff.size(), filename.string().c_str()) == 0;
+
+		// Save the text we'll be loading for the line number rewriting in the
+		// error handling
+		push_value(L, buff);
+		lua_setfield(L, LUA_REGISTRYINDEX, ("raw moonscript: " + filename.string()).c_str());
 
 		// We have a MoonScript file, so we need to load it with that
 		// It might be nice to have a dedicated lua state for compiling
