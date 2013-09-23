@@ -720,7 +720,7 @@ namespace Automation4 {
 				lua_pop(L, 1);
 				failed = true;
 			}
-			lua_pop(L, 1);
+			lua_remove(L, -nresults - 1);
 
 			lua_gc(L, LUA_GCCOLLECT, 0);
 		});
@@ -890,7 +890,7 @@ namespace Automation4 {
 
 			subsobj->ProcessingComplete(StrDisplay(c));
 
-			AssDialogue *active_line = 0;
+			AssDialogue *active_line = nullptr;
 			int active_idx = 0;
 
 			// Check for a new active row
