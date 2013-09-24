@@ -717,10 +717,11 @@ namespace Automation4 {
 					ps->Log("\n\nLua reported a runtime error:\n");
 					ps->Log(get_string_or_default(L, -1));
 				}
-				lua_pop(L, 1);
+				lua_pop(L, 2);
 				failed = true;
 			}
-			lua_remove(L, -nresults - 1);
+			else
+				lua_remove(L, -nresults - 1);
 
 			lua_gc(L, LUA_GCCOLLECT, 0);
 		});
