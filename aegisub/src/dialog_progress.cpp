@@ -56,7 +56,7 @@ public:
 	}
 
 	void SetProgress(int64_t cur, int64_t max) {
-		Main().Async([=]{ dialog->gauge->SetValue(mid<int>(0, double(cur) / max * 100, 100)); });
+		Main().Async([=]{ dialog->SetProgress(mid<int>(0, double(cur) / max * 300, 300)); });
 	}
 
 	void Log(std::string const& str) {
@@ -79,9 +79,11 @@ public:
 DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxString const& message)
 : wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
 , pulse_timer(GetEventHandler())
+, progress_current(0)
+, progress_target(0)
 {
 	title = new wxStaticText(this, -1, title_text, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
-	gauge = new wxGauge(this, -1, 100, wxDefaultPosition, wxSize(300,20));
+	gauge = new wxGauge(this, -1, 300, wxDefaultPosition, wxSize(300,20));
 	text = new wxStaticText(this, -1, message, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
 	cancel_button = new wxButton(this, wxID_CANCEL);
 	log_output = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(600, 240), wxTE_MULTILINE | wxTE_READONLY);
@@ -160,6 +162,17 @@ void DialogProgress::OnShow(wxShowEvent&) {
 }
 
 void DialogProgress::OnIdle(wxIdleEvent&) {
+	if (progress_current != progress_target) {
+		using namespace std::chrono;
+		auto now = steady_clock::now();
+		int ms = mid<int>(0, duration_cast<milliseconds>(now - progress_anim_start_time).count(), progress_anim_duration);
+		int dist = (progress_target - progress_anim_start_value) * ms / progress_anim_duration;
+		if (dist) {
+			progress_current = progress_anim_start_value + dist;
+			gauge->SetValue(progress_current);
+		}
+	}
+
 	if (!pending_log) return;
 
 	if (log_output->IsEmpty()) {
@@ -179,4 +192,17 @@ void DialogProgress::OnCancel(wxCommandEvent &) {
 	ps->Cancel();
 	cancel_button->Enable(false);
 	cancel_button->SetLabelText(_("Cancelling..."));
+}
+
+void DialogProgress::SetProgress(int target) {
+	using namespace std::chrono;
+
+	progress_anim_start_value = progress_current;
+	auto now = steady_clock::now();
+	if (progress_target == 0)
+		progress_anim_duration = 1000;
+	else
+		progress_anim_duration = std::max<int>(100, duration_cast<milliseconds>(now - progress_anim_start_time).count() * 11 / 10);
+	progress_anim_start_time = now;
+	progress_target = target;
 }

@@ -17,6 +17,7 @@
 /// @ingroup utility
 ///
 
+#include <chrono>
 #include <wx/dialog.h>
 #include <wx/timer.h>
 
@@ -43,10 +44,17 @@ class DialogProgress : public wxDialog, public agi::BackgroundRunner {
 	wxTimer pulse_timer;
 
 	wxString pending_log;
+	int progress_anim_start_value;
+	int progress_current;
+	int progress_target;
+	std::chrono::steady_clock::time_point progress_anim_start_time;
+	int progress_anim_duration;
 
 	void OnShow(wxShowEvent&);
 	void OnCancel(wxCommandEvent &);
 	void OnIdle(wxIdleEvent&);
+
+	void SetProgress(int target);
 
 public:
 	/// Constructor
