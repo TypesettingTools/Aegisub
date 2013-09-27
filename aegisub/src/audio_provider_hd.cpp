@@ -89,14 +89,9 @@ public:
 
 }
 
-HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br) {
-	bytes_per_sample = src->GetBytesPerSample();
-	num_samples      = src->GetNumSamples();
-	channels         = src->GetChannels();
-	sample_rate      = src->GetSampleRate();
-	filename         = src->GetFilename();
-	float_samples    = src->AreSamplesFloat();
-
+HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br)
+: AudioProviderWrapper(std::move(src))
+{
 	// Check free space
 	if ((uint64_t)num_samples * channels * bytes_per_sample > agi::fs::FreeSpace(cache_dir()))
 		throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir().string() + " to cache the audio", 0);
@@ -106,9 +101,9 @@ HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::Backgr
 	try {
 		{
 			agi::io::Save out(diskCacheFilename, true);
-			br->Run(bind(&HDAudioProvider::FillCache, this, src.get(), &out.Get(), std::placeholders::_1));
+			br->Run(bind(&HDAudioProvider::FillCache, this, source.get(), &out.Get(), std::placeholders::_1));
 		}
-		cache_provider = agi::util::make_unique<RawAudioProvider>(diskCacheFilename, src.get());
+		cache_provider = agi::util::make_unique<RawAudioProvider>(diskCacheFilename, source.get());
 	}
 	catch (...) {
 		agi::fs::Remove(diskCacheFilename);

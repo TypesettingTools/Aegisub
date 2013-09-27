@@ -73,6 +73,23 @@ public:
 	virtual bool NeedsCache() const { return false; }
 };
 
+/// Helper base class for an audio provider which wraps another provider
+class AudioProviderWrapper : public AudioProvider {
+protected:
+	std::unique_ptr<AudioProvider> source;
+public:
+	AudioProviderWrapper(std::unique_ptr<AudioProvider> src)
+	: source(std::move(src))
+	{
+		channels = source->GetChannels();
+		num_samples = source->GetNumSamples();
+		sample_rate = source->GetSampleRate();
+		bytes_per_sample = source->GetBytesPerSample();
+		float_samples = source->AreSamplesFloat();
+		filename = source->GetFilename();
+	}
+};
+
 class AudioProviderFactory : public Factory1<AudioProvider, agi::fs::path> {
 public:
 	static void RegisterProviders();

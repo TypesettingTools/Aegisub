@@ -46,23 +46,17 @@
 #define CacheBits 22
 #define CacheBlockSize (1 << CacheBits)
 
-RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br) {
+RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br)
+: AudioProviderWrapper(std::move(src))
+{
 	try {
-		blockcache.resize((src->GetNumSamples() * src->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
+		blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 	}
 	catch (std::bad_alloc const&) {
 		throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", 0);
 	}
 
-	// Copy parameters
-	bytes_per_sample = src->GetBytesPerSample();
-	num_samples = src->GetNumSamples();
-	channels = src->GetChannels();
-	sample_rate = src->GetSampleRate();
-	filename = src->GetFilename();
-	float_samples = src->AreSamplesFloat();
-
-	br->Run(std::bind(&RAMAudioProvider::FillCache, this, src.get(), std::placeholders::_1));
+	br->Run(std::bind(&RAMAudioProvider::FillCache, this, source.get(), std::placeholders::_1));
 }
 
 void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {

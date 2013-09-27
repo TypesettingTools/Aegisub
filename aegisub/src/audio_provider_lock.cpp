@@ -21,13 +21,8 @@
 #include "audio_provider_lock.h"
 
 LockAudioProvider::LockAudioProvider(std::unique_ptr<AudioProvider> src)
-: source(std::move(src))
+: AudioProviderWrapper(std::move(src))
 {
-	channels = source->GetChannels();
-	num_samples = source->GetNumSamples();
-	sample_rate = source->GetSampleRate();
-	bytes_per_sample = source->GetBytesPerSample();
-	float_samples = source->AreSamplesFloat();
 }
 
 void LockAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {

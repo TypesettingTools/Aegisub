@@ -21,8 +21,7 @@
 #include <memory>
 #include <mutex>
 
-class LockAudioProvider : public AudioProvider {
-	std::unique_ptr<const AudioProvider> source;
+class LockAudioProvider : public AudioProviderWrapper {
 	mutable std::mutex mutex;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
