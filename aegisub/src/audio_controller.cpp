@@ -319,15 +319,6 @@ int AudioController::GetDuration() const
 	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
 }
 
-
-void AudioController::ResyncPlaybackPosition(int new_position)
-{
-	if (!IsPlaying()) return;
-
-	player->SetCurrentPosition(SamplesFromMilliseconds(new_position));
-}
-
-
 TimeRange AudioController::GetPrimaryPlaybackRange() const
 {
 	if (timing_controller)
@@ -338,12 +329,6 @@ TimeRange AudioController::GetPrimaryPlaybackRange() const
 	{
 		return TimeRange(0, 0);
 	}
-}
-
-double AudioController::GetVolume() const
-{
-	if (!IsAudioOpen()) return 1.0;
-	return player->GetVolume();
 }
 
 void AudioController::SetVolume(double volume)

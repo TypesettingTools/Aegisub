@@ -422,26 +422,6 @@ void AlsaPlayer::SetEndPosition(int64_t pos)
 	ps->end_position = pos;
 }
 
-
-void AlsaPlayer::SetCurrentPosition(int64_t pos)
-{
-	PthreadMutexLocker ml(ps->mutex);
-
-	if (!ps->playing) return;
-
-	ps->start_position = pos;
-	ps->signal_start = true;
-	ps->signal_stop = true;
-	LOG_D("audio/player/alsa") << "set position, stop+start signal";
-	pthread_cond_signal(&ps->cond);
-}
-
-int64_t AlsaPlayer::GetStartPosition()
-{
-	PthreadMutexLocker ml(ps->mutex);
-	return ps->start_position;
-}
-
 int64_t AlsaPlayer::GetEndPosition()
 {
 	PthreadMutexLocker ml(ps->mutex);
@@ -483,13 +463,6 @@ void AlsaPlayer::SetVolume(double vol)
 	ps->volume = vol;
 	ps->signal_volume = true;
 	pthread_cond_signal(&ps->cond);
-}
-
-
-double AlsaPlayer::GetVolume()
-{
-	PthreadMutexLocker ml(ps->mutex);
-	return ps->volume;
 }
 
 #endif // WITH_ALSA

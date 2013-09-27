@@ -88,14 +88,11 @@ public:
 	void Stop();
 	bool IsPlaying() { return is_playing; }
 
-	int64_t GetStartPosition() { return start_frame; }
 	int64_t GetEndPosition() { return end_frame; }
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
-	void SetCurrentPosition(int64_t pos);
 
 	void SetVolume(double vol) { volume = vol; }
-	double GetVolume() { return volume; }
 };
 
 #endif

@@ -112,10 +112,6 @@ public:
 	/// @return Status
 	bool IsPlaying();
 
-	/// @brief Position audio will be played from.
-	/// @return Start position.
-	int64_t GetStartPosition() { return start; }
-
 	/// @brief End position playback will stop at.
 	/// @return End position.
 	int64_t GetEndPosition() { return end; }
@@ -126,10 +122,6 @@ public:
 	/// @brief Set end position of playback
 	/// @param pos End position
 	void SetEndPosition(int64_t position) { end = position; }
-
-	/// @brief Set current position of playback.
-	/// @param pos Current position
-	void SetCurrentPosition(int64_t position) { current = position; }
 
 
 	/// @brief Set volume level

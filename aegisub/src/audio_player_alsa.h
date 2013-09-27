@@ -59,7 +59,6 @@ public:
 	void SetCurrentPosition(int64_t pos);
 
 	void SetVolume(double vol);
-	double GetVolume();
 };
 
 #endif

@@ -164,11 +164,6 @@ void OSSPlayer::SetEndPosition(int64_t pos)
     }
 }
 
-void OSSPlayer::SetCurrentPosition(int64_t pos)
-{
-    cur_frame = start_frame = pos;
-}
-
 int64_t OSSPlayer::GetCurrentPosition()
 {
     if (!playing)

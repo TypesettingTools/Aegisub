@@ -277,14 +277,6 @@ void DirectSoundPlayer::SetEndPosition(int64_t pos) {
 	if (playing) endPos = pos;
 }
 
-/// @brief Set current position
-/// @param pos
-///
-void DirectSoundPlayer::SetCurrentPosition(int64_t pos) {
-	startPos = playPos = pos;
-	startTime = GetTickCount();
-}
-
 /// @brief Get current position
 /// @return
 ///

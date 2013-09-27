@@ -218,24 +218,9 @@ public:
 	/// @return Duration in milliseconds
 	int GetDuration() const;
 
-	/// @brief If playing, restart playback from the specified position
-	/// @param new_position Time to restart playback from
-	///
-	/// This function can be used to re-synchronise audio playback to another
-	/// source that might not be able to keep up with the full speed, such as
-	/// video playback in high resolution or with complex subtitles.
-	///
-	/// This function only does something if audio is already playing.
-	void ResyncPlaybackPosition(int new_position);
-
-
 	/// @brief Get the primary playback range
 	/// @return An immutable TimeRange object
 	TimeRange GetPrimaryPlaybackRange() const;
-
-	/// @brief Get the playback audio volume
-	/// @return The amplification factor for the audio
-	double GetVolume() const;
 
 	/// @brief Set the playback audio volume
 	/// @param volume The new amplification factor for the audio

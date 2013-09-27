@@ -77,12 +77,6 @@ public:
 	/// @return True if audio is playing back
 	bool IsPlaying();
 
-	/// @brief Get first audio frame in playback range
-	/// @return Audio frame index
-	///
-	/// Returns 0 if playback is stopped or there is no playback thread
-	int64_t GetStartPosition();
-
 	/// @brief Get playback end position
 	/// @return Audio frame index
 	///
@@ -98,18 +92,8 @@ public:
 	/// @param pos New end position
 	void SetEndPosition(int64_t pos);
 
-	/// @brief Seek playback to new position
-	/// @param pos New position to seek to
-	///
-	/// This is done by simply restarting playback
-	void SetCurrentPosition(int64_t pos);
-
 	/// @brief Change playback volume
 	/// @param vol Amplification factor
 	void SetVolume(double vol);
-
-	/// @brief Get playback volume
-	/// @return Amplification factor
-	double GetVolume();
 };
 #endif

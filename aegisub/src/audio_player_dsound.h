@@ -83,13 +83,10 @@ public:
 
 	bool IsPlaying() { return playing; }
 
-	int64_t GetStartPosition() { return startPos; }
 	int64_t GetEndPosition() { return endPos; }
 	int64_t GetCurrentPosition();
 	void SetEndPosition(int64_t pos);
-	void SetCurrentPosition(int64_t pos);
 
 	void SetVolume(double vol) { volume = vol; }
-	double GetVolume() { return volume; }
 };
 #endif

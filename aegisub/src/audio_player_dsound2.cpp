@@ -242,10 +242,6 @@ public:
 	/// @return True if audio is being played back, false if it is not
 	bool IsPlaying();
 
-	/// @brief Get first audio frame in current playback range
-	/// @return Audio frame index
-	int64_t GetStartFrame();
-
 	/// @brief Get approximate current audio frame being heard by the user
 	/// @return Audio frame index
 	///
@@ -255,10 +251,6 @@ public:
 	/// @brief Get audio playback end point
 	/// @return Audio frame index
 	int64_t GetEndFrame();
-
-	/// @brief Get current playback volume
-	/// @return Audio amplification factor
-	double GetVolume();
 
 	/// @brief Tell whether playback thread has died
 	/// @return True if thread is no longer running
@@ -755,13 +747,6 @@ bool DirectSoundPlayer2Thread::IsPlaying()
 	}
 }
 
-int64_t DirectSoundPlayer2Thread::GetStartFrame()
-{
-	CheckError();
-
-	return start_frame;
-}
-
 int64_t DirectSoundPlayer2Thread::GetCurrentFrame()
 {
 	CheckError();
@@ -778,13 +763,6 @@ int64_t DirectSoundPlayer2Thread::GetEndFrame()
 	CheckError();
 
 	return end_frame;
-}
-
-double DirectSoundPlayer2Thread::GetVolume()
-{
-	CheckError();
-
-	return volume;
 }
 
 bool DirectSoundPlayer2Thread::IsDead()
@@ -875,20 +853,6 @@ bool DirectSoundPlayer2::IsPlaying()
 	}
 }
 
-int64_t DirectSoundPlayer2::GetStartPosition()
-{
-	try
-	{
-		if (!IsThreadAlive()) return 0;
-		return thread->GetStartFrame();
-	}
-	catch (const char *msg)
-	{
-		LOG_E("audio/player/dsound") << msg;
-		return 0;
-	}
-}
-
 int64_t DirectSoundPlayer2::GetEndPosition()
 {
 	try
@@ -929,18 +893,6 @@ void DirectSoundPlayer2::SetEndPosition(int64_t pos)
 	}
 }
 
-void DirectSoundPlayer2::SetCurrentPosition(int64_t pos)
-{
-	try
-	{
-		if (IsThreadAlive()) thread->Play(pos, thread->GetEndFrame()-pos);
-	}
-	catch (const char *msg)
-	{
-		LOG_E("audio/player/dsound") << msg;
-	}
-}
-
 void DirectSoundPlayer2::SetVolume(double vol)
 {
 	try
@@ -953,17 +905,4 @@ void DirectSoundPlayer2::SetVolume(double vol)
 	}
 }
 
-double DirectSoundPlayer2::GetVolume()
-{
-	try
-	{
-		if (!IsThreadAlive()) return 0;
-		return thread->GetVolume();
-	}
-	catch (const char *msg)
-	{
-		LOG_E("audio/player/dsound") << msg;
-		return 0;
-	}
-}
 #endif // WITH_DIRECTSOUND

@@ -51,13 +51,10 @@ public:
 	virtual bool IsPlaying()=0;
 
 	virtual void SetVolume(double volume)=0;
-	virtual double GetVolume()=0;
 
-	virtual int64_t GetStartPosition()=0;
 	virtual int64_t GetEndPosition()=0;
 	virtual int64_t GetCurrentPosition()=0;
 	virtual void SetEndPosition(int64_t pos)=0;
-	virtual void SetCurrentPosition(int64_t pos)=0;
 };
 
 class AudioPlayerFactory : public Factory1<AudioPlayer, AudioProvider*> {

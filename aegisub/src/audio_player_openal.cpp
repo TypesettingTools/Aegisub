@@ -214,11 +214,6 @@ void OpenALPlayer::SetEndPosition(int64_t pos)
 	end_frame = pos;
 }
 
-void OpenALPlayer::SetCurrentPosition(int64_t pos)
-{
-	cur_frame = pos;
-}
-
 int64_t OpenALPlayer::GetCurrentPosition()
 {
 	// FIXME: this should be based on not duration played but actual sample being heard

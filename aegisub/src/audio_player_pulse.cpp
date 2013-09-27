@@ -218,11 +218,6 @@ void PulseAudioPlayer::SetEndPosition(int64_t pos)
 	end_frame = pos;
 }
 
-void PulseAudioPlayer::SetCurrentPosition(int64_t pos)
-{
-	cur_frame = pos;
-}
-
 int64_t PulseAudioPlayer::GetCurrentPosition()
 {
 	if (!is_playing) return 0;
