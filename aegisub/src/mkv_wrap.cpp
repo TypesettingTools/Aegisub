@@ -44,6 +44,7 @@
 #include "MatroskaParser.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
@@ -135,94 +136,88 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *target) {
 	MkvStdIO input(filename);
 	char err[2048];
-	MatroskaFile *file = mkv_Open(&input, err, sizeof(err));
+	agi::scoped_holder<MatroskaFile*, decltype(&mkv_Close)> file(mkv_Open(&input, err, sizeof(err)), mkv_Close);
 	if (!file) throw MatroskaException(err);
 
-	try {
-		// Get info
-		unsigned tracks = mkv_GetNumTracks(file);
-		std::vector<unsigned> tracksFound;
-		std::vector<std::string> tracksNames;
-		unsigned trackToRead;
+	// Get info
+	unsigned tracks = mkv_GetNumTracks(file);
+	std::vector<unsigned> tracksFound;
+	std::vector<std::string> tracksNames;
 
-		// Find tracks
-		for (unsigned track = 0; track < tracks; track++) {
-			TrackInfo *trackInfo = mkv_GetTrackInfo(file, track);
-			if (trackInfo->Type != 0x11) continue;
+	// Find tracks
+	for (auto track : boost::irange(0u, tracks)) {
+		auto trackInfo = mkv_GetTrackInfo(file, track);
+		if (trackInfo->Type != 0x11) continue;
 
-			// Known subtitle format
-			std::string CodecID(trackInfo->CodecID);
-			if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
-				tracksFound.push_back(track);
-				tracksNames.emplace_back(str(boost::format("%d (%s %s)") % track % CodecID % trackInfo->Language));
-				if (trackInfo->Name) {
-					tracksNames.back() += ": ";
-					tracksNames.back() += trackInfo->Name;
-				}
+		// Known subtitle format
+		std::string CodecID(trackInfo->CodecID);
+		if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
+			tracksFound.push_back(track);
+			tracksNames.emplace_back(str(boost::format("%d (%s %s)") % track % CodecID % trackInfo->Language));
+			if (trackInfo->Name) {
+				tracksNames.back() += ": ";
+				tracksNames.back() += trackInfo->Name;
 			}
 		}
-
-		// No tracks found
-		if (tracksFound.empty())
-			throw MatroskaException("File has no recognised subtitle tracks.");
-
-		// Only one track found
-		if (tracksFound.size() == 1)
-			trackToRead = tracksFound[0];
-		// Pick a track
-		else {
-			int choice = wxGetSingleChoiceIndex(_("Choose which track to read:"), _("Multiple subtitle tracks found"), to_wx(tracksNames));
-			if (choice == -1)
-				throw agi::UserCancelException("canceled");
-
-			trackToRead = tracksFound[choice];
-		}
-
-		// Picked track
-		mkv_SetTrackMask(file, ~(1 << trackToRead));
-		TrackInfo *trackInfo = mkv_GetTrackInfo(file, trackToRead);
-		std::string CodecID(trackInfo->CodecID);
-		bool srt = CodecID == "S_TEXT/UTF8";
-		bool ssa = CodecID == "S_TEXT/SSA";
-
-		AssParser parser(target, !ssa);
-
-		// Read private data if it's ASS/SSA
-		if (!srt) {
-			// Read raw data
-			std::string priv((const char *)trackInfo->CodecPrivate, trackInfo->CodecPrivateSize);
-
-			// Load into file
-			boost::char_separator<char> sep("\r\n");
-			for (auto const& cur : boost::tokenizer<boost::char_separator<char>>(priv, sep))
-				parser.AddLine(cur);
-		}
-		// Load default if it's SRT
-		else {
-			target->LoadDefault(false);
-			parser.AddLine("[Events]");
-		}
-
-		// Read timecode scale
-		SegmentInfo *segInfo = mkv_GetFileInfo(file);
-		longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
-
-		// Progress bar
-		double totalTime = double(segInfo->Duration) / timecodeScale;
-		DialogProgress progress(nullptr, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
-		progress.Run([&](agi::ProgressSink *ps) { read_subtitles(ps, file, &input, srt, totalTime, &parser); });
 	}
-	catch (...) {
-		mkv_Close(file);
-		throw;
+
+	// No tracks found
+	if (tracksFound.empty())
+		throw MatroskaException("File has no recognised subtitle tracks.");
+
+	unsigned trackToRead;
+	// Only one track found
+	if (tracksFound.size() == 1)
+		trackToRead = tracksFound[0];
+	// Pick a track
+	else {
+		int choice = wxGetSingleChoiceIndex(_("Choose which track to read:"), _("Multiple subtitle tracks found"), to_wx(tracksNames));
+		if (choice == -1)
+			throw agi::UserCancelException("canceled");
+
+		trackToRead = tracksFound[choice];
 	}
+
+	// Picked track
+	mkv_SetTrackMask(file, ~(1 << trackToRead));
+	auto trackInfo = mkv_GetTrackInfo(file, trackToRead);
+	std::string CodecID(trackInfo->CodecID);
+	bool srt = CodecID == "S_TEXT/UTF8";
+	bool ssa = CodecID == "S_TEXT/SSA";
+
+	AssParser parser(target, !ssa);
+
+	// Read private data if it's ASS/SSA
+	if (!srt) {
+		// Read raw data
+		std::string priv((const char *)trackInfo->CodecPrivate, trackInfo->CodecPrivateSize);
+
+		// Load into file
+		boost::char_separator<char> sep("\r\n");
+		for (auto const& cur : boost::tokenizer<boost::char_separator<char>>(priv, sep))
+			parser.AddLine(cur);
+	}
+	// Load default if it's SRT
+	else {
+		target->LoadDefault(false);
+		parser.AddLine("[Events]");
+	}
+
+	// Read timecode scale
+	auto segInfo = mkv_GetFileInfo(file);
+	longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
+
+	// Progress bar
+	auto totalTime = double(segInfo->Duration) / timecodeScale;
+	DialogProgress progress(nullptr, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
+	progress.Run([&](agi::ProgressSink *ps) { read_subtitles(ps, file, &input, srt, totalTime, &parser); });
 }
 
 bool MatroskaWrapper::HasSubtitles(agi::fs::path const& filename) {
 	char err[2048];
 	try {
 		MkvStdIO input(filename);
-		auto file = mkv_Open(&input, err, sizeof(err));
+		agi::scoped_holder<MatroskaFile*, decltype(&mkv_Close)> file(mkv_Open(&input, err, sizeof(err)), mkv_Close);
 		if (!file) return false;
 
 		// Find tracks
@@ -232,20 +227,16 @@ bool MatroskaWrapper::HasSubtitles(agi::fs::path const& filename) {
 
 			if (trackInfo->Type == 0x11) {
 				std::string CodecID(trackInfo->CodecID);
-				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
-					mkv_Close(file);
+				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8")
 					return true;
-				}
 			}
 		}
-
-		mkv_Close(file);
-		return false;
 	}
 	catch (...) {
 		// We don't care about why we couldn't read subtitles here
-		return false;
 	}
+
+	return false;
 }
 
 int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
@@ -274,9 +265,8 @@ longlong StdIoScan(InputStream *st, ulonglong start, unsigned signature) {
 		return -1;
 
 	int c;
-	unsigned cmp = 0;
 	while ((c = getc(fp)) != EOF) {
-		cmp = ((cmp << 8) | c) & 0xffffffff;
+		unsigned cmp = ((cmp << 8) | c) & 0xffffffff;
 		if (cmp == signature)
 			return std_ftell(fp) - 4;
 	}
