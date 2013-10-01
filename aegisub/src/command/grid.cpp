@@ -350,18 +350,19 @@ struct grid_tags_simplify : public Command {
 };
 
 template<class T, class U>
-static bool move_one(T begin, T end, U const& value) {
+static bool move_one(T begin, T end, U const& to_move, int step) {
 	size_t move_count = 0;
-	T prev = end;
-	for (; begin != end; ++begin) {
-		typename U::key_type cur = dynamic_cast<typename U::key_type>(&*begin);
-		bool in_set = !!value.count(cur);
-		if (!in_set && cur)
-			prev = begin;
-		else if (in_set && prev != end) {
-			begin->swap_nodes(*prev);
-			prev = begin;
-			if (++move_count == value.size())
+	auto prev = end;
+	for (auto it = begin; it != end; std::advance(it, step)) {
+		auto cur = dynamic_cast<typename U::key_type>(&*it);
+		if (!cur) continue;
+
+		if (!to_move.count(cur))
+			prev = it;
+		else if (prev != end) {
+			it->swap_nodes(*prev);
+			prev = it;
+			if (++move_count == to_move.size())
 				break;
 		}
 	}
@@ -382,7 +383,7 @@ struct grid_move_up : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		if (move_one(c->ass->Line.begin(), c->ass->Line.end(), c->selectionController->GetSelectedSet()))
+		if (move_one(c->ass->Line.begin(), c->ass->Line.end(), c->selectionController->GetSelectedSet(), 1))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };
@@ -400,7 +401,7 @@ struct grid_move_down : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		if (move_one(c->ass->Line.rbegin(), c->ass->Line.rend(), c->selectionController->GetSelectedSet()))
+		if (move_one(--c->ass->Line.end(), c->ass->Line.begin(), c->selectionController->GetSelectedSet(), -1))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };
