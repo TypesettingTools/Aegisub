@@ -28,11 +28,17 @@
 /// When linking with this library, be sure to add '-framework CoreFoundation'
 /// to the GCC commandline.
 
-#ifdef __APPLE__
-
 #include <string>
 
 namespace agi {
+	namespace osx {
+		class AppNapDisabler {
+			void *handle;
+		public:
+			AppNapDisabler(std::string const& reason);
+			~AppNapDisabler();
+		};
+	}
     namespace util {
 /// @brief Get the full name of bundle.
 ///  @return Full name of bundle.
@@ -91,7 +97,5 @@ std::string OSX_GetBundleAuxillaryExecutablePath(std::string const& executableNa
 /// @param location URI of file
 /// @note If this is a FILE or DIRECTORY the path must be ABSOLUTE no 'file://'
 void OSX_OpenLocation(std::string const& location);
-    } // namespace io
+    } // namespace util
 } // namespace agi
-
-#endif

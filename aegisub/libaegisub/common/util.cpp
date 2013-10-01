@@ -17,6 +17,7 @@
 #include "../config.h"
 
 #include "libaegisub/util.h"
+#include "libaegisub/util_osx.h"
 
 #include "libaegisub/exception.h"
 
@@ -132,4 +133,12 @@ std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& 
 	return ret;
 }
 
-} }
+}
+
+#ifndef __APPLE__
+namespace osx {
+AppNapDisabler::AppNapDisabler(std::string const& reason) { }
+AppNapDisabler::~AppNapDisabler() { }
+}
+#endif
+}

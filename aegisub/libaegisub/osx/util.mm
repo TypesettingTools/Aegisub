@@ -28,6 +28,22 @@ static std::string EmptyIfNil(NSString *string) {
 }
 
 namespace agi {
+	namespace osx {
+AppNapDisabler::AppNapDisabler(std::string const& reason) : handle(nullptr) {
+	auto processInfo = [NSProcessInfo processInfo];
+	if ([processInfo respondsToSelector:@selector(beginActivityWithOptions:reason:)])
+		handle = [[processInfo beginActivityWithOptions:NSActivityUserInitiatedAllowingIdleSystemSleep
+		                                         reason:[NSString stringWithUTF8String:reason.c_str()]]
+		          retain];
+}
+
+AppNapDisabler::~AppNapDisabler() {
+	auto processInfo = [NSProcessInfo processInfo];
+	if (handle && [processInfo respondsToSelector:@selector(endActivity:)])
+		[processInfo endActivity:(id)handle];
+	[(id)handle release];
+}
+	}
 	namespace util {
 
 std::string OSX_GetBundlePath() {

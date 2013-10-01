@@ -26,6 +26,7 @@
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
+#include <libaegisub/util_osx.h>
 
 #include <atomic>
 #include <wx/button.h>
@@ -115,7 +116,9 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 	DialogProgressSink ps(this);
 	this->ps = &ps;
 
+	auto current_title = from_wx(title->GetLabelText());
 	agi::dispatch::Background().Async([=]{
+		agi::osx::AppNapDisabler app_nap_disabler(current_title);
 		try {
 			task(this->ps);
 		}
