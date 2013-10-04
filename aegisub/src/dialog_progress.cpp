@@ -35,7 +35,42 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
+#ifdef _MSC_VER
+#include <shobjidl.h>
+#endif
+
 using agi::dispatch::Main;
+
+namespace {
+	void set_taskbar_progress(int progress) {
+#ifdef _MSC_VER
+		int major, minor;
+		wxGetOsVersion(&major, &minor);
+		if (major < 6 || (major == 6 && minor < 1)) return;
+
+		ITaskbarList3 *taskbar;
+		auto hr = ::CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER,
+			__uuidof(ITaskbarList3), (LPVOID *)&taskbar);
+		if (FAILED(hr)) return;
+
+		hr = taskbar->HrInit();
+		if (FAILED(hr)) {
+			taskbar->Release();
+			return;
+		}
+
+		auto hwnd = wxTheApp->GetTopWindow()->GetHWND();
+		if (progress == 0 || progress == 100)
+			taskbar->SetProgressState(hwnd, TBPF_NOPROGRESS);
+		else if (progress == -1)
+			taskbar->SetProgressState(hwnd, TBPF_INDETERMINATE);
+		else
+			taskbar->SetProgressValue(hwnd, progress, 100);
+
+		taskbar->Release();
+#endif
+	}
+}
 
 class DialogProgressSink : public agi::ProgressSink {
 	DialogProgress *dialog;
@@ -141,6 +176,7 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 				EndModal(!cancelled);
 			else
 				cancel_button->SetLabelText(_("Close"));
+			set_taskbar_progress(0);
 		});
 	});
 
@@ -173,6 +209,7 @@ void DialogProgress::OnIdle(wxIdleEvent&) {
 		if (dist) {
 			progress_current = progress_anim_start_value + dist;
 			gauge->SetValue(progress_current);
+			set_taskbar_progress(progress_current / 3);
 		}
 	}
 
