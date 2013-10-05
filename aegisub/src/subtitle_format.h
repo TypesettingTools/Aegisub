@@ -93,7 +93,7 @@ public:
 	///
 	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
-	virtual bool CanReadFile(agi::fs::path const& filename) const;
+	virtual bool CanReadFile(agi::fs::path const& filename, std::string const& encoding) const;
 
 	/// @brief Check if the given file can be written by this format
 	///
@@ -124,7 +124,7 @@ public:
 	static std::string GetWildcards(int mode);
 
 	/// Get a subtitle format that can read the given file or nullptr if none can
-	static const SubtitleFormat *GetReader(agi::fs::path const& filename);
+	static const SubtitleFormat *GetReader(agi::fs::path const& filename, std::string const& encoding);
 	/// Get a subtitle format that can write the given file or nullptr if none can
 	static const SubtitleFormat *GetWriter(agi::fs::path const& filename);
 	/// Initialize subtitle formats

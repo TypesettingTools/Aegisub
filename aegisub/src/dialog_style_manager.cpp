@@ -583,7 +583,7 @@ void DialogStyleManager::OnCurrentImport() {
 
 	AssFile temp;
 	try {
-		auto reader = SubtitleFormat::GetReader(filename);
+		auto reader = SubtitleFormat::GetReader(filename, charset);
 		if (!reader)
 			wxMessageBox("Unsupported subtitle format", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		else

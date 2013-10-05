@@ -107,7 +107,7 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 		}
 	}
 
-	const SubtitleFormat *reader = SubtitleFormat::GetReader(filename);
+	const SubtitleFormat *reader = SubtitleFormat::GetReader(filename, charset);
 
 	try {
 		AssFile temp;

@@ -39,7 +39,6 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
-#include "charset_detect.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "video_context.h"
@@ -70,14 +69,11 @@ std::vector<std::string> MicroDVDSubtitleFormat::GetWriteWildcards() const {
 
 static const boost::regex line_regex("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$");
 
-bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename) const {
+bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename, std::string const& encoding) const {
 	// Return false immediately if extension is wrong
 	if (!agi::fs::HasExtension(filename, "sub")) return false;
 
 	// Since there is an infinity of .sub formats, load first line and check if it's valid
-	auto encoding = CharSetDetect::GetEncoding(filename);
-	if (encoding == "binary") return false;
-
 	TextFileReader file(filename, encoding);
 	if (file.HasMoreLines())
 		return regex_match(file.ReadLineFromFile(), line_regex);
