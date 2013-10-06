@@ -94,7 +94,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& file
 		std::string line = file.ReadLineFromFile();
 		if (!regex_match(line, match, line_regex)) continue;
 
-		std::string text = match[2].str();
+		std::string text = match[3].str();
 
 		// If it's the first, check if it contains fps information
 		if (isFirst) {
@@ -111,8 +111,8 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& file
 			if (!fps.IsLoaded()) return;
 		}
 
-		int f1 = boost::lexical_cast<int>(match[0]);
-		int f2 = boost::lexical_cast<int>(match[1]);
+		int f1 = boost::lexical_cast<int>(match[1]);
+		int f2 = boost::lexical_cast<int>(match[2]);
 
 		boost::replace_all(text, "|", "\\N");
 
