@@ -95,6 +95,9 @@ public:
 	std::string GetScriptInfo(std::string const& key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
 	void SetScriptInfo(std::string const& key, std::string const& value);
+	std::string GetUIState(std::string const& key) const;
+	int GetUIStateAsInt(std::string const& key) const;
+	void SaveUIState(std::string const& key, std::string const& value);
 
 	/// Type of changes made in a commit
 	enum CommitType {

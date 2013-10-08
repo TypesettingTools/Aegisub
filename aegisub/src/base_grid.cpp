@@ -187,7 +187,7 @@ void BaseGrid::OnSubtitlesOpen() {
 	UpdateMaps();
 
 	if (GetRows()) {
-		int row = context->ass->GetScriptInfoAsInt("Active Line");
+		int row = context->ass->GetUIStateAsInt("Active Line");
 		if (row < 0 || row >= GetRows())
 			row = 0;
 
@@ -195,15 +195,15 @@ void BaseGrid::OnSubtitlesOpen() {
 		SelectRow(row);
 	}
 
-	ScrollTo(context->ass->GetScriptInfoAsInt("Scroll Position"));
+	ScrollTo(context->ass->GetUIStateAsInt("Scroll Position"));
 
 	EndBatch();
 	SetColumnWidths();
 }
 
 void BaseGrid::OnSubtitlesSave() {
-	context->ass->SetScriptInfo("Scroll Position", std::to_string(yPos));
-	context->ass->SetScriptInfo("Active Line", std::to_string(GetDialogueIndex(active_line)));
+	context->ass->SaveUIState("Scroll Position", std::to_string(yPos));
+	context->ass->SaveUIState("Active Line", std::to_string(GetDialogueIndex(active_line)));
 }
 
 void BaseGrid::OnShowColMenu(wxCommandEvent &event) {

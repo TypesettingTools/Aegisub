@@ -616,9 +616,9 @@ void FrameMain::OnSubtitlesOpen() {
 	if (videoChanged) {
 		context->videoController->SetVideo(video);
 		if (context->videoController->IsLoaded()) {
-			context->videoController->JumpToFrame(context->ass->GetScriptInfoAsInt("Video Position"));
+			context->videoController->JumpToFrame(context->ass->GetUIStateAsInt("Video Position"));
 
-			std::string arString = context->ass->GetScriptInfo("Video Aspect Ratio");
+			std::string arString = context->ass->GetUIState("Video Aspect Ratio");
 			if (boost::starts_with(arString, "c")) {
 				double ar = 0.;
 				agi::util::try_parse(arString.substr(1), &ar);
@@ -631,7 +631,7 @@ void FrameMain::OnSubtitlesOpen() {
 			}
 
 			double videoZoom = 0.;
-			if (agi::util::try_parse(context->ass->GetScriptInfo("Video Zoom Percent"), &videoZoom))
+			if (agi::util::try_parse(context->ass->GetUIState("Video Zoom Percent"), &videoZoom))
 				context->videoDisplay->SetZoom(videoZoom);
 		}
 	}

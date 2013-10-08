@@ -435,5 +435,5 @@ void VideoDisplay::Unload() {
 }
 
 void VideoDisplay::OnSubtitlesSave() {
-	con->ass->SetScriptInfo("Video Zoom Percent", std::to_string(zoomValue));
+	con->ass->SaveUIState("Video Zoom Percent", std::to_string(zoomValue));
 }

@@ -136,6 +136,21 @@ int AssFile::GetScriptInfoAsInt(std::string const& key) const {
 	return atoi(GetScriptInfo(key).c_str());
 }
 
+std::string AssFile::GetUIState(std::string const& key) const {
+	auto value = GetScriptInfo("Aegisub " + key);
+	if (value.empty())
+		value = GetScriptInfo(key);
+	return value;
+}
+
+int AssFile::GetUIStateAsInt(std::string const& key) const {
+	return atoi(GetUIState(key).c_str());
+}
+
+void AssFile::SaveUIState(std::string const& key, std::string const& value) {
+	SetScriptInfo("Aegisub " + key, value);
+}
+
 void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
 	for (auto info : Line | agi::of_type<AssInfo>()) {
 		if (boost::iequals(key, info->Key())) {

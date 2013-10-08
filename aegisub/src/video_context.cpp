@@ -248,8 +248,8 @@ void VideoContext::OnSubtitlesSave() {
 
 	if (!IsLoaded()) {
 		context->ass->SetScriptInfo("Video File", "");
-		context->ass->SetScriptInfo("Video Aspect Ratio", "");
-		context->ass->SetScriptInfo("Video Position", "");
+		context->ass->SaveUIState("Video Aspect Ratio", "");
+		context->ass->SaveUIState("Video Position", "");
 		return;
 	}
 
@@ -261,8 +261,8 @@ void VideoContext::OnSubtitlesSave() {
 
 	context->ass->SetScriptInfo("Video File", config::path->MakeRelative(video_filename, "?script").generic_string());
 	context->ass->SetScriptInfo("YCbCr Matrix", video_provider->GetColorSpace());
-	context->ass->SetScriptInfo("Video Aspect Ratio", ar);
-	context->ass->SetScriptInfo("Video Position", std::to_string(frame_n));
+	context->ass->SaveUIState("Video Aspect Ratio", ar);
+	context->ass->SaveUIState("Video Position", std::to_string(frame_n));
 }
 
 void VideoContext::JumpToFrame(int n) {
