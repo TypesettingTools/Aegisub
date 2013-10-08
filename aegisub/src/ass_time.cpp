@@ -40,12 +40,12 @@ AssTime::AssTime(std::string const& text)
 {
 	int after_decimal = -1;
 	int current = 0;
-	for (char c : text | boost::adaptors::filtered(boost::is_any_of(":0123456789."))) {
+	for (char c : text | boost::adaptors::filtered(boost::is_any_of(",.0123456789:"))) {
 		if (c == ':') {
 			time = time * 60 + current;
 			current = 0;
 		}
-		else if (c == '.') {
+		else if (c == '.' || c == ',') {
 			time = (time * 60 + current) * 1000;
 			current = 0;
 			after_decimal = 100;

@@ -67,20 +67,8 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::
 {
 	// Set validator
 	wxTextValidator val(wxFILTER_INCLUDE_CHAR_LIST);
-	wxArrayString includes;
-	includes.Add("0");
-	includes.Add("1");
-	includes.Add("2");
-	includes.Add("3");
-	includes.Add("4");
-	includes.Add("5");
-	includes.Add("6");
-	includes.Add("7");
-	includes.Add("8");
-	includes.Add("9");
-	includes.Add(".");
-	includes.Add(":");
-	val.SetIncludes(includes);
+	wxString includes[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ":", ","};
+	val.SetIncludes(wxArrayString(countof(includes), includes));
 	SetValidator(val);
 
 	// Other stuff
@@ -162,7 +150,7 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	event.Skip();
 	if (byFrame) return;
 	if (insert) return;
-	if ((key < '0' || key > '9') && key != WXK_BACK && key != WXK_DELETE && key != ';' && key != '.') return;
+	if ((key < '0' || key > '9') && key != WXK_BACK && key != WXK_DELETE && key != ';' && key != '.' && key != ',') return;
 
 	event.Skip(false);
 
@@ -182,11 +170,11 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	if (start >= (long)text.size()) return;
 
 	// If the cursor is at punctuation, move it forward to the next digit
-	if (text[start] == ':' || text[start] == '.')
+	if (text[start] == ':' || text[start] == '.' || text[start] == ',')
 		++start;
 
 	// : and . hop over punctuation but never insert anything
-	if (key == ';' || key == '.') {
+	if (key == ';' || key == '.' || key == ',') {
 		SetInsertionPoint(start);
 		return;
 	}
