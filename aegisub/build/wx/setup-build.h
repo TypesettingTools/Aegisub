@@ -38,7 +38,7 @@
 #define wxUSE_FILE 1
 #define wxUSE_FFILE 1
 #define wxUSE_FSVOLUME 0
-#define wxUSE_STDPATHS 0
+#define wxUSE_STDPATHS 1
 #define wxUSE_TEXTBUFFER 1
 #define wxUSE_TEXTFILE 1
 #define wxUSE_INTL 1
