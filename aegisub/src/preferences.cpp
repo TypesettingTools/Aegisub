@@ -93,6 +93,8 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 	wxFlexGridSizer *general = PageSizer(_("General"));
 	OptionAdd(general, _("Check for updates on startup"), "App/Auto/Check For Updates");
 	OptionAdd(general, _("Show main toolbar"), "App/Show Toolbar");
+	OptionAdd(general, _("Save UI state in subtitles files"), "App/Save UI State");
+	CellSkip(general);
 
 	OptionAdd(general, _("Toolbar Icon Size"), "App/Toolbar Icon Size");
 	wxString autoload_modes[] = { _("Never"), _("Always"), _("Ask") };

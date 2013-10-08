@@ -148,7 +148,8 @@ int AssFile::GetUIStateAsInt(std::string const& key) const {
 }
 
 void AssFile::SaveUIState(std::string const& key, std::string const& value) {
-	SetScriptInfo("Aegisub " + key, value);
+	if (OPT_GET("App/Save UI State")->GetBool())
+		SetScriptInfo("Aegisub " + key, value);
 }
 
 void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
