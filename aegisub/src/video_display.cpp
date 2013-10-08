@@ -193,6 +193,9 @@ void VideoDisplay::Render() try {
 		return;
 	}
 
+	if (videoSize.GetWidth() == 0) videoSize.SetWidth(1);
+	if (videoSize.GetHeight() == 0) videoSize.SetHeight(1);
+
 	if (!viewport_height || !viewport_width)
 		PositionVideo();
 
