@@ -34,7 +34,7 @@
 	ignore = dirty
 [submodule "deps/libass"]
 	path = deps/libass
-	url = git://github.com/tgoyne/libass.git
+	url = https://github.com/Aegisub/libass.git
 	branch = msvc
 [submodule "deps/icu"]
 	path = deps/icu
