@@ -147,29 +147,18 @@ CC="$PTHREAD_CC"
 AC_ARG_ENABLE(compiler-flags, AS_HELP_STRING([--disable-compiler-flags],[Disable *all* additional compiler flags. [no]]))
 
 AS_IF([test x$enable_compiler_flags != xno], [
-  AC_C_FLAG([-Wall])
-  AC_C_FLAG([-Wextra],[AC_C_FLAG([-W])])
-  AC_C_FLAG([-Wno-unused-parameter])
-  AC_C_FLAG([-std=gnu99])
-  AC_C_FLAG([-pipe])
-  AC_C_FLAG([-g])
-  AC_CXX_FLAG([-Wall])
-  AC_CXX_FLAG([-Wextra],[AC_CXX_FLAG([-W])])
-  AC_CXX_FLAG([-Wno-unused-parameter])
-  AC_CXX_FLAG([-Wno-long-long])
-  AC_CXX_FLAG([-fno-strict-aliasing])
-  AC_CXX_FLAG([-pipe])
-  AC_CXX_FLAG([-g])
+  CFLAGS="$CFLAGS -Wall -Wextra -Wno-unused-parameter -std=gnu99 -pipe -g"
+  CXXFLAGS="$CXXFLAGS -Wall -Wextra -Wno-unused-parameter -Wno-long-long -fno-strict-aliasing -pipe -g"
   AC_CXX_FLAG([-std=c++11])
   AC_CXX_FLAG([-Wno-c++11-narrowing])
 
   # -O* messes with debugging.
   AS_IF([test x$enable_debug = xyes], [
-    AC_C_FLAG([-O0])
-    AC_CXX_FLAG([-O0])
+    CFLAGS="$CFLAGS -O0"
+    CXXFLAGS="$CXXFLAGS -O0"
   ], [
-    AC_C_FLAG([-O3])
-    AC_CXX_FLAG([-O3])
+    CFLAGS="$CFLAGS -O3"
+    CXXFLAGS="$CXXFLAGS -O3"
   ])
 ])
 
@@ -197,17 +186,6 @@ AS_IF([test x$with_libc__ != xno], [
 # Check Headers / Features / Libraries
 ######################################
 AC_CHECK_LIB([m], [main])
-
-AC_AGI_COMPILE([pragma once], [pragma_once], [], [],[
-#pragma once
-int main(void) {}
-])
-
-AS_IF([test x$agi_cv_pragma_once = xno],
-      [AC_MSG_FAILURE([Aegisub requires #pragma once to work correctly.])])
-
-AC_CHECK_HEADER([wchar.h],,[AC_MSG_FAILURE([aegisub requires wide character support])])
-
 AC_CHECK_HEADERS([sys/time.h])
 
 ##############################
