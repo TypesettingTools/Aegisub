@@ -84,9 +84,7 @@ decltype(LogSink::messages) LogSink::GetMessages() const {
 	return ret;
 }
 
-Message::Message(const char *section, Severity severity, const char *file, const char *func, int line)
-: msg(nullptr, 1024)
-{
+Message::Message(const char *section, Severity severity, const char *file, const char *func, int line) {
 	sm.section = section;
 	sm.severity = severity;
 	sm.file = file;
