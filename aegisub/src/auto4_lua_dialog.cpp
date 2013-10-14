@@ -328,8 +328,7 @@ namespace Automation4 {
 					return scd;
 				}
 
-				wxFloatingPointValidator<double> val(4, &value, wxNUM_VAL_NO_TRAILING_ZEROES);
-				val.SetRange(min, max);
+				::DoubleValidator val(&value, min, max);
 
 				cw = new wxTextCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, 0, val);
 				cw->SetToolTip(to_wx(hint));

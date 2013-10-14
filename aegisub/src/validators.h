@@ -1,36 +1,18 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-
-/// @file validators.h
-/// @see validators.cpp
-/// @ingroup custom_control utility
-///
 
 #include <libaegisub/exception.h>
 
@@ -39,59 +21,44 @@
 #include <wx/radiobox.h>
 #include <wx/validate.h>
 
-/// A wx validator that only allows valid numbers
-class NumValidator : public wxValidator {
-	double fValue; ///< Value if isFloat is true
-	int iValue;    ///< Value if isFloat is false
-	bool isFloat;  ///< Should decimals be allowed?
-	bool isSigned; ///< Can the number be negative?
+class IntValidator : public wxValidator {
+	int value;
+	bool allow_negative;
 
-	/// Polymorphic copy
-	wxObject* Clone() const;
-	/// Check if the value in the passed window is valid
-	bool Validate(wxWindow* parent);
-	/// Copy the currently stored value to the associated window
-	bool TransferToWindow();
-	/// Read the value in the associated window and validate it
-	bool TransferFromWindow();
-
-	/// Check a single character
-	/// @param chr Character to check
-	/// @param isFirst Is this the first character in the string?
-	/// @param canSign Can this character be a sign?
-	/// @param gotDecimal[in,out] Has a decimal been found? Set to true if a chr is a decimal
-	/// @return Is this character valid?
-	bool CheckCharacter(int chr,bool isFirst,bool canSign,bool &gotDecimal);
-
-	/// wx character event handler
+	bool CheckCharacter(int chr, bool is_first) const;
 	void OnChar(wxKeyEvent& event);
 
+	bool Validate(wxWindow *) override { return true; }
+	wxObject* Clone() const override { return new IntValidator(*this); }
+	bool TransferToWindow() override;
+	bool TransferFromWindow() override { return true; }
+
+	IntValidator(IntValidator const& rgt);
+
 public:
-	/// Constructor
-	/// @param val Initial value to set the associated control to
-	/// @param isfloat Allow floats, or just ints?
-	/// @param issigned Allow negative numbers?
-	explicit NumValidator(wxString val = wxString(), bool isfloat=false, bool issigned=false);
+	explicit IntValidator(std::string const& value = "");
+	explicit IntValidator(int val, bool allow_negative=false);
+};
 
-	/// Constructor
-	/// @param val Initial value to set the associated control to
-	/// @param issigned Allow negative numbers?
-	explicit NumValidator(int val, bool issigned=false);
+class DoubleValidator : public wxValidator {
+	double *value;
+	double min;
+	double max;
+	wxChar decimal_sep;
 
-	/// Constructor
-	/// @param val Initial value to set the associated control to
-	/// @param issigned Allow negative numbers?
-	explicit NumValidator(int64_t val, bool issigned=false);
+	bool Validate(wxWindow* parent) override { return true; }
+	bool CheckCharacter(int chr, bool is_first, bool *got_decimal) const;
+	void OnChar(wxKeyEvent& event);
 
-	/// Constructor
-	/// @param val Initial value to set the associated control to
-	/// @param issigned Allow negative numbers?
-	explicit NumValidator(double val, bool issigned=false);
+	DoubleValidator(DoubleValidator const& rgt);
 
-	/// Copy constructor
-	NumValidator(const NumValidator& from);
+	wxObject* Clone() const override { return new DoubleValidator(*this); }
+	bool TransferToWindow() override;
+	bool TransferFromWindow() override;
 
-	DECLARE_EVENT_TABLE()
+public:
+	explicit DoubleValidator(double *val, bool allow_negative=false);
+	explicit DoubleValidator(double *val, double min, double max);
 };
 
 template<typename T>

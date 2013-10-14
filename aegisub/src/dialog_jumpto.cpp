@@ -58,7 +58,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	auto LabelFrame = new wxStaticText(this, -1, _("Frame: "));
 	auto LabelTime = new wxStaticText(this, -1, _("Time: "));
 
-	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, NumValidator((int)jumpframe));
+	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, IntValidator((int)jumpframe));
 	JumpFrame->SetMaxLength(std::to_string(c->videoController->GetLength() - 1).size());
 	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetAssFormated(), wxSize(-1,-1));
 

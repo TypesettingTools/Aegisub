@@ -1,36 +1,18 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-
-/// @file validators.cpp
-/// @brief Various validators for wx
-/// @ingroup custom_control utility
-///
 
 #include "config.h"
 
@@ -40,171 +22,142 @@
 #include "utils.h"
 
 #include <libaegisub/exception.h>
+#include <libaegisub/util.h>
 
 #include <wx/combobox.h>
 #include <wx/textctrl.h>
 
-NumValidator::NumValidator(wxString val, bool isfloat, bool issigned)
-: fValue(0)
-, iValue(0)
-, isFloat(isfloat)
-, isSigned(issigned)
+namespace {
+std::string new_value(wxTextCtrl *ctrl, int chr) {
+	long from, to;
+	ctrl->GetSelection(&from, &to);
+	auto value = ctrl->GetValue();
+	return from_wx(value.substr(0, from) + (wxChar)chr + value.substr(to));
+}
+
+wxChar decimal_separator() {
+	auto sep = wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT, wxLOCALE_CAT_NUMBER);
+	return sep.empty() ? '.' : sep[0];
+}
+}
+
+IntValidator::IntValidator(std::string const& initial)
+: allow_negative(false)
 {
-	if (isFloat) {
-		val.ToDouble(&fValue);
-	}
-	else {
-		long tLong = 0;
-		val.ToLong(&tLong);
-		iValue = tLong;
-	}
+	agi::util::try_parse(initial, &value);
+	Bind(wxEVT_CHAR, &IntValidator::OnChar, this);
 }
 
-NumValidator::NumValidator(int val, bool issigned)
-: fValue(0)
-, iValue(val)
-, isFloat(false)
-, isSigned(issigned)
+IntValidator::IntValidator(int val, bool allow_negative)
+: value(val)
+, allow_negative(allow_negative)
 {
+	Bind(wxEVT_CHAR, &IntValidator::OnChar, this);
 }
 
-NumValidator::NumValidator(int64_t val, bool issigned)
-: fValue(0)
-, iValue((int)val)
-, isFloat(false)
-, isSigned(issigned)
+IntValidator::IntValidator(IntValidator const& rgt)
+: allow_negative(rgt.allow_negative)
 {
+	SetWindow(rgt.GetWindow());
+	Bind(wxEVT_CHAR, &IntValidator::OnChar, this);
 }
 
-NumValidator::NumValidator(double val, bool issigned)
-: fValue(val)
-, iValue(0)
-, isFloat(true)
-, isSigned(issigned)
-{
-}
-
-NumValidator::NumValidator(const NumValidator &from)
-: wxValidator()
-, fValue(from.fValue)
-, iValue(from.iValue)
-, isFloat(from.isFloat)
-, isSigned(from.isSigned)
-{
-	SetWindow(from.GetWindow());
-}
-
-BEGIN_EVENT_TABLE(NumValidator, wxValidator)
-	EVT_CHAR(NumValidator::OnChar)
-END_EVENT_TABLE()
-
-wxObject* NumValidator::Clone() const {
-	return new NumValidator(*this);
-}
-
-bool NumValidator::Validate(wxWindow*) {
-	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
-	wxString value = ctrl->GetValue();
-
-	if (!ctrl->IsEnabled()) return true;
-
-	if (value.Length() < 1) return false;
-
-	bool gotDecimal = false;
-	for (size_t i = 0; i < value.Length(); i++) {
-		if (!CheckCharacter(value[i], !i, true, gotDecimal))
-			return false;
-	}
+bool IntValidator::TransferToWindow() {
+	static_cast<wxTextCtrl *>(GetWindow())->SetValue(std::to_wstring(value));
 	return true;
 }
 
-bool NumValidator::CheckCharacter(int chr, bool isFirst, bool canSign, bool &gotDecimal) {
-	// Check sign
-	if (chr == '-' || chr == '+') {
-		return isFirst && canSign && isSigned;
-	}
-
-	// Don't allow anything before a sign
-	if (isFirst && !canSign) return false;
-
-	// Check decimal point
-	if (chr == '.' || chr == ',') {
-		if (!isFloat || gotDecimal)
-			return false;
-		else {
-			gotDecimal = true;
-			return true;
-		}
-	}
-
-	// Check digit
-	return chr >= '0' && chr <= '9';
-}
-
-void NumValidator::OnChar(wxKeyEvent& event) {
-	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
-	wxString value = ctrl->GetValue();
+void IntValidator::OnChar(wxKeyEvent& event) {
 	int chr = event.GetKeyCode();
-
-	// Special keys
 	if (chr < WXK_SPACE || chr == WXK_DELETE || chr > WXK_START) {
 		event.Skip();
 		return;
 	}
 
-	// Get selection
-	long from,to;
-	ctrl->GetSelection(&from,&to);
+	auto ctrl = static_cast<wxTextCtrl *>(GetWindow());
+	auto str = new_value(ctrl, chr);
+	int parsed;
+	if (allow_negative && str == '-')
+		event.Skip();
+	else if (agi::util::try_parse(str, &parsed) && (allow_negative || parsed >= 0))
+		event.Skip();
+	else if (!wxValidator::IsSilent())
+		wxBell();
+}
 
-	// Count decimal points and signs outside selection
-	int decimals = 0;
-	int signs = 0;
-	wxChar curchr;
-	for (size_t i=0;i<value.Length();i++) {
-		if (i >= (unsigned)from && i < (unsigned)to) continue;
-		curchr = value[i];
-		if (curchr == '.' || curchr == ',') decimals++;
-		if (curchr == '+' || curchr == '-') signs++;
-	}
-	bool gotDecimal = decimals > 0;
+DoubleValidator::DoubleValidator(double *val, bool allow_negative)
+: value(val)
+, min(allow_negative ? std::numeric_limits<double>::lowest() : 0)
+, max(std::numeric_limits<double>::max())
+, decimal_sep(decimal_separator())
+{
+	Bind(wxEVT_CHAR, &DoubleValidator::OnChar, this);
+}
 
-	// Check character
-	if (!CheckCharacter(chr,!from,!signs,gotDecimal)) {
-		if (!wxValidator::IsSilent()) wxBell();
+DoubleValidator::DoubleValidator(double *val, double min, double max)
+: value(val)
+, min(min)
+, max(max)
+, decimal_sep(decimal_separator())
+{
+	Bind(wxEVT_CHAR, &DoubleValidator::OnChar, this);
+}
+
+DoubleValidator::DoubleValidator(DoubleValidator const& rgt)
+: value(rgt.value)
+, min(rgt.min)
+, max(rgt.max)
+, decimal_sep(rgt.decimal_sep)
+{
+	Bind(wxEVT_CHAR, &DoubleValidator::OnChar, this);
+	SetWindow(rgt.GetWindow());
+}
+
+void DoubleValidator::OnChar(wxKeyEvent& event) {
+	int chr = event.GetKeyCode();
+	if (chr < WXK_SPACE || chr == WXK_DELETE || chr > WXK_START) {
+		event.Skip();
 		return;
 	}
 
-	// OK
-	event.Skip();
-	return;
+	if (chr == decimal_sep)
+		chr = '.';
+
+	auto str = new_value(static_cast<wxTextCtrl *>(GetWindow()), chr);
+	if (decimal_sep != '.')
+		replace(begin(str), end(str), (char)decimal_sep, '.');
+
+	double parsed;
+	bool can_parse = agi::util::try_parse(str, &parsed);
+	if ((min < 0 && str == '-') || str == '.')
+		event.Skip();
+	else if (can_parse && parsed >= min && parsed <= max)
+		event.Skip();
+	else if (can_parse && min < 0 && chr == '-') // allow negating an existing value even if it results in being out of range
+		event.Skip();
+	else if (!wxValidator::IsSilent())
+		wxBell();
 }
 
-bool NumValidator::TransferToWindow() {
-	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
-	if (isFloat)
-		ctrl->SetValue(wxString::Format("%g",fValue));
-	else
-		ctrl->SetValue(std::to_wstring(iValue));
-
+bool DoubleValidator::TransferToWindow() {
+	auto str = wxString::Format("%g", *value);
+	if (decimal_sep != '.')
+		std::replace(str.begin(), str.end(), wxS('.'), decimal_sep);
+	if (str.find(decimal_sep) != str.npos) {
+		while (str.Last() == '0')
+			str.RemoveLast();
+	}
+	static_cast<wxTextCtrl *>(GetWindow())->SetValue(str);
 	return true;
 }
 
-bool NumValidator::TransferFromWindow() {
-	wxTextCtrl *ctrl = (wxTextCtrl*) GetWindow();
-	wxString value = ctrl->GetValue();
-
+bool DoubleValidator::TransferFromWindow() {
+	auto ctrl = static_cast<wxTextCtrl *>(GetWindow());
 	if (!Validate(ctrl)) return false;
-
-	// Transfer
-	if (isFloat) {
-		value.ToDouble(&fValue);
-	}
-	else {
-		long tLong;
-		value.ToLong(&tLong);
-		iValue = tLong;
-	}
-
+	auto str = from_wx(ctrl->GetValue());
+	if (decimal_sep != '.')
+		replace(begin(str), end(str), (char)decimal_sep, '.');
+	agi::util::try_parse(str, value);
 	return true;
 }
 
