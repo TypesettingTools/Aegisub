@@ -58,6 +58,7 @@ aegisub/src/libresrc/default_config.cpp
 aegisub/src/libresrc/default_config.h
 aegisub/src/libresrc/default_config_platform.json
 aegisub/tools/common-respack
+aegisub/tools/osx-bundle-restart-helper
 aegisub/tools/osx-bundle.sed
 autom4te.cache
 config.log
