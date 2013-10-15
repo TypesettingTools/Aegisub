@@ -41,13 +41,6 @@ wxChar decimal_separator() {
 }
 }
 
-IntValidator::IntValidator(std::string const& initial)
-: allow_negative(false)
-{
-	agi::util::try_parse(initial, &value);
-	Bind(wxEVT_CHAR, &IntValidator::OnChar, this);
-}
-
 IntValidator::IntValidator(int val, bool allow_negative)
 : value(val)
 , allow_negative(allow_negative)
@@ -56,7 +49,8 @@ IntValidator::IntValidator(int val, bool allow_negative)
 }
 
 IntValidator::IntValidator(IntValidator const& rgt)
-: allow_negative(rgt.allow_negative)
+: value(rgt.value)
+, allow_negative(rgt.allow_negative)
 {
 	SetWindow(rgt.GetWindow());
 	Bind(wxEVT_CHAR, &IntValidator::OnChar, this);

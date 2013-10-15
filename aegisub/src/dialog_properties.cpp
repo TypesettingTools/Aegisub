@@ -78,8 +78,8 @@ DialogProperties::DialogProperties(agi::Context *c)
 
 	// Resolution box
 	wxSizer *ResSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Resolution"));
-	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfo("PlayResX")));
-	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfo("PlayResY")));
+	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResX")));
+	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResY")));
 	wxStaticText *ResText = new wxStaticText(this,-1,"x");
 
 	wxButton *FromVideo = new wxButton(this,-1,_("From &video"));

@@ -36,8 +36,7 @@ class IntValidator : public wxValidator {
 	IntValidator(IntValidator const& rgt);
 
 public:
-	explicit IntValidator(std::string const& value = "");
-	explicit IntValidator(int val, bool allow_negative=false);
+	explicit IntValidator(int val=0, bool allow_negative=false);
 };
 
 class DoubleValidator : public wxValidator {
