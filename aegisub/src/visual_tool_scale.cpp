@@ -98,6 +98,12 @@ void VisualToolScale::UpdateHold() {
 	Vector2D delta = (mouse_pos - drag_start) * Vector2D(1, -1);
 	if (shift_down)
 		delta = delta.SingleAxis();
+	if (alt_down) {
+		if (abs(delta.X()) > abs(delta.Y()))
+			delta = Vector2D(delta.X(), delta.X() * (initial_scale.Y() / initial_scale.X()));
+		else
+			delta = Vector2D(delta.Y() * (initial_scale.X() / initial_scale.Y()), delta.Y());
+	}
 
 	scale = Vector2D(0, 0).Max(delta * 1.25f + initial_scale);
 	if (ctrl_down)
