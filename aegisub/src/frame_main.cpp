@@ -548,6 +548,8 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 END_EVENT_TABLE()
 
 void FrameMain::OnCloseWindow(wxCloseEvent &event) {
+	wxEventBlocker blocker(this, wxEVT_CLOSE_WINDOW);
+
 	context->videoController->Stop();
 	context->audioController->Stop();
 
