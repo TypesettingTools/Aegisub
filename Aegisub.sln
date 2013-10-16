@@ -47,6 +47,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffms2", "aegisub\build\ffms
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffmpeg", "aegisub\build\ffmpeg\ffmpeg.vcxproj", "{F934AB7B-186B-4E96-B20C-A58C38C1B819}"
+	ProjectSection(ProjectDependencies) = postProject
+		{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE} = {10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "aegisub\build\zlib\zlib.vcxproj", "{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}"
 EndProject

@@ -37,6 +37,7 @@
       --enable-gpl
       --enable-runtime-cpudetect
       --enable-static
+      --enable-zlib
       --extra-cflags=-D_SYSCRT
       --extra-cflags=-wd4005
       --extra-cflags=-wd4189
