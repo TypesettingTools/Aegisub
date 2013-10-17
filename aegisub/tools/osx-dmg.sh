@@ -13,6 +13,8 @@
 # Released under GNU GPL, read the file 'COPYING' from the Inkscape project for more
 # information.
 
+set -e
+
 TMP_DMG="temp_dmg"
 PKG_DIR="Aegisub.app"
 PKG_NAME="Aegisub-${1}"
@@ -39,20 +41,20 @@ cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns "${TMP_DMG}/.VolumeIco
 
 echo
 echo "---- Creating image ----"
-/usr/bin/hdiutil create -srcfolder "${TMP_DMG}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${PKG_NAME_RW}" || exit $?
+/usr/bin/hdiutil create -srcfolder "${TMP_DMG}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${PKG_NAME_RW}"
 
 echo
 echo "---- Mounting image ----"
-DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/Apple_partition_scheme/ {print $1}'` || exit $?
+DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/GUID_partition_scheme/ {print $1}'`
 echo "Device name: ${DEV_NAME}"
 
 echo
 echo "---- Setting bless -openfolder ----"
-bless -openfolder "/Volumes/${PKG_NAME_VOLUME}" || exit $?
+bless -openfolder "/Volumes/${PKG_NAME_VOLUME}"
 
 echo
 echo "---- Setting root icon using SetFile ----"
-SetFile -a C "/Volumes/${PKG_NAME_VOLUME}" || exit $?
+SetFile -a C "/Volumes/${PKG_NAME_VOLUME}"
 
 echo
 if test -n "${SET_STYLE}"; then
@@ -77,7 +79,7 @@ if test -n "${SET_STYLE}"; then
 
   hdiutil detach "${DEV_NAME}"
 
-  DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/Apple_partition_scheme/ {print $1}'` || exit $?
+  DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/GUID_partition_scheme/ {print $1}'`
   echo "Device name: ${DEV_NAME}"
 
   cp -v "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" packages/osx_dmg/DS_Store
@@ -93,15 +95,16 @@ fi
 
 echo
 echo "---- Detaching ----"
-/usr/bin/hdiutil detach "${DEV_NAME}" -force || exit $?
+echo /usr/bin/hdiutil detach "${DEV_NAME}" -force
+/usr/bin/hdiutil detach "${DEV_NAME}" -force
 
 echo
 echo "---- Compressing ----"
-/usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDBZ -imagekey bzip2-level=9 -o "${PKG_NAME}.dmg" || exit $?
+/usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDBZ -imagekey bzip2-level=9 -o "${PKG_NAME}.dmg"
 
 echo
 echo "---- Removing \"${TMP_DMG}\", \"${PKG_NAME_RW}\" ----"
-rm -rf "${TMP_DMG}"  "${PKG_NAME_RW}" || exit $?
+rm -rf "${TMP_DMG}"  "${PKG_NAME_RW}"
 
 echo
 echo "Done!"
