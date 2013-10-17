@@ -106,7 +106,7 @@ public:
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to
-	ThreadedFrameSource(agi::fs::path const& filename, wxEvtHandler *parent);
+	ThreadedFrameSource(agi::fs::path const& filename, std::string const& colormatrix, wxEvtHandler *parent);
 	~ThreadedFrameSource();
 };
 

@@ -54,7 +54,7 @@ class AvisynthVideoProvider: public VideoProvider {
 	AVSValue Open(agi::fs::path const& filename);
 
 public:
-	AvisynthVideoProvider(agi::fs::path const& filename);
+	AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
 
 	std::shared_ptr<VideoFrame> GetFrame(int n);
 

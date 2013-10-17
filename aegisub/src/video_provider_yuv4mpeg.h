@@ -129,7 +129,7 @@ class YUV4MPEGVideoProvider : public VideoProvider {
 	int IndexFile();
 
 public:
-	YUV4MPEGVideoProvider(agi::fs::path const& filename);
+	YUV4MPEGVideoProvider(agi::fs::path const& filename, std::string const&);
 	~YUV4MPEGVideoProvider();
 
 	std::shared_ptr<VideoFrame> GetFrame(int n);

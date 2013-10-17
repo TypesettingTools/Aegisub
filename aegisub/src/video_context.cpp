@@ -129,7 +129,7 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 
 	bool commit_subs = false;
 	try {
-		provider.reset(new ThreadedFrameSource(filename, this));
+		provider.reset(new ThreadedFrameSource(filename, context->ass->GetScriptInfo("YCbCr Matrix"), this));
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
 

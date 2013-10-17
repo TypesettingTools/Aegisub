@@ -109,10 +109,10 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *parent
 	}
 }
 
-ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, wxEvtHandler *parent)
+ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, std::string const& colormatrix, wxEvtHandler *parent)
 : worker(agi::dispatch::Create())
 , subs_provider(get_subs_provider(parent))
-, video_provider(VideoProviderFactory::GetProvider(video_filename))
+, video_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix))
 , parent(parent)
 , frame_number(-1)
 , time(-1.)

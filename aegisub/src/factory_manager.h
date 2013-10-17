@@ -68,8 +68,24 @@ public:
 	}
 };
 
-template<typename Base, typename Arg1=void>
-class Factory : public FactoryBase<Base *(*)(Arg1)> {
+template<typename Base, typename Arg1=void, typename Arg2=void>
+class Factory : public FactoryBase<Base *(*)(Arg1, Arg2)> {
+	typedef Base *(*func)(Arg1, Arg2);
+
+public:
+	static std::unique_ptr<Base> Create(std::string const& name, Arg1 a1, Arg2 a2) {
+		auto factory = FactoryBase<func>::Find(name);
+		return factory ? std::unique_ptr<Base>(factory(a1, a2)) : nullptr;
+	}
+
+	template<class T>
+	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
+		FactoryBase<func>::DoRegister([](Arg1 a1, Arg2 a2) -> Base * { return new T(a1, a2); }, name, hide, subTypes);
+	}
+};
+
+template<typename Base, typename Arg1>
+class Factory<Base, Arg1, void> : public FactoryBase<Base *(*)(Arg1)> {
 	typedef Base *(*func)(Arg1);
 
 public:
@@ -85,7 +101,7 @@ public:
 };
 
 template<typename Base>
-class Factory<Base, void> : public FactoryBase<Base *(*)()> {
+class Factory<Base, void, void> : public FactoryBase<Base *(*)()> {
 	typedef Base *(*func)();
 
 public:

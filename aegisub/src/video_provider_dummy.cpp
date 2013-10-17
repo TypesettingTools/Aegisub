@@ -84,7 +84,7 @@ void DummyVideoProvider::Create(double fps, int frames, int width, int height, u
 	}
 }
 
-DummyVideoProvider::DummyVideoProvider(agi::fs::path const& filename) {
+DummyVideoProvider::DummyVideoProvider(agi::fs::path const& filename, std::string const&) {
 	if (!boost::starts_with(filename.string(), "?dummy"))
 		throw agi::fs::FileNotFound(std::string("Attempted creating dummy video provider with non-dummy filename"));
 

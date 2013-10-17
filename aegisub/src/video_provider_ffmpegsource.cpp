@@ -48,7 +48,31 @@
 #include <wx/choicdlg.h>
 #include <wx/msgdlg.h>
 
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename) try
+namespace {
+std::string colormatrix_description(int cs, int cr) {
+	// Assuming TV for unspecified
+	std::string str = cr == FFMS_CR_JPEG ? "PC" : "TV";
+
+	switch (cs) {
+		case FFMS_CS_RGB:
+			return "None";
+			break;
+		case FFMS_CS_BT709:
+			return str + ".709";
+		case FFMS_CS_FCC:
+			return str + ".FCC";
+		case FFMS_CS_BT470BG:
+		case FFMS_CS_SMPTE170M:
+			return str + ".601";
+		case FFMS_CS_SMPTE240M:
+			return str + ".240M";
+		default:
+			throw VideoOpenError("Unknown video color space");
+	}
+}
+}
+
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) try
 : VideoSource(nullptr, FFMS_DestroyVideoSource)
 , VideoInfo(nullptr)
 , Width(-1)
@@ -61,7 +85,7 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filena
 
 	SetLogLevel();
 
-	LoadVideo(filename);
+	LoadVideo(filename, colormatrix);
 }
 catch (std::string const& err) {
 	throw VideoOpenError(err);
@@ -70,7 +94,7 @@ catch (const char * err) {
 	throw VideoOpenError(err);
 }
 
-void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename) {
+void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::string const& colormatrix) {
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.string().c_str(), &ErrInfo);
 	if (!Indexer) {
 		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
@@ -168,43 +192,20 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename) {
 	else
 		DAR = double(Width) / Height;
 
-	// Assuming TV for unspecified
-	ColorSpace = TempFrame->ColorRange == FFMS_CR_JPEG ? "PC" : "TV";
+	auto CS = TempFrame->ColorSpace;
+	if (CS == FFMS_CS_UNSPECIFIED)
+		CS = Width > 1024 || Height >= 600 ? FFMS_CS_BT709 : FFMS_CS_BT470BG;
+	ColorSpace = colormatrix_description(CS, TempFrame->ColorRange);
 
-	int CS = TempFrame->ColorSpace;
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
-	if (CS != FFMS_CS_RGB && CS != FFMS_CS_BT470BG && OPT_GET("Video/Force BT.601")->GetBool()) {
+	if (CS != FFMS_CS_RGB && CS != FFMS_CS_BT470BG && CS != colormatrix && (colormatrix == "TV.601" || OPT_GET("Video/Force BT.601")->GetBool())) {
 		if (FFMS_SetInputFormatV(VideoSource, FFMS_CS_BT470BG, TempFrame->ColorRange, FFMS_GetPixFmt(""), &ErrInfo))
 			throw VideoOpenError(std::string("Failed to set input format: ") + ErrInfo.Buffer);
 
 		CS = FFMS_CS_BT470BG;
+		ColorSpace = colormatrix_description(CS, TempFrame->ColorRange);
 	}
 #endif
-
-	switch (CS) {
-		case FFMS_CS_RGB:
-			ColorSpace = "None";
-			break;
-		case FFMS_CS_BT709:
-			ColorSpace += ".709";
-			break;
-		case FFMS_CS_UNSPECIFIED:
-			ColorSpace += Width > 1024 || Height >= 600 ? "709" : "601";
-			break;
-		case FFMS_CS_FCC:
-			ColorSpace += ".FCC";
-			break;
-		case FFMS_CS_BT470BG:
-		case FFMS_CS_SMPTE170M:
-			ColorSpace += ".601";
-			break;
-		case FFMS_CS_SMPTE240M:
-			ColorSpace += ".240M";
-			break;
-		default:
-			throw VideoOpenError("Unknown video color space");
-			break;
-	}
 
 	const int TargetFormat[] = { FFMS_GetPixFmt("bgra"), -1 };
 	if (FFMS_SetOutputFormatV2(VideoSource, TargetFormat, Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {

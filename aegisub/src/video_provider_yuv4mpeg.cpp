@@ -58,7 +58,7 @@
 
 /// @brief Constructor
 /// @param filename The filename to open
-YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
+YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename, std::string const&)
 : sf(nullptr)
 , inited(false)
 , w (0)

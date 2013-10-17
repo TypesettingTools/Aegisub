@@ -53,7 +53,7 @@
 #include <vfw.h>
 #endif
 
-AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename)
+AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix)
 {
 	agi::acs::CheckFileRead(filename);
 
@@ -146,7 +146,9 @@ file_exit:
 		if (!vi.IsRGB()) {
 			/// @todo maybe read ColorMatrix hints for d2v files?
 			AVSValue args[2] = { script, "Rec601" };
-			if (!OPT_GET("Video/Force BT.601")->GetBool() && (vi.width > 1024 || vi.height >= 600)) {
+			bool force_bt601 = OPT_GET("Video/Force BT.601")->GetBool() || colormatrix == "TV.601";
+			bool bt709 = vi.width > 1024 || vi.height >= 600;
+			if (bt709 && (!force_bt601 || colormatrix == "TV.709")) {
 				args[1] = "Rec709";
 				colorspace = "TV.709";
 			}

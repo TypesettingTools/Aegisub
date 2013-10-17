@@ -53,10 +53,10 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
 
-	void LoadVideo(agi::fs::path const& filename);
+	void LoadVideo(agi::fs::path const& filename, std::string const& colormatrix);
 
 public:
-	FFmpegSourceVideoProvider(agi::fs::path const& filename);
+	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
 
 	std::shared_ptr<VideoFrame> GetFrame(int n);
 

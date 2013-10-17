@@ -47,7 +47,7 @@
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
-std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& video_file) {
+std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& video_file, std::string const& colormatrix) {
 	std::vector<std::string> factories = GetClasses(OPT_GET("Video/Provider")->GetString());
 	factories.insert(factories.begin(), "YUV4MPEG");
 	factories.insert(factories.begin(), "Dummy");
@@ -60,7 +60,7 @@ std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path c
 	for (auto const& factory : factories) {
 		std::string err;
 		try {
-			auto provider = Create(factory, video_file);
+			auto provider = Create(factory, video_file, colormatrix);
 			LOG_I("manager/video/provider") << factory << ": opened " << video_file;
 			return provider->WantsCaching() ? agi::util::make_unique<VideoProviderCache>(std::move(provider)) : std::move(provider);
 		}

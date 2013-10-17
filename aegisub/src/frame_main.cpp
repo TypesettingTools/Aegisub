@@ -582,6 +582,7 @@ void FrameMain::OnAudioClose() {
 
 void FrameMain::OnSubtitlesOpen() {
 	UpdateTitle();
+	auto vc = context->videoController;
 
 	/// @todo figure out how to move this to the relevant controllers without
 	///       prompting for each file loaded/unloaded
@@ -592,9 +593,9 @@ void FrameMain::OnSubtitlesOpen() {
 	auto keyframes = config::path->MakeAbsolute(context->ass->GetScriptInfo("Keyframes File"), "?script");
 	auto audio     = config::path->MakeAbsolute(context->ass->GetScriptInfo("Audio URI"), "?script");
 
-	bool videoChanged     = !blockVideoLoad && video != context->videoController->GetVideoName();
-	bool timecodesChanged = vfr != context->videoController->GetTimecodesName();
-	bool keyframesChanged = keyframes != context->videoController->GetKeyFramesName();
+	bool videoChanged     = !blockVideoLoad && video != vc->GetVideoName();
+	bool timecodesChanged = vfr != vc->GetTimecodesName();
+	bool keyframesChanged = keyframes != vc->GetKeyFramesName();
 	bool audioChanged     = !blockAudioLoad && audio != context->audioController->GetAudioURL();
 
 	// Check if there is anything to change
@@ -607,6 +608,8 @@ void FrameMain::OnSubtitlesOpen() {
 	if (autoLoadMode == 2) {
 		if (wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO | wxCENTRE, this) != wxYES) {
 			SetDisplayMode(1, 1);
+			if (vc->IsLoaded() && vc->GetProvider()->GetColorSpace() != context->ass->GetScriptInfo("YCbCr Matrix"))
+				vc->Reload();
 			return;
 		}
 	}
@@ -616,20 +619,20 @@ void FrameMain::OnSubtitlesOpen() {
 
 	// Video
 	if (videoChanged) {
-		context->videoController->SetVideo(video);
-		if (context->videoController->IsLoaded()) {
-			context->videoController->JumpToFrame(context->ass->GetUIStateAsInt("Video Position"));
+		vc->SetVideo(video);
+		if (vc->IsLoaded()) {
+			vc->JumpToFrame(context->ass->GetUIStateAsInt("Video Position"));
 
 			std::string arString = context->ass->GetUIState("Video Aspect Ratio");
 			if (boost::starts_with(arString, "c")) {
 				double ar = 0.;
 				agi::util::try_parse(arString.substr(1), &ar);
-				context->videoController->SetAspectRatio(ar);
+				vc->SetAspectRatio(ar);
 			}
 			else {
 				int ar = 0;
 				if (agi::util::try_parse(arString, &ar) && ar >= 0 && ar < 4)
-					context->videoController->SetAspectRatio((AspectRatio)ar);
+					vc->SetAspectRatio((AspectRatio)ar);
 			}
 
 			double videoZoom = 0.;
@@ -637,9 +640,11 @@ void FrameMain::OnSubtitlesOpen() {
 				context->videoDisplay->SetZoom(videoZoom);
 		}
 	}
+	else if (vc->IsLoaded() && vc->GetProvider()->GetColorSpace() != context->ass->GetScriptInfo("YCbCr Matrix"))
+		vc->Reload();
 
-	context->videoController->LoadTimecodes(vfr);
-	context->videoController->LoadKeyframes(keyframes);
+	vc->LoadTimecodes(vfr);
+	vc->LoadKeyframes(keyframes);
 
 	// Audio
 	if (audioChanged) {

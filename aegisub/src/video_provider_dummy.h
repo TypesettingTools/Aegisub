@@ -63,7 +63,7 @@ class DummyVideoProvider : public VideoProvider {
 
 public:
 	/// Create a dummy video from a string returned from MakeFilename
-	DummyVideoProvider(agi::fs::path const& filename);
+	DummyVideoProvider(agi::fs::path const& filename, std::string const& colormatix);
 
 	/// Create a dummy video from separate parameters
 	/// @param fps Frame rate of the dummy video
