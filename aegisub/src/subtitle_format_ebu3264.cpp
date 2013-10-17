@@ -291,7 +291,7 @@ namespace
 								continue;
 
 							// add first part of text to current part
-							cur_row->back().text.append(text.substr(start, i));
+							cur_row->back().text.append(begin(text) + start, begin(text) + i);
 
 							// process special character
 							if (text[i] == '\\' && (text[i + 1] == 'N' || wrap_mode == 1))
@@ -311,7 +311,7 @@ namespace
 						}
 
 						// add the remaining text
-						cur_row->back().text.append(text.substr(start));
+						cur_row->back().text.append(begin(text) + start, end(text));
 
 						// convert \h to regular spaces
 						// done after parsing so that words aren't split on \h
