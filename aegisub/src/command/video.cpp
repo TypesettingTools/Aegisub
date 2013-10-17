@@ -461,14 +461,16 @@ struct video_frame_prev_large : public validator_video_loaded {
 };
 
 static void save_snapshot(agi::Context *c, bool raw) {
-	static const agi::OptionValue* ssPath = OPT_GET("Path/Screenshot");
-	std::string option = ssPath->GetString();
+	auto option = OPT_GET("Path/Screenshot")->GetString();
 	agi::fs::path basepath;
+
+	auto videoname = c->videoController->GetVideoName();
+	bool is_dummy = boost::starts_with(videoname.string(), "?dummy");
 
 	// Is it a path specifier and not an actual fixed path?
 	if (option[0] == '?') {
 		// If dummy video is loaded, we can't save to the video location
-		if (boost::starts_with(option, "?video") && boost::starts_with(c->videoController->GetVideoName().string(), "?dummy")) {
+		if (boost::starts_with(option, "?video") && is_dummy) {
 			// So try the script location instead
 			option = "?script";
 		}
@@ -483,7 +485,8 @@ static void save_snapshot(agi::Context *c, bool raw) {
 	// Actual fixed (possibly relative) path, decode it
 	else
 		basepath = config::path->MakeAbsolute(option, "?user/");
-	basepath /= c->videoController->GetVideoName().stem();
+
+	basepath /= is_dummy ? "dummy" : videoname.stem();
 
 	// Get full path
 	int session_shot_count = 1;
