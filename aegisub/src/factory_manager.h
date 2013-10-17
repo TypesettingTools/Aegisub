@@ -27,11 +27,10 @@
 #include <string>
 #include <vector>
 
-template <class func>
+template <typename func>
 class FactoryBase {
 protected:
 	typedef std::map<std::string, std::pair<bool, func>> map;
-	typedef typename map::iterator iterator;
 
 	static map& classes() {
 		static map classes;
@@ -48,7 +47,7 @@ protected:
 	}
 
 	static func Find(std::string const& name) {
-		iterator factory = classes().find(name);
+		auto factory = classes().find(name);
 		return factory != classes().end() ? factory->second.second : nullptr;
 	}
 
@@ -69,42 +68,34 @@ public:
 	}
 };
 
-template<class Base>
-class Factory0 : public FactoryBase<std::unique_ptr<Base>(*)()> {
-	typedef std::unique_ptr<Base>(*func)();
-	template<class T>
-	static std::unique_ptr<Base> create() {
-		return std::unique_ptr<Base>(new T);
-	}
-
-public:
-	static std::unique_ptr<Base> Create(std::string const& name) {
-		func factory = FactoryBase<func>::Find(name);
-		return factory ? factory() : nullptr;
-	}
-
-	template<class T>
-	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
-		FactoryBase<func>::DoRegister(&Factory0<Base>::template create<T>, name, hide, subTypes);
-	}
-};
-
-template<class Base, class Arg1>
-class Factory1 : public FactoryBase<std::unique_ptr<Base>(*)(Arg1)> {
-	typedef std::unique_ptr<Base>(*func)(Arg1);
-	template<class T>
-	static std::unique_ptr<Base> create(Arg1 a1) {
-		return std::unique_ptr<Base>(new T(a1));
-	}
+template<typename Base, typename Arg1=void>
+class Factory : public FactoryBase<Base *(*)(Arg1)> {
+	typedef Base *(*func)(Arg1);
 
 public:
 	static std::unique_ptr<Base> Create(std::string const& name, Arg1 a1) {
-		func factory = FactoryBase<func>::Find(name);
-		return factory ? factory(a1) : nullptr;
+		auto factory = FactoryBase<func>::Find(name);
+		return factory ? std::unique_ptr<Base>(factory(a1)) : nullptr;
 	}
 
 	template<class T>
 	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
-		FactoryBase<func>::DoRegister(&Factory1<Base, Arg1>::template create<T>, name, hide, subTypes);
+		FactoryBase<func>::DoRegister([](Arg1 a1) -> Base * { return new T(a1); }, name, hide, subTypes);
+	}
+};
+
+template<typename Base>
+class Factory<Base, void> : public FactoryBase<Base *(*)()> {
+	typedef Base *(*func)();
+
+public:
+	static std::unique_ptr<Base> Create(std::string const& name) {
+		auto factory = FactoryBase<func>::Find(name);
+		return factory ? std::unique_ptr<Base>(factory()) : nullptr;
+	}
+
+	template<class T>
+	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
+		FactoryBase<func>::DoRegister([]() -> Base * { return new T; }, name, hide, subTypes);
 	}
 };

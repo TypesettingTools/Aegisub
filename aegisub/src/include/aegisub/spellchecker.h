@@ -23,7 +23,7 @@
 
 namespace agi { class SpellChecker; }
 
-class SpellCheckerFactory : public Factory0<agi::SpellChecker> {
+class SpellCheckerFactory : public Factory<agi::SpellChecker> {
 public:
 	static std::unique_ptr<agi::SpellChecker> GetSpellChecker();
 	static void RegisterProviders();
