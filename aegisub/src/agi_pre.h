@@ -46,6 +46,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+// Ensure we get a consistent SDK with VS2012 + Win8 SDK
+#define _USING_V110_SDK71_ 1
+
 #include "config.h"
 
 #include "../libaegisub/lagi_pre.h"
