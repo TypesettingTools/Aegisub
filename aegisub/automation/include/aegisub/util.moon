@@ -13,7 +13,13 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-sformat = string.format
+error    = error
+pairs    = pairs
+select   = select
+sformat  = string.format
+tonumber = tonumber
+type     = type
+
 local *
 
 -- Make a shallow copy of a table

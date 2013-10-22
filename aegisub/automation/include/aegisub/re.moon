@@ -12,6 +12,11 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+error  = error
+next   = next
+select = select
+type   = type
+
 -- Get the boost::regex binding
 regex = aegisub.__init_regex()
 
