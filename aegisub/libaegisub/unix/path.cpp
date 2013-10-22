@@ -22,6 +22,7 @@
 #include <pwd.h>
 
 namespace {
+#ifndef __APPLE__
 std::string home_dir() {
 	const char *env = getenv("HOME");
 	if (env) return env;
@@ -33,24 +34,23 @@ std::string home_dir() {
 
 	throw agi::EnvironmentError("Could not get home directory. Make sure HOME is set.");
 }
-
-std::string data_dir() {
-#ifndef __APPLE__
-	return P_DATA;
-#else
-	return agi::util::OSX_GetBundleSharedSupportDirectory();
 #endif
-}
-
 }
 
 namespace agi {
 
 void Path::FillPlatformSpecificPaths() {
+#ifndef __APPLE__
 	agi::fs::path home = home_dir();
 	SetToken("?user", home/".aegisub");
 	SetToken("?local", home/".aegisub");
-	SetToken("?data", data_dir());
+	SetToken("?data", P_DATA);
+#else
+	agi::fs::path app_support = agi::util::OSX_GetApplicationSupportDirectory();
+	SetToken("?user", app_support/"Aegisub");
+	SetToken("?local", app_support/"Aegisub");
+	SetToken("?data", agi::util::OSX_GetBundleSharedSupportDirectory());
+#endif
 	SetToken("?temp", boost::filesystem::temp_directory_path());
 	SetToken("?dictionary", "/usr/share/hunspell");
 	SetToken("?docs", P_DOC);

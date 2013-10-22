@@ -93,6 +93,8 @@ std::string OSX_GetBundleExecutablePath();
 /// Pass the basename of the executable to get the path.
 std::string OSX_GetBundleAuxillaryExecutablePath(std::string const& executableName);
 
+std::string OSX_GetApplicationSupportDirectory();
+
 /// @brief Open a URI using the Launcher.
 /// @param location URI of file
 /// @note If this is a FILE or DIRECTORY the path must be ABSOLUTE no 'file://'

@@ -95,6 +95,12 @@ std::string OSX_GetBundleAuxillaryExecutablePath(std::string const& executableNa
 	}
 }
 
+std::string OSX_GetApplicationSupportDirectory() {
+	@autoreleasepool {
+		return EmptyIfNil([NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject]);
+	}
+}
+
 void OSX_OpenLocation(std::string const& location) {
 	@autoreleasepool {
 		NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:location.c_str()]];
