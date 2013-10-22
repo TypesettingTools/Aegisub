@@ -41,7 +41,7 @@ namespace {
 FcConfig *init_fontconfig() {
 #ifdef __APPLE__
 	FcConfig *config = FcConfigCreate();
-	std::string conf_path = agi::util::OSX_GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf";
+	std::string conf_path = agi::util::GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf";
 	if (FcConfigParseAndLoad(config, (unsigned char *)conf_path.c_str(), FcTrue))
 		return config;
 

@@ -46,10 +46,10 @@ void Path::FillPlatformSpecificPaths() {
 	SetToken("?local", home/".aegisub");
 	SetToken("?data", P_DATA);
 #else
-	agi::fs::path app_support = agi::util::OSX_GetApplicationSupportDirectory();
+	agi::fs::path app_support = agi::util::GetApplicationSupportDirectory();
 	SetToken("?user", app_support/"Aegisub");
 	SetToken("?local", app_support/"Aegisub");
-	SetToken("?data", agi::util::OSX_GetBundleSharedSupportDirectory());
+	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
 #endif
 	SetToken("?temp", boost::filesystem::temp_directory_path());
 	SetToken("?dictionary", "/usr/share/hunspell");

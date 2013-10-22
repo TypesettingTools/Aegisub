@@ -77,7 +77,7 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 }
 
 #ifdef __APPLE__
-#define CONFIG_PATH (agi::util::OSX_GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf").c_str()
+#define CONFIG_PATH (agi::util::GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf").c_str()
 #else
 #define CONFIG_PATH nullptr
 #endif

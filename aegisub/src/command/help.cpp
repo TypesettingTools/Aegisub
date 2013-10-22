@@ -95,7 +95,7 @@ struct help_files : public Command {
 	STR_HELP("Resource files")
 
 	void operator()(agi::Context *) {
-		agi::util::OSX_OpenLocation((agi::util::OSX_GetBundleSharedSupportDirectory() + "/doc").c_str());
+		agi::util::OpenLocation((agi::util::GetBundleSharedSupportDirectory() + "/doc").c_str());
 	}
 };
 #endif

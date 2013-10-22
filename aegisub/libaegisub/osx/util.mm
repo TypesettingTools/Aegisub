@@ -46,62 +46,62 @@ AppNapDisabler::~AppNapDisabler() {
 	}
 	namespace util {
 
-std::string OSX_GetBundlePath() {
+std::string GetBundlePath() {
 	@autoreleasepool {
 		return EmptyIfNil([[NSBundle mainBundle] bundlePath]);
 	}
 }
 
-std::string OSX_GetBundleResourcesDirectory() {
+std::string GetBundleResourcesDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([[[NSBundle mainBundle] resourceURL] path]);
 	}
 }
 
-std::string OSX_GetBundleExecutablePath() {
+std::string GetBundleExecutablePath() {
 	@autoreleasepool {
 		return EmptyIfNil([[NSBundle mainBundle] executablePath]);
 	}
 }
 
-std::string OSX_GetBundleBuiltInPlugInsDirectory() {
+std::string GetBundleBuiltInPlugInsDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([[NSBundle mainBundle] builtInPlugInsPath]);
 	}
 }
 
-std::string OSX_GetBundlePrivateFrameworksDirectory() {
+std::string GetBundlePrivateFrameworksDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([[NSBundle mainBundle] privateFrameworksPath]);
 	}
 }
 
-std::string OSX_GetBundleSharedFrameworksDirectory() {
+std::string GetBundleSharedFrameworksDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([[NSBundle mainBundle] sharedFrameworksPath]);
 	}
 }
 
-std::string OSX_GetBundleSharedSupportDirectory() {
+std::string GetBundleSharedSupportDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([[NSBundle mainBundle] sharedSupportPath]);
 	}
 }
 
-std::string OSX_GetBundleAuxillaryExecutablePath(std::string const& executableName) {
+std::string GetBundleAuxillaryExecutablePath(std::string const& executableName) {
 	@autoreleasepool {
 		NSString *name = [NSString stringWithUTF8String:executableName.c_str()];
 		return EmptyIfNil([[NSBundle mainBundle]pathForAuxiliaryExecutable:name]);
 	}
 }
 
-std::string OSX_GetApplicationSupportDirectory() {
+std::string GetApplicationSupportDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject]);
 	}
 }
 
-void OSX_OpenLocation(std::string const& location) {
+void OpenLocation(std::string const& location) {
 	@autoreleasepool {
 		NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:location.c_str()]];
 		LSOpenCFURLRef((CFURLRef)url, NULL);

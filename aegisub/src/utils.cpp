@@ -116,8 +116,8 @@ void RestartAegisub() {
 #if defined(__WXMSW__)
 	wxExecute("\"" + wxStandardPaths::Get().GetExecutablePath() + "\"");
 #elif defined(__WXMAC__)
-	std::string bundle_path = agi::util::OSX_GetBundlePath();
-	std::string helper_path = agi::util::OSX_GetBundleAuxillaryExecutablePath("restart-helper");
+	std::string bundle_path = agi::util::GetBundlePath();
+	std::string helper_path = agi::util::GetBundleAuxillaryExecutablePath("restart-helper");
 	if (bundle_path.empty() || helper_path.empty()) return;
 
 	wxString exec = wxString::Format("\"%s\" /usr/bin/open -n \"%s\"'", to_wx(helper_path), to_wx(bundle_path));
