@@ -197,6 +197,7 @@ void Framerate::swap(Framerate &right) throw() {
 Framerate::Framerate(fs::path const& filename)
 : denominator(default_denominator)
 , numerator(0)
+, drop(false)
 {
 	auto file = agi::io::Open(filename);
 	auto encoding = agi::charset::Detect(filename);
