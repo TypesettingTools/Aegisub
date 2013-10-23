@@ -54,15 +54,19 @@ OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 : AudioPlayer(provider)
 , playing(false)
 , volume(1.f)
-, samplerate(0)
-, bpf(0)
+, samplerate(provider->GetSampleRate())
+, bpf(provider->GetChannels() * provider->GetBytesPerSample())
 , start_frame(0)
 , cur_frame(0)
 , end_frame(0)
 , device(0)
 , context(0)
+, source(0)
+, buf_first_free(0)
+, buf_first_queued(0)
+, buffers_free(0)
+, buffers_played(0)
 {
-	bpf = provider->GetChannels() * provider->GetBytesPerSample();
 	try {
 		// Open device
 		device = alcOpenDevice(0);
@@ -91,13 +95,10 @@ OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 	{
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-		context = 0;
-		device = 0;
 		throw;
 	}
 
 	// Determine buffer length
-	samplerate = provider->GetSampleRate();
 	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
 }
 
