@@ -265,8 +265,9 @@ longlong StdIoScan(InputStream *st, ulonglong start, unsigned signature) {
 		return -1;
 
 	int c;
+	unsigned cmp = 0;
 	while ((c = getc(fp)) != EOF) {
-		unsigned cmp = ((cmp << 8) | c) & 0xffffffff;
+		cmp = ((cmp << 8) | c) & 0xffffffff;
 		if (cmp == signature)
 			return std_ftell(fp) - 4;
 	}
