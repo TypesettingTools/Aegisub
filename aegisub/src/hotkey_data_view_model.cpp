@@ -25,6 +25,7 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/hotkey.h>
+#include <libaegisub/util.h>
 
 #include "command/command.h"
 #include "command/icon.h"
@@ -258,7 +259,7 @@ public:
 
 
 HotkeyDataViewModel::HotkeyDataViewModel(Preferences *parent)
-: root(new HotkeyModelRoot(this))
+: root(agi::util::make_unique<HotkeyModelRoot>(this))
 , parent(parent)
 , has_pending_changes(false)
 {

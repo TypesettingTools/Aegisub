@@ -365,7 +365,7 @@ do_setup:
 
 AlsaPlayer::AlsaPlayer(AudioProvider *provider)
 : AudioPlayer(provider)
-, ps(new PlaybackState)
+, ps(agi::util::make_unique<PlaybackState>())
 {
 	ps->provider = provider;
 

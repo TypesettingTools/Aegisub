@@ -50,6 +50,7 @@
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/calltip_provider.h>
 #include <libaegisub/spellchecker.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -257,7 +258,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	cursor_pos = pos;
 
 	if (!calltip_provider)
-		calltip_provider.reset(new agi::CalltipProvider);
+		calltip_provider = agi::util::make_unique<agi::CalltipProvider>();
 
 	agi::Calltip new_calltip = calltip_provider->GetCalltip(tokenized_line, line_text, pos);
 
@@ -384,7 +385,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 	if (currentWord.empty()) return;
 
 	if (!thesaurus)
-		thesaurus.reset(new Thesaurus);
+		thesaurus = agi::util::make_unique<Thesaurus>();
 
 	std::vector<Thesaurus::Entry> results;
 	thesaurus->Lookup(currentWord, &results);

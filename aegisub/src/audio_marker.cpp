@@ -50,7 +50,7 @@ AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, cons
 , timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
 , enabled_slot(OPT_SUB(opt_name, &AudioMarkerProviderKeyframes::Update, this))
 , enabled_opt(OPT_GET(opt_name))
-, style(new Pen("Colour/Audio Display/Keyframe"))
+, style(agi::util::make_unique<Pen>("Colour/Audio Display/Keyframe"))
 {
 	Update();
 }
@@ -139,7 +139,7 @@ void VideoPositionMarkerProvider::GetMarkers(const TimeRange &range, AudioMarker
 }
 
 SecondsMarkerProvider::SecondsMarkerProvider()
-: pen(new Pen("Colour/Audio Display/Seconds Line", 1, wxPENSTYLE_DOT))
+: pen(agi::util::make_unique<Pen>("Colour/Audio Display/Seconds Line", 1, wxPENSTYLE_DOT))
 , enabled(OPT_GET("Audio/Display/Draw/Seconds"))
 , enabled_opt_changed(OPT_SUB("Audio/Display/Draw/Seconds", &SecondsMarkerProvider::EnabledOptChanged, this))
 {

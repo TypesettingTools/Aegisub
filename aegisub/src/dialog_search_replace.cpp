@@ -30,6 +30,8 @@
 #include "utils.h"
 #include "validators.h"
 
+#include <libaegisub/util.h>
+
 #include <functional>
 
 #include <wx/button.h>
@@ -45,7 +47,7 @@
 DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 : wxDialog(c->parent, -1, replace ? _("Replace") : _("Find"))
 , c(c)
-, settings(new SearchReplaceSettings)
+, settings(agi::util::make_unique<SearchReplaceSettings>())
 , has_replace(replace)
 {
 	auto recent_find(lagi_MRU_wxAS("Find"));

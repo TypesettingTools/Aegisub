@@ -27,12 +27,13 @@
 #include "video_display.h"
 
 #include <libaegisub/color.h>
+#include <libaegisub/util.h>
 
 #include <boost/format.hpp>
 
 VisualToolCross::VisualToolCross(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)
-, gl_text(new OpenGLText)
+, gl_text(agi::util::make_unique<OpenGLText>())
 {
 	parent->SetCursor(wxCursor(wxCURSOR_BLANK));
 }

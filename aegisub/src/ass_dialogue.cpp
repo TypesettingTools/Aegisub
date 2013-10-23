@@ -39,6 +39,7 @@
 
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/split.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/join.hpp>
