@@ -49,7 +49,6 @@ public:
 	};
 private:
 	std::vector<Syllable> syls;
-	AssDialogue *active_line;
 
 	bool no_announce;
 

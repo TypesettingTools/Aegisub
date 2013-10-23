@@ -57,8 +57,6 @@ AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize)
 }
 
 void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
-	active_line = line;
-
 	syls.clear();
 	Syllable syl;
 	syl.start_time = line->Start;
@@ -69,7 +67,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 
 	if (normalize) {
 		// Normalize the syllables so that the total duration is equal to the line length
-		int end_time = active_line->End;
+		int end_time = line->End;
 		int last_end = syl.start_time + syl.duration;
 
 		// Total duration is shorter than the line length so just extend the last
