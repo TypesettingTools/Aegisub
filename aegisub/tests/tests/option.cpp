@@ -19,6 +19,8 @@
 #include "main.h"
 #include "util.h"
 
+#include <fstream>
+
 class lagi_option : public libagi {
 protected:
 	std::string default_opt;

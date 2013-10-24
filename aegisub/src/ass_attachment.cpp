@@ -22,6 +22,7 @@
 #include <libaegisub/io.h>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <fstream>
 
 AssAttachment::AssAttachment(std::string const& name, AssEntryGroup group)
@@ -67,7 +68,8 @@ size_t AssAttachment::GetSize() const {
 
 void AssAttachment::Extract(agi::fs::path const& filename) const {
 	auto header_end = entry_data.get().find('\n');
-	agi::io::Save(filename, true).Get().write(&entry_data.get()[header_end + 1], entry_data.get().size() - header_end - 1);
+	auto decoded = agi::ass::UUDecode(boost::make_iterator_range(entry_data.get().begin() + header_end + 1, entry_data.get().end()));
+	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());
 }
 
 std::string AssAttachment::GetFileName(bool raw) const {

@@ -48,7 +48,7 @@ TEST(lagi_uuencode, random_blobs_roundtrip) {
 	std::vector<char> data;
 
 	for (size_t len = 0; len < 200; ++len) {
-		EXPECT_EQ(data, UUDecode(boost::replace_all_copy(UUEncode(data), "\r\n", "")));
+		EXPECT_EQ(data, UUDecode(UUEncode(data)));
 		data.push_back(rand());
 	}
 }

@@ -22,7 +22,33 @@ namespace agi {
 		/// Encode a blob of data, using ASS's nonstandard variant
 		std::string UUEncode(std::vector<char> const& data);
 
-		/// Decode an ASS uuencoded string which has had its newlines stripped
-		std::vector<char> UUDecode(std::string const& str);
+		/// Decode an ASS uuencoded string
+		template<typename String>
+		std::vector<char> UUDecode(String const& str) {
+			std::vector<char> ret;
+			size_t len = std::end(str) - std::begin(str);
+			ret.reserve(len * 3 / 4);
+
+			for (size_t pos = 0; pos + 1 < len; ) {
+				size_t bytes = 0;
+				unsigned char src[4] = { '\0', '\0', '\0', '\0' };
+				for (size_t i = 0; i < 4 && pos < len; ) {
+					char c = str[pos++];
+					if (c && c != '\n' && c != '\r') {
+						src[i++] = c - 33;
+						++bytes;
+					}
+				}
+
+				if (bytes > 1)
+					ret.push_back((src[0] << 2) | (src[1] >> 4));
+				if (bytes > 2)
+					ret.push_back(((src[1] & 0xF) << 4) | (src[2] >> 2));
+				if (bytes > 3)
+					ret.push_back(((src[2] & 0x3) << 6) | (src[3]));
+			}
+
+			return ret;
+		}
 	}
 }

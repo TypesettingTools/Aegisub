@@ -26,27 +26,6 @@
 
 namespace agi { namespace ass {
 
-std::vector<char> UUDecode(std::string const& str) {
-	std::vector<char> ret;
-	ret.reserve(str.size() * 3 / 4);
-
-	for(size_t pos = 0; pos + 1 < str.size(); pos += 4) {
-		size_t bytes = std::min<size_t>(str.size() - pos, 4);
-
-		unsigned char src[4] = { '\0', '\0', '\0', '\0' };
-		for (size_t i = 0; i < bytes; ++i)
-			src[i] = str[pos + i] - 33;
-
-		ret.push_back((src[0] << 2) | (src[1] >> 4));
-		if (bytes > 2)
-			ret.push_back(((src[1] & 0xF) << 4) | (src[2] >> 2));
-		if (bytes > 3)
-			ret.push_back(((src[2] & 0x3) << 6) | (src[3]));
-	}
-
-	return ret;
-}
-
 std::string UUEncode(std::vector<char> const& data) {
 	std::string ret;
 	ret.reserve((data.size() * 4 + 2) / 3 + data.size() / 80 * 2);
