@@ -136,7 +136,7 @@ void DoubleValidator::OnChar(wxKeyEvent& event) {
 bool DoubleValidator::TransferToWindow() {
 	auto str = wxString::Format("%g", *value);
 	if (decimal_sep != '.')
-		std::replace(str.begin(), str.end(), wxS('.'), decimal_sep);
+		std::replace(str.begin(), str.end(), (wxChar)'.', decimal_sep);
 	if (str.find(decimal_sep) != str.npos) {
 		while (str.Last() == '0')
 			str.RemoveLast();
