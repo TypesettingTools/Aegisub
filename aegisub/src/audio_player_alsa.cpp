@@ -36,8 +36,6 @@
 
 #ifdef WITH_ALSA
 
-#include <libaegisub/log.h>
-
 #include "audio_player_alsa.h"
 
 #include "audio_controller.h"
@@ -45,6 +43,9 @@
 #include "compat.h"
 #include "frame_main.h"
 #include "options.h"
+
+#include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 
