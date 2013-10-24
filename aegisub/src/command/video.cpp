@@ -48,6 +48,7 @@
 #include "../dialog_video_details.h"
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
+#include "../include/aegisub/subtitles_provider.h"
 #include "../main.h"
 #include "../options.h"
 #include "../selection_controller.h"
@@ -231,6 +232,25 @@ struct video_copy_coordinates : public validator_video_loaded {
 
 	void operator()(agi::Context *c) {
 		SetClipboard(c->videoDisplay->GetMousePosition().Str());
+	}
+};
+
+struct video_cycle_subtitles_provider : public cmd::Command {
+	CMD_NAME("video/subtitles_provider/cycle")
+	STR_MENU("Cycle active subtitles provider")
+	STR_DISP("Cycle active subtitles provider")
+	STR_HELP("Cycle active subtitles provider")
+
+	void operator()(agi::Context *c) {
+		auto providers = SubtitlesProviderFactory::GetClasses();
+		if (providers.empty()) return;
+
+		auto it = find(begin(providers), end(providers), OPT_GET("Subtitle/Provider")->GetString());
+		if (it != end(providers)) ++it;
+		if (it == end(providers)) it = begin(providers);
+
+		OPT_SET("Subtitle/Provider")->SetString(*it);
+		StatusTimeout(wxString::Format(_("Subtitles provider set to %s"), to_wx(*it)), 5000);
 	}
 };
 
@@ -760,6 +780,7 @@ namespace cmd {
 		reg(agi::util::make_unique<video_aspect_wide>());
 		reg(agi::util::make_unique<video_close>());
 		reg(agi::util::make_unique<video_copy_coordinates>());
+		reg(agi::util::make_unique<video_cycle_subtitles_provider>());
 		reg(agi::util::make_unique<video_detach>());
 		reg(agi::util::make_unique<video_details>());
 		reg(agi::util::make_unique<video_focus_seek>());

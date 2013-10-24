@@ -143,6 +143,7 @@
         $(AegisubSourceBase)libaegisub\include;
         $(AegisubSourceBase)build;
         $(AegisubSourceBase)include;
+        $(AegisubSourceBase)src;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
     </ClCompile>
