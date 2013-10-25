@@ -101,12 +101,5 @@ std::string GetApplicationSupportDirectory() {
 	}
 }
 
-void OpenLocation(std::string const& location) {
-	@autoreleasepool {
-		NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:location.c_str()]];
-		LSOpenCFURLRef((CFURLRef)url, NULL);
-	}
-}
-
 	}
 }

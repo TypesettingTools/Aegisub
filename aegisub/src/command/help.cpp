@@ -38,7 +38,6 @@
 #include "../options.h"
 
 #include <libaegisub/util.h>
-#include <libaegisub/util_osx.h>
 
 #include <wx/msgdlg.h>
 
@@ -75,19 +74,6 @@ struct help_contents : public Command {
 		HelpButton::OpenPage("Main");
 	}
 };
-
-#ifdef __WXMAC__
-struct help_files : public Command {
-	CMD_NAME("help/files")
-	STR_MENU("All Fil&es")
-	STR_DISP("All Files")
-	STR_HELP("Resource files")
-
-	void operator()(agi::Context *) {
-		agi::util::OpenLocation((agi::util::GetBundleSharedSupportDirectory() + "/doc").c_str());
-	}
-};
-#endif
 
 struct help_forums : public Command {
 	CMD_NAME("help/forums")
@@ -138,9 +124,6 @@ namespace cmd {
 	void init_help() {
 		reg(agi::util::make_unique<help_bugs>());
 		reg(agi::util::make_unique<help_contents>());
-#ifdef __WXMAC__
-		reg(agi::util::make_unique<help_files>());
-#endif
 		reg(agi::util::make_unique<help_forums>());
 		reg(agi::util::make_unique<help_irc>());
 		reg(agi::util::make_unique<help_video>());

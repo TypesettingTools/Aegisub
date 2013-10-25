@@ -202,7 +202,6 @@
     "main/help" : [
         { "command" : "help/contents" },
         {},
-        { "command" : "help/files" },
         { "command" : "help/website" },
         { "command" : "help/forums" },
         { "command" : "help/bugs" },
