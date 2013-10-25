@@ -411,7 +411,7 @@ struct grid_swap : public Command {
 	CMD_NAME("grid/swap")
 	STR_MENU("Swap Lines")
 	STR_DISP("Swap Lines")
-	STR_HELP("Swaps the two selected lines")
+	STR_HELP("Swap the two selected lines")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {

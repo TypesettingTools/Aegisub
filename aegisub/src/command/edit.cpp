@@ -515,7 +515,7 @@ struct edit_line_copy : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
 	STR_MENU("&Copy Lines")
 	STR_DISP("Copy Lines")
-	STR_HELP("Copy subtitles")
+	STR_HELP("Copy subtitles to the clipboard")
 
 	void operator()(agi::Context *c) {
 		// Ideally we'd let the control's keydown handler run and only deal
@@ -703,7 +703,7 @@ struct edit_line_join_as_karaoke : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/as_karaoke")
 	STR_MENU("As &Karaoke")
 	STR_DISP("As Karaoke")
-	STR_HELP("Joins selected lines in a single one, as karaoke")
+	STR_HELP("Join selected lines in a single one, as karaoke")
 
 	void operator()(agi::Context *c) {
 		combine_lines(c, combine_karaoke, _("join as karaoke"));
@@ -716,7 +716,7 @@ struct edit_line_join_concatenate : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/concatenate")
 	STR_MENU("&Concatenate")
 	STR_DISP("Concatenate")
-	STR_HELP("Joins selected lines in a single one, concatenating text together")
+	STR_HELP("Join selected lines in a single one, concatenating text together")
 
 	void operator()(agi::Context *c) {
 		combine_lines(c, combine_concat, _("join lines"));
@@ -729,7 +729,7 @@ struct edit_line_join_keep_first : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/keep_first")
 	STR_MENU("Keep &First")
 	STR_DISP("Keep First")
-	STR_HELP("Joins selected lines in a single one, keeping text of first and discarding remaining")
+	STR_HELP("Join selected lines in a single one, keeping text of first and discarding remaining")
 
 	void operator()(agi::Context *c) {
 		combine_lines(c, combine_drop, _("join lines"));
@@ -897,7 +897,7 @@ struct edit_line_recombine : public validate_sel_multiple {
 	CMD_NAME("edit/line/recombine")
 	STR_MENU("Recom&bine Lines")
 	STR_DISP("Recombine Lines")
-	STR_HELP("Recombine subtitles when they have been split and merged")
+	STR_HELP("Recombine subtitles which have been split and merged")
 
 	void operator()(agi::Context *c) {
 		auto sel_set = c->selectionController->GetSelectedSet();
@@ -974,7 +974,7 @@ struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	CMD_NAME("edit/line/split/by_karaoke")
 	STR_MENU("Split Lines (by karaoke)")
 	STR_DISP("Split Lines (by karaoke)")
-	STR_HELP("Uses karaoke timing to split line into multiple smaller lines")
+	STR_HELP("Use karaoke timing to split line into multiple smaller lines")
 
 	void operator()(agi::Context *c) {
 		AssKaraoke::SplitLines(c->selectionController->GetSelectedSet(), c);
@@ -1025,7 +1025,7 @@ struct edit_line_split_preserve : public validate_sel_nonempty {
 /// Redoes last action.
 struct edit_redo : public Command {
 	CMD_NAME("edit/redo")
-	STR_HELP("Redoes last action")
+	STR_HELP("Redo last undone action")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	wxString StrMenu(const agi::Context *c) const {
@@ -1051,7 +1051,7 @@ struct edit_redo : public Command {
 /// Undoes last action.
 struct edit_undo : public Command {
 	CMD_NAME("edit/undo")
-	STR_HELP("Undoes last action")
+	STR_HELP("Undo last action")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
 	wxString StrMenu(const agi::Context *c) const {

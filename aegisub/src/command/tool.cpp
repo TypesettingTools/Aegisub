@@ -72,7 +72,7 @@ struct tool_assdraw : public Command {
 	CMD_NAME("tool/assdraw")
 	STR_MENU("ASSDraw3...")
 	STR_DISP("ASSDraw3")
-	STR_HELP("Launch ASSDraw3 tool for vector drawing")
+	STR_HELP("Launch the ASSDraw3 tool for vector drawing")
 
 	void operator()(agi::Context *) {
 		wxExecute("\"" + config::path->Decode("?data/ASSDraw3.exe").wstring() + "\"");
@@ -84,7 +84,7 @@ struct tool_export : public Command {
 	CMD_NAME("tool/export")
 	STR_MENU("&Export Subtitles...")
 	STR_DISP("Export Subtitles")
-	STR_HELP("Saves a copy of subtitles with processing applied to it")
+	STR_HELP("Save a copy of subtitles in a different format or with processing applied to it")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -109,7 +109,7 @@ struct tool_line_select : public Command {
 	CMD_NAME("tool/line/select")
 	STR_MENU("S&elect Lines...")
 	STR_DISP("Select Lines")
-	STR_HELP("Selects lines based on defined criteria")
+	STR_HELP("Select lines based on defined criteria")
 
 	void operator()(agi::Context *c) {
 		c->dialog->Show<DialogSelection>(c);
@@ -121,7 +121,7 @@ struct tool_resampleres : public Command {
 	CMD_NAME("tool/resampleres")
 	STR_MENU("&Resample Resolution...")
 	STR_DISP("Resample Resolution")
-	STR_HELP("Changes resolution and modifies subtitles to conform to change")
+	STR_HELP("Resample subtitles to maintain their current appearance at a different script resolution")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -180,7 +180,7 @@ struct tool_style_manager : public Command {
 	CMD_NAME("tool/style/manager")
 	STR_MENU("&Styles Manager...")
 	STR_DISP("Styles Manager")
-	STR_HELP("Open styles manager")
+	STR_HELP("Open the styles manager")
 
 	void operator()(agi::Context *c) {
 		c->dialog->Show<DialogStyleManager>(c);
@@ -192,7 +192,7 @@ struct tool_time_kanji : public Command {
 	CMD_NAME("tool/time/kanji")
 	STR_MENU("&Kanji Timer...")
 	STR_DISP("Kanji Timer")
-	STR_HELP("Open Kanji timer")
+	STR_HELP("Open the Kanji timer copier")
 
 	void operator()(agi::Context *c) {
 		DialogKanjiTimer(c).ShowModal();
@@ -204,7 +204,7 @@ struct tool_time_postprocess : public Command {
 	CMD_NAME("tool/time/postprocess")
 	STR_MENU("&Timing Post-Processor...")
 	STR_DISP("Timing Post-Processor")
-	STR_HELP("Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc")
+	STR_HELP("Post-process the subtitle timing to add lead-ins and lead-outs, snap timing to scene changes, etc.")
 
 	void operator()(agi::Context *c) {
 		DialogTimingProcessor(c).ShowModal();

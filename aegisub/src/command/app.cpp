@@ -82,7 +82,7 @@ struct app_display_audio_subs : public Command {
 	CMD_NAME("app/display/audio_subs")
 	STR_MENU("&Audio+Subs View")
 	STR_DISP("Audio+Subs View")
-	STR_HELP("Display audio and subtitles only")
+	STR_HELP("Display audio and the subtitles grid only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *) {
@@ -104,7 +104,7 @@ struct app_display_full : public Command {
 	CMD_NAME("app/display/full")
 	STR_MENU("&Full view")
 	STR_DISP("Full view")
-	STR_HELP("Display audio, video and subtitles")
+	STR_HELP("Display audio, video and then subtitles grid")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
@@ -126,7 +126,7 @@ struct app_display_subs : public Command {
 	CMD_NAME("app/display/subs")
 	STR_MENU("S&ubs Only View")
 	STR_DISP("Subs Only View")
-	STR_HELP("Display subtitles only")
+	STR_HELP("Display the subtitles grid only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
@@ -144,7 +144,7 @@ struct app_display_video_subs : public Command {
 	CMD_NAME("app/display/video_subs")
 	STR_MENU("&Video+Subs View")
 	STR_DISP("Video+Subs View")
-	STR_HELP("Display video and subtitles only")
+	STR_HELP("Display video and the subtitles grid only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) {
@@ -246,7 +246,7 @@ struct app_toggle_global_hotkeys : public Command {
 	CMD_NAME("app/toggle/global_hotkeys")
 	STR_MENU("Toggle global hotkey overrides")
 	STR_DISP("Toggle global hotkey overrides")
-	STR_HELP("Toggle global hotkey overrides")
+	STR_HELP("Toggle global hotkey overrides (Medusa Mode)")
 	CMD_TYPE(COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *) {

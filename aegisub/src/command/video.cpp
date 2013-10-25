@@ -96,7 +96,7 @@ struct video_aspect_cinematic : public validator_video_loaded {
 	CMD_NAME("video/aspect/cinematic")
 	STR_MENU("&Cinematic (2.35)")
 	STR_DISP("Cinematic (2.35)")
-	STR_HELP("Forces video to 2.35 aspect ratio")
+	STR_HELP("Force video to 2.35 aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -115,7 +115,7 @@ struct video_aspect_custom : public validator_video_loaded {
 	CMD_NAME("video/aspect/custom")
 	STR_MENU("C&ustom...")
 	STR_DISP("Custom")
-	STR_HELP("Forces video to a custom aspect ratio")
+	STR_HELP("Force video to a custom aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -159,7 +159,7 @@ struct video_aspect_default : public validator_video_loaded {
 	CMD_NAME("video/aspect/default")
 	STR_MENU("&Default")
 	STR_DISP("Default")
-	STR_HELP("Leave video on original aspect ratio")
+	STR_HELP("Use video's original aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -178,7 +178,7 @@ struct video_aspect_full : public validator_video_loaded {
 	CMD_NAME("video/aspect/full")
 	STR_MENU("&Fullscreen (4:3)")
 	STR_DISP("Fullscreen (4:3)")
-	STR_HELP("Forces video to 4:3 aspect ratio")
+	STR_HELP("Force video to 4:3 aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -197,7 +197,7 @@ struct video_aspect_wide : public validator_video_loaded {
 	CMD_NAME("video/aspect/wide")
 	STR_MENU("&Widescreen (16:9)")
 	STR_DISP("Widescreen (16:9)")
-	STR_HELP("Forces video to 16:9 aspect ratio")
+	STR_HELP("Force video to 16:9 aspect ratio")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) {
@@ -216,7 +216,7 @@ struct video_close : public validator_video_loaded {
 	CMD_NAME("video/close")
 	STR_MENU("&Close Video")
 	STR_DISP("Close Video")
-	STR_HELP("Closes the currently open video file")
+	STR_HELP("Close the currently open video file")
 
 	void operator()(agi::Context *c) {
 		c->videoController->SetVideo("");
@@ -239,7 +239,7 @@ struct video_cycle_subtitles_provider : public cmd::Command {
 	CMD_NAME("video/subtitles_provider/cycle")
 	STR_MENU("Cycle active subtitles provider")
 	STR_DISP("Cycle active subtitles provider")
-	STR_HELP("Cycle active subtitles provider")
+	STR_HELP("Cycle through the available subtitles providers")
 
 	void operator()(agi::Context *c) {
 		auto providers = SubtitlesProviderFactory::GetClasses();
@@ -259,7 +259,7 @@ struct video_detach : public validator_video_loaded {
 	CMD_NAME("video/detach")
 	STR_MENU("&Detach Video")
 	STR_DISP("Detach Video")
-	STR_HELP("Detach video, displaying it in a separate Window")
+	STR_HELP("Detach the video display from the main window, displaying it in a separate Window")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *c) {
@@ -279,7 +279,7 @@ struct video_details : public validator_video_loaded {
 	CMD_NAME("video/details")
 	STR_MENU("Show &Video Details")
 	STR_DISP("Show Video Details")
-	STR_HELP("Shows video details")
+	STR_HELP("Show video details")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -292,7 +292,7 @@ struct video_focus_seek : public validator_video_loaded {
 	CMD_NAME("video/focus_seek")
 	STR_MENU("Toggle video slider focus")
 	STR_DISP("Toggle video slider focus")
-	STR_HELP("Toggle focus between the video slider and other things")
+	STR_HELP("Toggle focus between the video slider and the previous thing to have focus")
 
 	void operator()(agi::Context *c) {
 		wxWindow *curFocus = wxWindow::FindFocus();
@@ -347,7 +347,7 @@ struct video_frame_next_boundary : public validator_video_loaded {
 	CMD_NAME("video/frame/next/boundary")
 	STR_MENU("Next Boundary")
 	STR_DISP("Next Boundary")
-	STR_HELP("Seek to the next subtitle boundary")
+	STR_HELP("Seek to the next beginning or end of a subtitle")
 
 	void operator()(agi::Context *c) {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
@@ -418,7 +418,7 @@ struct video_frame_prev_boundary : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/boundary")
 	STR_MENU("Previous Boundary")
 	STR_DISP("Previous Boundary")
-	STR_HELP("Seek to the previous subtitle boundary")
+	STR_HELP("Seek to the previous beginning or end of a subtitle")
 
 	void operator()(agi::Context *c) {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
@@ -563,7 +563,7 @@ struct video_jump_end : public validator_video_loaded {
 	CMD_NAME("video/jump/end")
 	STR_MENU("Jump Video to &End")
 	STR_DISP("Jump Video to End")
-	STR_HELP("Jumps the video to the end frame of current subtitle")
+	STR_HELP("Jump the video to the end frame of current subtitle")
 
 	void operator()(agi::Context *c) {
 		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
@@ -577,7 +577,7 @@ struct video_jump_start : public validator_video_loaded {
 	CMD_NAME("video/jump/start")
 	STR_MENU("Jump Video to &Start")
 	STR_DISP("Jump Video to Start")
-	STR_HELP("Jumps the video to the start frame of current subtitle")
+	STR_HELP("Jump the video to the start frame of current subtitle")
 
 	void operator()(agi::Context *c) {
 		if (AssDialogue *active_line = c->selectionController->GetActiveLine())
@@ -590,7 +590,7 @@ struct video_open : public Command {
 	CMD_NAME("video/open")
 	STR_MENU("&Open Video...")
 	STR_DISP("Open Video")
-	STR_HELP("Opens a video file")
+	STR_HELP("Open a video file")
 
 	void operator()(agi::Context *c) {
 		auto str = _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
@@ -606,7 +606,7 @@ struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
 	STR_MENU("&Use Dummy Video...")
 	STR_DISP("Use Dummy Video")
-	STR_HELP("Opens a video clip with solid color")
+	STR_HELP("Open a placeholder video clip with solid color")
 
 	void operator()(agi::Context *c) {
 		std::string fn = DialogDummyVideo::CreateDummyVideo(c->parent);
@@ -620,7 +620,7 @@ struct video_opt_autoscroll : public Command {
 	CMD_NAME("video/opt/autoscroll")
 	STR_MENU("Toggle autoscroll of video")
 	STR_DISP("Toggle autoscroll of video")
-	STR_HELP("Toggle autoscroll of video")
+	STR_HELP("Toggle automatically seeking video to the start time of selected lines")
 	CMD_TYPE(COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *) {

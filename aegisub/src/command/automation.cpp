@@ -96,7 +96,7 @@ struct meta : public Command {
 	CMD_NAME("am/meta")
 	STR_MENU("&Automation...")
 	STR_DISP("Automation")
-	STR_HELP("Open automation manager")
+	STR_HELP("Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan autoload folder and reload all automation scripts")
 
 	void operator()(agi::Context *c) {
 		if (wxGetMouseState().CmdDown()) {

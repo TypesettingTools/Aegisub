@@ -119,7 +119,7 @@ struct time_continuous_end : public validate_adjoinable {
 	CMD_NAME("time/continuous/end")
 	STR_MENU("Change &End")
 	STR_DISP("Change End")
-	STR_HELP("Changes times of subs so end times begin on next's start time")
+	STR_HELP("Change end times of lines to the next line's start time")
 
 	void operator()(agi::Context *c) {
 		adjoin_lines(c, false);
@@ -131,7 +131,7 @@ struct time_continuous_start : public validate_adjoinable {
 	CMD_NAME("time/continuous/start")
 	STR_MENU("Change &Start")
 	STR_DISP("Change Start")
-	STR_HELP("Changes times of subs so start times begin on previous's end time")
+	STR_HELP("Change start times of lines to the previous line's end time")
 
 	void operator()(agi::Context *c) {
 		adjoin_lines(c, true);
@@ -259,7 +259,7 @@ struct time_add_lead_both : public Command {
 	CMD_NAME("time/lead/both")
 	STR_MENU("Add lead in and out")
 	STR_DISP("Add lead in and out")
-	STR_HELP("Add lead in and out")
+	STR_HELP("Add both lead in and out to the selected lines")
 	void operator()(agi::Context *c) {
 		if (AudioTimingController *tc = c->audioController->GetTimingController()) {
 			tc->AddLeadIn();
@@ -272,7 +272,7 @@ struct time_add_lead_in : public Command {
 	CMD_NAME("time/lead/in")
 	STR_MENU("Add lead in")
 	STR_DISP("Add lead in")
-	STR_HELP("Add lead in")
+	STR_HELP("Add the lead in time to the selected lines")
 	void operator()(agi::Context *c) {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->AddLeadIn();
@@ -283,7 +283,7 @@ struct time_add_lead_out : public Command {
 	CMD_NAME("time/lead/out")
 	STR_MENU("Add lead out")
 	STR_DISP("Add lead out")
-	STR_HELP("Add lead out")
+	STR_HELP("Add the lead out time to the selected lines")
 	void operator()(agi::Context *c) {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->AddLeadOut();

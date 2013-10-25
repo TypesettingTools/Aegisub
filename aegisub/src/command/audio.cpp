@@ -72,7 +72,7 @@ struct audio_close : public validate_audio_open {
 	CMD_NAME("audio/close")
 	STR_MENU("&Close Audio")
 	STR_DISP("Close Audio")
-	STR_HELP("Closes the currently open audio file")
+	STR_HELP("Close the currently open audio file")
 
 	void operator()(agi::Context *c) {
 		c->audioController->CloseAudio();
@@ -85,7 +85,7 @@ struct audio_open : public Command {
 	CMD_NAME("audio/open")
 	STR_MENU("&Open Audio File...")
 	STR_DISP("Open Audio File")
-	STR_HELP("Opens an audio file")
+	STR_HELP("Open an audio file")
 
 	void operator()(agi::Context *c) {
 		wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
@@ -146,7 +146,7 @@ struct audio_open_video : public Command {
 	CMD_NAME("audio/open/video")
 	STR_MENU("Open Audio from &Video")
 	STR_DISP("Open Audio from Video")
-	STR_HELP("Opens the audio from the current video file")
+	STR_HELP("Open the audio from the current video file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
@@ -205,7 +205,7 @@ struct audio_save_clip : public Command {
 	CMD_NAME("audio/save/clip")
 	STR_MENU("Create audio clip")
 	STR_DISP("Create audio clip")
-	STR_HELP("Create an audio clip of the selected line")
+	STR_HELP("Save an audio clip of the selected line")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
@@ -246,7 +246,7 @@ struct audio_play_current_line : public validate_audio_open {
 	CMD_NAME("audio/play/line")
 	STR_MENU("Play current line")
 	STR_DISP("Play current line")
-	STR_HELP("Play current line")
+	STR_HELP("Play the audio for the current line")
 
 	void operator()(agi::Context *c) {
 		c->videoController->Stop();
@@ -274,7 +274,7 @@ struct audio_play_toggle : public validate_audio_open {
 	CMD_NAME("audio/play/toggle")
 	STR_MENU("Play audio selection or stop")
 	STR_DISP("Play audio selection or stop")
-	STR_HELP("Play selection or stop playback if it's already playing")
+	STR_HELP("Play selection, or stop playback if it's already playing")
 
 	void operator()(agi::Context *c) {
 		if (c->audioController->IsPlaying())
@@ -291,7 +291,7 @@ struct audio_stop : public Command {
 	CMD_NAME("audio/stop")
 	STR_MENU("Stop playing")
 	STR_DISP("Stop playing")
-	STR_HELP("Stop")
+	STR_HELP("Stop audio and video playback")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
@@ -446,7 +446,7 @@ struct audio_go_to : public validate_audio_open {
 	CMD_NAME("audio/go_to")
 	STR_MENU("Go to selection")
 	STR_DISP("Go to selection")
-	STR_HELP("Go to selection")
+	STR_HELP("Scroll the audio display to center on the current audio selection")
 
 	void operator()(agi::Context *c) {
 		c->audioBox->ScrollToActiveLine();
@@ -485,9 +485,9 @@ static inline void toggle(const char *opt) {
 /// Toggle autoscrolling the audio display to the selected line when switch lines
 struct audio_autoscroll : public Command {
 	CMD_NAME("audio/opt/autoscroll")
-	STR_MENU("Auto scrolls audio display to selected line")
-	STR_DISP("Auto scrolls audio display to selected line")
-	STR_HELP("Auto scrolls audio display to selected line")
+	STR_MENU("Auto scroll audio display to selected line")
+	STR_DISP("Auto scroll audio display to selected line")
+	STR_HELP("Auto scroll audio display to selected line")
 	CMD_TYPE(COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *) {
@@ -519,9 +519,9 @@ struct audio_autocommit : public Command {
 /// Toggle automatically advancing to the next line after a commit
 struct audio_autonext : public Command {
 	CMD_NAME("audio/opt/autonext")
-	STR_MENU("Auto goes to next line on commit")
-	STR_DISP("Auto goes to next line on commit")
-	STR_HELP("Auto goes to next line on commit")
+	STR_MENU("Auto go to next line on commit")
+	STR_DISP("Auto go to next line on commit")
+	STR_HELP("Automatically go to next line on commit")
 	CMD_TYPE(COMMAND_TOGGLE)
 
 	bool IsActive(const agi::Context *) {
