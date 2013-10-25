@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file tool.cpp
-/// @brief tool/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -63,11 +58,7 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-tool Various tool and utilities
-/// @{
 
-
-/// Launch ASSDraw3 tool for vector drawing.
 struct tool_assdraw : public Command {
 	CMD_NAME("tool/assdraw")
 	STR_MENU("ASSDraw3...")
@@ -79,7 +70,6 @@ struct tool_assdraw : public Command {
 	}
 };
 
-/// Saves a copy of subtitles with processing applied to it.
 struct tool_export : public Command {
 	CMD_NAME("tool/export")
 	STR_MENU("&Export Subtitles...")
@@ -92,7 +82,6 @@ struct tool_export : public Command {
 	}
 };
 
-/// Open fonts collector.
 struct tool_font_collector : public Command {
 	CMD_NAME("tool/font_collector")
 	STR_MENU("&Fonts Collector...")
@@ -104,7 +93,6 @@ struct tool_font_collector : public Command {
 	}
 };
 
-/// Selects lines based on defined criteria.
 struct tool_line_select : public Command {
 	CMD_NAME("tool/line/select")
 	STR_MENU("S&elect Lines...")
@@ -116,7 +104,6 @@ struct tool_line_select : public Command {
 	}
 };
 
-/// Changes resolution and modifies subtitles to conform to change.
 struct tool_resampleres : public Command {
 	CMD_NAME("tool/resampleres")
 	STR_MENU("&Resample Resolution...")
@@ -131,7 +118,6 @@ struct tool_resampleres : public Command {
 	}
 };
 
-/// Open styling assistant.
 struct tool_style_assistant : public Command {
 	CMD_NAME("tool/style/assistant")
 	STR_MENU("St&yling Assistant...")
@@ -151,7 +137,6 @@ struct tool_styling_assistant_validator : public Command {
 	}
 };
 
-/// Commit changes and move to the next line.
 struct tool_styling_assistant_commit : public tool_styling_assistant_validator {
 	CMD_NAME("tool/styling_assistant/commit")
 	STR_MENU("&Accept changes")
@@ -163,7 +148,6 @@ struct tool_styling_assistant_commit : public tool_styling_assistant_validator {
 	}
 };
 
-/// Commit changes and stay on the current line.
 struct tool_styling_assistant_preview : public tool_styling_assistant_validator {
 	CMD_NAME("tool/styling_assistant/preview")
 	STR_MENU("&Preview changes")
@@ -175,7 +159,6 @@ struct tool_styling_assistant_preview : public tool_styling_assistant_validator 
 	}
 };
 
-/// Open styles manager.
 struct tool_style_manager : public Command {
 	CMD_NAME("tool/style/manager")
 	STR_MENU("&Styles Manager...")
@@ -187,7 +170,6 @@ struct tool_style_manager : public Command {
 	}
 };
 
-/// Open Kanji timer.
 struct tool_time_kanji : public Command {
 	CMD_NAME("tool/time/kanji")
 	STR_MENU("&Kanji Timer...")
@@ -199,7 +181,6 @@ struct tool_time_kanji : public Command {
 	}
 };
 
-/// Launch timing post-processor.
 struct tool_time_postprocess : public Command {
 	CMD_NAME("tool/time/postprocess")
 	STR_MENU("&Timing Post-Processor...")
@@ -211,7 +192,6 @@ struct tool_time_postprocess : public Command {
 	}
 };
 
-/// Open translation assistant.
 struct tool_translation_assistant : public Command {
 	CMD_NAME("tool/translation_assistant")
 	STR_MENU("&Translation Assistant...")
@@ -237,7 +217,6 @@ struct tool_translation_assistant_validator : public Command {
 	}
 };
 
-/// Commit changes and move to the next line.
 struct tool_translation_assistant_commit : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/commit")
 	STR_MENU("&Accept changes")
@@ -249,7 +228,6 @@ struct tool_translation_assistant_commit : public tool_translation_assistant_val
 	}
 };
 
-/// Commit changes and stay on the current line.
 struct tool_translation_assistant_preview : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/preview")
 	STR_MENU("&Preview changes")
@@ -261,7 +239,6 @@ struct tool_translation_assistant_preview : public tool_translation_assistant_va
 	}
 };
 
-/// Move to the next line without committing changes.
 struct tool_translation_assistant_next : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/next")
 	STR_MENU("&Next Line")
@@ -273,7 +250,6 @@ struct tool_translation_assistant_next : public tool_translation_assistant_valid
 	}
 };
 
-/// Move to the previous line without committing changes.
 struct tool_translation_assistant_prev : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/prev")
 	STR_MENU("&Previous Line")
@@ -286,7 +262,6 @@ struct tool_translation_assistant_prev : public tool_translation_assistant_valid
 };
 }
 
-/// Insert the untranslated text.
 struct tool_translation_assistant_insert : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/insert_original")
 	STR_MENU("&Insert Original")
@@ -297,7 +272,6 @@ struct tool_translation_assistant_insert : public tool_translation_assistant_val
 		c->dialog->Get<DialogTranslation>()->InsertOriginal();
 	}
 };
-/// @}
 
 namespace cmd {
 	void init_tool() {

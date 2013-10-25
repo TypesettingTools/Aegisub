@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file video.cpp
-/// @brief video/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -74,8 +69,6 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-video Video commands.
-/// @{
 
 struct validator_video_loaded : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
@@ -91,7 +84,6 @@ struct validator_video_attached : public Command {
 	}
 };
 
-/// Forces video to 2.35 aspect ratio.
 struct video_aspect_cinematic : public validator_video_loaded {
 	CMD_NAME("video/aspect/cinematic")
 	STR_MENU("&Cinematic (2.35)")
@@ -110,7 +102,6 @@ struct video_aspect_cinematic : public validator_video_loaded {
 	}
 };
 
-/// Forces video to a custom aspect ratio.
 struct video_aspect_custom : public validator_video_loaded {
 	CMD_NAME("video/aspect/custom")
 	STR_MENU("C&ustom...")
@@ -154,7 +145,6 @@ struct video_aspect_custom : public validator_video_loaded {
 	}
 };
 
-/// Leave video on original aspect ratio.
 struct video_aspect_default : public validator_video_loaded {
 	CMD_NAME("video/aspect/default")
 	STR_MENU("&Default")
@@ -173,7 +163,6 @@ struct video_aspect_default : public validator_video_loaded {
 	}
 };
 
-/// Forces video to 4:3 aspect ratio.
 struct video_aspect_full : public validator_video_loaded {
 	CMD_NAME("video/aspect/full")
 	STR_MENU("&Fullscreen (4:3)")
@@ -192,7 +181,6 @@ struct video_aspect_full : public validator_video_loaded {
 	}
 };
 
-/// Forces video to 16:9 aspect ratio.
 struct video_aspect_wide : public validator_video_loaded {
 	CMD_NAME("video/aspect/wide")
 	STR_MENU("&Widescreen (16:9)")
@@ -211,7 +199,6 @@ struct video_aspect_wide : public validator_video_loaded {
 	}
 };
 
-/// Closes the currently open video file.
 struct video_close : public validator_video_loaded {
 	CMD_NAME("video/close")
 	STR_MENU("&Close Video")
@@ -223,7 +210,6 @@ struct video_close : public validator_video_loaded {
 	}
 };
 
-/// Copy the current coordinates of the mouse over the video to the clipboard.
 struct video_copy_coordinates : public validator_video_loaded {
 	CMD_NAME("video/copy_coordinates")
 	STR_MENU("Copy coordinates to Clipboard")
@@ -254,7 +240,6 @@ struct video_cycle_subtitles_provider : public cmd::Command {
 	}
 };
 
-/// Detach video, displaying it in a separate Window.
 struct video_detach : public validator_video_loaded {
 	CMD_NAME("video/detach")
 	STR_MENU("&Detach Video")
@@ -274,7 +259,6 @@ struct video_detach : public validator_video_loaded {
 	}
 };
 
-/// Shows video details.
 struct video_details : public validator_video_loaded {
 	CMD_NAME("video/details")
 	STR_MENU("Show &Video Details")
@@ -287,7 +271,6 @@ struct video_details : public validator_video_loaded {
 	}
 };
 
-/// Toggle focus between the video slider and other things
 struct video_focus_seek : public validator_video_loaded {
 	CMD_NAME("video/focus_seek")
 	STR_MENU("Toggle video slider focus")
@@ -306,7 +289,6 @@ struct video_focus_seek : public validator_video_loaded {
 	}
 };
 
-/// Copy the current video frame to the clipboard, with subtitles
 struct video_frame_copy : public validator_video_loaded {
 	CMD_NAME("video/frame/copy")
 	STR_MENU("Copy image to Clipboard")
@@ -318,7 +300,6 @@ struct video_frame_copy : public validator_video_loaded {
 	}
 };
 
-/// Copy the current video frame to the clipboard, without subtitles
 struct video_frame_copy_raw : public validator_video_loaded {
 	CMD_NAME("video/frame/copy/raw")
 	STR_MENU("Copy image to Clipboard (no subtitles)")
@@ -330,7 +311,6 @@ struct video_frame_copy_raw : public validator_video_loaded {
 	}
 };
 
-/// Seek to the next frame.
 struct video_frame_next : public validator_video_loaded {
 	CMD_NAME("video/frame/next")
 	STR_MENU("Next Frame")
@@ -342,7 +322,6 @@ struct video_frame_next : public validator_video_loaded {
 	}
 };
 
-/// Seek to the next subtitle boundary.
 struct video_frame_next_boundary : public validator_video_loaded {
 	CMD_NAME("video/frame/next/boundary")
 	STR_MENU("Next Boundary")
@@ -372,7 +351,6 @@ struct video_frame_next_boundary : public validator_video_loaded {
 	}
 };
 
-/// Seek to the next keyframe.
 struct video_frame_next_keyframe : public validator_video_loaded {
 	CMD_NAME("video/frame/next/keyframe")
 	STR_MENU("Next Keyframe")
@@ -387,7 +365,6 @@ struct video_frame_next_keyframe : public validator_video_loaded {
 	}
 };
 
-/// Fast jump forward
 struct video_frame_next_large : public validator_video_loaded {
 	CMD_NAME("video/frame/next/large")
 	STR_MENU("Fast jump forward")
@@ -401,7 +378,6 @@ struct video_frame_next_large : public validator_video_loaded {
 	}
 };
 
-/// Seek to the previous frame.
 struct video_frame_prev : public validator_video_loaded {
 	CMD_NAME("video/frame/prev")
 	STR_MENU("Previous Frame")
@@ -413,7 +389,6 @@ struct video_frame_prev : public validator_video_loaded {
 	}
 };
 
-/// Seek to the previous subtitle boundary.
 struct video_frame_prev_boundary : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/boundary")
 	STR_MENU("Previous Boundary")
@@ -443,7 +418,6 @@ struct video_frame_prev_boundary : public validator_video_loaded {
 	}
 };
 
-/// Seek to the previous keyframe.
 struct video_frame_prev_keyframe : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/keyframe")
 	STR_MENU("Previous Keyframe")
@@ -466,7 +440,6 @@ struct video_frame_prev_keyframe : public validator_video_loaded {
 	}
 };
 
-/// Fast jump backwards
 struct video_frame_prev_large : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/large")
 	STR_MENU("Fast jump backwards")
@@ -518,7 +491,6 @@ static void save_snapshot(agi::Context *c, bool raw) {
 	GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN(), raw)).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
 }
 
-/// Save the current video frame, with subtitles (if any)
 struct video_frame_save : public validator_video_loaded {
 	CMD_NAME("video/frame/save")
 	STR_MENU("Save PNG snapshot")
@@ -530,7 +502,6 @@ struct video_frame_save : public validator_video_loaded {
 	}
 };
 
-/// Save the current video frame, without subtitles
 struct video_frame_save_raw : public validator_video_loaded {
 	CMD_NAME("video/frame/save/raw")
 	STR_MENU("Save PNG snapshot (no subtitles)")
@@ -542,7 +513,6 @@ struct video_frame_save_raw : public validator_video_loaded {
 	}
 };
 
-/// Jump to frame or time.
 struct video_jump : public validator_video_loaded {
 	CMD_NAME("video/jump")
 	STR_MENU("&Jump to...")
@@ -558,7 +528,6 @@ struct video_jump : public validator_video_loaded {
 	}
 };
 
-/// Jumps the video to the end frame of current subtitle.
 struct video_jump_end : public validator_video_loaded {
 	CMD_NAME("video/jump/end")
 	STR_MENU("Jump Video to &End")
@@ -572,7 +541,6 @@ struct video_jump_end : public validator_video_loaded {
 	}
 };
 
-/// Jumps the video to the start frame of current subtitle.
 struct video_jump_start : public validator_video_loaded {
 	CMD_NAME("video/jump/start")
 	STR_MENU("Jump Video to &Start")
@@ -585,7 +553,6 @@ struct video_jump_start : public validator_video_loaded {
 	}
 };
 
-/// Opens a video file.
 struct video_open : public Command {
 	CMD_NAME("video/open")
 	STR_MENU("&Open Video...")
@@ -601,7 +568,6 @@ struct video_open : public Command {
 	}
 };
 
-/// Opens a video clip with solid colour.
 struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
 	STR_MENU("&Use Dummy Video...")
@@ -615,7 +581,6 @@ struct video_open_dummy : public Command {
 	}
 };
 
-/// Toggle autoscrolling video when the active line changes
 struct video_opt_autoscroll : public Command {
 	CMD_NAME("video/opt/autoscroll")
 	STR_MENU("Toggle autoscroll of video")
@@ -632,7 +597,6 @@ struct video_opt_autoscroll : public Command {
 	}
 };
 
-/// Play video.
 struct video_play : public validator_video_loaded {
 	CMD_NAME("video/play")
 	STR_MENU("Play")
@@ -644,7 +608,6 @@ struct video_play : public validator_video_loaded {
 	}
 };
 
-/// Play video for the active line.
 struct video_play_line : public validator_video_loaded {
 	CMD_NAME("video/play/line")
 	STR_MENU("Play line")
@@ -656,7 +619,6 @@ struct video_play_line : public validator_video_loaded {
 	}
 };
 
-/// Show a mask over the video.
 struct video_show_overscan : public validator_video_loaded {
 	CMD_NAME("video/show_overscan")
 	STR_MENU("Show &Overscan Mask")
@@ -674,7 +636,6 @@ struct video_show_overscan : public validator_video_loaded {
 	}
 };
 
-/// Set zoom to 100%.
 class video_zoom_100: public validator_video_attached {
 public:
 	CMD_NAME("video/zoom/100")
@@ -693,7 +654,6 @@ public:
 	}
 };
 
-/// Stop video playback
 class video_stop: public validator_video_loaded {
 public:
 	CMD_NAME("video/stop")
@@ -706,7 +666,6 @@ public:
 	}
 };
 
-/// Set zoom to 200%.
 class video_zoom_200: public validator_video_attached {
 public:
 	CMD_NAME("video/zoom/200")
@@ -725,7 +684,6 @@ public:
 	}
 };
 
-/// Set zoom to 50%.
 class video_zoom_50: public validator_video_attached {
 public:
 	CMD_NAME("video/zoom/50")
@@ -744,7 +702,6 @@ public:
 	}
 };
 
-/// Zoom video in.
 struct video_zoom_in : public validator_video_attached {
 	CMD_NAME("video/zoom/in")
 	STR_MENU("Zoom In")
@@ -756,7 +713,6 @@ struct video_zoom_in : public validator_video_attached {
 	}
 };
 
-/// Zoom video out.
 struct video_zoom_out : public validator_video_attached {
 	CMD_NAME("video/zoom/out")
 	STR_MENU("Zoom Out")
@@ -768,8 +724,6 @@ struct video_zoom_out : public validator_video_attached {
 	}
 };
 }
-
-/// @}
 
 namespace cmd {
 	void init_video() {

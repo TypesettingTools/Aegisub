@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file recent.cpp
-/// @brief recent/ commands, rebuild MRU-based lists.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -51,8 +46,6 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-recent MRU (Most Recently Used) commands.
-/// @{
 
 COMMAND_GROUP(recent_audio,     "recent/audio",     _("Recent"), _("Recent"), _("Open recent audio"));
 COMMAND_GROUP(recent_keyframes, "recent/keyframe",  _("Recent"), _("Recent"), _("Open recent keyframes"));
@@ -122,8 +115,6 @@ struct recent_video_entry : public Command {
 	}
 };
 
-/// @class mru_wrapper
-/// @brief Wrapper class for mru commands to
 template<class T>
 class mru_wrapper : public T {
 	int id;
@@ -136,7 +127,6 @@ public:
 	mru_wrapper(int id) : id(id) , full_name(T::name() + std::to_string(id)) { }
 };
 }
-/// @}
 
 namespace cmd {
 	void init_recent() {
@@ -146,7 +136,6 @@ namespace cmd {
 		reg(agi::util::make_unique<recent_timecodes>());
 		reg(agi::util::make_unique<recent_video>());
 
-		/// @todo 16 is an implementation detail that maybe needs to be exposed
 		for (int i = 0; i < 16; ++i) {
 			reg(agi::util::make_unique<mru_wrapper<recent_audio_entry>>(i));
 			reg(agi::util::make_unique<mru_wrapper<recent_keyframes_entry>>(i));

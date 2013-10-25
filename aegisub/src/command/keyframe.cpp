@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file keyframe.cpp
-/// @brief keyframe/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -47,10 +42,7 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-keyframed Keyframe commands.
-/// @{
 
-/// Closes the currently open keyframes list.
 struct keyframe_close : public Command {
 	CMD_NAME("keyframe/close")
 	STR_MENU("Close Keyframes")
@@ -67,7 +59,6 @@ struct keyframe_close : public Command {
 	}
 };
 
-/// Opens a keyframe list file.
 struct keyframe_open : public Command {
 	CMD_NAME("keyframe/open")
 	STR_MENU("Open Keyframes...")
@@ -86,7 +77,6 @@ struct keyframe_open : public Command {
 	}
 };
 
-/// Saves the current keyframe list.
 struct keyframe_save : public Command {
 	CMD_NAME("keyframe/save")
 	STR_MENU("Save Keyframes...")
@@ -105,7 +95,6 @@ struct keyframe_save : public Command {
 	}
 };
 }
-/// @}
 
 namespace cmd {
 	void init_keyframe() {

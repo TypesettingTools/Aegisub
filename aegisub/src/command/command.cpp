@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file command.cpp
-/// @brief Command system base file.
-/// @ingroup command
-
 #include "command.h"
 
 #include "icon.h"

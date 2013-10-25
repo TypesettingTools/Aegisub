@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file edit.cpp
-/// @brief edit/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -76,8 +71,6 @@
 namespace {
 	using namespace boost::adaptors;
 	using cmd::Command;
-/// @defgroup cmd-edit Editing commands.
-/// @{
 
 struct validate_sel_nonempty : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
@@ -165,7 +158,6 @@ T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T ini
 	return initial;
 }
 
-/// Get the block index in the text of the position
 int block_at_pos(std::string const& text, int pos) {
 	int n = 0;
 	int max = text.size() - 1;
@@ -446,7 +438,6 @@ struct edit_font : public Command {
 	}
 };
 
-/// Find and replace words in subtitles.
 struct edit_find_replace : public Command {
 	CMD_NAME("edit/find_replace")
 	STR_MENU("Find and R&eplace...")
@@ -510,7 +501,6 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	c->selectionController->SetSelectionAndActive(sel, new_active);
 }
 
-/// Copy subtitles.
 struct edit_line_copy : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
 	STR_MENU("&Copy Lines")
@@ -533,7 +523,6 @@ struct edit_line_copy : public validate_sel_nonempty {
 	}
 };
 
-/// Cut subtitles.
 struct edit_line_cut: public validate_sel_nonempty {
 	CMD_NAME("edit/line/cut")
 	STR_MENU("Cu&t Lines")
@@ -550,7 +539,6 @@ struct edit_line_cut: public validate_sel_nonempty {
 	}
 };
 
-/// Delete currently selected lines.
 struct edit_line_delete : public validate_sel_nonempty {
 	CMD_NAME("edit/line/delete")
 	STR_MENU("De&lete Lines")
@@ -611,7 +599,6 @@ static void duplicate_lines(agi::Context *c, Func&& shift) {
 	c->selectionController->SetSelectionAndActive(new_sel, new_active);
 }
 
-/// Duplicate the selected lines.
 struct edit_line_duplicate : public validate_sel_nonempty {
 	CMD_NAME("edit/line/duplicate")
 	STR_MENU("&Duplicate Lines")
@@ -623,7 +610,6 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 	}
 };
 
-/// Duplicate lines and shift by one frame.
 struct edit_line_duplicate_shift : public Command {
 	CMD_NAME("edit/line/duplicate/shift")
 	STR_MENU("D&uplicate and Shift by 1 Frame")
@@ -698,7 +684,6 @@ static void combine_concat(AssDialogue *first, AssDialogue *second) {
 
 static void combine_drop(AssDialogue *, AssDialogue *) { }
 
-/// Joins selected lines in a single one, as karaoke.
 struct edit_line_join_as_karaoke : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/as_karaoke")
 	STR_MENU("As &Karaoke")
@@ -710,8 +695,6 @@ struct edit_line_join_as_karaoke : public validate_sel_multiple {
 	}
 };
 
-
-/// Joins selected lines in a single one, concatenating text together.
 struct edit_line_join_concatenate : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/concatenate")
 	STR_MENU("&Concatenate")
@@ -723,8 +706,6 @@ struct edit_line_join_concatenate : public validate_sel_multiple {
 	}
 };
 
-
-/// Joins selected lines in a single one, keeping text of first and discarding remaining.
 struct edit_line_join_keep_first : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/keep_first")
 	STR_MENU("Keep &First")
@@ -767,7 +748,6 @@ static bool try_paste_lines(agi::Context *c) {
 	return true;
 }
 
-/// Paste subtitles.
 struct edit_line_paste : public Command {
 	CMD_NAME("edit/line/paste")
 	STR_MENU("&Paste Lines")
@@ -799,7 +779,6 @@ struct edit_line_paste : public Command {
 	}
 };
 
-/// Paste subtitles over others.
 struct edit_line_paste_over : public Command {
 	CMD_NAME("edit/line/paste/over")
 	STR_MENU("Paste Lines &Over...")
@@ -892,7 +871,6 @@ bool check_end(AssDialogue *d1, AssDialogue *d2) {
 
 }
 
-/// Recombine subtitles when they have been split and merged.
 struct edit_line_recombine : public validate_sel_multiple {
 	CMD_NAME("edit/line/recombine")
 	STR_MENU("Recom&bine Lines")
@@ -968,8 +946,6 @@ struct edit_line_recombine : public validate_sel_multiple {
 	}
 };
 
-
-/// Uses karaoke timing to split line into multiple smaller lines.
 struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	CMD_NAME("edit/line/split/by_karaoke")
 	STR_MENU("Split Lines (by karaoke)")
@@ -1022,7 +998,6 @@ struct edit_line_split_preserve : public validate_sel_nonempty {
 	}
 };
 
-/// Redoes last action.
 struct edit_redo : public Command {
 	CMD_NAME("edit/redo")
 	STR_HELP("Redo last undone action")
@@ -1048,7 +1023,6 @@ struct edit_redo : public Command {
 	}
 };
 
-/// Undoes last action.
 struct edit_undo : public Command {
 	CMD_NAME("edit/undo")
 	STR_HELP("Undo last action")
@@ -1135,7 +1109,6 @@ struct edit_insert_original : public Command {
 };
 
 }
-/// @}
 
 namespace cmd {
 	void init_edit() {

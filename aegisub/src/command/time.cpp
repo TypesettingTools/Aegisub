@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file time.cpp
-/// @brief time/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -83,9 +78,6 @@ namespace {
 		}
 	};
 
-/// @defgroup cmd-time Time manipulation commands.
-/// @{
-
 static void adjoin_lines(agi::Context *c, bool set_start) {
 	auto sel = c->selectionController->GetSelectedSet();
 	AssDialogue *prev = nullptr;
@@ -114,7 +106,6 @@ static void adjoin_lines(agi::Context *c, bool set_start) {
 	c->ass->Commit(_("adjoin"), AssFile::COMMIT_DIAG_TIME);
 }
 
-/// Changes times of subs so end times begin on next's start time.
 struct time_continuous_end : public validate_adjoinable {
 	CMD_NAME("time/continuous/end")
 	STR_MENU("Change &End")
@@ -126,7 +117,6 @@ struct time_continuous_end : public validate_adjoinable {
 	}
 };
 
-/// Changes times of subs so start times begin on previous's end time.
 struct time_continuous_start : public validate_adjoinable {
 	CMD_NAME("time/continuous/start")
 	STR_MENU("Change &Start")
@@ -138,8 +128,6 @@ struct time_continuous_start : public validate_adjoinable {
 	}
 };
 
-
-/// Shift selection so that the active line starts at current frame.
 struct time_frame_current : public validate_video_loaded {
 	CMD_NAME("time/frame/current")
 	STR_MENU("Shift to &Current Frame")
@@ -166,8 +154,6 @@ struct time_frame_current : public validate_video_loaded {
 	}
 };
 
-
-/// Shift subtitles by time or frames.
 struct time_shift : public Command {
 	CMD_NAME("time/shift")
 	STR_MENU("S&hift Times...")
@@ -197,7 +183,6 @@ static void snap_subs_video(agi::Context *c, bool set_start) {
 	c->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
 }
 
-/// Set end of selected subtitles to current video frame.
 struct time_snap_end_video : public validate_video_loaded {
 	CMD_NAME("time/snap/end_video")
 	STR_MENU("Snap &End to Video")
@@ -209,7 +194,6 @@ struct time_snap_end_video : public validate_video_loaded {
 	}
 };
 
-/// Set start and end of subtitles to the keyframes around current video frame.
 struct time_snap_scene : public validate_video_loaded {
 	CMD_NAME("time/snap/scene")
 	STR_MENU("Snap to S&cene")
@@ -356,7 +340,6 @@ struct time_start_decrease : public Command {
 	}
 };
 
-/// Set start of selected subtitles to current video frame.
 struct time_snap_start_video : public validate_video_loaded {
 	CMD_NAME("time/snap/start_video")
 	STR_MENU("Snap &Start to Video")
@@ -368,7 +351,6 @@ struct time_snap_start_video : public validate_video_loaded {
 	}
 };
 
-/// Switch to the next timeable thing (line or syllable)
 struct time_next : public Command {
 	CMD_NAME("time/next")
 	STR_MENU("Next Line")
@@ -380,7 +362,6 @@ struct time_next : public Command {
 	}
 };
 
-/// Switch to the previous timeable thing (line or syllable)
 struct time_prev : public Command {
 	CMD_NAME("time/prev")
 	STR_MENU("Previous Line")
@@ -392,8 +373,6 @@ struct time_prev : public Command {
 	}
 };
 }
-
-/// @}
 
 namespace cmd {
 	void init_time() {

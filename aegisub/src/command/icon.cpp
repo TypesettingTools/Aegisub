@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file icon.h
-/// @brief Icon for commands.
-/// @ingroup command
-
 #include "../config.h"
 
 #include "icon.h"

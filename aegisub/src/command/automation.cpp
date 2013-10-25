@@ -29,13 +29,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file automation.cpp
-/// @brief am/ (automation) commands
-/// @ingroup command
-///
-
 #include "../config.h"
-
 
 #include "command.h"
 
@@ -53,8 +47,6 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-am Automation commands
-/// @{
 
 struct reload_all : public Command {
 	CMD_NAME("am/reload")
@@ -110,7 +102,6 @@ struct meta : public Command {
 	}
 };
 
-/// @}
 }
 
 namespace cmd {

@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file help.cpp
-/// @brief help/ commands
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -49,10 +44,7 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-help Help commands.
-/// @{
 
-/// Visit Aegisub's bug tracker.
 struct help_bugs : public Command {
 	CMD_NAME("help/bugs")
 	STR_MENU("&Bug Tracker...")
@@ -73,8 +65,6 @@ struct help_bugs : public Command {
 	}
 };
 
-
-/// Help topics.
 struct help_contents : public Command {
 	CMD_NAME("help/contents")
 	STR_MENU("&Contents")
@@ -87,7 +77,6 @@ struct help_contents : public Command {
 };
 
 #ifdef __WXMAC__
-/// Resource files.
 struct help_files : public Command {
 	CMD_NAME("help/files")
 	STR_MENU("All Fil&es")
@@ -100,7 +89,6 @@ struct help_files : public Command {
 };
 #endif
 
-/// Visit Aegisub's forums.
 struct help_forums : public Command {
 	CMD_NAME("help/forums")
 	STR_MENU("&Forums")
@@ -112,8 +100,6 @@ struct help_forums : public Command {
 	}
 };
 
-
-/// Visit Aegisub's official IRC channel.
 struct help_irc : public Command {
 	CMD_NAME("help/irc")
 	STR_MENU("&IRC Channel")
@@ -125,7 +111,6 @@ struct help_irc : public Command {
 	}
 };
 
-/// Open the manual page for Visual Typesetting.
 struct help_video : public Command {
 	CMD_NAME("help/video")
 	STR_MENU("&Visual Typesetting")
@@ -137,7 +122,6 @@ struct help_video : public Command {
 	}
 };
 
-/// Visit Aegisub's official website.
 struct help_website : public Command {
 	CMD_NAME("help/website")
 	STR_MENU("&Website")
@@ -149,7 +133,6 @@ struct help_website : public Command {
 	}
 };
 }
-/// @}
 
 namespace cmd {
 	void init_help() {

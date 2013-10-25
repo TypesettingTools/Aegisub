@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file vis_tool.cpp
-/// @brief Visual typesetting tools commands
-/// @ingroup command visual_ui
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -39,8 +34,6 @@
 
 namespace {
 	using cmd::Command;
-	/// @defgroup cmd-visual Visual typesetting tools commands
-	/// @{
 
 	template<class T>
 	struct visual_tool_command : public Command {
@@ -108,8 +101,6 @@ namespace {
 		STR_HELP("Clip subtitles to a vectorial area")
 	};
 }
-
-/// @}
 
 namespace cmd {
 	void init_visual_tools() {

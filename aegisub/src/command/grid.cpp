@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file grid.cpp
-/// @brief grid/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -51,10 +46,7 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-grid Subtitle grid commands.
-/// @{
 
-/// Move to the next subtitle line.
 struct grid_line_next : public Command {
 	CMD_NAME("grid/line/next")
 	STR_MENU("Next Line")
@@ -66,7 +58,6 @@ struct grid_line_next : public Command {
 	}
 };
 
-/// Move to the next subtitle line, creating it if needed
 struct grid_line_next_create : public Command {
 	CMD_NAME("grid/line/next/create")
 	STR_MENU("Next Line")
@@ -94,7 +85,6 @@ struct grid_line_next_create : public Command {
 	}
 };
 
-/// Move to the previous line.
 struct grid_line_prev : public Command {
 	CMD_NAME("grid/line/prev")
 	STR_MENU("Previous Line")
@@ -106,7 +96,6 @@ struct grid_line_prev : public Command {
 	}
 };
 
-/// Sort all subtitles by their actor names
 struct grid_sort_actor : public Command {
 	CMD_NAME("grid/sort/actor")
 	STR_MENU("&Actor Name")
@@ -127,7 +116,6 @@ struct validate_sel_multiple : public Command {
 	}
 };
 
-/// Sort all selected subtitles by their actor names
 struct grid_sort_actor_selected : public validate_sel_multiple {
 	CMD_NAME("grid/sort/actor/selected")
 	STR_MENU("&Actor Name")
@@ -140,7 +128,6 @@ struct grid_sort_actor_selected : public validate_sel_multiple {
 	}
 };
 
-/// Sort all subtitles by their effects
 struct grid_sort_effect : public Command {
 	CMD_NAME("grid/sort/effect")
 	STR_MENU("&Effect")
@@ -153,7 +140,6 @@ struct grid_sort_effect : public Command {
 	}
 };
 
-/// Sort all selected subtitles by their effects
 struct grid_sort_effect_selected : public validate_sel_multiple {
 	CMD_NAME("grid/sort/effect/selected")
 	STR_MENU("&Effect")
@@ -166,7 +152,6 @@ struct grid_sort_effect_selected : public validate_sel_multiple {
 	}
 };
 
-/// Sort all subtitles by their end times.
 struct grid_sort_end : public Command {
 	CMD_NAME("grid/sort/end")
 	STR_MENU("&End Time")
@@ -179,7 +164,6 @@ struct grid_sort_end : public Command {
 	}
 };
 
-/// Sort all selected subtitles by their end times.
 struct grid_sort_end_selected : public validate_sel_multiple {
 	CMD_NAME("grid/sort/end/selected")
 	STR_MENU("&End Time")
@@ -192,7 +176,6 @@ struct grid_sort_end_selected : public validate_sel_multiple {
 	}
 };
 
-/// Sort all subtitles by their layer number.
 struct grid_sort_layer : public Command {
 	CMD_NAME("grid/sort/layer")
 	STR_MENU("&Layer")
@@ -205,7 +188,6 @@ struct grid_sort_layer : public Command {
 	}
 };
 
-/// Sort all selected subtitles by their layer number.
 struct grid_sort_layer_selected : public validate_sel_multiple {
 	CMD_NAME("grid/sort/layer/selected")
 	STR_MENU("&Layer")
@@ -218,7 +200,6 @@ struct grid_sort_layer_selected : public validate_sel_multiple {
 	}
 };
 
-/// Sort all subtitles by their start times.
 struct grid_sort_start : public Command {
 	CMD_NAME("grid/sort/start")
 	STR_MENU("&Start Time")
@@ -231,7 +212,6 @@ struct grid_sort_start : public Command {
 	}
 };
 
-/// Sort all selected subtitles by their start times.
 struct grid_sort_start_selected : public validate_sel_multiple {
 	CMD_NAME("grid/sort/start/selected")
 	STR_MENU("&Start Time")
@@ -244,7 +224,6 @@ struct grid_sort_start_selected : public validate_sel_multiple {
 	}
 };
 
-/// Sort all subtitles by their style names
 struct grid_sort_style : public Command {
 	CMD_NAME("grid/sort/style")
 	STR_MENU("St&yle Name")
@@ -257,7 +236,6 @@ struct grid_sort_style : public Command {
 	}
 };
 
-/// Sort all selected subtitles by their style names
 struct grid_sort_style_selected : public validate_sel_multiple {
 	CMD_NAME("grid/sort/style/selected")
 	STR_MENU("St&yle Name")
@@ -270,7 +248,6 @@ struct grid_sort_style_selected : public validate_sel_multiple {
 	}
 };
 
-/// Cycle through tag hiding modes.
 struct grid_tag_cycle_hiding : public Command {
 	CMD_NAME("grid/tag/cycle_hiding")
 	STR_MENU("Cycle Tag Hiding Mode")
@@ -295,8 +272,6 @@ struct grid_tag_cycle_hiding : public Command {
 	}
 };
 
-
-/// Hide override tags in the subtitle grid.
 struct grid_tags_hide : public Command {
 	CMD_NAME("grid/tags/hide")
 	STR_MENU("&Hide Tags")
@@ -313,8 +288,6 @@ struct grid_tags_hide : public Command {
 	}
 };
 
-
-/// Show full override tags in the subtitle grid.
 struct grid_tags_show : public Command {
 	CMD_NAME("grid/tags/show")
 	STR_MENU("Sh&ow Tags")
@@ -331,8 +304,6 @@ struct grid_tags_show : public Command {
 	}
 };
 
-
-/// Replace override tags in the subtitle grid with a simplified placeholder.
 struct grid_tags_simplify : public Command {
 	CMD_NAME("grid/tags/simplify")
 	STR_MENU("S&implify Tags")
@@ -370,7 +341,6 @@ static bool move_one(T begin, T end, U const& to_move, int step) {
 	return move_count > 0;
 }
 
-/// Move the selected lines up one row
 struct grid_move_up : public Command {
 	CMD_NAME("grid/move/up")
 	STR_MENU("Move line up")
@@ -388,7 +358,6 @@ struct grid_move_up : public Command {
 	}
 };
 
-/// Move the selected lines down one row
 struct grid_move_down : public Command {
 	CMD_NAME("grid/move/down")
 	STR_MENU("Move line down")
@@ -406,7 +375,6 @@ struct grid_move_down : public Command {
 	}
 };
 
-/// Swaps the two selected lines.
 struct grid_swap : public Command {
 	CMD_NAME("grid/swap")
 	STR_MENU("Swap Lines")
@@ -428,7 +396,6 @@ struct grid_swap : public Command {
 };
 
 }
-/// @}
 
 namespace cmd {
 	void init_grid() {

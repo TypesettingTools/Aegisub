@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file app.cpp
-/// @brief app/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include <wx/msgdlg.h>
@@ -61,10 +56,6 @@
 namespace {
 	using cmd::Command;
 
-/// @defgroup cmd-app Application related
-/// @{
-
-/// Launch about dialogue.
 struct app_about : public Command {
 	CMD_NAME("app/about")
 	STR_MENU("&About")
@@ -76,8 +67,6 @@ struct app_about : public Command {
 	}
 };
 
-
-/// Display audio and subtitles.
 struct app_display_audio_subs : public Command {
 	CMD_NAME("app/display/audio_subs")
 	STR_MENU("&Audio+Subs View")
@@ -98,8 +87,6 @@ struct app_display_audio_subs : public Command {
 	}
 };
 
-
-/// Display audio, video and subtitles.
 struct app_display_full : public Command {
 	CMD_NAME("app/display/full")
 	STR_MENU("&Full view")
@@ -120,8 +107,6 @@ struct app_display_full : public Command {
 	}
 };
 
-
-/// Display subtitles only.
 struct app_display_subs : public Command {
 	CMD_NAME("app/display/subs")
 	STR_MENU("S&ubs Only View")
@@ -138,8 +123,6 @@ struct app_display_subs : public Command {
 	}
 };
 
-
-/// Display video and subtitles only.
 struct app_display_video_subs : public Command {
 	CMD_NAME("app/display/video_subs")
 	STR_MENU("&Video+Subs View")
@@ -160,8 +143,6 @@ struct app_display_video_subs : public Command {
 	}
 };
 
-
-/// Exit the application.
 struct app_exit : public Command {
 	CMD_NAME("app/exit")
 	STR_MENU("E&xit")
@@ -173,8 +154,6 @@ struct app_exit : public Command {
 	}
 };
 
-
-/// Select Aegisub interface language
 struct app_language : public Command {
 	CMD_NAME("app/language")
 	STR_MENU("&Language...")
@@ -199,7 +178,6 @@ struct app_language : public Command {
 	}
 };
 
-/// Event log.
 struct app_log : public Command {
 	CMD_NAME("app/log")
 	STR_MENU("&Log window")
@@ -211,8 +189,6 @@ struct app_log : public Command {
 	}
 };
 
-
-/// Open a new application window.
 struct app_new_window : public Command {
 	CMD_NAME("app/new_window")
 	STR_MENU("New &Window")
@@ -224,8 +200,6 @@ struct app_new_window : public Command {
 	}
 };
 
-
-/// Configure Aegisub.
 struct app_options : public Command {
 	CMD_NAME("app/options")
 	STR_MENU("&Options...")
@@ -241,7 +215,6 @@ struct app_options : public Command {
 	}
 };
 
-/// Toggle global override hotkeys (aka medusa mode).
 struct app_toggle_global_hotkeys : public Command {
 	CMD_NAME("app/toggle/global_hotkeys")
 	STR_MENU("Toggle global hotkey overrides")
@@ -259,7 +232,6 @@ struct app_toggle_global_hotkeys : public Command {
 	}
 };
 
-/// Toggle the main toolbar
 struct app_toggle_toolbar : public Command {
 	CMD_NAME("app/toggle/toolbar")
 	STR_HELP("Toggle the main toolbar")
@@ -281,7 +253,6 @@ struct app_toggle_toolbar : public Command {
 	}
 };
 
-/// Check to see if there is a new version of Aegisub available.
 struct app_updates : public Command {
 	CMD_NAME("app/updates")
 	STR_MENU("&Check for Updates...")
@@ -293,7 +264,6 @@ struct app_updates : public Command {
 	}
 };
 
-/// @}
 }
 
 namespace cmd {

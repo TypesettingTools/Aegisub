@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subtitle.cpp
-/// @brief subtitle/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -65,8 +60,6 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-subtitle Subtitle commands.
-/// @{
 
 struct validate_nonempty_selection : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
@@ -82,7 +75,6 @@ struct validate_nonempty_selection_video_loaded : public Command {
 	}
 };
 
-/// Open the attachment list.
 struct subtitle_attachment : public Command {
 	CMD_NAME("subtitle/attachment")
 	STR_MENU("A&ttachments...")
@@ -95,8 +87,6 @@ struct subtitle_attachment : public Command {
 	}
 };
 
-
-/// Find words in subtitles.
 struct subtitle_find : public Command {
 	CMD_NAME("subtitle/find")
 	STR_MENU("&Find...")
@@ -109,7 +99,6 @@ struct subtitle_find : public Command {
 	}
 };
 
-/// Find next match of last word.
 struct subtitle_find_next : public Command {
 	CMD_NAME("subtitle/find/next")
 	STR_MENU("Find &Next")
@@ -141,7 +130,6 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	c->selectionController->SetSelectionAndActive(sel, def);
 }
 
-/// Inserts a line after current.
 struct subtitle_insert_after : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/after")
 	STR_MENU("&After Current")
@@ -178,7 +166,6 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 	}
 };
 
-/// Inserts a line after current, starting at video time.
 struct subtitle_insert_after_videotime : public validate_nonempty_selection_video_loaded {
 	CMD_NAME("subtitle/insert/after/videotime")
 	STR_MENU("After Current, at Video Time")
@@ -190,8 +177,6 @@ struct subtitle_insert_after_videotime : public validate_nonempty_selection_vide
 	}
 };
 
-
-/// Inserts a line before current.
 struct subtitle_insert_before : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/before")
 	STR_MENU("&Before Current")
@@ -225,8 +210,6 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 	}
 };
 
-
-/// Inserts a line before current, starting at video time.
 struct subtitle_insert_before_videotime : public validate_nonempty_selection_video_loaded {
 	CMD_NAME("subtitle/insert/before/videotime")
 	STR_MENU("Before Current, at Video Time")
@@ -238,8 +221,6 @@ struct subtitle_insert_before_videotime : public validate_nonempty_selection_vid
 	}
 };
 
-
-/// New subtitles.
 struct subtitle_new : public Command {
 	CMD_NAME("subtitle/new")
 	STR_MENU("&New Subtitles")
@@ -252,8 +233,6 @@ struct subtitle_new : public Command {
 	}
 };
 
-
-/// Opens a subtitles file.
 struct subtitle_open : public Command {
 	CMD_NAME("subtitle/open")
 	STR_MENU("&Open Subtitles...")
@@ -282,7 +261,6 @@ struct subtitle_open_autosave : public Command {
 	}
 };
 
-/// Opens a subtitles file with a specific charset.
 struct subtitle_open_charset : public Command {
 	CMD_NAME("subtitle/open/charset")
 	STR_MENU("Open Subtitles with &Charset...")
@@ -302,7 +280,6 @@ struct subtitle_open_charset : public Command {
 	}
 };
 
-/// Opens the subtitles from the current video file.
 struct subtitle_open_video : public Command {
 	CMD_NAME("subtitle/open/video")
 	STR_MENU("Open Subtitles from &Video")
@@ -320,8 +297,6 @@ struct subtitle_open_video : public Command {
 	}
 };
 
-
-/// Open script properties window.
 struct subtitle_properties : public Command {
 	CMD_NAME("subtitle/properties")
 	STR_MENU("&Properties...")
@@ -357,7 +332,6 @@ static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	}
 }
 
-/// Saves subtitles.
 struct subtitle_save : public Command {
 	CMD_NAME("subtitle/save")
 	STR_MENU("&Save Subtitles")
@@ -374,8 +348,6 @@ struct subtitle_save : public Command {
 	}
 };
 
-
-/// Saves subtitles with another name.
 struct subtitle_save_as : public Command {
 	CMD_NAME("subtitle/save/as")
 	STR_MENU("Save Subtitles &as...")
@@ -387,7 +359,6 @@ struct subtitle_save_as : public Command {
 	}
 };
 
-/// Selects all dialogue lines
 struct subtitle_select_all : public Command {
 	CMD_NAME("subtitle/select/all")
 	STR_MENU("Select &All")
@@ -403,7 +374,6 @@ struct subtitle_select_all : public Command {
 	}
 };
 
-/// Selects all lines that are currently visible on video frame.
 struct subtitle_select_visible : public Command {
 	CMD_NAME("subtitle/select/visible")
 	STR_MENU("Select Visible")
@@ -438,8 +408,6 @@ struct subtitle_select_visible : public Command {
 	}
 };
 
-
-/// Open spell checker.
 struct subtitle_spellcheck : public Command {
 	CMD_NAME("subtitle/spellcheck")
 	STR_MENU("Spell &Checker...")
@@ -452,8 +420,6 @@ struct subtitle_spellcheck : public Command {
 	}
 };
 }
-
-/// @}
 
 namespace cmd {
 	void init_subtitle() {

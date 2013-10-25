@@ -29,11 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file timecode.cpp
-/// @brief timecode/ commands.
-/// @ingroup command
-///
-
 #include "../config.h"
 
 #include "command.h"
@@ -47,10 +42,7 @@
 
 namespace {
 	using cmd::Command;
-/// @defgroup cmd-timecode Timecode commands.
-/// @{
 
-/// Closes the currently open timecodes file.
 struct timecode_close : public Command {
 	CMD_NAME("timecode/close")
 	STR_MENU("Close Timecodes File")
@@ -67,8 +59,6 @@ struct timecode_close : public Command {
 	}
 };
 
-
-/// Opens a VFR timecodes v1 or v2 file.
 struct timecode_open : public Command {
 	CMD_NAME("timecode/open")
 	STR_MENU("Open Timecodes File...")
@@ -83,7 +73,6 @@ struct timecode_open : public Command {
 	}
 };
 
-/// Saves a VFR timecodes v2 file.
 struct timecode_save : public Command {
 	CMD_NAME("timecode/save")
 	STR_MENU("Save Timecodes File...")
@@ -103,7 +92,6 @@ struct timecode_save : public Command {
 	}
 };
 }
-/// @}
 
 namespace cmd {
 	void init_timecode() {
