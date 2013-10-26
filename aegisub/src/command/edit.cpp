@@ -559,8 +559,7 @@ struct in_selection : public std::unary_function<AssEntry, bool> {
 	}
 };
 
-template<typename Func>
-static void duplicate_lines(agi::Context *c, Func&& shift) {
+static void duplicate_lines(agi::Context *c, int shift) {
 	in_selection sel(c->selectionController->GetSelectedSet());
 	SubtitleSelectionController::Selection new_sel;
 	AssDialogue *new_active = 0;
@@ -585,7 +584,15 @@ static void duplicate_lines(agi::Context *c, Func&& shift) {
 			new_sel.insert(new_diag);
 			if (!new_active)
 				new_active = new_diag;
-			shift(new_diag);
+
+			if (shift) {
+				int old_start = c->videoController->FrameAtTime(new_diag->Start, agi::vfr::START);
+				int old_end = c->videoController->FrameAtTime(new_diag->End, agi::vfr::END);
+				int dur = (old_end - old_start + 1) * shift;
+
+				new_diag->Start = c->videoController->TimeAtFrame(old_start + dur, agi::vfr::START);
+				new_diag->End = c->videoController->TimeAtFrame(old_end + dur, agi::vfr::END);
+			}
 		} while (start++ != last);
 
 		// Skip over the lines we just made
@@ -606,15 +613,15 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 	STR_HELP("Duplicate the selected lines")
 
 	void operator()(agi::Context *c) {
-		duplicate_lines(c, [](AssDialogue *){});
+		duplicate_lines(c, 0);
 	}
 };
 
 struct edit_line_duplicate_shift : public Command {
 	CMD_NAME("edit/line/duplicate/shift")
-	STR_MENU("D&uplicate and Shift by 1 Frame")
-	STR_DISP("Duplicate and Shift by 1 Frame")
-	STR_HELP("Duplicate lines and shift them to the frame after the original end frame")
+	STR_MENU("D&uplicate and Shift")
+	STR_DISP("Duplicate and Shift")
+	STR_HELP("Duplicate lines and shift them to start the frame after the original end frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
@@ -622,19 +629,15 @@ struct edit_line_duplicate_shift : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		duplicate_lines(c, [=](AssDialogue *new_diag) {
-			int pos = c->videoController->FrameAtTime(new_diag->End, agi::vfr::END) + 1;
-			new_diag->Start = c->videoController->TimeAtFrame(pos, agi::vfr::START);
-			new_diag->End = c->videoController->TimeAtFrame(pos, agi::vfr::END);
-		});
+		duplicate_lines(c, 1);
 	}
 };
 
 struct edit_line_duplicate_shift_back : public Command {
 	CMD_NAME("edit/line/duplicate/shift_back")
-	STR_MENU("Du&plicate and Shift by 1 Frame Backwards")
-	STR_DISP("Duplicate and Shift by 1 Frame Backwards")
-	STR_HELP("Duplicate selected lines and shift them to the frame before the original start frame")
+	STR_MENU("Du&plicate and Shift Backwards")
+	STR_DISP("Duplicate and Shift Backwards")
+	STR_HELP("Duplicate selected lines and shift them to end the frame before the original start frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
@@ -642,11 +645,7 @@ struct edit_line_duplicate_shift_back : public Command {
 	}
 
 	void operator()(agi::Context *c) {
-		duplicate_lines(c, [=](AssDialogue *new_diag) {
-			int pos = c->videoController->FrameAtTime(new_diag->Start, agi::vfr::START) - 1;
-			new_diag->Start = c->videoController->TimeAtFrame(pos, agi::vfr::START);
-			new_diag->End = c->videoController->TimeAtFrame(pos, agi::vfr::END);
-		});
+		duplicate_lines(c, -1);
 	}
 };
 
