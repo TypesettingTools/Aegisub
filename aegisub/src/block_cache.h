@@ -49,25 +49,18 @@
 /// requested blocks in to avoid the default allocator.
 template <typename BlockT>
 struct BasicDataBlockFactory {
+	typedef std::unique_ptr<BlockT> BlockType;
+
 	/// @brief Allocates a block and returns it
 	/// @param i Index of the block to allocate
 	/// @return A pointer to the allocated block
 	///
 	/// This default implementation does not use the i parameter. Custom implementations
 	/// of block factories should use i to determine what data to fill into the block.
-	BlockT *ProduceBlock(size_t i)
+	std::unique_ptr<BlockT> ProduceBlock(size_t i)
 	{
 		(void)i;
-		return new BlockT;
-	}
-
-	/// @brief De-allocate a block
-	/// @param block Pointer to the block to de-allocate
-	///
-	/// It is guaranteed that block was returned by ProduceBlock.
-	void DisposeBlock(BlockT *block)
-	{
-		delete block;
+		return std::unique_ptr<BlockT>(new BlockT);
 	}
 
 	/// @brief Retrieve the amount of memory consumed by a single block
@@ -94,9 +87,8 @@ template <
 	typename BlockFactoryT = BasicDataBlockFactory<BlockT>
 >
 class DataBlockCache {
-
 	/// Type of an array of blocks
-	typedef std::vector<BlockT*> BlockArray;
+	typedef std::vector<typename BlockFactoryT::BlockType> BlockArray;
 
 	struct MacroBlock {
 		/// This macroblock's position in the age list
@@ -105,6 +97,16 @@ class DataBlockCache {
 
 		/// The blocks contained in the macroblock
 		BlockArray blocks;
+
+#ifdef _MSC_VER
+		MacroBlock() { }
+		MacroBlock(MacroBlock&& rgt) : position(rgt.position), blocks(std::move(rgt.blocks)) { }
+		MacroBlock& operator=(MacroBlock&& rgt) {
+			position = rgt.position;
+			blocks = std::move(rgt.blocks);
+			return *this;
+		}
+#endif
 	};
 
 	/// Type of an array of macro blocks
@@ -135,17 +137,21 @@ class DataBlockCache {
 		if (mb.blocks.empty())
 			return;
 
-		for (auto block : mb.blocks)
-		{
-			if (block)
-				factory.DisposeBlock(block);
-		}
-
 		mb.blocks.clear();
 		age.erase(mb.position);
 	}
 
 public:
+#ifdef _MSC_VER
+		DataBlockCache(DataBlockCache&& rgt)
+		: data(std::move(rgt.data))
+		, age(std::move(rgt.age))
+		, macroblock_size(rgt.macroblock_size)
+		, macroblock_index_mask(rgt.macroblock_index_mask)
+		, factory(std::move(rgt.factory))
+		{ }
+#endif
+
 	/// @brief Constructor
 	/// @param block_count Total number of blocks the cache will manage
 	/// @param factory     Factory object to use for producing blocks
@@ -155,19 +161,9 @@ public:
 	///
 	/// The factory object passed must respond well to copying.
 	DataBlockCache(size_t block_count, BlockFactoryT factory = BlockFactoryT())
-		: factory(factory)
+	: factory(factory)
 	{
 		SetBlockCount(block_count);
-	}
-
-
-	/// @brief Destructor
-	///
-	/// Disposes of all cached blocks
-	~DataBlockCache()
-	{
-		// Clear all blocks by aging to zero bytes
-		Age(0);
 	}
 
 
@@ -184,7 +180,7 @@ public:
 
 		macroblock_index_mask = ~(((~0) >> MacroblockExponent) << MacroblockExponent);
 
-		data.resize( (block_count + macroblock_size - 1) >> MacroblockExponent );
+		data.resize((block_count + macroblock_size - 1) >> MacroblockExponent);
 	}
 
 
@@ -201,8 +197,10 @@ public:
 		// Quick way out: get rid of everything
 		if (max_size == 0)
 		{
-			for (auto& mb : data)
-				KillMacroBlock(mb);
+			size_t block_count = data.size();
+			data.clear();
+			SetBlockCount(block_count);
+			age.clear();
 			return;
 		}
 
@@ -212,14 +210,12 @@ public:
 		auto it = age.begin();
 		for (; it != age.end() && cur_size < max_size; ++it)
 		{
-			BlockArray &ba = (*it)->blocks;
+			auto& ba = (*it)->blocks;
 			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * block_size;
 		}
 		// Hit max, clear all remaining blocks
-		for (; it != age.end();)
-		{
+		for (; it != age.end(); )
 			KillMacroBlock(**it++);
-		}
 	}
 
 
@@ -229,21 +225,17 @@ public:
 	/// @return A pointer to the block in cache
 	///
 	/// It is legal to pass 0 (null) for created, in this case nothing is returned in it.
-	BlockT *Get(size_t i, bool *created = 0)
+	BlockT *Get(size_t i, bool *created = nullptr)
 	{
 		size_t mbi = i >> MacroblockExponent;
 		assert(mbi < data.size());
 
 		MacroBlock &mb = data[mbi];
 
-		if (mb.blocks.size() == 0)
-		{
+		if (mb.blocks.empty())
 			mb.blocks.resize(macroblock_size);
-		}
 		else
-		{
 			age.erase(mb.position);
-		}
 
 		// Move this macroblock to the front of the age list
 		age.push_front(&mb);
@@ -252,13 +244,13 @@ public:
 		size_t block_index = i & macroblock_index_mask;
 		assert(block_index < mb.blocks.size());
 
-		BlockT *b = mb.blocks[block_index];
+		BlockT *b = mb.blocks[block_index].get();
 
 		if (!b)
 		{
-			b = factory.ProduceBlock(i);
+			mb.blocks[block_index] = factory.ProduceBlock(i);
+			b = mb.blocks[block_index].get();
 			assert(b != 0);
-			mb.blocks[block_index] = b;
 
 			if (created) *created = true;
 		}

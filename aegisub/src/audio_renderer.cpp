@@ -31,19 +31,19 @@
 /// @brief Base classes for audio renderers (spectrum, waveform, ...)
 /// @ingroup audio_ui
 
-
-// Headers
 #include "config.h"
 
 #include "audio_renderer.h"
+
+#include "include/aegisub/audio_provider.h"
+
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <functional>
 
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
-
-#include "include/aegisub/audio_provider.h"
 
 using std::placeholders::_1;
 
@@ -53,14 +53,9 @@ AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(Aud
 	assert(renderer);
 }
 
-wxBitmap *AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */)
+std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */)
 {
-	return new wxBitmap(renderer->cache_bitmap_width, renderer->pixel_height, 24);
-}
-
-void AudioRendererBitmapCacheBitmapFactory::DisposeBlock(wxBitmap *bmp)
-{
-	delete bmp;
+	return agi::util::make_unique<wxBitmap>(renderer->cache_bitmap_width, renderer->pixel_height, 24);
 }
 
 size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
@@ -79,7 +74,8 @@ AudioRenderer::AudioRenderer()
 , renderer(0)
 , provider(0)
 {
-	bitmaps.resize(AudioStyle_MAX, AudioRendererBitmapCache(256, AudioRendererBitmapCacheBitmapFactory(this)));
+	for (int i = 0; i < AudioStyle_MAX; ++i)
+		bitmaps.emplace_back(256, AudioRendererBitmapCacheBitmapFactory(this));
 
 	// Make sure there's *some* values for those fields, and in the caches
 	SetMillisecondsPerPixel(1);

@@ -83,7 +83,7 @@ namespace Automation4 {
 		/// Commits to apply once processing completes successfully
 		std::deque<PendingCommit> pending_commits;
 		/// Lines to delete once processing complete successfully
-		std::deque<AssEntry*> lines_to_delete;
+		std::deque<std::unique_ptr<AssEntry>> lines_to_delete;
 
 		int ObjectIndexRead(lua_State *L);
 		void ObjectIndexWrite(lua_State *L);
@@ -101,7 +101,7 @@ namespace Automation4 {
 		void LuaSetUndoPoint(lua_State *L);
 
 		// LuaAssFile can only be deleted by the reference count hitting zero
-		~LuaAssFile() { }
+		~LuaAssFile();
 	public:
 		static LuaAssFile *GetObjPointer(lua_State *L, int idx);
 

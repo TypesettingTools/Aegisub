@@ -87,8 +87,9 @@ void AssFile::swap(AssFile &that) throw() {
 }
 
 AssFile::AssFile(const AssFile &from) {
-	Line.clone_from(from.Line, std::mem_fun_ref(&AssEntry::Clone), delete_ptr());
+	Line.clone_from(from.Line, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
 }
+
 AssFile& AssFile::operator=(AssFile from) {
 	std::swap(*this, from);
 	return *this;

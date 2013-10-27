@@ -307,7 +307,7 @@ namespace Automation4 {
 		std::string version;
 
 		std::vector<cmd::Command*> macros;
-		std::vector<ExportFilter*> filters;
+		std::vector<std::unique_ptr<ExportFilter>> filters;
 
 		/// load script and create internal structures etc.
 		void Create();
@@ -337,7 +337,7 @@ namespace Automation4 {
 		bool GetLoadedState() const { return L != 0; }
 
 		std::vector<cmd::Command*> GetMacros() const { return macros; }
-		std::vector<ExportFilter*> GetFilters() const { return filters; }
+		std::vector<ExportFilter*> GetFilters() const;
 		std::vector<SubtitleFormat*> GetFormats() const { return std::vector<SubtitleFormat*>(); }
 	};
 
@@ -492,10 +492,18 @@ namespace Automation4 {
 		for (int i = macros.size() - 1; i >= 0; --i)
 			cmd::unreg(macros[i]->name());
 
-		delete_clear(filters);
+		filters.clear();
 
 		lua_close(L);
 		L = nullptr;
+	}
+
+	std::vector<ExportFilter*> LuaScript::GetFilters() const
+	{
+		std::vector<ExportFilter *> ret;
+		ret.reserve(filters.size());
+		for (auto& filter : filters) ret.push_back(filter.get());
+		return ret;
 	}
 
 	void LuaScript::RegisterCommand(LuaCommand *command)
@@ -517,7 +525,7 @@ namespace Automation4 {
 
 	void LuaScript::RegisterFilter(LuaExportFilter *filter)
 	{
-		filters.push_back(filter);
+		filters.emplace_back(filter);
 	}
 
 	LuaScript* LuaScript::GetScriptObject(lua_State *L)

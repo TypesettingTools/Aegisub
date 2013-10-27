@@ -54,6 +54,8 @@ class AudioRenderer;
 /// @class AudioRendererBitmapCacheBitmapFactory
 /// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer
 struct AudioRendererBitmapCacheBitmapFactory {
+	typedef std::unique_ptr<wxBitmap> BlockType;
+
 	/// The audio renderer we're producing bitmaps for
 	AudioRenderer *renderer;
 
@@ -66,13 +68,7 @@ struct AudioRendererBitmapCacheBitmapFactory {
 	/// @return A fresh wxBitmap
 	///
 	/// Produces a wxBitmap with dimensions pulled from our master AudioRenderer.
-	wxBitmap *ProduceBlock(int i);
-
-	/// @brief Delete a bitmap
-	/// @param bmp The bitmap to delete
-	///
-	/// Deletes said bitmap.
-	void DisposeBlock(wxBitmap *bmp);
+	std::unique_ptr<wxBitmap> ProduceBlock(int i);
 
 	/// @brief Calculate the size of bitmaps
 	/// @return The size of bitmaps created
@@ -81,7 +77,6 @@ struct AudioRendererBitmapCacheBitmapFactory {
 
 /// The type of a bitmap cache
 typedef DataBlockCache<wxBitmap, 8, AudioRendererBitmapCacheBitmapFactory> AudioRendererBitmapCache;
-
 
 
 /// @class AudioRenderer

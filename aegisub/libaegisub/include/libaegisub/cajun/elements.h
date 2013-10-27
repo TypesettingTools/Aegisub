@@ -12,6 +12,7 @@ Author: Terry Caton
 #include <deque>
 #include <list>
 #include <map>
+#include <memory>
 #include <string>
 #include <stdexcept>
 
@@ -126,7 +127,7 @@ private:
    template <typename ElementTypeT>
    ElementTypeT& CastTo();
 
-   Imp* m_pImp;
+   std::unique_ptr<Imp> m_pImp;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

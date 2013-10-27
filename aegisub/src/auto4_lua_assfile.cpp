@@ -129,6 +129,8 @@ namespace {
 }
 
 namespace Automation4 {
+	LuaAssFile::~LuaAssFile() { }
+
 	void LuaAssFile::CheckAllowModify()
 	{
 		if (!can_modify)
@@ -376,7 +378,7 @@ namespace Automation4 {
 				auto e = LuaToAssEntry(L);
 				modification_type |= modification_mask(e.get());
 				CheckBounds(n);
-				lines_to_delete.push_back(lines[n - 1]);
+				lines_to_delete.emplace_back(lines[n - 1]);
 				lines[n - 1] = e.release();
 			}
 			else {
@@ -416,7 +418,7 @@ namespace Automation4 {
 		for (size_t i = 0; i < lines.size(); ++i) {
 			if (id_idx < ids.size() && ids[id_idx] == i) {
 				modification_type |= modification_mask(lines[i]);
-				lines_to_delete.push_back(lines[i]);
+				lines_to_delete.emplace_back(lines[i]);
 				++id_idx;
 			}
 			else {
@@ -438,7 +440,7 @@ namespace Automation4 {
 
 		for (; b < lines.size(); ++a, ++b) {
 			modification_type |= modification_mask(lines[a]);
-			lines_to_delete.push_back(lines[a]);
+			lines_to_delete.emplace_back(lines[a]);
 			lines[a] = lines[b];
 		}
 
@@ -609,7 +611,7 @@ namespace Automation4 {
 		if (modification_type && can_set_undo && !undo_description.empty())
 			ass->Commit(undo_description, modification_type);
 
-		delete_clear(lines_to_delete);
+		lines_to_delete.clear();
 
 		references--;
 		if (!references) delete this;
@@ -617,6 +619,7 @@ namespace Automation4 {
 
 	void LuaAssFile::Cancel()
 	{
+		for (auto& line : lines_to_delete) line.release();
 		references--;
 		if (!references) delete this;
 	}

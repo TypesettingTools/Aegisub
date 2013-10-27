@@ -114,22 +114,6 @@ void SetClipboard(wxBitmap const& new_value);
 
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
-/// Polymorphic delete functor
-struct delete_ptr {
-	template<class T> void operator()(T* ptr) const {
-		delete ptr;
-	}
-};
-
-/// Delete all of the items in a container of pointers and clear the container
-template<class T>
-void delete_clear(T& container) {
-	if (!container.empty()) {
-		std::for_each(container.begin(), container.end(), delete_ptr());
-		container.clear();
-	}
-}
-
 template<class Out>
 struct cast {
 	template<class In>

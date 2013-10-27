@@ -88,7 +88,7 @@ UnknownElement::UnknownElement() :                              m_pImp(new Imp_T
 UnknownElement::UnknownElement(const UnknownElement& unknown) : m_pImp(unknown.m_pImp->Clone()) {}
 UnknownElement::UnknownElement(int number) :                    m_pImp(new Imp_T<Integer>(number)) {}
 UnknownElement::UnknownElement(const char *string) :            m_pImp(new Imp_T<String>(string)) {}
-UnknownElement::~UnknownElement() { delete m_pImp; }
+UnknownElement::~UnknownElement() { }
 
 #define DEFINE_UE_TYPE(Type) \
 	UnknownElement::UnknownElement(Type const& val) : m_pImp(new Imp_T<Type>(val)) { } \
@@ -105,8 +105,7 @@ DEFINE_UE_TYPE(Null)
 
 UnknownElement& UnknownElement::operator =(const UnknownElement& unknown)
 {
-   delete m_pImp;
-   m_pImp = unknown.m_pImp->Clone();
+   m_pImp.reset(unknown.m_pImp->Clone());
    return *this;
 }
 

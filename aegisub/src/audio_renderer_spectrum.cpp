@@ -54,6 +54,8 @@
 
 /// Allocates blocks of derived data for the audio spectrum
 struct AudioSpectrumCacheBlockFactory {
+	typedef std::unique_ptr<float, std::default_delete<float[]>> BlockType;
+
 	/// Pointer back to the owning spectrum renderer
 	AudioSpectrumRenderer *spectrum;
 
@@ -66,18 +68,11 @@ struct AudioSpectrumCacheBlockFactory {
 	/// @return Newly allocated and filled block
 	///
 	/// The filling is delegated to the spectrum renderer
-	float *ProduceBlock(size_t i)
+	BlockType ProduceBlock(size_t i)
 	{
 		float *res = new float[((size_t)1)<<spectrum->derivation_size];
 		spectrum->FillBlock(i, res);
-		return res;
-	}
-
-	/// @brief De-allocate a cache block
-	/// @param block The block to dispose of
-	void DisposeBlock(float *block)
-	{
-		delete[] block;
+		return BlockType(res);
 	}
 
 	/// @brief Calculate the in-memory size of a spec
@@ -118,7 +113,7 @@ AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_nam
 AudioSpectrumRenderer::~AudioSpectrumRenderer()
 {
 	// This sequence will clean up
-	provider = 0;
+	provider = nullptr;
 	RecreateCache();
 }
 
