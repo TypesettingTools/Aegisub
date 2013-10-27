@@ -208,7 +208,8 @@ void SubsController::Close() {
 	redo_stack.clear();
 	autosaved_commit_id = saved_commit_id = commit_id + 1;
 	filename.clear();
-	context->ass->Line.clear();
+	AssFile blank;
+	swap(blank.Line, context->ass->Line);
 	context->ass->LoadDefault();
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 }

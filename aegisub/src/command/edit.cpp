@@ -494,11 +494,11 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 		c->ass->InsertLine(new_active);
 	}
 
-	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);
-
 	sel.clear();
 	sel.insert(new_active);
 	c->selectionController->SetSelectionAndActive(sel, new_active);
+
+	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);
 }
 
 struct edit_line_copy : public validate_sel_nonempty {
@@ -670,6 +670,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 	sel.clear();
 	sel.insert(first);
 	c->selectionController->SetSelectionAndActive(sel, first);
+
 	c->ass->Commit(message, AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 

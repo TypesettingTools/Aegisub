@@ -315,10 +315,10 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 
 	if (!did_split) return;
 
-	c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
-
 	AssDialogue *new_active = c->selectionController->GetActiveLine();
 	if (!sel.count(c->selectionController->GetActiveLine()))
 		new_active = *sel.begin();
 	c->selectionController->SetSelectionAndActive(sel, new_active);
+
+	c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }

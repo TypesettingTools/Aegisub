@@ -320,23 +320,14 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 		SetSelectedSet(new_sel);
 	}
 
-	// Force a reannounce of the active line if it hasn't changed, as it isn't
-	// safe to touch the active line while processing a commit event which would
-	// cause this function to be called
-	AssDialogue *line = active_line;
-	active_line = nullptr;
-
 	// The active line may have ceased to exist; pick a new one if so
-	if (line_index_map.size() && line_index_map.find(line) == line_index_map.end()) {
+	if (line_index_map.size() && !line_index_map.count(active_line)) {
 		if (active_row < (int)index_line_map.size())
 			SetActiveLine(index_line_map[active_row]);
 		else if (preserve_selected_rows && !selection.empty())
 			SetActiveLine(index_line_map[sel_rows[0]]);
 		else
 			SetActiveLine(index_line_map.back());
-	}
-	else {
-		SetActiveLine(line);
 	}
 
 	if (selection.empty() && active_line) {
