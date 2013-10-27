@@ -234,7 +234,6 @@ void DialogShiftTimes::OnSelectedSetChanged() {
 	}
 }
 
-
 void DialogShiftTimes::OnClear(wxCommandEvent &) {
 	agi::fs::Remove(history_filename);
 	history_box->Clear();
@@ -289,6 +288,8 @@ void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	new_entry["selection"] = shifted_blocks;
 
 	history->push_front(new_entry);
+	if (history->size() > 50)
+		history->resize(50);
 
 	try {
 		json::Writer::Write(*history, agi::io::Save(history_filename).Get());
