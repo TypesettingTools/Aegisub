@@ -852,8 +852,8 @@ void expand_times(AssDialogue *src, AssDialogue *dst) {
 	dst->End = std::max(dst->End, src->End);
 }
 
-bool check_lines(AssDialogue *d1, AssDialogue *d2, bool (*pred)(std::string const&, std::string const&)) {
-	if (pred(d1->Text.get(), d2->Text.get())) {
+bool check_start(AssDialogue *d1, AssDialogue *d2) {
+	if (boost::starts_with(d1->Text.get(), d2->Text.get())) {
 		d1->Text = trim_text(d1->Text.get().substr(d2->Text.get().size()));
 		expand_times(d1, d2);
 		return true;
@@ -861,12 +861,13 @@ bool check_lines(AssDialogue *d1, AssDialogue *d2, bool (*pred)(std::string cons
 	return false;
 }
 
-bool check_start(AssDialogue *d1, AssDialogue *d2) {
-	return check_lines(d1, d2, &boost::starts_with<std::string, std::string>);
-}
-
 bool check_end(AssDialogue *d1, AssDialogue *d2) {
-	return check_lines(d1, d2, &boost::ends_with<std::string, std::string>);
+	if (boost::ends_with(d1->Text.get(), d2->Text.get())) {
+		d1->Text = trim_text(d1->Text.get().substr(0, d1->Text.get().size() - d2->Text.get().size()));
+		expand_times(d1, d2);
+		return true;
+	}
+	return false;
 }
 
 }
