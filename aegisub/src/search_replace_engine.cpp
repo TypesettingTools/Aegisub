@@ -266,7 +266,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 		it = circular_next(it, context->ass->Line);
 
 	auto const& sel = context->selectionController->GetSelectedSet();
-	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
+	bool selection_only = sel.size() > 1 && settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
 
 	do {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
