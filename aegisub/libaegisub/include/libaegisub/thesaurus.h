@@ -38,7 +38,7 @@ class Thesaurus {
 
 public:
 	/// A pair of a word and synonyms for that word
-	typedef std::pair<std::string, std::vector<std::string> > Entry;
+	typedef std::pair<std::string, std::vector<std::string>> Entry;
 
 	/// Constructor
 	/// @param dat_path Path to data file
@@ -48,8 +48,7 @@ public:
 
 	/// Look up synonyms for a word
 	/// @param word Word to look up
-	/// @param[out] out Vector to fill with word/synonym lists
-	void Lookup(std::string const& word, std::vector<Entry> *out);
+	std::vector<Entry> Lookup(std::string const& word);
 };
 
 }

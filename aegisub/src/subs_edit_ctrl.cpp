@@ -387,8 +387,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 	if (!thesaurus)
 		thesaurus = agi::util::make_unique<Thesaurus>();
 
-	std::vector<Thesaurus::Entry> results;
-	thesaurus->Lookup(currentWord, &results);
+	auto results = thesaurus->Lookup(currentWord);
 
 	thesSugs.clear();
 
@@ -398,7 +397,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 		int curThesEntry = 0;
 		for (auto const& result : results) {
 			// Single word, insert directly
-			if (result.second.size() == 1) {
+			if (result.second.empty()) {
 				thesMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, to_wx(result.first));
 				thesSugs.push_back(result.first);
 				++curThesEntry;

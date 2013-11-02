@@ -44,10 +44,10 @@ Thesaurus::~Thesaurus() {
 	// Explicit empty destructor needed for scoped_ptr with incomplete types
 }
 
-void Thesaurus::Lookup(std::string word, std::vector<Entry> *result) {
-	if (!impl.get()) return;
+std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string word) {
+	if (!impl.get()) return std::vector<Entry>();
 	boost::to_lower(word);
-	impl->Lookup(word, result);
+	return impl->Lookup(word);
 }
 
 std::vector<std::string> Thesaurus::GetLanguageList() const {

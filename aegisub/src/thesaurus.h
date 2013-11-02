@@ -53,8 +53,7 @@ public:
 
 	/// Get a list of synonyms for a word, grouped by possible meanings of the word
 	/// @param word Word to get synonyms for
-	/// @param[out] result Output list
-	void Lookup(std::string word, std::vector<Entry> *result);
+	std::vector<Entry> Lookup(std::string word);
 
 	/// Get a list of language codes which thesauri are available for
 	std::vector<std::string> GetLanguageList() const;

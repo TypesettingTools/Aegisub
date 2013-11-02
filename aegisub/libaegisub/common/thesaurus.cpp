@@ -55,15 +55,15 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 
 Thesaurus::~Thesaurus() { }
 
-void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
-	out->clear();
-	if (!dat.get()) return;
+std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
+	std::vector<Entry> out;
+	if (!dat.get()) return out;
 
-	std::map<std::string, int>::const_iterator it = offsets.find(word);
-	if (it == offsets.end()) return;
+	auto it = offsets.find(word);
+	if (it == offsets.end()) return out;
 
 	dat->seekg(it->second, std::ios::beg);
-	if (!dat->good()) return;
+	if (!dat->good()) return out;
 
 	// First line is the word and meaning count
 	std::string temp;
@@ -71,22 +71,36 @@ void Thesaurus::Lookup(std::string const& word, std::vector<Entry> *out) {
 	std::vector<std::string> header;
 	std::string converted(conv->Convert(temp));
 	boost::split(header, converted, _1 == '|');
-	if (header.size() != 2) return;
+	if (header.size() != 2) return out;
 	int meanings = atoi(header[1].c_str());
 
-	out->resize(meanings);
+	out.reserve(meanings);
 	for (int i = 0; i < meanings; ++i) {
-		std::vector<std::string> line;
 		getline(*dat, temp);
-		std::string converted(conv->Convert(temp));
+		auto converted = conv->Convert(temp);
+		std::vector<std::string> line;
 		boost::split(line, converted, _1 == '|');
 
-		// The "definition" is just the part of speech plus the word it's
-		// giving synonyms for (which may not be the passed word)
-		(*out)[i].first = line[0] + ' ' + line[1];
-		(*out)[i].second.reserve(line.size() - 2);
-		copy(line.begin() + 2, line.end(), back_inserter((*out)[i].second));
+		if (line.size() < 2)
+			continue;
+
+		Entry e;
+		// The "definition" is just the part of speech (which may be empty)
+		// plus the word it's giving synonyms for (which may not be the passed word)
+		if (!line[0].empty())
+			e.first = line[0] + ' ';
+		e.first += line[1];
+		e.second.reserve(line.size() - 2);
+
+		for (size_t i = 2; i < line.size(); ++i) {
+			if (line[i].size())
+				e.second.emplace_back(std::move(line[i]));
+		}
+
+		out.emplace_back(std::move(e));
 	}
+
+	return out;
 }
 
 }
