@@ -199,7 +199,7 @@ public:
 		{
 			size_t block_count = data.size();
 			data.clear();
-			SetBlockCount(block_count);
+			data.resize(block_count);
 			age.clear();
 			return;
 		}
