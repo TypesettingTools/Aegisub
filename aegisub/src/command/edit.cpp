@@ -161,14 +161,31 @@ T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T ini
 int block_at_pos(std::string const& text, int pos) {
 	int n = 0;
 	int max = text.size() - 1;
+	bool in_block = false;
+
 	for (int i = 0; i <= pos && i <= max; ++i) {
-		if (i > 0 && text[i] == '{')
-			n++;
-		if (text[i] == '}' && i != max && i != pos && i != pos -1 && (i+1 == max || text[i+1] != '{'))
-			n++;
+		if (i > 0 && text[i] == '{') {
+			if (!in_block)
+				++n;
+			in_block = true;
+		}
+		else if (text[i] == '}' && in_block) {
+			in_block = false;
+			if (i != max && i != pos && i != pos -1 && (i+1 == max || text[i+1] != '{'))
+				n++;
+		}
 	}
 
-	return n;
+	if (in_block) {
+		for (int i = pos + 1; i <= max; ++i) {
+			if (text[i] == '}') {
+				in_block = false;
+				break;
+			}
+		}
+	}
+
+	return n - in_block;
 }
 
 void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std::string const& tag, std::string const& value, int &sel_start, int &sel_end, bool at_end = false) {
