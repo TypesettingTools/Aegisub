@@ -164,8 +164,8 @@ int block_at_pos(std::string const& text, int pos) {
 	bool in_block = false;
 
 	for (int i = 0; i <= pos && i <= max; ++i) {
-		if (i > 0 && text[i] == '{') {
-			if (!in_block)
+		if (text[i] == '{') {
+			if (!in_block && i > 0)
 				++n;
 			in_block = true;
 		}
