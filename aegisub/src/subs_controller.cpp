@@ -84,32 +84,32 @@ SubsController::SubsController(agi::Context *context)
 
 void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 	try {
-		if (charset.empty())
-			charset = CharSetDetect::GetEncoding(filename);
-	}
-	catch (agi::UserCancelException const&) {
-		return;
-	}
-
-	// Make sure that file isn't actually a timecode file
-	if (charset != "binary") {
 		try {
-			TextFileReader testSubs(filename, charset);
-			std::string cur = testSubs.ReadLineFromFile();
-			if (boost::starts_with(cur, "# timecode")) {
-				context->videoController->LoadTimecodes(filename);
-				return;
+			if (charset.empty())
+				charset = CharSetDetect::GetEncoding(filename);
+		}
+		catch (agi::UserCancelException const&) {
+			return;
+		}
+
+		// Make sure that file isn't actually a timecode file
+		if (charset != "binary") {
+			try {
+				TextFileReader testSubs(filename, charset);
+				std::string cur = testSubs.ReadLineFromFile();
+				if (boost::starts_with(cur, "# timecode")) {
+					context->videoController->LoadTimecodes(filename);
+					return;
+				}
+			}
+			catch (...) {
+				// if trying to load the file as timecodes fails it's fairly
+				// safe to assume that it is in fact not a timecode file
 			}
 		}
-		catch (...) {
-			// if trying to load the file as timecodes fails it's fairly
-			// safe to assume that it is in fact not a timecode file
-		}
-	}
 
-	const SubtitleFormat *reader = SubtitleFormat::GetReader(filename, charset);
+		const SubtitleFormat *reader = SubtitleFormat::GetReader(filename, charset);
 
-	try {
 		AssFile temp;
 		reader->ReadFile(&temp, filename, charset);
 
