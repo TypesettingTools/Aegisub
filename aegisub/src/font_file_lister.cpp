@@ -72,8 +72,15 @@ FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFi
 void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	if (line->Comment) return;
 
+	auto style_it = styles.find(line->Style);
+	if (style_it == end(styles)) {
+		status_callback(wxString::Format(_("Style '%s' does not exist\n"), to_wx(line->Style)), 2);
+		++missing;
+		return;
+	}
+
 	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
-	StyleInfo style = styles[line->Style];
+	StyleInfo style = style_it->second;
 	StyleInfo initial = style;
 
 	bool overriden = false;
