@@ -406,7 +406,7 @@ namespace Automation4 {
 	// LuaDialog
 	LuaDialog::LuaDialog(lua_State *L, bool include_buttons)
 	: use_buttons(include_buttons)
-	, button_pushed(0)
+	, button_pushed(-1)
 	, window(0)
 	{
 		LOG_D("automation/lua/dialog") << "creating LuaDialoug, addr: " << this;
@@ -536,7 +536,7 @@ namespace Automation4 {
 	int LuaDialog::LuaReadBack(lua_State *L) {
 		// First read back which button was pressed, if any
 		if (use_buttons) {
-			if (buttons[button_pushed].first == wxID_CANCEL)
+			if (button_pushed == -1 || buttons[button_pushed].first == wxID_CANCEL)
 				lua_pushboolean(L, false);
 			else
 				lua_pushstring(L, buttons[button_pushed].second.c_str());
