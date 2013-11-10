@@ -479,7 +479,7 @@ void FrameMain::OnVideoOpen() {
 		catch (agi::UserCancelException const&) { }
 		// Opening a video with no audio data isn't an error, so just log
 		// and move on
-		catch (agi::fs::FileNotFound const&) {
+		catch (agi::fs::FileSystemError const&) {
 			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " found by video provider but not audio provider";
 		}
 		catch (agi::AudioDataNotFoundError const& e) {
