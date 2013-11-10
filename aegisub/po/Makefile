@@ -14,6 +14,7 @@ PO = \
 	fa.po \
 	fi.po \
 	fr_FR.po \
+	gl.po \
 	hu.po \
 	id.po \
 	it.po \
