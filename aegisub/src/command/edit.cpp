@@ -579,7 +579,7 @@ struct in_selection : public std::unary_function<AssEntry, bool> {
 static void duplicate_lines(agi::Context *c, int shift) {
 	in_selection sel(c->selectionController->GetSelectedSet());
 	SubtitleSelectionController::Selection new_sel;
-	AssDialogue *new_active = 0;
+	AssDialogue *new_active = nullptr;
 
 	entryIter start = c->ass->Line.begin();
 	entryIter end = c->ass->Line.end();
@@ -595,7 +595,8 @@ static void duplicate_lines(agi::Context *c, int shift) {
 		// Duplicate each of the selected lines, inserting them in a block
 		// after the selected block
 		do {
-			AssDialogue *new_diag = new AssDialogue(*static_cast<AssDialogue*>(&*start));
+			auto old_diag = static_cast<AssDialogue*>(&*start);
+			auto new_diag = new AssDialogue(*old_diag);
 
 			c->ass->Line.insert(insert_pos, *new_diag);
 			new_sel.insert(new_diag);
@@ -603,12 +604,28 @@ static void duplicate_lines(agi::Context *c, int shift) {
 				new_active = new_diag;
 
 			if (shift) {
+				int cur_frame = c->videoController->GetFrameN();
 				int old_start = c->videoController->FrameAtTime(new_diag->Start, agi::vfr::START);
 				int old_end = c->videoController->FrameAtTime(new_diag->End, agi::vfr::END);
-				int dur = (old_end - old_start + 1) * shift;
 
-				new_diag->Start = c->videoController->TimeAtFrame(old_start + dur, agi::vfr::START);
-				new_diag->End = c->videoController->TimeAtFrame(old_end + dur, agi::vfr::END);
+				// If the current frame isn't within the range of the line then
+				// splitting doesn't make any sense, so instead just duplicate
+				// the line and set the new one to just this frame
+				if (cur_frame < old_start || cur_frame > old_end) {
+					new_diag->Start = c->videoController->TimeAtFrame(cur_frame, agi::vfr::START);
+					new_diag->End = c->videoController->TimeAtFrame(cur_frame, agi::vfr::END);
+				}
+				/// @todo This does dumb things when old_start == old_end
+				else if (shift < 0) {
+					old_diag->End = c->videoController->TimeAtFrame(cur_frame - 1, agi::vfr::END);
+					new_diag->Start = c->videoController->TimeAtFrame(cur_frame, agi::vfr::START);
+				}
+				else {
+					old_diag->Start = c->videoController->TimeAtFrame(cur_frame + 1, agi::vfr::START);
+					new_diag->End = c->videoController->TimeAtFrame(cur_frame, agi::vfr::END);
+				}
+
+				/// @todo also split \t and \move?
 			}
 		} while (start++ != last);
 
@@ -618,7 +635,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 
 	if (new_sel.empty()) return;
 
-	c->ass->Commit(_("duplicate lines"), AssFile::COMMIT_DIAG_ADDREM);
+	c->ass->Commit(shift ? _("split") : _("duplicate lines"), AssFile::COMMIT_DIAG_ADDREM);
 
 	c->selectionController->SetSelectionAndActive(new_sel, new_active);
 }
@@ -635,10 +652,10 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 };
 
 struct edit_line_duplicate_shift : public Command {
-	CMD_NAME("edit/line/duplicate/shift")
-	STR_MENU("D&uplicate and Shift")
-	STR_DISP("Duplicate and Shift")
-	STR_HELP("Duplicate lines and shift them to start the frame after the original end frame")
+	CMD_NAME("edit/line/split/after")
+	STR_MENU("Split lines after current frame")
+	STR_DISP("Split lines after current frame")
+	STR_HELP("Split the current line into a line which ends on the current frame and a line which starts on the next frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {
@@ -651,10 +668,10 @@ struct edit_line_duplicate_shift : public Command {
 };
 
 struct edit_line_duplicate_shift_back : public Command {
-	CMD_NAME("edit/line/duplicate/shift_back")
-	STR_MENU("Du&plicate and Shift Backwards")
-	STR_DISP("Duplicate and Shift Backwards")
-	STR_HELP("Duplicate selected lines and shift them to end the frame before the original start frame")
+	CMD_NAME("edit/line/split/before")
+	STR_MENU("Split lines before current frame")
+	STR_DISP("Split lines before current frame")
+	STR_HELP("Split the current line into a line which ends on the previous frame and a line which starts on the current frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) {

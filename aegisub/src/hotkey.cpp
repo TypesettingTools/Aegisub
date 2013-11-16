@@ -29,6 +29,7 @@
 #include <libaegisub/path.h>
 
 #include <boost/range/algorithm/find.hpp>
+#include <boost/range/iterator_range.hpp>
 
 namespace {
 	const char *added_hotkeys_7035[][5] = {
@@ -93,6 +94,24 @@ void init() {
 	if (boost::find(migrations, "edit/line/duplicate/shift_back") == end(migrations)) {
 		migrate_hotkeys(added_hotkeys_shift_back);
 		migrations.emplace_back("edit/line/duplicate/shift_back");
+	}
+
+	if (boost::find(migrations, "duplicate -> split") == end(migrations)) {
+		auto hk_map = hotkey::inst->GetHotkeyMap();
+		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift"))) {
+			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/before", hotkey.second.Get());
+			hk_map.insert(std::make_pair(combo.CmdName(), combo));
+		}
+		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift_back"))) {
+			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/after", hotkey.second.Get());
+			hk_map.insert(std::make_pair(combo.CmdName(), combo));
+		}
+
+		hk_map.erase("edit/line/duplicate/shift");
+		hk_map.erase("edit/line/duplicate/shift_back");
+
+		hotkey::inst->SetHotkeyMap(hk_map);
+		migrations.emplace_back("duplicate -> split");
 	}
 
 	OPT_SET("App/Hotkey Migrations")->SetListString(migrations);
