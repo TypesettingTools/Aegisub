@@ -79,6 +79,13 @@ struct validate_sel_nonempty : public Command {
 	}
 };
 
+struct validate_video_and_sel_nonempty : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
+	bool Validate(const agi::Context *c) {
+		return c->videoController->IsLoaded() && !c->selectionController->GetSelectedSet().empty();
+	}
+};
+
 struct validate_sel_multiple : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) {
@@ -651,32 +658,24 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 	}
 };
 
-struct edit_line_duplicate_shift : public Command {
+struct edit_line_duplicate_shift : public validate_video_and_sel_nonempty {
 	CMD_NAME("edit/line/split/after")
 	STR_MENU("Split lines after current frame")
 	STR_DISP("Split lines after current frame")
 	STR_HELP("Split the current line into a line which ends on the current frame and a line which starts on the next frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
-		return !c->selectionController->GetSelectedSet().empty() && c->videoController->IsLoaded();
-	}
-
 	void operator()(agi::Context *c) {
 		duplicate_lines(c, 1);
 	}
 };
 
-struct edit_line_duplicate_shift_back : public Command {
+struct edit_line_duplicate_shift_back : public validate_video_and_sel_nonempty {
 	CMD_NAME("edit/line/split/before")
 	STR_MENU("Split lines before current frame")
 	STR_DISP("Split lines before current frame")
 	STR_HELP("Split the current line into a line which ends on the previous frame and a line which starts on the current frame")
 	CMD_TYPE(COMMAND_VALIDATE)
-
-	bool Validate(const agi::Context *c) {
-		return !c->selectionController->GetSelectedSet().empty() && c->videoController->IsLoaded();
-	}
 
 	void operator()(agi::Context *c) {
 		duplicate_lines(c, -1);
@@ -992,7 +991,8 @@ struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	}
 };
 
-void split_lines(agi::Context *c, bool estimate) {
+template<typename Func>
+void split_lines(agi::Context *c, Func&& set_time) {
 	int pos = c->textSelectionController->GetSelectionStart();
 
 	AssDialogue *n1 = c->selectionController->GetActiveLine();
@@ -1003,22 +1003,24 @@ void split_lines(agi::Context *c, bool estimate) {
 	n1->Text = boost::trim_right_copy(orig.substr(0, pos));
 	n2->Text = boost::trim_left_copy(orig.substr(pos));
 
-	if (estimate && orig.size()) {
-		double splitPos = double(pos) / orig.size();
-		n2->Start = n1->End = (int)((n1->End - n1->Start) * splitPos) + n1->Start;
-	}
+	set_time(n1, n2);
 
-	c->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | (estimate ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_TEXT));
+	c->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 
-struct edit_line_split_estimate : public validate_sel_nonempty {
+struct edit_line_split_estimate : public validate_video_and_sel_nonempty {
 	CMD_NAME("edit/line/split/estimate")
 	STR_MENU("Split at cursor (estimate times)")
 	STR_DISP("Split at cursor (estimate times)")
 	STR_HELP("Split the current line at the cursor, dividing the original line's duration between the new ones")
 
 	void operator()(agi::Context *c) {
-		split_lines(c, true);
+		split_lines(c, [](AssDialogue *n1, AssDialogue *n2) {
+			size_t len = n1->Text.get().size() + n2->Text.get().size();
+			if (!len) return;
+			double splitPos = double(n1->Text.get().size()) / len;
+			n2->Start = n1->End = (int)((n1->End - n1->Start) * splitPos) + n1->Start;
+		});
 	}
 };
 
@@ -1029,7 +1031,24 @@ struct edit_line_split_preserve : public validate_sel_nonempty {
 	STR_HELP("Split the current line at the cursor, setting both lines to the original line's times")
 
 	void operator()(agi::Context *c) {
-		split_lines(c, false);
+		split_lines(c, [](AssDialogue *, AssDialogue *) { });
+	}
+};
+
+struct edit_line_split_video : public validate_video_and_sel_nonempty {
+	CMD_NAME("edit/line/split/video")
+	STR_MENU("Split at cursor (at video frame)")
+	STR_DISP("Split at cursor (at video frame)")
+	STR_HELP("Split the current line at the cursor, dividing the line's duration at the current video frame")
+
+	void operator()(agi::Context *c) {
+		split_lines(c, [&](AssDialogue *n1, AssDialogue *n2) {
+			int cur_frame = mid(
+				c->videoController->FrameAtTime(n1->Start, agi::vfr::START),
+				c->videoController->GetFrameN(),
+				c->videoController->FrameAtTime(n1->End, agi::vfr::END));
+			n1->End = n2->Start = c->videoController->TimeAtFrame(cur_frame, agi::vfr::END);
+		});
 	}
 };
 
@@ -1168,6 +1187,7 @@ namespace cmd {
 		reg(agi::util::make_unique<edit_line_split_by_karaoke>());
 		reg(agi::util::make_unique<edit_line_split_estimate>());
 		reg(agi::util::make_unique<edit_line_split_preserve>());
+		reg(agi::util::make_unique<edit_line_split_video>());
 		reg(agi::util::make_unique<edit_style_bold>());
 		reg(agi::util::make_unique<edit_style_italic>());
 		reg(agi::util::make_unique<edit_style_underline>());

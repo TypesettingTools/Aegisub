@@ -65,6 +65,7 @@
 enum {
 	EDIT_MENU_SPLIT_PRESERVE = 1400,
 	EDIT_MENU_SPLIT_ESTIMATE,
+	EDIT_MENU_SPLIT_VIDEO,
 	EDIT_MENU_CUT,
 	EDIT_MENU_COPY,
 	EDIT_MENU_PASTE,
@@ -118,6 +119,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	if (context) {
 		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&cmd::call, "edit/line/split/preserve", context), EDIT_MENU_SPLIT_PRESERVE);
 		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&cmd::call, "edit/line/split/estimate", context), EDIT_MENU_SPLIT_ESTIMATE);
+		Bind(wxEVT_COMMAND_MENU_SELECTED, bind(&cmd::call, "edit/line/split/video", context), EDIT_MENU_SPLIT_VIDEO);
 	}
 
 	Bind(wxEVT_CONTEXT_MENU, &SubsTextEditCtrl::OnContextMenu, this);
@@ -344,8 +346,10 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	// Split
 	if (context) {
 		menu.AppendSeparator();
-		menu.Append(EDIT_MENU_SPLIT_PRESERVE,_("Split at cursor (preserve times)"));
-		menu.Append(EDIT_MENU_SPLIT_ESTIMATE,_("Split at cursor (estimate times)"));
+		menu.Append(EDIT_MENU_SPLIT_PRESERVE, _("Split at cursor (preserve times)"));
+		menu.Append(EDIT_MENU_SPLIT_ESTIMATE, _("Split at cursor (estimate times)"));
+		cmd::Command *split_video = cmd::get("edit/line/split/video");
+		menu.Append(EDIT_MENU_SPLIT_VIDEO, split_video->StrMenu(context))->Enable(split_video->Validate(context));
 	}
 
 	PopupMenu(&menu);
