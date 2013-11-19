@@ -52,6 +52,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
+#include <fstream>
 
 namespace {
 agi::fs::path cache_dir() {

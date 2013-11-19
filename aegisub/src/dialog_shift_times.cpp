@@ -47,6 +47,7 @@
 #include <libaegisub/cajun/writer.h>
 
 #include <algorithm>
+#include <fstream>
 #include <vector>
 
 #include <wx/listbox.h>

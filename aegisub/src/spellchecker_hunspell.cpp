@@ -32,9 +32,9 @@
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
 
-#include <hunspell/hunspell.hxx>
-
 #include <boost/format.hpp>
+#include <fstream>
+#include <hunspell/hunspell.hxx>
 
 HunspellSpellChecker::HunspellSpellChecker()
 : lang_listener(OPT_SUB("Tool/Spell Checker/Language", &HunspellSpellChecker::OnLanguageChanged, this))

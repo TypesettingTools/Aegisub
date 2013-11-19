@@ -40,6 +40,7 @@
 #include <libaegisub/of_type_adaptor.h>
 
 #include <boost/algorithm/string/replace.hpp>
+#include <fstream>
 
 namespace
 {

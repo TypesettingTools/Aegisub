@@ -54,6 +54,7 @@
 #include <libaegisub/path.h>
 
 #include <algorithm>
+#include <fstream>
 
 AudioController::AudioController(agi::Context *context)
 : context(context)

@@ -33,6 +33,7 @@
 
 #include <boost/range/adaptor/map.hpp>
 #include <cassert>
+#include <fstream>
 #include <memory>
 #include <sstream>
 
