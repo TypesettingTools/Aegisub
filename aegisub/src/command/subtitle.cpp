@@ -63,14 +63,14 @@ namespace {
 
 struct validate_nonempty_selection : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return !c->selectionController->GetSelectedSet().empty();
 	}
 };
 
 struct validate_nonempty_selection_video_loaded : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->IsLoaded() && !c->selectionController->GetSelectedSet().empty();
 	}
 };
@@ -81,7 +81,7 @@ struct subtitle_attachment : public Command {
 	STR_DISP("Attachments")
 	STR_HELP("Open the attachment manager dialog")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		DialogAttachments(c->parent, c->ass).ShowModal();
 	}
@@ -93,7 +93,7 @@ struct subtitle_find : public Command {
 	STR_DISP("Find")
 	STR_HELP("Search for text the in subtitles")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		DialogSearchReplace::Show(c, false);
 	}
@@ -105,7 +105,7 @@ struct subtitle_find_next : public Command {
 	STR_DISP("Find Next")
 	STR_HELP("Find next match of last search")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		if (!c->search->FindNext())
 			DialogSearchReplace::Show(c, false);
@@ -113,7 +113,7 @@ struct subtitle_find_next : public Command {
 };
 
 static void insert_subtitle_at_video(agi::Context *c, bool after) {
-	AssDialogue *def = new AssDialogue;
+	auto def = new AssDialogue;
 	int video_ms = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START);
 	def->Start = video_ms;
 	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
@@ -136,10 +136,10 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 	STR_DISP("After Current")
 	STR_HELP("Insert a new line after the current one")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
 
-		AssDialogue *new_line = new AssDialogue;
+		auto new_line = new AssDialogue;
 		new_line->Style = active_line->Style;
 		new_line->Start = active_line->End;
 		new_line->End = new_line->Start + OPT_GET("Timing/Default Duration")->GetInt();
@@ -172,7 +172,7 @@ struct subtitle_insert_after_videotime : public validate_nonempty_selection_vide
 	STR_DISP("After Current, at Video Time")
 	STR_HELP("Insert a new line after the current one, starting at video time")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		insert_subtitle_at_video(c, true);
 	}
 };
@@ -183,10 +183,10 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 	STR_DISP("Before Current")
 	STR_HELP("Insert a new line before the current one")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssDialogue *active_line = c->selectionController->GetActiveLine();
 
-		AssDialogue *new_line = new AssDialogue;
+		auto new_line = new AssDialogue;
 		new_line->Style = active_line->Style;
 		new_line->End = active_line->Start;
 		new_line->Start = new_line->End - OPT_GET("Timing/Default Duration")->GetInt();
@@ -216,7 +216,7 @@ struct subtitle_insert_before_videotime : public validate_nonempty_selection_vid
 	STR_DISP("Before Current, at Video Time")
 	STR_HELP("Insert a new line before the current one, starting at video time")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		insert_subtitle_at_video(c, false);
 	}
 };
@@ -227,7 +227,7 @@ struct subtitle_new : public Command {
 	STR_DISP("New Subtitles")
 	STR_HELP("New subtitles")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() != wxCANCEL)
 			c->subsController->Close();
 	}
@@ -239,7 +239,7 @@ struct subtitle_open : public Command {
 	STR_DISP("Open Subtitles")
 	STR_HELP("Open a subtitles file")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
 		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (!filename.empty())
@@ -253,7 +253,7 @@ struct subtitle_open_autosave : public Command {
 	STR_DISP("Open Autosaved Subtitles")
 	STR_HELP("Open a previous version of a file which was autosaved by Aegisub")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
 		DialogAutosave dialog(c->parent);
 		if (dialog.ShowModal() == wxID_OK)
@@ -267,7 +267,7 @@ struct subtitle_open_charset : public Command {
 	STR_DISP("Open Subtitles with Charset")
 	STR_HELP("Open a subtitles file with a specific file encoding")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
 
 		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
@@ -287,12 +287,12 @@ struct subtitle_open_video : public Command {
 	STR_HELP("Open the subtitles from the current video file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
 		c->subsController->Load(c->videoController->GetVideoName(), "binary");
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->IsLoaded() && c->videoController->HasSubtitles();
 	}
 };
@@ -303,7 +303,7 @@ struct subtitle_properties : public Command {
 	STR_DISP("Properties")
 	STR_HELP("Open script properties window")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		DialogProperties(c).ShowModal();
 	}
@@ -339,11 +339,11 @@ struct subtitle_save : public Command {
 	STR_HELP("Save the current subtitles")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		save_subtitles(c, c->subsController->CanSave() ? c->subsController->Filename() : "");
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->subsController->IsModified();
 	}
 };
@@ -354,7 +354,7 @@ struct subtitle_save_as : public Command {
 	STR_DISP("Save Subtitles as")
 	STR_HELP("Save subtitles with another name")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		save_subtitles(c, "");
 	}
 };
@@ -365,7 +365,7 @@ struct subtitle_select_all : public Command {
 	STR_DISP("Select All")
 	STR_HELP("Select all dialogue lines")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		SubtitleSelection sel;
 		transform(c->ass->Line.begin(), c->ass->Line.end(),
 			inserter(sel, sel.begin()), cast<AssDialogue*>());
@@ -381,7 +381,7 @@ struct subtitle_select_visible : public Command {
 	STR_HELP("Select all dialogue lines that visible on the current video frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (!c->videoController->IsLoaded()) return;
 		c->videoController->Stop();
 
@@ -403,7 +403,7 @@ struct subtitle_select_visible : public Command {
 		c->selectionController->SetSelectedSet(new_selection);
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->IsLoaded();
 	}
 };
@@ -414,7 +414,7 @@ struct subtitle_spellcheck : public Command {
 	STR_DISP("Spell Checker")
 	STR_HELP("Open spell checker")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->dialog->Show<DialogSpellChecker>(c);
 	}

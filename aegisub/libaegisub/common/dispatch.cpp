@@ -33,13 +33,13 @@ namespace {
 	std::atomic<uint_fast32_t> threads_running;
 
 	class MainQueue : public agi::dispatch::Queue {
-		void DoInvoke(agi::dispatch::Thunk thunk) {
+		void DoInvoke(agi::dispatch::Thunk thunk) override {
 			invoke_main(thunk);
 		}
 	};
 
 	class BackgroundQueue : public agi::dispatch::Queue {
-		void DoInvoke(agi::dispatch::Thunk thunk) {
+		void DoInvoke(agi::dispatch::Thunk thunk) override {
 			service->post(thunk);
 		}
 	};
@@ -47,7 +47,7 @@ namespace {
 	class SerialQueue : public agi::dispatch::Queue {
 		boost::asio::io_service::strand strand;
 
-		void DoInvoke(agi::dispatch::Thunk thunk) {
+		void DoInvoke(agi::dispatch::Thunk thunk) override {
 			strand.post(thunk);
 		}
 	public:

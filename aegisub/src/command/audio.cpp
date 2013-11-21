@@ -54,7 +54,7 @@ namespace {
 
 	struct validate_audio_open : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
-		bool Validate(const agi::Context *c) {
+		bool Validate(const agi::Context *c) override {
 			return c->audioController->IsAudioOpen();
 		}
 	};
@@ -65,7 +65,7 @@ struct audio_close : public validate_audio_open {
 	STR_DISP("Close Audio")
 	STR_HELP("Close the currently open audio file")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->audioController->CloseAudio();
 	}
 };
@@ -76,7 +76,7 @@ struct audio_open : public Command {
 	STR_DISP("Open Audio File")
 	STR_HELP("Open an audio file")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
 					+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts|"
 					+ _("All Files") + " (*.*)|*.*";
@@ -99,7 +99,7 @@ struct audio_open_blank : public Command {
 	STR_DISP("Open 2h30 Blank Audio")
 	STR_HELP("Open a 150 minutes blank audio clip, for debugging")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		try {
 			c->audioController->OpenAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
 		}
@@ -115,7 +115,7 @@ struct audio_open_noise : public Command {
 	STR_DISP("Open 2h30 Noise Audio")
 	STR_HELP("Open a 150 minutes noise-filled audio clip, for debugging")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		try {
 			c->audioController->OpenAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
 		}
@@ -132,11 +132,11 @@ struct audio_open_video : public Command {
 	STR_HELP("Open the audio from the current video file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->IsLoaded();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		try {
 			c->audioController->OpenAudio(c->videoController->GetVideoName());
 		}
@@ -154,11 +154,11 @@ struct audio_view_spectrum : public Command {
 	STR_HELP("Display audio as a frequency-power spectrograph")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Spectrum")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		OPT_SET("Audio/Spectrum")->SetBool(true);
 	}
 };
@@ -170,11 +170,11 @@ struct audio_view_waveform : public Command {
 	STR_HELP("Display audio as a linear amplitude graph")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return !OPT_GET("Audio/Spectrum")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		OPT_SET("Audio/Spectrum")->SetBool(false);
 	}
 };
@@ -186,11 +186,11 @@ struct audio_save_clip : public Command {
 	STR_HELP("Save an audio clip of the selected line")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->audioController->IsAudioOpen() && !c->selectionController->GetSelectedSet().empty();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		SubtitleSelection sel = c->selectionController->GetSelectedSet();
 		if (sel.empty()) return;
 
@@ -212,7 +212,7 @@ struct audio_play_current_selection : public validate_audio_open {
 	STR_DISP("Play current audio selection")
 	STR_HELP("Play the current audio selection, ignoring changes made while playing")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->audioController->PlayRange(c->audioController->GetPrimaryPlaybackRange());
 	}
@@ -224,7 +224,7 @@ struct audio_play_current_line : public validate_audio_open {
 	STR_DISP("Play current line")
 	STR_HELP("Play the audio for the current line")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		AudioTimingController *tc = c->audioController->GetTimingController();
 		if (tc)
@@ -238,7 +238,7 @@ struct audio_play_selection : public validate_audio_open {
 	STR_DISP("Play audio selection")
 	STR_HELP("Play audio until the end of the selection is reached")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->audioController->PlayPrimaryRange();
 	}
@@ -250,7 +250,7 @@ struct audio_play_toggle : public validate_audio_open {
 	STR_DISP("Play audio selection or stop")
 	STR_HELP("Play selection, or stop playback if it's already playing")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->IsPlaying())
 			c->audioController->Stop();
 		else {
@@ -267,11 +267,11 @@ struct audio_stop : public Command {
 	STR_HELP("Stop audio and video playback")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->audioController->IsPlaying();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->audioController->Stop();
 		c->videoController->Stop();
 	}
@@ -283,7 +283,7 @@ struct audio_play_before : public validate_audio_open {
 	STR_DISP("Play 500 ms before selection")
 	STR_HELP("Play 500 ms before selection")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		int begin = c->audioController->GetPrimaryPlaybackRange().begin();
 		c->audioController->PlayRange(TimeRange(begin - 500, begin));
@@ -296,7 +296,7 @@ struct audio_play_after : public validate_audio_open {
 	STR_DISP("Play 500 ms after selection")
 	STR_HELP("Play 500 ms after selection")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		int end = c->audioController->GetPrimaryPlaybackRange().end();
 		c->audioController->PlayRange(TimeRange(end, end + 500));
@@ -309,7 +309,7 @@ struct audio_play_end : public validate_audio_open {
 	STR_DISP("Play last 500 ms of selection")
 	STR_HELP("Play last 500 ms of selection")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		TimeRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayToEndOfPrimary(times.end() - std::min(500, times.length()));
@@ -322,7 +322,7 @@ struct audio_play_begin : public validate_audio_open {
 	STR_DISP("Play first 500 ms of selection")
 	STR_HELP("Play first 500 ms of selection")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		TimeRange times(c->audioController->GetPrimaryPlaybackRange());
 		c->audioController->PlayRange(TimeRange(
@@ -337,7 +337,7 @@ struct audio_play_to_end : public validate_audio_open {
 	STR_DISP("Play from selection start to end of file")
 	STR_HELP("Play from selection start to end of file")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->audioController->PlayToEnd(c->audioController->GetPrimaryPlaybackRange().begin());
 	}
@@ -349,7 +349,7 @@ struct audio_commit : public validate_audio_open {
 	STR_DISP("Commit")
 	STR_HELP("Commit any pending audio timing changes")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AudioTimingController *tc = c->audioController->GetTimingController();
 		if (tc) {
 			tc->Commit();
@@ -365,7 +365,7 @@ struct audio_commit_default : public validate_audio_open {
 	STR_DISP("Commit and use default timing for next line")
 	STR_HELP("Commit any pending audio timing changes and reset the next line's times to the default")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AudioTimingController *tc = c->audioController->GetTimingController();
 		if (tc) {
 			tc->Commit();
@@ -380,7 +380,7 @@ struct audio_commit_next : public validate_audio_open {
 	STR_DISP("Commit and move to next line")
 	STR_HELP("Commit any pending audio timing changes and move to the next line")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AudioTimingController *tc = c->audioController->GetTimingController();
 		if (tc) {
 			tc->Commit();
@@ -395,7 +395,7 @@ struct audio_commit_stay : public validate_audio_open {
 	STR_DISP("Commit and stay on current line")
 	STR_HELP("Commit any pending audio timing changes and stay on the current line")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AudioTimingController *tc = c->audioController->GetTimingController();
 		if (tc) tc->Commit();
 	}
@@ -407,7 +407,7 @@ struct audio_go_to : public validate_audio_open {
 	STR_DISP("Go to selection")
 	STR_HELP("Scroll the audio display to center on the current audio selection")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->audioBox->ScrollToActiveLine();
 	}
 };
@@ -418,7 +418,7 @@ struct audio_scroll_left : public validate_audio_open {
 		STR_DISP("Scroll left")
 		STR_HELP("Scroll the audio display left")
 
-		void operator()(agi::Context *c) {
+		void operator()(agi::Context *c) override {
 			c->audioBox->ScrollAudioBy(-128);
 	}
 };
@@ -429,7 +429,7 @@ struct audio_scroll_right : public validate_audio_open {
 		STR_DISP("Scroll right")
 		STR_HELP("Scroll the audio display right")
 
-		void operator()(agi::Context *c) {
+		void operator()(agi::Context *c) override {
 			c->audioBox->ScrollAudioBy(128);
 	}
 };
@@ -445,11 +445,11 @@ struct audio_autoscroll : public Command {
 	STR_HELP("Auto scroll audio display to selected line")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Auto/Scroll")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		toggle("Audio/Auto/Scroll");
 	}
 };
@@ -461,11 +461,11 @@ struct audio_autocommit : public Command {
 	STR_HELP("Automatically commit all changes")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Auto/Commit")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		toggle("Audio/Auto/Commit");
 	}
 };
@@ -477,11 +477,11 @@ struct audio_autonext : public Command {
 	STR_HELP("Automatically go to next line on commit")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Next Line on Commit")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		toggle("Audio/Next Line on Commit");
 	}
 };
@@ -493,11 +493,11 @@ struct audio_toggle_spectrum : public Command {
 	STR_HELP("Spectrum analyzer mode")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Spectrum")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		toggle("Audio/Spectrum");
 	}
 };
@@ -509,11 +509,11 @@ struct audio_vertical_link : public Command {
 	STR_HELP("Link vertical zoom and volume sliders")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Link")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		toggle("Audio/Link");
 	}
 };
@@ -525,10 +525,10 @@ struct audio_karaoke : public Command {
 	STR_HELP("Toggle karaoke mode")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) {
+	bool IsActive(const agi::Context *c) override {
 		return c->karaoke->IsEnabled();
 	}
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->karaoke->SetEnabled(!c->karaoke->IsEnabled());
 	}
 };

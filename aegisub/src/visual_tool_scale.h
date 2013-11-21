@@ -31,11 +31,11 @@ class VisualToolScale : public VisualTool<VisualDraggableFeature> {
 	float ry; ///< Y rotation
 	float rz; ///< Z rotation
 
-	bool InitializeHold();
-	void UpdateHold();
+	bool InitializeHold() override;
+	void UpdateHold() override;
 
-	void DoRefresh();
-	void Draw();
+	void DoRefresh() override;
+	void Draw() override;
 public:
 	VisualToolScale(VideoDisplay *parent, agi::Context *context);
 };

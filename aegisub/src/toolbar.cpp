@@ -104,7 +104,7 @@ namespace {
 			auto root_it = root.find(name);
 			if (root_it == root.end()) {
 				// Toolbar names are all hardcoded so this should never happen
-				throw agi::InternalError("Toolbar named " + name + " not found.", 0);
+				throw agi::InternalError("Toolbar named " + name + " not found.", nullptr);
 			}
 
 			json::Array const& arr = root_it->second;
@@ -164,11 +164,11 @@ namespace {
 		}
 
 	public:
-		Toolbar(wxWindow *parent, std::string const& name, agi::Context *c, std::string const& ht_context, bool vertical)
-		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_NODIVIDER | wxTB_FLAT | (vertical ? wxTB_VERTICAL :  wxTB_HORIZONTAL))
-		, name(name)
+		Toolbar(wxWindow *parent, std::string name, agi::Context *c, std::string ht_context, bool vertical)
+		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_NODIVIDER | wxTB_FLAT | (vertical ? wxTB_VERTICAL : wxTB_HORIZONTAL))
+		, name(std::move(name))
 		, context(c)
-		, ht_context(ht_context)
+		, ht_context(std::move(ht_context))
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
@@ -177,11 +177,11 @@ namespace {
 			Bind(wxEVT_COMMAND_TOOL_CLICKED, &Toolbar::OnClick, this);
 		}
 
-		Toolbar(wxFrame *parent, std::string const& name, agi::Context *c, std::string const& ht_context)
+		Toolbar(wxFrame *parent, std::string name, agi::Context *c, std::string ht_context)
 		: wxToolBar(parent, -1, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_HORIZONTAL)
-		, name(name)
+		, name(std::move(name))
 		, context(c)
-		, ht_context(ht_context)
+		, ht_context(std::move(ht_context))
 #ifndef __WXMAC__
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))

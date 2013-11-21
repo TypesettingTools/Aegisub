@@ -78,14 +78,14 @@ public:
 	/// string will result in a video with the given parameters
 	static std::string MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
-	std::shared_ptr<VideoFrame> GetFrame(int n);
+	std::shared_ptr<VideoFrame> GetFrame(int n) override;
 
-	int GetFrameCount()             const { return framecount; }
-	int GetWidth()                  const { return width; }
-	int GetHeight()                 const { return height; }
-	double GetDAR()                 const { return 0; }
-	agi::vfr::Framerate GetFPS()    const { return fps; }
-	std::vector<int> GetKeyFrames() const { return std::vector<int>(); }
-	std::string GetColorSpace()     const { return "None"; }
-	std::string GetDecoderName()    const { return "Dummy Video Provider"; }
+	int GetFrameCount()             const override { return framecount; }
+	int GetWidth()                  const override { return width; }
+	int GetHeight()                 const override { return height; }
+	double GetDAR()                 const override { return 0; }
+	agi::vfr::Framerate GetFPS()    const override { return fps; }
+	std::vector<int> GetKeyFrames() const override { return std::vector<int>(); }
+	std::string GetColorSpace()     const override { return "None"; }
+	std::string GetDecoderName()    const override { return "Dummy Video Provider"; }
 };

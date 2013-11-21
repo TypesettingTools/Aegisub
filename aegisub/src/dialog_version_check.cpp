@@ -89,8 +89,8 @@ struct AegisubUpdateDescription {
 	std::string friendly_name;
 	std::string description;
 
-	AegisubUpdateDescription(std::string const& url, std::string const& friendly_name, std::string const& description)
-	: url(url), friendly_name(friendly_name), description(description) { }
+	AegisubUpdateDescription(std::string url, std::string friendly_name, std::string description)
+	: url(std::move(url)), friendly_name(std::move(friendly_name)), description(std::move(description)) { }
 };
 
 class VersionCheckerResultDialog : public wxDialog {
@@ -103,11 +103,11 @@ class VersionCheckerResultDialog : public wxDialog {
 public:
 	VersionCheckerResultDialog(wxString const& main_text, const std::vector<AegisubUpdateDescription> &updates);
 
-	bool ShouldPreventAppExit() const { return false; }
+	bool ShouldPreventAppExit() const override { return false; }
 };
 
 VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text, const std::vector<AegisubUpdateDescription> &updates)
-: wxDialog(0, -1, _("Version Checker"))
+: wxDialog(nullptr, -1, _("Version Checker"))
 {
 	const int controls_width = 500;
 
@@ -135,7 +135,7 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 	automatic_check_checkbox = new wxCheckBox(this, -1, _("&Auto Check for Updates"));
 	automatic_check_checkbox->SetValue(OPT_GET("App/Auto/Check For Updates")->GetBool());
 
-	wxButton *remind_later_button = 0;
+	wxButton *remind_later_button = nullptr;
 	if (updates.size() > 0)
 		remind_later_button = new wxButton(this, wxID_NO, _("Remind me again in a &week"));
 
@@ -147,7 +147,7 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 		main_sizer->Add(new wxStaticLine(this), 0, wxEXPAND|wxALL, 6);
 	main_sizer->Add(automatic_check_checkbox, 0, wxEXPAND|wxBOTTOM, 6);
 
-	wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer();
+	auto button_sizer = new wxStdDialogButtonSizer();
 	button_sizer->AddButton(close_button);
 	if (remind_later_button)
 		button_sizer->AddButton(remind_later_button);

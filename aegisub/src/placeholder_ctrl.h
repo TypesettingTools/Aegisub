@@ -114,5 +114,5 @@ public:
 };
 
 template<> inline void Placeholder<wxComboBox>::Create(wxWindow *parent, wxSize const& size, long style) {
-	wxComboBox::Create(parent, -1, "", wxDefaultPosition, size, 0, 0, style);
+	wxComboBox::Create(parent, -1, "", wxDefaultPosition, size, 0, nullptr, style);
 }

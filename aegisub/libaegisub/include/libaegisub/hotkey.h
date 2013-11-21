@@ -34,8 +34,8 @@ namespace agi {
 	namespace hotkey {
 
 /// @class Combo
-/// A Combo represents a linear sequence of characters set in an std::vector.  This makes up
-/// a single combination, or "Hotkey".
+/// A Combo represents a linear sequence of characters set in an std::vector.
+/// This makes up a single combination, or "Hotkey".
 class Combo {
 	std::vector<std::string> key_map;
 	std::string cmd_name;
@@ -44,10 +44,10 @@ public:
 	/// Constructor
 	/// @param ctx Context
 	/// @param cmd Command name
-	Combo(std::string const& ctx, std::string const& cmd, std::vector<std::string> const& keys)
-	: key_map(keys)
-	, cmd_name(cmd)
-	, context(ctx)
+	Combo(std::string ctx, std::string cmd, std::vector<std::string> keys)
+	: key_map(std::move(keys))
+	, cmd_name(std::move(cmd))
+	, context(std::move(ctx))
 	{
 	}
 

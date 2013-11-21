@@ -84,11 +84,11 @@ public:
 			hk_map->insert(make_pair(combo.CmdName(), combo));
 	}
 
-	unsigned int GetChildren(wxDataViewItemArray &) const { return 0; }
-	wxDataViewItem GetParent() const { return wxDataViewItem(parent); }
-	bool IsContainer() const { return false; }
+	unsigned int GetChildren(wxDataViewItemArray &) const override { return 0; }
+	wxDataViewItem GetParent() const override { return wxDataViewItem(parent); }
+	bool IsContainer() const override { return false; }
 
-	void GetValue(wxVariant &variant, unsigned int col) const {
+	void GetValue(wxVariant &variant, unsigned int col) const override {
 		if (col == 0)
 			variant = to_wx(combo.Str());
 		else if (col == 1) {
@@ -107,10 +107,10 @@ public:
 			}
 		}
 		else
-			throw agi::InternalError("HotkeyDataViewModel asked for an invalid column number", 0);
+			throw agi::InternalError("HotkeyDataViewModel asked for an invalid column number", nullptr);
 	}
 
-	bool SetValue(wxVariant const& variant, unsigned int col) {
+	bool SetValue(wxVariant const& variant, unsigned int col) override {
 		if (col == 0) {
 			wxArrayString toks = wxSplit(variant.GetString(), '-');
 			std::vector<std::string> keys;
@@ -195,17 +195,17 @@ public:
 	}
 
 
-	wxDataViewItem GetParent() const { return wxDataViewItem(0); }
-	bool IsContainer() const { return true; }
-	bool SetValue(wxVariant const&, unsigned int) { return false; }
-	void GetValue(wxVariant &variant, unsigned int col) const {
+	wxDataViewItem GetParent() const override { return wxDataViewItem(nullptr); }
+	bool IsContainer() const override { return true; }
+	bool SetValue(wxVariant const&, unsigned int) override { return false; }
+	void GetValue(wxVariant &variant, unsigned int col) const override {
 		if (col == 1)
 			variant << wxDataViewIconText(name);
 		else
 			variant = name;
 	}
 
-	unsigned int GetChildren(wxDataViewItemArray &out) const {
+	unsigned int GetChildren(wxDataViewItemArray &out) const override {
 		out = visible_items;
 		return out.size();
 	}
@@ -244,12 +244,12 @@ public:
 			category.SetFilter(filter);
 	}
 
-	wxDataViewItem GetParent() const { return wxDataViewItem(0); }
-	bool IsContainer() const { return true; }
-	bool SetValue(wxVariant const&, unsigned int) { return false; }
-	void GetValue(wxVariant &, unsigned int) const { }
+	wxDataViewItem GetParent() const override { return wxDataViewItem(nullptr); }
+	bool IsContainer() const override { return true; }
+	bool SetValue(wxVariant const&, unsigned int) override { return false; }
+	void GetValue(wxVariant &, unsigned int) const override { }
 
-	unsigned int GetChildren(wxDataViewItemArray &out) const {
+	unsigned int GetChildren(wxDataViewItemArray &out) const override {
 		out.reserve(categories.size());
 		for (auto const& category : categories)
 			out.push_back(wxDataViewItem((void*)&category));

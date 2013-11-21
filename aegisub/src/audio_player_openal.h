@@ -92,20 +92,20 @@ class OpenALPlayer : public AudioPlayer, wxTimer {
 
 protected:
 	/// wxTimer override to periodically fill available buffers
-	void Notify();
+	void Notify() override;
 
 public:
 	OpenALPlayer(AudioProvider *provider);
 	~OpenALPlayer();
 
-	void Play(int64_t start,int64_t count);
-	void Stop();
-	bool IsPlaying() { return playing; }
+	void Play(int64_t start,int64_t count) override;
+	void Stop() override;
+	bool IsPlaying() override { return playing; }
 
-	int64_t GetEndPosition() { return end_frame; }
-	int64_t GetCurrentPosition();
-	void SetEndPosition(int64_t pos);
+	int64_t GetEndPosition() override { return end_frame; }
+	int64_t GetCurrentPosition() override;
+	void SetEndPosition(int64_t pos) override;
 
-	void SetVolume(double vol) { volume = vol; }
+	void SetVolume(double vol) override { volume = vol; }
 };
 #endif

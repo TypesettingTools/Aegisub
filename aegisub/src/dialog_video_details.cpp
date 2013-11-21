@@ -57,7 +57,7 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	auto fps = c->videoController->FPS();
 	boost::rational<int> ar(width, height);
 
-	wxFlexGridSizer *fg = new wxFlexGridSizer(2, 5, 10);
+	auto fg = new wxFlexGridSizer(2, 5, 10);
 	auto make_field = [&](wxString const& name, wxString const& value) {
 		fg->Add(new wxStaticText(this, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
 		fg->Add(new wxTextCtrl(this, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
@@ -71,7 +71,7 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	wxStaticBoxSizer *video_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Video"));
 	video_sizer->Add(fg);
 
-	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	auto main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(video_sizer, 1, wxALL|wxEXPAND, 5);
 	main_sizer->Add(CreateSeparatedButtonSizer(wxOK), 0, wxALL|wxEXPAND, 5);
 	SetSizerAndFit(main_sizer);

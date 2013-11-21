@@ -31,9 +31,9 @@ public:
 	// problems such as errant characters or corrupt/incomplete documents
 	class ScanException : public Exception {
 	public:
-		ScanException(std::string const& sMessage, Reader::Location const& locError)
+		ScanException(std::string const& sMessage, Reader::Location locError)
 		: Exception(sMessage)
-		, m_locError(locError)
+		, m_locError(std::move(locError))
 		{ }
 
 		Reader::Location m_locError;
@@ -43,10 +43,10 @@ public:
 	// higher-level problems such as missing commas or brackets
 	class ParseException : public Exception {
 	public:
-		ParseException(std::string const& sMessage, Reader::Location const& locTokenBegin, Reader::Location const& locTokenEnd)
+		ParseException(std::string const& sMessage, Reader::Location locTokenBegin, Reader::Location locTokenEnd)
 		: Exception(sMessage)
-		, m_locTokenBegin(locTokenBegin)
-		, m_locTokenEnd(locTokenEnd)
+		, m_locTokenBegin(std::move(locTokenBegin))
+		, m_locTokenEnd(std::move(locTokenEnd))
 		{ }
 
 		Reader::Location m_locTokenBegin;

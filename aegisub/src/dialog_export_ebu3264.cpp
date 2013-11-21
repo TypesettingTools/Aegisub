@@ -53,14 +53,14 @@ namespace {
 
 		wxTextCtrl *GetCtrl() const { return dynamic_cast<wxTextCtrl*>(GetWindow()); }
 
-		bool TransferToWindow() {
+		bool TransferToWindow() override {
 			wxTextCtrl *ctrl = GetCtrl();
 			if (!ctrl) return false;
 			ctrl->SetValue(wxString::Format("%02d:%02d:%02d:%02d", (int)value->h, (int)value->m, (int)value->s, (int)value->f));
 			return true;
 		}
 
-		bool TransferFromWindow() {
+		bool TransferFromWindow() override {
 			wxTextCtrl *ctrl = GetCtrl();
 			if (!ctrl) return false;
 
@@ -77,7 +77,7 @@ namespace {
 			return true;
 		}
 
-		bool Validate(wxWindow *parent) {
+		bool Validate(wxWindow *parent) override {
 			wxTextCtrl *ctrl = GetCtrl();
 			if (!ctrl) return false;
 
@@ -88,7 +88,7 @@ namespace {
 			return true;
 		}
 
-		wxObject *Clone() const { return new TimecodeValidator(*this); }
+		wxObject *Clone() const override { return new TimecodeValidator(*this); }
 
 	public:
 		TimecodeValidator(EbuTimecode *target) : value(target) { assert(target); }

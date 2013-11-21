@@ -36,7 +36,7 @@
 
 class DummyAudioProvider : public AudioProvider {
 	bool noise;
-	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 public:
 	DummyAudioProvider(agi::fs::path const& uri);

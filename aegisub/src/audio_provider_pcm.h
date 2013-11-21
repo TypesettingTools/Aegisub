@@ -77,7 +77,7 @@ protected:
 
 	IndexVector index_points;
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 };
 
 // Construct the right PCM audio provider (if any) for the file

@@ -72,8 +72,8 @@ class MruMenu : public wxMenu {
 	}
 
 public:
-	MruMenu(std::string const& type, std::vector<std::string> *cmds)
-	: type(type)
+	MruMenu(std::string type, std::vector<std::string> *cmds)
+	: type(std::move(type))
 	, cmds(cmds)
 	{
 	}
@@ -318,7 +318,7 @@ menu_items const& get_menu(std::string const& name) {
 	return it->second;
 }
 
-wxMenu *build_menu(std::string const& name, agi::Context *c, CommandManager *cm, wxMenu *menu = 0);
+wxMenu *build_menu(std::string const& name, agi::Context *c, CommandManager *cm, wxMenu *menu = nullptr);
 
 /// Recursively process a single entry in the menu json
 /// @param parent Menu to add the item(s) from this entry to
@@ -416,8 +416,8 @@ class AutomationMenu : public wxMenu {
 		if (macros.empty())
 			Append(-1, _("No Automation macros loaded"))->Enable(false);
 		else {
-			for (size_t i = 0; i < macros.size(); ++i)
-				cm->AddCommand(macros[i], this, "");
+			for (auto const& macro : macros)
+				cm->AddCommand(macro, this, "");
 		}
 	}
 public:
@@ -477,7 +477,7 @@ namespace menu {
 	}
 
 	std::unique_ptr<wxMenu> GetMenu(std::string const& name, agi::Context *c) {
-		CommandMenu *menu = new CommandMenu(c);
+		auto menu = new CommandMenu(c);
 		build_menu(name, c, &menu->cm, menu);
 		menu->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
 		menu->Bind(wxEVT_COMMAND_MENU_SELECTED, &CommandManager::OnMenuClick, &menu->cm);

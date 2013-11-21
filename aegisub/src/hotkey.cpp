@@ -33,21 +33,21 @@
 
 namespace {
 	const char *added_hotkeys_7035[][5] = {
-		{ "audio/play/line", "Audio", "R", 0, 0 },
-		{ 0 }
+		{ "audio/play/line", "Audio", "R", nullptr, nullptr },
+		{ nullptr }
 	};
 
 	const char *added_hotkeys_7070[][5] = {
-		{ "edit/color/primary", "Subtitle Edit Box", "Alt", "1", 0 },
-		{ "edit/color/secondary", "Subtitle Edit Box", "Alt", "2", 0 },
-		{ "edit/color/outline", "Subtitle Edit Box", "Alt", "3", 0 },
-		{ "edit/color/shadow", "Subtitle Edit Box", "Alt", "4", 0 },
-		{ 0 }
+		{ "edit/color/primary", "Subtitle Edit Box", "Alt", "1", nullptr },
+		{ "edit/color/secondary", "Subtitle Edit Box", "Alt", "2", nullptr },
+		{ "edit/color/outline", "Subtitle Edit Box", "Alt", "3", nullptr },
+		{ "edit/color/shadow", "Subtitle Edit Box", "Alt", "4", nullptr },
+		{ nullptr }
 	};
 
 	const char *added_hotkeys_shift_back[][5] = {
 		{ "edit/line/duplicate/shift_back", "Default", "Ctrl", "Shift", "D" },
-		{ 0 }
+		{ nullptr }
 	};
 
 	void migrate_hotkeys(const char *added[][5]) {
@@ -73,7 +73,7 @@ namespace {
 
 namespace hotkey {
 
-agi::hotkey::Hotkey *inst = 0;
+agi::hotkey::Hotkey *inst = nullptr;
 void init() {
 	inst = new agi::hotkey::Hotkey(
 		config::path->Decode("?user/hotkey.json"),

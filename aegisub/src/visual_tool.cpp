@@ -54,7 +54,7 @@ VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 : c(context)
 , parent(parent)
 , holding(false)
-, active_line(0)
+, active_line(nullptr)
 , dragging(false)
 , frame_number(c->videoController->GetFrameN())
 , shift_down(false)
@@ -110,7 +110,7 @@ void VisualToolBase::OnMouseCaptureLost(wxMouseCaptureLostEvent &) {
 
 void VisualToolBase::OnActiveLineChanged(AssDialogue *new_line) {
 	if (!IsDisplayed(new_line))
-		new_line = 0;
+		new_line = nullptr;
 
 	holding = false;
 	dragging = false;
@@ -142,7 +142,7 @@ AssDialogue* VisualToolBase::GetActiveDialogueLine() {
 	AssDialogue *diag = c->selectionController->GetActiveLine();
 	if (IsDisplayed(diag))
 		return diag;
-	return 0;
+	return nullptr;
 }
 
 void VisualToolBase::SetDisplayArea(int x, int y, int w, int h) {
@@ -351,7 +351,7 @@ static param_vec find_tag(boost::ptr_vector<AssDialogueBlock>& blocks, std::stri
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 // Get a Vector2D from the given tag parameters, or Vector2D::Bad() if they are not valid

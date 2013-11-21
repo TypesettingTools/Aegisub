@@ -132,7 +132,7 @@ public:
 	/// Destructor
 	~JsonEmitter();
 
-	void log(SinkMessage *);
+	void log(SinkMessage *) override;
 };
 
 /// Generates a message and submits it to the log sink.
@@ -149,7 +149,7 @@ public:
 /// Emit log entries to stdout.
 class EmitSTDOUT: public Emitter {
 public:
-	void log(SinkMessage *sm);
+	void log(SinkMessage *sm) override;
 };
 
 	} // namespace log

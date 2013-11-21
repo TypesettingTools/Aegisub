@@ -56,7 +56,7 @@ class SmpteFormatter {
 	std::string sep;
 
 public:
-	SmpteFormatter(agi::vfr::Framerate fps, std::string const& sep=":");
+	SmpteFormatter(agi::vfr::Framerate fps, std::string sep=":");
 
 	/// Convert an AssTime to a SMPTE timecode
 	std::string ToSMPTE(AssTime time) const;

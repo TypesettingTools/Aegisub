@@ -43,9 +43,9 @@ namespace agi {
 		template<class StartCont, class Iter, class WidthCont>
 		inline void get_line_widths(StartCont const& line_start_points, Iter begin, Iter end, WidthCont &line_widths) {
 			size_t line_start = 0;
-			for (size_t i = 0; i < line_start_points.size(); ++i) {
-				line_widths.push_back(std::accumulate(begin + line_start, begin + line_start_points[i], 0));
-				line_start = line_start_points[i];
+			for (auto & line_start_point : line_start_points) {
+				line_widths.push_back(std::accumulate(begin + line_start, begin + line_start_point, 0));
+				line_start = line_start_point;
 			}
 			line_widths.push_back(std::accumulate(begin + line_start, end, 0));
 		}

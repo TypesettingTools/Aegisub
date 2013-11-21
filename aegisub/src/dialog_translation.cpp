@@ -93,7 +93,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	}
 
 	{
-		translated_text = new SubsTextEditCtrl(this, wxSize(320, 80), 0, 0);
+		translated_text = new SubsTextEditCtrl(this, wxSize(320, 80), 0, nullptr);
 		translated_text->SetWrapMode(wxSTC_WRAP_WORD);
 		translated_text->SetMarginWidth(1, 0);
 		translated_text->SetFocus();
@@ -145,7 +145,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	main_sizer->Add(right_box, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 5);
 
 	{
-		wxStdDialogButtonSizer *standard_buttons = new wxStdDialogButtonSizer();
+		auto standard_buttons = new wxStdDialogButtonSizer();
 		standard_buttons->AddButton(new wxButton(this, wxID_CANCEL));
 		standard_buttons->AddButton(new HelpButton(this, "Translation Assistant"));
 		standard_buttons->Realize();

@@ -98,7 +98,7 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 
 	wxSizerFlags main_flags = wxSizerFlags().Expand().Border();
 
-	wxRadioButton *select_matching_lines = 0;
+	wxRadioButton *select_matching_lines = nullptr;
 	{
 		wxSizer *match_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Match"));
 		{

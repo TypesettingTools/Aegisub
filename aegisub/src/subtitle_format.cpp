@@ -66,8 +66,8 @@
 
 using namespace std::placeholders;
 
-SubtitleFormat::SubtitleFormat(std::string const& name)
-: name(name)
+SubtitleFormat::SubtitleFormat(std::string name)
+: name(std::move(name))
 {
 	formats.push_back(this);
 }
@@ -242,7 +242,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 		//Is there an A part before the overlap?
 		if (curdlg->Start > prevdlg->Start) {
 			// Produce new entry with correct values
-			AssDialogue *newdlg = new AssDialogue(*prevdlg);
+			auto newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = prevdlg->Start;
 			newdlg->End = curdlg->Start;
 			newdlg->Text = prevdlg->Text;
@@ -252,7 +252,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 
 		// Overlapping A+B part
 		{
-			AssDialogue *newdlg = new AssDialogue(*prevdlg);
+			auto newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = curdlg->Start;
 			newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
 			// Put an ASS format hard linewrap between lines
@@ -264,7 +264,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 		// Is there an A part after the overlap?
 		if (prevdlg->End > curdlg->End) {
 			// Produce new entry with correct values
-			AssDialogue *newdlg = new AssDialogue(*prevdlg);
+			auto newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = curdlg->End;
 			newdlg->End = prevdlg->End;
 			newdlg->Text = prevdlg->Text;
@@ -275,7 +275,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 		// Is there a B part after the overlap?
 		if (curdlg->End > prevdlg->End) {
 			// Produce new entry with correct values
-			AssDialogue *newdlg = new AssDialogue(*prevdlg);
+			auto newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = prevdlg->End;
 			newdlg->End = curdlg->End;
 			newdlg->Text = curdlg->Text;
@@ -332,7 +332,7 @@ template<class Cont, class Pred>
 SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	auto it = find_if(container.begin(), container.end(), pred);
 	if (it == container.end())
-		throw UnknownSubtitleFormatError("Subtitle format for extension not found", 0);
+		throw UnknownSubtitleFormatError("Subtitle format for extension not found", nullptr);
 	return *it;
 }
 

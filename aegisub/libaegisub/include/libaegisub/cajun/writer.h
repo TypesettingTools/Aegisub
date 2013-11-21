@@ -26,13 +26,13 @@ class Writer : private ConstVisitor {
 	void Write(const Null& null);
 	void Write(const UnknownElement& unknown);
 
-	void Visit(const Array& array);
-	void Visit(const Object& object);
-	void Visit(const Integer& number);
-	void Visit(const Double& number);
-	void Visit(const String& string);
-	void Visit(const Boolean& boolean);
-	void Visit(const Null& null);
+	void Visit(const Array& array) override;
+	void Visit(const Object& object) override;
+	void Visit(const Integer& number) override;
+	void Visit(const Double& number) override;
+	void Visit(const String& string) override;
+	void Visit(const Boolean& boolean) override;
+	void Visit(const Null& null) override;
 
 	std::ostream& m_ostr;
 	int tab_depth;

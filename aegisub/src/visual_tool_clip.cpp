@@ -37,9 +37,9 @@ VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
 , inverse(false)
 {
 	ClipCorner *feats[4];
-	for (size_t i = 0; i < 4; ++i) {
-		feats[i] = new ClipCorner;
-		features.push_back(*feats[i]);
+	for (auto& feat : feats) {
+		feat = new ClipCorner;
+		features.push_back(*feat);
 	}
 
 	// Attach each feature to the two features it shares edges with

@@ -77,7 +77,7 @@ Vector2D Vector2D::Round(float step) const {
 }
 
 Vector2D::operator unspecified_bool_type() const {
-	return *this == Vector2D() ? 0 : &Vector2D::x;
+	return *this == Vector2D() ? nullptr : &Vector2D::x;
 }
 
 std::string Vector2D::PStr(char sep) const {

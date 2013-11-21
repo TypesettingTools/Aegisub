@@ -60,7 +60,7 @@ public:
 	/// @param line Initial line
 	/// @param auto_split Should the line automatically be split on spaces if there are no k tags?
 	/// @param normalize Should the total duration of the syllables be forced to equal the line duration?
-	AssKaraoke(AssDialogue *line = 0, bool auto_split = false, bool normalize = true);
+	AssKaraoke(AssDialogue *line = nullptr, bool auto_split = false, bool normalize = true);
 
 	/// Parse a dialogue line
 	void SetLine(AssDialogue *line, bool auto_split = false, bool normalize = true);

@@ -24,7 +24,7 @@ class AssInfo : public AssEntry {
 
 public:
 	AssInfo(AssInfo const& o) : key(o.key), value(o.value) { }
-	AssInfo(std::string const& key, std::string const& value) : key(key), value(value) { }
+	AssInfo(std::string key, std::string value) : key(std::move(key)), value(std::move(value)) { }
 
 	AssEntry *Clone() const override { return new AssInfo(*this); }
 	AssEntryGroup Group() const override { return AssEntryGroup::INFO; }

@@ -85,7 +85,7 @@ public:
 
 	/// @brief Invalid iterator constructor; use for end iterator
 	line_iterator()
-	: stream(0)
+	: stream(nullptr)
 	, valid(false)
 	{
 	}

@@ -199,7 +199,7 @@ public:
 		RecalculateThumb();
 	}
 
-	bool OnMouseEvent(wxMouseEvent &event)
+	bool OnMouseEvent(wxMouseEvent &event) override
 	{
 		if (event.LeftIsDown())
 		{
@@ -357,7 +357,7 @@ public:
 		pixel_left = std::max(new_pixel_left, 0);
 	}
 
-	bool OnMouseEvent(wxMouseEvent &event)
+	bool OnMouseEvent(wxMouseEvent &event) override
 	{
 		if (event.LeftDown())
 		{
@@ -475,7 +475,7 @@ class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
 
 public:
 	AudioMarkerInteractionObject(std::vector<AudioMarker*> markers, AudioTimingController *timing_controller, AudioDisplay *display, wxMouseButton button_used)
-	: markers(markers)
+	: markers(std::move(markers))
 	, timing_controller(timing_controller)
 	, display(display)
 	, button_used(button_used)
@@ -484,7 +484,7 @@ public:
 	{
 	}
 
-	bool OnMouseEvent(wxMouseEvent &event)
+	bool OnMouseEvent(wxMouseEvent &event) override
 	{
 		if (event.Dragging())
 		{
@@ -512,7 +512,7 @@ private:
 
 	void Split(int point)
 	{
-		iterator it = points.lower_bound(point);
+		auto it = points.lower_bound(point);
 		if (it == points.end() || it->first != point)
 		{
 			assert(it != points.begin());
@@ -523,7 +523,7 @@ private:
 	void Restyle(int start, int end, AudioRenderingStyle style)
 	{
 		assert(points.lower_bound(end) != points.end());
-		for (iterator pt = points.lower_bound(start); pt->first < end; ++pt)
+		for (auto pt = points.lower_bound(start); pt->first < end; ++pt)
 		{
 			if (style > pt->second)
 				pt->second = style;
@@ -536,7 +536,7 @@ public:
 		points[0] = AudioStyle_Normal;
 	}
 
-	void AddRange(int start, int end, AudioRenderingStyle style)
+	void AddRange(int start, int end, AudioRenderingStyle style) override
 	{
 
 		if (start < 0) start = 0;
@@ -559,7 +559,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 , controller(controller)
 , scrollbar(agi::util::make_unique<AudioDisplayScrollbar>(this))
 , timeline(agi::util::make_unique<AudioDisplayTimeline>(this))
-, dragged_object(0)
+, dragged_object(nullptr)
 , scroll_left(0)
 , pixel_audio_width(0)
 , ms_per_pixel(0.0)
@@ -1078,7 +1078,7 @@ bool AudioDisplay::ForwardMouseEvent(wxMouseEvent &event) {
 		if (!dragged_object->OnMouseEvent(event))
 		{
 			scroll_timer.Stop();
-			SetDraggedObject(0);
+			SetDraggedObject(nullptr);
 			SetCursor(wxNullCursor);
 		}
 		return true;
@@ -1087,12 +1087,12 @@ bool AudioDisplay::ForwardMouseEvent(wxMouseEvent &event) {
 	{
 		// Something is wrong, we might have lost capture somehow.
 		// Fix state and pretend it didn't happen.
-		SetDraggedObject(0);
+		SetDraggedObject(nullptr);
 		SetCursor(wxNullCursor);
 	}
 
 	const wxPoint mousepos = event.GetPosition();
-	AudioDisplayInteractionObject *new_obj = 0;
+	AudioDisplayInteractionObject *new_obj = nullptr;
 	// Check for scrollbar action
 	if (scrollbar->GetBounds().Contains(mousepos))
 	{

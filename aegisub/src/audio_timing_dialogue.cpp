@@ -71,10 +71,10 @@ class DialogueTimingMarker : public AudioMarker {
 	TimeableLine *line;
 
 public:
-	int       GetPosition() const { return position; }
-	wxPen     GetStyle()    const { return *style; }
-	FeetStyle GetFeet()     const { return feet; }
-	bool      CanSnap()     const { return true; }
+	int       GetPosition() const override { return position; }
+	wxPen     GetStyle()    const override { return *style; }
+	FeetStyle GetFeet()     const override { return feet; }
+	bool      CanSnap()     const override { return true; }
 
 	/// Move the marker to a new position
 	/// @param new_position The position to move the marker to, in milliseconds
@@ -179,7 +179,7 @@ public:
 	/// @param style_left The rendering style for the start marker
 	/// @param style_right The rendering style for the end marker
 	TimeableLine(AudioRenderingStyle style, const Pen *style_left, const Pen *style_right)
-		: line(0)
+		: line(nullptr)
 		, style(style)
 		, marker1(0, style_left, AudioMarker::Feet_Right, style, this)
 		, marker2(0, style_right, AudioMarker::Feet_Left, style, this)
@@ -382,27 +382,27 @@ class AudioTimingControllerDialogue : public AudioTimingController {
 
 public:
 	// AudioMarkerProvider interface
-	void GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const;
+	void GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const override;
 
 	// AudioTimingController interface
-	wxString GetWarningMessage() const;
-	TimeRange GetIdealVisibleTimeRange() const;
-	TimeRange GetPrimaryPlaybackRange() const;
-	TimeRange GetActiveLineRange() const;
-	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
-	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const { }
-	void Next(NextMode mode);
-	void Prev();
-	void Commit();
-	void Revert();
-	void AddLeadIn();
-	void AddLeadOut();
-	void ModifyLength(int delta, bool shift_following);
-	void ModifyStart(int delta);
-	bool IsNearbyMarker(int ms, int sensitivity) const;
-	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range);
-	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range);
-	void OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range);
+	wxString GetWarningMessage() const override;
+	TimeRange GetIdealVisibleTimeRange() const override;
+	TimeRange GetPrimaryPlaybackRange() const override;
+	TimeRange GetActiveLineRange() const override;
+	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const override;
+	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const override { }
+	void Next(NextMode mode) override;
+	void Prev() override;
+	void Commit() override;
+	void Revert() override;
+	void AddLeadIn() override;
+	void AddLeadOut() override;
+	void ModifyLength(int delta, bool shift_following) override;
+	void ModifyStart(int delta) override;
+	bool IsNearbyMarker(int ms, int sensitivity) const override;
+	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range) override;
+	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range) override;
+	void OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range) override;
 
 	/// Constructor
 	/// @param c Project context
@@ -555,7 +555,7 @@ void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
 		}
 		else
 		{
-			AssDialogue *amend = modified_lines.size() == 1 ? (*modified_lines.begin())->GetLine() : 0;
+			AssDialogue *amend = modified_lines.size() == 1 ? (*modified_lines.begin())->GetLine() : nullptr;
 			commit_id = context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id, amend);
 		}
 
@@ -857,7 +857,7 @@ int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range, st
 		return position;
 
 	TimeRange snap_time_range(position - snap_range, position + snap_range);
-	const AudioMarker *snap_marker = 0;
+	const AudioMarker *snap_marker = nullptr;
 	AudioMarkerVector potential_snaps;
 	GetMarkers(snap_time_range, potential_snaps);
 	for (auto marker : potential_snaps)

@@ -196,7 +196,7 @@ protected:
 public:
 	/// @brief Handler for all mouse events
 	/// @param event Shockingly enough, the mouse event
-	void OnMouseEvent(wxMouseEvent &event);
+	void OnMouseEvent(wxMouseEvent &event) override;
 
 	/// @brief Constructor
 	/// @param parent The VideoDisplay to use for coordinate conversion

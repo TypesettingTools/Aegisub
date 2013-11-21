@@ -71,7 +71,7 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	///
 	/// Overrides the OnSetProvider event handler in the base class, to reset things
 	/// when the audio provider is changed.
-	void OnSetProvider();
+	void OnSetProvider() override;
 
 	/// @brief Recreates the cache
 	///
@@ -117,10 +117,10 @@ public:
 	/// @param bmp   [in,out] Bitmap to render into, also carries length information
 	/// @param start First column of pixel data in display to render
 	/// @param style Style to render audio in
-	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style);
+	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) override;
 
 	/// @brief Render blank area
-	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style);
+	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style) override;
 
 	/// @brief Set the derivation resolution
 	/// @param derivation_size Binary logarithm of number of samples to use in deriving frequency-power data
@@ -135,5 +135,5 @@ public:
 
 	/// @brief Cleans up the cache
 	/// @param max_size Maximum size in bytes for the cache
-	void AgeCache(size_t max_size);
+	void AgeCache(size_t max_size) override;
 };

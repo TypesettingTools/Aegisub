@@ -62,7 +62,7 @@ struct app_about : public Command {
 	STR_DISP("About")
 	STR_HELP("About Aegisub")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AboutScreen(c->parent).ShowModal();
 	}
 };
@@ -74,15 +74,15 @@ struct app_display_audio_subs : public Command {
 	STR_HELP("Display audio and the subtitles grid only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		wxGetApp().frame->SetDisplayMode(0,1);
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->audioController->IsAudioOpen();
 	}
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return wxGetApp().frame->IsAudioShown() && !wxGetApp().frame->IsVideoShown();
 	}
 };
@@ -94,15 +94,15 @@ struct app_display_full : public Command {
 	STR_HELP("Display audio, video and then subtitles grid")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		wxGetApp().frame->SetDisplayMode(1,1);
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->audioController->IsAudioOpen() && c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return wxGetApp().frame->IsAudioShown() && wxGetApp().frame->IsVideoShown();
 	}
 };
@@ -114,11 +114,11 @@ struct app_display_subs : public Command {
 	STR_HELP("Display the subtitles grid only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		wxGetApp().frame->SetDisplayMode(0,0);
 	}
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return !wxGetApp().frame->IsAudioShown() && !wxGetApp().frame->IsVideoShown();
 	}
 };
@@ -130,15 +130,15 @@ struct app_display_video_subs : public Command {
 	STR_HELP("Display video and the subtitles grid only")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		wxGetApp().frame->SetDisplayMode(1,0);
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return !wxGetApp().frame->IsAudioShown() && wxGetApp().frame->IsVideoShown();
 	}
 };
@@ -149,7 +149,7 @@ struct app_exit : public Command {
 	STR_DISP("Exit")
 	STR_HELP("Exit the application")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		wxGetApp().frame->Close();
 	}
 };
@@ -160,7 +160,7 @@ struct app_language : public Command {
 	STR_DISP("Language")
 	STR_HELP("Select Aegisub interface language")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		// Get language
 		wxString new_language = wxGetApp().locale.PickLanguage();
 		if (!new_language) return;
@@ -184,7 +184,7 @@ struct app_log : public Command {
 	STR_DISP("Log window")
 	STR_HELP("View the event log")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->dialog->Show<LogWindow>(c);
 	}
 };
@@ -195,7 +195,7 @@ struct app_new_window : public Command {
 	STR_DISP("New Window")
 	STR_HELP("Open a new application window")
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		RestartAegisub();
 	}
 };
@@ -206,7 +206,7 @@ struct app_options : public Command {
 	STR_DISP("Options")
 	STR_HELP("Configure Aegisub")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		try {
 			while (Preferences(c->parent).ShowModal() < 0);
 		} catch (agi::Exception& e) {
@@ -222,11 +222,11 @@ struct app_toggle_global_hotkeys : public Command {
 	STR_HELP("Toggle global hotkey overrides (Medusa Mode)")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		agi::OptionValue *opt = OPT_SET("Audio/Medusa Timing Hotkeys");
 		opt->SetBool(!opt->GetBool());
 	}
@@ -237,17 +237,17 @@ struct app_toggle_toolbar : public Command {
 	STR_HELP("Toggle the main toolbar")
 	CMD_TYPE(COMMAND_DYNAMIC_NAME)
 
-	wxString StrMenu(const agi::Context *) const {
+	wxString StrMenu(const agi::Context *) const override {
 		return OPT_GET("App/Show Toolbar")->GetBool() ?
 			_("Hide Toolbar") :
 			_("Show Toolbar");
 	}
 
-	wxString StrDisplay(const agi::Context *) const {
-		return StrMenu(0);
+	wxString StrDisplay(const agi::Context *) const override {
+		return StrMenu(nullptr);
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		agi::OptionValue *opt = OPT_SET("App/Show Toolbar");
 		opt->SetBool(!opt->GetBool());
 	}
@@ -259,7 +259,7 @@ struct app_updates : public Command {
 	STR_DISP("Check for Updates")
 	STR_HELP("Check to see if there is a new version of Aegisub available")
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		PerformVersionCheck(true);
 	}
 };

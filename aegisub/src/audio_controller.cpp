@@ -155,7 +155,7 @@ void AudioController::OnAudioProviderChanged()
 void AudioController::OpenAudio(agi::fs::path const& url)
 {
 	if (url.empty())
-		throw agi::InternalError("AudioController::OpenAudio() was passed an empty string. This must not happen.", 0);
+		throw agi::InternalError("AudioController::OpenAudio() was passed an empty string. This must not happen.", nullptr);
 
 	std::unique_ptr<AudioProvider> new_provider;
 	try {
@@ -204,8 +204,8 @@ void AudioController::CloseAudio()
 
 	player.reset();
 	provider.reset();
-	player = 0;
-	provider = 0;
+	player = nullptr;
+	provider = nullptr;
 
 	audio_url.clear();
 

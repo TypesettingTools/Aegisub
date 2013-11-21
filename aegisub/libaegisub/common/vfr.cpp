@@ -179,8 +179,8 @@ void Framerate::SetFromTimecodes() {
 	last = (timecodes.size() - 1) * denominator * 1000;
 }
 
-Framerate::Framerate(std::vector<int> const& timecodes)
-: timecodes(timecodes)
+Framerate::Framerate(std::vector<int> timecodes)
+: timecodes(std::move(timecodes))
 , drop(false)
 {
 	SetFromTimecodes();

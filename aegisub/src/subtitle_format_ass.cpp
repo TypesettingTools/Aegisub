@@ -76,7 +76,7 @@ void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 			parser.AddLine(line);
 		}
 		catch (const char *err) {
-			throw AssParseError("Error processing line: " + line + ": " + err, 0);
+			throw AssParseError("Error processing line: " + line + ": " + err, nullptr);
 		}
 	}
 }

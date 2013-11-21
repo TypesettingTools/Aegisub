@@ -51,7 +51,7 @@
 SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, agi::Color col)
 : wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
 , style(new AssStyle)
-, back_color(col)
+, back_color(std::move(col))
 , sub_file(agi::util::make_unique<AssFile>())
 , line(new AssDialogue)
 {

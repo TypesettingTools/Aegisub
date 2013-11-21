@@ -94,8 +94,8 @@ public:
 	VideoOutRenderException(const char *func, int err)
 	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))
 	{ }
-	const char * GetName() const { return "videoout/opengl/render"; }
-	Exception * Copy() const { return new VideoOutRenderException(*this); }
+	const char * GetName() const override { return "videoout/opengl/render"; }
+	Exception * Copy() const override { return new VideoOutRenderException(*this); }
 };
 /// @class VideoOutOpenGLException
 /// @extends VideoOutException
@@ -106,6 +106,6 @@ public:
 	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))
 	{ }
 	VideoOutInitException(const char *err) : VideoOutException(err) { }
-	const char * GetName() const { return "videoout/opengl/init"; }
-	Exception * Copy() const { return new VideoOutInitException(*this); }
+	const char * GetName() const override { return "videoout/opengl/init"; }
+	Exception * Copy() const override { return new VideoOutInitException(*this); }
 };

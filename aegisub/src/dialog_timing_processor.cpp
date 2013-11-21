@@ -390,9 +390,7 @@ void DialogTimingProcessor::Process() {
 		if (c->videoController->IsLoaded())
 			kf.push_back(c->videoController->GetLength() - 1);
 
-		for (size_t i = 0; i < sorted.size(); ++i) {
-			AssDialogue *cur = sorted[i];
-
+		for (AssDialogue *cur : sorted) {
 			// Get start/end frames
 			int startF = c->videoController->FrameAtTime(cur->Start, agi::vfr::START);
 			int endF = c->videoController->FrameAtTime(cur->End, agi::vfr::END);

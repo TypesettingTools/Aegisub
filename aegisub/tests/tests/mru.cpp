@@ -22,7 +22,7 @@ protected:
 	std::string default_mru;
 	std::string conf_ok;
 
-	void SetUp() {
+	void SetUp() override {
 		default_mru = "{\"Valid\" : []}";
 		conf_ok = "./data/mru_ok.json";
 	}
@@ -105,7 +105,7 @@ TEST_F(lagi_mru, MRUEntryRemove_r4347) {
 	EXPECT_NO_THROW(mru.Remove("Valid", "/path/to/file"));
 
 	const agi::MRUManager::MRUListMap *map_list = mru.Get("Valid");
-	agi::MRUManager::MRUListMap::const_iterator i_lst = map_list->begin();
+	auto i_lst = map_list->begin();
 
 	if ((i_lst != map_list->end()) && (*i_lst == "/path/to/file"))
 		FAIL() << "r4347 regression, Entry exists after remove";

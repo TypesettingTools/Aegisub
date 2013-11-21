@@ -45,12 +45,12 @@ class FrameMain;
 namespace Automation4 { class AutoloadScriptManager; }
 
 class AegisubApp: public wxApp {
-	bool OnInit();
-	int OnExit();
-	int OnRun();
+	bool OnInit() override;
+	int OnExit() override;
+	int OnRun() override;
 
-	void OnUnhandledException();
-	void OnFatalException();
+	void OnUnhandledException() override;
+	void OnFatalException() override;
 
 	/// @brief Handle wx assertions and redirect to the logging system.
 	/// @param file File name
@@ -58,11 +58,11 @@ class AegisubApp: public wxApp {
 	/// @param func Function name
 	/// @param cond Condition
 	/// @param msg  Message
-	void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg);
+	void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) override;
 
 	// This function wraps all event handler calls anywhere in the application and is
 	// our ticket to catch exceptions happening in event handlers.
-	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const;
+	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const override;
 
 public:
 	AegisubApp();

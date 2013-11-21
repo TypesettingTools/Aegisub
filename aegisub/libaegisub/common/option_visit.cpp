@@ -67,11 +67,11 @@ std::unique_ptr<OptionValue> ConfigVisitor::ReadArray(json::Array const& src, st
 	for (json::Object const& obj : src) {
 		if (obj.size() != 1) {
 			Error<OptionJsonValueArray>("Invalid array member");
-			return 0;
+			return nullptr;
 		}
 		if (obj.begin()->first != array_type) {
 			Error<OptionJsonValueArray>("Attempt to insert value into array of wrong type");
-			return 0;
+			return nullptr;
 		}
 
 		arr.push_back(ValueType(obj.begin()->second));

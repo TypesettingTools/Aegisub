@@ -47,11 +47,11 @@ class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
 	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
 	void LoadAudio(agi::fs::path const& filename);
-	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 public:
 	FFmpegSourceAudioProvider(agi::fs::path const& filename);
 
-	bool NeedsCache() const { return true; }
+	bool NeedsCache() const override { return true; }
 };
 #endif

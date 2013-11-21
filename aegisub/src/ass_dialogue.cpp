@@ -96,7 +96,7 @@ public:
 
 	agi::StringRange next_tok() {
 		if (pos.eof())
-			throw SubtitleFormatParseError("Failed parsing line: " + std::string(str.begin(), str.end()), 0);
+			throw SubtitleFormatParseError("Failed parsing line: " + std::string(str.begin(), str.end()), nullptr);
 		return *pos++;
 	}
 
@@ -115,7 +115,7 @@ void AssDialogue::Parse(std::string const& raw) {
 		str = agi::StringRange(raw.begin() + 9, raw.end());
 	}
 	else
-		throw SubtitleFormatParseError("Failed parsing line: " + raw, 0);
+		throw SubtitleFormatParseError("Failed parsing line: " + raw, nullptr);
 
 	tokenizer tkn(str);
 
@@ -169,8 +169,8 @@ std::string AssDialogue::GetData(bool ssa) const {
 	append_str(str, End.GetAssFormated());
 	append_unsafe_str(str, Style);
 	append_unsafe_str(str, Actor);
-	for (int i = 0; i < 3; ++i)
-		append_int(str, Margin[i]);
+	for (auto margin : Margin)
+		append_int(str, margin);
 	append_unsafe_str(str, Effect);
 	str += Text.get();
 
@@ -224,7 +224,7 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 			}
 			else {
 				// Create block
-				AssDialogueBlockOverride *block = new AssDialogueBlockOverride(work);
+				auto block = new AssDialogueBlockOverride(work);
 				block->ParseTags();
 				Blocks.push_back(block);
 
@@ -282,7 +282,7 @@ std::string AssDialogue::GetStrippedText() const {
 }
 
 AssEntry *AssDialogue::Clone() const {
-	AssDialogue *clone = new AssDialogue(*this);
+	auto clone = new AssDialogue(*this);
 	*const_cast<int *>(&clone->Id) = Id;
 	return clone;
 }

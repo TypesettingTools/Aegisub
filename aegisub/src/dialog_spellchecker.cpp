@@ -54,15 +54,15 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 : wxDialog(context->parent, -1, _("Spell Checker"))
 , context(context)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
-, start_line(0)
-, active_line(0)
+, start_line(nullptr)
+, active_line(nullptr)
 , has_looped(false)
 {
 	SetIcon(GETICON(spellcheck_toolbutton_16));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
-	wxFlexGridSizer *current_word_sizer = new wxFlexGridSizer(2, 5, 5);
+	auto current_word_sizer = new wxFlexGridSizer(2, 5, 5);
 	main_sizer->Add(current_word_sizer, wxSizerFlags().Expand().Border(wxALL, 5));
 
 	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);

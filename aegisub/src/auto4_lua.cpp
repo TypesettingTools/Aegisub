@@ -88,7 +88,7 @@ namespace {
 		lua_getfield(L, LUA_REGISTRYINDEX, "project_context");
 		if (!lua_islightuserdata(L, -1)) {
 			lua_pop(L, 1);
-			return 0;
+			return nullptr;
 		}
 		const agi::Context * c = static_cast<const agi::Context *>(lua_touserdata(L, -1));
 		lua_pop(L, 1);
@@ -328,17 +328,17 @@ namespace Automation4 {
 		static LuaScript* GetScriptObject(lua_State *L);
 
 		// Script implementation
-		void Reload() { Create(); }
+		void Reload() override { Create(); }
 
-		std::string GetName() const { return name; }
-		std::string GetDescription() const { return description; }
-		std::string GetAuthor() const { return author; }
-		std::string GetVersion() const { return version; }
-		bool GetLoadedState() const { return L != 0; }
+		std::string GetName() const override { return name; }
+		std::string GetDescription() const override { return description; }
+		std::string GetAuthor() const override { return author; }
+		std::string GetVersion() const override { return version; }
+		bool GetLoadedState() const override { return L != nullptr; }
 
-		std::vector<cmd::Command*> GetMacros() const { return macros; }
-		std::vector<ExportFilter*> GetFilters() const;
-		std::vector<SubtitleFormat*> GetFormats() const { return std::vector<SubtitleFormat*>(); }
+		std::vector<cmd::Command*> GetMacros() const override { return macros; }
+		std::vector<ExportFilter*> GetFilters() const override;
+		std::vector<SubtitleFormat*> GetFormats() const override { return std::vector<SubtitleFormat*>(); }
 	};
 
 	LuaScript::LuaScript(agi::fs::path const& filename)
@@ -512,7 +512,7 @@ namespace Automation4 {
 			if (macro->name() == command->name()) {
 				luaL_error(L,
 					"A macro named '%s' is already defined in script '%s'",
-					command->StrDisplay(0).utf8_str().data(), name.c_str());
+					command->StrDisplay(nullptr).utf8_str().data(), name.c_str());
 			}
 		}
 		macros.push_back(command);
@@ -858,7 +858,7 @@ namespace Automation4 {
 		set_context(L, c);
 
 		GetFeatureFunction("validate");
-		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
+		auto subsobj = new LuaAssFile(L, c->ass);
 		push_value(L, transform_selection(L, c));
 
 		int err = lua_pcall(L, 3, 2, 0);
@@ -891,7 +891,7 @@ namespace Automation4 {
 		stackcheck.check_stack(0);
 
 		GetFeatureFunction("run");
-		LuaAssFile *subsobj = new LuaAssFile(L, c->ass, true, true);
+		auto subsobj = new LuaAssFile(L, c->ass, true, true);
 		push_value(L, transform_selection(L, c));
 
 		try {
@@ -968,7 +968,7 @@ namespace Automation4 {
 		stackcheck.check_stack(0);
 
 		GetFeatureFunction("isactive");
-		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
+		auto subsobj = new LuaAssFile(L, c->ass);
 		push_value(L, transform_selection(L, c));
 
 		int err = lua_pcall(L, 3, 1, 0);
@@ -1035,7 +1035,7 @@ namespace Automation4 {
 
 		// The entire point of an export filter is to modify the file, but
 		// setting undo points makes no sense
-		LuaAssFile *subsobj = new LuaAssFile(L, subs, true);
+		auto subsobj = new LuaAssFile(L, subs, true);
 		assert(lua_isuserdata(L, -1));
 		stackcheck.check_stack(2);
 
@@ -1066,14 +1066,14 @@ namespace Automation4 {
 	ScriptDialog* LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
 	{
 		if (!has_config)
-			return 0;
+			return nullptr;
 
 		set_context(L, c);
 
 		GetFeatureFunction("config");
 
 		// prepare function call
-		LuaAssFile *subsobj = new LuaAssFile(L, c->ass);
+		auto subsobj = new LuaAssFile(L, c->ass);
 		// stored options
 		lua_newtable(L); // TODO, nothing for now
 

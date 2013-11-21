@@ -161,8 +161,8 @@ void Spline::DecodeFromAss(std::string const& str) {
 }
 
 void Spline::MovePoint(iterator curve,int point,Vector2D pos) {
-	iterator prev = std::prev(curve, curve != begin());
-	iterator next = std::next(curve);
+	auto prev = std::prev(curve, curve != begin());
+	auto next = std::next(curve);
 	if (next != end() && next->type == SplineCurve::POINT)
 		next = end();
 
@@ -198,8 +198,8 @@ void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, s
 	int curCount = 0;
 
 	// Generate points for each curve
-	for (iterator cur = begin(); cur != end(); ++cur) {
-		if (cur->type == SplineCurve::POINT) {
+	for (auto const& elem : *this) {
+		if (elem.type == SplineCurve::POINT) {
 			if (curCount > 0)
 				count.push_back(curCount);
 
@@ -207,7 +207,7 @@ void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, s
 			first.push_back(points.size() / 2);
 			curCount = 0;
 		}
-		curCount += cur->GetPoints(points);
+		curCount += elem.GetPoints(points);
 	}
 
 	count.push_back(curCount);
@@ -241,7 +241,7 @@ void Spline::GetClosestParametricPoint(Vector2D reference,iterator &curve,float 
 	emplace_back(back().EndPoint(), front().p1);
 
 	float closest = std::numeric_limits<float>::infinity();
-	for (iterator cur = begin(); cur != end(); ++cur) {
+	for (auto cur = begin(); cur != end(); ++cur) {
 		float param = cur->GetClosestParam(reference);
 		Vector2D p1 = cur->GetPoint(param);
 		float dist = (p1-reference).SquareLen();
@@ -274,9 +274,9 @@ void Spline::Smooth(float smooth) {
 	if (size() < 3) return;
 
 	// Smooth curve
-	for (iterator cur = begin(); cur != end(); ++cur) {
-		iterator prev_curve = prev(cur != begin() ? cur : end());
-		iterator next_curve = next(cur);
+	for (auto cur = begin(); cur != end(); ++cur) {
+		auto prev_curve = prev(cur != begin() ? cur : end());
+		auto next_curve = next(cur);
 		if (next_curve == end())
 			next_curve = begin();
 

@@ -59,7 +59,7 @@ class AssExportFilter : public boost::intrusive::make_list_base_hook<boost::intr
 	std::string description;
 
 public:
-	AssExportFilter(std::string const& name, std::string const& description, int priority = 0);
+	AssExportFilter(std::string name, std::string description, int priority = 0);
 	virtual ~AssExportFilter() { };
 
 	std::string const& GetName() const { return name; }
@@ -69,12 +69,12 @@ public:
 	/// @param subs Subtitles to process
 	/// @param parent_window Window to use as the parent if the filter wishes
 	///                      to open a progress dialog
-	virtual void ProcessSubs(AssFile *subs, wxWindow *parent_window=0)=0;
+	virtual void ProcessSubs(AssFile *subs, wxWindow *parent_window=nullptr)=0;
 
 	/// Draw setup controls
 	/// @param parent Parent window to add controls to
 	/// @param c Project context
-	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) { return 0; }
+	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) { return nullptr; }
 
 	/// Load settings to use from the configuration dialog
 	/// @param is_default If true use default settings instead

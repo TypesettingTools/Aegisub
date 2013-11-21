@@ -62,7 +62,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 
 	// Script details crap
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Script"));
-	wxFlexGridSizer *TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
+	auto TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
 
 	AddProperty(TopSizerGrid, _("Title:"), "Title");
 	AddProperty(TopSizerGrid, _("Original script:"), "Original Script");
@@ -95,7 +95,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 
 	// Options
 	wxSizer *optionsBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
-	wxFlexGridSizer *optionsGrid = new wxFlexGridSizer(3,2,5,5);
+	auto optionsGrid = new wxFlexGridSizer(3,2,5,5);
 	wxString wrap_opts[] = {
 		_("0: Smart wrapping, top line is wider"),
 		_("1: End-of-line word wrapping, only \\N breaks"),

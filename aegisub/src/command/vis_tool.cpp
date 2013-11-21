@@ -39,15 +39,15 @@ namespace {
 	struct visual_tool_command : public Command {
 		CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
-		bool Validate(const agi::Context *c) {
+		bool Validate(const agi::Context *c) override {
 			return c->videoController->IsLoaded();
 		}
 
-		bool IsActive(const agi::Context *c) {
+		bool IsActive(const agi::Context *c) override {
 			return c->videoDisplay->ToolIsType(typeid(T));
 		}
 
-		void operator()(agi::Context *c) {
+		void operator()(agi::Context *c) override {
 			c->videoDisplay->SetTool(agi::util::make_unique<T>(c->videoDisplay, c));
 		}
 	};

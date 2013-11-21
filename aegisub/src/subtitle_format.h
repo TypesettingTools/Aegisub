@@ -81,7 +81,7 @@ public:
 	/// Constructor
 	/// @param Subtitle format name
 	/// @note Automatically registers the format
-	SubtitleFormat(std::string const& name);
+	SubtitleFormat(std::string name);
 	/// Destructor
 	/// @note Automatically unregisters the format
 	virtual ~SubtitleFormat();

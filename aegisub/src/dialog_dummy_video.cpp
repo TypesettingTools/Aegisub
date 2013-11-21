@@ -73,7 +73,7 @@ wxControl *spin_ctrl(wxWindow *parent, double min, double max, double *value) {
 }
 
 wxComboBox *resolution_shortcuts(wxWindow *parent, int width, int height) {
-	wxComboBox *ctrl = new wxComboBox(parent, -1, "", wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY);
+	wxComboBox *ctrl = new wxComboBox(parent, -1, "", wxDefaultPosition, wxDefaultSize, 0, nullptr, wxCB_READONLY);
 
 	for (auto const& res : resolutions) {
 		ctrl->Append(res.name);
@@ -97,13 +97,13 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 {
 	SetIcon(GETICON(use_dummy_video_menu_16));
 
-	wxBoxSizer *res_sizer = new wxBoxSizer(wxHORIZONTAL);
+	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(spin_ctrl(this, 1, 10000, &width), wxSizerFlags(1).Expand());
 	res_sizer->Add(new wxStaticText(this, -1, " x "), wxSizerFlags().Center());
 	res_sizer->Add(spin_ctrl(this, 1, 10000, &height), wxSizerFlags(1).Expand());
 
-	wxBoxSizer *color_sizer = new wxBoxSizer(wxHORIZONTAL);
-	ColourButton *color_btn = new ColourButton(this, wxSize(30, 17), false, color);
+	auto color_sizer = new wxBoxSizer(wxHORIZONTAL);
+	auto color_btn = new ColourButton(this, wxSize(30, 17), false, color);
 	color_sizer->Add(color_btn, wxSizerFlags().DoubleBorder(wxRIGHT));
 	color_sizer->Add(new wxCheckBox(this, -1, _("Checkerboard &pattern"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&pattern)), wxSizerFlags(1).Center());
 
@@ -118,7 +118,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	btn_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Dummy Video"));
 
-	wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	auto main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(sizer, wxSizerFlags(1).Border().Expand());
 	main_sizer->Add(new wxStaticLine(this, wxHORIZONTAL), wxSizerFlags().HorzBorder().Expand());
 	main_sizer->Add(btn_sizer, wxSizerFlags().Expand().Border());

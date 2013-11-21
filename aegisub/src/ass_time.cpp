@@ -89,9 +89,9 @@ int AssTime::GetTimeSeconds() const { return (time % 60000) / 1000; }
 int AssTime::GetTimeMiliseconds() const { return (time % 1000); }
 int AssTime::GetTimeCentiseconds() const { return (time % 1000) / 10; }
 
-SmpteFormatter::SmpteFormatter(agi::vfr::Framerate fps, std::string const& sep)
-: fps(fps)
-, sep(sep)
+SmpteFormatter::SmpteFormatter(agi::vfr::Framerate fps, std::string sep)
+: fps(std::move(fps))
+, sep(std::move(sep))
 {
 }
 

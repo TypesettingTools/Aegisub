@@ -53,7 +53,7 @@ struct grid_line_next : public Command {
 	STR_DISP("Next Line")
 	STR_HELP("Move to the next subtitle line")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->selectionController->NextLine();
 	}
 };
@@ -64,7 +64,7 @@ struct grid_line_next_create : public Command {
 	STR_DISP("Next Line")
 	STR_HELP("Move to the next subtitle line, creating a new one if needed")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AudioTimingController *tc = c->audioController->GetTimingController();
 		if (tc)
 			tc->Commit();
@@ -72,7 +72,7 @@ struct grid_line_next_create : public Command {
 		AssDialogue *cur = c->selectionController->GetActiveLine();
 		c->selectionController->NextLine();
 		if (cur == c->selectionController->GetActiveLine()) {
-			AssDialogue *newline = new AssDialogue;
+			auto newline = new AssDialogue;
 			newline->Start = cur->End;
 			newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
 			newline->Style = cur->Style;
@@ -91,7 +91,7 @@ struct grid_line_prev : public Command {
 	STR_DISP("Previous Line")
 	STR_HELP("Move to the previous line")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->selectionController->PrevLine();
 	}
 };
@@ -102,7 +102,7 @@ struct grid_sort_actor : public Command {
 	STR_DISP("Actor Name")
 	STR_HELP("Sort all subtitles by their actor names")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompActor);
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -111,7 +111,7 @@ struct grid_sort_actor : public Command {
 struct validate_sel_multiple : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() > 1;
 	}
 };
@@ -122,7 +122,7 @@ struct grid_sort_actor_selected : public validate_sel_multiple {
 	STR_DISP("Actor Name")
 	STR_HELP("Sort selected subtitles by their actor names")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompActor, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -134,7 +134,7 @@ struct grid_sort_effect : public Command {
 	STR_DISP("Effect")
 	STR_HELP("Sort all subtitles by their effects")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompEffect);
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -146,7 +146,7 @@ struct grid_sort_effect_selected : public validate_sel_multiple {
 	STR_DISP("Effect")
 	STR_HELP("Sort selected subtitles by their effects")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompEffect, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -158,7 +158,7 @@ struct grid_sort_end : public Command {
 	STR_DISP("End Time")
 	STR_HELP("Sort all subtitles by their end times")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompEnd);
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -170,7 +170,7 @@ struct grid_sort_end_selected : public validate_sel_multiple {
 	STR_DISP("End Time")
 	STR_HELP("Sort selected subtitles by their end times")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompEnd, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -182,7 +182,7 @@ struct grid_sort_layer : public Command {
 	STR_DISP("Layer")
 	STR_HELP("Sort all subtitles by their layer number")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompLayer);
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -194,7 +194,7 @@ struct grid_sort_layer_selected : public validate_sel_multiple {
 	STR_DISP("Layer")
 	STR_HELP("Sort selected subtitles by their layer number")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompLayer, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -206,7 +206,7 @@ struct grid_sort_start : public Command {
 	STR_DISP("Start Time")
 	STR_HELP("Sort all subtitles by their start times")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort();
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -218,7 +218,7 @@ struct grid_sort_start_selected : public validate_sel_multiple {
 	STR_DISP("Start Time")
 	STR_HELP("Sort selected subtitles by their start times")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompStart, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -230,7 +230,7 @@ struct grid_sort_style : public Command {
 	STR_DISP("Style Name")
 	STR_HELP("Sort all subtitles by their style names")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompStyle);
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -242,7 +242,7 @@ struct grid_sort_style_selected : public validate_sel_multiple {
 	STR_DISP("Style Name")
 	STR_HELP("Sort selected subtitles by their style names")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->ass->Sort(AssFile::CompStyle, c->selectionController->GetSelectedSet());
 		c->ass->Commit(_("sort"), AssFile::COMMIT_ORDER);
 	}
@@ -254,7 +254,7 @@ struct grid_tag_cycle_hiding : public Command {
 	STR_DISP("Cycle Tag Hiding Mode")
 	STR_HELP("Cycle through tag hiding modes")
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		int tagMode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 
 		// Cycle to next
@@ -279,11 +279,11 @@ struct grid_tags_hide : public Command {
 	STR_HELP("Hide override tags in the subtitle grid")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt() == 2;
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(2);
 	}
 };
@@ -295,11 +295,11 @@ struct grid_tags_show : public Command {
 	STR_HELP("Show full override tags in the subtitle grid")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt() == 0;
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(0);
 	}
 };
@@ -311,11 +311,11 @@ struct grid_tags_simplify : public Command {
 	STR_HELP("Replace override tags in the subtitle grid with a simplified placeholder")
 	CMD_TYPE(COMMAND_RADIO)
 
-	bool IsActive(const agi::Context *) {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt() == 1;
 	}
 
-	void operator()(agi::Context *) {
+	void operator()(agi::Context *) override {
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(1);
 	}
 };
@@ -348,11 +348,11 @@ struct grid_move_up : public Command {
 	STR_HELP("Move the selected lines up one row")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() != 0;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (move_one(c->ass->Line.begin(), c->ass->Line.end(), c->selectionController->GetSelectedSet(), 1))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
@@ -365,11 +365,11 @@ struct grid_move_down : public Command {
 	STR_HELP("Move the selected lines down one row")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() != 0;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (move_one(--c->ass->Line.end(), c->ass->Line.begin(), c->selectionController->GetSelectedSet(), -1))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
@@ -382,11 +382,11 @@ struct grid_swap : public Command {
 	STR_HELP("Swap the two selected lines")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() == 2;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		SubtitleSelection sel = c->selectionController->GetSelectedSet();
 		if (sel.size() == 2) {
 			(*sel.begin())->swap_nodes(**sel.rbegin());

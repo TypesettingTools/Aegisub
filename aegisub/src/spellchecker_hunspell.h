@@ -69,13 +69,13 @@ public:
 	HunspellSpellChecker();
 	~HunspellSpellChecker();
 
-	void AddWord(std::string const& word);
-	void RemoveWord(std::string const& word);
-	bool CanAddWord(std::string const& word);
-	bool CanRemoveWord(std::string const& word);
-	bool CheckWord(std::string const& word);
-	std::vector<std::string> GetSuggestions(std::string const& word);
-	std::vector<std::string> GetLanguageList();
+	void AddWord(std::string const& word) override;
+	void RemoveWord(std::string const& word) override;
+	bool CanAddWord(std::string const& word) override;
+	bool CanRemoveWord(std::string const& word) override;
+	bool CheckWord(std::string const& word) override;
+	std::vector<std::string> GetSuggestions(std::string const& word) override;
+	std::vector<std::string> GetLanguageList() override;
 };
 
 #endif

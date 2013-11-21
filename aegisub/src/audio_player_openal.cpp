@@ -59,8 +59,8 @@ OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 , start_frame(0)
 , cur_frame(0)
 , end_frame(0)
-, device(0)
-, context(0)
+, device(nullptr)
+, context(nullptr)
 , source(0)
 , buf_first_free(0)
 , buf_first_queued(0)
@@ -69,26 +69,26 @@ OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 {
 	try {
 		// Open device
-		device = alcOpenDevice(0);
-		if (!device) throw OpenALException("Failed opening default OpenAL device", 0);
+		device = alcOpenDevice(nullptr);
+		if (!device) throw OpenALException("Failed opening default OpenAL device", nullptr);
 
 		// Create context
-		context = alcCreateContext(device, 0);
-		if (!context) throw OpenALException("Failed creating OpenAL context", 0);
-		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context", 0);
+		context = alcCreateContext(device, nullptr);
+		if (!context) throw OpenALException("Failed creating OpenAL context", nullptr);
+		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context", nullptr);
 
 		// Clear error code
 		alGetError();
 
 		// Generate buffers
 		alGenBuffers(num_buffers, buffers);
-		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers", 0);
+		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers", nullptr);
 
 		// Generate source
 		alGenSources(1, &source);
 		if (alGetError() != AL_NO_ERROR) {
 			alDeleteBuffers(num_buffers, buffers);
-			throw OpenALException("Error generating OpenAL source", 0);
+			throw OpenALException("Error generating OpenAL source", nullptr);
 		}
 	}
 	catch (...)

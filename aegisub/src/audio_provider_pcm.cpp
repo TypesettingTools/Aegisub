@@ -52,7 +52,7 @@
 #endif
 
 PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
-: current_mapping(0)
+: current_mapping(nullptr)
 , mapping_start(0)
 , mapping_length(0)
 #ifdef _WIN32
@@ -154,7 +154,7 @@ char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t rang
 			mapping_start_li.LowPart,	// Offset low-part
 			mapping_length);	// Length of view
 #else
-		current_mapping = mmap(0, mapping_length, PROT_READ, MAP_PRIVATE, file_handle, mapping_start);
+		current_mapping = mmap(nullptr, mapping_length, PROT_READ, MAP_PRIVATE, file_handle, mapping_start);
 #endif
 
 		if (!current_mapping)
@@ -263,9 +263,9 @@ public:
 
 		// Check magic values
 		if (!CheckFourcc(header.ch.type, "RIFF"))
-			throw agi::AudioDataNotFoundError("File is not a RIFF file", 0);
+			throw agi::AudioDataNotFoundError("File is not a RIFF file", nullptr);
 		if (!CheckFourcc(header.format, "WAVE"))
-			throw agi::AudioDataNotFoundError("File is not a RIFF WAV file", 0);
+			throw agi::AudioDataNotFoundError("File is not a RIFF WAV file", nullptr);
 
 		// Count how much more data we can have in the entire file
 		// The first 4 bytes are already eaten by the header.format field
@@ -288,13 +288,13 @@ public:
 			filepos += sizeof(ch);
 
 			if (CheckFourcc(ch.type, "fmt ")) {
-				if (got_fmt_header) throw agi::AudioProviderOpenError("Invalid file, multiple 'fmt ' chunks", 0);
+				if (got_fmt_header) throw agi::AudioProviderOpenError("Invalid file, multiple 'fmt ' chunks", nullptr);
 				got_fmt_header = true;
 
 				fmtChunk &fmt = *(fmtChunk*)EnsureRangeAccessible(filepos, sizeof(fmtChunk));
 
 				if (fmt.compression != 1)
-					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", 0);
+					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", nullptr);
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = fmt.samplerate;
@@ -306,7 +306,7 @@ public:
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
-				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", 0);
+				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
 
 				int64_t samples = ch.size / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -400,7 +400,7 @@ public:
 		int64_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
 		if (file_size < smallest_possible_file)
-			throw agi::AudioDataNotFoundError("File is too small to be a Wave64 file", 0);
+			throw agi::AudioDataNotFoundError("File is too small to be a Wave64 file", nullptr);
 
 		// Read header
 		// This should throw an exception if the mapping fails
@@ -410,9 +410,9 @@ public:
 
 		// Check magic values
 		if (!CheckGuid(header.riff_guid, w64GuidRIFF))
-			throw agi::AudioDataNotFoundError("File is not a Wave64 RIFF file", 0);
+			throw agi::AudioDataNotFoundError("File is not a Wave64 RIFF file", nullptr);
 		if (!CheckGuid(header.format_guid, w64GuidWAVE))
-			throw agi::AudioDataNotFoundError("File is not a Wave64 WAVE file", 0);
+			throw agi::AudioDataNotFoundError("File is not a Wave64 WAVE file", nullptr);
 
 		// Count how much more data we can have in the entire file
 		uint64_t data_left = header.file_size - sizeof(RiffChunk);
@@ -432,15 +432,15 @@ public:
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
-					throw agi::AudioProviderOpenError("Bad file, found more than one 'fmt' chunk", 0);
+					throw agi::AudioProviderOpenError("Bad file, found more than one 'fmt' chunk", nullptr);
 
 				FormatChunk &fmt = *(FormatChunk*)EnsureRangeAccessible(filepos, sizeof(FormatChunk));
 				got_fmt_header = true;
 
 				if (fmt.format.wFormatTag == 3)
-					throw agi::AudioProviderOpenError("File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.", 0);
+					throw agi::AudioProviderOpenError("File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.", nullptr);
 				if (fmt.format.wFormatTag != 1)
-					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", 0);
+					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", nullptr);
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = fmt.format.nSamplesPerSec;
@@ -449,7 +449,7 @@ public:
 			}
 			else if (CheckGuid(chunk_guid, w64Guiddata)) {
 				if (!got_fmt_header)
-					throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", 0);
+					throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
 
 				int64_t samples = chunk_size / bytes_per_sample;
 				int64_t frames = samples / channels;
@@ -498,7 +498,7 @@ std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filen
 	}
 
 	if (wrong_file_type)
-		throw agi::AudioDataNotFoundError(msg, 0);
+		throw agi::AudioDataNotFoundError(msg, nullptr);
 	else
-		throw agi::AudioProviderOpenError(msg, 0);
+		throw agi::AudioProviderOpenError(msg, nullptr);
 }

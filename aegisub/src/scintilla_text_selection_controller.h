@@ -22,12 +22,12 @@ class ScintillaTextSelectionController : public TextSelectionController {
 	ScintillaTextCtrl *ctrl;
 
 public:
-	void SetSelection(int start, int end);
-	void SetInsertionPoint(int point);
+	void SetSelection(int start, int end) override;
+	void SetInsertionPoint(int point) override;
 
-	int GetSelectionStart() const;
-	int GetSelectionEnd() const;
-	int GetInsertionPoint() const;
+	int GetSelectionStart() const override;
+	int GetSelectionEnd() const override;
+	int GetInsertionPoint() const override;
 
 	ScintillaTextSelectionController(ScintillaTextCtrl *ctrl);
 };

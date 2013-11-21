@@ -58,16 +58,16 @@ class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 public:
 	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
 
-	std::shared_ptr<VideoFrame> GetFrame(int n);
+	std::shared_ptr<VideoFrame> GetFrame(int n) override;
 
-	int GetFrameCount() const { return VideoInfo->NumFrames; }
-	int GetWidth() const { return Width; }
-	int GetHeight() const { return Height; }
-	double GetDAR() const { return DAR; }
-	agi::vfr::Framerate GetFPS() const { return Timecodes; }
-	std::string GetColorSpace() const { return ColorSpace; }
-	std::vector<int> GetKeyFrames() const { return KeyFramesList; };
-	std::string GetDecoderName() const { return "FFmpegSource"; }
-	bool WantsCaching() const { return true; }
+	int GetFrameCount() const override { return VideoInfo->NumFrames; }
+	int GetWidth() const override { return Width; }
+	int GetHeight() const override { return Height; }
+	double GetDAR() const override { return DAR; }
+	agi::vfr::Framerate GetFPS() const override { return Timecodes; }
+	std::string GetColorSpace() const override { return ColorSpace; }
+	std::vector<int> GetKeyFrames() const override { return KeyFramesList; };
+	std::string GetDecoderName() const override { return "FFmpegSource"; }
+	bool WantsCaching() const override { return true; }
 };
 #endif /* WITH_FFMS2 */

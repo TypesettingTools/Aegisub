@@ -51,7 +51,7 @@ class HDAudioProvider : public AudioProviderWrapper {
 	/// @param ps Sink for progress reporting
 	void FillCache(AudioProvider *src, std::ofstream *file, agi::ProgressSink *ps);
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 public:
 	HDAudioProvider(std::unique_ptr<AudioProvider> source, agi::BackgroundRunner *br);

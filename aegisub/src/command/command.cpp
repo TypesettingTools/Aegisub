@@ -26,7 +26,7 @@ namespace cmd {
 	typedef std::map<std::string, std::unique_ptr<Command>>::iterator iterator;
 
 	static iterator find_command(std::string const& name) {
-		iterator it = cmd_map.find(name);
+		auto it = cmd_map.find(name);
 		if (it == cmd_map.end())
 			throw CommandNotFound(from_wx(wxString::Format(_("'%s' is not a valid command name"), to_wx(name))));
 		return it;

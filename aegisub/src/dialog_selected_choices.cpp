@@ -33,7 +33,7 @@ SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& m
 	selAll->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SelectedChoicesDialog::SelectAll, this);
 	selNone->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetSelections(wxArrayInt()); });
 
-	wxBoxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+	auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	buttonSizer->Add(selAll, wxSizerFlags(0).Left());
 	buttonSizer->Add(selNone, wxSizerFlags(0).Right());
 

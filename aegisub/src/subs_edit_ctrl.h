@@ -123,7 +123,7 @@ public:
 	~SubsTextEditCtrl();
 
 	void SetTextTo(wxString const& text);
-	void Paste();
+	void Paste() override;
 
 	std::pair<int, int> GetBoundsOfWordAtPosition(int pos);
 

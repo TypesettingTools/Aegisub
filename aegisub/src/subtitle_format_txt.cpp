@@ -89,7 +89,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 
 		// Check if this isn't a timecodes file
 		if (boost::starts_with(value, "# timecode"))
-			throw SubtitleFormatParseError("File is a timecode file, cannot load as subtitles.", 0);
+			throw SubtitleFormatParseError("File is a timecode file, cannot load as subtitles.", nullptr);
 
 		// Read comment data
 		bool isComment = false;
@@ -117,7 +117,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 			isComment = true;
 
 		// Sets line up
-		AssDialogue *line = new AssDialogue;
+		auto line = new AssDialogue;
 		line->Actor = isComment ? std::string() : actor;
 		line->Comment = isComment;
 		line->Text = value;

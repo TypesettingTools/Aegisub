@@ -54,7 +54,7 @@ struct reload_all : public Command {
 	STR_DISP("Reload Automation scripts")
 	STR_HELP("Reload all Automation scripts and rescan the autoload folder")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		wxGetApp().global_scripts->Reload();
 		c->local_scripts->Reload();
 		StatusTimeout(_("Reloaded all Automation scripts"));
@@ -67,7 +67,7 @@ struct reload_autoload : public Command {
 	STR_DISP("Reload autoload Automation scripts")
 	STR_HELP("Rescan the Automation autoload folder")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		wxGetApp().global_scripts->Reload();
 		StatusTimeout(_("Reloaded autoload Automation scripts"));
 	}
@@ -79,7 +79,7 @@ struct open_manager : public Command {
 	STR_DISP("Automation")
 	STR_HELP("Open automation manager")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->dialog->Show<DialogAutomation>(c);
 	}
 };
@@ -90,7 +90,7 @@ struct meta : public Command {
 	STR_DISP("Automation")
 	STR_HELP("Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan autoload folder and reload all automation scripts")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (wxGetMouseState().CmdDown()) {
 			if (wxGetMouseState().ShiftDown())
 				cmd::call("am/reload", c);

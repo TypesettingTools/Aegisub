@@ -29,8 +29,8 @@ class DialogAutosave : public wxDialog {
 		wxString filename;
 		wxDateTime date;
 		wxString display;
-		Version(wxString const& filename, wxDateTime const& date, wxString const& display)
-		: filename(filename), date(date), display(display) { }
+		Version(wxString const& filename, wxDateTime date, wxString const& display)
+		: filename(filename), date(std::move(date)), display(display) { }
 	};
 
 	struct AutosaveFile {

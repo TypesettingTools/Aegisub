@@ -26,7 +26,7 @@ protected:
 	std::string default_opt;
 	std::string conf_ok;
 
-	void SetUp() {
+	void SetUp() override {
 		default_opt = "{\"Valid\" : \"This is valid\"}";
 		conf_ok = "data/options/string.json";
 	}

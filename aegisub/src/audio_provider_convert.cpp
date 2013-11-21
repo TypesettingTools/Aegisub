@@ -38,13 +38,13 @@ class BitdepthConvertAudioProvider : public AudioProviderWrapper {
 public:
 	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		if (bytes_per_sample > 8)
-			throw agi::AudioProviderOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported", 0);
+			throw agi::AudioProviderOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported", nullptr);
 
 		src_bytes_per_sample = bytes_per_sample;
 		bytes_per_sample = sizeof(Target);
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		std::vector<char> src_buf(count * src_bytes_per_sample * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
@@ -81,7 +81,7 @@ public:
 		float_samples = false;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		std::vector<Source> src_buf(count * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
@@ -110,14 +110,14 @@ class DownmixAudioProvider : public AudioProviderWrapper {
 public:
 	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		if (bytes_per_sample != 2)
-			throw agi::InternalError("DownmixAudioProvider requires 16-bit input", 0);
+			throw agi::InternalError("DownmixAudioProvider requires 16-bit input", nullptr);
 		if (channels == 1)
-			throw agi::InternalError("DownmixAudioProvider requires multi-channel input", 0);
+			throw agi::InternalError("DownmixAudioProvider requires multi-channel input", nullptr);
 		src_channels = channels;
 		channels = 1;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		if (count == 0) return;
 
 		std::vector<int16_t> src_buf(count * src_channels);
@@ -140,15 +140,15 @@ class SampleDoublingAudioProvider : public AudioProviderWrapper {
 public:
 	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		if (source->GetBytesPerSample() != 2)
-			throw agi::InternalError("UpsampleAudioProvider requires 16-bit input", 0);
+			throw agi::InternalError("UpsampleAudioProvider requires 16-bit input", nullptr);
 		if (source->GetChannels() != 1)
-			throw agi::InternalError("UpsampleAudioProvider requires mono input", 0);
+			throw agi::InternalError("UpsampleAudioProvider requires mono input", nullptr);
 
 		sample_rate *= 2;
 		num_samples *= 2;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		if (count == 0) return;
 
 		int not_end = start + count < num_samples;

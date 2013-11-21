@@ -67,7 +67,7 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 	old_display->Unload();
 
 	// Video area;
-	VideoBox *videoBox = new VideoBox(this, true, context);
+	auto videoBox = new VideoBox(this, true, context);
 	context->videoDisplay->SetMinClientSize(old_display->GetClientSize());
 	videoBox->Layout();
 

@@ -24,7 +24,7 @@
 class LockAudioProvider : public AudioProviderWrapper {
 	mutable std::mutex mutex;
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 public:
 	LockAudioProvider(std::unique_ptr<AudioProvider> source);
 };

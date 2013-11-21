@@ -59,14 +59,14 @@ AssTransformFramerateFilter::AssTransformFramerateFilter()
 : AssExportFilter(from_wx(_("Transform Framerate")),
 	from_wx(_("Transform subtitle times, including those in override tags, from an input framerate to an output framerate.\n\nThis is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\nIt can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup.")),
 	1000)
-, c(0)
-, line(0)
+, c(nullptr)
+, line(nullptr)
 , newStart(0)
 , newEnd(0)
 , newK(0)
 , oldK(0)
-, Input(0)
-, Output(0)
+, Input(nullptr)
+, Output(nullptr)
 {
 }
 

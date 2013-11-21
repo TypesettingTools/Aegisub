@@ -50,11 +50,11 @@ struct keyframe_close : public Command {
 	STR_HELP("Discard the currently loaded keyframes and use those from the video, if any")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->OverKeyFramesLoaded();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->CloseKeyframes();
 	}
 };
@@ -65,7 +65,7 @@ struct keyframe_open : public Command {
 	STR_DISP("Open Keyframes")
 	STR_HELP("Open a keyframe list file")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		auto filename = OpenFileSelector(
 			_("Open keyframes file"),
 			"Path/Last/Keyframes", "" ,".txt",
@@ -84,11 +84,11 @@ struct keyframe_save : public Command {
 	STR_HELP("Save the current list of keyframes to a file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->KeyFramesLoaded();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		auto filename = SaveFileSelector(_("Save keyframes file"), "Path/Last/Keyframes", "", "*.key.txt", "Text files (*.txt)|*.txt", c->parent);
 		if (!filename.empty())
 			c->videoController->SaveKeyframes(filename);

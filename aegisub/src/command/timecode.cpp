@@ -50,11 +50,11 @@ struct timecode_close : public Command {
 	STR_HELP("Close the currently open timecodes file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->OverTimecodesLoaded();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->CloseTimecodes();
 	}
 };
@@ -65,7 +65,7 @@ struct timecode_open : public Command {
 	STR_DISP("Open Timecodes File")
 	STR_HELP("Open a VFR timecodes v1 or v2 file")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		auto str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
 		auto filename = OpenFileSelector(_("Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
 		if (!filename.empty())
@@ -80,11 +80,11 @@ struct timecode_save : public Command {
 	STR_HELP("Save a VFR timecodes v2 file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->TimecodesLoaded();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		auto str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
 		auto filename = SaveFileSelector(_("Save Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
 		if (!filename.empty())

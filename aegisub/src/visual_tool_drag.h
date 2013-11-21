@@ -59,20 +59,20 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 
 	void OnSelectedSetChanged(SubtitleSelection const& lines_added, SubtitleSelection const& lines_removed);
 
-	void OnFrameChanged();
-	void OnFileChanged();
-	void OnLineChanged();
-	void OnCoordinateSystemsChanged() { OnFileChanged(); }
+	void OnFrameChanged() override;
+	void OnFileChanged() override;
+	void OnLineChanged() override;
+	void OnCoordinateSystemsChanged() override { OnFileChanged(); }
 
-	bool InitializeDrag(Feature *feature);
-	void UpdateDrag(Feature *feature);
-	void Draw();
-	void OnDoubleClick();
+	bool InitializeDrag(Feature *feature) override;
+	void UpdateDrag(Feature *feature) override;
+	void Draw() override;
+	void OnDoubleClick() override;
 
 	/// Set the pos/move button to the correct icon based on the active line
 	void UpdateToggleButtons();
 	void OnSubTool(wxCommandEvent &event);
 public:
 	VisualToolDrag(VideoDisplay *parent, agi::Context *context);
-	void SetToolbar(wxToolBar *tb);
+	void SetToolbar(wxToolBar *tb) override;
 };

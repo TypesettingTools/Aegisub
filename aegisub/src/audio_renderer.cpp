@@ -71,8 +71,8 @@ AudioRenderer::AudioRenderer()
 , cache_bitmap_width(32) // arbitrary value for now
 , cache_bitmap_maxsize(0)
 , cache_renderer_maxsize(0)
-, renderer(0)
-, provider(0)
+, renderer(nullptr)
+, provider(nullptr)
 {
 	for (int i = 0; i < AudioStyle_MAX; ++i)
 		bitmaps.emplace_back(256, AudioRendererBitmapCacheBitmapFactory(this));

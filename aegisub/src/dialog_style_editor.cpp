@@ -105,12 +105,12 @@ class StyleRenamer {
 	}
 
 public:
-	StyleRenamer(agi::Context *c, std::string const& source_name, std::string const& new_name)
+	StyleRenamer(agi::Context *c, std::string source_name, std::string new_name)
 	: c(c)
 	, found_any(false)
 	, do_replace(false)
-	, source_name(source_name)
-	, new_name(new_name)
+	, source_name(std::move(source_name))
+	, new_name(std::move(new_name))
 	{
 	}
 
@@ -179,7 +179,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	// Create controls
 	StyleName = new wxTextCtrl(this, -1, to_wx(style->name));
-	FontName = new wxComboBox(this, -1, to_wx(style->font), wxDefaultPosition, wxSize(150, -1), 0, 0, wxCB_DROPDOWN);
+	FontName = new wxComboBox(this, -1, to_wx(style->font), wxDefaultPosition, wxSize(150, -1), 0, nullptr, wxCB_DROPDOWN);
 	FontSize =  num_text_ctrl(this, &work->fontsize, false, wxSize(50, -1));
 	BoxBold = new wxCheckBox(this, -1, _("&Bold"));
 	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
@@ -379,8 +379,8 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogStyleEditor::Apply, this, false, true), wxID_CANCEL);
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Style Editor"), wxID_HELP);
 
-	for (int i = 0; i < 4; ++i)
-		colorButton[i]->Bind(EVT_COLOR, &DialogStyleEditor::OnSetColor, this);
+	for (auto const& elem : colorButton)
+		elem->Bind(EVT_COLOR, &DialogStyleEditor::OnSetColor, this);
 }
 
 DialogStyleEditor::~DialogStyleEditor() {

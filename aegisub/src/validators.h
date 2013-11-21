@@ -70,7 +70,7 @@ class EnumBinder : public wxValidator {
 		if (wxRadioBox *rb = dynamic_cast<wxRadioBox*>(GetWindow()))
 			*value = static_cast<T>(rb->GetSelection());
 		else
-			throw agi::InternalError("Control type not supported by EnumBinder", 0);
+			throw agi::InternalError("Control type not supported by EnumBinder", nullptr);
 		return true;
 	}
 
@@ -78,7 +78,7 @@ class EnumBinder : public wxValidator {
 		if (wxRadioBox *rb = dynamic_cast<wxRadioBox*>(GetWindow()))
 			rb->SetSelection(static_cast<int>(*value));
 		else
-			throw agi::InternalError("Control type not supported by EnumBinder", 0);
+			throw agi::InternalError("Control type not supported by EnumBinder", nullptr);
 		return true;
 	}
 
@@ -95,10 +95,10 @@ EnumBinder<T> MakeEnumBinder(T *value) {
 class StringBinder : public wxValidator {
 	std::string *value;
 
-	wxObject* Clone() const { return new StringBinder(value); }
-	bool Validate(wxWindow*) { return true;}
-	bool TransferToWindow();
-	bool TransferFromWindow();
+	wxObject* Clone() const override { return new StringBinder(value); }
+	bool Validate(wxWindow*) override { return true;}
+	bool TransferToWindow() override;
+	bool TransferFromWindow() override;
 
 public:
 	explicit StringBinder(std::string *value) : value(value) { }

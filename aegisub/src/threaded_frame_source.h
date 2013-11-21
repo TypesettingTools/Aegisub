@@ -116,24 +116,24 @@ struct FrameReadyEvent : public wxEvent {
 	std::shared_ptr<VideoFrame> frame;
 	/// Time which was used for subtitle rendering
 	double time;
-	wxEvent *Clone() const { return new FrameReadyEvent(*this); };
+	wxEvent *Clone() const override { return new FrameReadyEvent(*this); };
 	FrameReadyEvent(std::shared_ptr<VideoFrame> frame, double time)
-	: frame(frame), time(time) { }
+	: frame(std::move(frame)), time(time) { }
 };
 
 // These exceptions are wxEvents so that they can be passed directly back to
 // the parent thread as events
 struct VideoProviderErrorEvent : public wxEvent, public agi::Exception {
-	const char * GetName() const { return "video/error"; }
-	wxEvent *Clone() const { return new VideoProviderErrorEvent(*this); };
-	agi::Exception *Copy() const { return new VideoProviderErrorEvent(*this); };
+	const char * GetName() const override { return "video/error"; }
+	wxEvent *Clone() const override { return new VideoProviderErrorEvent(*this); };
+	agi::Exception *Copy() const override { return new VideoProviderErrorEvent(*this); };
 	VideoProviderErrorEvent(VideoProviderError const& err);
 };
 
 struct SubtitlesProviderErrorEvent : public wxEvent, public agi::Exception {
-	const char * GetName() const { return "subtitles/error"; }
-	wxEvent *Clone() const { return new SubtitlesProviderErrorEvent(*this); };
-	agi::Exception *Copy() const { return new SubtitlesProviderErrorEvent(*this); };
+	const char * GetName() const override { return "subtitles/error"; }
+	wxEvent *Clone() const override { return new SubtitlesProviderErrorEvent(*this); };
+	agi::Exception *Copy() const override { return new SubtitlesProviderErrorEvent(*this); };
 	SubtitlesProviderErrorEvent(std::string const& msg);
 };
 

@@ -52,7 +52,7 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 }
 
 AssEntry *AssAttachment::Clone() const {
-	AssAttachment *clone = new AssAttachment(filename, group);
+	auto clone = new AssAttachment(filename, group);
 	clone->entry_data = entry_data;
 	return clone;
 }

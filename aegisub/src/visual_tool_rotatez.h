@@ -33,14 +33,14 @@ class VisualToolRotateZ : public VisualTool<VisualDraggableFeature> {
 
 	Feature *org; ///< The origin feature
 
-	bool InitializeHold();
-	void UpdateHold();
+	bool InitializeHold() override;
+	void UpdateHold() override;
 
-	void UpdateDrag(Feature *feature);
+	void UpdateDrag(Feature *feature) override;
 
-	void DoRefresh();
+	void DoRefresh() override;
 
-	void Draw();
+	void Draw() override;
 public:
 	VisualToolRotateZ(VideoDisplay *parent, agi::Context *context);
 };

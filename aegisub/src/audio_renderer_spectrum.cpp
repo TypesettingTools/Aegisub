@@ -70,7 +70,7 @@ struct AudioSpectrumCacheBlockFactory {
 	/// The filling is delegated to the spectrum renderer
 	BlockType ProduceBlock(size_t i)
 	{
-		float *res = new float[((size_t)1)<<spectrum->derivation_size];
+		auto res = new float[((size_t)1)<<spectrum->derivation_size];
 		spectrum->FillBlock(i, res);
 		return BlockType(res);
 	}
@@ -100,9 +100,9 @@ AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_nam
 : derivation_size(8)
 , derivation_dist(8)
 #ifdef WITH_FFTW3
-, dft_plan(0)
-, dft_input(0)
-, dft_output(0)
+, dft_plan(nullptr)
+, dft_input(nullptr)
+, dft_output(nullptr)
 #endif
 {
 	colors.reserve(AudioStyle_MAX);
@@ -125,9 +125,9 @@ void AudioSpectrumRenderer::RecreateCache()
 		fftw_destroy_plan(dft_plan);
 		fftw_free(dft_input);
 		fftw_free(dft_output);
-		dft_plan = 0;
-		dft_input = 0;
-		dft_output = 0;
+		dft_plan = nullptr;
+		dft_input = nullptr;
+		dft_output = nullptr;
 	}
 #endif
 

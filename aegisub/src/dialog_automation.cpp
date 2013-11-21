@@ -240,7 +240,7 @@ static wxString form_to_str(const SubtitleFormat* f) {
 void DialogAutomation::OnInfo(wxCommandEvent &)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-	ExtraScriptInfo *ei = i >= 0 ? &script_info[list->GetItemData(i)] : 0;
+	ExtraScriptInfo *ei = i >= 0 ? &script_info[list->GetItemData(i)] : nullptr;
 
 	wxArrayString info;
 	std::back_insert_iterator<wxArrayString> append_info(info);

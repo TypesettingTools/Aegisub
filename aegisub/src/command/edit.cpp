@@ -74,21 +74,21 @@ namespace {
 
 struct validate_sel_nonempty : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() > 0;
 	}
 };
 
 struct validate_video_and_sel_nonempty : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->videoController->IsLoaded() && !c->selectionController->GetSelectedSet().empty();
 	}
 };
 
 struct validate_sel_multiple : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() > 1;
 	}
 };
@@ -202,8 +202,8 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std
 	int start = at_end ? sel_end : sel_start;
 	int blockn = block_at_pos(line->Text, start);
 
-	AssDialogueBlockPlain *plain = 0;
-	AssDialogueBlockOverride *ovr = 0;
+	AssDialogueBlockPlain *plain = nullptr;
+	AssDialogueBlockOverride *ovr = nullptr;
 	while (blockn >= 0) {
 		AssDialogueBlock *block = &blocks[blockn];
 		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
@@ -267,12 +267,12 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std
 	}
 }
 
-void commit_text(agi::Context const * const c, wxString const& desc, int sel_start = -1, int sel_end = -1, int *commit_id = 0) {
+void commit_text(agi::Context const * const c, wxString const& desc, int sel_start = -1, int sel_end = -1, int *commit_id = nullptr) {
 	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 	std::string text = c->selectionController->GetActiveLine()->Text;
 	for_each(sel.begin(), sel.end(), [&](AssDialogue *d) { d->Text = text; });
 
-	int new_commit_id = c->ass->Commit(desc, AssFile::COMMIT_DIAG_TEXT, commit_id ? *commit_id : -1, sel.size() == 1 ? *sel.begin() : 0);
+	int new_commit_id = c->ass->Commit(desc, AssFile::COMMIT_DIAG_TEXT, commit_id ? *commit_id : -1, sel.size() == 1 ? *sel.begin() : nullptr);
 	if (commit_id)
 		*commit_id = new_commit_id;
 	if (sel_start >= 0 && sel_end >= 0)
@@ -335,7 +335,7 @@ struct edit_color_primary : public Command {
 	STR_DISP("Primary Color")
 	STR_HELP("Set the primary fill color (\\c) at the cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		show_color_picker(c, &AssStyle::primary, "\\c", "\\1c", "\\1a");
 	}
 };
@@ -346,7 +346,7 @@ struct edit_color_secondary : public Command {
 	STR_DISP("Secondary Color")
 	STR_HELP("Set the secondary (karaoke) fill color (\\2c) at the cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		show_color_picker(c, &AssStyle::secondary, "\\2c", "", "\\2a");
 	}
 };
@@ -357,7 +357,7 @@ struct edit_color_outline : public Command {
 	STR_DISP("Outline Color")
 	STR_HELP("Set the outline color (\\3c) at the cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		show_color_picker(c, &AssStyle::outline, "\\3c", "", "\\3a");
 	}
 };
@@ -368,7 +368,7 @@ struct edit_color_shadow : public Command {
 	STR_DISP("Shadow Color")
 	STR_HELP("Set the shadow color (\\4c) at the cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		show_color_picker(c, &AssStyle::shadow, "\\4c", "", "\\4a");
 	}
 };
@@ -379,7 +379,7 @@ struct edit_style_bold : public Command {
 	STR_DISP("Toggle Bold")
 	STR_HELP("Toggle bold (\\b) for the current selection or at the current cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		toggle_override_tag(c, &AssStyle::bold, "\\b", _("toggle bold"));
 	}
 };
@@ -390,7 +390,7 @@ struct edit_style_italic : public Command {
 	STR_DISP("Toggle Italics")
 	STR_HELP("Toggle italics (\\i) for the current selection or at the current cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		toggle_override_tag(c, &AssStyle::italic, "\\i", _("toggle italic"));
 	}
 };
@@ -401,7 +401,7 @@ struct edit_style_underline : public Command {
 	STR_DISP("Toggle Underline")
 	STR_HELP("Toggle underline (\\u) for the current selection or at the current cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		toggle_override_tag(c, &AssStyle::underline, "\\u", _("toggle underline"));
 	}
 };
@@ -412,7 +412,7 @@ struct edit_style_strikeout : public Command {
 	STR_DISP("Toggle Strikeout")
 	STR_HELP("Toggle strikeout (\\s) for the current selection or at the current cursor position")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		toggle_override_tag(c, &AssStyle::strikeout, "\\s", _("toggle strikeout"));
 	}
 };
@@ -423,7 +423,7 @@ struct edit_font : public Command {
 	STR_DISP("Font Face")
 	STR_HELP("Select a font face and size")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssDialogue *const line = c->selectionController->GetActiveLine();
 		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 		const int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
@@ -468,7 +468,7 @@ struct edit_find_replace : public Command {
 	STR_DISP("Find and Replace")
 	STR_HELP("Find and replace words in subtitles")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		DialogSearchReplace::Show(c, true);
 	}
@@ -531,7 +531,7 @@ struct edit_line_copy : public validate_sel_nonempty {
 	STR_DISP("Copy Lines")
 	STR_HELP("Copy subtitles to the clipboard")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		// Ideally we'd let the control's keydown handler run and only deal
 		// with the events not processed by it, but that doesn't seem to be
 		// possible with how wx implements key event handling - the native
@@ -553,7 +553,7 @@ struct edit_line_cut: public validate_sel_nonempty {
 	STR_DISP("Cut Lines")
 	STR_HELP("Cut subtitles")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus()))
 			ctrl->Cut();
 		else {
@@ -569,7 +569,7 @@ struct edit_line_delete : public validate_sel_nonempty {
 	STR_DISP("Delete Lines")
 	STR_HELP("Delete currently selected lines")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		delete_lines(c, _("delete lines"));
 	}
 };
@@ -603,7 +603,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 		// after the selected block
 		do {
 			auto old_diag = static_cast<AssDialogue*>(&*start);
-			auto new_diag = new AssDialogue(*old_diag);
+			auto  new_diag = new AssDialogue(*old_diag);
 
 			c->ass->Line.insert(insert_pos, *new_diag);
 			new_sel.insert(new_diag);
@@ -653,7 +653,7 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 	STR_DISP("Duplicate Lines")
 	STR_HELP("Duplicate the selected lines")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		duplicate_lines(c, 0);
 	}
 };
@@ -665,7 +665,7 @@ struct edit_line_duplicate_shift : public validate_video_and_sel_nonempty {
 	STR_HELP("Split the current line into a line which ends on the current frame and a line which starts on the next frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		duplicate_lines(c, 1);
 	}
 };
@@ -677,7 +677,7 @@ struct edit_line_duplicate_shift_back : public validate_video_and_sel_nonempty {
 	STR_HELP("Split the current line into a line which ends on the previous frame and a line which starts on the current frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		duplicate_lines(c, -1);
 	}
 };
@@ -685,7 +685,7 @@ struct edit_line_duplicate_shift_back : public validate_video_and_sel_nonempty {
 static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDialogue *), wxString const& message) {
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
-	AssDialogue *first = 0;
+	AssDialogue *first = nullptr;
 	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it++);
 		if (!diag || !sel.count(diag))
@@ -723,7 +723,7 @@ struct edit_line_join_as_karaoke : public validate_sel_multiple {
 	STR_DISP("As Karaoke")
 	STR_HELP("Join selected lines in a single one, as karaoke")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		combine_lines(c, combine_karaoke, _("join as karaoke"));
 	}
 };
@@ -734,7 +734,7 @@ struct edit_line_join_concatenate : public validate_sel_multiple {
 	STR_DISP("Concatenate")
 	STR_HELP("Join selected lines in a single one, concatenating text together")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		combine_lines(c, combine_concat, _("join lines"));
 	}
 };
@@ -745,7 +745,7 @@ struct edit_line_join_keep_first : public validate_sel_multiple {
 	STR_DISP("Keep First")
 	STR_HELP("Join selected lines in a single one, keeping text of first and discarding remaining")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		combine_lines(c, combine_drop, _("join lines"));
 	}
 };
@@ -788,7 +788,7 @@ struct edit_line_paste : public Command {
 	STR_HELP("Paste subtitles")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *) {
+	bool Validate(const agi::Context *) override {
 		bool can_paste = false;
 		if (wxTheClipboard->Open()) {
 			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
@@ -797,7 +797,7 @@ struct edit_line_paste : public Command {
 		return can_paste;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (wxTextEntryBase *ctrl = dynamic_cast<wxTextEntryBase*>(c->parent->FindFocus())) {
 			if (!try_paste_lines(c))
 				ctrl->Paste();
@@ -819,7 +819,7 @@ struct edit_line_paste_over : public Command {
 	STR_HELP("Paste subtitles over others")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		bool can_paste = !c->selectionController->GetSelectedSet().empty();
 		if (can_paste && wxTheClipboard->Open()) {
 			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
@@ -828,7 +828,7 @@ struct edit_line_paste_over : public Command {
 		return can_paste;
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		auto const& sel = c->selectionController->GetSelectedSet();
 		std::vector<bool> pasteOverOptions;
 
@@ -911,7 +911,7 @@ struct edit_line_recombine : public validate_sel_multiple {
 	STR_DISP("Recombine Lines")
 	STR_HELP("Recombine subtitles which have been split and merged")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		auto sel_set = c->selectionController->GetSelectedSet();
 		if (sel_set.size() < 2) return;
 
@@ -986,7 +986,7 @@ struct edit_line_split_by_karaoke : public validate_sel_nonempty {
 	STR_DISP("Split Lines (by karaoke)")
 	STR_HELP("Use karaoke timing to split line into multiple smaller lines")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssKaraoke::SplitLines(c->selectionController->GetSelectedSet(), c);
 	}
 };
@@ -996,7 +996,7 @@ void split_lines(agi::Context *c, Func&& set_time) {
 	int pos = c->textSelectionController->GetSelectionStart();
 
 	AssDialogue *n1 = c->selectionController->GetActiveLine();
-	AssDialogue *n2 = new AssDialogue(*n1);
+	auto n2 = new AssDialogue(*n1);
 	c->ass->Line.insert(++c->ass->Line.iterator_to(*n1), *n2);
 
 	std::string orig = n1->Text;
@@ -1014,7 +1014,7 @@ struct edit_line_split_estimate : public validate_video_and_sel_nonempty {
 	STR_DISP("Split at cursor (estimate times)")
 	STR_HELP("Split the current line at the cursor, dividing the original line's duration between the new ones")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		split_lines(c, [](AssDialogue *n1, AssDialogue *n2) {
 			size_t len = n1->Text.get().size() + n2->Text.get().size();
 			if (!len) return;
@@ -1030,7 +1030,7 @@ struct edit_line_split_preserve : public validate_sel_nonempty {
 	STR_DISP("Split at cursor (preserve times)")
 	STR_HELP("Split the current line at the cursor, setting both lines to the original line's times")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		split_lines(c, [](AssDialogue *, AssDialogue *) { });
 	}
 };
@@ -1041,7 +1041,7 @@ struct edit_line_split_video : public validate_video_and_sel_nonempty {
 	STR_DISP("Split at cursor (at video frame)")
 	STR_HELP("Split the current line at the cursor, dividing the line's duration at the current video frame")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		split_lines(c, [&](AssDialogue *n1, AssDialogue *n2) {
 			int cur_frame = mid(
 				c->videoController->FrameAtTime(n1->Start, agi::vfr::START),
@@ -1057,22 +1057,22 @@ struct edit_redo : public Command {
 	STR_HELP("Redo last undone action")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
-	wxString StrMenu(const agi::Context *c) const {
+	wxString StrMenu(const agi::Context *c) const override {
 		return c->subsController->IsRedoStackEmpty() ?
 			_("Nothing to &redo") :
 		wxString::Format(_("&Redo %s"), c->subsController->GetRedoDescription());
 	}
-	wxString StrDisplay(const agi::Context *c) const {
+	wxString StrDisplay(const agi::Context *c) const override {
 		return c->subsController->IsRedoStackEmpty() ?
 			_("Nothing to redo") :
 		wxString::Format(_("Redo %s"), c->subsController->GetRedoDescription());
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return !c->subsController->IsRedoStackEmpty();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->subsController->Redo();
 	}
 };
@@ -1082,22 +1082,22 @@ struct edit_undo : public Command {
 	STR_HELP("Undo last action")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
-	wxString StrMenu(const agi::Context *c) const {
+	wxString StrMenu(const agi::Context *c) const override {
 		return c->subsController->IsUndoStackEmpty() ?
 			_("Nothing to &undo") :
 			wxString::Format(_("&Undo %s"), c->subsController->GetUndoDescription());
 	}
-	wxString StrDisplay(const agi::Context *c) const {
+	wxString StrDisplay(const agi::Context *c) const override {
 		return c->subsController->IsUndoStackEmpty() ?
 			_("Nothing to undo") :
 			wxString::Format(_("Undo %s"), c->subsController->GetUndoDescription());
 	}
 
-	bool Validate(const agi::Context *c) {
+	bool Validate(const agi::Context *c) override {
 		return !c->subsController->IsUndoStackEmpty();
 	}
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->subsController->Undo();
 	}
 };
@@ -1108,7 +1108,7 @@ struct edit_revert : public Command {
 	STR_MENU("Revert")
 	STR_HELP("Revert the active line to its initial state (shown in the upper editor)")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssDialogue *line = c->selectionController->GetActiveLine();
 		line->Text = c->initialLineState->GetInitialText();
 		c->ass->Commit(_("revert line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
@@ -1121,7 +1121,7 @@ struct edit_clear : public Command {
 	STR_MENU("Clear")
 	STR_HELP("Clear the current line's text")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssDialogue *line = c->selectionController->GetActiveLine();
 		line->Text = "";
 		c->ass->Commit(_("clear line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
@@ -1135,7 +1135,7 @@ struct edit_clear_text : public Command {
 	STR_MENU("Clear Text")
 	STR_HELP("Clear the current line's text, leaving override tags")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssDialogue *line = c->selectionController->GetActiveLine();
 		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 		line->Text = join(blocks
@@ -1152,7 +1152,7 @@ struct edit_insert_original : public Command {
 	STR_MENU("Insert Original")
 	STR_HELP("Insert the original line text at the cursor")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		AssDialogue *line = c->selectionController->GetActiveLine();
 		int sel_start = c->textSelectionController->GetSelectionStart();
 		int sel_end = c->textSelectionController->GetSelectionEnd();

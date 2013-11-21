@@ -162,7 +162,7 @@ bool StringBinder::TransferFromWindow() {
 	else if (wxComboBox *ctrl = dynamic_cast<wxComboBox*>(window))
 		*value = from_wx(ctrl->GetValue());
 	else
-		throw agi::InternalError("Unsupported control type", 0);
+		throw agi::InternalError("Unsupported control type", nullptr);
 	return true;
 }
 
@@ -173,6 +173,6 @@ bool StringBinder::TransferToWindow() {
 	else if (wxComboBox *ctrl = dynamic_cast<wxComboBox*>(window))
 		ctrl->SetValue(to_wx(*value));
 	else
-		throw agi::InternalError("Unsupported control type", 0);
+		throw agi::InternalError("Unsupported control type", nullptr);
 	return true;
 }

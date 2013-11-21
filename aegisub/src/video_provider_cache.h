@@ -39,15 +39,15 @@ public:
 	VideoProviderCache(std::unique_ptr<VideoProvider> master);
 	~VideoProviderCache();
 
-	std::shared_ptr<VideoFrame> GetFrame(int n);
+	std::shared_ptr<VideoFrame> GetFrame(int n) override;
 
-	int GetFrameCount() const             { return master->GetFrameCount(); }
-	int GetWidth() const                  { return master->GetWidth(); }
-	int GetHeight() const                 { return master->GetHeight(); }
-	double GetDAR() const                 { return master->GetDAR(); }
-	agi::vfr::Framerate GetFPS() const    { return master->GetFPS(); }
-	std::vector<int> GetKeyFrames() const { return master->GetKeyFrames(); }
-	std::string GetWarning() const        { return master->GetWarning(); }
-	std::string GetDecoderName() const    { return master->GetDecoderName(); }
-	std::string GetColorSpace() const     { return master->GetColorSpace(); }
+	int GetFrameCount() const override             { return master->GetFrameCount(); }
+	int GetWidth() const override                  { return master->GetWidth(); }
+	int GetHeight() const override                 { return master->GetHeight(); }
+	double GetDAR() const override                 { return master->GetDAR(); }
+	agi::vfr::Framerate GetFPS() const override    { return master->GetFPS(); }
+	std::vector<int> GetKeyFrames() const override { return master->GetKeyFrames(); }
+	std::string GetWarning() const override        { return master->GetWarning(); }
+	std::string GetDecoderName() const override    { return master->GetDecoderName(); }
+	std::string GetColorSpace() const override     { return master->GetColorSpace(); }
 };

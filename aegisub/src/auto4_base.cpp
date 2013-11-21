@@ -197,7 +197,7 @@ namespace Automation4 {
 			return config_dialog->CreateWindow(parent);
 		}
 
-		return 0;
+		return nullptr;
 	}
 
 	void ExportFilter::LoadSettings(bool is_default, agi::Context *c) {
@@ -222,7 +222,7 @@ namespace Automation4 {
 			wxDialog w; // container dialog box
 			w.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 			w.Create(bsr->GetParentWindow(), -1, to_wx(bsr->GetTitle()));
-			wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
+			auto s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
 			wxWindow *ww = config_dialog->CreateWindow(&w); // generate actual dialog contents
 			s->Add(ww, 0, wxALL, 5); // add contents to dialog
 			w.SetSizerAndFit(s);
@@ -331,8 +331,8 @@ namespace Automation4 {
 	}
 
 	// AutoloadScriptManager
-	AutoloadScriptManager::AutoloadScriptManager(std::string const& path)
-	: path(path)
+	AutoloadScriptManager::AutoloadScriptManager(std::string path)
+	: path(std::move(path))
 	{
 		Reload();
 	}
@@ -454,16 +454,16 @@ namespace Automation4 {
 	}
 
 	// ScriptFactory
-	ScriptFactory::ScriptFactory(std::string const& engine_name, std::string const& filename_pattern)
-	: engine_name(engine_name)
-	, filename_pattern(filename_pattern)
+	ScriptFactory::ScriptFactory(std::string engine_name, std::string filename_pattern)
+	: engine_name(std::move(engine_name))
+	, filename_pattern(std::move(filename_pattern))
 	{
 	}
 
 	void ScriptFactory::Register(std::unique_ptr<ScriptFactory> factory)
 	{
 		if (find(Factories().begin(), Factories().end(), factory) != Factories().end())
-			throw agi::InternalError("Automation 4: Attempt to register the same script factory multiple times. This should never happen.", 0);
+			throw agi::InternalError("Automation 4: Attempt to register the same script factory multiple times. This should never happen.", nullptr);
 
 		Factories().emplace_back(std::move(factory));
 	}

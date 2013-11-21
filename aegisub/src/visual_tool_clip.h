@@ -26,7 +26,7 @@
 struct ClipCorner : public VisualDraggableFeature {
 	ClipCorner *horiz; ///< Other corner on this corner's horizontal line
 	ClipCorner *vert;  ///< Other corner on this corner's vertical line
-	ClipCorner() : VisualDraggableFeature() , horiz(0) , vert(0) { type = DRAG_SMALL_CIRCLE; }
+	ClipCorner() : VisualDraggableFeature() , horiz(nullptr) , vert(nullptr) { type = DRAG_SMALL_CIRCLE; }
 };
 
 class VisualToolClip : public VisualTool<ClipCorner> {
@@ -35,17 +35,17 @@ class VisualToolClip : public VisualTool<ClipCorner> {
 
 	bool inverse; ///< Is this currently in iclip mode?
 
-	bool InitializeHold();
-	void UpdateHold();
+	bool InitializeHold() override;
+	void UpdateHold() override;
 	void CommitHold();
 
-	void DoRefresh();
+	void DoRefresh() override;
 	void SetFeaturePositions();
 
-	bool InitializeDrag(ClipCorner *feature) { return true; }
-	void UpdateDrag(ClipCorner *feature);
+	bool InitializeDrag(ClipCorner *feature) override { return true; }
+	void UpdateDrag(ClipCorner *feature) override;
 
-	void Draw();
+	void Draw() override;
 public:
 	VisualToolClip(VideoDisplay *parent, agi::Context *context);
 };

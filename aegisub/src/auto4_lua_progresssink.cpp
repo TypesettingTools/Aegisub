@@ -203,7 +203,7 @@ namespace Automation4 {
 		if (must_exist)
 			flags |= wxFD_FILE_MUST_EXIST;
 
-		wxFileDialog diag(0, message, dir, file, wildcard, flags);
+		wxFileDialog diag(nullptr, message, dir, file, wildcard, flags);
 		if (ps->ShowDialog(&diag) == wxID_CANCEL) {
 			lua_pushnil(L);
 			return 1;

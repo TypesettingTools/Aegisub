@@ -166,14 +166,14 @@ class AegisubFileDropTarget : public wxFileDropTarget {
 	FrameMain *parent;
 public:
 	AegisubFileDropTarget(FrameMain *parent) : parent(parent) { }
-	bool OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames) {
+	bool OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames) override {
 		std::string subs, audio, video;
 		get_files_to_load(filenames, subs, audio, video);
 
 		if (subs.empty() && audio.empty() && video.empty())
 			return false;
 
-		wxThreadEvent *evt = new wxThreadEvent(FILE_LIST_DROPPED);
+		auto evt = new wxThreadEvent(FILE_LIST_DROPPED);
 		evt->SetPayload(filenames);
 		parent->QueueEvent(evt);
 		return true;
@@ -203,9 +203,9 @@ FrameMain::FrameMain()
 	// anything involving unicode and in some cases number formatting.
 	// The right thing to do here would be to query CoreFoundation for the user's
 	// locale and add .UTF-8 to that, but :effort:
-	LOG_D("locale") << setlocale(LC_ALL, 0);
+	LOG_D("locale") << setlocale(LC_ALL, nullptr);
 	setlocale(LC_CTYPE, "en_US.UTF-8");
-	LOG_D("locale") << setlocale(LC_ALL, 0);
+	LOG_D("locale") << setlocale(LC_ALL, nullptr);
 #endif
 
 	StartupLog("Initializing context models");
@@ -225,14 +225,14 @@ FrameMain::FrameMain()
 	context->local_scripts = new Automation4::LocalScriptManager(context.get());
 
 	// Initialized later due to that the selection controller is currently the subtitles grid
-	context->selectionController = 0;
+	context->selectionController = nullptr;
 
 	context->videoController = VideoContext::Get(); // derp
 	context->videoController->AddVideoOpenListener(&FrameMain::OnVideoOpen, this);
 
 	StartupLog("Initializing context frames");
 	context->parent = this;
-	context->previousFocus = 0;
+	context->previousFocus = nullptr;
 
 	StartupLog("Install PNG handler");
 	wxImage::AddHandler(new wxPNGHandler);
@@ -325,7 +325,7 @@ static bool delete_children(wxWindow *window, wxWindow *keep) {
 }
 
 FrameMain::~FrameMain () {
-	wxGetApp().frame = 0;
+	wxGetApp().frame = nullptr;
 
 	context->videoController->SetVideo("");
 	context->audioController->CloseAudio();
@@ -355,7 +355,7 @@ void FrameMain::EnableToolBar(agi::OptionValue const& opt) {
 		}
 	}
 	else if (wxToolBar *old_tb = GetToolBar()) {
-		SetToolBar(0);
+		SetToolBar(nullptr);
 		delete old_tb;
 		Layout();
 	}
@@ -378,7 +378,7 @@ void FrameMain::InitContents() {
 	context->audioBox = audioBox = new AudioBox(Panel, context.get());
 
 	StartupLog("Create subtitle editing box");
-	SubsEditBox *EditBox = new SubsEditBox(Panel, context.get());
+	auto EditBox = new SubsEditBox(Panel, context.get());
 
 	StartupLog("Arrange main sizers");
 	ToolsSizer = new wxBoxSizer(wxVERTICAL);

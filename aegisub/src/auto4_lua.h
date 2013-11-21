@@ -206,9 +206,9 @@ namespace Automation4 {
 		int LuaReadBack(lua_State *L);
 
 		// ScriptDialog implementation
-		wxWindow* CreateWindow(wxWindow *parent);
-		std::string Serialise();
-		void Unserialise(const std::string &serialised);
+		wxWindow* CreateWindow(wxWindow *parent) override;
+		std::string Serialise() override;
+		void Unserialise(const std::string &serialised) override;
 	};
 
 	class LuaFeature {
@@ -244,16 +244,16 @@ namespace Automation4 {
 		LuaCommand(lua_State *L);
 		~LuaCommand();
 
-		const char* name() const { return cmd_name.c_str(); }
-		wxString StrMenu(const agi::Context *) const { return display; }
-		wxString StrDisplay(const agi::Context *) const { return display; }
-		wxString StrHelp() const { return help; }
+		const char* name() const override { return cmd_name.c_str(); }
+		wxString StrMenu(const agi::Context *) const override { return display; }
+		wxString StrDisplay(const agi::Context *) const override { return display; }
+		wxString StrHelp() const override { return help; }
 
-		int Type() const { return cmd_type; }
+		int Type() const override { return cmd_type; }
 
-		void operator()(agi::Context *c);
-		bool Validate(const agi::Context *c);
-		virtual bool IsActive(const agi::Context *c);
+		void operator()(agi::Context *c) override;
+		bool Validate(const agi::Context *c) override;
+		virtual bool IsActive(const agi::Context *c) override;
 
 		static int LuaRegister(lua_State *L);
 	};
@@ -263,12 +263,12 @@ namespace Automation4 {
 		LuaDialog *config_dialog;
 
 	protected:
-		ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c);
+		ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) override;
 
 	public:
 		LuaExportFilter(lua_State *L);
 		static int LuaRegister(lua_State *L);
 
-		void ProcessSubs(AssFile *subs, wxWindow *export_dialog);
+		void ProcessSubs(AssFile *subs, wxWindow *export_dialog) override;
 	};
 }

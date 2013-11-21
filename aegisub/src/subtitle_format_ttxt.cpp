@@ -69,10 +69,10 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename
 
 	// Load XML document
 	wxXmlDocument doc;
-	if (!doc.Load(filename.wstring())) throw TTXTParseError("Failed loading TTXT XML file.", 0);
+	if (!doc.Load(filename.wstring())) throw TTXTParseError("Failed loading TTXT XML file.", nullptr);
 
 	// Check root node name
-	if (doc.GetRoot()->GetName() != "TextStream") throw TTXTParseError("Invalid TTXT file.", 0);
+	if (doc.GetRoot()->GetName() != "TextStream") throw TTXTParseError("Invalid TTXT file.", nullptr);
 
 	// Check version
 	wxString verStr = doc.GetRoot()->GetAttribute("version", "");
@@ -82,10 +82,10 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename
 	else if (verStr == "1.1")
 		version = 1;
 	else
-		throw TTXTParseError("Unknown TTXT version: " + from_wx(verStr), 0);
+		throw TTXTParseError("Unknown TTXT version: " + from_wx(verStr), nullptr);
 
 	// Get children
-	AssDialogue *diag = 0;
+	AssDialogue *diag = nullptr;
 	int lines = 0;
 	for (wxXmlNode *child = doc.GetRoot()->GetChildren(); child; child = child->GetNext()) {
 		// Line
@@ -123,10 +123,10 @@ AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev,
 		text = node->GetNodeContent();
 
 	// Create line
-	if (text.empty()) return 0;
+	if (text.empty()) return nullptr;
 
 	// Create dialogue
-	AssDialogue *diag = new AssDialogue;
+	auto diag = new AssDialogue;
 	diag->Start = time;
 	diag->End = 36000000-10;
 
@@ -176,7 +176,7 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& file
 	WriteHeader(root);
 
 	// Create lines
-	const AssDialogue *prev = 0;
+	const AssDialogue *prev = nullptr;
 	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
 		WriteLine(root, prev, current);
 		prev = current;
@@ -270,7 +270,7 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 	}
 
 	// Insert blank line at the end
-	AssDialogue *diag = new AssDialogue;
+	auto diag = new AssDialogue;
 	diag->Start = lastTime;
 	diag->End = lastTime+OPT_GET("Timing/Default Duration")->GetInt();
 	file.Line.push_back(*diag);

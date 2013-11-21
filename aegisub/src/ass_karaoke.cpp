@@ -294,7 +294,7 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 		bool in_sel = sel.count(diag) > 0;
 
 		for (auto const& syl : kara) {
-			AssDialogue *new_line = new AssDialogue(*diag);
+			auto new_line = new AssDialogue(*diag);
 
 			new_line->Start = syl.start_time;
 			new_line->End = syl.start_time + syl.duration;

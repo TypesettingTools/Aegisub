@@ -59,7 +59,7 @@ wxBitmap const& get(std::string const& name, const int size) {
 
 void icon_init() {
 	// Seems that WX doesn't install the handlers early enough for our use.
-	wxPNGHandler *handler = new wxPNGHandler();
+	auto handler = new wxPNGHandler();
 	wxImage::AddHandler(handler);
 
 	LOG_D("icon/init") << "Generating 24x24, 16x16 icons";

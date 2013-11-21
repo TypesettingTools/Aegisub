@@ -59,15 +59,15 @@ class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeat
 	void MakeFeature(Spline::iterator cur);
 	void MakeFeatures();
 
-	bool InitializeHold();
-	void UpdateHold();
+	bool InitializeHold() override;
+	void UpdateHold() override;
 
-	void UpdateDrag(Feature *feature);
-	bool InitializeDrag(Feature *feature);
+	void UpdateDrag(Feature *feature) override;
+	bool InitializeDrag(Feature *feature) override;
 
-	void DoRefresh();
-	void Draw();
+	void DoRefresh() override;
+	void Draw() override;
 public:
 	VisualToolVectorClip(VideoDisplay *parent, agi::Context *context);
-	void SetToolbar(wxToolBar *tb);
+	void SetToolbar(wxToolBar *tb) override;
 };

@@ -56,7 +56,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 : wxDialog(context->parent, -1, _("Styling Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(context)
 , active_line_connection(context->selectionController->AddActiveLineListener(&DialogStyling::OnActiveLineChanged, this))
-, active_line(0)
+, active_line(nullptr)
 {
 	SetIcon(GETICON(styling_toolbutton_16));
 
@@ -127,7 +127,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 	main_sizer->Add(bottom_sizer, 1, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 5);
 
 	{
-		wxStdDialogButtonSizer *button_sizer = new wxStdDialogButtonSizer;
+		auto button_sizer = new wxStdDialogButtonSizer;
 		button_sizer->AddButton(new wxButton(this, wxID_CANCEL));
 		button_sizer->AddButton(new HelpButton(this, "Styling Assistant"));
 		button_sizer->Realize();

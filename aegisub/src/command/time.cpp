@@ -54,14 +54,14 @@ namespace {
 
 	struct validate_video_loaded : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
-		bool Validate(const agi::Context *c) {
+		bool Validate(const agi::Context *c) override {
 			return c->videoController->IsLoaded();
 		}
 	};
 
 	struct validate_adjoinable : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
-		bool Validate(const agi::Context *c) {
+		bool Validate(const agi::Context *c) override {
 			SubtitleSelection sel = c->selectionController->GetSelectedSet();
 			if (sel.size() < 2) return !sel.empty();
 
@@ -112,7 +112,7 @@ struct time_continuous_end : public validate_adjoinable {
 	STR_DISP("Change End")
 	STR_HELP("Change end times of lines to the next line's start time")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		adjoin_lines(c, false);
 	}
 };
@@ -123,7 +123,7 @@ struct time_continuous_start : public validate_adjoinable {
 	STR_DISP("Change Start")
 	STR_HELP("Change start times of lines to the previous line's end time")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		adjoin_lines(c, true);
 	}
 };
@@ -134,7 +134,7 @@ struct time_frame_current : public validate_video_loaded {
 	STR_DISP("Shift to Current Frame")
 	STR_HELP("Shift selection so that the active line starts at current frame")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (!c->videoController->IsLoaded()) return;
 
 		SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
@@ -160,7 +160,7 @@ struct time_shift : public Command {
 	STR_DISP("Shift Times")
 	STR_HELP("Shift subtitles by time or frames")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		c->dialog->Show<DialogShiftTimes>(c);
 	}
 };
@@ -189,7 +189,7 @@ struct time_snap_end_video : public validate_video_loaded {
 	STR_DISP("Snap End to Video")
 	STR_HELP("Set end of selected subtitles to current video frame")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		snap_subs_video(c, false);
 	}
 };
@@ -200,7 +200,7 @@ struct time_snap_scene : public validate_video_loaded {
 	STR_DISP("Snap to Scene")
 	STR_HELP("Set start and end of subtitles to the keyframes around current video frame")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		VideoContext *con = c->videoController;
 		if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
 
@@ -244,7 +244,7 @@ struct time_add_lead_both : public Command {
 	STR_MENU("Add lead in and out")
 	STR_DISP("Add lead in and out")
 	STR_HELP("Add both lead in and out to the selected lines")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (AudioTimingController *tc = c->audioController->GetTimingController()) {
 			tc->AddLeadIn();
 			tc->AddLeadOut();
@@ -257,7 +257,7 @@ struct time_add_lead_in : public Command {
 	STR_MENU("Add lead in")
 	STR_DISP("Add lead in")
 	STR_HELP("Add the lead in time to the selected lines")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->AddLeadIn();
 	}
@@ -268,7 +268,7 @@ struct time_add_lead_out : public Command {
 	STR_MENU("Add lead out")
 	STR_DISP("Add lead out")
 	STR_HELP("Add the lead out time to the selected lines")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->AddLeadOut();
 	}
@@ -279,7 +279,7 @@ struct time_length_increase : public Command {
 	STR_MENU("Increase length")
 	STR_DISP("Increase length")
 	STR_HELP("Increase the length of the current timing unit")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->ModifyLength(1, false);
 	}
@@ -290,7 +290,7 @@ struct time_length_increase_shift : public Command {
 	STR_MENU("Increase length and shift")
 	STR_DISP("Increase length and shift")
 	STR_HELP("Increase the length of the current timing unit and shift the following items")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->ModifyLength(1, true);
 	}
@@ -301,7 +301,7 @@ struct time_length_decrease : public Command {
 	STR_MENU("Decrease length")
 	STR_DISP("Decrease length")
 	STR_HELP("Decrease the length of the current timing unit")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->ModifyLength(-1, false);
 	}
@@ -312,7 +312,7 @@ struct time_length_decrease_shift : public Command {
 	STR_MENU("Decrease length and shift")
 	STR_DISP("Decrease length and shift")
 	STR_HELP("Decrease the length of the current timing unit and shift the following items")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->ModifyLength(-1, true);
 	}
@@ -323,7 +323,7 @@ struct time_start_increase : public Command {
 	STR_MENU("Shift start time forward")
 	STR_DISP("Shift start time forward")
 	STR_HELP("Shift the start time of the current timing unit forward")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->ModifyStart(1);
 	}
@@ -334,7 +334,7 @@ struct time_start_decrease : public Command {
 	STR_MENU("Shift start time backward")
 	STR_DISP("Shift start time backward")
 	STR_HELP("Shift the start time of the current timing unit backward")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->ModifyStart(-1);
 	}
@@ -346,7 +346,7 @@ struct time_snap_start_video : public validate_video_loaded {
 	STR_DISP("Snap Start to Video")
 	STR_HELP("Set start of selected subtitles to current video frame")
 
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		snap_subs_video(c, true);
 	}
 };
@@ -356,7 +356,7 @@ struct time_next : public Command {
 	STR_MENU("Next Line")
 	STR_DISP("Next Line")
 	STR_HELP("Next line or syllable")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->Next(AudioTimingController::TIMING_UNIT);
 	}
@@ -367,7 +367,7 @@ struct time_prev : public Command {
 	STR_MENU("Previous Line")
 	STR_DISP("Previous Line")
 	STR_HELP("Previous line or syllable")
-	void operator()(agi::Context *c) {
+	void operator()(agi::Context *c) override {
 		if (c->audioController->GetTimingController())
 			c->audioController->GetTimingController()->Prev();
 	}

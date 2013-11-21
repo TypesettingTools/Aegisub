@@ -104,7 +104,7 @@ namespace
 		bool underline;   ///< Is this block underlined?
 		bool italic;      ///< Is this block italic?
 		bool word_start;  ///< Is it safe to line-wrap between this block and the previous one?
-		EbuFormattedText(std::string const& t, bool u = false, bool i = false, bool ws = true) : text(t), underline(u), italic(i), word_start(ws) { }
+		EbuFormattedText(std::string t, bool u = false, bool i = false, bool ws = true) : text(std::move(t)), underline(u), italic(i), word_start(ws) { }
 	};
 	typedef std::vector<EbuFormattedText> EbuTextRow;
 
@@ -407,7 +407,7 @@ namespace
 			else if (!imline.CheckLineLengths(export_settings.max_line_length))
 			{
 				if (export_settings.line_wrapping_mode == EbuExportSettings::AbortOverLength)
-					throw Ebu3264SubtitleFormat::ConversionFailed(from_wx(wxString::Format(_("Line over maximum length: %s"), line->Text.get())), 0);
+					throw Ebu3264SubtitleFormat::ConversionFailed(from_wx(wxString::Format(_("Line over maximum length: %s"), line->Text.get())), nullptr);
 				else // skip over-long lines
 					subs_list.pop_back();
 			}
@@ -518,7 +518,7 @@ namespace
 			}
 
 			// produce blocks from string
-			static const size_t block_size = sizeof(((BlockTTI*)0)->tf);
+			static const size_t block_size = sizeof(((BlockTTI*)nullptr)->tf);
 			uint8_t num_blocks = 0;
 			for (size_t pos = 0; pos < fullstring.size(); pos += block_size)
 			{
@@ -640,7 +640,7 @@ std::vector<std::string> Ebu3264SubtitleFormat::GetWriteWildcards() const
 void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const&) const
 {
 	// collect data from user
-	EbuExportSettings export_settings = get_export_config(0);
+	EbuExportSettings export_settings = get_export_config(nullptr);
 	AssFile copy(*src);
 
 	std::vector<EbuSubtitle> subs_list = convert_subtitles(copy, export_settings);

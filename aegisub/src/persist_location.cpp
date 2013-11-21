@@ -30,8 +30,8 @@
 PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix, bool size_too)
 : x_opt(OPT_SET(options_prefix + "/Last/X"))
 , y_opt(OPT_SET(options_prefix + "/Last/Y"))
-, w_opt(size_too ? OPT_SET(options_prefix + "/Last/Width") : 0)
-, h_opt(size_too ? OPT_SET(options_prefix + "/Last/Height") : 0)
+, w_opt(size_too ? OPT_SET(options_prefix + "/Last/Width") : nullptr)
+, h_opt(size_too ? OPT_SET(options_prefix + "/Last/Height") : nullptr)
 , maximize_opt(OPT_SET(options_prefix + "/Maximized"))
 , dialog(dialog)
 {

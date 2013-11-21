@@ -151,7 +151,7 @@ public:
 	/// Get all keyframe markers within a range
 	/// @param range Time range to get markers for
 	/// @param[out] out Vector to fill with markers in the range
-	void GetMarkers(TimeRange const& range, AudioMarkerVector &out) const;
+	void GetMarkers(TimeRange const& range, AudioMarkerVector &out) const override;
 };
 
 /// Marker provider for the current video playback position
@@ -170,7 +170,7 @@ public:
 	VideoPositionMarkerProvider(agi::Context *c);
 	~VideoPositionMarkerProvider();
 
-	void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const;
+	void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const override;
 };
 
 /// Marker provider for lines every second
@@ -180,10 +180,10 @@ class SecondsMarkerProvider : public AudioMarkerProvider {
 		int position;
 
 		Marker(Pen *style) : style(style), position(0) { }
-		int GetPosition() const { return position; }
-		FeetStyle GetFeet() const { return Feet_None; }
-		bool CanSnap() const { return false; }
-		wxPen GetStyle() const;
+		int GetPosition() const override { return position; }
+		FeetStyle GetFeet() const override { return Feet_None; }
+		bool CanSnap() const override { return false; }
+		wxPen GetStyle() const override;
 		operator int() const { return position; }
 	};
 
@@ -203,5 +203,5 @@ class SecondsMarkerProvider : public AudioMarkerProvider {
 
 public:
 	SecondsMarkerProvider();
-	void GetMarkers(TimeRange const& range, AudioMarkerVector &out) const;
+	void GetMarkers(TimeRange const& range, AudioMarkerVector &out) const override;
 };

@@ -146,13 +146,13 @@ namespace Automation4 {
 		public:
 			Label(lua_State *L) : LuaDialogControl(L), label(get_field(L, "label")) { }
 
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				return new wxStaticText(parent, -1, to_wx(label));
 			}
 
-			int GetSizerFlags() const { return wxALIGN_CENTRE_VERTICAL | wxALIGN_LEFT; }
+			int GetSizerFlags() const override { return wxALIGN_CENTRE_VERTICAL | wxALIGN_LEFT; }
 
-			void LuaReadBack(lua_State *L) {
+			void LuaReadBack(lua_State *L) override {
 				// Label doesn't produce output, so let it be nil
 				lua_pushnil(L);
 			}
@@ -168,7 +168,7 @@ namespace Automation4 {
 			Edit(lua_State *L)
 			: LuaDialogControl(L)
 			, text(get_field(L, "value"))
-			, cw(0)
+			, cw(nullptr)
 			{
 				// Undocumented behaviour, 'value' is also accepted as key for text,
 				// mostly so a text control can stand in for other things.
@@ -176,18 +176,18 @@ namespace Automation4 {
 				text = get_field(L, "text", text);
 			}
 
-			bool CanSerialiseValue() const { return true; }
-			std::string SerialiseValue() const { return inline_string_encode(text); }
-			void UnserialiseValue(const std::string &serialised) { text = inline_string_decode(serialised); }
+			bool CanSerialiseValue() const override { return true; }
+			std::string SerialiseValue() const override { return inline_string_encode(text); }
+			void UnserialiseValue(const std::string &serialised) override { text = inline_string_decode(serialised); }
 
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				cw = new wxTextCtrl(parent, -1, to_wx(text));
 				cw->SetValidator(StringBinder(&text));
 				cw->SetToolTip(to_wx(hint));
 				return cw;
 			}
 
-			void LuaReadBack(lua_State *L) {
+			void LuaReadBack(lua_State *L) override {
 				lua_pushstring(L, text.c_str());
 			}
 		};
@@ -205,17 +205,17 @@ namespace Automation4 {
 			{
 			}
 
-			bool CanSerialiseValue() const { return true; }
-			std::string SerialiseValue() const { return inline_string_encode(color.GetHexFormatted()); }
-			void UnserialiseValue(const std::string &serialised) { color = inline_string_decode(serialised); }
+			bool CanSerialiseValue() const override { return true; }
+			std::string SerialiseValue() const override { return inline_string_encode(color.GetHexFormatted()); }
+			void UnserialiseValue(const std::string &serialised) override { color = inline_string_decode(serialised); }
 
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), alpha, color, ColorValidator(&color));
 				cw->SetToolTip(to_wx(hint));
 				return cw;
 			}
 
-			void LuaReadBack(lua_State *L) {
+			void LuaReadBack(lua_State *L) override {
 				lua_pushstring(L, color.GetHexFormatted().c_str());
 			}
 		};
@@ -226,7 +226,7 @@ namespace Automation4 {
 			Textbox(lua_State *L) : Edit(L) { }
 
 			// Same serialisation interface as single-line edit
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				cw = new wxTextCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, StringBinder(&text));
 				cw->SetMinSize(wxSize(0, 30));
 				cw->SetToolTip(to_wx(hint));
@@ -244,7 +244,7 @@ namespace Automation4 {
 		public:
 			IntEdit(lua_State *L)
 			: Edit(L)
-			, cw(0)
+			, cw(nullptr)
 			, value(get_field(L, "value", 0))
 			, min(get_field(L, "min", INT_MIN))
 			, max(get_field(L, "max", INT_MAX))
@@ -255,18 +255,18 @@ namespace Automation4 {
 				}
 			}
 
-			bool CanSerialiseValue() const  { return true; }
-			std::string SerialiseValue() const { return std::to_string(value); }
-			void UnserialiseValue(const std::string &serialised) { value = atoi(serialised.c_str()); }
+			bool CanSerialiseValue() const override  { return true; }
+			std::string SerialiseValue() const override { return std::to_string(value); }
+			void UnserialiseValue(const std::string &serialised) override { value = atoi(serialised.c_str()); }
 
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				cw = new wxSpinCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
 				cw->SetValidator(wxGenericValidator(&value));
 				cw->SetToolTip(to_wx(hint));
 				return cw;
 			}
 
-			void LuaReadBack(lua_State *L) {
+			void LuaReadBack(lua_State *L) override {
 				lua_pushinteger(L, value);
 			}
 		};
@@ -282,15 +282,15 @@ namespace Automation4 {
 			struct DoubleValidator : public wxValidator {
 				double *value;
 				DoubleValidator(double *value) : value(value) { }
-				wxValidator *Clone() const { return new DoubleValidator(value); }
-				bool Validate(wxWindow*) { return true; }
+				wxValidator *Clone() const override { return new DoubleValidator(value); }
+				bool Validate(wxWindow*) override { return true; }
 
-				bool TransferToWindow() {
+				bool TransferToWindow() override {
 					static_cast<wxSpinCtrlDouble*>(GetWindow())->SetValue(*value);
 					return true;
 				}
 
-				bool TransferFromWindow() {
+				bool TransferFromWindow() override {
 					auto ctrl = static_cast<wxSpinCtrlDouble*>(GetWindow());
 #ifndef wxHAS_NATIVE_SPINCTRLDOUBLE
 					wxFocusEvent evt;
@@ -308,7 +308,7 @@ namespace Automation4 {
 			, min(get_field(L, "min", -DBL_MAX))
 			, max(get_field(L, "max", DBL_MAX))
 			, step(get_field(L, "step", 0.0))
-			, scd(0)
+			, scd(nullptr)
 			{
 				if (min >= max) {
 					max = DBL_MAX;
@@ -316,11 +316,11 @@ namespace Automation4 {
 				}
 			}
 
-			bool CanSerialiseValue() const { return true; }
-			std::string SerialiseValue() const { return std::to_string(value); }
-			void UnserialiseValue(const std::string &serialised) { value = atof(serialised.c_str()); }
+			bool CanSerialiseValue() const override { return true; }
+			std::string SerialiseValue() const override { return std::to_string(value); }
+			void UnserialiseValue(const std::string &serialised) override { value = atof(serialised.c_str()); }
 
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				if (step > 0) {
 					scd = new wxSpinCtrlDouble(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value, step);
 					scd->SetValidator(DoubleValidator(&value));
@@ -335,7 +335,7 @@ namespace Automation4 {
 				return cw;
 			}
 
-			void LuaReadBack(lua_State *L) {
+			void LuaReadBack(lua_State *L) override {
 				lua_pushnumber(L, value);
 			}
 		};
@@ -350,23 +350,23 @@ namespace Automation4 {
 			Dropdown(lua_State *L)
 			: LuaDialogControl(L)
 			, value(get_field(L, "value"))
-			, cw(0)
+			, cw(nullptr)
 			{
 				lua_getfield(L, -1, "items");
 				read_string_array(L, items);
 			}
 
-			bool CanSerialiseValue() const { return true; }
-			std::string SerialiseValue() const { return inline_string_encode(value); }
-			void UnserialiseValue(const std::string &serialised) { value = inline_string_decode(serialised); }
+			bool CanSerialiseValue() const override { return true; }
+			std::string SerialiseValue() const override { return inline_string_encode(value); }
+			void UnserialiseValue(const std::string &serialised) override { value = inline_string_decode(serialised); }
 
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				cw = new wxComboBox(parent, -1, to_wx(value), wxDefaultPosition, wxDefaultSize, to_wx(items), wxCB_READONLY, StringBinder(&value));
 				cw->SetToolTip(to_wx(hint));
 				return cw;
 			}
 
-			void LuaReadBack(lua_State *L) {
+			void LuaReadBack(lua_State *L) override {
 				lua_pushstring(L, value.c_str());
 			}
 		};
@@ -381,15 +381,15 @@ namespace Automation4 {
 			: LuaDialogControl(L)
 			, label(get_field(L, "label"))
 			, value(get_field(L, "value", false))
-			, cw(0)
+			, cw(nullptr)
 			{
 			}
 
-			bool CanSerialiseValue() const { return true; }
-			std::string SerialiseValue() const { return value ? "1" : "0"; }
-			void UnserialiseValue(const std::string &serialised) { value = serialised != "0"; }
+			bool CanSerialiseValue() const override { return true; }
+			std::string SerialiseValue() const override { return value ? "1" : "0"; }
+			void UnserialiseValue(const std::string &serialised) override { value = serialised != "0"; }
 
-			wxControl *Create(wxWindow *parent) {
+			wxControl *Create(wxWindow *parent) override {
 				cw = new wxCheckBox(parent, -1, to_wx(label));
 				cw->SetValidator(wxGenericValidator(&value));
 				cw->SetToolTip(to_wx(hint));
@@ -397,7 +397,7 @@ namespace Automation4 {
 				return cw;
 			}
 
-			void LuaReadBack(lua_State *L) {
+			void LuaReadBack(lua_State *L) override {
 				lua_pushboolean(L, value);
 			}
 		};
@@ -407,7 +407,7 @@ namespace Automation4 {
 	LuaDialog::LuaDialog(lua_State *L, bool include_buttons)
 	: use_buttons(include_buttons)
 	, button_pushed(-1)
-	, window(0)
+	, window(nullptr)
 	{
 		LOG_D("automation/lua/dialog") << "creating LuaDialoug, addr: " << this;
 

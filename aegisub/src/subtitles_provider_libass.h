@@ -46,8 +46,8 @@ public:
 	LibassSubtitlesProvider(std::string);
 	~LibassSubtitlesProvider();
 
-	void LoadSubtitles(AssFile *subs);
-	void DrawSubtitles(VideoFrame &dst, double time);
+	void LoadSubtitles(AssFile *subs) override;
+	void DrawSubtitles(VideoFrame &dst, double time) override;
 
 	static void CacheFonts();
 };

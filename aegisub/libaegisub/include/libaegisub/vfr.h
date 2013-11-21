@@ -107,7 +107,7 @@ public:
 
 	/// @brief VFR from frame times
 	/// @param timecodes Vector of frame start times in milliseconds
-	Framerate(std::vector<int> const& timecodes);
+	Framerate(std::vector<int> timecodes);
 
 	/// Helper function for the std::swap specialization
 	void swap(Framerate &right) throw();

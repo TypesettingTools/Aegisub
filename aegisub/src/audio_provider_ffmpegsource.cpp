@@ -58,10 +58,10 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filena
 	LoadAudio(filename);
 }
 catch (std::string const& err) {
-	throw agi::AudioProviderOpenError(err, 0);
+	throw agi::AudioProviderOpenError(err, nullptr);
 }
 catch (const char *err) {
-	throw agi::AudioProviderOpenError(err, 0);
+	throw agi::AudioProviderOpenError(err, nullptr);
 }
 
 void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
@@ -70,12 +70,12 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
 			throw agi::fs::FileNotFound(std::string(ErrInfo.Buffer));
 		else
-			throw agi::AudioDataNotFoundError(ErrInfo.Buffer, 0);
+			throw agi::AudioDataNotFoundError(ErrInfo.Buffer, nullptr);
 	}
 
 	std::map<int, std::string> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_AUDIO);
 	if (TrackList.empty())
-		throw agi::AudioDataNotFoundError("no audio tracks found", 0);
+		throw agi::AudioDataNotFoundError("no audio tracks found", nullptr);
 
 	// initialize the track number to an invalid value so we can detect later on
 	// whether the user actually had to choose a track or not
@@ -103,7 +103,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 		if (TrackNumber < 0)
 			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, &ErrInfo);
 		if (TrackNumber < 0)
-			throw agi::AudioDataNotFoundError(std::string("Couldn't find any audio tracks: ") + ErrInfo.Buffer, 0);
+			throw agi::AudioDataNotFoundError(std::string("Couldn't find any audio tracks: ") + ErrInfo.Buffer, nullptr);
 
 		// index is valid and track number is now set,
 		// but do we have indexing info for the desired audio track?
@@ -145,7 +145,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 	AudioSource = FFMS_CreateAudioSource(filename.string().c_str(), TrackNumber, Index, -1, &ErrInfo);
 	if (!AudioSource)
-		throw agi::AudioProviderOpenError(std::string("Failed to open audio track: ") + ErrInfo.Buffer, 0);
+		throw agi::AudioProviderOpenError(std::string("Failed to open audio track: ") + ErrInfo.Buffer, nullptr);
 
 	const FFMS_AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
 
@@ -153,7 +153,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	sample_rate	= AudioInfo.SampleRate;
 	num_samples = AudioInfo.NumSamples;
 	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
-		throw agi::AudioProviderOpenError("sanity check failed, consult your local psychiatrist", 0);
+		throw agi::AudioProviderOpenError("sanity check failed, consult your local psychiatrist", nullptr);
 
 	switch (AudioInfo.SampleFormat) {
 		case FFMS_FMT_U8:  bytes_per_sample = 1; float_samples = false; break;
@@ -162,7 +162,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 		case FFMS_FMT_FLT: bytes_per_sample = 4; float_samples = true; break;
 		case FFMS_FMT_DBL: bytes_per_sample = 8; float_samples = true; break;
 		default:
-			throw agi::AudioProviderOpenError("unknown or unsupported sample format", 0);
+			throw agi::AudioProviderOpenError("unknown or unsupported sample format", nullptr);
 	}
 
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (4 << 8) | 0)

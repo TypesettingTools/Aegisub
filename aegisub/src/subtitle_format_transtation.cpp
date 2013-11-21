@@ -76,7 +76,7 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path cons
 
 	SmpteFormatter ft(fps);
 	TextFileWriter file(filename, encoding);
-	AssDialogue *prev = 0;
+	AssDialogue *prev = nullptr;
 	for (auto cur : copy.Line | agi::of_type<AssDialogue>()) {
 		if (prev) {
 			file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, cur->Start));

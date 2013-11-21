@@ -53,7 +53,7 @@ AudioPlayer::AudioPlayer(AudioProvider *provider)
 
 std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider) {
 	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
-	if (list.empty()) throw agi::NoAudioPlayersError("No audio players are available.", 0);
+	if (list.empty()) throw agi::NoAudioPlayersError("No audio players are available.", nullptr);
 
 	std::string error;
 	for (auto const& factory_name : list) {
@@ -64,7 +64,7 @@ std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *p
 			error += factory_name + " factory: " + err.GetChainedMessage() + "\n";
 		}
 	}
-	throw agi::AudioPlayerOpenError(error, 0);
+	throw agi::AudioPlayerOpenError(error, nullptr);
 }
 
 void AudioPlayerFactory::RegisterProviders() {

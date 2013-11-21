@@ -105,7 +105,7 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *parent
 	}
 	catch (std::string const& err) {
 		parent->AddPendingEvent(SubtitlesProviderErrorEvent(err));
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -129,7 +129,7 @@ ThreadedFrameSource::~ThreadedFrameSource() {
 void ThreadedFrameSource::LoadSubtitles(const AssFile *new_subs) throw() {
 	uint_fast32_t req_version = ++version;
 
-	AssFile *copy = new AssFile(*new_subs);
+	auto copy = new AssFile(*new_subs);
 	worker->Async([=]{
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;

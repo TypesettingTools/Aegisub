@@ -37,10 +37,10 @@ class AudioMarkerKeyframe : public AudioMarker {
 	int position;
 public:
 	AudioMarkerKeyframe(Pen *style, int position) : style(style), position(position) { }
-	int GetPosition() const { return position; }
-	FeetStyle GetFeet() const { return Feet_None; }
-	bool CanSnap() const { return true; }
-	wxPen GetStyle() const { return *style; }
+	int GetPosition() const override { return position; }
+	FeetStyle GetFeet() const override { return Feet_None; }
+	bool CanSnap() const override { return true; }
+	wxPen GetStyle() const override { return *style; }
 	operator int() const { return position; }
 };
 
@@ -99,10 +99,10 @@ public:
 
 	void SetPosition(int new_pos) { position = new_pos; }
 
-	int GetPosition() const { return position; }
-	FeetStyle GetFeet() const { return Feet_None; }
-	bool CanSnap() const { return true; }
-	wxPen GetStyle() const { return style; }
+	int GetPosition() const override { return position; }
+	FeetStyle GetFeet() const override { return Feet_None; }
+	bool CanSnap() const override { return true; }
+	wxPen GetStyle() const override { return style; }
 	operator int() const { return position; }
 };
 

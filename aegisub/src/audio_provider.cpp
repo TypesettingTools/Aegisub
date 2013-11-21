@@ -59,7 +59,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 
 	if (volume == 1.0) return;
 	if (bytes_per_sample != 2)
-		throw agi::InternalError("GetAudioWithVolume called on unconverted audio stream", 0);
+		throw agi::InternalError("GetAudioWithVolume called on unconverted audio stream", nullptr);
 
 	short *buffer = static_cast<int16_t *>(buf);
 	for (size_t i = 0; i < (size_t)count; ++i)
@@ -159,7 +159,7 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 
 	if (!provider) {
 		std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
-		if (list.empty()) throw agi::NoAudioProvidersError("No audio providers are available.", 0);
+		if (list.empty()) throw agi::NoAudioProvidersError("No audio providers are available.", nullptr);
 
 		for (auto const& name : list) {
 			provider = creator.try_create(name, [&]() { return Create(name, filename); });
@@ -169,9 +169,9 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 
 	if (!provider) {
 		if (creator.found_audio)
-			throw agi::AudioProviderOpenError(creator.msg, 0);
+			throw agi::AudioProviderOpenError(creator.msg, nullptr);
 		if (creator.found_file)
-			throw agi::AudioDataNotFoundError(creator.msg, 0);
+			throw agi::AudioDataNotFoundError(creator.msg, nullptr);
 		throw agi::fs::FileNotFound(filename);
 	}
 
@@ -194,7 +194,7 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 	// Convert to HD
 	if (cache == 2) return agi::util::make_unique<HDAudioProvider>(std::move(provider), &progress);
 
-	throw agi::AudioCacheOpenError("Unknown caching method", 0);
+	throw agi::AudioCacheOpenError("Unknown caching method", nullptr);
 }
 
 void AudioProviderFactory::RegisterProviders() {

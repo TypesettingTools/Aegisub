@@ -367,7 +367,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	ParseState state = STATE_INITIAL;
 	int line_num = 0;
 	int linebreak_debt = 0;
-	AssDialogue *line = 0;
+	AssDialogue *line = nullptr;
 	std::string text;
 	while (file.HasMoreLines()) {
 		std::string text_line = file.ReadLineFromFile();
@@ -387,11 +387,11 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 				if (regex_search(text_line, timestamp_match, timestamp_regex))
 					goto found_timestamps;
 
-				throw SRTParseError(str(boost::format("Parsing SRT: Expected subtitle index at line %d") % line_num), 0);
+				throw SRTParseError(str(boost::format("Parsing SRT: Expected subtitle index at line %d") % line_num), nullptr);
 
 			case STATE_TIMESTAMP:
 				if (!regex_search(text_line, timestamp_match, timestamp_regex))
-					throw SRTParseError(str(boost::format("Parsing SRT: Expected timestamp pair at line %d") % line_num), 0);
+					throw SRTParseError(str(boost::format("Parsing SRT: Expected timestamp pair at line %d") % line_num), nullptr);
 found_timestamps:
 				if (line) {
 					// finalize active line
@@ -457,7 +457,7 @@ found_timestamps:
 	}
 
 	if (state == 1 || state == 2)
-		throw SRTParseError("Parsing SRT: Incomplete file", 0);
+		throw SRTParseError("Parsing SRT: Incomplete file", nullptr);
 
 	if (line) // an unfinalized line
 		line->Text = tag_parser.ToAss(text);

@@ -244,7 +244,7 @@ namespace Automation4 {
 			if (lclass == "info")
 				result = agi::util::make_unique<AssInfo>(get_string_field(L, "key", "info"), get_string_field(L, "value", "info"));
 			else if (lclass == "style") {
-				AssStyle *sty = new AssStyle;
+				auto sty = new AssStyle;
 				result.reset(sty);
 				sty->name = get_string_field(L, "name", "style");
 				sty->font = get_string_field(L, "fontname", "style");
@@ -272,7 +272,7 @@ namespace Automation4 {
 				sty->UpdateData();
 			}
 			else if (lclass == "dialogue") {
-				AssDialogue *dia = new AssDialogue;
+				auto dia = new AssDialogue;
 				result.reset(dia);
 
 				dia->Comment = get_bool_field(L, "comment", "dialogue");
@@ -289,7 +289,7 @@ namespace Automation4 {
 			}
 			else {
 				luaL_error(L, "Found line with unknown class: %s", lclass.c_str());
-				return 0;
+				return nullptr;
 			}
 
 			return result;

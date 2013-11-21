@@ -45,7 +45,7 @@ protected:
 	void CellSkip(wxFlexGridSizer *flex);
 	wxControl *OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min=0, double max=INT_MAX, double inc=1);
 	void OptionChoice(wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name);
-	void OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, wxControl *enabler = 0, bool do_enable = false);
+	void OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, wxControl *enabler = nullptr, bool do_enable = false);
 	void OptionFont(wxSizer *sizer, std::string opt_prefix);
 public:
 

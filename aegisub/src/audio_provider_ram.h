@@ -50,7 +50,7 @@ class RAMAudioProvider : public AudioProviderWrapper {
 #endif
 
 	void FillCache(AudioProvider *source, agi::ProgressSink *ps);
-	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 public:
 	RAMAudioProvider(std::unique_ptr<AudioProvider> source, agi::BackgroundRunner *br);

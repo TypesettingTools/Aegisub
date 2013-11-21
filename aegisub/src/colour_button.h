@@ -46,11 +46,11 @@ public:
 struct ColorValidator : public wxValidator {
 	agi::Color *color;
 	ColorValidator(agi::Color *color) : color(color) { }
-	wxValidator *Clone() const { return new ColorValidator(color); }
-	bool Validate(wxWindow*) { return true; }
-	bool TransferToWindow() { return true; }
+	wxValidator *Clone() const override { return new ColorValidator(color); }
+	bool Validate(wxWindow*) override { return true; }
+	bool TransferToWindow() override { return true; }
 
-	bool TransferFromWindow() {
+	bool TransferFromWindow() override {
 		*color = static_cast<ColourButton*>(GetWindow())->GetColor();
 		return true;
 	}

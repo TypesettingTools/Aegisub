@@ -39,7 +39,7 @@ class UCDetect : public nsUniversalDetector {
 	/// List of detected character sets
 	CharsetListDetected list;
 
-	void Report(const char* aCharset) {}
+	void Report(const char*) override {}
 
 public:
 	/// @brief Detect character set of a file using UniversalCharDetect
@@ -90,17 +90,16 @@ public:
 			list.emplace_back(1.f, mDetectedCharset);
 		else {
 			switch (mInputState) {
-			case eHighbyte: {
-				for (PRInt32 i=0; i<NUM_OF_CHARSET_PROBERS; i++) {
-					if (!mCharSetProbers[i]) continue;
+			case eHighbyte:
+				for (auto& elem : mCharSetProbers) {
+					if (!elem) continue;
 
-					float conf = mCharSetProbers[i]->GetConfidence();
+					float conf = elem->GetConfidence();
 					if (conf > 0.01f)
-						list.emplace_back(conf, mCharSetProbers[i]->GetCharSetName());
+						list.emplace_back(conf, elem->GetCharSetName());
 				}
-
 				break;
-			}
+
 			case ePureAscii:
 				list.emplace_back(1.f, "US-ASCII");
 				break;

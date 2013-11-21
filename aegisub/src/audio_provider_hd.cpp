@@ -95,7 +95,7 @@ HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::Backgr
 {
 	// Check free space
 	if ((uint64_t)num_samples * channels * bytes_per_sample > agi::fs::FreeSpace(cache_dir()))
-		throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir().string() + " to cache the audio", 0);
+		throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir().string() + " to cache the audio", nullptr);
 
 	diskCacheFilename = cache_path();
 

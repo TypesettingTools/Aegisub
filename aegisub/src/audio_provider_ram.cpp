@@ -53,7 +53,7 @@ RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::Back
 		blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 	}
 	catch (std::bad_alloc const&) {
-		throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", 0);
+		throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", nullptr);
 	}
 
 	br->Run(std::bind(&RAMAudioProvider::FillCache, this, source.get(), std::placeholders::_1));

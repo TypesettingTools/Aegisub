@@ -230,7 +230,7 @@ void SubsTextEditCtrl::SetStyles() {
 }
 
 void SubsTextEditCtrl::UpdateStyle() {
-	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : 0;
+	AssDialogue *diag = context ? context->selectionController->GetActiveLine() : nullptr;
 	bool template_line = diag && diag->Comment && boost::istarts_with(diag->Effect.get(), "template");
 
 	tokenized_line = agi::ass::TokenizeDialogueBody(line_text, template_line);
@@ -366,7 +366,7 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 		if (sugs.empty())
 			menu.Append(EDIT_MENU_SUGGESTION,_("No spell checker suggestions"))->Enable(false);
 		else {
-			wxMenu *subMenu = new wxMenu;
+			auto subMenu = new wxMenu;
 			for (size_t i = 0; i < sugs.size(); ++i)
 				subMenu->Append(EDIT_MENU_SUGGESTIONS+i, to_wx(sugs[i]));
 
@@ -396,7 +396,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 	thesSugs.clear();
 
 	if (results.size()) {
-		wxMenu *thesMenu = new wxMenu;
+		auto thesMenu = new wxMenu;
 
 		int curThesEntry = 0;
 		for (auto const& result : results) {
@@ -408,7 +408,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 			}
 			// Multiple, create submenu
 			else {
-				wxMenu *subMenu = new wxMenu;
+				auto subMenu = new wxMenu;
 				for (auto const& sug : result.second) {
 					subMenu->Append(EDIT_MENU_THESAURUS_SUGS+curThesEntry, to_wx(sug));
 					thesSugs.push_back(sug);
@@ -433,7 +433,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 }
 
 wxMenu *SubsTextEditCtrl::GetLanguagesMenu(int base_id, wxString const& curLang, wxArrayString const& langs) {
-	wxMenu *languageMenu = new wxMenu;
+	auto languageMenu = new wxMenu;
 	languageMenu->AppendRadioItem(base_id, _("Disable"))->Check(curLang.empty());
 
 	for (size_t i = 0; i < langs.size(); ++i) {

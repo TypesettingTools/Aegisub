@@ -112,7 +112,7 @@ void VisualToolDrag::OnFileChanged() {
 	/// @todo it should be possible to preserve the selection in some cases
 	features.clear();
 	sel_features.clear();
-	primary = 0;
+	primary = nullptr;
 	active_feature = nullptr;
 
 	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
@@ -125,7 +125,7 @@ void VisualToolDrag::OnFileChanged() {
 
 void VisualToolDrag::OnFrameChanged() {
 	if (primary && !IsDisplayed(primary->line))
-		primary = 0;
+		primary = nullptr;
 
 	auto feat = features.begin();
 	auto end = features.end();

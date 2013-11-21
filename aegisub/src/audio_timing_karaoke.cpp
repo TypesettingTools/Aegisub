@@ -49,10 +49,10 @@ class KaraokeMarker : public AudioMarker {
 	FeetStyle style;
 public:
 
-	int GetPosition() const { return position; }
-	wxPen GetStyle() const { return *pen; }
-	FeetStyle GetFeet() const { return style; }
-	bool CanSnap() const { return false; }
+	int GetPosition() const override { return position; }
+	wxPen GetStyle() const override { return *pen; }
+	FeetStyle GetFeet() const override { return style; }
+	bool CanSnap() const override { return false; }
 
 	void Move(int new_pos) { position = new_pos; }
 
@@ -65,7 +65,7 @@ public:
 
 	KaraokeMarker(int position)
 	: position(position)
-	, pen(0)
+	, pen(nullptr)
 	, style(Feet_None)
 	{
 	}
@@ -127,25 +127,25 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 
 public:
 	// AudioTimingController implementation
-	void GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const;
-	wxString GetWarningMessage() const { return ""; }
-	TimeRange GetIdealVisibleTimeRange() const;
-	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const;
-	TimeRange GetPrimaryPlaybackRange() const;
-	TimeRange GetActiveLineRange() const;
-	void GetLabels(const TimeRange &range, std::vector<AudioLabel> &out_labels) const;
-	void Next(NextMode mode);
-	void Prev();
-	void Commit();
-	void Revert();
-	void AddLeadIn();
-	void AddLeadOut();
-	void ModifyLength(int delta, bool shift_following);
-	void ModifyStart(int delta);
-	bool IsNearbyMarker(int ms, int sensitivity) const;
-	std::vector<AudioMarker*> OnLeftClick(int ms, bool, int sensitivity, int);
-	std::vector<AudioMarker*> OnRightClick(int ms, bool, int, int);
-	void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int);
+	void GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const override;
+	wxString GetWarningMessage() const override { return ""; }
+	TimeRange GetIdealVisibleTimeRange() const override;
+	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const override;
+	TimeRange GetPrimaryPlaybackRange() const override;
+	TimeRange GetActiveLineRange() const override;
+	void GetLabels(const TimeRange &range, std::vector<AudioLabel> &out_labels) const override;
+	void Next(NextMode mode) override;
+	void Prev() override;
+	void Commit() override;
+	void Revert() override;
+	void AddLeadIn() override;
+	void AddLeadOut() override;
+	void ModifyLength(int delta, bool shift_following) override;
+	void ModifyStart(int delta) override;
+	bool IsNearbyMarker(int ms, int sensitivity) const override;
+	std::vector<AudioMarker*> OnLeftClick(int ms, bool, int sensitivity, int) override;
+	std::vector<AudioMarker*> OnRightClick(int ms, bool, int, int) override;
+	void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int) override;
 
 	AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
 };

@@ -195,14 +195,14 @@ class ColorPickerSpectrum : public wxControl {
 		}
 	}
 
-	bool AcceptsFocusFromKeyboard() const { return false; }
+	bool AcceptsFocusFromKeyboard() const override { return false; }
 
 public:
 	ColorPickerSpectrum(wxWindow *parent, PickerDirection direction, wxSize size)
 	: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE)
 	, x(-1)
 	, y(-1)
-	, background(0)
+	, background(nullptr)
 	, direction(direction)
 	{
 		size.x += 2;
@@ -295,7 +295,7 @@ class ColorPickerRecent : public wxStaticBitmap {
 		Refresh(false);
 	}
 
-	bool AcceptsFocusFromKeyboard() const { return false; }
+	bool AcceptsFocusFromKeyboard() const override { return false; }
 
 public:
 	ColorPickerRecent(wxWindow *parent, int cols, int rows, int cellsize)
@@ -365,7 +365,7 @@ class ColorPickerScreenDropper : public wxControl {
 		wxPaintDC(this).DrawBitmap(capture, 0, 0);
 	}
 
-	bool AcceptsFocusFromKeyboard() const { return false; }
+	bool AcceptsFocusFromKeyboard() const override { return false; }
 
 public:
 	ColorPickerScreenDropper(wxWindow *parent, int resx, int resy, int magnification)
@@ -548,7 +548,7 @@ static wxBitmap make_slider(Func func) {
 
 DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color, std::function<void (agi::Color)> callback, bool alpha)
 : wxDialog(parent, -1, _("Select Color"))
-, callback(callback)
+, callback(std::move(callback))
 {
 	// generate spectrum slider bar images
 	for (int i = 0; i < 3; ++i) {
@@ -576,18 +576,18 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	wxSizer *hsl_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSL color"));
 	wxSizer *hsv_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSV color"));
 
-	for (int i = 0; i < 3; ++i)
-		rgb_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
+	for (auto& elem : rgb_input)
+		elem = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 
 	ass_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
 	html_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
 	alpha_input = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 
-	for (int i = 0; i < 3; ++i)
-		hsl_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
+	for (auto& elem : hsl_input)
+		elem = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 
-	for (int i = 0; i < 3; ++i)
-		hsv_input[i] = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
+	for (auto& elem : hsv_input)
+		elem = new wxSpinCtrl(this, -1, "", wxDefaultPosition, colorinput_size, wxSP_ARROW_KEYS, 0, 255);
 
 	preview_box = new wxStaticBitmap(this, -1, wxBitmap(40, 40, 24), wxDefaultPosition, wxSize(40, 40), STATIC_BORDER_FLAG);
 	recent_box = new ColorPickerRecent(this, 8, 4, 16);
@@ -709,7 +709,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 template<int N, class Control>
 wxSizer *DialogColorPicker::MakeColorInputSizer(wxString (&labels)[N], Control *(&inputs)[N]) {
-	wxFlexGridSizer * sizer = new wxFlexGridSizer(2, 5, 5);
+	auto sizer = new wxFlexGridSizer(2, 5, 5);
 	for (int i = 0; i < N; ++i) {
 		sizer->Add(new wxStaticText(this, -1, labels[i]), wxSizerFlags(1).Center().Left());
 		sizer->Add(inputs[i]);

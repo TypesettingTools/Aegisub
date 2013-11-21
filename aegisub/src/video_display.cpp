@@ -80,8 +80,8 @@ public:
 	OpenGlException(const char *func, int err)
 	: agi::Exception(from_wx(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
-	const char * GetName() const { return "video/opengl"; }
-	Exception * Copy() const { return new OpenGlException(*this); }
+	const char * GetName() const override { return "video/opengl"; }
+	Exception * Copy() const override { return new OpenGlException(*this); }
 };
 
 #define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(#cmd, err)
@@ -249,8 +249,8 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 
 	// Shift to compensate for black bars
 	Vector2D pos(viewport_left, viewport_top);
-	for (size_t i = 0; i < 4; ++i)
-		corners[i] = corners[i] + pos;
+	for (auto& corner : corners)
+		corner = corner + pos;
 
 	int count = 0;
 	std::vector<float> points;

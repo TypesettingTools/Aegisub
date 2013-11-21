@@ -62,7 +62,7 @@ public:
 			log(&sm);
 	}
 
-	void log(agi::log::SinkMessage *sm) {
+	void log(agi::log::SinkMessage *sm) override {
 #ifndef _WIN32
 		tm tmtime;
 		localtime_r(&sm->tv.tv_sec, &tmtime);

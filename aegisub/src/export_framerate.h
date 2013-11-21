@@ -87,7 +87,7 @@ class AssTransformFramerateFilter : public AssExportFilter {
 public:
 	/// Constructor
 	AssTransformFramerateFilter();
-	void ProcessSubs(AssFile *subs, wxWindow *);
-	wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c);
-	void LoadSettings(bool is_default, agi::Context *c);
+	void ProcessSubs(AssFile *subs, wxWindow *) override;
+	wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) override;
+	void LoadSettings(bool is_default, agi::Context *c) override;
 };

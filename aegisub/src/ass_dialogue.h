@@ -75,7 +75,7 @@ protected:
 	/// Text of this block
 	std::string text;
 public:
-	AssDialogueBlock(std::string const& text) : text(text) { }
+	AssDialogueBlock(std::string text) : text(std::move(text)) { }
 	virtual ~AssDialogueBlock() { }
 
 	virtual AssBlockType GetType() const = 0;
@@ -174,7 +174,7 @@ public:
 	/// Does this line collide with the passed line?
 	bool CollidesWith(const AssDialogue *target) const;
 
-	AssEntry *Clone() const;
+	AssEntry *Clone() const override;
 
 	AssDialogue();
 	AssDialogue(AssDialogue const&);

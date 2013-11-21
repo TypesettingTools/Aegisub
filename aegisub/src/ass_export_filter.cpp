@@ -43,10 +43,10 @@ static FilterList& filters() {
 	return instance;
 }
 
-AssExportFilter::AssExportFilter(std::string const& name, std::string const& description, int priority)
-: name(name)
+AssExportFilter::AssExportFilter(std::string name, std::string description, int priority)
+: name(std::move(name))
 , priority(priority)
-, description(description)
+, description(std::move(description))
 {
 }
 

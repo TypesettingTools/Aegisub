@@ -93,12 +93,12 @@ wxString AegisubLocale::PickLanguage() {
 
 	// Generate names
 	wxArrayString langNames;
-	for (size_t i = 0; i < langs.size(); ++i) {
-		const wxLanguageInfo *info = wxLocale::FindLanguageInfo(langs[i]);
+	for (auto const& lang : langs) {
+		const wxLanguageInfo *info = wxLocale::FindLanguageInfo(lang);
 		if (info)
 			langNames.push_back(wxLocale::GetLanguageName(info->Language));
 		else
-			langNames.push_back(langs[i]);
+			langNames.push_back(lang);
 	}
 
 	long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxOK | wxCENTRE;
@@ -107,7 +107,7 @@ wxString AegisubLocale::PickLanguage() {
 
 	wxSingleChoiceDialog dialog(nullptr, "Please choose a language:", "Language", langNames,
 #if wxCHECK_VERSION(2, 9, 4)
-			(void **)0,
+			(void **)nullptr,
 #else
 			0,
 #endif

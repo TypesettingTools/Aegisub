@@ -81,8 +81,8 @@ namespace Automation4 {
 	public:
 		ExportFilter(std::string const& name, std::string const& description, int priority);
 
-		wxWindow* GetConfigDialogWindow(wxWindow *parent, agi::Context *c);
-		void LoadSettings(bool is_default, agi::Context *c);
+		wxWindow* GetConfigDialogWindow(wxWindow *parent, agi::Context *c) override;
+		void LoadSettings(bool is_default, agi::Context *c) override;
 
 		// Subclasses must implement ProcessSubs from AssExportFilter
 	};
@@ -128,12 +128,12 @@ namespace Automation4 {
 		BackgroundScriptRunner *bsr;
 		int trace_level;
 	public:
-		void SetIndeterminate() { impl->SetIndeterminate(); }
-		void SetTitle(std::string const& title) { impl->SetTitle(title); }
-		void SetMessage(std::string const& msg) { impl->SetMessage(msg); }
-		void SetProgress(int64_t cur, int64_t max) { impl->SetProgress(cur, max); }
-		void Log(std::string const& str) { impl->Log(str); }
-		bool IsCancelled() { return impl->IsCancelled(); }
+		void SetIndeterminate() override { impl->SetIndeterminate(); }
+		void SetTitle(std::string const& title) override { impl->SetTitle(title); }
+		void SetMessage(std::string const& msg) override { impl->SetMessage(msg); }
+		void SetProgress(int64_t cur, int64_t max) override { impl->SetProgress(cur, max); }
+		void Log(std::string const& str) override { impl->Log(str); }
+		bool IsCancelled() override { return impl->IsCancelled(); }
 
 		/// Show the passed dialog on the GUI thread, blocking the calling
 		/// thread until it closes
@@ -225,15 +225,15 @@ namespace Automation4 {
 		void OnSubtitlesSave();
 	public:
 		LocalScriptManager(agi::Context *context);
-		void Reload();
+		void Reload() override;
 	};
 
 	/// Manager for scripts in the autoload directory
 	class AutoloadScriptManager : public ScriptManager {
 		std::string path;
 	public:
-		AutoloadScriptManager(std::string const& path);
-		void Reload();
+		AutoloadScriptManager(std::string path);
+		void Reload() override;
 	};
 
 	/// Both a base class for script factories and a manager of registered
@@ -254,7 +254,7 @@ namespace Automation4 {
 		static std::vector<std::unique_ptr<ScriptFactory>>& Factories();
 
 	protected:
-		ScriptFactory(std::string const& engine_name, std::string const& filename_pattern);
+		ScriptFactory(std::string engine_name, std::string filename_pattern);
 
 	public:
 		virtual ~ScriptFactory() { }
@@ -285,16 +285,16 @@ namespace Automation4 {
 	public:
 		UnknownScript(agi::fs::path const& filename) : Script(filename) { }
 
-		void Reload() { }
+		void Reload() override { }
 
-		std::string GetName() const { return GetFilename().stem().string(); }
-		std::string GetDescription() const { return from_wx(_("File was not recognized as a script")); }
-		std::string GetAuthor() const { return ""; }
-		std::string GetVersion() const { return ""; }
-		bool GetLoadedState() const { return false; }
+		std::string GetName() const override { return GetFilename().stem().string(); }
+		std::string GetDescription() const override { return from_wx(_("File was not recognized as a script")); }
+		std::string GetAuthor() const override { return ""; }
+		std::string GetVersion() const override { return ""; }
+		bool GetLoadedState() const override { return false; }
 
-		std::vector<cmd::Command*> GetMacros() const { return std::vector<cmd::Command*>(); }
-		std::vector<ExportFilter*> GetFilters() const { return std::vector<ExportFilter*>(); }
-		std::vector<SubtitleFormat*> GetFormats() const { return std::vector<SubtitleFormat*>(); }
+		std::vector<cmd::Command*> GetMacros() const override { return std::vector<cmd::Command*>(); }
+		std::vector<ExportFilter*> GetFilters() const override { return std::vector<ExportFilter*>(); }
+		std::vector<SubtitleFormat*> GetFormats() const override { return std::vector<SubtitleFormat*>(); }
 	};
 }

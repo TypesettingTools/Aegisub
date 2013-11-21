@@ -32,8 +32,8 @@ class OpenGLText;
 class VisualToolCross : public VisualTool<VisualDraggableFeature> {
 	std::unique_ptr<OpenGLText> gl_text;
 
-	void OnDoubleClick();
-	void Draw();
+	void OnDoubleClick() override;
+	void Draw() override;
 	std::string Text(Vector2D v);
 public:
 	VisualToolCross(VideoDisplay *parent, agi::Context *context);

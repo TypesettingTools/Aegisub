@@ -114,7 +114,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 {
 	scrollBar->SetScrollbar(0,10,100,10);
 
-	wxBoxSizer *scrollbarpositioner = new wxBoxSizer(wxHORIZONTAL);
+	auto scrollbarpositioner = new wxBoxSizer(wxHORIZONTAL);
 	scrollbarpositioner->AddStretchSpacer();
 	scrollbarpositioner->Add(scrollBar, 0, wxEXPAND, 0);
 
@@ -920,7 +920,7 @@ void BaseGrid::SetColumnWidths() {
 }
 
 AssDialogue *BaseGrid::GetDialogue(int n) const {
-	if (static_cast<size_t>(n) >= index_line_map.size()) return 0;
+	if (static_cast<size_t>(n) >= index_line_map.size()) return nullptr;
 	return index_line_map[n];
 }
 
@@ -1043,7 +1043,7 @@ void BaseGrid::SetSelectedSet(const Selection &new_selection) {
 
 void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 	if (new_line != active_line) {
-		assert(new_line == 0 || line_index_map.count(new_line));
+		assert(new_line == nullptr || line_index_map.count(new_line));
 		active_line = new_line;
 		AnnounceActiveLineChanged(active_line);
 		MakeRowVisible(GetDialogueIndex(active_line));

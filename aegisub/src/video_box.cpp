@@ -61,7 +61,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 , context(context)
 {
 	// Seek
-	VideoSlider *videoSlider = new VideoSlider(this, context);
+	auto videoSlider = new VideoSlider(this, context);
 	videoSlider->SetToolTip(_("Seek video"));
 
 	// Buttons
@@ -87,7 +87,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	// Visual controls sub-toolbar
 	wxToolBar *visualSubToolBar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_BOTTOM | wxTB_FLAT);
 
-	VideoDisplay *videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
+	auto videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
 	videoDisplay->MoveBeforeInTabOrder(videoSlider);
 
 	wxSizer *toolbarSizer = new wxBoxSizer(wxVERTICAL);

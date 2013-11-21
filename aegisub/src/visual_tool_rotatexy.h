@@ -32,11 +32,11 @@ class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
 
 	Feature *org;
 
-	void DoRefresh();
-	void Draw();
-	void UpdateDrag(Feature *feature);
-	bool InitializeHold();
-	void UpdateHold();
+	void DoRefresh() override;
+	void Draw() override;
+	void UpdateDrag(Feature *feature) override;
+	bool InitializeHold() override;
+	void UpdateHold() override;
 public:
 	VisualToolRotateXY(VideoDisplay *parent, agi::Context *context);
 };

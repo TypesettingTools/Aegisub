@@ -138,7 +138,7 @@ public:
 	/// @param commitId    Commit to amend rather than pushing a new commit
 	/// @param single_line Line which was changed, if only one line was
 	/// @return Unique identifier for the new undo group
-	int Commit(wxString const& desc, int type, int commitId = -1, AssEntry *single_line = 0);
+	int Commit(wxString const& desc, int type, int commitId = -1, AssEntry *single_line = nullptr);
 
 	/// Comparison function for use when sorting
 	typedef bool (*CompFunc)(const AssDialogue* lft, const AssDialogue* rgt);

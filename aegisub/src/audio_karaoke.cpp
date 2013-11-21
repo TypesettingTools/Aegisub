@@ -54,7 +54,7 @@
 
 template<class Container, class Value>
 static inline size_t last_lt_or_eq(Container const& c, Value const& v) {
-	typename Container::const_iterator it = lower_bound(c.begin(), c.end(), v);
+	auto it = lower_bound(c.begin(), c.end(), v);
 	// lower_bound gives first >=
 	if (it == c.end() || *it > v)
 		--it;
@@ -137,7 +137,7 @@ void AudioKaraoke::OnAudioOpened() {
 }
 
 void AudioKaraoke::OnAudioClosed() {
-	c->audioController->SetTimingController(0);
+	c->audioController->SetTimingController(nullptr);
 }
 
 void AudioKaraoke::SetEnabled(bool en) {
@@ -236,8 +236,8 @@ void AudioKaraoke::RenderText() {
 
 	// Draw the lines between each syllable
 	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
-	for (size_t i = 0; i < syl_lines.size(); ++i)
-		dc.DrawLine(syl_lines[i], 0, syl_lines[i], bmp_size.GetHeight());
+	for (auto syl_line : syl_lines)
+		dc.DrawLine(syl_line, 0, syl_line, bmp_size.GetHeight());
 }
 
 void AudioKaraoke::AddMenuItem(wxMenu &menu, std::string const& tag, wxString const& help, std::string const& selected) {

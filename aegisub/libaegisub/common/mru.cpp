@@ -56,7 +56,7 @@ MRUManager::~MRUManager() {
 }
 
 MRUManager::MRUListMap &MRUManager::Find(std::string const& key) {
-	MRUMap::iterator index = mru.find(key);
+	auto index = mru.find(key);
 	if (index == mru.end())
 		throw MRUErrorInvalidKey("Invalid key value");
 	return index->second;

@@ -62,7 +62,7 @@ OPTION_UPDATER(BoolUpdater, wxCommandEvent, OptionValueBool, !!evt.GetInt());
 OPTION_UPDATER(ColourUpdater, wxThreadEvent, OptionValueColor, evt.GetPayload<agi::Color>());
 
 static void browse_button(wxTextCtrl *ctrl) {
-	wxDirDialog dlg(0, _("Please choose the folder:"), config::path->Decode(from_wx(ctrl->GetValue())).wstring());
+	wxDirDialog dlg(nullptr, _("Please choose the folder:"), config::path->Decode(from_wx(ctrl->GetValue())).wstring());
 	if (dlg.ShowModal() == wxID_OK) {
 		wxString dir = dlg.GetPath();
 		if (!dir.empty())
@@ -147,7 +147,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 		}
 
 		case agi::OptionValue::Type_Color: {
-			ColourButton *cb = new ColourButton(this, wxSize(40,10), false, opt->GetColor());
+			auto cb = new ColourButton(this, wxSize(40,10), false, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(flex, name, cb);
 			return cb;
@@ -190,7 +190,7 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 wxFlexGridSizer* OptionPage::PageSizer(wxString name) {
 	wxSizer *tmp_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, name);
 	sizer->Add(tmp_sizer, 0,wxEXPAND, 5);
-	wxFlexGridSizer *flex = new wxFlexGridSizer(2,5,5);
+	auto flex = new wxFlexGridSizer(2,5,5);
 	flex->AddGrowableCol(0,1);
 	tmp_sizer->Add(flex, 1, wxEXPAND, 5);
 	sizer->AddSpacer(8);

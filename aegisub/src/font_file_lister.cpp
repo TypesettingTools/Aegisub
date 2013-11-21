@@ -62,7 +62,7 @@ namespace {
 }
 
 FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister)
-: status_callback(status_callback)
+: status_callback(std::move(status_callback))
 , lister(lister)
 , missing(0)
 , missing_glyphs(0)
@@ -146,9 +146,9 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 		++missing;
 	}
 	else {
-		for (size_t i = 0; i < res.paths.size(); ++i) {
-			if (results.insert(res.paths[i]).second)
-				status_callback(wxString::Format(_("Found '%s' at '%s'\n"), to_wx(style.first.facename), res.paths[i].make_preferred().wstring()), 0);
+		for (auto& elem : res.paths) {
+			if (results.insert(elem).second)
+				status_callback(wxString::Format(_("Found '%s' at '%s'\n"), to_wx(style.first.facename), elem.make_preferred().wstring()), 0);
 		}
 
 		if (res.missing.size()) {

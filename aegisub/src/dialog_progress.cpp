@@ -83,23 +83,23 @@ public:
 	{
 	}
 
-	void SetTitle(std::string const& title) {
+	void SetTitle(std::string const& title) override {
 		Main().Async([=]{ dialog->title->SetLabelText(to_wx(title)); });
 	}
 
-	void SetMessage(std::string const& msg) {
+	void SetMessage(std::string const& msg) override {
 		Main().Async([=]{ dialog->text->SetLabelText(to_wx(msg)); });
 	}
 
-	void SetProgress(int64_t cur, int64_t max) {
+	void SetProgress(int64_t cur, int64_t max) override {
 		Main().Async([=]{ dialog->SetProgress(mid<int>(0, double(cur) / max * 300, 300)); });
 	}
 
-	void Log(std::string const& str) {
+	void Log(std::string const& str) override {
 		Main().Async([=]{ dialog->pending_log += to_wx(str); });
 	}
 
-	bool IsCancelled() {
+	bool IsCancelled() override {
 		return cancelled;
 	}
 
@@ -107,7 +107,7 @@ public:
 		cancelled = true;
 	}
 
-	void SetIndeterminate() {
+	void SetIndeterminate() override {
 		Main().Async([=]{ dialog->pulse_timer.Start(1000); });
 	}
 };

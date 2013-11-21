@@ -161,7 +161,7 @@ public:
 	///
 	/// The factory object passed must respond well to copying.
 	DataBlockCache(size_t block_count, BlockFactoryT factory = BlockFactoryT())
-	: factory(factory)
+	: factory(std::move(factory))
 	{
 		SetBlockCount(block_count);
 	}
@@ -250,7 +250,7 @@ public:
 		{
 			mb.blocks[block_index] = factory.ProduceBlock(i);
 			b = mb.blocks[block_index].get();
-			assert(b != 0);
+			assert(b != nullptr);
 
 			if (created) *created = true;
 		}

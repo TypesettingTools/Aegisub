@@ -105,7 +105,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
 	VertVolArea->Add(VertVol,1,wxEXPAND,0);
 
-	ToggleBitmap *link_btn = new ToggleBitmap(panel, context, "audio/opt/vertical_link", 16, "Audio", wxSize(20, -1));
+	auto link_btn = new ToggleBitmap(panel, context, "audio/opt/vertical_link", 16, "Audio", wxSize(20, -1));
 	link_btn->SetMaxSize(wxDefaultSize);
 	VertVolArea->Add(link_btn, 0, wxRIGHT | wxALIGN_CENTER | wxEXPAND, 0);
 	OPT_SUB("Audio/Link", &AudioBox::OnVerticalLink, this);
@@ -119,7 +119,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 	context->karaoke = new AudioKaraoke(panel, context);
 
 	// Main sizer
-	wxBoxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
+	auto MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
 	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"),0,wxEXPAND|wxLEFT|wxRIGHT,3);
 	MainSizer->Add(context->karaoke,0,wxEXPAND|wxALL,3);

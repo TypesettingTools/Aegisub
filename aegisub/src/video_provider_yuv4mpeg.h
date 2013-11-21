@@ -132,15 +132,15 @@ public:
 	YUV4MPEGVideoProvider(agi::fs::path const& filename, std::string const&);
 	~YUV4MPEGVideoProvider();
 
-	std::shared_ptr<VideoFrame> GetFrame(int n);
+	std::shared_ptr<VideoFrame> GetFrame(int n) override;
 
-	int GetFrameCount() const             { return num_frames; }
-	int GetWidth() const                  { return w; }
-	int GetHeight() const                 { return h; }
-	double GetDAR() const                 { return 0; }
-	agi::vfr::Framerate GetFPS() const    { return fps; }
-	std::vector<int> GetKeyFrames() const { return std::vector<int>(); }
-	std::string GetColorSpace() const     { return "TV.601"; }
-	std::string GetDecoderName() const    { return "YU4MPEG"; }
-	bool WantsCaching() const             { return true; }
+	int GetFrameCount() const override             { return num_frames; }
+	int GetWidth() const override                  { return w; }
+	int GetHeight() const override                 { return h; }
+	double GetDAR() const override                 { return 0; }
+	agi::vfr::Framerate GetFPS() const override    { return fps; }
+	std::vector<int> GetKeyFrames() const override { return std::vector<int>(); }
+	std::string GetColorSpace() const override     { return "TV.601"; }
+	std::string GetDecoderName() const override    { return "YU4MPEG"; }
+	bool WantsCaching() const override             { return true; }
 };

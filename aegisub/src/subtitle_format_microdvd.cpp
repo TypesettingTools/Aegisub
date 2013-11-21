@@ -116,7 +116,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& file
 
 		boost::replace_all(text, "|", "\\N");
 
-		AssDialogue *diag = new AssDialogue;
+		auto diag = new AssDialogue;
 		diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
 		diag->End = fps.TimeAtFrame(f2, agi::vfr::END);
 		diag->Text = text;

@@ -139,7 +139,7 @@ namespace detail {
 
 		SlotMap slots; /// Signals currently connected to this slot
 
-		void Disconnect(ConnectionToken *tok) {
+		void Disconnect(ConnectionToken *tok) override {
 			slots.erase(tok);
 		}
 

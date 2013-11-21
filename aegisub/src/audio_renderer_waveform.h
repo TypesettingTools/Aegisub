@@ -50,8 +50,8 @@ class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 	/// Whether to render max+avg or just max
 	bool render_averages;
 
-	void OnSetProvider();
-	void OnSetMillisecondsPerPixel();
+	void OnSetProvider() override;
+	void OnSetMillisecondsPerPixel() override;
 
 public:
 	/// @brief Constructor
@@ -65,16 +65,16 @@ public:
 	/// @param bmp   [in,out] Bitmap to render into, also carries length information
 	/// @param start First column of pixel data in display to render
 	/// @param style Style to render audio in
-	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style);
+	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) override;
 
 	/// @brief Render blank area
-	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style);
+	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style) override;
 
 	/// @brief Cleans up the cache
 	/// @param max_size Maximum size in bytes for the cache
 	///
 	/// Does nothing for waveform renderer, since it does not have a backend cache
-	void AgeCache(size_t max_size) { }
+	void AgeCache(size_t max_size) override { }
 
 	/// Get a list of waveform rendering modes
 	static wxArrayString GetWaveformStyles();

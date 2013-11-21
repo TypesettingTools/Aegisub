@@ -25,7 +25,7 @@ protected:
 	std::string idx_path;
 	std::string dat_path;
 
-	void SetUp() {
+	void SetUp() override {
 		using std::endl;
 
 		idx_path = "data/thes.idx";

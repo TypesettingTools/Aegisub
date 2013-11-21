@@ -241,7 +241,7 @@ namespace {
 		~ConverterImpl() {
 			if (cd != iconv_invalid) iconv_close(cd);
 		}
-		size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+		size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) override {
 			eat_bom(cd, bomSize, inbuf, inbytesleft, outbuf, outbytesleft);
 			size_t res = iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 

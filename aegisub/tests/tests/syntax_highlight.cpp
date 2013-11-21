@@ -18,13 +18,13 @@
 #include "main.h"
 
 class MockSpellChecker : public agi::SpellChecker {
-	void AddWord(std::string const&) { }
-	void RemoveWord(std::string const&) { }
-	bool CanAddWord(std::string const&) { return false; }
-	bool CanRemoveWord(std::string const&) { return false; }
-	std::vector<std::string> GetSuggestions(std::string const&) { return std::vector<std::string>(); }
-	std::vector<std::string> GetLanguageList() { return std::vector<std::string>(); }
-	bool CheckWord(std::string const& word) { return word != "incorrect"; }
+	void AddWord(std::string const&) override { }
+	void RemoveWord(std::string const&) override { }
+	bool CanAddWord(std::string const&) override { return false; }
+	bool CanRemoveWord(std::string const&) override { return false; }
+	std::vector<std::string> GetSuggestions(std::string const&) override { return std::vector<std::string>(); }
+	std::vector<std::string> GetLanguageList() override { return std::vector<std::string>(); }
+	bool CheckWord(std::string const& word) override { return word != "incorrect"; }
 };
 
 using namespace agi::ass;
@@ -37,10 +37,10 @@ TEST(lagi_syntax, empty) {
 	std::string text;
 	std::vector<DialogueToken> tokens;
 
-	EXPECT_TRUE(SyntaxHighlight(text, tokens, 0).empty());
+	EXPECT_TRUE(SyntaxHighlight(text, tokens, nullptr).empty());
 
 	tokens.emplace_back(dt::TEXT, 0);
-	auto syntax = SyntaxHighlight(text, tokens, 0);
+	auto syntax = SyntaxHighlight(text, tokens, nullptr);
 	EXPECT_EQ(1u, syntax.size());
 	EXPECT_EQ(ss::NORMAL, syntax[0].type);
 }

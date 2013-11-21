@@ -458,7 +458,7 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 
 	wxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
 	wxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
-	wxFlexGridSizer *StylesGridSizer = new wxFlexGridSizer(2, 2, 6, 6);
+	auto StylesGridSizer = new wxFlexGridSizer(2, 2, 6, 6);
 	wxSizer *HelpBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Shortcut Keys"));
 	wxSizer *ButtonsBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Commands"));
 	wxSizer *MainStackSizer = new wxBoxSizer(wxVERTICAL);
@@ -510,7 +510,7 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	ButtonsBoxSizer->AddStretchSpacer(1);
 
 	// Button sizer
-	wxStdDialogButtonSizer *buttonSizer = new wxStdDialogButtonSizer();
+	auto buttonSizer = new wxStdDialogButtonSizer();
 	buttonSizer->AddButton(new HelpButton(this,"Kanji Timer"));
 	buttonSizer->SetAffirmativeButton(CloseKT);
 	buttonSizer->Realize();

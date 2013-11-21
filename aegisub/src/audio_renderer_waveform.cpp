@@ -55,7 +55,7 @@ enum {
 };
 
 AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_name)
-: audio_buffer(0)
+: audio_buffer(nullptr)
 , render_averages(OPT_GET("Audio/Display/Waveform Style")->GetInt() == Waveform_MaxAvg)
 {
 	colors.reserve(AudioStyle_MAX);
@@ -168,13 +168,13 @@ void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRende
 void AudioWaveformRenderer::OnSetProvider()
 {
 	delete[] audio_buffer;
-	audio_buffer = 0;
+	audio_buffer = nullptr;
 }
 
 void AudioWaveformRenderer::OnSetMillisecondsPerPixel()
 {
 	delete[] audio_buffer;
-	audio_buffer = 0;
+	audio_buffer = nullptr;
 }
 
 wxArrayString AudioWaveformRenderer::GetWaveformStyles() {

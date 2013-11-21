@@ -122,7 +122,7 @@ bool AegisubApp::OnInit() {
 
 	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
 	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
-		wxThreadEvent *evt = new wxThreadEvent(EVT_CALL_THUNK);
+		auto evt = new wxThreadEvent(EVT_CALL_THUNK);
 		evt->SetPayload(f);
 		wxTheApp->QueueEvent(evt);
 	});
@@ -304,7 +304,7 @@ class StackWalker: public wxStackWalker {
 public:
 	StackWalker(std::string const& cause);
 	~StackWalker();
-	void OnStackFrame(wxStackFrame const& frame);
+	void OnStackFrame(wxStackFrame const& frame) override;
 };
 
 /// @brief Called at the start of walking the stack.

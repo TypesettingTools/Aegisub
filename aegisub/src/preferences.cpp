@@ -275,7 +275,7 @@ public:
 	{
 	}
 
-	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) {
+	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) override {
 		wxDataViewIconText iconText;
 		iconText << value;
 
@@ -292,12 +292,12 @@ public:
 		return ctrl;
 	}
 
-	bool SetValue(wxVariant const& var) {
+	bool SetValue(wxVariant const& var) override {
 		value << var;
 		return true;
 	}
 
-	bool Render(wxRect rect, wxDC *dc, int state) {
+	bool Render(wxRect rect, wxDC *dc, int state) override {
 		wxIcon const& icon = value.GetIcon();
 		if (icon.IsOk())
 			dc->DrawIcon(icon, rect.x, rect.y + (rect.height - icon.GetHeight()) / 2);
@@ -307,7 +307,7 @@ public:
 		return true;
 	}
 
-	wxSize GetSize() const {
+	wxSize GetSize() const override {
 		if (!value.GetText().empty()) {
 			wxSize size = GetTextExtent(value.GetText());
 			size.x += icon_width;
@@ -316,15 +316,15 @@ public:
 		return wxSize(80,20);
 	}
 
-	bool GetValueFromEditorCtrl(wxWindow* editor, wxVariant &var) {
+	bool GetValueFromEditorCtrl(wxWindow* editor, wxVariant &var) override {
 		wxTextCtrl *text = static_cast<wxTextCtrl*>(editor);
 		wxDataViewIconText iconText(text->GetValue(), value.GetIcon());
 		var << iconText;
 		return true;
 	}
 
-	bool GetValue(wxVariant &) const { return false; }
-	bool HasEditorCtrl() const { return true; }
+	bool GetValue(wxVariant &) const override { return false; }
+	bool HasEditorCtrl() const override { return true; }
 };
 
 class HotkeyRenderer : public wxDataViewCustomRenderer {
@@ -334,10 +334,10 @@ class HotkeyRenderer : public wxDataViewCustomRenderer {
 public:
 	HotkeyRenderer()
 	: wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_EDITABLE)
-	, ctrl(0)
+	, ctrl(nullptr)
 	{ }
 
-	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& var) {
+	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& var) override {
 		ctrl = new wxTextCtrl(parent, -1, var.GetString(), label_rect.GetPosition(), label_rect.GetSize(), wxTE_PROCESS_ENTER);
 		ctrl->SetInsertionPointEnd();
 		ctrl->SelectAll();
@@ -349,24 +349,24 @@ public:
 		ctrl->ChangeValue(to_wx(hotkey::keypress_to_str(evt.GetKeyCode(), evt.GetModifiers())));
 	}
 
-	bool SetValue(wxVariant const& var) {
+	bool SetValue(wxVariant const& var) override {
 		value = var.GetString();
 		return true;
 	}
 
-	bool Render(wxRect rect, wxDC *dc, int state) {
+	bool Render(wxRect rect, wxDC *dc, int state) override {
 		RenderText(value, 0, rect, dc, state);
 		return true;
 	}
 
-	bool GetValueFromEditorCtrl(wxWindow*, wxVariant &var) {
+	bool GetValueFromEditorCtrl(wxWindow*, wxVariant &var) override {
 		var = ctrl->GetValue();
 		return true;
 	}
 
-	bool GetValue(wxVariant &) const { return false; }
-	wxSize GetSize() const { return !value ? wxSize(80, 20) : GetTextExtent(value); }
-	bool HasEditorCtrl() const { return true; }
+	bool GetValue(wxVariant &) const override { return false; }
+	wxSize GetSize() const override { return !value ? wxSize(80, 20) : GetTextExtent(value); }
+	bool HasEditorCtrl() const override { return true; }
 };
 
 static void edit_item(wxDataViewCtrl *dvc, wxDataViewItem item) {
@@ -436,7 +436,7 @@ void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
 
 	if (!quick_search->GetValue().empty()) {
 		wxDataViewItemArray contexts;
-		model->GetChildren(wxDataViewItem(0), contexts);
+		model->GetChildren(wxDataViewItem(nullptr), contexts);
 		for (auto const& context : contexts)
 			dvc->Expand(context);
 	}

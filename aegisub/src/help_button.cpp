@@ -47,7 +47,7 @@
 
 #include <wx/filename.h>
 
-static std::map<wxString,wxString> *pages = 0;
+static std::map<wxString,wxString> *pages = nullptr;
 
 static void init_static() {
 	if (!pages) {
@@ -83,7 +83,7 @@ HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position,
 	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, page));
 	init_static();
 	if (pages->find(page) == pages->end())
-		throw agi::InternalError("Invalid help page", 0);
+		throw agi::InternalError("Invalid help page", nullptr);
 }
 
 void HelpButton::OpenPage(wxString const& pageID) {

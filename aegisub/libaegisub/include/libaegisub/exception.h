@@ -100,7 +100,7 @@ namespace agi {
 		///
 		/// Deriving classes should always use this constructor for initialising
 		/// the base class.
-		Exception(const std::string &msg, const Exception *inr = 0) : message(msg) {
+		Exception(std::string msg, const Exception *inr = nullptr) : message(std::move(msg)) {
 			if (inr)
 				inner.reset(inr->Copy());
 		}

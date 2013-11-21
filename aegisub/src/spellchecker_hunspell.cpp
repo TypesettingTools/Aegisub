@@ -174,8 +174,8 @@ std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 	sort(begin(aff), end(aff));
 
 	// Drop extensions
-	for (size_t i = 0; i < dic.size(); ++i) dic[i].resize(dic[i].size() - 4);
-	for (size_t i = 0; i < aff.size(); ++i) aff[i].resize(aff[i].size() - 4);
+	for (auto& elem : dic) elem.resize(elem.size() - 4);
+	for (auto& elem : aff) elem.resize(elem.size() - 4);
 
 	// Verify that each aff has a dic
 	for (size_t i = 0, j = 0; i < dic.size() && j < aff.size(); ) {

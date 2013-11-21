@@ -97,5 +97,5 @@ AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
 		if (boost::iequals(cur->name, name))
 			return cur.get();
 	}
-	return 0;
+	return nullptr;
 }
