@@ -70,7 +70,7 @@ TEST_F(lagi_thes, word_1) {
 	agi::Thesaurus thes(dat_path, idx_path);
 
 	std::vector<agi::Thesaurus::Entry> entries;
-	ASSERT_NO_THROW(thes.Lookup("Word 1", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Word 1"));
 	ASSERT_EQ(1, entries.size());
 	ASSERT_EQ(3, entries[0].second.size());
 	EXPECT_STREQ("(noun) Word 1", entries[0].first.c_str());
@@ -83,7 +83,7 @@ TEST_F(lagi_thes, word_2) {
 	agi::Thesaurus thes(dat_path, idx_path);
 
 	std::vector<agi::Thesaurus::Entry> entries;
-	ASSERT_NO_THROW(thes.Lookup("Word 2", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Word 2"));
 	ASSERT_EQ(2, entries.size());
 	ASSERT_EQ(1, entries[0].second.size());
 	ASSERT_EQ(1, entries[1].second.size());
@@ -97,7 +97,7 @@ TEST_F(lagi_thes, word_3) {
 	agi::Thesaurus thes(dat_path, idx_path);
 
 	std::vector<agi::Thesaurus::Entry> entries;
-	ASSERT_NO_THROW(thes.Lookup("Word 3", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Word 3"));
 	ASSERT_EQ(1, entries.size());
 	ASSERT_EQ(1, entries[0].second.size());
 	EXPECT_STREQ("(verb) Not Word 3", entries[0].first.c_str());
@@ -108,7 +108,7 @@ TEST_F(lagi_thes, bad_word) {
 	agi::Thesaurus thes(dat_path, idx_path);
 
 	std::vector<agi::Thesaurus::Entry> entries;
-	ASSERT_NO_THROW(thes.Lookup("Nonexistent word", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Nonexistent word"));
 	EXPECT_EQ(0, entries.size());
 }
 
@@ -116,9 +116,9 @@ TEST_F(lagi_thes, lookup_clears) {
 	agi::Thesaurus thes(dat_path, idx_path);
 
 	std::vector<agi::Thesaurus::Entry> entries;
-	ASSERT_NO_THROW(thes.Lookup("Word 1", &entries));
-	ASSERT_NO_THROW(thes.Lookup("Word 2", &entries));
-	ASSERT_NO_THROW(thes.Lookup("Word 3", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Word 1"));
+	ASSERT_NO_THROW(entries = thes.Lookup("Word 2"));
+	ASSERT_NO_THROW(entries = thes.Lookup("Word 3"));
 	EXPECT_EQ(1, entries.size());
 }
 
@@ -126,15 +126,15 @@ TEST_F(lagi_thes, malformed_index_lines) {
 	agi::Thesaurus thes(dat_path, idx_path);
 
 	std::vector<agi::Thesaurus::Entry> entries;
-	ASSERT_NO_THROW(thes.Lookup("Too few fields", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Too few fields"));
 	EXPECT_EQ(0, entries.size());
-	ASSERT_NO_THROW(thes.Lookup("Too many fields", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Too many fields"));
 	EXPECT_EQ(0, entries.size());
-	ASSERT_NO_THROW(thes.Lookup("Not a number", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Not a number"));
 	EXPECT_EQ(0, entries.size());
-	ASSERT_NO_THROW(thes.Lookup("Out of range", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Out of range"));
 	EXPECT_EQ(0, entries.size());
-	ASSERT_NO_THROW(thes.Lookup("Further out of range", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Further out of range"));
 	EXPECT_EQ(0, entries.size());
 }
 
@@ -142,6 +142,6 @@ TEST_F(lagi_thes, unindexed_word) {
 	agi::Thesaurus thes(dat_path, idx_path);
 
 	std::vector<agi::Thesaurus::Entry> entries;
-	ASSERT_NO_THROW(thes.Lookup("Unindexed Word", &entries));
+	ASSERT_NO_THROW(entries = thes.Lookup("Unindexed Word"));
 	EXPECT_EQ(0, entries.size());
 }
