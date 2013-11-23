@@ -67,7 +67,8 @@ namespace {
 			}
 		}
 
-		final.pop_back();
+		if (final.size())
+			final.pop_back();
 		return final;
 	}
 
