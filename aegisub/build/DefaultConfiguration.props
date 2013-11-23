@@ -42,6 +42,7 @@
     <AegisubUseDSound>true</AegisubUseDSound>
     <AegisubUseFfms>true</AegisubUseFfms>
     <AegisubUseFftw>true</AegisubUseFftw>
+    <AegisubUseOpenAl>false</AegisubUseOpenAl>
     <AegisubUseUpdateChecker>true</AegisubUseUpdateChecker>
     <CsriLibraryName>vsfilter.lib</CsriLibraryName>
     <DirectXSDKPath>$(DXSDK_DIR)</DirectXSDKPath>

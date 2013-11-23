@@ -125,6 +125,13 @@
     Description="A high-speed fourier transformation library which improves the spectograph speed and quality. Requires a copy of the FFTW 3.2 source."
     />
 
+  <BoolProperty
+    Name="AegisubUseOpenAl"
+    Category="Features"
+    DisplayName="OpenAL"
+    Description="OpenAL audio player. Requires a copy of the OpenAL SDK."
+    />
+
   <!-- Library Paths -->
   <StringProperty
     Subtype="folder"

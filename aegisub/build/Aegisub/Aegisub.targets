@@ -97,6 +97,13 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <!-- OpenAL support -->
+  <ItemDefinitionGroup Condition="'$(AegisubUseOpenAl)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>WITH_OPENAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
   <!-- DirectSound support -->
   <PropertyGroup>
     <DirectXSDKDir Condition="'$(DirectXSDKDir)'==''">$(DXSDK_DIR)</DirectXSDKDir>
