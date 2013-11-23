@@ -79,6 +79,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::
 	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
 	Bind(wxEVT_CONTEXT_MENU, &TimeEdit::OnContextMenu, this);
 	Bind(wxEVT_CHAR_HOOK, &TimeEdit::OnKeyDown, this);
+	Bind(wxEVT_CHAR, &TimeEdit::OnChar, this);
 	Bind(wxEVT_KILL_FOCUS, &TimeEdit::OnFocusLost, this);
 }
 
@@ -123,7 +124,10 @@ void TimeEdit::UpdateText() {
 }
 
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
-	int key = event.GetKeyCode();
+	int kc = event.GetKeyCode();
+
+	// Needs to be done here to trump user-defined hotkeys
+	int key = event.GetUnicodeKey();
 	if (event.CmdDown()) {
 		if (key == 'C' || key == 'X')
 			CopyTime();
@@ -136,35 +140,44 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 
 	// Shift-Insert would paste the stuff anyway
 	// but no one updates the private "time" variable.
-	if (event.ShiftDown() && key == WXK_INSERT) {
+	if (event.ShiftDown() && kc == WXK_INSERT) {
 		PasteTime();
 		return;
 	}
 
-	// Translate numpad presses to normal numbers
-	if (key >= WXK_NUMPAD0 && key <= WXK_NUMPAD9)
-		key += '0' - WXK_NUMPAD0;
+	if (byFrame || insert) {
+		event.Skip();
+		return;
+	}
+	// Overwrite mode stuff
 
-	// If overwriting is disabled, we're in frame mode, or it's a key we
-	// don't care about just let the standard processing happen
+	// On OS X backspace is reported as delete
+#ifdef __APPLE__
+	if (kc == WXK_DELETE)
+		kc = WXK_BACK;
+#endif
+
+	// Back just moves cursor back one without deleting
+	if (kc == WXK_BACK) {
+		long start = GetInsertionPoint();
+		if (start > 0)
+			SetInsertionPoint(start - 1);
+	}
+	// Delete just does nothing
+	else if (kc != WXK_DELETE)
+		event.Skip();
+}
+
+void TimeEdit::OnChar(wxKeyEvent &event) {
 	event.Skip();
-	if (byFrame) return;
-	if (insert) return;
-	if ((key < '0' || key > '9') && key != WXK_BACK && key != WXK_DELETE && key != ';' && key != '.' && key != ',') return;
+	if (byFrame || insert) return;
+
+	int key = event.GetUnicodeKey();
+	if ((key < '0' || key > '9') && key != ';' && key != '.' && key != ',') return;
 
 	event.Skip(false);
 
-	// Delete does nothing
-	if (key == WXK_DELETE) return;
-
 	long start = GetInsertionPoint();
-	// Back just moves cursor back one without deleting
-	if (key == WXK_BACK) {
-		if (start > 0)
-			SetInsertionPoint(start - 1);
-		return;
-	}
-
 	std::string text = from_wx(GetValue());
 	// Cursor is at the end so do nothing
 	if (start >= (long)text.size()) return;
@@ -174,7 +187,7 @@ void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 		++start;
 
 	// : and . hop over punctuation but never insert anything
-	if (key == ';' || key == '.' || key == ',') {
+	if (key == ':' || key == ';' || key == '.' || key == ',') {
 		SetInsertionPoint(start);
 		return;
 	}
