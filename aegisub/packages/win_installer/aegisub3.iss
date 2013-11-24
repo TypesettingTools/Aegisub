@@ -58,7 +58,6 @@ ArchitecturesAllowed=x64
 #include "fragment_automation.iss"
 #include "fragment_translations.iss"
 #include "fragment_spelling.iss"
-#include "fragment_docs.iss"
 #include "fragment_assdraw.iss"
 
 

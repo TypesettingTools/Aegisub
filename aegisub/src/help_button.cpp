@@ -93,19 +93,7 @@ void HelpButton::OpenPage(wxString const& pageID) {
 	wxString section;
 	page = page.BeforeFirst('#', &section);
 
-	wxFileName docFile(config::path->Decode("?data/docs/").wstring(), page, "html", wxPATH_NATIVE);
-
-	wxString url;
-	// If we can read a file by the constructed name, assume we have a local copy of the manual
-	if (docFile.IsFileReadable())
-		// Tested IE8, Firefox 3.5, Safari 4, Chrome 4 and Opera 10 on Windows, they all handle
-		// various variations of slashes, missing one at the start and using backslashes throughout
-		// is safe with everything everyone uses. Blame Microsoft.
-		url = wxString("file://") + docFile.GetFullPath(wxPATH_NATIVE);
-	else
-		url = wxString::Format("http://docs.aegisub.org/3.1/%s/#%s", page, section);
-
-	wxLaunchDefaultBrowser(url);
+	wxLaunchDefaultBrowser(wxString::Format("http://docs.aegisub.org/3.1/%s/#%s", page, section));
 }
 
 void HelpButton::ClearPages() {
