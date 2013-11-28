@@ -142,7 +142,7 @@ namespace Automation4 {
 		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
 
 		// Check trace level
-		if (lua_isnumber(L, 1)) {
+		if (lua_type(L, 1) == LUA_TNUMBER) {
 			if (lua_tointeger(L, 1) > ps->GetTraceLevel())
 				return 0;
 			// remove trace level
