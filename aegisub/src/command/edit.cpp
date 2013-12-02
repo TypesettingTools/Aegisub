@@ -503,10 +503,16 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 			pre_sel = diag;
 	}
 
-	// Delete selected lines
+	// Remove the selected lines, but defer the deletion until after we select
+	// different lines. We can't just change the selection first because we may
+	// need to create a new dialogue line for it, and we can't select dialogue
+	// lines until after they're committed.
+	std::vector<std::unique_ptr<AssEntry>> to_delete;
 	c->ass->Line.remove_and_dispose_if([&sel](AssEntry const& e) {
 		return sel.count(const_cast<AssDialogue *>(static_cast<const AssDialogue*>(&e)));
-	}, [](AssEntry *e) { delete e; });
+	}, [&](AssEntry *e) {
+		to_delete.emplace_back(e);
+	});
 
 	AssDialogue *new_active = post_sel;
 	if (!new_active)
@@ -518,11 +524,11 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 		c->ass->InsertLine(new_active);
 	}
 
+	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);
+
 	sel.clear();
 	sel.insert(new_active);
 	c->selectionController->SetSelectionAndActive(sel, new_active);
-
-	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);
 }
 
 struct edit_line_copy : public validate_sel_nonempty {
