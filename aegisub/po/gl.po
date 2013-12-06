@@ -2,21 +2,21 @@
 # Copyright (C) 2005-2012 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et. al.
 # This file is distributed under the same license as the Aegisub package.
 # Niels Martin Hansen <nielsm@aegisub.org>, 2005-2012.
-#
+# Nuria Andión <nandiez@gmail.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 16:45-0700\n"
-"PO-Revision-Date: 2013-10-27 15:03+0100\n"
+"PO-Revision-Date: 2013-11-01 21:33+0100\n"
 "Last-Translator: Nuria Andión <nandiez@gmail.com>\n"
-"Language-Team: Nuria Andión <nandiez@gmail.com>\n"
+"Language-Team: Proxecto Trasno <proxecto@trasno.net>\n"
+"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: galego\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,450,-1,-1,1276\n"
 
@@ -124,7 +124,7 @@ msgstr "de %d en adiante"
 
 #: ../src/dialog_shift_times.cpp:86
 msgid "sel "
-msgstr "sel"
+msgstr "sel "
 
 #: ../src/dialog_shift_times.cpp:103 ../src/command/time.cpp:156
 msgid "Shift Times"
@@ -132,7 +132,7 @@ msgstr "Desprazar marcas de tempo"
 
 #: ../src/dialog_shift_times.cpp:112
 msgid "&Time: "
-msgstr "&Tempo:"
+msgstr "&Tempo: "
 
 #: ../src/dialog_shift_times.cpp:113
 msgid "Shift by time"
@@ -140,7 +140,7 @@ msgstr "Desprazar por tempo"
 
 #: ../src/dialog_shift_times.cpp:116
 msgid "&Frames: "
-msgstr "&Fotogramas:"
+msgstr "&Fotogramas: "
 
 #: ../src/dialog_shift_times.cpp:117
 msgid "Shift by frames"
@@ -276,11 +276,11 @@ msgid "&Paste"
 msgstr "&Pegar"
 
 #: ../src/auto4_base.cpp:562
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An Automation script failed to load. File name: '%s', error reported: %s"
 msgstr ""
-"Non se puido cargar un script de automatización. Nome do ficheiro: \"%s\", "
+"Non se puido cargar un script de automatización. Nome do ficheiro: '%s', "
 "erro detectado: %s"
 
 #: ../src/auto4_base.cpp:569
@@ -472,11 +472,11 @@ msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:170
 msgid "Bias: Start <- "
-msgstr "Tendencia: Comezo <-"
+msgstr "Tendencia: Comezo <- "
 
 #: ../src/dialog_timing_processor.cpp:172
 msgid " -> End"
-msgstr "-> Final"
+msgstr " -> Final"
 
 #: ../src/dialog_timing_processor.cpp:180
 msgid "Keyframe snapping"
@@ -660,11 +660,11 @@ msgstr "Ir a"
 
 #: ../src/dialog_jumpto.cpp:67
 msgid "Frame: "
-msgstr "Fotograma:"
+msgstr "Fotograma: "
 
 #: ../src/dialog_jumpto.cpp:68
 msgid "Time: "
-msgstr "Tempo:"
+msgstr "Tempo: "
 
 #: ../src/dialog_style_manager.cpp:85
 msgid "Move style up"
@@ -3066,7 +3066,7 @@ msgstr "3: Axuste intelixente, a liña inferior é máis longa"
 
 #: ../src/dialog_properties.cpp:107
 msgid "Wrap Style: "
-msgstr "Estilo de axuste de liña:"
+msgstr "Estilo de axuste de liña: "
 
 #: ../src/dialog_properties.cpp:110 ../src/preferences.cpp:236
 #: ../src/preferences.cpp:490
@@ -3079,7 +3079,7 @@ msgstr "Inverso"
 
 #: ../src/dialog_properties.cpp:113
 msgid "Collision: "
-msgstr "Colisión:"
+msgstr "Colisión: "
 
 #: ../src/dialog_properties.cpp:116
 msgid "Scale Border and Shadow"
@@ -3117,7 +3117,7 @@ msgstr "Copiando tipos de letra no arquivo…\n"
 #: ../src/dialog_fonts_collector.cpp:164
 #, c-format
 msgid "* Copied %s.\n"
-msgstr "*Copiado %s.\n"
+msgstr "* Copiado %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:166
 #, c-format
@@ -3127,7 +3127,7 @@ msgstr "* %s xa existe neste destino.\n"
 #: ../src/dialog_fonts_collector.cpp:168
 #, c-format
 msgid "* Symlinked %s.\n"
-msgstr "*Ligado simbolicamente %s.\n"
+msgstr "* Ligado simbolicamente %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:170
 #, c-format
@@ -3840,7 +3840,7 @@ msgstr "Disco Duro"
 
 #: ../src/preferences.cpp:528
 msgid "Cache type"
-msgstr "Tipo de Caché"
+msgstr "Tipo de caché"
 
 #: ../src/preferences.cpp:531
 msgid "File name"
@@ -4052,11 +4052,11 @@ msgstr "Construído por %s en %s."
 
 #: ../src/dialog_kara_timing_copy.cpp:68
 msgid "Source: "
-msgstr "Orixe:"
+msgstr "Orixe: "
 
 #: ../src/dialog_kara_timing_copy.cpp:69
 msgid "Dest: "
-msgstr "Destino:"
+msgstr "Destino: "
 
 #: ../src/dialog_kara_timing_copy.cpp:634
 msgid "Kanji timing"
@@ -4577,6 +4577,7 @@ msgid ""
 msgstr ""
 "Transforma as marcas de tempo dos subtítulos, incluíndo as que están en "
 "etiquetas de formato, dunha taxa de fotogramas a outra.\n"
+"\n"
 "Isto é útil para converter subtítulos en tempo estándar a subtítulos VFRaC "
 "para integrar.\n"
 "Tamén se pode utilizar para transportar os subtítulos a un formato de vídeo "
@@ -4588,7 +4589,7 @@ msgstr "&Variábel"
 
 #: ../src/export_framerate.cpp:103
 msgid "&Constant: "
-msgstr "&Constante"
+msgstr "&Constante: "
 
 #: ../src/export_framerate.cpp:115
 msgid "&Reverse transformation"
@@ -4596,11 +4597,11 @@ msgstr "&Desfacer transformación"
 
 #: ../src/export_framerate.cpp:123
 msgid "Input framerate: "
-msgstr "Inserir velocidade:"
+msgstr "Inserir velocidade: "
 
 #: ../src/export_framerate.cpp:125
 msgid "Output: "
-msgstr "Saída:"
+msgstr "Saída: "
 
 #: ../src/audio_display.cpp:705
 #, c-format
@@ -4746,7 +4747,7 @@ msgstr "    Filtro de exportación: %s"
 #: ../src/dialog_automation.cpp:252
 #, c-format
 msgid "    Subtitle format handler: %s"
-msgstr "   Manexador de formato de subtítulos: %s"
+msgstr "    Manexador de formato de subtítulos: %s"
 
 #: ../src/dialog_automation.cpp:264
 #, c-format
@@ -5496,7 +5497,7 @@ msgid ""
 "two digits separated by colons."
 msgstr ""
 "O código de tempo ten un formato incorrecto. Asegúrese de que introduce "
-"catro grupos de dous díxitos, separados por dous puntos (:)"
+"catro grupos de dous díxitos, separados por dous puntos (:)."
 
 #: ../src/dialog_export_ebu3264.cpp:89
 msgid "EBU STL export"
@@ -5934,7 +5935,7 @@ msgstr "Desenfocar os bordos"
 msgid "A demo macro showing how to do simple line modification in Automation 4"
 msgstr ""
 "Unha macro de demostración amosa como facer cambios simples de liña en "
-"\"Automation 4\""
+"Automation 4"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:21
 msgid "Adds \\be1 tags to all selected lines"
