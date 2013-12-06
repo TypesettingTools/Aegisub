@@ -41,8 +41,8 @@ all: $(MO)
 install:
 	@$(BIN_MKDIR) -p $(addsuffix /LC_MESSAGES/, $(addprefix $(DESTDIR)$(P_LOCALE)/, $(basename $(PO))))
 	@for i in $(basename $(PO)); do \
-		echo $(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_CATALOG).mo; \
-		$(BIN_INSTALL) $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_CATALOG).mo; \
+		$(BIN_ECHO) "$(BIN_INSTALL) -m644 $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_CATALOG).mo"; \
+		$(BIN_INSTALL) -m644 $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_CATALOG).mo; \
 	done
 
 

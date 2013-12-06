@@ -48,8 +48,8 @@ all: ;
 install: install-share
 	@$(BIN_MKDIR) -p $(addprefix $(DESTDIR)$(P_DATA)/automation/, $(dir $(DATA_AUTOMATION)))
 	@for i in $(DATA_AUTOMATION); do \
-		$(BIN_ECHO) "$(BIN_INSTALL) $$i $(DESTDIR)$(P_DATA)/automation/$$i"; \
-		$(BIN_INSTALL) $$i $(DESTDIR)$(P_DATA)/automation/$$i; \
+		$(BIN_ECHO) "$(BIN_INSTALL) -m644 $$i $(DESTDIR)$(P_DATA)/automation/$$i"; \
+		$(BIN_INSTALL) -m644 $$i $(DESTDIR)$(P_DATA)/automation/$$i; \
 	done
 
 EXTRA_DIST = $(DATA_AUTOMATION)
