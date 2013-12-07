@@ -139,6 +139,7 @@ public:
 class Message {
 	std::ostrstream msg;
 	SinkMessage sm;
+	char buffer[2048];
 
 public:
 	Message(const char *section, Severity severity, const char *file, const char *func, int line);
