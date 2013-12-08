@@ -30,7 +30,7 @@ def collectlibs(lib, masterlist, targetdir):
 		l = lr.group(1)
 		if is_bad_lib(l) and not l in badlist:
 			badlist.append(l)
-		if not is_sys_lib(l) and not l in masterlist:
+		if ((not is_sys_lib(l)) or is_bad_lib(l)) and not l in masterlist:
 			locallist.append(l)
 			print "found %s:" % l
 
