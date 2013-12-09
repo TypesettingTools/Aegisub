@@ -107,12 +107,12 @@ void AssParser::ParseStyleLine(std::string const& data) {
 
 void AssParser::ParseFontLine(std::string const& data) {
 	if (boost::starts_with(data, "fontname: "))
-		attach.reset(new AssAttachment(data.substr(10), AssEntryGroup::FONT));
+		attach.reset(new AssAttachment(data, AssEntryGroup::FONT));
 }
 
 void AssParser::ParseGraphicsLine(std::string const& data) {
 	if (boost::starts_with(data, "filename: "))
-		attach.reset(new AssAttachment(data.substr(10), AssEntryGroup::GRAPHIC));
+		attach.reset(new AssAttachment(data, AssEntryGroup::GRAPHIC));
 }
 
 void AssParser::AddLine(std::string const& data) {
