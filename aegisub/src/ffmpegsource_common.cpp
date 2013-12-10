@@ -140,8 +140,9 @@ std::map<int, std::string> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *I
 
 	for (int i=0; i<NumTracks; i++) {
 		if (FFMS_GetTrackTypeI(Indexer, i) == Type) {
-			std::string CodecName(FFMS_GetCodecNameI(Indexer, i));
-			TrackList.insert(std::pair<int,std::string>(i, CodecName));
+			const char *CodecName = FFMS_GetCodecNameI(Indexer, i);
+			if (CodecName)
+				TrackList.insert(std::pair<int,std::string>(i, CodecName));
 		}
 	}
 	return TrackList;
