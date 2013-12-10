@@ -64,6 +64,7 @@
 
 #ifdef __APPLE__
 #include <libaegisub/util_osx.h>
+#include <CoreText/CTFont.h>
 #endif
 
 /// @brief There shall be no kiB, MiB stuff here Pretty reading of size
@@ -271,6 +272,31 @@ size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 void AddFullScreenButton(wxWindow *) { }
 void SetFloatOnParent(wxWindow *) { }
 #endif
+
+wxString FontFace(std::string opt_prefix) {
+	opt_prefix += "/Font Face";
+	auto value = OPT_GET(opt_prefix)->GetString();
+#ifdef __WXOSX_COCOA__
+	if (value.empty()) {
+		auto default_font = CTFontCreateUIFontForLanguage(kCTFontUserFontType, 0, nullptr);
+		auto default_font_name = CTFontCopyPostScriptName(default_font);
+		CFRelease(default_font);
+
+		auto utf8_str = CFStringGetCStringPtr(default_font_name, kCFStringEncodingUTF8);
+		if (utf8_str)
+			value = utf8_str;
+		else {
+			char buffer[1024];
+			CFStringGetCString(default_font_name, buffer, sizeof(buffer), kCFStringEncodingUTF8);
+			buffer[1023] = '\0';
+			value = buffer;
+		}
+
+		CFRelease(default_font_name);
+	}
+#endif
+	return to_wx(value);
+}
 
 agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, int flags, wxWindow *parent) {
 	wxString path;

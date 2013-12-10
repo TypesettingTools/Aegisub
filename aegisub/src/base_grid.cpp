@@ -225,7 +225,7 @@ void BaseGrid::OnHighlightVisibleChange(agi::OptionValue const& opt) {
 }
 
 void BaseGrid::UpdateStyle() {
-	wxString fontname = to_wx(OPT_GET("Subtitle/Grid/Font Face")->GetString());
+	wxString fontname = FontFace("Subtitle/Grid");
 	if (fontname.empty()) fontname = "Tahoma";
 	font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Grid/Font Size")->GetInt());
