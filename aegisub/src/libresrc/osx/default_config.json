@@ -81,6 +81,9 @@
 		},
 		"Spectrum" : true,
 		"Start Drag Sensitivity" : 3,
+		"Track Cursor" : {
+			"Font Face" : ""
+		},
 		"Volume" : 50,
 		"Wheel Default to Zoom" : false,
 		"Zoom" : {

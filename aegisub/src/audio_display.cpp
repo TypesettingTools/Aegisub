@@ -795,9 +795,7 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 	}
 
 	if (track_cursor_pos >= 0)
-	{
 		PaintTrackCursor(dc);
-	}
 
 	if (redraw_scrollbar)
 		scrollbar->Paint(dc, HasFocus());
@@ -901,6 +899,9 @@ void AudioDisplay::PaintTrackCursor(wxDC &dc) {
 
 	wxDCFontChanger fc(dc);
 	wxFont font = dc.GetFont();
+	wxString face_name = FontFace("Audio/Track Cursor");
+	if (!face_name.empty())
+		font.SetFaceName(face_name);
 	font.SetWeight(wxFONTWEIGHT_BOLD);
 	dc.SetFont(font);
 
