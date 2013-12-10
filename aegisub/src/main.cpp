@@ -324,9 +324,9 @@ StackWalker::StackWalker(std::string const& cause)
 void StackWalker::OnStackFrame(wxStackFrame const& frame) {
 	if (!fp.good()) return;
 
-	fp << boost::format("%03u - %p: %s") % frame.GetLevel() % frame.GetAddress();
+	fp << boost::format("%03u - %p: %s") % frame.GetLevel() % frame.GetAddress() % frame.GetName().utf8_str().data();
 	if (frame.HasSourceLocation())
-		fp << boost::format(" on %s:%u") % frame.GetFileName(), frame.GetLine();
+		fp << boost::format(" on %s:%u") % frame.GetFileName().utf8_str().data(), frame.GetLine();
 
 	fp << "\n";
 }
