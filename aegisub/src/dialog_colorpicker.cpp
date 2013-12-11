@@ -291,7 +291,11 @@ class ColorPickerRecent : public wxStaticBitmap {
 			}
 		}
 
-		SetBitmap(background);
+		{
+			wxEventBlocker blocker(this);
+			SetBitmap(background);
+		}
+
 		Refresh(false);
 	}
 
