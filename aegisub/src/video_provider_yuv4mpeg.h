@@ -139,7 +139,7 @@ public:
 	int GetHeight() const override                 { return h; }
 	double GetDAR() const override                 { return 0; }
 	agi::vfr::Framerate GetFPS() const override    { return fps; }
-	std::vector<int> GetKeyFrames() const override { return std::vector<int>(); }
+	std::vector<int> GetKeyFrames() const override { return {}; }
 	std::string GetColorSpace() const override     { return "TV.601"; }
 	std::string GetDecoderName() const override    { return "YU4MPEG"; }
 	bool WantsCaching() const override             { return true; }

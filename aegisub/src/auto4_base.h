@@ -293,8 +293,8 @@ namespace Automation4 {
 		std::string GetVersion() const override { return ""; }
 		bool GetLoadedState() const override { return false; }
 
-		std::vector<cmd::Command*> GetMacros() const override { return std::vector<cmd::Command*>(); }
-		std::vector<ExportFilter*> GetFilters() const override { return std::vector<ExportFilter*>(); }
-		std::vector<SubtitleFormat*> GetFormats() const override { return std::vector<SubtitleFormat*>(); }
+		std::vector<cmd::Command*> GetMacros() const override { return {}; }
+		std::vector<ExportFilter*> GetFilters() const override { return {}; }
+		std::vector<SubtitleFormat*> GetFormats() const override { return {}; }
 	};
 }

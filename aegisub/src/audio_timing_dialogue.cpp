@@ -590,24 +590,24 @@ void AudioTimingControllerDialogue::Revert()
 void AudioTimingControllerDialogue::AddLeadIn()
 {
 	DialogueTimingMarker *m = active_line.GetLeftMarker();
-	SetMarkers(std::vector<AudioMarker*>(1, m), *m - OPT_GET("Audio/Lead/IN")->GetInt());
+	SetMarkers({ m }, *m - OPT_GET("Audio/Lead/IN")->GetInt());
 }
 
 void AudioTimingControllerDialogue::AddLeadOut()
 {
 	DialogueTimingMarker *m = active_line.GetRightMarker();
-	SetMarkers(std::vector<AudioMarker*>(1, m), *m + OPT_GET("Audio/Lead/OUT")->GetInt());
+	SetMarkers({ m }, *m + OPT_GET("Audio/Lead/OUT")->GetInt());
 }
 
 void AudioTimingControllerDialogue::ModifyLength(int delta, bool) {
 	DialogueTimingMarker *m = active_line.GetRightMarker();
-	SetMarkers(std::vector<AudioMarker*>(1, m),
+	SetMarkers({ m },
 		std::max<int>(*m + delta * 10, *active_line.GetLeftMarker()));
 }
 
 void AudioTimingControllerDialogue::ModifyStart(int delta) {
 	DialogueTimingMarker *m = active_line.GetLeftMarker();
-	SetMarkers(std::vector<AudioMarker*>(1, m),
+	SetMarkers({ m },
 		std::min<int>(*m + delta * 10, *active_line.GetRightMarker()));
 }
 

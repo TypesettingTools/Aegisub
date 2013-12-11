@@ -184,7 +184,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(VersionCheckError, agi::Exception, "versioncheck
 void PostErrorEvent(bool interactive, wxString const& error_text) {
 	if (interactive) {
 		agi::dispatch::Main().Async([=]{
-			new VersionCheckerResultDialog(error_text, std::vector<AegisubUpdateDescription>());
+			new VersionCheckerResultDialog(error_text, {});
 		});
 	}
 }

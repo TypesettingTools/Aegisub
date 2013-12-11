@@ -186,6 +186,13 @@ Framerate::Framerate(std::vector<int> timecodes)
 	SetFromTimecodes();
 }
 
+Framerate::Framerate(std::initializer_list<int> timecodes)
+: timecodes(timecodes)
+, drop(false)
+{
+	SetFromTimecodes();
+}
+
 void Framerate::swap(Framerate &right) throw() {
 	using std::swap;
 	swap(numerator, right.numerator);

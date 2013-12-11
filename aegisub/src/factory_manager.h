@@ -79,7 +79,7 @@ public:
 	}
 
 	template<class T>
-	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
+	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = {}) {
 		FactoryBase<func>::DoRegister([](Arg1 a1, Arg2 a2) -> Base * { return new T(a1, a2); }, name, hide, subTypes);
 	}
 };
@@ -95,7 +95,7 @@ public:
 	}
 
 	template<class T>
-	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
+	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = {}) {
 		FactoryBase<func>::DoRegister([](Arg1 a1) -> Base * { return new T(a1); }, name, hide, subTypes);
 	}
 };
@@ -111,7 +111,7 @@ public:
 	}
 
 	template<class T>
-	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = std::vector<std::string>()) {
+	static void Register(std::string name, bool hide = false, std::vector<std::string> subTypes = {}) {
 		FactoryBase<func>::DoRegister([]() -> Base * { return new T; }, name, hide, subTypes);
 	}
 };

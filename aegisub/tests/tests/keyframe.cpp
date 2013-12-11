@@ -29,7 +29,7 @@ using namespace agi::keyframe;
 using namespace util;
 
 TEST(lagi_keyframe, save) {
-	std::vector<int> kf = make_vector<int>(5, 0, 5, 70, 180, 300);
+	std::vector<int> kf = { 0, 5, 70, 180, 300 };
 
 	ASSERT_NO_THROW(Save("data/keyframe/out.txt", kf));
 
@@ -46,7 +46,7 @@ TEST(lagi_keyframe, bad_files) {
 }
 
 TEST(lagi_keyframe, xvid) {
-	std::vector<int> expected = make_vector<int>(681,
+	std::vector<int> expected = {
 		0, 52, 53, 55, 57, 80, 114, 168, 182, 234, 240, 242, 244, 250, 251,
 		274, 290, 336, 364, 431, 465, 535, 596, 654, 700, 744, 976, 982, 983,
 		984, 985, 993, 994, 995, 996, 997, 998, 1006, 1007, 1008, 1009, 1022,
@@ -111,13 +111,13 @@ TEST(lagi_keyframe, xvid) {
 		32594, 32801, 32820, 32881, 32989, 33060, 33130, 33162, 33233, 33273,
 		33325, 33344, 33362, 33388, 33408, 33438, 33458, 33561, 33644, 33700,
 		33880, 33923, 33969, 33982, 33991, 34010, 34025, 34043, 34055, 34065,
-		34082, 34102, 34112, 34122, 34142, 34158, 34170, 34187, 34211);
+		34082, 34102, 34112, 34122, 34142, 34158, 34170, 34187, 34211
+	};
 
 	std::vector<int> res;
 	ASSERT_NO_THROW(res = Load("data/keyframe/xvid.txt"));
 
 	EXPECT_TRUE(expected == res);
-
 }
 
 TEST(lagi_keyframe, x264) {

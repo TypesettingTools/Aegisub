@@ -48,9 +48,9 @@ class SubtitleFormat {
 	std::string name;
 
 	/// Get this format's wildcards for a load dialog
-	virtual std::vector<std::string> GetReadWildcards() const { return std::vector<std::string>(); }
+	virtual std::vector<std::string> GetReadWildcards() const { return {}; }
 	/// Get this format's wildcards for a save dialog
-	virtual std::vector<std::string> GetWriteWildcards() const { return std::vector<std::string>(); }
+	virtual std::vector<std::string> GetWriteWildcards() const { return {}; }
 
 	/// List of loaded subtitle formats
 	static std::vector<SubtitleFormat*> formats;

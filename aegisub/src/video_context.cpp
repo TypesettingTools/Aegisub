@@ -456,7 +456,7 @@ void VideoContext::SaveTimecodes(agi::fs::path const& filename) {
 void VideoContext::CloseTimecodes() {
 	ovr_fps = agi::vfr::Framerate();
 	timecodes_filename.clear();
-	OnSubtitlesCommit(0, std::set<const AssEntry*>());
+    OnSubtitlesCommit(0, std::set<const AssEntry*>());
 	TimecodesOpen(video_fps);
 }
 

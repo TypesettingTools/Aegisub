@@ -338,7 +338,7 @@ namespace Automation4 {
 
 		std::vector<cmd::Command*> GetMacros() const override { return macros; }
 		std::vector<ExportFilter*> GetFilters() const override;
-		std::vector<SubtitleFormat*> GetFormats() const override { return std::vector<SubtitleFormat*>(); }
+		std::vector<SubtitleFormat*> GetFormats() const override { return {}; }
 	};
 
 	LuaScript::LuaScript(agi::fs::path const& filename)

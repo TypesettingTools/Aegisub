@@ -278,11 +278,8 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 			if (selection_only)
 				// We're cycling through the selection, so don't muck with it
 				context->selectionController->SetActiveLine(diag);
-			else {
-				SubtitleSelection new_sel;
-				new_sel.insert(diag);
-				context->selectionController->SetSelectionAndActive(new_sel, diag);
-			}
+			else
+				context->selectionController->SetSelectionAndActive({ diag }, diag);
 
 			if (settings.field == SearchReplaceSettings::Field::TEXT)
 				context->textSelectionController->SetSelection(ms.start, ms.end);

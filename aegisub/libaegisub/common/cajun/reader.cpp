@@ -243,11 +243,8 @@ void Reader::MatchString(std::string& string, InputStream& inputStream) {
 }
 
 void Reader::MatchNumber(std::string& sNumber, InputStream& inputStream) {
-	const char sNumericChars[] = "0123456789.eE-+";
-	std::set<char> numericChars;
-	numericChars.insert(sNumericChars, sNumericChars + sizeof(sNumericChars));
-
-	while (!inputStream.EOS()&& numericChars.count(inputStream.Peek()))
+	const char numericChars[] = "0123456789.eE-+";
+	while (!inputStream.EOS() && std::find(numericChars, std::end(numericChars), inputStream.Peek()) != std::end(numericChars))
 		sNumber.push_back(inputStream.Get());
 }
 

@@ -125,9 +125,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	c->ass->Line.insert(pos, *def);
 	c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 
-	SubtitleSelection sel;
-	sel.insert(def);
-	c->selectionController->SetSelectionAndActive(sel, def);
+	c->selectionController->SetSelectionAndActive({ def }, def);
 }
 
 struct subtitle_insert_after : public validate_nonempty_selection {
@@ -160,9 +158,7 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 		}
 
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
-		SubtitleSelection sel;
-		sel.insert(new_line);
-		c->selectionController->SetSelectionAndActive(sel, new_line);
+		c->selectionController->SetSelectionAndActive({ new_line }, new_line);
 	}
 };
 
@@ -204,9 +200,7 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 		}
 
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
-		SubtitleSelection sel;
-		sel.insert(new_line);
-		c->selectionController->SetSelectionAndActive(sel, new_line);
+		c->selectionController->SetSelectionAndActive({ new_line }, new_line);
 	}
 };
 

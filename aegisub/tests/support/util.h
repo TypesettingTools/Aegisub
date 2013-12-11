@@ -22,20 +22,6 @@
 namespace util {
 bool compare(std::string const& file1, std::string const& file2);
 
-template<typename T>
-static std::vector<T> make_vector(int len, ...) {
-	std::vector<T> vec(len);
-
-	va_list argp;
-	va_start(argp, len);
-	for (int i = 0; i < len; i++) {
-		vec[i] = va_arg(argp, T);
-	}
-	va_end(argp);
-	return vec;
-}
-
 int write_rand(const char *path);
 int read_written_rand(const char *path);
-
 }

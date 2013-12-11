@@ -375,7 +375,7 @@ std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool
 	AnnounceUpdatedPrimaryRange();
 	AnnounceUpdatedStyleRanges();
 
-	return std::vector<AudioMarker*>();
+	return {};
 }
 
 std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnRightClick(int ms, bool, int, int) {
@@ -385,7 +385,7 @@ std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnRightClick(int ms, boo
 	AnnounceUpdatedStyleRanges();
 	c->audioController->PlayPrimaryRange();
 
-	return std::vector<AudioMarker*>();
+	return {};
 }
 
 int AudioTimingControllerKaraoke::MoveMarker(KaraokeMarker *marker, int new_position) {

@@ -34,7 +34,7 @@ using namespace util;
 TEST(lagi_vfr, constructors_good) {
 	EXPECT_NO_THROW(Framerate(1.));
 	EXPECT_NO_THROW(Framerate(Framerate(1.)));
-	EXPECT_NO_THROW(Framerate(make_vector<int>(2, 0, 10)));
+	EXPECT_NO_THROW(Framerate({ 0, 10 }));
 
 	EXPECT_NO_THROW(Framerate("data/vfr/in/v1_start_equals_end.txt"));
 	EXPECT_NO_THROW(Framerate("data/vfr/in/v1_whitespace.txt"));
@@ -48,9 +48,9 @@ TEST(lagi_vfr, constructors_bad_cfr) {
 }
 
 TEST(lagi_vfr, constructors_bad_timecodes) {
-	EXPECT_THROW(Framerate(make_vector<int>(0)), TooFewTimecodes);
-	EXPECT_THROW(Framerate(make_vector<int>(1, 0)), TooFewTimecodes);
-	EXPECT_THROW(Framerate(make_vector<int>(2, 10, 0)), UnorderedTimecodes);
+	EXPECT_THROW(Framerate(std::initializer_list<int>{}), TooFewTimecodes);
+	EXPECT_THROW(Framerate({ 0 }), TooFewTimecodes);
+	EXPECT_THROW(Framerate({ 10, 0 }), UnorderedTimecodes);
 }
 
 TEST(lagi_vfr, constructors_bad_v1) {
@@ -168,7 +168,7 @@ TEST(lagi_vfr, cfr_round_trip_end) {
 
 TEST(lagi_vfr, vfr_round_trip_exact) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(7, 0, 1000, 1500, 2000, 2001, 2002, 2003)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001, 2002, 2003 }));
 	for (int i = -10; i < 11; i++) {
 		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i)));
 	}
@@ -176,7 +176,7 @@ TEST(lagi_vfr, vfr_round_trip_exact) {
 
 TEST(lagi_vfr, vfr_round_trip_start) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(7, 0, 1000, 1500, 2000, 2001, 2002, 2003)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001, 2002, 2003 }));
 	for (int i = -10; i < 11; i++) {
 		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i, START), START));
 	}
@@ -184,7 +184,7 @@ TEST(lagi_vfr, vfr_round_trip_start) {
 
 TEST(lagi_vfr, vfr_round_trip_end) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(7, 0, 1000, 1500, 2000, 2001, 2002, 2003)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001, 2002, 2003 }));
 	for (int i = -10; i < 11; i++) {
 		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i, END), END));
 	}
@@ -192,7 +192,7 @@ TEST(lagi_vfr, vfr_round_trip_end) {
 
 TEST(lagi_vfr, vfr_time_at_frame_exact) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(5, 0, 1000, 1500, 2000, 2001)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001 }));
 	EXPECT_EQ(0, fps.TimeAtFrame(0));
 	EXPECT_EQ(1000, fps.TimeAtFrame(1));
 	EXPECT_EQ(1500, fps.TimeAtFrame(2));
@@ -202,7 +202,7 @@ TEST(lagi_vfr, vfr_time_at_frame_exact) {
 
 TEST(lagi_vfr, vfr_time_at_frame_start) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(7, 0, 1000, 1500, 2000, 2001, 2002, 2003)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001, 2002, 2003 }));
 	EXPECT_GE(0, fps.TimeAtFrame(0, START));
 	EXPECT_RANGE(1, 1000, fps.TimeAtFrame(1, START));
 	EXPECT_RANGE(1001, 1500, fps.TimeAtFrame(2, START));
@@ -214,7 +214,7 @@ TEST(lagi_vfr, vfr_time_at_frame_start) {
 
 TEST(lagi_vfr, vfr_time_at_frame_end) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(7, 0, 1000, 1500, 2000, 2001, 2002, 2003)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001, 2002, 2003 }));
 	EXPECT_RANGE(1, 1000, fps.TimeAtFrame(0, END));
 	EXPECT_RANGE(1001, 1500, fps.TimeAtFrame(1, END));
 	EXPECT_RANGE(1501, 2000, fps.TimeAtFrame(2, END));
@@ -226,7 +226,7 @@ TEST(lagi_vfr, vfr_time_at_frame_end) {
 
 TEST(lagi_vfr, vfr_time_at_frame_outside_range) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(3, 0, 100, 200)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 100, 200 }));
 	EXPECT_GT(0, fps.TimeAtFrame(-1));
 	EXPECT_EQ(0, fps.TimeAtFrame(0));
 	EXPECT_EQ(100, fps.TimeAtFrame(1));
@@ -242,7 +242,7 @@ TEST(lagi_vfr, vfr_time_at_frame_outside_range) {
 
 TEST(lagi_vfr, vfr_frame_at_time_exact) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(7, 0, 1000, 1500, 2000, 2001, 2002, 2003)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001, 2002, 2003 }));
 	EXPECT_GT(0, fps.FrameAtTime(-1));
 	EXPECT_EQ(0, fps.FrameAtTime(0));
 	EXPECT_EQ(0, fps.FrameAtTime(999));
@@ -258,7 +258,7 @@ TEST(lagi_vfr, vfr_frame_at_time_exact) {
 }
 TEST(lagi_vfr, vfr_frame_at_time_start) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(7, 0, 1000, 1500, 2000, 2001, 2002, 2003)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 1000, 1500, 2000, 2001, 2002, 2003 }));
 	EXPECT_GE(0, fps.FrameAtTime(-1, START));
 	EXPECT_EQ(0, fps.FrameAtTime(0, START));
 	EXPECT_EQ(1, fps.FrameAtTime(1, START));
@@ -315,7 +315,7 @@ TEST(lagi_vfr, validate_save) {
 
 TEST(lagi_vfr, save_vfr_nolen) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(3, 0, 100, 200)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 100, 200 }));
 	ASSERT_NO_THROW(fps.Save("data/vfr/out/v2_nolen.txt"));
 
 	EXPECT_TRUE(validate_save("data/vfr/in/v2_nolen.txt", "data/vfr/out/v2_nolen.txt"));
@@ -323,7 +323,7 @@ TEST(lagi_vfr, save_vfr_nolen) {
 
 TEST(lagi_vfr, save_vfr_len) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(3, 0, 100, 200)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 100, 200 }));
 	ASSERT_NO_THROW(fps.Save("data/vfr/out/v2_len_3_10.txt", 10));
 
 	EXPECT_TRUE(validate_save("data/vfr/in/v2_len_3_10.txt", "data/vfr/out/v2_len_3_10.txt", 3));
@@ -378,14 +378,14 @@ TEST(lagi_vfr, load_v1_save_v2_ovr) {
 TEST(lagi_vfr, nonzero_start_time) {
 	Framerate fps;
 
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(5, 10, 20, 30, 40, 50)));
+	ASSERT_NO_THROW(fps = Framerate({ 10, 20, 30, 40, 50 }));
 	EXPECT_EQ(0, fps.TimeAtFrame(0, EXACT));
 	EXPECT_EQ(10, fps.TimeAtFrame(1, EXACT));
 	EXPECT_EQ(20, fps.TimeAtFrame(2, EXACT));
 	EXPECT_EQ(30, fps.TimeAtFrame(3, EXACT));
 	EXPECT_EQ(40, fps.TimeAtFrame(4, EXACT));
 
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(5, -10, 20, 30, 40, 50)));
+	ASSERT_NO_THROW(fps = Framerate({ -10, 20, 30, 40, 50 }));
 	EXPECT_EQ(0, fps.TimeAtFrame(0, EXACT));
 	EXPECT_EQ(30, fps.TimeAtFrame(1, EXACT));
 	EXPECT_EQ(40, fps.TimeAtFrame(2, EXACT));
@@ -420,7 +420,7 @@ TEST(lagi_vfr, no_intermediate_overflow) {
 
 TEST(lagi_vfr, duplicate_timestamps) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(6, 0, 0, 1, 2, 2, 3)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 0, 1, 2, 2, 3 }));
 
 	EXPECT_EQ(1, fps.FrameAtTime(0, EXACT));
 	EXPECT_EQ(2, fps.FrameAtTime(1, EXACT));
@@ -434,7 +434,7 @@ TEST(lagi_vfr, duplicate_timestamps) {
 	EXPECT_EQ(2, fps.TimeAtFrame(4, EXACT));
 	EXPECT_EQ(3, fps.TimeAtFrame(5, EXACT));
 
-	ASSERT_NO_THROW(fps = Framerate(make_vector<int>(5, 0, 100, 100, 200, 300)));
+	ASSERT_NO_THROW(fps = Framerate({ 0, 100, 100, 200, 300 }));
 
 	EXPECT_EQ(0, fps.FrameAtTime(0, EXACT));
 	EXPECT_EQ(0, fps.FrameAtTime(99, EXACT));
