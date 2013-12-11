@@ -30,19 +30,13 @@ using agi::charset::ConvertLocal;
 #include <boost/filesystem.hpp>
 namespace bfs = boost::filesystem;
 
+#include <versionhelpers.h>
+
 #undef CreateDirectory
 
 namespace {
 	FINDEX_INFO_LEVELS find_info_level() {
-		OSVERSIONINFO osvi;
-		ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-		GetVersionEx(&osvi);
-
-		if (osvi.dwMajorVersion > 6 || (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1))
-			return FindExInfoBasic;
-		else
-			return FindExInfoStandard;
+		return IsWindowsVistaOrGreater() ? FindExInfoBasic : FindExInfoStandard;
 	}
 }
 

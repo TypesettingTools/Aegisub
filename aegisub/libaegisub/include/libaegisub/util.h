@@ -55,20 +55,10 @@ namespace agi {
 	/// @param name New name for the thread
 	void SetThreadName(const char *name);
 
-#ifdef _MSC_VER
-#define MAKE_UNIQUE(TEMPLATE_LIST, PADDING_LIST, LIST, COMMA, X1, X2, X3, X4) \
-	template<class T COMMA LIST(_CLASS_TYPE)> \
-	inline std::unique_ptr<T> make_unique(LIST(_TYPE_REFREF_ARG)) { \
-		return std::unique_ptr<T>(new T(LIST(_FORWARD_ARG))); \
-	}
-	_VARIADIC_EXPAND_0X(MAKE_UNIQUE, , , , )
-#undef MAKE_UNIQUE
-#else
 	template<typename T, typename... Args>
 	std::unique_ptr<T> make_unique(Args&&... args) {
 		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 	}
-#endif
 
 	/// A thin wrapper around this_thread::sleep_for that uses std::thread on
 	/// Windows (to avoid having to compile boost.thread) and boost::thread

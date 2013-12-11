@@ -66,7 +66,7 @@ type ShellWrapper(conf : ITaskItem) =
     this.UseCommandProcessor <- false
     this.StandardOutputImportance <- "High"
     this.EnvironmentVariables <- [| for x in ["CC"; "CPP"; "CFLAGS"; "PATH"; "INCLUDE"; "LIB"]
-                                    -> sprintf "%s=%s" <| x <| conf.GetMetadata x |]
+                                    -> sprintf "%s=%s" <| x <| conf.GetMetadata(x).Replace("\n", "").Replace("        ", "") |]
     base.Execute()
 
 type ExecShellScript() =

@@ -108,14 +108,14 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::pat
 			int calls;
 		};
 		progress state = { ps, 0 };
-		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE, nullptr, nullptr, IndexEH,
-			static_cast<TIndexCallback>([](int64_t Current, int64_t Total, void *Private) -> int {
-				auto state = static_cast<progress *>(Private);
-				if (++state->calls % 10 == 0)
-					state->ps->SetProgress(Current, Total);
-				return state->ps->IsCancelled();
-			}),
-			&state, &ErrInfo);
+		TIndexCallback callback = [](int64_t Current, int64_t Total, void *Private) -> int {
+			auto state = static_cast<progress *>(Private);
+			if (++state->calls % 10 == 0)
+				state->ps->SetProgress(Current, Total);
+			return state->ps->IsCancelled();
+		};
+		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE,
+			nullptr, nullptr, IndexEH, callback, &state, &ErrInfo);
 	});
 
 	if (Index == nullptr) {

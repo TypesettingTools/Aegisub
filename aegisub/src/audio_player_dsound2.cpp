@@ -812,7 +812,7 @@ bool DirectSoundPlayer2::IsThreadAlive()
 		thread.reset();
 	}
 
-	return thread;
+	return !!thread;
 }
 
 void DirectSoundPlayer2::Play(int64_t start,int64_t count)
