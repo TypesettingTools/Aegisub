@@ -50,6 +50,7 @@ public:
 	AssEntryGroup Group() const override { return group; }
 	AssEntry *Clone() const override;
 
+	AssAttachment(AssAttachment const& rgt);
 	AssAttachment(std::string const& header, AssEntryGroup group);
 	AssAttachment(agi::fs::path const& name, AssEntryGroup group);
 };

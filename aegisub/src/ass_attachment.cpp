@@ -25,6 +25,13 @@
 #include <boost/range/iterator_range.hpp>
 #include <fstream>
 
+AssAttachment::AssAttachment(AssAttachment const& rgt)
+: entry_data(rgt.entry_data)
+, filename(rgt.filename)
+, group(rgt.group)
+{
+}
+
 AssAttachment::AssAttachment(std::string const& header, AssEntryGroup group)
 : entry_data(header + "\r\n")
 , filename(header.substr(10))
@@ -53,9 +60,7 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 }
 
 AssEntry *AssAttachment::Clone() const {
-	auto clone = new AssAttachment(filename, group);
-	clone->entry_data = entry_data;
-	return clone;
+	return new AssAttachment(*this);
 }
 
 const std::string AssAttachment::GetEntryData() const {
