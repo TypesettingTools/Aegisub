@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <string>
+#include <memory>
 
 struct tm;
 
