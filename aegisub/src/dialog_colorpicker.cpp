@@ -637,15 +637,12 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	hsx_sizer->AddSpacer(5);
 	hsx_sizer->Add(hsv_box);
 
-	wxSizer *recent_sizer = new wxBoxSizer(wxVERTICAL);
-	recent_sizer->Add(recent_box, 1, wxEXPAND);
-
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
 	picker_sizer->Add(screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
 	picker_sizer->Add(screen_dropper, 0, wxALIGN_CENTER);
 	picker_sizer->AddStretchSpacer();
-	picker_sizer->Add(recent_sizer, 0, wxALIGN_CENTER);
+	picker_sizer->Add(recent_box, 0, wxALIGN_CENTER);
 	picker_sizer->AddStretchSpacer();
 
 	wxStdDialogButtonSizer *button_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
