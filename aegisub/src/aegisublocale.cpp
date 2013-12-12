@@ -106,11 +106,7 @@ wxString AegisubLocale::PickLanguage() {
 		style |= wxCANCEL;
 
 	wxSingleChoiceDialog dialog(nullptr, "Please choose a language:", "Language", langNames,
-#if wxCHECK_VERSION(2, 9, 4)
 			(void **)nullptr,
-#else
-			0,
-#endif
 			style);
 	if (dialog.ShowModal() == wxID_OK) {
 		int picked = dialog.GetSelection();

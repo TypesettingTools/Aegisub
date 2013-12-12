@@ -370,11 +370,7 @@ public:
 };
 
 static void edit_item(wxDataViewCtrl *dvc, wxDataViewItem item) {
-#if wxCHECK_VERSION(2, 9, 4)
 	dvc->EditItem(item, dvc->GetColumn(0));
-#else
-	dvc->StartEditor(item, 0);
-#endif
 }
 
 /// Interface Hotkeys preferences subpage
