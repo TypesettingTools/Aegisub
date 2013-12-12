@@ -22,6 +22,18 @@
 #include "video_frame.h"
 
 #include <algorithm>
+#include <boost/version.hpp>
+
+#if BOOST_VERSION <= 105200
+// Compilation fails without this with boost 1.52. I have no idea why.
+static bool operator==(VideoFrame const& a, VideoFrame const& b) {
+	return a.width == b.width
+		&& a.height == b.height
+		&& a.pitch == b.pitch
+		&& a.flipped == b.flipped
+		&& a.data == b.data;
+}
+#endif
 
 /// A video frame and its frame number
 struct CachedFrame : public VideoFrame {
