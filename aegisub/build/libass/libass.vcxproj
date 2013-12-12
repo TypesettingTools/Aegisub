@@ -19,8 +19,8 @@
     <ClCompile>
       <AdditionalIncludeDirectories>
         $(LibassSrcDir)\libass;
-        $(LibassSrcDir)\win32;
-        $(LibassSrcDir)\win32\headers;
+        $(MSBuildThisFileDirectory);
+        $(AegisubSourceBase)\include\fribidi;
         $(AegisubContribBase)iconv\include;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
