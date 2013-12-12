@@ -454,7 +454,7 @@ namespace menu {
 		}
 
 		window->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
-		window->Bind(wxEVT_COMMAND_MENU_SELECTED, &CommandManager::OnMenuClick, &menu->cm);
+		window->Bind(wxEVT_MENU, &CommandManager::OnMenuClick, &menu->cm);
 		window->SetMenuBar(menu.get());
 
 		menu.release();
@@ -464,7 +464,7 @@ namespace menu {
 		auto menu = new CommandMenu(c);
 		build_menu(name, c, &menu->cm, menu);
 		menu->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
-		menu->Bind(wxEVT_COMMAND_MENU_SELECTED, &CommandManager::OnMenuClick, &menu->cm);
+		menu->Bind(wxEVT_MENU, &CommandManager::OnMenuClick, &menu->cm);
 		return std::unique_ptr<wxMenu>(menu);
 	}
 

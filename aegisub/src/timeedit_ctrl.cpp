@@ -73,9 +73,9 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::
 	// Other stuff
 	if (value.empty()) SetValue(to_wx(time.GetAssFormated()));
 
-	Bind(wxEVT_COMMAND_MENU_SELECTED, std::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
-	Bind(wxEVT_COMMAND_MENU_SELECTED, std::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &TimeEdit::OnModified, this);
+	Bind(wxEVT_MENU, std::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
+	Bind(wxEVT_MENU, std::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
+	Bind(wxEVT_TEXT, &TimeEdit::OnModified, this);
 	Bind(wxEVT_CONTEXT_MENU, &TimeEdit::OnContextMenu, this);
 	Bind(wxEVT_CHAR_HOOK, &TimeEdit::OnKeyDown, this);
 	Bind(wxEVT_CHAR, &TimeEdit::OnChar, this);
@@ -238,7 +238,7 @@ void TimeEdit::PasteTime() {
 		SetTime(tempTime);
 		SetSelection(0, GetValue().size());
 
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, GetId());
+		wxCommandEvent evt(wxEVT_TEXT, GetId());
 		evt.SetEventObject(this);
 		HandleWindowEvent(evt);
 	}

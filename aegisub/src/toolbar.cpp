@@ -174,7 +174,7 @@ namespace {
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
 			Populate();
-			Bind(wxEVT_COMMAND_TOOL_CLICKED, &Toolbar::OnClick, this);
+			Bind(wxEVT_TOOL, &Toolbar::OnClick, this);
 		}
 
 		Toolbar(wxFrame *parent, std::string name, agi::Context *c, std::string ht_context)
@@ -192,7 +192,7 @@ namespace {
 		{
 			parent->SetToolBar(this);
 			Populate();
-			Bind(wxEVT_COMMAND_TOOL_CLICKED, &Toolbar::OnClick, this);
+			Bind(wxEVT_TOOL, &Toolbar::OnClick, this);
 		}
 	};
 }

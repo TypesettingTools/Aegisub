@@ -68,7 +68,7 @@ DialogTextImport::DialogTextImport()
 	SetSizerAndFit(main_sizer);
 
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) {
+	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
 		TransferDataFromWindow();
 
 		OPT_SET("Tool/Import/Text/Actor Separator")->SetString(seperator);

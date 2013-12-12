@@ -383,12 +383,12 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	wxButton *edit_button = new wxButton(this, -1, _("&Edit"));
 	wxButton *delete_button = new wxButton(this, -1, _("&Delete"));
 
-	new_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Interface_Hotkeys::OnNewButton, this);
-	edit_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { edit_item(dvc, dvc->GetSelection()); });
-	delete_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { model->Delete(dvc->GetSelection()); });
+	new_button->Bind(wxEVT_BUTTON, &Interface_Hotkeys::OnNewButton, this);
+	edit_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { edit_item(dvc, dvc->GetSelection()); });
+	delete_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { model->Delete(dvc->GetSelection()); });
 
-	quick_search->Bind(wxEVT_COMMAND_TEXT_UPDATED, &Interface_Hotkeys::OnUpdateFilter, this);
-	quick_search->Bind(wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, [=](wxCommandEvent&) { quick_search->SetValue(""); });
+	quick_search->Bind(wxEVT_TEXT, &Interface_Hotkeys::OnUpdateFilter, this);
+	quick_search->Bind(wxEVT_SEARCHCTRL_CANCEL_BTN, [=](wxCommandEvent&) { quick_search->SetValue(""); });
 
 	dvc = new wxDataViewCtrl(this, -1);
 	dvc->AssociateModel(model.get());
@@ -666,7 +666,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	book->Fit();
 
 	book->ChangeSelection(OPT_GET("Tool/Preferences/Page")->GetInt());
-	book->Bind(wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, &PageChanged);
+	book->Bind(wxEVT_TREEBOOK_PAGE_CHANGED, &PageChanged);
 
 	// Bottom Buttons
 	wxStdDialogButtonSizer *stdButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY | wxHELP);
@@ -687,10 +687,10 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 
 	applyButton->Enable(false);
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnOK, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnApply, this, wxID_APPLY);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Options"), wxID_HELP);
-	defaultButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &Preferences::OnResetDefault, this);
+	Bind(wxEVT_BUTTON, &Preferences::OnOK, this, wxID_OK);
+	Bind(wxEVT_BUTTON, &Preferences::OnApply, this, wxID_APPLY);
+	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Options"), wxID_HELP);
+	defaultButton->Bind(wxEVT_BUTTON, &Preferences::OnResetDefault, this);
 }
 
 Preferences::~Preferences() {

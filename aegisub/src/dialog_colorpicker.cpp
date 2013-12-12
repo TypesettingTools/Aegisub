@@ -677,17 +677,17 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	using std::bind;
 	for (int i = 0; i < 3; ++i) {
-		rgb_input[i]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromRGB, this, true));
-		rgb_input[i]->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromRGB, this, true));
-		hsl_input[i]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromHSL, this, true));
-		hsl_input[i]->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromHSL, this, true));
-		hsv_input[i]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromHSV, this, true));
-		hsv_input[i]->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromHSV, this, true));
+		rgb_input[i]->Bind(wxEVT_SPINCTRL, bind(&DialogColorPicker::UpdateFromRGB, this, true));
+		rgb_input[i]->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromRGB, this, true));
+		hsl_input[i]->Bind(wxEVT_SPINCTRL, bind(&DialogColorPicker::UpdateFromHSL, this, true));
+		hsl_input[i]->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromHSL, this, true));
+		hsv_input[i]->Bind(wxEVT_SPINCTRL, bind(&DialogColorPicker::UpdateFromHSV, this, true));
+		hsv_input[i]->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromHSV, this, true));
 	}
-	ass_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromAss, this));
-	html_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromHTML, this));
-	alpha_input->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogColorPicker::UpdateFromAlpha, this));
-	alpha_input->Bind(wxEVT_COMMAND_TEXT_UPDATED, bind(&DialogColorPicker::UpdateFromAlpha, this));
+	ass_input->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromAss, this));
+	html_input->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromHTML, this));
+	alpha_input->Bind(wxEVT_SPINCTRL, bind(&DialogColorPicker::UpdateFromAlpha, this));
+	alpha_input->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromAlpha, this));
 
 	screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
 	screen_dropper_icon->Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnDropperMouse, this);
@@ -703,9 +703,9 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	recent_box->Bind(EVT_RECENT_SELECT, &DialogColorPicker::OnRecentSelect, this);
 	screen_dropper->Bind(EVT_DROPPER_SELECT, &DialogColorPicker::OnRecentSelect, this);
 
-	colorspace_choice->Bind(wxEVT_COMMAND_CHOICE_SELECTED, &DialogColorPicker::OnChangeMode, this);
+	colorspace_choice->Bind(wxEVT_CHOICE, &DialogColorPicker::OnChangeMode, this);
 
-	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Colour Picker"));
+	button_sizer->GetHelpButton()->Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Colour Picker"));
 }
 
 template<int N, class Control>

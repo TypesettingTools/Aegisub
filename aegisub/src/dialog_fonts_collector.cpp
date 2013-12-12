@@ -244,10 +244,10 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	wxCommandEvent evt;
 	OnRadio(evt);
 
-	start_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogFontsCollector::OnStart, this);
-	dest_browse_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogFontsCollector::OnBrowse, this);
-	collection_mode->Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &DialogFontsCollector::OnRadio, this);
-	button_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Fonts Collector"));
+	start_btn->Bind(wxEVT_BUTTON, &DialogFontsCollector::OnStart, this);
+	dest_browse_button->Bind(wxEVT_BUTTON, &DialogFontsCollector::OnBrowse, this);
+	collection_mode->Bind(wxEVT_RADIOBOX, &DialogFontsCollector::OnRadio, this);
+	button_sizer->GetHelpButton()->Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Fonts Collector"));
 	Bind(EVT_ADD_TEXT, &DialogFontsCollector::OnAddText, this);
 	Bind(EVT_COLLECTION_DONE, &DialogFontsCollector::OnCollectionComplete, this);
 }

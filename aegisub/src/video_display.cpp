@@ -101,8 +101,8 @@ VideoDisplay::VideoDisplay(
 , freeSize(freeSize)
 {
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
-	zoomBox->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &VideoDisplay::SetZoomFromBox, this);
-	zoomBox->Bind(wxEVT_COMMAND_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
+	zoomBox->Bind(wxEVT_COMBOBOX, &VideoDisplay::SetZoomFromBox, this);
+	zoomBox->Bind(wxEVT_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::UpdateSize, this));

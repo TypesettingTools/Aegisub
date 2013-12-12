@@ -498,7 +498,7 @@ namespace Automation4 {
 
 		auto make_button = [&](wxWindowID id, int button_pushed, wxString const& text) -> wxButton *{
 			auto button = new wxButton(window, id, text);
-			button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent &evt) {
+			button->Bind(wxEVT_BUTTON, [=](wxCommandEvent &evt) {
 				this->button_pushed = button_pushed;
 				dialog->TransferDataFromWindow();
 				dialog->EndModal(0);

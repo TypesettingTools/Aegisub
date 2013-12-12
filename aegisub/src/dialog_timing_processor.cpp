@@ -81,7 +81,7 @@ wxTextCtrl *make_ctrl(wxWindow *parent, wxSizer *sizer, wxString const& desc, in
 	sizer->Add(ctrl, wxSizerFlags().Expand().Border(wxRIGHT));
 
 	ctrl->Enable(cb->IsChecked());
-	cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, bind(set_ctrl_state, _1, cb, ctrl));
+	cb->Bind(wxEVT_CHECKBOX, bind(set_ctrl_state, _1, cb, ctrl));
 
 	return ctrl;
 }
@@ -210,7 +210,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Button sizer
 	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	ApplyButton = ButtonSizer->GetAffirmativeButton();
-	ButtonSizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Timing Processor"));
+	ButtonSizer->GetHelpButton()->Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Timing Processor"));
 
 	// Right Sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
@@ -241,11 +241,11 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	SetSizerAndFit(MainSizer);
 	CenterOnParent();
 
-	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, bind(&DialogTimingProcessor::UpdateControls, this));
-	Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, bind(&DialogTimingProcessor::UpdateControls, this));
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTimingProcessor::OnApply, this, wxID_OK);
-	all->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogTimingProcessor::CheckAll, this, true));
-	none->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogTimingProcessor::CheckAll, this, false));
+	Bind(wxEVT_CHECKBOX, bind(&DialogTimingProcessor::UpdateControls, this));
+	Bind(wxEVT_CHECKLISTBOX, bind(&DialogTimingProcessor::UpdateControls, this));
+	Bind(wxEVT_BUTTON, &DialogTimingProcessor::OnApply, this, wxID_OK);
+	all->Bind(wxEVT_BUTTON, bind(&DialogTimingProcessor::CheckAll, this, true));
+	none->Bind(wxEVT_BUTTON, bind(&DialogTimingProcessor::CheckAll, this, false));
 
 	CheckAll(true);
 }

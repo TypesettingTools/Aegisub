@@ -130,12 +130,12 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 
 		wxButton *play_audio = new wxButton(this, -1, _("Play &Audio"));
 		play_audio->Enable(c->audioController->IsAudioOpen());
-		play_audio->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTranslation::OnPlayAudioButton, this);
+		play_audio->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayAudioButton, this);
 		actions_box->Add(play_audio, 0, wxALL, 5);
 
 		wxButton *play_video = new wxButton(this, -1, _("Play &Video"));
 		play_video->Enable(c->videoController->IsLoaded());
-		play_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogTranslation::OnPlayVideoButton, this);
+		play_video->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayVideoButton, this);
 		actions_box->Add(play_video, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
 
 		right_box->Add(actions_box, 0);

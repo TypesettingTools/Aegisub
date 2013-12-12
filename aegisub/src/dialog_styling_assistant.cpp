@@ -142,11 +142,11 @@ DialogStyling::DialogStyling(agi::Context *context)
 	Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);
 	style_name->Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);
 	style_name->Bind(wxEVT_KEY_DOWN, &DialogStyling::OnKeyDown, this);
-	play_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayVideoButton, this);
-	play_audio->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogStyling::OnPlayAudioButton, this);
-	style_list->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &DialogStyling::OnListClicked, this);
-	style_list->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogStyling::OnListDoubleClicked, this);
-	style_name->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogStyling::OnStyleBoxModified, this);
+	play_video->Bind(wxEVT_BUTTON, &DialogStyling::OnPlayVideoButton, this);
+	play_audio->Bind(wxEVT_BUTTON, &DialogStyling::OnPlayAudioButton, this);
+	style_list->Bind(wxEVT_LISTBOX, &DialogStyling::OnListClicked, this);
+	style_list->Bind(wxEVT_LISTBOX_DCLICK, &DialogStyling::OnListDoubleClicked, this);
+	style_name->Bind(wxEVT_TEXT, &DialogStyling::OnStyleBoxModified, this);
 
 	OnActiveLineChanged(c->selectionController->GetActiveLine());
 }

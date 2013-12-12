@@ -112,13 +112,13 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	style_box = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
 
 	actor_box = new Placeholder<wxComboBox>(this, _("Actor"), wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnActorChange, this, actor_box->GetId());
-	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnActorChange, this, actor_box->GetId());
+	Bind(wxEVT_TEXT, &SubsEditBox::OnActorChange, this, actor_box->GetId());
+	Bind(wxEVT_COMBOBOX, &SubsEditBox::OnActorChange, this, actor_box->GetId());
 	top_sizer->Add(actor_box, wxSizerFlags(2).Center().Border(wxRIGHT));
 
 	effect_box = new Placeholder<wxComboBox>(this, _("Effect"), wxSize(80,-1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
-	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
+	Bind(wxEVT_TEXT, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
+	Bind(wxEVT_COMBOBOX, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
 	top_sizer->Add(effect_box, 3, wxALIGN_CENTER, 5);
 
 	char_count = new wxTextCtrl(this, -1, "0", wxDefaultPosition, wxSize(30, -1), wxTE_READONLY | wxTE_CENTER);
@@ -166,7 +166,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	split_box = new wxCheckBox(this,-1,_("Show Original"));
 	split_box->SetToolTip(_("Show the contents of the subtitle line when it was first selected above the edit box. This is sometimes useful when editing subtitles or translating subtitles into another language."));
-	split_box->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnSplit, this);
+	split_box->Bind(wxEVT_CHECKBOX, &SubsEditBox::OnSplit, this);
 	middle_right_sizer->Add(split_box, wxSizerFlags().Center().Left());
 
 	// Main sizer
@@ -198,9 +198,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	edit_ctrl->Bind(wxEVT_STC_MODIFIED, &SubsEditBox::OnChange, this);
 	edit_ctrl->SetModEventMask(wxSTC_MOD_INSERTTEXT | wxSTC_MOD_DELETETEXT | wxSTC_STARTACTION);
 
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, &SubsEditBox::OnLayerEnter, this, layer->GetId());
-	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, &SubsEditBox::OnLayerEnter, this, layer->GetId());
-	Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &SubsEditBox::OnCommentChange, this, comment_box->GetId());
+	Bind(wxEVT_TEXT, &SubsEditBox::OnLayerEnter, this, layer->GetId());
+	Bind(wxEVT_SPINCTRL, &SubsEditBox::OnLayerEnter, this, layer->GetId());
+	Bind(wxEVT_CHECKBOX, &SubsEditBox::OnCommentChange, this, comment_box->GetId());
 
 	Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
@@ -229,7 +229,7 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 	ctrl->SetToolTip(tooltip);
 	middle_left_sizer->Add(ctrl, wxSizerFlags().Center());
 
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) {
+	Bind(wxEVT_TEXT, [=](wxCommandEvent&) {
 		int value = mid(0, atoi(ctrl->GetValue().utf8_str()), 9999);
 		SetSelectedRows([&](AssDialogue *d) { d->Margin[margin] = value; },
 			commit_msg, AssFile::COMMIT_DIAG_META);
@@ -241,7 +241,7 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
 	TimeEdit *ctrl = new TimeEdit(this, -1, c, "", wxSize(GetTextExtent(wxS(" 0:00:00.000 ")).GetWidth(),-1), field == TIME_END);
 	ctrl->SetToolTip(tooltip);
-	Bind(wxEVT_COMMAND_TEXT_UPDATED, [=](wxCommandEvent&) { CommitTimes(field); }, ctrl->GetId());
+	Bind(wxEVT_TEXT, [=](wxCommandEvent&) { CommitTimes(field); }, ctrl->GetId());
 	ctrl->Bind(wxEVT_CHAR_HOOK, time_edit_char_hook);
 	middle_left_sizer->Add(ctrl, wxSizerFlags().Center());
 	return ctrl;
@@ -253,7 +253,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	middle_right_sizer->Add(btn, wxSizerFlags().Center().Expand());
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
+	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 }
 
 wxButton *SubsEditBox::MakeBottomButton(const char *cmd_name) {
@@ -261,7 +261,7 @@ wxButton *SubsEditBox::MakeBottomButton(const char *cmd_name) {
 	wxButton *btn = new wxButton(this, -1, command->StrDisplay(c));
 	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
+	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 	return btn;
 }
 
@@ -270,14 +270,14 @@ wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, v
 	wxComboBox *ctrl = new wxComboBox(this, -1, initial_text, wxDefaultPosition, wxSize(110,-1), 1, styles, style | wxTE_PROCESS_ENTER);
 	ctrl->SetToolTip(tooltip);
 	top_sizer->Add(ctrl, wxSizerFlags(2).Center().Border(wxRIGHT));
-	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, handler, this, ctrl->GetId());
+	Bind(wxEVT_COMBOBOX, handler, this, ctrl->GetId());
 	return ctrl;
 }
 
 wxRadioButton *SubsEditBox::MakeRadio(wxString const& text, bool start, wxString const& tooltip) {
 	wxRadioButton *ctrl = new wxRadioButton(this, -1, text, wxDefaultPosition, wxDefaultSize, start ? wxRB_GROUP : 0);
 	ctrl->SetToolTip(tooltip);
-	Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &SubsEditBox::OnFrameTimeRadio, this, ctrl->GetId());
+	Bind(wxEVT_RADIOBUTTON, &SubsEditBox::OnFrameTimeRadio, this, ctrl->GetId());
 	middle_right_sizer->Add(ctrl, wxSizerFlags().Center().Expand().Border(wxRIGHT));
 	return ctrl;
 }
@@ -548,7 +548,7 @@ void SubsEditBox::OnStyleChange(wxCommandEvent &) {
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
-	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
+	bool amend = evt.GetEventType() == wxEVT_TEXT;
 	SetSelectedRows(&AssDialogue::Actor, actor_box->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(actor_box, &AssDialogue::Actor);
 }
@@ -558,7 +558,7 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
-	bool amend = evt.GetEventType() == wxEVT_COMMAND_TEXT_UPDATED;
+	bool amend = evt.GetEventType() == wxEVT_TEXT;
 	SetSelectedRows(&AssDialogue::Effect, effect_box->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(effect_box, &AssDialogue::Effect);
 }

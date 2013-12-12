@@ -42,12 +42,12 @@ DialogAutosave::DialogAutosave(wxWindow *parent)
 
 	wxSizer *files_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Files"));
 	file_list = new wxListBox(this, -1);
-	file_list->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &DialogAutosave::OnSelectFile, this);
+	file_list->Bind(wxEVT_LISTBOX, &DialogAutosave::OnSelectFile, this);
 	files_box->Add(file_list, wxSizerFlags(1).Expand().Border());
 
 	wxSizer *versions_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Versions"));
 	version_list = new wxListBox(this, -1);
-	version_list->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, [=](wxCommandEvent&) { EndModal(wxID_OK); });
+	version_list->Bind(wxEVT_LISTBOX_DCLICK, [=](wxCommandEvent&) { EndModal(wxID_OK); });
 	versions_box->Add(version_list, wxSizerFlags(1).Expand().Border());
 
 	wxSizer *boxes_sizer = new wxBoxSizer(wxHORIZONTAL);

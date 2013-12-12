@@ -86,7 +86,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	if (!c->videoController->IsLoaded())
 		FromVideo->Enable(false);
 	else
-		FromVideo->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogProperties::OnSetFromVideo, this);
+		FromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetFromVideo, this);
 
 	ResSizer->Add(ResX,1,wxRIGHT | wxALIGN_CENTER_VERTICAL,5);
 	ResSizer->Add(ResText,0,wxALIGN_CENTER | wxRIGHT,5);
@@ -117,8 +117,8 @@ DialogProperties::DialogProperties(agi::Context *c)
 
 	// Button sizer
 	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogProperties::OnOK, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
+	Bind(wxEVT_BUTTON, &DialogProperties::OnOK, this, wxID_OK);
+	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

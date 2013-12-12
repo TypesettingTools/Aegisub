@@ -82,14 +82,14 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 	SetSizerAndFit(mainSizer);
 	CenterOnParent();
 
-	attachFont->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAttachments::OnAttachFont, this);
-	attachGraphics->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAttachments::OnAttachGraphics, this);
-	extractButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAttachments::OnExtract, this);
-	deleteButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAttachments::OnDelete, this);
+	attachFont->Bind(wxEVT_BUTTON, &DialogAttachments::OnAttachFont, this);
+	attachGraphics->Bind(wxEVT_BUTTON, &DialogAttachments::OnAttachGraphics, this);
+	extractButton->Bind(wxEVT_BUTTON, &DialogAttachments::OnExtract, this);
+	deleteButton->Bind(wxEVT_BUTTON, &DialogAttachments::OnDelete, this);
 
-	listView->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, &DialogAttachments::OnListClick, this);
-	listView->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, &DialogAttachments::OnListClick, this);
-	listView->Bind(wxEVT_COMMAND_LIST_ITEM_FOCUSED, &DialogAttachments::OnListClick, this);
+	listView->Bind(wxEVT_LIST_ITEM_SELECTED, &DialogAttachments::OnListClick, this);
+	listView->Bind(wxEVT_LIST_ITEM_DESELECTED, &DialogAttachments::OnListClick, this);
+	listView->Bind(wxEVT_LIST_ITEM_FOCUSED, &DialogAttachments::OnListClick, this);
 }
 
 void DialogAttachments::UpdateList() {

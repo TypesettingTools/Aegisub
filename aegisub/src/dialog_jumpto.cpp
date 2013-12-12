@@ -80,10 +80,10 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	CenterOnParent();
 
 	Bind(wxEVT_INIT_DIALOG, &DialogJumpTo::OnInitDialog, this);
-	Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogJumpTo::OnOK, this);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogJumpTo::OnOK, this, wxID_OK);
-	JumpTime->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditTime, this);
-	JumpFrame->Bind(wxEVT_COMMAND_TEXT_UPDATED, &DialogJumpTo::OnEditFrame, this);
+	Bind(wxEVT_TEXT_ENTER, &DialogJumpTo::OnOK, this);
+	Bind(wxEVT_BUTTON, &DialogJumpTo::OnOK, this, wxID_OK);
+	JumpTime->Bind(wxEVT_TEXT, &DialogJumpTo::OnEditTime, this);
+	JumpFrame->Bind(wxEVT_TEXT, &DialogJumpTo::OnEditFrame, this);
 }
 
 void DialogJumpTo::OnInitDialog(wxInitDialogEvent&) {

@@ -77,13 +77,13 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	wxButton *reload_autoload_button = new wxButton(this, -1, _("Re&scan Autoload Dir"));
 	wxButton *close_button = new wxButton(this, wxID_CANCEL, _("&Close"));
 
-	list->Bind(wxEVT_COMMAND_LIST_ITEM_SELECTED, std::bind(&DialogAutomation::UpdateDisplay, this));
-	list->Bind(wxEVT_COMMAND_LIST_ITEM_DESELECTED, std::bind(&DialogAutomation::UpdateDisplay, this));
-	add_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnAdd, this);
-	remove_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnRemove, this);
-	reload_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnReload, this);
-	info_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnInfo, this);
-	reload_autoload_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogAutomation::OnReloadAutoload, this);
+	list->Bind(wxEVT_LIST_ITEM_SELECTED, std::bind(&DialogAutomation::UpdateDisplay, this));
+	list->Bind(wxEVT_LIST_ITEM_DESELECTED, std::bind(&DialogAutomation::UpdateDisplay, this));
+	add_button->Bind(wxEVT_BUTTON, &DialogAutomation::OnAdd, this);
+	remove_button->Bind(wxEVT_BUTTON, &DialogAutomation::OnRemove, this);
+	reload_button->Bind(wxEVT_BUTTON, &DialogAutomation::OnReload, this);
+	info_button->Bind(wxEVT_BUTTON, &DialogAutomation::OnInfo, this);
+	reload_autoload_button->Bind(wxEVT_BUTTON, &DialogAutomation::OnReloadAutoload, this);
 
 	// add headers to list view
 	list->InsertColumn(0, "", wxLIST_FORMAT_CENTER, 20);

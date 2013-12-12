@@ -161,8 +161,8 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 	Centre();
 	Show();
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&VersionCheckerResultDialog::Close, this, false), wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &VersionCheckerResultDialog::OnRemindMeLater, this, wxID_NO);
+	Bind(wxEVT_BUTTON, std::bind(&VersionCheckerResultDialog::Close, this, false), wxID_OK);
+	Bind(wxEVT_BUTTON, &VersionCheckerResultDialog::OnRemindMeLater, this, wxID_NO);
 	Bind(wxEVT_CLOSE_WINDOW, &VersionCheckerResultDialog::OnClose, this);
 }
 

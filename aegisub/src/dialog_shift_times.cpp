@@ -111,11 +111,11 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	// Create controls
 	shift_by_time = new wxRadioButton(this, -1, _("&Time: "), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
 	shift_by_time->SetToolTip(_("Shift by time"));
-	shift_by_time->Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &DialogShiftTimes::OnByTime, this);
+	shift_by_time->Bind(wxEVT_RADIOBUTTON, &DialogShiftTimes::OnByTime, this);
 
 	shift_by_frames = new wxRadioButton(this, -1 , _("&Frames: "));
 	shift_by_frames->SetToolTip(_("Shift by frames"));
-	shift_by_frames->Bind(wxEVT_COMMAND_RADIOBUTTON_SELECTED, &DialogShiftTimes::OnByFrames, this);
+	shift_by_frames->Bind(wxEVT_RADIOBUTTON, &DialogShiftTimes::OnByFrames, this);
 
 	shift_time = new TimeEdit(this, -1, context);
 	shift_time->SetToolTip(_("Enter time in h:mm:ss.cs notation"));
@@ -138,7 +138,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	history_box = new wxListBox(this, -1, wxDefaultPosition, wxSize(350, 100), 0, nullptr, wxLB_HSCROLL);
 
 	wxButton *clear_button = new wxButton(this, -1, _("&Clear"));
-	clear_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::OnClear, this);
+	clear_button->Bind(wxEVT_BUTTON, &DialogShiftTimes::OnClear, this);
 
 	// Set initial control states
 	OnTimecodesLoaded(context->videoController->FPS());
@@ -192,10 +192,10 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	SetSizerAndFit(main_sizer);
 	CenterOnParent();
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogShiftTimes::Process, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Shift Times"), wxID_HELP);
-	shift_time->Bind(wxEVT_COMMAND_TEXT_ENTER, &DialogShiftTimes::Process, this);
-	history_box->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, &DialogShiftTimes::OnHistoryClick, this);
+	Bind(wxEVT_BUTTON, &DialogShiftTimes::Process, this, wxID_OK);
+	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Shift Times"), wxID_HELP);
+	shift_time->Bind(wxEVT_TEXT_ENTER, &DialogShiftTimes::Process, this);
+	history_box->Bind(wxEVT_LISTBOX_DCLICK, &DialogShiftTimes::OnHistoryClick, this);
 }
 
 DialogShiftTimes::~DialogShiftTimes() {

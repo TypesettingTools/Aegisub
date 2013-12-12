@@ -528,14 +528,14 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	Bind(wxEVT_KEY_DOWN, &DialogKanjiTimer::OnKeyDown, this);
 	display->Bind(wxEVT_KEY_DOWN, &DialogKanjiTimer::OnKeyDown, this);
 
-	CloseKT->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnClose, this);
-	Start->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnStart, this);
-	Link->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnLink, this);
-	Unlink->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnUnlink, this);
-	SkipSourceLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnSkipSource, this);
-	SkipDestLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnSkipDest, this);
-	GoBackLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnGoBack, this);
-	AcceptLine->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogKanjiTimer::OnAccept, this);
+	CloseKT->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnClose, this);
+	Start->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnStart, this);
+	Link->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnLink, this);
+	Unlink->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnUnlink, this);
+	SkipSourceLine->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnSkipSource, this);
+	SkipDestLine->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnSkipDest, this);
+	GoBackLine->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnGoBack, this);
+	AcceptLine->Bind(wxEVT_BUTTON, &DialogKanjiTimer::OnAccept, this);
 }
 
 void DialogKanjiTimer::OnClose(wxCommandEvent &) {

@@ -109,11 +109,11 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	// Bind events
 	using std::bind;
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
-	from_video->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogResample::SetDestFromVideo, this);
-	symmetrical->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &DialogResample::OnSymmetrical, this);
-	margin_ctrl[LEFT]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogResample::OnMarginChange, this, margin_ctrl[LEFT], margin_ctrl[RIGHT]));
-	margin_ctrl[TOP]->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, bind(&DialogResample::OnMarginChange, this, margin_ctrl[TOP], margin_ctrl[BOTTOM]));
+	Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
+	from_video->Bind(wxEVT_BUTTON, &DialogResample::SetDestFromVideo, this);
+	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);
+	margin_ctrl[LEFT]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[LEFT], margin_ctrl[RIGHT]));
+	margin_ctrl[TOP]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[TOP], margin_ctrl[BOTTOM]));
 }
 
 void DialogResample::SetDestFromVideo(wxCommandEvent &) {

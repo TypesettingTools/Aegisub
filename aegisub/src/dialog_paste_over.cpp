@@ -80,18 +80,18 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&All")), wxSizerFlags(1));
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogPasteOver::CheckAll, this, true));
+	btn->Bind(wxEVT_BUTTON, std::bind(&DialogPasteOver::CheckAll, this, true));
 	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&None")), wxSizerFlags(1));
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&DialogPasteOver::CheckAll, this, false));
+	btn->Bind(wxEVT_BUTTON, std::bind(&DialogPasteOver::CheckAll, this, false));
 	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&Times")), wxSizerFlags(1));
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogPasteOver::OnTimes, this);
+	btn->Bind(wxEVT_BUTTON, &DialogPasteOver::OnTimes, this);
 	TopButtonSizer->Add(btn = new wxButton(this, -1, _("T&ext")), wxSizerFlags(1));
-	btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogPasteOver::OnText, this);
+	btn->Bind(wxEVT_BUTTON, &DialogPasteOver::OnText, this);
 
 	// Buttons
 	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogPasteOver::OnOK, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Paste Over"), wxID_HELP);
+	Bind(wxEVT_BUTTON, &DialogPasteOver::OnOK, this, wxID_OK);
+	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Paste Over"), wxID_HELP);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);

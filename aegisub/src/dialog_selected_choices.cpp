@@ -30,8 +30,8 @@ SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& m
 
 	wxButton *selAll = new wxButton(this, -1, _("Select &All"));
 	wxButton *selNone = new wxButton(this, -1, _("Select &None"));
-	selAll->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &SelectedChoicesDialog::SelectAll, this);
-	selNone->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetSelections(wxArrayInt()); });
+	selAll->Bind(wxEVT_BUTTON, &SelectedChoicesDialog::SelectAll, this);
+	selNone->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetSelections(wxArrayInt()); });
 
 	auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	buttonSizer->Add(selAll, wxSizerFlags(0).Left());

@@ -150,10 +150,10 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 	select_matching_lines->SetValue(!select_unmatching_lines->GetValue());
 	match_mode->SetSelection(OPT_GET("Tool/Select Lines/Mode")->GetInt());
 
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogSelection::Process, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
-	apply_to_comments->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
-	apply_to_dialogue->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
+	Bind(wxEVT_BUTTON, &DialogSelection::Process, this, wxID_OK);
+	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
+	apply_to_comments->Bind(wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
+	apply_to_dialogue->Bind(wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
 }
 
 DialogSelection::~DialogSelection() {

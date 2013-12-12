@@ -78,8 +78,8 @@ static void font_button(Preferences *parent, wxTextCtrl *name, wxSpinCtrl *size)
 	if (font.IsOk()) {
 		name->SetValue(font.GetFaceName());
 		size->SetValue(font.GetPointSize());
-		// wxGTK doesn't generate wxEVT_COMMAND_SPINCTRL_UPDATED from SetValue
-		wxSpinEvent evt(wxEVT_COMMAND_SPINCTRL_UPDATED);
+		// wxGTK doesn't generate wxEVT_SPINCTRL from SetValue
+		wxSpinEvent evt(wxEVT_SPINCTRL);
 		evt.SetInt(font.GetPointSize());
 		size->ProcessWindowEvent(evt);
 	}
@@ -121,27 +121,27 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 			wxCheckBox *cb = new wxCheckBox(this, -1, name);
 			flex->Add(cb, 1, wxEXPAND, 0);
 			cb->SetValue(opt->GetBool());
-			cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, BoolUpdater(opt_name, parent));
+			cb->Bind(wxEVT_CHECKBOX, BoolUpdater(opt_name, parent));
 			return cb;
 		}
 
 		case agi::OptionValue::Type_Int: {
 			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, std::to_wstring((int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
-			sc->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(opt_name, parent));
+			sc->Bind(wxEVT_SPINCTRL, IntUpdater(opt_name, parent));
 			Add(flex, name, sc);
 			return sc;
 		}
 
 		case agi::OptionValue::Type_Double: {
 			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, wxString::Format("%g", opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
-			scd->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, DoubleUpdater(opt_name, parent));
+			scd->Bind(wxEVT_SPINCTRL, DoubleUpdater(opt_name, parent));
 			Add(flex, name, scd);
 			return scd;
 		}
 
 		case agi::OptionValue::Type_String: {
 			wxTextCtrl *text = new wxTextCtrl(this, -1 , to_wx(opt->GetString()));
-			text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
+			text->Bind(wxEVT_TEXT, StringUpdater(opt_name, parent));
 			Add(flex, name, text);
 			return text;
 		}
@@ -169,7 +169,7 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 		case agi::OptionValue::Type_Int: {
 			int val = opt->GetInt();
 			cb->Select(val < (int)choices.size() ? val : 0);
-			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, IntCBUpdater(opt_name, parent));
+			cb->Bind(wxEVT_COMBOBOX, IntCBUpdater(opt_name, parent));
 			break;
 		}
 		case agi::OptionValue::Type_String: {
@@ -178,7 +178,7 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 				cb->SetStringSelection(val);
 			else if (!choices.empty())
 				cb->SetSelection(0);
-			cb->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, StringUpdater(opt_name, parent));
+			cb->Bind(wxEVT_COMBOBOX, StringUpdater(opt_name, parent));
 			break;
 		}
 
@@ -206,10 +206,10 @@ void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const
 
 	wxTextCtrl *text = new wxTextCtrl(this, -1 , to_wx(opt->GetString()));
 	text->SetMinSize(wxSize(160, -1));
-	text->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(opt_name, parent));
+	text->Bind(wxEVT_TEXT, StringUpdater(opt_name, parent));
 
 	wxButton *browse = new wxButton(this, -1, _("Browse..."));
-	browse->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(browse_button, text));
+	browse->Bind(wxEVT_BUTTON, std::bind(browse_button, text));
 
 	wxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	button_sizer->Add(text, wxSizerFlags(1).Expand());
@@ -238,13 +238,13 @@ void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
 
 	wxTextCtrl *font_name = new wxTextCtrl(this, -1, to_wx(face_opt->GetString()));
 	font_name->SetMinSize(wxSize(160, -1));
-	font_name->Bind(wxEVT_COMMAND_TEXT_UPDATED, StringUpdater(face_opt->GetName().c_str(), parent));
+	font_name->Bind(wxEVT_TEXT, StringUpdater(face_opt->GetName().c_str(), parent));
 
 	wxSpinCtrl *font_size = new wxSpinCtrl(this, -1, std::to_wstring((int)size_opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
-	font_size->Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, IntUpdater(size_opt->GetName().c_str(), parent));
+	font_size->Bind(wxEVT_SPINCTRL, IntUpdater(size_opt->GetName().c_str(), parent));
 
 	wxButton *pick_btn = new wxButton(this, -1, _("Choose..."));
-	pick_btn->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(font_button, parent, font_name, font_size));
+	pick_btn->Bind(wxEVT_BUTTON, std::bind(font_button, parent, font_name, font_size));
 
 	wxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	button_sizer->Add(font_name, wxSizerFlags(1).Expand());
@@ -270,7 +270,7 @@ void OptionPage::EnableIfChecked(wxControl *cbx, wxControl *ctrl) {
 	if (!cb) return;
 
 	ctrl->Enable(cb->IsChecked());
-	cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, disabler(ctrl, true));
+	cb->Bind(wxEVT_CHECKBOX, disabler(ctrl, true));
 }
 
 void OptionPage::DisableIfChecked(wxControl *cbx, wxControl *ctrl) {
@@ -278,5 +278,5 @@ void OptionPage::DisableIfChecked(wxControl *cbx, wxControl *ctrl) {
 	if (!cb) return;
 
 	ctrl->Enable(!cb->IsChecked());
-	cb->Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, disabler(ctrl, false));
+	cb->Bind(wxEVT_CHECKBOX, disabler(ctrl, false));
 }

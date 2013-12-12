@@ -31,7 +31,7 @@ ColourButton::ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi
 , colour(std::move(col))
 {
 	UpdateBitmap();
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) {
+	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
 		GetColorFromUser(GetParent(), colour, alpha, [=](agi::Color new_color) {
 			colour = new_color;
 			UpdateBitmap();

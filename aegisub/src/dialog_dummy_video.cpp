@@ -116,7 +116,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	AddCtrl("", length_display = new wxStaticText(this, -1, ""));
 
 	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
-	btn_sizer->GetHelpButton()->Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Dummy Video"));
+	btn_sizer->GetHelpButton()->Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Dummy Video"));
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(sizer, wxSizerFlags(1).Border().Expand());
@@ -128,9 +128,9 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	SetSizerAndFit(main_sizer);
 	CenterOnParent();
 
-	Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, &DialogDummyVideo::OnResolutionShortcut, this);
+	Bind(wxEVT_COMBOBOX, &DialogDummyVideo::OnResolutionShortcut, this);
 	color_btn->Bind(EVT_COLOR, [=](wxThreadEvent& e) { color = color_btn->GetColor(); });
-	Bind(wxEVT_COMMAND_SPINCTRL_UPDATED, [=](wxCommandEvent&) {
+	Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) {
 		TransferDataFromWindow();
 		UpdateLengthDisplay();
 	});

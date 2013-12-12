@@ -85,8 +85,8 @@ DialogExport::DialogExport(agi::Context *c)
 
 	std::vector<std::string> filters = exporter->GetAllFilterNames();
 	filter_list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(200, 100), to_wx(filters));
-	filter_list->Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, [=](wxCommandEvent&) { RefreshOptions(); });
-	filter_list->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, &DialogExport::OnChange, this);
+	filter_list->Bind(wxEVT_CHECKLISTBOX, [=](wxCommandEvent&) { RefreshOptions(); });
+	filter_list->Bind(wxEVT_LISTBOX, &DialogExport::OnChange, this);
 
 	// Get selected filters
 	std::string selected = c->ass->GetScriptInfo("Export filters");
@@ -102,10 +102,10 @@ DialogExport::DialogExport(agi::Context *c)
 	wxButton *btn_all = new wxButton(this, -1, _("Select &All"), wxDefaultPosition, wxSize(80, -1));
 	wxButton *btn_none = new wxButton(this, -1, _("Select &None"), wxDefaultPosition, wxSize(80, -1));
 
-	btn_up->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
-	btn_down->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
-	btn_all->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetAll(true); });
-	btn_none->Bind(wxEVT_COMMAND_BUTTON_CLICKED, [=](wxCommandEvent&) { SetAll(false); });
+	btn_up->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
+	btn_down->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
+	btn_all->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetAll(true); });
+	btn_none->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetAll(false); });
 
 	wxSizer *top_buttons = new wxBoxSizer(wxHORIZONTAL);
 	top_buttons->Add(btn_up, wxSizerFlags(1).Expand());
@@ -132,8 +132,8 @@ DialogExport::DialogExport(agi::Context *c)
 
 	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	btn_sizer->GetAffirmativeButton()->SetLabelText(_("Export..."));
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogExport::OnProcess, this, wxID_OK);
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, std::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
+	Bind(wxEVT_BUTTON, &DialogExport::OnProcess, this, wxID_OK);
+	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
 
 	wxSizer *horz_sizer = new wxBoxSizer(wxHORIZONTAL);
 	opt_sizer = new wxBoxSizer(wxVERTICAL);

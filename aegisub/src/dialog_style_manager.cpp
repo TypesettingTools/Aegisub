@@ -213,7 +213,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = CreateStdDialogButtonSizer(wxCANCEL | wxHELP);
 	buttonSizer->GetCancelButton()->SetLabel(_("Close"));
-	Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&HelpButton::OpenPage, "Styles Manager"), wxID_HELP);
+	Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Styles Manager"), wxID_HELP);
 
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -238,43 +238,43 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	StorageList->Bind(wxEVT_KEY_DOWN, &DialogStyleManager::OnKeyDown, this);
 	CurrentList->Bind(wxEVT_KEY_DOWN, &DialogStyleManager::OnKeyDown, this);
 
-	StorageMoveUp->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 0));
-	StorageMoveTop->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 1));
-	StorageMoveDown->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 2));
-	StorageMoveBottom->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 3));
-	StorageSort->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, true, 4));
+	StorageMoveUp->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, true, 0));
+	StorageMoveTop->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, true, 1));
+	StorageMoveDown->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, true, 2));
+	StorageMoveBottom->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, true, 3));
+	StorageSort->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, true, 4));
 
-	CurrentMoveUp->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 0));
-	CurrentMoveTop->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 1));
-	CurrentMoveDown->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 2));
-	CurrentMoveBottom->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 3));
-	CurrentSort->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::MoveStyles, this, false, 4));
+	CurrentMoveUp->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, false, 0));
+	CurrentMoveTop->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, false, 1));
+	CurrentMoveDown->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, false, 2));
+	CurrentMoveBottom->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, false, 3));
+	CurrentSort->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::MoveStyles, this, false, 4));
 
-	CatalogNew->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCatalogNew, this));
-	CatalogDelete->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCatalogDelete, this));
+	CatalogNew->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCatalogNew, this));
+	CatalogDelete->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCatalogDelete, this));
 
-	StorageNew->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageNew, this));
-	StorageEdit->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageEdit, this));
-	StorageCopy->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageCopy, this));
-	StorageDelete->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnStorageDelete, this));
+	StorageNew->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnStorageNew, this));
+	StorageEdit->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnStorageEdit, this));
+	StorageCopy->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnStorageCopy, this));
+	StorageDelete->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnStorageDelete, this));
 
-	CurrentNew->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentNew, this));
-	CurrentEdit->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentEdit, this));
-	CurrentCopy->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentCopy, this));
-	CurrentDelete->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentDelete, this));
+	CurrentNew->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCurrentNew, this));
+	CurrentEdit->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCurrentEdit, this));
+	CurrentCopy->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCurrentCopy, this));
+	CurrentDelete->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCurrentDelete, this));
 
-	CurrentImport->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCurrentImport, this));
+	CurrentImport->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCurrentImport, this));
 
-	MoveToLocal->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCopyToCurrent, this));
-	MoveToStorage->Bind(wxEVT_COMMAND_BUTTON_CLICKED, bind(&DialogStyleManager::OnCopyToStorage, this));
+	MoveToLocal->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCopyToCurrent, this));
+	MoveToStorage->Bind(wxEVT_BUTTON, bind(&DialogStyleManager::OnCopyToStorage, this));
 
-	CatalogList->Bind(wxEVT_COMMAND_COMBOBOX_SELECTED, bind(&DialogStyleManager::OnChangeCatalog, this));
+	CatalogList->Bind(wxEVT_COMBOBOX, bind(&DialogStyleManager::OnChangeCatalog, this));
 
-	StorageList->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, bind(&DialogStyleManager::UpdateButtons, this));
-	StorageList->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, bind(&DialogStyleManager::OnStorageEdit, this));
+	StorageList->Bind(wxEVT_LISTBOX, bind(&DialogStyleManager::UpdateButtons, this));
+	StorageList->Bind(wxEVT_LISTBOX_DCLICK, bind(&DialogStyleManager::OnStorageEdit, this));
 
-	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_SELECTED, bind(&DialogStyleManager::UpdateButtons, this));
-	CurrentList->Bind(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, bind(&DialogStyleManager::OnCurrentEdit, this));
+	CurrentList->Bind(wxEVT_LISTBOX, bind(&DialogStyleManager::UpdateButtons, this));
+	CurrentList->Bind(wxEVT_LISTBOX_DCLICK, bind(&DialogStyleManager::OnCurrentEdit, this));
 }
 
 DialogStyleManager::~DialogStyleManager() {

@@ -73,7 +73,7 @@ public:
 				wxDialog *d = new DialogType(c);
 				created_dialogs[&typeid(DialogType)] = d;
 				d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose<wxCloseEvent>, this);
-				d->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
+				d->Bind(wxEVT_BUTTON, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
 				d->Show();
 				SetFloatOnParent(d);
 			}
@@ -109,7 +109,7 @@ public:
 	~DialogManager() {
 		for (auto const& it : created_dialogs) {
 			it.second->Unbind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose<wxCloseEvent>, this);
-			it.second->Unbind(wxEVT_COMMAND_BUTTON_CLICKED, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
+			it.second->Unbind(wxEVT_BUTTON, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
 			it.second->Destroy();
 		}
 		created_dialogs.clear();

@@ -59,7 +59,7 @@ void VisualToolDrag::SetToolbar(wxToolBar *tb) {
 	toolbar->Realize();
 	toolbar->Show(true);
 
-	toolbar->Bind(wxEVT_COMMAND_TOOL_CLICKED, &VisualToolDrag::OnSubTool, this);
+	toolbar->Bind(wxEVT_TOOL, &VisualToolDrag::OnSubTool, this);
 }
 
 void VisualToolDrag::UpdateToggleButtons() {
