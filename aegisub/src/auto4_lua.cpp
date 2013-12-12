@@ -667,7 +667,7 @@ namespace Automation4 {
 
 		// Strip the location from the error message since it's redundant with
 		// the stack trace
-		boost::regex location("^\\[string \".*\"\\]:[0-9]+: ");
+		boost::regex location(R"(^\[string ".*"\]:[0-9]+: )");
 		message = regex_replace(message, location, "", boost::format_first_only);
 
 		std::vector<std::string> frames;

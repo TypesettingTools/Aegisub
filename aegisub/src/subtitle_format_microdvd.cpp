@@ -67,7 +67,7 @@ std::vector<std::string> MicroDVDSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-static const boost::regex line_regex("^[\\{\\[]([0-9]+)[\\}\\]][\\{\\[]([0-9]+)[\\}\\]](.*)$");
+static const boost::regex line_regex(R"(^[\{\[]([0-9]+)[\}\]][\{\[]([0-9]+)[\}\]](.*)$)");
 
 bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename, std::string const& encoding) const {
 	// Return false immediately if extension is wrong

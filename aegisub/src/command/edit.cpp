@@ -875,8 +875,8 @@ struct edit_line_paste_over : public Command {
 
 namespace {
 std::string trim_text(std::string text) {
-	boost::regex start("^( |\t|\\\\[nNh])+");
-	boost::regex end("( |\t|\\\\[nNh])+$");
+	boost::regex start(R"(^( |	|\\[nNh])+)");
+	boost::regex end(R"(( |	|\\[nNh])+$)");
 
 	text = regex_replace(text, start, "", boost::format_first_only);
 	text = regex_replace(text, end, "", boost::format_first_only);

@@ -86,8 +86,8 @@ class SrtTagParser {
 public:
 	SrtTagParser()
 	: tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", boost::regex::icase)
-	, attrib_matcher("^[[:space:]]+(face|size|color)=('[^']*'|\"[^\"]*\"|[^[:space:]]+)", boost::regex::icase)
-	, is_quoted("^(['\"]).*\\1$")
+	, attrib_matcher(R"(^[[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))", boost::regex::icase)
+	, is_quoted(R"(^(['"]).*\1$)")
 	{
 		tag_name_cases["b"]  = TAG_BOLD_OPEN;
 		tag_name_cases["/b"] = TAG_BOLD_CLOSE;
