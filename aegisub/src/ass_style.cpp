@@ -49,26 +49,7 @@
 
 #include <wx/intl.h>
 
-AssStyle::AssStyle()
-: name("Default")
-, font("Arial")
-, fontsize(20.)
-, primary(255, 255, 255)
-, secondary(255, 0, 0)
-, bold(false)
-, italic(false)
-, underline(false)
-, strikeout(false)
-, scalex(100.)
-, scaley(100.)
-, spacing(0.)
-, angle(0.)
-, borderstyle(1)
-, outline_w(2.)
-, shadow_w(2.)
-, alignment(2)
-, encoding(1)
-{
+AssStyle::AssStyle() {
 	std::fill(Margin.begin(), Margin.end(), 10);
 
 	UpdateData();

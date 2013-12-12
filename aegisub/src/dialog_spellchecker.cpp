@@ -54,9 +54,6 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 : wxDialog(context->parent, -1, _("Spell Checker"))
 , context(context)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
-, start_line(nullptr)
-, active_line(nullptr)
-, has_looped(false)
 {
 	SetIcon(GETICON(spellcheck_toolbutton_16));
 

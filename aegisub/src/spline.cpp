@@ -46,8 +46,6 @@
 
 Spline::Spline(const VisualToolBase &tl)
 : coord_translator(tl)
-, scale(1)
-, raw_scale(1)
 {
 }
 

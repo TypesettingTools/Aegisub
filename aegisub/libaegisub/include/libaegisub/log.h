@@ -83,7 +83,7 @@ class Emitter;
 
 /// Log sink, single destination for all messages
 class LogSink {
-	boost::circular_buffer<SinkMessage> messages;
+	boost::circular_buffer<SinkMessage> messages{250};
 	std::unique_ptr<dispatch::Queue> queue;
 
 	/// List of pointers to emitters

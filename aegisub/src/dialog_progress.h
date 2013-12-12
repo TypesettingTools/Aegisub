@@ -44,11 +44,11 @@ class DialogProgress : public wxDialog, public agi::BackgroundRunner {
 	wxTimer pulse_timer;
 
 	wxString pending_log;
-	int progress_anim_start_value;
-	int progress_current;
-	int progress_target;
+	int progress_anim_start_value = 0;
+	int progress_current = 0;
+	int progress_target = 0;
 	std::chrono::steady_clock::time_point progress_anim_start_time;
-	int progress_anim_duration;
+	int progress_anim_duration = 0;
 
 	void OnShow(wxShowEvent&);
 	void OnCancel(wxCommandEvent &);

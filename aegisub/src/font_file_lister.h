@@ -87,9 +87,9 @@ class FontCollector {
 	/// Paths to found required font files
 	std::set<agi::fs::path> results;
 	/// Number of fonts which could not be found
-	int missing;
+	int missing = 0;
 	/// Number of fonts which were found, but did not contain all used glyphs
-	int missing_glyphs;
+	int missing_glyphs = 0;
 
 	/// Gather all of the unique styles with text on a line
 	void ProcessDialogueLine(const AssDialogue *line, int index);

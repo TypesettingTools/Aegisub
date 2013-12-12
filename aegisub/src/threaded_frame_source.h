@@ -50,8 +50,8 @@ class ThreadedFrameSource {
 	/// Event handler to send FrameReady events to
 	wxEvtHandler *parent;
 
-	int frame_number; ///< Last frame number requested
-	double time; ///< Time of the frame to pass to the subtitle renderer
+	int frame_number = -1; ///< Last frame number requested
+	double time = -1.; ///< Time of the frame to pass to the subtitle renderer
 
 	/// Copy of the subtitles file to avoid having to touch the project context
 	std::unique_ptr<AssFile> subs;
@@ -59,7 +59,7 @@ class ThreadedFrameSource {
 	/// If >= 0, the subtitles provider current has just the lines visible on
 	/// that frame loaded. If -1, the entire file is loaded. If -2, the
 	/// currently loaded file is out of date.
-	int single_frame;
+	int single_frame = -1;
 
 	std::shared_ptr<VideoFrame> ProcFrame(int frame, double time, bool raw = false);
 
@@ -68,7 +68,7 @@ class ThreadedFrameSource {
 
 	/// Monotonic counter used to drop frames when changes arrive faster than
 	/// they can be rendered
-	std::atomic<uint_fast32_t> version;
+	std::atomic<uint_fast32_t> version{ 0 };
 
 public:
 	/// @brief Load the passed subtitle file

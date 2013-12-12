@@ -74,7 +74,7 @@ class AudioBox : public wxSashWindow {
 	wxSlider *VolumeBar;
 
 	// Mouse wheel zoom accumulator
-	int mouse_zoom_accum;
+	int mouse_zoom_accum = 0;
 
 	void SetHorizontalZoom(int new_zoom);
 	void OnAudioOpen();

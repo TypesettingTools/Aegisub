@@ -66,10 +66,8 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 , file_change_connection(c->ass->AddCommitListener(&DialogTranslation::OnExternalCommit, this))
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogTranslation::OnActiveLineChanged, this))
 , active_line(c->selectionController->GetActiveLine())
-, cur_block(0)
 , line_count(count_if(c->ass->Line.begin(), c->ass->Line.end(), cast<AssDialogue*>()))
 , line_number(count_if(c->ass->Line.begin(), c->ass->Line.iterator_to(*active_line), cast<AssDialogue*>()) + 1)
-, switching_lines(false)
 {
 	SetIcon(GETICON(translation_toolbutton_16));
 

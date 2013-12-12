@@ -83,10 +83,7 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 #endif
 }
 
-LibassSubtitlesProvider::LibassSubtitlesProvider(std::string)
-: ass_renderer(nullptr)
-, ass_track(nullptr)
-{
+LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
 	auto done = std::make_shared<bool>(false);
 	auto renderer = std::make_shared<ASS_Renderer*>(nullptr);
 	cache_queue->Async([=]{

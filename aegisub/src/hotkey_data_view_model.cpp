@@ -261,7 +261,6 @@ public:
 HotkeyDataViewModel::HotkeyDataViewModel(Preferences *parent)
 : root(agi::util::make_unique<HotkeyModelRoot>(this))
 , parent(parent)
-, has_pending_changes(false)
 {
 }
 

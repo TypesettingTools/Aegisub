@@ -48,8 +48,8 @@ namespace agi {
 /// This control constrains values to valid times, and can display the time
 /// being edited as either a h:mm:ss.cc formatted time, or a frame number
 class TimeEdit : public wxTextCtrl {
+	bool byFrame = false; ///< Is the time displayed as a frame number?
 	agi::Context *c; ///< Project context
-	bool byFrame;    ///< Is the time displayed as a frame number?
 	bool isEnd;      ///< Should the time be treated as an end time for time <-> frame conversions?
 	AssTime time;    ///< The time, which may be displayed as either a frame number or time
 	bool insert;     ///< If true, disable overwriting behavior in time mode

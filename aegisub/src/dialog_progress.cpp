@@ -115,8 +115,6 @@ public:
 DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxString const& message)
 : wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
 , pulse_timer(GetEventHandler())
-, progress_current(0)
-, progress_target(0)
 {
 	title = new wxStaticText(this, -1, title_text, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
 	gauge = new wxGauge(this, -1, 300, wxDefaultPosition, wxSize(300,20));

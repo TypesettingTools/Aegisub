@@ -53,15 +53,8 @@ const wxColour VisualToolBase::colour[] = {
 VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 : c(context)
 , parent(parent)
-, holding(false)
-, active_line(nullptr)
-, dragging(false)
 , frame_number(c->videoController->GetFrameN())
-, shift_down(false)
-, ctrl_down(false)
-, alt_down(false)
 , file_changed_connection(c->ass->AddCommitListener(&VisualToolBase::OnCommit, this))
-, commit_id(-1)
 {
 	int script_w, script_h;
 	c->ass->GetResolution(script_w, script_h);
@@ -169,8 +162,6 @@ Vector2D VisualToolBase::FromScriptCoords(Vector2D point) const {
 template<class FeatureType>
 VisualTool<FeatureType>::VisualTool(VideoDisplay *parent, agi::Context *context)
 : VisualToolBase(parent, context)
-, sel_changed(false)
-, active_feature(nullptr)
 {
 }
 

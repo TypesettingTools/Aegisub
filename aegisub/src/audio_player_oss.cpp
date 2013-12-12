@@ -50,15 +50,6 @@ DEFINE_SIMPLE_EXCEPTION(OSSError, agi::AudioPlayerOpenError, "audio/player/open/
 
 OSSPlayer::OSSPlayer(AudioProvider *provider)
 : AudioPlayer(provider)
-, rate(0)
-, thread(0)
-, playing(false)
-, volume(1.0f)
-, start_frame(0)
-, cur_frame(0)
-, end_frame(0)
-, bpf(0)
-, dspdev(0)
 {
     OpenStream();
 }

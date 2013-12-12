@@ -43,30 +43,30 @@ class AssStyle : public AssEntry {
 	std::string data;
 
 public:
-	std::string name;   ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
-	std::string font;   ///< Font face name
-	double fontsize; ///< Font size
+	std::string name = "Default"; ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
+	std::string font = "Arial";   ///< Font face name
+	double fontsize = 20.;        ///< Font size
 
-	agi::Color primary;   ///< Default text color
-	agi::Color secondary; ///< Text color for not-yet-reached karaoke syllables
-	agi::Color outline;   ///< Outline color
-	agi::Color shadow;    ///< Shadow color
+	agi::Color primary{ 255, 255, 255 }; ///< Default text color
+	agi::Color secondary{ 255, 0, 0 };   ///< Text color for not-yet-reached karaoke syllables
+	agi::Color outline{ 0, 0, 0 };       ///< Outline color
+	agi::Color shadow{ 0, 0, 0 };        ///< Shadow color
 
-	bool bold;
-	bool italic;
-	bool underline;
-	bool strikeout;
+	bool bold = false;
+	bool italic = false;
+	bool underline = false;
+	bool strikeout = false;
 
-	double scalex;    ///< Font x scale with 100 = 100%
-	double scaley;    ///< Font y scale with 100 = 100%
-	double spacing;   ///< Additional spacing between characters in pixels
-	double angle;     ///< Counterclockwise z rotation in degrees
-	int borderstyle;  ///< 1: Normal; 3: Opaque box; others are unused in Aegisub
-	double outline_w; ///< Outline width in pixels
-	double shadow_w;  ///< Shadow distance in pixels
-	int alignment;    ///< \an-style line alignment
-	std::array<int, 3> Margin; ///< Left/Right/Vertical
-	int encoding;     ///< ASS font encoding needed for some non-unicode fonts
+	double scalex = 100.;      ///< Font x scale with 100 = 100%
+	double scaley = 100.;      ///< Font y scale with 100 = 100%
+	double spacing = 0.;       ///< Additional spacing between characters in pixels
+	double angle = 0.1;        ///< Counterclockwise z rotation in degrees
+	int borderstyle = 1;       ///< 1: Normal; 3: Opaque box; others are unused in Aegisub
+	double outline_w = 2.;     ///< Outline width in pixels
+	double shadow_w = 2.;      ///< Shadow distance in pixels
+	int alignment = 2;         ///< \an-style line alignment
+	std::array<int, 3> Margin; ///< Left / Right / Vertical
+	int encoding = 1;          ///< ASS font encoding needed for some non-unicode fonts
 
 	/// Update the raw line data after one or more of the public members have been changed
 	void UpdateData();

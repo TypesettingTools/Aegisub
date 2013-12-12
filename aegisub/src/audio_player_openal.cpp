@@ -52,20 +52,8 @@ DEFINE_SIMPLE_EXCEPTION(OpenALException, agi::AudioPlayerOpenError, "audio/open/
 
 OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 : AudioPlayer(provider)
-, playing(false)
-, volume(1.f)
 , samplerate(provider->GetSampleRate())
 , bpf(provider->GetChannels() * provider->GetBytesPerSample())
-, start_frame(0)
-, cur_frame(0)
-, end_frame(0)
-, device(nullptr)
-, context(nullptr)
-, source(0)
-, buf_first_free(0)
-, buf_first_queued(0)
-, buffers_free(0)
-, buffers_played(0)
 {
 	try {
 		// Open device

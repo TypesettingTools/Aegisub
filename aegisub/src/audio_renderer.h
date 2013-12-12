@@ -89,31 +89,31 @@ class AudioRenderer {
 	friend struct AudioRendererBitmapCacheBitmapFactory;
 
 	/// Horizontal zoom level, milliseconds per pixel
-	double pixel_ms;
+	double pixel_ms = 0.f;
 	/// Rendering height in pixels
-	int pixel_height;
+	int pixel_height = 0;
 	/// Vertical zoom level/amplitude scale
-	float amplitude_scale;
+	float amplitude_scale = 0.f;
 
 	/// Width of bitmaps to store in cache
-	const int cache_bitmap_width;
+	const int cache_bitmap_width = 32; // Completely arbitrary value
 
 	/// Cached bitmaps for audio ranges
 	std::vector<AudioRendererBitmapCache> bitmaps;
 	/// Number of blocks in the bitmap caches
-	size_t cache_numblocks;
+	size_t cache_numblocks = 0;
 	/// The maximum allowed size of each bitmap cache, in bytes
-	size_t cache_bitmap_maxsize;
+	size_t cache_bitmap_maxsize = 0;
 	/// The maximum allowed size of the renderer's cache, in bytes
-	size_t cache_renderer_maxsize;
+	size_t cache_renderer_maxsize = 0;
 	/// Do the caches need to be aged?
-	bool needs_age;
+	bool needs_age = false;
 
 	/// Actual renderer for bitmaps
-	AudioRendererBitmapProvider *renderer;
+	AudioRendererBitmapProvider *renderer = nullptr;
 
 	/// Audio provider to use as source
-	AudioProvider *provider;
+	AudioProvider *provider = nullptr;
 
 	/// @brief Make sure bitmap index i is in cache
 	/// @param i     Index of bitmap to get into cache

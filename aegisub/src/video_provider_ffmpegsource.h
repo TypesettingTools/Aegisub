@@ -41,10 +41,10 @@
 class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
 	/// video source object
 	agi::scoped_holder<FFMS_VideoSource*, void (FFMS_CC*)(FFMS_VideoSource*)> VideoSource;
-	const FFMS_VideoProperties *VideoInfo; ///< video properties
+	const FFMS_VideoProperties *VideoInfo = nullptr; ///< video properties
 
-	int Width;                      ///< width in pixels
-	int Height;                     ///< height in pixels
+	int Width = -1;                 ///< width in pixels
+	int Height = -1;                ///< height in pixels
 	double DAR;                     ///< display aspect ratio
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object

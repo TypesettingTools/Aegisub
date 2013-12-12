@@ -229,19 +229,8 @@ public:
 
 }
 
-OpenGLText::OpenGLText()
-: r(1.f)
-, g(1.f)
-, b(1.f)
-, a(1.f)
-, fontSize(0)
-, fontBold(false)
-, fontItalics(false)
-{
-}
-
-OpenGLText::~OpenGLText() {
-}
+OpenGLText::OpenGLText() { }
+OpenGLText::~OpenGLText() { }
 
 void OpenGLText::SetFont(std::string const& face, int size, bool bold, bool italics) {
 	// No change required

@@ -86,7 +86,6 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 : ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
 , context(context)
-, calltip_position(0)
 {
 	// Set properties
 	SetWrapMode(wxSTC_WRAP_WORD);

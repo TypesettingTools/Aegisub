@@ -74,9 +74,6 @@ std::string colormatrix_description(int cs, int cr) {
 
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) try
 : VideoSource(nullptr, FFMS_DestroyVideoSource)
-, VideoInfo(nullptr)
-, Width(-1)
-, Height(-1)
 {
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);

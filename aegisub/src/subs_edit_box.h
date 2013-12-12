@@ -78,14 +78,14 @@ class SubsEditBox : public wxPanel {
 	std::deque<agi::signal::Connection> connections;
 
 	/// Currently active dialogue line
-	AssDialogue *line;
+	AssDialogue *line = nullptr;
 	/// Last seen grid selection
 	SubtitleSelection sel;
 
 	/// Are the buttons currently split into two lines?
-	bool button_bar_split;
+	bool button_bar_split = true;
 	/// Are the controls currently enabled?
-	bool controls_enabled;
+	bool controls_enabled = true;
 
 	agi::Context *c;
 
@@ -120,7 +120,7 @@ class SubsEditBox : public wxPanel {
 	void CommitText(wxString const& desc);
 
 	/// Last commit ID for undo coalescing
-	int commit_id;
+	int commit_id = -1;
 
 	/// Last used commit message to avoid coalescing different types of changes
 	wxString last_commit_type;

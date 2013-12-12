@@ -59,9 +59,6 @@ struct SubsController::UndoInfo {
 SubsController::SubsController(agi::Context *context)
 : context(context)
 , undo_connection(context->ass->AddUndoManager(&SubsController::OnCommit, this))
-, commit_id(0)
-, saved_commit_id(0)
-, autosaved_commit_id(0)
 {
 	autosave_timer_changed(&autosave_timer);
 	OPT_SUB("App/Auto/Save", autosave_timer_changed, &autosave_timer);

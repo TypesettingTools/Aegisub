@@ -39,8 +39,8 @@ extern "C" {
 }
 
 class LibassSubtitlesProvider : public SubtitlesProvider {
-	ASS_Renderer* ass_renderer;
-	ASS_Track* ass_track;
+	ASS_Renderer* ass_renderer = nullptr;
+	ASS_Track* ass_track = nullptr;
 
 public:
 	LibassSubtitlesProvider(std::string);

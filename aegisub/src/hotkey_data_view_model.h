@@ -31,7 +31,7 @@ class Preferences;
 class HotkeyDataViewModel : public wxDataViewModel {
 	std::unique_ptr<HotkeyModelRoot> root;
 	Preferences *parent;
-	bool has_pending_changes;
+	bool has_pending_changes = false;
 
 	/// Get the real item from the wrapper, or root if it's wrapping nullptr
 	const HotkeyModelItem *get(wxDataViewItem const& item) const;

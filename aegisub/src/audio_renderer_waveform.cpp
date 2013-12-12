@@ -55,8 +55,7 @@ enum {
 };
 
 AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_name)
-: audio_buffer(nullptr)
-, render_averages(OPT_GET("Audio/Display/Waveform Style")->GetInt() == Waveform_MaxAvg)
+: render_averages(OPT_GET("Audio/Display/Waveform Style")->GetInt() == Waveform_MaxAvg)
 {
 	colors.reserve(AudioStyle_MAX);
 	for (int i = 0; i < AudioStyle_MAX; ++i)

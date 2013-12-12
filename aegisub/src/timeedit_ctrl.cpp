@@ -60,7 +60,6 @@ enum {
 TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::string& value, const wxSize& size, bool asEnd)
 : wxTextCtrl(parent, id, to_wx(value), wxDefaultPosition, size, wxTE_CENTRE | wxTE_PROCESS_ENTER)
 , c(c)
-, byFrame(false)
 , isEnd(asEnd)
 , insert(!OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool())
 , insert_opt(OPT_SUB("Subtitle/Time Edit/Insert Mode", &TimeEdit::OnInsertChanged, this))

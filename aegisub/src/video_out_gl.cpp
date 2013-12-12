@@ -50,16 +50,10 @@
 
 /// @brief Structure tracking all precomputable information about a subtexture
 struct VideoOutGL::TextureInfo {
-	GLuint textureID;
-	int dataOffset;
-	int sourceH;
-	int sourceW;
-	TextureInfo()
-		: textureID(0)
-		, dataOffset(0)
-		, sourceH(0)
-		, sourceW(0)
-	{ }
+	GLuint textureID = 0;
+	int dataOffset = 0;
+	int sourceH = 0;
+	int sourceW = 0;
 };
 
 /// @brief Test if a texture can be created
@@ -76,21 +70,7 @@ static bool TestTexture(int width, int height, GLint format) {
 	return format != 0;
 }
 
-VideoOutGL::VideoOutGL()
-: maxTextureSize(0)
-, supportsRectangularTextures(false)
-, internalFormat(0)
-, frameWidth(0)
-, frameHeight(0)
-, frameFormat(0)
-, frameFlipped(false)
-, textureIdList()
-, textureList()
-, dl(0)
-, textureCount(0)
-, textureRows(0)
-, textureCols(0)
-{ }
+VideoOutGL::VideoOutGL() { }
 
 /// @brief Runtime detection of required OpenGL capabilities
 void VideoOutGL::DetectOpenGLCapabilities() {

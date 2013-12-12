@@ -50,27 +50,27 @@ namespace agi {
 class AssDialogue;
 
 class BaseGrid : public wxWindow, public SubtitleSelectionController {
-	int lineHeight;         ///< Height of a line in pixels in the current font
-	bool holding;           ///< Is a drag selection in process?
+	int lineHeight = 1;     ///< Height of a line in pixels in the current font
+	bool holding = false;   ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
-	bool byFrame;           ///< Should times be displayed as frame numbers
+	bool byFrame = false;   ///< Should times be displayed as frame numbers
 	wxBrush rowColors[7];   ///< Cached brushes used for row backgrounds
 
 	/// Row from which the selection shrinks/grows from when selecting via the
 	/// keyboard, shift-clicking or dragging
-	int extendRow;
+	int extendRow = -1;
 
-	Selection selection;      ///< Currently selected lines
-	AssDialogue *active_line; ///< The currently active line or 0 if none
+	Selection selection; ///< Currently selected lines
+	AssDialogue *active_line = nullptr; ///< The currently active line or 0 if none
 	std::vector<AssDialogue*> index_line_map;  ///< Row number -> dialogue line
 	std::map<AssDialogue*,int> line_index_map; ///< Dialogue line -> row number
 
 	/// Selection batch nesting depth; changes are commited only when this
 	/// hits zero
-	int batch_level;
+	int batch_level = 0;
 	/// Has the active line been changed in the current batch?
-	bool batch_active_line_changed;
+	bool batch_active_line_changed = false;
 	/// Lines which will be added to the selection when the current batch is
 	/// completed; should be disjoint from selection
 	Selection batch_selection_added;
@@ -112,7 +112,7 @@ class BaseGrid : public wxWindow, public SubtitleSelectionController {
 
 	bool showCol[10]; ///< Column visibility mask
 
-	int yPos;
+	int yPos = 0;
 
 	void AdjustScrollbar();
 	void SetColumnWidths();

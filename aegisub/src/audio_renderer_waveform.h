@@ -45,7 +45,7 @@ class AudioWaveformRenderer : public AudioRendererBitmapProvider {
 	std::vector<AudioColorScheme> colors;
 
 	/// Pre-allocated buffer for audio fetched from provider
-	char *audio_buffer;
+	char *audio_buffer = nullptr;
 
 	/// Whether to render max+avg or just max
 	bool render_averages;

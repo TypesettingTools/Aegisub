@@ -55,11 +55,6 @@ static int next_id = 0;
 
 AssDialogue::AssDialogue()
 : Id(++next_id)
-, Comment(false)
-, Layer(0)
-, Start(0)
-, End(5000)
-, Style("Default")
 {
 	memset(Margin, 0, sizeof Margin);
 }

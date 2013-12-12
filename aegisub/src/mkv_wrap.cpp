@@ -66,8 +66,8 @@ public:
 	MkvStdIO(agi::fs::path const& filename);
 	~MkvStdIO() { if (fp) fclose(fp); }
 
-	FILE *fp;
-	int error;
+	FILE *fp = nullptr;
+	int error = 0;
 };
 
 #define CACHESIZE     1024
@@ -284,9 +284,7 @@ longlong StdIoGetFileSize(InputStream *st) {
 	return epos;
 }
 
-MkvStdIO::MkvStdIO(agi::fs::path const& filename)
-: error(0)
-{
+MkvStdIO::MkvStdIO(agi::fs::path const& filename) {
 	read = StdIoRead;
 	scan = StdIoScan;
 	getcachesize = [](InputStream *) -> unsigned int { return CACHESIZE; };

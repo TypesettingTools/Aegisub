@@ -55,8 +55,8 @@ class DialogKanjiTimer : public wxDialog {
 
 	std::vector<std::pair<AssDialogue*, std::string>> LinesToChange;
 
-	AssEntry *currentSourceLine;
-	AssEntry *currentDestinationLine;
+	AssEntry *currentSourceLine = nullptr;
+	AssEntry *currentDestinationLine = nullptr;
 
 	void OnClose(wxCommandEvent &event);
 	void OnStart(wxCommandEvent &event);

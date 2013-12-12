@@ -285,9 +285,7 @@ namespace {
 namespace agi { namespace charset {
 
 IconvWrapper::IconvWrapper(const char* sourceEncoding, const char* destEncoding, bool enableSubst)
-: toNulLen(0)
-, fromNulLen(0)
-, conv(get_converter(enableSubst, sourceEncoding, destEncoding))
+: conv(get_converter(enableSubst, sourceEncoding, destEncoding))
 {
 	// These need to be set only after we verify that the source and dest
 	// charsets are valid

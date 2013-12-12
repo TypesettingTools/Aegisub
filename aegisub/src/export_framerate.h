@@ -45,16 +45,16 @@ class wxTextCtrl;
 /// @class AssTransformFramerateFilter
 /// @brief Transform subtitle times, including those in override tags, from an input framerate to an output framerate
 class AssTransformFramerateFilter : public AssExportFilter {
-	agi::Context *c;
-	AssDialogue *line;
-	int newStart;
-	int newEnd;
-	int newK;
-	int oldK;
+	agi::Context *c = nullptr;
+	AssDialogue *line = nullptr;
+	int newStart = 0;
+	int newEnd = 0;
+	int newK = 0;
+	int oldK = 0;
 
-	// Yes, these are backwards
-	const agi::vfr::Framerate *Input;  ///< Destination frame rate
-	const agi::vfr::Framerate *Output; ///< Source frame rate
+	// Yes, these are backwards. It sort of makes sense if you think about what it's doing.
+	const agi::vfr::Framerate *Input = nullptr;  ///< Destination frame rate
+	const agi::vfr::Framerate *Output = nullptr; ///< Source frame rate
 
 	agi::vfr::Framerate t1,t2;
 

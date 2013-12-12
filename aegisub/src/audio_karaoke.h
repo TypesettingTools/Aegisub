@@ -76,7 +76,7 @@ class AudioKaraoke : public wxWindow {
 	agi::signal::Connection active_line_changed;
 
 	/// Currently active dialogue line
-	AssDialogue *active_line;
+	AssDialogue *active_line = nullptr;
 	/// Karaoke data
 	std::unique_ptr<AssKaraoke> kara;
 
@@ -101,18 +101,18 @@ class AudioKaraoke : public wxWindow {
 	/// Cached width of characters from GetTextExtent
 	std::unordered_map<std::string, int> char_widths;
 
-	int scroll_x; ///< Distance the display has been shifted to the left in pixels
-	int scroll_dir; ///< Direction the display will be scrolled on scroll_timer ticks (+/- 1)
+	int scroll_x = 0; ///< Distance the display has been shifted to the left in pixels
+	int scroll_dir = 0; ///< Direction the display will be scrolled on scroll_timer ticks (+/- 1)
 	wxTimer scroll_timer; ///< Timer to scroll every 50ms when user holds down scroll button
 
-	int char_height; ///< Maximum character height in pixels
-	int char_width; ///< Maximum character width in pixels
-	int mouse_pos; ///< Last x coordinate of the mouse
-	bool click_will_remove_split; ///< If true a click at mouse_pos will remove a split rather than adding one
+	int char_height = 0; ///< Maximum character height in pixels
+	int char_width = 0; ///< Maximum character width in pixels
+	int mouse_pos = 0; ///< Last x coordinate of the mouse
+	bool click_will_remove_split = false; ///< If true a click at mouse_pos will remove a split rather than adding one
 
 	wxFont split_font; ///< Font used in the split/join interface
 
-	bool enabled; ///< Is karaoke mode enabled?
+	bool enabled = false; ///< Is karaoke mode enabled?
 
 	wxButton *accept_button; ///< Accept pending splits button
 	wxButton *cancel_button; ///< Revert pending changes

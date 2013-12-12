@@ -52,11 +52,8 @@
 #endif
 
 PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
-: current_mapping(nullptr)
-, mapping_start(0)
-, mapping_length(0)
 #ifdef _WIN32
-, file_handle(0, CloseHandle)
+: file_handle(0, CloseHandle)
 , file_mapping(0, CloseHandle)
 {
 	file_handle = CreateFile(
@@ -81,7 +78,7 @@ PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
 	if (file_mapping == 0)
 		throw agi::AudioProviderOpenError("Failed creating file mapping", 0);
 #else
-, file_handle(open(filename.c_str(), O_RDONLY), close)
+: file_handle(open(filename.c_str(), O_RDONLY), close)
 {
 	if (file_handle == -1)
 		throw agi::fs::FileNotFound(filename.string());

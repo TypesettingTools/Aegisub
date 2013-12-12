@@ -42,9 +42,9 @@ struct VisualToolVectorClipDraggableFeature : public VisualDraggableFeature {
 
 class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeature> {
 	Spline spline; /// The current spline
-	wxToolBar *toolBar; /// The subtoolbar
-	int mode; /// 0-7
-	bool inverse; /// is iclip?
+	wxToolBar *toolBar = nullptr; /// The subtoolbar
+	int mode = 0; /// 0-7
+	bool inverse = false; /// is iclip?
 
 	std::set<Feature *> box_added;
 

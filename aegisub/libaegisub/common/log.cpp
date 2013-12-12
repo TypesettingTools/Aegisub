@@ -44,10 +44,7 @@ LogSink *log;
 /// Keep this ordered the same as Severity
 const char *Severity_ID = "EAWID";
 
-LogSink::LogSink()
-: messages(250)
-, queue(dispatch::Create())
-{ }
+LogSink::LogSink() : queue(dispatch::Create()) { }
 
 LogSink::~LogSink() {
 	// The destructor for emitters may try to log messages, so disable all the
@@ -86,13 +83,8 @@ decltype(LogSink::messages) LogSink::GetMessages() const {
 
 Message::Message(const char *section, Severity severity, const char *file, const char *func, int line)
 : msg(buffer, sizeof buffer)
+, sm{section, severity, file, func, line, util::time_log(), ""}
 {
-	sm.section = section;
-	sm.severity = severity;
-	sm.file = file;
-	sm.func = func;
-	sm.line = line;
-	sm.tv = util::time_log();
 }
 
 Message::~Message() {

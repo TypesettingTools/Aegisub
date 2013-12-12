@@ -35,7 +35,7 @@ class Writer : private ConstVisitor {
 	void Visit(const Null& null) override;
 
 	std::ostream& m_ostr;
-	int tab_depth;
+	int tab_depth = 0;
 
 public:
 	template <typename ElementTypeT>
@@ -50,6 +50,5 @@ inline std::ostream& operator <<(std::ostream& ostr, UnknownElement const& eleme
     Writer::Write(elementRoot, ostr);
     return ostr;
 }
-
 
 } // End namespace

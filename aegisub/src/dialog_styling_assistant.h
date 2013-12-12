@@ -55,7 +55,7 @@ class DialogStyling : public wxDialog {
 
 	void OnActiveLineChanged(AssDialogue *);
 
-	AssDialogue *active_line;
+	AssDialogue *active_line = nullptr;
 
 	std::unique_ptr<PersistLocation> persist;
 

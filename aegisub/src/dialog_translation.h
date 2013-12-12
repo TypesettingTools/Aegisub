@@ -47,7 +47,7 @@ class DialogTranslation : public wxDialog {
 	/// The parsed dialogue blocks for the active line
 	boost::ptr_vector<AssDialogueBlock> blocks;
 	/// Which dialogue block in the active line is currently being translated
-	size_t cur_block;
+	size_t cur_block = 0;
 
 	/// Total number of dialogue lines in the file
 	size_t line_count;
@@ -55,7 +55,7 @@ class DialogTranslation : public wxDialog {
 	size_t line_number;
 
 	/// Should active line change announcements be ignored?
-	bool switching_lines;
+	bool switching_lines = false;
 
 	wxStaticText *line_number_display;
 	ScintillaTextCtrl *original_text;

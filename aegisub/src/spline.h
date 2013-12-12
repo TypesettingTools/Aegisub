@@ -43,8 +43,8 @@ class Spline : private std::list<SplineCurve> {
 	/// Visual tool to do the conversion between script and video pixels
 	const VisualToolBase &coord_translator;
 	/// Spline scale
-	int scale;
-	int raw_scale;
+	int scale = 0;
+	int raw_scale = 0;
 
 	/// Video coordinates -> Script coordinates
 	Vector2D ToScript(Vector2D vec) const;

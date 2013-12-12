@@ -62,10 +62,10 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 	std::vector<AudioColorScheme> colors;
 
 	/// Binary logarithm of number of samples to use in deriving frequency-power data
-	size_t derivation_size;
+	size_t derivation_size = 0;
 
 	/// Binary logarithm of number of samples between the start of derivations
-	size_t derivation_dist;
+	size_t derivation_dist = 0;
 
 	/// @brief Reset in response to changing audio provider
 	///
@@ -92,11 +92,11 @@ class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
 
 #ifdef WITH_FFTW3
 	/// FFTW plan data
-	fftw_plan dft_plan;
+	fftw_plan dft_plan = nullptr;
 	/// Pre-allocated input array for FFTW
-	double *dft_input;
+	double *dft_input = nullptr;
 	/// Pre-allocated output array for FFTW
-	fftw_complex *dft_output;
+	fftw_complex *dft_output = nullptr;
 #else
 	/// Pre-allocated scratch area for doing FFT derivations
 	std::vector<float> fft_scratch;

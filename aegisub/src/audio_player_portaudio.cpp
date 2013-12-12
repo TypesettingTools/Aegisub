@@ -69,12 +69,7 @@ static const PaHostApiTypeId pa_host_api_priority[] = {
 };
 static const size_t pa_host_api_priority_count = sizeof(pa_host_api_priority) / sizeof(pa_host_api_priority[0]);
 
-PortAudioPlayer::PortAudioPlayer(AudioProvider *provider)
-: AudioPlayer(provider)
-, volume(1.0f)
-, pa_start(0.0)
-, stream(0)
-{
+PortAudioPlayer::PortAudioPlayer(AudioProvider *provider) : AudioPlayer(provider) {
 	PaError err = Pa_Initialize();
 
 	if (err != paNoError)
@@ -131,7 +126,7 @@ PortAudioPlayer::~PortAudioPlayer() {
 }
 
 void PortAudioPlayer::OpenStream() {
-	DeviceVec *device_ids = 0;
+	DeviceVec *device_ids = nullptr;
 	std::string device_name = OPT_GET("Player/Audio/PortAudio/Device Name")->GetString();
 
 	if (devices.count(device_name)) {

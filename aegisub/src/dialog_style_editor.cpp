@@ -142,7 +142,6 @@ static wxTextCtrl *num_text_ctrl(wxWindow *parent, double *value, bool allow_neg
 DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name, wxArrayString const& font_list)
 : wxDialog (parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , c(c)
-, is_new(false)
 , style(style)
 , store(store)
 {

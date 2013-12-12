@@ -100,16 +100,8 @@ namespace std {
 
 BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, long style, const wxString& name)
 : wxWindow(parent, -1, wxDefaultPosition, size, style, name)
-, lineHeight(1) // non-zero to avoid div by 0
-, holding(false)
 , scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
-, byFrame(false)
-, extendRow(-1)
-, active_line(nullptr)
-, batch_level(0)
-, batch_active_line_changed(false)
 , seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, nullptr)))
-, yPos(0)
 , context(context)
 {
 	scrollBar->SetScrollbar(0,10,100,10);

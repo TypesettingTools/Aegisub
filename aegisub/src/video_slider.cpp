@@ -50,8 +50,6 @@
 VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
 , c(c)
-, val(0)
-, max(1)
 {
 	SetClientSize(20,25);
 	SetMinSize(wxSize(20, 25));

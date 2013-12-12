@@ -18,12 +18,12 @@
 
 namespace agi {
 	struct Color {
-		unsigned char r;	///< Red component
-		unsigned char g;	///< Green component
-		unsigned char b;	///< Blue component
-		unsigned char a;	///< Alpha component
+		unsigned char r = 0;	///< Red component
+		unsigned char g = 0;	///< Green component
+		unsigned char b = 0;	///< Blue component
+		unsigned char a = 0;	///< Alpha component
 
-		Color();
+		Color() { }
 		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);
 		Color(std::string const& str);
 

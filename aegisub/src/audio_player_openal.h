@@ -55,32 +55,32 @@ class OpenALPlayer : public AudioPlayer, wxTimer {
 	/// Number of OpenAL buffers to use
 	static const ALsizei num_buffers = 8;
 
-	bool playing; ///< Is audio currently playing?
+	bool playing = false; ///< Is audio currently playing?
 
-	float volume; ///< Current audio volume
+	float volume = 1.f; ///< Current audio volume
 	ALsizei samplerate; ///< Sample rate of the audio
 	int bpf; ///< Bytes per frame
 
-	int64_t start_frame; ///< First frame of playbacka
-	int64_t cur_frame; ///< Next frame to write to playback buffers
-	int64_t end_frame; ///< Last frame to play
+	int64_t start_frame = 0; ///< First frame of playbacka
+	int64_t cur_frame = 0; ///< Next frame to write to playback buffers
+	int64_t end_frame = 0; ///< Last frame to play
 
-	ALCdevice *device; ///< OpenAL device handle
-	ALCcontext *context; ///< OpenAL sound context
+	ALCdevice *device = nullptr; ///< OpenAL device handle
+	ALCcontext *context = nullptr; ///< OpenAL sound context
 	ALuint buffers[num_buffers]; ///< OpenAL sound buffers
-	ALuint source; ///< OpenAL playback source
+	ALuint source = 0; ///< OpenAL playback source
 
 	/// Index into buffers, first free (unqueued) buffer to be filled
-	ALsizei buf_first_free;
+	ALsizei buf_first_free = 0;
 
 	/// Index into buffers, first queued (non-free) buffer
-	ALsizei buf_first_queued;
+	ALsizei buf_first_queued = 0;
 
 	/// Number of free buffers
-	ALsizei buffers_free;
+	ALsizei buffers_free = 0;
 
 	/// Number of buffers which have been fully played since playback was last started
-	ALsizei buffers_played;
+	ALsizei buffers_played = 0;
 
 	wxStopWatch playback_segment_timer;
 

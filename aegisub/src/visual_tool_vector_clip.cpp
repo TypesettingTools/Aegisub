@@ -52,9 +52,6 @@ enum {
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolVectorClipDraggableFeature>(parent, context)
 , spline(*this)
-, toolBar(nullptr)
-, mode(0)
-, inverse(false)
 {
 }
 

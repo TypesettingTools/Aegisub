@@ -64,24 +64,24 @@ class Framerate {
 	/// Denominator of the FPS
 	///
 	/// For v1 VFR, the assumed FPS is used, for v2 the average FPS
-	int64_t denominator;
+	int64_t denominator = 0;
 	/// Numerator of the FPS
 	///
 	/// For v1 VFR, the assumed FPS is used, for v2 the average FPS
-	int64_t numerator;
+	int64_t numerator = 0;
 
 	/// Unrounded frame-seconds of the final frame in timecodes. For CFR and v2,
 	/// this is simply frame count * denominator, but for v1 it's the
 	/// "unrounded" frame count, since override ranges generally don't exactly
 	/// cover timebase-unit ranges of time. This is needed to match mkvmerge's
 	/// rounding past the end of the final override range.
-	int64_t last;
+	int64_t last = 0;
 
 	/// Start time in milliseconds of each frame
 	std::vector<int> timecodes;
 
 	/// Does this frame rate need drop frames and have them enabled?
-	bool drop;
+	bool drop = false;
 
 	/// Set FPS properties from the timecodes vector
 	void SetFromTimecodes();

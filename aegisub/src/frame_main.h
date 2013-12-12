@@ -66,14 +66,14 @@ class FrameMain: public wxFrame {
     void Thaw(void) {}
 #endif
 
-	bool showVideo;       ///< Is the video display shown?
-	bool showAudio;       ///< Is the audio display shown?
-	wxTimer StatusClear;  ///< Status bar timeout timer
+	bool showVideo = true; ///< Is the video display shown?
+	bool showAudio = true; ///< Is the audio display shown?
+	wxTimer StatusClear;   ///< Status bar timeout timer
 	/// Block video loading; used when both video and subtitles are opened at
 	/// the same time, so that the video associated with the subtitles (if any)
 	/// isn't loaded
-	bool blockVideoLoad;
-	bool blockAudioLoad;
+	bool blockVideoLoad = false;
+	bool blockAudioLoad = false;
 
 	void InitToolbar();
 	void InitContents();

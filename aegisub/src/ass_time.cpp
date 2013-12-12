@@ -35,9 +35,7 @@
 
 AssTime::AssTime(int time) : time(mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
 
-AssTime::AssTime(std::string const& text)
-: time(0)
-{
+AssTime::AssTime(std::string const& text) {
 	int after_decimal = -1;
 	int current = 0;
 	for (char c : text | boost::adaptors::filtered(boost::is_any_of(",.0123456789:"))) {

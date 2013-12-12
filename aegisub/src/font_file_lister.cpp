@@ -64,8 +64,6 @@ namespace {
 FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister)
 : status_callback(std::move(status_callback))
 , lister(lister)
-, missing(0)
-, missing_glyphs(0)
 {
 }
 

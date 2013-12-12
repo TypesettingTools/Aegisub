@@ -58,7 +58,7 @@ class AssExporter {
 
 	/// Have the config windows been created, or should filters simply use
 	/// their default settings
-	bool is_default;
+	bool is_default = true;
 
 public:
 	AssExporter(agi::Context *c);

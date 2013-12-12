@@ -40,34 +40,34 @@
 class PulseAudioPlayer;
 
 class PulseAudioPlayer : public AudioPlayer {
-	float volume;
-	bool is_playing;
+	float volume = 1.f;
+	bool is_playing = false;
 
-	volatile unsigned long start_frame;
-	volatile unsigned long cur_frame;
-	volatile unsigned long end_frame;
+	volatile unsigned long start_frame = 0;
+	volatile unsigned long cur_frame = 0;
+	volatile unsigned long end_frame = 0;
 
-	unsigned long bpf; // bytes per frame
+	unsigned long bpf = 0; // bytes per frame
 
 
-	wxSemaphore context_notify;
-	wxSemaphore context_success;
+	wxSemaphore context_notify{0, 1};
+	wxSemaphore context_success{0, 1};
 	volatile int context_success_val;
 
-	wxSemaphore stream_notify;
-	wxSemaphore stream_success;
+	wxSemaphore stream_notify{0, 1};
+	wxSemaphore stream_success{0, 1};
 	volatile int stream_success_val;
 
-	pa_threaded_mainloop *mainloop; // pulseaudio mainloop handle
-	pa_context *context; // connection context
+	pa_threaded_mainloop *mainloop = nullptr; // pulseaudio mainloop handle
+	pa_context *context = nullptr; // connection context
 	volatile pa_context_state_t cstate;
 
-	pa_stream *stream;
+	pa_stream *stream = nullptr;
 	volatile pa_stream_state_t sstate;
 
 	volatile pa_usec_t play_start_time; // timestamp when playback was started
 
-	int paerror;
+	int paerror = 0;
 
 	/// Called by PA to notify about contetxt operation completion
 	static void pa_context_success(pa_context *c, int success, PulseAudioPlayer *thread);

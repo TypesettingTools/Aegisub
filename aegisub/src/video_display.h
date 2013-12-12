@@ -73,15 +73,15 @@ class VideoDisplay : public wxGLCanvas {
 	Vector2D last_mouse_pos, mouse_pos;
 
 	/// Screen pixels between the left of the canvas and the left of the video
-	int viewport_left;
+	int viewport_left = 0;
 	/// The width of the video in screen pixels
-	int viewport_width;
+	int viewport_width = 0;
 	/// Screen pixels between the bottom of the canvas and the bottom of the video; used for glViewport
-	int viewport_bottom;
+	int viewport_bottom = 0;
 	/// Screen pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
-	int viewport_top;
+	int viewport_top = 0;
 	/// The height of the video in screen pixels
-	int viewport_height;
+	int viewport_height = 0;
 
 	/// The current zoom level, where 1.0 = 100%
 	double zoomValue;

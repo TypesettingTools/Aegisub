@@ -23,12 +23,12 @@
 #include "visual_tool.h"
 
 class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
-	float angle_x; /// Current x rotation
-	float angle_y; /// Current y rotation
-	float angle_z; /// Current z rotation
+	float angle_x = 0.f; /// Current x rotation
+	float angle_y = 0.f; /// Current y rotation
+	float angle_z = 0.f; /// Current z rotation
 
-	float orig_x; ///< x rotation at the beginning of the current hold
-	float orig_y; ///< y rotation at the beginning of the current hold
+	float orig_x = 0.f; ///< x rotation at the beginning of the current hold
+	float orig_y = 0.f; ///< y rotation at the beginning of the current hold
 
 	Feature *org;
 

@@ -27,9 +27,9 @@ class VisualToolScale : public VisualTool<VisualDraggableFeature> {
 	Vector2D initial_scale; ///< The scale at the beginning of the current hold
 	Vector2D pos; ///< Position of the line
 
-	float rx; ///< X rotation
-	float ry; ///< Y rotation
-	float rz; ///< Z rotation
+	float rx = 0.f; ///< X rotation
+	float ry = 0.f; ///< Y rotation
+	float rz = 0.f; ///< Z rotation
 
 	bool InitializeHold() override;
 	void UpdateHold() override;

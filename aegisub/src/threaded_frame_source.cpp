@@ -114,10 +114,6 @@ ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, st
 , subs_provider(get_subs_provider(parent))
 , video_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix))
 , parent(parent)
-, frame_number(-1)
-, time(-1.)
-, single_frame(-1)
-, version(0)
 {
 }
 

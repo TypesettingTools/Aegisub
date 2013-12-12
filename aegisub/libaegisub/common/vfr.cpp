@@ -151,8 +151,6 @@ namespace vfr {
 Framerate::Framerate(double fps)
 : denominator(default_denominator)
 , numerator(int64_t(fps * denominator))
-, last(0)
-, drop(false)
 {
 	if (fps < 0.) throw BadFPS("FPS must be greater than zero");
 	if (fps > 1000.) throw BadFPS("FPS must not be greater than 1000");
@@ -162,7 +160,6 @@ Framerate::Framerate(double fps)
 Framerate::Framerate(int64_t numerator, int64_t denominator, bool drop)
 : denominator(denominator)
 , numerator(numerator)
-, last(0)
 , drop(drop && numerator % denominator != 0)
 {
 	if (numerator <= 0 || denominator <= 0)
@@ -181,14 +178,12 @@ void Framerate::SetFromTimecodes() {
 
 Framerate::Framerate(std::vector<int> timecodes)
 : timecodes(std::move(timecodes))
-, drop(false)
 {
 	SetFromTimecodes();
 }
 
 Framerate::Framerate(std::initializer_list<int> timecodes)
 : timecodes(timecodes)
-, drop(false)
 {
 	SetFromTimecodes();
 }
@@ -203,8 +198,6 @@ void Framerate::swap(Framerate &right) throw() {
 
 Framerate::Framerate(fs::path const& filename)
 : denominator(default_denominator)
-, numerator(0)
-, drop(false)
 {
 	auto file = agi::io::Open(filename);
 	auto encoding = agi::charset::Detect(filename);

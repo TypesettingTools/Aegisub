@@ -50,9 +50,7 @@ std::string AssKaraoke::Syllable::GetText(bool k_tag) const {
 }
 
 
-AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize)
-: no_announce(false)
-{
+AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize) {
 	if (line) SetLine(line, auto_split, normalize);
 }
 

@@ -43,13 +43,13 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	/// Equal to curFeature during drags; possibly different at all other times
 	/// nullptr if no features have been clicked on or the last clicked on one no
 	/// longer exists
-	Feature *primary;
+	Feature *primary = nullptr;
 	/// The last announced selection set
 	SubtitleSelection selection;
 
 	/// When the button is pressed, will it convert the line to a move (vs. from
 	/// move to pos)? Used to avoid changing the button's icon unnecessarily
-	bool button_is_move;
+	bool button_is_move = false;
 
 	/// @brief Create the features for a line
 	/// @param diag Line to create the features for

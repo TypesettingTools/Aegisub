@@ -110,24 +110,24 @@ class VideoContext : public wxEvtHandler {
 
 	/// The start time of the first frame of the current playback; undefined if
 	/// video is not currently playing
-	int start_ms;
+	int start_ms = 0;
 
 	/// The last frame to play if video is currently playing
-	int end_frame;
+	int end_frame = 0;
 
 	/// The frame number which was last requested from the video provider,
 	/// which may not be the same thing as the currently displayed frame
-	int frame_n;
+	int frame_n = 0;
 
 	/// The picture aspect ratio of the video if the aspect ratio has been
 	/// overridden by the user
-	double ar_value;
+	double ar_value = 1.;
 
 	/// The current AR type
-	AspectRatio ar_type;
+	AspectRatio ar_type = AspectRatio::Default;
 
 	/// Does the currently loaded video file have subtitles muxed into it?
-	bool has_subtitles;
+	bool has_subtitles = false;
 
 	/// Filename of the currently loaded timecodes file, or empty if timecodes
 	/// have not been overridden
@@ -140,7 +140,7 @@ class VideoContext : public wxEvtHandler {
 	/// be kept in perfect sync. Saving the file can add lines to the file
 	/// without a commit, breaking this sync, so force a non-amend after each
 	/// save.
-	bool no_amend;
+	bool no_amend = false;
 
 	void OnPlayTimer(wxTimerEvent &event);
 

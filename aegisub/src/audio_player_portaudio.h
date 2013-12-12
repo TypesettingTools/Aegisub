@@ -57,13 +57,13 @@ class PortAudioPlayer : public AudioPlayer {
 	/// The index of the default output devices sorted by host API priority
 	DeviceVec default_device;
 
-	float volume;    ///< Current volume level
-	int64_t current; ///< Current position
-	int64_t start;   ///< Start position
-	int64_t end;     ///< End position
-	PaTime pa_start; ///< PortAudio internal start position
+	float volume = 1.f;  ///< Current volume level
+	int64_t current = 0; ///< Current position
+	int64_t start = 0;   ///< Start position
+	int64_t end = 0;     ///< End position
+	PaTime pa_start;     ///< PortAudio internal start position
 
-	PaStream *stream; ///< PortAudio stream
+	PaStream *stream = nullptr; ///< PortAudio stream
 
 	/// @brief PortAudio callback, used to fill buffer for playback, and prime the playback buffer.
 	/// @param inputBuffer     Input buffer.

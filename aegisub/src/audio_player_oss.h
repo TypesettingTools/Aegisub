@@ -69,31 +69,31 @@ class OSSPlayer : public AudioPlayer {
     friend class OSSPlayerThread;
 
     /// sample rate of audio
-    unsigned int rate;
+    unsigned int rate = 0;
 
     /// Worker thread that does the actual writing
-    OSSPlayerThread *thread;
+    OSSPlayerThread *thread = nullptr;
 
     /// Is the player currently playing?
-    volatile bool playing;
+    volatile bool playing = false;
 
     /// Current volume level
-    volatile float volume;
+    volatile float volume = 1.f;
 
     /// first frame of playback
-    volatile unsigned long start_frame;
+    volatile unsigned long start_frame = 0;
 
     /// last written frame + 1
-    volatile unsigned long cur_frame;
+    volatile unsigned long cur_frame = 0;
 
     /// last frame to play
-    volatile unsigned long end_frame;
+    volatile unsigned long end_frame = 0;
 
     /// bytes per frame
-    unsigned long bpf;
+    unsigned long bpf = 0;
 
     /// OSS audio device handle
-    volatile int dspdev;
+    volatile int dspdev = 0;
 
     void OpenStream();
 

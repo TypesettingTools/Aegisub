@@ -49,8 +49,8 @@ class VideoSlider: public wxWindow {
 	std::vector<int> keyframes; ///< Currently loaded keyframes
 	std::vector<agi::signal::Connection> slots;
 
-	int val; ///< Current frame number
-	int max; ///< Last frame number
+	int val = 0; ///< Current frame number
+	int max = 1; ///< Last frame number
 
 	/// Get the frame number for the given x coordinate
 	int GetValueAtX(int x);

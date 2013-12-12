@@ -110,11 +110,9 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 
 namespace {
 struct provider_creator {
-	bool found_file;
-	bool found_audio;
+	bool found_file = false;
+	bool found_audio = false;
 	std::string msg;
-
-	provider_creator() : found_file(false) , found_audio(false) { }
 
 	template<typename Factory>
 	std::unique_ptr<AudioProvider> try_create(std::string const& name, Factory&& create) {

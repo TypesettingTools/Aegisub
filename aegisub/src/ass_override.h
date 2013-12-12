@@ -77,7 +77,7 @@ public:
 	AssParameterClass classification;
 
 	/// Is this parameter actually present?
-	bool omitted;
+	bool omitted = true;
 
 	VariableDataType GetType() const { return type; }
 	template<class T> void Set(T param);

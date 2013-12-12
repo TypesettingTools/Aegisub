@@ -50,7 +50,7 @@ public:
 private:
 	std::vector<Syllable> syls;
 
-	bool no_announce;
+	bool no_announce = false;
 
 	agi::signal::Signal<> AnnounceSyllablesChanged;
 	void ParseSyllables(AssDialogue *line, Syllable &syl);

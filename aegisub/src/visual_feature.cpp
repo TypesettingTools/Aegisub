@@ -37,13 +37,6 @@
 #include "gl_wrap.h"
 #include "visual_feature.h"
 
-VisualDraggableFeature::VisualDraggableFeature()
-: type(DRAG_NONE)
-, layer(0)
-, line(nullptr)
-{
-}
-
 bool VisualDraggableFeature::IsMouseOver(Vector2D mouse_pos) const {
 	if (!pos) return false;
 

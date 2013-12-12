@@ -34,7 +34,6 @@ VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
 : VisualTool<ClipCorner>(parent, context)
 , cur_1(0, 0)
 , cur_2(video_res)
-, inverse(false)
 {
 	ClipCorner *feats[4];
 	for (auto& feat : feats) {

@@ -48,20 +48,7 @@
 
 #include <libaegisub/log.h>
 
-PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider)
-: AudioPlayer(provider)
-, volume(1.0f)
-, is_playing(false)
-, start_frame(0)
-, cur_frame(0)
-, end_frame(0)
-, bpf(0)
-, context_notify(0, 1)
-, context_success(0, 1)
-, stream_notify(0, 1)
-, stream_success(0, 1)
-, paerror(0)
-{
+PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider) : AudioPlayer(provider) {
 	// Initialise a mainloop
 	mainloop = pa_threaded_mainloop_new();
 	if (!mainloop)

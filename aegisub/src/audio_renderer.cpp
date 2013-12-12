@@ -65,14 +65,6 @@ size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
 
 
 AudioRenderer::AudioRenderer()
-: pixel_ms(0)
-, pixel_height(0)
-, amplitude_scale(0)
-, cache_bitmap_width(32) // arbitrary value for now
-, cache_bitmap_maxsize(0)
-, cache_renderer_maxsize(0)
-, renderer(nullptr)
-, provider(nullptr)
 {
 	for (int i = 0; i < AudioStyle_MAX; ++i)
 		bitmaps.emplace_back(256, AudioRendererBitmapCacheBitmapFactory(this));

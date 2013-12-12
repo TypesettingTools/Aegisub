@@ -78,7 +78,7 @@ class SubsTextEditCtrl : public ScintillaTextCtrl {
 	std::string calltip_text;
 
 	/// Position of the currently show calltip
-	size_t calltip_position;
+	size_t calltip_position = 0;
 
 	/// Cursor position which the current calltip is for
 	int cursor_pos;

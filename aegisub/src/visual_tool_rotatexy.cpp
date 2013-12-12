@@ -27,11 +27,6 @@
 
 VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)
-, angle_x(0)
-, angle_y(0)
-, angle_z(0)
-, orig_x(0)
-, orig_y(0)
 {
 	org = new Feature;
 	org->type = DRAG_BIG_TRIANGLE;

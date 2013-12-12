@@ -50,11 +50,11 @@ namespace agi { struct Color; }
 typedef boost::container::map<int, OpenGLTextGlyph> glyphMap;
 
 class OpenGLText {
-	float r,g,b,a;
+	float r = 1.f, g = 1.f, b = 1.f, a = 1.f;
 
-	int fontSize;
-	bool fontBold;
-	bool fontItalics;
+	int fontSize = 0;
+	bool fontBold = false;
+	bool fontItalics = false;
 	std::string fontFace;
 	wxFont font;
 
@@ -62,8 +62,8 @@ class OpenGLText {
 
 	std::vector<OpenGLTextTexture> textures;
 
-	OpenGLText(OpenGLText const&);
-	OpenGLText& operator=(OpenGLText const&);
+	OpenGLText(OpenGLText const&) = delete;
+	OpenGLText& operator=(OpenGLText const&) = delete;
 
 	/// @brief Get the glyph for the character chr, creating it if necessary
 	/// @param chr Character to get the glyph of

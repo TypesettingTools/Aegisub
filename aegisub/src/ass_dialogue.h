@@ -136,17 +136,17 @@ public:
 	const int Id;
 
 	/// Is this a comment line?
-	bool Comment;
+	bool Comment = false;
 	/// Layer number
-	int Layer;
+	int Layer = 0;
 	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical)
 	int Margin[3];
 	/// Starting time
-	AssTime Start;
+	AssTime Start = 0;
 	/// Ending time
-	AssTime End;
+	AssTime End = 5000;
 	/// Style name
-	boost::flyweight<std::string> Style;
+	boost::flyweight<std::string> Style{ "Default" };
 	/// Actor name
 	boost::flyweight<std::string> Actor;
 	/// Effect name

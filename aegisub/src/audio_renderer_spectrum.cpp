@@ -97,13 +97,6 @@ public:
 
 
 AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_name)
-: derivation_size(8)
-, derivation_dist(8)
-#ifdef WITH_FFTW3
-, dft_plan(nullptr)
-, dft_input(nullptr)
-, dft_output(nullptr)
-#endif
 {
 	colors.reserve(AudioStyle_MAX);
 	for (int i = 0; i < AudioStyle_MAX; ++i)

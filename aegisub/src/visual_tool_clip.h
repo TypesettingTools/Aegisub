@@ -33,7 +33,7 @@ class VisualToolClip : public VisualTool<ClipCorner> {
 	Vector2D cur_1;
 	Vector2D cur_2;
 
-	bool inverse; ///< Is this currently in iclip mode?
+	bool inverse = false; ///< Is this currently in iclip mode?
 
 	bool InitializeHold() override;
 	void UpdateHold() override;

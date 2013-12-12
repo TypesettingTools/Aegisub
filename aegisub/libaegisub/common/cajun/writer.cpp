@@ -20,14 +20,9 @@ TODO:
 
 */
 
-namespace json
-{
+namespace json {
 
-Writer::Writer(std::ostream& ostr)
-: m_ostr(ostr)
-, tab_depth(0)
-{
-}
+Writer::Writer(std::ostream& ostr) : m_ostr(ostr) { }
 
 void Writer::Write(Array const& array) {
 	if (array.empty())

@@ -28,9 +28,6 @@
 
 VisualToolScale::VisualToolScale(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)
-, rx(0)
-, ry(0)
-, rz(0)
 {
 }
 

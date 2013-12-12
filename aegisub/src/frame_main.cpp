@@ -183,10 +183,6 @@ public:
 FrameMain::FrameMain()
 : wxFrame(nullptr, -1, "", wxDefaultPosition, wxSize(920,700), wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
 , context(agi::util::make_unique<agi::Context>())
-, showVideo(true)
-, showAudio(true)
-, blockVideoLoad(false)
-, blockAudioLoad(false)
 {
 	StartupLog("Entering FrameMain constructor");
 

@@ -93,11 +93,7 @@ void time_edit_char_hook(wxKeyEvent &event) {
 
 SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxRAISED_BORDER, "SubsEditBox")
-, line(nullptr)
-, button_bar_split(true)
-, controls_enabled(true)
 , c(context)
-, commit_id(-1)
 , undo_timer(GetEventHandler())
 {
 	using std::bind;

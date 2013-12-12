@@ -559,14 +559,6 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 , controller(controller)
 , scrollbar(agi::util::make_unique<AudioDisplayScrollbar>(this))
 , timeline(agi::util::make_unique<AudioDisplayTimeline>(this))
-, dragged_object(nullptr)
-, scroll_left(0)
-, pixel_audio_width(0)
-, ms_per_pixel(0.0)
-, scale_amplitude(1.0f)
-, audio_top(0)
-, audio_height(0)
-, track_cursor_pos(-1)
 {
 	style_ranges[0] = AudioStyle_Normal;
 

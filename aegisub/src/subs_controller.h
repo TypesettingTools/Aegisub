@@ -37,11 +37,11 @@ class SubsController {
 	boost::container::list<UndoInfo> redo_stack;
 
 	/// Revision counter for undo coalescing and modified state tracking
-	int commit_id;
+	int commit_id = 0;
 	/// Last saved version of this file
-	int saved_commit_id;
+	int saved_commit_id = 0;
 	/// Last autosaved version of this file
-	int autosaved_commit_id;
+	int autosaved_commit_id = 0;
 
 	/// Timer for triggering autosaves
 	wxTimer autosave_timer;

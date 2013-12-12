@@ -59,9 +59,9 @@ class DialogSpellChecker : public wxDialog {
 	wxButton *add_button;      ///< Add word to currently active dictionary
 	wxButton *remove_button;   ///< Remove word from currently active dictionary
 
-	AssDialogue *start_line;  ///< The first line checked
-	AssDialogue *active_line; ///< The most recently checked line
-	bool has_looped;          ///< Has the search already looped from the end to beginning?
+	AssDialogue *start_line = nullptr;  ///< The first line checked
+	AssDialogue *active_line = nullptr; ///< The most recently checked line
+	bool has_looped = false;            ///< Has the search already looped from the end to beginning?
 
 	/// Find the next misspelled word and close the dialog if there are none
 	/// @return Are there any more misspelled words?

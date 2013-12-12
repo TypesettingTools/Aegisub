@@ -45,11 +45,7 @@
 #include <memory>
 #include <wx/sizer.h>
 
-AssExporter::AssExporter(agi::Context *c)
-: c(c)
-, is_default(true)
-{
-}
+AssExporter::AssExporter(agi::Context *c) : c(c) { }
 
 void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 	is_default = false;

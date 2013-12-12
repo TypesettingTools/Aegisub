@@ -68,15 +68,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , audio_opened(c->audioController->AddAudioOpenListener(&AudioKaraoke::OnAudioOpened, this))
 , audio_closed(c->audioController->AddAudioCloseListener(&AudioKaraoke::OnAudioClosed, this))
 , active_line_changed(c->selectionController->AddActiveLineListener(&AudioKaraoke::OnActiveLineChanged, this))
-, active_line(nullptr)
 , kara(agi::util::make_unique<AssKaraoke>())
-, scroll_x(0)
-, scroll_dir(0)
-, char_height(0)
-, char_width(0)
-, mouse_pos(0)
-, click_will_remove_split(false)
-, enabled(false)
 {
 	using std::bind;
 

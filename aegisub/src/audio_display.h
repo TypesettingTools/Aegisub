@@ -124,7 +124,7 @@ class AudioDisplay: public wxWindow {
 
 
 	/// Current object on display being dragged, if any
-	AudioDisplayInteractionObject *dragged_object;
+	AudioDisplayInteractionObject *dragged_object = nullptr;
 	/// Change the dragged object and update mouse capture
 	void SetDraggedObject(AudioDisplayInteractionObject *new_obj);
 
@@ -133,22 +133,22 @@ class AudioDisplay: public wxWindow {
 	wxTimer scroll_timer;
 
 	/// Leftmost pixel in the virtual audio image being displayed
-	int scroll_left;
+	int scroll_left = 0;
 
 	/// Total width of the audio in pixels
-	int pixel_audio_width;
+	int pixel_audio_width = 0;
 
 	/// Horizontal zoom measured in millisecond per pixels
-	double ms_per_pixel;
+	double ms_per_pixel = 0.;
 
 	/// Amplitude scaling ("vertical zoom") as a factor, 1.0 is neutral
-	float scale_amplitude;
+	float scale_amplitude = 1.f;
 
 	/// Top of the main audio area in pixels
-	int audio_top;
+	int audio_top = 0;
 
 	/// Height of main audio area in pixels
-	int audio_height;
+	int audio_height = 0;
 
 	/// Width of the audio marker feet in pixels
 	static const int foot_size = 6;
@@ -157,7 +157,7 @@ class AudioDisplay: public wxWindow {
 	int zoom_level;
 
 	/// Absolute pixel position of the tracking cursor (mouse or playback)
-	int track_cursor_pos;
+	int track_cursor_pos = -1;
 	/// Label to show by track cursor
 	wxString track_cursor_label;
 	/// Bounding rectangle last drawn track cursor label

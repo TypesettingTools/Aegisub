@@ -31,38 +31,38 @@ class VideoOutGL {
 	struct TextureInfo;
 
 	/// The maximum texture size supported by the user's graphics card
-	int maxTextureSize;
+	int maxTextureSize = 0;
 	/// Whether rectangular textures are supported by the user's graphics card
-	bool supportsRectangularTextures;
+	bool supportsRectangularTextures = false;
 	/// The internalformat to use
-	int internalFormat;
+	int internalFormat = 0;
 
 	/// The frame height which the texture grid has been set up for
-	int frameWidth;
+	int frameWidth = 0;
 	/// The frame width which the texture grid has been set up for
-	int frameHeight;
+	int frameHeight = 0;
 	/// The frame format which the texture grid has been set up for
-	GLenum frameFormat;
+	GLenum frameFormat = 0;
 	/// Whether the grid is set up for flipped video
-	bool frameFlipped;
+	bool frameFlipped = false;
 	/// List of OpenGL texture ids used in the grid
 	std::vector<GLuint> textureIdList;
 	/// List of precalculated texture display information
 	std::vector<TextureInfo> textureList;
 	/// OpenGL display list which draws the frames
-	GLuint dl;
+	GLuint dl = 0;
 	/// The total texture count
-	int textureCount;
+	int textureCount = 0;
 	/// The number of rows of textures
-	int textureRows;
+	int textureRows = 0;
 	/// The number of columns of textures
-	int textureCols;
+	int textureCols = 0;
 
 	void DetectOpenGLCapabilities();
 	void InitTextures(int width, int height, GLenum format, int bpp, bool flipped);
 
-	VideoOutGL(const VideoOutGL &);
-	VideoOutGL& operator=(const VideoOutGL&);
+	VideoOutGL(const VideoOutGL &) = delete;
+	VideoOutGL& operator=(const VideoOutGL&) = delete;
 public:
 	/// @brief Set the frame to be displayed when Render() is called
 	/// @param frame The frame to be displayed

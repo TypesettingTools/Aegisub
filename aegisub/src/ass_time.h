@@ -27,7 +27,7 @@
 
 class AssTime {
 	/// Time in milliseconds
-	int time;
+	int time = 0;
 
 public:
 	AssTime(int ms = 0);

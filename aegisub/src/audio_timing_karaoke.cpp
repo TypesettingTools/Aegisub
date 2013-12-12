@@ -89,7 +89,7 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 	AssDialogue *active_line; ///< Currently active line
 	AssKaraoke *kara;         ///< Parsed karaoke model provided by karaoke controller
 
-	size_t cur_syl; ///< Index of currently selected syllable in the line
+	size_t cur_syl = 0; ///< Index of currently selected syllable in the line
 
 	/// Pen used for the mid-syllable markers
 	Pen separator_pen;
@@ -114,8 +114,8 @@ class AudioTimingControllerKaraoke : public AudioTimingController {
 	/// Labels containing the stripped text of each syllable
 	std::vector<AudioLabel> labels;
 
-	bool auto_commit; ///< Should changes be automatically commited?
-	int commit_id;    ///< Last commit id used for an autocommit
+	bool auto_commit;     ///< Should changes be automatically commited?
+	int commit_id = -1;   ///< Last commit id used for an autocommit
 	bool pending_changes; ///< Are there any pending changes to be committed?
 
 	void OnAutoCommitChange(agi::OptionValue const& opt);
@@ -160,7 +160,6 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , c(c)
 , active_line(c->selectionController->GetActiveLine())
 , kara(kara)
-, cur_syl(0)
 , separator_pen("Colour/Audio Display/Syllable Boundaries", "Audio/Line Boundaries Thickness", wxPENSTYLE_DOT)
 , start_pen("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
 , end_pen("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
@@ -169,7 +168,6 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
 , video_position_provider(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
-, commit_id(-1)
 {
 	slots.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
 	slots.push_back(OPT_SUB("Audio/Auto/Commit", &AudioTimingControllerKaraoke::OnAutoCommitChange, this));

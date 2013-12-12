@@ -44,17 +44,17 @@
 #include <libaegisub/scoped_ptr.h>
 
 class PCMAudioProvider : public AudioProvider {
-	mutable void *current_mapping;
+	mutable void *current_mapping = nullptr;
 
 #ifdef _WIN32
-	mutable int64_t mapping_start;
-	mutable size_t mapping_length;
+	mutable int64_t mapping_start = 0;
+	mutable size_t mapping_length = 0;
 
 	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_handle;
 	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_mapping;
 #else
-	mutable off_t mapping_start;
-	mutable size_t mapping_length;
+	mutable off_t mapping_start = 0;
+	mutable size_t mapping_length = 0;
 
 	agi::scoped_holder<int, int(*)(int)> file_handle;
 #endif
@@ -65,7 +65,7 @@ protected:
 	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
 
 	/// Size of the opened file
-	int64_t file_size;
+	int64_t file_size = 0;
 
 	struct IndexPoint {
 		int64_t start_byte;

@@ -31,7 +31,6 @@
 AssParser::AssParser(AssFile *target, int version)
 : target(target)
 , version(version)
-, attach(nullptr)
 , state(&AssParser::ParseScriptInfoLine)
 {
 	std::fill(begin(insertion_positions), end(insertion_positions), nullptr);
