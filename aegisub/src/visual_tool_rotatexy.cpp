@@ -50,7 +50,7 @@ void VisualToolRotateXY::Draw() {
 	float b = colour[0].Blue() / 255.f;
 
 	// Number of lines on each side of each axis
-	static const int radius = 5;
+	static const int radius = 15;
 	// Total number of lines, including center axis line
 	static const int line_count = radius * 2 + 1;
 	// Distance between each line in pixels
