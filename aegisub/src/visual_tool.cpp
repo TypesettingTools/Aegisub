@@ -445,6 +445,17 @@ void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, fl
 		rz = tag->front().Get(rz);
 }
 
+void VisualToolBase::GetLineShear(AssDialogue *diag, float& fax, float& fay) {
+	fax = fay = 0.f;
+
+	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+
+	if (param_vec tag = find_tag(blocks, "\\fax"))
+		fax = tag->front().Get(fax);
+	if (param_vec tag = find_tag(blocks, "\\fay"))
+		fay = tag->front().Get(fay);
+}
+
 void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 	float x = 100.f, y = 100.f;
 

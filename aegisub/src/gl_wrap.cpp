@@ -415,6 +415,17 @@ void OpenGLWrapper::SetRotation(float x, float y, float z) {
 	glRotatef(z, 0.f, 0.f, -1.f);
 }
 
+void OpenGLWrapper::SetShear(float x, float y) {
+	PrepareTransform();
+	float matrix[16] = {
+		1, y, 0, 0,
+		x, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
+	glMultMatrixf(matrix);
+}
+
 void OpenGLWrapper::PrepareTransform() {
 	if (!transform_pushed) {
 		glMatrixMode(GL_MODELVIEW);

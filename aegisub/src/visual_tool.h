@@ -122,6 +122,7 @@ protected:
 	Vector2D GetLineOrigin(AssDialogue *diag);
 	bool GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, int &t1, int &t2);
 	void GetLineRotation(AssDialogue *diag, float &rx, float &ry, float &rz);
+	void GetLineShear(AssDialogue *diag, float& fax, float& fay);
 	void GetLineScale(AssDialogue *diag, Vector2D &scale);
 	void GetLineClip(AssDialogue *diag, Vector2D &p1, Vector2D &p2, bool &inverse);
 	std::string GetLineVectorClip(AssDialogue *diag, int &scale, bool &inverse);

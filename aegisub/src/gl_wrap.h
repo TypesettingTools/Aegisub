@@ -49,6 +49,7 @@ public:
 	void SetScale(Vector2D scale);
 	void SetOrigin(Vector2D origin);
 	void SetRotation(float x, float y, float z);
+	void SetShear(float x, float y);
 	void ResetTransform();
 
 	void DrawLine(Vector2D p1, Vector2D p2) const;

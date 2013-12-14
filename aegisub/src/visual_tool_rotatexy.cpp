@@ -41,6 +41,7 @@ void VisualToolRotateXY::Draw() {
 	// Transform grid
 	gl.SetOrigin(org->pos);
 	gl.SetRotation(angle_x, angle_y, angle_z);
+	gl.SetShear(fax, fay);
 
 	// Draw grid
 	gl.SetLineColour(colour[0], 0.5f, 2);
@@ -178,4 +179,5 @@ void VisualToolRotateXY::DoRefresh() {
 	org->pos = FromScriptCoords(org->pos);
 
 	GetLineRotation(active_line, angle_x, angle_y, angle_z);
+	GetLineShear(active_line, fax, fay);
 }

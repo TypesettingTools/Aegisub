@@ -27,6 +27,9 @@ class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
 	float angle_y = 0.f; /// Current y rotation
 	float angle_z = 0.f; /// Current z rotation
 
+	float fax = 0.f;
+	float fay = 0.f;
+
 	float orig_x = 0.f; ///< x rotation at the beginning of the current hold
 	float orig_y = 0.f; ///< y rotation at the beginning of the current hold
 
