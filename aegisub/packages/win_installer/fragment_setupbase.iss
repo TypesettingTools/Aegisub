@@ -41,7 +41,7 @@ AppVersion={#VERSION}
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
-AppCopyright=© 2005-2012 The Aegisub Team
+AppCopyright=© 2005-2013 The Aegisub Team
 VersionInfoVersion={#VERSION}
 DefaultGroupName=Aegisub
 AllowNoIcons=true
@@ -70,7 +70,7 @@ Name: english; MessagesFile: compiler:Default.isl
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
-WelcomeLabel2=This will install Aegisub {#VERSION} on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
+WelcomeLabel2=This will install Aegisub {#VERSION}-beta on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
 
 [Files]
 ; small bitmaps (used by beautify code)
