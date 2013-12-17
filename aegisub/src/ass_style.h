@@ -60,7 +60,7 @@ public:
 	double scalex = 100.;      ///< Font x scale with 100 = 100%
 	double scaley = 100.;      ///< Font y scale with 100 = 100%
 	double spacing = 0.;       ///< Additional spacing between characters in pixels
-	double angle = 0.1;        ///< Counterclockwise z rotation in degrees
+	double angle = 0.;         ///< Counterclockwise z rotation in degrees
 	int borderstyle = 1;       ///< 1: Normal; 3: Opaque box; others are unused in Aegisub
 	double outline_w = 2.;     ///< Outline width in pixels
 	double shadow_w = 2.;      ///< Shadow distance in pixels
