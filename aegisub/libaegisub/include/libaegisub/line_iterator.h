@@ -34,9 +34,7 @@ namespace agi {
 template<class OutputType = std::string>
 class line_iterator : public std::iterator<std::input_iterator_tag, OutputType> {
 	std::istream *stream; ///< Stream to iterator over
-	bool valid; ///< Are there any more values to read?
 	OutputType value; ///< Value to return when this is dereference
-	std::string encoding; ///< Encoding of source stream
 	std::shared_ptr<agi::charset::IconvWrapper> conv;
 	int cr; ///< CR character in the source encoding
 	int lf; ///< LF character in the source encoding
@@ -65,8 +63,6 @@ public:
 	/// @param encoding Encoding of the text read from the stream
 	line_iterator(std::istream &stream, std::string encoding = "utf-8")
 	: stream(&stream)
-	, valid(true)
-	, encoding(encoding)
 	, cr('\r')
 	, lf('\n')
 	, width(1)
@@ -84,25 +80,11 @@ public:
 	}
 
 	/// @brief Invalid iterator constructor; use for end iterator
-	line_iterator()
-	: stream(nullptr)
-	, valid(false)
-	{
-	}
+	line_iterator() : stream(nullptr) { }
 
 	/// @brief Copy constructor
 	/// @param that line_iterator to copy from
-	line_iterator(line_iterator<OutputType> const& that)
-	: stream(that.stream)
-	, valid(that.valid)
-	, value(that.value)
-	, encoding(that.encoding)
-	, conv(that.conv)
-	, cr(that.cr)
-	, lf(that.lf)
-	, width(that.width)
-	{
-	}
+	line_iterator(line_iterator<OutputType> const&) = default;
 
 	OutputType const& operator*() const { return value; }
 	OutputType const* operator->() const { return &value; }
@@ -117,7 +99,7 @@ public:
 		return tmp;
 	}
 
-	bool operator==(line_iterator<OutputType> const& rgt) const { return valid == rgt.valid; }
+	bool operator==(line_iterator<OutputType> const& rgt) const { return stream == rgt.stream; }
 	bool operator!=(line_iterator<OutputType> const& rgt) const { return !operator==(rgt); }
 
 	// typedefs needed by some stl algorithms
@@ -126,7 +108,7 @@ public:
 	typedef const OutputType* const_pointer;
 	typedef const OutputType& const_reference;
 
-	line_iterator<OutputType> operator=(line_iterator<OutputType> that) {
+	line_iterator<OutputType>& operator=(line_iterator<OutputType> that) {
 		using std::swap;
 		swap(*this, that);
 		return *this;
@@ -135,9 +117,7 @@ public:
 	void swap(line_iterator<OutputType> &that) throw() {
 		using std::swap;
 		swap(stream, that.stream);
-		swap(valid, that.valid);
 		swap(value, that.value);
-		swap(encoding, that.encoding);
 		swap(conv, that.conv);
 		swap(lf, that.lf);
 		swap(cr, that.cr);
@@ -179,16 +159,16 @@ void line_iterator<OutputType>::getline(std::string &str) {
 
 template<class OutputType>
 void line_iterator<OutputType>::next() {
-	if (!valid) return;
+	if (!stream) return;
 	if (!stream->good()) {
-		valid = false;
+		stream = nullptr;
 		return;
 	}
 	std::string str, cstr, *target;
 	if (width == 1) {
 		std::getline(*stream, str);
-		if (str.size() && *str.rbegin() == '\r')
-			str.resize(str.size() - 1);
+		if (str.size() && str.back() == '\r')
+			str.pop_back();
 	}
 	else {
 		getline(str);
@@ -200,9 +180,29 @@ void line_iterator<OutputType>::next() {
 	else {
 		target = &str;
 	}
-	if (!convert(*target)) {
+	if (!convert(*target))
 		next();
+}
+
+template<>
+inline void line_iterator<std::string>::next() {
+	if (!stream) return;
+	if (!stream->good()) {
+		stream = nullptr;
 		return;
+	}
+	std::string cstr;
+	std::string *target = conv ? &cstr : &value;
+	if (width == 1) {
+		std::getline(*stream, *target);
+		if (target->size() && target->back() == '\r')
+			target->pop_back();
+	}
+	else
+		getline(*target);
+	if (conv.get()) {
+		value.clear();
+		conv->Convert(*target, value);
 	}
 }
 
@@ -211,11 +211,6 @@ inline bool line_iterator<OutputType>::convert(std::string &str) {
 	std::istringstream ss(str);
 	ss >> value;
 	return !ss.fail();
-}
-template<>
-inline bool line_iterator<std::string>::convert(std::string &str) {
-	value = str;
-	return true;
 }
 
 template<class T>
