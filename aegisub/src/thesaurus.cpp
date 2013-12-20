@@ -29,6 +29,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/algorithm.hpp>
 
+#include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
@@ -99,7 +100,17 @@ void Thesaurus::OnLanguageChanged() {
 
 	LOG_I("thesaurus/file") << "Using thesaurus: " << dat;
 
-	impl = agi::util::make_unique<agi::Thesaurus>(dat, idx);
+	agi::dispatch::Background().Async([=]{
+		try {
+			auto thes = agi::util::make_unique<agi::Thesaurus>(dat, idx);
+			agi::dispatch::Main().Sync([&]{
+				impl = std::move(thes);
+			});
+		}
+		catch (agi::Exception const& e) {
+			LOG_E("thesaurus") << e.GetChainedMessage();
+		}
+	});
 }
 
 void Thesaurus::OnPathChanged() {

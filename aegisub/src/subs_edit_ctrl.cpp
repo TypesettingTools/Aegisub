@@ -85,6 +85,7 @@ enum {
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context *context)
 : ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
+, thesaurus(agi::util::make_unique<Thesaurus>())
 , context(context)
 {
 	// Set properties
@@ -386,9 +387,6 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 
 void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 	if (currentWord.empty()) return;
-
-	if (!thesaurus)
-		thesaurus = agi::util::make_unique<Thesaurus>();
 
 	auto results = thesaurus->Lookup(currentWord);
 

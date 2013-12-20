@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file thesaurus.h
-/// @see thesaurus.cpp
-/// @ingroup thesaurus
-///
-
 #include <memory>
 #include <string>
 #include <vector>
