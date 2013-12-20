@@ -35,7 +35,7 @@ namespace agi {
 Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
 : dat(io::Open(dat_path))
 {
-	std::unique_ptr<std::ifstream> idx(io::Open(idx_path));
+	auto idx = io::Open(idx_path);
 
 	std::string encoding_name;
 	getline(*idx, encoding_name);
@@ -43,9 +43,9 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 	getline(*idx, unused_entry_count);
 
 	// Read the list of words and file offsets for those words
-	for (line_iterator<std::string> iter(*idx, encoding_name), end; iter != end; ++iter) {
+	for (auto const& line : line_iterator<std::string>(*idx, encoding_name)) {
 		std::vector<std::string> chunks;
-		boost::split(chunks, *iter, _1 == '|');
+		boost::split(chunks, line, _1 == '|');
 		if (chunks.size() == 2)
 			offsets[chunks[0]] = atoi(chunks[1].c_str());
 	}
