@@ -414,7 +414,13 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	tool->SetToolbar(toolBar);
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size
-	UpdateSize();
+	if (!freeSize)
+		UpdateSize();
+	else {
+		// UpdateSize fits the window to the video, which we don't want to do
+		GetGrandParent()->Layout();
+		tool->SetDisplayArea(viewport_left, viewport_top, viewport_width, viewport_height);
+	}
 }
 
 bool VideoDisplay::ToolIsType(std::type_info const& type) const {
