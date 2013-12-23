@@ -326,7 +326,7 @@ void StackWalker::OnStackFrame(wxStackFrame const& frame) {
 
 	fp << boost::format("%03u - %p: %s") % frame.GetLevel() % frame.GetAddress() % frame.GetName().utf8_str().data();
 	if (frame.HasSourceLocation())
-		fp << boost::format(" on %s:%u") % frame.GetFileName().utf8_str().data(), frame.GetLine();
+		fp << boost::format(" on %s:%u") % frame.GetFileName().utf8_str().data() % frame.GetLine();
 
 	fp << "\n";
 }
