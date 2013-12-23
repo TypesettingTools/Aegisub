@@ -383,8 +383,10 @@ void AegisubApp::OnFatalException() {
 	UnhandledExeception(true, frame ? frame->context.get() : nullptr);
 }
 
+#define SHOW_EXCEPTION(str) \
+	wxMessageBox(wxString::Format(_("An unexpected error has occurred. Please save your work and restart Aegisub.\n\nError Message: %s"), str), \
+				"Exception in event handler", wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
 void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const {
-#define SHOW_EXCEPTION(str) wxMessageBox(str, "Exception in event handler", wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
 	try {
 		wxApp::HandleEvent(handler, func, event);
 	}
@@ -400,8 +402,34 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 	catch (const wxString &e) {
 		SHOW_EXCEPTION(e);
 	}
-#undef SHOW_EXCEPTION
+	catch (...) {
+		SHOW_EXCEPTION("Unknown error");
+	}
 }
+
+bool AegisubApp::OnExceptionInMainLoop() {
+	try {
+		throw;
+	}
+	catch (const agi::Exception &e) {
+		SHOW_EXCEPTION(to_wx(e.GetChainedMessage()));
+	}
+	catch (const std::exception &e) {
+		SHOW_EXCEPTION(to_wx(e.what()));
+	}
+	catch (const char *e) {
+		SHOW_EXCEPTION(to_wx(e));
+	}
+	catch (const wxString &e) {
+		SHOW_EXCEPTION(e);
+	}
+	catch (...) {
+		SHOW_EXCEPTION("Unknown error");
+	}
+	return true;
+}
+
+#undef SHOW_EXCEPTION
 
 int AegisubApp::OnRun() {
 	std::string error;
