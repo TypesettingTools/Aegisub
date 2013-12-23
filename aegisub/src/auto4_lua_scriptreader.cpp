@@ -31,7 +31,13 @@
 
 namespace Automation4 {
 	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
-		auto filename = agi::fs::Canonicalize(raw_filename);
+		auto filename = raw_filename;
+		try {
+			filename = agi::fs::Canonicalize(raw_filename);
+		}
+		catch (agi::fs::FileSystemUnknownError const& e) {
+			LOG_E("auto4/lua") << "Error canonicalizing path: " << e.GetChainedMessage();
+		}
 
 		std::unique_ptr<std::istream> file(agi::io::Open(filename, true));
 		file->seekg(0, std::ios::end);
