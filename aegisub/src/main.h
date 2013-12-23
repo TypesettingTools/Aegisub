@@ -51,6 +51,7 @@ class AegisubApp: public wxApp {
 
 	void OnUnhandledException() override;
 	void OnFatalException() override;
+	bool OnExceptionInMainLoop() override;
 
 	/// @brief Handle wx assertions and redirect to the logging system.
 	/// @param file File name
