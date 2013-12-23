@@ -127,6 +127,7 @@ std::string unique_name(Func name_checker, std::string const& source_name) {
 template<class Func1, class Func2>
 void add_styles(Func1 name_checker, Func2 style_adder) {
 	auto cb = GetClipboard();
+	int failed_to_parse = 0;
 	for (auto tok : agi::Split(cb, '\n')) {
 		tok = boost::trim_copy(tok);
 		if (tok.empty()) continue;
@@ -136,9 +137,11 @@ void add_styles(Func1 name_checker, Func2 style_adder) {
 			style_adder(s);
 		}
 		catch (...) {
-			wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION);
+			++failed_to_parse;
 		}
 	}
+	if (failed_to_parse)
+		wxMessageBox(_("Could not parse style"), _("Could not parse style"), wxOK | wxICON_EXCLAMATION);
 }
 
 int confirm_delete(int n, wxWindow *parent, wxString const& title) {
