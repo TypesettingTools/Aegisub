@@ -350,7 +350,8 @@ static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 		agi::fs::CreateDirectory(path);
 
 		auto filename = c->subsController->Filename().stem();
-		path /= str(boost::format("%s.%s.ass") % filename % agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
+		filename.replace_extension(str(boost::format("%s.ass") % agi::util::strftime("%Y-%m-%d-%H-%M-%S")));
+		path /= filename;
 		c->subsController->Save(path);
 
 #if wxUSE_STACKWALKER == 1
