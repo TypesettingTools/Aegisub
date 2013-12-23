@@ -27,11 +27,13 @@
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/range/algorithm.hpp>
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
 #include <libaegisub/thesaurus.h>
+#include <libaegisub/util.h>
 
 Thesaurus::Thesaurus()
 : lang_listener(OPT_SUB("Tool/Thesaurus/Language", &Thesaurus::OnLanguageChanged, this))
@@ -50,44 +52,34 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string word) {
 	return impl->Lookup(word);
 }
 
-std::vector<std::string> Thesaurus::GetLanguageList() const {
-	if (!languages.empty()) return languages;
+static std::vector<std::string> langs(const char *ext) {
+	std::vector<std::string> paths;
+	auto data_path = config::path->Decode("?data/dictionaries/");
+	auto user_path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
 
-	std::vector<std::string> idx, dat;
-
-	// Get list of dictionaries
-	auto path = config::path->Decode("?data/dictionaries/");
-	agi::fs::DirectoryIterator(path, "th_*.idx").GetAll(idx);
-	agi::fs::DirectoryIterator(path, "th_*.dat").GetAll(dat);
-
-	path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
-	agi::fs::DirectoryIterator(path, "th_*.idx").GetAll(idx);
-	agi::fs::DirectoryIterator(path, "th_*.dat").GetAll(dat);
-
-	if (idx.empty() || dat.empty()) return languages;
-
-	sort(begin(idx), end(idx));
-	sort(begin(dat), end(dat));
+	auto filter = std::string("th_*.") + ext;
+	agi::fs::DirectoryIterator(data_path, filter).GetAll(paths);
+	agi::fs::DirectoryIterator(user_path, filter).GetAll(paths);
 
 	// Drop extensions and the th_ prefix
-	for (auto& fn : idx) fn = fn.substr(3, fn.size() - 7);
-	for (auto& fn : dat) fn = fn.substr(3, fn.size() - 7);
+	for (auto& fn : paths) fn = fn.substr(3, fn.size() - filter.size() + 1);
 
-	// Verify that each idx has a dat
-	for (size_t i = 0, j = 0; i < idx.size() && j < dat.size(); ) {
-		int cmp = idx[i].compare(dat[j]);
-		if (cmp < 0) ++i;
-		else if (cmp > 0) ++j;
-		else {
-			// Don't insert a language twice if it's in both the user dir and
-			// the app's dir
-			if (languages.empty() || dat[j] != languages.back())
-				languages.push_back(dat[j]);
-			++i;
-			++j;
-		}
-	}
+	boost::sort(paths);
+	paths.erase(unique(begin(paths), end(paths)), end(paths));
+
+	return paths;
+}
+
+std::vector<std::string> Thesaurus::GetLanguageList() const {
+	if (languages.empty())
+		boost::set_intersection(langs("idx"), langs("dat"), back_inserter(languages));
 	return languages;
+}
+
+static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& idx, agi::fs::path& dat) {
+	idx = path/str(boost::format("th_%s.idx") % language);
+	dat = path/str(boost::format("th_%s.dat") % language);
+	return agi::fs::FileExists(idx) && agi::fs::FileExists(dat);
 }
 
 void Thesaurus::OnLanguageChanged() {
@@ -96,24 +88,18 @@ void Thesaurus::OnLanguageChanged() {
 	auto language = OPT_GET("Tool/Thesaurus/Language")->GetString();
 	if (language.empty()) return;
 
+	agi::fs::path idx, dat;
+
 	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
-
-	// Get index and data paths
-	auto idxpath = path/str(boost::format("th_%s.idx") % language);
-	auto datpath = path/str(boost::format("th_%s.dat") % language);
-
-	// If they aren't in the user dictionary path, check the application directory
-	if (!agi::fs::FileExists(idxpath) || !agi::fs::FileExists(datpath)) {
+	if (!check_path(path, language, idx, dat)) {
 		path = config::path->Decode("?data/dictionaries/");
-		idxpath = path/str(boost::format("th_%s.idx") % language);
-		datpath = path/str(boost::format("th_%s.dat") % language);
-
-		if (!agi::fs::FileExists(idxpath) || !agi::fs::FileExists(datpath)) return;
+		if (!check_path(path, language, idx, dat))
+			return;
 	}
 
-	LOG_I("thesaurus/file") << "Using thesaurus: " << datpath;
+	LOG_I("thesaurus/file") << "Using thesaurus: " << dat;
 
-	impl.reset(new agi::Thesaurus(datpath, idxpath));
+	impl = agi::util::make_unique<agi::Thesaurus>(dat, idx);
 }
 
 void Thesaurus::OnPathChanged() {
