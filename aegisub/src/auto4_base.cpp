@@ -396,7 +396,7 @@ namespace Automation4 {
 		for (auto const& cur : boost::tokenizer<boost::char_separator<char>>(local_scripts, sep)) {
 			auto trimmed = boost::trim_copy(cur);
 			char first_char = trimmed[0];
-			trimmed.erase(0);
+			trimmed.erase(0, 1);
 
 			agi::fs::path basepath;
 			if (first_char == '~') {
