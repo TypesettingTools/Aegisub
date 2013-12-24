@@ -142,6 +142,7 @@ $(SUBDIRS):
 automation: libaegisub
 src: universalchardet tools libaegisub
 tests: libaegisub
+tools: libaegisub
 reporter: src
 
 $(OBJ): $(GLOBAL_DEPS)
