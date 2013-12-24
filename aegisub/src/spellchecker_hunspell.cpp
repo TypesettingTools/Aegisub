@@ -33,6 +33,7 @@
 #include <libaegisub/path.h>
 
 #include <boost/format.hpp>
+#include <boost/range/algorithm.hpp>
 #include <fstream>
 #include <hunspell/hunspell.hxx>
 
@@ -154,44 +155,33 @@ std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const&
 	return suggestions;
 }
 
-std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
-	if (!languages.empty()) return languages;
+static std::vector<std::string> langs(const char *filter) {
+	std::vector<std::string> paths;
+	auto data_path = config::path->Decode("?data/dictionaries/");
+	auto user_path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
 
-	std::vector<std::string> dic, aff;
-
-	// Get list of dictionaries
-	auto path = config::path->Decode("?data/dictionaries/");
-	agi::fs::DirectoryIterator(path, "*.dic").GetAll(dic);
-	agi::fs::DirectoryIterator(path, "*.aff").GetAll(aff);
-
-	path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
-	agi::fs::DirectoryIterator(path, "*.dic").GetAll(dic);
-	agi::fs::DirectoryIterator(path, "*.aff").GetAll(aff);
-
-	if (dic.empty() || aff.empty()) return languages;
-
-	sort(begin(dic), end(dic));
-	sort(begin(aff), end(aff));
+	agi::fs::DirectoryIterator(data_path, filter).GetAll(paths);
+	agi::fs::DirectoryIterator(user_path, filter).GetAll(paths);
 
 	// Drop extensions
-	for (auto& elem : dic) elem.resize(elem.size() - 4);
-	for (auto& elem : aff) elem.resize(elem.size() - 4);
+	for (auto& fn : paths) fn.resize(fn.size() - 4);
 
-	// Verify that each aff has a dic
-	for (size_t i = 0, j = 0; i < dic.size() && j < aff.size(); ) {
-		int cmp = dic[i].compare(aff[j]);
-		if (cmp < 0) ++i;
-		else if (cmp > 0) ++j;
-		else {
-			// Don't insert a language twice if it's in both the user dir and
-			// the app's dir
-			if (languages.empty() || aff[j] != languages.back())
-				languages.push_back(aff[j]);
-			++i;
-			++j;
-		}
-	}
+	boost::sort(paths);
+	paths.erase(unique(begin(paths), end(paths)), end(paths));
+
+	return paths;
+}
+
+std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
+	if (languages.empty())
+		boost::set_intersection(langs("*.dic"), langs("*.aff"), back_inserter(languages));
 	return languages;
+}
+
+static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& aff, agi::fs::path& dic) {
+	aff = path/str(boost::format("%s.aff") % language);
+	dic = path/str(boost::format("%s.dic") % language);
+	return agi::fs::FileExists(aff) && agi::fs::FileExists(dic);
 }
 
 void HunspellSpellChecker::OnLanguageChanged() {
@@ -200,33 +190,23 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	auto language = OPT_GET("Tool/Spell Checker/Language")->GetString();
 	if (language.empty()) return;
 
-	auto custDicRoot = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
-	auto dataDicRoot = config::path->Decode("?data/dictionaries");
-
-	// If the user has a dic/aff pair in their dictionary path for this language
-	// use that; otherwise use the one from Aegisub's install dir, adding words
-	// from the dic in the user's dictionary path if it exists
-	auto affPath = custDicRoot/(language + ".aff");
-	auto dicPath = custDicRoot/(language + ".dic");
-	userDicPath = config::path->Decode("?user/dictionaries")/str(boost::format("user_%s.dic") % language);
-	if (!agi::fs::FileExists(affPath) || !agi::fs::FileExists(dicPath)) {
-		affPath = dataDicRoot/(language + ".aff");
-		dicPath = dataDicRoot/(language + ".dic");
+	agi::fs::path aff, dic;
+	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
+	if (!check_path(path, language, aff, dic)) {
+		path = config::path->Decode("?data/dictionaries/");
+		if (!check_path(path, language, aff, dic))
+			return;
 	}
 
-	LOG_I("dictionary/file") << dicPath;
+	LOG_I("dictionary/file") << dic;
 
-	if (!agi::fs::FileExists(affPath) || !agi::fs::FileExists(dicPath)) {
-		LOG_D("dictionary/file") << "Dictionary not found";
-		return;
-	}
-
-	hunspell.reset(new Hunspell(agi::fs::ShortName(affPath).c_str(), agi::fs::ShortName(dicPath).c_str()));
+	hunspell.reset(new Hunspell(agi::fs::ShortName(aff).c_str(), agi::fs::ShortName(dic).c_str()));
 	if (!hunspell) return;
 
 	conv.reset(new agi::charset::IconvWrapper("utf-8", hunspell->get_dic_encoding()));
 	rconv.reset(new agi::charset::IconvWrapper(hunspell->get_dic_encoding(), "utf-8"));
 
+	userDicPath = config::path->Decode("?user/dictionaries")/str(boost::format("user_%s.dic") % language);
 	ReadUserDictionary();
 
 	for (auto const& word : customWords) {
