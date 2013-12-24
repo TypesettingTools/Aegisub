@@ -1058,7 +1058,9 @@ void DialogColorPicker::OnAlphaSliderChange(wxCommandEvent &) {
 }
 
 void DialogColorPicker::OnRecentSelect(wxThreadEvent &evt) {
-	SetColor(evt.GetPayload<agi::Color>());
+	agi::Color new_color = evt.GetPayload<agi::Color>();
+	new_color.a = cur_color.a;
+	SetColor(new_color);
 }
 
 void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt) {
