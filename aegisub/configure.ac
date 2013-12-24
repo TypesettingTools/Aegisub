@@ -534,7 +534,7 @@ DEFAULT_PLAYER_AUDIO=${DEFAULT_PLAYER_AUDIO:-NONE}
 ###############
 # Files that need substitution.
 AC_CONFIG_FILES([
-desktop/aegisub.desktop
+desktop/aegisub.desktop.template
 src/libresrc/default_config_platform.json
 tools/osx-bundle.sed
 Makefile.inc

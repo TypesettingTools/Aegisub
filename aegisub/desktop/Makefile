@@ -6,6 +6,8 @@ applications_DATA = aegisub.desktop
 iconsscalabledir = $(DESKTOP_DATADIR)/icons/hicolor/scalable/apps
 iconsscalable_DATA = scalable/aegisub.svg
 
+aegisub.desktop: aegisub.desktop.template ../po
+	intltool-merge --quiet --desktop-style ../po aegisub.desktop.template aegisub.desktop
 
 all: ;
 
@@ -20,17 +22,17 @@ ICON_HICOLOR = \
 ICON_SCALABLE = \
 	scalable/apps/aegisub.svg
 
-DESKTOP_FILE = \
-	aegisub.desktop
+DESKTOP_FILE = aegisub.desktop
 
 EXTRA_DIST = \
-	aegisub.desktop.in \
+	aegisub.desktop.template.in \
+	aegisub.desktop.template \
 	$(ICON_HICOLOR) \
 	$(ICON_SCALABLE)
 
 install: install-desktop install-icons
 
-install-desktop:
+install-desktop: $(DESKTOP_FILE)
 	@$(BIN_MKDIR) -p $(DESTDIR)$(P_DESKTOP)
 	$(BIN_INSTALL) $(DESKTOP_FILE) $(DESTDIR)$(P_DESKTOP)/$(DESKTOP_FILE)
 
