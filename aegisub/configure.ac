@@ -221,6 +221,23 @@ PKG_CHECK_MODULES(ICU_UC, icu-uc >= icu_required_version)
 PKG_CHECK_MODULES(ICU_I18N, icu-i18n >= icu_required_version)
 
 ########
+## boost
+########
+AS_IF([test x$enable_slow_wx_checks != xno], [
+  AC_AGI_COMPILE([boost ICU support], [boost_icu], [$BOOST_CPPFLAGS],
+                 [$BOOST_LDFLAGS $BOOST_REGEX_LIB $ICU_UC_LIBS $ICU_I18N_LIBS],[
+  #include <boost/regex/icu.hpp>
+  int main() {
+    auto regex = boost::make_u32regex(".", boost::u32regex::perl);
+    boost::smatch result;
+    u32regex_search("a", result, regex, boost::match_default);
+  } ])
+
+  AS_IF([test x$agi_cv_with_boost_icu = xno],
+        [AC_MSG_FAILURE([Aegisub requires that boost be built with ICU support.])])
+])
+
+########
 ## iconv
 ########
 AC_ARG_VAR([ICONV_CFLAGS], [CFLAGS to use for iconv []])
@@ -230,11 +247,8 @@ AS_IF([test -z "$ICONV_LIBS"], AC_SEARCH_LIBS([iconv_open], [iconv]))
 
 AC_AGI_COMPILE([iconv], [iconv], [$ICONV_CFLAGS], [$ICONV_LIBS],[
 #include <iconv.h>
-int main(void) {
-  iconv_t ic;
-  ic = iconv_open ("UTF-8", "UTF-8");
-  if (!ic) return 1;
-  return 0;
+int main() {
+  return !iconv_open("UTF-8", "UTF-8");
 } ])
 
 AC_SUBST(ICONV_LIBS)
