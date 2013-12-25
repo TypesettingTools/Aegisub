@@ -62,6 +62,7 @@ AC_DEFUN([AX_BOOST_CHRONO],
 		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 		export LDFLAGS
 
+		AS_IF([test x$enable_sanity_checks != xno], [
         AC_CACHE_CHECK(whether the Boost::Chrono library is available,
 					   ax_cv_boost_chrono,
         [AC_LANG_PUSH([C++])
@@ -73,6 +74,7 @@ AC_DEFUN([AX_BOOST_CHRONO],
 			 CXXFLAGS=$CXXFLAGS_SAVE
              AC_LANG_POP([C++])
 		])
+		], [ax_cv_boost_chrono=yes])
 		if test "x$ax_cv_boost_chrono" = "xyes"; then
 			AC_SUBST(BOOST_CPPFLAGS)
 

@@ -63,6 +63,7 @@ AC_DEFUN([AX_BOOST_THREAD],
 		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 		export LDFLAGS
 
+		AS_IF([test x$enable_sanity_checks != xno], [
         AC_CACHE_CHECK(whether the Boost::Thread library is available,
 					   ax_cv_boost_thread,
         [AC_LANG_PUSH([C++])
@@ -82,6 +83,7 @@ AC_DEFUN([AX_BOOST_THREAD],
 			 CXXFLAGS=$CXXFLAGS_SAVE
              AC_LANG_POP([C++])
 		])
+		], [ax_cv_boost_thread=yes])
 		if test "x$ax_cv_boost_thread" = "xyes"; then
            if test "x$host_os" = "xsolaris" ; then
 			  BOOST_CPPFLAGS="-pthreads $BOOST_CPPFLAGS"

@@ -67,6 +67,7 @@ AC_DEFUN([AX_BOOST_FILESYSTEM],
 		LIBS="$LIBS $BOOST_SYSTEM_LIB"
 		export LIBS
 
+		AS_IF([test x$enable_sanity_checks != xno], [
         AC_CACHE_CHECK(whether the Boost::Filesystem library is available,
 					   ax_cv_boost_filesystem,
         [AC_LANG_PUSH([C++])
@@ -77,6 +78,7 @@ AC_DEFUN([AX_BOOST_FILESYSTEM],
 					       ax_cv_boost_filesystem=yes, ax_cv_boost_filesystem=no)
          AC_LANG_POP([C++])
 		])
+		], [ax_cv_boost_filesystem=yes])
 		if test "x$ax_cv_boost_filesystem" = "xyes"; then
 			AC_DEFINE(HAVE_BOOST_FILESYSTEM,,[define if the Boost::Filesystem library is available])
             BOOSTLIBDIR=`echo $BOOST_LDFLAGS | sed -e 's/@<:@^\/@:>@*//'`
