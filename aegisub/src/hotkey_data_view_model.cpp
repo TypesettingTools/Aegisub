@@ -28,7 +28,6 @@
 #include <libaegisub/util.h>
 
 #include "command/command.h"
-#include "command/icon.h"
 #include "compat.h"
 #include "include/aegisub/hotkey.h"
 #include "preferences.h"
@@ -92,7 +91,7 @@ public:
 		if (col == 0)
 			variant = to_wx(combo.Str());
 		else if (col == 1) {
-			wxBitmap icon_bmp(icon::get(combo.CmdName(), 16));
+			auto icon_bmp = cmd::get(combo.CmdName())->Icon(16);
 			wxIcon icon;
 			if (icon_bmp.IsOk())
 				icon.CopyFromBitmap(icon_bmp);

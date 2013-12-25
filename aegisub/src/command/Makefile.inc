@@ -1,5 +1,3 @@
-command/icon.o: CXXFLAGS += -fno-var-tracking
-
 SRC += \
 	command/app.cpp \
 	command/audio.cpp \
@@ -17,7 +15,6 @@ SRC += \
 	command/vis_tool.cpp
 
 SRC += \
-	command/icon.cpp \
 	command/command.cpp
 
 HEADER += *.h

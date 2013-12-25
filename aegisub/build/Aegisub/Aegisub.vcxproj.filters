@@ -561,9 +561,6 @@
     <ClInclude Include="$(SrcDir)include\aegisub\video_provider.h">
       <Filter>Video\Providers</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)command\icon.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)plugin_manager.h">
       <Filter>Utilities</Filter>
     </ClInclude>
@@ -1087,9 +1084,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)hotkey.cpp">
       <Filter>Main UI</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)command\icon.cpp">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)menu.cpp">
       <Filter>Main UI</Filter>

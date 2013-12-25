@@ -47,6 +47,7 @@
 #include "../dialog_version_check.h"
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
+#include "../libresrc/libresrc.h"
 #include "../main.h"
 #include "../options.h"
 #include "../preferences.h"
@@ -58,6 +59,7 @@ namespace {
 
 struct app_about : public Command {
 	CMD_NAME("app/about")
+	CMD_ICON(about_menu)
 	STR_MENU("&About")
 	STR_DISP("About")
 	STR_HELP("About Aegisub")
@@ -156,6 +158,7 @@ struct app_exit : public Command {
 
 struct app_language : public Command {
 	CMD_NAME("app/language")
+	CMD_ICON(languages_menu)
 	STR_MENU("&Language...")
 	STR_DISP("Language")
 	STR_HELP("Select Aegisub interface language")
@@ -180,6 +183,7 @@ struct app_language : public Command {
 
 struct app_log : public Command {
 	CMD_NAME("app/log")
+	CMD_ICON(about_menu)
 	STR_MENU("&Log window")
 	STR_DISP("Log window")
 	STR_HELP("View the event log")
@@ -191,6 +195,7 @@ struct app_log : public Command {
 
 struct app_new_window : public Command {
 	CMD_NAME("app/new_window")
+	CMD_ICON(new_window_menu)
 	STR_MENU("New &Window")
 	STR_DISP("New Window")
 	STR_HELP("Open a new application window")
@@ -202,6 +207,7 @@ struct app_new_window : public Command {
 
 struct app_options : public Command {
 	CMD_NAME("app/options")
+	CMD_ICON(options_button)
 	STR_MENU("&Options...")
 	STR_DISP("Options")
 	STR_HELP("Configure Aegisub")
@@ -217,6 +223,7 @@ struct app_options : public Command {
 
 struct app_toggle_global_hotkeys : public Command {
 	CMD_NAME("app/toggle/global_hotkeys")
+	CMD_ICON(toggle_audio_medusa)
 	STR_MENU("Toggle global hotkey overrides")
 	STR_DISP("Toggle global hotkey overrides")
 	STR_HELP("Toggle global hotkey overrides (Medusa Mode)")

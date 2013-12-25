@@ -38,6 +38,7 @@
 #include "../dialog_manager.h"
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
+#include "../libresrc/libresrc.h"
 #include "../main.h"
 #include "../options.h"
 #include "../utils.h"
@@ -75,6 +76,7 @@ struct reload_autoload : public Command {
 
 struct open_manager : public Command {
 	CMD_NAME("am/manager")
+	CMD_ICON(automation_toolbutton)
 	STR_MENU("&Automation...")
 	STR_DISP("Automation")
 	STR_HELP("Open automation manager")
@@ -86,6 +88,7 @@ struct open_manager : public Command {
 
 struct meta : public Command {
 	CMD_NAME("am/meta")
+	CMD_ICON(automation_toolbutton)
 	STR_MENU("&Automation...")
 	STR_DISP("Automation")
 	STR_HELP("Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan autoload folder and reload all automation scripts")

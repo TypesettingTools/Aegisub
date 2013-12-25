@@ -142,7 +142,6 @@
     <ClInclude Include="$(SrcDir)colorspace.h" />
     <ClInclude Include="$(SrcDir)colour_button.h" />
     <ClInclude Include="$(SrcDir)command\command.h" />
-    <ClInclude Include="$(SrcDir)command\icon.h" />
     <ClInclude Include="$(SrcDir)compat.h" />
     <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)dialog_about.h" />
@@ -339,7 +338,6 @@
     <ClCompile Include="$(SrcDir)command\edit.cpp" />
     <ClCompile Include="$(SrcDir)command\grid.cpp" />
     <ClCompile Include="$(SrcDir)command\help.cpp" />
-    <ClCompile Include="$(SrcDir)command\icon.cpp" />
     <ClCompile Include="$(SrcDir)command\keyframe.cpp" />
     <ClCompile Include="$(SrcDir)command\recent.cpp" />
     <ClCompile Include="$(SrcDir)command\subtitle.cpp" />

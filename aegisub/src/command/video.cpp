@@ -44,6 +44,7 @@
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../include/aegisub/subtitles_provider.h"
+#include "../libresrc/libresrc.h"
 #include "../main.h"
 #include "../options.h"
 #include "../selection_controller.h"
@@ -201,6 +202,7 @@ struct video_aspect_wide : public validator_video_loaded {
 
 struct video_close : public validator_video_loaded {
 	CMD_NAME("video/close")
+	CMD_ICON(close_video_menu)
 	STR_MENU("&Close Video")
 	STR_DISP("Close Video")
 	STR_HELP("Close the currently open video file")
@@ -242,6 +244,7 @@ struct video_cycle_subtitles_provider : public cmd::Command {
 
 struct video_detach : public validator_video_loaded {
 	CMD_NAME("video/detach")
+	CMD_ICON(detach_video_menu)
 	STR_MENU("&Detach Video")
 	STR_DISP("Detach Video")
 	STR_HELP("Detach the video display from the main window, displaying it in a separate Window")
@@ -261,6 +264,7 @@ struct video_detach : public validator_video_loaded {
 
 struct video_details : public validator_video_loaded {
 	CMD_NAME("video/details")
+	CMD_ICON(show_video_details_menu)
 	STR_MENU("Show &Video Details")
 	STR_DISP("Show Video Details")
 	STR_HELP("Show video details")
@@ -515,6 +519,7 @@ struct video_frame_save_raw : public validator_video_loaded {
 
 struct video_jump : public validator_video_loaded {
 	CMD_NAME("video/jump")
+	CMD_ICON(jumpto_button)
 	STR_MENU("&Jump to...")
 	STR_DISP("Jump to")
 	STR_HELP("Jump to frame or time")
@@ -530,6 +535,7 @@ struct video_jump : public validator_video_loaded {
 
 struct video_jump_end : public validator_video_loaded {
 	CMD_NAME("video/jump/end")
+	CMD_ICON(video_to_subend)
 	STR_MENU("Jump Video to &End")
 	STR_DISP("Jump Video to End")
 	STR_HELP("Jump the video to the end frame of current subtitle")
@@ -543,6 +549,7 @@ struct video_jump_end : public validator_video_loaded {
 
 struct video_jump_start : public validator_video_loaded {
 	CMD_NAME("video/jump/start")
+	CMD_ICON(video_to_substart)
 	STR_MENU("Jump Video to &Start")
 	STR_DISP("Jump Video to Start")
 	STR_HELP("Jump the video to the start frame of current subtitle")
@@ -555,6 +562,7 @@ struct video_jump_start : public validator_video_loaded {
 
 struct video_open : public Command {
 	CMD_NAME("video/open")
+	CMD_ICON(open_video_menu)
 	STR_MENU("&Open Video...")
 	STR_DISP("Open Video")
 	STR_HELP("Open a video file")
@@ -570,6 +578,7 @@ struct video_open : public Command {
 
 struct video_open_dummy : public Command {
 	CMD_NAME("video/open/dummy")
+	CMD_ICON(use_dummy_video_menu)
 	STR_MENU("&Use Dummy Video...")
 	STR_DISP("Use Dummy Video")
 	STR_HELP("Open a placeholder video clip with solid color")
@@ -583,6 +592,7 @@ struct video_open_dummy : public Command {
 
 struct video_opt_autoscroll : public Command {
 	CMD_NAME("video/opt/autoscroll")
+	CMD_ICON(toggle_video_autoscroll)
 	STR_MENU("Toggle autoscroll of video")
 	STR_DISP("Toggle autoscroll of video")
 	STR_HELP("Toggle automatically seeking video to the start time of selected lines")
@@ -599,6 +609,7 @@ struct video_opt_autoscroll : public Command {
 
 struct video_play : public validator_video_loaded {
 	CMD_NAME("video/play")
+	CMD_ICON(button_play)
 	STR_MENU("Play")
 	STR_DISP("Play")
 	STR_HELP("Play video starting on this position")
@@ -610,6 +621,7 @@ struct video_play : public validator_video_loaded {
 
 struct video_play_line : public validator_video_loaded {
 	CMD_NAME("video/play/line")
+	CMD_ICON(button_playline)
 	STR_MENU("Play line")
 	STR_DISP("Play line")
 	STR_HELP("Play current line")
@@ -657,6 +669,7 @@ public:
 class video_stop: public validator_video_loaded {
 public:
 	CMD_NAME("video/stop")
+	CMD_ICON(button_pause)
 	STR_MENU("Stop video")
 	STR_DISP("Stop video")
 	STR_HELP("Stop video playback")
@@ -704,6 +717,7 @@ public:
 
 struct video_zoom_in : public validator_video_attached {
 	CMD_NAME("video/zoom/in")
+	CMD_ICON(zoom_in_button)
 	STR_MENU("Zoom In")
 	STR_DISP("Zoom In")
 	STR_HELP("Zoom video in")
@@ -715,6 +729,7 @@ struct video_zoom_in : public validator_video_attached {
 
 struct video_zoom_out : public validator_video_attached {
 	CMD_NAME("video/zoom/out")
+	CMD_ICON(zoom_out_button)
 	STR_MENU("Zoom Out")
 	STR_DISP("Zoom Out")
 	STR_HELP("Zoom video out")

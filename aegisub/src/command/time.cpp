@@ -40,6 +40,7 @@
 #include "../dialog_manager.h"
 #include "../dialog_shift_times.h"
 #include "../include/aegisub/context.h"
+#include "../libresrc/libresrc.h"
 #include "../options.h"
 #include "../selection_controller.h"
 #include "../video_context.h"
@@ -130,6 +131,7 @@ struct time_continuous_start : public validate_adjoinable {
 
 struct time_frame_current : public validate_video_loaded {
 	CMD_NAME("time/frame/current")
+	CMD_ICON(shift_to_frame)
 	STR_MENU("Shift to &Current Frame")
 	STR_DISP("Shift to Current Frame")
 	STR_HELP("Shift selection so that the active line starts at current frame")
@@ -156,6 +158,7 @@ struct time_frame_current : public validate_video_loaded {
 
 struct time_shift : public Command {
 	CMD_NAME("time/shift")
+	CMD_ICON(shift_times_toolbutton)
 	STR_MENU("S&hift Times...")
 	STR_DISP("Shift Times")
 	STR_HELP("Shift subtitles by time or frames")
@@ -185,6 +188,7 @@ static void snap_subs_video(agi::Context *c, bool set_start) {
 
 struct time_snap_end_video : public validate_video_loaded {
 	CMD_NAME("time/snap/end_video")
+	CMD_ICON(subend_to_video)
 	STR_MENU("Snap &End to Video")
 	STR_DISP("Snap End to Video")
 	STR_HELP("Set end of selected subtitles to current video frame")
@@ -196,6 +200,7 @@ struct time_snap_end_video : public validate_video_loaded {
 
 struct time_snap_scene : public validate_video_loaded {
 	CMD_NAME("time/snap/scene")
+	CMD_ICON(snap_subs_to_scene)
 	STR_MENU("Snap to S&cene")
 	STR_DISP("Snap to Scene")
 	STR_HELP("Set start and end of subtitles to the keyframes around current video frame")
@@ -254,6 +259,7 @@ struct time_add_lead_both : public Command {
 
 struct time_add_lead_in : public Command {
 	CMD_NAME("time/lead/in")
+	CMD_ICON(button_leadin)
 	STR_MENU("Add lead in")
 	STR_DISP("Add lead in")
 	STR_HELP("Add the lead in time to the selected lines")
@@ -265,6 +271,7 @@ struct time_add_lead_in : public Command {
 
 struct time_add_lead_out : public Command {
 	CMD_NAME("time/lead/out")
+	CMD_ICON(button_leadout)
 	STR_MENU("Add lead out")
 	STR_DISP("Add lead out")
 	STR_HELP("Add the lead out time to the selected lines")
@@ -342,6 +349,7 @@ struct time_start_decrease : public Command {
 
 struct time_snap_start_video : public validate_video_loaded {
 	CMD_NAME("time/snap/start_video")
+	CMD_ICON(substart_to_video)
 	STR_MENU("Snap &Start to Video")
 	STR_DISP("Snap Start to Video")
 	STR_HELP("Set start of selected subtitles to current video frame")
@@ -353,6 +361,7 @@ struct time_snap_start_video : public validate_video_loaded {
 
 struct time_next : public Command {
 	CMD_NAME("time/next")
+	CMD_ICON(button_next)
 	STR_MENU("Next Line")
 	STR_DISP("Next Line")
 	STR_HELP("Next line or syllable")
@@ -364,6 +373,7 @@ struct time_next : public Command {
 
 struct time_prev : public Command {
 	CMD_NAME("time/prev")
+	CMD_ICON(button_prev)
 	STR_MENU("Previous Line")
 	STR_DISP("Previous Line")
 	STR_HELP("Previous line or syllable")

@@ -19,6 +19,7 @@
 #include "command.h"
 
 #include "../include/aegisub/context.h"
+#include "../libresrc/libresrc.h"
 #include "../video_box.h"
 #include "../video_context.h"
 #include "../video_display.h"
@@ -54,6 +55,7 @@ namespace {
 
 	struct visual_mode_cross : public visual_tool_command<VisualToolCross> {
 		CMD_NAME("video/tool/cross")
+		CMD_ICON(visual_standard)
 		STR_MENU("Standard")
 		STR_DISP("Standard")
 		STR_HELP("Standard mode, double click sets position")
@@ -61,6 +63,7 @@ namespace {
 
 	struct visual_mode_drag : public visual_tool_command<VisualToolDrag> {
 		CMD_NAME("video/tool/drag")
+		CMD_ICON(visual_move)
 		STR_MENU("Drag")
 		STR_DISP("Drag")
 		STR_HELP("Drag subtitles")
@@ -68,6 +71,7 @@ namespace {
 
 	struct visual_mode_rotate_z : public visual_tool_command<VisualToolRotateZ> {
 		CMD_NAME("video/tool/rotate/z")
+		CMD_ICON(visual_rotatez)
 		STR_MENU("Rotate Z")
 		STR_DISP("Rotate Z")
 		STR_HELP("Rotate subtitles on their Z axis")
@@ -75,6 +79,7 @@ namespace {
 
 	struct visual_mode_rotate_xy : public visual_tool_command<VisualToolRotateXY> {
 		CMD_NAME("video/tool/rotate/xy")
+		CMD_ICON(visual_rotatexy)
 		STR_MENU("Rotate XY")
 		STR_DISP("Rotate XY")
 		STR_HELP("Rotate subtitles on their X and Y axes")
@@ -82,6 +87,7 @@ namespace {
 
 	struct visual_mode_scale : public visual_tool_command<VisualToolScale> {
 		CMD_NAME("video/tool/scale")
+		CMD_ICON(visual_scale)
 		STR_MENU("Scale")
 		STR_DISP("Scale")
 		STR_HELP("Scale subtitles on X and Y axes")
@@ -89,6 +95,7 @@ namespace {
 
 	struct visual_mode_clip : public visual_tool_command<VisualToolClip> {
 		CMD_NAME("video/tool/clip")
+		CMD_ICON(visual_clip)
 		STR_MENU("Clip")
 		STR_DISP("Clip")
 		STR_HELP("Clip subtitles to a rectangle")
@@ -96,6 +103,7 @@ namespace {
 
 	struct visual_mode_vector_clip : public visual_tool_command<VisualToolVectorClip> {
 		CMD_NAME("video/tool/vector_clip")
+		CMD_ICON(visual_vector_clip)
 		STR_MENU("Vector Clip")
 		STR_DISP("Vector Clip")
 		STR_HELP("Clip subtitles to a vectorial area")

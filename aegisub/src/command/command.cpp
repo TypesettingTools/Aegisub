@@ -14,7 +14,6 @@
 
 #include "command.h"
 
-#include "icon.h"
 #include "../compat.h"
 
 #include <libaegisub/log.h>
@@ -48,10 +47,6 @@ namespace cmd {
 		Command &cmd = *find_command(name)->second;
 		if (cmd.Validate(c))
 			cmd(c);
-	}
-
-	wxBitmap const& Command::Icon(int size) const {
-		return icon::get(name(), size);
 	}
 
 	std::vector<std::string> get_registered_commands() {

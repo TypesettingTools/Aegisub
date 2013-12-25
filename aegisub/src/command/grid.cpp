@@ -38,6 +38,7 @@
 #include "../audio_controller.h"
 #include "../audio_timing.h"
 #include "../include/aegisub/context.h"
+#include "../libresrc/libresrc.h"
 #include "../options.h"
 #include "../selection_controller.h"
 #include "../utils.h"
@@ -60,6 +61,7 @@ struct grid_line_next : public Command {
 
 struct grid_line_next_create : public Command {
 	CMD_NAME("grid/line/next/create")
+	CMD_ICON(button_audio_commit)
 	STR_MENU("Next Line")
 	STR_DISP("Next Line")
 	STR_HELP("Move to the next subtitle line, creating a new one if needed")
@@ -250,6 +252,7 @@ struct grid_sort_style_selected : public validate_sel_multiple {
 
 struct grid_tag_cycle_hiding : public Command {
 	CMD_NAME("grid/tag/cycle_hiding")
+	CMD_ICON(toggle_tag_hiding)
 	STR_MENU("Cycle Tag Hiding Mode")
 	STR_DISP("Cycle Tag Hiding Mode")
 	STR_HELP("Cycle through tag hiding modes")
@@ -377,6 +380,7 @@ struct grid_move_down : public Command {
 
 struct grid_swap : public Command {
 	CMD_NAME("grid/swap")
+	CMD_ICON(arrow_sort)
 	STR_MENU("Swap Lines")
 	STR_DISP("Swap Lines")
 	STR_HELP("Swap the two selected lines")

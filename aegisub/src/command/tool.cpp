@@ -45,6 +45,7 @@
 #include "../dialog_timing_processor.h"
 #include "../dialog_translation.h"
 #include "../include/aegisub/context.h"
+#include "../libresrc/libresrc.h"
 #include "../options.h"
 #include "../resolution_resampler.h"
 #include "../video_context.h"
@@ -61,6 +62,7 @@ namespace {
 
 struct tool_assdraw : public Command {
 	CMD_NAME("tool/assdraw")
+	CMD_ICON(assdraw)
 	STR_MENU("ASSDraw3...")
 	STR_DISP("ASSDraw3")
 	STR_HELP("Launch the ASSDraw3 tool for vector drawing")
@@ -72,6 +74,7 @@ struct tool_assdraw : public Command {
 
 struct tool_export : public Command {
 	CMD_NAME("tool/export")
+	CMD_ICON(export_menu)
 	STR_MENU("&Export Subtitles...")
 	STR_DISP("Export Subtitles")
 	STR_HELP("Save a copy of subtitles in a different format or with processing applied to it")
@@ -84,6 +87,7 @@ struct tool_export : public Command {
 
 struct tool_font_collector : public Command {
 	CMD_NAME("tool/font_collector")
+	CMD_ICON(font_collector_button)
 	STR_MENU("&Fonts Collector...")
 	STR_DISP("Fonts Collector")
 	STR_HELP("Open fonts collector")
@@ -95,6 +99,7 @@ struct tool_font_collector : public Command {
 
 struct tool_line_select : public Command {
 	CMD_NAME("tool/line/select")
+	CMD_ICON(select_lines_button)
 	STR_MENU("S&elect Lines...")
 	STR_DISP("Select Lines")
 	STR_HELP("Select lines based on defined criteria")
@@ -106,6 +111,7 @@ struct tool_line_select : public Command {
 
 struct tool_resampleres : public Command {
 	CMD_NAME("tool/resampleres")
+	CMD_ICON(resample_toolbutton)
 	STR_MENU("&Resample Resolution...")
 	STR_DISP("Resample Resolution")
 	STR_HELP("Resample subtitles to maintain their current appearance at a different script resolution")
@@ -120,6 +126,7 @@ struct tool_resampleres : public Command {
 
 struct tool_style_assistant : public Command {
 	CMD_NAME("tool/style/assistant")
+	CMD_ICON(styling_toolbutton)
 	STR_MENU("St&yling Assistant...")
 	STR_DISP("Styling Assistant")
 	STR_HELP("Open styling assistant")
@@ -161,6 +168,7 @@ struct tool_styling_assistant_preview : public tool_styling_assistant_validator 
 
 struct tool_style_manager : public Command {
 	CMD_NAME("tool/style/manager")
+	CMD_ICON(style_toolbutton)
 	STR_MENU("&Styles Manager...")
 	STR_DISP("Styles Manager")
 	STR_HELP("Open the styles manager")
@@ -172,6 +180,7 @@ struct tool_style_manager : public Command {
 
 struct tool_time_kanji : public Command {
 	CMD_NAME("tool/time/kanji")
+	CMD_ICON(kara_timing_copier)
 	STR_MENU("&Kanji Timer...")
 	STR_DISP("Kanji Timer")
 	STR_HELP("Open the Kanji timer copier")
@@ -183,6 +192,7 @@ struct tool_time_kanji : public Command {
 
 struct tool_time_postprocess : public Command {
 	CMD_NAME("tool/time/postprocess")
+	CMD_ICON(timing_processor_toolbutton)
 	STR_MENU("&Timing Post-Processor...")
 	STR_DISP("Timing Post-Processor")
 	STR_HELP("Post-process the subtitle timing to add lead-ins and lead-outs, snap timing to scene changes, etc.")
@@ -194,6 +204,7 @@ struct tool_time_postprocess : public Command {
 
 struct tool_translation_assistant : public Command {
 	CMD_NAME("tool/translation_assistant")
+	CMD_ICON(translation_toolbutton)
 	STR_MENU("&Translation Assistant...")
 	STR_DISP("Translation Assistant")
 	STR_HELP("Open translation assistant")

@@ -35,6 +35,7 @@
 
 #include "../help_button.h"
 #include "../include/aegisub/context.h"
+#include "../libresrc/libresrc.h"
 #include "../options.h"
 
 #include <libaegisub/util.h>
@@ -46,6 +47,7 @@ namespace {
 
 struct help_bugs : public Command {
 	CMD_NAME("help/bugs")
+	CMD_ICON(bugtracker_button)
 	STR_MENU("&Bug Tracker...")
 	STR_DISP("Bug Tracker")
 	STR_HELP("Visit Aegisub's bug tracker to report bugs and request new features")
@@ -66,6 +68,7 @@ struct help_bugs : public Command {
 
 struct help_contents : public Command {
 	CMD_NAME("help/contents")
+	CMD_ICON(contents_button)
 	STR_MENU("&Contents")
 	STR_DISP("Contents")
 	STR_HELP("Help topics")
@@ -77,6 +80,7 @@ struct help_contents : public Command {
 
 struct help_forums : public Command {
 	CMD_NAME("help/forums")
+	CMD_ICON(forums_button)
 	STR_MENU("&Forums")
 	STR_DISP("Forums")
 	STR_HELP("Visit Aegisub's forums")
@@ -88,6 +92,7 @@ struct help_forums : public Command {
 
 struct help_irc : public Command {
 	CMD_NAME("help/irc")
+	CMD_ICON(irc_button)
 	STR_MENU("&IRC Channel")
 	STR_DISP("IRC Channel")
 	STR_HELP("Visit Aegisub's official IRC channel")
@@ -99,6 +104,7 @@ struct help_irc : public Command {
 
 struct help_video : public Command {
 	CMD_NAME("help/video")
+	CMD_ICON(visual_help)
 	STR_MENU("&Visual Typesetting")
 	STR_DISP("Visual Typesetting")
 	STR_HELP("Open the manual page for Visual Typesetting")
@@ -110,6 +116,7 @@ struct help_video : public Command {
 
 struct help_website : public Command {
 	CMD_NAME("help/website")
+	CMD_ICON(website_button)
 	STR_MENU("&Website")
 	STR_DISP("Website")
 	STR_HELP("Visit Aegisub's official website")

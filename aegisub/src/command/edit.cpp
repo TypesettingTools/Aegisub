@@ -43,6 +43,7 @@
 #include "../dialog_search_replace.h"
 #include "../include/aegisub/context.h"
 #include "../initial_line_state.h"
+#include "../libresrc/libresrc.h"
 #include "../options.h"
 #include "../search_replace_engine.h"
 #include "../selection_controller.h"
@@ -331,6 +332,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 
 struct edit_color_primary : public Command {
 	CMD_NAME("edit/color/primary")
+	CMD_ICON(button_color_one)
 	STR_MENU("Primary Color...")
 	STR_DISP("Primary Color")
 	STR_HELP("Set the primary fill color (\\c) at the cursor position")
@@ -342,6 +344,7 @@ struct edit_color_primary : public Command {
 
 struct edit_color_secondary : public Command {
 	CMD_NAME("edit/color/secondary")
+	CMD_ICON(button_color_two)
 	STR_MENU("Secondary Color...")
 	STR_DISP("Secondary Color")
 	STR_HELP("Set the secondary (karaoke) fill color (\\2c) at the cursor position")
@@ -353,6 +356,7 @@ struct edit_color_secondary : public Command {
 
 struct edit_color_outline : public Command {
 	CMD_NAME("edit/color/outline")
+	CMD_ICON(button_color_three)
 	STR_MENU("Outline Color...")
 	STR_DISP("Outline Color")
 	STR_HELP("Set the outline color (\\3c) at the cursor position")
@@ -364,6 +368,7 @@ struct edit_color_outline : public Command {
 
 struct edit_color_shadow : public Command {
 	CMD_NAME("edit/color/shadow")
+	CMD_ICON(button_color_four)
 	STR_MENU("Shadow Color...")
 	STR_DISP("Shadow Color")
 	STR_HELP("Set the shadow color (\\4c) at the cursor position")
@@ -375,6 +380,7 @@ struct edit_color_shadow : public Command {
 
 struct edit_style_bold : public Command {
 	CMD_NAME("edit/style/bold")
+	CMD_ICON(button_bold)
 	STR_MENU("Toggle Bold")
 	STR_DISP("Toggle Bold")
 	STR_HELP("Toggle bold (\\b) for the current selection or at the current cursor position")
@@ -386,6 +392,7 @@ struct edit_style_bold : public Command {
 
 struct edit_style_italic : public Command {
 	CMD_NAME("edit/style/italic")
+	CMD_ICON(button_italics)
 	STR_MENU("Toggle Italics")
 	STR_DISP("Toggle Italics")
 	STR_HELP("Toggle italics (\\i) for the current selection or at the current cursor position")
@@ -397,6 +404,7 @@ struct edit_style_italic : public Command {
 
 struct edit_style_underline : public Command {
 	CMD_NAME("edit/style/underline")
+	CMD_ICON(button_underline)
 	STR_MENU("Toggle Underline")
 	STR_DISP("Toggle Underline")
 	STR_HELP("Toggle underline (\\u) for the current selection or at the current cursor position")
@@ -408,6 +416,7 @@ struct edit_style_underline : public Command {
 
 struct edit_style_strikeout : public Command {
 	CMD_NAME("edit/style/strikeout")
+	CMD_ICON(button_strikeout)
 	STR_MENU("Toggle Strikeout")
 	STR_DISP("Toggle Strikeout")
 	STR_HELP("Toggle strikeout (\\s) for the current selection or at the current cursor position")
@@ -419,6 +428,7 @@ struct edit_style_strikeout : public Command {
 
 struct edit_font : public Command {
 	CMD_NAME("edit/font")
+	CMD_ICON(button_fontname)
 	STR_MENU("Font Face...")
 	STR_DISP("Font Face")
 	STR_HELP("Select a font face and size")
@@ -464,6 +474,7 @@ struct edit_font : public Command {
 
 struct edit_find_replace : public Command {
 	CMD_NAME("edit/find_replace")
+	CMD_ICON(find_replace_menu)
 	STR_MENU("Find and R&eplace...")
 	STR_DISP("Find and Replace")
 	STR_HELP("Find and replace words in subtitles")
@@ -530,6 +541,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 
 struct edit_line_copy : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
+	CMD_ICON(copy_button)
 	STR_MENU("&Copy Lines")
 	STR_DISP("Copy Lines")
 	STR_HELP("Copy subtitles to the clipboard")
@@ -552,6 +564,7 @@ struct edit_line_copy : public validate_sel_nonempty {
 
 struct edit_line_cut: public validate_sel_nonempty {
 	CMD_NAME("edit/line/cut")
+	CMD_ICON(cut_button)
 	STR_MENU("Cu&t Lines")
 	STR_DISP("Cut Lines")
 	STR_HELP("Cut subtitles")
@@ -568,6 +581,7 @@ struct edit_line_cut: public validate_sel_nonempty {
 
 struct edit_line_delete : public validate_sel_nonempty {
 	CMD_NAME("edit/line/delete")
+	CMD_ICON(delete_button)
 	STR_MENU("De&lete Lines")
 	STR_DISP("Delete Lines")
 	STR_HELP("Delete currently selected lines")
@@ -786,6 +800,7 @@ static bool try_paste_lines(agi::Context *c) {
 
 struct edit_line_paste : public Command {
 	CMD_NAME("edit/line/paste")
+	CMD_ICON(paste_button)
 	STR_MENU("&Paste Lines")
 	STR_DISP("Paste Lines")
 	STR_HELP("Paste subtitles")
@@ -1057,6 +1072,7 @@ struct edit_line_split_video : public validate_video_and_sel_nonempty {
 
 struct edit_redo : public Command {
 	CMD_NAME("edit/redo")
+	CMD_ICON(redo_button)
 	STR_HELP("Redo last undone action")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 
@@ -1082,6 +1098,7 @@ struct edit_redo : public Command {
 
 struct edit_undo : public Command {
 	CMD_NAME("edit/undo")
+	CMD_ICON(undo_button)
 	STR_HELP("Undo last action")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
 

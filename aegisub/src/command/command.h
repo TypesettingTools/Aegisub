@@ -39,6 +39,12 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/
 #define STR_HELP(a) wxString StrHelp() const { return _(a); }
 #define CMD_TYPE(a) int Type() const { using namespace cmd; return a; }
 
+#define CMD_ICON(icon) wxBitmap Icon(int size) const override { \
+	if (size == 32) return GETIMAGE(icon##_32); \
+	if (size == 24) return GETIMAGE(icon##_24); \
+	return GETIMAGE(icon##_16); \
+}
+
 #define COMMAND_GROUP(cname, cmdname, menu, disp, help) \
 struct cname : public Command {                         \
 	CMD_NAME(cmdname)                                   \
@@ -101,7 +107,7 @@ namespace cmd {
 
 		/// Request icon.
 		/// @param size Icon size.
-		wxBitmap const& Icon(int size) const;
+		virtual wxBitmap Icon(int size) const { return wxBitmap{}; }
 
 		/// Command function
 		virtual void operator()(agi::Context *c)=0;
