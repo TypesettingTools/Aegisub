@@ -62,6 +62,7 @@ AC_DEFUN([AX_BOOST_ASIO],
 		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 		export LDFLAGS
 
+		AS_IF([test x$enable_sanity_checks != xno], [
         AC_CACHE_CHECK(whether the Boost::ASIO library is available,
 					   ax_cv_boost_asio,
         [AC_LANG_PUSH([C++])
@@ -79,6 +80,7 @@ AC_DEFUN([AX_BOOST_ASIO],
                              ax_cv_boost_asio=yes, ax_cv_boost_asio=no)
          AC_LANG_POP([C++])
 		])
+		], [ax_cv_boost_asio=yes])
 		if test "x$ax_cv_boost_asio" = "xyes"; then
 			AC_DEFINE(HAVE_BOOST_ASIO,,[define if the Boost::ASIO library is available])
 			BN=boost_system

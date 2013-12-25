@@ -62,6 +62,7 @@ AC_DEFUN([AX_BOOST_REGEX],
 		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 		export LDFLAGS
 
+		AS_IF([test x$enable_sanity_checks != xno], [
         AC_CACHE_CHECK(whether the Boost::Regex library is available,
 					   ax_cv_boost_regex,
         [AC_LANG_PUSH([C++])
@@ -71,6 +72,7 @@ AC_DEFUN([AX_BOOST_REGEX],
                    ax_cv_boost_regex=yes, ax_cv_boost_regex=no)
          AC_LANG_POP([C++])
 		])
+		], [ax_cv_boost_regex=yes])
 		if test "x$ax_cv_boost_regex" = "xyes"; then
 			AC_DEFINE(HAVE_BOOST_REGEX,,[define if the Boost::Regex library is available])
             BOOSTLIBDIR=`echo $BOOST_LDFLAGS | sed -e 's/@<:@^\/@:>@*//'`

@@ -188,6 +188,9 @@ AS_IF([test x$with_libc__ != xno], [
 AC_CHECK_LIB([m], [main])
 AC_CHECK_HEADERS([sys/time.h])
 
+AC_ARG_ENABLE(sanity-checks,
+              AS_HELP_STRING([--disable-sanity-checks],[Skip verifying that found libraries work.]))
+
 ##############################
 # Program Support and Features
 ##############################
@@ -223,7 +226,7 @@ PKG_CHECK_MODULES(ICU_I18N, icu-i18n >= icu_required_version)
 ########
 ## boost
 ########
-AS_IF([test x$enable_slow_wx_checks != xno], [
+AS_IF([test x$enable_sanity_checks != xno], [
   AC_AGI_COMPILE([boost ICU support], [boost_icu], [$BOOST_CPPFLAGS],
                  [$BOOST_LDFLAGS $BOOST_REGEX_LIB $ICU_UC_LIBS $ICU_I18N_LIBS],[
   #include <boost/regex/icu.hpp>
@@ -431,10 +434,7 @@ AC_SUBST(WX_CONFIG_PATH)
 AS_IF([test x$WX_VERSION = x],
   [AC_MSG_FAILURE([wxWidgets detection failed, please set --with-wx* or add the libraries to your LIBS, CXX/CFLAGS.])])
 
-AC_ARG_ENABLE(slow-wx-checks,
-              AS_HELP_STRING([--disable-slow-wx-checks],[Disable slow-running checks for wx components.]))
-
-AS_IF([test x$enable_slow_wx_checks != xno], [
+AS_IF([test x$enable_sanity_checks != xno], [
   AC_AGI_LINK([wxWidgets OpenGL support], [wxopengl], [wx/glcanvas.h], [$GL_CFLAGS $WX_CFLAGS], [$GL_LIBS $WX_LIBS],[
 #include <wx/glcanvas.h>
 int main(void) {

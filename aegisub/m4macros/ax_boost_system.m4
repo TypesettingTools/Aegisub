@@ -64,6 +64,7 @@ AC_DEFUN([AX_BOOST_SYSTEM],
 		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 		export LDFLAGS
 
+		AS_IF([test x$enable_sanity_checks != xno], [
         AC_CACHE_CHECK(whether the Boost::System library is available,
 					   ax_cv_boost_system,
         [AC_LANG_PUSH([C++])
@@ -75,6 +76,7 @@ AC_DEFUN([AX_BOOST_SYSTEM],
 			 CXXFLAGS=$CXXFLAGS_SAVE
              AC_LANG_POP([C++])
 		])
+		], [ax_cv_boost_system=yes])
 		if test "x$ax_cv_boost_system" = "xyes"; then
 			AC_SUBST(BOOST_CPPFLAGS)
 
