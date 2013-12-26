@@ -41,40 +41,40 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/path.h>
 
+#include <boost/container/flat_map.hpp>
 #include <boost/filesystem/path.hpp>
 #include <functional>
-#include <map>
 
 #include <wx/filename.h>
 
-static std::map<wxString,wxString> *pages = nullptr;
+namespace {
+static boost::container::flat_map<wxString, wxString> pages;
 
-static void init_static() {
-	if (!pages) {
-		pages = new std::map<wxString, wxString>;
-		std::map<wxString, wxString> &page = *pages;
-		page["Attachment Manager"] = "Attachment_Manager";
-		page["Automation Manager"] = "Automation/Manager";
-		page["Colour Picker"] = "Colour_Picker";
-		page["Dummy Video"] = "Video#dummyvideo";
-		page["Export"] = "Exporting";
-		page["Fonts Collector"] = "Fonts_Collector";
-		page["Kanji Timer"] = "Kanji_Timer";
-		page["Main"] = "Main_Page";
-		page["Options"] = "Options";
-		page["Paste Over"] = "Paste_Over";
-		page["Properties"] = "Properties";
-		page["Resample resolution"] = "Resolution_Resampler";
-		page["Shift Times"] = "Shift_Times";
-		page["Select Lines"] = "Select_Lines";
-		page["Spell Checker"] = "Spell_Checker";
-		page["Style Editor"] = "Styles";
-		page["Styles Manager"] = "Styles";
-		page["Styling Assistant"] = "Styling_Assistant";
-		page["Timing Processor"] = "Timing_Post-Processor";
-		page["Translation Assistant"] = "Translation_Assistant";
-		page["Visual Typesetting"] = "Visual_Typesetting";
+void init_static() {
+	if (pages.empty()) {
+		pages["Attachment Manager"] = "Attachment_Manager";
+		pages["Automation Manager"] = "Automation/Manager";
+		pages["Colour Picker"] = "Colour_Picker";
+		pages["Dummy Video"] = "Video#dummyvideo";
+		pages["Export"] = "Exporting";
+		pages["Fonts Collector"] = "Fonts_Collector";
+		pages["Kanji Timer"] = "Kanji_Timer";
+		pages["Main"] = "Main_Page";
+		pages["Options"] = "Options";
+		pages["Paste Over"] = "Paste_Over";
+		pages["Properties"] = "Properties";
+		pages["Resample resolution"] = "Resolution_Resampler";
+		pages["Shift Times"] = "Shift_Times";
+		pages["Select Lines"] = "Select_Lines";
+		pages["Spell Checker"] = "Spell_Checker";
+		pages["Style Editor"] = "Styles";
+		pages["Styles Manager"] = "Styles";
+		pages["Styling Assistant"] = "Styling_Assistant";
+		pages["Timing Processor"] = "Timing_Post-Processor";
+		pages["Translation Assistant"] = "Translation_Assistant";
+		pages["Visual Typesetting"] = "Visual_Typesetting";
 	}
+}
 }
 
 HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position, wxSize size)
@@ -82,20 +82,17 @@ HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position,
 {
 	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, page));
 	init_static();
-	if (pages->find(page) == pages->end())
+	if (pages.find(page) == pages.end())
 		throw agi::InternalError("Invalid help page", nullptr);
 }
 
 void HelpButton::OpenPage(wxString const& pageID) {
 	init_static();
 
-	wxString page = (*pages)[pageID];
+	wxString page = pages[pageID];
 	wxString section;
 	page = page.BeforeFirst('#', &section);
 
 	wxLaunchDefaultBrowser(wxString::Format("http://docs.aegisub.org/3.1/%s/#%s", page, section));
 }
 
-void HelpButton::ClearPages() {
-	delete pages;
-}

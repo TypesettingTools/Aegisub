@@ -332,7 +332,6 @@ FrameMain::~FrameMain () {
 	delete_children(this, SubsGrid);
 
 	delete context->ass;
-	HelpButton::ClearPages();
 	delete context->audioController;
 	delete context->local_scripts;
 }

@@ -39,5 +39,4 @@ public:
 	HelpButton(wxWindow *parent, wxString const& page="", wxPoint position=wxDefaultPosition, wxSize size=wxDefaultSize);
 
 	static void OpenPage(wxString const& page);
-	static void ClearPages();
 };
