@@ -382,11 +382,15 @@ namespace Automation4 {
 			push_value(L, &pairs<table_ipairs>);
 			lua_setglobal(L, "ipairs");
 
-			// add include_path to the module load path
+			// set the module load path to include_path
 			lua_getglobal(L, "package");
 			push_value(L, "path");
+#ifdef __WXMSW__
+			push_value(L, "");
+#else
 			push_value(L, "path");
 			lua_gettable(L, -3);
+#endif
 
 			for (auto const& path : include_path) {
 				lua_pushfstring(L, ";%s/?.lua;%s/?/init.lua", path.string().c_str(), path.string().c_str());
