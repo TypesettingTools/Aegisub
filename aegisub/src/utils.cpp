@@ -271,6 +271,7 @@ size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 #ifndef __WXOSX_COCOA__
 void AddFullScreenButton(wxWindow *) { }
 void SetFloatOnParent(wxWindow *) { }
+double GetScaleFactor(wxWindow *) { return 1; }
 #endif
 
 wxString FontFace(std::string opt_prefix) {

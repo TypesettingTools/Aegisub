@@ -49,6 +49,7 @@
 
 class wxMouseEvent;
 class wxWindow;
+namespace cmd { class Command; }
 
 wxString PrettySize(int bytes);
 
@@ -76,6 +77,8 @@ void AddFullScreenButton(wxWindow *window);
 void SetFloatOnParent(wxWindow *window);
 
 void SetPlaceholderText(wxWindow *window, wxString const& placeholder);
+
+double GetScaleFactor(wxWindow *window);
 
 /// Forward a mouse wheel event to the window under the mouse if needed
 /// @param source The initial target of the wheel event

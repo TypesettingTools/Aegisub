@@ -26,6 +26,7 @@
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "utils.h"
 
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
@@ -186,7 +187,7 @@ namespace {
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 #else
-		, icon_size(32)
+		, icon_size(32 * GetScaleFactor(parent))
 #endif
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
