@@ -62,7 +62,3 @@ void SetPlaceholderText(wxWindow *window, wxString const& placeholder) {
     }
 }
 
-double GetScaleFactor(wxWindow *window) {
-    NSWindow *nsWindow = [window->GetHandle() window];
-    return [nsWindow respondsToSelector:@selector(backingScaleFactor)] ? nsWindow.backingScaleFactor : 1.0;
-}

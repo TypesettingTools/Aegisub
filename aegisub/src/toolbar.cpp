@@ -26,6 +26,7 @@
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "retina_helper.h"
 #include "utils.h"
 
 #include <libaegisub/hotkey.h>
@@ -61,6 +62,9 @@ namespace {
 		std::vector<cmd::Command *> commands;
 		/// Hotkey context
 		std::string ht_context;
+
+		RetinaHelper retina_helper;
+
 		/// Current icon size
 		int icon_size;
 
@@ -170,6 +174,7 @@ namespace {
 		, name(std::move(name))
 		, context(c)
 		, ht_context(std::move(ht_context))
+		, retina_helper(parent)
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
@@ -183,11 +188,16 @@ namespace {
 		, name(std::move(name))
 		, context(c)
 		, ht_context(std::move(ht_context))
+		, retina_helper(parent)
 #ifndef __WXMAC__
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 #else
-		, icon_size(32 * GetScaleFactor(parent))
+		, icon_size(32 * retina_helper.GetScaleFactor())
+		, icon_size_slot(retina_helper.AddScaleFactorListener([=](double scale) {
+			icon_size = 32 * retina_helper.GetScaleFactor();
+			RegenerateToolbar();
+		}))
 #endif
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{

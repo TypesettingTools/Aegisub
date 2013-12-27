@@ -40,6 +40,7 @@
 #include "frame_main.h"
 #include "main.h"
 #include "options.h"
+#include "retina_helper.h"
 
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/dispatch.h>
@@ -267,11 +268,15 @@ size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 }
 
 
-// OS X implementation in osx_utils.mm
 #ifndef __WXOSX_COCOA__
+// OS X implementation in osx_utils.mm
 void AddFullScreenButton(wxWindow *) { }
 void SetFloatOnParent(wxWindow *) { }
-double GetScaleFactor(wxWindow *) { return 1; }
+
+// OS X implementation in retina_helper.mm
+RetinaHelper::RetinaHelper(wxWindow *) { }
+RetinaHelper::~RetinaHelper() { }
+int RetinaHelper::GetScaleFactor() const { return 1; }
 #endif
 
 wxString FontFace(std::string opt_prefix) {
