@@ -42,15 +42,19 @@ RetinaHelper::RetinaHelper(wxWindow *window)
 : window(window)
 , observer([RetinaObserver new])
 {
+	NSView *view = window->GetHandle();
 	RetinaObserver *obs = (id)observer;
-	obs.window = window->GetHandle().window;
+	obs.window = view.window;
 	obs.block = ^{ ScaleFactorChanged(GetScaleFactor()); };
 
 	NSNotificationCenter *nc = NSNotificationCenter.defaultCenter;
 	[nc addObserver:(id)observer
 	       selector:@selector(backingPropertiesDidChange:)
 	           name:NSWindowDidChangeBackingPropertiesNotification
-	         object:window->GetHandle().window];
+	         object:view.window];
+
+	if ([view respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
+		view.wantsBestResolutionOpenGLSurface = YES;
 }
 
 RetinaHelper::~RetinaHelper() {

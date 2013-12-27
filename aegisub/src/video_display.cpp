@@ -43,6 +43,7 @@
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/menu.h"
 #include "options.h"
+#include "retina_helper.h"
 #include "spline_curve.h"
 #include "subs_controller.h"
 #include "threaded_frame_source.h"
@@ -99,6 +100,13 @@ VideoDisplay::VideoDisplay(
 , toolBar(visualSubToolBar)
 , zoomBox(zoomBox)
 , freeSize(freeSize)
+, retina_helper(agi::util::make_unique<RetinaHelper>(this))
+, scale_factor(retina_helper->GetScaleFactor())
+, scale_factor_connection(retina_helper->AddScaleFactorListener([=](int new_scale_factor) {
+	double new_zoom = zoomValue * new_scale_factor / scale_factor;
+	scale_factor = new_scale_factor;
+	SetZoom(new_zoom);
+}))
 {
 	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
 	zoomBox->Bind(wxEVT_COMBOBOX, &VideoDisplay::SetZoomFromBox, this);
@@ -199,7 +207,7 @@ void VideoDisplay::Render() try {
 
 	E(glMatrixMode(GL_PROJECTION));
 	E(glLoadIdentity());
-	E(glOrtho(0.0f, videoSize.GetWidth(), videoSize.GetHeight(), 0.0f, -1000.0f, 1000.0f));
+	E(glOrtho(0.0f, videoSize.GetWidth() / scale_factor, videoSize.GetHeight() / scale_factor, 0.0f, -1000.0f, 1000.0f));
 
 	if (OPT_GET("Video/Overscan Mask")->GetBool()) {
 		double ar = con->videoController->GetAspectRatioValue();
@@ -272,7 +280,7 @@ void VideoDisplay::PositionVideo() {
 	if (!con->videoController->IsLoaded() || !IsShownOnScreen()) return;
 
 	viewport_left = 0;
-	viewport_bottom = GetClientSize().GetHeight() - videoSize.GetHeight();
+	viewport_bottom = GetClientSize().GetHeight() * scale_factor - videoSize.GetHeight();
 	viewport_top = 0;
 	viewport_width = videoSize.GetWidth();
 	viewport_height = videoSize.GetHeight();
@@ -300,7 +308,8 @@ void VideoDisplay::PositionVideo() {
 	}
 
 	if (tool)
-		tool->SetDisplayArea(viewport_left, viewport_top, viewport_width, viewport_height);
+		tool->SetDisplayArea(viewport_left / scale_factor, viewport_top / scale_factor,
+		                     viewport_width / scale_factor, viewport_height / scale_factor);
 
 	Render();
 }
@@ -320,12 +329,12 @@ void VideoDisplay::UpdateSize() {
 
 		wxSize cs = GetClientSize();
 		wxSize oldSize = top->GetSize();
-		top->SetSize(top->GetSize() + videoSize - cs);
+		top->SetSize(top->GetSize() + videoSize / scale_factor - cs);
 		SetClientSize(cs + top->GetSize() - oldSize);
 	}
 	else {
-		SetMinClientSize(videoSize);
-		SetMaxClientSize(videoSize);
+		SetMinClientSize(videoSize / scale_factor);
+		SetMaxClientSize(videoSize / scale_factor);
 
 		GetGrandParent()->Layout();
 	}
@@ -335,7 +344,7 @@ void VideoDisplay::UpdateSize() {
 
 void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 	if (freeSize) {
-		videoSize = GetClientSize();
+		videoSize = GetClientSize() * scale_factor;
 		PositionVideo();
 		zoomValue = double(viewport_height) / con->videoController->GetHeight();
 		zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
@@ -419,7 +428,8 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	else {
 		// UpdateSize fits the window to the video, which we don't want to do
 		GetGrandParent()->Layout();
-		tool->SetDisplayArea(viewport_left, viewport_top, viewport_width, viewport_height);
+		tool->SetDisplayArea(viewport_left / scale_factor, viewport_top / scale_factor,
+		                     viewport_width / scale_factor, viewport_height / scale_factor);
 	}
 }
 
