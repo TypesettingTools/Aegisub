@@ -323,9 +323,12 @@ void SubsController::Redo() {
 	context->ass->swap(redo_stack.back().file);
 	commit_id = redo_stack.back().commit_id;
 	undo_stack.emplace_back(*context->ass, redo_stack.back().undo_description, commit_id);
-	redo_stack.pop_back();
 
 	context->ass->Commit("", AssFile::COMMIT_NEW);
+
+    // Done after commit so that the old active line and selection stay alive
+    // while the commit is being processed
+	redo_stack.pop_back();
 }
 
 wxString SubsController::GetUndoDescription() const {
