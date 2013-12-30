@@ -28,7 +28,7 @@ All other dependencies are either stored in the repository or are included as su
 Building:
 
 1. Clone Aegisub's repository recursively to fetch it and all submodules: `git clone --recursive git@github.com:Aegisub/Aegisub.git`
-2. Disable autocrlf for ffmpeg, as its build system manages to not support Windows newlines: `cd aegisub/deps/ffmpeg && config --local core.autocrlf && git rm --cached -r . && git reset --hard`
+2. Disable autocrlf for ffmpeg, as its build system manages to not support Windows newlines: `cd aegisub/deps/ffmpeg && git config --local core.autocrlf && git rm --cached -r . && git reset --hard`
 3. Open Aegisub.sln
 4. Build the "! Update Dependencies" project
 5. Open the properties for the Aegisub project and set the location of MSYS in Configuration Properties > Aegisub > Library paths
