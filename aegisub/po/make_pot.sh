@@ -15,7 +15,7 @@ maybe_append() {
 find ../src ../src/command -name \*.cpp -o -name \*.h \
   | xgettext --files-from=- -o - --c++ -k_ -kSTR_MENU -kSTR_DISP -kSTR_HELP -kwxT \
   | sed 's/SOME DESCRIPTIVE TITLE./Aegisub 3.1.0/' \
-  | sed 's/YEAR/2005-2013/' \
+  | sed 's/YEAR/2005-2014/' \
   | sed "s/THE PACKAGE'S COPYRIGHT HOLDER/Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et. al./" \
   | sed 's/PACKAGE/Aegisub/' \
   | sed 's/VERSION/3.1.0/' \
