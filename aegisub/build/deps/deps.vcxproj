@@ -22,21 +22,10 @@ Aegisub Project http://www.aegisub.org/
     <ProjectName>! Update Dependencies</ProjectName>
   </PropertyGroup>
 
-  <ItemGroup Label="tarball">
-    <TarballProject Include="fftw">
-      <Version>3.3.2</Version>
-      <Url>http://www.fftw.org/fftw-3.3.2.tar.gz</Url>
-      <DirName>fftw-3.3.2</DirName>
-    </TarballProject>
-  </ItemGroup>
-
   <Import Project="$(MSBuildThisFileDirectory)\..\aegisub.props" />
-  <UsingTask TaskName="TarballProject" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
   <UsingTask TaskName="DownloadTgzFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
 
   <Target Name="Build">
-    <TarballProject Projects="@(TarballProject)" Root="$(MSBuildThisFileDirectory)..\..\..\deps" />
-
     <!-- Generated with http://apps.icu-project.org/datacustom/ -->
     <!-- Includes Break Iterator and Collator data only -->
     <DownloadTgzFile
