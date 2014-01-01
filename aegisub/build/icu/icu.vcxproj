@@ -11,6 +11,8 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
+  <UsingTask TaskName="DownloadTgzFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+
   <PropertyGroup Label="ConfigArgs">
     <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-release CFLAGS=-MDd CXXFLAGS=-MDd</CfgDebug>
     <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug --enable-release CFLAGS="-MD -Gw" CXXFLAGS="-MD -Gw"</CfgDebug>
@@ -78,6 +80,16 @@
     Inputs="$(IcuSrcDir)"
     Outputs="$(AegisubObjectDir)build.timestamp"
     >
+
+    <!-- Generated with http://apps.icu-project.org/datacustom/ -->
+    <!-- Includes Break Iterator and Collator data only -->
+    <DownloadTgzFile
+      Url="http://www.aegisub.org/~plorkyeran/icudt51l.dat.tgz"
+      Destination="$(MSBuildThisFileDirectory)..\..\..\deps\icu\source\data\in"
+      OutputFile="$(MSBuildThisFileDirectory)..\..\..\deps\icu\source\data\in\icudt51l.dat"
+      Hash="0885a647fdd48645a6bba48a7f8957131882db02"
+      />
+
     <ExecShellScript
       Command="make"
       Arguments="-j$(NUMBER_OF_PROCESSORS)"
