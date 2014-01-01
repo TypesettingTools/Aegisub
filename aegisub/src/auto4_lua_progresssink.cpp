@@ -245,7 +245,7 @@ namespace Automation4 {
 			return 1;
 		}
 
-		lua_pushstring(L, diag.GetFilename().utf8_str());
+		lua_pushstring(L, diag.GetPath().utf8_str());
 		return 1;
 	}
 }
