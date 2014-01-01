@@ -92,7 +92,7 @@ namespace {
 
 	public:
 		TimecodeValidator(EbuTimecode *target) : value(target) { assert(target); }
-		TimecodeValidator(TimecodeValidator const& other) : value(other.value) { }
+		TimecodeValidator(TimecodeValidator const& other) : wxValidator(other), value(other.value) { }
 	};
 } // namespace {
 

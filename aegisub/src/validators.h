@@ -84,7 +84,7 @@ class EnumBinder : public wxValidator {
 
 public:
 	explicit EnumBinder(T *value) : value(value) { }
-	EnumBinder(EnumBinder const& rhs) : value(rhs.value) { }
+	EnumBinder(EnumBinder const& rhs) : wxValidator(rhs), value(rhs.value) { }
 };
 
 template<typename T>
