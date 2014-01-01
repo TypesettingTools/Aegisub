@@ -115,6 +115,8 @@ struct extended_range {
 	const int value;
 };
 
+#ifdef _MSC_VER
+// Needed for msvc's debug assertions
 bool operator<(extended_range const& lft, extended_range const& rgt) {
 	return lft.codepoint < rgt.codepoint;
 }
@@ -122,6 +124,7 @@ bool operator<(extended_range const& lft, extended_range const& rgt) {
 bool operator<(int lft, extended_range const& rgt) {
 	return lft < rgt.codepoint;
 }
+#endif
 
 bool operator<(extended_range const& lft, int rgt) {
 	return lft.codepoint < rgt;
