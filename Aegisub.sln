@@ -53,11 +53,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffmpeg", "aegisub\build\ffm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "aegisub\build\zlib\zlib.vcxproj", "{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "! Update Dependencies", "aegisub\build\deps\deps.vcxproj", "{472212DF-99E8-4B73-9736-8500616D8A80}"
-	ProjectSection(ProjectDependencies) = postProject
-		{914A5B35-66B2-4293-BB6C-D93DA9BC68C6} = {914A5B35-66B2-4293-BB6C-D93DA9BC68C6}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CEAEFCB9-3759-4D03-8D51-7287D7B7E7DF}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -298,14 +293,6 @@ Global
 		{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}.Release|Win32.Build.0 = Release|Win32
 		{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}.Release|x64.ActiveCfg = Release|x64
 		{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}.Release|x64.Build.0 = Release|x64
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Debug|Win32.ActiveCfg = Debug|Win32
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Debug|x64.ActiveCfg = Debug|x64
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Debug-MinDep|Win32.ActiveCfg = Debug|Win32
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Debug-MinDep|x64.ActiveCfg = Debug|Win32
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Debug-Tests|Win32.ActiveCfg = Debug|Win32
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Debug-Tests|x64.ActiveCfg = Debug|x64
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Release|Win32.ActiveCfg = Debug|Win32
-		{472212DF-99E8-4B73-9736-8500616D8A80}.Release|x64.ActiveCfg = Debug|x64
 		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}.Debug|Win32.ActiveCfg = Debug|Win32
 		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}.Debug|Win32.Build.0 = Debug|Win32
 		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}.Debug|x64.ActiveCfg = Debug|x64
