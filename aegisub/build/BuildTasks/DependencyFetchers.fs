@@ -31,45 +31,6 @@ let downloadArchive (url : String) unpackDest =
   use tarArchive = ICSharpCode.SharpZipLib.Tar.TarArchive.CreateInputTarArchive tarStream
   tarArchive.ExtractContents unpackDest
 
-type TarballProject() =
-  inherit Task()
-
-  member val Projects : ITaskItem[] = null with get, set
-  member val Root = "" with get, set
-
-  override this.Execute() =
-    let needsUpdate directory version =
-      try
-        not <| String.Equals(sprintf "%s\\version.aegisub" directory |> IO.File.ReadAllText, version)
-      with | :? IO.IOException -> true
-
-    let update directory (project : ITaskItem) version =
-      try IO.Directory.Delete(directory, true) with | :? IO.IOException -> ()
-
-      this.Log.LogMessage ("Downloading {0} {1} from {2}", project.ItemSpec, version, project.GetMetadata "Url")
-      downloadArchive (project.GetMetadata "Url") (sprintf @"%s\.." directory)
-
-      let dirname = project.GetMetadata "DirName"
-      if not <| String.IsNullOrWhiteSpace dirname
-      then IO.Directory.Move(dirname |> sprintf @"%s\..\%s" directory, directory)
-
-      IO.File.WriteAllText(sprintf @"%s\version.aegisub" directory, version)
-
-    let check (project : ITaskItem) =
-      let directory = sprintf "%s\\%s" this.Root project.ItemSpec
-      let version = project.GetMetadata "Version"
-
-      if needsUpdate directory <| version
-      then update directory project version
-      else this.Log.LogMessage <| sprintf "%s is up to date" project.ItemSpec
-
-    try
-      this.Projects |> Array.map check |> ignore
-      true
-    with e ->
-      this.Log.LogErrorFromException e
-      false
-
 type DownloadTgzFile() =
   inherit Task()
 

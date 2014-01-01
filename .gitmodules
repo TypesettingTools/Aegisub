@@ -50,3 +50,7 @@
 	url = git://github.com/ittner/Lua-experimentation.git
 	branch = lua51
 	ignore = dirty
+[submodule "deps/fftw"]
+	path = deps/fftw
+	url = https://github.com/Aegisub/fftw3.git
+	ignore = dirty
