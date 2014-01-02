@@ -19,6 +19,9 @@ ifeq (yes, $(BUILD_DARWIN))
 SRC += osx_utils.mm retina_helper.mm
 endif
 
+lpeg.o: CFLAGS += -Wno-unused-function
+MatroskaParser.o: CFLAGS += -Wno-sometimes-uninitialized
+
 ###############
 # AUDIO PLAYERS
 ###############
