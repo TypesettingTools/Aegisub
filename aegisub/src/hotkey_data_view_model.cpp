@@ -91,10 +91,15 @@ public:
 		if (col == 0)
 			variant = to_wx(combo.Str());
 		else if (col == 1) {
-			auto icon_bmp = cmd::get(combo.CmdName())->Icon(16);
 			wxIcon icon;
-			if (icon_bmp.IsOk())
-				icon.CopyFromBitmap(icon_bmp);
+			try {
+				auto icon_bmp = cmd::get(combo.CmdName())->Icon(16);
+				if (icon_bmp.IsOk())
+					icon.CopyFromBitmap(icon_bmp);
+			}
+			catch (agi::Exception const& e) {
+				// Just use no icon; error is reported in the description column
+			}
 			variant << wxDataViewIconText(to_wx(combo.CmdName()), icon);
 		}
 		else if (col == 2) {
