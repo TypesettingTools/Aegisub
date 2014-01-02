@@ -69,6 +69,14 @@ class TimeEdit : public wxTextCtrl {
 	void OnChar(wxKeyEvent &event);
 	void OnModified(wxCommandEvent &event);
 
+#ifdef __WXGTK__
+	// IM processing completely breaks modifying a text ctrl's in response to
+	// wxEVT_CHAR (changing the value clears it and modifying the insertion
+	// point does nothing). IM processing should never be relevant here, so
+	// just disable it.
+	int GTKIMFilterKeypress(GdkEventKey *) const override { return 0; }
+#endif
+
 public:
 	/// Get the current time as an AssTime object
 	AssTime GetTime() const { return time; }
