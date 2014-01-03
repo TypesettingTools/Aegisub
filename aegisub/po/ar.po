@@ -2,21 +2,23 @@
 # Copyright (C) 2005-2012 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et. al.
 # This file is distributed under the same license as the Aegisub package.
 # Niels Martin Hansen <nielsm@aegisub.org>, 2005-2012.
-#
+# صفا الفليج <safaalfulaij@hotmail.com>, 2013.
+# Safa Alfulaij <safaalfulaij@hotmail.con>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-27 16:45-0700\n"
-"PO-Revision-Date: 2013-03-03 16:47+0400\n"
-"Last-Translator: صفا الفليج <safaalfulaij@hotmail.com>\n"
-"Language-Team: صفا الفليج <safaalfulaij@hotmail.com>\n"
+"PO-Revision-Date: 2013-07-22 14:32+0300\n"
+"Last-Translator: safa\n"
+"Language-Team: Arabic <kde-i18n-doc@kde.org>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.3\n"
-"Plural-Forms: nplurals=6; plural= n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"Language: العربية\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Lokalize 1.5\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: ../src/base_grid.cpp:507
@@ -27,7 +29,7 @@ msgstr "#"
 #: ../src/base_grid.cpp:507
 #: ../src/base_grid.cpp:910
 msgid "L"
-msgstr ""
+msgstr "ط"
 
 #: ../src/base_grid.cpp:507
 #: ../src/base_grid.cpp:785
@@ -116,7 +118,7 @@ msgstr "غير محفوظ"
 #: ../src/dialog_shift_times.cpp:67
 #, c-format
 msgid "%s frames"
-msgstr "%s إطارات"
+msgstr "%s من الإطارات"
 
 #: ../src/dialog_shift_times.cpp:69
 msgid "backward"
@@ -149,52 +151,56 @@ msgstr "من %d فصاعدا"
 
 #: ../src/dialog_shift_times.cpp:86
 msgid "sel "
-msgstr "اختير"
+msgstr "اختير "
 
 #: ../src/dialog_shift_times.cpp:103
 #: ../src/command/time.cpp:156
 msgid "Shift Times"
-msgstr "تحريك الاوقات"
+msgstr "إزاحة الأوقات"
 
 #: ../src/dialog_shift_times.cpp:112
 msgid "&Time: "
-msgstr "ال&وقت:"
+msgstr "ال&وقت: "
 
 #: ../src/dialog_shift_times.cpp:113
 msgid "Shift by time"
-msgstr "تحريك بالوقت"
+msgstr "إزاحة بالوقت"
 
 #: ../src/dialog_shift_times.cpp:116
 msgid "&Frames: "
-msgstr "الإطارات:"
+msgstr "الإ&طارات: "
 
 #: ../src/dialog_shift_times.cpp:117
 msgid "Shift by frames"
-msgstr "تحريك بالإطارات"
+msgstr "إزاحة بالإطارات"
 
 #: ../src/dialog_shift_times.cpp:121
 msgid "Enter time in h:mm:ss.cs notation"
-msgstr "إدخال الوقت بالترقيم س:دد:ثﺙ.لﻝ"
+msgstr "أدخل الوقت بالهيئة س:دد:ثﺙ.لﻝ"
 
 #: ../src/dialog_shift_times.cpp:124
 msgid "Enter number of frames to shift by"
-msgstr "إدخال عدد الإطارات للتحريك بها"
+msgstr "أدخل عدد الإطارات للإزاحة بها"
 
 #: ../src/dialog_shift_times.cpp:126
 msgid "For&ward"
 msgstr "للأ&مام"
 
 #: ../src/dialog_shift_times.cpp:127
-msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
-msgstr ""
+msgid ""
+"Shifts subs forward, making them appear later. Use if they are appearing too "
+"soon."
+msgstr "إزاحة الترجمات للأمام، لتأخير ظهورها. استخدم هذا إن كانت تظهر مبكّرة"
 
 #: ../src/dialog_shift_times.cpp:129
 msgid "&Backward"
 msgstr "لل&خلف"
 
 #: ../src/dialog_shift_times.cpp:130
-msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
-msgstr ""
+msgid ""
+"Shifts subs backward, making them appear earlier. Use if they are appearing "
+"too late."
+msgstr "إزاحة الترجمات للخلف لتقديم ظهورها. استخدم هذا إن كانت تظهر متأخرة"
 
 #: ../src/dialog_shift_times.cpp:132
 msgid "&All rows"
@@ -234,7 +240,7 @@ msgstr "م&حو"
 
 #: ../src/dialog_shift_times.cpp:172
 msgid "Shift by"
-msgstr "التحريك بـ"
+msgstr "الإزاحة بـ"
 
 #: ../src/dialog_shift_times.cpp:181
 msgid "Load from history"
@@ -242,15 +248,16 @@ msgstr "تحميل من التاريخ"
 
 #: ../src/dialog_shift_times.cpp:384
 msgid "shifting"
-msgstr "التحريك"
+msgstr "يزيح"
 
 #: ../src/export_fixstyle.cpp:49
 msgid "Fix Styles"
-msgstr ""
+msgstr "إصلاح الأنماط"
 
 #: ../src/export_fixstyle.cpp:49
-msgid "Fixes styles by replacing any style that isn't available on file with Default."
-msgstr ""
+msgid ""
+"Fixes styles by replacing any style that isn't available on file with Default."
+msgstr "إصلاح الأنماط باستبدال أي نمط ليس متوفّر مع الملف افتراضيًّا."
 
 #: ../src/audio_karaoke.cpp:79
 msgid "Discard all uncommitted splits"
@@ -293,13 +300,14 @@ msgstr "&لصق"
 
 #: ../src/auto4_base.cpp:562
 #, c-format
-msgid "An Automation script failed to load. File name: '%s', error reported: %s"
-msgstr "تعذر تحميل سكربت أتممة ما. اسم الملف '%s'، تقرير الخطأ: %s"
+msgid ""
+"An Automation script failed to load. File name: '%s', error reported: %s"
+msgstr "تعذّر تحميل سكرِبت أتمتة ما. اسم الملف '%s'، تقرير الخطأ: %s"
 
 #: ../src/auto4_base.cpp:569
 #, c-format
 msgid "The file was not recognised as an Automation script: %s"
-msgstr ""
+msgstr "لم يعرّف الملف كـسكرِبت أتمتة: %s"
 
 #: ../src/auto4_base.cpp:606
 #: ../src/command/timecode.cpp:85
@@ -321,12 +329,12 @@ msgstr "كل الملفات المدعومة"
 
 #: ../src/visual_tool_drag.cpp:60
 msgid "Toggle between \\move and \\pos"
-msgstr ""
+msgstr "التبديل بين \\move و \\pos"
 
 #: ../src/visual_tool_drag.cpp:330
 #: ../src/visual_tool_cross.cpp:62
 msgid "positioning"
-msgstr ""
+msgstr "يموضع"
 
 #: ../src/font_file_lister_fontconfig.cpp:75
 msgid "Updating font cache\n"
@@ -335,7 +343,7 @@ msgstr "يحدث خبيئة الخطوط\n"
 #: ../src/subtitle_format_ebu3264.cpp:426
 #, c-format
 msgid "Line over maximum length: %s"
-msgstr ""
+msgstr "سطر طوله أكثر من الطول الأقصى: %s"
 
 #: ../src/dialog_video_details.cpp:78
 msgid "Video Details"
@@ -360,11 +368,11 @@ msgstr "الطول:"
 #: ../src/dialog_video_details.cpp:89
 #, c-format
 msgid "%d frames (%s)"
-msgstr "%d إطار (%s)"
+msgstr "%d من الإطارات (%s)"
 
 #: ../src/dialog_video_details.cpp:90
 msgid "Decoder:"
-msgstr "المرمّز:"
+msgstr "المرمِّز:"
 
 #: ../src/dialog_video_details.cpp:92
 #: ../src/preferences.cpp:164
@@ -375,15 +383,15 @@ msgstr "الفيديو"
 #: ../src/dialog_timing_processor.cpp:105
 #: ../src/command/tool.cpp:212
 msgid "Timing Post-Processor"
-msgstr ""
+msgstr "معالج أحداث التوقيت"
 
 #: ../src/dialog_timing_processor.cpp:123
 msgid "Apply to styles"
-msgstr "تطبيق على الأنماط."
+msgstr "تطبيق على الأنماط"
 
 #: ../src/dialog_timing_processor.cpp:125
 msgid "Select styles to process. Unchecked ones will be ignored."
-msgstr "إختيار الأنماط للمعالجة. الأنماط الغير مؤشرة ستُتجاهل."
+msgstr "حدّد الأنماط لمعالجتها. الأنماط الغير معلّمة ستُتجاهل."
 
 #: ../src/dialog_timing_processor.cpp:127
 #: ../src/dialog_paste_over.cpp:86
@@ -392,7 +400,7 @@ msgstr "ال&كل"
 
 #: ../src/dialog_timing_processor.cpp:128
 msgid "Select all styles"
-msgstr "إختيار كل الأنماط"
+msgstr "تحديد كل الأنماط"
 
 #: ../src/dialog_timing_processor.cpp:130
 #: ../src/dialog_paste_over.cpp:88
@@ -401,7 +409,7 @@ msgstr "لا &شيء"
 
 #: ../src/dialog_timing_processor.cpp:131
 msgid "Deselect all styles"
-msgstr ""
+msgstr "إزالة تحديد كل الأنماط"
 
 #: ../src/dialog_timing_processor.cpp:134
 #: ../src/command/app.cpp:236
@@ -413,7 +421,7 @@ msgstr "خيارات"
 
 #: ../src/dialog_timing_processor.cpp:135
 msgid "Affect &selection only"
-msgstr ""
+msgstr "التأثير في الت&حديد فقط"
 
 #: ../src/dialog_timing_processor.cpp:140
 msgid "Lead-in/Lead-out"
@@ -425,7 +433,7 @@ msgstr "إضافة وقت &بداية:"
 
 #: ../src/dialog_timing_processor.cpp:144
 msgid "Enable adding of lead-ins to lines"
-msgstr "لتمكين إضافة أوقات بداية للأسطر"
+msgstr "تمكين إضافة أوقات بداية للأسطر"
 
 #: ../src/dialog_timing_processor.cpp:145
 msgid "Lead in to be added, in milliseconds"
@@ -437,7 +445,7 @@ msgstr "إضافة وقت &نهاية:"
 
 #: ../src/dialog_timing_processor.cpp:149
 msgid "Enable adding of lead-outs to lines"
-msgstr "لتمكين إضافة أوقات نهاية للأسطر"
+msgstr "تمكين إضافة أوقات نهاية للأسطر"
 
 #: ../src/dialog_timing_processor.cpp:150
 msgid "Lead out to be added, in milliseconds"
@@ -449,58 +457,76 @@ msgstr "جعل الترجمات المتجاورة متتابعة"
 
 #: ../src/dialog_timing_processor.cpp:156
 msgid "&Enable"
-msgstr "&تفعيل"
+msgstr "ت&مكين"
 
 #: ../src/dialog_timing_processor.cpp:158
-msgid "Enable snapping of subtitles together if they are within a certain distance of each other"
+msgid ""
+"Enable snapping of subtitles together if they are within a certain distance "
+"of each other"
 msgstr ""
+"تمكين جذب الترجمات مع بعضها البعض إن كانت المسافة بين كل واحدة منها معيّنة"
 
 #: ../src/dialog_timing_processor.cpp:161
 msgid "Max gap:"
 msgstr "أقصى فراغ:"
 
 #: ../src/dialog_timing_processor.cpp:162
-msgid "Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"
+msgid ""
+"Maximum difference between start and end time for two subtitles to be made "
+"continuous, in milliseconds"
 msgstr ""
+"الاختلاف الأقصى بين وقت البداية والنهاية لترجمتان لجعلهما متتابعتان، بالملي "
+"ثانية"
 
 #: ../src/dialog_timing_processor.cpp:163
 msgid "Max overlap:"
 msgstr "أقصى تداخل:"
 
 #: ../src/dialog_timing_processor.cpp:164
-msgid "Maximum overlap between the end and start time for two subtitles to be made continuous, in milliseconds"
+msgid ""
+"Maximum overlap between the end and start time for two subtitles to be made "
+"continuous, in milliseconds"
 msgstr ""
+"التداخل الأقصى بين وقت النهاية والبداية لترجمتان لجعلهما متتابعتان، بالملي "
+"ثانية"
 
 #: ../src/dialog_timing_processor.cpp:167
-msgid "Sets how to set the adjoining of lines. If set totally to left, it will extend or shrink start time of the second line; if totally to right, it will extend or shrink the end time of the first line."
+msgid ""
+"Sets how to set the adjoining of lines. If set totally to left, it will "
+"extend or shrink start time of the second line; if totally to right, it will "
+"extend or shrink the end time of the first line."
 msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:170
 msgid "Bias: Start <- "
-msgstr "الانحياز: البداية <-"
+msgstr "الانحياز: البداية <- "
 
 #: ../src/dialog_timing_processor.cpp:172
 msgid " -> End"
-msgstr "-> النهاية"
+msgstr " -> النهاية"
 
 #: ../src/dialog_timing_processor.cpp:180
 msgid "Keyframe snapping"
-msgstr ""
+msgstr "جذب إطار المفتاح"
 
 #: ../src/dialog_timing_processor.cpp:183
 msgid "E&nable"
-msgstr "ت&فعيل"
+msgstr "&تمكين"
 
 #: ../src/dialog_timing_processor.cpp:184
-msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
-msgstr ""
+msgid ""
+"Enable snapping of subtitles to nearest keyframe, if distance is within "
+"threshold"
+msgstr "تمكين جذب الترجمات إلى إطار المفتاح الأقرب، إن كانت المسافة ضمن العتبة"
 
 #: ../src/dialog_timing_processor.cpp:195
 msgid "Starts before thres.:"
 msgstr "البداية قبل العتبات:"
 
 #: ../src/dialog_timing_processor.cpp:196
-msgid "Threshold for 'before start' distance, that is, how many milliseconds a subtitle must start before a keyframe to snap to it"
+msgid ""
+"Threshold for 'before start' distance, that is, how many milliseconds a "
+"subtitle must start before a keyframe to snap to it"
 msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:198
@@ -508,7 +534,9 @@ msgid "Starts after thres.:"
 msgstr "البداية بعد العتبات:"
 
 #: ../src/dialog_timing_processor.cpp:199
-msgid "Threshold for 'after start' distance, that is, how many milliseconds a subtitle must start after a keyframe to snap to it"
+msgid ""
+"Threshold for 'after start' distance, that is, how many milliseconds a "
+"subtitle must start after a keyframe to snap to it"
 msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:203
@@ -516,7 +544,9 @@ msgid "Ends before thres.:"
 msgstr "النهاية قبل العتبات:"
 
 #: ../src/dialog_timing_processor.cpp:204
-msgid "Threshold for 'before end' distance, that is, how many milliseconds a subtitle must end before a keyframe to snap to it"
+msgid ""
+"Threshold for 'before end' distance, that is, how many milliseconds a "
+"subtitle must end before a keyframe to snap to it"
 msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:206
@@ -524,17 +554,19 @@ msgid "Ends after thres.:"
 msgstr "النهاية بعد العتبات:"
 
 #: ../src/dialog_timing_processor.cpp:207
-msgid "Threshold for 'after end' distance, that is, how many milliseconds a subtitle must end after a keyframe to snap to it"
+msgid ""
+"Threshold for 'after end' distance, that is, how many milliseconds a subtitle "
+"must end after a keyframe to snap to it"
 msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:325
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
-msgstr "واحد من هذه الأسطر في الملف (%i) يحوي مدة سالبة. يجهض."
+msgstr "أحد أسطر الملف (%i) يحوي مدة سالبة. يجهض."
 
 #: ../src/dialog_timing_processor.cpp:326
 msgid "Invalid script"
-msgstr "سكربت غير صحيح"
+msgstr "سكرِبت غير صحيح"
 
 #: ../src/dialog_timing_processor.cpp:422
 msgid "timing processor"
@@ -542,7 +574,7 @@ msgstr "معالجة التوقيت"
 
 #: ../src/mkv_wrap.cpp:186
 msgid "Choose which track to read:"
-msgstr "اختيار المسار لقراءته:"
+msgstr "اختر المسار لقراءته:"
 
 #: ../src/mkv_wrap.cpp:186
 msgid "Multiple subtitle tracks found"
@@ -619,16 +651,16 @@ msgstr "النقر على القائمة"
 
 #: ../src/dialog_styling_assistant.cpp:100
 msgid "Select style"
-msgstr "تحديد النمط"
+msgstr "تحديد نمط"
 
 #: ../src/dialog_styling_assistant.cpp:104
 msgid "&Seek video to line start time"
-msgstr ""
+msgstr "&سعي الفيديو إلى وقت بداية السطر"
 
 #: ../src/dialog_styling_assistant.cpp:113
 #: ../src/dialog_translation.cpp:133
 msgid "Actions"
-msgstr "الأفعال"
+msgstr "الإجراءات"
 
 #: ../src/dialog_styling_assistant.cpp:116
 #: ../src/dialog_translation.cpp:135
@@ -646,7 +678,7 @@ msgstr "مساعد الأنماط"
 
 #: ../src/audio_timing_karaoke.cpp:250
 msgid "karaoke timing"
-msgstr ""
+msgstr "توقيت الكاروكي"
 
 #: ../src/dialog_jumpto.cpp:57
 #: ../src/command/video.cpp:547
@@ -655,11 +687,11 @@ msgstr "قفز إلى"
 
 #: ../src/dialog_jumpto.cpp:67
 msgid "Frame: "
-msgstr "الإطار:"
+msgstr "الإطار: "
 
 #: ../src/dialog_jumpto.cpp:68
 msgid "Time: "
-msgstr "الوقت:"
+msgstr "الوقت: "
 
 #: ../src/dialog_style_manager.cpp:85
 msgid "Move style up"
@@ -709,7 +741,7 @@ msgstr "%s - نسخة (%d)"
 
 #: ../src/dialog_style_manager.cpp:146
 msgid "Could not parse style"
-msgstr ""
+msgstr "تعذّر تحليل النمط"
 
 #: ../src/dialog_style_manager.cpp:153
 msgid "Are you sure you want to delete this style?"
@@ -739,7 +771,7 @@ msgstr "حذف"
 
 #: ../src/dialog_style_manager.cpp:184
 msgid "Copy to &current script ->"
-msgstr "نسخ للسكربت ال&حالي ->"
+msgstr "نسخ للسكرِبت ال&حالي ->"
 
 #: ../src/dialog_style_manager.cpp:191
 msgid "Storage"
@@ -747,15 +779,15 @@ msgstr "المخزن"
 
 #: ../src/dialog_style_manager.cpp:197
 msgid "&Import from script..."
-msgstr "إ&ستيراد من سكربت..."
+msgstr "ا&ستيراد من سكرِبت..."
 
 #: ../src/dialog_style_manager.cpp:198
 msgid "<- Copy to &storage"
-msgstr "نسخ للم&خزن ->"
+msgstr "<- نسخ للم&خزن"
 
 #: ../src/dialog_style_manager.cpp:209
 msgid "Current script"
-msgstr "السكربت الحالي"
+msgstr "السكرِبت الحالي"
 
 #: ../src/dialog_style_manager.cpp:216
 #: ../src/dialog_progress.cpp:229
@@ -768,7 +800,7 @@ msgstr "اسم التخزين الجديد:"
 
 #: ../src/dialog_style_manager.cpp:372
 msgid "New catalog entry"
-msgstr ""
+msgstr "مدخلة كتالوج جديد"
 
 #: ../src/dialog_style_manager.cpp:387
 msgid "A catalog with that name already exists."
@@ -776,14 +808,18 @@ msgstr "هناك كتالوج بهذا الاسم موجود بالفعل."
 
 #: ../src/dialog_style_manager.cpp:387
 msgid "Catalog name conflict"
-msgstr ""
+msgstr "تعارض اسم الكتالوج"
 
 #: ../src/dialog_style_manager.cpp:394
 #, c-format
 msgid ""
-"The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\n"
+"The specified catalog name contains one or more illegal characters. They have "
+"been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
+"اسم الكتالوج المعيّن يحوي محارف غير صالح أو أكثر. تمّ استبدالها بِشرْطَة "
+"سفلية.\n"
+"أُعيد تسمية الكتالوج إلى \"%s\"."
 
 #: ../src/dialog_style_manager.cpp:395
 msgid "Invalid characters"
@@ -800,23 +836,29 @@ msgstr "تأكيد الحذف"
 
 #: ../src/dialog_style_manager.cpp:426
 #, c-format
-msgid "There is already a style with the name \"%s\" in the current storage. Overwrite?"
-msgstr "هناك نمط بالإسم \"%s\" موجود بالفعل في المخزن الحالي. إعادة الكتابة؟"
+msgid ""
+"There is already a style with the name \"%s\" in the current storage. "
+"Overwrite?"
+msgstr ""
+"هناك نمط بالاسم \"%s\" موجود بالفعل في المخزن الحالي. هل تريد إعادة الكتابة؟"
 
 #: ../src/dialog_style_manager.cpp:426
 msgid "Style name collision."
-msgstr ""
+msgstr "تصادم اسم النمط."
 
 #: ../src/dialog_style_manager.cpp:455
 #: ../src/dialog_style_manager.cpp:627
 #, c-format
-msgid "There is already a style with the name \"%s\" in the current script. Overwrite?"
-msgstr "هناك نمط بالإسم \"%s\" موجود بالفعل في السكربت الحالي. إعادة الكتابة؟"
+msgid ""
+"There is already a style with the name \"%s\" in the current script. "
+"Overwrite?"
+msgstr ""
+"هناك نمط بالاسم \"%s\" موجود بالفعل في السكرِبت الحالي هل تريد إعادة الكتابة؟"
 
 #: ../src/dialog_style_manager.cpp:455
 #: ../src/dialog_style_manager.cpp:628
 msgid "Style name collision"
-msgstr ""
+msgstr "تصادم اسم النمط"
 
 #: ../src/dialog_style_manager.cpp:468
 msgid "style copy"
@@ -854,23 +896,23 @@ msgstr "خطأ في استيراد الأنماط"
 
 #: ../src/dialog_style_manager.cpp:617
 msgid "Choose styles to import:"
-msgstr "اختيار الأنماط للاستيراد\""
+msgstr "اختر الأنماط للاستيراد:"
 
 #: ../src/dialog_style_manager.cpp:617
 msgid "Import Styles"
-msgstr "إستيراد الأنماط"
+msgstr "استيراد الأنماط"
 
 #: ../src/dialog_style_manager.cpp:650
 msgid "style import"
-msgstr "إستيراد نمط"
+msgstr "استيراد نمط"
 
 #: ../src/dialog_style_manager.cpp:759
 msgid "Are you sure? This cannot be undone!"
-msgstr ""
+msgstr "هل أنت متأكد؟ لا يمكن التراجع عن ذلك!"
 
 #: ../src/dialog_style_manager.cpp:759
 msgid "Sort styles"
-msgstr ""
+msgstr "فرز الأنماط"
 
 #: ../src/dialog_style_manager.cpp:804
 msgid "style move"
@@ -878,42 +920,42 @@ msgstr "تحريك نمط"
 
 #: ../src/auto4_base.h:311
 msgid "File was not recognized as a script"
-msgstr ""
+msgstr "لم يُميّز الملف كـسكرِبت"
 
 #: ../src/command/timecode.cpp:61
 #: ../src/command/timecode.cpp:62
 msgid "Close Timecodes File"
-msgstr "إغلاق ملف أكواد الوقت"
+msgstr "إغلاق ملف شِفرات الوقت"
 
 #: ../src/command/timecode.cpp:63
 msgid "Closes the currently open timecodes file"
-msgstr "لإغلاق ملف أكواد الوقت الحالي"
+msgstr "يغلق ملف شِفرات الوقت الحالي"
 
 #: ../src/command/timecode.cpp:79
 msgid "Open Timecodes File..."
-msgstr "فتح ملف أكواد الوقت..."
+msgstr "فتح ملف شِفرات الوقت..."
 
 #: ../src/command/timecode.cpp:80
 #: ../src/command/timecode.cpp:86
 msgid "Open Timecodes File"
-msgstr "فتح ملف أكواد الوقت"
+msgstr "فتح ملف شِفرات الوقت"
 
 #: ../src/command/timecode.cpp:81
 msgid "Opens a VFR timecodes v1 or v2 file"
-msgstr ""
+msgstr "يفتح مل شِفرات وقت VFR إصدار 1 أو إصدار 2"
 
 #: ../src/command/timecode.cpp:98
 msgid "Save Timecodes File..."
-msgstr "حفظ ملف أكواد الوقت..."
+msgstr "حفظ ملف شِفرات الوقت..."
 
 #: ../src/command/timecode.cpp:99
 #: ../src/command/timecode.cpp:110
 msgid "Save Timecodes File"
-msgstr "حفظ ملف أكواد الوقت"
+msgstr "حفظ ملف شِفرات الوقت"
 
 #: ../src/command/timecode.cpp:100
 msgid "Saves a VFR timecodes v2 file"
-msgstr ""
+msgstr "يحفظ ملف شِفرات وقت VFR إصدار 2"
 
 #: ../src/command/command.cpp:39
 #, c-format
@@ -930,7 +972,7 @@ msgstr "سينمائي (2.35)"
 
 #: ../src/command/video.cpp:93
 msgid "Forces video to 2.35 aspect ratio"
-msgstr ""
+msgstr "يجبر الفيديو إلى النسبة الباعيّة 2.35"
 
 #: ../src/command/video.cpp:110
 msgid "C&ustom..."
@@ -942,7 +984,7 @@ msgstr "مخصص"
 
 #: ../src/command/video.cpp:112
 msgid "Forces video to a custom aspect ratio"
-msgstr ""
+msgstr "يجبر الفيديو إلى نسبة باعيّة مخصّصة"
 
 #: ../src/command/video.cpp:122
 msgid ""
@@ -951,18 +993,22 @@ msgid ""
 "  fractional (e.g. 16:9)\n"
 "  specific resolution (e.g. 853x480)"
 msgstr ""
+"أدخل النسبة الباعيّة بطريقة من التالي:\n"
+"  رقمي (مثال 2.35)\n"
+"  كسري (مثال 16:9)\n"
+"  دقّة معيّنة (مثال 853x480)"
 
 #: ../src/command/video.cpp:122
 msgid "Enter aspect ratio"
-msgstr ""
+msgstr "أدخل النسبة الباعيّة"
 
 #: ../src/command/video.cpp:157
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
-msgstr ""
+msgstr "قيمة غير صالحة! القيمة الباعيّة يجب أن تكون بين 0.5 و 5.0."
 
 #: ../src/command/video.cpp:157
 msgid "Invalid Aspect Ratio"
-msgstr ""
+msgstr "نسبة باعيّة غير صالحة"
 
 #: ../src/command/video.cpp:170
 msgid "&Default"
@@ -975,7 +1021,7 @@ msgstr "الافتراضي"
 
 #: ../src/command/video.cpp:172
 msgid "Leave video on original aspect ratio"
-msgstr ""
+msgstr "ترك الفيديو على نسبته الباعيّة الأصلية"
 
 #: ../src/command/video.cpp:189
 msgid "&Fullscreen (4:3)"
@@ -987,7 +1033,7 @@ msgstr "ملء الشاشة (4:3)"
 
 #: ../src/command/video.cpp:191
 msgid "Forces video to 4:3 aspect ratio"
-msgstr ""
+msgstr "يجبر الفيديو إلى النسبة الباعيّة 4:3"
 
 #: ../src/command/video.cpp:208
 msgid "&Widescreen (16:9)"
@@ -999,7 +1045,7 @@ msgstr "شاشة عريضة (16:9)"
 
 #: ../src/command/video.cpp:210
 msgid "Forces video to 16:9 aspect ratio"
-msgstr ""
+msgstr "يجبر الفيديو إلى النسبة الباعيّة 16:9"
 
 #: ../src/command/video.cpp:227
 msgid "&Close Video"
@@ -1011,16 +1057,17 @@ msgstr "إغلاق الفيديو"
 
 #: ../src/command/video.cpp:229
 msgid "Closes the currently open video file"
-msgstr "لإغلاق ملف الفيديو المفتوح حاليا"
+msgstr "يغلق ملف الفيديو المفتوح حاليا"
 
 #: ../src/command/video.cpp:239
 #: ../src/command/video.cpp:240
 msgid "Copy coordinates to Clipboard"
-msgstr "نسخ التنسيقات للحافظة"
+msgstr "نسخ الإحداثات للحافظة"
 
 #: ../src/command/video.cpp:241
-msgid "Copy the current coordinates of the mouse over the video to the clipboard"
-msgstr ""
+msgid ""
+"Copy the current coordinates of the mouse over the video to the clipboard"
+msgstr "نسخ إحداثيات الفأرة الحالية على الفيديو إلى الحافظة"
 
 #: ../src/command/video.cpp:254
 msgid "&Detach Video"
@@ -1032,7 +1079,7 @@ msgstr "فصل الفيديو"
 
 #: ../src/command/video.cpp:256
 msgid "Detach video, displaying it in a separate Window"
-msgstr "لفصل الفيديو، عارضا إياه في نافذة مستقلة"
+msgstr "يفصل الفيديو، عارضا إياه في نافذة مستقلة"
 
 #: ../src/command/video.cpp:274
 msgid "Show &Video Details"
@@ -1044,7 +1091,7 @@ msgstr "إظهار تفاصيل الفيديو"
 
 #: ../src/command/video.cpp:276
 msgid "Shows video details"
-msgstr "لإظهار تفاصيل الفيديو"
+msgstr "يظهر تفاصيل الفيديو"
 
 #: ../src/command/video.cpp:287
 #: ../src/command/video.cpp:288
@@ -1062,7 +1109,7 @@ msgstr "نسخ الصورة للحافظة"
 
 #: ../src/command/video.cpp:308
 msgid "Copy the currently displayed frame to the clipboard"
-msgstr "لنسخ الإطار المعروض حاليا للحافظة"
+msgstr "ينسخ الإطار المعروض حاليا للحافظة"
 
 #: ../src/command/video.cpp:321
 #: ../src/command/video.cpp:322
@@ -1070,8 +1117,9 @@ msgid "Copy image to Clipboard (no subtitles)"
 msgstr "نسخ الصورة للحافظة (دون الترجمات)"
 
 #: ../src/command/video.cpp:323
-msgid "Copy the currently displayed frame to the clipboard, without the subtitles"
-msgstr "لنسخ الإطار المعروض حاليا للحافظة، دون الترجمات"
+msgid ""
+"Copy the currently displayed frame to the clipboard, without the subtitles"
+msgstr "ينسخ الإطار المعروض حاليا للحافظة، دون الترجمات"
 
 #: ../src/command/video.cpp:336
 #: ../src/command/video.cpp:337
@@ -1080,7 +1128,7 @@ msgstr "الإطار التالي"
 
 #: ../src/command/video.cpp:338
 msgid "Seek to the next frame"
-msgstr ""
+msgstr "سعي إلى الإطار التالي"
 
 #: ../src/command/video.cpp:348
 #: ../src/command/video.cpp:349
@@ -1089,7 +1137,7 @@ msgstr "الحد التالي"
 
 #: ../src/command/video.cpp:350
 msgid "Seek to the next subtitle boundary"
-msgstr ""
+msgstr "سعي إلى حد الترجمة التالي"
 
 #: ../src/command/video.cpp:378
 #: ../src/command/video.cpp:379
@@ -1098,13 +1146,13 @@ msgstr "الإطار المفتاحي التالي"
 
 #: ../src/command/video.cpp:380
 msgid "Seek to the next keyframe"
-msgstr ""
+msgstr "سعي إلى إطار الوقت التالي"
 
 #: ../src/command/video.cpp:393
 #: ../src/command/video.cpp:394
 #: ../src/command/video.cpp:395
 msgid "Fast jump forward"
-msgstr ""
+msgstr "القفز بسرعة للأمام"
 
 #: ../src/command/video.cpp:407
 #: ../src/command/video.cpp:408
@@ -1113,7 +1161,7 @@ msgstr "الإطار السابق"
 
 #: ../src/command/video.cpp:409
 msgid "Seek to the previous frame"
-msgstr ""
+msgstr "سعي إلى الإطار السابق"
 
 #: ../src/command/video.cpp:419
 #: ../src/command/video.cpp:420
@@ -1122,7 +1170,7 @@ msgstr "الحد السابق"
 
 #: ../src/command/video.cpp:421
 msgid "Seek to the previous subtitle boundary"
-msgstr ""
+msgstr "سعي إلى حد الترجمة السابق"
 
 #: ../src/command/video.cpp:449
 #: ../src/command/video.cpp:450
@@ -1131,13 +1179,13 @@ msgstr "الإطار المفتاحي السابق"
 
 #: ../src/command/video.cpp:451
 msgid "Seek to the previous keyframe"
-msgstr ""
+msgstr "سعي إلى إطار الوقت السابق"
 
 #: ../src/command/video.cpp:473
 #: ../src/command/video.cpp:474
 #: ../src/command/video.cpp:475
 msgid "Fast jump backwards"
-msgstr ""
+msgstr "القفز بسرعة للخلف"
 
 #: ../src/command/video.cpp:522
 #: ../src/command/video.cpp:523
@@ -1145,8 +1193,9 @@ msgid "Save PNG snapshot"
 msgstr "حفظ لقطة PNG"
 
 #: ../src/command/video.cpp:524
-msgid "Save the currently displayed frame to a PNG file in the video's directory"
-msgstr "لحفظ الإطار المعروض حاليا لملف PNG إلى مسار الفيديوهات"
+msgid ""
+"Save the currently displayed frame to a PNG file in the video's directory"
+msgstr "يحفظ الإطار المعروض حاليا لملف PNG إلى مسار الفيديوهات"
 
 #: ../src/command/video.cpp:534
 #: ../src/command/video.cpp:535
@@ -1154,8 +1203,10 @@ msgid "Save PNG snapshot (no subtitles)"
 msgstr "حفظ لقطة PNG (دون الترجمات)"
 
 #: ../src/command/video.cpp:536
-msgid "Save the currently displayed frame without the subtitles to a PNG file in the video's directory"
-msgstr "لحفظ الإطار المعروض حاليا دون الترجمات لملف PNG إلى مسار الفيديوهات"
+msgid ""
+"Save the currently displayed frame without the subtitles to a PNG file in the "
+"video's directory"
+msgstr "يحفظ الإطار المعروض حاليا دون الترجمات لملف PNG إلى مسار الفيديوهات"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -1163,7 +1214,7 @@ msgstr "&قفز إلى..."
 
 #: ../src/command/video.cpp:548
 msgid "Jump to frame or time"
-msgstr "للقفز إلى إطار أو وقت"
+msgstr "يقفز إلى إطار أو وقت"
 
 #: ../src/command/video.cpp:562
 msgid "Jump Video to &End"
@@ -1199,16 +1250,16 @@ msgstr "فتح فيديو"
 
 #: ../src/command/video.cpp:592
 msgid "Opens a video file"
-msgstr "لفتح ملف فيديو"
+msgstr "يفتح ملف فيديو"
 
 #: ../src/command/video.cpp:596
 #: ../src/command/audio.cpp:98
 msgid "Video Formats"
-msgstr ""
+msgstr "هيئات الفيديو"
 
 #: ../src/command/video.cpp:598
 msgid "Open video file"
-msgstr ""
+msgstr "فتح ملف فيديو"
 
 #: ../src/command/video.cpp:609
 msgid "&Use Dummy Video..."
@@ -1220,7 +1271,7 @@ msgstr "استخدام فيديو وهمي"
 
 #: ../src/command/video.cpp:611
 msgid "Opens a video clip with solid color"
-msgstr "لفتح قصاصة فيديو بلون صلب"
+msgstr "يفتح قصاصة فيديو بلون صلب"
 
 #: ../src/command/video.cpp:624
 #: ../src/command/video.cpp:625
@@ -1255,7 +1306,9 @@ msgid "Show Overscan Mask"
 msgstr ""
 
 #: ../src/command/video.cpp:667
-msgid "Show a mask over the video, indicating areas that might get cropped off by overscan on televisions"
+msgid ""
+"Show a mask over the video, indicating areas that might get cropped off by "
+"overscan on televisions"
 msgstr ""
 
 #: ../src/command/video.cpp:684
@@ -1277,7 +1330,7 @@ msgstr "إيقاف الفيديو"
 
 #: ../src/command/video.cpp:705
 msgid "Stop video playback"
-msgstr ""
+msgstr "إيقاف تشغيل الفيديو"
 
 #: ../src/command/video.cpp:716
 msgid "&200%"
@@ -1310,7 +1363,7 @@ msgstr "تكبير"
 
 #: ../src/command/video.cpp:755
 msgid "Zoom video in"
-msgstr "لتكبير الفيديو"
+msgstr "يكبّر الفيديو"
 
 #: ../src/command/video.cpp:765
 #: ../src/command/video.cpp:766
@@ -1319,7 +1372,7 @@ msgstr "تصغير"
 
 #: ../src/command/video.cpp:767
 msgid "Zoom video out"
-msgstr "لتصغير الفيديو"
+msgstr "يصغّر الفيديو"
 
 #: ../src/command/edit.cpp:80
 msgid "Find and R&eplace..."
@@ -1331,7 +1384,7 @@ msgstr "بحث واستبدال"
 
 #: ../src/command/edit.cpp:82
 msgid "Find and replace words in subtitles"
-msgstr "لبحث واستبدال الكلمات في الترجمات"
+msgstr "يبحث ويستبدل الكلمات في الترجمات"
 
 #: ../src/command/edit.cpp:93
 msgid "&Copy Lines"
@@ -1343,7 +1396,7 @@ msgstr "نسخ الأسطر"
 
 #: ../src/command/edit.cpp:95
 msgid "Copy subtitles"
-msgstr "لنسخ الترجمات"
+msgstr "ينسخ الترجمات"
 
 #: ../src/command/edit.cpp:116
 msgid "Cu&t Lines"
@@ -1355,7 +1408,7 @@ msgstr "قص الأسطر"
 
 #: ../src/command/edit.cpp:118
 msgid "Cut subtitles"
-msgstr "لقص الترجمات"
+msgstr "يقصّ الترجمات"
 
 #: ../src/command/edit.cpp:132
 msgid "De&lete Lines"
@@ -1367,7 +1420,7 @@ msgstr "حذف الأسطر"
 
 #: ../src/command/edit.cpp:134
 msgid "Delete currently selected lines"
-msgstr "لحذف الأسطر المحددة حاليا"
+msgstr "يحذف الأسطر المحددة حاليا"
 
 #: ../src/command/edit.cpp:190
 msgid "duplicate lines"
@@ -1383,7 +1436,7 @@ msgstr "تكرار الأسطر"
 
 #: ../src/command/edit.cpp:200
 msgid "Duplicate the selected lines"
-msgstr "لتكرار الأسطر المحددة"
+msgstr "يكرّر الأسطر المحددة"
 
 #: ../src/command/edit.cpp:211
 msgid "D&uplicate and Shift by 1 Frame"
@@ -1395,35 +1448,35 @@ msgstr "تكرار وتحريك بإطار واحد"
 
 #: ../src/command/edit.cpp:213
 msgid "Duplicate lines and shift by one frame"
-msgstr "لتكرار الأسطر وتحريكها بإطار واحد"
+msgstr "يكرّر الأسطر ويحرّكها بإطار واحد"
 
 #: ../src/command/edit.cpp:268
 msgid "As &Karaoke"
-msgstr "ك&كاروكي"
+msgstr "كـ&كاروكي"
 
 #: ../src/command/edit.cpp:269
 msgid "As Karaoke"
-msgstr "ككاروكي"
+msgstr "كـكاروكي"
 
 #: ../src/command/edit.cpp:270
 msgid "Joins selected lines in a single one, as karaoke"
-msgstr "لجمع الأسطر في سطر واحد، ككاروكي"
+msgstr "يجمع الأسطر في سطر واحد، كـكاروكي"
 
 #: ../src/command/edit.cpp:273
 msgid "join as karaoke"
-msgstr "جمع ككاروكي"
+msgstr "جمع كـكاروكي"
 
 #: ../src/command/edit.cpp:281
 msgid "&Concatenate"
-msgstr "&سلسلة"
+msgstr "&لمّ"
 
 #: ../src/command/edit.cpp:282
 msgid "Concatenate"
-msgstr "سلسلة"
+msgstr "لمّ"
 
 #: ../src/command/edit.cpp:283
 msgid "Joins selected lines in a single one, concatenating text together"
-msgstr "لجمع الأسطر في سطر واحد، بوصل النص معا"
+msgstr "لجمع الأسطر في سطر واحد، بلمّ النص معا"
 
 #: ../src/command/edit.cpp:286
 #: ../src/command/edit.cpp:299
@@ -1439,8 +1492,10 @@ msgid "Keep First"
 msgstr "إبقاء الأول"
 
 #: ../src/command/edit.cpp:296
-msgid "Joins selected lines in a single one, keeping text of first and discarding remaining"
-msgstr "لجمع الأسطر في سطر واحد، مبقيا النص في الأول ومتجاهلا البقية"
+msgid ""
+"Joins selected lines in a single one, keeping text of first and discarding "
+"remaining"
+msgstr "يجمع الأسطر في سطر واحد، مبقيا النص في الأول ومتجاهلا البقية"
 
 #: ../src/command/edit.cpp:307
 msgid "&Paste Lines"
@@ -1452,7 +1507,7 @@ msgstr "لصق الأسطر"
 
 #: ../src/command/edit.cpp:309
 msgid "Paste subtitles"
-msgstr "للصق الترجمات"
+msgstr "يلصق الترجمات"
 
 #: ../src/command/edit.cpp:333
 msgid "Paste Lines &Over..."
@@ -1464,7 +1519,7 @@ msgstr "لصق الأسطر فوق"
 
 #: ../src/command/edit.cpp:335
 msgid "Paste subtitles over others"
-msgstr "للصق الترجمات فوق الأخرى"
+msgstr "يلصق الترجمات فوق الأخرى"
 
 #: ../src/command/edit.cpp:356
 msgid "Recom&bine Lines"
@@ -1476,7 +1531,7 @@ msgstr "توحيد الأسطر"
 
 #: ../src/command/edit.cpp:358
 msgid "Recombine subtitles when they have been split and merged"
-msgstr "لتوحيد الترجمات التي فرّقت وجُمعت"
+msgstr "يوحّد الترجمات التي فرّقت وجُمعت"
 
 #: ../src/command/edit.cpp:369
 #: ../src/command/edit.cpp:370
@@ -1485,11 +1540,11 @@ msgstr "جمع الأسطر (بالكاروكي)"
 
 #: ../src/command/edit.cpp:371
 msgid "Uses karaoke timing to split line into multiple smaller lines"
-msgstr "لاستخدام توقيت الكاروكي لتفريق السطر إلى أخرى متعددة أصغر"
+msgstr "يستخدم توقيت الكاروكي لتفريق السطر إلى أخرى متعددة أصغر"
 
 #: ../src/command/edit.cpp:381
 msgid "Redoes last action"
-msgstr "لإعادة آخر فعل"
+msgstr "يعيد آخر إجراء"
 
 #: ../src/command/edit.cpp:386
 msgid "Nothing to &redo"
@@ -1511,7 +1566,7 @@ msgstr "إعادة %s"
 
 #: ../src/command/edit.cpp:407
 msgid "Undoes last action"
-msgstr "للتراجع عن آخر فعل"
+msgstr "يتراجع عن آخر إجراء"
 
 #: ../src/command/edit.cpp:412
 msgid "Nothing to &undo"
@@ -1567,7 +1622,7 @@ msgstr "فتح الترجمات الأخيرة"
 #: ../src/command/recent.cpp:63
 #: ../src/command/recent.cpp:109
 msgid "Open recent timecodes"
-msgstr ""
+msgstr "فتح شِفرات الوقت الأخيرة"
 
 #: ../src/command/recent.cpp:64
 msgid "Open recent video"
@@ -1587,7 +1642,7 @@ msgstr "مرفقات"
 
 #: ../src/command/subtitle.cpp:90
 msgid "Open the attachment list"
-msgstr "لفتح قائمة المرفقات"
+msgstr "يفتح قائمة المرفقات"
 
 #: ../src/command/subtitle.cpp:102
 msgid "&Find..."
@@ -1600,7 +1655,7 @@ msgstr "بحث"
 
 #: ../src/command/subtitle.cpp:104
 msgid "Find words in subtitles"
-msgstr "للبحث عن كلمات في الترجمات"
+msgstr "يبحث عن كلمات في الترجمات"
 
 #: ../src/command/subtitle.cpp:116
 msgid "Find &Next"
@@ -1612,7 +1667,7 @@ msgstr "البحث عن التالي"
 
 #: ../src/command/subtitle.cpp:118
 msgid "Find next match of last word"
-msgstr "للبحث عن التطابق التالي لآخر كلمة"
+msgstr "يبحث عن التطابق التالي لآخر كلمة"
 
 #: ../src/command/subtitle.cpp:147
 msgid "&After Current"
@@ -1624,7 +1679,7 @@ msgstr "بعد الحالي"
 
 #: ../src/command/subtitle.cpp:149
 msgid "Inserts a line after current"
-msgstr "لإدراج سطر بعد الحالي"
+msgstr "يدرج سطر بعد الحالي"
 
 #: ../src/command/subtitle.cpp:174
 #: ../src/command/subtitle.cpp:221
@@ -1640,7 +1695,7 @@ msgstr "بعد الحالي، عند وقت الفيديو"
 
 #: ../src/command/subtitle.cpp:186
 msgid "Inserts a line after current, starting at video time"
-msgstr "لإدراج سطر بعد الحالي، يبدأ عند وقت الفيديو"
+msgstr "يدرج سطر بعد الحالي، يبدأ عند وقت الفيديو"
 
 #: ../src/command/subtitle.cpp:197
 msgid "&Before Current"
@@ -1652,7 +1707,7 @@ msgstr "قبل الحالي"
 
 #: ../src/command/subtitle.cpp:199
 msgid "Inserts a line before current"
-msgstr "لإدراج سطر قبل الحالي"
+msgstr "يدرج سطر قبل الحالي"
 
 #: ../src/command/subtitle.cpp:232
 #: ../src/command/subtitle.cpp:233
@@ -1661,7 +1716,7 @@ msgstr "قبل الحالي، عند وقت الفيديو"
 
 #: ../src/command/subtitle.cpp:234
 msgid "Inserts a line before current, starting at video time"
-msgstr "لإدراج سطر قبل الحالي، يبدأ عند وقت الفيديو"
+msgstr "يدرج سطر قبل الحالي، يبدأ عند وقت الفيديو"
 
 #: ../src/command/subtitle.cpp:245
 msgid "&New Subtitles"
@@ -1673,7 +1728,7 @@ msgstr "ترجمات جديدة"
 
 #: ../src/command/subtitle.cpp:247
 msgid "New subtitles"
-msgstr "لترجمات جديدة"
+msgstr "ترجمات جديدة"
 
 #: ../src/command/subtitle.cpp:259
 msgid "&Open Subtitles..."
@@ -1685,7 +1740,7 @@ msgstr "فتح ترجمات"
 
 #: ../src/command/subtitle.cpp:261
 msgid "Opens a subtitles file"
-msgstr "لفتح ملف ترجمات"
+msgstr "يفتح ملف ترجمات"
 
 #: ../src/command/subtitle.cpp:276
 msgid "Open Subtitles with &Charset..."
@@ -1697,11 +1752,11 @@ msgstr "فتح ترجمات بطقم محارف"
 
 #: ../src/command/subtitle.cpp:278
 msgid "Opens a subtitles file with a specific charset"
-msgstr "لفتح ترجمات بطقم محارف معين"
+msgstr "يفتح ترجمات بطقم محارف معين"
 
 #: ../src/command/subtitle.cpp:287
 msgid "Choose charset code:"
-msgstr "اختر نظام طقم المحارف الشفري:"
+msgstr "اختر شِفرة طقم المحارف:"
 
 #: ../src/command/subtitle.cpp:287
 msgid "Charset"
@@ -1717,7 +1772,7 @@ msgstr "فتح الترجمات من الفيديو"
 
 #: ../src/command/subtitle.cpp:301
 msgid "Opens the subtitles from the current video file"
-msgstr "لفتح الترجمات من ملف الفيديو الحالي"
+msgstr "يفتح الترجمات من ملف الفيديو الحالي"
 
 #: ../src/command/subtitle.cpp:317
 msgid "&Properties..."
@@ -1729,7 +1784,7 @@ msgstr "خصائص"
 
 #: ../src/command/subtitle.cpp:319
 msgid "Open script properties window"
-msgstr "لفتح نافذة خصائص السكربت"
+msgstr "يفتح نافذة خصائص السكرِبت"
 
 #: ../src/command/subtitle.cpp:332
 msgid "Save subtitles file"
@@ -1745,7 +1800,7 @@ msgstr "حفظ الترجمات"
 
 #: ../src/command/subtitle.cpp:355
 msgid "Saves subtitles"
-msgstr "لحفظ الترجمات"
+msgstr "يحفظ الترجمات"
 
 #: ../src/command/subtitle.cpp:371
 msgid "Save Subtitles &as..."
@@ -1757,7 +1812,7 @@ msgstr "حفظ الترجمات كـ"
 
 #: ../src/command/subtitle.cpp:373
 msgid "Saves subtitles with another name"
-msgstr "لحفظ الترجمات باسم آخر"
+msgstr "يحفظ الترجمات باسم آخر"
 
 #: ../src/command/subtitle.cpp:383
 #: ../src/dialog_selected_choices.cpp:47
@@ -1772,7 +1827,7 @@ msgstr "تحديد الكل"
 
 #: ../src/command/subtitle.cpp:385
 msgid "Selects all dialogue lines"
-msgstr "لتحديد كل أسطر مربع الحوار"
+msgstr "يحدّد كل أسطر مربع الحوار"
 
 #: ../src/command/subtitle.cpp:399
 #: ../src/command/subtitle.cpp:400
@@ -1794,7 +1849,7 @@ msgstr "مدقق الإملاء"
 
 #: ../src/command/subtitle.cpp:437
 msgid "Open spell checker"
-msgstr "لفتح مدقق الإملاء"
+msgstr "يفتح مدقق الإملاء"
 
 #: ../src/command/tool.cpp:73
 msgid "ASSDraw3..."
@@ -1806,7 +1861,7 @@ msgstr "ASSDraw3"
 
 #: ../src/command/tool.cpp:75
 msgid "Launch ASSDraw3 tool for vector drawing"
-msgstr "لبدأ الأداة ASSDraw3 للرسم المتجهي"
+msgstr "يبدأ الأداة ASSDraw3 للرسم المتجهي"
 
 #: ../src/command/tool.cpp:85
 msgid "&Export Subtitles..."
@@ -1818,7 +1873,7 @@ msgstr "تصدير الترجمات"
 
 #: ../src/command/tool.cpp:87
 msgid "Saves a copy of subtitles with processing applied to it"
-msgstr ""
+msgstr "يحفظ نسخة من الترجمات مع العمليات المطبَّقة عليها"
 
 #: ../src/command/tool.cpp:99
 msgid "&Fonts Collector..."
@@ -1831,7 +1886,7 @@ msgstr "جامع الخطوط"
 
 #: ../src/command/tool.cpp:101
 msgid "Open fonts collector"
-msgstr "لفتح جامع الخطوط"
+msgstr "يفتح جامع الخطوط"
 
 #: ../src/command/tool.cpp:112
 msgid "S&elect Lines..."
@@ -1864,27 +1919,27 @@ msgstr "مساعد الأن&ماط..."
 
 #: ../src/command/tool.cpp:143
 msgid "Open styling assistant"
-msgstr "لفتح مساعد الأنماط"
+msgstr "يفتح مساعد الأنماط"
 
 #: ../src/command/tool.cpp:161
 #: ../src/command/tool.cpp:250
 msgid "&Accept changes"
-msgstr ""
+msgstr "&قبول التغييرات"
 
 #: ../src/command/tool.cpp:163
 #: ../src/command/tool.cpp:252
 msgid "Commit changes and move to the next line"
-msgstr ""
+msgstr "إيداع التغييرات والانتقال إلى السطر التالي"
 
 #: ../src/command/tool.cpp:173
 #: ../src/command/tool.cpp:262
 msgid "&Preview changes"
-msgstr ""
+msgstr "م&عاينة التغييرات"
 
 #: ../src/command/tool.cpp:175
 #: ../src/command/tool.cpp:264
 msgid "Commit changes and stay on the current line"
-msgstr ""
+msgstr "إيداع التغييرات والبقاء في السطر الحالي"
 
 #: ../src/command/tool.cpp:185
 msgid "&Styles Manager..."
@@ -1892,7 +1947,7 @@ msgstr "مدير الأ&نماط..."
 
 #: ../src/command/tool.cpp:187
 msgid "Open styles manager"
-msgstr "لفتح مدير الأنماط"
+msgstr "يفتح مدير الأنماط"
 
 #: ../src/command/tool.cpp:198
 msgid "&Kanji Timer..."
@@ -1904,15 +1959,19 @@ msgstr "مؤقت الكانجي"
 
 #: ../src/command/tool.cpp:200
 msgid "Open Kanji timer"
-msgstr "لفتح مؤقت الكانجي"
+msgstr "يفتح مؤقت الكانجي"
 
 #: ../src/command/tool.cpp:211
 msgid "&Timing Post-Processor..."
-msgstr ""
+msgstr "معالج أحداث الت&وقيت..."
 
 #: ../src/command/tool.cpp:213
-msgid "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene timing and etc"
+msgid ""
+"Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
+"timing and etc"
 msgstr ""
+"ينفّذ معالج أحداث للتوقيت والتعامل مع أوقات البداية، النهاية، توقيت المشهد، "
+"إلخ"
 
 #: ../src/command/tool.cpp:224
 msgid "&Translation Assistant..."
@@ -1925,7 +1984,7 @@ msgstr "مساعد الترجمة"
 
 #: ../src/command/tool.cpp:226
 msgid "Open translation assistant"
-msgstr "لفتح مساعد الترجمة"
+msgstr "يفتح مساعد الترجمة"
 
 #: ../src/command/tool.cpp:274
 msgid "&Next Line"
@@ -1943,7 +2002,7 @@ msgstr "السطر التالي"
 
 #: ../src/command/tool.cpp:276
 msgid "Move to the next line without committing changes"
-msgstr ""
+msgstr "الانتقال إلى السطر التالي دون إيداع التغييرات"
 
 #: ../src/command/tool.cpp:286
 msgid "&Previous Line"
@@ -1959,7 +2018,7 @@ msgstr "السطر السابق"
 
 #: ../src/command/tool.cpp:288
 msgid "Move to the previous line without committing changes"
-msgstr ""
+msgstr "الانتقال إلى السطر السابق دون إيداع التغييرات"
 
 #: ../src/command/tool.cpp:299
 msgid "&Insert Original"
@@ -1971,7 +2030,7 @@ msgstr "إدراج الأصل"
 
 #: ../src/command/tool.cpp:301
 msgid "Insert the untranslated text"
-msgstr "لإدراج النص الغير مترجم"
+msgstr "يدرج النص الغير مترجم"
 
 #: ../src/command/app.cpp:72
 msgid "&About"
@@ -1996,7 +2055,7 @@ msgstr "عرض الصوت والترجمات"
 
 #: ../src/command/app.cpp:87
 msgid "Display audio and subtitles only"
-msgstr "لعرض الصوت والترجمات فقط"
+msgstr "يعرض الصوت والترجمات فقط"
 
 #: ../src/command/app.cpp:107
 msgid "&Full view"
@@ -2008,7 +2067,7 @@ msgstr "عرض شامل"
 
 #: ../src/command/app.cpp:109
 msgid "Display audio, video and subtitles"
-msgstr "لعرض الصوت، الفيديو والترجمات"
+msgstr "يعرض الصوت، الفيديو والترجمات"
 
 #: ../src/command/app.cpp:129
 msgid "S&ubs Only View"
@@ -2020,7 +2079,7 @@ msgstr "عرض الترجمات فقط"
 
 #: ../src/command/app.cpp:131
 msgid "Display subtitles only"
-msgstr "لعرض الترجمات فقط"
+msgstr "يعرض الترجمات فقط"
 
 #: ../src/command/app.cpp:147
 msgid "&Video+Subs View"
@@ -2032,7 +2091,7 @@ msgstr "عرض الفيديو والترجمات"
 
 #: ../src/command/app.cpp:149
 msgid "Display video and subtitles only"
-msgstr "لعرض الفيديو والترجمات فقط"
+msgstr "يعرض الفيديو والترجمات فقط"
 
 #: ../src/command/app.cpp:169
 msgid "E&xit"
@@ -2044,7 +2103,7 @@ msgstr "إنهاء"
 
 #: ../src/command/app.cpp:171
 msgid "Exit the application"
-msgstr "لإنهاء التطبيق"
+msgstr "ينهي التطبيق"
 
 #: ../src/command/app.cpp:182
 msgid "&Language..."
@@ -2056,7 +2115,7 @@ msgstr "اللغة"
 
 #: ../src/command/app.cpp:184
 msgid "Select Aegisub interface language"
-msgstr "لتحديد لغة واجهة أيجي سب"
+msgstr "يحدّد لغة واجهة أيجي سب"
 
 #: ../src/command/app.cpp:209
 msgid "&Log window"
@@ -2069,7 +2128,7 @@ msgstr "نافذة السجل"
 
 #: ../src/command/app.cpp:211
 msgid "View the event log"
-msgstr "لزيارة سجل الأحداث"
+msgstr "يعرض سجل الأحداث"
 
 #: ../src/command/app.cpp:222
 msgid "New &Window"
@@ -2081,7 +2140,7 @@ msgstr "نافذة جديدة"
 
 #: ../src/command/app.cpp:224
 msgid "Open a new application window"
-msgstr "لفتح نافذة تطبيق جديدة"
+msgstr "يفتح نافذة تطبيق جديدة"
 
 #: ../src/command/app.cpp:235
 msgid "&Options..."
@@ -2099,7 +2158,7 @@ msgstr ""
 
 #: ../src/command/app.cpp:269
 msgid "Toggle the main toolbar"
-msgstr "لتبديل شريط الأدوات الرئيسي"
+msgstr "يبدّل شريط الأدوات الرئيسي"
 
 #: ../src/command/app.cpp:274
 msgid "Hide Toolbar"
@@ -2111,15 +2170,15 @@ msgstr "إظهار شريط الأدوات"
 
 #: ../src/command/app.cpp:291
 msgid "&Check for Updates..."
-msgstr "الت&حقق من التحديثات..."
+msgstr "الت&ماس من التحديثات..."
 
 #: ../src/command/app.cpp:292
 msgid "Check for Updates"
-msgstr "التحقق من التحديثات..."
+msgstr "التماس التحديثات"
 
 #: ../src/command/app.cpp:293
 msgid "Check to see if there is a new version of Aegisub available"
-msgstr "للتحقق من وجود إصدار جديد متوفر لأيجي سب"
+msgstr "يلتمس وجود إصدار جديد متوفر لأيجي سب"
 
 #: ../src/command/grid.cpp:61
 msgid "Move to the next subtitle line"
@@ -2127,7 +2186,7 @@ msgstr "التحرك لسطر الترجمة التالي"
 
 #: ../src/command/grid.cpp:73
 msgid "Move to the next subtitle line, creating a new one if needed"
-msgstr "للتحرك لسطر الترجمة التالي، منشئا واحد إن لزم الأمر"
+msgstr "يتحرّك لسطر الترجمة التالي، منشئا واحد إن لزم الأمر"
 
 #: ../src/command/grid.cpp:97
 msgid "Move to the previous line"
@@ -2145,7 +2204,7 @@ msgstr "اسم الممثل"
 
 #: ../src/command/grid.cpp:109
 msgid "Sort all subtitles by their actor names"
-msgstr "لفرز كل الترجمات بأسماء ممثليها"
+msgstr "يفرز كل الترجمات بأسماء ممثليها"
 
 #: ../src/command/grid.cpp:113
 #: ../src/command/grid.cpp:134
@@ -2164,7 +2223,7 @@ msgstr "فرز"
 
 #: ../src/command/grid.cpp:130
 msgid "Sort selected subtitles by their actor names"
-msgstr "فرز الترجمات المحددة بأسماء ممثيلها"
+msgstr "فرز الترجمات المحددة بأسماء ممثليها"
 
 #: ../src/command/grid.cpp:141
 #: ../src/command/grid.cpp:154
@@ -2173,11 +2232,11 @@ msgstr "ال&تأثير"
 
 #: ../src/command/grid.cpp:143
 msgid "Sort all subtitles by their effects"
-msgstr "لفرز كل الترجمات بتأثيراتهم"
+msgstr "يفرز كل الترجمات بتأثيراتهم"
 
 #: ../src/command/grid.cpp:156
 msgid "Sort selected subtitles by their effects"
-msgstr "لفرز الترجمات المحددة بتأثيراتهم"
+msgstr "يفرز الترجمات المحددة بتأثيراتهم"
 
 #: ../src/command/grid.cpp:167
 #: ../src/command/grid.cpp:180
@@ -2192,11 +2251,11 @@ msgstr "وقت النهاية"
 
 #: ../src/command/grid.cpp:169
 msgid "Sort all subtitles by their end times"
-msgstr "لفرز كل الترجمات بأوقات نهايتهم"
+msgstr "يفرز كل الترجمات بأوقات نهايتهم"
 
 #: ../src/command/grid.cpp:182
 msgid "Sort selected subtitles by their end times"
-msgstr "لفرز الترجمات المحددة بأوقات نهايتهم"
+msgstr "يفرز الترجمات المحددة بأوقات نهايتهم"
 
 #: ../src/command/grid.cpp:193
 #: ../src/command/grid.cpp:206
@@ -2205,11 +2264,11 @@ msgstr "الطب&قة"
 
 #: ../src/command/grid.cpp:195
 msgid "Sort all subtitles by their layer number"
-msgstr "لفرز كل الترجمات برقم طبقاتهم"
+msgstr "يفرز كل الترجمات برقم طبقاتهم"
 
 #: ../src/command/grid.cpp:208
 msgid "Sort selected subtitles by their layer number"
-msgstr "لفرز الترجمات المحددة برقم طبقاتهم"
+msgstr "يفرز الترجمات المحددة برقم طبقاتهم"
 
 #: ../src/command/grid.cpp:219
 #: ../src/command/grid.cpp:232
@@ -2224,11 +2283,11 @@ msgstr "وقت البداية"
 
 #: ../src/command/grid.cpp:221
 msgid "Sort all subtitles by their start times"
-msgstr "لفرز كل الترجمات بأوقات بدايتهم"
+msgstr "يفرز كل الترجمات بأوقات بدايتهم"
 
 #: ../src/command/grid.cpp:234
 msgid "Sort selected subtitles by their start times"
-msgstr "لفرز الترجمات المحددة بأوقات بدايتهم"
+msgstr "يفرز الترجمات المحددة بأوقات بدايتهم"
 
 #: ../src/command/grid.cpp:245
 #: ../src/command/grid.cpp:258
@@ -2243,11 +2302,11 @@ msgstr "اسم النمط"
 
 #: ../src/command/grid.cpp:247
 msgid "Sort all subtitles by their style names"
-msgstr "لفرز كل الترجمات بأسماء أنماطها"
+msgstr "يفرز كل الترجمات بأسماء أنماطها"
 
 #: ../src/command/grid.cpp:260
 msgid "Sort selected subtitles by their style names"
-msgstr "لفرز الترجمات المحددة بأسماء أنماطها"
+msgstr "يفرز الترجمات المحددة بأسماء أنماطها"
 
 #: ../src/command/grid.cpp:271
 #: ../src/command/grid.cpp:272
@@ -2303,7 +2362,8 @@ msgid "Simplify Tags"
 msgstr "تبسيط الوسوم"
 
 #: ../src/command/grid.cpp:335
-msgid "Replace override tags in the subtitle grid with a simplified placeholder"
+msgid ""
+"Replace override tags in the subtitle grid with a simplified placeholder"
 msgstr ""
 
 #: ../src/command/grid.cpp:371
@@ -2313,7 +2373,7 @@ msgstr "تحريك السطر لأعلى"
 
 #: ../src/command/grid.cpp:373
 msgid "Move the selected lines up one row"
-msgstr "لتحريك الأسطر المحددة لأعلى بمقدار صف واحد"
+msgstr "يحرّك الأسطر المحددة لأعلى بمقدار صف واحد"
 
 #: ../src/command/grid.cpp:382
 #: ../src/command/grid.cpp:400
@@ -2327,7 +2387,7 @@ msgstr "تحريك السطر لأسفل"
 
 #: ../src/command/grid.cpp:391
 msgid "Move the selected lines down one row"
-msgstr "لتحريك الأسطر المحددة لأسفل بمقدار صف واحد"
+msgstr "يحرّك الأسطر المحددة لأسفل بمقدار صف واحد"
 
 #: ../src/command/grid.cpp:407
 #: ../src/command/grid.cpp:408
@@ -2336,7 +2396,7 @@ msgstr "تبديل الأسطر"
 
 #: ../src/command/grid.cpp:409
 msgid "Swaps the two selected lines"
-msgstr "لتبديل السطران المحددان مع بعضهما"
+msgstr "يبدّل السطران المحددان مع بعضهما"
 
 #: ../src/command/grid.cpp:424
 msgid "swap lines"
@@ -2344,27 +2404,27 @@ msgstr "تبديل الأسطر"
 
 #: ../src/command/automation.cpp:61
 msgid "&Reload Automation scripts"
-msgstr "إعادة تح&ميل سكربتات الأتممة"
+msgstr "إعادة تح&ميل سكرِبتات الأتمتة"
 
 #: ../src/command/automation.cpp:62
 msgid "Reload Automation scripts"
-msgstr "إعادة تحميل سكربتات الأتممة"
+msgstr "إعادة تحميل سكربتات الأتمتة"
 
 #: ../src/command/automation.cpp:63
 msgid "Reload all Automation scripts and rescan the autoload folder"
-msgstr "لإعادة تحميل كل سكربتات الأتممة وإعادة مسح مجلد التحميل التلقائي"
+msgstr "يعيد تحميل كل سكربتات الأتمتة ويعيد مسح مجلد التحميل التلقائي"
 
 #: ../src/command/automation.cpp:68
 msgid "Reloaded all Automation scripts"
-msgstr ""
+msgstr "أعيد تحميل جميع سكرِبتات الأتمتة"
 
 #: ../src/command/automation.cpp:74
 msgid "R&eload autoload Automation scripts"
-msgstr ""
+msgstr "أ&عد تحميل سكرِبتات الأتمتة المحمّلة تلقائيًّا"
 
 #: ../src/command/automation.cpp:75
 msgid "Reload autoload Automation scripts"
-msgstr ""
+msgstr "أعد تحميل سكرِبتات الأتمتة المحمّلة تلقائيًّا"
 
 #: ../src/command/automation.cpp:76
 msgid "Rescan the Automation autoload folder"
@@ -2372,23 +2432,23 @@ msgstr ""
 
 #: ../src/command/automation.cpp:80
 msgid "Reloaded autoload Automation scripts"
-msgstr ""
+msgstr "أعيد تحميل سكرِبتات الأتمتة المحمّلة تلقائيًّا"
 
 #: ../src/command/automation.cpp:86
 #: ../src/command/automation.cpp:97
 msgid "&Automation..."
-msgstr "أتمم&ة..."
+msgstr "أتمت&ة..."
 
 #: ../src/command/automation.cpp:87
 #: ../src/command/automation.cpp:98
 #: ../src/preferences.cpp:479
 msgid "Automation"
-msgstr "الأتممة"
+msgstr "الأتمتة"
 
 #: ../src/command/automation.cpp:88
 #: ../src/command/automation.cpp:99
 msgid "Open automation manager"
-msgstr "لفتح مدير الأتممة"
+msgstr "يفتح مدير الأتمتة"
 
 #: ../src/command/time.cpp:98
 msgid "Change &End"
@@ -2396,11 +2456,11 @@ msgstr "تغيير الن&هاية"
 
 #: ../src/command/time.cpp:99
 msgid "Change End"
-msgstr "تغيير التهاية"
+msgstr "تغيير النهاية"
 
 #: ../src/command/time.cpp:100
 msgid "Changes times of subs so end times begin on next's start time"
-msgstr "لتغيير الأوقات للترجمات، لذا أوقات النهاية تبدأ عند وقت البداية التالي"
+msgstr "يغيّر الأوقات للترجمات، لذا أوقات النهاية تبدأ عند وقت البداية التالي"
 
 #: ../src/command/time.cpp:112
 msgid "Change &Start"
@@ -2412,7 +2472,7 @@ msgstr "تغيير البداية"
 
 #: ../src/command/time.cpp:114
 msgid "Changes times of subs so start times begin on previous's end time"
-msgstr "لتغيير الأوقات للترجمات، لذا أوقات البداية تبدأ عند وقت النهاية السابق"
+msgstr "يغيّر الأوقات للترجمات، لذا أوقات البداية تبدأ عند وقت النهاية السابق"
 
 #: ../src/command/time.cpp:127
 msgid "Shift to &Current Frame"
@@ -2436,7 +2496,7 @@ msgstr "ت&حريك الأوقات..."
 
 #: ../src/command/time.cpp:157
 msgid "Shift subtitles by time or frames"
-msgstr "لتحريك الترجمات بالوقت أو بالإطارات"
+msgstr "يحرّك الترجمات بالوقت أو بالإطارات"
 
 #: ../src/command/time.cpp:179
 #: ../src/audio_timing_dialogue.cpp:556
@@ -2454,7 +2514,7 @@ msgstr "جذب النهاية للفيديو"
 
 #: ../src/command/time.cpp:187
 msgid "Set end of selected subtitles to current video frame"
-msgstr "لضبط نهاية الترجمات المحددة لإطار الفيديو الحالي"
+msgstr "يضبط نهاية الترجمات المحددة لإطار الفيديو الحالي"
 
 #: ../src/command/time.cpp:197
 msgid "Snap to S&cene"
@@ -2465,39 +2525,40 @@ msgid "Snap to Scene"
 msgstr "جذب للمشهد"
 
 #: ../src/command/time.cpp:199
-msgid "Set start and end of subtitles to the keyframes around current video frame"
+msgid ""
+"Set start and end of subtitles to the keyframes around current video frame"
 msgstr ""
 
 #: ../src/command/time.cpp:244
 msgid "snap to scene"
-msgstr ""
+msgstr "انطباق إلى المشهد"
 
 #: ../src/command/time.cpp:250
 #: ../src/command/time.cpp:251
 #: ../src/command/time.cpp:252
 msgid "Add lead in and out"
-msgstr ""
+msgstr "إضافة وقت بداية ونهاية"
 
 #: ../src/command/time.cpp:263
 #: ../src/command/time.cpp:264
 #: ../src/command/time.cpp:265
 msgid "Add lead in"
-msgstr ""
+msgstr "إضافة وقت بداية"
 
 #: ../src/command/time.cpp:274
 #: ../src/command/time.cpp:275
 #: ../src/command/time.cpp:276
 msgid "Add lead out"
-msgstr ""
+msgstr "إضافة وقت نهاية"
 
 #: ../src/command/time.cpp:285
 #: ../src/command/time.cpp:286
 msgid "Increase length"
-msgstr ""
+msgstr "زيادة الطول"
 
 #: ../src/command/time.cpp:287
 msgid "Increase the length of the current timing unit"
-msgstr ""
+msgstr "زيادة طول وحدة التوقيت الحاليّة"
 
 #: ../src/command/time.cpp:296
 #: ../src/command/time.cpp:297
@@ -2505,17 +2566,18 @@ msgid "Increase length and shift"
 msgstr ""
 
 #: ../src/command/time.cpp:298
-msgid "Increase the length of the current timing unit and shift the following items"
+msgid ""
+"Increase the length of the current timing unit and shift the following items"
 msgstr ""
 
 #: ../src/command/time.cpp:307
 #: ../src/command/time.cpp:308
 msgid "Decrease length"
-msgstr ""
+msgstr "قلل الطول"
 
 #: ../src/command/time.cpp:309
 msgid "Decrease the length of the current timing unit"
-msgstr ""
+msgstr "تقليل طول وحدة التوقيت الحاليّة"
 
 #: ../src/command/time.cpp:318
 #: ../src/command/time.cpp:319
@@ -2523,7 +2585,8 @@ msgid "Decrease length and shift"
 msgstr ""
 
 #: ../src/command/time.cpp:320
-msgid "Decrease the length of the current timing unit and shift the following items"
+msgid ""
+"Decrease the length of the current timing unit and shift the following items"
 msgstr ""
 
 #: ../src/command/time.cpp:329
@@ -2546,15 +2609,15 @@ msgstr ""
 
 #: ../src/command/time.cpp:352
 msgid "Snap &Start to Video"
-msgstr ""
+msgstr "إطباق ال&بداية إلى الفيديو"
 
 #: ../src/command/time.cpp:353
 msgid "Snap Start to Video"
-msgstr ""
+msgstr "إطباق البداية إلى الفيديو"
 
 #: ../src/command/time.cpp:354
 msgid "Set start of selected subtitles to current video frame"
-msgstr ""
+msgstr "يضبط بداية الترجمات المحددة لإطار الفيديو الحالي"
 
 #: ../src/command/time.cpp:366
 msgid "Next line or syllable"
@@ -2567,11 +2630,11 @@ msgstr ""
 #: ../src/command/vis_tool.cpp:64
 #: ../src/command/vis_tool.cpp:65
 msgid "Standard"
-msgstr ""
+msgstr "القياسي"
 
 #: ../src/command/vis_tool.cpp:66
 msgid "Standard mode, double click sets position"
-msgstr ""
+msgstr "الوضع القياسي، النقر المزدوج يعيّن الموقع"
 
 #: ../src/command/vis_tool.cpp:71
 #: ../src/command/vis_tool.cpp:72
@@ -2581,7 +2644,7 @@ msgstr "سحب"
 
 #: ../src/command/vis_tool.cpp:73
 msgid "Drag subtitles"
-msgstr "لسحب الترجمات"
+msgstr "يسحب الترجمات"
 
 #: ../src/command/vis_tool.cpp:78
 #: ../src/command/vis_tool.cpp:79
@@ -2590,16 +2653,16 @@ msgstr "تدوير ع"
 
 #: ../src/command/vis_tool.cpp:80
 msgid "Rotate subtitles on their Z axis"
-msgstr "لتدوير الترجمات حول محاورهم العينية"
+msgstr "يدوّر الترجمات حول محاورهم العينية"
 
 #: ../src/command/vis_tool.cpp:85
 #: ../src/command/vis_tool.cpp:86
 msgid "Rotate XY"
-msgstr "تدوير س.ص"
+msgstr "تدوير ﺱﺹ"
 
 #: ../src/command/vis_tool.cpp:87
 msgid "Rotate subtitles on their X and Y axes"
-msgstr "لتدوير الترجمات حول محاورهم السينية والصادية"
+msgstr "يدوّر الترجمات حول محاورهم السينية والصادية"
 
 #: ../src/command/vis_tool.cpp:92
 #: ../src/command/vis_tool.cpp:93
@@ -2608,25 +2671,25 @@ msgstr "تحجيم"
 
 #: ../src/command/vis_tool.cpp:94
 msgid "Scale subtitles on X and Y axes"
-msgstr "لتحجيم الترجمات حول محاورهم السينية والصادية"
+msgstr "يحجّم الترجمات حول محاورهم السينية والصادية"
 
 #: ../src/command/vis_tool.cpp:99
 #: ../src/command/vis_tool.cpp:100
 msgid "Clip"
-msgstr ""
+msgstr "قص"
 
 #: ../src/command/vis_tool.cpp:101
 msgid "Clip subtitles to a rectangle"
-msgstr ""
+msgstr "قص الترجمات إلى مستطيل"
 
 #: ../src/command/vis_tool.cpp:106
 #: ../src/command/vis_tool.cpp:107
 msgid "Vector Clip"
-msgstr ""
+msgstr "قص متّجهي"
 
 #: ../src/command/vis_tool.cpp:108
 msgid "Clip subtitles to a vectorial area"
-msgstr ""
+msgstr "قص الترجمات إلى مستطيل متّجهي"
 
 #: ../src/command/audio.cpp:77
 msgid "&Close Audio"
@@ -2638,7 +2701,7 @@ msgstr "إغلاق الصوت"
 
 #: ../src/command/audio.cpp:79
 msgid "Closes the currently open audio file"
-msgstr "لإغلاق ملف الصوت المفتوح حاليا"
+msgstr "يغلق ملف الصوت المفتوح حاليا"
 
 #: ../src/command/audio.cpp:90
 msgid "&Open Audio File..."
@@ -2651,11 +2714,11 @@ msgstr "فتح ملف صوت..."
 
 #: ../src/command/audio.cpp:92
 msgid "Opens an audio file"
-msgstr "لفتح ملف صوت"
+msgstr "يفتح ملف صوت"
 
 #: ../src/command/audio.cpp:97
 msgid "Audio Formats"
-msgstr ""
+msgstr "هيئات الوقت"
 
 #: ../src/command/audio.cpp:117
 #: ../src/command/audio.cpp:118
@@ -2664,7 +2727,7 @@ msgstr "فتح صوت 2س30 فارغ"
 
 #: ../src/command/audio.cpp:119
 msgid "Open a 150 minutes blank audio clip, for debugging"
-msgstr "لفتح قصاصة صوت بـ150 دقيقة فارغة، للتنقيح"
+msgstr "يفتح قصاصة صوت بـ150 دقيقة فارغة، للتنقيح"
 
 #: ../src/command/audio.cpp:135
 #: ../src/command/audio.cpp:136
@@ -2673,7 +2736,7 @@ msgstr "فتح صوت 2س30 ضوضائي"
 
 #: ../src/command/audio.cpp:137
 msgid "Open a 150 minutes noise-filled audio clip, for debugging"
-msgstr "لفتح قصاصة صوت بـ150 دقيقة ضوضائي، للتنقيح"
+msgstr "يفتح قصاصة صوت بـ150 دقيقة ضوضائي، للتنقيح"
 
 #: ../src/command/audio.cpp:153
 msgid "Open Audio from &Video"
@@ -2685,7 +2748,7 @@ msgstr "فتح الصوت من الفيديو"
 
 #: ../src/command/audio.cpp:155
 msgid "Opens the audio from the current video file"
-msgstr "لفتح الصوت من ملف الفيديو الحالي"
+msgstr "يفتح الصوت من ملف الفيديو الحالي"
 
 #: ../src/command/audio.cpp:177
 msgid "&Spectrum Display"
@@ -2697,7 +2760,7 @@ msgstr "عرض طيف"
 
 #: ../src/command/audio.cpp:179
 msgid "Display audio as a frequency-power spectrograph"
-msgstr "لعرض الصوت كطيف قوة التردد"
+msgstr "يعرض الصوت كطيف قوة التردد"
 
 #: ../src/command/audio.cpp:195
 msgid "&Waveform Display"
@@ -2709,7 +2772,7 @@ msgstr "عرض موجي"
 
 #: ../src/command/audio.cpp:197
 msgid "Display audio as a linear amplitude graph"
-msgstr "لعرض الصوت كرسم بياني خطي المدى"
+msgstr "يعرض الصوت كرسم بياني خطي المدى"
 
 #: ../src/command/audio.cpp:212
 #: ../src/command/audio.cpp:213
@@ -2718,7 +2781,7 @@ msgstr "إنشاء قصاصة صوت"
 
 #: ../src/command/audio.cpp:214
 msgid "Create an audio clip of the selected line"
-msgstr "لإنشاء قصاصة صوت للسطر المحدد"
+msgstr "ينشأ قصاصة صوت للسطر المحدد"
 
 #: ../src/command/audio.cpp:225
 msgid "Save audio clip"
@@ -2740,7 +2803,7 @@ msgstr "تشغيل التحديد الصوتي"
 
 #: ../src/command/audio.cpp:249
 msgid "Play audio until the end of the selection is reached"
-msgstr "لتشغيل الصوت حتى الوصول لنهاية التحديد"
+msgstr "يشغّل الصوت حتى الوصول لنهاية التحديد"
 
 #: ../src/command/audio.cpp:260
 #: ../src/command/audio.cpp:261
@@ -2749,12 +2812,12 @@ msgstr "تشغيل التحديد الصوتي أو إيقافه"
 
 #: ../src/command/audio.cpp:262
 msgid "Play selection or stop playback if it's already playing"
-msgstr "لتشغيل التحديد المشغَّل أو إيقافه إن كان مشغَّلا فعليا"
+msgstr "يشغّل التحديد أو إيقافه إن كان مشغَّلا فعليا"
 
 #: ../src/command/audio.cpp:277
 #: ../src/command/audio.cpp:278
 msgid "Stop playing"
-msgstr ""
+msgstr "إيقاف التشغيل"
 
 #: ../src/command/audio.cpp:279
 #: ../src/preferences.cpp:552
@@ -2789,7 +2852,7 @@ msgstr "تشغيل أول 500 مث للتحديد"
 #: ../src/command/audio.cpp:353
 #: ../src/command/audio.cpp:354
 msgid "Play from selection start to end of file"
-msgstr ""
+msgstr "تشغيل من بداية التحديد إلى نهاية الملف"
 
 #: ../src/command/audio.cpp:366
 #: ../src/command/audio.cpp:367
@@ -2798,34 +2861,38 @@ msgstr "إيداع"
 
 #: ../src/command/audio.cpp:368
 msgid "Commit any pending audio timing changes"
-msgstr ""
+msgstr "إيداع أي تغييرات في توقيت الصوت المعلّقة"
 
 #: ../src/command/audio.cpp:384
 #: ../src/command/audio.cpp:385
 msgid "Commit and use default timing for next line"
-msgstr ""
+msgstr "إيداع واستخدام التوقيت الافتراضي للسطر التالي"
 
 #: ../src/command/audio.cpp:386
-msgid "Commit any pending audio timing changes and reset the next line's times to the default"
+msgid ""
+"Commit any pending audio timing changes and reset the next line's times to "
+"the default"
 msgstr ""
+"إيداع أي تغييرات في توقيت الصوت المعلّقة وإعادة تعيين توقيت السطر التالي إلى "
+"الافتراضي"
 
 #: ../src/command/audio.cpp:401
 #: ../src/command/audio.cpp:402
 msgid "Commit and move to next line"
-msgstr ""
+msgstr "إيداع وانتقال إلى السطر التالي"
 
 #: ../src/command/audio.cpp:403
 msgid "Commit any pending audio timing changes and move to the next line"
-msgstr ""
+msgstr "إيداع أي تغييرات في توقيت الصوت المعلّقة والانتقال إلى السطر التالي"
 
 #: ../src/command/audio.cpp:418
 #: ../src/command/audio.cpp:419
 msgid "Commit and stay on current line"
-msgstr ""
+msgstr "إيداع والبقاء على السطر الحالي"
 
 #: ../src/command/audio.cpp:420
 msgid "Commit any pending audio timing changes and stay on the current line"
-msgstr ""
+msgstr "إيداع أي تغييرات في توقيت الصوت المعلّقة والبقاء على السطر الحالي"
 
 #: ../src/command/audio.cpp:431
 #: ../src/command/audio.cpp:432
@@ -2840,7 +2907,7 @@ msgstr "التمرير يسارا"
 
 #: ../src/command/audio.cpp:445
 msgid "Scroll the audio display left"
-msgstr "لتمرير عرض الصوت يسارا"
+msgstr "يمرّر عرض الصوت يسارا"
 
 #: ../src/command/audio.cpp:456
 #: ../src/command/audio.cpp:457
@@ -2849,7 +2916,7 @@ msgstr "التمرير يمينا"
 
 #: ../src/command/audio.cpp:458
 msgid "Scroll the audio display right"
-msgstr "لتمرير عرض الصوت يمينا"
+msgstr "يمرّر عرض الصوت يمينا"
 
 #: ../src/command/audio.cpp:472
 #: ../src/command/audio.cpp:473
@@ -2867,13 +2934,13 @@ msgstr "تنفيذ كل التغييرات تلقائيًا"
 #: ../src/command/audio.cpp:507
 #: ../src/command/audio.cpp:508
 msgid "Auto goes to next line on commit"
-msgstr ""
+msgstr "الذهاب تلقائيًّا إلى السطر التالي عند الإيداع"
 
 #: ../src/command/audio.cpp:523
 #: ../src/command/audio.cpp:524
 #: ../src/command/audio.cpp:525
 msgid "Spectrum analyzer mode"
-msgstr ""
+msgstr "وضع المحلّل الطيفي"
 
 #: ../src/command/audio.cpp:540
 #: ../src/command/audio.cpp:541
@@ -2885,7 +2952,7 @@ msgstr ""
 #: ../src/command/audio.cpp:558
 #: ../src/command/audio.cpp:559
 msgid "Toggle karaoke mode"
-msgstr ""
+msgstr "تبديل وضع الكاروكي"
 
 #: ../src/command/help.cpp:61
 msgid "&Bug Tracker..."
@@ -2897,7 +2964,7 @@ msgstr "متتبع العلل"
 
 #: ../src/command/help.cpp:63
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
-msgstr "لزيارة متتبع علل أيجي سب للإخبار عن العلل وطلب مميزات جديدة"
+msgstr "يزور متتبع علل أيجي سب للإخبار عن العلل وطلب مميزات جديدة"
 
 #: ../src/command/help.cpp:83
 msgid "&Contents"
@@ -2929,7 +2996,7 @@ msgstr "المنتديات"
 
 #: ../src/command/help.cpp:111
 msgid "Visit Aegisub's forums"
-msgstr "لزيارة منتديات أيجي سب"
+msgstr "يزور منتديات أيجي سب"
 
 #: ../src/command/help.cpp:122
 msgid "&IRC Channel"
@@ -2941,31 +3008,31 @@ msgstr "قناة IRC"
 
 #: ../src/command/help.cpp:124
 msgid "Visit Aegisub's official IRC channel"
-msgstr "لزيارة قناة IRC لأيجي سب"
+msgstr "يزور قناة IRC لأيجي سب"
 
 #: ../src/command/help.cpp:134
 msgid "&Visual Typesetting"
-msgstr ""
+msgstr "تنضيد ب&صري"
 
 #: ../src/command/help.cpp:135
 msgid "Visual Typesetting"
-msgstr ""
+msgstr "تنضيد بصري"
 
 #: ../src/command/help.cpp:136
 msgid "Open the manual page for Visual Typesetting"
-msgstr ""
+msgstr "فتح صفحة المساعدة للتنضيد البصري"
 
 #: ../src/command/help.cpp:146
 msgid "&Website"
-msgstr "موقع ال&ويب"
+msgstr "موقع ال&وِب"
 
 #: ../src/command/help.cpp:147
 msgid "Website"
-msgstr "موقع الويب"
+msgstr "موقع الوِب"
 
 #: ../src/command/help.cpp:148
 msgid "Visit Aegisub's official website"
-msgstr "لزيارة موقع أيجي سب الرسمي"
+msgstr "يزور موقع أيجي سب الرسمي"
 
 #: ../src/command/keyframe.cpp:62
 #: ../src/command/keyframe.cpp:63
@@ -2974,7 +3041,7 @@ msgstr "إغلاق الإطارات المفتاحية"
 
 #: ../src/command/keyframe.cpp:64
 msgid "Closes the currently open keyframes list"
-msgstr ""
+msgstr "يغلق قائمة الإطارات المفتاحية المفتوحة حاليًّا"
 
 #: ../src/command/keyframe.cpp:80
 msgid "Open Keyframes..."
@@ -2986,7 +3053,7 @@ msgstr "فتح إطارات مفتاحية"
 
 #: ../src/command/keyframe.cpp:82
 msgid "Opens a keyframe list file"
-msgstr "لفتح ملف قائمة إطارات مفتاحية"
+msgstr "يفتح ملف قائمة إطارات مفتاحية"
 
 #: ../src/command/keyframe.cpp:87
 msgid "Open keyframes file"
@@ -3002,7 +3069,7 @@ msgstr "حفظ الإطارات المفتاحية"
 
 #: ../src/command/keyframe.cpp:106
 msgid "Saves the current keyframe list"
-msgstr "لحفظ قائمة الإطارات المفتاحية الحالية"
+msgstr "يحفظ قائمة الإطارات المفتاحية الحالية"
 
 #: ../src/command/keyframe.cpp:115
 msgid "Save keyframes file"
@@ -3024,7 +3091,7 @@ msgstr "استبدال بـ:"
 
 #: ../src/dialog_spellchecker.cpp:128
 msgid "&Skip Comments"
-msgstr ""
+msgstr "ت&خطي التعليقات"
 
 #: ../src/dialog_spellchecker.cpp:135
 msgid "&Replace"
@@ -3049,7 +3116,7 @@ msgstr "إضافة إلى ال&قاموس"
 
 #: ../src/dialog_spellchecker.cpp:236
 msgid "Aegisub has finished checking spelling of this script."
-msgstr "أيجي سب انتهى من تحقق الهجاء لهذا السكربت."
+msgstr "أيجي سب انتهى من تحقق الهجاء لهذا السكرِبت."
 
 #: ../src/dialog_spellchecker.cpp:236
 #: ../src/dialog_spellchecker.cpp:240
@@ -3058,7 +3125,7 @@ msgstr "تدقيق الإملاء اكتمل."
 
 #: ../src/dialog_spellchecker.cpp:240
 msgid "Aegisub has found no spelling mistakes in this script."
-msgstr "لم يحصل أيجي سب على أخطاء في هذا السكربت."
+msgstr "لم يحصل أيجي سب على أخطاء في هذا السكرِبت."
 
 #: ../src/dialog_spellchecker.cpp:278
 #: ../src/dialog_spellchecker.cpp:290
@@ -3088,11 +3155,11 @@ msgstr "حجم الخط"
 
 #: ../src/dialog_properties.cpp:58
 msgid "Script Properties"
-msgstr "خصائص السكربت"
+msgstr "خصائص السكرِبت"
 
 #: ../src/dialog_properties.cpp:64
 msgid "Script"
-msgstr "سكربت"
+msgstr "سكرِبت"
 
 #: ../src/dialog_properties.cpp:67
 msgid "Title:"
@@ -3100,7 +3167,7 @@ msgstr "العنوان:"
 
 #: ../src/dialog_properties.cpp:68
 msgid "Original script:"
-msgstr "السكربت الأصلي:"
+msgstr "السكرِبت الأصلي:"
 
 #: ../src/dialog_properties.cpp:69
 msgid "Translation:"
@@ -3116,15 +3183,15 @@ msgstr "التوقيت:"
 
 #: ../src/dialog_properties.cpp:72
 msgid "Synch point:"
-msgstr ""
+msgstr "نقطة المزامنة:"
 
 #: ../src/dialog_properties.cpp:73
 msgid "Updated by:"
-msgstr "حدثه:"
+msgstr "حدّثه:"
 
 #: ../src/dialog_properties.cpp:74
 msgid "Update details:"
-msgstr "تفاصيل التحديث"
+msgstr "تفاصيل التحديث:"
 
 #: ../src/dialog_properties.cpp:80
 #: ../src/dialog_resample.cpp:108
@@ -3159,7 +3226,7 @@ msgstr "3: التفاف ذكي، السطر السفلي أوسع"
 
 #: ../src/dialog_properties.cpp:107
 msgid "Wrap Style: "
-msgstr "نمط الالتفاف:"
+msgstr "نمط الالتفاف: "
 
 #: ../src/dialog_properties.cpp:110
 #: ../src/preferences.cpp:236
@@ -3173,19 +3240,21 @@ msgstr "معكوس"
 
 #: ../src/dialog_properties.cpp:113
 msgid "Collision: "
-msgstr "التصادم:"
+msgstr "التصادم: "
 
 #: ../src/dialog_properties.cpp:116
 msgid "Scale Border and Shadow"
 msgstr "تحجيم الحدود والظل"
 
 #: ../src/dialog_properties.cpp:117
-msgid "Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."
+msgid ""
+"Scale border and shadow together with script/render resolution. If this is "
+"unchecked, relative border and shadow size will depend on renderer."
 msgstr ""
 
 #: ../src/dialog_properties.cpp:159
 msgid "property changes"
-msgstr ""
+msgstr "تغييرات الخاصية"
 
 #: ../src/dialog_fonts_collector.cpp:91
 msgid "Aegisub was built without any font file listers enabled"
@@ -3234,10 +3303,12 @@ msgstr "تم. بعض الخطوط تعذر نسخها."
 #: ../src/dialog_fonts_collector.cpp:181
 msgid ""
 "\n"
-"Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the player if they are all attached to a Matroska file."
+"Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the "
+"player if they are all attached to a Matroska file."
 msgstr ""
 "\n"
-"أكثر من 32 م.بايت للملفات نُسخت. يمكن أن لا تُحمّل بعض هذه الخطوط في المشغّل إن أُرفقوا في ملف ماتروسكا."
+"أكثر من 32 م.بايت للملفات نُسخت. يمكن أن لا تُحمّل بعض هذه الخطوط في المشغّل "
+"إن أُرفقوا في ملف ماتروسكا."
 
 #: ../src/dialog_fonts_collector.cpp:221
 msgid "Check fonts for availability"
@@ -3257,12 +3328,12 @@ msgstr "نسخ الخطوط لأرشيف مضغوط"
 
 #: ../src/dialog_fonts_collector.cpp:226
 msgid "Symlink fonts to folder"
-msgstr ""
+msgstr "وصل الخطوط رمزيًا إلى المجلد"
 
 #: ../src/dialog_fonts_collector.cpp:229
 #: ../src/dialog_selection.cpp:176
 msgid "Action"
-msgstr "الفعل"
+msgstr "الإجراء"
 
 #: ../src/dialog_fonts_collector.cpp:235
 msgid "Destination"
@@ -3304,36 +3375,46 @@ msgstr "مسار غير صالح لملف .zip ."
 
 #: ../src/dialog_fonts_collector.cpp:341
 msgid "Select archive file name"
-msgstr "اختيار اسم ملف الأرشيف"
+msgstr "اختر اسم ملف الأرشيف"
 
 #: ../src/dialog_fonts_collector.cpp:348
 msgid "Select folder to save fonts on"
-msgstr "اختيار مجلد لحفظ الخطوط داخله"
+msgstr "اختر مجلد لحفظ الخطوط داخله"
 
 #: ../src/dialog_fonts_collector.cpp:362
 msgid "N/A"
 msgstr "غير موجود"
 
 #: ../src/dialog_fonts_collector.cpp:370
-msgid "Choose the folder where the fonts will be collected to. It will be created if it doesn't exist."
-msgstr "إختيار المجلد لتجميع الخطوط فيه. سيُنشأ إن لم يكن موجودا."
+msgid ""
+"Choose the folder where the fonts will be collected to. It will be created if "
+"it doesn't exist."
+msgstr "اختر المجلد لتجميع الخطوط فيه. سيُنشأ إن لم يكن موجودا."
 
 #: ../src/dialog_fonts_collector.cpp:377
-msgid "Enter the name of the destination zip file to collect the fonts to. If a folder is entered, a default name will be used."
-msgstr "إدخال اسم ملف zip الوجهة لتجميع الخطوط فيه. إن أُدخل مجلد، سيُستخدم اسم افتراضي."
+msgid ""
+"Enter the name of the destination zip file to collect the fonts to. If a "
+"folder is entered, a default name will be used."
+msgstr ""
+"أدخل اسم ملف zip الوجهة لتجميع الخطوط فيه. إن أُدخل مجلد، سيُستخدم اسم "
+"افتراضي."
 
 #: ../src/frame_main.cpp:299
-msgid "Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."
-msgstr "هل تريد لأيجي سب التحقق من التحديثات كل مرة يبدأ فيه؟ ما زلت تستطيع فعل ذلك يدويًا من قائمة المساعدة."
+msgid ""
+"Do you want Aegisub to check for updates whenever it starts? You can still do "
+"it manually via the Help menu."
+msgstr ""
+"هل تريد لأيجي سب التماس التحديثات كل مرة يبدأ فيه؟ ما زلت تستطيع فعل ذلك "
+"يدويًا من قائمة المساعدة."
 
 #: ../src/frame_main.cpp:299
 msgid "Check for updates?"
-msgstr "التحقق من التحديثات؟"
+msgstr "التماس التحديثات؟"
 
 #: ../src/frame_main.cpp:459
 #, c-format
 msgid "Do you want to save changes to %s?"
-msgstr "هل تريد حفظ التغييرات لـ %s ؟"
+msgstr "هل تريد حفظ تغييرات %s ؟"
 
 #: ../src/frame_main.cpp:459
 msgid "Unsaved changes"
@@ -3342,11 +3423,11 @@ msgstr "تغييرات غير محفوظة"
 #: ../src/frame_main.cpp:654
 #, c-format
 msgid "File backup saved as \"%s\"."
-msgstr "النسخة الإحتياطية للملف حُفظت كـ\"%s\"."
+msgstr "النسخة الاحتياطية للملف حُفظت كـ \"%s\"."
 
 #: ../src/frame_main.cpp:706
 msgid "Do you want to load/unload the associated files?"
-msgstr "هل تريد تحميل/إزالة تحميل الملفات المرتبطة؟"
+msgstr "هل تريد تحميل/إلغاء تحميل الملفات المرتبطة؟"
 
 #: ../src/frame_main.cpp:706
 msgid "(Un)Load files?"
@@ -3399,7 +3480,7 @@ msgstr "الطول الناتج: %d:%02d:%02d.%03d"
 
 #: ../src/dialog_dummy_video.cpp:322
 msgid "Invalid fps or length value"
-msgstr ""
+msgstr "قيم الإطار/ث أو الطول غير صالحة"
 
 #: ../src/preferences.cpp:107
 #: ../src/preferences.cpp:108
@@ -3410,7 +3491,7 @@ msgstr "عام"
 
 #: ../src/preferences.cpp:109
 msgid "Check for updates on startup"
-msgstr "التحقق من التحديثات عند البدء"
+msgstr "التماس التحديثات عند البدء"
 
 #: ../src/preferences.cpp:110
 msgid "Show main toolbar"
@@ -3423,12 +3504,12 @@ msgstr "حجم أيقونة شريط الأدوات"
 #: ../src/preferences.cpp:113
 #: ../src/preferences.cpp:193
 msgid "Never"
-msgstr "أبدا"
+msgstr "أبدًا"
 
 #: ../src/preferences.cpp:113
 #: ../src/preferences.cpp:193
 msgid "Always"
-msgstr "دائما"
+msgstr "دائمًا"
 
 #: ../src/preferences.cpp:113
 #: ../src/preferences.cpp:193
@@ -3490,11 +3571,11 @@ msgstr "طول الوقت الافتراضي (ms)"
 
 #: ../src/preferences.cpp:135
 msgid "Default lead-in length (ms)"
-msgstr ""
+msgstr "طول وقت البداية الافتراضي (ms)"
 
 #: ../src/preferences.cpp:136
 msgid "Default lead-out length (ms)"
-msgstr ""
+msgstr "طول وقت النهاية الافتراضي (ms)"
 
 #: ../src/preferences.cpp:138
 msgid "Marker drag-start sensitivity (px)"
@@ -3526,7 +3607,7 @@ msgstr "إظهار الكل"
 
 #: ../src/preferences.cpp:144
 msgid "Show inactive lines"
-msgstr ""
+msgstr "إظهار الأسطر الغير نشطة"
 
 #: ../src/preferences.cpp:146
 msgid "Include commented inactive lines"
@@ -3567,7 +3648,7 @@ msgstr "مسميات الصوت"
 
 #: ../src/preferences.cpp:166
 msgid "Show keyframes in slider"
-msgstr ""
+msgstr "إظهار الإطارات المفتاحية في المنزلقة"
 
 #: ../src/preferences.cpp:168
 msgid "Only show visual tools when mouse is over video"
@@ -3595,7 +3676,7 @@ msgstr "مسار حفظ لقطات الشاشة"
 
 #: ../src/preferences.cpp:185
 msgid "Script Resolution"
-msgstr "دقة السكربت"
+msgstr "دقة السكرِبت"
 
 #: ../src/preferences.cpp:186
 msgid "Use resolution of first video opened"
@@ -3664,7 +3745,7 @@ msgstr "عرض الصوت"
 
 #: ../src/preferences.cpp:228
 msgid "Play cursor"
-msgstr ""
+msgstr "مؤشر التشغيل"
 
 #: ../src/preferences.cpp:229
 msgid "Line boundary start"
@@ -3700,11 +3781,11 @@ msgstr "الوسوم"
 
 #: ../src/preferences.cpp:240
 msgid "Parameters"
-msgstr "البارامترات"
+msgstr "المُعاملات"
 
 #: ../src/preferences.cpp:242
 msgid "Error Background"
-msgstr ""
+msgstr "خلفية الخطأ"
 
 #: ../src/preferences.cpp:243
 msgid "Line Break"
@@ -3712,11 +3793,11 @@ msgstr ""
 
 #: ../src/preferences.cpp:244
 msgid "Karaoke templates"
-msgstr ""
+msgstr "قوالب الكاروكي"
 
 #: ../src/preferences.cpp:250
 msgid "Audio Color Schemes"
-msgstr ""
+msgstr "مخططات ألوان الصوت"
 
 #: ../src/preferences.cpp:252
 #: ../src/preferences.cpp:533
@@ -3794,7 +3875,7 @@ msgstr "حفظ تلقائي"
 #: ../src/preferences.cpp:463
 #: ../src/preferences.cpp:471
 msgid "Enable"
-msgstr "تفعيل"
+msgstr "تمكين"
 
 #: ../src/preferences.cpp:466
 msgid "Interval in seconds"
@@ -3856,7 +3937,7 @@ msgstr "قوة التأثير"
 
 #: ../src/preferences.cpp:490
 msgid "Below Normal (recommended)"
-msgstr "اقل من العادي (مستحسن)"
+msgstr "أقل من العادي (مستحسن)"
 
 #: ../src/preferences.cpp:490
 msgid "Lowest"
@@ -3868,7 +3949,7 @@ msgstr "أولوية التأثير"
 
 #: ../src/preferences.cpp:494
 msgid "No scripts"
-msgstr "لا سكربتات"
+msgstr "لا سكرِبتات"
 
 #: ../src/preferences.cpp:494
 msgid "Subtitle-local scripts"
@@ -3880,19 +3961,23 @@ msgstr ""
 
 #: ../src/preferences.cpp:494
 msgid "All scripts"
-msgstr "كل السكربتات"
+msgstr "كل السكرِبتات"
 
 #: ../src/preferences.cpp:496
 msgid "Autoreload on Export"
-msgstr ""
+msgstr "إعادة التحميل تلقائيًّا عند التصدير"
 
 #: ../src/preferences.cpp:503
 msgid "Advanced"
 msgstr "متقدم"
 
 #: ../src/preferences.cpp:506
-msgid "Changing these settings might result in bugs and/or crashes.  Do not touch these unless you know what you're doing."
-msgstr "تغيير هذه الاعدادات لربما يتسبب في علل و/أو انهيارات. لا تلمسها إلا إن كنت تعلم ما تفعل."
+msgid ""
+"Changing these settings might result in bugs and/or crashes.  Do not touch "
+"these unless you know what you're doing."
+msgstr ""
+"تغيير هذه الإعدادات لربما يتسبب في علل و/أو انهيارات. لا تقربها إلا إن كنت "
+"تعلم ما تفعل."
 
 #: ../src/preferences.cpp:517
 #: ../src/preferences.cpp:580
@@ -3961,7 +4046,7 @@ msgstr ""
 
 #: ../src/preferences.cpp:546
 msgid "Force sample rate"
-msgstr ""
+msgstr "أجبر معدّل الإعتيان"
 
 #: ../src/preferences.cpp:552
 msgid "Ignore"
@@ -4001,11 +4086,11 @@ msgstr ""
 
 #: ../src/preferences.cpp:583
 msgid "Video provider"
-msgstr "موفر الفيديو"
+msgstr "موفّر الفيديو"
 
 #: ../src/preferences.cpp:586
 msgid "Subtitles provider"
-msgstr "موفر الترجمات"
+msgstr "موفّر الترجمات"
 
 #: ../src/preferences.cpp:589
 msgid "Force BT.601"
@@ -4032,8 +4117,10 @@ msgid "Enable unsafe seeking"
 msgstr ""
 
 #: ../src/preferences.cpp:652
-msgid "Are you sure that you want to restore the defaults? All your settings will be overridden."
-msgstr "هل أنت متأكد من استعادة الافتراضيات؟ كل الاعدادات ستُبطل."
+msgid ""
+"Are you sure that you want to restore the defaults? All your settings will be "
+"overridden."
+msgstr "هل أنت متأكد من استعادة الافتراضيات؟ كل الإعدادات ستُبطل."
 
 #: ../src/preferences.cpp:652
 msgid "Restore defaults?"
@@ -4057,11 +4144,11 @@ msgstr "التقسيم عند المؤشر (الحفاظ على الأوقات)"
 
 #: ../src/subs_edit_ctrl.cpp:763
 msgid "Split at cursor (estimate times)"
-msgstr "التقسيم عند المؤشر (تقدير الأوقات"
+msgstr "التقسيم عند المؤشر (تقدير الأوقات)"
 
 #: ../src/subs_edit_ctrl.cpp:773
 msgid "No spell checker suggestions"
-msgstr "لا اقتراحات لمدقق الاملاء"
+msgstr "لا اقتراحات لمدقق الإملاء"
 
 #: ../src/subs_edit_ctrl.cpp:779
 #, c-format
@@ -4096,7 +4183,7 @@ msgstr "لغة المترادفات"
 
 #: ../src/subs_edit_ctrl.cpp:849
 msgid "Disable"
-msgstr ""
+msgstr "تعطيل"
 
 #: ../src/subs_edit_ctrl.cpp:877
 msgid "split"
@@ -4112,7 +4199,7 @@ msgstr "الأ&خيرة"
 
 #: ../src/menu.cpp:422
 msgid "No Automation macros loaded"
-msgstr ""
+msgstr "لم تحمّل أية وحدات ماكرو للأتمتة"
 
 #: ../src/dialog_about.cpp:104
 msgid "Translated into LANGUAGE by PERSON\n"
@@ -4133,11 +4220,11 @@ msgstr "بناه %s في %s."
 
 #: ../src/dialog_kara_timing_copy.cpp:68
 msgid "Source: "
-msgstr "المصدر:"
+msgstr "المصدر: "
 
 #: ../src/dialog_kara_timing_copy.cpp:69
 msgid "Dest: "
-msgstr "الوجهة:"
+msgstr "الوجهة: "
 
 #: ../src/dialog_kara_timing_copy.cpp:634
 msgid "Kanji timing"
@@ -4149,7 +4236,7 @@ msgstr "الأنماط"
 
 #: ../src/dialog_kara_timing_copy.cpp:646
 msgid "Shortcut Keys"
-msgstr "مفاتيح الإختصار"
+msgstr "مفاتيح الاختصار"
 
 #: ../src/dialog_kara_timing_copy.cpp:647
 msgid "Commands"
@@ -4181,7 +4268,7 @@ msgstr "&ربط"
 
 #: ../src/dialog_kara_timing_copy.cpp:667
 msgid "&Unlink"
-msgstr "إ&زل الربط"
+msgstr "إ&زالة الربط"
 
 #: ../src/dialog_kara_timing_copy.cpp:668
 msgid "Skip &Source Line"
@@ -4212,7 +4299,7 @@ msgstr "مؤقت الكانجي"
 
 #: ../src/dialog_kara_timing_copy.cpp:745
 msgid "Select source and destination styles first."
-msgstr "اختيار مصدر الأنماط ووجهتها أولا."
+msgstr "اختر مصدر الأنماط ووجهتها أولا."
 
 #: ../src/dialog_kara_timing_copy.cpp:747
 msgid "The source and destination styles must be different."
@@ -4224,7 +4311,7 @@ msgstr ""
 
 #: ../src/dialog_paste_over.cpp:54
 msgid "Select Fields to Paste Over"
-msgstr "اختيار الحقول لللصق فوقها."
+msgstr "اختر الحقول لللصق فوقها."
 
 #: ../src/dialog_paste_over.cpp:57
 msgid "Fields"
@@ -4271,31 +4358,34 @@ msgstr ""
 "\n"
 "%s\n"
 "\n"
-"أيجي سب سيغلق الآن,"
+"أيجي سب سيغلق الآن."
 
 #: ../src/main.cpp:348
 #: ../src/main.cpp:357
 msgid "Program error"
-msgstr ""
+msgstr "خطأ في البرنامج"
 
 #: ../src/subs_edit_box.cpp:162
 msgid "&Comment"
-msgstr "تن&فيذ"
+msgstr "ت&عليق"
 
 #: ../src/subs_edit_box.cpp:163
 msgid "Comment this line out. Commented lines don't show up on screen."
-msgstr ""
+msgstr "جعل هذا السطر تعليق. أسطر التعليقات لا تظهر على الشاشة"
 
 #: ../src/subs_edit_box.cpp:170
 msgid "Style for this line"
 msgstr "نمط هذا السطر"
 
 #: ../src/subs_edit_box.cpp:172
-msgid "Actor name for this speech. This is only for reference, and is mainly useless."
+msgid ""
+"Actor name for this speech. This is only for reference, and is mainly useless."
 msgstr ""
 
 #: ../src/subs_edit_box.cpp:177
-msgid "Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."
+msgid ""
+"Effect for this line. This can be used to store extra information for karaoke "
+"scripts, or for the effects supported by the renderer."
 msgstr ""
 
 #: ../src/subs_edit_box.cpp:185
@@ -4344,11 +4434,11 @@ msgstr "قلبُ مائل"
 
 #: ../src/subs_edit_box.cpp:204
 msgid "Underline"
-msgstr "تحته خط"
+msgstr "تسطير"
 
 #: ../src/subs_edit_box.cpp:204
 msgid "toggle underline"
-msgstr "قلبُ خط سفلي"
+msgstr "قلبُ تسطير"
 
 #: ../src/subs_edit_box.cpp:205
 msgid "Strikeout"
@@ -4474,7 +4564,7 @@ msgstr "ي&حتويه"
 
 #: ../src/dialog_selection.cpp:158
 msgid "&Regular Expression match"
-msgstr ""
+msgstr "تطابق التعبير النم&طي"
 
 #: ../src/dialog_selection.cpp:159
 msgid "Mode"
@@ -4503,11 +4593,11 @@ msgstr "في الحقل"
 
 #: ../src/dialog_selection.cpp:168
 msgid "Match dialogues/comments"
-msgstr "تطابق الحوارات/التعليقات"
+msgstr "تطابق مربعات الحوار/التعليقات"
 
 #: ../src/dialog_selection.cpp:169
 msgid "D&ialogues"
-msgstr "الح&وارات"
+msgstr "مربعات الح&وار"
 
 #: ../src/dialog_selection.cpp:170
 msgid "Comme&nts"
@@ -4515,7 +4605,7 @@ msgstr "التعلي&قات"
 
 #: ../src/dialog_selection.cpp:175
 msgid "Set se&lection"
-msgstr "تعيين ال&حديد"
+msgstr "تعيين الت&حديد"
 
 #: ../src/dialog_selection.cpp:175
 msgid "&Add to selection"
@@ -4535,7 +4625,7 @@ msgstr "التحديد لم يعيَّن على سطر"
 
 #: ../src/dialog_selection.cpp:238
 msgid "Selection was set to one line"
-msgstr "التحديد عيِِّن على سطر واحد"
+msgstr "التحديد عُيِّن على سطر واحد"
 
 #: ../src/dialog_selection.cpp:239
 #, c-format
@@ -4639,10 +4729,13 @@ msgstr "تحويل معدل الإطارات"
 
 #: ../src/export_framerate.cpp:60
 msgid ""
-"Transform subtitle times, including those in override tags, from an input framerate to an output framerate.\n"
+"Transform subtitle times, including those in override tags, from an input "
+"framerate to an output framerate.\n"
 "\n"
-"This is useful for converting regular time subtitles to VFRaC time subtitles for hardsubbing.\n"
-"It can also be used to convert subtitles to a different speed video, such as NTSC to PAL speedup."
+"This is useful for converting regular time subtitles to VFRaC time subtitles "
+"for hardsubbing.\n"
+"It can also be used to convert subtitles to a different speed video, such as "
+"NTSC to PAL speedup."
 msgstr ""
 
 #: ../src/export_framerate.cpp:99
@@ -4651,7 +4744,7 @@ msgstr "مت&غير"
 
 #: ../src/export_framerate.cpp:103
 msgid "&Constant: "
-msgstr "&ثابت"
+msgstr "&ثابت: "
 
 #: ../src/export_framerate.cpp:115
 msgid "&Reverse transformation"
@@ -4659,11 +4752,11 @@ msgstr ""
 
 #: ../src/export_framerate.cpp:123
 msgid "Input framerate: "
-msgstr "ادخال معدل الإطارات:"
+msgstr "إدخال معدل الإطارات: "
 
 #: ../src/export_framerate.cpp:125
 msgid "Output: "
-msgstr "المخرج:"
+msgstr "المخرج: "
 
 #: ../src/audio_display.cpp:705
 #, c-format
@@ -4679,7 +4772,10 @@ msgid "Cancelling..."
 msgstr "يُلغ..."
 
 #: ../src/font_file_lister_freetype.cpp:117
-msgid "Collecting font data from system. This might take a while, depending on the number of fonts installed. Results are cached and subsequent executions will be faster...\n"
+msgid ""
+"Collecting font data from system. This might take a while, depending on the "
+"number of fonts installed. Results are cached and subsequent executions will "
+"be faster...\n"
 msgstr ""
 
 #: ../src/font_file_lister_freetype.cpp:159
@@ -4688,11 +4784,11 @@ msgstr "اكتمل تجميع بيانات الخط.\n"
 
 #: ../src/visual_tool_vector_clip.cpp:63
 msgid "Drag control points"
-msgstr ""
+msgstr "نقاط تحكّم السحب"
 
 #: ../src/visual_tool_vector_clip.cpp:64
 msgid "Line"
-msgstr ""
+msgstr "خط"
 
 #: ../src/visual_tool_vector_clip.cpp:64
 msgid "Appends a line"
@@ -4720,7 +4816,7 @@ msgstr "إدراج"
 
 #: ../src/visual_tool_vector_clip.cpp:68
 msgid "Inserts a control point"
-msgstr ""
+msgstr "يدرج نقطة تحكّم"
 
 #: ../src/visual_tool_vector_clip.cpp:69
 msgid "Remove"
@@ -4728,15 +4824,15 @@ msgstr "إزالة"
 
 #: ../src/visual_tool_vector_clip.cpp:69
 msgid "Removes a control point"
-msgstr ""
+msgstr "يزيل نقطة تحكّم"
 
 #: ../src/visual_tool_vector_clip.cpp:71
 msgid "Freehand"
-msgstr ""
+msgstr "رسم يدوي"
 
 #: ../src/visual_tool_vector_clip.cpp:71
 msgid "Draws a freehand shape"
-msgstr ""
+msgstr "يرسم شكلًا برسم يدوي"
 
 #: ../src/visual_tool_vector_clip.cpp:72
 msgid "Freehand smooth"
@@ -4748,11 +4844,11 @@ msgstr ""
 
 #: ../src/visual_tool_vector_clip.cpp:240
 msgid "delete control point"
-msgstr ""
+msgstr "حذف نقطة التحكّم"
 
 #: ../src/dialog_automation.cpp:65
 msgid "Automation Manager"
-msgstr "مدير الأتممة"
+msgstr "مدير الأتمتة"
 
 #: ../src/dialog_automation.cpp:76
 msgid "&Add"
@@ -4788,17 +4884,17 @@ msgstr "التفاصيل"
 
 #: ../src/dialog_automation.cpp:193
 msgid "Add Automation script"
-msgstr "إضافة سكربت أتممة"
+msgstr "إضافة سكرِبت أتمتة"
 
 #: ../src/dialog_automation.cpp:244
 #, c-format
 msgid "    Macro: %s (%s)"
-msgstr "الماكرو: %s (%s)"
+msgstr "    الماكرو: %s (%s)"
 
 #: ../src/dialog_automation.cpp:248
 #, c-format
 msgid "    Export filter: %s"
-msgstr "مرشح التصدير: %s"
+msgstr "    مرشح التصدير: %s"
 
 #: ../src/dialog_automation.cpp:252
 #, c-format
@@ -4812,9 +4908,9 @@ msgid ""
 "Global scripts loaded: %d\n"
 "Local scripts loaded: %d\n"
 msgstr ""
-"مجموع السكربتات المحملة: %d\n"
-"السكربتات العالمية المحملة: %d\n"
-"السكربتات المحلية المحملة: %d\n"
+"مجموع السكرِبتات المحملة: %d\n"
+"السكرِبتات العالمية المحملة: %d\n"
+"السكرِبتات المحلية المحملة: %d\n"
 
 #: ../src/dialog_automation.cpp:269
 msgid "Scripting engines installed:"
@@ -4843,7 +4939,7 @@ msgstr ""
 "كامل المسار: %s\n"
 "الحالة: %s\n"
 "\n"
-"المميزات التي يوفرها السكربت:"
+"المميزات التي يوفرها السكرِبت:"
 
 #: ../src/dialog_automation.cpp:279
 msgid "Correctly loaded"
@@ -4855,7 +4951,7 @@ msgstr "تعذر التحميل"
 
 #: ../src/dialog_automation.cpp:286
 msgid "Automation Script Info"
-msgstr "معلومات سكربت الأتممة"
+msgstr "معلومات سكرِبت الأتمتة"
 
 #: ../src/dialog_export.cpp:57
 msgid "Export"
@@ -4899,7 +4995,7 @@ msgstr "م&طابقة حالة الأحرف"
 
 #: ../src/dialog_search_replace.cpp:87
 msgid "&Use regular expressions"
-msgstr ""
+msgstr "ا&ستخدام التعابير النمطية"
 
 #: ../src/dialog_search_replace.cpp:88
 msgid "Update &Video"
@@ -4963,17 +5059,20 @@ msgstr ""
 msgid ""
 "Aegisub can take over the following file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must "
+"tell another program to take over the file type."
 msgstr ""
 "أيجي سب يستطيع تولي أمر أنواع الملفات التالية.\n"
 "\n"
-"إن لم تكن تريد لأيجي سب أن يرتبط بنوع ملف معين بعد الآن، يجب عليك إخبار برنامج آخر تولي أمر نوع الملف."
+"إن لم تكن تريد لأيجي سب أن يرتبط بنوع ملف معين بعد الآن، يجب عليك إخبار "
+"برنامج آخر تولي أمر نوع الملف."
 
 #: ../src/dialog_associations.cpp:378
 msgid ""
 "Aegisub is already associated with all supported file types.\n"
 "\n"
-"If you want Aegisub to no longer be associated with a file type, you must tell another program to take over the file type."
+"If you want Aegisub to no longer be associated with a file type, you must "
+"tell another program to take over the file type."
 msgstr ""
 
 #: ../src/dialog_associations.cpp:476
@@ -4982,10 +5081,12 @@ msgstr "أيجي سب"
 
 #: ../src/dialog_associations.cpp:477
 msgid "Make Aegisub default editor for subtitles?"
-msgstr "جعل أيجي سب محرر الترجمات الإفتراضي؟"
+msgstr "جعل أيجي سب محرر الترجمات الافتراضي؟"
 
 #: ../src/dialog_associations.cpp:478
-msgid "Aegisub is not your default editor for subtitle files. Do you want to make Aegisub your default editor for subtitle files?"
+msgid ""
+"Aegisub is not your default editor for subtitle files. Do you want to make "
+"Aegisub your default editor for subtitle files?"
 msgstr ""
 
 #: ../src/dialog_associations.cpp:479
@@ -5018,15 +5119,15 @@ msgstr "خيارات استيراد النص"
 
 #: ../src/dialog_text_import.cpp:60
 msgid "Actor separator:"
-msgstr ""
+msgstr "فاصل الممثلين:"
 
 #: ../src/dialog_text_import.cpp:62
 msgid "Comment starter:"
-msgstr ""
+msgstr "بداية التعليق:"
 
 #: ../src/video_box.cpp:84
 msgid "Seek video"
-msgstr ""
+msgstr "سعي الفيديو"
 
 #: ../src/video_box.cpp:95
 msgid "Current frame time and number"
@@ -5078,7 +5179,7 @@ msgstr "تركية"
 
 #: ../src/ass_style.cpp:376
 msgid "Vietnamese"
-msgstr "الفيتنامية"
+msgstr "فيتنامية"
 
 #: ../src/ass_style.cpp:377
 msgid "Hebrew"
@@ -5090,7 +5191,7 @@ msgstr "عربية"
 
 #: ../src/ass_style.cpp:379
 msgid "Baltic"
-msgstr "البلطيقية"
+msgstr "بلطيقية"
 
 #: ../src/ass_style.cpp:380
 msgid "Russian"
@@ -5098,7 +5199,7 @@ msgstr "روسية"
 
 #: ../src/ass_style.cpp:381
 msgid "Thai"
-msgstr "التايلاندية"
+msgstr "تايلاندية"
 
 #: ../src/ass_style.cpp:382
 msgid "East European"
@@ -5110,11 +5211,11 @@ msgstr "OEM"
 
 #: ../src/dialog_colorpicker.cpp:654
 msgid "Select Color"
-msgstr "إختيار اللون"
+msgstr "اختيار اللون"
 
 #: ../src/dialog_colorpicker.cpp:687
 msgid "Color spectrum"
-msgstr ""
+msgstr "الطيف اللوني"
 
 #: ../src/dialog_colorpicker.cpp:690
 msgid "RGB/R"
@@ -5130,11 +5231,11 @@ msgstr "حﺥﺯ/ز"
 
 #: ../src/dialog_colorpicker.cpp:690
 msgid "HSL/L"
-msgstr ""
+msgstr "ﺹﺵﺽ/ض"
 
 #: ../src/dialog_colorpicker.cpp:690
 msgid "HSV/H"
-msgstr ""
+msgstr "ﺹﺵﻕ/ص"
 
 #: ../src/dialog_colorpicker.cpp:696
 msgid "RGB color"
@@ -5142,11 +5243,11 @@ msgstr "لون حﺥﺯ"
 
 #: ../src/dialog_colorpicker.cpp:697
 msgid "HSL color"
-msgstr ""
+msgstr "لون ﺹﺵﺽ"
 
 #: ../src/dialog_colorpicker.cpp:698
 msgid "HSV color"
-msgstr ""
+msgstr "لون ﺹﺵﻕ"
 
 #: ../src/dialog_colorpicker.cpp:722
 msgid "Spectrum mode:"
@@ -5167,7 +5268,7 @@ msgstr "الأزرق:"
 #: ../src/dialog_colorpicker.cpp:740
 #: ../src/dialog_colorpicker.cpp:743
 msgid "Hue:"
-msgstr "التدرج:"
+msgstr "الصبغة:"
 
 #: ../src/dialog_colorpicker.cpp:740
 #: ../src/dialog_colorpicker.cpp:743
@@ -5187,12 +5288,12 @@ msgid ""
 "Aegisub could not narrow down the character set to a single one.\n"
 "Please pick one below:"
 msgstr ""
-"تعذر أيجي سب تضييق مجموع المحارف لواحدة.\n"
+"تعذر على أيجي سب تضييق مجموع المحارف لواحدة.\n"
 "يرجى اختيار واحدة أدناه:"
 
 #: ../src/charset_detect.cpp:78
 msgid "Choose character set"
-msgstr "إختيار طقم المحارف"
+msgstr "اختر طقم المحارف"
 
 #: ../src/dialog_detached_video.cpp:67
 #, c-format
@@ -5270,7 +5371,7 @@ msgstr "يُفهرس"
 
 #: ../src/ffmpegsource_common.cpp:118
 msgid "Reading timecodes and frame/sample data"
-msgstr "يقرأ "
+msgstr "يقرأ شِفرات الوقت وبيانات الإطار/النموذج"
 
 #: ../src/ffmpegsource_common.cpp:167
 #, c-format
@@ -5296,20 +5397,29 @@ msgstr "اختيار مسار الصوت"
 #: ../src/video_context.cpp:167
 #, c-format
 msgid ""
-"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n"
+"The resolution of the loaded video and the resolution specified for the "
+"subtitles don't match.\n"
 "\n"
 "Video resolution:\t%d x %d\n"
 "Script resolution:\t%d x %d\n"
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
+"دقة الفيديو المحمّل ودقة الترجمات لا تتطابق.\n"
+"\n"
+"دقة الفيديو:\t%d x %d\n"
+"دقة السكرِبت:\t%d x %d\n"
+"\n"
+"تغيير دقة الترجمات لتطابق الفيديو؟"
 
 #: ../src/video_context.cpp:168
 msgid "Resolution mismatch"
-msgstr ""
+msgstr "الدقة لا تتطابق"
 
 #: ../src/video_context.cpp:189
-msgid "You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"
+msgid ""
+"You already have timecodes loaded. Would you like to replace them with "
+"timecodes from the video file?"
 msgstr ""
 
 #: ../src/video_context.cpp:189
@@ -5318,7 +5428,7 @@ msgstr ""
 
 #: ../src/video_context.cpp:229
 msgid "change script resolution"
-msgstr "تغيير دقة السكربت"
+msgstr "تغيير دقة السكرِبت"
 
 #: ../src/dialog_style_editor.cpp:149
 msgid "Style Editor"
@@ -5355,7 +5465,7 @@ msgstr "&مائل"
 
 #: ../src/dialog_style_editor.cpp:194
 msgid "&Underline"
-msgstr "&تحته خط"
+msgstr "&تسطير"
 
 #: ../src/dialog_style_editor.cpp:195
 msgid "&Strikeout"
@@ -5383,19 +5493,19 @@ msgstr "حجم الخط"
 
 #: ../src/dialog_style_editor.cpp:221
 msgid "Choose primary color"
-msgstr "إختيار لون أساسي"
+msgstr "اختيار لون أساسي"
 
 #: ../src/dialog_style_editor.cpp:222
 msgid "Choose secondary color"
-msgstr "إختيار لون ثانوي"
+msgstr "اختيار لون ثانوي"
 
 #: ../src/dialog_style_editor.cpp:223
 msgid "Choose outline color"
-msgstr "إختيار لون الحدود"
+msgstr "اختيار لون الحدود"
 
 #: ../src/dialog_style_editor.cpp:224
 msgid "Choose shadow color"
-msgstr "إختيار لون الظل"
+msgstr "اختيار لون الظل"
 
 #: ../src/dialog_style_editor.cpp:225
 msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
@@ -5414,7 +5524,9 @@ msgid "Distance from top/bottom edge, in pixels"
 msgstr "المسافة من الحافة العليا/السفلى، بالبكسلات"
 
 #: ../src/dialog_style_editor.cpp:229
-msgid "When selected, display an opaque box behind the subtitles instead of an outline around the text"
+msgid ""
+"When selected, display an opaque box behind the subtitles instead of an "
+"outline around the text"
 msgstr ""
 
 #: ../src/dialog_style_editor.cpp:230
@@ -5438,8 +5550,11 @@ msgid "Angle to rotate in Z axis, in degrees"
 msgstr ""
 
 #: ../src/dialog_style_editor.cpp:235
-msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgid ""
+"Encoding, only useful in unicode if the font doesn't have the proper unicode "
+"mapping"
 msgstr ""
+"الترميز، مفيد فقط في اليونيكود إن كان الخط لا يملك خريطة يونيكود الصحيحة"
 
 #: ../src/dialog_style_editor.cpp:236
 msgid "Character spacing, in pixels"
@@ -5503,39 +5618,43 @@ msgstr "لون خلفية المعاينة"
 
 #: ../src/dialog_style_editor.cpp:352
 msgid "No subtitle providers available. Cannot preview subs."
-msgstr "لا يتوفر متوفروا للترجمات. لا يمكن معاينة الترجمات."
+msgstr "لا يتوفر موفرون للترجمات. لا يمكن معاينة الترجمات."
 
 #: ../src/dialog_style_editor.cpp:448
-msgid "Do you want to change all instances of this style in the script to this new name?"
+msgid ""
+"Do you want to change all instances of this style in the script to this new "
+"name?"
 msgstr ""
 
 #: ../src/dialog_style_editor.cpp:449
 msgid "Update script?"
-msgstr "تحديث السكربت؟"
+msgstr "تحديث السكرِبت؟"
 
 #: ../src/audio_provider.cpp:204
 msgid "Load audio"
 msgstr "يحمل الصوت"
 
 #: ../src/dialog_export_ebu3264.cpp:89
-msgid "Time code offset in incorrect format. Ensure it is entered as four groups of two digits separated by colons."
+msgid ""
+"Time code offset in incorrect format. Ensure it is entered as four groups of "
+"two digits separated by colons."
 msgstr ""
 
 #: ../src/dialog_export_ebu3264.cpp:89
 msgid "EBU STL export"
-msgstr ""
+msgstr "تصدير EBU STL"
 
 #: ../src/dialog_export_ebu3264.cpp:115
 msgid "Export to EBU STL format"
-msgstr ""
+msgstr "تصدير إلى هيئة EBU STL"
 
 #: ../src/dialog_export_ebu3264.cpp:118
 msgid "23.976 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "23.976 إطار/ث (غير قياسي، STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:119
 msgid "24 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "24 إطار/ث (غير قياسي، STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:120
 msgid "25 fps (STL25.01)"
@@ -5631,11 +5750,11 @@ msgstr ""
 
 #: ../src/dialog_export_ebu3264.cpp:169
 msgid "Text formatting"
-msgstr ""
+msgstr "تنسيق النص"
 
 #: ../src/dialog_export_ebu3264.cpp:174
 msgid "Time codes"
-msgstr ""
+msgstr "شِفرات الوقت"
 
 #: ../src/dialog_export_ebu3264.cpp:178
 msgid "Display standard"
@@ -5704,7 +5823,7 @@ msgstr "إزالة المرفق"
 
 #: ../src/dialog_translation.cpp:82
 msgid "Original"
-msgstr "الحالي"
+msgstr "الأصلي"
 
 #: ../src/dialog_translation.cpp:104
 msgid "Translation"
@@ -5712,7 +5831,7 @@ msgstr "الترجمة"
 
 #: ../src/dialog_translation.cpp:119
 msgid "Insert original"
-msgstr "إدراج الحالي"
+msgstr "إدراج الأصلي"
 
 #: ../src/dialog_translation.cpp:122
 msgid "Delete line"
@@ -5720,7 +5839,7 @@ msgstr "حذف السطر"
 
 #: ../src/dialog_translation.cpp:125
 msgid "Enable &preview"
-msgstr "تفعيل الم&عاينة"
+msgstr "تمكين الم&عاينة"
 
 #: ../src/dialog_translation.cpp:166
 msgid "There is nothing to translate in the file."
@@ -5743,7 +5862,7 @@ msgstr "مساعد الترجمة"
 
 #: ../src/visual_tool.cpp:145
 msgid "visual typesetting"
-msgstr ""
+msgstr "تنضيد بصري"
 
 #: ../src/ass_karaoke.cpp:330
 msgid "splitting"
@@ -5755,7 +5874,7 @@ msgstr ""
 
 #: ../src/dialog_resample.cpp:84
 msgid "&Change aspect ratio"
-msgstr ""
+msgstr "ت&غيير النسبة الباعيّة"
 
 #: ../src/dialog_resample.cpp:99
 msgid "Margin offset"
@@ -5775,21 +5894,23 @@ msgid ""
 "There was an error checking for updates to Aegisub:\n"
 "%s\n"
 "\n"
-"If other applications can access the Internet fine, this is probably a temporary server problem on our end."
+"If other applications can access the Internet fine, this is probably a "
+"temporary server problem on our end."
 msgstr ""
-"هناك خطأ في التحقق من تحديثات لأيجي سب:\n"
+"هناك خطأ في التماس تحديثات لأيجي سب:\n"
 "%s\n"
 "\n"
-"إن كانت بقية التطبيقات تصل للإنترنت جيدا، إذن هذه بالتأكيد مشكلة مؤقتة في خادمنا من جانبنا."
+"إن كانت بقية التطبيقات تصل للإنترنت جيدا، إذن هذه بالتأكيد مشكلة مؤقتة في "
+"خادمنا من جانبنا."
 
 #: ../src/dialog_version_check.cpp:197
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr "خطأ مجهول حدث بينما يتحقق أيجي سب عن تحديثاته."
+msgstr "خطأ مجهول حدث بينما يلتمس أيجي سب عن تحديثاته."
 
 #: ../src/dialog_version_check.cpp:387
 #: ../src/dialog_version_check.cpp:411
 msgid "Could not connect to updates server."
-msgstr "تعذر الإتصال بخادم التحديثات."
+msgstr "تعذر الاتصال بخادم التحديثات."
 
 #: ../src/dialog_version_check.cpp:389
 #: ../src/dialog_version_check.cpp:415
@@ -5843,7 +5964,7 @@ msgstr "إدراج عند وقت الفيديو (بعد)"
 
 #: default_menu.json:0
 msgid "&Join (concatenate)"
-msgstr "&جمع (سلسلة)"
+msgstr "&جمع (لمّ)"
 
 #: default_menu.json:0
 msgid "Join (keep first)"
@@ -5851,7 +5972,7 @@ msgstr "جمع (إبقاء الأول)"
 
 #: default_menu.json:0
 msgid "Join (as Karaoke)"
-msgstr "جمع (ككاروكي)"
+msgstr "جمع (كـكاروكي)"
 
 #: default_menu.json:0
 msgid "&Make times continuous (change start)"
@@ -5883,7 +6004,7 @@ msgstr "&صوت"
 
 #: default_menu.json:0
 msgid "A&utomation"
-msgstr "أتمم&ة"
+msgstr "أتمت&ة"
 
 #: default_menu.json:0
 msgid "Vie&w"
@@ -5939,10 +6060,13 @@ msgstr ""
 
 #: ../automation/autoload/clean-info.lua:19
 msgid "Clean Script Info"
-msgstr ""
+msgstr "محو معلومات السكرِبت"
 
 #: ../automation/autoload/clean-info.lua:20
-msgid "Removes all but the absolutely required fields from the Script Info section. You might want to run this on files that you plan to distribute in original form."
+msgid ""
+"Removes all but the absolutely required fields from the Script Info section. "
+"You might want to run this on files that you plan to distribute in original "
+"form."
 msgstr ""
 
 #: ../automation/autoload/macro-1-edgeblur.lua:6
@@ -5955,11 +6079,11 @@ msgstr ""
 
 #: ../automation/autoload/macro-1-edgeblur.lua:21
 msgid "Adds \\be1 tags to all selected lines"
-msgstr ""
+msgstr "يضيف وسوم \\be1 إلى كل الأسطر المحدّدة"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:32
 msgid "Automatic karaoke lead-in"
-msgstr ""
+msgstr "وقت بداية كاروكي تلقائي"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:33
 msgid "Join up the ends of selected lines and add \\k tags to shift karaoke"
@@ -5970,7 +6094,9 @@ msgid "Clean Tags"
 msgstr "محو الوسوم"
 
 #: ../automation/autoload/cleantags-autoload.lua:32
-msgid "Clean subtitle lines by re-arranging ASS tags and override blocks within the lines"
+msgid ""
+"Clean subtitle lines by re-arranging ASS tags and override blocks within the "
+"lines"
 msgstr ""
 
 #: ../automation/autoload/kara-templater.lua:36
@@ -5978,7 +6104,8 @@ msgid "Karaoke Templater"
 msgstr "قولبة الكاروكي"
 
 #: ../automation/autoload/kara-templater.lua:37
-msgid "Macro and export filter to apply karaoke effects using the template language"
+msgid ""
+"Macro and export filter to apply karaoke effects using the template language"
 msgstr ""
 
 #: ../automation/autoload/kara-templater.lua:858
@@ -5987,7 +6114,7 @@ msgstr "تطبيق قالب الكاروكي"
 
 #: ../automation/autoload/kara-templater.lua:858
 msgid "Applies karaoke effects from templates"
-msgstr "لتطبيق تأثيرات الكاروكي من القوالب"
+msgstr "يطبّق تأثيرات الكاروكي من القوالب"
 
 #: ../automation/autoload/kara-templater.lua:859
 msgid "Karaoke template"
@@ -6027,4 +6154,5 @@ msgstr "محرر ترجمة"
 #: aegisub.desktop:6
 msgid "Create and edit subtitles for film and videos."
 msgstr "إنشاء وتحرير الترجمات للأفلام والفيديوهات."
+
 
