@@ -19,9 +19,9 @@ DEP		= $(addsuffix .d, $(basename $(SRC)))
 ###################
 
 ifeq (yes, $(BUILD_DARWIN))
-CFLAGS += -mmacosx-version-min=10.7
-CXXFLAGS += -mmacosx-version-min=10.7
-LDFLAGS += -mmacosx-version-min=10.7
+CFLAGS += -mmacosx-version-min=10.7 -gfull
+CXXFLAGS += -mmacosx-version-min=10.7 -gfull
+LDFLAGS += -mmacosx-version-min=10.7 -Wl,-dead_strip
 LIB_SHARED_LINK = $(LIB_SHARED_LINK_OSX)
 endif
 
