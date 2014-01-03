@@ -1850,7 +1850,7 @@ msgid "Find"
 msgstr "Cari"
 
 #: ../src/command/subtitle.cpp:94
-msgid "Search for text the in subtitles"
+msgid "Search for text in the subtitles"
 msgstr "Cari teks di dalam takarir"
 
 #: ../src/command/subtitle.cpp:104

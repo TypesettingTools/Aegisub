@@ -1854,7 +1854,7 @@ msgid "Find"
 msgstr "Localizar"
 
 #: ../src/command/subtitle.cpp:94
-msgid "Search for text the in subtitles"
+msgid "Search for text in the subtitles"
 msgstr "Procurar por texto nas legendas"
 
 #: ../src/command/subtitle.cpp:104
