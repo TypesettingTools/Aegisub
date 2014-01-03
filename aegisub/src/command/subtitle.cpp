@@ -94,7 +94,7 @@ struct subtitle_find : public Command {
 	CMD_ICON(find_button)
 	STR_MENU("&Find...")
 	STR_DISP("Find")
-	STR_HELP("Search for text the in subtitles")
+	STR_HELP("Search for text in the subtitles")
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
