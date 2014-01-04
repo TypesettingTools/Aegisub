@@ -28,11 +28,6 @@
 
 namespace agi { struct Context; }
 
-DEFINE_BASE_EXCEPTION_NOINNER(CommandError, agi::Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandNotFound, CommandError, "command/notfound")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconNone, CommandError, "command/icon")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandIconInvalid, CommandError, "command/icon/invalid")
-
 #define CMD_NAME(a) const char* name() const { return a; }
 #define STR_MENU(a) wxString StrMenu(const agi::Context *) const { return _(a); }
 #define STR_DISP(a) wxString StrDisplay(const agi::Context *) const { return _(a); }
@@ -50,6 +45,9 @@ struct cname : public Command {                         \
 
 /// Commands
 namespace cmd {
+DEFINE_BASE_EXCEPTION_NOINNER(CommandError, agi::Exception)
+DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandNotFound, CommandError, "command/notfound")
+
 	enum CommandFlags {
 		/// Default command type
 		COMMAND_NORMAL       = 0,
