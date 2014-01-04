@@ -24,6 +24,7 @@
 
 #include "libresrc/libresrc.h"
 #include "command/command.h"
+#include "compat.h"
 #include "options.h"
 
 #include <libaegisub/path.h>
@@ -163,11 +164,18 @@ bool check(std::string const& context, agi::Context *c, int key_code, int modifi
 }
 
 bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
-	if (!hotkey::check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
-		evt.Skip();
-		return false;
+	try {
+		if (!hotkey::check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
+			evt.Skip();
+			return false;
+		}
+		return true;
 	}
-	return true;
+	catch (cmd::CommandNotFound const& e) {
+		wxMessageBox(to_wx(e.GetChainedMessage()), _("Invalid command name for hotkey"),
+			wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP);
+		return true;
+	}
 }
 
 std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command) {

@@ -129,7 +129,7 @@ namespace {
 				try {
 					command = cmd::get(command_name);
 				}
-				catch (CommandNotFound const&) {
+				catch (cmd::CommandNotFound const&) {
 					LOG_W("toolbar/command/not_found") << "Command '" << command_name << "' not found; skipping";
 					continue;
 				}

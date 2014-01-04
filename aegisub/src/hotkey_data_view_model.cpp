@@ -97,7 +97,7 @@ public:
 				if (icon_bmp.IsOk())
 					icon.CopyFromBitmap(icon_bmp);
 			}
-			catch (agi::Exception const& e) {
+			catch (agi::Exception const&) {
 				// Just use no icon; error is reported in the description column
 			}
 			variant << wxDataViewIconText(to_wx(combo.CmdName()), icon);
