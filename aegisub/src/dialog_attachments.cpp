@@ -150,7 +150,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 
 	// Multiple or single?
 	if (listView->GetNextSelected(i) != -1)
-		path = wxDirSelector(_("Select the path to save the files to:"), to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()));
+		path = wxDirSelector(_("Select the path to save the files to:"), to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString())).c_str();
 	else {
 		path = SaveFileSelector(
 			_("Select the path to save the file to:"),
