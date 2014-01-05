@@ -570,9 +570,9 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 	if (paint_columns[4]) strings[4] = to_wx(line->Style);
 	if (paint_columns[5]) strings[5] = to_wx(line->Actor);
 	if (paint_columns[6]) strings[6] = to_wx(line->Effect);
-	if (paint_columns[7]) strings[7] = line->Margin[0] ? std::to_wstring(line->Margin[0]) : wxString();
-	if (paint_columns[8]) strings[8] = line->Margin[1] ? std::to_wstring(line->Margin[1]) : wxString();
-	if (paint_columns[9]) strings[9] = line->Margin[2] ? std::to_wstring(line->Margin[2]) : wxString();
+	if (paint_columns[7]) strings[7] = line->Margin[0] ? wxString(std::to_wstring(line->Margin[0])) : wxString();
+	if (paint_columns[8]) strings[8] = line->Margin[1] ? wxString(std::to_wstring(line->Margin[1])) : wxString();
+	if (paint_columns[9]) strings[9] = line->Margin[2] ? wxString(std::to_wstring(line->Margin[2])) : wxString();
 
 	if (paint_columns[10]) {
 		strings[10].clear();
