@@ -36,7 +36,7 @@ namespace bfs = boost::filesystem;
 
 namespace {
 	FINDEX_INFO_LEVELS find_info_level() {
-		return IsWindowsVistaOrGreater() ? FindExInfoBasic : FindExInfoStandard;
+		return IsWindows7OrGreater() ? FindExInfoBasic : FindExInfoStandard;
 	}
 }
 
