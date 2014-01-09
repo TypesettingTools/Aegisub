@@ -40,20 +40,10 @@ public:
 	/// @brief Constructor
 	/// @param begin Index of the first millisecond to include in the range
 	/// @param end   Index of one past the last millisecond to include in the range
-	TimeRange(int begin, int end) : _begin(begin), _end(end)
+	TimeRange(int begin, int end)
+	: _begin(begin), _end(end)
 	{
 		assert(end >= begin);
-	}
-
-	/// @brief Copy constructor, optionally adjusting the range
-	/// @param src          The range to duplicate
-	/// @param begin_adjust Number of milliseconds to add to the start of the range
-	/// @param end_adjust   Number of milliseconds to add to the end of the range
-	TimeRange(const TimeRange &src, int begin_adjust = 0, int end_adjust = 0)
-	{
-		_begin = src._begin + begin_adjust;
-		_end = src._end + end_adjust;
-		assert(_end >= _begin);
 	}
 
 	/// Get the length of the range in milliseconds
