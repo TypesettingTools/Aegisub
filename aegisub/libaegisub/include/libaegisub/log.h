@@ -70,13 +70,13 @@ extern LogSink *log;
 
 /// Container to hold a single message
 struct SinkMessage {
+	std::string message;	///< Formatted message
+	agi_timeval tv;			///< Time at execution
 	const char *section;	///< Section info eg "video/open" "video/seek" etc
-	Severity severity;		///< Severity
 	const char *file;		///< Source file
 	const char *func;		///< Function name
+	Severity severity;		///< Severity
 	int line;				///< Source line
-	agi_timeval tv;			///< Time at execution
-	std::string message;	///< Formatted message
 };
 
 class Emitter;
