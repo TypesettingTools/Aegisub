@@ -31,6 +31,8 @@
 
 #include <boost/range/algorithm/find.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <wx/intl.h>
+#include <wx/msgdlg.h>
 
 namespace {
 	const char *added_hotkeys_7035[][5] = {
