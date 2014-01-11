@@ -103,7 +103,7 @@ void Thesaurus::OnLanguageChanged() {
 	agi::dispatch::Background().Async([=]{
 		try {
 			auto thes = agi::util::make_unique<agi::Thesaurus>(dat, idx);
-			agi::dispatch::Main().Sync([&]{
+			agi::dispatch::Main().Sync([&thes, this]{
 				impl = std::move(thes);
 			});
 		}
