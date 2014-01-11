@@ -253,7 +253,9 @@ void VideoContext::OnSubtitlesSave() {
 		ar = std::to_string((int)ar_type);
 
 	context->ass->SetScriptInfo("Video File", config::path->MakeRelative(video_filename, "?script").generic_string());
-	context->ass->SetScriptInfo("YCbCr Matrix", video_provider->GetColorSpace());
+	auto matrix = video_provider->GetColorSpace();
+	if (!matrix.empty())
+		context->ass->SetScriptInfo("YCbCr Matrix", matrix);
 	context->ass->SaveUIState("Video Aspect Ratio", ar);
 	context->ass->SaveUIState("Video Position", std::to_string(frame_n));
 }
