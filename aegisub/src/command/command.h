@@ -34,19 +34,6 @@ namespace agi { struct Context; }
 #define STR_HELP(a) wxString StrHelp() const { return _(a); }
 #define CMD_TYPE(a) int Type() const { using namespace cmd; return a; }
 
-#ifdef __WXMSW__
-#define CMD_ICON(icon) wxBitmap Icon(int size) const override { \
-	if (size == 24) return GETIMAGE(icon##_24); \
-	return GETIMAGE(icon##_16); \
-}
-#elif defined(__WXMAC__)
-#define CMD_ICON(icon) wxBitmap Icon(int size) const override { \
-	if (size == 64) return GETIMAGE(icon##_64); \
-	if (size == 32) return GETIMAGE(icon##_32); \
-	if (size == 24) return GETIMAGE(icon##_24); \
-	return GETIMAGE(icon##_16); \
-}
-#else
 #define CMD_ICON(icon) wxBitmap Icon(int size) const override { \
 	if (size == 64) return GETIMAGE(icon##_64); \
 	if (size == 48) return GETIMAGE(icon##_48); \
@@ -54,7 +41,6 @@ namespace agi { struct Context; }
 	if (size == 24) return GETIMAGE(icon##_24); \
 	return GETIMAGE(icon##_16); \
 }
-#endif
 
 #define COMMAND_GROUP(cname, cmdname, menu, disp, help) \
 struct cname : public Command {                         \
