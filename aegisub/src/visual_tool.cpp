@@ -116,10 +116,10 @@ void VisualToolBase::OnActiveLineChanged(AssDialogue *new_line) {
 
 bool VisualToolBase::IsDisplayed(AssDialogue *line) const {
 	int frame = c->videoController->GetFrameN();
-	return
-		line &&
-		c->videoController->FrameAtTime(line->Start, agi::vfr::START) <= frame &&
-		c->videoController->FrameAtTime(line->End, agi::vfr::END) >= frame;
+	return line
+		&& !line->Comment
+		&& c->videoController->FrameAtTime(line->Start, agi::vfr::START) <= frame
+		&& c->videoController->FrameAtTime(line->End, agi::vfr::END) >= frame;
 }
 
 void VisualToolBase::Commit(wxString message) {
