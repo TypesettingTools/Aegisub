@@ -11,48 +11,25 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// $Id$
-
-/// @file common-respack.cpp
-/// @brief Load any file into a byte array.
-/// @ingroup util
 
 #include <iterator>
 #include <fstream>
 #include <iostream>
 #include <string>
 
-
 /// Clean a filename for use as an identity.
 /// @param str[in] String containing filename.
-inline void clean(std::string &str) {
-	// Remove path.
-	std::string::size_type pos = str.rfind('/');
-	if (pos != std::string::npos) {
-		str = str.substr(pos+1, str.size());
-	}
+void clean(std::string &str) {
+	// Chop extension
+	auto pos = str.rfind('.');
+	if (pos != std::string::npos)
+		str.erase(pos, str.size() - pos);
 
-	// Chop extension.
-	pos = str.rfind('.');
-	if (pos != std::string::npos) {
-		str = str.substr(0, pos);
-	}
-
-	for (unsigned int i = 0; i != str.size(); i++) {
-		int c = (int)str[i];
-		if (((c >= 65) && (c <= 90)) ||   /* A-Z */
-			((c >= 97) && (c <= 122)) ||  /* a-z */
-			((c >= 48) && (c <= 57)) ||   /* 0-9 */
-			(c == 95)) {                  /* _ */
-
-			continue;
-		} else {
-			str.erase(i, 1);
-		}
-	}
+	// Remove path
+	pos = str.rfind('/');
+	if (pos != std::string::npos)
+		str.erase(0, pos + 1);
 }
-
 
 int main(int argc, const char *argv[]) {
 	// Needs 3 arguments
@@ -90,46 +67,32 @@ int main(int argc, const char *argv[]) {
 		path_base = manifest.substr(0, pos+1);
 	}
 
+	file_cpp << "#include \"libresrc.h\"\n";
 
-	file_cpp << "#include \"libresrc.h\"" << std::endl;
-
-	std::string file;	// File for array.
-	while (file_manifest) {
-		std::getline(file_manifest, file);
+	std::string file;
+	while (std::getline(file_manifest, file)) {
 		if (file.empty()) continue;
 
-		std::ifstream ifp((path_base + file).c_str(), std::ios_base::in|std::ios_base::binary);
+		std::ifstream ifp((path_base + file).c_str(), std::ios_base::binary);
 
 		if (!ifp.is_open()) {
 			std::cout << "Error opening file: " << file << std::endl;
 			return 1;
 		}
 
-		// Identity used in C/Header files.
-		std::string ident(file);
-		clean(ident);
+		clean(file);
+		file_cpp << "const unsigned char " << file << "[] = {";
 
-		file_cpp << "const unsigned char " << ident << "[] = {";
-
-		/// Create byte-array.
-		std::istreambuf_iterator<char> ifp_i(ifp);
-		std::istreambuf_iterator<char> eof;
-		int length = 0;
-
-		while (ifp_i != eof) {
+		size_t length = 0;
+		for (std::istreambuf_iterator<char> it(ifp), end; it != end; ++it) {
 			if (length > 0) file_cpp << ",";
-			file_cpp << (unsigned int)(unsigned char)*ifp_i;
-
-			++ifp_i;
-			length++;
+			file_cpp << (unsigned int)(unsigned char)*it;
+			++length;
 		}
 
-		// Finish
-		file_cpp << "};" << std::endl;
+		file_cpp << "};\n";
 
-		// Prototype.
-		file_h << "extern const unsigned char " << ident << "[" << length << "];" << std::endl;
-
+		file_h << "extern const unsigned char " << file << "[" << length << "];\n";
 	}
 
 	return 0;
