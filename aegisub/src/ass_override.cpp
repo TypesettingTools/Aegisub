@@ -133,7 +133,7 @@ template<> void AssOverrideParameter::Set<int>(int new_value) {
 }
 
 template<> void AssOverrideParameter::Set<double>(double new_value) {
-	Set(std::to_string(new_value));
+	Set(float_to_string(new_value));
 }
 
 template<> void AssOverrideParameter::Set<bool>(bool new_value) {
