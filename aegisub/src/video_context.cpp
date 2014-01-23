@@ -126,6 +126,14 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
 
+		// Video provider handles the case where matrix is different but
+		// compatible, so no need to handle it here
+		auto matrix = video_provider->GetColorSpace();
+		if (!matrix.empty() && matrix != context->ass->GetScriptInfo("YCbCr Matrix")) {
+			context->ass->SetScriptInfo("YCbCr Matrix", matrix);
+			commit_subs = true;
+		}
+
 		// Check that the script resolution matches the video resolution
 		int sx = context->ass->GetScriptInfoAsInt("PlayResX");
 		int sy = context->ass->GetScriptInfoAsInt("PlayResY");
@@ -253,9 +261,6 @@ void VideoContext::OnSubtitlesSave() {
 		ar = std::to_string((int)ar_type);
 
 	context->ass->SetScriptInfo("Video File", config::path->MakeRelative(video_filename, "?script").generic_string());
-	auto matrix = video_provider->GetColorSpace();
-	if (!matrix.empty())
-		context->ass->SetScriptInfo("YCbCr Matrix", matrix);
 	context->ass->SaveUIState("Video Aspect Ratio", ar);
 	context->ass->SaveUIState("Video Position", std::to_string(frame_n));
 }
