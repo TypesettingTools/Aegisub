@@ -71,6 +71,9 @@ public:
 	/// @brief Does this provider want Aegisub to cache video frames?
 	/// @return Returns true if caching is desired, false otherwise.
 	virtual bool WantsCaching() const { return false; }
+
+	/// Should the video properties in the script be set to this video's property if they already have values?
+	virtual bool ShouldSetVideoProperties() const { return true; }
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(VideoProviderError, agi::Exception)

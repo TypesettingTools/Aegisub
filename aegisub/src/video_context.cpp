@@ -122,14 +122,17 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 
 	bool commit_subs = false;
 	try {
-		provider.reset(new ThreadedFrameSource(filename, context->ass->GetScriptInfo("YCbCr Matrix"), this));
+		auto old_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
+		provider.reset(new ThreadedFrameSource(filename, old_matrix, this));
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
 
-		// Video provider handles the case where matrix is different but
-		// compatible, so no need to handle it here
+		// When opening dummy video only want to set the script properties if
+		// they were previously unset
+		bool set_properties = video_provider->ShouldSetVideoProperties();
+
 		auto matrix = video_provider->GetColorSpace();
-		if (!matrix.empty() && matrix != context->ass->GetScriptInfo("YCbCr Matrix")) {
+		if (set_properties && matrix != old_matrix) {
 			context->ass->SetScriptInfo("YCbCr Matrix", matrix);
 			commit_subs = true;
 		}
@@ -149,7 +152,7 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		}
 		// If it has been set to something other than a multiple of the video
 		// resolution, ask the user if they want it to be fixed
-		else if (sx % vx != 0 || sy % vy != 0) {
+		else if (set_properties && (sx % vx != 0 || sy % vy != 0)) {
 			switch (OPT_GET("Video/Check Script Res")->GetInt()) {
 			case 1: // Ask to change on mismatch
 				if (wxYES != wxMessageBox(
@@ -175,7 +178,8 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		// Set frame rate
 		video_fps = video_provider->GetFPS();
 		if (ovr_fps.IsLoaded()) {
-			int ovr = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"), _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
+			int ovr = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"),
+			                       _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
 			if (ovr == wxYES) {
 				ovr_fps = agi::vfr::Framerate();
 				timecodes_filename.clear();

@@ -86,6 +86,7 @@ public:
 	double GetDAR()                 const override { return 0; }
 	agi::vfr::Framerate GetFPS()    const override { return fps; }
 	std::vector<int> GetKeyFrames() const override { return {}; }
-	std::string GetColorSpace()     const override { return ""; }
+	std::string GetColorSpace()     const override { return "None"; }
 	std::string GetDecoderName()    const override { return "Dummy Video Provider"; }
+	bool ShouldSetVideoProperties() const override { return false; }
 };
