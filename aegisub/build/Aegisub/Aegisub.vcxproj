@@ -463,7 +463,8 @@
     <ClCompile Include="$(SrcDir)visual_tool_vector_clip.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="$(SrcDir)res.rc" />
+    <ResourceCompile Include="$(SrcDir)res\res.rc" />
+    <ResourceCompile Include="$(SrcDir)res\strings.rc" />
   </ItemGroup>
   <ItemGroup>
     <MsgFmt Include="$(AegisubSourceBase)po\*.po" />

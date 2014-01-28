@@ -1234,7 +1234,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="$(SrcDir)res.rc">
+    <ResourceCompile Include="$(SrcDir)res/res.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="$(SrcDir)res/strings.rc">
       <Filter>Resources</Filter>
     </ResourceCompile>
   </ItemGroup>
