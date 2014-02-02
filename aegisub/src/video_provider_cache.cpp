@@ -60,7 +60,15 @@ std::shared_ptr<VideoFrame> VideoProviderCache::GetFrame(int n) {
 
 	for (auto cur = cache.begin(); cur != cache.end(); ++cur) {
 		if (cur->frame_number == n) {
+#if BOOST_VERSION <= 105200
+			// Until boost 1.52, boost::container::list incorrectly asserted
+			// that this != &other, so do an extra splice through an empty list
+			decltype(cache) temp;
+			temp.splice(temp.begin(), cache, cur);
+			cache.splice(cache.begin(), temp, temp.begin());
+#else
 			cache.splice(cache.begin(), cache, cur); // Move to front
+#endif
 			return std::make_shared<VideoFrame>(cache.front());
 		}
 
