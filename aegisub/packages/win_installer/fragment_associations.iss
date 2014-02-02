@@ -41,6 +41,7 @@ DestDir: {commontemplates}; Source: template.ass; DestName: Aegisub.ass
 ; Application registration for Open With dialogue
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe"; ValueType: none; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe"; ValueType: string; ValueName: "FriendlyAppName"; ValueData: "@{app}\aegisub{#ARCH}.exe,-10000"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe"; ValueType: string; ValueName: "ApplicationCompany"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\shell"; ValueType: none; Flags: uninsdeletekey
 Root: HKLM; SubKey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\shell\open"; ValueType: none; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\shell\open"; ValueType: string; ValueName: "FriendlyAppName"; ValueData: "@{app}\aegisub{#ARCH}.exe,-10000"; Flags: uninsdeletekey
