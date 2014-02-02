@@ -4,6 +4,7 @@ include ../Makefile.inc
 
 PO = \
 	ar.po \
+	bg.po \
 	ca.po \
 	cs.po \
 	da.po \
