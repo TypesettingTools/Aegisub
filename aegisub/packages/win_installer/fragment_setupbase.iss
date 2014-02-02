@@ -32,7 +32,7 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#define VERSION "3.1.1"
+#define VERSION "3.1.2"
 
 [Setup]
 AppName=Aegisub
