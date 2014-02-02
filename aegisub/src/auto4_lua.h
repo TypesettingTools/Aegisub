@@ -37,6 +37,7 @@
 #include "command/command.h"
 
 #include <deque>
+#include <vector>
 
 #include <wx/event.h>
 #include <wx/thread.h>
@@ -83,7 +84,7 @@ namespace Automation4 {
 		/// Commits to apply once processing completes successfully
 		std::deque<PendingCommit> pending_commits;
 		/// Lines to delete once processing complete successfully
-		std::deque<std::unique_ptr<AssEntry>> lines_to_delete;
+		std::vector<std::unique_ptr<AssEntry>> lines_to_delete;
 
 		int ObjectIndexRead(lua_State *L);
 		void ObjectIndexWrite(lua_State *L);
