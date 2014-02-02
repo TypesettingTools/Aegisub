@@ -1036,8 +1036,10 @@ void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 		AnnounceActiveLineChanged(active_line);
 		MakeRowVisible(GetDialogueIndex(active_line));
 		Refresh(false);
-		extendRow = GetDialogueIndex(new_line);
 	}
+	// extendRow may not equal the active row if it was set via a shift-click,
+	// so update it even if the active line didn't change
+	extendRow = GetDialogueIndex(new_line);
 }
 
 void BaseGrid::SetSelectionAndActive(Selection const& new_selection, AssDialogue *new_line) {
