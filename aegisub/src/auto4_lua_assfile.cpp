@@ -438,13 +438,12 @@ namespace Automation4 {
 
 		if (a >= b) return;
 
-		for (; b < lines.size(); ++a, ++b) {
-			modification_type |= modification_mask(lines[a]);
-			lines_to_delete.emplace_back(lines[a]);
-			lines[a] = lines[b];
+		for (size_t i = a; i < b; ++i) {
+			modification_type |= modification_mask(lines[i]);
+			lines_to_delete.emplace_back(lines[i]);
 		}
 
-		lines.erase(lines.begin() + a, lines.end());
+		lines.erase(lines.begin() + a, lines.begin() + b);
 	}
 
 	void LuaAssFile::ObjectAppend(lua_State *L)
