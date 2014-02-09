@@ -227,6 +227,14 @@ PKG_CHECK_MODULES(ICU_I18N, icu-i18n >= icu_required_version)
 ########
 ## boost
 ########
+AS_IF([test x$ax_cv_boost_asio != xyes], [AC_MSG_FAILURE([Boost.asio is requirdd])])
+AS_IF([test x$ax_cv_boost_chrono != xyes], [AC_MSG_FAILURE([Boost.chrono is requirdd])])
+AS_IF([test x$ax_cv_boost_filesystem != xyes], [AC_MSG_FAILURE([Boost.filesystem is requirdd])])
+AS_IF([test x$ax_cv_boost_locale != xyes], [AC_MSG_FAILURE([Boost.locale is requirdd])])
+AS_IF([test x$ax_cv_boost_regex != xyes], [AC_MSG_FAILURE([Boost.regex is requirdd])])
+AS_IF([test x$ax_cv_boost_system != xyes], [AC_MSG_FAILURE([Boost.system is requirdd])])
+AS_IF([test x$ax_cv_boost_thread != xyes], [AC_MSG_FAILURE([Boost.thread is requirdd])])
+
 AS_IF([test x$enable_sanity_checks != xno], [
   AC_AGI_COMPILE([boost ICU support], [boost_icu], [$BOOST_CPPFLAGS],
                  [$BOOST_LDFLAGS $BOOST_REGEX_LIB $ICU_UC_LIBS $ICU_I18N_LIBS],[
