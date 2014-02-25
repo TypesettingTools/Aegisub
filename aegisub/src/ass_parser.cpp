@@ -129,14 +129,11 @@ void AssParser::AddLine(std::string const& data) {
 	if (data[0] == '[' && data.back() == ']') {
 		// Ugly hacks to allow intermixed v4 and v4+ style sections
 		const std::string low = boost::to_lower_copy(data);
-		std::string header = data;
 		if (low == "[v4 styles]") {
-			header = "[V4+ Styles]";
 			version = 0;
 			state = &AssParser::ParseStyleLine;
 		}
 		else if (low == "[v4+ styles]") {
-			header = "[V4+ Styles]";
 			version = 1;
 			state = &AssParser::ParseStyleLine;
 		}
