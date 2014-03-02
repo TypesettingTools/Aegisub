@@ -33,7 +33,7 @@ namespace agi {
 		std::string GetAssStyleFormatted() const;
 		std::string GetAssOverrideFormatted() const;
 		std::string GetSsaFormatted() const;
-		std::string GetHexFormatted() const;
+		std::string GetHexFormatted(bool rgba=false) const;
 		std::string GetRgbFormatted() const;
 
 		operator std::string() const { return GetRgbFormatted(); }

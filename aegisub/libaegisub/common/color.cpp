@@ -43,7 +43,9 @@ std::string Color::GetSsaFormatted() const {
 	return boost::lexical_cast<std::string>((a << 24) + (b << 16) + (g << 8) + r);
 }
 
-std::string Color::GetHexFormatted() const {
+std::string Color::GetHexFormatted(bool rgba) const {
+	if (rgba)
+		return str(boost::format("#%02X%02X%02X%02X") % (int)r % (int)g % (int)b % (int)a);
 	return str(boost::format("#%02X%02X%02X") % (int)r % (int)g % (int)b);
 }
 
