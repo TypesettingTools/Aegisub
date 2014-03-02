@@ -206,7 +206,7 @@ namespace Automation4 {
 			}
 
 			bool CanSerialiseValue() const override { return true; }
-			std::string SerialiseValue() const override { return inline_string_encode(color.GetHexFormatted()); }
+			std::string SerialiseValue() const override { return inline_string_encode(color.GetHexFormatted(alpha)); }
 			void UnserialiseValue(const std::string &serialised) override { color = inline_string_decode(serialised); }
 
 			wxControl *Create(wxWindow *parent) override {
@@ -216,7 +216,7 @@ namespace Automation4 {
 			}
 
 			void LuaReadBack(lua_State *L) override {
-				lua_pushstring(L, color.GetHexFormatted().c_str());
+				lua_pushstring(L, color.GetHexFormatted(alpha).c_str());
 			}
 		};
 
