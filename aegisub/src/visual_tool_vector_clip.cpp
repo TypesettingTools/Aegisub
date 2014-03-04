@@ -101,7 +101,7 @@ void VisualToolVectorClip::Draw() {
 	assert(!start.empty());
 	assert(!count.empty());
 
-	gl.SetLineColour(colour[3], 1.f, 2);
+	gl.SetLineColour(colour[3], .5f, 2);
 	gl.SetFillColour(wxColour(0, 0, 0), 0.5f);
 
 	// draw the shade over clipped out areas and line showing the clip
