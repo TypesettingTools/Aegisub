@@ -141,7 +141,24 @@ void VisualToolVectorClip::Draw() {
 		}
 	}
 
-	DrawAllFeatures();
+	// Draw features
+	for (auto& feature : features) {
+		int color = 3;
+		if (&feature == active_feature)
+			color = 1;
+		else if (sel_features.count(&feature))
+			color = 2;
+		gl.SetFillColour(colour[color], .6f);
+
+		if (feature.type == DRAG_SMALL_SQUARE) {
+			gl.SetLineColour(colour[3], .5f, 1);
+			gl.DrawRectangle(feature.pos - 3, feature.pos + 3);
+		}
+		else {
+			gl.SetLineColour(colour[color], .5f, 1);
+			gl.DrawCircle(feature.pos, 2.f);
+		}
+	}
 
 	// Draw preview of inserted line
 	if (mode == 1 || mode == 2) {
