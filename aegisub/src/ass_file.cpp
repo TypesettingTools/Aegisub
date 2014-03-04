@@ -206,8 +206,7 @@ AssStyle *AssFile::GetStyle(std::string const& name) {
 }
 
 int AssFile::Commit(wxString const& desc, int type, int amend_id, AssEntry *single_line) {
-	AssFileCommit c = { desc, &amend_id, single_line };
-	PushState(c);
+	PushState({desc, &amend_id, single_line});
 
 	std::set<const AssEntry*> changed_lines;
 	if (single_line)

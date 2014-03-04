@@ -34,17 +34,17 @@
 static const size_t bad_pos = -1;
 
 namespace {
-auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDialogue::Text) {
+auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDialogueBase::Text) {
 	switch (field) {
-		case SearchReplaceSettings::Field::TEXT: return &AssDialogue::Text;
-		case SearchReplaceSettings::Field::STYLE: return &AssDialogue::Style;
-		case SearchReplaceSettings::Field::ACTOR: return &AssDialogue::Actor;
-		case SearchReplaceSettings::Field::EFFECT: return &AssDialogue::Effect;
+		case SearchReplaceSettings::Field::TEXT: return &AssDialogueBase::Text;
+		case SearchReplaceSettings::Field::STYLE: return &AssDialogueBase::Style;
+		case SearchReplaceSettings::Field::ACTOR: return &AssDialogueBase::Actor;
+		case SearchReplaceSettings::Field::EFFECT: return &AssDialogueBase::Effect;
 	}
 	throw agi::InternalError("Bad field for search", nullptr);
 }
 
-std::string const& get_normalized(const AssDialogue *diag, decltype(&AssDialogue::Text) field) {
+std::string const& get_normalized(const AssDialogue *diag, decltype(&AssDialogueBase::Text) field) {
 	auto& value = const_cast<AssDialogue*>(diag)->*field;
 	auto normalized = boost::locale::normalize(value.get());
 	if (normalized != value)
@@ -55,7 +55,7 @@ std::string const& get_normalized(const AssDialogue *diag, decltype(&AssDialogue
 typedef std::function<MatchState (const AssDialogue*, size_t)> matcher;
 
 class noop_accessor {
-	boost::flyweight<std::string> AssDialogue::*field;
+	boost::flyweight<std::string> AssDialogueBase::*field;
 	size_t start;
 
 public:
@@ -72,7 +72,7 @@ public:
 };
 
 class skip_tags_accessor {
-	boost::flyweight<std::string> AssDialogue::*field;
+	boost::flyweight<std::string> AssDialogueBase::*field;
 	std::vector<std::pair<size_t, size_t>> blocks;
 	size_t start;
 

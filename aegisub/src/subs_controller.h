@@ -62,6 +62,9 @@ class SubsController {
 	/// Set the filename, updating things like the MRU and last used path
 	void SetFileName(agi::fs::path const& file);
 
+	/// Set the current file to the file on top of the undo stack
+	void ApplyUndo();
+
 public:
 	SubsController(agi::Context *context);
 

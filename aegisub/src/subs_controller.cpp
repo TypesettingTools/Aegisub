@@ -18,8 +18,10 @@
 
 #include "subs_controller.h"
 
+#include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "ass_info.h"
 #include "ass_style.h"
 #include "charset_detect.h"
 #include "compat.h"
@@ -50,10 +52,73 @@ namespace {
 }
 
 struct SubsController::UndoInfo {
-	AssFile file;
+	std::vector<std::pair<std::string, std::string>> script_info;
+	std::vector<AssStyle> styles;
+	std::vector<AssDialogueBase> events;
+	std::vector<AssAttachment> graphics;
+	std::vector<AssAttachment> fonts;
+
 	wxString undo_description;
 	int commit_id;
-	UndoInfo(AssFile const& f, wxString const& d, int c) : file(f), undo_description(d), commit_id(c) { }
+	UndoInfo(AssFile const& f, wxString const& d, int c)
+	: undo_description(d), commit_id(c)
+	{
+		size_t info_count = 0, style_count = 0, event_count = 0, font_count = 0, graphics_count = 0;
+		for (auto const& line : f.Line) {
+			switch (line.Group()) {
+				case AssEntryGroup::DIALOGUE: ++event_count; break;
+				case AssEntryGroup::INFO: ++info_count; break;
+				case AssEntryGroup::STYLE: ++style_count; break;
+				case AssEntryGroup::FONT: ++font_count; break;
+				case AssEntryGroup::GRAPHIC: ++graphics_count; break;
+				default: assert(false); break;
+			}
+		}
+
+		script_info.reserve(info_count);
+		styles.reserve(style_count);
+		events.reserve(event_count);
+
+		for (auto const& line : f.Line) {
+			switch (line.Group()) {
+			case AssEntryGroup::DIALOGUE:
+				events.push_back(static_cast<AssDialogue const&>(line));
+				break;
+			case AssEntryGroup::INFO: {
+				auto info = static_cast<const AssInfo *>(&line);
+				script_info.emplace_back(info->Key(), info->Value());
+				break;
+			}
+			case AssEntryGroup::STYLE:
+				styles.push_back(static_cast<AssStyle const&>(line));
+				break;
+			case AssEntryGroup::FONT:
+				fonts.push_back(static_cast<AssAttachment const&>(line));
+				break;
+			case AssEntryGroup::GRAPHIC:
+				graphics.push_back(static_cast<AssAttachment const&>(line));
+				break;
+			default:
+				assert(false);
+				break;
+			}
+		}
+	}
+
+	operator AssFile() const {
+		AssFile ret;
+		for (auto const& info : script_info)
+			ret.Line.push_back(*new AssInfo(info.first, info.second));
+		for (auto const& style : styles)
+			ret.Line.push_back(*new AssStyle(style));
+		for (auto const& event : events)
+			ret.Line.push_back(*new AssDialogue(event));
+		for (auto const& attachment : graphics)
+			ret.Line.push_back(*new AssAttachment(attachment));
+		for (auto const& attachment : fonts)
+			ret.Line.push_back(*new AssAttachment(attachment));
+		return ret;
+	}
 };
 
 SubsController::SubsController(agi::Context *context)
@@ -275,20 +340,19 @@ void SubsController::OnCommit(AssFileCommit c) {
 	// saved since the last change
 	if (commit_id == *c.commit_id+1 && redo_stack.empty() && saved_commit_id+1 != commit_id && autosaved_commit_id+1 != commit_id) {
 		// If only one line changed just modify it instead of copying the file
-		if (c.single_line) {
-			entryIter this_it = context->ass->Line.begin(), undo_it = undo_stack.back().file.Line.begin();
-			while (&*this_it != c.single_line) {
-				++this_it;
-				++undo_it;
+		if (c.single_line && c.single_line->Group() == AssEntryGroup::DIALOGUE) {
+			auto src_diag = static_cast<const AssDialogue *>(c.single_line);
+			for (auto& diag : undo_stack.back().events) {
+				if (diag.Id == src_diag->Id) {
+					diag = *src_diag;
+					break;
+				}
 			}
-			undo_stack.back().file.Line.insert(undo_it, *c.single_line->Clone());
-			delete &*undo_it;
+			*c.commit_id = commit_id;
+			return;
 		}
-		else
-			undo_stack.back().file = *context->ass;
 
-		*c.commit_id = commit_id;
-		return;
+		undo_stack.pop_back();
 	}
 
 	redo_stack.clear();
@@ -305,28 +369,27 @@ void SubsController::OnCommit(AssFileCommit c) {
 	*c.commit_id = commit_id;
 }
 
-void SubsController::Undo() {
-	if (undo_stack.size() <= 1) return;
+void SubsController::ApplyUndo() {
+	// Keep old lines alive until after the commit is complete
+	AssFile old;
+	old.swap(*context->ass);
 
-	redo_stack.splice(redo_stack.end(), undo_stack, std::prev(undo_stack.end()));
-	*context->ass = undo_stack.back().file;
+	*context->ass = undo_stack.back();
 	commit_id = undo_stack.back().commit_id;
 
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 }
 
+void SubsController::Undo() {
+	if (undo_stack.size() <= 1) return;
+	redo_stack.splice(redo_stack.end(), undo_stack, std::prev(undo_stack.end()));
+	ApplyUndo();
+}
+
 void SubsController::Redo() {
 	if (redo_stack.empty()) return;
-
-	context->ass->swap(redo_stack.back().file);
-	commit_id = redo_stack.back().commit_id;
-	undo_stack.emplace_back(*context->ass, redo_stack.back().undo_description, commit_id);
-
-	context->ass->Commit("", AssFile::COMMIT_NEW);
-
-    // Done after commit so that the old active line and selection stay alive
-    // while the commit is being processed
-	redo_stack.pop_back();
+	undo_stack.splice(undo_stack.end(), redo_stack, std::prev(redo_stack.end()));
+	ApplyUndo();
 }
 
 wxString SubsController::GetUndoDescription() const {

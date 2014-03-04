@@ -23,7 +23,7 @@ class AssInfo : public AssEntry {
 	std::string value;
 
 public:
-	AssInfo(AssInfo const& o) : key(o.key), value(o.value) { }
+	AssInfo(AssInfo const& o) = default;
 	AssInfo(std::string key, std::string value) : key(std::move(key)), value(std::move(value)) { }
 
 	AssEntry *Clone() const override { return new AssInfo(*this); }

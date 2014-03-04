@@ -361,8 +361,7 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 	if (Vector2D ret = vec_or_bad(find_tag(blocks, "\\move"), 0, 1)) return ret;
 
 	// Get default position
-	int margin[3];
-	memcpy(margin, diag->Margin, sizeof margin);
+	auto margin = diag->Margin;
 	int align = 2;
 
 	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {

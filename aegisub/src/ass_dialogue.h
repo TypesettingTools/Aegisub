@@ -38,6 +38,7 @@
 
 #include <libaegisub/exception.h>
 
+#include <array>
 #include <boost/flyweight.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <vector>
@@ -123,24 +124,18 @@ public:
 	void ProcessParameters(ProcessParametersCallback callback, void *userData);
 };
 
-class AssDialogue : public AssEntry {
-	std::string GetData(bool ssa) const;
-
-	/// @brief Parse raw ASS data into everything else
-	/// @param data ASS line
-	void Parse(std::string const& data);
-public:
+struct AssDialogueBase {
 	/// Unique ID of this line. Copies of the line for Undo/Redo purposes
 	/// preserve the unique ID, so that the equivalent lines can be found in
 	/// the different versions of the file.
-	const int Id;
+	int Id;
 
 	/// Is this a comment line?
 	bool Comment = false;
 	/// Layer number
 	int Layer = 0;
 	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical)
-	int Margin[3];
+	std::array<int, 3> Margin = {{0, 0, 0}};
 	/// Starting time
 	AssTime Start = 0;
 	/// Ending time
@@ -153,7 +148,15 @@ public:
 	boost::flyweight<std::string> Effect;
 	/// Raw text data
 	boost::flyweight<std::string> Text;
+};
 
+class AssDialogue : public AssEntry, public AssDialogueBase {
+	std::string GetData(bool ssa) const;
+
+	/// @brief Parse raw ASS data into everything else
+	/// @param data ASS line
+	void Parse(std::string const& data);
+public:
 	AssEntryGroup Group() const override { return AssEntryGroup::DIALOGUE; }
 
 	/// Parse text as ASS and return block information
@@ -167,10 +170,10 @@ public:
 
 	/// Update the text of the line from parsed blocks
 	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
-	const std::string GetEntryData() const override;
+	const std::string GetEntryData() const override { return GetData(false); }
 
 	/// Get the line as SSA rather than ASS
-	std::string GetSSAText() const override;
+	std::string GetSSAText() const override { return GetData(true); }
 	/// Does this line collide with the passed line?
 	bool CollidesWith(const AssDialogue *target) const;
 
@@ -178,6 +181,7 @@ public:
 
 	AssDialogue();
 	AssDialogue(AssDialogue const&);
+	AssDialogue(AssDialogueBase const&);
 	AssDialogue(std::string const& data);
 	~AssDialogue();
 };

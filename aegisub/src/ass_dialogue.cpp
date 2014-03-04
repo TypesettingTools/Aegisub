@@ -53,34 +53,24 @@ using namespace boost::adaptors;
 
 static int next_id = 0;
 
-AssDialogue::AssDialogue()
-: Id(++next_id)
-{
-	memset(Margin, 0, sizeof Margin);
+AssDialogue::AssDialogue() {
+	Id = ++next_id;
 }
 
-AssDialogue::AssDialogue(AssDialogue const& that)
-: Id(++next_id)
-, Comment(that.Comment)
-, Layer(that.Layer)
-, Start(that.Start)
-, End(that.End)
-, Style(that.Style)
-, Actor(that.Actor)
-, Effect(that.Effect)
-, Text(that.Text)
-{
-	memmove(Margin, that.Margin, sizeof Margin);
+AssDialogue::AssDialogue(AssDialogue const& that) : AssDialogueBase(that) {
+	Id = ++next_id;
 }
 
-AssDialogue::AssDialogue(std::string const& data)
-: Id(++next_id)
-{
+AssDialogue::AssDialogue(AssDialogueBase const& that) : AssDialogueBase(that) {
+	Id = ++next_id;
+}
+
+AssDialogue::AssDialogue(std::string const& data) {
+	Id = ++next_id;
 	Parse(data);
 }
 
-AssDialogue::~AssDialogue () {
-}
+AssDialogue::~AssDialogue () { }
 
 class tokenizer {
 	agi::StringRange str;
@@ -177,14 +167,6 @@ std::string AssDialogue::GetData(bool ssa) const {
 	return str;
 }
 
-const std::string AssDialogue::GetEntryData() const {
-	return GetData(false);
-}
-
-std::string AssDialogue::GetSSAText() const {
-	return GetData(true);
-}
-
 std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() const {
 	boost::ptr_vector<AssDialogueBlock> Blocks;
 
@@ -278,6 +260,6 @@ std::string AssDialogue::GetStrippedText() const {
 
 AssEntry *AssDialogue::Clone() const {
 	auto clone = new AssDialogue(*this);
-	*const_cast<int *>(&clone->Id) = Id;
+	clone->Id = Id;
 	return clone;
 }
