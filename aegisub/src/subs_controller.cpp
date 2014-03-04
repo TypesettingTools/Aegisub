@@ -308,9 +308,7 @@ void SubsController::OnCommit(AssFileCommit c) {
 void SubsController::Undo() {
 	if (undo_stack.size() <= 1) return;
 
-	redo_stack.emplace_back(AssFile(), undo_stack.back().undo_description, commit_id);
-	context->ass->swap(redo_stack.back().file);
-	undo_stack.pop_back();
+	redo_stack.splice(redo_stack.end(), undo_stack, std::prev(undo_stack.end()));
 	*context->ass = undo_stack.back().file;
 	commit_id = undo_stack.back().commit_id;
 
