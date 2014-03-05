@@ -128,6 +128,10 @@ struct SubsController::UndoInfo {
 			c->ass->Line.push_back(*new AssInfo(info.first, info.second));
 		for (auto const& style : styles)
 			c->ass->Line.push_back(*new AssStyle(style));
+		for (auto const& attachment : fonts)
+			c->ass->Line.push_back(*new AssAttachment(attachment));
+		for (auto const& attachment : graphics)
+			c->ass->Line.push_back(*new AssAttachment(attachment));
 		for (auto const& event : events) {
 			auto copy = new AssDialogue(event);
 			c->ass->Line.push_back(*copy);
@@ -136,10 +140,6 @@ struct SubsController::UndoInfo {
 			if (binary_search(begin(selection), end(selection), copy->Id))
 				new_sel.insert(copy);
 		}
-		for (auto const& attachment : graphics)
-			c->ass->Line.push_back(*new AssAttachment(attachment));
-		for (auto const& attachment : fonts)
-			c->ass->Line.push_back(*new AssAttachment(attachment));
 
 		c->subsGrid->BeginBatch();
 		c->selectionController->SetSelectedSet({ });
