@@ -301,12 +301,12 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 		SetSelectedSet(sel);
 	}
 	else {
-		Selection lines;
-		copy(index_line_map.begin(), index_line_map.end(), inserter(lines, lines.begin()));
+		auto sorted = index_line_map;
+		sort(begin(sorted), end(sorted));
 		Selection new_sel;
 		// Remove lines which no longer exist from the selection
 		set_intersection(selection.begin(), selection.end(),
-			lines.begin(), lines.end(),
+			sorted.begin(), sorted.end(),
 			inserter(new_sel, new_sel.begin()));
 
 		SetSelectedSet(new_sel);
