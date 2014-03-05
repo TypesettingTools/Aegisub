@@ -141,9 +141,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size, 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
 }
 
-BaseGrid::~BaseGrid() {
-	ClearMaps();
-}
+BaseGrid::~BaseGrid() { }
 
 BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_PAINT(BaseGrid::OnPaint)
@@ -156,10 +154,8 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 END_EVENT_TABLE()
 
 void BaseGrid::OnSubtitlesCommit(int type) {
-	if (type == AssFile::COMMIT_NEW)
-		UpdateMaps(true);
-	else if (type & AssFile::COMMIT_ORDER || type & AssFile::COMMIT_DIAG_ADDREM)
-		UpdateMaps(false);
+	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_ORDER || type & AssFile::COMMIT_DIAG_ADDREM)
+		UpdateMaps();
 
 	if (type & AssFile::COMMIT_DIAG_META) {
 		SetColumnWidths();
@@ -264,16 +260,9 @@ void BaseGrid::ClearMaps() {
 	AnnounceSelectedSetChanged(Selection(), old_selection);
 }
 
-void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
+void BaseGrid::UpdateMaps() {
 	BeginBatch();
 	int active_row = line_index_map[active_line];
-
-	std::vector<int> sel_rows;
-	if (preserve_selected_rows) {
-		sel_rows.reserve(selection.size());
-		transform(selection.begin(), selection.end(), back_inserter(sel_rows),
-			[this](AssDialogue *diag) { return GetDialogueIndex(diag); });
-	}
 
 	index_line_map.clear();
 	line_index_map.clear();
@@ -283,44 +272,19 @@ void BaseGrid::UpdateMaps(bool preserve_selected_rows) {
 		index_line_map.push_back(curdiag);
 	}
 
-	if (preserve_selected_rows) {
-		Selection sel;
+	auto sorted = index_line_map;
+	sort(begin(sorted), end(sorted));
+	Selection new_sel;
+	// Remove lines which no longer exist from the selection
+	set_intersection(selection.begin(), selection.end(),
+		sorted.begin(), sorted.end(),
+		inserter(new_sel, new_sel.begin()));
 
-		// If the file shrank enough that no selected rows are left, select the
-		// last row
-		if (sel_rows.empty())
-			sel_rows.push_back(index_line_map.size() - 1);
-		else if (sel_rows[0] >= (int)index_line_map.size())
-			sel_rows[0] = index_line_map.size() - 1;
-
-		for (int row : sel_rows) {
-			if (row >= (int)index_line_map.size()) break;
-			sel.insert(index_line_map[row]);
-		}
-
-		SetSelectedSet(sel);
-	}
-	else {
-		auto sorted = index_line_map;
-		sort(begin(sorted), end(sorted));
-		Selection new_sel;
-		// Remove lines which no longer exist from the selection
-		set_intersection(selection.begin(), selection.end(),
-			sorted.begin(), sorted.end(),
-			inserter(new_sel, new_sel.begin()));
-
-		SetSelectedSet(new_sel);
-	}
+	SetSelectedSet(new_sel);
 
 	// The active line may have ceased to exist; pick a new one if so
-	if (line_index_map.size() && !line_index_map.count(active_line)) {
-		if (active_row < (int)index_line_map.size())
-			SetActiveLine(index_line_map[active_row]);
-		else if (preserve_selected_rows && !selection.empty())
-			SetActiveLine(index_line_map[sel_rows[0]]);
-		else
-			SetActiveLine(index_line_map.back());
-	}
+	if (line_index_map.size() && !line_index_map.count(active_line))
+		SetActiveLine(index_line_map[std::min((size_t)active_row, index_line_map.size() - 1)]);
 
 	if (selection.empty() && active_line)
 		SetSelectedSet({ active_line });
@@ -392,15 +356,6 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 
 	int w = GetClientSize().GetWidth();
 	RefreshRect(wxRect(0, (row + 1 - yPos) * lineHeight, w, lineHeight), false);
-}
-
-wxArrayInt BaseGrid::GetSelection() const {
-	wxArrayInt res;
-	res.reserve(selection.size());
-	transform(selection.begin(), selection.end(), std::back_inserter(res),
-		std::bind(&BaseGrid::GetDialogueIndex, this, std::placeholders::_1));
-	std::sort(res.begin(), res.end());
-	return res;
 }
 
 void BaseGrid::OnPaint(wxPaintEvent &) {

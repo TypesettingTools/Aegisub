@@ -61,9 +61,7 @@ AssDialogue::AssDialogue(AssDialogue const& that) : AssDialogueBase(that) {
 	Id = ++next_id;
 }
 
-AssDialogue::AssDialogue(AssDialogueBase const& that) : AssDialogueBase(that) {
-	Id = ++next_id;
-}
+AssDialogue::AssDialogue(AssDialogueBase const& that) : AssDialogueBase(that) { }
 
 AssDialogue::AssDialogue(std::string const& data) {
 	Id = ++next_id;

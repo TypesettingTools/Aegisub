@@ -23,11 +23,13 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
+#include "base_grid.h"
 #include "charset_detect.h"
 #include "compat.h"
 #include "command/command.h"
 #include "include/aegisub/context.h"
 #include "options.h"
+#include "selection_controller.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"
 #include "utils.h"
@@ -58,19 +60,23 @@ struct SubsController::UndoInfo {
 	std::vector<AssAttachment> graphics;
 	std::vector<AssAttachment> fonts;
 
+	mutable std::vector<int> selection;
+	int active_line_id = 0;
+
 	wxString undo_description;
 	int commit_id;
-	UndoInfo(AssFile const& f, wxString const& d, int c)
-	: undo_description(d), commit_id(c)
+
+	UndoInfo(const agi::Context *c, wxString const& d, int commit_id)
+	: undo_description(d), commit_id(commit_id)
 	{
 		size_t info_count = 0, style_count = 0, event_count = 0, font_count = 0, graphics_count = 0;
-		for (auto const& line : f.Line) {
+		for (auto const& line : c->ass->Line) {
 			switch (line.Group()) {
-				case AssEntryGroup::DIALOGUE: ++event_count; break;
-				case AssEntryGroup::INFO: ++info_count; break;
-				case AssEntryGroup::STYLE: ++style_count; break;
-				case AssEntryGroup::FONT: ++font_count; break;
-				case AssEntryGroup::GRAPHIC: ++graphics_count; break;
+				case AssEntryGroup::DIALOGUE: ++event_count;    break;
+				case AssEntryGroup::INFO:     ++info_count;     break;
+				case AssEntryGroup::STYLE:    ++style_count;    break;
+				case AssEntryGroup::FONT:     ++font_count;     break;
+				case AssEntryGroup::GRAPHIC:  ++graphics_count; break;
 				default: assert(false); break;
 			}
 		}
@@ -79,7 +85,7 @@ struct SubsController::UndoInfo {
 		styles.reserve(style_count);
 		events.reserve(event_count);
 
-		for (auto const& line : f.Line) {
+		for (auto const& line : c->ass->Line) {
 			switch (line.Group()) {
 			case AssEntryGroup::DIALOGUE:
 				events.push_back(static_cast<AssDialogue const&>(line));
@@ -103,21 +109,57 @@ struct SubsController::UndoInfo {
 				break;
 			}
 		}
+
+		UpdateActiveLine(c);
+		UpdateSelection(c);
 	}
 
-	operator AssFile() const {
-		AssFile ret;
+	void Apply(agi::Context *c) const {
+		// Keep old lines alive until after the commit is complete
+		AssFile old;
+		old.swap(*c->ass);
+
+		sort(begin(selection), end(selection));
+
+		AssDialogue *active_line = nullptr;
+		SubtitleSelection new_sel;
+
 		for (auto const& info : script_info)
-			ret.Line.push_back(*new AssInfo(info.first, info.second));
+			c->ass->Line.push_back(*new AssInfo(info.first, info.second));
 		for (auto const& style : styles)
-			ret.Line.push_back(*new AssStyle(style));
-		for (auto const& event : events)
-			ret.Line.push_back(*new AssDialogue(event));
+			c->ass->Line.push_back(*new AssStyle(style));
+		for (auto const& event : events) {
+			auto copy = new AssDialogue(event);
+			c->ass->Line.push_back(*copy);
+			if (copy->Id == active_line_id)
+				active_line = copy;
+			if (binary_search(begin(selection), end(selection), copy->Id))
+				new_sel.insert(copy);
+		}
 		for (auto const& attachment : graphics)
-			ret.Line.push_back(*new AssAttachment(attachment));
+			c->ass->Line.push_back(*new AssAttachment(attachment));
 		for (auto const& attachment : fonts)
-			ret.Line.push_back(*new AssAttachment(attachment));
-		return ret;
+			c->ass->Line.push_back(*new AssAttachment(attachment));
+
+		c->subsGrid->BeginBatch();
+		c->selectionController->SetSelectedSet({ });
+		c->ass->Commit("", AssFile::COMMIT_NEW);
+		c->selectionController->SetSelectionAndActive(new_sel, active_line);
+		c->subsGrid->EndBatch();
+	}
+
+	void UpdateActiveLine(const agi::Context *c) {
+		auto line = c->selectionController->GetActiveLine();
+		if (line)
+			active_line_id = line->Id;
+	}
+
+	void UpdateSelection(const agi::Context *c) {
+		auto const& sel = c->selectionController->GetSelectedSet();
+		selection.clear();
+		selection.reserve(sel.size());
+		for (const auto diag : sel)
+			selection.push_back(diag->Id);
 	}
 };
 
@@ -142,6 +184,11 @@ SubsController::SubsController(agi::Context *context)
 			StatusTimeout("Unhandled exception when attempting to autosave file.");
 		}
 	});
+}
+
+void SubsController::SetSelectionController(SelectionController<AssDialogue *> *selection_controller) {
+	active_line_connection = context->selectionController->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
+	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
 void SubsController::Load(agi::fs::path const& filename, std::string charset) {
@@ -357,7 +404,7 @@ void SubsController::OnCommit(AssFileCommit c) {
 
 	redo_stack.clear();
 
-	undo_stack.emplace_back(*context->ass, c.message, commit_id);
+	undo_stack.emplace_back(context, c.message, commit_id);
 
 	int depth = std::max<int>(OPT_GET("Limits/Undo Levels")->GetInt(), 2);
 	while ((int)undo_stack.size() > depth)
@@ -369,27 +416,30 @@ void SubsController::OnCommit(AssFileCommit c) {
 	*c.commit_id = commit_id;
 }
 
-void SubsController::ApplyUndo() {
-	// Keep old lines alive until after the commit is complete
-	AssFile old;
-	old.swap(*context->ass);
+void SubsController::OnActiveLineChanged() {
+	if (!undo_stack.empty())
+		undo_stack.back().UpdateActiveLine(context);
+}
 
-	*context->ass = undo_stack.back();
-	commit_id = undo_stack.back().commit_id;
-
-	context->ass->Commit("", AssFile::COMMIT_NEW);
+void SubsController::OnSelectionChanged() {
+	if (!undo_stack.empty())
+		undo_stack.back().UpdateSelection(context);
 }
 
 void SubsController::Undo() {
 	if (undo_stack.size() <= 1) return;
 	redo_stack.splice(redo_stack.end(), undo_stack, std::prev(undo_stack.end()));
-	ApplyUndo();
+
+	commit_id = undo_stack.back().commit_id;
+	undo_stack.back().Apply(context);
 }
 
 void SubsController::Redo() {
 	if (redo_stack.empty()) return;
 	undo_stack.splice(undo_stack.end(), redo_stack, std::prev(redo_stack.end()));
-	ApplyUndo();
+
+	commit_id = undo_stack.back().commit_id;
+	undo_stack.back().Apply(context);
 }
 
 wxString SubsController::GetUndoDescription() const {

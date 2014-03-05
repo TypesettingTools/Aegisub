@@ -142,13 +142,10 @@ public:
 	void SetByFrame(bool state);
 
 	void SelectRow(int row, bool addToSelected = false, bool select=true);
-	wxArrayInt GetSelection() const;
 
 	void ClearMaps();
 	/// @brief Update the row <-> AssDialogue mappings
-	/// @param preserve_selected_rows Try to keep the same rows selected rather
-	///                               rather than the same lines
-	void UpdateMaps(bool preserve_selected_rows = false);
+	void UpdateMaps();
 	void UpdateStyle();
 
 	int GetRows() const { return index_line_map.size(); }

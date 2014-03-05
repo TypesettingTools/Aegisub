@@ -22,15 +22,19 @@
 #include <set>
 #include <wx/timer.h>
 
+class AssDialogue;
 class AssEntry;
 class AssFile;
 struct AssFileCommit;
+template<typename T> class SelectionController;
 
 namespace agi { struct Context; }
 
 class SubsController {
 	agi::Context *context;
 	agi::signal::Connection undo_connection;
+	agi::signal::Connection active_line_connection;
+	agi::signal::Connection selection_connection;
 
 	struct UndoInfo;
 	boost::container::list<UndoInfo> undo_stack;
@@ -57,16 +61,21 @@ class SubsController {
 	/// The filename of the currently open file, if any
 	agi::fs::path filename;
 
-	void OnCommit(AssFileCommit c);
-
 	/// Set the filename, updating things like the MRU and last used path
 	void SetFileName(agi::fs::path const& file);
 
-	/// Set the current file to the file on top of the undo stack
-	void ApplyUndo();
+	void OnCommit(AssFileCommit c);
+	void OnActiveLineChanged();
+	void OnSelectionChanged();
 
 public:
 	SubsController(agi::Context *context);
+
+	/// Set the selection controller to use
+	///
+	/// Required due to that the selection controller is the subtitles grid, and
+	/// so is created long after the subtitles controller
+	void SetSelectionController(SelectionController<AssDialogue *> *selection_controller);
 
 	/// The file's path and filename if any, or platform-appropriate "untitled"
 	agi::fs::path Filename() const;

@@ -264,6 +264,7 @@ FrameMain::FrameMain()
 
 	StartupLog("Complete context initialization");
 	context->videoController->SetContext(context.get());
+	context->subsController->SetSelectionController(context->selectionController);
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(this));
