@@ -148,7 +148,7 @@ class SubsEditBox : public wxPanel {
 	void OnKeyDown(wxKeyEvent &event);
 
 	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &);
+	void OnSelectedSetChanged();
 	void OnLineInitialTextChanged(std::string const& new_text);
 
 	void OnFrameTimeRadio(wxCommandEvent &event);

@@ -249,15 +249,13 @@ void BaseGrid::UpdateStyle() {
 }
 
 void BaseGrid::ClearMaps() {
-	Selection old_selection(selection);
-
 	index_line_map.clear();
 	line_index_map.clear();
 	selection.clear();
 	yPos = 0;
 	AdjustScrollbar();
 
-	AnnounceSelectedSetChanged(Selection(), old_selection);
+	AnnounceSelectedSetChanged();
 }
 
 void BaseGrid::UpdateMaps() {
@@ -307,10 +305,9 @@ void BaseGrid::EndBatch() {
 		if (batch_active_line_changed)
 			AnnounceActiveLineChanged(active_line);
 		batch_active_line_changed = false;
-		if (!batch_selection_added.empty() || !batch_selection_removed.empty())
-			AnnounceSelectedSetChanged(batch_selection_added, batch_selection_removed);
-		batch_selection_added.clear();
-		batch_selection_removed.clear();
+		if (batch_selection_changed)
+			AnnounceSelectedSetChanged();
+		batch_selection_changed = false;
 	}
 
 	AdjustScrollbar();
@@ -339,19 +336,11 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 
 	if (select && selection.find(line) == selection.end()) {
 		selection.insert(line);
-
-		Selection added;
-		added.insert(line);
-
-		AnnounceSelectedSetChanged(added, Selection());
+		AnnounceSelectedSetChanged();
 	}
 	else if (!select && selection.find(line) != selection.end()) {
 		selection.erase(line);
-
-		Selection removed;
-		removed.insert(line);
-
-		AnnounceSelectedSetChanged(Selection(), removed);
+		AnnounceSelectedSetChanged();
 	}
 
 	int w = GetClientSize().GetWidth();
@@ -976,11 +965,8 @@ void BaseGrid::SetByFrame(bool state) {
 }
 
 void BaseGrid::SetSelectedSet(const Selection &new_selection) {
-	Selection inserted, removed;
-	set_difference(new_selection, selection, inserted);
-	set_difference(selection, new_selection, removed);
 	selection = new_selection;
-	AnnounceSelectedSetChanged(inserted, removed);
+	AnnounceSelectedSetChanged();
 	Refresh(false);
 }
 
@@ -1023,23 +1009,9 @@ void BaseGrid::AnnounceActiveLineChanged(AssDialogue *new_line) {
 		SubtitleSelectionController::AnnounceActiveLineChanged(new_line);
 }
 
-void BaseGrid::AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed) {
-	if (batch_level > 0) {
-		// Remove all previously added lines that are now removed
-		Selection temp;
-		set_difference(batch_selection_added, lines_removed, temp);
-		std::swap(temp, batch_selection_added);
-		temp.clear();
-
-		// Remove all previously removed lines that are now added
-		set_difference(batch_selection_removed, lines_added, temp);
-		std::swap(temp, batch_selection_removed);
-
-		// Add new stuff to batch sets
-		batch_selection_added.insert(lines_added.begin(), lines_added.end());
-		batch_selection_removed.insert(lines_removed.begin(), lines_removed.end());
-	}
-	else {
-		SubtitleSelectionController::AnnounceSelectedSetChanged(lines_added, lines_removed);
-	}
+void BaseGrid::AnnounceSelectedSetChanged() {
+	if (batch_level > 0)
+		batch_selection_changed = true;
+	else
+		SubtitleSelectionController::AnnounceSelectedSetChanged();
 }

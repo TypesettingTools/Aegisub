@@ -378,7 +378,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	}
 }
 
-void SubsEditBox::OnSelectedSetChanged(const SubtitleSelection &, const SubtitleSelection &) {
+void SubsEditBox::OnSelectedSetChanged() {
 	sel = c->selectionController->GetSelectedSet();
 	initial_times.clear();
 }

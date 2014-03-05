@@ -45,7 +45,7 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	/// longer exists
 	Feature *primary = nullptr;
 	/// The last announced selection set
-	SubtitleSelection selection;
+	std::vector<AssDialogue *> selection;
 
 	/// When the button is pressed, will it convert the line to a move (vs. from
 	/// move to pos)? Used to avoid changing the button's icon unnecessarily
@@ -57,7 +57,7 @@ class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
 	void MakeFeatures(AssDialogue *diag, feature_list::iterator pos);
 	void MakeFeatures(AssDialogue *diag);
 
-	void OnSelectedSetChanged(SubtitleSelection const& lines_added, SubtitleSelection const& lines_removed);
+	void OnSelectedSetChanged();
 
 	void OnFrameChanged() override;
 	void OnFileChanged() override;

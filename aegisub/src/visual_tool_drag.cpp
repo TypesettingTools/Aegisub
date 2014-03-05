@@ -36,6 +36,7 @@
 
 #include <algorithm>
 #include <boost/format.hpp>
+#include <boost/range/algorithm/binary_search.hpp>
 #include <functional>
 
 #include <wx/toolbar.h>
@@ -49,8 +50,9 @@ static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolDragDraggableFeature>(parent, context)
 {
-	c->selectionController->GetSelectedSet(selection);
 	connections.push_back(c->selectionController->AddSelectionListener(&VisualToolDrag::OnSelectedSetChanged, this));
+	auto const& sel_set = c->selectionController->GetSelectedSet();
+	selection.insert(begin(selection), begin(sel_set), end(sel_set));
 }
 
 void VisualToolDrag::SetToolbar(wxToolBar *tb) {
@@ -155,17 +157,20 @@ template<class C, class T> static bool line_not_present(C const& set, T const& i
 	});
 }
 
-void VisualToolDrag::OnSelectedSetChanged(const SubtitleSelection &added, const SubtitleSelection &removed) {
-	c->selectionController->GetSelectedSet(selection);
+void VisualToolDrag::OnSelectedSetChanged() {
+	auto const& new_sel_set = c->selectionController->GetSelectedSet();
+	std::vector<AssDialogue *> new_sel(begin(new_sel_set), end(new_sel_set));
 
 	bool any_changed = false;
 	for (auto it = features.begin(); it != features.end(); ) {
-		if (removed.count(it->line)) {
+		bool was_selected = boost::binary_search(selection, it->line);
+		bool is_selected = boost::binary_search(new_sel, it->line);
+		if (was_selected && !is_selected) {
 			sel_features.erase(&*it++);
 			any_changed = true;
 		}
 		else {
-			if (added.count(it->line) && it->type == DRAG_START && line_not_present(sel_features, it)) {
+			if (is_selected && !was_selected && it->type == DRAG_START && line_not_present(sel_features, it)) {
 				sel_features.insert(&*it);
 				any_changed = true;
 			}
@@ -175,6 +180,7 @@ void VisualToolDrag::OnSelectedSetChanged(const SubtitleSelection &added, const 
 
 	if (any_changed)
 		parent->Render();
+	selection = std::move(new_sel);
 }
 
 void VisualToolDrag::Draw() {
@@ -232,7 +238,7 @@ void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_list::iterator pos)
 	feat->type = DRAG_START;
 	feat->line = diag;
 
-	if (selection.count(diag))
+	if (boost::binary_search(selection, diag))
 		sel_features.insert(feat.get());
 	features.insert(pos, *feat.release());
 

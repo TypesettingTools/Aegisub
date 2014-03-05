@@ -71,12 +71,8 @@ class BaseGrid : public wxWindow, public SubtitleSelectionController {
 	int batch_level = 0;
 	/// Has the active line been changed in the current batch?
 	bool batch_active_line_changed = false;
-	/// Lines which will be added to the selection when the current batch is
-	/// completed; should be disjoint from selection
-	Selection batch_selection_added;
-	/// Lines which will be removed from the selection when the current batch
-	/// is completed; should be a subset of selection
-	Selection batch_selection_removed;
+	/// Has the selection been changed in the current batch?
+	bool batch_selection_changed = false;
 
 	/// Connection for video seek event. Stored explicitly so that it can be
 	/// blocked if the relevant option is disabled
@@ -121,7 +117,7 @@ class BaseGrid : public wxWindow, public SubtitleSelectionController {
 
 	// Re-implement functions from BaseSelectionController to add batching
 	void AnnounceActiveLineChanged(AssDialogue *new_line);
-	void AnnounceSelectedSetChanged(const Selection &lines_added, const Selection &lines_removed);
+	void AnnounceSelectedSetChanged();
 
 protected:
 	agi::Context *context; ///< Current project context

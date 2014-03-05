@@ -65,7 +65,7 @@ public:
 
 protected:
 	agi::signal::Signal<ItemDataType> AnnounceActiveLineChanged;
-	agi::signal::Signal<Selection const&, Selection const&> AnnounceSelectedSetChanged;
+	agi::signal::Signal<> AnnounceSelectedSetChanged;
 
 public:
 	/// Virtual destructor for safety

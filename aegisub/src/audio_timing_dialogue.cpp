@@ -373,9 +373,8 @@ class AudioTimingControllerDialogue : public AudioTimingController {
 	/// @param user_triggered Is this a user-initiated commit or an autocommit
 	void DoCommit(bool user_triggered);
 
-	// SubtitleSelectionListener interface
-	void OnActiveLineChanged(AssDialogue *new_line);
-	void OnSelectedSetChanged(const SubtitleSelection &lines_added, const SubtitleSelection &lines_removed);
+	void OnActiveLineChanged();
+	void OnSelectedSetChanged();
 
 	// AssFile events
 	void OnFileChanged(int type);
@@ -457,12 +456,12 @@ void AudioTimingControllerDialogue::GetMarkers(const TimeRange &range, AudioMark
 	video_position_provider.GetMarkers(range, out_markers);
 }
 
-void AudioTimingControllerDialogue::OnActiveLineChanged(AssDialogue *new_line)
+void AudioTimingControllerDialogue::OnActiveLineChanged()
 {
 	Revert();
 }
 
-void AudioTimingControllerDialogue::OnSelectedSetChanged(SubtitleSelection const&, SubtitleSelection const&)
+void AudioTimingControllerDialogue::OnSelectedSetChanged()
 {
 	RegenerateSelectedLines();
 	RegenerateInactiveLines();
