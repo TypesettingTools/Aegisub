@@ -343,13 +343,19 @@ void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<std::string> 
 	wxEventBlocker blocker(this);
 
 	std::unordered_set<std::string> values;
-	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>())
-		values.insert(diag->*field);
-	values.erase("");
+	for (auto const& line : c->ass->Line) {
+		if (line.Group() != AssEntryGroup::DIALOGUE) continue;
+		auto const& value = static_cast<const AssDialogue *>(&line)->*field;
+		if (!value.get().empty())
+			values.insert(value);
+	}
+
 	wxArrayString arrstr;
 	arrstr.reserve(values.size());
 	transform(values.begin(), values.end(), std::back_inserter(arrstr),
 		(wxString (*)(std::string const&))to_wx);
+
+	arrstr.Sort();
 
 	combo->Freeze();
 	long pos = combo->GetInsertionPoint();
