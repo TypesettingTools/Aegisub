@@ -1,6 +1,503 @@
 package.preload['moonscript.base'] = function()
-  _G.moon_no_loader = true
-  return require("moonscript")
+  local compile = require("moonscript.compile")
+  local parse = require("moonscript.parse")
+  local concat, insert, remove
+  do
+    local _obj_0 = table
+    concat, insert, remove = _obj_0.concat, _obj_0.insert, _obj_0.remove
+  end
+  local split, dump, get_options, unpack
+  do
+    local _obj_0 = require("moonscript.util")
+    split, dump, get_options, unpack = _obj_0.split, _obj_0.dump, _obj_0.get_options, _obj_0.unpack
+  end
+  local lua = {
+    loadstring = loadstring,
+    load = load
+  }
+  local dirsep, line_tables, create_moonpath, to_lua, moon_loader, loadstring, loadfile, dofile, insert_loader, remove_loader
+  dirsep = "/"
+  line_tables = require("moonscript.line_tables")
+  create_moonpath = function(package_path)
+    local paths = split(package_path, ";")
+    for i, path in ipairs(paths) do
+      local p = path:match("^(.-)%.lua$")
+      if p then
+        paths[i] = p .. ".moon"
+      end
+    end
+    return concat(paths, ";")
+  end
+  to_lua = function(text, options)
+    if options == nil then
+      options = { }
+    end
+    if "string" ~= type(text) then
+      local t = type(text)
+      return nil, "expecting string (got " .. t .. ")", 2
+    end
+    local tree, err = parse.string(text)
+    if not tree then
+      return nil, err
+    end
+    local code, ltable, pos = compile.tree(tree, options)
+    if not code then
+      return nil, compile.format_error(ltable, pos, text), 2
+    end
+    return code, ltable
+  end
+  moon_loader = function(name)
+    local name_path = name:gsub("%.", dirsep)
+    local file, file_path
+    local _list_0 = split(package.moonpath, ";")
+    for _index_0 = 1, #_list_0 do
+      local path = _list_0[_index_0]
+      file_path = path:gsub("?", name_path)
+      file = io.open(file_path)
+      if file then
+        break
+      end
+    end
+    if file then
+      local text = file:read("*a")
+      file:close()
+      local res, err = loadstring(text, file_path)
+      if not res then
+        error(file_path .. ": " .. err)
+      end
+      return res
+    end
+    return nil, "Could not find moon file"
+  end
+  loadstring = function(...)
+    local options, str, chunk_name, mode, env = get_options(...)
+    chunk_name = chunk_name or "=(moonscript.loadstring)"
+    local code, ltable_or_err = to_lua(str, options)
+    if not (code) then
+      return nil, ltable_or_err
+    end
+    if chunk_name then
+      line_tables[chunk_name] = ltable_or_err
+    end
+    return (lua.loadstring or lua.load)(code, chunk_name, unpack({
+      mode,
+      env
+    }))
+  end
+  loadfile = function(fname, ...)
+    local file, err = io.open(fname)
+    if not (file) then
+      return nil, err
+    end
+    local text = assert(file:read("*a"))
+    file:close()
+    return loadstring(text, fname, ...)
+  end
+  dofile = function(...)
+    local f = assert(loadfile(...))
+    return f()
+  end
+  insert_loader = function(pos)
+    if pos == nil then
+      pos = 2
+    end
+    if not package.moonpath then
+      package.moonpath = create_moonpath(package.path)
+    end
+    local loaders = package.loaders or package.searchers
+    for _index_0 = 1, #loaders do
+      local loader = loaders[_index_0]
+      if loader == moon_loader then
+        return false
+      end
+    end
+    insert(loaders, pos, moon_loader)
+    return true
+  end
+  remove_loader = function()
+    local loaders = package.loaders or package.searchers
+    for i, loader in ipairs(loaders) do
+      if loader == moon_loader then
+        remove(loaders, i)
+        return true
+      end
+    end
+    return false
+  end
+  return {
+    _NAME = "moonscript",
+    insert_loader = insert_loader,
+    remove_loader = remove_loader,
+    to_lua = to_lua,
+    moon_chunk = moon_chunk,
+    moon_loader = moon_loader,
+    dirsep = dirsep,
+    dofile = dofile,
+    loadfile = loadfile,
+    loadstring = loadstring
+  }
+  
+end
+package.preload['moonscript.cmd.coverage'] = function()
+  local log
+  log = function(str)
+    if str == nil then
+      str = ""
+    end
+    return io.stderr:write(str .. "\n")
+  end
+  local create_counter
+  create_counter = function()
+    return setmetatable({ }, {
+      __index = function(self, name)
+        do
+          local tbl = setmetatable({ }, {
+            __index = function(self)
+              return 0
+            end
+          })
+          self[name] = tbl
+          return tbl
+        end
+      end
+    })
+  end
+  local position_to_lines
+  position_to_lines = function(file_content, positions)
+    local lines = { }
+    local current_pos = 0
+    local line_no = 1
+    for char in file_content:gmatch(".") do
+      do
+        local count = rawget(positions, current_pos)
+        if count then
+          lines[line_no] = count
+        end
+      end
+      if char == "\n" then
+        line_no = line_no + 1
+      end
+      current_pos = current_pos + 1
+    end
+    return lines
+  end
+  local format_file
+  format_file = function(fname, positions)
+    local file = assert(io.open(fname))
+    local content = file:read("*a")
+    file:close()
+    local lines = position_to_lines(content, positions)
+    log("------| @" .. tostring(fname))
+    local line_no = 1
+    for line in (content .. "\n"):gmatch("(.-)\n") do
+      local foramtted_no = ("% 5d"):format(line_no)
+      local sym = lines[line_no] and "*" or " "
+      log(tostring(sym) .. tostring(foramtted_no) .. "| " .. tostring(line))
+      line_no = line_no + 1
+    end
+    return log()
+  end
+  local CodeCoverage
+  do
+    local _base_0 = {
+      reset = function(self)
+        self.line_counts = create_counter()
+      end,
+      start = function(self)
+        return debug.sethook((function()
+          local _base_1 = self
+          local _fn_0 = _base_1.process_line
+          return function(...)
+            return _fn_0(_base_1, ...)
+          end
+        end)(), "l")
+      end,
+      stop = function(self)
+        return debug.sethook()
+      end,
+      print_results = function(self)
+        return self:format_results()
+      end,
+      process_line = function(self, _, line_no)
+        local debug_data = debug.getinfo(2, "S")
+        local source = debug_data.source
+        self.line_counts[source][line_no] = self.line_counts[source][line_no] + 1
+      end,
+      format_results = function(self)
+        local line_table = require("moonscript.line_tables")
+        local positions = create_counter()
+        for file, lines in pairs(self.line_counts) do
+          local _continue_0 = false
+          repeat
+            local file_table = line_table[file]
+            if not (file_table) then
+              _continue_0 = true
+              break
+            end
+            for line, count in pairs(lines) do
+              local _continue_1 = false
+              repeat
+                local position = file_table[line]
+                if not (position) then
+                  _continue_1 = true
+                  break
+                end
+                positions[file][position] = positions[file][position] + count
+                _continue_1 = true
+              until true
+              if not _continue_1 then
+                break
+              end
+            end
+            _continue_0 = true
+          until true
+          if not _continue_0 then
+            break
+          end
+        end
+        for file, ps in pairs(positions) do
+          format_file(file, ps)
+        end
+      end
+    }
+    _base_0.__index = _base_0
+    local _class_0 = setmetatable({
+      __init = function(self)
+        return self:reset()
+      end,
+      __base = _base_0,
+      __name = "CodeCoverage"
+    }, {
+      __index = _base_0,
+      __call = function(cls, ...)
+        local _self_0 = setmetatable({}, _base_0)
+        cls.__init(_self_0, ...)
+        return _self_0
+      end
+    })
+    _base_0.__class = _class_0
+    CodeCoverage = _class_0
+  end
+  return {
+    CodeCoverage = CodeCoverage
+  }
+  
+end
+package.preload['moonscript.cmd.lint'] = function()
+  local insert
+  do
+    local _obj_0 = table
+    insert = _obj_0.insert
+  end
+  local Set
+  do
+    local _obj_0 = require("moonscript.data")
+    Set = _obj_0.Set
+  end
+  local Block
+  do
+    local _obj_0 = require("moonscript.compile")
+    Block = _obj_0.Block
+  end
+  local default_whitelist = Set({
+    '_G',
+    '_VERSION',
+    'assert',
+    'bit32',
+    'collectgarbage',
+    'coroutine',
+    'debug',
+    'dofile',
+    'error',
+    'getfenv',
+    'getmetatable',
+    'io',
+    'ipairs',
+    'load',
+    'loadfile',
+    'loadstring',
+    'math',
+    'module',
+    'next',
+    'os',
+    'package',
+    'pairs',
+    'pcall',
+    'print',
+    'rawequal',
+    'rawget',
+    'rawlen',
+    'rawset',
+    'require',
+    'select',
+    'setfenv',
+    'setmetatable',
+    'string',
+    'table',
+    'tonumber',
+    'tostring',
+    'type',
+    'unpack',
+    'xpcall',
+    "nil",
+    "true",
+    "false"
+  })
+  local LinterBlock
+  do
+    local _parent_0 = Block
+    local _base_0 = {
+      block = function(self, ...)
+        do
+          local _with_0 = _parent_0.block(self, ...)
+          _with_0.block = self.block
+          _with_0.value_compilers = self.value_compilers
+          return _with_0
+        end
+      end
+    }
+    _base_0.__index = _base_0
+    setmetatable(_base_0, _parent_0.__base)
+    local _class_0 = setmetatable({
+      __init = function(self, whitelist_globals, ...)
+        if whitelist_globals == nil then
+          whitelist_globals = default_whitelist
+        end
+        _parent_0.__init(self, ...)
+        self.lint_errors = { }
+        local vc = self.value_compilers
+        self.value_compilers = setmetatable({
+          ref = function(block, val)
+            local name = val[2]
+            if not (block:has_name(name) or whitelist_globals[name] or name:match("%.")) then
+              insert(self.lint_errors, {
+                "accessing global " .. tostring(name),
+                val[-1]
+              })
+            end
+            return vc.ref(block, val)
+          end
+        }, {
+          __index = vc
+        })
+      end,
+      __base = _base_0,
+      __name = "LinterBlock",
+      __parent = _parent_0
+    }, {
+      __index = function(cls, name)
+        local val = rawget(_base_0, name)
+        if val == nil then
+          return _parent_0[name]
+        else
+          return val
+        end
+      end,
+      __call = function(cls, ...)
+        local _self_0 = setmetatable({}, _base_0)
+        cls.__init(_self_0, ...)
+        return _self_0
+      end
+    })
+    _base_0.__class = _class_0
+    if _parent_0.__inherited then
+      _parent_0.__inherited(_parent_0, _class_0)
+    end
+    LinterBlock = _class_0
+  end
+  local format_lint
+  format_lint = function(errors, code, header)
+    if not (next(errors)) then
+      return 
+    end
+    local pos_to_line, get_line
+    do
+      local _obj_0 = require("moonscript.util")
+      pos_to_line, get_line = _obj_0.pos_to_line, _obj_0.get_line
+    end
+    local formatted
+    do
+      local _accum_0 = { }
+      local _len_0 = 1
+      for _index_0 = 1, #errors do
+        local _des_0 = errors[_index_0]
+        local msg, pos
+        msg, pos = _des_0[1], _des_0[2]
+        if pos then
+          local line = pos_to_line(code, pos)
+          msg = "line " .. tostring(line) .. ": " .. tostring(msg)
+          local line_text = "> " .. get_line(code, line)
+          local sep_len = math.max(#msg, #line_text)
+          _accum_0[_len_0] = table.concat({
+            msg,
+            ("="):rep(sep_len),
+            line_text
+          }, "\n")
+        else
+          _accum_0[_len_0] = msg
+        end
+        _len_0 = _len_0 + 1
+      end
+      formatted = _accum_0
+    end
+    if header then
+      table.insert(formatted, 1, header)
+    end
+    return table.concat(formatted, "\n\n")
+  end
+  local whitelist_for_file
+  do
+    local lint_config
+    whitelist_for_file = function(fname)
+      if not (lint_config) then
+        lint_config = { }
+        pcall(function()
+          lint_config = require("lint_config")
+        end)
+      end
+      if not (lint_config.whitelist_globals) then
+        return default_whitelist
+      end
+      local final_list = { }
+      for pattern, list in pairs(lint_config.whitelist_globals) do
+        if fname:match(pattern) then
+          for _index_0 = 1, #list do
+            local item = list[_index_0]
+            insert(final_list, item)
+          end
+        end
+      end
+      return setmetatable(Set(final_list), {
+        __index = default_whitelist
+      })
+    end
+  end
+  local lint_code
+  lint_code = function(code, name, whitelist_globals)
+    if name == nil then
+      name = "string input"
+    end
+    local parse = require("moonscript.parse")
+    local tree, err = parse.string(code)
+    if not (tree) then
+      return nil, err
+    end
+    local scope = LinterBlock(whitelist_globals)
+    scope:stms(tree)
+    return format_lint(scope.lint_errors, code, name)
+  end
+  local lint_file
+  lint_file = function(fname)
+    local f, err = io.open(fname)
+    if not (f) then
+      return nil, err
+    end
+    return lint_code(f:read("*a"), fname, whitelist_for_file(fname))
+  end
+  return {
+    lint_code = lint_code,
+    lint_file = lint_file
+  }
   
 end
 package.preload['moonscript.compile.statement'] = function()
@@ -18,7 +515,7 @@ package.preload['moonscript.compile.statement'] = function()
     local _obj_0 = table
     concat, insert = _obj_0.concat, _obj_0.insert
   end
-  local statement_compilers = {
+  return {
     raw = function(self, node)
       return self:add(node[2])
     end,
@@ -249,9 +746,6 @@ package.preload['moonscript.compile.statement'] = function()
     end,
     noop = function(self) end
   }
-  return {
-    statement_compilers = statement_compilers
-  }
   
 end
 package.preload['moonscript.compile.value'] = function()
@@ -279,7 +773,7 @@ package.preload['moonscript.compile.value'] = function()
     ["\r"] = "\\r",
     ["\n"] = "\\n"
   }
-  local value_compilers = {
+  return {
     exp = function(self, node)
       local _comp
       _comp = function(i, value)
@@ -333,15 +827,20 @@ package.preload['moonscript.compile.value'] = function()
     end,
     chain = function(self, node)
       local callee = node[2]
+      local callee_type = ntype(callee)
       if callee == -1 then
         callee = self:get("scope_var")
         if not callee then
           user_error("Short-dot syntax must be called within a with block")
         end
       end
-      local sup = self:get("super")
-      if callee == "super" and sup then
-        return self:value(sup(self, node))
+      if callee_type == "ref" and callee[2] == "super" or callee == "super" then
+        do
+          local sup = self:get("super")
+          if sup then
+            return self:value(sup(self, node))
+          end
+        end
       end
       local chain_item
       chain_item = function(node)
@@ -357,12 +856,11 @@ package.preload['moonscript.compile.value'] = function()
         elseif t == "colon_stub" then
           return user_error("Uncalled colon stub")
         else
-          return error("Unknown chain action: " .. t)
+          return error("Unknown chain action: " .. tostring(t))
         end
       end
-      local t = ntype(callee)
-      if (t == "self" or t == "self_class") and node[3] and ntype(node[3]) == "call" then
-        callee[1] = t .. "_colon"
+      if (callee_type == "self" or callee_type == "self_class") and node[3] and ntype(node[3]) == "call" then
+        callee[1] = callee_type .. "_colon"
       end
       local callee_value = self:value(callee)
       if ntype(callee) == "exp" then
@@ -429,7 +927,10 @@ package.preload['moonscript.compile.value'] = function()
             'if',
             {
               'exp',
-              name,
+              {
+                "ref",
+                name
+              },
               '==',
               'nil'
             },
@@ -539,30 +1040,32 @@ package.preload['moonscript.compile.value'] = function()
       return self:line("not ", self:value(node[2]))
     end,
     self = function(self, node)
-      return "self." .. self:value(node[2])
+      return "self." .. self:name(node[2])
     end,
     self_class = function(self, node)
-      return "self.__class." .. self:value(node[2])
+      return "self.__class." .. self:name(node[2])
     end,
     self_colon = function(self, node)
-      return "self:" .. self:value(node[2])
+      return "self:" .. self:name(node[2])
     end,
     self_class_colon = function(self, node)
-      return "self.__class:" .. self:value(node[2])
+      return "self.__class:" .. self:name(node[2])
+    end,
+    ref = function(self, value)
+      do
+        local sup = value[2] == "super" and self:get("super")
+        if sup then
+          return self:value(sup(self))
+        end
+      end
+      return tostring(value[2])
     end,
     raw_value = function(self, value)
-      local sup = self:get("super")
-      if value == "super" and sup then
-        return self:value(sup(self))
-      end
       if value == "..." then
         self:send("varargs")
       end
       return tostring(value)
     end
-  }
-  return {
-    value_compilers = value_compilers
   }
   
 end
@@ -585,16 +1088,8 @@ package.preload['moonscript.compile'] = function()
     local _obj_0 = require("moonscript.types")
     ntype, has_value = _obj_0.ntype, _obj_0.has_value
   end
-  local statement_compilers
-  do
-    local _obj_0 = require("moonscript.compile.statement")
-    statement_compilers = _obj_0.statement_compilers
-  end
-  local value_compilers
-  do
-    local _obj_0 = require("moonscript.compile.value")
-    value_compilers = _obj_0.value_compilers
-  end
+  local statement_compilers = require("moonscript.compile.statement")
+  local value_compilers = require("moonscript.compile.value")
   local concat, insert
   do
     local _obj_0 = table
@@ -638,6 +1133,10 @@ package.preload['moonscript.compile'] = function()
           local _exp_0 = mtype(l)
           if "string" == _exp_0 or DelayedLine == _exp_0 then
             line_no = line_no + 1
+            out[line_no] = posmap[i]
+            for _ in l:gmatch("\n") do
+              line_no = line_no + 1
+            end
             out[line_no] = posmap[i]
           elseif Lines == _exp_0 then
             local _
@@ -724,38 +1223,30 @@ package.preload['moonscript.compile'] = function()
   do
     local _base_0 = {
       pos = nil,
-      _append_single = function(self, item)
-        if Line == mtype(item) then
-          if not (self.pos) then
-            self.pos = item.pos
-          end
-          for _index_0 = 1, #item do
-            local value = item[_index_0]
-            self:_append_single(value)
-          end
-        else
-          insert(self, item)
-        end
-        return nil
-      end,
       append_list = function(self, items, delim)
         for i = 1, #items do
-          self:_append_single(items[i])
+          self:append(items[i])
           if i < #items then
             insert(self, delim)
           end
         end
         return nil
       end,
-      append = function(self, ...)
-        local _list_0 = {
-          ...
-        }
-        for _index_0 = 1, #_list_0 do
-          local item = _list_0[_index_0]
-          self:_append_single(item)
+      append = function(self, first, ...)
+        if Line == mtype(first) then
+          if not (self.pos) then
+            self.pos = first.pos
+          end
+          for _index_0 = 1, #first do
+            local value = first[_index_0]
+            self:append(value)
+          end
+        else
+          insert(self, first)
         end
-        return nil
+        if ... then
+          return self:append(...)
+        end
       end,
       render = function(self, buffer)
         local current = { }
@@ -783,7 +1274,7 @@ package.preload['moonscript.compile'] = function()
             insert(current, chunk)
           end
         end
-        if #current > 0 then
+        if current[1] then
           add_current()
         end
         return buffer
@@ -840,6 +1331,7 @@ package.preload['moonscript.compile'] = function()
       footer = "end",
       export_all = false,
       export_proper = false,
+      value_compilers = value_compilers,
       __tostring = function(self)
         local h
         if "string" == type(self.header) then
@@ -889,6 +1381,8 @@ package.preload['moonscript.compile'] = function()
                 real_name = name:get_name(self)
               elseif NameProxy == _exp_0 then
                 real_name = name:get_name(self)
+              elseif "table" == _exp_0 then
+                real_name = name[1] == "ref" and name[2]
               elseif "string" == _exp_0 then
                 real_name = name
               end
@@ -956,8 +1450,10 @@ package.preload['moonscript.compile'] = function()
         if t == NameProxy or t == LocalName then
           return true
         end
-        if t == "table" and node[1] == "chain" and #node == 2 then
-          return self:is_local(node[2])
+        if t == "table" then
+          if node[1] == "ref" or (node[1] == "chain" and #node == 2) then
+            return self:is_local(node[2])
+          end
         end
         return false
       end,
@@ -1028,10 +1524,14 @@ package.preload['moonscript.compile'] = function()
       end,
       is_value = function(self, node)
         local t = ntype(node)
-        return value_compilers[t] ~= nil or t == "value"
+        return self.value_compilers[t] ~= nil or t == "value"
       end,
       name = function(self, node, ...)
-        return self:value(node, ...)
+        if type(node) == "string" then
+          return node
+        else
+          return self:value(node, ...)
+        end
       end,
       value = function(self, node, ...)
         node = self.transform.value(node)
@@ -1041,9 +1541,13 @@ package.preload['moonscript.compile'] = function()
         else
           action = node[1]
         end
-        local fn = value_compilers[action]
-        if not fn then
-          error("Failed to compile value: " .. dump.value(node))
+        local fn = self.value_compilers[action]
+        if not (fn) then
+          error({
+            "compile-error",
+            "Failed to find value compiler for: " .. dump.value(node),
+            node[-1]
+          })
         end
         local out = fn(self, node, ...)
         if type(node) == "table" and node[-1] then
@@ -1227,13 +1731,17 @@ package.preload['moonscript.compile'] = function()
   end
   local format_error
   format_error = function(msg, pos, file_str)
-    local line = pos_to_line(file_str, pos)
-    local line_str
-    line_str, line = get_closest_line(file_str, line)
-    line_str = line_str or ""
+    local line_message
+    if pos then
+      local line = pos_to_line(file_str, pos)
+      local line_str
+      line_str, line = get_closest_line(file_str, line)
+      line_str = line_str or ""
+      line_message = (" [%d] >>    %s"):format(line, trim(line_str))
+    end
     return concat({
       "Compile error: " .. msg,
-      (" [%d] >>    %s"):format(line, trim(line_str))
+      line_message
     }, "\n")
   end
   local value
@@ -1257,27 +1765,27 @@ package.preload['moonscript.compile'] = function()
       return scope:root_stms(tree)
     end)
     local success, err = coroutine.resume(runner)
-    if not success then
-      local error_msg
+    if not (success) then
+      local error_msg, error_pos
       if type(err) == "table" then
         local error_type = err[1]
-        if error_type == "user-error" then
-          error_msg = err[2]
+        local _exp_0 = err[1]
+        if "user-error" == _exp_0 or "compile-error" == _exp_0 then
+          error_msg, error_pos = unpack(err, 2)
         else
-          error_msg = error("Unknown error thrown", util.dump(error_msg))
+          error_msg, error_pos = error("Unknown error thrown", util.dump(error_msg))
         end
       else
-        error_msg = concat({
+        error_msg, error_pos = concat({
           err,
           debug.traceback(runner)
         }, "\n")
       end
-      return nil, error_msg, scope.last_pos
-    else
-      local lua_code = scope:render()
-      local posmap = scope._lines:flatten_posmap()
-      return lua_code, posmap
+      return nil, error_msg, error_pos or scope.last_pos
     end
+    local lua_code = scope:render()
+    local posmap = scope._lines:flatten_posmap()
+    return lua_code, posmap
   end
   do
     local data = require("moonscript.data")
@@ -1306,12 +1814,12 @@ package.preload['moonscript.data'] = function()
   end
   local Set
   Set = function(items)
-    local self = { }
+    local _tbl_0 = { }
     for _index_0 = 1, #items do
-      local key = items[_index_0]
-      self[key] = true
+      local k = items[_index_0]
+      _tbl_0[k] = true
     end
-    return self
+    return _tbl_0
   end
   local Stack
   do
@@ -1322,9 +1830,13 @@ package.preload['moonscript.data'] = function()
       pop = function(self)
         return remove(self)
       end,
-      push = function(self, value)
+      push = function(self, value, ...)
         insert(self, value)
-        return value
+        if ... then
+          return self:push(...)
+        else
+          return value
+        end
       end,
       top = function(self)
         return self[#self]
@@ -1333,13 +1845,7 @@ package.preload['moonscript.data'] = function()
     _base_0.__index = _base_0
     local _class_0 = setmetatable({
       __init = function(self, ...)
-        local _list_0 = {
-          ...
-        }
-        for _index_0 = 1, #_list_0 do
-          local v = _list_0[_index_0]
-          self:push(v)
-        end
+        self:push(...)
         return nil
       end,
       __base = _base_0,
@@ -1550,120 +2056,11 @@ package.preload['moonscript.errors'] = function()
   
 end
 package.preload['moonscript'] = function()
-  local compile = require("moonscript.compile")
-  local parse = require("moonscript.parse")
-  local concat, insert
   do
-    local _obj_0 = table
-    concat, insert = _obj_0.concat, _obj_0.insert
+    local _with_0 = require("moonscript.base")
+    _with_0.insert_loader()
+    return _with_0
   end
-  local split, dump, get_options, unpack
-  do
-    local _obj_0 = require("moonscript.util")
-    split, dump, get_options, unpack = _obj_0.split, _obj_0.dump, _obj_0.get_options, _obj_0.unpack
-  end
-  local lua = {
-    loadstring = loadstring,
-    load = load
-  }
-  local dirsep, line_tables, create_moonpath, to_lua, moon_loader, init_loader, loadstring, loadfile, dofile
-  dirsep = "/"
-  line_tables = require("moonscript.line_tables")
-  create_moonpath = function(package_path)
-    local paths = split(package_path, ";")
-    for i, path in ipairs(paths) do
-      local p = path:match("^(.-)%.lua$")
-      if p then
-        paths[i] = p .. ".moon"
-      end
-    end
-    return concat(paths, ";")
-  end
-  to_lua = function(text, options)
-    if options == nil then
-      options = { }
-    end
-    if "string" ~= type(text) then
-      local t = type(text)
-      return nil, "expecting string (got " .. t .. ")", 2
-    end
-    local tree, err = parse.string(text)
-    if not tree then
-      return nil, err
-    end
-    local code, ltable, pos = compile.tree(tree, options)
-    if not code then
-      return nil, compile.format_error(ltable, pos, text), 2
-    end
-    return code, ltable
-  end
-  moon_loader = function(name)
-    local name_path = name:gsub("%.", dirsep)
-    local file, file_path
-    local _list_0 = split(package.moonpath, ";")
-    for _index_0 = 1, #_list_0 do
-      local path = _list_0[_index_0]
-      file_path = path:gsub("?", name_path)
-      file = io.open(file_path)
-      if file then
-        break
-      end
-    end
-    if file then
-      local text = file:read("*a")
-      file:close()
-      return loadstring(text, file_path)
-    else
-      return nil, "Could not find moon file"
-    end
-  end
-  if not package.moonpath then
-    package.moonpath = create_moonpath(package.path)
-  end
-  init_loader = function()
-    return insert(package.loaders or package.searchers, 2, moon_loader)
-  end
-  if not (_G.moon_no_loader) then
-    init_loader()
-  end
-  loadstring = function(...)
-    local options, str, chunk_name, mode, env = get_options(...)
-    chunk_name = chunk_name or "=(moonscript.loadstring)"
-    local code, ltable_or_err = to_lua(str, options)
-    if not (code) then
-      return nil, ltable_or_err
-    end
-    if chunk_name then
-      line_tables[chunk_name] = ltable_or_err
-    end
-    return (lua.loadstring or lua.load)(code, chunk_name, unpack({
-      mode,
-      env
-    }))
-  end
-  loadfile = function(fname, ...)
-    local file, err = io.open(fname)
-    if not (file) then
-      return nil, err
-    end
-    local text = assert(file:read("*a"))
-    file:close()
-    return loadstring(text, fname, ...)
-  end
-  dofile = function(...)
-    local f = assert(loadfile(...))
-    return f()
-  end
-  return {
-    _NAME = "moonscript",
-    to_lua = to_lua,
-    moon_chunk = moon_chunk,
-    moon_loader = moon_loader,
-    dirsep = dirsep,
-    dofile = dofile,
-    loadfile = loadfile,
-    loadstring = loadstring
-  }
   
 end
 package.preload['moonscript.line_tables'] = function()
@@ -1724,7 +2121,8 @@ package.preload['moonscript.parse'] = function()
   local _Name = C(R("az", "AZ", "__") * AlphaNum^0)
   local Name = Space * _Name
   
-  local Num = P"0x" * R("09", "af", "AF")^1 +
+  local Num = P"0x" * R("09", "af", "AF")^1 * (S"uU"^-1 * S"lL"^2)^-1 +
+      R"09"^1 * (S"uU"^-1 * S"lL"^2) +
   	(
   		R"09"^1 * (P"." * R"09"^1)^-1 +
   		P"." * R"09"^1
@@ -1847,8 +2245,12 @@ package.preload['moonscript.parse'] = function()
   local _chain_assignable = { index = true, dot = true, slice = true }
   
   local function is_assignable(node)
+  	if node == "..." then
+  		return false
+  	end
+  
   	local t = ntype(node)
-  	return t == "self" or t == "value" or t == "self_class" or
+  	return t == "ref" or t == "self" or t == "value" or t == "self_class" or
   		t == "chain" and _chain_assignable[ntype(node[#node])] or
   		t == "table"
   end
@@ -2051,8 +2453,7 @@ package.preload['moonscript.parse'] = function()
   		_Name / mark"self" + Cc"self")
   
   	local KeyName = SelfName + Space * _Name / mark"key_literal"
-  
-  	local Name = SelfName + Name + Space * "..." / trim
+  	local VarArg = Space * P"..." / trim
   
   	local g = lpeg.P{
   		File,
@@ -2085,8 +2486,6 @@ package.preload['moonscript.parse'] = function()
   		Import = key"import" * Ct(ImportNameList) * SpaceBreak^0 * key"from" * Exp / mark"import",
   		ImportName = (sym"\\" * Ct(Cc"colon_stub" * Name) + Name),
   		ImportNameList = SpaceBreak^0 * ImportName * ((SpaceBreak^1 + sym"," * SpaceBreak^0) * ImportName)^0,
-  
-  		NameList = Name * (sym"," * Name)^0,
   
   		BreakLoop = Ct(key"break"/trim) + Ct(key"continue"/trim),
   
@@ -2134,8 +2533,7 @@ package.preload['moonscript.parse'] = function()
   		-- we can ignore precedence for now
   		OtherOps = op"or" + op"and" + op"<=" + op">=" + op"~=" + op"!=" + op"==" + op".." + op"<" + op">",
   
-  		Assignable = Cmt(DotChain + Chain, check_assignable) + Name,
-  		AssignableList = Assignable * (sym"," * Assignable)^0,
+  		Assignable = Cmt(DotChain + Chain, check_assignable) + Name + SelfName,
   
   		Exp = Ct(Value * ((OtherOps + FactorOp + TermOp) * Value)^0) / flatten_or_mark"exp",
   
@@ -2184,7 +2582,7 @@ package.preload['moonscript.parse'] = function()
   		LuaStringOpen = sym"[" * P"="^0 * "[" / trim,
   		LuaStringClose = "]" * P"="^0 * "]",
   
-  		Callable = Name + Parens / mark"parens",
+  		Callable = pos(Name / mark"ref") + SelfName + VarArg + Parens / mark"parens",
   		Parens = sym"(" * Exp * sym")",
   
   		FnArgs = symx"(" * Ct(ExpList^-1) * sym")" + sym"!" * -P"=" * Ct"",
@@ -2256,8 +2654,8 @@ package.preload['moonscript.parse'] = function()
   			(key"using" * Ct(NameList + Space * "nil") + Ct"") *
   			sym")" + Ct"" * Ct"",
   
-  		FnArgDefList = FnArgDef * (sym"," * FnArgDef)^0,
-  		FnArgDef = Ct(Name * (sym"=" * Exp)^-1),
+  		FnArgDefList = FnArgDef * (sym"," * FnArgDef)^0 * (sym"," * Ct(VarArg))^0 + Ct(VarArg),
+  		FnArgDef = Ct((Name + SelfName) * (sym"=" * Exp)^-1),
   
   		FunLit = FnArgsDef *
   			(sym"->" * Cc"slim" + sym"=>" * Cc"fat") *
@@ -2288,13 +2686,17 @@ package.preload['moonscript.parse'] = function()
   			end
   
   			local tree
-  			local pass, err = pcall(function(...)
-  				tree = self._g:match(str, ...)
-  			end, ...)
+  			local parse_args = {...}
+  
+  			local pass, err = xpcall(function()
+  				tree = self._g:match(str, unpack(parse_args))
+  			end, function(err)
+  				return debug.traceback(err, 2)
+  			end)
   
   			-- regular error, let it bubble up
   			if type(err) == "string" then
-  				error(err)
+  				return nil, err
   			end
   
   			if not tree then
@@ -2434,13 +2836,13 @@ package.preload['moonscript.transform.destructure'] = function()
       suffix = join(prefix, {
         suffix
       })
-      local t = ntype(value)
-      if t == "value" or t == "chain" or t == "self" then
+      local _exp_0 = ntype(value)
+      if "value" == _exp_0 or "ref" == _exp_0 or "chain" == _exp_0 or "self" == _exp_0 then
         insert(accum, {
           value,
           suffix
         })
-      elseif t == "table" then
+      elseif "table" == _exp_0 then
         extract_assign_names(value, accum, suffix)
       else
         user_error("Can't destructure value of type: " .. tostring(ntype(value)))
@@ -2623,33 +3025,29 @@ package.preload['moonscript.transform.names'] = function()
         return self.name
       end,
       chain = function(self, ...)
-        local items
-        do
-          local _accum_0 = { }
-          local _len_0 = 1
-          local _list_0 = {
-            ...
-          }
-          for _index_0 = 1, #_list_0 do
-            local i = _list_0[_index_0]
-            if type(i) == "string" then
-              _accum_0[_len_0] = {
-                "dot",
-                i
-              }
-            else
-              _accum_0[_len_0] = i
-            end
-            _len_0 = _len_0 + 1
-          end
-          items = _accum_0
-        end
-        return build.chain({
+        local items = {
           base = self,
-          unpack(items)
-        })
+          ...
+        }
+        for k, v in ipairs(items) do
+          if type(v) == "string" then
+            items[k] = {
+              "dot",
+              v
+            }
+          else
+            items[k] = v
+          end
+        end
+        return build.chain(items)
       end,
       index = function(self, key)
+        if type(key) == "string" then
+          key = {
+            "ref",
+            key
+          }
+        end
         return build.chain({
           base = self,
           {
@@ -2801,7 +3199,9 @@ package.preload['moonscript.transform'] = function()
           local _list_0 = stm[2]
           for _index_0 = 1, #_list_0 do
             local name = _list_0[_index_0]
-            if type(name) == "string" then
+            if ntype(name) == "ref" then
+              insert(out, name)
+            elseif type(name) == "string" then
               insert(out, name)
             end
           end
@@ -3021,15 +3421,27 @@ package.preload['moonscript.transform'] = function()
       return apply_to_last(body, implicitly_return(self))
     end,
     ["return"] = function(self, node)
-      node[2] = Value:transform_once(self, node[2])
-      if "block_exp" == ntype(node[2]) then
-        local block_exp = node[2]
-        local block_body = block_exp[2]
-        local idx = #block_body
-        node[2] = block_body[idx]
-        block_body[idx] = node
-        return build.group(block_body)
+      local ret_val = node[2]
+      local ret_val_type = ntype(ret_val)
+      if ret_val_type == "explist" and #ret_val == 2 then
+        ret_val = ret_val[2]
+        ret_val_type = ntype(ret_val)
       end
+      if types.cascading[ret_val_type] then
+        return implicitly_return(self)(ret_val)
+      end
+      if ret_val_type == "chain" or ret_val_type == "comprehension" or ret_val_type == "tblcomprehension" then
+        ret_val = Value:transform_once(self, ret_val)
+        if ntype(ret_val) == "block_exp" then
+          return build.group(apply_to_last(ret_val[2], function(stm)
+            return {
+              "return",
+              stm
+            }
+          end))
+        end
+      end
+      node[2] = ret_val
       return node
     end,
     declare_glob = function(self, node)
@@ -3042,7 +3454,7 @@ package.preload['moonscript.transform'] = function()
             local _continue_0 = false
             repeat
               local name = names[_index_0]
-              if not (name:match("^%u")) then
+              if not (name[2]:match("^%u")) then
                 _continue_0 = true
                 break
               end
@@ -3070,6 +3482,11 @@ package.preload['moonscript.transform'] = function()
       if num_names == 1 and num_values == 1 then
         local first_value = values[1]
         local first_name = names[1]
+        local first_type = ntype(first_value)
+        if first_type == "chain" then
+          first_value = Value:transform_once(self, first_value)
+          first_type = ntype(first_value)
+        end
         local _exp_0 = ntype(first_value)
         if "block_exp" == _exp_0 then
           local block_body = first_value[2]
@@ -3089,6 +3506,8 @@ package.preload['moonscript.transform'] = function()
           })
         elseif "comprehension" == _exp_0 or "tblcomprehension" == _exp_0 or "foreach" == _exp_0 or "for" == _exp_0 or "while" == _exp_0 then
           return build.assign_one(first_name, Value:transform_once(self, first_value))
+        else
+          values[1] = first_value
         end
       end
       local transformed
@@ -3293,7 +3712,7 @@ package.preload['moonscript.transform'] = function()
               local _list_0 = stm[2]
               for _index_0 = 1, #_list_0 do
                 local name = _list_0[_index_0]
-                if type(name) == "string" then
+                if ntype(name) == "ref" then
                   _accum_0[_len_0] = name
                   _len_0 = _len_0 + 1
                 end
@@ -3368,7 +3787,7 @@ package.preload['moonscript.transform'] = function()
       if ntype(exp) == "assign" then
         local names, values = unpack(exp, 2)
         local first_name = names[1]
-        if ntype(first_name) == "value" then
+        if ntype(first_name) == "ref" then
           scope_name = first_name
           named_assign = exp
           exp = values[1]
@@ -3660,10 +4079,19 @@ package.preload['moonscript.transform'] = function()
       elseif "nil" == _exp_0 then
         real_name = "nil"
       else
+        local name_t = type(real_name)
+        local flattened_name
+        if name_t == "string" then
+          flattened_name = real_name
+        elseif name_t == "table" and real_name[1] == "ref" then
+          flattened_name = real_name[2]
+        else
+          flattened_name = error("don't know how to extract name from " .. tostring(name_t))
+        end
         real_name = {
           "string",
           '"',
-          real_name
+          flattened_name
         }
       end
       local cls = build.table({
@@ -3689,7 +4117,10 @@ package.preload['moonscript.transform'] = function()
         local class_lookup = build["if"]({
           cond = {
             "exp",
-            "val",
+            {
+              "ref",
+              "val"
+            },
             "==",
             "nil"
           },
@@ -3719,7 +4150,10 @@ package.preload['moonscript.transform'] = function()
                 "call",
                 {
                   base_name,
-                  "name"
+                  {
+                    "ref",
+                    "name"
+                  }
                 }
               }
             })),
@@ -4088,13 +4522,11 @@ package.preload['moonscript.transform'] = function()
         end
       end
       if #node <= 3 then
-        return (function()
-          if type(node[3]) == "string" then
-            return node
-          else
-            return convert_part(node[3])
-          end
-        end)()
+        if type(node[3]) == "string" then
+          return node
+        else
+          return convert_part(node[3])
+        end
       end
       local e = {
         "exp",
@@ -4214,8 +4646,8 @@ package.preload['moonscript.transform'] = function()
         table.remove(node, #node)
         local base_name = NameProxy("base")
         local fn_name = NameProxy("fn")
-        local is_super = node[2] == "super"
-        return self.transform.value(build.block_exp({
+        local is_super = ntype(node[2]) == "ref" and node[2][2] == "super"
+        return build.block_exp({
           build.assign({
             names = {
               base_name
@@ -4257,7 +4689,7 @@ package.preload['moonscript.transform'] = function()
               })
             }
           })
-        }))
+        })
       end
     end,
     block_exp = function(self, node)
@@ -4563,6 +4995,12 @@ package.preload['moonscript.types'] = function()
     end,
     chain = function(parts)
       local base = parts.base or error("expecting base property for chain")
+      if type(base) == "string" then
+        base = {
+          "ref",
+          base
+        }
+      end
       local node = {
         "chain",
         base
@@ -4844,7 +5282,7 @@ package.preload['moonscript.version'] = function()
   
   module("moonscript.version", package.seeall)
   
-  version = "0.2.4"
+  version = "0.2.5"
   function print_version()
   	print("MoonScript version "..version)
   end
