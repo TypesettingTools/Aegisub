@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file text_file_reader.cpp
-/// @brief Read plain text files line by line
-/// @ingroup utility
-///
-
 #include "config.h"
 
 #include "text_file_reader.h"

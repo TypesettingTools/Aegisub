@@ -14,13 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file text_file_reader.h
-/// @see text_file_reader.cpp
-/// @ingroup utility
-///
-
-#pragma once
-
 #include <fstream>
 #include <memory>
 #include <string>
@@ -34,9 +27,6 @@ class TextFileReader {
 	std::unique_ptr<std::ifstream> file;
 	bool trim;
 	agi::line_iterator<std::string> iter;
-
-	TextFileReader(const TextFileReader&);
-	TextFileReader& operator=(const TextFileReader&);
 
 public:
 	/// @brief Constructor
