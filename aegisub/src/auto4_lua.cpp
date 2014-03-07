@@ -277,7 +277,7 @@ namespace {
 
 		lua_pushvalue(L, 1);
 		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
-		AssStyle *st = dynamic_cast<AssStyle*>(et.get());
+		auto st = dynamic_cast<AssStyle*>(et.get());
 		lua_pop(L, 1);
 		if (!st)
 			return luaL_error(L, "Not a style entry");
@@ -843,9 +843,8 @@ namespace Automation4 {
 		int idx = 1;
 		for (auto& line : c->ass->Events) {
 			++row;
-			auto diag = static_cast<AssDialogue*>(&line);
-			if (diag == active_line) active_idx = row;
-			if (sel.count(diag)) {
+			if (&line == active_line) active_idx = row;
+			if (sel.count(&line)) {
 				push_value(L, row);
 				lua_rawseti(L, -2, idx++);
 			}
@@ -928,7 +927,7 @@ namespace Automation4 {
 							throw LuaForEachBreak();
 						}
 
-						AssDialogue *diag = dynamic_cast<AssDialogue*>(lines[cur - 1]);
+						auto diag = dynamic_cast<AssDialogue*>(lines[cur - 1]);
 						if (!diag) {
 							wxLogError("Selected row %d is not a dialogue line", cur);
 							throw LuaForEachBreak();

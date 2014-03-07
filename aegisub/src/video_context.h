@@ -45,11 +45,11 @@
 
 #include <wx/timer.h>
 
-class AssEntry;
-struct SubtitlesProviderErrorEvent;
+class AssDialogue;
 class ThreadedFrameSource;
-struct VideoFrame;
 class VideoProvider;
+struct SubtitlesProviderErrorEvent;
+struct VideoFrame;
 struct VideoProviderErrorEvent;
 
 namespace agi {
@@ -152,7 +152,7 @@ class VideoContext : public wxEvtHandler {
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
 
-	void OnSubtitlesCommit(int type, std::set<const AssEntry *> const& changed);
+	void OnSubtitlesCommit(int type, std::set<const AssDialogue *> const& changed);
 	void OnSubtitlesSave();
 
 	/// Close the video, keyframes and timecodes

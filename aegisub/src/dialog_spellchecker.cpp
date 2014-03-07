@@ -212,19 +212,17 @@ bool DialogSpellChecker::FindNext() {
 	if (CheckLine(active_line, start_pos, &commit_id))
 		return true;
 
-	entryIter it = context->ass->Events.iterator_to(*active_line);
+	auto it = context->ass->Events.iterator_to(*active_line);
 
 	// Note that it is deliberate that the start line is checked twice, as if
 	// the cursor is past the first misspelled word in the current line, that
 	// word should be hit last
 	while(!has_looped || active_line != start_line) {
-		do {
-			// Wrap around to the beginning if we hit the end
-			if (++it == context->ass->Events.end()) {
-				it = context->ass->Events.begin();
-				has_looped = true;
-			}
-		} while (!(active_line = dynamic_cast<AssDialogue*>(&*it)));
+		// Wrap around to the beginning if we hit the end
+		if (++it == context->ass->Events.end()) {
+			it = context->ass->Events.begin();
+			has_looped = true;
+		}
 
 		if (CheckLine(active_line, 0, &commit_id))
 			return true;

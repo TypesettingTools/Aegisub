@@ -201,20 +201,20 @@ void AssTransformFramerateFilter::TransformTimeTags(std::string const& name, Ass
 
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	if (!Input->IsLoaded() || !Output->IsLoaded()) return;
-	for (auto curDialogue : subs->Events | agi::of_type<AssDialogue>()) {
-		line = curDialogue;
+	for (auto& curDialogue : subs->Events) {
+		line = &curDialogue;
 		newK = 0;
 		oldK = 0;
-		newStart = trunc_cs(ConvertTime(curDialogue->Start));
-		newEnd = trunc_cs(ConvertTime(curDialogue->End) + 9);
+		newStart = trunc_cs(ConvertTime(curDialogue.Start));
+		newEnd = trunc_cs(ConvertTime(curDialogue.End) + 9);
 
 		// Process stuff
 		boost::ptr_vector<AssDialogueBlock> blocks;
 		for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
 			block->ProcessParameters(TransformTimeTags, this);
-		curDialogue->Start = newStart;
-		curDialogue->End = newEnd;
-		curDialogue->UpdateText(blocks);
+		curDialogue.Start = newStart;
+		curDialogue.End = newEnd;
+		curDialogue.UpdateText(blocks);
 	}
 }
 

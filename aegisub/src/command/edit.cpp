@@ -53,6 +53,7 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
@@ -485,12 +486,11 @@ struct edit_find_replace : public Command {
 	}
 };
 
-static std::string get_entry_data(AssDialogue *d) { return d->GetEntryData(); }
+static std::string get_entry_data(AssDialogue &d) { return d.GetEntryData(); }
 static void copy_lines(agi::Context *c) {
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 	SetClipboard(join(c->ass->Events
-		| agi::of_type<AssDialogue>()
-		| filtered([&](AssDialogue *d) { return sel.count(d); })
+		| filtered([&](AssDialogue &d) { return sel.count(&d); })
 		| transformed(get_entry_data),
 		"\r\n"));
 }
@@ -503,25 +503,25 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	AssDialogue *post_sel = nullptr;
 	bool hit_selection = false;
 
-	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
-		if (sel.count(diag))
+	for (auto& diag : c->ass->Events) {
+		if (sel.count(&diag))
 			hit_selection = true;
 		else if (hit_selection && !post_sel) {
-			post_sel = diag;
+			post_sel = &diag;
 			break;
 		}
 		else
-			pre_sel = diag;
+			pre_sel = &diag;
 	}
 
 	// Remove the selected lines, but defer the deletion until after we select
 	// different lines. We can't just change the selection first because we may
 	// need to create a new dialogue line for it, and we can't select dialogue
 	// lines until after they're committed.
-	std::vector<std::unique_ptr<AssEntry>> to_delete;
-	c->ass->Events.remove_and_dispose_if([&sel](AssEntry const& e) {
-		return sel.count(const_cast<AssDialogue *>(static_cast<const AssDialogue*>(&e)));
-	}, [&](AssEntry *e) {
+	std::vector<std::unique_ptr<AssDialogue>> to_delete;
+	c->ass->Events.remove_and_dispose_if([&sel](AssDialogue const& e) {
+		return sel.count(const_cast<AssDialogue *>(&e));
+	}, [&](AssDialogue *e) {
 		to_delete.emplace_back(e);
 	});
 
@@ -591,35 +591,28 @@ struct edit_line_delete : public validate_sel_nonempty {
 	}
 };
 
-struct in_selection : public std::unary_function<AssEntry, bool> {
-	SubtitleSelectionController::Selection const& sel;
-	in_selection(SubtitleSelectionController::Selection const& sel) : sel(sel) { }
-	bool operator()(AssEntry const& e) const {
-		const AssDialogue *d = dynamic_cast<const AssDialogue*>(&e);
-		return d && sel.count(const_cast<AssDialogue *>(d));
-	}
-};
-
 static void duplicate_lines(agi::Context *c, int shift) {
-	in_selection sel(c->selectionController->GetSelectedSet());
+	auto const& sel = c->selectionController->GetSelectedSet();
+	auto in_selection = [&](AssDialogue const& d) { return sel.count(const_cast<AssDialogue *>(&d)); };
+
 	SubtitleSelectionController::Selection new_sel;
 	AssDialogue *new_active = nullptr;
 
-	entryIter start = c->ass->Events.begin();
-	entryIter end = c->ass->Events.end();
+	auto start = c->ass->Events.begin();
+	auto end = c->ass->Events.end();
 	while (start != end) {
 		// Find the first line in the selection
-		start = find_if(start, end, sel);
+		start = find_if(start, end, in_selection);
 		if (start == end) break;
 
 		// And the last line in this contiguous selection
-		entryIter insert_pos = find_if_not(start, end, sel);
-		entryIter last = std::prev(insert_pos);
+		auto insert_pos = find_if_not(start, end, in_selection);
+		auto last = std::prev(insert_pos);
 
 		// Duplicate each of the selected lines, inserting them in a block
 		// after the selected block
 		do {
-			auto old_diag = static_cast<AssDialogue*>(&*start);
+			auto old_diag = &*start;
 			auto  new_diag = new AssDialogue(*old_diag);
 
 			c->ass->Events.insert(insert_pos, *new_diag);
@@ -703,10 +696,9 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
 	AssDialogue *first = nullptr;
-	for (entryIter it = c->ass->Events.begin(); it != c->ass->Events.end(); ) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it++);
-		if (!diag || !sel.count(diag))
-			continue;
+	for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ) {
+		AssDialogue *diag = &*it++;
+		if (!sel.count(diag)) continue;
 		if (!first) {
 			first = diag;
 			continue;
@@ -772,7 +764,7 @@ static bool try_paste_lines(agi::Context *c) {
 	boost::trim_left(data);
 	if (!boost::starts_with(data, "Dialogue:")) return false;
 
-	EntryList parsed;
+	EntryList<AssDialogue> parsed;
 	boost::char_separator<char> sep("\r\n");
 	for (auto curdata : boost::tokenizer<boost::char_separator<char>>(data, sep)) {
 		boost::trim(curdata);
@@ -780,15 +772,15 @@ static bool try_paste_lines(agi::Context *c) {
 			parsed.push_back(*new AssDialogue(curdata));
 		}
 		catch (...) {
-			parsed.clear_and_dispose([](AssEntry *e) { delete e; });
+			parsed.clear_and_dispose([](AssDialogue *e) { delete e; });
 			return false;
 		}
 	}
 
-	AssDialogue *new_active = static_cast<AssDialogue *>(&*parsed.begin());
+	AssDialogue *new_active = &*parsed.begin();
 	SubtitleSelection new_selection;
 	for (auto& line : parsed)
-		new_selection.insert(static_cast<AssDialogue *>(&line));
+		new_selection.insert(&line);
 
 	auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
 	c->ass->Events.splice(pos, parsed, parsed.begin(), parsed.end());
@@ -858,9 +850,9 @@ struct edit_line_paste_over : public Command {
 				std::unique_ptr<AssDialogue> deleter(new_line);
 				if (pos == c->ass->Events.end()) return nullptr;
 
-				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, static_cast<AssDialogue*>(&*pos));
+				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, &*pos);
 				if (ret)
-					pos = find_if(next(pos), c->ass->Events.end(), cast<AssDialogue*>());
+					++pos;
 				return ret;
 			});
 		}
@@ -871,8 +863,8 @@ struct edit_line_paste_over : public Command {
 			std::vector<AssDialogue*> sorted_selection;
 			sorted_selection.reserve(sel.size());
 			for (auto& line : c->ass->Events) {
-				if (sel.count(static_cast<AssDialogue*>(&line)))
-					sorted_selection.push_back(static_cast<AssDialogue*>(&line));
+				if (sel.count(&line))
+					sorted_selection.push_back(&line);
 			}
 
 			auto pos = begin(sorted_selection);
@@ -936,7 +928,10 @@ struct edit_line_recombine : public validate_sel_multiple {
 		auto active_line = c->selectionController->GetActiveLine();
 
 		std::vector<AssDialogue*> sel(sel_set.begin(), sel_set.end());
-		boost::sort(sel, &AssFile::CompStart);
+		boost::sort(sel, [](const AssDialogue *a, const AssDialogue *b) {
+			return a->Start < b->Start;
+		});
+
 		for (auto &diag : sel)
 			diag->Text = trim_text(diag->Text);
 
@@ -983,7 +978,7 @@ struct edit_line_recombine : public validate_sel_multiple {
 
 		// Remove now non-existent lines from the selection
 		SubtitleSelection lines, new_sel;
-		boost::copy(c->ass->Events | agi::of_type<AssDialogue>(), inserter(lines, lines.begin()));
+		boost::copy(c->ass->Events | agi::address_of, inserter(lines, lines.begin()));
 		boost::set_intersection(lines, sel_set, inserter(new_sel, new_sel.begin()));
 
 		if (new_sel.empty())

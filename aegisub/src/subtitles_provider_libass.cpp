@@ -41,7 +41,10 @@
 #include <libaegisub/util_osx.h>
 #endif
 
+#include "ass_info.h"
+#include "ass_dialogue.h"
 #include "ass_file.h"
+#include "ass_style.h"
 #include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
@@ -112,28 +115,35 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 	if (ass_renderer) ass_renderer_done(ass_renderer);
 }
 
-void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
-	std::vector<char> data;
-	data.clear();
-	data.reserve(0x4000);
+namespace {
+	struct Writer {
+		std::vector<char> data;
+		AssEntryGroup group = AssEntryGroup::GROUP_MAX;
 
-	AssEntryGroup group = AssEntryGroup::GROUP_MAX;
-	auto write_group = [&](EntryList const& list) {
-		for (auto const& line : list) {
-			if (group != line.Group()) {
-				group = line.Group();
-				boost::push_back(data, line.GroupHeader() + "\r\n");
+		template<typename T>
+		void Write(T const& list) {
+			for (auto const& line : list) {
+				if (group != line.Group()) {
+					group = line.Group();
+					boost::push_back(data, line.GroupHeader() + "\r\n");
+				}
+				boost::push_back(data, line.GetEntryData() + "\r\n");
 			}
-			boost::push_back(data, line.GetEntryData() + "\r\n");
 		}
 	};
+}
 
-	write_group(subs->Info);
-	write_group(subs->Styles);
-	write_group(subs->Events);
+void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
+	Writer writer;
+
+	writer.data.reserve(0x4000);
+
+	writer.Write(subs->Info);
+	writer.Write(subs->Styles);
+	writer.Write(subs->Events);
 
 	if (ass_track) ass_free_track(ass_track);
-	ass_track = ass_read_memory(library, &data[0], data.size(), nullptr);
+	ass_track = ass_read_memory(library, &writer.data[0], writer.data.size(), nullptr);
 	if (!ass_track) throw "libass failed to load subtitles.";
 }
 

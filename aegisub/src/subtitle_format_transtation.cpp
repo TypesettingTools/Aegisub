@@ -44,8 +44,6 @@
 #include "ass_time.h"
 #include "text_file_writer.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
@@ -76,14 +74,14 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path cons
 
 	SmpteFormatter ft(fps);
 	TextFileWriter file(filename, encoding);
-	AssDialogue *prev = nullptr;
-	for (auto cur : copy.Events | agi::of_type<AssDialogue>()) {
+	const AssDialogue *prev = nullptr;
+	for (auto const& cur : copy.Events) {
 		if (prev) {
-			file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, cur->Start));
+			file.WriteLineToFile(ConvertLine(&copy, prev, fps, ft, cur.Start));
 			file.WriteLineToFile("");
 		}
 
-		prev = cur;
+		prev = &cur;
 	}
 
 	// flush last line
@@ -94,7 +92,7 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path cons
 	file.WriteLineToFile("SUB[");
 }
 
-std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, AssDialogue *current, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const {
+std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, const AssDialogue *current, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const {
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style

@@ -70,26 +70,22 @@ struct SubsController::UndoInfo {
 	: undo_description(d), commit_id(commit_id)
 	{
 		script_info.reserve(c->ass->Info.size());
-		for (auto const& line : c->ass->Info) {
-			auto info = static_cast<const AssInfo *>(&line);
-			script_info.emplace_back(info->Key(), info->Value());
-		}
+		for (auto const& info : c->ass->Info)
+			script_info.emplace_back(info.Key(), info.Value());
 
 		styles.reserve(c->ass->Styles.size());
-		for (auto const& line : c->ass->Styles)
-			styles.push_back(static_cast<AssStyle const&>(line));
+		styles.assign(c->ass->Styles.begin(), c->ass->Styles.end());
 
 		events.reserve(c->ass->Events.size());
-		for (auto const& line : c->ass->Events)
-			events.push_back(static_cast<AssDialogue const&>(line));
+		events.assign(c->ass->Events.begin(), c->ass->Events.end());
 
 		for (auto const& line : c->ass->Attachments) {
 			switch (line.Group()) {
 			case AssEntryGroup::FONT:
-				fonts.push_back(static_cast<AssAttachment const&>(line));
+				fonts.push_back(line);
 				break;
 			case AssEntryGroup::GRAPHIC:
-				graphics.push_back(static_cast<AssAttachment const&>(line));
+				graphics.push_back(line);
 				break;
 			default:
 				assert(false);
@@ -364,10 +360,9 @@ void SubsController::OnCommit(AssFileCommit c) {
 	if (commit_id == *c.commit_id+1 && redo_stack.empty() && saved_commit_id+1 != commit_id && autosaved_commit_id+1 != commit_id) {
 		// If only one line changed just modify it instead of copying the file
 		if (c.single_line && c.single_line->Group() == AssEntryGroup::DIALOGUE) {
-			auto src_diag = static_cast<const AssDialogue *>(c.single_line);
 			for (auto& diag : undo_stack.back().events) {
-				if (diag.Id == src_diag->Id) {
-					diag = *src_diag;
+				if (diag.Id == c.single_line->Id) {
+					diag = *c.single_line;
 					break;
 				}
 			}

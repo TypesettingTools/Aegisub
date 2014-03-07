@@ -31,7 +31,6 @@
 #include "video_context.h"
 #include "video_display.h"
 
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
@@ -115,9 +114,9 @@ void VisualToolDrag::OnFileChanged() {
 	primary = nullptr;
 	active_feature = nullptr;
 
-	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
-		if (IsDisplayed(diag))
-			MakeFeatures(diag);
+	for (auto& diag : c->ass->Events) {
+		if (IsDisplayed(&diag))
+			MakeFeatures(&diag);
 	}
 
 	UpdateToggleButtons();
@@ -130,18 +129,18 @@ void VisualToolDrag::OnFrameChanged() {
 	auto feat = features.begin();
 	auto end = features.end();
 
-	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
-		if (IsDisplayed(diag)) {
+	for (auto& diag : c->ass->Events) {
+		if (IsDisplayed(&diag)) {
 			// Features don't exist and should
-			if (feat == end || feat->line != diag)
-				MakeFeatures(diag, feat);
+			if (feat == end || feat->line != &diag)
+				MakeFeatures(&diag, feat);
 			// Move past already existing features for the line
 			else
-				while (feat != end && feat->line == diag) ++feat;
+				while (feat != end && feat->line == &diag) ++feat;
 		}
 		else {
 			// Remove all features for this line (if any)
-			while (feat != end && feat->line == diag) {
+			while (feat != end && feat->line == &diag) {
 				if (&*feat == active_feature) active_feature = nullptr;
 				feat->line = nullptr;
 				RemoveSelection(&*feat);

@@ -125,32 +125,33 @@ namespace {
 			cur->Set<int>((cur->Get<int>() + shift) * resizer + 0.5);
 	}
 
-	void resample_line(resample_state *state, AssEntry &line) {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-		if (diag && !(diag->Comment && (boost::starts_with(diag->Effect.get(), "template") || boost::starts_with(diag->Effect.get(), "code")))) {
-			boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+	void resample_line(resample_state *state, AssDialogue &diag) {
+		if (diag.Comment && (boost::starts_with(diag.Effect.get(), "template") || boost::starts_with(diag.Effect.get(), "code")))
+			return;
 
-			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
-				block->ProcessParameters(resample_tags, state);
+		boost::ptr_vector<AssDialogueBlock> blocks(diag.ParseTags());
 
-			for (auto drawing : blocks | agi::of_type<AssDialogueBlockDrawing>())
-				drawing->text = transform_drawing(drawing->text, state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
+		for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
+			block->ProcessParameters(resample_tags, state);
 
-			for (size_t i = 0; i < 3; ++i)
-				diag->Margin[i] = int((diag->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
+		for (auto drawing : blocks | agi::of_type<AssDialogueBlockDrawing>())
+			drawing->text = transform_drawing(drawing->text, state->margin[LEFT], state->margin[TOP], state->rx, state->ry);
 
-			diag->UpdateText(blocks);
-		}
-		else if (AssStyle *style = dynamic_cast<AssStyle*>(&line)) {
-			style->fontsize = int(style->fontsize * state->ry + 0.5);
-			style->outline_w *= state->ry;
-			style->shadow_w *= state->ry;
-			style->spacing *= state->rx;
-			style->scalex *= state->ar;
-			for (int i = 0; i < 3; i++)
-				style->Margin[i] = int((style->Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
-			style->UpdateData();
-		}
+		for (size_t i = 0; i < 3; ++i)
+			diag.Margin[i] = int((diag.Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
+
+		diag.UpdateText(blocks);
+	}
+
+	void resample_style(resample_state *state, AssStyle &style) {
+		style.fontsize = int(style.fontsize * state->ry + 0.5);
+		style.outline_w *= state->ry;
+		style.shadow_w *= state->ry;
+		style.spacing *= state->rx;
+		style.scalex *= state->ar;
+		for (int i = 0; i < 3; i++)
+			style.Margin[i] = int((style.Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
+		style.UpdateData();
 	}
 }
 
@@ -173,7 +174,7 @@ void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
 		state.ar = state.rx / state.ry;
 
 	for (auto& line : ass->Styles)
-		resample_line(&state, line);
+		resample_style(&state, line);
 	for (auto& line : ass->Events)
 		resample_line(&state, line);
 

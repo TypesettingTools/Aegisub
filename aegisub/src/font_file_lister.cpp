@@ -29,8 +29,6 @@
 #include "compat.h"
 #include "utils.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 #include <algorithm>
 #include <tuple>
 #include <unicode/uchar.h>
@@ -182,17 +180,17 @@ std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 
 	status_callback(_("Parsing file\n"), 0);
 
-	for (auto style : file->Styles | agi::of_type<const AssStyle>()) {
-		StyleInfo &info = styles[style->name];
-		info.facename = style->font;
-		info.bold     = style->bold;
-		info.italic   = style->italic;
-		used_styles[info].styles.insert(style->name);
+	for (auto const& style : file->Styles) {
+		StyleInfo &info = styles[style.name];
+		info.facename = style.font;
+		info.bold     = style.bold;
+		info.italic   = style.italic;
+		used_styles[info].styles.insert(style.name);
 	}
 
 	int index = 0;
-	for (auto diag : file->Events | agi::of_type<const AssDialogue>())
-		ProcessDialogueLine(diag, ++index);
+	for (auto const& diag : file->Events)
+		ProcessDialogueLine(&diag, ++index);
 
 	status_callback(_("Searching for font files\n"), 0);
 	for_each(used_styles.begin(), used_styles.end(), bind(&FontCollector::ProcessChunk, this, _1));

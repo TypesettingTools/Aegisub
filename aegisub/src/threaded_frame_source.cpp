@@ -28,6 +28,7 @@
 #include "video_frame.h"
 #include "video_provider_manager.h"
 
+#include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/dispatch.h>
 
 #include <boost/range/adaptor/indirected.hpp>
@@ -70,12 +71,10 @@ std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, dou
 				// Copying a nontrivially sized AssFile is fairly slow, so
 				// instead muck around with its innards to just temporarily
 				// remove the non-visible lines without deleting them
-				std::deque<AssEntry*> full;
-				for (auto& line : subs->Events)
-					full.push_back(&line);
-				subs->Events.remove_if([=](AssEntry const& e) -> bool {
-					const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e);
-					return diag && (diag->Start > time || diag->End <= time);
+				std::deque<AssDialogue*> full;
+				boost::push_back(full, subs->Events | agi::address_of);
+				subs->Events.remove_if([=](AssDialogue const& diag) {
+					return diag.Start > time || diag.End <= time;
 				});
 
 				try {
@@ -133,12 +132,12 @@ void ThreadedFrameSource::LoadSubtitles(const AssFile *new_subs) throw() {
 	});
 }
 
-void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<const AssEntry*> const& changes) throw() {
+void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<const AssDialogue*> const& changes) throw() {
 	uint_fast32_t req_version = ++version;
 
 	// Copy just the lines which were changed, then replace the lines at the
 	// same indices in the worker's copy of the file with the new entries
-	std::deque<std::pair<size_t, AssEntry*>> changed;
+	std::deque<std::pair<size_t, AssDialogue*>> changed;
 	size_t i = 0;
 	for (auto const& e : new_subs->Events) {
 		if (changes.count(&e))

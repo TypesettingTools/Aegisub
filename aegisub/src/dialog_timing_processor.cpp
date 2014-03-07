@@ -48,8 +48,12 @@
 #include "utils.h"
 #include "video_context.h"
 
+#include <libaegisub/address_of_adaptor.h>
+
 #include <algorithm>
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm_ext.hpp>
 #include <functional>
 
 #include <wx/button.h>
@@ -62,6 +66,8 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/valnum.h>
+
+using namespace boost::adaptors;
 
 namespace {
 using std::placeholders::_1;
@@ -288,10 +294,6 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	EndModal(0);
 }
 
-static bool bad_line(std::set<std::string> *styles, AssDialogue *d) {
-	return !d || d->Comment || styles->find(d->Style) == styles->end();
-}
-
 std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 	std::set<std::string> styles;
 	for (size_t i = 0; i < StyleList->GetCount(); ++i) {
@@ -301,14 +303,13 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 
 	std::vector<AssDialogue*> sorted;
 
-	if (onlySelection->IsChecked()) {
-		SubtitleSelection sel = c->selectionController->GetSelectedSet();
-		copy_if(sel.begin(), sel.end(), back_inserter(sorted),
-			[&](AssDialogue *d) { return !d->Comment && styles.count(d->Style); });
-	}
+	auto valid_line = [&](const AssDialogue *d) { return !d->Comment && styles.count(d->Style); };
+	if (onlySelection->IsChecked())
+		boost::copy(c->selectionController->GetSelectedSet() | filtered(valid_line),
+		    back_inserter(sorted));
 	else {
-		transform(c->ass->Events.begin(), c->ass->Events.end(), back_inserter(sorted), cast<AssDialogue*>());
-		sorted.erase(boost::remove_if(sorted, bind(bad_line, &styles, _1)), sorted.end());
+		sorted.reserve(c->ass->Events.size());
+		boost::push_back(sorted, c->ass->Events | agi::address_of | filtered(valid_line));
 	}
 
 	// Check if rows are valid
@@ -324,7 +325,9 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 		}
 	}
 
-	boost::sort(sorted, AssFile::CompStart);
+	boost::sort(sorted, [](const AssDialogue *a, const AssDialogue *b) {
+		return a->Start < b->Start;
+	});
 	return sorted;
 }
 

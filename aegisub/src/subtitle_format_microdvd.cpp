@@ -44,7 +44,6 @@
 #include "video_context.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/replace.hpp>
@@ -143,10 +142,10 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& 
 		file.WriteLineToFile(str(boost::format("{1}{1}%.6f") % fps.FPS()));
 
 	// Write lines
-	for (auto current : copy.Events | agi::of_type<AssDialogue>()) {
-		int start = fps.FrameAtTime(current->Start, agi::vfr::START);
-		int end = fps.FrameAtTime(current->End, agi::vfr::END);
+	for (auto const& current : copy.Events) {
+		int start = fps.FrameAtTime(current.Start, agi::vfr::START);
+		int end = fps.FrameAtTime(current.End, agi::vfr::END);
 
-		file.WriteLineToFile(str(boost::format("{%i}{%i}%s") % start % end % boost::replace_all_copy(current->Text.get(), "\\N", "|")));
+		file.WriteLineToFile(str(boost::format("{%i}{%i}%s") % start % end % boost::replace_all_copy(current.Text.get(), "\\N", "|")));
 	}
 }

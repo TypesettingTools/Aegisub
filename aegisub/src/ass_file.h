@@ -41,33 +41,36 @@
 #include <set>
 #include <vector>
 
-class AssDialogue;
-class AssStyle;
 class AssAttachment;
+class AssDialogue;
+class AssInfo;
+class AssStyle;
 class wxString;
 
-typedef boost::intrusive::make_list<AssEntry, boost::intrusive::constant_time_size<false>>::type EntryList;
-typedef EntryList::iterator entryIter;
-typedef EntryList::const_iterator constEntryIter;
+template<typename T>
+using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntry>>::type;
+
+template<typename T>
+using EntryIter = typename EntryList<T>::iterator;
 
 struct AssFileCommit {
 	wxString const& message;
 	int *commit_id;
-	AssEntry *single_line;
+	AssDialogue *single_line;
 };
 
 class AssFile {
 	/// A set of changes has been committed to the file (AssFile::COMMITType)
-	agi::signal::Signal<int, std::set<const AssEntry*> const&> AnnounceCommit;
+	agi::signal::Signal<int, std::set<const AssDialogue*> const&> AnnounceCommit;
 	agi::signal::Signal<AssFileCommit> PushState;
 public:
 	/// The lines in the file
-	EntryList Info;
-	EntryList Styles;
-	EntryList Events;
-	EntryList Attachments;
+	EntryList<AssInfo> Info;
+	EntryList<AssStyle> Styles;
+	EntryList<AssDialogue> Events;
+	EntryList<AssAttachment> Attachments;
 
-	AssFile() { }
+	AssFile();
 	AssFile(const AssFile &from);
 	AssFile& operator=(AssFile from);
 	~AssFile();
@@ -139,23 +142,23 @@ public:
 	/// @param commitId    Commit to amend rather than pushing a new commit
 	/// @param single_line Line which was changed, if only one line was
 	/// @return Unique identifier for the new undo group
-	int Commit(wxString const& desc, int type, int commitId = -1, AssEntry *single_line = nullptr);
+	int Commit(wxString const& desc, int type, int commitId = -1, AssDialogue *single_line = nullptr);
 
 	/// Comparison function for use when sorting
-	typedef bool (*CompFunc)(const AssDialogue* lft, const AssDialogue* rgt);
+	typedef bool (*CompFunc)(AssDialogue const& lft, AssDialogue const& rgt);
 
 	/// Compare based on start time
-	static bool CompStart(const AssDialogue* lft, const AssDialogue* rgt);
+	static bool CompStart(AssDialogue const& lft, AssDialogue const& rgt);
 	/// Compare based on end time
-	static bool CompEnd(const AssDialogue* lft, const AssDialogue* rgt);
+	static bool CompEnd(AssDialogue const& lft, AssDialogue const& rgt);
 	/// Compare based on style name
-	static bool CompStyle(const AssDialogue* lft, const AssDialogue* rgt);
+	static bool CompStyle(AssDialogue const& lft, AssDialogue const& rgt);
 	/// Compare based on actor name
-	static bool CompActor(const AssDialogue* lft, const AssDialogue* rgt);
+	static bool CompActor(AssDialogue const& lft, AssDialogue const& rgt);
 	/// Compare based on effect
-	static bool CompEffect(const AssDialogue* lft, const AssDialogue* rgt);
+	static bool CompEffect(AssDialogue const& lft, AssDialogue const& rgt);
 	/// Compare based on layer
-	static bool CompLayer(const AssDialogue* lft, const AssDialogue* rgt);
+	static bool CompLayer(AssDialogue const& lft, AssDialogue const& rgt);
 
 	/// @brief Sort the dialogue lines in this file
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
@@ -164,5 +167,5 @@ public:
 	/// @brief Sort the dialogue lines in the given list
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
 	/// @param limit If non-empty, only lines in this set are sorted
-	static void Sort(EntryList& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
+	static void Sort(EntryList<AssDialogue>& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 };

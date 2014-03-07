@@ -1,35 +1,18 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-
-/// @file ass_file.cpp
-/// @brief Overall storage of subtitle files, undo management and more
-/// @ingroup subs_storage
 
 #include "config.h"
 
@@ -42,20 +25,20 @@
 #include "options.h"
 #include "utils.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem/path.hpp>
 
+AssFile::AssFile() { }
+
 AssFile::~AssFile() {
-	Info.clear_and_dispose([](AssEntry *e) { delete e; });
-	Styles.clear_and_dispose([](AssEntry *e) { delete e; });
-	Events.clear_and_dispose([](AssEntry *e) { delete e; });
-	Attachments.clear_and_dispose([](AssEntry *e) { delete e; });
+	Info.clear_and_dispose([](AssInfo *e) { delete e; });
+	Styles.clear_and_dispose([](AssStyle *e) { delete e; });
+	Events.clear_and_dispose([](AssDialogue *e) { delete e; });
+	Attachments.clear_and_dispose([](AssAttachment *e) { delete e; });
 }
 
-void AssFile::LoadDefault(bool defline) {
+void AssFile::LoadDefault(bool include_dialogue_line) {
 	Info.push_back(*new AssInfo("Title", "Default Aegisub file"));
 	Info.push_back(*new AssInfo("ScriptType", "v4.00+"));
 	Info.push_back(*new AssInfo("WrapStyle", "0"));
@@ -68,15 +51,15 @@ void AssFile::LoadDefault(bool defline) {
 
 	Styles.push_back(*new AssStyle);
 
-	if (defline)
+	if (include_dialogue_line)
 		Events.push_back(*new AssDialogue);
 }
 
 AssFile::AssFile(const AssFile &from) {
-	Info.clone_from(from.Info, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
-	Styles.clone_from(from.Styles, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
-	Events.clone_from(from.Events, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
-	Attachments.clone_from(from.Attachments, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
+	Info.clone_from(from.Info, std::mem_fun_ref(&AssInfo::Clone), [](AssInfo *e) { delete e; });
+	Styles.clone_from(from.Styles, std::mem_fun_ref(&AssStyle::Clone), [](AssStyle *e) { delete e; });
+	Events.clone_from(from.Events, std::mem_fun_ref(&AssDialogue::Clone), [](AssDialogue *e) { delete e; });
+	Attachments.clone_from(from.Attachments, std::mem_fun_ref(&AssAttachment::Clone), [](AssAttachment *e) { delete e; });
 }
 
 void AssFile::swap(AssFile& from) throw() {
@@ -102,9 +85,9 @@ void AssFile::InsertAttachment(agi::fs::path const& filename) {
 }
 
 std::string AssFile::GetScriptInfo(std::string const& key) const {
-	for (const auto info : Info | agi::of_type<AssInfo>()) {
-		if (boost::iequals(key, info->Key()))
-			return info->Value();
+	for (auto const& info : Info) {
+		if (boost::iequals(key, info.Key()))
+			return info.Value();
 	}
 
 	return "";
@@ -131,12 +114,12 @@ void AssFile::SaveUIState(std::string const& key, std::string const& value) {
 }
 
 void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
-	for (auto info : Info | agi::of_type<AssInfo>()) {
-		if (boost::iequals(key, info->Key())) {
+	for (auto& info : Info) {
+		if (boost::iequals(key, info.Key())) {
 			if (value.empty())
-				delete info;
+				delete &info;
 			else
-				info->SetValue(value);
+				info.SetValue(value);
 			return;
 		}
 	}
@@ -145,47 +128,42 @@ void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
 		Info.push_back(*new AssInfo(key, value));
 }
 
-void AssFile::GetResolution(int &sw,int &sh) const {
+void AssFile::GetResolution(int &sw, int &sh) const {
 	sw = GetScriptInfoAsInt("PlayResX");
 	sh = GetScriptInfoAsInt("PlayResY");
 
-	// Gabest logic?
+	// Gabest logic: default is 384x288, assume 1280x1024 if either height or
+	// width are that, otherwise assume 4:3 if only heigh or width are set.
+	// Why 1280x1024? Who the fuck knows. Clearly just Gabest trolling everyone.
 	if (sw == 0 && sh == 0) {
 		sw = 384;
 		sh = 288;
-	} else if (sw == 0) {
-		if (sh == 1024)
-			sw = 1280;
-		else
-			sw = sh * 4 / 3;
-	} else if (sh == 0) {
-		// you are not crazy; this doesn't make any sense
-		if (sw == 1280)
-			sh = 1024;
-		else
-			sh = sw * 3 / 4;
 	}
+	else if (sw == 0)
+		sw = sh == 1024 ? 1280 : sh * 4 / 3;
+	else if (sh == 0)
+		sh = sw == 1280 ? 1024 : sw * 3 / 4;
 }
 
 std::vector<std::string> AssFile::GetStyles() const {
 	std::vector<std::string> styles;
-	for (auto style : Styles | agi::of_type<AssStyle>())
-		styles.push_back(style->name);
+	for (auto& style : Styles)
+		styles.push_back(style.name);
 	return styles;
 }
 
 AssStyle *AssFile::GetStyle(std::string const& name) {
-	for (auto style : Styles | agi::of_type<AssStyle>()) {
-		if (boost::iequals(style->name, name))
-			return style;
+	for (auto& style : Styles) {
+		if (boost::iequals(style.name, name))
+			return &style;
 	}
 	return nullptr;
 }
 
-int AssFile::Commit(wxString const& desc, int type, int amend_id, AssEntry *single_line) {
+int AssFile::Commit(wxString const& desc, int type, int amend_id, AssDialogue *single_line) {
 	PushState({desc, &amend_id, single_line});
 
-	std::set<const AssEntry*> changed_lines;
+	std::set<const AssDialogue*> changed_lines;
 	if (single_line)
 		changed_lines.insert(single_line);
 
@@ -194,50 +172,45 @@ int AssFile::Commit(wxString const& desc, int type, int amend_id, AssEntry *sing
 	return amend_id;
 }
 
-bool AssFile::CompStart(const AssDialogue* lft, const AssDialogue* rgt) {
-	return lft->Start < rgt->Start;
+bool AssFile::CompStart(AssDialogue const& lft, AssDialogue const& rgt) {
+	return lft.Start < rgt.Start;
 }
-bool AssFile::CompEnd(const AssDialogue* lft, const AssDialogue* rgt) {
-	return lft->End < rgt->End;
+bool AssFile::CompEnd(AssDialogue const& lft, AssDialogue const& rgt) {
+	return lft.End < rgt.End;
 }
-bool AssFile::CompStyle(const AssDialogue* lft, const AssDialogue* rgt) {
-	return lft->Style < rgt->Style;
+bool AssFile::CompStyle(AssDialogue const& lft, AssDialogue const& rgt) {
+	return lft.Style < rgt.Style;
 }
-bool AssFile::CompActor(const AssDialogue* lft, const AssDialogue* rgt) {
-	return lft->Actor < rgt->Actor;
+bool AssFile::CompActor(AssDialogue const& lft, AssDialogue const& rgt) {
+	return lft.Actor < rgt.Actor;
 }
-bool AssFile::CompEffect(const AssDialogue* lft, const AssDialogue* rgt) {
-	return lft->Effect < rgt->Effect;
+bool AssFile::CompEffect(AssDialogue const& lft, AssDialogue const& rgt) {
+	return lft.Effect < rgt.Effect;
 }
-bool AssFile::CompLayer(const AssDialogue* lft, const AssDialogue* rgt) {
-	return lft->Layer < rgt->Layer;
+bool AssFile::CompLayer(AssDialogue const& lft, AssDialogue const& rgt) {
+	return lft.Layer < rgt.Layer;
 }
 
 void AssFile::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
 	Sort(Events, comp, limit);
 }
-namespace {
-	inline bool is_dialogue(AssEntry *e, std::set<AssDialogue*> const& limit) {
-		AssDialogue *d = dynamic_cast<AssDialogue*>(e);
-		return d && (limit.empty() || limit.count(d));
+
+void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
+	if (limit.empty()) {
+		lst.sort(comp);
+		return;
 	}
-}
 
-void AssFile::Sort(EntryList &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
-	auto compE = [&](AssEntry const& a, AssEntry const& b) {
-		return comp(static_cast<const AssDialogue*>(&a), static_cast<const AssDialogue*>(&b));
-	};
+	// Sort each selected block separately, leaving everything else untouched
+	for (auto begin = lst.begin(); begin != lst.end(); ++begin) {
+		if (!limit.count(&*begin)) continue;
+		auto end = begin;
+		while (end != lst.end() && limit.count(&*end)) ++end;
 
-	// Sort each block of AssDialogues separately, leaving everything else untouched
-	for (entryIter begin = lst.begin(); begin != lst.end(); ++begin) {
-		if (!is_dialogue(&*begin, limit)) continue;
-		entryIter end = begin;
-		while (end != lst.end() && is_dialogue(&*end, limit)) ++end;
-
-		// used instead of std::list::sort for partial list sorting
-		EntryList tmp;
+		// sort doesn't support only sorting a sublist, so move them to a temp list
+		EntryList<AssDialogue> tmp;
 		tmp.splice(tmp.begin(), lst, begin, end);
-		tmp.sort(compE);
+		tmp.sort(comp);
 		lst.splice(end, tmp);
 
 		begin = --end;

@@ -38,7 +38,6 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
@@ -354,10 +353,10 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	int block_start = 0;
 	json::Array shifted_blocks;
 
-	for (auto line : context->ass->Events | agi::of_type<AssDialogue>()) {
+	for (auto& line : context->ass->Events) {
 		++row_number;
 
-		if (!sel.count(line)) {
+		if (!sel.count(&line)) {
 			if (block_start) {
 				json::Object block;
 				block["start"] = block_start;
@@ -372,9 +371,9 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 			block_start = row_number;
 
 		if (start)
-			line->Start = Shift(line->Start, shift, by_time, agi::vfr::START);
+			line.Start = Shift(line.Start, shift, by_time, agi::vfr::START);
 		if (end)
-			line->End = Shift(line->End, shift, by_time, agi::vfr::END);
+			line.End = Shift(line.End, shift, by_time, agi::vfr::END);
 	}
 
 	context->ass->Commit(_("shifting"), AssFile::COMMIT_DIAG_TIME);

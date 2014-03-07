@@ -53,10 +53,11 @@
 #include "../utils.h"
 #include "../video_context.h"
 
+#include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
+#include <boost/range/algorithm.hpp>
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 
@@ -124,7 +125,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
 	def->Style = c->selectionController->GetActiveLine()->Style;
 
-	entryIter pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
+	auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
 	if (after) ++pos;
 
 	c->ass->Events.insert(pos, *def);
@@ -147,8 +148,8 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 		new_line->Start = active_line->End;
 		new_line->End = new_line->Start + OPT_GET("Timing/Default Duration")->GetInt();
 
-		for (entryIter it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
-			AssDialogue *diag = static_cast<AssDialogue*>(&*it);
+		for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
+			AssDialogue *diag = &*it;
 
 			// Limit the line to the available time
 			if (diag->Start >= new_line->Start)
@@ -192,8 +193,8 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 		new_line->End = active_line->Start;
 		new_line->Start = new_line->End - OPT_GET("Timing/Default Duration")->GetInt();
 
-		for (entryIter it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
-			auto diag = static_cast<AssDialogue*>(&*it);
+		for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
+			auto diag = &*it;
 
 			// Limit the line to the available time
 			if (diag->End <= new_line->End)
@@ -372,9 +373,7 @@ struct subtitle_select_all : public Command {
 
 	void operator()(agi::Context *c) override {
 		SubtitleSelection sel;
-		transform(c->ass->Events.begin(), c->ass->Events.end(),
-			inserter(sel, sel.begin()), cast<AssDialogue*>());
-		sel.erase(nullptr);
+		boost::copy(c->ass->Events | agi::address_of, inserter(sel, sel.end()));
 		c->selectionController->SetSelectedSet(sel);
 	}
 };
@@ -394,13 +393,13 @@ struct subtitle_select_visible : public Command {
 		SubtitleSelectionController::Selection new_selection;
 		int frame = c->videoController->GetFrameN();
 
-		for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
-			if (c->videoController->FrameAtTime(diag->Start, agi::vfr::START) <= frame &&
-				c->videoController->FrameAtTime(diag->End, agi::vfr::END) >= frame)
+		for (auto& diag : c->ass->Events) {
+			if (c->videoController->FrameAtTime(diag.Start, agi::vfr::START) <= frame &&
+				c->videoController->FrameAtTime(diag.End, agi::vfr::END) >= frame)
 			{
 				if (new_selection.empty())
-					c->selectionController->SetActiveLine(diag);
-				new_selection.insert(diag);
+					c->selectionController->SetActiveLine(&diag);
+				new_selection.insert(&diag);
 			}
 		}
 

@@ -39,7 +39,6 @@
 
 namespace agi { struct Context; }
 class AssDialogue;
-class AssEntry;
 class AssFile;
 class KaraokeLineMatchDisplay;
 class wxComboBox;
@@ -55,8 +54,8 @@ class DialogKanjiTimer : public wxDialog {
 
 	std::vector<std::pair<AssDialogue*, std::string>> LinesToChange;
 
-	AssEntry *currentSourceLine = nullptr;
-	AssEntry *currentDestinationLine = nullptr;
+	AssDialogue *currentSourceLine = nullptr;
+	AssDialogue *currentDestinationLine = nullptr;
 
 	void OnClose(wxCommandEvent &event);
 	void OnStart(wxCommandEvent &event);
@@ -71,8 +70,8 @@ class DialogKanjiTimer : public wxDialog {
 	void ResetForNewLine();
 	void TryAutoMatch();
 
-	AssEntry *FindNextStyleMatch(AssEntry *search_from, const std::string &search_style);
-	AssEntry *FindPrevStyleMatch(AssEntry *search_from, const std::string &search_style);
+	AssDialogue *FindNextStyleMatch(AssDialogue *search_from, const std::string &search_style);
+	AssDialogue *FindPrevStyleMatch(AssDialogue *search_from, const std::string &search_style);
 
 public:
 	DialogKanjiTimer(agi::Context *context);

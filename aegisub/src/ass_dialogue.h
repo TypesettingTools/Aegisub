@@ -177,7 +177,7 @@ public:
 	/// Does this line collide with the passed line?
 	bool CollidesWith(const AssDialogue *target) const;
 
-	AssEntry *Clone() const override;
+	AssDialogue *Clone() const override;
 
 	AssDialogue();
 	AssDialogue(AssDialogue const&);

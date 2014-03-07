@@ -52,8 +52,6 @@
 #include "video_context.h"
 #include "video_slider.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 #include <algorithm>
 #include <boost/range/algorithm.hpp>
 #include <cmath>
@@ -81,13 +79,6 @@ enum RowColor {
 	COLOR_SELECTED_COMMENT,
 	COLOR_LEFT_COL
 };
-
-template<class S1, class S2, class D>
-static inline void set_difference(const S1 &src1, const S2 &src2, D &dst) {
-	std::set_difference(
-		src1.begin(), src1.end(), src2.begin(), src2.end(),
-		std::inserter(dst, dst.begin()));
-}
 
 namespace std {
 	template <typename T>
@@ -265,9 +256,9 @@ void BaseGrid::UpdateMaps() {
 	index_line_map.clear();
 	line_index_map.clear();
 
-	for (auto curdiag : context->ass->Events | agi::of_type<AssDialogue>()) {
-		line_index_map[curdiag] = (int)index_line_map.size();
-		index_line_map.push_back(curdiag);
+	for (auto& curdiag : context->ass->Events) {
+		line_index_map[&curdiag] = (int)index_line_map.size();
+		index_line_map.push_back(&curdiag);
 	}
 
 	auto sorted = index_line_map;
@@ -751,6 +742,7 @@ void BaseGrid::SetColumnWidths() {
 
 	std::unordered_map<boost::flyweight<std::string>, int> widths;
 	auto get_width = [&](boost::flyweight<std::string> const& str) -> int {
+		if (str.get().empty()) return 0;
 		auto it = widths.find(str);
 		if (it != end(widths)) return it->second;
 		int width = dc.GetTextExtent(to_wx(str)).GetWidth();
@@ -766,24 +758,22 @@ void BaseGrid::SetColumnWidths() {
 	int maxLayer = 0;
 	int maxStart = 0;
 	int maxEnd = 0;
-	for (int i = 0; i < GetRows(); i++) {
-		AssDialogue *curDiag = GetDialogue(i);
-
-		maxLayer = std::max(maxLayer, curDiag->Layer);
-		actorLen = std::max(actorLen, get_width(curDiag->Actor));
-		styleLen = std::max(styleLen, get_width(curDiag->Style));
-		effectLen = std::max(effectLen, get_width(curDiag->Effect));
+	for (auto const& diag : context->ass->Events) {
+		maxLayer = std::max(maxLayer, diag.Layer);
+		actorLen = std::max(actorLen, get_width(diag.Actor));
+		styleLen = std::max(styleLen, get_width(diag.Style));
+		effectLen = std::max(effectLen, get_width(diag.Effect));
 
 		// Margins
 		for (int j = 0; j < 3; j++) {
-			if (curDiag->Margin[j])
+			if (diag.Margin[j])
 				showMargin[j] = true;
 		}
 
 		// Times
 		if (byFrame) {
-			maxStart = std::max(maxStart, context->videoController->FrameAtTime(curDiag->Start, agi::vfr::START));
-			maxEnd = std::max(maxEnd, context->videoController->FrameAtTime(curDiag->End, agi::vfr::END));
+			maxStart = std::max(maxStart, context->videoController->FrameAtTime(diag.Start, agi::vfr::START));
+			maxEnd = std::max(maxEnd, context->videoController->FrameAtTime(diag.End, agi::vfr::END));
 		}
 	}
 
@@ -991,15 +981,19 @@ void BaseGrid::SetSelectionAndActive(Selection const& new_selection, AssDialogue
 }
 
 void BaseGrid::PrevLine() {
-	int cur_line_i = GetDialogueIndex(GetActiveLine());
-	if (AssDialogue *prev_line = GetDialogue(cur_line_i-1))
-		SetSelectionAndActive({ prev_line }, prev_line);
+	if (!active_line) return;
+	auto it = context->ass->Events.iterator_to(*active_line);
+	if (it != context->ass->Events.begin()) {
+		--it;
+		SetSelectionAndActive({&*it}, &*it);
+	}
 }
 
 void BaseGrid::NextLine() {
-	int cur_line_i = GetDialogueIndex(GetActiveLine());
-	if (AssDialogue *next_line = GetDialogue(cur_line_i+1))
-		SetSelectionAndActive({ next_line }, next_line);
+	if (!active_line) return;
+	auto it = context->ass->Events.iterator_to(*active_line);
+	if (++it != context->ass->Events.end())
+		SetSelectionAndActive({&*it}, &*it);
 }
 
 void BaseGrid::AnnounceActiveLineChanged(AssDialogue *new_line) {

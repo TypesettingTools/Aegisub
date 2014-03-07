@@ -232,7 +232,7 @@ void VideoContext::Reload() {
 	}
 }
 
-void VideoContext::OnSubtitlesCommit(int type, std::set<const AssEntry *> const& changed) {
+void VideoContext::OnSubtitlesCommit(int type, std::set<const AssDialogue *> const& changed) {
 	if (!IsLoaded()) return;
 
 	if (changed.empty() || no_amend)
@@ -436,7 +436,7 @@ void VideoContext::LoadTimecodes(agi::fs::path const& filename) {
 		ovr_fps = agi::vfr::Framerate(filename);
 		timecodes_filename = filename;
 		config::mru->Add("Timecodes", filename);
-		OnSubtitlesCommit(0, std::set<const AssEntry*>());
+		OnSubtitlesCommit(0, std::set<const AssDialogue*>());
 		TimecodesOpen(ovr_fps);
 	}
 	catch (agi::fs::FileSystemError const& err) {
@@ -460,7 +460,7 @@ void VideoContext::SaveTimecodes(agi::fs::path const& filename) {
 void VideoContext::CloseTimecodes() {
 	ovr_fps = agi::vfr::Framerate();
 	timecodes_filename.clear();
-    OnSubtitlesCommit(0, std::set<const AssEntry*>());
+    OnSubtitlesCommit(0, std::set<const AssDialogue*>());
 	TimecodesOpen(video_fps);
 }
 

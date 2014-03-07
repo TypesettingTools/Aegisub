@@ -715,21 +715,19 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 	AnnounceMarkerMoved();
 }
 
-static bool noncomment_dialogue(AssEntry const& e)
+static bool noncomment_dialogue(AssDialogue const& diag)
 {
-	if (const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e))
-		return !diag->Comment;
-	return false;
+	return !diag.Comment;
 }
 
-static bool dialogue(AssEntry const& e)
+static bool dialogue(AssDialogue const&)
 {
-	return !!dynamic_cast<const AssDialogue*>(&e);
+	return true;
 }
 
 void AudioTimingControllerDialogue::RegenerateInactiveLines()
 {
-	bool (*predicate)(AssEntry const&) = inactive_line_comments->GetBool() ? dialogue : noncomment_dialogue;
+	auto predicate = inactive_line_comments->GetBool() ? dialogue : noncomment_dialogue;
 
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
@@ -742,21 +740,20 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	case 2: // Previous and next lines
 		if (AssDialogue *line = context->selectionController->GetActiveLine())
 		{
-			entryIter current_line = context->ass->Events.iterator_to(*line);
+			auto current_line = context->ass->Events.iterator_to(*line);
 			if (current_line == context->ass->Events.end())
 				break;
 
-			entryIter prev = current_line;
+			auto prev = current_line;
 			while (--prev != context->ass->Events.begin() && !predicate(*prev)) ;
 			if (prev != context->ass->Events.begin())
-				AddInactiveLine(sel, static_cast<AssDialogue*>(&*prev));
+				AddInactiveLine(sel, &*prev);
 
 			if (mode == 2)
 			{
-				entryIter next =
-					find_if(++current_line, context->ass->Events.end(), predicate);
+				auto next = find_if(++current_line, context->ass->Events.end(), predicate);
 				if (next != context->ass->Events.end())
-					AddInactiveLine(sel, static_cast<AssDialogue*>(&*next));
+					AddInactiveLine(sel, &*next);
 			}
 		}
 		break;
@@ -766,7 +763,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 		for (auto& line : context->ass->Events)
 		{
 			if (&line != active_line && predicate(line))
-				AddInactiveLine(sel, static_cast<AssDialogue*>(&line));
+				AddInactiveLine(sel, &line);
 		}
 		break;
 	}

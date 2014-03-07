@@ -34,8 +34,6 @@
 #include "selection_controller.h"
 #include "utils.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 #include <algorithm>
 #include <boost/algorithm/string/find.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -77,12 +75,12 @@ static std::set<AssDialogue*> process(std::string const& match_text, bool match_
 	auto predicate = SearchReplaceEngine::GetMatcher(settings);
 
 	std::set<AssDialogue*> matches;
-	for (auto diag : ass->Events | agi::of_type<AssDialogue>()) {
-		if (diag->Comment && !comments) continue;
-		if (!diag->Comment && !dialogue) continue;
+	for (auto& diag : ass->Events) {
+		if (diag.Comment && !comments) continue;
+		if (!diag.Comment && !dialogue) continue;
 
-		if (invert != predicate(diag, 0))
-			matches.insert(diag);
+		if (invert != predicate(&diag, 0))
+			matches.insert(&diag);
 	}
 
 	return matches;

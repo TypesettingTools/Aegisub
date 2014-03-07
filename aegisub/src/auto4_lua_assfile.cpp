@@ -37,6 +37,7 @@
 #include "auto4_lua.h"
 
 #include "auto4_lua_utils.h"
+#include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_info.h"
 #include "ass_file.h"
@@ -535,7 +536,7 @@ namespace Automation4 {
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
 		auto e = LuaToAssEntry(L);
-		AssDialogue *dia = dynamic_cast<AssDialogue*>(e.get());
+		auto dia = dynamic_cast<AssDialogue*>(e.get());
 		luaL_argcheck(L, dia, 1, "Subtitle line must be a dialogue line");
 
 		int idx = 0;

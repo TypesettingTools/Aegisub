@@ -256,7 +256,7 @@ std::string AssDialogue::GetStrippedText() const {
 	return join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), "");
 }
 
-AssEntry *AssDialogue::Clone() const {
+AssDialogue *AssDialogue::Clone() const {
 	auto clone = new AssDialogue(*this);
 	clone->Id = Id;
 	return clone;

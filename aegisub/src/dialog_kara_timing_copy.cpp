@@ -601,8 +601,8 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &) {
 
 	if (display->GetRemainingSource() > 0)
 		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
-	else if (AssDialogue *destLine = dynamic_cast<AssDialogue*>(currentDestinationLine)) {
-		LinesToChange.push_back(std::make_pair(destLine, display->GetOutputLine()));
+	else {
+		LinesToChange.push_back(std::make_pair(currentDestinationLine, display->GetOutputLine()));
 
 		currentSourceLine = FindNextStyleMatch(currentSourceLine, from_wx(SourceStyle->GetValue()));
 		currentDestinationLine = FindNextStyleMatch(currentDestinationLine, from_wx(DestStyle->GetValue()));
@@ -644,21 +644,13 @@ void DialogKanjiTimer::OnKeyDown(wxKeyEvent &event) {
 
 void DialogKanjiTimer::ResetForNewLine()
 {
-	AssDialogue *src = nullptr;
-	AssDialogue *dst = nullptr;
-
-	if (currentSourceLine)
-		src = dynamic_cast<AssDialogue*>(currentSourceLine);
-	if (currentDestinationLine)
-		dst = dynamic_cast<AssDialogue*>(currentDestinationLine);
-
-	if (!src || !dst)
+	if (!currentSourceLine || !currentDestinationLine)
 	{
-		src = dst = nullptr;
+		currentSourceLine = currentDestinationLine = nullptr;
 		wxBell();
 	}
 
-	display->SetInputData(src, dst);
+	display->SetInputData(currentSourceLine, currentDestinationLine);
 
 	TryAutoMatch();
 
@@ -672,25 +664,24 @@ void DialogKanjiTimer::TryAutoMatch()
 }
 
 template<typename Iterator>
-static AssEntry *find_next(Iterator from, Iterator to, std::string const& style_name) {
+static AssDialogue *find_next(Iterator from, Iterator to, std::string const& style_name) {
 	for (; from != to; ++from)
 	{
-		AssDialogue *dlg = dynamic_cast<AssDialogue*>(&*from);
-		if (dlg && dlg->Style == style_name && !dlg->Text.get().empty())
-			return dlg;
+		if (from->Style == style_name && !from->Text.get().empty())
+			return &*from;
 	}
 
 	return nullptr;
 }
 
-AssEntry *DialogKanjiTimer::FindNextStyleMatch(AssEntry *search_from, const std::string &search_style)
+AssDialogue *DialogKanjiTimer::FindNextStyleMatch(AssDialogue *search_from, const std::string &search_style)
 {
 	if (!search_from) return search_from;
 	return find_next(++subs->Events.iterator_to(*search_from), subs->Events.end(), search_style);
 }
 
-AssEntry *DialogKanjiTimer::FindPrevStyleMatch(AssEntry *search_from, const std::string &search_style)
+AssDialogue *DialogKanjiTimer::FindPrevStyleMatch(AssDialogue *search_from, const std::string &search_style)
 {
 	if (!search_from) return search_from;
-	return find_next(EntryList::reverse_iterator(subs->Events.iterator_to(*search_from)), subs->Events.rend(), search_style);
+	return find_next(EntryList<AssDialogue>::reverse_iterator(subs->Events.iterator_to(*search_from)), subs->Events.rend(), search_style);
 }

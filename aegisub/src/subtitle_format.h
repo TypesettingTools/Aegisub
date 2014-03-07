@@ -40,7 +40,6 @@
 #include <string>
 #include <vector>
 
-class AssEntry;
 class AssFile;
 namespace agi { namespace vfr { class Framerate; } }
 

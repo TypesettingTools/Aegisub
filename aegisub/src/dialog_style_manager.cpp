@@ -54,7 +54,6 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
@@ -288,9 +287,9 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 		CurrentList->Clear();
 		styleMap.clear();
 
-		for (auto style : c->ass->Styles | agi::of_type<AssStyle>()) {
-			CurrentList->Append(to_wx(style->name));
-			styleMap.push_back(style);
+		for (auto& style : c->ass->Styles) {
+			CurrentList->Append(to_wx(style.name));
+			styleMap.push_back(&style);
 		}
 	}
 
@@ -780,10 +779,8 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 		// Replace styles
 		size_t curn = 0;
 		for (auto it = c->ass->Styles.begin(); it != c->ass->Styles.end(); ++it) {
-			if (!dynamic_cast<AssStyle*>(&*it)) continue;
-
 			auto new_style_at_pos = c->ass->Styles.iterator_to(*styleMap[curn]);
-			EntryList::node_algorithms::swap_nodes(it.pointed_node(), new_style_at_pos.pointed_node());
+			EntryList<AssStyle>::node_algorithms::swap_nodes(it.pointed_node(), new_style_at_pos.pointed_node());
 			if (++curn == styleMap.size()) break;
 			it = new_style_at_pos;
 		}

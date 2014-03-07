@@ -50,8 +50,6 @@
 #include "options.h"
 #include "utils.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 : wxDialog(parent, -1, _("Attachment List"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 , ass(ass)
@@ -99,12 +97,12 @@ void DialogAttachments::UpdateList() {
 	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, 100);
 	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
 
-	for (auto attach : ass->Attachments | agi::of_type<AssAttachment>()) {
+	for (auto& attach : ass->Attachments) {
 		int row = listView->GetItemCount();
-		listView->InsertItem(row, to_wx(attach->GetFileName(true)));
-		listView->SetItem(row, 1, PrettySize(attach->GetSize()));
-		listView->SetItem(row, 2, to_wx(attach->GroupHeader()));
-		listView->SetItemPtrData(row, wxPtrToUInt(attach));
+		listView->InsertItem(row, to_wx(attach.GetFileName(true)));
+		listView->SetItem(row, 1, PrettySize(attach.GetSize()));
+		listView->SetItem(row, 2, to_wx(attach.GroupHeader()));
+		listView->SetItemPtrData(row, wxPtrToUInt(&attach));
 	}
 }
 

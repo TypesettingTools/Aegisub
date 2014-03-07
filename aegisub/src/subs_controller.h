@@ -23,7 +23,6 @@
 #include <wx/timer.h>
 
 class AssDialogue;
-class AssEntry;
 class AssFile;
 struct AssFileCommit;
 template<typename T> class SelectionController;

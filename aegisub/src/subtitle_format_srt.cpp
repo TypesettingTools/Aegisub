@@ -480,10 +480,10 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 
 	// Write lines
 	int i=0;
-	for (auto current : copy.Events | agi::of_type<AssDialogue>()) {
+	for (auto const& current : copy.Events) {
 		file.WriteLineToFile(std::to_string(++i));
-		file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
-		file.WriteLineToFile(ConvertTags(current));
+		file.WriteLineToFile(WriteSRTTime(current.Start) + " --> " + WriteSRTTime(current.End));
+		file.WriteLineToFile(ConvertTags(&current));
 		file.WriteLineToFile("");
 	}
 }
@@ -496,13 +496,12 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 
 	std::string defstyle = AssStyle().GetEntryData();
 	for (auto const& line : file->Styles) {
-		if (static_cast<const AssStyle *>(&line)->GetEntryData() != defstyle)
+		if (line.GetEntryData() != defstyle)
 			return false;
 	}
 
 	for (auto const& line : file->Events) {
-		auto diag = static_cast<const AssDialogue *>(&line);
-		boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+		boost::ptr_vector<AssDialogueBlock> blocks(line.ParseTags());
 		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 			// Verify that all overrides used are supported
 			for (auto const& tag : ovr->Tags) {

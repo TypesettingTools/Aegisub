@@ -37,7 +37,6 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_wrap.h>
-#include <libaegisub/of_type_adaptor.h>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <fstream>
@@ -373,7 +372,7 @@ namespace
 		subs_list.reserve(copy.Events.size());
 
 		// convert to intermediate format
-		for (auto line : copy.Events | agi::of_type<AssDialogue>())
+		for (auto& line : copy.Events)
 		{
 			// add a new subtitle and work on it
 			subs_list.emplace_back();
@@ -385,19 +384,19 @@ namespace
 			imline.cumulative_status = EbuSubtitle::NotCumulative;
 
 			// convert times
-			imline.time_in = fps.FrameAtTime(line->Start) + timecode_bias;
-			imline.time_out = fps.FrameAtTime(line->End) + timecode_bias;
+			imline.time_in = fps.FrameAtTime(line.Start) + timecode_bias;
+			imline.time_out = fps.FrameAtTime(line.End) + timecode_bias;
 			if (export_settings.inclusive_end_times)
 				// cheap and possibly wrong way to ensure exclusive times, subtract one frame from end time
 				imline.time_out -= 1;
 
 			// convert alignment from style
-			AssStyle *style = copy.GetStyle(line->Style);
+			AssStyle *style = copy.GetStyle(line.Style);
 			if (!style)
 				style = &default_style;
 
 			// add text, translate formatting
-			imline.SetTextFromAss(line, style->underline, style->italic, style->alignment, line_wrap_type);
+			imline.SetTextFromAss(&line, style->underline, style->italic, style->alignment, line_wrap_type);
 
 			// line breaking handling
 			if (export_settings.line_wrapping_mode == EbuExportSettings::AutoWrap)
@@ -407,7 +406,7 @@ namespace
 			else if (!imline.CheckLineLengths(export_settings.max_line_length))
 			{
 				if (export_settings.line_wrapping_mode == EbuExportSettings::AbortOverLength)
-					throw Ebu3264SubtitleFormat::ConversionFailed(from_wx(wxString::Format(_("Line over maximum length: %s"), line->Text.get())), nullptr);
+					throw Ebu3264SubtitleFormat::ConversionFailed(from_wx(wxString::Format(_("Line over maximum length: %s"), line.Text.get())), nullptr);
 				else // skip over-long lines
 					subs_list.pop_back();
 			}

@@ -86,19 +86,19 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
-		for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
-			if (diag->Style == source_name) {
+		for (auto& diag : c->ass->Events) {
+			if (diag.Style == source_name) {
 				if (replace)
-					diag->Style = new_name;
+					diag.Style = new_name;
 				else
 					found_any = true;
 			}
 
-			boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+			boost::ptr_vector<AssDialogueBlock> blocks(diag.ParseTags());
 			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
 				block->ProcessParameters(&StyleRenamer::ProcessTag, this);
 			if (replace)
-				diag->UpdateText(blocks);
+				diag.UpdateText(blocks);
 
 			if (found_any) return;
 		}

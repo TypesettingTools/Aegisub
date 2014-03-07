@@ -45,7 +45,6 @@
 #include "../selection_controller.h"
 #include "../video_context.h"
 
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
@@ -67,8 +66,8 @@ namespace {
 			if (sel.size() < 2) return !sel.empty();
 
 			size_t found = 0;
-			for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
-				if (sel.count(diag)) {
+			for (auto& diag : c->ass->Events) {
+				if (sel.count(&diag)) {
 					if (++found == sel.size())
 						return true;
 				}
@@ -84,14 +83,14 @@ static void adjoin_lines(agi::Context *c, bool set_start) {
 	AssDialogue *prev = nullptr;
 	size_t seen = 0;
 	bool prev_sel = false;
-	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
-		bool cur_sel = !!sel.count(diag);
+	for (auto diag : c->ass->Events) {
+		bool cur_sel = !!sel.count(&diag);
 		if (prev) {
 			// One row selections act as if the previous or next line was selected
 			if (set_start && cur_sel && (sel.size() == 1 || prev_sel))
-				diag->Start = prev->End;
+				diag.Start = prev->End;
 			else if (!set_start && prev_sel && (cur_sel || sel.size() == 1))
-				prev->End = diag->Start;
+				prev->End = diag.Start;
 		}
 
 		if (seen == sel.size())
@@ -100,7 +99,7 @@ static void adjoin_lines(agi::Context *c, bool set_start) {
 		if (cur_sel)
 			++seen;
 
-		prev = diag;
+		prev = &diag;
 		prev_sel = cur_sel;
 	}
 

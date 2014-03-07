@@ -56,7 +56,6 @@
 #include "video_context.h"
 
 #include <libaegisub/dispatch.h>
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
 #include <functional>
@@ -344,7 +343,7 @@ void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<std::string> 
 
 	std::unordered_set<std::string> values;
 	for (auto const& line : c->ass->Events) {
-		auto const& value = static_cast<const AssDialogue *>(&line)->*field;
+		auto const& value = line.*field;
 		if (!value.get().empty())
 			values.insert(value);
 	}

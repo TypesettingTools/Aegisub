@@ -26,7 +26,7 @@ public:
 	AssInfo(AssInfo const& o) = default;
 	AssInfo(std::string key, std::string value) : key(std::move(key)), value(std::move(value)) { }
 
-	AssEntry *Clone() const override { return new AssInfo(*this); }
+	AssInfo *Clone() const override { return new AssInfo(*this); }
 	AssEntryGroup Group() const override { return AssEntryGroup::INFO; }
 	const std::string GetEntryData() const override { return key + ": " + value; }
 	std::string GetSSAText() const override { return boost::iequals(key, "scripttype: v4.00+") ? "ScriptType: v4.00" : GetEntryData(); }

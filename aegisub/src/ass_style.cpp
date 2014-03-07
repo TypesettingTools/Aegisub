@@ -204,10 +204,6 @@ std::string AssStyle::GetSSAText() const {
 		% Margin[0] % Margin[1] % Margin[2] % encoding);
 }
 
-AssEntry *AssStyle::Clone() const {
-	return new AssStyle(*this);
-}
-
 void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Clear();
 	encodingStrings.Add(wxString("0 - ") + _("ANSI"));

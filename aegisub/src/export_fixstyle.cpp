@@ -40,11 +40,8 @@
 #include "ass_dialogue.h"
 #include "compat.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <functional>
 #include <wx/intl.h>
 
 AssFixStylesFilter::AssFixStylesFilter()
@@ -53,12 +50,12 @@ AssFixStylesFilter::AssFixStylesFilter()
 }
 
 void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *) {
-	std::vector<std::string> styles = subs->GetStyles();
-	for_each(begin(styles), end(styles), [](std::string& str) { boost::to_lower(str); });
+	auto styles = subs->GetStyles();
+	for (auto& str : styles) boost::to_lower(str);
 	sort(begin(styles), end(styles));
 
-	for (auto diag : subs->Events | agi::of_type<AssDialogue>()) {
-		if (!binary_search(begin(styles), end(styles), boost::to_lower_copy(diag->Style.get())))
-			diag->Style = "Default";
+	for (auto& diag : subs->Events) {
+		if (!binary_search(begin(styles), end(styles), boost::to_lower_copy(diag.Style.get())))
+			diag.Style = "Default";
 	}
 }

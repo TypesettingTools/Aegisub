@@ -24,7 +24,6 @@
 #include "selection_controller.h"
 #include "text_selection_controller.h"
 
-#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
 #include <boost/locale.hpp>
@@ -269,17 +268,15 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 	bool selection_only = sel.size() > 1 && settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
 
 	do {
-		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
-		if (!diag) continue;
-		if (selection_only && !sel.count(diag)) continue;
-		if (settings.ignore_comments && diag->Comment) continue;
+		if (selection_only && !sel.count(&*it)) continue;
+		if (settings.ignore_comments && it->Comment) continue;
 
-		if (MatchState ms = matches(diag, pos)) {
+		if (MatchState ms = matches(&*it, pos)) {
 			if (selection_only)
 				// We're cycling through the selection, so don't muck with it
-				context->selectionController->SetActiveLine(diag);
+				context->selectionController->SetActiveLine(&*it);
 			else
-				context->selectionController->SetSelectionAndActive({ diag }, diag);
+				context->selectionController->SetSelectionAndActive({ &*it }, &*it);
 
 			if (settings.field == SearchReplaceSettings::Field::TEXT)
 				context->textSelectionController->SetSelection(ms.start, ms.end);
@@ -307,13 +304,13 @@ bool SearchReplaceEngine::ReplaceAll() {
 	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
 
-	for (auto diag : context->ass->Events | agi::of_type<AssDialogue>()) {
-		if (selection_only && !sel.count(diag)) continue;
-		if (settings.ignore_comments && diag->Comment) continue;
+	for (auto& diag : context->ass->Events) {
+		if (selection_only && !sel.count(&diag)) continue;
+		if (settings.ignore_comments && diag.Comment) continue;
 
 		if (settings.use_regex) {
-			if (MatchState ms = matches(diag, 0)) {
-				auto& diag_field = diag->*get_dialogue_field(settings.field);
+			if (MatchState ms = matches(&diag, 0)) {
+				auto& diag_field = diag.*get_dialogue_field(settings.field);
 				std::string const& text = diag_field.get();
 				count += distance(
 					boost::u32regex_iterator<std::string::const_iterator>(begin(text), end(text), *ms.re),
@@ -324,9 +321,9 @@ bool SearchReplaceEngine::ReplaceAll() {
 		}
 
 		size_t pos = 0;
-		while (MatchState ms = matches(diag, pos)) {
+		while (MatchState ms = matches(&diag, pos)) {
 			++count;
-			Replace(diag, ms);
+			Replace(&diag, ms);
 			pos = ms.end;
 		}
 	}

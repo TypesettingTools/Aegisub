@@ -59,14 +59,6 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 	entry_data = entry_data.get() + agi::ass::UUEncode(data);
 }
 
-AssEntry *AssAttachment::Clone() const {
-	return new AssAttachment(*this);
-}
-
-const std::string AssAttachment::GetEntryData() const {
-	return entry_data;
-}
-
 size_t AssAttachment::GetSize() const {
 	auto header_end = entry_data.get().find('\n');
 	return entry_data.get().size() - header_end - 1;

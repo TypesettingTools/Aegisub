@@ -79,7 +79,7 @@ struct grid_line_next_create : public Command {
 			newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
 			newline->Style = cur->Style;
 
-			entryIter pos = c->ass->Events.iterator_to(*cur);
+			auto pos = c->ass->Events.iterator_to(*cur);
 			c->ass->Events.insert(++pos, *newline);
 			c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 			c->selectionController->NextLine();
@@ -328,9 +328,7 @@ static bool move_one(T begin, T end, U const& to_move, int step) {
 	size_t move_count = 0;
 	auto prev = end;
 	for (auto it = begin; it != end; std::advance(it, step)) {
-		auto cur = dynamic_cast<typename U::key_type>(&*it);
-		if (!cur) continue;
-
+		auto cur = &*it;
 		if (!to_move.count(cur))
 			prev = it;
 		else if (prev != end) {

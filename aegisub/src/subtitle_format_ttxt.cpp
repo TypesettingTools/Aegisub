@@ -44,7 +44,6 @@
 #include "compat.h"
 #include "options.h"
 
-#include <libaegisub/of_type_adaptor.h>
 #include <boost/range/adaptor/reversed.hpp>
 
 DEFINE_SIMPLE_EXCEPTION(TTXTParseError, SubtitleFormatParseError, "subtitle_io/parse/ttxt")
@@ -177,9 +176,9 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& file
 
 	// Create lines
 	const AssDialogue *prev = nullptr;
-	for (auto current : copy.Events | agi::of_type<AssDialogue>()) {
-		WriteLine(root, prev, current);
-		prev = current;
+	for (auto const& current : copy.Events) {
+		WriteLine(root, prev, &current);
+		prev = &current;
 	}
 
 	// Save XML
@@ -264,8 +263,8 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 
 	// Find last line
 	AssTime lastTime;
-	for (auto line : file.Events | boost::adaptors::reversed | agi::of_type<AssDialogue>()) {
-		lastTime = line->End;
+	for (auto const& line : file.Events | boost::adaptors::reversed) {
+		lastTime = line.End;
 		break;
 	}
 

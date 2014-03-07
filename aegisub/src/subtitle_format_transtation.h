@@ -38,7 +38,7 @@ class AssDialogue;
 class SmpteFormatter;
 
 class TranStationSubtitleFormat : public SubtitleFormat {
-	std::string ConvertLine(AssFile *file, AssDialogue *line, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const;
+	std::string ConvertLine(AssFile *file, const AssDialogue *line, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const;
 
 public:
 	TranStationSubtitleFormat();

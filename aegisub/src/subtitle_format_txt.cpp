@@ -45,8 +45,6 @@
 #include "utils.h"
 #include "version.h"
 
-#include <libaegisub/of_type_adaptor.h>
-
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -131,10 +129,10 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (auto dia : src->Events | agi::of_type<AssDialogue>()) {
-		if (!dia->Comment) {
+	for (auto const& dia : src->Events) {
+		if (!dia.Comment) {
 			num_dialogue_lines++;
-			if (!dia->Actor.get().empty())
+			if (!dia.Actor.get().empty())
 				num_actor_names++;
 		}
 	}
@@ -147,16 +145,16 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	file.WriteLineToFile(std::string("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (auto dia : src->Events | agi::of_type<AssDialogue>()) {
+	for (auto const& dia : src->Events) {
 		std::string out_line;
 
-		if (dia->Comment)
+		if (dia.Comment)
 			out_line = "# ";
 
 		if (write_actors)
-			out_line += dia->Actor.get() + ": ";
+			out_line += dia.Actor.get() + ": ";
 
-		std::string out_text = strip_formatting ? dia->GetStrippedText() : dia->Text;
+		std::string out_text = strip_formatting ? dia.GetStrippedText() : dia.Text;
 		out_line += out_text;
 
 		if (!out_text.empty())

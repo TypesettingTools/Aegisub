@@ -57,7 +57,6 @@
 #include "video_context.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>
@@ -94,13 +93,12 @@ bool SubtitleFormat::CanSave(const AssFile *subs) const {
 
 	std::string defstyle = AssStyle().GetEntryData();
 	for (auto const& line : subs->Styles) {
-		if (static_cast<const AssStyle *>(&line)->GetEntryData() != defstyle)
+		if (line.GetEntryData() != defstyle)
 			return false;
 	}
 
 	for (auto const& line : subs->Events) {
-		auto diag = static_cast<const AssDialogue *>(&line);
-		if (diag->GetStrippedText() != diag->Text)
+		if (line.GetStrippedText() != line.Text)
 			return false;
 	}
 
@@ -173,13 +171,13 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
 }
 
 void SubtitleFormat::StripTags(AssFile &file) {
-	for (auto current : file.Events | agi::of_type<AssDialogue>())
-		current->StripTags();
+	for (auto& current : file.Events)
+		current.StripTags();
 }
 
 void SubtitleFormat::ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks) {
-	for (auto current : file.Events | agi::of_type<AssDialogue>()) {
-		std::string repl = current->Text;
+	for (auto& current : file.Events) {
+		std::string repl = current.Text;
 		boost::replace_all(repl, "\\h", " ");
 		boost::ireplace_all(repl, "\\n", newline);
 		if (mergeLineBreaks) {
@@ -188,39 +186,35 @@ void SubtitleFormat::ConvertNewlines(AssFile &file, std::string const& newline, 
 			while ((pos = repl.find(dbl, pos)) != std::string::npos)
 				boost::replace_all(repl, dbl, newline);
 		}
-		current->Text = repl;
+		current.Text = repl;
 	}
 }
 
 void SubtitleFormat::StripComments(AssFile &file) {
-	file.Events.remove_and_dispose_if([](AssEntry const& e) {
-		const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e);
-		return diag && (diag->Comment || diag->Text.get().empty());
-	}, [](AssEntry *e) { delete e; });
+	file.Events.remove_and_dispose_if([](AssDialogue const& diag) {
+		return diag.Comment || diag.Text.get().empty();
+	}, [](AssDialogue *e) { delete e; });
 }
 
-static bool dialog_start_lt(AssEntry &pos, AssDialogue *to_insert) {
-	AssDialogue *diag = dynamic_cast<AssDialogue*>(&pos);
-	return diag && diag->Start > to_insert->Start;
+static bool dialog_start_lt(AssDialogue &pos, AssDialogue *to_insert) {
+	return pos.Start > to_insert->Start;
 }
 
 /// @brief Split and merge lines so there are no overlapping lines
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
 void SubtitleFormat::RecombineOverlaps(AssFile &file) {
-	entryIter cur, next = file.Events.begin();
-	cur = next++;
+	auto next = file.Events.begin();
+	auto cur = next++;
 
 	for (; next != file.Events.end(); cur = next++) {
-		AssDialogue *prevdlg = dynamic_cast<AssDialogue*>(&*cur);
-		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(&*next);
-
-		if (!curdlg || !prevdlg) continue;
+		AssDialogue *prevdlg = &*cur;
+		AssDialogue *curdlg = &*next;
 		if (prevdlg->End <= curdlg->Start) continue;
 
 		// Use names like in the algorithm description and prepare for erasing
 		// old dialogues from the list
-		entryIter prev = cur;
+		auto prev = cur;
 		cur = next;
 		next++;
 
@@ -280,20 +274,17 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 
 /// @brief Merge identical lines that follow each other
 void SubtitleFormat::MergeIdentical(AssFile &file) {
-	entryIter cur, next = file.Events.begin();
-	cur = next++;
+	auto next = file.Events.begin();
+	auto cur = next++;
 
 	for (; next != file.Events.end(); cur = next++) {
-		AssDialogue *curdlg = dynamic_cast<AssDialogue*>(&*cur);
-		AssDialogue *nextdlg = dynamic_cast<AssDialogue*>(&*next);
-
-		if (curdlg && nextdlg && curdlg->End == nextdlg->Start && curdlg->Text == nextdlg->Text) {
+		if (cur->End == next->Start && cur->Text == next->Text) {
 			// Merge timing
-			nextdlg->Start = std::min(nextdlg->Start, curdlg->Start);
-			nextdlg->End = std::max(nextdlg->End, curdlg->End);
+			next->Start = std::min(next->Start, cur->Start);
+			next->End = std::max(next->End, cur->End);
 
 			// Remove duplicate line
-			delete curdlg;
+			delete &*cur;
 		}
 	}
 }
