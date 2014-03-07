@@ -285,6 +285,11 @@ int AegisubApp::OnExit() {
 	if (frame)
 		delete frame;
 
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Flush();
+		wxTheClipboard->Close();
+	}
+
 	SubtitleFormat::DestroyFormats();
 	delete config::opt;
 	delete config::mru;
