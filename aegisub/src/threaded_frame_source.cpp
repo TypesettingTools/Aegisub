@@ -71,9 +71,9 @@ std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, dou
 				// instead muck around with its innards to just temporarily
 				// remove the non-visible lines without deleting them
 				std::deque<AssEntry*> full;
-				for (auto& line : subs->Line)
+				for (auto& line : subs->Events)
 					full.push_back(&line);
-				subs->Line.remove_if([=](AssEntry const& e) -> bool {
+				subs->Events.remove_if([=](AssEntry const& e) -> bool {
 					const AssDialogue *diag = dynamic_cast<const AssDialogue*>(&e);
 					return diag && (diag->Start > time || diag->End <= time);
 				});
@@ -81,12 +81,12 @@ std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, dou
 				try {
 					subs_provider->LoadSubtitles(subs.get());
 
-					subs->Line.clear();
-					boost::push_back(subs->Line, full | boost::adaptors::indirected);
+					subs->Events.clear();
+					boost::push_back(subs->Events, full | boost::adaptors::indirected);
 				}
 				catch (...) {
-					subs->Line.clear();
-					boost::push_back(subs->Line, full | boost::adaptors::indirected);
+					subs->Events.clear();
+					boost::push_back(subs->Events, full | boost::adaptors::indirected);
 					throw;
 				}
 			}
@@ -140,7 +140,7 @@ void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<cons
 	// same indices in the worker's copy of the file with the new entries
 	std::deque<std::pair<size_t, AssEntry*>> changed;
 	size_t i = 0;
-	for (auto const& e : new_subs->Line) {
+	for (auto const& e : new_subs->Events) {
 		if (changes.count(&e))
 			changed.emplace_back(i, e.Clone());
 		++i;
@@ -148,11 +148,11 @@ void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<cons
 
 	worker->Async([=]{
 		size_t i = 0;
-		auto it = subs->Line.begin();
+		auto it = subs->Events.begin();
 		for (auto& update : changed) {
 			advance(it, update.first - i);
 			i = update.first;
-			subs->Line.insert(it, *update.second);
+			subs->Events.insert(it, *update.second);
 			delete &*it--;
 		}
 

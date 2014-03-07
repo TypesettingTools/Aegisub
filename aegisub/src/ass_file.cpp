@@ -42,76 +42,53 @@
 #include "options.h"
 #include "utils.h"
 
-#include <libaegisub/dispatch.h>
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem/path.hpp>
 
-namespace std {
-	template<>
-	void swap(AssFile &lft, AssFile &rgt) {
-		lft.swap(rgt);
-	}
-}
-
 AssFile::~AssFile() {
-	auto copy = new EntryList;
-	copy->swap(Line);
-	agi::dispatch::Background().Async([=]{
-		copy->clear_and_dispose([](AssEntry *e) { delete e; });
-		delete copy;
-	});
+	Info.clear_and_dispose([](AssEntry *e) { delete e; });
+	Styles.clear_and_dispose([](AssEntry *e) { delete e; });
+	Events.clear_and_dispose([](AssEntry *e) { delete e; });
+	Attachments.clear_and_dispose([](AssEntry *e) { delete e; });
 }
 
 void AssFile::LoadDefault(bool defline) {
-	Line.push_back(*new AssInfo("Title", "Default Aegisub file"));
-	Line.push_back(*new AssInfo("ScriptType", "v4.00+"));
-	Line.push_back(*new AssInfo("WrapStyle", "0"));
-	Line.push_back(*new AssInfo("ScaledBorderAndShadow", "yes"));
+	Info.push_back(*new AssInfo("Title", "Default Aegisub file"));
+	Info.push_back(*new AssInfo("ScriptType", "v4.00+"));
+	Info.push_back(*new AssInfo("WrapStyle", "0"));
+	Info.push_back(*new AssInfo("ScaledBorderAndShadow", "yes"));
 	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
-		Line.push_back(*new AssInfo("PlayResX", std::to_string(OPT_GET("Subtitle/Default Resolution/Width")->GetInt())));
-		Line.push_back(*new AssInfo("PlayResY", std::to_string(OPT_GET("Subtitle/Default Resolution/Height")->GetInt())));
+		Info.push_back(*new AssInfo("PlayResX", std::to_string(OPT_GET("Subtitle/Default Resolution/Width")->GetInt())));
+		Info.push_back(*new AssInfo("PlayResY", std::to_string(OPT_GET("Subtitle/Default Resolution/Height")->GetInt())));
 	}
-	Line.push_back(*new AssInfo("YCbCr Matrix", "None"));
+	Info.push_back(*new AssInfo("YCbCr Matrix", "None"));
 
-	Line.push_back(*new AssStyle);
+	Styles.push_back(*new AssStyle);
 
 	if (defline)
-		Line.push_back(*new AssDialogue);
-}
-
-void AssFile::swap(AssFile &that) throw() {
-	Line.swap(that.Line);
+		Events.push_back(*new AssDialogue);
 }
 
 AssFile::AssFile(const AssFile &from) {
-	Line.clone_from(from.Line, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
+	Info.clone_from(from.Info, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
+	Styles.clone_from(from.Styles, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
+	Events.clone_from(from.Events, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
+	Attachments.clone_from(from.Attachments, std::mem_fun_ref(&AssEntry::Clone), [](AssEntry *e) { delete e; });
+}
+
+void AssFile::swap(AssFile& from) throw() {
+	Info.swap(from.Info);
+	Styles.swap(from.Styles);
+	Events.swap(from.Events);
+	Attachments.swap(from.Attachments);
 }
 
 AssFile& AssFile::operator=(AssFile from) {
-	std::swap(*this, from);
+	swap(from);
 	return *this;
-}
-
-void AssFile::InsertLine(AssEntry *entry) {
-	if (Line.empty()) {
-		Line.push_back(*entry);
-		return;
-	}
-
-	// Search for insertion point
-	entryIter it = Line.end();
-	do {
-		--it;
-		if (it->Group() <= entry->Group()) {
-			Line.insert(++it, *entry);
-			return;
-		}
-	} while (it != Line.begin());
-
-	Line.push_front(*entry);
 }
 
 void AssFile::InsertAttachment(agi::fs::path const& filename) {
@@ -121,11 +98,11 @@ void AssFile::InsertAttachment(agi::fs::path const& filename) {
 	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb")
 		group = AssEntryGroup::FONT;
 
-	InsertLine(new AssAttachment(filename, group));
+	Attachments.push_back(*new AssAttachment(filename, group));
 }
 
 std::string AssFile::GetScriptInfo(std::string const& key) const {
-	for (const auto info : Line | agi::of_type<AssInfo>()) {
+	for (const auto info : Info | agi::of_type<AssInfo>()) {
 		if (boost::iequals(key, info->Key()))
 			return info->Value();
 	}
@@ -154,7 +131,7 @@ void AssFile::SaveUIState(std::string const& key, std::string const& value) {
 }
 
 void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
-	for (auto info : Line | agi::of_type<AssInfo>()) {
+	for (auto info : Info | agi::of_type<AssInfo>()) {
 		if (boost::iequals(key, info->Key())) {
 			if (value.empty())
 				delete info;
@@ -165,7 +142,7 @@ void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
 	}
 
 	if (!value.empty())
-		InsertLine(new AssInfo(key, value));
+		Info.push_back(*new AssInfo(key, value));
 }
 
 void AssFile::GetResolution(int &sw,int &sh) const {
@@ -192,13 +169,13 @@ void AssFile::GetResolution(int &sw,int &sh) const {
 
 std::vector<std::string> AssFile::GetStyles() const {
 	std::vector<std::string> styles;
-	for (auto style : Line | agi::of_type<AssStyle>())
+	for (auto style : Styles | agi::of_type<AssStyle>())
 		styles.push_back(style->name);
 	return styles;
 }
 
 AssStyle *AssFile::GetStyle(std::string const& name) {
-	for (auto style : Line | agi::of_type<AssStyle>()) {
+	for (auto style : Styles | agi::of_type<AssStyle>()) {
 		if (boost::iequals(style->name, name))
 			return style;
 	}
@@ -237,7 +214,7 @@ bool AssFile::CompLayer(const AssDialogue* lft, const AssDialogue* rgt) {
 }
 
 void AssFile::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
-	Sort(Line, comp, limit);
+	Sort(Events, comp, limit);
 }
 namespace {
 	inline bool is_dialogue(AssEntry *e, std::set<AssDialogue*> const& limit) {

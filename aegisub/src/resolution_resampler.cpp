@@ -172,7 +172,9 @@ void ResampleResolution(AssFile *ass, ResampleSettings const& settings) {
 	if (settings.change_ar)
 		state.ar = state.rx / state.ry;
 
-	for (auto& line : ass->Line)
+	for (auto& line : ass->Styles)
+		resample_line(&state, line);
+	for (auto& line : ass->Events)
 		resample_line(&state, line);
 
 	ass->SetScriptInfo("PlayResX", std::to_string(settings.script_x));

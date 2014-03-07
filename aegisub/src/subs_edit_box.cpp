@@ -343,8 +343,7 @@ void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<std::string> 
 	wxEventBlocker blocker(this);
 
 	std::unordered_set<std::string> values;
-	for (auto const& line : c->ass->Line) {
-		if (line.Group() != AssEntryGroup::DIALOGUE) continue;
+	for (auto const& line : c->ass->Events) {
 		auto const& value = static_cast<const AssDialogue *>(&line)->*field;
 		if (!value.get().empty())
 			values.insert(value);
@@ -435,12 +434,12 @@ void SubsEditBox::SetSelectedRows(setter set, wxString const& desc, int type, bo
 }
 
 template<class T>
-void SubsEditBox::SetSelectedRows(T AssDialogue::*field, T value, wxString const& desc, int type, bool amend) {
+void SubsEditBox::SetSelectedRows(T AssDialogueBase::*field, T value, wxString const& desc, int type, bool amend) {
 	SetSelectedRows([&](AssDialogue *d) { d->*field = value; }, desc, type, amend);
 }
 
 template<class T>
-void SubsEditBox::SetSelectedRows(T AssDialogue::*field, wxString const& value, wxString const& desc, int type, bool amend) {
+void SubsEditBox::SetSelectedRows(T AssDialogueBase::*field, wxString const& value, wxString const& desc, int type, bool amend) {
 	boost::flyweight<std::string> conv_value(from_wx(value));
 	SetSelectedRows([&](AssDialogue *d) { d->*field = conv_value; }, desc, type, amend);
 }

@@ -201,7 +201,7 @@ void AssTransformFramerateFilter::TransformTimeTags(std::string const& name, Ass
 
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 	if (!Input->IsLoaded() || !Output->IsLoaded()) return;
-	for (auto curDialogue : subs->Line | agi::of_type<AssDialogue>()) {
+	for (auto curDialogue : subs->Events | agi::of_type<AssDialogue>()) {
 		line = curDialogue;
 		newK = 0;
 		oldK = 0;

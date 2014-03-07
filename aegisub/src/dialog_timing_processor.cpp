@@ -307,14 +307,14 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 			[&](AssDialogue *d) { return !d->Comment && styles.count(d->Style); });
 	}
 	else {
-		transform(c->ass->Line.begin(), c->ass->Line.end(), back_inserter(sorted), cast<AssDialogue*>());
+		transform(c->ass->Events.begin(), c->ass->Events.end(), back_inserter(sorted), cast<AssDialogue*>());
 		sorted.erase(boost::remove_if(sorted, bind(bad_line, &styles, _1)), sorted.end());
 	}
 
 	// Check if rows are valid
 	for (auto diag : sorted) {
 		if (diag->Start > diag->End) {
-			int line = count_if(c->ass->Line.begin(), c->ass->Line.iterator_to(*diag), cast<const AssDialogue*>());
+			int line = distance(c->ass->Events.begin(), c->ass->Events.iterator_to(*diag));
 			wxMessageBox(
 				wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."), line),
 				_("Invalid script"),

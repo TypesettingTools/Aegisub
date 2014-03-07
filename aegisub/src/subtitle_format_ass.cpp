@@ -115,17 +115,24 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	bool ssa = agi::fs::HasExtension(filename, "ssa");
 	AssEntryGroup group = AssEntryGroup::INFO;
 
-	for (auto const& line : src->Line) {
-		if (line.Group() != group) {
-			// Add a blank line between each group
-			file.WriteLineToFile("");
+	auto write = [&](EntryList const& list) {
+		for (auto const& line : list) {
+			if (line.Group() != group) {
+				// Add a blank line between each group
+				file.WriteLineToFile("");
 
-			file.WriteLineToFile(line.GroupHeader(ssa));
-			file.WriteLineToFile(format(line.Group(), ssa), false);
+				file.WriteLineToFile(line.GroupHeader(ssa));
+				file.WriteLineToFile(format(line.Group(), ssa), false);
 
-			group = line.Group();
+				group = line.Group();
+			}
+
+			file.WriteLineToFile(ssa ? line.GetSSAText() : line.GetEntryData());
 		}
+	};
 
-		file.WriteLineToFile(ssa ? line.GetSSAText() : line.GetEntryData());
-	}
+	write(src->Info);
+	write(src->Styles);
+	write(src->Attachments);
+	write(src->Events);
 }

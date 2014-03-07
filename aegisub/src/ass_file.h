@@ -62,7 +62,10 @@ class AssFile {
 	agi::signal::Signal<AssFileCommit> PushState;
 public:
 	/// The lines in the file
-	EntryList Line;
+	EntryList Info;
+	EntryList Styles;
+	EntryList Events;
+	EntryList Attachments;
 
 	AssFile() { }
 	AssFile(const AssFile &from);
@@ -72,8 +75,6 @@ public:
 	/// @brief Load default file
 	/// @param defline Add a blank line to the file
 	void LoadDefault(bool defline=true);
-	/// Add a line to the file at the end of the appropriate section
-	void InsertLine(AssEntry *line);
 	/// Attach a file to the ass file
 	void InsertAttachment(agi::fs::path const& filename);
 	/// Get the names of all of the styles available

@@ -280,7 +280,7 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
 	bool did_split = false;
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+	for (entryIter it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 		if (!diag || !lines.count(diag)) continue;
 
@@ -298,7 +298,7 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 			new_line->End = syl.start_time + syl.duration;
 			new_line->Text = syl.GetText(false);
 
-			c->ass->Line.insert(it, *new_line);
+			c->ass->Events.insert(it, *new_line);
 
 			if (in_sel)
 				sel.insert(new_line);

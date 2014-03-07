@@ -99,7 +99,7 @@ void DialogAttachments::UpdateList() {
 	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, 100);
 	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
 
-	for (auto attach : ass->Line | agi::of_type<AssAttachment>()) {
+	for (auto attach : ass->Attachments | agi::of_type<AssAttachment>()) {
 		int row = listView->GetItemCount();
 		listView->InsertItem(row, to_wx(attach->GetFileName(true)));
 		listView->SetItem(row, 1, PrettySize(attach->GetSize()));

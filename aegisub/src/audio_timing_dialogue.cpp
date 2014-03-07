@@ -742,20 +742,20 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	case 2: // Previous and next lines
 		if (AssDialogue *line = context->selectionController->GetActiveLine())
 		{
-			entryIter current_line = context->ass->Line.iterator_to(*line);
-			if (current_line == context->ass->Line.end())
+			entryIter current_line = context->ass->Events.iterator_to(*line);
+			if (current_line == context->ass->Events.end())
 				break;
 
 			entryIter prev = current_line;
-			while (--prev != context->ass->Line.begin() && !predicate(*prev)) ;
-			if (prev != context->ass->Line.begin())
+			while (--prev != context->ass->Events.begin() && !predicate(*prev)) ;
+			if (prev != context->ass->Events.begin())
 				AddInactiveLine(sel, static_cast<AssDialogue*>(&*prev));
 
 			if (mode == 2)
 			{
 				entryIter next =
-					find_if(++current_line, context->ass->Line.end(), predicate);
-				if (next != context->ass->Line.end())
+					find_if(++current_line, context->ass->Events.end(), predicate);
+				if (next != context->ass->Events.end())
 					AddInactiveLine(sel, static_cast<AssDialogue*>(&*next));
 			}
 		}
@@ -763,7 +763,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	case 3: // All inactive lines
 	{
 		AssDialogue *active_line = context->selectionController->GetActiveLine();
-		for (auto& line : context->ass->Line)
+		for (auto& line : context->ass->Events)
 		{
 			if (&line != active_line && predicate(line))
 				AddInactiveLine(sel, static_cast<AssDialogue*>(&line));

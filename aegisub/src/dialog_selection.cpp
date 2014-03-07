@@ -77,7 +77,7 @@ static std::set<AssDialogue*> process(std::string const& match_text, bool match_
 	auto predicate = SearchReplaceEngine::GetMatcher(settings);
 
 	std::set<AssDialogue*> matches;
-	for (auto diag : ass->Line | agi::of_type<AssDialogue>()) {
+	for (auto diag : ass->Events | agi::of_type<AssDialogue>()) {
 		if (diag->Comment && !comments) continue;
 		if (!diag->Comment && !dialogue) continue;
 

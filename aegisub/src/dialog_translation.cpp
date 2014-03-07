@@ -66,8 +66,8 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 , file_change_connection(c->ass->AddCommitListener(&DialogTranslation::OnExternalCommit, this))
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogTranslation::OnActiveLineChanged, this))
 , active_line(c->selectionController->GetActiveLine())
-, line_count(count_if(c->ass->Line.begin(), c->ass->Line.end(), cast<AssDialogue*>()))
-, line_number(count_if(c->ass->Line.begin(), c->ass->Line.iterator_to(*active_line), cast<AssDialogue*>()) + 1)
+, line_count(c->ass->Events.size())
+, line_number(distance(c->ass->Events.begin(), c->ass->Events.iterator_to(*active_line)) + 1)
 {
 	SetIcon(GETICON(translation_toolbutton_16));
 
@@ -175,7 +175,7 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 	active_line = new_line;
 	blocks = active_line->ParseTags();
 	cur_block = 0;
-	line_number = count_if(c->ass->Line.begin(), c->ass->Line.iterator_to(*new_line), cast<AssDialogue*>()) + 1;
+	line_number = distance(c->ass->Events.begin(), c->ass->Events.iterator_to(*new_line)) + 1;
 
 	if (bad_block(blocks[cur_block]) && !NextBlock()) {
 		wxMessageBox(_("No more lines to translate."));
@@ -185,7 +185,7 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 
 void DialogTranslation::OnExternalCommit(int commit_type) {
 	if (commit_type == AssFile::COMMIT_NEW || commit_type & AssFile::COMMIT_DIAG_ADDREM) {
-		line_count = count_if(c->ass->Line.begin(), c->ass->Line.end(), cast<AssDialogue*>());
+		line_count = c->ass->Events.size();
 		line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), (int)line_number, (int)line_count));
 	}
 

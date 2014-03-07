@@ -123,7 +123,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		line->Text = value;
 		line->End = 0;
 
-		target->Line.push_back(*line);
+		target->Events.push_back(*line);
 	}
 }
 
@@ -131,7 +131,7 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (auto dia : src->Line | agi::of_type<AssDialogue>()) {
+	for (auto dia : src->Events | agi::of_type<AssDialogue>()) {
 		if (!dia->Comment) {
 			num_dialogue_lines++;
 			if (!dia->Actor.get().empty())
@@ -147,7 +147,7 @@ void TXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	file.WriteLineToFile(std::string("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (auto dia : src->Line | agi::of_type<AssDialogue>()) {
+	for (auto dia : src->Events | agi::of_type<AssDialogue>()) {
 		std::string out_line;
 
 		if (dia->Comment)

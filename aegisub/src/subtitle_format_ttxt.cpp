@@ -92,7 +92,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename
 		if (child->GetName() == "TextSample") {
 			if ((diag = ProcessLine(child, diag, version))) {
 				lines++;
-				target->Line.push_back(*diag);
+				target->Events.push_back(*diag);
 			}
 		}
 		// Header
@@ -103,7 +103,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename
 
 	// No lines?
 	if (lines == 0)
-		target->Line.push_back(*new AssDialogue);
+		target->Events.push_back(*new AssDialogue);
 }
 
 AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const {
@@ -177,7 +177,7 @@ void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& file
 
 	// Create lines
 	const AssDialogue *prev = nullptr;
-	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
+	for (auto current : copy.Events | agi::of_type<AssDialogue>()) {
 		WriteLine(root, prev, current);
 		prev = current;
 	}
@@ -264,7 +264,7 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 
 	// Find last line
 	AssTime lastTime;
-	for (auto line : file.Line | boost::adaptors::reversed | agi::of_type<AssDialogue>()) {
+	for (auto line : file.Events | boost::adaptors::reversed | agi::of_type<AssDialogue>()) {
 		lastTime = line->End;
 		break;
 	}
@@ -273,5 +273,5 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 	auto diag = new AssDialogue;
 	diag->Start = lastTime;
 	diag->End = lastTime+OPT_GET("Timing/Default Duration")->GetInt();
-	file.Line.push_back(*diag);
+	file.Events.push_back(*diag);
 }

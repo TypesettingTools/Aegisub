@@ -182,7 +182,7 @@ std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 
 	status_callback(_("Parsing file\n"), 0);
 
-	for (auto style : file->Line | agi::of_type<const AssStyle>()) {
+	for (auto style : file->Styles | agi::of_type<const AssStyle>()) {
 		StyleInfo &info = styles[style->name];
 		info.facename = style->font;
 		info.bold     = style->bold;
@@ -191,7 +191,7 @@ std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 	}
 
 	int index = 0;
-	for (auto diag : file->Line | agi::of_type<const AssDialogue>())
+	for (auto diag : file->Events | agi::of_type<const AssDialogue>())
 		ProcessDialogueLine(diag, ++index);
 
 	status_callback(_("Searching for font files\n"), 0);

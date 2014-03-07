@@ -69,35 +69,22 @@ struct SubsController::UndoInfo {
 	UndoInfo(const agi::Context *c, wxString const& d, int commit_id)
 	: undo_description(d), commit_id(commit_id)
 	{
-		size_t info_count = 0, style_count = 0, event_count = 0, font_count = 0, graphics_count = 0;
-		for (auto const& line : c->ass->Line) {
-			switch (line.Group()) {
-				case AssEntryGroup::DIALOGUE: ++event_count;    break;
-				case AssEntryGroup::INFO:     ++info_count;     break;
-				case AssEntryGroup::STYLE:    ++style_count;    break;
-				case AssEntryGroup::FONT:     ++font_count;     break;
-				case AssEntryGroup::GRAPHIC:  ++graphics_count; break;
-				default: assert(false); break;
-			}
+		script_info.reserve(c->ass->Info.size());
+		for (auto const& line : c->ass->Info) {
+			auto info = static_cast<const AssInfo *>(&line);
+			script_info.emplace_back(info->Key(), info->Value());
 		}
 
-		script_info.reserve(info_count);
-		styles.reserve(style_count);
-		events.reserve(event_count);
+		styles.reserve(c->ass->Styles.size());
+		for (auto const& line : c->ass->Styles)
+			styles.push_back(static_cast<AssStyle const&>(line));
 
-		for (auto const& line : c->ass->Line) {
+		events.reserve(c->ass->Events.size());
+		for (auto const& line : c->ass->Events)
+			events.push_back(static_cast<AssDialogue const&>(line));
+
+		for (auto const& line : c->ass->Attachments) {
 			switch (line.Group()) {
-			case AssEntryGroup::DIALOGUE:
-				events.push_back(static_cast<AssDialogue const&>(line));
-				break;
-			case AssEntryGroup::INFO: {
-				auto info = static_cast<const AssInfo *>(&line);
-				script_info.emplace_back(info->Key(), info->Value());
-				break;
-			}
-			case AssEntryGroup::STYLE:
-				styles.push_back(static_cast<AssStyle const&>(line));
-				break;
 			case AssEntryGroup::FONT:
 				fonts.push_back(static_cast<AssAttachment const&>(line));
 				break;
@@ -125,16 +112,16 @@ struct SubsController::UndoInfo {
 		SubtitleSelection new_sel;
 
 		for (auto const& info : script_info)
-			c->ass->Line.push_back(*new AssInfo(info.first, info.second));
+			c->ass->Info.push_back(*new AssInfo(info.first, info.second));
 		for (auto const& style : styles)
-			c->ass->Line.push_back(*new AssStyle(style));
+			c->ass->Styles.push_back(*new AssStyle(style));
 		for (auto const& attachment : fonts)
-			c->ass->Line.push_back(*new AssAttachment(attachment));
+			c->ass->Attachments.push_back(*new AssAttachment(attachment));
 		for (auto const& attachment : graphics)
-			c->ass->Line.push_back(*new AssAttachment(attachment));
+			c->ass->Attachments.push_back(*new AssAttachment(attachment));
 		for (auto const& event : events) {
 			auto copy = new AssDialogue(event);
-			c->ass->Line.push_back(*copy);
+			c->ass->Events.push_back(*copy);
 			if (copy->Id == active_line_id)
 				active_line = copy;
 			if (binary_search(begin(selection), end(selection), copy->Id))
@@ -142,7 +129,7 @@ struct SubsController::UndoInfo {
 		}
 
 		c->subsGrid->BeginBatch();
-		c->selectionController->SetSelectedSet({ });
+		c->selectionController->SetSelectedSet(std::set<AssDialogue *>{});
 		c->ass->Commit("", AssFile::COMMIT_NEW);
 		c->selectionController->SetSelectionAndActive(new_sel, active_line);
 		c->subsGrid->EndBatch();
@@ -222,22 +209,11 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 		AssFile temp;
 		reader->ReadFile(&temp, filename, charset);
 
-		bool found_style = false;
-		bool found_dialogue = false;
-
-		// Check if the file has at least one style and at least one dialogue line
-		for (auto const& line : temp.Line) {
-			AssEntryGroup type = line.Group();
-			if (type == AssEntryGroup::STYLE) found_style = true;
-			if (type == AssEntryGroup::DIALOGUE) found_dialogue = true;
-			if (found_style && found_dialogue) break;
-		}
-
-		// And if it doesn't add defaults for each
-		if (!found_style)
-			temp.InsertLine(new AssStyle);
-		if (!found_dialogue)
-			temp.InsertLine(new AssDialogue);
+		// Make sure the file has at least one style and one dialogue line
+		if (temp.Styles.empty())
+			temp.Styles.push_back(*new AssStyle);
+		if (temp.Events.empty())
+			temp.Events.push_back(*new AssDialogue);
 
 		context->ass->swap(temp);
 	}
@@ -318,7 +294,7 @@ void SubsController::Close() {
 	autosaved_commit_id = saved_commit_id = commit_id + 1;
 	filename.clear();
 	AssFile blank;
-	swap(blank.Line, context->ass->Line);
+	blank.swap(*context->ass);
 	context->ass->LoadDefault();
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 }

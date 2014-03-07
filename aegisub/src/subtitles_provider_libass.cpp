@@ -118,13 +118,19 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	data.reserve(0x4000);
 
 	AssEntryGroup group = AssEntryGroup::GROUP_MAX;
-	for (auto const& line : subs->Line) {
-		if (group != line.Group()) {
-			group = line.Group();
-			boost::push_back(data, line.GroupHeader() + "\r\n");
+	auto write_group = [&](EntryList const& list) {
+		for (auto const& line : list) {
+			if (group != line.Group()) {
+				group = line.Group();
+				boost::push_back(data, line.GroupHeader() + "\r\n");
+			}
+			boost::push_back(data, line.GetEntryData() + "\r\n");
 		}
-		boost::push_back(data, line.GetEntryData() + "\r\n");
-	}
+	};
+
+	write_group(subs->Info);
+	write_group(subs->Styles);
+	write_group(subs->Events);
 
 	if (ass_track) ass_free_track(ass_track);
 	ass_track = ass_read_memory(library, &data[0], data.size(), nullptr);

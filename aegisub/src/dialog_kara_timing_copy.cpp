@@ -557,8 +557,8 @@ void DialogKanjiTimer::OnStart(wxCommandEvent &) {
 	else if (SourceStyle->GetValue() == DestStyle->GetValue())
 		wxMessageBox(_("The source and destination styles must be different."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else {
-		currentSourceLine = FindNextStyleMatch(&*subs->Line.begin(), from_wx(SourceStyle->GetValue()));
-		currentDestinationLine = FindNextStyleMatch(&*subs->Line.begin(), from_wx(DestStyle->GetValue()));
+		currentSourceLine = FindNextStyleMatch(&*subs->Events.begin(), from_wx(SourceStyle->GetValue()));
+		currentDestinationLine = FindNextStyleMatch(&*subs->Events.begin(), from_wx(DestStyle->GetValue()));
 		ResetForNewLine();
 	}
 	LinesToChange.clear();
@@ -686,11 +686,11 @@ static AssEntry *find_next(Iterator from, Iterator to, std::string const& style_
 AssEntry *DialogKanjiTimer::FindNextStyleMatch(AssEntry *search_from, const std::string &search_style)
 {
 	if (!search_from) return search_from;
-	return find_next(++subs->Line.iterator_to(*search_from), subs->Line.end(), search_style);
+	return find_next(++subs->Events.iterator_to(*search_from), subs->Events.end(), search_style);
 }
 
 AssEntry *DialogKanjiTimer::FindPrevStyleMatch(AssEntry *search_from, const std::string &search_style)
 {
 	if (!search_from) return search_from;
-	return find_next(EntryList::reverse_iterator(subs->Line.iterator_to(*search_from)), subs->Line.rend(), search_style);
+	return find_next(EntryList::reverse_iterator(subs->Events.iterator_to(*search_from)), subs->Events.rend(), search_style);
 }

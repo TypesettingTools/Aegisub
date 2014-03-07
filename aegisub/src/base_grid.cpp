@@ -265,7 +265,7 @@ void BaseGrid::UpdateMaps() {
 	index_line_map.clear();
 	line_index_map.clear();
 
-	for (auto curdiag : context->ass->Line | agi::of_type<AssDialogue>()) {
+	for (auto curdiag : context->ass->Events | agi::of_type<AssDialogue>()) {
 		line_index_map[curdiag] = (int)index_line_map.size();
 		index_line_map.push_back(curdiag);
 	}

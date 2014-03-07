@@ -79,8 +79,8 @@ struct grid_line_next_create : public Command {
 			newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
 			newline->Style = cur->Style;
 
-			entryIter pos = c->ass->Line.iterator_to(*cur);
-			c->ass->Line.insert(++pos, *newline);
+			entryIter pos = c->ass->Events.iterator_to(*cur);
+			c->ass->Events.insert(++pos, *newline);
 			c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 			c->selectionController->NextLine();
 		}
@@ -356,7 +356,7 @@ struct grid_move_up : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		if (move_one(c->ass->Line.begin(), c->ass->Line.end(), c->selectionController->GetSelectedSet(), 1))
+		if (move_one(c->ass->Events.begin(), c->ass->Events.end(), c->selectionController->GetSelectedSet(), 1))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };
@@ -373,7 +373,7 @@ struct grid_move_down : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		if (move_one(--c->ass->Line.end(), c->ass->Line.begin(), c->selectionController->GetSelectedSet(), -1))
+		if (move_one(--c->ass->Events.end(), c->ass->Events.begin(), c->selectionController->GetSelectedSet(), -1))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };

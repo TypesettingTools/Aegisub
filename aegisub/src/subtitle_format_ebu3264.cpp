@@ -370,10 +370,10 @@ namespace
 
 		AssStyle default_style;
 		std::vector<EbuSubtitle> subs_list;
-		subs_list.reserve(copy.Line.size());
+		subs_list.reserve(copy.Events.size());
 
 		// convert to intermediate format
-		for (auto line : copy.Line | agi::of_type<AssDialogue>())
+		for (auto line : copy.Events | agi::of_type<AssDialogue>())
 		{
 			// add a new subtitle and work on it
 			subs_list.emplace_back();

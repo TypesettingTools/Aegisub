@@ -86,7 +86,7 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
-		for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+		for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
 			if (diag->Style == source_name) {
 				if (replace)
 					diag->Style = new_name;
@@ -437,7 +437,7 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 			if (store)
 				store->push_back(std::unique_ptr<AssStyle>(style));
 			else
-				c->ass->InsertLine(style);
+				c->ass->Styles.push_back(*style);
 			is_new = false;
 		}
 		if (!store)

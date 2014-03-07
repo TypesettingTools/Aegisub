@@ -67,7 +67,7 @@ namespace {
 			if (sel.size() < 2) return !sel.empty();
 
 			size_t found = 0;
-			for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+			for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
 				if (sel.count(diag)) {
 					if (++found == sel.size())
 						return true;
@@ -84,7 +84,7 @@ static void adjoin_lines(agi::Context *c, bool set_start) {
 	AssDialogue *prev = nullptr;
 	size_t seen = 0;
 	bool prev_sel = false;
-	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
 		bool cur_sel = !!sel.count(diag);
 		if (prev) {
 			// One row selections act as if the previous or next line was selected

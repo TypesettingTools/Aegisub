@@ -404,7 +404,7 @@ found_timestamps:
 				line->Start = ReadSRTTime(timestamp_match.str(1));
 				line->End = ReadSRTTime(timestamp_match.str(2));
 				// store pointer to subtitle, we'll continue working on it
-				target->Line.push_back(*line);
+				target->Events.push_back(*line);
 				// next we're reading the text
 				state = STATE_FIRST_LINE_OF_BODY;
 				break;
@@ -480,7 +480,7 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 
 	// Write lines
 	int i=0;
-	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
+	for (auto current : copy.Events | agi::of_type<AssDialogue>()) {
 		file.WriteLineToFile(std::to_string(++i));
 		file.WriteLineToFile(WriteSRTTime(current->Start) + " --> " + WriteSRTTime(current->End));
 		file.WriteLineToFile(ConvertTags(current));
@@ -491,26 +491,23 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	std::string supported_tags[] = { "\\b", "\\i", "\\s", "\\u" };
 
-	AssStyle defstyle;
-	for (auto const& line : file->Line) {
-		// Check style, if anything non-default is found, return false
-		if (const AssStyle *curstyle = dynamic_cast<const AssStyle*>(&line)) {
-			if (curstyle->GetEntryData() != defstyle.GetEntryData())
-				return false;
-		}
+	if (!file->Attachments.empty())
+		return false;
 
-		// Check for attachments, if any is found, return false
-		if (dynamic_cast<const AssAttachment*>(&line)) return false;
+	std::string defstyle = AssStyle().GetEntryData();
+	for (auto const& line : file->Styles) {
+		if (static_cast<const AssStyle *>(&line)->GetEntryData() != defstyle)
+			return false;
+	}
 
-		// Check dialogue
-		if (const AssDialogue *curdiag = dynamic_cast<const AssDialogue*>(&line)) {
-			boost::ptr_vector<AssDialogueBlock> blocks(curdiag->ParseTags());
-			for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
-				// Verify that all overrides used are supported
-				for (auto const& tag : ovr->Tags) {
-					if (!std::binary_search(supported_tags, std::end(supported_tags), tag.Name))
-						return false;
-				}
+	for (auto const& line : file->Events) {
+		auto diag = static_cast<const AssDialogue *>(&line);
+		boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
+		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
+			// Verify that all overrides used are supported
+			for (auto const& tag : ovr->Tags) {
+				if (!std::binary_search(supported_tags, std::end(supported_tags), tag.Name))
+					return false;
 			}
 		}
 	}

@@ -37,6 +37,7 @@
 #include "auto4_lua.h"
 
 #include "auto4_lua_utils.h"
+#include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
@@ -838,13 +839,11 @@ namespace Automation4 {
 		lua_newtable(L);
 		int active_idx = -1;
 
-		int row = 0;
+		int row = c->ass->Info.size() + c->ass->Styles.size();
 		int idx = 1;
-		for (auto& line : c->ass->Line) {
+		for (auto& line : c->ass->Events) {
 			++row;
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(&line);
-			if (!diag) continue;
-
+			auto diag = static_cast<AssDialogue*>(&line);
 			if (diag == active_line) active_idx = row;
 			if (sel.count(diag)) {
 				push_value(L, row);
@@ -901,7 +900,7 @@ namespace Automation4 {
 		try {
 			LuaThreadedCall(L, 3, 2, from_wx(StrDisplay(c)), c->parent, true);
 
-			subsobj->ProcessingComplete(StrDisplay(c));
+			auto lines = subsobj->ProcessingComplete(StrDisplay(c));
 
 			AssDialogue *active_line = nullptr;
 			int active_idx = 0;
@@ -909,8 +908,8 @@ namespace Automation4 {
 			// Check for a new active row
 			if (lua_isnumber(L, -1)) {
 				active_idx = lua_tointeger(L, -1);
-				if (active_idx < 1 || active_idx > (int)c->ass->Line.size()) {
-					wxLogError("Active row %d is out of bounds (must be 1-%u)", active_idx, c->ass->Line.size());
+				if (active_idx < 1 || active_idx > (int)lines.size()) {
+					wxLogError("Active row %d is out of bounds (must be 1-%u)", active_idx, lines.size());
 					active_idx = 0;
 				}
 			}
@@ -921,26 +920,21 @@ namespace Automation4 {
 			// top of stack will be selected lines array, if any was returned
 			if (lua_istable(L, -1)) {
 				std::set<AssDialogue*> sel;
-				entryIter it = c->ass->Line.begin();
-				int last_idx = 1;
 				lua_for_each(L, [&] {
 					if (lua_isnumber(L, -1)) {
 						int cur = lua_tointeger(L, -1);
-						if (cur < 1 || cur > (int)c->ass->Line.size()) {
-							wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, c->ass->Line.size());
+						if (cur < 1 || cur > (int)lines.size()) {
+							wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, lines.size());
 							throw LuaForEachBreak();
 						}
 
-						advance(it, cur - last_idx);
-
-						AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+						AssDialogue *diag = dynamic_cast<AssDialogue*>(lines[cur - 1]);
 						if (!diag) {
 							wxLogError("Selected row %d is not a dialogue line", cur);
 							throw LuaForEachBreak();
 						}
 
 						sel.insert(diag);
-						last_idx = cur;
 						if (!active_line || active_idx == cur)
 							active_line = diag;
 					}

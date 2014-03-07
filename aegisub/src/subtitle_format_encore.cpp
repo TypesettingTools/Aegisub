@@ -77,6 +77,6 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& fi
 	// Write lines
 	int i = 0;
 	TextFileWriter file(filename, "UTF-8");
-	for (auto current : copy.Line | agi::of_type<AssDialogue>())
+	for (auto current : copy.Events | agi::of_type<AssDialogue>())
 		file.WriteLineToFile(str(boost::format("%i %s %s %s") % ++i % ft.ToSMPTE(current->Start) % ft.ToSMPTE(current->End) % current->Text));
 }

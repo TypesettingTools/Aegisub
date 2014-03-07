@@ -354,7 +354,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	int block_start = 0;
 	json::Array shifted_blocks;
 
-	for (auto line : context->ass->Line | agi::of_type<AssDialogue>()) {
+	for (auto line : context->ass->Events | agi::of_type<AssDialogue>()) {
 		++row_number;
 
 		if (!sel.count(line)) {

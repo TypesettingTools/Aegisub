@@ -57,7 +57,7 @@ void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 	for_each(begin(styles), end(styles), [](std::string& str) { boost::to_lower(str); });
 	sort(begin(styles), end(styles));
 
-	for (auto diag : subs->Line | agi::of_type<AssDialogue>()) {
+	for (auto diag : subs->Events | agi::of_type<AssDialogue>()) {
 		if (!binary_search(begin(styles), end(styles), boost::to_lower_copy(diag->Style.get())))
 			diag->Style = "Default";
 	}

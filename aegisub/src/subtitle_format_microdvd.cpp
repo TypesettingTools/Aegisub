@@ -120,7 +120,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& file
 		diag->Start = fps.TimeAtFrame(f1, agi::vfr::START);
 		diag->End = fps.TimeAtFrame(f2, agi::vfr::END);
 		diag->Text = text;
-		target->Line.push_back(*diag);
+		target->Events.push_back(*diag);
 	}
 }
 
@@ -143,7 +143,7 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& 
 		file.WriteLineToFile(str(boost::format("{1}{1}%.6f") % fps.FPS()));
 
 	// Write lines
-	for (auto current : copy.Line | agi::of_type<AssDialogue>()) {
+	for (auto current : copy.Events | agi::of_type<AssDialogue>()) {
 		int start = fps.FrameAtTime(current->Start, agi::vfr::START);
 		int end = fps.FrameAtTime(current->End, agi::vfr::END);
 

@@ -33,7 +33,6 @@ AssParser::AssParser(AssFile *target, int version)
 , version(version)
 , state(&AssParser::ParseScriptInfoLine)
 {
-	std::fill(begin(insertion_positions), end(insertion_positions), nullptr);
 }
 
 AssParser::~AssParser() {
@@ -52,7 +51,7 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 
 	// Data is over, add attachment to the file
 	if (!valid_data || is_filename) {
-		InsertLine(attach.release());
+		target->Attachments.push_back(*attach.release());
 		AddLine(data);
 	}
 	else {
@@ -60,7 +59,7 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 
 		// Done building
 		if (data.size() < 80)
-			InsertLine(attach.release());
+			target->Attachments.push_back(*attach.release());
 	}
 }
 
@@ -91,17 +90,17 @@ void AssParser::ParseScriptInfoLine(std::string const& data) {
 	size_t pos = data.find(':');
 	if (pos == data.npos) return;
 
-	InsertLine(new AssInfo(data.substr(0, pos), boost::trim_left_copy(data.substr(pos + 1))));
+	target->Info.push_back(*new AssInfo(data.substr(0, pos), boost::trim_left_copy(data.substr(pos + 1))));
 }
 
 void AssParser::ParseEventLine(std::string const& data) {
 	if (boost::starts_with(data, "Dialogue:") || boost::starts_with(data, "Comment:"))
-		InsertLine(new AssDialogue(data));
+		target->Events.push_back(*new AssDialogue(data));
 }
 
 void AssParser::ParseStyleLine(std::string const& data) {
 	if (boost::starts_with(data, "Style:"))
-		InsertLine(new AssStyle(data, version));
+		target->Styles.push_back(*new AssStyle(data, version));
 }
 
 void AssParser::ParseFontLine(std::string const& data) {
@@ -151,13 +150,4 @@ void AssParser::AddLine(std::string const& data) {
 	}
 
 	(this->*state)(data);
-}
-
-void AssParser::InsertLine(AssEntry *entry) {
-	AssEntry *position = insertion_positions[(size_t)entry->Group()];
-	if (position)
-		target->Line.insert(++target->Line.iterator_to(*position), *entry);
-	else
-		target->Line.push_back(*entry);
-	insertion_positions[(size_t)entry->Group()] = entry;
 }

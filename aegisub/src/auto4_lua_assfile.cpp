@@ -121,9 +121,7 @@ namespace {
 		{
 			case AssEntryGroup::DIALOGUE: return AssFile::COMMIT_DIAG_ADDREM;
 			case AssEntryGroup::STYLE:    return AssFile::COMMIT_STYLES;
-			case AssEntryGroup::FONT:     return AssFile::COMMIT_ATTACHMENT;
-			case AssEntryGroup::GRAPHIC:  return AssFile::COMMIT_ATTACHMENT;
-			default:             return AssFile::COMMIT_SCRIPTINFO;
+			default:                      return AssFile::COMMIT_SCRIPTINFO;
 		}
 	}
 }
@@ -217,8 +215,7 @@ namespace Automation4 {
 			set_field(L, "class", "style");
 		}
 		else {
-			// Attachments
-			set_field(L, "class", "unknown");
+			assert(false);
 		}
 	}
 
@@ -593,27 +590,40 @@ namespace Automation4 {
 		return *((LuaAssFile**)ud);
 	}
 
-	void LuaAssFile::ProcessingComplete(wxString const& undo_description)
+	std::vector<AssEntry *> LuaAssFile::ProcessingComplete(wxString const& undo_description)
 	{
+		auto apply_lines = [&](std::vector<AssEntry *> const& lines) {
+			ass->Info.clear();
+			ass->Styles.clear();
+			ass->Events.clear();
+
+			for (auto line : lines) {
+				switch (line->Group()) {
+					case AssEntryGroup::INFO:     ass->Info.push_back(*static_cast<AssInfo *>(line)); break;
+					case AssEntryGroup::STYLE:    ass->Styles.push_back(*static_cast<AssStyle *>(line)); break;
+					case AssEntryGroup::DIALOGUE: ass->Events.push_back(*static_cast<AssDialogue *>(line)); break;
+					default: break;
+				}
+			}
+		};
 		// Apply any pending commits
 		for (auto const& pc : pending_commits) {
-			ass->Line.clear();
-			boost::push_back(ass->Line, pc.lines | boost::adaptors::indirected);
+			apply_lines(pc.lines);
 			ass->Commit(pc.mesage, pc.modification_type);
 		}
 
 		// Commit any changes after the last undo point was set
-		if (modification_type) {
-			ass->Line.clear();
-			boost::push_back(ass->Line, lines | boost::adaptors::indirected);
-		}
+		if (modification_type)
+			apply_lines(lines);
 		if (modification_type && can_set_undo && !undo_description.empty())
 			ass->Commit(undo_description, modification_type);
 
 		lines_to_delete.clear();
 
+		auto ret = std::move(lines);
 		references--;
 		if (!references) delete this;
+		return ret;
 	}
 
 	void LuaAssFile::Cancel()
@@ -631,7 +641,11 @@ namespace Automation4 {
 	, modification_type(0)
 	, references(2)
 	{
-		for (auto& line : ass->Line)
+		for (auto& line : ass->Info)
+			lines.push_back(&line);
+		for (auto& line : ass->Styles)
+			lines.push_back(&line);
+		for (auto& line : ass->Events)
 			lines.push_back(&line);
 
 		// prepare userdata object

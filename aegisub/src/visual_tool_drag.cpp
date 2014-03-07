@@ -115,7 +115,7 @@ void VisualToolDrag::OnFileChanged() {
 	primary = nullptr;
 	active_feature = nullptr;
 
-	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
 		if (IsDisplayed(diag))
 			MakeFeatures(diag);
 	}
@@ -130,7 +130,7 @@ void VisualToolDrag::OnFrameChanged() {
 	auto feat = features.begin();
 	auto end = features.end();
 
-	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
 		if (IsDisplayed(diag)) {
 			// Features don't exist and should
 			if (feat == end || feat->line != diag)

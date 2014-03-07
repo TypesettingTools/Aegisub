@@ -16,8 +16,6 @@
 #include <map>
 #include <memory>
 
-#include "ass_entry.h"
-
 class AssAttachment;
 class AssFile;
 
@@ -26,9 +24,6 @@ class AssParser {
 	int version;
 	std::unique_ptr<AssAttachment> attach;
 	void (AssParser::*state)(std::string const&);
-	std::array<AssEntry*, (size_t)AssEntryGroup::GROUP_MAX> insertion_positions;
-
-	void InsertLine(AssEntry *entry);
 
 	void ParseAttachmentLine(std::string const& data);
 	void ParseEventLine(std::string const& data);

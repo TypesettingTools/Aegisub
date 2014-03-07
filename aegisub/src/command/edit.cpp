@@ -488,7 +488,7 @@ struct edit_find_replace : public Command {
 static std::string get_entry_data(AssDialogue *d) { return d->GetEntryData(); }
 static void copy_lines(agi::Context *c) {
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
-	SetClipboard(join(c->ass->Line
+	SetClipboard(join(c->ass->Events
 		| agi::of_type<AssDialogue>()
 		| filtered([&](AssDialogue *d) { return sel.count(d); })
 		| transformed(get_entry_data),
@@ -503,7 +503,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	AssDialogue *post_sel = nullptr;
 	bool hit_selection = false;
 
-	for (auto diag : c->ass->Line | agi::of_type<AssDialogue>()) {
+	for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
 		if (sel.count(diag))
 			hit_selection = true;
 		else if (hit_selection && !post_sel) {
@@ -519,7 +519,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	// need to create a new dialogue line for it, and we can't select dialogue
 	// lines until after they're committed.
 	std::vector<std::unique_ptr<AssEntry>> to_delete;
-	c->ass->Line.remove_and_dispose_if([&sel](AssEntry const& e) {
+	c->ass->Events.remove_and_dispose_if([&sel](AssEntry const& e) {
 		return sel.count(const_cast<AssDialogue *>(static_cast<const AssDialogue*>(&e)));
 	}, [&](AssEntry *e) {
 		to_delete.emplace_back(e);
@@ -532,7 +532,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	// lines, so make a new one
 	if (!new_active) {
 		new_active = new AssDialogue;
-		c->ass->InsertLine(new_active);
+		c->ass->Events.push_back(*new_active);
 	}
 
 	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);
@@ -605,8 +605,8 @@ static void duplicate_lines(agi::Context *c, int shift) {
 	SubtitleSelectionController::Selection new_sel;
 	AssDialogue *new_active = nullptr;
 
-	entryIter start = c->ass->Line.begin();
-	entryIter end = c->ass->Line.end();
+	entryIter start = c->ass->Events.begin();
+	entryIter end = c->ass->Events.end();
 	while (start != end) {
 		// Find the first line in the selection
 		start = find_if(start, end, sel);
@@ -622,7 +622,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 			auto old_diag = static_cast<AssDialogue*>(&*start);
 			auto  new_diag = new AssDialogue(*old_diag);
 
-			c->ass->Line.insert(insert_pos, *new_diag);
+			c->ass->Events.insert(insert_pos, *new_diag);
 			new_sel.insert(new_diag);
 			if (!new_active)
 				new_active = new_diag;
@@ -703,7 +703,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 	SubtitleSelection sel = c->selectionController->GetSelectedSet();
 
 	AssDialogue *first = nullptr;
-	for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ) {
+	for (entryIter it = c->ass->Events.begin(); it != c->ass->Events.end(); ) {
 		AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it++);
 		if (!diag || !sel.count(diag))
 			continue;
@@ -790,8 +790,8 @@ static bool try_paste_lines(agi::Context *c) {
 	for (auto& line : parsed)
 		new_selection.insert(static_cast<AssDialogue *>(&line));
 
-	auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
-	c->ass->Line.splice(pos, parsed, parsed.begin(), parsed.end());
+	auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
+	c->ass->Events.splice(pos, parsed, parsed.begin(), parsed.end());
 	c->ass->Commit(_("paste"), AssFile::COMMIT_DIAG_ADDREM);
 	c->selectionController->SetSelectionAndActive(new_selection, new_active);
 
@@ -821,9 +821,9 @@ struct edit_line_paste : public Command {
 				ctrl->Paste();
 		}
 		else {
-			auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
+			auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
 			paste_lines(c, false, [=](AssDialogue *new_line) -> AssDialogue * {
-				c->ass->Line.insert(pos, *new_line);
+				c->ass->Events.insert(pos, *new_line);
 				return new_line;
 			});
 		}
@@ -852,15 +852,15 @@ struct edit_line_paste_over : public Command {
 
 		// Only one line selected, so paste over downwards from the active line
 		if (sel.size() < 2) {
-			auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
+			auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
 
 			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
 				std::unique_ptr<AssDialogue> deleter(new_line);
-				if (pos == c->ass->Line.end()) return nullptr;
+				if (pos == c->ass->Events.end()) return nullptr;
 
 				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, static_cast<AssDialogue*>(&*pos));
 				if (ret)
-					pos = find_if(next(pos), c->ass->Line.end(), cast<AssDialogue*>());
+					pos = find_if(next(pos), c->ass->Events.end(), cast<AssDialogue*>());
 				return ret;
 			});
 		}
@@ -870,7 +870,7 @@ struct edit_line_paste_over : public Command {
 			// Sort the selection by grid order
 			std::vector<AssDialogue*> sorted_selection;
 			sorted_selection.reserve(sel.size());
-			for (auto& line : c->ass->Line) {
+			for (auto& line : c->ass->Events) {
 				if (sel.count(static_cast<AssDialogue*>(&line)))
 					sorted_selection.push_back(static_cast<AssDialogue*>(&line));
 			}
@@ -983,7 +983,7 @@ struct edit_line_recombine : public validate_sel_multiple {
 
 		// Remove now non-existent lines from the selection
 		SubtitleSelection lines, new_sel;
-		boost::copy(c->ass->Line | agi::of_type<AssDialogue>(), inserter(lines, lines.begin()));
+		boost::copy(c->ass->Events | agi::of_type<AssDialogue>(), inserter(lines, lines.begin()));
 		boost::set_intersection(lines, sel_set, inserter(new_sel, new_sel.begin()));
 
 		if (new_sel.empty())
@@ -1015,7 +1015,7 @@ void split_lines(agi::Context *c, Func&& set_time) {
 
 	AssDialogue *n1 = c->selectionController->GetActiveLine();
 	auto n2 = new AssDialogue(*n1);
-	c->ass->Line.insert(++c->ass->Line.iterator_to(*n1), *n2);
+	c->ass->Events.insert(++c->ass->Events.iterator_to(*n1), *n2);
 
 	std::string orig = n1->Text;
 	n1->Text = boost::trim_right_copy(orig.substr(0, pos));

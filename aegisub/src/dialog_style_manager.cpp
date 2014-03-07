@@ -288,7 +288,7 @@ void DialogStyleManager::LoadCurrentStyles(int commit_type) {
 		CurrentList->Clear();
 		styleMap.clear();
 
-		for (auto style : c->ass->Line | agi::of_type<AssStyle>()) {
+		for (auto style : c->ass->Styles | agi::of_type<AssStyle>()) {
 			CurrentList->Append(to_wx(style->name));
 			styleMap.push_back(style);
 		}
@@ -448,7 +448,7 @@ void DialogStyleManager::OnCopyToCurrent() {
 			}
 		}
 		else {
-			c->ass->InsertLine(new AssStyle(*Store[selections[i]]));
+			c->ass->Styles.push_back(*new AssStyle(*Store[selections[i]]));
 			copied.push_back(styleName);
 		}
 	}
@@ -480,7 +480,7 @@ void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
 void DialogStyleManager::PasteToCurrent() {
 	add_styles(
 		std::bind(&AssFile::GetStyle, c->ass, _1),
-		std::bind(&AssFile::InsertLine, c->ass, _1));
+		[=](AssStyle *s) { c->ass->Styles.push_back(*s); });
 
 	c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
 }
@@ -630,7 +630,7 @@ void DialogStyleManager::OnCurrentImport() {
 
 		// Copy
 		modified = true;
-		c->ass->InsertLine(temp.GetStyle(styles[sel])->Clone());
+		c->ass->Styles.push_back(*temp.GetStyle(styles[sel])->Clone());
 	}
 
 	// Update
@@ -779,10 +779,10 @@ void DialogStyleManager::MoveStyles(bool storage, int type) {
 
 		// Replace styles
 		size_t curn = 0;
-		for (auto it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
+		for (auto it = c->ass->Styles.begin(); it != c->ass->Styles.end(); ++it) {
 			if (!dynamic_cast<AssStyle*>(&*it)) continue;
 
-			auto new_style_at_pos = c->ass->Line.iterator_to(*styleMap[curn]);
+			auto new_style_at_pos = c->ass->Styles.iterator_to(*styleMap[curn]);
 			EntryList::node_algorithms::swap_nodes(it.pointed_node(), new_style_at_pos.pointed_node());
 			if (++curn == styleMap.size()) break;
 			it = new_style_at_pos;

@@ -64,8 +64,6 @@ public:
 	static void ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
 	static void StripComments(AssFile &file);
-	/// Remove everything but the dialogue lines
-	static void StripNonDialogue(AssFile &file);
 	/// @brief Split and merge lines so there are no overlapping lines
 	///
 	/// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge

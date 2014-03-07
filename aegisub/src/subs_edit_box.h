@@ -62,6 +62,7 @@ class wxSpinCtrl;
 class wxStyledTextCtrl;
 class wxStyledTextEvent;
 class wxTextCtrl;
+struct AssDialogueBase;
 
 template<class Base> class Placeholder;
 
@@ -177,10 +178,10 @@ class SubsEditBox : public wxPanel {
 	/// @param type  Commit type to use
 	/// @param amend Coalesce sequences of commits of the same type
 	template<class T>
-	void SetSelectedRows(T AssDialogue::*field, T value, wxString const& desc, int type, bool amend = false);
+	void SetSelectedRows(T AssDialogueBase::*field, T value, wxString const& desc, int type, bool amend = false);
 
 	template<class T>
-	void SetSelectedRows(T AssDialogue::*field, wxString const& value, wxString const& desc, int type, bool amend = false);
+	void SetSelectedRows(T AssDialogueBase::*field, wxString const& value, wxString const& desc, int type, bool amend = false);
 
 	/// @brief Reload the current line from the file
 	/// @param type AssFile::COMMITType

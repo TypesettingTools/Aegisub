@@ -54,6 +54,7 @@
 #include "../video_context.h"
 
 #include <libaegisub/charset_conv.h>
+#include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/util.h>
 
 #include <wx/msgdlg.h>
@@ -123,10 +124,10 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
 	def->Style = c->selectionController->GetActiveLine()->Style;
 
-	entryIter pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
+	entryIter pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
 	if (after) ++pos;
 
-	c->ass->Line.insert(pos, *def);
+	c->ass->Events.insert(pos, *def);
 	c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 
 	c->selectionController->SetSelectionAndActive({ def }, def);
@@ -146,17 +147,17 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 		new_line->Start = active_line->End;
 		new_line->End = new_line->Start + OPT_GET("Timing/Default Duration")->GetInt();
 
-		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+		for (entryIter it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
+			AssDialogue *diag = static_cast<AssDialogue*>(&*it);
 
 			// Limit the line to the available time
-			if (diag && diag->Start >= new_line->Start)
+			if (diag->Start >= new_line->Start)
 				new_line->End = std::min(new_line->End, diag->Start);
 
 			// If we just hit the active line, insert the new line after it
 			if (diag == active_line) {
 				++it;
-				c->ass->Line.insert(it, *new_line);
+				c->ass->Events.insert(it, *new_line);
 				--it;
 			}
 		}
@@ -191,16 +192,16 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 		new_line->End = active_line->Start;
 		new_line->Start = new_line->End - OPT_GET("Timing/Default Duration")->GetInt();
 
-		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
+		for (entryIter it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
+			auto diag = static_cast<AssDialogue*>(&*it);
 
 			// Limit the line to the available time
-			if (diag && diag->End <= new_line->End)
+			if (diag->End <= new_line->End)
 				new_line->Start = std::max(new_line->Start, diag->End);
 
 			// If we just hit the active line, insert the new line before it
 			if (diag == active_line)
-				c->ass->Line.insert(it, *new_line);
+				c->ass->Events.insert(it, *new_line);
 		}
 
 		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
@@ -371,7 +372,7 @@ struct subtitle_select_all : public Command {
 
 	void operator()(agi::Context *c) override {
 		SubtitleSelection sel;
-		transform(c->ass->Line.begin(), c->ass->Line.end(),
+		transform(c->ass->Events.begin(), c->ass->Events.end(),
 			inserter(sel, sel.begin()), cast<AssDialogue*>());
 		sel.erase(nullptr);
 		c->selectionController->SetSelectedSet(sel);
@@ -393,10 +394,8 @@ struct subtitle_select_visible : public Command {
 		SubtitleSelectionController::Selection new_selection;
 		int frame = c->videoController->GetFrameN();
 
-		for (entryIter it = c->ass->Line.begin(); it != c->ass->Line.end(); ++it) {
-			AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
-			if (diag &&
-				c->videoController->FrameAtTime(diag->Start, agi::vfr::START) <= frame &&
+		for (auto diag : c->ass->Events | agi::of_type<AssDialogue>()) {
+			if (c->videoController->FrameAtTime(diag->Start, agi::vfr::START) <= frame &&
 				c->videoController->FrameAtTime(diag->End, agi::vfr::END) >= frame)
 			{
 				if (new_selection.empty())
