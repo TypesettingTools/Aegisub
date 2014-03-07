@@ -400,20 +400,8 @@ void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEven
 	try {
 		wxApp::HandleEvent(handler, func, event);
 	}
-	catch (const agi::Exception &e) {
-		SHOW_EXCEPTION(to_wx(e.GetChainedMessage()));
-	}
-	catch (const std::exception &e) {
-		SHOW_EXCEPTION(to_wx(e.what()));
-	}
-	catch (const char *e) {
-		SHOW_EXCEPTION(to_wx(e));
-	}
-	catch (const wxString &e) {
-		SHOW_EXCEPTION(e);
-	}
 	catch (...) {
-		SHOW_EXCEPTION("Unknown error");
+		const_cast<AegisubApp *>(this)->OnExceptionInMainLoop();
 	}
 }
 
