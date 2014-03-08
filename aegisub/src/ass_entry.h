@@ -46,7 +46,9 @@ enum class AssEntryGroup {
 	GROUP_MAX
 };
 
-class AssEntry : public boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type {
+using AssEntryListHook = boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type;
+
+class AssEntry {
 public:
 	virtual ~AssEntry() { }
 

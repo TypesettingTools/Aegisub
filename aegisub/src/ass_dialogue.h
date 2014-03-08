@@ -150,7 +150,7 @@ struct AssDialogueBase {
 	boost::flyweight<std::string> Text;
 };
 
-class AssDialogue : public AssEntry, public AssDialogueBase {
+class AssDialogue : public AssEntry, public AssDialogueBase, public AssEntryListHook {
 	std::string GetData(bool ssa) const;
 
 	/// @brief Parse raw ASS data into everything else

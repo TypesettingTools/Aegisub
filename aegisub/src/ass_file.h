@@ -48,7 +48,7 @@ class AssStyle;
 class wxString;
 
 template<typename T>
-using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntry>>::type;
+using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntryListHook>>::type;
 
 struct AssFileCommit {
 	wxString const& message;

@@ -22,7 +22,7 @@
 #include <vector>
 
 /// @class AssAttachment
-class AssAttachment : public AssEntry {
+class AssAttachment : public AssEntry, public AssEntryListHook {
 	/// ASS uuencoded entry data, including header.
 	boost::flyweight<std::string> entry_data;
 
