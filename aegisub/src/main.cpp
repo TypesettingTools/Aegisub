@@ -68,6 +68,7 @@
 #include <boost/locale.hpp>
 #include <sstream>
 
+#include <wx/clipbrd.h>
 #include <wx/config.h>
 #include <wx/msgdlg.h>
 #include <wx/stackwalk.h>
