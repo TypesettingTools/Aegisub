@@ -170,7 +170,7 @@ public:
 
 	/// Update the text of the line from parsed blocks
 	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
-	const std::string GetEntryData() const override { return GetData(false); }
+	std::string GetEntryData() const override { return GetData(false); }
 
 	/// Get the line as SSA rather than ASS
 	std::string GetSSAText() const override { return GetData(true); }

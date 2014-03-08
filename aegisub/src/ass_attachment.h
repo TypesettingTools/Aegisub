@@ -46,7 +46,7 @@ public:
 	/// @param raw If false, remove the SSA filename mangling
 	std::string GetFileName(bool raw=false) const;
 
-	const std::string GetEntryData() const override { return entry_data;  }
+	std::string GetEntryData() const override { return entry_data;  }
 	AssEntryGroup Group() const override { return group; }
 	AssAttachment *Clone() const override { return new AssAttachment(*this); }
 
