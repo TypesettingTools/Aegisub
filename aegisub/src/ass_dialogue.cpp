@@ -177,14 +177,6 @@ std::string AssDialogue::GetData(bool ssa) const {
 	return str;
 }
 
-const std::string AssDialogue::GetEntryData() const {
-	return GetData(false);
-}
-
-std::string AssDialogue::GetSSAText() const {
-	return GetData(true);
-}
-
 std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() const {
 	boost::ptr_vector<AssDialogueBlock> Blocks;
 

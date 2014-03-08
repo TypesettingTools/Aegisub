@@ -167,10 +167,10 @@ public:
 
 	/// Update the text of the line from parsed blocks
 	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
-	const std::string GetEntryData() const override;
+	std::string GetEntryData() const override { return GetData(false); }
 
 	/// Get the line as SSA rather than ASS
-	std::string GetSSAText() const override;
+	std::string GetSSAText() const override { return GetData(true); }
 	/// Does this line collide with the passed line?
 	bool CollidesWith(const AssDialogue *target) const;
 

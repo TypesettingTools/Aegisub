@@ -77,7 +77,7 @@ public:
 	AssStyle();
 	AssStyle(std::string const& data, int version=1);
 
-	const std::string GetEntryData() const override { return data; }
+	std::string GetEntryData() const override { return data; }
 	std::string GetSSAText() const override;
 	AssEntryGroup Group() const override { return AssEntryGroup::STYLE; }
 	AssEntry *Clone() const override;
