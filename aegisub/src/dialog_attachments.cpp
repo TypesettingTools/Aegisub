@@ -102,7 +102,6 @@ void DialogAttachments::UpdateList() {
 		listView->InsertItem(row, to_wx(attach.GetFileName(true)));
 		listView->SetItem(row, 1, PrettySize(attach.GetSize()));
 		listView->SetItem(row, 2, to_wx(attach.GroupHeader()));
-		listView->SetItemPtrData(row, wxPtrToUInt(&attach));
 	}
 }
 
@@ -153,7 +152,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 		path = SaveFileSelector(
 			_("Select the path to save the file to:"),
 			"Path/Fonts Collector Destination",
-			((AssAttachment*)wxUIntToPtr(listView->GetItemData(i)))->GetFileName(),
+			ass->Attachments[i].GetFileName(),
 			".ttf", "Font Files (*.ttf)|*.ttf",
 			this);
 		fullPath = true;
@@ -162,20 +161,16 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 
 	// Loop through items in list
 	while (i != -1) {
-		AssAttachment *attach = (AssAttachment*)wxUIntToPtr(listView->GetItemData(i));
-		attach->Extract(fullPath ? path : path/attach->GetFileName());
+		auto& attach = ass->Attachments[i];
+		attach.Extract(fullPath ? path : path/attach.GetFileName());
 		i = listView->GetNextSelected(i);
 	}
 }
 
 void DialogAttachments::OnDelete(wxCommandEvent &) {
-	auto i = listView->GetFirstSelected();
-	if (i == -1) return;
-
-	while (i != -1) {
-		delete (AssEntry*)wxUIntToPtr(listView->GetItemData(i));
-		i = listView->GetNextSelected(i);
-	}
+	size_t removed = 0;
+	for (auto i = listView->GetFirstSelected(); i != -1; i = listView->GetNextSelected(i))
+		ass->Attachments.erase(ass->Attachments.begin() + i - removed++);
 
 	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
 

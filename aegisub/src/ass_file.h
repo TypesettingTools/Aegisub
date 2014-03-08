@@ -65,7 +65,7 @@ public:
 	std::vector<AssInfo> Info;
 	EntryList<AssStyle> Styles;
 	EntryList<AssDialogue> Events;
-	EntryList<AssAttachment> Attachments;
+	std::vector<AssAttachment> Attachments;
 
 	AssFile();
 	AssFile(const AssFile &from);

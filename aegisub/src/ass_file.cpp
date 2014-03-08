@@ -34,7 +34,6 @@ AssFile::AssFile() { }
 AssFile::~AssFile() {
 	Styles.clear_and_dispose([](AssStyle *e) { delete e; });
 	Events.clear_and_dispose([](AssDialogue *e) { delete e; });
-	Attachments.clear_and_dispose([](AssAttachment *e) { delete e; });
 }
 
 void AssFile::LoadDefault(bool include_dialogue_line) {
@@ -56,6 +55,7 @@ void AssFile::LoadDefault(bool include_dialogue_line) {
 
 AssFile::AssFile(const AssFile &from)
 : Info(from.Info)
+, Attachments(from.Attachments)
 {
 	Styles.clone_from(from.Styles,
 		[](AssStyle const& e) { return new AssStyle(e); },
@@ -63,9 +63,6 @@ AssFile::AssFile(const AssFile &from)
 	Events.clone_from(from.Events,
 		[](AssDialogue const& e) { return new AssDialogue(e); },
 		[](AssDialogue *e) { delete e; });
-	Attachments.clone_from(from.Attachments,
-		[](AssAttachment const & e) { return new AssAttachment(e); },
-		[](AssAttachment *e) { delete e; });
 }
 
 void AssFile::swap(AssFile& from) throw() {
@@ -87,7 +84,7 @@ void AssFile::InsertAttachment(agi::fs::path const& filename) {
 	if (ext == ".ttf" || ext == ".ttc" || ext == ".pfb")
 		group = AssEntryGroup::FONT;
 
-	Attachments.push_back(*new AssAttachment(filename, group));
+	Attachments.emplace_back(filename, group);
 }
 
 std::string AssFile::GetScriptInfo(std::string const& key) const {

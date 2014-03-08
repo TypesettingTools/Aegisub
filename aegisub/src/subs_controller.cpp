@@ -54,20 +54,21 @@ namespace {
 }
 
 struct SubsController::UndoInfo {
+	wxString undo_description;
+	int commit_id;
+
 	std::vector<std::pair<std::string, std::string>> script_info;
 	std::vector<AssStyle> styles;
 	std::vector<AssDialogueBase> events;
-	std::vector<AssAttachment> graphics;
-	std::vector<AssAttachment> fonts;
+	std::vector<AssAttachment> attachments;
 
 	mutable std::vector<int> selection;
 	int active_line_id = 0;
 
-	wxString undo_description;
-	int commit_id;
-
 	UndoInfo(const agi::Context *c, wxString const& d, int commit_id)
-	: undo_description(d), commit_id(commit_id)
+	: undo_description(d)
+	, commit_id(commit_id)
+	, attachments(c->ass->Attachments)
 	{
 		script_info.reserve(c->ass->Info.size());
 		for (auto const& info : c->ass->Info)
@@ -78,20 +79,6 @@ struct SubsController::UndoInfo {
 
 		events.reserve(c->ass->Events.size());
 		events.assign(c->ass->Events.begin(), c->ass->Events.end());
-
-		for (auto const& line : c->ass->Attachments) {
-			switch (line.Group()) {
-			case AssEntryGroup::FONT:
-				fonts.push_back(line);
-				break;
-			case AssEntryGroup::GRAPHIC:
-				graphics.push_back(line);
-				break;
-			default:
-				assert(false);
-				break;
-			}
-		}
 
 		UpdateActiveLine(c);
 		UpdateSelection(c);
@@ -111,10 +98,7 @@ struct SubsController::UndoInfo {
 			c->ass->Info.push_back(*new AssInfo(info.first, info.second));
 		for (auto const& style : styles)
 			c->ass->Styles.push_back(*new AssStyle(style));
-		for (auto const& attachment : fonts)
-			c->ass->Attachments.push_back(*new AssAttachment(attachment));
-		for (auto const& attachment : graphics)
-			c->ass->Attachments.push_back(*new AssAttachment(attachment));
+		c->ass->Attachments = attachments;
 		for (auto const& event : events) {
 			auto copy = new AssDialogue(event);
 			c->ass->Events.push_back(*copy);
