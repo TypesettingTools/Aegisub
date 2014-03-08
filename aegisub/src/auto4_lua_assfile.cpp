@@ -147,14 +147,15 @@ namespace Automation4 {
 		lua_newtable(L);
 
 		set_field(L, "section", e->GroupHeader());
-		set_field(L, "raw", e->GetEntryData());
 
 		if (AssInfo *info = dynamic_cast<AssInfo*>(e)) {
+			set_field(L, "raw", info->GetEntryData());
 			set_field(L, "key", info->Key());
 			set_field(L, "value", info->Value());
 			set_field(L, "class", "info");
 		}
 		else if (AssDialogue *dia = dynamic_cast<AssDialogue*>(e)) {
+			set_field(L, "raw", dia->GetEntryData());
 			set_field(L, "comment", dia->Comment);
 
 			set_field(L, "layer", dia->Layer);
@@ -176,6 +177,7 @@ namespace Automation4 {
 			set_field(L, "class", "dialogue");
 		}
 		else if (AssStyle *sty = dynamic_cast<AssStyle*>(e)) {
+			set_field(L, "raw", sty->GetEntryData());
 			set_field(L, "name", sty->name);
 
 			set_field(L, "fontname", sty->font);

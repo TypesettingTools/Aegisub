@@ -77,8 +77,8 @@ public:
 	AssStyle();
 	AssStyle(std::string const& data, int version=1);
 
-	std::string GetEntryData() const override { return data; }
-	std::string GetSSAText() const override;
+	std::string const& GetEntryData() const { return data; }
+	std::string GetSSAText() const ;
 	AssEntryGroup Group() const override { return AssEntryGroup::STYLE; }
 
 	/// Convert an ASS alignment to the equivalent SSA alignment

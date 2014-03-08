@@ -57,10 +57,4 @@ public:
 
 	/// ASS or SSA Section header for this entry's group
 	std::string const& GroupHeader(bool ssa=false) const;
-
-	/// @brief Get this line's raw entry data in ASS format
-	virtual std::string GetEntryData() const=0;
-
-	/// Get this line in SSA format
-	virtual std::string GetSSAText() const { return GetEntryData(); }
 };

@@ -27,8 +27,8 @@ public:
 	AssInfo(std::string key, std::string value) : key(std::move(key)), value(std::move(value)) { }
 
 	AssEntryGroup Group() const override { return AssEntryGroup::INFO; }
-	std::string GetEntryData() const override { return key + ": " + value; }
-	std::string GetSSAText() const override { return boost::iequals(key, "scripttype: v4.00+") ? "ScriptType: v4.00" : GetEntryData(); }
+	std::string GetEntryData() const { return key + ": " + value; }
+	std::string GetSSAText() const { return boost::iequals(key, "scripttype: v4.00+") ? "ScriptType: v4.00" : GetEntryData(); }
 
 	std::string Key() const { return key; }
 	std::string Value() const { return value; }
