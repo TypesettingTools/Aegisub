@@ -32,22 +32,21 @@
 AssFile::AssFile() { }
 
 AssFile::~AssFile() {
-	Info.clear_and_dispose([](AssInfo *e) { delete e; });
 	Styles.clear_and_dispose([](AssStyle *e) { delete e; });
 	Events.clear_and_dispose([](AssDialogue *e) { delete e; });
 	Attachments.clear_and_dispose([](AssAttachment *e) { delete e; });
 }
 
 void AssFile::LoadDefault(bool include_dialogue_line) {
-	Info.push_back(*new AssInfo("Title", "Default Aegisub file"));
-	Info.push_back(*new AssInfo("ScriptType", "v4.00+"));
-	Info.push_back(*new AssInfo("WrapStyle", "0"));
-	Info.push_back(*new AssInfo("ScaledBorderAndShadow", "yes"));
+	Info.emplace_back("Title", "Default Aegisub file");
+	Info.emplace_back("ScriptType", "v4.00+");
+	Info.emplace_back("WrapStyle", "0");
+	Info.emplace_back("ScaledBorderAndShadow", "yes");
 	if (!OPT_GET("Subtitle/Default Resolution/Auto")->GetBool()) {
-		Info.push_back(*new AssInfo("PlayResX", std::to_string(OPT_GET("Subtitle/Default Resolution/Width")->GetInt())));
-		Info.push_back(*new AssInfo("PlayResY", std::to_string(OPT_GET("Subtitle/Default Resolution/Height")->GetInt())));
+		Info.emplace_back("PlayResX", std::to_string(OPT_GET("Subtitle/Default Resolution/Width")->GetInt()));
+		Info.emplace_back("PlayResY", std::to_string(OPT_GET("Subtitle/Default Resolution/Height")->GetInt()));
 	}
-	Info.push_back(*new AssInfo("YCbCr Matrix", "None"));
+	Info.emplace_back("YCbCr Matrix", "None");
 
 	Styles.push_back(*new AssStyle);
 
@@ -55,8 +54,9 @@ void AssFile::LoadDefault(bool include_dialogue_line) {
 		Events.push_back(*new AssDialogue);
 }
 
-AssFile::AssFile(const AssFile &from) {
-	Info.clone_from(from.Info, std::mem_fun_ref(&AssInfo::Clone), [](AssInfo *e) { delete e; });
+AssFile::AssFile(const AssFile &from)
+: Info(from.Info)
+{
 	Styles.clone_from(from.Styles, std::mem_fun_ref(&AssStyle::Clone), [](AssStyle *e) { delete e; });
 	Events.clone_from(from.Events, std::mem_fun_ref(&AssDialogue::Clone), [](AssDialogue *e) { delete e; });
 	Attachments.clone_from(from.Attachments, std::mem_fun_ref(&AssAttachment::Clone), [](AssAttachment *e) { delete e; });
@@ -114,18 +114,18 @@ void AssFile::SaveUIState(std::string const& key, std::string const& value) {
 }
 
 void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
-	for (auto& info : Info) {
-		if (boost::iequals(key, info.Key())) {
+	for (auto it = Info.begin(); it != Info.end(); ++it) {
+		if (boost::iequals(key, it->Key())) {
 			if (value.empty())
-				delete &info;
+				Info.erase(it);
 			else
-				info.SetValue(value);
+				it->SetValue(value);
 			return;
 		}
 	}
 
 	if (!value.empty())
-		Info.push_back(*new AssInfo(key, value));
+		Info.emplace_back(key, value);
 }
 
 void AssFile::GetResolution(int &sw, int &sh) const {

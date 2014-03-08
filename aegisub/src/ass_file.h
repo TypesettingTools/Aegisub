@@ -50,9 +50,6 @@ class wxString;
 template<typename T>
 using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntry>>::type;
 
-template<typename T>
-using EntryIter = typename EntryList<T>::iterator;
-
 struct AssFileCommit {
 	wxString const& message;
 	int *commit_id;
@@ -65,7 +62,7 @@ class AssFile {
 	agi::signal::Signal<AssFileCommit> PushState;
 public:
 	/// The lines in the file
-	EntryList<AssInfo> Info;
+	std::vector<AssInfo> Info;
 	EntryList<AssStyle> Styles;
 	EntryList<AssDialogue> Events;
 	EntryList<AssAttachment> Attachments;
