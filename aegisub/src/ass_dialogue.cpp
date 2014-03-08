@@ -255,9 +255,3 @@ std::string AssDialogue::GetStrippedText() const {
 	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
 	return join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), "");
 }
-
-AssDialogue *AssDialogue::Clone() const {
-	auto clone = new AssDialogue(*this);
-	clone->Id = Id;
-	return clone;
-}

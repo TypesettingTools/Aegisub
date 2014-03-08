@@ -80,7 +80,6 @@ public:
 	std::string GetEntryData() const override { return data; }
 	std::string GetSSAText() const override;
 	AssEntryGroup Group() const override { return AssEntryGroup::STYLE; }
-	AssStyle *Clone() const override { return new AssStyle(*this); }
 
 	/// Convert an ASS alignment to the equivalent SSA alignment
 	static int AssToSsa(int ass_align);

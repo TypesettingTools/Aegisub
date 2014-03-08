@@ -141,7 +141,7 @@ void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<cons
 	size_t i = 0;
 	for (auto const& e : new_subs->Events) {
 		if (changes.count(&e))
-			changed.emplace_back(i, e.Clone());
+			changed.emplace_back(i, new AssDialogue(e));
 		++i;
 	}
 

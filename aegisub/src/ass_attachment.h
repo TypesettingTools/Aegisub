@@ -48,7 +48,6 @@ public:
 
 	std::string GetEntryData() const override { return entry_data;  }
 	AssEntryGroup Group() const override { return group; }
-	AssAttachment *Clone() const override { return new AssAttachment(*this); }
 
 	AssAttachment(AssAttachment const& rgt);
 	AssAttachment(std::string const& header, AssEntryGroup group);

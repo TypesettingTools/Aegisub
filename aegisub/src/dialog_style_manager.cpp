@@ -629,7 +629,7 @@ void DialogStyleManager::OnCurrentImport() {
 
 		// Copy
 		modified = true;
-		c->ass->Styles.push_back(*temp.GetStyle(styles[sel])->Clone());
+		c->ass->Styles.push_back(*new AssStyle(*temp.GetStyle(styles[sel])));
 	}
 
 	// Update

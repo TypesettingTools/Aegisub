@@ -57,9 +57,15 @@ void AssFile::LoadDefault(bool include_dialogue_line) {
 AssFile::AssFile(const AssFile &from)
 : Info(from.Info)
 {
-	Styles.clone_from(from.Styles, std::mem_fun_ref(&AssStyle::Clone), [](AssStyle *e) { delete e; });
-	Events.clone_from(from.Events, std::mem_fun_ref(&AssDialogue::Clone), [](AssDialogue *e) { delete e; });
-	Attachments.clone_from(from.Attachments, std::mem_fun_ref(&AssAttachment::Clone), [](AssAttachment *e) { delete e; });
+	Styles.clone_from(from.Styles,
+		[](AssStyle const& e) { return new AssStyle(e); },
+		[](AssStyle *e) { delete e; });
+	Events.clone_from(from.Events,
+		[](AssDialogue const& e) { return new AssDialogue(e); },
+		[](AssDialogue *e) { delete e; });
+	Attachments.clone_from(from.Attachments,
+		[](AssAttachment const & e) { return new AssAttachment(e); },
+		[](AssAttachment *e) { delete e; });
 }
 
 void AssFile::swap(AssFile& from) throw() {

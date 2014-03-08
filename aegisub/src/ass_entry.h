@@ -50,9 +50,6 @@ class AssEntry : public boost::intrusive::make_list_base_hook<boost::intrusive::
 public:
 	virtual ~AssEntry() { }
 
-	/// Create a copy of this entry
-	virtual AssEntry *Clone() const=0;
-
 	/// Section of the file this entry belongs to
 	virtual AssEntryGroup Group() const=0;
 
