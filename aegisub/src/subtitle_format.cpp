@@ -53,10 +53,10 @@
 #include "subtitle_format_transtation.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
-#include "utils.h"
 #include "video_context.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>
@@ -65,15 +65,16 @@
 
 using namespace std::placeholders;
 
+namespace {
+	std::vector<std::unique_ptr<SubtitleFormat>> formats;
+}
+
 SubtitleFormat::SubtitleFormat(std::string name)
 : name(std::move(name))
 {
-	formats.push_back(this);
 }
 
-SubtitleFormat::~SubtitleFormat() {
-	formats.erase(remove(begin(formats), end(formats), this));
-}
+SubtitleFormat::~SubtitleFormat() { }
 
 bool SubtitleFormat::CanReadFile(agi::fs::path const& filename, std::string const&) const {
 	auto wildcards = GetReadWildcards();
@@ -289,25 +290,19 @@ void SubtitleFormat::MergeIdentical(AssFile &file) {
 	}
 }
 
-std::vector<SubtitleFormat*> SubtitleFormat::formats;
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
-		new AssSubtitleFormat;
-		new Ebu3264SubtitleFormat;
-		new EncoreSubtitleFormat;
-		new MKVSubtitleFormat;
-		new MicroDVDSubtitleFormat;
-		new SRTSubtitleFormat;
-		new TTXTSubtitleFormat;
-		new TXTSubtitleFormat;
-		new TranStationSubtitleFormat;
+		formats.emplace_back(agi::util::make_unique<AssSubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<Ebu3264SubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<EncoreSubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<MKVSubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<MicroDVDSubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<SRTSubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<TTXTSubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<TXTSubtitleFormat>());
+		formats.emplace_back(agi::util::make_unique<TranStationSubtitleFormat>());
 	}
-}
-
-void SubtitleFormat::DestroyFormats() {
-	while (!formats.empty())
-		delete formats.back();
 }
 
 template<class Cont, class Pred>
@@ -315,7 +310,7 @@ SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	auto it = find_if(container.begin(), container.end(), pred);
 	if (it == container.end())
 		throw UnknownSubtitleFormatError("Subtitle format for extension not found", nullptr);
-	return *it;
+	return it->get();
 }
 
 const SubtitleFormat *SubtitleFormat::GetReader(agi::fs::path const& filename, std::string const& encoding) {
@@ -334,11 +329,11 @@ std::string SubtitleFormat::GetWildcards(int mode) {
 	std::vector<std::string> all;
 	std::string final;
 
-	for (auto format : formats) {
-		std::vector<std::string> cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
+	for (auto const& format : formats) {
+		auto cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
 		if (cur.empty()) continue;
 
-		for_each(cur.begin(), cur.end(), [](std::string &str) { str.insert(0, "*."); });
+		for (auto& str : cur) str.insert(0, "*.");
 		all.insert(all.end(), begin(cur), end(cur));
 		final += "|" + format->GetName() + " (" + boost::join(cur, ",") + ")|" + boost::join(cur, ";");
 	}

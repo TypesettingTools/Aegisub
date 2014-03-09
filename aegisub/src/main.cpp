@@ -291,7 +291,6 @@ int AegisubApp::OnExit() {
 		wxTheClipboard->Close();
 	}
 
-	SubtitleFormat::DestroyFormats();
 	delete config::opt;
 	delete config::mru;
 	hotkey::clear();
