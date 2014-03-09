@@ -37,7 +37,6 @@
 #include "auto4_lua.h"
 
 #include "auto4_lua_utils.h"
-#include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_info.h"
 #include "ass_file.h"
@@ -50,8 +49,6 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/range/adaptor/indirected.hpp>
-#include <boost/range/algorithm_ext.hpp>
 #include <cassert>
 #include <memory>
 
@@ -118,8 +115,8 @@ namespace {
 
 	int modification_mask(AssEntry *e)
 	{
-		switch (e->Group())
-		{
+		if (!e) return AssFile::COMMIT_SCRIPTINFO;
+		switch (e->Group()) {
 			case AssEntryGroup::DIALOGUE: return AssFile::COMMIT_DIAG_ADDREM;
 			case AssEntryGroup::STYLE:    return AssFile::COMMIT_STYLES;
 			default:                      return AssFile::COMMIT_SCRIPTINFO;
@@ -142,19 +139,23 @@ namespace Automation4 {
 			luaL_error(L, "Requested out-of-range line from subtitle file: %d", idx);
 	}
 
-	void LuaAssFile::AssEntryToLua(lua_State *L, AssEntry *e)
+	void LuaAssFile::AssEntryToLua(lua_State *L, size_t idx)
 	{
 		lua_newtable(L);
 
+		const AssEntry *e = lines[idx];
+		if (!e)
+			e = &ass->Info[idx];
+
 		set_field(L, "section", e->GroupHeader());
 
-		if (AssInfo *info = dynamic_cast<AssInfo*>(e)) {
+		if (auto info = dynamic_cast<const AssInfo*>(e)) {
 			set_field(L, "raw", info->GetEntryData());
 			set_field(L, "key", info->Key());
 			set_field(L, "value", info->Value());
 			set_field(L, "class", "info");
 		}
-		else if (AssDialogue *dia = dynamic_cast<AssDialogue*>(e)) {
+		else if (auto dia = dynamic_cast<const AssDialogue*>(e)) {
 			set_field(L, "raw", dia->GetEntryData());
 			set_field(L, "comment", dia->Comment);
 
@@ -176,7 +177,7 @@ namespace Automation4 {
 
 			set_field(L, "class", "dialogue");
 		}
-		else if (AssStyle *sty = dynamic_cast<AssStyle*>(e)) {
+		else if (auto sty = dynamic_cast<const AssStyle*>(e)) {
 			set_field(L, "raw", sty->GetEntryData());
 			set_field(L, "name", sty->name);
 
@@ -308,7 +309,7 @@ namespace Automation4 {
 				// read an indexed AssEntry
 				int idx = lua_tointeger(L, 2);
 				CheckBounds(idx);
-				AssEntryToLua(L, lines[idx - 1]);
+				AssEntryToLua(L, idx - 1);
 				return 1;
 			}
 
@@ -350,6 +351,52 @@ namespace Automation4 {
 		return 0;
 	}
 
+	void LuaAssFile::InitScriptInfoIfNeeded()
+	{
+		if (script_info_copied) return;
+		size_t i = 0;
+		for (auto const& info : ass->Info) {
+			// Just in case an insane user inserted non-info lines into the
+			// script info section...
+			while (lines[i]) ++i;
+			lines_to_delete.emplace_back(agi::util::make_unique<AssInfo>(info));
+			lines[i++] = lines_to_delete.back().get();
+		}
+		script_info_copied = true;
+	}
+
+	void LuaAssFile::QueueLineForDeletion(size_t idx)
+	{
+		if (!lines[idx] || lines[idx]->Group() == AssEntryGroup::INFO)
+			InitScriptInfoIfNeeded();
+		else
+			lines_to_delete.emplace_back(lines[idx]);
+	}
+
+	void LuaAssFile::AssignLine(size_t idx, std::unique_ptr<AssEntry> e)
+	{
+		auto group = e->Group();
+		if (group == AssEntryGroup::INFO)
+			InitScriptInfoIfNeeded();
+		lines[idx] = e.get();
+		if (group == AssEntryGroup::INFO)
+			lines_to_delete.emplace_back(std::move(e));
+		else
+			e.release();
+	}
+
+	void LuaAssFile::InsertLine(std::vector<AssEntry *> &vec, size_t idx, std::unique_ptr<AssEntry> e)
+	{
+		auto group = e->Group();
+		if (group == AssEntryGroup::INFO)
+			InitScriptInfoIfNeeded();
+		vec.insert(vec.begin() + idx, e.get());
+		if (group == AssEntryGroup::INFO)
+			lines_to_delete.emplace_back(std::move(e));
+		else
+			e.release();
+	}
+
 	void LuaAssFile::ObjectIndexWrite(lua_State *L)
 	{
 		// instead of implementing everything twice, just call the other modification-functions from here
@@ -375,11 +422,12 @@ namespace Automation4 {
 			// replace line at index n or delete
 			if (!lua_isnil(L, 3)) {
 				// insert
+				CheckBounds(n);
+
 				auto e = LuaToAssEntry(L);
 				modification_type |= modification_mask(e.get());
-				CheckBounds(n);
-				lines_to_delete.emplace_back(lines[n - 1]);
-				lines[n - 1] = e.release();
+				QueueLineForDeletion(n - 1);
+				AssignLine(n - 1, std::move(e));
 			}
 			else {
 				// delete
@@ -418,7 +466,7 @@ namespace Automation4 {
 		for (size_t i = 0; i < lines.size(); ++i) {
 			if (id_idx < ids.size() && ids[id_idx] == i) {
 				modification_type |= modification_mask(lines[i]);
-				lines_to_delete.emplace_back(lines[i]);
+				QueueLineForDeletion(i);
 				++id_idx;
 			}
 			else {
@@ -440,7 +488,7 @@ namespace Automation4 {
 
 		for (size_t i = a; i < b; ++i) {
 			modification_type |= modification_mask(lines[i]);
-			lines_to_delete.emplace_back(lines[i]);
+			QueueLineForDeletion(i);
 		}
 
 		lines.erase(lines.begin() + a, lines.begin() + b);
@@ -457,24 +505,23 @@ namespace Automation4 {
 			auto e = LuaToAssEntry(L);
 			modification_type |= modification_mask(e.get());
 
-			// Find the appropriate place to put it
-			auto it = lines.end();
-			if (!lines.empty()) {
-				do {
-					--it;
-				}
-				while (it != lines.begin() && (*it)->Group() != e->Group());
+			if (lines.empty()) {
+				InsertLine(lines, 0, std::move(e));
+				continue;
 			}
 
-			if (it == lines.end() || (*it)->Group() != e->Group()) {
-				// The new entry belongs to a group that doesn't exist yet, so
-				// create it at the end of the file
-				lines.push_back(e.release());
+			// Find the appropriate place to put it
+			auto group = e->Group();
+			for (size_t i = lines.size(); i > 0; --i) {
+				auto cur_group = lines[i - 1] ? lines[i - 1]->Group() : AssEntryGroup::INFO;
+				if (cur_group == group) {
+					InsertLine(lines, i, std::move(e));
+					break;
+				}
 			}
-			else {
-				// Append the entry to the end of the existing group
-				lines.insert(++it, e.release());
-			}
+
+			// No lines of this type exist already, so just append it to the end
+			if (e) InsertLine(lines, lines.size(), std::move(e));
 		}
 	}
 
@@ -500,7 +547,7 @@ namespace Automation4 {
 			lua_pushvalue(L, i);
 			auto e = LuaToAssEntry(L);
 			modification_type |= modification_mask(e.get());
-			new_entries[i - 2] = e.release();
+			InsertLine(new_entries, i - 2, std::move(e));
 			lua_pop(L, 1);
 		}
 		lines.insert(lines.begin() + before - 1, new_entries.begin(), new_entries.end());
@@ -531,7 +578,7 @@ namespace Automation4 {
 		}
 
 		push_value(L, i + 1);
-		AssEntryToLua(L, lines[i]);
+		AssEntryToLua(L, i);
 		return 2;
 	}
 
@@ -596,11 +643,13 @@ namespace Automation4 {
 	std::vector<AssEntry *> LuaAssFile::ProcessingComplete(wxString const& undo_description)
 	{
 		auto apply_lines = [&](std::vector<AssEntry *> const& lines) {
-			ass->Info.clear();
+			if (script_info_copied)
+				ass->Info.clear();
 			ass->Styles.clear();
 			ass->Events.clear();
 
 			for (auto line : lines) {
+				if (!line) continue;
 				switch (line->Group()) {
 					case AssEntryGroup::INFO:     ass->Info.push_back(*static_cast<AssInfo *>(line)); break;
 					case AssEntryGroup::STYLE:    ass->Styles.push_back(*static_cast<AssStyle *>(line)); break;
@@ -641,11 +690,9 @@ namespace Automation4 {
 	, L(L)
 	, can_modify(can_modify)
 	, can_set_undo(can_set_undo)
-	, modification_type(0)
-	, references(2)
 	{
 		for (auto& line : ass->Info)
-			lines.push_back(&line);
+			lines.push_back(nullptr);
 		for (auto& line : ass->Styles)
 			lines.push_back(&line);
 		for (auto& line : ass->Events)

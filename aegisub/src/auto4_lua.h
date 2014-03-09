@@ -73,18 +73,33 @@ namespace Automation4 {
 		void CheckBounds(int idx);
 
 		/// How ass file been modified by the script since the last commit
-		int modification_type;
+		int modification_type = 0;
 
 		/// Reference count used to avoid deleting this until both lua and the
 		/// calling C++ code are done with it
-		int references;
+		int references = 2;
 
 		/// Set of subtitle lines being modified; initially a shallow copy of ass->Line
 		std::vector<AssEntry*> lines;
+		bool script_info_copied = false;
+
 		/// Commits to apply once processing completes successfully
 		std::deque<PendingCommit> pending_commits;
 		/// Lines to delete once processing complete successfully
 		std::vector<std::unique_ptr<AssEntry>> lines_to_delete;
+
+		/// Create copies of all of the lines in the script info section if it
+		/// hasn't already happened. This is done lazily, since it only needs
+		/// to happen when the user modifies the headers in some way, which
+		/// most runs of a script will not do.
+		void InitScriptInfoIfNeeded();
+		/// Add the line at the given index to the list of lines to be deleted
+		/// when the script completes, unless it's an AssInfo, since those are
+		/// owned by the container.
+		void QueueLineForDeletion(size_t idx);
+		/// Set the line at the index to the given value
+		void AssignLine(size_t idx, std::unique_ptr<AssEntry> e);
+		void InsertLine(std::vector<AssEntry *> &vec, size_t idx, std::unique_ptr<AssEntry> e);
 
 		int ObjectIndexRead(lua_State *L);
 		void ObjectIndexWrite(lua_State *L);
@@ -107,7 +122,7 @@ namespace Automation4 {
 		static LuaAssFile *GetObjPointer(lua_State *L, int idx);
 
 		/// makes a Lua representation of AssEntry and places on the top of the stack
-		static void AssEntryToLua(lua_State *L, AssEntry *e);
+		void AssEntryToLua(lua_State *L, size_t idx);
 		/// assumes a Lua representation of AssEntry on the top of the stack, and creates an AssEntry object of it
 		static std::unique_ptr<AssEntry> LuaToAssEntry(lua_State *L);
 
