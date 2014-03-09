@@ -27,7 +27,7 @@
 #include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
-#include <boost/spirit/home/phoenix/statement.hpp>
+#include <boost/phoenix/statement.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
 	agi::Color,

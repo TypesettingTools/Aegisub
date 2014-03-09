@@ -751,7 +751,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 
 			if (mode == 2)
 			{
-				auto next = find_if(++current_line, context->ass->Events.end(), predicate);
+				auto next = std::find_if(++current_line, context->ass->Events.end(), predicate);
 				if (next != context->ass->Events.end())
 					AddInactiveLine(sel, &*next);
 			}

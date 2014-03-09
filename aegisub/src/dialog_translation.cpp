@@ -67,7 +67,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogTranslation::OnActiveLineChanged, this))
 , active_line(c->selectionController->GetActiveLine())
 , line_count(c->ass->Events.size())
-, line_number(distance(c->ass->Events.begin(), c->ass->Events.iterator_to(*active_line)) + 1)
+, line_number(std::distance(c->ass->Events.begin(), c->ass->Events.iterator_to(*active_line)) + 1)
 {
 	SetIcon(GETICON(translation_toolbutton_16));
 
@@ -175,7 +175,7 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 	active_line = new_line;
 	blocks = active_line->ParseTags();
 	cur_block = 0;
-	line_number = distance(c->ass->Events.begin(), c->ass->Events.iterator_to(*new_line)) + 1;
+	line_number = std::distance(c->ass->Events.begin(), c->ass->Events.iterator_to(*new_line)) + 1;
 
 	if (bad_block(blocks[cur_block]) && !NextBlock()) {
 		wxMessageBox(_("No more lines to translate."));

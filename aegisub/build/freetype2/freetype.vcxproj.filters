@@ -14,9 +14,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(Freetype2SrcDir)\builds\win32\ftdebug.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(Freetype2SrcDir)\src\autofit\autofit.c">
       <Filter>Source Files</Filter>
     </ClCompile>

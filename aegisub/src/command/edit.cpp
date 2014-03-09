@@ -602,11 +602,11 @@ static void duplicate_lines(agi::Context *c, int shift) {
 	auto end = c->ass->Events.end();
 	while (start != end) {
 		// Find the first line in the selection
-		start = find_if(start, end, in_selection);
+		start = std::find_if(start, end, in_selection);
 		if (start == end) break;
 
 		// And the last line in this contiguous selection
-		auto insert_pos = find_if_not(start, end, in_selection);
+		auto insert_pos = std::find_if_not(start, end, in_selection);
 		auto last = std::prev(insert_pos);
 
 		// Duplicate each of the selected lines, inserting them in a block
