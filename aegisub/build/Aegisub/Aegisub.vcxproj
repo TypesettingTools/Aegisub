@@ -379,7 +379,9 @@
     <ClCompile Include="$(SrcDir)dialog_video_details.cpp" />
     <ClCompile Include="$(SrcDir)export_fixstyle.cpp" />
     <ClCompile Include="$(SrcDir)export_framerate.cpp" />
-    <ClCompile Include="$(SrcDir)ffmpegsource_common.cpp" />
+    <ClCompile Include="$(SrcDir)ffmpegsource_common.cpp">
+      <DisableSpecificWarnings>4345;4307;4800</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)fft.cpp" />
     <ClCompile Include="$(SrcDir)font_file_lister.cpp" />
     <ClCompile Include="$(SrcDir)font_file_lister_fontconfig.cpp" />
