@@ -8,7 +8,7 @@
 		<!-- Base for Aegisub source code -->
 		<AegisubSourceBase Condition="'$(AegisubSourceBase)'==''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</AegisubSourceBase>
 		<!-- Base for contrib libraries source code -->
-		<AegisubContribBase Condition="'$(AegisubContribBase)'==''">$(AegisubSourceBase)..\contrib\</AegisubContribBase>
+		<AegisubContribBase Condition="'$(AegisubContribBase)'==''">$(AegisubSourceBase)vendor\</AegisubContribBase>
 		<!-- Base for built files -->
 		<AegisubOutputBase Condition="'$(AegisubOutputBase)'==''">$(AegisubSourceBase)</AegisubOutputBase>
 		<!-- Directory for built executables -->

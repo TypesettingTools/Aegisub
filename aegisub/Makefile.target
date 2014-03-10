@@ -140,7 +140,7 @@ $(SUBDIRS):
 
 # Set relations to ensure dependencies are built before their targets during parallel builds.
 automation: libaegisub
-src: universalchardet tools libaegisub
+src: vendor/universalchardet tools libaegisub
 tests: libaegisub
 tools: libaegisub
 reporter: src

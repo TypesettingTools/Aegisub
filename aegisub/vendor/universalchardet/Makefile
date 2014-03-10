@@ -1,4 +1,4 @@
-include ../Makefile.inc
+include ../../Makefile.inc
 
 LIB = libuniversalchardet.a
 
@@ -40,6 +40,6 @@ EXTRA_DIST = \
 	GB2312Freq.tab \
 	JISFreq.tab
 
-include ../Makefile.target
+include ../../Makefile.target
 -include *.d
 

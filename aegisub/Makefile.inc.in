@@ -91,7 +91,7 @@ CFLAGS_OSS         = @OSS_CFLAGS@
 CFLAGS_PORTAUDIO   = @PORTAUDIO_CFLAGS@
 CFLAGS_PTHREAD     = @PTHREAD_CFLAGS@
 CFLAGS_LIBPULSE    = @LIBPULSE_CFLAGS@
-CFLAGS_UCHARDET    = -I../universalchardet
+CFLAGS_UCHARDET    = -I../vendor/universalchardet
 
 LIBS_ALSA          = @ALSA_LIBS@
 LIBS_FFMS2         = @FFMS2_LIBS@
@@ -109,7 +109,7 @@ LIBS_LUA           = @LUA_LIBS@
 LIBS_OPENAL        = @OPENAL_LIBS@
 LIBS_PORTAUDIO     = @PORTAUDIO_LIBS@
 LIBS_PTHREAD       = @PTHREAD_LIBS@
-LIBS_UCHARDET     ?= ../universalchardet/libuniversalchardet.a
+LIBS_UCHARDET     ?= ../vendor/universalchardet/libuniversalchardet.a
 
 #####################
 # DEBUG / DEVELOPMENT
