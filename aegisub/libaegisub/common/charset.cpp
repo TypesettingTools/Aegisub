@@ -27,10 +27,10 @@
 #define _X86_ 1
 #endif
 
-#include "../../universalchardet/nscore.h"
-#include "../../universalchardet/nsUniversalDetector.h"
-#include "../../universalchardet/nsMBCSGroupProber.h"
-#include "../../universalchardet/nsCharSetProber.h"
+#include "../../vendor/universalchardet/nscore.h"
+#include "../../vendor/universalchardet/nsUniversalDetector.h"
+#include "../../vendor/universalchardet/nsMBCSGroupProber.h"
+#include "../../vendor/universalchardet/nsCharSetProber.h"
 
 namespace {
 using namespace agi::charset;

@@ -7,7 +7,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\..\contrib\hunspell\src\</SrcDir>
+    <SrcDir>..\..\vendor\hunspell\src\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -47,9 +47,12 @@
     <ClCompile Include="$(SrcDir)hunspell\affixmgr.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\csutil.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\dictmgr.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\filemgr.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\hashmgr.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\hunspell.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\hunzip.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\phonet.cxx" />
+    <ClCompile Include="$(SrcDir)hunspell\replist.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\suggestmgr.cxx" />
     <ClCompile Include="$(SrcDir)parsers\firstparser.cxx" />
     <ClCompile Include="$(SrcDir)parsers\htmlparser.cxx" />
@@ -61,8 +64,5 @@
       <!-- Why is this file named .c when it's obviously C++ code -->
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\filemgr.cxx" />
-    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\hunzip.cxx" />
-    <ClCompile Include="..\..\..\contrib\hunspell\src\hunspell\replist.cxx" />
   </ItemGroup>
 </Project>

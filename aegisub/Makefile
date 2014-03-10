@@ -1,7 +1,7 @@
 include Makefile.inc
 
 SUBDIRS += \
-	universalchardet \
+	vendor/universalchardet \
 	libaegisub \
 	tools \
 	src \
