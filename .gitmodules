@@ -1,56 +1,56 @@
-[submodule "deps/fribidi"]
-	path = deps/fribidi
+[submodule "aegisub/vendor/fribidi"]
+	path = aegisub/vendor/fribidi
 	url = git://anongit.freedesktop.org/fribidi/fribidi
 	ignore = dirty
-[submodule "deps/freetype2"]
-	path = deps/freetype2
+[submodule "aegisub/vendor/freetype2"]
+	path = aegisub/vendor/freetype2
 	url = git://git.sv.nongnu.org/freetype/freetype2.git
 	ignore = dirty
-[submodule "deps/zlib"]
-	path = deps/zlib
+[submodule "aegisub/vendor/zlib"]
+	path = aegisub/vendor/zlib
 	url = git://github.com/madler/zlib.git
 	ignore = dirty
-[submodule "deps/wxWidgets"]
-	path = deps/wxWidgets
+[submodule "aegisub/vendor/wxWidgets"]
+	path = aegisub/vendor/wxWidgets
 	url = git://github.com/wxWidgets/wxWidgets.git
 	ignore = dirty
-[submodule "deps/googletest"]
-	path = deps/googletest
+[submodule "aegisub/vendor/googletest"]
+	path = aegisub/vendor/googletest
 	url = git://github.com/svn2github/googletest.git
 	ignore = dirty
-[submodule "deps/ffmpeg"]
-	path = deps/ffmpeg
+[submodule "aegisub/vendor/ffmpeg"]
+	path = aegisub/vendor/ffmpeg
 	url = git://source.ffmpeg.org/ffmpeg.git
 	ignore = dirty
-[submodule "deps/ffms2"]
-	path = deps/ffms2
+[submodule "aegisub/vendor/ffms2"]
+	path = aegisub/vendor/ffms2
 	url = git://github.com/FFMS/ffms2.git
 	branch = master
 	ignore = dirty
-[submodule "deps/fontconfig"]
-	path = deps/fontconfig
+[submodule "aegisub/vendor/fontconfig"]
+	path = aegisub/vendor/fontconfig
 	url = git://github.com/tgoyne/fontconfig.git
 	branch = msvc
 	ignore = dirty
-[submodule "deps/libass"]
-	path = deps/libass
+[submodule "aegisub/vendor/libass"]
+	path = aegisub/vendor/libass
 	url = git://github.com/libass/libass.git
 	branch = master
-[submodule "deps/icu"]
-	path = deps/icu
+[submodule "aegisub/vendor/icu"]
+	path = aegisub/vendor/icu
 	url = git://github.com/sillsdev/icu4c.git
 	branch = trunk
 	ignore = dirty
-[submodule "deps/boost"]
-	path = deps/boost
+[submodule "aegisub/vendor/boost"]
+	path = aegisub/vendor/boost
 	url = https://github.com/boostorg/boost.git
 	ignore = dirty
-[submodule "deps/lua"]
-	path = deps/lua
+[submodule "aegisub/vendor/lua"]
+	path = aegisub/vendor/lua
 	url = git://github.com/ittner/Lua-experimentation.git
 	branch = lua51
 	ignore = dirty
-[submodule "deps/fftw"]
-	path = deps/fftw
+[submodule "aegisub/vendor/fftw"]
+	path = aegisub/vendor/fftw
 	url = https://github.com/Aegisub/fftw3.git
 	ignore = dirty

@@ -8,7 +8,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\..\deps\lua\src\</SrcDir>
+    <SrcDir>..\..\vendor\lua\src\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />

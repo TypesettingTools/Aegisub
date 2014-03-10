@@ -85,8 +85,8 @@
     <!-- Includes Break Iterator and Collator data only -->
     <DownloadTgzFile
       Url="http://www.aegisub.org/~plorkyeran/icudt52l.dat.tgz"
-      Destination="$(MSBuildThisFileDirectory)..\..\..\deps\icu\source\data\in"
-      OutputFile="$(MSBuildThisFileDirectory)..\..\..\deps\icu\source\data\in\icudt52l.dat"
+      Destination="$(MSBuildThisFileDirectory)..\..\vendor\icu\source\data\in"
+      OutputFile="$(MSBuildThisFileDirectory)..\..\vendor\icu\source\data\in\icudt52l.dat"
       Hash="b611a32e857ab4474e3c0118bd09b0958026fe1d"
       />
 

@@ -50,18 +50,18 @@
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>
 
-    <BoostPath>..\..\..\deps\boost</BoostPath>
-    <FfmsSrcDir>..\..\..\deps\ffms2</FfmsSrcDir>
-    <FfmpegSrcDir>..\..\..\deps\ffmpeg</FfmpegSrcDir>
-    <FftwSrcDir>..\..\..\deps\fftw</FftwSrcDir>
-    <Freetype2SrcDir>..\..\..\deps\freetype2</Freetype2SrcDir>
-    <FribidiSrcDir>..\..\..\deps\fribidi</FribidiSrcDir>
-    <FontconfigSrcDir>..\..\..\deps\fontconfig</FontconfigSrcDir>
-    <GtestSrcDir>..\..\..\deps\googletest</GtestSrcDir>
-    <IcuSrcDir>..\..\..\deps\icu\source</IcuSrcDir>
-    <LibassSrcDir>..\..\..\deps\libass</LibassSrcDir>
-    <WxSrcDir>..\..\..\deps\wxWidgets</WxSrcDir>
-    <ZlibSrcDir>..\..\..\deps\zlib</ZlibSrcDir>
+    <BoostPath>..\..\vendor\boost</BoostPath>
+    <FfmsSrcDir>..\..\vendor\ffms2</FfmsSrcDir>
+    <FfmpegSrcDir>..\..\vendor\ffmpeg</FfmpegSrcDir>
+    <FftwSrcDir>..\..\vendor\fftw</FftwSrcDir>
+    <Freetype2SrcDir>..\..\vendor\freetype2</Freetype2SrcDir>
+    <FribidiSrcDir>..\..\vendor\fribidi</FribidiSrcDir>
+    <FontconfigSrcDir>..\..\vendor\fontconfig</FontconfigSrcDir>
+    <GtestSrcDir>..\..\vendor\googletest</GtestSrcDir>
+    <IcuSrcDir>..\..\vendor\icu\source</IcuSrcDir>
+    <LibassSrcDir>..\..\vendor\libass</LibassSrcDir>
+    <WxSrcDir>..\..\vendor\wxWidgets</WxSrcDir>
+    <ZlibSrcDir>..\..\vendor\zlib</ZlibSrcDir>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(MsysBasePath)' == ''">
