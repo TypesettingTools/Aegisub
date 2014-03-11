@@ -27,7 +27,14 @@
 #include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
+
+// We have to use the copy of pheonix within spirit if it exists, as the
+// standalone copy has different header guards
+#ifdef HAVE_BOOST_SPIRIT_HOME_PHOENIX_VERSION_HPP
 #include <boost/spirit/home/phoenix/statement.hpp>
+#else
+#include <boost/phoenix/statement.hpp>
+#endif
 
 BOOST_FUSION_ADAPT_STRUCT(
 	agi::Color,
