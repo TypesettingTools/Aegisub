@@ -45,12 +45,7 @@
 	path = vendor/boost
 	url = https://github.com/boostorg/boost.git
 	ignore = dirty
-[submodule "aegisub/vendor/lua"]
-	path = vendor/lua
-	url = git://github.com/ittner/Lua-experimentation.git
-	branch = lua51
-	ignore = dirty
-[submodule "aegisub/vendor/fftw"]
+[submodule "deps/fftw"]
 	path = vendor/fftw
 	url = https://github.com/Aegisub/fftw3.git
 	ignore = dirty

@@ -23,35 +23,35 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <ClCompile Include="$(SrcDir)lapi.c" />
-    <ClCompile Include="$(SrcDir)lauxlib.c" />
-    <ClCompile Include="$(SrcDir)lbaselib.c" />
-    <ClCompile Include="$(SrcDir)lcode.c" />
-    <ClCompile Include="$(SrcDir)ldblib.c" />
-    <ClCompile Include="$(SrcDir)ldebug.c" />
-    <ClCompile Include="$(SrcDir)ldo.c" />
-    <ClCompile Include="$(SrcDir)ldump.c" />
-    <ClCompile Include="$(SrcDir)lfunc.c" />
-    <ClCompile Include="$(SrcDir)lgc.c" />
-    <ClCompile Include="$(SrcDir)linit.c" />
-    <ClCompile Include="$(SrcDir)liolib.c" />
-    <ClCompile Include="$(SrcDir)llex.c" />
-    <ClCompile Include="$(SrcDir)lmathlib.c" />
-    <ClCompile Include="$(SrcDir)lmem.c" />
-    <ClCompile Include="$(SrcDir)loadlib.c" />
-    <ClCompile Include="$(SrcDir)lobject.c" />
-    <ClCompile Include="$(SrcDir)lopcodes.c" />
-    <ClCompile Include="$(SrcDir)loslib.c" />
-    <ClCompile Include="$(SrcDir)lparser.c" />
-    <ClCompile Include="$(SrcDir)lstate.c" />
-    <ClCompile Include="$(SrcDir)lstring.c" />
-    <ClCompile Include="$(SrcDir)lstrlib.c" />
-    <ClCompile Include="$(SrcDir)ltable.c" />
-    <ClCompile Include="$(SrcDir)ltablib.c" />
-    <ClCompile Include="$(SrcDir)ltm.c" />
-    <ClCompile Include="$(SrcDir)lundump.c" />
-    <ClCompile Include="$(SrcDir)lvm.c" />
-    <ClCompile Include="$(SrcDir)lzio.c" />
+    <ClCompile Include="$(SrcDir)lapi.cpp" />
+    <ClCompile Include="$(SrcDir)lauxlib.cpp" />
+    <ClCompile Include="$(SrcDir)lbaselib.cpp" />
+    <ClCompile Include="$(SrcDir)lcode.cpp" />
+    <ClCompile Include="$(SrcDir)ldblib.cpp" />
+    <ClCompile Include="$(SrcDir)ldebug.cpp" />
+    <ClCompile Include="$(SrcDir)ldo.cpp" />
+    <ClCompile Include="$(SrcDir)ldump.cpp" />
+    <ClCompile Include="$(SrcDir)lfunc.cpp" />
+    <ClCompile Include="$(SrcDir)lgc.cpp" />
+    <ClCompile Include="$(SrcDir)linit.cpp" />
+    <ClCompile Include="$(SrcDir)liolib.cpp" />
+    <ClCompile Include="$(SrcDir)llex.cpp" />
+    <ClCompile Include="$(SrcDir)lmathlib.cpp" />
+    <ClCompile Include="$(SrcDir)lmem.cpp" />
+    <ClCompile Include="$(SrcDir)loadlib.cpp" />
+    <ClCompile Include="$(SrcDir)lobject.cpp" />
+    <ClCompile Include="$(SrcDir)lopcodes.cpp" />
+    <ClCompile Include="$(SrcDir)loslib.cpp" />
+    <ClCompile Include="$(SrcDir)lparser.cpp" />
+    <ClCompile Include="$(SrcDir)lstate.cpp" />
+    <ClCompile Include="$(SrcDir)lstring.cpp" />
+    <ClCompile Include="$(SrcDir)lstrlib.cpp" />
+    <ClCompile Include="$(SrcDir)ltable.cpp" />
+    <ClCompile Include="$(SrcDir)ltablib.cpp" />
+    <ClCompile Include="$(SrcDir)ltm.cpp" />
+    <ClCompile Include="$(SrcDir)lundump.cpp" />
+    <ClCompile Include="$(SrcDir)lvm.cpp" />
+    <ClCompile Include="$(SrcDir)lzio.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)lapi.h" />
@@ -81,7 +81,7 @@
 
   <Target Name="CopyHeaders" BeforeTargets="Build">
     <Copy
-      SourceFiles="$(SrcDir)lua.h;$(SrcDir)lualib.h;$(SrcDir)lauxlib.h;$(SrcDir)luaconf.h;$(SrcDir)..\etc\lua.hpp"
+      SourceFiles="$(SrcDir)lua.h;$(SrcDir)lualib.h;$(SrcDir)lauxlib.h;$(SrcDir)luaconf.h"
       DestinationFolder="$(AegisubSourceBase)include"
       SkipUnchangedFiles="true"
       />

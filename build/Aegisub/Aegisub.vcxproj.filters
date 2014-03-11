@@ -1226,7 +1226,7 @@
     <ClCompile Include="$(SrcDir)auto4_regex.cpp">
       <Filter>Automation\Lua</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lpeg.c">
+    <ClCompile Include="$(SrcDir)lpeg.cpp">
       <Filter>Automation\Lua</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)resolution_resampler.cpp">

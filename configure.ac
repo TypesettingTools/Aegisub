@@ -383,38 +383,6 @@ AGI_OPT_PKG(ffms2, [build without ffms2 A/V provider [auto]], [Enable FFMS2 supp
 AGI_OPT_PKG(fftw3, [build without fftw support [auto]], [Enable fftw support])
 AGI_OPT_PKG(hunspell, [build without hunspell spell-checking [auto]], [Enable Hunspell support])
 
-############
-# Automation
-############
-# First try pkg-config with several names
-PKG_CHECK_MODULES(LUA, lua5.1  >= 5.1 lua5.1  < 5.2, [], [
-PKG_CHECK_MODULES(LUA, lua-5.1 >= 5.1 lua-5.1 < 5.2, [], [
-PKG_CHECK_MODULES(LUA, lua     >= 5.1 lua     < 5.2, [], [
-# Still not found so try to autodetect
-AS_IF([test -z "$LUA_CFLAGS"],
-  [AGI_FIND_HEADER([LUA], [lua.hpp],
-                   [/usr/include/lua5.1 /usr/include/lua51 /usr/local/include/lua51 /usr/local/include/lua5.1 /usr/include /usr/local/include])])
-
-AS_IF([test -z "$LUA_LIBS"],
-  [AGI_FIND_LIB([LUA], [lua51 lua-5.1 lua5.1 lua], [])])
-
-AC_AGI_COMPILE([Lua 5.1 (auto4)], [lua], [$LUA_CFLAGS], [$LUA_LIBS],[
-#include <lua.hpp>
-
-int main () {
-  lua_State *L = luaL_newstate();
-  lua_pushstring(L, "test");
-  int res = lua_objlen(L, -1) == 4;
-  lua_close(L);
-  return !res;
-}])
-    AS_IF([test x$agi_cv_with_lua = xno],
-          [AC_MSG_FAILURE([Lua 5.1 could not be found. Try setting LUA_CLFAGS and LUA_LIBS manually])])
-])])])
-
-AC_SUBST(LUA_CFLAGS)
-AC_SUBST(LUA_LIBS)
-
 ######################################################
 # Debugging support
 ######################################################

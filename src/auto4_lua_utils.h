@@ -16,10 +16,11 @@
 
 #include <libaegisub/log.h>
 
-#include <lua.hpp>
-
 #include <libaegisub/fs.h>
 
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 #include <string>
 #include <type_traits>
 #include <wx/string.h>

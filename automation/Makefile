@@ -4,11 +4,11 @@ LIB_SHARED = aegisub.so
 LIB_VERSION = 0.1.0
 BUILD_LIB = no
 
-CXXFLAGS += -I../libaegisub/include -I../src $(CXXFLAGS_WX)
+CXXFLAGS += -I../libaegisub/include -I../src -I ../vendor/lua/src $(CXXFLAGS_WX)
 CPPFLAGS += $(CPPFLAGS_BOOST)
 
-LIBS := -L../libaegisub -laegisub $(LIBS)
-LIBS += $(LIBS_WX) $(LIBS_BOOST) $(LIBS_ICU) $(LIBS_LUA)
+LIBS := -L../libaegisub -laegisub  -L../vendor/lua -llua-aegisub $(LIBS)
+LIBS += $(LIBS_WX) $(LIBS_BOOST) $(LIBS_ICU)
 
 SRC += tests/aegisub.cpp ../src/auto4_regex.cpp
 
