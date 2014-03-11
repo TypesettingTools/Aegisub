@@ -21,7 +21,6 @@
         $(LibassSrcDir)\libass;
         $(MSBuildThisFileDirectory);
         $(AegisubSourceBase)\include\fribidi;
-        $(AegisubContribBase)iconv\include;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <PreprocessorDefinitions>

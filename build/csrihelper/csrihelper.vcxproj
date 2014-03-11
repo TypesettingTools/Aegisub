@@ -5,6 +5,7 @@
     <ProjectGuid>{C832EAF3-860D-4373-A02C-933626B47A5E}</ProjectGuid>
     <RootNamespace>csrihelper</RootNamespace>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
@@ -13,6 +14,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -20,7 +22,13 @@
       <AdditionalIncludeDirectories>$(SrcDir)include\;$(SrcDir)lib\;$(SrcDir)lib\win32\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
+
   <!-- Source files -->
+  <ItemGroup>
+    <InstallHeader Include="$(SrcDir)\include\csri\*.h">
+      <Destination>csri\</Destination>
+    </InstallHeader>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)include\csri\csri.h" />
     <ClInclude Include="$(SrcDir)include\csri\fmtids.h" />

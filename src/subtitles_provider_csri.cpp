@@ -49,10 +49,9 @@
 
 #ifdef WIN32
 #define CSRIAPI
-#include "../../contrib/csri/include/csri/csri.h"
-#else
-#include <csri/csri.h>
 #endif
+
+#include <csri/csri.h>
 
 // CSRI renderers are not required to be thread safe (and VSFilter very much
 // is not)
