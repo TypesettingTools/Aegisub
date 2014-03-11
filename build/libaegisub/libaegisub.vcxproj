@@ -18,7 +18,6 @@
       <AdditionalIncludeDirectories>
         $(SrcDir);
         $(SrcDir)include;
-        $(AegisubContribBase)iconv\include;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <PreprocessorDefinitions>

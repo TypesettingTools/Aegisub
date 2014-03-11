@@ -4,6 +4,7 @@
     <ProjectGuid>{965054D2-44F2-4EB2-9879-051CC3D7EF08}</ProjectGuid>
     <RootNamespace>libiconv</RootNamespace>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
@@ -12,6 +13,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -20,7 +22,11 @@
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
   </ItemDefinitionGroup>
+
   <!-- Source files -->
+  <ItemGroup>
+    <InstallHeader Include="$(SrcDir)\include\iconv.h" />
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)include\iconv.h" />
     <ClInclude Include="$(SrcDir)include\libcharset.h" />

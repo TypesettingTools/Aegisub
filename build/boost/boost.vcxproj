@@ -25,10 +25,6 @@
         BOOST_THREAD_BUILD_LIB;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>
-        $(AegisubContribBase)iconv\include;
-        %(AdditionalIncludeDirectories)
-      </AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
 
