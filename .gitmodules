@@ -1,56 +1,56 @@
 [submodule "aegisub/vendor/fribidi"]
-	path = aegisub/vendor/fribidi
+	path = vendor/fribidi
 	url = git://anongit.freedesktop.org/fribidi/fribidi
 	ignore = dirty
 [submodule "aegisub/vendor/freetype2"]
-	path = aegisub/vendor/freetype2
+	path = vendor/freetype2
 	url = git://git.sv.nongnu.org/freetype/freetype2.git
 	ignore = dirty
 [submodule "aegisub/vendor/zlib"]
-	path = aegisub/vendor/zlib
+	path = vendor/zlib
 	url = git://github.com/madler/zlib.git
 	ignore = dirty
 [submodule "aegisub/vendor/wxWidgets"]
-	path = aegisub/vendor/wxWidgets
+	path = vendor/wxWidgets
 	url = git://github.com/wxWidgets/wxWidgets.git
 	ignore = dirty
 [submodule "aegisub/vendor/googletest"]
-	path = aegisub/vendor/googletest
+	path = vendor/googletest
 	url = git://github.com/svn2github/googletest.git
 	ignore = dirty
 [submodule "aegisub/vendor/ffmpeg"]
-	path = aegisub/vendor/ffmpeg
+	path = vendor/ffmpeg
 	url = git://source.ffmpeg.org/ffmpeg.git
 	ignore = dirty
 [submodule "aegisub/vendor/ffms2"]
-	path = aegisub/vendor/ffms2
+	path = vendor/ffms2
 	url = git://github.com/FFMS/ffms2.git
 	branch = master
 	ignore = dirty
 [submodule "aegisub/vendor/fontconfig"]
-	path = aegisub/vendor/fontconfig
+	path = vendor/fontconfig
 	url = git://github.com/tgoyne/fontconfig.git
 	branch = msvc
 	ignore = dirty
 [submodule "aegisub/vendor/libass"]
-	path = aegisub/vendor/libass
+	path = vendor/libass
 	url = git://github.com/libass/libass.git
 	branch = master
 [submodule "aegisub/vendor/icu"]
-	path = aegisub/vendor/icu
+	path = vendor/icu
 	url = git://github.com/sillsdev/icu4c.git
 	branch = trunk
 	ignore = dirty
 [submodule "aegisub/vendor/boost"]
-	path = aegisub/vendor/boost
+	path = vendor/boost
 	url = https://github.com/boostorg/boost.git
 	ignore = dirty
 [submodule "aegisub/vendor/lua"]
-	path = aegisub/vendor/lua
+	path = vendor/lua
 	url = git://github.com/ittner/Lua-experimentation.git
 	branch = lua51
 	ignore = dirty
 [submodule "aegisub/vendor/fftw"]
-	path = aegisub/vendor/fftw
+	path = vendor/fftw
 	url = https://github.com/Aegisub/fftw3.git
 	ignore = dirty

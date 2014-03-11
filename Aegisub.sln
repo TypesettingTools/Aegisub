@@ -2,56 +2,56 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Aegisub", "aegisub\build\Aegisub\Aegisub.vcxproj", "{9DDDB9E5-E4A1-423D-A224-F6D4E5AAC06A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Aegisub", "build\Aegisub\Aegisub.vcxproj", "{9DDDB9E5-E4A1-423D-A224-F6D4E5AAC06A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{914A5B35-66B2-4293-BB6C-D93DA9BC68C6} = {914A5B35-66B2-4293-BB6C-D93DA9BC68C6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "csrihelper", "aegisub\build\csrihelper\csrihelper.vcxproj", "{C832EAF3-860D-4373-A02C-933626B47A5E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "csrihelper", "build\csrihelper\csrihelper.vcxproj", "{C832EAF3-860D-4373-A02C-933626B47A5E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hunspell", "aegisub\build\hunspell\hunspell.vcxproj", "{CC791693-6B28-40AC-879D-64A6C16468E3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hunspell", "build\hunspell\hunspell.vcxproj", "{CC791693-6B28-40AC-879D-64A6C16468E3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libaegisub", "aegisub\build\libaegisub\libaegisub.vcxproj", "{BB3FED86-DB7A-4DC7-964A-260FB86CDE61}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libaegisub", "build\libaegisub\libaegisub.vcxproj", "{BB3FED86-DB7A-4DC7-964A-260FB86CDE61}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "aegisub\build\libiconv\libiconv.vcxproj", "{965054D2-44F2-4EB2-9879-051CC3D7EF08}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "build\libiconv\libiconv.vcxproj", "{965054D2-44F2-4EB2-9879-051CC3D7EF08}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libresrc", "aegisub\build\libresrc\libresrc.vcxproj", "{BD00D65F-24DA-4784-8860-3B972EA125FC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libresrc", "build\libresrc\libresrc.vcxproj", "{BD00D65F-24DA-4784-8860-3B972EA125FC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC} = {0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}
 		{08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8} = {08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua51", "aegisub\build\lua51\lua51.vcxproj", "{5391A8B1-9C70-4DC4-92AD-D3E34C6B803F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua51", "build\lua51\lua51.vcxproj", "{5391A8B1-9C70-4DC4-92AD-D3E34C6B803F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "respack", "aegisub\build\respack\respack.vcxproj", "{08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "respack", "build\respack\respack.vcxproj", "{08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "universalchardet", "aegisub\build\universalchardet\universalchardet.vcxproj", "{7B56955D-5162-4698-AA5B-47484EDC8783}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "universalchardet", "build\universalchardet\universalchardet.vcxproj", "{7B56955D-5162-4698-AA5B-47484EDC8783}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fftw", "aegisub\build\fftw\fftw.vcxproj", "{EA3DCC95-2423-4EA0-A508-7A427B4C0594}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fftw", "build\fftw\fftw.vcxproj", "{EA3DCC95-2423-4EA0-A508-7A427B4C0594}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "aegisub\build\freetype2\freetype.vcxproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "build\freetype2\freetype.vcxproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fontconfig", "aegisub\build\fontconfig\fontconfig.vcxproj", "{AD56899E-961B-47B7-BD0F-14D0DA50D141}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fontconfig", "build\fontconfig\fontconfig.vcxproj", "{AD56899E-961B-47B7-BD0F-14D0DA50D141}"
 	ProjectSection(ProjectDependencies) = postProject
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fribidi", "aegisub\build\fribidi\fribidi.vcxproj", "{FB8E8D19-A4D6-4181-943C-282075F49B41}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fribidi", "build\fribidi\fribidi.vcxproj", "{FB8E8D19-A4D6-4181-943C-282075F49B41}"
 	ProjectSection(ProjectDependencies) = postProject
 		{914A5B35-66B2-4293-BB6C-D93DA9BC68C6} = {914A5B35-66B2-4293-BB6C-D93DA9BC68C6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffms2", "aegisub\build\ffms2\ffms2.vcxproj", "{AA137613-96A1-4388-8905-71345B4F8F87}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffms2", "build\ffms2\ffms2.vcxproj", "{AA137613-96A1-4388-8905-71345B4F8F87}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F934AB7B-186B-4E96-B20C-A58C38C1B819} = {F934AB7B-186B-4E96-B20C-A58C38C1B819}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffmpeg", "aegisub\build\ffmpeg\ffmpeg.vcxproj", "{F934AB7B-186B-4E96-B20C-A58C38C1B819}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffmpeg", "build\ffmpeg\ffmpeg.vcxproj", "{F934AB7B-186B-4E96-B20C-A58C38C1B819}"
 	ProjectSection(ProjectDependencies) = postProject
 		{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE} = {10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "aegisub\build\zlib\zlib.vcxproj", "{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "build\zlib\zlib.vcxproj", "{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CEAEFCB9-3759-4D03-8D51-7287D7B7E7DF}"
 	ProjectSection(SolutionItems) = preProject
@@ -60,27 +60,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CEAEFC
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxWidgets", "aegisub\build\wx\wxWidgets.vcxproj", "{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxWidgets", "build\wx\wxWidgets.vcxproj", "{0518D6C0-7BF6-4FD1-91FB-191BD10DB2AC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{914A5B35-66B2-4293-BB6C-D93DA9BC68C6} = {914A5B35-66B2-4293-BB6C-D93DA9BC68C6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass", "aegisub\build\libass\libass.vcxproj", "{8804F253-DA67-4CC4-926B-0CD2AEE5778D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass", "build\libass\libass.vcxproj", "{8804F253-DA67-4CC4-926B-0CD2AEE5778D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PortableInstaller", "aegisub\build\PortableInstaller\PortableInstaller.vcxproj", "{5B0E9978-E76F-4BBC-8194-228323F59B53}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PortableInstaller", "build\PortableInstaller\PortableInstaller.vcxproj", "{5B0E9978-E76F-4BBC-8194-228323F59B53}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "aegisub\build\boost\boost.vcxproj", "{A649D828-A399-4D81-ADEF-94CFDBA7847F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "build\boost\boost.vcxproj", "{A649D828-A399-4D81-ADEF-94CFDBA7847F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icu", "aegisub\build\icu\icu.vcxproj", "{F934AB7B-186B-4E96-B20C-A58C38C1B818}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icu", "build\icu\icu.vcxproj", "{F934AB7B-186B-4E96-B20C-A58C38C1B818}"
 	ProjectSection(ProjectDependencies) = postProject
 		{914A5B35-66B2-4293-BB6C-D93DA9BC68C6} = {914A5B35-66B2-4293-BB6C-D93DA9BC68C6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googletest", "aegisub\build\googletest\googletest.vcxproj", "{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googletest", "build\googletest\googletest.vcxproj", "{FBE51B37-8B12-41E8-B5E0-F00A06B4BCD2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "aegisub\build\tests\tests.vcxproj", "{49766286-2B5D-4177-A860-BD7CE1846EEF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tests", "build\tests\tests.vcxproj", "{49766286-2B5D-4177-A860-BD7CE1846EEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildTasks", "aegisub\build\BuildTasks\BuildTasks.csproj", "{914A5B35-66B2-4293-BB6C-D93DA9BC68C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildTasks", "build\BuildTasks\BuildTasks.csproj", "{914A5B35-66B2-4293-BB6C-D93DA9BC68C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
