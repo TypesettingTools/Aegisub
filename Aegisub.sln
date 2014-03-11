@@ -12,6 +12,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hunspell", "build\hunspell\hunspell.vcxproj", "{CC791693-6B28-40AC-879D-64A6C16468E3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libaegisub", "build\libaegisub\libaegisub.vcxproj", "{BB3FED86-DB7A-4DC7-964A-260FB86CDE61}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A649D828-A399-4D81-ADEF-94CFDBA7847F} = {A649D828-A399-4D81-ADEF-94CFDBA7847F}
+		{F934AB7B-186B-4E96-B20C-A58C38C1B818} = {F934AB7B-186B-4E96-B20C-A58C38C1B818}
+		{965054D2-44F2-4EB2-9879-051CC3D7EF08} = {965054D2-44F2-4EB2-9879-051CC3D7EF08}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "build\libiconv\libiconv.vcxproj", "{965054D2-44F2-4EB2-9879-051CC3D7EF08}"
 EndProject
@@ -24,6 +29,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua51", "build\lua51\lua51.vcxproj", "{5391A8B1-9C70-4DC4-92AD-D3E34C6B803F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "respack", "build\respack\respack.vcxproj", "{08AF2BCC-FCDD-4F0E-8B41-59A6E634F2E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FB8E8D19-A4D6-4181-943C-282075F49B41} = {FB8E8D19-A4D6-4181-943C-282075F49B41}
+		{F934AB7B-186B-4E96-B20C-A58C38C1B818} = {F934AB7B-186B-4E96-B20C-A58C38C1B818}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "universalchardet", "build\universalchardet\universalchardet.vcxproj", "{7B56955D-5162-4698-AA5B-47484EDC8783}"
 EndProject
@@ -43,6 +52,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fribidi", "build\fribidi\fr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ffms2", "build\ffms2\ffms2.vcxproj", "{AA137613-96A1-4388-8905-71345B4F8F87}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FB8E8D19-A4D6-4181-943C-282075F49B41} = {FB8E8D19-A4D6-4181-943C-282075F49B41}
+		{F934AB7B-186B-4E96-B20C-A58C38C1B818} = {F934AB7B-186B-4E96-B20C-A58C38C1B818}
 		{F934AB7B-186B-4E96-B20C-A58C38C1B819} = {F934AB7B-186B-4E96-B20C-A58C38C1B819}
 	EndProjectSection
 EndProject
@@ -70,6 +81,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PortableInstaller", "build\PortableInstaller\PortableInstaller.vcxproj", "{5B0E9978-E76F-4BBC-8194-228323F59B53}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "build\boost\boost.vcxproj", "{A649D828-A399-4D81-ADEF-94CFDBA7847F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F934AB7B-186B-4E96-B20C-A58C38C1B818} = {F934AB7B-186B-4E96-B20C-A58C38C1B818}
+		{965054D2-44F2-4EB2-9879-051CC3D7EF08} = {965054D2-44F2-4EB2-9879-051CC3D7EF08}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "icu", "build\icu\icu.vcxproj", "{F934AB7B-186B-4E96-B20C-A58C38C1B818}"
 	ProjectSection(ProjectDependencies) = postProject
