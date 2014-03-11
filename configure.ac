@@ -221,6 +221,11 @@ AX_BOOST_REGEX
 AX_BOOST_SYSTEM
 AX_BOOST_THREAD
 
+cppflags_bak="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
+AC_CHECK_HEADERS([boost/spirit/home/phoenix/version.hpp])
+CPPFLAGS=$cppflags_bak
+
 PKG_CHECK_MODULES(ICU_UC, icu-uc >= icu_required_version)
 PKG_CHECK_MODULES(ICU_I18N, icu-i18n >= icu_required_version)
 
