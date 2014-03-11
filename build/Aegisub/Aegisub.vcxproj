@@ -392,10 +392,7 @@
     <ClCompile Include="$(SrcDir)hotkey.cpp" />
     <ClCompile Include="$(SrcDir)hotkey_data_view_model.cpp" />
     <ClCompile Include="$(SrcDir)initial_line_state.cpp" />
-    <ClCompile Include="$(SrcDir)lpeg.c">
-        <PrecompiledHeader>NotUsing</PrecompiledHeader>
-        <ForcedIncludeFiles></ForcedIncludeFiles>
-    </ClCompile>
+    <ClCompile Include="$(SrcDir)lpeg.cpp" />
     <ClCompile Include="$(SrcDir)main.cpp" />
     <ClCompile Include="$(SrcDir)menu.cpp" />
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />

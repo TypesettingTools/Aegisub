@@ -139,8 +139,8 @@ $(SUBDIRS):
 	$(MAKE) -C $@ $(MAKECMDGOALS)
 
 # Set relations to ensure dependencies are built before their targets during parallel builds.
-automation: libaegisub
-src: vendor/universalchardet tools libaegisub
+automation: libaegisub vendor/lua
+src: vendor/universalchardet vendor/lua tools libaegisub
 tests: libaegisub
 tools: libaegisub
 reporter: src

@@ -26,7 +26,7 @@
 #include <libaegisub/io.h>
 
 #include <fstream>
-#include <lua.hpp>
+#include <lua.h>
 #include <memory>
 
 namespace Automation4 {

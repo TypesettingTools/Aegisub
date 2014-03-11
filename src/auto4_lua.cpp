@@ -293,7 +293,7 @@ namespace {
 	}
 }
 
-extern "C" int luaopen_lpeg (lua_State *L);
+int luaopen_lpeg (lua_State *L);
 
 namespace Automation4 {
 	int regex_init(lua_State *L);
