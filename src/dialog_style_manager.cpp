@@ -144,10 +144,9 @@ void add_styles(Func1 name_checker, Func2 style_adder) {
 }
 
 int confirm_delete(int n, wxWindow *parent, wxString const& title) {
-	wxString message = n == 1 ?
-		_("Are you sure you want to delete this style?") :
-		wxString::Format(_("Are you sure you want to delete these %d styles?"), n);
-	return wxMessageBox(message, title, wxYES_NO | wxICON_EXCLAMATION, parent);
+	return wxMessageBox(
+		wxString::Format(wxPLURAL("Are you sure you want to delete this style?", "Are you sure you want to delete these %d styles?", n), n),
+		title, wxYES_NO | wxICON_EXCLAMATION, parent);
 }
 
 int get_single_sel(wxListBox *lb) {

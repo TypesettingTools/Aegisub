@@ -34,9 +34,9 @@
 #include "selection_controller.h"
 #include "utils.h"
 
-#include <algorithm>
 #include <boost/algorithm/string/find.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/algorithm.hpp>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -187,42 +187,32 @@ void DialogSelection::Process(wxCommandEvent&) {
 		con->selectionController->GetSelectedSet(old_sel);
 
 	wxString message;
-	size_t count = 0;
+	size_t count;
 	switch (action) {
 		case ACTION_SET:
-			new_sel = matches;
-			switch (count = new_sel.size()) {
-				case 0:  message = _("Selection was set to no lines"); break;
-				case 1:  message = _("Selection was set to one line"); break;
-				default: message = wxString::Format(_("Selection was set to %u lines"), (unsigned)count);
-			}
+			new_sel = std::move(matches);
+			message = (count = new_sel.size())
+				? wxString::Format(wxPLURAL("Selection was set to one line", "Selection was set to %u lines", count), (unsigned)count)
+				: _("Selection was set to no lines");
 			break;
 
 		case ACTION_ADD:
-			set_union(old_sel.begin(), old_sel.end(), matches.begin(), matches.end(), inserter(new_sel, new_sel.begin()));
-			switch (count = new_sel.size() - old_sel.size()) {
-				case 0:  message = _("No lines were added to selection"); break;
-				case 1:  message = _("One line was added to selection"); break;
-				default: message = wxString::Format(_("%u lines were added to selection"), (unsigned)count);
-			}
+			boost::set_union(old_sel, matches, inserter(new_sel, new_sel.begin()));
+			message = (count = new_sel.size() - old_sel.size())
+				? wxString::Format(wxPLURAL("One line was added to selection", "%u lines were added to selection", count), (unsigned)count)
+				: _("No lines were added to selection");
 			break;
 
 		case ACTION_SUB:
-			set_difference(old_sel.begin(), old_sel.end(), matches.begin(), matches.end(), inserter(new_sel, new_sel.begin()));
-			switch (count = old_sel.size() - new_sel.size()) {
-				case 0:  message = _("No lines were removed from selection"); break;
-				case 1:  message = _("One line was removed from selection"); break;
-				default: message = wxString::Format(_("%u lines were removed from selection"), (unsigned)count);
-			}
-			break;
+			boost::set_difference(old_sel, matches, inserter(new_sel, new_sel.begin()));
+			goto sub_message;
 
 		case ACTION_INTERSECT:
-			set_intersection(old_sel.begin(), old_sel.end(), matches.begin(), matches.end(), inserter(new_sel, new_sel.begin()));
-			switch (count = old_sel.size() - new_sel.size()) {
-				case 0:  message = _("No lines were removed from selection"); break;
-				case 1:  message = _("One line was removed from selection"); break;
-				default: message = wxString::Format(_("%u lines were removed from selection"), (unsigned)count);
-			}
+			boost::set_intersection(old_sel, matches, inserter(new_sel, new_sel.begin()));
+			sub_message:
+			message = (count = old_sel.size() - new_sel.size())
+				? wxString::Format(wxPLURAL("One line was removed from selection", "%u lines were removed from selection", count), (unsigned)count)
+				: _("No lines were removed from selection");
 			break;
 	}
 

@@ -203,9 +203,13 @@ std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 	if (missing == 0)
 		status_callback(_("All fonts found.\n"), 1);
 	else
-		status_callback(wxString::Format(_("%d fonts could not be found.\n"), missing), 2);
+		status_callback(wxString::Format(wxPLURAL("One font could not be found\n", "%d fonts could not be found.\n", missing), missing), 2);
 	if (missing_glyphs != 0)
-		status_callback(wxString::Format(_("%d fonts were found, but were missing glyphs used in the script.\n"), missing_glyphs), 2);
+		status_callback(wxString::Format(wxPLURAL(
+				"One font was found, but was missing glyphs used in the script.\n",
+				"%d fonts were found, but were missing glyphs used in the script.\n",
+				missing_glyphs),
+			missing_glyphs), 2);
 
 	return paths;
 }
