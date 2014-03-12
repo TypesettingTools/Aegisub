@@ -333,7 +333,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	bool start = type != 2;
 	bool end = type != 1;
 
-	SubtitleSelection sel = context->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 
 	long shift;
 	if (by_time) {

@@ -735,7 +735,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
 
-	SubtitleSelection sel = context->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 
 	switch (int mode = inactive_line_mode->GetInt())
 	{
@@ -798,7 +798,7 @@ void AudioTimingControllerDialogue::RegenerateSelectedLines()
 	selected_lines.clear();
 
 	AssDialogue *active = context->selectionController->GetActiveLine();
-	SubtitleSelection sel = context->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
 	for (auto line : sel)
 	{
 		if (line == active) continue;

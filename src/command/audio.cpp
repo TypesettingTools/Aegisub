@@ -191,7 +191,7 @@ struct audio_save_clip : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		SubtitleSelection sel = c->selectionController->GetSelectedSet();
+		SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 		if (sel.empty()) return;
 
 		AssTime start = INT_MAX, end = 0;
