@@ -960,6 +960,12 @@ void BaseGrid::SetSelectedSet(const Selection &new_selection) {
 	Refresh(false);
 }
 
+void BaseGrid::SetSelectedSet(Selection&& new_selection) {
+	selection = std::move(new_selection);
+	AnnounceSelectedSetChanged();
+	Refresh(false);
+}
+
 void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 	if (new_line != active_line) {
 		assert(new_line == nullptr || line_index_map.count(new_line));
@@ -976,6 +982,13 @@ void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 void BaseGrid::SetSelectionAndActive(Selection const& new_selection, AssDialogue *new_line) {
 	BeginBatch();
 	SetSelectedSet(new_selection);
+	SetActiveLine(new_line);
+	EndBatch();
+}
+
+void BaseGrid::SetSelectionAndActive(Selection&& new_selection, AssDialogue *new_line) {
+	BeginBatch();
+	SetSelectedSet(std::move(new_selection));
 	SetActiveLine(new_line);
 	EndBatch();
 }

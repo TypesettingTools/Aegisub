@@ -126,10 +126,12 @@ public:
 	// SelectionController implementation
 	void SetActiveLine(AssDialogue *new_line) override;
 	AssDialogue * GetActiveLine() const override { return active_line; }
+	void SetSelectedSet(Selection&& new_selection) override;
 	void SetSelectedSet(const Selection &new_selection) override;
 	void GetSelectedSet(Selection &res) const override { res = selection; }
 	Selection const& GetSelectedSet() const override { return selection; }
 	void SetSelectionAndActive(Selection const& new_selection, AssDialogue *new_line) override;;
+	void SetSelectionAndActive(Selection&& new_selection, AssDialogue *new_line) override;;
 	void NextLine() override;
 	void PrevLine() override;
 
