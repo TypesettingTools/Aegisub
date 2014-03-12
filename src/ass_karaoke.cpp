@@ -317,5 +317,5 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 	AssDialogue *new_active = c->selectionController->GetActiveLine();
 	if (!sel.count(c->selectionController->GetActiveLine()))
 		new_active = *sel.begin();
-	c->selectionController->SetSelectionAndActive(sel, new_active);
+	c->selectionController->SetSelectionAndActive(std::move(sel), new_active);
 }

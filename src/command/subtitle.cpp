@@ -374,7 +374,7 @@ struct subtitle_select_all : public Command {
 	void operator()(agi::Context *c) override {
 		SubtitleSelection sel;
 		boost::copy(c->ass->Events | agi::address_of, inserter(sel, sel.end()));
-		c->selectionController->SetSelectedSet(sel);
+		c->selectionController->SetSelectedSet(std::move(sel));
 	}
 };
 
@@ -403,7 +403,7 @@ struct subtitle_select_visible : public Command {
 			}
 		}
 
-		c->selectionController->SetSelectedSet(new_selection);
+		c->selectionController->SetSelectedSet(std::move(new_selection));
 	}
 
 	bool Validate(const agi::Context *c) override {

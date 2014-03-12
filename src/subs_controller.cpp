@@ -111,7 +111,7 @@ struct SubsController::UndoInfo {
 		c->subsGrid->BeginBatch();
 		c->selectionController->SetSelectedSet(std::set<AssDialogue *>{});
 		c->ass->Commit("", AssFile::COMMIT_NEW);
-		c->selectionController->SetSelectionAndActive(new_sel, active_line);
+		c->selectionController->SetSelectionAndActive(std::move(new_sel), active_line);
 		c->subsGrid->EndBatch();
 	}
 

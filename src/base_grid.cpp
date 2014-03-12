@@ -269,7 +269,7 @@ void BaseGrid::UpdateMaps() {
 		sorted.begin(), sorted.end(),
 		inserter(new_sel, new_sel.begin()));
 
-	SetSelectedSet(new_sel);
+	SetSelectedSet(std::move(new_sel));
 
 	// The active line may have ceased to exist; pick a new one if so
 	if (line_index_map.size() && !line_index_map.count(active_line))
@@ -321,7 +321,7 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	if (!addToSelected) {
 		Selection sel;
 		if (select) sel.insert(line);
-		SetSelectedSet(sel);
+		SetSelectedSet(std::move(sel));
 		return;
 	}
 
@@ -643,7 +643,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 			if (ctrl) newsel = selection;
 			for (int i = i1; i <= i2; i++)
 				newsel.insert(GetDialogue(i));
-			SetSelectedSet(newsel);
+			SetSelectedSet(std::move(newsel));
 			return;
 		}
 
@@ -940,7 +940,7 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 		for (int i = begin; i <= end; i++)
 			newsel.insert(GetDialogue(i));
 
-		SetSelectedSet(newsel);
+		SetSelectedSet(std::move(newsel));
 
 		MakeRowVisible(next);
 		return;

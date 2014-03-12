@@ -221,14 +221,10 @@ void DialogSelection::Process(wxCommandEvent&) {
 	else
 		StatusTimeout(message);
 
-	if (new_sel.size() && !new_sel.count(con->selectionController->GetActiveLine()))
-		con->selectionController->SetActiveLine(*new_sel.begin());
-	con->selectionController->SetSelectedSet(new_sel);
-
 	AssDialogue *new_active = con->selectionController->GetActiveLine();
 	if (new_sel.size() && !new_sel.count(new_active))
 		new_active = *new_sel.begin();
-	con->selectionController->SetSelectionAndActive(new_sel, new_active);
+	con->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 
 	Close();
 }
