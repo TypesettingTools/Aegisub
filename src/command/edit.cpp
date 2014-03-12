@@ -130,7 +130,7 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 		c->ass->Commit(_("paste"), paste_over ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_ADDREM);
 
 		if (!paste_over)
-			c->selectionController->SetSelectionAndActive(newsel, first);
+			c->selectionController->SetSelectionAndActive(std::move(newsel), first);
 	}
 }
 
@@ -647,7 +647,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 
 	c->ass->Commit(shift ? _("split") : _("duplicate lines"), AssFile::COMMIT_DIAG_ADDREM);
 
-	c->selectionController->SetSelectionAndActive(new_sel, new_active);
+	c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 }
 
 struct edit_line_duplicate : public validate_sel_nonempty {
@@ -777,7 +777,7 @@ static bool try_paste_lines(agi::Context *c) {
 	auto pos = c->ass->Line.iterator_to(*c->selectionController->GetActiveLine());
 	c->ass->Line.splice(pos, parsed, parsed.begin(), parsed.end());
 	c->ass->Commit(_("paste"), AssFile::COMMIT_DIAG_ADDREM);
-	c->selectionController->SetSelectionAndActive(new_selection, new_active);
+	c->selectionController->SetSelectionAndActive(std::move(new_selection), new_active);
 
 	return true;
 }
@@ -975,7 +975,7 @@ struct edit_line_recombine : public validate_sel_multiple {
 		// Restore selection
 		if (!new_sel.count(active_line))
 			active_line = *new_sel.begin();
-		c->selectionController->SetSelectionAndActive(new_sel, active_line);
+		c->selectionController->SetSelectionAndActive(std::move(new_sel), active_line);
 
 		c->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 	}

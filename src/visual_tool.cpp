@@ -301,7 +301,7 @@ void VisualTool<FeatureType>::SetSelection(FeatureType *feat, bool clear) {
 		if (!clear)
 			sel = c->selectionController->GetSelectedSet();
 		if (sel.insert(feat->line).second)
-			c->selectionController->SetSelectedSet(sel);
+			c->selectionController->SetSelectedSet(std::move(sel));
 	}
 }
 
@@ -324,7 +324,7 @@ void VisualTool<FeatureType>::RemoveSelection(FeatureType *feat) {
 	if (feat->line == new_active)
 		new_active = *sel.begin();
 
-	c->selectionController->SetSelectionAndActive(sel, new_active);
+	c->selectionController->SetSelectionAndActive(std::move(sel), new_active);
 }
 
 //////// PARSERS

@@ -364,7 +364,7 @@ struct subtitle_select_all : public Command {
 		transform(c->ass->Line.begin(), c->ass->Line.end(),
 			inserter(sel, sel.begin()), cast<AssDialogue*>());
 		sel.erase(nullptr);
-		c->selectionController->SetSelectedSet(sel);
+		c->selectionController->SetSelectedSet(std::move(sel));
 	}
 };
 
@@ -394,7 +394,7 @@ struct subtitle_select_visible : public Command {
 			}
 		}
 
-		c->selectionController->SetSelectedSet(new_selection);
+		c->selectionController->SetSelectedSet(std::move(new_selection));
 	}
 
 	bool Validate(const agi::Context *c) override {
