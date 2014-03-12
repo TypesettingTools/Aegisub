@@ -62,7 +62,7 @@ namespace {
 	struct validate_adjoinable : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) override {
-			SubtitleSelection sel = c->selectionController->GetSelectedSet();
+			SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 			if (sel.size() < 2) return !sel.empty();
 
 			size_t found = 0;
@@ -79,7 +79,7 @@ namespace {
 	};
 
 static void adjoin_lines(agi::Context *c, bool set_start) {
-	auto sel = c->selectionController->GetSelectedSet();
+	auto const& sel = c->selectionController->GetSelectedSet();
 	AssDialogue *prev = nullptr;
 	size_t seen = 0;
 	bool prev_sel = false;

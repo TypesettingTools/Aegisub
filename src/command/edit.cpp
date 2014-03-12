@@ -488,7 +488,7 @@ struct edit_find_replace : public Command {
 
 static std::string get_entry_data(AssDialogue &d) { return d.GetEntryData(); }
 static void copy_lines(agi::Context *c) {
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 	SetClipboard(join(c->ass->Events
 		| filtered([&](AssDialogue &d) { return sel.count(&d); })
 		| transformed(get_entry_data),
@@ -496,7 +496,7 @@ static void copy_lines(agi::Context *c) {
 }
 
 static void delete_lines(agi::Context *c, wxString const& commit_message) {
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 
 	// Find a line near the active line not being deleted to make the new active line
 	AssDialogue *pre_sel = nullptr;
@@ -693,7 +693,7 @@ struct edit_line_duplicate_shift_back : public validate_video_and_sel_nonempty {
 };
 
 static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDialogue *), wxString const& message) {
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
 
 	AssDialogue *first = nullptr;
 	for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ) {
@@ -709,9 +709,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 		delete diag;
 	}
 
-	sel.clear();
-	sel.insert(first);
-	c->selectionController->SetSelectionAndActive(sel, first);
+	c->selectionController->SetSelectionAndActive({first}, first);
 
 	c->ass->Commit(message, AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
@@ -922,7 +920,7 @@ struct edit_line_recombine : public validate_sel_multiple {
 	STR_HELP("Recombine subtitles which have been split and merged")
 
 	void operator()(agi::Context *c) override {
-		auto sel_set = c->selectionController->GetSelectedSet();
+		auto const& sel_set = c->selectionController->GetSelectedSet();
 		if (sel_set.size() < 2) return;
 
 		auto active_line = c->selectionController->GetActiveLine();
