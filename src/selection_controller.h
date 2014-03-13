@@ -97,8 +97,7 @@ public:
 	/// If no change happens to the selected set, whether because it was refused or
 	/// because the new set was identical to the old set, no change notification may
 	/// be sent.
-	virtual void SetSelectedSet(const Selection &new_selection) = 0;
-	virtual void SetSelectedSet(Selection&& new_selection) = 0;
+	virtual void SetSelectedSet(Selection new_selection) = 0;
 
 	/// @brief Obtain the selected set
 	/// @param[out] selection Filled with the selected set on return
@@ -115,8 +114,7 @@ public:
 	/// This sets both the active line and selected set before announcing the
 	/// change to either of them, and is guaranteed to announce the active line
 	/// change before the selection change.
-	virtual void SetSelectionAndActive(Selection const& new_selection, ItemDataType new_line) = 0;
-	virtual void SetSelectionAndActive(Selection&& new_selection, ItemDataType new_line) = 0;
+	virtual void SetSelectionAndActive(Selection new_selection, ItemDataType new_line) = 0;
 
 	/// @brief Change the active line to the next in sequence
 	///

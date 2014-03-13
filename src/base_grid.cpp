@@ -954,13 +954,7 @@ void BaseGrid::SetByFrame(bool state) {
 	Refresh(false);
 }
 
-void BaseGrid::SetSelectedSet(const Selection &new_selection) {
-	selection = new_selection;
-	AnnounceSelectedSetChanged();
-	Refresh(false);
-}
-
-void BaseGrid::SetSelectedSet(Selection&& new_selection) {
+void BaseGrid::SetSelectedSet(Selection new_selection) {
 	selection = std::move(new_selection);
 	AnnounceSelectedSetChanged();
 	Refresh(false);
@@ -979,14 +973,7 @@ void BaseGrid::SetActiveLine(AssDialogue *new_line) {
 	extendRow = GetDialogueIndex(new_line);
 }
 
-void BaseGrid::SetSelectionAndActive(Selection const& new_selection, AssDialogue *new_line) {
-	BeginBatch();
-	SetSelectedSet(new_selection);
-	SetActiveLine(new_line);
-	EndBatch();
-}
-
-void BaseGrid::SetSelectionAndActive(Selection&& new_selection, AssDialogue *new_line) {
+void BaseGrid::SetSelectionAndActive(Selection new_selection, AssDialogue *new_line) {
 	BeginBatch();
 	SetSelectedSet(std::move(new_selection));
 	SetActiveLine(new_line);
