@@ -37,7 +37,7 @@ namespace {
 	using cmd::Command;
 
 	template<class T>
-	struct visual_tool_command final : public Command {
+	struct visual_tool_command : public Command {
 		CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 		bool Validate(const agi::Context *c) override {

@@ -133,7 +133,7 @@ namespace detail {
 
 	/// @brief Templated common code for signals
 	template<class Slot>
-	class SignalBaseImpl final : public SignalBase {
+	class SignalBaseImpl : public SignalBase {
 	protected:
 		typedef boost::container::map<ConnectionToken*, Slot> SlotMap;
 
