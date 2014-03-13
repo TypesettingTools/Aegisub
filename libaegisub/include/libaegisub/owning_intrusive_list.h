@@ -21,7 +21,7 @@
 namespace agi {
 
 template<typename T>
-class owning_intrusive_list : private boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>>::type {
+class owning_intrusive_list final : private boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>>::type {
 	typedef typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>>::type base;
 public:
 	using base::back;

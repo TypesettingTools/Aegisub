@@ -42,7 +42,7 @@ class PersistLocation;
 class VideoBox;
 class VideoDisplay;
 
-class DialogDetachedVideo : public wxDialog {
+class DialogDetachedVideo final : public wxDialog {
 	agi::Context *context;
 	VideoDisplay *old_display;
 	wxWindow *old_slider;

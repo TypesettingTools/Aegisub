@@ -93,7 +93,7 @@ struct AegisubUpdateDescription {
 	: url(std::move(url)), friendly_name(std::move(friendly_name)), description(std::move(description)) { }
 };
 
-class VersionCheckerResultDialog : public wxDialog {
+class VersionCheckerResultDialog final : public wxDialog {
 	void OnCloseButton(wxCommandEvent &evt);
 	void OnRemindMeLater(wxCommandEvent &evt);
 	void OnClose(wxCloseEvent &evt);

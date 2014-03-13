@@ -34,7 +34,7 @@
 
 #include "subtitle_format.h"
 
-class MicroDVDSubtitleFormat : public SubtitleFormat {
+class MicroDVDSubtitleFormat final : public SubtitleFormat {
 public:
 	MicroDVDSubtitleFormat();
 

@@ -25,7 +25,7 @@ namespace agi { namespace charset {
 ///
 /// While glibc iconv supports ISO-6937-2, GNU libiconv does not due to that
 /// it's not used by anything but old subtitle formats
-class Converter6937 : public Converter {
+class Converter6937 final : public Converter {
 	/// Converter to UCS-4 so that we only have to deal with unicode codepoints
 	std::unique_ptr<IconvWrapper> to_ucs4;
 

@@ -43,7 +43,7 @@
 
 class DirectSoundPlayer;
 
-class DirectSoundPlayerThread : public wxThread {
+class DirectSoundPlayerThread final : public wxThread {
 	DirectSoundPlayer *parent;
 	HANDLE stopnotify;
 
@@ -55,7 +55,7 @@ public:
 	wxThread::ExitCode Entry();
 };
 
-class DirectSoundPlayer : public AudioPlayer {
+class DirectSoundPlayer final : public AudioPlayer {
 	friend class DirectSoundPlayerThread;
 
 	volatile bool playing;

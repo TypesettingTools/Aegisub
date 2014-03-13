@@ -44,7 +44,7 @@
 namespace {
 	using cmd::Command;
 
-struct timecode_close : public Command {
+struct timecode_close final : public Command {
 	CMD_NAME("timecode/close")
 	CMD_ICON(close_timecodes_menu)
 	STR_MENU("Close Timecodes File")
@@ -61,7 +61,7 @@ struct timecode_close : public Command {
 	}
 };
 
-struct timecode_open : public Command {
+struct timecode_open final : public Command {
 	CMD_NAME("timecode/open")
 	CMD_ICON(open_timecodes_menu)
 	STR_MENU("Open Timecodes File...")
@@ -76,7 +76,7 @@ struct timecode_open : public Command {
 	}
 };
 
-struct timecode_save : public Command {
+struct timecode_save final : public Command {
 	CMD_NAME("timecode/save")
 	CMD_ICON(save_timecodes_menu)
 	STR_MENU("Save Timecodes File...")

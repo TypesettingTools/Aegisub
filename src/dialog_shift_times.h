@@ -43,7 +43,7 @@ namespace json {
 	typedef std::deque<UnknownElement> Array;
 }
 
-class DialogShiftTimes : public wxDialog {
+class DialogShiftTimes final : public wxDialog {
 	wxDECLARE_NO_COPY_CLASS(DialogShiftTimes); // clang + libc++ herps a derp without this
 	agi::Context *context;
 

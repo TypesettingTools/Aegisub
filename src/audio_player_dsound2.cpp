@@ -117,7 +117,7 @@ struct COMObjectRetainer {
 };
 
 /// @brief RAII wrapper around Win32 HANDLE type
-struct Win32KernelHandle : public agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> {
+struct Win32KernelHandle final : public agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> {
 	/// @brief Create with a managed handle
 	/// @param handle Win32 handle to manage
 	Win32KernelHandle(HANDLE handle = 0)

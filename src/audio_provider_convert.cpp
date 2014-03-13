@@ -33,7 +33,7 @@
 
 /// Anything integral -> 16 bit signed machine-endian audio converter
 template<class Target>
-class BitdepthConvertAudioProvider : public AudioProviderWrapper {
+class BitdepthConvertAudioProvider final : public AudioProviderWrapper {
 	int src_bytes_per_sample;
 public:
 	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
@@ -74,7 +74,7 @@ public:
 
 /// Floating point -> 16 bit signed machine-endian audio converter
 template<class Source, class Target>
-class FloatConvertAudioProvider : public AudioProviderWrapper {
+class FloatConvertAudioProvider final : public AudioProviderWrapper {
 public:
 	FloatConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		bytes_per_sample = sizeof(Target);
@@ -105,7 +105,7 @@ public:
 };
 
 /// Non-mono 16-bit signed machine-endian -> mono 16-bit signed machine endian converter
-class DownmixAudioProvider : public AudioProviderWrapper {
+class DownmixAudioProvider final : public AudioProviderWrapper {
 	int src_channels;
 public:
 	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
@@ -136,7 +136,7 @@ public:
 
 /// Sample doubler with linear interpolation for the agi::util::make_unique<samples>
 /// Requires 16-bit mono input
-class SampleDoublingAudioProvider : public AudioProviderWrapper {
+class SampleDoublingAudioProvider final : public AudioProviderWrapper {
 public:
 	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		if (source->GetBytesPerSample() != 2)

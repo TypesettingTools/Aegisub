@@ -42,7 +42,7 @@ namespace agi {
 	class ProgressSink;
 }
 
-class RAMAudioProvider : public AudioProviderWrapper {
+class RAMAudioProvider final : public AudioProviderWrapper {
 #ifdef _MSC_VER
 	boost::container::stable_vector<char[1 << 22]> blockcache;
 #else

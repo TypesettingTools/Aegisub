@@ -86,7 +86,7 @@ static const int spectrum_horz_vert_arrow_size = 4;
 
 wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
 
-class ColorPickerSpectrum : public wxControl {
+class ColorPickerSpectrum final : public wxControl {
 	int x;
 	int y;
 
@@ -251,7 +251,7 @@ wxDEFINE_EVENT(EVT_RECENT_SELECT, wxThreadEvent);
 
 /// @class ColorPickerRecent
 /// @brief A grid of recently used colors which can be selected by clicking on them
-class ColorPickerRecent : public wxStaticBitmap {
+class ColorPickerRecent final : public wxStaticBitmap {
 	int rows;     ///< Number of rows of colors
 	int cols;     ///< Number of cols of colors
 	int cellsize; ///< Width/Height of each cell
@@ -344,7 +344,7 @@ public:
 
 wxDEFINE_EVENT(EVT_DROPPER_SELECT, wxThreadEvent);
 
-class ColorPickerScreenDropper : public wxControl {
+class ColorPickerScreenDropper final : public wxControl {
 	wxBitmap capture;
 
 	int resx, resy;
@@ -434,7 +434,7 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 }
 
 
-class DialogColorPicker : public wxDialog {
+class DialogColorPicker final : public wxDialog {
 	std::unique_ptr<PersistLocation> persist;
 
 	agi::Color cur_color; ///< Currently selected colour

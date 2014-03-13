@@ -38,7 +38,7 @@ namespace agi { struct Context; }
 
 /// @class DialogVideoDetails
 /// @brief Display information about the video in a dialog
-struct DialogVideoDetails : public wxDialog {
+struct DialogVideoDetails final : public wxDialog {
 	/// Constructor
 	/// @param c Project context
 	DialogVideoDetails(agi::Context *c);

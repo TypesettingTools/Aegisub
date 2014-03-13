@@ -69,7 +69,7 @@ template<class Base> class Placeholder;
 /// @brief Main subtitle edit box
 ///
 /// Controls the text edit and all surrounding controls
-class SubsEditBox : public wxPanel {
+class SubsEditBox final : public wxPanel {
 	enum TimeField {
 		TIME_START = 0,
 		TIME_END,

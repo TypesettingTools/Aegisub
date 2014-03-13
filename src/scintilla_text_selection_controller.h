@@ -18,7 +18,7 @@
 
 class ScintillaTextCtrl;
 
-class ScintillaTextSelectionController : public TextSelectionController {
+class ScintillaTextSelectionController final : public TextSelectionController {
 	ScintillaTextCtrl *ctrl;
 
 public:

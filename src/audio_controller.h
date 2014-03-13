@@ -63,7 +63,7 @@ class TimeRange;
 /// providers or players owned by a controller. If some operation that isn't
 /// possible in the existing design is needed, the controller should be
 /// extended in some way to allow it.
-class AudioController : public wxEvtHandler {
+class AudioController final : public wxEvtHandler {
 	/// Project context this controller belongs to
 	agi::Context *context;
 

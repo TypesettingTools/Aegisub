@@ -29,7 +29,7 @@ public:
 
 	// thrown during the first phase of reading. generally catches low-level
 	// problems such as errant characters or corrupt/incomplete documents
-	class ScanException : public Exception {
+	class ScanException final : public Exception {
 	public:
 		ScanException(std::string const& sMessage, Reader::Location locError)
 		: Exception(sMessage)
@@ -41,7 +41,7 @@ public:
 
 	// thrown during the second phase of reading. generally catches
 	// higher-level problems such as missing commas or brackets
-	class ParseException : public Exception {
+	class ParseException final : public Exception {
 	public:
 		ParseException(std::string const& sMessage, Reader::Location locTokenBegin, Reader::Location locTokenEnd)
 		: Exception(sMessage)

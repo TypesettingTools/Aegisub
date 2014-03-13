@@ -26,7 +26,7 @@
 class wxFlexGridSizer;
 class wxStaticText;
 
-class DialogDummyVideo : public wxDialog {
+class DialogDummyVideo final : public wxDialog {
 	DialogDummyVideo(wxWindow *parent);
 
 	double fps;

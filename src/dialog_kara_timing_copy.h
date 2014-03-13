@@ -44,7 +44,7 @@ class KaraokeLineMatchDisplay;
 class wxComboBox;
 class wxCheckBox;
 
-class DialogKanjiTimer : public wxDialog {
+class DialogKanjiTimer final : public wxDialog {
 	AssFile *subs;
 
 	KaraokeLineMatchDisplay *display;

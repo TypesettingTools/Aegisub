@@ -33,7 +33,7 @@ namespace agi { namespace charset { class IconvWrapper; } }
 class Hunspell;
 
 /// @brief Hunspell-based spell checker implementation
-class HunspellSpellChecker : public agi::SpellChecker {
+class HunspellSpellChecker final : public agi::SpellChecker {
 	/// Hunspell instance
 	std::unique_ptr<Hunspell> hunspell;
 

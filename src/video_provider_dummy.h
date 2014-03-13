@@ -41,7 +41,7 @@ namespace agi { struct Color; }
 ///
 /// This simply returns a single constant frame, which can either be a flat
 /// color or a checkerboard pattern
-class DummyVideoProvider : public VideoProvider {
+class DummyVideoProvider final : public VideoProvider {
 	int framecount;          ///< Length of the dummy video in frames
 	agi::vfr::Framerate fps; ///< Frame rate to use
 	int width;               ///< Width in pixels

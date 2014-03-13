@@ -43,7 +43,7 @@
 
 /// @class KaraokeMarker
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke
-class KaraokeMarker : public AudioMarker {
+class KaraokeMarker final : public AudioMarker {
 	int position;
 	Pen *pen;
 	FeetStyle style;
@@ -81,7 +81,7 @@ public:
 ///
 /// This does not support \kt, as it inherently requires that the end time of
 /// one syllable be the same as the start time of the next one.
-class AudioTimingControllerKaraoke : public AudioTimingController {
+class AudioTimingControllerKaraoke final : public AudioTimingController {
 	std::deque<agi::signal::Connection> slots;
 	agi::signal::Connection& file_changed_slot;
 

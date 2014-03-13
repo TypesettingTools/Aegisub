@@ -200,7 +200,7 @@ namespace Automation4 {
 	};
 
 	/// A lua-generated dialog or panel in the export options dialog
-	class LuaDialog : public ScriptDialog {
+	class LuaDialog final : public ScriptDialog {
 		/// Controls in this dialog
 		std::vector<std::unique_ptr<LuaDialogControl>> controls;
 		/// The names and IDs of buttons in this dialog if non-default ones were used
@@ -250,7 +250,7 @@ namespace Automation4 {
 	/// @throws agi::UserCancelException if the function fails to run to completion (either due to cancelling or errors)
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, std::string const& title, wxWindow *parent, bool can_open_config);
 
-	class LuaCommand : public cmd::Command, private LuaFeature {
+	class LuaCommand final : public cmd::Command, private LuaFeature {
 		std::string cmd_name;
 		wxString display;
 		wxString help;
@@ -274,7 +274,7 @@ namespace Automation4 {
 		static int LuaRegister(lua_State *L);
 	};
 
-	class LuaExportFilter : public ExportFilter, private LuaFeature {
+	class LuaExportFilter final : public ExportFilter, private LuaFeature {
 		bool has_config;
 		LuaDialog *config_dialog;
 

@@ -38,7 +38,7 @@
 
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
-class FFmpegSourceVideoProvider : public VideoProvider, FFmpegSourceProvider {
+class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvider {
 	/// video source object
 	agi::scoped_holder<FFMS_VideoSource*, void (FFMS_CC*)(FFMS_VideoSource*)> VideoSource;
 	const FFMS_VideoProperties *VideoInfo = nullptr; ///< video properties

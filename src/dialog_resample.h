@@ -29,7 +29,7 @@ struct ResampleSettings;
 /// @brief Configuration dialog for resolution resampling
 ///
 /// Populate a ResampleSettings structure with data from the user
-class DialogResample : public wxDialog {
+class DialogResample final : public wxDialog {
 	agi::Context *c; ///< Project context
 
 	wxSpinCtrl *res_x;

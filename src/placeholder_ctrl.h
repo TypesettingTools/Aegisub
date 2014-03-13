@@ -28,7 +28,7 @@
 /// is removed when the control is focused to begin typing in it, and restored
 /// when the control loses focus and the value is empty
 template<class BaseCtrl>
-class Placeholder : public BaseCtrl {
+class Placeholder final : public BaseCtrl {
 	wxString placeholder; ///< Placeholder string
 	bool is_placeholder;  ///< Should the value be cleared on focus?
 

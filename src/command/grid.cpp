@@ -48,7 +48,7 @@
 namespace {
 	using cmd::Command;
 
-struct grid_line_next : public Command {
+struct grid_line_next final : public Command {
 	CMD_NAME("grid/line/next")
 	STR_MENU("Next Line")
 	STR_DISP("Next Line")
@@ -59,7 +59,7 @@ struct grid_line_next : public Command {
 	}
 };
 
-struct grid_line_next_create : public Command {
+struct grid_line_next_create final : public Command {
 	CMD_NAME("grid/line/next/create")
 	CMD_ICON(button_audio_commit)
 	STR_MENU("Next Line")
@@ -87,7 +87,7 @@ struct grid_line_next_create : public Command {
 	}
 };
 
-struct grid_line_prev : public Command {
+struct grid_line_prev final : public Command {
 	CMD_NAME("grid/line/prev")
 	STR_MENU("Previous Line")
 	STR_DISP("Previous Line")
@@ -98,7 +98,7 @@ struct grid_line_prev : public Command {
 	}
 };
 
-struct grid_sort_actor : public Command {
+struct grid_sort_actor final : public Command {
 	CMD_NAME("grid/sort/actor")
 	STR_MENU("&Actor Name")
 	STR_DISP("Actor Name")
@@ -118,7 +118,7 @@ struct validate_sel_multiple : public Command {
 	}
 };
 
-struct grid_sort_actor_selected : public validate_sel_multiple {
+struct grid_sort_actor_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/actor/selected")
 	STR_MENU("&Actor Name")
 	STR_DISP("Actor Name")
@@ -130,7 +130,7 @@ struct grid_sort_actor_selected : public validate_sel_multiple {
 	}
 };
 
-struct grid_sort_effect : public Command {
+struct grid_sort_effect final : public Command {
 	CMD_NAME("grid/sort/effect")
 	STR_MENU("&Effect")
 	STR_DISP("Effect")
@@ -142,7 +142,7 @@ struct grid_sort_effect : public Command {
 	}
 };
 
-struct grid_sort_effect_selected : public validate_sel_multiple {
+struct grid_sort_effect_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/effect/selected")
 	STR_MENU("&Effect")
 	STR_DISP("Effect")
@@ -154,7 +154,7 @@ struct grid_sort_effect_selected : public validate_sel_multiple {
 	}
 };
 
-struct grid_sort_end : public Command {
+struct grid_sort_end final : public Command {
 	CMD_NAME("grid/sort/end")
 	STR_MENU("&End Time")
 	STR_DISP("End Time")
@@ -166,7 +166,7 @@ struct grid_sort_end : public Command {
 	}
 };
 
-struct grid_sort_end_selected : public validate_sel_multiple {
+struct grid_sort_end_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/end/selected")
 	STR_MENU("&End Time")
 	STR_DISP("End Time")
@@ -178,7 +178,7 @@ struct grid_sort_end_selected : public validate_sel_multiple {
 	}
 };
 
-struct grid_sort_layer : public Command {
+struct grid_sort_layer final : public Command {
 	CMD_NAME("grid/sort/layer")
 	STR_MENU("&Layer")
 	STR_DISP("Layer")
@@ -190,7 +190,7 @@ struct grid_sort_layer : public Command {
 	}
 };
 
-struct grid_sort_layer_selected : public validate_sel_multiple {
+struct grid_sort_layer_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/layer/selected")
 	STR_MENU("&Layer")
 	STR_DISP("Layer")
@@ -202,7 +202,7 @@ struct grid_sort_layer_selected : public validate_sel_multiple {
 	}
 };
 
-struct grid_sort_start : public Command {
+struct grid_sort_start final : public Command {
 	CMD_NAME("grid/sort/start")
 	STR_MENU("&Start Time")
 	STR_DISP("Start Time")
@@ -214,7 +214,7 @@ struct grid_sort_start : public Command {
 	}
 };
 
-struct grid_sort_start_selected : public validate_sel_multiple {
+struct grid_sort_start_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/start/selected")
 	STR_MENU("&Start Time")
 	STR_DISP("Start Time")
@@ -226,7 +226,7 @@ struct grid_sort_start_selected : public validate_sel_multiple {
 	}
 };
 
-struct grid_sort_style : public Command {
+struct grid_sort_style final : public Command {
 	CMD_NAME("grid/sort/style")
 	STR_MENU("St&yle Name")
 	STR_DISP("Style Name")
@@ -238,7 +238,7 @@ struct grid_sort_style : public Command {
 	}
 };
 
-struct grid_sort_style_selected : public validate_sel_multiple {
+struct grid_sort_style_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/style/selected")
 	STR_MENU("St&yle Name")
 	STR_DISP("Style Name")
@@ -250,7 +250,7 @@ struct grid_sort_style_selected : public validate_sel_multiple {
 	}
 };
 
-struct grid_tag_cycle_hiding : public Command {
+struct grid_tag_cycle_hiding final : public Command {
 	CMD_NAME("grid/tag/cycle_hiding")
 	CMD_ICON(toggle_tag_hiding)
 	STR_MENU("Cycle Tag Hiding Mode")
@@ -275,7 +275,7 @@ struct grid_tag_cycle_hiding : public Command {
 	}
 };
 
-struct grid_tags_hide : public Command {
+struct grid_tags_hide final : public Command {
 	CMD_NAME("grid/tags/hide")
 	STR_MENU("&Hide Tags")
 	STR_DISP("Hide Tags")
@@ -291,7 +291,7 @@ struct grid_tags_hide : public Command {
 	}
 };
 
-struct grid_tags_show : public Command {
+struct grid_tags_show final : public Command {
 	CMD_NAME("grid/tags/show")
 	STR_MENU("Sh&ow Tags")
 	STR_DISP("Show Tags")
@@ -307,7 +307,7 @@ struct grid_tags_show : public Command {
 	}
 };
 
-struct grid_tags_simplify : public Command {
+struct grid_tags_simplify final : public Command {
 	CMD_NAME("grid/tags/simplify")
 	STR_MENU("S&implify Tags")
 	STR_DISP("Simplify Tags")
@@ -342,7 +342,7 @@ static bool move_one(T begin, T end, U const& to_move, int step) {
 	return move_count > 0;
 }
 
-struct grid_move_up : public Command {
+struct grid_move_up final : public Command {
 	CMD_NAME("grid/move/up")
 	STR_MENU("Move line up")
 	STR_DISP("Move line up")
@@ -359,7 +359,7 @@ struct grid_move_up : public Command {
 	}
 };
 
-struct grid_move_down : public Command {
+struct grid_move_down final : public Command {
 	CMD_NAME("grid/move/down")
 	STR_MENU("Move line down")
 	STR_DISP("Move line down")
@@ -376,7 +376,7 @@ struct grid_move_down : public Command {
 	}
 };
 
-struct grid_swap : public Command {
+struct grid_swap final : public Command {
 	CMD_NAME("grid/swap")
 	CMD_ICON(arrow_sort)
 	STR_MENU("Swap Lines")

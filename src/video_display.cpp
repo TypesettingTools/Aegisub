@@ -76,7 +76,7 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 /// @class VideoOutRenderException
 /// @extends VideoOutException
 /// @brief An OpenGL error occurred while uploading or displaying a frame
-class OpenGlException : public agi::Exception {
+class OpenGlException final : public agi::Exception {
 public:
 	OpenGlException(const char *func, int err)
 	: agi::Exception(from_wx(wxString::Format("%s failed with error code %d", func, err)))

@@ -62,7 +62,7 @@ enum class VariableDataType {
 };
 
 /// A single parameter to an override tag
-class AssOverrideParameter : boost::noncopyable {
+class AssOverrideParameter final : boost::noncopyable {
 	std::string value;
 	mutable std::unique_ptr<AssDialogueBlockOverride> block;
 	VariableDataType type;
@@ -87,7 +87,7 @@ public:
 	}
 };
 
-class AssOverrideTag : boost::noncopyable {
+class AssOverrideTag final : boost::noncopyable {
 	bool valid;
 
 public:

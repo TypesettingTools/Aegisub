@@ -44,7 +44,7 @@
 namespace {
 	using cmd::Command;
 
-struct keyframe_close : public Command {
+struct keyframe_close final : public Command {
 	CMD_NAME("keyframe/close")
 	CMD_ICON(close_keyframes_menu)
 	STR_MENU("Close Keyframes")
@@ -61,7 +61,7 @@ struct keyframe_close : public Command {
 	}
 };
 
-struct keyframe_open : public Command {
+struct keyframe_open final : public Command {
 	CMD_NAME("keyframe/open")
 	CMD_ICON(open_keyframes_menu)
 	STR_MENU("Open Keyframes...")
@@ -80,7 +80,7 @@ struct keyframe_open : public Command {
 	}
 };
 
-struct keyframe_save : public Command {
+struct keyframe_save final : public Command {
 	CMD_NAME("keyframe/save")
 	CMD_ICON(save_keyframes_menu)
 	STR_MENU("Save Keyframes...")

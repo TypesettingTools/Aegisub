@@ -38,7 +38,7 @@ extern "C" {
 #include <ass/ass.h>
 }
 
-class LibassSubtitlesProvider : public SubtitlesProvider {
+class LibassSubtitlesProvider final : public SubtitlesProvider {
 	ASS_Renderer* ass_renderer = nullptr;
 	ASS_Track* ass_track = nullptr;
 

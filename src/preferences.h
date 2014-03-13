@@ -34,7 +34,7 @@ DEFINE_BASE_EXCEPTION_NOINNER(PreferencesError, agi::Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceIncorrectType, PreferencesError, "preferences/incorrect_type")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(PreferenceNotSupported, PreferencesError, "preferences/not_supported")
 
-class Preferences : public wxDialog {
+class Preferences final : public wxDialog {
 public:
 	typedef std::function<void ()> Thunk;
 private:

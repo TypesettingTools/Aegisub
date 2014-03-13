@@ -52,7 +52,7 @@ class AssStyle;
 class DialogStyleEditor;
 class PersistLocation;
 
-class DialogStyleManager : public wxDialog {
+class DialogStyleManager final : public wxDialog {
 	agi::Context *c; ///< Project context
 	std::unique_ptr<PersistLocation> persist;
 

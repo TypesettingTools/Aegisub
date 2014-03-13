@@ -45,7 +45,7 @@
 typedef void csri_rend;
 typedef void csri_inst;
 
-class CSRISubtitlesProvider : public SubtitlesProvider {
+class CSRISubtitlesProvider final : public SubtitlesProvider {
 	agi::scoped_holder<csri_inst*> instance;
 	csri_rend *renderer;
 

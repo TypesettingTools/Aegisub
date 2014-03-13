@@ -50,7 +50,7 @@ class wxButton;
 class wxListEvent;
 class wxListView;
 
-class DialogAutomation : public wxDialog {
+class DialogAutomation final : public wxDialog {
 	agi::Context *context;
 
 	/// Struct to attach a flag for global/local to scripts

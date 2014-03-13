@@ -39,7 +39,7 @@
 
 /// @class FFmpegSourceAudioProvider
 /// @brief Implements audio loading with the FFMS library.
-class FFmpegSourceAudioProvider : public AudioProvider, FFmpegSourceProvider {
+class FFmpegSourceAudioProvider final : public AudioProvider, FFmpegSourceProvider {
 	/// audio source object
 	agi::scoped_holder<FFMS_AudioSource*, void (FFMS_CC *)(FFMS_AudioSource*)> AudioSource;
 

@@ -21,7 +21,7 @@
 #include <memory>
 #include <mutex>
 
-class LockAudioProvider : public AudioProviderWrapper {
+class LockAudioProvider final : public AudioProviderWrapper {
 	mutable std::mutex mutex;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override;

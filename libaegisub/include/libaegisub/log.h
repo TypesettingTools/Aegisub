@@ -120,7 +120,7 @@ public:
 };
 
 /// A simple emitter which writes the log to a file in json format
-class JsonEmitter : public Emitter {
+class JsonEmitter final : public Emitter {
 	std::unique_ptr<std::ostream> fp;
 
 	void WriteTime(const char *key);

@@ -52,7 +52,7 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
-class EmitLog : public agi::log::Emitter {
+class EmitLog final : public agi::log::Emitter {
 	wxTextCtrl *text_ctrl;
 public:
 	EmitLog(wxTextCtrl *t)

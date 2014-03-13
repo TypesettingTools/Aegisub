@@ -85,7 +85,7 @@ struct validator_video_attached : public Command {
 	}
 };
 
-struct video_aspect_cinematic : public validator_video_loaded {
+struct video_aspect_cinematic final : public validator_video_loaded {
 	CMD_NAME("video/aspect/cinematic")
 	STR_MENU("&Cinematic (2.35)")
 	STR_DISP("Cinematic (2.35)")
@@ -103,7 +103,7 @@ struct video_aspect_cinematic : public validator_video_loaded {
 	}
 };
 
-struct video_aspect_custom : public validator_video_loaded {
+struct video_aspect_custom final : public validator_video_loaded {
 	CMD_NAME("video/aspect/custom")
 	STR_MENU("C&ustom...")
 	STR_DISP("Custom")
@@ -146,7 +146,7 @@ struct video_aspect_custom : public validator_video_loaded {
 	}
 };
 
-struct video_aspect_default : public validator_video_loaded {
+struct video_aspect_default final : public validator_video_loaded {
 	CMD_NAME("video/aspect/default")
 	STR_MENU("&Default")
 	STR_DISP("Default")
@@ -164,7 +164,7 @@ struct video_aspect_default : public validator_video_loaded {
 	}
 };
 
-struct video_aspect_full : public validator_video_loaded {
+struct video_aspect_full final : public validator_video_loaded {
 	CMD_NAME("video/aspect/full")
 	STR_MENU("&Fullscreen (4:3)")
 	STR_DISP("Fullscreen (4:3)")
@@ -182,7 +182,7 @@ struct video_aspect_full : public validator_video_loaded {
 	}
 };
 
-struct video_aspect_wide : public validator_video_loaded {
+struct video_aspect_wide final : public validator_video_loaded {
 	CMD_NAME("video/aspect/wide")
 	STR_MENU("&Widescreen (16:9)")
 	STR_DISP("Widescreen (16:9)")
@@ -200,7 +200,7 @@ struct video_aspect_wide : public validator_video_loaded {
 	}
 };
 
-struct video_close : public validator_video_loaded {
+struct video_close final : public validator_video_loaded {
 	CMD_NAME("video/close")
 	CMD_ICON(close_video_menu)
 	STR_MENU("&Close Video")
@@ -212,7 +212,7 @@ struct video_close : public validator_video_loaded {
 	}
 };
 
-struct video_copy_coordinates : public validator_video_loaded {
+struct video_copy_coordinates final : public validator_video_loaded {
 	CMD_NAME("video/copy_coordinates")
 	STR_MENU("Copy coordinates to Clipboard")
 	STR_DISP("Copy coordinates to Clipboard")
@@ -223,7 +223,7 @@ struct video_copy_coordinates : public validator_video_loaded {
 	}
 };
 
-struct video_cycle_subtitles_provider : public cmd::Command {
+struct video_cycle_subtitles_provider final : public cmd::Command {
 	CMD_NAME("video/subtitles_provider/cycle")
 	STR_MENU("Cycle active subtitles provider")
 	STR_DISP("Cycle active subtitles provider")
@@ -242,7 +242,7 @@ struct video_cycle_subtitles_provider : public cmd::Command {
 	}
 };
 
-struct video_detach : public validator_video_loaded {
+struct video_detach final : public validator_video_loaded {
 	CMD_NAME("video/detach")
 	CMD_ICON(detach_video_menu)
 	STR_MENU("&Detach Video")
@@ -262,7 +262,7 @@ struct video_detach : public validator_video_loaded {
 	}
 };
 
-struct video_details : public validator_video_loaded {
+struct video_details final : public validator_video_loaded {
 	CMD_NAME("video/details")
 	CMD_ICON(show_video_details_menu)
 	STR_MENU("Show &Video Details")
@@ -275,7 +275,7 @@ struct video_details : public validator_video_loaded {
 	}
 };
 
-struct video_focus_seek : public validator_video_loaded {
+struct video_focus_seek final : public validator_video_loaded {
 	CMD_NAME("video/focus_seek")
 	STR_MENU("Toggle video slider focus")
 	STR_DISP("Toggle video slider focus")
@@ -293,7 +293,7 @@ struct video_focus_seek : public validator_video_loaded {
 	}
 };
 
-struct video_frame_copy : public validator_video_loaded {
+struct video_frame_copy final : public validator_video_loaded {
 	CMD_NAME("video/frame/copy")
 	STR_MENU("Copy image to Clipboard")
 	STR_DISP("Copy image to Clipboard")
@@ -304,7 +304,7 @@ struct video_frame_copy : public validator_video_loaded {
 	}
 };
 
-struct video_frame_copy_raw : public validator_video_loaded {
+struct video_frame_copy_raw final : public validator_video_loaded {
 	CMD_NAME("video/frame/copy/raw")
 	STR_MENU("Copy image to Clipboard (no subtitles)")
 	STR_DISP("Copy image to Clipboard (no subtitles)")
@@ -315,7 +315,7 @@ struct video_frame_copy_raw : public validator_video_loaded {
 	}
 };
 
-struct video_frame_next : public validator_video_loaded {
+struct video_frame_next final : public validator_video_loaded {
 	CMD_NAME("video/frame/next")
 	STR_MENU("Next Frame")
 	STR_DISP("Next Frame")
@@ -326,7 +326,7 @@ struct video_frame_next : public validator_video_loaded {
 	}
 };
 
-struct video_frame_next_boundary : public validator_video_loaded {
+struct video_frame_next_boundary final : public validator_video_loaded {
 	CMD_NAME("video/frame/next/boundary")
 	STR_MENU("Next Boundary")
 	STR_DISP("Next Boundary")
@@ -355,7 +355,7 @@ struct video_frame_next_boundary : public validator_video_loaded {
 	}
 };
 
-struct video_frame_next_keyframe : public validator_video_loaded {
+struct video_frame_next_keyframe final : public validator_video_loaded {
 	CMD_NAME("video/frame/next/keyframe")
 	STR_MENU("Next Keyframe")
 	STR_DISP("Next Keyframe")
@@ -369,7 +369,7 @@ struct video_frame_next_keyframe : public validator_video_loaded {
 	}
 };
 
-struct video_frame_next_large : public validator_video_loaded {
+struct video_frame_next_large final : public validator_video_loaded {
 	CMD_NAME("video/frame/next/large")
 	STR_MENU("Fast jump forward")
 	STR_DISP("Fast jump forward")
@@ -382,7 +382,7 @@ struct video_frame_next_large : public validator_video_loaded {
 	}
 };
 
-struct video_frame_prev : public validator_video_loaded {
+struct video_frame_prev final : public validator_video_loaded {
 	CMD_NAME("video/frame/prev")
 	STR_MENU("Previous Frame")
 	STR_DISP("Previous Frame")
@@ -393,7 +393,7 @@ struct video_frame_prev : public validator_video_loaded {
 	}
 };
 
-struct video_frame_prev_boundary : public validator_video_loaded {
+struct video_frame_prev_boundary final : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/boundary")
 	STR_MENU("Previous Boundary")
 	STR_DISP("Previous Boundary")
@@ -422,7 +422,7 @@ struct video_frame_prev_boundary : public validator_video_loaded {
 	}
 };
 
-struct video_frame_prev_keyframe : public validator_video_loaded {
+struct video_frame_prev_keyframe final : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/keyframe")
 	STR_MENU("Previous Keyframe")
 	STR_DISP("Previous Keyframe")
@@ -444,7 +444,7 @@ struct video_frame_prev_keyframe : public validator_video_loaded {
 	}
 };
 
-struct video_frame_prev_large : public validator_video_loaded {
+struct video_frame_prev_large final : public validator_video_loaded {
 	CMD_NAME("video/frame/prev/large")
 	STR_MENU("Fast jump backwards")
 	STR_DISP("Fast jump backwards")
@@ -495,7 +495,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 	GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN(), raw)).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
 }
 
-struct video_frame_save : public validator_video_loaded {
+struct video_frame_save final : public validator_video_loaded {
 	CMD_NAME("video/frame/save")
 	STR_MENU("Save PNG snapshot")
 	STR_DISP("Save PNG snapshot")
@@ -506,7 +506,7 @@ struct video_frame_save : public validator_video_loaded {
 	}
 };
 
-struct video_frame_save_raw : public validator_video_loaded {
+struct video_frame_save_raw final : public validator_video_loaded {
 	CMD_NAME("video/frame/save/raw")
 	STR_MENU("Save PNG snapshot (no subtitles)")
 	STR_DISP("Save PNG snapshot (no subtitles)")
@@ -517,7 +517,7 @@ struct video_frame_save_raw : public validator_video_loaded {
 	}
 };
 
-struct video_jump : public validator_video_loaded {
+struct video_jump final : public validator_video_loaded {
 	CMD_NAME("video/jump")
 	CMD_ICON(jumpto_button)
 	STR_MENU("&Jump to...")
@@ -533,7 +533,7 @@ struct video_jump : public validator_video_loaded {
 	}
 };
 
-struct video_jump_end : public validator_video_loaded {
+struct video_jump_end final : public validator_video_loaded {
 	CMD_NAME("video/jump/end")
 	CMD_ICON(video_to_subend)
 	STR_MENU("Jump Video to &End")
@@ -547,7 +547,7 @@ struct video_jump_end : public validator_video_loaded {
 	}
 };
 
-struct video_jump_start : public validator_video_loaded {
+struct video_jump_start final : public validator_video_loaded {
 	CMD_NAME("video/jump/start")
 	CMD_ICON(video_to_substart)
 	STR_MENU("Jump Video to &Start")
@@ -560,7 +560,7 @@ struct video_jump_start : public validator_video_loaded {
 	}
 };
 
-struct video_open : public Command {
+struct video_open final : public Command {
 	CMD_NAME("video/open")
 	CMD_ICON(open_video_menu)
 	STR_MENU("&Open Video...")
@@ -576,7 +576,7 @@ struct video_open : public Command {
 	}
 };
 
-struct video_open_dummy : public Command {
+struct video_open_dummy final : public Command {
 	CMD_NAME("video/open/dummy")
 	CMD_ICON(use_dummy_video_menu)
 	STR_MENU("&Use Dummy Video...")
@@ -590,7 +590,7 @@ struct video_open_dummy : public Command {
 	}
 };
 
-struct video_opt_autoscroll : public Command {
+struct video_opt_autoscroll final : public Command {
 	CMD_NAME("video/opt/autoscroll")
 	CMD_ICON(toggle_video_autoscroll)
 	STR_MENU("Toggle autoscroll of video")
@@ -607,7 +607,7 @@ struct video_opt_autoscroll : public Command {
 	}
 };
 
-struct video_play : public validator_video_loaded {
+struct video_play final : public validator_video_loaded {
 	CMD_NAME("video/play")
 	CMD_ICON(button_play)
 	STR_MENU("Play")
@@ -619,7 +619,7 @@ struct video_play : public validator_video_loaded {
 	}
 };
 
-struct video_play_line : public validator_video_loaded {
+struct video_play_line final : public validator_video_loaded {
 	CMD_NAME("video/play/line")
 	CMD_ICON(button_playline)
 	STR_MENU("Play line")
@@ -631,7 +631,7 @@ struct video_play_line : public validator_video_loaded {
 	}
 };
 
-struct video_show_overscan : public validator_video_loaded {
+struct video_show_overscan final : public validator_video_loaded {
 	CMD_NAME("video/show_overscan")
 	STR_MENU("Show &Overscan Mask")
 	STR_DISP("Show Overscan Mask")
@@ -715,7 +715,7 @@ public:
 	}
 };
 
-struct video_zoom_in : public validator_video_attached {
+struct video_zoom_in final : public validator_video_attached {
 	CMD_NAME("video/zoom/in")
 	CMD_ICON(zoom_in_button)
 	STR_MENU("Zoom In")
@@ -727,7 +727,7 @@ struct video_zoom_in : public validator_video_attached {
 	}
 };
 
-struct video_zoom_out : public validator_video_attached {
+struct video_zoom_out final : public validator_video_attached {
 	CMD_NAME("video/zoom/out")
 	CMD_ICON(zoom_out_button)
 	STR_MENU("Zoom Out")

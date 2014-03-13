@@ -60,7 +60,7 @@
 namespace {
 	using cmd::Command;
 
-struct tool_assdraw : public Command {
+struct tool_assdraw final : public Command {
 	CMD_NAME("tool/assdraw")
 	CMD_ICON(assdraw)
 	STR_MENU("ASSDraw3...")
@@ -72,7 +72,7 @@ struct tool_assdraw : public Command {
 	}
 };
 
-struct tool_export : public Command {
+struct tool_export final : public Command {
 	CMD_NAME("tool/export")
 	CMD_ICON(export_menu)
 	STR_MENU("&Export Subtitles...")
@@ -85,7 +85,7 @@ struct tool_export : public Command {
 	}
 };
 
-struct tool_font_collector : public Command {
+struct tool_font_collector final : public Command {
 	CMD_NAME("tool/font_collector")
 	CMD_ICON(font_collector_button)
 	STR_MENU("&Fonts Collector...")
@@ -97,7 +97,7 @@ struct tool_font_collector : public Command {
 	}
 };
 
-struct tool_line_select : public Command {
+struct tool_line_select final : public Command {
 	CMD_NAME("tool/line/select")
 	CMD_ICON(select_lines_button)
 	STR_MENU("S&elect Lines...")
@@ -109,7 +109,7 @@ struct tool_line_select : public Command {
 	}
 };
 
-struct tool_resampleres : public Command {
+struct tool_resampleres final : public Command {
 	CMD_NAME("tool/resampleres")
 	CMD_ICON(resample_toolbutton)
 	STR_MENU("&Resample Resolution...")
@@ -124,7 +124,7 @@ struct tool_resampleres : public Command {
 	}
 };
 
-struct tool_style_assistant : public Command {
+struct tool_style_assistant final : public Command {
 	CMD_NAME("tool/style/assistant")
 	CMD_ICON(styling_toolbutton)
 	STR_MENU("St&yling Assistant...")
@@ -144,7 +144,7 @@ struct tool_styling_assistant_validator : public Command {
 	}
 };
 
-struct tool_styling_assistant_commit : public tool_styling_assistant_validator {
+struct tool_styling_assistant_commit final : public tool_styling_assistant_validator {
 	CMD_NAME("tool/styling_assistant/commit")
 	STR_MENU("&Accept changes")
 	STR_DISP("Accept changes")
@@ -155,7 +155,7 @@ struct tool_styling_assistant_commit : public tool_styling_assistant_validator {
 	}
 };
 
-struct tool_styling_assistant_preview : public tool_styling_assistant_validator {
+struct tool_styling_assistant_preview final : public tool_styling_assistant_validator {
 	CMD_NAME("tool/styling_assistant/preview")
 	STR_MENU("&Preview changes")
 	STR_DISP("Preview changes")
@@ -166,7 +166,7 @@ struct tool_styling_assistant_preview : public tool_styling_assistant_validator 
 	}
 };
 
-struct tool_style_manager : public Command {
+struct tool_style_manager final : public Command {
 	CMD_NAME("tool/style/manager")
 	CMD_ICON(style_toolbutton)
 	STR_MENU("&Styles Manager...")
@@ -178,7 +178,7 @@ struct tool_style_manager : public Command {
 	}
 };
 
-struct tool_time_kanji : public Command {
+struct tool_time_kanji final : public Command {
 	CMD_NAME("tool/time/kanji")
 	CMD_ICON(kara_timing_copier)
 	STR_MENU("&Kanji Timer...")
@@ -190,7 +190,7 @@ struct tool_time_kanji : public Command {
 	}
 };
 
-struct tool_time_postprocess : public Command {
+struct tool_time_postprocess final : public Command {
 	CMD_NAME("tool/time/postprocess")
 	CMD_ICON(timing_processor_toolbutton)
 	STR_MENU("&Timing Post-Processor...")
@@ -202,7 +202,7 @@ struct tool_time_postprocess : public Command {
 	}
 };
 
-struct tool_translation_assistant : public Command {
+struct tool_translation_assistant final : public Command {
 	CMD_NAME("tool/translation_assistant")
 	CMD_ICON(translation_toolbutton)
 	STR_MENU("&Translation Assistant...")
@@ -228,7 +228,7 @@ struct tool_translation_assistant_validator : public Command {
 	}
 };
 
-struct tool_translation_assistant_commit : public tool_translation_assistant_validator {
+struct tool_translation_assistant_commit final : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/commit")
 	STR_MENU("&Accept changes")
 	STR_DISP("Accept changes")
@@ -239,7 +239,7 @@ struct tool_translation_assistant_commit : public tool_translation_assistant_val
 	}
 };
 
-struct tool_translation_assistant_preview : public tool_translation_assistant_validator {
+struct tool_translation_assistant_preview final : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/preview")
 	STR_MENU("&Preview changes")
 	STR_DISP("Preview changes")
@@ -250,7 +250,7 @@ struct tool_translation_assistant_preview : public tool_translation_assistant_va
 	}
 };
 
-struct tool_translation_assistant_next : public tool_translation_assistant_validator {
+struct tool_translation_assistant_next final : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/next")
 	STR_MENU("&Next Line")
 	STR_DISP("Next Line")
@@ -261,7 +261,7 @@ struct tool_translation_assistant_next : public tool_translation_assistant_valid
 	}
 };
 
-struct tool_translation_assistant_prev : public tool_translation_assistant_validator {
+struct tool_translation_assistant_prev final : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/prev")
 	STR_MENU("&Previous Line")
 	STR_DISP("Previous Line")
@@ -273,7 +273,7 @@ struct tool_translation_assistant_prev : public tool_translation_assistant_valid
 };
 }
 
-struct tool_translation_assistant_insert : public tool_translation_assistant_validator {
+struct tool_translation_assistant_insert final : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/insert_original")
 	STR_MENU("&Insert Original")
 	STR_DISP("Insert Original")

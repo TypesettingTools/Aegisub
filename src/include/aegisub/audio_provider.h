@@ -90,7 +90,7 @@ public:
 	}
 };
 
-class AudioProviderFactory : public Factory<AudioProvider, agi::fs::path> {
+class AudioProviderFactory final : public Factory<AudioProvider, agi::fs::path> {
 public:
 	static void RegisterProviders();
 

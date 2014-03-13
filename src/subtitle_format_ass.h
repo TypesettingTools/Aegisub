@@ -34,7 +34,7 @@
 
 #include "subtitle_format.h"
 
-class AssSubtitleFormat : public SubtitleFormat {
+class AssSubtitleFormat final : public SubtitleFormat {
 public:
 	AssSubtitleFormat();
 

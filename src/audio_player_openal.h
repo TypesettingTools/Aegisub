@@ -51,7 +51,7 @@
 
 #include <wx/timer.h>
 
-class OpenALPlayer : public AudioPlayer, wxTimer {
+class OpenALPlayer final : public AudioPlayer, wxTimer {
 	/// Number of OpenAL buffers to use
 	static const ALsizei num_buffers = 8;
 

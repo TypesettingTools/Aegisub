@@ -24,7 +24,7 @@
 
 /// @class VisualToolDragDraggableFeature
 /// @brief VisualDraggableFeature with a time value
-class VisualToolDragDraggableFeature : public VisualDraggableFeature {
+class VisualToolDragDraggableFeature final : public VisualDraggableFeature {
 public:
 	int time;
 	VisualToolDragDraggableFeature *parent;
@@ -36,7 +36,7 @@ class wxToolBar;
 
 /// @class VisualToolDrag
 /// @brief Moveable features for the positions of each visible line
-class VisualToolDrag : public VisualTool<VisualToolDragDraggableFeature> {
+class VisualToolDrag final : public VisualTool<VisualToolDragDraggableFeature> {
 	/// The subtoolbar for the move/pos conversion button
 	wxToolBar *toolbar;
 	/// The feature last clicked on for the double-click handler

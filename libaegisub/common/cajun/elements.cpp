@@ -38,7 +38,7 @@ namespace {
 	};
 
 	template<class T>
-	struct CastVisitor : public CastVisitorBase {
+	struct CastVisitor final : public CastVisitorBase {
 		T *element;
 		CastVisitor() : element(0) { }
 		void Visit(T& ele) { element = &ele; }
@@ -64,7 +64,7 @@ public:
 
 
 template <typename ElementTypeT>
-class UnknownElement::Imp_T : public UnknownElement::Imp
+class UnknownElement::Imp_T final : public UnknownElement::Imp
 {
 public:
    Imp_T(const ElementTypeT& element) : m_Element(element) { }

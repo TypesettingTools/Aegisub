@@ -123,7 +123,7 @@ namespace Automation4 {
 
 	/// A wrapper around agi::ProgressSink which adds the ability to open
 	/// dialogs on the GUI thread
-	class ProgressSink : public agi::ProgressSink {
+	class ProgressSink final : public agi::ProgressSink {
 		agi::ProgressSink *impl;
 		BackgroundScriptRunner *bsr;
 		int trace_level;
@@ -218,7 +218,7 @@ namespace Automation4 {
 	};
 
 	/// Manager for scripts specified by a subtitle file
-	class LocalScriptManager : public ScriptManager {
+	class LocalScriptManager final : public ScriptManager {
 		std::deque<agi::signal::Connection> slots;
 		agi::Context *context;
 
@@ -229,7 +229,7 @@ namespace Automation4 {
 	};
 
 	/// Manager for scripts in the autoload directory
-	class AutoloadScriptManager : public ScriptManager {
+	class AutoloadScriptManager final : public ScriptManager {
 		std::string path;
 	public:
 		AutoloadScriptManager(std::string path);
@@ -281,7 +281,7 @@ namespace Automation4 {
 
 	/// A script which represents a file not recognized by any registered
 	/// automation engines
-	class UnknownScript : public Script {
+	class UnknownScript final : public Script {
 	public:
 		UnknownScript(agi::fs::path const& filename) : Script(filename) { }
 

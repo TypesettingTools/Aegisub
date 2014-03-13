@@ -69,7 +69,7 @@
 #define TEXT_LABEL_SOURCE _("Source: ")
 #define TEXT_LABEL_DEST _("Dest: ")
 
-class KaraokeLineMatchDisplay : public wxControl {
+class KaraokeLineMatchDisplay final : public wxControl {
 	typedef AssKaraoke::Syllable MatchSyllable;
 
 	struct MatchGroup {

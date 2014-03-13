@@ -42,7 +42,7 @@ class wxChoice;
 class wxSizer;
 class wxTextCtrl;
 
-class DialogExport : public wxDialog {
+class DialogExport final : public wxDialog {
 	agi::Context *c;
 
 	/// The export transform engine

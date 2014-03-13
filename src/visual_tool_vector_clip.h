@@ -28,7 +28,7 @@ class wxToolBar;
 /// @class VisualToolVectorClipDraggableFeature
 /// @brief VisualDraggableFeature with information about a feature's location
 ///        in the spline
-struct VisualToolVectorClipDraggableFeature : public VisualDraggableFeature {
+struct VisualToolVectorClipDraggableFeature final : public VisualDraggableFeature {
 	/// Which curve in the spline this feature is a point on
 	Spline::iterator curve;
 	/// 0-3; indicates which part of the curve this point is
@@ -40,7 +40,7 @@ struct VisualToolVectorClipDraggableFeature : public VisualDraggableFeature {
 	{ }
 };
 
-class VisualToolVectorClip : public VisualTool<VisualToolVectorClipDraggableFeature> {
+class VisualToolVectorClip final : public VisualTool<VisualToolVectorClipDraggableFeature> {
 	Spline spline; /// The current spline
 	wxToolBar *toolBar = nullptr; /// The subtoolbar
 	int mode = 0; /// 0-7

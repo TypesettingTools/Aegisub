@@ -162,7 +162,7 @@ static void get_files_to_load(wxArrayString const& list, std::string &subs, std:
 }
 
 /// Handle files drag and dropped onto Aegisub
-class AegisubFileDropTarget : public wxFileDropTarget {
+class AegisubFileDropTarget final : public wxFileDropTarget {
 	FrameMain *parent;
 public:
 	AegisubFileDropTarget(FrameMain *parent) : parent(parent) { }

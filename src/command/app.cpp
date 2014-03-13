@@ -57,7 +57,7 @@
 namespace {
 	using cmd::Command;
 
-struct app_about : public Command {
+struct app_about final : public Command {
 	CMD_NAME("app/about")
 	CMD_ICON(about_menu)
 	STR_MENU("&About")
@@ -69,7 +69,7 @@ struct app_about : public Command {
 	}
 };
 
-struct app_display_audio_subs : public Command {
+struct app_display_audio_subs final : public Command {
 	CMD_NAME("app/display/audio_subs")
 	STR_MENU("&Audio+Subs View")
 	STR_DISP("Audio+Subs View")
@@ -89,7 +89,7 @@ struct app_display_audio_subs : public Command {
 	}
 };
 
-struct app_display_full : public Command {
+struct app_display_full final : public Command {
 	CMD_NAME("app/display/full")
 	STR_MENU("&Full view")
 	STR_DISP("Full view")
@@ -109,7 +109,7 @@ struct app_display_full : public Command {
 	}
 };
 
-struct app_display_subs : public Command {
+struct app_display_subs final : public Command {
 	CMD_NAME("app/display/subs")
 	STR_MENU("S&ubs Only View")
 	STR_DISP("Subs Only View")
@@ -125,7 +125,7 @@ struct app_display_subs : public Command {
 	}
 };
 
-struct app_display_video_subs : public Command {
+struct app_display_video_subs final : public Command {
 	CMD_NAME("app/display/video_subs")
 	STR_MENU("&Video+Subs View")
 	STR_DISP("Video+Subs View")
@@ -145,7 +145,7 @@ struct app_display_video_subs : public Command {
 	}
 };
 
-struct app_exit : public Command {
+struct app_exit final : public Command {
 	CMD_NAME("app/exit")
 	STR_MENU("E&xit")
 	STR_DISP("Exit")
@@ -156,7 +156,7 @@ struct app_exit : public Command {
 	}
 };
 
-struct app_language : public Command {
+struct app_language final : public Command {
 	CMD_NAME("app/language")
 	CMD_ICON(languages_menu)
 	STR_MENU("&Language...")
@@ -181,7 +181,7 @@ struct app_language : public Command {
 	}
 };
 
-struct app_log : public Command {
+struct app_log final : public Command {
 	CMD_NAME("app/log")
 	CMD_ICON(about_menu)
 	STR_MENU("&Log window")
@@ -193,7 +193,7 @@ struct app_log : public Command {
 	}
 };
 
-struct app_new_window : public Command {
+struct app_new_window final : public Command {
 	CMD_NAME("app/new_window")
 	CMD_ICON(new_window_menu)
 	STR_MENU("New &Window")
@@ -205,7 +205,7 @@ struct app_new_window : public Command {
 	}
 };
 
-struct app_options : public Command {
+struct app_options final : public Command {
 	CMD_NAME("app/options")
 	CMD_ICON(options_button)
 	STR_MENU("&Options...")
@@ -221,7 +221,7 @@ struct app_options : public Command {
 	}
 };
 
-struct app_toggle_global_hotkeys : public Command {
+struct app_toggle_global_hotkeys final : public Command {
 	CMD_NAME("app/toggle/global_hotkeys")
 	CMD_ICON(toggle_audio_medusa)
 	STR_MENU("Toggle global hotkey overrides")
@@ -239,7 +239,7 @@ struct app_toggle_global_hotkeys : public Command {
 	}
 };
 
-struct app_toggle_toolbar : public Command {
+struct app_toggle_toolbar final : public Command {
 	CMD_NAME("app/toggle/toolbar")
 	STR_HELP("Toggle the main toolbar")
 	CMD_TYPE(COMMAND_DYNAMIC_NAME)
@@ -260,7 +260,7 @@ struct app_toggle_toolbar : public Command {
 	}
 };
 
-struct app_updates : public Command {
+struct app_updates final : public Command {
 	CMD_NAME("app/updates")
 	STR_MENU("&Check for Updates...")
 	STR_DISP("Check for Updates")

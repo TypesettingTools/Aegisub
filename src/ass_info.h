@@ -18,7 +18,7 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
-class AssInfo : public AssEntry {
+class AssInfo final : public AssEntry {
 	std::string key;
 	std::string value;
 

@@ -135,7 +135,7 @@ namespace {
 	}
 
 #ifdef ICONV_POSIX
-	class ConverterImpl : public agi::charset::Converter {
+	class ConverterImpl final : public agi::charset::Converter {
 		size_t bomSize;
 		iconv_t cd;
 	public:
@@ -175,7 +175,7 @@ namespace {
 
 #else
 
-	class ConverterImpl : public iconv_fallbacks, public agi::charset::Converter {
+	class ConverterImpl final : public iconv_fallbacks, public agi::charset::Converter {
 		size_t bomSize;
 		char invalidRep[8];
 		size_t invalidRepSize;

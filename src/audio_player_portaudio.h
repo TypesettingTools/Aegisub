@@ -49,7 +49,7 @@ class wxArrayString;
 /// @class PortAudioPlayer
 /// @brief PortAudio Player
 ///
-class PortAudioPlayer : public AudioPlayer {
+class PortAudioPlayer final : public AudioPlayer {
 	typedef std::vector<PaDeviceIndex> DeviceVec;
 	/// Map of supported output devices from name -> device index
 	std::map<std::string, DeviceVec> devices;

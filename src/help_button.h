@@ -34,7 +34,7 @@
 
 #include <wx/button.h>
 
-class HelpButton : public wxButton {
+class HelpButton final : public wxButton {
 public:
 	HelpButton(wxWindow *parent, wxString const& page="", wxPoint position=wxDefaultPosition, wxSize size=wxDefaultSize);
 

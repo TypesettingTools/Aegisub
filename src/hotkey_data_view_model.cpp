@@ -60,7 +60,7 @@ class HotkeyModelCategory;
 /// @brief A single hotkey exposed in the data view
 ///
 /// All actual mutation of hotkeys happens through this class
-class HotkeyModelCombo : public HotkeyModelItem {
+class HotkeyModelCombo final : public HotkeyModelItem {
 	HotkeyModelCategory *parent; ///< The containing category
 	Combo combo;                 ///< The actual hotkey
 	wxString cmd_name;
@@ -136,7 +136,7 @@ public:
 };
 
 /// A hotkey context exposed in the data view
-class HotkeyModelCategory : public HotkeyModelItem {
+class HotkeyModelCategory final : public HotkeyModelItem {
 	std::list<HotkeyModelCombo> children;
 	wxDataViewModel *model;
 	wxString name;
@@ -216,7 +216,7 @@ public:
 };
 
 /// The root containing the hotkey contexts
-class HotkeyModelRoot : public HotkeyModelItem {
+class HotkeyModelRoot final : public HotkeyModelItem {
 	std::list<HotkeyModelCategory> categories;
 public:
 	HotkeyModelRoot(wxDataViewModel *model) {

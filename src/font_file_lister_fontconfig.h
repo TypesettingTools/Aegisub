@@ -28,7 +28,7 @@ typedef struct _FcFontSet FcFontSet;
 
 /// @class FontConfigFontFileLister
 /// @brief fontconfig powered font lister
-class FontConfigFontFileLister : public FontFileLister {
+class FontConfigFontFileLister final : public FontFileLister {
 	agi::scoped_holder<FcConfig*> config;
 
 	/// @brief Case-insensitive match ASS/SSA font family against full name. (also known as "name for humans")

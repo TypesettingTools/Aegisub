@@ -45,7 +45,7 @@
 namespace {
 	using cmd::Command;
 
-struct help_bugs : public Command {
+struct help_bugs final : public Command {
 	CMD_NAME("help/bugs")
 	CMD_ICON(bugtracker_button)
 	STR_MENU("&Bug Tracker...")
@@ -66,7 +66,7 @@ struct help_bugs : public Command {
 	}
 };
 
-struct help_contents : public Command {
+struct help_contents final : public Command {
 	CMD_NAME("help/contents")
 	CMD_ICON(contents_button)
 	STR_MENU("&Contents")
@@ -78,7 +78,7 @@ struct help_contents : public Command {
 	}
 };
 
-struct help_forums : public Command {
+struct help_forums final : public Command {
 	CMD_NAME("help/forums")
 	CMD_ICON(forums_button)
 	STR_MENU("&Forums")
@@ -90,7 +90,7 @@ struct help_forums : public Command {
 	}
 };
 
-struct help_irc : public Command {
+struct help_irc final : public Command {
 	CMD_NAME("help/irc")
 	CMD_ICON(irc_button)
 	STR_MENU("&IRC Channel")
@@ -102,7 +102,7 @@ struct help_irc : public Command {
 	}
 };
 
-struct help_video : public Command {
+struct help_video final : public Command {
 	CMD_NAME("help/video")
 	CMD_ICON(visual_help)
 	STR_MENU("&Visual Typesetting")
@@ -114,7 +114,7 @@ struct help_video : public Command {
 	}
 };
 
-struct help_website : public Command {
+struct help_website final : public Command {
 	CMD_NAME("help/website")
 	CMD_ICON(website_button)
 	STR_MENU("&Website")

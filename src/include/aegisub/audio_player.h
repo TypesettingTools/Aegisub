@@ -57,7 +57,7 @@ public:
 	virtual void SetEndPosition(int64_t pos)=0;
 };
 
-class AudioPlayerFactory : public Factory<AudioPlayer, AudioProvider*> {
+class AudioPlayerFactory final : public Factory<AudioPlayer, AudioProvider*> {
 public:
 	static void RegisterProviders();
 	static std::unique_ptr<AudioPlayer> GetAudioPlayer(AudioProvider *provider);

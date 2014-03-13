@@ -39,7 +39,7 @@
 #include <array>
 #include <wx/arrstr.h>
 
-class AssStyle : public AssEntry, public AssEntryListHook {
+class AssStyle final : public AssEntry, public AssEntryListHook {
 	std::string data;
 
 public:

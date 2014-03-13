@@ -31,7 +31,7 @@ class wxStaticText;
 class wxTextCtrl;
 class wxThreadEvent;
 
-class DialogFontsCollector : public wxDialog {
+class DialogFontsCollector final : public wxDialog {
 	AssFile *subs;
 
 	ScintillaTextCtrl *collection_log;

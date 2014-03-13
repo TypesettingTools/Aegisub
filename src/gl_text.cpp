@@ -114,7 +114,7 @@ struct OpenGLTextGlyph {
 
 /// @class OpenGLTextTexture
 /// @brief OpenGL texture which stores one or more glyphs as sprites
-class OpenGLTextTexture : boost::noncopyable {
+class OpenGLTextTexture final : boost::noncopyable {
 	int x;      ///< Next x coordinate at which a glyph can be inserted
 	int y;      ///< Next y coordinate at which a glyph can be inserted
 	int nextY;  ///< Y coordinate of the next line; tracked due to that lines

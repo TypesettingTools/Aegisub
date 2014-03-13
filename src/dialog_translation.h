@@ -36,7 +36,7 @@ class wxStaticText;
 class wxCheckBox;
 
 /// Assistant for translating subtitles in one language to another language
-class DialogTranslation : public wxDialog {
+class DialogTranslation final : public wxDialog {
 	agi::Context *c;
 
 	agi::signal::Connection file_change_connection;

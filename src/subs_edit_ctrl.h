@@ -49,7 +49,7 @@ namespace agi {
 
 /// @class SubsTextEditCtrl
 /// @brief A Scintilla control with spell checking and syntax highlighting
-class SubsTextEditCtrl : public ScintillaTextCtrl {
+class SubsTextEditCtrl final : public ScintillaTextCtrl {
 	/// Backend spellchecker to use
 	std::unique_ptr<agi::SpellChecker> spellchecker;
 

@@ -133,7 +133,7 @@ namespace detail {
 
 	/// @brief Templated common code for signals
 	template<class Slot>
-	class SignalBaseImpl : public SignalBase {
+	class SignalBaseImpl final : public SignalBase {
 	protected:
 		typedef boost::container::map<ConnectionToken*, Slot> SlotMap;
 
@@ -187,7 +187,7 @@ namespace detail {
 /// @param Arg1 Type of first argument to pass to slots
 /// @param Arg2 Type of second argument to pass to slots
 template<class Arg1 = void, class Arg2 = void>
-class Signal : public detail::SignalBaseImpl<std::function<void (Arg1, Arg2)> > {
+class Signal final : public detail::SignalBaseImpl<std::function<void (Arg1, Arg2)> > {
 	typedef detail::SignalBaseImpl<std::function<void (Arg1, Arg2)> > super;
 	using super::Blocked;
 	using super::slots;
@@ -266,7 +266,7 @@ public:
 /// @class Signal
 /// @brief Zero-argument signal
 template<>
-class Signal<void> : public detail::SignalBaseImpl<std::function<void ()> > {
+class Signal<void> final : public detail::SignalBaseImpl<std::function<void ()> > {
 	typedef detail::SignalBaseImpl<std::function<void ()> > super;
 	using super::Blocked;
 	using super::slots;

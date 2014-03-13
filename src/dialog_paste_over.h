@@ -36,7 +36,7 @@
 
 class wxCheckListBox;
 
-class DialogPasteOver : public wxDialog {
+class DialogPasteOver final : public wxDialog {
 	wxCheckListBox *ListBox;
 
 	void CheckAll(bool check);

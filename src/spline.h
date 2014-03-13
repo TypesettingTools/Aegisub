@@ -39,7 +39,7 @@
 
 class VisualToolBase;
 
-class Spline : private std::list<SplineCurve> {
+class Spline final : private std::list<SplineCurve> {
 	/// Visual tool to do the conversion between script and video pixels
 	const VisualToolBase &coord_translator;
 	/// Spline scale

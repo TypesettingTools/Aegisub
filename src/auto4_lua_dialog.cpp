@@ -141,7 +141,7 @@ namespace Automation4 {
 
 	namespace LuaControl {
 		/// A static text label
-		class Label : public LuaDialogControl {
+		class Label final : public LuaDialogControl {
 			std::string label;
 		public:
 			Label(lua_State *L) : LuaDialogControl(L), label(get_field(L, "label")) { }
@@ -193,7 +193,7 @@ namespace Automation4 {
 		};
 
 		/// A color-picker button
-		class Color : public LuaDialogControl {
+		class Color final : public LuaDialogControl {
 			agi::Color color;
 			bool alpha;
 
@@ -221,7 +221,7 @@ namespace Automation4 {
 		};
 
 		/// A multiline text edit control
-		class Textbox : public Edit {
+		class Textbox final : public Edit {
 		public:
 			Textbox(lua_State *L) : Edit(L) { }
 
@@ -236,7 +236,7 @@ namespace Automation4 {
 
 
 		/// Integer only edit
-		class IntEdit : public Edit {
+		class IntEdit final : public Edit {
 			wxSpinCtrl *cw;
 			int value;
 			int min, max;
@@ -272,14 +272,14 @@ namespace Automation4 {
 		};
 
 		// Float only edit
-		class FloatEdit : public Edit {
+		class FloatEdit final : public Edit {
 			double value;
 			double min;
 			double max;
 			double step;
 			wxSpinCtrlDouble *scd;
 
-			struct DoubleValidator : public wxValidator {
+			struct DoubleValidator final : public wxValidator {
 				double *value;
 				DoubleValidator(double *value) : value(value) { }
 				wxValidator *Clone() const override { return new DoubleValidator(value); }
@@ -341,7 +341,7 @@ namespace Automation4 {
 		};
 
 		/// A dropdown list
-		class Dropdown : public LuaDialogControl {
+		class Dropdown final : public LuaDialogControl {
 			std::vector<std::string> items;
 			std::string value;
 			wxComboBox *cw;
@@ -371,7 +371,7 @@ namespace Automation4 {
 			}
 		};
 
-		class Checkbox : public LuaDialogControl {
+		class Checkbox final : public LuaDialogControl {
 			std::string label;
 			bool value;
 			wxCheckBox *cw;

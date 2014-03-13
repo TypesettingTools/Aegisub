@@ -47,7 +47,7 @@ class AssStyleStorage;
 class PersistLocation;
 class SubtitlesPreview;
 
-class DialogStyleEditor : public wxDialog {
+class DialogStyleEditor final : public wxDialog {
 	agi::Context *c;
 	std::unique_ptr<PersistLocation> persist;
 

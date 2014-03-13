@@ -44,7 +44,7 @@ class wxTextCtrl;
 
 /// @class AssTransformFramerateFilter
 /// @brief Transform subtitle times, including those in override tags, from an input framerate to an output framerate
-class AssTransformFramerateFilter : public AssExportFilter {
+class AssTransformFramerateFilter final : public AssExportFilter {
 	agi::Context *c = nullptr;
 	AssDialogue *line = nullptr;
 	int newStart = 0;

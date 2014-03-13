@@ -148,7 +148,7 @@ public:
 
 /// Visual tool base class containing all common feature-related functionality
 template<class FeatureType>
-class VisualTool : public VisualToolBase {
+class VisualTool final : public VisualToolBase {
 protected:
 	typedef FeatureType Feature;
 	typedef agi::owning_intrusive_list<FeatureType> feature_list;

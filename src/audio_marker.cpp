@@ -32,7 +32,7 @@
 
 #include <algorithm>
 
-class AudioMarkerKeyframe : public AudioMarker {
+class AudioMarkerKeyframe final : public AudioMarker {
 	Pen *style;
 	int position;
 public:
@@ -86,7 +86,7 @@ void AudioMarkerProviderKeyframes::GetMarkers(TimeRange const& range, AudioMarke
 		out.push_back(&*a);
 }
 
-class VideoPositionMarker : public AudioMarker {
+class VideoPositionMarker final : public AudioMarker {
 	Pen style;
 	int position;
 

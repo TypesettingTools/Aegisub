@@ -34,7 +34,7 @@
 
 #include "subtitle_format.h"
 
-class TXTSubtitleFormat : public SubtitleFormat {
+class TXTSubtitleFormat final : public SubtitleFormat {
 public:
 	TXTSubtitleFormat();
 	std::vector<std::string> GetReadWildcards() const override;

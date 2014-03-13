@@ -34,7 +34,7 @@
 
 #include "include/aegisub/audio_provider.h"
 
-class DummyAudioProvider : public AudioProvider {
+class DummyAudioProvider final : public AudioProvider {
 	bool noise;
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 

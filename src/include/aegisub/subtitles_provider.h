@@ -47,7 +47,7 @@ public:
 	virtual void DrawSubtitles(VideoFrame &dst,double time)=0;
 };
 
-class SubtitlesProviderFactory : public Factory<SubtitlesProvider, std::string> {
+class SubtitlesProviderFactory final : public Factory<SubtitlesProvider, std::string> {
 public:
 	static std::unique_ptr<SubtitlesProvider> GetProvider();
 	static void RegisterProviders();

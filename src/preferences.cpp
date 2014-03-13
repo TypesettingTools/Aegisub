@@ -77,7 +77,7 @@ CLASS_PAGE(Advanced)
 CLASS_PAGE(Advanced_Audio)
 CLASS_PAGE(Advanced_Video)
 
-class Interface_Hotkeys : public OptionPage {
+class Interface_Hotkeys final : public OptionPage {
 	wxDataViewCtrl *dvc;
 	wxObjectDataPtr<HotkeyDataViewModel> model;
 	wxSearchCtrl *quick_search;
@@ -263,7 +263,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 }
 
 /// wxDataViewIconTextRenderer with command name autocompletion
-class CommandRenderer : public wxDataViewCustomRenderer {
+class CommandRenderer final : public wxDataViewCustomRenderer {
 	wxArrayString autocomplete;
 	wxDataViewIconText value;
 	static const int icon_width = 20;
@@ -327,7 +327,7 @@ public:
 	bool HasEditorCtrl() const override { return true; }
 };
 
-class HotkeyRenderer : public wxDataViewCustomRenderer {
+class HotkeyRenderer final : public wxDataViewCustomRenderer {
 	wxString value;
 	wxTextCtrl *ctrl;
 

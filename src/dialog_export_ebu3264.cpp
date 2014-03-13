@@ -48,7 +48,7 @@ namespace {
 	const boost::regex timecode_regex("([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2}):([[:digit:]]{2})");
 
 	/// Validator for SMPTE timecodes
-	class TimecodeValidator : public wxValidator {
+	class TimecodeValidator final : public wxValidator {
 		EbuTimecode *value;
 
 		wxTextCtrl *GetCtrl() const { return dynamic_cast<wxTextCtrl*>(GetWindow()); }

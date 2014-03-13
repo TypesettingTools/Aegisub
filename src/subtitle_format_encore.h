@@ -34,7 +34,7 @@
 
 #include "subtitle_format.h"
 
-class EncoreSubtitleFormat : public SubtitleFormat {
+class EncoreSubtitleFormat final : public SubtitleFormat {
 public:
 	EncoreSubtitleFormat();
 	std::vector<std::string> GetWriteWildcards() const override;

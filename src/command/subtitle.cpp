@@ -78,7 +78,7 @@ struct validate_nonempty_selection_video_loaded : public Command {
 	}
 };
 
-struct subtitle_attachment : public Command {
+struct subtitle_attachment final : public Command {
 	CMD_NAME("subtitle/attachment")
 	CMD_ICON(attach_button)
 	STR_MENU("A&ttachments...")
@@ -91,7 +91,7 @@ struct subtitle_attachment : public Command {
 	}
 };
 
-struct subtitle_find : public Command {
+struct subtitle_find final : public Command {
 	CMD_NAME("subtitle/find")
 	CMD_ICON(find_button)
 	STR_MENU("&Find...")
@@ -104,7 +104,7 @@ struct subtitle_find : public Command {
 	}
 };
 
-struct subtitle_find_next : public Command {
+struct subtitle_find_next final : public Command {
 	CMD_NAME("subtitle/find/next")
 	CMD_ICON(find_next_menu)
 	STR_MENU("Find &Next")
@@ -134,7 +134,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	c->selectionController->SetSelectionAndActive({ def }, def);
 }
 
-struct subtitle_insert_after : public validate_nonempty_selection {
+struct subtitle_insert_after final : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/after")
 	STR_MENU("&After Current")
 	STR_DISP("After Current")
@@ -168,7 +168,7 @@ struct subtitle_insert_after : public validate_nonempty_selection {
 	}
 };
 
-struct subtitle_insert_after_videotime : public validate_nonempty_selection_video_loaded {
+struct subtitle_insert_after_videotime final : public validate_nonempty_selection_video_loaded {
 	CMD_NAME("subtitle/insert/after/videotime")
 	STR_MENU("After Current, at Video Time")
 	STR_DISP("After Current, at Video Time")
@@ -179,7 +179,7 @@ struct subtitle_insert_after_videotime : public validate_nonempty_selection_vide
 	}
 };
 
-struct subtitle_insert_before : public validate_nonempty_selection {
+struct subtitle_insert_before final : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/before")
 	STR_MENU("&Before Current")
 	STR_DISP("Before Current")
@@ -210,7 +210,7 @@ struct subtitle_insert_before : public validate_nonempty_selection {
 	}
 };
 
-struct subtitle_insert_before_videotime : public validate_nonempty_selection_video_loaded {
+struct subtitle_insert_before_videotime final : public validate_nonempty_selection_video_loaded {
 	CMD_NAME("subtitle/insert/before/videotime")
 	STR_MENU("Before Current, at Video Time")
 	STR_DISP("Before Current, at Video Time")
@@ -221,7 +221,7 @@ struct subtitle_insert_before_videotime : public validate_nonempty_selection_vid
 	}
 };
 
-struct subtitle_new : public Command {
+struct subtitle_new final : public Command {
 	CMD_NAME("subtitle/new")
 	CMD_ICON(new_toolbutton)
 	STR_MENU("&New Subtitles")
@@ -234,7 +234,7 @@ struct subtitle_new : public Command {
 	}
 };
 
-struct subtitle_open : public Command {
+struct subtitle_open final : public Command {
 	CMD_NAME("subtitle/open")
 	CMD_ICON(open_toolbutton)
 	STR_MENU("&Open Subtitles...")
@@ -249,7 +249,7 @@ struct subtitle_open : public Command {
 	}
 };
 
-struct subtitle_open_autosave : public Command {
+struct subtitle_open_autosave final : public Command {
 	CMD_NAME("subtitle/open/autosave")
 	STR_MENU("Open A&utosaved Subtitles...")
 	STR_DISP("Open Autosaved Subtitles")
@@ -263,7 +263,7 @@ struct subtitle_open_autosave : public Command {
 	}
 };
 
-struct subtitle_open_charset : public Command {
+struct subtitle_open_charset final : public Command {
 	CMD_NAME("subtitle/open/charset")
 	CMD_ICON(open_with_toolbutton)
 	STR_MENU("Open Subtitles with &Charset...")
@@ -283,7 +283,7 @@ struct subtitle_open_charset : public Command {
 	}
 };
 
-struct subtitle_open_video : public Command {
+struct subtitle_open_video final : public Command {
 	CMD_NAME("subtitle/open/video")
 	STR_MENU("Open Subtitles from &Video")
 	STR_DISP("Open Subtitles from Video")
@@ -300,7 +300,7 @@ struct subtitle_open_video : public Command {
 	}
 };
 
-struct subtitle_properties : public Command {
+struct subtitle_properties final : public Command {
 	CMD_NAME("subtitle/properties")
 	CMD_ICON(properties_toolbutton)
 	STR_MENU("&Properties...")
@@ -336,7 +336,7 @@ static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	}
 }
 
-struct subtitle_save : public Command {
+struct subtitle_save final : public Command {
 	CMD_NAME("subtitle/save")
 	CMD_ICON(save_toolbutton)
 	STR_MENU("&Save Subtitles")
@@ -353,7 +353,7 @@ struct subtitle_save : public Command {
 	}
 };
 
-struct subtitle_save_as : public Command {
+struct subtitle_save_as final : public Command {
 	CMD_NAME("subtitle/save/as")
 	CMD_ICON(save_as_toolbutton)
 	STR_MENU("Save Subtitles &as...")
@@ -365,7 +365,7 @@ struct subtitle_save_as : public Command {
 	}
 };
 
-struct subtitle_select_all : public Command {
+struct subtitle_select_all final : public Command {
 	CMD_NAME("subtitle/select/all")
 	STR_MENU("Select &All")
 	STR_DISP("Select All")
@@ -378,7 +378,7 @@ struct subtitle_select_all : public Command {
 	}
 };
 
-struct subtitle_select_visible : public Command {
+struct subtitle_select_visible final : public Command {
 	CMD_NAME("subtitle/select/visible")
 	CMD_ICON(select_visible_button)
 	STR_MENU("Select Visible")
@@ -411,7 +411,7 @@ struct subtitle_select_visible : public Command {
 	}
 };
 
-struct subtitle_spellcheck : public Command {
+struct subtitle_spellcheck final : public Command {
 	CMD_NAME("subtitle/spellcheck")
 	CMD_ICON(spellcheck_toolbutton)
 	STR_MENU("Spell &Checker...")

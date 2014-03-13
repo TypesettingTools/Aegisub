@@ -47,7 +47,7 @@ namespace agi {
 ///
 /// This control constrains values to valid times, and can display the time
 /// being edited as either a h:mm:ss.cc formatted time, or a frame number
-class TimeEdit : public wxTextCtrl {
+class TimeEdit final : public wxTextCtrl {
 	bool byFrame = false; ///< Is the time displayed as a frame number?
 	agi::Context *c; ///< Project context
 	bool isEnd;      ///< Should the time be treated as an end time for time <-> frame conversions?

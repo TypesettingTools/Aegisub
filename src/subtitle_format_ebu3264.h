@@ -24,7 +24,7 @@
 ///
 /// Based on specifications obtained at <http://tech.ebu.ch/docs/tech/tech3264.pdf>
 /// Work on support for this format was sponsored by Bandai.
-class Ebu3264SubtitleFormat : public SubtitleFormat {
+class Ebu3264SubtitleFormat final : public SubtitleFormat {
 public:
 	Ebu3264SubtitleFormat();
 	std::vector<std::string> GetWriteWildcards() const override;

@@ -52,7 +52,7 @@ struct AudioSpectrumCacheBlockFactory;
 ///
 /// Renders frequency-power spectrum graphs of PCM audio data using a derivation function
 /// such as the fast fourier transform.
-class AudioSpectrumRenderer : public AudioRendererBitmapProvider {
+class AudioSpectrumRenderer final : public AudioRendererBitmapProvider {
 	friend struct AudioSpectrumCacheBlockFactory;
 
 	/// Internal cache management for the spectrum

@@ -109,7 +109,7 @@ struct color_grammar : qi::grammar<Iterator, agi::Color()> {
 };
 
 template <typename Lexer>
-struct dialogue_tokens : lex::lexer<Lexer> {
+struct dialogue_tokens final : lex::lexer<Lexer> {
 	int paren_depth;
 
 	template<typename KT>

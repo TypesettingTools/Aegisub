@@ -45,7 +45,7 @@ class wxTextCtrl;
 
 /// @class VideoBox
 /// @brief The box containing the video display and associated controls
-class VideoBox : public wxPanel {
+class VideoBox final : public wxPanel {
 	std::deque<agi::signal::Connection> slots;
 	agi::Context *context;     ///< Project context
 	wxTextCtrl *VideoPosition; ///< Current frame/time

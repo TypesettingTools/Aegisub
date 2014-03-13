@@ -36,7 +36,7 @@ static bool operator==(VideoFrame const& a, VideoFrame const& b) {
 #endif
 
 /// A video frame and its frame number
-struct CachedFrame : public VideoFrame {
+struct CachedFrame final : public VideoFrame {
 	int frame_number;
 
 	CachedFrame(int frame_number, VideoFrame const& frame)

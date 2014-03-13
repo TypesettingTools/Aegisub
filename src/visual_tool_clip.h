@@ -23,13 +23,13 @@
 #include "visual_tool.h"
 
 /// VisualDraggableFeature with siblings
-struct ClipCorner : public VisualDraggableFeature {
+struct ClipCorner final : public VisualDraggableFeature {
 	ClipCorner *horiz; ///< Other corner on this corner's horizontal line
 	ClipCorner *vert;  ///< Other corner on this corner's vertical line
 	ClipCorner() : VisualDraggableFeature() , horiz(nullptr) , vert(nullptr) { type = DRAG_SMALL_CIRCLE; }
 };
 
-class VisualToolClip : public VisualTool<ClipCorner> {
+class VisualToolClip final : public VisualTool<ClipCorner> {
 	Vector2D cur_1;
 	Vector2D cur_2;
 

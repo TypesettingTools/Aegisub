@@ -37,7 +37,7 @@
 class AssDialogue;
 class wxXmlNode;
 
-class TTXTSubtitleFormat : public SubtitleFormat {
+class TTXTSubtitleFormat final : public SubtitleFormat {
 	AssDialogue *ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const;
 	void ProcessHeader(wxXmlNode *node) const;
 

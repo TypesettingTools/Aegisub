@@ -19,7 +19,7 @@
 
 #include <libaegisub/fs_fwd.h>
 
-class VideoProviderFactory : public Factory<VideoProvider, agi::fs::path, std::string> {
+class VideoProviderFactory final : public Factory<VideoProvider, agi::fs::path, std::string> {
 public:
 	static std::unique_ptr<VideoProvider> GetProvider(agi::fs::path const& video_file, std::string const& colormatrix);
 	static void RegisterProviders();

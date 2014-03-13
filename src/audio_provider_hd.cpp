@@ -71,7 +71,7 @@ agi::fs::path cache_path() {
 }
 
 /// A PCM audio provider for raw dumps with no header
-class RawAudioProvider : public PCMAudioProvider {
+class RawAudioProvider final : public PCMAudioProvider {
 public:
 	RawAudioProvider(agi::fs::path const& cache_filename, AudioProvider *src)
 	: PCMAudioProvider(cache_filename)

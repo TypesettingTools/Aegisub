@@ -351,7 +351,7 @@ static const uint8_t w64Guiddata[16] = {
 /// @brief Sony Wave64 audio provider
 ///
 /// http://www.vcs.de/fileadmin/user_upload/MBS/PDF/Whitepaper/Informations_about_Sony_Wave64.pdf
-class Wave64AudioProvider : public PCMAudioProvider {
+class Wave64AudioProvider final : public PCMAudioProvider {
 	// Here's some copy-paste from the FFmpegSource2 code
 
 	/// http://msdn.microsoft.com/en-us/library/dd757720(VS.85).aspx

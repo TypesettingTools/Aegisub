@@ -108,7 +108,7 @@ public:
 	wxColour Selection() const { return focused ? sel_focused_colour : sel_colour; }
 };
 
-class AudioDisplayScrollbar : public AudioDisplayInteractionObject {
+class AudioDisplayScrollbar final : public AudioDisplayInteractionObject {
 	static const int height = 15;
 	static const int min_width = 10;
 
@@ -247,7 +247,7 @@ public:
 const int AudioDisplayScrollbar::min_width;
 
 
-class AudioDisplayTimeline : public AudioDisplayInteractionObject {
+class AudioDisplayTimeline final : public AudioDisplayInteractionObject {
 	int duration;        ///< Total duration in ms
 	double ms_per_pixel; ///< Milliseconds per pixel
 	int pixel_left;      ///< Leftmost visible pixel (i.e. scroll position)
@@ -460,7 +460,7 @@ public:
 	}
 };
 
-class AudioMarkerInteractionObject : public AudioDisplayInteractionObject {
+class AudioMarkerInteractionObject final : public AudioDisplayInteractionObject {
 	// Object-pair being interacted with
 	std::vector<AudioMarker*> markers;
 	AudioTimingController *timing_controller;
@@ -502,7 +502,7 @@ public:
 	int GetPosition() const { return markers.front()->GetPosition(); }
 };
 
-class AudioStyleRangeMerger : public AudioRenderingStyleRanges {
+class AudioStyleRangeMerger final : public AudioRenderingStyleRanges {
 	typedef std::map<int, AudioRenderingStyle> style_map;
 public:
 	typedef style_map::iterator iterator;

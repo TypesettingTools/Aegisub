@@ -22,7 +22,7 @@ struct CachedFrame;
 
 /// @class VideoProviderCache
 /// @brief A wrapper around a video provider which provides LRU caching
-class VideoProviderCache : public VideoProvider {
+class VideoProviderCache final : public VideoProvider {
 	/// The source provider to get frames from
 	std::unique_ptr<VideoProvider> master;
 

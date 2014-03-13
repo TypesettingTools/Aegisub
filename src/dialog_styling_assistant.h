@@ -33,7 +33,7 @@ class wxCheckBox;
 class wxListBox;
 class wxTextCtrl;
 
-class DialogStyling : public wxDialog {
+class DialogStyling final : public wxDialog {
 	agi::Context *c;
 	agi::signal::Connection active_line_connection;
 

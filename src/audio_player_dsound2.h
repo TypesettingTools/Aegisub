@@ -44,7 +44,7 @@ class DirectSoundPlayer2Thread;
 /// The core design idea is to have a playback thread that owns the DirectSound COM objects
 /// and performs all playback operations, and use the player object as a proxy to
 /// send commands to the playback thread.
-class DirectSoundPlayer2 : public AudioPlayer {
+class DirectSoundPlayer2 final : public AudioPlayer {
 	/// The playback thread
 	std::unique_ptr<DirectSoundPlayer2Thread> thread;
 

@@ -38,7 +38,7 @@
 namespace agi { struct Context; }
 namespace cmd { class Command; }
 
-class ToggleBitmap : public wxControl {
+class ToggleBitmap final : public wxControl {
 	agi::Context *context;
 	cmd::Command &command;
 	wxBitmap img;

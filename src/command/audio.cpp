@@ -60,7 +60,7 @@ namespace {
 		}
 	};
 
-struct audio_close : public validate_audio_open {
+struct audio_close final : public validate_audio_open {
 	CMD_NAME("audio/close")
 	CMD_ICON(close_audio_menu)
 	STR_MENU("&Close Audio")
@@ -72,7 +72,7 @@ struct audio_close : public validate_audio_open {
 	}
 };
 
-struct audio_open : public Command {
+struct audio_open final : public Command {
 	CMD_NAME("audio/open")
 	CMD_ICON(open_audio_menu)
 	STR_MENU("&Open Audio File...")
@@ -96,7 +96,7 @@ struct audio_open : public Command {
 	}
 };
 
-struct audio_open_blank : public Command {
+struct audio_open_blank final : public Command {
 	CMD_NAME("audio/open/blank")
 	STR_MENU("Open 2h30 Blank Audio")
 	STR_DISP("Open 2h30 Blank Audio")
@@ -112,7 +112,7 @@ struct audio_open_blank : public Command {
 	}
 };
 
-struct audio_open_noise : public Command {
+struct audio_open_noise final : public Command {
 	CMD_NAME("audio/open/noise")
 	STR_MENU("Open 2h30 Noise Audio")
 	STR_DISP("Open 2h30 Noise Audio")
@@ -128,7 +128,7 @@ struct audio_open_noise : public Command {
 	}
 };
 
-struct audio_open_video : public Command {
+struct audio_open_video final : public Command {
 	CMD_NAME("audio/open/video")
 	CMD_ICON(open_audio_from_video_menu)
 	STR_MENU("Open Audio from &Video")
@@ -151,7 +151,7 @@ struct audio_open_video : public Command {
 	}
 };
 
-struct audio_view_spectrum : public Command {
+struct audio_view_spectrum final : public Command {
 	CMD_NAME("audio/view/spectrum")
 	STR_MENU("&Spectrum Display")
 	STR_DISP("Spectrum Display")
@@ -167,7 +167,7 @@ struct audio_view_spectrum : public Command {
 	}
 };
 
-struct audio_view_waveform : public Command {
+struct audio_view_waveform final : public Command {
 	CMD_NAME("audio/view/waveform")
 	STR_MENU("&Waveform Display")
 	STR_DISP("Waveform Display")
@@ -183,7 +183,7 @@ struct audio_view_waveform : public Command {
 	}
 };
 
-struct audio_save_clip : public Command {
+struct audio_save_clip final : public Command {
 	CMD_NAME("audio/save/clip")
 	STR_MENU("Create audio clip")
 	STR_DISP("Create audio clip")
@@ -210,7 +210,7 @@ struct audio_save_clip : public Command {
 	}
 };
 
-struct audio_play_current_selection : public validate_audio_open {
+struct audio_play_current_selection final : public validate_audio_open {
 	CMD_NAME("audio/play/current")
 	STR_MENU("Play current audio selection")
 	STR_DISP("Play current audio selection")
@@ -222,7 +222,7 @@ struct audio_play_current_selection : public validate_audio_open {
 	}
 };
 
-struct audio_play_current_line : public validate_audio_open {
+struct audio_play_current_line final : public validate_audio_open {
 	CMD_NAME("audio/play/line")
 	CMD_ICON(button_playline)
 	STR_MENU("Play current line")
@@ -237,7 +237,7 @@ struct audio_play_current_line : public validate_audio_open {
 	}
 };
 
-struct audio_play_selection : public validate_audio_open {
+struct audio_play_selection final : public validate_audio_open {
 	CMD_NAME("audio/play/selection")
 	CMD_ICON(button_playsel)
 	STR_MENU("Play audio selection")
@@ -250,7 +250,7 @@ struct audio_play_selection : public validate_audio_open {
 	}
 };
 
-struct audio_play_toggle : public validate_audio_open {
+struct audio_play_toggle final : public validate_audio_open {
 	CMD_NAME("audio/play/toggle")
 	STR_MENU("Play audio selection or stop")
 	STR_DISP("Play audio selection or stop")
@@ -266,7 +266,7 @@ struct audio_play_toggle : public validate_audio_open {
 	}
 };
 
-struct audio_stop : public Command {
+struct audio_stop final : public Command {
 	CMD_NAME("audio/stop")
 	CMD_ICON(button_stop)
 	STR_MENU("Stop playing")
@@ -284,7 +284,7 @@ struct audio_stop : public Command {
 	}
 };
 
-struct audio_play_before : public validate_audio_open {
+struct audio_play_before final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/before")
 	CMD_ICON(button_playfivehbefore)
 	STR_MENU("Play 500 ms before selection")
@@ -298,7 +298,7 @@ struct audio_play_before : public validate_audio_open {
 	}
 };
 
-struct audio_play_after : public validate_audio_open {
+struct audio_play_after final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/after")
 	CMD_ICON(button_playfivehafter)
 	STR_MENU("Play 500 ms after selection")
@@ -312,7 +312,7 @@ struct audio_play_after : public validate_audio_open {
 	}
 };
 
-struct audio_play_end : public validate_audio_open {
+struct audio_play_end final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/end")
 	CMD_ICON(button_playlastfiveh)
 	STR_MENU("Play last 500 ms of selection")
@@ -326,7 +326,7 @@ struct audio_play_end : public validate_audio_open {
 	}
 };
 
-struct audio_play_begin : public validate_audio_open {
+struct audio_play_begin final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/begin")
 	CMD_ICON(button_playfirstfiveh)
 	STR_MENU("Play first 500 ms of selection")
@@ -342,7 +342,7 @@ struct audio_play_begin : public validate_audio_open {
 	}
 };
 
-struct audio_play_to_end : public validate_audio_open {
+struct audio_play_to_end final : public validate_audio_open {
 	CMD_NAME("audio/play/to_end")
 	CMD_ICON(button_playtoend)
 	STR_MENU("Play from selection start to end of file")
@@ -355,7 +355,7 @@ struct audio_play_to_end : public validate_audio_open {
 	}
 };
 
-struct audio_commit : public validate_audio_open {
+struct audio_commit final : public validate_audio_open {
 	CMD_NAME("audio/commit")
 	CMD_ICON(button_audio_commit)
 	STR_MENU("Commit")
@@ -372,7 +372,7 @@ struct audio_commit : public validate_audio_open {
 	}
 };
 
-struct audio_commit_default : public validate_audio_open {
+struct audio_commit_default final : public validate_audio_open {
 	CMD_NAME("audio/commit/default")
 	STR_MENU("Commit and use default timing for next line")
 	STR_DISP("Commit and use default timing for next line")
@@ -387,7 +387,7 @@ struct audio_commit_default : public validate_audio_open {
 	}
 };
 
-struct audio_commit_next : public validate_audio_open {
+struct audio_commit_next final : public validate_audio_open {
 	CMD_NAME("audio/commit/next")
 	STR_MENU("Commit and move to next line")
 	STR_DISP("Commit and move to next line")
@@ -402,7 +402,7 @@ struct audio_commit_next : public validate_audio_open {
 	}
 };
 
-struct audio_commit_stay : public validate_audio_open {
+struct audio_commit_stay final : public validate_audio_open {
 	CMD_NAME("audio/commit/stay")
 	STR_MENU("Commit and stay on current line")
 	STR_DISP("Commit and stay on current line")
@@ -414,7 +414,7 @@ struct audio_commit_stay : public validate_audio_open {
 	}
 };
 
-struct audio_go_to : public validate_audio_open {
+struct audio_go_to final : public validate_audio_open {
 	CMD_NAME("audio/go_to")
 	CMD_ICON(button_audio_goto)
 	STR_MENU("Go to selection")
@@ -426,7 +426,7 @@ struct audio_go_to : public validate_audio_open {
 	}
 };
 
-struct audio_scroll_left : public validate_audio_open {
+struct audio_scroll_left final : public validate_audio_open {
 	CMD_NAME("audio/scroll/left")
 		STR_MENU("Scroll left")
 		STR_DISP("Scroll left")
@@ -437,7 +437,7 @@ struct audio_scroll_left : public validate_audio_open {
 	}
 };
 
-struct audio_scroll_right : public validate_audio_open {
+struct audio_scroll_right final : public validate_audio_open {
 	CMD_NAME("audio/scroll/right")
 		STR_MENU("Scroll right")
 		STR_DISP("Scroll right")
@@ -452,7 +452,7 @@ static inline void toggle(const char *opt) {
 	OPT_SET(opt)->SetBool(!OPT_GET(opt)->GetBool());
 }
 
-struct audio_autoscroll : public Command {
+struct audio_autoscroll final : public Command {
 	CMD_NAME("audio/opt/autoscroll")
 	CMD_ICON(toggle_audio_autoscroll)
 	STR_MENU("Auto scroll audio display to selected line")
@@ -469,7 +469,7 @@ struct audio_autoscroll : public Command {
 	}
 };
 
-struct audio_autocommit : public Command {
+struct audio_autocommit final : public Command {
 	CMD_NAME("audio/opt/autocommit")
 	CMD_ICON(toggle_audio_autocommit)
 	STR_MENU("Automatically commit all changes")
@@ -486,7 +486,7 @@ struct audio_autocommit : public Command {
 	}
 };
 
-struct audio_autonext : public Command {
+struct audio_autonext final : public Command {
 	CMD_NAME("audio/opt/autonext")
 	CMD_ICON(toggle_audio_nextcommit)
 	STR_MENU("Auto go to next line on commit")
@@ -503,7 +503,7 @@ struct audio_autonext : public Command {
 	}
 };
 
-struct audio_toggle_spectrum : public Command {
+struct audio_toggle_spectrum final : public Command {
 	CMD_NAME("audio/opt/spectrum")
 	CMD_ICON(toggle_audio_spectrum)
 	STR_MENU("Spectrum analyzer mode")
@@ -520,7 +520,7 @@ struct audio_toggle_spectrum : public Command {
 	}
 };
 
-struct audio_vertical_link : public Command {
+struct audio_vertical_link final : public Command {
 	CMD_NAME("audio/opt/vertical_link")
 	CMD_ICON(toggle_audio_link)
 	STR_MENU("Link vertical zoom and volume sliders")
@@ -537,7 +537,7 @@ struct audio_vertical_link : public Command {
 	}
 };
 
-struct audio_karaoke : public Command {
+struct audio_karaoke final : public Command {
 	CMD_NAME("audio/karaoke")
 	CMD_ICON(kara_mode)
 	STR_MENU("Toggle karaoke mode")

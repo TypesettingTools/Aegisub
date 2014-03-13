@@ -49,7 +49,7 @@
 namespace {
 	using cmd::Command;
 
-struct reload_all : public Command {
+struct reload_all final : public Command {
 	CMD_NAME("am/reload")
 	STR_MENU("&Reload Automation scripts")
 	STR_DISP("Reload Automation scripts")
@@ -62,7 +62,7 @@ struct reload_all : public Command {
 	}
 };
 
-struct reload_autoload : public Command {
+struct reload_autoload final : public Command {
 	CMD_NAME("am/reload/autoload")
 	STR_MENU("R&eload autoload Automation scripts")
 	STR_DISP("Reload autoload Automation scripts")
@@ -74,7 +74,7 @@ struct reload_autoload : public Command {
 	}
 };
 
-struct open_manager : public Command {
+struct open_manager final : public Command {
 	CMD_NAME("am/manager")
 	CMD_ICON(automation_toolbutton)
 	STR_MENU("&Automation...")
@@ -86,7 +86,7 @@ struct open_manager : public Command {
 	}
 };
 
-struct meta : public Command {
+struct meta final : public Command {
 	CMD_NAME("am/meta")
 	CMD_ICON(automation_toolbutton)
 	STR_MENU("&Automation...")

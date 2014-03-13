@@ -36,7 +36,7 @@
 
 class AssDialogue;
 
-class SRTSubtitleFormat : public SubtitleFormat {
+class SRTSubtitleFormat final : public SubtitleFormat {
 	std::string ConvertTags(const AssDialogue *diag) const;
 public:
 	SRTSubtitleFormat();

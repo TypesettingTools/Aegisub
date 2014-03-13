@@ -122,7 +122,7 @@ public:
 
 
 /// Marker provider for video keyframes
-class AudioMarkerProviderKeyframes : public AudioMarkerProvider {
+class AudioMarkerProviderKeyframes final : public AudioMarkerProvider {
 	/// Video controller to get keyframes from
 	VideoContext *vc;
 
@@ -155,7 +155,7 @@ public:
 };
 
 /// Marker provider for the current video playback position
-class VideoPositionMarkerProvider : public AudioMarkerProvider {
+class VideoPositionMarkerProvider final : public AudioMarkerProvider {
 	VideoContext *vc;
 
 	std::unique_ptr<VideoPositionMarker> marker;
@@ -174,8 +174,8 @@ public:
 };
 
 /// Marker provider for lines every second
-class SecondsMarkerProvider : public AudioMarkerProvider {
-	struct Marker : public AudioMarker {
+class SecondsMarkerProvider final : public AudioMarkerProvider {
+	struct Marker final : public AudioMarker {
 		Pen *style;
 		int position;
 

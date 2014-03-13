@@ -42,7 +42,7 @@
 
 /// @class YUV4MPEGVideoProvider
 /// @brief Implements reading of YUV4MPEG uncompressed video files
-class YUV4MPEGVideoProvider : public VideoProvider {
+class YUV4MPEGVideoProvider final : public VideoProvider {
 	/// Pixel formats
 	enum Y4M_PixelFormat {
 		Y4M_PIXFMT_NONE		= -1,	/// not set/unknown

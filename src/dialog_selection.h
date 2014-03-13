@@ -28,7 +28,7 @@ class wxRadioBox;
 class wxRadioButton;
 class wxTextCtrl;
 
-class DialogSelection : public wxDialog {
+class DialogSelection final : public wxDialog {
 	agi::Context *con; ///< Project context
 
 	wxTextCtrl *match_text; ///< Text to search for

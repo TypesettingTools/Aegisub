@@ -38,7 +38,7 @@
 #include "avisynth.h"
 #include "avisynth_wrap.h"
 
-class AvisynthAudioProvider : public AudioProvider {
+class AvisynthAudioProvider final : public AudioProvider {
 	AviSynthWrapper avs_wrapper;
 	PClip clip;
 

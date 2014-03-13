@@ -43,7 +43,7 @@ public:
 	agi::Color GetColor() { return colour; }
 };
 
-struct ColorValidator : public wxValidator {
+struct ColorValidator final : public wxValidator {
 	agi::Color *color;
 	ColorValidator(agi::Color *color) : color(color) { }
 	wxValidator *Clone() const override { return new ColorValidator(color); }

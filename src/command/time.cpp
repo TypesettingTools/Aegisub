@@ -106,7 +106,7 @@ static void adjoin_lines(agi::Context *c, bool set_start) {
 	c->ass->Commit(_("adjoin"), AssFile::COMMIT_DIAG_TIME);
 }
 
-struct time_continuous_end : public validate_adjoinable {
+struct time_continuous_end final : public validate_adjoinable {
 	CMD_NAME("time/continuous/end")
 	STR_MENU("Change &End")
 	STR_DISP("Change End")
@@ -117,7 +117,7 @@ struct time_continuous_end : public validate_adjoinable {
 	}
 };
 
-struct time_continuous_start : public validate_adjoinable {
+struct time_continuous_start final : public validate_adjoinable {
 	CMD_NAME("time/continuous/start")
 	STR_MENU("Change &Start")
 	STR_DISP("Change Start")
@@ -128,7 +128,7 @@ struct time_continuous_start : public validate_adjoinable {
 	}
 };
 
-struct time_frame_current : public validate_video_loaded {
+struct time_frame_current final : public validate_video_loaded {
 	CMD_NAME("time/frame/current")
 	CMD_ICON(shift_to_frame)
 	STR_MENU("Shift to &Current Frame")
@@ -155,7 +155,7 @@ struct time_frame_current : public validate_video_loaded {
 	}
 };
 
-struct time_shift : public Command {
+struct time_shift final : public Command {
 	CMD_NAME("time/shift")
 	CMD_ICON(shift_times_toolbutton)
 	STR_MENU("S&hift Times...")
@@ -185,7 +185,7 @@ static void snap_subs_video(agi::Context *c, bool set_start) {
 	c->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
 }
 
-struct time_snap_end_video : public validate_video_loaded {
+struct time_snap_end_video final : public validate_video_loaded {
 	CMD_NAME("time/snap/end_video")
 	CMD_ICON(subend_to_video)
 	STR_MENU("Snap &End to Video")
@@ -197,7 +197,7 @@ struct time_snap_end_video : public validate_video_loaded {
 	}
 };
 
-struct time_snap_scene : public validate_video_loaded {
+struct time_snap_scene final : public validate_video_loaded {
 	CMD_NAME("time/snap/scene")
 	CMD_ICON(snap_subs_to_scene)
 	STR_MENU("Snap to S&cene")
@@ -243,7 +243,7 @@ struct time_snap_scene : public validate_video_loaded {
 	}
 };
 
-struct time_add_lead_both : public Command {
+struct time_add_lead_both final : public Command {
 	CMD_NAME("time/lead/both")
 	STR_MENU("Add lead in and out")
 	STR_DISP("Add lead in and out")
@@ -256,7 +256,7 @@ struct time_add_lead_both : public Command {
 	}
 };
 
-struct time_add_lead_in : public Command {
+struct time_add_lead_in final : public Command {
 	CMD_NAME("time/lead/in")
 	CMD_ICON(button_leadin)
 	STR_MENU("Add lead in")
@@ -268,7 +268,7 @@ struct time_add_lead_in : public Command {
 	}
 };
 
-struct time_add_lead_out : public Command {
+struct time_add_lead_out final : public Command {
 	CMD_NAME("time/lead/out")
 	CMD_ICON(button_leadout)
 	STR_MENU("Add lead out")
@@ -280,7 +280,7 @@ struct time_add_lead_out : public Command {
 	}
 };
 
-struct time_length_increase : public Command {
+struct time_length_increase final : public Command {
 	CMD_NAME("time/length/increase")
 	STR_MENU("Increase length")
 	STR_DISP("Increase length")
@@ -291,7 +291,7 @@ struct time_length_increase : public Command {
 	}
 };
 
-struct time_length_increase_shift : public Command {
+struct time_length_increase_shift final : public Command {
 	CMD_NAME("time/length/increase/shift")
 	STR_MENU("Increase length and shift")
 	STR_DISP("Increase length and shift")
@@ -302,7 +302,7 @@ struct time_length_increase_shift : public Command {
 	}
 };
 
-struct time_length_decrease : public Command {
+struct time_length_decrease final : public Command {
 	CMD_NAME("time/length/decrease")
 	STR_MENU("Decrease length")
 	STR_DISP("Decrease length")
@@ -313,7 +313,7 @@ struct time_length_decrease : public Command {
 	}
 };
 
-struct time_length_decrease_shift : public Command {
+struct time_length_decrease_shift final : public Command {
 	CMD_NAME("time/length/decrease/shift")
 	STR_MENU("Decrease length and shift")
 	STR_DISP("Decrease length and shift")
@@ -324,7 +324,7 @@ struct time_length_decrease_shift : public Command {
 	}
 };
 
-struct time_start_increase : public Command {
+struct time_start_increase final : public Command {
 	CMD_NAME("time/start/increase")
 	STR_MENU("Shift start time forward")
 	STR_DISP("Shift start time forward")
@@ -335,7 +335,7 @@ struct time_start_increase : public Command {
 	}
 };
 
-struct time_start_decrease : public Command {
+struct time_start_decrease final : public Command {
 	CMD_NAME("time/start/decrease")
 	STR_MENU("Shift start time backward")
 	STR_DISP("Shift start time backward")
@@ -346,7 +346,7 @@ struct time_start_decrease : public Command {
 	}
 };
 
-struct time_snap_start_video : public validate_video_loaded {
+struct time_snap_start_video final : public validate_video_loaded {
 	CMD_NAME("time/snap/start_video")
 	CMD_ICON(substart_to_video)
 	STR_MENU("Snap &Start to Video")
@@ -358,7 +358,7 @@ struct time_snap_start_video : public validate_video_loaded {
 	}
 };
 
-struct time_next : public Command {
+struct time_next final : public Command {
 	CMD_NAME("time/next")
 	CMD_ICON(button_next)
 	STR_MENU("Next Line")
@@ -370,7 +370,7 @@ struct time_next : public Command {
 	}
 };
 
-struct time_prev : public Command {
+struct time_prev final : public Command {
 	CMD_NAME("time/prev")
 	CMD_ICON(button_prev)
 	STR_MENU("Previous Line")

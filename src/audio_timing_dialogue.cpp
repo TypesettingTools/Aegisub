@@ -54,7 +54,7 @@ class TimeableLine;
 ///
 /// Audio marker intended to live in pairs of two, taking styles depending
 /// on which marker in the pair is to the left and which is to the right.
-class DialogueTimingMarker : public AudioMarker {
+class DialogueTimingMarker final : public AudioMarker {
 	/// Current ms position of this marker
 	int position;
 
@@ -285,7 +285,7 @@ void DialogueTimingMarker::SetPosition(int new_position) {
 /// addition, any markers for inactive lines that start/end at the same time
 /// as the active line starts/ends can optionally be dragged along with the
 /// active line's markers, updating those lines as well.
-class AudioTimingControllerDialogue : public AudioTimingController {
+class AudioTimingControllerDialogue final : public AudioTimingController {
 	/// The rendering style for the active line's start marker
 	Pen style_left;
 	/// The rendering style for the active line's end marker

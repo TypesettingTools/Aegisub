@@ -112,7 +112,7 @@ public:
 };
 
 /// Dialog box for getting an export configuration for EBU Tech 3264-1991
-class EbuExportConfigurationDialog : public wxDialog {
+class EbuExportConfigurationDialog final : public wxDialog {
 public:
 	/// Constructor
 	/// @param owner Parent window of the dialog

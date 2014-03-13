@@ -31,7 +31,7 @@ class wxTextCtrl;
 
 /// @class DialogProgress
 /// @brief Progress-bar dialog box for displaying during long operations
-class DialogProgress : public wxDialog, public agi::BackgroundRunner {
+class DialogProgress final : public wxDialog, public agi::BackgroundRunner {
 	friend class DialogProgressSink;
 	DialogProgressSink *ps;
 

@@ -41,7 +41,7 @@ class wxCheckBox;
 class wxComboBox;
 class wxTextCtrl;
 
-class DialogProperties : public wxDialog {
+class DialogProperties final : public wxDialog {
 	agi::Context *c; ///< Project this dialog is adjusting the properties of
 
 	/// Pairs of a script property and a text control for that property

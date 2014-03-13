@@ -39,7 +39,7 @@
 ///
 /// A simple dialog to let the user select the format of a plain text file
 /// being imported into Aegisub
-class DialogTextImport : public wxDialog {
+class DialogTextImport final : public wxDialog {
 	std::string seperator;
 	std::string comment;
 	bool include_blank;

@@ -111,7 +111,7 @@ public:
 };
 
 /// Event which signals that a requested frame is ready
-struct FrameReadyEvent : public wxEvent {
+struct FrameReadyEvent final : public wxEvent {
 	/// Frame which is ready
 	std::shared_ptr<VideoFrame> frame;
 	/// Time which was used for subtitle rendering
@@ -123,14 +123,14 @@ struct FrameReadyEvent : public wxEvent {
 
 // These exceptions are wxEvents so that they can be passed directly back to
 // the parent thread as events
-struct VideoProviderErrorEvent : public wxEvent, public agi::Exception {
+struct VideoProviderErrorEvent final : public wxEvent, public agi::Exception {
 	const char * GetName() const override { return "video/error"; }
 	wxEvent *Clone() const override { return new VideoProviderErrorEvent(*this); };
 	agi::Exception *Copy() const override { return new VideoProviderErrorEvent(*this); };
 	VideoProviderErrorEvent(VideoProviderError const& err);
 };
 
-struct SubtitlesProviderErrorEvent : public wxEvent, public agi::Exception {
+struct SubtitlesProviderErrorEvent final : public wxEvent, public agi::Exception {
 	const char * GetName() const override { return "subtitles/error"; }
 	wxEvent *Clone() const override { return new SubtitlesProviderErrorEvent(*this); };
 	agi::Exception *Copy() const override { return new SubtitlesProviderErrorEvent(*this); };

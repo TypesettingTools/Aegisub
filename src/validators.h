@@ -21,7 +21,7 @@
 #include <wx/radiobox.h>
 #include <wx/validate.h>
 
-class IntValidator : public wxValidator {
+class IntValidator final : public wxValidator {
 	int value;
 	bool allow_negative;
 
@@ -39,7 +39,7 @@ public:
 	explicit IntValidator(int val=0, bool allow_negative=false);
 };
 
-class DoubleValidator : public wxValidator {
+class DoubleValidator final : public wxValidator {
 	double *value;
 	double min;
 	double max;
@@ -61,7 +61,7 @@ public:
 };
 
 template<typename T>
-class EnumBinder : public wxValidator {
+class EnumBinder final : public wxValidator {
 	T *value;
 
 	wxObject *Clone() const override { return new EnumBinder<T>(value); }
@@ -92,7 +92,7 @@ EnumBinder<T> MakeEnumBinder(T *value) {
 	return EnumBinder<T>(value);
 }
 
-class StringBinder : public wxValidator {
+class StringBinder final : public wxValidator {
 	std::string *value;
 
 	wxObject* Clone() const override { return new StringBinder(value); }

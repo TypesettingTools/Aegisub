@@ -31,7 +31,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueArray, OptionJsonValueError, "opt
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueSingle, OptionJsonValueError, "options/value")
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueNull, OptionJsonValueError, "options/value")
 
-class ConfigVisitor : public json::ConstVisitor {
+class ConfigVisitor final : public json::ConstVisitor {
 	/// Option map being populated
 	OptionValueMap &values;
 	/// Option name prefix to add to read names

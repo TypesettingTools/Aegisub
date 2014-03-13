@@ -331,7 +331,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 	}
 }
 
-struct edit_color_primary : public Command {
+struct edit_color_primary final : public Command {
 	CMD_NAME("edit/color/primary")
 	CMD_ICON(button_color_one)
 	STR_MENU("Primary Color...")
@@ -343,7 +343,7 @@ struct edit_color_primary : public Command {
 	}
 };
 
-struct edit_color_secondary : public Command {
+struct edit_color_secondary final : public Command {
 	CMD_NAME("edit/color/secondary")
 	CMD_ICON(button_color_two)
 	STR_MENU("Secondary Color...")
@@ -355,7 +355,7 @@ struct edit_color_secondary : public Command {
 	}
 };
 
-struct edit_color_outline : public Command {
+struct edit_color_outline final : public Command {
 	CMD_NAME("edit/color/outline")
 	CMD_ICON(button_color_three)
 	STR_MENU("Outline Color...")
@@ -367,7 +367,7 @@ struct edit_color_outline : public Command {
 	}
 };
 
-struct edit_color_shadow : public Command {
+struct edit_color_shadow final : public Command {
 	CMD_NAME("edit/color/shadow")
 	CMD_ICON(button_color_four)
 	STR_MENU("Shadow Color...")
@@ -379,7 +379,7 @@ struct edit_color_shadow : public Command {
 	}
 };
 
-struct edit_style_bold : public Command {
+struct edit_style_bold final : public Command {
 	CMD_NAME("edit/style/bold")
 	CMD_ICON(button_bold)
 	STR_MENU("Toggle Bold")
@@ -391,7 +391,7 @@ struct edit_style_bold : public Command {
 	}
 };
 
-struct edit_style_italic : public Command {
+struct edit_style_italic final : public Command {
 	CMD_NAME("edit/style/italic")
 	CMD_ICON(button_italics)
 	STR_MENU("Toggle Italics")
@@ -403,7 +403,7 @@ struct edit_style_italic : public Command {
 	}
 };
 
-struct edit_style_underline : public Command {
+struct edit_style_underline final : public Command {
 	CMD_NAME("edit/style/underline")
 	CMD_ICON(button_underline)
 	STR_MENU("Toggle Underline")
@@ -415,7 +415,7 @@ struct edit_style_underline : public Command {
 	}
 };
 
-struct edit_style_strikeout : public Command {
+struct edit_style_strikeout final : public Command {
 	CMD_NAME("edit/style/strikeout")
 	CMD_ICON(button_strikeout)
 	STR_MENU("Toggle Strikeout")
@@ -427,7 +427,7 @@ struct edit_style_strikeout : public Command {
 	}
 };
 
-struct edit_font : public Command {
+struct edit_font final : public Command {
 	CMD_NAME("edit/font")
 	CMD_ICON(button_fontname)
 	STR_MENU("Font Face...")
@@ -473,7 +473,7 @@ struct edit_font : public Command {
 	}
 };
 
-struct edit_find_replace : public Command {
+struct edit_find_replace final : public Command {
 	CMD_NAME("edit/find_replace")
 	CMD_ICON(find_replace_menu)
 	STR_MENU("Find and R&eplace...")
@@ -539,7 +539,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	c->selectionController->SetSelectionAndActive({ new_active }, new_active);
 }
 
-struct edit_line_copy : public validate_sel_nonempty {
+struct edit_line_copy final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/copy")
 	CMD_ICON(copy_button)
 	STR_MENU("&Copy Lines")
@@ -579,7 +579,7 @@ struct edit_line_cut: public validate_sel_nonempty {
 	}
 };
 
-struct edit_line_delete : public validate_sel_nonempty {
+struct edit_line_delete final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/delete")
 	CMD_ICON(delete_button)
 	STR_MENU("De&lete Lines")
@@ -657,7 +657,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 	c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 }
 
-struct edit_line_duplicate : public validate_sel_nonempty {
+struct edit_line_duplicate final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/duplicate")
 	STR_MENU("&Duplicate Lines")
 	STR_DISP("Duplicate Lines")
@@ -668,7 +668,7 @@ struct edit_line_duplicate : public validate_sel_nonempty {
 	}
 };
 
-struct edit_line_duplicate_shift : public validate_video_and_sel_nonempty {
+struct edit_line_duplicate_shift final : public validate_video_and_sel_nonempty {
 	CMD_NAME("edit/line/split/after")
 	STR_MENU("Split lines after current frame")
 	STR_DISP("Split lines after current frame")
@@ -680,7 +680,7 @@ struct edit_line_duplicate_shift : public validate_video_and_sel_nonempty {
 	}
 };
 
-struct edit_line_duplicate_shift_back : public validate_video_and_sel_nonempty {
+struct edit_line_duplicate_shift_back final : public validate_video_and_sel_nonempty {
 	CMD_NAME("edit/line/split/before")
 	STR_MENU("Split lines before current frame")
 	STR_DISP("Split lines before current frame")
@@ -724,7 +724,7 @@ static void combine_concat(AssDialogue *first, AssDialogue *second) {
 
 static void combine_drop(AssDialogue *, AssDialogue *) { }
 
-struct edit_line_join_as_karaoke : public validate_sel_multiple {
+struct edit_line_join_as_karaoke final : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/as_karaoke")
 	STR_MENU("As &Karaoke")
 	STR_DISP("As Karaoke")
@@ -735,7 +735,7 @@ struct edit_line_join_as_karaoke : public validate_sel_multiple {
 	}
 };
 
-struct edit_line_join_concatenate : public validate_sel_multiple {
+struct edit_line_join_concatenate final : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/concatenate")
 	STR_MENU("&Concatenate")
 	STR_DISP("Concatenate")
@@ -746,7 +746,7 @@ struct edit_line_join_concatenate : public validate_sel_multiple {
 	}
 };
 
-struct edit_line_join_keep_first : public validate_sel_multiple {
+struct edit_line_join_keep_first final : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/keep_first")
 	STR_MENU("Keep &First")
 	STR_DISP("Keep First")
@@ -788,7 +788,7 @@ static bool try_paste_lines(agi::Context *c) {
 	return true;
 }
 
-struct edit_line_paste : public Command {
+struct edit_line_paste final : public Command {
 	CMD_NAME("edit/line/paste")
 	CMD_ICON(paste_button)
 	STR_MENU("&Paste Lines")
@@ -820,7 +820,7 @@ struct edit_line_paste : public Command {
 	}
 };
 
-struct edit_line_paste_over : public Command {
+struct edit_line_paste_over final : public Command {
 	CMD_NAME("edit/line/paste/over")
 	STR_MENU("Paste Lines &Over...")
 	STR_DISP("Paste Lines Over")
@@ -913,7 +913,7 @@ bool check_end(AssDialogue *d1, AssDialogue *d2) {
 
 }
 
-struct edit_line_recombine : public validate_sel_multiple {
+struct edit_line_recombine final : public validate_sel_multiple {
 	CMD_NAME("edit/line/recombine")
 	STR_MENU("Recom&bine Lines")
 	STR_DISP("Recombine Lines")
@@ -991,7 +991,7 @@ struct edit_line_recombine : public validate_sel_multiple {
 	}
 };
 
-struct edit_line_split_by_karaoke : public validate_sel_nonempty {
+struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/split/by_karaoke")
 	STR_MENU("Split Lines (by karaoke)")
 	STR_DISP("Split Lines (by karaoke)")
@@ -1019,7 +1019,7 @@ void split_lines(agi::Context *c, Func&& set_time) {
 	c->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 }
 
-struct edit_line_split_estimate : public validate_video_and_sel_nonempty {
+struct edit_line_split_estimate final : public validate_video_and_sel_nonempty {
 	CMD_NAME("edit/line/split/estimate")
 	STR_MENU("Split at cursor (estimate times)")
 	STR_DISP("Split at cursor (estimate times)")
@@ -1035,7 +1035,7 @@ struct edit_line_split_estimate : public validate_video_and_sel_nonempty {
 	}
 };
 
-struct edit_line_split_preserve : public validate_sel_nonempty {
+struct edit_line_split_preserve final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/split/preserve")
 	STR_MENU("Split at cursor (preserve times)")
 	STR_DISP("Split at cursor (preserve times)")
@@ -1046,7 +1046,7 @@ struct edit_line_split_preserve : public validate_sel_nonempty {
 	}
 };
 
-struct edit_line_split_video : public validate_video_and_sel_nonempty {
+struct edit_line_split_video final : public validate_video_and_sel_nonempty {
 	CMD_NAME("edit/line/split/video")
 	STR_MENU("Split at cursor (at video frame)")
 	STR_DISP("Split at cursor (at video frame)")
@@ -1063,7 +1063,7 @@ struct edit_line_split_video : public validate_video_and_sel_nonempty {
 	}
 };
 
-struct edit_redo : public Command {
+struct edit_redo final : public Command {
 	CMD_NAME("edit/redo")
 	CMD_ICON(redo_button)
 	STR_HELP("Redo last undone action")
@@ -1089,7 +1089,7 @@ struct edit_redo : public Command {
 	}
 };
 
-struct edit_undo : public Command {
+struct edit_undo final : public Command {
 	CMD_NAME("edit/undo")
 	CMD_ICON(undo_button)
 	STR_HELP("Undo last action")
@@ -1115,7 +1115,7 @@ struct edit_undo : public Command {
 	}
 };
 
-struct edit_revert : public Command {
+struct edit_revert final : public Command {
 	CMD_NAME("edit/revert")
 	STR_DISP("Revert")
 	STR_MENU("Revert")
@@ -1128,7 +1128,7 @@ struct edit_revert : public Command {
 	}
 };
 
-struct edit_clear : public Command {
+struct edit_clear final : public Command {
 	CMD_NAME("edit/clear")
 	STR_DISP("Clear")
 	STR_MENU("Clear")
@@ -1142,7 +1142,7 @@ struct edit_clear : public Command {
 };
 
 std::string get_text(AssDialogueBlock &d) { return d.GetText(); }
-struct edit_clear_text : public Command {
+struct edit_clear_text final : public Command {
 	CMD_NAME("edit/clear/text")
 	STR_DISP("Clear Text")
 	STR_MENU("Clear Text")
@@ -1159,7 +1159,7 @@ struct edit_clear_text : public Command {
 	}
 };
 
-struct edit_insert_original : public Command {
+struct edit_insert_original final : public Command {
 	CMD_NAME("edit/insert_original")
 	STR_DISP("Insert Original")
 	STR_MENU("Insert Original")

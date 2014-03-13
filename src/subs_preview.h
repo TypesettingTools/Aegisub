@@ -42,7 +42,7 @@ class SubtitlesProvider;
 class VideoProvider;
 
 /// Preview window to show a short string with a given ass style
-class SubtitlesPreview : public wxWindow {
+class SubtitlesPreview final : public wxWindow {
 	/// The subtitle provider used to render the string
 	std::unique_ptr<SubtitlesProvider> provider;
 	/// Bitmap to render into

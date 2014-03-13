@@ -40,7 +40,7 @@ class AudioColorScheme;
 
 #include "audio_renderer.h"
 
-class AudioWaveformRenderer : public AudioRendererBitmapProvider {
+class AudioWaveformRenderer final : public AudioRendererBitmapProvider {
 	/// Colour tables used for rendering
 	std::vector<AudioColorScheme> colors;
 

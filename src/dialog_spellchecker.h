@@ -35,7 +35,7 @@ class wxComboBox;
 class wxListBox;
 class wxTextCtrl;
 
-class DialogSpellChecker : public wxDialog {
+class DialogSpellChecker final : public wxDialog {
 	agi::Context *context; ///< The project context
 	std::unique_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine
 

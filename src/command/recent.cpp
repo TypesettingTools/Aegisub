@@ -117,7 +117,7 @@ struct recent_video_entry : public Command {
 };
 
 template<class T>
-class mru_wrapper : public T {
+class mru_wrapper final : public T {
 	int id;
 	std::string full_name;
 public:

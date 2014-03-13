@@ -71,7 +71,7 @@ enum class AspectRatio {
 /// VideoContext's core responsibility is opening and playing videos. Along
 /// with that, it also manages video timecodes and keyframes, and some
 /// video-related UI properties
-class VideoContext : public wxEvtHandler {
+class VideoContext final : public wxEvtHandler {
 	/// Current frame number changed (new frame number)
 	agi::signal::Signal<int> Seek;
 	/// A new video was opened

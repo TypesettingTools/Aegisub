@@ -23,7 +23,7 @@
 
 /// @class SelectedChoicesDialog
 /// @brief wxMultiChoiceDialog with Select All and Select None
-class SelectedChoicesDialog : public wxMultiChoiceDialog {
+class SelectedChoicesDialog final : public wxMultiChoiceDialog {
 	SelectedChoicesDialog(SelectedChoicesDialog const&);
 	SelectedChoicesDialog& operator=(SelectedChoicesDialog const&);
 

@@ -52,7 +52,7 @@ static const int MENU_ID_BASE = 10000;
 using std::placeholders::_1;
 using std::bind;
 
-class MruMenu : public wxMenu {
+class MruMenu final : public wxMenu {
 	std::string type;
 	std::vector<wxMenuItem *> items;
 	std::vector<std::string> *cmds;
@@ -262,13 +262,13 @@ public:
 };
 
 /// Wrapper for wxMenu to add a command manager
-struct CommandMenu : public wxMenu {
+struct CommandMenu final : public wxMenu {
 	CommandManager cm;
 	CommandMenu(agi::Context *c) : cm(c) { }
 };
 
 /// Wrapper for wxMenuBar to add a command manager
-struct CommandMenuBar : public wxMenuBar {
+struct CommandMenuBar final : public wxMenuBar {
 	CommandManager cm;
 	CommandMenuBar(agi::Context *c) : cm(c) { }
 };
@@ -396,7 +396,7 @@ struct comp_str_menu {
 	}
 };
 
-class AutomationMenu : public wxMenu {
+class AutomationMenu final : public wxMenu {
 	agi::Context *c;
 	CommandManager *cm;
 	agi::signal::Connection global_slot;

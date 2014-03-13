@@ -89,7 +89,7 @@ DEFINE_BASE_EXCEPTION_NOINNER(VideoOutException, agi::Exception)
 /// @class VideoOutRenderException
 /// @extends VideoOutException
 /// @brief An OpenGL error occurred while uploading or displaying a frame
-class VideoOutRenderException : public VideoOutException {
+class VideoOutRenderException final : public VideoOutException {
 public:
 	VideoOutRenderException(const char *func, int err)
 	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))
@@ -100,7 +100,7 @@ public:
 /// @class VideoOutOpenGLException
 /// @extends VideoOutException
 /// @brief An OpenGL error occurred while setting up the video display
-class VideoOutInitException : public VideoOutException {
+class VideoOutInitException final : public VideoOutException {
 public:
 	VideoOutInitException(const char *func, int err)
 	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))

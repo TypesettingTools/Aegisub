@@ -50,7 +50,7 @@ namespace {
 		return root;
 	}
 
-	class Toolbar : public wxToolBar {
+	class Toolbar final : public wxToolBar {
 		/// Window ID of first toolbar control
 		static const int TOOL_ID_BASE = 5000;
 

@@ -28,7 +28,7 @@ class Preferences;
 
 /// @class HotkeyDataViewModel
 /// @brief A wxDataViewModel for hotkeys
-class HotkeyDataViewModel : public wxDataViewModel {
+class HotkeyDataViewModel final : public wxDataViewModel {
 	std::unique_ptr<HotkeyModelRoot> root;
 	Preferences *parent;
 	bool has_pending_changes = false;

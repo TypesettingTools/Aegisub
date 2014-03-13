@@ -32,7 +32,7 @@ namespace agi {
 /// @class line_iterator
 /// @brief An iterator over lines in a stream
 template<class OutputType = std::string>
-class line_iterator : public std::iterator<std::input_iterator_tag, OutputType> {
+class line_iterator final : public std::iterator<std::input_iterator_tag, OutputType> {
 	std::istream *stream; ///< Stream to iterator over
 	OutputType value; ///< Value to return when this is dereference
 	std::shared_ptr<agi::charset::IconvWrapper> conv;

@@ -83,20 +83,20 @@ public:
 	virtual std::string GetText() { return text; }
 };
 
-class AssDialogueBlockPlain : public AssDialogueBlock {
+class AssDialogueBlockPlain final : public AssDialogueBlock {
 public:
 	using AssDialogueBlock::text;
 	AssBlockType GetType() const override { return AssBlockType::PLAIN; }
 	AssDialogueBlockPlain(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 };
 
-class AssDialogueBlockComment : public AssDialogueBlock {
+class AssDialogueBlockComment final : public AssDialogueBlock {
 public:
 	AssBlockType GetType() const override { return AssBlockType::COMMENT; }
 	AssDialogueBlockComment(std::string const& text = std::string()) : AssDialogueBlock("{" + text + "}") { }
 };
 
-class AssDialogueBlockDrawing : public AssDialogueBlock {
+class AssDialogueBlockDrawing final : public AssDialogueBlock {
 public:
 	using AssDialogueBlock::text;
 	int Scale;
@@ -105,7 +105,7 @@ public:
 	AssDialogueBlockDrawing(std::string const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 };
 
-class AssDialogueBlockOverride : public AssDialogueBlock {
+class AssDialogueBlockOverride final : public AssDialogueBlock {
 public:
 	AssDialogueBlockOverride(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 
@@ -150,7 +150,7 @@ struct AssDialogueBase {
 	boost::flyweight<std::string> Text;
 };
 
-class AssDialogue : public AssEntry, public AssDialogueBase, public AssEntryListHook {
+class AssDialogue final : public AssEntry, public AssDialogueBase, public AssEntryListHook {
 	std::string GetData(bool ssa) const;
 
 	/// @brief Parse raw ASS data into everything else

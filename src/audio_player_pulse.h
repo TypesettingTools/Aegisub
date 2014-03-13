@@ -39,7 +39,7 @@
 
 class PulseAudioPlayer;
 
-class PulseAudioPlayer : public AudioPlayer {
+class PulseAudioPlayer final : public AudioPlayer {
 	float volume = 1.f;
 	bool is_playing = false;
 

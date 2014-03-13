@@ -99,7 +99,7 @@ public:
 };
 
 #define CONFIG_OPTIONVALUE(type_name, type)                                                   \
-	class OptionValue##type_name : public OptionValue {                                       \
+	class OptionValue##type_name final : public OptionValue {                                 \
 		type value;                                                                           \
 		type value_default;                                                                   \
 	public:                                                                                   \
@@ -121,7 +121,7 @@ CONFIG_OPTIONVALUE(Color, Color)
 CONFIG_OPTIONVALUE(Bool, bool)
 
 #define CONFIG_OPTIONVALUE_LIST(type_name, type)                                              \
-	class OptionValueList##type_name : public OptionValue {                                   \
+	class OptionValueList##type_name final : public OptionValue {                             \
 		std::vector<type> array;                                                              \
 		std::vector<type> array_default;                                                      \
 		std::string name;                                                                     \

@@ -61,7 +61,7 @@
 
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
-class MkvStdIO : public InputStream {
+class MkvStdIO final : public InputStream {
 public:
 	MkvStdIO(agi::fs::path const& filename);
 	~MkvStdIO() { if (fp) fclose(fp); }

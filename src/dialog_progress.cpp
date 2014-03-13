@@ -72,7 +72,7 @@ namespace {
 	}
 }
 
-class DialogProgressSink : public agi::ProgressSink {
+class DialogProgressSink final : public agi::ProgressSink {
 	DialogProgress *dialog;
 	std::atomic<bool> cancelled;
 

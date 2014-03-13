@@ -22,7 +22,7 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
-class VisualToolRotateXY : public VisualTool<VisualDraggableFeature> {
+class VisualToolRotateXY final : public VisualTool<VisualDraggableFeature> {
 	float angle_x = 0.f; /// Current x rotation
 	float angle_y = 0.f; /// Current y rotation
 	float angle_z = 0.f; /// Current z rotation

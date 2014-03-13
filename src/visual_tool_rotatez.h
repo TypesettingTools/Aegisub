@@ -22,7 +22,7 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
-class VisualToolRotateZ : public VisualTool<VisualDraggableFeature> {
+class VisualToolRotateZ final : public VisualTool<VisualDraggableFeature> {
 	float angle = 0.f; ///< Current Z rotation
 	float orig_angle = 0.f; ///< Z rotation at the beginning of the current hold
 	Vector2D pos; ///< Position of the dialogue line

@@ -24,7 +24,7 @@
 
 class wxListBox;
 
-class DialogAutosave : public wxDialog {
+class DialogAutosave final : public wxDialog {
 	struct Version {
 		wxString filename;
 		wxDateTime date;

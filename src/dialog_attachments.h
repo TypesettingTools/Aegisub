@@ -39,7 +39,7 @@ class wxListEvent;
 
 #include <wx/dialog.h>
 
-class DialogAttachments : public wxDialog {
+class DialogAttachments final : public wxDialog {
 	AssFile *ass;
 
 	wxListView *listView;

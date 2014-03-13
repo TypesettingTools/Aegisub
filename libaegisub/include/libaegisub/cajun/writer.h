@@ -15,7 +15,7 @@ Author: Terry Caton
 
 namespace json {
 
-class Writer : private ConstVisitor {
+class Writer final : private ConstVisitor {
 	Writer(std::ostream& ostr);
 	void Write(const Object& object);
 	void Write(const Array& array);

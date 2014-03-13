@@ -39,7 +39,7 @@ namespace agi {
 	class ProgressSink;
 }
 
-class HDAudioProvider : public AudioProviderWrapper {
+class HDAudioProvider final : public AudioProviderWrapper {
 	/// Name of the file which the decoded audio is written to
 	agi::fs::path diskCacheFilename;
 	/// Audio provider which reads from the decoded cache

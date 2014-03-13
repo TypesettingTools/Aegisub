@@ -45,7 +45,7 @@ class wxSlider;
 
 /// @class DialogTimingProcessor
 /// @brief Automatic postprocessor for correcting common timing issues
-class DialogTimingProcessor : public wxDialog {
+class DialogTimingProcessor final : public wxDialog {
 	agi::Context *c; ///< Project context
 
 	int leadIn;      ///< Lead-in to add in milliseconds

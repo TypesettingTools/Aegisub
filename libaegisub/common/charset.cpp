@@ -35,7 +35,7 @@
 namespace {
 using namespace agi::charset;
 
-class UCDetect : public nsUniversalDetector {
+class UCDetect final : public nsUniversalDetector {
 	/// List of detected character sets
 	CharsetListDetected list;
 

@@ -49,7 +49,7 @@ namespace agi {
 }
 class AssDialogue;
 
-class BaseGrid : public wxWindow, public SubtitleSelectionController {
+class BaseGrid final : public wxWindow, public SubtitleSelectionController {
 	int lineHeight = 1;     ///< Height of a line in pixels in the current font
 	bool holding = false;   ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font

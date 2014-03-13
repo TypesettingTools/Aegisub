@@ -22,7 +22,7 @@
 #include "visual_feature.h"
 #include "visual_tool.h"
 
-class VisualToolScale : public VisualTool<VisualDraggableFeature> {
+class VisualToolScale final : public VisualTool<VisualDraggableFeature> {
 	Vector2D scale; ///< The current scale
 	Vector2D initial_scale; ///< The scale at the beginning of the current hold
 	Vector2D pos; ///< Position of the line

@@ -34,7 +34,7 @@
 
 #include "subtitle_format.h"
 
-class MKVSubtitleFormat : public SubtitleFormat {
+class MKVSubtitleFormat final : public SubtitleFormat {
 public:
 	MKVSubtitleFormat();
 	std::vector<std::string> GetReadWildcards() const override;

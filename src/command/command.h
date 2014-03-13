@@ -43,7 +43,7 @@ namespace agi { struct Context; }
 }
 
 #define COMMAND_GROUP(cname, cmdname, menu, disp, help) \
-struct cname : public Command {                         \
+struct cname final : public Command {                         \
 	CMD_NAME(cmdname)                                   \
 	STR_MENU(menu)                                      \
 	STR_DISP(disp)                                      \

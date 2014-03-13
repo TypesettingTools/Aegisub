@@ -300,7 +300,7 @@ int luaopen_lpeg (lua_State *L);
 namespace Automation4 {
 	int regex_init(lua_State *L);
 
-	class LuaScript : public Script {
+	class LuaScript final : public Script {
 		lua_State *L;
 
 		std::string name;

@@ -40,7 +40,7 @@
 
 struct PlaybackState;
 
-class AlsaPlayer : public AudioPlayer {
+class AlsaPlayer final : public AudioPlayer {
 	std::unique_ptr<PlaybackState> ps;
 	pthread_t thread;
 
