@@ -36,37 +36,49 @@
     </InstallHeader>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(FontconfigSrcDir)\win32\src\dirent.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcatomic.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcblanks.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fccache.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fccfg.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fccharset.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccompat.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcdbg.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcdefault.c" />
-    <ClCompile Include="$(FontconfigSrcDir)\src\fcdir.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdir.cpp" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcformat.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcfreetype.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcfs.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fchash.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcinit.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fclang.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fclist.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcmatch.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcmatrix.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcname.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcobjs.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcpat.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcserialize.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcstat.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcstr.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcxml.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\ftglue.c" />
+    <ClCompile Include="$(FontconfigSrcDir)\win32\src\dirent.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(FontconfigSrcDir)\win32\include\config.h" />
-    <ClInclude Include="$(FontconfigSrcDir)\win32\include\dirent.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\fontconfig\fcfreetype.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\fontconfig\fcprivate.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\fontconfig\fontconfig.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcarch.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcatomic.h" />
     <ClInclude Include="$(FontconfigSrcDir)\src\fcdeprecate.h" />
     <ClInclude Include="$(FontconfigSrcDir)\src\fcftint.h" />
     <ClInclude Include="$(FontconfigSrcDir)\src\fcint.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcmutex.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcobjs.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcobjshash.gperf.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcwindows.h" />
     <ClInclude Include="$(FontconfigSrcDir)\src\ftglue.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\win32\include\config.h" />
+    <ClInclude Include="$(FontconfigSrcDir)\win32\include\dirent.h" />
   </ItemGroup>
 </Project>
