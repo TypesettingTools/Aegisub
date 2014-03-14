@@ -30,7 +30,7 @@
 
 // We have to use the copy of pheonix within spirit if it exists, as the
 // standalone copy has different header guards
-#ifdef HAVE_BOOST_PHOENIX_VERSION_HPP
+#ifdef HAVE_BOOST_SPIRIT_HOME_PHOENIX_VERSION_HPP
 #include <boost/spirit/home/phoenix/statement.hpp>
 #else
 #include <boost/phoenix/statement.hpp>
