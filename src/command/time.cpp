@@ -83,7 +83,7 @@ static void adjoin_lines(agi::Context *c, bool set_start) {
 	AssDialogue *prev = nullptr;
 	size_t seen = 0;
 	bool prev_sel = false;
-	for (auto diag : c->ass->Events) {
+	for (auto& diag : c->ass->Events) {
 		bool cur_sel = !!sel.count(&diag);
 		if (prev) {
 			// One row selections act as if the previous or next line was selected
