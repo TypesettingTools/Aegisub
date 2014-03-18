@@ -46,30 +46,32 @@
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 
-enum {
-	ACTION_SET = 0,
-	ACTION_ADD,
-	ACTION_SUB,
-	ACTION_INTERSECT
+namespace {
+
+enum class Action {
+	SET = 0,
+	ADD,
+	SUB,
+	INTERSECT
 };
 
-enum {
-	MODE_EXACT = 0,
-	MODE_CONTAINS,
-	MODE_REGEXP
+enum Mode {
+	EXACT = 0,
+	CONTAINS,
+	REGEXP
 };
 
-static std::set<AssDialogue*> process(std::string const& match_text, bool match_case, int mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
+std::set<AssDialogue*> process(std::string const& match_text, bool match_case, Mode mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
 	SearchReplaceSettings settings = {
 		match_text,
 		std::string(),
 		static_cast<SearchReplaceSettings::Field>(field_n),
 		SearchReplaceSettings::Limit::ALL,
 		match_case,
-		mode == MODE_REGEXP,
+		mode == Mode::REGEXP,
 		false,
 		false,
-		mode == MODE_EXACT
+		mode == Mode::EXACT
 	};
 
 	auto predicate = SearchReplaceEngine::GetMatcher(settings);
@@ -84,6 +86,8 @@ static std::set<AssDialogue*> process(std::string const& match_text, bool match_
 	}
 
 	return matches;
+}
+
 }
 
 DialogSelection::DialogSelection(agi::Context *c) :
@@ -171,7 +175,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 	try {
 		matches = process(
 			from_wx(match_text->GetValue()), case_sensitive->IsChecked(),
-			match_mode->GetSelection(), select_unmatching_lines->GetValue(),
+			static_cast<Mode>(match_mode->GetSelection()), select_unmatching_lines->GetValue(),
 			apply_to_comments->IsChecked(), apply_to_dialogue->IsChecked(),
 			dialogue_field->GetSelection(), con->ass);
 	}
@@ -180,34 +184,34 @@ void DialogSelection::Process(wxCommandEvent&) {
 		return;
 	}
 
-	int action = selection_change_type->GetSelection();
+	auto action = static_cast<Action>(selection_change_type->GetSelection());
 
 	SubtitleSelection old_sel, new_sel;
-	if (action != ACTION_SET)
+	if (action != Action::SET)
 		con->selectionController->GetSelectedSet(old_sel);
 
 	wxString message;
 	size_t count;
 	switch (action) {
-		case ACTION_SET:
+		case Action::SET:
 			new_sel = std::move(matches);
 			message = (count = new_sel.size())
 				? wxString::Format(wxPLURAL("Selection was set to one line", "Selection was set to %u lines", count), (unsigned)count)
 				: _("Selection was set to no lines");
 			break;
 
-		case ACTION_ADD:
+		case Action::ADD:
 			boost::set_union(old_sel, matches, inserter(new_sel, new_sel.begin()));
 			message = (count = new_sel.size() - old_sel.size())
 				? wxString::Format(wxPLURAL("One line was added to selection", "%u lines were added to selection", count), (unsigned)count)
 				: _("No lines were added to selection");
 			break;
 
-		case ACTION_SUB:
+		case Action::SUB:
 			boost::set_difference(old_sel, matches, inserter(new_sel, new_sel.begin()));
 			goto sub_message;
 
-		case ACTION_INTERSECT:
+		case Action::INTERSECT:
 			boost::set_intersection(old_sel, matches, inserter(new_sel, new_sel.begin()));
 			sub_message:
 			message = (count = old_sel.size() - new_sel.size())
