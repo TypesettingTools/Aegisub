@@ -32,8 +32,8 @@ namespace agi {
 			for (size_t pos = 0; pos + 1 < len; ) {
 				size_t bytes = 0;
 				unsigned char src[4] = { '\0', '\0', '\0', '\0' };
-				for (size_t i = 0; i < 4 && pos < len; ) {
-					char c = str[pos++];
+				for (size_t i = 0; i < 4 && pos < len; ++pos) {
+					char c = str[pos];
 					if (c && c != '\n' && c != '\r') {
 						src[i++] = c - 33;
 						++bytes;
