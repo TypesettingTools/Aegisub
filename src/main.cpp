@@ -104,6 +104,9 @@ AegisubApp::AegisubApp() {
 
 wxDEFINE_EVENT(EVT_CALL_THUNK, wxThreadEvent);
 
+/// Message displayed when an exception has occurred.
+static wxString exception_message = "Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.";
+
 /// @brief Gets called when application starts.
 /// @return bool
 bool AegisubApp::OnInit() {
@@ -233,6 +236,8 @@ bool AegisubApp::OnInit() {
 		}
 		locale.Init(lang);
 
+		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
+
 		// Load plugins
 		RegisterBuiltInPlugins();
 
@@ -309,9 +314,6 @@ int AegisubApp::OnExit() {
 
 	return wxApp::OnExit();
 }
-
-/// Message displayed when an exception has occurred.
-const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
