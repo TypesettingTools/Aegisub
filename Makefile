@@ -10,10 +10,6 @@ SUBDIRS += \
 	desktop \
 	po
 
-ifeq (yes, $(ENABLE_REPORTER))
-SUBDIRS += reporter
-endif
-
 all: ;
 
 ifeq (yes, $(BUILD_DARWIN))

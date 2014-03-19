@@ -488,19 +488,6 @@ AC_MSG_RESULT(${with_update_url:=/trunk})
 AC_DEFINE_UNQUOTED([UPDATE_CHECKER_BASE_URL], ["$with_update_url"],
                    [Base path for the update checker])
 
-################
-# Crash reporter
-################
-AC_MSG_CHECKING([whether to enable the crash reporter])
-AC_ARG_ENABLE(crash-reporter,
-              AS_HELP_STRING([--enable-crash-reporter], [enable the crash reporter [no]]))
-AC_MSG_RESULT(${enable_crash_reporter:=no})
-AS_IF([test "x$enable_crash_reporter" = "xyes"],
-      [PKG_CHECK_MODULES(LIBCURL, libcurl >= curl_required_version,,
-        [AC_MSG_FAILURE([the crash repoter requires >= cURL curl_required_version])])])
-ENABLE_REPORTER="$enable_crash_reporter"
-AC_SUBST(ENABLE_REPORTER)
-
 ####################################################################
 # Default settings for Providers/Players
 # * This is done at the end to preserve sanity rather than littering
