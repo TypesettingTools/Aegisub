@@ -594,6 +594,9 @@
     <ClInclude Include="$(SrcDir)dialog_log.h">
       <Filter>Utilities\Logging</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)crash_writer.h">
+      <Filter>Utilities\Logging</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)utils.h">
       <Filter>Utilities</Filter>
     </ClInclude>
@@ -1231,6 +1234,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)resolution_resampler.cpp">
       <Filter>Features\Resolution resampler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)crash_writer.cpp">
+      <Filter>Utilities\Logging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

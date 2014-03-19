@@ -144,6 +144,7 @@
     <ClInclude Include="$(SrcDir)command\command.h" />
     <ClInclude Include="$(SrcDir)compat.h" />
     <ClInclude Include="$(SrcDir)config.h" />
+    <ClInclude Include="$(SrcDir)crash_writer.h" />
     <ClInclude Include="$(SrcDir)dialog_about.h" />
     <ClInclude Include="$(SrcDir)dialog_attachments.h" />
     <ClInclude Include="$(SrcDir)dialog_automation.h" />
@@ -347,6 +348,7 @@
     <ClCompile Include="$(SrcDir)command\video.cpp" />
     <ClCompile Include="$(SrcDir)command\vis_tool.cpp" />
     <ClCompile Include="$(SrcDir)compat.cpp" />
+    <ClCompile Include="$(SrcDir)crash_writer.cpp" />
     <ClCompile Include="$(SrcDir)dialog_about.cpp" />
     <ClCompile Include="$(SrcDir)dialog_attachments.cpp" />
     <ClCompile Include="$(SrcDir)dialog_automation.cpp" />

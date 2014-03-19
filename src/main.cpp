@@ -34,6 +34,8 @@
 
 #include "config.h"
 
+#include "main.h"
+
 #include "command/command.h"
 #include "include/aegisub/hotkey.h"
 
@@ -41,18 +43,18 @@
 #include "ass_file.h"
 #include "auto4_base.h"
 #include "compat.h"
+#include "crash_writer.h"
 #include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"
 #include "include/aegisub/context.h"
-#include "main.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "plugin_manager.h"
 #include "subs_controller.h"
 #include "subtitle_format.h"
-#include "version.h"
 #include "video_context.h"
+#include "version.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
@@ -140,6 +142,7 @@ bool AegisubApp::OnInit() {
 	});
 
 	config::path = new agi::Path;
+	crash_writer::Initialize(config::path->Decode("?user"));
 
 	agi::log::log = new agi::log::LogSink;
 #ifdef _DEBUG
@@ -158,6 +161,7 @@ bool AegisubApp::OnInit() {
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
 		config::path->SetToken("?user", config::path->Decode("?data"));
 		config::path->SetToken("?local", config::path->Decode("?data"));
+		crash_writer::Initialize(config::path->Decode("?user"));
 	} catch (agi::fs::FileSystemError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
@@ -306,49 +310,6 @@ int AegisubApp::OnExit() {
 	return wxApp::OnExit();
 }
 
-#if wxUSE_STACKWALKER == 1
-class StackWalker: public wxStackWalker {
-	boost::filesystem::ofstream fp;
-
-public:
-	StackWalker(std::string const& cause);
-	~StackWalker();
-	void OnStackFrame(wxStackFrame const& frame) override;
-};
-
-/// @brief Called at the start of walking the stack.
-/// @param cause cause of the crash.
-StackWalker::StackWalker(std::string const& cause)
-: fp(config::path->Decode("?user/crashlog.txt"), std::ios::app)
-{
-	if (!fp.good()) return;
-
-	fp << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
-	fp << boost::format("VER - %s\n") % GetAegisubLongVersionString();
-	fp << boost::format("FTL - Beginning stack dump for \"%s\": \n") % cause;
-}
-
-/// @brief Callback to format a single frame
-/// @param frame frame to parse.
-void StackWalker::OnStackFrame(wxStackFrame const& frame) {
-	if (!fp.good()) return;
-
-	fp << boost::format("%03u - %p: %s") % frame.GetLevel() % frame.GetAddress() % frame.GetName().utf8_str().data();
-	if (frame.HasSourceLocation())
-		fp << boost::format(" on %s:%u") % frame.GetFileName().utf8_str().data() % frame.GetLine();
-
-	fp << "\n";
-}
-
-/// @brief Called at the end of walking the stack.
-StackWalker::~StackWalker() {
-	if (!fp.good()) return;
-
-	fp << "End of stack dump.\n";
-	fp << "----------------------------------------\n\n";
-}
-#endif
-
 /// Message displayed when an exception has occurred.
 const static wxString exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
@@ -363,23 +324,15 @@ static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 		path /= filename;
 		c->subsController->Save(path);
 
-#if wxUSE_STACKWALKER == 1
-		if (stackWalk) {
-			StackWalker walker("Fatal exception");
-			walker.WalkFromException();
-		}
-#endif
+		if (stackWalk)
+			crash_writer::Write();
 
 		// Inform user of crash.
 		wxMessageBox(wxString::Format(exception_message, path.wstring()), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, nullptr);
 	}
 	else if (LastStartupState) {
-#if wxUSE_STACKWALKER == 1
-		if (stackWalk) {
-			StackWalker walker("Fatal exception");
-			walker.WalkFromException();
-		}
-#endif
+		if (stackWalk)
+			crash_writer::Write();
 		wxMessageBox(wxString::Format("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR | wxCENTER);
 	}
 #endif
@@ -444,15 +397,7 @@ int AegisubApp::OnRun() {
 
 	// Report errors
 	if (!error.empty()) {
-		boost::filesystem::ofstream file(config::path->Decode("?user/crashlog.txt"), std::ios::app);
-		if (file.is_open()) {
-			file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
-			file << boost::format("VER - %s\n") % GetAegisubLongVersionString();
-			file << boost::format("EXC - Aegisub has crashed with unhandled exception \"%s\".\n") % error;
-			file << "----------------------------------------\n\n";
-			file.close();
-		}
-
+		crash_writer::Write(error);
 		OnUnhandledException();
 	}
 

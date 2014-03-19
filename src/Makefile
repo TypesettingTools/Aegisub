@@ -154,6 +154,7 @@ SRC += \
 	colorspace.cpp \
 	colour_button.cpp \
 	compat.cpp \
+	crash_writer.cpp \
 	dialog_about.cpp \
 	dialog_attachments.cpp \
 	dialog_automation.cpp \
