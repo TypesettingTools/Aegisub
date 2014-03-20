@@ -36,7 +36,6 @@
 [Files]
 ; ffmpegsource
 DestDir: {app}; Source: ..\..\bin\ffms2_64.dll; Flags: ignoreversion
-DestDir: {app}; Source: ..\..\bin\ffms2_64.pdb; Flags: ignoreversion
 ; vsfilter
 DestDir: {app}\csri; Source: src\xy-vsfilter-aegisub64.dll; Flags: ignoreversion
 

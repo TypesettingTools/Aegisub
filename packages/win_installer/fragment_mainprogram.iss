@@ -41,7 +41,6 @@ Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
 [Files]
 ; main
 DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.exe; Flags: ignoreversion
-DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.pdb; Flags: ignoreversion
 DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: 
 
 [Icons]
