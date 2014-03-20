@@ -105,13 +105,13 @@ namespace {
 	template<int (LuaAssFile::*closure)(lua_State *)>
 	int closure_wrapper(lua_State *L)
 	{
-		return (LuaAssFile::GetObjPointer(L, lua_upvalueindex(1))->*closure)(L);
+		return (LuaAssFile::GetObjPointer(L, lua_upvalueindex(1), false)->*closure)(L);
 	}
 
-	template<void (LuaAssFile::*closure)(lua_State *)>
+	template<void (LuaAssFile::*closure)(lua_State *), bool allow_expired>
 	int closure_wrapper_v(lua_State *L)
 	{
-		(LuaAssFile::GetObjPointer(L, lua_upvalueindex(1))->*closure)(L);
+		(LuaAssFile::GetObjPointer(L, lua_upvalueindex(1), allow_expired)->*closure)(L);
 		return 0;
 	}
 
@@ -325,13 +325,13 @@ namespace Automation4 {
 
 				lua_pushvalue(L, 1);
 				if (strcmp(idx, "delete") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDelete>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDelete, false>, 1);
 				else if (strcmp(idx, "deleterange") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDeleteRange>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDeleteRange, false>, 1);
 				else if (strcmp(idx, "insert") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectInsert>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectInsert, false>, 1);
 				else if (strcmp(idx, "append") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectAppend>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectAppend, false>, 1);
 				else {
 					// idiot
 					lua_pop(L, 1);
@@ -586,11 +586,14 @@ namespace Automation4 {
 		}
 	}
 
-	LuaAssFile *LuaAssFile::GetObjPointer(lua_State *L, int idx)
+	LuaAssFile *LuaAssFile::GetObjPointer(lua_State *L, int idx, bool allow_expired)
 	{
 		assert(lua_type(L, idx) == LUA_TUSERDATA);
-		void *ud = lua_touserdata(L, idx);
-		return *((LuaAssFile**)ud);
+		auto ud = lua_touserdata(L, idx);
+		auto laf = *static_cast<LuaAssFile **>(ud);
+		if (!allow_expired && laf->references < 2)
+			luaL_error(L, "Subtitles object is no longer valid");
+		return laf;
 	}
 
 	void LuaAssFile::ProcessingComplete(wxString const& undo_description)
@@ -640,9 +643,9 @@ namespace Automation4 {
 		// make the metatable
 		lua_newtable(L);
 		set_field(L, "__index", closure_wrapper<&LuaAssFile::ObjectIndexRead>);
-		set_field(L, "__newindex", closure_wrapper_v<&LuaAssFile::ObjectIndexWrite>);
+		set_field(L, "__newindex", closure_wrapper_v<&LuaAssFile::ObjectIndexWrite, false>);
 		set_field(L, "__len", closure_wrapper<&LuaAssFile::ObjectGetLen>);
-		set_field(L, "__gc", closure_wrapper_v<&LuaAssFile::ObjectGarbageCollect>);
+		set_field(L, "__gc", closure_wrapper_v<&LuaAssFile::ObjectGarbageCollect, true>);
 		set_field(L, "__ipairs", closure_wrapper<&LuaAssFile::ObjectIPairs>);
 		lua_setmetatable(L, -2);
 
@@ -651,7 +654,7 @@ namespace Automation4 {
 		lua_getglobal(L, "aegisub");
 
 		set_field(L, "parse_karaoke_data", closure_wrapper<&LuaAssFile::LuaParseKaraokeData>);
-		set_field(L, "set_undo_point", closure_wrapper_v<&LuaAssFile::LuaSetUndoPoint>);
+		set_field(L, "set_undo_point", closure_wrapper_v<&LuaAssFile::LuaSetUndoPoint, false>);
 
 		lua_pop(L, 1); // pop "aegisub" table
 

@@ -103,7 +103,7 @@ namespace Automation4 {
 		// LuaAssFile can only be deleted by the reference count hitting zero
 		~LuaAssFile();
 	public:
-		static LuaAssFile *GetObjPointer(lua_State *L, int idx);
+		static LuaAssFile *GetObjPointer(lua_State *L, int idx, bool allow_expired);
 
 		/// makes a Lua representation of AssEntry and places on the top of the stack
 		static void AssEntryToLua(lua_State *L, AssEntry *e);
