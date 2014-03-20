@@ -22,7 +22,6 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
-#include <libaegisub/util_win.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>

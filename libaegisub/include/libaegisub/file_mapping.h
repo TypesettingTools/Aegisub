@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,18 +11,23 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-/// @file util.h
-/// @brief Public interface for Windows utilities.
-/// @ingroup libaegisub windows
+#include <libaegisub/fs_fwd.h>
 
-#include <string>
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <boost/interprocess/detail/os_file_functions.hpp>
 
 namespace agi {
-	namespace util {
-		std::string ErrorString(DWORD error);
-	} // namespace util
-} // namespace agi
+	// boost::interprocess::file_mapping is awesome and uses CreateFileA on Windows
+	class file_mapping {
+		boost::interprocess::file_handle_t handle;
+
+	public:
+		file_mapping(fs::path const& filename, boost::interprocess::mode_t mode);
+		~file_mapping();
+		boost::interprocess::mapping_handle_t get_mapping_handle() const {
+			return boost::interprocess::ipcdetail::mapping_handle_from_file_handle(handle);
+		}
+	};
+}

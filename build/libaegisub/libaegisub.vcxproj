@@ -52,6 +52,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\color.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\dispatch.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\exception.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\file_mapping.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\fs.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\fs_fwd.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\hotkey.h" />
@@ -77,7 +78,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\time.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\util_win.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h" />
     <ClInclude Include="$(SrcDir)lagi_pre.h" />
   </ItemGroup>
@@ -97,6 +97,7 @@
     <ClCompile Include="$(SrcDir)common\charset_conv.cpp" />
     <ClCompile Include="$(SrcDir)common\color.cpp" />
     <ClCompile Include="$(SrcDir)common\dispatch.cpp" />
+    <ClCompile Include="$(SrcDir)common\file_mapping.cpp" />
     <ClCompile Include="$(SrcDir)common\fs.cpp" />
     <ClCompile Include="$(SrcDir)common\hotkey.cpp" />
     <ClCompile Include="$(SrcDir)common\io.cpp" />

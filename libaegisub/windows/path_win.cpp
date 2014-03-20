@@ -20,7 +20,7 @@
 
 #include <libaegisub/path.h>
 
-#include <libaegisub/util_win.h>
+#include <libaegisub/util.h>
 
 #include <boost/filesystem.hpp>
 

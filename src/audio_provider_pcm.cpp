@@ -39,50 +39,21 @@
 #include "audio_controller.h"
 #include "utils.h"
 
+#include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
+#include <boost/interprocess/file_mapping.hpp>
+#include <boost/interprocess/mapped_region.hpp>
 #include <cassert>
 #include <cstdint>
-#ifndef _WIN32
-#include <sys/fcntl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#endif
+
+using namespace boost::interprocess;
 
 PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
-#ifdef _WIN32
-: file_handle(0, CloseHandle)
-, file_mapping(0, CloseHandle)
+: file(agi::util::make_unique<agi::file_mapping>(filename, read_only))
 {
-	file_handle = CreateFile(
-		filename.c_str(),
-		FILE_READ_DATA,
-		FILE_SHARE_READ|FILE_SHARE_WRITE,
-		0,
-		OPEN_EXISTING,
-		FILE_ATTRIBUTE_NORMAL|FILE_FLAG_RANDOM_ACCESS,
-		0);
-
-	if (file_handle == INVALID_HANDLE_VALUE)
-		throw agi::fs::FileNotFound(filename);
-
-	file_mapping = CreateFileMapping(
-		file_handle,
-		0,
-		PAGE_READONLY,
-		0, 0,
-		0);
-
-	if (file_mapping == 0)
-		throw agi::AudioProviderOpenError("Failed creating file mapping", 0);
-#else
-: file_handle(open(filename.c_str(), O_RDONLY), close)
-{
-	if (file_handle == -1)
-		throw agi::fs::FileNotFound(filename.string());
-#endif
 	float_samples = false;
 
 	try {
@@ -93,79 +64,36 @@ PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
 	}
 }
 
-PCMAudioProvider::~PCMAudioProvider() {
-#ifdef _WIN32
-	if (current_mapping)
-		UnmapViewOfFile(current_mapping);
-#else
-	if (current_mapping)
-		munmap(current_mapping, mapping_length);
-#endif
-}
+PCMAudioProvider::~PCMAudioProvider() { }
 
-char * PCMAudioProvider::EnsureRangeAccessible(int64_t range_start, int64_t range_length) const {
-	if (range_start + range_length > file_size)
+char *PCMAudioProvider::EnsureRangeAccessible(int64_t start, int64_t length) const {
+	if (start + length > file_size)
 		throw AudioDecodeError("Attempted to map beyond end of file");
 
-	// Check whether the requested range is already visible
-	if (!current_mapping || range_start < mapping_start || range_start+range_length > mapping_start+(int64_t)mapping_length) {
-		// It's not visible, change the current mapping
-		if (current_mapping) {
-#ifdef _WIN32
-			UnmapViewOfFile(current_mapping);
-#else
-			munmap(current_mapping, mapping_length);
-#endif
-		}
+	// Check if we can just use the current mapping
+	if (region && start >= mapping_start && start + length <= mapping_start + region->get_size())
+		return static_cast<char *>(region->get_address()) + start - mapping_start;
 
-		// Align range start on a 1 MB boundary and go 16 MB back
-		mapping_start = (range_start & ~0xFFFFF) - 0x1000000;
-		if (mapping_start < 0) mapping_start = 0;
-
-		if (sizeof(void*) > 4)
-			// Large address space, use a 2 GB mapping
-			mapping_length = 0x80000000;
-		else
-			// Small (32 bit) address space, use a 256 MB mapping
-			mapping_length = 0x10000000;
-
-		// Make sure to always make a mapping at least as large as the requested range
-		if ((int64_t)mapping_length < range_length) {
-			if (range_length > (int64_t)(~(size_t)0))
-				throw AudioDecodeError("Requested range larger than max size_t, cannot create view of file");
-			mapping_length = range_length;
-		}
-		// But also make sure we don't try to make a mapping larger than the file
-		if (mapping_start + (int64_t)mapping_length > file_size)
-			mapping_length = (size_t)(file_size - mapping_start);
-		// We already checked that the requested range doesn't extend over the end of the file
-		// Hopefully this should ensure that small files are always mapped in their entirety
-
-#ifdef _WIN32
-		LARGE_INTEGER mapping_start_li;
-		mapping_start_li.QuadPart = mapping_start;
-		current_mapping = MapViewOfFile(
-			file_mapping,	// Mapping handle
-			FILE_MAP_READ,	// Access type
-			mapping_start_li.HighPart,	// Offset high-part
-			mapping_start_li.LowPart,	// Offset low-part
-			mapping_length);	// Length of view
-#else
-		current_mapping = mmap(nullptr, mapping_length, PROT_READ, MAP_PRIVATE, file_handle, mapping_start);
-#endif
-
-		if (!current_mapping)
-			throw AudioDecodeError("Failed mapping a view of the file");
+	if (sizeof(size_t) == 4) {
+		mapping_start = start & ~0xFFFFFULL; // Align to 1 MB bondary
+		length += static_cast<size_t>(start - mapping_start);
+		// Map 16 MB or length rounded up to the next MB
+		length = std::min<size_t>(std::max<size_t>(0x1000000U, (length + 0xFFFFF) & ~0xFFFFF), file_size - mapping_start);
+	}
+	else {
+		// Just map the whole file
+		mapping_start = 0;
+		length = file_size;
 	}
 
-	assert(current_mapping);
-	assert(range_start >= mapping_start);
+	try {
+		region = agi::util::make_unique<mapped_region>(*file, read_only, mapping_start, length);
+	}
+	catch (interprocess_exception const&) {
+		throw AudioDecodeError("Failed mapping a view of the file");
+	}
 
-	// Difference between actual current mapping start and requested range start
-	ptrdiff_t rel_ofs = (ptrdiff_t)(range_start - mapping_start);
-
-	// Calculate a pointer into current mapping for the requested range
-	return ((char*)current_mapping) + rel_ofs;
+	return static_cast<char *>(region->get_address()) + start - mapping_start;
 }
 
 void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {

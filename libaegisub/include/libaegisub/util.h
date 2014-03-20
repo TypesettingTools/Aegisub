@@ -72,5 +72,7 @@ namespace agi {
 		return std::any_of(std::begin(r), std::end(r), std::forward<Predicate>(p));
 	}
 
+	std::string ErrorString(int error);
+
 	} // namespace util
 } // namespace agi

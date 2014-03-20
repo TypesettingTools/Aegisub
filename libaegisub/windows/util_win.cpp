@@ -19,7 +19,6 @@
 #include "../config.h"
 
 #include "libaegisub/util.h"
-#include "libaegisub/util_win.h"
 
 #include "libaegisub/charset_conv_win.h"
 
@@ -33,7 +32,7 @@ namespace agi {
 
 using agi::charset::ConvertW;
 
-std::string ErrorString(DWORD error) {
+std::string ErrorString(int error) {
 	LPWSTR lpstr = nullptr;
 
 	if(FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, error, 0, reinterpret_cast<LPWSTR>(&lpstr), 0, nullptr) == 0) {

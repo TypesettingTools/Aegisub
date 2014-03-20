@@ -22,7 +22,7 @@
 #include "libaegisub/charset_conv_win.h"
 #include "libaegisub/exception.h"
 #include "libaegisub/scoped_ptr.h"
-#include "libaegisub/util_win.h"
+#include "libaegisub/util.h"
 
 using agi::charset::ConvertW;
 using agi::charset::ConvertLocal;
@@ -30,6 +30,8 @@ using agi::charset::ConvertLocal;
 #include <boost/filesystem.hpp>
 namespace bfs = boost::filesystem;
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 #include <versionhelpers.h>
 
 #undef CreateDirectory

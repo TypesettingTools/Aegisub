@@ -27,42 +27,23 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_provider_pcm.h
-/// @see audio_provider_pcm.cpp
-/// @ingroup audio_input
-///
-
-#include <vector>
-
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 #include "include/aegisub/audio_provider.h"
 
-#include <libaegisub/scoped_ptr.h>
+#include <memory>
+#include <vector>
+
+namespace agi { class file_mapping; }
+namespace boost { namespace interprocess { class mapped_region; } }
 
 class PCMAudioProvider : public AudioProvider {
-	mutable void *current_mapping = nullptr;
-
-#ifdef _WIN32
+	std::unique_ptr<agi::file_mapping> file;
+	mutable std::unique_ptr<boost::interprocess::mapped_region> region;
 	mutable int64_t mapping_start = 0;
-	mutable size_t mapping_length = 0;
-
-	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_handle;
-	agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> file_mapping;
-#else
-	mutable off_t mapping_start = 0;
-	mutable size_t mapping_length = 0;
-
-	agi::scoped_holder<int, int(*)(int)> file_handle;
-#endif
 
 protected:
 	PCMAudioProvider(agi::fs::path const& filename); // Create base object and open the file mapping
-	virtual ~PCMAudioProvider(); // Closes the file mapping
-	char * EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
+	~PCMAudioProvider(); // Closes the file mapping
+	char *EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
 
 	/// Size of the opened file
 	int64_t file_size = 0;
