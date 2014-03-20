@@ -348,7 +348,10 @@
     <ClCompile Include="$(SrcDir)command\video.cpp" />
     <ClCompile Include="$(SrcDir)command\vis_tool.cpp" />
     <ClCompile Include="$(SrcDir)compat.cpp" />
-    <ClCompile Include="$(SrcDir)crash_writer.cpp" />
+    <ClCompile Include="$(SrcDir)crash_writer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)crash_writer_minidump.cpp" />
     <ClCompile Include="$(SrcDir)dialog_about.cpp" />
     <ClCompile Include="$(SrcDir)dialog_attachments.cpp" />
     <ClCompile Include="$(SrcDir)dialog_automation.cpp" />

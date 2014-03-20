@@ -311,6 +311,7 @@ int AegisubApp::OnExit() {
 
 	// Keep this last!
 	delete agi::log::log;
+	crash_writer::Cleanup();
 
 	return wxApp::OnExit();
 }

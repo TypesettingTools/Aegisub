@@ -1238,6 +1238,9 @@
     <ClCompile Include="$(SrcDir)crash_writer.cpp">
       <Filter>Utilities\Logging</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)crash_writer_minidump.cpp">
+      <Filter>Utilities\Logging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(SrcDir)res/res.rc">
