@@ -34,8 +34,10 @@
 
 #include "include/aegisub/video_provider.h"
 
-#include <cstdio>
+#include <memory>
 #include <vector>
+
+namespace agi { class read_file_mapping; }
 
 /// the maximum allowed header length, in bytes
 #define YUV4MPEG_HEADER_MAXLEN 128
@@ -100,7 +102,7 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 		Y4M_FFLAG_C_UNKNOWN = 0x0800	/// unknown (only allowed for non-4:2:0 sampling)
 	};
 
-	FILE *sf = nullptr;		/// source file
+	std::unique_ptr<agi::read_file_mapping> file;
 	bool inited = false;	/// initialization state
 
 	int w = 0, h = 0;	/// frame width/height
@@ -112,21 +114,21 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 	Y4M_PixelFormat pixfmt = Y4M_PIXFMT_NONE;		/// colorspace/pixel format
 	Y4M_InterlacingMode imode = Y4M_ILACE_NOTSET;	/// interlacing mode (for the entire stream)
 	struct {
-		int num;	/// numerator
-		int den;	/// denominator
-	} fps_rat;		/// framerate
+		int num = -1;	/// numerator
+		int den = 1;	/// denominator
+	} fps_rat;          /// framerate
 
 	agi::vfr::Framerate fps;
 
 	/// a list of byte positions detailing where in the file
 	/// each frame header can be found
-	std::vector<int64_t> seek_table;
+	std::vector<uint64_t> seek_table;
 
 	void CheckFileFormat();
 	void ParseFileHeader(const std::vector<std::string>& tags);
 	Y4M_FrameFlags ParseFrameHeader(const std::vector<std::string>& tags);
-	std::vector<std::string> ReadHeader(int64_t startpos);
-	int IndexFile();
+	std::vector<std::string> ReadHeader(uint64_t &startpos);
+	int IndexFile(uint64_t pos);
 
 public:
 	YUV4MPEGVideoProvider(agi::fs::path const& filename, std::string const&);

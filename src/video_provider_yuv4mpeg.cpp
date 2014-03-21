@@ -40,6 +40,7 @@
 #include "utils.h"
 #include "video_frame.h"
 
+#include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
@@ -47,127 +48,93 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem/path.hpp>
 
-// All of this cstdio bogus is because of one reason and one reason only:
-// MICROSOFT'S IMPLEMENTATION OF STD::FSTREAM DOES NOT SUPPORT FILES LARGER THAN 2 GB.
-// (yes, really)
-// With cstdio it's at least possible to work around the problem...
-#ifdef _MSC_VER
-#define fseeko _fseeki64
-#define ftello _ftelli64
-#endif
-
 /// @brief Constructor
 /// @param filename The filename to open
-YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename, std::string const&) {
-	fps_rat.num = -1;
-	fps_rat.den = 1;
+YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename, std::string const&)
+: file(agi::util::make_unique<agi::read_file_mapping>(filename))
+{
+	CheckFileFormat();
 
-	try {
-#ifdef WIN32
-		sf = _wfopen(filename.c_str(), L"rb");
-#else
-		sf = fopen(filename.c_str(), "rb");
-#endif
+	uint64_t pos = 0;
+	ParseFileHeader(ReadHeader(pos));
 
-		if (!sf) throw agi::fs::FileNotFound(filename);
-
-		CheckFileFormat();
-
-		ParseFileHeader(ReadHeader(0));
-
-		if (w <= 0 || h <= 0)
-			throw VideoOpenError("Invalid resolution");
-		if (fps_rat.num <= 0 || fps_rat.den <= 0) {
-			fps_rat.num = 25;
-			fps_rat.den = 1;
-			LOG_D("provider/video/yuv4mpeg") << "framerate info unavailable, assuming 25fps";
-		}
-		if (pixfmt == Y4M_PIXFMT_NONE)
-			pixfmt = Y4M_PIXFMT_420JPEG;
-		if (imode == Y4M_ILACE_NOTSET)
-			imode = Y4M_ILACE_UNKNOWN;
-
-		luma_sz = w * h;
-		switch (pixfmt) {
-		case Y4M_PIXFMT_420JPEG:
-		case Y4M_PIXFMT_420MPEG2:
-		case Y4M_PIXFMT_420PALDV:
-			chroma_sz	= (w * h) >> 2; break;
-		case Y4M_PIXFMT_422:
-			chroma_sz	= (w * h) >> 1; break;
-			/// @todo add support for more pixel formats
-		default:
-			throw VideoOpenError("Unsupported pixel format");
-		}
-		frame_sz	= luma_sz + chroma_sz*2;
-
-		num_frames = IndexFile();
-		if (num_frames <= 0 || seek_table.empty())
-			throw VideoOpenError("Unable to determine file length");
-
-		fseeko(sf, 0, SEEK_SET);
+	if (w <= 0 || h <= 0)
+		throw VideoOpenError("Invalid resolution");
+	if (fps_rat.num <= 0 || fps_rat.den <= 0) {
+		fps_rat.num = 25;
+		fps_rat.den = 1;
+		LOG_D("provider/video/yuv4mpeg") << "framerate info unavailable, assuming 25fps";
 	}
-	catch (...) {
-		if (sf) fclose(sf);
-		throw;
+	if (pixfmt == Y4M_PIXFMT_NONE)
+		pixfmt = Y4M_PIXFMT_420JPEG;
+	if (imode == Y4M_ILACE_NOTSET)
+		imode = Y4M_ILACE_UNKNOWN;
+
+	luma_sz = w * h;
+	switch (pixfmt) {
+	case Y4M_PIXFMT_420JPEG:
+	case Y4M_PIXFMT_420MPEG2:
+	case Y4M_PIXFMT_420PALDV:
+		chroma_sz	= (w * h) >> 2; break;
+	case Y4M_PIXFMT_422:
+		chroma_sz	= (w * h) >> 1; break;
+		/// @todo add support for more pixel formats
+	default:
+		throw VideoOpenError("Unsupported pixel format");
 	}
+	frame_sz	= luma_sz + chroma_sz*2;
+
+	num_frames = IndexFile(pos);
+	if (num_frames <= 0 || seek_table.empty())
+		throw VideoOpenError("Unable to determine file length");
 }
 
-YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() {
-	fclose(sf);
-}
+YUV4MPEGVideoProvider::~YUV4MPEGVideoProvider() { }
 
 /// @brief Checks if the file is an YUV4MPEG file or not
 /// Note that it reports the error by throwing an exception,
 /// not by returning a false value.
 void YUV4MPEGVideoProvider::CheckFileFormat() {
-	char buf[10];
-	if (fread(buf, 10, 1, sf) != 1)
-		throw VideoNotSupported("CheckFileFormat: Failed reading header");
-	if (strncmp("YUV4MPEG2 ", buf, 10))
+	if (file->size() < 10)
+		throw VideoNotSupported("CheckFileFormat: File is not a YUV4MPEG file (too small)");
+	if (strncmp("YUV4MPEG2 ", file->read(0, 10), 10))
 		throw VideoNotSupported("CheckFileFormat: File is not a YUV4MPEG file (bad magic)");
-
-	fseeko(sf, 0, SEEK_SET);
 }
 
 /// @brief Read a frame or file header at a given file position
 /// @param startpos		The byte offset at where to start reading
-/// @param reset_pos	If true, the function will reset the file position to what it was before the function call before returning
 /// @return				A list of parameters
-std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(int64_t startpos) {
+std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(uint64_t &pos) {
 	std::vector<std::string> tags;
-	std::string curtag;
-	int bytesread = 0;
-	int buf;
+	if (pos >= file->size())
+		return tags;
 
-	if (fseeko(sf, startpos, SEEK_SET))
-		throw VideoOpenError("YUV4MPEG video provider: ReadHeader: failed seeking to position " + std::to_string(startpos));
+	auto len = std::min<uint64_t>(YUV4MPEG_HEADER_MAXLEN, file->size() - pos);
+	auto buff = file->read(pos, len);
 
 	// read header until terminating newline (0x0A) is found
-	while ((buf = fgetc(sf)) != 0x0A) {
-		if (ferror(sf))
-			throw VideoOpenError("ReadHeader: Failed to read from file");
-		if (feof(sf))
-			throw VideoOpenError("ReadHeader: Reached eof while reading header");
-
-		// some basic low-effort sanity checking
-		if (buf == 0x00)
+	const char *curtag = buff;
+	auto end = buff + len;
+	for (; buff < end && *buff != 0x0A; ++buff, ++pos) {
+		if (*buff == 0)
 			throw VideoOpenError("ReadHeader: Malformed header (unexpected NUL)");
-		if (++bytesread >= YUV4MPEG_HEADER_MAXLEN)
-			throw VideoOpenError("ReadHeader: Malformed header (no terminating newline found)");
 
-		// found a new tag
-		if (buf == 0x20 && !curtag.empty()) {
-			tags.push_back(curtag);
-			curtag.clear();
+		if (*buff == 0x20) {
+			if (curtag != buff)
+				tags.emplace_back(curtag, buff);
+			curtag = buff + 1;
 		}
-		else
-			curtag.push_back(buf);
 	}
+
+	if (buff == end)
+		throw VideoOpenError("ReadHeader: Malformed header (no terminating newline found)");
+
 	// if only one tag with no trailing space was found (possible in the
 	// FRAME header case), make sure we get it
-	if (!curtag.empty())
-		tags.push_back(curtag);
+	if (curtag != buff)
+		tags.emplace_back(curtag, buff);
+
+	pos += 1; // Move past newline
 
 	return tags;
 }
@@ -285,22 +252,14 @@ YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(co
 /// This function goes through the file, finds and parses all file and frame headers,
 /// and creates a seek table that lists the byte positions of all frames so seeking
 /// can easily be done.
-int YUV4MPEGVideoProvider::IndexFile() {
+int YUV4MPEGVideoProvider::IndexFile(uint64_t pos) {
 	int framecount = 0;
 
 	// the ParseFileHeader() call in LoadVideo() will already have read
 	// the file header for us and set the seek position correctly
 	while (true) {
-		int64_t curpos = ftello(sf); // update position
-		if (curpos < 0)
-			throw VideoOpenError("IndexFile: ftello failed");
-
 		// continue reading headers until no more are found
-		std::vector<std::string> tags = ReadHeader(curpos);
-		curpos = ftello(sf);
-		if (curpos < 0)
-			throw VideoOpenError("IndexFile: ftello failed");
-
+		std::vector<std::string> tags = ReadHeader(pos);
 		if (tags.empty())
 			break; // no more headers
 
@@ -314,10 +273,8 @@ int YUV4MPEGVideoProvider::IndexFile() {
 
 		if (flags == Y4M_FFLAG_NONE) {
 			framecount++;
-			seek_table.push_back(curpos);
-			// seek to next frame header start position
-			if (fseeko(sf, frame_sz, SEEK_CUR))
-				throw VideoOpenError("IndexFile: failed seeking to position " + std::to_string(curpos + frame_sz));
+			seek_table.push_back(pos);
+			pos += frame_sz;
 		}
 		else {
 			/// @todo implement rff flags etc
@@ -350,25 +307,9 @@ std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 			throw "YUV4MPEG video provider: GetFrame: Unsupported source colorspace";
 	}
 
-	std::vector<uint8_t> planes[3];
-	planes[0].resize(luma_sz);
-	planes[1].resize(chroma_sz);
-	planes[2].resize(chroma_sz);
-
-	fseeko(sf, seek_table[n], SEEK_SET);
-	size_t ret;
-	ret = fread(&planes[0][0], luma_sz, 1, sf);
-	if (ret != 1 || feof(sf) || ferror(sf))
-		throw "YUV4MPEG video provider: GetFrame: failed to read luma plane";
-	for (int i = 1; i <= 2; i++) {
-		ret = fread(&planes[i][0], chroma_sz, 1, sf);
-		if (ret != 1 || feof(sf) || ferror(sf))
-			throw "YUV4MPEG video provider: GetFrame: failed to read chroma planes";
-	}
-
-	const unsigned char *src_y = &planes[0][0];
-	const unsigned char *src_u = &planes[1][0];
-	const unsigned char *src_v = &planes[2][0];
+	auto src_y = reinterpret_cast<const unsigned char *>(file->read(seek_table[n], luma_sz + chroma_sz * 2));
+	auto src_u = src_y + luma_sz;
+	auto src_v = src_u + chroma_sz;
 	std::vector<unsigned char> data;
 	data.resize(w * h * 4);
 	unsigned char *dst = &data[0];
