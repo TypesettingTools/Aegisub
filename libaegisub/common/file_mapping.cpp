@@ -34,7 +34,7 @@ using namespace boost::interprocess;
 namespace agi {
 file_mapping::file_mapping(agi::fs::path const& filename, boost::interprocess::mode_t mode)
 #ifdef _WIN32
-: handle(CreateFileW(filename.wstring().c_str(), (unsigned int)mode, 0, nullptr, OPEN_EXISTING, 0, 0))
+: handle(CreateFileW(filename.wstring().c_str(), (unsigned int)mode, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, 0))
 {
 	if (handle == ipcdetail::invalid_file()) {
 		switch (GetLastError()) {
