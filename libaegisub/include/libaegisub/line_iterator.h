@@ -47,8 +47,6 @@ class line_iterator final : public std::iterator<std::input_iterator_tag, Output
 	/// their desired output type or simply provide a specialization of this
 	/// method which does the conversion.
 	inline bool convert(std::string &str);
-	/// Called after construction for specializations that need to do things
-	void init() { };
 	/// @brief Get the next line from the stream
 	/// @param[out] str String to fill with the next line
 	void getline(std::string &str);
@@ -75,7 +73,6 @@ public:
 			conv = std::make_shared<agi::charset::IconvWrapper>(encoding.c_str(), "utf-8");
 		}
 
-		init();
 		++(*this);
 	}
 
