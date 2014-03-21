@@ -87,7 +87,6 @@
       <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass\dialogue_parser.cpp" />
-    <ClCompile Include="$(SrcDir)ass\uuencode.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\elements.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\reader.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\writer.cpp" />

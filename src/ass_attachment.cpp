@@ -19,6 +19,7 @@
 #include "ass_attachment.h"
 
 #include <libaegisub/ass/uuencode.h>
+#include <libaegisub/file_mapping.h>
 #include <libaegisub/io.h>
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -48,15 +49,10 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 	if (boost::iends_with(filename.get(), ".ttf"))
 		filename = filename.get().substr(0, filename.get().size() - 4) + "_0" + filename.get().substr(filename.get().size() - 4);
 
-	std::vector<char> data;
-	std::unique_ptr<std::istream> file(agi::io::Open(name, true));
-	file->seekg(0, std::ios::end);
-	data.resize(file->tellg());
-	file->seekg(0, std::ios::beg);
-	file->read(&data[0], data.size());
-
+	agi::read_file_mapping file(name);
+	auto buff = file.read(0, file.size());
 	entry_data = (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
-	entry_data = entry_data.get() + agi::ass::UUEncode(data);
+	entry_data = entry_data.get() + agi::ass::UUEncode(boost::make_iterator_range(buff, buff + file.size()));
 }
 
 size_t AssAttachment::GetSize() const {
