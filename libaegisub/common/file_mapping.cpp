@@ -22,12 +22,17 @@
 #include "libaegisub/util.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <limits>
+
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 
 using namespace boost::interprocess;
 
 namespace agi {
-file_mapping::file_mapping(agi::fs::path const& filename, mode_t mode)
+file_mapping::file_mapping(agi::fs::path const& filename, boost::interprocess::mode_t mode)
 #ifdef _WIN32
 : handle(CreateFileW(filename.wstring().c_str(), (unsigned int)mode, 0, nullptr, OPEN_EXISTING, 0, 0))
 {
@@ -62,5 +67,49 @@ file_mapping::~file_mapping() {
 	if (handle != ipcdetail::invalid_file()) {
 		ipcdetail::close_file(handle);
 	}
+}
+
+read_file_mapping::read_file_mapping(fs::path const& filename)
+: file(filename, read_only)
+{
+	offset_t size;
+	ipcdetail::get_file_size(file.get_mapping_handle().handle, size);
+	file_size = static_cast<uint64_t>(size);
+}
+
+read_file_mapping::~read_file_mapping() { }
+
+char *read_file_mapping::read(int64_t s_offset, uint64_t length) {
+	auto offset = static_cast<uint64_t>(s_offset);
+	if (offset + length > file_size)
+		throw InternalError("Attempted to map beyond end of file", nullptr);
+
+	// Check if we can just use the current mapping
+	if (region && offset >= mapping_start && offset + length <= mapping_start + region->get_size())
+		return static_cast<char *>(region->get_address()) + offset - mapping_start;
+
+	if (sizeof(size_t) == 4) {
+		mapping_start = offset & ~0xFFFFFULL; // Align to 1 MB bondary
+		length += static_cast<size_t>(offset - mapping_start);
+		// Map 16 MB or length rounded up to the next MB
+		length = std::min<uint64_t>(std::max<uint64_t>(0x1000000U, (length + 0xFFFFF) & ~0xFFFFF), file_size - mapping_start);
+	}
+	else {
+		// Just map the whole file
+		mapping_start = 0;
+		length = file_size;
+	}
+
+	if (length > std::numeric_limits<size_t>::max())
+		throw std::bad_alloc();
+
+	try {
+		region = agi::util::make_unique<mapped_region>(file, read_only, mapping_start, static_cast<size_t>(length));
+	}
+	catch (interprocess_exception const&) {
+		throw fs::FileSystemUnknownError("Failed mapping a view of the file");
+	}
+
+	return static_cast<char *>(region->get_address()) + offset - mapping_start;
 }
 }

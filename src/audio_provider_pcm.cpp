@@ -44,56 +44,21 @@
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
-#include <boost/interprocess/file_mapping.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-#include <cassert>
-#include <cstdint>
-
-using namespace boost::interprocess;
-
 PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
-: file(agi::util::make_unique<agi::file_mapping>(filename, read_only))
+: file(agi::util::make_unique<agi::read_file_mapping>(filename))
 {
 	float_samples = false;
-
-	try {
-		file_size = agi::fs::Size(filename);
-	}
-	catch (agi::Exception const& e) {
-		throw agi::AudioPlayerOpenError("Could not get file size", e.Copy());
-	}
 }
 
 PCMAudioProvider::~PCMAudioProvider() { }
 
 char *PCMAudioProvider::EnsureRangeAccessible(int64_t start, int64_t length) const {
-	if (start + length > file_size)
-		throw AudioDecodeError("Attempted to map beyond end of file");
-
-	// Check if we can just use the current mapping
-	if (region && start >= mapping_start && start + length <= mapping_start + region->get_size())
-		return static_cast<char *>(region->get_address()) + start - mapping_start;
-
-	if (sizeof(size_t) == 4) {
-		mapping_start = start & ~0xFFFFFULL; // Align to 1 MB bondary
-		length += static_cast<size_t>(start - mapping_start);
-		// Map 16 MB or length rounded up to the next MB
-		length = std::min<size_t>(std::max<size_t>(0x1000000U, (length + 0xFFFFF) & ~0xFFFFF), file_size - mapping_start);
-	}
-	else {
-		// Just map the whole file
-		mapping_start = 0;
-		length = file_size;
-	}
-
 	try {
-		region = agi::util::make_unique<mapped_region>(*file, read_only, mapping_start, length);
+		return file->read(start, static_cast<size_t>(length));
 	}
-	catch (interprocess_exception const&) {
-		throw AudioDecodeError("Failed mapping a view of the file");
+	catch (agi::fs::FileSystemError const& e) {
+		throw AudioDecodeError(e.GetMessage());
 	}
-
-	return static_cast<char *>(region->get_address()) + start - mapping_start;
 }
 
 void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
@@ -322,15 +287,13 @@ public:
 	{
 		this->filename = filename;
 
-		int64_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
+		size_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
-		if (file_size < smallest_possible_file)
+		if (file->size() < smallest_possible_file)
 			throw agi::AudioDataNotFoundError("File is too small to be a Wave64 file", nullptr);
 
 		// Read header
-		// This should throw an exception if the mapping fails
 		void *filestart = EnsureRangeAccessible(0, sizeof(RiffChunk));
-		assert(filestart);
 		RiffChunk &header = *(RiffChunk*)filestart;
 
 		// Check magic values

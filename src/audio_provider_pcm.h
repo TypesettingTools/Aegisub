@@ -32,21 +32,15 @@
 #include <memory>
 #include <vector>
 
-namespace agi { class file_mapping; }
-namespace boost { namespace interprocess { class mapped_region; } }
+namespace agi { class read_file_mapping; }
 
 class PCMAudioProvider : public AudioProvider {
-	std::unique_ptr<agi::file_mapping> file;
-	mutable std::unique_ptr<boost::interprocess::mapped_region> region;
-	mutable int64_t mapping_start = 0;
-
 protected:
+	std::unique_ptr<agi::read_file_mapping> file;
+
 	PCMAudioProvider(agi::fs::path const& filename); // Create base object and open the file mapping
 	~PCMAudioProvider(); // Closes the file mapping
 	char *EnsureRangeAccessible(int64_t range_start, int64_t range_length) const; // Ensure that the given range of bytes are accessible in the file mapping and return a pointer to the first byte of the requested range
-
-	/// Size of the opened file
-	int64_t file_size = 0;
 
 	struct IndexPoint {
 		int64_t start_byte;
