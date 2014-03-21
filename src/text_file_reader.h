@@ -14,17 +14,20 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <fstream>
+#include <iosfwd>
 #include <memory>
 #include <string>
 
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/line_iterator.h>
 
+namespace agi { class read_file_mapping; }
+
 /// @class TextFileReader
 /// @brief A line-based text file reader
 class TextFileReader {
-	std::unique_ptr<std::ifstream> file;
+	std::unique_ptr<agi::read_file_mapping> file;
+	std::unique_ptr<std::istream> stream;
 	bool trim;
 	agi::line_iterator<std::string> iter;
 

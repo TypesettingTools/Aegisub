@@ -18,16 +18,19 @@
 
 #include "text_file_reader.h"
 
-#include <libaegisub/io.h>
+#include <libaegisub/file_mapping.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/interprocess/streams/bufferstream.hpp>
 
 TextFileReader::TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim)
-: file(agi::io::Open(filename, true))
+: file(agi::util::make_unique<agi::read_file_mapping>(filename))
+, stream(agi::util::make_unique<boost::interprocess::bufferstream>(file->read(0, file->size()), file->size()))
 , trim(trim)
-, iter(agi::line_iterator<std::string>(*file, encoding))
+, iter(agi::line_iterator<std::string>(*stream, encoding))
 {
 }
 
