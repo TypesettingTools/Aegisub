@@ -19,10 +19,12 @@
 #include "libaegisub/thesaurus.h"
 
 #include "libaegisub/charset_conv.h"
-#include "libaegisub/io.h"
+#include "libaegisub/file_mapping.h"
 #include "libaegisub/line_iterator.h"
+#include "libaegisub/util.h"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/phoenix/operator/comparison.hpp>
 #include <boost/phoenix/core/argument.hpp>
 
@@ -33,17 +35,18 @@ using boost::phoenix::placeholders::_1;
 namespace agi {
 
 Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
-: dat(io::Open(dat_path))
+: dat(util::make_unique<read_file_mapping>(dat_path))
 {
-	auto idx = io::Open(idx_path);
+	read_file_mapping idx_file(idx_path);
+	boost::interprocess::ibufferstream idx(idx_file.read(), static_cast<size_t>(idx_file.size()));
 
 	std::string encoding_name;
-	getline(*idx, encoding_name);
+	getline(idx, encoding_name);
 	std::string unused_entry_count;
-	getline(*idx, unused_entry_count);
+	getline(idx, unused_entry_count);
 
 	// Read the list of words and file offsets for those words
-	for (auto const& line : line_iterator<std::string>(*idx, encoding_name)) {
+	for (auto const& line : line_iterator<std::string>(idx, encoding_name)) {
 		std::vector<std::string> chunks;
 		boost::split(chunks, line, _1 == '|');
 		if (chunks.size() == 2)
@@ -61,25 +64,33 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 
 	auto it = offsets.find(word);
 	if (it == offsets.end()) return out;
+	if (it->second >= dat->size()) return out;
 
-	dat->seekg(it->second, std::ios::beg);
-	if (!dat->good()) return out;
+	auto len = dat->size() - it->second;
+	auto buff = dat->read(it->second, len);
+	auto buff_end = buff + len;
+
+	std::string temp;
+	auto read_line = [&] () -> std::string const& {
+		auto start = buff;
+		auto end = std::find(buff, buff_end, '\n');
+		buff = end < buff_end ? end + 1 : buff_end;
+		if (end > start && end[-1] == '\r') --end;
+		temp.clear();
+		conv->Convert(start, end - start, temp);
+		return temp;
+	};
 
 	// First line is the word and meaning count
-	std::string temp;
-	getline(*dat, temp);
 	std::vector<std::string> header;
-	std::string converted(conv->Convert(temp));
-	boost::split(header, converted, _1 == '|');
+	boost::split(header, read_line(), _1 == '|');
 	if (header.size() != 2) return out;
 	int meanings = atoi(header[1].c_str());
 
 	out.reserve(meanings);
 	for (int i = 0; i < meanings; ++i) {
-		getline(*dat, temp);
-		auto converted = conv->Convert(temp);
 		std::vector<std::string> line;
-		boost::split(line, converted, _1 == '|');
+		boost::split(line, read_line(), _1 == '|');
 
 		if (line.size() < 2)
 			continue;

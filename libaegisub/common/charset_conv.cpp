@@ -295,16 +295,14 @@ IconvWrapper::IconvWrapper(const char* sourceEncoding, const char* destEncoding,
 IconvWrapper::~IconvWrapper() {
 }
 
-std::string IconvWrapper::Convert(std::string const& source) {
+std::string IconvWrapper::Convert(const char *source, size_t len) {
 	std::string dest;
-	Convert(source, dest);
+	Convert(source, len, dest);
 	return dest;
 }
-void IconvWrapper::Convert(std::string const& source, std::string &dest) {
+void IconvWrapper::Convert(const char *src, size_t srcLen, std::string &dest) {
 	char buff[512];
 
-	const char *src = source.data();
-	size_t srcLen = source.size();
 	size_t res;
 	do {
 		char *dst = buff;

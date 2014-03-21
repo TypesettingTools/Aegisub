@@ -65,11 +65,13 @@ public:
 	/// @return Converted string. Note that std::string always uses a single byte
 	///         terminator, so c_str() may not return a valid string if the dest
 	///         charset has wider terminators
-	std::string Convert(std::string const& source);
+	std::string Convert(std::string const& source) { return Convert(source.c_str(), source.size()); }
+	std::string Convert(const char *source, size_t len);
 	/// @brief Convert a string from the source to destination charset
 	/// @param source String to convert
 	/// @param[out] dest String to place the result in
-	void Convert(std::string const& source, std::string &dest);
+	void Convert(std::string const& source, std::string &dest) { Convert(source.c_str(), source.size(), dest); }
+	void Convert(const char *source, size_t len, std::string &dest);
 	size_t Convert(const char* source, size_t sourceSize, char* dest, size_t destSize);
 	/// Bare wrapper around iconv; see iconv documention for details
 	size_t Convert(const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);

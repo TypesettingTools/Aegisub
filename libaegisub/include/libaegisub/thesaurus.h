@@ -26,13 +26,14 @@
 
 namespace agi {
 
+class read_file_mapping;
 namespace charset { class IconvWrapper; }
 
 class Thesaurus {
 	/// Map of word -> byte position in the data file
 	boost::container::flat_map<std::string, int> offsets;
 	/// Read handle to the data file
-	std::unique_ptr<std::istream> dat;
+	std::unique_ptr<read_file_mapping> dat;
 	/// Converter from the data file's charset to UTF-8
 	std::unique_ptr<charset::IconvWrapper> conv;
 
