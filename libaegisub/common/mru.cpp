@@ -28,8 +28,6 @@
 #include "libaegisub/option.h"
 #include "libaegisub/option_value.h"
 
-#include <fstream>
-
 namespace agi {
 
 MRUManager::MRUManager(agi::fs::path const& config, std::pair<const char *, size_t> default_config, agi::Options *options)

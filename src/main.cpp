@@ -65,7 +65,6 @@
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
-#include <boost/filesystem/fstream.hpp>
 #include <boost/format.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/locale.hpp>

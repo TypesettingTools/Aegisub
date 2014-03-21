@@ -52,7 +52,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
-#include <fstream>
 
 namespace {
 agi::fs::path cache_dir() {
@@ -103,7 +102,7 @@ void HDAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const 
 	memcpy(buf, file->read(start, count), count);
 }
 
-void HDAudioProvider::FillCache(AudioProvider *src, std::ofstream *out, agi::ProgressSink *ps) {
+void HDAudioProvider::FillCache(AudioProvider *src, std::ostream *out, agi::ProgressSink *ps) {
 	ps->SetMessage(from_wx(_("Reading to Hard Disk cache")));
 
 	int64_t block = 65536;

@@ -29,7 +29,6 @@
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/range/algorithm.hpp>
 #include <cmath>
-#include <fstream>
 #include <functional>
 #include <iterator>
 #include <list>

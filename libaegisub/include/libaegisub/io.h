@@ -29,17 +29,17 @@ namespace agi {
 DEFINE_BASE_EXCEPTION_NOINNER(IOError, Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(IOFatal, IOError, "io/fatal")
 
-std::unique_ptr<std::ifstream> Open(fs::path const& file, bool binary = false);
+std::unique_ptr<std::istream> Open(fs::path const& file, bool binary = false);
 
 class Save {
-	std::unique_ptr<std::ofstream> fp;
+	std::unique_ptr<std::ostream> fp;
 	const fs::path file_name;
 	const fs::path tmp_name;
 
 public:
 	Save(fs::path const& file, bool binary = false);
 	~Save();
-	std::ofstream& Get() { return *fp; }
+	std::ostream& Get() { return *fp; }
 };
 
 	} // namespace io

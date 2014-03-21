@@ -34,7 +34,6 @@
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <cassert>
-#include <fstream>
 #include <memory>
 
 namespace {

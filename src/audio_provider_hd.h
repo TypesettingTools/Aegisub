@@ -49,7 +49,7 @@ class HDAudioProvider final : public AudioProviderWrapper {
 	/// @param src Audio data to cache
 	/// @param file File to write to
 	/// @param ps Sink for progress reporting
-	void FillCache(AudioProvider *src, std::ofstream *file, agi::ProgressSink *ps);
+	void FillCache(AudioProvider *src, std::ostream *file, agi::ProgressSink *ps);
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 

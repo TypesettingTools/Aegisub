@@ -9,7 +9,6 @@ Author: Terry Caton
 #include "libaegisub/cajun/writer.h"
 
 #include <cmath>
-#include <iostream>
 #include <iomanip>
 
 /*

@@ -54,7 +54,6 @@
 #include <libaegisub/path.h>
 
 #include <algorithm>
-#include <fstream>
 
 AudioController::AudioController(agi::Context *context)
 : context(context)
@@ -373,7 +372,7 @@ void AudioController::SaveClip(agi::fs::path const& filename, TimeRange const& r
 	if (filename.empty() || start_sample > provider->GetNumSamples() || range.length() == 0) return;
 
 	agi::io::Save outfile(filename, true);
-	std::ofstream& out(outfile.Get());
+	std::ostream& out(outfile.Get());
 
 	size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
 	size_t bufsize = (end_sample - start_sample) * bytes_per_sample;

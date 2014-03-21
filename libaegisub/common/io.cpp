@@ -30,17 +30,16 @@
 namespace agi {
 	namespace io {
 
-std::unique_ptr<std::ifstream> Open(fs::path const& file, bool binary) {
+std::unique_ptr<std::istream> Open(fs::path const& file, bool binary) {
 	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
-	std::unique_ptr<std::ifstream> stream(
-		new boost::filesystem::ifstream(file, (binary ? std::ios::binary : std::ios::in)));
+	auto stream = util::make_unique<boost::filesystem::ifstream>(file, (binary ? std::ios::binary : std::ios::in));
 
 	if (stream->fail())
 		throw IOFatal("Unknown fatal error as occurred");
 
-	return stream;
+	return std::unique_ptr<std::istream>(stream.release());
 }
 
 Save::Save(fs::path const& file, bool binary)
@@ -63,7 +62,7 @@ Save::Save(fs::path const& file, bool binary)
 }
 
 Save::~Save() {
-	fp->close(); // Need to close before rename on Windows to unlock the file
+	fp.reset(); // Need to close before rename on Windows to unlock the file
 	for (int i = 0; i < 10; ++i) {
 		try {
 			fs::Rename(tmp_name, file_name);

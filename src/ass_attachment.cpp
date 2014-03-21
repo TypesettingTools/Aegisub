@@ -24,7 +24,6 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/iterator_range.hpp>
-#include <fstream>
 
 AssAttachment::AssAttachment(AssAttachment const& rgt)
 : entry_data(rgt.entry_data)

@@ -34,7 +34,6 @@
 
 #include <boost/format.hpp>
 #include <boost/range/algorithm.hpp>
-#include <fstream>
 #include <hunspell/hunspell.hxx>
 
 HunspellSpellChecker::HunspellSpellChecker()

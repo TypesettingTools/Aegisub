@@ -44,7 +44,6 @@
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <fstream>
 
 AssStyleStorage::~AssStyleStorage() { }
 void AssStyleStorage::clear() { style.clear(); }
@@ -67,7 +66,7 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 	clear();
 
 	try {
-		std::unique_ptr<std::ifstream> in(agi::io::Open(file));
+		auto in = agi::io::Open(file);
 		for (auto const& line : agi::line_iterator<std::string>(*in)) {
 			try {
 				style.emplace_back(agi::util::make_unique<AssStyle>(line));

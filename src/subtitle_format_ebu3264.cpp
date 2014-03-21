@@ -39,7 +39,6 @@
 #include <libaegisub/line_wrap.h>
 
 #include <boost/algorithm/string/replace.hpp>
-#include <fstream>
 
 namespace
 {

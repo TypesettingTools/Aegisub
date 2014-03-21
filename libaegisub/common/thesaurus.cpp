@@ -28,8 +28,6 @@
 #include <boost/phoenix/operator/comparison.hpp>
 #include <boost/phoenix/core/argument.hpp>
 
-#include <fstream>
-
 using boost::phoenix::placeholders::_1;
 
 namespace agi {
