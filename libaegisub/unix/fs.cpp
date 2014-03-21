@@ -23,7 +23,7 @@
 #include <boost/filesystem.hpp>
 #include <fcntl.h>
 #include <fnmatch.h>
-#include <fstream>
+#include <istream>
 #include <sys/time.h>
 
 namespace bfs = boost::filesystem;
@@ -48,7 +48,7 @@ void Copy(fs::path const& from, fs::path const& to) {
 	CreateDirectory(to.parent_path());
 	acs::CheckDirWrite(to.parent_path());
 
-	std::unique_ptr<std::istream> in(io::Open(from, true));
+	auto in = io::Open(from, true);
 	io::Save(to).Get() << in->rdbuf();
 }
 

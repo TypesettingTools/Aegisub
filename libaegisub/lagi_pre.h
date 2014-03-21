@@ -18,11 +18,6 @@
 #  include <ctime>
 #endif
 
-// Windows C
-#ifdef _WIN32
-#include <io.h>
-#endif
-
 // Unix C
 #ifndef _WIN32
 #include <sys/statvfs.h>
@@ -38,10 +33,8 @@
 #include <algorithm>
 #include <deque>
 #include <functional>
-#include <iomanip>
 #include <iterator>
 #include <list>
-#include <locale>
 #include <map>
 #include <memory>
 #include <numeric>

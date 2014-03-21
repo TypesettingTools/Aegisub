@@ -55,10 +55,9 @@
 
 // General headers
 #include <array>
-#include <cctype>
-#include <fcntl.h>
 #include <inttypes.h>
 #include <limits>
+#include <set>
 #include <typeinfo>
 #include <type_traits>
 #include <utility>
@@ -67,9 +66,6 @@
 #include <objbase.h>
 #include <mmsystem.h>
 #else
-#include <sys/fcntl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
 #include <sys/param.h>
 #endif
 
@@ -100,7 +96,6 @@
 #include <wx/control.h>
 #include <wx/dataobj.h>
 #include <wx/dataview.h>
-#include <wx/datetime.h>
 #include <wx/dc.h>
 #include <wx/dcbuffer.h>
 #include <wx/dcclient.h>
@@ -111,24 +106,18 @@
 #include <wx/dirdlg.h>
 #include <wx/display.h>
 #include <wx/dnd.h>
-#include <wx/docview.h>
-#include <wx/dynarray.h>
 #include <wx/event.h>
 #include <wx/file.h>
 #include <wx/filedlg.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
-#include <wx/filesys.h>
 #include <wx/font.h>
 #include <wx/fontdlg.h>
 #include <wx/frame.h>
-#include <wx/fs_inet.h>
 #include <wx/gauge.h>
 #include <wx/gbsizer.h>
 #include <wx/gdicmn.h>
 #include <wx/glcanvas.h>
-#include <wx/grid.h>
-#include <wx/hashmap.h>
 #include <wx/icon.h>
 #include <wx/image.h>
 #include <wx/intl.h>
@@ -138,14 +127,11 @@
 #include <wx/menu.h>
 #include <wx/menuitem.h>
 #include <wx/msgdlg.h>
-#include <wx/mstream.h>
-#include <wx/notebook.h>
 #include <wx/panel.h>
 #include <wx/power.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
 #include <wx/rawbmp.h>
-#include <wx/recguard.h>
 #include <wx/sashwin.h>
 #include <wx/scrolbar.h>
 #include <wx/settings.h>
@@ -165,12 +151,9 @@
 #include <wx/sysopt.h>
 #include <wx/textctrl.h>
 #include <wx/textdlg.h>
-#include <wx/textfile.h>
 #include <wx/tglbtn.h>
 #include <wx/thread.h>
 #include <wx/timer.h>
-#include <wx/tipdlg.h>
-#include <wx/tokenzr.h>
 #include <wx/toolbar.h>
 #include <wx/treebook.h>
 #include <wx/utils.h>
