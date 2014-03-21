@@ -54,7 +54,7 @@ public:
 
 	/// @brief Constructor
 	/// @param config File to load MRU values from
-	MRUManager(agi::fs::path const& config, std::string const& default_config, agi::Options *options = nullptr);
+	MRUManager(agi::fs::path const& config, std::pair<const char *, size_t> default_config, agi::Options *options = nullptr);
 
 	/// Destructor
 	~MRUManager();

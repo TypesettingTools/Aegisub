@@ -48,23 +48,23 @@ json::UnknownElement file(agi::fs::path const& file) {
 	return parse(*io::Open(file));
 }
 
-json::UnknownElement file(agi::fs::path const& file, const std::string &default_config) {
+json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, size_t> default_config) {
 	try {
 		return parse(*io::Open(file));
 	}
 	catch (fs::FileNotFound const&) {
 		// Not an error
-		boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
+		boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
 		return parse(stream);
 	}
 	catch (json::Exception&) {
 		// Already logged in parse
-		boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
+		boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
 		return parse(stream);
 	}
 	catch (agi::Exception& e) {
 		LOG_E("json/file") << "Unexpected error when reading config file " << file << ": " << e.GetMessage();
-		boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
+		boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
 		return parse(stream);
 	}
 }

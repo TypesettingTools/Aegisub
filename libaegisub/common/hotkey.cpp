@@ -49,7 +49,7 @@ void Hotkey::ComboInsert(Combo const& combo) {
 	cmd_map.insert(make_pair(combo.CmdName(), combo));
 }
 
-Hotkey::Hotkey(agi::fs::path const& file, const std::string &default_config)
+Hotkey::Hotkey(agi::fs::path const& file, std::pair<const char *, size_t> default_config)
 : config_file(file)
 {
 	LOG_D("hotkey/init") << "Generating hotkeys.";

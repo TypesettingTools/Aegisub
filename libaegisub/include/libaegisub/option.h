@@ -74,7 +74,7 @@ public:
 	/// @brief Constructor
 	/// @param file User config that will be loaded from and written back to.
 	/// @param default_config Default configuration.
-	Options(agi::fs::path const& file, const std::string &default_config, const OptionSetting setting=NONE);
+	Options(agi::fs::path const& file, std::pair<const char *, size_t> default_config, const OptionSetting setting = NONE);
 
 	/// Destructor
 	~Options();

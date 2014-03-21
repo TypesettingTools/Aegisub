@@ -39,7 +39,7 @@ json::UnknownElement file(agi::fs::path const& file);
 /// @param file Path to JSON file.
 /// @param Default config file to load incase of nonexistent file
 /// @return json::UnknownElement
-json::UnknownElement file(agi::fs::path const& file, const std::string &default_config);
+json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
 
 	} // namespace json_util
 } // namespace agi

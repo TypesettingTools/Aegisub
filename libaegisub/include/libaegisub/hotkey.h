@@ -99,7 +99,7 @@ public:
 	/// Constructor
 	/// @param file           Location of user config file.
 	/// @param default_config Default config.
-	Hotkey(agi::fs::path const& file, const std::string &default_config);
+	Hotkey(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.
