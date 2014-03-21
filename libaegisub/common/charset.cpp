@@ -18,9 +18,8 @@
 
 #include "libaegisub/charset.h"
 
-#include "libaegisub/io.h"
+#include "libaegisub/file_mapping.h"
 
-#include <fstream>
 #include <string>
 
 #ifndef _WIN32
@@ -48,35 +47,30 @@ public:
 	: nsUniversalDetector(NS_FILTER_ALL)
 	{
 		{
-			std::unique_ptr<std::ifstream> fp(agi::io::Open(file, true));
+			agi::read_file_mapping fp(file);
 
 			// If it's over 100 MB it's either binary or big enough that we won't
 			// be able to do anything useful with it anyway
-			fp->seekg(0, std::ios::end);
-			if (fp->tellg() > 100 * 1024 * 1024) {
+			if (fp.size() > 100 * 1024 * 1024) {
 				list.emplace_back(1.f, "binary");
 				return;
 			}
-			fp->seekg(0, std::ios::beg);
 
-			std::streamsize binaryish = 0;
-			std::streamsize bytes = 0;
-
-			while (!mDone && *fp) {
-				char buf[4096];
-				fp->read(buf, sizeof(buf));
-				std::streamsize read = fp->gcount();
+			uint64_t binaryish = 0;
+			for (uint64_t offset = 0; !mDone && offset < fp.size(); ) {
+				auto read = std::min<uint64_t>(4096, fp.size() - offset);
+				auto buf = fp.read(offset, read);
 				HandleData(buf, (PRUint32)read);
+				offset += read;
 
 				// A dumb heuristic to detect binary files
 				if (!mDone) {
-					bytes += read;
-					for (std::streamsize i = 0; i < read; ++i) {
+					for (size_t i = 0; i < read; ++i) {
 						if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
 							++binaryish;
 					}
 
-					if (binaryish > bytes / 8) {
+					if (binaryish > offset / 8) {
 						list.emplace_back(1.f, "binary");
 						return;
 					}
