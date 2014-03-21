@@ -739,10 +739,13 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 			if (current_line == context->ass->Events.end())
 				break;
 
-			auto prev = current_line;
-			while (--prev != context->ass->Events.begin() && !predicate(*prev)) ;
-			if (prev != context->ass->Events.begin())
-				AddInactiveLine(sel, &*prev);
+			if (current_line != context->ass->Events.begin())
+			{
+				auto prev = current_line;
+				while (--prev != context->ass->Events.begin() && !predicate(*prev)) ;
+				if (predicate(*prev))
+					AddInactiveLine(sel, &*prev);
+			}
 
 			if (mode == 2)
 			{
@@ -789,8 +792,7 @@ void AudioTimingControllerDialogue::RegenerateSelectedLines()
 	selected_lines.clear();
 
 	AssDialogue *active = context->selectionController->GetActiveLine();
-	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
-	for (auto line : sel)
+	for (auto line : context->selectionController->GetSelectedSet())
 	{
 		if (line == active) continue;
 
