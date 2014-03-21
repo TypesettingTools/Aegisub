@@ -35,7 +35,6 @@
 #endif
 
 static const float deg2rad = 3.1415926536f / 180.f;
-static const float rad2deg = 180.f / 3.1415926536f;
 static const float pi = 3.1415926535897932384626433832795f;
 
 #ifdef __WIN32__
