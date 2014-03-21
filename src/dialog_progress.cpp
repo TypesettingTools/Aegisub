@@ -233,6 +233,7 @@ void DialogProgress::OnCancel(wxCommandEvent &) {
 }
 
 void DialogProgress::SetProgress(int target) {
+	if (target == progress_target) return;
 	using namespace std::chrono;
 
 	progress_anim_start_value = progress_current;
