@@ -23,11 +23,9 @@
 
 #include "auto4_lua_utils.h"
 
-#include <libaegisub/io.h>
+#include <libaegisub/file_mapping.h>
 
-#include <fstream>
 #include <lua.h>
-#include <memory>
 
 namespace Automation4 {
 	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
@@ -39,26 +37,18 @@ namespace Automation4 {
 			LOG_E("auto4/lua") << "Error canonicalizing path: " << e.GetChainedMessage();
 		}
 
-		std::unique_ptr<std::istream> file(agi::io::Open(filename, true));
-		file->seekg(0, std::ios::end);
-		size_t size = file->tellg();
-		file->seekg(0, std::ios::beg);
-
-		std::string buff;
-		buff.resize(size);
+		agi::read_file_mapping file(filename);
+		char *buff = file.read(0, file.size());
+		size_t size = file.size();
 
 		// Discard the BOM if present
-		file->read(&buff[0], 3);
-		size_t start = file->gcount();
-		if (start == 3 && buff[0] == -17 && buff[1] == -69 && buff[2] == -65) {
-			buff.resize(size - 3);
-			start = 0;
+		if (size >= 3 && buff[0] == -17 && buff[1] == -69 && buff[2] == -65) {
+			buff += 3;
+			size -= 3;
 		}
 
-		file->read(&buff[start], size - start);
-
 		if (!agi::fs::HasExtension(filename, "moon"))
-			return luaL_loadbuffer(L, &buff[0], buff.size(), filename.string().c_str()) == 0;
+			return luaL_loadbuffer(L, buff, size, filename.string().c_str()) == 0;
 
 		// Save the text we'll be loading for the line number rewriting in the
 		// error handling
@@ -70,7 +60,7 @@ namespace Automation4 {
 		// MoonScript to Lua
 		if (luaL_dostring(L, "return require('moonscript').loadstring"))
 			return false; // Leaves error message on stack
-		lua_pushlstring(L, &buff[0], buff.size());
+		lua_pushlstring(L, buff, size);
 		lua_pushstring(L, filename.string().c_str());
 		if (lua_pcall(L, 2, 2, 0))
 			return false; // Leaves error message on stack
