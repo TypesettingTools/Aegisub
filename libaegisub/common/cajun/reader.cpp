@@ -8,9 +8,9 @@ Author: Terry Caton
 
 #include "libaegisub/cajun/reader.h"
 
+#include <boost/interprocess/streams/bufferstream.hpp>
 #include <cassert>
 #include <set>
-#include <sstream>
 
 /*
 
@@ -320,7 +320,7 @@ UnknownElement Reader::ParseNumber(Reader::TokenStream& tokenStream) {
 	std::string const& sValue = MatchExpectedToken(Token::TOKEN_NUMBER, tokenStream);
 
 	// First try to parse it as an int
-	std::istringstream iStr(sValue);
+	boost::interprocess::ibufferstream iStr(sValue.data(), sValue.size());
 	int64_t iValue;
 	iStr >> iValue;
 

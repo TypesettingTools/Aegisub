@@ -20,20 +20,20 @@
 
 #include "libaegisub/vfr.h"
 
+#include "libaegisub/charset.h"
+#include "libaegisub/io.h"
+#include "libaegisub/line_iterator.h"
+#include "libaegisub/scoped_ptr.h"
+
 #include <algorithm>
+#include <boost/interprocess/streams/bufferstream.hpp>
+#include <boost/range/algorithm.hpp>
 #include <cmath>
 #include <fstream>
 #include <functional>
 #include <iterator>
 #include <list>
 #include <numeric>
-
-#include "libaegisub/charset.h"
-#include "libaegisub/io.h"
-#include "libaegisub/line_iterator.h"
-#include "libaegisub/scoped_ptr.h"
-
-#include <boost/range/algorithm.hpp>
 
 namespace {
 
@@ -73,7 +73,7 @@ struct TimecodeRange {
 TimecodeRange v1_parse_line(std::string const& str) {
 	if (str.empty() || str[0] == '#') return TimecodeRange();
 
-	std::istringstream ss(str);
+	boost::interprocess::ibufferstream ss(str.data(), str.size());
 	TimecodeRange range;
 	char comma1 = 0, comma2 = 0;
 	ss >> range.start >> comma1 >> range.end >> comma2 >> range.fps;

@@ -20,22 +20,20 @@
 
 #include "libaegisub/json.h"
 
-#include <fstream>
-#include <memory>
-#include <sstream>
-
 #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
 
+#include <boost/interprocess/streams/bufferstream.hpp>
+
 namespace agi {
 	namespace json_util {
 
-json::UnknownElement parse(std::unique_ptr<std::istream> stream) {
+json::UnknownElement parse(std::istream &stream) {
 	try {
 		json::UnknownElement root;
-		json::Reader::Read(root, *stream);
+		json::Reader::Read(root, stream);
 		return root;
 	} catch (json::Reader::ParseException& e) {
 		LOG_E("json/parse") << "json::ParseException: " << e.what() << ", Line/offset: " << e.m_locTokenBegin.m_nLine + 1 << '/' << e.m_locTokenBegin.m_nLineOffset + 1;
@@ -47,24 +45,27 @@ json::UnknownElement parse(std::unique_ptr<std::istream> stream) {
 }
 
 json::UnknownElement file(agi::fs::path const& file) {
-	return parse(io::Open(file));
+	return parse(*io::Open(file));
 }
 
 json::UnknownElement file(agi::fs::path const& file, const std::string &default_config) {
 	try {
-		return parse(io::Open(file));
+		return parse(*io::Open(file));
 	}
 	catch (fs::FileNotFound const&) {
 		// Not an error
-		return parse(util::make_unique<std::istringstream>(default_config));
+		boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
+		return parse(stream);
 	}
 	catch (json::Exception&) {
 		// Already logged in parse
-		return parse(util::make_unique<std::istringstream>(default_config));
+		boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
+		return parse(stream);
 	}
 	catch (agi::Exception& e) {
 		LOG_E("json/file") << "Unexpected error when reading config file " << file << ": " << e.GetMessage();
-		return parse(util::make_unique<std::istringstream>(default_config));
+		boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
+		return parse(stream);
 	}
 }
 

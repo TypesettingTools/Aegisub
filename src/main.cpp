@@ -67,8 +67,8 @@
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/format.hpp>
+#include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/locale.hpp>
-#include <sstream>
 
 #include <wx/clipbrd.h>
 #include <wx/config.h>
@@ -181,7 +181,7 @@ bool AegisubApp::OnInit() {
 	try {
 		if (!config::opt)
 			config::opt = new agi::Options(config::path->Decode("?user/config.json"), GET_DEFAULT_CONFIG(default_config));
-		std::istringstream stream(GET_DEFAULT_CONFIG(default_config_platform));
+		boost::interprocess::ibufferstream stream((const char *)default_config, sizeof(default_config));
 		config::opt->ConfigNext(stream);
 	} catch (agi::Exception& e) {
 		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();

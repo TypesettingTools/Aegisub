@@ -20,9 +20,9 @@
 
 #include <iterator>
 #include <memory>
-#include <sstream>
 
 #include <cstdint>
+#include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include <libaegisub/charset_conv.h>
@@ -205,7 +205,7 @@ inline void line_iterator<std::string>::next() {
 
 template<class OutputType>
 inline bool line_iterator<OutputType>::convert(std::string &str) {
-	std::istringstream ss(str);
+	boost::interprocess::ibufferstream ss(str.data(), str.size());
 	ss >> value;
 	return !ss.fail();
 }

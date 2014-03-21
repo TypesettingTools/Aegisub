@@ -36,7 +36,7 @@
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/join.hpp>
-#include <sstream>
+#include <boost/interprocess/streams/bufferstream.hpp>
 #include <vector>
 
 #include <wx/frame.h>
@@ -45,8 +45,10 @@
 namespace {
 	json::Object const& get_root() {
 		static json::Object root;
-		if (root.empty())
-			root = agi::json_util::parse(agi::util::make_unique<std::istringstream>(GET_DEFAULT_CONFIG(default_toolbar)));
+		if (root.empty()) {
+			boost::interprocess::ibufferstream stream((const char *)default_toolbar, sizeof(default_toolbar));
+			root = agi::json_util::parse(stream);
+		}
 		return root;
 	}
 

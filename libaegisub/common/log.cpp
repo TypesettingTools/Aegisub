@@ -93,9 +93,8 @@ Message::Message(const char *section, Severity severity, const char *file, const
 }
 
 Message::~Message() {
-	sm.message = std::string(msg.str(), (std::string::size_type)msg.pcount());
+	sm.message = std::string(buffer, (std::string::size_type)msg.tellp());
 	agi::log::log->Log(sm);
-	msg.freeze(false);
 }
 
 JsonEmitter::JsonEmitter(fs::path const& directory)

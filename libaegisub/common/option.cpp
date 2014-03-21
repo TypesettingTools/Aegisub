@@ -31,11 +31,11 @@
 
 #include "option_visit.h"
 
+#include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <cassert>
 #include <fstream>
 #include <memory>
-#include <sstream>
 
 namespace {
 	/// @brief Write an option to a json object
@@ -72,7 +72,7 @@ Options::Options(agi::fs::path const& file, const std::string& default_config, c
 , setting(setting)
 {
 	LOG_D("agi/options") << "New Options object";
-	std::istringstream stream(default_config);
+	boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
 	LoadConfig(stream);
 }
 

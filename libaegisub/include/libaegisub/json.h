@@ -28,7 +28,7 @@ namespace agi {
 /// Parse a JSON stream.
 /// @param stream JSON stream to parse
 /// @return json::UnknownElement
-json::UnknownElement parse(std::unique_ptr<std::istream> stream);
+json::UnknownElement parse(std::istream &stream);
 
 /// Parse a JSON file.
 /// @param file Path JSON to file

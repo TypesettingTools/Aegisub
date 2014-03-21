@@ -21,17 +21,10 @@
 
 #include <ctime>
 #include <boost/circular_buffer.hpp>
+#include <boost/interprocess/streams/bufferstream.hpp>
 #include <iosfwd>
 #include <memory>
 #include <vector>
-
-#ifdef __DEPRECATED // Dodge GCC warnings
-# undef __DEPRECATED
-# include <strstream>
-# define __DEPRECATED
-#else
-# include <strstream>
-#endif
 
 // These macros below aren't a perm solution, it will depend on how annoying they are through
 // actual usage, and also depends on msvc support.
@@ -137,7 +130,7 @@ public:
 
 /// Generates a message and submits it to the log sink.
 class Message {
-	std::ostrstream msg;
+	boost::interprocess::obufferstream msg;
 	SinkMessage sm;
 	char buffer[2048];
 

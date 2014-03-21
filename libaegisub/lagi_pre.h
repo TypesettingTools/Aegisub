@@ -48,7 +48,6 @@
 #include <memory>
 #include <numeric>
 #include <set>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -64,11 +63,4 @@
 #define BOOST_NO_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
 #undef BOOST_NO_SCOPED_ENUMS
-
-#ifdef __DEPRECATED // Dodge GCC warnings
-# undef __DEPRECATED
-# include <strstream>
-# define __DEPRECATED
-#else
-# include <strstream>
-#endif
+#include <boost/interprocess/streams/bufferstream.hpp>
