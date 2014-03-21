@@ -43,46 +43,78 @@
 #include "dialog_progress.h"
 #include "MatroskaParser.h"
 
+#include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string/split.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/range/irange.hpp>
 #include <boost/tokenizer.hpp>
-#include <cerrno>
-#include <cstdint>
-#include <cstdio>
 #include <iterator>
 
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
-class MkvStdIO final : public InputStream {
-public:
-	MkvStdIO(agi::fs::path const& filename);
-	~MkvStdIO() { if (fp) fclose(fp); }
+struct MkvStdIO final : InputStream {
+	agi::read_file_mapping file;
+	std::string error;
 
-	FILE *fp = nullptr;
-	int error = 0;
+	static int Read(InputStream *st, ulonglong pos, void *buffer, int count) {
+		auto *self = static_cast<MkvStdIO*>(st);
+		if (pos == self->file.size())
+			return 0;
+
+		try {
+			memcpy(buffer, self->file.read(pos, count), count);
+		}
+		catch (agi::Exception const& e) {
+			self->error = e.GetChainedMessage();
+			return -1;
+		}
+
+		return count;
+	}
+
+	static longlong Scan(InputStream *st, ulonglong start, unsigned signature) {
+		auto *self = static_cast<MkvStdIO*>(st);
+		try {
+			unsigned cmp = 0;
+			for (auto i : boost::irange(start, self->file.size())) {
+				int c = *self->file.read(i, 1);
+				cmp = ((cmp << 8) | c) & 0xffffffff;
+				if (cmp == signature)
+					return i - 4;
+			}
+		}
+		catch (agi::Exception const& e) {
+			self->error = e.GetChainedMessage();
+		}
+
+		return -1;
+	}
+
+	static longlong Size(InputStream *st) {
+		return static_cast<MkvStdIO*>(st)->file.size();
+	}
+
+	MkvStdIO(agi::fs::path const& filename) : file(filename) {
+		read = &MkvStdIO::Read;
+		scan = &MkvStdIO::Scan;
+		getcachesize = [](InputStream *) -> unsigned int { return 16 * 1024 * 1024; };
+		geterror = [](InputStream *st) -> const char * { return ((MkvStdIO *)st)->error.c_str(); };
+		memalloc = [](InputStream *, size_t size) { return malloc(size); };
+		memrealloc = [](InputStream *, void *mem, size_t size) { return realloc(mem, size); };
+		memfree = [](InputStream *, void *mem) { free(mem); };
+		progress = [](InputStream *, ulonglong, ulonglong) { return 1; };
+		getfilesize = &MkvStdIO::Size;
+	}
 };
-
-#define CACHESIZE     1024
-
-#ifdef __VISUALC__
-#define std_fseek _fseeki64
-#define std_ftell _ftelli64
-#else
-#define std_fseek fseeko
-#define std_ftell ftello
-#endif
 
 static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, double totalTime, AssParser *parser) {
 	std::vector<std::pair<int, std::string>> subList;
-	std::string readBuf;
 
 	// Load blocks
 	ulonglong startTime, endTime, filePos;
@@ -92,36 +124,42 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 		if (ps->IsCancelled()) return;
 		if (frameSize == 0) continue;
 
-		readBuf.resize(frameSize);
-		std_fseek(input->fp, filePos, SEEK_SET);
-		fread(&readBuf[0], 1, frameSize, input->fp);
+		const auto readBuf = input->file.read(filePos, frameSize);
+		const auto readBufEnd = readBuf + frameSize;
 
 		// Get start and end times
 		longlong timecodeScaleLow = 1000000;
 		AssTime subStart = startTime / timecodeScaleLow;
 		AssTime subEnd = endTime / timecodeScaleLow;
 
+		using str_range = boost::iterator_range<const char *>;
+
 		// Process SSA/ASS
 		if (!srt) {
-			std::vector<boost::iterator_range<std::string::iterator>> chunks;
-			boost::split(chunks, readBuf, boost::is_any_of(","));
+			auto first = std::find(readBuf, readBufEnd, ',');
+			if (first == readBufEnd) continue;
+			auto second = std::find(first + 1, readBufEnd, ',');
+			if (second == readBufEnd) continue;
 
 			subList.emplace_back(
-				boost::lexical_cast<int>(chunks[0]),
+				boost::lexical_cast<int>(str_range(readBuf, first)),
 				str(boost::format("Dialogue: %d,%s,%s,%s")
-					% boost::lexical_cast<int>(chunks[1])
+					% boost::lexical_cast<int>(str_range(first + 1, second))
 					% subStart.GetAssFormated()
 					% subEnd.GetAssFormated()
-					% boost::make_iterator_range(begin(chunks[2]), readBuf.end())));
+					% str_range(second + 1, readBufEnd)));
 		}
 		// Process SRT
 		else {
-			readBuf = str(boost::format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s") % subStart.GetAssFormated() % subEnd.GetAssFormated() % readBuf);
-			boost::replace_all(readBuf, "\r\n", "\\N");
-			boost::replace_all(readBuf, "\r", "\\N");
-			boost::replace_all(readBuf, "\n", "\\N");
+			auto line = str(boost::format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s")
+				% subStart.GetAssFormated()
+				% subEnd.GetAssFormated()
+				% str_range(readBuf, readBufEnd));
+			boost::replace_all(line, "\r\n", "\\N");
+			boost::replace_all(line, "\r", "\\N");
+			boost::replace_all(line, "\n", "\\N");
 
-			subList.emplace_back(subList.size(), readBuf);
+			subList.emplace_back(subList.size(), std::move(line));
 		}
 
 		ps->SetProgress(startTime / timecodeScaleLow, totalTime);
@@ -237,71 +275,4 @@ bool MatroskaWrapper::HasSubtitles(agi::fs::path const& filename) {
 	}
 
 	return false;
-}
-
-int StdIoRead(InputStream *_st, ulonglong pos, void *buffer, int count) {
-	auto *st = static_cast<MkvStdIO*>(_st);
-	if (std_fseek(st->fp, pos, SEEK_SET)) {
-		st->error = errno;
-		return -1;
-	}
-
-	auto rd = fread(buffer, 1, count, st->fp);
-	if (rd == 0) {
-		if (feof(st->fp))
-			return 0;
-		st->error = errno;
-		return -1;
-	}
-	return rd;
-}
-
-/// @brief scan for a signature sig(big-endian) starting at file position pos
-/// @return position of the first byte of signature or -1 if error/not found
-longlong StdIoScan(InputStream *st, ulonglong start, unsigned signature) {
-	FILE *fp = static_cast<MkvStdIO*>(st)->fp;
-
-	if (std_fseek(fp, start, SEEK_SET))
-		return -1;
-
-	int c;
-	unsigned cmp = 0;
-	while ((c = getc(fp)) != EOF) {
-		cmp = ((cmp << 8) | c) & 0xffffffff;
-		if (cmp == signature)
-			return std_ftell(fp) - 4;
-	}
-
-	return -1;
-}
-
-longlong StdIoGetFileSize(InputStream *st) {
-	auto fp = static_cast<MkvStdIO*>(st)->fp;
-	auto cpos = std_ftell(fp);
-	std_fseek(fp, 0, SEEK_END);
-	auto epos = std_ftell(fp);
-	std_fseek(fp, cpos, SEEK_SET);
-	return epos;
-}
-
-MkvStdIO::MkvStdIO(agi::fs::path const& filename) {
-	read = StdIoRead;
-	scan = StdIoScan;
-	getcachesize = [](InputStream *) -> unsigned int { return CACHESIZE; };
-	geterror = [](InputStream *st) -> const char * { return strerror(((MkvStdIO *)st)->error); };
-	memalloc = [](InputStream *, size_t size) { return malloc(size); };
-	memrealloc = [](InputStream *, void *mem, size_t size) { return realloc(mem, size); };
-	memfree = [](InputStream *, void *mem) { free(mem); };
-	progress = [](InputStream *, ulonglong, ulonglong) { return 1; };
-	getfilesize = StdIoGetFileSize;
-
-#ifdef __VISUALC__
-	fp = _wfopen(filename.c_str(), L"rb");
-#else
-	fp = fopen(filename.c_str(), "rb");
-#endif
-	if (!fp)
-		throw agi::fs::FileNotFound(filename);
-
-	setvbuf(fp, nullptr, _IOFBF, CACHESIZE);
 }
