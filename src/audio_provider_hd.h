@@ -37,13 +37,13 @@
 namespace agi {
 	class BackgroundRunner;
 	class ProgressSink;
+	class read_file_mapping;
 }
 
 class HDAudioProvider final : public AudioProviderWrapper {
 	/// Name of the file which the decoded audio is written to
-	agi::fs::path diskCacheFilename;
-	/// Audio provider which reads from the decoded cache
-	std::unique_ptr<AudioProvider> cache_provider;
+	agi::fs::path cache_filename;
+	std::unique_ptr<agi::read_file_mapping> file;
 
 	/// Fill the cache with all of the data from the source audio provider
 	/// @param src Audio data to cache

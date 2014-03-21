@@ -37,13 +37,13 @@
 #include "audio_provider_hd.h"
 
 #include "audio_controller.h"
-#include "audio_provider_pcm.h"
 #include "compat.h"
 #include "options.h"
 #include "utils.h"
 
 #include <libaegisub/access.h>
 #include <libaegisub/background_runner.h>
+#include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/path.h>
@@ -69,56 +69,38 @@ agi::fs::path cache_path() {
 	boost::replace_all(pattern, "%02i", "%%%%-%%%%-%%%%-%%%%");
 	return unique_path(cache_dir()/pattern);
 }
-
-/// A PCM audio provider for raw dumps with no header
-class RawAudioProvider final : public PCMAudioProvider {
-public:
-	RawAudioProvider(agi::fs::path const& cache_filename, AudioProvider *src)
-	: PCMAudioProvider(cache_filename)
-	{
-		bytes_per_sample = src->GetBytesPerSample();
-		num_samples      = src->GetNumSamples();
-		channels         = src->GetChannels();
-		sample_rate      = src->GetSampleRate();
-		filename         = src->GetFilename();
-		float_samples    = src->AreSamplesFloat();
-
-		IndexPoint p = { 0, 0, num_samples };
-		index_points.push_back(p);
-	}
-};
-
 }
 
 HDAudioProvider::HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br)
 : AudioProviderWrapper(std::move(src))
+, cache_filename(cache_path())
 {
 	// Check free space
 	if ((uint64_t)num_samples * channels * bytes_per_sample > agi::fs::FreeSpace(cache_dir()))
 		throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir().string() + " to cache the audio", nullptr);
 
-	diskCacheFilename = cache_path();
-
 	try {
 		{
-			agi::io::Save out(diskCacheFilename, true);
+			agi::io::Save out(cache_filename, true);
 			br->Run(bind(&HDAudioProvider::FillCache, this, source.get(), &out.Get(), std::placeholders::_1));
 		}
-		cache_provider = agi::util::make_unique<RawAudioProvider>(diskCacheFilename, source.get());
+		file = agi::util::make_unique<agi::read_file_mapping>(cache_filename);
 	}
 	catch (...) {
-		agi::fs::Remove(diskCacheFilename);
+		agi::fs::Remove(cache_filename);
 		throw;
 	}
 }
 
 HDAudioProvider::~HDAudioProvider() {
-	cache_provider.reset(); // explicitly close the file so we can delete it
-	agi::fs::Remove(diskCacheFilename);
+	file.reset(); // explicitly close the file so we can delete it
+	agi::fs::Remove(cache_filename);
 }
 
 void HDAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	cache_provider->GetAudio(buf, start, count);
+	start *= channels * bytes_per_sample;
+	count *= channels * bytes_per_sample;
+	memcpy(buf, file->read(start, count), count);
 }
 
 void HDAudioProvider::FillCache(AudioProvider *src, std::ofstream *out, agi::ProgressSink *ps) {
