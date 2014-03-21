@@ -31,9 +31,7 @@
 /// @brief Default timing mode for dialogue subtitles
 /// @ingroup audio_ui
 
-
-#include <cstdint>
-#include <wx/pen.h>
+#include "config.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -46,6 +44,10 @@
 #include "pen.h"
 #include "selection_controller.h"
 #include "utils.h"
+
+#include <boost/range/algorithm.hpp>
+#include <cstdint>
+#include <wx/pen.h>
 
 class TimeableLine;
 
@@ -446,8 +448,8 @@ void AudioTimingControllerDialogue::GetMarkers(const TimeRange &range, AudioMark
 
 	// Copy inactive line markers in the range
 	copy(
-		lower_bound(markers.begin(), markers.end(), range.begin(), marker_ptr_cmp()),
-		upper_bound(markers.begin(), markers.end(), range.end(), marker_ptr_cmp()),
+		boost::lower_bound(markers, range.begin(), marker_ptr_cmp()),
+		boost::upper_bound(markers, range.end(), marker_ptr_cmp()),
 		back_inserter(out_markers));
 
 	keyframes_provider.GetMarkers(range, out_markers);
@@ -520,7 +522,7 @@ void AudioTimingControllerDialogue::Next(NextMode mode)
 		// same marker gets set twice
 		active_line.GetRightMarker()->SetPosition(new_end_ms + default_duration);
 		active_line.GetLeftMarker()->SetPosition(new_end_ms);
-		sort(markers.begin(), markers.end(), marker_ptr_cmp());
+		boost::sort(markers, marker_ptr_cmp());
 		modified_lines.insert(&active_line);
 		UpdateSelection();
 	}
@@ -646,7 +648,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 	{
 		// The use of GetPosition here is important, as otherwise it'll start
 		// after lines ending at the same time as the active line begins
-		auto it = lower_bound(markers.begin(), markers.end(), clicked->GetPosition(), marker_ptr_cmp());
+		auto it = boost::lower_bound(markers, clicked->GetPosition(), marker_ptr_cmp());
 		for(; it != markers.end() && !(*clicked < **it); ++it)
 			ret.push_back(*it);
 	}
@@ -693,7 +695,7 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 		max_ms = std::max<int>(*marker, max_ms);
 	}
 
-	auto begin = lower_bound(markers.begin(), markers.end(), min_ms, marker_ptr_cmp());
+	auto begin = boost::lower_bound(markers, min_ms, marker_ptr_cmp());
 	auto end = upper_bound(begin, markers.end(), max_ms, marker_ptr_cmp());
 
 	// Update the markers
@@ -850,7 +852,7 @@ int AudioTimingControllerDialogue::SnapPosition(int position, int snap_range, st
 	GetMarkers(snap_time_range, potential_snaps);
 	for (auto marker : potential_snaps)
 	{
-		if (marker->CanSnap() && find(exclude.begin(), exclude.end(), marker) == exclude.end())
+		if (marker->CanSnap() && boost::find(exclude, marker) == exclude.end())
 		{
 			if (!snap_marker)
 				snap_marker = marker;
