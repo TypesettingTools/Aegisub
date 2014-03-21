@@ -43,6 +43,7 @@ namespace agi {
 		~read_file_mapping();
 
 		uint64_t size() const { return file_size; }
-		char *read(int64_t offset, uint64_t length);
+		const char *read(int64_t offset, uint64_t length);
+		const char *read(); // Map the entire file
 	};
 }

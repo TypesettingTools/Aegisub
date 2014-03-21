@@ -28,7 +28,7 @@
 
 TextFileReader::TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim)
 : file(agi::util::make_unique<agi::read_file_mapping>(filename))
-, stream(agi::util::make_unique<boost::interprocess::bufferstream>(file->read(0, file->size()), file->size()))
+, stream(agi::util::make_unique<boost::interprocess::ibufferstream>(file->read(), file->size()))
 , trim(trim)
 , iter(agi::line_iterator<std::string>(*stream, encoding))
 {

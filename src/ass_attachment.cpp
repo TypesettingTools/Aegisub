@@ -50,7 +50,7 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 		filename = filename.get().substr(0, filename.get().size() - 4) + "_0" + filename.get().substr(filename.get().size() - 4);
 
 	agi::read_file_mapping file(name);
-	auto buff = file.read(0, file.size());
+	auto buff = file.read();
 	entry_data = (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
 	entry_data = entry_data.get() + agi::ass::UUEncode(boost::make_iterator_range(buff, buff + file.size()));
 }

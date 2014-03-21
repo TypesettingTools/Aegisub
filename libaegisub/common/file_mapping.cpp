@@ -79,7 +79,11 @@ read_file_mapping::read_file_mapping(fs::path const& filename)
 
 read_file_mapping::~read_file_mapping() { }
 
-char *read_file_mapping::read(int64_t s_offset, uint64_t length) {
+const char *read_file_mapping::read() {
+	return read(0, size());
+}
+
+const char *read_file_mapping::read(int64_t s_offset, uint64_t length) {
 	auto offset = static_cast<uint64_t>(s_offset);
 	if (offset + length > file_size)
 		throw InternalError("Attempted to map beyond end of file", nullptr);

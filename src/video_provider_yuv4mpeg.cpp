@@ -113,7 +113,7 @@ std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(uint64_t &pos) {
 	auto buff = file->read(pos, len);
 
 	// read header until terminating newline (0x0A) is found
-	const char *curtag = buff;
+	auto curtag = buff;
 	auto end = buff + len;
 	for (; buff < end && *buff != 0x0A; ++buff, ++pos) {
 		if (*buff == 0)

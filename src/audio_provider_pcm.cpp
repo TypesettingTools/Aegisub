@@ -58,7 +58,7 @@ protected:
 		float_samples = false;
 	}
 
-	char *EnsureRangeAccessible(int64_t start, int64_t length) const {
+	const char *EnsureRangeAccessible(int64_t start, int64_t length) const {
 		try {
 			return file->read(start, static_cast<size_t>(length));
 		}
@@ -67,12 +67,16 @@ protected:
 		}
 	}
 
+	template<typename T>
+	T const& Read(int64_t start) const {
+		return *reinterpret_cast<const T *>(EnsureRangeAccessible(start, sizeof(T)));
+	}
+
 	struct IndexPoint {
 		int64_t start_byte;
 		int64_t num_samples;
 	};
 	std::vector<IndexPoint> index_points;
-
 };
 
 void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
@@ -159,8 +163,7 @@ public:
 		this->filename = filename;
 
 		// Read header
-		void *filestart = EnsureRangeAccessible(0, sizeof(RIFFChunk));
-		RIFFChunk &header = *(RIFFChunk*)filestart;
+		auto const& header = Read<RIFFChunk>(0);
 
 		// Check magic values
 		if (!CheckFourcc(header.ch.type, "RIFF"))
@@ -182,7 +185,7 @@ public:
 
 		// Continue reading chunks until out of data
 		while (data_left) {
-			ChunkHeader &ch = *(ChunkHeader*)EnsureRangeAccessible(filepos, sizeof(ChunkHeader));
+			auto const& ch = Read<ChunkHeader>(filepos);
 
 			// Update counters
 			data_left -= sizeof(ch);
@@ -192,7 +195,7 @@ public:
 				if (got_fmt_header) throw agi::AudioProviderOpenError("Invalid file, multiple 'fmt ' chunks", nullptr);
 				got_fmt_header = true;
 
-				fmtChunk &fmt = *(fmtChunk*)EnsureRangeAccessible(filepos, sizeof(fmtChunk));
+				auto const& fmt = Read<fmtChunk>(filepos);
 
 				if (fmt.compression != 1)
 					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", nullptr);
@@ -297,8 +300,7 @@ public:
 			throw agi::AudioDataNotFoundError("File is too small to be a Wave64 file", nullptr);
 
 		// Read header
-		void *filestart = EnsureRangeAccessible(0, sizeof(RiffChunk));
-		RiffChunk &header = *(RiffChunk*)filestart;
+		auto const& header = Read<RiffChunk>(0);
 
 		// Check magic values
 		if (!CheckGuid(header.riff_guid, w64GuidRIFF))
@@ -320,13 +322,13 @@ public:
 		// Continue reading chunks until out of data
 		while (data_left) {
 			uint8_t *chunk_guid = (uint8_t*)EnsureRangeAccessible(filepos, 16);
-			uint64_t chunk_size = *(uint64_t*)EnsureRangeAccessible(filepos+16, sizeof(uint64_t));
+			auto chunk_size = Read<uint64_t>(filepos + 16);
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
 					throw agi::AudioProviderOpenError("Bad file, found more than one 'fmt' chunk", nullptr);
 
-				FormatChunk &fmt = *(FormatChunk*)EnsureRangeAccessible(filepos, sizeof(FormatChunk));
+				auto const& fmt = Read<FormatChunk>(filepos);
 				got_fmt_header = true;
 
 				if (fmt.format.wFormatTag == 3)

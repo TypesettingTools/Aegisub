@@ -38,7 +38,7 @@ namespace Automation4 {
 		}
 
 		agi::read_file_mapping file(filename);
-		char *buff = file.read(0, file.size());
+		auto buff = file.read();
 		size_t size = file.size();
 
 		// Discard the BOM if present
