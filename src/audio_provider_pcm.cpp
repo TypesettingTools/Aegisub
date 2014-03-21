@@ -34,7 +34,7 @@
 
 #include "config.h"
 
-#include "audio_provider_pcm.h"
+#include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
 #include "utils.h"
@@ -44,47 +44,58 @@
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
-PCMAudioProvider::PCMAudioProvider(agi::fs::path const& filename)
-: file(agi::util::make_unique<agi::read_file_mapping>(filename))
-{
-	float_samples = false;
-}
+#include <vector>
 
-PCMAudioProvider::~PCMAudioProvider() { }
+class PCMAudioProvider : public AudioProvider {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
-char *PCMAudioProvider::EnsureRangeAccessible(int64_t start, int64_t length) const {
-	try {
-		return file->read(start, static_cast<size_t>(length));
+protected:
+	std::unique_ptr<agi::read_file_mapping> file;
+
+	PCMAudioProvider(agi::fs::path const& filename)
+	: file(agi::util::make_unique<agi::read_file_mapping>(filename))
+	{
+		float_samples = false;
 	}
-	catch (agi::fs::FileSystemError const& e) {
-		throw AudioDecodeError(e.GetMessage());
+
+	char *EnsureRangeAccessible(int64_t start, int64_t length) const {
+		try {
+			return file->read(start, static_cast<size_t>(length));
+		}
+		catch (agi::fs::FileSystemError const& e) {
+			throw AudioDecodeError(e.GetMessage());
+		}
 	}
-}
+
+	struct IndexPoint {
+		int64_t start_byte;
+		int64_t num_samples;
+	};
+	std::vector<IndexPoint> index_points;
+
+};
 
 void PCMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	// Read blocks from the file
-	size_t index = 0;
-	while (count > 0 && index < index_points.size()) {
-		// Check if this index contains the samples we're looking for
-		const IndexPoint &ip = index_points[index];
-		if (ip.start_sample <= start && ip.start_sample+ip.num_samples > start) {
+	auto write_buf = static_cast<char *>(buf);
+	auto bps = bytes_per_sample * channels;
+	int64_t pos = 0;
 
-			// How many samples we can maximum take from this block
-			int64_t samples_can_do = ip.num_samples - start + ip.start_sample;
-			if (samples_can_do > count) samples_can_do = count;
-
-			// Read as many samples we can
-			char *src = EnsureRangeAccessible(
-				ip.start_byte + (start - ip.start_sample) * bytes_per_sample * channels,
-				samples_can_do * bytes_per_sample * channels);
-			memcpy(buf, src, samples_can_do * bytes_per_sample * channels);
-
-			// Update data
-			buf = (char*)buf + samples_can_do * bytes_per_sample * channels;
-			start += samples_can_do;
-			count -= samples_can_do;
+	for (auto const& ip : index_points) {
+		if (count == 0) break;
+		if (pos + ip.num_samples < start) {
+			pos += ip.num_samples;
+			continue;
 		}
-		index++;
+
+		auto read_offset = start - pos;
+		auto read_count = std::min(count, ip.num_samples - read_offset);
+		auto bytes = read_count * bps;
+		memcpy(write_buf, file->read(ip.start_byte + read_offset * bps, bytes), bytes);
+
+		write_buf += bytes;
+		count -= read_count;
+		start += read_count;
+		pos += ip.num_samples;
 	}
 }
 
@@ -198,16 +209,9 @@ public:
 
 				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
 
-				int64_t samples = ch.size / bytes_per_sample;
-				int64_t frames = samples / channels;
-
-				IndexPoint ip;
-				ip.start_sample = num_samples;
-				ip.num_samples = frames;
-				ip.start_byte = filepos;
-				index_points.push_back(ip);
-
-				num_samples += frames;
+				auto samples = ch.size / bytes_per_sample / channels;
+				index_points.push_back(IndexPoint{filepos, samples});
+				num_samples += samples;
 			}
 
 			// Support wavl (wave list) chunks too?
@@ -339,16 +343,9 @@ public:
 				if (!got_fmt_header)
 					throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
 
-				int64_t samples = chunk_size / bytes_per_sample;
-				int64_t frames = samples / channels;
-
-				IndexPoint ip;
-				ip.start_sample = num_samples;
-				ip.num_samples = frames;
-				ip.start_byte = filepos;
-				index_points.push_back(ip);
-
-				num_samples += frames;
+				auto samples = chunk_size / bytes_per_sample / channels;
+				index_points.push_back(IndexPoint{filepos, samples});
+				num_samples += samples;
 			}
 
 			// Update counters

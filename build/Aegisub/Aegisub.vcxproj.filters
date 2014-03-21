@@ -195,9 +195,6 @@
     <ClInclude Include="$(SrcDir)audio_provider_hd.h">
       <Filter>Audio\Providers</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_pcm.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)audio_box.h">
       <Filter>Audio\UI</Filter>
     </ClInclude>

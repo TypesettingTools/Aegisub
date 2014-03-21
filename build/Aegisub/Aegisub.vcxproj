@@ -123,7 +123,6 @@
     <ClInclude Include="$(SrcDir)audio_provider_ffmpegsource.h" />
     <ClInclude Include="$(SrcDir)audio_provider_hd.h" />
     <ClInclude Include="$(SrcDir)audio_provider_lock.h" />
-    <ClInclude Include="$(SrcDir)audio_provider_pcm.h" />
     <ClInclude Include="$(SrcDir)audio_provider_ram.h" />
     <ClInclude Include="$(SrcDir)audio_renderer.h" />
     <ClInclude Include="$(SrcDir)audio_renderer_spectrum.h" />

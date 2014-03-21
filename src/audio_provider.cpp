@@ -40,7 +40,6 @@
 #include "audio_provider_ffmpegsource.h"
 #include "audio_provider_hd.h"
 #include "audio_provider_lock.h"
-#include "audio_provider_pcm.h"
 #include "audio_provider_ram.h"
 
 #include "audio_controller.h"
@@ -53,6 +52,9 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
+
+// Defined in audio_provider_pcm.cpp
+std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename);
 
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
 	GetAudio(buf, start, count);
