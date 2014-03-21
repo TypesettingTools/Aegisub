@@ -159,7 +159,7 @@ struct marker_ptr_cmp
 /// markers to the tracked dialogue line.
 class TimeableLine {
 	/// The current tracked dialogue line
-	AssDialogue *line;
+	AssDialogue *line = nullptr;
 	/// The rendering style of this line
 	AudioRenderingStyle style;
 
@@ -179,23 +179,22 @@ public:
 	/// @param style_left The rendering style for the start marker
 	/// @param style_right The rendering style for the end marker
 	TimeableLine(AudioRenderingStyle style, const Pen *style_left, const Pen *style_right)
-		: line(nullptr)
-		, style(style)
-		, marker1(0, style_left, AudioMarker::Feet_Right, style, this)
-		, marker2(0, style_right, AudioMarker::Feet_Left, style, this)
-		, left_marker(&marker1)
-		, right_marker(&marker2)
+	: style(style)
+	, marker1(0, style_left, AudioMarker::Feet_Right, style, this)
+	, marker2(0, style_right, AudioMarker::Feet_Left, style, this)
+	, left_marker(&marker1)
+	, right_marker(&marker2)
 	{
 	}
 
 	/// Explicit copy constructor needed due to that the markers have a pointer to this
 	TimeableLine(TimeableLine const& other)
-		: line(other.line)
-		, style(other.style)
-		, marker1(*other.left_marker, this)
-		, marker2(*other.right_marker, this)
-		, left_marker(&marker1)
-		, right_marker(&marker2)
+	: line(other.line)
+	, style(other.style)
+	, marker1(*other.left_marker, this)
+	, marker2(*other.right_marker, this)
+	, left_marker(&marker1)
+	, right_marker(&marker2)
 	{
 	}
 
@@ -319,7 +318,7 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	std::set<TimeableLine*> modified_lines;
 
 	/// Commit id for coalescing purposes when in auto commit mode
-	int commit_id;
+	int commit_id =-1;
 
 	/// The owning project context
 	agi::Context *context;
@@ -420,7 +419,6 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , active_line(AudioStyle_Primary, &style_left, &style_right)
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Dialogue Mode")
 , video_position_provider(c)
-, commit_id(-1)
 , context(c)
 , auto_commit(OPT_GET("Audio/Auto/Commit"))
 , inactive_line_mode(OPT_GET("Audio/Inactive Lines Display Mode"))
@@ -498,10 +496,10 @@ TimeRange AudioTimingControllerDialogue::GetActiveLineRange() const
 void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
 {
 	active_line.GetStyleRange(&ranges);
-	for_each(selected_lines.begin(), selected_lines.end(),
-		std::bind(&TimeableLine::GetStyleRange, std::placeholders::_1, &ranges));
-	for_each(inactive_lines.begin(), inactive_lines.end(),
-		std::bind(&TimeableLine::GetStyleRange, std::placeholders::_1, &ranges));
+	for (auto const& line : selected_lines)
+		line.GetStyleRange(&ranges);
+	for (auto const& line : inactive_lines)
+		line.GetStyleRange(&ranges);
 }
 
 void AudioTimingControllerDialogue::Next(NextMode mode)
@@ -543,8 +541,8 @@ void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
 	// Store back new times
 	if (modified_lines.size())
 	{
-		for_each(modified_lines.begin(), modified_lines.end(),
-			std::mem_fn(&TimeableLine::Apply));
+		for (auto line : modified_lines)
+			line->Apply();
 
 		commit_connection.Block();
 		if (user_triggered)
@@ -720,14 +718,9 @@ static bool noncomment_dialogue(AssDialogue const& diag)
 	return !diag.Comment;
 }
 
-static bool dialogue(AssDialogue const&)
-{
-	return true;
-}
-
 void AudioTimingControllerDialogue::RegenerateInactiveLines()
 {
-	auto predicate = inactive_line_comments->GetBool() ? dialogue : noncomment_dialogue;
+	auto predicate = inactive_line_comments->GetBool() ? [](AssDialogue const&) { return true; } : noncomment_dialogue;
 
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
@@ -815,11 +808,10 @@ void AudioTimingControllerDialogue::RegenerateMarkers()
 	markers.clear();
 
 	active_line.GetMarkers(&markers);
-	for_each(selected_lines.begin(), selected_lines.end(),
-		std::bind(&TimeableLine::GetMarkers, std::placeholders::_1, &markers));
-	for_each(inactive_lines.begin(), inactive_lines.end(),
-		std::bind(&TimeableLine::GetMarkers, std::placeholders::_1, &markers));
-	sort(markers.begin(), markers.end(), marker_ptr_cmp());
+	for (auto const& line : selected_lines)
+		line.GetMarkers(&markers);
+	for (auto const& line : inactive_lines)
+		line.GetMarkers(&markers);
 
 	AnnounceMarkerMoved();
 }
@@ -829,8 +821,8 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::GetLeftMarkers()
 	std::vector<AudioMarker*> ret;
 	ret.reserve(selected_lines.size() + 1);
 	ret.push_back(active_line.GetLeftMarker());
-	transform(selected_lines.begin(), selected_lines.end(), back_inserter(ret),
-		std::bind(&TimeableLine::GetLeftMarker, std::placeholders::_1));
+	for (auto& line : selected_lines)
+		ret.push_back(line.GetLeftMarker());
 	return ret;
 }
 
@@ -839,8 +831,8 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::GetRightMarkers()
 	std::vector<AudioMarker*> ret;
 	ret.reserve(selected_lines.size() + 1);
 	ret.push_back(active_line.GetRightMarker());
-	transform(selected_lines.begin(), selected_lines.end(), back_inserter(ret),
-		std::bind(&TimeableLine::GetRightMarker, std::placeholders::_1));
+	for (auto& line : selected_lines)
+		ret.push_back(line.GetRightMarker());
 	return ret;
 }
 
