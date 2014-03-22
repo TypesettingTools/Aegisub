@@ -1,51 +1,51 @@
-[submodule "aegisub/vendor/fribidi"]
+[submodule "fribidi"]
 	path = vendor/fribidi
 	url = git://anongit.freedesktop.org/fribidi/fribidi
 	ignore = dirty
-[submodule "aegisub/vendor/freetype2"]
+[submodule "freetype2"]
 	path = vendor/freetype2
 	url = git://git.sv.nongnu.org/freetype/freetype2.git
 	ignore = dirty
-[submodule "aegisub/vendor/zlib"]
+[submodule "zlib"]
 	path = vendor/zlib
 	url = git://github.com/madler/zlib.git
 	ignore = dirty
-[submodule "aegisub/vendor/wxWidgets"]
+[submodule "wxWidgets"]
 	path = vendor/wxWidgets
 	url = git://github.com/wxWidgets/wxWidgets.git
 	ignore = dirty
-[submodule "aegisub/vendor/googletest"]
+[submodule "googletest"]
 	path = vendor/googletest
 	url = git://github.com/svn2github/googletest.git
 	ignore = dirty
-[submodule "aegisub/vendor/ffmpeg"]
+[submodule "ffmpeg"]
 	path = vendor/ffmpeg
 	url = git://source.ffmpeg.org/ffmpeg.git
 	ignore = dirty
-[submodule "aegisub/vendor/ffms2"]
+[submodule "ffms2"]
 	path = vendor/ffms2
 	url = git://github.com/FFMS/ffms2.git
 	branch = master
 	ignore = dirty
-[submodule "aegisub/vendor/fontconfig"]
+[submodule "fontconfig"]
 	path = vendor/fontconfig
 	url = git://github.com/tgoyne/fontconfig.git
 	branch = msvc
 	ignore = dirty
-[submodule "aegisub/vendor/libass"]
+[submodule "libass"]
 	path = vendor/libass
 	url = git://github.com/libass/libass.git
 	branch = master
-[submodule "aegisub/vendor/icu"]
+[submodule "icu"]
 	path = vendor/icu
 	url = git://github.com/sillsdev/icu4c.git
 	branch = trunk
 	ignore = dirty
-[submodule "aegisub/vendor/boost"]
+[submodule "boost"]
 	path = vendor/boost
 	url = https://github.com/boostorg/boost.git
 	ignore = dirty
-[submodule "deps/fftw"]
+[submodule "fftw"]
 	path = vendor/fftw
 	url = https://github.com/Aegisub/fftw3.git
 	ignore = dirty
