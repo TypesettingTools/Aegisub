@@ -29,7 +29,6 @@
 		"Cache" : {
 			"HD" : {
 				"Location" : "default",
-				"Name" : "audio%02i.tmp"
 			},
 			"Type" : 1
 		},

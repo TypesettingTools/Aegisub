@@ -507,9 +507,7 @@ Advanced_Audio::Advanced_Audio(wxTreebook *book, Preferences *parent): OptionPag
 	const wxString ct_arr[3] = { _("None (NOT RECOMMENDED)"), _("RAM"), _("Hard Disk") };
 	wxArrayString ct_choice(3, ct_arr);
 	OptionChoice(cache, _("Cache type"), ct_choice, "Audio/Cache/Type");
-
 	OptionBrowse(cache, _("Path"), "Audio/Cache/HD/Location");
-	OptionAdd(cache, _("File name"), "Audio/Cache/HD/Name");
 
 	wxFlexGridSizer *spectrum = PageSizer(_("Spectrum"));
 

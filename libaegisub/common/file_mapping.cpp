@@ -31,62 +31,14 @@
 
 using namespace boost::interprocess;
 
-namespace agi {
-file_mapping::file_mapping(agi::fs::path const& filename, boost::interprocess::mode_t mode)
-#ifdef _WIN32
-: handle(CreateFileW(filename.wstring().c_str(), (unsigned int)mode, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, 0))
+namespace {
+char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
+	uint64_t file_size, agi::file_mapping const& file,
+	std::unique_ptr<mapped_region>& region, uint64_t& mapping_start)
 {
-	if (handle == ipcdetail::invalid_file()) {
-		switch (GetLastError()) {
-		case ERROR_FILE_NOT_FOUND:
-		case ERROR_PATH_NOT_FOUND:
-			throw fs::FileNotFound(filename);
-		case ERROR_ACCESS_DENIED:
-			throw fs::ReadDenied(filename);
-		default:
-			throw fs::FileSystemUnknownError(util::ErrorString(GetLastError()));
-		}
-	}
-#else
-: handle(ipcdetail::open_existing_file(filename.string().c_str(), mode))
-{
-	if (handle == ipcdetail::invalid_file()) {
-		switch (errno) {
-		case ENOENT:
-			throw fs::FileNotFound(filename);
-		case EACCES:
-			throw fs::ReadDenied(filename);
-		case EIO:
-			throw fs::FileSystemUnknownError("Fatal I/O opening path: " + filename.string());
-		}
-	}
-#endif
-}
-
-file_mapping::~file_mapping() {
-	if (handle != ipcdetail::invalid_file()) {
-		ipcdetail::close_file(handle);
-	}
-}
-
-read_file_mapping::read_file_mapping(fs::path const& filename)
-: file(filename, read_only)
-{
-	offset_t size;
-	ipcdetail::get_file_size(file.get_mapping_handle().handle, size);
-	file_size = static_cast<uint64_t>(size);
-}
-
-read_file_mapping::~read_file_mapping() { }
-
-const char *read_file_mapping::read() {
-	return read(0, size());
-}
-
-const char *read_file_mapping::read(int64_t s_offset, uint64_t length) {
 	auto offset = static_cast<uint64_t>(s_offset);
 	if (offset + length > file_size)
-		throw InternalError("Attempted to map beyond end of file", nullptr);
+		throw agi::InternalError("Attempted to map beyond end of file", nullptr);
 
 	// Check if we can just use the current mapping
 	if (region && offset >= mapping_start && offset + length <= mapping_start + region->get_size())
@@ -108,12 +60,103 @@ const char *read_file_mapping::read(int64_t s_offset, uint64_t length) {
 		throw std::bad_alloc();
 
 	try {
-		region = agi::util::make_unique<mapped_region>(file, read_only, mapping_start, static_cast<size_t>(length));
+		region = agi::util::make_unique<mapped_region>(file, mode, mapping_start, static_cast<size_t>(length));
 	}
 	catch (interprocess_exception const&) {
-		throw fs::FileSystemUnknownError("Failed mapping a view of the file");
+		throw agi::fs::FileSystemUnknownError("Failed mapping a view of the file");
 	}
 
 	return static_cast<char *>(region->get_address()) + offset - mapping_start;
+}
+
+}
+
+namespace agi {
+file_mapping::file_mapping(fs::path const& filename, bool temporary)
+#ifdef _WIN32
+: handle(CreateFileW(filename.wstring().c_str(),
+	temporary ? read_write : read_only,
+	temporary ? FILE_SHARE_READ | FILE_SHARE_WRITE : FILE_SHARE_READ,
+	nullptr,
+	temporary ? OPEN_ALWAYS : OPEN_EXISTING,
+	0, 0))
+{
+	if (handle == ipcdetail::invalid_file()) {
+		switch (GetLastError()) {
+		case ERROR_FILE_NOT_FOUND:
+		case ERROR_PATH_NOT_FOUND:
+			throw fs::FileNotFound(filename);
+		case ERROR_ACCESS_DENIED:
+			throw fs::ReadDenied(filename);
+		default:
+			throw fs::FileSystemUnknownError(util::ErrorString(GetLastError()));
+		}
+	}
+#else
+: handle(temporary
+	? ipcdetail::create_or_open_file(filename.string().c_str(), read_write)
+	: ipcdetail::open_existing_file(filename.string().c_str(), read_only))
+{
+	if (handle == ipcdetail::invalid_file()) {
+		switch (errno) {
+		case ENOENT:
+			throw fs::FileNotFound(filename);
+		case EACCES:
+			throw fs::ReadDenied(filename);
+		case EIO:
+			throw fs::FileSystemUnknownError("Fatal I/O opening path: " + filename.string());
+		}
+	}
+#endif
+}
+
+file_mapping::~file_mapping() {
+	if (handle != ipcdetail::invalid_file()) {
+		ipcdetail::close_file(handle);
+	}
+}
+
+read_file_mapping::read_file_mapping(fs::path const& filename)
+: file(filename, false)
+{
+	offset_t size;
+	ipcdetail::get_file_size(file.get_mapping_handle().handle, size);
+	file_size = static_cast<uint64_t>(size);
+}
+
+read_file_mapping::~read_file_mapping() { }
+
+const char *read_file_mapping::read() {
+	return read(0, size());
+}
+
+const char *read_file_mapping::read(int64_t offset, uint64_t length) {
+	return map(offset, length, read_only, file_size, file, region, mapping_start);
+}
+
+temp_file_mapping::temp_file_mapping(fs::path const& filename, uint64_t size)
+: file(filename, true)
+, file_size(size)
+{
+	auto handle = file.get_mapping_handle().handle;
+#ifdef _WIN32
+	LARGE_INTEGER li;
+	li.QuadPart = size;
+	SetFilePointerEx(handle, li, nullptr, FILE_BEGIN);
+	SetEndOfFile(handle);
+#else
+	ftruncate(handle, size);
+	unlink(filename.string().c_str());
+#endif
+}
+
+temp_file_mapping::~temp_file_mapping() { }
+
+const char *temp_file_mapping::read(int64_t offset, uint64_t length) {
+	return write(offset, length);
+}
+
+char *temp_file_mapping::write(int64_t offset, uint64_t length) {
+	return map(offset, length, read_write, file_size, file, region, mapping_start);
 }
 }

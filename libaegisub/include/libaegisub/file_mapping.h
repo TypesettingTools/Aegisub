@@ -25,7 +25,7 @@ namespace agi {
 		boost::interprocess::file_handle_t handle;
 
 	public:
-		file_mapping(fs::path const& filename, boost::interprocess::mode_t mode);
+		file_mapping(fs::path const& filename, bool temporary);
 		~file_mapping();
 		boost::interprocess::mapping_handle_t get_mapping_handle() const {
 			return boost::interprocess::ipcdetail::mapping_handle_from_file_handle(handle);
@@ -45,5 +45,19 @@ namespace agi {
 		uint64_t size() const { return file_size; }
 		const char *read(int64_t offset, uint64_t length);
 		const char *read(); // Map the entire file
+	};
+
+	class temp_file_mapping {
+		file_mapping file;
+		std::unique_ptr<boost::interprocess::mapped_region> region;
+		uint64_t mapping_start = 0;
+		uint64_t file_size = 0;
+
+	public:
+		temp_file_mapping(fs::path const& filename, uint64_t size);
+		~temp_file_mapping();
+
+		const char *read(int64_t offset, uint64_t length);
+		char *write(int64_t offset, uint64_t length);
 	};
 }
