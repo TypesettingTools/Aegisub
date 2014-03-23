@@ -27,6 +27,8 @@
  *
  */
 
+#include <stdint.h>
+
 #ifndef MATROSKA_PARSER_H
 #define	MATROSKA_PARSER_H
 
@@ -57,19 +59,10 @@
 extern "C" {
 #endif
 
-/* 64-bit integers */
-#ifdef _WIN32_WCE
-typedef signed __int64	    longlong;
-typedef unsigned __int64    ulonglong;
-#else
-typedef signed long long    longlong;
-typedef unsigned long long  ulonglong;
-#endif
-
 /* MKFLOATing point */
 #ifdef MATROSKA_INTEGER_ONLY
 typedef struct {
-  longlong	v;
+  int64_t	v;
 } MKFLOAT;
 #else
 typedef	double	MKFLOAT;
@@ -78,9 +71,9 @@ typedef	double	MKFLOAT;
 /* generic I/O */
 struct InputStream {
   /* read bytes from stream */
-  int	      (*read)(struct InputStream *cc,ulonglong pos,void *buffer,int count);
+  int	      (*read)(struct InputStream *cc,uint64_t pos,void *buffer,int count);
   /* scan for a four byte signature, bytes must be nonzero */
-  longlong    (*scan)(struct InputStream *cc,ulonglong start,unsigned signature);
+  int64_t    (*scan)(struct InputStream *cc,uint64_t start,unsigned signature);
   /* get cache size, this is used to cap readahead */
   unsigned    (*getcachesize)(struct InputStream *cc);
   /* fetch last error message */
@@ -90,9 +83,9 @@ struct InputStream {
   void	      *(*memrealloc)(struct InputStream *cc,void *mem,size_t newsize);
   void	      (*memfree)(struct InputStream *cc,void *mem);
   /* zero return causes parser to abort open */
-  int	      (*progress)(struct InputStream *cc,ulonglong cur,ulonglong max);
+  int	      (*progress)(struct InputStream *cc,uint64_t cur,uint64_t max);
   /* get file size, optional, can be NULL or return -1 if filesize is unknown */
-  longlong    (*getfilesize)(struct InputStream *cc);
+  int64_t    (*getfilesize)(struct InputStream *cc);
 };
 
 typedef struct InputStream InputStream;
@@ -115,10 +108,10 @@ struct TrackInfo {
   unsigned char	  Number;
   unsigned char	  Type;
   unsigned char	  TrackOverlay;
-  ulonglong	  UID;
-  ulonglong	  MinCache;
-  ulonglong	  MaxCache;
-  ulonglong	  DefaultDuration;
+  uint64_t	  UID;
+  uint64_t	  MinCache;
+  uint64_t	  MaxCache;
+  uint64_t	  DefaultDuration;
   MKFLOAT	  TimecodeScale;
   void		  *CodecPrivate;
   unsigned	  CodecPrivateSize;
@@ -174,18 +167,18 @@ struct SegmentInfo {
   char			*Title;
   char			*MuxingApp;
   char			*WritingApp;
-  ulonglong		TimecodeScale;
-  ulonglong		Duration;
-  longlong		DateUTC;
+  uint64_t		TimecodeScale;
+  uint64_t		Duration;
+  int64_t		DateUTC;
   char			DateUTCValid;
 };
 
 typedef struct SegmentInfo SegmentInfo;
 
 struct Attachment {
-  ulonglong		Position;
-  ulonglong		Length;
-  ulonglong		UID;
+  uint64_t		Position;
+  uint64_t		Length;
+  uint64_t		UID;
   char			*Name;
   char			*Description;
   char			*MimeType;
@@ -214,12 +207,12 @@ struct ChapterProcess {
 };
 
 struct Chapter {
-  ulonglong		UID;
-  ulonglong		Start;
-  ulonglong		End;
+  uint64_t		UID;
+  uint64_t		Start;
+  uint64_t		End;
 
   unsigned		nTracks,nTracksSize;
-  ulonglong		*Tracks;
+  uint64_t		*Tracks;
   unsigned		nDisplay,nDisplaySize;
   struct ChapterDisplay	*Display;
   unsigned		nChildren,nChildrenSize;
@@ -244,7 +237,7 @@ typedef struct Chapter	Chapter;
 #define	TARGET_ATTACHMENT 2
 #define	TARGET_EDITION	  3
 struct Target {
-  ulonglong	    UID;
+  uint64_t	    UID;
   unsigned	    Type;
 };
 
@@ -275,7 +268,7 @@ X MatroskaFile  *mkv_Open(/* in */ InputStream *io,
 #define	MKVF_AVOID_SEEKS    1 /* use sequential reading only */
 
 X MatroskaFile  *mkv_OpenEx(/* in */  InputStream *io,
-			  /* in */  ulonglong base,
+			  /* in */  uint64_t base,
 			  /* in */  unsigned flags,
 			  /* out */ char *err_msg,
 			  /* in */  unsigned msgsize);
@@ -306,7 +299,7 @@ X void	      mkv_GetTags(/* in */  MatroskaFile *mf,
 			  /* out */ Tag **tag,
 			  /* out */ unsigned *count);
 
-X ulonglong   mkv_GetSegmentTop(MatroskaFile *mf);
+X uint64_t   mkv_GetSegmentTop(MatroskaFile *mf);
 
 /* Seek to specified timecode,
  * if timecode is past end of file,
@@ -317,12 +310,12 @@ X ulonglong   mkv_GetSegmentTop(MatroskaFile *mf);
 #define	MKVF_SEEK_TO_PREV_KEYFRAME_STRICT   2
 
 X void	      mkv_Seek(/* in */ MatroskaFile *mf,
-		       /* in */	ulonglong timecode /* in ns */,
+		       /* in */	uint64_t timecode /* in ns */,
 		       /* in */ unsigned flags);
 
 X void	      mkv_SkipToKeyframe(MatroskaFile *mf);
 
-X ulonglong   mkv_GetLowestQTimecode(MatroskaFile *mf);
+X uint64_t   mkv_GetLowestQTimecode(MatroskaFile *mf);
 
 X int	      mkv_TruncFloat(MKFLOAT f);
 
@@ -353,9 +346,9 @@ X void	      mkv_SetTrackMask(/* in */ MatroskaFile *mf,/* in */ unsigned int ma
 X int	      mkv_ReadFrame(/* in */  MatroskaFile *mf,
 			    /* in */  unsigned int mask,
 			    /* out */ unsigned int *track,
-			    /* out */ ulonglong *StartTime /* in ns */,
-			    /* out */ ulonglong *EndTime /* in ns */,
-			    /* out */ ulonglong *FilePos /* in bytes from start of file */,
+			    /* out */ uint64_t *StartTime /* in ns */,
+			    /* out */ uint64_t *EndTime /* in ns */,
+			    /* out */ uint64_t *FilePos /* in bytes from start of file */,
 			    /* out */ unsigned int *FrameSize /* in bytes */,
 			    /* out */ unsigned int *FrameFlags);
 
@@ -374,7 +367,7 @@ X void		  cs_Destroy(/* in */ CompressedStream *cs);
 /* advance to the next frame in matroska stream, you need to pass values returned
  * by mkv_ReadFrame */
 X void		  cs_NextFrame(/* in */ CompressedStream *cs,
-			       /* in */ ulonglong pos,
+			       /* in */ uint64_t pos,
 			       /* in */ unsigned size);
 
 /* read and decode more data from current frame, return number of bytes decoded,

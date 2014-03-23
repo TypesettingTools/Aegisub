@@ -62,7 +62,7 @@ struct MkvStdIO final : InputStream {
 	agi::read_file_mapping file;
 	std::string error;
 
-	static int Read(InputStream *st, ulonglong pos, void *buffer, int count) {
+	static int Read(InputStream *st, uint64_t pos, void *buffer, int count) {
 		auto *self = static_cast<MkvStdIO*>(st);
 		if (pos == self->file.size())
 			return 0;
@@ -78,7 +78,7 @@ struct MkvStdIO final : InputStream {
 		return count;
 	}
 
-	static longlong Scan(InputStream *st, ulonglong start, unsigned signature) {
+	static int64_t Scan(InputStream *st, uint64_t start, unsigned signature) {
 		auto *self = static_cast<MkvStdIO*>(st);
 		try {
 			unsigned cmp = 0;
@@ -96,7 +96,7 @@ struct MkvStdIO final : InputStream {
 		return -1;
 	}
 
-	static longlong Size(InputStream *st) {
+	static int64_t Size(InputStream *st) {
 		return static_cast<MkvStdIO*>(st)->file.size();
 	}
 
@@ -108,7 +108,7 @@ struct MkvStdIO final : InputStream {
 		memalloc = [](InputStream *, size_t size) { return malloc(size); };
 		memrealloc = [](InputStream *, void *mem, size_t size) { return realloc(mem, size); };
 		memfree = [](InputStream *, void *mem) { free(mem); };
-		progress = [](InputStream *, ulonglong, ulonglong) { return 1; };
+		progress = [](InputStream *, uint64_t, uint64_t) { return 1; };
 		getfilesize = &MkvStdIO::Size;
 	}
 };
@@ -117,7 +117,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 	std::vector<std::pair<int, std::string>> subList;
 
 	// Load blocks
-	ulonglong startTime, endTime, filePos;
+	uint64_t startTime, endTime, filePos;
 	unsigned int rt, frameSize, frameFlags;
 
 	while (mkv_ReadFrame(file, 0, &rt, &startTime, &endTime, &filePos, &frameSize, &frameFlags) == 0) {
@@ -128,7 +128,7 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 		const auto readBufEnd = readBuf + frameSize;
 
 		// Get start and end times
-		longlong timecodeScaleLow = 1000000;
+		int64_t timecodeScaleLow = 1000000;
 		AssTime subStart = startTime / timecodeScaleLow;
 		AssTime subEnd = endTime / timecodeScaleLow;
 
@@ -243,7 +243,7 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 
 	// Read timecode scale
 	auto segInfo = mkv_GetFileInfo(file);
-	longlong timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
+	int64_t timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
 
 	// Progress bar
 	auto totalTime = double(segInfo->Duration) / timecodeScale;

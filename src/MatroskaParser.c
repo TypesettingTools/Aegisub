@@ -111,9 +111,9 @@ static void  mystrlcpy(char *dst,const char *src,unsigned size) {
 }
 
 struct Cue {
-  ulonglong	Time;
-  ulonglong	Position;
-  ulonglong	Block;
+  uint64_t	Time;
+  uint64_t	Position;
+  uint64_t	Block;
   unsigned char	Track;
 };
 
@@ -121,9 +121,9 @@ struct QueueEntry {
   struct QueueEntry *next;
   unsigned int	    Length;
 
-  ulonglong	    Start;
-  ulonglong	    End;
-  ulonglong	    Position;
+  uint64_t	    Start;
+  uint64_t	    End;
+  uint64_t	    Position;
 
   unsigned int	    flags;
 };
@@ -147,7 +147,7 @@ struct MatroskaFile {
 
   // internal buffering
   char	      inbuf[IBSZ];
-  ulonglong   bufbase; // file offset of the first byte in buffer
+  uint64_t   bufbase; // file offset of the first byte in buffer
   int	      bufpos; // current read position in buffer
   int	      buflen; // valid bytes in buffer
 
@@ -156,15 +156,15 @@ struct MatroskaFile {
   jmp_buf     jb;
 
   // pointers to key elements
-  ulonglong   pSegment;
-  ulonglong   pSeekHead;
-  ulonglong   pSegmentInfo;
-  ulonglong   pCluster;
-  ulonglong   pTracks;
-  ulonglong   pCues;
-  ulonglong   pAttachments;
-  ulonglong   pChapters;
-  ulonglong   pTags;
+  uint64_t   pSegment;
+  uint64_t   pSeekHead;
+  uint64_t   pSegmentInfo;
+  uint64_t   pCluster;
+  uint64_t   pTracks;
+  uint64_t   pCues;
+  uint64_t   pAttachments;
+  uint64_t   pChapters;
+  uint64_t   pTags;
 
   // flags for key elements
   struct {
@@ -178,7 +178,7 @@ struct MatroskaFile {
   } seen;
 
   // file info
-  ulonglong   firstTimecode;
+  uint64_t   firstTimecode;
 
   // SegmentInfo
   struct SegmentInfo  Seg;
@@ -192,10 +192,10 @@ struct MatroskaFile {
   unsigned int	    nQBlocks,nQBlocksSize;
   struct QueueEntry **QBlocks;
   struct Queue	    *Queues;
-  ulonglong	    readPosition;
+  uint64_t	    readPosition;
   unsigned int	    trackMask;
-  ulonglong	    pSegmentTop;  // offset of next byte after the segment
-  ulonglong	    tcCluster;    // current cluster timecode
+  uint64_t	    pSegmentTop;  // offset of next byte after the segment
+  uint64_t	    tcCluster;    // current cluster timecode
 
   // Cues
   unsigned int	    nCues,nCuesSize;
@@ -227,7 +227,7 @@ static void   myvsnprintf_string(char **pdest,char *de,const char *str) {
 
 static void   myvsnprintf_uint_impl(char **pdest,char *de,int width,int zero,
 				    int neg,unsigned base,int letter,
-				    int ms,ulonglong val)
+				    int ms,uint64_t val)
 {
   char	*dest = *pdest;
   char	tmp[21]; /* enough for 64 bit ints */
@@ -275,14 +275,14 @@ static void   myvsnprintf_uint_impl(char **pdest,char *de,int width,int zero,
 
 static void   myvsnprintf_uint(char **pdest,char *de,int width,int zero,
 			       int neg,unsigned base,int letter,
-			       ulonglong val)
+			       uint64_t val)
 {
   myvsnprintf_uint_impl(pdest,de,width,zero,neg,base,letter,0,val);
 }
 
 static void   myvsnprintf_int(char **pdest,char *de,int width,int zero,
 			      int neg,unsigned base,int letter,
-			      longlong val)
+			      int64_t val)
 {
   if (val < 0)
     myvsnprintf_uint_impl(pdest,de,width,zero,neg,base,letter,1,-val);
@@ -348,7 +348,7 @@ static void   myvsnprintf(char *dest,unsigned dsize,const char *fmt,va_list ap) 
 		myvsnprintf_int(&dest,de,width,zero,neg,10,'a',va_arg(ap,long));
 		break;
 	      case 2:
-		myvsnprintf_int(&dest,de,width,zero,neg,10,'a',va_arg(ap,longlong));
+		myvsnprintf_int(&dest,de,width,zero,neg,10,'a',va_arg(ap,int64_t));
 		break;
 	    }
 	    break;
@@ -361,7 +361,7 @@ static void   myvsnprintf(char *dest,unsigned dsize,const char *fmt,va_list ap) 
 		myvsnprintf_uint(&dest,de,width,zero,neg,10,'a',va_arg(ap,unsigned long));
 		break;
 	      case 2:
-		myvsnprintf_uint(&dest,de,width,zero,neg,10,'a',va_arg(ap,ulonglong));
+		myvsnprintf_uint(&dest,de,width,zero,neg,10,'a',va_arg(ap,uint64_t));
 		break;
 	    }
 	    break;
@@ -374,7 +374,7 @@ static void   myvsnprintf(char *dest,unsigned dsize,const char *fmt,va_list ap) 
 		myvsnprintf_uint(&dest,de,width,zero,neg,16,'a',va_arg(ap,unsigned long));
 		break;
 	      case 2:
-		myvsnprintf_uint(&dest,de,width,zero,neg,16,'a',va_arg(ap,ulonglong));
+		myvsnprintf_uint(&dest,de,width,zero,neg,16,'a',va_arg(ap,uint64_t));
 		break;
 	    }
 	    break;
@@ -387,7 +387,7 @@ static void   myvsnprintf(char *dest,unsigned dsize,const char *fmt,va_list ap) 
 		myvsnprintf_uint(&dest,de,width,zero,neg,16,'A',va_arg(ap,unsigned long));
 		break;
 	      case 2:
-		myvsnprintf_uint(&dest,de,width,zero,neg,16,'A',va_arg(ap,ulonglong));
+		myvsnprintf_uint(&dest,de,width,zero,neg,16,'A',va_arg(ap,uint64_t));
 		break;
 	    }
 	    break;
@@ -537,7 +537,7 @@ static inline int readch(MatroskaFile *mf) {
   return mf->bufpos < mf->buflen ? (unsigned char)(mf->inbuf[mf->bufpos++]) : nextbuf(mf);
 }
 
-static inline ulonglong	filepos(MatroskaFile *mf) {
+static inline uint64_t	filepos(MatroskaFile *mf) {
   return mf->bufbase + mf->bufpos;
 }
 
@@ -566,7 +566,7 @@ static void   readbytes(MatroskaFile *mf,void *buffer,int len) {
   }
 }
 
-static void   skipbytes(MatroskaFile *mf,ulonglong len) {
+static void   skipbytes(MatroskaFile *mf,uint64_t len) {
   unsigned int	    nb = mf->buflen - mf->bufpos;
 
   if (nb > len)
@@ -583,7 +583,7 @@ static void   skipbytes(MatroskaFile *mf,ulonglong len) {
   }
 }
 
-static void seek(MatroskaFile *mf,ulonglong pos) {
+static void seek(MatroskaFile *mf,uint64_t pos) {
   // see if pos is inside buffer
   if (pos>=mf->bufbase && pos<mf->bufbase+mf->buflen)
     mf->bufpos = (unsigned)(pos - mf->bufbase);
@@ -599,14 +599,14 @@ static void seek(MatroskaFile *mf,ulonglong pos) {
 static inline MKFLOAT	mkfi(int i) {
 #ifdef MATROSKA_INTEGER_ONLY
   MKFLOAT  f;
-  f.v = (longlong)i << 32;
+  f.v = (int64_t)i << 32;
   return f;
 #else
   return i;
 #endif
 }
 
-static inline longlong mul3(MKFLOAT scale,longlong tc) {
+static inline int64_t mul3(MKFLOAT scale,int64_t tc) {
 #ifdef MATROSKA_INTEGER_ONLY
   //             x1 x0
   //             y1 y0
@@ -620,7 +620,7 @@ static inline longlong mul3(MKFLOAT scale,longlong tc) {
   //
   //    r = ((x0*y0) >> 32) + (x1*y0) + (x0*y1) + ((x1*y1) << 32)
   unsigned    x0,x1,y0,y1;
-  ulonglong   p;
+  uint64_t   p;
   char	      sign = 0;
 
   if (scale.v < 0)
@@ -629,18 +629,18 @@ static inline longlong mul3(MKFLOAT scale,longlong tc) {
     sign = !sign, tc = -tc;
 
   x0 = (unsigned)scale.v;
-  x1 = (unsigned)((ulonglong)scale.v >> 32);
+  x1 = (unsigned)((uint64_t)scale.v >> 32);
   y0 = (unsigned)tc;
-  y1 = (unsigned)((ulonglong)tc >> 32);
+  y1 = (unsigned)((uint64_t)tc >> 32);
 
-  p = (ulonglong)x0*y0 >> 32;
-  p += (ulonglong)x0*y1;
-  p += (ulonglong)x1*y0;
-  p += (ulonglong)(x1*y1) << 32;
+  p = (uint64_t)x0*y0 >> 32;
+  p += (uint64_t)x0*y1;
+  p += (uint64_t)x1*y0;
+  p += (uint64_t)(x1*y1) << 32;
 
   return p;
 #else
-  return (longlong)(scale * tc);
+  return (int64_t)(scale * tc);
 #endif
 }
 
@@ -684,9 +684,9 @@ fail:
   return 0; // NOT REACHED
 }
 
-static ulonglong readVLUIntImp(MatroskaFile *mf,int *mask) {
+static uint64_t readVLUIntImp(MatroskaFile *mf,int *mask) {
   int		c,d,m;
-  ulonglong	v = 0;
+  uint64_t	v = 0;
 
   c = readch(mf);
   if (c == EOF)
@@ -700,7 +700,7 @@ static ulonglong readVLUIntImp(MatroskaFile *mf,int *mask) {
       c &= 0x7f >> m;
       if (mask)
 	*mask = m;
-      return v | ((ulonglong)c << m*8);
+      return v | ((uint64_t)c << m*8);
     }
     d = readch(mf);
     if (d == EOF)
@@ -710,13 +710,13 @@ static ulonglong readVLUIntImp(MatroskaFile *mf,int *mask) {
   // NOT REACHED
 }
 
-static inline ulonglong	readVLUInt(MatroskaFile *mf) {
+static inline uint64_t	readVLUInt(MatroskaFile *mf) {
   return readVLUIntImp(mf,NULL);
 }
 
-static ulonglong	readSize(MatroskaFile *mf) {
+static uint64_t	readSize(MatroskaFile *mf) {
   int	    m;
-  ulonglong v = readVLUIntImp(mf,&m);
+  uint64_t v = readVLUIntImp(mf,&m);
 
   // see if it's unspecified
   if (v == (MAXU64 >> (57-m*7)))
@@ -725,20 +725,20 @@ static ulonglong	readSize(MatroskaFile *mf) {
   return v;
 }
 
-static inline longlong	readVLSInt(MatroskaFile *mf) {
-  static longlong bias[8] = { (ONE<<6)-1, (ONE<<13)-1, (ONE<<20)-1, (ONE<<27)-1,
+static inline int64_t	readVLSInt(MatroskaFile *mf) {
+  static int64_t bias[8] = { (ONE<<6)-1, (ONE<<13)-1, (ONE<<20)-1, (ONE<<27)-1,
 			      (ONE<<34)-1, (ONE<<41)-1, (ONE<<48)-1, (ONE<<55)-1 };
 
   int	    m;
-  longlong  v = readVLUIntImp(mf,&m);
+  int64_t  v = readVLUIntImp(mf,&m);
 
   return v - bias[m];
 }
 
-static ulonglong  readUInt(MatroskaFile *mf,unsigned int len) {
+static uint64_t  readUInt(MatroskaFile *mf,unsigned int len) {
   int		c;
   unsigned int	m = len;
-  ulonglong	v = 0;
+  uint64_t	v = 0;
 
   if (len==0)
     return v;
@@ -755,8 +755,8 @@ static ulonglong  readUInt(MatroskaFile *mf,unsigned int len) {
   return v;
 }
 
-static inline longlong	readSInt(MatroskaFile *mf,unsigned int len) {
-  longlong	v = readUInt(mf,(unsigned)len);
+static inline int64_t	readSInt(MatroskaFile *mf,unsigned int len) {
+  int64_t	v = readUInt(mf,(unsigned)len);
   int		s = 64 - (len<<3);
   return (v << s) >> s;
 }
@@ -768,7 +768,7 @@ static MKFLOAT readFloat(MatroskaFile *mf,unsigned int len) {
 #else
   union {
     unsigned int  ui;
-    ulonglong	  ull;
+    uint64_t	  ull;
     float	  f;
     double	  d;
   } u;
@@ -804,7 +804,7 @@ shift:
 	f.v = f.v << shift;
     }
   } else if (len == 8) {
-    ulonglong  ui = readUInt(mf,(unsigned)len);
+    uint64_t  ui = readUInt(mf,(unsigned)len);
     f.v = (ui & LL(0xfffffffffffff)) | LL(0x10000000000000);
     if (ui & 0x80000000)
       f.v = -f.v;
@@ -837,7 +837,7 @@ shift:
 #endif
 }
 
-static void readString(MatroskaFile *mf,ulonglong len,char *buffer,int buflen) {
+static void readString(MatroskaFile *mf,uint64_t len,char *buffer,int buflen) {
   unsigned int	  nread;
 
   if (buflen<1)
@@ -857,7 +857,7 @@ static void readString(MatroskaFile *mf,ulonglong len,char *buffer,int buflen) {
   buffer[nread] = '\0';
 }
 
-static void readLangCC(MatroskaFile *mf, ulonglong len, char lcc[4]) {
+static void readLangCC(MatroskaFile *mf, uint64_t len, char lcc[4]) {
   unsigned  todo = len > 3 ? 3 : (int)len;
 
   lcc[0] = lcc[1] = lcc[2] = lcc[3] = 0;
@@ -869,10 +869,10 @@ static void readLangCC(MatroskaFile *mf, ulonglong len, char lcc[4]) {
 // file parser
 #define	FOREACH(f,tl) \
   { \
-    ulonglong	tmplen = (tl); \
+    uint64_t	tmplen = (tl); \
     { \
-      ulonglong   start = filepos(f); \
-      ulonglong   cur,len; \
+      uint64_t   start = filepos(f); \
+      uint64_t   cur,len; \
       int	      id; \
       for (;;) { \
 	cur = filepos(mf); \
@@ -922,8 +922,8 @@ static int  IsWritingApp(MatroskaFile *mf,const char *str) {
   return !*str;
 }
 */
-static void parseEBML(MatroskaFile *mf,ulonglong toplen) {
-  ulonglong v;
+static void parseEBML(MatroskaFile *mf,uint64_t toplen) {
+  uint64_t v;
   char	    buf[32];
 
   FOREACH(mf,toplen)
@@ -961,9 +961,9 @@ static void parseEBML(MatroskaFile *mf,ulonglong toplen) {
   ENDFOR(mf);
 }
 
-static void parseSeekEntry(MatroskaFile *mf,ulonglong toplen) {
+static void parseSeekEntry(MatroskaFile *mf,uint64_t toplen) {
   int	    seekid = 0;
-  ulonglong pos = (ulonglong)-1;
+  uint64_t pos = (uint64_t)-1;
 
   FOREACH(mf,toplen)
     case 0x53ab: // SeekID
@@ -976,7 +976,7 @@ static void parseSeekEntry(MatroskaFile *mf,ulonglong toplen) {
       break;
   ENDFOR(mf);
 
-  if (pos == (ulonglong)-1)
+  if (pos == (uint64_t)-1)
     errorjmp(mf,"Invalid element position in parseSeekEntry");
 
   pos += mf->pSegment;
@@ -1011,7 +1011,7 @@ static void parseSeekEntry(MatroskaFile *mf,ulonglong toplen) {
   }
 }
 
-static void parseSeekHead(MatroskaFile *mf,ulonglong toplen) {
+static void parseSeekHead(MatroskaFile *mf,uint64_t toplen) {
   FOREACH(mf,toplen)
     case 0x4dbb:
       parseSeekEntry(mf,len);
@@ -1019,7 +1019,7 @@ static void parseSeekHead(MatroskaFile *mf,ulonglong toplen) {
   ENDFOR(mf);
 }
 
-static void parseSegmentInfo(MatroskaFile *mf,ulonglong toplen) {
+static void parseSegmentInfo(MatroskaFile *mf,uint64_t toplen) {
   MKFLOAT     duration = mkfi(0);
 
   if (mf->seen.SegmentInfo) {
@@ -1081,8 +1081,8 @@ static void parseSegmentInfo(MatroskaFile *mf,ulonglong toplen) {
   mf->Seg.Duration = mul3(duration,mf->Seg.TimecodeScale);
 }
 
-static void parseFirstCluster(MatroskaFile *mf,ulonglong toplen) {
-  ulonglong end = filepos(mf) + toplen;
+static void parseFirstCluster(MatroskaFile *mf,uint64_t toplen) {
+  uint64_t end = filepos(mf) + toplen;
 
   mf->seen.Cluster = 1;
   mf->firstTimecode = 0;
@@ -1110,8 +1110,8 @@ static void parseFirstCluster(MatroskaFile *mf,ulonglong toplen) {
   ENDFOR(mf);
 }
 
-static void parseVideoInfo(MatroskaFile *mf,ulonglong toplen,struct TrackInfo *ti) {
-  ulonglong v;
+static void parseVideoInfo(MatroskaFile *mf,uint64_t toplen,struct TrackInfo *ti) {
+  uint64_t v;
   char	    dW = 0, dH = 0;
 
   FOREACH(mf,toplen)
@@ -1199,8 +1199,8 @@ static void parseVideoInfo(MatroskaFile *mf,ulonglong toplen,struct TrackInfo *t
   ENDFOR(mf);
 }
 
-static void parseAudioInfo(MatroskaFile *mf,ulonglong toplen,struct TrackInfo *ti) {
-  ulonglong   v;
+static void parseAudioInfo(MatroskaFile *mf,uint64_t toplen,struct TrackInfo *ti) {
+  uint64_t   v;
 
   FOREACH(mf,toplen)
     case 0xb5: // SamplingFrequency
@@ -1248,9 +1248,9 @@ static void CopyStr(char **src,char **dst) {
   *dst += l;
 }
 
-static void parseTrackEntry(MatroskaFile *mf,ulonglong toplen) {
+static void parseTrackEntry(MatroskaFile *mf,uint64_t toplen) {
   struct TrackInfo  t,*tp,**tpp;
-  ulonglong	    v;
+  uint64_t	    v;
   char		    *cp = NULL, *cs = NULL;
   size_t	    cplen = 0, cslen = 0, cpadd = 0;
   unsigned	    CompScope, num_comp = 0;
@@ -1512,7 +1512,7 @@ static void parseTrackEntry(MatroskaFile *mf,ulonglong toplen) {
   *tpp = tp;
 }
 
-static void parseTracks(MatroskaFile *mf,ulonglong toplen) {
+static void parseTracks(MatroskaFile *mf,uint64_t toplen) {
   mf->seen.Tracks = 1;
   FOREACH(mf,toplen)
     case 0xae: // TrackEntry
@@ -1521,7 +1521,7 @@ static void parseTracks(MatroskaFile *mf,ulonglong toplen) {
   ENDFOR(mf);
 }
 
-static void addCue(MatroskaFile *mf,ulonglong pos,ulonglong timecode) {
+static void addCue(MatroskaFile *mf,uint64_t pos,uint64_t timecode) {
   struct Cue  *cc = AGET(mf,Cues);
   cc->Time = timecode;
   cc->Position = pos;
@@ -1532,7 +1532,7 @@ static void addCue(MatroskaFile *mf,ulonglong pos,ulonglong timecode) {
 static void fixupCues(MatroskaFile *mf) {
   // adjust cues, shift cues if file does not start at 0
   unsigned  i;
-  longlong  adjust = mf->firstTimecode * mf->Seg.TimecodeScale;
+  int64_t  adjust = mf->firstTimecode * mf->Seg.TimecodeScale;
 
   for (i=0;i<mf->nCues;++i) {
     mf->Cues[i].Time *= mf->Seg.TimecodeScale;
@@ -1540,9 +1540,9 @@ static void fixupCues(MatroskaFile *mf) {
   }
 }
 
-static void parseCues(MatroskaFile *mf,ulonglong toplen) {
+static void parseCues(MatroskaFile *mf,uint64_t toplen) {
   jmp_buf     jb;
-  ulonglong   v;
+  uint64_t   v;
   struct Cue  cc;
   unsigned    i,j,k;
 
@@ -1625,7 +1625,7 @@ static void parseCues(MatroskaFile *mf,ulonglong toplen) {
 	}
 }
 
-static void parseAttachment(MatroskaFile *mf,ulonglong toplen) {
+static void parseAttachment(MatroskaFile *mf,uint64_t toplen) {
   struct Attachment a,*pa;
 
   memset(&a,0,sizeof(a));
@@ -1663,7 +1663,7 @@ static void parseAttachment(MatroskaFile *mf,ulonglong toplen) {
     pa->MimeType = mystrdup(mf->cache,a.MimeType);
 }
 
-static void parseAttachments(MatroskaFile *mf,ulonglong toplen) {
+static void parseAttachments(MatroskaFile *mf,uint64_t toplen) {
   mf->seen.Attachments = 1;
 
   FOREACH(mf,toplen)
@@ -1673,7 +1673,7 @@ static void parseAttachments(MatroskaFile *mf,ulonglong toplen) {
   ENDFOR(mf);
 }
 
-static void parseChapter(MatroskaFile *mf,ulonglong toplen,struct Chapter *parent) {
+static void parseChapter(MatroskaFile *mf,uint64_t toplen,struct Chapter *parent) {
   struct ChapterDisplay	*disp;
   struct ChapterProcess	*proc;
   struct ChapterCommand	*cmd;
@@ -1708,7 +1708,7 @@ static void parseChapter(MatroskaFile *mf,ulonglong toplen,struct Chapter *paren
     case 0x8f: // ChapterTrack
       FOREACH(mf,len)
 	case 0x89: // ChapterTrackNumber
-	  *(ulonglong*)(ASGET(mf,ch,Tracks)) = readUInt(mf,(unsigned)len);
+	  *(uint64_t*)(ASGET(mf,ch,Tracks)) = readUInt(mf,(unsigned)len);
 	  break;
       ENDFOR(mf);
       break;
@@ -1816,7 +1816,7 @@ static void parseChapter(MatroskaFile *mf,ulonglong toplen,struct Chapter *paren
   ARELEASE(mf,ch,Children);
 }
 
-static void parseChapters(MatroskaFile *mf,ulonglong toplen) {
+static void parseChapters(MatroskaFile *mf,uint64_t toplen) {
   struct Chapter  *ch;
 
   mf->seen.Chapters = 1;
@@ -1846,7 +1846,7 @@ static void parseChapters(MatroskaFile *mf,ulonglong toplen) {
   ENDFOR(mf);
 }
 
-static void parseTags(MatroskaFile *mf,ulonglong toplen) {
+static void parseTags(MatroskaFile *mf,uint64_t toplen) {
   struct Tag  *tag;
   struct Target *target;
   struct SimpleTag *st;
@@ -1920,7 +1920,7 @@ static void parseTags(MatroskaFile *mf,ulonglong toplen) {
 }
 
 static void parseContainer(MatroskaFile *mf) {
-  ulonglong len;
+  uint64_t len;
   int	    id = readID(mf);
   if (id==EOF)
     errorjmp(mf,"Unexpected EOF in parseContainer");
@@ -1952,7 +1952,7 @@ static void parseContainer(MatroskaFile *mf) {
   }
 }
 
-static void parseContainerPos(MatroskaFile *mf,ulonglong pos) {
+static void parseContainerPos(MatroskaFile *mf,uint64_t pos) {
   seek(mf,pos);
   parseContainer(mf);
 }
@@ -1985,8 +1985,8 @@ static void parsePointers(MatroskaFile *mf) {
   memcpy(&mf->jb,&jb,sizeof(jb));
 }
 
-static void parseSegment(MatroskaFile *mf,ulonglong toplen) {
-  ulonglong   nextpos;
+static void parseSegment(MatroskaFile *mf,uint64_t toplen) {
+  uint64_t   nextpos;
   unsigned    nSeekHeads = 0, dontstop = 0;
   jmp_buf     jb;
 
@@ -2064,8 +2064,8 @@ static void parseSegment(MatroskaFile *mf,ulonglong toplen) {
   parsePointers(mf);
 }
 
-static void parseBlockAdditions(MatroskaFile *mf, ulonglong toplen, ulonglong timecode, unsigned track) {
-  ulonglong	add_id = 1, add_pos, add_len;
+static void parseBlockAdditions(MatroskaFile *mf, uint64_t toplen, uint64_t timecode, unsigned track) {
+  uint64_t	add_id = 1, add_pos, add_len;
   unsigned char	have_add;
 
   FOREACH(mf, toplen)
@@ -2096,10 +2096,10 @@ static void parseBlockAdditions(MatroskaFile *mf, ulonglong toplen, ulonglong ti
   ENDFOR(mf);
 }
 
-static void parseBlockGroup(MatroskaFile *mf,ulonglong toplen,ulonglong timecode, int blockex) {
-  ulonglong	v;
-  ulonglong	duration = 0;
-  ulonglong	dpos;
+static void parseBlockGroup(MatroskaFile *mf,uint64_t toplen,uint64_t timecode, int blockex) {
+  uint64_t	v;
+  uint64_t	duration = 0;
+  uint64_t	dpos;
   struct QueueEntry *qe,*qf = NULL;
   unsigned char	have_duration = 0, have_block = 0;
   unsigned char	gap = 0;
@@ -2253,7 +2253,7 @@ out:
     errorjmp(mf,"Found a BlockGroup without Block");
 
   if (nframes > 1) {
-    ulonglong defd = mf->Tracks[tracknum]->DefaultDuration;
+    uint64_t defd = mf->Tracks[tracknum]->DefaultDuration;
     v = qf->Start;
 
     if (have_duration) {
@@ -2319,8 +2319,8 @@ static void EmptyQueues(MatroskaFile *mf) {
 }
 
 static int  readMoreBlocks(MatroskaFile *mf) {
-  ulonglong		toplen, cstop;
-  longlong		cp;
+  uint64_t		toplen, cstop;
+  int64_t		cp;
   int			cid, ret = 0;
   jmp_buf		jb;
   volatile unsigned	retries = 0;
@@ -2346,7 +2346,7 @@ static int  readMoreBlocks(MatroskaFile *mf) {
 
       cp = mf->cache->scan(mf->cache,filepos(mf),0x1f43b675); // cluster
 
-      if (cp < 0 || (ulonglong)cp >= mf->pSegmentTop)
+      if (cp < 0 || (uint64_t)cp >= mf->pSegmentTop)
 	goto ex;
 
       seek(mf,cp);
@@ -2476,10 +2476,10 @@ static int  fillQueues(MatroskaFile *mf,unsigned int mask) {
 
 static void reindex(MatroskaFile *mf) {
   jmp_buf     jb;
-  ulonglong   pos = mf->pCluster;
-  ulonglong   step = 10*1024*1024;
-  ulonglong   size, tc, isize;
-  longlong    next_cluster;
+  uint64_t   pos = mf->pCluster;
+  uint64_t   step = 10*1024*1024;
+  uint64_t   size, tc, isize;
+  int64_t    next_cluster;
   int	      id, have_tc, bad;
   struct Cue  *cue;
 
@@ -2510,7 +2510,7 @@ static void reindex(MatroskaFile *mf) {
 
     // find next cluster header
     next_cluster = mf->cache->scan(mf->cache,pos,0x1f43b675); // cluster
-    if (next_cluster < 0 || (ulonglong)next_cluster >= mf->pSegmentTop)
+    if (next_cluster < 0 || (uint64_t)next_cluster >= mf->pSegmentTop)
       break;
 
     pos = next_cluster + 4; // prevent endless loops
@@ -2533,7 +2533,7 @@ static void reindex(MatroskaFile *mf) {
     have_tc = 0;
     size += filepos(mf);
 
-    while (filepos(mf) < (ulonglong)next_cluster + 1024) {
+    while (filepos(mf) < (uint64_t)next_cluster + 1024) {
       id = readID(mf);
       if (id == EOF)
 	break;
@@ -2591,7 +2591,7 @@ static void reindex(MatroskaFile *mf) {
   memcpy(&mf->jb,&jb,sizeof(jb));
 }
 
-static void fixupChapter(ulonglong adj, struct Chapter *ch) {
+static void fixupChapter(uint64_t adj, struct Chapter *ch) {
   unsigned i;
 
   if (ch->Start != 0)
@@ -2603,8 +2603,8 @@ static void fixupChapter(ulonglong adj, struct Chapter *ch) {
     fixupChapter(adj,&ch->Children[i]);
 }
 
-static longlong	findLastTimecode(MatroskaFile *mf) {
-  ulonglong   nd = 0;
+static int64_t	findLastTimecode(MatroskaFile *mf) {
+  uint64_t   nd = 0;
   unsigned    n,vtrack;
 
   if (mf->nTracks == 0)
@@ -2633,7 +2633,7 @@ ok:
   do
     while (mf->Queues[vtrack].head)
     {
-      ulonglong   tc = mf->Queues[vtrack].head->flags & FRAME_UNKNOWN_END ?
+      uint64_t   tc = mf->Queues[vtrack].head->flags & FRAME_UNKNOWN_END ?
 			  mf->Queues[vtrack].head->Start : mf->Queues[vtrack].head->End;
       if (nd < tc)
 	nd = tc;
@@ -2656,7 +2656,7 @@ ok:
 }
 
 static void parseFile(MatroskaFile *mf) {
-  ulonglong len = filepos(mf), adjust;
+  uint64_t len = filepos(mf), adjust;
   unsigned  i;
   int	    id = readID(mf);
   int	    m;
@@ -2694,7 +2694,7 @@ segment:
   if (len == MAXU64) {
     mf->pSegmentTop = MAXU64;
     if (mf->cache->getfilesize) {
-      longlong seglen = mf->cache->getfilesize(mf->cache);
+      int64_t seglen = mf->cache->getfilesize(mf->cache);
       if (seglen > 0)
 	mf->pSegmentTop = seglen;
     }
@@ -2726,7 +2726,7 @@ segment:
 
   // try to detect real duration
   if (!(mf->flags & MKVF_AVOID_SEEKS)) {
-    longlong nd = findLastTimecode(mf);
+    int64_t nd = findLastTimecode(mf);
     if (nd > 0)
       mf->Seg.Duration = nd;
   }
@@ -2760,7 +2760,7 @@ static void DeleteChapter(MatroskaFile *mf,struct Chapter *ch) {
 ///////////////////////////////////////////////////////////////////////////
 // public interface
 MatroskaFile  *mkv_OpenEx(InputStream *io,
-			  ulonglong base,
+			  uint64_t base,
 			  unsigned flags,
 			  char *err_msg,unsigned msgsize)
 {
@@ -2877,16 +2877,16 @@ void	      mkv_GetTags(MatroskaFile *mf,Tag **tag,unsigned *count) {
   *count = mf->nTags;
 }
 
-ulonglong     mkv_GetSegmentTop(MatroskaFile *mf) {
+uint64_t     mkv_GetSegmentTop(MatroskaFile *mf) {
   return mf->pSegmentTop;
 }
 
 #define	IS_DELTA(f) (!((f)->flags & FRAME_KF) || ((f)->flags & FRAME_UNKNOWN_START))
 
-void  mkv_Seek(MatroskaFile *mf,ulonglong timecode,unsigned flags) {
+void  mkv_Seek(MatroskaFile *mf,uint64_t timecode,unsigned flags) {
   int		i,j,m,ret;
   unsigned	n,z,mask;
-  ulonglong	m_kftime[MAX_TRACKS];
+  uint64_t	m_kftime[MAX_TRACKS];
   unsigned char	m_seendf[MAX_TRACKS];
 
   if (mf->flags & MKVF_AVOID_SEEKS)
@@ -3031,7 +3031,7 @@ again:;
 
 void  mkv_SkipToKeyframe(MatroskaFile *mf) {
   unsigned  n,wait;
-  ulonglong ht;
+  uint64_t ht;
 
   if (setjmp(mf->jb)!=0)
     return;
@@ -3074,16 +3074,16 @@ void  mkv_SkipToKeyframe(MatroskaFile *mf) {
   } while (wait);
 }
 
-ulonglong mkv_GetLowestQTimecode(MatroskaFile *mf) {
+uint64_t mkv_GetLowestQTimecode(MatroskaFile *mf) {
   unsigned  n,seen;
-  ulonglong t;
+  uint64_t t;
 
   // find the lowest queued timecode
   for (n=seen=0,t=0;n<mf->nTracks;++n)
     if (mf->Queues[n].head && (!seen || t > mf->Queues[n].head->Start))
       t = mf->Queues[n].head->Start, seen=1;
 
-  return seen ? t : (ulonglong)LL(-1);
+  return seen ? t : (uint64_t)LL(-1);
 }
 
 int	      mkv_TruncFloat(MKFLOAT f) {
@@ -3111,8 +3111,8 @@ void	      mkv_SetTrackMask(MatroskaFile *mf,unsigned int mask) {
 
 int	      mkv_ReadFrame(MatroskaFile *mf,
 			    unsigned int mask,unsigned int *track,
-			    ulonglong *StartTime,ulonglong *EndTime,
-			    ulonglong *FilePos,unsigned int *FrameSize,
+			    uint64_t *StartTime,uint64_t *EndTime,
+			    uint64_t *FilePos,unsigned int *FrameSize,
 			    unsigned int *FrameFlags)
 {
   unsigned int	    i,j;
@@ -3167,7 +3167,7 @@ struct CompressedStream {
   z_stream	  zs;
 
   /* current compressed frame */
-  ulonglong	  frame_pos;
+  uint64_t	  frame_pos;
   unsigned	  frame_size;
   char		  frame_buffer[2048];
 
@@ -3237,7 +3237,7 @@ void		  cs_Destroy(/* in */ CompressedStream *cs) {
 /* advance to the next frame in matroska stream, you need to pass values returned
  * by mkv_ReadFrame */
 void		  cs_NextFrame(/* in */ CompressedStream *cs,
-			       /* in */ ulonglong pos,
+			       /* in */ uint64_t pos,
 			       /* in */ unsigned size)
 {
   cs->zs.avail_in = 0;
