@@ -324,9 +324,6 @@
 			},
 			"FFmpegSource" : {
 				"Decode Error Handling" : "stop"
-			},
-			"PCM" : {
-				"Disable" : false
 			}
 		},
 		"Avisynth" : {

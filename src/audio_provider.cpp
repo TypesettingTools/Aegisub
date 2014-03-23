@@ -154,7 +154,7 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 	});
 
 	// Try a PCM provider first
-	if (!provider && !OPT_GET("Provider/Audio/PCM/Disable")->GetBool())
+	if (!provider)
 		provider = creator.try_create("PCM audio provider", [&]() { return CreatePCMAudioProvider(filename); });
 
 	if (!provider) {
