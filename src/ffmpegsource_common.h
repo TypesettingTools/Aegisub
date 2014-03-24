@@ -75,8 +75,6 @@ public:
 	agi::fs::path GetCacheFilename(agi::fs::path const& filename);
 	void SetLogLevel();
 	FFMS_IndexErrorHandling GetErrorHandlingMode();
-
-	virtual ~FFmpegSourceProvider() {}
 };
 
 #endif /* WITH_FFMS2 */
