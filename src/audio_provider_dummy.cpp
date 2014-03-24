@@ -34,10 +34,10 @@
 
 #include "config.h"
 
-#include "audio_provider_dummy.h"
-#include "utils.h"
+#include "include/aegisub/audio_provider.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -61,25 +61,35 @@
  *       in every channel even if one would be LFE.
  * "ln", length of signal in samples. ln/sr gives signal length in seconds.
  */
-DummyAudioProvider::DummyAudioProvider(agi::fs::path const& uri) {
-	if (!boost::starts_with(uri.string(), "dummy-audio:"))
-		throw agi::fs::FileNotFound(std::string("Not a dummy audio URI"));
 
-	noise = boost::contains(uri.string(), ":noise?");
-	channels = 1;
-	sample_rate = 44100;
-	bytes_per_sample = 2;
-	float_samples = false;
-	num_samples = (int64_t)5*30*60*1000 * sample_rate / 1000;
+namespace {
+class DummyAudioProvider final : public AudioProvider {
+	bool noise;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+		if (noise) {
+			auto workbuf = static_cast<uint16_t *>(buf);
+			while (count-- > 0)
+				*workbuf++ = (rand() - RAND_MAX/2) * 10000 / RAND_MAX;
+		}
+		else {
+			memset(buf, 0, count * bytes_per_sample);
+		}
+	}
+
+public:
+	DummyAudioProvider(agi::fs::path const& uri) {
+		noise = boost::contains(uri.string(), ":noise?");
+		channels = 1;
+		sample_rate = 44100;
+		bytes_per_sample = 2;
+		float_samples = false;
+		num_samples = (int64_t)5*30*60*1000 * sample_rate / 1000;
+	}
+};
 }
 
-void DummyAudioProvider::FillBuffer(void *buf, int64_t, int64_t count) const {
-	if (noise) {
-		short *workbuf = (short*)buf;
-		while (count-- > 0)
-			*workbuf++ = (rand() - RAND_MAX/2) * 10000 / RAND_MAX;
-	}
-	else {
-		memset(buf, 0, count * bytes_per_sample);
-	}
+std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& file) {
+	if (!boost::starts_with(file.string(), "dummy-audio:"))
+		return {};
+	return agi::util::make_unique<DummyAudioProvider>(file);
 }

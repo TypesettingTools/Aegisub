@@ -177,24 +177,6 @@
     <ClInclude Include="$(SrcDir)ass_style_storage.h">
       <Filter>ASS</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_ram.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_avs.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_convert.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_dummy.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_ffmpegsource.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_hd.h">
-      <Filter>Audio\Providers</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)audio_box.h">
       <Filter>Audio\UI</Filter>
     </ClInclude>
@@ -644,9 +626,6 @@
     </ClInclude>
     <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h">
       <Filter>Main UI\Edit box</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_provider_lock.h">
-      <Filter>Audio\Providers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_manager.h">
       <Filter>Utilities\UI utilities</Filter>

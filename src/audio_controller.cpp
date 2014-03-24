@@ -37,7 +37,6 @@
 #include "audio_controller.h"
 
 #include "ass_file.h"
-#include "audio_provider_dummy.h"
 #include "audio_timing.h"
 #include "compat.h"
 #include "include/aegisub/audio_player.h"

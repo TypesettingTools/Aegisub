@@ -34,13 +34,7 @@
 
 #include "config.h"
 
-#include "audio_provider_avs.h"
-#include "audio_provider_convert.h"
-#include "audio_provider_dummy.h"
-#include "audio_provider_ffmpegsource.h"
-#include "audio_provider_hd.h"
-#include "audio_provider_lock.h"
-#include "audio_provider_ram.h"
+#include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
 #include "dialog_progress.h"
@@ -52,9 +46,6 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
-
-// Defined in audio_provider_pcm.cpp
-std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename);
 
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
 	GetAudio(buf, start, count);
@@ -110,68 +101,96 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	}
 }
 
+std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& filename);
+std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename);
+std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& filename);
+std::unique_ptr<AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& filename);
+
+std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> source_provider);
+std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> source_provider);
+std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> source_provider, agi::BackgroundRunner *br);
+std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> source_provider, agi::BackgroundRunner *br);
+
 namespace {
-struct provider_creator {
+	using factory_fn = std::unique_ptr<AudioProvider> (*)(agi::fs::path const&);
+	struct factory {
+		const char *name;
+		factory_fn create;
+		bool hidden;
+	};
+
+	const factory providers[] = {
+		{"Dummy", CreateDummyAudioProvider, true},
+		{"PCM", CreatePCMAudioProvider, true},
+#ifdef WITH_FFMS2
+		{"FFmpegSource", CreateFFmpegSourceAudioProvider, false},
+#endif
+#ifdef WITH_AVISYNTH
+		{"Avisynth", CreateAvisynthAudioProvider, false},
+#endif
+	};
+}
+
+std::vector<std::string> AudioProviderFactory::GetClasses() {
+	std::vector<std::string> list;
+	for (auto const& provider : providers) {
+		if (!provider.hidden)
+			list.push_back(provider.name);
+	}
+	return list;
+}
+
+std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path const& filename) {
+	auto preferred = OPT_GET("Audio/Provider")->GetString();
+	std::vector<const factory *> sorted;
+	auto preferred_insertion_point = sorted.end();
+	for (auto const& provider : providers) {
+		if (provider.hidden)
+			sorted.push_back(&provider);
+		else if (preferred_insertion_point == sorted.end()) {
+			sorted.push_back(&provider);
+			preferred_insertion_point = prev(sorted.end());
+		}
+		else if (preferred == provider.name)
+			sorted.insert(preferred_insertion_point, &provider);
+		else
+			sorted.push_back(&provider);
+	}
+
+	std::unique_ptr<AudioProvider> provider;
 	bool found_file = false;
 	bool found_audio = false;
 	std::string msg;
 
-	template<typename Factory>
-	std::unique_ptr<AudioProvider> try_create(std::string const& name, Factory&& create) {
+	for (auto const& factory : sorted) {
 		try {
-			std::unique_ptr<AudioProvider> provider = create();
-			if (provider)
-				LOG_I("audio_provider") << "Using audio provider: " << name;
-			return provider;
+			provider = factory->create(filename);
+			if (!provider) continue;
+			LOG_I("audio_provider") << "Using audio provider: " << factory->name;
+			break;
 		}
 		catch (agi::fs::FileNotFound const& err) {
 			LOG_D("audio_provider") << err.GetChainedMessage();
-			msg += name + ": " + err.GetMessage() + " not found.\n";
+			msg += std::string(factory->name) + ": " + err.GetMessage() + " not found.\n";
 		}
 		catch (agi::AudioDataNotFoundError const& err) {
 			LOG_D("audio_provider") << err.GetChainedMessage();
 			found_file = true;
-			msg += name + ": " + err.GetChainedMessage() + "\n";
+			msg += std::string(factory->name) + ": " + err.GetChainedMessage() + "\n";
 		}
 		catch (agi::AudioOpenError const& err) {
 			LOG_D("audio_provider") << err.GetChainedMessage();
 			found_audio = true;
 			found_file = true;
-			msg += name + ": " + err.GetChainedMessage() + "\n";
-		}
-
-		return nullptr;
-	}
-};
-}
-
-std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path const& filename) {
-	provider_creator creator;
-	std::unique_ptr<AudioProvider> provider;
-
-	provider = creator.try_create("Dummy audio provider", [&]() {
-		return agi::util::make_unique<DummyAudioProvider>(filename);
-	});
-
-	// Try a PCM provider first
-	if (!provider)
-		provider = creator.try_create("PCM audio provider", [&]() { return CreatePCMAudioProvider(filename); });
-
-	if (!provider) {
-		std::vector<std::string> list = GetClasses(OPT_GET("Audio/Provider")->GetString());
-		if (list.empty()) throw agi::NoAudioProvidersError("No audio providers are available.", nullptr);
-
-		for (auto const& name : list) {
-			provider = creator.try_create(name, [&]() { return Create(name, filename); });
-			if (provider) break;
+			msg += std::string(factory->name) + ": " + err.GetChainedMessage() + "\n";
 		}
 	}
 
 	if (!provider) {
-		if (creator.found_audio)
-			throw agi::AudioProviderOpenError(creator.msg, nullptr);
-		if (creator.found_file)
-			throw agi::AudioDataNotFoundError(creator.msg, nullptr);
+		if (found_audio)
+			throw agi::AudioProviderOpenError(msg, nullptr);
+		if (found_file)
+			throw agi::AudioDataNotFoundError(msg, nullptr);
 		throw agi::fs::FileNotFound(filename);
 	}
 
@@ -184,24 +203,15 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 	// Change provider to RAM/HD cache if needed
 	int cache = OPT_GET("Audio/Cache/Type")->GetInt();
 	if (!cache || !needsCache)
-		return agi::util::make_unique<LockAudioProvider>(std::move(provider));
+		return CreateLockAudioProvider(std::move(provider));
 
 	DialogProgress progress(wxGetApp().frame, _("Load audio"));
 
 	// Convert to RAM
-	if (cache == 1) return agi::util::make_unique<RAMAudioProvider>(std::move(provider), &progress);
+	if (cache == 1) return CreateRAMAudioProvider(std::move(provider), &progress);
 
 	// Convert to HD
-	if (cache == 2) return agi::util::make_unique<HDAudioProvider>(std::move(provider), &progress);
+	if (cache == 2) return CreateHDAudioProvider(std::move(provider), &progress);
 
 	throw agi::AudioCacheOpenError("Unknown caching method", nullptr);
-}
-
-void AudioProviderFactory::RegisterProviders() {
-#ifdef WITH_AVISYNTH
-	Register<AvisynthAudioProvider>("Avisynth");
-#endif
-#ifdef WITH_FFMS2
-	Register<FFmpegSourceAudioProvider>("FFmpegSource");
-#endif
 }

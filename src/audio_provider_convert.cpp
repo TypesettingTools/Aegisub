@@ -21,10 +21,9 @@
 
 #include "config.h"
 
-#include "audio_provider_convert.h"
+#include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
-#include "include/aegisub/audio_provider.h"
 
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>

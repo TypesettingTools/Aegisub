@@ -34,8 +34,6 @@
 
 #pragma once
 
-#include "factory_manager.h"
-
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
@@ -90,9 +88,8 @@ public:
 	}
 };
 
-class AudioProviderFactory final : public Factory<AudioProvider, agi::fs::path> {
-public:
-	static void RegisterProviders();
+struct AudioProviderFactory {
+	static std::vector<std::string> GetClasses();
 
 	/// Get a provider for the file
 	/// @param filename URI to open

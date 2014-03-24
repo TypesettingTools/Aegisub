@@ -35,14 +35,36 @@
 #include "config.h"
 
 #ifdef WITH_FFMS2
-#include "audio_provider_ffmpegsource.h"
+#include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
+#include "ffmpegsource_common.h"
 #include "options.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/util.h>
 
 #include <map>
+
+namespace {
+class FFmpegSourceAudioProvider final : public AudioProvider, FFmpegSourceProvider {
+	/// audio source object
+	agi::scoped_holder<FFMS_AudioSource*, void (FFMS_CC *)(FFMS_AudioSource*)> AudioSource;
+
+	mutable char FFMSErrMsg[1024];			///< FFMS error message
+	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
+
+	void LoadAudio(agi::fs::path const& filename);
+	void FillBuffer(void *Buf, int64_t Start, int64_t Count) const override {
+		if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo))
+			throw AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
+	}
+
+public:
+	FFmpegSourceAudioProvider(agi::fs::path const& filename);
+
+	bool NeedsCache() const override { return true; }
+};
 
 /// @brief Constructor
 /// @param filename The filename to open
@@ -182,8 +204,10 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 #endif
 }
 
-void FFmpegSourceAudioProvider::FillBuffer(void *Buf, int64_t Start, int64_t Count) const {
-	if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo))
-		throw AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
 }
+
+std::unique_ptr<AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& file) {
+	return agi::util::make_unique<FFmpegSourceAudioProvider>(file);
+}
+
 #endif /* WITH_FFMS2 */

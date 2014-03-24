@@ -34,44 +34,55 @@
 
 #include "config.h"
 
-#include "audio_provider_ram.h"
+#include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
 #include "compat.h"
-#include "options.h"
-#include "utils.h"
 
 #include <libaegisub/background_runner.h>
+#include <libaegisub/util.h>
+
+#include <array>
+#include <boost/container/stable_vector.hpp>
+#include <wx/intl.h>
+
+namespace {
 
 #define CacheBits 22
 #define CacheBlockSize (1 << CacheBits)
 
-RAMAudioProvider::RAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br)
-: AudioProviderWrapper(std::move(src))
-{
-	try {
-		blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
-	}
-	catch (std::bad_alloc const&) {
-		throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", nullptr);
-	}
+class RAMAudioProvider final : public AudioProviderWrapper {
+#ifdef _MSC_VER
+	boost::container::stable_vector<char[1 << 22]> blockcache;
+#else
+	boost::container::stable_vector<std::array<char, 1 << 22>> blockcache;
+#endif
 
-	br->Run(std::bind(&RAMAudioProvider::FillCache, this, source.get(), std::placeholders::_1));
-}
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
-void RAMAudioProvider::FillCache(AudioProvider *source, agi::ProgressSink *ps) {
-	ps->SetMessage(from_wx(_("Reading into RAM")));
-
-	int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
-	for (size_t i = 0; i < blockcache.size(); i++) {
-		ps->SetProgress(i + 1, blockcache.size());
-		source->GetAudio(&blockcache[i][0], i * readsize, std::min<int64_t>(readsize, num_samples - i * readsize));
-
-		if (ps->IsCancelled()) {
-			return;
+public:
+	RAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br)
+	: AudioProviderWrapper(std::move(src))
+	{
+		try {
+			blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 		}
+		catch (std::bad_alloc const&) {
+			throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", nullptr);
+		}
+
+		br->Run([&](agi::ProgressSink *ps) {
+			ps->SetMessage(from_wx(_("Reading into RAM")));
+
+			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
+			for (size_t i = 0; i < blockcache.size(); i++) {
+				if (ps->IsCancelled()) return;
+				ps->SetProgress(i + 1, blockcache.size());
+				source->GetAudio(&blockcache[i][0], i * readsize, std::min<int64_t>(readsize, num_samples - i * readsize));
+			}
+		});
 	}
-}
+};
 
 void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	char *charbuf = static_cast<char *>(buf);
@@ -89,4 +100,9 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 		start_offset = 0;
 		bytesremaining -= readsize;
 	}
+}
+}
+
+std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br) {
+	return agi::util::make_unique<RAMAudioProvider>(std::move(src), br);
 }

@@ -18,14 +18,30 @@
 
 #include "config.h"
 
-#include "audio_provider_lock.h"
+#include "include/aegisub/audio_provider.h"
 
-LockAudioProvider::LockAudioProvider(std::unique_ptr<AudioProvider> src)
-: AudioProviderWrapper(std::move(src))
-{
+#include <libaegisub/util.h>
+
+#include <memory>
+#include <mutex>
+
+namespace {
+class LockAudioProvider final : public AudioProviderWrapper {
+	mutable std::mutex mutex;
+
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+		std::unique_lock<std::mutex> lock(mutex);
+		source->GetAudio(buf, start, count);
+	}
+
+public:
+	LockAudioProvider(std::unique_ptr<AudioProvider> src)
+	: AudioProviderWrapper(std::move(src))
+	{
+	}
+};
 }
 
-void LockAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	std::unique_lock<std::mutex> lock(mutex);
-	source->GetAudio(buf, start, count);
+std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> src) {
+	return agi::util::make_unique<LockAudioProvider>(std::move(src));
 }

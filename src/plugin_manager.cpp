@@ -35,7 +35,6 @@
 #include "config.h"
 
 #include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/spellchecker.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "plugin_manager.h"
@@ -46,7 +45,6 @@
 
 void RegisterBuiltInPlugins() {
 	VideoProviderFactory::RegisterProviders();
-	AudioProviderFactory::RegisterProviders();
 	AudioPlayerFactory::RegisterProviders();
 	SubtitlesProviderFactory::RegisterProviders();
 	SpellCheckerFactory::RegisterProviders();

@@ -35,8 +35,10 @@
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
-#include "audio_provider_avs.h"
+#include "include/aegisub/audio_provider.h"
 
+#include "avisynth.h"
+#include "avisynth_wrap.h"
 #include "audio_controller.h"
 #include "options.h"
 #include "utils.h"
@@ -45,8 +47,23 @@
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include <mutex>
+
+namespace {
+class AvisynthAudioProvider final : public AudioProvider {
+	AviSynthWrapper avs_wrapper;
+	PClip clip;
+
+	void LoadFromClip(AVSValue clip);
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
+
+public:
+	AvisynthAudioProvider(agi::fs::path const& filename);
+
+	bool NeedsCache() const override { return true; }
+};
 
 AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 	this->filename = filename;
@@ -127,5 +144,10 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 
 void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	clip->GetAudio(buf, start, count, avs_wrapper.GetEnv());
+}
+}
+
+std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file) {
+	return agi::util::make_unique<AvisynthAudioProvider>(file);
 }
 #endif
