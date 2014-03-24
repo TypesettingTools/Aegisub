@@ -38,13 +38,11 @@
 #include "include/aegisub/spellchecker.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "plugin_manager.h"
-#include "video_provider_manager.h"
 #include "auto4_lua_factory.h"
 
 #include <libaegisub/util.h>
 
 void RegisterBuiltInPlugins() {
-	VideoProviderFactory::RegisterProviders();
 	AudioPlayerFactory::RegisterProviders();
 	SubtitlesProviderFactory::RegisterProviders();
 	SpellCheckerFactory::RegisterProviders();

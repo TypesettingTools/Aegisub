@@ -1,68 +1,95 @@
-// Copyright (c) 2006, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-
-/// @file video_provider_manager.cpp
-/// @brief Keep track of installed video providers
-/// @ingroup video_input
-///
 
 #include "config.h"
 
 #include "video_provider_manager.h"
 
+#include "include/aegisub/video_provider.h"
 #include "options.h"
-#include "video_provider_avs.h"
-#include "video_provider_cache.h"
-#include "video_provider_dummy.h"
-#include "video_provider_ffmpegsource.h"
-#include "video_provider_yuv4mpeg.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
-std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& video_file, std::string const& colormatrix) {
-	std::vector<std::string> factories = GetClasses(OPT_GET("Video/Provider")->GetString());
-	factories.insert(factories.begin(), "YUV4MPEG");
-	factories.insert(factories.begin(), "Dummy");
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const&, std::string const&);
+std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const&, std::string const&);
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const&, std::string const&);
+std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const&, std::string const&);
+
+std::unique_ptr<VideoProvider> CreateCacheVideoProvider(std::unique_ptr<VideoProvider>);
+
+namespace {
+	using factory_fn = std::unique_ptr<VideoProvider> (*)(agi::fs::path const&, std::string const&);
+	struct factory {
+		const char *name;
+		factory_fn create;
+		bool hidden;
+	};
+
+	const factory providers[] = {
+		{"Dummy", CreateDummyVideoProvider, true},
+		{"YUV4MPEG", CreateYUV4MPEGVideoProvider, true},
+#ifdef WITH_FFMS2
+		{"FFmpegSource", CreateFFmpegSourceVideoProvider, false},
+#endif
+#ifdef WITH_AVISYNTH
+		{"Avisynth", CreateAvisynthVideoProvider, false},
+#endif
+	};
+}
+
+std::vector<std::string> VideoProviderFactory::GetClasses() {
+	std::vector<std::string> list;
+	for (auto const& provider : providers) {
+		if (!provider.hidden)
+			list.push_back(provider.name);
+	}
+	return list;
+}
+
+std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& filename, std::string const& colormatrix) {
+	auto preferred = OPT_GET("Video/Provider")->GetString();
+	std::vector<const factory *> sorted;
+	auto preferred_insertion_point = sorted.end();
+	for (auto const& provider : providers) {
+		if (provider.hidden)
+			sorted.push_back(&provider);
+		else if (preferred_insertion_point == sorted.end()) {
+			sorted.push_back(&provider);
+			preferred_insertion_point = prev(sorted.end());
+		}
+		else if (preferred == provider.name)
+			sorted.insert(preferred_insertion_point, &provider);
+		else
+			sorted.push_back(&provider);
+	}
 
 	bool found = false;
 	bool supported = false;
 	std::string errors;
 	errors.reserve(1024);
 
-	for (auto const& factory : factories) {
+	for (auto factory : sorted) {
 		std::string err;
 		try {
-			auto provider = Create(factory, video_file, colormatrix);
-			LOG_I("manager/video/provider") << factory << ": opened " << video_file;
-			return provider->WantsCaching() ? agi::util::make_unique<VideoProviderCache>(std::move(provider)) : std::move(provider);
+			auto provider = factory->create(filename, colormatrix);
+			if (!provider) continue;
+			LOG_I("manager/video/provider") << factory->name << ": opened " << filename;
+			return provider->WantsCaching() ? CreateCacheVideoProvider(std::move(provider)) : std::move(provider);
 		}
 		catch (agi::fs::FileNotFound const&) {
 			err = "file not found.";
@@ -82,26 +109,15 @@ std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path c
 			err = ex.GetMessage();
 		}
 
-		errors += factory + ": " + err + "\n";
-		LOG_D("manager/video/provider") << factory << ": " << err;
+		errors += std::string(factory->name) + ": " + err + "\n";
+		LOG_D("manager/video/provider") << factory->name << ": " << err;
 	}
 
 	// No provider could open the file
-	LOG_E("manager/video/provider") << "Could not open " << video_file;
-	std::string msg = "Could not open " + video_file.string() + ":\n" + errors;
+	LOG_E("manager/video/provider") << "Could not open " << filename;
+	std::string msg = "Could not open " + filename.string() + ":\n" + errors;
 
-	if (!found) throw agi::fs::FileNotFound(video_file.string());
+	if (!found) throw agi::fs::FileNotFound(filename.string());
 	if (!supported) throw VideoNotSupported(msg);
 	throw VideoOpenError(msg);
-}
-
-void VideoProviderFactory::RegisterProviders() {
-#ifdef WITH_AVISYNTH
-	Register<AvisynthVideoProvider>("Avisynth");
-#endif
-#ifdef WITH_FFMS2
-	Register<FFmpegSourceVideoProvider>("FFmpegSource");
-#endif
-	Register<DummyVideoProvider>("Dummy", true);
-	Register<YUV4MPEGVideoProvider>("YUV4MPEG", true);
 }

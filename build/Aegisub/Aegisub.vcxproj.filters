@@ -390,19 +390,7 @@
     <ClInclude Include="$(SrcDir)video_out_gl.h">
       <Filter>Video\UI</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)video_provider_avs.h">
-      <Filter>Video\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)video_provider_yuv4mpeg.h">
-      <Filter>Video\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)video_provider_cache.h">
-      <Filter>Video\Providers</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)video_provider_dummy.h">
-      <Filter>Video\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)video_provider_ffmpegsource.h">
       <Filter>Video\Providers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)video_provider_manager.h">

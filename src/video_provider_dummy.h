@@ -50,21 +50,7 @@ class DummyVideoProvider final : public VideoProvider {
 	/// The data for the image returned for all frames
 	std::vector<unsigned char> data;
 
-	/// Create the dummy frame from the given parameters
-	/// @param fps Frame rate of the dummy video
-	/// @param frames Length in frames of the dummy video
-	/// @param width Width in pixels of the dummy video
-	/// @param height Height in pixels of the dummy video
-	/// @param red Red component of the primary colour of the dummy video
-	/// @param green Green component of the primary colour of the dummy video
-	/// @param blue Blue component of the primary colour of the dummy video
-	/// @param pattern Use a checkerboard pattern rather than a solid colour
-	void Create(double fps, int frames, int width, int height, unsigned char red, unsigned char green, unsigned char blue, bool pattern);
-
 public:
-	/// Create a dummy video from a string returned from MakeFilename
-	DummyVideoProvider(agi::fs::path const& filename, std::string const& colormatix);
-
 	/// Create a dummy video from separate parameters
 	/// @param fps Frame rate of the dummy video
 	/// @param frames Length in frames of the dummy video

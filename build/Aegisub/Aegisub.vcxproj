@@ -243,12 +243,8 @@
     <ClInclude Include="$(SrcDir)video_display.h" />
     <ClInclude Include="$(SrcDir)video_frame.h" />
     <ClInclude Include="$(SrcDir)video_out_gl.h" />
-    <ClInclude Include="$(SrcDir)video_provider_avs.h" />
-    <ClInclude Include="$(SrcDir)video_provider_cache.h" />
     <ClInclude Include="$(SrcDir)video_provider_dummy.h" />
-    <ClInclude Include="$(SrcDir)video_provider_ffmpegsource.h" />
     <ClInclude Include="$(SrcDir)video_provider_manager.h" />
-    <ClInclude Include="$(SrcDir)video_provider_yuv4mpeg.h" />
     <ClInclude Include="$(SrcDir)video_slider.h" />
     <ClInclude Include="$(SrcDir)visual_feature.h" />
     <ClInclude Include="$(SrcDir)visual_tool.h" />

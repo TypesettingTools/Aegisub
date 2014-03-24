@@ -25,6 +25,7 @@
 #include "ass_file.h"
 #include "export_fixstyle.h"
 #include "include/aegisub/subtitles_provider.h"
+#include "include/aegisub/video_provider.h"
 #include "video_frame.h"
 #include "video_provider_manager.h"
 

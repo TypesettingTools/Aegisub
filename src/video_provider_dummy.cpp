@@ -49,12 +49,17 @@
 #include <boost/format.hpp>
 #include <boost/gil/gil_all.hpp>
 
-void DummyVideoProvider::Create(double fps, int frames, int width, int height, unsigned char red, unsigned char green, unsigned char blue, bool pattern) {
-	this->framecount = frames;
-	this->fps = fps;
-	this->width = width;
-	this->height = height;
+DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern)
+: framecount(frames)
+, fps(fps)
+, width(width)
+, height(height)
+{
 	data.resize(width * height * 4);
+
+	auto red = colour.r;
+	auto green = colour.g;
+	auto blue = colour.b;
 
 	using namespace boost::gil;
 	auto dst = interleaved_view(width, height, (bgra8_pixel_t*)data.data(), 4 * width);
@@ -84,9 +89,17 @@ void DummyVideoProvider::Create(double fps, int frames, int width, int height, u
 	}
 }
 
-DummyVideoProvider::DummyVideoProvider(agi::fs::path const& filename, std::string const&) {
+std::string DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
+	return str(boost::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s") % fps % frames % width % height % (int)colour.r % (int)colour.g % (int)colour.b % (pattern ? "c" : ""));
+}
+
+std::shared_ptr<VideoFrame> DummyVideoProvider::GetFrame(int) {
+	return std::make_shared<VideoFrame>(data.data(), width, height, width * 4, false);
+}
+
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string const&) {
 	if (!boost::starts_with(filename.string(), "?dummy"))
-		throw agi::fs::FileNotFound(std::string("Attempted creating dummy video provider with non-dummy filename"));
+		return {};
 
 	std::vector<std::string> toks;
 	auto const& fields = filename.string().substr(7);
@@ -109,17 +122,5 @@ DummyVideoProvider::DummyVideoProvider(agi::fs::path const& filename, std::strin
 
 	bool pattern = toks[i] == "c";
 
-	Create(fps, frames, width, height, red, green, blue, pattern);
-}
-
-DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
-	Create(fps, frames, width, height, colour.r, colour.g, colour.b, pattern);
-}
-
-std::string DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
-	return str(boost::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s") % fps % frames % width % height % (int)colour.r % (int)colour.g % (int)colour.b % (pattern ? "c" : ""));
-}
-
-std::shared_ptr<VideoFrame> DummyVideoProvider::GetFrame(int) {
-	return std::make_shared<VideoFrame>(data.data(), width, height, width * 4, false);
+	return agi::util::make_unique<DummyVideoProvider>(fps, frames, width, height, agi::Color(red, green, blue), pattern);
 }

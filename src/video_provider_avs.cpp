@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifdef WITH_AVISYNTH
-#include "video_provider_avs.h"
+#include "include/aegisub/video_provider.h"
 
 #include "options.h"
 #include "video_frame.h"
@@ -45,6 +45,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <mutex>
@@ -53,8 +54,42 @@
 #include <vfw.h>
 #endif
 
-AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix)
-{
+#define VideoFrame AVSVideoFrame
+#include "avisynth.h"
+#undef VideoFrame
+#include "avisynth_wrap.h"
+
+namespace {
+class AvisynthVideoProvider: public VideoProvider {
+	AviSynthWrapper avs;
+	std::string decoder_name;
+	agi::vfr::Framerate fps;
+	std::vector<int> keyframes;
+	std::string warning;
+	std::string colorspace;
+
+	PClip RGB32Video;
+	VideoInfo vi;
+
+	AVSValue Open(agi::fs::path const& filename);
+
+public:
+	AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
+
+	std::shared_ptr<VideoFrame> GetFrame(int n);
+
+	int GetFrameCount() const override { return vi.num_frames; }
+	agi::vfr::Framerate GetFPS() const override { return fps; }
+	int GetWidth() const override { return vi.width; }
+	int GetHeight() const override { return vi.height; }
+	double GetDAR() const override { return 0; }
+	std::vector<int> GetKeyFrames() const override { return keyframes; }
+	std::string GetWarning() const override { return warning; }
+	std::string GetDecoderName() const override { return decoder_name; }
+	std::string GetColorSpace() const override { return colorspace; }
+};
+
+AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) {
 	agi::acs::CheckFileRead(filename);
 
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
@@ -272,5 +307,10 @@ std::shared_ptr<VideoFrame> AvisynthVideoProvider::GetFrame(int n) {
 
 	auto frame = RGB32Video->GetFrame(n, avs.GetEnv());
 	return std::make_shared<VideoFrame>(frame->GetReadPtr(), frame->GetRowSize() / 4, frame->GetHeight(), frame->GetPitch(), true);
+}
+}
+
+std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string const& colormatrix) {
+	return agi::util::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
 #endif // HAVE_AVISYNTH

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,13 +14,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "factory_manager.h"
-#include "include/aegisub/video_provider.h"
-
 #include <libaegisub/fs_fwd.h>
 
-class VideoProviderFactory final : public Factory<VideoProvider, agi::fs::path, std::string> {
-public:
+#include <memory>
+#include <string>
+#include <vector>
+
+class VideoProvider;
+
+struct VideoProviderFactory {
+	static std::vector<std::string> GetClasses();
 	static std::unique_ptr<VideoProvider> GetProvider(agi::fs::path const& video_file, std::string const& colormatrix);
-	static void RegisterProviders();
 };

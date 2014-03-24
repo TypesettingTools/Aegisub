@@ -39,8 +39,8 @@
 #include "ass_time.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
+#include "include/aegisub/video_provider.h"
 #include "video_context.h"
-#include "video_provider_manager.h"
 
 #include <boost/rational.hpp>
 

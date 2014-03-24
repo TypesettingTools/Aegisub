@@ -35,7 +35,8 @@
 #include "config.h"
 
 #ifdef WITH_FFMS2
-#include "video_provider_ffmpegsource.h"
+#include "ffmpegsource_common.h"
+#include "include/aegisub/video_provider.h"
 
 #include "compat.h"
 #include "options.h"
@@ -44,11 +45,47 @@
 #include "video_frame.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/util.h>
 
 #include <wx/choicdlg.h>
 #include <wx/msgdlg.h>
 
 namespace {
+/// @class FFmpegSourceVideoProvider
+/// @brief Implements video loading through the FFMS library.
+class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvider {
+	/// video source object
+	agi::scoped_holder<FFMS_VideoSource*, void (FFMS_CC*)(FFMS_VideoSource*)> VideoSource;
+	const FFMS_VideoProperties *VideoInfo = nullptr; ///< video properties
+
+	int Width = -1;                 ///< width in pixels
+	int Height = -1;                ///< height in pixels
+	double DAR;                     ///< display aspect ratio
+	std::vector<int> KeyFramesList; ///< list of keyframes
+	agi::vfr::Framerate Timecodes;  ///< vfr object
+	std::string ColorSpace;         ///< Colorspace name
+
+	char FFMSErrMsg[1024];          ///< FFMS error message
+	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
+
+	void LoadVideo(agi::fs::path const& filename, std::string const& colormatrix);
+
+public:
+	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
+
+	std::shared_ptr<VideoFrame> GetFrame(int n) override;
+
+	int GetFrameCount() const override { return VideoInfo->NumFrames; }
+	int GetWidth() const override { return Width; }
+	int GetHeight() const override { return Height; }
+	double GetDAR() const override { return DAR; }
+	agi::vfr::Framerate GetFPS() const override { return Timecodes; }
+	std::string GetColorSpace() const override { return ColorSpace; }
+	std::vector<int> GetKeyFrames() const override { return KeyFramesList; };
+	std::string GetDecoderName() const override { return "FFmpegSource"; }
+	bool WantsCaching() const override { return true; }
+};
+
 std::string colormatrix_description(int cs, int cr) {
 	// Assuming TV for unspecified
 	std::string str = cr == FFMS_CR_JPEG ? "PC" : "TV";
@@ -69,7 +106,6 @@ std::string colormatrix_description(int cs, int cr) {
 		default:
 			throw VideoOpenError("Unknown video color space");
 	}
-}
 }
 
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) try
@@ -246,6 +282,11 @@ std::shared_ptr<VideoFrame> FFmpegSourceVideoProvider::GetFrame(int n) {
 		throw VideoDecodeError(std::string("Failed to retrieve frame: ") +  ErrInfo.Buffer);
 
 	return std::make_shared<VideoFrame>(frame->Data[0], Width, Height, frame->Linesize[0], false);
+}
+}
+
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, std::string const& colormatrix) {
+	return agi::util::make_unique<FFmpegSourceVideoProvider>(path, colormatrix);
 }
 
 #endif /* WITH_FFMS2 */

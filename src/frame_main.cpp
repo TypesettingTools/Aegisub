@@ -44,6 +44,7 @@
 #include "include/aegisub/menu.h"
 #include "include/aegisub/toolbar.h"
 #include "include/aegisub/hotkey.h"
+#include "include/aegisub/video_provider.h"
 
 #include "ass_file.h"
 #include "audio_controller.h"
@@ -69,7 +70,6 @@
 #include "video_box.h"
 #include "video_context.h"
 #include "video_display.h"
-#include "video_provider_manager.h"
 #include "video_slider.h"
 
 #include <boost/algorithm/string/predicate.hpp>
