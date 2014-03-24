@@ -18,12 +18,15 @@
 
 #include "video_provider_manager.h"
 
+#include "factory_manager.h"
 #include "include/aegisub/video_provider.h"
 #include "options.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
+
+#include <boost/range/iterator_range.hpp>
 
 std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const&, std::string const&);
 std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const&, std::string const&);
@@ -33,10 +36,9 @@ std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const&,
 std::unique_ptr<VideoProvider> CreateCacheVideoProvider(std::unique_ptr<VideoProvider>);
 
 namespace {
-	using factory_fn = std::unique_ptr<VideoProvider> (*)(agi::fs::path const&, std::string const&);
 	struct factory {
 		const char *name;
-		factory_fn create;
+		std::unique_ptr<VideoProvider> (*create)(agi::fs::path const&, std::string const&);
 		bool hidden;
 	};
 
@@ -53,30 +55,12 @@ namespace {
 }
 
 std::vector<std::string> VideoProviderFactory::GetClasses() {
-	std::vector<std::string> list;
-	for (auto const& provider : providers) {
-		if (!provider.hidden)
-			list.push_back(provider.name);
-	}
-	return list;
+	return ::GetClasses(boost::make_iterator_range(std::begin(providers), std::end(providers)));
 }
 
 std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& filename, std::string const& colormatrix) {
 	auto preferred = OPT_GET("Video/Provider")->GetString();
-	std::vector<const factory *> sorted;
-	auto preferred_insertion_point = sorted.end();
-	for (auto const& provider : providers) {
-		if (provider.hidden)
-			sorted.push_back(&provider);
-		else if (preferred_insertion_point == sorted.end()) {
-			sorted.push_back(&provider);
-			preferred_insertion_point = prev(sorted.end());
-		}
-		else if (preferred == provider.name)
-			sorted.insert(preferred_insertion_point, &provider);
-		else
-			sorted.push_back(&provider);
-	}
+	auto sorted = GetSorted(boost::make_iterator_range(std::begin(providers), std::end(providers)), preferred);
 
 	bool found = false;
 	bool supported = false;
