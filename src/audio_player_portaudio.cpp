@@ -32,13 +32,9 @@
 /// @ingroup audio_output
 ///
 
-
 #include "config.h"
 
 #ifdef WITH_PORTAUDIO
-
-#include <libaegisub/log.h>
-
 #include "audio_player_portaudio.h"
 
 #include "audio_controller.h"
@@ -46,6 +42,9 @@
 #include "include/aegisub/audio_provider.h"
 #include "options.h"
 #include "utils.h"
+
+#include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
 DEFINE_SIMPLE_EXCEPTION(PortAudioError, agi::AudioPlayerOpenError, "audio/player/open/portaudio")
 
@@ -282,6 +281,10 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 
 bool PortAudioPlayer::IsPlaying() {
 	return !!Pa_IsStreamActive(stream);
+}
+
+std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *provider) {
+	return agi::util::make_unique<PortAudioPlayer>(provider);
 }
 
 #endif // WITH_PORTAUDIO

@@ -34,21 +34,21 @@
 
 #pragma once
 
-#include "factory_manager.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 class AssFile;
 struct VideoFrame;
 
 class SubtitlesProvider {
 public:
-	virtual ~SubtitlesProvider() { };
-
+	virtual ~SubtitlesProvider() { }
 	virtual void LoadSubtitles(AssFile *subs)=0;
-	virtual void DrawSubtitles(VideoFrame &dst,double time)=0;
+	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
 };
 
-class SubtitlesProviderFactory final : public Factory<SubtitlesProvider, std::string> {
-public:
+struct SubtitlesProviderFactory {
 	static std::unique_ptr<SubtitlesProvider> GetProvider();
-	static void RegisterProviders();
+	static std::vector<std::string> GetClasses();
 };

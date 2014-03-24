@@ -213,24 +213,6 @@
     <ClInclude Include="$(SrcDir)config.h">
       <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_player_pulse.h">
-      <Filter>Audio\Players</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_player_alsa.h">
-      <Filter>Audio\Players</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_player_dsound.h">
-      <Filter>Audio\Players</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_player_dsound2.h">
-      <Filter>Audio\Players</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_player_openal.h">
-      <Filter>Audio\Players</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)audio_player_oss.h">
-      <Filter>Audio\Players</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)audio_player_portaudio.h">
       <Filter>Audio\Players</Filter>
     </ClInclude>
@@ -527,9 +509,6 @@
     </ClInclude>
     <ClInclude Include="$(SrcDir)include\aegisub\video_provider.h">
       <Filter>Video\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)plugin_manager.h">
-      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)spline_curve.h">
       <Filter>Video\Visual tools</Filter>
@@ -1054,9 +1033,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)menu.cpp">
       <Filter>Main UI</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)plugin_manager.cpp">
-      <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)spline.cpp">
       <Filter>Video\Visual tools</Filter>

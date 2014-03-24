@@ -33,12 +33,7 @@
 #include "config.h"
 
 #ifdef WITH_OSS
-
-#include <sys/param.h>
-
-#include <libaegisub/log.h>
-
-#include "audio_player_oss.h"
+#include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
 #include "compat.h"
@@ -46,19 +41,112 @@
 #include "options.h"
 #include "utils.h"
 
+#include <libaegisub/log.h>
+#include <libaegisub/util.h>
+
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <sys/param.h>
+#include <wx/thread.h>
+
+#ifdef HAVE_SOUNDCARD_H
+#   include <soundcard.h>
+#elif defined(HAVE_SYS_SOUNDCARD_H)
+#   include <sys/soundcard.h>
+#endif
+
+namespace {
 DEFINE_SIMPLE_EXCEPTION(OSSError, agi::AudioPlayerOpenError, "audio/player/open/oss")
+class OSSPlayerThread;
 
-OSSPlayer::OSSPlayer(AudioProvider *provider)
-: AudioPlayer(provider)
-{
-    OpenStream();
-}
+class OSSPlayer final : public AudioPlayer {
+    friend class OSSPlayerThread;
 
-OSSPlayer::~OSSPlayer()
-{
-    Stop();
-    ::close(dspdev);
-}
+    /// sample rate of audio
+    unsigned int rate = 0;
+
+    /// Worker thread that does the actual writing
+    OSSPlayerThread *thread = nullptr;
+
+    /// Is the player currently playing?
+    volatile bool playing = false;
+
+    /// Current volume level
+    volatile float volume = 1.f;
+
+    /// first frame of playback
+    volatile unsigned long start_frame = 0;
+
+    /// last written frame + 1
+    volatile unsigned long cur_frame = 0;
+
+    /// last frame to play
+    volatile unsigned long end_frame = 0;
+
+    /// bytes per frame
+    unsigned long bpf = 0;
+
+    /// OSS audio device handle
+    volatile int dspdev = 0;
+
+    void OpenStream();
+
+public:
+    OSSPlayer(AudioProvider *provider)
+    : AudioPlayer(provider)
+    {
+        OpenStream();
+    }
+
+    ~OSSPlayer() {
+        Stop();
+        ::close(dspdev);
+    }
+
+
+    void Play(int64_t start, int64_t count);
+    void Stop();
+    bool IsPlaying() { return playing; }
+
+    int64_t GetEndPosition() { return end_frame; }
+    void SetEndPosition(int64_t pos);
+
+    int64_t GetCurrentPosition();
+
+    void SetVolume(double vol) { volume = vol; }
+};
+
+/// Worker thread to asynchronously write audio data to the output device
+class OSSPlayerThread final : public wxThread {
+    /// Parent player
+    OSSPlayer *parent;
+
+public:
+    /// Constructor
+    /// @param parent Player to get audio data and playback state from
+    OSSPlayerThread(OSSPlayer *parent) : wxThread(wxTHREAD_JOINABLE) , parent(parent) { }
+
+    /// Main thread entry point
+    wxThread::ExitCode Entry() {
+        // Use small enough writes for good timing accuracy with all
+        // timing methods.
+        const unsigned long wsize = parent->rate / 25;
+        void *buf = malloc(wsize * parent->bpf);
+
+        while (!TestDestroy() && parent->cur_frame < parent->end_frame) {
+            int rsize = std::min(wsize, parent->end_frame - parent->cur_frame);
+            parent->provider->GetAudioWithVolume(buf, parent->cur_frame,
+                                                 rsize, parent->volume);
+            int written = ::write(parent->dspdev, buf, rsize * parent->bpf);
+            parent->cur_frame += written / parent->bpf;
+        }
+        free(buf);
+        parent->cur_frame = parent->end_frame;
+
+        LOG_D("player/audio/oss") << "Thread dead";
+        return 0;
+    }
+};
 
 void OSSPlayer::OpenStream()
 {
@@ -193,31 +281,10 @@ int64_t OSSPlayer::GetCurrentPosition()
     // Return the last written frame, timing will suffer
     return cur_frame;
 }
-
-OSSPlayerThread::OSSPlayerThread(OSSPlayer *par)
-: wxThread(wxTHREAD_JOINABLE)
-, parent(par)
-{
 }
 
-wxThread::ExitCode OSSPlayerThread::Entry() {
-    // Use small enough writes for good timing accuracy with all
-    // timing methods.
-    const unsigned long wsize = parent->rate / 25;
-    void *buf = malloc(wsize * parent->bpf);
-
-    while (!TestDestroy() && parent->cur_frame < parent->end_frame) {
-        int rsize = std::min(wsize, parent->end_frame - parent->cur_frame);
-        parent->provider->GetAudioWithVolume(buf, parent->cur_frame,
-                                             rsize, parent->volume);
-        int written = ::write(parent->dspdev, buf, rsize * parent->bpf);
-        parent->cur_frame += written / parent->bpf;
-    }
-    free(buf);
-    parent->cur_frame = parent->end_frame;
-
-    LOG_D("player/audio/oss") << "Thread dead";
-    return 0;
+std::unique_ptr<AudioPlayer> CreateOSSPlayer(AudioProvider *provider) {
+    return agi::util::make_unique<OSSPlayer>(provider);
 }
 
 #endif // WITH_OSS

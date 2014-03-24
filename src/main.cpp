@@ -42,6 +42,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "auto4_base.h"
+#include "auto4_lua_factory.h"
 #include "compat.h"
 #include "crash_writer.h"
 #include "export_fixstyle.h"
@@ -50,9 +51,9 @@
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
-#include "plugin_manager.h"
 #include "subs_controller.h"
 #include "subtitle_format.h"
+#include "subtitles_provider_libass.h"
 #include "video_context.h"
 #include "version.h"
 #include "utils.h"
@@ -238,7 +239,8 @@ bool AegisubApp::OnInit() {
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 		// Load plugins
-		RegisterBuiltInPlugins();
+		Automation4::ScriptFactory::Register(agi::util::make_unique<Automation4::LuaScriptFactory>());
+		libass::CacheFonts();
 
 		// Load Automation scripts
 		StartupLog("Load global Automation scripts");

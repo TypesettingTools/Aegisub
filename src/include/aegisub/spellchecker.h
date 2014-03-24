@@ -19,12 +19,10 @@
 /// @ingroup main_headers spelling
 ///
 
-#include "factory_manager.h"
+#include <memory>
 
 namespace agi { class SpellChecker; }
 
-class SpellCheckerFactory final : public Factory<agi::SpellChecker> {
-public:
+struct SpellCheckerFactory {
 	static std::unique_ptr<agi::SpellChecker> GetSpellChecker();
-	static void RegisterProviders();
 };

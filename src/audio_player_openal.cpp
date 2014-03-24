@@ -35,13 +35,28 @@
 #include "config.h"
 
 #ifdef WITH_OPENAL
-
-#include <libaegisub/log.h>
-
-#include "audio_player_openal.h"
+#include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
+#include "include/aegisub/audio_provider.h"
 #include "utils.h"
+
+#include <libaegisub/log.h>
+#include <libaegisub/util.h>
+
+#ifdef __WINDOWS__
+#include <al.h>
+#include <alc.h>
+#elif defined(__APPLE__)
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#else
+#include <AL/al.h>
+#include <AL/alc.h>
+#endif
+
+#include <vector>
+#include <wx/timer.h>
 
 // Auto-link to OpenAL lib for MSVC
 #ifdef _MSC_VER
@@ -49,6 +64,65 @@
 #endif
 
 DEFINE_SIMPLE_EXCEPTION(OpenALException, agi::AudioPlayerOpenError, "audio/open/player/openal")
+
+namespace {
+class OpenALPlayer final : public AudioPlayer, wxTimer {
+	/// Number of OpenAL buffers to use
+	static const ALsizei num_buffers = 8;
+
+	bool playing = false; ///< Is audio currently playing?
+
+	float volume = 1.f; ///< Current audio volume
+	ALsizei samplerate; ///< Sample rate of the audio
+	int bpf; ///< Bytes per frame
+
+	int64_t start_frame = 0; ///< First frame of playbacka
+	int64_t cur_frame = 0; ///< Next frame to write to playback buffers
+	int64_t end_frame = 0; ///< Last frame to play
+
+	ALCdevice *device = nullptr; ///< OpenAL device handle
+	ALCcontext *context = nullptr; ///< OpenAL sound context
+	ALuint buffers[num_buffers]; ///< OpenAL sound buffers
+	ALuint source = 0; ///< OpenAL playback source
+
+	/// Index into buffers, first free (unqueued) buffer to be filled
+	ALsizei buf_first_free = 0;
+
+	/// Index into buffers, first queued (non-free) buffer
+	ALsizei buf_first_queued = 0;
+
+	/// Number of free buffers
+	ALsizei buffers_free = 0;
+
+	/// Number of buffers which have been fully played since playback was last started
+	ALsizei buffers_played = 0;
+
+	wxStopWatch playback_segment_timer;
+
+	/// Buffer to decode audio into
+	std::vector<char> decode_buffer;
+
+	/// Fill count OpenAL buffers
+	void FillBuffers(ALsizei count);
+
+protected:
+	/// wxTimer override to periodically fill available buffers
+	void Notify() override;
+
+public:
+	OpenALPlayer(AudioProvider *provider);
+	~OpenALPlayer();
+
+	void Play(int64_t start,int64_t count) override;
+	void Stop() override;
+	bool IsPlaying() override { return playing; }
+
+	int64_t GetEndPosition() override { return end_frame; }
+	int64_t GetCurrentPosition() override;
+	void SetEndPosition(int64_t pos) override;
+
+	void SetVolume(double vol) override { volume = vol; }
+};
 
 OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 : AudioPlayer(provider)
@@ -209,6 +283,12 @@ int64_t OpenALPlayer::GetCurrentPosition()
 	// (during video playback, cur_frame might get changed to resync)
 	long extra = playback_segment_timer.Time();
 	return buffers_played * decode_buffer.size() / bpf + start_frame + extra * samplerate / 1000;
+}
+}
+
+std::unique_ptr<AudioPlayer> CreateOpenALPlayer(AudioProvider *provider)
+{
+	return agi::util::make_unique<OpenALPlayer>(provider);
 }
 
 #endif // WITH_OPENAL

@@ -34,7 +34,10 @@
 
 #pragma once
 
-#include "factory_manager.h"
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <vector>
 
 class AudioProvider;
 
@@ -57,8 +60,7 @@ public:
 	virtual void SetEndPosition(int64_t pos)=0;
 };
 
-class AudioPlayerFactory final : public Factory<AudioPlayer, AudioProvider*> {
-public:
-	static void RegisterProviders();
+struct AudioPlayerFactory {
+	static std::vector<std::string> GetClasses();
 	static std::unique_ptr<AudioPlayer> GetAudioPlayer(AudioProvider *provider);
 };

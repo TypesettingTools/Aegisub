@@ -110,13 +110,7 @@
     <ClInclude Include="$(SrcDir)audio_display.h" />
     <ClInclude Include="$(SrcDir)audio_karaoke.h" />
     <ClInclude Include="$(SrcDir)audio_marker.h" />
-    <ClInclude Include="$(SrcDir)audio_player_alsa.h" />
-    <ClInclude Include="$(SrcDir)audio_player_dsound.h" />
-    <ClInclude Include="$(SrcDir)audio_player_dsound2.h" />
-    <ClInclude Include="$(SrcDir)audio_player_openal.h" />
-    <ClInclude Include="$(SrcDir)audio_player_oss.h" />
     <ClInclude Include="$(SrcDir)audio_player_portaudio.h" />
-    <ClInclude Include="$(SrcDir)audio_player_pulse.h" />
     <ClInclude Include="$(SrcDir)audio_renderer.h" />
     <ClInclude Include="$(SrcDir)audio_renderer_spectrum.h" />
     <ClInclude Include="$(SrcDir)audio_renderer_waveform.h" />
@@ -197,7 +191,6 @@
     <ClInclude Include="$(SrcDir)pen.h" />
     <ClInclude Include="$(SrcDir)persist_location.h" />
     <ClInclude Include="$(SrcDir)placeholder_ctrl.h" />
-    <ClInclude Include="$(SrcDir)plugin_manager.h" />
     <ClInclude Include="$(SrcDir)preferences.h" />
     <ClInclude Include="$(SrcDir)preferences_base.h" />
     <ClInclude Include="$(SrcDir)resolution_resampler.h" />
@@ -391,7 +384,6 @@
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />
     <ClCompile Include="$(SrcDir)pen.cpp" />
     <ClCompile Include="$(SrcDir)persist_location.cpp" />
-    <ClCompile Include="$(SrcDir)plugin_manager.cpp" />
     <ClCompile Include="$(SrcDir)preferences.cpp" />
     <ClCompile Include="$(SrcDir)preferences_base.cpp" />
     <ClCompile Include="$(SrcDir)resolution_resampler.cpp" />

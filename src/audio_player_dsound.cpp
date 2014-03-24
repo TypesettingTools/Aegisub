@@ -35,28 +35,72 @@
 #include "config.h"
 
 #ifdef WITH_DIRECTSOUND
-
-#include <libaegisub/log.h>
+#include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
-#include "audio_player_dsound.h"
+#include "include/aegisub/audio_provider.h"
 #include "frame_main.h"
 #include "main.h"
 #include "utils.h"
 
+#include <libaegisub/log.h>
+#include <libaegisub/util.h>
+
+#include <mmsystem.h>
+#include <dsound.h>
+
+namespace {
+class DirectSoundPlayer;
+
+class DirectSoundPlayerThread final : public wxThread {
+	DirectSoundPlayer *parent;
+	HANDLE stopnotify;
+
+public:
+	void Stop(); // Notify thread to stop audio playback. Thread safe.
+	DirectSoundPlayerThread(DirectSoundPlayer *parent);
+	~DirectSoundPlayerThread();
+
+	wxThread::ExitCode Entry();
+};
+
+class DirectSoundPlayer final : public AudioPlayer {
+	friend class DirectSoundPlayerThread;
+
+	volatile bool playing = false;
+	float volume = 1.0f;
+	int offset = 0;
+
+	DWORD bufSize = 0;
+	volatile int64_t playPos = 0;
+	int64_t startPos = 0;
+	volatile int64_t endPos = 0;
+	DWORD startTime = 0;
+
+	IDirectSound8 *directSound = nullptr;
+	IDirectSoundBuffer8 *buffer = nullptr;
+
+	bool FillBuffer(bool fill);
+	DirectSoundPlayerThread *thread = nullptr;
+
+public:
+	DirectSoundPlayer(AudioProvider *provider);
+	~DirectSoundPlayer();
+
+	void Play(int64_t start,int64_t count);
+	void Stop();
+
+	bool IsPlaying() { return playing; }
+
+	int64_t GetEndPosition() { return endPos; }
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+
+	void SetVolume(double vol) { volume = vol; }
+};
+
 DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider)
 : AudioPlayer(provider)
-, playing(false)
-, volume(1.0f)
-, offset(0)
-, bufSize(0)
-, playPos(0)
-, startPos(0)
-, endPos(0)
-, startTime(0)
-, directSound(0)
-, buffer(0)
-, thread(0)
 {
 	// Initialize the DirectSound object
 	HRESULT res;
@@ -105,23 +149,13 @@ DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider)
 DirectSoundPlayer::~DirectSoundPlayer() {
 	Stop();
 
-	// Unref the DirectSound buffer
-	if (buffer) {
+	if (buffer)
 		buffer->Release();
-		buffer = nullptr;
-	}
 
-	// Unref the DirectSound object
-	if (directSound) {
+	if (directSound)
 		directSound->Release();
-		directSound = nullptr;
-	}
 }
 
-/// @brief Fill buffer
-/// @param fill
-/// @return
-///
 bool DirectSoundPlayer::FillBuffer(bool fill) {
 	if (playPos >= endPos) return false;
 
@@ -181,7 +215,6 @@ RetryLock:
 		goto RetryLock;
 	}
 
-	// Error
 	if (FAILED(res)) return false;
 
 	// Convert size to number of samples
@@ -197,19 +230,13 @@ RetryLock:
 	if (count2) provider->GetAudioWithVolume(ptr2, playPos+count1, count2, volume);
 	playPos += count1+count2;
 
-	// Unlock
 	buffer->Unlock(ptr1,count1*bytesps,ptr2,count2*bytesps);
 
-	// Update offset
 	offset = (offset + count1*bytesps + count2*bytesps) % bufSize;
 
 	return playPos < endPos;
 }
 
-/// @brief Play
-/// @param start
-/// @param count
-///
 void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	// Make sure that it's stopped
 	Stop();
@@ -245,9 +272,6 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	startTime = GetTickCount();
 }
 
-/// @brief Stop
-/// @param timerToo
-///
 void DirectSoundPlayer::Stop() {
 	// Stop the thread
 	if (thread) {
@@ -259,7 +283,6 @@ void DirectSoundPlayer::Stop() {
 	}
 	// The thread is now guaranteed dead and there are no concurrency problems to worry about
 
-	// Stop
 	if (buffer) buffer->Stop(); // the thread should have done this already
 
 	// Reset variables
@@ -270,16 +293,10 @@ void DirectSoundPlayer::Stop() {
 	offset = 0;
 }
 
-/// @brief Set end
-/// @param pos
-///
 void DirectSoundPlayer::SetEndPosition(int64_t pos) {
 	if (playing) endPos = pos;
 }
 
-/// @brief Get current position
-/// @return
-///
 int64_t DirectSoundPlayer::GetCurrentPosition() {
 	// Check if buffer is loaded
 	if (!buffer || !playing) return 0;
@@ -291,23 +308,15 @@ int64_t DirectSoundPlayer::GetCurrentPosition() {
 	return startPos + tdiff * provider->GetSampleRate() / 1000;
 }
 
-/// @brief Thread constructor
-/// @param par
-///
 DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
 	stopnotify = CreateEvent(nullptr, true, false, nullptr);
 }
 
-/// @brief Thread destructor
-///
 DirectSoundPlayerThread::~DirectSoundPlayerThread() {
 	CloseHandle(stopnotify);
 }
 
-/// @brief Thread entry point
-/// @return
-///
 wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	CoInitialize(0);
 
@@ -355,11 +364,14 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 	return 0;
 }
 
-/// @brief Stop playback thread
-///
 void DirectSoundPlayerThread::Stop() {
 	// Increase the stopnotify by one, causing a wait for it to succeed
 	SetEvent(stopnotify);
+}
+}
+
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *provider) {
+	return agi::util::make_unique<DirectSoundPlayer>(provider);
 }
 
 #endif // WITH_DIRECTSOUND

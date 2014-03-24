@@ -203,7 +203,6 @@ SRC += \
 	mkv_wrap.cpp \
 	pen.cpp \
 	persist_location.cpp \
-	plugin_manager.cpp \
 	preferences.cpp \
 	preferences_base.cpp \
 	resolution_resampler.cpp \

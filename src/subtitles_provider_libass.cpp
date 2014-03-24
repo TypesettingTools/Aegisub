@@ -36,17 +36,13 @@
 
 #include "subtitles_provider_libass.h"
 
-#ifdef __APPLE__
-#include <sys/param.h>
-#include <libaegisub/util_osx.h>
-#endif
-
 #include "ass_info.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "dialog_progress.h"
 #include "frame_main.h"
+#include "include/aegisub/subtitles_provider.h"
 #include "main.h"
 #include "utils.h"
 #include "video_frame.h"
@@ -59,6 +55,15 @@
 #include <boost/range/algorithm_ext/push_back.hpp>
 #include <memory>
 #include <mutex>
+
+#ifdef __APPLE__
+#include <sys/param.h>
+#include <libaegisub/util_osx.h>
+#endif
+
+extern "C" {
+#include <ass/ass.h>
+}
 
 namespace {
 std::unique_ptr<agi::dispatch::Queue> cache_queue;
@@ -84,9 +89,20 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 #else
 #define CONFIG_PATH nullptr
 #endif
-}
 
-LibassSubtitlesProvider::LibassSubtitlesProvider(std::string) {
+class LibassSubtitlesProvider final : public SubtitlesProvider {
+	ASS_Renderer* ass_renderer = nullptr;
+	ASS_Track* ass_track = nullptr;
+
+public:
+	LibassSubtitlesProvider();
+	~LibassSubtitlesProvider();
+
+	void LoadSubtitles(AssFile *subs) override;
+	void DrawSubtitles(VideoFrame &dst, double time) override;
+};
+
+LibassSubtitlesProvider::LibassSubtitlesProvider() {
 	auto done = std::make_shared<bool>(false);
 	auto renderer = std::make_shared<ASS_Renderer*>(nullptr);
 	cache_queue->Async([=]{
@@ -115,23 +131,21 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 	if (ass_renderer) ass_renderer_done(ass_renderer);
 }
 
-namespace {
-	struct Writer {
-		std::vector<char> data;
-		AssEntryGroup group = AssEntryGroup::GROUP_MAX;
+struct Writer {
+	std::vector<char> data;
+	AssEntryGroup group = AssEntryGroup::GROUP_MAX;
 
-		template<typename T>
-		void Write(T const& list) {
-			for (auto const& line : list) {
-				if (group != line.Group()) {
-					group = line.Group();
-					boost::push_back(data, line.GroupHeader() + "\r\n");
-				}
-				boost::push_back(data, line.GetEntryData() + "\r\n");
+	template<typename T>
+	void Write(T const& list) {
+		for (auto const& line : list) {
+			if (group != line.Group()) {
+				group = line.Group();
+				boost::push_back(data, line.GroupHeader() + "\r\n");
 			}
+			boost::push_back(data, line.GetEntryData() + "\r\n");
 		}
-	};
-}
+	}
+};
 
 void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	Writer writer;
@@ -188,8 +202,14 @@ void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 		});
 	}
 }
+}
 
-void LibassSubtitlesProvider::CacheFonts() {
+namespace libass {
+std::unique_ptr<SubtitlesProvider> Create(std::string const&) {
+	return agi::util::make_unique<LibassSubtitlesProvider>();
+}
+
+void CacheFonts() {
 	// Initialize the cache worker thread
 	cache_queue = agi::dispatch::Create();
 
@@ -203,4 +223,5 @@ void LibassSubtitlesProvider::CacheFonts() {
 		ass_set_fonts(ass_renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
 		ass_renderer_done(ass_renderer);
 	});
+}
 }

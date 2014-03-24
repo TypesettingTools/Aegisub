@@ -35,56 +35,75 @@
 #include "config.h"
 
 #include "include/aegisub/audio_player.h"
-#include "audio_player_alsa.h"
-#include "audio_player_dsound.h"
-#include "audio_player_dsound2.h"
-#include "audio_player_openal.h"
-#include "audio_player_oss.h"
-#include "audio_player_portaudio.h"
-#include "audio_player_pulse.h"
 
 #include "audio_controller.h"
+#include "factory_manager.h"
 #include "options.h"
+
+#include <boost/range/iterator_range.hpp>
 
 AudioPlayer::AudioPlayer(AudioProvider *provider)
 : provider(provider)
 {
 }
 
+std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *providers);
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *providers);
+std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *providers);
+std::unique_ptr<AudioPlayer> CreateOpenALPlayer(AudioProvider *providers);
+std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *providers);
+std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(AudioProvider *providers);
+std::unique_ptr<AudioPlayer> CreateOSSPlayer(AudioProvider *providers);
+
+namespace {
+	struct factory {
+		const char *name;
+		std::unique_ptr<AudioPlayer> (*create)(AudioProvider *);
+		bool hidden;
+	};
+
+	const factory factories[] = {
+#ifdef WITH_ALSA
+		{"ALSA", CreateAlsaPlayer, false},
+#endif
+#ifdef WITH_DIRECTSOUND
+		{"DirectSound-old", CreateDirectSoundPlayer, false},
+		{"DirectSound", CreateDirectSound2Player, false},
+#endif
+#ifdef WITH_OPENAL
+		{"OpenAL", CreateOpenALPlayer, false},
+#endif
+#ifdef WITH_PORTAUDIO
+		{"PortAudio", CreatePortAudioPlayer, false},
+#endif
+#ifdef WITH_LIBPULSE
+		{"PulseAudio", CreatePulseAudioPlayer, false},
+#endif
+#ifdef WITH_OSS
+		{"OSS", CreateOSSPlayer, false},
+#endif
+	};
+}
+
+std::vector<std::string> AudioPlayerFactory::GetClasses() {
+	return ::GetClasses(boost::make_iterator_range(std::begin(factories), std::end(factories)));
+}
+
 std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider) {
-	std::vector<std::string> list = GetClasses(OPT_GET("Audio/Player")->GetString());
-	if (list.empty()) throw agi::NoAudioPlayersError("No audio players are available.", nullptr);
+	if (std::distance(std::begin(factories), std::end(factories)) == 0)
+		throw agi::NoAudioPlayersError("No audio players are available.", nullptr);
+
+	auto preferred = OPT_GET("Audio/Player")->GetString();
+	auto sorted = GetSorted(boost::make_iterator_range(std::begin(factories), std::end(factories)), preferred);
 
 	std::string error;
-	for (auto const& factory_name : list) {
+	for (auto factory : sorted) {
 		try {
-			return Create(factory_name, provider);
+			return factory->create(provider);
 		}
 		catch (agi::AudioPlayerOpenError const& err) {
-			error += factory_name + " factory: " + err.GetChainedMessage() + "\n";
+			error += std::string(factory->name) + " factory: " + err.GetChainedMessage() + "\n";
 		}
 	}
 	throw agi::AudioPlayerOpenError(error, nullptr);
-}
-
-void AudioPlayerFactory::RegisterProviders() {
-#ifdef WITH_ALSA
-	Register<AlsaPlayer>("ALSA");
-#endif
-#ifdef WITH_DIRECTSOUND
-	Register<DirectSoundPlayer>("DirectSound-old");
-	Register<DirectSoundPlayer2>("DirectSound");
-#endif
-#ifdef WITH_OPENAL
-	Register<OpenALPlayer>("OpenAL");
-#endif
-#ifdef WITH_PORTAUDIO
-	Register<PortAudioPlayer>("PortAudio");
-#endif
-#ifdef WITH_LIBPULSE
-	Register<PulseAudioPlayer>("PulseAudio");
-#endif
-#ifdef WITH_OSS
-	Register<OSSPlayer>("OSS");
-#endif
 }

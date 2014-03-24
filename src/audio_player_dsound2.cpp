@@ -35,7 +35,7 @@
 #include "config.h"
 
 #ifdef WITH_DIRECTSOUND
-#include "audio_player_dsound2.h"
+#include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
@@ -51,6 +51,68 @@
 #include <mmsystem.h>
 #include <process.h>
 #include <dsound.h>
+
+namespace {
+class DirectSoundPlayer2Thread;
+
+/// @class DirectSoundPlayer2
+/// @brief New implementation of DirectSound-based audio player
+///
+/// The core design idea is to have a playback thread that owns the DirectSound COM objects
+/// and performs all playback operations, and use the player object as a proxy to
+/// send commands to the playback thread.
+class DirectSoundPlayer2 final : public AudioPlayer {
+	/// The playback thread
+	std::unique_ptr<DirectSoundPlayer2Thread> thread;
+
+	/// Desired length in milliseconds to write ahead of the playback cursor
+	int WantedLatency;
+
+	/// Multiplier for WantedLatency to get total buffer length
+	int BufferLength;
+
+	/// @brief Tell whether playback thread is alive
+	/// @return True if there is a playback thread and it's ready
+	bool IsThreadAlive();
+
+public:
+	/// @brief Constructor
+	DirectSoundPlayer2(AudioProvider *provider);
+	/// @brief Destructor
+	~DirectSoundPlayer2();
+
+	/// @brief Start playback
+	/// @param start First audio frame to play
+	/// @param count Number of audio frames to play
+	void Play(int64_t start,int64_t count);
+
+	/// @brief Stop audio playback
+	/// @param timerToo Whether to also stop the playback update timer
+	void Stop();
+
+	/// @brief Tell whether playback is active
+	/// @return True if audio is playing back
+	bool IsPlaying();
+
+	/// @brief Get playback end position
+	/// @return Audio frame index
+	///
+	/// Returns 0 if playback is stopped or there is no playback thread
+	int64_t GetEndPosition();
+	/// @brief Get approximate playback position
+	/// @return Index of audio frame user is currently hearing
+	///
+	/// Returns 0 if playback is stopped or there is no playback thread
+	int64_t GetCurrentPosition();
+
+	/// @brief Change playback end position
+	/// @param pos New end position
+	void SetEndPosition(int64_t pos);
+
+	/// @brief Change playback volume
+	/// @param vol Amplification factor
+	void SetVolume(double vol);
+};
 
 /// @brief RAII support class to init and de-init the COM library
 struct COMInitialization {
@@ -157,7 +219,6 @@ class DirectSoundPlayer2Thread {
 	/// @brief Check for error state and throw exception if one occurred
 	void CheckError();
 
-
 	/// Win32 handle to the thread
 	Win32KernelHandle thread_handle;
 
@@ -186,16 +247,16 @@ class DirectSoundPlayer2Thread {
 	Win32KernelHandle error_happened;
 
 	/// Statically allocated error message text describing reason for error_happened being set
-	const char *error_message;
+	const char *error_message = nullptr;
 
 	/// Playback volume, 1.0 is "unchanged"
-	double volume;
+	double volume = 1.0;
 
 	/// Audio frame to start playback at
-	int64_t start_frame;
+	int64_t start_frame = 0;
 
 	/// Audio frame to end playback at
-	int64_t end_frame;
+	int64_t end_frame = 0;
 
 
 	/// Desired length in milliseconds to write ahead of the playback cursor
@@ -646,11 +707,6 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 , buffer_length(BufferLength)
 , provider(provider)
 {
-	error_message = 0;
-	volume = 1.0;
-	start_frame = 0;
-	end_frame = 0;
-
 	thread_handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
@@ -903,6 +959,11 @@ void DirectSoundPlayer2::SetVolume(double vol)
 	{
 		LOG_E("audio/player/dsound") << msg;
 	}
+}
+}
+
+std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *provider) {
+	return agi::util::make_unique<DirectSoundPlayer2>(provider);
 }
 
 #endif // WITH_DIRECTSOUND

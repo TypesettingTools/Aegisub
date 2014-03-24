@@ -35,8 +35,7 @@
 #include "config.h"
 
 #ifdef WITH_ALSA
-
-#include "audio_player_alsa.h"
+#include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
 #include "include/aegisub/audio_provider.h"
@@ -48,15 +47,73 @@
 #include <libaegisub/util.h>
 
 #include <algorithm>
-
+#include <alsa/asoundlib.h>
 #include <inttypes.h>
+#include <memory>
+
+namespace {
+struct PlaybackState {
+	pthread_mutex_t mutex;
+	pthread_cond_t cond;
+
+	bool playing = false;
+	bool alive = false;
+
+	bool signal_start = false;
+	bool signal_stop = false;
+	bool signal_close = false;
+	bool signal_volume = false;
+
+	double volume = 1.0;
+	int64_t start_position = 0;
+	int64_t end_position = 0;
+
+	AudioProvider *provider = nullptr;
+	std::string device_name;
+
+	int64_t last_position = 0;
+	timespec last_position_time;
+
+	PlaybackState()
+	{
+		pthread_mutex_init(&mutex, 0);
+		pthread_cond_init(&cond, 0);
+		memset(&last_position_time, 0, sizeof last_position_time);
+	}
+
+	~PlaybackState()
+	{
+		pthread_cond_destroy(&cond);
+		pthread_mutex_destroy(&mutex);
+	}
+};
+
+class AlsaPlayer final : public AudioPlayer {
+	PlaybackState ps;
+	pthread_t thread;
+
+public:
+	AlsaPlayer(AudioProvider *provider);
+	~AlsaPlayer();
+
+	void Play(int64_t start, int64_t count);
+	void Stop();
+	bool IsPlaying();
+
+	int64_t GetStartPosition();
+	int64_t GetEndPosition();
+	int64_t GetCurrentPosition();
+	void SetEndPosition(int64_t pos);
+	void SetCurrentPosition(int64_t pos);
+
+	void SetVolume(double vol);
+};
 
 class PthreadMutexLocker {
 	pthread_mutex_t &mutex;
 
-	PthreadMutexLocker(const PthreadMutexLocker &); // uncopyable
-	PthreadMutexLocker(); // no default
-	PthreadMutexLocker& operator=(PthreadMutexLocker const&);
+	PthreadMutexLocker(const PthreadMutexLocker &) = delete;
+	PthreadMutexLocker& operator=(PthreadMutexLocker const&) = delete;
 
 public:
 	explicit PthreadMutexLocker(pthread_mutex_t &mutex) : mutex(mutex)
@@ -83,78 +140,22 @@ public:
 	}
 };
 
-
 class ScopedAliveFlag {
 	bool &flag;
 
-	ScopedAliveFlag(const ScopedAliveFlag &); // uncopyable
-	ScopedAliveFlag(); // no default
-	ScopedAliveFlag& operator=(ScopedAliveFlag const&);
+	ScopedAliveFlag(const ScopedAliveFlag &) = delete;
+	ScopedAliveFlag& operator=(ScopedAliveFlag const&) = delete;
 
 public:
 	explicit ScopedAliveFlag(bool &var) : flag(var) { flag = true; }
 	~ScopedAliveFlag() { flag = false; }
 };
 
-
-struct PlaybackState {
-	pthread_mutex_t mutex;
-	pthread_cond_t cond;
-
-	bool playing;
-	bool alive;
-
-	bool signal_start;
-	bool signal_stop;
-	bool signal_close;
-	bool signal_volume;
-
-	double volume;
-	int64_t start_position;
-	int64_t end_position;
-
-	AudioProvider *provider;
-	std::string device_name;
-
-	int64_t last_position;
-	timespec last_position_time;
-
-	PlaybackState()
-	{
-		pthread_mutex_init(&mutex, 0);
-		pthread_cond_init(&cond, 0);
-
-		Reset();
-		volume = 1.0;
-	}
-
-	~PlaybackState()
-	{
-		pthread_cond_destroy(&cond);
-		pthread_mutex_destroy(&mutex);
-	}
-
-	void Reset()
-	{
-		playing = false;
-		alive = false;
-		signal_start = false;
-		signal_stop = false;
-		signal_close = false;
-		signal_volume = false;
-		start_position = 0;
-		end_position = 0;
-		last_position = 0;
-		memset(&last_position_time, 0, sizeof last_position_time);
-		provider = 0;
-	}
-};
-
 void *playback_thread(void *arg)
 {
 	// This is exception-free territory!
 	// Return a pointer to a static string constant describing the error, or 0 on no error
-	PlaybackState &ps = *(PlaybackState*)arg;
+	auto &ps = *static_cast<PlaybackState *>(arg);
 
 	PthreadMutexLocker ml(ps.mutex);
 	ScopedAliveFlag alive_flag(ps.alive);
@@ -363,72 +364,65 @@ do_setup:
 	return 0;
 }
 
-
 AlsaPlayer::AlsaPlayer(AudioProvider *provider)
 : AudioPlayer(provider)
-, ps(agi::util::make_unique<PlaybackState>())
 {
-	ps->provider = provider;
+	ps.provider = provider;
 
-	ps->device_name = OPT_GET("Player/Audio/ALSA/Device")->GetString();
+	ps.device_name = OPT_GET("Player/Audio/ALSA/Device")->GetString();
 
-	if (pthread_create(&thread, 0, &playback_thread, ps.get()) != 0)
+	if (pthread_create(&thread, 0, &playback_thread, &ps) != 0)
 		throw agi::AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed", 0);
 }
-
 
 AlsaPlayer::~AlsaPlayer()
 {
 	{
-		PthreadMutexLocker ml(ps->mutex);
-		ps->signal_stop = true;
-		ps->signal_close = true;
+		PthreadMutexLocker ml(ps.mutex);
+		ps.signal_stop = true;
+		ps.signal_close = true;
 		LOG_D("audio/player/alsa") << "close stream, stop+close signal";
-		pthread_cond_signal(&ps->cond);
+		pthread_cond_signal(&ps.cond);
 	}
 
 	pthread_join(thread, 0); // FIXME: check for errors
 }
 
-
 void AlsaPlayer::Play(int64_t start, int64_t count)
 {
-	PthreadMutexLocker ml(ps->mutex);
-	ps->signal_start = true;
-	ps->signal_stop = true; // make sure to stop any ongoing playback first
-	ps->start_position = start;
-	ps->end_position = start + count;
-	pthread_cond_signal(&ps->cond);
+	PthreadMutexLocker ml(ps.mutex);
+	ps.signal_start = true;
+	ps.signal_stop = true; // make sure to stop any ongoing playback first
+	ps.start_position = start;
+	ps.end_position = start + count;
+	pthread_cond_signal(&ps.cond);
 }
-
 
 void AlsaPlayer::Stop()
 {
-	PthreadMutexLocker ml(ps->mutex);
-	ps->signal_stop = true;
+	PthreadMutexLocker ml(ps.mutex);
+	ps.signal_stop = true;
 	LOG_D("audio/player/alsa") << "stop stream, stop signal";
-	pthread_cond_signal(&ps->cond);
+	pthread_cond_signal(&ps.cond);
 }
 
 bool AlsaPlayer::IsPlaying()
 {
-	PthreadMutexLocker ml(ps->mutex);
-	return ps->playing;
+	PthreadMutexLocker ml(ps.mutex);
+	return ps.playing;
 }
-
 
 void AlsaPlayer::SetEndPosition(int64_t pos)
 {
-	PthreadMutexLocker ml(ps->mutex);
-	ps->end_position = pos;
+	PthreadMutexLocker ml(ps.mutex);
+	ps.end_position = pos;
 }
 
 int64_t AlsaPlayer::GetEndPosition()
 {
-	PthreadMutexLocker ml(ps->mutex);
-	return ps->end_position;
+	PthreadMutexLocker ml(ps.mutex);
+	return ps.end_position;
 }
-
 
 int64_t AlsaPlayer::GetCurrentPosition()
 {
@@ -437,10 +431,10 @@ int64_t AlsaPlayer::GetCurrentPosition()
 	int64_t samplerate;
 
 	{
-		PthreadMutexLocker ml(ps->mutex);
-		lastpos = ps->last_position;
-		lasttime = ps->last_position_time;
-		samplerate = ps->provider->GetSampleRate();
+		PthreadMutexLocker ml(ps.mutex);
+		lastpos = ps.last_position;
+		lasttime = ps.last_position_time;
+		samplerate = ps.provider->GetSampleRate();
 	}
 
 	timespec now;
@@ -460,10 +454,16 @@ int64_t AlsaPlayer::GetCurrentPosition()
 
 void AlsaPlayer::SetVolume(double vol)
 {
-	PthreadMutexLocker ml(ps->mutex);
-	ps->volume = vol;
-	ps->signal_volume = true;
-	pthread_cond_signal(&ps->cond);
+	PthreadMutexLocker ml(ps.mutex);
+	ps.volume = vol;
+	ps.signal_volume = true;
+	pthread_cond_signal(&ps.cond);
+}
+}
+
+std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *provider)
+{
+	return agi::util::make_unique<AlsaPlayer>(provider);
 }
 
 #endif // WITH_ALSA

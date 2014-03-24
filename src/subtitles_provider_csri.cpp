@@ -37,12 +37,15 @@
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"
 
+#include "include/aegisub/subtitles_provider.h"
 #include "options.h"
 #include "subtitle_format.h"
 #include "video_frame.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/scoped_ptr.h>
+#include <libaegisub/util.h>
 
 #include <boost/filesystem.hpp>
 #include <mutex>
@@ -53,9 +56,24 @@
 
 #include <csri/csri.h>
 
+namespace {
 // CSRI renderers are not required to be thread safe (and VSFilter very much
 // is not)
-static std::mutex csri_mutex;
+std::mutex csri_mutex;
+
+class CSRISubtitlesProvider final : public SubtitlesProvider {
+	agi::scoped_holder<csri_inst*> instance;
+	csri_rend *renderer;
+
+	/// Name of the file passed to renderers with can_open_mem false
+	agi::fs::path tempfile;
+public:
+	CSRISubtitlesProvider(std::string subType);
+	~CSRISubtitlesProvider();
+
+	void LoadSubtitles(AssFile *subs);
+	void DrawSubtitles(VideoFrame &dst, double time);
+};
 
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
 : instance(nullptr, csri_close)
@@ -106,8 +124,10 @@ void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst,double time) {
 	if (!csri_request_fmt(instance, &format))
 		csri_render(instance, &frame, time);
 }
+}
 
-std::vector<std::string> CSRISubtitlesProvider::GetSubTypes() {
+namespace csri {
+std::vector<std::string> List() {
 	std::vector<std::string> final;
 	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
 		std::string name(csri_renderer_info(cur)->name);
@@ -119,4 +139,8 @@ std::vector<std::string> CSRISubtitlesProvider::GetSubTypes() {
 	return final;
 }
 
+std::unique_ptr<SubtitlesProvider> Create(std::string const& name) {
+	return agi::util::make_unique<CSRISubtitlesProvider>(name);
+}
+}
 #endif // WITH_CSRI
