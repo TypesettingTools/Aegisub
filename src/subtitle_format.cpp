@@ -197,33 +197,26 @@ void SubtitleFormat::StripComments(AssFile &file) {
 	}, [](AssDialogue *e) { delete e; });
 }
 
-static bool dialog_start_lt(AssDialogue &pos, AssDialogue *to_insert) {
-	return pos.Start > to_insert->Start;
-}
-
 /// @brief Split and merge lines so there are no overlapping lines
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
 void SubtitleFormat::RecombineOverlaps(AssFile &file) {
-	auto next = file.Events.begin();
-	auto cur = next++;
+	auto cur = file.Events.begin();
+	for (auto next = std::next(cur); next != file.Events.end(); cur = std::prev(next)) {
+		if (next == file.Events.begin() || cur->End <= next->Start) {
+			++next;
+			continue;
+		}
 
-	for (; next != file.Events.end(); cur = next++) {
-		AssDialogue *prevdlg = &*cur;
-		AssDialogue *curdlg = &*next;
-		if (prevdlg->End <= curdlg->Start) continue;
+		std::unique_ptr<AssDialogue> prevdlg(&*cur);
+		std::unique_ptr<AssDialogue> curdlg(&*next);
+		++next;
 
-		// Use names like in the algorithm description and prepare for erasing
-		// old dialogues from the list
-		auto prev = cur;
-		cur = next;
-		next++;
-
-		// std::list::insert() inserts items before the given iterator, so
-		// we need 'next' for inserting. 'prev' and 'cur' can safely be erased
-		// from the list now.
-		file.Events.erase(prev);
-		file.Events.erase(cur);
+		auto insert_line = [&](AssDialogue *newdlg) {
+			file.Events.insert(std::find_if(next, file.Events.end(), [&](AssDialogue const& pos) {
+				return pos.Start >= newdlg->Start;
+			}), *newdlg);
+		};
 
 		//Is there an A part before the overlap?
 		if (curdlg->Start > prevdlg->Start) {
@@ -232,8 +225,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->Start = prevdlg->Start;
 			newdlg->End = curdlg->Start;
 			newdlg->Text = prevdlg->Text;
-
-			file.Events.insert(find_if(next, file.Events.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			insert_line(newdlg);
 		}
 
 		// Overlapping A+B part
@@ -243,8 +235,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->End = (prevdlg->End < curdlg->End) ? prevdlg->End : curdlg->End;
 			// Put an ASS format hard linewrap between lines
 			newdlg->Text = curdlg->Text.get() + "\\N" + prevdlg->Text.get();
-
-			file.Events.insert(find_if(next, file.Events.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			insert_line(newdlg);
 		}
 
 		// Is there an A part after the overlap?
@@ -254,8 +245,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->Start = curdlg->End;
 			newdlg->End = prevdlg->End;
 			newdlg->Text = prevdlg->Text;
-
-			file.Events.insert(find_if(next, file.Events.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			insert_line(newdlg);
 		}
 
 		// Is there a B part after the overlap?
@@ -265,11 +255,8 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 			newdlg->Start = prevdlg->End;
 			newdlg->End = curdlg->End;
 			newdlg->Text = curdlg->Text;
-
-			file.Events.insert(find_if(next, file.Events.end(), std::bind(dialog_start_lt, _1, newdlg)), *newdlg);
+			insert_line(newdlg);
 		}
-
-		next--;
 	}
 }
 
