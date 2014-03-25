@@ -61,7 +61,7 @@ using std::placeholders::_1;
 DialogAutomation::DialogAutomation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , context(c)
-, local_manager(c->local_scripts)
+, local_manager(c->local_scripts.get())
 , local_scripts_changed(local_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 , global_manager(wxGetApp().global_scripts)
 , global_scripts_changed(global_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))

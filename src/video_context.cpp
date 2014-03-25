@@ -60,10 +60,17 @@
 
 #include <wx/msgdlg.h>
 
-VideoContext::VideoContext()
-: playback(this)
+static VideoContext *instance;
+
+VideoContext::VideoContext(agi::Context *c)
+: context(c)
+, playback(this)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 {
+	instance = this;
+	context->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
+	context->subsController->AddFileSaveListener(&VideoContext::OnSubtitlesSave, this);
+
 	Bind(EVT_VIDEO_ERROR, &VideoContext::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoContext::OnSubtitlesError, this);
 	Bind(wxEVT_TIMER, &VideoContext::OnPlayTimer, this);
@@ -80,12 +87,10 @@ VideoContext::VideoContext()
 	OPT_SUB("Video/Force BT.601", &VideoContext::Reload, this);
 }
 
-VideoContext::~VideoContext () {
-}
+VideoContext::~VideoContext () { }
 
 VideoContext *VideoContext::Get() {
-	static VideoContext instance;
-	return &instance;
+	return instance;
 }
 
 void VideoContext::Reset() {
@@ -107,12 +112,6 @@ void VideoContext::Reset() {
 	video_fps = agi::vfr::Framerate();
 	KeyframesOpen(keyframes);
 	if (!ovr_fps.IsLoaded()) TimecodesOpen(video_fps);
-}
-
-void VideoContext::SetContext(agi::Context *context) {
-	this->context = context;
-	context->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
-	context->subsController->AddFileSaveListener(&VideoContext::OnSubtitlesSave, this);
 }
 
 void VideoContext::SetVideo(const agi::fs::path &filename) {
@@ -208,7 +207,7 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		if (agi::fs::HasExtension(filename, "mkv"))
 			has_subtitles = MatroskaWrapper::HasSubtitles(filename);
 
-		provider->LoadSubtitles(context->ass);
+		provider->LoadSubtitles(context->ass.get());
 		VideoOpen();
 		KeyframesOpen(keyframes);
 		TimecodesOpen(FPS());
@@ -240,9 +239,9 @@ void VideoContext::OnSubtitlesCommit(int type, std::set<const AssDialogue *> con
 	if (!IsLoaded()) return;
 
 	if (changed.empty() || no_amend)
-		provider->LoadSubtitles(context->ass);
+		provider->LoadSubtitles(context->ass.get());
 	else
-		provider->UpdateSubtitles(context->ass, changed);
+		provider->UpdateSubtitles(context->ass.get(), changed);
 	if (!IsPlaying())
 		GetFrameAsync(frame_n);
 

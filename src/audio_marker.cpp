@@ -45,7 +45,7 @@ public:
 };
 
 AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, const char *opt_name)
-: vc(c->videoController)
+: vc(c->videoController.get())
 , keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
 , timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
 , enabled_slot(OPT_SUB(opt_name, &AudioMarkerProviderKeyframes::Update, this))
@@ -107,7 +107,7 @@ public:
 };
 
 VideoPositionMarkerProvider::VideoPositionMarkerProvider(agi::Context *c)
-: vc(c->videoController)
+: vc(c->videoController.get())
 , video_seek_slot(vc->AddSeekListener(&VideoPositionMarkerProvider::Update, this))
 , enable_opt_changed_slot(OPT_SUB("Audio/Display/Draw/Video Position", &VideoPositionMarkerProvider::OptChanged, this))
 {

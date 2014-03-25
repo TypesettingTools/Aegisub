@@ -150,6 +150,8 @@ SubsController::SubsController(agi::Context *context)
 	});
 }
 
+SubsController::~SubsController() { }
+
 void SubsController::SetSelectionController(SelectionController *selection_controller) {
 	active_line_connection = context->selectionController->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
 	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
@@ -254,7 +256,7 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 
 		FileSave();
 
-		writer->WriteFile(context->ass, filename, encoding);
+		writer->WriteFile(context->ass.get(), filename, encoding);
 	}
 	catch (...) {
 		autosaved_commit_id = old_autosaved_commit_id;
@@ -309,7 +311,7 @@ agi::fs::path SubsController::AutoSave() {
 
 	path /= str(boost::format("%s.%s.AUTOSAVE.ass") % name.string() % agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
 
-	SubtitleFormat::GetWriter(path)->WriteFile(context->ass, path);
+	SubtitleFormat::GetWriter(path)->WriteFile(context->ass.get(), path);
 	autosaved_commit_id = commit_id;
 
 	return path;
@@ -317,7 +319,7 @@ agi::fs::path SubsController::AutoSave() {
 
 bool SubsController::CanSave() const {
 	try {
-		return SubtitleFormat::GetWriter(filename)->CanSave(context->ass);
+		return SubtitleFormat::GetWriter(filename)->CanSave(context->ass.get());
 	}
 	catch (...) {
 		return false;

@@ -44,7 +44,6 @@
 #include "ass_file.h"
 #include "audio_controller.h"
 #include "audio_box.h"
-#include "auto4_base.h"
 #include "base_grid.h"
 #include "compat.h"
 #include "command/command.h"
@@ -52,12 +51,9 @@
 #include "dialog_manager.h"
 #include "dialog_version_check.h"
 #include "help_button.h"
-#include "initial_line_state.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
-#include "selection_controller.h"
-#include "search_replace_engine.h"
 #include "subs_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
@@ -205,32 +201,17 @@ FrameMain::FrameMain()
 	LOG_D("locale") << setlocale(LC_ALL, nullptr);
 #endif
 
-	StartupLog("Initializing context models");
-	memset(context.get(), 0, sizeof(*context));
-	context->ass = new AssFile;
-
 	StartupLog("Initializing context controls");
-	context->subsController = new SubsController(context.get());
 	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
 	context->subsController->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
 	context->subsController->AddFileSaveListener(&FrameMain::UpdateTitle, this);
-
-	context->audioController = new AudioController(context.get());
 	context->audioController->AddAudioOpenListener(&FrameMain::OnAudioOpen, this);
 	context->audioController->AddAudioCloseListener(&FrameMain::OnAudioClose, this);
-
-	context->local_scripts = new Automation4::LocalScriptManager(context.get());
-
-	context->selectionController = new SelectionController(context.get());
-	context->subsController->SetSelectionController(context->selectionController);
-
-	context->videoController = VideoContext::Get(); // derp
 	context->videoController->AddVideoOpenListener(&FrameMain::OnVideoOpen, this);
 
 	StartupLog("Initializing context frames");
 	context->parent = this;
 	context->frame = this;
-	context->previousFocus = nullptr;
 
 	StartupLog("Install PNG handler");
 	wxImage::AddHandler(new wxPNGHandler);
@@ -257,12 +238,8 @@ FrameMain::FrameMain()
 #endif
 
 	StartupLog("Create views and inner main window controls");
-	context->dialog = new DialogManager;
 	InitContents();
 	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this, agi::signal::_1);
-
-	StartupLog("Complete context initialization");
-	context->videoController->SetContext(context.get());
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(this));
@@ -307,10 +284,6 @@ FrameMain::~FrameMain () {
 	context->audioController->CloseAudio();
 
 	DestroyChildren();
-
-	delete context->ass;
-	delete context->audioController;
-	delete context->local_scripts;
 }
 
 void FrameMain::InitToolbar() {
@@ -339,8 +312,6 @@ void FrameMain::InitContents() {
 
 	StartupLog("Create subtitles grid");
 	context->subsGrid = new BaseGrid(Panel, context.get());
-	context->search = new SearchReplaceEngine(context.get());
-	context->initialLineState = new InitialLineState(context.get());
 
 	StartupLog("Create video box");
 	videoBox = new VideoBox(Panel, false, context.get());
@@ -530,8 +501,7 @@ void FrameMain::OnCloseWindow(wxCloseEvent &event) {
 		return;
 	}
 
-	delete context->dialog;
-	context->dialog = nullptr;
+	context->dialog.reset();
 
 	// Store maximization state
 	OPT_SET("App/Maximized")->SetBool(IsMaximized());
@@ -553,7 +523,7 @@ void FrameMain::OnAudioClose() {
 
 void FrameMain::OnSubtitlesOpen() {
 	UpdateTitle();
-	auto vc = context->videoController;
+	auto vc = context->videoController.get();
 
 	/// @todo figure out how to move this to the relevant controllers without
 	///       prompting for each file loaded/unloaded

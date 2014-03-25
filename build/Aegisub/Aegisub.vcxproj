@@ -329,6 +329,7 @@
     <ClCompile Include="$(SrcDir)command\video.cpp" />
     <ClCompile Include="$(SrcDir)command\vis_tool.cpp" />
     <ClCompile Include="$(SrcDir)compat.cpp" />
+    <ClCompile Include="$(SrcDir)context.cpp" />
     <ClCompile Include="$(SrcDir)crash_writer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>

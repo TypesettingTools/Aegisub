@@ -87,7 +87,7 @@ struct subtitle_attachment final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogAttachments(c->parent, c->ass).ShowModal();
+		DialogAttachments(c->parent, c->ass.get()).ShowModal();
 	}
 };
 

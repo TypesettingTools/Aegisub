@@ -205,7 +205,7 @@ struct time_snap_scene final : public validate_video_loaded {
 	STR_HELP("Set start and end of subtitles to the keyframes around current video frame")
 
 	void operator()(agi::Context *c) override {
-		VideoContext *con = c->videoController;
+		VideoContext *con = c->videoController.get();
 		if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
 
 		int curFrame = con->GetFrameN();

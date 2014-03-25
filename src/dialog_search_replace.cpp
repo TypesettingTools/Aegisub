@@ -136,7 +136,7 @@ void DialogSearchReplace::FindReplace(bool (SearchReplaceEngine::*func)()) {
 
 	c->search->Configure(*settings);
 	try {
-		(c->search->*func)();
+		((*c->search).*func)();
 	}
 	catch (std::exception const& e) {
 		wxMessageBox(to_wx(e.what()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);

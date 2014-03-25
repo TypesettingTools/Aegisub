@@ -178,7 +178,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 			from_wx(match_text->GetValue()), case_sensitive->IsChecked(),
 			static_cast<Mode>(match_mode->GetSelection()), select_unmatching_lines->GetValue(),
 			apply_to_comments->IsChecked(), apply_to_dialogue->IsChecked(),
-			dialogue_field->GetSelection(), con->ass);
+			dialogue_field->GetSelection(), con->ass.get());
 	}
 	catch (agi::Exception const&) {
 		Close();

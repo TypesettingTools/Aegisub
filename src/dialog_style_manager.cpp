@@ -477,7 +477,7 @@ void DialogStyleManager::CopyToClipboard(wxListBox *list, T const& v) {
 
 void DialogStyleManager::PasteToCurrent() {
 	add_styles(
-		std::bind(&AssFile::GetStyle, c->ass, _1),
+		[=](std::string const& str) { return c->ass->GetStyle(str); },
 		[=](AssStyle *s) { c->ass->Styles.push_back(*s); });
 
 	c->ass->Commit(_("style paste"), AssFile::COMMIT_STYLES);
@@ -554,8 +554,9 @@ void DialogStyleManager::OnCurrentCopy() {
 	int sel = get_single_sel(CurrentList);
 	if (sel == -1) return;
 
-	ShowCurrentEditor(styleMap[sel],
-		unique_name(std::bind(&AssFile::GetStyle, c->ass, _1), styleMap[sel]->name));
+	ShowCurrentEditor(styleMap[sel], unique_name(
+		[=](std::string const& str) { return c->ass->GetStyle(str); },
+		styleMap[sel]->name));
 }
 
 void DialogStyleManager::OnCurrentDelete() {

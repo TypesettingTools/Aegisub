@@ -90,7 +90,7 @@ class VideoContext final : public wxEvtHandler {
 
 	/// The video provider owned by the threaded frame source, or nullptr if no
 	/// video is open
-	VideoProvider *video_provider;
+	VideoProvider *video_provider = nullptr;
 
 	/// Asynchronous provider of video frames
 	std::unique_ptr<ThreadedFrameSource> provider;
@@ -162,15 +162,8 @@ class VideoContext final : public wxEvtHandler {
 	void Reset();
 
 public:
-	VideoContext();
+	VideoContext(agi::Context *context);
 	~VideoContext();
-
-	/// @brief Set the context that this is the video controller for
-	/// @param context Initialized project context
-	///
-	/// Once this is no longer a singleton this can probably be moved into
-	/// the constructor
-	void SetContext(agi::Context *context);
 
 	/// @brief Get the video provider used for the currently open video
 	VideoProvider *GetProvider() const { return video_provider; }

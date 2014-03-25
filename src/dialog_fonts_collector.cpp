@@ -183,7 +183,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 
 DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 : wxDialog(c->parent, -1, _("Fonts Collector"))
-, subs(c->ass)
+, subs(c->ass.get())
 {
 	SetIcon(GETICON(font_collector_button_16));
 

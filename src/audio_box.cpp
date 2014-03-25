@@ -75,11 +75,11 @@ enum {
 
 AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 : wxSashWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSW_3D | wxCLIP_CHILDREN)
-, controller(context->audioController)
+, controller(context->audioController.get())
 , context(context)
 , audio_open_connection(controller->AddAudioOpenListener(&AudioBox::OnAudioOpen, this))
 , panel(new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_RAISED))
-, audioDisplay(new AudioDisplay(panel, context->audioController, context))
+, audioDisplay(new AudioDisplay(panel, context->audioController.get(), context))
 , HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, -OPT_GET("Audio/Zoom/Horizontal")->GetInt(), -50, 30, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH))
 , VerticalZoom(new wxSlider(panel, Audio_Vertical_Zoom, OPT_GET("Audio/Zoom/Vertical")->GetInt(), 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
 , VolumeBar(new wxSlider(panel, Audio_Volume, OPT_GET("Audio/Volume")->GetInt(), 0, 100, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))

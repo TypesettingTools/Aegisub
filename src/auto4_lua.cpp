@@ -861,7 +861,7 @@ namespace Automation4 {
 		set_context(L, c);
 
 		GetFeatureFunction("validate");
-		auto subsobj = new LuaAssFile(L, c->ass);
+		auto subsobj = new LuaAssFile(L, c->ass.get());
 		push_value(L, transform_selection(L, c));
 
 		int err = lua_pcall(L, 3, 2, 0);
@@ -894,7 +894,7 @@ namespace Automation4 {
 		stackcheck.check_stack(0);
 
 		GetFeatureFunction("run");
-		auto subsobj = new LuaAssFile(L, c->ass, true, true);
+		auto subsobj = new LuaAssFile(L, c->ass.get(), true, true);
 		push_value(L, transform_selection(L, c));
 
 		try {
@@ -966,7 +966,7 @@ namespace Automation4 {
 		stackcheck.check_stack(0);
 
 		GetFeatureFunction("isactive");
-		auto subsobj = new LuaAssFile(L, c->ass);
+		auto subsobj = new LuaAssFile(L, c->ass.get());
 		push_value(L, transform_selection(L, c));
 
 		int err = lua_pcall(L, 3, 1, 0);
@@ -1071,7 +1071,7 @@ namespace Automation4 {
 		GetFeatureFunction("config");
 
 		// prepare function call
-		auto subsobj = new LuaAssFile(L, c->ass);
+		auto subsobj = new LuaAssFile(L, c->ass.get());
 		// stored options
 		lua_newtable(L); // TODO, nothing for now
 

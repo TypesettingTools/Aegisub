@@ -69,6 +69,7 @@ class SubsController {
 
 public:
 	SubsController(agi::Context *context);
+	~SubsController();
 
 	/// Set the selection controller to use
 	///

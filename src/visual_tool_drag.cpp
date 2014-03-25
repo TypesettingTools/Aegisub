@@ -81,7 +81,7 @@ void VisualToolDrag::UpdateToggleButtons() {
 
 void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 	// Toggle \move <-> \pos
-	VideoContext *vc = c->videoController;
+	VideoContext *vc = c->videoController.get();
 	for (auto line : selection) {
 		Vector2D p1, p2;
 		int t1, t2;

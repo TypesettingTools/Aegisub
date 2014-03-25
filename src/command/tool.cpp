@@ -120,7 +120,7 @@ struct tool_resampleres final : public Command {
 		c->videoController->Stop();
 		ResampleSettings settings;
 		if (DialogResample(c, settings).ShowModal() == wxID_OK)
-			ResampleResolution(c->ass, settings);
+			ResampleResolution(c->ass.get(), settings);
 	}
 };
 
