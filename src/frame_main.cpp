@@ -232,9 +232,6 @@ FrameMain::FrameMain()
 
 	StartupLog("Install PNG handler");
 	wxImage::AddHandler(new wxPNGHandler);
-#ifndef __APPLE__
-	wxSafeYield();
-#endif
 
 	StartupLog("Apply saved Maximized state");
 	if (OPT_GET("App/Maximized")->GetBool()) Maximize(true);
