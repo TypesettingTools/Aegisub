@@ -100,14 +100,21 @@ void Queue::Sync(Thunk thunk) {
 	std::mutex m;
 	std::condition_variable cv;
 	std::unique_lock<std::mutex> l(m);
+	std::exception_ptr e;
 	bool done = false;
 	DoInvoke([&]{
 		std::unique_lock<std::mutex> l(m);
-		thunk();
+		try {
+			thunk();
+		}
+		catch (...) {
+			e = std::current_exception();
+		}
 		done = true;
 		cv.notify_all();
 	});
 	cv.wait(l, [&]{ return done; });
+	if (e) std::rethrow_exception(e);
 }
 
 Queue& Main() {

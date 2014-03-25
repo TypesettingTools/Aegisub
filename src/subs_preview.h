@@ -38,6 +38,7 @@
 
 class AssFile;
 class AssStyle;
+class DialogProgress;
 class SubtitlesProvider;
 class VideoProvider;
 
@@ -57,6 +58,8 @@ class SubtitlesPreview final : public wxWindow {
 	std::unique_ptr<AssFile> sub_file;
 	/// Line used to render the specified text
 	AssDialogue* line;
+
+	std::unique_ptr<DialogProgress> progress;
 
 	/// Regenerate the bitmap
 	void UpdateBitmap();

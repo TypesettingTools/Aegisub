@@ -132,10 +132,10 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 	bmp = agi::util::make_unique<wxBitmap>(w, h, -1);
 	vid.reset(new DummyVideoProvider(0.0, 10, w, h, back_color, true));
 	try {
-		if (!provider) {
-			DialogProgress progress(this);
-			provider = SubtitlesProviderFactory::GetProvider(&progress);
-		}
+		if (!progress)
+			progress = agi::util::make_unique<DialogProgress>(this);
+		if (!provider)
+			provider = SubtitlesProviderFactory::GetProvider(progress.get());
 	}
 	catch (...) {
 		wxMessageBox(

@@ -94,7 +94,10 @@ std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, dou
 	}
 	catch (std::string const& err) { throw SubtitlesProviderErrorEvent(err); }
 
-	subs_provider->DrawSubtitles(*frame, time / 1000.);
+	try {
+		subs_provider->DrawSubtitles(*frame, time / 1000.);
+	}
+	catch (agi::UserCancelException const&) { }
 
 	return frame;
 }

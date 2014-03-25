@@ -56,6 +56,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/keyframe.h>
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include <wx/msgdlg.h>
 
@@ -123,9 +124,10 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 
 	bool commit_subs = false;
 	try {
-		DialogProgress progress(context->parent);
+		if (!progress)
+			progress = new DialogProgress(context->parent);
 		auto old_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		provider.reset(new ThreadedFrameSource(filename, old_matrix, this, &progress));
+		provider.reset(new ThreadedFrameSource(filename, old_matrix, this, progress));
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
 

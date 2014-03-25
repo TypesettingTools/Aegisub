@@ -49,10 +49,14 @@
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
+#include <atomic>
 #include <boost/gil/gil_all.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 #include <memory>
 #include <mutex>
+
+#include <wx/intl.h>
+#include <wx/thread.h>
 
 #ifdef __APPLE__
 #include <sys/param.h>
@@ -88,9 +92,39 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 #define CONFIG_PATH nullptr
 #endif
 
+// Stuff used on the cache thread, owned by a shared_ptr in case the provider
+// gets deleted before the cache finishing updating
+struct cache_thread_shared {
+	ASS_Renderer *renderer = nullptr;
+	std::atomic<bool> ready{false};
+	~cache_thread_shared() { if (renderer) ass_renderer_done(renderer); }
+};
+
 class LibassSubtitlesProvider final : public SubtitlesProvider {
-	ASS_Renderer* ass_renderer = nullptr;
+	agi::BackgroundRunner *br;
+	std::shared_ptr<cache_thread_shared> shared;
 	ASS_Track* ass_track = nullptr;
+
+	ASS_Renderer *renderer() {
+		if (shared->ready)
+			return shared->renderer;
+
+		auto block = [&]{
+			br->Run([=](agi::ProgressSink *ps) {
+				ps->SetTitle(from_wx(_("Updating font index")));
+				ps->SetMessage(from_wx(_("This may take several minutes")));
+				ps->SetIndeterminate();
+				while (!shared->ready && !ps->IsCancelled())
+					agi::util::sleep_for(250);
+			});
+		};
+
+		if (wxThread::IsMain())
+			block();
+		else
+			agi::dispatch::Main().Sync(block);
+		return shared->renderer;
+	}
 
 public:
 	LibassSubtitlesProvider(agi::BackgroundRunner *br);
@@ -100,34 +134,24 @@ public:
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 };
 
-LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br) {
-	auto done = std::make_shared<bool>(false);
-	auto renderer = std::make_shared<ASS_Renderer*>(nullptr);
-	cache_queue->Async([=]{
+LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
+: br(br)
+, shared(std::make_shared<cache_thread_shared>())
+{
+	auto state = shared;
+	cache_queue->Async([state]{
 		auto ass_renderer = ass_renderer_init(library);
 		if (ass_renderer) {
 			ass_set_font_scale(ass_renderer, 1.);
 			ass_set_fonts(ass_renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
 		}
-		*done = true;
-		*renderer = ass_renderer;
+		state->renderer = ass_renderer;
+		state->ready = true;
 	});
-
-	br->Run([=](agi::ProgressSink *ps) {
-		ps->SetTitle(from_wx(_("Updating font index")));
-		ps->SetMessage(from_wx(_("This may take several minutes")));
-		ps->SetIndeterminate();
-		while (!*done && !ps->IsCancelled())
-			agi::util::sleep_for(250);
-	});
-
-	ass_renderer = *renderer;
-	if (!ass_renderer) throw "ass_renderer_init failed";
 }
 
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 	if (ass_track) ass_free_track(ass_track);
-	if (ass_renderer) ass_renderer_done(ass_renderer);
 }
 
 struct Writer {
@@ -166,9 +190,9 @@ void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
 #define _a(c) ((c)&0xFF)
 
 void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
-	ass_set_frame_size(ass_renderer, frame.width, frame.height);
+	ass_set_frame_size(renderer(), frame.width, frame.height);
 
-	ASS_Image* img = ass_render_frame(ass_renderer, ass_track, int(time * 1000), nullptr);
+	ASS_Image* img = ass_render_frame(renderer(), ass_track, int(time * 1000), nullptr);
 
 	// libass actually returns several alpha-masked monochrome images.
 	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.

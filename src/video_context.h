@@ -46,6 +46,7 @@
 #include <wx/timer.h>
 
 class AssDialogue;
+class DialogProgress;
 class ThreadedFrameSource;
 class VideoProvider;
 struct SubtitlesProviderErrorEvent;
@@ -84,6 +85,8 @@ class VideoContext final : public wxEvtHandler {
 	agi::signal::Signal<AspectRatio, double> ARChange;
 
 	agi::Context *context;
+
+	DialogProgress *progress = nullptr;
 
 	/// The video provider owned by the threaded frame source, or nullptr if no
 	/// video is open
