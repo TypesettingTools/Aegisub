@@ -35,7 +35,10 @@ class SubtitlesProvider;
 class VideoProvider;
 class VideoProviderError;
 struct VideoFrame;
-namespace agi { namespace dispatch { class Queue; } }
+namespace agi {
+	class BackgroundRunner;
+	namespace dispatch { class Queue; }
+}
 
 /// @class ThreadedFrameSource
 /// @brief An asynchronous video decoding and subtitle rendering wrapper
@@ -106,7 +109,7 @@ public:
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to
-	ThreadedFrameSource(agi::fs::path const& filename, std::string const& colormatrix, wxEvtHandler *parent);
+	ThreadedFrameSource(agi::fs::path const& filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
 	~ThreadedFrameSource();
 };
 

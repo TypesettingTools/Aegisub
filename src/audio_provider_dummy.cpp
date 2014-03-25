@@ -88,7 +88,7 @@ public:
 };
 }
 
-std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& file) {
+std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
 	if (!boost::starts_with(file.string(), "dummy-audio:"))
 		return {};
 	return agi::util::make_unique<DummyAudioProvider>(file);

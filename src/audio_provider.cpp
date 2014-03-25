@@ -37,13 +37,13 @@
 #include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
-#include "dialog_progress.h"
 #include "factory_manager.h"
 #include "frame_main.h"
 #include "main.h"
 #include "options.h"
 #include "utils.h"
 
+#include <libaegisub/background_runner.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
@@ -104,10 +104,10 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	}
 }
 
-std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& filename);
-std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename);
-std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& filename);
-std::unique_ptr<AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& filename);
+std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *);
+std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *);
+std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *);
+std::unique_ptr<AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *);
 
 std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> source_provider);
 std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> source_provider);
@@ -117,7 +117,7 @@ std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvi
 namespace {
 	struct factory {
 		const char *name;
-		std::unique_ptr<AudioProvider> (*create)(agi::fs::path const&);
+		std::unique_ptr<AudioProvider> (*create)(agi::fs::path const&, agi::BackgroundRunner *);
 		bool hidden;
 	};
 
@@ -137,7 +137,7 @@ std::vector<std::string> AudioProviderFactory::GetClasses() {
 	return ::GetClasses(boost::make_iterator_range(std::begin(providers), std::end(providers)));
 }
 
-std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path const& filename) {
+std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path const& filename, agi::BackgroundRunner *br) {
 	auto preferred = OPT_GET("Audio/Provider")->GetString();
 	auto sorted = GetSorted(boost::make_iterator_range(std::begin(providers), std::end(providers)), preferred);
 
@@ -148,7 +148,7 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 
 	for (auto const& factory : sorted) {
 		try {
-			provider = factory->create(filename);
+			provider = factory->create(filename, br);
 			if (!provider) continue;
 			LOG_I("audio_provider") << "Using audio provider: " << factory->name;
 			break;
@@ -189,13 +189,11 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 	if (!cache || !needsCache)
 		return CreateLockAudioProvider(std::move(provider));
 
-	DialogProgress progress(wxGetApp().frame, _("Load audio"));
-
 	// Convert to RAM
-	if (cache == 1) return CreateRAMAudioProvider(std::move(provider), &progress);
+	if (cache == 1) return CreateRAMAudioProvider(std::move(provider), br);
 
 	// Convert to HD
-	if (cache == 2) return CreateHDAudioProvider(std::move(provider), &progress);
+	if (cache == 2) return CreateHDAudioProvider(std::move(provider), br);
 
 	throw agi::AudioCacheOpenError("Unknown caching method", nullptr);
 }

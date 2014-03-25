@@ -283,7 +283,7 @@ bool PortAudioPlayer::IsPlaying() {
 	return !!Pa_IsStreamActive(stream);
 }
 
-std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *provider) {
+std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *provider, wxWindow *) {
 	return agi::util::make_unique<PortAudioPlayer>(provider);
 }
 

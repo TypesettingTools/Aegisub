@@ -58,7 +58,7 @@ struct reload_all final : public Command {
 	void operator()(agi::Context *c) override {
 		wxGetApp().global_scripts->Reload();
 		c->local_scripts->Reload();
-		StatusTimeout(_("Reloaded all Automation scripts"));
+		c->frame->StatusTimeout(_("Reloaded all Automation scripts"));
 	}
 };
 
@@ -70,7 +70,7 @@ struct reload_autoload final : public Command {
 
 	void operator()(agi::Context *c) override {
 		wxGetApp().global_scripts->Reload();
-		StatusTimeout(_("Reloaded autoload Automation scripts"));
+		c->frame->StatusTimeout(_("Reloaded autoload Automation scripts"));
 	}
 };
 

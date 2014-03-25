@@ -27,7 +27,7 @@ namespace {
 	struct factory {
 		std::string name;
 		std::string subtype;
-		std::unique_ptr<SubtitlesProvider> (*create)(std::string const& subtype);
+		std::unique_ptr<SubtitlesProvider> (*create)(std::string const& subtype, agi::BackgroundRunner *br);
 		bool hidden;
 	};
 
@@ -47,14 +47,14 @@ std::vector<std::string> SubtitlesProviderFactory::GetClasses() {
 	return ::GetClasses(factories());
 }
 
-std::unique_ptr<SubtitlesProvider> SubtitlesProviderFactory::GetProvider() {
+std::unique_ptr<SubtitlesProvider> SubtitlesProviderFactory::GetProvider(agi::BackgroundRunner *br) {
 	auto preferred = OPT_GET("Subtitle/Provider")->GetString();
 	auto sorted = GetSorted(factories(), preferred);
 
 	std::string error;
 	for (auto factory : sorted) {
 		try {
-			auto provider = factory->create(factory->subtype);
+			auto provider = factory->create(factory->subtype, br);
 			if (provider) return provider;
 		}
 		catch (agi::UserCancelException const&) { throw; }

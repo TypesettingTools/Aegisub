@@ -358,7 +358,7 @@ public:
 	}
 };
 
-std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename) {
+std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *) {
 	bool wrong_file_type = true;
 	std::string msg;
 

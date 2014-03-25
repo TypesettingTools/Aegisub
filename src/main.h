@@ -44,7 +44,9 @@ class FrameMain;
 
 namespace Automation4 { class AutoloadScriptManager; }
 
-class AegisubApp: public wxApp {
+class AegisubApp : public wxApp {
+	friend class FrameMain;
+
 	bool OnInit() override;
 	int OnExit() override;
 	int OnRun() override;
@@ -65,10 +67,10 @@ class AegisubApp: public wxApp {
 	// our ticket to catch exceptions happening in event handlers.
 	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const override;
 
+	FrameMain *frame;
 public:
 	AegisubApp();
 	AegisubLocale locale;
-	FrameMain *frame;
 	Automation4::AutoloadScriptManager *global_scripts;
 
 	// Apple events

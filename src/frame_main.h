@@ -49,7 +49,7 @@ class VideoBox;
 
 namespace agi { struct Context; class OptionValue; }
 
-class FrameMain: public wxFrame {
+class FrameMain : public wxFrame {
 	friend class AegisubApp;
 	friend class AegisubFileDropTarget;
 

@@ -48,7 +48,9 @@ public:
 	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
 };
 
+namespace agi { class BackgroundRunner; }
+
 struct SubtitlesProviderFactory {
-	static std::unique_ptr<SubtitlesProvider> GetProvider();
+	static std::unique_ptr<SubtitlesProvider> GetProvider(agi::BackgroundRunner *br);
 	static std::vector<std::string> GetClasses();
 };

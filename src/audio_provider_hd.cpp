@@ -66,6 +66,7 @@ public:
 
 		file = agi::util::make_unique<agi::temp_file_mapping>(cache_dir / filename, num_samples * bps);
 		br->Run([&] (agi::ProgressSink *ps) {
+			ps->SetTitle(from_wx(_("Load audio")));
 			ps->SetMessage(from_wx(_("Reading to Hard Disk cache")));
 
 			int64_t block = 65536;

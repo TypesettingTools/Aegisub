@@ -461,7 +461,7 @@ void AlsaPlayer::SetVolume(double vol)
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *provider)
+std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *provider, wxWindow *)
 {
 	return agi::util::make_unique<AlsaPlayer>(provider);
 }

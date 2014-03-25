@@ -47,18 +47,18 @@ AudioPlayer::AudioPlayer(AudioProvider *provider)
 {
 }
 
-std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *providers);
-std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *providers);
-std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *providers);
-std::unique_ptr<AudioPlayer> CreateOpenALPlayer(AudioProvider *providers);
-std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *providers);
-std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(AudioProvider *providers);
-std::unique_ptr<AudioPlayer> CreateOSSPlayer(AudioProvider *providers);
+std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateOpenALPlayer(AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateOSSPlayer(AudioProvider *providers, wxWindow *window);
 
 namespace {
 	struct factory {
 		const char *name;
-		std::unique_ptr<AudioPlayer> (*create)(AudioProvider *);
+		std::unique_ptr<AudioPlayer> (*create)(AudioProvider *, wxWindow *window);
 		bool hidden;
 	};
 
@@ -89,7 +89,7 @@ std::vector<std::string> AudioPlayerFactory::GetClasses() {
 	return ::GetClasses(boost::make_iterator_range(std::begin(factories), std::end(factories)));
 }
 
-std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider) {
+std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider, wxWindow *window) {
 	if (std::distance(std::begin(factories), std::end(factories)) == 0)
 		throw agi::NoAudioPlayersError("No audio players are available.", nullptr);
 
@@ -99,7 +99,7 @@ std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *p
 	std::string error;
 	for (auto factory : sorted) {
 		try {
-			return factory->create(provider);
+			return factory->create(provider, window);
 		}
 		catch (agi::AudioPlayerOpenError const& err) {
 			error += std::string(factory->name) + " factory: " + err.GetChainedMessage() + "\n";

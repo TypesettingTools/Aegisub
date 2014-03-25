@@ -97,7 +97,8 @@ std::shared_ptr<VideoFrame> DummyVideoProvider::GetFrame(int) {
 	return std::make_shared<VideoFrame>(data.data(), width, height, width * 4, false);
 }
 
-std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string const&) {
+namespace agi { class BackgroundRunner; }
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string const&, agi::BackgroundRunner *) {
 	if (!boost::starts_with(filename.string(), "?dummy"))
 		return {};
 

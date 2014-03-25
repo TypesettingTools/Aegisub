@@ -72,6 +72,7 @@ public:
 		}
 
 		br->Run([&](agi::ProgressSink *ps) {
+			ps->SetTitle(from_wx(_("Load audio")));
 			ps->SetMessage(from_wx(_("Reading into RAM")));
 
 			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();

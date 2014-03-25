@@ -310,7 +310,8 @@ std::shared_ptr<VideoFrame> AvisynthVideoProvider::GetFrame(int n) {
 }
 }
 
-std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string const& colormatrix) {
+namespace agi { class BackgroundRunner; }
+std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *) {
 	return agi::util::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
 #endif // HAVE_AVISYNTH

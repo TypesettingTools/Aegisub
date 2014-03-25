@@ -61,15 +61,16 @@ class FFmpegSourceAudioProvider final : public AudioProvider, FFmpegSourceProvid
 	}
 
 public:
-	FFmpegSourceAudioProvider(agi::fs::path const& filename);
+	FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br);
 
 	bool NeedsCache() const override { return true; }
 };
 
 /// @brief Constructor
 /// @param filename The filename to open
-FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filename) try
-: AudioSource(nullptr, FFMS_DestroyAudioSource)
+FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br) try
+: FFmpegSourceProvider(br)
+, AudioSource(nullptr, FFMS_DestroyAudioSource)
 {
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -206,8 +207,8 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 }
 
-std::unique_ptr<AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& file) {
-	return agi::util::make_unique<FFmpegSourceAudioProvider>(file);
+std::unique_ptr<AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *br) {
+	return agi::util::make_unique<FFmpegSourceAudioProvider>(file, br);
 }
 
 #endif /* WITH_FFMS2 */

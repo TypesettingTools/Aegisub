@@ -147,7 +147,7 @@ void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) 
 }
 }
 
-std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file) {
+std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
 	return agi::util::make_unique<AvisynthAudioProvider>(file);
 }
 #endif

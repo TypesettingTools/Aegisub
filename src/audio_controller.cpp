@@ -39,6 +39,7 @@
 #include "ass_file.h"
 #include "audio_timing.h"
 #include "compat.h"
+#include "dialog_progress.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
@@ -113,7 +114,7 @@ void AudioController::OnComputerResuming(wxPowerEvent &)
 	{
 		try
 		{
-			player = AudioPlayerFactory::GetAudioPlayer(provider.get());
+			player = AudioPlayerFactory::GetAudioPlayer(provider.get(), context->parent);
 		}
 		catch (...)
 		{
@@ -133,7 +134,7 @@ void AudioController::OnAudioPlayerChanged()
 
 	try
 	{
-		player = AudioPlayerFactory::GetAudioPlayer(provider.get());
+		player = AudioPlayerFactory::GetAudioPlayer(provider.get(), context->parent);
 	}
 	catch (...)
 	{
@@ -157,7 +158,8 @@ void AudioController::OpenAudio(agi::fs::path const& url)
 
 	std::unique_ptr<AudioProvider> new_provider;
 	try {
-		new_provider = AudioProviderFactory::GetProvider(url);
+		DialogProgress progress(context->parent);
+		new_provider = AudioProviderFactory::GetProvider(url, &progress);
 		config::path->SetToken("?audio", url);
 	}
 	catch (agi::UserCancelException const&) {
@@ -173,7 +175,7 @@ void AudioController::OpenAudio(agi::fs::path const& url)
 
 	try
 	{
-		player = AudioPlayerFactory::GetAudioPlayer(provider.get());
+		player = AudioPlayerFactory::GetAudioPlayer(provider.get(), context->parent);
 	}
 	catch (...)
 	{

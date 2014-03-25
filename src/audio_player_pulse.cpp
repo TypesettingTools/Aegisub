@@ -335,7 +335,7 @@ void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 }
 }
 
-std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(AudioProvider *provider) {
+std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(AudioProvider *provider, wxWindow *) {
 	return agi::util::make_unique<PulseAudioPlayer>(provider);
 }
 #endif // WITH_LIBPULSE

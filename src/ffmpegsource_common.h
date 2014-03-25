@@ -40,6 +40,8 @@
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/scoped_ptr.h>
 
+namespace agi { class BackgroundRunner; }
+
 /// Index all tracks
 #define FFMS_TRACKMASK_ALL		-1
 /// Index no tracks
@@ -50,9 +52,10 @@
 class FFmpegSourceProvider {
 	friend class FFmpegSourceCacheCleaner;
 	agi::scoped_holder<bool> COMInited; ///< COM initialization state
+	agi::BackgroundRunner *br;
 
 public:
-	FFmpegSourceProvider();
+	FFmpegSourceProvider(agi::BackgroundRunner *br);
 
 	/// Logging level constants from avutil/log.h
 	enum FFMS_LogLevel {

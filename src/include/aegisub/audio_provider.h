@@ -88,12 +88,14 @@ public:
 	}
 };
 
+namespace agi { class BackgroundRunner; }
+
 struct AudioProviderFactory {
 	static std::vector<std::string> GetClasses();
 
 	/// Get a provider for the file
 	/// @param filename URI to open
-	static std::unique_ptr<AudioProvider> GetProvider(agi::fs::path const& filename);
+	static std::unique_ptr<AudioProvider> GetProvider(agi::fs::path const& filename, agi::BackgroundRunner *br);
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception)

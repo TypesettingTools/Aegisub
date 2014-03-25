@@ -19,8 +19,9 @@
 #include <vector>
 
 class SubtitlesProvider;
+namespace agi { class BackgroundRunner; }
 
 namespace csri {
 	std::vector<std::string> List();
-	std::unique_ptr<SubtitlesProvider> Create(std::string const& subtype);
+	std::unique_ptr<SubtitlesProvider> Create(std::string const& subtype, agi::BackgroundRunner *br);
 }

@@ -139,7 +139,7 @@ std::vector<std::string> List() {
 	return final;
 }
 
-std::unique_ptr<SubtitlesProvider> Create(std::string const& name) {
+std::unique_ptr<SubtitlesProvider> Create(std::string const& name, agi::BackgroundRunner *) {
 	return agi::util::make_unique<CSRISubtitlesProvider>(name);
 }
 }

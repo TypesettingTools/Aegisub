@@ -99,7 +99,7 @@ struct video_aspect_cinematic final : public validator_video_loaded {
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->videoController->SetAspectRatio(AspectRatio::Cinematic);
-		wxGetApp().frame->SetDisplayMode(1,-1);
+		c->frame->SetDisplayMode(1,-1);
 	}
 };
 
@@ -141,7 +141,7 @@ struct video_aspect_custom final : public validator_video_loaded {
 			wxMessageBox(_("Invalid value! Aspect ratio must be between 0.5 and 5.0."),_("Invalid Aspect Ratio"),wxOK | wxICON_ERROR | wxCENTER);
 		else {
 			c->videoController->SetAspectRatio(numval);
-			wxGetApp().frame->SetDisplayMode(1,-1);
+			c->frame->SetDisplayMode(1,-1);
 		}
 	}
 };
@@ -160,7 +160,7 @@ struct video_aspect_default final : public validator_video_loaded {
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->videoController->SetAspectRatio(AspectRatio::Default);
-		wxGetApp().frame->SetDisplayMode(1,-1);
+		c->frame->SetDisplayMode(1,-1);
 	}
 };
 
@@ -178,7 +178,7 @@ struct video_aspect_full final : public validator_video_loaded {
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->videoController->SetAspectRatio(AspectRatio::Fullscreen);
-		wxGetApp().frame->SetDisplayMode(1,-1);
+		c->frame->SetDisplayMode(1,-1);
 	}
 };
 
@@ -196,7 +196,7 @@ struct video_aspect_wide final : public validator_video_loaded {
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		c->videoController->SetAspectRatio(AspectRatio::Widescreen);
-		wxGetApp().frame->SetDisplayMode(1,-1);
+		c->frame->SetDisplayMode(1,-1);
 	}
 };
 
@@ -238,7 +238,7 @@ struct video_cycle_subtitles_provider final : public cmd::Command {
 		if (it == end(providers)) it = begin(providers);
 
 		OPT_SET("Subtitle/Provider")->SetString(*it);
-		StatusTimeout(wxString::Format(_("Subtitles provider set to %s"), to_wx(*it)), 5000);
+		c->frame->StatusTimeout(wxString::Format(_("Subtitles provider set to %s"), to_wx(*it)), 5000);
 	}
 };
 

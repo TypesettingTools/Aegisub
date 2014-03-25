@@ -4,6 +4,7 @@ class AudioController;
 class AssDialogue;
 class AudioKaraoke;
 class DialogManager;
+class FrameMain;
 class SearchReplaceEngine;
 class InitialLineState;
 class SelectionController;
@@ -41,8 +42,9 @@ struct Context {
 	// Views (i.e. things that should eventually not be here at all)
 	AudioBox *audioBox;
 	AudioKaraoke *karaoke;
-	DialogManager *dialog;
 	BaseGrid *subsGrid;
+	DialogManager *dialog;
+	FrameMain *frame;
 	VideoDisplay *videoDisplay;
 };
 

@@ -38,6 +38,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "dialog_progress.h"
 #include "subs_preview.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
@@ -51,7 +52,7 @@
 SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, agi::Color col)
 : wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
 , style(new AssStyle)
-, back_color(std::move(col))
+, back_color(col)
 , sub_file(agi::util::make_unique<AssFile>())
 , line(new AssDialogue)
 {
@@ -131,8 +132,10 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 	bmp = agi::util::make_unique<wxBitmap>(w, h, -1);
 	vid.reset(new DummyVideoProvider(0.0, 10, w, h, back_color, true));
 	try {
-		if (!provider)
-			provider = SubtitlesProviderFactory::GetProvider();
+		if (!provider) {
+			DialogProgress progress(this);
+			provider = SubtitlesProviderFactory::GetProvider(&progress);
+		}
 	}
 	catch (...) {
 		wxMessageBox(

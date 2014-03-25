@@ -40,6 +40,7 @@
 #include <vector>
 
 class AudioProvider;
+class wxWindow;
 
 class AudioPlayer {
 protected:
@@ -62,5 +63,5 @@ public:
 
 struct AudioPlayerFactory {
 	static std::vector<std::string> GetClasses();
-	static std::unique_ptr<AudioPlayer> GetAudioPlayer(AudioProvider *provider);
+	static std::unique_ptr<AudioPlayer> GetAudioPlayer(AudioProvider *provider, wxWindow *window);
 };

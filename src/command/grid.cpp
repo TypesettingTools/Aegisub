@@ -37,6 +37,7 @@
 #include "../ass_file.h"
 #include "../audio_controller.h"
 #include "../audio_timing.h"
+#include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
@@ -257,7 +258,7 @@ struct grid_tag_cycle_hiding final : public Command {
 	STR_DISP("Cycle Tag Hiding Mode")
 	STR_HELP("Cycle through tag hiding modes")
 
-	void operator()(agi::Context *) override {
+	void operator()(agi::Context *c) override {
 		int tagMode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 
 		// Cycle to next
@@ -268,7 +269,7 @@ struct grid_tag_cycle_hiding final : public Command {
 		if (tagMode == 0) message = _("ASS Override Tag mode set to show full tags.");
 		if (tagMode == 1) message = _("ASS Override Tag mode set to simplify tags.");
 		if (tagMode == 2) message = _("ASS Override Tag mode set to hide tags.");
-		StatusTimeout(message,10000);
+		c->frame->StatusTimeout(message,10000);
 
 		// Set option
 		OPT_SET("Subtitle/Grid/Hide Overrides")->SetInt(tagMode);

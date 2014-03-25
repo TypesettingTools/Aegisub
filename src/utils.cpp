@@ -97,10 +97,6 @@ std::string float_to_string(double val) {
 	return s;
 }
 
-void StatusTimeout(wxString const& msg, int ms) {
-	wxGetApp().frame->StatusTimeout(msg, ms);
-}
-
 int SmallestPowerOf2(int x) {
 	x--;
 	x |= (x >> 1);

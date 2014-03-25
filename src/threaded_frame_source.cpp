@@ -99,20 +99,20 @@ std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, dou
 	return frame;
 }
 
-static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *parent) {
+static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_handler, agi::BackgroundRunner *br) {
 	try {
-		return SubtitlesProviderFactory::GetProvider();
+		return SubtitlesProviderFactory::GetProvider(br);
 	}
 	catch (std::string const& err) {
-		parent->AddPendingEvent(SubtitlesProviderErrorEvent(err));
+		evt_handler->AddPendingEvent(SubtitlesProviderErrorEvent(err));
 		return nullptr;
 	}
 }
 
-ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, std::string const& colormatrix, wxEvtHandler *parent)
+ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
 : worker(agi::dispatch::Create())
-, subs_provider(get_subs_provider(parent))
-, video_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix))
+, subs_provider(get_subs_provider(parent, br))
+, video_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
 , parent(parent)
 {
 }

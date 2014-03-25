@@ -40,13 +40,11 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "dialog_progress.h"
-#include "frame_main.h"
+#include "compat.h"
 #include "include/aegisub/subtitles_provider.h"
-#include "main.h"
-#include "utils.h"
 #include "video_frame.h"
 
+#include <libaegisub/background_runner.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
@@ -95,14 +93,14 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 	ASS_Track* ass_track = nullptr;
 
 public:
-	LibassSubtitlesProvider();
+	LibassSubtitlesProvider(agi::BackgroundRunner *br);
 	~LibassSubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs) override;
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 };
 
-LibassSubtitlesProvider::LibassSubtitlesProvider() {
+LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br) {
 	auto done = std::make_shared<bool>(false);
 	auto renderer = std::make_shared<ASS_Renderer*>(nullptr);
 	cache_queue->Async([=]{
@@ -115,8 +113,9 @@ LibassSubtitlesProvider::LibassSubtitlesProvider() {
 		*renderer = ass_renderer;
 	});
 
-	DialogProgress progress(wxGetApp().frame, _("Updating font index"), _("This may take several minutes"));
-	progress.Run([=](agi::ProgressSink *ps) {
+	br->Run([=](agi::ProgressSink *ps) {
+		ps->SetTitle(from_wx(_("Updating font index")));
+		ps->SetMessage(from_wx(_("This may take several minutes")));
 		ps->SetIndeterminate();
 		while (!*done && !ps->IsCancelled())
 			agi::util::sleep_for(250);
@@ -205,8 +204,8 @@ void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 }
 
 namespace libass {
-std::unique_ptr<SubtitlesProvider> Create(std::string const&) {
-	return agi::util::make_unique<LibassSubtitlesProvider>();
+std::unique_ptr<SubtitlesProvider> Create(std::string const&, agi::BackgroundRunner *br) {
+	return agi::util::make_unique<LibassSubtitlesProvider>(br);
 }
 
 void CacheFonts() {

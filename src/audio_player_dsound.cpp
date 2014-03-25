@@ -84,7 +84,7 @@ class DirectSoundPlayer final : public AudioPlayer {
 	DirectSoundPlayerThread *thread = nullptr;
 
 public:
-	DirectSoundPlayer(AudioProvider *provider);
+	DirectSoundPlayer(AudioProvider *provider, wxWindow *parent);
 	~DirectSoundPlayer();
 
 	void Play(int64_t start,int64_t count);
@@ -99,7 +99,7 @@ public:
 	void SetVolume(double vol) { volume = vol; }
 };
 
-DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider)
+DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider, wxWindow *parent)
 : AudioPlayer(provider)
 {
 	// Initialize the DirectSound object
@@ -108,7 +108,7 @@ DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider)
 	if (FAILED(res)) throw agi::AudioPlayerOpenError("Failed initializing DirectSound", 0);
 
 	// Set DirectSound parameters
-	directSound->SetCooperativeLevel((HWND)wxGetApp().frame->GetHandle(),DSSCL_PRIORITY);
+	directSound->SetCooperativeLevel((HWND)parent->GetHandle(),DSSCL_PRIORITY);
 
 	// Create the wave format structure
 	WAVEFORMATEX waveFormat;
@@ -370,8 +370,8 @@ void DirectSoundPlayerThread::Stop() {
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *provider) {
-	return agi::util::make_unique<DirectSoundPlayer>(provider);
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *provider, wxWindow *parent) {
+	return agi::util::make_unique<DirectSoundPlayer>(provider, parent);
 }
 
 #endif // WITH_DIRECTSOUND

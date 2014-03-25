@@ -229,6 +229,7 @@ FrameMain::FrameMain()
 
 	StartupLog("Initializing context frames");
 	context->parent = this;
+	context->frame = this;
 	context->previousFocus = nullptr;
 
 	StartupLog("Install PNG handler");

@@ -38,12 +38,12 @@
 #include "ffmpegsource_common.h"
 
 #include "compat.h"
-#include "dialog_progress.h"
 #include "frame_main.h"
 #include "main.h"
 #include "options.h"
 #include "utils.h"
 
+#include <libaegisub/background_runner.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/log.h>
@@ -66,8 +66,9 @@ static void deinit_com(bool) {
 static void deinit_com(bool) { }
 #endif
 
-FFmpegSourceProvider::FFmpegSourceProvider()
+FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 : COMInited(false, deinit_com)
+, br(br)
 {
 #ifdef _WIN32
 	HRESULT res = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
@@ -85,9 +86,6 @@ FFmpegSourceProvider::FFmpegSourceProvider()
 /// @param Indexer		A pointer to the indexer object representing the file to be indexed
 /// @param CacheName    The filename of the output index file
 /// @param Trackmask    A binary mask of the track numbers to index
-/// @param IgnoreDecodeErrors	True if audio decoding errors will be tolerated, false otherwise
-/// @return				Returns the index object on success, nullptr otherwise
-///
 FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::path const& CacheName, int Trackmask, FFMS_IndexErrorHandling IndexEH) {
 	char FFMSErrMsg[1024];
 	FFMS_ErrorInfo ErrInfo;
@@ -97,12 +95,11 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::pat
 	ErrInfo.SubType		= FFMS_ERROR_SUCCESS;
 	std::string MsgString;
 
-	// set up progress dialog callback
-	DialogProgress Progress(wxGetApp().frame, _("Indexing"), _("Reading timecodes and frame/sample data"));
-
 	// index all audio tracks
 	FFMS_Index *Index;
-	Progress.Run([&](agi::ProgressSink *ps) {
+	br->Run([&](agi::ProgressSink *ps) {
+		ps->SetTitle(from_wx(_("Indexing")));
+		ps->SetMessage(from_wx(_("Reading timecodes and frame/sample data")));
 		struct progress {
 			agi::ProgressSink *ps;
 			int calls;

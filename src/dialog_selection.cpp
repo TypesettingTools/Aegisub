@@ -26,6 +26,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "frame_main.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -223,7 +224,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 	if (count == 0)
 		wxMessageBox(message, _("Selection"), wxOK | wxCENTER, this);
 	else
-		StatusTimeout(message);
+		con->frame->StatusTimeout(message);
 
 	AssDialogue *new_active = con->selectionController->GetActiveLine();
 	if (new_sel.size() && !new_sel.count(new_active))

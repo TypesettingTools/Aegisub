@@ -26,6 +26,7 @@
 #include "charset_detect.h"
 #include "compat.h"
 #include "command/command.h"
+#include "Frame_main.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "selection_controller.h"
@@ -138,13 +139,13 @@ SubsController::SubsController(agi::Context *context)
 		try {
 			auto fn = AutoSave();
 			if (!fn.empty())
-				StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
+				context->frame->StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
 		}
 		catch (const agi::Exception& err) {
-			StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
+			context->frame->StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
 		}
 		catch (...) {
-			StatusTimeout("Unhandled exception when attempting to autosave file.");
+			context->frame->StatusTimeout("Unhandled exception when attempting to autosave file.");
 		}
 	});
 }

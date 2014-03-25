@@ -41,6 +41,7 @@
 #include "ass_time.h"
 #include "audio_controller.h"
 #include "compat.h"
+#include "dialog_progress.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
@@ -122,8 +123,9 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 
 	bool commit_subs = false;
 	try {
+		DialogProgress progress(context->parent);
 		auto old_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		provider.reset(new ThreadedFrameSource(filename, old_matrix, this));
+		provider.reset(new ThreadedFrameSource(filename, old_matrix, this, &progress));
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
 

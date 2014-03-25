@@ -77,7 +77,7 @@ class DirectSoundPlayer2 final : public AudioPlayer {
 
 public:
 	/// @brief Constructor
-	DirectSoundPlayer2(AudioProvider *provider);
+	DirectSoundPlayer2(AudioProvider *provider, wxWindow *parent);
 	/// @brief Destructor
 	~DirectSoundPlayer2();
 
@@ -144,39 +144,14 @@ struct COMInitialization {
 	}
 };
 
-/// @class COMObjectRetainer
-/// @brief Simple auto_ptr-like class for COM objects
-template<class T>
-struct COMObjectRetainer {
-	/// Managed object
-	T *obj;
-
-	/// @brief Constructor for null object
-	COMObjectRetainer()
-	{
-		obj = 0;
-	}
-
-	/// @brief Constructor to take object immediately
-	/// @param _obj Object to manage
-	COMObjectRetainer(T *_obj)
-	{
-		obj = _obj;
-	}
-
-	/// @brief Destructor, releases object if there is one
-	~COMObjectRetainer()
-	{
+struct ReleaseCOMObject {
+	void operator()(IUnknown *obj) {
 		if (obj) obj->Release();
 	}
-
-	/// @brief Dereference the managed object
-	/// @return The managed object
-	T * operator -> ()
-	{
-		return obj;
-	}
 };
+
+template<typename T>
+using COMObjectRetainer = std::unique_ptr<T, ReleaseCOMObject>;
 
 /// @brief RAII wrapper around Win32 HANDLE type
 struct Win32KernelHandle final : public agi::scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> {
@@ -218,6 +193,8 @@ class DirectSoundPlayer2Thread {
 
 	/// @brief Check for error state and throw exception if one occurred
 	void CheckError();
+
+	HWND parent;
 
 	/// Win32 handle to the thread
 	Win32KernelHandle thread_handle;
@@ -277,7 +254,7 @@ public:
 	/// @param provider       Audio provider to take sample data from
 	/// @param WantedLatency Desired length in milliseconds to write ahead of the playback cursor
 	/// @param BufferLength  Multiplier for WantedLatency to get total buffer length
-	DirectSoundPlayer2Thread(AudioProvider *provider, int WantedLatency, int BufferLength);
+	DirectSoundPlayer2Thread(AudioProvider *provider, int WantedLatency, int BufferLength, wxWindow *parent);
 	/// @brief Destructor, waits for thread to have died
 	~DirectSoundPlayer2Thread();
 
@@ -340,15 +317,15 @@ void DirectSoundPlayer2Thread::Run()
 	catch (std::exception e)
 		REPORT_ERROR("Could not initialise COM")
 
-
 	// Create DirectSound object
-	COMObjectRetainer<IDirectSound8> ds;
-	if (FAILED(DirectSoundCreate8(&DSDEVID_DefaultPlayback, &ds.obj, nullptr)))
+	IDirectSound8 *ds_raw = nullptr;
+	if (FAILED(DirectSoundCreate8(&DSDEVID_DefaultPlayback, &ds_raw, nullptr)))
 		REPORT_ERROR("Cound not create DirectSound object")
 
+	COMObjectRetainer<IDirectSound8> ds(ds_raw);
 
 	// Ensure we can get interesting wave formats (unless we have PRIORITY we can only use a standard 8 bit format)
-	ds->SetCooperativeLevel((HWND)static_cast<AegisubApp*>(wxApp::GetInstance())->frame->GetHandle(), DSSCL_PRIORITY);
+	ds->SetCooperativeLevel(parent, DSSCL_PRIORITY);
 
 	// Describe the wave format
 	WAVEFORMATEX waveFormat;
@@ -379,9 +356,10 @@ void DirectSoundPlayer2Thread::Run()
 		REPORT_ERROR("Could not create buffer")
 
 	// But it's an old version interface we get, query it for the DSound8 interface
-	COMObjectRetainer<IDirectSoundBuffer8> bfr;
-	if (FAILED(bfr7->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&bfr.obj)))
+	IDirectSoundBuffer8 *bfr_raw = nullptr;
+	if (FAILED(bfr7->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&bfr_raw)))
 		REPORT_ERROR("Buffer doesn't support version 8 interface")
+	COMObjectRetainer<IDirectSoundBuffer8> bfr(bfr_raw);
 	bfr7->Release();
 	bfr7 = 0;
 
@@ -447,7 +425,7 @@ void DirectSoundPlayer2Thread::Run()
 				// Clear the buffer in case we can't fill it completely
 				memset(buf, 0, buf_size);
 
-				DWORD bytes_filled = FillAndUnlockBuffers(buf, buf_size, 0, 0, next_input_frame, bfr.obj);
+				DWORD bytes_filled = FillAndUnlockBuffers(buf, buf_size, 0, 0, next_input_frame, bfr.get());
 				buffer_offset += bytes_filled;
 				if (buffer_offset >= bufSize) buffer_offset -= bufSize;
 
@@ -575,7 +553,7 @@ do_fill_buffer:
 					break;
 				}
 
-				DWORD bytes_filled = FillAndUnlockBuffers(buf1, buf1sz, buf2, buf2sz, next_input_frame, bfr.obj);
+				DWORD bytes_filled = FillAndUnlockBuffers(buf1, buf1sz, buf2, buf2sz, next_input_frame, bfr.get());
 				buffer_offset += bytes_filled;
 				if (buffer_offset >= bufSize) buffer_offset -= bufSize;
 
@@ -694,8 +672,9 @@ void DirectSoundPlayer2Thread::CheckError()
 	}
 }
 
-DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int WantedLatency, int BufferLength)
-: event_start_playback  (CreateEvent(0, FALSE, FALSE, 0))
+DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int WantedLatency, int BufferLength, wxWindow *parent)
+: parent((HWND)parent->GetHandle())
+, event_start_playback  (CreateEvent(0, FALSE, FALSE, 0))
 , event_stop_playback   (CreateEvent(0, FALSE, FALSE, 0))
 , event_update_end_time (CreateEvent(0, FALSE, FALSE, 0))
 , event_set_volume      (CreateEvent(0, FALSE, FALSE, 0))
@@ -833,7 +812,7 @@ bool DirectSoundPlayer2Thread::IsDead()
 	}
 }
 
-DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider)
+DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider, wxWindow *parent)
 : AudioPlayer(provider)
 {
 	// The buffer will hold BufferLength times WantedLatency milliseconds of audio
@@ -848,7 +827,7 @@ DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider)
 
 	try
 	{
-		thread = agi::util::make_unique<DirectSoundPlayer2Thread>(provider, WantedLatency, BufferLength);
+		thread = agi::util::make_unique<DirectSoundPlayer2Thread>(provider, WantedLatency, BufferLength, parent);
 	}
 	catch (const char *msg)
 	{
@@ -962,8 +941,8 @@ void DirectSoundPlayer2::SetVolume(double vol)
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *provider) {
-	return agi::util::make_unique<DirectSoundPlayer2>(provider);
+std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *provider, wxWindow *parent) {
+	return agi::util::make_unique<DirectSoundPlayer2>(provider, parent);
 }
 
 #endif // WITH_DIRECTSOUND

@@ -55,8 +55,6 @@ wxString PrettySize(int bytes);
 
 std::string float_to_string(double val);
 
-void StatusTimeout(wxString const& msg, int ms = 10000);
-
 /// @brief Get the smallest power of two that is greater or equal to x
 ///
 /// Algorithm from http://bob.allegronetwork.com/prog/tricks.html

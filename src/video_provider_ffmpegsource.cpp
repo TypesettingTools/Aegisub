@@ -71,7 +71,7 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 	void LoadVideo(agi::fs::path const& filename, std::string const& colormatrix);
 
 public:
-	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
+	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br);
 
 	std::shared_ptr<VideoFrame> GetFrame(int n) override;
 
@@ -108,8 +108,9 @@ std::string colormatrix_description(int cs, int cr) {
 	}
 }
 
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) try
-: VideoSource(nullptr, FFMS_DestroyVideoSource)
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br) try
+: FFmpegSourceProvider(br)
+, VideoSource(nullptr, FFMS_DestroyVideoSource)
 {
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -285,8 +286,8 @@ std::shared_ptr<VideoFrame> FFmpegSourceVideoProvider::GetFrame(int n) {
 }
 }
 
-std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, std::string const& colormatrix) {
-	return agi::util::make_unique<FFmpegSourceVideoProvider>(path, colormatrix);
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *br) {
+	return agi::util::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
 }
 
 #endif /* WITH_FFMS2 */
