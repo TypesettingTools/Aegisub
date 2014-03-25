@@ -21,7 +21,6 @@
 #pragma once
 
 #include "gl_wrap.h"
-#include "selection_controller.h"
 #include "vector2d.h"
 
 #include <libaegisub/owning_intrusive_list.h>

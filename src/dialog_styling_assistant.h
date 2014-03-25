@@ -14,12 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_styling_assistant.h
-/// @see dialog_styling_assistant.cpp
-/// @ingroup tools_ui
-///
-
-#include "selection_controller.h"
+#include <libaegisub/signal.h>
 
 #include <memory>
 #include <wx/dialog.h>

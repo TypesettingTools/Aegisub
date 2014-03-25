@@ -48,6 +48,7 @@
 #include "options.h"
 #include "placeholder_ctrl.h"
 #include "scintilla_text_selection_controller.h"
+#include "selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "timeedit_ctrl.h"
 #include "tooltip_manager.h"
@@ -383,7 +384,6 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 }
 
 void SubsEditBox::OnSelectedSetChanged() {
-	sel = c->selectionController->GetSelectedSet();
 	initial_times.clear();
 }
 
@@ -421,6 +421,7 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 
 template<class setter>
 void SubsEditBox::SetSelectedRows(setter set, wxString const& desc, int type, bool amend) {
+	auto const& sel = c->selectionController->GetSelectedSet();
 	for_each(sel.begin(), sel.end(), set);
 
 	file_changed_slot.Block();
@@ -449,6 +450,7 @@ void SubsEditBox::CommitText(wxString const& desc) {
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
+	auto const& sel = c->selectionController->GetSelectedSet();
 	for (AssDialogue *d : sel) {
 		if (!initial_times.count(d))
 			initial_times[d] = std::make_pair(d->Start, d->End);

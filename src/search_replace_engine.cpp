@@ -301,7 +301,7 @@ bool SearchReplaceEngine::ReplaceAll() {
 
 	auto matches = GetMatcher(settings);
 
-	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
+	auto const& sel = context->selectionController->GetSelectedSet();
 	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
 
 	for (auto& diag : context->ass->Events) {

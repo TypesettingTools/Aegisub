@@ -101,7 +101,7 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 	if (data.empty()) return;
 
 	AssDialogue *first = nullptr;
-	SubtitleSelection newsel;
+	Selection newsel;
 
 	boost::char_separator<char> sep("\r\n");
 	for (auto curdata : boost::tokenizer<boost::char_separator<char>>(data, sep)) {
@@ -270,7 +270,7 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std
 }
 
 void commit_text(agi::Context const * const c, wxString const& desc, int sel_start = -1, int sel_end = -1, int *commit_id = nullptr) {
-	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+	auto const& sel = c->selectionController->GetSelectedSet();
 	std::string text = c->selectionController->GetActiveLine()->Text;
 	for_each(sel.begin(), sel.end(), [&](AssDialogue *d) { d->Text = text; });
 
@@ -488,7 +488,7 @@ struct edit_find_replace final : public Command {
 
 static std::string get_entry_data(AssDialogue &d) { return d.GetEntryData(); }
 static void copy_lines(agi::Context *c) {
-	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+	auto const& sel = c->selectionController->GetSelectedSet();
 	SetClipboard(join(c->ass->Events
 		| filtered([&](AssDialogue &d) { return sel.count(&d); })
 		| transformed(get_entry_data),
@@ -496,7 +496,7 @@ static void copy_lines(agi::Context *c) {
 }
 
 static void delete_lines(agi::Context *c, wxString const& commit_message) {
-	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+	auto const& sel = c->selectionController->GetSelectedSet();
 
 	// Find a line near the active line not being deleted to make the new active line
 	AssDialogue *pre_sel = nullptr;
@@ -595,7 +595,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 	auto const& sel = c->selectionController->GetSelectedSet();
 	auto in_selection = [&](AssDialogue const& d) { return sel.count(const_cast<AssDialogue *>(&d)); };
 
-	SubtitleSelectionController::Selection new_sel;
+	Selection new_sel;
 	AssDialogue *new_active = nullptr;
 
 	auto start = c->ass->Events.begin();
@@ -693,7 +693,7 @@ struct edit_line_duplicate_shift_back final : public validate_video_and_sel_none
 };
 
 static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDialogue *), wxString const& message) {
-	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+	auto const& sel = c->selectionController->GetSelectedSet();
 
 	AssDialogue *first = nullptr;
 	for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ) {
@@ -776,7 +776,7 @@ static bool try_paste_lines(agi::Context *c) {
 	}
 
 	AssDialogue *new_active = &*parsed.begin();
-	SubtitleSelection new_selection;
+	Selection new_selection;
 	for (auto& line : parsed)
 		new_selection.insert(&line);
 
@@ -975,7 +975,7 @@ struct edit_line_recombine final : public validate_sel_multiple {
 		}
 
 		// Remove now non-existent lines from the selection
-		SubtitleSelection lines, new_sel;
+		Selection lines, new_sel;
 		boost::copy(c->ass->Events | agi::address_of, inserter(lines, lines.begin()));
 		boost::set_intersection(lines, sel_set, inserter(new_sel, new_sel.begin()));
 

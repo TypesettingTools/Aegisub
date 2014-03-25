@@ -27,49 +27,32 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file selection_controller.h
-/// @ingroup controllers
-/// @brief Interface declaration for the SubtitleSelectionController
-
-#pragma once
+#include <libaegisub/signal.h>
 
 #include <set>
 
-#include <libaegisub/signal.h>
+class AssDialogue;
+typedef std::set<AssDialogue *> Selection;
 
-/// @class SelectionController
-/// @brief Abstract interface for selection controllers
-///
-/// Two concepts are managed by implementations of this interface: The concept of the
-/// active line, and the concept of the set of selected lines. There is one or zero
-/// active lines, the active line is the base for subtitle manipulation in the GUI.
-/// The set of selected lines may contain any number of subtitle lines, and those
-/// lines are the primary target of subtitle manipulation. In other words, the active
-/// line controls what values the user is presented to modify, and the selected set
-/// controls what lines are actually modified when the user performs modifications.
-/// In most cases, the active line will be a member of the selected set. It will be
-/// the responsibility of manipulators to affect the appropriate lines.
-///
-/// There is only intended to be one instance of a class implementing this interface
-/// per editing session, but there may be many different implementations of it.
-/// The primary implementation would be the subtitle grid in the main GUI, allowing
-/// the user to actively manipulate the active and selected line sets, but other
-/// potential implementations are in a test driver and in a non-interactive scenario.
-///
-/// Objects implementing the SelectionListener interface can subscribe to
-/// changes in the active line and the selected set.
-template <typename ItemDataType>
+namespace agi { struct Context; }
+
 class SelectionController {
-public:
-	typedef std::set<ItemDataType> Selection;
-
-protected:
-	agi::signal::Signal<ItemDataType> AnnounceActiveLineChanged;
+	agi::signal::Signal<AssDialogue *> AnnounceActiveLineChanged;
 	agi::signal::Signal<> AnnounceSelectedSetChanged;
 
+	agi::Context *context;
+
+	Selection selection; ///< Currently selected lines
+	AssDialogue *active_line = nullptr; ///< The currently active line or 0 if none
+
+	agi::signal::Connection open_connection;
+	agi::signal::Connection save_connection;
+
+	void OnSubtitlesOpen();
+	void OnSubtitlesSave();
+
 public:
-	/// Virtual destructor for safety
-	virtual ~SelectionController() { }
+	SelectionController(agi::Context *context);
 
 	/// @brief Change the active line
 	/// @param new_line Subtitle line to become the new active line
@@ -81,11 +64,11 @@ public:
 	/// the active line was actually changed.
 	///
 	/// This method must not affect the selected set.
-	virtual void SetActiveLine(ItemDataType new_line) = 0;
+	void SetActiveLine(AssDialogue *new_line);
 
 	/// @brief Obtain the active line
 	/// @return The active line or nullptr if there is none
-	virtual ItemDataType GetActiveLine() const = 0;
+	AssDialogue *GetActiveLine() const { return active_line;  }
 
 	/// @brief Change the selected set
 	/// @param new_selection The set of subtitle lines to become the new selected set
@@ -97,15 +80,15 @@ public:
 	/// If no change happens to the selected set, whether because it was refused or
 	/// because the new set was identical to the old set, no change notification may
 	/// be sent.
-	virtual void SetSelectedSet(Selection new_selection) = 0;
+	void SetSelectedSet(Selection new_selection);
 
 	/// @brief Obtain the selected set
 	/// @param[out] selection Filled with the selected set on return
-	virtual void GetSelectedSet(Selection &selection) const = 0;
+	void GetSelectedSet(Selection &out) const { out = selection; }
 
 	/// @brief Obtain the selected set
 	/// @return The selected set
-	virtual Selection const& GetSelectedSet() const = 0;
+	Selection const& GetSelectedSet() const { return selection; }
 
 	/// @brief Set both the selected set and active line
 	/// @param new_line Subtitle line to become the new active line
@@ -114,26 +97,22 @@ public:
 	/// This sets both the active line and selected set before announcing the
 	/// change to either of them, and is guaranteed to announce the active line
 	/// change before the selection change.
-	virtual void SetSelectionAndActive(Selection new_selection, ItemDataType new_line) = 0;
+	void SetSelectionAndActive(Selection new_selection, AssDialogue *new_line);
 
 	/// @brief Change the active line to the next in sequence
 	///
 	/// If there is no logical next line in sequence, no change happens. This should
 	/// also reset the selected set to consist of exactly the active line, if the
 	/// active line was changed.
-	virtual void NextLine() = 0;
+	void NextLine();
 
 	/// @brief Change the active line to the previous in sequence
 	///
 	/// If there is no logical previous line in sequence, no change happens. This
 	/// should also reset the selected set to consist of exactly the active line, if
 	/// the active line was changed.
-	virtual void PrevLine() = 0;
+	void PrevLine();
 
 	DEFINE_SIGNAL_ADDERS(AnnounceSelectedSetChanged, AddSelectionListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceActiveLineChanged, AddActiveLineListener)
 };
-
-class AssDialogue;
-typedef SelectionController<AssDialogue *> SubtitleSelectionController;
-typedef SubtitleSelectionController::Selection SubtitleSelection;

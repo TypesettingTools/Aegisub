@@ -389,7 +389,7 @@ struct grid_swap final : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+		auto const& sel = c->selectionController->GetSelectedSet();
 		if (sel.size() == 2) {
 			(*sel.begin())->swap_nodes(**sel.rbegin());
 			c->ass->Commit(_("swap lines"), AssFile::COMMIT_ORDER);

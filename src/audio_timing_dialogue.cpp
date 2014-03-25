@@ -348,7 +348,7 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	void RegenerateSelectedLines();
 
 	/// Add a line to the list of timeable inactive lines
-	void AddInactiveLine(SubtitleSelection const& sel, AssDialogue *diag);
+	void AddInactiveLine(Selection const& sel, AssDialogue *diag);
 
 	/// Regenerate the list of active and inactive line markers
 	void RegenerateMarkers();
@@ -727,7 +727,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
 
-	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
+	auto const& sel = context->selectionController->GetSelectedSet();
 
 	switch (int mode = inactive_line_mode->GetInt())
 	{
@@ -778,7 +778,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	RegenerateMarkers();
 }
 
-void AudioTimingControllerDialogue::AddInactiveLine(SubtitleSelection const& sel, AssDialogue *diag)
+void AudioTimingControllerDialogue::AddInactiveLine(Selection const& sel, AssDialogue *diag)
 {
 	if (sel.count(diag)) return;
 

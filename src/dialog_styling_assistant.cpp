@@ -35,6 +35,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
+#include "selection_controller.h"
 #include "video_context.h"
 
 #include <libaegisub/util.h>

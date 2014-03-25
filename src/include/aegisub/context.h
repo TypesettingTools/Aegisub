@@ -6,7 +6,7 @@ class AudioKaraoke;
 class DialogManager;
 class SearchReplaceEngine;
 class InitialLineState;
-template<class T> class SelectionController;
+class SelectionController;
 class SubsController;
 class SubsTextEditCtrl;
 class BaseGrid;
@@ -26,7 +26,7 @@ struct Context {
 
 	// Controllers
 	AudioController *audioController;
-	SelectionController<AssDialogue *> *selectionController;
+	SelectionController *selectionController;
 	SubsController *subsController;
 	TextSelectionController *textSelectionController;
 	VideoContext *videoController;

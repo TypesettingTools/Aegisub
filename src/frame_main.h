@@ -37,11 +37,7 @@
 #include <memory>
 #include <vector>
 
-#include <wx/combobox.h>
 #include <wx/frame.h>
-#include <wx/log.h>
-#include <wx/menu.h>
-#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/timer.h>
 
@@ -49,7 +45,6 @@ class AegisubApp;
 class AegisubFileDropTarget;
 class AudioBox;
 class AudioProvider;
-class BaseGrid;
 class VideoBox;
 
 namespace agi { struct Context; class OptionValue; }
@@ -98,7 +93,6 @@ class FrameMain: public wxFrame {
 
 	void EnableToolBar(agi::OptionValue const& opt);
 
-	BaseGrid *SubsGrid; ///< The subtitle editing area
 	AudioBox *audioBox;      ///< The audio area
 	VideoBox *videoBox;      ///< The video area
 

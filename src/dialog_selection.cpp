@@ -186,7 +186,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 
 	auto action = static_cast<Action>(selection_change_type->GetSelection());
 
-	SubtitleSelection old_sel, new_sel;
+	Selection old_sel, new_sel;
 	if (action != Action::SET)
 		con->selectionController->GetSelectedSet(old_sel);
 

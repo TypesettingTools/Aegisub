@@ -31,6 +31,7 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "selection_controller.h"
 #include "subs_controller.h"
 #include "timeedit_ctrl.h"
 #include "video_context.h"
@@ -331,7 +332,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	bool start = type != 2;
 	bool end = type != 1;
 
-	SubtitleSelection const& sel = context->selectionController->GetSelectedSet();
+	auto const& sel = context->selectionController->GetSelectedSet();
 
 	long shift;
 	if (by_time) {

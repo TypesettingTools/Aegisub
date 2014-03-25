@@ -28,6 +28,7 @@
 #include "ass_time.h"
 #include "include/aegisub/context.h"
 #include "options.h"
+#include "selection_controller.h"
 #include "utils.h"
 #include "video_context.h"
 #include "video_display.h"
@@ -297,7 +298,7 @@ void VisualTool<FeatureType>::SetSelection(FeatureType *feat, bool clear) {
 		sel_features.clear();
 
 	if (sel_features.insert(feat).second && feat->line) {
-		SubtitleSelection sel;
+		Selection sel;
 		if (!clear)
 			sel = c->selectionController->GetSelectedSet();
 		if (sel.insert(feat->line).second)
@@ -311,7 +312,7 @@ void VisualTool<FeatureType>::RemoveSelection(FeatureType *feat) {
 	for (auto sel : sel_features)
 		if (sel->line == feat->line) return;
 
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	auto sel = c->selectionController->GetSelectedSet();
 
 	// Don't deselect the only selected line
 	if (sel.size() <= 1) return;

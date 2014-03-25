@@ -24,6 +24,7 @@
 
 #include "gl_text.h"
 #include "include/aegisub/context.h"
+#include "selection_controller.h"
 #include "video_display.h"
 
 #include <libaegisub/color.h>

@@ -62,7 +62,7 @@ namespace {
 	struct validate_adjoinable : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) override {
-			SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+			auto const& sel = c->selectionController->GetSelectedSet();
 			if (sel.size() < 2) return !sel.empty();
 
 			size_t found = 0;
@@ -138,8 +138,8 @@ struct time_frame_current final : public validate_video_loaded {
 	void operator()(agi::Context *c) override {
 		if (!c->videoController->IsLoaded()) return;
 
-		SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
-		const AssDialogue *active_line = c->selectionController->GetActiveLine();
+		auto const& sel = c->selectionController->GetSelectedSet();
+		const auto active_line = c->selectionController->GetActiveLine();
 
 		if (sel.empty() || !active_line) return;
 
@@ -168,7 +168,7 @@ struct time_shift final : public Command {
 };
 
 static void snap_subs_video(agi::Context *c, bool set_start) {
-	SubtitleSelection const& sel = c->selectionController->GetSelectedSet();
+	auto const& sel = c->selectionController->GetSelectedSet();
 
 	if (!c->videoController->IsLoaded() || sel.empty()) return;
 

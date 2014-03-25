@@ -277,7 +277,7 @@ void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c
 
 	AssKaraoke kara;
 
-	SubtitleSelection sel = c->selectionController->GetSelectedSet();
+	Selection sel = c->selectionController->GetSelectedSet();
 
 	bool did_split = false;
 	for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {

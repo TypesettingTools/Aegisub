@@ -19,8 +19,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "selection_controller.h"
-
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>

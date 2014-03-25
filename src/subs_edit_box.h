@@ -45,8 +45,6 @@
 
 #include <libaegisub/signal.h>
 
-#include "selection_controller.h"
-
 namespace agi { namespace vfr { class Framerate; } }
 namespace agi { struct Context; }
 class AssDialogue;
@@ -80,8 +78,6 @@ class SubsEditBox final : public wxPanel {
 
 	/// Currently active dialogue line
 	AssDialogue *line = nullptr;
-	/// Last seen grid selection
-	SubtitleSelection sel;
 
 	/// Are the buttons currently split into two lines?
 	bool button_bar_split = true;

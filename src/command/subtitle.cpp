@@ -372,7 +372,7 @@ struct subtitle_select_all final : public Command {
 	STR_HELP("Select all dialogue lines")
 
 	void operator()(agi::Context *c) override {
-		SubtitleSelection sel;
+		Selection sel;
 		boost::copy(c->ass->Events | agi::address_of, inserter(sel, sel.end()));
 		c->selectionController->SetSelectedSet(std::move(sel));
 	}
@@ -390,7 +390,7 @@ struct subtitle_select_visible final : public Command {
 		if (!c->videoController->IsLoaded()) return;
 		c->videoController->Stop();
 
-		SubtitleSelectionController::Selection new_selection;
+		Selection new_selection;
 		int frame = c->videoController->GetFrameN();
 
 		for (auto& diag : c->ass->Events) {

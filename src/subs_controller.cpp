@@ -23,7 +23,6 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
-#include "base_grid.h"
 #include "charset_detect.h"
 #include "compat.h"
 #include "command/command.h"
@@ -92,7 +91,7 @@ struct SubsController::UndoInfo {
 		sort(begin(selection), end(selection));
 
 		AssDialogue *active_line = nullptr;
-		SubtitleSelection new_sel;
+		Selection new_sel;
 
 		for (auto const& info : script_info)
 			c->ass->Info.push_back(*new AssInfo(info.first, info.second));
@@ -108,11 +107,8 @@ struct SubsController::UndoInfo {
 				new_sel.insert(copy);
 		}
 
-		c->subsGrid->BeginBatch();
-		c->selectionController->SetSelectedSet(std::set<AssDialogue *>{});
 		c->ass->Commit("", AssFile::COMMIT_NEW);
 		c->selectionController->SetSelectionAndActive(std::move(new_sel), active_line);
-		c->subsGrid->EndBatch();
 	}
 
 	void UpdateActiveLine(const agi::Context *c) {
@@ -153,7 +149,7 @@ SubsController::SubsController(agi::Context *context)
 	});
 }
 
-void SubsController::SetSelectionController(SelectionController<AssDialogue *> *selection_controller) {
+void SubsController::SetSelectionController(SelectionController *selection_controller) {
 	active_line_connection = context->selectionController->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
 	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
@@ -277,6 +273,7 @@ void SubsController::Close() {
 	blank.swap(*context->ass);
 	context->ass->LoadDefault();
 	context->ass->Commit("", AssFile::COMMIT_NEW);
+	FileOpen(filename);
 }
 
 int SubsController::TryToClose(bool allow_cancel) const {

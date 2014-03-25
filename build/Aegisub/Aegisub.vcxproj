@@ -390,6 +390,7 @@
     <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
+    <ClCompile Include="$(SrcDir)selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker_hunspell.cpp" />
     <ClCompile Include="$(SrcDir)spline.cpp" />

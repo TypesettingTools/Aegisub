@@ -35,11 +35,6 @@
 
 #include "frame_main.h"
 
-#include <libaegisub/fs.h>
-#include <libaegisub/log.h>
-#include <libaegisub/path.h>
-#include <libaegisub/util.h>
-
 #include "include/aegisub/context.h"
 #include "include/aegisub/menu.h"
 #include "include/aegisub/toolbar.h"
@@ -61,6 +56,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
+#include "selection_controller.h"
 #include "search_replace_engine.h"
 #include "subs_controller.h"
 #include "subs_edit_box.h"
@@ -72,6 +68,11 @@
 #include "video_display.h"
 #include "video_slider.h"
 
+#include <libaegisub/fs.h>
+#include <libaegisub/log.h>
+#include <libaegisub/path.h>
+#include <libaegisub/util.h>
+
 #include <boost/algorithm/string/predicate.hpp>
 
 #include <wx/dnd.h>
@@ -82,7 +83,7 @@
 #include <wx/sysopt.h>
 
 enum {
-	ID_APP_TIMER_STATUSCLEAR				= 12002
+	ID_APP_TIMER_STATUSCLEAR = 12002
 };
 
 #ifdef WITH_STARTUPLOG
@@ -220,8 +221,8 @@ FrameMain::FrameMain()
 
 	context->local_scripts = new Automation4::LocalScriptManager(context.get());
 
-	// Initialized later due to that the selection controller is currently the subtitles grid
-	context->selectionController = nullptr;
+	context->selectionController = new SelectionController(context.get());
+	context->subsController->SetSelectionController(context->selectionController);
 
 	context->videoController = VideoContext::Get(); // derp
 	context->videoController->AddVideoOpenListener(&FrameMain::OnVideoOpen, this);
@@ -264,7 +265,6 @@ FrameMain::FrameMain()
 
 	StartupLog("Complete context initialization");
 	context->videoController->SetContext(context.get());
-	context->subsController->SetSelectionController(context->selectionController);
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(this));
@@ -302,40 +302,13 @@ FrameMain::FrameMain()
 	StartupLog("Leaving FrameMain constructor");
 }
 
-/// @brief Delete everything but @a keep and its parents
-/// @param window Root window to delete the children of
-/// @param keep Window to keep alive
-/// @return Was @a keep found?
-static bool delete_children(wxWindow *window, wxWindow *keep) {
-	bool found = false;
-	while (window->GetChildren().size() > (size_t)found) {
-		auto it = window->GetChildren().begin();
-
-		if (*it == keep)
-			found = true;
-
-		if (found) {
-			if (++it != window->GetChildren().end())
-				(*it)->wxWindowBase::Destroy();
-		}
-		else if (!delete_children(*it, keep))
-			(*it)->wxWindowBase::Destroy();
-		else
-			found = true;
-	}
-	return found;
-}
-
 FrameMain::~FrameMain () {
 	wxGetApp().frame = nullptr;
 
 	context->videoController->SetVideo("");
 	context->audioController->CloseAudio();
 
-	// SubsGrid needs to be deleted last due to being the selection
-	// controller, but everything else needs to be deleted before the context
-	// is cleaned up
-	delete_children(this, SubsGrid);
+	DestroyChildren();
 
 	delete context->ass;
 	delete context->audioController;
@@ -367,8 +340,7 @@ void FrameMain::InitContents() {
 	wxPanel *Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create subtitles grid");
-	context->subsGrid = SubsGrid = new BaseGrid(Panel, context.get(), wxDefaultSize, wxWANTS_CHARS | wxSUNKEN_BORDER);
-	context->selectionController = context->subsGrid;
+	context->subsGrid = new BaseGrid(Panel, context.get());
 	context->search = new SearchReplaceEngine(context.get());
 	context->initialLineState = new InitialLineState(context.get());
 
@@ -391,7 +363,7 @@ void FrameMain::InitContents() {
 	MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(new wxStaticLine(Panel),0,wxEXPAND | wxALL,0);
 	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,0);
-	MainSizer->Add(SubsGrid,1,wxEXPAND | wxALL,0);
+	MainSizer->Add(context->subsGrid,1,wxEXPAND | wxALL,0);
 	Panel->SetSizer(MainSizer);
 
 	StartupLog("Perform layout");

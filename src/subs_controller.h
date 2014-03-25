@@ -25,7 +25,7 @@
 class AssDialogue;
 class AssFile;
 struct AssFileCommit;
-template<typename T> class SelectionController;
+class SelectionController;
 
 namespace agi { struct Context; }
 
@@ -74,7 +74,7 @@ public:
 	///
 	/// Required due to that the selection controller is the subtitles grid, and
 	/// so is created long after the subtitles controller
-	void SetSelectionController(SelectionController<AssDialogue *> *selection_controller);
+	void SetSelectionController(SelectionController *selection_controller);
 
 	/// The file's path and filename if any, or platform-appropriate "untitled"
 	agi::fs::path Filename() const;

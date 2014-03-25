@@ -38,7 +38,6 @@ class AudioRenderingStyleRanges;
 namespace agi { struct Context; }
 
 #include "audio_marker.h"
-#include "selection_controller.h"
 
 /// @class AudioTimingController
 /// @brief Base class for objects controlling audio timing

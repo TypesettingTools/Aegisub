@@ -32,8 +32,6 @@
 /// @ingroup main_ui
 ///
 
-#pragma once
-
 #include <libaegisub/signal.h>
 
 #include <map>
@@ -41,15 +39,14 @@
 #include <vector>
 #include <wx/window.h>
 
-#include "selection_controller.h"
-
 namespace agi {
 	struct Context;
 	class OptionValue;
 }
 class AssDialogue;
 
-class BaseGrid final : public wxWindow, public SubtitleSelectionController {
+class BaseGrid final : public wxWindow {
+	std::vector<agi::signal::Connection> connections;
 	int lineHeight = 1;     ///< Height of a line in pixels in the current font
 	bool holding = false;   ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font
@@ -61,18 +58,8 @@ class BaseGrid final : public wxWindow, public SubtitleSelectionController {
 	/// keyboard, shift-clicking or dragging
 	int extendRow = -1;
 
-	Selection selection; ///< Currently selected lines
-	AssDialogue *active_line = nullptr; ///< The currently active line or 0 if none
 	std::vector<AssDialogue*> index_line_map;  ///< Row number -> dialogue line
 	std::map<AssDialogue*,int> line_index_map; ///< Dialogue line -> row number
-
-	/// Selection batch nesting depth; changes are commited only when this
-	/// hits zero
-	int batch_level = 0;
-	/// Has the active line been changed in the current batch?
-	bool batch_active_line_changed = false;
-	/// Has the selection been changed in the current batch?
-	bool batch_selection_changed = false;
 
 	/// Connection for video seek event. Stored explicitly so that it can be
 	/// blocked if the relevant option is disabled
@@ -93,6 +80,7 @@ class BaseGrid final : public wxWindow, public SubtitleSelectionController {
 	void OnSubtitlesCommit(int type);
 	void OnSubtitlesOpen();
 	void OnSubtitlesSave();
+	void OnActiveLineChanged(AssDialogue *);
 
 	void DrawImage(wxDC &dc, bool paint_columns[]);
 	void GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings, bool replace, wxString const& rep_char) const;
@@ -115,34 +103,14 @@ class BaseGrid final : public wxWindow, public SubtitleSelectionController {
 
 	bool IsDisplayed(const AssDialogue *line) const;
 
-	// Re-implement functions from BaseSelectionController to add batching
-	void AnnounceActiveLineChanged(AssDialogue *new_line);
-	void AnnounceSelectedSetChanged();
-
-protected:
 	agi::Context *context; ///< Current project context
-
-public:
-	// SelectionController implementation
-	void SetActiveLine(AssDialogue *new_line) override;
-	AssDialogue * GetActiveLine() const override { return active_line; }
-	void SetSelectedSet(Selection new_selection) override;
-	void GetSelectedSet(Selection &res) const override { res = selection; }
-	Selection const& GetSelectedSet() const override { return selection; }
-	void SetSelectionAndActive(Selection new_selection, AssDialogue *new_line) override;;
-	void NextLine() override;
-	void PrevLine() override;
-
-	void BeginBatch();
-	void EndBatch();
-	void SetByFrame(bool state);
-
-	void SelectRow(int row, bool addToSelected = false, bool select=true);
 
 	void ClearMaps();
 	/// @brief Update the row <-> AssDialogue mappings
 	void UpdateMaps();
 	void UpdateStyle();
+
+	void SelectRow(int row, bool addToSelected = false, bool select=true);
 
 	int GetRows() const { return index_line_map.size(); }
 	void MakeRowVisible(int row);
@@ -157,8 +125,11 @@ public:
 	/// @return Subtitle index for object, or -1 if unknown subtitle
 	int GetDialogueIndex(AssDialogue *diag) const;
 
-	BaseGrid(wxWindow* parent, agi::Context *context, const wxSize& size = wxDefaultSize, long style = wxWANTS_CHARS, const wxString& name = wxPanelNameStr);
+public:
+	BaseGrid(wxWindow* parent, agi::Context *context);
 	~BaseGrid();
+
+	void SetByFrame(bool state);
 
 	DECLARE_EVENT_TABLE()
 };

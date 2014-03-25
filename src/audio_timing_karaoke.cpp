@@ -33,6 +33,7 @@
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "pen.h"
+#include "selection_controller.h"
 #include "utils.h"
 
 #include <deque>
