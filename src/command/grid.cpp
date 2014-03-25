@@ -324,16 +324,19 @@ struct grid_tags_simplify final : public Command {
 };
 
 template<class T, class U>
-static bool move_one(T begin, T end, U const& to_move, int step) {
+static bool move_one(T begin, T end, U const& to_move, bool swap) {
 	size_t move_count = 0;
 	auto prev = end;
-	for (auto it = begin; it != end; std::advance(it, step)) {
+	for (auto it = begin; it != end; ++it) {
 		auto cur = &*it;
 		if (!to_move.count(cur))
 			prev = it;
 		else if (prev != end) {
 			it->swap_nodes(*prev);
-			prev = it;
+			if (swap)
+				std::swap(prev, it);
+			else
+				prev = it;
 			if (++move_count == to_move.size())
 				break;
 		}
@@ -354,7 +357,7 @@ struct grid_move_up final : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		if (move_one(c->ass->Events.begin(), c->ass->Events.end(), c->selectionController->GetSelectedSet(), 1))
+		if (move_one(c->ass->Events.begin(), c->ass->Events.end(), c->selectionController->GetSelectedSet(), false))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };
@@ -371,7 +374,7 @@ struct grid_move_down final : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		if (move_one(--c->ass->Events.end(), c->ass->Events.begin(), c->selectionController->GetSelectedSet(), -1))
+		if (move_one(c->ass->Events.rbegin(), c->ass->Events.rend(), c->selectionController->GetSelectedSet(), true))
 			c->ass->Commit(_("move lines"), AssFile::COMMIT_ORDER);
 	}
 };
