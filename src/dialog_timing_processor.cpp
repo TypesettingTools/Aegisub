@@ -70,13 +70,6 @@
 using namespace boost::adaptors;
 
 namespace {
-using std::placeholders::_1;
-
-void set_ctrl_state(wxCommandEvent &evt, wxCheckBox *cb, wxTextCtrl *tc) {
-	tc->Enable(cb->IsChecked());
-	evt.Skip();
-}
-
 wxTextCtrl *make_ctrl(wxWindow *parent, wxSizer *sizer, wxString const& desc, int *value, wxCheckBox *cb, wxString const& tooltip) {
 	wxIntegerValidator<int> validator(value);
 	validator.SetMin(0);
@@ -87,7 +80,10 @@ wxTextCtrl *make_ctrl(wxWindow *parent, wxSizer *sizer, wxString const& desc, in
 	sizer->Add(ctrl, wxSizerFlags().Expand().Border(wxRIGHT));
 
 	ctrl->Enable(cb->IsChecked());
-	cb->Bind(wxEVT_CHECKBOX, bind(set_ctrl_state, _1, cb, ctrl));
+	cb->Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& evt) {
+		ctrl->Enable(cb->IsChecked());
+		evt.Skip();
+	});
 
 	return ctrl;
 }

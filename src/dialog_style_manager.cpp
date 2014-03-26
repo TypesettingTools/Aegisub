@@ -70,8 +70,6 @@
 #include <wx/textdlg.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
-using std::placeholders::_1;
-
 namespace {
 
 wxBitmapButton *add_bitmap_button(wxWindow *parent, wxSizer *sizer, wxBitmap const& img, wxString const& tooltip) {
@@ -485,7 +483,7 @@ void DialogStyleManager::PasteToCurrent() {
 
 void DialogStyleManager::PasteToStorage() {
 	add_styles(
-		std::bind(&AssStyleStorage::GetStyle, &Store, _1),
+		[=](std::string const& str) { return Store.GetStyle(str); },
 		[=](AssStyle *s) { Store.push_back(std::unique_ptr<AssStyle>(s)); });
 
 	UpdateStorage();
@@ -516,8 +514,8 @@ void DialogStyleManager::OnStorageCopy() {
 	int sel = get_single_sel(StorageList);
 	if (sel == -1) return;
 
-	ShowStorageEditor(Store[sel],
-		unique_name(std::bind(&AssStyleStorage::GetStyle, &Store, _1), Store[sel]->name));
+	ShowStorageEditor(Store[sel], unique_name(
+		[=](std::string const& str) { return Store.GetStyle(str); }, Store[sel]->name));
 }
 
 void DialogStyleManager::OnStorageDelete() {

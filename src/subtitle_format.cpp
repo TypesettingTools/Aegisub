@@ -63,8 +63,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
-using namespace std::placeholders;
-
 namespace {
 	std::vector<std::unique_ptr<SubtitleFormat>> formats;
 }
@@ -299,12 +297,16 @@ SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 
 const SubtitleFormat *SubtitleFormat::GetReader(agi::fs::path const& filename, std::string const& encoding) {
 	LoadFormats();
-	return find_or_throw(formats, std::bind(&SubtitleFormat::CanReadFile, _1, filename, encoding));
+	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
+		return f->CanReadFile(filename, encoding);
+	});
 }
 
 const SubtitleFormat *SubtitleFormat::GetWriter(agi::fs::path const& filename) {
 	LoadFormats();
-	return find_or_throw(formats, std::bind(&SubtitleFormat::CanWriteFile, _1, filename));
+	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
+		return f->CanWriteFile(filename);
+	});
 }
 
 std::string SubtitleFormat::GetWildcards(int mode) {

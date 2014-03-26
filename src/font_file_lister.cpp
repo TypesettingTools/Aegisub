@@ -34,8 +34,6 @@
 #include <unicode/uchar.h>
 #include <wx/intl.h>
 
-using namespace std::placeholders;
-
 namespace {
 	wxString format_missing(wxString const& str) {
 		wxString printable;
@@ -193,7 +191,7 @@ std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 		ProcessDialogueLine(&diag, ++index);
 
 	status_callback(_("Searching for font files\n"), 0);
-	for_each(used_styles.begin(), used_styles.end(), bind(&FontCollector::ProcessChunk, this, _1));
+	for (auto const& style : used_styles) ProcessChunk(style);
 	status_callback(_("Done\n\n"), 0);
 
 	std::vector<agi::fs::path> paths;

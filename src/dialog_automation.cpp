@@ -56,8 +56,6 @@
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 
-using std::placeholders::_1;
-
 DialogAutomation::DialogAutomation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 , context(c)
@@ -221,22 +219,6 @@ void DialogAutomation::OnReload(wxCommandEvent &)
 		local_manager->Reload(ei.script);
 }
 
-static wxString fac_to_str(std::unique_ptr<Automation4::ScriptFactory> const& f) {
-	return wxString::Format("- %s (%s)", to_wx(f->GetEngineName()), to_wx(f->GetFilenamePattern()));
-}
-
-static wxString cmd_to_str(const cmd::Command *f, agi::Context *c) {
-	return wxString::Format(_("    Macro: %s (%s)"), f->StrDisplay(c), to_wx(f->name()));
-}
-
-static wxString filt_to_str(const Automation4::ExportFilter* f) {
-	return wxString::Format(_("    Export filter: %s"), to_wx(f->GetName()));
-}
-
-static wxString form_to_str(const SubtitleFormat* f) {
-	return wxString::Format(_("    Subtitle format handler: %s"), to_wx(f->GetName()));
-}
-
 void DialogAutomation::OnInfo(wxCommandEvent &)
 {
 	int i = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -252,7 +234,10 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 		(int)local_manager->GetScripts().size()));
 
 	info.push_back(_("Scripting engines installed:"));
-	boost::transform(Automation4::ScriptFactory::GetFactories(), append_info, fac_to_str);
+	boost::transform(Automation4::ScriptFactory::GetFactories(), append_info,
+		[](std::unique_ptr<Automation4::ScriptFactory> const& f) {
+			return wxString::Format("- %s (%s)", to_wx(f->GetEngineName()), to_wx(f->GetFilenamePattern()));
+		});
 
 	if (ei) {
 		info.push_back(wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:"),
@@ -263,9 +248,15 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 			ei->script->GetFilename().wstring(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
 
-		boost::transform(ei->script->GetMacros(), append_info, std::bind(cmd_to_str, _1, context));
-		boost::transform(ei->script->GetFilters(), append_info, filt_to_str);
-		boost::transform(ei->script->GetFormats(), append_info, form_to_str);
+		boost::transform(ei->script->GetMacros(), append_info, [=](const cmd::Command *f) {
+			return wxString::Format(_("    Macro: %s (%s)"), f->StrDisplay(context), to_wx(f->name()));
+		});
+		boost::transform(ei->script->GetFilters(), append_info, [](const Automation4::ExportFilter* f) {
+			return wxString::Format(_("    Export filter: %s"), to_wx(f->GetName()));
+		});
+		boost::transform(ei->script->GetFormats(), append_info, [](const SubtitleFormat* f) {
+			return wxString::Format(_("    Subtitle format handler: %s"), to_wx(f->GetName()));
+		});
 	}
 
 	wxMessageBox(wxJoin(info, '\n', 0), _("Automation Script Info"));

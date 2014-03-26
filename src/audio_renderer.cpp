@@ -45,8 +45,6 @@
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 
-using std::placeholders::_1;
-
 AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer)
 : renderer(renderer)
 {

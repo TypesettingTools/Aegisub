@@ -42,8 +42,6 @@
 #include <algorithm>
 #include <boost/format.hpp>
 
-using std::placeholders::_1;
-
 const wxColour VisualToolBase::colour[] = {
 	wxColour(106,32,19),
 	wxColour(255,169,40),
