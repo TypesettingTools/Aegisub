@@ -29,7 +29,8 @@ static std::string EmptyIfNil(NSString *string) {
 
 namespace agi {
 	namespace osx {
-AppNapDisabler::AppNapDisabler(std::string const& reason) : handle(nullptr) {
+AppNapDisabler::AppNapDisabler(std::string reason) : handle(nullptr) {
+	if (reason.empty()) reason = "Loading";
 	auto processInfo = [NSProcessInfo processInfo];
 	if ([processInfo respondsToSelector:@selector(beginActivityWithOptions:reason:)])
 		handle = [[processInfo beginActivityWithOptions:NSActivityUserInitiatedAllowingIdleSystemSleep

@@ -35,7 +35,7 @@ namespace agi {
 		class AppNapDisabler {
 			void *handle;
 		public:
-			AppNapDisabler(std::string const& reason);
+			AppNapDisabler(std::string reason);
 			~AppNapDisabler();
 		};
 	}
