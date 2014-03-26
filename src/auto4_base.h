@@ -49,10 +49,8 @@
 
 #include <wx/dialog.h>
 
-class AssFile;
 class AssStyle;
 class DialogProgress;
-class SubtitleFormat;
 class wxWindow;
 class wxDialog;
 
@@ -181,8 +179,6 @@ namespace Automation4 {
 		virtual std::vector<cmd::Command*> GetMacros() const=0;
 		/// Get a list of export filters provided by this script
 		virtual std::vector<ExportFilter*> GetFilters() const=0;
-		/// Get a list of subtitle formats provided by this script
-		virtual std::vector<SubtitleFormat*> GetFormats() const=0;
 	};
 
 	/// A manager of loaded automation scripts
@@ -295,6 +291,5 @@ namespace Automation4 {
 
 		std::vector<cmd::Command*> GetMacros() const override { return {}; }
 		std::vector<ExportFilter*> GetFilters() const override { return {}; }
-		std::vector<SubtitleFormat*> GetFormats() const override { return {}; }
 	};
 }

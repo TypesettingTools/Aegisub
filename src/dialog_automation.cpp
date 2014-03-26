@@ -254,9 +254,6 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 		boost::transform(ei->script->GetFilters(), append_info, [](const Automation4::ExportFilter* f) {
 			return wxString::Format(_("    Export filter: %s"), to_wx(f->GetName()));
 		});
-		boost::transform(ei->script->GetFormats(), append_info, [](const SubtitleFormat* f) {
-			return wxString::Format(_("    Subtitle format handler: %s"), to_wx(f->GetName()));
-		});
 	}
 
 	wxMessageBox(wxJoin(info, '\n', 0), _("Automation Script Info"));
