@@ -24,7 +24,6 @@
 				_WINDOWS;
 				%(PreprocessorDefinitions)</PreprocessorDefinitions>
 			<AdditionalIncludeDirectories>
-				$(AegisubSourceBase)src\msvc;
 				$(AegisubSourceBase)\include;
 				$(BoostPath);
 				$(GtestSrcDir)\include;
