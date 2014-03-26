@@ -60,14 +60,11 @@
 
 #include <wx/msgdlg.h>
 
-static VideoContext *instance;
-
 VideoContext::VideoContext(agi::Context *c)
 : context(c)
 , playback(this)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 {
-	instance = this;
 	context->ass->AddCommitListener(&VideoContext::OnSubtitlesCommit, this);
 	context->subsController->AddFileSaveListener(&VideoContext::OnSubtitlesSave, this);
 
@@ -88,10 +85,6 @@ VideoContext::VideoContext(agi::Context *c)
 }
 
 VideoContext::~VideoContext () { }
-
-VideoContext *VideoContext::Get() {
-	return instance;
-}
 
 void VideoContext::Reset() {
 	config::path->SetToken("?video", "");

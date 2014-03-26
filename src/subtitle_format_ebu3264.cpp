@@ -635,7 +635,7 @@ std::vector<std::string> Ebu3264SubtitleFormat::GetWriteWildcards() const
 	return formats;
 }
 
-void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const&) const
+void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const&) const
 {
 	// collect data from user
 	EbuExportSettings export_settings = get_export_config(nullptr);

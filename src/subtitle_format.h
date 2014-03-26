@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subtitle_format.h
-/// @see subtitle_format.cpp
-/// @ingroup subtitle_io
-///
-
 #pragma once
 
 #include <libaegisub/exception.h>
@@ -70,7 +65,7 @@ public:
 	/// Prompt the user for a frame rate to use
 	/// @param allow_vfr Include video frame rate as an option even if it's vfr
 	/// @param show_smpte Show SMPTE drop frame option
-	static agi::vfr::Framerate AskForFPS(bool allow_vfr, bool show_smpte);
+	static agi::vfr::Framerate AskForFPS(bool allow_vfr, bool show_smpte, agi::vfr::Framerate const& fps);
 
 	/// Constructor
 	/// @param Subtitle format name
@@ -103,13 +98,13 @@ public:
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param encoding Encoding to use. May be ignored by the reader.
-	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& encoding) const { }
+	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
 	/// @param filename File to write to
 	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding="") const { }
+	virtual void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const { }
 
 	/// Get the wildcards for a save or load dialog
 	/// @param mode 0: load 1: save

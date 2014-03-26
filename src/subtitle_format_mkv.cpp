@@ -51,6 +51,6 @@ std::vector<std::string> MKVSubtitleFormat::GetReadWildcards() const {
 	return formats;
 }
 
-void MKVSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, std::string const&) const {
+void MKVSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const&) const {
 	MatroskaWrapper::GetSubtitles(filename, target);
 }

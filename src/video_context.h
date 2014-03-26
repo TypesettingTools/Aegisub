@@ -269,6 +269,4 @@ public:
 
 	int TimeAtFrame(int frame, agi::vfr::Time type = agi::vfr::EXACT) const;
 	int FrameAtTime(int time, agi::vfr::Time type = agi::vfr::EXACT) const;
-
-	static VideoContext *Get();
 };

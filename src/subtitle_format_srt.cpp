@@ -351,7 +351,7 @@ enum ParseState {
 	STATE_LAST_WAS_BLANK
 };
 
-void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& encoding) const {
+void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
@@ -463,7 +463,7 @@ found_timestamps:
 		line->Text = tag_parser.ToAss(text);
 }
 
-void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
+void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	TextFileWriter file(filename, encoding);
 
 	// Convert to SRT

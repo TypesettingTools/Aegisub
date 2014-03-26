@@ -41,6 +41,7 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "subtitle_format.h"
+#include "video_context.h"
 
 #include <memory>
 #include <wx/sizer.h>
@@ -93,7 +94,7 @@ void AssExporter::Export(agi::fs::path const& filename, std::string const& chars
 	if (!writer)
 		throw "Unknown file type.";
 
-	writer->WriteFile(&subs, filename, charset);
+	writer->WriteFile(&subs, filename, c->videoController->FPS(), charset);
 }
 
 wxSizer *AssExporter::GetSettingsSizer(std::string const& name) {

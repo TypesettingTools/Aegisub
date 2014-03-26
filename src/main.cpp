@@ -206,7 +206,6 @@ bool AegisubApp::OnInit() {
 	agi::util::SetThreadName("AegiMain");
 
 	StartupLog("Inside OnInit");
-	frame = nullptr;
 	try {
 		// Initialize randomizer
 		StartupLog("Initialize random generator");

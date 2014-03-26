@@ -67,11 +67,11 @@ class AegisubApp : public wxApp {
 	// our ticket to catch exceptions happening in event handlers.
 	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const override;
 
-	FrameMain *frame;
+	FrameMain *frame = nullptr;
 public:
 	AegisubApp();
 	AegisubLocale locale;
-	Automation4::AutoloadScriptManager *global_scripts;
+	Automation4::AutoloadScriptManager *global_scripts = nullptr;
 
 	// Apple events
 	void MacOpenFile(const wxString &filename);

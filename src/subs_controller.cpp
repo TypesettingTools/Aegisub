@@ -186,7 +186,7 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 		const SubtitleFormat *reader = SubtitleFormat::GetReader(filename, charset);
 
 		AssFile temp;
-		reader->ReadFile(&temp, filename, charset);
+		reader->ReadFile(&temp, filename, context->videoController->FPS(), charset);
 
 		// Make sure the file has at least one style and one dialogue line
 		if (temp.Styles.empty())
@@ -256,7 +256,7 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 
 		FileSave();
 
-		writer->WriteFile(context->ass.get(), filename, encoding);
+		writer->WriteFile(context->ass.get(), filename, 0, encoding);
 	}
 	catch (...) {
 		autosaved_commit_id = old_autosaved_commit_id;
@@ -311,7 +311,7 @@ agi::fs::path SubsController::AutoSave() {
 
 	path /= str(boost::format("%s.%s.AUTOSAVE.ass") % name.string() % agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
 
-	SubtitleFormat::GetWriter(path)->WriteFile(context->ass.get(), path);
+	SubtitleFormat::GetWriter(path)->WriteFile(context->ass.get(), path, 0);
 	autosaved_commit_id = commit_id;
 
 	return path;

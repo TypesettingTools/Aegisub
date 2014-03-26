@@ -45,7 +45,7 @@ std::vector<std::string> AssSubtitleFormat::GetWriteWildcards() const {
 	return {"ass", "ssa"};
 }
 
-void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& encoding) const {
+void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	TextFileReader file(filename, encoding);
 	int version = !agi::fs::HasExtension(filename, "ssa");
 	AssParser parser(target, version);
@@ -119,7 +119,7 @@ struct Writer {
 };
 }
 
-void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
+void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	Writer writer(filename, encoding);
 
 	writer.Write(src->Info);

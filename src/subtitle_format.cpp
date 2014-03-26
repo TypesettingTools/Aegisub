@@ -106,15 +106,14 @@ bool SubtitleFormat::CanSave(const AssFile *subs) const {
 	return true;
 }
 
-agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
+agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte, agi::vfr::Framerate const& fps) {
 	wxArrayString choices;
 
-	// Video FPS
-	VideoContext *context = VideoContext::Get();
-	bool vidLoaded = context->TimecodesLoaded();
-	if (vidLoaded) {
-		if (!context->FPS().IsVFR())
-			choices.Add(wxString::Format(_("From video (%g)"), context->FPS().FPS()));
+	bool vidLoaded = false;
+	if (fps.IsLoaded()) {
+		vidLoaded = true;
+		if (!fps.IsVFR())
+			choices.Add(wxString::Format(_("From video (%g)"), fps.FPS()));
 		else if (allow_vfr)
 			choices.Add(_("From video (VFR)"));
 		else
@@ -152,7 +151,7 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
 		--choice;
 
 	switch (choice) {
-		case -1: return context->FPS();          break; // VIDEO
+		case -1: return fps;                     break;
 		case 0:  return Framerate(15, 1);        break;
 		case 1:  return Framerate(24000, 1001);  break;
 		case 2:  return Framerate(24, 1);        break;
@@ -166,9 +165,7 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte) {
 		case 10: return Framerate(120000, 1001); break;
 		case 11: return Framerate(120, 1);       break;
 	}
-
-	assert(false);
-	return Framerate();
+	throw agi::InternalError("Out of bounds result from wxGetSingleChoiceIndex?", nullptr);
 }
 
 void SubtitleFormat::StripTags(AssFile &file) {

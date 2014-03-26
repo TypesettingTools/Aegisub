@@ -59,8 +59,8 @@ std::vector<std::string> TranStationSubtitleFormat::GetWriteWildcards() const {
 	return formats;
 }
 
-void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const {
-	agi::vfr::Framerate fps = AskForFPS(false, true);
+void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, std::string const& encoding) const {
+	agi::vfr::Framerate fps = AskForFPS(false, true, vfps);
 	if (!fps.IsLoaded()) return;
 
 	// Convert to TranStation

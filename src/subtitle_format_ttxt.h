@@ -51,6 +51,6 @@ public:
 	std::vector<std::string> GetReadWildcards() const override;
 	std::vector<std::string> GetWriteWildcards() const override;
 
-	void ReadFile(AssFile *target, agi::fs::path const& filename, std::string const& forceEncoding) const override;
-	void WriteFile(const AssFile *src, agi::fs::path const& filename, std::string const& encoding) const override;
+	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
+	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 };

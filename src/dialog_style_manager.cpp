@@ -589,7 +589,7 @@ void DialogStyleManager::OnCurrentImport() {
 		if (!reader)
 			wxMessageBox("Unsupported subtitle format", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 		else
-			reader->ReadFile(&temp, filename, charset);
+			reader->ReadFile(&temp, filename, 0, charset);
 	}
 	catch (agi::Exception const& err) {
 		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);

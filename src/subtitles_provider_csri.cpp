@@ -46,6 +46,7 @@
 #include <libaegisub/path.h>
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/util.h>
+#include <libaegisub/vfr.h>
 
 #include <boost/filesystem.hpp>
 #include <mutex>
@@ -98,7 +99,7 @@ CSRISubtitlesProvider::~CSRISubtitlesProvider() {
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
 	if (tempfile.empty())
 		tempfile = unique_path(config::path->Decode("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));
-	SubtitleFormat::GetWriter(tempfile)->WriteFile(subs, tempfile, "utf-8");
+	SubtitleFormat::GetWriter(tempfile)->WriteFile(subs, tempfile, 0, "utf-8");
 
 	std::lock_guard<std::mutex> lock(csri_mutex);
 	instance = csri_open_file(renderer, tempfile.string().c_str(), nullptr);
