@@ -49,7 +49,6 @@
 #include "command/command.h"
 #include "dialog_detached_video.h"
 #include "dialog_manager.h"
-#include "dialog_version_check.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
@@ -191,15 +190,6 @@ FrameMain::FrameMain()
 	// However LC_NUMERIC must be "C", otherwise some parsing fails.
 	setlocale(LC_NUMERIC, "C");
 #endif
-#ifdef __APPLE__
-	// When run from an app bundle, LC_CTYPE defaults to "C", which breaks on
-	// anything involving unicode and in some cases number formatting.
-	// The right thing to do here would be to query CoreFoundation for the user's
-	// locale and add .UTF-8 to that, but :effort:
-	LOG_D("locale") << setlocale(LC_ALL, nullptr);
-	setlocale(LC_CTYPE, "en_US.UTF-8");
-	LOG_D("locale") << setlocale(LC_ALL, nullptr);
-#endif
 
 	StartupLog("Initializing context controls");
 	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
@@ -212,9 +202,6 @@ FrameMain::FrameMain()
 	StartupLog("Initializing context frames");
 	context->parent = this;
 	context->frame = this;
-
-	StartupLog("Install PNG handler");
-	wxImage::AddHandler(new wxPNGHandler);
 
 	StartupLog("Apply saved Maximized state");
 	if (OPT_GET("App/Maximized")->GetBool()) Maximize(true);
@@ -243,6 +230,9 @@ FrameMain::FrameMain()
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(this));
+	Bind(FILE_LIST_DROPPED, [=](wxThreadEvent &evt) {
+		LoadList(evt.GetPayload<wxArrayString>());
+	});
 
 	StartupLog("Load default file");
 	context->subsController->Close();
@@ -251,28 +241,6 @@ FrameMain::FrameMain()
 	AddFullScreenButton(this);
 	Show();
 	SetDisplayMode(1, 1);
-
-	// Version checker
-	StartupLog("Possibly perform automatic updates check");
-	if (OPT_GET("App/First Start")->GetBool()) {
-		OPT_SET("App/First Start")->SetBool(false);
-#ifdef WITH_UPDATE_CHECKER
-		int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"), wxYES_NO | wxCENTER);
-		OPT_SET("App/Auto/Check For Updates")->SetBool(result == wxYES);
-		try {
-			config::opt->Flush();
-		}
-		catch (agi::fs::FileSystemError const& e) {
-			wxMessageBox(to_wx(e.GetMessage()), "Error saving config file", wxOK | wxICON_ERROR | wxCENTER);
-		}
-#endif
-	}
-
-#ifdef WITH_UPDATE_CHECKER
-	PerformVersionCheck(false);
-#endif
-
-	Bind(FILE_LIST_DROPPED, &FrameMain::OnFilesDropped, this);
 
 	StartupLog("Leaving FrameMain constructor");
 }
@@ -444,10 +412,6 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 	SetStatusText(text,1);
 	StatusClear.SetOwner(this, ID_APP_TIMER_STATUSCLEAR);
 	StatusClear.Start(ms,true);
-}
-
-void FrameMain::OnFilesDropped(wxThreadEvent &evt) {
-	LoadList(evt.GetPayload<wxArrayString>());
 }
 
 bool FrameMain::LoadList(wxArrayString list) {

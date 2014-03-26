@@ -39,12 +39,12 @@
 #include "command/command.h"
 #include "include/aegisub/hotkey.h"
 
-#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "auto4_base.h"
 #include "auto4_lua_factory.h"
 #include "compat.h"
 #include "crash_writer.h"
+#include "dialog_version_check.h"
 #include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"
@@ -235,6 +235,14 @@ bool AegisubApp::OnInit() {
 		}
 		locale.Init(lang);
 
+#ifdef __APPLE__
+		// When run from an app bundle, LC_CTYPE defaults to "C", which breaks on
+		// anything involving unicode and in some cases number formatting.
+		// The right thing to do here would be to query CoreFoundation for the user's
+		// locale and add .UTF-8 to that, but :effort:
+		setlocale(LC_CTYPE, "en_US.UTF-8");
+#endif
+
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 		// Load plugins
@@ -250,10 +258,33 @@ bool AegisubApp::OnInit() {
 		AssExportFilterChain::Register(agi::util::make_unique<AssFixStylesFilter>());
 		AssExportFilterChain::Register(agi::util::make_unique<AssTransformFramerateFilter>());
 
+		StartupLog("Install PNG handler");
+		wxImage::AddHandler(new wxPNGHandler);
+
 		// Open main frame
 		StartupLog("Create main window");
 		frame = new FrameMain;
 		SetTopWindow(frame);
+
+		// Version checker
+		StartupLog("Possibly perform automatic updates check");
+		if (OPT_GET("App/First Start")->GetBool()) {
+			OPT_SET("App/First Start")->SetBool(false);
+#ifdef WITH_UPDATE_CHECKER
+			int result = wxMessageBox(_("Do you want Aegisub to check for updates whenever it starts? You can still do it manually via the Help menu."),_("Check for updates?"), wxYES_NO | wxCENTER);
+			OPT_SET("App/Auto/Check For Updates")->SetBool(result == wxYES);
+			try {
+				config::opt->Flush();
+			}
+			catch (agi::fs::FileSystemError const& e) {
+				wxMessageBox(to_wx(e.GetMessage()), "Error saving config file", wxOK | wxICON_ERROR | wxCENTER);
+			}
+#endif
+		}
+
+#ifdef WITH_UPDATE_CHECKER
+		PerformVersionCheck(false);
+#endif
 
 		// Get parameter subs
 		StartupLog("Parse command line");

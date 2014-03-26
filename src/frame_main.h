@@ -73,7 +73,6 @@ class FrameMain : public wxFrame {
 	void InitToolbar();
 	void InitContents();
 
-	void OnFilesDropped(wxThreadEvent &evt);
 	void UpdateTitle();
 
 	void OnKeyDown(wxKeyEvent &event);
