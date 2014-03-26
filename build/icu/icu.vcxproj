@@ -15,7 +15,7 @@
 
   <PropertyGroup Label="ConfigArgs">
     <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-release CFLAGS=-MDd CXXFLAGS=-MDd</CfgDebug>
-    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug --enable-release CFLAGS="-MD -Gw" CXXFLAGS="-MD -Gw"</CfgDebug>
+    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug --enable-release CFLAGS="-MD -Gw -O2 -GL" CXXFLAGS="-MD -Gw -O2 -GL"</CfgDebug>
     <CfgArgs>
       CC=cl
       CXX=cl
