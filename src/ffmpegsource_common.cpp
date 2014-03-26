@@ -39,7 +39,6 @@
 
 #include "compat.h"
 #include "frame_main.h"
-#include "main.h"
 #include "options.h"
 #include "utils.h"
 

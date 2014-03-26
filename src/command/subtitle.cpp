@@ -44,7 +44,6 @@
 #include "../dialog_spellchecker.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
-#include "../main.h"
 #include "../options.h"
 #include "../search_replace_engine.h"
 #include "../selection_controller.h"

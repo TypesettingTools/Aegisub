@@ -35,7 +35,6 @@
 #include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
-#include "../main.h"
 #include "../options.h"
 #include "../subs_controller.h"
 #include "../video_context.h"

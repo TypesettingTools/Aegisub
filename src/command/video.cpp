@@ -45,7 +45,6 @@
 #include "../include/aegisub/context.h"
 #include "../include/aegisub/subtitles_provider.h"
 #include "../libresrc/libresrc.h"
-#include "../main.h"
 #include "../options.h"
 #include "../selection_controller.h"
 #include "../utils.h"
