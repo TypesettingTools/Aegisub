@@ -49,9 +49,6 @@ namespace {
 /// Window ID of first menu item
 static const int MENU_ID_BASE = 10000;
 
-using std::placeholders::_1;
-using std::bind;
-
 class MruMenu final : public wxMenu {
 	std::string type;
 	std::vector<wxMenuItem *> items;
@@ -84,7 +81,7 @@ public:
 	}
 
 	void Update() {
-		const agi::MRUManager::MRUListMap *mru = config::mru->Get(type);
+		const auto mru = config::mru->Get(type);
 
 		Resize(mru->size());
 
@@ -105,14 +102,6 @@ public:
 				name));
 			items[i]->Enable(true);
 		}
-	}
-};
-
-struct menu_item_cmp {
-	wxMenuItem *item;
-	menu_item_cmp(wxMenuItem *item) : item(item) { }
-	bool operator()(std::pair<std::string, wxMenuItem*> const& o) const {
-		return o.second == item;
 	}
 };
 
@@ -207,10 +196,14 @@ public:
 
 	/// Unregister a dynamic menu item
 	void Remove(wxMenuItem *item) {
-		auto it = find_if(dynamic_items.begin(), dynamic_items.end(), menu_item_cmp(item));
+		auto pred = [=](std::pair<std::string, wxMenuItem*> const& o) {
+			return o.second == item;
+		};
+
+		auto it = find_if(dynamic_items.begin(), dynamic_items.end(), pred);
 		if (it != dynamic_items.end())
 			dynamic_items.erase(it);
-		it = find_if(static_items.begin(), static_items.end(), menu_item_cmp(item));
+		it = find_if(static_items.begin(), static_items.end(), pred);
 		if (it != static_items.end())
 			static_items.erase(it);
 	}
@@ -224,8 +217,8 @@ public:
 	}
 
 	void OnMenuOpen(wxMenuEvent &) {
-		for_each(dynamic_items.begin(), dynamic_items.end(), bind(&CommandManager::UpdateItem, this, _1));
-		for_each(mru.begin(), mru.end(), std::mem_fun(&MruMenu::Update));
+		for (auto const& item : dynamic_items) UpdateItem(item);
+		for (auto item : mru) item->Update();
 	}
 
 	void OnMenuClick(wxCommandEvent &evt) {
@@ -256,8 +249,8 @@ public:
 
 	/// Update the hotkeys for all menu items
 	void OnHotkeysChanged() {
-		for_each(dynamic_items.begin(), dynamic_items.end(), bind(&CommandManager::UpdateItemName, this, _1));
-		for_each(static_items.begin(), static_items.end(), bind(&CommandManager::UpdateItemName, this, _1));
+		for (auto const& item : dynamic_items) UpdateItemName(item);
+		for (auto const& item : static_items) UpdateItemName(item);
 	}
 };
 
@@ -285,12 +278,9 @@ bool read_entry(json::Object const& obj, const char *name, std::string *value) {
 	return true;
 }
 
-typedef json::Array menu_items;
-typedef json::Object menu_map;
-
 /// Get the root object of the menu configuration
-menu_map const& get_menus_root() {
-	static menu_map root;
+json::Object const& get_menus_root() {
+	static json::Object root;
 	if (!root.empty()) return root;
 
 	try {
@@ -310,8 +300,8 @@ menu_map const& get_menus_root() {
 /// Get the menu with the specified name
 /// @param name Name of menu to get
 /// @return Array of menu items
-menu_items const& get_menu(std::string const& name) {
-	menu_map const& root = get_menus_root();
+json::Array const& get_menu(std::string const& name) {
+	auto const& root = get_menus_root();
 
 	auto it = root.find(name);
 	if (it == root.end()) throw menu::UnknownMenu("Menu named " + name + " not found");
@@ -381,20 +371,11 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 /// @param name Name of the menu
 /// @param c Project context to bind the menu to
 wxMenu *build_menu(std::string const& name, agi::Context *c, CommandManager *cm, wxMenu *menu) {
-	menu_items const& items = get_menu(name);
-
 	if (!menu) menu = new wxMenu;
-	for_each(items.begin(), items.end(), bind(process_menu_item, menu, c, _1, cm));
+	for (auto const& item : get_menu(name))
+		process_menu_item(menu, c, item, cm);
 	return menu;
 }
-
-struct comp_str_menu {
-	agi::Context *c;
-	comp_str_menu(agi::Context *c) : c(c) { }
-	bool operator()(const cmd::Command *lft, const cmd::Command *rgt) const {
-		return lft->StrMenu(c) < rgt->StrMenu(c);
-	}
-};
 
 class AutomationMenu final : public wxMenu {
 	agi::Context *c;
@@ -436,10 +417,8 @@ public:
 
 namespace menu {
 	void GetMenuBar(std::string const& name, wxFrame *window, agi::Context *c) {
-		menu_items const& items = get_menu(name);
-
 		auto menu = agi::util::make_unique<CommandMenuBar>(c);
-		for (auto const& item : items) {
+		for (auto const& item : get_menu(name)) {
 			std::string submenu, disp;
 			read_entry(item, "submenu", &submenu);
 			read_entry(item, "text", &disp);
@@ -461,11 +440,11 @@ namespace menu {
 	}
 
 	std::unique_ptr<wxMenu> GetMenu(std::string const& name, agi::Context *c) {
-		auto menu = new CommandMenu(c);
-		build_menu(name, c, &menu->cm, menu);
+		auto menu = agi::util::make_unique<CommandMenu>(c);
+		build_menu(name, c, &menu->cm, menu.get());
 		menu->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
 		menu->Bind(wxEVT_MENU, &CommandManager::OnMenuClick, &menu->cm);
-		return std::unique_ptr<wxMenu>(menu);
+		return std::unique_ptr<wxMenu>(menu.release());
 	}
 
 	void OpenPopupMenu(wxMenu *menu, wxWindow *parent_window) {
