@@ -137,7 +137,7 @@ std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& 
 
 #ifndef __APPLE__
 namespace osx {
-AppNapDisabler::AppNapDisabler(std::string const& reason) { }
+AppNapDisabler::AppNapDisabler(std::string reason) { }
 AppNapDisabler::~AppNapDisabler() { }
 }
 #endif
