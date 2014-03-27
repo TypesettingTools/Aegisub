@@ -199,7 +199,12 @@ void DialogProgress::OnShow(wxShowEvent&) {
 }
 
 void DialogProgress::OnIdle(wxIdleEvent&) {
-	if (progress_current != progress_target) {
+	if (progress_current > progress_target) {
+		progress_current = progress_target;
+		gauge->SetValue(progress_current);
+		set_taskbar_progress(progress_current / 3);
+	}
+	else if (progress_current < progress_target) {
 		using namespace std::chrono;
 		auto now = steady_clock::now();
 		int ms = mid<int>(0, duration_cast<milliseconds>(now - progress_anim_start_time).count(), progress_anim_duration);
