@@ -26,7 +26,7 @@
 #include "charset_detect.h"
 #include "compat.h"
 #include "command/command.h"
-#include "Frame_main.h"
+#include "frame_main.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "selection_controller.h"
