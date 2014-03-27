@@ -34,7 +34,6 @@
 
 #include "auto4_lua.h"
 
-#include "auto4_lua_utils.h"
 #include "ass_dialogue.h"
 #include "ass_info.h"
 #include "ass_file.h"
@@ -44,6 +43,7 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/lua/utils.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -51,6 +51,8 @@
 #include <memory>
 
 namespace {
+	using namespace agi::lua;
+
 	DEFINE_SIMPLE_EXCEPTION_NOINNER(BadField, Automation4::MacroRunError, "automation/macro/bad_field")
 	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
 	{

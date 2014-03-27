@@ -121,8 +121,6 @@
     <ClInclude Include="$(SrcDir)auto4_base.h" />
     <ClInclude Include="$(SrcDir)auto4_lua.h" />
     <ClInclude Include="$(SrcDir)auto4_lua_factory.h" />
-    <ClInclude Include="$(SrcDir)auto4_lua_scriptreader.h" />
-    <ClInclude Include="$(SrcDir)auto4_lua_utils.h" />
     <ClInclude Include="$(SrcDir)avisynth.h" />
     <ClInclude Include="$(SrcDir)avisynth_wrap.h" />
     <ClInclude Include="$(SrcDir)base_grid.h" />
@@ -187,7 +185,6 @@
     <ClInclude Include="$(SrcDir)include\aegisub\toolbar.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\video_provider.h" />
     <ClInclude Include="$(SrcDir)initial_line_state.h" />
-    <ClInclude Include="$(SrcDir)lpeg.h" />
     <ClInclude Include="$(SrcDir)main.h" />
     <ClInclude Include="$(SrcDir)mkv_wrap.h" />
     <ClInclude Include="$(SrcDir)options.h" />
@@ -308,8 +305,6 @@
     <ClCompile Include="$(SrcDir)auto4_lua_assfile.cpp" />
     <ClCompile Include="$(SrcDir)auto4_lua_dialog.cpp" />
     <ClCompile Include="$(SrcDir)auto4_lua_progresssink.cpp" />
-    <ClCompile Include="$(SrcDir)auto4_lua_scriptreader.cpp" />
-    <ClCompile Include="$(SrcDir)auto4_regex.cpp" />
     <ClCompile Include="$(SrcDir)avisynth_wrap.cpp" />
     <ClCompile Include="$(SrcDir)base_grid.cpp" />
     <ClCompile Include="$(SrcDir)charset_detect.cpp" />
@@ -382,7 +377,6 @@
     <ClCompile Include="$(SrcDir)hotkey.cpp" />
     <ClCompile Include="$(SrcDir)hotkey_data_view_model.cpp" />
     <ClCompile Include="$(SrcDir)initial_line_state.cpp" />
-    <ClCompile Include="$(SrcDir)lpeg.cpp" />
     <ClCompile Include="$(SrcDir)main.cpp" />
     <ClCompile Include="$(SrcDir)menu.cpp" />
     <ClCompile Include="$(SrcDir)mkv_wrap.cpp" />

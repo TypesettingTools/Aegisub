@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,16 +14,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
-#include <libaegisub/fs.h>
-
 #include <lua.h>
-#include <lualib.h>
 #include <lauxlib.h>
 #include <string>
 #include <type_traits>
-#include <wx/string.h>
+
+namespace agi { namespace lua {
 
 inline void push_value(lua_State *L, bool value) { lua_pushboolean(L, value); }
 inline void push_value(lua_State *L, const char *value) { lua_pushstring(L, value); }
@@ -33,15 +32,12 @@ inline void push_value(lua_State *L, void *p) { lua_pushlightuserdata(L, p); }
 
 template<typename Integer>
 typename std::enable_if<std::is_integral<Integer>::value>::type
-push_value(lua_State *L, Integer value) { lua_pushinteger(L, value); }
-
-inline void push_value(lua_State *L, wxString const& value) {
-	lua_pushstring(L, value.utf8_str());
+push_value(lua_State *L, Integer value) {
+	lua_pushinteger(L, static_cast<lua_Integer>(value));
 }
 
-inline void push_value(lua_State *L, agi::fs::path const& value) {
-	std::string strval = value.string();
-	lua_pushlstring(L, strval.c_str(), strval.size());
+inline void push_value(lua_State *L, fs::path const& value) {
+	lua_pushstring(L, value.string().c_str());
 }
 
 inline void push_value(lua_State *L, std::string const& value) {
@@ -63,20 +59,24 @@ inline void set_field(lua_State *L, const char *name, T value) {
 	lua_setfield(L, -2, name);
 }
 
-inline wxString get_wxstring(lua_State *L, int idx) {
-	return wxString::FromUTF8(lua_tostring(L, idx));
-}
-
-inline wxString check_wxstring(lua_State *L, int idx) {
-	return wxString::FromUTF8(luaL_checkstring(L, idx));
-}
-
 inline std::string get_string_or_default(lua_State *L, int idx) {
 	size_t len = 0;
 	const char *str = lua_tolstring(L, idx, &len);
 	if (!str)
-		str = "<not a string>";
+		return "<not a string>";
 	return std::string(str, len);
+}
+
+inline std::string get_string(lua_State *L, int idx) {
+	size_t len = 0;
+	const char *str = lua_tolstring(L, idx, &len);
+	return std::string(str ? str : "", len);
+}
+
+inline std::string check_string(lua_State *L, int idx) {
+	size_t len = 0;
+	const char *str = luaL_checklstring(L, idx, &len);
+	return std::string(str ? str : "", len);
 }
 
 inline std::string get_global_string(lua_State *L, const char *name) {
@@ -86,6 +86,20 @@ inline std::string get_global_string(lua_State *L, const char *name) {
 		ret = lua_tostring(L, -1);
 	lua_pop(L, 1);
 	return ret;
+}
+
+template<typename T, typename... Args>
+T *make(lua_State *L, const char *mt, Args&&... args) {
+	auto obj = static_cast<T*>(lua_newuserdata(L, sizeof(T)));
+	new(obj) T(std::forward<Args>(args)...);
+	luaL_getmetatable(L, mt);
+	lua_setmetatable(L, -2);
+	return obj;
+}
+
+template<typename T>
+T& get(lua_State *L, int idx, const char *mt) {
+	return *static_cast<T *>(luaL_checkudata(L, idx, mt));
 }
 
 struct LuaForEachBreak {};
@@ -144,3 +158,5 @@ struct LuaStackcheck {
 	LuaStackcheck(lua_State*) { }
 };
 #endif
+
+} }

@@ -34,8 +34,6 @@
 
 #include "auto4_base.h"
 
-#include "command/command.h"
-
 #include <deque>
 #include <vector>
 

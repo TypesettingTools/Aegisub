@@ -34,14 +34,13 @@
 
 #include "auto4_lua.h"
 
-#include "auto4_lua_utils.h"
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_info.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "auto4_lua_factory.h"
-#include "auto4_lua_scriptreader.h"
+#include "command/command.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "main.h"
@@ -52,6 +51,9 @@
 #include "utils.h"
 
 #include <libaegisub/access.h>
+#include <libaegisub/lua/modules.h>
+#include <libaegisub/lua/script_reader.h>
+#include <libaegisub/lua/utils.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
 
@@ -67,8 +69,9 @@
 #include <boost/tokenizer.hpp>
 #include <cassert>
 #include <cstdint>
+#include <lualib.h>
+#include <lauxlib.h>
 #include <mutex>
-
 #include <wx/clipbrd.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
@@ -76,13 +79,21 @@
 #include <wx/msgdlg.h>
 #include <wx/window.h>
 
-// Forward declarations of stuff with no public headers
-int luaopen_lpeg (lua_State *L);
-extern "C" int luaopen_luabins(lua_State * L);
-namespace Automation4 { int regex_init(lua_State *L); }
+using namespace agi::lua;
+using namespace Automation4;
 
 namespace {
-	using namespace Automation4;
+
+	wxString get_wxstring(lua_State *L, int idx)
+	{
+		return wxString::FromUTF8(lua_tostring(L, idx));
+	}
+
+	wxString check_wxstring(lua_State *L, int idx)
+	{
+		return wxString::FromUTF8(luaL_checkstring(L, idx));
+	}
+
 	void set_context(lua_State *L, const agi::Context *c)
 	{
 		// Explicit cast is needed to discard the const
@@ -115,7 +126,7 @@ namespace {
 	int get_translation(lua_State *L)
 	{
 		wxString str(check_wxstring(L, 1));
-		push_value(L, _(str));
+		push_value(L, _(str).utf8_str());
 		return 1;
 	}
 
@@ -426,19 +437,18 @@ namespace {
 		try {
 			// create lua environment
 			L = lua_open();
-			LuaStackcheck _stackcheck(L);
+			LuaStackcheck stackcheck(L);
 
 			// register standard libs
 			push_value(L, luaopen_base); lua_call(L, 0, 0);
 			push_value(L, luaopen_io); lua_call(L, 0, 0);
-			push_value(L, luaopen_lpeg); lua_call(L, 0, 0);
 			push_value(L, luaopen_math); lua_call(L, 0, 0);
 			push_value(L, luaopen_os); lua_call(L, 0, 0);
 			push_value(L, luaopen_package); lua_call(L, 0, 0);
 			push_value(L, luaopen_string); lua_call(L, 0, 0);
 			push_value(L, luaopen_table); lua_call(L, 0, 0);
-			push_value(L, luaopen_luabins); lua_call(L, 0, 0);
-			_stackcheck.check_stack(0);
+			agi::lua::preload_modules(L);
+			stackcheck.check_stack(0);
 
 			// dofile and loadfile are replaced with include
 			lua_pushnil(L);
@@ -476,19 +486,19 @@ namespace {
 			push_value(L, LuaModuleLoader);
 			lua_rawseti(L, -2, 2);
 			lua_pop(L, 2);
-			_stackcheck.check_stack(0);
+			stackcheck.check_stack(0);
 
 			// prepare stuff in the registry
 
 			// store the script's filename
 			push_value(L, GetFilename().stem());
 			lua_setfield(L, LUA_REGISTRYINDEX, "filename");
-			_stackcheck.check_stack(0);
+			stackcheck.check_stack(0);
 
 			// reference to the script object
 			push_value(L, this);
 			lua_setfield(L, LUA_REGISTRYINDEX, "aegisub");
-			_stackcheck.check_stack(0);
+			stackcheck.check_stack(0);
 
 			// make "aegisub" table
 			lua_pushstring(L, "aegisub");
@@ -504,14 +514,17 @@ namespace {
 			set_field(L, "decode_path", decode_path);
 			set_field(L, "cancel", cancel_script);
 			set_field(L, "lua_automation_version", 4);
-			set_field(L, "__init_regex", regex_init);
 			set_field(L, "__init_clipboard", clipboard_init);
 			set_field(L, "file_name", get_file_name);
 			set_field(L, "gettext", get_translation);
 
 			// store aegisub table to globals
 			lua_settable(L, LUA_GLOBALSINDEX);
-			_stackcheck.check_stack(0);
+			stackcheck.check_stack(0);
+
+			// Preload packaged binary modules
+			preload_modules(L);
+			stackcheck.check_stack(0);
 
 			// load user script
 			if (!LoadFile(L, GetFilename())) {
@@ -519,7 +532,7 @@ namespace {
 				lua_pop(L, 1);
 				throw ScriptLoadError(err);
 			}
-			_stackcheck.check_stack(1);
+			stackcheck.check_stack(1);
 
 			// and execute it
 			// this is where features are registered
@@ -530,7 +543,7 @@ namespace {
 				lua_pop(L, 1);
 				throw ScriptLoadError(err);
 			}
-			_stackcheck.check_stack(0);
+			stackcheck.check_stack(0);
 
 			lua_getglobal(L, "version");
 			if (lua_isnumber(L, -1) && lua_tointeger(L, -1) == 3) {
@@ -548,7 +561,7 @@ namespace {
 
 			lua_pop(L, 1);
 			// if we got this far, the script should be ready
-			_stackcheck.check_stack(0);
+			stackcheck.check_stack(0);
 
 		}
 		catch (agi::Exception const& e) {

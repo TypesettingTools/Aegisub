@@ -34,7 +34,6 @@
 
 #include "auto4_lua.h"
 
-#include "auto4_lua_utils.h"
 #include "ass_style.h"
 #include "colour_button.h"
 #include "compat.h"
@@ -43,6 +42,7 @@
 #include "validators.h"
 
 #include <libaegisub/make_unique.h>
+#include <libaegisub/lua/utils.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptors.hpp>
@@ -64,6 +64,7 @@
 #include <wx/valnum.h>
 #include <wx/window.h>
 
+using namespace agi::lua;
 namespace {
 	inline void get_if_right_type(lua_State *L, std::string &def) {
 		if (lua_isstring(L, -1))

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,34 +14,33 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "auto4_lua_utils.h"
+#include "libaegisub/lua/utils.h"
 
 #include <boost/regex/icu.hpp>
+#include <lauxlib.h>
 
 namespace {
+using namespace agi::lua;
+
 boost::u32regex& get_regex(lua_State *L) {
-	return *static_cast<boost::u32regex*>(luaL_checkudata(L, 1, "aegisub.regex"));
+	return get<boost::u32regex>(L, 1, "aegisub.regex");
 }
 
 boost::smatch& get_smatch(lua_State *L) {
-	return *static_cast<boost::smatch*>(luaL_checkudata(L, 1, "aegisub.smatch"));
+	return get<boost::smatch>(L, 1, "aegisub.smatch");
 }
 
 int regex_matches(lua_State *L) {
-	lua_pushboolean(L, u32regex_match(luaL_checkstring(L, 2), get_regex(L)));
+	lua_pushboolean(L, u32regex_match(check_string(L, 2), get_regex(L)));
 	return 1;
 }
 
 int regex_match(lua_State *L) {
 	auto re = get_regex(L);
-	std::string str = luaL_checkstring(L, 2);
+	std::string str = check_string(L, 2);
 	int start = lua_tointeger(L, 3);
 
-	auto result = static_cast<boost::smatch*>(lua_newuserdata(L, sizeof(boost::smatch)));
-	new(result) boost::smatch;
-	luaL_getmetatable(L, "aegisub.smatch");
-	lua_setmetatable(L, -2);
-
+	auto result = make<boost::smatch>(L, "aegisub.smatch");
 	if (!u32regex_search(str.cbegin() + start, str.cend(), *result, re,
 		start > 0 ? boost::match_prev_avail | boost::match_not_bob : boost::match_default))
 	{
@@ -67,7 +66,7 @@ int regex_get_match(lua_State *L) {
 
 int regex_search(lua_State *L) {
 	auto re = get_regex(L);
-	std::string str = luaL_checkstring(L, 2);
+	std::string str = check_string(L, 2);
 	int start = luaL_checkinteger(L, 3) - 1;
 	boost::smatch result;
 	if (!u32regex_search(str.cbegin() + start, str.cend(), result, re,
@@ -84,8 +83,8 @@ int regex_search(lua_State *L) {
 
 int regex_replace(lua_State *L) {
 	auto re = get_regex(L);
-	const auto replacement = luaL_checkstring(L, 2);
-	const std::string str = luaL_checkstring(L, 3);
+	const auto replacement = check_string(L, 2);
+	const std::string str = check_string(L, 3);
 	int max_count = luaL_checkinteger(L, 4);
 
 	// Can't just use regex_replace here since it can only do one or infinite replacements
@@ -111,12 +110,11 @@ int regex_replace(lua_State *L) {
 }
 
 int regex_compile(lua_State *L) {
-	std::string pattern(luaL_checkstring(L, 1));
+	std::string pattern(check_string(L, 1));
 	int flags = luaL_checkinteger(L, 2);
-	boost::u32regex *re = static_cast<boost::u32regex*>(lua_newuserdata(L, sizeof(boost::u32regex)));
+	auto re = make<boost::u32regex>(L, "aegisub.regex");
 
 	try {
-		new(re) boost::u32regex;
 		*re = boost::make_u32regex(pattern, boost::u32regex::perl | flags);
 	}
 	catch (std::exception const& e) {
@@ -126,9 +124,6 @@ int regex_compile(lua_State *L) {
 		// Do the actual triggering of the error in the Lua code as that code
 		// can report the original call site
 	}
-
-	luaL_getmetatable(L, "aegisub.regex");
-	lua_setmetatable(L, -2);
 
 	return 1;
 }
@@ -178,8 +173,7 @@ int regex_init_flags(lua_State *L) {
 
 }
 
-namespace Automation4 {
-int regex_init(lua_State *L) {
+extern "C" int luaopen_re_impl(lua_State *L) {
 	if (luaL_newmetatable(L, "aegisub.regex")) {
 		set_field(L, "__gc", regex_gc);
 		lua_pop(L, 1);
@@ -200,5 +194,4 @@ int regex_init(lua_State *L) {
 	set_field(L, "process_flags", regex_process_flags);
 	set_field(L, "init_flags", regex_init_flags);
 	return 1;
-}
 }

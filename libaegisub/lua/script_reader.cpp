@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,21 +11,17 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-/// @file auto4_lua_scriptreader.cpp
-/// @brief Script-file reader for Lua 5.1-based scripting engine
-/// @ingroup scripting
-///
+#include "libaegisub/lua/script_reader.h"
 
-#include "auto4_lua_scriptreader.h"
+#include "libaegisub/file_mapping.h"
+#include "libaegisub/lua/utils.h"
 
-#include "auto4_lua_utils.h"
+#include <lauxlib.h>
 
-#include <libaegisub/file_mapping.h>
-
-#include <lua.h>
-
-namespace Automation4 {
+namespace agi { namespace lua {
 	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
 		auto filename = raw_filename;
 		try {
@@ -37,7 +33,7 @@ namespace Automation4 {
 
 		agi::read_file_mapping file(filename);
 		auto buff = file.read();
-		size_t size = file.size();
+		size_t size = static_cast<size_t>(file.size());
 
 		// Discard the BOM if present
 		if (size >= 3 && buff[0] == -17 && buff[1] == -69 && buff[2] == -65) {
@@ -72,4 +68,4 @@ namespace Automation4 {
 		lua_pop(L, 1); // Remove the extra nil for the stackchecker
 		return true;
 	}
-}
+} }

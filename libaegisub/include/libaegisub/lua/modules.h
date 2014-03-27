@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,9 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/lua/modules.h>
+struct lua_State;
 
-extern "C" int luaopen_aegisub(lua_State *L) {
-	agi::lua::preload_modules(L);
-	return 1;
-}
+namespace agi { namespace lua {
+	void preload_modules(lua_State *L);
+} }

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,9 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/lua/modules.h>
+#include <libaegisub/fs_fwd.h>
 
-extern "C" int luaopen_aegisub(lua_State *L) {
-	agi::lua::preload_modules(L);
-	return 1;
-}
+struct lua_State;
+
+namespace agi { namespace lua {
+	bool LoadFile(lua_State *L, agi::fs::path const& filename);
+} }

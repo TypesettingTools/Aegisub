@@ -18,7 +18,7 @@ select = select
 type   = type
 
 -- Get the boost::regex binding
-regex = aegisub.__init_regex()
+regex = require 'aegisub.__re_impl'
 
 -- Return the first n elements from ...
 select_first = (n, a, ...) ->

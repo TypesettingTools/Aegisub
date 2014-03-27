@@ -21,6 +21,12 @@
     <Filter Include="ASS">
       <UniqueIdentifier>{c97bd8a3-ebb7-4c43-9ca0-4ab8479d9388}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{ce495b25-1630-42e1-8ab0-053c313448f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\Modules">
+      <UniqueIdentifier>{2cf3ad94-e8a9-4a89-b47e-29523d90fd08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)common\charset_6937.h">
@@ -173,6 +179,18 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\make_unique.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\lua\utils.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\lua\script_reader.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)lua\modules\lpeg.h">
+      <Filter>Lua\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\lua\modules.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -282,6 +300,18 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\character_count.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)lua\script_reader.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)lua\modules\lpeg.cpp">
+      <Filter>Lua\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)lua\modules\re.cpp">
+      <Filter>Lua\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)lua\modules.cpp">
+      <Filter>Lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

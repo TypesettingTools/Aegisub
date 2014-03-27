@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,16 +11,28 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-/// @file auto4_lua_scriptreader.h
-/// @see auto4_lua_scriptreader.cpp
-/// @ingroup scripting
-///
+#include "libaegisub/lua/modules.h"
 
-#include <libaegisub/fs_fwd.h>
+#include "libaegisub/lua/utils.h"
 
-struct lua_State;
+int luaopen_lpeg(lua_State *L);
+extern "C" int luaopen_luabins(lua_State *L);
+extern "C" int luaopen_re_impl(lua_State *L);
 
-namespace Automation4 {
-	bool LoadFile(lua_State *L, agi::fs::path const& filename);
+namespace agi { namespace lua {
+int regex_init(lua_State *L);
+
+void preload_modules(lua_State *L) {
+	lua_getglobal(L, "package");
+	lua_getfield(L, -1, "preload");
+
+	set_field(L, "lpeg", luaopen_lpeg);
+	set_field(L, "luabins", luaopen_luabins);
+	set_field(L, "aegisub.__re_impl", luaopen_re_impl);
+
+	lua_pop(L, 2);
 }
+} }
