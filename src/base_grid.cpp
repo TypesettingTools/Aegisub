@@ -236,6 +236,7 @@ void BaseGrid::UpdateMaps() {
 	}
 
 	SetColumnWidths();
+	AdjustScrollbar();
 	Refresh(false);
 }
 
