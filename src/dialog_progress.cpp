@@ -170,11 +170,14 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 			// so the user can read the debug output and switch the cancel button to a
 			// close button
 			bool cancelled = this->ps->IsCancelled();
-			if (cancelled || (log_output->IsEmpty() && !pending_log))
+			if (cancelled || (log_output->IsEmpty() && !pending_log)) {
+				set_taskbar_progress(0);
 				EndModal(!cancelled);
-			else
+			}
+			else {
 				cancel_button->SetLabelText(_("Close"));
-			set_taskbar_progress(0);
+				SetProgress(300);
+			}
 		});
 	});
 
