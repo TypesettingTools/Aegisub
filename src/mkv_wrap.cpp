@@ -67,6 +67,10 @@ struct MkvStdIO final : InputStream {
 		if (pos == self->file.size())
 			return 0;
 
+		auto remaining = self->file.size() - pos;
+		if (remaining < INT_MAX)
+			count = std::min(static_cast<int>(remaining), count);
+
 		try {
 			memcpy(buffer, self->file.read(pos, count), count);
 		}
