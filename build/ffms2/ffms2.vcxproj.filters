@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{ed366ac0-ef41-4c15-b40e-4db3c76b17db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Indexing">
+      <UniqueIdentifier>{a5f150b5-ae8e-448c-a724-bbdca106ea10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Video">
+      <UniqueIdentifier>{14a03221-39fc-4803-b677-e90f2290666b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API">
+      <UniqueIdentifier>{132a91ed-71ff-4574-aba8-09d496869832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{7e197647-eb8c-44bc-b6d8-6368b242478c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Avisynth">
+      <UniqueIdentifier>{fab6c2c7-eeae-4009-a932-fc079402db63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{ac81097c-9043-43fa-a184-ea4c22091059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VapourSynth">
+      <UniqueIdentifier>{8a87437e-fe04-4b74-a917-f8c108247e3f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\audiosource.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\haaliaudio.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfaudio.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaaudio.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\haaliindexer.cpp">
+      <Filter>Indexing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\indexing.cpp">
+      <Filter>Indexing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfindexer.cpp">
+      <Filter>Indexing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaindexer.cpp">
+      <Filter>Indexing</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\haalivideo.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfvideo.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskavideo.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\videosource.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\ffms.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\codectype.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaparser.c">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\numthreads.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\stdiostream.c">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\utils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\wave64writer.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <None Include="$(FfmsSrcDir)\src\avisynth\avisynth.cpp">
+      <Filter>Avisynth</Filter>
+    </None>
+    <None Include="$(FfmsSrcDir)\src\avisynth\avssources.cpp">
+      <Filter>Avisynth</Filter>
+    </None>
+    <None Include="$(FfmsSrcDir)\src\avisynth\avsutils.cpp">
+      <Filter>Avisynth</Filter>
+    </None>
+    <None Include="$(FfmsSrcDir)\src\avisynth\ffswscale.cpp">
+      <Filter>Avisynth</Filter>
+    </None>
+    <ClCompile Include="$(FfmsSrcDir)\src\config\libs.cpp">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\videoutils.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <None Include="$(FfmsSrcDir)\src\vapoursynth\vapoursource.cpp">
+      <Filter>VapourSynth</Filter>
+    </None>
+    <None Include="$(FfmsSrcDir)\src\vapoursynth\vapoursynth.cpp">
+      <Filter>VapourSynth</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\audiosource.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\indexing.h">
+      <Filter>Indexing</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\videosource.h">
+      <Filter>Video</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\include\ffms.h">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\coparser.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\codectype.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\include\ffmscompat.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\guids.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\matroskaparser.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\numthreads.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\stdiostream.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\wave64writer.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\avisynth\avisynth.h">
+      <Filter>Avisynth</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\avisynth\avssources.h">
+      <Filter>Avisynth</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\avisynth\avsutils.h">
+      <Filter>Avisynth</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\avisynth\ffswscale.h">
+      <Filter>Avisynth</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\config\msvc-config.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\videoutils.h">
+      <Filter>Video</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\vapoursource.h">
+      <Filter>VapourSynth</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\VapourSynth.h">
+      <Filter>VapourSynth</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
