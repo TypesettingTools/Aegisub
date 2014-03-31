@@ -124,10 +124,6 @@ const UnknownElement& UnknownElement::operator[] (const std::string& key) const
    return it->second;
 }
 
-UnknownElement&       UnknownElement::operator[](size_t index)       { return CastTo<Array>()[index]; }
-UnknownElement const& UnknownElement::operator[](size_t index) const { return CastTo<Array>()[index]; }
-
-
 template <typename ElementTypeT>
 ElementTypeT const& UnknownElement::CastTo() const
 {

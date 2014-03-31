@@ -35,14 +35,12 @@ typedef std::string String;
 typedef std::deque<UnknownElement> Array;
 typedef std::map<std::string, UnknownElement> Object;
 
-class Null;
-
+struct Null;
 
 
 /////////////////////////////////////////////////////////////////////////
 // Exception - base class for all JSON-related runtime errors
-class Exception : public std::runtime_error
-{
+class Exception : public std::runtime_error {
 public:
 	Exception(const std::string& sMessage) : std::runtime_error(sMessage) { }
 };
@@ -60,8 +58,7 @@ public:
 //  element accesses can be chained together, allowing the following
 //  (when document structure is well-known):
 //  String str = objInvoices[1]["Customer"]["Company"];
-class UnknownElement
-{
+class UnknownElement {
 public:
    UnknownElement();
    UnknownElement(const UnknownElement& unknown);
@@ -96,16 +93,12 @@ public:
    operator Null&();
 
    // provides quick access to children when real element type is object
-   template<int N>
-   UnknownElement& operator[] (const char (&key)[N]) { return operator[](std::string(key)); }
-   template<int N>
-   const UnknownElement& operator[] (const char (&key)[N]) const { return operator[](std::string(key)); }
    UnknownElement& operator[] (const std::string& key);
    const UnknownElement& operator[] (const std::string& key) const;
-
-   // provides quick access to children when real element type is array
-   UnknownElement& operator[] (size_t index);
-   const UnknownElement& operator[] (size_t index) const;
+   template<int N>
+   UnknownElement& operator[] (const char(&key)[N]) { return operator[](std::string(key)); }
+   template<int N>
+   const UnknownElement& operator[] (const char(&key)[N]) const { return operator[](std::string(key)); }
 
    // implements visitor pattern
    void Accept(ConstVisitor& visitor) const;
@@ -133,9 +126,7 @@ private:
 /////////////////////////////////////////////////////////////////////////////////
 // Null - doesn't do much of anything but satisfy the JSON spec. It is the default
 //  element type of UnknownElement
-class Null
-{
-public:
+struct Null {
    bool operator == (const Null&) const { return true; }
 };
 
