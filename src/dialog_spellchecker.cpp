@@ -224,6 +224,7 @@ bool DialogSpellChecker::FindNext() {
 			has_looped = true;
 		}
 
+		active_line = &*it;
 		if (CheckLine(active_line, 0, &commit_id))
 			return true;
 	}
