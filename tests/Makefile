@@ -45,3 +45,5 @@ SRC = \
 HEADER = support/*.h tests/*.h
 
 include ../Makefile.target
+-include support/*.d
+-include tests/*.d
