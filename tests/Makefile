@@ -1,5 +1,6 @@
-# $Id$
 include ../Makefile.inc
+
+GTEST_ROOT = ../vendor/googletest
 
 PROGRAM = run
 
