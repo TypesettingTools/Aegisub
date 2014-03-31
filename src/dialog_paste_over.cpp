@@ -106,7 +106,7 @@ void DialogPasteOver::OnOK(wxCommandEvent &) {
 	std::vector<bool> options;
 	for (size_t i = 0; i < ListBox->GetCount(); ++i)
 		options.push_back(ListBox->IsChecked(i));
-	OPT_SET("Tool/Paste Lines Over/Fields")->SetListBool(options);
+	OPT_SET("Tool/Paste Lines Over/Fields")->SetListBool(std::move(options));
 
 	EndModal(0);
 }

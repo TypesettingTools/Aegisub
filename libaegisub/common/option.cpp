@@ -125,43 +125,43 @@ void Options::Flush() const {
 
 	for (auto const& ov : values) {
 		switch (ov.second->GetType()) {
-			case OptionValue::Type_String:
+			case OptionType::String:
 				put_option(obj_out, ov.first, ov.second->GetString());
 				break;
 
-			case OptionValue::Type_Int:
+			case OptionType::Int:
 				put_option(obj_out, ov.first, ov.second->GetInt());
 				break;
 
-			case OptionValue::Type_Double:
+			case OptionType::Double:
 				put_option(obj_out, ov.first, ov.second->GetDouble());
 				break;
 
-			case OptionValue::Type_Color:
+			case OptionType::Color:
 				put_option(obj_out, ov.first, ov.second->GetColor().GetRgbFormatted());
 				break;
 
-			case OptionValue::Type_Bool:
+			case OptionType::Bool:
 				put_option(obj_out, ov.first, ov.second->GetBool());
 				break;
 
-			case OptionValue::Type_List_String:
+			case OptionType::ListString:
 				put_array(obj_out, ov.first, "string", ov.second->GetListString());
 				break;
 
-			case OptionValue::Type_List_Int:
+			case OptionType::ListInt:
 				put_array(obj_out, ov.first, "int", ov.second->GetListInt());
 				break;
 
-			case OptionValue::Type_List_Double:
+			case OptionType::ListDouble:
 				put_array(obj_out, ov.first, "double", ov.second->GetListDouble());
 				break;
 
-			case OptionValue::Type_List_Color:
+			case OptionType::ListColor:
 				put_array(obj_out, ov.first, "color", ov.second->GetListColor());
 				break;
 
-			case OptionValue::Type_List_Bool:
+			case OptionType::ListBool:
 				put_array(obj_out, ov.first, "bool", ov.second->GetListBool());
 				break;
 		}

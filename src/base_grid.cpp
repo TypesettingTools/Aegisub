@@ -176,8 +176,7 @@ void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
 	int item = event.GetId() - MENU_SHOW_COL;
 	showCol[item] = !showCol[item];
 
-	std::vector<bool> map(std::begin(showCol), std::end(showCol));
-	OPT_SET("Subtitle/Grid/Column")->SetListBool(map);
+	OPT_SET("Subtitle/Grid/Column")->SetListBool(std::vector<bool>(std::begin(showCol), std::end(showCol)));
 
 	SetColumnWidths();
 	Refresh(false);

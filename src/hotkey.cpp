@@ -117,7 +117,7 @@ void init() {
 		migrations.emplace_back("duplicate -> split");
 	}
 
-	OPT_SET("App/Hotkey Migrations")->SetListString(migrations);
+	OPT_SET("App/Hotkey Migrations")->SetListString(std::move(migrations));
 }
 
 void clear() {

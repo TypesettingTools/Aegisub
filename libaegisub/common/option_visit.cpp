@@ -59,9 +59,9 @@ void ConfigVisitor::Visit(const json::Object& object) {
 	}
 }
 
-template<class OptionValueType, class ValueType>
-std::unique_ptr<OptionValue> ConfigVisitor::ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*)(const std::vector<ValueType>&)) {
-	std::vector<ValueType> arr;
+template<class OptionValueType>
+std::unique_ptr<OptionValue> ConfigVisitor::ReadArray(json::Array const& src, std::string const& array_type) {
+	typename OptionValueType::value_type arr;
 	arr.reserve(src.size());
 
 	for (json::Object const& obj : src) {
@@ -74,10 +74,10 @@ std::unique_ptr<OptionValue> ConfigVisitor::ReadArray(json::Array const& src, st
 			return nullptr;
 		}
 
-		arr.push_back(ValueType(obj.begin()->second));
+		arr.push_back((typename OptionValueType::value_type::value_type)(obj.begin()->second));
 	}
 
-	return util::make_unique<OptionValueType>(name, arr);
+	return util::make_unique<OptionValueType>(name, std::move(arr));
 }
 
 void ConfigVisitor::Visit(const json::Array& array) {
@@ -95,15 +95,15 @@ void ConfigVisitor::Visit(const json::Array& array) {
 	const std::string& array_type = front.begin()->first;
 
 	if (array_type == "string")
-		AddOptionValue(ReadArray(array, array_type, &OptionValueListString::SetListString));
+		AddOptionValue(ReadArray<OptionValueListString>(array, array_type));
 	else if (array_type == "int")
-		AddOptionValue(ReadArray(array, array_type, &OptionValueListInt::SetListInt));
+		AddOptionValue(ReadArray<OptionValueListInt>(array, array_type));
 	else if (array_type == "double")
-		AddOptionValue(ReadArray(array, array_type, &OptionValueListDouble::SetListDouble));
+		AddOptionValue(ReadArray<OptionValueListDouble>(array, array_type));
 	else if (array_type == "bool")
-		AddOptionValue(ReadArray(array, array_type, &OptionValueListBool::SetListBool));
+		AddOptionValue(ReadArray<OptionValueListBool>(array, array_type));
 	else if (array_type == "color")
-		AddOptionValue(ReadArray(array, array_type, &OptionValueListColor::SetListColor));
+		AddOptionValue(ReadArray<OptionValueListColor>(array, array_type));
 	else
 		Error<OptionJsonValueArray>("Array type not handled");
 }

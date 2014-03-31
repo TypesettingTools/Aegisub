@@ -46,8 +46,8 @@ class ConfigVisitor final : public json::ConstVisitor {
 	template<class ErrorType>
 	void Error(const char *message);
 
-	template<class OptionValueType, class ValueType>
-	std::unique_ptr<OptionValue> ReadArray(json::Array const& src, std::string const& array_type, void (OptionValueType::*set_list)(const std::vector<ValueType>&));
+	template<class OptionValueType>
+	std::unique_ptr<OptionValue> ReadArray(json::Array const& src, std::string const& array_type);
 
 	void AddOptionValue(std::unique_ptr<OptionValue>&& opt);
 public:

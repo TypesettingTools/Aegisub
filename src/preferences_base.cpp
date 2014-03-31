@@ -117,7 +117,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
 	switch (opt->GetType()) {
-		case agi::OptionValue::Type_Bool: {
+		case agi::OptionType::Bool: {
 			wxCheckBox *cb = new wxCheckBox(this, -1, name);
 			flex->Add(cb, 1, wxEXPAND, 0);
 			cb->SetValue(opt->GetBool());
@@ -125,28 +125,28 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 			return cb;
 		}
 
-		case agi::OptionValue::Type_Int: {
+		case agi::OptionType::Int: {
 			wxSpinCtrl *sc = new wxSpinCtrl(this, -1, std::to_wstring((int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
 			sc->Bind(wxEVT_SPINCTRL, IntUpdater(opt_name, parent));
 			Add(flex, name, sc);
 			return sc;
 		}
 
-		case agi::OptionValue::Type_Double: {
+		case agi::OptionType::Double: {
 			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, wxString::Format("%g", opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
 			scd->Bind(wxEVT_SPINCTRL, DoubleUpdater(opt_name, parent));
 			Add(flex, name, scd);
 			return scd;
 		}
 
-		case agi::OptionValue::Type_String: {
+		case agi::OptionType::String: {
 			wxTextCtrl *text = new wxTextCtrl(this, -1 , to_wx(opt->GetString()));
 			text->Bind(wxEVT_TEXT, StringUpdater(opt_name, parent));
 			Add(flex, name, text);
 			return text;
 		}
 
-		case agi::OptionValue::Type_Color: {
+		case agi::OptionType::Color: {
 			auto cb = new ColourButton(this, wxSize(40,10), false, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(flex, name, cb);
@@ -166,13 +166,13 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 	Add(flex, name, cb);
 
 	switch (opt->GetType()) {
-		case agi::OptionValue::Type_Int: {
+		case agi::OptionType::Int: {
 			int val = opt->GetInt();
 			cb->Select(val < (int)choices.size() ? val : 0);
 			cb->Bind(wxEVT_COMBOBOX, IntCBUpdater(opt_name, parent));
 			break;
 		}
-		case agi::OptionValue::Type_String: {
+		case agi::OptionType::String: {
 			wxString val(to_wx(opt->GetString()));
 			if (cb->FindString(val) != wxNOT_FOUND)
 				cb->SetStringSelection(val);
@@ -201,8 +201,8 @@ void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const
 	parent->AddChangeableOption(opt_name);
 	const agi::OptionValue *opt = OPT_GET(opt_name);
 
-	if (opt->GetType() != agi::OptionValue::Type_String)
-		throw PreferenceIncorrectType("Option must be agi::OptionValue::Type_String for BrowseButton.");
+	if (opt->GetType() != agi::OptionType::String)
+		throw PreferenceIncorrectType("Option must be agi::OptionType::String for BrowseButton.");
 
 	wxTextCtrl *text = new wxTextCtrl(this, -1 , to_wx(opt->GetString()));
 	text->SetMinSize(wxSize(160, -1));
