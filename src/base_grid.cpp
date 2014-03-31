@@ -228,12 +228,9 @@ void BaseGrid::UpdateStyle() {
 
 void BaseGrid::UpdateMaps() {
 	index_line_map.clear();
-	line_index_map.clear();
 
-	for (auto& curdiag : context->ass->Events) {
-		line_index_map[&curdiag] = (int)index_line_map.size();
+	for (auto& curdiag : context->ass->Events)
 		index_line_map.push_back(&curdiag);
-	}
 
 	SetColumnWidths();
 	AdjustScrollbar();
@@ -242,7 +239,7 @@ void BaseGrid::UpdateMaps() {
 
 void BaseGrid::OnActiveLineChanged(AssDialogue *new_active) {
 	if (new_active) {
-		int row = GetDialogueIndex(new_active);
+		int row = new_active->Row;
 		MakeRowVisible(row);
 		extendRow = row;
 		Refresh(false);
@@ -792,11 +789,6 @@ AssDialogue *BaseGrid::GetDialogue(int n) const {
 	return index_line_map[n];
 }
 
-int BaseGrid::GetDialogueIndex(AssDialogue *diag) const {
-	auto it = line_index_map.find(diag);
-	return it != line_index_map.end() ? it->second : -1;
-}
-
 bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
 	if (!context->videoController->IsLoaded()) return false;
 	int frame = context->videoController->GetFrameN();
@@ -856,8 +848,9 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 		return;
 	}
 
+	auto active_line = context->selectionController->GetActiveLine();
 	int old_extend = extendRow;
-	int next = mid(0, GetDialogueIndex(context->selectionController->GetActiveLine()) + dir * step, GetRows() - 1);
+	int next = mid(0, (active_line ? active_line->Row : 0) + dir * step, GetRows() - 1);
 	context->selectionController->SetActiveLine(GetDialogue(next));
 
 	// Move selection

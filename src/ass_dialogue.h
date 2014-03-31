@@ -130,6 +130,8 @@ struct AssDialogueBase {
 	/// the different versions of the file.
 	int Id;
 
+	int Row = -1;
+
 	/// Is this a comment line?
 	bool Comment = false;
 	/// Layer number

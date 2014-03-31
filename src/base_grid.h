@@ -34,7 +34,6 @@
 
 #include <libaegisub/signal.h>
 
-#include <map>
 #include <memory>
 #include <vector>
 #include <wx/window.h>
@@ -59,7 +58,6 @@ class BaseGrid final : public wxWindow {
 	int extendRow = -1;
 
 	std::vector<AssDialogue*> index_line_map;  ///< Row number -> dialogue line
-	std::map<AssDialogue*,int> line_index_map; ///< Dialogue line -> row number
 
 	/// Connection for video seek event. Stored explicitly so that it can be
 	/// blocked if the relevant option is disabled
@@ -119,11 +117,6 @@ class BaseGrid final : public wxWindow {
 	/// @param n Index to look up
 	/// @return Subtitle dialogue line for index, or 0 if invalid index
 	AssDialogue *GetDialogue(int n) const;
-
-	/// @brief Get index by dialogue line
-	/// @param diag Dialogue line to look up
-	/// @return Subtitle index for object, or -1 if unknown subtitle
-	int GetDialogueIndex(AssDialogue *diag) const;
 
 public:
 	BaseGrid(wxWindow* parent, agi::Context *context);
