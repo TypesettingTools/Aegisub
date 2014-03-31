@@ -21,13 +21,13 @@
 
 #include <fstream>
 
+static const char default_opt[] = "{\"Valid\" : \"This is valid\"}";
+
 class lagi_option : public libagi {
 protected:
-	std::string default_opt;
 	std::string conf_ok;
 
 	void SetUp() override {
-		default_opt = "{\"Valid\" : \"This is valid\"}";
 		conf_ok = "data/options/string.json";
 	}
 };
@@ -107,7 +107,7 @@ TEST_F(lagi_option, bad_default_throws_and_null_is_rejected) {
 }
 
 TEST_F(lagi_option, nested_options) {
-	const char *conf = "{ \"a\" : { \"b\" : { \"c\" : { \"c\" : \"value\" } } } }";
+	const char conf[] = "{ \"a\" : { \"b\" : { \"c\" : { \"c\" : \"value\" } } } }";
 	ASSERT_NO_THROW(agi::Options("", conf, agi::Options::FLUSH_SKIP));
 	agi::Options opt("", conf, agi::Options::FLUSH_SKIP);
 	ASSERT_NO_THROW(opt.Get("a/b/c/c"));
@@ -169,7 +169,7 @@ TEST_F(lagi_option, flush_roundtrip) {
 }
 
 TEST_F(lagi_option, mixed_valid_and_invalid_in_user_conf_loads_all_valid) {
-	const char *def = "{\"1\" : false, \"2\" : 1, \"3\" : false }";
+	const char def[] = "{\"1\" : false, \"2\" : 1, \"3\" : false }";
 	agi::Options opt("data/options/all_bool.json", def, agi::Options::FLUSH_SKIP);
 	ASSERT_NO_THROW(opt.ConfigUser());
 	EXPECT_EQ(true, opt.Get("1")->GetBool());

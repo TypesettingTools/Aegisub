@@ -101,6 +101,10 @@ public:
 	/// @param default_config Default config.
 	Hotkey(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
 
+	template<size_t N>
+	Hotkey(agi::fs::path const& file, const char (&default_config)[N])
+	: Hotkey(file, std::make_pair(default_config, N - 1)) { }
+
 	/// Scan for a matching key.
 	/// @param context  Context requested.
 	/// @param str      Hyphen separated key sequence.

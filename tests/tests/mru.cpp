@@ -17,13 +17,13 @@
 
 #include "main.h"
 
+static const char default_mru[] = "{\"Valid\" : []}";
+
 class lagi_mru : public libagi {
 protected:
-	std::string default_mru;
 	std::string conf_ok;
 
 	void SetUp() override {
-		default_mru = "{\"Valid\" : []}";
 		conf_ok = "./data/mru_ok.json";
 	}
 };
