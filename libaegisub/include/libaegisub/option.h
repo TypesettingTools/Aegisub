@@ -39,13 +39,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionErrorDuplicateKey, OptionError, "options/d
 
 class OptionValue;
 
-class OptionValueMap final : public std::map<std::string, std::unique_ptr<OptionValue>> {
-private:
-	OptionValueMap(const OptionValueMap& x);
-	OptionValueMap& operator=(const OptionValueMap& x);
-public:
-	OptionValueMap() {};
-};
+using OptionValueMap = std::map<std::string, std::unique_ptr<OptionValue>>;
 
 class Options {
 public:
