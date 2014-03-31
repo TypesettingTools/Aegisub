@@ -831,26 +831,25 @@ namespace Automation4 {
 		LuaScript::GetScriptObject(L)->UnregisterCommand(this);
 	}
 
-	static int transform_selection(lua_State *L, const agi::Context *c)
+	static std::vector<int> selected_rows(const agi::Context *c)
 	{
 		auto const& sel = c->selectionController->GetSelectedSet();
-		AssDialogue *active_line = c->selectionController->GetActiveLine();
+		int offset = c->ass->Info.size() + c->ass->Styles.size();
+		std::vector<int> rows;
+		rows.reserve(sel.size());
+		for (auto line : sel)
+			rows.push_back(line->Row + offset + 1);
+		sort(begin(rows), end(rows));
+		return rows;
+	}
 
+	static void transform_selection(lua_State *L, std::vector<int> rows)
+	{
 		lua_newtable(L);
-		int active_idx = -1;
-
-		int row = c->ass->Info.size() + c->ass->Styles.size();
-		int idx = 1;
-		for (auto& line : c->ass->Events) {
-			++row;
-			if (&line == active_line) active_idx = row;
-			if (sel.count(&line)) {
-				push_value(L, row);
-				lua_rawseti(L, -2, idx++);
-			}
+		for (size_t i = 0; i < rows.size(); ++i) {
+			push_value(L, rows[i]);
+			lua_rawseti(L, -2, i + 1);
 		}
-
-		return active_idx;
 	}
 
 	bool LuaCommand::Validate(const agi::Context *c)
@@ -861,7 +860,10 @@ namespace Automation4 {
 
 		GetFeatureFunction("validate");
 		auto subsobj = new LuaAssFile(L, c->ass.get());
-		push_value(L, transform_selection(L, c));
+
+		transform_selection(L, selected_rows(c));
+		if (auto active_line = c->selectionController->GetActiveLine())
+			push_value(L, active_line->Row + c->ass->Info.size() + c->ass->Styles.size() + 1);
 
 		int err = lua_pcall(L, 3, 2, 0);
 
@@ -894,7 +896,15 @@ namespace Automation4 {
 
 		GetFeatureFunction("run");
 		auto subsobj = new LuaAssFile(L, c->ass.get(), true, true);
-		push_value(L, transform_selection(L, c));
+
+		int original_offset = c->ass->Info.size() + c->ass->Styles.size() + 1;
+		auto original_sel = selected_rows(c);
+		int original_active = 0;
+		if (auto active_line = c->selectionController->GetActiveLine())
+			original_active = active_line->Row + original_offset;
+
+		transform_selection(L, original_sel);
+		push_value(L, original_active);
 
 		try {
 			LuaThreadedCall(L, 3, 2, from_wx(StrDisplay(c)), c->parent, true);
@@ -944,8 +954,31 @@ namespace Automation4 {
 					new_active = active_line;
 				c->selectionController->SetSelectionAndActive(std::move(sel), new_active);
 			}
-			else
+			else {
 				lua_pop(L, 1);
+
+				Selection new_sel;
+				AssDialogue *new_active = nullptr;
+
+				int prev = original_offset;
+				auto it = c->ass->Events.begin();
+				for (int row : original_sel) {
+					while (row > prev && it != c->ass->Events.end()) {
+						++prev;
+						++it;
+					}
+					if (row != prev) break;
+					new_sel.insert(&*it);
+					if (row == original_active)
+						new_active = &*it;
+				}
+
+				if (new_sel.empty() && !c->ass->Events.empty())
+					new_sel.insert(&c->ass->Events.front());
+				if (!new_sel.count(new_active))
+					new_active = *new_sel.begin();
+				c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
+			}
 
 			stackcheck.check_stack(0);
 		}
@@ -966,7 +999,9 @@ namespace Automation4 {
 
 		GetFeatureFunction("isactive");
 		auto subsobj = new LuaAssFile(L, c->ass.get());
-		push_value(L, transform_selection(L, c));
+		transform_selection(L, selected_rows(c));
+		if (auto active_line = c->selectionController->GetActiveLine())
+			push_value(L, active_line->Row + c->ass->Info.size() + c->ass->Styles.size() + 1);
 
 		int err = lua_pcall(L, 3, 1, 0);
 		subsobj->ProcessingComplete();
