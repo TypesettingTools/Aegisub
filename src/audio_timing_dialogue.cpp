@@ -816,6 +816,7 @@ void AudioTimingControllerDialogue::RegenerateMarkers()
 		line.GetMarkers(&markers);
 	for (auto const& line : inactive_lines)
 		line.GetMarkers(&markers);
+	boost::sort(markers, marker_ptr_cmp());
 
 	AnnounceMarkerMoved();
 }
