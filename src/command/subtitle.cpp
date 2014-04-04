@@ -382,7 +382,7 @@ struct subtitle_select_visible final : public Command {
 	CMD_ICON(select_visible_button)
 	STR_MENU("Select Visible")
 	STR_DISP("Select Visible")
-	STR_HELP("Select all dialogue lines that visible on the current video frame")
+	STR_HELP("Select all dialogue lines that are visible on the current video frame")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) override {
