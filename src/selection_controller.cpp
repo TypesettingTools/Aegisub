@@ -46,7 +46,7 @@ void SelectionController::OnSubtitlesOpen() {
 void SelectionController::OnSubtitlesSave() {
 	if (active_line)
 		context->ass->SaveUIState("Active Line", std::to_string(std::distance(
-			context->ass->Events.begin(), context->ass->Events.iterator_to(*active_line))));
+			context->ass->Events.begin(), context->ass->iterator_to(*active_line))));
 }
 
 void SelectionController::SetSelectedSet(Selection new_selection) {
@@ -68,7 +68,7 @@ void SelectionController::SetSelectionAndActive(Selection new_selection, AssDial
 
 void SelectionController::PrevLine() {
 	if (!active_line) return;
-	auto it = context->ass->Events.iterator_to(*active_line);
+	auto it = context->ass->iterator_to(*active_line);
 	if (it != context->ass->Events.begin()) {
 		--it;
 		SetSelectionAndActive({&*it}, &*it);
@@ -77,7 +77,7 @@ void SelectionController::PrevLine() {
 
 void SelectionController::NextLine() {
 	if (!active_line) return;
-	auto it = context->ass->Events.iterator_to(*active_line);
+	auto it = context->ass->iterator_to(*active_line);
 	if (++it != context->ass->Events.end())
 		SetSelectionAndActive({&*it}, &*it);
 }

@@ -229,7 +229,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 	auto matches = GetMatcher(settings);
 
 	AssDialogue *line = context->selectionController->GetActiveLine();
-	auto it = context->ass->Events.iterator_to(*line);
+	auto it = context->ass->iterator_to(*line);
 	size_t pos = 0;
 
 	MatchState replace_ms;

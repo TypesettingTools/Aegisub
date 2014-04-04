@@ -80,7 +80,7 @@ struct grid_line_next_create final : public Command {
 			newline->End = cur->End + OPT_GET("Timing/Default Duration")->GetInt();
 			newline->Style = cur->Style;
 
-			auto pos = c->ass->Events.iterator_to(*cur);
+			auto pos = c->ass->iterator_to(*cur);
 			c->ass->Events.insert(++pos, *newline);
 			c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
 			c->selectionController->NextLine();

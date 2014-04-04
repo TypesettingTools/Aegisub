@@ -780,7 +780,7 @@ static bool try_paste_lines(agi::Context *c) {
 	for (auto& line : parsed)
 		new_selection.insert(&line);
 
-	auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
+	auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
 	c->ass->Events.splice(pos, parsed, parsed.begin(), parsed.end());
 	c->ass->Commit(_("paste"), AssFile::COMMIT_DIAG_ADDREM);
 	c->selectionController->SetSelectionAndActive(std::move(new_selection), new_active);
@@ -811,7 +811,7 @@ struct edit_line_paste final : public Command {
 				ctrl->Paste();
 		}
 		else {
-			auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
+			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
 			paste_lines(c, false, [=](AssDialogue *new_line) -> AssDialogue * {
 				c->ass->Events.insert(pos, *new_line);
 				return new_line;
@@ -842,7 +842,7 @@ struct edit_line_paste_over final : public Command {
 
 		// Only one line selected, so paste over downwards from the active line
 		if (sel.size() < 2) {
-			auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
+			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
 
 			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
 				std::unique_ptr<AssDialogue> deleter(new_line);
@@ -1008,7 +1008,7 @@ void split_lines(agi::Context *c, Func&& set_time) {
 
 	AssDialogue *n1 = c->selectionController->GetActiveLine();
 	auto n2 = new AssDialogue(*n1);
-	c->ass->Events.insert(++c->ass->Events.iterator_to(*n1), *n2);
+	c->ass->Events.insert(++c->ass->iterator_to(*n1), *n2);
 
 	std::string orig = n1->Text;
 	n1->Text = boost::trim_right_copy(orig.substr(0, pos));

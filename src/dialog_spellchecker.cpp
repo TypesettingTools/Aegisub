@@ -212,7 +212,7 @@ bool DialogSpellChecker::FindNext() {
 	if (CheckLine(active_line, start_pos, &commit_id))
 		return true;
 
-	auto it = context->ass->Events.iterator_to(*active_line);
+	auto it = context->ass->iterator_to(*active_line);
 
 	// Note that it is deliberate that the start line is checked twice, as if
 	// the cursor is past the first misspelled word in the current line, that

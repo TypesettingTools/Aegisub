@@ -124,7 +124,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
 	def->Style = c->selectionController->GetActiveLine()->Style;
 
-	auto pos = c->ass->Events.iterator_to(*c->selectionController->GetActiveLine());
+	auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
 	if (after) ++pos;
 
 	c->ass->Events.insert(pos, *def);

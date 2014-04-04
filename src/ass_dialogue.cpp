@@ -57,7 +57,10 @@ AssDialogue::AssDialogue() {
 	Id = ++next_id;
 }
 
-AssDialogue::AssDialogue(AssDialogue const& that) : AssDialogueBase(that) {
+AssDialogue::AssDialogue(AssDialogue const& that)
+: AssDialogueBase(that)
+, AssEntryListHook(that)
+{
 	Id = ++next_id;
 }
 

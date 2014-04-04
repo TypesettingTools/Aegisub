@@ -72,6 +72,8 @@ public:
 	AssFile& operator=(AssFile from);
 	~AssFile();
 
+	EntryList<AssDialogue>::iterator iterator_to(AssDialogue& line);
+
 	/// @brief Load default file
 	/// @param defline Add a blank line to the file
 	void LoadDefault(bool defline=true);

@@ -682,11 +682,11 @@ static AssDialogue *find_next(Iterator from, Iterator to, std::string const& sty
 AssDialogue *DialogKanjiTimer::FindNextStyleMatch(AssDialogue *search_from, const std::string &search_style)
 {
 	if (!search_from) return search_from;
-	return find_next(++subs->Events.iterator_to(*search_from), subs->Events.end(), search_style);
+	return find_next(++subs->iterator_to(*search_from), subs->Events.end(), search_style);
 }
 
 AssDialogue *DialogKanjiTimer::FindPrevStyleMatch(AssDialogue *search_from, const std::string &search_style)
 {
 	if (!search_from) return search_from;
-	return find_next(EntryList<AssDialogue>::reverse_iterator(subs->Events.iterator_to(*search_from)), subs->Events.rend(), search_style);
+	return find_next(EntryList<AssDialogue>::reverse_iterator(subs->iterator_to(*search_from)), subs->Events.rend(), search_style);
 }
