@@ -62,8 +62,13 @@ void SelectionController::SetActiveLine(AssDialogue *new_line) {
 }
 
 void SelectionController::SetSelectionAndActive(Selection new_selection, AssDialogue *new_line) {
-	SetSelectedSet(std::move(new_selection));
-	SetActiveLine(new_line);
+	bool active_line_changed = new_line != active_line;
+	selection = std::move(new_selection);
+	active_line = new_line;
+
+	AnnounceSelectedSetChanged();
+	if (active_line_changed)
+		AnnounceActiveLineChanged(new_line);
 }
 
 void SelectionController::PrevLine() {
