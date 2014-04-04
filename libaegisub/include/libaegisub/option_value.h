@@ -23,6 +23,9 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/signal.h>
 
+// X11 is awesome and defines Bool to int
+#undef Bool
+
 namespace agi {
 DEFINE_BASE_EXCEPTION_NOINNER(OptionValueError, Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidType, OptionValueError, "options/invalid_type")

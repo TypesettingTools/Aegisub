@@ -42,6 +42,8 @@
 #include <wx/stattext.h>
 #include <wx/treebook.h>
 
+#undef Bool
+
 #define OPTION_UPDATER(type, evttype, opt, body)                            \
 	class type {                                                            \
 		std::string name;                                                   \
