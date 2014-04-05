@@ -142,7 +142,6 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 
 	Bind(wxEVT_SHOW, &DialogProgress::OnShow, this);
 	Bind(wxEVT_TIMER, [=](wxTimerEvent&) { gauge->Pulse(); });
-	Bind(wxEVT_IDLE, &DialogProgress::OnIdle, this);
 }
 
 void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int priority) {
@@ -161,6 +160,7 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 
 		Main().Async([this]{
 			pulse_timer.Stop();
+			Unbind(wxEVT_IDLE, &DialogProgress::OnIdle, this);
 
 			// Unbind the cancel handler so that the default behavior happens (i.e. the
 			// dialog is closed) as there's no longer a task to cancel
@@ -170,14 +170,13 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 			// so the user can read the debug output and switch the cancel button to a
 			// close button
 			bool cancelled = this->ps->IsCancelled();
-			if (cancelled || (log_output->IsEmpty() && !pending_log)) {
-				set_taskbar_progress(0);
+			if (cancelled || (log_output->IsEmpty() && !pending_log))
 				EndModal(!cancelled);
-			}
 			else {
 				cancel_button->SetLabelText(_("Close"));
-				SetProgress(300);
+				gauge->SetValue(300);
 			}
+			set_taskbar_progress(0);
 		});
 	});
 
@@ -185,10 +184,13 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 		throw agi::UserCancelException("Cancelled by user");
 }
 
-void DialogProgress::OnShow(wxShowEvent&) {
+void DialogProgress::OnShow(wxShowEvent& evt) {
+	if (!evt.IsShown()) return;
+
 	// Restore the cancel button in case it was previously switched to a close
 	// button
 	Bind(wxEVT_BUTTON, &DialogProgress::OnCancel, this, wxID_CANCEL);
+	Bind(wxEVT_IDLE, &DialogProgress::OnIdle, this);
 	cancel_button->SetLabelText(_("Cancel"));
 	cancel_button->Enable();
 
