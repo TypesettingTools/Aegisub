@@ -743,10 +743,10 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	case 2: // Previous and next lines
 		if (AssDialogue *line = context->selectionController->GetActiveLine())
 		{
-			entryIter current_line = context->ass->Line.iterator_to(*line);
-			if (current_line == context->ass->Line.end())
+			bool in_list = !EntryList::node_algorithms::inited(EntryList::value_traits::to_node_ptr(*line));
+			if (!in_list)
 				break;
-
+			entryIter current_line = context->ass->Line.iterator_to(*line);
 			entryIter prev = current_line;
 			while (--prev != context->ass->Line.begin() && !predicate(*prev)) ;
 			if (prev != context->ass->Line.begin())
