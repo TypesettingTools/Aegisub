@@ -843,7 +843,7 @@ struct edit_line_paste_over : public Command {
 
 				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, static_cast<AssDialogue*>(&*pos));
 				if (ret)
-					pos = find_if(next(pos), c->ass->Line.end(), cast<AssDialogue*>());
+					pos = std::find_if(std::next(pos), c->ass->Line.end(), cast<AssDialogue*>());
 				return ret;
 			});
 		}

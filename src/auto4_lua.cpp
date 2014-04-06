@@ -931,7 +931,7 @@ namespace Automation4 {
 							throw LuaForEachBreak();
 						}
 
-						advance(it, cur - last_idx);
+						std::advance(it, cur - last_idx);
 
 						AssDialogue *diag = dynamic_cast<AssDialogue*>(&*it);
 						if (!diag) {

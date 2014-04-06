@@ -150,7 +150,7 @@ void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<cons
 		size_t i = 0;
 		auto it = subs->Line.begin();
 		for (auto& update : changed) {
-			advance(it, update.first - i);
+			std::advance(it, update.first - i);
 			i = update.first;
 			subs->Line.insert(it, *update.second);
 			delete &*it--;
