@@ -34,7 +34,7 @@
       Command="$(MSBuildThisFileDirectory)..\version.sh"
       WorkingDirectory="$(AegisubSourceBase)"
       Configuration="@(ExecShellScript)"
-      Arguments=".." />
+      Arguments="." />
   </Target>
 
   <!-- Project References -->
