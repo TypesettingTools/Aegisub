@@ -38,9 +38,6 @@
     <ClCompile Include="$(FontconfigSrcDir)\src\fcdefault.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(FontconfigSrcDir)\src\fcdir.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(FontconfigSrcDir)\src\fcformat.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -83,14 +80,23 @@
     <ClCompile Include="$(FontconfigSrcDir)\src\ftglue.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcstat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcobjs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fccompat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fchash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FontconfigSrcDir)\src\fcdir.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FontconfigSrcDir)\win32\headers\dirent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(FontconfigSrcDir)\src\fcdeprecate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -101,6 +107,39 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(FontconfigSrcDir)\src\ftglue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\win32\include\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\win32\include\dirent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\fontconfig\fcfreetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\fontconfig\fcprivate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\fontconfig\fontconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcarch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcatomic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcmutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcobjs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcobjshash.gperf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FontconfigSrcDir)\src\fcwindows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

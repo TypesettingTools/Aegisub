@@ -56,7 +56,9 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\audiosource.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\codectype.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\ffms.cpp" />
+    <ClCompile Include="$(FfmsSrcDir)\src\core\filehandle.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\haaliaudio.cpp" />
+    <ClCompile Include="$(FfmsSrcDir)\src\core\haalicommon.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\haaliindexer.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\haalivideo.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\indexing.cpp" />
@@ -66,13 +68,15 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaaudio.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaindexer.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaparser.c" />
+    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskareader.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\matroskavideo.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\numthreads.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\stdiostream.c" />
+    <ClCompile Include="$(FfmsSrcDir)\src\core\track.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\utils.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\videosource.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\videoutils.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\wave64writer.cpp" />
+    <ClCompile Include="$(FfmsSrcDir)\src\core\zipfile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(FfmsSrcDir)\include\ffms.h" />
@@ -85,15 +89,19 @@
     <ClInclude Include="$(FfmsSrcDir)\src\core\audiosource.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\codectype.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\coparser.h" />
+    <ClInclude Include="$(FfmsSrcDir)\src\core\filehandle.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\guids.h" />
+    <ClInclude Include="$(FfmsSrcDir)\src\core\haalicommon.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\indexing.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\matroskaparser.h" />
+    <ClInclude Include="$(FfmsSrcDir)\src\core\matroskareader.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\numthreads.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\stdiostream.h" />
+    <ClInclude Include="$(FfmsSrcDir)\src\core\track.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\utils.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\videosource.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\videoutils.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\wave64writer.h" />
+    <ClInclude Include="$(FfmsSrcDir)\src\core\zipfile.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\VapourSynth.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\vapoursource.h" />
   </ItemGroup>

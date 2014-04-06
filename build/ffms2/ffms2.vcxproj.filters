@@ -75,9 +75,6 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\numthreads.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\stdiostream.c">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -108,6 +105,21 @@
     <None Include="$(FfmsSrcDir)\src\vapoursynth\vapoursynth.cpp">
       <Filter>VapourSynth</Filter>
     </None>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskareader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\filehandle.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\haalicommon.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\zipfile.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FfmsSrcDir)\src\core\track.cpp">
+      <Filter>Indexing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(FfmsSrcDir)\src\core\audiosource.h">
@@ -140,9 +152,6 @@
     <ClInclude Include="$(FfmsSrcDir)\src\core\numthreads.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\stdiostream.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\core\utils.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -172,6 +181,21 @@
     </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\VapourSynth.h">
       <Filter>VapourSynth</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\matroskareader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\filehandle.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\haalicommon.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\zipfile.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FfmsSrcDir)\src\core\track.h">
+      <Filter>Indexing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

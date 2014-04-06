@@ -16,7 +16,7 @@
     <WxTargetCpu Condition="$(Platform) == 'x64'">X64</WxTargetCpu>
     <WxBuild Condition="$(Configuration) == 'Debug'">debug</WxBuild>
     <WxBuild Condition="$(Configuration) == 'Release'">release</WxBuild>
-    <NMakeArgs>LIBDIRNAME=$(AegisubLibraryDir) OBJS=$(AegisubObjectDir) SHARED=0 UNICODE=0 USE_OPENGL=1 VENDOR=aegisub TARGET_CPU=$(WxTargetCpu) BUILD=$(WxBuild)</NMakeArgs>
+    <NMakeArgs>LIBDIRNAME=$(AegisubLibraryDir) OBJS=$(AegisubObjectDir) SHARED=0 UNICODE=0 USE_OPENGL=1 USE_WEBVIEW=0 USE_HTML=0 USE_MEDIA=0 USE_XRC=0 USE_AUI=0 USE_RIBBON=0 USE_PROPGRID=0 USE_RICHTEXT=0 USE_CAIRO=0 VENDOR=aegisub TARGET_CPU=$(WxTargetCpu) BUILD=$(WxBuild)</NMakeArgs>
     <LibraryNameSuffix Condition="$(Configuration) == 'Debug'">d</LibraryNameSuffix>
   </PropertyGroup>
 

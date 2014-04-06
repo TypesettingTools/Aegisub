@@ -30,22 +30,18 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <InstallHeader Include="$(Freetype2SrcDir)\include\ft2build.h" />
-    <InstallHeader Include="$(Freetype2SrcDir)\include\freetype\*.h">
-      <Destination>freetype\</Destination>
+    <InstallHeader Include="$(Freetype2SrcDir)\include\*.h" />
+    <InstallHeader Include="$(Freetype2SrcDir)\include\config\*.h">
+      <Destination>config\</Destination>
     </InstallHeader>
-    <InstallHeader Include="$(Freetype2SrcDir)\include\freetype\config\*.h">
-      <Destination>freetype\config\</Destination>
+    <InstallHeader Include="$(Freetype2SrcDir)\include\internal\*.h">
+      <Destination>internal\</Destination>
     </InstallHeader>
-    <InstallHeader Include="$(Freetype2SrcDir)\include\freetype\internal\*.h">
-      <Destination>freetype\internal\</Destination>
-    </InstallHeader>
-    <InstallHeader Include="$(Freetype2SrcDir)\include\freetype\internal\services*.h">
-      <Destination>freetype\internal\services\</Destination>
+    <InstallHeader Include="$(Freetype2SrcDir)\include\internal\services*.h">
+      <Destination>internal\services\</Destination>
     </InstallHeader>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(Freetype2SrcDir)\builds\win32\ftdebug.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\autofit\autofit.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftbase.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftbbox.c" />
