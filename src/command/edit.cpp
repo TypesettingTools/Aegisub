@@ -199,9 +199,6 @@ int block_at_pos(std::string const& text, int pos) {
 }
 
 void set_tag(AssDialogue *line, std::vector<std::unique_ptr<AssDialogueBlock>> &blocks, std::string const& tag, std::string const& value, int &sel_start, int &sel_end, bool at_end = false) {
-	if (blocks.empty())
-		blocks = line->ParseTags();
-
 	int start = at_end ? sel_end : sel_start;
 	int blockn = block_at_pos(line->Text, start);
 
@@ -270,61 +267,106 @@ void set_tag(AssDialogue *line, std::vector<std::unique_ptr<AssDialogueBlock>> &
 	}
 }
 
-void commit_text(agi::Context const * const c, wxString const& desc, int sel_start = -1, int sel_end = -1, int *commit_id = nullptr) {
-	auto const& sel = c->selectionController->GetSelectedSet();
-	std::string text = c->selectionController->GetActiveLine()->Text;
-	for_each(sel.begin(), sel.end(), [&](AssDialogue *d) { d->Text = text; });
+template<typename Func>
+void update_lines(const agi::Context *c, wxString const& undo_msg, Func&& f) {
+	const int initial_sel_start = c->textSelectionController->GetSelectionStart();
+	const int initial_sel_end = c->textSelectionController->GetSelectionEnd();
+	const auto active_line = c->selectionController->GetActiveLine();
+	int active_sel_start = initial_sel_start, active_sel_end = initial_sel_end;
 
-	int new_commit_id = c->ass->Commit(desc, AssFile::COMMIT_DIAG_TEXT, commit_id ? *commit_id : -1, sel.size() == 1 ? *sel.begin() : nullptr);
-	if (commit_id)
-		*commit_id = new_commit_id;
-	if (sel_start >= 0 && sel_end >= 0)
-		c->textSelectionController->SetSelection(sel_start, sel_end);
+	for (const auto line : c->selectionController->GetSelectedSet()) {
+		int sel_start = initial_sel_start;
+		int sel_end = initial_sel_end;
+		f(line, sel_start, sel_end);
+		if (line == active_line) {
+			active_sel_start = sel_start;
+			active_sel_end = sel_end;
+		}
+	}
+
+	auto const& sel = c->selectionController->GetSelectedSet();
+	c->ass->Commit(undo_msg, AssFile::COMMIT_DIAG_TEXT, -1, sel.size() == 1 ? *sel.begin() : nullptr);
+	if (active_sel_start >= 0 && active_sel_end >= 0)
+		c->textSelectionController->SetSelection(active_sel_start, active_sel_end);
 }
 
 void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const char *tag, wxString const& undo_msg) {
-	AssDialogue *const line = c->selectionController->GetActiveLine();
-	AssStyle const* const style = c->ass->GetStyle(line->Style);
-	bool state = style ? style->*field : AssStyle().*field;
+	update_lines(c, undo_msg, [&](AssDialogue *line, int &sel_start, int &sel_end) {
+		AssStyle const* const style = c->ass->GetStyle(line->Style);
+		bool state = style ? style->*field : AssStyle().*field;
 
-	auto blocks = line->ParseTags();
-	int sel_start = c->textSelectionController->GetSelectionStart();
-	int sel_end = c->textSelectionController->GetSelectionEnd();
-	int blockn = block_at_pos(line->Text, sel_start);
+		auto blocks = line->ParseTags();
+		int blockn = block_at_pos(line->Text, sel_start);
 
-	state = get_value(blocks, blockn, state, tag);
+		state = get_value(blocks, blockn, state, tag);
 
-	set_tag(line, blocks, tag, state ? "0" : "1", sel_start, sel_end);
-	if (sel_start != sel_end)
-		set_tag(line, blocks, tag, state ? "1" : "0", sel_start, sel_end, true);
-
-	commit_text(c, undo_msg, sel_start, sel_end);
+		set_tag(line, blocks, tag, state ? "0" : "1", sel_start, sel_end);
+		if (sel_start != sel_end)
+			set_tag(line, blocks, tag, state ? "1" : "0", sel_start, sel_end, true);
+	});
 }
 
 void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), const char *tag, const char *alt, const char *alpha) {
-	AssDialogue *const line = c->selectionController->GetActiveLine();
-	AssStyle const* const style = c->ass->GetStyle(line->Style);
-	agi::Color color = (style ? style->*field : AssStyle().*field);
+	agi::Color initial_color;
+	const int initial_sel_start = c->textSelectionController->GetSelectionStart();
+	const int initial_sel_end = c->textSelectionController->GetSelectionEnd();
+	const auto active_line = c->selectionController->GetActiveLine();
+	int active_sel_start = initial_sel_start, active_sel_end = initial_sel_end;
 
-	auto blocks = line->ParseTags();
-	int sel_start = c->textSelectionController->GetSelectionStart();
-	int sel_end = c->textSelectionController->GetSelectionEnd();
-	int blockn = block_at_pos(line->Text, sel_start);
-	int initial_sel_start = sel_start, initial_sel_end = sel_end;
+	struct line_info {
+		AssDialogue *line;
+		agi::Color color;
+		std::vector<std::unique_ptr<AssDialogueBlock>> blocks;
 
-	int a = get_value(blocks, blockn, (int)color.a, alpha, "\\alpha");
-	color = get_value(blocks, blockn, color, tag, alt);
-	color.a = a;
+#ifdef _MSC_VER
+		line_info(AssDialogue *line, agi::Color color, std::vector<std::unique_ptr<AssDialogueBlock>> blocks)
+		: line(line), color(color), blocks(std::move(blocks)) { }
+		line_info(line_info &&r) : line(r.line), color(r.color), blocks(std::move(r.blocks)) { }
+#endif
+	};
+
+	auto const& sel = c->selectionController->GetSelectedSet();
+	std::vector<line_info> lines;
+	for (auto line : sel) {
+		AssStyle const* const style = c->ass->GetStyle(line->Style);
+		agi::Color color = (style ? style->*field : AssStyle().*field);
+
+		auto blocks = line->ParseTags();
+		int blockn = block_at_pos(line->Text, initial_sel_start);
+
+		int a = get_value(blocks, blockn, (int)color.a, alpha, "\\alpha");
+		color = get_value(blocks, blockn, color, tag, alt);
+		color.a = a;
+
+		if (line == active_line)
+			initial_color = color;
+
+		lines.push_back(line_info{line, color, std::move(blocks)});
+	}
+
 	int commit_id = -1;
-	bool ok = GetColorFromUser(c->parent, color, true, [&](agi::Color new_color) {
-		set_tag(line, blocks, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
-		if (new_color.a != color.a) {
-			set_tag(line, blocks, alpha, str(boost::format("&H%02X&") % (int)new_color.a), sel_start, sel_end);
-			color.a = new_color.a;
+	bool ok = GetColorFromUser(c->parent, initial_color, true, [&](agi::Color new_color) {
+		for (auto& line : lines) {
+			int sel_start = initial_sel_start;
+			int sel_end = initial_sel_end;
+
+			set_tag(line.line, line.blocks, tag, new_color.GetAssOverrideFormatted(), sel_start, sel_end);
+			if (new_color.a != line.color.a) {
+				set_tag(line.line, line.blocks, alpha, str(boost::format("&H%02X&") % (int)new_color.a), sel_start, sel_end);
+				line.color.a = new_color.a;
+			}
+
+			if (line.line == active_line) {
+				active_sel_start = sel_start;
+				active_sel_end = sel_end;
+			}
 		}
-		commit_text(c, _("set color"), sel_start, sel_end, &commit_id);
+
+		commit_id = c->ass->Commit(_("set color"), AssFile::COMMIT_DIAG_TEXT, commit_id, sel.size() == 1 ? *sel.begin() : nullptr);
+		if (active_sel_start >= 0 && active_sel_end >= 0)
+			c->textSelectionController->SetSelection(active_sel_start, active_sel_end);
 	});
-	commit_text(c, _("set color"), -1, -1, &commit_id);
+	c->ass->Commit(_("set color"), AssFile::COMMIT_DIAG_TEXT, commit_id, sel.size() == 1 ? *sel.begin() : nullptr);
 
 	if (!ok) {
 		c->subsController->Undo();
@@ -436,41 +478,43 @@ struct edit_font final : public Command {
 	STR_HELP("Select a font face and size")
 
 	void operator()(agi::Context *c) override {
-		AssDialogue *const line = c->selectionController->GetActiveLine();
-		auto blocks = line->ParseTags();
-		const int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
+		const int insertion_point = c->textSelectionController->GetInsertionPoint();
+		std::vector<std::unique_ptr<AssDialogueBlock>> blocks;
+		auto font_for_line = [&](AssDialogue *const line) -> wxFont {
+			blocks = line->ParseTags();
+			const int blockn = block_at_pos(line->Text, insertion_point);
 
-		const AssStyle *style = c->ass->GetStyle(line->Style);
-		const AssStyle default_style;
-		if (!style)
-			style = &default_style;
+			const AssStyle *style = c->ass->GetStyle(line->Style);
+			const AssStyle default_style;
+			if (!style)
+				style = &default_style;
 
-		int sel_start = c->textSelectionController->GetSelectionStart();
-		int sel_end = c->textSelectionController->GetSelectionEnd();
+			return wxFont(
+				get_value(blocks, blockn, (int)style->fontsize, "\\fs"),
+				wxFONTFAMILY_DEFAULT,
+				get_value(blocks, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
+				get_value(blocks, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
+				get_value(blocks, blockn, style->underline, "\\u"),
+				to_wx(get_value(blocks, blockn, style->font, "\\fn")));
+		};
 
-		const wxFont startfont(
-			get_value(blocks, blockn, (int)style->fontsize, "\\fs"),
-			wxFONTFAMILY_DEFAULT,
-			get_value(blocks, blockn, style->italic, "\\i") ? wxFONTSTYLE_ITALIC : wxFONTSTYLE_NORMAL,
-			get_value(blocks, blockn, style->bold, "\\b") ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL,
-			get_value(blocks, blockn, style->underline, "\\u"),
-			to_wx(get_value(blocks, blockn, style->font, "\\fn")));
+		const wxFont initial = font_for_line(c->selectionController->GetActiveLine());
+		const wxFont font = wxGetFontFromUser(c->parent, initial);
+		if (!font.Ok() || font == initial) return;
 
-		const wxFont font = wxGetFontFromUser(c->parent, startfont);
-		if (!font.Ok() || font == startfont) return;
-
-		if (font.GetFaceName() != startfont.GetFaceName())
-			set_tag(line, blocks, "\\fn", from_wx(font.GetFaceName()), sel_start, sel_end);
-		if (font.GetPointSize() != startfont.GetPointSize())
-			set_tag(line, blocks, "\\fs", std::to_string(font.GetPointSize()), sel_start, sel_end);
-		if (font.GetWeight() != startfont.GetWeight())
-			set_tag(line, blocks, "\\b", std::to_string(font.GetWeight() == wxFONTWEIGHT_BOLD), sel_start, sel_end);
-		if (font.GetStyle() != startfont.GetStyle())
-			set_tag(line, blocks, "\\i", std::to_string(font.GetStyle() == wxFONTSTYLE_ITALIC), sel_start, sel_end);
-		if (font.GetUnderlined() != startfont.GetUnderlined())
-			set_tag(line, blocks, "\\i", std::to_string(font.GetUnderlined()), sel_start, sel_end);
-
-		commit_text(c, _("set font"), sel_start, sel_end);
+		update_lines(c, _("set font"), [&](AssDialogue *line, int &sel_start, int &sel_end) {
+			const wxFont startfont = font_for_line(line);
+			if (font.GetFaceName() != startfont.GetFaceName())
+				set_tag(line, blocks, "\\fn", from_wx(font.GetFaceName()), sel_start, sel_end);
+			if (font.GetPointSize() != startfont.GetPointSize())
+				set_tag(line, blocks, "\\fs", std::to_string(font.GetPointSize()), sel_start, sel_end);
+			if (font.GetWeight() != startfont.GetWeight())
+				set_tag(line, blocks, "\\b", std::to_string(font.GetWeight() == wxFONTWEIGHT_BOLD), sel_start, sel_end);
+			if (font.GetStyle() != startfont.GetStyle())
+				set_tag(line, blocks, "\\i", std::to_string(font.GetStyle() == wxFONTSTYLE_ITALIC), sel_start, sel_end);
+			if (font.GetUnderlined() != startfont.GetUnderlined())
+				set_tag(line, blocks, "\\i", std::to_string(font.GetUnderlined()), sel_start, sel_end);
+		});
 	}
 };
 
