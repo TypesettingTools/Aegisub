@@ -70,7 +70,6 @@
 #endif
 
 #include <boost/flyweight.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/adaptor/reversed.hpp>

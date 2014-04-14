@@ -94,7 +94,7 @@ class StyleRenamer {
 					found_any = true;
 			}
 
-			boost::ptr_vector<AssDialogueBlock> blocks(diag.ParseTags());
+			auto blocks = diag.ParseTags();
 			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
 				block->ProcessParameters(&StyleRenamer::ProcessTag, this);
 			if (replace)

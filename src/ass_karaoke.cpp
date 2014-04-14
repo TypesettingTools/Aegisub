@@ -99,20 +99,18 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 }
 
 void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
-	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
+	for (auto& block : line->ParseTags()) {
+		std::string text = block->GetText();
 
-	for (auto& block : blocks) {
-		std::string text = block.GetText();
-
-		if (dynamic_cast<AssDialogueBlockPlain*>(&block))
+		if (dynamic_cast<AssDialogueBlockPlain*>(block.get()))
 			syl.text += text;
-		else if (dynamic_cast<AssDialogueBlockComment*>(&block))
+		else if (dynamic_cast<AssDialogueBlockComment*>(block.get()))
 			syl.ovr_tags[syl.text.size()] += text;
-		else if (dynamic_cast<AssDialogueBlockDrawing*>(&block))
+		else if (dynamic_cast<AssDialogueBlockDrawing*>(block.get()))
 			// drawings aren't override tags but they shouldn't show up in the
 			// stripped text so pretend they are
 			syl.ovr_tags[syl.text.size()] += text;
-		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(&block)) {
+		else if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block.get())) {
 			bool in_tag = false;
 			for (auto& tag : ovr->Tags) {
 				if (tag.IsValid() && boost::istarts_with(tag.Name, "\\k")) {

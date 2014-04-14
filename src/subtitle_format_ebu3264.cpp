@@ -259,8 +259,6 @@ namespace
 
 		void SetTextFromAss(AssDialogue *line, bool style_underline, bool style_italic, int align, int wrap_mode)
 		{
-			boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
-
 			text_rows.clear();
 			text_rows.emplace_back();
 
@@ -272,14 +270,14 @@ namespace
 
 			bool underline = style_underline, italic = style_italic;
 
-			for (auto& b : blocks)
+			for (auto& b : line->ParseTags())
 			{
-				switch (b.GetType())
+				switch (b->GetType())
 				{
 					case AssBlockType::PLAIN:
 					// find special characters and convert them
 					{
-						std::string text = b.GetText();
+						std::string text = b->GetText();
 
 						boost::replace_all(text, "\\t", " ");
 
@@ -321,7 +319,7 @@ namespace
 					case AssBlockType::OVERRIDE:
 					// find relevant tags and process them
 					{
-						AssDialogueBlockOverride *ob = static_cast<AssDialogueBlockOverride*>(&b);
+						AssDialogueBlockOverride *ob = static_cast<AssDialogueBlockOverride*>(b.get());
 						ob->ParseTags();
 						ProcessOverrides(ob, underline, italic, align, style_underline, style_italic);
 

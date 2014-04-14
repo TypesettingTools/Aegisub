@@ -168,13 +168,13 @@ std::string AssDialogue::GetData(bool ssa) const {
 	return str;
 }
 
-std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() const {
-	boost::ptr_vector<AssDialogueBlock> Blocks;
+std::vector<std::unique_ptr<AssDialogueBlock>> AssDialogue::ParseTags() const {
+	std::vector<std::unique_ptr<AssDialogueBlock>> Blocks;
 
 	// Empty line, make an empty block
 	if (Text.get().empty()) {
-		Blocks.push_back(new AssDialogueBlockPlain);
-		return Blocks.release();
+		Blocks.push_back(agi::util::make_unique<AssDialogueBlockPlain>());
+		return Blocks;
 	}
 
 	int drawingLevel = 0;
@@ -198,19 +198,19 @@ std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> AssDialogue::ParseTags() cons
 			if (work.size() && work.find('\\') == std::string::npos) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
-				Blocks.push_back(new AssDialogueBlockComment(work));
+				Blocks.push_back(agi::util::make_unique<AssDialogueBlockComment>(work));
 			}
 			else {
 				// Create block
-				auto block = new AssDialogueBlockOverride(work);
+				auto block = agi::util::make_unique<AssDialogueBlockOverride>(work);
 				block->ParseTags();
-				Blocks.push_back(block);
 
 				// Look for \p in block
 				for (auto const& tag : block->Tags) {
 					if (tag.Name == "\\p")
 						drawingLevel = tag.Params[0].Get<int>(0);
 				}
+				Blocks.push_back(std::move(block));
 			}
 
 			continue;
@@ -230,20 +230,20 @@ plain:
 		}
 
 		if (drawingLevel == 0)
-			Blocks.push_back(new AssDialogueBlockPlain(work));
+			Blocks.push_back(agi::util::make_unique<AssDialogueBlockPlain>(work));
 		else
-			Blocks.push_back(new AssDialogueBlockDrawing(work, drawingLevel));
+			Blocks.push_back(agi::util::make_unique<AssDialogueBlockDrawing>(work, drawingLevel));
 	}
 
-	return Blocks.release();
+	return Blocks;
 }
 
 void AssDialogue::StripTags() {
 	Text = GetStrippedText();
 }
 
-static std::string get_text(AssDialogueBlock &d) { return d.GetText(); }
-void AssDialogue::UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks) {
+static std::string get_text(std::unique_ptr<AssDialogueBlock> &d) { return d->GetText(); }
+void AssDialogue::UpdateText(std::vector<std::unique_ptr<AssDialogueBlock>>& blocks) {
 	if (blocks.empty()) return;
 	Text = join(blocks | transformed(get_text), "");
 }
@@ -255,6 +255,6 @@ bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 
 static std::string get_text_p(AssDialogueBlock *d) { return d->GetText(); }
 std::string AssDialogue::GetStrippedText() const {
-	boost::ptr_vector<AssDialogueBlock> blocks(ParseTags());
+	auto blocks = ParseTags();
 	return join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), "");
 }

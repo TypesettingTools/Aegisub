@@ -18,13 +18,12 @@
 /// @see dialog_translation.cpp
 /// @ingroup tools_ui
 
-#include <wx/dialog.h>
-
 #include <libaegisub/exception.h>
 #include <libaegisub/signal.h>
 
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <memory>
+#include <vector>
+#include <wx/dialog.h>
 
 namespace agi { struct Context; }
 class AssDialogue;
@@ -45,7 +44,7 @@ class DialogTranslation final : public wxDialog {
 	/// The active line
 	AssDialogue *active_line;
 	/// The parsed dialogue blocks for the active line
-	boost::ptr_vector<AssDialogueBlock> blocks;
+	std::vector<std::unique_ptr<AssDialogueBlock>> blocks;
 	/// Which dialogue block in the active line is currently being translated
 	size_t cur_block = 0;
 

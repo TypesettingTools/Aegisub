@@ -73,14 +73,13 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 		return;
 	}
 
-	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
 	StyleInfo style = style_it->second;
 	StyleInfo initial = style;
 
 	bool overriden = false;
 
-	for (auto& block : blocks) {
-		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(&block)) {
+	for (auto& block : line->ParseTags()) {
+		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(block.get())) {
 			for (auto const& tag : ovr->Tags) {
 				std::string const& name = tag.Name;
 
@@ -102,7 +101,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 				}
 			}
 		}
-		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(&block)) {
+		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(block.get())) {
 			wxString text(to_wx(txt->GetText()));
 
 			if (text.empty())

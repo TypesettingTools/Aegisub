@@ -62,6 +62,7 @@
 #include <boost/format.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/sliced.hpp>
 #include <boost/range/adaptor/transformed.hpp>
@@ -157,7 +158,7 @@ AssDialogue *paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, A
 }
 
 template<typename T>
-T get_value(boost::ptr_vector<AssDialogueBlock> const& blocks, int blockn, T initial, std::string const& tag_name, std::string alt = "") {
+T get_value(std::vector<std::unique_ptr<AssDialogueBlock>> const& blocks, int blockn, T initial, std::string const& tag_name, std::string alt = "") {
 	for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {
 		for (auto const& tag : ovr->Tags | reversed) {
 			if (tag.Name == tag_name || tag.Name == alt)
@@ -197,7 +198,7 @@ int block_at_pos(std::string const& text, int pos) {
 	return n - in_block;
 }
 
-void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std::string const& tag, std::string const& value, int &sel_start, int &sel_end, bool at_end = false) {
+void set_tag(AssDialogue *line, std::vector<std::unique_ptr<AssDialogueBlock>> &blocks, std::string const& tag, std::string const& value, int &sel_start, int &sel_end, bool at_end = false) {
 	if (blocks.empty())
 		blocks = line->ParseTags();
 
@@ -207,7 +208,7 @@ void set_tag(AssDialogue *line, boost::ptr_vector<AssDialogueBlock> &blocks, std
 	AssDialogueBlockPlain *plain = nullptr;
 	AssDialogueBlockOverride *ovr = nullptr;
 	while (blockn >= 0) {
-		AssDialogueBlock *block = &blocks[blockn];
+		AssDialogueBlock *block = blocks[blockn].get();
 		if (dynamic_cast<AssDialogueBlockDrawing*>(block))
 			--blockn;
 		else if (dynamic_cast<AssDialogueBlockComment*>(block)) {
@@ -286,7 +287,7 @@ void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const c
 	AssStyle const* const style = c->ass->GetStyle(line->Style);
 	bool state = style ? style->*field : AssStyle().*field;
 
-	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
+	auto blocks = line->ParseTags();
 	int sel_start = c->textSelectionController->GetSelectionStart();
 	int sel_end = c->textSelectionController->GetSelectionEnd();
 	int blockn = block_at_pos(line->Text, sel_start);
@@ -305,7 +306,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 	AssStyle const* const style = c->ass->GetStyle(line->Style);
 	agi::Color color = (style ? style->*field : AssStyle().*field);
 
-	boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
+	auto blocks = line->ParseTags();
 	int sel_start = c->textSelectionController->GetSelectionStart();
 	int sel_end = c->textSelectionController->GetSelectionEnd();
 	int blockn = block_at_pos(line->Text, sel_start);
@@ -436,7 +437,7 @@ struct edit_font final : public Command {
 
 	void operator()(agi::Context *c) override {
 		AssDialogue *const line = c->selectionController->GetActiveLine();
-		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
+		auto blocks = line->ParseTags();
 		const int blockn = block_at_pos(line->Text, c->textSelectionController->GetInsertionPoint());
 
 		const AssStyle *style = c->ass->GetStyle(line->Style);
@@ -1150,8 +1151,9 @@ struct edit_clear_text final : public Command {
 
 	void operator()(agi::Context *c) override {
 		AssDialogue *line = c->selectionController->GetActiveLine();
-		boost::ptr_vector<AssDialogueBlock> blocks(line->ParseTags());
+		auto blocks = line->ParseTags();
 		line->Text = join(blocks
+			| indirected
 			| filtered([](AssDialogueBlock const& b) { return b.GetType() != AssBlockType::PLAIN; })
 			| transformed(get_text),
 			"");

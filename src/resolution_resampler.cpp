@@ -129,7 +129,7 @@ namespace {
 		if (diag.Comment && (boost::starts_with(diag.Effect.get(), "template") || boost::starts_with(diag.Effect.get(), "code")))
 			return;
 
-		boost::ptr_vector<AssDialogueBlock> blocks(diag.ParseTags());
+		auto blocks = diag.ParseTags();
 
 		for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
 			block->ProcessParameters(resample_tags, state);

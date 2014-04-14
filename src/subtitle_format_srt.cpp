@@ -501,7 +501,7 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	}
 
 	for (auto const& line : file->Events) {
-		boost::ptr_vector<AssDialogueBlock> blocks(line.ParseTags());
+		auto blocks = line.ParseTags();
 		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 			// Verify that all overrides used are supported
 			for (auto const& tag : ovr->Tags) {
@@ -522,10 +522,8 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 	tag_states['u'] = false;
 	tag_states['s'] = false;
 
-	boost::ptr_vector<AssDialogueBlock> blocks(diag->ParseTags());
-
-	for (auto& block : blocks) {
-		if (AssDialogueBlockOverride* ovr = dynamic_cast<AssDialogueBlockOverride*>(&block)) {
+	for (auto& block : diag->ParseTags()) {
+		if (AssDialogueBlockOverride* ovr = dynamic_cast<AssDialogueBlockOverride*>(block.get())) {
 			// Iterate through overrides
 			for (auto const& tag : ovr->Tags) {
 				if (tag.IsValid() && tag.Name.size() == 2) {
@@ -542,7 +540,7 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 			}
 		}
 		// Plain text
-		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(&block))
+		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(block.get()))
 			final += plain->GetText();
 	}
 

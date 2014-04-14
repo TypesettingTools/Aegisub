@@ -40,7 +40,6 @@
 
 #include <array>
 #include <boost/flyweight.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <vector>
 
 enum class AssBlockType {
@@ -162,7 +161,7 @@ public:
 	AssEntryGroup Group() const override { return AssEntryGroup::DIALOGUE; }
 
 	/// Parse text as ASS and return block information
-	std::auto_ptr<boost::ptr_vector<AssDialogueBlock>> ParseTags() const;
+	std::vector<std::unique_ptr<AssDialogueBlock>> ParseTags() const;
 
 	/// Strip all ASS tags from the text
 	void StripTags();
@@ -171,7 +170,7 @@ public:
 	std::string GetStrippedText() const;
 
 	/// Update the text of the line from parsed blocks
-	void UpdateText(boost::ptr_vector<AssDialogueBlock>& blocks);
+	void UpdateText(std::vector<std::unique_ptr<AssDialogueBlock>>& blocks);
 	std::string GetEntryData() const { return GetData(false); }
 
 	/// Get the line as SSA rather than ASS

@@ -209,7 +209,7 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 		newEnd = trunc_cs(ConvertTime(curDialogue.End) + 9);
 
 		// Process stuff
-		boost::ptr_vector<AssDialogueBlock> blocks;
+		auto blocks = line->ParseTags();
 		for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
 			block->ProcessParameters(TransformTimeTags, this);
 		curDialogue.Start = newStart;

@@ -56,8 +56,8 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wx
 }
 
 // Skip over override blocks, comments, and whitespace between blocks
-static bool bad_block(AssDialogueBlock &block) {
-	return block.GetType() != AssBlockType::PLAIN || boost::all(block.GetText(), boost::is_space());
+static bool bad_block(std::unique_ptr<AssDialogueBlock> &block) {
+	return block->GetType() != AssBlockType::PLAIN || boost::all(block->GetText(), boost::is_space());
 }
 
 DialogTranslation::DialogTranslation(agi::Context *c)
@@ -245,17 +245,17 @@ void DialogTranslation::UpdateDisplay() {
 
 	size_t i = 0;
 	for (auto& block : blocks) {
-		if (block.GetType() == AssBlockType::PLAIN) {
+		if (block->GetType() == AssBlockType::PLAIN) {
 			int initial_pos = original_text->GetLength();
-			original_text->AppendTextRaw(block.GetText().c_str());
+			original_text->AppendTextRaw(block->GetText().c_str());
 			if (i == cur_block) {
 				int cur_size = original_text->GetReverseUnicodePosition(initial_pos);
 				original_text->StartUnicodeStyling(cur_size);
-				original_text->SetUnicodeStyling(cur_size, block.GetText().size(), 1);
+				original_text->SetUnicodeStyling(cur_size, block->GetText().size(), 1);
 			}
 		}
 		else
-			original_text->AppendTextRaw(block.GetText().c_str());
+			original_text->AppendTextRaw(block->GetText().c_str());
 		++i;
 	}
 
@@ -272,7 +272,7 @@ void DialogTranslation::Commit(bool next) {
 	new_value.Replace("\r\n", "\\N");
 	new_value.Replace("\r", "\\N");
 	new_value.Replace("\n", "\\N");
-	blocks[cur_block] = AssDialogueBlockPlain(from_wx(new_value));
+	*blocks[cur_block] = AssDialogueBlockPlain(from_wx(new_value));
 	active_line->UpdateText(blocks);
 
 	file_change_connection.Block();
@@ -291,7 +291,7 @@ void DialogTranslation::Commit(bool next) {
 }
 
 void DialogTranslation::InsertOriginal() {
-	translated_text->AddText(to_wx(blocks[cur_block].GetText()));
+	translated_text->AddText(to_wx(blocks[cur_block]->GetText()));
 }
 
 
