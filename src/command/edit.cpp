@@ -162,7 +162,11 @@ struct parsed_line {
 	std::vector<std::unique_ptr<AssDialogueBlock>> blocks;
 
 	parsed_line(AssDialogue *line) : line(line), blocks(line->ParseTags()) { }
+#ifdef _MSC_VER
 	parsed_line(parsed_line&& r) : line(r.line), blocks(std::move(r.blocks)) { }
+#else
+	parsed_line(parsed_line&& r) = default;
+#endif
 
 	template<typename T>
 	T get_value(int blockn, T initial, std::string const& tag_name, std::string alt = "") const {
