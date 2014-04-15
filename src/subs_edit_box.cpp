@@ -313,7 +313,7 @@ void SubsEditBox::OnCommit(int type) {
 	if (type & AssFile::COMMIT_DIAG_TIME) {
 		start_time->SetTime(line->Start);
 		end_time->SetTime(line->End);
-		duration->SetTime(line->End - line->Start);
+		SetDurationField();
 	}
 
 	if (type & AssFile::COMMIT_DIAG_TEXT) {
@@ -468,7 +468,7 @@ void SubsEditBox::CommitTimes(TimeField field) {
 
 			case TIME_DURATION:
 				if (by_frame->GetValue())
-					d->End = c->videoController->TimeAtFrame(c->videoController->FrameAtTime(d->Start, agi::vfr::START) + duration->GetFrame(), agi::vfr::END);
+					d->End = c->videoController->TimeAtFrame(c->videoController->FrameAtTime(d->Start, agi::vfr::START) + duration->GetFrame() - 1, agi::vfr::END);
 				else
 					d->End = d->Start + duration->GetTime();
 				initial_times[d].second = d->End;
@@ -479,10 +479,8 @@ void SubsEditBox::CommitTimes(TimeField field) {
 	start_time->SetTime(line->Start);
 	end_time->SetTime(line->End);
 
-	if (by_frame->GetValue())
-		duration->SetFrame(end_time->GetFrame() - start_time->GetFrame() + 1);
-	else
-		duration->SetTime(end_time->GetTime() - start_time->GetTime());
+	if (field != TIME_DURATION)
+		SetDurationField();
 
 	if (field != last_time_commit_type)
 		commit_id = -1;
@@ -491,6 +489,16 @@ void SubsEditBox::CommitTimes(TimeField field) {
 	file_changed_slot.Block();
 	commit_id = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, commit_id, sel.size() == 1 ? *sel.begin() : nullptr);
 	file_changed_slot.Unblock();
+}
+
+void SubsEditBox::SetDurationField() {
+	// With VFR, the frame count calculated from the duration in time can be
+	// completely wrong (since the duration is calculated as if it were a start
+	// time), so we need to explicitly set it with the correct units.
+	if (by_frame->GetValue())
+		duration->SetFrame(end_time->GetFrame() - start_time->GetFrame() + 1);
+	else
+		duration->SetTime(end_time->GetTime() - start_time->GetTime());
 }
 
 void SubsEditBox::OnSize(wxSizeEvent &evt) {
@@ -517,12 +525,15 @@ void SubsEditBox::OnSize(wxSizeEvent &evt) {
 }
 
 void SubsEditBox::OnFrameTimeRadio(wxCommandEvent &event) {
+	event.Skip();
+
 	bool byFrame = by_frame->GetValue();
 	start_time->SetByFrame(byFrame);
 	end_time->SetByFrame(byFrame);
 	duration->SetByFrame(byFrame);
 	c->subsGrid->SetByFrame(byFrame);
-	event.Skip();
+
+	SetDurationField();
 }
 
 void SubsEditBox::SetControlsState(bool state) {

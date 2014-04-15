@@ -195,6 +195,8 @@ class SubsEditBox final : public wxPanel {
 	/// Call a command the restore focus to the edit box
 	void CallCommand(const char *cmd_name);
 
+	void SetDurationField();
+
 	SubsTextEditCtrl *edit_ctrl;
 	wxTextCtrl *secondary_editor;
 	std::unique_ptr<TextSelectionController> textSelectionController;
