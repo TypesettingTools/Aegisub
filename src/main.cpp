@@ -121,17 +121,16 @@ bool AegisubApp::OnInit() {
 	// be created now
 	(void)wxLog::GetActiveTarget();
 
+#ifdef __APPLE__
+	// When launched from Finder, boost::locale fails to get the correct locale
+	// and falls back to "C", which of course doesn't support unicode
+	std::locale::global(boost::locale::generator().generate("en_US.UTF-8"));
+#else
 	// Set the global locale to the utf-8 version of the current locale
 	std::locale::global(boost::locale::generator().generate(""));
-
-#ifndef __APPLE__
-	// Boost.FileSystem always uses UTF-8 for paths on OS X (since paths
-	// actually are required to be UTF-8 strings rather than just opaque binary
-	// blobs like on Linux), so there's no need to imbue the new locale and in
-	// fact it actively breaks things for unknown reasons when launching the
-	// app from Finder (but not from the command line).
-	boost::filesystem::path::imbue(std::locale());
 #endif
+
+	boost::filesystem::path::imbue(std::locale());
 
 	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
 	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
