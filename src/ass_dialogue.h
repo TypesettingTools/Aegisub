@@ -43,7 +43,6 @@
 #include <vector>
 
 enum class AssBlockType {
-	BASE,
 	PLAIN,
 	COMMENT,
 	OVERRIDE,
