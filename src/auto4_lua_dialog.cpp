@@ -180,6 +180,7 @@ namespace Automation4 {
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxTextCtrl(parent, -1, to_wx(text));
+				cw->SetMaxLength(0);
 				cw->SetValidator(StringBinder(&text));
 				cw->SetToolTip(to_wx(hint));
 				return cw;
