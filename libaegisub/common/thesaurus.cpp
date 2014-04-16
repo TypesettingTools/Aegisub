@@ -43,6 +43,8 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 	std::string unused_entry_count;
 	getline(idx, unused_entry_count);
 
+	conv.reset(new charset::IconvWrapper(encoding_name.c_str(), "utf-8"));
+
 	// Read the list of words and file offsets for those words
 	for (auto const& line : line_iterator<std::string>(idx, encoding_name)) {
 		std::vector<std::string> chunks;
@@ -50,8 +52,6 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 		if (chunks.size() == 2)
 			offsets[chunks[0]] = atoi(chunks[1].c_str());
 	}
-
-	conv.reset(new charset::IconvWrapper(encoding_name.c_str(), "utf-8"));
 }
 
 Thesaurus::~Thesaurus() { }
