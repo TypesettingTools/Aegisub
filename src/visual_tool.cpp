@@ -283,7 +283,7 @@ void VisualTool<FeatureType>::DrawAllFeatures() {
 			fill = 2;
 		else if (sel_features.count(&feature))
 			fill = 3;
-		gl.SetFillColour(colour[fill], 0.6f);
+		gl.SetFillColour(colour[fill], 0.3f);
 		feature.Draw(gl);
 	}
 }
