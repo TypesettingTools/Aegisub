@@ -27,26 +27,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file video_box.cpp
-/// @brief The video area in the main window, including surrounding tool bars
-/// @ingroup main_ui video
-///
-
-#include <wx/combobox.h>
-#include <wx/sizer.h>
-#include <wx/statline.h>
-#include <wx/textctrl.h>
-#include <wx/toolbar.h>
-
 #include "video_box.h"
-
-#include "include/aegisub/context.h"
-#include "include/aegisub/toolbar.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "command/command.h"
 #include "compat.h"
+#include "include/aegisub/context.h"
+#include "include/aegisub/toolbar.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "selection_controller.h"
@@ -54,35 +42,34 @@
 #include "video_display.h"
 #include "video_slider.h"
 
+#include <boost/range/algorithm/binary_search.hpp>
+#include <wx/combobox.h>
+#include <wx/sizer.h>
+#include <wx/statline.h>
+#include <wx/textctrl.h>
+#include <wx/toolbar.h>
+
 VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
-: wxPanel(parent,-1)
+: wxPanel(parent, -1)
 , context(context)
 {
-	// Seek
 	auto videoSlider = new VideoSlider(this, context);
 	videoSlider->SetToolTip(_("Seek video"));
 
-	// Buttons
 	wxToolBar *mainToolbar = toolbar::GetToolbar(this, "video", context, "Video", false);
 
-	// Position
-	VideoPosition = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
+	VideoPosition = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(110, 20), wxTE_READONLY);
 	VideoPosition->SetToolTip(_("Current frame time and number"));
 
-	// Times of sub relative to video
-	VideoSubsPos = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(110,20),wxTE_READONLY);
+	VideoSubsPos = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(110, 20), wxTE_READONLY);
 	VideoSubsPos->SetToolTip(_("Time of this frame relative to start and end of current subs"));
 
-	// Zoom box
 	wxArrayString choices;
-	for (int i = 1 ; i <= 24; ++i)
+	for (int i = 1; i <= 24; ++i)
 		choices.Add(wxString::Format("%g%%", i * 12.5));
 	wxComboBox *zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
-	// Typesetting buttons
 	wxToolBar *visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
-
-	// Visual controls sub-toolbar
 	wxToolBar *visualSubToolBar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_BOTTOM | wxTB_FLAT);
 
 	auto videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
@@ -92,14 +79,9 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	toolbarSizer->Add(visualToolBar, wxSizerFlags(1));
 	toolbarSizer->Add(visualSubToolBar, wxSizerFlags());
 
-	// Top sizer
 	wxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
 	topSizer->Add(toolbarSizer, 0, wxEXPAND);
 	topSizer->Add(videoDisplay, isDetached, isDetached ? wxEXPAND : 0);
-
-	// Sizers
-	wxSizer *videoSliderSizer = new wxBoxSizer(wxHORIZONTAL);
-	videoSliderSizer->Add(videoSlider, wxSizerFlags(1).Expand());
 
 	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	videoBottomSizer->Add(mainToolbar, wxSizerFlags(0).Center());
@@ -110,8 +92,8 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	wxSizer *VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(topSizer, 1, wxEXPAND, 0);
 	VideoSizer->Add(new wxStaticLine(this), 0, wxEXPAND, 0);
-	VideoSizer->Add(videoSliderSizer,0,wxEXPAND,0);
-	VideoSizer->Add(videoBottomSizer,0,wxEXPAND | wxBOTTOM,5);
+	VideoSizer->Add(videoSlider, 0, wxEXPAND, 0);
+	VideoSizer->Add(videoBottomSizer, 0, wxEXPAND | wxBOTTOM, 5);
 	SetSizer(VideoSizer);
 
 	UpdateTimeBoxes();
@@ -132,7 +114,7 @@ void VideoBox::UpdateTimeBoxes() {
 
 	// Set the text box for frame number and time
 	VideoPosition->SetValue(wxString::Format("%s - %d", AssTime(time).GetAssFormated(true), frame));
-	if (binary_search(context->videoController->GetKeyFrames().begin(), context->videoController->GetKeyFrames().end(), frame)) {
+	if (boost::binary_search(context->videoController->GetKeyFrames(), frame)) {
 		// Set the background color to indicate this is a keyframe
 		VideoPosition->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColor()));
 		VideoPosition->SetForegroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Selection")->GetColor()));

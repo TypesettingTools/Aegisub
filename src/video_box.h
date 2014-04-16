@@ -27,20 +27,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file video_box.h
-/// @see video_box.cpp
-/// @ingroup main_ui video
-///
-
-#include <deque>
-
-#include <wx/panel.h>
-
 #include <libaegisub/signal.h>
 
+#include <deque>
+#include <wx/panel.h>
+
 namespace agi { struct Context; }
-class AssDialogue;
-class wxComboBox;
 class wxTextCtrl;
 
 /// @class VideoBox
