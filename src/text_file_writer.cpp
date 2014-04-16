@@ -19,8 +19,6 @@
 /// @ingroup utility
 ///
 
-#include "config.h"
-
 #include "text_file_writer.h"
 
 #include "options.h"

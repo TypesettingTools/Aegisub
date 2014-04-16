@@ -32,8 +32,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #ifdef WITH_DIRECTSOUND
 #include "include/aegisub/audio_player.h"
 
@@ -234,13 +232,11 @@ class DirectSoundPlayer2Thread {
 	/// Audio frame to end playback at
 	int64_t end_frame = 0;
 
-
 	/// Desired length in milliseconds to write ahead of the playback cursor
 	int wanted_latency;
 
 	/// Multiplier for WantedLatency to get total buffer length
 	int buffer_length;
-
 
 	/// System millisecond timestamp of last playback start, used to calculate playback position
 	DWORD last_playback_restart;
@@ -363,7 +359,6 @@ void DirectSoundPlayer2Thread::Run()
 	bfr7 = 0;
 
 	//wx Log Debug("DirectSoundPlayer2: Created buffer of %d bytes, supposed to be %d milliseconds or %d frames", bufSize, WANTED_LATENCY*BUFFER_LENGTH, bufSize/provider->GetBytesPerSample());
-
 
 	// Now we're ready to roll!
 	SetEvent(thread_running);

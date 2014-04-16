@@ -32,8 +32,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #ifdef WITH_ALSA
 #include "include/aegisub/audio_player.h"
 
@@ -250,7 +248,7 @@ do_setup:
 		{
 			int64_t orig_position = position;
 			int64_t orig_ps_end_position = ps.end_position;
-			
+
 			ScopedAliveFlag playing_flag(ps.playing);
 
 			// Sleep a bit, or until an event

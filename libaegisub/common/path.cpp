@@ -18,8 +18,6 @@
 /// @brief Platform-independent path code
 /// @ingroup libaegisub
 
-#include "../config.h"
-
 #include "libaegisub/path.h"
 
 #include "libaegisub/fs.h"

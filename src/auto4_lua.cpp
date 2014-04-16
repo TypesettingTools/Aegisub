@@ -32,8 +32,6 @@
 /// @ingroup scripting
 ///
 
-#include "config.h"
-
 #include "auto4_lua.h"
 
 #include "auto4_lua_utils.h"

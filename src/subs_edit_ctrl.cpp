@@ -32,8 +32,6 @@
 /// @ingroup main_ui
 ///
 
-#include "config.h"
-
 #include "subs_edit_ctrl.h"
 
 #include "ass_dialogue.h"

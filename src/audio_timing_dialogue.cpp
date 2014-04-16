@@ -31,8 +31,6 @@
 /// @brief Default timing mode for dialogue subtitles
 /// @ingroup audio_ui
 
-#include "config.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"

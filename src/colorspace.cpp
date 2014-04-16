@@ -32,8 +32,6 @@
 /// @ingroup utility
 ///
 
-#include "config.h"
-
 #include "colorspace.h"
 #include "utils.h"
 

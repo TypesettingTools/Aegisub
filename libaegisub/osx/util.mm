@@ -16,8 +16,6 @@
 /// @brief OSX Utilities
 /// @ingroup libosxutil osx
 
-#include "config.h"
-
 #include "libaegisub/util_osx.h"
 
 #import <ApplicationServices/ApplicationServices.h>

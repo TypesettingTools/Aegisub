@@ -19,8 +19,6 @@
 /// @ingroup video
 ///
 
-#include "config.h"
-
 #include <algorithm>
 #include <utility>
 

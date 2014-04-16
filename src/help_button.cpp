@@ -32,8 +32,6 @@
 /// @ingroup custom_control
 ///
 
-#include "config.h"
-
 #include "help_button.h"
 
 #include "options.h"
@@ -95,4 +93,3 @@ void HelpButton::OpenPage(wxString const& pageID) {
 
 	wxLaunchDefaultBrowser(wxString::Format("http://docs.aegisub.org/3.1/%s/#%s", page, section));
 }
-

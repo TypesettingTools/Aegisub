@@ -33,8 +33,6 @@
 /// @ingroup tools_ui kara_timing_copy
 ///
 
-#include "config.h"
-
 #include "dialog_kara_timing_copy.h"
 
 #include "ass_dialogue.h"
@@ -115,7 +113,6 @@ public:
 	bool AcceptMatch();
 	/// Undo last match, adding it back to the unmatched input
 	bool UndoMatch();
-
 
 	KaraokeLineMatchDisplay(wxWindow *parent);
 

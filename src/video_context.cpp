@@ -32,8 +32,6 @@
 /// @ingroup video
 ///
 
-#include "config.h"
-
 #include "video_context.h"
 
 #include "ass_dialogue.h"

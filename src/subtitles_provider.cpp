@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "include/aegisub/subtitles_provider.h"
 
 #include "factory_manager.h"

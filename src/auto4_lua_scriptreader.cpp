@@ -17,8 +17,6 @@
 /// @ingroup scripting
 ///
 
-#include "config.h"
-
 #include "auto4_lua_scriptreader.h"
 
 #include "auto4_lua_utils.h"

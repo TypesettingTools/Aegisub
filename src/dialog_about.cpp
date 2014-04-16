@@ -32,8 +32,6 @@
 /// @ingroup configuration_ui
 ///
 
-#include "config.h"
-
 #include <wx/button.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>

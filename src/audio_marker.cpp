@@ -19,8 +19,6 @@
 /// @ingroup audio_ui
 ///
 
-#include "config.h"
-
 #include "audio_marker.h"
 
 #include "include/aegisub/context.h"

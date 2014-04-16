@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "text_file_reader.h"
 
 #include <libaegisub/file_mapping.h>

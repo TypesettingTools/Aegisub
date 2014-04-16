@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "../config.h"
-
 #include "libaegisub/ass/dialogue_parser.h"
 
 #include "libaegisub/spellchecker.h"

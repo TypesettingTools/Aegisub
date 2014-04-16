@@ -32,9 +32,6 @@
 /// @ingroup custom_control
 ///
 
-
-#include "config.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"

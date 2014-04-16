@@ -17,8 +17,6 @@
 /// @ingroup libaegisub
 ///
 
-#include "../config.h"
-
 #include "libaegisub/keyframe.h"
 
 #include <algorithm>

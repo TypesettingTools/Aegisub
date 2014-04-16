@@ -32,8 +32,6 @@
 /// @ingroup tools_ui
 ///
 
-#include "config.h"
-
 #include "dialog_timing_processor.h"
 
 #include "ass_dialogue.h"

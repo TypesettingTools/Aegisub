@@ -32,8 +32,6 @@
 /// @ingroup video_input ffms
 ///
 
-#include "config.h"
-
 #ifdef WITH_FFMS2
 #include "ffmpegsource_common.h"
 #include "include/aegisub/video_provider.h"

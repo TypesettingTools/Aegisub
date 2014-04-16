@@ -32,8 +32,6 @@
 /// @ingroup utility
 ///
 
-#include "config.h"
-
 #include "utils.h"
 
 #include "compat.h"
@@ -262,7 +260,6 @@ size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 	return std::max(max_line_length, current_line_length);
 }
 
-
 #ifndef __WXOSX_COCOA__
 // OS X implementation in osx_utils.mm
 void AddFullScreenButton(wxWindow *) { }
@@ -316,4 +313,3 @@ agi::fs::path OpenFileSelector(wxString const& message, std::string const& optio
 agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent) {
 	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent);
 }
-

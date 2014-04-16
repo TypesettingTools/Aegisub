@@ -17,8 +17,6 @@
 /// @ingroup tools_ui
 ///
 
-#include "config.h"
-
 #include "dialog_resample.h"
 
 #include "ass_file.h"

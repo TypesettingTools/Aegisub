@@ -31,8 +31,6 @@
 /// @brief Main window creation and control management
 /// @ingroup main_ui
 
-#include "config.h"
-
 #include "frame_main.h"
 
 #include "include/aegisub/context.h"

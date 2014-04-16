@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "subs_controller.h"
 
 #include "ass_attachment.h"

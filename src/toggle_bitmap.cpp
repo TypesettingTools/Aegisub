@@ -32,8 +32,6 @@
 /// @ingroup custom_control
 ///
 
-#include "config.h"
-
 #include <wx/dcbuffer.h>
 #include <wx/settings.h>
 #include <wx/tglbtn.h>

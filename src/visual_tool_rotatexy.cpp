@@ -18,8 +18,6 @@
 /// @brief 3D rotation in X/Y axes visual typesetting tool
 /// @ingroup visual_ts
 
-#include "config.h"
-
 #include "visual_tool_rotatexy.h"
 
 #include <boost/format.hpp>

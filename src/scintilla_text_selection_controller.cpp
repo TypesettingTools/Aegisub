@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "scintilla_text_selection_controller.h"
 
 #include "scintilla_text_ctrl.h"

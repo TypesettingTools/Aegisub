@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "video_provider_manager.h"
 
 #include "factory_manager.h"

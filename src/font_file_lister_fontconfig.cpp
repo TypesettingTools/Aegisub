@@ -19,11 +19,7 @@
 /// @ingroup font_collector
 ///
 
-#include "config.h"
-
 #include "font_file_lister_fontconfig.h"
-
-#include <fontconfig/fontconfig.h>
 
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
@@ -34,7 +30,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem/path.hpp>
-
+#include <fontconfig/fontconfig.h>
 #include <wx/intl.h>
 
 namespace {

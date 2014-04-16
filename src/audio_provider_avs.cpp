@@ -32,8 +32,6 @@
 /// @ingroup audio_input
 ///
 
-#include "config.h"
-
 #ifdef WITH_AVISYNTH
 #include "include/aegisub/audio_provider.h"
 

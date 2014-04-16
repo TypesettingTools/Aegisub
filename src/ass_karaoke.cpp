@@ -19,8 +19,6 @@
 /// @ingroup subs_storage
 ///
 
-#include "config.h"
-
 #include "ass_karaoke.h"
 
 #include "ass_dialogue.h"
@@ -48,7 +46,6 @@ std::string AssKaraoke::Syllable::GetText(bool k_tag) const {
 	ret += text.substr(idx);
 	return ret;
 }
-
 
 AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize) {
 	if (line) SetLine(line, auto_split, normalize);

@@ -29,8 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "../config.h"
-
 #include "command.h"
 
 #include "../compat.h"

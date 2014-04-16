@@ -16,8 +16,6 @@
 /// @brief Logging
 /// @ingroup libaegisub
 
-#include "../config.h"
-
 #include "libaegisub/log.h"
 
 #include "libaegisub/cajun/elements.h"

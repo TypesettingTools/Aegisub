@@ -18,8 +18,6 @@
 /// @see persist_location.h
 /// @ingroup utility
 
-#include "config.h"
-
 #include "persist_location.h"
 
 #include "options.h"

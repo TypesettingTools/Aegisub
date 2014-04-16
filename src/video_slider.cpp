@@ -32,8 +32,6 @@
 /// @ingroup custom_control
 ///
 
-#include "config.h"
-
 #include "video_slider.h"
 
 #include "base_grid.h"

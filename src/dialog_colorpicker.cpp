@@ -32,8 +32,6 @@
 /// @ingroup tools_ui
 ///
 
-#include "config.h"
-
 #include "dialog_colorpicker.h"
 
 #include "ass_style.h"
@@ -432,7 +430,6 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 
 	Refresh(false);
 }
-
 
 class DialogColorPicker final : public wxDialog {
 	std::unique_ptr<PersistLocation> persist;

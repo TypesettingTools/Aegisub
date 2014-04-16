@@ -19,8 +19,6 @@
 /// @see dialog_export_ebu3264.h
 /// @ingroup subtitle_io export
 
-#include "config.h"
-
 #include "dialog_export_ebu3264.h"
 
 #include "compat.h"

@@ -21,8 +21,6 @@
 // This implements support for the EBU tech 3264 (1991) subtitling data exchange format.
 // Work on support for this format was sponsored by Bandai.
 
-#include "config.h"
-
 #include "subtitle_format_ebu3264.h"
 
 #include "ass_dialogue.h"

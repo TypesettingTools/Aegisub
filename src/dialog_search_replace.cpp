@@ -19,8 +19,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_search_replace.h"
 
 #include "compat.h"

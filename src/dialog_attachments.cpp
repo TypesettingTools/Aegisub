@@ -32,8 +32,6 @@
 /// @ingroup tools_ui
 ///
 
-#include "config.h"
-
 #include "dialog_attachments.h"
 
 #include <wx/button.h>

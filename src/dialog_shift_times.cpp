@@ -19,8 +19,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_shift_times.h"
 
 #include "ass_dialogue.h"
@@ -155,7 +153,6 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 		shift_time->Disable();
 	else
 		shift_frames->Disable();
-
 
 	// Position controls
 	wxSizer *shift_amount_sizer = new wxFlexGridSizer(2, 2, 5, 5);

@@ -31,8 +31,6 @@
 /// @brief Style Manager dialogue box and partial logic
 /// @ingroup style_editor
 
-#include "config.h"
-
 #include "dialog_style_manager.h"
 
 #include "ass_dialogue.h"
@@ -452,7 +450,7 @@ void DialogStyleManager::OnCopyToCurrent() {
 	c->ass->Commit(_("style copy"), AssFile::COMMIT_STYLES);
 
 	CurrentList->DeselectAll();
-	for (auto const& style_name : copied) 
+	for (auto const& style_name : copied)
 		CurrentList->SetStringSelection(style_name, true);
 	UpdateButtons();
 }
@@ -669,7 +667,6 @@ void DialogStyleManager::UpdateButtons() {
 	StorageMoveDown->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
 	StorageMoveBottom->Enable(contStor && lastStor != -1 && lastStor < itemsStor-1);
 	StorageSort->Enable(itemsStor > 1);
-
 
 	// Get current selection
 	n = CurrentList->GetSelections(sels);

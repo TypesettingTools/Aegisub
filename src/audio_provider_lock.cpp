@@ -16,8 +16,6 @@
 /// @brief An audio provider adapter for un-threadsafe audio providers
 /// @ingroup audio_input
 
-#include "config.h"
-
 #include "include/aegisub/audio_provider.h"
 
 #include <libaegisub/util.h>

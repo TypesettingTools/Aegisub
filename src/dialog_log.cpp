@@ -32,8 +32,6 @@
 /// @ingroup libaegisub
 ///
 
-#include "config.h"
-
 #include "dialog_log.h"
 
 #include "compat.h"

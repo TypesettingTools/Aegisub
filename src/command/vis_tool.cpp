@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "../config.h"
-
 #include "command.h"
 
 #include "../include/aegisub/context.h"

@@ -32,8 +32,6 @@
 /// @ingroup custom_control
 ///
 
-#include "config.h"
-
 #include "timeedit_ctrl.h"
 
 #include <functional>

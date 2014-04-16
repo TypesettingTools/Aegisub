@@ -32,8 +32,6 @@
 /// @ingroup subs_storage
 ///
 
-#include "config.h"
-
 #include "ass_style.h"
 
 #include "subtitle_format.h"

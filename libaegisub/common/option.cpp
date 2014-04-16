@@ -16,8 +16,6 @@
 /// @brief Option interface.
 /// @ingroup libaegisub
 
-#include "../config.h"
-
 #include "libaegisub/option.h"
 
 #include "libaegisub/cajun/reader.h"

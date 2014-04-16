@@ -32,8 +32,6 @@
 /// @ingroup subtitle_rendering
 ///
 
-#include "config.h"
-
 #include "subtitles_provider_libass.h"
 
 #include "ass_info.h"

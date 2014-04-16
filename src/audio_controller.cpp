@@ -32,8 +32,6 @@
 /// @ingroup audio_ui
 ///
 
-#include "config.h"
-
 #include "audio_controller.h"
 
 #include "ass_file.h"
@@ -150,7 +148,6 @@ void AudioController::OnAudioProviderChanged()
 		OpenAudio(agi::fs::path(audio_url));
 }
 
-
 void AudioController::OpenAudio(agi::fs::path const& url)
 {
 	if (url.empty())
@@ -214,7 +211,6 @@ void AudioController::CloseAudio()
 	AnnounceAudioClose();
 }
 
-
 bool AudioController::IsAudioOpen() const
 {
 	return player && provider;
@@ -258,7 +254,6 @@ void AudioController::PlayRange(const TimeRange &range)
 	AnnouncePlaybackPosition(range.begin());
 }
 
-
 void AudioController::PlayPrimaryRange()
 {
 	PlayRange(GetPrimaryPlaybackRange());
@@ -287,7 +282,6 @@ void AudioController::PlayToEnd(int start_ms)
 	AnnouncePlaybackPosition(start_ms);
 }
 
-
 void AudioController::Stop()
 {
 	if (!IsAudioOpen()) return;
@@ -299,12 +293,10 @@ void AudioController::Stop()
 	AnnouncePlaybackStop();
 }
 
-
 bool AudioController::IsPlaying()
 {
 	return IsAudioOpen() && playback_mode != PM_NotPlaying;
 }
-
 
 int AudioController::GetPlaybackPosition()
 {
@@ -338,7 +330,6 @@ void AudioController::SetVolume(double volume)
 	player->SetVolume(volume);
 }
 
-
 int64_t AudioController::SamplesFromMilliseconds(int64_t ms) const
 {
 	/// @todo There might be some subtle rounding errors here.
@@ -351,7 +342,6 @@ int64_t AudioController::SamplesFromMilliseconds(int64_t ms) const
 
 	return (millisamples + 999) / 1000;
 }
-
 
 int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
 {

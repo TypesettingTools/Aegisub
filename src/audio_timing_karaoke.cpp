@@ -19,8 +19,6 @@
 /// @ingroup audio_ui
 ///
 
-#include "config.h"
-
 #include <libaegisub/signal.h>
 
 #include "ass_dialogue.h"

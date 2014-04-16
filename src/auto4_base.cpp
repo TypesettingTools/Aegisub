@@ -32,8 +32,6 @@
 /// @ingroup scripting
 ///
 
-#include "config.h"
-
 #include "auto4_base.h"
 
 #include "ass_file.h"

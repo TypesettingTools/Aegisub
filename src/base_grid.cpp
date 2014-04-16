@@ -32,8 +32,6 @@
 /// @ingroup main_ui
 ///
 
-#include "config.h"
-
 #include "base_grid.h"
 
 #include "include/aegisub/context.h"

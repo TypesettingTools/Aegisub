@@ -32,8 +32,6 @@
 /// @brief Main subtitle editing area, including toolbars around the text control
 /// @ingroup main_ui
 
-#include "config.h"
-
 #include "subs_edit_box.h"
 
 #include "ass_dialogue.h"

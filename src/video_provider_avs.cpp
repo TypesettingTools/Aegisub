@@ -32,8 +32,6 @@
 /// @ingroup video_input
 ///
 
-#include "config.h"
-
 #ifdef WITH_AVISYNTH
 #include "include/aegisub/video_provider.h"
 

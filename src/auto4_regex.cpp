@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "auto4_lua_utils.h"
 
 #include <boost/regex/icu.hpp>

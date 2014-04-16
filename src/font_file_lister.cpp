@@ -19,8 +19,6 @@
 /// @ingroup font_collector
 ///
 
-#include "config.h"
-
 #include "font_file_lister.h"
 
 #include "ass_dialogue.h"

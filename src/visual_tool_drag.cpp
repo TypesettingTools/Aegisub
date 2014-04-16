@@ -18,8 +18,6 @@
 /// @brief Position all visible subtitles by dragging visual typesetting tool
 /// @ingroup visual_ts
 
-#include "config.h"
-
 #include "visual_tool_drag.h"
 
 #include "ass_dialogue.h"

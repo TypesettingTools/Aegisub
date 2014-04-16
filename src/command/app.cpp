@@ -29,8 +29,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "../config.h"
-
 #include <wx/msgdlg.h>
 
 #include "command.h"

@@ -18,8 +18,6 @@
 /// @brief 2D rotation in Z axis visual typesetting tool
 /// @ingroup visual_ts
 
-#include "config.h"
-
 #include "visual_tool_rotatez.h"
 
 #include "utils.h"

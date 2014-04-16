@@ -32,8 +32,6 @@
 ///
 /// Manage colour schemes for the audio display
 
-#include "config.h"
-
 #include <algorithm>
 
 #include "audio_colorscheme.h"

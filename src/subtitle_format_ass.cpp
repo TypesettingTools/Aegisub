@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "subtitle_format_ass.h"
 
 #include "ass_attachment.h"

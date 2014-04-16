@@ -19,8 +19,6 @@
 /// @ingroup tools_ui
 ///
 
-#include "config.h"
-
 #include "dialog_styling_assistant.h"
 
 #include "include/aegisub/context.h"

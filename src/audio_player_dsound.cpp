@@ -32,8 +32,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #ifdef WITH_DIRECTSOUND
 #include "include/aegisub/audio_player.h"
 
@@ -374,4 +372,3 @@ std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *provider, wx
 }
 
 #endif // WITH_DIRECTSOUND
-

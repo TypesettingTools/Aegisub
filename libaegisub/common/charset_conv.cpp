@@ -22,8 +22,6 @@
 #include <cassert>
 #include <map>
 
-#include "../config.h"
-
 #include <libaegisub/charset_conv.h>
 #include <iconv.h>
 
@@ -312,7 +310,7 @@ void IconvWrapper::Convert(const char *src, size_t srcLen, std::string &dest) {
 
 		dest.append(buff, sizeof(buff) - dstLen);
 	} while (res == iconv_failed && errno == E2BIG);
-	
+
 	if (res == iconv_failed) {
 		switch (errno) {
 			case EINVAL:

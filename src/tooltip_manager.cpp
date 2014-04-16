@@ -32,8 +32,6 @@
 /// @ingroup custom_control
 ///
 
-#include "config.h"
-
 #include "tooltip_manager.h"
 
 #include "compat.h"

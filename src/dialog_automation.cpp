@@ -32,8 +32,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_automation.h"
 
 #include "auto4_base.h"

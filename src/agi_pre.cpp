@@ -32,7 +32,6 @@
 /// @ingroup main
 ///
 
-
 //
 // Precompiled Header Source File for MSVC
 //

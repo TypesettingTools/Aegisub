@@ -30,8 +30,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #ifdef WITH_OSS
 #include "include/aegisub/audio_player.h"
 
@@ -102,7 +100,6 @@ public:
         Stop();
         ::close(dspdev);
     }
-
 
     void Play(int64_t start, int64_t count);
     void Stop();

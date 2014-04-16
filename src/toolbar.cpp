@@ -16,8 +16,6 @@
 /// @brief Dynamic menu toolbar generator.
 /// @ingroup toolbar menu
 
-#include "config.h"
-
 #include "include/aegisub/toolbar.h"
 
 #include "command/command.h"
@@ -137,7 +135,6 @@ namespace {
 				}
 
 				last_was_sep = false;
-
 
 				int flags = command->Type();
 				wxItemKind kind =

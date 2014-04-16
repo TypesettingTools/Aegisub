@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "include/aegisub/spellchecker.h"
 #include "spellchecker_hunspell.h"
 

@@ -32,8 +32,6 @@
 /// @ingroup subtitle_io
 ///
 
-#include "config.h"
-
 #include "subtitle_format.h"
 
 #include <wx/intl.h>
@@ -271,7 +269,6 @@ void SubtitleFormat::MergeIdentical(AssFile &file) {
 		}
 	}
 }
-
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {

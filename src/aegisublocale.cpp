@@ -32,8 +32,6 @@
 /// @ingroup utility
 ///
 
-#include "config.h"
-
 #include "aegisublocale.h"
 
 #include "options.h"

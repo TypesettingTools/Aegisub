@@ -16,8 +16,6 @@
 /// @brief Dynamic menu and toolbar generator.
 /// @ingroup menu
 
-#include "config.h"
-
 #include "include/aegisub/menu.h"
 
 #include "include/aegisub/context.h"

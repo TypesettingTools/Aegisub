@@ -19,8 +19,6 @@
 /// @ingroup spelling
 ///
 
-#include "config.h"
-
 #include "dialog_spellchecker.h"
 
 #include "ass_dialogue.h"

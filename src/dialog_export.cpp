@@ -32,8 +32,6 @@
 /// @ingroup export
 ///
 
-#include "config.h"
-
 #include "dialog_export.h"
 
 #include "ass_exporter.h"

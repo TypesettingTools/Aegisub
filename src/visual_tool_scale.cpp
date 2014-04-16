@@ -18,8 +18,6 @@
 /// @brief X/Y scaling visual typesetting tool
 /// @ingroup visual_ts
 
-#include "config.h"
-
 #include <cmath>
 
 #include "visual_tool_scale.h"

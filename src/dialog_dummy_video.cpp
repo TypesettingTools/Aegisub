@@ -19,8 +19,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_dummy_video.h"
 
 #include <wx/checkbox.h>

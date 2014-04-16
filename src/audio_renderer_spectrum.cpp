@@ -32,8 +32,6 @@
 /// @brief Caching frequency-power spectrum renderer for audio display
 /// @ingroup audio_ui
 
-#include "config.h"
-
 #include "audio_renderer_spectrum.h"
 
 #include "audio_colorscheme.h"
@@ -83,7 +81,6 @@ struct AudioSpectrumCacheBlockFactory {
 	}
 };
 
-
 /// @brief Cache for audio spectrum frequency-power data
 class AudioSpectrumCache
 : public DataBlockCache<float, 10, AudioSpectrumCacheBlockFactory> {
@@ -94,7 +91,6 @@ public:
 	{
 	}
 };
-
 
 AudioSpectrumRenderer::AudioSpectrumRenderer(std::string const& color_scheme_name)
 {

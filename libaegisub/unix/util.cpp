@@ -16,8 +16,6 @@
 /// @brief Unix utility methods.
 /// @ingroup libaegisub unix
 
-#include "config.h"
-
 #include "libaegisub/util.h"
 
 #include <boost/thread.hpp>

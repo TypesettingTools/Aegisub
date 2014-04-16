@@ -19,8 +19,6 @@
 /// @ingroup audio_input
 ///
 
-#include "config.h"
-
 #include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"

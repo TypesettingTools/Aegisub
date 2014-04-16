@@ -32,8 +32,6 @@
 /// @ingroup video_input audio_input ffms
 ///
 
-#include "config.h"
-
 #ifdef WITH_FFMS2
 #include "ffmpegsource_common.h"
 
@@ -52,7 +50,6 @@
 #include <boost/filesystem.hpp>
 #include <inttypes.h>
 
-#include <wx/config.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
 #ifdef _WIN32

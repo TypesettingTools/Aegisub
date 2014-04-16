@@ -32,8 +32,6 @@
 /// @ingroup style_editor
 ///
 
-#include "config.h"
-
 #include "ass_style_storage.h"
 
 #include "ass_style.h"

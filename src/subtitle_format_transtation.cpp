@@ -32,8 +32,6 @@
 /// @ingroup subtitle_io
 ///
 
-#include "config.h"
-
 #include <cstdio>
 
 #include "subtitle_format_transtation.h"

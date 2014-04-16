@@ -32,8 +32,6 @@
 /// @ingroup video_input
 ///
 
-#include "config.h"
-
 #include "mkv_wrap.h"
 
 #include "ass_file.h"

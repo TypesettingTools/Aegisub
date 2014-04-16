@@ -18,8 +18,6 @@
 /// @ingroup spelling
 ///
 
-#include "config.h"
-
 #ifdef WITH_HUNSPELL
 #include "spellchecker_hunspell.h"
 

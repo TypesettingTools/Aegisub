@@ -19,8 +19,6 @@
 /// @ingroup tools_ui font_collector
 ///
 
-#include "config.h"
-
 #include "dialog_fonts_collector.h"
 
 #include "font_file_lister.h"
@@ -42,7 +40,6 @@
 #include <libaegisub/path.h>
 
 #include <wx/button.h>
-#include <wx/config.h>
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>

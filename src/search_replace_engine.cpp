@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "search_replace_engine.h"
 
 #include "ass_dialogue.h"

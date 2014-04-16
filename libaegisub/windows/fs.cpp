@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "libaegisub/fs.h"
 
 #include "libaegisub/access.h"

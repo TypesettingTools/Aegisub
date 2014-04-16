@@ -19,8 +19,6 @@
 /// @ingroup thesaurus
 ///
 
-#include "config.h"
-
 #include "thesaurus.h"
 
 #include "options.h"

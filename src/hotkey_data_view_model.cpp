@@ -19,8 +19,6 @@
 /// @ingroup hotkey configuration_ui
 ///
 
-#include "config.h"
-
 #include "hotkey_data_view_model.h"
 
 #include <libaegisub/exception.h>
@@ -198,7 +196,6 @@ public:
 			model->ItemsDeleted(wxDataViewItem(this), removed);
 	}
 
-
 	wxDataViewItem GetParent() const override { return wxDataViewItem(nullptr); }
 	bool IsContainer() const override { return true; }
 	bool SetValue(wxVariant const&, unsigned int) override { return false; }
@@ -260,7 +257,6 @@ public:
 		return out.size();
 	}
 };
-
 
 HotkeyDataViewModel::HotkeyDataViewModel(Preferences *parent)
 : root(agi::util::make_unique<HotkeyModelRoot>(this))

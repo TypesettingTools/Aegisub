@@ -5,8 +5,6 @@ Project Webpage: http://cajun-jsonapi.sourceforge.net/
 Author: Terry Caton
 ***********************************************/
 
-#include "../../config.h"
-
 #include "libaegisub/cajun/elements.h"
 
 #include "libaegisub/cajun/visitor.h"
@@ -61,7 +59,6 @@ public:
    virtual void Accept(ConstVisitor& visitor) const = 0;
    virtual void Accept(Visitor& visitor) = 0;
 };
-
 
 template <typename ElementTypeT>
 class UnknownElement::Imp_T final : public UnknownElement::Imp
@@ -154,7 +151,6 @@ ElementTypeT& UnknownElement::CastTo()
 
 void UnknownElement::Accept(ConstVisitor& visitor) const { m_pImp->Accept(visitor); }
 void UnknownElement::Accept(Visitor& visitor)            { m_pImp->Accept(visitor); }
-
 
 bool UnknownElement::operator == (const UnknownElement& element) const
 {

@@ -16,8 +16,6 @@
 /// @brief Parse JSON files and return json::UnknownElement
 /// @ingroup libaegisub io
 
-#include "../config.h"
-
 #include "libaegisub/json.h"
 
 #include "libaegisub/fs.h"

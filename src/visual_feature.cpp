@@ -32,8 +32,6 @@
 /// @ingroup visual_ts
 ///
 
-#include "config.h"
-
 #include "gl_wrap.h"
 #include "visual_feature.h"
 

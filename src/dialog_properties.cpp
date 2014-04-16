@@ -32,8 +32,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_properties.h"
 
 #include "ass_file.h"

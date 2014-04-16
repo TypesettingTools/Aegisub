@@ -17,8 +17,6 @@
 /// @ingroup utility
 ///
 
-#include "config.h"
-
 #include "dialog_progress.h"
 
 #include "compat.h"

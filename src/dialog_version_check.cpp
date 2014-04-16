@@ -32,8 +32,6 @@
 /// @ingroup configuration_ui
 ///
 
-#include "config.h"
-
 #ifdef WITH_UPDATE_CHECKER
 
 #include "dialog_version_check.h"

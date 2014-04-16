@@ -18,8 +18,6 @@
 /// @brief Base class for visual typesetting functions
 /// @ingroup visual_ts
 
-#include "config.h"
-
 #include "visual_tool.h"
 
 #include "ass_dialogue.h"

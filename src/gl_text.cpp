@@ -32,8 +32,6 @@
 /// @ingroup video_output
 ///
 
-#include "config.h"
-
 #include "gl_text.h"
 
 #include "compat.h"

@@ -32,8 +32,6 @@
 /// @ingroup export
 ///
 
-#include "config.h"
-
 #include "export_fixstyle.h"
 
 #include "ass_file.h"

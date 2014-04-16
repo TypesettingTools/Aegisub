@@ -32,8 +32,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_jumpto.h"
 
 #include "include/aegisub/context.h"

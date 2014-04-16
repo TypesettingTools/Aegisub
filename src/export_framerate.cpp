@@ -32,8 +32,6 @@
 /// @ingroup export
 ///
 
-#include "config.h"
-
 #include "export_framerate.h"
 
 #include "ass_dialogue.h"

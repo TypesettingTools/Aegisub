@@ -19,9 +19,6 @@
 /// @ingroup video_output
 ///
 
-
-#include "config.h"
-
 #include "gl_wrap.h"
 
 #include <wx/colour.h>

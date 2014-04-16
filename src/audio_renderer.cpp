@@ -31,8 +31,6 @@
 /// @brief Base classes for audio renderers (spectrum, waveform, ...)
 /// @ingroup audio_ui
 
-#include "config.h"
-
 #include "audio_renderer.h"
 
 #include "include/aegisub/audio_provider.h"
@@ -61,7 +59,6 @@ size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
 	return sizeof(wxBitmap) + renderer->cache_bitmap_width * renderer->pixel_height * 3;
 }
 
-
 AudioRenderer::AudioRenderer()
 {
 	for (int i = 0; i < AudioStyle_MAX; ++i)
@@ -84,7 +81,6 @@ void AudioRenderer::SetMillisecondsPerPixel(double new_pixel_ms)
 	ResetBlockCount();
 }
 
-
 void AudioRenderer::SetHeight(int _pixel_height)
 {
 	if (pixel_height == _pixel_height) return;
@@ -92,7 +88,6 @@ void AudioRenderer::SetHeight(int _pixel_height)
 	pixel_height = _pixel_height;
 	Invalidate();
 }
-
 
 void AudioRenderer::SetAmplitudeScale(float _amplitude_scale)
 {
@@ -107,7 +102,6 @@ void AudioRenderer::SetAmplitudeScale(float _amplitude_scale)
 		renderer->SetAmplitudeScale(amplitude_scale);
 	Invalidate();
 }
-
 
 void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *_renderer)
 {
@@ -124,7 +118,6 @@ void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *_renderer)
 	}
 }
 
-
 void AudioRenderer::SetAudioProvider(AudioProvider *_provider)
 {
 	if (provider == _provider) return;
@@ -138,7 +131,6 @@ void AudioRenderer::SetAudioProvider(AudioProvider *_provider)
 	ResetBlockCount();
 }
 
-
 void AudioRenderer::SetCacheMaxSize(size_t max_size)
 {
 	// Limit the bitmap cache sizes to 16 MB hard, to avoid the risk of exhausting
@@ -148,7 +140,6 @@ void AudioRenderer::SetCacheMaxSize(size_t max_size)
 	// The renderer gets whatever is left.
 	cache_renderer_maxsize = max_size - 4*cache_bitmap_maxsize;
 }
-
 
 void AudioRenderer::ResetBlockCount()
 {
@@ -160,7 +151,6 @@ void AudioRenderer::ResetBlockCount()
 		for (auto& bmp : bitmaps) bmp.SetBlockCount(cache_numblocks);
 	}
 }
-
 
 const wxBitmap *AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
 {
@@ -179,7 +169,6 @@ const wxBitmap *AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
 	assert(bmp->IsOk());
 	return bmp;
 }
-
 
 void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, AudioRenderingStyle style)
 {
@@ -225,13 +214,11 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, Audi
 	}
 }
 
-
 void AudioRenderer::Invalidate()
 {
 	for (auto& bmp : bitmaps) bmp.Age(0);
 	needs_age = false;
 }
-
 
 void AudioRendererBitmapProvider::SetProvider(AudioProvider *_provider)
 {
@@ -242,7 +229,6 @@ void AudioRendererBitmapProvider::SetProvider(AudioProvider *_provider)
 	OnSetProvider();
 }
 
-
 void AudioRendererBitmapProvider::SetMillisecondsPerPixel(double new_pixel_ms)
 {
 	if (pixel_ms == new_pixel_ms) return;
@@ -251,7 +237,6 @@ void AudioRendererBitmapProvider::SetMillisecondsPerPixel(double new_pixel_ms)
 
 	OnSetMillisecondsPerPixel();
 }
-
 
 void AudioRendererBitmapProvider::SetAmplitudeScale(float _amplitude_scale)
 {

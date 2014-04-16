@@ -32,8 +32,6 @@
 /// @ingroup main
 ///
 
-#include "config.h"
-
 #include "main.h"
 
 #include "command/command.h"
@@ -71,7 +69,6 @@
 #include <boost/locale.hpp>
 
 #include <wx/clipbrd.h>
-#include <wx/config.h>
 #include <wx/msgdlg.h>
 #include <wx/stackwalk.h>
 #include <wx/utils.h>

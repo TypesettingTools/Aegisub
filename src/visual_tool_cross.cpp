@@ -18,8 +18,6 @@
 /// @brief Crosshair double-click-to-position visual typesetting tool
 /// @ingroup visual_ts
 
-#include "config.h"
-
 #include "visual_tool_cross.h"
 
 #include "gl_text.h"

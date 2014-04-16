@@ -16,8 +16,6 @@
 /// @brief Framerate handling of all sorts
 /// @ingroup libaegisub video_input
 
-#include "../config.h"
-
 #include "libaegisub/vfr.h"
 
 #include "libaegisub/charset.h"

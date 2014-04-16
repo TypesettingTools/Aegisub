@@ -19,8 +19,6 @@
 /// @ingroup utils
 ///
 
-#include "config.h"
-
 #include <wx/window.h>
 #include <wx/osx/core/cfstring.h>
 
@@ -61,4 +59,3 @@ void SetPlaceholderText(wxWindow *window, wxString const& placeholder) {
         cell.placeholderString = wxCFStringRef(placeholder).AsNSString();
     }
 }
-

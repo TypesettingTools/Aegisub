@@ -32,8 +32,6 @@
 /// @ingroup audio_ui
 ///
 
-#include "config.h"
-
 #include <cmath>
 
 #include <wx/bmpbuttn.h>

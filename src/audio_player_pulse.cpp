@@ -32,8 +32,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #ifdef WITH_LIBPULSE
 #include "include/aegisub/audio_player.h"
 

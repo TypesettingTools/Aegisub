@@ -32,8 +32,6 @@
 /// @ingroup video main_ui
 ///
 
-#include "config.h"
-
 #include "video_display.h"
 
 #include "ass_file.h"

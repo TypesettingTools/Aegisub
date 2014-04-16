@@ -32,8 +32,6 @@
 /// @ingroup subtitle_io matroska
 ///
 
-#include "config.h"
-
 #include "subtitle_format_mkv.h"
 
 #include "mkv_wrap.h"

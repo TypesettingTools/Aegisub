@@ -16,8 +16,6 @@
 /// @brief Hotkey handler
 /// @ingroup hotkey menu event window
 
-#include "../config.h"
-
 #include "libaegisub/hotkey.h"
 
 #include "libaegisub/cajun/writer.h"

@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "../config.h"
-
 #include "libaegisub/util.h"
 #include "libaegisub/util_osx.h"
 

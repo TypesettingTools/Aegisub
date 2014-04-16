@@ -32,8 +32,6 @@
 /// @ingroup main_ui
 ///
 
-#include "config.h"
-
 #include "dialog_detached_video.h"
 
 #include "include/aegisub/context.h"

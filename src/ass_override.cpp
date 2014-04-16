@@ -33,8 +33,6 @@
 /// @ingroup subs_storage
 ///
 
-#include "config.h"
-
 #include "ass_dialogue.h"
 
 #include "utils.h"

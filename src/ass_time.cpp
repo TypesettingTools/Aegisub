@@ -19,8 +19,6 @@
 /// @ingroup subs_storage
 ///
 
-#include "config.h"
-
 #include "ass_time.h"
 
 #include "utils.h"

@@ -1,4 +1,6 @@
-#include "config.h"
+#ifndef _WIN32
+#include "../acconf.h"
+#endif
 
 #define WIN32_LEAN_AND_MEAN
 

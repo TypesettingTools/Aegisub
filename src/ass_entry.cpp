@@ -19,8 +19,6 @@
 /// @ingroup subs_storage
 ///
 
-#include "config.h"
-
 #include "ass_entry.h"
 
 std::string const& AssEntry::GroupHeader(bool ssa) const {

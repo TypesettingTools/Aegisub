@@ -32,8 +32,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #ifdef WITH_PORTAUDIO
 #include "audio_player_portaudio.h"
 

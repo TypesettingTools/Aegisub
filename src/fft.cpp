@@ -34,8 +34,6 @@
 /// Most of this code was taken from http://www.codeproject.com/audio/waveInFFT.asp
 /// And rewriten by Rodrigo Braz Monteiro
 
-#include "config.h"
-
 #include "fft.h"
 
 #include <cmath>

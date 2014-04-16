@@ -17,8 +17,6 @@
 /// @see option_visit.h
 /// @ingroup libaegisub
 
-#include "../config.h"
-
 #include "option_visit.h"
 
 #include <cassert>

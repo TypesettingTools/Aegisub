@@ -16,8 +16,6 @@
 /// @brief Unix logging
 /// @ingroup libaegisub
 
-#include "config.h"
-
 #include <cstdio>
 #include <ctime>
 #include <cstring>

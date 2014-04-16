@@ -31,8 +31,6 @@
 /// @brief Class for dialogue lines in subtitles
 /// @ingroup subs_storage
 
-#include "config.h"
-
 #include "ass_dialogue.h"
 #include "subtitle_format.h"
 #include "utils.h"

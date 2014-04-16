@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "../config.h"
-
 #include "libaegisub/karaoke_matcher.h"
 
 #include "libaegisub/kana_table.h"

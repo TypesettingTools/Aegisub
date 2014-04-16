@@ -32,8 +32,6 @@
 /// @ingroup main_ui video
 ///
 
-#include "config.h"
-
 #include <wx/combobox.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>

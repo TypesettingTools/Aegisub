@@ -16,8 +16,6 @@
 /// @brief Windows utility methods.
 /// @ingroup libaegisub windows
 
-#include "../config.h"
-
 #include "libaegisub/util.h"
 
 #include "libaegisub/charset_conv_win.h"

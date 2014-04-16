@@ -32,8 +32,6 @@
 ///
 /// Render a waveform display of PCM audio data
 
-#include "config.h"
-
 #include "audio_renderer_waveform.h"
 
 #include <algorithm>
@@ -66,7 +64,6 @@ AudioWaveformRenderer::~AudioWaveformRenderer()
 {
 	delete[] audio_buffer;
 }
-
 
 void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle style)
 {
@@ -143,7 +140,6 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 
 	dc.DrawLine(0, midpoint, rect.width, midpoint);
 }
-
 
 void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style)
 {

@@ -192,7 +192,6 @@ void Reader::Scan(Tokens& tokens, InputStream& inputStream) {
 	}
 }
 
-
 void Reader::EatWhiteSpace(InputStream& inputStream) {
 	while (!inputStream.EOS() && ::isspace(inputStream.Peek()))
 		inputStream.Get();

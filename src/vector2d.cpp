@@ -19,8 +19,6 @@
 /// @ingroup utility visual_ts
 ///
 
-#include "config.h"
-
 #include "vector2d.h"
 
 #include "utils.h"

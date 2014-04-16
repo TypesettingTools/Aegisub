@@ -32,8 +32,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_video_details.h"
 
 #include "ass_time.h"

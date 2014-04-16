@@ -32,8 +32,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_text_import.h"
 
 #include "options.h"
@@ -66,7 +64,6 @@ DialogTextImport::DialogTextImport()
 	main_sizer->Add(new wxCheckBox(this, -1, _("Include blank lines"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&include_blank)), 0, wxLEFT|wxRIGHT|wxALIGN_RIGHT, 5);
 	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
 	SetSizerAndFit(main_sizer);
-
 
 	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
 		TransferDataFromWindow();

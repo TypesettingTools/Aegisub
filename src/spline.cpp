@@ -32,8 +32,6 @@
 /// @ingroup visual_ts
 ///
 
-#include "config.h"
-
 #include "spline.h"
 
 #include "utils.h"

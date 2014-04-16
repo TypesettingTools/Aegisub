@@ -32,8 +32,6 @@
 /// @ingroup video_input
 ///
 
-#include "config.h"
-
 #include "include/aegisub/video_provider.h"
 
 #include "compat.h"
@@ -77,7 +75,6 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 		Y4M_PIXFMT_MONO		/// luma only (grayscale)
 	};
 
-
 	/// Interlacing mode for an entire stream
 	enum Y4M_InterlacingMode {
 		Y4M_ILACE_NOTSET = -1,	/// undefined
@@ -89,7 +86,6 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 		Y4M_ILACE_MIXED,		/// mixed interlaced/progressive, possibly with RFF flags
 		Y4M_ILACE_UNKNOWN		/// unknown interlacing mode (not the same as undefined)
 	};
-
 
 	/// Frame information flags
 	enum Y4M_FrameFlags {

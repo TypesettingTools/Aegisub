@@ -32,8 +32,6 @@
 /// @ingroup video_input
 ///
 
-#include "config.h"
-
 #include "video_provider_dummy.h"
 
 #include "colorspace.h"

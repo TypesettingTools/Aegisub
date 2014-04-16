@@ -14,13 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "retina_helper.h"
 
 #include <Cocoa/Cocoa.h>
 #include <wx/window.h>
-
 
 @interface RetinaObserver : NSObject
 @property (nonatomic, assign) NSWindow *window;
@@ -65,4 +62,3 @@ RetinaHelper::~RetinaHelper() {
 int RetinaHelper::GetScaleFactor() const {
 	return static_cast<int>(window->GetHandle().window.backingScaleFactor);
 }
-

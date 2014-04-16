@@ -33,8 +33,6 @@
 /// @ingroup audio_ui
 ///
 
-#include "config.h"
-
 #include "audio_display.h"
 
 #include "ass_time.h"
@@ -245,7 +243,6 @@ public:
 };
 
 const int AudioDisplayScrollbar::min_width;
-
 
 class AudioDisplayTimeline final : public AudioDisplayInteractionObject {
 	int duration;        ///< Total duration in ms
@@ -939,7 +936,6 @@ void AudioDisplay::SetDraggedObject(AudioDisplayInteractionObject *new_obj)
 	if (!dragged_object)
 		audio_marker.reset();
 }
-
 
 void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 {

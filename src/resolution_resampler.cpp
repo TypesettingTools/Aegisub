@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "config.h"
-
 #include "resolution_resampler.h"
 
 #include "ass_dialogue.h"

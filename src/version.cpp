@@ -32,8 +32,6 @@
 /// @ingroup main
 ///
 
-#include "config.h"
-
 #include "version.h"
 #include "git_version.h"
 
@@ -84,4 +82,3 @@ int GetSVNRevision() {
 	return 0;
 #endif
 }
-

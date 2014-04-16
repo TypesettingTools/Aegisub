@@ -18,8 +18,6 @@
 /// @brief Vector clipping visual typesetting tool
 /// @ingroup visual_ts
 
-#include "config.h"
-
 #include "visual_tool_vector_clip.h"
 
 #include "ass_dialogue.h"

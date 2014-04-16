@@ -35,8 +35,6 @@
 // Functions for inline string encoding.
 // See header file for details.
 
-#include "config.h"
-
 #include "string_codec.h"
 
 #include <boost/format.hpp>

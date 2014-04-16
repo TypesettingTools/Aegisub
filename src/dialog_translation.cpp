@@ -19,8 +19,6 @@
 /// @ingroup tools_ui
 ///
 
-#include "config.h"
-
 #include "dialog_translation.h"
 
 #include "include/aegisub/context.h"
@@ -293,7 +291,6 @@ void DialogTranslation::Commit(bool next) {
 void DialogTranslation::InsertOriginal() {
 	translated_text->AddText(to_wx(blocks[cur_block]->GetText()));
 }
-
 
 void DialogTranslation::OnKeyDown(wxKeyEvent &evt) {
 	hotkey::check("Translation Assistant", c, evt);

@@ -32,8 +32,6 @@
 /// @ingroup custom_control
 ///
 
-#include "config.h"
-
 #include "scintilla_text_ctrl.h"
 #include "utils.h"
 

@@ -32,8 +32,6 @@
 /// @ingroup subtitle_io
 ///
 
-#include "config.h"
-
 #include "subtitle_format_srt.h"
 
 #include "ass_attachment.h"

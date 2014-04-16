@@ -32,8 +32,6 @@
 /// @ingroup utility
 ///
 
-#include "config.h"
-
 #include "charset_detect.h"
 
 #include "compat.h"
@@ -89,4 +87,3 @@ std::string GetEncoding(agi::fs::path const& filename) {
 }
 
 }
-

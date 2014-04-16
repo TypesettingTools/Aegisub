@@ -16,8 +16,6 @@
 /// @brief Preferences dialogue
 /// @ingroup configuration_ui
 
-#include "config.h"
-
 #include "preferences.h"
 
 #include "audio_renderer_waveform.h"
@@ -478,7 +476,6 @@ Automation::Automation(wxTreebook *book, Preferences *parent): OptionPage(book, 
 
 	SetSizerAndFit(sizer);
 }
-
 
 /// Advanced preferences page
 Advanced::Advanced(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _("Advanced")) {

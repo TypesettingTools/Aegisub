@@ -16,7 +16,6 @@
 /// @brief Windows access methods.
 /// @ingroup libaegisub windows
 
-
 #include <libaegisub/access.h>
 
 #include <libaegisub/fs.h>

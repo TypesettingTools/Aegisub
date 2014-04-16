@@ -19,8 +19,6 @@
 /// @ingroup secondary_ui
 ///
 
-#include "config.h"
-
 #include "dialog_selection.h"
 
 #include "ass_dialogue.h"

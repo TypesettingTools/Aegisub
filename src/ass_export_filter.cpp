@@ -32,8 +32,6 @@
 /// @ingroup export
 ///
 
-#include "config.h"
-
 #include "ass_export_filter.h"
 
 #include <boost/format.hpp>

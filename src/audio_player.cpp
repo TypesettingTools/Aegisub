@@ -32,8 +32,6 @@
 /// @ingroup audio_output
 ///
 
-#include "config.h"
-
 #include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"

@@ -32,8 +32,6 @@
 /// @ingroup scripting
 ///
 
-#include "config.h"
-
 #include "auto4_lua.h"
 
 #include "auto4_lua_utils.h"
@@ -233,7 +231,6 @@ namespace Automation4 {
 				return cw;
 			}
 		};
-
 
 		/// Integer only edit
 		class IntEdit final : public Edit {

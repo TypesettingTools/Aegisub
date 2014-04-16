@@ -16,8 +16,6 @@
 /// @brief Unix access methods.
 /// @ingroup libaegisub unix
 
-#include "config.h"
-
 #include "libaegisub/access.h"
 
 #include "libaegisub/fs.h"
