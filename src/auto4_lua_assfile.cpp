@@ -448,14 +448,25 @@ namespace Automation4 {
 
 		// get number of items to delete
 		int itemcount = lua_gettop(L);
-		std::vector<int> ids;
-		ids.reserve(itemcount);
+		if (itemcount == 0) return;
 
-		while (itemcount > 0) {
-			int n = luaL_checkint(L, itemcount);
-			luaL_argcheck(L, n > 0 && n <= (int)lines.size(), itemcount, "Out of range line index");
-			ids.push_back(n - 1);
-			--itemcount;
+		std::vector<int> ids;
+		if (itemcount == 1 && lua_istable(L, 1)) {
+			lua_pushvalue(L, 1);
+			lua_for_each(L, [&] {
+				int n = luaL_checkint(L, -1);
+				luaL_argcheck(L, n > 0 && n <= (int)lines.size(), 1, "Out of range line index");
+				ids.push_back(n - 1);
+			});
+		}
+		else {
+			ids.reserve(itemcount);
+			while (itemcount > 0) {
+				int n = luaL_checkint(L, itemcount);
+				luaL_argcheck(L, n > 0 && n <= (int)lines.size(), itemcount, "Out of range line index");
+				ids.push_back(n - 1);
+				--itemcount;
+			}
 		}
 
 		sort(ids.begin(), ids.end());
