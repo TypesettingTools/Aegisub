@@ -910,14 +910,14 @@ namespace Automation4 {
 			auto lines = subsobj->ProcessingComplete(StrDisplay(c));
 
 			AssDialogue *active_line = nullptr;
-			int active_idx = 0;
+			int active_idx = original_active;
 
 			// Check for a new active row
 			if (lua_isnumber(L, -1)) {
 				active_idx = lua_tointeger(L, -1);
 				if (active_idx < 1 || active_idx > (int)lines.size()) {
 					wxLogError("Active row %d is out of bounds (must be 1-%u)", active_idx, lines.size());
-					active_idx = 0;
+					active_idx = original_active;
 				}
 			}
 
