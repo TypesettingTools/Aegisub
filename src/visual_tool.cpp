@@ -276,7 +276,7 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::DrawAllFeatures() {
-	gl.SetLineColour(colour[0], 1.0f, 2);
+	gl.SetLineColour(colour[0], 1.0f, 1);
 	for (auto& feature : features) {
 		int fill = 1;
 		if (&feature == active_feature)
