@@ -148,7 +148,7 @@ AC_ARG_ENABLE(compiler-flags, AS_HELP_STRING([--disable-compiler-flags],[Disable
 
 AS_IF([test x$enable_compiler_flags != xno], [
   CFLAGS="$CFLAGS -Wall -Wextra -Wno-unused-parameter -std=gnu99 -pipe -g"
-  CXXFLAGS="$CXXFLAGS -Wall -Wextra -Wno-unused-parameter -Wno-long-long -fno-strict-aliasing -pipe -g"
+  CXXFLAGS="$CXXFLAGS -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing -pipe -g"
   AC_CXX_FLAG([-std=c++11])
   AC_CXX_FLAG([-Wno-c++11-narrowing])
   AC_CXX_FLAG([-Wno-unused-local-typedefs])
