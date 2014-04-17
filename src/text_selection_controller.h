@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,16 +14,33 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#pragma once
+#include <libaegisub/signal.h>
+
+class wxStyledTextCtrl;
+class wxStyledTextEvent;
 
 class TextSelectionController {
+	int selection_start = 0;
+	int selection_end = 0;
+	int insertion_point = 0;
+	bool changing = false;
+
+	wxStyledTextCtrl *ctrl = nullptr;
+
+	void UpdateUI(wxStyledTextEvent &evt);
+
+	agi::signal::Signal<> AnnounceSelectionChanged;
+
 public:
-	virtual ~TextSelectionController() { }
+	void SetSelection(int start, int end);
+	void SetInsertionPoint(int point);
 
-	virtual void SetSelection(int start, int end) = 0;
-	virtual void SetInsertionPoint(int point) = 0;
+	int GetSelectionStart() const { return selection_start; }
+	int GetSelectionEnd() const { return selection_end; }
+	int GetInsertionPoint() const { return insertion_point; }
 
-	virtual int GetSelectionStart() const = 0;
-	virtual int GetSelectionEnd() const = 0;
-	virtual int GetInsertionPoint() const = 0;
+	void SetControl(wxStyledTextCtrl *ctrl);
+	~TextSelectionController();
+
+	DEFINE_SIGNAL_ADDERS(AnnounceSelectionChanged, AddSelectionListener)
 };

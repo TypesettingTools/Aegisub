@@ -210,9 +210,6 @@
     <ClInclude Include="$(SrcDir)command\command.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)config.h">
-      <Filter>Config</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)audio_player_portaudio.h">
       <Filter>Audio\Players</Filter>
     </ClInclude>
@@ -590,9 +587,6 @@
     </ClInclude>
     <ClInclude Include="$(SrcDir)ass_parser.h">
       <Filter>ASS</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h">
-      <Filter>Main UI\Edit box</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_manager.h">
       <Filter>Utilities\UI utilities</Filter>
@@ -1148,9 +1142,6 @@
     <ClCompile Include="$(SrcDir)ass_parser.cpp">
       <Filter>ASS</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp">
-      <Filter>Main UI\Edit box</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)audio_provider_lock.cpp">
       <Filter>Audio\Providers</Filter>
     </ClCompile>
@@ -1186,6 +1177,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)context.cpp">
       <Filter>Main UI</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)text_selection_controller.cpp">
+      <Filter>Main UI\Edit box</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -129,7 +129,6 @@
     <ClInclude Include="$(SrcDir)colour_button.h" />
     <ClInclude Include="$(SrcDir)command\command.h" />
     <ClInclude Include="$(SrcDir)compat.h" />
-    <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)crash_writer.h" />
     <ClInclude Include="$(SrcDir)dialog_about.h" />
     <ClInclude Include="$(SrcDir)dialog_attachments.h" />
@@ -195,7 +194,6 @@
     <ClInclude Include="$(SrcDir)preferences_base.h" />
     <ClInclude Include="$(SrcDir)resolution_resampler.h" />
     <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h" />
-    <ClInclude Include="$(SrcDir)scintilla_text_selection_controller.h" />
     <ClInclude Include="$(SrcDir)search_replace_engine.h" />
     <ClInclude Include="$(SrcDir)selection_controller.h" />
     <ClInclude Include="$(SrcDir)spellchecker_hunspell.h" />
@@ -389,7 +387,6 @@
     <ClCompile Include="$(SrcDir)preferences_base.cpp" />
     <ClCompile Include="$(SrcDir)resolution_resampler.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
-    <ClCompile Include="$(SrcDir)scintilla_text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
     <ClCompile Include="$(SrcDir)selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker.cpp" />
@@ -416,6 +413,7 @@
     <ClCompile Include="$(SrcDir)subtitles_provider_libass.cpp" />
     <ClCompile Include="$(SrcDir)text_file_reader.cpp" />
     <ClCompile Include="$(SrcDir)text_file_writer.cpp" />
+    <ClCompile Include="$(SrcDir)text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)thesaurus.cpp" />
     <ClCompile Include="$(SrcDir)threaded_frame_source.cpp" />
     <ClCompile Include="$(SrcDir)timeedit_ctrl.cpp" />

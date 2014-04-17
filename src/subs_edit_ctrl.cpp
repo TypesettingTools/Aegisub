@@ -276,17 +276,13 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	CallTipSetHighlight(new_calltip.highlight_start, new_calltip.highlight_end);
 }
 
-void SubsTextEditCtrl::SetTextTo(wxString const& text) {
+void SubsTextEditCtrl::SetTextTo(std::string const& text) {
 	SetEvtHandlerEnabled(false);
 	Freeze();
 
-	int from = GetReverseUnicodePosition(GetSelectionStart());
-	int to = GetReverseUnicodePosition(GetSelectionEnd());
-
 	line_text.clear();
-	SetText(text);
-
-	SetSelectionU(from, to);
+	SetTextRaw(text.c_str());
+	SetSelection(0, 0);
 
 	SetEvtHandlerEnabled(true);
 	Thaw();

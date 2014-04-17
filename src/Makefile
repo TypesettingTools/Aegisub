@@ -208,7 +208,6 @@ SRC += \
 	preferences_base.cpp \
 	resolution_resampler.cpp \
 	scintilla_text_ctrl.cpp \
-	scintilla_text_selection_controller.cpp \
 	search_replace_engine.cpp \
 	selection_controller.cpp \
 	spellchecker.cpp \
@@ -232,6 +231,7 @@ SRC += \
 	subtitles_provider.cpp \
 	text_file_reader.cpp \
 	text_file_writer.cpp \
+	text_selection_controller.cpp \
 	thesaurus.cpp \
 	threaded_frame_source.cpp \
 	timeedit_ctrl.cpp \

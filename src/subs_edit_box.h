@@ -50,7 +50,6 @@ namespace agi { struct Context; }
 class AssDialogue;
 class AssTime;
 class SubsTextEditCtrl;
-class TextSelectionController;
 class TimeEdit;
 class wxButton;
 class wxCheckBox;
@@ -199,7 +198,6 @@ class SubsEditBox final : public wxPanel {
 
 	SubsTextEditCtrl *edit_ctrl;
 	wxTextCtrl *secondary_editor;
-	std::unique_ptr<TextSelectionController> textSelectionController;
 
 public:
 	/// @brief Constructor

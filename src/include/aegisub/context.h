@@ -40,13 +40,13 @@ struct Context {
 	// Note: order here matters quite a bit, as things need to be set up and
     // torn down in the correct order
 	std::unique_ptr<AssFile> ass;
+	std::unique_ptr<TextSelectionController> textSelectionController;
 	std::unique_ptr<SubsController> subsController;
 	std::unique_ptr<Automation4::ScriptManager> local_scripts;
 	std::unique_ptr<VideoContext> videoController;
 	std::unique_ptr<AudioController> audioController;
 	std::unique_ptr<SelectionController> selectionController;
 	std::unique_ptr<InitialLineState> initialLineState;
-	TextSelectionController *textSelectionController;
 	std::unique_ptr<SearchReplaceEngine> search;
 
 	// Things that should probably be in some sort of UI-context-model

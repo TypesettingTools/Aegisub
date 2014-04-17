@@ -45,9 +45,9 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "placeholder_ctrl.h"
-#include "scintilla_text_selection_controller.h"
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
+#include "text_selection_controller.h"
 #include "timeedit_ctrl.h"
 #include "tooltip_manager.h"
 #include "utils.h"
@@ -213,12 +213,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	connections.push_back(context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this));
 	connections.push_back(context->initialLineState->AddChangeListener(&SubsEditBox::OnLineInitialTextChanged, this));
 
-	textSelectionController = agi::util::make_unique<ScintillaTextSelectionController>(edit_ctrl);
-	context->textSelectionController = textSelectionController.get();
+	context->textSelectionController->SetControl(edit_ctrl);
 	edit_ctrl->SetFocus();
 }
 
 SubsEditBox::~SubsEditBox() {
+	c->textSelectionController->SetControl(nullptr);
 }
 
 wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxString const& commit_msg) {
@@ -293,11 +293,8 @@ void SubsEditBox::OnCommit(int type) {
 	}
 
 	if (type == AssFile::COMMIT_NEW) {
-		/// @todo maybe preserve selection over undo?
 		PopulateList(effect_box, &AssDialogue::Effect);
 		PopulateList(actor_box, &AssDialogue::Actor);
-
-		edit_ctrl->SetSelection(0,0);
 		return;
 	}
 	else if (type & AssFile::COMMIT_STYLES)
@@ -315,7 +312,7 @@ void SubsEditBox::OnCommit(int type) {
 	}
 
 	if (type & AssFile::COMMIT_DIAG_TEXT) {
-		edit_ctrl->SetTextTo(to_wx(line->Text));
+		edit_ctrl->SetTextTo(line->Text);
 		UpdateCharacterCount(line->Text);
 	}
 
@@ -333,7 +330,7 @@ void SubsEditBox::OnCommit(int type) {
 		PopulateList(actor_box, &AssDialogue::Actor);
 		actor_box->ChangeValue(to_wx(line->Actor));
 		actor_box->SetStringSelection(to_wx(line->Actor));
-		edit_ctrl->SetTextTo(to_wx(line->Text));
+		edit_ctrl->SetTextTo(line->Text);
 	}
 }
 

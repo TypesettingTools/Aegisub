@@ -30,6 +30,7 @@
 #include "selection_controller.h"
 #include "subtitle_format.h"
 #include "text_file_reader.h"
+#include "text_selection_controller.h"
 #include "utils.h"
 #include "video_context.h"
 
@@ -62,6 +63,7 @@ struct SubsController::UndoInfo {
 
 	mutable std::vector<int> selection;
 	int active_line_id = 0;
+	int pos = 0, sel_start = 0, sel_end = 0;
 
 	UndoInfo(const agi::Context *c, wxString const& d, int commit_id)
 	: undo_description(d)
@@ -80,6 +82,7 @@ struct SubsController::UndoInfo {
 
 		UpdateActiveLine(c);
 		UpdateSelection(c);
+		UpdateTextSelection(c);
 	}
 
 	void Apply(agi::Context *c) const {
@@ -108,6 +111,9 @@ struct SubsController::UndoInfo {
 
 		c->ass->Commit("", AssFile::COMMIT_NEW);
 		c->selectionController->SetSelectionAndActive(std::move(new_sel), active_line);
+
+		c->textSelectionController->SetInsertionPoint(pos);
+		c->textSelectionController->SetSelection(sel_start, sel_end);
 	}
 
 	void UpdateActiveLine(const agi::Context *c) {
@@ -123,11 +129,18 @@ struct SubsController::UndoInfo {
 		for (const auto diag : sel)
 			selection.push_back(diag->Id);
 	}
+
+	void UpdateTextSelection(const agi::Context *c) {
+		pos = c->textSelectionController->GetInsertionPoint();
+		sel_start = c->textSelectionController->GetSelectionStart();
+		sel_end = c->textSelectionController->GetSelectionEnd();
+	}
 };
 
 SubsController::SubsController(agi::Context *context)
 : context(context)
 , undo_connection(context->ass->AddUndoManager(&SubsController::OnCommit, this))
+, text_selection_connection(context->textSelectionController->AddSelectionListener(&SubsController::OnTextSelectionChanged, this))
 {
 	autosave_timer_changed(&autosave_timer);
 	OPT_SUB("App/Auto/Save", [=] { autosave_timer_changed(&autosave_timer); });
@@ -379,12 +392,20 @@ void SubsController::OnSelectionChanged() {
 		undo_stack.back().UpdateSelection(context);
 }
 
+void SubsController::OnTextSelectionChanged() {
+	if (!undo_stack.empty())
+		undo_stack.back().UpdateTextSelection(context);
+}
+
 void SubsController::Undo() {
 	if (undo_stack.size() <= 1) return;
 	redo_stack.splice(redo_stack.end(), undo_stack, std::prev(undo_stack.end()));
 
 	commit_id = undo_stack.back().commit_id;
+
+	text_selection_connection.Block();
 	undo_stack.back().Apply(context);
+	text_selection_connection.Unblock();
 }
 
 void SubsController::Redo() {
@@ -392,7 +413,10 @@ void SubsController::Redo() {
 	undo_stack.splice(undo_stack.end(), redo_stack, std::prev(redo_stack.end()));
 
 	commit_id = undo_stack.back().commit_id;
+
+	text_selection_connection.Block();
 	undo_stack.back().Apply(context);
+	text_selection_connection.Unblock();
 }
 
 wxString SubsController::GetUndoDescription() const {

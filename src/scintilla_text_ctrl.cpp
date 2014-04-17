@@ -64,13 +64,7 @@ void ScintillaTextCtrl::SetUnicodeStyling(int start,int length,int style) {
 	// Get the real length
 	int len = text.Mid(start, length).utf8_str().length();
 
-	// Set styling
 	SetStyling(len,style);
-}
-
-/// @brief Set selection, unicode-aware
-void ScintillaTextCtrl::SetSelectionU(int start, int end) {
-	SetSelection(GetUnicodePosition(start),GetUnicodePosition(end));
 }
 
 void ScintillaTextCtrl::OnMouseWheel(wxMouseEvent& evt) {

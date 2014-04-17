@@ -46,7 +46,6 @@ public:
 
 	void StartUnicodeStyling(int start,int mask=31);
 	void SetUnicodeStyling(int start,int length,int style);
-	void SetSelectionU(int start,int end);
 
 	ScintillaTextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = wxString(), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
 };

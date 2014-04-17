@@ -34,6 +34,7 @@ class SubsController {
 	agi::signal::Connection undo_connection;
 	agi::signal::Connection active_line_connection;
 	agi::signal::Connection selection_connection;
+	agi::signal::Connection text_selection_connection;
 
 	struct UndoInfo;
 	boost::container::list<UndoInfo> undo_stack;
@@ -66,6 +67,7 @@ class SubsController {
 	void OnCommit(AssFileCommit c);
 	void OnActiveLineChanged();
 	void OnSelectionChanged();
+	void OnTextSelectionChanged();
 
 public:
 	SubsController(agi::Context *context);

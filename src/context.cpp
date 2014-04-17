@@ -24,6 +24,7 @@
 #include "search_replace_engine.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
+#include "text_selection_controller.h"
 #include "video_context.h"
 
 #include <libaegisub/util.h>
@@ -31,6 +32,7 @@
 namespace agi {
 Context::Context()
 : ass(util::make_unique<AssFile>())
+, textSelectionController(util::make_unique<TextSelectionController>())
 , subsController(util::make_unique<SubsController>(this))
 , local_scripts(util::make_unique<Automation4::LocalScriptManager>(this))
 , videoController(util::make_unique<VideoContext>(this))
