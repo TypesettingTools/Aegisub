@@ -33,7 +33,7 @@ namespace agi {
 /// @brief An iterator over lines in a stream
 template<class OutputType = std::string>
 class line_iterator final : public std::iterator<std::input_iterator_tag, OutputType> {
-	std::istream *stream; ///< Stream to iterator over
+	std::istream *stream = nullptr; ///< Stream to iterator over
 	OutputType value; ///< Value to return when this is dereference
 	std::shared_ptr<agi::charset::IconvWrapper> conv;
 	int cr; ///< CR character in the source encoding
@@ -77,7 +77,7 @@ public:
 	}
 
 	/// @brief Invalid iterator constructor; use for end iterator
-	line_iterator() : stream(nullptr) { }
+	line_iterator() = default;
 
 	/// @brief Copy constructor
 	/// @param that line_iterator to copy from

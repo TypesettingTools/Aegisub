@@ -32,7 +32,6 @@
 /// @ingroup subs_storage
 ///
 
-#include <boost/noncopyable.hpp>
 #include <memory>
 #include <vector>
 
@@ -62,15 +61,20 @@ enum class VariableDataType {
 };
 
 /// A single parameter to an override tag
-class AssOverrideParameter final : boost::noncopyable {
+class AssOverrideParameter {
 	std::string value;
 	mutable std::unique_ptr<AssDialogueBlockOverride> block;
 	VariableDataType type;
 
 public:
 	AssOverrideParameter(VariableDataType type, AssParameterClass classification);
+#ifdef _MSC_VER
 	AssOverrideParameter(AssOverrideParameter&&);
 	AssOverrideParameter& operator=(AssOverrideParameter&&);
+#else
+	AssOverrideParameter(AssOverrideParameter&&) = default;
+	AssOverrideParameter& operator=(AssOverrideParameter&&) = default;
+#endif
 	~AssOverrideParameter();
 
 	/// Type of parameter
@@ -87,14 +91,19 @@ public:
 	}
 };
 
-class AssOverrideTag final : boost::noncopyable {
-	bool valid;
+class AssOverrideTag {
+	bool valid = false;
 
 public:
-	AssOverrideTag();
-	AssOverrideTag(AssOverrideTag&&);
+	AssOverrideTag() = default;
 	AssOverrideTag(std::string const& text);
+#ifdef _MSC_VER
+	AssOverrideTag(AssOverrideTag&&);
 	AssOverrideTag& operator=(AssOverrideTag&&);
+#else
+	AssOverrideTag(AssOverrideTag&&) = default;
+	AssOverrideTag& operator=(AssOverrideTag&&) = default;
+#endif
 
 	std::string Name;
 	std::vector<AssOverrideParameter> Params;

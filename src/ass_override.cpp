@@ -55,6 +55,7 @@ AssOverrideParameter::AssOverrideParameter(VariableDataType type, AssParameterCl
 {
 }
 
+#ifdef _MSC_VER
 AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
 : value(std::move(o.value))
 , block(std::move(o.block))
@@ -71,6 +72,7 @@ AssOverrideParameter& AssOverrideParameter::operator=(AssOverrideParameter&& rhs
 	classification = rhs.classification;
 	return *this;
 }
+#endif
 
 AssOverrideParameter::~AssOverrideParameter() {
 }
@@ -460,10 +462,11 @@ void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callb
 	}
 }
 
-AssOverrideTag::AssOverrideTag() : valid(false) { }
 AssOverrideTag::AssOverrideTag(std::string const& text) {
 	SetText(text);
 }
+
+#ifdef _MSC_VER
 AssOverrideTag::AssOverrideTag(AssOverrideTag&& rhs)
 : valid(rhs.valid)
 , Name(std::move(rhs.Name))
@@ -477,6 +480,7 @@ AssOverrideTag& AssOverrideTag::operator=(AssOverrideTag&& rhs) {
 	Params = std::move(rhs.Params);
 	return *this;
 }
+#endif
 
 void AssOverrideTag::Clear() {
 	Params.clear();

@@ -99,7 +99,7 @@ class DataBlockCache {
 		BlockArray blocks;
 
 #ifdef _MSC_VER
-		MacroBlock() { }
+		MacroBlock() = default;
 		MacroBlock(MacroBlock&& rgt) : position(rgt.position), blocks(std::move(rgt.blocks)) { }
 		MacroBlock& operator=(MacroBlock&& rgt) {
 			position = rgt.position;

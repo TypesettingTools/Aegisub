@@ -187,7 +187,7 @@ public:
 		TryToInsert(glyph);
 	}
 
-	OpenGLTextTexture(OpenGLTextTexture&& rhs)
+	OpenGLTextTexture(OpenGLTextTexture&& rhs) BOOST_NOEXCEPT
 	: x(rhs.x)
 	, y(rhs.y)
 	, nextY(rhs.nextY)
