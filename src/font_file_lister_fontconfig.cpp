@@ -133,6 +133,14 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(std::str
 		}
 	}
 
+	int actual_weight = weight;
+	if (FcPatternGetInteger(match, FC_WEIGHT, 0, &actual_weight) == FcResultMatch)
+		ret.fake_bold = actual_weight < weight;
+
+	int actual_slant = slant;
+	if (FcPatternGetInteger(match, FC_SLANT, 0, &actual_slant) == FcResultMatch)
+		ret.fake_italic = italic && !actual_slant;
+
 	ret.paths.emplace_back((const char *)file);
 	return ret;
 }

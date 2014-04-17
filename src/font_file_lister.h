@@ -46,6 +46,8 @@ public:
 		wxString missing;
 		/// Paths to the file(s) containing the requested font
 		std::vector<agi::fs::path> paths;
+		bool fake_bold = false;
+		bool fake_italic = false;
 	};
 
 	/// @brief Get the path to the font with the given styles

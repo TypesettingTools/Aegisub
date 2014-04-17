@@ -142,6 +142,11 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 				status_callback(wxString::Format(_("Found '%s' at '%s'\n"), to_wx(style.first.facename), elem.make_preferred().wstring()), 0);
 		}
 
+		if (res.fake_bold)
+			status_callback(wxString::Format(_("'%s' does not have a bold variant.\n"), to_wx(style.first.facename)), 3);
+		if (res.fake_italic)
+			status_callback(wxString::Format(_("'%s' does not have an italic variant.\n"), to_wx(style.first.facename)), 3);
+
 		if (res.missing.size()) {
 			if (res.missing.size() > 50)
 				status_callback(wxString::Format(_("'%s' is missing %d glyphs used.\n"), to_wx(style.first.facename), (int)res.missing.size()), 2);
