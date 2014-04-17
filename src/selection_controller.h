@@ -30,6 +30,7 @@
 #include <libaegisub/signal.h>
 
 #include <set>
+#include <vector>
 
 class AssDialogue;
 typedef std::set<AssDialogue *> Selection;
@@ -83,12 +84,11 @@ public:
 	void SetSelectedSet(Selection new_selection);
 
 	/// @brief Obtain the selected set
-	/// @param[out] selection Filled with the selected set on return
-	void GetSelectedSet(Selection &out) const { out = selection; }
-
-	/// @brief Obtain the selected set
 	/// @return The selected set
 	Selection const& GetSelectedSet() const { return selection; }
+
+	/// Get the selection sorted by row number
+	std::vector<AssDialogue *> GetSortedSelection() const;
 
 	/// @brief Set both the selected set and active line
 	/// @param new_line Subtitle line to become the new active line

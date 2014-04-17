@@ -187,7 +187,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 
 	Selection old_sel, new_sel;
 	if (action != Action::SET)
-		con->selectionController->GetSelectedSet(old_sel);
+		old_sel = con->selectionController->GetSelectedSet();
 
 	wxString message;
 	size_t count;

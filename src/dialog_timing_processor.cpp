@@ -309,9 +309,8 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 	// Check if rows are valid
 	for (auto diag : sorted) {
 		if (diag->Start > diag->End) {
-			int line = std::distance(c->ass->Events.begin(), c->ass->iterator_to(*diag));
 			wxMessageBox(
-				wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."), line),
+				wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."), diag->Row),
 				_("Invalid script"),
 				wxOK | wxICON_ERROR | wxCENTER);
 			sorted.clear();

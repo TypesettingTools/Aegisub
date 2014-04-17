@@ -542,12 +542,9 @@ struct edit_find_replace final : public Command {
 	}
 };
 
-static std::string get_entry_data(AssDialogue &d) { return d.GetEntryData(); }
 static void copy_lines(agi::Context *c) {
-	auto const& sel = c->selectionController->GetSelectedSet();
-	SetClipboard(join(c->ass->Events
-		| filtered([&](AssDialogue &d) { return sel.count(&d); })
-		| transformed(get_entry_data),
+	SetClipboard(join(c->selectionController->GetSortedSelection()
+		| transformed(static_cast<std::string(*)(AssDialogue*)>([](AssDialogue *d) { return d->GetEntryData(); })),
 		"\r\n"));
 }
 
@@ -749,20 +746,13 @@ struct edit_line_duplicate_shift_back final : public validate_video_and_sel_none
 };
 
 static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDialogue *), wxString const& message) {
-	auto const& sel = c->selectionController->GetSelectedSet();
+	auto sel = c->selectionController->GetSortedSelection();
 
-	AssDialogue *first = nullptr;
-	for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ) {
-		AssDialogue *diag = &*it++;
-		if (!sel.count(diag)) continue;
-		if (!first) {
-			first = diag;
-			continue;
-		}
-
-		combiner(first, diag);
-		first->End = std::max(first->End, diag->End);
-		delete diag;
+	AssDialogue *first = sel[0];
+	for (size_t i = 1; i < sel.size(); ++i) {
+		combiner(first, sel[1]);
+		first->End = std::max(first->End, sel[1]->End);
+		delete sel[1];
 	}
 
 	c->selectionController->SetSelectionAndActive({first}, first);
@@ -912,15 +902,7 @@ struct edit_line_paste_over final : public Command {
 		}
 		else {
 			// Multiple lines selected, so paste over the selection
-
-			// Sort the selection by grid order
-			std::vector<AssDialogue*> sorted_selection;
-			sorted_selection.reserve(sel.size());
-			for (auto& line : c->ass->Events) {
-				if (sel.count(&line))
-					sorted_selection.push_back(&line);
-			}
-
+			auto sorted_selection = c->selectionController->GetSortedSelection();
 			auto pos = begin(sorted_selection);
 			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
 				std::unique_ptr<AssDialogue> deleter(new_line);
@@ -1054,7 +1036,43 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 	STR_HELP("Use karaoke timing to split line into multiple smaller lines")
 
 	void operator()(agi::Context *c) override {
-		AssKaraoke::SplitLines(c->selectionController->GetSelectedSet(), c);
+		auto sel = c->selectionController->GetSortedSelection();
+		if (sel.empty()) return;
+
+		Selection new_sel;
+		AssKaraoke kara;
+
+		bool did_split = false;
+		for (auto line : sel) {
+			kara.SetLine(line);
+
+			// If there aren't at least two tags there's nothing to split
+			if (kara.size() < 2) continue;
+
+			for (auto const& syl : kara) {
+				auto new_line = new AssDialogue(*line);
+
+				new_line->Start = syl.start_time;
+				new_line->End = syl.start_time + syl.duration;
+				new_line->Text = syl.GetText(false);
+
+				c->ass->Events.insert(c->ass->iterator_to(*line), *new_line);
+
+				new_sel.insert(new_line);
+			}
+
+			delete line;
+			did_split = true;
+		}
+
+		if (!did_split) return;
+
+		c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
+
+		AssDialogue *new_active = c->selectionController->GetActiveLine();
+		if (!new_sel.count(c->selectionController->GetActiveLine()))
+			new_active = *sel.begin();
+		c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 	}
 };
 

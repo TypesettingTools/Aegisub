@@ -346,18 +346,15 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 		shift = -shift;
 
 	// Track which rows were shifted for the log
-	int row_number = 0;
 	int block_start = 0;
 	json::Array shifted_blocks;
 
 	for (auto& line : context->ass->Events) {
-		++row_number;
-
 		if (!sel.count(&line)) {
 			if (block_start) {
 				json::Object block;
 				block["start"] = block_start;
-				block["end"] = row_number - 1;
+				block["end"] = line.Row;
 				shifted_blocks.push_back(block);
 				block_start = 0;
 			}
@@ -365,7 +362,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 			if (mode == 2 && shifted_blocks.empty()) continue;
 		}
 		else if (!block_start)
-			block_start = row_number;
+			block_start = line.Row + 1;
 
 		if (start)
 			line.Start = Shift(line.Start, shift, by_time, agi::vfr::START);
@@ -378,7 +375,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	if (block_start) {
 		json::Object block;
 		block["start"] = block_start;
-		block["end"] = row_number - 1;
+		block["end"] = context->ass->Events.back().Row + 1;
 		shifted_blocks.push_back(block);
 	}
 

@@ -14,12 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_karaoke.h
-/// @see ass_karaoke.cpp
-/// @ingroup subs_storage
-///
-
-
 #include <map>
 #include <set>
 #include <string>
@@ -88,11 +82,6 @@ public:
 	std::string GetTagType() const;
 	/// Set the tag type for all karaoke tags in this line
 	void SetTagType(std::string const& new_type);
-
-	/// Split lines so that each syllable is its own line
-	/// @param lines Lines to split
-	/// @param c Project context
-	static void SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c);
 
 	DEFINE_SIGNAL_ADDERS(AnnounceSyllablesChanged, AddSyllablesChangedListener)
 };

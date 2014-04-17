@@ -60,16 +60,11 @@ namespace {
 	struct validate_adjoinable : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) override {
-			auto const& sel = c->selectionController->GetSelectedSet();
-			if (sel.size() < 2) return !sel.empty();
+			auto sel = c->selectionController->GetSortedSelection();
+			if (sel.empty()) return false;
 
-			size_t found = 0;
-			for (auto& diag : c->ass->Events) {
-				if (sel.count(&diag)) {
-					if (++found == sel.size())
-						return true;
-				}
-				else if (found)
+			for (size_t i = 1; i < sel.size(); ++i) {
+				if (sel[i]->Row != sel[i - 1]->Row + 1)
 					return false;
 			}
 			return true;

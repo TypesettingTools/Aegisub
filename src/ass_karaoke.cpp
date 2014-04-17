@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_karaoke.cpp
-/// @brief Parse and manipulate ASSA karaoke tags
-/// @ingroup subs_storage
-///
-
 #include "ass_karaoke.h"
 
 #include "ass_dialogue.h"
@@ -265,52 +260,4 @@ void AssKaraoke::SetLineTimes(int start_time, int end_time) {
 		--idx;
 	}
 	syls[idx].duration = end_time - syls[idx].start_time;
-}
-
-void AssKaraoke::SplitLines(std::set<AssDialogue*> const& lines, agi::Context *c) {
-	if (lines.empty()) return;
-
-	AssKaraoke kara;
-
-	Selection sel = c->selectionController->GetSelectedSet();
-
-	bool did_split = false;
-	for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
-		if (!lines.count(&*it)) continue;
-
-		kara.SetLine(&*it);
-
-		// If there aren't at least two tags there's nothing to split
-		if (kara.size() < 2) continue;
-
-		bool in_sel = sel.count(&*it) > 0;
-
-		for (auto const& syl : kara) {
-			auto new_line = new AssDialogue(*it);
-
-			new_line->Start = syl.start_time;
-			new_line->End = syl.start_time + syl.duration;
-			new_line->Text = syl.GetText(false);
-
-			c->ass->Events.insert(it, *new_line);
-
-			if (in_sel)
-				sel.insert(new_line);
-		}
-
-		--it; // Move `it` to the last of the new lines
-		sel.erase(&*it);
-		delete &*it;
-
-		did_split = true;
-	}
-
-	if (!did_split) return;
-
-	c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
-
-	AssDialogue *new_active = c->selectionController->GetActiveLine();
-	if (!sel.count(c->selectionController->GetActiveLine()))
-		new_active = *sel.begin();
-	c->selectionController->SetSelectionAndActive(std::move(sel), new_active);
 }

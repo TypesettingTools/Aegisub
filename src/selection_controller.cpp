@@ -22,6 +22,8 @@
 #include "subs_controller.h"
 #include "utils.h"
 
+#include <algorithm>
+
 SelectionController::SelectionController(agi::Context *c)
 : context(c)
 , open_connection(c->subsController->AddFileOpenListener(&SelectionController::OnSubtitlesOpen, this))
@@ -67,6 +69,12 @@ void SelectionController::SetSelectionAndActive(Selection new_selection, AssDial
 	AnnounceSelectedSetChanged();
 	if (active_line_changed)
 		AnnounceActiveLineChanged(new_line);
+}
+
+std::vector<AssDialogue *> SelectionController::GetSortedSelection() const {
+	std::vector<AssDialogue *> ret(selection.begin(), selection.end());
+	sort(begin(ret), end(ret), [](AssDialogue *a, AssDialogue *b) { return a->Row < b->Row; });
+	return ret;
 }
 
 void SelectionController::PrevLine() {
