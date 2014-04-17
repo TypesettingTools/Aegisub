@@ -224,7 +224,7 @@ FrameMain::FrameMain()
 
 	StartupLog("Create views and inner main window controls");
 	InitContents();
-	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this, agi::signal::_1);
+	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this);
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(this));

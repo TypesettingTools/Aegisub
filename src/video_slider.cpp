@@ -53,7 +53,7 @@ VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 	SetMinSize(wxSize(20, 25));
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 
-	slots.push_back(OPT_SUB("Video/Slider/Show Keyframes", &wxWindow::Refresh, this, false, nullptr));
+	slots.push_back(OPT_SUB("Video/Slider/Show Keyframes", [=] { Refresh(false); }));
 	slots.push_back(c->videoController->AddSeekListener(&VideoSlider::SetValue, this));
 	slots.push_back(c->videoController->AddVideoOpenListener(&VideoSlider::VideoOpened, this));
 	slots.push_back(c->videoController->AddKeyframesListener(&VideoSlider::KeyframesChanged, this));
