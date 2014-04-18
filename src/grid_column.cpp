@@ -206,12 +206,12 @@ struct GridColumnMarginLeft final : GridColumnMargin<0> {
 	COLUMN_DESCRIPTION(_("Left Margin"))
 };
 
-struct GridColumnMarginRight final : GridColumnMargin<0> {
+struct GridColumnMarginRight final : GridColumnMargin<1> {
 	COLUMN_HEADER(_("Right"))
 	COLUMN_DESCRIPTION(_("Right Margin"))
 };
 
-struct GridColumnMarginVert final : GridColumnMargin<0> {
+struct GridColumnMarginVert final : GridColumnMargin<2> {
 	COLUMN_HEADER(_("Vert"))
 	COLUMN_DESCRIPTION(_("Vertical Margin"))
 };
