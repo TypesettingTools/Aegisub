@@ -750,9 +750,9 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 
 	AssDialogue *first = sel[0];
 	for (size_t i = 1; i < sel.size(); ++i) {
-		combiner(first, sel[1]);
-		first->End = std::max(first->End, sel[1]->End);
-		delete sel[1];
+		combiner(first, sel[i]);
+		first->End = std::max(first->End, sel[i]->End);
+		delete sel[i];
 	}
 
 	c->selectionController->SetSelectionAndActive({first}, first);
