@@ -472,7 +472,10 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 		} while (++pos != end(text));
 
 		int duration = line->End - line->Start;
-		strings[4] = std::to_wstring(duration > 0 ? characters * 1000 / duration : 0);
+		if (duration <= 0 || characters * 1000 / duration >= 1000)
+			strings[4] = "";
+		else
+			strings[4] = std::to_wstring(characters * 1000 / duration);
 	}
 
 	if (paint_columns[11]) {
@@ -703,6 +706,7 @@ void BaseGrid::SetColumnWidths() {
 
 	// O(1) widths
 	int marginLen = dc.GetTextExtent("0000").GetWidth();
+	int cpsLen = dc.GetTextExtent("999").GetWidth();
 
 	int labelLen = dc.GetTextExtent(std::to_wstring(GetRows())).GetWidth();
 	int startLen = 0;
@@ -761,7 +765,7 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[1] = layerLen;
 	colWidth[2] = startLen;
 	colWidth[3] = endLen;
-	colWidth[4] = 1;
+	colWidth[4] = cpsLen;
 	colWidth[5] = styleLen;
 	colWidth[6] = actorLen;
 	colWidth[7] = effectLen;
