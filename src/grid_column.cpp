@@ -225,7 +225,12 @@ struct GridColumnCPS final : GridColumn {
 	wxString Value(const AssDialogue *d, const agi::Context *) const override {
 		int characters = 0;
 
+		int duration = d->End - d->Start;
 		auto const& text = d->Text.get();
+
+		if (duration <= 0 || text.size() > static_cast<size_t>(duration))
+			return wxS("");
+
 		auto pos = begin(text);
 		do {
 			auto it = std::find(pos, end(text), '{');
@@ -239,11 +244,7 @@ struct GridColumnCPS final : GridColumn {
 			}
 		} while (++pos != end(text));
 
-		int duration = d->End - d->Start;
-		if (duration <= 0 || characters * 1000 / duration >= 1000)
-			return wxS("");
-		else
-			return std::to_wstring(characters * 1000 / duration);
+		return std::to_wstring(characters * 1000 / duration);
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
