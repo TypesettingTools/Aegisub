@@ -53,6 +53,7 @@
 
 #include <algorithm>
 #include <boost/range/algorithm.hpp>
+#include <boost/range/irange.hpp>
 #include <cmath>
 #include <iterator>
 #include <numeric>
@@ -92,6 +93,10 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxSUNKEN_BORDER)
 , scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 , seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, nullptr)))
+, headerNames({
+	_("#"), _("L"), _("Start"), _("End"), _("Style"), _("Actor"),
+	_("Effect"), _("Left"), _("Right"), _("Vert"), _("Text")
+})
 , context(context)
 {
 	scrollBar->SetScrollbar(0,10,100,10);
@@ -194,14 +199,11 @@ void BaseGrid::UpdateStyle() {
 	font.SetPointSize(OPT_GET("Subtitle/Grid/Font Size")->GetInt());
 	font.SetWeight(wxFONTWEIGHT_NORMAL);
 
+	wxClientDC dc(this);
+	dc.SetFont(font);
+
 	// Set line height
-	{
-		wxClientDC dc(this);
-		dc.SetFont(font);
-		int fw,fh;
-		dc.GetTextExtent("#TWFfgGhH", &fw, &fh, nullptr, nullptr, &font);
-		lineHeight = fh + 4;
-	}
+	lineHeight = dc.GetTextExtent("#TWFfgGhH").GetHeight() + 4;
 
 	// Set row brushes
 	assert(sizeof(rowColors) / sizeof(rowColors[0]) >= COLOR_LEFT_COL);
@@ -215,8 +217,12 @@ void BaseGrid::UpdateStyle() {
 
 	// Set column widths
 	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
-	assert(column_array.size() == boost::size(showCol));
+	assert(column_array.size() <= showCol.size());
 	boost::copy(column_array, std::begin(showCol));
+
+	for (int i : boost::irange(0, column_count))
+		headerWidth[i] = dc.GetTextExtent(headerNames[i]).GetWidth();
+
 	SetColumnWidths();
 
 	AdjustScrollbar();
@@ -283,7 +289,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	for (wxRegionIterator region(GetUpdateRegion()); region; ++region) {
 		wxRect updrect = region.GetRect();
 		int x = 0;
-		for (size_t i = 0; i < 11; ++i) {
+		for (int i : boost::irange(0, column_count)) {
 			if (updrect.x < x + colWidth[i] && updrect.x + updrect.width > x && colWidth[i])
 				paint_columns[i] = true;
 			x += colWidth[i];
@@ -326,10 +332,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 	dc.DrawLine(0, 0, w, 0);
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
-	wxString strings[] = {
-		_("#"), _("L"), _("Start"), _("End"), _("Style"), _("Actor"),
-		_("Effect"), _("Left"), _("Right"), _("Vert"), _("Text")
-	};
+	auto strings = headerNames;
 
 	int override_mode = OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt();
 	wxString replace_char;
@@ -351,7 +354,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 		}
 		// Lines
 		else if ((curDiag = GetDialogue(curRow))) {
-			GetRowStrings(curRow, curDiag, paint_columns, strings, !!override_mode, replace_char);
+			GetRowStrings(curRow, curDiag, paint_columns, &strings[0], !!override_mode, replace_char);
 
 			bool inSel = !!selection.count(curDiag);
 			if (inSel && curDiag->Comment)
@@ -385,7 +388,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 		// Draw text
 		int dx = 0;
 		int dy = i*lineHeight;
-		for (int j = 0; j < 11; j++) {
+		for (int j : boost::irange(0, column_count)) {
 			if (colWidth[j] == 0) continue;
 
 			if (paint_columns[j]) {
@@ -624,7 +627,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 		};
 
 		wxMenu menu;
-		for (size_t i = 0; i < boost::size(showCol); ++i)
+		for (int i : boost::irange(0, column_count))
 			menu.Append(MENU_SHOW_COL + i, strings[i], "", wxITEM_CHECK)->Check(showCol[i]);
 		PopupMenu(&menu);
 	}
@@ -740,39 +743,19 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[10] = 1;
 
 	// Hide columns
-	for (size_t i = 0; i < boost::size(showCol); ++i) {
+	for (size_t i : boost::irange(0u, showCol.size())) {
 		if (!showCol[i])
 			colWidth[i] = 0;
 	}
 
-	wxString col_names[11] = {
-		_("#"),
-		_("L"),
-		_("Start"),
-		_("End"),
-		_("Style"),
-		_("Actor"),
-		_("Effect"),
-		_("Left"),
-		_("Right"),
-		_("Vert"),
-		_("Text")
-	};
-
-	// Ensure every visible column is at least as big as its header
-	for (size_t i = 0; i < 11; ++i) {
+	// Ensure every visible column is at least as big as its header plus padding
+	for (size_t i : boost::irange(0u, showCol.size())) {
 		if (colWidth[i])
-			colWidth[i] = std::max(colWidth[i], dc.GetTextExtent(col_names[i]).GetWidth());
-	}
-
-	// Add padding to all non-empty columns
-	for (size_t i = 0; i < 10; ++i) {
-		if (colWidth[i])
-			colWidth[i] += 10;
+			colWidth[i] = 10 + std::max(colWidth[i], headerWidth[i]);
 	}
 
 	// Set size of last
-	int total = std::accumulate(colWidth, colWidth + 10, 0);
+	int total = std::accumulate(colWidth.begin(), colWidth.end(), 0);
 	colWidth[10] = std::max(w - total, 0);
 
 	time_cols_x = colWidth[0] + colWidth[1];

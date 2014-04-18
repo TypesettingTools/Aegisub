@@ -34,6 +34,7 @@
 
 #include <libaegisub/signal.h>
 
+#include <array>
 #include <memory>
 #include <vector>
 #include <wx/window.h>
@@ -45,6 +46,8 @@ namespace agi {
 class AssDialogue;
 
 class BaseGrid final : public wxWindow {
+	static const int column_count = 11;
+
 	std::vector<agi::signal::Connection> connections;
 	int lineHeight = 1;     ///< Height of a line in pixels in the current font
 	bool holding = false;   ///< Is a drag selection in process?
@@ -85,14 +88,16 @@ class BaseGrid final : public wxWindow {
 
 	void ScrollTo(int y);
 
-	int colWidth[13];      ///< Width in pixels of each column
+	std::array<int, column_count> colWidth; ///< Width in pixels of each column
+	std::array<int, column_count> headerWidth; ///< Width in pixels of each column's header
+	std::array<wxString, column_count> headerNames;
 
 	int time_cols_x; ///< Left edge of the times columns
 	int time_cols_w; ///< Width of the two times columns
 	int text_col_x; ///< Left edge of the text column
 	int text_col_w; ///< Width of the text column
 
-	bool showCol[10]; ///< Column visibility mask
+	std::array<bool, column_count - 1> showCol; ///< Column visibility mask (Text can't be hidden)
 
 	int yPos = 0;
 
