@@ -256,7 +256,6 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 void BaseGrid::OnPaint(wxPaintEvent &) {
 	// Find which columns need to be repainted
 	std::vector<GridColumn *> paint_columns;
-	std::vector<int> paint_column_widths;
 	for (wxRegionIterator region(GetUpdateRegion()); region; ++region) {
 		wxRect updrect = region.GetRect();
 		int x = 0;
