@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file base_grid.h
-/// @see base_grid.cpp
-/// @ingroup main_ui
-///
-
 #include <libaegisub/signal.h>
 
 #include <array>
@@ -54,7 +49,17 @@ class BaseGrid final : public wxWindow {
 	wxFont font;            ///< Current grid font
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
 	bool byFrame = false;   ///< Should times be displayed as frame numbers
-	wxBrush rowColors[7];   ///< Cached brushes used for row backgrounds
+
+	/// Cached brushes used for row backgrounds
+	struct {
+		wxBrush Default;
+		wxBrush Header;
+		wxBrush Selection;
+		wxBrush Comment;
+		wxBrush Visible;
+		wxBrush SelectedComment;
+		wxBrush LeftCol;
+	} row_colors;
 
 	/// Row from which the selection shrinks/grows from when selecting via the
 	/// keyboard, shift-clicking or dragging

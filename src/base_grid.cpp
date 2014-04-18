@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file base_grid.cpp
-/// @brief Base for subtitle grid in main UI
-/// @ingroup main_ui
-///
-
 #include "base_grid.h"
 
 #include "include/aegisub/context.h"
@@ -68,16 +63,6 @@
 enum {
 	GRID_SCROLLBAR = 1730,
 	MENU_SHOW_COL = 1250 // Needs 15 IDs after this
-};
-
-enum RowColor {
-	COLOR_DEFAULT = 0,
-	COLOR_HEADER,
-	COLOR_SELECTION,
-	COLOR_COMMENT,
-	COLOR_VISIBLE,
-	COLOR_SELECTED_COMMENT,
-	COLOR_LEFT_COL
 };
 
 namespace std {
@@ -208,14 +193,13 @@ void BaseGrid::UpdateStyle() {
 	lineHeight = dc.GetTextExtent("#TWFfgGhH").GetHeight() + 4;
 
 	// Set row brushes
-	assert(sizeof(rowColors) / sizeof(rowColors[0]) >= COLOR_LEFT_COL);
-	rowColors[COLOR_DEFAULT].SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColor()));
-	rowColors[COLOR_HEADER].SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Header")->GetColor()));
-	rowColors[COLOR_SELECTION].SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColor()));
-	rowColors[COLOR_COMMENT].SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Comment")->GetColor()));
-	rowColors[COLOR_VISIBLE].SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Inframe")->GetColor()));
-	rowColors[COLOR_SELECTED_COMMENT].SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColor()));
-	rowColors[COLOR_LEFT_COL].SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Left Column")->GetColor()));
+	row_colors.Default.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColor()));
+	row_colors.Header.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Header")->GetColor()));
+	row_colors.Selection.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColor()));
+	row_colors.Comment.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Comment")->GetColor()));
+	row_colors.Visible.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Inframe")->GetColor()));
+	row_colors.SelectedComment.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColor()));
+	row_colors.LeftCol.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Left Column")->GetColor()));
 
 	// Set column widths
 	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
@@ -312,12 +296,12 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 
 	dc.SetFont(font);
 
-	dc.SetBackground(rowColors[COLOR_DEFAULT]);
+	dc.SetBackground(row_colors.Default);
 	dc.Clear();
 
 	// Draw labels
 	dc.SetPen(*wxTRANSPARENT_PEN);
-	dc.SetBrush(rowColors[COLOR_LEFT_COL]);
+	dc.SetBrush(row_colors.LeftCol);
 	dc.DrawRectangle(0,lineHeight,colWidth[0],h-lineHeight);
 
 	// Visible lines
@@ -348,12 +332,12 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 
 	for (int i = 0; i < nDraw + 1; i++) {
 		int curRow = i + yPos - 1;
-		RowColor curColor = COLOR_DEFAULT;
+		wxBrush curColor = row_colors.Default;
 		AssDialogue *curDiag = nullptr;
 
 		// Header
 		if (i == 0) {
-			curColor = COLOR_HEADER;
+			curColor = row_colors.Header;
 			dc.SetTextForeground(text_standard);
 		}
 		// Lines
@@ -362,15 +346,13 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 
 			bool inSel = !!selection.count(curDiag);
 			if (inSel && curDiag->Comment)
-				curColor = COLOR_SELECTED_COMMENT;
+				curColor = row_colors.SelectedComment;
 			else if (inSel)
-				curColor = COLOR_SELECTION;
+				curColor = row_colors.Selection;
 			else if (curDiag->Comment)
-				curColor = COLOR_COMMENT;
+				curColor = row_colors.Comment;
 			else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag))
-				curColor = COLOR_VISIBLE;
-			else
-				curColor = COLOR_DEFAULT;
+				curColor = row_colors.Visible;
 
 			if (active_line != curDiag && curDiag->CollidesWith(active_line))
 				dc.SetTextForeground(text_collision);
@@ -384,9 +366,11 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 		}
 
 		// Draw row background color
-		if (curColor) {
-			dc.SetBrush(rowColors[curColor]);
-			dc.DrawRectangle((curColor == 1) ? 0 : colWidth[0],i*lineHeight+1,w,lineHeight);
+		if (curColor != row_colors.Default) {
+			dc.SetBrush(curColor);
+			dc.DrawRectangle(
+				(i == 0) ? 0 : colWidth[0], i * lineHeight + 1,
+				w, lineHeight);
 		}
 
 		// Draw text
