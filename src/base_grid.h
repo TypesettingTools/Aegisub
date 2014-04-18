@@ -46,7 +46,7 @@ namespace agi {
 class AssDialogue;
 
 class BaseGrid final : public wxWindow {
-	static const int column_count = 11;
+	static const int column_count = 12;
 
 	std::vector<agi::signal::Connection> connections;
 	int lineHeight = 1;     ///< Height of a line in pixels in the current font
@@ -96,6 +96,8 @@ class BaseGrid final : public wxWindow {
 	int time_cols_w; ///< Width of the two times columns
 	int text_col_x; ///< Left edge of the text column
 	int text_col_w; ///< Width of the text column
+	int cps_col_x; ///< Left edge of the cps column
+	int cps_col_w; ///< Width of the cps column
 
 	std::array<bool, column_count - 1> showCol; ///< Column visibility mask (Text can't be hidden)
 

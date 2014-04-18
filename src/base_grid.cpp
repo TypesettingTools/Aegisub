@@ -93,10 +93,10 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxSUNKEN_BORDER)
 , scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 , seek_listener(context->videoController->AddSeekListener(std::bind(&BaseGrid::Refresh, this, false, nullptr)))
-, headerNames({
-	_("#"), _("L"), _("Start"), _("End"), _("Style"), _("Actor"),
+, headerNames({{
+	_("#"), _("L"), _("Start"), _("End"), _("CPS"), _("Style"), _("Actor"),
 	_("Effect"), _("Left"), _("Right"), _("Vert"), _("Text")
-})
+}})
 , context(context)
 {
 	scrollBar->SetScrollbar(0,10,100,10);
@@ -163,8 +163,10 @@ void BaseGrid::OnSubtitlesCommit(int type) {
 	}
 	if (type & AssFile::COMMIT_DIAG_TIME)
 		Refresh(false);
-	else if (type & AssFile::COMMIT_DIAG_TEXT)
+	else if (type & AssFile::COMMIT_DIAG_TEXT) {
+		RefreshRect(wxRect(cps_col_x, 0, cps_col_w, GetClientSize().GetHeight()), false);
 		RefreshRect(wxRect(text_col_x, 0, text_col_w, GetClientSize().GetHeight()), false);
+	}
 }
 
 void BaseGrid::OnSubtitlesOpen() {
@@ -219,6 +221,8 @@ void BaseGrid::UpdateStyle() {
 	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
 	assert(column_array.size() <= showCol.size());
 	boost::copy(column_array, std::begin(showCol));
+	for (size_t i : boost::irange(column_array.size(), showCol.size()))
+		showCol[i] = true;
 
 	for (int i : boost::irange(0, column_count))
 		headerWidth[i] = dc.GetTextExtent(headerNames[i]).GetWidth();
@@ -285,7 +289,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	cs.SetWidth(cs.GetWidth() - scrollBar->GetSize().GetWidth());
 
 	// Find which columns need to be repainted
-	bool paint_columns[11] = {0};
+	bool paint_columns[column_count] = {0};
 	for (wxRegionIterator region(GetUpdateRegion()); region; ++region) {
 		wxRect updrect = region.GetRect();
 		int x = 0;
@@ -398,7 +402,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 				int top = dy + (lineHeight - ext.GetHeight()) / 2;
 
 				// Centered columns
-				if (!(j == 4 || j == 5 || j == 6 || j == 10)) {
+				if (!(j == 5 || j == 6 || j == 7 || j == 11)) {
 					left += (colWidth[j] - 6 - ext.GetWidth()) / 2;
 				}
 
@@ -424,7 +428,7 @@ void BaseGrid::DrawImage(wxDC &dc, bool paint_columns[]) {
 	// Draw grid columns
 	int dx = 0;
 	dc.SetPen(grid_pen);
-	for (int i = 0; i < 10; ++i) {
+	for (int i : boost::irange(0, column_count - 1)) {
 		dx += colWidth[i];
 		dc.DrawLine(dx, 0, dx, maxH);
 	}
@@ -443,36 +447,57 @@ void BaseGrid::GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wx
 		if (paint_columns[2]) strings[2] = to_wx(line->Start.GetAssFormated());
 		if (paint_columns[3]) strings[3] = to_wx(line->End.GetAssFormated());
 	}
-	if (paint_columns[4]) strings[4] = to_wx(line->Style);
-	if (paint_columns[5]) strings[5] = to_wx(line->Actor);
-	if (paint_columns[6]) strings[6] = to_wx(line->Effect);
-	if (paint_columns[7]) strings[7] = line->Margin[0] ? wxString(std::to_wstring(line->Margin[0])) : wxString();
-	if (paint_columns[8]) strings[8] = line->Margin[1] ? wxString(std::to_wstring(line->Margin[1])) : wxString();
-	if (paint_columns[9]) strings[9] = line->Margin[2] ? wxString(std::to_wstring(line->Margin[2])) : wxString();
+	if (paint_columns[5])  strings[5]  = to_wx(line->Style);
+	if (paint_columns[6])  strings[6]  = to_wx(line->Actor);
+	if (paint_columns[7])  strings[7]  = to_wx(line->Effect);
+	if (paint_columns[8])  strings[8]  = line->Margin[0] ? wxString(std::to_wstring(line->Margin[0])) : wxString();
+	if (paint_columns[9])  strings[9]  = line->Margin[1] ? wxString(std::to_wstring(line->Margin[1])) : wxString();
+	if (paint_columns[10]) strings[10] = line->Margin[2] ? wxString(std::to_wstring(line->Margin[2])) : wxString();
 
-	if (paint_columns[10]) {
-		strings[10].clear();
+	if (paint_columns[4]) {
+		int characters = 0;
+
+		auto const& text = line->Text.get();
+		auto pos = begin(text);
+		do {
+			auto it = std::find(pos, end(text), '{');
+			characters += CharacterCount(pos, it, true);
+			if (it == end(text)) break;
+
+			pos = std::find(pos, end(text), '}');
+			if (pos == end(text)) {
+				characters += CharacterCount(it, pos, true);
+				break;
+			}
+		} while (++pos != end(text));
+
+		int duration = line->End - line->Start;
+		strings[4] = std::to_wstring(duration > 0 ? characters * 1000 / duration : 0);
+	}
+
+	if (paint_columns[11]) {
+		strings[11].clear();
 
 		// Show overrides
 		if (!replace)
-			strings[10] = to_wx(line->Text);
+			strings[11] = to_wx(line->Text);
 		// Hidden overrides
 		else {
-			strings[10].reserve(line->Text.get().size());
+			strings[11].reserve(line->Text.get().size());
 			size_t start = 0, pos;
 			while ((pos = line->Text.get().find('{', start)) != std::string::npos) {
-				strings[10] += to_wx(line->Text.get().substr(start, pos - start));
-				strings[10] += rep_char;
+				strings[11] += to_wx(line->Text.get().substr(start, pos - start));
+				strings[11] += rep_char;
 				start = line->Text.get().find('}', pos);
 				if (start != std::string::npos) ++start;
 			}
 			if (start != std::string::npos)
-				strings[10] += to_wx(line->Text.get().substr(start));
+				strings[11] += to_wx(line->Text.get().substr(start));
 		}
 
 		// Cap length and set text
-		if (strings[10].size() > 512)
-			strings[10] = strings[10].Left(512) + "...";
+		if (strings[11].size() > 512)
+			strings[11] = strings[11].Left(512) + "...";
 	}
 }
 
@@ -481,7 +506,7 @@ void BaseGrid::OnSize(wxSizeEvent &) {
 
 	int w, h;
 	GetClientSize(&w, &h);
-	colWidth[10] = text_col_w = w - text_col_x;
+	colWidth[11] = text_col_w = w - text_col_x;
 
 	Refresh(false);
 }
@@ -618,6 +643,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 			_("Layer"),
 			_("Start"),
 			_("End"),
+			_("Characters per Second"),
 			_("Style"),
 			_("Actor"),
 			_("Effect"),
@@ -627,7 +653,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 		};
 
 		wxMenu menu;
-		for (int i : boost::irange(0, column_count))
+		for (size_t i : boost::irange<size_t>(0, boost::size(strings)))
 			menu.Append(MENU_SHOW_COL + i, strings[i], "", wxITEM_CHECK)->Check(showCol[i]);
 		PopupMenu(&menu);
 	}
@@ -735,33 +761,33 @@ void BaseGrid::SetColumnWidths() {
 	colWidth[1] = layerLen;
 	colWidth[2] = startLen;
 	colWidth[3] = endLen;
-	colWidth[4] = styleLen;
-	colWidth[5] = actorLen;
-	colWidth[6] = effectLen;
+	colWidth[4] = 1;
+	colWidth[5] = styleLen;
+	colWidth[6] = actorLen;
+	colWidth[7] = effectLen;
 	for (int i = 0; i < 3; i++)
-		colWidth[i + 7] = showMargin[i] ? marginLen : 0;
-	colWidth[10] = 1;
+		colWidth[i + 8] = showMargin[i] ? marginLen : 0;
+	colWidth[11] = 1;
 
-	// Hide columns
-	for (size_t i : boost::irange(0u, showCol.size())) {
+	// Hide columns and ensure every visible column is at least as big as its
+	// header plus padding
+	for (size_t i : boost::irange<size_t>(0u, showCol.size())) {
 		if (!showCol[i])
 			colWidth[i] = 0;
-	}
-
-	// Ensure every visible column is at least as big as its header plus padding
-	for (size_t i : boost::irange(0u, showCol.size())) {
-		if (colWidth[i])
+		else if (colWidth[i])
 			colWidth[i] = 10 + std::max(colWidth[i], headerWidth[i]);
 	}
 
 	// Set size of last
 	int total = std::accumulate(colWidth.begin(), colWidth.end(), 0);
-	colWidth[10] = std::max(w - total, 0);
+	colWidth[11] = std::max(w - total, 0);
 
 	time_cols_x = colWidth[0] + colWidth[1];
-	time_cols_w = colWidth[2] + colWidth[3];
+	time_cols_w = colWidth[2] + colWidth[3] + colWidth[4];
+	cps_col_x = time_cols_x + colWidth[2] + colWidth[3];
+	cps_col_w = colWidth[4];
 	text_col_x = total;
-	text_col_w = colWidth[10];
+	text_col_w = colWidth[11];
 }
 
 AssDialogue *BaseGrid::GetDialogue(int n) const {

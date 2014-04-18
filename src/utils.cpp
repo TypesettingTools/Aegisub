@@ -219,6 +219,24 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 	});
 }
 
+size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, bool ignore_whitespace) {
+	using namespace boost::locale::boundary;
+	const ssegment_index characters(character, begin, end);
+	if (!ignore_whitespace)
+		return boost::distance(characters);
+
+	// characters.rule(word_any) doesn't seem to work for character indexes (everything is word_none)
+	size_t count = 0;
+	for (auto const& chr : characters) {
+		UChar32 c;
+		int i = 0;
+		U8_NEXT_UNSAFE(chr.begin(), i, c);
+		if (!u_isUWhiteSpace(c))
+			++count;
+	}
+	return count;
+}
+
 size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 	auto tokens = agi::ass::TokenizeDialogueBody(text);
 	agi::ass::MarkDrawings(text, tokens);
@@ -237,22 +255,8 @@ size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 				current_line_length = 0;
 			}
 		}
-		else if (token.type == agi::ass::DialogueTokenType::TEXT) {
-			using namespace boost::locale::boundary;
-			const ssegment_index characters(character, begin(text) + pos, begin(text) + pos + token.length);
-			if (!ignore_whitespace)
-				current_line_length += boost::distance(characters);
-			else {
-				// characters.rule(word_any) doesn't seem to work for character indexes (everything is word_none)
-				for (auto const& chr : characters) {
-					UChar32 c;
-					int i = 0;
-					U8_NEXT_UNSAFE(chr.begin(), i, c);
-					if (!u_isUWhiteSpace(c))
-						++current_line_length;
-				}
-			}
-		}
+		else if (token.type == agi::ass::DialogueTokenType::TEXT)
+			current_line_length += CharacterCount(begin(text) + pos, begin(text) + pos + token.length, ignore_whitespace);
 
 		pos += token.length;
 	}
