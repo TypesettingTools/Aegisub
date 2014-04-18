@@ -39,16 +39,22 @@ namespace agi {
 	class OptionValue;
 }
 class AssDialogue;
+struct GridColumn;
 
 class BaseGrid final : public wxWindow {
-	static const int column_count = 12;
-
 	std::vector<agi::signal::Connection> connections;
 	int lineHeight = 1;     ///< Height of a line in pixels in the current font
 	bool holding = false;   ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
 	bool byFrame = false;   ///< Should times be displayed as frame numbers
+
+	std::vector<std::unique_ptr<GridColumn>> columns;
+	std::vector<int> column_widths;
+	std::vector<int> column_header_widths;
+	std::vector<char> column_shown;
+
+	std::vector<wxRect> text_refresh_rects;
 
 	/// Cached brushes used for row backgrounds
 	struct {
@@ -88,23 +94,7 @@ class BaseGrid final : public wxWindow {
 	void OnSubtitlesSave();
 	void OnActiveLineChanged(AssDialogue *);
 
-	void DrawImage(wxDC &dc, bool paint_columns[]);
-	void GetRowStrings(int row, AssDialogue *line, bool *paint_columns, wxString *strings, bool replace, wxString const& rep_char) const;
-
 	void ScrollTo(int y);
-
-	std::array<int, column_count> colWidth; ///< Width in pixels of each column
-	std::array<int, column_count> headerWidth; ///< Width in pixels of each column's header
-	std::array<wxString, column_count> headerNames;
-
-	int time_cols_x; ///< Left edge of the times columns
-	int time_cols_w; ///< Width of the two times columns
-	int text_col_x; ///< Left edge of the text column
-	int text_col_w; ///< Width of the text column
-	int cps_col_x; ///< Left edge of the cps column
-	int cps_col_w; ///< Width of the cps column
-
-	std::array<bool, column_count - 1> showCol; ///< Column visibility mask (Text can't be hidden)
 
 	int yPos = 0;
 

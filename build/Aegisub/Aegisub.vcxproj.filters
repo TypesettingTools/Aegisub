@@ -624,6 +624,9 @@
     <ClInclude Include="$(SrcDir)resolution_resampler.h">
       <Filter>Features\Resolution resampler</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)grid_column.h">
+      <Filter>Main UI\Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1180,6 +1183,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)text_selection_controller.cpp">
       <Filter>Main UI\Edit box</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)grid_column.cpp">
+      <Filter>Main UI\Grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

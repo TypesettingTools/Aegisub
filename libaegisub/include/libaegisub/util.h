@@ -19,6 +19,7 @@
 #include <libaegisub/time.h>
 
 #include <algorithm>
+#include <boost/range/irange.hpp>
 #include <cstdint>
 #include <string>
 #include <memory>
@@ -73,6 +74,11 @@ namespace agi {
 	}
 
 	std::string ErrorString(int error);
+
+	template<typename Integer>
+	auto range(Integer end) -> decltype(boost::irange<Integer>(0, end)) {
+		return boost::irange<Integer>(0, end);
+	}
 
 	} // namespace util
 } // namespace agi

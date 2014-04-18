@@ -171,6 +171,7 @@
     <ClInclude Include="$(SrcDir)frame_main.h" />
     <ClInclude Include="$(SrcDir)gl_text.h" />
     <ClInclude Include="$(SrcDir)gl_wrap.h" />
+    <ClInclude Include="$(SrcDir)grid_column.h" />
     <ClInclude Include="$(SrcDir)help_button.h" />
     <ClInclude Include="$(SrcDir)hotkey_data_view_model.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\audio_player.h" />
@@ -373,6 +374,7 @@
     <ClCompile Include="$(SrcDir)frame_main.cpp" />
     <ClCompile Include="$(SrcDir)gl_text.cpp" />
     <ClCompile Include="$(SrcDir)gl_wrap.cpp" />
+    <ClCompile Include="$(SrcDir)grid_column.cpp" />
     <ClCompile Include="$(SrcDir)help_button.cpp" />
     <ClCompile Include="$(SrcDir)hotkey.cpp" />
     <ClCompile Include="$(SrcDir)hotkey_data_view_model.cpp" />
