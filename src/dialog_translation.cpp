@@ -65,7 +65,6 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogTranslation::OnActiveLineChanged, this))
 , active_line(c->selectionController->GetActiveLine())
 , line_count(c->ass->Events.size())
-, line_number(std::distance(c->ass->Events.begin(), c->ass->iterator_to(*active_line)) + 1)
 {
 	SetIcon(GETICON(translation_toolbutton_16));
 
@@ -173,7 +172,6 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 	active_line = new_line;
 	blocks = active_line->ParseTags();
 	cur_block = 0;
-	line_number = std::distance(c->ass->Events.begin(), c->ass->iterator_to(*new_line)) + 1;
 
 	if (bad_block(blocks[cur_block]) && !NextBlock()) {
 		wxMessageBox(_("No more lines to translate."));
@@ -184,7 +182,7 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 void DialogTranslation::OnExternalCommit(int commit_type) {
 	if (commit_type == AssFile::COMMIT_NEW || commit_type & AssFile::COMMIT_DIAG_ADDREM) {
 		line_count = c->ass->Events.size();
-		line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), (int)line_number, (int)line_count));
+		line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), active_line->Row + 1, (int)line_count));
 	}
 
 	if (commit_type & AssFile::COMMIT_DIAG_TEXT)
@@ -202,7 +200,6 @@ bool DialogTranslation::NextBlock() {
 			active_line = new_line;
 			blocks = active_line->ParseTags();
 			cur_block = 0;
-			++line_number;
 		}
 		else
 			++cur_block;
@@ -224,7 +221,6 @@ bool DialogTranslation::PrevBlock() {
 			active_line = new_line;
 			blocks = active_line->ParseTags();
 			cur_block = blocks.size() - 1;
-			--line_number;
 		}
 		else
 			--cur_block;
@@ -236,7 +232,7 @@ bool DialogTranslation::PrevBlock() {
 }
 
 void DialogTranslation::UpdateDisplay() {
-	line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), (int)line_number, (int)line_count));
+	line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), active_line->Row, (int)line_count));
 
 	original_text->SetReadOnly(false);
 	original_text->ClearAll();

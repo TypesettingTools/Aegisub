@@ -45,8 +45,7 @@ void SelectionController::OnSubtitlesOpen() {
 
 void SelectionController::OnSubtitlesSave() {
 	if (active_line)
-		context->ass->SaveUIState("Active Line", std::to_string(std::distance(
-			context->ass->Events.begin(), context->ass->iterator_to(*active_line))));
+		context->ass->SaveUIState("Active Line", std::to_string(active_line->Row));
 }
 
 void SelectionController::SetSelectedSet(Selection new_selection) {

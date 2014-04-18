@@ -88,7 +88,7 @@ std::vector<std::string> AudioPlayerFactory::GetClasses() {
 }
 
 std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider, wxWindow *window) {
-	if (std::distance(std::begin(factories), std::end(factories)) == 0)
+	if (std::begin(factories) == std::end(factories))
 		throw agi::NoAudioPlayersError("No audio players are available.", nullptr);
 
 	auto preferred = OPT_GET("Audio/Player")->GetString();

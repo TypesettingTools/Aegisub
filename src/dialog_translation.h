@@ -50,8 +50,6 @@ class DialogTranslation final : public wxDialog {
 
 	/// Total number of dialogue lines in the file
 	size_t line_count;
-	/// Line number of the currently active line
-	size_t line_number;
 
 	/// Should active line change announcements be ignored?
 	bool switching_lines = false;
