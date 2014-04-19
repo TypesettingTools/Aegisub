@@ -195,6 +195,7 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 	wxFlexGridSizer *character_count = PageSizer(_("Character Counter"));
 	OptionAdd(character_count, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
 	OptionAdd(character_count, _("Ignore whitespace"), "Subtitle/Character Counter/Ignore Whitespace");
+	OptionAdd(character_count, _("Ignore punctuation"), "Subtitle/Character Counter/Ignore Punctuation");
 
 	wxFlexGridSizer *grid = PageSizer(_("Grid"));
 	OptionAdd(grid, _("Focus grid on click"), "Subtitle/Grid/Focus Allow");

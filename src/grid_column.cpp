@@ -217,20 +217,31 @@ struct GridColumnMarginVert final : GridColumnMargin<2> {
 	COLUMN_DESCRIPTION(_("Vertical Margin"))
 };
 
-struct GridColumnCPS final : GridColumn {
+class GridColumnCPS final : public GridColumn {
+	const agi::OptionValue *ignore_whitespace = OPT_GET("Subtitle/Character Counter/Ignore Whitespace");
+	const agi::OptionValue *ignore_punctuation = OPT_GET("Subtitle/Character Counter/Ignore Punctuation");
+
+public:
 	COLUMN_HEADER(_("CPS"))
 	COLUMN_DESCRIPTION(_("Characters Per Second"))
 	bool Centered() const override { return true; }
 	bool RefreshOnTextChange() const override { return true; }
 
 	wxString Value(const AssDialogue *d, const agi::Context *) const override {
+
 		int duration = d->End - d->Start;
 		auto const& text = d->Text.get();
 
 		if (duration <= 0 || text.size() > static_cast<size_t>(duration))
 			return wxS("");
 
-		return std::to_wstring(agi::CharacterCount(text) * 1000 / duration);
+		int ignore = agi::IGNORE_NONE;
+		if (ignore_whitespace->GetBool())
+			ignore |= agi::IGNORE_WHITESPACE;
+		if (ignore_punctuation->GetBool())
+			ignore |= agi::IGNORE_PUNCTUATION;
+
+		return std::to_wstring(agi::CharacterCount(text, ignore) * 1000 / duration);
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {

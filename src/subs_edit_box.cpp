@@ -588,8 +588,12 @@ void SubsEditBox::CallCommand(const char *cmd_name) {
 }
 
 void SubsEditBox::UpdateCharacterCount(std::string const& text) {
-	auto ignore_whitespace = OPT_GET("Subtitle/Character Counter/Ignore Whitespace")->GetBool();
-	size_t length = agi::MaxLineLength(text, ignore_whitespace);
+	int ignore = agi::IGNORE_NONE;
+	if (OPT_GET("Subtitle/Character Counter/Ignore Whitespace")->GetBool())
+		ignore |= agi::IGNORE_WHITESPACE;
+	if (OPT_GET("Subtitle/Character Counter/Ignore Punctuation")->GetBool())
+		ignore |= agi::IGNORE_PUNCTUATION;
+	size_t length = agi::MaxLineLength(text, ignore);
 	char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
 	size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();
 	if (limit && length > limit)

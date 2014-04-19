@@ -17,7 +17,13 @@
 #include <string>
 
 namespace agi {
+	enum {
+		IGNORE_NONE = 0,
+		IGNORE_WHITESPACE = 1,
+		IGNORE_PUNCTUATION = 2
+	};
+
 	/// Get the length in characters of the longest line in the given text
-	size_t MaxLineLength(std::string const& text, bool ignore_whitespace);
-	size_t CharacterCount(std::string const& str);
+	size_t MaxLineLength(std::string const& text, int ignore_mask);
+	size_t CharacterCount(std::string const& str, int ignore_mask);
 }

@@ -40,7 +40,7 @@ utext_ptr to_utext(Iterator begin, Iterator end) {
 }
 
 template <typename Iterator>
-size_t count_in_range(Iterator begin, Iterator end, bool ignore_whitespace) {
+size_t count_in_range(Iterator begin, Iterator end, int mask) {
 	if (begin == end) return 0;
 
 	static std::unique_ptr<icu::BreakIterator> character_bi;
@@ -60,33 +60,43 @@ size_t count_in_range(Iterator begin, Iterator end, bool ignore_whitespace) {
 	size_t count = 0;
 	auto pos = character_bi->first();
 	for (auto end = character_bi->next(); end != BreakIterator::DONE; pos = end, end = character_bi->next()) {
-		if (!ignore_whitespace)
+		if (!mask)
 			++count;
 		else {
 			UChar32 c;
 			int i = 0;
 			U8_NEXT_UNSAFE(begin + pos, i, c);
-			if (!u_isUWhiteSpace(c))
+			if ((U_GET_GC_MASK(c) & mask) == 0)
 				++count;
 		}
 
 	}
 	return count;
 }
+
+int ignore_mask_to_icu_mask(int mask) {
+	int ret = 0;
+	if (mask & agi::IGNORE_PUNCTUATION)
+		ret |= U_GC_P_MASK;
+	if (mask & agi::IGNORE_WHITESPACE)
+		ret |= U_GC_Z_MASK;
+	return ret;
+}
 }
 
 namespace agi {
-size_t CharacterCount(std::string const& str) {
+size_t CharacterCount(std::string const& str, int mask) {
+	mask = ignore_mask_to_icu_mask(mask);
 	size_t characters = 0;
 	auto pos = begin(str);
 	do {
 		auto it = std::find(pos, end(str), '{');
-		characters += count_in_range(pos, it, true);
+		characters += count_in_range(pos, it, mask);
 		if (it == end(str)) break;
 
 		pos = std::find(pos, end(str), '}');
 		if (pos == end(str)) {
-			characters += count_in_range(it, pos, true);
+			characters += count_in_range(it, pos, mask);
 			break;
 		}
 	} while (++pos != end(str));
@@ -94,7 +104,8 @@ size_t CharacterCount(std::string const& str) {
 	return characters;
 }
 
-size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
+size_t MaxLineLength(std::string const& text, int mask) {
+	mask = ignore_mask_to_icu_mask(mask);
 	auto tokens = agi::ass::TokenizeDialogueBody(text);
 	agi::ass::MarkDrawings(text, tokens);
 
@@ -104,7 +115,7 @@ size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 	for (auto token : tokens) {
 		if (token.type == agi::ass::DialogueTokenType::LINE_BREAK) {
 			if (text[pos + 1] == 'h') {
-				if (!ignore_whitespace)
+				if (!(mask & U_GC_Z_MASK))
 					current_line_length += 1;
 			}
 			else { // N or n
@@ -113,7 +124,7 @@ size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
 			}
 		}
 		else if (token.type == agi::ass::DialogueTokenType::TEXT)
-			current_line_length += count_in_range(begin(text) + pos, begin(text) + pos + token.length, ignore_whitespace);
+			current_line_length += count_in_range(begin(text) + pos, begin(text) + pos + token.length, mask);
 
 		pos += token.length;
 	}

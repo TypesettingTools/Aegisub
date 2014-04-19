@@ -351,7 +351,8 @@
 
 	"Subtitle" : {
 		"Character Counter" : {
-			"Ignore Whitespace" : false
+			"Ignore Whitespace" : true,
+			"Ignore Punctuation" : true
 		},
 		"Character Limit" : 40,
 		"Default Resolution" : {
