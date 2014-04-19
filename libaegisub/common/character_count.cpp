@@ -17,28 +17,59 @@
 #include "libaegisub/character_count.h"
 
 #include "libaegisub/ass/dialogue_parser.h"
+#include "libaegisub/exception.h"
 
-#include <boost/locale/boundary.hpp>
-#include <boost/range/algorithm_ext.hpp>
 #include <unicode/uchar.h>
 #include <unicode/utf8.h>
 
+#include <mutex>
+#include <unicode/brkiter.h>
+
 namespace {
+struct utext_deleter {
+	void operator()(UText *ut) { if (ut) utext_close(ut); }
+};
+using utext_ptr = std::unique_ptr<UText, utext_deleter>;
+
+template<typename Iterator>
+utext_ptr to_utext(Iterator begin, Iterator end) {
+	UErrorCode err = U_ZERO_ERROR;
+	utext_ptr ret(utext_openUTF8(nullptr, &*begin, end - begin, &err));
+	if (U_FAILURE(err)) throw agi::InternalError("Failed to open utext", nullptr);
+	return ret;
+}
+
 template <typename Iterator>
 size_t count_in_range(Iterator begin, Iterator end, bool ignore_whitespace) {
-	using namespace boost::locale::boundary;
-	const ssegment_index characters(character, begin, end);
-	if (!ignore_whitespace)
-		return boost::distance(characters);
+	if (begin == end) return 0;
 
-	// characters.rule(word_any) doesn't seem to work for character indexes (everything is word_none)
+	static std::unique_ptr<icu::BreakIterator> character_bi;
+	static std::once_flag token;
+	std::call_once(token, [&] {
+		UErrorCode status = U_ZERO_ERROR;
+		character_bi.reset(BreakIterator::createCharacterInstance(Locale::getDefault(), status));
+		if (U_FAILURE(status)) throw agi::InternalError("Failed to create character iterator", nullptr);
+	});
+
+	UErrorCode err = U_ZERO_ERROR;
+
+	utext_ptr ut = to_utext(begin, end);
+	character_bi->setText(ut.get(), err);
+	if (U_FAILURE(err)) throw agi::InternalError("Failed to set break iterator text", nullptr);
+
 	size_t count = 0;
-	for (auto const& chr : characters) {
-		UChar32 c;
-		int i = 0;
-		U8_NEXT_UNSAFE(chr.begin(), i, c);
-		if (!u_isUWhiteSpace(c))
+	auto pos = character_bi->first();
+	for (auto end = character_bi->next(); end != BreakIterator::DONE; pos = end, end = character_bi->next()) {
+		if (!ignore_whitespace)
 			++count;
+		else {
+			UChar32 c;
+			int i = 0;
+			U8_NEXT_UNSAFE(begin + pos, i, c);
+			if (!u_isUWhiteSpace(c))
+				++count;
+		}
+
 	}
 	return count;
 }
