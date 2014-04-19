@@ -54,7 +54,6 @@
 #include "video_context.h"
 
 #include <libaegisub/character_count.h>
-#include <libaegisub/dispatch.h>
 #include <libaegisub/util.h>
 
 #include <functional>
@@ -586,15 +585,11 @@ void SubsEditBox::CallCommand(const char *cmd_name) {
 
 void SubsEditBox::UpdateCharacterCount(std::string const& text) {
 	auto ignore_whitespace = OPT_GET("Subtitle/Character Counter/Ignore Whitespace")->GetBool();
-	agi::dispatch::Background().Async([=]{
-		size_t length = agi::MaxLineLength(text, ignore_whitespace);
-		agi::dispatch::Main().Async([=]{
-			char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
-			size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();
-			if (limit && length > limit)
-				char_count->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColor()));
-			else
-				char_count->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
-		});
-	});
+	size_t length = agi::MaxLineLength(text, ignore_whitespace);
+	char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
+	size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();
+	if (limit && length > limit)
+		char_count->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle/Syntax/Background/Error")->GetColor()));
+	else
+		char_count->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 }
