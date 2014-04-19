@@ -46,6 +46,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\visitor.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\writer.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\calltip_provider.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\character_count.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\charset_conv_win.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="$(SrcDir)common\cajun\reader.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\writer.cpp" />
     <ClCompile Include="$(SrcDir)common\calltip_provider.cpp" />
+    <ClCompile Include="$(SrcDir)common\character_count.cpp" />
     <ClCompile Include="$(SrcDir)common\charset.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_6937.cpp" />
     <ClCompile Include="$(SrcDir)common\charset_conv.cpp" />

@@ -50,10 +50,10 @@
 #include "text_selection_controller.h"
 #include "timeedit_ctrl.h"
 #include "tooltip_manager.h"
-#include "utils.h"
 #include "validators.h"
 #include "video_context.h"
 
+#include <libaegisub/character_count.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/util.h>
 
@@ -228,7 +228,7 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 	middle_left_sizer->Add(ctrl, wxSizerFlags().Center());
 
 	Bind(wxEVT_TEXT, [=](wxCommandEvent&) {
-		int value = mid(0, atoi(ctrl->GetValue().utf8_str()), 9999);
+		int value = agi::util::mid(0, atoi(ctrl->GetValue().utf8_str()), 9999);
 		SetSelectedRows([&](AssDialogue *d) { d->Margin[margin] = value; },
 			commit_msg, AssFile::COMMIT_DIAG_META);
 	}, ctrl->GetId());
@@ -587,7 +587,7 @@ void SubsEditBox::CallCommand(const char *cmd_name) {
 void SubsEditBox::UpdateCharacterCount(std::string const& text) {
 	auto ignore_whitespace = OPT_GET("Subtitle/Character Counter/Ignore Whitespace")->GetBool();
 	agi::dispatch::Background().Async([=]{
-		size_t length = MaxLineLength(text, ignore_whitespace);
+		size_t length = agi::MaxLineLength(text, ignore_whitespace);
 		agi::dispatch::Main().Async([=]{
 			char_count->SetValue(wxString::Format("%lu", (unsigned long)length));
 			size_t limit = (size_t)OPT_GET("Subtitle/Character Limit")->GetInt();

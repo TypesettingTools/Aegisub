@@ -14,11 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file placeholder_ctrl.h
-/// @ingroup custom_control
-///
-
 #include <wx/settings.h>
+
+// Defined in osx_utils.mm
+void SetPlaceholderText(wxWindow *window, wxString const& placeholder);
 
 /// @class Placeholder
 /// @brief A wrapper around a control to add placeholder text

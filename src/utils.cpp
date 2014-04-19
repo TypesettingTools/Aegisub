@@ -39,7 +39,6 @@
 #include "options.h"
 #include "retina_helper.h"
 
-#include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
@@ -49,11 +48,7 @@
 #endif
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
-#include <boost/locale/boundary.hpp>
-#include <boost/range/algorithm_ext.hpp>
 #include <map>
-#include <unicode/uchar.h>
-#include <unicode/utf8.h>
 
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
@@ -217,51 +212,6 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 
 		LOG_D("utils/clean_cache") << "deleted " << deleted << " files, exiting";
 	});
-}
-
-size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, bool ignore_whitespace) {
-	using namespace boost::locale::boundary;
-	const ssegment_index characters(character, begin, end);
-	if (!ignore_whitespace)
-		return boost::distance(characters);
-
-	// characters.rule(word_any) doesn't seem to work for character indexes (everything is word_none)
-	size_t count = 0;
-	for (auto const& chr : characters) {
-		UChar32 c;
-		int i = 0;
-		U8_NEXT_UNSAFE(chr.begin(), i, c);
-		if (!u_isUWhiteSpace(c))
-			++count;
-	}
-	return count;
-}
-
-size_t MaxLineLength(std::string const& text, bool ignore_whitespace) {
-	auto tokens = agi::ass::TokenizeDialogueBody(text);
-	agi::ass::MarkDrawings(text, tokens);
-
-	size_t pos = 0;
-	size_t max_line_length = 0;
-	size_t current_line_length = 0;
-	for (auto token : tokens) {
-		if (token.type == agi::ass::DialogueTokenType::LINE_BREAK) {
-			if (text[pos + 1] == 'h') {
-				if (!ignore_whitespace)
-					current_line_length += 1;
-			}
-			else { // N or n
-				max_line_length = std::max(max_line_length, current_line_length);
-				current_line_length = 0;
-			}
-		}
-		else if (token.type == agi::ass::DialogueTokenType::TEXT)
-			current_line_length += CharacterCount(begin(text) + pos, begin(text) + pos + token.length, ignore_whitespace);
-
-		pos += token.length;
-	}
-
-	return std::max(max_line_length, current_line_length);
 }
 
 #ifndef __WXOSX_COCOA__

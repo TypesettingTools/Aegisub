@@ -21,8 +21,9 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "options.h"
-#include "utils.h"
 #include "video_context.h"
+
+#include <libaegisub/character_count.h>
 
 #include <wx/dc.h>
 
@@ -223,28 +224,13 @@ struct GridColumnCPS final : GridColumn {
 	bool RefreshOnTextChange() const override { return true; }
 
 	wxString Value(const AssDialogue *d, const agi::Context *) const override {
-		int characters = 0;
-
 		int duration = d->End - d->Start;
 		auto const& text = d->Text.get();
 
 		if (duration <= 0 || text.size() > static_cast<size_t>(duration))
 			return wxS("");
 
-		auto pos = begin(text);
-		do {
-			auto it = std::find(pos, end(text), '{');
-			characters += CharacterCount(pos, it, true);
-			if (it == end(text)) break;
-
-			pos = std::find(pos, end(text), '}');
-			if (pos == end(text)) {
-				characters += CharacterCount(it, pos, true);
-				break;
-			}
-		} while (++pos != end(text));
-
-		return std::to_wstring(characters * 1000 / duration);
+		return std::to_wstring(agi::CharacterCount(text) * 1000 / duration);
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {

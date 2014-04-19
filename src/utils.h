@@ -60,10 +60,6 @@ std::string float_to_string(double val);
 /// Algorithm from http://bob.allegronetwork.com/prog/tricks.html
 int SmallestPowerOf2(int x);
 
-/// Get the length in characters of the longest line in the given text
-size_t MaxLineLength(std::string const& text, bool ignore_whitespace);
-size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, bool ignore_whitespace);
-
 /// @brief Launch a new copy of Aegisub.
 ///
 /// Contrary to what the name suggests, this does not close the currently
@@ -74,8 +70,6 @@ void RestartAegisub();
 void AddFullScreenButton(wxWindow *window);
 
 void SetFloatOnParent(wxWindow *window);
-
-void SetPlaceholderText(wxWindow *window, wxString const& placeholder);
 
 /// Forward a mouse wheel event to the window under the mouse if needed
 /// @param source The initial target of the wheel event
