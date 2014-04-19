@@ -54,7 +54,9 @@ struct GridColumn {
 	virtual wxString const& Description() const = 0;
 
 	virtual wxString Value(const AssDialogue *d, const agi::Context * = nullptr) const = 0;
-	virtual int Width(const agi::Context *c, WidthHelper &helper, bool by_frame) const = 0;
+	virtual int Width(const agi::Context *c, WidthHelper &helper) const = 0;
+
+	virtual void SetByFrame(bool /* by_frame */) { }
 };
 
 std::vector<std::unique_ptr<GridColumn>> GetGridColumns();

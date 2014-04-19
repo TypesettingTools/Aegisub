@@ -61,7 +61,7 @@ struct GridColumnLineNumber final : GridColumn {
 		return std::to_wstring(d->Row + 1);
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return helper(Value(&c->ass->Events.back()));
 	}
 };
@@ -85,24 +85,30 @@ struct GridColumnLayer final : GridColumn {
 		return d->Layer ? wxString(std::to_wstring(d->Layer)) : wxString();
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		int max_layer = max_value(&AssDialogue::Layer, c->ass->Events);
 		return max_layer == 0 ? 0 : helper(std::to_wstring(max_layer));
 	}
 };
 
-struct GridColumnStartTime final : GridColumn {
+struct GridColumnTime : GridColumn {
+	bool by_frame = false;
+
+	bool Centered() const override { return true; }
+	void SetByFrame(bool by_frame) override { this->by_frame = by_frame; }
+};
+
+struct GridColumnStartTime final : GridColumnTime {
 	COLUMN_HEADER(_("Start"))
 	COLUMN_DESCRIPTION(_("Start Time"))
-	bool Centered() const override { return true; }
 
 	wxString Value(const AssDialogue *d, const agi::Context *c) const override {
-		if (c)
+		if (by_frame)
 			return std::to_wstring(c->videoController->FrameAtTime(d->Start, agi::vfr::START));
 		return to_wx(d->Start.GetAssFormated());
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool by_frame) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		if (!by_frame)
 			return helper(wxS("0:00:00.00"));
 		int frame = c->videoController->FrameAtTime(max_value(&AssDialogue::Start, c->ass->Events), agi::vfr::START);
@@ -110,18 +116,17 @@ struct GridColumnStartTime final : GridColumn {
 	}
 };
 
-struct GridColumnEndTime final : GridColumn {
+struct GridColumnEndTime final : GridColumnTime {
 	COLUMN_HEADER(_("End"))
 	COLUMN_DESCRIPTION(_("End Time"))
-	bool Centered() const override { return true; }
 
 	wxString Value(const AssDialogue *d, const agi::Context *c) const override {
-		if (c)
+		if (by_frame)
 			return std::to_wstring(c->videoController->FrameAtTime(d->End, agi::vfr::END));
 		return to_wx(d->End.GetAssFormated());
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool by_frame) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		if (!by_frame)
 			return helper(wxS("0:00:00.00"));
 		int frame = c->videoController->FrameAtTime(max_value(&AssDialogue::End, c->ass->Events), agi::vfr::END);
@@ -151,7 +156,7 @@ struct GridColumnStyle final : GridColumn {
 		return to_wx(d->Style);
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return max_width(&AssDialogue::Style, c->ass->Events, helper);
 	}
 };
@@ -165,7 +170,7 @@ struct GridColumnEffect final : GridColumn {
 		return to_wx(d->Effect);
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return max_width(&AssDialogue::Effect, c->ass->Events, helper);
 	}
 };
@@ -179,7 +184,7 @@ struct GridColumnActor final : GridColumn {
 		return to_wx(d->Actor);
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return max_width(&AssDialogue::Actor, c->ass->Events, helper);
 	}
 };
@@ -192,7 +197,7 @@ struct GridColumnMargin : GridColumn {
 		return d->Margin[Index] ? wxString(std::to_wstring(d->Margin[Index])) : wxString();
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		int max = 0;
 		for (AssDialogue const& line : c->ass->Events) {
 			if (line.Margin[Index] > max)
@@ -244,7 +249,7 @@ public:
 		return std::to_wstring(agi::CharacterCount(text, ignore) * 1000 / duration);
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return helper(wxS("999"));
 	}
 };
@@ -300,7 +305,7 @@ public:
 		return str;
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper, bool) const override {
+	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return 5000;
 	}
 };

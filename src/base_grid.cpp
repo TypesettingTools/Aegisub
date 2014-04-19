@@ -366,7 +366,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 			if (column_widths[j] == 0) continue;
 
 			if (paint_columns[j])
-				paint_text(columns[j]->Value(curDiag, byFrame ? context : nullptr), x, y, j);
+				paint_text(columns[j]->Value(curDiag, context), x, y, j);
 			x += column_widths[j];
 		}
 
@@ -581,14 +581,14 @@ void BaseGrid::SetColumnWidths() {
 	wxClientDC dc(this);
 	dc.SetFont(font);
 
-	WidthHelper helper{dc, {}};
+	WidthHelper helper{dc, std::unordered_map<boost::flyweight<std::string>, int>{}};
 
 	column_widths.clear();
 	for (auto i : agi::util::range(columns.size())) {
 		if (!column_shown[i])
 			column_widths.push_back(0);
 		else {
-			int width = columns[i]->Width(context, helper, byFrame);
+			int width = columns[i]->Width(context, helper);
 			if (width) // 10 is an arbitrary amount of padding
 				width = 10 + std::max(width, column_header_widths[i]);
 			column_widths.push_back(width);
@@ -706,6 +706,8 @@ void BaseGrid::OnKeyDown(wxKeyEvent &event) {
 void BaseGrid::SetByFrame(bool state) {
 	if (byFrame == state) return;
 	byFrame = state;
+	for (auto& column : columns)
+		column->SetByFrame(byFrame);
 	SetColumnWidths();
 	Refresh(false);
 }
