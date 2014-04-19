@@ -302,6 +302,10 @@ void SubsEditBox::OnCommit(int type) {
 	if (!(type ^ AssFile::COMMIT_ORDER)) return;
 
 	SetControlsState(!!line);
+	UpdateFields(type, true);
+}
+
+void SubsEditBox::UpdateFields(int type, bool repopulate_lists) {
 	if (!line) return;
 
 	if (type & AssFile::COMMIT_DIAG_TIME) {
@@ -322,11 +326,11 @@ void SubsEditBox::OnCommit(int type) {
 		comment_box->SetValue(line->Comment);
 		style_box->Select(style_box->FindString(to_wx(line->Style)));
 
-		PopulateList(effect_box, &AssDialogue::Effect);
+		if (repopulate_lists) PopulateList(effect_box, &AssDialogue::Effect);
 		effect_box->ChangeValue(to_wx(line->Effect));
 		effect_box->SetStringSelection(to_wx(line->Effect));
 
-		PopulateList(actor_box, &AssDialogue::Actor);
+		if (repopulate_lists) PopulateList(actor_box, &AssDialogue::Actor);
 		actor_box->ChangeValue(to_wx(line->Actor));
 		actor_box->SetStringSelection(to_wx(line->Actor));
 		edit_ctrl->SetTextTo(line->Text);
@@ -366,7 +370,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	line = new_line;
 	commit_id = -1;
 
-	OnCommit(AssFile::COMMIT_DIAG_FULL);
+	UpdateFields(AssFile::COMMIT_DIAG_FULL, false);
 
 	/// @todo VideoContext should be doing this
 	if (c->videoController->IsLoaded()) {
