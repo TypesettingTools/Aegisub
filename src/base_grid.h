@@ -49,6 +49,15 @@ class BaseGrid final : public wxWindow {
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
 	bool byFrame = false;   ///< Should times be displayed as frame numbers
 
+	/// Row from which the selection shrinks/grows from when selecting via the
+	/// keyboard, shift-clicking or dragging
+	int extendRow = -1;
+
+	/// First row that is visible at the current scroll position
+	int yPos = 0;
+
+	agi::Context *context; ///< Associated project context
+
 	std::vector<std::unique_ptr<GridColumn>> columns;
 	std::vector<int> column_widths;
 	std::vector<int> column_header_widths;
@@ -66,10 +75,6 @@ class BaseGrid final : public wxWindow {
 		wxBrush SelectedComment;
 		wxBrush LeftCol;
 	} row_colors;
-
-	/// Row from which the selection shrinks/grows from when selecting via the
-	/// keyboard, shift-clicking or dragging
-	int extendRow = -1;
 
 	std::vector<AssDialogue*> index_line_map;  ///< Row number -> dialogue line
 
@@ -96,17 +101,11 @@ class BaseGrid final : public wxWindow {
 
 	void ScrollTo(int y);
 
-	int yPos = 0;
-
 	void AdjustScrollbar();
 	void SetColumnWidths();
 
 	bool IsDisplayed(const AssDialogue *line) const;
 
-	agi::Context *context; ///< Current project context
-
-	void ClearMaps();
-	/// @brief Update the row <-> AssDialogue mappings
 	void UpdateMaps();
 	void UpdateStyle();
 
