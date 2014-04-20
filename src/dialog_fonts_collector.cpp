@@ -100,9 +100,20 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 		std::unique_ptr<wxFFileOutputStream> out;
 		std::unique_ptr<wxZipOutputStream> zip;
 		if (oper == CopyToZip) {
+			try {
+				agi::fs::CreateDirectory(destination.parent_path());
+			}
+			catch (agi::fs::FileSystemError const& e) {
+				AppendText(wxString::Format(_("* Failed to create directory '%s': %s.\n"),
+					destination.parent_path().wstring(), to_wx(e.GetChainedMessage())), 2);
+				collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
+				return;
+			}
+
 			out.reset(new wxFFileOutputStream(destination.wstring()));
 			if (out->IsOk())
 				zip.reset(new wxZipOutputStream(*out));
+
 			if (!out->IsOk() || !zip || !zip->IsOk()) {
 				AppendText(wxString::Format(_("* Failed to open %s.\n"), destination.wstring()), 2);
 				collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
