@@ -101,7 +101,13 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 		std::unique_ptr<wxZipOutputStream> zip;
 		if (oper == CopyToZip) {
 			out.reset(new wxFFileOutputStream(destination.wstring()));
-			zip.reset(new wxZipOutputStream(*out));
+			if (out->IsOk())
+				zip.reset(new wxZipOutputStream(*out));
+			if (!out->IsOk() || !zip || !zip->IsOk()) {
+				AppendText(wxString::Format(_("* Failed to open %s.\n"), destination.wstring()), 2);
+				collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
+				return;
+			}
 		}
 
 		int64_t total_size = 0;
