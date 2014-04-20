@@ -68,6 +68,15 @@
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 
+namespace std {
+	template <typename T>
+	struct hash<boost::flyweight<T>> {
+		size_t operator()(boost::flyweight<T> const& ss) const {
+			return hash<const void*>()(&ss.get());
+		}
+	};
+}
+
 namespace {
 
 /// Work around wxGTK's fondness for generating events from ChangeValue
@@ -340,7 +349,7 @@ void SubsEditBox::UpdateFields(int type, bool repopulate_lists) {
 void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<std::string> AssDialogue::*field) {
 	wxEventBlocker blocker(this);
 
-	std::unordered_set<std::string> values;
+	std::unordered_set<boost::flyweight<std::string>> values;
 	for (auto const& line : c->ass->Events) {
 		auto const& value = line.*field;
 		if (!value.get().empty())
