@@ -348,11 +348,11 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 			color = row_colors.Comment;
 		else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag))
 			color = row_colors.Visible;
+		dc.SetBrush(color);
 
 		// Draw row background color
 		if (color != row_colors.Default) {
 			dc.SetPen(*wxTRANSPARENT_PEN);
-			dc.SetBrush(color);
 			dc.DrawRectangle(grid_x, (i + 1) * lineHeight + 1, w, lineHeight);
 		}
 
@@ -368,7 +368,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		int y = (i + 1) * lineHeight;
 		for (size_t j : agi::util::range(columns.size())) {
 			if (paint_columns[j])
-				columns[j]->Paint(dc, x + 4, y + 2, curDiag, context);
+				columns[j]->Paint(dc, x, y, curDiag, context);
 			x += columns[j]->Width();
 		}
 

@@ -59,7 +59,7 @@ void GridColumn::Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::
 	wxString str = Value(d, c);
 	if (Centered())
 		x += (width - 6 - dc.GetTextExtent(str).GetWidth()) / 2;
-	dc.DrawText(str, x, y);
+	dc.DrawText(str, x + 4, y + 2);
 }
 
 namespace {
@@ -240,6 +240,13 @@ struct GridColumnMarginVert final : GridColumnMargin<2> {
 	COLUMN_DESCRIPTION(_("Vertical Margin"))
 };
 
+wxColor blend(wxColor fg, wxColor bg, double alpha) {
+	return wxColor(
+		wxColor::AlphaBlend(fg.Red(), bg.Red(), alpha),
+		wxColor::AlphaBlend(fg.Green(), bg.Green(), alpha),
+		wxColor::AlphaBlend(fg.Blue(), bg.Blue(), alpha));
+}
+
 class GridColumnCPS final : public GridColumn {
 	const agi::OptionValue *ignore_whitespace = OPT_GET("Subtitle/Character Counter/Ignore Whitespace");
 	const agi::OptionValue *ignore_punctuation = OPT_GET("Subtitle/Character Counter/Ignore Punctuation");
@@ -251,11 +258,15 @@ public:
 	bool RefreshOnTextChange() const override { return true; }
 
 	wxString Value(const AssDialogue *d, const agi::Context *) const override {
+		return wxS("");
+	}
+
+	int CPS(const AssDialogue *d) const {
 		int duration = d->End - d->Start;
 		auto const& text = d->Text.get();
 
 		if (duration <= 0 || text.size() > static_cast<size_t>(duration))
-			return wxS("");
+			return -1;
 
 		int ignore = agi::IGNORE_NONE;
 		if (ignore_whitespace->GetBool())
@@ -263,11 +274,35 @@ public:
 		if (ignore_punctuation->GetBool())
 			ignore |= agi::IGNORE_PUNCTUATION;
 
-		return std::to_wstring(agi::CharacterCount(text, ignore) * 1000 / duration);
+		return agi::CharacterCount(text, ignore) * 1000 / duration;
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		return helper(wxS("999"));
+	}
+
+	void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *) const {
+		int cps = CPS(d);
+		if (cps < 0) return;
+
+		wxString str = std::to_wstring(cps);
+		wxSize ext = dc.GetTextExtent(str);
+		auto tc = dc.GetTextForeground();
+
+		int cps_min = 15;
+		int cps_max = 30;
+		if (cps > cps_min) {
+			double alpha = std::min((double)(cps - cps_min + 1) / (cps_max - cps_min + 1), 1.0);
+			auto bg = dc.GetBrush().GetColour();
+			dc.SetBrush(wxBrush(blend(wxColor(255, 0, 0), bg, alpha)));
+			dc.SetPen(*wxTRANSPARENT_PEN);
+			dc.DrawRectangle(x, y + 1, width, ext.GetHeight() + 3);
+			dc.SetTextForeground(blend(*wxBLACK, tc, alpha));
+		}
+
+		x += (width + 2 - ext.GetWidth()) / 2;
+		dc.DrawText(str, x, y + 2);
+		dc.SetTextForeground(tc);
 	}
 };
 
