@@ -354,6 +354,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 
 		// Draw row background color
 		if (color != row_colors.Default) {
+			dc.SetPen(*wxTRANSPARENT_PEN);
 			dc.SetBrush(color);
 			dc.DrawRectangle(column_widths[0], (i + 1) * lineHeight + 1, w, lineHeight);
 		}
