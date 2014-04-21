@@ -216,6 +216,7 @@
 				"Selection" : "rgb(206, 255, 231)"
 			},
 			"Collision" : "rgb(255,0,0)",
+			"CPS Error" : "rgb(255,0,0)",
 			"Header" : "rgb(165, 207, 231)",
 			"Left Column" : "rgb(196, 236, 201)",
 			"Lines" : "rgb(190,190,190)",
@@ -352,7 +353,9 @@
 	"Subtitle" : {
 		"Character Counter" : {
 			"Ignore Whitespace" : true,
-			"Ignore Punctuation" : true
+			"Ignore Punctuation" : true,
+			"CPS Warning Threshold" : 15,
+			"CPS Error Threshold" : 30
 		},
 		"Character Limit" : 40,
 		"Default Resolution" : {
@@ -366,15 +369,6 @@
 		},
 		"Grid" : {
 			"Column" : [
-				{"bool" : true},
-				{"bool" : true},
-				{"bool" : true},
-				{"bool" : true},
-				{"bool" : true},
-				{"bool" : true},
-				{"bool" : true},
-				{"bool" : true},
-				{"bool" : true},
 				{"bool" : true}
 			],
 			"Focus Allow" : true,

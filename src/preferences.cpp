@@ -194,6 +194,8 @@ Interface::Interface(wxTreebook *book, Preferences *parent): OptionPage(book, pa
 
 	wxFlexGridSizer *character_count = PageSizer(_("Character Counter"));
 	OptionAdd(character_count, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
+	OptionAdd(character_count, _("Characters Per Second Warning Threshold"), "Subtitle/Character Counter/CPS Warning Threshold", 0, 1000);
+	OptionAdd(character_count, _("Characters Per Second Error Threshold"), "Subtitle/Character Counter/CPS Error Threshold", 0, 1000);
 	OptionAdd(character_count, _("Ignore whitespace"), "Subtitle/Character Counter/Ignore Whitespace");
 	OptionAdd(character_count, _("Ignore punctuation"), "Subtitle/Character Counter/Ignore Punctuation");
 
@@ -255,6 +257,7 @@ Interface_Colours::Interface_Colours(wxTreebook *book, Preferences *parent): Opt
 	OptionAdd(grid, _("Left Column"), "Colour/Subtitle Grid/Left Column");
 	OptionAdd(grid, _("Active Line Border"), "Colour/Subtitle Grid/Active Border");
 	OptionAdd(grid, _("Lines"), "Colour/Subtitle Grid/Lines");
+	OptionAdd(grid, _("CPS Error"), "Colour/Subtitle Grid/CPS Error");
 
 	sizer = main_sizer;
 

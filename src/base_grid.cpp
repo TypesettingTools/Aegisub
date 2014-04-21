@@ -159,6 +159,7 @@ void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
 	int item = event.GetId() - MENU_SHOW_COL;
 	bool new_value = !columns_visible[item];
 
+	columns_visible.resize(columns.size(), true);
 	columns_visible[item] = new_value;
 	OPT_SET("Subtitle/Grid/Column")->SetListBool(columns_visible);
 	columns[item]->SetVisible(new_value);
