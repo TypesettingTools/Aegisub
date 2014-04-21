@@ -177,7 +177,7 @@ void BaseGrid::UpdateStyle() {
 	dc.SetFont(font);
 
 	// Set line height
-	lineHeight = dc.GetTextExtent("#TWFfgGhH").GetHeight() + 4;
+	lineHeight = dc.GetCharHeight() + 4;
 
 	// Set row brushes
 	row_colors.Default.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColor()));
@@ -298,14 +298,13 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
 	auto paint_text = [&](wxString const& str, int x, int y, int col) {
-		wxSize ext = dc.GetTextExtent(str);
-
-		int top = y + (lineHeight - ext.GetHeight()) / 2;
 		int left = x + 4;
-		if (columns[col]->Centered())
+		if (columns[col]->Centered()) {
+			wxSize ext = dc.GetTextExtent(str);
 			left += (column_widths[col] - 6 - ext.GetWidth()) / 2;
+		}
 
-		dc.DrawText(str, left, top);
+		dc.DrawText(str, left, y + 2);
 	};
 
 	// Paint header
