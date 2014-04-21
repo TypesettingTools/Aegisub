@@ -265,7 +265,7 @@ public:
 		int duration = d->End - d->Start;
 		auto const& text = d->Text.get();
 
-		if (duration <= 0 || text.size() > static_cast<size_t>(duration))
+		if (duration <= 100 || text.size() > static_cast<size_t>(duration))
 			return -1;
 
 		int ignore = agi::IGNORE_NONE;
