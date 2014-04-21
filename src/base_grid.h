@@ -39,7 +39,7 @@ namespace agi {
 	class OptionValue;
 }
 class AssDialogue;
-struct GridColumn;
+class GridColumn;
 
 class BaseGrid final : public wxWindow {
 	std::vector<agi::signal::Connection> connections;
@@ -59,9 +59,7 @@ class BaseGrid final : public wxWindow {
 	agi::Context *context; ///< Associated project context
 
 	std::vector<std::unique_ptr<GridColumn>> columns;
-	std::vector<int> column_widths;
-	std::vector<int> column_header_widths;
-	std::vector<char> column_shown;
+	std::vector<bool> columns_visible;
 
 	std::vector<wxRect> text_refresh_rects;
 

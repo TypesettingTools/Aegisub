@@ -44,6 +44,24 @@ int WidthHelper::operator()(wxString const& str) {
 	return dc.GetTextExtent(str).GetWidth();
 }
 
+void GridColumn::UpdateWidth(const agi::Context *c, WidthHelper &helper) {
+	if (!visible) {
+		width = 0;
+		return;
+	}
+
+	width = Width(c, helper);
+	if (width) // 10 is an arbitrary amount of padding
+		width = 10 + std::max(width, helper(Header()));
+}
+
+void GridColumn::Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *c) const {
+	wxString str = Value(d, c);
+	if (Centered())
+		x += (width - 6 - dc.GetTextExtent(str).GetWidth()) / 2;
+	dc.DrawText(str, x, y);
+}
+
 namespace {
 #define COLUMN_HEADER(value) \
 	private: const wxString header = value; \
@@ -233,7 +251,6 @@ public:
 	bool RefreshOnTextChange() const override { return true; }
 
 	wxString Value(const AssDialogue *d, const agi::Context *) const override {
-
 		int duration = d->End - d->Start;
 		auto const& text = d->Text.get();
 
@@ -255,18 +272,15 @@ public:
 };
 
 class GridColumnText final : public GridColumn {
-	int override_mode;
+	const agi::OptionValue *override_mode;
 	wxString replace_char;
 
-	agi::signal::Connection override_mode_connection;
 	agi::signal::Connection replace_char_connection;
 
 public:
 	GridColumnText()
-	: override_mode(OPT_GET("Subtitle/Grid/Hide Overrides")->GetInt())
+	: override_mode(OPT_GET("Subtitle/Grid/Hide Overrides"))
 	, replace_char(to_wx(OPT_GET("Subtitle/Grid/Hide Overrides Char")->GetString()))
-	, override_mode_connection(OPT_SUB("Subtitle/Grid/Hide Overrides",
-		[&](agi::OptionValue const& v) { override_mode = v.GetInt(); }))
 	, replace_char_connection(OPT_SUB("Subtitle/Grid/Hide Overrides Char",
 		[&](agi::OptionValue const& v) { replace_char = to_wx(v.GetString()); }))
 	{
@@ -280,23 +294,25 @@ public:
 
 	wxString Value(const AssDialogue *d, const agi::Context *) const override {
 		wxString str;
+		int mode = override_mode->GetInt();
 
 		// Show overrides
-		if (override_mode == 0)
+		if (mode == 0)
 			str = to_wx(d->Text);
 		// Hidden overrides
 		else {
-			str.reserve(d->Text.get().size());
+			auto const& text = d->Text.get();
+			str.reserve(text.size());
 			size_t start = 0, pos;
-			while ((pos = d->Text.get().find('{', start)) != std::string::npos) {
-				str += to_wx(d->Text.get().substr(start, pos - start));
-				if (override_mode == 1)
+			while ((pos = text.find('{', start)) != std::string::npos) {
+				str += to_wx(text.substr(start, pos - start));
+				if (mode == 1)
 					str += replace_char;
-				start = d->Text.get().find('}', pos);
+				start = text.find('}', pos);
 				if (start != std::string::npos) ++start;
 			}
 			if (start != std::string::npos)
-				str += to_wx(d->Text.get().substr(start));
+				str += to_wx(text.substr(start));
 		}
 
 		// Cap length and set text

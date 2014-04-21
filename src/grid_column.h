@@ -43,20 +43,31 @@ struct WidthHelper {
 	int operator()(wxString const& str);
 };
 
-struct GridColumn {
+class GridColumn {
+protected:
+	int width = 0;
+	bool visible = true;
+
+	virtual int Width(const agi::Context *c, WidthHelper &helper) const = 0;
+	virtual wxString Value(const AssDialogue *d, const agi::Context *c) const = 0;
+
+public:
 	virtual ~GridColumn() = default;
 
-	virtual bool Centered() const = 0;
+	virtual bool Centered() const { return false; }
 	virtual bool CanHide() const { return true; }
 	virtual bool RefreshOnTextChange() const { return false; }
 
 	virtual wxString const& Header() const = 0;
 	virtual wxString const& Description() const = 0;
+	virtual void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *c) const;
 
-	virtual wxString Value(const AssDialogue *d, const agi::Context * = nullptr) const = 0;
-	virtual int Width(const agi::Context *c, WidthHelper &helper) const = 0;
+	int Width() const { return width; }
+	bool Visible() const { return visible; }
 
+	virtual void UpdateWidth(const agi::Context *c, WidthHelper &helper);
 	virtual void SetByFrame(bool /* by_frame */) { }
+	void SetVisible(bool new_value) { visible = new_value; }
 };
 
 std::vector<std::unique_ptr<GridColumn>> GetGridColumns();

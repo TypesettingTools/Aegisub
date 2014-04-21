@@ -69,6 +69,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 , scrollBar(new wxScrollBar(this, GRID_SCROLLBAR, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL))
 , context(context)
 , columns(GetGridColumns())
+, columns_visible(OPT_GET("Subtitle/Grid/Column")->GetListBool())
 , seek_listener(context->videoController->AddSeekListener([&] { Refresh(false); }))
 {
 	scrollBar->SetScrollbar(0,10,100,10);
@@ -80,6 +81,11 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 	SetSizerAndFit(scrollbarpositioner);
 
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
+
+	for (size_t i : agi::util::range(std::min(columns_visible.size(), columns.size()))) {
+		if (!columns_visible[i])
+			columns[i]->SetVisible(false);
+	}
 
 	UpdateStyle();
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
@@ -151,11 +157,14 @@ void BaseGrid::OnSubtitlesSave() {
 
 void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
 	int item = event.GetId() - MENU_SHOW_COL;
-	column_shown[item] = !column_shown[item];
+	bool new_value = !columns_visible[item];
 
-	OPT_SET("Subtitle/Grid/Column")->SetListBool(std::vector<bool>(std::begin(column_shown), std::end(column_shown)));
+	columns_visible[item] = new_value;
+	OPT_SET("Subtitle/Grid/Column")->SetListBool(columns_visible);
+	columns[item]->SetVisible(new_value);
 
 	SetColumnWidths();
+
 	Refresh(false);
 }
 
@@ -187,15 +196,6 @@ void BaseGrid::UpdateStyle() {
 	row_colors.Visible.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Inframe")->GetColor()));
 	row_colors.SelectedComment.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColor()));
 	row_colors.LeftCol.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Left Column")->GetColor()));
-
-	// Set column widths
-	std::vector<bool> column_array(OPT_GET("Subtitle/Grid/Column")->GetListBool());
-	column_shown.assign(column_array.begin(), column_array.end());
-	column_shown.resize(columns.size(), true);
-
-	column_header_widths.resize(columns.size());
-	for (size_t i : agi::util::range(columns.size()))
-		column_header_widths[i] = dc.GetTextExtent(columns[i]->Header()).GetWidth();
 
 	SetColumnWidths();
 
@@ -255,20 +255,23 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 
 void BaseGrid::OnPaint(wxPaintEvent &) {
 	// Find which columns need to be repainted
-	std::vector<GridColumn *> paint_columns;
+	std::vector<char> paint_columns;
+	paint_columns.resize(columns.size(), false);
+	bool any = false;
 	for (wxRegionIterator region(GetUpdateRegion()); region; ++region) {
 		wxRect updrect = region.GetRect();
 		int x = 0;
 		for (size_t i : agi::util::range(columns.size())) {
-			if (updrect.x < x + column_widths[i] && updrect.x + updrect.width > x && column_widths[i])
-				paint_columns.push_back(columns[i].get());
-			else
-				paint_columns.push_back(nullptr);
-			x += column_widths[i];
+			int width = columns[i]->Width();
+			if (width && updrect.x < x + width && updrect.x + updrect.width > x) {
+				paint_columns[i] = true;
+				any = true;
+			}
+			x += width;
 		}
 	}
 
-	if (paint_columns.empty()) return;
+	if (!any) return;
 
 	int w = 0;
 	int h = 0;
@@ -284,7 +287,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	// Draw labels
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetBrush(row_colors.LeftCol);
-	dc.DrawRectangle(0, lineHeight, column_widths[0], h-lineHeight);
+	dc.DrawRectangle(0, lineHeight, columns[0]->Width(), h-lineHeight);
 
 	// Row colors
 	wxColour text_standard(to_wx(OPT_GET("Colour/Subtitle Grid/Standard")->GetColor()));
@@ -301,7 +304,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		int left = x + 4;
 		if (columns[col]->Centered()) {
 			wxSize ext = dc.GetTextExtent(str);
-			left += (column_widths[col] - 6 - ext.GetWidth()) / 2;
+			left += (columns[col]->Width() - 6 - ext.GetWidth()) / 2;
 		}
 
 		dc.DrawText(str, left, y + 2);
@@ -317,7 +320,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		for (size_t i : agi::util::range(columns.size())) {
 			if (paint_columns[i])
 				paint_text(columns[i]->Header(), x, 0, i);
-			x += column_widths[i];
+			x += columns[i]->Width();
 		}
 
 		dc.SetPen(grid_pen);
@@ -325,10 +328,11 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	}
 
 	// Paint the rows
-	int drawPerScreen = h/lineHeight + 1;
-	int nDraw = mid(0, drawPerScreen, GetRows() - yPos);
+	const int drawPerScreen = h/lineHeight + 1;
+	const int nDraw = mid(0, drawPerScreen, GetRows() - yPos);
+	const int grid_x = columns[0]->Width();
 
-	auto active_line = context->selectionController->GetActiveLine();
+	const auto active_line = context->selectionController->GetActiveLine();
 	auto const& selection = context->selectionController->GetSelectedSet();
 
 	for (int i : agi::util::range(nDraw)) {
@@ -345,6 +349,13 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag))
 			color = row_colors.Visible;
 
+		// Draw row background color
+		if (color != row_colors.Default) {
+			dc.SetPen(*wxTRANSPARENT_PEN);
+			dc.SetBrush(color);
+			dc.DrawRectangle(grid_x, (i + 1) * lineHeight + 1, w, lineHeight);
+		}
+
 		if (active_line != curDiag && curDiag->CollidesWith(active_line))
 			dc.SetTextForeground(text_collision);
 		else if (inSel)
@@ -352,22 +363,13 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		else
 			dc.SetTextForeground(text_standard);
 
-		// Draw row background color
-		if (color != row_colors.Default) {
-			dc.SetPen(*wxTRANSPARENT_PEN);
-			dc.SetBrush(color);
-			dc.DrawRectangle(column_widths[0], (i + 1) * lineHeight + 1, w, lineHeight);
-		}
-
 		// Draw text
 		int x = 0;
 		int y = (i + 1) * lineHeight;
 		for (size_t j : agi::util::range(columns.size())) {
-			if (column_widths[j] == 0) continue;
-
 			if (paint_columns[j])
-				paint_text(columns[j]->Value(curDiag, context), x, y, j);
-			x += column_widths[j];
+				columns[j]->Paint(dc, x + 4, y + 2, curDiag, context);
+			x += columns[j]->Width();
 		}
 
 		// Draw grid
@@ -381,14 +383,15 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		int maxH = (nDraw + 1) * lineHeight;
 		int x = 0;
 		dc.SetPen(grid_pen);
-		for (int width : column_widths) {
-			x += width;
+		for (auto const& column : columns) {
+			x += column->Width();
 			if (x < w)
 				dc.DrawLine(x, 0, x, maxH);
 		}
 		dc.DrawLine(0, 0, 0, maxH);
-		dc.DrawLine(w - 1, 0, w - 1, maxH);
+		dc.DrawLine(w, 0, w, maxH);
 	}
+
 	if (active_line && active_line->Row >= yPos && active_line->Row < yPos + nDraw) {
 		dc.SetPen(wxPen(to_wx(OPT_GET("Colour/Subtitle Grid/Active Border")->GetColor())));
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
@@ -531,7 +534,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 		wxMenu menu;
 		for (size_t i : agi::util::range(columns.size())) {
 			if (columns[i]->CanHide())
-				menu.Append(MENU_SHOW_COL + i, columns[i]->Description(), "", wxITEM_CHECK)->Check(!!column_shown[i]);
+				menu.Append(MENU_SHOW_COL + i, columns[i]->Description(), "", wxITEM_CHECK)->Check(columns[i]->Visible());
 		}
 		PopupMenu(&menu);
 	}
@@ -579,25 +582,15 @@ void BaseGrid::SetColumnWidths() {
 	wxClientDC dc(this);
 	dc.SetFont(font);
 
-	WidthHelper helper{dc, std::unordered_map<boost::flyweight<std::string>, int>{}};
-
-	column_widths.clear();
-	for (auto i : agi::util::range(columns.size())) {
-		if (!column_shown[i])
-			column_widths.push_back(0);
-		else {
-			int width = columns[i]->Width(context, helper);
-			if (width) // 10 is an arbitrary amount of padding
-				width = 10 + std::max(width, column_header_widths[i]);
-			column_widths.push_back(width);
-		}
-	}
-
 	text_refresh_rects.clear();
 	int x = 0;
-	for (auto i : agi::util::range(columns.size())) {
-		if (columns[i]->RefreshOnTextChange() && column_widths[i])
-			text_refresh_rects.emplace_back(x, 0, column_widths[i], h);
+
+	WidthHelper helper{dc, std::unordered_map<boost::flyweight<std::string>, int>{}};
+	for (auto const& column : columns) {
+		column->UpdateWidth(context, helper);
+		if (column->Width() && column->RefreshOnTextChange())
+			text_refresh_rects.emplace_back(x, 0, column->Width(), h);
+		x += column->Width();
 	}
 }
 
