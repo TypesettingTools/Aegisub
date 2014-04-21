@@ -370,15 +370,8 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		}
 
 		// Draw grid
-		if (curDiag == active_line) {
-			dc.SetPen(wxPen(to_wx(OPT_GET("Colour/Subtitle Grid/Active Border")->GetColor())));
-			dc.SetBrush(*wxTRANSPARENT_BRUSH);
-			dc.DrawRectangle(0, y, w, lineHeight + 1);
-		}
-		else {
-			dc.SetPen(grid_pen);
-			dc.DrawLine(0, y + lineHeight, w , y + lineHeight);
-		}
+		dc.SetPen(grid_pen);
+		dc.DrawLine(0, y + lineHeight, w , y + lineHeight);
 		dc.SetPen(*wxTRANSPARENT_PEN);
 	}
 
@@ -394,6 +387,11 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 		}
 		dc.DrawLine(0, 0, 0, maxH);
 		dc.DrawLine(w - 1, 0, w - 1, maxH);
+	}
+	if (active_line && active_line->Row >= yPos && active_line->Row < yPos + nDraw) {
+		dc.SetPen(wxPen(to_wx(OPT_GET("Colour/Subtitle Grid/Active Border")->GetColor())));
+		dc.SetBrush(*wxTRANSPARENT_BRUSH);
+		dc.DrawRectangle(0, (active_line->Row - yPos + 1) * lineHeight, w, lineHeight + 1);
 	}
 }
 
