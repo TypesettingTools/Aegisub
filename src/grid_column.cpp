@@ -286,7 +286,7 @@ public:
 
 	void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *) const {
 		int cps = CPS(d);
-		if (cps < 0) return;
+		if (cps < 0 || cps > 100) return;
 
 		wxString str = std::to_wstring(cps);
 		wxSize ext = dc.GetTextExtent(str);
