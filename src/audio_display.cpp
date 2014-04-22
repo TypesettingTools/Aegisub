@@ -1232,6 +1232,7 @@ void AudioDisplay::OnTimingController()
 
 		OnStyleRangesChanged();
 		OnMarkerMoved();
+		OnSelectionChanged();
 	}
 }
 
