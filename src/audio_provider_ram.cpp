@@ -37,11 +37,11 @@
 #include "audio_controller.h"
 #include "compat.h"
 
-#include <libaegisub/background_runner.h>
 #include <libaegisub/util.h>
 
 #include <array>
 #include <boost/container/stable_vector.hpp>
+#include <thread>
 #include <wx/intl.h>
 
 namespace {
@@ -51,17 +51,21 @@ namespace {
 
 class RAMAudioProvider final : public AudioProviderWrapper {
 #ifdef _MSC_VER
-	boost::container::stable_vector<char[1 << 22]> blockcache;
+	boost::container::stable_vector<char[CacheBlockSize]> blockcache;
 #else
-	boost::container::stable_vector<std::array<char, 1 << 22>> blockcache;
+	boost::container::stable_vector<std::array<char, CacheBlockSize>> blockcache;
 #endif
+	std::atomic<bool> cancelled = {false};
+	std::thread decoder;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 public:
-	RAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br)
+	RAMAudioProvider(std::unique_ptr<AudioProvider> src)
 	: AudioProviderWrapper(std::move(src))
 	{
+		decoded_samples = 0;
+
 		try {
 			blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 		}
@@ -69,39 +73,44 @@ public:
 			throw agi::AudioCacheOpenError("Couldn't open audio, not enough ram available.", nullptr);
 		}
 
-		br->Run([&](agi::ProgressSink *ps) {
-			ps->SetTitle(from_wx(_("Load audio")));
-			ps->SetMessage(from_wx(_("Reading into RAM")));
-
+		decoder = std::thread([&] {
 			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
 			for (size_t i = 0; i < blockcache.size(); i++) {
-				if (ps->IsCancelled()) return;
-				ps->SetProgress(i + 1, blockcache.size());
-				source->GetAudio(&blockcache[i][0], i * readsize, std::min<int64_t>(readsize, num_samples - i * readsize));
+				if (cancelled) break;
+				auto actual_read = std::min<int64_t>(readsize, num_samples - i * readsize);
+				source->GetAudio(&blockcache[i][0], i * readsize, actual_read);
+				decoded_samples += actual_read;
 			}
 		});
+	}
+
+	~RAMAudioProvider() {
+		cancelled = true;
+		decoder.join();
 	}
 };
 
 void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	char *charbuf = static_cast<char *>(buf);
-	int i = (start * bytes_per_sample) >> CacheBits;
-	int start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
-	int64_t bytesremaining = count * bytes_per_sample;
+	for (int64_t bytes_remaining = count * bytes_per_sample; bytes_remaining; ) {
+		if (start >= decoded_samples) {
+			memset(charbuf, 0, bytes_remaining);
+			break;
+		}
 
-	while (bytesremaining) {
-		int readsize = std::min<int>(bytesremaining, CacheBlockSize - start_offset);
+		int i = (start * bytes_per_sample) >> CacheBits;
+		int start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
+		int read_size = std::min<int>(bytes_remaining, CacheBlockSize - start_offset);
 
-		memcpy(charbuf, &blockcache[i++][start_offset], readsize);
+		memcpy(charbuf, &blockcache[i++][start_offset], read_size);
+		charbuf += read_size;
 
-		charbuf += readsize;
-
-		start_offset = 0;
-		bytesremaining -= readsize;
+		bytes_remaining -= read_size;
+		start += CacheBlockSize / bytes_per_sample;
 	}
 }
 }
 
-std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br) {
-	return agi::util::make_unique<RAMAudioProvider>(std::move(src), br);
+std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> src) {
+	return agi::util::make_unique<RAMAudioProvider>(std::move(src));
 }

@@ -43,6 +43,16 @@
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
 
+namespace {
+	template<typename T>
+	bool compare_and_set(T &var, T new_value)
+	{
+		if (var == new_value) return false;
+		var = new_value;
+		return true;
+	}
+}
+
 AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer)
 : renderer(renderer)
 {
@@ -71,64 +81,59 @@ AudioRenderer::AudioRenderer()
 
 void AudioRenderer::SetMillisecondsPerPixel(double new_pixel_ms)
 {
-	if (pixel_ms == new_pixel_ms) return;
+	if (compare_and_set(pixel_ms, new_pixel_ms))
+	{
+		if (renderer)
+			renderer->SetMillisecondsPerPixel(pixel_ms);
 
-	pixel_ms = new_pixel_ms;
-
-	if (renderer)
-		renderer->SetMillisecondsPerPixel(pixel_ms);
-
-	ResetBlockCount();
+		ResetBlockCount();
+	}
 }
 
 void AudioRenderer::SetHeight(int _pixel_height)
 {
-	if (pixel_height == _pixel_height) return;
-
-	pixel_height = _pixel_height;
-	Invalidate();
+	if (compare_and_set(pixel_height, _pixel_height))
+		Invalidate();
 }
 
 void AudioRenderer::SetAmplitudeScale(float _amplitude_scale)
 {
-	if (amplitude_scale == _amplitude_scale) return;
-
-	// A scaling of 0 or a negative scaling makes no sense
-	assert(_amplitude_scale > 0);
-
-	amplitude_scale = _amplitude_scale;
-
-	if (renderer)
-		renderer->SetAmplitudeScale(amplitude_scale);
-	Invalidate();
+	if (compare_and_set(amplitude_scale, _amplitude_scale))
+	{
+		// A scaling of 0 or a negative scaling makes no sense
+		assert(amplitude_scale > 0);
+		if (renderer)
+			renderer->SetAmplitudeScale(amplitude_scale);
+		Invalidate();
+	}
 }
 
 void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *_renderer)
 {
-	if (renderer == _renderer) return;
-
-	renderer = _renderer;
-	Invalidate();
-
-	if (renderer)
+	if (compare_and_set(renderer, _renderer))
 	{
-		renderer->SetProvider(provider);
-		renderer->SetAmplitudeScale(amplitude_scale);
-		renderer->SetMillisecondsPerPixel(pixel_ms);
+		Invalidate();
+
+		if (renderer)
+		{
+			renderer->SetProvider(provider);
+			renderer->SetAmplitudeScale(amplitude_scale);
+			renderer->SetMillisecondsPerPixel(pixel_ms);
+		}
 	}
 }
 
 void AudioRenderer::SetAudioProvider(AudioProvider *_provider)
 {
-	if (provider == _provider) return;
+	if (compare_and_set(provider, _provider))
+	{
+		Invalidate();
 
-	provider = _provider;
-	Invalidate();
+		if (renderer)
+			renderer->SetProvider(provider);
 
-	if (renderer)
-		renderer->SetProvider(provider);
-
-	ResetBlockCount();
+		ResetBlockCount();
+	}
 }
 
 void AudioRenderer::SetCacheMaxSize(size_t max_size)
@@ -145,11 +150,15 @@ void AudioRenderer::ResetBlockCount()
 {
 	if (provider)
 	{
-		double duration = provider->GetNumSamples() * 1000.0 / provider->GetSampleRate();
-		size_t rendered_width = (size_t)ceil(duration / pixel_ms);
-		cache_numblocks = rendered_width / cache_bitmap_width;
-		for (auto& bmp : bitmaps) bmp.SetBlockCount(cache_numblocks);
+		const size_t total_blocks = NumBlocks(provider->GetNumSamples());
+		for (auto& bmp : bitmaps) bmp.SetBlockCount(total_blocks);
 	}
+}
+
+size_t AudioRenderer::NumBlocks(const int64_t samples) const
+{
+	const double duration = samples * 1000.0 / provider->GetSampleRate();
+	return static_cast<size_t>(duration / pixel_ms / cache_bitmap_width);
 }
 
 const wxBitmap *AudioRenderer::GetCachedBitmap(int i, AudioRenderingStyle style)
@@ -187,7 +196,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, Audi
 	// And the offset in it to start its use at
 	int firstbitmapoffset = start % cache_bitmap_width;
 	// The last bitmap required
-	int lastbitmap = std::min<int>(end / cache_bitmap_width, cache_numblocks - 1);
+	int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetDecodedSamples()) - 1);
 
 	// Set a clipping region so that the first and last bitmaps don't draw
 	// outside the requested range
@@ -202,9 +211,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, int start, int length, Audi
 
 	// Now render blank audio from origin to end
 	if (origin.x < lastx)
-	{
 		renderer->RenderBlank(dc, wxRect(origin.x-1, origin.y, lastx-origin.x+1, pixel_height), style);
-	}
 
 	if (needs_age)
 	{
@@ -222,27 +229,18 @@ void AudioRenderer::Invalidate()
 
 void AudioRendererBitmapProvider::SetProvider(AudioProvider *_provider)
 {
-	if (provider == _provider) return;
-
-	provider = _provider;
-
-	OnSetProvider();
+	if (compare_and_set(provider, _provider))
+		OnSetProvider();
 }
 
 void AudioRendererBitmapProvider::SetMillisecondsPerPixel(double new_pixel_ms)
 {
-	if (pixel_ms == new_pixel_ms) return;
-
-	pixel_ms = new_pixel_ms;
-
-	OnSetMillisecondsPerPixel();
+	if (compare_and_set(pixel_ms, new_pixel_ms))
+		OnSetMillisecondsPerPixel();
 }
 
 void AudioRendererBitmapProvider::SetAmplitudeScale(float _amplitude_scale)
 {
-	if (amplitude_scale == _amplitude_scale) return;
-
-	amplitude_scale = _amplitude_scale;
-
-	OnSetAmplitudeScale();
+	if (compare_and_set(amplitude_scale, _amplitude_scale))
+		OnSetAmplitudeScale();
 }

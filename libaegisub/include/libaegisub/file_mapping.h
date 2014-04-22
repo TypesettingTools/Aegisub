@@ -49,9 +49,12 @@ namespace agi {
 
 	class temp_file_mapping {
 		file_mapping file;
-		std::unique_ptr<boost::interprocess::mapped_region> region;
-		uint64_t mapping_start = 0;
 		uint64_t file_size = 0;
+
+		std::unique_ptr<boost::interprocess::mapped_region> read_region;
+		uint64_t read_mapping_start = 0;
+		std::unique_ptr<boost::interprocess::mapped_region> write_region;
+		uint64_t write_mapping_start = 0;
 
 	public:
 		temp_file_mapping(fs::path const& filename, uint64_t size);

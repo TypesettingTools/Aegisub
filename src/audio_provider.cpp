@@ -108,8 +108,8 @@ std::unique_ptr<AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path con
 
 std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> source_provider);
 std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> source_provider);
-std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> source_provider, agi::BackgroundRunner *br);
-std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> source_provider, agi::BackgroundRunner *br);
+std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> source_provider);
+std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> source_provider);
 
 namespace {
 	struct factory {
@@ -187,10 +187,10 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 		return CreateLockAudioProvider(std::move(provider));
 
 	// Convert to RAM
-	if (cache == 1) return CreateRAMAudioProvider(std::move(provider), br);
+	if (cache == 1) return CreateRAMAudioProvider(std::move(provider));
 
 	// Convert to HD
-	if (cache == 2) return CreateHDAudioProvider(std::move(provider), br);
+	if (cache == 2) return CreateHDAudioProvider(std::move(provider));
 
 	throw agi::AudioCacheOpenError("Unknown caching method", nullptr);
 }

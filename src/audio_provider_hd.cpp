@@ -20,7 +20,6 @@
 #include "compat.h"
 #include "options.h"
 
-#include <libaegisub/background_runner.h>
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
@@ -31,54 +30,67 @@
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/interprocess/detail/os_thread_functions.hpp>
+#include <thread>
 #include <wx/intl.h>
 
 namespace {
 class HDAudioProvider final : public AudioProviderWrapper {
 	std::unique_ptr<agi::temp_file_mapping> file;
+	std::atomic<bool> cancelled = {false};
+	std::thread decoder;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
-		start *= channels * bytes_per_sample;
-		count *= channels * bytes_per_sample;
-		memcpy(buf, file->read(start, count), count);
+		auto missing = std::min(count, start + count - decoded_samples);
+		if (missing > 0) {
+			memset(static_cast<int16_t*>(buf) + count - missing, 0, missing * bytes_per_sample);
+			count -= missing;
+		}
+
+		if (count > 0) {
+			start *= bytes_per_sample;
+			count *= bytes_per_sample;
+			memcpy(buf, file->read(start, count), count);
+		}
 	}
 
 public:
-	HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br)
+	HDAudioProvider(std::unique_ptr<AudioProvider> src)
 	: AudioProviderWrapper(std::move(src))
 	{
+		decoded_samples = 0;
+
 		auto path = OPT_GET("Audio/Cache/HD/Location")->GetString();
 		if (path == "default")
 			path = "?temp";
 		auto cache_dir = config::path->MakeAbsolute(config::path->Decode(path), "?temp");
 
-		auto bps = bytes_per_sample * channels;
-
 		// Check free space
-		if ((uint64_t)num_samples * bps > agi::fs::FreeSpace(cache_dir))
+		if ((uint64_t)num_samples * bytes_per_sample > agi::fs::FreeSpace(cache_dir))
 			throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir.string() + " to cache the audio", nullptr);
 
 		auto filename = str(boost::format("audio-%lld-%lld")
 			% (long long)time(nullptr)
 			% (long long)boost::interprocess::ipcdetail::get_current_process_id());
 
-		file = agi::util::make_unique<agi::temp_file_mapping>(cache_dir / filename, num_samples * bps);
-		br->Run([&] (agi::ProgressSink *ps) {
-			ps->SetTitle(from_wx(_("Load audio")));
-			ps->SetMessage(from_wx(_("Reading to Hard Disk cache")));
-
+		file = agi::util::make_unique<agi::temp_file_mapping>(cache_dir / filename, num_samples * bytes_per_sample);
+		decoder = std::thread([&] {
 			int64_t block = 65536;
 			for (int64_t i = 0; i < num_samples; i += block) {
+				if (cancelled) break;
 				block = std::min(block, num_samples - i);
-				source->GetAudio(file->write(i * bps, block * bps), i, block);
-				ps->SetProgress(i, num_samples);
-				if (ps->IsCancelled()) return;
+				source->GetAudio(file->write(i * bytes_per_sample, block * bytes_per_sample), i, block);
+				decoded_samples += block;
 			}
 		});
+	}
+
+	~HDAudioProvider() {
+		cancelled = true;
+		decoder.join();
 	}
 };
 }
 
-std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src, agi::BackgroundRunner *br) {
-	return agi::util::make_unique<HDAudioProvider>(std::move(src), br);
+std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src) {
+	return agi::util::make_unique<HDAudioProvider>(std::move(src));
 }

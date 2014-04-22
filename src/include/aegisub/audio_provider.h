@@ -37,6 +37,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
+#include <atomic>
 #include <boost/filesystem/path.hpp>
 
 class AudioProvider {
@@ -45,6 +46,7 @@ protected:
 
 	/// for one channel, ie. number of PCM frames
 	int64_t num_samples;
+	std::atomic<int64_t> decoded_samples;
 	int sample_rate;
 	int bytes_per_sample;
 	bool float_samples;
@@ -62,6 +64,7 @@ public:
 
 	agi::fs::path GetFilename()       const { return filename; }
 	int64_t       GetNumSamples()     const { return num_samples; }
+	int64_t       GetDecodedSamples() const { return decoded_samples; }
 	int           GetSampleRate()     const { return sample_rate; }
 	int           GetBytesPerSample() const { return bytes_per_sample; }
 	int           GetChannels()       const { return channels; }
@@ -81,6 +84,7 @@ public:
 	{
 		channels = source->GetChannels();
 		num_samples = source->GetNumSamples();
+		decoded_samples = source->GetDecodedSamples();
 		sample_rate = source->GetSampleRate();
 		bytes_per_sample = source->GetBytesPerSample();
 		float_samples = source->AreSamplesFloat();

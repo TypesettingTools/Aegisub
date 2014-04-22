@@ -132,7 +132,7 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 
 	// Read properties
 	channels = vi.AudioChannels();
-	num_samples = vi.num_audio_samples;
+	decoded_samples = num_samples = vi.num_audio_samples;
 	sample_rate = vi.SamplesPerSecond();
 	bytes_per_sample = vi.BytesPerAudioSample();
 	float_samples = false;

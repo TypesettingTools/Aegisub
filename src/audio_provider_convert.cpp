@@ -143,6 +143,7 @@ public:
 
 		sample_rate *= 2;
 		num_samples *= 2;
+		decoded_samples = decoded_samples * 2;
 	}
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {

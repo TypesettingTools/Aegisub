@@ -33,6 +33,7 @@
 /// @ingroup audio_ui
 ///
 
+#include <chrono>
 #include <cstdint>
 #include <deque>
 #include <map>
@@ -55,9 +56,11 @@ class AudioProvider;
 class TimeRange;
 
 // Helper classes used in implementation of the audio display
-class AudioDisplayScrollbar;
-class AudioDisplayTimeline;
-class AudioDisplaySelection;
+namespace {
+	class AudioDisplayScrollbar;
+	class AudioDisplayTimeline;
+	class AudioDisplaySelection;
+}
 class AudioMarkerInteractionObject;
 
 /// @class AudioDisplayInteractionObject
@@ -91,7 +94,6 @@ public:
 	virtual ~AudioDisplayInteractionObject() { }
 };
 
-
 /// @class AudioDisplay
 /// @brief Primary view/UI for interaction with audio timing
 ///
@@ -111,7 +113,9 @@ class AudioDisplay: public wxWindow {
 	std::unique_ptr<AudioRendererBitmapProvider> audio_renderer_provider;
 
 	/// The controller managing us
-	AudioController *controller;
+	AudioController *controller = nullptr;
+
+	AudioProvider *provider = nullptr;
 
 	/// Scrollbar helper object
 	std::unique_ptr<AudioDisplayScrollbar> scrollbar;
@@ -131,6 +135,15 @@ class AudioDisplay: public wxWindow {
 
 	/// Timer for scrolling when markers are dragged out of the displayed area
 	wxTimer scroll_timer;
+
+	wxTimer load_timer;
+	int64_t last_sample_decoded = 0;
+	/// Time at which audio loading began, for calculating loading speed
+	std::chrono::steady_clock::time_point audio_load_start_time;
+	/// Estimated speed of audio decoding in samples per ms
+	double audio_load_speed = 0.0;
+	/// Current position of the audio loading progress in absolute pixels
+	int audio_load_position = 0;
 
 	/// Leftmost pixel in the virtual audio image being displayed
 	int scroll_left = 0;
@@ -219,6 +232,7 @@ class AudioDisplay: public wxWindow {
 	/// wxWidgets keypress event
 	void OnKeyDown(wxKeyEvent& event);
 	void OnScrollTimer(wxTimerEvent &event);
+	void OnLoadTimer(wxTimerEvent &);
 	void OnMouseEnter(wxMouseEvent&);
 	void OnMouseLeave(wxMouseEvent&);
 

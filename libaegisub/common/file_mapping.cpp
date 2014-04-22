@@ -151,10 +151,10 @@ temp_file_mapping::temp_file_mapping(fs::path const& filename, uint64_t size)
 temp_file_mapping::~temp_file_mapping() { }
 
 const char *temp_file_mapping::read(int64_t offset, uint64_t length) {
-	return write(offset, length);
+	return map(offset, length, read_only, file_size, file, read_region, read_mapping_start);
 }
 
 char *temp_file_mapping::write(int64_t offset, uint64_t length) {
-	return map(offset, length, read_write, file_size, file, region, mapping_start);
+	return map(offset, length, read_write, file_size, file, write_region, write_mapping_start);
 }
 }

@@ -100,8 +100,6 @@ class AudioRenderer {
 
 	/// Cached bitmaps for audio ranges
 	std::vector<AudioRendererBitmapCache> bitmaps;
-	/// Number of blocks in the bitmap caches
-	size_t cache_numblocks = 0;
 	/// The maximum allowed size of each bitmap cache, in bytes
 	size_t cache_bitmap_maxsize = 0;
 	/// The maximum allowed size of the renderer's cache, in bytes
@@ -131,11 +129,14 @@ class AudioRenderer {
 	/// has changed.
 	void ResetBlockCount();
 
+	/// Calculate the number of cache blocks needed for a given number of samples
+	size_t NumBlocks(int64_t samples) const;
+
 public:
 	/// @brief Constructor
 	///
-	/// Initialises audio rendering to a do-nothing state. An audio provider and bitmap
-	/// provider must be set before the audio renderer is functional.
+	/// Initialises audio rendering to a do-nothing state. An audio provider
+	/// and bitmap provider must be set before the audio renderer is functional.
 	AudioRenderer();
 
 	/// @brief Set horizontal zoom

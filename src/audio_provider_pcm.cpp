@@ -222,6 +222,8 @@ public:
 			data_left -= (ch.size + 1) & ~1;
 			filepos += (ch.size + 1) & ~1;
 		}
+
+		decoded_samples = num_samples;
 	}
 };
 
@@ -353,6 +355,8 @@ public:
 			data_left -= (chunk_size + 7) & ~7;
 			filepos += (chunk_size + 7) & ~7;
 		}
+
+		decoded_samples = num_samples;
 	}
 };
 

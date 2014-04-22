@@ -44,6 +44,7 @@
 #include "audio_timing.h"
 #include "block_cache.h"
 #include "compat.h"
+#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "options.h"
@@ -59,6 +60,7 @@
 #include <wx/dcclient.h>
 #include <wx/mousestate.h>
 
+namespace {
 /// @brief Colourscheme-based UI colour provider
 ///
 /// This class provides UI colours corresponding to the supplied audio colour
@@ -74,11 +76,8 @@ class UIColours {
 	wxColour dark_focused_colour;  ///< Dark focused colour from the colour scheme
 	wxColour sel_focused_colour;   ///< Selection focused colour from the colour scheme
 
-	bool focused; ///< Use the focused colours?
+	bool focused = false; ///< Use the focused colours?
 public:
-	/// Constructor
-	UIColours() : focused(false) { }
-
 	/// Set the colour scheme to load colours from
 	/// @param name Name of the colour scheme
 	void SetColourScheme(std::string const& name)
@@ -113,14 +112,14 @@ class AudioDisplayScrollbar final : public AudioDisplayInteractionObject {
 	wxRect bounds;
 	wxRect thumb;
 
-	bool dragging;   ///< user is dragging with the primary mouse button
+	bool dragging = false;   ///< user is dragging with the primary mouse button
 
-	int data_length; ///< total amount of data in control
-	int page_length; ///< amount of data in one page
-	int position;    ///< first item displayed
+	int data_length = 1; ///< total amount of data in control
+	int page_length = 1; ///< amount of data in one page
+	int position    = 0; ///< first item displayed
 
-	int sel_start;   ///< first data item in selection
-	int sel_length;  ///< number of data items in selection
+	int sel_start  = -1; ///< first data item in selection
+	int sel_length = 0;  ///< number of data items in selection
 
 	UIColours colours; ///< Colour provider
 
@@ -138,13 +137,7 @@ class AudioDisplayScrollbar final : public AudioDisplayInteractionObject {
 
 public:
 	AudioDisplayScrollbar(AudioDisplay *display)
-	: dragging(false)
-	, data_length(1)
-	, page_length(1)
-	, position(0)
-	, sel_start(-1)
-	, sel_length(0)
-	, display(display)
+	: display(display)
 	{
 	}
 
@@ -217,7 +210,7 @@ public:
 		return dragging;
 	}
 
-	void Paint(wxDC &dc, bool has_focus)
+	void Paint(wxDC &dc, bool has_focus, int load_progress)
 	{
 		colours.SetFocused(has_focus);
 
@@ -236,6 +229,14 @@ public:
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
 		dc.DrawRectangle(bounds);
 
+		if (load_progress > 0 && load_progress < data_length)
+		{
+			wxRect marker(
+				(int64_t)bounds.width * load_progress / data_length - 25, bounds.y + 1,
+				25, bounds.height - 2);
+			dc.GradientFillLinear(marker, colours.Dark(), colours.Light());
+		}
+
 		dc.SetPen(wxPen(colours.Light()));
 		dc.SetBrush(wxBrush(colours.Light()));
 		dc.DrawRectangle(thumb);
@@ -245,14 +246,14 @@ public:
 const int AudioDisplayScrollbar::min_width;
 
 class AudioDisplayTimeline final : public AudioDisplayInteractionObject {
-	int duration;        ///< Total duration in ms
-	double ms_per_pixel; ///< Milliseconds per pixel
-	int pixel_left;      ///< Leftmost visible pixel (i.e. scroll position)
+	int duration = 0;          ///< Total duration in ms
+	double ms_per_pixel = 1.0; ///< Milliseconds per pixel
+	int pixel_left = 0;        ///< Leftmost visible pixel (i.e. scroll position)
 
 	wxRect bounds;
 
 	wxPoint drag_lastpos;
-	bool dragging;
+	bool dragging = false;
 
 	enum Scale {
 		Sc_Millisecond,
@@ -276,11 +277,7 @@ class AudioDisplayTimeline final : public AudioDisplayInteractionObject {
 
 public:
 	AudioDisplayTimeline(AudioDisplay *display)
-	: duration(0)
-	, ms_per_pixel(1.0)
-	, pixel_left(0)
-	, dragging(false)
-	, display(display)
+	: display(display)
 	{
 		int width, height;
 		display->GetTextExtent("0123456789:.", &width, &height);
@@ -457,48 +454,6 @@ public:
 	}
 };
 
-class AudioMarkerInteractionObject final : public AudioDisplayInteractionObject {
-	// Object-pair being interacted with
-	std::vector<AudioMarker*> markers;
-	AudioTimingController *timing_controller;
-	// Audio display drag is happening on
-	AudioDisplay *display;
-	// Mouse button used to initiate the drag
-	wxMouseButton button_used;
-	// Default to snapping to snappable markers
-	bool default_snap;
-	// Range in pixels to snap at
-	int snap_range;
-
-public:
-	AudioMarkerInteractionObject(std::vector<AudioMarker*> markers, AudioTimingController *timing_controller, AudioDisplay *display, wxMouseButton button_used)
-	: markers(std::move(markers))
-	, timing_controller(timing_controller)
-	, display(display)
-	, button_used(button_used)
-	, default_snap(OPT_GET("Audio/Snap/Enable")->GetBool())
-	, snap_range(OPT_GET("Audio/Snap/Distance")->GetInt())
-	{
-	}
-
-	bool OnMouseEvent(wxMouseEvent &event) override
-	{
-		if (event.Dragging())
-		{
-			timing_controller->OnMarkerDrag(
-				markers,
-				display->TimeFromRelativeX(event.GetPosition().x),
-				default_snap != event.ShiftDown() ? display->TimeFromAbsoluteX(snap_range) : 0);
-		}
-
-		// We lose the marker drag if the button used to initiate it goes up
-		return !event.ButtonUp(button_used);
-	}
-
-	/// Get the position in milliseconds of this group of markers
-	int GetPosition() const { return markers.front()->GetPosition(); }
-};
-
 class AudioStyleRangeMerger final : public AudioRenderingStyleRanges {
 	typedef std::map<int, AudioRenderingStyle> style_map;
 public:
@@ -548,6 +503,50 @@ public:
 	iterator end() { return points.end(); }
 };
 
+}
+
+class AudioMarkerInteractionObject final : public AudioDisplayInteractionObject {
+	// Object-pair being interacted with
+	std::vector<AudioMarker*> markers;
+	AudioTimingController *timing_controller;
+	// Audio display drag is happening on
+	AudioDisplay *display;
+	// Mouse button used to initiate the drag
+	wxMouseButton button_used;
+	// Default to snapping to snappable markers
+	bool default_snap;
+	// Range in pixels to snap at
+	int snap_range;
+
+public:
+	AudioMarkerInteractionObject(std::vector<AudioMarker*> markers, AudioTimingController *timing_controller, AudioDisplay *display, wxMouseButton button_used)
+	: markers(std::move(markers))
+	, timing_controller(timing_controller)
+	, display(display)
+	, button_used(button_used)
+	, default_snap(OPT_GET("Audio/Snap/Enable")->GetBool())
+	, snap_range(OPT_GET("Audio/Snap/Distance")->GetInt())
+	{
+	}
+
+	bool OnMouseEvent(wxMouseEvent &event) override
+	{
+		if (event.Dragging())
+		{
+			timing_controller->OnMarkerDrag(
+				markers,
+				display->TimeFromRelativeX(event.GetPosition().x),
+				default_snap != event.ShiftDown() ? display->TimeFromAbsoluteX(snap_range) : 0);
+		}
+
+		// We lose the marker drag if the button used to initiate it goes up
+		return !event.ButtonUp(button_used);
+	}
+
+	/// Get the position in milliseconds of this group of markers
+	int GetPosition() const { return markers.front()->GetPosition(); }
+};
+
 AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
 , audio_open_connection(controller->AddAudioOpenListener(&AudioDisplay::OnAudioOpen, this))
@@ -582,6 +581,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	Bind(wxEVT_CHAR_HOOK, &AudioDisplay::OnKeyDown, this);
 	Bind(wxEVT_KEY_DOWN, &AudioDisplay::OnKeyDown, this);
 	scroll_timer.Bind(wxEVT_TIMER, &AudioDisplay::OnScrollTimer, this);
+	load_timer.Bind(wxEVT_TIMER, &AudioDisplay::OnLoadTimer, this);
 }
 
 AudioDisplay::~AudioDisplay()
@@ -754,9 +754,43 @@ void AudioDisplay::ReloadRenderingSettings()
 	Refresh();
 }
 
+void AudioDisplay::OnLoadTimer(wxTimerEvent&)
+{
+	using namespace std::chrono;
+	if (provider)
+	{
+		const auto now = steady_clock::now();
+		const auto elapsed = duration_cast<milliseconds>(now - audio_load_start_time).count();
+		if (elapsed == 0) return;
+
+		const int64_t new_decoded_count = provider->GetDecodedSamples();
+		if (new_decoded_count != last_sample_decoded)
+			audio_load_speed = (audio_load_speed + (double)new_decoded_count / elapsed) / 2;
+		if (audio_load_speed == 0) return;
+
+		int new_pos = AbsoluteXFromTime(elapsed * audio_load_speed * 1000.0 / provider->GetSampleRate());
+		if (new_pos > audio_load_position)
+			audio_load_position = new_pos;
+
+		const double left = last_sample_decoded * 1000.0 / provider->GetSampleRate() / ms_per_pixel;
+		const double right = new_decoded_count * 1000.0 / provider->GetSampleRate() / ms_per_pixel;
+
+		if (left < scroll_left + pixel_audio_width && right >= scroll_left)
+			Refresh();
+		else
+			RefreshRect(scrollbar->GetBounds());
+		last_sample_decoded = new_decoded_count;
+	}
+
+	if (!provider || last_sample_decoded == provider->GetNumSamples()) {
+		load_timer.Stop();
+		audio_load_position = -1;
+	}
+}
+
 void AudioDisplay::OnPaint(wxPaintEvent&)
 {
-	if (!audio_renderer_provider) return;
+	if (!audio_renderer_provider || !provider) return;
 
 	wxAutoBufferedPaintDC dc(this);
 
@@ -787,7 +821,7 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 		PaintTrackCursor(dc);
 
 	if (redraw_scrollbar)
-		scrollbar->Paint(dc, HasFocus());
+		scrollbar->Paint(dc, HasFocus(), audio_load_position);
 	if (redraw_timeline)
 		timeline->Paint(dc);
 }
@@ -1142,6 +1176,8 @@ void AudioDisplay::OnFocus(wxFocusEvent &)
 
 void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 {
+	this->provider = provider;
+
 	if (!audio_renderer_provider)
 		ReloadRenderingSettings();
 
@@ -1171,6 +1207,13 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 
 			OnTimingController();
 		}
+
+		last_sample_decoded = provider->GetDecodedSamples();
+		audio_load_position = -1;
+		audio_load_speed = 0;
+		audio_load_start_time = std::chrono::steady_clock::now();
+		if (last_sample_decoded != provider->GetNumSamples())
+			load_timer.Start(100);
 	}
 	else
 	{
