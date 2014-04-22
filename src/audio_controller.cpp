@@ -216,14 +216,12 @@ bool AudioController::IsAudioOpen() const
 	return player && provider;
 }
 
-void AudioController::SetTimingController(AudioTimingController *new_controller)
+void AudioController::SetTimingController(std::unique_ptr<AudioTimingController> new_controller)
 {
-	if (timing_controller.get() != new_controller) {
-		timing_controller.reset(new_controller);
-		if (timing_controller)
-		{
-			timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
-		}
+	timing_controller = std::move(new_controller);
+	if (timing_controller)
+	{
+		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
 	}
 
 	AnnounceTimingControllerChanged();

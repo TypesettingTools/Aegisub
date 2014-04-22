@@ -43,6 +43,8 @@
 #include "selection_controller.h"
 #include "utils.h"
 
+#include <libaegisub/util.h>
+
 #include <boost/range/algorithm.hpp>
 #include <cstdint>
 #include <wx/pen.h>
@@ -407,9 +409,9 @@ public:
 	AudioTimingControllerDialogue(agi::Context *c);
 };
 
-AudioTimingController *CreateDialogueTimingController(agi::Context *c)
+std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Context *c)
 {
-	return new AudioTimingControllerDialogue(c);
+	return agi::util::make_unique<AudioTimingControllerDialogue>(c);
 }
 
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)

@@ -179,12 +179,11 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedStyleRanges, AddUpdatedStyleRangesListener)
 };
 
-
 /// @brief Create a standard dialogue audio timing controller
 /// @param c Project context
-AudioTimingController *CreateDialogueTimingController(agi::Context *c);
+std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Context *c);
 
 /// @brief Create a karaoke audio timing controller
 /// @param c Project context
 /// @param kara Karaoke model
-AudioTimingController *CreateKaraokeTimingController(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
+std::unique_ptr<AudioTimingController> CreateKaraokeTimingController(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);

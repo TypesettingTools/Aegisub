@@ -228,14 +228,11 @@ public:
 
 	/// @brief Return the current timing controller
 	/// @return The current timing controller or 0
-	AudioTimingController * GetTimingController() const { return timing_controller.get(); }
+	AudioTimingController *GetTimingController() const { return timing_controller.get(); }
 
 	/// @brief Change the current timing controller
-	/// @param new_mode The new timing controller or 0. This may be the same
-	/// object as the current timing controller, to signal that the timing
-	/// controller has changed the object being timed, e.g. changed to a new
-	/// dialogue line.
-	void SetTimingController(AudioTimingController *new_controller);
+	/// @param new_mode The new timing controller or nullptr
+	void SetTimingController(std::unique_ptr<AudioTimingController> new_controller);
 
 	/// @brief Save a portion of the decoded loaded audio to a wav file
 	/// @param filename File to save to

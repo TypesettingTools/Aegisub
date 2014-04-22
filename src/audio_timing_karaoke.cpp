@@ -34,11 +34,12 @@
 #include "selection_controller.h"
 #include "utils.h"
 
-#include <deque>
+#include <libaegisub/util.h>
 
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/sliced.hpp>
+#include <deque>
 
 /// @class KaraokeMarker
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke
@@ -149,9 +150,9 @@ public:
 	AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
 };
 
-AudioTimingController *CreateKaraokeTimingController(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed)
+std::unique_ptr<AudioTimingController> CreateKaraokeTimingController(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed)
 {
-	return new AudioTimingControllerKaraoke(c, kara, file_changed);
+	return agi::util::make_unique<AudioTimingControllerKaraoke>(c, kara, file_changed);
 }
 
 AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed)
