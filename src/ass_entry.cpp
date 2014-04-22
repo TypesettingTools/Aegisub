@@ -28,6 +28,7 @@ std::string const& AssEntry::GroupHeader(bool ssa) const {
 		"[Fonts]",
 		"[Graphics]",
 		"[Events]",
+		"[Aegisub Extradata]",
 		""
 	};
 
@@ -37,6 +38,7 @@ std::string const& AssEntry::GroupHeader(bool ssa) const {
 		"[Fonts]",
 		"[Graphics]",
 		"[Events]",
+		"[Aegisub Extradata]",
 		""
 	};
 

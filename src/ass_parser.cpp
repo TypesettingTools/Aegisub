@@ -19,12 +19,15 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
+#include "string_codec.h"
 #include "subtitle_format.h"
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 AssParser::AssParser(AssFile *target, int version)
 : target(target)
@@ -111,6 +114,21 @@ void AssParser::ParseGraphicsLine(std::string const& data) {
 		attach.reset(new AssAttachment(data, AssEntryGroup::GRAPHIC));
 }
 
+void AssParser::ParseExtradataLine(std::string const &data) {
+	static const boost::regex matcher("Data:[[:space:]]*(\\d+),([^,]+),(.*)");
+	boost::match_results<std::string::const_iterator> mr;
+
+	if (boost::regex_match(data, mr, matcher)) {
+		auto id = boost::lexical_cast<uint32_t>(mr.str(1));
+		auto key = inline_string_decode(mr.str(2));
+		auto value = inline_string_decode(mr.str(3));
+
+		// ensure next_extradata_id is always at least 1 more than the largest existing id
+		target->next_extradata_id = std::max(id+1, target->next_extradata_id);
+		target->Extradata[id] = std::make_pair(key, value);
+	}
+}
+
 void AssParser::AddLine(std::string const& data) {
 	// Special-case for attachments since a line could theoretically be both a
 	// valid attachment data line and a valid section header, and if an
@@ -142,6 +160,8 @@ void AssParser::AddLine(std::string const& data) {
 			state = &AssParser::ParseGraphicsLine;
 		else if (low == "[fonts]")
 			state = &AssParser::ParseFontLine;
+		else if (low == "[aegisub extradata]")
+			state = &AssParser::ParseExtradataLine;
 		else
 			state = &AssParser::UnknownLine;
 		return;

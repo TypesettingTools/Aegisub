@@ -146,6 +146,8 @@ struct AssDialogueBase {
 	boost::flyweight<std::string> Actor;
 	/// Effect name
 	boost::flyweight<std::string> Effect;
+	/// IDs of extradata entries for line
+	boost::flyweight<std::vector<uint32_t>> ExtradataIds;
 	/// Raw text data
 	boost::flyweight<std::string> Text;
 };
@@ -183,3 +185,4 @@ public:
 	AssDialogue(std::string const& data);
 	~AssDialogue();
 };
+

@@ -43,6 +43,7 @@ enum class AssEntryGroup {
 	FONT,
 	GRAPHIC,
 	DIALOGUE,
+	EXTRADATA,
 	GROUP_MAX
 };
 

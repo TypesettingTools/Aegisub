@@ -22,6 +22,7 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_parser.h"
+#include "string_codec.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
@@ -114,6 +115,24 @@ struct Writer {
 			file.WriteLineToFile(ssa ? line.GetSSAText() : line.GetEntryData());
 		}
 	}
+
+	void WriteExtradata(AegisubExtradataMap const& extradata) {
+		if (extradata.size() == 0)
+			return;
+
+		group = AssEntryGroup::EXTRADATA;
+		file.WriteLineToFile("");
+		file.WriteLineToFile("[Aegisub Extradata]");
+		for (auto const& edi : extradata) {
+			std::string line = "Data: ";
+			line += std::to_string(edi.first);
+			line += ",";
+			line += inline_string_encode(edi.second.first);
+			line += ",";
+			line += inline_string_encode(edi.second.second);
+			file.WriteLineToFile(line);
+		}
+	}
 };
 }
 
@@ -124,4 +143,5 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	writer.Write(src->Styles);
 	writer.Write(src->Attachments);
 	writer.Write(src->Events);
+	writer.WriteExtradata(src->Extradata);
 }
