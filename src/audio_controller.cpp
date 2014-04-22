@@ -168,17 +168,9 @@ void AudioController::OpenAudio(agi::fs::path const& url)
 	}
 
 	CloseAudio();
-	provider = std::move(new_provider);
 
-	try
-	{
-		player = AudioPlayerFactory::GetAudioPlayer(provider.get(), context->parent);
-	}
-	catch (...)
-	{
-		provider.reset();
-		throw;
-	}
+	player = AudioPlayerFactory::GetAudioPlayer(new_provider.get(), context->parent);
+	provider = std::move(new_provider);
 
 	audio_url = url;
 

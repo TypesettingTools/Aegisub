@@ -71,7 +71,7 @@ namespace Automation4 {
 		std::unique_ptr<ScriptDialog> config_dialog;
 
 		/// subclasses should implement this, producing a new ScriptDialog
-		virtual ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) = 0;
+		virtual std::unique_ptr<ScriptDialog> GenerateConfigDialog(wxWindow *parent, agi::Context *c) = 0;
 
 	protected:
 		std::string GetScriptSettingsIdentifier();

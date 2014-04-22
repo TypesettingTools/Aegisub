@@ -38,6 +38,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/util.h>
 
 #include <wx/button.h>
 #include <wx/dirdlg.h>
@@ -110,9 +111,9 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 				return;
 			}
 
-			out.reset(new wxFFileOutputStream(destination.wstring()));
+			out = agi::util::make_unique<wxFFileOutputStream>(destination.wstring());
 			if (out->IsOk())
-				zip.reset(new wxZipOutputStream(*out));
+				zip = agi::util::make_unique<wxZipOutputStream>(*out);
 
 			if (!out->IsOk() || !zip || !zip->IsOk()) {
 				AppendText(wxString::Format(_("* Failed to open %s.\n"), destination.wstring()), 2);

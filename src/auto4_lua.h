@@ -279,7 +279,7 @@ namespace Automation4 {
 		LuaDialog *config_dialog;
 
 	protected:
-		ScriptDialog* GenerateConfigDialog(wxWindow *parent, agi::Context *c) override;
+		std::unique_ptr<ScriptDialog> GenerateConfigDialog(wxWindow *parent, agi::Context *c) override;
 
 	public:
 		LuaExportFilter(lua_State *L);

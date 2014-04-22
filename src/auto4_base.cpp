@@ -186,7 +186,7 @@ namespace Automation4 {
 	}
 
 	wxWindow* ExportFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {
-		config_dialog.reset(GenerateConfigDialog(parent, c));
+		config_dialog = GenerateConfigDialog(parent, c);
 
 		if (config_dialog) {
 			std::string val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());

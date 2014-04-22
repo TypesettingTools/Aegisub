@@ -1093,7 +1093,7 @@ namespace Automation4 {
 		}
 	}
 
-	ScriptDialog* LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
+	std::unique_ptr<ScriptDialog> LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
 	{
 		if (!has_config)
 			return nullptr;
@@ -1119,7 +1119,7 @@ namespace Automation4 {
 			config_dialog = new LuaDialog(L, false);
 		}
 
-		return config_dialog;
+		return std::unique_ptr<ScriptDialog>{config_dialog};
 	}
 
 	LuaScriptFactory::LuaScriptFactory()

@@ -21,6 +21,8 @@
 #include "ass_style.h"
 #include "subtitle_format.h"
 
+#include <libaegisub/util.h>
+
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -103,12 +105,12 @@ void AssParser::ParseStyleLine(std::string const& data) {
 
 void AssParser::ParseFontLine(std::string const& data) {
 	if (boost::starts_with(data, "fontname: "))
-		attach.reset(new AssAttachment(data, AssEntryGroup::FONT));
+		attach = agi::util::make_unique<AssAttachment>(data, AssEntryGroup::FONT);
 }
 
 void AssParser::ParseGraphicsLine(std::string const& data) {
 	if (boost::starts_with(data, "filename: "))
-		attach.reset(new AssAttachment(data, AssEntryGroup::GRAPHIC));
+		attach = agi::util::make_unique<AssAttachment>(data, AssEntryGroup::GRAPHIC);
 }
 
 void AssParser::AddLine(std::string const& data) {

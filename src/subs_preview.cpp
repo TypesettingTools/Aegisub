@@ -93,7 +93,7 @@ void SubtitlesPreview::SetText(std::string const& text) {
 void SubtitlesPreview::SetColour(agi::Color col) {
 	if (col != back_color) {
 		back_color = col;
-		vid.reset(new DummyVideoProvider(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), back_color, true));
+		vid = agi::util::make_unique<DummyVideoProvider>(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), back_color, true);
 		UpdateBitmap();
 	}
 }
@@ -127,7 +127,7 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 	int h = evt.GetSize().GetHeight();
 
 	bmp = agi::util::make_unique<wxBitmap>(w, h, -1);
-	vid.reset(new DummyVideoProvider(0.0, 10, w, h, back_color, true));
+	vid = agi::util::make_unique<DummyVideoProvider>(0.0, 10, w, h, back_color, true);
 	try {
 		if (!progress)
 			progress = agi::util::make_unique<DialogProgress>(this);
