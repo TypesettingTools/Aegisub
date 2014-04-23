@@ -43,7 +43,7 @@
 #include "../selection_controller.h"
 #include "../video_context.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -378,23 +378,23 @@ struct time_prev final : public Command {
 
 namespace cmd {
 	void init_time() {
-		reg(agi::util::make_unique<time_add_lead_both>());
-		reg(agi::util::make_unique<time_add_lead_in>());
-		reg(agi::util::make_unique<time_add_lead_out>());
-		reg(agi::util::make_unique<time_continuous_end>());
-		reg(agi::util::make_unique<time_continuous_start>());
-		reg(agi::util::make_unique<time_frame_current>());
-		reg(agi::util::make_unique<time_length_decrease>());
-		reg(agi::util::make_unique<time_length_decrease_shift>());
-		reg(agi::util::make_unique<time_length_increase>());
-		reg(agi::util::make_unique<time_length_increase_shift>());
-		reg(agi::util::make_unique<time_next>());
-		reg(agi::util::make_unique<time_prev>());
-		reg(agi::util::make_unique<time_shift>());
-		reg(agi::util::make_unique<time_snap_end_video>());
-		reg(agi::util::make_unique<time_snap_scene>());
-		reg(agi::util::make_unique<time_snap_start_video>());
-		reg(agi::util::make_unique<time_start_decrease>());
-		reg(agi::util::make_unique<time_start_increase>());
+		reg(agi::make_unique<time_add_lead_both>());
+		reg(agi::make_unique<time_add_lead_in>());
+		reg(agi::make_unique<time_add_lead_out>());
+		reg(agi::make_unique<time_continuous_end>());
+		reg(agi::make_unique<time_continuous_start>());
+		reg(agi::make_unique<time_frame_current>());
+		reg(agi::make_unique<time_length_decrease>());
+		reg(agi::make_unique<time_length_decrease_shift>());
+		reg(agi::make_unique<time_length_increase>());
+		reg(agi::make_unique<time_length_increase_shift>());
+		reg(agi::make_unique<time_next>());
+		reg(agi::make_unique<time_prev>());
+		reg(agi::make_unique<time_shift>());
+		reg(agi::make_unique<time_snap_end_video>());
+		reg(agi::make_unique<time_snap_scene>());
+		reg(agi::make_unique<time_snap_start_video>());
+		reg(agi::make_unique<time_start_decrease>());
+		reg(agi::make_unique<time_start_increase>());
 	}
 }

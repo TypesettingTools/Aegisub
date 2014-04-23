@@ -29,7 +29,7 @@
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/format.hpp>
 #include <boost/range/algorithm.hpp>
@@ -198,11 +198,11 @@ void HunspellSpellChecker::OnLanguageChanged() {
 
 	LOG_I("dictionary/file") << dic;
 
-	hunspell = agi::util::make_unique<Hunspell>(agi::fs::ShortName(aff).c_str(), agi::fs::ShortName(dic).c_str());
+	hunspell = agi::make_unique<Hunspell>(agi::fs::ShortName(aff).c_str(), agi::fs::ShortName(dic).c_str());
 	if (!hunspell) return;
 
-	conv = agi::util::make_unique<agi::charset::IconvWrapper>("utf-8", hunspell->get_dic_encoding());
-	rconv = agi::util::make_unique<agi::charset::IconvWrapper>(hunspell->get_dic_encoding(), "utf-8");
+	conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", hunspell->get_dic_encoding());
+	rconv = agi::make_unique<agi::charset::IconvWrapper>(hunspell->get_dic_encoding(), "utf-8");
 
 	userDicPath = config::path->Decode("?user/dictionaries")/str(boost::format("user_%s.dic") % language);
 	ReadUserDictionary();

@@ -35,7 +35,7 @@
 #include "include/aegisub/audio_provider.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -89,5 +89,5 @@ public:
 std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
 	if (!boost::starts_with(file.string(), "dummy-audio:"))
 		return {};
-	return agi::util::make_unique<DummyAudioProvider>(file);
+	return agi::make_unique<DummyAudioProvider>(file);
 }

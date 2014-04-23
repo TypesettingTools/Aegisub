@@ -23,7 +23,7 @@
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -72,7 +72,7 @@ public:
 			% (long long)time(nullptr)
 			% (long long)boost::interprocess::ipcdetail::get_current_process_id());
 
-		file = agi::util::make_unique<agi::temp_file_mapping>(cache_dir / filename, num_samples * bytes_per_sample);
+		file = agi::make_unique<agi::temp_file_mapping>(cache_dir / filename, num_samples * bytes_per_sample);
 		decoder = std::thread([&] {
 			int64_t block = 65536;
 			for (int64_t i = 0; i < num_samples; i += block) {
@@ -92,5 +92,5 @@ public:
 }
 
 std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src) {
-	return agi::util::make_unique<HDAudioProvider>(std::move(src));
+	return agi::make_unique<HDAudioProvider>(std::move(src));
 }

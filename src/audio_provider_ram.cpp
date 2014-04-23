@@ -37,7 +37,7 @@
 #include "audio_controller.h"
 #include "compat.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <array>
 #include <boost/container/stable_vector.hpp>
@@ -112,5 +112,5 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 }
 
 std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> src) {
-	return agi::util::make_unique<RAMAudioProvider>(std::move(src));
+	return agi::make_unique<RAMAudioProvider>(std::move(src));
 }

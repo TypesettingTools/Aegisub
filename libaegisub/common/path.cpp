@@ -21,7 +21,7 @@
 #include "libaegisub/path.h"
 
 #include "libaegisub/fs.h"
-#include "libaegisub/util.h"
+#include "libaegisub/make_unique.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>

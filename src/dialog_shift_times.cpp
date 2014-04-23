@@ -38,7 +38,7 @@
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/cajun/reader.h>
@@ -99,7 +99,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
 , history_filename(config::path->Decode("?user/shift_history.json"))
-, history(agi::util::make_unique<json::Array>())
+, history(agi::make_unique<json::Array>())
 , timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 , selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))
 {

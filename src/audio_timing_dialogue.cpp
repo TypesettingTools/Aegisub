@@ -43,7 +43,7 @@
 #include "selection_controller.h"
 #include "utils.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm.hpp>
 #include <cstdint>
@@ -411,7 +411,7 @@ public:
 
 std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Context *c)
 {
-	return agi::util::make_unique<AudioTimingControllerDialogue>(c);
+	return agi::make_unique<AudioTimingControllerDialogue>(c);
 }
 
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)

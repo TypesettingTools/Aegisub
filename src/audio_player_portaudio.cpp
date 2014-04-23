@@ -42,7 +42,7 @@
 #include "utils.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 DEFINE_SIMPLE_EXCEPTION(PortAudioError, agi::AudioPlayerOpenError, "audio/player/open/portaudio")
 
@@ -282,7 +282,7 @@ bool PortAudioPlayer::IsPlaying() {
 }
 
 std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *provider, wxWindow *) {
-	return agi::util::make_unique<PortAudioPlayer>(provider);
+	return agi::make_unique<PortAudioPlayer>(provider);
 }
 
 #endif // WITH_PORTAUDIO

@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,42 +11,14 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-/// @file log.cpp
-/// @brief Unix logging
-/// @ingroup libaegisub
-
-#include <cstdio>
-#include <ctime>
-#include <cstring>
-
-#include <unistd.h>
-
-#include "libaegisub/log.h"
-#include "libaegisub/make_unique.h"
+#include <memory>
 
 namespace agi {
-	namespace log {
-
-void EmitSTDOUT::log(SinkMessage *sm) {
-	tm tmtime;
-	localtime_r(&sm->tv.tv_sec, &tmtime);
-
-	printf("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %.*s\n",
-		Severity_ID[sm->severity],
-		tmtime.tm_hour,
-		tmtime.tm_min,
-		tmtime.tm_sec,
-		(long)sm->tv.tv_usec,
-		sm->section,
-		sm->file,
-		sm->func,
-		sm->line,
-		(int)sm->message.size(),
-		sm->message.c_str());
-	if (!isatty(fileno(stdout)))
-		fflush(stdout);
+	template<typename T, typename... Args>
+	std::unique_ptr<T> make_unique(Args&&... args) {
+		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+	}
 }
-
-	} // namespace log
-} // namespace agi

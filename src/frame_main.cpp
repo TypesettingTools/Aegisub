@@ -63,6 +63,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
@@ -176,7 +177,7 @@ public:
 
 FrameMain::FrameMain()
 : wxFrame(nullptr, -1, "", wxDefaultPosition, wxSize(920,700), wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
-, context(agi::util::make_unique<agi::Context>())
+, context(agi::make_unique<agi::Context>())
 {
 	StartupLog("Entering FrameMain constructor");
 

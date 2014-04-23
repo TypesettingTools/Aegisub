@@ -53,7 +53,7 @@
 
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/of_type_adaptor.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -1254,37 +1254,37 @@ struct edit_insert_original final : public Command {
 
 namespace cmd {
 	void init_edit() {
-		reg(agi::util::make_unique<edit_color_primary>());
-		reg(agi::util::make_unique<edit_color_secondary>());
-		reg(agi::util::make_unique<edit_color_outline>());
-		reg(agi::util::make_unique<edit_color_shadow>());
-		reg(agi::util::make_unique<edit_font>());
-		reg(agi::util::make_unique<edit_find_replace>());
-		reg(agi::util::make_unique<edit_line_copy>());
-		reg(agi::util::make_unique<edit_line_cut>());
-		reg(agi::util::make_unique<edit_line_delete>());
-		reg(agi::util::make_unique<edit_line_duplicate>());
-		reg(agi::util::make_unique<edit_line_duplicate_shift>());
-		reg(agi::util::make_unique<edit_line_duplicate_shift_back>());
-		reg(agi::util::make_unique<edit_line_join_as_karaoke>());
-		reg(agi::util::make_unique<edit_line_join_concatenate>());
-		reg(agi::util::make_unique<edit_line_join_keep_first>());
-		reg(agi::util::make_unique<edit_line_paste>());
-		reg(agi::util::make_unique<edit_line_paste_over>());
-		reg(agi::util::make_unique<edit_line_recombine>());
-		reg(agi::util::make_unique<edit_line_split_by_karaoke>());
-		reg(agi::util::make_unique<edit_line_split_estimate>());
-		reg(agi::util::make_unique<edit_line_split_preserve>());
-		reg(agi::util::make_unique<edit_line_split_video>());
-		reg(agi::util::make_unique<edit_style_bold>());
-		reg(agi::util::make_unique<edit_style_italic>());
-		reg(agi::util::make_unique<edit_style_underline>());
-		reg(agi::util::make_unique<edit_style_strikeout>());
-		reg(agi::util::make_unique<edit_redo>());
-		reg(agi::util::make_unique<edit_undo>());
-		reg(agi::util::make_unique<edit_revert>());
-		reg(agi::util::make_unique<edit_insert_original>());
-		reg(agi::util::make_unique<edit_clear>());
-		reg(agi::util::make_unique<edit_clear_text>());
+		reg(agi::make_unique<edit_color_primary>());
+		reg(agi::make_unique<edit_color_secondary>());
+		reg(agi::make_unique<edit_color_outline>());
+		reg(agi::make_unique<edit_color_shadow>());
+		reg(agi::make_unique<edit_font>());
+		reg(agi::make_unique<edit_find_replace>());
+		reg(agi::make_unique<edit_line_copy>());
+		reg(agi::make_unique<edit_line_cut>());
+		reg(agi::make_unique<edit_line_delete>());
+		reg(agi::make_unique<edit_line_duplicate>());
+		reg(agi::make_unique<edit_line_duplicate_shift>());
+		reg(agi::make_unique<edit_line_duplicate_shift_back>());
+		reg(agi::make_unique<edit_line_join_as_karaoke>());
+		reg(agi::make_unique<edit_line_join_concatenate>());
+		reg(agi::make_unique<edit_line_join_keep_first>());
+		reg(agi::make_unique<edit_line_paste>());
+		reg(agi::make_unique<edit_line_paste_over>());
+		reg(agi::make_unique<edit_line_recombine>());
+		reg(agi::make_unique<edit_line_split_by_karaoke>());
+		reg(agi::make_unique<edit_line_split_estimate>());
+		reg(agi::make_unique<edit_line_split_preserve>());
+		reg(agi::make_unique<edit_line_split_video>());
+		reg(agi::make_unique<edit_style_bold>());
+		reg(agi::make_unique<edit_style_italic>());
+		reg(agi::make_unique<edit_style_underline>());
+		reg(agi::make_unique<edit_style_strikeout>());
+		reg(agi::make_unique<edit_redo>());
+		reg(agi::make_unique<edit_undo>());
+		reg(agi::make_unique<edit_revert>());
+		reg(agi::make_unique<edit_insert_original>());
+		reg(agi::make_unique<edit_clear>());
+		reg(agi::make_unique<edit_clear_text>());
 	}
 }

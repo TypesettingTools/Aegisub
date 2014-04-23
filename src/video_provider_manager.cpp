@@ -22,7 +22,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/range/iterator_range.hpp>
 

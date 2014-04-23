@@ -32,7 +32,7 @@
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
 #include <libaegisub/thesaurus.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 Thesaurus::Thesaurus()
 : lang_listener(OPT_SUB("Tool/Thesaurus/Language", &Thesaurus::OnLanguageChanged, this))
@@ -100,7 +100,7 @@ void Thesaurus::OnLanguageChanged() {
 
 	agi::dispatch::Background().Async([=]{
 		try {
-			auto thes = agi::util::make_unique<agi::Thesaurus>(dat, idx);
+			auto thes = agi::make_unique<agi::Thesaurus>(dat, idx);
 			agi::dispatch::Main().Sync([&thes, this]{
 				impl = std::move(thes);
 			});

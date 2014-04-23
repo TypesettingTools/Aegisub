@@ -34,7 +34,7 @@
 #include "command.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include "../audio_controller.h"
 #include "../compat.h"
@@ -273,20 +273,20 @@ struct app_updates final : public Command {
 
 namespace cmd {
 	void init_app() {
-		reg(agi::util::make_unique<app_about>());
-		reg(agi::util::make_unique<app_display_audio_subs>());
-		reg(agi::util::make_unique<app_display_full>());
-		reg(agi::util::make_unique<app_display_subs>());
-		reg(agi::util::make_unique<app_display_video_subs>());
-		reg(agi::util::make_unique<app_exit>());
-		reg(agi::util::make_unique<app_language>());
-		reg(agi::util::make_unique<app_log>());
-		reg(agi::util::make_unique<app_new_window>());
-		reg(agi::util::make_unique<app_options>());
-		reg(agi::util::make_unique<app_toggle_global_hotkeys>());
-		reg(agi::util::make_unique<app_toggle_toolbar>());
+		reg(agi::make_unique<app_about>());
+		reg(agi::make_unique<app_display_audio_subs>());
+		reg(agi::make_unique<app_display_full>());
+		reg(agi::make_unique<app_display_subs>());
+		reg(agi::make_unique<app_display_video_subs>());
+		reg(agi::make_unique<app_exit>());
+		reg(agi::make_unique<app_language>());
+		reg(agi::make_unique<app_log>());
+		reg(agi::make_unique<app_new_window>());
+		reg(agi::make_unique<app_options>());
+		reg(agi::make_unique<app_toggle_global_hotkeys>());
+		reg(agi::make_unique<app_toggle_toolbar>());
 #ifdef WITH_UPDATE_CHECKER
-		reg(agi::util::make_unique<app_updates>());
+		reg(agi::make_unique<app_updates>());
 #endif
 	}
 }

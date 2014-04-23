@@ -54,7 +54,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/keyframe.h>
 #include <libaegisub/path.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <wx/msgdlg.h>
 
@@ -117,7 +117,7 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		if (!progress)
 			progress = new DialogProgress(context->parent);
 		auto old_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		provider = agi::util::make_unique<ThreadedFrameSource>(filename, old_matrix, this, progress);
+		provider = agi::make_unique<ThreadedFrameSource>(filename, old_matrix, this, progress);
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
 

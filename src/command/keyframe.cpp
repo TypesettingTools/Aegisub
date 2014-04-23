@@ -37,7 +37,7 @@
 #include "../utils.h"
 #include "../video_context.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 namespace {
 	using cmd::Command;
@@ -100,8 +100,8 @@ struct keyframe_save final : public Command {
 
 namespace cmd {
 	void init_keyframe() {
-		reg(agi::util::make_unique<keyframe_close>());
-		reg(agi::util::make_unique<keyframe_open>());
-		reg(agi::util::make_unique<keyframe_save>());
+		reg(agi::make_unique<keyframe_close>());
+		reg(agi::make_unique<keyframe_open>());
+		reg(agi::make_unique<keyframe_save>());
 	}
 }

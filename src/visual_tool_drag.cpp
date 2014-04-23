@@ -30,7 +30,7 @@
 #include "video_context.h"
 #include "video_display.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/format.hpp>
@@ -230,7 +230,7 @@ void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_list::iterator pos)
 	Vector2D p1 = FromScriptCoords(GetLinePosition(diag));
 
 	// Create \pos feature
-	auto feat = agi::util::make_unique<Feature>();
+	auto feat = agi::make_unique<Feature>();
 	auto parent = feat.get();
 	feat->pos = p1;
 	feat->type = DRAG_START;
@@ -245,7 +245,7 @@ void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_list::iterator pos)
 
 	// Create move destination feature
 	if (GetLineMove(diag, p1, p2, t1, t2)) {
-		feat = agi::util::make_unique<Feature>();
+		feat = agi::make_unique<Feature>();
 		feat->pos = FromScriptCoords(p2);
 		feat->layer = 1;
 		feat->type = DRAG_END;
@@ -261,7 +261,7 @@ void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_list::iterator pos)
 
 	// Create org feature
 	if (Vector2D org = GetLineOrigin(diag)) {
-		feat = agi::util::make_unique<Feature>();
+		feat = agi::make_unique<Feature>();
 		feat->pos = FromScriptCoords(org);
 		feat->layer = -1;
 		feat->type = DRAG_ORIGIN;

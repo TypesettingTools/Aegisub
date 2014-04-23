@@ -31,7 +31,7 @@
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 #include <libaegisub/signal.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>

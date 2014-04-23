@@ -20,7 +20,7 @@
 
 #include <libaegisub/path.h>
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/filesystem.hpp>
 

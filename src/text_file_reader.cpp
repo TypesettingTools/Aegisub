@@ -17,7 +17,7 @@
 #include "text_file_reader.h"
 
 #include <libaegisub/file_mapping.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
@@ -25,8 +25,8 @@
 #include <boost/interprocess/streams/bufferstream.hpp>
 
 TextFileReader::TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim)
-: file(agi::util::make_unique<agi::read_file_mapping>(filename))
-, stream(agi::util::make_unique<boost::interprocess::ibufferstream>(file->read(), file->size()))
+: file(agi::make_unique<agi::read_file_mapping>(filename))
+, stream(agi::make_unique<boost::interprocess::ibufferstream>(file->read(), file->size()))
 , trim(trim)
 , iter(agi::line_iterator<std::string>(*stream, encoding))
 {

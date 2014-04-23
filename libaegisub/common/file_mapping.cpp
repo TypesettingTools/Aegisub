@@ -17,6 +17,7 @@
 #include "libaegisub/file_mapping.h"
 
 #include "libaegisub/fs.h"
+#include "libaegisub/make_unique.h"
 #include "libaegisub/util.h"
 
 #include <boost/filesystem.hpp>
@@ -58,7 +59,7 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 		throw std::bad_alloc();
 
 	try {
-		region = agi::util::make_unique<mapped_region>(file, mode, mapping_start, static_cast<size_t>(length));
+		region = agi::make_unique<mapped_region>(file, mode, mapping_start, static_cast<size_t>(length));
 	}
 	catch (interprocess_exception const&) {
 		throw agi::fs::FileSystemUnknownError("Failed mapping a view of the file");

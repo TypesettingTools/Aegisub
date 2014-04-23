@@ -22,7 +22,7 @@
 #include "font_file_lister_fontconfig.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #ifdef __APPLE__
 #include <libaegisub/util_osx.h>

@@ -44,7 +44,7 @@
 #include "utils.h"
 
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/filesystem/path.hpp>
@@ -76,7 +76,7 @@ static void swap(wxCheckListBox *list, int idx, int sel_dir) {
 DialogExport::DialogExport(agi::Context *c)
 : wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
 , c(c)
-, exporter(agi::util::make_unique<AssExporter>(c))
+, exporter(agi::make_unique<AssExporter>(c))
 {
 	SetIcon(GETICON(export_menu_16));
 	SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);

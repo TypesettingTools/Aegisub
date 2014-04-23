@@ -57,11 +57,6 @@ namespace agi {
 	/// @param name New name for the thread
 	void SetThreadName(const char *name);
 
-	template<typename T, typename... Args>
-	std::unique_ptr<T> make_unique(Args&&... args) {
-		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-	}
-
 	/// A thin wrapper around this_thread::sleep_for that uses std::thread on
 	/// Windows (to avoid having to compile boost.thread) and boost::thread
 	/// elsewhere (because libstcc++ 4.7 is missing it).

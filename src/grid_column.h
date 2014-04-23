@@ -21,7 +21,7 @@
 #include <unordered_map>
 
 class AssDialogue;
-class wxClientDC;
+class wxDC;
 class wxString;
 namespace agi { struct Context; }
 

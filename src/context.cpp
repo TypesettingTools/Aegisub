@@ -27,20 +27,20 @@
 #include "text_selection_controller.h"
 #include "video_context.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 namespace agi {
 Context::Context()
-: ass(util::make_unique<AssFile>())
-, textSelectionController(util::make_unique<TextSelectionController>())
-, subsController(util::make_unique<SubsController>(this))
-, local_scripts(util::make_unique<Automation4::LocalScriptManager>(this))
-, videoController(util::make_unique<VideoContext>(this))
-, audioController(util::make_unique<AudioController>(this))
-, selectionController(util::make_unique<SelectionController>(this))
-, initialLineState(util::make_unique<InitialLineState>(this))
-, search(util::make_unique<SearchReplaceEngine>(this))
-, dialog(util::make_unique<DialogManager>())
+: ass(make_unique<AssFile>())
+, textSelectionController(make_unique<TextSelectionController>())
+, subsController(make_unique<SubsController>(this))
+, local_scripts(make_unique<Automation4::LocalScriptManager>(this))
+, videoController(make_unique<VideoContext>(this))
+, audioController(make_unique<AudioController>(this))
+, selectionController(make_unique<SelectionController>(this))
+, initialLineState(make_unique<InitialLineState>(this))
+, search(make_unique<SearchReplaceEngine>(this))
+, dialog(make_unique<DialogManager>())
 {
 	subsController->SetSelectionController(selectionController.get());
 }

@@ -21,6 +21,7 @@
 #include <libaegisub/access.h>
 #include "libaegisub/fs.h"
 #include "libaegisub/log.h"
+#include "libaegisub/make_unique.h"
 #include "libaegisub/path.h"
 #include "libaegisub/util.h"
 
@@ -34,7 +35,7 @@ std::unique_ptr<std::istream> Open(fs::path const& file, bool binary) {
 	LOG_D("agi/io/open/file") << file;
 	acs::CheckFileRead(file);
 
-	auto stream = util::make_unique<boost::filesystem::ifstream>(file, (binary ? std::ios::binary : std::ios::in));
+	auto stream = agi::make_unique<boost::filesystem::ifstream>(file, (binary ? std::ios::binary : std::ios::in));
 
 	if (stream->fail())
 		throw IOFatal("Unknown fatal error as occurred");
@@ -56,7 +57,7 @@ Save::Save(fs::path const& file, bool binary)
 		// Not an error
 	}
 
-	fp = util::make_unique<boost::filesystem::ofstream>(tmp_name, binary ? std::ios::binary : std::ios::out);
+	fp = agi::make_unique<boost::filesystem::ofstream>(tmp_name, binary ? std::ios::binary : std::ios::out);
 	if (!fp->good())
 		throw fs::WriteDenied(tmp_name);
 }

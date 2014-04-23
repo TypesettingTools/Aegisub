@@ -42,7 +42,7 @@
 #include "../utils.h"
 #include "../video_context.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 namespace {
 	using cmd::Command;
@@ -107,9 +107,9 @@ struct meta final : public Command {
 
 namespace cmd {
 	void init_automation() {
-		reg(agi::util::make_unique<meta>());
-		reg(agi::util::make_unique<open_manager>());
-		reg(agi::util::make_unique<reload_all>());
-		reg(agi::util::make_unique<reload_autoload>());
+		reg(agi::make_unique<meta>());
+		reg(agi::make_unique<open_manager>());
+		reg(agi::make_unique<reload_all>());
+		reg(agi::make_unique<reload_autoload>());
 	}
 }

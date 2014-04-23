@@ -52,7 +52,7 @@
 
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm.hpp>
 #include <wx/msgdlg.h>
@@ -424,23 +424,23 @@ struct subtitle_spellcheck final : public Command {
 
 namespace cmd {
 	void init_subtitle() {
-		reg(agi::util::make_unique<subtitle_attachment>());
-		reg(agi::util::make_unique<subtitle_find>());
-		reg(agi::util::make_unique<subtitle_find_next>());
-		reg(agi::util::make_unique<subtitle_insert_after>());
-		reg(agi::util::make_unique<subtitle_insert_after_videotime>());
-		reg(agi::util::make_unique<subtitle_insert_before>());
-		reg(agi::util::make_unique<subtitle_insert_before_videotime>());
-		reg(agi::util::make_unique<subtitle_new>());
-		reg(agi::util::make_unique<subtitle_open>());
-		reg(agi::util::make_unique<subtitle_open_autosave>());
-		reg(agi::util::make_unique<subtitle_open_charset>());
-		reg(agi::util::make_unique<subtitle_open_video>());
-		reg(agi::util::make_unique<subtitle_properties>());
-		reg(agi::util::make_unique<subtitle_save>());
-		reg(agi::util::make_unique<subtitle_save_as>());
-		reg(agi::util::make_unique<subtitle_select_all>());
-		reg(agi::util::make_unique<subtitle_select_visible>());
-		reg(agi::util::make_unique<subtitle_spellcheck>());
+		reg(agi::make_unique<subtitle_attachment>());
+		reg(agi::make_unique<subtitle_find>());
+		reg(agi::make_unique<subtitle_find_next>());
+		reg(agi::make_unique<subtitle_insert_after>());
+		reg(agi::make_unique<subtitle_insert_after_videotime>());
+		reg(agi::make_unique<subtitle_insert_before>());
+		reg(agi::make_unique<subtitle_insert_before_videotime>());
+		reg(agi::make_unique<subtitle_new>());
+		reg(agi::make_unique<subtitle_open>());
+		reg(agi::make_unique<subtitle_open_autosave>());
+		reg(agi::make_unique<subtitle_open_charset>());
+		reg(agi::make_unique<subtitle_open_video>());
+		reg(agi::make_unique<subtitle_properties>());
+		reg(agi::make_unique<subtitle_save>());
+		reg(agi::make_unique<subtitle_save_as>());
+		reg(agi::make_unique<subtitle_select_all>());
+		reg(agi::make_unique<subtitle_select_visible>());
+		reg(agi::make_unique<subtitle_spellcheck>());
 	}
 }

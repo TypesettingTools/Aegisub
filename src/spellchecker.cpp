@@ -17,11 +17,11 @@
 #include "include/aegisub/spellchecker.h"
 #include "spellchecker_hunspell.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 std::unique_ptr<agi::SpellChecker> SpellCheckerFactory::GetSpellChecker() {
 #ifdef WITH_HUNSPELL
-	return agi::util::make_unique<HunspellSpellChecker>();
+	return agi::make_unique<HunspellSpellChecker>();
 #else
 	return {};
 #endif

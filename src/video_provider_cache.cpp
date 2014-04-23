@@ -19,7 +19,7 @@
 #include "options.h"
 #include "video_frame.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <list>
 
@@ -93,5 +93,5 @@ std::shared_ptr<VideoFrame> VideoProviderCache::GetFrame(int n) {
 }
 
 std::unique_ptr<VideoProvider> CreateCacheVideoProvider(std::unique_ptr<VideoProvider> parent) {
-	return agi::util::make_unique<VideoProviderCache>(std::move(parent));
+	return agi::make_unique<VideoProviderCache>(std::move(parent));
 }

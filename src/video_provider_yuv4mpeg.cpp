@@ -41,6 +41,7 @@
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
@@ -446,5 +447,5 @@ std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 
 namespace agi { class BackgroundRunner; }
 std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const& path, std::string const&, agi::BackgroundRunner *) {
-	return agi::util::make_unique<YUV4MPEGVideoProvider>(path);
+	return agi::make_unique<YUV4MPEGVideoProvider>(path);
 }

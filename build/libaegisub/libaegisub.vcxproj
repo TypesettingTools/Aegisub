@@ -65,6 +65,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\line_wrap.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\log.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\make_unique.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\mru.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\of_type_adaptor.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\option.h" />

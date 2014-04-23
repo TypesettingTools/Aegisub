@@ -35,7 +35,7 @@
 #include "selection_controller.h"
 #include "utils.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/locale/boundary.hpp>
@@ -66,7 +66,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , audio_opened(c->audioController->AddAudioOpenListener(&AudioKaraoke::OnAudioOpened, this))
 , audio_closed(c->audioController->AddAudioCloseListener(&AudioKaraoke::OnAudioClosed, this))
 , active_line_changed(c->selectionController->AddActiveLineListener(&AudioKaraoke::OnActiveLineChanged, this))
-, kara(agi::util::make_unique<AssKaraoke>())
+, kara(agi::make_unique<AssKaraoke>())
 {
 	using std::bind;
 

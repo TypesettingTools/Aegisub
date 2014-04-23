@@ -53,7 +53,7 @@
 
 #include <libaegisub/access.h>
 #include <libaegisub/path.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
@@ -773,7 +773,7 @@ namespace Automation4 {
 	int LuaCommand::LuaRegister(lua_State *L)
 	{
 		static std::mutex mutex;
-		auto command = agi::util::make_unique<LuaCommand>(L);
+		auto command = agi::make_unique<LuaCommand>(L);
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			cmd::reg(std::move(command));
@@ -1048,7 +1048,7 @@ namespace Automation4 {
 	int LuaExportFilter::LuaRegister(lua_State *L)
 	{
 		static std::mutex mutex;
-		auto filter = agi::util::make_unique<LuaExportFilter>(L);
+		auto filter = agi::make_unique<LuaExportFilter>(L);
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			AssExportFilterChain::Register(std::move(filter));
@@ -1130,7 +1130,7 @@ namespace Automation4 {
 	std::unique_ptr<Script> LuaScriptFactory::Produce(agi::fs::path const& filename) const
 	{
 		if (agi::fs::HasExtension(filename, "lua") || agi::fs::HasExtension(filename, "moon"))
-			return agi::util::make_unique<LuaScript>(filename);
+			return agi::make_unique<LuaScript>(filename);
 		return nullptr;
 	}
 }

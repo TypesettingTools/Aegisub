@@ -40,7 +40,7 @@
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <vector>
 
@@ -51,7 +51,7 @@ protected:
 	std::unique_ptr<agi::read_file_mapping> file;
 
 	PCMAudioProvider(agi::fs::path const& filename)
-	: file(agi::util::make_unique<agi::read_file_mapping>(filename))
+	: file(agi::make_unique<agi::read_file_mapping>(filename))
 	{
 		float_samples = false;
 	}
@@ -365,7 +365,7 @@ std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filen
 	std::string msg;
 
 	try {
-		return agi::util::make_unique<RiffWavPCMAudioProvider>(filename);
+		return agi::make_unique<RiffWavPCMAudioProvider>(filename);
 	}
 	catch (agi::AudioDataNotFoundError const& err) {
 		msg = "RIFF PCM WAV audio provider: " + err.GetMessage();
@@ -376,7 +376,7 @@ std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filen
 	}
 
 	try {
-		return agi::util::make_unique<Wave64AudioProvider>(filename);
+		return agi::make_unique<Wave64AudioProvider>(filename);
 	}
 	catch (agi::AudioDataNotFoundError const& err) {
 		msg += "\nWave64 audio provider: " + err.GetMessage();

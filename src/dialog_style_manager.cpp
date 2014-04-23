@@ -53,7 +53,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/split.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>
@@ -224,7 +224,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	SetSizerAndFit(MainSizer);
 
 	// Position window
-	persist = agi::util::make_unique<PersistLocation>(this, "Tool/Style Manager");
+	persist = agi::make_unique<PersistLocation>(this, "Tool/Style Manager");
 
 	// Populate lists
 	LoadCatalog();
@@ -334,7 +334,7 @@ void DialogStyleManager::LoadCatalog() {
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty()) {
 		Store.Load(config::path->Decode("?user/catalog/Default.sty"));
-		Store.push_back(agi::util::make_unique<AssStyle>());
+		Store.push_back(agi::make_unique<AssStyle>());
 		Store.Save();
 		CatalogList->Append("Default");
 	}
@@ -415,7 +415,7 @@ void DialogStyleManager::OnCopyToStorage() {
 			}
 		}
 		else {
-			Store.push_back(agi::util::make_unique<AssStyle>(*styleMap.at(selections[i])));
+			Store.push_back(agi::make_unique<AssStyle>(*styleMap.at(selections[i])));
 			copied.push_back(styleName);
 		}
 	}

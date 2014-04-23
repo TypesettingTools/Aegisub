@@ -42,7 +42,7 @@
 #include "utils.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -123,7 +123,7 @@ void AudioSpectrumRenderer::RecreateCache()
 	if (provider)
 	{
 		size_t block_count = (size_t)((provider->GetNumSamples() + (size_t)(1<<derivation_dist) - 1) >> derivation_dist);
-		cache = agi::util::make_unique<AudioSpectrumCache>(block_count, this);
+		cache = agi::make_unique<AudioSpectrumCache>(block_count, this);
 
 #ifdef WITH_FFTW3
 		dft_input = fftw_alloc_real(2<<derivation_size);

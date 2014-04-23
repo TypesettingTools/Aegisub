@@ -21,7 +21,7 @@
 #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
-#include "libaegisub/util.h"
+#include "libaegisub/make_unique.h"
 
 #include <boost/interprocess/streams/bufferstream.hpp>
 

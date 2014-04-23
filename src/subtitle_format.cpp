@@ -54,7 +54,7 @@
 #include "video_context.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>
@@ -272,15 +272,15 @@ void SubtitleFormat::MergeIdentical(AssFile &file) {
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
-		formats.emplace_back(agi::util::make_unique<AssSubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<Ebu3264SubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<EncoreSubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<MKVSubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<MicroDVDSubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<SRTSubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<TTXTSubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<TXTSubtitleFormat>());
-		formats.emplace_back(agi::util::make_unique<TranStationSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<AssSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<Ebu3264SubtitleFormat>());
+		formats.emplace_back(agi::make_unique<EncoreSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<MKVSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<MicroDVDSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<SRTSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<TTXTSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<TXTSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<TranStationSubtitleFormat>());
 	}
 }
 

@@ -43,7 +43,7 @@
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <mmsystem.h>
 #include <process.h>
@@ -821,7 +821,7 @@ DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider, wxWindow *parent
 
 	try
 	{
-		thread = agi::util::make_unique<DirectSoundPlayer2Thread>(provider, WantedLatency, BufferLength, parent);
+		thread = agi::make_unique<DirectSoundPlayer2Thread>(provider, WantedLatency, BufferLength, parent);
 	}
 	catch (const char *msg)
 	{
@@ -936,7 +936,7 @@ void DirectSoundPlayer2::SetVolume(double vol)
 }
 
 std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *provider, wxWindow *parent) {
-	return agi::util::make_unique<DirectSoundPlayer2>(provider, parent);
+	return agi::make_unique<DirectSoundPlayer2>(provider, parent);
 }
 
 #endif // WITH_DIRECTSOUND

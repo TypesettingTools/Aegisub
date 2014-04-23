@@ -54,6 +54,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/classification.hpp>
@@ -739,43 +740,43 @@ struct video_zoom_out final : public validator_video_attached {
 
 namespace cmd {
 	void init_video() {
-		reg(agi::util::make_unique<video_aspect_cinematic>());
-		reg(agi::util::make_unique<video_aspect_custom>());
-		reg(agi::util::make_unique<video_aspect_default>());
-		reg(agi::util::make_unique<video_aspect_full>());
-		reg(agi::util::make_unique<video_aspect_wide>());
-		reg(agi::util::make_unique<video_close>());
-		reg(agi::util::make_unique<video_copy_coordinates>());
-		reg(agi::util::make_unique<video_cycle_subtitles_provider>());
-		reg(agi::util::make_unique<video_detach>());
-		reg(agi::util::make_unique<video_details>());
-		reg(agi::util::make_unique<video_focus_seek>());
-		reg(agi::util::make_unique<video_frame_copy>());
-		reg(agi::util::make_unique<video_frame_copy_raw>());
-		reg(agi::util::make_unique<video_frame_next>());
-		reg(agi::util::make_unique<video_frame_next_boundary>());
-		reg(agi::util::make_unique<video_frame_next_keyframe>());
-		reg(agi::util::make_unique<video_frame_next_large>());
-		reg(agi::util::make_unique<video_frame_prev>());
-		reg(agi::util::make_unique<video_frame_prev_boundary>());
-		reg(agi::util::make_unique<video_frame_prev_keyframe>());
-		reg(agi::util::make_unique<video_frame_prev_large>());
-		reg(agi::util::make_unique<video_frame_save>());
-		reg(agi::util::make_unique<video_frame_save_raw>());
-		reg(agi::util::make_unique<video_jump>());
-		reg(agi::util::make_unique<video_jump_end>());
-		reg(agi::util::make_unique<video_jump_start>());
-		reg(agi::util::make_unique<video_open>());
-		reg(agi::util::make_unique<video_open_dummy>());
-		reg(agi::util::make_unique<video_opt_autoscroll>());
-		reg(agi::util::make_unique<video_play>());
-		reg(agi::util::make_unique<video_play_line>());
-		reg(agi::util::make_unique<video_show_overscan>());
-		reg(agi::util::make_unique<video_stop>());
-		reg(agi::util::make_unique<video_zoom_100>());
-		reg(agi::util::make_unique<video_zoom_200>());
-		reg(agi::util::make_unique<video_zoom_50>());
-		reg(agi::util::make_unique<video_zoom_in>());
-		reg(agi::util::make_unique<video_zoom_out>());
+		reg(agi::make_unique<video_aspect_cinematic>());
+		reg(agi::make_unique<video_aspect_custom>());
+		reg(agi::make_unique<video_aspect_default>());
+		reg(agi::make_unique<video_aspect_full>());
+		reg(agi::make_unique<video_aspect_wide>());
+		reg(agi::make_unique<video_close>());
+		reg(agi::make_unique<video_copy_coordinates>());
+		reg(agi::make_unique<video_cycle_subtitles_provider>());
+		reg(agi::make_unique<video_detach>());
+		reg(agi::make_unique<video_details>());
+		reg(agi::make_unique<video_focus_seek>());
+		reg(agi::make_unique<video_frame_copy>());
+		reg(agi::make_unique<video_frame_copy_raw>());
+		reg(agi::make_unique<video_frame_next>());
+		reg(agi::make_unique<video_frame_next_boundary>());
+		reg(agi::make_unique<video_frame_next_keyframe>());
+		reg(agi::make_unique<video_frame_next_large>());
+		reg(agi::make_unique<video_frame_prev>());
+		reg(agi::make_unique<video_frame_prev_boundary>());
+		reg(agi::make_unique<video_frame_prev_keyframe>());
+		reg(agi::make_unique<video_frame_prev_large>());
+		reg(agi::make_unique<video_frame_save>());
+		reg(agi::make_unique<video_frame_save_raw>());
+		reg(agi::make_unique<video_jump>());
+		reg(agi::make_unique<video_jump_end>());
+		reg(agi::make_unique<video_jump_start>());
+		reg(agi::make_unique<video_open>());
+		reg(agi::make_unique<video_open_dummy>());
+		reg(agi::make_unique<video_opt_autoscroll>());
+		reg(agi::make_unique<video_play>());
+		reg(agi::make_unique<video_play_line>());
+		reg(agi::make_unique<video_show_overscan>());
+		reg(agi::make_unique<video_stop>());
+		reg(agi::make_unique<video_zoom_100>());
+		reg(agi::make_unique<video_zoom_200>());
+		reg(agi::make_unique<video_zoom_50>());
+		reg(agi::make_unique<video_zoom_in>());
+		reg(agi::make_unique<video_zoom_out>());
 	}
 }

@@ -43,7 +43,7 @@
 #include "video_frame.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <wx/choicdlg.h>
 #include <wx/msgdlg.h>
@@ -285,7 +285,7 @@ std::shared_ptr<VideoFrame> FFmpegSourceVideoProvider::GetFrame(int n) {
 }
 
 std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *br) {
-	return agi::util::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
+	return agi::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
 }
 
 #endif /* WITH_FFMS2 */

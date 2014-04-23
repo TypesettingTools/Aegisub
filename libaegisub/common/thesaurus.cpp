@@ -21,7 +21,7 @@
 #include "libaegisub/charset_conv.h"
 #include "libaegisub/file_mapping.h"
 #include "libaegisub/line_iterator.h"
-#include "libaegisub/util.h"
+#include "libaegisub/make_unique.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
@@ -33,7 +33,7 @@ using boost::phoenix::placeholders::_1;
 namespace agi {
 
 Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
-: dat(util::make_unique<read_file_mapping>(dat_path))
+: dat(make_unique<read_file_mapping>(dat_path))
 {
 	read_file_mapping idx_file(idx_path);
 	boost::interprocess::ibufferstream idx(idx_file.read(), static_cast<size_t>(idx_file.size()));

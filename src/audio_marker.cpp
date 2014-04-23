@@ -26,7 +26,7 @@
 #include "pen.h"
 #include "video_context.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -48,7 +48,7 @@ AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, cons
 , timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
 , enabled_slot(OPT_SUB(opt_name, &AudioMarkerProviderKeyframes::Update, this))
 , enabled_opt(OPT_GET(opt_name))
-, style(agi::util::make_unique<Pen>("Colour/Audio Display/Keyframe"))
+, style(agi::make_unique<Pen>("Colour/Audio Display/Keyframe"))
 {
 	Update();
 }
@@ -122,7 +122,7 @@ void VideoPositionMarkerProvider::Update(int frame_number) {
 void VideoPositionMarkerProvider::OptChanged(agi::OptionValue const& opt) {
 	if (opt.GetBool()) {
 		video_seek_slot.Unblock();
-		marker = agi::util::make_unique<VideoPositionMarker>();
+		marker = agi::make_unique<VideoPositionMarker>();
 		marker->SetPosition(vc->GetFrameN());
 	}
 	else {
@@ -137,7 +137,7 @@ void VideoPositionMarkerProvider::GetMarkers(const TimeRange &range, AudioMarker
 }
 
 SecondsMarkerProvider::SecondsMarkerProvider()
-: pen(agi::util::make_unique<Pen>("Colour/Audio Display/Seconds Line", 1, wxPENSTYLE_DOT))
+: pen(agi::make_unique<Pen>("Colour/Audio Display/Seconds Line", 1, wxPENSTYLE_DOT))
 , enabled(OPT_GET("Audio/Display/Draw/Seconds"))
 , enabled_opt_changed(OPT_SUB("Audio/Display/Draw/Seconds", &SecondsMarkerProvider::EnabledOptChanged, this))
 {

@@ -52,7 +52,7 @@
 #include "utils.h"
 #include "video_context.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -551,10 +551,10 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
 , audio_open_connection(controller->AddAudioOpenListener(&AudioDisplay::OnAudioOpen, this))
 , context(context)
-, audio_renderer(agi::util::make_unique<AudioRenderer>())
+, audio_renderer(agi::make_unique<AudioRenderer>())
 , controller(controller)
-, scrollbar(agi::util::make_unique<AudioDisplayScrollbar>(this))
-, timeline(agi::util::make_unique<AudioDisplayTimeline>(this))
+, scrollbar(agi::make_unique<AudioDisplayScrollbar>(this))
+, timeline(agi::make_unique<AudioDisplayTimeline>(this))
 {
 	style_ranges[0] = AudioStyle_Normal;
 
@@ -722,7 +722,7 @@ void AudioDisplay::ReloadRenderingSettings()
 	if (OPT_GET("Audio/Spectrum")->GetBool())
 	{
 		colour_scheme_name = OPT_GET("Colour/Audio Display/Spectrum")->GetString();
-		auto audio_spectrum_renderer = agi::util::make_unique<AudioSpectrumRenderer>(colour_scheme_name);
+		auto audio_spectrum_renderer = agi::make_unique<AudioSpectrumRenderer>(colour_scheme_name);
 
 		int64_t spectrum_quality = OPT_GET("Audio/Renderer/Spectrum/Quality")->GetInt();
 #ifdef WITH_FFTW3
@@ -744,7 +744,7 @@ void AudioDisplay::ReloadRenderingSettings()
 	else
 	{
 		colour_scheme_name = OPT_GET("Colour/Audio Display/Waveform")->GetString();
-		audio_renderer_provider = agi::util::make_unique<AudioWaveformRenderer>(colour_scheme_name);
+		audio_renderer_provider = agi::make_unique<AudioWaveformRenderer>(colour_scheme_name);
 	}
 
 	audio_renderer->SetRenderer(audio_renderer_provider.get());
@@ -1087,7 +1087,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 		if (markers.size())
 		{
 			RemoveTrackCursor();
-			audio_marker = agi::util::make_unique<AudioMarkerInteractionObject>(markers, timing, this, (wxMouseButton)event.GetButton());
+			audio_marker = agi::make_unique<AudioMarkerInteractionObject>(markers, timing, this, (wxMouseButton)event.GetButton());
 			SetDraggedObject(audio_marker.get());
 			return;
 		}

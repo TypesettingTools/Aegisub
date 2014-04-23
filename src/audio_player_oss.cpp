@@ -40,7 +40,7 @@
 #include "utils.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -281,7 +281,7 @@ int64_t OSSPlayer::GetCurrentPosition()
 }
 
 std::unique_ptr<AudioPlayer> CreateOSSPlayer(AudioProvider *provider, wxWindow *) {
-    return agi::util::make_unique<OSSPlayer>(provider);
+    return agi::make_unique<OSSPlayer>(provider);
 }
 
 #endif // WITH_OSS

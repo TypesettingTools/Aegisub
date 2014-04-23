@@ -39,7 +39,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -67,7 +67,7 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 		auto in = agi::io::Open(file);
 		for (auto const& line : agi::line_iterator<std::string>(*in)) {
 			try {
-				style.emplace_back(agi::util::make_unique<AssStyle>(line));
+				style.emplace_back(agi::make_unique<AssStyle>(line));
 			} catch(...) {
 				/* just ignore invalid lines for now */
 			}

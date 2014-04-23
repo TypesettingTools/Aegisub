@@ -42,7 +42,7 @@
 #include "options.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <alsa/asoundlib.h>
@@ -461,7 +461,7 @@ void AlsaPlayer::SetVolume(double vol)
 
 std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *provider, wxWindow *)
 {
-	return agi::util::make_unique<AlsaPlayer>(provider);
+	return agi::make_unique<AlsaPlayer>(provider);
 }
 
 #endif // WITH_ALSA

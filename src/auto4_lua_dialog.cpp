@@ -42,7 +42,7 @@
 #include "utils.h"
 #include "validators.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptors.hpp>
@@ -426,26 +426,26 @@ namespace Automation4 {
 
 			// Check control class and create relevant control
 			if (controlclass == "label")
-				ctl = agi::util::make_unique<LuaControl::Label>(L);
+				ctl = agi::make_unique<LuaControl::Label>(L);
 			else if (controlclass == "edit")
-				ctl = agi::util::make_unique<LuaControl::Edit>(L);
+				ctl = agi::make_unique<LuaControl::Edit>(L);
 			else if (controlclass == "intedit")
-				ctl = agi::util::make_unique<LuaControl::IntEdit>(L);
+				ctl = agi::make_unique<LuaControl::IntEdit>(L);
 			else if (controlclass == "floatedit")
-				ctl = agi::util::make_unique<LuaControl::FloatEdit>(L);
+				ctl = agi::make_unique<LuaControl::FloatEdit>(L);
 			else if (controlclass == "textbox")
-				ctl = agi::util::make_unique<LuaControl::Textbox>(L);
+				ctl = agi::make_unique<LuaControl::Textbox>(L);
 			else if (controlclass == "dropdown")
-				ctl = agi::util::make_unique<LuaControl::Dropdown>(L);
+				ctl = agi::make_unique<LuaControl::Dropdown>(L);
 			else if (controlclass == "checkbox")
-				ctl = agi::util::make_unique<LuaControl::Checkbox>(L);
+				ctl = agi::make_unique<LuaControl::Checkbox>(L);
 			else if (controlclass == "color")
-				ctl = agi::util::make_unique<LuaControl::Color>(L, false);
+				ctl = agi::make_unique<LuaControl::Color>(L, false);
 			else if (controlclass == "coloralpha")
-				ctl = agi::util::make_unique<LuaControl::Color>(L, true);
+				ctl = agi::make_unique<LuaControl::Color>(L, true);
 			else if (controlclass == "alpha")
 				// FIXME
-				ctl = agi::util::make_unique<LuaControl::Edit>(L);
+				ctl = agi::make_unique<LuaControl::Edit>(L);
 			else
 				luaL_error(L, "bad control table entry");
 

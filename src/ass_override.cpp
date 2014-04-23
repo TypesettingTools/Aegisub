@@ -38,7 +38,7 @@
 #include "utils.h"
 
 #include <libaegisub/color.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -114,7 +114,7 @@ template<> agi::Color AssOverrideParameter::Get<agi::Color>() const {
 
 template<> AssDialogueBlockOverride *AssOverrideParameter::Get<AssDialogueBlockOverride*>() const {
 	if (!block.get()) {
-		block = agi::util::make_unique<AssDialogueBlockOverride>(Get<std::string>());
+		block = agi::make_unique<AssDialogueBlockOverride>(Get<std::string>());
 		block->ParseTags();
 	}
 	return block.get();

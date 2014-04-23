@@ -19,6 +19,7 @@
 #include "version.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <atomic>
@@ -120,7 +121,7 @@ void Initialize(agi::fs::path const& path) {
 	wcscpy_s(crash_dump_path + len, MAX_PATH - len, L".dmp");
 
 	if (!dump_thread)
-		dump_thread = agi::util::make_unique<dump_thread_state>();
+		dump_thread = agi::make_unique<dump_thread_state>();
 }
 
 void Cleanup() {

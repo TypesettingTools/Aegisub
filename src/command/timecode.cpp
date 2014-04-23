@@ -37,7 +37,7 @@
 #include "../utils.h"
 #include "../video_context.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 namespace {
 	using cmd::Command;
@@ -97,8 +97,8 @@ struct timecode_save final : public Command {
 
 namespace cmd {
 	void init_timecode() {
-		reg(agi::util::make_unique<timecode_close>());
-		reg(agi::util::make_unique<timecode_open>());
-		reg(agi::util::make_unique<timecode_save>());
+		reg(agi::make_unique<timecode_close>());
+		reg(agi::make_unique<timecode_open>());
+		reg(agi::make_unique<timecode_save>());
 	}
 }

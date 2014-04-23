@@ -23,7 +23,7 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/hotkey.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include "command/command.h"
 #include "compat.h"
@@ -259,7 +259,7 @@ public:
 };
 
 HotkeyDataViewModel::HotkeyDataViewModel(Preferences *parent)
-: root(agi::util::make_unique<HotkeyModelRoot>(this))
+: root(agi::make_unique<HotkeyModelRoot>(this))
 , parent(parent)
 {
 }

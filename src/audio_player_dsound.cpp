@@ -41,7 +41,7 @@
 #include "utils.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <mmsystem.h>
 #include <dsound.h>
@@ -368,7 +368,7 @@ void DirectSoundPlayerThread::Stop() {
 }
 
 std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *provider, wxWindow *parent) {
-	return agi::util::make_unique<DirectSoundPlayer>(provider, parent);
+	return agi::make_unique<DirectSoundPlayer>(provider, parent);
 }
 
 #endif // WITH_DIRECTSOUND

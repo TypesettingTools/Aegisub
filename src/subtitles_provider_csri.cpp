@@ -43,7 +43,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/scoped_ptr.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/vfr.h>
 
 #include <boost/filesystem.hpp>
@@ -139,7 +139,7 @@ std::vector<std::string> List() {
 }
 
 std::unique_ptr<SubtitlesProvider> Create(std::string const& name, agi::BackgroundRunner *) {
-	return agi::util::make_unique<CSRISubtitlesProvider>(name);
+	return agi::make_unique<CSRISubtitlesProvider>(name);
 }
 }
 #endif // WITH_CSRI

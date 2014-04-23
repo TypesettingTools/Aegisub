@@ -45,7 +45,7 @@
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <mutex>
 
@@ -146,6 +146,6 @@ void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) 
 }
 
 std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
-	return agi::util::make_unique<AvisynthAudioProvider>(file);
+	return agi::make_unique<AvisynthAudioProvider>(file);
 }
 #endif

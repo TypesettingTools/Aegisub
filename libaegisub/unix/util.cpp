@@ -16,7 +16,7 @@
 /// @brief Unix utility methods.
 /// @ingroup libaegisub unix
 
-#include "libaegisub/util.h"
+#include "libaegisub/make_unique.h"
 
 #include <boost/thread.hpp>
 

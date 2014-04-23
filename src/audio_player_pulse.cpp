@@ -40,7 +40,7 @@
 #include "utils.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <cstdio>
 #include <pulse/pulseaudio.h>
@@ -334,6 +334,6 @@ void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
 }
 
 std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(AudioProvider *provider, wxWindow *) {
-	return agi::util::make_unique<PulseAudioPlayer>(provider);
+	return agi::make_unique<PulseAudioPlayer>(provider);
 }
 #endif // WITH_LIBPULSE

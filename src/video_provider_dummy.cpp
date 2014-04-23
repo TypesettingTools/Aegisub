@@ -39,6 +39,7 @@
 
 #include <libaegisub/color.h>
 #include <libaegisub/fs.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/classification.hpp>
@@ -121,5 +122,5 @@ std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& fil
 
 	bool pattern = toks[i] == "c";
 
-	return agi::util::make_unique<DummyVideoProvider>(fps, frames, width, height, agi::Color(red, green, blue), pattern);
+	return agi::make_unique<DummyVideoProvider>(fps, frames, width, height, agi::Color(red, green, blue), pattern);
 }

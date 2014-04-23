@@ -51,7 +51,7 @@
 #include "video_frame.h"
 #include "visual_tool.h"
 
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -98,7 +98,7 @@ VideoDisplay::VideoDisplay(
 , toolBar(visualSubToolBar)
 , zoomBox(zoomBox)
 , freeSize(freeSize)
-, retina_helper(agi::util::make_unique<RetinaHelper>(this))
+, retina_helper(agi::make_unique<RetinaHelper>(this))
 , scale_factor(retina_helper->GetScaleFactor())
 , scale_factor_connection(retina_helper->AddScaleFactorListener([=](int new_scale_factor) {
 	double new_zoom = zoomValue * new_scale_factor / scale_factor;
@@ -150,7 +150,7 @@ bool VideoDisplay::InitContext() {
 		return false;
 
 	if (!glContext)
-		glContext = agi::util::make_unique<wxGLContext>(this);
+		glContext = agi::make_unique<wxGLContext>(this);
 
 	SetCurrent(*glContext);
 	return true;
@@ -166,7 +166,7 @@ void VideoDisplay::Render() try {
 		return;
 
 	if (!videoOut)
-		videoOut = agi::util::make_unique<VideoOutGL>();
+		videoOut = agi::make_unique<VideoOutGL>();
 
 	if (!tool)
 		cmd::call("video/tool/cross", con);

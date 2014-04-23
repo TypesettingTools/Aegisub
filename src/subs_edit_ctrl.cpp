@@ -48,7 +48,7 @@
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/calltip_provider.h>
 #include <libaegisub/spellchecker.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -83,7 +83,7 @@ enum {
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context *context)
 : ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
-, thesaurus(agi::util::make_unique<Thesaurus>())
+, thesaurus(agi::make_unique<Thesaurus>())
 , context(context)
 {
 	// Set properties
@@ -259,7 +259,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	cursor_pos = pos;
 
 	if (!calltip_provider)
-		calltip_provider = agi::util::make_unique<agi::CalltipProvider>();
+		calltip_provider = agi::make_unique<agi::CalltipProvider>();
 
 	agi::Calltip new_calltip = calltip_provider->GetCalltip(tokenized_line, line_text, pos);
 

@@ -50,7 +50,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <wx/msgdlg.h>
 #include <wx/utils.h>
@@ -284,25 +284,25 @@ struct tool_translation_assistant_insert final : public tool_translation_assista
 
 namespace cmd {
 	void init_tool() {
-		reg(agi::util::make_unique<tool_export>());
-		reg(agi::util::make_unique<tool_font_collector>());
-		reg(agi::util::make_unique<tool_line_select>());
-		reg(agi::util::make_unique<tool_resampleres>());
-		reg(agi::util::make_unique<tool_style_assistant>());
-		reg(agi::util::make_unique<tool_styling_assistant_commit>());
-		reg(agi::util::make_unique<tool_styling_assistant_preview>());
-		reg(agi::util::make_unique<tool_style_manager>());
-		reg(agi::util::make_unique<tool_time_kanji>());
-		reg(agi::util::make_unique<tool_time_postprocess>());
-		reg(agi::util::make_unique<tool_translation_assistant>());
+		reg(agi::make_unique<tool_export>());
+		reg(agi::make_unique<tool_font_collector>());
+		reg(agi::make_unique<tool_line_select>());
+		reg(agi::make_unique<tool_resampleres>());
+		reg(agi::make_unique<tool_style_assistant>());
+		reg(agi::make_unique<tool_styling_assistant_commit>());
+		reg(agi::make_unique<tool_styling_assistant_preview>());
+		reg(agi::make_unique<tool_style_manager>());
+		reg(agi::make_unique<tool_time_kanji>());
+		reg(agi::make_unique<tool_time_postprocess>());
+		reg(agi::make_unique<tool_translation_assistant>());
 #ifdef _WIN32
 		if (agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe")))
-			reg(agi::util::make_unique<tool_assdraw>());
+			reg(agi::make_unique<tool_assdraw>());
 #endif
-		reg(agi::util::make_unique<tool_translation_assistant_commit>());
-		reg(agi::util::make_unique<tool_translation_assistant_preview>());
-		reg(agi::util::make_unique<tool_translation_assistant_next>());
-		reg(agi::util::make_unique<tool_translation_assistant_prev>());
-		reg(agi::util::make_unique<tool_translation_assistant_insert>());
+		reg(agi::make_unique<tool_translation_assistant_commit>());
+		reg(agi::make_unique<tool_translation_assistant_preview>());
+		reg(agi::make_unique<tool_translation_assistant_next>());
+		reg(agi::make_unique<tool_translation_assistant_prev>());
+		reg(agi::make_unique<tool_translation_assistant_insert>());
 	}
 }
