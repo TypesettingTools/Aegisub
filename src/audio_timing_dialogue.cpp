@@ -432,9 +432,9 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::OnActiveLineChanged, this))
 , selection_connection(c->selectionController->AddSelectionListener(&AudioTimingControllerDialogue::OnSelectedSetChanged, this))
 {
-	keyframes_provider.AddMarkerMovedListener(std::bind(std::ref(AnnounceMarkerMoved)));
-	video_position_provider.AddMarkerMovedListener(std::bind(std::ref(AnnounceMarkerMoved)));
-	seconds_provider.AddMarkerMovedListener(std::bind(std::ref(AnnounceMarkerMoved)));
+	keyframes_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
+	video_position_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
+	seconds_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
 
 	Revert();
 }
