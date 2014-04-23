@@ -2,7 +2,7 @@ include ../Makefile.inc
 
 LIB = libaegisub.a
 
-CXXFLAGS += -Iinclude -I../src -I.. -DLAGI -fPIC -Wno-variadic-macros
+CXXFLAGS += -Iinclude -I../src -I.. -fPIC
 CPPFLAGS += $(CPPFLAGS_BOOST)
 
 PRECOMPILED_HEADER_NAME = lagi_pre.h
