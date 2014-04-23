@@ -71,10 +71,11 @@ inline wxString check_wxstring(lua_State *L, int idx) {
 }
 
 inline std::string get_string_or_default(lua_State *L, int idx) {
-	const char *str = lua_tostring(L, idx);
+	size_t len = 0;
+	const char *str = lua_tolstring(L, idx, &len);
 	if (!str)
 		str = "<not a string>";
-	return str;
+	return std::string(str, len);
 }
 
 inline std::string get_global_string(lua_State *L, const char *name) {

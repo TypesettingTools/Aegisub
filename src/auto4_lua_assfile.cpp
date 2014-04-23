@@ -173,6 +173,15 @@ namespace Automation4 {
 
 			set_field(L, "text", dia->Text);
 
+			// create extradata table
+			lua_newtable(L);
+			for (auto const& ed : ass->GetExtradata(dia->ExtradataIds)) {
+				push_value(L, ed.first);
+				push_value(L, ed.second);
+				lua_settable(L, -3);
+			}
+			lua_setfield(L, -2, "extra");
+
 			set_field(L, "class", "dialogue");
 		}
 		else if (auto sty = dynamic_cast<const AssStyle*>(e)) {
@@ -221,7 +230,7 @@ namespace Automation4 {
 		}
 	}
 
-	std::unique_ptr<AssEntry> LuaAssFile::LuaToAssEntry(lua_State *L)
+	std::unique_ptr<AssEntry> LuaAssFile::LuaToAssEntry(lua_State *L, AssFile *ass)
 	{
 		// assume an assentry table is on the top of the stack
 		// convert it to a real AssEntry object, and pop the table from the stack
@@ -271,6 +280,7 @@ namespace Automation4 {
 				sty->UpdateData();
 			}
 			else if (lclass == "dialogue") {
+				assert(ass != 0); // since we need AssFile::AddExtradata
 				auto dia = new AssDialogue;
 				result.reset(dia);
 
@@ -285,6 +295,18 @@ namespace Automation4 {
 				dia->Margin[2] = get_int_field(L, "margin_t", "dialogue");
 				dia->Effect = get_string_field(L, "effect", "dialogue");
 				dia->Text = get_string_field(L, "text", "dialogue");
+
+				lua_getfield(L, -1, "extra");
+				std::vector<uint32_t> new_ids;
+				lua_pushnil(L);
+				while (lua_next(L, -2)) {
+					auto key = get_string_or_default(L, -2);
+					auto value = get_string_or_default(L, -1);
+					new_ids.push_back(ass->AddExtradata(key, value));
+					lua_pop(L, 1);
+				}
+				lua_pop(L, 1);
+				dia->ExtradataIds = new_ids;
 			}
 			else {
 				luaL_error(L, "Found line with unknown class: %s", lclass.c_str());
@@ -422,7 +444,7 @@ namespace Automation4 {
 				// insert
 				CheckBounds(n);
 
-				auto e = LuaToAssEntry(L);
+				auto e = LuaToAssEntry(L, ass);
 				modification_type |= modification_mask(e.get());
 				QueueLineForDeletion(n - 1);
 				AssignLine(n - 1, std::move(e));
@@ -511,7 +533,7 @@ namespace Automation4 {
 
 		for (int i = 1; i <= n; i++) {
 			lua_pushvalue(L, i);
-			auto e = LuaToAssEntry(L);
+			auto e = LuaToAssEntry(L, ass);
 			modification_type |= modification_mask(e.get());
 
 			if (lines.empty()) {
@@ -555,7 +577,7 @@ namespace Automation4 {
 		new_entries.reserve(n - 1);
 		for (int i = 2; i <= n; i++) {
 			lua_pushvalue(L, i);
-			auto e = LuaToAssEntry(L);
+			auto e = LuaToAssEntry(L, ass);
 			modification_type |= modification_mask(e.get());
 			InsertLine(new_entries, i - 2, std::move(e));
 			lua_pop(L, 1);
@@ -594,7 +616,7 @@ namespace Automation4 {
 
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
-		auto e = LuaToAssEntry(L);
+		auto e = LuaToAssEntry(L, ass);
 		auto dia = dynamic_cast<AssDialogue*>(e.get());
 		luaL_argcheck(L, dia, 1, "Subtitle line must be a dialogue line");
 

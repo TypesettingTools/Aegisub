@@ -56,6 +56,7 @@
 #include <libaegisub/util.h>
 
 #include <algorithm>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -273,6 +274,17 @@ namespace {
 	{
 		luaL_argcheck(L, lua_istable(L, 1), 1, "");
 		luaL_argcheck(L, lua_isstring(L, 2), 2, "");
+
+		// have to check that it looks like a style table before actually converting
+		// if it's a dialogue table then an active AssFile object is required
+		{
+			lua_getfield(L, 1, "class");
+			std::string actual_class{lua_tostring(L, -1)};
+			boost::to_lower(actual_class);
+			if (actual_class != "style")
+				return luaL_error(L, "Not a style entry");
+			lua_pop(L, 1);
+		}
 
 		lua_pushvalue(L, 1);
 		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
