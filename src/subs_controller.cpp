@@ -270,6 +270,8 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 
 		FileSave();
 
+		context->ass->CleanExtradata();
+
 		writer->WriteFile(context->ass.get(), filename, 0, encoding);
 	}
 	catch (...) {
