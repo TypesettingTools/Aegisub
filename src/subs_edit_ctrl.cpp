@@ -122,6 +122,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 
 	Bind(wxEVT_CONTEXT_MENU, &SubsTextEditCtrl::OnContextMenu, this);
 	Bind(wxEVT_IDLE, std::bind(&SubsTextEditCtrl::UpdateCallTip, this));
+	Bind(wxEVT_STC_DOUBLECLICK, &SubsTextEditCtrl::OnDoubleClick, this);
 	Bind(wxEVT_STC_STYLENEEDED, [=](wxStyledTextEvent&) {
 		{
 			std::string text = GetTextRaw().data();
@@ -347,6 +348,14 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	}
 
 	PopupMenu(&menu);
+}
+
+void SubsTextEditCtrl::OnDoubleClick(wxStyledTextEvent &evt) {
+	auto bounds = GetBoundsOfWordAtPosition(evt.GetPosition());
+	if (bounds.second != 0)
+		SetSelection(bounds.first, bounds.first + bounds.second);
+	else
+		evt.Skip();
 }
 
 void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {

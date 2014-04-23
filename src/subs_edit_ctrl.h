@@ -91,6 +91,7 @@ class SubsTextEditCtrl final : public ScintillaTextCtrl {
 	std::vector<agi::ass::DialogueToken> tokenized_line;
 
 	void OnContextMenu(wxContextMenuEvent &);
+	void OnDoubleClick(wxStyledTextEvent&);
 	void OnUseSuggestion(wxCommandEvent &event);
 	void OnSetDicLanguage(wxCommandEvent &event);
 	void OnSetThesLanguage(wxCommandEvent &event);
