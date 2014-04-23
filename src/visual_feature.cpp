@@ -42,10 +42,10 @@ bool VisualDraggableFeature::IsMouseOver(Vector2D mouse_pos) const {
 
 	switch (type) {
 		case DRAG_BIG_SQUARE:
-			return fabs(delta.X()) < 8 && fabs(delta.Y()) < 8;
+			return fabs(delta.X()) < 6 && fabs(delta.Y()) < 6;
 
 		case DRAG_BIG_CIRCLE:
-			return delta.SquareLen() < 64;
+			return delta.SquareLen() < 36;
 
 		case DRAG_BIG_TRIANGLE: {
 			if (delta.Y() < -10 || delta.Y() > 6) return false;
@@ -54,10 +54,10 @@ bool VisualDraggableFeature::IsMouseOver(Vector2D mouse_pos) const {
 		}
 
 		case DRAG_SMALL_SQUARE:
-			return fabs(delta.X()) < 4 && fabs(delta.Y()) < 4;
+			return fabs(delta.X()) < 3 && fabs(delta.Y()) < 3;
 
 		case DRAG_SMALL_CIRCLE:
-			return delta.SquareLen() < 16;
+			return delta.SquareLen() < 9;
 
 		default:
 			return false;
@@ -69,15 +69,15 @@ void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) const {
 
 	switch (type) {
 		case DRAG_BIG_SQUARE:
-			gl.DrawRectangle(pos - 8, pos + 8);
-			gl.DrawLine(pos - Vector2D(0, 16), pos + Vector2D(0, 16));
-			gl.DrawLine(pos - Vector2D(16, 0), pos + Vector2D(16, 0));
+			gl.DrawRectangle(pos - 6, pos + 6);
+			gl.DrawLine(pos - Vector2D(0, 12), pos + Vector2D(0, 12));
+			gl.DrawLine(pos - Vector2D(12, 0), pos + Vector2D(12, 0));
 			break;
 
 		case DRAG_BIG_CIRCLE:
-			gl.DrawCircle(pos, 8);
-			gl.DrawLine(pos - Vector2D(0, 16), pos + Vector2D(0, 16));
-			gl.DrawLine(pos - Vector2D(16, 0), pos + Vector2D(16, 0));
+			gl.DrawCircle(pos, 6);
+			gl.DrawLine(pos - Vector2D(0, 12), pos + Vector2D(0, 12));
+			gl.DrawLine(pos - Vector2D(12, 0), pos + Vector2D(12, 0));
 			break;
 
 		case DRAG_BIG_TRIANGLE:
@@ -88,11 +88,11 @@ void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) const {
 			break;
 
 		case DRAG_SMALL_SQUARE:
-			gl.DrawRectangle(pos - 4, pos + 4);
+			gl.DrawRectangle(pos - 3, pos + 3);
 			break;
 
 		case DRAG_SMALL_CIRCLE:
-			gl.DrawCircle(pos, 4);
+			gl.DrawCircle(pos, 3);
 			break;
 		default:
 			break;
