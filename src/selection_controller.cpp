@@ -35,7 +35,7 @@ void SelectionController::OnSubtitlesOpen() {
 	selection.clear();
 	active_line = nullptr;
 	if (!context->ass->Events.empty()) {
-		int row = mid<int>(0, context->ass->GetUIStateAsInt("Active Line"), context->ass->Events.size());
+		int row = mid<int>(0, context->ass->GetUIStateAsInt("Active Line"), context->ass->Events.size() - 1);
 		active_line = &*std::next(context->ass->Events.begin(), row);
 		selection.insert(active_line);
 	}
