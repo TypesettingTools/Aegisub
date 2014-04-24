@@ -3,6 +3,7 @@ include Makefile.inc
 SUBDIRS += \
 	vendor/lua \
 	vendor/universalchardet \
+	vendor/luabins \
 	libaegisub \
 	tools \
 	src \
