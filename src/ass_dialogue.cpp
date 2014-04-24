@@ -137,7 +137,7 @@ void AssDialogue::Parse(std::string const& raw) {
 		while (boost::regex_search(start, end, rematch, idmatcher)) {
 			auto id = boost::lexical_cast<uint32_t>(rematch.str(1));
 			ids.push_back(id);
-			start = rematch.suffix().second;
+			start = rematch.suffix().first;
 		}
 		ExtradataIds = ids;
 	}
