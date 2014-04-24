@@ -14,6 +14,7 @@ LIBS := -L../libaegisub -laegisub $(LIBS)
 LIBS += $(LIBS_GL) $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE)
 LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3) $(LIBS_UCHARDET) $(LIBS_BOOST)
 LIBS += $(LIBS_ICU) $(LIBS_LUA)
+LIBS += ../vendor/luabins/libluabins.a
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += osx_utils.mm retina_helper.mm
