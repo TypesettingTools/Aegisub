@@ -45,7 +45,7 @@ std::string inline_string_encode(const std::string &input) {
 	auto format = boost::format("#%02X");
 	for (char c : input) {
 		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
-			output += str(format % c);
+			output += str(format % (int)(unsigned char)c);
 		else
 			output += c;
 	}
