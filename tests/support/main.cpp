@@ -17,7 +17,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/locale/generator.hpp>
 #include <cstdlib>
@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 
 	int retval;
 	agi::log::log = new agi::log::LogSink;
-	agi::log::log->Subscribe(agi::util::make_unique<agi::log::JsonEmitter>("./"));
+	agi::log::log->Subscribe(agi::make_unique<agi::log::JsonEmitter>("./"));
 	::testing::InitGoogleTest(&argc, argv);
 
 	srand(time(nullptr));

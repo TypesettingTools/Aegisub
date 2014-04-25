@@ -154,8 +154,6 @@ static void insert_combo(Hotkey::HotkeyMap &hm, const char *ctx, const char *cmd
 	hm.insert(make_pair(std::string(cmd), Combo(ctx, cmd, keys)));
 }
 
-static void set_var(bool *b) { *b = true; }
-
 TEST(lagi_hotkey, set_hotkey_map) {
 	agi::fs::Remove("data/hotkey_tmp");
 	{
@@ -168,7 +166,7 @@ TEST(lagi_hotkey, set_hotkey_map) {
 		insert_combo(hm, "Default", "cmd2", 2, "Shift", "C");
 
 		bool listener_called = false;
-		h.AddHotkeyChangeListener(set_var, &listener_called);
+		h.AddHotkeyChangeListener([&] { listener_called = true; });
 
 		h.SetHotkeyMap(hm);
 		EXPECT_TRUE(listener_called);
