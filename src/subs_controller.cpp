@@ -60,6 +60,7 @@ struct SubsController::UndoInfo {
 	std::vector<AssStyle> styles;
 	std::vector<AssDialogueBase> events;
 	std::vector<AssAttachment> attachments;
+	AegisubExtradataMap extradata;
 
 	mutable std::vector<int> selection;
 	int active_line_id = 0;
@@ -69,6 +70,7 @@ struct SubsController::UndoInfo {
 	: undo_description(d)
 	, commit_id(commit_id)
 	, attachments(c->ass->Attachments)
+	, extradata(c->ass->Extradata)
 	{
 		script_info.reserve(c->ass->Info.size());
 		for (auto const& info : c->ass->Info)
@@ -108,6 +110,7 @@ struct SubsController::UndoInfo {
 			if (binary_search(begin(selection), end(selection), copy->Id))
 				new_sel.insert(copy);
 		}
+		c->ass->Extradata = extradata;
 
 		c->ass->Commit("", AssFile::COMMIT_NEW);
 		c->selectionController->SetSelectionAndActive(std::move(new_sel), active_line);
@@ -266,6 +269,8 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 		config::path->SetToken("?script", filename.parent_path());
 
 		FileSave();
+
+		context->ass->CleanExtradata();
 
 		writer->WriteFile(context->ass.get(), filename, 0, encoding);
 	}

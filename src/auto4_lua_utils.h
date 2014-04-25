@@ -40,11 +40,12 @@ inline void push_value(lua_State *L, wxString const& value) {
 }
 
 inline void push_value(lua_State *L, agi::fs::path const& value) {
-	lua_pushstring(L, value.string().c_str());
+	std::string strval = value.string();
+	lua_pushlstring(L, strval.c_str(), strval.size());
 }
 
 inline void push_value(lua_State *L, std::string const& value) {
-	lua_pushstring(L, value.c_str());
+	lua_pushlstring(L, value.c_str(), value.size());
 }
 
 inline void push_value(lua_State *L, lua_CFunction value) {
@@ -71,10 +72,11 @@ inline wxString check_wxstring(lua_State *L, int idx) {
 }
 
 inline std::string get_string_or_default(lua_State *L, int idx) {
-	const char *str = lua_tostring(L, idx);
+	size_t len = 0;
+	const char *str = lua_tolstring(L, idx, &len);
 	if (!str)
 		str = "<not a string>";
-	return str;
+	return std::string(str, len);
 }
 
 inline std::string get_global_string(lua_State *L, const char *name) {

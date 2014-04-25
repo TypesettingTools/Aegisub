@@ -50,6 +50,8 @@ class wxString;
 template<typename T>
 using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntryListHook>>::type;
 
+using AegisubExtradataMap = std::map<uint32_t, std::pair<std::string, std::string>>;
+
 struct AssFileCommit {
 	wxString const& message;
 	int *commit_id;
@@ -66,6 +68,9 @@ public:
 	EntryList<AssStyle> Styles;
 	EntryList<AssDialogue> Events;
 	std::vector<AssAttachment> Attachments;
+	AegisubExtradataMap Extradata;
+
+	uint32_t next_extradata_id = 0;
 
 	AssFile();
 	AssFile(const AssFile &from);
@@ -102,6 +107,16 @@ public:
 	int GetUIStateAsInt(std::string const& key) const;
 	void SaveUIState(std::string const& key, std::string const& value);
 
+	/// @brief Add a new extradata entry
+	/// @param key Class identifier/owner for the extradata
+	/// @param value Data for the extradata
+	/// @return ID of the created entry
+	uint32_t AddExtradata(std::string const& key, std::string const& value);
+	/// Fetch all extradata entries from a list of IDs
+	std::map<std::string, std::string> GetExtradata(std::vector<uint32_t> const& id_list) const;
+	/// Remove unreferenced extradata entries
+	void CleanExtradata();
+
 	/// Type of changes made in a commit
 	enum CommitType {
 		/// Potentially the entire file has been changed; any saved information
@@ -129,7 +144,9 @@ public:
 		COMMIT_DIAG_TIME   = 0x40,
 		/// The text of existing dialogue lines have changed
 		COMMIT_DIAG_TEXT   = 0x80,
-		COMMIT_DIAG_FULL   = COMMIT_DIAG_META | COMMIT_DIAG_TIME | COMMIT_DIAG_TEXT
+		COMMIT_DIAG_FULL   = COMMIT_DIAG_META | COMMIT_DIAG_TIME | COMMIT_DIAG_TEXT,
+		/// Extradata entries were added/modified/removed
+		COMMIT_EXTRADATA   = 0x100,
 	};
 
 	DEFINE_SIGNAL_ADDERS(AnnounceCommit, AddCommitListener)
@@ -168,3 +185,4 @@ public:
 	/// @param limit If non-empty, only lines in this set are sorted
 	static void Sort(EntryList<AssDialogue>& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 };
+

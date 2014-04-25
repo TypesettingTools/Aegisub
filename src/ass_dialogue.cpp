@@ -44,6 +44,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 #include <boost/spirit/include/karma_generate.hpp>
 #include <boost/spirit/include/karma_int.hpp>
 
@@ -120,7 +121,28 @@ void AssDialogue::Parse(std::string const& raw) {
 	for (int& margin : Margin)
 		margin = mid(0, boost::lexical_cast<int>(tkn.next_str()), 9999);
 	Effect = tkn.next_str_trim();
-	Text = std::string(tkn.next_tok().begin(), str.end());
+
+	std::string text{tkn.next_tok().begin(), str.end()};
+
+	static const boost::regex extradata_test("^\\{(=\\d+)+\\}");
+	boost::match_results<std::string::iterator> rematch;
+	if (boost::regex_search(text.begin(), text.end(), rematch, extradata_test)) {
+		std::string extradata_str = rematch.str(0);
+		text = rematch.suffix().str();
+
+		static const boost::regex idmatcher("=(\\d+)");
+		auto start = extradata_str.begin();
+		auto end = extradata_str.end();
+		std::vector<uint32_t> ids;
+		while (boost::regex_search(start, end, rematch, idmatcher)) {
+			auto id = boost::lexical_cast<uint32_t>(rematch.str(1));
+			ids.push_back(id);
+			start = rematch.suffix().first;
+		}
+		ExtradataIds = ids;
+	}
+
+	Text = text;
 }
 
 void append_int(std::string &str, int v) {
@@ -156,6 +178,16 @@ std::string AssDialogue::GetData(bool ssa) const {
 	for (auto margin : Margin)
 		append_int(str, margin);
 	append_unsafe_str(str, Effect);
+
+	if (ExtradataIds.get().size() > 0) {
+		str += "{";
+		for (auto id : ExtradataIds.get()) {
+			str += "=";
+			boost::spirit::karma::generate(back_inserter(str), boost::spirit::karma::int_, id);
+		}
+		str += "}";
+	}
+
 	str += Text.get();
 
 	if (str.find('\n') != str.npos || str.find('\r') != str.npos) {

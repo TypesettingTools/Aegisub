@@ -124,7 +124,7 @@ namespace Automation4 {
 		/// makes a Lua representation of AssEntry and places on the top of the stack
 		void AssEntryToLua(lua_State *L, size_t idx);
 		/// assumes a Lua representation of AssEntry on the top of the stack, and creates an AssEntry object of it
-		static std::unique_ptr<AssEntry> LuaToAssEntry(lua_State *L);
+		static std::unique_ptr<AssEntry> LuaToAssEntry(lua_State *L, AssFile *ass=0);
 
 		/// @brief Signal that the script using this file is now done running
 		/// @param set_undo If there's any uncommitted changes to the file,

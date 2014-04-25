@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/filesystem/path.hpp>
+#include <cassert>
 
 AssFile::AssFile() { }
 
@@ -54,6 +55,8 @@ void AssFile::LoadDefault(bool include_dialogue_line) {
 AssFile::AssFile(const AssFile &from)
 : Info(from.Info)
 , Attachments(from.Attachments)
+, Extradata(from.Extradata)
+, next_extradata_id(from.next_extradata_id)
 {
 	Styles.clone_from(from.Styles,
 		[](AssStyle const& e) { return new AssStyle(e); },
@@ -68,6 +71,8 @@ void AssFile::swap(AssFile& from) throw() {
 	Styles.swap(from.Styles);
 	Events.swap(from.Events);
 	Attachments.swap(from.Attachments);
+	Extradata.swap(from.Extradata);
+	std::swap(next_extradata_id, from.next_extradata_id);
 }
 
 AssFile& AssFile::operator=(AssFile from) {
@@ -229,3 +234,58 @@ void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialo
 		begin = --end;
 	}
 }
+
+
+uint32_t AssFile::AddExtradata(std::string const& key, std::string const& value) {
+	// next_extradata_id must not exist
+	assert(Extradata.find(next_extradata_id) == Extradata.end());
+	Extradata[next_extradata_id] = std::make_pair(key, value);
+	return next_extradata_id++; // return old value, then post-increment
+}
+
+std::map<std::string, std::string> AssFile::GetExtradata(std::vector<uint32_t> const& id_list) const {
+	// If multiple IDs have the same key name, the last ID wins
+	std::map<std::string, std::string> result;
+	for (auto id : id_list) {
+		auto it = Extradata.find(id);
+		if (it != Extradata.end())
+			result[it->second.first] = it->second.second;
+	}
+	return result;
+}
+
+void AssFile::CleanExtradata() {
+	// Collect all IDs existing in the database
+	// Then remove all IDs found to be in use from this list
+	// Remaining is then all garbage IDs
+	std::vector<uint32_t> ids;
+	for (auto& it : Extradata) {
+		ids.push_back(it.first);
+	}
+
+	// For each line, find which IDs it actually uses and remove them from the unused-list
+	for (auto& line : Events) {
+		// Find the ID for each unique key in the line
+		std::map<std::string, uint32_t> key_ids;
+		for (auto id : line.ExtradataIds.get()) {
+			auto ed_it = Extradata.find(id);
+			if (ed_it == Extradata.end())
+				continue;
+			key_ids[ed_it->second.first] = id;
+		}
+		// Update the line's ID list to only contain the actual ID for any duplicate keys
+		// Also mark found IDs as used in the cleaning list
+		std::vector<uint32_t> new_ids;
+		for (auto& keyid : key_ids) {
+			new_ids.push_back(keyid.second);
+			ids.erase(std::remove(ids.begin(), ids.end(), keyid.second));
+		}
+		line.ExtradataIds = new_ids;
+	}
+
+	// The ids list should contain only unused IDs now
+	for (auto id : ids) {
+		Extradata.erase(id);
+	}
+}
+

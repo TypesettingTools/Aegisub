@@ -1,0 +1,11 @@
+-- Add key-value size-less table format (see luatexts)
+-- Add utf-8 char-length string format (see luatexts)
+-- Add autotest targets for LuaJIT and LuaJIT 2 x86, x86_64, both for Lua and C.
+-- Test on Lua with custom allocator.
+-- Use Makefile in rockspec?
+-- Enhance "corrupt data" message on load. Need more info on what is wrong.
+   Ensure every case is covered with tests.
+-- Autocompact integers (especially strings -- most of them do not need size_t!)
+-- Better cover new exponential growth strategy corner-cases with tests.
+-- Shouldn't write and fwrite have common codebase?
+-- Document write.h and fwrite.h

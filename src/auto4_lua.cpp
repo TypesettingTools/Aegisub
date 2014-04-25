@@ -56,6 +56,7 @@
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -274,6 +275,17 @@ namespace {
 		luaL_argcheck(L, lua_istable(L, 1), 1, "");
 		luaL_argcheck(L, lua_isstring(L, 2), 2, "");
 
+		// have to check that it looks like a style table before actually converting
+		// if it's a dialogue table then an active AssFile object is required
+		{
+			lua_getfield(L, 1, "class");
+			std::string actual_class{lua_tostring(L, -1)};
+			boost::to_lower(actual_class);
+			if (actual_class != "style")
+				return luaL_error(L, "Not a style entry");
+			lua_pop(L, 1);
+		}
+
 		lua_pushvalue(L, 1);
 		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
 		auto st = dynamic_cast<AssStyle*>(et.get());
@@ -294,6 +306,9 @@ namespace {
 }
 
 int luaopen_lpeg (lua_State *L);
+
+// Forward-declaration for luabins library (not in any public header)
+extern "C" int luaopen_luabins(lua_State * L);
 
 namespace Automation4 {
 	int regex_init(lua_State *L);
@@ -365,6 +380,7 @@ namespace Automation4 {
 			push_value(L, luaopen_package); lua_call(L, 0, 0);
 			push_value(L, luaopen_string); lua_call(L, 0, 0);
 			push_value(L, luaopen_table); lua_call(L, 0, 0);
+			push_value(L, luaopen_luabins); lua_call(L, 0, 0);
 			_stackcheck.check_stack(0);
 
 			// dofile and loadfile are replaced with include

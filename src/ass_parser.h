@@ -31,6 +31,7 @@ class AssParser {
 	void ParseScriptInfoLine(std::string const& data);
 	void ParseFontLine(std::string const& data);
 	void ParseGraphicsLine(std::string const& data);
+	void ParseExtradataLine(std::string const &data);
 	void UnknownLine(std::string const&) { }
 public:
 	AssParser(AssFile *target, int version);
