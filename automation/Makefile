@@ -2,9 +2,7 @@ include ../Makefile.inc
 
 PRECOMPILED_HEADER_NAME = ../libaegisub/lagi_pre.h
 
-LIB_SHARED = aegisub.so
-LIB_VERSION = 0.1.0
-BUILD_LIB = no
+PROGRAM = aegisub-lua
 
 CXXFLAGS += -I../libaegisub/include -I../src -I ../vendor/lua/src $(CXXFLAGS_WX)
 CPPFLAGS += $(CPPFLAGS_BOOST)
@@ -15,8 +13,8 @@ LIBS += $(LIBS_WX) $(LIBS_BOOST) $(LIBS_ICU)
 
 SRC += tests/aegisub.cpp
 
-test: $(LIB_SHARED)
-	moon tests/runner.moon
+test: $(PROGRAM)
+	LUA=./aegisub-lua busted -p 'moon' tests/modules
 
 .PHONY: test
 
@@ -58,3 +56,4 @@ install: install-share
 EXTRA_DIST = $(DATA_AUTOMATION)
 
 include ../Makefile.target
+-include tests/*.d

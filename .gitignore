@@ -49,6 +49,7 @@ acconf.h
 acconf.h.in
 aclocal.m4
 autom4te.cache
+automation/aegisub-lua
 conf.sh
 config.log
 config.status

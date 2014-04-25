@@ -15,7 +15,6 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <libaegisub/fs.h>
-#include <libaegisub/log.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -59,34 +58,13 @@ inline void set_field(lua_State *L, const char *name, T value) {
 	lua_setfield(L, -2, name);
 }
 
-inline std::string get_string_or_default(lua_State *L, int idx) {
-	size_t len = 0;
-	const char *str = lua_tolstring(L, idx, &len);
-	if (!str)
-		return "<not a string>";
-	return std::string(str, len);
-}
+std::string get_string_or_default(lua_State *L, int idx);
 
-inline std::string get_string(lua_State *L, int idx) {
-	size_t len = 0;
-	const char *str = lua_tolstring(L, idx, &len);
-	return std::string(str ? str : "", len);
-}
+std::string get_string(lua_State *L, int idx);
 
-inline std::string check_string(lua_State *L, int idx) {
-	size_t len = 0;
-	const char *str = luaL_checklstring(L, idx, &len);
-	return std::string(str ? str : "", len);
-}
+std::string check_string(lua_State *L, int idx);
 
-inline std::string get_global_string(lua_State *L, const char *name) {
-	lua_getglobal(L, name);
-	std::string ret;
-	if (lua_isstring(L, -1))
-		ret = lua_tostring(L, -1);
-	lua_pop(L, 1);
-	return ret;
-}
+std::string get_global_string(lua_State *L, const char *name);
 
 template<typename T, typename... Args>
 T *make(lua_State *L, const char *mt, Args&&... args) {
@@ -120,34 +98,16 @@ void lua_for_each(lua_State *L, Func&& func) {
 	lua_pop(L, 1); // pop table
 }
 
+int add_stack_trace(lua_State *L);
+
 #ifdef _DEBUG
 struct LuaStackcheck {
 	lua_State *L;
 	int startstack;
 
-	void check_stack(int additional) {
-		int top = lua_gettop(L);
-		if (top - additional != startstack) {
-			LOG_D("automation/lua") << "lua stack size mismatch.";
-			dump();
-			assert(top - additional == startstack);
-		}
-	}
+	void check_stack(int additional);
+	void dump();
 
-	void dump() {
-		int top = lua_gettop(L);
-		LOG_D("automation/lua/stackdump") << "--- dumping lua stack...";
-		for (int i = top; i > 0; i--) {
-			lua_pushvalue(L, i);
-			std::string type(lua_typename(L, lua_type(L, -1)));
-			if (lua_isstring(L, i))
-				LOG_D("automation/lua/stackdump") << type << ": " << lua_tostring(L, -1);
-			else
-				LOG_D("automation/lua/stackdump") << type;
-			lua_pop(L, 1);
-		}
-		LOG_D("automation/lua") << "--- end dump";
-	}
 	LuaStackcheck(lua_State *L) : L(L), startstack(lua_gettop(L)) { }
 	~LuaStackcheck() { check_stack(0); }
 };

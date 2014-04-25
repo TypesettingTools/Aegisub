@@ -12,308 +12,312 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-require 'aegisub'
-require 'lunatest'
 re = require 'aegisub.re'
 
-export test_compile = ->
-  r = re.compile '.'
+describe 'compile', ->
+  it 'should return a object with the regexp bound', ->
+    r = re.compile '.'
 
-  res = r\find 'abc'
-  assert_not_nil res
-  assert_equal 3, #res
+    res = r\find 'abc'
+    assert.is.not.nil res
+    assert.is.equal 3, #res
 
-  res = r\find 'bc'
-  assert_not_nil res
-  assert_equal 2, #res
+    res = r\find 'bc'
+    assert.is.not.nil res
+    assert.is.equal 2, #res
 
-export test_compile_bad_call_is_error = ->
-  r = re.compile '.'
-  assert_error -> r.find 'bc'
+  it 'should throw an error when it is not called with \\', ->
+    r = re.compile '.'
+    assert.is.error -> r.find 'bc'
 
-export test_find_bol_only_matches_once = ->
-  res = re.find 'aaa', '^a'
-  assert_not_nil res
-  assert_equal 1, #res
+  it 'should throw an error when given an invalid regex', ->
+    assert.is.error -> re.compile '('
 
-export test_find_finds_characters_not_bytes = ->
-  res = re.find '☃☃', '.'
-  assert_not_nil res
-  assert_equal 2, #res
-  assert_equal '☃', res[1].str
-  assert_equal 1,   res[1].first
-  assert_equal 3,   res[1].last
-  assert_equal '☃', res[2].str
-  assert_equal 4,   res[2].first
-  assert_equal 6,   res[2].last
+  it 'should throw an error when given an empty regex', ->
+    assert.is.error -> re.compile ''
 
-export test_find_no_matches_returns_nil = ->
-  assert_nil(re.find 'a', 'b')
+describe 'find', ->
+  it 'should only match once when using ^', ->
+    res = re.find 'aaa', '^a'
+    assert.is.not.nil res
+    assert.is.equal 1, #res
 
-export test_find_on_empty_string_returns_nil = ->
-  assert_nil(re.find '', '.')
+  it 'should match codepoints with ., not bytes', ->
+    res = re.find '☃☃', '.'
+    assert.is.not.nil res
+    assert.is.equal 2, #res
+    assert.is.equal '☃', res[1].str
+    assert.is.equal 1,   res[1].first
+    assert.is.equal 3,   res[1].last
+    assert.is.equal '☃', res[2].str
+    assert.is.equal 4,   res[2].first
+    assert.is.equal 6,   res[2].last
 
-export test_find_plain = ->
-  res = re.find 'aa', '.'
-  assert_not_nil res
-  assert_equal 2, #res
-  assert_equal 'a', res[1].str
-  assert_equal 1,   res[1].first
-  assert_equal 1,   res[1].last
-  assert_equal 'a', res[2].str
-  assert_equal 2,   res[2].first
-  assert_equal 2,   res[2].last
+  it 'should return nil when there are no matches', ->
+    assert.is.nil(re.find 'a', 'b')
 
-export test_find_zero_length_match = ->
-  res = re.find 'abc', '^'
-  assert_not_nil res
-  assert_equal 1, #res
-  assert_equal '', res[1].str
-  assert_equal 1, res[1].first
-  assert_equal 0, res[1].last
+  it 'should return nil when called on an empty string', ->
+    assert.is.nil(re.find '', '.')
 
-export test_flags_in_wrong_position_is_error = ->
-  assert_error -> re.sub 'a', re.ICASE, 'b', 'c'
-  assert_error -> re.sub 'a', 'b', re.ICASE, 'c'
+  it 'should return full match information', ->
+    res = re.find 'aa', '.'
+    assert.is.not.nil res
+    assert.is.equal 2, #res
+    assert.is.equal 'a', res[1].str
+    assert.is.equal 1,   res[1].first
+    assert.is.equal 1,   res[1].last
+    assert.is.equal 'a', res[2].str
+    assert.is.equal 2,   res[2].first
+    assert.is.equal 2,   res[2].last
 
-export test_invalid_regex_syntax_is_error = ->
-  assert_error -> re.compile '('
+  it 'should be able to handle a zero-length match', ->
+    res = re.find 'abc', '^'
+    assert.is.not.nil res
+    assert.is.equal 1, #res
+    assert.is.equal '', res[1].str
+    assert.is.equal 1, res[1].first
+    assert.is.equal 0, res[1].last
 
-export test_match_plain = ->
-  res = re.match '{250 1173 380}Help!', '(\\d+) (\\d+) (\\d+)'
-  assert_not_nil res
-  assert_equal 4, #res
-  assert_equal '250 1173 380', res[1].str
-  assert_equal 2,              res[1].first
-  assert_equal 13,             res[1].last
+describe 'flag handling', ->
+  it 'should be an error to pass flags somewhere other than the end', ->
+    assert.is.error -> re.sub 'a', re.ICASE, 'b', 'c'
+    assert.is.error -> re.sub 'a', 'b', re.ICASE, 'c'
 
-  assert_equal '250', res[2].str
-  assert_equal 2,     res[2].first
-  assert_equal 4,     res[2].last
+describe 'match', ->
+  it 'should be able to extract values from multiple match groups', ->
+    res = re.match '{250 1173 380}Help!', '(\\d+) (\\d+) (\\d+)'
+    assert.is.not.nil res
+    assert.is.equal 4, #res
+    assert.is.equal '250 1173 380', res[1].str
+    assert.is.equal 2,              res[1].first
+    assert.is.equal 13,             res[1].last
 
-  assert_equal '1173', res[3].str
-  assert_equal 6,      res[3].first
-  assert_equal 9,      res[3].last
+    assert.is.equal '250', res[2].str
+    assert.is.equal 2,     res[2].first
+    assert.is.equal 4,     res[2].last
 
-  assert_equal '380', res[4].str
-  assert_equal 11,    res[4].first
-  assert_equal 13,    res[4].last
+    assert.is.equal '1173', res[3].str
+    assert.is.equal 6,      res[3].first
+    assert.is.equal 9,      res[3].last
 
-export test_match_zero_length_match = ->
-  res = re.match 'abc', '^'
-  assert_not_nil res
-  assert_equal 1, #res
-  assert_equal '', res[1].str
-  assert_equal 1, res[1].first
-  assert_equal 0, res[1].last
+    assert.is.equal '380', res[4].str
+    assert.is.equal 11,    res[4].first
+    assert.is.equal 13,    res[4].last
 
-export test_split_delim_not_found_gives_input_string_in_table = ->
-  res = re.split 'abc', ','
-  assert_not_nil res
-  assert_equal 1, #res
-  assert_equal 'abc', res[1]
+  it 'should handle zero length matches', ->
+    res = re.match 'abc', '^'
+    assert.is.not.nil res
+    assert.is.equal 1, #res
+    assert.is.equal '', res[1].str
+    assert.is.equal 1, res[1].first
+    assert.is.equal 0, res[1].last
 
-export test_split_empty_string_returns_empty_table = ->
-  res = re.split '', ','
-  assert_not_nil res
-  assert_equal 0, #res
+describe 'split', ->
+  it 'should return the input string in a table when the delimiter does not appear in the string', ->
+    res = re.split 'abc', ','
+    assert.is.not.nil res
+    assert.is.equal 1, #res
+    assert.is.equal 'abc', res[1]
 
-export test_split_max_splits_noskip = ->
-  res = re.split 'a,,b,c', ',', false, 1
-  assert_not_nil res
-  assert_equal 2, #res
-  assert_equal 'a', res[1]
-  assert_equal ',b,c', res[2]
+  it 'should return an empty table when given an empty string', ->
+    res = re.split '', ','
+    assert.is.not.nil res
+    assert.is.equal 0, #res
 
-export test_split_max_splits_skip = ->
-  res = re.split 'a,,b,c', ',', true, 1
-  assert_not_nil res
-  assert_equal 2, #res
-  assert_equal 'a', res[1]
-  assert_equal ',b,c', res[2]
+  it 'should honor the max splits argument', ->
+    res = re.split 'a,,b,c', ',', false, 1
+    assert.is.not.nil res
+    assert.is.equal 2, #res
+    assert.is.equal 'a', res[1]
+    assert.is.equal ',b,c', res[2]
 
-  res = re.split 'a,,b,c,d', ',', true, 2
-  assert_not_nil res
-  assert_equal 3, #res
-  assert_equal 'a', res[1]
-  assert_equal 'b', res[2]
-  assert_equal 'c,d', res[3]
+  it 'should not count skipped segments in the maximum when skipping empty', ->
+    res = re.split 'a,,b,c', ',', true, 1
+    assert.is.not.nil res
+    assert.is.equal 2, #res
+    assert.is.equal 'a', res[1]
+    assert.is.equal ',b,c', res[2]
 
-export test_split_multi_character_delimeter = ->
-  res = re.split 'a::b::c:d', '::'
-  assert_not_nil res
-  assert_equal 3, #res
-  assert_equal 'a', res[1]
-  assert_equal 'b', res[2]
-  assert_equal 'c:d', res[3]
+    res = re.split 'a,,b,c,d', ',', true, 2
+    assert.is.not.nil res
+    assert.is.equal 3, #res
+    assert.is.equal 'a', res[1]
+    assert.is.equal 'b', res[2]
+    assert.is.equal 'c,d', res[3]
 
-export test_split_plain = ->
-  res = re.split 'a,,b,c', ','
-  assert_not_nil res
-  assert_equal 4, #res
-  assert_equal 'a', res[1]
-  assert_equal '',  res[2]
-  assert_equal 'b', res[3]
-  assert_equal 'c', res[4]
+  it 'should support multi-character delimiters', ->
+    res = re.split 'a::b::c:d', '::'
+    assert.is.not.nil res
+    assert.is.equal 3, #res
+    assert.is.equal 'a', res[1]
+    assert.is.equal 'b', res[2]
+    assert.is.equal 'c:d', res[3]
 
-export test_split_skip_empty = ->
-  res = re.split 'a,,b,c', ',', true
-  assert_not_nil res
-  assert_equal 3, #res
-  assert_equal 'a', res[1]
-  assert_equal 'b', res[2]
-  assert_equal 'c', res[3]
+  it 'should not fail on basic splits', ->
+    res = re.split 'a,,b,c', ','
+    assert.is.not.nil res
+    assert.is.equal 4, #res
+    assert.is.equal 'a', res[1]
+    assert.is.equal '',  res[2]
+    assert.is.equal 'b', res[3]
+    assert.is.equal 'c', res[4]
 
-export test_sub_bad_find_is_error = ->
-  assert_error -> re.sub 'aa', 5, 'b'
+  it 'should be able to skip empty segments', ->
+    res = re.split 'a,,b,c', ',', true
+    assert.is.not.nil res
+    assert.is.equal 3, #res
+    assert.is.equal 'a', res[1]
+    assert.is.equal 'b', res[2]
+    assert.is.equal 'c', res[3]
 
-export test_sub_bad_haystack_is_error = ->
-  assert_error -> re.sub 5, 'a', 'b'
+  it 'should be able to split on word boundaries', ->
+    res = re.split 'aa bb cc', '\\b', true
+    assert.is.not.nil res
+    assert.is.equal 5, #res
+    assert.is.equal res[1], 'aa'
+    assert.is.equal res[2], ' '
+    assert.is.equal res[3], 'bb'
+    assert.is.equal res[4], ' '
+    assert.is.equal res[5], 'cc'
 
-export test_sub_bad_replacement_is_error = ->
-  assert_error -> re.sub 'aa', 'a', 5
+  it 'should be able to split on the beginning of the buffer', ->
+    res = re.split 'aa bb cc', '\\A'
+    assert.is.not.nil res
+    assert.is.equal 2, #res
+    assert.is.equal '', res[1]
+    assert.is.equal 'aa bb cc', res[2]
 
-export test_sub_capture_groups = ->
-  assert_equal 'aabbaabb', re.sub 'abab', '(a)(b)', (str) -> str .. str
+describe 'sub', ->
+  it 'should throw an error when given a non-string to search for', ->
+    assert.is.error -> re.sub 'aa', 5, 'b'
 
-export test_sub_empty_string_returns_empty = ->
-  assert_equal '', re.sub '', 'b', 'c' 
+  it 'should throw an error when given a non-string to search in', ->
+    assert.is.error -> re.sub 5, 'a', 'b'
 
-export test_sub_function = ->
-  add_one = (str) -> tostring tonumber(str) + 1
+  it 'should throw an error when given a non-string to replace with', ->
+    assert.is.error -> re.sub 'aa', 'a', 5
 
-  res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k([[:digit:]]+)', add_one
-  assert_not_nil res
-  assert_equal '{\\k11}a{\\k16}b{\\k31}c', res
+  it 'should pass capture groups to the replacement function if given one', ->
+    assert.is.equal 'aabbaabb', re.sub 'abab', '(a)(b)', (str) -> str .. str
 
-export test_sub_function_no_capture_group_passes_full_match = ->
-  found = {}
-  drop_match = (str) ->
-    table.insert found, str
-    ''
+  it 'should return an empty string when given an empty string', ->
+    assert.is.equal '', re.sub '', 'b', 'c' 
 
-  res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k[[:digit:]]+', drop_match
-  assert_not_nil res
-  assert_equal '{}a{}b{}c', res
+  it 'should support functions for replacements in addition to strings', ->
+    add_one = (str) -> tostring tonumber(str) + 1
 
-  assert_equal 3, #found
-  assert_equal '\\k10', found[1]
-  assert_equal '\\k15', found[2]
-  assert_equal '\\k30', found[3]
+    res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k([[:digit:]]+)', add_one
+    assert.is.not.nil res
+    assert.is.equal '{\\k11}a{\\k16}b{\\k31}c', res
 
-export test_sub_function_returning_non_string_returns_unchanged_input = ->
-  found = {}
-  mutate_external = (str) ->
-    table.insert found, str
-    nil
+  it 'should pass the full match to the replacement function if there are no capture groups', ->
+    found = {}
+    drop_match = (str) ->
+      table.insert found, str
+      ''
 
-  res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k([[:digit:]]+)', mutate_external
-  assert_not_nil res
-  assert_equal '{\\k10}a{\\k15}b{\\k30}c', res
+    res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k[[:digit:]]+', drop_match
+    assert.is.not.nil res
+    assert.is.equal '{}a{}b{}c', res
 
-  assert_equal 3, #found
-  assert_equal '10', found[1]
-  assert_equal '15', found[2]
-  assert_equal '30', found[3]
+    assert.is.equal 3, #found
+    assert.is.equal '\\k10', found[1]
+    assert.is.equal '\\k15', found[2]
+    assert.is.equal '\\k30', found[3]
 
-export test_sub_icase = ->
-  res = re.sub '{\\K10}a{\\K15}b{\\k30}c', '\\\\k', '\\\\kf', re.ICASE
-  assert_not_nil res
-  assert_equal '{\\kf10}a{\\kf15}b{\\kf30}c', res
+  it 'should return the input unchanged if the replacement function does not return a string', ->
+    found = {}
+    mutate_external = (str) ->
+      table.insert found, str
+      nil
 
-export test_sub_icase_greek = ->
-  res = re.sub '!συνεργ!', 'Συνεργ', 'foo', re.ICASE
-  assert_not_nil res
-  assert_equal '!foo!', res
+    res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k([[:digit:]]+)', mutate_external
+    assert.is.not.nil res
+    assert.is.equal '{\\k10}a{\\k15}b{\\k30}c', res
 
-export test_sub_max_replace_count = ->
-  res = re.sub 'aaa', 'a', 'b', 2
-  assert_not_nil res
-  assert_equal 'bba', res
+    assert.is.equal 3, #found
+    assert.is.equal '10', found[1]
+    assert.is.equal '15', found[2]
+    assert.is.equal '30', found[3]
 
-export test_sub_no_matches_leaves_unchanged = ->
-  assert_equal('a', re.sub 'a', 'b', 'c')
+  it 'should be able to do case-insensitive replacements on English', ->
+    res = re.sub '{\\K10}a{\\K15}b{\\k30}c', '\\\\k', '\\\\kf', re.ICASE
+    assert.is.not.nil res
+    assert.is.equal '{\\kf10}a{\\kf15}b{\\kf30}c', res
 
-export test_sub_plain = ->
-  res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k', '\\\\kf'
-  assert_not_nil res
-  assert_equal '{\\kf10}a{\\kf15}b{\\kf30}c', res
+  it 'should be able to do case-insensitive replacements on Greek', ->
+    res = re.sub '!συνεργ!', 'Συνεργ', 'foo', re.ICASE
+    assert.is.not.nil res
+    assert.is.equal '!foo!', res
 
-export test_sub_zero_length_match_bol = ->
-  res = re.sub 'abc', '^', 'd'
-  assert_not_nil res
-  assert_equal 'dabc', res
+  it 'should be able to limit the number of replacements', ->
+    res = re.sub 'aaa', 'a', 'b', 2
+    assert.is.not.nil res
+    assert.is.equal 'bba', res
 
-export test_sub_zero_length_match_bow = ->
-  res = re.sub 'abc abc', '\\<', 'd'
-  assert_not_nil res
-  assert_equal 'dabc dabc', res
+  it 'should return the input unchanged if there are no matches', ->
+    assert.is.equal('a', re.sub 'a', 'b', 'c')
 
-export test_sub_zero_length_match_bob = ->
-  res = re.sub 'abc', '\\A', 'd'
-  assert_not_nil res
-  assert_equal 'dabc', res
+  it 'should be able to do simple string replacements', ->
+    res = re.sub '{\\k10}a{\\k15}b{\\k30}c', '\\\\k', '\\\\kf'
+    assert.is.not.nil res
+    assert.is.equal '{\\kf10}a{\\kf15}b{\\kf30}c', res
 
-assert_empty_match_and_return_d = (str) ->
-  assert_equal '', str
-  'd'
+  it 'should replace only once when given a zero-length-bol-match', ->
+    res = re.sub 'abc', '^', 'd'
+    assert.is.not.nil res
+    assert.is.equal 'dabc', res
 
-export test_sub_zero_length_match_bol_with_function_replacement = ->
-  res = re.sub 'abc', '^', assert_empty_match_and_return_d
-  assert_not_nil res
-  assert_equal 'dabc', res
+  it 'should replace only once when given a zero-length-bow-match', ->
+    res = re.sub 'abc abc', '\\<', 'd'
+    assert.is.not.nil res
+    assert.is.equal 'dabc dabc', res
 
-export test_sub_zero_length_match_bow_with_function_replacement = ->
-  res = re.sub 'abc abc', '\\<', assert_empty_match_and_return_d
-  assert_not_nil res
-  assert_equal 'dabc dabc', res
+  it 'should replace only once when given a zero-length-bob-match', ->
+    res = re.sub 'abc', '\\A', 'd'
+    assert.is.not.nil res
+    assert.is.equal 'dabc', res
 
-export test_sub_zero_length_match_bob_with_function_replacement = ->
-  res = re.sub 'abc', '\\A', assert_empty_match_and_return_d
-  assert_not_nil res
-  assert_equal 'dabc', res
+  assert_empty_match_and_return_d = (str) ->
+    assert.is.equal '', str
+    'd'
 
-export test_sub_zero_length_match_eol = ->
-  res = re.sub 'abc', '$', 'd'
-  assert_not_nil res
-  assert_equal 'abcd', res
+  it 'should replace only once when given a zero-length-bol-match and a function replacements', ->
+    res = re.sub 'abc', '^', assert_empty_match_and_return_d
+    assert.is.not.nil res
+    assert.is.equal 'dabc', res
 
-export test_sub_zero_length_match_eol_with_function_replacement = ->
-  res = re.sub 'abc', '$', assert_empty_match_and_return_d
-  assert_not_nil res
-  assert_equal 'abcd', res
+  it 'should replace only once when given a zero-length-bow-match and a function replacements', ->
+    res = re.sub 'abc abc', '\\<', assert_empty_match_and_return_d
+    assert.is.not.nil res
+    assert.is.equal 'dabc dabc', res
 
-export test_sub_zero_length_match_mid = ->
-  res = re.sub 'abc', 'e?', 'd'
-  assert_not_nil res
-  assert_equal 'dadbdcd', res
+  it 'should replace only once when given a zero-length-bob-match and a function replacements', ->
+    res = re.sub 'abc', '\\A', assert_empty_match_and_return_d
+    assert.is.not.nil res
+    assert.is.equal 'dabc', res
 
-  res = re.sub 'abc', 'b*', 'd'
-  assert_not_nil res
-  assert_equal 'daddcd', res
+  it 'should replace only once when given a zero-length-eol-match', ->
+    res = re.sub 'abc', '$', 'd'
+    assert.is.not.nil res
+    assert.is.equal 'abcd', res
 
-export test_sub_zero_length_match_mid_with_function_replacement = ->
-  res = re.sub 'abc', 'e?', assert_empty_match_and_return_d
-  assert_not_nil res
-  assert_equal 'dadbdcd', res
+  it 'should replace only once when given a zero-length-eol-match and a function replacements', ->
+    res = re.sub 'abc', '$', assert_empty_match_and_return_d
+    assert.is.not.nil res
+    assert.is.equal 'abcd', res
 
-export test_zero_length_regex_is_error = ->
-  assert_error -> re.compile ''
+  it 'should apply unanchored zero-length matches at each point in the string', ->
+    res = re.sub 'abc', 'e?', 'd'
+    assert.is.not.nil res
+    assert.is.equal 'dadbdcd', res
 
-export test_split_word_boundary = ->
-  res = re.split 'aa bb cc', '\\b', true
-  assert_not_nil res
-  assert_equal 5, #res
-  assert_equal res[1], 'aa'
-  assert_equal res[2], ' '
-  assert_equal res[3], 'bb'
-  assert_equal res[4], ' '
-  assert_equal res[5], 'cc'
+    res = re.sub 'abc', 'b*', 'd'
+    assert.is.not.nil res
+    assert.is.equal 'daddcd', res
 
-export test_split_bob = ->
-  res = re.split 'aa bb cc', '\\A'
-  assert_not_nil res
-  assert_equal 2, #res
-  assert_equal '', res[1]
-  assert_equal 'aa bb cc', res[2]
+  it 'should apply unanchored zero-length matches with function insertions at each point in the string', ->
+    res = re.sub 'abc', 'e?', assert_empty_match_and_return_d
+    assert.is.not.nil res
+    assert.is.equal 'dadbdcd', res
 

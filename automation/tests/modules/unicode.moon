@@ -12,28 +12,36 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-require 'lunatest'
 unicode = require 'aegisub.unicode'
 
-export test_char_widths = ->
-  assert_equal 1, unicode.charwidth 'a'
-  assert_equal 2, unicode.charwidth 'ß'
-  assert_equal 3, unicode.charwidth 'ｃ'
-  assert_equal 4, unicode.charwidth '🄓'
+describe 'charwidth', ->
+  it 'should return 1 for an ascii character', ->
+    assert.is.equal 1, unicode.charwidth 'a'
+  it 'should return 2 for a two byte character', ->
+    assert.is.equal 2, unicode.charwidth 'ß'
+  it 'should return 3 for a three byte character', ->
+    assert.is.equal 3, unicode.charwidth 'ｃ'
+  it 'should return 4 for a four byte character', ->
+    assert.is.equal 4, unicode.charwidth '🄓'
 
-export test_char_iterator = ->
-  chars = [c for c in unicode.chars 'aßｃ🄓']
-  assert_equal 4, #chars
-  assert_equal chars[1], 'a'
-  assert_equal chars[2], 'ß'
-  assert_equal chars[3], 'ｃ'
-  assert_equal chars[4], '🄓'
+describe 'char_iterator', ->
+  it 'should iterator over multi-byte codepoints', ->
+    chars = [c for c in unicode.chars 'aßｃ🄓']
+    assert.is.equal 4, #chars
+    assert.is.equal chars[1], 'a'
+    assert.is.equal chars[2], 'ß'
+    assert.is.equal chars[3], 'ｃ'
+    assert.is.equal chars[4], '🄓'
 
-export test_len = ->
-  assert_equal 4, unicode.len 'aßｃ🄓'
+describe 'len', ->
+  it 'should give length in codepoints', ->
+    assert.is.equal 4, unicode.len 'aßｃ🄓'
 
-export test_codepoint = ->
-  assert_equal 97, unicode.codepoint 'a'
-  assert_equal 223, unicode.codepoint 'ß'
-  assert_equal 0xFF43, unicode.codepoint 'ｃ'
-  assert_equal 0x1F113, unicode.codepoint '🄓'
+describe 'codepoint', ->
+  it 'should give codepoint as an integer for a string', ->
+    assert.is.equal 97, unicode.codepoint 'a'
+    assert.is.equal 223, unicode.codepoint 'ß'
+    assert.is.equal 0xFF43, unicode.codepoint 'ｃ'
+    assert.is.equal 0x1F113, unicode.codepoint '🄓'
+  it 'should give ignore codepoints after the first', ->
+    assert.is.equal 97, unicode.codepoint 'abc'

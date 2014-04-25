@@ -41,8 +41,9 @@
 #include "utils.h"
 #include "validators.h"
 
-#include <libaegisub/make_unique.h>
+#include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptors.hpp>

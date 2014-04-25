@@ -121,9 +121,11 @@
     <ClCompile Include="$(SrcDir)common\util.cpp" />
     <ClCompile Include="$(SrcDir)common\vfr.cpp" />
     <ClCompile Include="$(SrcDir)lua\modules.cpp" />
+    <ClCompile Include="$(SrcDir)lua\modules\lfs.cpp" />
     <ClCompile Include="$(SrcDir)lua\modules\lpeg.cpp" />
     <ClCompile Include="$(SrcDir)lua\modules\re.cpp" />
     <ClCompile Include="$(SrcDir)lua\script_reader.cpp" />
+    <ClCompile Include="$(SrcDir)lua\utils.cpp" />
     <ClCompile Include="$(SrcDir)windows\access.cpp" />
     <ClCompile Include="$(SrcDir)windows\charset_conv_win.cpp" />
     <ClCompile Include="$(SrcDir)windows\fs.cpp" />

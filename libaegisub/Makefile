@@ -42,9 +42,11 @@ SRC += \
 	common/util.cpp \
 	common/vfr.cpp \
 	lua/modules.cpp \
+	lua/modules/lfs.cpp \
 	lua/modules/lpeg.cpp \
 	lua/modules/re.cpp \
 	lua/script_reader.cpp \
+	lua/utils.cpp \
 	unix/access.cpp \
 	unix/fs.cpp \
 	unix/log.cpp \

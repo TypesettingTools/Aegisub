@@ -2,7 +2,7 @@ include ../../Makefile.inc
 
 LIB = liblua-aegisub.a
 
-CXXFLAGS += -Wno-empty-body -Wno-deprecated-declarations
+CXXFLAGS += -Wno-empty-body -Wno-deprecated-declarations -DLUA_USE_DLOPEN -DLUA_USE_POSIX
 
 SRC = \
 	src/lapi.cpp \
@@ -31,8 +31,6 @@ SRC = \
 	src/ltable.cpp \
 	src/ltablib.cpp \
 	src/ltm.cpp \
-	src/lua.cpp \
-	src/luac.cpp \
 	src/lundump.cpp \
 	src/lvm.cpp \
 	src/lzio.cpp \

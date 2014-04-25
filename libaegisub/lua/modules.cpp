@@ -18,20 +18,32 @@
 
 #include "libaegisub/lua/utils.h"
 
-int luaopen_lpeg(lua_State *L);
+#include <lualib.h>
+
 extern "C" int luaopen_luabins(lua_State *L);
 extern "C" int luaopen_re_impl(lua_State *L);
+int luaopen_lfs(lua_State *L);
+int luaopen_lpeg(lua_State *L);
 
 namespace agi { namespace lua {
 int regex_init(lua_State *L);
 
 void preload_modules(lua_State *L) {
+	push_value(L, luaopen_base); lua_call(L, 0, 0);
+	push_value(L, luaopen_io); lua_call(L, 0, 0);
+	push_value(L, luaopen_math); lua_call(L, 0, 0);
+	push_value(L, luaopen_os); lua_call(L, 0, 0);
+	push_value(L, luaopen_package); lua_call(L, 0, 0);
+	push_value(L, luaopen_string); lua_call(L, 0, 0);
+	push_value(L, luaopen_table); lua_call(L, 0, 0);
+
 	lua_getglobal(L, "package");
 	lua_getfield(L, -1, "preload");
 
+	set_field(L, "aegisub.__re_impl", luaopen_re_impl);
+	set_field(L, "lfs", luaopen_lfs);
 	set_field(L, "lpeg", luaopen_lpeg);
 	set_field(L, "luabins", luaopen_luabins);
-	set_field(L, "aegisub.__re_impl", luaopen_re_impl);
 
 	lua_pop(L, 2);
 }

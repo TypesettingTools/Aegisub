@@ -304,6 +304,12 @@
     <ClCompile Include="$(SrcDir)lua\script_reader.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)lua\utils.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)lua\modules\lfs.cpp">
+      <Filter>Lua\Modules</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)lua\modules\lpeg.cpp">
       <Filter>Lua\Modules</Filter>
     </ClCompile>
