@@ -31,35 +31,34 @@ struct utext_deleter {
 };
 using utext_ptr = std::unique_ptr<UText, utext_deleter>;
 
-template<typename Iterator>
-utext_ptr to_utext(Iterator begin, Iterator end) {
+icu::BreakIterator& get_break_iterator(const char *ptr, size_t len) {
+	static std::unique_ptr<icu::BreakIterator> bi;
+	static std::once_flag token;
+	std::call_once(token, [&] {
+		UErrorCode status = U_ZERO_ERROR;
+		bi.reset(BreakIterator::createCharacterInstance(Locale::getDefault(), status));
+		if (U_FAILURE(status)) throw agi::InternalError("Failed to create character iterator", nullptr);
+	});
+
 	UErrorCode err = U_ZERO_ERROR;
-	utext_ptr ret(utext_openUTF8(nullptr, &*begin, end - begin, &err));
+	utext_ptr ut(utext_openUTF8(nullptr, ptr, len, &err));
 	if (U_FAILURE(err)) throw agi::InternalError("Failed to open utext", nullptr);
-	return ret;
+
+	bi->setText(ut.get(), err);
+	if (U_FAILURE(err)) throw agi::InternalError("Failed to set break iterator text", nullptr);
+
+	return *bi;
 }
 
 template <typename Iterator>
 size_t count_in_range(Iterator begin, Iterator end, int mask) {
 	if (begin == end) return 0;
 
-	static std::unique_ptr<icu::BreakIterator> character_bi;
-	static std::once_flag token;
-	std::call_once(token, [&] {
-		UErrorCode status = U_ZERO_ERROR;
-		character_bi.reset(BreakIterator::createCharacterInstance(Locale::getDefault(), status));
-		if (U_FAILURE(status)) throw agi::InternalError("Failed to create character iterator", nullptr);
-	});
-
-	UErrorCode err = U_ZERO_ERROR;
-
-	utext_ptr ut = to_utext(begin, end);
-	character_bi->setText(ut.get(), err);
-	if (U_FAILURE(err)) throw agi::InternalError("Failed to set break iterator text", nullptr);
+	auto& character_bi = get_break_iterator(&*begin, end - begin);
 
 	size_t count = 0;
-	auto pos = character_bi->first();
-	for (auto end = character_bi->next(); end != BreakIterator::DONE; pos = end, end = character_bi->next()) {
+	auto pos = character_bi.first();
+	for (auto end = character_bi.next(); end != BreakIterator::DONE; pos = end, end = character_bi.next()) {
 		if (!mask)
 			++count;
 		else {
@@ -85,23 +84,27 @@ int ignore_mask_to_icu_mask(int mask) {
 }
 
 namespace agi {
-size_t CharacterCount(std::string const& str, int mask) {
+size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, int mask) {
 	mask = ignore_mask_to_icu_mask(mask);
 	size_t characters = 0;
-	auto pos = begin(str);
+	auto pos = begin;
 	do {
-		auto it = std::find(pos, end(str), '{');
+		auto it = std::find(pos, end, '{');
 		characters += count_in_range(pos, it, mask);
-		if (it == end(str)) break;
+		if (it == end) break;
 
-		pos = std::find(pos, end(str), '}');
-		if (pos == end(str)) {
+		pos = std::find(pos, end, '}');
+		if (pos == end) {
 			characters += count_in_range(it, pos, mask);
 			break;
 		}
-	} while (++pos != end(str));
+	} while (++pos != end);
 
 	return characters;
+}
+
+size_t CharacterCount(std::string const& str, int mask) {
+	return CharacterCount(begin(str), end(str), mask);
 }
 
 size_t MaxLineLength(std::string const& text, int mask) {
@@ -130,5 +133,17 @@ size_t MaxLineLength(std::string const& text, int mask) {
 	}
 
 	return std::max(max_line_length, current_line_length);
+}
+
+size_t IndexOfCharacter(std::string const& str, size_t n) {
+	if (str.empty() || n == 0) return 0;
+	auto& bi = get_break_iterator(&str[0], str.size());
+
+	for (auto pos = bi.first(), end = bi.next(); ; --n, pos = end, end = bi.next()) {
+		if (end == BreakIterator::DONE)
+			return str.size();
+		if (n == 0)
+			return pos;
+	}
 }
 }

@@ -342,7 +342,6 @@ void SubsEditBox::UpdateFields(int type, bool repopulate_lists) {
 		if (repopulate_lists) PopulateList(actor_box, &AssDialogue::Actor);
 		actor_box->ChangeValue(to_wx(line->Actor));
 		actor_box->SetStringSelection(to_wx(line->Actor));
-		edit_ctrl->SetTextTo(line->Text);
 	}
 }
 

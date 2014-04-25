@@ -47,8 +47,9 @@
 
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/calltip_provider.h>
-#include <libaegisub/spellchecker.h>
+#include <libaegisub/character_count.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/spellchecker.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -281,9 +282,16 @@ void SubsTextEditCtrl::SetTextTo(std::string const& text) {
 	SetEvtHandlerEnabled(false);
 	Freeze();
 
+	auto insertion_point = GetInsertionPoint();
+	if (insertion_point > line_text.size())
+		line_text = GetTextRaw().data();
+	auto old_pos = agi::CharacterCount(line_text.begin(), line_text.begin() + insertion_point, 0);
 	line_text.clear();
-	SetTextRaw(text.c_str());
+
 	SetSelection(0, 0);
+	SetTextRaw(text.c_str());
+	auto pos = agi::IndexOfCharacter(text, old_pos);
+	SetSelection(pos, pos);
 
 	SetEvtHandlerEnabled(true);
 	Thaw();
