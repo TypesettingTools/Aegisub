@@ -22,6 +22,8 @@
 #include "string_codec.h"
 #include "subtitle_format.h"
 
+#include <libaegisub/ass/uuencode.h>
+
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -115,13 +117,25 @@ void AssParser::ParseGraphicsLine(std::string const& data) {
 }
 
 void AssParser::ParseExtradataLine(std::string const &data) {
-	static const boost::regex matcher("Data:[[:space:]]*(\\d+),([^,]+),(.*)");
+	static const boost::regex matcher("Data:[[:space:]]*(\\d+),([^,]+),(.)(.*)");
 	boost::match_results<std::string::const_iterator> mr;
 
 	if (boost::regex_match(data, mr, matcher)) {
 		auto id = boost::lexical_cast<uint32_t>(mr.str(1));
 		auto key = inline_string_decode(mr.str(2));
-		auto value = inline_string_decode(mr.str(3));
+		auto valuetype = mr.str(3);
+		auto value = mr.str(4);
+		if (valuetype == "e") {
+			// escaped/inline_string encoded
+			value = inline_string_decode(value);
+		} else if (valuetype == "u") {
+			// ass uuencoded
+			auto valuedata = agi::ass::UUDecode(value);
+			value = std::string(valuedata.begin(), valuedata.end());
+		} else {
+			// unknown, error?
+			value = "";
+		}
 
 		// ensure next_extradata_id is always at least 1 more than the largest existing id
 		target->next_extradata_id = std::max(id+1, target->next_extradata_id);

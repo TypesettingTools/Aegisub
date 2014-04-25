@@ -27,6 +27,7 @@
 #include "text_file_writer.h"
 #include "version.h"
 
+#include <libaegisub/ass/uuencode.h>
 #include <libaegisub/fs.h>
 
 DEFINE_SIMPLE_EXCEPTION(AssParseError, SubtitleFormatParseError, "subtitle_io/parse/ass")
@@ -129,7 +130,18 @@ struct Writer {
 			line += ",";
 			line += inline_string_encode(edi.second.first);
 			line += ",";
-			line += inline_string_encode(edi.second.second);
+			std::string encoded_data = inline_string_encode(edi.second.second);
+			if (4*edi.second.second.size() < 3*encoded_data.size()) {
+				// the inline_string encoding grew the data by more than uuencoding would
+				// so base64 encode it instead
+				line += "u"; // marker for uuencoding
+				encoded_data = agi::ass::UUEncode(edi.second.second, false);
+				printf("did uuencoding, original size=%lu, encoded size=%lu\n", edi.second.second.size(), encoded_data.size());
+				line += encoded_data;
+			} else {
+				line += "e"; // marker for inline_string encoding (escaping)
+				line += encoded_data;
+			}
 			file.WriteLineToFile(line);
 		}
 	}

@@ -28,7 +28,7 @@ namespace agi { namespace ass {
 
 /// Encode a blob of data, using ASS's nonstandard variant
 template<typename RandomAccessRange>
-std::string UUEncode(RandomAccessRange const& data) {
+std::string UUEncode(RandomAccessRange const& data, bool insert_linebreaks=true) {
 	using std::begin;
 	using std::end;
 
@@ -51,7 +51,7 @@ std::string UUEncode(RandomAccessRange const& data) {
 		for (size_t i = 0; i < std::min<size_t>(size - pos + 1, 4u); ++i) {
 			ret += dst[i] + 33;
 
-			if (++written == 80 && pos + 3 < size) {
+			if (insert_linebreaks && ++written == 80 && pos + 3 < size) {
 				written = 0;
 				ret += "\r\n";
 			}
