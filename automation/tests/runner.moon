@@ -15,8 +15,8 @@
 require 'lunatest'
 require 'lfs'
 
-package.path ..= 'include/?.lua;'
-package.moonpath ..= 'include/?.moon;'
+package.path ..= ';include/?.lua;'
+package.moonpath ..= ';include/?.moon;'
 
 for file in lfs.dir 'tests/modules'
   require "tests.modules.#{file\gsub '\.[^.]+$', ''}" unless file\sub(1, 1) == '.'

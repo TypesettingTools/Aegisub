@@ -1,5 +1,7 @@
 include ../Makefile.inc
 
+PRECOMPILED_HEADER_NAME = ../libaegisub/lagi_pre.h
+
 LIB_SHARED = aegisub.so
 LIB_VERSION = 0.1.0
 BUILD_LIB = no
