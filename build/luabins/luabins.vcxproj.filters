@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{0A33FF05-970D-49a7-B722-73E8EA350084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{2C50401A-5AC6-4630-B633-DFCC190306A8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)fwrite.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)load.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)luabins.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)luainternals.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)save.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)savebuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)write.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)fwrite.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)luabins.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)luaheaders.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)luainternals.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)savebuffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)saveload.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)write.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

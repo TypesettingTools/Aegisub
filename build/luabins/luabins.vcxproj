@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A7A30702-8162-4E1A-A010-EF51B590C121}</ProjectGuid>
+    <RootNamespace>luabins</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
+    <SrcDir>..\..\vendor\luabins\src\</SrcDir>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>LUABINS_LUABUILTASCPP;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SrcDir)..\..\lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)fwrite.cpp" />
+    <ClCompile Include="$(SrcDir)load.cpp" />
+    <ClCompile Include="$(SrcDir)luabins.cpp" />
+    <ClCompile Include="$(SrcDir)luainternals.cpp" />
+    <ClCompile Include="$(SrcDir)save.cpp" />
+    <ClCompile Include="$(SrcDir)savebuffer.cpp" />
+    <ClCompile Include="$(SrcDir)write.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)fwrite.h" />
+    <ClInclude Include="$(SrcDir)luabins.h" />
+    <ClInclude Include="$(SrcDir)luaheaders.h" />
+    <ClInclude Include="$(SrcDir)luainternals.h" />
+    <ClInclude Include="$(SrcDir)savebuffer.h" />
+    <ClInclude Include="$(SrcDir)saveload.h" />
+    <ClInclude Include="$(SrcDir)write.h" />
+  </ItemGroup>
+</Project>
