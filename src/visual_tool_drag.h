@@ -26,9 +26,8 @@
 /// @brief VisualDraggableFeature with a time value
 class VisualToolDragDraggableFeature final : public VisualDraggableFeature {
 public:
-	int time;
-	VisualToolDragDraggableFeature *parent;
-	VisualToolDragDraggableFeature() : VisualDraggableFeature(), time(0), parent(nullptr) { }
+	int time = 0;
+	VisualToolDragDraggableFeature *parent = nullptr;
 };
 
 class wxBitmapButton;

@@ -43,7 +43,7 @@ struct VideoFrame;
 
 class SubtitlesProvider {
 public:
-	virtual ~SubtitlesProvider() { }
+	virtual ~SubtitlesProvider() = default;
 	virtual void LoadSubtitles(AssFile *subs)=0;
 	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
 };

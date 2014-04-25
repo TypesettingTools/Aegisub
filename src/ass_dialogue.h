@@ -75,7 +75,7 @@ protected:
 	std::string text;
 public:
 	AssDialogueBlock(std::string text) : text(std::move(text)) { }
-	virtual ~AssDialogueBlock() { }
+	virtual ~AssDialogueBlock() = default;
 
 	virtual AssBlockType GetType() const = 0;
 	virtual std::string GetText() { return text; }

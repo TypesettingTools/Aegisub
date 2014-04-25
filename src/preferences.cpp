@@ -331,12 +331,11 @@ public:
 
 class HotkeyRenderer final : public wxDataViewCustomRenderer {
 	wxString value;
-	wxTextCtrl *ctrl;
+	wxTextCtrl *ctrl = nullptr;
 
 public:
 	HotkeyRenderer()
 	: wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_EDITABLE)
-	, ctrl(nullptr)
 	{ }
 
 	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& var) override {

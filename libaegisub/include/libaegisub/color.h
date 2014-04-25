@@ -23,7 +23,7 @@ namespace agi {
 		unsigned char b = 0;	///< Blue component
 		unsigned char a = 0;	///< Alpha component
 
-		Color() { }
+		Color() = default;
 		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);
 		Color(std::string const& str);
 

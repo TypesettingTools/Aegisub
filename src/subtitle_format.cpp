@@ -70,8 +70,6 @@ SubtitleFormat::SubtitleFormat(std::string name)
 {
 }
 
-SubtitleFormat::~SubtitleFormat() { }
-
 bool SubtitleFormat::CanReadFile(agi::fs::path const& filename, std::string const&) const {
 	auto wildcards = GetReadWildcards();
 	return any_of(begin(wildcards), end(wildcards),

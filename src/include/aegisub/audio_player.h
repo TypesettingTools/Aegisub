@@ -48,7 +48,7 @@ protected:
 
 public:
 	AudioPlayer(AudioProvider *provider);
-	virtual ~AudioPlayer() { }
+	virtual ~AudioPlayer() = default;
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
 	virtual void Stop()=0;			// Stop playing

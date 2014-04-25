@@ -136,7 +136,7 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandNotFound, CommandError, "command/notfound
 		virtual bool IsActive(const agi::Context *c) { return false; }
 
 		/// Destructor
-		virtual ~Command() { };
+		virtual ~Command() = default;
 	};
 
 	/// Init all builtin commands.

@@ -196,7 +196,7 @@ namespace Automation4 {
 		LuaDialogControl(lua_State *L);
 
 		/// Virtual destructor so this can safely be inherited from
-		virtual ~LuaDialogControl() { }
+		virtual ~LuaDialogControl() = default;
 	};
 
 	/// A lua-generated dialog or panel in the export options dialog

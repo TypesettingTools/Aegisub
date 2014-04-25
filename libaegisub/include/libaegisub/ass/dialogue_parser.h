@@ -66,7 +66,6 @@ namespace agi {
 		struct DialogueToken {
 			int type;
 			size_t length;
-			DialogueToken(int type, size_t length) : type(type), length(length) { }
 		};
 
 		/// Tokenize the passed string as the body of a dialogue line

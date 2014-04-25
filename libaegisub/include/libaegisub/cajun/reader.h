@@ -19,11 +19,9 @@ class Reader {
 public:
 	// this structure will be reported in one of the exceptions defined below
 	struct Location {
-		Location() : m_nLine(0), m_nLineOffset(0), m_nDocOffset(0) { }
-
-		unsigned int m_nLine;       // document line, zero-indexed
-		unsigned int m_nLineOffset; // character offset from beginning of line, zero indexed
-		unsigned int m_nDocOffset;  // character offset from entire document, zero indexed
+		unsigned int m_nLine = 0;       // document line, zero-indexed
+		unsigned int m_nLineOffset = 0; // character offset from beginning of line, zero indexed
+		unsigned int m_nDocOffset = 0;  // character offset from entire document, zero indexed
 	};
 
 	// thrown during the first phase of reading. generally catches low-level

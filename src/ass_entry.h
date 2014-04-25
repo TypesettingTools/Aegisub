@@ -51,7 +51,7 @@ using AssEntryListHook = boost::intrusive::make_list_base_hook<boost::intrusive:
 
 class AssEntry {
 public:
-	virtual ~AssEntry() { }
+	virtual ~AssEntry() = default;
 
 	/// Section of the file this entry belongs to
 	virtual AssEntryGroup Group() const=0;

@@ -115,13 +115,7 @@ public:
 struct COMInitialization {
 
 	/// Flag set if an inited COM library is managed
-	bool inited;
-
-	/// @brief Constructor, sets inited false
-	COMInitialization()
-	{
-		inited = false;
-	}
+	bool inited = false;
 
 	/// @brief Destructor, de-inits COM if it is inited
 	~COMInitialization()

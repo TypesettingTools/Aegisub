@@ -260,7 +260,6 @@ struct disabler {
 	wxControl *ctrl;
 	bool enable;
 
-	disabler(wxControl *ctrl, bool enable) : ctrl(ctrl), enable(enable) { }
 	void operator()(wxCommandEvent &evt) {
 		ctrl->Enable(!!evt.GetInt() == enable);
 		evt.Skip();
@@ -272,7 +271,7 @@ void OptionPage::EnableIfChecked(wxControl *cbx, wxControl *ctrl) {
 	if (!cb) return;
 
 	ctrl->Enable(cb->IsChecked());
-	cb->Bind(wxEVT_CHECKBOX, disabler(ctrl, true));
+	cb->Bind(wxEVT_CHECKBOX, disabler{ctrl, true});
 }
 
 void OptionPage::DisableIfChecked(wxControl *cbx, wxControl *ctrl) {
@@ -280,5 +279,5 @@ void OptionPage::DisableIfChecked(wxControl *cbx, wxControl *ctrl) {
 	if (!cb) return;
 
 	ctrl->Enable(!cb->IsChecked());
-	cb->Bind(wxEVT_CHECKBOX, disabler(ctrl, false));
+	cb->Bind(wxEVT_CHECKBOX, disabler{ctrl, false});
 }

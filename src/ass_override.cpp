@@ -167,13 +167,6 @@ struct AssOverrideParamProto {
 
 	/// Semantic type of this parameter
 	AssParameterClass classification;
-
-	AssOverrideParamProto(VariableDataType type, int opt, AssParameterClass classi)
-	: optional(opt)
-	, type(type)
-	, classification(classi)
-	{
-	}
 };
 
 struct AssOverrideTagProto {
@@ -190,7 +183,7 @@ struct AssOverrideTagProto {
 	/// @param classi Semantic type of the parameter
 	/// @param opt Situations in which this parameter is present
 	void AddParam(VariableDataType type, AssParameterClass classi = AssParameterClass::NORMAL, int opt = NOT_OPTIONAL) {
-		params.emplace_back(type, opt, classi);
+		params.push_back(AssOverrideParamProto{opt, type, classi});
 	}
 
 	/// @brief Convenience function for single-argument tags
@@ -200,7 +193,7 @@ struct AssOverrideTagProto {
 	/// @param opt Situations in which this parameter is present
 	void Set(const char *name, VariableDataType type, AssParameterClass classi = AssParameterClass::NORMAL, int opt = NOT_OPTIONAL) {
 		this->name = name;
-		params.emplace_back(type, opt, classi);
+		params.push_back(AssOverrideParamProto{opt, type, classi});
 	}
 };
 

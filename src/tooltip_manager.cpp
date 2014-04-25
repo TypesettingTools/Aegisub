@@ -39,6 +39,7 @@
 
 #include <libaegisub/hotkey.h>
 
+#include <list>
 #include <wx/weakref.h>
 #include <wx/window.h>
 
@@ -48,36 +49,15 @@ struct ToolTipBinding {
 	const char *command;
 	const char *context;
 	void Update();
-
-	ToolTipBinding(wxWindow *window, wxString toolTip, const char *command, const char *context)
-	: window(window)
-	, toolTip(toolTip)
-	, command(command)
-	, context(context)
-	{
-	}
-
-	// clang doesn't like wxWeakRef's copy constructor, so use the assignment
-	// operator instead
-	ToolTipBinding(ToolTipBinding const& other)
-	: toolTip(other.toolTip)
-	, command(other.command)
-	, context(other.context)
-	{
-		window = other.window;
-	}
 };
 
-ToolTipManager::ToolTipManager() { }
-ToolTipManager::~ToolTipManager() { }
-
 void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *context, const char *command) {
-	ToolTipBinding tip(window, tooltip, command, context);
+	ToolTipBinding tip{window, tooltip, command, context};
 	tip.Update();
 
-	static ToolTipManager instance;
-	instance.tips.push_back(tip);
-	hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, &instance.tips.back());
+	static std::list<ToolTipBinding> tips;
+	tips.push_back(tip);
+	hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, &tips.back());
 }
 
 void ToolTipBinding::Update() {

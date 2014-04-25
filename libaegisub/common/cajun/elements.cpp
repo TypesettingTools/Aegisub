@@ -31,14 +31,12 @@ namespace {
 		void Visit(Boolean const&) { }
 		void Visit(Null const&) { is_null = true; }
 	public:
-		bool is_null;
-		CastVisitorBase() : is_null(false) { }
+		bool is_null = false;
 	};
 
 	template<class T>
 	struct CastVisitor final : public CastVisitorBase {
-		T *element;
-		CastVisitor() : element(0) { }
+		T *element = nullptr;
 		void Visit(T& ele) { element = &ele; }
 	};
 }

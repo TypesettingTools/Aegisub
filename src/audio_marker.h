@@ -85,7 +85,7 @@ protected:
 	agi::signal::Signal<> AnnounceMarkerMoved;
 public:
 	/// Virtual destructor, does nothing
-	virtual ~AudioMarkerProvider() { }
+	virtual ~AudioMarkerProvider() = default;
 
 	/// @brief Return markers in a time range
 	virtual void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const = 0;
@@ -106,11 +106,10 @@ public:
 		wxString text;
 		/// Range which this label applies to
 		TimeRange range;
-		AudioLabel(wxString const& text, TimeRange const& range) : text(text), range(range) { }
 	};
 
 	/// Virtual destructor, does nothing
-	virtual ~AudioLabelProvider() { }
+	virtual ~AudioLabelProvider() = default;
 
 	/// @brief Get labels in a time range
 	/// @param range Range of times to get labels for
@@ -177,9 +176,9 @@ public:
 class SecondsMarkerProvider final : public AudioMarkerProvider {
 	struct Marker final : public AudioMarker {
 		Pen *style;
-		int position;
+		int position = 0;
 
-		Marker(Pen *style) : style(style), position(0) { }
+		Marker(Pen *style) : style(style) { }
 		int GetPosition() const override { return position; }
 		FeetStyle GetFeet() const override { return Feet_None; }
 		bool CanSnap() const override { return false; }

@@ -142,7 +142,7 @@ public:
 	virtual void Draw()=0;
 	virtual void SetDisplayArea(int x, int y, int w, int h);
 	virtual void SetToolbar(wxToolBar *) { }
-	virtual ~VisualToolBase() { }
+	virtual ~VisualToolBase() = default;
 };
 
 /// Visual tool base class containing all common feature-related functionality

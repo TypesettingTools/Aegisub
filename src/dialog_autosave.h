@@ -29,14 +29,11 @@ class DialogAutosave final : public wxDialog {
 		wxString filename;
 		wxDateTime date;
 		wxString display;
-		Version(wxString const& filename, wxDateTime date, wxString const& display)
-		: filename(filename), date(std::move(date)), display(display) { }
 	};
 
 	struct AutosaveFile {
 		wxString name;
 		std::vector<Version> versions;
-		AutosaveFile(wxString const& name) : name(name) { }
 	};
 
 	std::vector<AutosaveFile> files;

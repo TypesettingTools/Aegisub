@@ -86,9 +86,6 @@ struct AegisubUpdateDescription {
 	std::string url;
 	std::string friendly_name;
 	std::string description;
-
-	AegisubUpdateDescription(std::string url, std::string friendly_name, std::string description)
-	: url(std::move(url)), friendly_name(std::move(friendly_name)), description(std::move(description)) { }
 };
 
 class VersionCheckerResultDialog final : public wxDialog {
@@ -340,16 +337,15 @@ void DoCheck(bool interactive) {
 		boost::split(parsed, line, boost::is_any_of("|"));
 		if (parsed.size() != 6) continue;
 
-		// 0 and 2 being things that never got used
-		std::string revision = parsed[1];
-		std::string url = inline_string_decode(parsed[3]);
-		std::string friendlyname = inline_string_decode(parsed[4]);
-		std::string description = inline_string_decode(parsed[5]);
-
-		if (atoi(revision.c_str()) <= GetSVNRevision())
+		if (atoi(parsed[1].c_str()) <= GetSVNRevision())
 			continue;
 
-		results.emplace_back(url, friendlyname, description);
+		// 0 and 2 being things that never got used
+		results.push_back(AegisubUpdateDescription{
+			inline_string_decode(parsed[3]),
+			inline_string_decode(parsed[4]),
+			inline_string_decode(parsed[5])
+		});
 	}
 
 	if (!results.empty() || interactive) {

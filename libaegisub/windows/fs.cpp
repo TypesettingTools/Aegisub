@@ -84,8 +84,7 @@ void Copy(fs::path const& from, fs::path const& to) {
 }
 
 struct DirectoryIterator::PrivData {
-	scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> h;
-	PrivData() : h(INVALID_HANDLE_VALUE, FindClose) { }
+	scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> h{INVALID_HANDLE_VALUE, FindClose};
 };
 
 DirectoryIterator::DirectoryIterator() { }

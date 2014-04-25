@@ -60,7 +60,7 @@ class AssExportFilter : public boost::intrusive::make_list_base_hook<boost::intr
 
 public:
 	AssExportFilter(std::string name, std::string description, int priority = 0);
-	virtual ~AssExportFilter() { };
+	virtual ~AssExportFilter() = default;
 
 	std::string const& GetName() const { return name; }
 	std::string const& GetDescription() const { return description; }

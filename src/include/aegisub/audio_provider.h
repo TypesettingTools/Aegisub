@@ -57,7 +57,7 @@ protected:
 	void ZeroFill(void *buf, int64_t count) const;
 
 public:
-	virtual ~AudioProvider() { }
+	virtual ~AudioProvider() = default;
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;

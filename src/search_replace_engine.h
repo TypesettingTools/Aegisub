@@ -25,8 +25,6 @@ struct MatchState {
 	boost::u32regex *re;
 	size_t start, end;
 
-	MatchState() : re(nullptr), start(0), end(-1) { }
-	MatchState(size_t s, size_t e, boost::u32regex *re) : re(re), start(s), end(e) { }
 	operator bool() const { return end != (size_t)-1; }
 };
 

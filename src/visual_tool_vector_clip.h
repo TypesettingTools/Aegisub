@@ -32,12 +32,7 @@ struct VisualToolVectorClipDraggableFeature final : public VisualDraggableFeatur
 	/// Which curve in the spline this feature is a point on
 	Spline::iterator curve;
 	/// 0-3; indicates which part of the curve this point is
-	int point;
-	/// @brief Constructor
-	VisualToolVectorClipDraggableFeature()
-	: VisualDraggableFeature()
-	, point(0)
-	{ }
+	int point = 0;
 };
 
 class VisualToolVectorClip final : public VisualTool<VisualToolVectorClipDraggableFeature> {

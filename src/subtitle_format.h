@@ -71,7 +71,7 @@ public:
 	/// @param Subtitle format name
 	SubtitleFormat(std::string name);
 	/// Destructor
-	virtual ~SubtitleFormat();
+	virtual ~SubtitleFormat() = default;
 
 	/// Get this format's name
 	std::string const& GetName() const { return name; }

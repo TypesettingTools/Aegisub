@@ -27,26 +27,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file tooltip_manager.h
-/// @see tooltip_manager.cpp
-/// @ingroup custom_control
-///
-
-#include <boost/container/list.hpp>
-
-struct ToolTipBinding;
-
 class wxString;
 class wxWindow;
 
 class ToolTipManager {
-	ToolTipManager();
-	~ToolTipManager();
-	ToolTipManager(ToolTipManager const&);
-	ToolTipManager& operator=(ToolTipManager const&);
-
-	boost::container::list<ToolTipBinding> tips;
-
 public:
 	static void Bind(wxWindow *window, wxString tooltip, const char *context, const char *command);
 };

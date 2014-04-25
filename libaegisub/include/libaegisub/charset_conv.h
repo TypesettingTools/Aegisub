@@ -40,7 +40,7 @@ typedef void* iconv_t;
 /// Helper class that abstracts away the differences between libiconv and
 /// POSIX iconv implementations
 struct Converter {
-	virtual ~Converter() { }
+	virtual ~Converter() = default;
 	virtual size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) = 0;
 };
 

@@ -53,10 +53,10 @@ typedef std::function<MatchState (const AssDialogue*, size_t)> matcher;
 
 class noop_accessor {
 	boost::flyweight<std::string> AssDialogueBase::*field;
-	size_t start;
+	size_t start = 0;
 
 public:
-	noop_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)), start(0) { }
+	noop_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)) { }
 
 	std::string get(const AssDialogue *d, size_t s) {
 		start = s;
@@ -64,14 +64,14 @@ public:
 	}
 
 	MatchState make_match_state(size_t s, size_t e, boost::u32regex *r = nullptr) {
-		return MatchState(s + start, e + start, r);
+		return {r, s + start, e + start};
 	}
 };
 
 class skip_tags_accessor {
 	boost::flyweight<std::string> AssDialogueBase::*field;
 	std::vector<std::pair<size_t, size_t>> blocks;
-	size_t start;
+	size_t start = 0;
 
 	void parse_str(std::string const& str) {
 		blocks.clear();
@@ -90,7 +90,7 @@ class skip_tags_accessor {
 	}
 
 public:
-	skip_tags_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)), start(0) { }
+	skip_tags_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)) { }
 
 	std::string get(const AssDialogue *d, size_t s) {
 		auto const& str = get_normalized(d, field);
@@ -140,7 +140,7 @@ public:
 			// Note that blocks cannot be partially within the match
 			e += block.second - block.first + 1;
 		}
-		return MatchState(s, e, r);
+		return {r, s, e};
 	}
 };
 
@@ -157,7 +157,7 @@ matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 			boost::smatch result;
 			auto const& str = a.get(diag, start);
 			if (!u32regex_search(str, result, regex, start > 0 ? boost::match_not_bol : boost::match_default))
-				return MatchState();
+				return {nullptr, 0, -1};
 			return a.make_match_state(result.position(), result.position() + result.length(), &regex);
 		};
 	}
@@ -169,18 +169,19 @@ matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 	if (!settings.match_case)
 		look_for = boost::locale::fold_case(look_for);
 
+	MatchState invalid{nullptr, 0, -1};
 	return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
 		const auto str = a.get(diag, start);
 		if (full_match_only && str.size() != look_for.size())
-			return MatchState();
+			return invalid;
 
 		if (match_case) {
 			const auto pos = str.find(look_for);
-			return pos == std::string::npos ? MatchState() : a.make_match_state(pos, pos + look_for.size());
+			return pos == std::string::npos ? invalid : a.make_match_state(pos, pos + look_for.size());
 		}
 
 		const auto pos = agi::util::ifind(str, look_for);
-		return pos.first == bad_pos ? MatchState() : a.make_match_state(pos.first, pos.second);
+		return pos.first == bad_pos ? invalid : a.make_match_state(pos.first, pos.second);
 	};
 }
 

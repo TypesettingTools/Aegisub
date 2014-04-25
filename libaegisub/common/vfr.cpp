@@ -60,8 +60,6 @@ struct TimecodeRange {
 	int end;
 	double fps;
 	bool operator<(TimecodeRange const& cmp) const { return start < cmp.start; }
-	TimecodeRange(int start=0, int end=0, double fps=0.)
-	: start(start), end(end), fps(fps) { }
 };
 
 /// @brief Parse a single line of a v1 timecode file
@@ -95,7 +93,7 @@ TimecodeRange v1_parse_line(std::string const& str) {
 void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
 	// Range for frames between start and first override
 	if (ranges.empty() || ranges.front().start > 0)
-		ranges.emplace_front(0, ranges.empty() ? 0 : ranges.front().start - 1, fps);
+		ranges.push_front(TimecodeRange{0, ranges.empty() ? 0 : ranges.front().start - 1, fps});
 
 	for (auto cur = ++begin(ranges), prev = begin(ranges); cur != end(ranges); ++cur, ++prev) {
 		if (prev->end >= cur->start)
@@ -103,7 +101,7 @@ void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
 			// broken things with them
 			throw UnorderedTimecodes("Override ranges must not overlap");
 		if (prev->end + 1 < cur->start) {
-			ranges.emplace(cur, prev->end + 1, cur->start -1, fps);
+			ranges.insert(cur, TimecodeRange{prev->end + 1, cur->start - 1, fps});
 			++prev;
 		}
 	}

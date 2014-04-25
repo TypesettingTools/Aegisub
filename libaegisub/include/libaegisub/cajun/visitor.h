@@ -14,7 +14,7 @@ namespace json
 {
 
 struct Visitor {
-	virtual ~Visitor() { }
+	virtual ~Visitor() = default;
 
 	virtual void Visit(Array& array) = 0;
 	virtual void Visit(Object& object) = 0;
@@ -26,7 +26,7 @@ struct Visitor {
 };
 
 struct ConstVisitor {
-	virtual ~ConstVisitor() { }
+	virtual ~ConstVisitor() = default;
 
 	virtual void Visit(const Array& array) = 0;
 	virtual void Visit(const Object& object) = 0;

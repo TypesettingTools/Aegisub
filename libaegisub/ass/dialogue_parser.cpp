@@ -38,7 +38,7 @@ class SyntaxHighlighter {
 		if (ranges.size() && ranges.back().type == type)
 			ranges.back().length += len;
 		else
-			ranges.push_back(DialogueToken(type, len));
+			ranges.push_back(DialogueToken{type, len});
 	}
 
 public:
@@ -101,7 +101,7 @@ class WordSplitter {
 		tokens[i].length = len;
 
 		if (old.length != (size_t)len) {
-			tokens.insert(tokens.begin() + i + 1, DialogueToken(old.type, old.length - len));
+			tokens.insert(tokens.begin() + i + 1, DialogueToken{old.type, old.length - len});
 			++i;
 		}
 	}

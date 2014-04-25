@@ -56,22 +56,17 @@ namespace {
 /// @brief Struct storing the information needed to draw a glyph
 struct OpenGLTextGlyph {
 	wxString str; ///< String containing the glyph(s) this is for
-	int tex;      ///< OpenGL texture to draw for this glyph
-	float x1;     ///< Left x coordinate of this glyph in the containing texture
-	float x2;     ///< Right x coordinate of this glyph in the containing texture
-	float y1;     ///< Left y coordinate of this glyph in the containing texture
-	float y2;     ///< Right y coordinate of this glyph in the containing texture
-	int w;        ///< Width of the glyph in pixels
-	int h;        ///< Height of the glyph in pixels
+	int tex = 0;  ///< OpenGL texture to draw for this glyph
+	float x1 = 0; ///< Left x coordinate of this glyph in the containing texture
+	float x2 = 0; ///< Right x coordinate of this glyph in the containing texture
+	float y1 = 0; ///< Left y coordinate of this glyph in the containing texture
+	float y2 = 0; ///< Right y coordinate of this glyph in the containing texture
+	int w = 0;    ///< Width of the glyph in pixels
+	int h = 0;    ///< Height of the glyph in pixels
 	wxFont font;  ///< Font used for this glyph
 
 	OpenGLTextGlyph(int value, wxFont const& font)
 	: str(wxChar(value))
-	, tex(0)
-	, x1(0)
-	, x2(0)
-	, y1(0)
-	, y2(0)
 	, font(font)
 	{
 		wxCoord desc,lead;
@@ -113,13 +108,13 @@ struct OpenGLTextGlyph {
 /// @class OpenGLTextTexture
 /// @brief OpenGL texture which stores one or more glyphs as sprites
 class OpenGLTextTexture final : boost::noncopyable {
-	int x;      ///< Next x coordinate at which a glyph can be inserted
-	int y;      ///< Next y coordinate at which a glyph can be inserted
-	int nextY;  ///< Y coordinate of the next line; tracked due to that lines
-	            ///< are only as tall as needed to fit the glyphs in them
-	int width;  ///< Width of the texture
-	int height; ///< Height of the texture
-	GLuint tex; ///< The texture
+	int x = 0;      ///< Next x coordinate at which a glyph can be inserted
+	int y = 0;      ///< Next y coordinate at which a glyph can be inserted
+	int nextY = 0;  ///< Y coordinate of the next line; tracked due to that lines
+	                ///< are only as tall as needed to fit the glyphs in them
+	int width;      ///< Width of the texture
+	int height;     ///< Height of the texture
+	GLuint tex = 0; ///< The texture
 
 	/// Insert the glyph into this texture at the current coordinates
 	void Insert(OpenGLTextGlyph &glyph) {
@@ -161,12 +156,8 @@ class OpenGLTextTexture final : boost::noncopyable {
 
 public:
 	OpenGLTextTexture(OpenGLTextGlyph &glyph)
-	: x(0)
-	, y(0)
-	, nextY(0)
-	, width(std::max(SmallestPowerOf2(glyph.w), 64))
+	: width(std::max(SmallestPowerOf2(glyph.w), 64))
 	, height(std::max(SmallestPowerOf2(glyph.h), 64))
-	, tex(0)
 	{
 		width = height = std::max(width, height);
 

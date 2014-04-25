@@ -73,8 +73,7 @@ class KaraokeLineMatchDisplay final : public wxControl {
 	struct MatchGroup {
 		std::vector<MatchSyllable> src;
 		std::string dst;
-		int last_render_width;
-		MatchGroup() : last_render_width(0) { }
+		int last_render_width = 0;
 	};
 
 	std::vector<MatchGroup> matched_groups;

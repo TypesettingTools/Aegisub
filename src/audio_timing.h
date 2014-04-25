@@ -173,7 +173,7 @@ public:
 	virtual void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int snap_range) = 0;
 
 	/// @brief Destructor
-	virtual ~AudioTimingController() { }
+	virtual ~AudioTimingController() = default;
 
 	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedPrimaryRange, AddUpdatedPrimaryRangeListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceUpdatedStyleRanges, AddUpdatedStyleRangesListener)

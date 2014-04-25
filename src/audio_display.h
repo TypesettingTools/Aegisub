@@ -91,7 +91,7 @@ public:
 	/// @brief Destructor
 	///
 	/// Empty virtual destructor for the cases that need it.
-	virtual ~AudioDisplayInteractionObject() { }
+	virtual ~AudioDisplayInteractionObject() = default;
 };
 
 /// @class AudioDisplay

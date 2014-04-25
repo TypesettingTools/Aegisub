@@ -90,7 +90,7 @@ namespace Automation4 {
 	/// panel
 	class ScriptDialog {
 	public:
-		virtual ~ScriptDialog() { }
+		virtual ~ScriptDialog() = default;
 
 		/// Create a window with the given parent
 		virtual wxWindow *CreateWindow(wxWindow *parent) = 0;
@@ -155,7 +155,7 @@ namespace Automation4 {
 		Script(agi::fs::path const& filename);
 
 	public:
-		virtual ~Script() { }
+		virtual ~Script() = default;
 
 		/// Reload this script
 		virtual void Reload() = 0;
@@ -253,7 +253,7 @@ namespace Automation4 {
 		ScriptFactory(std::string engine_name, std::string filename_pattern);
 
 	public:
-		virtual ~ScriptFactory() { }
+		virtual ~ScriptFactory() = default;
 
 		/// Name of this automation engine
 		const std::string& GetEngineName() const { return engine_name; }

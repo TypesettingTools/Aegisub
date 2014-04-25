@@ -114,8 +114,8 @@ void DialogAutosave::Populate(std::map<wxString, AutosaveFile> &files_map, std::
 
 		auto it = files_map.find(name);
 		if (it == files_map.end())
-			it = files_map.insert(std::make_pair(name, name)).first;
-		it->second.versions.emplace_back(wxFileName(directory, fn).GetFullPath(), date, wxString::Format(name_fmt, date.Format()));
+			it = files_map.insert(std::make_pair(name, AutosaveFile{name})).first;
+		it->second.versions.push_back(Version{wxFileName(directory, fn).GetFullPath(), date, wxString::Format(name_fmt, date.Format())});
 	} while (dir.GetNext(&fn));
 }
 
