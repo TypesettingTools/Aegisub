@@ -259,9 +259,9 @@ void AssFile::CleanExtradata() {
 	// Then remove all IDs found to be in use from this list
 	// Remaining is then all garbage IDs
 	std::vector<uint32_t> ids;
-	for (auto& it : Extradata) {
+	for (auto& it : Extradata)
 		ids.push_back(it.first);
-	}
+	if (ids.empty()) return;
 
 	// For each line, find which IDs it actually uses and remove them from the unused-list
 	for (auto& line : Events) {
