@@ -76,7 +76,13 @@
 #include <wx/msgdlg.h>
 #include <wx/window.h>
 
+// Forward declarations of stuff with no public headers
+int luaopen_lpeg (lua_State *L);
+extern "C" int luaopen_luabins(lua_State * L);
+namespace Automation4 { int regex_init(lua_State *L); }
+
 namespace {
+	using namespace Automation4;
 	void set_context(lua_State *L, const agi::Context *c)
 	{
 		// Explicit cast is needed to discard the const
@@ -303,16 +309,67 @@ namespace {
 		push_value(L, extlead);
 		return 4;
 	}
-}
 
-int luaopen_lpeg (lua_State *L);
+	class LuaFeature {
+		int myid;
+	protected:
+		lua_State *L;
 
-// Forward-declaration for luabins library (not in any public header)
-extern "C" int luaopen_luabins(lua_State * L);
+		void RegisterFeature();
+		void UnregisterFeature();
 
-namespace Automation4 {
-	int regex_init(lua_State *L);
+		void GetFeatureFunction(const char *function) const;
 
+		LuaFeature(lua_State *L);
+	};
+
+	/// Run a lua function on a background thread
+	/// @param L Lua state
+	/// @param nargs Number of arguments the function takes
+	/// @param nresults Number of values the function returns
+	/// @param title Title to use for the progress dialog
+	/// @param parent Parent window for the progress dialog
+	/// @param can_open_config Can the function open its own dialogs?
+	/// @throws agi::UserCancelException if the function fails to run to completion (either due to cancelling or errors)
+	void LuaThreadedCall(lua_State *L, int nargs, int nresults, std::string const& title, wxWindow *parent, bool can_open_config);
+
+	class LuaCommand final : public cmd::Command, private LuaFeature {
+		std::string cmd_name;
+		wxString display;
+		wxString help;
+		int cmd_type;
+
+	public:
+		LuaCommand(lua_State *L);
+		~LuaCommand();
+
+		const char* name() const override { return cmd_name.c_str(); }
+		wxString StrMenu(const agi::Context *) const override { return display; }
+		wxString StrDisplay(const agi::Context *) const override { return display; }
+		wxString StrHelp() const override { return help; }
+
+		int Type() const override { return cmd_type; }
+
+		void operator()(agi::Context *c) override;
+		bool Validate(const agi::Context *c) override;
+		virtual bool IsActive(const agi::Context *c) override;
+
+		static int LuaRegister(lua_State *L);
+	};
+
+	class LuaExportFilter final : public ExportFilter, private LuaFeature {
+		bool has_config;
+		LuaDialog *config_dialog;
+
+	protected:
+		std::unique_ptr<ScriptDialog> GenerateConfigDialog(wxWindow *parent, agi::Context *c) override;
+
+	public:
+		LuaExportFilter(lua_State *L);
+		static int LuaRegister(lua_State *L);
+
+		void ProcessSubs(AssFile *subs, wxWindow *export_dialog) override;
+	};
 	class LuaScript final : public Script {
 		lua_State *L;
 
@@ -1137,7 +1194,9 @@ namespace Automation4 {
 
 		return std::unique_ptr<ScriptDialog>{config_dialog};
 	}
+}
 
+namespace Automation4 {
 	LuaScriptFactory::LuaScriptFactory()
 	: ScriptFactory("Lua", "*.lua,*.moon")
 	{
