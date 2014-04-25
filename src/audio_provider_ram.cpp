@@ -104,9 +104,8 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 
 		memcpy(charbuf, &blockcache[i][start_offset], read_size);
 		charbuf += read_size;
-
 		bytes_remaining -= read_size;
-		start += CacheBlockSize / bytes_per_sample;
+		start += read_size / bytes_per_sample;
 	}
 }
 }
