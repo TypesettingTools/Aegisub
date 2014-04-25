@@ -18,17 +18,10 @@
 
 using namespace agi::signal;
 
-struct increment {
-	int *num;
-	increment(int &num) : num(&num) { }
-	void operator()() const { ++*num; }
-	void operator()(int n) const { *num += n; }
-};
-
 TEST(lagi_signal, basic) {
 	Signal<> s;
 	int x = 0;
-	Connection c = s.Connect(increment(x));
+	Connection c = s.Connect([&] { ++x; });
 
 	EXPECT_EQ(0, x);
 	s();
@@ -38,8 +31,8 @@ TEST(lagi_signal, basic) {
 TEST(lagi_signal, multiple) {
 	Signal<> s;
 	int x = 0;
-	Connection c1 = s.Connect(increment(x));
-	Connection c2 = s.Connect(increment(x));
+	Connection c1 = s.Connect([&] { ++x; });
+	Connection c2 = s.Connect([&] { ++x; });
 
 	EXPECT_EQ(0, x);
 	s();
@@ -48,7 +41,7 @@ TEST(lagi_signal, multiple) {
 TEST(lagi_signal, manual_disconnect) {
 	Signal<> s;
 	int x = 0;
-	Connection c1 = s.Connect(increment(x));
+	Connection c1 = s.Connect([&] { ++x; });
 	EXPECT_EQ(0, x);
 	s();
 	EXPECT_EQ(1, x);
@@ -63,7 +56,7 @@ TEST(lagi_signal, auto_disconnect) {
 
 	EXPECT_EQ(0, x);
 	{
-		Connection c = s.Connect(increment(x));
+		Connection c = s.Connect([&] { ++x; });
 		s();
 		EXPECT_EQ(1, x);
 	}
@@ -78,7 +71,7 @@ TEST(lagi_signal, connection_outlives_slot) {
 	EXPECT_EQ(0, x);
 	{
 		Signal<> s;
-		c = s.Connect(increment(x));
+		c = s.Connect([&] { ++x; });
 		s();
 		EXPECT_EQ(1, x);
 	}
@@ -89,7 +82,7 @@ TEST(lagi_signal, one_arg) {
 	Signal<int> s;
 	int x = 0;
 
-	Connection c = s.Connect(increment(x));
+	Connection c = s.Connect([&](int v) { x += v; });
 	s(0);
 	EXPECT_EQ(0, x);
 	s(10);

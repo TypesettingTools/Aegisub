@@ -158,26 +158,11 @@ TEST_F(lagi_cajun, UnknownIsIndexable) {
 
 	EXPECT_NO_THROW(unk_obj["Integer"]);
 	EXPECT_EQ(1, (json::Integer)unk_obj["Integer"]);
-	EXPECT_THROW(unk_obj[0], json::Exception);
 	EXPECT_NO_THROW(unk_obj["Nonexistent Key"]);
 
 	json::UnknownElement const& const_unk_obj = obj;
 	EXPECT_NO_THROW(const_unk_obj["Integer"]);
 	EXPECT_THROW(const_unk_obj["Another nonexistent Key"], json::Exception);
-
-	json::Array arr;
-	arr.push_back(1);
-	json::UnknownElement unk_arr = arr;
-
-	EXPECT_NO_THROW(unk_arr[0]);
-	EXPECT_EQ(1, (json::Integer)unk_arr[0]);
-	EXPECT_THROW(unk_arr["Integer"], json::Exception);
-
-	json::Integer number = 1;
-	json::UnknownElement const& unk_num = number;
-
-	EXPECT_THROW(unk_num[0], json::Exception);
-	EXPECT_THROW(unk_num[""], json::Exception);
 }
 
 TEST_F(lagi_cajun, ObjectStoreInteger) {
