@@ -249,19 +249,10 @@ namespace {
 	int get_keyframes(lua_State *L)
 	{
 		const agi::Context *c = get_context(L);
-		if (!c) {
+		if (c)
+			push_value(L, c->videoController->GetKeyFrames());
+		else
 			lua_pushnil(L);
-			return 1;
-		}
-
-		std::vector<int> const& kf = c->videoController->GetKeyFrames();
-
-		lua_createtable(L, kf.size(), 0);
-		for (size_t i = 0; i < kf.size(); ++i) {
-			push_value(L, kf[i]);
-			lua_rawseti(L, -2, i);
-		}
-
 		return 1;
 	}
 
@@ -739,15 +730,6 @@ namespace {
 		return rows;
 	}
 
-	static void transform_selection(lua_State *L, std::vector<int> const& rows)
-	{
-		lua_createtable(L, rows.size(), 0);
-		for (size_t i = 0; i < rows.size(); ++i) {
-			push_value(L, rows[i]);
-			lua_rawseti(L, -2, i + 1);
-		}
-	}
-
 	bool LuaCommand::Validate(const agi::Context *c)
 	{
 		if (!(cmd_type & cmd::COMMAND_VALIDATE)) return true;
@@ -757,7 +739,7 @@ namespace {
 		GetFeatureFunction("validate");
 		auto subsobj = new LuaAssFile(L, c->ass.get());
 
-		transform_selection(L, selected_rows(c));
+		push_value(L, selected_rows(c));
 		if (auto active_line = c->selectionController->GetActiveLine())
 			push_value(L, active_line->Row + c->ass->Info.size() + c->ass->Styles.size() + 1);
 
@@ -799,7 +781,7 @@ namespace {
 		if (auto active_line = c->selectionController->GetActiveLine())
 			original_active = active_line->Row + original_offset;
 
-		transform_selection(L, original_sel);
+		push_value(L, original_sel);
 		push_value(L, original_active);
 
 		try {
@@ -895,7 +877,7 @@ namespace {
 
 		GetFeatureFunction("isactive");
 		auto subsobj = new LuaAssFile(L, c->ass.get());
-		transform_selection(L, selected_rows(c));
+		push_value(L, selected_rows(c));
 		if (auto active_line = c->selectionController->GetActiveLine())
 			push_value(L, active_line->Row + c->ass->Info.size() + c->ass->Styles.size() + 1);
 

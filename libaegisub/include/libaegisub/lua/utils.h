@@ -19,6 +19,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <string>
+#include <vector>
 #include <type_traits>
 
 namespace agi { namespace lua {
@@ -53,17 +54,23 @@ inline void push_value(lua_State *L, lua_CFunction value) {
 }
 
 template<typename T>
-inline void set_field(lua_State *L, const char *name, T value) {
+void push_value(lua_State *L, std::vector<T> const& value) {
+	lua_createtable(L, value.size(), 0);
+	for (size_t i = 0; i < value.size(); ++i) {
+		push_value(L, value[i]);
+		lua_rawseti(L, -2, i + 1);
+	}
+}
+
+template<typename T>
+void set_field(lua_State *L, const char *name, T value) {
 	push_value(L, value);
 	lua_setfield(L, -2, name);
 }
 
 std::string get_string_or_default(lua_State *L, int idx);
-
 std::string get_string(lua_State *L, int idx);
-
 std::string check_string(lua_State *L, int idx);
-
 std::string get_global_string(lua_State *L, const char *name);
 
 template<typename T, typename... Args>
