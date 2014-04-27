@@ -156,7 +156,7 @@ int regex_process_flags(lua_State *L) {
 }
 
 int regex_init_flags(lua_State *L) {
-	lua_newtable(L);
+	lua_createtable(L, 0, 9);
 
 	set_field(L, "ICASE", (void*)boost::u32regex::icase);
 	set_field(L, "NOSUB", (void*)boost::u32regex::nosubs);
@@ -184,7 +184,7 @@ extern "C" int luaopen_re_impl(lua_State *L) {
 		lua_pop(L, 1);
 	}
 
-	lua_newtable(L);
+	lua_createtable(L, 0, 8);
 	set_field(L, "matches", regex_matches);
 	set_field(L, "search", regex_search);
 	set_field(L, "match", regex_match);

@@ -543,7 +543,7 @@ namespace Automation4 {
 		}
 
 		// Then read controls back
-		lua_newtable(L);
+		lua_createtable(L, 0, controls.size());
 		for (auto& control : controls) {
 			control->LuaReadBack(L);
 			lua_setfield(L, -2, control->name.c_str());

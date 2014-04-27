@@ -69,7 +69,7 @@ namespace Automation4 {
 		lua_getglobal(L, "aegisub");
 
 		// Create aegisub.progress table
-		lua_newtable(L);
+		lua_createtable(L, 0, 5);
 		set_field_to_closure(L, "set", LuaSetProgress);
 		set_field_to_closure(L, "task", LuaSetTask);
 		set_field_to_closure(L, "title", LuaSetTitle);
@@ -77,7 +77,7 @@ namespace Automation4 {
 		lua_setfield(L, -2, "progress");
 
 		// Create aegisub.debug table
-		lua_newtable(L);
+		lua_createtable(L, 0, 4);
 		set_field_to_closure(L, "out", LuaDebugOut);
 		lua_setfield(L, -2, "debug");
 
@@ -85,7 +85,7 @@ namespace Automation4 {
 		set_field_to_closure(L, "log", LuaDebugOut, -2);
 
 		if (allow_config_dialog) {
-			lua_newtable(L);
+			lua_createtable(L, 0, 3);
 			set_field_to_closure(L, "display", LuaDisplayDialog);
 			set_field_to_closure(L, "open", LuaDisplayOpenDialog);
 			set_field_to_closure(L, "save", LuaDisplaySaveDialog);
@@ -216,7 +216,7 @@ namespace Automation4 {
 			wxArrayString files;
 			diag.GetPaths(files);
 
-			lua_newtable(L);
+			lua_createtable(L, files.size(), 0);
 			for (size_t i = 0; i < files.size(); ++i) {
 				lua_pushstring(L, files[i].utf8_str());
 				lua_rawseti(L, -2, i + 1);

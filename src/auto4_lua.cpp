@@ -157,7 +157,7 @@ namespace {
 
 	int clipboard_init(lua_State *L)
 	{
-		lua_newtable(L);
+		lua_createtable(L, 0, 2);
 		set_field(L, "get", clipboard_get);
 		set_field(L, "set", clipboard_set);
 		return 1;
@@ -256,7 +256,7 @@ namespace {
 
 		std::vector<int> const& kf = c->videoController->GetKeyFrames();
 
-		lua_newtable(L);
+		lua_createtable(L, kf.size(), 0);
 		for (size_t i = 0; i < kf.size(); ++i) {
 			push_value(L, kf[i]);
 			lua_rawseti(L, -2, i);
@@ -466,7 +466,7 @@ namespace {
 
 			// make "aegisub" table
 			lua_pushstring(L, "aegisub");
-			lua_newtable(L);
+			lua_createtable(L, 0, 12);
 
 			set_field(L, "register_macro", LuaCommand::LuaRegister);
 			set_field(L, "register_filter", LuaExportFilter::LuaRegister);
@@ -698,7 +698,7 @@ namespace {
 			cmd_type |= cmd::COMMAND_TOGGLE;
 
 		// new table for containing the functions for this feature
-		lua_newtable(L);
+		lua_createtable(L, 0, 3);
 
 		// store processing function
 		push_value(L, "run");
@@ -739,9 +739,9 @@ namespace {
 		return rows;
 	}
 
-	static void transform_selection(lua_State *L, std::vector<int> rows)
+	static void transform_selection(lua_State *L, std::vector<int> const& rows)
 	{
-		lua_newtable(L);
+		lua_createtable(L, rows.size(), 0);
 		for (size_t i = 0; i < rows.size(); ++i) {
 			push_value(L, rows[i]);
 			lua_rawseti(L, -2, i + 1);
@@ -924,7 +924,7 @@ namespace {
 			luaL_error(L, "The filter processing function must be a function");
 
 		// new table for containing the functions for this feature
-		lua_newtable(L);
+		lua_createtable(L, 0, 2);
 
 		// store processing function
 		push_value(L, "run");

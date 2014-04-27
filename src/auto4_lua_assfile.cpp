@@ -628,7 +628,7 @@ namespace Automation4 {
 		// 2.1.x stored everything before the first syllable at index zero
 		// There's no longer any such thing with the new parser, but scripts
 		// may rely on kara[0] existing so add an empty syllable
-		lua_newtable(L);
+		lua_createtable(L, 0, 6);
 		set_field(L, "duration", 0);
 		set_field(L, "start_time", 0);
 		set_field(L, "end_time", 0);
@@ -639,7 +639,7 @@ namespace Automation4 {
 
 		AssKaraoke kara(dia, false, false);
 		for (auto const& syl : kara) {
-			lua_newtable(L);
+			lua_createtable(L, 0, 6);
 			set_field(L, "duration", syl.duration);
 			set_field(L, "start_time", syl.start_time - dia->Start);
 			set_field(L, "end_time", syl.start_time + syl.duration - dia->Start);
@@ -740,7 +740,7 @@ namespace Automation4 {
 		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile*))) = this;
 
 		// make the metatable
-		lua_newtable(L);
+		lua_createtable(L, 0, 5);
 		set_field(L, "__index", closure_wrapper<&LuaAssFile::ObjectIndexRead>);
 		set_field(L, "__newindex", closure_wrapper_v<&LuaAssFile::ObjectIndexWrite, false>);
 		set_field(L, "__len", closure_wrapper<&LuaAssFile::ObjectGetLen>);
