@@ -9,25 +9,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(SrcDir)fwrite.cpp">
+    <ClCompile Include="$(SrcDir)fwrite.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)load.cpp">
+    <ClCompile Include="$(SrcDir)load.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)luabins.cpp">
+    <ClCompile Include="$(SrcDir)luabins.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)luainternals.cpp">
+    <ClCompile Include="$(SrcDir)luainternals.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)save.cpp">
+    <ClCompile Include="$(SrcDir)save.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)savebuffer.cpp">
+    <ClCompile Include="$(SrcDir)savebuffer.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)write.cpp">
+    <ClCompile Include="$(SrcDir)write.c">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

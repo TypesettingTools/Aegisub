@@ -24,6 +24,11 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/regex.hpp>
 
+#ifdef _MSC_VER
+// Disable warnings for noreturn functions having return types
+#pragma warning(disable: 4645 4646)
+#endif
+
 namespace agi { namespace lua {
 std::string get_string_or_default(lua_State *L, int idx) {
 	size_t len = 0;
@@ -39,12 +44,6 @@ std::string get_string(lua_State *L, int idx) {
 	return std::string(str ? str : "", len);
 }
 
-std::string check_string(lua_State *L, int idx) {
-	size_t len = 0;
-	const char *str = luaL_checklstring(L, idx, &len);
-	return std::string(str ? str : "", len);
-}
-
 std::string get_global_string(lua_State *L, const char *name) {
 	lua_getglobal(L, name);
 	std::string ret;
@@ -52,6 +51,41 @@ std::string get_global_string(lua_State *L, const char *name) {
 		ret = lua_tostring(L, -1);
 	lua_pop(L, 1);
 	return ret;
+}
+
+std::string check_string(lua_State *L, int idx) {
+	size_t len = 0;
+	const char *str = lua_tolstring(L, idx, &len);
+	if (!str) typerror(L, idx, "string");
+	return std::string(str, len);
+}
+
+int check_int(lua_State *L, int idx) {
+	auto v = lua_tointeger(L, idx);
+	if (v == 0 && !lua_isnumber(L, idx))
+		typerror(L, idx, "number");
+	return v;
+}
+
+size_t check_uint(lua_State *L, int idx) {
+	auto v = lua_tointeger(L, idx);
+	if (v == 0 && !lua_isnumber(L, idx))
+		typerror(L, idx, "number");
+	if (v < 0)
+		argerror(L, idx, "must be >= 0");
+	return static_cast<size_t>(v);
+}
+
+void *check_udata(lua_State *L, int idx, const char *mt) {
+	void *p = lua_touserdata(L, idx);
+	if (!p) typerror(L, idx, mt);
+	if (!lua_getmetatable(L, idx)) typerror(L, idx, mt);
+
+	lua_getfield(L, LUA_REGISTRYINDEX, mt);
+	if (!lua_rawequal(L, -1, -2)) typerror(L, idx, mt);
+
+	lua_pop(L, 2);
+	return p;
 }
 
 static int moon_line(lua_State *L, int lua_line, std::string const& file) {
@@ -147,6 +181,37 @@ int add_stack_trace(lua_State *L) {
 	return 1;
 }
 
+int BOOST_ATTRIBUTE_NORETURN error(lua_State *L, const char *fmt, ...) {
+	va_list argp;
+	va_start(argp, fmt);
+	luaL_where(L, 1);
+	lua_pushvfstring(L, fmt, argp);
+	va_end(argp);
+	lua_concat(L, 2);
+	throw error_tag();
+}
+
+int BOOST_ATTRIBUTE_NORETURN argerror(lua_State *L, int narg, const char *extramsg) {
+	lua_Debug ar;
+	if (!lua_getstack(L, 0, &ar))
+		error(L, "bad argument #%d (%s)", narg, extramsg);
+	lua_getinfo(L, "n", &ar);
+	if (strcmp(ar.namewhat, "method") == 0 && --narg == 0)
+		error(L, "calling '%s' on bad self (%s)", ar.name, extramsg);
+	if (!ar.name) ar.name = "?";
+	error(L, "bad argument #%d to '%s' (%s)",
+		narg, ar.name, extramsg);
+}
+
+int BOOST_ATTRIBUTE_NORETURN typerror(lua_State *L, int narg, const char *tname) {
+	const char *msg = lua_pushfstring(L, "%s expected, got %s",
+		tname, luaL_typename(L, narg));
+	argerror(L, narg, msg);
+}
+
+void argcheck(lua_State *L, bool cond, int narg, const char *msg) {
+	if (!cond) argerror(L, narg, msg);
+}
 
 #ifdef _DEBUG
 void LuaStackcheck::check_stack(int additional) {

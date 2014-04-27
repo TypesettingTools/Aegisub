@@ -11,6 +11,7 @@ lagi_pre.h.gch: CXXFLAGS := $(CXXFLAGS)
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 common/parser.o: CXXFLAGS += -ftemplate-depth=256
 unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=\"$(P_LOCALE)\"
+lua/**/*.o: CPPFLAGS += -I../vendor/lua/src
 
 SRC += \
 	common/parser.cpp \
@@ -43,7 +44,7 @@ SRC += \
 	common/vfr.cpp \
 	lua/modules.cpp \
 	lua/modules/lfs.cpp \
-	lua/modules/lpeg.cpp \
+	lua/modules/lpeg.c \
 	lua/modules/re.cpp \
 	lua/script_reader.cpp \
 	lua/utils.cpp \
@@ -68,3 +69,5 @@ EXTRA_DIST += osx/util.mm
 
 include ../Makefile.target
 -include */*.d
+-include lua/*/*.d
+-include common/*/*.d

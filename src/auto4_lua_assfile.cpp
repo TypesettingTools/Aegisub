@@ -131,13 +131,13 @@ namespace Automation4 {
 	void LuaAssFile::CheckAllowModify()
 	{
 		if (!can_modify)
-			luaL_error(L, "Attempt to modify subtitles in read-only feature context.");
+			error(L, "Attempt to modify subtitles in read-only feature context.");
 	}
 
 	void LuaAssFile::CheckBounds(int idx)
 	{
 		if (idx <= 0 || idx > (int)lines.size())
-			luaL_error(L, "Requested out-of-range line from subtitle file: %d", idx);
+			error(L, "Requested out-of-range line from subtitle file: %d", idx);
 	}
 
 	void LuaAssFile::AssEntryToLua(lua_State *L, size_t idx)
@@ -239,89 +239,82 @@ namespace Automation4 {
 		// convert it to a real AssEntry object, and pop the table from the stack
 
 		if (!lua_istable(L, -1))
-			luaL_error(L, "Can't convert a non-table value to AssEntry");
+			error(L, "Can't convert a non-table value to AssEntry");
 
 		lua_getfield(L, -1, "class");
 		if (!lua_isstring(L, -1))
-			luaL_error(L, "Table lacks 'class' field, can't convert to AssEntry");
+			error(L, "Table lacks 'class' field, can't convert to AssEntry");
 
 		std::string lclass(lua_tostring(L, -1));
 		boost::to_lower(lclass);
 		lua_pop(L, 1);
 
 		std::unique_ptr<AssEntry> result;
-
-		try {
-			if (lclass == "info")
-				result = agi::make_unique<AssInfo>(get_string_field(L, "key", "info"), get_string_field(L, "value", "info"));
-			else if (lclass == "style") {
-				auto sty = new AssStyle;
-				result.reset(sty);
-				sty->name = get_string_field(L, "name", "style");
-				sty->font = get_string_field(L, "fontname", "style");
-				sty->fontsize = get_double_field(L, "fontsize", "style");
-				sty->primary = get_string_field(L, "color1", "style");
-				sty->secondary = get_string_field(L, "color2", "style");
-				sty->outline = get_string_field(L, "color3", "style");
-				sty->shadow = get_string_field(L, "color4", "style");
-				sty->bold = get_bool_field(L, "bold", "style");
-				sty->italic = get_bool_field(L, "italic", "style");
-				sty->underline = get_bool_field(L, "underline", "style");
-				sty->strikeout = get_bool_field(L, "strikeout", "style");
-				sty->scalex = get_double_field(L, "scale_x", "style");
-				sty->scaley = get_double_field(L, "scale_y", "style");
-				sty->spacing = get_double_field(L, "spacing", "style");
-				sty->angle = get_double_field(L, "angle", "style");
-				sty->borderstyle = get_int_field(L, "borderstyle", "style");
-				sty->outline_w = get_double_field(L, "outline", "style");
-				sty->shadow_w = get_double_field(L, "shadow", "style");
-				sty->alignment = get_int_field(L, "align", "style");
-				sty->Margin[0] = get_int_field(L, "margin_l", "style");
-				sty->Margin[1] = get_int_field(L, "margin_r", "style");
-				sty->Margin[2] = get_int_field(L, "margin_t", "style");
-				sty->encoding = get_int_field(L, "encoding", "style");
-				sty->UpdateData();
-			}
-			else if (lclass == "dialogue") {
-				assert(ass != 0); // since we need AssFile::AddExtradata
-				auto dia = new AssDialogue;
-				result.reset(dia);
-
-				dia->Comment = get_bool_field(L, "comment", "dialogue");
-				dia->Layer = get_int_field(L, "layer", "dialogue");
-				dia->Start = get_int_field(L, "start_time", "dialogue");
-				dia->End = get_int_field(L, "end_time", "dialogue");
-				dia->Style = get_string_field(L, "style", "dialogue");
-				dia->Actor = get_string_field(L, "actor", "dialogue");
-				dia->Margin[0] = get_int_field(L, "margin_l", "dialogue");
-				dia->Margin[1] = get_int_field(L, "margin_r", "dialogue");
-				dia->Margin[2] = get_int_field(L, "margin_t", "dialogue");
-				dia->Effect = get_string_field(L, "effect", "dialogue");
-				dia->Text = get_string_field(L, "text", "dialogue");
-
-				lua_getfield(L, -1, "extra");
-				std::vector<uint32_t> new_ids;
-				lua_pushnil(L);
-				while (lua_next(L, -2)) {
-					auto key = get_string_or_default(L, -2);
-					auto value = get_string_or_default(L, -1);
-					new_ids.push_back(ass->AddExtradata(key, value));
-					lua_pop(L, 1);
-				}
-				lua_pop(L, 1);
-				dia->ExtradataIds = new_ids;
-			}
-			else {
-				luaL_error(L, "Found line with unknown class: %s", lclass.c_str());
-				return nullptr;
-			}
-
-			return result;
+		if (lclass == "info")
+			result = agi::make_unique<AssInfo>(get_string_field(L, "key", "info"), get_string_field(L, "value", "info"));
+		else if (lclass == "style") {
+			auto sty = new AssStyle;
+			result.reset(sty);
+			sty->name = get_string_field(L, "name", "style");
+			sty->font = get_string_field(L, "fontname", "style");
+			sty->fontsize = get_double_field(L, "fontsize", "style");
+			sty->primary = get_string_field(L, "color1", "style");
+			sty->secondary = get_string_field(L, "color2", "style");
+			sty->outline = get_string_field(L, "color3", "style");
+			sty->shadow = get_string_field(L, "color4", "style");
+			sty->bold = get_bool_field(L, "bold", "style");
+			sty->italic = get_bool_field(L, "italic", "style");
+			sty->underline = get_bool_field(L, "underline", "style");
+			sty->strikeout = get_bool_field(L, "strikeout", "style");
+			sty->scalex = get_double_field(L, "scale_x", "style");
+			sty->scaley = get_double_field(L, "scale_y", "style");
+			sty->spacing = get_double_field(L, "spacing", "style");
+			sty->angle = get_double_field(L, "angle", "style");
+			sty->borderstyle = get_int_field(L, "borderstyle", "style");
+			sty->outline_w = get_double_field(L, "outline", "style");
+			sty->shadow_w = get_double_field(L, "shadow", "style");
+			sty->alignment = get_int_field(L, "align", "style");
+			sty->Margin[0] = get_int_field(L, "margin_l", "style");
+			sty->Margin[1] = get_int_field(L, "margin_r", "style");
+			sty->Margin[2] = get_int_field(L, "margin_t", "style");
+			sty->encoding = get_int_field(L, "encoding", "style");
+			sty->UpdateData();
 		}
-		catch (agi::Exception const& e) {
-			luaL_error(L, e.GetMessage().c_str());
+		else if (lclass == "dialogue") {
+			assert(ass != 0); // since we need AssFile::AddExtradata
+			auto dia = new AssDialogue;
+			result.reset(dia);
+
+			dia->Comment = get_bool_field(L, "comment", "dialogue");
+			dia->Layer = get_int_field(L, "layer", "dialogue");
+			dia->Start = get_int_field(L, "start_time", "dialogue");
+			dia->End = get_int_field(L, "end_time", "dialogue");
+			dia->Style = get_string_field(L, "style", "dialogue");
+			dia->Actor = get_string_field(L, "actor", "dialogue");
+			dia->Margin[0] = get_int_field(L, "margin_l", "dialogue");
+			dia->Margin[1] = get_int_field(L, "margin_r", "dialogue");
+			dia->Margin[2] = get_int_field(L, "margin_t", "dialogue");
+			dia->Effect = get_string_field(L, "effect", "dialogue");
+			dia->Text = get_string_field(L, "text", "dialogue");
+
+			lua_getfield(L, -1, "extra");
+			std::vector<uint32_t> new_ids;
+			lua_pushnil(L);
+			while (lua_next(L, -2)) {
+				auto key = get_string_or_default(L, -2);
+				auto value = get_string_or_default(L, -1);
+				new_ids.push_back(ass->AddExtradata(key, value));
+				lua_pop(L, 1);
+			}
+			lua_pop(L, 1);
+			dia->ExtradataIds = new_ids;
+		}
+		else {
+			error(L, "Found line with unknown class: %s", lclass.c_str());
 			return nullptr;
 		}
+
+		return result;
 	}
 
 	int LuaAssFile::ObjectIndexRead(lua_State *L)
@@ -359,7 +352,7 @@ namespace Automation4 {
 				else {
 					// idiot
 					lua_pop(L, 1);
-					return luaL_error(L, "Invalid indexing in Subtitle File object: '%s'", idx);
+					return error(L, "Invalid indexing in Subtitle File object: '%s'", idx);
 				}
 
 				return 1;
@@ -367,7 +360,7 @@ namespace Automation4 {
 
 			default:
 				// crap, user is stupid!
-				return luaL_error(L, "Attempt to index a Subtitle File object with value of type '%s'.", lua_typename(L, lua_type(L, 2)));
+				return error(L, "Attempt to index a Subtitle File object with value of type '%s'.", lua_typename(L, lua_type(L, 2)));
 		}
 
 		assert(false);
@@ -427,7 +420,7 @@ namespace Automation4 {
 
 		CheckAllowModify();
 
-		int n = luaL_checkint(L, 2);
+		int n = check_int(L, 2);
 		if (n < 0) {
 			// insert line so new index is n
 			lua_remove(L, 1);
@@ -475,20 +468,20 @@ namespace Automation4 {
 		int itemcount = lua_gettop(L);
 		if (itemcount == 0) return;
 
-		std::vector<int> ids;
+		std::vector<size_t> ids;
 		if (itemcount == 1 && lua_istable(L, 1)) {
 			lua_pushvalue(L, 1);
 			lua_for_each(L, [&] {
-				int n = luaL_checkint(L, -1);
-				luaL_argcheck(L, n > 0 && n <= (int)lines.size(), 1, "Out of range line index");
+				size_t n = check_uint(L, -1);
+				argcheck(L, n > 0 && n <= lines.size(), 1, "Out of range line index");
 				ids.push_back(n - 1);
 			});
 		}
 		else {
 			ids.reserve(itemcount);
 			while (itemcount > 0) {
-				int n = luaL_checkint(L, itemcount);
-				luaL_argcheck(L, n > 0 && n <= (int)lines.size(), itemcount, "Out of range line index");
+				size_t n = check_uint(L, -1);
+				argcheck(L, n > 0 && n <= lines.size(), itemcount, "Out of range line index");
 				ids.push_back(n - 1);
 				--itemcount;
 			}
@@ -515,8 +508,8 @@ namespace Automation4 {
 	{
 		CheckAllowModify();
 
-		size_t a = std::max<size_t>(luaL_checkinteger(L, 1), 1) - 1;
-		size_t b = std::min<size_t>(luaL_checkinteger(L, 2), lines.size());
+		size_t a = std::max<size_t>(check_uint(L, 1), 1) - 1;
+		size_t b = std::min<size_t>(check_uint(L, 2), lines.size());
 
 		if (a >= b) return;
 
@@ -563,13 +556,13 @@ namespace Automation4 {
 	{
 		CheckAllowModify();
 
-		int before = luaL_checkinteger(L, 1);
+		size_t before = check_uint(L, 1);
 
 		// + 1 to allow appending at the end of the file
-		luaL_argcheck(L, before > 0 && before <= (int)lines.size() + 1, 1,
+		argcheck(L, before > 0 && before <= lines.size() + 1, 1,
 			"Out of range line index");
 
-		if (before == (int)lines.size() + 1) {
+		if (before == lines.size() + 1) {
 			lua_remove(L, 1);
 			ObjectAppend(L);
 			return;
@@ -606,8 +599,8 @@ namespace Automation4 {
 
 	int LuaAssFile::IterNext(lua_State *L)
 	{
-		int i = luaL_checkint(L, 2);
-		if (i >= (int)lines.size()) {
+		size_t i = check_uint(L, 2);
+		if (i >= lines.size()) {
 			lua_pushnil(L);
 			return 1;
 		}
@@ -621,7 +614,7 @@ namespace Automation4 {
 	{
 		auto e = LuaToAssEntry(L, ass);
 		auto dia = dynamic_cast<AssDialogue*>(e.get());
-		luaL_argcheck(L, dia, 1, "Subtitle line must be a dialogue line");
+		argcheck(L, !!dia, 1, "Subtitle line must be a dialogue line");
 
 		int idx = 0;
 
@@ -655,14 +648,14 @@ namespace Automation4 {
 	void LuaAssFile::LuaSetUndoPoint(lua_State *L)
 	{
 		if (!can_set_undo)
-			luaL_error(L, "Attempt to set an undo point in a context where it makes no sense to do so.");
+			error(L, "Attempt to set an undo point in a context where it makes no sense to do so.");
 
 		if (modification_type) {
 			pending_commits.emplace_back();
 			PendingCommit& back = pending_commits.back();
 
 			back.modification_type = modification_type;
-			back.mesage = wxString::FromUTF8(luaL_checkstring(L, 1));
+			back.mesage = to_wx(check_string(L, 1));
 			back.lines = lines;
 			modification_type = 0;
 		}
@@ -674,7 +667,7 @@ namespace Automation4 {
 		auto ud = lua_touserdata(L, idx);
 		auto laf = *static_cast<LuaAssFile **>(ud);
 		if (!allow_expired && laf->references < 2)
-			luaL_error(L, "Subtitles object is no longer valid");
+			error(L, "Subtitles object is no longer valid");
 		return laf;
 	}
 
@@ -741,19 +734,19 @@ namespace Automation4 {
 
 		// make the metatable
 		lua_createtable(L, 0, 5);
-		set_field(L, "__index", closure_wrapper<&LuaAssFile::ObjectIndexRead>);
-		set_field(L, "__newindex", closure_wrapper_v<&LuaAssFile::ObjectIndexWrite, false>);
-		set_field(L, "__len", closure_wrapper<&LuaAssFile::ObjectGetLen>);
-		set_field(L, "__gc", closure_wrapper_v<&LuaAssFile::ObjectGarbageCollect, true>);
-		set_field(L, "__ipairs", closure_wrapper<&LuaAssFile::ObjectIPairs>);
+		set_field<closure_wrapper<&LuaAssFile::ObjectIndexRead>>(L, "__index");
+		set_field<closure_wrapper_v<&LuaAssFile::ObjectIndexWrite, false>>(L, "__newindex");
+		set_field<closure_wrapper<&LuaAssFile::ObjectGetLen>>(L, "__len");
+		set_field<closure_wrapper_v<&LuaAssFile::ObjectGarbageCollect, true>>(L, "__gc");
+		set_field<closure_wrapper<&LuaAssFile::ObjectIPairs>>(L, "__ipairs");
 		lua_setmetatable(L, -2);
 
 		// register misc functions
 		// assume the "aegisub" global table exists
 		lua_getglobal(L, "aegisub");
 
-		set_field(L, "parse_karaoke_data", closure_wrapper<&LuaAssFile::LuaParseKaraokeData>);
-		set_field(L, "set_undo_point", closure_wrapper_v<&LuaAssFile::LuaSetUndoPoint, false>);
+		set_field<closure_wrapper<&LuaAssFile::LuaParseKaraokeData>>(L, "parse_karaoke_data");
+		set_field<closure_wrapper_v<&LuaAssFile::LuaSetUndoPoint, false>>(L, "set_undo_point");
 
 		lua_pop(L, 1); // pop "aegisub" table
 

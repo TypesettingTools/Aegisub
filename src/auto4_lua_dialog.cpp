@@ -413,13 +413,13 @@ namespace Automation4 {
 
 		// assume top of stack now contains a dialog table
 		if (!lua_istable(L, 1))
-			luaL_error(L, "Cannot create config dialog from something non-table");
+			error(L, "Cannot create config dialog from something non-table");
 
 		// Ok, so there is a table with controls
 		lua_pushvalue(L, 1);
 		lua_for_each(L, [&] {
 			if (!lua_istable(L, -1))
-				luaL_error(L, "bad control table entry");
+				error(L, "bad control table entry");
 
 			std::string controlclass = get_field(L, "class");
 			boost::to_lower(controlclass);
@@ -449,7 +449,7 @@ namespace Automation4 {
 				// FIXME
 				ctl = agi::make_unique<LuaControl::Edit>(L);
 			else
-				luaL_error(L, "bad control table entry");
+				error(L, "bad control table entry");
 
 			controls.emplace_back(std::move(ctl));
 		});
@@ -457,19 +457,19 @@ namespace Automation4 {
 		if (include_buttons && lua_istable(L, 2)) {
 			lua_pushvalue(L, 2);
 			lua_for_each(L, [&]{
-				buttons.emplace_back(-1, luaL_checkstring(L, -1));
+				buttons.emplace_back(-1, check_string(L, -1));
 			});
 		}
 
 		if (include_buttons && lua_istable(L, 3)) {
 			lua_pushvalue(L, 3);
 			lua_for_each(L, [&]{
-				int id = string_to_wx_id(luaL_checkstring(L, -2));
-				std::string label = luaL_checkstring(L, -1);
+				int id = string_to_wx_id(check_string(L, -2));
+				std::string label = check_string(L, -1);
 				auto btn = boost::find_if(buttons,
 					[&](std::pair<int, std::string>& btn) { return btn.second == label; });
 				if (btn == end(buttons))
-					luaL_error(L, "Invalid button for id %s", lua_tostring(L, -2));
+					error(L, "Invalid button for id %s", lua_tostring(L, -2));
 				btn->first = id;
 			});
 		}

@@ -2,16 +2,16 @@ include ../../Makefile.inc
 
 LIB = libluabins.a
 
-CXXFLAGS += -I../lua/src -DLUABINS_LUABUILTASCPP
+CPPFLAGS += -I../lua/src
 
 SRC = \
-	src/fwrite.cpp \
-	src/load.cpp \
-	src/luabins.cpp \
-	src/luainternals.cpp \
-	src/save.cpp \
-	src/savebuffer.cpp \
-	src/write.cpp
+	src/fwrite.c \
+	src/load.c \
+	src/luabins.c \
+	src/luainternals.c \
+	src/save.c \
+	src/savebuffer.c \
+	src/write.c
 
 HEADER = \
 	src/fwrite.h \

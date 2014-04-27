@@ -31,7 +31,7 @@ boost::smatch& get_smatch(lua_State *L) {
 }
 
 int regex_matches(lua_State *L) {
-	lua_pushboolean(L, u32regex_match(check_string(L, 2), get_regex(L)));
+	push_value(L, u32regex_match(check_string(L, 2), get_regex(L)));
 	return 1;
 }
 
@@ -52,9 +52,9 @@ int regex_match(lua_State *L) {
 }
 
 int regex_get_match(lua_State *L) {
-	auto match = get_smatch(L);
-	int idx = luaL_checkinteger(L, 2) - 1;
-	if (static_cast<size_t>(idx) > match.size() || !match[idx].matched) {
+	auto& match = get_smatch(L);
+	auto idx = check_uint(L, 2) - 1;
+	if (idx > match.size() || !match[idx].matched) {
 		lua_pushnil(L);
 		return 1;
 	}
@@ -65,9 +65,10 @@ int regex_get_match(lua_State *L) {
 }
 
 int regex_search(lua_State *L) {
-	auto re = get_regex(L);
-	std::string str = check_string(L, 2);
-	int start = luaL_checkinteger(L, 3) - 1;
+	auto& re = get_regex(L);
+	auto str = check_string(L, 2);
+	auto start = check_uint(L, 3) - 1;
+	argcheck(L, start <= str.size(), 3, "out of bounds");
 	boost::smatch result;
 	if (!u32regex_search(str.cbegin() + start, str.cend(), result, re,
 		start > 0 ? boost::match_prev_avail | boost::match_not_bob : boost::match_default))
@@ -82,10 +83,10 @@ int regex_search(lua_State *L) {
 }
 
 int regex_replace(lua_State *L) {
-	auto re = get_regex(L);
+	auto& re = get_regex(L);
 	const auto replacement = check_string(L, 2);
-	const std::string str = check_string(L, 3);
-	int max_count = luaL_checkinteger(L, 4);
+	const auto str = check_string(L, 3);
+	int max_count = check_int(L, 4);
 
 	// Can't just use regex_replace here since it can only do one or infinite replacements
 	auto match = boost::u32regex_iterator<std::string::const_iterator>(begin(str), end(str), re);
@@ -110,8 +111,8 @@ int regex_replace(lua_State *L) {
 }
 
 int regex_compile(lua_State *L) {
-	std::string pattern(check_string(L, 1));
-	int flags = luaL_checkinteger(L, 2);
+	auto pattern(check_string(L, 1));
+	int flags = check_int(L, 2);
 	auto re = make<boost::u32regex>(L, "aegisub.regex");
 
 	try {
@@ -175,23 +176,23 @@ int regex_init_flags(lua_State *L) {
 
 extern "C" int luaopen_re_impl(lua_State *L) {
 	if (luaL_newmetatable(L, "aegisub.regex")) {
-		set_field(L, "__gc", regex_gc);
+		set_field<regex_gc>(L, "__gc");
 		lua_pop(L, 1);
 	}
 
 	if (luaL_newmetatable(L, "aegisub.smatch")) {
-		set_field(L, "__gc", smatch_gc);
+		set_field<smatch_gc>(L, "__gc");
 		lua_pop(L, 1);
 	}
 
 	lua_createtable(L, 0, 8);
-	set_field(L, "matches", regex_matches);
-	set_field(L, "search", regex_search);
-	set_field(L, "match", regex_match);
-	set_field(L, "get_match", regex_get_match);
-	set_field(L, "replace", regex_replace);
-	set_field(L, "compile", regex_compile);
-	set_field(L, "process_flags", regex_process_flags);
-	set_field(L, "init_flags", regex_init_flags);
+	set_field<regex_matches>(L, "matches");
+	set_field<regex_search>(L, "search");
+	set_field<regex_match>(L, "match");
+	set_field<regex_get_match>(L, "get_match");
+	set_field<regex_replace>(L, "replace");
+	set_field<regex_compile>(L, "compile");
+	set_field<regex_process_flags>(L, "process_flags");
+	set_field<regex_init_flags>(L, "init_flags");
 	return 1;
 }

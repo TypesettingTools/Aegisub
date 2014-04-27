@@ -18,12 +18,10 @@
 
 #include "libaegisub/lua/utils.h"
 
-#include <lualib.h>
-
 extern "C" int luaopen_luabins(lua_State *L);
 extern "C" int luaopen_re_impl(lua_State *L);
-int luaopen_lfs(lua_State *L);
-int luaopen_lpeg(lua_State *L);
+extern "C" int luaopen_lfs(lua_State *L);
+extern "C" int luaopen_lpeg(lua_State *L);
 
 namespace agi { namespace lua {
 int regex_init(lua_State *L);

@@ -83,7 +83,7 @@ namespace {
 
 	wxString check_wxstring(lua_State *L, int idx)
 	{
-		return wxString::FromUTF8(luaL_checkstring(L, idx));
+		return to_wx(check_string(L, idx));
 	}
 
 	void set_context(lua_State *L, const agi::Context *c)
@@ -134,7 +134,7 @@ namespace {
 
 	int clipboard_set(lua_State *L)
 	{
-		std::string str(luaL_checkstring(L, 1));
+		std::string str(check_string(L, 1));
 
 		bool succeeded = false;
 
@@ -158,8 +158,8 @@ namespace {
 	int clipboard_init(lua_State *L)
 	{
 		lua_createtable(L, 0, 2);
-		set_field(L, "get", clipboard_get);
-		set_field(L, "set", clipboard_set);
+		set_field<clipboard_get>(L, "get");
+		set_field<clipboard_set>(L, "set");
 		return 1;
 	}
 
@@ -189,7 +189,7 @@ namespace {
 	};
 
 	template<typename TableIter>
-	int pairs(lua_State *L) {
+	int pairs(lua_State *L) BOOST_NOEXCEPT {
 		// If the metamethod is defined, call it instead
 		if (luaL_getmetafield(L, 1, TableIter::method())) {
 			lua_pushvalue(L, 1);
@@ -258,7 +258,7 @@ namespace {
 
 	int decode_path(lua_State *L)
 	{
-		std::string path = luaL_checkstring(L, 1);
+		std::string path = check_string(L, 1);
 		lua_pop(L, 1);
 		push_value(L, config::path->Decode(path));
 		return 1;
@@ -267,13 +267,13 @@ namespace {
 	int cancel_script(lua_State *L)
 	{
 		lua_pushnil(L);
-		return lua_error(L);
+		throw error_tag();
 	}
 
 	int lua_text_textents(lua_State *L)
 	{
-		luaL_argcheck(L, lua_istable(L, 1), 1, "");
-		luaL_argcheck(L, lua_isstring(L, 2), 2, "");
+		argcheck(L, !!lua_istable(L, 1), 1, "");
+		argcheck(L, !!lua_isstring(L, 2), 2, "");
 
 		// have to check that it looks like a style table before actually converting
 		// if it's a dialogue table then an active AssFile object is required
@@ -282,7 +282,7 @@ namespace {
 			std::string actual_class{lua_tostring(L, -1)};
 			boost::to_lower(actual_class);
 			if (actual_class != "style")
-				return luaL_error(L, "Not a style entry");
+				return error(L, "Not a style entry");
 			lua_pop(L, 1);
 		}
 
@@ -291,11 +291,11 @@ namespace {
 		auto st = dynamic_cast<AssStyle*>(et.get());
 		lua_pop(L, 1);
 		if (!st)
-			return luaL_error(L, "Not a style entry");
+			return error(L, "Not a style entry");
 
 		double width, height, descent, extlead;
-		if (!Automation4::CalculateTextExtents(st, luaL_checkstring(L, 2), width, height, descent, extlead))
-			return luaL_error(L, "Some internal error occurred calculating text_extents");
+		if (!Automation4::CalculateTextExtents(st, check_string(L, 2), width, height, descent, extlead))
+			return error(L, "Some internal error occurred calculating text_extents");
 
 		push_value(L, width);
 		push_value(L, height);
@@ -429,7 +429,7 @@ namespace {
 			lua_setglobal(L, "dofile");
 			lua_pushnil(L);
 			lua_setglobal(L, "loadfile");
-			push_value(L, LuaInclude);
+			push_value(L, exception_wrapper<LuaInclude>);
 			lua_setglobal(L, "include");
 
 			// replace pairs and ipairs with lua 5.2-style versions
@@ -459,19 +459,19 @@ namespace {
 			lua_pushstring(L, "aegisub");
 			lua_createtable(L, 0, 12);
 
-			set_field(L, "register_macro", LuaCommand::LuaRegister);
-			set_field(L, "register_filter", LuaExportFilter::LuaRegister);
-			set_field(L, "text_extents", lua_text_textents);
-			set_field(L, "frame_from_ms", frame_from_ms);
-			set_field(L, "ms_from_frame", ms_from_frame);
-			set_field(L, "video_size", video_size);
-			set_field(L, "keyframes", get_keyframes);
-			set_field(L, "decode_path", decode_path);
-			set_field(L, "cancel", cancel_script);
+			set_field<LuaCommand::LuaRegister>(L, "register_macro");
+			set_field<LuaExportFilter::LuaRegister>(L, "register_filter");
+			set_field<lua_text_textents>(L, "text_extents");
+			set_field<frame_from_ms>(L, "frame_from_ms");
+			set_field<ms_from_frame>(L, "ms_from_frame");
+			set_field<video_size>(L, "video_size");
+			set_field<get_keyframes>(L, "keyframes");
+			set_field<decode_path>(L, "decode_path");
+			set_field<cancel_script>(L, "cancel");
 			set_field(L, "lua_automation_version", 4);
-			set_field(L, "__init_clipboard", clipboard_init);
-			set_field(L, "file_name", get_file_name);
-			set_field(L, "gettext", get_translation);
+			set_field<clipboard_init>(L, "__init_clipboard");
+			set_field<get_file_name>(L, "file_name");
+			set_field<get_translation>(L, "gettext");
 
 			// store aegisub table to globals
 			lua_settable(L, LUA_GLOBALSINDEX);
@@ -550,8 +550,7 @@ namespace {
 	{
 		for (auto macro : macros) {
 			if (macro->name() == command->name()) {
-				luaL_error(L,
-					"A macro named '%s' is already defined in script '%s'",
+				error(L, "A macro named '%s' is already defined in script '%s'",
 					command->StrDisplay(nullptr).utf8_str().data(), name.c_str());
 			}
 		}
@@ -581,7 +580,7 @@ namespace {
 	{
 		const LuaScript *s = GetScriptObject(L);
 
-		const std::string filename(luaL_checkstring(L, 1));
+		const std::string filename(check_string(L, 1));
 		agi::fs::path filepath;
 
 		// Relative or absolute path
@@ -596,10 +595,10 @@ namespace {
 		}
 
 		if (!agi::fs::FileExists(filepath))
-			return luaL_error(L, "Lua include not found: %s", filename.c_str());
+			return error(L, "Lua include not found: %s", filename.c_str());
 
 		if (!LoadFile(L, filepath))
-			return luaL_error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), luaL_checkstring(L, 1));
+			return error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), check_string(L, 1).c_str());
 
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
 		lua_call(L, 0, LUA_MULTRET);
@@ -677,10 +676,10 @@ namespace {
 	, cmd_type(cmd::COMMAND_NORMAL)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
-		cmd_name = str(boost::format("automation/lua/%s/%s") % luaL_checkstring(L, -1) % luaL_checkstring(L, 1));
+		cmd_name = str(boost::format("automation/lua/%s/%s") % check_string(L, -1) % check_string(L, 1));
 
 		if (!lua_isfunction(L, 3))
-			luaL_error(L, "The macro processing function must be a function");
+			error(L, "The macro processing function must be a function");
 
 		if (lua_isfunction(L, 4))
 			cmd_type |= cmd::COMMAND_VALIDATE;
@@ -899,11 +898,11 @@ namespace {
 
 	// LuaFeatureFilter
 	LuaExportFilter::LuaExportFilter(lua_State *L)
-	: ExportFilter(luaL_checkstring(L, 1), lua_tostring(L, 2), lua_tointeger(L, 3))
+	: ExportFilter(check_string(L, 1), lua_tostring(L, 2), lua_tointeger(L, 3))
 	, LuaFeature(L)
 	{
 		if (!lua_isfunction(L, 4))
-			luaL_error(L, "The filter processing function must be a function");
+			error(L, "The filter processing function must be a function");
 
 		// new table for containing the functions for this feature
 		lua_createtable(L, 0, 2);

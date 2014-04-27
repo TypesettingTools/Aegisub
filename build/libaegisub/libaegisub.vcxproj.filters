@@ -310,7 +310,7 @@
     <ClCompile Include="$(SrcDir)lua\modules\lfs.cpp">
       <Filter>Lua\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lua\modules\lpeg.cpp">
+    <ClCompile Include="$(SrcDir)lua\modules\lpeg.c">
       <Filter>Lua\Modules</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)lua\modules\re.cpp">

@@ -20,9 +20,6 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <lauxlib.h>
-#include <lua.h>
-#include <lualib.h>
 
 using namespace agi::lua;
 

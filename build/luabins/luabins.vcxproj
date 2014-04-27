@@ -17,20 +17,20 @@
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>LUABINS_LUABUILTASCPP;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SrcDir)..\..\lua51\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
 
   <!-- Source files -->
   <ItemGroup>
-    <ClCompile Include="$(SrcDir)fwrite.cpp" />
-    <ClCompile Include="$(SrcDir)load.cpp" />
-    <ClCompile Include="$(SrcDir)luabins.cpp" />
-    <ClCompile Include="$(SrcDir)luainternals.cpp" />
-    <ClCompile Include="$(SrcDir)save.cpp" />
-    <ClCompile Include="$(SrcDir)savebuffer.cpp" />
-    <ClCompile Include="$(SrcDir)write.cpp" />
+    <ClCompile Include="$(SrcDir)fwrite.c" />
+    <ClCompile Include="$(SrcDir)load.c" />
+    <ClCompile Include="$(SrcDir)luabins.c" />
+    <ClCompile Include="$(SrcDir)luainternals.c" />
+    <ClCompile Include="$(SrcDir)save.c" />
+    <ClCompile Include="$(SrcDir)savebuffer.c" />
+    <ClCompile Include="$(SrcDir)write.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)fwrite.h" />

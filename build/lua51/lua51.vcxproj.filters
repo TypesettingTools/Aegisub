@@ -15,91 +15,91 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(SrcDir)lapi.cpp">
+    <ClCompile Include="$(SrcDir)lapi.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lcode.cpp">
+    <ClCompile Include="$(SrcDir)lcode.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)ldo.cpp">
+    <ClCompile Include="$(SrcDir)ldo.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)ldump.cpp">
+    <ClCompile Include="$(SrcDir)ldump.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lfunc.cpp">
+    <ClCompile Include="$(SrcDir)lfunc.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lgc.cpp">
+    <ClCompile Include="$(SrcDir)lgc.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)linit.cpp">
+    <ClCompile Include="$(SrcDir)linit.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)llex.cpp">
+    <ClCompile Include="$(SrcDir)llex.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lmem.cpp">
+    <ClCompile Include="$(SrcDir)lmem.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lobject.cpp">
+    <ClCompile Include="$(SrcDir)lobject.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lopcodes.cpp">
+    <ClCompile Include="$(SrcDir)lopcodes.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lparser.cpp">
+    <ClCompile Include="$(SrcDir)lparser.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lstate.cpp">
+    <ClCompile Include="$(SrcDir)lstate.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lstring.cpp">
+    <ClCompile Include="$(SrcDir)lstring.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)ldebug.cpp">
+    <ClCompile Include="$(SrcDir)ldebug.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)ltable.cpp">
+    <ClCompile Include="$(SrcDir)ltable.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)ltm.cpp">
+    <ClCompile Include="$(SrcDir)ltm.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lundump.cpp">
+    <ClCompile Include="$(SrcDir)lundump.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lvm.cpp">
+    <ClCompile Include="$(SrcDir)lvm.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lzio.cpp">
+    <ClCompile Include="$(SrcDir)lzio.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lbaselib.cpp">
+    <ClCompile Include="$(SrcDir)lbaselib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)ltablib.cpp">
+    <ClCompile Include="$(SrcDir)ltablib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)ldblib.cpp">
+    <ClCompile Include="$(SrcDir)ldblib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)liolib.cpp">
+    <ClCompile Include="$(SrcDir)liolib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lmathlib.cpp">
+    <ClCompile Include="$(SrcDir)lmathlib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)loslib.cpp">
+    <ClCompile Include="$(SrcDir)loslib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lstrlib.cpp">
+    <ClCompile Include="$(SrcDir)lstrlib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)loadlib.cpp">
+    <ClCompile Include="$(SrcDir)loadlib.c">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)lauxlib.cpp">
+    <ClCompile Include="$(SrcDir)lauxlib.c">
       <Filter>Standard library</Filter>
     </ClCompile>
   </ItemGroup>

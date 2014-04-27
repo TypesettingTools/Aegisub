@@ -47,18 +47,19 @@ namespace agi { namespace lua {
 		if (!agi::fs::HasExtension(filename, "moon"))
 			return luaL_loadbuffer(L, buff, size, filename.string().c_str()) == 0;
 
-		// Save the text we'll be loading for the line number rewriting in the
-		// error handling
-		push_value(L, buff);
-		lua_setfield(L, LUA_REGISTRYINDEX, ("raw moonscript: " + filename.string()).c_str());
-
 		// We have a MoonScript file, so we need to load it with that
 		// It might be nice to have a dedicated lua state for compiling
 		// MoonScript to Lua
 		if (luaL_dostring(L, "return require('moonscript').loadstring"))
 			return false; // Leaves error message on stack
+
+		// Save the text we'll be loading for the line number rewriting in the
+		// error handling
 		lua_pushlstring(L, buff, size);
-		lua_pushstring(L, filename.string().c_str());
+		lua_pushvalue(L, -1);
+		lua_setfield(L, LUA_REGISTRYINDEX, ("raw moonscript: " + filename.string()).c_str());
+
+		push_value(L, filename);
 		if (lua_pcall(L, 2, 2, 0))
 			return false; // Leaves error message on stack
 
@@ -74,13 +75,13 @@ namespace agi { namespace lua {
 
 	static int module_loader(lua_State *L) {
 		int pretop = lua_gettop(L);
-		std::string module(luaL_checkstring(L, -1));
+		std::string module(check_string(L, -1));
 		boost::replace_all(module, ".", LUA_DIRSEP);
 
 		// Get the lua package include path (which the user may have modified)
 		lua_getglobal(L, "package");
 		lua_getfield(L, -1, "path");
-		std::string package_paths(luaL_checkstring(L, -1));
+		std::string package_paths(check_string(L, -1));
 		lua_pop(L, 2);
 
 		boost::char_separator<char> sep(";");
@@ -99,7 +100,7 @@ namespace agi { namespace lua {
 
 			try {
 				if (!LoadFile(L, path))
-					return luaL_error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), luaL_checkstring(L, 1));
+					return error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), check_string(L, 1).c_str());
 				break;
 			}
 			catch (agi::fs::FileNotFound const&) {
@@ -109,7 +110,7 @@ namespace agi { namespace lua {
 				// Not an error so swallow and continue on
 			}
 			catch (agi::Exception const& e) {
-				return luaL_error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), e.GetChainedMessage().c_str());
+				return error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), e.GetChainedMessage().c_str());
 			}
 		}
 
@@ -138,7 +139,7 @@ namespace agi { namespace lua {
 
 		// Replace the default lua module loader with our unicode compatible one
 		lua_getfield(L, -1, "loaders");
-		push_value(L, module_loader);
+		push_value(L, exception_wrapper<module_loader>);
 		lua_rawseti(L, -2, 2);
 		lua_pop(L, 2);
 	}

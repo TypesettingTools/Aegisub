@@ -16,13 +16,22 @@
 
 #include <libaegisub/fs.h>
 
-#include <lua.h>
-#include <lauxlib.h>
+#include <boost/exception/detail/attribute_noreturn.hpp>
+#include <lua.hpp>
 #include <string>
 #include <vector>
 #include <type_traits>
 
 namespace agi { namespace lua {
+// Exception type for errors where the error details are on the lua stack
+struct error_tag {};
+
+// Below are functionally equivalent to the luaL_ functions, but using a C++
+// exception for stack unwinding
+int BOOST_ATTRIBUTE_NORETURN error(lua_State *L, const char *fmt, ...);
+int BOOST_ATTRIBUTE_NORETURN argerror(lua_State *L, int narg, const char *extramsg);
+int BOOST_ATTRIBUTE_NORETURN typerror(lua_State *L, int narg, const char *tname);
+void argcheck(lua_State *L, bool cond, int narg, const char *msg);
 
 inline void push_value(lua_State *L, bool value) { lua_pushboolean(L, value); }
 inline void push_value(lua_State *L, const char *value) { lua_pushstring(L, value); }
@@ -62,16 +71,50 @@ void push_value(lua_State *L, std::vector<T> const& value) {
 	}
 }
 
+/// Wrap a function which may throw exceptions and make it trigger lua errors
+/// whenever it throws
+template<int (*func)(lua_State *L)>
+int exception_wrapper(lua_State *L) {
+	try {
+		return func(L);
+	}
+	catch (agi::Exception const& e) {
+		push_value(L, e.GetChainedMessage());
+		return lua_error(L);
+	}
+	catch (std::exception const& e) {
+		push_value(L, e.what());
+		return lua_error(L);
+	}
+	catch (error_tag) {
+		// Error message is already on the stack
+		return lua_error(L);
+	}
+	catch (...) {
+		std::terminate();
+	}
+}
+
 template<typename T>
 void set_field(lua_State *L, const char *name, T value) {
 	push_value(L, value);
 	lua_setfield(L, -2, name);
 }
 
+template<int (*func)(lua_State *L)>
+void set_field(lua_State *L, const char *name) {
+	push_value(L, exception_wrapper<func>);
+	lua_setfield(L, -2, name);
+}
+
 std::string get_string_or_default(lua_State *L, int idx);
 std::string get_string(lua_State *L, int idx);
-std::string check_string(lua_State *L, int idx);
 std::string get_global_string(lua_State *L, const char *name);
+
+std::string check_string(lua_State *L, int idx);
+int check_int(lua_State *L, int idx);
+size_t check_uint(lua_State *L, int idx);
+void *check_udata(lua_State *L, int idx, const char *mt);
 
 template<typename T, typename... Args>
 T *make(lua_State *L, const char *mt, Args&&... args) {
@@ -84,7 +127,7 @@ T *make(lua_State *L, const char *mt, Args&&... args) {
 
 template<typename T>
 T& get(lua_State *L, int idx, const char *mt) {
-	return *static_cast<T *>(luaL_checkudata(L, idx, mt));
+	return *static_cast<T *>(check_udata(L, idx, mt));
 }
 
 struct LuaForEachBreak {};
@@ -105,6 +148,8 @@ void lua_for_each(lua_State *L, Func&& func) {
 	lua_pop(L, 1); // pop table
 }
 
+/// Lua error handler which adds the stack trace to the error message, with
+/// moonscript line rewriting support
 int add_stack_trace(lua_State *L);
 
 #ifdef _DEBUG

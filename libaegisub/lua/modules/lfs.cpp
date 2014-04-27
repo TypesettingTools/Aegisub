@@ -24,32 +24,30 @@ using namespace agi::lua;
 using namespace agi::fs;
 namespace bfs = boost::filesystem;
 
-template<typename Func>
-int call(lua_State *L, Func&& f) {
+template<void (*func)(lua_State *L)>
+int wrap(lua_State *L) {
 	try {
-		f();
+		func(L);
 		return 1;
 	}
 	catch (bfs::filesystem_error const& e) {
 		lua_pushnil(L);
-		lua_pushstring(L, e.what());
+		push_value(L, e.what());
 		return 2;
 	}
 	catch (agi::Exception const& e) {
 		lua_pushnil(L);
-		lua_pushstring(L, e.GetChainedMessage().c_str());
+		push_value(L, e.GetChainedMessage());
 		return 2;
 	}
-}
-
-template<void (*func)(lua_State *L)>
-int wrap(lua_State *L) {
-	return call(L, [=] { func(L); });
+	catch (error_tag) {
+		return lua_error(L);
+	}
 }
 
 void chdir(lua_State *L) {
 	bfs::current_path(check_string(L, 1));
-	lua_pushboolean(L, true);
+	push_value(L, true);
 }
 
 void currentdir(lua_State *L) {
@@ -58,17 +56,17 @@ void currentdir(lua_State *L) {
 
 void mkdir(lua_State *L) {
 	CreateDirectory(check_string(L, 1));
-	lua_pushboolean(L, true);
+	push_value(L, true);
 }
 
 void rmdir(lua_State *L) {
 	Remove(check_string(L, 1));
-	lua_pushboolean(L, true);
+	push_value(L, true);
 }
 
 void touch(lua_State *L) {
 	Touch(check_string(L, 1));
-	lua_pushboolean(L, true);
+	push_value(L, true);
 }
 
 int dir_next(lua_State *L) {
@@ -88,18 +86,13 @@ int dir_close(lua_State *L) {
 }
 
 int dir(lua_State *L) {
-	try {
-		const path p = check_string(L, 1);
-		push_value(L, dir_next);
-		make<agi::fs::DirectoryIterator>(L, "aegisub.lfs.dir", check_string(L, 1), "");
-		return 2;
-	}
-	catch (agi::Exception const& e) {
-		return luaL_error(L, "%s", e.GetChainedMessage().c_str());
-	}
+	const path p = check_string(L, 1);
+	push_value(L, dir_next);
+	make<agi::fs::DirectoryIterator>(L, "aegisub.lfs.dir", check_string(L, 1), "");
+	return 2;
 }
 
-int attributes(lua_State *L) {
+void attributes(lua_State *L) {
 	static std::pair<const char *, void (*)(lua_State *, path const&)> fields[] = {
 		{"mode", [](lua_State *L, path const& p) {
 			switch (status(p).type()) {
@@ -119,45 +112,43 @@ int attributes(lua_State *L) {
 		{"size",         [](lua_State *L, path const& p) { push_value(L, Size(p)); }}
 	};
 
-	return call(L, [=] {
-		const path p = check_string(L, 1);
+	const path p = check_string(L, 1);
 
-		const auto field = get_string(L, 2);
-		if (!field.empty()) {
-			for (const auto getter : fields) {
-				if (field == getter.first) {
-					getter.second(L, p);
-					return;
-				}
-			}
-			luaL_error(L, "Invalid attribute name: %s", field.c_str());
-		}
-
-		lua_createtable(L, 0, boost::size(fields));
+	const auto field = get_string(L, 2);
+	if (!field.empty()) {
 		for (const auto getter : fields) {
-			getter.second(L, p);
-			lua_setfield(L, -2, getter.first);
+			if (field == getter.first) {
+				getter.second(L, p);
+				return;
+			}
 		}
-	});
+		error(L, "Invalid attribute name: %s", field.c_str());
+	}
+
+	lua_createtable(L, 0, boost::size(fields));
+	for (const auto getter : fields) {
+		getter.second(L, p);
+		lua_setfield(L, -2, getter.first);
+	}
 }
 }
 
-int luaopen_lfs(lua_State *L) {
+extern "C" int luaopen_lfs(lua_State *L) {
 	if (luaL_newmetatable(L, "aegisub.lfs.dir")) {
-		set_field(L, "__gc", dir_close);
+		set_field<dir_close>(L, "__gc");
 
 		lua_createtable(L, 0, 2);
-		set_field(L, "next", dir_next);
-		set_field(L, "close", dir_close);
+		set_field<dir_next>(L, "next");
+		set_field<dir_close>(L, "close");
 		lua_setfield(L, -2, "__index");
 		lua_pop(L, 1);
 	}
 
 	const struct luaL_Reg lib[] = {
-		{"attributes", attributes},
+		{"attributes", wrap<attributes>},
 		{"chdir", wrap<chdir>},
 		{"currentdir", wrap<currentdir>},
-		{"dir", dir},
+		{"dir", exception_wrapper<dir>},
 		{"mkdir", wrap<mkdir>},
 		{"rmdir", wrap<rmdir>},
 		{"touch", wrap<touch>},
