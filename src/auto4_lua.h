@@ -208,9 +208,9 @@ namespace Automation4 {
 		bool use_buttons;
 
 		/// Id of the button pushed (once a button has been pushed)
-		int button_pushed;
+		int button_pushed = -1;
 
-		wxWindow *window;
+		wxWindow *window = nullptr;
 
 	public:
 		LuaDialog(lua_State *L, bool include_buttons);

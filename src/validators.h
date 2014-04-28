@@ -60,6 +60,17 @@ public:
 	explicit DoubleValidator(double *val, double min, double max);
 };
 
+class DoubleSpinValidator final : public wxValidator {
+	double *value;
+	wxValidator *Clone() const override { return new DoubleSpinValidator(value); }
+	bool Validate(wxWindow*) override { return true; }
+	bool TransferToWindow() override;
+	bool TransferFromWindow() override;
+
+public:
+	DoubleSpinValidator(double *value) : value(value) { }
+};
+
 template<typename T>
 class EnumBinder final : public wxValidator {
 	T *value;

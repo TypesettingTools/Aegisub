@@ -162,13 +162,12 @@ namespace Automation4 {
 		class Edit : public LuaDialogControl {
 		protected:
 			std::string text;
-			wxTextCtrl *cw;
+			wxTextCtrl *cw = nullptr;
 
 		public:
 			Edit(lua_State *L)
 			: LuaDialogControl(L)
 			, text(get_field(L, "value"))
-			, cw(nullptr)
 			{
 				// Undocumented behaviour, 'value' is also accepted as key for text,
 				// mostly so a text control can stand in for other things.
@@ -237,14 +236,13 @@ namespace Automation4 {
 
 		/// Integer only edit
 		class IntEdit final : public Edit {
-			wxSpinCtrl *cw;
+			wxSpinCtrl *cw = nullptr;
 			int value;
 			int min, max;
 
 		public:
 			IntEdit(lua_State *L)
 			: Edit(L)
-			, cw(nullptr)
 			, value(get_field(L, "value", 0))
 			, min(get_field(L, "min", INT_MIN))
 			, max(get_field(L, "max", INT_MAX))
@@ -277,29 +275,7 @@ namespace Automation4 {
 			double min;
 			double max;
 			double step;
-			wxSpinCtrlDouble *scd;
-
-			struct DoubleValidator final : public wxValidator {
-				double *value;
-				DoubleValidator(double *value) : value(value) { }
-				wxValidator *Clone() const override { return new DoubleValidator(value); }
-				bool Validate(wxWindow*) override { return true; }
-
-				bool TransferToWindow() override {
-					static_cast<wxSpinCtrlDouble*>(GetWindow())->SetValue(*value);
-					return true;
-				}
-
-				bool TransferFromWindow() override {
-					auto ctrl = static_cast<wxSpinCtrlDouble*>(GetWindow());
-#ifndef wxHAS_NATIVE_SPINCTRLDOUBLE
-					wxFocusEvent evt;
-					ctrl->OnTextLostFocus(evt);
-#endif
-					*value = ctrl->GetValue();
-					return true;
-				}
-			};
+			wxSpinCtrlDouble *scd = nullptr;
 
 		public:
 			FloatEdit(lua_State *L)
@@ -308,7 +284,6 @@ namespace Automation4 {
 			, min(get_field(L, "min", -DBL_MAX))
 			, max(get_field(L, "max", DBL_MAX))
 			, step(get_field(L, "step", 0.0))
-			, scd(nullptr)
 			{
 				if (min >= max) {
 					max = DBL_MAX;
@@ -323,13 +298,12 @@ namespace Automation4 {
 			wxControl *Create(wxWindow *parent) override {
 				if (step > 0) {
 					scd = new wxSpinCtrlDouble(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value, step);
-					scd->SetValidator(DoubleValidator(&value));
+					scd->SetValidator(DoubleSpinValidator(&value));
 					scd->SetToolTip(to_wx(hint));
 					return scd;
 				}
 
-				::DoubleValidator val(&value, min, max);
-
+				DoubleValidator val(&value, min, max);
 				cw = new wxTextCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, 0, val);
 				cw->SetToolTip(to_wx(hint));
 				return cw;
@@ -344,13 +318,12 @@ namespace Automation4 {
 		class Dropdown final : public LuaDialogControl {
 			std::vector<std::string> items;
 			std::string value;
-			wxComboBox *cw;
+			wxComboBox *cw = nullptr;
 
 		public:
 			Dropdown(lua_State *L)
 			: LuaDialogControl(L)
 			, value(get_field(L, "value"))
-			, cw(nullptr)
 			{
 				lua_getfield(L, -1, "items");
 				read_string_array(L, items);
@@ -374,14 +347,13 @@ namespace Automation4 {
 		class Checkbox final : public LuaDialogControl {
 			std::string label;
 			bool value;
-			wxCheckBox *cw;
+			wxCheckBox *cw = nullptr;
 
 		public:
 			Checkbox(lua_State *L)
 			: LuaDialogControl(L)
 			, label(get_field(L, "label"))
 			, value(get_field(L, "value", false))
-			, cw(nullptr)
 			{
 			}
 
@@ -406,8 +378,6 @@ namespace Automation4 {
 	// LuaDialog
 	LuaDialog::LuaDialog(lua_State *L, bool include_buttons)
 	: use_buttons(include_buttons)
-	, button_pushed(-1)
-	, window(nullptr)
 	{
 		LOG_D("automation/lua/dialog") << "creating LuaDialoug, addr: " << this;
 

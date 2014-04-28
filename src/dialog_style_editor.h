@@ -56,6 +56,8 @@ class DialogStyleEditor final : public wxDialog {
 	/// the style
 	bool is_new = false;
 
+	bool updating = false;
+
 	/// The style currently being edited
 	AssStyle *style;
 
@@ -68,21 +70,14 @@ class DialogStyleEditor final : public wxDialog {
 
 	wxTextCtrl *StyleName;
 	wxComboBox *FontName;
-	wxTextCtrl *FontSize;
 	wxCheckBox *BoxBold;
 	wxCheckBox *BoxItalic;
 	wxCheckBox *BoxUnderline;
 	wxCheckBox *BoxStrikeout;
 	wxSpinCtrl *margin[3];
 	wxRadioBox *Alignment;
-	wxTextCtrl *Outline;
-	wxTextCtrl *Shadow;
 	wxCheckBox *OutlineType;
-	wxTextCtrl *ScaleX;
-	wxTextCtrl *ScaleY;
-	wxTextCtrl *Angle;
 	wxComboBox *Encoding;
-	wxTextCtrl *Spacing;
 	wxTextCtrl *PreviewText;
 	SubtitlesPreview *SubsPreview;
 

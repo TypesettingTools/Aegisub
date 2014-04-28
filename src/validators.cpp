@@ -153,6 +153,21 @@ bool DoubleValidator::TransferFromWindow() {
 	return true;
 }
 
+bool DoubleSpinValidator::TransferToWindow() {
+	static_cast<wxSpinCtrlDouble*>(GetWindow())->SetValue(*value);
+	return true;
+}
+
+bool DoubleSpinValidator::TransferFromWindow() {
+	auto ctrl = static_cast<wxSpinCtrlDouble*>(GetWindow());
+#ifndef wxHAS_NATIVE_SPINCTRLDOUBLE
+	wxFocusEvent evt;
+	ctrl->OnTextLostFocus(evt);
+#endif
+	*value = ctrl->GetValue();
+	return true;
+}
+
 bool StringBinder::TransferFromWindow() {
 	wxWindow *window = GetWindow();
 	if (wxTextCtrl *ctrl = dynamic_cast<wxTextCtrl*>(window))
