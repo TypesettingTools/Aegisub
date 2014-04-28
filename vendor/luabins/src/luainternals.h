@@ -38,6 +38,7 @@ int luaO_log2 (unsigned int x);
 /*
 ** max size of array part is 2^MAXBITS
 */
+#define LUAI_BITSINT 32
 #if LUAI_BITSINT > 26
 #define MAXBITS		26
 #else

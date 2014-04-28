@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7CA6A4EB-A11B-4975-8F3A-F633111C6213}</ProjectGuid>
+    <RootNamespace>luajitbuildvm</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>exe</AegisubProjectType>
+    <SrcDir>..\..\vendor\luajit\</SrcDir>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)</OutDir>
+    <TargetName>luajit-buildvm$(AegisubPlatformSuffix)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+        $(AegisubObjectDir);
+        $(SrcDir)dynasm;
+        $(SrcDir)src;
+        $(SrcDir)src/host;
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <!-- Build buildvm_arch.h -->
+  <PropertyGroup>
+    <MiniLuaCommand>$(AegisubBinaryDir)luajit-minilua$(AegisubPlatformSuffix)</MiniLuaCommand>
+    <MiniLuaPlat Condition="'$(Platform)'=='x64'">-D P64</MiniLuaPlat>
+    <MiniLuaPlat Condition="'$(Platform)'!='x64'"></MiniLuaPlat>
+  </PropertyGroup>
+
+  <Target
+    Name="MiniLua"
+    BeforeTargets="ClCompile"
+    DependsOnTargets="PrepareForBuild"
+    Inputs="$(SrcDir)dynasm\dynasm.lua"
+    Outputs="$(AegisubObjectDir)buildvm_arch.h"
+    >
+    <Exec
+      Command="$(MiniLuaCommand) ..\dynasm\dynasm.lua -LN -D WIN -D JIT -D FFI $(MiniLuaPlatform) -o $(AegisubObjectDir)buildvm_arch.h vm_x86.dasc"
+      WorkingDirectory="$(SrcDir)src"
+      />
+  </Target>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)src\host\buildvm.c" />
+    <ClCompile Include="$(SrcDir)src\host\buildvm_asm.c" />
+    <ClCompile Include="$(SrcDir)src\host\buildvm_fold.c" />
+    <ClCompile Include="$(SrcDir)src\host\buildvm_lib.c" />
+    <ClCompile Include="$(SrcDir)src\host\buildvm_peobj.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)src\host\buildvm.h" />
+    <ClInclude Include="$(AegisubObjectDir)buildvm_arch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\luajit-minilua\luajit-minilua.vcxproj">
+      <Project>{fcaed410-90ef-4ef9-916c-4b86dc13a3cf}</Project>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

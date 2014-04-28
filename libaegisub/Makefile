@@ -3,7 +3,7 @@ include ../Makefile.inc
 LIB = libaegisub.a
 
 CXXFLAGS += -Iinclude -I../src -I.. -fPIC
-CPPFLAGS += $(CPPFLAGS_BOOST)
+CPPFLAGS += $(CPPFLAGS_BOOST) $(CFLAGS_LUA)
 
 PRECOMPILED_HEADER_NAME = lagi_pre.h
 lagi_pre.h.gch: CXXFLAGS := $(CXXFLAGS)
@@ -11,7 +11,6 @@ lagi_pre.h.gch: CXXFLAGS := $(CXXFLAGS)
 common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
 common/parser.o: CXXFLAGS += -ftemplate-depth=256
 unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\" -DP_DOC=\"$(P_DOC)\" -DP_LOCALE=\"$(P_LOCALE)\"
-lua/**/*.o: CPPFLAGS += -I../vendor/lua/src
 
 SRC += \
 	common/parser.cpp \

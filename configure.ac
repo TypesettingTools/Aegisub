@@ -187,6 +187,7 @@ AS_IF([test x$with_libc__ != xno], [
 # Check Headers / Features / Libraries
 ######################################
 AC_CHECK_LIB([m], [main])
+AC_CHECK_LIB([dl], [dlclose])
 AC_CHECK_HEADERS([sys/time.h])
 
 AC_ARG_ENABLE(sanity-checks,

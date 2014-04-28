@@ -10,11 +10,10 @@ AEGISUB_CFLAGS = -I. -I.. -Iinclude -I../libaegisub/include -I../build -DAEGISUB
 CFLAGS += $(AEGISUB_CFLAGS)
 CXXFLAGS += $(AEGISUB_CFLAGS) -D__STDC_FORMAT_MACROS $(CXXFLAGS_WX)
 
-LIBS := -L../libaegisub -laegisub $(LIBS)
+LIBS := -L../libaegisub -laegisub $(LIBS_LUA) $(LIBS)
 LIBS += $(LIBS_GL) $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE)
 LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3) $(LIBS_UCHARDET) $(LIBS_BOOST)
-LIBS += $(LIBS_ICU) $(LIBS_LUA)
-LIBS += ../vendor/luabins/libluabins.a
+LIBS += $(LIBS_ICU) ../vendor/luabins/libluabins.a
 
 ifeq (yes, $(BUILD_DARWIN))
 SRC += osx_utils.mm retina_helper.mm
@@ -106,7 +105,7 @@ charset_detect.o:              CXXFLAGS += -D_X86_
 font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG)
 text_file_reader.o:            CXXFLAGS += -D_X86_
 video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS2)
-auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o: CPPFLAGS += -I../vendor/lua/src
+auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o: CPPFLAGS += -I../vendor/luajit/include
 
 SRC += \
 	MatroskaParser.c \

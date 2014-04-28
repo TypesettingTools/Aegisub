@@ -2,7 +2,7 @@ include ../../Makefile.inc
 
 LIB = libluabins.a
 
-CPPFLAGS += -I../lua/src
+CPPFLAGS += -I../luajit/include
 
 SRC = \
 	src/fwrite.c \

@@ -38,12 +38,6 @@ namespace agi { namespace lua {
 		auto buff = file.read();
 		size_t size = static_cast<size_t>(file.size());
 
-		// Discard the BOM if present
-		if (size >= 3 && buff[0] == -17 && buff[1] == -69 && buff[2] == -65) {
-			buff += 3;
-			size -= 3;
-		}
-
 		if (!agi::fs::HasExtension(filename, "moon"))
 			return luaL_loadbuffer(L, buff, size, filename.string().c_str()) == 0;
 

@@ -74,5 +74,11 @@ tools/osx-bundle-restart-helper
 tools/osx-bundle.sed
 tools/repack-thes-dict
 tools/repack-thes-dict.dSYM
+vendor/luajit/src/host/buildvm
+vendor/luajit/src/host/minilua
+vendor/luajit/src/jit/vmdef.lua
+vendor/luajit/src/gen
+vendor/luajit/src/lj_vm.s
+vendor/luajit/src/luajit
 
 .nuget

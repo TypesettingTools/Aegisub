@@ -13,7 +13,7 @@ endif
 
 CXXFLAGS +=  -I../libaegisub/include $(CFLAGS_ICU)
 LIBS := -L../libaegisub -laegisub $(LIBS)
-LIBS += $(LIBS_BOOST) $(LIBS_ICU) $(LIBS_LUA)
+LIBS += $(LIBS_BOOST) $(LIBS_ICU)
 
 repack-thes-dict: repack-thes-dict.cpp
 	$(BIN_CXX) -o repack-thes-dict repack-thes-dict.cpp  $(CXXFLAGS) $(LIBS)

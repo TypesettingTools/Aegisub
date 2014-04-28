@@ -1,7 +1,7 @@
 include Makefile.inc
 
 SUBDIRS += \
-	vendor/lua \
+	vendor/luajit \
 	vendor/universalchardet \
 	vendor/luabins \
 	libaegisub \

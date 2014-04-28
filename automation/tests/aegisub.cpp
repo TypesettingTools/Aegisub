@@ -42,7 +42,6 @@ int main(int argc, char **argv) {
 	lua_State *L = lua_open();
 	agi::lua::preload_modules(L);
 	Install(L, {"include"});
-	push_value(L, luaopen_debug); lua_call(L, 0, 0);
 
 	// Build arg table for scripts
 	lua_createtable(L, argc - 1, 0);

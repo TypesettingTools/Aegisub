@@ -4,10 +4,10 @@ PRECOMPILED_HEADER_NAME = ../libaegisub/lagi_pre.h
 
 PROGRAM = aegisub-lua
 
-CXXFLAGS += -I../libaegisub/include -I../src -I.. -I../vendor/lua/src $(CXXFLAGS_WX)
-CPPFLAGS += $(CPPFLAGS_BOOST)
+CXXFLAGS += -I../libaegisub/include -I../src -I.. $(CXXFLAGS_WX)
+CPPFLAGS += $(CPPFLAGS_BOOST) $(CFLAGS_LUA)
 
-LIBS := -L../libaegisub -laegisub  -L../vendor/lua -llua-aegisub $(LIBS)
+LIBS := -L../libaegisub -laegisub $(LIBS_LUA) $(LIBS)
 LIBS += ../vendor/luabins/libluabins.a
 LIBS += $(LIBS_WX) $(LIBS_BOOST) $(LIBS_ICU)
 

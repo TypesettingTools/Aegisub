@@ -78,11 +78,11 @@
     <ProjectReference Include="..\libresrc\libresrc.vcxproj">
       <Project>{bd00d65f-24da-4784-8860-3b972ea125fc}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\lua51\lua51.vcxproj">
-      <Project>{5391a8b1-9c70-4dc4-92ad-d3e34c6b803f}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\luabins\luabins.vcxproj">
       <Project>{A7A30702-8162-4E1A-A010-EF51B590C121}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\luajit\luajit.vcxproj">
+      <Project>{5391a8b1-9c70-4dc4-92ad-d3e34c6b803f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
       <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
