@@ -40,7 +40,6 @@
   <PropertyGroup>
     <MiniLuaCommand>$(AegisubBinaryDir)luajit-minilua$(AegisubPlatformSuffix)</MiniLuaCommand>
     <MiniLuaPlat Condition="'$(Platform)'=='x64'">-D P64</MiniLuaPlat>
-    <MiniLuaPlat Condition="'$(Platform)'!='x64'"></MiniLuaPlat>
   </PropertyGroup>
 
   <Target
@@ -51,7 +50,7 @@
     Outputs="$(AegisubObjectDir)buildvm_arch.h"
     >
     <Exec
-      Command="$(MiniLuaCommand) ..\dynasm\dynasm.lua -LN -D WIN -D JIT -D FFI $(MiniLuaPlatform) -o $(AegisubObjectDir)buildvm_arch.h vm_x86.dasc"
+      Command="$(MiniLuaCommand) ..\dynasm\dynasm.lua -LN -D WIN -D JIT -D FFI $(MiniLuaPlat) -o $(AegisubObjectDir)buildvm_arch.h vm_x86.dasc"
       WorkingDirectory="$(SrcDir)src"
       />
   </Target>
