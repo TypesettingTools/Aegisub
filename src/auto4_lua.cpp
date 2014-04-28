@@ -61,6 +61,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/format.hpp>
+#include <boost/scope_exit.hpp>
 #include <cassert>
 #include <cstdint>
 #include <lauxlib.h>
@@ -373,105 +374,103 @@ namespace {
 	{
 		Destroy();
 
-		try {
-			// create lua environment
-			L = lua_open();
-			LuaStackcheck stackcheck(L);
+		name = GetPrettyFilename().string();
 
-			// register standard libs
-			preload_modules(L);
-			stackcheck.check_stack(0);
+		// create lua environment
+		L = lua_open();
 
-			// dofile and loadfile are replaced with include
-			lua_pushnil(L);
-			lua_setglobal(L, "dofile");
-			lua_pushnil(L);
-			lua_setglobal(L, "loadfile");
-			push_value(L, exception_wrapper<LuaInclude>);
-			lua_setglobal(L, "include");
+		bool loaded = false;
+		BOOST_SCOPE_EXIT_ALL(&) { if (!loaded) Destroy(); };
+		LuaStackcheck stackcheck(L);
 
-			// Replace the default lua module loader with our unicode compatible
-			// one and set the module search path
-			Install(L, include_path);
-			stackcheck.check_stack(0);
+		// register standard libs
+		preload_modules(L);
+		stackcheck.check_stack(0);
 
-			// prepare stuff in the registry
+		// dofile and loadfile are replaced with include
+		lua_pushnil(L);
+		lua_setglobal(L, "dofile");
+		lua_pushnil(L);
+		lua_setglobal(L, "loadfile");
+		push_value(L, exception_wrapper<LuaInclude>);
+		lua_setglobal(L, "include");
 
-			// store the script's filename
-			push_value(L, GetFilename().stem());
-			lua_setfield(L, LUA_REGISTRYINDEX, "filename");
-			stackcheck.check_stack(0);
+		// Replace the default lua module loader with our unicode compatible
+		// one and set the module search path
+		Install(L, include_path);
+		stackcheck.check_stack(0);
 
-			// reference to the script object
-			push_value(L, this);
-			lua_setfield(L, LUA_REGISTRYINDEX, "aegisub");
-			stackcheck.check_stack(0);
+		// prepare stuff in the registry
 
-			// make "aegisub" table
-			lua_pushstring(L, "aegisub");
-			lua_createtable(L, 0, 12);
+		// store the script's filename
+		push_value(L, GetFilename().stem());
+		lua_setfield(L, LUA_REGISTRYINDEX, "filename");
+		stackcheck.check_stack(0);
 
-			set_field<LuaCommand::LuaRegister>(L, "register_macro");
-			set_field<LuaExportFilter::LuaRegister>(L, "register_filter");
-			set_field<lua_text_textents>(L, "text_extents");
-			set_field<frame_from_ms>(L, "frame_from_ms");
-			set_field<ms_from_frame>(L, "ms_from_frame");
-			set_field<video_size>(L, "video_size");
-			set_field<get_keyframes>(L, "keyframes");
-			set_field<decode_path>(L, "decode_path");
-			set_field<cancel_script>(L, "cancel");
-			set_field(L, "lua_automation_version", 4);
-			set_field<clipboard_init>(L, "__init_clipboard");
-			set_field<get_file_name>(L, "file_name");
-			set_field<get_translation>(L, "gettext");
+		// reference to the script object
+		push_value(L, this);
+		lua_setfield(L, LUA_REGISTRYINDEX, "aegisub");
+		stackcheck.check_stack(0);
 
-			// store aegisub table to globals
-			lua_settable(L, LUA_GLOBALSINDEX);
-			stackcheck.check_stack(0);
+		// make "aegisub" table
+		lua_pushstring(L, "aegisub");
+		lua_createtable(L, 0, 12);
 
-			// load user script
-			if (!LoadFile(L, GetFilename())) {
-				std::string err = get_string_or_default(L, 1);
-				lua_pop(L, 1);
-				throw ScriptLoadError(err);
-			}
-			stackcheck.check_stack(1);
+		set_field<LuaCommand::LuaRegister>(L, "register_macro");
+		set_field<LuaExportFilter::LuaRegister>(L, "register_filter");
+		set_field<lua_text_textents>(L, "text_extents");
+		set_field<frame_from_ms>(L, "frame_from_ms");
+		set_field<ms_from_frame>(L, "ms_from_frame");
+		set_field<video_size>(L, "video_size");
+		set_field<get_keyframes>(L, "keyframes");
+		set_field<decode_path>(L, "decode_path");
+		set_field<cancel_script>(L, "cancel");
+		set_field(L, "lua_automation_version", 4);
+		set_field<clipboard_init>(L, "__init_clipboard");
+		set_field<get_file_name>(L, "file_name");
+		set_field<get_translation>(L, "gettext");
 
-			// and execute it
-			// this is where features are registered
-			// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
-			if (lua_pcall(L, 0, 0, 0)) {
-				// error occurred, assumed to be on top of Lua stack
-				std::string err = str(boost::format("Error initialising Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % get_string_or_default(L, -1));
-				lua_pop(L, 1);
-				throw ScriptLoadError(err);
-			}
-			stackcheck.check_stack(0);
+		// store aegisub table to globals
+		lua_settable(L, LUA_GLOBALSINDEX);
+		stackcheck.check_stack(0);
 
-			lua_getglobal(L, "version");
-			if (lua_isnumber(L, -1) && lua_tointeger(L, -1) == 3) {
-				lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
-				throw ScriptLoadError("Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.");
-			}
-
-			name = get_global_string(L, "script_name");
-			description = get_global_string(L, "script_description");
-			author = get_global_string(L, "script_author");
-			version = get_global_string(L, "script_version");
-
-			if (name.empty())
-				name = GetPrettyFilename().string();
-
+		// load user script
+		if (!LoadFile(L, GetFilename())) {
+			description = get_string_or_default(L, 1);
 			lua_pop(L, 1);
-			// if we got this far, the script should be ready
-			stackcheck.check_stack(0);
+			return;
+		}
+		stackcheck.check_stack(1);
 
+		// and execute it
+		// this is where features are registered
+		// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
+		if (lua_pcall(L, 0, 0, 0)) {
+			// error occurred, assumed to be on top of Lua stack
+			description = str(boost::format("Error initialising Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % get_string_or_default(L, -1));
+			lua_pop(L, 1);
+			return;
 		}
-		catch (agi::Exception const& e) {
-			Destroy();
+		stackcheck.check_stack(0);
+
+		lua_getglobal(L, "version");
+		if (lua_isnumber(L, -1) && lua_tointeger(L, -1) == 3) {
+			lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
+			description = "Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.";
+			return;
+		}
+
+		name = get_global_string(L, "script_name");
+		description = get_global_string(L, "script_description");
+		author = get_global_string(L, "script_author");
+		version = get_global_string(L, "script_version");
+
+		if (name.empty())
 			name = GetPrettyFilename().string();
-			description = e.GetChainedMessage();
-		}
+
+		lua_pop(L, 1);
+		// if we got this far, the script should be ready
+		loaded = true;
 	}
 
 	void LuaScript::Destroy()
