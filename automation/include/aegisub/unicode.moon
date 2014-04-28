@@ -1,4 +1,4 @@
--- Copyright (c) 2007, Niels Martin Hansen, Rodrigo Braz Monteiro
+﻿-- Copyright (c) 2007, Niels Martin Hansen, Rodrigo Braz Monteiro
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
