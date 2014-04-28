@@ -50,8 +50,7 @@ namespace agi { namespace lua {
 		// We have a MoonScript file, so we need to load it with that
 		// It might be nice to have a dedicated lua state for compiling
 		// MoonScript to Lua
-		if (luaL_dostring(L, "return require('moonscript').loadstring"))
-			return false; // Leaves error message on stack
+		lua_getfield(L, LUA_REGISTRYINDEX, "moonscript");
 
 		// Save the text we'll be loading for the line number rewriting in the
 		// error handling
@@ -117,7 +116,7 @@ namespace agi { namespace lua {
 		return lua_gettop(L) - pretop;
 	}
 
-	void Install(lua_State *L, std::vector<fs::path> const& include_path) {
+	bool Install(lua_State *L, std::vector<fs::path> const& include_path) {
 		// set the module load path to include_path
 		lua_getglobal(L, "package");
 		push_value(L, "path");
@@ -137,10 +136,19 @@ namespace agi { namespace lua {
 
 		lua_settable(L, -3);
 
+		luaL_loadstring(L, "return require('moonscript').loadstring");
+		if (lua_pcall(L, 0, 1, 0)) {
+			lua_remove(L, -2); // remove package.path table
+			return false; // leave error message
+		}
+		lua_setfield(L, LUA_REGISTRYINDEX, "moonscript");
+
 		// Replace the default lua module loader with our unicode compatible one
 		lua_getfield(L, -1, "loaders");
 		push_value(L, exception_wrapper<module_loader>);
 		lua_rawseti(L, -2, 2);
 		lua_pop(L, 2);
+
+		return true;
 	}
 } }

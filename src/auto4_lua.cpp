@@ -397,7 +397,11 @@ namespace {
 
 		// Replace the default lua module loader with our unicode compatible
 		// one and set the module search path
-		Install(L, include_path);
+		if (!Install(L, include_path)) {
+			description = get_string_or_default(L, 1);
+			lua_pop(L, 1);
+			return;
+		}
 		stackcheck.check_stack(0);
 
 		// prepare stuff in the registry
