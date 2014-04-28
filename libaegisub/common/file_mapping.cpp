@@ -35,6 +35,9 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 	uint64_t file_size, agi::file_mapping const& file,
 	std::unique_ptr<mapped_region>& region, uint64_t& mapping_start)
 {
+	static char dummy = 0;
+	if (length == 0) return &dummy;
+
 	auto offset = static_cast<uint64_t>(s_offset);
 	if (offset + length > file_size)
 		throw agi::InternalError("Attempted to map beyond end of file", nullptr);
