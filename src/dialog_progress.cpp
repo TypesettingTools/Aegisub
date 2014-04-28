@@ -171,6 +171,10 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 			if (cancelled || (log_output->IsEmpty() && !pending_log))
 				EndModal(!cancelled);
 			else {
+				if (!pending_log.empty()) {
+					wxIdleEvent evt;
+					OnIdle(evt);
+				}
 				cancel_button->SetLabelText(_("Close"));
 				gauge->SetValue(300);
 			}
