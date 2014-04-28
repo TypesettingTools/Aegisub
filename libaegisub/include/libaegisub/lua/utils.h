@@ -54,7 +54,7 @@ inline void push_value(lua_State *L, std::string const& value) {
 }
 
 inline void push_value(lua_State *L, lua_CFunction value) {
-	if (lua_type(L, -2) == LUA_TUSERDATA) {
+	if (lua_gettop(L) >= 2 && lua_type(L, -2) == LUA_TUSERDATA) {
 		lua_pushvalue(L, -2);
 		lua_pushcclosure(L, value, 1);
 	}
