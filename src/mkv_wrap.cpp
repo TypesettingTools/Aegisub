@@ -187,7 +187,7 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 	// Find tracks
 	for (auto track : boost::irange(0u, tracks)) {
 		auto trackInfo = mkv_GetTrackInfo(file, track);
-		if (trackInfo->Type != 0x11) continue;
+		if (trackInfo->Type != 0x11 || trackInfo->CompEnabled) continue;
 
 		// Known subtitle format
 		std::string CodecID(trackInfo->CodecID);
@@ -265,7 +265,7 @@ bool MatroskaWrapper::HasSubtitles(agi::fs::path const& filename) {
 		for (auto track : boost::irange(0u, tracks)) {
 			auto trackInfo = mkv_GetTrackInfo(file, track);
 
-			if (trackInfo->Type == 0x11) {
+			if (trackInfo->Type == 0x11 && !trackInfo->CompEnabled) {
 				std::string CodecID(trackInfo->CodecID);
 				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8")
 					return true;
