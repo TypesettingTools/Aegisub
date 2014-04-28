@@ -378,8 +378,8 @@ std::vector<std::unique_ptr<GridColumn>> GetGridColumns() {
 	ret.push_back(make<GridColumnEndTime>());
 	ret.push_back(make<GridColumnCPS>());
 	ret.push_back(make<GridColumnStyle>());
-	ret.push_back(make<GridColumnEffect>());
 	ret.push_back(make<GridColumnActor>());
+	ret.push_back(make<GridColumnEffect>());
 	ret.push_back(make<GridColumnMarginLeft>());
 	ret.push_back(make<GridColumnMarginRight>());
 	ret.push_back(make<GridColumnMarginVert>());
