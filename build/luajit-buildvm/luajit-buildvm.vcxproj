@@ -21,7 +21,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+        _CRT_SECURE_NO_WARNINGS;
+        LUAJIT_ENABLE_LUA52COMPAT;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
         $(AegisubObjectDir);
         $(SrcDir)dynasm;
