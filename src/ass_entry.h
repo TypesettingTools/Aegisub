@@ -57,5 +57,5 @@ public:
 	virtual AssEntryGroup Group() const=0;
 
 	/// ASS or SSA Section header for this entry's group
-	std::string const& GroupHeader(bool ssa=false) const;
+	std::string const& GroupHeader() const;
 };

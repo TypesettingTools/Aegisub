@@ -16,8 +16,6 @@
 
 #include "ass_entry.h"
 
-#include <boost/algorithm/string/predicate.hpp>
-
 class AssInfo final : public AssEntry {
 	std::string key;
 	std::string value;
@@ -28,7 +26,6 @@ public:
 
 	AssEntryGroup Group() const override { return AssEntryGroup::INFO; }
 	std::string GetEntryData() const { return key + ": " + value; }
-	std::string GetSSAText() const { return boost::iequals(key, "scripttype: v4.00+") ? "ScriptType: v4.00" : GetEntryData(); }
 
 	std::string Key() const { return key; }
 	std::string Value() const { return value; }

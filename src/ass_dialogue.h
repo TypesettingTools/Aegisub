@@ -153,8 +153,6 @@ struct AssDialogueBase {
 };
 
 class AssDialogue final : public AssEntry, public AssDialogueBase, public AssEntryListHook {
-	std::string GetData(bool ssa) const;
-
 	/// @brief Parse raw ASS data into everything else
 	/// @param data ASS line
 	void Parse(std::string const& data);
@@ -172,10 +170,8 @@ public:
 
 	/// Update the text of the line from parsed blocks
 	void UpdateText(std::vector<std::unique_ptr<AssDialogueBlock>>& blocks);
-	std::string GetEntryData() const { return GetData(false); }
+	std::string GetEntryData() const;
 
-	/// Get the line as SSA rather than ASS
-	std::string GetSSAText() const { return GetData(true); }
 	/// Does this line collide with the passed line?
 	bool CollidesWith(const AssDialogue *target) const;
 

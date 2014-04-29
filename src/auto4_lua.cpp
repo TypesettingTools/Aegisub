@@ -60,11 +60,11 @@
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/format.hpp>
 #include <boost/scope_exit.hpp>
 #include <cassert>
 #include <cstdint>
-#include <lauxlib.h>
 #include <mutex>
 #include <wx/clipbrd.h>
 #include <wx/filefn.h>

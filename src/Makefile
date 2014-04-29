@@ -223,6 +223,7 @@ SRC += \
 	subtitle_format_microdvd.cpp \
 	subtitle_format_mkv.cpp \
 	subtitle_format_srt.cpp \
+	subtitle_format_ssa.cpp \
 	subtitle_format_transtation.cpp \
 	subtitle_format_ttxt.cpp \
 	subtitle_format_txt.cpp \

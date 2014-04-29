@@ -163,14 +163,11 @@ void append_unsafe_str(std::string &out, std::string const& str) {
 	out += ',';
 }
 
-std::string AssDialogue::GetData(bool ssa) const {
+std::string AssDialogue::GetEntryData() const {
 	std::string str = Comment ? "Comment: " : "Dialogue: ";
 	str.reserve(51 + Style.get().size() + Actor.get().size() + Effect.get().size() + Text.get().size());
 
-	if (ssa)
-		append_str(str, "Marked=0");
-	else
-		append_int(str, Layer);
+	append_int(str, Layer);
 	append_str(str, Start.GetAssFormated());
 	append_str(str, End.GetAssFormated());
 	append_unsafe_str(str, Style);

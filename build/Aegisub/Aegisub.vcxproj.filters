@@ -618,6 +618,9 @@
     <ClInclude Include="$(SrcDir)grid_column.h">
       <Filter>Main UI\Grid</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)subtitle_format_ssa.h">
+      <Filter>Subtitle formats</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1169,13 +1172,12 @@
     <ClCompile Include="$(SrcDir)grid_column.cpp">
       <Filter>Main UI\Grid</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)subtitle_format_ssa.cpp">
+      <Filter>Subtitle formats</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="$(SrcDir)res/res.rc">
-      <Filter>Resources</Filter>
-    </ResourceCompile>
-    <ResourceCompile Include="$(SrcDir)res/strings.rc">
-      <Filter>Resources</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="$(SrcDir)res\res.rc" />
+    <ResourceCompile Include="$(SrcDir)res\strings.rc" />
   </ItemGroup>
 </Project>

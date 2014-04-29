@@ -212,6 +212,7 @@
     <ClInclude Include="$(SrcDir)subtitle_format_microdvd.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_mkv.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_srt.h" />
+    <ClInclude Include="$(SrcDir)subtitle_format_ssa.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_transtation.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_ttxt.h" />
     <ClInclude Include="$(SrcDir)subtitle_format_txt.h" />
@@ -404,6 +405,7 @@
     <ClCompile Include="$(SrcDir)subtitle_format_microdvd.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_mkv.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_srt.cpp" />
+    <ClCompile Include="$(SrcDir)subtitle_format_ssa.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_transtation.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_ttxt.cpp" />
     <ClCompile Include="$(SrcDir)subtitle_format_txt.cpp" />

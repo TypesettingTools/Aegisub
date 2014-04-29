@@ -16,17 +16,11 @@
 
 #include "subtitle_format.h"
 
-class AssSubtitleFormat final : public SubtitleFormat {
+class SsaSubtitleFormat final : public SubtitleFormat {
 public:
-	AssSubtitleFormat() : SubtitleFormat("Advanced SubStation Alpha") { }
-
-	std::vector<std::string> GetReadWildcards() const override { return {"ass", "ssa"}; }
-	std::vector<std::string> GetWriteWildcards() const override { return {"ass"}; }
-
-	// Naturally the ASS subtitle format can save all ASS files
+	SsaSubtitleFormat() : SubtitleFormat("SubStation Alpha") { }
+	std::vector<std::string> GetWriteWildcards() const override { return {"ssa"}; }
+	/// @todo Not actually true
 	bool CanSave(const AssFile*) const override { return true; }
-
-	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
 	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
-	static void WriteToStream(const AssFile *src, std::ostream &ostr);
 };

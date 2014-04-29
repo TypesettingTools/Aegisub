@@ -21,7 +21,7 @@
 
 #include "ass_entry.h"
 
-std::string const& AssEntry::GroupHeader(bool ssa) const {
+std::string const& AssEntry::GroupHeader() const {
 	static std::string ass_headers[] = {
 		"[Script Info]",
 		"[V4+ Styles]",
@@ -31,16 +31,5 @@ std::string const& AssEntry::GroupHeader(bool ssa) const {
 		"[Aegisub Extradata]",
 		""
 	};
-
-	static std::string ssa_headers[] = {
-		"[Script Info]",
-		"[V4 Styles]",
-		"[Fonts]",
-		"[Graphics]",
-		"[Events]",
-		"[Aegisub Extradata]",
-		""
-	};
-
-	return (ssa ? ssa_headers : ass_headers)[(int)Group()];
+	return ass_headers[(int)Group()];
 }

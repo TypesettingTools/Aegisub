@@ -47,7 +47,6 @@ public:
 	std::string GetFileName(bool raw=false) const;
 
 	std::string const& GetEntryData() const { return entry_data; }
-	std::string const& GetSSAText() const { return entry_data; }
 	AssEntryGroup Group() const override { return group; }
 
 	AssAttachment(AssAttachment const& rgt);

@@ -191,17 +191,6 @@ void AssStyle::UpdateData() {
 		% Margin[0] % Margin[1] % Margin[2] % encoding);
 }
 
-std::string AssStyle::GetSSAText() const {
-	return str(boost::format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i")
-		% name % font % fontsize
-		% primary.GetSsaFormatted()
-		% secondary.GetSsaFormatted()
-		% shadow.GetSsaFormatted()
-		% (bold? -1 : 0) % (italic ? -1 : 0)
-		% borderstyle % outline_w % shadow_w % AssToSsa(alignment)
-		% Margin[0] % Margin[1] % Margin[2] % encoding);
-}
-
 void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 	encodingStrings.Clear();
 	encodingStrings.Add(wxString("0 - ") + _("ANSI"));
