@@ -214,9 +214,9 @@ fi
 
 if test "$succeeded" != "yes" ; then
     if test "$_version" = "0" ; then
-        AC_MSG_NOTICE([[We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>. See http://randspringer.de/boost for more documentation.]])
+        AC_MSG_ERROR([[We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>. See http://randspringer.de/boost for more documentation.]])
     else
-        AC_MSG_NOTICE([Your boost libraries seems too old (version $_version).])
+        AC_MSG_ERROR([Your boost libraries seem too old (version $_version).])
     fi
     # execute ACTION-IF-NOT-FOUND (if present):
     ifelse([$3], , :, [$3])
@@ -248,18 +248,9 @@ LDFLAGS_SAVED="$LDFLAGS"
 LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 export LDFLAGS
 
-AS_IF([test x$enable_sanity_checks != xno], [
-    AC_CACHE_CHECK(
-        [whether the boost.$1 library is available],
-        ax_cv_boost_$1,
-        [AC_LANG_PUSH([C++])
-         AC_COMPILE_IFELSE(
-            [AC_LANG_PROGRAM([[@%:@include <boost/$3>]], [[$4;]])],
-            [eval ax_cv_boost_$1=yes],
-            AC_MSG_ERROR([Could not find boost.$1 headers!]))
-         AC_LANG_POP([C++])])
-    AC_CHECK_LIB($ax_boost_lib, exit, [ax_boost_actual_lib="-l$ax_boost_lib"])
-], [ax_boost_actual_lib="-l$ax_boost_lib"])
+AS_IF([test x$enable_sanity_checks != xno],
+      [AC_CHECK_LIB($ax_boost_lib, exit, [ax_boost_actual_lib="-l$ax_boost_lib"])],
+      [ax_boost_actual_lib="-l$ax_boost_lib"])
 
 if test "x$ax_boost_actual_lib" = "x"; then
     for lib in `ls -r $BOOSTLIBDIR/libboost_$1* 2>/dev/null | sed 's,.*/lib,,' | sed 's,\..*,,'`; do
