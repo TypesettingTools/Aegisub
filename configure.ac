@@ -543,7 +543,7 @@ AS_IF([test x$with_ffms2 != xyes], [AC_MSG_NOTICE([
 * Currently we only support one video/audio provider on non-Windows
 * systems:
 *  - FFMS2
-*    * http://code.google.com/p/ffmpegsource/
+*    * http://github.com/FFMS/ffms2
 ***********************************************************************
 ])])
 
@@ -567,9 +567,6 @@ Audio Players
   OSS:                   $with_oss $oss_disabled
   PortAudio:             $with_portaudio $portaudio_disabled
   PulseAudio:            $with_libpulse $libpulse_disabled
-
-A/V Providers
-  FFMS2:                 $with_ffms2 $ffms2_disabled
 
 Misc Packages
   Hunspell:              $with_hunspell $hunspell_disabled
