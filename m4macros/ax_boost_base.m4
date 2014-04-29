@@ -232,27 +232,6 @@ CPPFLAGS="$CPPFLAGS_SAVED"
 LDFLAGS="$LDFLAGS_SAVED"
 ])
 
-AC_DEFUN([AX_BOOST_HEADER_ONLY], [
-CPPFLAGS_SAVED="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
-export CPPFLAGS
-
-AS_IF([test x$enable_sanity_checks != xno], [
-    AC_CACHE_CHECK(
-        [whether the boost.$1 library is available],
-        ax_cv_boost_$1,
-        [AC_LANG_PUSH([C++])
-         AC_COMPILE_IFELSE(
-            [AC_LANG_PROGRAM([[@%:@include <boost/$2>]],
-                [[$3;]])],
-            [AC_MSG_RESULT(yes)],
-            AC_MSG_ERROR([Could not find boost.$1 headers!]))
-         AC_LANG_POP([C++])])
-])
-
-CPPFLAGS="$CPPFLAGS_SAVED"
-])
-
 AC_DEFUN([AX_BOOST_LIB], [
 AC_ARG_WITH([boost-$1],
             AS_HELP_STRING([--with-boost-$1=LIBNAME],
@@ -276,7 +255,7 @@ AS_IF([test x$enable_sanity_checks != xno], [
         [AC_LANG_PUSH([C++])
          AC_COMPILE_IFELSE(
             [AC_LANG_PROGRAM([[@%:@include <boost/$3>]], [[$4;]])],
-            [AC_MSG_RESULT(yes)],
+            [eval ax_cv_boost_$1=yes],
             AC_MSG_ERROR([Could not find boost.$1 headers!]))
          AC_LANG_POP([C++])])
     AC_CHECK_LIB($ax_boost_lib, exit, [ax_boost_actual_lib="-l$ax_boost_lib"])
