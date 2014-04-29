@@ -68,7 +68,7 @@ void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 #endif
 
 namespace {
-std::string format(AssEntryGroup group, bool ssa) {
+const char *format(AssEntryGroup group, bool ssa) {
 	if (group == AssEntryGroup::DIALOGUE) {
 		if (ssa)
 			return "Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text" LINEBREAK;
@@ -83,13 +83,17 @@ std::string format(AssEntryGroup group, bool ssa) {
 			return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding" LINEBREAK;
 	}
 
-	return "";
+	return nullptr;
 }
 
 struct Writer {
 	TextFileWriter file;
-	bool ssa;
+	bool ssa = false;
 	AssEntryGroup group = AssEntryGroup::INFO;
+
+	Writer(std::ostream &ostr) : file(ostr) {
+		file.WriteLineToFile("[Script Info]");
+	}
 
 	Writer(agi::fs::path const& filename, std::string const& encoding)
 	: file(filename, encoding)
@@ -108,7 +112,8 @@ struct Writer {
 				file.WriteLineToFile("");
 
 				file.WriteLineToFile(line.GroupHeader(ssa));
-				file.WriteLineToFile(format(line.Group(), ssa), false);
+				if (const char *str = format(line.Group(), ssa))
+					file.WriteLineToFile(str, false);
 
 				group = line.Group();
 			}
@@ -135,9 +140,7 @@ struct Writer {
 				// the inline_string encoding grew the data by more than uuencoding would
 				// so base64 encode it instead
 				line += "u"; // marker for uuencoding
-				encoded_data = agi::ass::UUEncode(edi.second.second, false);
-				printf("did uuencoding, original size=%lu, encoded size=%lu\n", edi.second.second.size(), encoded_data.size());
-				line += encoded_data;
+				line += agi::ass::UUEncode(edi.second.second, false);
 			} else {
 				line += "e"; // marker for inline_string encoding (escaping)
 				line += encoded_data;
@@ -150,10 +153,16 @@ struct Writer {
 
 void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	Writer writer(filename, encoding);
-
 	writer.Write(src->Info);
 	writer.Write(src->Styles);
 	writer.Write(src->Attachments);
 	writer.Write(src->Events);
 	writer.WriteExtradata(src->Extradata);
+}
+
+void AssSubtitleFormat::WriteToStream(const AssFile *src, std::ostream &ostr) {
+	Writer writer(ostr);
+	writer.Write(src->Info);
+	writer.Write(src->Styles);
+	writer.Write(src->Events);
 }
