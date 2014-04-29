@@ -214,13 +214,12 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version)
 PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version)
 
 AX_BOOST_BASE([boost_required_version])
-AX_BOOST_ASIO
-AX_BOOST_CHRONO
-AX_BOOST_FILESYSTEM
-AX_BOOST_LOCALE
-AX_BOOST_REGEX
-AX_BOOST_SYSTEM
-AX_BOOST_THREAD
+AX_BOOST_LIB(chrono,     BOOST_CHRONO_LIB,     [chrono.hpp], [boost::chrono::system_clock::time_point time])
+AX_BOOST_LIB(filesystem, BOOST_FILESYSTEM_LIB, [filesystem/path.hpp], [boost::filesystem::path("data.txt")])
+AX_BOOST_LIB(locale,     BOOST_LOCALE_LIB,     [locale.hpp], [boost::locale::generator{}])
+AX_BOOST_LIB(regex,      BOOST_REGEX_LIB,      [regex.hpp], [boost::regex{}])
+AX_BOOST_LIB(system,     BOOST_SYSTEM_LIB,     [system/error_code.hpp], [boost::system::system_category])
+AX_BOOST_LIB(thread,     BOOST_THREAD_LIB,     [thread/thread.hpp], [boost::thread_group{}])
 
 cppflags_bak="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
@@ -233,14 +232,6 @@ PKG_CHECK_MODULES(ICU_I18N, icu-i18n >= icu_required_version)
 ########
 ## boost
 ########
-AS_IF([test x$ax_cv_boost_asio != xyes], [AC_MSG_FAILURE([Boost.asio is requirdd])])
-AS_IF([test x$ax_cv_boost_chrono != xyes], [AC_MSG_FAILURE([Boost.chrono is requirdd])])
-AS_IF([test x$ax_cv_boost_filesystem != xyes], [AC_MSG_FAILURE([Boost.filesystem is requirdd])])
-AS_IF([test x$ax_cv_boost_locale != xyes], [AC_MSG_FAILURE([Boost.locale is requirdd])])
-AS_IF([test x$ax_cv_boost_regex != xyes], [AC_MSG_FAILURE([Boost.regex is requirdd])])
-AS_IF([test x$ax_cv_boost_system != xyes], [AC_MSG_FAILURE([Boost.system is requirdd])])
-AS_IF([test x$ax_cv_boost_thread != xyes], [AC_MSG_FAILURE([Boost.thread is requirdd])])
-
 AS_IF([test x$enable_sanity_checks != xno], [
   AC_AGI_COMPILE([boost ICU support], [boost_icu], [$BOOST_CPPFLAGS],
                  [$BOOST_LDFLAGS $BOOST_REGEX_LIB $ICU_UC_LIBS $ICU_I18N_LIBS],[
