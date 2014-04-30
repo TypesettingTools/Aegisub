@@ -37,16 +37,15 @@
 
 #include "include/aegisub/subtitles_provider.h"
 #include "options.h"
-#include "subtitle_format.h"
+#include "subtitle_format_ass.h"
 #include "video_frame.h"
 
-#include <libaegisub/fs.h>
+#include <libaegisub/file_mapping.h>
 #include <libaegisub/path.h>
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/make_unique.h>
-#include <libaegisub/vfr.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/interprocess/streams/vectorstream.hpp>
 #include <mutex>
 
 #ifdef WIN32
@@ -60,25 +59,28 @@ namespace {
 // is not)
 std::mutex csri_mutex;
 
-class CSRISubtitlesProvider final : public SubtitlesProvider {
-	agi::scoped_holder<csri_inst*> instance;
-	csri_rend *renderer;
+struct closer {
+	void operator()(csri_inst *inst) { if (inst) csri_close(inst); }
+};
 
+class CSRISubtitlesProvider final : public SubtitlesProvider {
+	std::unique_ptr<csri_inst, closer> instance;
+	csri_rend *renderer = nullptr;
+
+	boost::interprocess::basic_ovectorstream<std::vector<char>> ostr;
 	/// Name of the file passed to renderers with can_open_mem false
 	agi::fs::path tempfile;
 public:
 	CSRISubtitlesProvider(std::string subType);
-	~CSRISubtitlesProvider();
 
 	void LoadSubtitles(AssFile *subs);
 	void DrawSubtitles(VideoFrame &dst, double time);
 };
 
-CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
-: instance(nullptr, csri_close)
-{
-	std::lock_guard<std::mutex> lock(csri_mutex);
+CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) {
+	ostr.reserve(0x10000);
 
+	std::lock_guard<std::mutex> lock(csri_mutex);
 	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
 		if (type == csri_renderer_info(cur)->name) {
 			renderer = cur;
@@ -90,20 +92,21 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type)
 		throw agi::InternalError("CSRI renderer vanished between initial list and creation?", 0);
 }
 
-CSRISubtitlesProvider::~CSRISubtitlesProvider() {
-	agi::fs::Remove(tempfile);
-}
-
 void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
+	ostr.rdbuf()->clear();
+	AssSubtitleFormat::WriteToStream(subs, ostr);
+
 	if (tempfile.empty())
 		tempfile = unique_path(config::path->Decode("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));
-	SubtitleFormat::GetWriter(tempfile)->WriteFile(subs, tempfile, 0, "utf-8");
+	auto size = ostr.vector().size();
+	agi::temp_file_mapping file(tempfile, size);
+	memcpy(file.write(0, size), &ostr.vector()[0], size);
 
 	std::lock_guard<std::mutex> lock(csri_mutex);
-	instance = csri_open_file(renderer, tempfile.string().c_str(), nullptr);
+	instance.reset(csri_open_file(renderer, tempfile.string().c_str(), nullptr));
 }
 
-void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst,double time) {
+void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
 	if (!instance) return;
 
 	csri_frame frame;
@@ -120,8 +123,8 @@ void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst,double time) {
 	csri_fmt format = { frame.pixfmt, dst.width, dst.height };
 
 	std::lock_guard<std::mutex> lock(csri_mutex);
-	if (!csri_request_fmt(instance, &format))
-		csri_render(instance, &frame, time);
+	if (!csri_request_fmt(instance.get(), &format))
+		csri_render(instance.get(), &frame, time);
 }
 }
 
