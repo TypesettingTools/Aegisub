@@ -30,14 +30,23 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
 
+#ifdef _WIN32
+#define NEWLINE "\r\n"
+#else
+#define NEWLINE "\n"
+#endif
+
 TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
 : file(new agi::io::Save(filename, true))
 , ostr(file->Get())
+, newline(NEWLINE)
 {
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();
-	if (boost::iequals(encoding, "utf-8"))
+	if (boost::iequals(encoding, "utf-8")) {
 		conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.c_str(), true);
+		newline = conv->Convert(newline);
+	}
 
 	try {
 		// Write the BOM
@@ -48,7 +57,10 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 	}
 }
 
-TextFileWriter::TextFileWriter(std::ostream &ostr) : ostr(ostr) {
+TextFileWriter::TextFileWriter(std::ostream &ostr)
+: ostr(ostr)
+, newline(NEWLINE)
+{
 	WriteLineToFile("\xEF\xBB\xBF", false);
 }
 
@@ -56,15 +68,14 @@ TextFileWriter::~TextFileWriter() {
 	// Explicit empty destructor required with a unique_ptr to an incomplete class
 }
 
-void TextFileWriter::WriteLineToFile(std::string line, bool addLineBreak) {
-	if (addLineBreak)
-#ifdef _WIN32
-		line += "\r\n";
-#else
-		line += "\n";
-#endif
+void TextFileWriter::WriteLineToFile(std::string const& line, bool addLineBreak) {
+	if (conv) {
+		auto converted = conv->Convert(line);
+		ostr.write(converted.data(), converted.size());
+	}
+	else
+		ostr.write(line.data(), line.size());
 
-	if (conv)
-		line = conv->Convert(line);
-	ostr.write(line.data(), line.size());
+	if (addLineBreak)
+		ostr.write(newline.data(), newline.size());
 }
