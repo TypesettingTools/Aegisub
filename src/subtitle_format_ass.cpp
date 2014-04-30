@@ -135,9 +135,14 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	writer.WriteExtradata(src->Extradata);
 }
 
-void AssSubtitleFormat::WriteToStream(const AssFile *src, std::ostream &ostr) {
+void AssSubtitleFormat::WriteToStream(const AssFile *src, std::ostream &ostr, int time) {
 	Writer writer(ostr);
 	writer.Write(src->Info);
 	writer.Write(src->Styles);
-	writer.Write(src->Events);
+
+	writer.file.WriteLineToFile("[Events]");
+	for (auto const& line : src->Events) {
+		if (!line.Comment && time < 0 || !(line.Start > time || line.End <= time))
+			writer.file.WriteLineToFile(line.GetEntryData());
+	}
 }

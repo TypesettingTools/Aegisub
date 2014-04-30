@@ -73,7 +73,7 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 public:
 	CSRISubtitlesProvider(std::string subType);
 
-	void LoadSubtitles(AssFile *subs);
+	void LoadSubtitles(AssFile *subs, int time);
 	void DrawSubtitles(VideoFrame &dst, double time);
 };
 
@@ -92,9 +92,9 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) {
 		throw agi::InternalError("CSRI renderer vanished between initial list and creation?", 0);
 }
 
-void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs) {
+void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 	ostr.rdbuf()->clear();
-	AssSubtitleFormat::WriteToStream(subs, ostr);
+	AssSubtitleFormat::WriteToStream(subs, ostr, time);
 
 	if (tempfile.empty())
 		tempfile = unique_path(config::path->Decode("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));

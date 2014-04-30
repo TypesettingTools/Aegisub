@@ -29,11 +29,8 @@
 #include "video_frame.h"
 #include "video_provider_manager.h"
 
-#include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/dispatch.h>
 
-#include <boost/range/adaptor/indirected.hpp>
-#include <boost/range/algorithm_ext.hpp>
 #include <condition_variable>
 #include <functional>
 #include <mutex>
@@ -67,28 +64,8 @@ std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, dou
 			}
 			else {
 				AssFixStylesFilter().ProcessSubs(subs.get(), nullptr);
-
 				single_frame = frame_number;
-				// Copying a nontrivially sized AssFile is fairly slow, so
-				// instead muck around with its innards to just temporarily
-				// remove the non-visible lines without deleting them
-				std::deque<AssDialogue*> full;
-				boost::push_back(full, subs->Events | agi::address_of);
-				subs->Events.remove_if([=](AssDialogue const& diag) {
-					return diag.Start > time || diag.End <= time;
-				});
-
-				try {
-					subs_provider->LoadSubtitles(subs.get());
-
-					subs->Events.clear();
-					boost::push_back(subs->Events, full | boost::adaptors::indirected);
-				}
-				catch (...) {
-					subs->Events.clear();
-					boost::push_back(subs->Events, full | boost::adaptors::indirected);
-					throw;
-				}
+				subs_provider->LoadSubtitles(subs.get(), time);
 			}
 		}
 	}

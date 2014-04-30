@@ -131,7 +131,7 @@ public:
 	LibassSubtitlesProvider(agi::BackgroundRunner *br);
 	~LibassSubtitlesProvider();
 
-	void LoadSubtitles(AssFile *subs) override;
+	void LoadSubtitles(AssFile *subs, int time) override;
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 };
 
@@ -155,10 +155,10 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 	if (ass_track) ass_free_track(ass_track);
 }
 
-void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs) {
+void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 	boost::interprocess::basic_ovectorstream<std::vector<char>> ostr;
 	ostr.reserve(0x4000);
-	AssSubtitleFormat::WriteToStream(subs, ostr);
+	AssSubtitleFormat::WriteToStream(subs, ostr, time);
 
 	if (ass_track) ass_free_track(ass_track);
 	ass_track = ass_read_memory(library, const_cast<char *>(ostr.vector().data()), ostr.vector().size(), nullptr);
