@@ -23,6 +23,7 @@
 #include <libaegisub/util.h>
 
 #include <wx/combobox.h>
+#include <wx/spinctrl.h>
 #include <wx/textctrl.h>
 
 namespace {
