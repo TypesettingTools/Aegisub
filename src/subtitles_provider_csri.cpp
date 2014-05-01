@@ -36,15 +36,11 @@
 #include "subtitles_provider_csri.h"
 
 #include "include/aegisub/subtitles_provider.h"
-#include "options.h"
 #include "subtitle_format_ass.h"
 #include "video_frame.h"
 
-#include <libaegisub/file_mapping.h>
-#include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
 
-#include <boost/filesystem.hpp>
 #include <boost/interprocess/streams/vectorstream.hpp>
 #include <mutex>
 
@@ -68,8 +64,6 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 	csri_rend *renderer = nullptr;
 
 	boost::interprocess::basic_ovectorstream<std::vector<char>> ostr;
-	/// Name of the file passed to renderers with can_open_mem false
-	agi::fs::path tempfile;
 public:
 	CSRISubtitlesProvider(std::string subType);
 
@@ -96,14 +90,8 @@ void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 	ostr.rdbuf()->clear();
 	AssSubtitleFormat::WriteToStream(subs, ostr, time);
 
-	if (tempfile.empty())
-		tempfile = unique_path(config::path->Decode("?temp/csri-%%%%-%%%%-%%%%-%%%%.ass"));
-	auto size = ostr.vector().size();
-	agi::temp_file_mapping file(tempfile, size);
-	memcpy(file.write(0, size), &ostr.vector()[0], size);
-
 	std::lock_guard<std::mutex> lock(csri_mutex);
-	instance.reset(csri_open_file(renderer, tempfile.string().c_str(), nullptr));
+	instance.reset(csri_open_mem(renderer, ostr.vector().data(), ostr.vector().size(), nullptr));
 }
 
 void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
