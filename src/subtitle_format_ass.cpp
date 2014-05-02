@@ -67,10 +67,6 @@ struct Writer {
 	TextFileWriter file;
 	AssEntryGroup group = AssEntryGroup::INFO;
 
-	Writer(std::ostream &ostr) : file(ostr) {
-		file.WriteLineToFile("[Script Info]");
-	}
-
 	Writer(agi::fs::path const& filename, std::string const& encoding)
 	: file(filename, encoding)
 	{
@@ -133,16 +129,4 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	writer.Write(src->Attachments);
 	writer.Write(src->Events);
 	writer.WriteExtradata(src->Extradata);
-}
-
-void AssSubtitleFormat::WriteToStream(const AssFile *src, std::ostream &ostr, int time) {
-	Writer writer(ostr);
-	writer.Write(src->Info);
-	writer.Write(src->Styles);
-
-	writer.file.WriteLineToFile("[Events]");
-	for (auto const& line : src->Events) {
-		if (!line.Comment && time < 0 || !(line.Start > time || line.End <= time))
-			writer.file.WriteLineToFile(line.GetEntryData());
-	}
 }

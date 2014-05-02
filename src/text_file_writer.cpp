@@ -38,7 +38,6 @@
 
 TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
 : file(new agi::io::Save(filename, true))
-, ostr(file->Get())
 , newline(NEWLINE)
 {
 	if (encoding.empty())
@@ -57,13 +56,6 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 	}
 }
 
-TextFileWriter::TextFileWriter(std::ostream &ostr)
-: ostr(ostr)
-, newline(NEWLINE)
-{
-	WriteLineToFile("\xEF\xBB\xBF", false);
-}
-
 TextFileWriter::~TextFileWriter() {
 	// Explicit empty destructor required with a unique_ptr to an incomplete class
 }
@@ -71,11 +63,11 @@ TextFileWriter::~TextFileWriter() {
 void TextFileWriter::WriteLineToFile(std::string const& line, bool addLineBreak) {
 	if (conv) {
 		auto converted = conv->Convert(line);
-		ostr.write(converted.data(), converted.size());
+		file->Get().write(converted.data(), converted.size());
 	}
 	else
-		ostr.write(line.data(), line.size());
+		file->Get().write(line.data(), line.size());
 
 	if (addLineBreak)
-		ostr.write(newline.data(), newline.size());
+		file->Get().write(newline.data(), newline.size());
 }

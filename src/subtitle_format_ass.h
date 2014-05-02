@@ -28,5 +28,4 @@ public:
 
 	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
 	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
-	static void WriteToStream(const AssFile *src, std::ostream &ostr, int time);
 };

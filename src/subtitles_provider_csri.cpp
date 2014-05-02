@@ -41,7 +41,6 @@
 
 #include <libaegisub/make_unique.h>
 
-#include <boost/interprocess/streams/vectorstream.hpp>
 #include <mutex>
 
 #ifdef WIN32
@@ -63,17 +62,18 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 	std::unique_ptr<csri_inst, closer> instance;
 	csri_rend *renderer = nullptr;
 
-	boost::interprocess::basic_ovectorstream<std::vector<char>> ostr;
+	void LoadSubtitles(const char *data, size_t len) override {
+		std::lock_guard<std::mutex> lock(csri_mutex);
+		instance.reset(csri_open_mem(renderer, data, len, nullptr));
+	}
+
 public:
 	CSRISubtitlesProvider(std::string subType);
 
-	void LoadSubtitles(AssFile *subs, int time);
-	void DrawSubtitles(VideoFrame &dst, double time);
+	void DrawSubtitles(VideoFrame &dst, double time) override;
 };
 
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) {
-	ostr.reserve(0x10000);
-
 	std::lock_guard<std::mutex> lock(csri_mutex);
 	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
 		if (type == csri_renderer_info(cur)->name) {
@@ -84,14 +84,6 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) {
 
 	if (!renderer)
 		throw agi::InternalError("CSRI renderer vanished between initial list and creation?", 0);
-}
-
-void CSRISubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
-	ostr.rdbuf()->clear();
-	AssSubtitleFormat::WriteToStream(subs, ostr, time);
-
-	std::lock_guard<std::mutex> lock(csri_mutex);
-	instance.reset(csri_open_mem(renderer, ostr.vector().data(), ostr.vector().size(), nullptr));
 }
 
 void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {

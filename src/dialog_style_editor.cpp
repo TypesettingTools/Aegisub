@@ -41,7 +41,6 @@
 #include "dialog_style_editor.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
-#include "include/aegisub/subtitles_provider.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "persist_location.h"

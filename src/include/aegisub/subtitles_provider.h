@@ -42,9 +42,12 @@ class AssFile;
 struct VideoFrame;
 
 class SubtitlesProvider {
+	std::vector<char> buffer;
+	virtual void LoadSubtitles(const char *data, size_t len)=0;
+
 public:
 	virtual ~SubtitlesProvider() = default;
-	virtual void LoadSubtitles(AssFile *subs, int time = -1)=0;
+	void LoadSubtitles(AssFile *subs, int time = -1);
 	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
 };
 

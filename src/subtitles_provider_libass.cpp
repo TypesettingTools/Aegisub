@@ -40,7 +40,6 @@
 #include "ass_style.h"
 #include "compat.h"
 #include "include/aegisub/subtitles_provider.h"
-#include "subtitle_format_ass.h"
 #include "video_frame.h"
 
 #include <libaegisub/background_runner.h>
@@ -51,8 +50,6 @@
 
 #include <atomic>
 #include <boost/gil/gil_all.hpp>
-#include <boost/interprocess/streams/vectorstream.hpp>
-#include <boost/range/algorithm_ext/push_back.hpp>
 #include <memory>
 #include <mutex>
 
@@ -131,7 +128,12 @@ public:
 	LibassSubtitlesProvider(agi::BackgroundRunner *br);
 	~LibassSubtitlesProvider();
 
-	void LoadSubtitles(AssFile *subs, int time) override;
+	void LoadSubtitles(const char *data, size_t len) override {
+		if (ass_track) ass_free_track(ass_track);
+		ass_track = ass_read_memory(library, const_cast<char *>(data), len, nullptr);
+		if (!ass_track) throw "libass failed to load subtitles.";
+	}
+
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 };
 
@@ -153,16 +155,6 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
 
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 	if (ass_track) ass_free_track(ass_track);
-}
-
-void LibassSubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
-	boost::interprocess::basic_ovectorstream<std::vector<char>> ostr;
-	ostr.reserve(0x4000);
-	AssSubtitleFormat::WriteToStream(subs, ostr, time);
-
-	if (ass_track) ass_free_track(ass_track);
-	ass_track = ass_read_memory(library, const_cast<char *>(ostr.vector().data()), ostr.vector().size(), nullptr);
-	if (!ass_track) throw "libass failed to load subtitles.";
 }
 
 #define _r(c) ((c)>>24)
