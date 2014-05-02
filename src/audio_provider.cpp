@@ -141,7 +141,8 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 	std::unique_ptr<AudioProvider> provider;
 	bool found_file = false;
 	bool found_audio = false;
-	std::string msg;
+	std::string msg_all;     // error messages from all attempted providers
+	std::string msg_partial; // error messages from providers that could partially load the file (knows container, missing codec)
 
 	for (auto const& factory : sorted) {
 		try {
@@ -152,26 +153,28 @@ std::unique_ptr<AudioProvider> AudioProviderFactory::GetProvider(agi::fs::path c
 		}
 		catch (agi::fs::FileNotFound const& err) {
 			LOG_D("audio_provider") << err.GetChainedMessage();
-			msg += std::string(factory->name) + ": " + err.GetMessage() + " not found.\n";
+			msg_all += std::string(factory->name) + ": " + err.GetMessage() + " not found.\n";
 		}
 		catch (agi::AudioDataNotFoundError const& err) {
 			LOG_D("audio_provider") << err.GetChainedMessage();
 			found_file = true;
-			msg += std::string(factory->name) + ": " + err.GetChainedMessage() + "\n";
+			msg_all += std::string(factory->name) + ": " + err.GetChainedMessage() + "\n";
 		}
 		catch (agi::AudioOpenError const& err) {
 			LOG_D("audio_provider") << err.GetChainedMessage();
 			found_audio = true;
 			found_file = true;
-			msg += std::string(factory->name) + ": " + err.GetChainedMessage() + "\n";
+			std::string thismsg = std::string(factory->name) + ": " + err.GetChainedMessage() + "\n";
+			msg_all += thismsg;
+			msg_partial += thismsg;
 		}
 	}
 
 	if (!provider) {
 		if (found_audio)
-			throw agi::AudioProviderOpenError(msg, nullptr);
+			throw agi::AudioProviderOpenError(msg_partial, nullptr);
 		if (found_file)
-			throw agi::AudioDataNotFoundError(msg, nullptr);
+			throw agi::AudioDataNotFoundError(msg_all, nullptr);
 		throw agi::fs::FileNotFound(filename);
 	}
 

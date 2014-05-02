@@ -45,6 +45,7 @@
 #include "../video_context.h"
 
 #include <libaegisub/make_unique.h>
+#include <libaegisub/fs.h>
 
 #include <wx/msgdlg.h>
 
@@ -70,7 +71,31 @@ struct audio_close final : public validate_audio_open {
 	}
 };
 
-struct audio_open final : public Command {
+namespace {
+	struct audio_open_from_file : public Command {
+	protected:
+		void do_open(agi::Context *c, agi::fs::path const& filename) {
+			try {
+				c->audioController->OpenAudio(filename);
+			}
+			catch (agi::UserCancelException const&) {}
+			catch (agi::fs::FileNotFound const& e) {
+				wxMessageBox(_("The audio file was not found: ") + to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			}
+			catch (agi::AudioDataNotFoundError const& e) {
+				wxMessageBox(_("None of the available audio providers recognised the selected file as containing audio data.\n\nThe following providers were tried:\n") + to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			}
+			catch (agi::AudioProviderOpenError const& e) {
+				wxMessageBox(_("None of the available audio providers have a codec available to handle the selected file.\n\nThe following providers were tried:\n") + to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			}
+			catch (agi::Exception const& e) {
+				wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			}
+		}
+	};
+};
+
+struct audio_open final : public audio_open_from_file {
 	CMD_NAME("audio/open")
 	CMD_ICON(open_audio_menu)
 	STR_MENU("&Open Audio File...")
@@ -84,13 +109,7 @@ struct audio_open final : public Command {
 		auto filename = OpenFileSelector(_("Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
 		if (filename.empty()) return;
 
-		try {
-			c->audioController->OpenAudio(filename);
-		}
-		catch (agi::UserCancelException const&) { }
-		catch (agi::Exception const& e) {
-			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-		}
+		do_open(c, filename);
 	}
 };
 
@@ -126,7 +145,7 @@ struct audio_open_noise final : public Command {
 	}
 };
 
-struct audio_open_video final : public Command {
+struct audio_open_video final : public audio_open_from_file {
 	CMD_NAME("audio/open/video")
 	CMD_ICON(open_audio_from_video_menu)
 	STR_MENU("Open Audio from &Video")
@@ -139,13 +158,7 @@ struct audio_open_video final : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		try {
-			c->audioController->OpenAudio(c->videoController->GetVideoName());
-		}
-		catch (agi::UserCancelException const&) { }
-		catch (agi::Exception const& e) {
-			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-		}
+		do_open(c, c->videoController->GetVideoName());
 	}
 };
 
