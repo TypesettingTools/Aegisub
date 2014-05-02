@@ -11,28 +11,11 @@
       <Configuration>$(Configuration)</Configuration>
       <Platform>$(Platform)</Platform>
       <Sh>$(MsysBasePath)\bin\sh.exe</Sh>
-      <INCLUDE>
-        $(MSBuildProjectDirectory);
-        $(AegisubSourceBase)\include;
-        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include;
-        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\include;
-        C:\Program Files (x86)\Windows Kits\8.1\Include\um;
-        C:\Program Files (x86)\Windows Kits\8.1\Include\shared;
-      </INCLUDE>
+      <INCLUDE>$(MSBuildProjectDirectory);$(AegisubSourceBase)\include;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\include;C:\Program Files (x86)\Windows Kits\8.1\Include\um;C:\Program Files (x86)\Windows Kits\8.1\Include\shared;</INCLUDE>
       <PATH Condition="'$(Platform)'=='Win32'">$(MsysBasePath)\bin;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin;</PATH>
       <PATH Condition="'$(Platform)'=='x64'">$(MsysBasePath)\bin;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64;</PATH>
-      <LIB Condition="'$(Platform)'=='Win32'">
-        $(AegisubLibraryDir);
-        C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86;
-        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib;
-        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\lib;
-      </LIB>
-      <LIB Condition="'$(Platform)'=='x64'">
-        $(AegisubLibraryDir);
-        C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;
-        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib\amd64;
-        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\lib\amd64;
-      </LIB>
+      <LIB Condition="'$(Platform)'=='Win32'">$(AegisubLibraryDir);C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\lib;</LIB>
+      <LIB Condition="'$(Platform)'=='x64'">$(AegisubLibraryDir);C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib\amd64;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\atlmfc\lib\amd64;</LIB>
     </ExecShellScript>
   </ItemGroup>
 
