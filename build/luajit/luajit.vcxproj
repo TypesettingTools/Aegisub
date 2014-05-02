@@ -48,6 +48,7 @@
   <!-- Source files -->
   <ItemGroup>
     <InstallHeader Include="$(SrcDir)\include\*.h" />
+    <InstallHeader Include="$(SrcDir)\include\lua.hpp" />
   </ItemGroup>
 
   <ItemGroup>
