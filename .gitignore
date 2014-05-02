@@ -50,6 +50,7 @@ acconf.h.in
 aclocal.m4
 autom4te.cache
 automation/aegisub-lua
+build/userconfig/*.props
 conf.sh
 config.log
 config.status
