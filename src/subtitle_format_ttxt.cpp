@@ -42,6 +42,8 @@
 #include "compat.h"
 #include "options.h"
 
+#include <libaegisub/path.h>
+
 #include <boost/range/adaptor/reversed.hpp>
 
 DEFINE_SIMPLE_EXCEPTION(TTXTParseError, SubtitleFormatParseError, "subtitle_io/parse/ttxt")
@@ -62,7 +64,7 @@ std::vector<std::string> TTXTSubtitleFormat::GetWriteWildcards() const {
 }
 
 void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
-	target->LoadDefault(false);
+	target->LoadDefault(false, config::path->Decode("?user/catalog/" + OPT_GET("Subtitle Format/TTXT/Default Style Catalog")->GetString() + ".sty"));
 
 	// Load XML document
 	wxXmlDocument doc;

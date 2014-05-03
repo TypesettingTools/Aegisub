@@ -38,11 +38,13 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "options.h"
 #include "utils.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/path.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -353,7 +355,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
-	target->LoadDefault(false);
+	target->LoadDefault(false, config::path->Decode("?user/catalog/" + OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString() + ".sty"));
 
 	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
 

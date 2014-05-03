@@ -388,6 +388,9 @@
 	},
 
 	"Subtitle Format" : {
+		"ASS": {
+			"Default Style Catalog": "Default"
+		},
 		"EBU STL" : {
 			"Display Standard" : 0,
 			"Inclusive End Times" : true,
@@ -402,6 +405,15 @@
 				"F" : 0
 			},
 			"Translate Alignments" : true
+		},
+		"SRT": {
+			"Default Style Catalog": "Default",
+		},
+		"TTXT": {
+			"Default Style Catalog": "Default",
+		},
+		"TXT": {
+			"Default Style Catalog": "Default",
 		}
 	},
 
