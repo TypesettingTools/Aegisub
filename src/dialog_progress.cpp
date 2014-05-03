@@ -72,14 +72,11 @@ namespace {
 
 class DialogProgressSink final : public agi::ProgressSink {
 	DialogProgress *dialog;
-	std::atomic<bool> cancelled;
+	std::atomic<bool> cancelled{false};
+	int progress = 0;
 
 public:
-	DialogProgressSink(DialogProgress *dialog)
-	: dialog(dialog)
-	, cancelled(false)
-	{
-	}
+	DialogProgressSink(DialogProgress *dialog) : dialog(dialog) { }
 
 	void SetTitle(std::string const& title) override {
 		Main().Async([=]{ dialog->title->SetLabelText(to_wx(title)); });
@@ -90,7 +87,11 @@ public:
 	}
 
 	void SetProgress(int64_t cur, int64_t max) override {
-		Main().Async([=]{ dialog->SetProgress(mid<int>(0, double(cur) / max * 300, 300)); });
+		int new_progress = mid<int>(0, double(cur) / max * 300, 300);
+		if (new_progress != progress) {
+			progress = new_progress;
+			Main().Async([=]{ dialog->SetProgress(new_progress); });
+		}
 	}
 
 	void Log(std::string const& str) override {
