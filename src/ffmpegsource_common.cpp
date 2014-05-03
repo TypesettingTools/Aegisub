@@ -96,19 +96,13 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::pat
 	br->Run([&](agi::ProgressSink *ps) {
 		ps->SetTitle(from_wx(_("Indexing")));
 		ps->SetMessage(from_wx(_("Reading timecodes and frame/sample data")));
-		struct progress {
-			agi::ProgressSink *ps;
-			int calls;
-		};
-		progress state = { ps, 0 };
 		TIndexCallback callback = [](int64_t Current, int64_t Total, void *Private) -> int {
-			auto state = static_cast<progress *>(Private);
-			if (++state->calls % 10 == 0)
-				state->ps->SetProgress(Current, Total);
-			return state->ps->IsCancelled();
+			auto ps = static_cast<agi::ProgressSink *>(Private);
+			ps->SetProgress(Current, Total);
+			return ps->IsCancelled();
 		};
 		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE,
-			nullptr, nullptr, IndexEH, callback, &state, &ErrInfo);
+			nullptr, nullptr, IndexEH, callback, ps, &ErrInfo);
 	});
 
 	if (Index == nullptr) {
