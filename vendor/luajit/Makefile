@@ -7,4 +7,6 @@ clean:
 distclean:
 	$(MAKE) -C src clean
 
-.PHONY: all clean
+install:
+
+.PHONY: all clean install
