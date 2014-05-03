@@ -42,9 +42,12 @@
 #endif
 
 #include <libaegisub/exception.h>
+#include <libaegisub/fs.h>
 #include <libaegisub/hotkey.h>
+#include <libaegisub/path.h>
 
 #include <iterator>
+#include <unordered_set>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -65,6 +68,7 @@ public:                                          \
 };
 
 CLASS_PAGE(General)
+CLASS_PAGE(General_DefaultStyles)
 CLASS_PAGE(Audio)
 CLASS_PAGE(Video)
 CLASS_PAGE(Interface)
@@ -103,6 +107,47 @@ General::General(wxTreebook *book, Preferences *parent): OptionPage(book, parent
 	wxFlexGridSizer *recent = PageSizer(_("Recently Used Lists"));
 	OptionAdd(recent, _("Files"), "Limits/MRU", 0, 16);
 	OptionAdd(recent, _("Find/Replace"), "Limits/Find Replace");
+
+	SetSizerAndFit(sizer);
+}
+
+General_DefaultStyles::General_DefaultStyles(wxTreebook *book, Preferences *parent) : OptionPage(book, parent, _("Default styles"), PAGE_SUB) {
+	auto staticbox = new wxStaticBoxSizer(wxVERTICAL, this, _("Default style catalogs"));
+	sizer->Add(staticbox, 0, wxEXPAND, 5);
+	sizer->AddSpacer(8);
+
+	wxStaticText *instructions = new wxStaticText(this, wxID_ANY, _("The chosen style catalogs will be loaded when you start a new file or import files in the various formats.\n\nYou can set up style catalogs in the Style Manager."));
+	sizer->Fit(this);
+	instructions->Wrap(400);
+	staticbox->Add(instructions, 0, wxALL, 5);
+	staticbox->AddSpacer(16);
+	
+	auto general = new wxFlexGridSizer(2, 5, 5);
+	general->AddGrowableCol(0, 1);
+	staticbox->Add(general, 1, wxEXPAND, 5);
+
+	// Build a list of available style catalogs, and wished-available ones
+	std::unordered_set<std::string> catalogs_set;
+	// Always include one named "Default" even if it doesn't exist (ensure there is at least one on the list)
+	catalogs_set.insert("Default");
+	// Include all catalog files that exist
+	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
+		catalogs_set.insert(agi::fs::path(file).stem().string());
+	// Include all catalogs named in the existing configuration
+	static const char *formats[] = { "ASS", "SRT", "TTXT", "TXT" };
+	for (auto formatname : formats)
+		catalogs_set.insert(OPT_GET("Subtitle Format/" + std::string(formatname) + "/Default Style Catalog")->GetString());
+	// Sorted version
+	wxArrayString catalogs;
+	for (auto const& cn : catalogs_set)
+		catalogs.Add(to_wx(cn));
+	catalogs.Sort();
+
+	OptionChoice(general, _("New files"), catalogs, "Subtitle Format/ASS/Default Style Catalog");
+	//CellSkip(general);
+	OptionChoice(general, _("SRT import"), catalogs, "Subtitle Format/SRT/Default Style Catalog");
+	OptionChoice(general, _("TTXT import"), catalogs, "Subtitle Format/TTXT/Default Style Catalog");
+	OptionChoice(general, _("Plain text import"), catalogs, "Subtitle Format/TXT/Default Style Catalog");
 
 	SetSizerAndFit(sizer);
 }
@@ -650,6 +695,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 
 	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
 	new General(book, this);
+	new General_DefaultStyles(book, this);
 	new Audio(book, this);
 	new Video(book, this);
 	new Interface(book, this);
