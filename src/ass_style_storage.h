@@ -39,6 +39,7 @@
 #include <string>
 #include <vector>
 
+class AssFile;
 class AssStyle;
 
 class AssStyleStorage {
@@ -77,4 +78,8 @@ public:
 	/// Load stored styles from a file
 	/// @param filename Catalog filename. Does not have to exist.
 	void Load(agi::fs::path const& filename);
+
+	/// Insert all styles into a file, replacing existing styles with the same names
+	/// @param file File to replace styles in
+	void ReplaceIntoFile(AssFile &file);
 };

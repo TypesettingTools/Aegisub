@@ -34,6 +34,7 @@
 
 #include "ass_style_storage.h"
 
+#include "ass_file.h"
 #include "ass_style.h"
 
 #include <libaegisub/fs.h>
@@ -96,3 +97,16 @@ AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
 	}
 	return nullptr;
 }
+
+void AssStyleStorage::ReplaceIntoFile(AssFile &file) {
+	std::vector<AssStyle*> replaced_styles;
+	for (auto const& s : style) {
+		AssStyle *existing_style = file.GetStyle(s->name);
+		if (existing_style)
+			replaced_styles.push_back(existing_style);
+		file.Styles.push_back(*new AssStyle(*s));
+	}
+	for (auto s : replaced_styles)
+		delete s;
+}
+

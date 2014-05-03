@@ -20,8 +20,11 @@
 #include "ass_dialogue.h"
 #include "ass_info.h"
 #include "ass_style.h"
+#include "ass_style_storage.h"
 #include "options.h"
 #include "utils.h"
+
+#include <libaegisub/fs.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -36,7 +39,7 @@ AssFile::~AssFile() {
 	Events.clear_and_dispose([](AssDialogue *e) { delete e; });
 }
 
-void AssFile::LoadDefault(bool include_dialogue_line) {
+void AssFile::LoadDefault(bool include_dialogue_line, agi::fs::path const& style_catalog_file) {
 	Info.emplace_back("Title", "Default Aegisub file");
 	Info.emplace_back("ScriptType", "v4.00+");
 	Info.emplace_back("WrapStyle", "0");
@@ -47,7 +50,15 @@ void AssFile::LoadDefault(bool include_dialogue_line) {
 	}
 	Info.emplace_back("YCbCr Matrix", "None");
 
+	// Add default style
 	Styles.push_back(*new AssStyle);
+
+	// Add/replace any catalog styles requested
+	if (!style_catalog_file.empty() && agi::fs::FileExists(style_catalog_file)) {
+		AssStyleStorage catalog;
+		catalog.Load(style_catalog_file);
+		catalog.ReplaceIntoFile(*this);
+	}
 
 	if (include_dialogue_line)
 		Events.push_back(*new AssDialogue);

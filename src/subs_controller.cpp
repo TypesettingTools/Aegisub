@@ -21,6 +21,7 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
+#include "ass_style_storage.h"
 #include "charset_detect.h"
 #include "compat.h"
 #include "command/command.h"
@@ -290,7 +291,7 @@ void SubsController::Close() {
 	filename.clear();
 	AssFile blank;
 	blank.swap(*context->ass);
-	context->ass->LoadDefault();
+	context->ass->LoadDefault(true, config::path->Decode("?user/catalog/Default.sty"));
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 	FileOpen(filename);
 }
