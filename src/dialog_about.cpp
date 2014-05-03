@@ -52,8 +52,12 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += "    wxWidgets - Copyright (c) Julian Smart, Robert Roebling et al;\n";
 	libString += "    wxStyledTextCtrl - Copyright (c) Robin Dunn, Neil Hodgson;\n";
 	libString += "    Scintilla - Copyright (c) Neil Hodgson;\n";
+	libString += "    Boost - Copyright (c) Beman Dawes, David Abrahams et al;\n";
 	libString += "    UniversalCharDet - Copyright (c) Netscape Communications Corp.;\n";
+	libString += "    ICU - Copyright (c) International Business Machines Corp.;\n";
 	libString += "    Lua - Copyright (c) Lua.org, PUC-Rio;\n";
+	libString += "    LuaJIT - Copyright (c) Mike Pall;\n";
+	libString += "    luabins - Copyright (c) Alexander Gladysh;\n";
 #ifdef WITH_HUNSPELL
 	libString += "    Hunspell - Copyright (c) Kevin Hendricks;\n";
 #endif
@@ -70,7 +74,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 #ifdef WITH_CSRI
 	libString += "    csri - Copyright (c) David Lamparter;\n";
 # ifdef __WINDOWS__
-	libString += "    vsfilter - Copyright (c) Gabest;\n";
+	libString += "    vsfilter - Copyright (c) Gabest et al;\n";
 # endif
 #endif
 	libString += "    libass - Copyright (c) Evgeniy Stepanov, Grigori Goronzy;\n";
@@ -78,6 +82,7 @@ AboutScreen::AboutScreen(wxWindow *parent)
 	libString += "    Matroska Parser - Copyright (c) Mike Matsnev;\n";
 #endif
 	libString += "    Freetype - Copyright (c) David Turner, Robert Wilhelm, Werner Lemberg;\n";
+	libString += "    Fontconfig - Copyright (c) Keith Packard et al;\n";
 #ifdef WITH_FFTW3
 	libString += "    FFTW - Copyright (c) Matteo Frigo, Massachusetts Institute of Technology;\n";
 #endif
