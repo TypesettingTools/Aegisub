@@ -92,7 +92,7 @@
 
     <ExecShellScript
       Command="make"
-      Arguments="-j$(NUMBER_OF_PROCESSORS)"
+      Arguments="$(GmakeParallelBuild)"
       WorkingDirectory="$(AegisubObjectDir)"
       Configuration="@(ExecShellScript)"
       />

@@ -19,6 +19,10 @@
     </ExecShellScript>
   </ItemGroup>
 
+  <PropertyGroup>
+    <GmakeParallelBuild Condition="'$(GmakeParallelBuild)'==''">-j$(NUMBER_OF_PROCESSORS)</GmakeParallelBuild>
+  </PropertyGroup>
+
   <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
   <UsingTask TaskName="MsysPath" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
   <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
