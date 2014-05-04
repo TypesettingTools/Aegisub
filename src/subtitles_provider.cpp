@@ -84,7 +84,7 @@ void SubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 		push_line(line.GetEntryData());
 
 	push_header("[V4+ Styles]\n");
-	for (auto const& line : subs->Info)
+	for (auto const& line : subs->Styles)
 		push_line(line.GetEntryData());
 
 	push_header("[Events]\n");
