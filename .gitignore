@@ -23,6 +23,7 @@
 *.pch
 *.pdb
 *.sdf
+*.opensdf
 *.so
 *.srt
 *.suo
