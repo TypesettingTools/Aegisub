@@ -39,7 +39,7 @@ AssFile::~AssFile() {
 	Events.clear_and_dispose([](AssDialogue *e) { delete e; });
 }
 
-void AssFile::LoadDefault(bool include_dialogue_line, agi::fs::path const& style_catalog_file) {
+void AssFile::LoadDefault(bool include_dialogue_line, std::string const& style_catalog) {
 	Info.emplace_back("Title", "Default Aegisub file");
 	Info.emplace_back("ScriptType", "v4.00+");
 	Info.emplace_back("WrapStyle", "0");
@@ -54,9 +54,9 @@ void AssFile::LoadDefault(bool include_dialogue_line, agi::fs::path const& style
 	Styles.push_back(*new AssStyle);
 
 	// Add/replace any catalog styles requested
-	if (!style_catalog_file.empty() && agi::fs::FileExists(style_catalog_file)) {
+	if (AssStyleStorage::CatalogExists(style_catalog)) {
 		AssStyleStorage catalog;
-		catalog.Load(style_catalog_file);
+		catalog.LoadCatalog(style_catalog);
 		catalog.ReplaceIntoFile(*this);
 	}
 

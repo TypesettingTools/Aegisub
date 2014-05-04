@@ -355,7 +355,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
-	target->LoadDefault(false, config::path->Decode("?user/catalog/" + OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString() + ".sty"));
+	target->LoadDefault(false, OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString());
 
 	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
 

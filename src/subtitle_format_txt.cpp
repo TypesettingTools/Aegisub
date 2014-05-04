@@ -74,7 +74,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 
 	TextFileReader file(filename, encoding, false);
 
-	target->LoadDefault(false, config::path->Decode("?user/catalog/" + OPT_GET("Subtitle Format/TXT/Default Style Catalog")->GetString() + ".sty"));
+	target->LoadDefault(false, OPT_GET("Subtitle Format/TXT/Default Style Catalog")->GetString());
 
 	std::string actor;
 	std::string separator = OPT_GET("Tool/Import/Text/Actor Separator")->GetString();

@@ -81,7 +81,8 @@ public:
 
 	/// @brief Load default file
 	/// @param defline Add a blank line to the file
-	void LoadDefault(bool defline = true, agi::fs::path const& style_catalog_file = agi::fs::path());
+	/// @param style_catalog Style catalog name to fill styles from, blank to use default style
+	void LoadDefault(bool defline = true, std::string const& style_catalog = std::string());
 	/// Attach a file to the ass file
 	void InsertAttachment(agi::fs::path const& filename);
 	/// Get the names of all of the styles available

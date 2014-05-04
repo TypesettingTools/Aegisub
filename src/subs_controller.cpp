@@ -291,7 +291,7 @@ void SubsController::Close() {
 	filename.clear();
 	AssFile blank;
 	blank.swap(*context->ass);
-	context->ass->LoadDefault(true, config::path->Decode("?user/catalog/" + OPT_GET("Subtitle Format/ASS/Default Style Catalog")->GetString() + ".sty"));
+	context->ass->LoadDefault(true, OPT_GET("Subtitle Format/ASS/Default Style Catalog")->GetString());
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 	FileOpen(filename);
 }

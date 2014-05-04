@@ -64,7 +64,7 @@ std::vector<std::string> TTXTSubtitleFormat::GetWriteWildcards() const {
 }
 
 void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
-	target->LoadDefault(false, config::path->Decode("?user/catalog/" + OPT_GET("Subtitle Format/TTXT/Default Style Catalog")->GetString() + ".sty"));
+	target->LoadDefault(false, OPT_GET("Subtitle Format/TTXT/Default Style Catalog")->GetString());
 
 	// Load XML document
 	wxXmlDocument doc;
