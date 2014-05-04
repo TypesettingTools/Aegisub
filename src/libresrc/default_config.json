@@ -406,6 +406,9 @@
 			},
 			"Translate Alignments" : true
 		},
+		"MicroDVD": {
+			"Default Style Catalog": "Default",
+		},
 		"SRT": {
 			"Default Style Catalog": "Default",
 		},

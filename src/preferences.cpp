@@ -134,7 +134,7 @@ General_DefaultStyles::General_DefaultStyles(wxTreebook *book, Preferences *pare
 	// Include all catalog files that exist
 	[&](std::vector<std::string> const& l){ catalogs_set.insert(l.begin(), l.end()); } (AssStyleStorage::GetCatalogs());
 	// Include all catalogs named in the existing configuration
-	static const char *formats[] = { "ASS", "SRT", "TTXT", "TXT" };
+	static const char *formats[] = { "ASS", "MicroDVD", "SRT", "TTXT", "TXT" };
 	for (auto formatname : formats)
 		catalogs_set.insert(OPT_GET("Subtitle Format/" + std::string(formatname) + "/Default Style Catalog")->GetString());
 	// Sorted version
@@ -144,7 +144,7 @@ General_DefaultStyles::General_DefaultStyles(wxTreebook *book, Preferences *pare
 	catalogs.Sort();
 
 	OptionChoice(general, _("New files"), catalogs, "Subtitle Format/ASS/Default Style Catalog");
-	//CellSkip(general);
+	OptionChoice(general, _("MicroDVD import"), catalogs, "Subtitle Format/MicroDVD/Default Style Catalog");
 	OptionChoice(general, _("SRT import"), catalogs, "Subtitle Format/SRT/Default Style Catalog");
 	OptionChoice(general, _("TTXT import"), catalogs, "Subtitle Format/TTXT/Default Style Catalog");
 	OptionChoice(general, _("Plain text import"), catalogs, "Subtitle Format/TXT/Default Style Catalog");
