@@ -79,6 +79,17 @@ public:
 	/// @param filename Catalog filename. Does not have to exist.
 	void Load(agi::fs::path const& filename);
 
+	/// Load stored styles from a file in the default location
+	/// @param catalogname Basename for the catalog file. Does not have to exist.
+	void LoadCatalog(std::string const& catalogname);
+
+	/// Make a list of all existing style catalogs in the default location
+	static std::vector<std::string> GetCatalogs();
+
+	/// Check whether the name catalog exists in the default location
+	/// @param catalogname Basename for the catalog file to check for.
+	static bool CatalogExists(std::string const& catalogname);
+
 	/// Insert all styles into a file, replacing existing styles with the same names
 	/// @param file File to replace styles in
 	void ReplaceIntoFile(AssFile &file);

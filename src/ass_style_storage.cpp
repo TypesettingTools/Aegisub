@@ -36,11 +36,13 @@
 
 #include "ass_file.h"
 #include "ass_style.h"
+#include "options.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/path.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -79,6 +81,11 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 	}
 }
 
+void AssStyleStorage::LoadCatalog(std::string const& catalogname) {
+	auto filename = config::path->Decode("?user/catalog/" + catalogname + ".sty");
+	Load(filename);
+}
+
 void AssStyleStorage::Delete(int idx) {
 	style.erase(style.begin() + idx);
 }
@@ -98,15 +105,23 @@ AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
 	return nullptr;
 }
 
+std::vector<std::string> AssStyleStorage::GetCatalogs() {
+	std::vector<std::string> catalogs;
+	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
+		catalogs.push_back(agi::fs::path(file).stem().string());
+	return catalogs;
+}
+
+bool AssStyleStorage::CatalogExists(std::string const& catalogname) {
+	if (catalogname.empty()) return false;
+	auto filename = config::path->Decode("?user/catalog/" + catalogname + ".sty");
+	return agi::fs::FileExists(filename);
+}
+
 void AssStyleStorage::ReplaceIntoFile(AssFile &file) {
-	std::vector<AssStyle*> replaced_styles;
 	for (auto const& s : style) {
-		AssStyle *existing_style = file.GetStyle(s->name);
-		if (existing_style)
-			replaced_styles.push_back(existing_style);
+		delete file.GetStyle(s->name);
 		file.Styles.push_back(*new AssStyle(*s));
 	}
-	for (auto s : replaced_styles)
-		delete s;
 }
 

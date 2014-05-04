@@ -320,7 +320,7 @@ void DialogStyleManager::UpdateStorage() {
 void DialogStyleManager::OnChangeCatalog() {
 	std::string catalog(from_wx(CatalogList->GetStringSelection()));
 	c->ass->SetScriptInfo("Last Style Storage", catalog);
-	Store.Load(config::path->Decode("?user/catalog/" + catalog + ".sty"));
+	Store.LoadCatalog(catalog);
 	UpdateStorage();
 }
 
@@ -328,12 +328,13 @@ void DialogStyleManager::LoadCatalog() {
 	CatalogList->Clear();
 
 	// Get saved style catalogs
-	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
-		CatalogList->Append(agi::fs::path(file).stem().wstring());
+	auto catalogs = AssStyleStorage::GetCatalogs();
+	for (auto const& c : catalogs)
+		CatalogList->Append(c);
 
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty()) {
-		Store.Load(config::path->Decode("?user/catalog/Default.sty"));
+		Store.LoadCatalog("Default");
 		Store.push_back(agi::make_unique<AssStyle>());
 		Store.Save();
 		CatalogList->Append("Default");

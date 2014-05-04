@@ -18,6 +18,7 @@
 
 #include "preferences.h"
 
+#include "ass_style_storage.h"
 #include "audio_renderer_waveform.h"
 #include "colour_button.h"
 #include "command/command.h"
@@ -131,8 +132,7 @@ General_DefaultStyles::General_DefaultStyles(wxTreebook *book, Preferences *pare
 	// Always include one named "Default" even if it doesn't exist (ensure there is at least one on the list)
 	catalogs_set.insert("Default");
 	// Include all catalog files that exist
-	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
-		catalogs_set.insert(agi::fs::path(file).stem().string());
+	[&](std::vector<std::string> const& l){ catalogs_set.insert(l.begin(), l.end()); } (AssStyleStorage::GetCatalogs());
 	// Include all catalogs named in the existing configuration
 	static const char *formats[] = { "ASS", "SRT", "TTXT", "TXT" };
 	for (auto formatname : formats)
