@@ -14,6 +14,10 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
+  <PropertyGroup>
+    <Ffms2PreprocessorHaalisource Condition="'$(Ffms2UseAtl)'!='0'">HAALISOURCE;</Ffms2PreprocessorHaalisource>
+  </PropertyGroup>
+
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -24,7 +28,7 @@
       <PreprocessorDefinitions>
         WITH_AVRESAMPLE;
         FFMS_EXPORTS;
-        HAALISOURCE;
+        $(Ffms2PreprocessorHaalisource)
         _CRT_SECURE_NO_WARNINGS;
         _CRT_NONSTDC_NO_DEPRECATE;
         _SCL_SECURE_NO_WARNINGS;
