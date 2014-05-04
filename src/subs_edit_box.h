@@ -48,6 +48,7 @@
 namespace agi { namespace vfr { class Framerate; } }
 namespace agi { struct Context; }
 class AssDialogue;
+class AssStyle;
 class AssTime;
 class SubsTextEditCtrl;
 class TimeEdit;
@@ -77,6 +78,7 @@ class SubsEditBox final : public wxPanel {
 
 	/// Currently active dialogue line
 	AssDialogue *line = nullptr;
+	AssStyle *active_style = nullptr;
 
 	/// Are the buttons currently split into two lines?
 	bool button_bar_split = true;
@@ -90,6 +92,7 @@ class SubsEditBox final : public wxPanel {
 	// Box controls
 	wxCheckBox *comment_box;
 	wxComboBox *style_box;
+	wxButton *style_edit_button;
 	Placeholder<wxComboBox> *actor_box;
 	TimeEdit *start_time;
 	TimeEdit *end_time;

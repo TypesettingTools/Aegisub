@@ -39,6 +39,7 @@
 #include "base_grid.h"
 #include "command/command.h"
 #include "compat.h"
+#include "dialog_style_editor.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "initial_line_state.h"
@@ -62,7 +63,7 @@
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/checkbox.h>
-#include <wx/hashset.h>
+#include <wx/fontenum.h>
 #include <wx/radiobut.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
@@ -116,6 +117,16 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	top_sizer->Add(comment_box, 0, wxRIGHT | wxALIGN_CENTER, 5);
 
 	style_box = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
+
+	style_edit_button = new wxButton(this, -1, _("Edit"), wxDefaultPosition, wxSize(50, -1));
+	style_edit_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
+		if (active_style) {
+			wxArrayString font_list = wxFontEnumerator::GetFacenames();
+			font_list.Sort();
+			DialogStyleEditor(this, active_style, c, nullptr, "", font_list).ShowModal();
+		}
+	});
+	top_sizer->Add(style_edit_button, wxSizerFlags().Center().Border(wxRIGHT));
 
 	actor_box = new Placeholder<wxComboBox>(this, _("Actor"), wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
 	Bind(wxEVT_TEXT, &SubsEditBox::OnActorChange, this, actor_box->GetId());
@@ -334,6 +345,8 @@ void SubsEditBox::UpdateFields(int type, bool repopulate_lists) {
 			change_value(margin[i], std::to_wstring(line->Margin[i]));
 		comment_box->SetValue(line->Comment);
 		style_box->Select(style_box->FindString(to_wx(line->Style)));
+		active_style = c->ass->GetStyle(line->Style);
+		style_edit_button->Enable(active_style != nullptr);
 
 		if (repopulate_lists) PopulateList(effect_box, &AssDialogue::Effect);
 		effect_box->ChangeValue(to_wx(line->Effect));
