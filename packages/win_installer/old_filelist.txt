@@ -1,6 +1,7 @@
 Aegisub.pdb
 aegisub32.exe
 aegisub32.pdb
+aegisub64.pdb
 aegisub-auto3.dll
 libauto3_32.dll
 libauto3_32.pdb
@@ -8,6 +9,8 @@ changelog.txt
 ffms2.html
 FFMS2.dll
 ffms2.pdb
+ffms2_32.pdb
+ffms2_64.pdb
 avcodec-51.dll
 avformat-51.dll
 avutil-49.dll
