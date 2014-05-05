@@ -609,7 +609,7 @@ void SubsEditBox::CallCommand(const char *cmd_name) {
 }
 
 void SubsEditBox::UpdateCharacterCount(std::string const& text) {
-	int ignore = agi::IGNORE_NONE;
+	int ignore = agi::IGNORE_BLOCKS;
 	if (OPT_GET("Subtitle/Character Counter/Ignore Whitespace")->GetBool())
 		ignore |= agi::IGNORE_WHITESPACE;
 	if (OPT_GET("Subtitle/Character Counter/Ignore Punctuation")->GetBool())

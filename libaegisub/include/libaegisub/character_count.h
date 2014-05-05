@@ -20,7 +20,8 @@ namespace agi {
 	enum {
 		IGNORE_NONE = 0,
 		IGNORE_WHITESPACE = 1,
-		IGNORE_PUNCTUATION = 2
+		IGNORE_PUNCTUATION = 2,
+		IGNORE_BLOCKS = 4
 	};
 
 	/// Get the length in characters of the longest line in the given text

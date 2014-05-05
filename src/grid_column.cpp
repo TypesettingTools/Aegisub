@@ -271,7 +271,7 @@ public:
 		if (duration <= 100 || text.size() > static_cast<size_t>(duration))
 			return -1;
 
-		int ignore = agi::IGNORE_NONE;
+		int ignore = agi::IGNORE_BLOCKS;
 		if (ignore_whitespace->GetBool())
 			ignore |= agi::IGNORE_WHITESPACE;
 		if (ignore_punctuation->GetBool())

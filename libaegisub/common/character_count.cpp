@@ -86,6 +86,9 @@ int ignore_mask_to_icu_mask(int mask) {
 namespace agi {
 size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, int mask) {
 	mask = ignore_mask_to_icu_mask(mask);
+	if ((mask & agi::IGNORE_BLOCKS) == 0)
+		return count_in_range(begin, end, mask);
+
 	size_t characters = 0;
 	auto pos = begin;
 	do {
