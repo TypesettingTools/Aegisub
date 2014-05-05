@@ -31,13 +31,14 @@
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
-#include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/path.h>
+#include <libaegisub/split.h>
 
 #include <algorithm>
+#include <boost/range/algorithm_ext/push_back.hpp>
 #include <deque>
 #include <vector>
-
 #include <wx/app.h>
 #include <wx/frame.h>
 #include <wx/menu.h>
@@ -164,15 +165,23 @@ public:
 	{
 	}
 
+	int AddCommand(cmd::Command *co, wxMenu *parent, std::string const& text = "") {
+		return AddCommand(co, parent, text.empty() ? co->StrMenu(context) : _(to_wx(text)));
+	}
+
+	// because wxString doesn't have a move constructor
+	int AddCommand(cmd::Command *co, wxMenu *parent, wxString const& menu_text) {
+		return AddCommand(co, parent, wxString(menu_text));
+	}
+
 	/// Append a command to a menu and register the needed handlers
-	int AddCommand(cmd::Command *co, wxMenu *parent, std::string const& text) {
+	int AddCommand(cmd::Command *co, wxMenu *parent, wxString&& menu_text) {
 		int flags = co->Type();
 		wxItemKind kind =
 			flags & cmd::COMMAND_RADIO ? wxITEM_RADIO :
 			flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 			wxITEM_NORMAL;
 
-		wxString menu_text = text.empty() ? co->StrMenu(context) : _(to_wx(text));
 		menu_text += to_wx("\t" + hotkey::get_hotkey_str_first("Default", co->name()));
 
 		wxMenuItem *item = new wxMenuItem(parent, MENU_ID_BASE + items.size(), menu_text, co->StrHelp(), kind);
@@ -380,23 +389,47 @@ class AutomationMenu final : public wxMenu {
 	CommandManager *cm;
 	agi::signal::Connection global_slot;
 	agi::signal::Connection local_slot;
+	std::vector<wxMenuItem *> all_items;
 
 	void Regenerate() {
+		for (auto item : all_items)
+			cm->Remove(item);
+
 		wxMenuItemList &items = GetMenuItems();
-		for (size_t i = items.size() - 1; i >= 2; --i) {
-			cm->Remove(items[i]);
+		// Remove everything but automation manager and the separator
+		for (size_t i = items.size() - 1; i >= 2; --i)
 			Delete(items[i]);
+
+		auto macros = wxGetApp().global_scripts->GetMacros();
+		boost::push_back(macros, c->local_scripts->GetMacros());
+		if (macros.empty()) {
+			Append(-1, _("No Automation macros loaded"))->Enable(false);
+			return;
 		}
 
-		std::vector<cmd::Command*> macros = wxGetApp().global_scripts->GetMacros();
-		std::vector<cmd::Command*> local_macros = c->local_scripts->GetMacros();
-		copy(local_macros.begin(), local_macros.end(), back_inserter(macros));
+		std::map<std::string, wxMenu *> submenus;
 
-		if (macros.empty())
-			Append(-1, _("No Automation macros loaded"))->Enable(false);
-		else {
-			for (auto const& macro : macros)
-				cm->AddCommand(macro, this, "");
+		for (auto macro : macros) {
+			const auto name = from_wx(macro->StrMenu(c));
+			wxMenu *parent = this;
+			for (auto section : agi::Split(name, wxS('/'))) {
+				if (section.end() == name.end()) {
+					cm->AddCommand(macro, parent, wxString::FromUTF8Unchecked(&*section.begin(), section.size()));
+					all_items.push_back(parent->GetMenuItems().back());
+					break;
+				}
+
+				std::string prefix(name.begin(), section.end());
+				auto it = submenus.find(prefix);
+				if (it != submenus.end())
+					parent = it->second;
+				else {
+					auto menu = new wxMenu;
+					parent->AppendSubMenu(menu, wxString::FromUTF8Unchecked(&*section.begin(), section.size()));
+					submenus[prefix] = menu;
+					parent = menu;
+				}
+			}
 		}
 	}
 public:
@@ -406,7 +439,7 @@ public:
 	, global_slot(wxGetApp().global_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
 	, local_slot(c->local_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
 	{
-		cm->AddCommand(cmd::get("am/meta"), this, "");
+		cm->AddCommand(cmd::get("am/meta"), this);
 		AppendSeparator();
 		Regenerate();
 	}
