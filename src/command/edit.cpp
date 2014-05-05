@@ -141,16 +141,17 @@ AssDialogue *paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, A
 		pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
 	}
 
-	if (pasteOverOptions[0]) old_line->Layer     = new_line->Layer;
-	if (pasteOverOptions[1]) old_line->Start     = new_line->Start;
-	if (pasteOverOptions[2]) old_line->End       = new_line->End;
-	if (pasteOverOptions[3]) old_line->Style     = new_line->Style;
-	if (pasteOverOptions[4]) old_line->Actor     = new_line->Actor;
-	if (pasteOverOptions[5]) old_line->Margin[0] = new_line->Margin[0];
-	if (pasteOverOptions[6]) old_line->Margin[1] = new_line->Margin[1];
-	if (pasteOverOptions[7]) old_line->Margin[2] = new_line->Margin[2];
-	if (pasteOverOptions[8]) old_line->Effect    = new_line->Effect;
-	if (pasteOverOptions[9]) old_line->Text      = new_line->Text;
+	if (pasteOverOptions[0])  old_line->Comment   = new_line->Comment;
+	if (pasteOverOptions[1])  old_line->Layer     = new_line->Layer;
+	if (pasteOverOptions[2])  old_line->Start     = new_line->Start;
+	if (pasteOverOptions[3])  old_line->End       = new_line->End;
+	if (pasteOverOptions[4])  old_line->Style     = new_line->Style;
+	if (pasteOverOptions[5])  old_line->Actor     = new_line->Actor;
+	if (pasteOverOptions[6])  old_line->Margin[0] = new_line->Margin[0];
+	if (pasteOverOptions[7])  old_line->Margin[1] = new_line->Margin[1];
+	if (pasteOverOptions[8])  old_line->Margin[2] = new_line->Margin[2];
+	if (pasteOverOptions[9])  old_line->Effect    = new_line->Effect;
+	if (pasteOverOptions[10]) old_line->Text      = new_line->Text;
 
 	return old_line;
 }

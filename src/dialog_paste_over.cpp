@@ -45,7 +45,7 @@
 #include "options.h"
 
 DialogPasteOver::DialogPasteOver(wxWindow *parent)
-: wxDialog (parent, -1, _("Select Fields to Paste Over"))
+: wxDialog(parent, -1, _("Select Fields to Paste Over"))
 {
 	// Label and list sizer
 	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Fields"));
@@ -53,6 +53,7 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 
 	// List box
 	wxArrayString choices;
+	choices.Add(_("Comment"));
 	choices.Add(_("Layer"));
 	choices.Add(_("Start Time"));
 	choices.Add(_("End Time"));
@@ -111,13 +112,13 @@ void DialogPasteOver::OnOK(wxCommandEvent &) {
 
 void DialogPasteOver::OnText(wxCommandEvent &) {
 	CheckAll(false);
-	ListBox->Check(9, true);
+	ListBox->Check(10, true);
 }
 
 void DialogPasteOver::OnTimes(wxCommandEvent &) {
 	CheckAll(false);
-	ListBox->Check(1, true);
 	ListBox->Check(2, true);
+	ListBox->Check(3, true);
 }
 
 void DialogPasteOver::CheckAll(bool check) {
