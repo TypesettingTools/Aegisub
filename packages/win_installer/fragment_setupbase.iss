@@ -49,7 +49,7 @@ OutputDir=output
 Compression=lzma/ultra64
 SolidCompression=true
 MinVersion=0,5.0
-ShowLanguageDialog=no
+ShowLanguageDialog=yes
 LanguageDetectionMethod=none
 DisableProgramGroupPage=yes
 UsePreviousGroup=yes
@@ -66,7 +66,32 @@ OutputBaseFilename=Aegisub-{#VERSION}-{#ARCH}
 VersionInfoDescription=Aegisub {#VERSION} {#ARCH}
 
 [Languages]
-Name: english; MessagesFile: compiler:Default.isl
+Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: "bg"; MessagesFile: "compiler:Languages\Bulgarian.isl"
+Name: "ca"; MessagesFile: "compiler:Languages\Catalan.isl"
+Name: "cz"; MessagesFile: "compiler:Languages\Czech.isl"
+Name: "da"; MessagesFile: "compiler:Languages\Danish.isl"
+Name: "de"; MessagesFile: "compiler:Languages\German.isl"
+Name: "el"; MessagesFile: "compiler:Languages\Greek.isl"
+Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "eu"; MessagesFile: "compiler:Languages\Basque.isl"
+Name: "fi"; MessagesFile: "compiler:Languages\Finnish.isl"
+Name: "fr_FR"; MessagesFile: "compiler:Languages\French.isl"
+Name: "gl"; MessagesFile: "compiler:Languages\Galician.isl"
+Name: "hu"; MessagesFile: "compiler:Languages\Hungarian.isl"
+Name: "id"; MessagesFile: "compiler:Languages\Indonesian.isl"
+Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"
+Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "ko"; MessagesFile: "compiler:Languages\Korean.isl"
+Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "pl"; MessagesFile: "compiler:Languages\Polish.isl"
+Name: "pt_BR"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
+Name: "pt_PT"; MessagesFile: "compiler:Languages\Portuguese.isl"
+Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"
+Name: "sr_RS"; MessagesFile: "compiler:Languages\SerbianCyrillic.isl"
+Name: "sr_RS_latin"; MessagesFile: "compiler:Languages\SerbianLatin.isl"
+Name: "zh_CN"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+Name: "zh_TW"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
@@ -85,6 +110,4 @@ DestDir: {tmp}; Flags: dontcopy; Source: old_filelist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_dirlist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_locales.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_shortcutlist.txt
-
-
 
