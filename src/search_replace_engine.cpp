@@ -231,7 +231,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 	auto it = context->ass->iterator_to(*line);
 	size_t pos = 0;
 
-	MatchState replace_ms;
+	MatchState replace_ms{nullptr, 0, -1};
 	if (replace) {
 		if (settings.field == SearchReplaceSettings::Field::TEXT)
 			pos = context->textSelectionController->GetSelectionStart();
