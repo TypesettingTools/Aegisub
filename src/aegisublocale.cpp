@@ -71,6 +71,12 @@ void AegisubLocale::Init(wxString const& language) {
 }
 
 wxString AegisubLocale::PickLanguage() {
+	if (!active_language) {
+		wxString os_ui_language = GetTranslations()->GetBestTranslation(AEGISUB_CATALOG);
+		if (!os_ui_language.empty())
+			return os_ui_language;
+	}
+
 	wxArrayString langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
 	langs.insert(langs.begin(), "en_US");
 
