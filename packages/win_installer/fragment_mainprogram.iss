@@ -32,11 +32,9 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-[Components]
-; Actual program
-Name: main; Description: Aegisub; Types: compact full custom; Languages: ; Flags: fixed
-Name: main/icons; Description: Start menu icon; Types: custom compact full
-Name: main/qcklnch; Description: Quick launch icon; Types: custom compact full
+[Tasks]
+Name: "startmenuicon"; Description: "Create a start menu icon"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
 ; main
@@ -44,8 +42,8 @@ DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.exe; Flags: ignoreversion
 DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: 
 
 [Icons]
-Name: {commonprograms}\Aegisub; Filename: {app}\aegisub{#ARCH}.exe; WorkingDir: {app}; IconIndex: 0; Components: main/icons; Comment: Create and edit subtitle files
-Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Aegisub; Filename: {app}\aegisub{#ARCH}.exe; WorkingDir: {app}; IconIndex: 0; Components: main/qcklnch; Comment: Create and edit subtitle files
+Name: {commonprograms}\Aegisub; Filename: {app}\aegisub{#ARCH}.exe; WorkingDir: {app}; IconIndex: 0; Tasks: startmenuicon; Comment: Create and edit subtitle files
+Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Aegisub; Filename: {app}\aegisub{#ARCH}.exe; WorkingDir: {app}; IconIndex: 0; Tasks: quicklaunchicon; Comment: Create and edit subtitle files
 
 [Registry]
 ; Register in App Paths so the user can conveniently enter 'aegisub' in their Run box
