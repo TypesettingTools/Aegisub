@@ -173,6 +173,8 @@ void SubsController::SetSelectionController(SelectionController *selection_contr
 }
 
 void SubsController::Load(agi::fs::path const& filename, std::string charset) {
+	AssFile temp;
+
 	try {
 		try {
 			if (charset.empty())
@@ -198,10 +200,7 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 			}
 		}
 
-		const SubtitleFormat *reader = SubtitleFormat::GetReader(filename, charset);
-
-		AssFile temp;
-		reader->ReadFile(&temp, filename, context->videoController->FPS(), charset);
+		SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->videoController->FPS(), charset);
 
 		// Make sure the file has at least one style and one dialogue line
 		if (temp.Styles.empty())
