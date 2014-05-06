@@ -17,16 +17,15 @@
 namespace BuildTasks {
     public class DownloadTgzFile : Microsoft.Build.Utilities.Task {
         public string Url { get; set; }
-        public string Destination { get; set; }
         public string OutputFile { get; set; }
         public string Hash { get; set; }
 
         private void DownloadArchive(string url, string unpackDest) {
             var downloadStream = new System.Net.WebClient().OpenRead(url);
             var gzStream = new ICSharpCode.SharpZipLib.GZip.GZipInputStream(downloadStream);
-            var tarStream = new ICSharpCode.SharpZipLib.Tar.TarInputStream(gzStream);
-            var tarArchive = ICSharpCode.SharpZipLib.Tar.TarArchive.CreateInputTarArchive(tarStream);
-            tarArchive.ExtractContents(unpackDest);
+            using (var file = System.IO.File.Create(unpackDest)) {
+                gzStream.CopyTo(file);
+            }
         }
 
         public override bool Execute() {
@@ -42,7 +41,7 @@ namespace BuildTasks {
             }
 
             try {
-                DownloadArchive(this.Url, this.Destination);
+                DownloadArchive(this.Url, this.OutputFile);
             }
             catch (System.Exception e) {
                 this.Log.LogErrorFromException(e);

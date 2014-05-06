@@ -38,8 +38,8 @@
 	branch = master
 [submodule "icu"]
 	path = vendor/icu
-	url = git://github.com/sillsdev/icu4c.git
-	branch = trunk
+	url = git://github.com/svn2github/icu4c.git
+	branch = master
 	ignore = dirty
 [submodule "boost"]
 	path = vendor/boost

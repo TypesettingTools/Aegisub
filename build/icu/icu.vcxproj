@@ -82,12 +82,11 @@
     >
 
     <!-- Generated with http://apps.icu-project.org/datacustom/ -->
-    <!-- Includes Break Iterator and Collator data only -->
+    <!-- Includes Break Iterator and Display Name data only -->
     <DownloadTgzFile
-      Url="http://www.aegisub.org/~plorkyeran/icudt52l.dat.tgz"
-      Destination="$(MSBuildThisFileDirectory)..\..\vendor\icu\source\data\in"
-      OutputFile="$(MSBuildThisFileDirectory)..\..\vendor\icu\source\data\in\icudt52l.dat"
-      Hash="b611a32e857ab4474e3c0118bd09b0958026fe1d"
+      Url="http://www.aegisub.org/~plorkyeran/icudt53l.dat.gz"
+      OutputFile="$(MSBuildThisFileDirectory)..\..\vendor\icu\source\data\in\icudt53l.dat"
+      Hash="6b4244cdad08804fbb9c4f53e5fbf212321b80d1"
       />
 
     <ExecShellScript
