@@ -190,7 +190,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 		old_sel = con->selectionController->GetSelectedSet();
 
 	wxString message;
-	size_t count;
+	size_t count = 0;
 	switch (action) {
 		case Action::SET:
 			new_sel = std::move(matches);
