@@ -35,14 +35,13 @@
 #include "aegisublocale.h"
 
 #include "options.h"
+#include "utils.h"
 
 #include <libaegisub/path.h>
 
 #include <algorithm>
-#include <boost/locale.hpp>
 #include <clocale>
 #include <functional>
-
 #include <wx/intl.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
@@ -78,6 +77,7 @@ wxString AegisubLocale::PickLanguage() {
 	}
 
 	wxArrayString langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
+
 	// No translations available, so don't bother asking the user
 	if (langs.empty() && !active_language)
 		return "en_US";
@@ -94,13 +94,8 @@ wxString AegisubLocale::PickLanguage() {
 
 	// Generate names
 	wxArrayString langNames;
-	for (auto const& lang : langs) {
-		const wxLanguageInfo *info = wxLocale::FindLanguageInfo(lang);
-		if (info)
-			langNames.push_back(wxLocale::GetLanguageName(info->Language));
-		else
-			langNames.push_back(lang);
-	}
+	for (auto const& lang : langs)
+		langNames.push_back(LocalizedLanguageName(lang));
 
 	long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxOK | wxCENTRE;
 	if (!active_language.empty())

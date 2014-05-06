@@ -444,10 +444,8 @@ wxMenu *SubsTextEditCtrl::GetLanguagesMenu(int base_id, wxString const& curLang,
 	auto languageMenu = new wxMenu;
 	languageMenu->AppendRadioItem(base_id, _("Disable"))->Check(curLang.empty());
 
-	for (size_t i = 0; i < langs.size(); ++i) {
-		const wxLanguageInfo *info = wxLocale::FindLanguageInfo(langs[i]);
-		languageMenu->AppendRadioItem(base_id + i + 1, info ? info->Description : langs[i])->Check(langs[i] == curLang);
-	}
+	for (size_t i = 0; i < langs.size(); ++i)
+		languageMenu->AppendRadioItem(base_id + i + 1, LocalizedLanguageName(langs[i]))->Check(langs[i] == curLang);
 
 	return languageMenu;
 }

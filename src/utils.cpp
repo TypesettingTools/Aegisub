@@ -49,7 +49,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <map>
-
+#include <unicode/locid.h>
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
 #include <wx/stdpaths.h>
@@ -266,4 +266,17 @@ agi::fs::path OpenFileSelector(wxString const& message, std::string const& optio
 
 agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent) {
 	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent);
+}
+
+wxString LocalizedLanguageName(wxString const& lang) {
+	Locale iculoc(lang.c_str());
+	if (!iculoc.isBogus()) {
+		UnicodeString ustr;
+		iculoc.getDisplayName(iculoc, ustr);
+		return wxString(ustr.getBuffer());
+	}
+
+	if (auto info = wxLocale::FindLanguageInfo(lang))
+		return info->Description;
+	return lang;
 }

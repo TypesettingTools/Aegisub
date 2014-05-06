@@ -112,3 +112,5 @@ wxString FontFace(std::string opt_prefix);
 
 agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent);
 agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent);
+
+wxString LocalizedLanguageName(wxString const& lang);
