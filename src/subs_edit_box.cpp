@@ -309,6 +309,7 @@ void SubsEditBox::OnCommit(int type) {
 		style_box->Clear();
 		style_box->Append(to_wx(c->ass->GetStyles()));
 		style_box->Select(style_box->FindString(style));
+		active_style = line ? c->ass->GetStyle(line->Style) : nullptr;
 	}
 
 	if (type == AssFile::COMMIT_NEW) {
@@ -345,7 +346,7 @@ void SubsEditBox::UpdateFields(int type, bool repopulate_lists) {
 			change_value(margin[i], std::to_wstring(line->Margin[i]));
 		comment_box->SetValue(line->Comment);
 		style_box->Select(style_box->FindString(to_wx(line->Style)));
-		active_style = c->ass->GetStyle(line->Style);
+		active_style = line ? c->ass->GetStyle(line->Style) : nullptr;
 		style_edit_button->Enable(active_style != nullptr);
 
 		if (repopulate_lists) PopulateList(effect_box, &AssDialogue::Effect);
@@ -581,6 +582,7 @@ void SubsEditBox::OnSplit(wxCommandEvent&) {
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &) {
 	SetSelectedRows(&AssDialogue::Style, style_box->GetValue(), _("style change"), AssFile::COMMIT_DIAG_META);
+	active_style = c->ass->GetStyle(line->Style);
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
