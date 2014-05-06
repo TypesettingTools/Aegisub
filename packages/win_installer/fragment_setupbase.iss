@@ -32,17 +32,17 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#define VERSION "3.1.0"
+#include "../../build/git_version.h"
 
 [Setup]
 AppName=Aegisub
-AppVerName=Aegisub {#VERSION}
-AppVersion={#VERSION}
+AppVerName=Aegisub {#BUILD_GIT_VERSION_STRING}
+AppVersion={#INSTALLER_VERSION}
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=http://forum.aegisub.org/
 AppCopyright=© 2005-2014 The Aegisub Team
-VersionInfoVersion={#VERSION}
+VersionInfoVersion={#INSTALLER_VERSION}
 DefaultGroupName=Aegisub
 AllowNoIcons=true
 OutputDir=output
@@ -62,8 +62,8 @@ UninstallDisplayIcon={app}\aegisub{#ARCH}.exe
 WizardImageFile=welcome-large.bmp
 WizardSmallImageFile=aegisub-large.bmp
 
-OutputBaseFilename=Aegisub-{#VERSION}-{#ARCH}
-VersionInfoDescription=Aegisub {#VERSION} {#ARCH}
+OutputBaseFilename=Aegisub-{#BUILD_GIT_VERSION_STRING}-{#ARCH}
+VersionInfoDescription=Aegisub {#BUILD_GIT_VERSION_STRING} {#ARCH}-bit
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
@@ -95,7 +95,7 @@ Name: "zh_TW"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
 
 [Messages]
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
-WelcomeLabel2=This will install Aegisub {#VERSION} on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
+WelcomeLabel2=This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
 
 [Files]
 ; small bitmaps (used by beautify code)
