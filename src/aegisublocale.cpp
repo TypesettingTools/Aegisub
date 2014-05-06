@@ -78,6 +78,10 @@ wxString AegisubLocale::PickLanguage() {
 	}
 
 	wxArrayString langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
+	// No translations available, so don't bother asking the user
+	if (langs.empty() && !active_language)
+		return "en_US";
+
 	langs.insert(langs.begin(), "en_US");
 
 	// Check if user local language is available, if so, make it first
@@ -87,13 +91,6 @@ wxString AegisubLocale::PickLanguage() {
 		if (it != langs.end())
 			std::rotate(langs.begin(), it, it + 1);
 	}
-
-	// Nothing to pick
-	if (langs.empty()) return "";
-
-	// Only one language, so don't bother asking the user
-	if (langs.size() == 1 && !active_language)
-		return langs[0];
 
 	// Generate names
 	wxArrayString langNames;
