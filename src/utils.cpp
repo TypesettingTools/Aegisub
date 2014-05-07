@@ -273,7 +273,13 @@ wxString LocalizedLanguageName(wxString const& lang) {
 	if (!iculoc.isBogus()) {
 		UnicodeString ustr;
 		iculoc.getDisplayName(iculoc, ustr);
+#ifdef _MSC_VER
 		return wxString(ustr.getBuffer());
+#else
+		std::string utf8;
+		ustr.toUTF8String(utf8);
+		return to_wx(utf8);
+#endif
 	}
 
 	if (auto info = wxLocale::FindLanguageInfo(lang))
