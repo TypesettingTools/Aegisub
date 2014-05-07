@@ -118,7 +118,8 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	style_box = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
 
-	style_edit_button = new wxButton(this, -1, _("Edit"), wxDefaultPosition, wxSize(50, -1));
+	style_edit_button = new wxButton(this, -1, _("Edit"), wxDefaultPosition,
+		wxSize(GetTextExtent(_("Edit")).GetWidth() + 20, -1));
 	style_edit_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
 		if (active_style) {
 			wxArrayString font_list = wxFontEnumerator::GetFacenames();
