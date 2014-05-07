@@ -155,6 +155,8 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 			PrintUsage(style.second);
 			++missing_glyphs;
 		}
+		else if (res.fake_bold || res.fake_italic)
+			PrintUsage(style.second);
 	}
 }
 
