@@ -81,12 +81,11 @@
     Outputs="$(AegisubObjectDir)build.timestamp"
     >
 
-    <!-- Generated with http://apps.icu-project.org/datacustom/ -->
-    <!-- Includes Break Iterator and Display Name data only -->
+    <!-- Generated with tools/strip-icu.py -->
     <DownloadTgzFile
       Url="http://www.aegisub.org/~plorkyeran/icudt53l.dat.gz"
       OutputFile="$(MSBuildThisFileDirectory)..\..\vendor\icu\source\data\in\icudt53l.dat"
-      Hash="6b4244cdad08804fbb9c4f53e5fbf212321b80d1"
+      Hash="2a351e7753fb1e92910dc2d68721b8f41bbf33b0"
       />
 
     <ExecShellScript
