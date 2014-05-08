@@ -6,15 +6,15 @@ SRC += \
 HEADER += \
 	libresrc/libresrc.h
 
-libresrc/bitmap.cpp libresrc/bitmap.h: ../tools/common-respack bitmaps/button/*
-	../tools/common-respack bitmaps/manifest.respack libresrc/bitmap.cpp libresrc/bitmap.h
+libresrc/bitmap.cpp libresrc/bitmap.h: ../tools/respack.lua bitmaps/button/*
+	../tools/respack.lua bitmaps/manifest.respack libresrc/bitmap.cpp libresrc/bitmap.h
 
 ifeq (yes, $(BUILD_DARWIN))
-libresrc/default_config.cpp libresrc/default_config.h: ../tools/common-respack libresrc/*.json libresrc/osx/*.json
-	../tools/common-respack libresrc/manifest_osx.respack libresrc/default_config.cpp libresrc/default_config.h
+libresrc/default_config.cpp libresrc/default_config.h: ../tools/respack.lua libresrc/*.json libresrc/osx/*.json
+	../tools/respack.lua libresrc/manifest_osx.respack libresrc/default_config.cpp libresrc/default_config.h
 else
-libresrc/default_config.cpp libresrc/default_config.h: ../tools/common-respack libresrc/*.json
-	../tools/common-respack libresrc/manifest.respack libresrc/default_config.cpp libresrc/default_config.h
+libresrc/default_config.cpp libresrc/default_config.h: ../tools/respack.lua libresrc/*.json
+	../tools/respack.lua libresrc/manifest.respack libresrc/default_config.cpp libresrc/default_config.h
 endif
 
 CLEANFILES += \

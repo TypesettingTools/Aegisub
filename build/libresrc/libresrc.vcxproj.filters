@@ -15,15 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ResPack Include="..\..\src\libresrc\manifest.respack">
-      <Filter>Resource Files</Filter>
-    </ResPack>
-    <ResPack Include="..\..\src\bitmaps\manifest.respack">
-      <Filter>Resource Files</Filter>
-    </ResPack>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="$(SrcDir)libresrc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)bitmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)default_config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -31,5 +29,22 @@
     <ClInclude Include="$(SrcDir)libresrc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)bitmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)default_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SrcDir)..\..\tools\respack.lua">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="$(SrcDir)manifest.respack">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="$(SrcDir)..\bitmaps\manifest.respack">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

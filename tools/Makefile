@@ -1,9 +1,5 @@
 include ../Makefile.inc
 
-PROGRAM = common-respack
-
-SRC			+= common-respack.cpp
-
 ifeq (yes, $(BUILD_DARWIN))
 osx-bundle-restart-helper: osx-bundle-restart-helper.c
 	$(BIN_CC) -o osx-bundle-restart-helper osx-bundle-restart-helper.c

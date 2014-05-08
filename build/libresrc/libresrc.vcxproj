@@ -8,7 +8,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\src\libresrc\</SrcDir>
+    <SrcDir>$(MSBuildThisFileDirectory)..\..\src\libresrc\</SrcDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -19,12 +19,9 @@
     <ClCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ResPack>
-      <OutputDir>$(MSBuildThisFileDirectory)..\..\src\libresrc\</OutputDir>
-    </ResPack>
   </ItemDefinitionGroup>
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(MSBuildThisFileDirectory)..\respack\Aegisub.ResPack.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)..\respack.targets" />
   </ImportGroup>
 
   <Target Name="DefaultConfig" BeforeTargets="ResPackGenerate">
@@ -37,20 +34,29 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <ResPack Include="..\..\src\libresrc\manifest.respack">
-      <OutputName>default_config.cpp</OutputName>
-      <OutputHeader>default_config.h</OutputHeader>
+    <ResPack Include="$(SrcDir)manifest.respack">
+      <OutputName>default_config</OutputName>
+      <OutputDir>$(SrcDir)</OutputDir>
     </ResPack>
-    <ResPack Include="..\..\src\bitmaps\manifest.respack">
-      <OutputName>bitmap.cpp</OutputName>
-      <OutputHeader>bitmap.h</OutputHeader>
+    <ResPack Include="$(SrcDir)..\bitmaps\manifest.respack">
+      <OutputName>bitmap</OutputName>
+      <OutputDir>$(SrcDir)</OutputDir>
     </ResPack>
   </ItemGroup>
 
   <ItemGroup>
     <ClCompile Include="$(SrcDir)libresrc.cpp" />
+    <ClCompile Include="$(SrcDir)bitmap.cpp" />
+    <ClCompile Include="$(SrcDir)default_config.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)libresrc.h" />
+    <ClInclude Include="$(SrcDir)bitmap.h" />
+    <ClInclude Include="$(SrcDir)default_config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SrcDir)manifest.respack" />
+    <None Include="$(SrcDir)..\bitmaps\manifest.respack" />
+    <None Include="$(SrcDir)..\..\tools\respack.lua" />
   </ItemGroup>
 </Project>

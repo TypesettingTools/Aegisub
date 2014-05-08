@@ -71,7 +71,6 @@ svn-revision.h
 svn_revision
 tests/*.json
 tests/run
-tools/common-respack
 tools/osx-bundle-restart-helper
 tools/osx-bundle.sed
 tools/repack-thes-dict
