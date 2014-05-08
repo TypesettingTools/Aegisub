@@ -684,4 +684,9 @@
       <Destination>unicode</Destination>
     </InstallHeader>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\luajit-minilua\luajit-minilua.vcxproj">
+      <Project>{fcaed410-90ef-4ef9-916c-4b86dc13a3cf}</Project>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
