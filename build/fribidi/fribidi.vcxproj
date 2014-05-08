@@ -2,8 +2,8 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB8E8D19-A4D6-4181-943C-282075F49B41}</ProjectGuid>
-    <Keyword>MakeFileProj</Keyword>
-    <ConfigurationType>Makefile</ConfigurationType>
+    <RootNamespace>fribidi</RootNamespace>
+    <AegisubProjectType>lib</AegisubProjectType>
   </PropertyGroup>
 
   <!-- Aegisub project configuration -->
@@ -11,10 +11,26 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>
+        $(FribidiSrcDir)\lib;
+        $(MSBuildThisFileDirectory);
+        %(AdditionalIncludeDirectories)
+      </AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>
+        FRIBIDI_ENTRY=;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
   <!-- Download fribidi -->
   <UsingTask TaskName="TarballProject" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
   <Target
     Name="Download"
+    BeforeTargets="ClCompile"
     Inputs="$(FribidiSrcDir)aegisub.hash"
     Outputs="$(FribidiSrcDir)nonexistent-file"
     >
@@ -25,90 +41,21 @@
       />
   </Target>
 
-  <!-- Build it -->
-  <PropertyGroup Label="ConfigArgs">
-    <Cflags>-nologo -DFRIBIDI_ENTRY=\"\"</Cflags>
-    <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug CFLAGS="-MDd $(Cflags)"</CfgDebug>
-    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug CFLAGS="-MD $(Cflags)"</CfgDebug>
-    <CfgArgs>
-      --enable-static
-      --disable-shared
-      --disable-dependency-tracking
-      --without-glib
-      $(CfgDebug)
-    </CfgArgs>
-    <AbsSrcDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(FribidiSrcDir)'))</AbsSrcDir>
-  </PropertyGroup>
-
+  <!-- Source files -->
   <ItemGroup>
-    <AutomakeFiles Include="$(AbsSrcDir)\**\*.am" />
-    <SourceFiles Include="$(AbsSrcDir)\**\*.c" />
-    <SourceFiles Include="$(AbsSrcDir)\**\*.h" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-arabic.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-bidi-types.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-bidi.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-deprecated.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-joining-types.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-joining.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-mem.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-mirroring.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-run.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-shape.c" />
+    <ClCompile Include="$(FribidiSrcDir)\lib\fribidi.c" />
+    <InstallHeader Include="$(FribidiSrcDir)\lib\*.h;$(MSBuildThisFileDirectory)fribidi-config.h">
+      <Destination>fribidi\</Destination>
+    </InstallHeader>
   </ItemGroup>
-
-  <Target Name="Configure"
-    Inputs="$(AbsSrcDir)\configure"
-    Outputs="$(AegisubObjectDir)Makefile"
-    >
-    <MsysPath Path="$(AegisubObjectDir)\temp">
-      <Output TaskParameter="Result" PropertyName="CfgPrefix" />
-    </MsysPath>
-
-    <MsysPath Path="$(MSBuildThisFileDirectory)../../include">
-      <Output TaskParameter="Result" PropertyName="CfgIncludePrefix" />
-    </MsysPath>
-
-    <MsysPath Path="$(AegisubLibraryDir)">
-      <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
-    </MsysPath>
-
-    <ExecShellScript
-      Command="$(AbsSrcDir)\configure"
-      Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --includedir=$(CfgIncludePrefix)"
-      WorkingDirectory="$(AegisubObjectDir)"
-      Configuration="@(ExecShellScript)"
-      />
-
-    <!-- fribidi defines the symbols to export twice, which causes errors -->
-    <UpdateFile File="$(AegisubObjectDir)lib\Makefile" Find=" %24(am__append_1)" Replacement="" />
-    <!-- We only want the library and the docs want c2man, so remove
-         unused stuff from SUBDIRS -->
-    <UpdateFile File="$(AegisubObjectDir)Makefile" Find=" bin doc test" Replacement="" />
-  </Target>
-
-  <Target Name="Compile"
-    Inputs="$(AegisubObjectDir)Makefile;@(SourceFiles)"
-    Outputs="$(AegisubObjectDir)lib\.libs\fribidi.lib"
-    >
-    <ExecShellScript
-      Command="make"
-      Arguments=" "
-      WorkingDirectory="$(AegisubObjectDir)"
-      Configuration="@(ExecShellScript)"
-      />
-    <Touch Files="$(AegisubObjectDir)lib\.libs\fribidi.lib" />
-  </Target>
-
-  <Target Name="Install"
-    Inputs="$(AegisubObjectDir)lib\.libs\fribidi.lib"
-    Outputs="$(AegisubLibraryDir)fribidi.lib"
-    >
-    <ExecShellScript
-      Command="make install"
-      WorkingDirectory="$(AegisubObjectDir)"
-      Configuration="@(ExecShellScript)"
-      />
-  </Target>
-
-  <Target Name="Build">
-    <CallTarget Targets="Download;Configure;Compile;Install" />
-  </Target>
-
-  <Target Name="Clean">
-    <RemoveDir Directories="$(AegisubObjectDir)" ContinueOnError="WarnAndContinue" />
-  </Target>
-
-  <Target Name="Rebuild">
-    <CallTarget Targets="Clean;Build" />
-  </Target>
 </Project>

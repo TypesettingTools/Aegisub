@@ -15,7 +15,6 @@
         advapi32.lib;
         wsock32.lib;
         opengl32.lib;
-        fribidi.lib;
         %(AdditionalDependencies)
       </AdditionalDependencies>
     </Link>

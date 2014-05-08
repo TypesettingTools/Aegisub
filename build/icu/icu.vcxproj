@@ -356,7 +356,7 @@
     <ClInclude Include="$(IcuSrcDir)\common\uvectr64.h" />
     <ClInclude Include="$(IcuSrcDir)\common\wintz.h" />
     <InstallHeader Include="$(IcuSrcDir)\common\unicode\*.h">
-      <Destination>unicode</Destination>
+      <Destination>unicode\</Destination>
     </InstallHeader>
   </ItemGroup>
   <ItemGroup>
@@ -681,7 +681,7 @@
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_impl.h" />
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_wsconf.h" />
     <InstallHeader Include="$(IcuSrcDir)\i18n\unicode\*.h">
-      <Destination>unicode</Destination>
+      <Destination>unicode\</Destination>
     </InstallHeader>
   </ItemGroup>
   <ItemGroup>
