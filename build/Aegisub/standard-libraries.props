@@ -15,10 +15,6 @@
         advapi32.lib;
         wsock32.lib;
         opengl32.lib;
-        sicudt.lib;
-        sicuin.lib;
-        sicutu.lib;
-        sicuuc.lib;
         fribidi.lib;
         %(AdditionalDependencies)
       </AdditionalDependencies>

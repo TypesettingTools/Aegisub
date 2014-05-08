@@ -50,12 +50,14 @@ for line in manifest:lines() do
 
     local len = 0
     while true do
-      local b = file:read(1)
-      if not b then break end
+      local bytes = file:read(65536)
+      if not bytes then break end
 
-      if len > 0 then out_cpp:write(',') end
-      out_cpp:write(string.format('%d', b:byte()))
-      len = len + 1
+      for i = 1, #bytes do
+        if len > 0 then out_cpp:write(',') end
+        out_cpp:write(string.format('%d', bytes:byte(i)))
+        len = len + 1
+      end
     end
     out_cpp:write('};\n')
     out_h:write(string.format('extern const unsigned char %s[%d];\n', id, len))
