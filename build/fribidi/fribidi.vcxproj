@@ -11,6 +11,21 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
+  <!-- Download fribidi -->
+  <UsingTask TaskName="TarballProject" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <Target
+    Name="Download"
+    Inputs="$(FribidiSrcDir)aegisub.hash"
+    Outputs="$(FribidiSrcDir)nonexistent-file"
+    >
+    <TarballProject
+      Url="http://fribidi.org/download/fribidi-0.19.6.tar.bz2"
+      Hash="cba8b7423c817e5adf50d28ec9079d14eafcec9127b9e8c8f1960c5ad585e17d"
+      Root="$(FribidiSrcDir)"
+      />
+  </Target>
+
+  <!-- Build it -->
   <PropertyGroup Label="ConfigArgs">
     <Cflags>-nologo -DFRIBIDI_ENTRY=\"\"</Cflags>
     <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug CFLAGS="-MDd $(Cflags)"</CfgDebug>
@@ -30,16 +45,6 @@
     <SourceFiles Include="$(AbsSrcDir)\**\*.c" />
     <SourceFiles Include="$(AbsSrcDir)\**\*.h" />
   </ItemGroup>
-  <Target Name="Bootstrap"
-    Inputs="$(AbsSrcDir)\configure.ac;@(AutomakeFiles)"
-    Outputs="$(AbsSrcDir)\configure"
-    >
-    <ExecShellScript
-      Command="$(AbsSrcDir)\bootstrap"
-      WorkingDirectory="$(AbsSrcDir)"
-      Configuration="@(ExecShellScript)"
-      />
-  </Target>
 
   <Target Name="Configure"
     Inputs="$(AbsSrcDir)\configure"
@@ -96,8 +101,7 @@
   </Target>
 
   <Target Name="Build">
-    <Error Condition="!Exists('$(AbsSrcDir)')" Text="Fribidi source not found at '$(AbsSrcDir)'" />
-    <CallTarget Targets="Bootstrap;Configure;Compile;Install" />
+    <CallTarget Targets="Download;Configure;Compile;Install" />
   </Target>
 
   <Target Name="Clean">

@@ -1,7 +1,3 @@
-[submodule "fribidi"]
-	path = vendor/fribidi
-	url = git://anongit.freedesktop.org/fribidi/fribidi
-	ignore = dirty
 [submodule "freetype2"]
 	path = vendor/freetype2
 	url = git://git.sv.nongnu.org/freetype/freetype2.git

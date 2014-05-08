@@ -55,6 +55,7 @@
     <Compile Include="MsysPath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShellWrapper.cs" />
+    <Compile Include="TarballProject.cs" />
     <Compile Include="UpdateFile.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
