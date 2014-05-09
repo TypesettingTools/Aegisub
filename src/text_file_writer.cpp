@@ -42,7 +42,7 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 {
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();
-	if (boost::iequals(encoding, "utf-8")) {
+	if (!boost::iequals(encoding, "utf-8")) {
 		conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.c_str(), true);
 		newline = conv->Convert(newline);
 	}
