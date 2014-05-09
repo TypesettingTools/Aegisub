@@ -319,6 +319,9 @@
     <ClCompile Include="$(SrcDir)lua\modules.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)lua\modules\unicode.cpp">
+      <Filter>Lua\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SrcDir)include\libaegisub\charsets.def">

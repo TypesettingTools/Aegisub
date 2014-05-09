@@ -28,6 +28,8 @@
 -- Unicode (UTF-8) support functions for Aegisub Automation 4 Lua
 -- http://www.ietf.org/rfc/rfc2279.txt
 
+impl = require 'aegisub.__unicode_impl'
+
 local unicode
 unicode =
   -- Return the number of bytes occupied by the character starting at the i'th byte in s
@@ -83,5 +85,9 @@ unicode =
     for i = 2, w
       res = res*64 + s\byte(i) - 128
     res
+
+  to_upper_case: impl.to_upper_case
+  to_lower_case: impl.to_lower_case
+  to_fold_case: impl.to_fold_case
 
 return unicode

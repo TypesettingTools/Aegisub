@@ -127,6 +127,7 @@
       <ForcedIncludeFiles></ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="$(SrcDir)lua\modules\re.cpp" />
+    <ClCompile Include="$(SrcDir)lua\modules\unicode.cpp" />
     <ClCompile Include="$(SrcDir)lua\script_reader.cpp" />
     <ClCompile Include="$(SrcDir)lua\utils.cpp" />
     <ClCompile Include="$(SrcDir)windows\access.cpp" />

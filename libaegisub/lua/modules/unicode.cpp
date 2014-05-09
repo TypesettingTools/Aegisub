@@ -14,31 +14,33 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "libaegisub/lua/modules.h"
-
 #include "libaegisub/lua/utils.h"
 
-extern "C" int luaopen_luabins(lua_State *L);
-extern "C" int luaopen_re_impl(lua_State *L);
-extern "C" int luaopen_unicode_impl(lua_State *L);
-extern "C" int luaopen_lfs(lua_State *L);
-extern "C" int luaopen_lpeg(lua_State *L);
+#include <boost/locale.hpp>
 
-namespace agi { namespace lua {
-int regex_init(lua_State *L);
+namespace {
+using namespace agi::lua;
 
-void preload_modules(lua_State *L) {
-	luaL_openlibs(L);
-
-	lua_getglobal(L, "package");
-	lua_getfield(L, -1, "preload");
-
-	set_field(L, "aegisub.__re_impl", luaopen_re_impl);
-	set_field(L, "aegisub.__unicode_impl", luaopen_unicode_impl);
-	set_field(L, "lfs", luaopen_lfs);
-	set_field(L, "lpeg", luaopen_lpeg);
-	set_field(L, "luabins", luaopen_luabins);
-
-	lua_pop(L, 2);
+int unicode_upper(lua_State *L) {
+	push_value(L, boost::locale::to_upper(check_string(L, 1)));
+	return 1;
 }
-} }
+
+int unicode_lower(lua_State *L) {
+	push_value(L, boost::locale::to_lower(check_string(L, 1)));
+	return 1;
+}
+
+int unicode_fold(lua_State *L) {
+	push_value(L, boost::locale::fold_case(check_string(L, 1)));
+	return 1;
+}
+}
+
+extern "C" int luaopen_unicode_impl(lua_State *L) {
+	lua_createtable(L, 0, 3);
+	set_field<unicode_upper>(L, "to_upper_case");
+	set_field<unicode_lower>(L, "to_lower_case");
+	set_field<unicode_fold>(L, "to_fold_case");
+	return 1;
+}

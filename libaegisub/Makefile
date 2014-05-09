@@ -45,6 +45,7 @@ SRC += \
 	lua/modules/lfs.cpp \
 	lua/modules/lpeg.c \
 	lua/modules/re.cpp \
+	lua/modules/unicode.cpp \
 	lua/script_reader.cpp \
 	lua/utils.cpp \
 	unix/access.cpp \
