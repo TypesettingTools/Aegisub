@@ -135,14 +135,6 @@
   <!-- Library Paths -->
   <StringProperty
     Subtype="folder"
-    Name="MsysBasePath"
-    Category="Paths"
-    DisplayName="MSYS root"
-    Description="Root directory of a copy of msys with git installed. Only required if it is not on your PATH."
-    />
-
-  <StringProperty
-    Subtype="folder"
     Name="WinRarPath"
     Category="Paths"
     DisplayName="WinRAR.exe location"

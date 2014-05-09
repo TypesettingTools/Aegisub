@@ -355,9 +355,9 @@
     <ClInclude Include="$(IcuSrcDir)\common\uvectr32.h" />
     <ClInclude Include="$(IcuSrcDir)\common\uvectr64.h" />
     <ClInclude Include="$(IcuSrcDir)\common\wintz.h" />
-    <InstallHeader Include="$(IcuSrcDir)\common\unicode\*.h">
+    <InstallHeaderTo Include="$(IcuSrcDir)\common\unicode\*.h">
       <Destination>unicode\</Destination>
-    </InstallHeader>
+    </InstallHeaderTo>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(IcuSrcDir)\i18n\filteredbrk.cpp" />
@@ -680,9 +680,9 @@
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_conf.h" />
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_impl.h" />
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_wsconf.h" />
-    <InstallHeader Include="$(IcuSrcDir)\i18n\unicode\*.h">
+    <InstallHeaderTo Include="$(IcuSrcDir)\i18n\unicode\*.h">
       <Destination>unicode\</Destination>
-    </InstallHeader>
+    </InstallHeaderTo>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\luajit-minilua\luajit-minilua.vcxproj">

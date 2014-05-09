@@ -15,6 +15,9 @@
   </ImportGroup>
 
   <!-- Project specific configuration -->
+  <PropertyGroup>
+    <HeaderRoot>$(FontconfigSrcDir)</HeaderRoot>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>
@@ -31,9 +34,7 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <InstallHeader Include="$(FontconfigSrcDir)\fontconfig\*.h">
-      <Destination>fontconfig\</Destination>
-    </InstallHeader>
+    <InstallHeader Include="$(FontconfigSrcDir)\fontconfig\*.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(FontconfigSrcDir)\src\fcatomic.c" />

@@ -3,10 +3,6 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{10F22A5A-DD9E-44A1-BA2E-2A9A7C78B0EE}</ProjectGuid>
     <RootNamespace>zlib</RootNamespace>
-  </PropertyGroup>
-
-  <!-- Aegisub project configuration -->
-  <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
   </PropertyGroup>
 
@@ -24,8 +20,8 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <InstallHeader Include="$(ZlibSrcDir)\zlib.h" />
-    <InstallHeader Include="$(MSBuildThisFileDirectory)\zconf.h" />
+    <InstallHeaderTo Include="$(ZlibSrcDir)\zlib.h" />
+    <InstallHeaderTo Include="$(MSBuildThisFileDirectory)\zconf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(ZlibSrcDir)\*.c" />

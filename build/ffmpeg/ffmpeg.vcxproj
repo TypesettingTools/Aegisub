@@ -2,121 +2,1101 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F934AB7B-186B-4E96-B20C-A58C38C1B819}</ProjectGuid>
-    <Keyword>MakeFileProj</Keyword>
-    <ConfigurationType>Makefile</ConfigurationType>
+    <RootNamespace>ffmpeg</RootNamespace>
+    <AegisubProjectType>lib</AegisubProjectType>
+    <SrcDir>$(FfmpegSrcDir)</SrcDir>
   </PropertyGroup>
 
   <!-- Aegisub project configuration -->
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
-
-  <PropertyGroup Label="ConfigArgs">
-    <CfgDebug Condition="'$(Configuration)' == 'Debug'">--enable-debug --disable-stripping --extra-cflags=-MDd</CfgDebug>
-    <CfgDebug Condition="'$(Configuration)' == 'Release'">--disable-debug --extra-cflags=-MD</CfgDebug>
-    <CfgArgs>
-      --disable-avfilter
-      --disable-avresample
-      --disable-bzlib
-      --disable-devices
-      --disable-doc
-      --disable-encoders
-      --disable-ffmpeg
-      --disable-ffplay
-      --disable-ffprobe
-      --disable-ffserver
-      --disable-filters
-      --disable-hwaccels
-      --disable-muxers
-      --disable-network
-      --disable-postproc
-      --disable-pthreads
-      --disable-shared
-      --disable-swresample
-      --enable-avresample
-      --enable-gpl
-      --enable-runtime-cpudetect
-      --enable-static
-      --enable-zlib
-      --extra-cflags=-D_SYSCRT
-      --extra-cflags=-wd4005
-      --extra-cflags=-wd4189
-      --toolchain=msvc
-      $(CfgDebug)
-    </CfgArgs>
-    <AbsSrcDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(FfmpegSrcDir)'))</AbsSrcDir>
+  <PropertyGroup>
+    <HeaderRoot>$(FfmpegSrcDir)</HeaderRoot>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ConfigureInput Include="$(AbsSrcDir)\configure" />
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- Intentionally does not inherit normal additional include dirs -->
+      <AdditionalIncludeDirectories>
+        $(MSBuildThisFileDirectory);
+        $(FfmpegSrcDir);
+        $(AegisubSourceBase)\include;
+      </AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>
+        HAVE_AV_CONFIG_H;
+        _CRT_SECURE_NO_WARNINGS;
+        _FILE_OFFSET_BITS=64;
+        _ISOC99_SOURCE;
+        _LARGEFILE_SOURCE;
+        _SYSCRT;
+        _USE_MATH_DEFINES;
+        _WIN32_WINNT=0x0502;
+        _snprintf=avpriv_snprintf;
+        inline=__inline;
+        snprintf=avpriv_snprintf;
+        strtod=avpriv_strtod;
+        strtoll=_strtoi64;
+        vsnprintf=avpriv_vsnprintf;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
+      <ForcedIncludeFiles>stdlib.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <WarningLevel>Level1</WarningLevel>
 
-    <ConfigureOutput Include="$(AegisubObjectDir)config.*" />
-    <ConfigureOutput Include="$(AegisubObjectDir)Makefile" />
-    <ConfigureOutput Include="$(AegisubObjectDir)libavutil\avconfig.h" />
+      <!-- FFmpeg relies heavily on dead-code elimination to remove references
+           to functions that don't exist in the current configuration, so it
+           fails to link with optimizations disabled or LTO enabled -->
+      <Optimization           Condition="'$(Configuration)'=='Debug'">MinSpace</Optimization>
+      <DebugInformationFormat Condition="'$(Configuration)'=='Debug'">ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks     Condition="'$(Configuration)'=='Debug'">Default</BasicRuntimeChecks>
+      <FunctionLevelLinking   Condition="'$(Configuration)'=='Debug'">true</FunctionLevelLinking>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <Target
+    Name="Assemble"
+    BeforeTargets="ClCompile"
+    Inputs="@(Yasm)"
+    Outputs="$(AegisubObjectDir)\%(Yasm.Directory)%(Yasm.Filename).obj"
+    >
+    <PropertyGroup>
+      <YasmInclude>-I. -I$(MSBuildThisFileDirectory) -I$(FfmpegSrcDir) -I%(Yasm.RootDir)%(Yasm.Directory)</YasmInclude>
+      <YasmOutName>@(Yasm -> '%(Directory)%(Filename)').obj</YasmOutName>
+      <YasmConfig Condition="'$(Platform)'=='Win32'">-m x86 -DPREFIX -Pconfig-x86.asm</YasmConfig>
+      <YasmConfig Condition="'$(Platform)'=='x64'">-m amd64 -Pconfig-x64.asm</YasmConfig>
+    </PropertyGroup>
+    <Exec
+      Command="yasm -f win32 $(YasmConfig) $(YasmInclude) -o $(YasmOutName) %(Yasm.FullPath)"
+      WorkingDirectory="$(AegisubObjectDir)"
+      />
+    <ItemGroup>
+      <Link   Include="$(AegisubObjectDir)$(YasmOutName)" />
+      <Lib    Include="$(AegisubObjectDir)$(YasmOutName)" />
+      <ImpLib Include="$(AegisubObjectDir)$(YasmOutName)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <ClCompile Include="$(FfmpegSrcDir)\libavdevice\alldevices.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavdevice\avdevice.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\4xm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\aacdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ac3dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\act.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\adp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\adxdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\aea.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\afc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\aiffdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\allformats.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\amr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\anm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\apc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ape.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\apetag.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\aqtitledec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\asf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\asfcrypt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\asfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\assdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ast.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\astdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\au.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\avidec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\avio.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\aviobuf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\avlanguage.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\avr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\avs.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\bethsoftvid.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\bfi.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\bink.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\bintext.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\bit.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\bmv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\boadec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\brstm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\c93.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\cache.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\caf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\cafdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\cavsvideodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\cdg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\cdxl.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\cinedec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\concat.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\concatdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\crypto.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\cutils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\data_uri.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\daud.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dfa.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\diracdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dnxhddec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dsfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dsicin.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dtsdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dtshddec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\dxa.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\eacdata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\electronicarts.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\epafdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ffmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ffmetadec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\file.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\filmstripdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\flac_picture.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\flacdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\flic.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\flvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\format.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\frmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\g722.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\g723_1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\g729dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\gifdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\gsmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\gxf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\h261dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\h263dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\h264dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\hevcdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\hls.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\hlsproto.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\hnm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\icodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\id3v1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\id3v2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\idcin.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\idroqdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\iff.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ilbc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\img2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\img2_alias_pix.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\img2_brender_pix.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\img2dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ingenientdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ipmovie.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ircam.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ircamdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\isom.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\iss.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\iv8.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ivfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\jacosubdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\jvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\lmlm4.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\loasdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\lvfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\lxfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\m4vdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\matroska.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\matroskadec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\md5proto.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\metadata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mgsts.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\microdvddec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mlvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mmf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mov.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mov_chan.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mp3dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mpc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mpc8.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mpeg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mpegts.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mpegvideodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mpl2dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mpsubdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\msnwc_tcp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mtv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mux.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mvi.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mxf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mxfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\mxg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\ncdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\nistspheredec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\nsvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\nut.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\nutdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\nuv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparsecelt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparsedirac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparseflac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparseogm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparseopus.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparseskeleton.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparsespeex.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparsetheora.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparsevorbis.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oggparsevp8.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\oma.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\omadec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\options.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\os_support.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\paf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\pcm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\pcmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\pjsdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\pmpdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\psxstr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\pva.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\pvfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\qcp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\r3d.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rawdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rawvideodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\realtextdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\redspark.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\replaygain.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\riff.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\riffdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rl2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rmsipr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rpl.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rsd.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rso.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\rsodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\samidec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\sauce.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\sbgdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\sdp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\sdr2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\seek.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\segafilm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\sierravmd.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\siff.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\smacker.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\smjpeg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\smjpegdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\smush.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\sol.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\soxdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\spdif.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\spdifdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\srtdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\subfile.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\subtitles.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\subviewer1dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\subviewerdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\swf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\swfdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\takdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\tedcaptionsdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\thp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\tiertexseq.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\tmv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\tta.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\tty.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\txd.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\url.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\utils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\vc1test.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\vivo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\voc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\vocdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\vorbiscomment.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\vplayerdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\vqf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\w64.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\wavdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\wc3movie.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\webvttdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\westwood_aud.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\westwood_vqa.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\wtv_common.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\wtvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\wv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\wvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\xa.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\xmv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\xwma.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\yop.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavformat\yuv4mpeg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\audio_convert.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\audio_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\audio_mix.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\audio_mix_matrix.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\dither.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\options.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\resample.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\utils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\x86/audio_convert_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\x86/audio_mix_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavresample\x86/dither_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\012v.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\4xm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\8bps.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\8svx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aac_ac3_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aac_adtstoasc_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aac_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aacadtsdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aacdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aacps.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aacpsdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aacsbr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aactab.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aandcttab.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aasc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ac3.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ac3_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ac3dec_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ac3dec_fixed.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ac3dec_float.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ac3dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ac3tab.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\acelp_filters.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\acelp_pitch_delay.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\acelp_vectors.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\adpcm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\adpcm_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\adx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\adx_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\adxdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aic.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\alac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\alac_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aliaspixdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\allcodecs.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\alsdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\amrnbdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\amrwbdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\anm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ansi.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\apedec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ass.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ass_split.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\assdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\asv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\asvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\atrac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\atrac1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\atrac3.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\atrac3plus.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\atrac3plusdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\atrac3plusdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\audioconvert.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\aura.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\avfft.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\avpacket.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\avpicture.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\avrndec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\avs.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\avuidec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bethsoftvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bfi.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bgmc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bink.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\binkaudio.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\binkdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bintext.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bitstream.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bitstream_filter.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bmp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bmp_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\bmv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\brenderpix.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\c93.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cabac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cavs.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cavs_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cavsdata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cavsdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cavsdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cdgraphics.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cdxl.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\celp_filters.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\celp_math.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cga_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\chomp_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cinepak.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cljr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cllc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cngdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\codec_desc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cook.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cook_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cpia.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cscd.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\cyuv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dca.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dca_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dcadec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dcadsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dct32_fixed.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dct32_float.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dfa.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dirac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dirac_arith.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dirac_dwt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dirac_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\diracdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\diracdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dnxhd_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dnxhddata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dnxhddec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dpcm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dpx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dpx_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dsddec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dsicinav.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dsputil.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dump_extradata_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dv_profile.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dvbsub_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dvbsubdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dvd_nav_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dvdata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dvdsub_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dvdsubdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dxa.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dxtory.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\dxva2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eac3_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eac3dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eacmv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eaidct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eamad.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eatgq.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eatgv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\eatqi.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\error_resilience.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\escape124.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\escape130.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\evrcdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\exif.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\exr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\faanidct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\faxcompr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\fft_fixed.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\fft_fixed_32.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\fft_float.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\fft_init_table.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ffv1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ffv1dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ffwavesynth.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\fic.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flac_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flacdata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flacdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flacdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flashsv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flicvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\flvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\fmtconvert.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\fraps.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\frwu.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\g2meet.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\g722.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\g722dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\g723_1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\g726.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\g729dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\g729postfilter.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\gifdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\golomb.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\gsm_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\gsmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\gsmdec_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h261.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h261_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h261data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h261dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h263.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h263_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h263dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h263dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_cabac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_cavlc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_direct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_loopfilter.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_mb.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_mp4toannexb_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_picture.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_ps.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_refs.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_sei.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264_slice.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264chroma.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264idct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264pred.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\h264qpel.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc_cabac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc_filter.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc_mvs.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc_ps.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc_refs.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevc_sei.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevcdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hevcpred.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hnm4video.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\hpeldsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\huffman.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\huffyuv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\huffyuvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\idcinvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\iff.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\imc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\imgconvert.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\imx_dump_header_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\indeo2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\indeo3.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\indeo4.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\indeo5.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\intelh263dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\interplayvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\intrax8.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\intrax8dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ituh263dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ivi_common.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ivi_dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jacosubdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jpeg2000.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jpeg2000dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jpeg2000dwt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jpegls.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jpeglsdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jrevdct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\jvdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\kbdwin.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\kgv1dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\kmvc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\lagarith.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\lagarithrac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\latm_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\lcldec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\loco.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\lossless_videodsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\lsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\lzw.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mace.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mathtables.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mdct_fixed.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mdct_fixed_32.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mdct_float.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\metasound.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\metasound_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\microdvddec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mimic.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mjpeg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mjpeg2jpeg_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mjpeg_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mjpega_dump_header_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mjpegbdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mjpegdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mlp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mlp_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mlpdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mlpdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mmvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\motionpixels.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\movsub_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\movtextdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mp3_header_decompress_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpc7.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpc8.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpeg12.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpeg12data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpeg12dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpeg4audio.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpeg4video.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpeg4video_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpeg4videodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudio.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudio_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodec_fixed.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodec_float.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodecheader.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodsp_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodsp_fixed.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegaudiodsp_float.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegutils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegvideo_motion.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpegvideo_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mpl2dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mqc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mqcdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\msgsmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\msmpeg4.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\msmpeg4data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\msmpeg4dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\msrle.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\msrledec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mss1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mss12.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mss2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mss2dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mss3.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mss34dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mss4.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\msvideo1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mvcdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\mxpegdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\nellymoser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\nellymoserdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\noise_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\nuv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\on2avc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\on2avcdata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\options.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\paf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pcm-bluray.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pcm-dvd.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pcm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pcx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pgssubdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pictordec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\png.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\png_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pngdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pngdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pnm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pnm_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pnmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\proresdata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\proresdec2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\proresdec_lgpl.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\proresdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pthread.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pthread_frame.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\pthread_slice.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ptx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\qcelpdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\qdm2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\qdrw.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\qpeg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\qtrle.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\r210dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ra144.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ra144dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ra288.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ralf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rangecoder.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\raw.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rawdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rdft.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\realtextdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\remove_extradata_bsf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\resample.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\resample2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rl2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\roqvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\roqvideodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rpza.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rtjpeg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv10.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv30.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv30dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv34.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv34_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv34dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv40.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\rv40dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\s302m.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\s3tc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\samidec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sanm.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sbrdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sgidec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sgirledec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\shorten.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\simple_idct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sinewin.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sipr.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sipr16k.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\smacker.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\smc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\smvjpegdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\snow.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\snow_dwt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\snowdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sonic.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sp5xdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\srtdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\startcode.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\subviewerdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\sunrast.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\svq1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\svq13.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\svq1dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\svq3.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\synth_filter.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tak.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tak_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\takdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\targa.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\targa_y216dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\textdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tiertexseqv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tiff.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tiff_common.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tiff_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tmv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tpeldsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\truemotion1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\truemotion2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\truespeech.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tscc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tscc2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\tta.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ttadata.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ttadsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\twinvq.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\twinvqdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\txd.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ulti.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\utils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\utvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\utvideodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\v210dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\v210x.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\v308dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\v408dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\v410dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vb.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vble.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vc1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vc1_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vc1data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vc1dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vc1dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vcr1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\videodsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vima.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vmdav.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vmnc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vorbis.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vorbis_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vorbis_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vorbisdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vorbisdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp3.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp3_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp3dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp5.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp56.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp56data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp56dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp56rac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp6.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp6dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp8.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp8_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp8dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp9.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp9_parser.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vp9dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\vqavideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wavpack.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\webp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\webvttdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wma.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wma_common.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wmadec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wmalosslessdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wmaprodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wmavoice.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wmv2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wmv2dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wmv2dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\wnv1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\ws-snd1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/ac3dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/cavsdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/constants.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/dcadsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/dct_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/dirac_dwt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/diracdsp_mmx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/dsputil_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/dsputil_mmx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/dsputil_x86.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/fft_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/flacdsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/fmtconvert_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/fpel_mmx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/h263dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/h264_intrapred_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/h264_qpel.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/h264chroma_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/h264dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/hevcdsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/hpeldsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/hpeldsp_mmx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/idct_mmx_xvid.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/idct_sse2_xvid.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/lossless_videodsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/mlpdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/mpegaudiodsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/mpegvideo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/pngdsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/proresdsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/rv34dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/rv40dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/sbrdsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/simple_idct.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/snowdsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/ttadsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/v210-init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/vc1dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/vc1dsp_mmx.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/videodsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/vorbisdsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/vp3dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/vp6dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/vp8dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\x86/vp9dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xan.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xbmdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xface.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xfacedec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xiph.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xl.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xsubdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xwddec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\xxan.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\y41pdec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\yop.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\yuv4dec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\zerocodec.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavcodec\zmbv.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\input.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\options.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\output.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\rgb2rgb.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\swscale.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\swscale_unscaled.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\utils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\x86/rgb2rgb.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\x86/swscale.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\x86/yuv2rgb.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libswscale\yuv2rgb.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\compat\msvcrt\snprintf.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\compat\strtod.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\adler32.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\aes.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\atomic.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\audio_fifo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\avstring.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\base64.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\blowfish.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\bprint.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\buffer.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\channel_layout.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\cpu.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\crc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\des.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\dict.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\downmix_info.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\error.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\eval.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\fifo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\file.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\file_open.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\fixed_dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\float_dsp.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\frame.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\hash.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\hmac.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\imgutils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\intfloat_readwrite.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\intmath.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\lfg.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\lls1.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\lls2.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\log.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\log2_tab.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\lzo.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\mathematics.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\md5.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\mem.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\murmur3.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\opt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\parseutils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\pixdesc.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\random_seed.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\rational.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\rc4.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\ripemd.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\samplefmt.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\sha.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\sha512.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\stereo3d.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\time.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\timecode.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\tree.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\utils.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\x86/cpu.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\x86/float_dsp_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\x86/lls_init.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\xga_font_data.c" />
+    <ClCompile Include="$(FfmpegSrcDir)\libavutil\xtea.c" />
   </ItemGroup>
 
-  <Target Name="Configure"
-    Inputs="@(ConfigureInput)"
-    Outputs="@(ConfigureOutput)"
-    >
-    <MsysPath Path="$(AegisubObjectDir)\temp">
-      <Output TaskParameter="Result" PropertyName="CfgPrefix" />
-    </MsysPath>
+  <ItemGroup>
+    <InstallHeaderTo Include="$(MSBuildThisFileDirectory)\libavutil\avconfig.h">
+      <Destination>libavutil\</Destination>
+    </InstallHeaderTo>
 
-    <MsysPath Path="$(MSBuildThisFileDirectory)../../include">
-      <Output TaskParameter="Result" PropertyName="CfgIncludePrefix" />
-    </MsysPath>
+    <InstallHeader Include="$(FfmpegSrcDir)\libavdevice\avdevice.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavdevice\version.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavformat\avformat.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavformat\avio.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavformat\version.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavresample\avresample.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavresample\version.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\avcodec.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\avfft.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\dxva2.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\old_codec_ids.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\vaapi.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\vda.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\vdpau.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\version.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\xvmc.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libswscale/swscale.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libswscale/version.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\adler32.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\aes.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\attributes.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\audio_fifo.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\audioconvert.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\avassert.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\avstring.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\avutil.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\base64.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\blowfish.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\bprint.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\bswap.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\buffer.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\channel_layout.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\common.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\cpu.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\crc.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\downmix_info.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\error.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\eval.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\fifo.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\file.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\frame.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\hmac.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\imgutils.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\intfloat.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\intfloat_readwrite.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\intreadwrite.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\lfg.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\log.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\macros.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\mathematics.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\md5.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\mem.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\murmur3.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\dict.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\old_pix_fmts.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\opt.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\parseutils.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\pixdesc.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\pixfmt.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\random_seed.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\replaygain.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\rational.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\ripemd.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\samplefmt.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\sha.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\sha512.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\stereo3d.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\time.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\timecode.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\timestamp.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\version.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\xtea.h" />
+    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\lzo.h" />
+  </ItemGroup>
 
-    <MsysPath Path="$(AegisubLibraryDir)">
-      <Output TaskParameter="Result" PropertyName="CfgLibPrefix" />
-    </MsysPath>
-
-    <Delete Files="$(AegisubObjectDir)build.timestamp" />
-
-    <ExecShellScript
-      Command="$(AbsSrcDir)\configure"
-      Arguments="$(CfgArgs) --prefix=$(CfgPrefix) --libdir=$(CfgLibPrefix) --incdir=$(CfgIncludePrefix)"
-      WorkingDirectory="$(AegisubObjectDir)"
-      Configuration="@(ExecShellScript)"
-      />
-
-    <!-- Ensure that Makefile has a recent modified time to avoid
-         rerunning configure pointlessly -->
-    <Touch Files="@(ConfigureOutput)" />
-  </Target>
-
-  <Target Name="Compile"
-    Inputs="$(FfmpegSrcDir)"
-    Outputs="$(AegisubObjectDir)build.timestamp"
-    >
-    <ExecShellScript
-      Command="make"
-      Arguments="$(GmakeParallelBuild)"
-      WorkingDirectory="$(AegisubObjectDir)"
-      Configuration="@(ExecShellScript)"
-      />
-
-    <ExecShellScript
-      Command="make install"
-      WorkingDirectory="$(AegisubObjectDir)"
-      Configuration="@(ExecShellScript)"
-      />
-
-    <Touch Files="$(AegisubObjectDir)build.timestamp" AlwaysCreate="true" />
-  </Target>
-
-  <Target Name="Build">
-    <Error Condition="!Exists('$(AbsSrcDir)')" Text="FFmpeg source not found at '$(AbsSrcDir)'" />
-
-    <CallTarget Targets="Configure" />
-    <CallTarget Targets="Compile" />
-  </Target>
-
-  <Target Name="Clean">
-    <RemoveDir Directories="$(AegisubObjectDir)" ContinueOnError="WarnAndContinue" />
-  </Target>
-
-  <Target Name="Rebuild">
-    <CallTarget Targets="Clean;Build" />
-  </Target>
+  <ItemGroup>
+    <Yasm Include="$(FfmpegSrcDir)\libavresample\x86\audio_convert.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavresample\x86\audio_mix.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavresample\x86\dither.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\ac3dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\dcadsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\dct32.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\deinterlace.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\diracdsp_yasm.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\dsputil.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\dwt_yasm.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\fft.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\flacdsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\fmtconvert.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\fpel.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h263_loopfilter.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_chromamc.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_chromamc_10bit.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_deblock.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_deblock_10bit.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_idct.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_idct_10bit.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_intrapred.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_intrapred_10bit.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_qpel_10bit.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_qpel_8bit.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_weight.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\h264_weight_10bit.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\hevc_mc.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\hpeldsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\imdct36.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\lossless_videodsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\mpeg4qpel.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\pngdsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\proresdsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\qpel.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\rv34dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\rv40dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\sbrdsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\ttadsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\v210.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vc1dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\videodsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vorbisdsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp3dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp6dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp8dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp8dsp_loopfilter.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp9intrapred.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp9itxfm.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp9lpf.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavcodec\x86\vp9mc.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libswscale\x86\input.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libswscale\x86\output.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libswscale\x86\scale.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavutil\x86\cpuid.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavutil\x86\emms.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavutil\x86\float_dsp.asm" />
+    <Yasm Include="$(FfmpegSrcDir)\libavutil\x86\lls.asm" />
+  </ItemGroup>
 </Project>

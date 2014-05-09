@@ -19,9 +19,6 @@
     <Filter Include="Avisynth">
       <UniqueIdentifier>{fab6c2c7-eeae-4009-a932-fc079402db63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Config">
-      <UniqueIdentifier>{ac81097c-9043-43fa-a184-ea4c22091059}</UniqueIdentifier>
-    </Filter>
     <Filter Include="VapourSynth">
       <UniqueIdentifier>{8a87437e-fe04-4b74-a917-f8c108247e3f}</UniqueIdentifier>
     </Filter>
@@ -93,9 +90,6 @@
     <None Include="$(FfmsSrcDir)\src\avisynth\ffswscale.cpp">
       <Filter>Avisynth</Filter>
     </None>
-    <ClCompile Include="$(FfmsSrcDir)\src\config\libs.cpp">
-      <Filter>Config</Filter>
-    </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\videoutils.cpp">
       <Filter>Video</Filter>
     </ClCompile>
@@ -169,9 +163,6 @@
     </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\avisynth\ffswscale.h">
       <Filter>Avisynth</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\config\msvc-config.h">
-      <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\core\videoutils.h">
       <Filter>Video</Filter>

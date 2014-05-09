@@ -15,6 +15,9 @@
   </ImportGroup>
 
   <!-- Project specific configuration -->
+  <PropertyGroup>
+    <HeaderRoot>$(SrcDir)\include</HeaderRoot>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>

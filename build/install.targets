@@ -4,11 +4,23 @@
     Name="InstallHeaders"
     AfterTargets="ClCompile"
     Inputs="@(InstallHeader)"
-    Outputs="$(AegisubSourceBase)include\%(InstallHeader.Destination)%(Filename)%(Extension)"
+    Outputs="@(InstallHeader->Replace($(HeaderRoot), $(AegisubSourceBase)include))"
     >
     <Copy
       SourceFiles="@(InstallHeader)"
-      DestinationFiles="$(AegisubSourceBase)include\%(InstallHeader.Destination)%(Filename)%(Extension)"
+      DestinationFiles="@(InstallHeader->Replace($(HeaderRoot), $(AegisubSourceBase)include))"
+      SkipUnchangedFiles="true"
+      />
+  </Target>
+  <Target
+    Name="InstallHeadersTo"
+    AfterTargets="ClCompile"
+    Inputs="@(InstallHeaderTo)"
+    Outputs="@(InstallHeaderTo -> '$(AegisubSourceBase)include\%(Destination)%(Filename)%(Extension)')"
+    >
+    <Copy
+      SourceFiles="@(InstallHeaderTo)"
+      DestinationFiles="@(InstallHeaderTo -> '$(AegisubSourceBase)include\%(Destination)%(Filename)%(Extension)')"
       SkipUnchangedFiles="true"
       />
   </Target>

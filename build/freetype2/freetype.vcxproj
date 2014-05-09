@@ -15,6 +15,9 @@
   </ImportGroup>
 
   <!-- Project specific configuration -->
+  <PropertyGroup>
+    <HeaderRoot>$(Freetype2SrcDir)\include</HeaderRoot>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(Freetype2SrcDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -30,16 +33,7 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <InstallHeader Include="$(Freetype2SrcDir)\include\*.h" />
-    <InstallHeader Include="$(Freetype2SrcDir)\include\config\*.h">
-      <Destination>config\</Destination>
-    </InstallHeader>
-    <InstallHeader Include="$(Freetype2SrcDir)\include\internal\*.h">
-      <Destination>internal\</Destination>
-    </InstallHeader>
-    <InstallHeader Include="$(Freetype2SrcDir)\include\internal\services*.h">
-      <Destination>internal\services\</Destination>
-    </InstallHeader>
+    <InstallHeader Include="$(Freetype2SrcDir)\include\**\*.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(Freetype2SrcDir)\src\autofit\autofit.c" />

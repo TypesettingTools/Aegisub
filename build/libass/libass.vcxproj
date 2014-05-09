@@ -29,15 +29,15 @@
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
     </ClCompile>
-    <InstallHeader>
+    <InstallHeaderTo>
       <Destination>ass\</Destination>
-    </InstallHeader>
+    </InstallHeaderTo>
   </ItemDefinitionGroup>
 
   <!-- Source files -->
   <ItemGroup>
-    <InstallHeader Include="$(LibassSrcDir)\libass\ass.h" />
-    <InstallHeader Include="$(LibassSrcDir)\libass\ass_types.h" />
+    <InstallHeaderTo Include="$(LibassSrcDir)\libass\ass.h" />
+    <InstallHeaderTo Include="$(LibassSrcDir)\libass\ass_types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(LibassSrcDir)\libass\ass.h" />
