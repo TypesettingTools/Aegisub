@@ -14,24 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-using Microsoft.Build.Evaluation;
-using Microsoft.Build.Framework;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace BuildTasks {
     static class Utils {
-        static public Dictionary<string, string> ReadPropertyMap(IBuildEngine be) {
-            var reader = XmlReader.Create(be.ProjectFileOfTaskNode);
-            return new Project(reader).AllEvaluatedProperties
-                .Where(x => !x.IsEnvironmentProperty)
-                .Where(x => !x.IsGlobalProperty)
-                .Where(x => !x.IsReservedProperty)
-                .ToDictionary(x => x.Name, x => x.EvaluatedValue);
-        }
-
         /// Convert an absolute windows path to an msys path
         static public string MungePath(string path) {
             var match = Regex.Match(path, @"([A-Za-z]):\\(.*)");

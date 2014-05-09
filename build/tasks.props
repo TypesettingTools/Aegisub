@@ -25,6 +25,6 @@
 
   <UsingTask TaskName="ExecShellScript" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
   <UsingTask TaskName="MsysPath" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
-  <UsingTask TaskName="UpdateFile" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+  <UsingTask TaskName="GitVersion" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
 </Project>
 

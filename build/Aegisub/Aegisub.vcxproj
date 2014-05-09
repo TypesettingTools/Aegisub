@@ -30,11 +30,7 @@
 
   <!-- Update git_version.h -->
   <Target Name="UpdateVersion" BeforeTargets="ClCompile">
-    <ExecShellScript
-      Command="$(MSBuildThisFileDirectory)..\version.sh"
-      WorkingDirectory="$(AegisubSourceBase)"
-      Configuration="@(ExecShellScript)"
-      Arguments="." />
+    <GitVersion Root="$(AegisubSourceBase)" />
   </Target>
 
   <!-- Project References -->
