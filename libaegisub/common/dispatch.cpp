@@ -91,7 +91,15 @@ void Init(std::function<void (Thunk)> invoke_main) {
 }
 
 void Queue::Async(Thunk thunk) {
-	DoInvoke(thunk);
+	DoInvoke([=] {
+		try {
+			thunk();
+		}
+		catch (...) {
+			auto e = std::current_exception();
+			invoke_main([=] { std::rethrow_exception(e); });
+		}
+	});
 }
 
 void Queue::Sync(Thunk thunk) {

@@ -152,8 +152,13 @@ bool AegisubApp::OnInit() {
 		wxTheApp->QueueEvent(evt);
 	});
 
-	wxTheApp->Bind(EVT_CALL_THUNK, [](wxThreadEvent &evt) {
-		evt.GetPayload<std::function<void()>>()();
+	wxTheApp->Bind(EVT_CALL_THUNK, [this](wxThreadEvent &evt) {
+		try {
+			evt.GetPayload<std::function<void()>>()();
+		}
+		catch (...) {
+			OnExceptionInMainLoop();
+		}
 	});
 
 	config::path = new agi::Path;
