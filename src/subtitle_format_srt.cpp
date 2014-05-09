@@ -494,12 +494,6 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	if (!file->Attachments.empty())
 		return false;
 
-	std::string defstyle = AssStyle().GetEntryData();
-	for (auto const& line : file->Styles) {
-		if (line.GetEntryData() != defstyle)
-			return false;
-	}
-
 	for (auto const& line : file->Events) {
 		auto blocks = line.ParseTags();
 		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
