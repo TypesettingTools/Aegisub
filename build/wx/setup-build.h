@@ -11,8 +11,8 @@
 #define WXWIN_COMPATIBILITY_2_8 0
 #define wxDIALOG_UNIT_COMPATIBILITY 0
 #define wxUSE_ON_FATAL_EXCEPTION 1
-#define wxUSE_STACKWALKER 1
-#define wxUSE_DEBUGREPORT 1
+#define wxUSE_STACKWALKER 0
+#define wxUSE_DEBUGREPORT 0
 #define wxUSE_DEBUG_CONTEXT 0
 #define wxUSE_MEMORY_TRACING 0
 #define wxUSE_GLOBAL_MEMORY_OPERATORS 0
@@ -39,8 +39,8 @@
 #define wxUSE_FFILE 1
 #define wxUSE_FSVOLUME 0
 #define wxUSE_STDPATHS 1
-#define wxUSE_TEXTBUFFER 1
-#define wxUSE_TEXTFILE 1
+#define wxUSE_TEXTBUFFER 0
+#define wxUSE_TEXTFILE 0
 #define wxUSE_INTL 1
 #define wxUSE_XLOCALE 1
 #define wxUSE_DATETIME 1
@@ -52,11 +52,11 @@
 #define wxUSE_DIALUP_MANAGER 0
 #define wxUSE_DYNLIB_CLASS 1
 #define wxUSE_DYNAMIC_LOADER 1
-#define wxUSE_SOCKETS 1
+#define wxUSE_SOCKETS 0
 #define wxUSE_IPV6 0
-#define wxUSE_FILESYSTEM 1
-#define wxUSE_FS_ZIP 1
-#define wxUSE_FS_ARCHIVE 1
+#define wxUSE_FILESYSTEM 0
+#define wxUSE_FS_ZIP 0
+#define wxUSE_FS_ARCHIVE 0
 #define wxUSE_FS_INET 0
 #define wxUSE_ARCHIVE_STREAMS 1
 #define wxUSE_ZIPSTREAM 1
@@ -66,7 +66,7 @@
 #define wxUSE_JOYSTICK 0
 #define wxUSE_FONTENUM 1
 #define wxUSE_FONTMAP 1
-#define wxUSE_MIMETYPE 1
+#define wxUSE_MIMETYPE 0
 #define wxUSE_PROTOCOL 0
 #define wxUSE_PROTOCOL_FILE 0
 #define wxUSE_PROTOCOL_FTP 0
@@ -90,7 +90,7 @@
 #define wxUSE_CONTROLS 1
 #define wxUSE_POPUPWIN 1
 #define wxUSE_TIPWINDOW 0
-#define wxUSE_ANIMATIONCTRL 1
+#define wxUSE_ANIMATIONCTRL 0
 #define wxUSE_BUTTON 1
 #define wxUSE_BMPBUTTON 1
 #define wxUSE_CALENDARCTRL 1
@@ -137,7 +137,7 @@
 #define wxUSE_TOOLBOOK 1
 #define wxUSE_TASKBARICON 0
 #define wxUSE_TAB_DIALOG 0
-#define wxUSE_GRID 1
+#define wxUSE_GRID 0
 #define wxUSE_MINIFRAME 0
 #define wxUSE_COMBOCTRL 1
 #define wxUSE_ODCOMBOBOX 1
@@ -151,7 +151,7 @@
 #define wxUSE_IMAGLIST 1
 #define wxUSE_INFOBAR 1
 #define wxUSE_MENUS 1
-#define wxUSE_NOTIFICATION_MESSAGE 1
+#define wxUSE_NOTIFICATION_MESSAGE 0
 #define wxUSE_SASH 1
 #define wxUSE_SPLITTER 1
 #define wxUSE_TOOLTIPS 1
@@ -199,7 +199,7 @@
 #define wxUSE_POSTSCRIPT 0
 #define wxUSE_AFM_FOR_POSTSCRIPT 0
 #define wxUSE_SVG 0
-#define wxODBC_FWD_ONLY_CURSORS 1
+#define wxODBC_FWD_ONLY_CURSORS 0
 #define wxODBC_BACKWARD_COMPATABILITY 0
 #define wxUSE_IOSTREAMH 0
 #define wxUSE_IMAGE 1
