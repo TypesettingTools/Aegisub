@@ -12,10 +12,9 @@ Support is available on [the forums](http://forum.aegisub.org) or [on IRC](irc:/
 
 Prerequisites:
 
-1. Visual Studio 2013. Express edition might work.
-2. A recent Windows SDK
-3. A recent DirectX SDK
-4. A MSYS install with git and c99conv. Note that mingw is not required.
+1. Visual Studio 2013 (Express edition is good enough) or the Windows 8.1 SDK (command line builds only).
+2. A recent DirectX SDK
+4. [Yasm](http://yasm.tortall.net/) installed to somewhere on your path.
 
 There are a few optional dependencies:
 
@@ -28,14 +27,10 @@ All other dependencies are either stored in the repository or are included as su
 Building:
 
 1. Clone Aegisub's repository recursively to fetch it and all submodules: `git clone --recursive git@github.com:Aegisub/Aegisub.git`
-2. Disable autocrlf for ffmpeg, as its build system manages to not support Windows newlines: `cd vendor/ffmpeg && git config --local core.autocrlf && git rm --cached -r . && git reset --hard`
-3. Open Visual Studio from the VS2013 Native Tools Command Promp using devenv.exe /useenv (required for the build system to be able to find nmake.exe for building wxWidgets)
-4. Open Aegisub.sln
-5. Open the properties for the Aegisub project and set the location of MSYS in Configuration Properties > Aegisub > Library paths
-6. Build Aegisub
-7. Copy the contents of an existing Aegisub install into the aegisub/aegisub/bin directory (not strictly required, but you'll be missing a lot of functionality otherwise).
-
-There's a pile of other files needed at runtime such as dictionaries, VSFilter and avisynth. The simplest way to get them is to copy all of the files from the Aegisub installer to the bin directory.
+2. Open Visual Studio from the VS2013 Native Tools Command Promp using devenv.exe /useenv (required for the build system to be able to find nmake.exe for building wxWidgets)
+3. Open Aegisub.sln
+4. Build the solution.
+5. Copy the contents of an existing Aegisub install into the aegisub/aegisub/bin directory (not strictly required, but you'll be missing a lot of functionality otherwise).
 
 For actual development work you will probably want to mostly use the
 "Debug-MinDep" configuration (which disables building most of the projects), as
