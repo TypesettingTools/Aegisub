@@ -39,7 +39,7 @@ TEST(lagi_syntax, empty) {
 
 	EXPECT_TRUE(SyntaxHighlight(text, tokens, nullptr).empty());
 
-	tokens.emplace_back(dt::TEXT, 0);
+	tokens.push_back(DialogueToken{dt::TEXT, 0});
 	auto syntax = SyntaxHighlight(text, tokens, nullptr);
 	EXPECT_EQ(1u, syntax.size());
 	EXPECT_EQ(ss::NORMAL, syntax[0].type);
