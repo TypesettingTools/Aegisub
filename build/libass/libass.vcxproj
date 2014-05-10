@@ -87,8 +87,5 @@
     <ProjectReference Include="..\fribidi\fribidi.vcxproj">
       <Project>{fb8e8d19-a4d6-4181-943c-282075f49b41}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libiconv\libiconv.vcxproj">
-      <Project>{965054d2-44f2-4eb2-9879-051cc3d7ef08}</Project>
-    </ProjectReference>
   </ItemGroup>
 </Project>
