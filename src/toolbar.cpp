@@ -142,7 +142,7 @@ namespace {
 					flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 					wxITEM_NORMAL;
 
-				wxBitmap const& bitmap = command->Icon(icon_size);
+				wxBitmap const& bitmap = command->Icon(icon_size, GetLayoutDirection());
 				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), bitmap, GetTooltip(command), kind);
 
 				commands.push_back(command);
