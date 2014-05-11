@@ -134,6 +134,8 @@ VideoDisplay::VideoDisplay(
 
 	if (con->videoController->IsLoaded())
 		con->videoController->JumpToFrame(con->videoController->GetFrameN());
+
+	SetLayoutDirection(wxLayout_LeftToRight);
 }
 
 VideoDisplay::~VideoDisplay () {
