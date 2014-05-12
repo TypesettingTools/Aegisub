@@ -83,6 +83,9 @@
     <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
       <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\zlib\zlib.vcxproj">
+      <Project>{10f22a5a-dd9e-44a1-ba2e-2a9a7c78b0ee}</Project>
+    </ProjectReference>
   </ItemGroup>
 
   <!-- Source files -->

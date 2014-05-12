@@ -32,7 +32,6 @@
 #pragma comment(lib, wxBASE_LIB_NAME("xml"))
 #pragma comment(lib, wx3RD_PARTY_LIB_NAME("expat"))
 #pragma comment(lib, wx3RD_PARTY_LIB_NAME("png"))
-#pragma comment(lib, wx3RD_PARTY_LIB_NAME("zlib"))
 #pragma comment(lib, wxMSW_LIB_NAME("core"))
 #pragma comment(lib, wxMSW_LIB_NAME("adv"))
 #pragma comment(lib, wxMSW_LIB_NAME("gl"))
