@@ -61,6 +61,6 @@
     <IcuSrcDir>..\..\vendor\icu\source</IcuSrcDir>
     <LibassSrcDir>..\..\vendor\libass</LibassSrcDir>
     <WxSrcDir>..\..\vendor\wxWidgets</WxSrcDir>
-    <ZlibSrcDir>..\..\vendor\zlib</ZlibSrcDir>
+    <ZlibSrcDir>..\..\vendor\wxWidgets\src\zlib</ZlibSrcDir>
   </PropertyGroup>
 </Project>

@@ -24,9 +24,33 @@
     <InstallHeaderTo Include="$(MSBuildThisFileDirectory)\zconf.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(ZlibSrcDir)\*.c" />
+    <ClCompile Include="$(ZlibSrcDir)\adler32.c" />
+    <ClCompile Include="$(ZlibSrcDir)\compress.c" />
+    <ClCompile Include="$(ZlibSrcDir)\crc32.c" />
+    <ClCompile Include="$(ZlibSrcDir)\deflate.c" />
+    <ClCompile Include="$(ZlibSrcDir)\gzclose.c" />
+    <ClCompile Include="$(ZlibSrcDir)\gzlib.c" />
+    <ClCompile Include="$(ZlibSrcDir)\gzread.c" />
+    <ClCompile Include="$(ZlibSrcDir)\gzwrite.c" />
+    <ClCompile Include="$(ZlibSrcDir)\infback.c" />
+    <ClCompile Include="$(ZlibSrcDir)\inffast.c" />
+    <ClCompile Include="$(ZlibSrcDir)\inflate.c" />
+    <ClCompile Include="$(ZlibSrcDir)\inftrees.c" />
+    <ClCompile Include="$(ZlibSrcDir)\trees.c" />
+    <ClCompile Include="$(ZlibSrcDir)\uncompr.c" />
+    <ClCompile Include="$(ZlibSrcDir)\zutil.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(ZlibSrcDir)\*.h" />
+    <ClInclude Include="$(ZlibSrcDir)\crc32.h" />
+    <ClInclude Include="$(ZlibSrcDir)\deflate.h" />
+    <ClInclude Include="$(ZlibSrcDir)\gzguts.h" />
+    <ClInclude Include="$(ZlibSrcDir)\inffast.h" />
+    <ClInclude Include="$(ZlibSrcDir)\inffixed.h" />
+    <ClInclude Include="$(ZlibSrcDir)\inflate.h" />
+    <ClInclude Include="$(ZlibSrcDir)\inftrees.h" />
+    <ClInclude Include="$(ZlibSrcDir)\trees.h" />
+    <ClInclude Include="$(ZlibSrcDir)\zconf.h" />
+    <ClInclude Include="$(ZlibSrcDir)\zlib.h" />
+    <ClInclude Include="$(ZlibSrcDir)\zutil.h" />
   </ItemGroup>
 </Project>

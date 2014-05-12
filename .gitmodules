@@ -2,10 +2,6 @@
 	path = vendor/freetype2
 	url = git://git.sv.nongnu.org/freetype/freetype2.git
 	ignore = dirty
-[submodule "zlib"]
-	path = vendor/zlib
-	url = git://github.com/madler/zlib.git
-	ignore = dirty
 [submodule "wxWidgets"]
 	path = vendor/wxWidgets
 	url = git://github.com/wxWidgets/wxWidgets.git
