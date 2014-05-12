@@ -140,7 +140,7 @@ public:
 	void ModifyLength(int delta, bool shift_following) override;
 	void ModifyStart(int delta) override;
 	bool IsNearbyMarker(int ms, int sensitivity) const override;
-	std::vector<AudioMarker*> OnLeftClick(int ms, bool, int sensitivity, int) override;
+	std::vector<AudioMarker*> OnLeftClick(int ms, bool, bool, int sensitivity, int) override;
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int, int) override;
 	void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int) override;
 
@@ -347,7 +347,7 @@ static std::vector<Out *> copy_ptrs(In &vec, size_t start, size_t end) {
 	return ret;
 }
 
-std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool ctrl_down, int sensitivity, int) {
+std::vector<AudioMarker*> AudioTimingControllerKaraoke::OnLeftClick(int ms, bool ctrl_down, bool, int sensitivity, int) {
 	TimeRange range(ms - sensitivity, ms + sensitivity);
 
 	size_t syl = distance(markers.begin(), lower_bound(markers.begin(), markers.end(), ms));

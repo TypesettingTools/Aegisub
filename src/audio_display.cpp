@@ -1075,9 +1075,9 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	if (event.LeftDown() || event.RightDown())
 	{
 		const int timepos = TimeFromRelativeX(mouse_x);
-		std::vector<AudioMarker*> markers = event.LeftDown() ?
-			timing->OnLeftClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity) :
-			timing->OnRightClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity);
+		std::vector<AudioMarker*> markers = event.LeftDown()
+			? timing->OnLeftClick(timepos, event.CmdDown(), event.AltDown(), drag_sensitivity, snap_sensitivity)
+			: timing->OnRightClick(timepos, event.CmdDown(), drag_sensitivity, snap_sensitivity);
 
 		// Clicking should never result in the audio display scrolling
 		ScrollPixelToLeft(old_scroll_pos);

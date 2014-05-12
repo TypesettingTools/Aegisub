@@ -154,7 +154,7 @@ public:
 	/// @param snap_range  Maximum snapping range in milliseconds
 	/// @return All audio markers at the clicked position which are eligible
 	///         to be dragged, if any.
-	virtual std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range) = 0;
+	virtual std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, bool alt_down, int sensitivity, int snap_range) = 0;
 
 	/// @brief The user pressed the right mouse button on the audio
 	/// @param ms          The time in milliseconds the user clicked

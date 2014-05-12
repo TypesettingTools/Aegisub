@@ -214,7 +214,8 @@ public:
 
 	/// Get this line's markers
 	/// @param c Vector to add the markers to
-	void GetMarkers(std::vector<DialogueTimingMarker*> *c) const
+	template<typename Container>
+	void GetMarkers(Container *c) const
 	{
 		c->push_back(left_marker);
 		c->push_back(right_marker);
@@ -325,6 +326,9 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	/// The owning project context
 	agi::Context *context;
 
+	/// The marker which was clicked on for relative shifting in alt-click mode
+	DialogueTimingMarker *clicked_marker = nullptr;
+
 	/// Autocommit option
 	const agi::OptionValue *auto_commit = OPT_GET("Audio/Auto/Commit");
 	const agi::OptionValue *inactive_line_mode = OPT_GET("Audio/Inactive Lines Display Mode");
@@ -400,7 +404,7 @@ public:
 	void ModifyLength(int delta, bool shift_following) override;
 	void ModifyStart(int delta) override;
 	bool IsNearbyMarker(int ms, int sensitivity) const override;
-	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range) override;
+	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, bool alt_down, int sensitivity, int snap_range) override;
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range) override;
 	void OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range) override;
 
@@ -609,10 +613,12 @@ bool AudioTimingControllerDialogue::IsNearbyMarker(int ms, int sensitivity) cons
 	return active_line.ContainsMarker(TimeRange(ms-sensitivity, ms+sensitivity));
 }
 
-std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, bool ctrl_down, int sensitivity, int snap_range)
+std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, bool ctrl_down, bool alt_down, int sensitivity, int snap_range)
 {
 	assert(sensitivity >= 0);
 	assert(snap_range >= 0);
+
+	clicked_marker = nullptr;
 
 	std::vector<AudioMarker*> ret;
 
@@ -642,8 +648,15 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 		// The use of GetPosition here is important, as otherwise it'll start
 		// after lines ending at the same time as the active line begins
 		auto it = boost::lower_bound(markers, clicked->GetPosition(), marker_ptr_cmp());
-		for(; it != markers.end() && !(*clicked < **it); ++it)
+		for (; it != markers.end() && !(*clicked < **it); ++it)
 			ret.push_back(*it);
+	}
+	else if (alt_down)
+	{
+		clicked_marker = clicked;
+		active_line.GetMarkers(&ret);
+		for (auto const& line : selected_lines)
+			line.GetMarkers(&ret);
 	}
 	else
 		ret.push_back(clicked);
@@ -676,6 +689,10 @@ void AudioTimingControllerDialogue::UpdateSelection()
 
 void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& upd_markers, int ms)
 {
+	if (upd_markers.empty()) return;
+
+	int shift = clicked_marker ? ms - *clicked_marker : 0;
+
 	// Since we're moving markers, the sorted list of markers will need to be
 	// resorted. To avoid resorting the entire thing, find the subrange that
 	// is effected.
@@ -683,19 +700,25 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 	int max_ms = ms;
 	for (AudioMarker *upd_marker : upd_markers)
 	{
-		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_marker);
-		min_ms = std::min<int>(*marker, min_ms);
-		max_ms = std::max<int>(*marker, max_ms);
+		auto marker = static_cast<DialogueTimingMarker*>(upd_marker);
+		if (shift < 0) {
+			min_ms = std::min<int>(*marker + shift, min_ms);
+			max_ms = std::max<int>(*marker, max_ms);
+		}
+		else {
+			min_ms = std::min<int>(*marker, min_ms);
+			max_ms = std::max<int>(*marker + shift, max_ms);
+		}
 	}
 
 	auto begin = boost::lower_bound(markers, min_ms, marker_ptr_cmp());
 	auto end = upper_bound(begin, markers.end(), max_ms, marker_ptr_cmp());
 
 	// Update the markers
-	for (AudioMarker *upd_marker : upd_markers)
+	for (auto upd_marker : upd_markers)
 	{
-		DialogueTimingMarker *marker = static_cast<DialogueTimingMarker*>(upd_marker);
-		marker->SetPosition(ms);
+		auto marker = static_cast<DialogueTimingMarker*>(upd_marker);
+		marker->SetPosition(clicked_marker ? *marker + shift : ms);
 		modified_lines.insert(marker->GetLine());
 	}
 
