@@ -56,7 +56,6 @@
 AudioController::AudioController(agi::Context *context)
 : context(context)
 , subtitle_save_slot(context->subsController->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
-, playback_mode(PM_NotPlaying)
 , playback_timer(this)
 {
 	Bind(wxEVT_TIMER, &AudioController::OnPlaybackTimer, this, playback_timer.GetId());

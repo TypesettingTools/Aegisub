@@ -288,11 +288,11 @@ void DialogueTimingMarker::SetPosition(int new_position) {
 /// active line's markers, updating those lines as well.
 class AudioTimingControllerDialogue final : public AudioTimingController {
 	/// The rendering style for the active line's start marker
-	Pen style_left;
+	Pen style_left{"Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness"};
 	/// The rendering style for the active line's end marker
-	Pen style_right;
+	Pen style_right{"Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness"};
 	/// The rendering style for the start and end markers of inactive lines
-	Pen style_inactive;
+	Pen style_inactive{"Colour/Audio Display/Line Boundary Inactive Line", "Audio/Line Boundaries Thickness"};
 
 	/// The currently active line
 	TimeableLine active_line;
@@ -326,10 +326,10 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	agi::Context *context;
 
 	/// Autocommit option
-	const agi::OptionValue *auto_commit;
-	const agi::OptionValue *inactive_line_mode;
-	const agi::OptionValue *inactive_line_comments;
-	const agi::OptionValue *drag_timing;
+	const agi::OptionValue *auto_commit = OPT_GET("Audio/Auto/Commit");
+	const agi::OptionValue *inactive_line_mode = OPT_GET("Audio/Inactive Lines Display Mode");
+	const agi::OptionValue *inactive_line_comments = OPT_GET("Audio/Display/Draw/Inactive Comments");
+	const agi::OptionValue *drag_timing = OPT_GET("Audio/Drag Timing");
 
 	agi::signal::Connection commit_connection;
 	agi::signal::Connection audio_open_connection;
@@ -415,17 +415,10 @@ std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Conte
 }
 
 AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
-: style_left("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
-, style_right("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
-, style_inactive("Colour/Audio Display/Line Boundary Inactive Line", "Audio/Line Boundaries Thickness")
-, active_line(AudioStyle_Primary, &style_left, &style_right)
+: active_line(AudioStyle_Primary, &style_left, &style_right)
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Dialogue Mode")
 , video_position_provider(c)
 , context(c)
-, auto_commit(OPT_GET("Audio/Auto/Commit"))
-, inactive_line_mode(OPT_GET("Audio/Inactive Lines Display Mode"))
-, inactive_line_comments(OPT_GET("Audio/Display/Draw/Inactive Comments"))
-, drag_timing(OPT_GET("Audio/Drag Timing"))
 , commit_connection(c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this))
 , inactive_line_mode_connection(OPT_SUB("Audio/Inactive Lines Display Mode", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 , inactive_line_comment_connection(OPT_SUB("Audio/Display/Draw/Inactive Comments", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))

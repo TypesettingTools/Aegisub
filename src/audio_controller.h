@@ -105,8 +105,7 @@ class AudioController final : public wxEvtHandler {
 		PM_ToEnd
 	};
 	/// The current playback mode
-	PlaybackMode playback_mode;
-
+	PlaybackMode playback_mode = PM_NotPlaying;
 
 	/// Timer used for playback position updates
 	wxTimer playback_timer;

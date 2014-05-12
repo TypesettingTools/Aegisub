@@ -30,15 +30,8 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
 
-#ifdef _WIN32
-#define NEWLINE "\r\n"
-#else
-#define NEWLINE "\n"
-#endif
-
 TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
 : file(new agi::io::Save(filename, true))
-, newline(NEWLINE)
 {
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();

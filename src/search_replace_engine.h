@@ -56,7 +56,7 @@ struct SearchReplaceSettings {
 
 class SearchReplaceEngine {
 	agi::Context *context;
-	bool initialized;
+	bool initialized = false;
 	SearchReplaceSettings settings;
 
 	bool FindReplace(bool replace);

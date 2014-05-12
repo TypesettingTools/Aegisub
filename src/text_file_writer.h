@@ -32,7 +32,11 @@ namespace agi {
 class TextFileWriter {
 	std::unique_ptr<agi::io::Save> file;
 	std::unique_ptr<agi::charset::IconvWrapper> conv;
-	std::string newline;
+#ifdef _WIN32
+	std::string newline = "\r\n";
+#else
+	std::string newline = "\n";
+#endif
 
 public:
 	TextFileWriter(agi::fs::path const& filename, std::string encoding="");

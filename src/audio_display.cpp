@@ -514,9 +514,9 @@ class AudioMarkerInteractionObject final : public AudioDisplayInteractionObject 
 	// Mouse button used to initiate the drag
 	wxMouseButton button_used;
 	// Default to snapping to snappable markers
-	bool default_snap;
+	bool default_snap = OPT_GET("Audio/Snap/Enable")->GetBool();
 	// Range in pixels to snap at
-	int snap_range;
+	int snap_range = OPT_GET("Audio/Snap/Distance")->GetInt();
 
 public:
 	AudioMarkerInteractionObject(std::vector<AudioMarker*> markers, AudioTimingController *timing_controller, AudioDisplay *display, wxMouseButton button_used)
@@ -524,8 +524,6 @@ public:
 	, timing_controller(timing_controller)
 	, display(display)
 	, button_used(button_used)
-	, default_snap(OPT_GET("Audio/Snap/Enable")->GetBool())
-	, snap_range(OPT_GET("Audio/Snap/Distance")->GetInt())
 	{
 	}
 

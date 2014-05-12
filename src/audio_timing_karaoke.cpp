@@ -45,8 +45,8 @@
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke
 class KaraokeMarker final : public AudioMarker {
 	int position;
-	Pen *pen;
-	FeetStyle style;
+	Pen *pen = nullptr;
+	FeetStyle style = Feet_None;
 public:
 
 	int GetPosition() const override { return position; }
@@ -65,8 +65,6 @@ public:
 
 	KaraokeMarker(int position)
 	: position(position)
-	, pen(nullptr)
-	, style(Feet_None)
 	{
 	}
 
@@ -92,11 +90,11 @@ class AudioTimingControllerKaraoke final : public AudioTimingController {
 	size_t cur_syl = 0; ///< Index of currently selected syllable in the line
 
 	/// Pen used for the mid-syllable markers
-	Pen separator_pen;
+	Pen separator_pen{"Colour/Audio Display/Syllable Boundaries", "Audio/Line Boundaries Thickness", wxPENSTYLE_DOT};
 	/// Pen used for the start-of-line marker
-	Pen start_pen;
+	Pen start_pen{"Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness"};
 	/// Pen used for the end-of-line marker
-	Pen end_pen;
+	Pen end_pen{"Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness"};
 
 	/// Immobile marker for the beginning of the line
 	KaraokeMarker start_marker;
@@ -114,11 +112,10 @@ class AudioTimingControllerKaraoke final : public AudioTimingController {
 	/// Labels containing the stripped text of each syllable
 	std::vector<AudioLabel> labels;
 
-	bool auto_commit;     ///< Should changes be automatically commited?
+	 /// Should changes be automatically commited?
+	bool auto_commit = OPT_GET("Audio/Auto/Commit")->GetBool();
 	int commit_id = -1;   ///< Last commit id used for an autocommit
 	bool pending_changes; ///< Are there any pending changes to be committed?
-
-	void OnAutoCommitChange(agi::OptionValue const& opt);
 
 	void DoCommit();
 	void ApplyLead(bool announce_primary);
@@ -160,26 +157,18 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , c(c)
 , active_line(c->selectionController->GetActiveLine())
 , kara(kara)
-, separator_pen("Colour/Audio Display/Syllable Boundaries", "Audio/Line Boundaries Thickness", wxPENSTYLE_DOT)
-, start_pen("Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness")
-, end_pen("Colour/Audio Display/Line boundary End", "Audio/Line Boundaries Thickness")
 , start_marker(active_line->Start, &start_pen, AudioMarker::Feet_Right)
 , end_marker(active_line->End, &end_pen, AudioMarker::Feet_Left)
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
 , video_position_provider(c)
-, auto_commit(OPT_GET("Audio/Auto/Commit")->GetBool())
 {
 	slots.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
-	slots.push_back(OPT_SUB("Audio/Auto/Commit", &AudioTimingControllerKaraoke::OnAutoCommitChange, this));
+	slots.push_back(OPT_SUB("Audio/Auto/Commit", [=](agi::OptionValue const& opt) { auto_commit = opt.GetBool(); }));
 
 	keyframes_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
 	video_position_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
 
 	Revert();
-}
-
-void AudioTimingControllerKaraoke::OnAutoCommitChange(agi::OptionValue const& opt) {
-	auto_commit = opt.GetBool();
 }
 
 void AudioTimingControllerKaraoke::Next(NextMode mode) {

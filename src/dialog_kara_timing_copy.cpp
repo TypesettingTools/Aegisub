@@ -88,7 +88,8 @@ class KaraokeLineMatchDisplay final : public wxControl {
 
 	void OnPaint(wxPaintEvent &event);
 
-	const wxString label_source, label_destination;
+	wxString const& label_source = TEXT_LABEL_SOURCE;
+	wxString const& label_destination = TEXT_LABEL_DEST;
 
 public:
 	/// Start processing a new line pair
@@ -120,8 +121,6 @@ public:
 
 KaraokeLineMatchDisplay::KaraokeLineMatchDisplay(wxWindow *parent)
 : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxWANTS_CHARS)
-, label_source(TEXT_LABEL_SOURCE)
-, label_destination(TEXT_LABEL_DEST)
 {
 	InheritAttributes();
 	SetInputData(nullptr, nullptr);

@@ -203,7 +203,6 @@ std::function<MatchState (const AssDialogue*, size_t)> SearchReplaceEngine::GetM
 
 SearchReplaceEngine::SearchReplaceEngine(agi::Context *c)
 : context(c)
-, initialized(false)
 {
 }
 
