@@ -334,9 +334,7 @@ SRTSubtitleFormat::SRTSubtitleFormat()
 }
 
 std::vector<std::string> SRTSubtitleFormat::GetReadWildcards() const {
-	std::vector<std::string> formats;
-	formats.push_back("srt");
-	return formats;
+	return {"srt"};
 }
 
 std::vector<std::string> SRTSubtitleFormat::GetWriteWildcards() const {
@@ -494,7 +492,11 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	if (!file->Attachments.empty())
 		return false;
 
+	auto def = boost::flyweight<std::string>("Default");
 	for (auto const& line : file->Events) {
+		if (line.Style != def)
+			return false;
+
 		auto blocks = line.ParseTags();
 		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 			// Verify that all overrides used are supported

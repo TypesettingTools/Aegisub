@@ -86,14 +86,9 @@ bool SubtitleFormat::CanSave(const AssFile *subs) const {
 	if (!subs->Attachments.empty())
 		return false;
 
-	std::string defstyle = AssStyle().GetEntryData();
-	for (auto const& line : subs->Styles) {
-		if (line.GetEntryData() != defstyle)
-			return false;
-	}
-
+	auto def = boost::flyweight<std::string>("Default");
 	for (auto const& line : subs->Events) {
-		if (line.GetStrippedText() != line.Text)
+		if (line.Style != def || line.GetStrippedText() != line.Text)
 			return false;
 	}
 
