@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target
     Name="InstallHeaders"
-    AfterTargets="ClCompile"
+    BeforeTargets="ClCompile"
     Inputs="@(InstallHeader)"
     Outputs="@(InstallHeader->Replace($(HeaderRoot), $(AegisubSourceBase)include))"
     >
@@ -14,7 +14,7 @@
   </Target>
   <Target
     Name="InstallHeadersTo"
-    AfterTargets="ClCompile"
+    BeforeTargets="ClCompile"
     Inputs="@(InstallHeaderTo)"
     Outputs="@(InstallHeaderTo -> '$(AegisubSourceBase)include\%(Destination)%(Filename)%(Extension)')"
     >
