@@ -83,8 +83,20 @@
     <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
       <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\wx\wxWidgets.vcxproj">
+      <Project>{0518d6c0-7bf6-4fd1-91fb-191bd10db2ac}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\zlib\zlib.vcxproj">
       <Project>{10f22a5a-dd9e-44a1-ba2e-2a9a7c78b0ee}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\expat\expat.vcxproj">
+      <Project>{d6ba6815-0aac-48fa-8372-d32cde8bf07a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libpng\libpng.vcxproj">
+      <Project>{5cabcbef-e79a-4d27-94a5-cf4eaaf1dd96}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\scintilla\scintilla.vcxproj">
+      <Project>{d6ea54fd-f15c-42f6-929b-a83f299a4582}</Project>
     </ProjectReference>
   </ItemGroup>
 
@@ -252,13 +264,10 @@
     <ClCompile Include="$(SrcDir)aegisublocale.cpp" />
     <ClCompile Include="$(SrcDir)agi_pre.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>agi_pre.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="$(SrcDir)MatroskaParser.c">
-        <PrecompiledHeader>NotUsing</PrecompiledHeader>
-        <ForcedIncludeFiles></ForcedIncludeFiles>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass_attachment.cpp" />
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp" />

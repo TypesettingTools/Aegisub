@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D6BA6815-0AAC-48FA-8372-D32CDE8BF07A}</ProjectGuid>
+    <RootNamespace>expat</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
+    <SrcDir>..\..\vendor\wxWidgets\src\expat\lib</SrcDir>
+    <HeaderRoot>$(SrcDir)</HeaderRoot>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>COMPILED_FROM_DSP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <InstallHeader Include="$(SrcDir)\expat.h" />
+    <InstallHeader Include="$(SrcDir)\expat_external.h" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)\ascii.h" />
+    <ClInclude Include="$(SrcDir)\asciitab.h" />
+    <ClInclude Include="$(SrcDir)\expat.h" />
+    <ClInclude Include="$(SrcDir)\expat_external.h" />
+    <ClInclude Include="$(SrcDir)\iasciitab.h" />
+    <ClInclude Include="$(SrcDir)\internal.h" />
+    <ClInclude Include="$(SrcDir)\latin1tab.h" />
+    <ClInclude Include="$(SrcDir)\nametab.h" />
+    <ClInclude Include="$(SrcDir)\utf8tab.h" />
+    <ClInclude Include="$(SrcDir)\winconfig.h" />
+    <ClInclude Include="$(SrcDir)\xmlrole.h" />
+    <ClInclude Include="$(SrcDir)\xmltok.h" />
+    <ClInclude Include="$(SrcDir)\xmltok_impl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SrcDir)\xmlparse.c" />
+    <ClCompile Include="$(SrcDir)\xmlrole.c" />
+    <ClCompile Include="$(SrcDir)\xmltok.c" />
+    <ClCompile Include="$(SrcDir)\xmltok_impl.c" />
+    <ClCompile Include="$(SrcDir)\xmltok_ns.c" />
+  </ItemGroup>
+</Project>

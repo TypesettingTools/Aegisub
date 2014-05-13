@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D6EA54FD-F15C-42F6-929B-A83F299A4582}</ProjectGuid>
+    <RootNamespace>scintilla</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Aegisub project configuration -->
+  <PropertyGroup Label="AegisubConfiguration">
+    <AegisubProjectType>lib</AegisubProjectType>
+    <SrcDir>..\..\vendor\wxWidgets\src\stc\scintilla</SrcDir>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
+  </ImportGroup>
+
+  <!-- Project specific configuration -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SrcDir)\include\;$(SrcDir)\lexlib\;$(SrcDir)\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;__WX__;PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Source files -->
+  <ItemGroup>
+    <ClInclude Include="$(SrcDir)\include\ILexer.h" />
+    <ClInclude Include="$(SrcDir)\include\Platform.h" />
+    <ClInclude Include="$(SrcDir)\include\SciLexer.h" />
+    <ClInclude Include="$(SrcDir)\include\Scintilla.h" />
+    <ClInclude Include="$(SrcDir)\include\ScintillaWidget.h" />
+    <ClInclude Include="$(SrcDir)\src\AutoComplete.h" />
+    <ClInclude Include="$(SrcDir)\src\CallTip.h" />
+    <ClInclude Include="$(SrcDir)\src\CaseConvert.h" />
+    <ClInclude Include="$(SrcDir)\src\CaseFolder.h" />
+    <ClInclude Include="$(SrcDir)\src\Catalogue.h" />
+    <ClInclude Include="$(SrcDir)\src\CellBuffer.h" />
+    <ClInclude Include="$(SrcDir)\src\CharClassify.h" />
+    <ClInclude Include="$(SrcDir)\src\ContractionState.h" />
+    <ClInclude Include="$(SrcDir)\src\Decoration.h" />
+    <ClInclude Include="$(SrcDir)\src\Document.h" />
+    <ClInclude Include="$(SrcDir)\src\Editor.h" />
+    <ClInclude Include="$(SrcDir)\src\ExternalLexer.h" />
+    <ClInclude Include="$(SrcDir)\src\FontQuality.h" />
+    <ClInclude Include="$(SrcDir)\src\Indicator.h" />
+    <ClInclude Include="$(SrcDir)\src\KeyMap.h" />
+    <ClInclude Include="$(SrcDir)\src\LineMarker.h" />
+    <ClInclude Include="$(SrcDir)\src\Partitioning.h" />
+    <ClInclude Include="$(SrcDir)\src\PerLine.h" />
+    <ClInclude Include="$(SrcDir)\src\PositionCache.h" />
+    <ClInclude Include="$(SrcDir)\src\RESearch.h" />
+    <ClInclude Include="$(SrcDir)\src\RunStyles.h" />
+    <ClInclude Include="$(SrcDir)\src\ScintillaBase.h" />
+    <ClInclude Include="$(SrcDir)\src\Selection.h" />
+    <ClInclude Include="$(SrcDir)\src\SplitVector.h" />
+    <ClInclude Include="$(SrcDir)\src\Style.h" />
+    <ClInclude Include="$(SrcDir)\src\UniConversion.h" />
+    <ClInclude Include="$(SrcDir)\src\UnicodeFromUTF8.h" />
+    <ClInclude Include="$(SrcDir)\src\ViewStyle.h" />
+    <ClInclude Include="$(SrcDir)\src\XPM.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)catalogue.cpp" />
+
+    <ClCompile Include="$(SrcDir)\lexlib\CharacterSet.cxx" />
+
+    <ClCompile Include="$(SrcDir)\src\AutoComplete.cxx" />
+    <ClCompile Include="$(SrcDir)\src\CallTip.cxx" />
+    <ClCompile Include="$(SrcDir)\src\CaseConvert.cxx" />
+    <ClCompile Include="$(SrcDir)\src\CaseFolder.cxx" />
+    <ClCompile Include="$(SrcDir)\src\CellBuffer.cxx" />
+    <ClCompile Include="$(SrcDir)\src\CharClassify.cxx" />
+    <ClCompile Include="$(SrcDir)\src\ContractionState.cxx" />
+    <ClCompile Include="$(SrcDir)\src\Decoration.cxx" />
+    <ClCompile Include="$(SrcDir)\src\Document.cxx" />
+    <ClCompile Include="$(SrcDir)\src\Editor.cxx" />
+    <ClCompile Include="$(SrcDir)\src\Indicator.cxx" />
+    <ClCompile Include="$(SrcDir)\src\KeyMap.cxx" />
+    <ClCompile Include="$(SrcDir)\src\LineMarker.cxx" />
+    <ClCompile Include="$(SrcDir)\src\PerLine.cxx" />
+    <ClCompile Include="$(SrcDir)\src\PositionCache.cxx" />
+    <ClCompile Include="$(SrcDir)\src\RESearch.cxx" />
+    <ClCompile Include="$(SrcDir)\src\RunStyles.cxx" />
+    <ClCompile Include="$(SrcDir)\src\ScintillaBase.cxx" />
+    <ClCompile Include="$(SrcDir)\src\Selection.cxx" />
+    <ClCompile Include="$(SrcDir)\src\Style.cxx" />
+    <ClCompile Include="$(SrcDir)\src\UniConversion.cxx" />
+    <ClCompile Include="$(SrcDir)\src\ViewStyle.cxx" />
+    <ClCompile Include="$(SrcDir)\src\XPM.cxx" />
+  </ItemGroup>
+</Project>
