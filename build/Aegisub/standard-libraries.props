@@ -9,12 +9,19 @@
     <Link>
       <AdditionalDependencies>
         Vfw32.lib;
-        comctl32.lib;
-        rpcrt4.lib;
-        winmm.lib;
         advapi32.lib;
-        wsock32.lib;
+        comctl32.lib;
+        comdlg32.lib;
+        gdi32.lib;
+        kernel32.lib;
+        ole32.lib;
+        oleaut32.lib;
         opengl32.lib;
+        rpcrt4.lib;
+        shell32.lib;
+        user32.lib;
+        uuid.lib;
+        wsock32.lib;
         %(AdditionalDependencies)
       </AdditionalDependencies>
     </Link>
