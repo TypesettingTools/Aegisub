@@ -671,6 +671,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 
 std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int sensitivity, int snap_range)
 {
+	clicked_marker = nullptr;
 	std::vector<AudioMarker*> ret = GetRightMarkers();
 	SetMarkers(ret, SnapPosition(ms, snap_range, ret));
 	return ret;
