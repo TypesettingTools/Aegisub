@@ -616,7 +616,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 
 	std::vector<AudioMarker*> ret;
 
-	clicked_ms = -1;
+	clicked_ms = INT_MIN;
 	if (alt_down)
 	{
 		clicked_ms = ms;
@@ -668,7 +668,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 
 std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int sensitivity, int snap_range)
 {
-	clicked_ms = -1;
+	clicked_ms = INT_MIN;
 	std::vector<AudioMarker*> ret = GetRightMarkers();
 	SetMarkers(ret, ms, snap_range);
 	return ret;
@@ -689,7 +689,7 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 {
 	if (upd_markers.empty()) return;
 
-	int shift = clicked_ms >= 0 ? ms - clicked_ms : 0;
+	int shift = clicked_ms != INT_MIN ? ms - clicked_ms : 0;
 	if (shift) clicked_ms = ms;
 
 	// Since we're moving markers, the sorted list of markers will need to be
@@ -717,12 +717,12 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 	for (auto upd_marker : upd_markers)
 	{
 		auto marker = static_cast<DialogueTimingMarker*>(upd_marker);
-		marker->SetPosition(clicked_ms >= 0 ? *marker + shift : ms);
+		marker->SetPosition(clicked_ms != INT_MIN ? *marker + shift : ms);
 		modified_lines.insert(marker->GetLine());
 	}
 
 	int snap = SnapMarkers(snap_range, upd_markers);
-	if (clicked_ms >= 0)
+	if (clicked_ms != INT_MIN)
 		clicked_ms += snap;
 
 	// Resort the range
