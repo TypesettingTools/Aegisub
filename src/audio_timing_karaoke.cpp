@@ -139,7 +139,7 @@ public:
 	void AddLeadOut() override;
 	void ModifyLength(int delta, bool shift_following) override;
 	void ModifyStart(int delta) override;
-	bool IsNearbyMarker(int ms, int sensitivity) const override;
+	bool IsNearbyMarker(int ms, int sensitivity, bool) const override;
 	std::vector<AudioMarker*> OnLeftClick(int ms, bool, bool, int sensitivity, int) override;
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int, int) override;
 	void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int) override;
@@ -331,7 +331,7 @@ void AudioTimingControllerKaraoke::ModifyStart(int delta) {
 	AnnounceChanges(cur_syl);
 }
 
-bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity) const {
+bool AudioTimingControllerKaraoke::IsNearbyMarker(int ms, int sensitivity, bool) const {
 	TimeRange range(ms - sensitivity, ms + sensitivity);
 	return any_of(markers.begin(), markers.end(), [&](KaraokeMarker const& km) {
 		return range.contains(km);

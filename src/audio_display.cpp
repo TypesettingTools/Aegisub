@@ -1064,7 +1064,7 @@ void AudioDisplay::OnMouseEvent(wxMouseEvent& event)
 	{
 		const int timepos = TimeFromRelativeX(mouse_x);
 
-		if (timing->IsNearbyMarker(timepos, drag_sensitivity))
+		if (timing->IsNearbyMarker(timepos, drag_sensitivity, event.AltDown()))
 			SetCursor(wxCursor(wxCURSOR_SIZEWE));
 		else
 			SetCursor(wxNullCursor);

@@ -145,7 +145,7 @@ public:
 	///
 	/// This is solely for hit-testing against draggable markers, for
 	/// controlling the mouse cursor.
-	virtual bool IsNearbyMarker(int ms, int sensitivity) const = 0;
+	virtual bool IsNearbyMarker(int ms, int sensitivity, bool alt_down) const = 0;
 
 	/// @brief The user pressed the left mouse button on the audio
 	/// @param ms          The time in milliseconds the user clicked

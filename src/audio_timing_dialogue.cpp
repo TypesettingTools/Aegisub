@@ -326,8 +326,8 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	/// The owning project context
 	agi::Context *context;
 
-	/// The marker which was clicked on for relative shifting in alt-click mode
-	DialogueTimingMarker *clicked_marker = nullptr;
+	/// The time which was clicked on for alt-dragging mode
+	int clicked_ms;
 
 	/// Autocommit option
 	const agi::OptionValue *auto_commit = OPT_GET("Audio/Auto/Commit");
@@ -403,7 +403,7 @@ public:
 	void AddLeadOut() override;
 	void ModifyLength(int delta, bool shift_following) override;
 	void ModifyStart(int delta) override;
-	bool IsNearbyMarker(int ms, int sensitivity) const override;
+	bool IsNearbyMarker(int ms, int sensitivity, bool alt_down) const override;
 	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, bool alt_down, int sensitivity, int snap_range) override;
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range) override;
 	void OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range) override;
@@ -607,10 +607,10 @@ void AudioTimingControllerDialogue::ModifyStart(int delta) {
 		std::min<int>(*m + delta * 10, *active_line.GetRightMarker()));
 }
 
-bool AudioTimingControllerDialogue::IsNearbyMarker(int ms, int sensitivity) const
+bool AudioTimingControllerDialogue::IsNearbyMarker(int ms, int sensitivity, bool alt_down) const
 {
 	assert(sensitivity >= 0);
-	return active_line.ContainsMarker(TimeRange(ms-sensitivity, ms+sensitivity));
+	return alt_down || active_line.ContainsMarker(TimeRange(ms-sensitivity, ms+sensitivity));
 }
 
 std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, bool ctrl_down, bool alt_down, int sensitivity, int snap_range)
@@ -618,9 +618,17 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 	assert(sensitivity >= 0);
 	assert(snap_range >= 0);
 
-	clicked_marker = nullptr;
-
 	std::vector<AudioMarker*> ret;
+
+	clicked_ms = -1;
+	if (alt_down)
+	{
+		clicked_ms = ms;
+		active_line.GetMarkers(&ret);
+		for (auto const& line : selected_lines)
+			line.GetMarkers(&ret);
+		return ret;
+	}
 
 	DialogueTimingMarker *left = active_line.GetLeftMarker();
 	DialogueTimingMarker *right = active_line.GetRightMarker();
@@ -651,13 +659,6 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 		for (; it != markers.end() && !(*clicked < **it); ++it)
 			ret.push_back(*it);
 	}
-	else if (alt_down)
-	{
-		clicked_marker = clicked;
-		active_line.GetMarkers(&ret);
-		for (auto const& line : selected_lines)
-			line.GetMarkers(&ret);
-	}
 	else
 		ret.push_back(clicked);
 
@@ -671,7 +672,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 
 std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int sensitivity, int snap_range)
 {
-	clicked_marker = nullptr;
+	clicked_ms = -1;
 	std::vector<AudioMarker*> ret = GetRightMarkers();
 	SetMarkers(ret, SnapPosition(ms, snap_range, ret));
 	return ret;
@@ -692,7 +693,12 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 {
 	if (upd_markers.empty()) return;
 
-	int shift = clicked_marker ? ms - *clicked_marker : 0;
+	int shift = 0;
+	if (clicked_ms >= 0)
+	{
+		shift = ms - clicked_ms;
+		clicked_ms = ms;
+	}
 
 	// Since we're moving markers, the sorted list of markers will need to be
 	// resorted. To avoid resorting the entire thing, find the subrange that
@@ -719,7 +725,7 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 	for (auto upd_marker : upd_markers)
 	{
 		auto marker = static_cast<DialogueTimingMarker*>(upd_marker);
-		marker->SetPosition(clicked_marker ? *marker + shift : ms);
+		marker->SetPosition(clicked_ms >= 0 ? *marker + shift : ms);
 		modified_lines.insert(marker->GetLine());
 	}
 
