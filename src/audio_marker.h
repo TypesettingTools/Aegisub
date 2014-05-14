@@ -65,15 +65,6 @@ public:
 	/// @brief Get the marker's feet style
 	/// @return The marker's feet style
 	virtual FeetStyle GetFeet() const = 0;
-
-	/// @brief Retrieve whether this marker participates in snapping
-	/// @return True if this marker may snap to other snappable markers
-	///
-	/// If a marker being dragged returns true from this method, and another
-	/// marker which also returns true from this method is within range, the
-	/// marker being dragged will be positioned at the position of the other
-	/// marker if it is released while it is inside snapping range.
-	virtual bool CanSnap() const = 0;
 };
 
 typedef std::vector<const AudioMarker*> AudioMarkerVector;
@@ -181,7 +172,6 @@ class SecondsMarkerProvider final : public AudioMarkerProvider {
 		Marker(Pen *style) : style(style) { }
 		int GetPosition() const override { return position; }
 		FeetStyle GetFeet() const override { return Feet_None; }
-		bool CanSnap() const override { return false; }
 		wxPen GetStyle() const override;
 		operator int() const { return position; }
 	};

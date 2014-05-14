@@ -52,7 +52,6 @@ public:
 	int GetPosition() const override { return position; }
 	wxPen GetStyle() const override { return *pen; }
 	FeetStyle GetFeet() const override { return style; }
-	bool CanSnap() const override { return false; }
 
 	void Move(int new_pos) { position = new_pos; }
 

@@ -77,7 +77,6 @@ public:
 	int       GetPosition() const override { return position; }
 	wxPen     GetStyle()    const override { return *style; }
 	FeetStyle GetFeet()     const override { return feet; }
-	bool      CanSnap()     const override { return true; }
 
 	/// Move the marker to a new position
 	/// @param new_position The position to move the marker to, in milliseconds
@@ -864,6 +863,11 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 {
 	if (snap_range <= 0) return 0;
 
+	std::vector<const DialogueTimingMarker *> inactive_markers;
+	inactive_markers.reserve(inactive_lines.size() * 2);
+	for (auto const& line : inactive_lines)
+		line.GetMarkers(&inactive_markers);
+
 	AudioMarkerVector potential_snaps;
 	int snap_distance = 0;
 	bool has_snapped = false;
@@ -874,11 +878,16 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 		if (pos == prev) continue;
 
 		potential_snaps.clear();
-		GetMarkers(TimeRange(pos - snap_range, pos + snap_range), potential_snaps);
+		TimeRange range(pos - snap_range, pos + snap_range);
+		keyframes_provider.GetMarkers(range, potential_snaps);
+		video_position_provider.GetMarkers(range, potential_snaps);
+		copy(
+			boost::lower_bound(inactive_markers, range.begin(), marker_ptr_cmp()),
+			boost::upper_bound(inactive_markers, range.end(), marker_ptr_cmp()),
+			back_inserter(potential_snaps));
+
 		for (auto marker : potential_snaps)
 		{
-			if (!marker->CanSnap() || boost::find(active, marker) != end(active)) continue;
-
 			auto dist = marker->GetPosition() - pos;
 			if (!has_snapped)
 				snap_distance = dist;

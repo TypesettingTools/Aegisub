@@ -37,7 +37,6 @@ public:
 	AudioMarkerKeyframe(Pen *style, int position) : style(style), position(position) { }
 	int GetPosition() const override { return position; }
 	FeetStyle GetFeet() const override { return Feet_None; }
-	bool CanSnap() const override { return true; }
 	wxPen GetStyle() const override { return *style; }
 	operator int() const { return position; }
 };
@@ -85,21 +84,14 @@ void AudioMarkerProviderKeyframes::GetMarkers(TimeRange const& range, AudioMarke
 }
 
 class VideoPositionMarker final : public AudioMarker {
-	Pen style;
-	int position;
+	Pen style{"Colour/Audio Display/Play Cursor"};
+	int position = -1;
 
 public:
-	VideoPositionMarker()
-	: style("Colour/Audio Display/Play Cursor")
-	, position(-1)
-	{
-	}
-
 	void SetPosition(int new_pos) { position = new_pos; }
 
 	int GetPosition() const override { return position; }
 	FeetStyle GetFeet() const override { return Feet_None; }
-	bool CanSnap() const override { return true; }
 	wxPen GetStyle() const override { return style; }
 	operator int() const { return position; }
 };
