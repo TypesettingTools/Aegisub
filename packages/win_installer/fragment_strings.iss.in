@@ -1,6 +1,8 @@
 [CustomMessages]
 _InstallRuntime=Installing runtime libraries...
 _StartMenuIcon=Create a start menu icon
+_CheckForUpdates=Automatically check for new versions of Aegisub
+_UpdatesGroup=Update Checker:
 
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
 [Messages]

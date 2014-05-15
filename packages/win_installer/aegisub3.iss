@@ -78,12 +78,24 @@ begin
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
+var
+  Updates: String;
 begin
   CurStepChangedMigration(CurStep);
 
   if CurStep = ssPostInstall then
   begin
-    SaveStringToFile(ExpandConstant('{app}\installer_config.json'), ExpandConstant('{{"App": {{"Language": "{language}"}}'), False);
+    if IsTaskSelected('checkforupdates') then
+      Updates := 'true'
+    else
+      Updates := 'false';
+
+    SaveStringToFile(
+      ExpandConstant('{app}\installer_config.json'),
+      FmtMessage('{"App": {"Auto": {"Check For Updates": %1}, "First Start": false, "Language": "%2"}}', [
+        Updates,
+        ExpandConstant('{language}')]),
+      False);
   end;
 end;
 

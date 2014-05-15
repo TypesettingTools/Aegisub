@@ -6203,6 +6203,16 @@ msgstr ""
 
 
 #: packages/win_installer/fragment_strings.iss:1
+msgid "Automatically check for new versions of Aegisub"
+msgstr ""
+
+
+#: packages/win_installer/fragment_strings.iss:1
+msgid "Update Checker:"
+msgstr ""
+
+
+#: packages/win_installer/fragment_strings.iss:1
 msgid "This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code."
 msgstr ""
 
