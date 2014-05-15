@@ -27,11 +27,13 @@ last_svn_hash="16cd907fe7482cb54a7374cd28b8501f138116be"
 git_revision=$(expr $last_svn_revision + $(git log --pretty=oneline $last_svn_hash..HEAD 2>/dev/null | wc -l))
 git_version_str=$(git describe --exact-match 2> /dev/null)
 installer_version='0.0.0'
+resource_version='0, 0, 0'
 if test x$git_version_str != x; then
   git_version_str="${git_version_str##v}"
   tagged_release=1
   if [ $(echo $git_version_str | grep '\d\.\d\.\d') ]; then
     installer_version=$git_version_str
+    resource_version=$(echo $git_version_str | sed 's/\./, /g')
   fi
 else
   git_branch="$(git symbolic-ref HEAD 2> /dev/null)" || git_branch="(unnamed branch)"
@@ -47,7 +49,8 @@ new_version_h="\
 #define BUILD_GIT_VERSION_NUMBER ${git_revision}
 #define BUILD_GIT_VERSION_STRING \"${git_version_str}\"
 #define TAGGED_RELEASE ${tagged_release}
-#define INSTALLER_VERSION \"${installer_version}\""
+#define INSTALLER_VERSION \"${installer_version}\"
+#define RESOURCE_BASE_VERSION ${resource_version}"
 
 # may not exist yet for out of tree builds
 mkdir -p build

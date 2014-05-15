@@ -1,43 +1,77 @@
-// Copyright (c) 2005, Rodrigo Braz Monteiro
-// All rights reserved.
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
 //
-//   * Redistributions of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//   * Redistributions in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//   * Neither the name of the Aegisub Group nor the names of its contributors
-//     may be used to endorse or promote products derived from this software
-//     without specific prior written permission.
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-// -----------------------------------------------------------------------------
-//
-// AEGISUB
-//
-// Website: http://aegisub.cellosoft.com
-// Contact: mailto:zeratul@cellosoft.com
-//
+// Aegisub Project http://www.aegisub.org/
 
 // main app icon should always be first
 // (windows explorer uses the first icon resource by default)
 wxicon ICON "../bitmaps/windows/icon.ico"
 eyedropper_cursor CURSOR "../bitmaps/windows/eyedropper.cur"
 
-// The following define is necessary for Visual Studio
+// We supply the manifest ourselves
 #define wxUSE_NO_MANIFEST 1
 #include "wx/msw/wx.rc"
+
+#include "../../build/git_version.h"
+#include <Winver.h>
+
+#ifdef _DEBUG
+    #ifdef _WIN64
+        #define AGI_RC_FILENAME "aegisub64d"
+    #else
+        #define AGI_RC_FILENAME "aegisub32d"
+    #endif
+#else
+    #ifdef _WIN64
+        #define AGI_RC_FILENAME "aegisub64"
+    #else
+        #define AGI_RC_FILENAME "aegisub32"
+    #endif
+#endif
+
+#ifdef _DEBUG
+    #define AGI_RC_FLAG_DEBUG VS_FF_DEBUG
+#else
+    #define AGI_RC_FLAG_DEBUG 0
+#endif
+
+#ifdef TAGGED_RELEASE
+    #define AGI_RC_FLAG_PRERELEASE 0
+#else
+    #define AGI_RC_FLAG_PRERELEASE VS_FF_PRERELEASE
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    	RESOURCE_BASE_VERSION, BUILD_GIT_VERSION_NUMBER
+PRODUCTVERSION 	RESOURCE_BASE_VERSION, 0
+FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
+FILEFLAGS      	(AGI_RC_FLAG_DEBUG|AGI_RC_FLAG_PRERELEASE)
+FILEOS         	VOS__WINDOWS32
+FILETYPE       	VFT_APP
+FILESUBTYPE    	VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0" // 0x0409: en-US, 0x04B0: unicode
+        BEGIN
+            VALUE "CompanyName",      "Aegisub"
+            VALUE "FileDescription",  "Aegisub subtitle editor"
+            VALUE "FileVersion",      BUILD_GIT_VERSION_STRING
+            VALUE "InternalName",     AGI_RC_FILENAME
+            VALUE "OriginalFilename", AGI_RC_FILENAME ".exe"
+            VALUE "ProductName",      "Aegisub"
+            VALUE "ProductVersion",   BUILD_GIT_VERSION_STRING
+        END
+    END
+END

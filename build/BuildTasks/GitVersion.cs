@@ -30,6 +30,7 @@ namespace BuildTasks {
 #define BUILD_GIT_VERSION_STRING ""{1}""
 #define TAGGED_RELEASE {2}
 #define INSTALLER_VERSION ""{3}""
+#define RESOURCE_BASE_VERSION {4}
 ";
         private const string versionXmlTemplate =
 @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -81,6 +82,7 @@ namespace BuildTasks {
 
             int commits = 6962; // Rev ID when we switched away from SVN
             string installerVersion = "0.0.0";
+            string resourceVersion = "0, 0, 0";
             string versionStr = null;
             bool taggedRelease = false;
             using (var repo = new Repository(Root + ".git")) {
@@ -92,8 +94,10 @@ namespace BuildTasks {
                     taggedRelease = true;
                     versionStr = tag.Name;
                     if (versionStr.StartsWith("v")) versionStr = versionStr.Substring(1);
-                    if (Regex.Match(versionStr, @"(\d)\.(\d)\.(\d)").Success)
+                    if (Regex.Match(versionStr, @"(\d)\.(\d)\.(\d)").Success) {
                         installerVersion = versionStr;
+                        resourceVersion = versionStr.Replace(".", ", ");
+                    }
                     break;
                 }
 
@@ -104,7 +108,7 @@ namespace BuildTasks {
                 }
             }
 
-            WriteIfChanged(versionHPath,  versionHTemplate, commits, versionStr, taggedRelease ? "1" : "0", installerVersion);
+            WriteIfChanged(versionHPath,  versionHTemplate, commits, versionStr, taggedRelease ? "1" : "0", installerVersion, resourceVersion);
             WriteIfChanged(versionXmlPath,  versionXmlTemplate, commits, versionStr);
 
             return true;
