@@ -380,7 +380,6 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	/// @param user_triggered Is this a user-initiated commit or an autocommit
 	void DoCommit(bool user_triggered);
 
-	void OnActiveLineChanged();
 	void OnSelectedSetChanged();
 
 	// AssFile events
@@ -391,15 +390,10 @@ public:
 	void GetMarkers(const TimeRange &range, AudioMarkerVector &out_markers) const override;
 
 	// AudioTimingController interface
-	wxString GetWarningMessage() const override;
-	TimeRange GetIdealVisibleTimeRange() const override;
-	TimeRange GetPrimaryPlaybackRange() const override;
-	TimeRange GetActiveLineRange() const override;
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const override;
 	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const override { }
 	void Next(NextMode mode) override;
 	void Prev() override;
-	void Commit() override;
 	void Revert() override;
 	void AddLeadIn() override;
 	void AddLeadOut() override;
@@ -409,6 +403,13 @@ public:
 	std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, bool alt_down, int sensitivity, int snap_range) override;
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int sensitivity, int snap_range) override;
 	void OnMarkerDrag(std::vector<AudioMarker*> const& markers, int new_position, int snap_range) override;
+
+	// We have no warning messages currently, maybe add the old "Modified" message back later?
+	wxString GetWarningMessage() const override { return wxString(); }
+	TimeRange GetIdealVisibleTimeRange() const override { return active_line; }
+	TimeRange GetPrimaryPlaybackRange() const override { return active_line; }
+	TimeRange GetActiveLineRange() const override { return active_line; }
+	void Commit() override { DoCommit(true); }
 
 	/// Constructor
 	/// @param c Project context
@@ -423,7 +424,7 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , commit_connection(c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this))
 , inactive_line_mode_connection(OPT_SUB("Audio/Inactive Lines Display Mode", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 , inactive_line_comment_connection(OPT_SUB("Audio/Display/Draw/Inactive Comments", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
-, active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::OnActiveLineChanged, this))
+, active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::Revert, this))
 , selection_connection(c->selectionController->AddSelectionListener(&AudioTimingControllerDialogue::OnSelectedSetChanged, this))
 {
 	keyframes_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
@@ -450,11 +451,6 @@ void AudioTimingControllerDialogue::GetMarkers(const TimeRange &range, AudioMark
 	video_position_provider.GetMarkers(range, out_markers);
 }
 
-void AudioTimingControllerDialogue::OnActiveLineChanged()
-{
-	Revert();
-}
-
 void AudioTimingControllerDialogue::OnSelectedSetChanged()
 {
 	RegenerateSelectedLines();
@@ -466,27 +462,6 @@ void AudioTimingControllerDialogue::OnFileChanged(int type) {
 		Revert();
 	else if (type & AssFile::COMMIT_DIAG_ADDREM)
 		RegenerateInactiveLines();
-}
-
-wxString AudioTimingControllerDialogue::GetWarningMessage() const
-{
-	// We have no warning messages currently, maybe add the old "Modified" message back later?
-	return wxString();
-}
-
-TimeRange AudioTimingControllerDialogue::GetIdealVisibleTimeRange() const
-{
-	return GetPrimaryPlaybackRange();
-}
-
-TimeRange AudioTimingControllerDialogue::GetPrimaryPlaybackRange() const
-{
-	return active_line;
-}
-
-TimeRange AudioTimingControllerDialogue::GetActiveLineRange() const
-{
-	return active_line;
 }
 
 void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges &ranges) const
@@ -525,11 +500,6 @@ void AudioTimingControllerDialogue::Next(NextMode mode)
 void AudioTimingControllerDialogue::Prev()
 {
 	context->selectionController->PrevLine();
-}
-
-void AudioTimingControllerDialogue::Commit()
-{
-	DoCommit(true);
 }
 
 void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
@@ -735,14 +705,12 @@ void AudioTimingControllerDialogue::SetMarkers(std::vector<AudioMarker*> const& 
 	AnnounceMarkerMoved();
 }
 
-static bool noncomment_dialogue(AssDialogue const& diag)
-{
-	return !diag.Comment;
-}
-
 void AudioTimingControllerDialogue::RegenerateInactiveLines()
 {
-	auto predicate = inactive_line_comments->GetBool() ? [](AssDialogue const&) { return true; } : noncomment_dialogue;
+	using pred = bool(*)(AssDialogue const&);
+	auto predicate = inactive_line_comments->GetBool()
+		? (pred)[](AssDialogue const&) { return true; }
+		: (pred)[](AssDialogue const& d) { return !d.Comment; };
 
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
