@@ -43,5 +43,5 @@
 DestDir: {tmp}; Source: src\vcredist_{#SUFFIX}.exe; Flags: nocompression deleteafterinstall
 
 [Run]
-Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: Installing runtime libraries...; Parameters: "/q"
+Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: {cm:InstallRuntime}; Parameters: "/q"
 

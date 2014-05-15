@@ -45,3 +45,10 @@ do
     | sed 's/\([0-9]\+\):[^=]\+=\(.*\)$/aegisub.desktop|\1|"\2"/' \
     | maybe_append
 done
+
+grep '^[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss | while read line
+do
+  echo "$line" \
+    | sed 's/[^=]*=\(.*\)/packages\/win_installer\/fragment_strings.iss|1|"\1"/' \
+    | maybe_append
+done

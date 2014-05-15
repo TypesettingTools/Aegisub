@@ -37,6 +37,7 @@
 #endif
 
 #include "fragment_setupbase.iss"
+#include "fragment_strings.iss"
 
 [Setup]
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
