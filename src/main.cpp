@@ -378,7 +378,7 @@ int AegisubApp::OnExit() {
 
 static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
-	if (c->ass && c->subsController) {
+	if (c && c->ass && c->subsController) {
 		auto path = config::path->Decode("?user/recovered");
 		agi::fs::CreateDirectory(path);
 
