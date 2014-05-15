@@ -34,6 +34,7 @@
 
 #include "aegisublocale.h"
 
+#include "compat.h"
 #include "options.h"
 #include "utils.h"
 
@@ -58,9 +59,9 @@ wxTranslations *AegisubLocale::GetTranslations() {
 	return translations;
 }
 
-void AegisubLocale::Init(wxString const& language) {
+void AegisubLocale::Init(std::string const& language) {
 	wxTranslations *translations = GetTranslations();
-	translations->SetLanguage(language);
+	translations->SetLanguage(to_wx(language));
 	translations->AddCatalog(AEGISUB_CATALOG);
 	translations->AddStdCatalog();
 
@@ -69,17 +70,22 @@ void AegisubLocale::Init(wxString const& language) {
 	active_language = language;
 }
 
-wxString AegisubLocale::PickLanguage() {
-	if (!active_language) {
+bool AegisubLocale::HasLanguage(std::string const& language) {
+	auto langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
+	return find(langs.begin(), langs.end(), to_wx(language)) != end(langs);
+}
+
+std::string AegisubLocale::PickLanguage() {
+	if (active_language.empty()) {
 		wxString os_ui_language = GetTranslations()->GetBestTranslation(AEGISUB_CATALOG);
 		if (!os_ui_language.empty())
-			return os_ui_language;
+			return from_wx(os_ui_language);
 	}
 
 	wxArrayString langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
 
 	// No translations available, so don't bother asking the user
-	if (langs.empty() && !active_language)
+	if (langs.empty() && active_language.empty())
 		return "en_US";
 
 	langs.insert(langs.begin(), "en_US");
@@ -107,7 +113,7 @@ wxString AegisubLocale::PickLanguage() {
 	if (dialog.ShowModal() == wxID_OK) {
 		int picked = dialog.GetSelection();
 		if (langs[picked] != active_language)
-			return langs[picked];
+			return from_wx(langs[picked]);
 	}
 
 	return "";

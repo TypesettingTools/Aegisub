@@ -80,8 +80,10 @@ end;
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   CurStepChangedMigration(CurStep);
+
+  if CurStep = ssPostInstall then
+  begin
+    SaveStringToFile(ExpandConstant('{app}\installer_config.json'), ExpandConstant('{{"App": {{"Language": "{language}"}}'), False);
+  end;
 end;
-
-
-
 

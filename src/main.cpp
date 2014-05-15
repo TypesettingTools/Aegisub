@@ -211,6 +211,18 @@ bool AegisubApp::OnInit() {
 		wxMessageBox("Configuration file is invalid. Error reported:\n" + to_wx(err.GetMessage()), "Error");
 	}
 
+#ifdef _WIN32
+	StartupLog("Load installer configuration");
+	if (OPT_GET("App/First Start")->GetBool()) {
+		try {
+			auto installer_config = agi::io::Open(config::path->Decode("?data/installer_config.json"));
+			config::opt->ConfigNext(*installer_config.get());
+		} catch (agi::fs::FileSystemError const&) {
+			// Not an error obviously as the user may not have used the installer
+		}
+	}
+#endif
+
 	// Init commands.
 	cmd::init_builtin_commands();
 
@@ -245,10 +257,10 @@ bool AegisubApp::OnInit() {
 		StartupLog("Initialize final locale");
 
 		// Set locale
-		wxString lang = to_wx(OPT_GET("App/Language")->GetString());
-		if (!lang) {
+		auto lang = OPT_GET("App/Language")->GetString();
+		if (lang.empty() || (lang != "en_US" && !locale.HasLanguage(lang))) {
 			lang = locale.PickLanguage();
-			OPT_SET("App/Language")->SetString(from_wx(lang));
+			OPT_SET("App/Language")->SetString(lang);
 		}
 		locale.Init(lang);
 

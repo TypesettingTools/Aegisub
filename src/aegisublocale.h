@@ -27,19 +27,16 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file aegisublocale.h
-/// @see aegisublocale.cpp
-/// @ingroup utility
-///
-
-#include <wx/string.h>
+#include <string>
 
 class wxTranslations;
 
 class AegisubLocale {
-	wxString active_language;
+	std::string active_language;
 	wxTranslations *GetTranslations();
+
 public:
-	void Init(wxString const& language);
-	wxString PickLanguage();
+	void Init(std::string const& language);
+	bool HasLanguage(std::string const& language);
+	std::string PickLanguage();
 };
