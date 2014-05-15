@@ -46,7 +46,7 @@ do
     | maybe_append
 done
 
-grep '^[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss | while read line
+grep '^_[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss.in | while read line
 do
   echo "$line" \
     | sed 's/[^=]*=\(.*\)/packages\/win_installer\/fragment_strings.iss|1|"\1"/' \

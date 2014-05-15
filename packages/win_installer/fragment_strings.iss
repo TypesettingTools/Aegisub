@@ -1,5 +1,6 @@
 [CustomMessages]
 InstallRuntime=Installing runtime libraries...
+StartMenuIcon=Create a start menu icon
 
 ; Replacement for License page, no need to bother the user with legal mumbo-jumbo
 [Messages]
