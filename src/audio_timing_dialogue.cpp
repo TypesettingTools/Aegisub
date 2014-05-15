@@ -223,9 +223,11 @@ public:
 
 	/// Get the leftmost of the markers
 	DialogueTimingMarker *GetLeftMarker() { return left_marker; }
+	const DialogueTimingMarker *GetLeftMarker() const { return left_marker; }
 
 	/// Get the rightmost of the markers
 	DialogueTimingMarker *GetRightMarker() { return right_marker; }
+	const DialogueTimingMarker *GetRightMarker() const { return right_marker; }
 
 	/// Does this line have a marker in the given range?
 	bool ContainsMarker(TimeRange const& range) const
@@ -861,41 +863,84 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::GetRightMarkers()
 
 int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<AudioMarker*> const& active) const
 {
-	if (snap_range <= 0) return 0;
+	if (snap_range <= 0 || active.empty()) return 0;
 
-	std::vector<const DialogueTimingMarker *> inactive_markers;
-	inactive_markers.reserve(inactive_lines.size() * 2);
+	auto marker_range = [&] {
+		int front = active.front()->GetPosition();
+		int min = front;
+		int max = front;
+		for (auto m : active)
+		{
+			auto pos = m->GetPosition();
+			if (pos < min) min = pos;
+			if (pos > max) max = pos;
+		}
+		return TimeRange{min - snap_range, max + snap_range};
+	}();
+
+	std::vector<int> inactive_markers;
+	inactive_markers.reserve(inactive_lines.size() * 2 + selected_lines.size() * 2 + 2 - active.size());
+
+	auto add_inactive = [&](const DialogueTimingMarker *m, bool check)
+	{
+		if (!marker_range.contains(*m)) return;
+		if (!inactive_markers.empty() && inactive_markers.back() == *m) return;
+		if (check && boost::find(active, m) != end(active)) return;
+		inactive_markers.push_back(*m);
+	};
+
 	for (auto const& line : inactive_lines)
-		line.GetMarkers(&inactive_markers);
+	{
+		add_inactive(line.GetLeftMarker(), false);
+		add_inactive(line.GetRightMarker(), false);
+	}
 
-	AudioMarkerVector potential_snaps;
+	if (active.size() != selected_lines.size() * 2 + 2)
+	{
+		for (auto const& line : selected_lines)
+		{
+			add_inactive(line.GetLeftMarker(), true);
+			add_inactive(line.GetRightMarker(), true);
+		}
+		add_inactive(active_line.GetLeftMarker(), true);
+		add_inactive(active_line.GetRightMarker(), true);
+	}
+
 	int snap_distance = 0;
 	bool has_snapped = false;
+	auto check = [&](int marker, int pos)
+	{
+		auto dist = marker - pos;
+		if (!has_snapped)
+			snap_distance = dist;
+		else if (tabs(dist) < tabs(snap_distance))
+			snap_distance = dist;
+		has_snapped = true;
+	};
+
 	int prev = -1;
+	AudioMarkerVector snap_markers;
 	for (const auto active_marker : active)
 	{
 		auto pos = active_marker->GetPosition();
 		if (pos == prev) continue;
 
-		potential_snaps.clear();
+		snap_markers.clear();
 		TimeRange range(pos - snap_range, pos + snap_range);
-		keyframes_provider.GetMarkers(range, potential_snaps);
-		video_position_provider.GetMarkers(range, potential_snaps);
-		copy(
-			boost::lower_bound(inactive_markers, range.begin(), marker_ptr_cmp()),
-			boost::upper_bound(inactive_markers, range.end(), marker_ptr_cmp()),
-			back_inserter(potential_snaps));
+		keyframes_provider.GetMarkers(range, snap_markers);
+		video_position_provider.GetMarkers(range, snap_markers);
 
-		for (auto marker : potential_snaps)
+		for (const auto marker : snap_markers)
 		{
-			auto dist = marker->GetPosition() - pos;
-			if (!has_snapped)
-				snap_distance = dist;
-			else if (tabs(dist) < tabs(snap_distance))
-				snap_distance = dist;
-			if (snap_distance == 0)
-				return 0;
-			has_snapped = true;
+			check(marker->GetPosition(), pos);
+			if (snap_distance == 0) return 0;
+		}
+
+		for (auto it = boost::lower_bound(inactive_markers, range.begin()); it != end(inactive_markers); ++it)
+		{
+			check(*it, pos);
+			if (snap_distance == 0) return 0;
+			if (*it > pos) break;
 		}
 	}
 
