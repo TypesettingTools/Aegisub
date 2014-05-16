@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
+#include <cmath>
 #include <functional>
 
 enum {
@@ -50,7 +51,7 @@ namespace {
 					val = (val + shift_x) * scale_x;
 				else
 					val = (val + shift_y) * scale_y;
-				val = int(val * 8 + .5) / 8.0; // round to eighth-pixels
+				val = round(val * 8) / 8.0; // round to eighth-pixels
 				final += float_to_string(val);
 				final += ' ';
 				is_x = !is_x;
