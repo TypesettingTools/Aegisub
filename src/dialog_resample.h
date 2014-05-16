@@ -22,6 +22,7 @@
 namespace agi { struct Context; }
 class AssFile;
 class wxCheckBox;
+class wxRadioBox;
 class wxSpinCtrl;
 struct ResampleSettings;
 
@@ -42,7 +43,7 @@ class DialogResample final : public wxDialog {
 	wxSpinCtrl *dest_x;
 	wxSpinCtrl *dest_y;
 	wxCheckBox *symmetrical;
-	wxCheckBox *change_ar;
+	wxRadioBox *ar_mode;
 	wxSpinCtrl *margin_ctrl[4];
 
 	wxButton *from_script;

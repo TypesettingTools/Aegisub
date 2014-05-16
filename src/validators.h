@@ -76,6 +76,7 @@ class EnumBinder final : public wxValidator {
 	T *value;
 
 	wxObject *Clone() const override { return new EnumBinder<T>(value); }
+	bool Validate(wxWindow *) override { return true; }
 
 	bool TransferFromWindow() override {
 		if (wxRadioBox *rb = dynamic_cast<wxRadioBox*>(GetWindow()))

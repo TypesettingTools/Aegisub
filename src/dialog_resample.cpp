@@ -24,9 +24,10 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "resolution_resampler.h"
+#include "validators.h"
 #include "video_context.h"
 
-#include <boost/rational.hpp>
+#include <boost/range/size.hpp>
 #include <wx/checkbox.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
@@ -88,9 +89,9 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	from_script = new wxButton(this, -1, _("From s&cript"));
 	from_script->Enable(false);
 
-	change_ar = new wxCheckBox(this, -1, _("&Change aspect ratio"));
-	change_ar->SetValidator(wxGenericValidator(&settings.change_ar));
-	change_ar->Enable(false);
+	wxString ar_modes[] = {_("Stretch"), _("Add borders"), _("Remove borders"), _("Manual")};
+	ar_mode = new wxRadioBox(this, -1, _("Aspect Ratio Handling"), wxDefaultPosition,
+		wxDefaultSize, boost::size(ar_modes), ar_modes, 1, 4, MakeEnumBinder(&settings.ar_mode));
 
 	// Position the controls
 	auto margin_sizer = new wxGridSizer(3, 3, 5, 5);
@@ -121,20 +122,24 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination Resolution"));
 	dest_res_box->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
-	dest_res_box->Add(change_ar);
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
 	main_sizer->Add(source_res_sizer, wxSizerFlags(0).Expand().Border());
 	main_sizer->Add(dest_res_box, wxSizerFlags(0).Expand().Border());
+	main_sizer->Add(ar_mode, wxSizerFlags(0).Expand().Border());
+	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
 	main_sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	SetSizerAndFit(main_sizer);
 	CenterOnParent();
+
+	TransferDataToWindow();
+	UpdateButtons();
 
 	// Bind events
 	using std::bind;
 	Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
 	Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) { UpdateButtons(); });
+	Bind(wxEVT_RADIOBOX, [=](wxCommandEvent&) { UpdateButtons(); });
 	from_video->Bind(wxEVT_BUTTON, &DialogResample::SetDestFromVideo, this);
 	from_script->Bind(wxEVT_BUTTON, &DialogResample::SetSourceFromScript, this);
 	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);
@@ -157,9 +162,18 @@ void DialogResample::UpdateButtons() {
 		(dest_x->GetValue() != video_w || dest_y->GetValue() != video_h));
 	from_script->Enable(source_x->GetValue() != script_w || source_y->GetValue() != script_h);
 
-	boost::rational<int> source_ar(source_x->GetValue(), source_y->GetValue());
-	boost::rational<int> dest_ar(dest_x->GetValue(), dest_y->GetValue());
-	change_ar->Enable(source_ar != dest_ar);
+	auto source_ar = double(source_x->GetValue()) / source_y->GetValue();
+	auto dest_ar = double(dest_x->GetValue()) / dest_y->GetValue();
+	bool ar_changed = abs(source_ar - dest_ar) / dest_ar > .01;
+
+	ar_mode->Enable(ar_changed);
+
+	bool margins = ar_changed && ar_mode->GetSelection() == (int)ResampleARMode::Manual;
+	symmetrical->Enable(margins);
+	margin_ctrl[LEFT]->Enable(margins);
+	margin_ctrl[TOP]->Enable(margins);
+	margin_ctrl[RIGHT]->Enable(margins && !symmetrical->GetValue());
+	margin_ctrl[BOTTOM]->Enable(margins && !symmetrical->GetValue());
 }
 
 void DialogResample::OnSymmetrical(wxCommandEvent &) {

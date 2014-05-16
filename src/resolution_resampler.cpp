@@ -154,6 +154,36 @@ namespace {
 }
 
 void ResampleResolution(AssFile *ass, ResampleSettings settings) {
+	auto horizontal_stretch = 1.0;
+	auto old_ar = double(settings.source_x) / settings.source_y;
+	auto new_ar = double(settings.dest_x) / settings.dest_y;
+	bool border_horizontally = new_ar > old_ar;
+	// Don't convert aspect ratio if it's very close to correct
+	// (for reference, 848x480 <-> 1280x720 is .006)
+	if (abs(old_ar - new_ar) / new_ar > .01) {
+		switch (settings.ar_mode) {
+		case ResampleARMode::RemoveBorder:
+			border_horizontally = !border_horizontally;
+		case ResampleARMode::AddBorder:
+			if (border_horizontally) // Wider/Shorter
+				settings.margin[LEFT] = settings.margin[RIGHT] = (settings.source_y * new_ar - settings.source_x) / 2;
+			else // Taller/Narrower
+				settings.margin[TOP] = settings.margin[BOTTOM] = (settings.source_x / new_ar - settings.source_y) / 2;
+			break;
+		case ResampleARMode::Stretch:
+			horizontal_stretch = new_ar / old_ar;
+			break;
+		case ResampleARMode::Manual:
+			old_ar =
+				double(settings.source_x + settings.margin[LEFT] + settings.margin[RIGHT]) /
+				double(settings.source_y + settings.margin[TOP] + settings.margin[BOTTOM]);
+
+			if (abs(old_ar - new_ar) / new_ar > .01)
+				horizontal_stretch = new_ar / old_ar;
+			break;
+		}
+	}
+
 	// Add margins to original resolution
 	settings.source_x += settings.margin[LEFT] + settings.margin[RIGHT];
 	settings.source_y += settings.margin[TOP] + settings.margin[BOTTOM];
@@ -162,11 +192,8 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 		settings.margin,
 		double(settings.dest_x) / double(settings.source_x),
 		double(settings.dest_y) / double(settings.source_y),
-		1.0
+		horizontal_stretch
 	};
-
-	if (settings.change_ar)
-		state.ar = state.rx / state.ry;
 
 	for (auto& line : ass->Styles)
 		resample_style(&state, line);

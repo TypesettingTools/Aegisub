@@ -16,6 +16,13 @@
 
 class AssFile;
 
+enum class ResampleARMode {
+	Stretch,
+	AddBorder,
+	RemoveBorder,
+	Manual
+};
+
 /// Configuration parameters for a resample
 struct ResampleSettings {
 	int margin[4];  ///< Amount to add to each margin
@@ -23,7 +30,7 @@ struct ResampleSettings {
 	int source_y;   ///< Original Y resolution
 	int dest_x;     ///< New X resolution
 	int dest_y;     ///< New Y resolution
-	bool change_ar; ///< Should the aspect ratio of the subs be changed?
+	ResampleARMode ar_mode; ///< What to do if the old AR and new AR don't match
 };
 
 /// Resample the subtitles in the project
