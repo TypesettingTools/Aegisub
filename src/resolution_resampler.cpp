@@ -136,8 +136,10 @@ namespace {
 		for (auto drawing : blocks | agi::of_type<AssDialogueBlockDrawing>())
 			drawing->text = transform_drawing(drawing->text, 0, 0, state->rx / state->ar, state->ry);
 
-		for (size_t i = 0; i < 3; ++i)
-			diag.Margin[i] = int((diag.Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
+		for (size_t i = 0; i < 3; ++i) {
+			if (diag.Margin[i])
+				diag.Margin[i] = int((diag.Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
+		}
 
 		diag.UpdateText(blocks);
 	}
