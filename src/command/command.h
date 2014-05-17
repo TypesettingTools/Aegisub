@@ -22,6 +22,7 @@
 #include <vector>
 
 #include <wx/bitmap.h>
+#include <wx/intl.h>
 #include <wx/string.h>
 
 #include <libaegisub/exception.h>

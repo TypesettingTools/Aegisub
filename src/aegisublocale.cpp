@@ -72,7 +72,7 @@ void AegisubLocale::Init(std::string const& language) {
 
 bool AegisubLocale::HasLanguage(std::string const& language) {
 	auto langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
-	return find(langs.begin(), langs.end(), to_wx(language)) != end(langs);
+	return std::find(langs.begin(), langs.end(), to_wx(language)) != langs.end();
 }
 
 std::string AegisubLocale::PickLanguage() {
