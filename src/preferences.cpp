@@ -220,9 +220,9 @@ Video::Video(wxTreebook *book, Preferences *parent): OptionPage(book, parent, _(
 	DisableIfChecked(autocb,
 		OptionAdd(resolution, _("Default height"), "Subtitle/Default Resolution/Height"));
 
-	const wxString cres_arr[3] = { _("Never"), _("Ask"), _("Always") };
-	wxArrayString choice_res(3, cres_arr);
-	OptionChoice(resolution, _("Match video resolution on open"), choice_res, "Video/Check Script Res");
+	const wxString cres_arr[] = {_("Never"), _("Ask"), _("Always set"), _("Always resample")};
+	wxArrayString choice_res(4, cres_arr);
+	OptionChoice(resolution, _("Match video resolution on open"), choice_res, "Video/Script Resolution Mismatch");
 
 	SetSizerAndFit(sizer);
 }

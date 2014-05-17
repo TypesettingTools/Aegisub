@@ -40,6 +40,7 @@
 #include "audio_controller.h"
 #include "compat.h"
 #include "dialog_progress.h"
+#include "dialog_video_properties.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
@@ -121,51 +122,7 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
 
-		// When opening dummy video only want to set the script properties if
-		// they were previously unset
-		bool set_properties = video_provider->ShouldSetVideoProperties();
-
-		auto matrix = video_provider->GetColorSpace();
-		if (set_properties && matrix != old_matrix) {
-			context->ass->SetScriptInfo("YCbCr Matrix", matrix);
-			commit_subs = true;
-		}
-
-		// Check that the script resolution matches the video resolution
-		int sx = context->ass->GetScriptInfoAsInt("PlayResX");
-		int sy = context->ass->GetScriptInfoAsInt("PlayResY");
-		int vx = GetWidth();
-		int vy = GetHeight();
-
-		// If the script resolution hasn't been set at all just force it to the
-		// video resolution
-		if (sx == 0 && sy == 0) {
-			context->ass->SetScriptInfo("PlayResX", std::to_string(vx));
-			context->ass->SetScriptInfo("PlayResY", std::to_string(vy));
-			commit_subs = true;
-		}
-		// If it has been set to something other than a multiple of the video
-		// resolution, ask the user if they want it to be fixed
-		else if (set_properties && (sx % vx != 0 || sy % vy != 0)) {
-			switch (OPT_GET("Video/Check Script Res")->GetInt()) {
-			case 1: // Ask to change on mismatch
-				if (wxYES != wxMessageBox(
-					wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vx, vy, sx, sy),
-					_("Resolution mismatch"),
-					wxYES_NO | wxCENTER,
-					context->parent))
-
-					break;
-				// Fallthrough to case 2
-			case 2: // Always change script res
-				context->ass->SetScriptInfo("PlayResX", std::to_string(vx));
-				context->ass->SetScriptInfo("PlayResY", std::to_string(vy));
-				commit_subs = true;
-				break;
-			default: // Never change
-				break;
-			}
-		}
+		bool needs_commit = UpdateVideoProperties(context->ass.get(), video_provider, context->parent);
 
 		keyframes = video_provider->GetKeyFrames();
 

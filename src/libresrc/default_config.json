@@ -572,7 +572,6 @@
 	},
 
 	"Video" : {
-		"Check Script Res" : 1,
 		"Default Zoom" : 7,
 		"Detached" : {
 			"Enabled" : false,
@@ -592,9 +591,11 @@
 			"Pattern" : false
 		},
 		"Force BT.601" : true,
+		"Last Script Resolution Mismatch Choice" : 2,
 		"Open Audio" : false,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",
+		"Script Resolution Mismatch" : 1,
 		"Slider" : {
 			"Fast Jump Step" : 10,
 			"Show Keyframes" : true

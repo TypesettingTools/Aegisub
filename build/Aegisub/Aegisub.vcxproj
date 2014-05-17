@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- VC boilerplate -->
   <PropertyGroup Label="Globals">
@@ -173,6 +173,7 @@
     <ClInclude Include="$(SrcDir)dialog_translation.h" />
     <ClInclude Include="$(SrcDir)dialog_version_check.h" />
     <ClInclude Include="$(SrcDir)dialog_video_details.h" />
+    <ClInclude Include="$(SrcDir)dialog_video_properties.h" />
     <ClInclude Include="$(SrcDir)export_fixstyle.h" />
     <ClInclude Include="$(SrcDir)export_framerate.h" />
     <ClInclude Include="$(SrcDir)factory_manager.h" />
@@ -370,6 +371,7 @@
     <ClCompile Include="$(SrcDir)dialog_translation.cpp" />
     <ClCompile Include="$(SrcDir)dialog_version_check.cpp" />
     <ClCompile Include="$(SrcDir)dialog_video_details.cpp" />
+    <ClCompile Include="$(SrcDir)dialog_video_properties.cpp" />
     <ClCompile Include="$(SrcDir)export_fixstyle.cpp" />
     <ClCompile Include="$(SrcDir)export_framerate.cpp" />
     <ClCompile Include="$(SrcDir)ffmpegsource_common.cpp">

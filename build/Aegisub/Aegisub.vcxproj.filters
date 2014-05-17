@@ -621,6 +621,9 @@
     <ClInclude Include="$(SrcDir)subtitle_format_ssa.h">
       <Filter>Subtitle formats</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)dialog_video_properties.h">
+      <Filter>Features\Resolution resampler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1174,6 +1177,9 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)subtitle_format_ssa.cpp">
       <Filter>Subtitle formats</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)dialog_video_properties.cpp">
+      <Filter>Features\Resolution resampler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

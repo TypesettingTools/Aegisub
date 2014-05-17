@@ -184,6 +184,7 @@ SRC += \
 	dialog_translation.cpp \
 	dialog_version_check.cpp \
 	dialog_video_details.cpp \
+	dialog_video_properties.cpp \
 	export_fixstyle.cpp \
 	export_framerate.cpp \
 	fft.cpp \
