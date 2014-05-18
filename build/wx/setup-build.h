@@ -251,6 +251,6 @@
 #define wxUSE_TIMEPICKCTRL 1
 #define wxUSE_WEBVIEW 0
 #define wxUSE_RICHTOOLTIP 0
-#define wxUSE_COMPILER_TLS 1
+#define wxUSE_COMPILER_TLS 2
 #define wxUSE_PREFERENCES_EDITOR 0
 #endif
