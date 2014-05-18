@@ -188,11 +188,22 @@ void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
 }
 
 void SubsTextEditCtrl::OnKeyDown(wxKeyEvent &event) {
-	// Workaround for wxSTC eating tabs.
-	if (event.GetKeyCode() == WXK_TAB) {
-		Navigate(event.ShiftDown() ? wxNavigationKeyEvent::IsBackward : wxNavigationKeyEvent::IsForward);
-	}
 	event.Skip();
+
+	// Workaround for wxSTC eating tabs.
+	if (event.GetKeyCode() == WXK_TAB)
+		Navigate(event.ShiftDown() ? wxNavigationKeyEvent::IsBackward : wxNavigationKeyEvent::IsForward);
+	else if (event.GetKeyCode() == WXK_RETURN && event.GetModifiers() == wxMOD_SHIFT) {
+		auto sel_start = GetSelectionStart(), sel_end = GetSelectionEnd();
+		wxCharBuffer old = GetTextRaw();
+		std::string data(old.data(), sel_start);
+		data.append("\\N");
+		data.append(old.data() + sel_end, old.length() - sel_end);
+		SetTextRaw(data.c_str());
+
+		SetSelection(sel_start + 2, sel_start + 2);
+		event.Skip(false);
+	}
 }
 
 void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& name) {
