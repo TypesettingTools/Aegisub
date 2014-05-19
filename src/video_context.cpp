@@ -126,7 +126,7 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		keyframes = video_provider->GetKeyFrames();
 		video_fps = video_provider->GetFPS();
 
-		bool needs_commit = UpdateVideoProperties(context->ass.get(), video_provider, context->parent);
+		commit_subs = UpdateVideoProperties(context->ass.get(), video_provider, context->parent);
 
 		// Set frame rate
 		if (ovr_fps.IsLoaded()) {
