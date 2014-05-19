@@ -709,8 +709,8 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 {
 	using pred = bool(*)(AssDialogue const&);
 	auto predicate = inactive_line_comments->GetBool()
-		? (pred)[](AssDialogue const&) { return true; }
-		: (pred)[](AssDialogue const& d) { return !d.Comment; };
+		? static_cast<pred>([](AssDialogue const&) { return true; })
+		: static_cast<pred>([](AssDialogue const& d) { return !d.Comment; });
 
 	bool was_empty = inactive_lines.empty();
 	inactive_lines.clear();
