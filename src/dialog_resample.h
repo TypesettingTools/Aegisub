@@ -22,8 +22,10 @@
 namespace agi { struct Context; }
 class AssFile;
 class wxCheckBox;
+class wxComboBox;
 class wxRadioBox;
 class wxSpinCtrl;
+enum class YCbCrMatrix : int;
 struct ResampleSettings;
 
 /// @class DialogResample
@@ -35,13 +37,17 @@ class DialogResample final : public wxDialog {
 
 	int script_w;
 	int script_h;
+	YCbCrMatrix script_mat;
 	int video_w = 0;
 	int video_h = 0;
+	YCbCrMatrix video_mat;
 
 	wxSpinCtrl *source_x;
 	wxSpinCtrl *source_y;
 	wxSpinCtrl *dest_x;
 	wxSpinCtrl *dest_y;
+	wxComboBox *source_matrix;
+	wxComboBox *dest_matrix;
 	wxCheckBox *symmetrical;
 	wxRadioBox *ar_mode;
 	wxSpinCtrl *margin_ctrl[4];

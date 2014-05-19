@@ -61,6 +61,7 @@ public:
 	/// @return A string describing the source colorspace or "None" if it is
 	///         unknown or meaningless
 	virtual std::string GetColorSpace() const = 0;
+	virtual std::string GetRealColorSpace() const { return GetColorSpace(); }
 
 	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
 	virtual std::string GetWarning() const { return ""; }

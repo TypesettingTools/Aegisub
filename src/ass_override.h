@@ -49,7 +49,8 @@ enum class AssParameterClass {
 	RELATIVE_TIME_END,
 	KARAOKE,
 	DRAWING,
-	ALPHA
+	ALPHA,
+	COLOR
 };
 
 enum class VariableDataType {

@@ -62,6 +62,7 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
 	std::string ColorSpace;         ///< Colorspace name
+	std::string RealColorSpace;     ///< Colorspace name
 
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
@@ -79,6 +80,7 @@ public:
 	double GetDAR() const override { return DAR; }
 	agi::vfr::Framerate GetFPS() const override { return Timecodes; }
 	std::string GetColorSpace() const override { return ColorSpace; }
+	std::string GetRealColorSpace() const override { return RealColorSpace; }
 	std::vector<int> GetKeyFrames() const override { return KeyFramesList; };
 	std::string GetDecoderName() const override { return "FFmpegSource"; }
 	bool WantsCaching() const override { return true; }
@@ -91,7 +93,6 @@ std::string colormatrix_description(int cs, int cr) {
 	switch (cs) {
 		case FFMS_CS_RGB:
 			return "None";
-			break;
 		case FFMS_CS_BT709:
 			return str + ".709";
 		case FFMS_CS_FCC:
@@ -227,7 +228,7 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 	auto CS = TempFrame->ColorSpace;
 	if (CS == FFMS_CS_UNSPECIFIED)
 		CS = Width > 1024 || Height >= 600 ? FFMS_CS_BT709 : FFMS_CS_BT470BG;
-	ColorSpace = colormatrix_description(CS, TempFrame->ColorRange);
+	RealColorSpace = ColorSpace = colormatrix_description(CS, TempFrame->ColorRange);
 
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
 	if (CS != FFMS_CS_RGB && CS != FFMS_CS_BT470BG && ColorSpace != colormatrix && (colormatrix == "TV.601" || OPT_GET("Video/Force BT.601")->GetBool())) {

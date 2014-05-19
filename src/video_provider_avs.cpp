@@ -65,6 +65,7 @@ class AvisynthVideoProvider: public VideoProvider {
 	std::vector<int> keyframes;
 	std::string warning;
 	std::string colorspace;
+	std::string real_colorspace;
 
 	PClip RGB32Video;
 	VideoInfo vi;
@@ -85,6 +86,7 @@ public:
 	std::string GetWarning() const override { return warning; }
 	std::string GetDecoderName() const override { return decoder_name; }
 	std::string GetColorSpace() const override { return colorspace; }
+	std::string GetRealColorSpace() const override { return real_colorspace; }
 };
 
 AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) {
@@ -176,22 +178,24 @@ file_exit:
 			throw VideoNotSupported("No usable video found");
 
 		vi = script.AsClip()->GetVideoInfo();
-		if (!vi.IsRGB()) {
+		if (vi.IsRGB())
+			real_colorspace = colorspace = "None";
+		else {
 			/// @todo maybe read ColorMatrix hints for d2v files?
 			AVSValue args[2] = { script, "Rec601" };
 			bool force_bt601 = OPT_GET("Video/Force BT.601")->GetBool() || colormatrix == "TV.601";
 			bool bt709 = vi.width > 1024 || vi.height >= 600;
 			if (bt709 && (!force_bt601 || colormatrix == "TV.709")) {
 				args[1] = "Rec709";
-				colorspace = "TV.709";
+				real_colorspace = colorspace = "TV.709";
 			}
-			else
+			else {
 				colorspace = "TV.601";
+				real_colorspace = bt709 ? "TV.709" : "TV.601";
+			}
 			const char *argnames[2] = { 0, "matrix" };
 			script = avs.GetEnv()->Invoke("ConvertToRGB32", AVSValue(args, 2), argnames);
 		}
-		else
-			colorspace = "None";
 
 		RGB32Video = avs.GetEnv()->Invoke("Cache", script).AsClip();
 		vi = RGB32Video->GetVideoInfo();

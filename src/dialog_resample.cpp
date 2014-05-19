@@ -20,8 +20,10 @@
 #include "dialog_resample.h"
 
 #include "ass_file.h"
-#include "include/aegisub/context.h"
+#include "compat.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
+#include "include/aegisub/video_provider.h"
 #include "libresrc/libresrc.h"
 #include "resolution_resampler.h"
 #include "validators.h"
@@ -29,6 +31,7 @@
 
 #include <boost/range/size.hpp>
 #include <wx/checkbox.h>
+#include <wx/combobox.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/statbox.h>
@@ -52,14 +55,18 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	c->ass->GetResolution(script_w, script_h);
 	settings.source_x = script_w;
 	settings.source_y = script_h;
+	settings.source_matrix = script_mat = MatrixFromString(c->ass->GetScriptInfo("YCbCr Matrix"));
 
 	if (c->videoController->IsLoaded()) {
 		settings.dest_x = video_w = c->videoController->GetWidth();
 		settings.dest_y = video_h = c->videoController->GetHeight();
+		settings.dest_matrix = video_mat = MatrixFromString(c->videoController->GetProvider()->GetRealColorSpace());
 	}
 	else {
 		settings.dest_x = script_w;
 		settings.dest_y = script_h;
+		settings.dest_matrix = script_mat;
+		video_mat = YCbCrMatrix::rgb;
 	}
 
 	// Create all controls and set validators
@@ -76,13 +83,19 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	source_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
 	source_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_matrix = new wxComboBox(this, -1, "", wxDefaultPosition,
+		wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
 	dest_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
 	dest_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_matrix = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize,
+		to_wx(MatrixNames()), wxCB_READONLY);
 
 	source_x->SetValidator(wxGenericValidator(&settings.source_x));
 	source_y->SetValidator(wxGenericValidator(&settings.source_y));
+	source_matrix->SetValidator(MakeEnumBinder(&settings.source_matrix));
 	dest_x->SetValidator(wxGenericValidator(&settings.dest_x));
 	dest_y->SetValidator(wxGenericValidator(&settings.dest_y));
+	dest_matrix->SetValidator(MakeEnumBinder(&settings.dest_matrix));
 
 	from_video = new wxButton(this, -1, _("From &video"));
 	from_video->Enable(false);
@@ -108,11 +121,19 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	auto margin_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Margin offset"));
 	margin_box->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 
-	auto source_res_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Source Resolution"));
+	auto source_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
 	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(from_script, wxSizerFlags(1));
+
+	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
+	source_matrix_sizer->Add(new wxStaticText(this, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	source_matrix_sizer->Add(source_matrix, wxSizerFlags(1).Center().Right());
+
+	auto source_res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Source Resolution"));
+	source_res_box->Add(source_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	source_res_box->Add(source_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto dest_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
@@ -120,13 +141,18 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	dest_res_sizer->Add(from_video, wxSizerFlags(1));
 
+	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
+	dest_matrix_sizer->Add(new wxStaticText(this, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	dest_matrix_sizer->Add(dest_matrix, wxSizerFlags(1).Center().Right());
+
 	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination Resolution"));
 	dest_res_box->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	dest_res_box->Add(dest_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(source_res_sizer, wxSizerFlags(0).Expand().Border());
-	main_sizer->Add(dest_res_box, wxSizerFlags(0).Expand().Border());
-	main_sizer->Add(ar_mode, wxSizerFlags(0).Expand().Border());
+	main_sizer->Add(source_res_box, wxSizerFlags().Expand().Border());
+	main_sizer->Add(dest_res_box, wxSizerFlags().Expand().Border());
+	main_sizer->Add(ar_mode, wxSizerFlags().Expand().Border());
 	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
 	main_sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	SetSizerAndFit(main_sizer);
@@ -150,11 +176,13 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 void DialogResample::SetDestFromVideo(wxCommandEvent &) {
 	dest_x->SetValue(video_w);
 	dest_y->SetValue(video_h);
+	dest_matrix->SetSelection((int)video_mat);
 }
 
 void DialogResample::SetSourceFromScript(wxCommandEvent&) {
 	source_x->SetValue(script_w);
 	source_y->SetValue(script_h);
+	source_matrix->SetSelection((int)script_mat);
 }
 
 void DialogResample::UpdateButtons() {

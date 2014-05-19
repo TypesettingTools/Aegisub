@@ -39,6 +39,7 @@
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
+#include "resolution_resampler.h"
 #include "validators.h"
 #include "video_context.h"
 
@@ -90,15 +91,8 @@ DialogProperties::DialogProperties(agi::Context *c)
 	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
 	res_sizer->Add(FromVideo, 1, 0, 0);
 
-	wxString matricies[] = {
-		"None",
-		"TV.601", "PC.601",
-		"TV.709", "PC.709",
-		"TV.FCC", "PC.FCC",
-		"TV.240M", "PC.240M"
-	};
 	YCbCrMatrix = new wxComboBox(this, -1, c->ass->GetScriptInfo("YCbCr Matrix"),
-		 wxDefaultPosition, wxDefaultSize, boost::size(matricies), matricies, wxCB_READONLY);
+		 wxDefaultPosition, wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
 
 	auto matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
 	matrix_sizer->Add(new wxStaticText(this, -1, "YCbCr Matrix:"), wxSizerFlags().Center());

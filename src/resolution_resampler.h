@@ -14,6 +14,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <string>
+#include <vector>
+
 class AssFile;
 
 enum class ResampleARMode {
@@ -23,6 +26,22 @@ enum class ResampleARMode {
 	Manual
 };
 
+enum class YCbCrMatrix : int {
+	rgb,
+	tv_601,
+	pc_601,
+	tv_709,
+	pc_709,
+	tv_fcc,
+	pc_fcc,
+	tv_240m,
+	pc_240m
+};
+
+YCbCrMatrix MatrixFromString(std::string const& str);
+std::string MatrixToString(YCbCrMatrix mat);
+std::vector<std::string> MatrixNames();
+
 /// Configuration parameters for a resample
 struct ResampleSettings {
 	int margin[4];  ///< Amount to add to each margin
@@ -31,6 +50,8 @@ struct ResampleSettings {
 	int dest_x;     ///< New X resolution
 	int dest_y;     ///< New Y resolution
 	ResampleARMode ar_mode; ///< What to do if the old AR and new AR don't match
+	YCbCrMatrix source_matrix;
+	YCbCrMatrix dest_matrix;
 };
 
 /// Resample the subtitles in the project

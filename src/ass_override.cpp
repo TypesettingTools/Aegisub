@@ -294,10 +294,10 @@ static void load_protos() {
 	proto[++i].Set("\\fr", VariableDataType::FLOAT); // \fr<degrees>
 	proto[++i].Set("\\fax", VariableDataType::FLOAT); // \fax<factor>
 	proto[++i].Set("\\fay", VariableDataType::FLOAT); // \fay<factor>
-	proto[++i].Set("\\1c", VariableDataType::TEXT); // \1c&H<bbggrr>&
-	proto[++i].Set("\\2c", VariableDataType::TEXT); // \2c&H<bbggrr>&
-	proto[++i].Set("\\3c", VariableDataType::TEXT); // \3c&H<bbggrr>&
-	proto[++i].Set("\\4c", VariableDataType::TEXT); // \4c&H<bbggrr>&
+	proto[++i].Set("\\1c", VariableDataType::TEXT, AssParameterClass::COLOR); // \1c&H<bbggrr>&
+	proto[++i].Set("\\2c", VariableDataType::TEXT, AssParameterClass::COLOR); // \2c&H<bbggrr>&
+	proto[++i].Set("\\3c", VariableDataType::TEXT, AssParameterClass::COLOR); // \3c&H<bbggrr>&
+	proto[++i].Set("\\4c", VariableDataType::TEXT, AssParameterClass::COLOR); // \4c&H<bbggrr>&
 	proto[++i].Set("\\1a", VariableDataType::TEXT, AssParameterClass::ALPHA); // \1a&H<aa>&
 	proto[++i].Set("\\2a", VariableDataType::TEXT, AssParameterClass::ALPHA); // \2a&H<aa>&
 	proto[++i].Set("\\3a", VariableDataType::TEXT, AssParameterClass::ALPHA); // \3a&H<aa>&
@@ -312,7 +312,7 @@ static void load_protos() {
 	proto[++i].Set("\\fs-", VariableDataType::FLOAT); // \fs-<size>
 	proto[++i].Set("\\fs", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \fs<size>
 	proto[++i].Set("\\an", VariableDataType::INT); // \an<alignment>
-	proto[++i].Set("\\c", VariableDataType::TEXT); // \c&H<bbggrr>&
+	proto[++i].Set("\\c", VariableDataType::TEXT, AssParameterClass::COLOR); // \c&H<bbggrr>&
 	proto[++i].Set("\\b", VariableDataType::INT); // \b<0/1/weight>
 	proto[++i].Set("\\i", VariableDataType::BOOL); // \i<0/1>
 	proto[++i].Set("\\u", VariableDataType::BOOL); // \u<0/1>

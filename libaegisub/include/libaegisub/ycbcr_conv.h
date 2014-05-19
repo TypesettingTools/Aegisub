@@ -17,6 +17,8 @@
 #include <array>
 #include <cstdint>
 
+#include <libaegisub/color.h>
+
 namespace agi {
 enum class ycbcr_matrix {
 	bt601,
@@ -83,6 +85,11 @@ public:
 	std::array<uint8_t, 3> rgb_to_rgb(std::array<uint8_t, 3> input) const {
 		return to_uint8_t(prod(from_ycbcr,
 			add(add(prod(to_ycbcr, input), shift_to), shift_from)));
+	}
+
+	Color rgb_to_rgb(Color c) const {
+		auto arr = rgb_to_rgb(std::array<uint8_t, 3>{{c.r, c.g, c.b}});
+		return Color{arr[0], arr[1], arr[2]};
 	}
 };
 }

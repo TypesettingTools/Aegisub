@@ -79,7 +79,9 @@ class EnumBinder final : public wxValidator {
 	bool Validate(wxWindow *) override { return true; }
 
 	bool TransferFromWindow() override {
-		if (wxRadioBox *rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+		if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+			*value = static_cast<T>(rb->GetSelection());
+		else if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
 			*value = static_cast<T>(rb->GetSelection());
 		else
 			throw agi::InternalError("Control type not supported by EnumBinder", nullptr);
@@ -87,8 +89,10 @@ class EnumBinder final : public wxValidator {
 	}
 
 	bool TransferToWindow() override {
-		if (wxRadioBox *rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+		if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
 			rb->SetSelection(static_cast<int>(*value));
+		else if (auto cb = dynamic_cast<wxComboBox*>(GetWindow()))
+			cb->SetSelection(static_cast<int>(*value));
 		else
 			throw agi::InternalError("Control type not supported by EnumBinder", nullptr);
 		return true;

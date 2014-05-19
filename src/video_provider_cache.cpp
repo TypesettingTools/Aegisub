@@ -68,6 +68,7 @@ public:
 	std::string GetWarning() const override        { return master->GetWarning(); }
 	std::string GetDecoderName() const override    { return master->GetDecoderName(); }
 	std::string GetColorSpace() const override     { return master->GetColorSpace(); }
+	std::string GetRealColorSpace() const override { return master->GetRealColorSpace(); }
 };
 
 std::shared_ptr<VideoFrame> VideoProviderCache::GetFrame(int n) {

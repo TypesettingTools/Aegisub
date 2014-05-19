@@ -134,9 +134,10 @@ bool UpdateVideoProperties(AssFile *file, const VideoProvider *new_provider, wxW
 		// Fallthrough to prompt if the AR changed
 		if (!ar_changed) {
 			ResampleResolution(file, {
-					{0, 0, 0, 0},
-					sx, sy, vx, vy,
-					ResampleARMode::Stretch
+				{0, 0, 0, 0},
+				sx, sy, vx, vy,
+				ResampleARMode::Stretch,
+				YCbCrMatrix::rgb, YCbCrMatrix::rgb
 			});
 			return true;
 		}
@@ -147,9 +148,10 @@ bool UpdateVideoProperties(AssFile *file, const VideoProvider *new_provider, wxW
 		OPT_SET("Video/Last Script Resolution Mismatch Choice")->SetInt(res);
 
 		ResampleResolution(file, {
-				{0, 0, 0, 0},
-				sx, sy, vx, vy,
-				static_cast<ResampleARMode>(res - FIX_RESAMPLE)
+			{0, 0, 0, 0},
+			sx, sy, vx, vy,
+			static_cast<ResampleARMode>(res - FIX_RESAMPLE),
+			YCbCrMatrix::rgb, YCbCrMatrix::rgb
 		});
 		return true;
 	}
