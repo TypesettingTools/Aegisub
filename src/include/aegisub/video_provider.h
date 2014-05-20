@@ -49,6 +49,12 @@ public:
 	/// Override this method to actually get frames
 	virtual std::shared_ptr<VideoFrame> GetFrame(int n)=0;
 
+	/// Set the YCbCr matrix to the specified one
+	///
+	/// Providers are free to disregard this, and should if the requested
+	/// matrix makes no sense or the input isn't YCbCr.
+	virtual void SetColorSpace(std::string const& matrix)=0;
+
 	// Override the following methods to get video information:
 	virtual int GetFrameCount() const=0;			///< Get total number of frames
 	virtual int GetWidth() const=0;					///< Returns the video width in pixels

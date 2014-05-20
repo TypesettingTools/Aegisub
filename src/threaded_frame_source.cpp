@@ -168,10 +168,12 @@ void ThreadedFrameSource::ProcAsync(uint_fast32_t req_version) {
 
 std::shared_ptr<VideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
 	std::shared_ptr<VideoFrame> ret;
-	worker->Sync([&]{
-		ret = ProcFrame(frame, time, raw);
-	});
+	worker->Sync([&]{ ret = ProcFrame(frame, time, raw); });
 	return ret;
+}
+
+void ThreadedFrameSource::SetColorSpace(std::string const& matrix) {
+	worker->Async([=] { video_provider->SetColorSpace(matrix); });
 }
 
 wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);

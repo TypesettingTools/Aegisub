@@ -65,6 +65,7 @@ public:
 	static std::string MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
 	std::shared_ptr<VideoFrame> GetFrame(int n) override;
+	void SetColorSpace(std::string const&) override { }
 
 	int GetFrameCount()             const override { return framecount; }
 	int GetWidth()                  const override { return width; }

@@ -98,6 +98,9 @@ class VideoContext final : public wxEvtHandler {
 	/// Filename of currently open video
 	agi::fs::path video_filename;
 
+	/// Last seen script color matrix
+	std::string color_matrix;
+
 	/// List of frame numbers which are keyframes
 	std::vector<int> keyframes;
 

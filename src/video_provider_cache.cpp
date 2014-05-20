@@ -59,6 +59,11 @@ public:
 
 	std::shared_ptr<VideoFrame> GetFrame(int n) override;
 
+	void SetColorSpace(std::string const& m) override {
+		cache.clear();
+		return master->SetColorSpace(m);
+	}
+
 	int GetFrameCount() const override             { return master->GetFrameCount(); }
 	int GetWidth() const override                  { return master->GetWidth(); }
 	int GetHeight() const override                 { return master->GetHeight(); }

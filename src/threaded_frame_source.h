@@ -106,6 +106,9 @@ public:
 	/// Get a reference to the video provider this is using
 	VideoProvider *GetVideoProvider() const { return video_provider.get(); }
 
+	/// Ask the video provider to change YCbCr matricies
+	void SetColorSpace(std::string const& matrix);
+
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to

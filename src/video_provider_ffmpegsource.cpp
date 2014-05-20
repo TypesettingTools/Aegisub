@@ -58,6 +58,8 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 
 	int Width = -1;                 ///< width in pixels
 	int Height = -1;                ///< height in pixels
+	int CS = -1;                    ///< Reported colorspace of first frame
+	int CR = -1;                    ///< Reported colorrange of first frame
 	double DAR;                     ///< display aspect ratio
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
@@ -73,6 +75,19 @@ public:
 	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br);
 
 	std::shared_ptr<VideoFrame> GetFrame(int n) override;
+
+	void SetColorSpace(std::string const& matrix) override {
+#if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
+		if (matrix == ColorSpace) return;
+		if (matrix == RealColorSpace)
+			FFMS_SetInputFormatV(VideoSource, CS, CR, FFMS_GetPixFmt(""), nullptr);
+		else if (matrix == "TV.601")
+			FFMS_SetInputFormatV(VideoSource, FFMS_CS_BT470BG, CR, FFMS_GetPixFmt(""), nullptr);
+		else
+			return;
+		ColorSpace = matrix;
+#endif
+	}
 
 	int GetFrameCount() const override { return VideoInfo->NumFrames; }
 	int GetWidth() const override { return Width; }
@@ -225,25 +240,24 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 	else
 		DAR = double(Width) / Height;
 
-	auto CS = TempFrame->ColorSpace;
+	CS = TempFrame->ColorSpace;
+	CR = TempFrame->ColorRange;
+
 	if (CS == FFMS_CS_UNSPECIFIED)
 		CS = Width > 1024 || Height >= 600 ? FFMS_CS_BT709 : FFMS_CS_BT470BG;
-	RealColorSpace = ColorSpace = colormatrix_description(CS, TempFrame->ColorRange);
+	RealColorSpace = ColorSpace = colormatrix_description(CS, CR);
 
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
 	if (CS != FFMS_CS_RGB && CS != FFMS_CS_BT470BG && ColorSpace != colormatrix && (colormatrix == "TV.601" || OPT_GET("Video/Force BT.601")->GetBool())) {
-		if (FFMS_SetInputFormatV(VideoSource, FFMS_CS_BT470BG, TempFrame->ColorRange, FFMS_GetPixFmt(""), &ErrInfo))
+		if (FFMS_SetInputFormatV(VideoSource, FFMS_CS_BT470BG, CR, FFMS_GetPixFmt(""), &ErrInfo))
 			throw VideoOpenError(std::string("Failed to set input format: ") + ErrInfo.Buffer);
-
-		CS = FFMS_CS_BT470BG;
-		ColorSpace = colormatrix_description(CS, TempFrame->ColorRange);
+		ColorSpace = colormatrix_description(FFMS_CS_BT470BG, CR);
 	}
 #endif
 
 	const int TargetFormat[] = { FFMS_GetPixFmt("bgra"), -1 };
-	if (FFMS_SetOutputFormatV2(VideoSource, TargetFormat, Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo)) {
+	if (FFMS_SetOutputFormatV2(VideoSource, TargetFormat, Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo))
 		throw VideoOpenError(std::string("Failed to set output format: ") + ErrInfo.Buffer);
-	}
 
 	// get frame info data
 	FFMS_Track *FrameData = FFMS_GetTrackFromVideo(VideoSource);

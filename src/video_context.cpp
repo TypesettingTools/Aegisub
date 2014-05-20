@@ -94,6 +94,7 @@ void VideoContext::Reset() {
 
 	// Clean up video data
 	video_filename.clear();
+	color_matrix.clear();
 
 	// Remove provider
 	provider.reset();
@@ -121,13 +122,13 @@ void VideoContext::SetVideo(const agi::fs::path &filename) {
 		provider = agi::make_unique<ThreadedFrameSource>(filename, old_matrix, this, progress);
 		video_provider = provider->GetVideoProvider();
 		video_filename = filename;
+		color_matrix = video_provider->GetColorSpace();
+		keyframes = video_provider->GetKeyFrames();
+		video_fps = video_provider->GetFPS();
 
 		bool needs_commit = UpdateVideoProperties(context->ass.get(), video_provider, context->parent);
 
-		keyframes = video_provider->GetKeyFrames();
-
 		// Set frame rate
-		video_fps = video_provider->GetFPS();
 		if (ovr_fps.IsLoaded()) {
 			int ovr = wxMessageBox(_("You already have timecodes loaded. Would you like to replace them with timecodes from the video file?"),
 			                       _("Replace timecodes?"), wxYES_NO | wxICON_QUESTION);
@@ -185,6 +186,14 @@ void VideoContext::Reload() {
 
 void VideoContext::OnSubtitlesCommit(int type, std::set<const AssDialogue *> const& changed) {
 	if (!IsLoaded()) return;
+
+	if ((type & AssFile::COMMIT_SCRIPTINFO) || type == AssFile::COMMIT_NEW) {
+		auto new_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
+		if (!new_matrix.empty() && new_matrix != color_matrix) {
+			color_matrix = new_matrix;
+			provider->SetColorSpace(new_matrix);
+		}
+	}
 
 	if (changed.empty() || no_amend)
 		provider->LoadSubtitles(context->ass.get());
