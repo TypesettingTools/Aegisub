@@ -147,8 +147,16 @@ temp_file_mapping::temp_file_mapping(fs::path const& filename, uint64_t size)
 	SetFilePointerEx(handle, li, nullptr, FILE_BEGIN);
 	SetEndOfFile(handle);
 #else
-	ftruncate(handle, size);
 	unlink(filename.string().c_str());
+	if (ftruncate(handle, size) == -1) {
+		switch (errno) {
+		case EBADF:  throw InternalError("Error opening file " + filename.string() + " not handled", nullptr);
+		case EFBIG:  throw fs::DriveFull(filename);
+		case EINVAL: throw InternalError("File opened incorrectly: " + filename.string(), nullptr);
+		case EROFS:  throw fs::WriteDenied(filename);
+		default: throw fs::FileSystemUnknownError("Unknown error opening file: " + filename.string());
+		}
+	}
 #endif
 }
 
