@@ -50,7 +50,7 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 		std::vector<std::string> chunks;
 		boost::split(chunks, line, _1 == '|');
 		if (chunks.size() == 2)
-			offsets[chunks[0]] = atoi(chunks[1].c_str());
+			offsets[chunks[0]] = static_cast<size_t>(atoi(chunks[1].c_str()));
 	}
 }
 

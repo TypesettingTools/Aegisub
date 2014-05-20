@@ -28,9 +28,10 @@
 
 #include <wx/msgdlg.h>
 
-static const size_t bad_pos = -1;
-
 namespace {
+static const size_t bad_pos = -1;
+static const MatchState bad_match{nullptr, 0, bad_pos};
+
 auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDialogueBase::Text) {
 	switch (field) {
 		case SearchReplaceSettings::Field::TEXT: return &AssDialogueBase::Text;
@@ -157,7 +158,7 @@ matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 			boost::smatch result;
 			auto const& str = a.get(diag, start);
 			if (!u32regex_search(str, result, regex, start > 0 ? boost::match_not_bol : boost::match_default))
-				return {nullptr, 0, -1};
+				return bad_match;
 			return a.make_match_state(result.position(), result.position() + result.length(), &regex);
 		};
 	}
@@ -169,19 +170,18 @@ matcher get_matcher(SearchReplaceSettings const& settings, Accessor&& a) {
 	if (!settings.match_case)
 		look_for = boost::locale::fold_case(look_for);
 
-	MatchState invalid{nullptr, 0, -1};
 	return [=](const AssDialogue *diag, size_t start) mutable -> MatchState {
 		const auto str = a.get(diag, start);
 		if (full_match_only && str.size() != look_for.size())
-			return invalid;
+			return bad_match;
 
 		if (match_case) {
 			const auto pos = str.find(look_for);
-			return pos == std::string::npos ? invalid : a.make_match_state(pos, pos + look_for.size());
+			return pos == std::string::npos ? bad_match : a.make_match_state(pos, pos + look_for.size());
 		}
 
 		const auto pos = agi::util::ifind(str, look_for);
-		return pos.first == bad_pos ? invalid : a.make_match_state(pos.first, pos.second);
+		return pos.first == bad_pos ? bad_match : a.make_match_state(pos.first, pos.second);
 	};
 }
 
@@ -230,7 +230,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 	auto it = context->ass->iterator_to(*line);
 	size_t pos = 0;
 
-	MatchState replace_ms{nullptr, 0, -1};
+	auto replace_ms = bad_match;
 	if (replace) {
 		if (settings.field == SearchReplaceSettings::Field::TEXT)
 			pos = context->textSelectionController->GetSelectionStart();

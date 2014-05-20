@@ -121,7 +121,7 @@ file_mapping::~file_mapping() {
 read_file_mapping::read_file_mapping(fs::path const& filename)
 : file(filename, false)
 {
-	offset_t size;
+	offset_t size = 0;
 	ipcdetail::get_file_size(file.get_mapping_handle().handle, size);
 	file_size = static_cast<uint64_t>(size);
 }

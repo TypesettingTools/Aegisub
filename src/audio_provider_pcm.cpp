@@ -346,7 +346,9 @@ public:
 					throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
 
 				auto samples = chunk_size / bytes_per_sample / channels;
-				index_points.push_back(IndexPoint{filepos, samples});
+				index_points.push_back(IndexPoint{
+					static_cast<int64_t>(filepos),
+					static_cast<int64_t>(samples)});
 				num_samples += samples;
 			}
 

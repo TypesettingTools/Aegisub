@@ -89,7 +89,7 @@ void SubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 
 	push_header("[Events]\n");
 	for (auto const& line : subs->Events) {
-		if (!line.Comment && time < 0 || !(line.Start > time || line.End <= time))
+		if (!line.Comment && (time < 0 || !(line.Start > time || line.End <= time)))
 			push_line(line.GetEntryData());
 	}
 

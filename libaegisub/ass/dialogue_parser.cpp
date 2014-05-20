@@ -34,7 +34,7 @@ class SyntaxHighlighter {
 	std::string const& text;
 	agi::SpellChecker *spellchecker;
 
-	void SetStyling(int len, int type) {
+	void SetStyling(size_t len, int type) {
 		if (ranges.size() && ranges.back().type == type)
 			ranges.back().length += len;
 		else

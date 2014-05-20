@@ -151,6 +151,7 @@ AS_IF([test x$enable_compiler_flags != xno], [
   CXXFLAGS="$CXXFLAGS -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing -pipe -g"
   AC_CXX_FLAG([-std=c++11])
   AC_CXX_FLAG([-Wno-c++11-narrowing])
+  AC_C_FLAG([-Wno-unused-local-typedefs])
   AC_CXX_FLAG([-Wno-unused-local-typedefs])
 
   # -O* messes with debugging.
