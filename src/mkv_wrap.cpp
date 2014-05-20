@@ -62,7 +62,7 @@ struct MkvStdIO final : InputStream {
 
 	static int Read(InputStream *st, uint64_t pos, void *buffer, int count) {
 		auto *self = static_cast<MkvStdIO*>(st);
-		if (pos == self->file.size())
+		if (pos >= self->file.size())
 			return 0;
 
 		auto remaining = self->file.size() - pos;
