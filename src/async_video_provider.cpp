@@ -14,18 +14,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file threaded_frame_source.cpp
-/// @see threaded_frame_source.h
-/// @ingroup video
-///
-
-#include "threaded_frame_source.h"
+#include "async_video_provider.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "export_fixstyle.h"
 #include "include/aegisub/subtitles_provider.h"
-#include "include/aegisub/video_provider.h"
 #include "video_frame.h"
 #include "video_provider_manager.h"
 
@@ -40,11 +34,11 @@ enum {
 	SUBS_FILE_ALREADY_LOADED = -2
 };
 
-std::shared_ptr<VideoFrame> ThreadedFrameSource::ProcFrame(int frame_number, double time, bool raw) {
+std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, double time, bool raw) {
 	std::shared_ptr<VideoFrame> frame;
 
 	try {
-		frame = video_provider->GetFrame(frame_number);
+		frame = source_provider->GetFrame(frame_number);
 	}
 	catch (VideoProviderError const& err) { throw VideoProviderErrorEvent(err); }
 
@@ -89,20 +83,20 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_ha
 	}
 }
 
-ThreadedFrameSource::ThreadedFrameSource(agi::fs::path const& video_filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
+AsyncVideoProvider::AsyncVideoProvider(agi::fs::path const& video_filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
 : worker(agi::dispatch::Create())
 , subs_provider(get_subs_provider(parent, br))
-, video_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
+, source_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
 , parent(parent)
 {
 }
 
-ThreadedFrameSource::~ThreadedFrameSource() {
+AsyncVideoProvider::~AsyncVideoProvider() {
 	// Block until all currently queued jobs are complete
 	worker->Sync([]{});
 }
 
-void ThreadedFrameSource::LoadSubtitles(const AssFile *new_subs) throw() {
+void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
 	uint_fast32_t req_version = ++version;
 
 	auto copy = new AssFile(*new_subs);
@@ -113,7 +107,7 @@ void ThreadedFrameSource::LoadSubtitles(const AssFile *new_subs) throw() {
 	});
 }
 
-void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<const AssDialogue*> const& changes) throw() {
+void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, std::set<const AssDialogue*> const& changes) throw() {
 	uint_fast32_t req_version = ++version;
 
 	// Copy just the lines which were changed, then replace the lines at the
@@ -141,7 +135,7 @@ void ThreadedFrameSource::UpdateSubtitles(const AssFile *new_subs, std::set<cons
 	});
 }
 
-void ThreadedFrameSource::RequestFrame(int new_frame, double new_time) throw() {
+void AsyncVideoProvider::RequestFrame(int new_frame, double new_time) throw() {
 	uint_fast32_t req_version = ++version;
 
 	worker->Async([=]{
@@ -151,7 +145,7 @@ void ThreadedFrameSource::RequestFrame(int new_frame, double new_time) throw() {
 	});
 }
 
-void ThreadedFrameSource::ProcAsync(uint_fast32_t req_version) {
+void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version) {
 	// Only actually produce the frame if there's no queued changes waiting
 	if (req_version < version || frame_number < 0) return;
 
@@ -166,14 +160,14 @@ void ThreadedFrameSource::ProcAsync(uint_fast32_t req_version) {
 	}
 }
 
-std::shared_ptr<VideoFrame> ThreadedFrameSource::GetFrame(int frame, double time, bool raw) {
+std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time, bool raw) {
 	std::shared_ptr<VideoFrame> ret;
 	worker->Sync([&]{ ret = ProcFrame(frame, time, raw); });
 	return ret;
 }
 
-void ThreadedFrameSource::SetColorSpace(std::string const& matrix) {
-	worker->Async([=] { video_provider->SetColorSpace(matrix); });
+void AsyncVideoProvider::SetColorSpace(std::string const& matrix) {
+	worker->Async([=] { source_provider->SetColorSpace(matrix); });
 }
 
 wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);

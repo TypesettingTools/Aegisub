@@ -38,8 +38,8 @@
 #include "ass_file.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
+#include "project.h"
 #include "subtitle_format.h"
-#include "video_context.h"
 
 #include <memory>
 #include <wx/sizer.h>
@@ -51,7 +51,7 @@ void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 	for (auto& filter : *AssExportFilterChain::GetFilterList()) {
 		// Make sure to construct static box sizer first, so it won't overlap
 		// the controls on wxMac.
-		wxSizer *box = new wxStaticBoxSizer(wxVERTICAL, parent, to_wx(filter.GetName()));
+		auto box = new wxStaticBoxSizer(wxVERTICAL, parent, to_wx(filter.GetName()));
 		wxWindow *window = filter.GetConfigDialogWindow(parent, c);
 		if (window) {
 			box->Add(window, 0, wxEXPAND, 0);
@@ -92,7 +92,7 @@ void AssExporter::Export(agi::fs::path const& filename, std::string const& chars
 	if (!writer)
 		throw "Unknown file type.";
 
-	writer->WriteFile(&subs, filename, c->videoController->FPS(), charset);
+	writer->WriteFile(&subs, filename, c->project->Timecodes(), charset);
 }
 
 wxSizer *AssExporter::GetSettingsSizer(std::string const& name) {

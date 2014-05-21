@@ -39,7 +39,6 @@
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/sliced.hpp>
-#include <deque>
 
 /// @class KaraokeMarker
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke
@@ -55,15 +54,12 @@ public:
 
 	void Move(int new_pos) { position = new_pos; }
 
+	KaraokeMarker(int position) : position(position) { }
+
 	KaraokeMarker(int position, Pen *pen, FeetStyle style)
 	: position(position)
 	, pen(pen)
 	, style(style)
-	{
-	}
-
-	KaraokeMarker(int position)
-	: position(position)
 	{
 	}
 
@@ -79,7 +75,7 @@ public:
 /// This does not support \kt, as it inherently requires that the end time of
 /// one syllable be the same as the start time of the next one.
 class AudioTimingControllerKaraoke final : public AudioTimingController {
-	std::deque<agi::signal::Connection> slots;
+	std::vector<agi::signal::Connection> connections;
 	agi::signal::Connection& file_changed_slot;
 
 	agi::Context *c;          ///< Project context
@@ -161,8 +157,8 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssK
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Karaoke Mode")
 , video_position_provider(c)
 {
-	slots.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
-	slots.push_back(OPT_SUB("Audio/Auto/Commit", [=](agi::OptionValue const& opt) { auto_commit = opt.GetBool(); }));
+	connections.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
+	connections.push_back(OPT_SUB("Audio/Auto/Commit", [=](agi::OptionValue const& opt) { auto_commit = opt.GetBool(); }));
 
 	keyframes_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
 	video_position_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });

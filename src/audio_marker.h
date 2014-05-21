@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_marker.h
-/// @see audio_marker.cpp
-/// @ingroup audio_ui
-///
-
 #pragma once
 
 #include <libaegisub/signal.h>
@@ -30,7 +25,8 @@
 
 class AudioMarkerKeyframe;
 class Pen;
-class VideoContext;
+class Project;
+class VideoController;
 class TimeRange;
 class VideoPositionMarker;
 class wxPen;
@@ -113,8 +109,8 @@ public:
 
 /// Marker provider for video keyframes
 class AudioMarkerProviderKeyframes final : public AudioMarkerProvider {
-	/// Video controller to get keyframes from
-	VideoContext *vc;
+	/// Project to get keyframes from
+	Project *p;
 
 	agi::signal::Connection keyframe_slot;
 	agi::signal::Connection timecode_slot;
@@ -146,7 +142,7 @@ public:
 
 /// Marker provider for the current video playback position
 class VideoPositionMarkerProvider final : public AudioMarkerProvider {
-	VideoContext *vc;
+	VideoController *vc;
 
 	std::unique_ptr<VideoPositionMarker> marker;
 

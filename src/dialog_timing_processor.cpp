@@ -37,14 +37,15 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
+#include "async_video_provider.h"
 #include "compat.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
 #include "utils.h"
-#include "video_context.h"
 
 #include <libaegisub/address_of_adaptor.h>
 
@@ -118,24 +119,24 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	adjOverlap = OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent Overlap")->GetInt();
 
 	// Styles box
-	wxSizer *LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
+	auto LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
 	StyleList = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->ass->GetStyles()));
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 
-	wxButton *all = new wxButton(this,-1,_("&All"));
+	auto all = new wxButton(this,-1,_("&All"));
 	all->SetToolTip(_("Select all styles"));
 
-	wxButton *none = new wxButton(this,-1,_("&None"));
+	auto none = new wxButton(this,-1,_("&None"));
 	none->SetToolTip(_("Deselect all styles"));
 
 	// Options box
-	wxStaticBoxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
+	auto optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
 	onlySelection = new wxCheckBox(this,-1,_("Affect &selection only"));
 	onlySelection->SetValue(OPT_GET("Tool/Timing Post Processor/Only Selection")->GetBool());
 	optionsSizer->Add(onlySelection,1,wxALL,0);
 
 	// Lead-in/out box
-	wxStaticBoxSizer *LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Lead-in/Lead-out"));
+	auto LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Lead-in/Lead-out"));
 
 	hasLeadIn = make_check(LeadSizer, _("Add lead &in:"),
 		"Tool/Timing Post Processor/Enable/Lead/IN",
@@ -150,12 +151,12 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	LeadSizer->AddStretchSpacer(1);
 
 	// Adjacent subs sizer
-	wxStaticBoxSizer *AdjacentSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Make adjacent subtitles continuous"));
+	auto AdjacentSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Make adjacent subtitles continuous"));
 	adjsEnable = make_check(AdjacentSizer, _("&Enable"),
 		"Tool/Timing Post Processor/Enable/Adjacent",
 		_("Enable snapping of subtitles together if they are within a certain distance of each other"));
 
-	wxSizer *adjBoxes = new wxBoxSizer(wxHORIZONTAL);
+	auto adjBoxes = new wxBoxSizer(wxHORIZONTAL);
 	make_ctrl(this, adjBoxes, _("Max gap:"), &adjGap, adjsEnable,
 		_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"));
 	make_ctrl(this, adjBoxes, _("Max overlap:"), &adjOverlap, adjsEnable,
@@ -164,19 +165,19 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	adjacentBias = new wxSlider(this, -1, mid<int>(0, OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble() * 100, 100), 0, 100, wxDefaultPosition, wxSize(-1,20));
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend or shrink start time of the second line; if totally to right, it will extend or shrink the end time of the first line."));
 
-	wxSizer *adjSliderSizer = new wxBoxSizer(wxHORIZONTAL);
+	auto adjSliderSizer = new wxBoxSizer(wxHORIZONTAL);
 	adjSliderSizer->Add(new wxStaticText(this, -1, _("Bias: Start <- ")), wxSizerFlags().Center());
 	adjSliderSizer->Add(adjacentBias, wxSizerFlags(1).Center());
 	adjSliderSizer->Add(new wxStaticText(this, -1, _(" -> End")), wxSizerFlags().Center());
 
-	wxSizer *adjRightSizer = new wxBoxSizer(wxVERTICAL);
+	auto adjRightSizer = new wxBoxSizer(wxVERTICAL);
 	adjRightSizer->Add(adjBoxes, wxSizerFlags().Expand());
 	adjRightSizer->Add(adjSliderSizer, wxSizerFlags().Expand().Border(wxTOP));
 	AdjacentSizer->Add(adjRightSizer);
 
 	// Keyframes sizer
-	wxStaticBoxSizer *KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Keyframe snapping"));
-	wxSizer *KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
+	auto KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Keyframe snapping"));
+	auto KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
 
 	keysEnable = new wxCheckBox(this, -1, _("E&nable"));
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold"));
@@ -184,7 +185,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	KeyframesFlexSizer->Add(keysEnable,0,wxRIGHT|wxEXPAND,10);
 
 	// Keyframes are only available if timecodes are loaded
-	bool keysAvailable = c->videoController->KeyFramesLoaded() && c->videoController->TimecodesLoaded();
+	bool keysAvailable = !c->project->Keyframes().empty() && c->project->Timecodes().IsLoaded();
 	if (!keysAvailable) {
 		keysEnable->SetValue(false);
 		keysEnable->Enable(false);
@@ -208,12 +209,12 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	KeyframesSizer->AddStretchSpacer(1);
 
 	// Button sizer
-	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	auto ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	ApplyButton = ButtonSizer->GetAffirmativeButton();
 	ButtonSizer->GetHelpButton()->Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Timing Processor"));
 
 	// Right Sizer
-	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
+	auto RightSizer = new wxBoxSizer(wxVERTICAL);
 	RightSizer->Add(optionsSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->Add(LeadSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->Add(AdjacentSizer,0,wxBOTTOM|wxEXPAND,5);
@@ -222,7 +223,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	RightSizer->Add(ButtonSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,0);
 
 	// Style buttons sizer
-	wxSizer *StyleButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+	auto StyleButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 	StyleButtonsSizer->Add(all,1,0,0);
 	StyleButtonsSizer->Add(none,1,0,0);
 
@@ -231,12 +232,12 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	LeftSizer->Add(StyleButtonsSizer, wxSizerFlags().Expand());
 
 	// Top Sizer
-	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
+	auto TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	TopSizer->Add(LeftSizer,0,wxRIGHT|wxEXPAND,5);
 	TopSizer->Add(RightSizer,1,wxALL|wxEXPAND,0);
 
 	// Main Sizer
-	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
+	auto MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxALL|wxEXPAND,5);
 	SetSizerAndFit(MainSizer);
 	CenterOnParent();
@@ -289,10 +290,10 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 }
 
 std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
-	std::set<std::string> styles;
+	std::set<boost::flyweight<std::string>> styles;
 	for (size_t i = 0; i < StyleList->GetCount(); ++i) {
 		if (StyleList->IsChecked(i))
-			styles.insert(from_wx(StyleList->GetString(i)));
+			styles.insert(boost::flyweight<std::string>(from_wx(StyleList->GetString(i))));
 	}
 
 	std::vector<AssDialogue*> sorted;
@@ -382,28 +383,27 @@ void DialogTimingProcessor::Process() {
 
 	// Keyframe snapping
 	if (keysEnable->IsChecked()) {
-		std::vector<int> kf = c->videoController->GetKeyFrames();
-		if (c->videoController->IsLoaded())
-			kf.push_back(c->videoController->GetLength() - 1);
+		std::vector<int> kf = c->project->Keyframes();
+		auto fps = c->project->Timecodes();
+		if (auto provider = c->project->VideoProvider())
+			kf.push_back(provider->GetFrameCount() - 1);
 
 		for (AssDialogue *cur : sorted) {
 			// Get start/end frames
-			int startF = c->videoController->FrameAtTime(cur->Start, agi::vfr::START);
-			int endF = c->videoController->FrameAtTime(cur->End, agi::vfr::END);
+			int startF = fps.FrameAtTime(cur->Start, agi::vfr::START);
+			int endF = fps.FrameAtTime(cur->End, agi::vfr::END);
 
 			// Get closest for start
 			int closest = get_closest_kf(kf, startF);
-			int time = c->videoController->TimeAtFrame(closest, agi::vfr::START);
-			if ((closest > startF && time - cur->Start <= beforeStart) || (closest < startF && cur->Start - time <= afterStart)) {
+			int time = fps.TimeAtFrame(closest, agi::vfr::START);
+			if ((closest > startF && time - cur->Start <= beforeStart) || (closest < startF && cur->Start - time <= afterStart))
 				cur->Start = time;
-			}
 
 			// Get closest for end
 			closest = get_closest_kf(kf, endF) - 1;
-			time = c->videoController->TimeAtFrame(closest, agi::vfr::END);
-			if ((closest > endF && time - cur->End <= beforeEnd) || (closest < endF && cur->End - time <= afterEnd)) {
+			time = fps.TimeAtFrame(closest, agi::vfr::END);
+			if ((closest > endF && time - cur->End <= beforeEnd) || (closest < endF && cur->End - time <= afterEnd))
 				cur->End = time;
-			}
 		}
 	}
 

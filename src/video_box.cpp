@@ -37,8 +37,9 @@
 #include "include/aegisub/toolbar.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
-#include "video_context.h"
+#include "video_controller.h"
 #include "video_display.h"
 #include "video_slider.h"
 
@@ -56,7 +57,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	auto videoSlider = new VideoSlider(this, context);
 	videoSlider->SetToolTip(_("Seek video"));
 
-	wxToolBar *mainToolbar = toolbar::GetToolbar(this, "video", context, "Video", false);
+	auto mainToolbar = toolbar::GetToolbar(this, "video", context, "Video", false);
 
 	VideoPosition = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(110, 20), wxTE_READONLY);
 	VideoPosition->SetToolTip(_("Current frame time and number"));
@@ -67,29 +68,29 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	wxArrayString choices;
 	for (int i = 1; i <= 24; ++i)
 		choices.Add(wxString::Format("%g%%", i * 12.5));
-	wxComboBox *zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	auto zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
-	wxToolBar *visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
-	wxToolBar *visualSubToolBar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_BOTTOM | wxTB_FLAT);
+	auto visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
+	auto visualSubToolBar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_VERTICAL | wxTB_BOTTOM | wxTB_FLAT);
 
 	auto videoDisplay = new VideoDisplay(visualSubToolBar, isDetached, zoomBox, this, context);
 	videoDisplay->MoveBeforeInTabOrder(videoSlider);
 
-	wxSizer *toolbarSizer = new wxBoxSizer(wxVERTICAL);
+	auto toolbarSizer = new wxBoxSizer(wxVERTICAL);
 	toolbarSizer->Add(visualToolBar, wxSizerFlags(1));
 	toolbarSizer->Add(visualSubToolBar, wxSizerFlags());
 
-	wxSizer *topSizer = new wxBoxSizer(wxHORIZONTAL);
+	auto topSizer = new wxBoxSizer(wxHORIZONTAL);
 	topSizer->Add(toolbarSizer, 0, wxEXPAND);
 	topSizer->Add(videoDisplay, isDetached, isDetached ? wxEXPAND : 0);
 
-	wxSizer *videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	auto videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	videoBottomSizer->Add(mainToolbar, wxSizerFlags(0).Center());
 	videoBottomSizer->Add(VideoPosition, wxSizerFlags(1).Center().Border(wxLEFT));
 	videoBottomSizer->Add(VideoSubsPos, wxSizerFlags(1).Center().Border(wxLEFT));
 	videoBottomSizer->Add(zoomBox, wxSizerFlags(0).Center().Border(wxLEFT | wxRIGHT));
 
-	wxSizer *VideoSizer = new wxBoxSizer(wxVERTICAL);
+	auto VideoSizer = new wxBoxSizer(wxVERTICAL);
 	VideoSizer->Add(topSizer, 1, wxEXPAND, 0);
 	VideoSizer->Add(new wxStaticLine(this), 0, wxEXPAND, 0);
 	VideoSizer->Add(videoSlider, 0, wxEXPAND, 0);
@@ -98,23 +99,25 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 
 	UpdateTimeBoxes();
 
-	slots.push_back(context->videoController->AddSeekListener(&VideoBox::UpdateTimeBoxes, this));
-	slots.push_back(context->videoController->AddKeyframesListener(&VideoBox::UpdateTimeBoxes, this));
-	slots.push_back(context->videoController->AddTimecodesListener(&VideoBox::UpdateTimeBoxes, this));
-	slots.push_back(context->videoController->AddVideoOpenListener(&VideoBox::UpdateTimeBoxes, this));
-	slots.push_back(context->ass->AddCommitListener(&VideoBox::UpdateTimeBoxes, this));
-	slots.push_back(context->selectionController->AddSelectionListener(&VideoBox::UpdateTimeBoxes, this));
+	connections = agi::signal::make_vector({
+		context->ass->AddCommitListener(&VideoBox::UpdateTimeBoxes, this),
+		context->project->AddKeyframesListener(&VideoBox::UpdateTimeBoxes, this),
+		context->project->AddTimecodesListener(&VideoBox::UpdateTimeBoxes, this),
+		context->project->AddVideoProviderListener(&VideoBox::UpdateTimeBoxes, this),
+		context->selectionController->AddSelectionListener(&VideoBox::UpdateTimeBoxes, this),
+		context->videoController->AddSeekListener(&VideoBox::UpdateTimeBoxes, this),
+	});
 }
 
 void VideoBox::UpdateTimeBoxes() {
-	if (!context->videoController->IsLoaded()) return;
+	if (!context->project->VideoProvider()) return;
 
 	int frame = context->videoController->GetFrameN();
 	int time = context->videoController->TimeAtFrame(frame, agi::vfr::EXACT);
 
 	// Set the text box for frame number and time
 	VideoPosition->SetValue(wxString::Format("%s - %d", AssTime(time).GetAssFormated(true), frame));
-	if (boost::binary_search(context->videoController->GetKeyFrames(), frame)) {
+	if (boost::binary_search(context->project->Keyframes(), frame)) {
 		// Set the background color to indicate this is a keyframe
 		VideoPosition->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColor()));
 		VideoPosition->SetForegroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Selection")->GetColor()));

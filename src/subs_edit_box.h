@@ -33,7 +33,6 @@
 ///
 
 #include <array>
-#include <deque>
 #include <boost/container/map.hpp>
 #include <boost/flyweight/flyweight_fwd.hpp>
 #include <memory>
@@ -74,7 +73,7 @@ class SubsEditBox final : public wxPanel {
 		TIME_DURATION
 	};
 
-	std::deque<agi::signal::Connection> connections;
+	std::vector<agi::signal::Connection> connections;
 
 	/// Currently active dialogue line
 	AssDialogue *line = nullptr;

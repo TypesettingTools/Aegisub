@@ -122,6 +122,7 @@ SRC += \
 	ass_style.cpp \
 	ass_style_storage.cpp \
 	ass_time.cpp \
+	async_video_provider.cpp \
 	audio_box.cpp \
 	audio_colorscheme.cpp \
 	audio_controller.cpp \
@@ -205,6 +206,7 @@ SRC += \
 	persist_location.cpp \
 	preferences.cpp \
 	preferences_base.cpp \
+	project.cpp \
 	resolution_resampler.cpp \
 	scintilla_text_ctrl.cpp \
 	search_replace_engine.cpp \
@@ -233,7 +235,6 @@ SRC += \
 	text_file_writer.cpp \
 	text_selection_controller.cpp \
 	thesaurus.cpp \
-	threaded_frame_source.cpp \
 	timeedit_ctrl.cpp \
 	toggle_bitmap.cpp \
 	toolbar.cpp \
@@ -243,7 +244,7 @@ SRC += \
 	vector2d.cpp \
 	version.cpp \
 	video_box.cpp \
-	video_context.cpp \
+	video_controller.cpp \
 	video_display.cpp \
 	video_frame.cpp \
 	video_out_gl.cpp \

@@ -43,7 +43,6 @@
 #include "compat.h"
 
 #include <boost/filesystem/path.hpp>
-#include <deque>
 #include <memory>
 #include <vector>
 
@@ -215,8 +214,8 @@ namespace Automation4 {
 
 	/// Manager for scripts specified by a subtitle file
 	class LocalScriptManager final : public ScriptManager {
-		std::deque<agi::signal::Connection> slots;
 		agi::Context *context;
+		std::vector<agi::signal::Connection> connections;
 
 		void OnSubtitlesSave();
 	public:

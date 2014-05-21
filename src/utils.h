@@ -97,15 +97,6 @@ std::string GetClipboard();
 void SetClipboard(std::string const& new_value);
 void SetClipboard(wxBitmap const& new_value);
 
-#ifndef FORCEINLINE
-#ifdef __VISUALC__
-#define FORCEINLINE __forceinline
-#else
-#define FORCEINLINE inline
-// __attribute__((always_inline)) gives me errors on g++ ~amz
-#endif
-#endif
-
 #define countof(array) (sizeof(array) / sizeof(array[0]))
 
 wxString FontFace(std::string opt_prefix);

@@ -46,7 +46,7 @@
 #include "../libresrc/libresrc.h"
 #include "../options.h"
 #include "../resolution_resampler.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>

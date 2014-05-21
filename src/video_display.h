@@ -36,14 +36,14 @@
 
 #include "vector2d.h"
 
-#include <deque>
 #include <memory>
 #include <typeinfo>
+#include <vector>
 #include <wx/glcanvas.h>
 
 // Prototypes
 class RetinaHelper;
-class VideoContext;
+class VideoController;
 class VideoOutGL;
 class VisualToolBase;
 class wxComboBox;
@@ -59,7 +59,7 @@ namespace agi {
 
 class VideoDisplay final : public wxGLCanvas {
 	/// Signals the display is connected to
-	std::deque<agi::signal::Connection> slots;
+	std::vector<agi::signal::Connection> connections;
 
 	const agi::OptionValue* autohideTools;
 

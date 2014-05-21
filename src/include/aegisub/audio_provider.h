@@ -50,7 +50,6 @@ protected:
 	int sample_rate;
 	int bytes_per_sample;
 	bool float_samples;
-	agi::fs::path filename;
 
 	virtual void FillBuffer(void *buf, int64_t start, int64_t count) const = 0;
 
@@ -62,7 +61,6 @@ public:
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;
 
-	agi::fs::path GetFilename()       const { return filename; }
 	int64_t       GetNumSamples()     const { return num_samples; }
 	int64_t       GetDecodedSamples() const { return decoded_samples; }
 	int           GetSampleRate()     const { return sample_rate; }
@@ -88,7 +86,6 @@ public:
 		sample_rate = source->GetSampleRate();
 		bytes_per_sample = source->GetBytesPerSample();
 		float_samples = source->AreSamplesFloat();
-		filename = source->GetFilename();
 	}
 };
 

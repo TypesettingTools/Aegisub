@@ -373,9 +373,11 @@ namespace Automation4 {
 
 	LocalScriptManager::LocalScriptManager(agi::Context *c)
 	: context(c)
+	, connections(agi::signal::make_vector({
+		c->subsController->AddFileSaveListener(&LocalScriptManager::OnSubtitlesSave, this),
+		c->subsController->AddFileOpenListener(&LocalScriptManager::Reload, this),
+	}))
 	{
-		slots.push_back(c->subsController->AddFileSaveListener(&LocalScriptManager::OnSubtitlesSave, this));
-		slots.push_back(c->subsController->AddFileOpenListener(&LocalScriptManager::Reload, this));
 	}
 
 	void LocalScriptManager::Reload()

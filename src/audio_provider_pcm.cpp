@@ -158,8 +158,6 @@ public:
 	RiffWavPCMAudioProvider(agi::fs::path const& filename)
 	: PCMAudioProvider(filename)
 	{
-		this->filename = filename;
-
 		// Read header
 		auto const& header = Read<RIFFChunk>(0);
 
@@ -292,8 +290,6 @@ public:
 	Wave64AudioProvider(agi::fs::path const& filename)
 	: PCMAudioProvider(filename)
 	{
-		this->filename = filename;
-
 		size_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
 		if (file->size() < smallest_possible_file)

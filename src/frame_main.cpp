@@ -37,9 +37,9 @@
 #include "include/aegisub/menu.h"
 #include "include/aegisub/toolbar.h"
 #include "include/aegisub/hotkey.h"
-#include "include/aegisub/video_provider.h"
 
 #include "ass_file.h"
+#include "async_video_provider.h"
 #include "audio_controller.h"
 #include "audio_box.h"
 #include "base_grid.h"
@@ -51,13 +51,14 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
+#include "project.h"
 #include "subs_controller.h"
 #include "subs_edit_box.h"
 #include "subs_edit_ctrl.h"
 #include "utils.h"
 #include "version.h"
 #include "video_box.h"
-#include "video_context.h"
+#include "video_controller.h"
 #include "video_display.h"
 #include "video_slider.h"
 
@@ -86,91 +87,16 @@ enum {
 #define StartupLog(a) LOG_I("frame_main/init") << a
 #endif
 
-wxDEFINE_EVENT(FILE_LIST_DROPPED, wxThreadEvent);
-
-static void get_files_to_load(wxArrayString const& list, std::string &subs, std::string &audio, std::string &video) {
-	// Keep these lists sorted
-
-	// Video formats
-	const wxString videoList[] = {
-		"asf",
-		"avi",
-		"avs",
-		"d2v",
-		"m2ts",
-		"m4v",
-		"mkv",
-		"mov",
-		"mp4",
-		"mpeg",
-		"mpg",
-		"ogm",
-		"rm",
-		"rmvb",
-		"ts",
-		"webm"
-		"wmv",
-		"y4m",
-		"yuv"
-	};
-
-	// Subtitle formats
-	const wxString subsList[] = {
-		"ass",
-		"srt",
-		"ssa",
-		"sub",
-		"ttxt",
-		"txt"
-	};
-
-	// Audio formats
-	const wxString audioList[] = {
-		"aac",
-		"ac3",
-		"ape",
-		"dts",
-		"flac",
-		"m4a",
-		"mka",
-		"mp3",
-		"ogg",
-		"w64",
-		"wav",
-		"wma"
-	};
-
-	// Scan list
-	for (wxFileName file : list) {
-		if (file.IsRelative()) file.MakeAbsolute();
-		if (!file.FileExists()) continue;
-
-		wxString ext = file.GetExt().Lower();
-
-		if (subs.empty() && std::binary_search(std::begin(subsList), std::end(subsList), ext))
-			subs = from_wx(file.GetFullPath());
-		if (video.empty() && std::binary_search(std::begin(videoList), std::end(videoList), ext))
-			video = from_wx(file.GetFullPath());
-		if (audio.empty() && std::binary_search(std::begin(audioList), std::end(audioList), ext))
-			audio = from_wx(file.GetFullPath());
-	}
-}
-
 /// Handle files drag and dropped onto Aegisub
 class AegisubFileDropTarget final : public wxFileDropTarget {
-	FrameMain *parent;
+	agi::Context *context;
 public:
-	AegisubFileDropTarget(FrameMain *parent) : parent(parent) { }
-	bool OnDropFiles(wxCoord, wxCoord, const wxArrayString& filenames) override {
-		std::string subs, audio, video;
-		get_files_to_load(filenames, subs, audio, video);
-
-		if (subs.empty() && audio.empty() && video.empty())
-			return false;
-
-		auto evt = new wxThreadEvent(FILE_LIST_DROPPED);
-		evt->SetPayload(filenames);
-		parent->QueueEvent(evt);
+	AegisubFileDropTarget(agi::Context *context) : context(context) { }
+	bool OnDropFiles(wxCoord, wxCoord, wxArrayString const& filenames) override {
+		std::vector<agi::fs::path> files;
+		for (wxString const& fn : filenames)
+			files.push_back(from_wx(fn));
+		context->project->LoadList(files);
 		return true;
 	}
 };
@@ -194,9 +120,8 @@ FrameMain::FrameMain()
 	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
 	context->subsController->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
 	context->subsController->AddFileSaveListener(&FrameMain::UpdateTitle, this);
-	context->audioController->AddAudioOpenListener(&FrameMain::OnAudioOpen, this);
-	context->audioController->AddAudioCloseListener(&FrameMain::OnAudioClose, this);
-	context->videoController->AddVideoOpenListener(&FrameMain::OnVideoOpen, this);
+	context->project->AddAudioProviderListener(&FrameMain::OnAudioOpen, this);
+	context->project->AddVideoProviderListener(&FrameMain::OnVideoOpen, this);
 
 	StartupLog("Initializing context frames");
 	context->parent = this;
@@ -206,7 +131,9 @@ FrameMain::FrameMain()
 	if (OPT_GET("App/Maximized")->GetBool()) Maximize(true);
 
 	StartupLog("Initialize toolbar");
-	InitToolbar();
+	wxSystemOptions::SetOption("msw.remap", 0);
+	OPT_SUB("App/Show Toolbar", &FrameMain::EnableToolBar, this);
+	EnableToolBar(*OPT_GET("App/Show Toolbar"));
 
 	StartupLog("Initialize menu bar");
 	menu::GetMenuBar("main", this, context.get());
@@ -228,10 +155,7 @@ FrameMain::FrameMain()
 	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this);
 
 	StartupLog("Set up drag/drop target");
-	SetDropTarget(new AegisubFileDropTarget(this));
-	Bind(FILE_LIST_DROPPED, [=](wxThreadEvent &evt) {
-		LoadList(evt.GetPayload<wxArrayString>());
-	});
+	SetDropTarget(new AegisubFileDropTarget(context.get()));
 
 	StartupLog("Load default file");
 	context->subsController->Close();
@@ -247,16 +171,10 @@ FrameMain::FrameMain()
 FrameMain::~FrameMain () {
 	wxGetApp().frame = nullptr;
 
-	context->videoController->SetVideo("");
-	context->audioController->CloseAudio();
+	context->project->CloseAudio();
+	context->project->CloseVideo();
 
 	DestroyChildren();
-}
-
-void FrameMain::InitToolbar() {
-	wxSystemOptions::SetOption("msw.remap", 0);
-	OPT_SUB("App/Show Toolbar", &FrameMain::EnableToolBar, this);
-	EnableToolBar(*OPT_GET("App/Show Toolbar"));
 }
 
 void FrameMain::EnableToolBar(agi::OptionValue const& opt) {
@@ -275,7 +193,7 @@ void FrameMain::EnableToolBar(agi::OptionValue const& opt) {
 
 void FrameMain::InitContents() {
 	StartupLog("Create background panel");
-	wxPanel *Panel = new wxPanel(this,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
+	auto Panel = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create subtitles grid");
 	context->subsGrid = new BaseGrid(Panel, context.get());
@@ -313,10 +231,10 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	bool sv = false, sa = false;
 
 	if (video == -1) sv = showVideo;
-	else if (video)  sv = context->videoController->IsLoaded() && !context->dialog->Get<DialogDetachedVideo>();
+	else if (video)  sv = context->project->VideoProvider() && !context->dialog->Get<DialogDetachedVideo>();
 
 	if (audio == -1) sa = showAudio;
-	else if (audio)  sa = context->audioController->IsAudioOpen();
+	else if (audio)  sa = !!context->project->AudioProvider();
 
 	// See if anything changed
 	if (sv == showVideo && sa == showAudio) return;
@@ -357,15 +275,14 @@ void FrameMain::UpdateTitle() {
 	if (GetTitle() != newTitle) SetTitle(newTitle);
 }
 
-void FrameMain::OnVideoOpen() {
-	if (!context->videoController->IsLoaded()) {
+void FrameMain::OnVideoOpen(AsyncVideoProvider *provider) {
+	if (!provider) {
 		SetDisplayMode(0, -1);
 		return;
 	}
 
 	Freeze();
-	int vidx = context->videoController->GetWidth(),
-		vidy = context->videoController->GetHeight();
+	int vidx = provider->GetWidth(), vidy = provider->GetHeight();
 
 	// Set zoom level based on video resolution and window size
 	double zoom = context->videoDisplay->GetZoom();
@@ -380,30 +297,12 @@ void FrameMain::OnVideoOpen() {
 	if (OPT_GET("Video/Detached/Enabled")->GetBool() && !context->dialog->Get<DialogDetachedVideo>())
 		cmd::call("video/detach", context.get());
 	Thaw();
-
-	if (!blockAudioLoad && OPT_GET("Video/Open Audio")->GetBool() && context->audioController->GetAudioURL() != context->videoController->GetVideoName()) {
-		try {
-			context->audioController->OpenAudio(context->videoController->GetVideoName());
-		}
-		catch (agi::UserCancelException const&) { }
-		// Opening a video with no audio data isn't an error, so just log
-		// and move on
-		catch (agi::fs::FileSystemError const&) {
-			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " found by video provider but not audio provider";
-		}
-		catch (agi::AudioDataNotFoundError const& e) {
-			LOG_D("video/open/audio") << "File " << context->videoController->GetVideoName() << " has no audio data: " << e.GetChainedMessage();
-		}
-		catch (agi::AudioOpenError const& err) {
-			wxMessageBox(to_wx(err.GetMessage()), "Error loading audio", wxOK | wxICON_ERROR | wxCENTER);
-		}
-	}
 }
 
 void FrameMain::OnVideoDetach(agi::OptionValue const& opt) {
 	if (opt.GetBool())
 		SetDisplayMode(0, -1);
-	else if (context->videoController->IsLoaded())
+	else if (context->project->VideoProvider())
 		SetDisplayMode(1, -1);
 }
 
@@ -413,41 +312,9 @@ void FrameMain::StatusTimeout(wxString text,int ms) {
 	StatusClear.Start(ms,true);
 }
 
-bool FrameMain::LoadList(wxArrayString list) {
-	std::string audio, video, subs;
-	get_files_to_load(list, subs, audio, video);
-
-	blockVideoLoad = !video.empty();
-	blockAudioLoad = !audio.empty();
-
-	// Load files
-	if (subs.size())
-		context->subsController->Load(subs);
-
-	if (blockVideoLoad) {
-		blockVideoLoad = false;
-		context->videoController->SetVideo(video);
-	}
-
-	if (blockAudioLoad) {
-		blockAudioLoad = false;
-		try {
-			context->audioController->OpenAudio(audio);
-		} catch (agi::UserCancelException const&) { }
-	}
-
-	bool loaded_any = subs.size() || audio.size() || video.size();
-	if (loaded_any)
-		Refresh(false);
-
-	return loaded_any;
-}
-
 BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_TIMER(ID_APP_TIMER_STATUSCLEAR, FrameMain::OnStatusClear)
-
 	EVT_CLOSE(FrameMain::OnCloseWindow)
-
 	EVT_CHAR_HOOK(FrameMain::OnKeyDown)
 	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
 END_EVENT_TABLE()
@@ -476,95 +343,15 @@ void FrameMain::OnStatusClear(wxTimerEvent &) {
 	SetStatusText("",1);
 }
 
-void FrameMain::OnAudioOpen(AudioProvider *) {
-	SetDisplayMode(-1, 1);
-}
-
-void FrameMain::OnAudioClose() {
-	SetDisplayMode(-1, 0);
+void FrameMain::OnAudioOpen(AudioProvider *provider) {
+	if (provider)
+		SetDisplayMode(-1, 1);
+	else
+		SetDisplayMode(-1, 0);
 }
 
 void FrameMain::OnSubtitlesOpen() {
 	UpdateTitle();
-	auto vc = context->videoController.get();
-
-	/// @todo figure out how to move this to the relevant controllers without
-	///       prompting for each file loaded/unloaded
-
-	// Load stuff from the new script
-	auto video     = config::path->MakeAbsolute(context->ass->GetScriptInfo("Video File"), "?script");
-	auto vfr       = config::path->MakeAbsolute(context->ass->GetScriptInfo("VFR File"), "?script");
-	auto keyframes = config::path->MakeAbsolute(context->ass->GetScriptInfo("Keyframes File"), "?script");
-	auto audio     = config::path->MakeAbsolute(context->ass->GetScriptInfo("Audio URI"), "?script");
-
-	bool videoChanged     = !blockVideoLoad && video != vc->GetVideoName();
-	bool timecodesChanged = vfr != vc->GetTimecodesName();
-	bool keyframesChanged = keyframes != vc->GetKeyFramesName();
-	bool audioChanged     = !blockAudioLoad && audio != context->audioController->GetAudioURL();
-
-	// Check if there is anything to change
-	int autoLoadMode = OPT_GET("App/Auto/Load Linked Files")->GetInt();
-	if (autoLoadMode == 0 || (!videoChanged && !timecodesChanged && !keyframesChanged && !audioChanged)) {
-		SetDisplayMode(1, 1);
-		return;
-	}
-
-	if (autoLoadMode == 2) {
-		if (wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO | wxCENTRE, this) != wxYES) {
-			SetDisplayMode(1, 1);
-			if (vc->IsLoaded() && vc->GetProvider()->GetColorSpace() != context->ass->GetScriptInfo("YCbCr Matrix"))
-				vc->Reload();
-			return;
-		}
-	}
-
-	if (audioChanged)
-		blockAudioLoad = true;
-
-	// Video
-	if (videoChanged) {
-		vc->SetVideo(video);
-		if (vc->IsLoaded()) {
-			vc->JumpToFrame(context->ass->GetUIStateAsInt("Video Position"));
-
-			std::string arString = context->ass->GetUIState("Video Aspect Ratio");
-			if (boost::starts_with(arString, "c")) {
-				double ar = 0.;
-				agi::util::try_parse(arString.substr(1), &ar);
-				vc->SetAspectRatio(ar);
-			}
-			else {
-				int ar = 0;
-				if (agi::util::try_parse(arString, &ar) && ar >= 0 && ar < 4)
-					vc->SetAspectRatio((AspectRatio)ar);
-			}
-
-			double videoZoom = 0.;
-			if (agi::util::try_parse(context->ass->GetUIState("Video Zoom Percent"), &videoZoom))
-				context->videoDisplay->SetZoom(videoZoom);
-		}
-	}
-	else if (vc->IsLoaded() && vc->GetProvider()->GetColorSpace() != context->ass->GetScriptInfo("YCbCr Matrix"))
-		vc->Reload();
-
-	vc->LoadTimecodes(vfr);
-	vc->LoadKeyframes(keyframes);
-
-	// Audio
-	if (audioChanged) {
-		blockAudioLoad = false;
-		try {
-			if (audio.empty())
-				context->audioController->CloseAudio();
-			else
-				context->audioController->OpenAudio(audio);
-		}
-		catch (agi::UserCancelException const&) { }
-		catch (agi::fs::FileSystemError const& err) {
-			wxMessageBox(to_wx(err.GetMessage()), "Error opening audio", wxOK | wxICON_ERROR | wxCENTER, this);
-		}
-	}
-
 	SetDisplayMode(1, 1);
 }
 

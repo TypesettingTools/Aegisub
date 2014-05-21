@@ -24,7 +24,8 @@
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "pen.h"
-#include "video_context.h"
+#include "project.h"
+#include "video_controller.h"
 
 #include <libaegisub/make_unique.h>
 
@@ -42,9 +43,9 @@ public:
 };
 
 AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, const char *opt_name)
-: vc(c->videoController.get())
-, keyframe_slot(vc->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
-, timecode_slot(vc->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
+: p(c->project.get())
+, keyframe_slot(p->AddKeyframesListener(&AudioMarkerProviderKeyframes::Update, this))
+, timecode_slot(p->AddTimecodesListener(&AudioMarkerProviderKeyframes::Update, this))
 , enabled_slot(OPT_SUB(opt_name, &AudioMarkerProviderKeyframes::Update, this))
 , enabled_opt(OPT_GET(opt_name))
 , style(agi::make_unique<Pen>("Colour/Audio Display/Keyframe"))
@@ -55,8 +56,8 @@ AudioMarkerProviderKeyframes::AudioMarkerProviderKeyframes(agi::Context *c, cons
 AudioMarkerProviderKeyframes::~AudioMarkerProviderKeyframes() { }
 
 void AudioMarkerProviderKeyframes::Update() {
-	std::vector<int> const& keyframes = vc->GetKeyFrames();
-	agi::vfr::Framerate const& timecodes = vc->FPS();
+	auto const& keyframes = p->Keyframes();
+	auto const& timecodes = p->Timecodes();
 
 	if (keyframes.empty() || !timecodes.IsLoaded() || !enabled_opt->GetBool()) {
 		if (!markers.empty()) {

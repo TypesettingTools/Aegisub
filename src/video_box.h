@@ -29,7 +29,7 @@
 
 #include <libaegisub/signal.h>
 
-#include <deque>
+#include <vector>
 #include <wx/panel.h>
 
 namespace agi { struct Context; }
@@ -38,7 +38,7 @@ class wxTextCtrl;
 /// @class VideoBox
 /// @brief The box containing the video display and associated controls
 class VideoBox final : public wxPanel {
-	std::deque<agi::signal::Connection> slots;
+	std::vector<agi::signal::Connection> connections;
 	agi::Context *context;     ///< Project context
 	wxTextCtrl *VideoPosition; ///< Current frame/time
 	wxTextCtrl *VideoSubsPos;  ///< Time relative to the active subtitle line

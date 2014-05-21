@@ -45,6 +45,7 @@
 #include "initial_line_state.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "project.h"
 #include "placeholder_ctrl.h"
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
@@ -52,7 +53,6 @@
 #include "timeedit_ctrl.h"
 #include "tooltip_manager.h"
 #include "validators.h"
-#include "video_context.h"
 
 #include <libaegisub/character_count.h>
 #include <libaegisub/util.h>
@@ -228,10 +228,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	OnSize(evt);
 
 	file_changed_slot = c->ass->AddCommitListener(&SubsEditBox::OnCommit, this);
-	connections.push_back(context->videoController->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this));
-	connections.push_back(context->selectionController->AddActiveLineListener(&SubsEditBox::OnActiveLineChanged, this));
-	connections.push_back(context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this));
-	connections.push_back(context->initialLineState->AddChangeListener(&SubsEditBox::OnLineInitialTextChanged, this));
+	connections = agi::signal::make_vector({
+		context->project->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this),
+		context->selectionController->AddActiveLineListener(&SubsEditBox::OnActiveLineChanged, this),
+		context->selectionController->AddSelectionListener(&SubsEditBox::OnSelectedSetChanged, this),
+		context->initialLineState->AddChangeListener(&SubsEditBox::OnLineInitialTextChanged, this),
+	 });
 
 	context->textSelectionController->SetControl(edit_ctrl);
 	edit_ctrl->SetFocus();
@@ -394,14 +396,6 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	commit_id = -1;
 
 	UpdateFields(AssFile::COMMIT_DIAG_FULL, false);
-
-	/// @todo VideoContext should be doing this
-	if (c->videoController->IsLoaded()) {
-		if (OPT_GET("Video/Subtitle Sync")->GetBool()) {
-			c->videoController->Stop();
-			c->videoController->JumpToTime(line->Start);
-		}
-	}
 }
 
 void SubsEditBox::OnSelectedSetChanged() {
@@ -488,8 +482,10 @@ void SubsEditBox::CommitTimes(TimeField field) {
 				break;
 
 			case TIME_DURATION:
-				if (by_frame->GetValue())
-					d->End = c->videoController->TimeAtFrame(c->videoController->FrameAtTime(d->Start, agi::vfr::START) + duration->GetFrame() - 1, agi::vfr::END);
+				if (by_frame->GetValue()) {
+					auto const& fps = c->project->Timecodes();
+					d->End = fps.TimeAtFrame(fps.FrameAtTime(d->Start, agi::vfr::START) + duration->GetFrame() - 1, agi::vfr::END);
+				}
 				else
 					d->End = d->Start + duration->GetTime();
 				initial_times[d].second = d->End;

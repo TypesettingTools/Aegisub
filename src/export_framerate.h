@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file export_framerate.h
-/// @see export_framerate.cpp
-/// @ingroup export
-///
-
 #include "ass_export_filter.h"
 
 #include <libaegisub/vfr.h>
@@ -53,10 +48,8 @@ class AssTransformFramerateFilter final : public AssExportFilter {
 	int oldK = 0;
 
 	// Yes, these are backwards. It sort of makes sense if you think about what it's doing.
-	const agi::vfr::Framerate *Input = nullptr;  ///< Destination frame rate
-	const agi::vfr::Framerate *Output = nullptr; ///< Source frame rate
-
-	agi::vfr::Framerate t1,t2;
+	agi::vfr::Framerate Input;  ///< Destination frame rate
+	agi::vfr::Framerate Output; ///< Source frame rate
 
 	wxTextCtrl *InputFramerate; ///< Input frame rate text box
 	wxTextCtrl *OutputFramerate; ///< Output frame rate text box
@@ -85,7 +78,6 @@ class AssTransformFramerateFilter final : public AssExportFilter {
 	///      is in and the beginning of the next frame
 	int ConvertTime(int time);
 public:
-	/// Constructor
 	AssTransformFramerateFilter();
 	void ProcessSubs(AssFile *subs, wxWindow *) override;
 	wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) override;

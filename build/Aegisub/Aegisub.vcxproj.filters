@@ -348,10 +348,7 @@
     <ClInclude Include="$(SrcDir)dialog_version_check.h">
       <Filter>Features\Update checker</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)threaded_frame_source.h">
-      <Filter>Video\Providers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)video_context.h">
+    <ClInclude Include="$(SrcDir)video_controller.h">
       <Filter>Video</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)video_frame.h">
@@ -623,6 +620,12 @@
     </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_video_properties.h">
       <Filter>Features\Resolution resampler</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)async_video_provider.h">
+      <Filter>Video\Providers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)project.h">
+      <Filter>Main UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -950,10 +953,7 @@
     <ClCompile Include="$(SrcDir)dialog_version_check.cpp">
       <Filter>Features\Update checker</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)threaded_frame_source.cpp">
-      <Filter>Video\Providers</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)video_context.cpp">
+    <ClCompile Include="$(SrcDir)video_controller.cpp">
       <Filter>Video</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)video_slider.cpp">
@@ -1180,6 +1180,12 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_video_properties.cpp">
       <Filter>Features\Resolution resampler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)async_video_provider.cpp">
+      <Filter>Video\Providers</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)project.cpp">
+      <Filter>Main UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

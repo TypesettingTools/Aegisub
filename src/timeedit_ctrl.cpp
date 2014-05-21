@@ -40,8 +40,8 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "options.h"
+#include "project.h"
 #include "utils.h"
-#include "video_context.h"
 
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
@@ -88,17 +88,17 @@ void TimeEdit::SetTime(AssTime new_time) {
 }
 
 int TimeEdit::GetFrame() const {
-	return c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START);
+	return c->project->Timecodes().FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START);
 }
 
 void TimeEdit::SetFrame(int fn) {
-	SetTime(c->videoController->TimeAtFrame(fn, isEnd ? agi::vfr::END : agi::vfr::START));
+	SetTime(c->project->Timecodes().TimeAtFrame(fn, isEnd ? agi::vfr::END : agi::vfr::START));
 }
 
 void TimeEdit::SetByFrame(bool enableByFrame) {
 	if (enableByFrame == byFrame) return;
 
-	byFrame = enableByFrame && c->videoController->TimecodesLoaded();
+	byFrame = enableByFrame && c->project->Timecodes().IsLoaded();
 	UpdateText();
 }
 
@@ -107,7 +107,7 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 	if (byFrame) {
 		long temp = 0;
 		GetValue().ToLong(&temp);
-		time = c->videoController->TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START);
+		time = c->project->Timecodes().TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START);
 	}
 	else if (insert)
 		time = from_wx(GetValue());
@@ -115,7 +115,7 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 
 void TimeEdit::UpdateText() {
 	if (byFrame)
-		ChangeValue(std::to_wstring(c->videoController->FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
+		ChangeValue(std::to_wstring(c->project->Timecodes().FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
 		ChangeValue(to_wx(time.GetAssFormated()));
 }

@@ -40,7 +40,7 @@
 #include "../main.h"
 #include "../options.h"
 #include "../utils.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 
 #include <libaegisub/make_unique.h>
 

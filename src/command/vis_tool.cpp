@@ -18,8 +18,9 @@
 
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
+#include "../project.h"
 #include "../video_box.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 #include "../video_display.h"
 #include "../visual_tool_clip.h"
 #include "../visual_tool_cross.h"
@@ -39,7 +40,7 @@ namespace {
 		CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 		bool Validate(const agi::Context *c) override {
-			return c->videoController->IsLoaded();
+			return !!c->project->VideoProvider();
 		}
 
 		bool IsActive(const agi::Context *c) override {

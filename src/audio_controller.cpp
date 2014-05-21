@@ -27,36 +27,23 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_controller.cpp
-/// @brief Manage open audio and abstract state away from display
-/// @ingroup audio_ui
-///
-
 #include "audio_controller.h"
 
-#include "ass_file.h"
 #include "audio_timing.h"
-#include "compat.h"
-#include "dialog_progress.h"
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
-#include "pen.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
-#include "subs_controller.h"
 #include "utils.h"
-#include "video_context.h"
-
-#include <libaegisub/io.h>
-#include <libaegisub/path.h>
 
 #include <algorithm>
 
 AudioController::AudioController(agi::Context *context)
 : context(context)
-, subtitle_save_slot(context->subsController->AddFileSaveListener(&AudioController::OnSubtitlesSave, this))
 , playback_timer(this)
+, provider_connection(context->project->AddAudioProviderListener(&AudioController::OnAudioProvider, this))
 {
 	Bind(wxEVT_TIMER, &AudioController::OnPlaybackTimer, this, playback_timer.GetId());
 
@@ -66,25 +53,18 @@ AudioController::AudioController(agi::Context *context)
 #endif
 
 	OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this);
-	OPT_SUB("Audio/Provider", &AudioController::OnAudioProviderChanged, this);
-	OPT_SUB("Audio/Cache/Type", &AudioController::OnAudioProviderChanged, this);
-
-#ifdef WITH_FFMS2
-	// As with the video ones, it'd be nice to figure out a decent way to move
-	// this to the provider itself
-	OPT_SUB("Provider/Audio/FFmpegSource/Decode Error Handling", &AudioController::OnAudioProviderChanged, this);
-#endif
 }
 
 AudioController::~AudioController()
 {
-	CloseAudio();
+	Stop();
 }
 
 void AudioController::OnPlaybackTimer(wxTimerEvent &)
 {
-	int64_t pos = player->GetCurrentPosition();
+	if (!player) return;
 
+	int64_t pos = player->GetCurrentPosition();
 	if (!player->IsPlaying() ||
 		(playback_mode != PM_ToEnd && pos >= player->GetEndPosition()+200))
 	{
@@ -107,113 +87,40 @@ void AudioController::OnComputerSuspending(wxPowerEvent &)
 
 void AudioController::OnComputerResuming(wxPowerEvent &)
 {
-	if (provider)
-	{
-		try
-		{
-			player = AudioPlayerFactory::GetAudioPlayer(provider.get(), context->parent);
-		}
-		catch (...)
-		{
-			CloseAudio();
-		}
-	}
+	OnAudioPlayerChanged();
 }
 #endif
 
 void AudioController::OnAudioPlayerChanged()
 {
-	if (!IsAudioOpen()) return;
+	if (!provider) return;
 
 	Stop();
-
 	player.reset();
 
 	try
 	{
-		player = AudioPlayerFactory::GetAudioPlayer(provider.get(), context->parent);
+		player = AudioPlayerFactory::GetAudioPlayer(provider, context->parent);
 	}
 	catch (...)
 	{
-		CloseAudio();
-		throw;
+		context->project->CloseAudio();
 	}
 }
 
-void AudioController::OnAudioProviderChanged()
+void AudioController::OnAudioProvider(AudioProvider *new_provider)
 {
-	if (IsAudioOpen())
-		// url is cloned because CloseAudio clears it and OpenAudio takes a const reference
-		OpenAudio(agi::fs::path(audio_url));
-}
-
-void AudioController::OpenAudio(agi::fs::path const& url)
-{
-	if (url.empty())
-		throw agi::InternalError("AudioController::OpenAudio() was passed an empty string. This must not happen.", nullptr);
-
-	std::unique_ptr<AudioProvider> new_provider;
-	try {
-		DialogProgress progress(context->parent);
-		new_provider = AudioProviderFactory::GetProvider(url, &progress);
-		config::path->SetToken("?audio", url);
-	}
-	catch (agi::UserCancelException const&) {
-		throw;
-	}
-	catch (...) {
-		config::mru->Remove("Audio", url);
-		throw;
-	}
-
-	CloseAudio();
-
-	player = AudioPlayerFactory::GetAudioPlayer(new_provider.get(), context->parent);
-	provider = std::move(new_provider);
-
-	audio_url = url;
-
-	config::mru->Add("Audio", url);
-
-	try
-	{
-		AnnounceAudioOpen(provider.get());
-	}
-	catch (...)
-	{
-		CloseAudio();
-		throw;
-	}
-}
-
-void AudioController::CloseAudio()
-{
+	provider = new_provider;
 	Stop();
-
 	player.reset();
-	provider.reset();
-	player = nullptr;
-	provider = nullptr;
-
-	audio_url.clear();
-
-	config::path->SetToken("?audio", "");
-
-	AnnounceAudioClose();
-}
-
-bool AudioController::IsAudioOpen() const
-{
-	return player && provider;
+	OnAudioPlayerChanged();
 }
 
 void AudioController::SetTimingController(std::unique_ptr<AudioTimingController> new_controller)
 {
 	timing_controller = std::move(new_controller);
 	if (timing_controller)
-	{
 		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
-	}
 
 	AnnounceTimingControllerChanged();
 }
@@ -224,17 +131,9 @@ void AudioController::OnTimingControllerUpdatedPrimaryRange()
 		player->SetEndPosition(SamplesFromMilliseconds(timing_controller->GetPrimaryPlaybackRange().end()));
 }
 
-void AudioController::OnSubtitlesSave()
-{
-	if (IsAudioOpen())
-		context->ass->SetScriptInfo("Audio URI", config::path->MakeRelative(audio_url, "?script").generic_string());
-	else
-		context->ass->SetScriptInfo("Audio URI", "");
-}
-
 void AudioController::PlayRange(const TimeRange &range)
 {
-	if (!IsAudioOpen()) return;
+	if (!player) return;
 
 	player->Play(SamplesFromMilliseconds(range.begin()), SamplesFromMilliseconds(range.length()));
 	playback_mode = PM_Range;
@@ -252,8 +151,6 @@ void AudioController::PlayPrimaryRange()
 
 void AudioController::PlayToEndOfPrimary(int start_ms)
 {
-	if (!IsAudioOpen()) return;
-
 	PlayRange(TimeRange(start_ms, GetPrimaryPlaybackRange().end()));
 	if (playback_mode == PM_Range)
 		playback_mode = PM_PrimaryRange;
@@ -261,7 +158,7 @@ void AudioController::PlayToEndOfPrimary(int start_ms)
 
 void AudioController::PlayToEnd(int start_ms)
 {
-	if (!IsAudioOpen()) return;
+	if (!player) return;
 
 	int64_t start_sample = SamplesFromMilliseconds(start_ms);
 	player->Play(start_sample, provider->GetNumSamples()-start_sample);
@@ -273,7 +170,7 @@ void AudioController::PlayToEnd(int start_ms)
 
 void AudioController::Stop()
 {
-	if (!IsAudioOpen()) return;
+	if (!player) return;
 
 	player->Stop();
 	playback_mode = PM_NotPlaying;
@@ -284,7 +181,7 @@ void AudioController::Stop()
 
 bool AudioController::IsPlaying()
 {
-	return IsAudioOpen() && playback_mode != PM_NotPlaying;
+	return player && playback_mode != PM_NotPlaying;
 }
 
 int AudioController::GetPlaybackPosition()
@@ -297,88 +194,31 @@ int AudioController::GetPlaybackPosition()
 int AudioController::GetDuration() const
 {
 	if (!provider) return 0;
-
 	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
 }
 
 TimeRange AudioController::GetPrimaryPlaybackRange() const
 {
 	if (timing_controller)
-	{
 		return timing_controller->GetPrimaryPlaybackRange();
-	}
 	else
-	{
-		return TimeRange(0, 0);
-	}
+		return TimeRange{0, 0};
 }
 
 void AudioController::SetVolume(double volume)
 {
-	if (!IsAudioOpen()) return;
+	if (!player) return;
 	player->SetVolume(volume);
 }
 
 int64_t AudioController::SamplesFromMilliseconds(int64_t ms) const
 {
-	/// @todo There might be some subtle rounding errors here.
-
 	if (!provider) return 0;
-
-	int64_t sr = provider->GetSampleRate();
-
-	int64_t millisamples = ms * sr;
-
-	return (millisamples + 999) / 1000;
+	return (ms * provider->GetSampleRate() + 999) / 1000;
 }
 
 int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
 {
-	/// @todo There might be some subtle rounding errors here.
-
 	if (!provider) return 0;
-
-	int64_t sr = provider->GetSampleRate();
-
-	int64_t millisamples = samples * 1000;
-
-	return millisamples / sr;
-}
-
-void AudioController::SaveClip(agi::fs::path const& filename, TimeRange const& range) const
-{
-	int64_t start_sample = SamplesFromMilliseconds(range.begin());
-	int64_t end_sample = SamplesFromMilliseconds(range.end());
-	if (filename.empty() || start_sample > provider->GetNumSamples() || range.length() == 0) return;
-
-	agi::io::Save outfile(filename, true);
-	std::ostream& out(outfile.Get());
-
-	size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
-	size_t bufsize = (end_sample - start_sample) * bytes_per_sample;
-
-	int intval;
-	short shortval;
-
-	out << "RIFF";
-	out.write((char*)&(intval=bufsize+36),4);
-	out<< "WAVEfmt ";
-	out.write((char*)&(intval=16),4);
-	out.write((char*)&(shortval=1),2);
-	out.write((char*)&(shortval=provider->GetChannels()),2);
-	out.write((char*)&(intval=provider->GetSampleRate()),4);
-	out.write((char*)&(intval=provider->GetSampleRate()*provider->GetChannels()*provider->GetBytesPerSample()),4);
-	out.write((char*)&(intval=provider->GetChannels()*provider->GetBytesPerSample()),2);
-	out.write((char*)&(shortval=provider->GetBytesPerSample()<<3),2);
-	out << "data";
-	out.write((char*)&bufsize,4);
-
-	//samples per read
-	size_t spr = 65536 / bytes_per_sample;
-	std::vector<char> buf(bufsize);
-	for(int64_t i = start_sample; i < end_sample; i += spr) {
-		size_t len = std::min<size_t>(spr, end_sample - i);
-		provider->GetAudio(&buf[0], i, len);
-		out.write(&buf[0], len * bytes_per_sample);
-	}
+	return samples * 1000 / provider->GetSampleRate();
 }

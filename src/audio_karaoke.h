@@ -14,26 +14,20 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_karaoke.h
-/// @see audio_karaoke.cpp
-/// @ingroup audio_ui
-///
-
 #include <libaegisub/signal.h>
 
 #include <memory>
 #include <set>
 #include <unordered_map>
 #include <vector>
-
 #include <wx/bitmap.h>
 #include <wx/timer.h>
 #include <wx/window.h>
 
 class AssDialogue;
 class AssKaraoke;
+class AudioProvider;
 class wxButton;
-
 namespace agi { struct Context; }
 
 /// @class AudioKaraoke
@@ -147,8 +141,7 @@ class AudioKaraoke final : public wxWindow {
 	void OnMouse(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
-	void OnAudioOpened();
-	void OnAudioClosed();
+	void OnAudioOpened(AudioProvider *provider);
 	void OnScrollTimer(wxTimerEvent &event);
 
 public:

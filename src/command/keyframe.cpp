@@ -34,9 +34,10 @@
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../utils.h"
-#include "../video_context.h"
 
+#include <libaegisub/keyframe.h>
 #include <libaegisub/make_unique.h>
 
 namespace {
@@ -51,11 +52,11 @@ struct keyframe_close final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->OverKeyFramesLoaded();
+		return c->project->CanCloseKeyframes();
 	}
 
 	void operator()(agi::Context *c) override {
-		c->videoController->CloseKeyframes();
+		c->project->CloseKeyframes();
 	}
 };
 
@@ -74,7 +75,7 @@ struct keyframe_open final : public Command {
 			c->parent);
 
 		if (!filename.empty())
-			c->videoController->LoadKeyframes(filename);
+			c->project->LoadKeyframes(filename);
 	}
 };
 
@@ -87,13 +88,15 @@ struct keyframe_save final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->KeyFramesLoaded();
+		return !c->project->Keyframes().empty();
 	}
 
 	void operator()(agi::Context *c) override {
 		auto filename = SaveFileSelector(_("Save keyframes file"), "Path/Last/Keyframes", "", "*.key.txt", "Text files (*.txt)|*.txt", c->parent);
-		if (!filename.empty())
-			c->videoController->SaveKeyframes(filename);
+		if (filename.empty()) return;
+
+		agi::keyframe::Save(filename, c->project->Keyframes());
+		config::mru->Add("Keyframes", filename);
 	}
 };
 }

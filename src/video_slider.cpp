@@ -34,13 +34,15 @@
 
 #include "video_slider.h"
 
+#include "async_video_provider.h"
 #include "base_grid.h"
 #include "command/command.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "options.h"
+#include "project.h"
 #include "utils.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <wx/dcbuffer.h>
 #include <wx/settings.h>
@@ -48,19 +50,19 @@
 VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
 , c(c)
+, connections(agi::signal::make_vector({
+	OPT_SUB("Video/Slider/Show Keyframes", [=] { Refresh(false); }),
+	c->videoController->AddSeekListener(&VideoSlider::SetValue, this),
+	c->project->AddVideoProviderListener(&VideoSlider::VideoOpened, this),
+	c->project->AddKeyframesListener(&VideoSlider::KeyframesChanged, this),
+}))
 {
 	SetClientSize(20,25);
 	SetMinSize(wxSize(20, 25));
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 
-	slots.push_back(OPT_SUB("Video/Slider/Show Keyframes", [=] { Refresh(false); }));
-	slots.push_back(c->videoController->AddSeekListener(&VideoSlider::SetValue, this));
-	slots.push_back(c->videoController->AddVideoOpenListener(&VideoSlider::VideoOpened, this));
-	slots.push_back(c->videoController->AddKeyframesListener(&VideoSlider::KeyframesChanged, this));
-
 	c->videoSlider = this;
-
-	VideoOpened();
+	VideoOpened(c->project->VideoProvider());
 }
 
 void VideoSlider::SetValue(int value) {
@@ -69,10 +71,9 @@ void VideoSlider::SetValue(int value) {
 	Refresh(false);
 }
 
-void VideoSlider::VideoOpened() {
-	if (c->videoController->IsLoaded()) {
-		max = c->videoController->GetLength() - 1;
-		keyframes = c->videoController->GetKeyFrames();
+void VideoSlider::VideoOpened(AsyncVideoProvider *provider) {
+	if (provider) {
+		max = provider->GetFrameCount() - 1;
 		Refresh(false);
 	}
 }

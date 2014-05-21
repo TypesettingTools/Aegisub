@@ -20,14 +20,14 @@
 #include "dialog_resample.h"
 
 #include "ass_file.h"
+#include "async_video_provider.h"
 #include "compat.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
-#include "include/aegisub/video_provider.h"
 #include "libresrc/libresrc.h"
+#include "project.h"
 #include "resolution_resampler.h"
 #include "validators.h"
-#include "video_context.h"
 
 #include <boost/range/size.hpp>
 #include <wx/checkbox.h>
@@ -57,10 +57,10 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	settings.source_y = script_h;
 	settings.source_matrix = script_mat = MatrixFromString(c->ass->GetScriptInfo("YCbCr Matrix"));
 
-	if (c->videoController->IsLoaded()) {
-		settings.dest_x = video_w = c->videoController->GetWidth();
-		settings.dest_y = video_h = c->videoController->GetHeight();
-		settings.dest_matrix = video_mat = MatrixFromString(c->videoController->GetProvider()->GetRealColorSpace());
+	if (auto provider = c->project->VideoProvider()) {
+		settings.dest_x = video_w = provider->GetWidth();
+		settings.dest_y = video_h = provider->GetHeight();
+		settings.dest_matrix = video_mat = MatrixFromString(provider->GetRealColorSpace());
 	}
 	else {
 		settings.dest_x = script_w;
@@ -186,7 +186,7 @@ void DialogResample::SetSourceFromScript(wxCommandEvent&) {
 }
 
 void DialogResample::UpdateButtons() {
-	from_video->Enable(c->videoController->IsLoaded() &&
+	from_video->Enable(c->project->VideoProvider() &&
 		(dest_x->GetValue() != video_w || dest_y->GetValue() != video_h));
 	from_script->Enable(source_x->GetValue() != script_w || source_y->GetValue() != script_h);
 

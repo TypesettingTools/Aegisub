@@ -48,9 +48,10 @@
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
 #include "utils.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/make_unique.h>
 
@@ -547,7 +548,7 @@ public:
 
 AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_SIMPLE)
-, audio_open_connection(controller->AddAudioOpenListener(&AudioDisplay::OnAudioOpen, this))
+, audio_open_connection(context->project->AddAudioProviderListener(&AudioDisplay::OnAudioOpen, this))
 , context(context)
 , audio_renderer(agi::make_unique<AudioRenderer>())
 , controller(controller)
@@ -1193,16 +1194,16 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 	{
 		if (connections.empty())
 		{
-			connections.push_back(controller->AddAudioCloseListener([=] { OnAudioOpen(nullptr); }));
-			connections.push_back(controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this));
-			connections.push_back(controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this));
-			connections.push_back(controller->AddTimingControllerListener(&AudioDisplay::OnTimingController, this));
-			connections.push_back(OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
-			connections.push_back(OPT_SUB("Audio/Display/Waveform Style", &AudioDisplay::ReloadRenderingSettings, this));
-			connections.push_back(OPT_SUB("Colour/Audio Display/Spectrum", &AudioDisplay::ReloadRenderingSettings, this));
-			connections.push_back(OPT_SUB("Colour/Audio Display/Waveform", &AudioDisplay::ReloadRenderingSettings, this));
-			connections.push_back(OPT_SUB("Audio/Renderer/Spectrum/Quality", &AudioDisplay::ReloadRenderingSettings, this));
-
+			connections = agi::signal::make_vector({
+				controller->AddPlaybackPositionListener(&AudioDisplay::OnPlaybackPosition, this),
+				controller->AddPlaybackStopListener(&AudioDisplay::RemoveTrackCursor, this),
+				controller->AddTimingControllerListener(&AudioDisplay::OnTimingController, this),
+				OPT_SUB("Audio/Spectrum", &AudioDisplay::ReloadRenderingSettings, this),
+				OPT_SUB("Audio/Display/Waveform Style", &AudioDisplay::ReloadRenderingSettings, this),
+				OPT_SUB("Colour/Audio Display/Spectrum", &AudioDisplay::ReloadRenderingSettings, this),
+				OPT_SUB("Colour/Audio Display/Waveform", &AudioDisplay::ReloadRenderingSettings, this),
+				OPT_SUB("Audio/Renderer/Spectrum/Quality", &AudioDisplay::ReloadRenderingSettings, this),
+			});
 			OnTimingController();
 		}
 

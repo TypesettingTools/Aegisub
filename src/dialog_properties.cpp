@@ -35,13 +35,14 @@
 #include "dialog_properties.h"
 
 #include "ass_file.h"
+#include "async_video_provider.h"
 #include "compat.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
+#include "project.h"
 #include "resolution_resampler.h"
 #include "validators.h"
-#include "video_context.h"
 
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
@@ -80,7 +81,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResY")));
 
 	wxButton *FromVideo = new wxButton(this,-1,_("From &video"));
-	if (!c->videoController->IsLoaded())
+	if (!c->project->VideoProvider())
 		FromVideo->Enable(false);
 	else
 		FromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetFromVideo, this);
@@ -172,6 +173,6 @@ int DialogProperties::SetInfoIfDifferent(std::string const& key, std::string con
 }
 
 void DialogProperties::OnSetFromVideo(wxCommandEvent &) {
-	ResX->SetValue(std::to_wstring(c->videoController->GetWidth()));
-	ResY->SetValue(std::to_wstring(c->videoController->GetHeight()));
+	ResX->SetValue(std::to_wstring(c->project->VideoProvider()->GetWidth()));
+	ResY->SetValue(std::to_wstring(c->project->VideoProvider()->GetHeight()));
 }

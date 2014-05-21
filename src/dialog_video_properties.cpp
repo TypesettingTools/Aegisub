@@ -17,11 +17,12 @@
 #include "dialog_video_properties.h"
 
 #include "ass_file.h"
-#include "include/aegisub/video_provider.h"
+#include "async_video_provider.h"
 #include "options.h"
 #include "resolution_resampler.h"
 
 #include <wx/dialog.h>
+#include <wx/intl.h>
 #include <wx/radiobox.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -79,9 +80,7 @@ public:
 		Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { EndModal(0); }, wxID_CANCEL);
 	}
 };
-}
-
-bool UpdateVideoProperties(AssFile *file, const VideoProvider *new_provider, wxWindow *parent) {
+bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	bool commit_subs = false;
 
 	// When opening dummy video only want to set the script properties if
@@ -155,4 +154,10 @@ bool UpdateVideoProperties(AssFile *file, const VideoProvider *new_provider, wxW
 		});
 		return true;
 	}
+}
+}
+
+void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
+	if (update_video_properties(file, new_provider, parent))
+		file->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
 }

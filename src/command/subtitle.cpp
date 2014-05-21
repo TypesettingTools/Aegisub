@@ -43,12 +43,13 @@
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../search_replace_engine.h"
 #include "../selection_controller.h"
 #include "../subs_controller.h"
 #include "../subtitle_format.h"
 #include "../utils.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/charset_conv.h>
@@ -71,7 +72,7 @@ struct validate_nonempty_selection : public Command {
 struct validate_nonempty_selection_video_loaded : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded() && !c->selectionController->GetSelectedSet().empty();
+		return c->project->VideoProvider() && !c->selectionController->GetSelectedSet().empty();
 	}
 };
 
@@ -227,7 +228,7 @@ struct subtitle_new final : public Command {
 
 	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() != wxCANCEL)
-			c->subsController->Close();
+			c->project->CloseSubtitles();
 	}
 };
 
@@ -242,7 +243,7 @@ struct subtitle_open final : public Command {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
 		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (!filename.empty())
-			c->subsController->Load(filename);
+			c->project->LoadSubtitles(filename);
 	}
 };
 
@@ -256,7 +257,7 @@ struct subtitle_open_autosave final : public Command {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
 		DialogAutosave dialog(c->parent);
 		if (dialog.ShowModal() == wxID_OK)
-			c->subsController->Load(dialog.ChosenFile());
+			c->project->LoadSubtitles(dialog.ChosenFile());
 	}
 };
 
@@ -276,7 +277,7 @@ struct subtitle_open_charset final : public Command {
 		wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
 		if (charset.empty()) return;
 
-		c->subsController->Load(filename, from_wx(charset));
+		c->project->LoadSubtitles(filename, from_wx(charset));
 	}
 };
 
@@ -289,11 +290,11 @@ struct subtitle_open_video final : public Command {
 
 	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
-		c->subsController->Load(c->videoController->GetVideoName(), "binary");
+		c->subsController->Load(c->project->VideoName(), "binary");
 	}
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded() && c->videoController->HasSubtitles();
+		return c->project->CanLoadSubtitlesFromVideo();
 	}
 };
 
@@ -384,7 +385,6 @@ struct subtitle_select_visible final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) override {
-		if (!c->videoController->IsLoaded()) return;
 		c->videoController->Stop();
 
 		Selection new_selection;
@@ -404,7 +404,7 @@ struct subtitle_select_visible final : public Command {
 	}
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded();
+		return !!c->project->VideoProvider();
 	}
 };
 

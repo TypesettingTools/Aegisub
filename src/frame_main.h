@@ -27,31 +27,23 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file frame_main.h
-/// @see frame_main.cpp
-/// @ingroup main_ui
-///
-
 #include <libaegisub/fs_fwd.h>
 
 #include <memory>
 #include <vector>
-
 #include <wx/frame.h>
 #include <wx/sizer.h>
 #include <wx/timer.h>
 
 class AegisubApp;
-class AegisubFileDropTarget;
+class AsyncVideoProvider;
 class AudioBox;
 class AudioProvider;
 class VideoBox;
-
 namespace agi { struct Context; class OptionValue; }
 
 class FrameMain : public wxFrame {
 	friend class AegisubApp;
-	friend class AegisubFileDropTarget;
 
 	std::unique_ptr<agi::Context> context;
 
@@ -64,13 +56,7 @@ class FrameMain : public wxFrame {
 	bool showVideo = true; ///< Is the video display shown?
 	bool showAudio = true; ///< Is the audio display shown?
 	wxTimer StatusClear;   ///< Status bar timeout timer
-	/// Block video loading; used when both video and subtitles are opened at
-	/// the same time, so that the video associated with the subtitles (if any)
-	/// isn't loaded
-	bool blockVideoLoad = false;
-	bool blockAudioLoad = false;
 
-	void InitToolbar();
 	void InitContents();
 
 	void UpdateTitle();
@@ -81,13 +67,9 @@ class FrameMain : public wxFrame {
 	void OnStatusClear(wxTimerEvent &event);
 	void OnCloseWindow (wxCloseEvent &event);
 
-	// AudioControllerAudioEventListener implementation
 	void OnAudioOpen(AudioProvider *provider);
-	void OnAudioClose();
-
-	void OnVideoOpen();
+	void OnVideoOpen(AsyncVideoProvider *provider);
 	void OnVideoDetach(agi::OptionValue const& opt);
-
 	void OnSubtitlesOpen();
 
 	void EnableToolBar(agi::OptionValue const& opt);
@@ -115,8 +97,6 @@ public:
 
 	bool IsVideoShown() const { return showVideo; }
 	bool IsAudioShown() const { return showAudio; }
-
-	bool LoadList(wxArrayString list);
 
 	DECLARE_EVENT_TABLE()
 };

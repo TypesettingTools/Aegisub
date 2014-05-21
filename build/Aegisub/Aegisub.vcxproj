@@ -205,6 +205,7 @@
     <ClInclude Include="$(SrcDir)placeholder_ctrl.h" />
     <ClInclude Include="$(SrcDir)preferences.h" />
     <ClInclude Include="$(SrcDir)preferences_base.h" />
+    <ClInclude Include="$(SrcDir)project.h" />
     <ClInclude Include="$(SrcDir)resolution_resampler.h" />
     <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h" />
     <ClInclude Include="$(SrcDir)search_replace_engine.h" />
@@ -234,7 +235,7 @@
     <ClInclude Include="$(SrcDir)text_file_writer.h" />
     <ClInclude Include="$(SrcDir)text_selection_controller.h" />
     <ClInclude Include="$(SrcDir)thesaurus.h" />
-    <ClInclude Include="$(SrcDir)threaded_frame_source.h" />
+    <ClInclude Include="$(SrcDir)async_video_provider.h" />
     <ClInclude Include="$(SrcDir)time_range.h" />
     <ClInclude Include="$(SrcDir)timeedit_ctrl.h" />
     <ClInclude Include="$(SrcDir)toggle_bitmap.h" />
@@ -244,7 +245,7 @@
     <ClInclude Include="$(SrcDir)vector2d.h" />
     <ClInclude Include="$(SrcDir)version.h" />
     <ClInclude Include="$(SrcDir)video_box.h" />
-    <ClInclude Include="$(SrcDir)video_context.h" />
+    <ClInclude Include="$(SrcDir)video_controller.h" />
     <ClInclude Include="$(SrcDir)video_display.h" />
     <ClInclude Include="$(SrcDir)video_frame.h" />
     <ClInclude Include="$(SrcDir)video_out_gl.h" />
@@ -282,6 +283,7 @@
     <ClCompile Include="$(SrcDir)ass_style.cpp" />
     <ClCompile Include="$(SrcDir)ass_style_storage.cpp" />
     <ClCompile Include="$(SrcDir)ass_time.cpp" />
+    <ClCompile Include="$(SrcDir)async_video_provider.cpp" />
     <ClCompile Include="$(SrcDir)audio_box.cpp" />
     <ClCompile Include="$(SrcDir)audio_colorscheme.cpp" />
     <ClCompile Include="$(SrcDir)audio_controller.cpp" />
@@ -395,6 +397,7 @@
     <ClCompile Include="$(SrcDir)persist_location.cpp" />
     <ClCompile Include="$(SrcDir)preferences.cpp" />
     <ClCompile Include="$(SrcDir)preferences_base.cpp" />
+    <ClCompile Include="$(SrcDir)project.cpp" />
     <ClCompile Include="$(SrcDir)resolution_resampler.cpp" />
     <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
@@ -426,7 +429,6 @@
     <ClCompile Include="$(SrcDir)text_file_writer.cpp" />
     <ClCompile Include="$(SrcDir)text_selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)thesaurus.cpp" />
-    <ClCompile Include="$(SrcDir)threaded_frame_source.cpp" />
     <ClCompile Include="$(SrcDir)timeedit_ctrl.cpp" />
     <ClCompile Include="$(SrcDir)toggle_bitmap.cpp" />
     <ClCompile Include="$(SrcDir)toolbar.cpp" />
@@ -436,7 +438,7 @@
     <ClCompile Include="$(SrcDir)vector2d.cpp" />
     <ClCompile Include="$(SrcDir)version.cpp" />
     <ClCompile Include="$(SrcDir)video_box.cpp" />
-    <ClCompile Include="$(SrcDir)video_context.cpp" />
+    <ClCompile Include="$(SrcDir)video_controller.cpp" />
     <ClCompile Include="$(SrcDir)video_display.cpp" />
     <ClCompile Include="$(SrcDir)video_frame.cpp" />
     <ClCompile Include="$(SrcDir)video_out_gl.cpp" />

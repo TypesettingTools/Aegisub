@@ -22,18 +22,16 @@
 #include "ass_info.h"
 #include "ass_style.h"
 #include "ass_style_storage.h"
-#include "charset_detect.h"
 #include "compat.h"
 #include "command/command.h"
 #include "frame_main.h"
 #include "include/aegisub/context.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
 #include "subtitle_format.h"
-#include "text_file_reader.h"
 #include "text_selection_controller.h"
 #include "utils.h"
-#include "video_context.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
@@ -175,61 +173,15 @@ void SubsController::SetSelectionController(SelectionController *selection_contr
 void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 	AssFile temp;
 
-	try {
-		try {
-			if (charset.empty())
-				charset = CharSetDetect::GetEncoding(filename);
-		}
-		catch (agi::UserCancelException const&) {
-			return;
-		}
+	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
 
-		// Make sure that file isn't actually a timecode file
-		if (charset != "binary") {
-			try {
-				TextFileReader testSubs(filename, charset);
-				std::string cur = testSubs.ReadLineFromFile();
-				if (boost::starts_with(cur, "# timecode")) {
-					context->videoController->LoadTimecodes(filename);
-					return;
-				}
-			}
-			catch (...) {
-				// if trying to load the file as timecodes fails it's fairly
-				// safe to assume that it is in fact not a timecode file
-			}
-		}
+	// Make sure the file has at least one style and one dialogue line
+	if (temp.Styles.empty())
+		temp.Styles.push_back(*new AssStyle);
+	if (temp.Events.empty())
+		temp.Events.push_back(*new AssDialogue);
 
-		SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->videoController->FPS(), charset);
-
-		// Make sure the file has at least one style and one dialogue line
-		if (temp.Styles.empty())
-			temp.Styles.push_back(*new AssStyle);
-		if (temp.Events.empty())
-			temp.Events.push_back(*new AssDialogue);
-
-		context->ass->swap(temp);
-	}
-	catch (agi::UserCancelException const&) {
-		return;
-	}
-	catch (agi::fs::FileNotFound const&) {
-		wxMessageBox(filename.wstring() + " not found.", "Error", wxOK | wxICON_ERROR | wxCENTER, context->parent);
-		config::mru->Remove("Subtitle", filename);
-		return;
-	}
-	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, context->parent);
-		return;
-	}
-	catch (std::exception const& err) {
-		wxMessageBox(to_wx(err.what()), "Error", wxOK | wxICON_ERROR | wxCENTER, context->parent);
-		return;
-	}
-	catch (...) {
-		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, context->parent);
-		return;
-	}
+	context->ass->swap(temp);
 
 	SetFileName(filename);
 

@@ -40,7 +40,7 @@
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/util.h>

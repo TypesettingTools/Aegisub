@@ -36,7 +36,6 @@
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
-#include "../audio_controller.h"
 #include "../compat.h"
 #include "../dialog_about.h"
 #include "../dialog_detached_video.h"
@@ -48,9 +47,9 @@
 #include "../libresrc/libresrc.h"
 #include "../main.h"
 #include "../options.h"
+#include "../project.h"
 #include "../preferences.h"
 #include "../utils.h"
-#include "../video_context.h"
 
 namespace {
 	using cmd::Command;
@@ -79,7 +78,7 @@ struct app_display_audio_subs final : public Command {
 	}
 
 	bool Validate(const agi::Context *c) override {
-		return c->audioController->IsAudioOpen();
+		return !!c->project->AudioProvider();
 	}
 
 	bool IsActive(const agi::Context *c) override {
@@ -99,7 +98,7 @@ struct app_display_full final : public Command {
 	}
 
 	bool Validate(const agi::Context *c) override {
-		return c->audioController->IsAudioOpen() && c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
+		return c->project->AudioProvider() && c->project->VideoProvider() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 
 	bool IsActive(const agi::Context *c) override {
@@ -115,7 +114,7 @@ struct app_display_subs final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) override {
-		c->frame->SetDisplayMode(0,0);
+		c->frame->SetDisplayMode(0, 0);
 	}
 
 	bool IsActive(const agi::Context *c) override {
@@ -131,11 +130,11 @@ struct app_display_video_subs final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	void operator()(agi::Context *c) override {
-		c->frame->SetDisplayMode(1,0);
+		c->frame->SetDisplayMode(1, 0);
 	}
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
+		return c->project->VideoProvider() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 
 	bool IsActive(const agi::Context *c) override {

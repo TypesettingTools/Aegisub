@@ -49,10 +49,9 @@
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
-#include "subs_controller.h"
+#include "project.h"
 #include "subtitle_format.h"
 #include "subtitles_provider_libass.h"
-#include "video_context.h"
 #include "version.h"
 #include "utils.h"
 
@@ -317,15 +316,14 @@ bool AegisubApp::OnInit() {
 
 		// Get parameter subs
 		StartupLog("Parse command line");
-		wxArrayString subs;
+		std::vector<agi::fs::path> files;
 		for (int i = 1; i < argc; ++i)
-			subs.push_back(argv[i]);
-		if (!subs.empty())
-			frame->LoadList(subs);
+			files.push_back(from_wx(argv[i]));
+		if (!files.empty())
+			frame->context->project->LoadList(files);
 	}
-
 	catch (const char *err) {
-		wxMessageBox(err,"Fatal error while initializing");
+		wxMessageBox(err, "Fatal error while initializing");
 		return false;
 	}
 	catch (wxString const& err) {
@@ -333,10 +331,9 @@ bool AegisubApp::OnInit() {
 		return false;
 	}
 	catch (agi::Exception const& e) {
-		wxMessageBox(to_wx(e.GetMessage()),"Fatal error while initializing");
+		wxMessageBox(to_wx(e.GetMessage()), "Fatal error while initializing");
 		return false;
 	}
-
 #ifndef _DEBUG
 	catch (...) {
 		wxMessageBox("Unhandled exception","Fatal error while initializing");
@@ -470,5 +467,5 @@ int AegisubApp::OnRun() {
 
 void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame && !filename.empty())
-		frame->context->subsController->Load(agi::fs::path(filename));
+		frame->context->project->LoadSubtitles(agi::fs::path(filename));
 }

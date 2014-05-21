@@ -31,13 +31,17 @@
 
 #include "command.h"
 
+#include "../async_video_provider.h"
+#include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../utils.h"
-#include "../video_context.h"
 
 #include <libaegisub/make_unique.h>
+
+#include <wx/msgdlg.h>
 
 namespace {
 	using cmd::Command;
@@ -51,11 +55,11 @@ struct timecode_close final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->OverTimecodesLoaded();
+		return c->project->CanCloseTimecodes();
 	}
 
 	void operator()(agi::Context *c) override {
-		c->videoController->CloseTimecodes();
+		c->project->CloseTimecodes();
 	}
 };
 
@@ -70,7 +74,7 @@ struct timecode_open final : public Command {
 		auto str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
 		auto filename = OpenFileSelector(_("Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
 		if (!filename.empty())
-			c->videoController->LoadTimecodes(filename);
+			c->project->LoadTimecodes(filename);
 	}
 };
 
@@ -83,14 +87,22 @@ struct timecode_save final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->TimecodesLoaded();
+		return c->project->Timecodes().IsLoaded();
 	}
 
 	void operator()(agi::Context *c) override {
 		auto str = _("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*";
 		auto filename = SaveFileSelector(_("Save Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
-		if (!filename.empty())
-			c->videoController->SaveTimecodes(filename);
+		if (filename.empty()) return;
+
+		try {
+			auto provider = c->project->VideoProvider();
+			c->project->Timecodes().Save(filename, provider ? provider->GetFrameCount() : -1);
+			config::mru->Add("Timecodes", filename);
+		}
+		catch (agi::Exception const& err) {
+			wxMessageBox(to_wx(err.GetMessage()), "Error saving timecodes", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+		}
 	}
 };
 }

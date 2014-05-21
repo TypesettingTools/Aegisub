@@ -15,9 +15,8 @@
 // Aegisub Project http://www.aegisub.org/
 
 class AssFile;
-class VideoProvider;
+class AsyncVideoProvider;
 class wxWindow;
 
 /// Update the video properties for a newly opened video, possibly prompting the user about what to do
-/// @return Does the file need to be committed?
-bool UpdateVideoProperties(AssFile *file, const VideoProvider *new_provider, wxWindow *parent);
+void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent);

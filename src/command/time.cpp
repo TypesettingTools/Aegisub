@@ -33,6 +33,7 @@
 
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
+#include "../async_video_provider.h"
 #include "../audio_controller.h"
 #include "../audio_timing.h"
 #include "../dialog_manager.h"
@@ -40,38 +41,39 @@
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../selection_controller.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
 namespace {
-	using cmd::Command;
+using cmd::Command;
 
-	struct validate_video_loaded : public Command {
-		CMD_TYPE(COMMAND_VALIDATE)
-		bool Validate(const agi::Context *c) override {
-			return c->videoController->IsLoaded();
+struct validate_video_loaded : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
+	bool Validate(const agi::Context *c) override {
+		return !!c->project->VideoProvider();
+	}
+};
+
+struct validate_adjoinable : public Command {
+	CMD_TYPE(COMMAND_VALIDATE)
+	bool Validate(const agi::Context *c) override {
+		auto sel = c->selectionController->GetSortedSelection();
+		if (sel.empty()) return false;
+
+		for (size_t i = 1; i < sel.size(); ++i) {
+			if (sel[i]->Row != sel[i - 1]->Row + 1)
+				return false;
 		}
-	};
+		return true;
+	}
+};
 
-	struct validate_adjoinable : public Command {
-		CMD_TYPE(COMMAND_VALIDATE)
-		bool Validate(const agi::Context *c) override {
-			auto sel = c->selectionController->GetSortedSelection();
-			if (sel.empty()) return false;
-
-			for (size_t i = 1; i < sel.size(); ++i) {
-				if (sel[i]->Row != sel[i - 1]->Row + 1)
-					return false;
-			}
-			return true;
-		}
-	};
-
-static void adjoin_lines(agi::Context *c, bool set_start) {
+void adjoin_lines(agi::Context *c, bool set_start) {
 	auto const& sel = c->selectionController->GetSelectedSet();
 	AssDialogue *prev = nullptr;
 	size_t seen = 0;
@@ -129,8 +131,6 @@ struct time_frame_current final : public validate_video_loaded {
 	STR_HELP("Shift selection so that the active line starts at current frame")
 
 	void operator()(agi::Context *c) override {
-		if (!c->videoController->IsLoaded()) return;
-
 		auto const& sel = c->selectionController->GetSelectedSet();
 		const auto active_line = c->selectionController->GetActiveLine();
 
@@ -162,8 +162,7 @@ struct time_shift final : public Command {
 
 static void snap_subs_video(agi::Context *c, bool set_start) {
 	auto const& sel = c->selectionController->GetSelectedSet();
-
-	if (!c->videoController->IsLoaded() || sel.empty()) return;
+	if (sel.empty()) return;
 
 	int start = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::START);
 	int end = c->videoController->TimeAtFrame(c->videoController->GetFrameN(), agi::vfr::END);
@@ -198,19 +197,19 @@ struct time_snap_scene final : public validate_video_loaded {
 	STR_HELP("Set start and end of subtitles to the keyframes around current video frame")
 
 	void operator()(agi::Context *c) override {
-		VideoContext *con = c->videoController.get();
-		if (!con->IsLoaded() || !con->KeyFramesLoaded()) return;
+		auto const& keyframes = c->project->Keyframes();
+		if (keyframes.empty()) return;
 
+		VideoController *con = c->videoController.get();
 		int curFrame = con->GetFrameN();
 		int prev = 0;
 		int next = 0;
 
-		auto const& keyframes = con->GetKeyFrames();
 		if (curFrame < keyframes.front())
 			next = keyframes.front();
 		else if (curFrame >= keyframes.back()) {
 			prev = keyframes.back();
-			next = con->GetLength();
+			next = c->project->VideoProvider()->GetFrameCount();
 		}
 		else {
 			auto kf = std::lower_bound(keyframes.begin(), keyframes.end(), curFrame);

@@ -17,7 +17,7 @@
 #include <libaegisub/exception.h>
 
 #include <string>
-
+#include <wx/combobox.h>
 #include <wx/radiobox.h>
 #include <wx/validate.h>
 

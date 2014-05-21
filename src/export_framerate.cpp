@@ -27,24 +27,19 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file export_framerate.cpp
-/// @brief Transform Framerate export filter
-/// @ingroup export
-///
-
 #include "export_framerate.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "async_video_provider.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
+#include "project.h"
 #include "utils.h"
-#include "video_context.h"
 
 #include <libaegisub/of_type_adaptor.h>
 
 #include <utility>
-
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
@@ -65,18 +60,18 @@ void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *) {
 }
 
 wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {
-	wxWindow *base = new wxPanel(parent, -1);
-
 	LoadSettings(true, c);
 
+	wxWindow *base = new wxPanel(parent, -1);
+
 	// Input sizer
-	wxSizer *InputSizer = new wxBoxSizer(wxHORIZONTAL);
+	auto InputSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxString initialInput;
-	wxButton *FromVideo = new wxButton(base,-1,_("From &video"));
-	if (Input->IsLoaded()) {
-		initialInput = wxString::Format("%2.3f",Input->FPS());
+	auto FromVideo = new wxButton(base,-1,_("From &video"));
+	if (Input.IsLoaded()) {
+		initialInput = wxString::Format("%2.3f", Input.FPS());
 		FromVideo->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
-			InputFramerate->SetValue(wxString::Format("%g", c->videoController->FPS().FPS()));
+			InputFramerate->SetValue(wxString::Format("%g", c->project->Timecodes().FPS()));
 		});
 	}
 	else {
@@ -89,9 +84,9 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	InputSizer->AddStretchSpacer(1);
 
 	// Output sizers
-	wxSizer *OutputSizerTop = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *OutputSizerBottom = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer *OutputSizer = new wxBoxSizer(wxVERTICAL);
+	auto OutputSizerTop = new wxBoxSizer(wxHORIZONTAL);
+	auto OutputSizerBottom = new wxBoxSizer(wxHORIZONTAL);
+	auto OutputSizer = new wxBoxSizer(wxVERTICAL);
 
 	// Output top line
 	RadioOutputVFR = new wxRadioButton(base,-1,_("V&ariable"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
@@ -100,7 +95,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	// Output bottom line
 	RadioOutputCFR = new wxRadioButton(base,-1,_("&Constant: "));
 	wxString initialOutput = initialInput;
-	if (!Output->IsVFR()) {
+	if (!Output.IsVFR()) {
 		RadioOutputVFR->Enable(false);
 		RadioOutputCFR->SetValue(true);
 	}
@@ -117,7 +112,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	OutputSizer->Add(OutputSizerBottom,0,wxLEFT,5);
 
 	// Main window
-	wxSizer *MainSizer = new wxFlexGridSizer(3,2,5,10);
+	auto MainSizer = new wxFlexGridSizer(3,2,5,10);
 	MainSizer->Add(new wxStaticText(base,-1,_("Input framerate: ")),0,wxEXPAND | wxALIGN_CENTER_VERTICAL,0);
 	MainSizer->Add(InputSizer,0,wxEXPAND,0);
 	MainSizer->Add(new wxStaticText(base,-1,_("Output: ")),0,wxALIGN_CENTER_VERTICAL,0);
@@ -133,29 +128,27 @@ void AssTransformFramerateFilter::LoadSettings(bool is_default, agi::Context *c)
 	this->c = c;
 
 	if (is_default) {
-		Input = &c->videoController->VideoFPS();
-		Output = &c->videoController->FPS();
+		auto provider = c->project->VideoProvider();
+		Output = c->project->Timecodes();
+		Input = provider ? provider->GetFPS() : Output;
 	}
 	else {
 		double temp;
 		InputFramerate->GetValue().ToDouble(&temp);
-		t1 = temp;
-		Input = &t1;
+		Input = temp;
 		if (RadioOutputCFR->GetValue()) {
 			OutputFramerate->GetValue().ToDouble(&temp);
-			t2 = temp;
-			Output = &t2;
+			Output = temp;
 		}
-		else Output = &c->videoController->FPS();
+		else Output = c->project->Timecodes();
 
-		if (Reverse->IsChecked()) {
+		if (Reverse->IsChecked())
 			std::swap(Input, Output);
-		}
 	}
 }
 
 /// Truncate a time to centisecond precision
-int FORCEINLINE trunc_cs(int time) {
+static int trunc_cs(int time) {
 	return (time / 10) * 10;
 }
 
@@ -198,7 +191,7 @@ void AssTransformFramerateFilter::TransformTimeTags(std::string const& name, Ass
 }
 
 void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
-	if (!Input->IsLoaded() || !Output->IsLoaded()) return;
+	if (!Input.IsLoaded() || !Output.IsLoaded()) return;
 	for (auto& curDialogue : subs->Events) {
 		line = &curDialogue;
 		newK = 0;
@@ -217,14 +210,14 @@ void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
 }
 
 int AssTransformFramerateFilter::ConvertTime(int time) {
-	int frame = Output->FrameAtTime(time);
-	int frameStart = Output->TimeAtFrame(frame);
-	int frameEnd = Output->TimeAtFrame(frame + 1);
+	int frame = Output.FrameAtTime(time);
+	int frameStart = Output.TimeAtFrame(frame);
+	int frameEnd = Output.TimeAtFrame(frame + 1);
 	int frameDur = frameEnd - frameStart;
 	double dist = double(time - frameStart) / frameDur;
 
-	int newStart = Input->TimeAtFrame(frame);
-	int newEnd = Input->TimeAtFrame(frame + 1);
+	int newStart = Input.TimeAtFrame(frame);
+	int newEnd = Input.TimeAtFrame(frame + 1);
 	int newDur = newEnd - newStart;
 
 	return newStart + newDur * dist;

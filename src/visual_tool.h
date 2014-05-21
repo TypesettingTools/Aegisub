@@ -26,7 +26,6 @@
 #include <libaegisub/owning_intrusive_list.h>
 #include <libaegisub/signal.h>
 
-#include <deque>
 #include <set>
 #include <wx/event.h>
 
@@ -79,7 +78,7 @@ class VisualToolBase {
 	virtual void DoRefresh() { }
 
 protected:
-	std::deque<agi::signal::Connection> connections;
+	std::vector<agi::signal::Connection> connections;
 
 	OpenGLWrapper gl;
 

@@ -38,9 +38,10 @@
 #include "include/aegisub/hotkey.h"
 #include "options.h"
 #include "persist_location.h"
+#include "project.h"
 #include "utils.h"
 #include "video_box.h"
-#include "video_context.h"
+#include "video_controller.h"
 #include "video_display.h"
 
 #include <libaegisub/make_unique.h>
@@ -55,12 +56,12 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 , context(context)
 , old_display(context->videoDisplay)
 , old_slider(context->videoSlider)
-, video_open(context->videoController->AddVideoOpenListener(&DialogDetachedVideo::OnVideoOpen, this))
+, video_open(context->project->AddVideoProviderListener(&DialogDetachedVideo::OnVideoOpen, this))
 {
 	// Set obscure stuff
 	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
-	SetTitle(wxString::Format(_("Video: %s"), context->videoController->GetVideoName().filename().wstring()));
+	SetTitle(wxString::Format(_("Video: %s"), context->project->VideoName().filename().wstring()));
 
 	old_display->Unload();
 
@@ -108,8 +109,7 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &evt) {
 
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
 
-	if (context->videoController->IsLoaded())
-		context->videoController->JumpToFrame(context->videoController->GetFrameN());
+	context->videoController->JumpToFrame(context->videoController->GetFrameN());
 
 	evt.Skip();
 }
@@ -128,8 +128,8 @@ void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
 }
 
 void DialogDetachedVideo::OnVideoOpen() {
-	if (context->videoController->IsLoaded())
-		SetTitle(wxString::Format(_("Video: %s"), context->videoController->GetVideoName().filename().wstring()));
+	if (context->project->VideoProvider())
+		SetTitle(wxString::Format(_("Video: %s"), context->project->VideoName().filename().wstring()));
 	else {
 		Close();
 		OPT_SET("Video/Detached/Enabled")->SetBool(true);

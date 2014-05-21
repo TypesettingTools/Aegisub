@@ -21,7 +21,7 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "options.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/character_count.h>
 

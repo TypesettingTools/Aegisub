@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file signal.h
-/// @brief 
-/// @ingroup libaegisub
-
 #pragma once
 
 #include <boost/container/map.hpp>
@@ -45,11 +41,29 @@ namespace detail {
 	};
 }
 
+/// A connection which is not automatically closed
+///
+/// Connections initially start out owned by the signal. If a slot knows that it
+/// will outlive a signal and does not need to be able to block a connection, it
+/// can simply ignore the return value of Connect.
+///
+/// If a slot needs to be able to disconnect from a signal, it should store the
+/// returned connection in a Connection, which transfers ownership of the
+/// connection to the slot. If there is any chance that the signal will outlive
+/// the slot, this must be done.
+class UnscopedConnection {
+	friend class Connection;
+	detail::ConnectionToken *token;
+public:
+	UnscopedConnection(detail::ConnectionToken *token) : token(token) { }
+};
+
 /// Object representing a connection to a signal
 class Connection {
 	std::unique_ptr<detail::ConnectionToken> token;
 public:
 	Connection() = default;
+	Connection(UnscopedConnection src) BOOST_NOEXCEPT : token(src.token) { token->claimed = true; }
 	Connection(Connection&& that) BOOST_NOEXCEPT : token(std::move(that.token)) { }
 	Connection(detail::ConnectionToken *token) BOOST_NOEXCEPT : token(token) { token->claimed = true; }
 	Connection& operator=(Connection&& that) BOOST_NOEXCEPT { token = std::move(that.token); return *this; }
@@ -67,23 +81,6 @@ public:
 
 	/// @brief Reenable this connection after it was disabled by Block
 	void Unblock() { if (token) token->blocked = false; }
-};
-
-/// A connection which is not automatically closed
-///
-/// Connections initially start out owned by the signal. If a slot knows that it
-/// will outlive a signal and does not need to be able to block a connection, it
-/// can simply ignore the return value of Connect.
-///
-/// If a slot needs to be able to disconnect from a signal, it should store the
-/// returned connection in a Connection, which transfers ownership of the
-/// connection to the slot. If there is any chance that the signal will outlive
-/// the slot, this must be done.
-class UnscopedConnection {
-	detail::ConnectionToken *token;
-public:
-	UnscopedConnection(detail::ConnectionToken *token) : token(token) { }
-	operator Connection() { return Connection(token); }
 };
 
 namespace detail {
@@ -197,6 +194,15 @@ public:
 		return DoConnect(std::bind(func, a1, std::placeholders::_1));
 	}
 };
+
+/// Create a vector of scoped connections from an initializer list
+///
+/// Required due to that initializer lists copy their input, and trying to pass
+/// an initializer list directly to a vector results in a
+/// std::initializer_list<Connection>, which can't be copied.
+inline std::vector<Connection> make_vector(std::initializer_list<UnscopedConnection> connections) {
+	return std::vector<Connection>(std::begin(connections), std::end(connections));
+}
 
 } }
 

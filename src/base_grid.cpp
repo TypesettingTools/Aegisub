@@ -40,10 +40,11 @@
 #include "frame_main.h"
 #include "grid_column.h"
 #include "options.h"
+#include "project.h"
 #include "utils.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/util.h>
 
@@ -123,30 +124,32 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 	UpdateStyle();
 	OnHighlightVisibleChange(*OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame"));
 
-	connections.push_back(context->ass->AddCommitListener(&BaseGrid::OnSubtitlesCommit, this));
-	connections.push_back(context->subsController->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this));
-	connections.push_back(context->subsController->AddFileSaveListener(&BaseGrid::OnSubtitlesSave, this));
+	connections = agi::signal::make_vector({
+		context->ass->AddCommitListener(&BaseGrid::OnSubtitlesCommit, this),
+		context->subsController->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this),
+		context->subsController->AddFileSaveListener(&BaseGrid::OnSubtitlesSave, this),
 
-	connections.push_back(context->selectionController->AddActiveLineListener(&BaseGrid::OnActiveLineChanged, this));
-	connections.push_back(context->selectionController->AddSelectionListener([&]{ Refresh(false); }));
+		context->selectionController->AddActiveLineListener(&BaseGrid::OnActiveLineChanged, this),
+		context->selectionController->AddSelectionListener([&]{ Refresh(false); }),
 
-	connections.push_back(OPT_SUB("Subtitle/Grid/Font Face", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Subtitle/Grid/Font Size", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Active Border", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Background/Background", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Background/Comment", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Background/Inframe", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Background/Selected Comment", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Background/Selection", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Collision", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Header", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Left Column", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Lines", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Selection", &BaseGrid::UpdateStyle, this));
-	connections.push_back(OPT_SUB("Colour/Subtitle Grid/Standard", &BaseGrid::UpdateStyle, this));
+		OPT_SUB("Subtitle/Grid/Font Face", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Subtitle/Grid/Font Size", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Active Border", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Background/Background", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Background/Comment", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Background/Inframe", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Background/Selected Comment", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Background/Selection", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Collision", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Header", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Left Column", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Lines", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Selection", &BaseGrid::UpdateStyle, this),
+		OPT_SUB("Colour/Subtitle Grid/Standard", &BaseGrid::UpdateStyle, this),
 
-	connections.push_back(OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &BaseGrid::OnHighlightVisibleChange, this));
-	connections.push_back(OPT_SUB("Subtitle/Grid/Hide Overrides", [&](agi::OptionValue const&) { Refresh(false); }));
+		OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &BaseGrid::OnHighlightVisibleChange, this),
+		OPT_SUB("Subtitle/Grid/Hide Overrides", [&](agi::OptionValue const&) { Refresh(false); }),
+	});
 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
 }
@@ -634,10 +637,10 @@ AssDialogue *BaseGrid::GetDialogue(int n) const {
 }
 
 bool BaseGrid::IsDisplayed(const AssDialogue *line) const {
-	if (!context->videoController->IsLoaded()) return false;
+	if (!context->project->VideoProvider()) return false;
 	int frame = context->videoController->GetFrameN();
-	return context->videoController->FrameAtTime(line->Start,agi::vfr::START) <= frame
-		&& context->videoController->FrameAtTime(line->End,agi::vfr::END) >= frame;
+	return context->project->Timecodes().FrameAtTime(line->Start, agi::vfr::START) <= frame
+		&& context->project->Timecodes().FrameAtTime(line->End, agi::vfr::END) >= frame;
 }
 
 void BaseGrid::OnCharHook(wxKeyEvent &event) {

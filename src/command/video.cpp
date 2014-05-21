@@ -33,6 +33,7 @@
 
 #include "../ass_dialogue.h"
 #include "../ass_time.h"
+#include "../async_video_provider.h"
 #include "../compat.h"
 #include "../dialog_detached_video.h"
 #include "../dialog_dummy_video.h"
@@ -44,10 +45,11 @@
 #include "../include/aegisub/subtitles_provider.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../selection_controller.h"
 #include "../utils.h"
 #include "../video_box.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 #include "../video_display.h"
 #include "../video_frame.h"
 #include "../video_slider.h"
@@ -61,7 +63,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/format.hpp>
-
 #include <wx/clipbrd.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
@@ -72,14 +73,14 @@ namespace {
 struct validator_video_loaded : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded();
+		return !!c->project->VideoProvider();
 	}
 };
 
 struct validator_video_attached : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded() && !c->dialog->Get<DialogDetachedVideo>();
+		return !!c->project->VideoProvider() && !c->dialog->Get<DialogDetachedVideo>();
 	}
 };
 
@@ -206,7 +207,7 @@ struct video_close final : public validator_video_loaded {
 	STR_HELP("Close the currently open video file")
 
 	void operator()(agi::Context *c) override {
-		c->videoController->SetVideo("");
+		c->project->CloseVideo();
 	}
 };
 
@@ -291,6 +292,10 @@ struct video_focus_seek final : public validator_video_loaded {
 	}
 };
 
+wxImage get_image(agi::Context *c, bool raw) {
+	return GetImage(*c->project->VideoProvider()->GetFrame(c->videoController->GetFrameN(), raw));
+}
+
 struct video_frame_copy final : public validator_video_loaded {
 	CMD_NAME("video/frame/copy")
 	STR_MENU("Copy image to Clipboard")
@@ -298,7 +303,7 @@ struct video_frame_copy final : public validator_video_loaded {
 	STR_HELP("Copy the currently displayed frame to the clipboard")
 
 	void operator()(agi::Context *c) override {
-		SetClipboard(wxBitmap(GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN())), 24));
+		SetClipboard(wxBitmap(get_image(c, false), 24));
 	}
 };
 
@@ -309,7 +314,7 @@ struct video_frame_copy_raw final : public validator_video_loaded {
 	STR_HELP("Copy the currently displayed frame to the clipboard, without the subtitles")
 
 	void operator()(agi::Context *c) override {
-		SetClipboard(wxBitmap(GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN(), true)), 24));
+		SetClipboard(wxBitmap(get_image(c, true), 24));
 	}
 };
 
@@ -360,10 +365,10 @@ struct video_frame_next_keyframe final : public validator_video_loaded {
 	STR_HELP("Seek to the next keyframe")
 
 	void operator()(agi::Context *c) override {
-		auto const& kf = c->videoController->GetKeyFrames();
+		auto const& kf = c->project->Keyframes();
 		auto pos = lower_bound(kf.begin(), kf.end(), c->videoController->GetFrameN() + 1);
 
-		c->videoController->JumpToFrame(pos == kf.end() ? c->videoController->GetLength() - 1 : *pos);
+		c->videoController->JumpToFrame(pos == kf.end() ? c->project->VideoProvider()->GetFrameCount() - 1 : *pos);
 	}
 };
 
@@ -427,7 +432,7 @@ struct video_frame_prev_keyframe final : public validator_video_loaded {
 	STR_HELP("Seek to the previous keyframe")
 
 	void operator()(agi::Context *c) override {
-		auto const& kf = c->videoController->GetKeyFrames();
+		auto const& kf = c->project->Keyframes();
 		if (kf.empty()) {
 			c->videoController->JumpToFrame(0);
 			return;
@@ -459,7 +464,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 	auto option = OPT_GET("Path/Screenshot")->GetString();
 	agi::fs::path basepath;
 
-	auto videoname = c->videoController->GetVideoName();
+	auto videoname = c->project->VideoName();
 	bool is_dummy = boost::starts_with(videoname.string(), "?dummy");
 
 	// Is it a path specifier and not an actual fixed path?
@@ -490,7 +495,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 		path = str(boost::format("%s_%03d_%d.png") % basepath.string() % session_shot_count++ % c->videoController->GetFrameN());
 	} while (agi::fs::FileExists(path));
 
-	GetImage(*c->videoController->GetFrame(c->videoController->GetFrameN(), raw)).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
+	get_image(c, raw).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
 }
 
 struct video_frame_save final : public validator_video_loaded {
@@ -524,10 +529,8 @@ struct video_jump final : public validator_video_loaded {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		if (c->videoController->IsLoaded()) {
-			DialogJumpTo(c).ShowModal();
-			c->videoSlider->SetFocus();
-		}
+		DialogJumpTo(c).ShowModal();
+		c->videoSlider->SetFocus();
 	}
 };
 
@@ -539,9 +542,8 @@ struct video_jump_end final : public validator_video_loaded {
 	STR_HELP("Jump the video to the end frame of current subtitle")
 
 	void operator()(agi::Context *c) override {
-		if (AssDialogue *active_line = c->selectionController->GetActiveLine()) {
+		if (auto active_line = c->selectionController->GetActiveLine())
 			c->videoController->JumpToTime(active_line->End, agi::vfr::END);
-		}
 	}
 };
 
@@ -553,7 +555,7 @@ struct video_jump_start final : public validator_video_loaded {
 	STR_HELP("Jump the video to the start frame of current subtitle")
 
 	void operator()(agi::Context *c) override {
-		if (AssDialogue *active_line = c->selectionController->GetActiveLine())
+		if (auto active_line = c->selectionController->GetActiveLine())
 			c->videoController->JumpToTime(active_line->Start);
 	}
 };
@@ -570,7 +572,7 @@ struct video_open final : public Command {
 		         + _("All Files") + " (*.*)|*.*";
 		auto filename = OpenFileSelector(_("Open video file"), "Path/Last/Video", "", "", str, c->parent);
 		if (!filename.empty())
-			c->videoController->SetVideo(filename);
+			c->project->LoadVideo(filename);
 	}
 };
 
@@ -584,7 +586,7 @@ struct video_open_dummy final : public Command {
 	void operator()(agi::Context *c) override {
 		std::string fn = DialogDummyVideo::CreateDummyVideo(c->parent);
 		if (!fn.empty())
-			c->videoController->SetVideo(fn);
+			c->project->LoadVideo(fn);
 	}
 };
 

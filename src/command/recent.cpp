@@ -29,18 +29,14 @@
 
 #include "command.h"
 
-#include "../audio_controller.h"
 #include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../subs_controller.h"
-#include "../video_context.h"
 
 #include <libaegisub/make_unique.h>
-
-#include <wx/event.h>
-#include <wx/msgdlg.h>
 
 namespace {
 	using cmd::Command;
@@ -58,13 +54,7 @@ struct recent_audio_entry : public Command {
 	STR_HELP("Open recent audio")
 
 	void operator()(agi::Context *c, int id) {
-		try {
-			c->audioController->OpenAudio(config::mru->GetEntry("Audio", id));
-		}
-		catch (agi::UserCancelException const&) { }
-		catch (agi::Exception const& e) {
-			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-		}
+		c->project->LoadAudio(config::mru->GetEntry("Audio", id));
 	}
 };
 
@@ -75,7 +65,7 @@ struct recent_keyframes_entry : public Command {
 	STR_HELP("Open recent keyframes")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->LoadKeyframes(config::mru->GetEntry("Keyframes", id));
+		c->project->LoadKeyframes(config::mru->GetEntry("Keyframes", id));
 	}
 };
 
@@ -87,7 +77,7 @@ struct recent_subtitle_entry : public Command {
 
 	void operator()(agi::Context *c, int id) {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
-		c->subsController->Load(config::mru->GetEntry("Subtitle", id));
+		c->project->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
 	}
 };
 
@@ -98,7 +88,7 @@ struct recent_timecodes_entry : public Command {
 	STR_HELP("Open recent timecodes")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->LoadTimecodes(config::mru->GetEntry("Timecodes", id));
+		c->project->LoadTimecodes(config::mru->GetEntry("Timecodes", id));
 	}
 };
 
@@ -109,7 +99,7 @@ struct recent_video_entry : public Command {
 	STR_HELP("Open recent videos")
 
 	void operator()(agi::Context *c, int id) {
-		c->videoController->SetVideo(config::mru->GetEntry("Video", id));
+		c->project->LoadVideo(config::mru->GetEntry("Video", id));
 	}
 };
 

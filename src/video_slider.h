@@ -27,27 +27,22 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file video_slider.h
-/// @see video_slider.cpp
-/// @ingroup custom_control
-///
+#include <libaegisub/signal.h>
 
 #include <vector>
-
 #include <wx/window.h>
-
-#include <libaegisub/signal.h>
 
 namespace agi { struct Context; }
 
-class VideoContext;
+class VideoController;
+class AsyncVideoProvider;
 
 /// @class VideoSlider
 /// @brief Slider for displaying and adjusting the video position
 class VideoSlider: public wxWindow {
 	agi::Context *c; ///< Associated project context
 	std::vector<int> keyframes; ///< Currently loaded keyframes
-	std::vector<agi::signal::Connection> slots;
+	std::vector<agi::signal::Connection> connections;
 
 	int val = 0; ///< Current frame number
 	int max = 1; ///< Last frame number
@@ -60,7 +55,7 @@ class VideoSlider: public wxWindow {
 	void SetValue(int value);
 
 	/// Video open event handler
-	void VideoOpened();
+	void VideoOpened(AsyncVideoProvider *new_provider);
 	/// Keyframe open even handler
 	void KeyframesChanged(std::vector<int> const& newKeyframes);
 

@@ -35,26 +35,26 @@
 #include "video_display.h"
 
 #include "ass_file.h"
+#include "async_video_provider.h"
 #include "command/command.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/menu.h"
 #include "options.h"
+#include "project.h"
 #include "retina_helper.h"
 #include "spline_curve.h"
 #include "subs_controller.h"
-#include "threaded_frame_source.h"
 #include "utils.h"
 #include "video_out_gl.h"
-#include "video_context.h"
+#include "video_controller.h"
 #include "video_frame.h"
 #include "visual_tool.h"
 
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
-
 #include <wx/combobox.h>
 #include <wx/dataobj.h>
 #include <wx/dcclient.h>
@@ -85,17 +85,12 @@ public:
 
 #define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(#cmd, err)
 
-VideoDisplay::VideoDisplay(
-	wxToolBar *visualSubToolBar,
-	bool freeSize,
-	wxComboBox *zoomBox,
-	wxWindow* parent,
-	agi::Context *c)
+VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBox, wxWindow *parent, agi::Context *c)
 : wxGLCanvas(parent, -1, attribList)
 , autohideTools(OPT_GET("Tool/Visual/Autohide"))
 , con(c)
 , zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
-, toolBar(visualSubToolBar)
+, toolBar(toolbar)
 , zoomBox(zoomBox)
 , freeSize(freeSize)
 , retina_helper(agi::make_unique<RetinaHelper>(this))
@@ -111,10 +106,11 @@ VideoDisplay::VideoDisplay(
 	zoomBox->Bind(wxEVT_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
-	slots.push_back(con->videoController->AddVideoOpenListener(&VideoDisplay::UpdateSize, this));
-	slots.push_back(con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this));
-
-	slots.push_back(con->subsController->AddFileSaveListener(&VideoDisplay::OnSubtitlesSave, this));
+	connections = agi::signal::make_vector({
+		con->project->AddVideoProviderListener(&VideoDisplay::UpdateSize, this),
+		con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
+		con->subsController->AddFileSaveListener(&VideoDisplay::OnSubtitlesSave, this),
+	});
 
 	Bind(wxEVT_PAINT, std::bind(&VideoDisplay::Render, this));
 	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
@@ -132,8 +128,7 @@ VideoDisplay::VideoDisplay(
 
 	c->videoDisplay = this;
 
-	if (con->videoController->IsLoaded())
-		con->videoController->JumpToFrame(con->videoController->GetFrameN());
+	con->videoController->JumpToFrame(con->videoController->GetFrameN());
 
 	SetLayoutDirection(wxLayout_LeftToRight);
 }
@@ -164,7 +159,7 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 }
 
 void VideoDisplay::Render() try {
-	if (!con->videoController->IsLoaded() || !InitContext() || (!videoOut && !pending_frame))
+	if (!con->project->VideoProvider() || !InitContext() || (!videoOut && !pending_frame))
 		return;
 
 	if (!videoOut)
@@ -185,7 +180,7 @@ void VideoDisplay::Render() try {
 			"programs and updating your video card drivers may fix this.\n"
 			"Error message reported: %s",
 			err.GetMessage());
-		con->videoController->SetVideo("");
+		con->project->CloseVideo();
 		return;
 	}
 	catch (const VideoOutRenderException& err) {
@@ -235,7 +230,7 @@ catch (const agi::Exception &err) {
 		"An error occurred trying to render the video frame on the screen.\n"
 		"Error message reported: %s",
 		err.GetChainedMessage());
-	con->videoController->SetVideo("");
+	con->project->CloseVideo();
 }
 
 void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {
@@ -277,7 +272,8 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 }
 
 void VideoDisplay::PositionVideo() {
-	if (!con->videoController->IsLoaded() || !IsShownOnScreen()) return;
+	auto provider = con->project->VideoProvider();
+	if (!provider || !IsShownOnScreen()) return;
 
 	viewport_left = 0;
 	viewport_bottom = GetClientSize().GetHeight() * scale_factor - videoSize.GetHeight();
@@ -286,8 +282,8 @@ void VideoDisplay::PositionVideo() {
 	viewport_height = videoSize.GetHeight();
 
 	if (freeSize) {
-		int vidW = con->videoController->GetWidth();
-		int vidH = con->videoController->GetHeight();
+		int vidW = provider->GetWidth();
+		int vidH = provider->GetHeight();
 
 		AspectRatio arType = con->videoController->GetAspectRatioType();
 		double displayAr = double(viewport_width) / viewport_height;
@@ -315,9 +311,10 @@ void VideoDisplay::PositionVideo() {
 }
 
 void VideoDisplay::UpdateSize() {
-	if (!con->videoController->IsLoaded() || !IsShownOnScreen()) return;
+	auto provider = con->project->VideoProvider();
+	if (!provider || !IsShownOnScreen()) return;
 
-	videoSize.Set(con->videoController->GetWidth(), con->videoController->GetHeight());
+	videoSize.Set(provider->GetWidth(), provider->GetHeight());
 	videoSize *= zoomValue;
 	if (con->videoController->GetAspectRatioType() != AspectRatio::Default)
 		videoSize.SetWidth(videoSize.GetHeight() * con->videoController->GetAspectRatioValue());
@@ -346,7 +343,7 @@ void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 	if (freeSize) {
 		videoSize = GetClientSize() * scale_factor;
 		PositionVideo();
-		zoomValue = double(viewport_height) / con->videoController->GetHeight();
+		zoomValue = double(viewport_height) / con->project->VideoProvider()->GetHeight();
 		zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
 	}
 	else {

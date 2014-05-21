@@ -32,10 +32,11 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
+#include "project.h"
 #include "subs_edit_ctrl.h"
 #include "selection_controller.h"
 #include "utils.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/make_unique.h>
 
@@ -127,12 +128,12 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		wxStaticBoxSizer *actions_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Actions"));
 
 		wxButton *play_audio = new wxButton(this, -1, _("Play &Audio"));
-		play_audio->Enable(c->audioController->IsAudioOpen());
+		play_audio->Enable(!!c->project->AudioProvider());
 		play_audio->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayAudioButton, this);
 		actions_box->Add(play_audio, 0, wxALL, 5);
 
 		wxButton *play_video = new wxButton(this, -1, _("Play &Video"));
-		play_video->Enable(c->videoController->IsLoaded());
+		play_video->Enable(!!c->project->VideoProvider());
 		play_video->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayVideoButton, this);
 		actions_box->Add(play_video, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
 

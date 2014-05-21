@@ -37,15 +37,18 @@
 #include "../audio_karaoke.h"
 #include "../audio_timing.h"
 #include "../compat.h"
+#include "../include/aegisub/audio_provider.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../selection_controller.h"
 #include "../utils.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 
 #include <libaegisub/make_unique.h>
 #include <libaegisub/fs.h>
+#include <libaegisub/io.h>
 
 #include <wx/msgdlg.h>
 
@@ -55,7 +58,7 @@ namespace {
 	struct validate_audio_open : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
 		bool Validate(const agi::Context *c) override {
-			return c->audioController->IsAudioOpen();
+			return !!c->project->AudioProvider();
 		}
 	};
 
@@ -67,35 +70,11 @@ struct audio_close final : public validate_audio_open {
 	STR_HELP("Close the currently open audio file")
 
 	void operator()(agi::Context *c) override {
-		c->audioController->CloseAudio();
+		c->project->CloseAudio();
 	}
 };
 
-namespace {
-	struct audio_open_from_file : public Command {
-	protected:
-		void do_open(agi::Context *c, agi::fs::path const& filename) {
-			try {
-				c->audioController->OpenAudio(filename);
-			}
-			catch (agi::UserCancelException const&) {}
-			catch (agi::fs::FileNotFound const& e) {
-				wxMessageBox(_("The audio file was not found: ") + to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-			}
-			catch (agi::AudioDataNotFoundError const& e) {
-				wxMessageBox(_("None of the available audio providers recognised the selected file as containing audio data.\n\nThe following providers were tried:\n") + to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-			}
-			catch (agi::AudioProviderOpenError const& e) {
-				wxMessageBox(_("None of the available audio providers have a codec available to handle the selected file.\n\nThe following providers were tried:\n") + to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-			}
-			catch (agi::Exception const& e) {
-				wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-			}
-		}
-	};
-};
-
-struct audio_open final : public audio_open_from_file {
+struct audio_open final : public Command {
 	CMD_NAME("audio/open")
 	CMD_ICON(open_audio_menu)
 	STR_MENU("&Open Audio File...")
@@ -107,9 +86,8 @@ struct audio_open final : public audio_open_from_file {
 					+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts|"
 					+ _("All Files") + " (*.*)|*.*";
 		auto filename = OpenFileSelector(_("Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
-		if (filename.empty()) return;
-
-		do_open(c, filename);
+		if (!filename.empty())
+			c->project->LoadAudio(filename);
 	}
 };
 
@@ -120,12 +98,7 @@ struct audio_open_blank final : public Command {
 	STR_HELP("Open a 150 minutes blank audio clip, for debugging")
 
 	void operator()(agi::Context *c) override {
-		try {
-			c->audioController->OpenAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
-		}
-		catch (agi::Exception const& e) {
-			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-		}
+		c->project->LoadAudio("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000");
 	}
 };
 
@@ -136,16 +109,11 @@ struct audio_open_noise final : public Command {
 	STR_HELP("Open a 150 minutes noise-filled audio clip, for debugging")
 
 	void operator()(agi::Context *c) override {
-		try {
-			c->audioController->OpenAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
-		}
-		catch (agi::Exception const& e) {
-			wxMessageBox(to_wx(e.GetChainedMessage()), "Error loading file", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-		}
+		c->project->LoadAudio("dummy-audio:noise?sr=44100&bd=16&ch=1&ln=396900000");
 	}
 };
 
-struct audio_open_video final : public audio_open_from_file {
+struct audio_open_video final : public Command {
 	CMD_NAME("audio/open/video")
 	CMD_ICON(open_audio_from_video_menu)
 	STR_MENU("Open Audio from &Video")
@@ -154,11 +122,11 @@ struct audio_open_video final : public audio_open_from_file {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded();
+		return !c->project->VideoName().empty();
 	}
 
 	void operator()(agi::Context *c) override {
-		do_open(c, c->videoController->GetVideoName());
+		c->project->LoadAudio(c->project->VideoName());
 	}
 };
 
@@ -194,6 +162,29 @@ struct audio_view_waveform final : public Command {
 	}
 };
 
+class writer {
+	agi::io::Save outfile;
+	std::ostream& out;
+
+public:
+	writer(agi::fs::path const& filename) : outfile(filename, true), out(outfile.Get()) { }
+
+	template<int N>
+	void write(const char(&str)[N]) {
+		out.write(str, N - 1);
+	}
+
+	void write(std::vector<char> const& data) {
+		out.write(data.data(), data.size());
+	}
+
+	template<typename Dest, typename Src>
+	void write(Src v) {
+		auto converted = static_cast<Dest>(v);
+		out.write(reinterpret_cast<char *>(&converted), sizeof(Dest));
+	}
+};
+
 struct audio_save_clip final : public Command {
 	CMD_NAME("audio/save/clip")
 	STR_MENU("Create audio clip")
@@ -202,12 +193,15 @@ struct audio_save_clip final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) override {
-		return c->audioController->IsAudioOpen() && !c->selectionController->GetSelectedSet().empty();
+		return c->project->AudioProvider() && !c->selectionController->GetSelectedSet().empty();
 	}
 
 	void operator()(agi::Context *c) override {
 		auto const& sel = c->selectionController->GetSelectedSet();
 		if (sel.empty()) return;
+
+		auto filename = SaveFileSelector(_("Save audio clip"), "", "", "wav", "", c->parent);
+		if (filename.empty()) return;
 
 		AssTime start = INT_MAX, end = 0;
 		for (auto line : sel) {
@@ -215,9 +209,39 @@ struct audio_save_clip final : public Command {
 			end = std::max(end, line->End);
 		}
 
-		c->audioController->SaveClip(
-			SaveFileSelector(_("Save audio clip"), "", "", "wav", "", c->parent),
-			TimeRange(start, end));
+		auto provider = c->project->AudioProvider();
+
+		auto start_sample = (start * provider->GetSampleRate() + 999) / 1000;
+		auto end_sample = (end * provider->GetSampleRate() + 999) / 1000;
+		if (start_sample >= provider->GetNumSamples() || start_sample <= end_sample) return;
+
+		size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
+		size_t bufsize = (end_sample - start_sample) * bytes_per_sample;
+
+		writer out{filename};
+		out.write("RIFF");
+		out.write<int32_t>(bufsize + 36);
+
+		out.write("WAVEfmt ");
+		out.write<int32_t>(16); // Size of chunk
+		out.write<int16_t>(1);  // compression format (PCM)
+		out.write<int16_t>(provider->GetChannels());
+		out.write<int32_t>(provider->GetSampleRate());
+		out.write<int32_t>(provider->GetSampleRate() * provider->GetChannels() * provider->GetBytesPerSample());
+		out.write<int16_t>(provider->GetChannels() * provider->GetBytesPerSample());
+		out.write<int16_t>(provider->GetBytesPerSample() * 8);
+
+		out.write("data");
+		out.write<int32_t>(bufsize);
+
+		// samples per read
+		size_t spr = 65536 / bytes_per_sample;
+		std::vector<char> buf(bufsize);
+		for (int64_t i = start_sample; i < end_sample; i += spr) {
+			buf.resize(std::min<size_t>(spr, end_sample - i));
+			provider->GetAudio(&buf[0], i, buf.size());
+			out.write(buf);
+		}
 	}
 };
 

@@ -27,7 +27,7 @@
 #include "options.h"
 #include "selection_controller.h"
 #include "utils.h"
-#include "video_context.h"
+#include "video_controller.h"
 #include "video_display.h"
 
 #include <libaegisub/make_unique.h>
@@ -79,7 +79,7 @@ void VisualToolDrag::UpdateToggleButtons() {
 
 void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 	// Toggle \move <-> \pos
-	VideoContext *vc = c->videoController.get();
+	VideoController *vc = c->videoController.get();
 	for (auto line : selection) {
 		Vector2D p1, p2;
 		int t1, t2;

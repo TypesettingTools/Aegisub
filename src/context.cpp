@@ -21,11 +21,12 @@
 #include "auto4_base.h"
 #include "dialog_manager.h"
 #include "initial_line_state.h"
+#include "project.h"
 #include "search_replace_engine.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
 #include "text_selection_controller.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/make_unique.h>
 
@@ -34,10 +35,11 @@ Context::Context()
 : ass(make_unique<AssFile>())
 , textSelectionController(make_unique<TextSelectionController>())
 , subsController(make_unique<SubsController>(this))
+, project(make_unique<Project>(this))
 , local_scripts(make_unique<Automation4::LocalScriptManager>(this))
-, videoController(make_unique<VideoContext>(this))
-, audioController(make_unique<AudioController>(this))
 , selectionController(make_unique<SelectionController>(this))
+, videoController(make_unique<VideoController>(this))
+, audioController(make_unique<AudioController>(this))
 , initialLineState(make_unique<InitialLineState>(this))
 , search(make_unique<SearchReplaceEngine>(this))
 , dialog(make_unique<DialogManager>())

@@ -14,19 +14,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file threaded_frame_source.h
-/// @see threaded_frame_source.cpp
-/// @ingroup video
-///
+#include "include/aegisub/video_provider.h"
 
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
 #include <atomic>
-#include <deque>
 #include <memory>
 #include <set>
-
 #include <wx/event.h>
 
 class AssDialogue;
@@ -40,16 +35,15 @@ namespace agi {
 	namespace dispatch { class Queue; }
 }
 
-/// @class ThreadedFrameSource
-/// @brief An asynchronous video decoding and subtitle rendering wrapper
-class ThreadedFrameSource {
+/// An asynchronous video decoding and subtitle rendering wrapper
+class AsyncVideoProvider {
 	/// Asynchronous work queue
 	std::unique_ptr<agi::dispatch::Queue> worker;
 
 	/// Subtitles provider
 	std::unique_ptr<SubtitlesProvider> subs_provider;
 	/// Video provider
-	std::unique_ptr<VideoProvider> video_provider;
+	std::unique_ptr<VideoProvider> source_provider;
 	/// Event handler to send FrameReady events to
 	wxEvtHandler *parent;
 
@@ -103,17 +97,26 @@ public:
 	/// @brief raw   Get raw frame without subtitles
 	std::shared_ptr<VideoFrame> GetFrame(int frame, double time, bool raw = false);
 
-	/// Get a reference to the video provider this is using
-	VideoProvider *GetVideoProvider() const { return video_provider.get(); }
-
 	/// Ask the video provider to change YCbCr matricies
 	void SetColorSpace(std::string const& matrix);
+
+	int GetFrameCount() const             { return source_provider->GetFrameCount(); }
+	int GetWidth() const                  { return source_provider->GetWidth(); }
+	int GetHeight() const                 { return source_provider->GetHeight(); }
+	double GetDAR() const                 { return source_provider->GetDAR(); }
+	agi::vfr::Framerate GetFPS() const    { return source_provider->GetFPS(); }
+	std::vector<int> GetKeyFrames() const { return source_provider->GetKeyFrames(); }
+	std::string GetColorSpace() const     { return source_provider->GetColorSpace(); }
+	std::string GetRealColorSpace() const { return source_provider->GetRealColorSpace(); }
+	std::string GetWarning() const        { return source_provider->GetWarning(); }
+	std::string GetDecoderName() const    { return source_provider->GetDecoderName(); }
+	bool ShouldSetVideoProperties() const { return source_provider->ShouldSetVideoProperties(); }
 
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to
-	ThreadedFrameSource(agi::fs::path const& filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
-	~ThreadedFrameSource();
+	AsyncVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
+	~AsyncVideoProvider();
 };
 
 /// Event which signals that a requested frame is ready

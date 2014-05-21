@@ -64,8 +64,6 @@ public:
 };
 
 AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
-	this->filename = filename;
-
 	agi::acs::CheckFileRead(filename);
 
 	std::lock_guard<std::mutex> lock(avs_wrapper.GetMutex());

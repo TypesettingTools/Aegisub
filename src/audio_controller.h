@@ -27,23 +27,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_controller.h
-/// @see audio_controller.cpp
-/// @ingroup audio_ui
-
-#pragma once
-
-#include <boost/filesystem/path.hpp>
-#include <cstdint>
-#include <memory>
-
-#include <wx/event.h>
-#include <wx/timer.h>
-#include <wx/power.h>
-
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
+
+#include <cstdint>
+#include <wx/event.h>
+#include <wx/power.h>
+#include <wx/timer.h>
 
 class AudioPlayer;
 class AudioProvider;
@@ -52,29 +43,16 @@ namespace agi { struct Context; }
 class TimeRange;
 
 /// @class AudioController
-/// @brief Manage an open audio stream
+/// @brief Manage playback of an open audio stream
 ///
-/// Creates and destroys audio providers and players. This behaviour should at
-/// some point be moved to a separate class, as it adds too many
-/// responsibilities to this class, but at the time of writing, it would extend
-/// the scope of reworking components too much.
-///
-/// There is not supposed to be a way to get direct access to the audio
-/// providers or players owned by a controller. If some operation that isn't
-/// possible in the existing design is needed, the controller should be
-/// extended in some way to allow it.
+/// AudioController owns an AudioPlayer and uses it to play audio from the
+/// project's current audio provider.
 class AudioController final : public wxEvtHandler {
 	/// Project context this controller belongs to
 	agi::Context *context;
 
 	/// Slot for subtitles save signal
 	agi::signal::Connection subtitle_save_slot;
-
-	/// A new audio stream was opened (and any previously open was closed)
-	agi::signal::Signal<AudioProvider*> AnnounceAudioOpen;
-
-	/// The current audio stream was closed
-	agi::signal::Signal<> AnnounceAudioClose;
 
 	/// Playback is in progress and the current position was updated
 	agi::signal::Signal<int> AnnouncePlaybackPosition;
@@ -88,15 +66,8 @@ class AudioController final : public wxEvtHandler {
 	/// The audio output object
 	std::unique_ptr<AudioPlayer> player;
 
-	/// The audio provider
-	std::unique_ptr<AudioProvider> provider;
-
 	/// The current timing mode, if any; owned by the audio controller
 	std::unique_ptr<AudioTimingController> timing_controller;
-
-	/// The URL of the currently open audio, if any
-	agi::fs::path audio_url;
-
 
 	enum PlaybackMode {
 		PM_NotPlaying,
@@ -110,6 +81,12 @@ class AudioController final : public wxEvtHandler {
 	/// Timer used for playback position updates
 	wxTimer playback_timer;
 
+	/// The audio provider
+	AudioProvider *provider = nullptr;
+	agi::signal::Connection provider_connection;
+
+	void OnAudioProvider(AudioProvider *new_provider);
+
 	/// Event handler for the playback timer
 	void OnPlaybackTimer(wxTimerEvent &event);
 
@@ -119,14 +96,8 @@ class AudioController final : public wxEvtHandler {
 	/// @brief Timing controller signals that the rendering style ranges have changed
 	void OnTimingControllerUpdatedStyleRanges();
 
-	/// Subtitles save slot which adds the audio uri to the subtitles
-	void OnSubtitlesSave();
-
 	/// Handler for the current audio player changing
 	void OnAudioPlayerChanged();
-
-	/// Handler for the current audio provider changing
-	void OnAudioProviderChanged();
 
 #ifdef wxHAS_POWER_EVENTS
 	/// Handle computer going into suspend mode by stopping audio and closing device
@@ -146,30 +117,8 @@ class AudioController final : public wxEvtHandler {
 	int64_t SamplesFromMilliseconds(int64_t ms) const;
 
 public:
-	/// @brief Constructor
 	AudioController(agi::Context *context);
-
-	/// @brief Destructor
 	~AudioController();
-
-	/// @brief Open an audio stream
-	/// @param url URL of the stream to open
-	void OpenAudio(agi::fs::path const& url);
-
-	/// @brief Closes the current audio stream
-	void CloseAudio();
-
-	/// @brief Determine whether audio is currently open
-	/// @return True if an audio stream is open and can be played back
-	bool IsAudioOpen() const;
-
-	/// @brief Get the URL for the current open audio stream
-	/// @return The URL for the audio stream
-	///
-	/// The returned URL can be passed into OpenAudio() later to open the same
-	/// stream again.
-	agi::fs::path GetAudioURL() const { return audio_url; }
-
 
 	/// @brief Start or restart audio playback, playing a range
 	/// @param range The range of audio to play back
@@ -233,13 +182,6 @@ public:
 	/// @param new_mode The new timing controller or nullptr
 	void SetTimingController(std::unique_ptr<AudioTimingController> new_controller);
 
-	/// @brief Save a portion of the decoded loaded audio to a wav file
-	/// @param filename File to save to
-	/// @param range Time range to save
-	void SaveClip(agi::fs::path const& filename, TimeRange const& range) const;
-
-	DEFINE_SIGNAL_ADDERS(AnnounceAudioOpen,               AddAudioOpenListener)
-	DEFINE_SIGNAL_ADDERS(AnnounceAudioClose,              AddAudioCloseListener)
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackPosition,        AddPlaybackPositionListener)
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop,            AddPlaybackStopListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)

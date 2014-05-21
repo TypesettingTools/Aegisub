@@ -39,15 +39,18 @@
 #include "ass_info.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "async_video_provider.h"
 #include "auto4_lua_factory.h"
 #include "command/command.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
+#include "include/aegisub/video_provider.h"
 #include "main.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
-#include "video_context.h"
+#include "video_controller.h"
 #include "utils.h"
 
 #include <libaegisub/access.h>
@@ -169,7 +172,7 @@ namespace {
 		const agi::Context *c = get_context(L);
 		int ms = lua_tointeger(L, -1);
 		lua_pop(L, 1);
-		if (c && c->videoController->TimecodesLoaded())
+		if (c && c->project->Timecodes().IsLoaded())
 			push_value(L, c->videoController->FrameAtTime(ms, agi::vfr::START));
 		else
 			lua_pushnil(L);
@@ -182,7 +185,7 @@ namespace {
 		const agi::Context *c = get_context(L);
 		int frame = lua_tointeger(L, -1);
 		lua_pop(L, 1);
-		if (c && c->videoController->TimecodesLoaded())
+		if (c && c->project->Timecodes().IsLoaded())
 			push_value(L, c->videoController->TimeAtFrame(frame, agi::vfr::START));
 		else
 			lua_pushnil(L);
@@ -192,9 +195,10 @@ namespace {
 	int video_size(lua_State *L)
 	{
 		const agi::Context *c = get_context(L);
-		if (c && c->videoController->IsLoaded()) {
-			push_value(L, c->videoController->GetWidth());
-			push_value(L, c->videoController->GetHeight());
+		if (c && c->project->VideoProvider()) {
+			auto provider = c->project->VideoProvider();
+			push_value(L, provider->GetWidth());
+			push_value(L, provider->GetHeight());
 			push_value(L, c->videoController->GetAspectRatioValue());
 			push_value(L, (int)c->videoController->GetAspectRatioType());
 			return 4;
@@ -209,7 +213,7 @@ namespace {
 	{
 		const agi::Context *c = get_context(L);
 		if (c)
-			push_value(L, c->videoController->GetKeyFrames());
+			push_value(L, c->project->Keyframes());
 		else
 			lua_pushnil(L);
 		return 1;

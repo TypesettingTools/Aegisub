@@ -34,12 +34,14 @@
 
 #include "dialog_jumpto.h"
 
-#include "include/aegisub/context.h"
 #include "ass_time.h"
+#include "async_video_provider.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
+#include "project.h"
 #include "timeedit_ctrl.h"
 #include "validators.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <wx/button.h>
 #include <wx/sizer.h>
@@ -57,7 +59,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	auto LabelTime = new wxStaticText(this, -1, _("Time: "));
 
 	JumpFrame = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, IntValidator((int)jumpframe));
-	JumpFrame->SetMaxLength(std::to_string(c->videoController->GetLength() - 1).size());
+	JumpFrame->SetMaxLength(std::to_string(c->project->VideoProvider()->GetFrameCount() - 1).size());
 	JumpTime = new TimeEdit(this, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetAssFormated(), wxSize(-1,-1));
 
 	auto TimesSizer = new wxGridSizer(2, 5, 5);
@@ -95,7 +97,7 @@ void DialogJumpTo::OnInitDialog(wxInitDialogEvent&) {
 
 void DialogJumpTo::OnOK(wxCommandEvent &) {
 	EndModal(0);
-	c->videoController->JumpToFrame(std::min<int>(jumpframe, c->videoController->GetLength() - 1));
+	c->videoController->JumpToFrame(jumpframe);
 }
 
 void DialogJumpTo::OnEditTime (wxCommandEvent &) {

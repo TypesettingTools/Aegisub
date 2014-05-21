@@ -33,8 +33,9 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
+#include "project.h"
 #include "selection_controller.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/make_unique.h>
 
@@ -111,11 +112,11 @@ DialogStyling::DialogStyling(agi::Context *context)
 		actions_box->AddStretchSpacer(1);
 
 		play_audio = new wxButton(this, -1, _("Play &Audio"));
-		play_audio->Enable(c->audioController->IsAudioOpen());
+		play_audio->Enable(!!c->project->AudioProvider());
 		actions_box->Add(play_audio, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
 
 		play_video = new wxButton(this, -1, _("Play &Video"));
-		play_video->Enable(c->videoController->IsLoaded());
+		play_video->Enable(!!c->project->VideoProvider());
 		actions_box->Add(play_video, 0, wxBOTTOM | wxRIGHT, 5);
 
 		actions_box->AddStretchSpacer(1);
@@ -180,8 +181,8 @@ void DialogStyling::Commit(bool next) {
 void DialogStyling::OnActivate(wxActivateEvent &) {
 	if (!IsActive()) return;
 
-	play_video->Enable(c->videoController->IsLoaded());
-	play_audio->Enable(c->audioController->IsAudioOpen());
+	play_video->Enable(!!c->project->VideoProvider());
+	play_audio->Enable(!!c->project->AudioProvider());
 
 	style_list->Set(to_wx(c->ass->GetStyles()));
 

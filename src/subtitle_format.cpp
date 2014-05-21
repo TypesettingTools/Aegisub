@@ -51,7 +51,7 @@
 #include "subtitle_format_transtation.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
-#include "video_context.h"
+#include "video_controller.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/make_unique.h>

@@ -32,6 +32,7 @@
 #include "compat.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
 #include "utils.h"
 
@@ -40,7 +41,6 @@
 #include <algorithm>
 #include <boost/locale/boundary.hpp>
 #include <numeric>
-
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/dcclient.h>
@@ -63,8 +63,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_SUNKEN)
 , c(c)
 , file_changed(c->ass->AddCommitListener(&AudioKaraoke::OnFileChanged, this))
-, audio_opened(c->audioController->AddAudioOpenListener(&AudioKaraoke::OnAudioOpened, this))
-, audio_closed(c->audioController->AddAudioCloseListener(&AudioKaraoke::OnAudioClosed, this))
+, audio_opened(c->project->AddAudioProviderListener(&AudioKaraoke::OnAudioOpened, this))
 , active_line_changed(c->selectionController->AddActiveLineListener(&AudioKaraoke::OnActiveLineChanged, this))
 , kara(agi::make_unique<AssKaraoke>())
 {
@@ -122,12 +121,11 @@ void AudioKaraoke::OnFileChanged(int type, std::set<const AssDialogue *> const& 
 	}
 }
 
-void AudioKaraoke::OnAudioOpened() {
-	SetEnabled(enabled);
-}
-
-void AudioKaraoke::OnAudioClosed() {
-	c->audioController->SetTimingController(nullptr);
+void AudioKaraoke::OnAudioOpened(AudioProvider *provider) {
+	if (provider)
+		SetEnabled(enabled);
+	else
+		c->audioController->SetTimingController(nullptr);
 }
 
 void AudioKaraoke::SetEnabled(bool en) {

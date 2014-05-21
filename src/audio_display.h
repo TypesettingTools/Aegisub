@@ -35,7 +35,6 @@
 
 #include <chrono>
 #include <cstdint>
-#include <deque>
 #include <map>
 #include <memory>
 
@@ -103,7 +102,7 @@ public:
 class AudioDisplay: public wxWindow {
 	agi::signal::Connection audio_open_connection;
 
-	std::deque<agi::signal::Connection> connections;
+	std::vector<agi::signal::Connection> connections;
 	agi::Context *context;
 
 	/// The audio renderer manager

@@ -44,7 +44,7 @@ struct VideoFrame;
 
 class VideoProvider {
 public:
-	virtual ~VideoProvider() {}
+	virtual ~VideoProvider() = default;
 
 	/// Override this method to actually get frames
 	virtual std::shared_ptr<VideoFrame> GetFrame(int n)=0;

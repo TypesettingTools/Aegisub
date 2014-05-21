@@ -29,10 +29,10 @@
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "project.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
 #include "timeedit_ctrl.h"
-#include "video_context.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
@@ -100,7 +100,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 , context(context)
 , history_filename(config::path->Decode("?user/shift_history.json"))
 , history(agi::make_unique<json::Array>())
-, timecodes_loaded_slot(context->videoController->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
+, timecodes_loaded_slot(context->project->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 , selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))
 {
 	SetIcon(GETICON(shift_times_toolbutton_16));
@@ -138,7 +138,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	clear_button->Bind(wxEVT_BUTTON, &DialogShiftTimes::OnClear, this);
 
 	// Set initial control states
-	OnTimecodesLoaded(context->videoController->FPS());
+	OnTimecodesLoaded(context->project->Timecodes());
 	OnSelectedSetChanged();
 	LoadHistory();
 

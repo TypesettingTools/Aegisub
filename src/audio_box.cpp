@@ -61,6 +61,7 @@
 #include "command/command.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "project.h"
 #include "toggle_bitmap.h"
 #include "selection_controller.h"
 #include "utils.h"
@@ -75,7 +76,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 : wxSashWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSW_3D | wxCLIP_CHILDREN)
 , controller(context->audioController.get())
 , context(context)
-, audio_open_connection(controller->AddAudioOpenListener(&AudioBox::OnAudioOpen, this))
+, audio_open_connection(context->project->AddAudioProviderListener(&AudioBox::OnAudioOpen, this))
 , panel(new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_RAISED))
 , audioDisplay(new AudioDisplay(panel, context->audioController.get(), context))
 , HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, -OPT_GET("Audio/Zoom/Horizontal")->GetInt(), -50, 30, wxDefaultPosition, wxSize(-1, 20), wxSL_VERTICAL|wxSL_BOTH))

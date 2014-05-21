@@ -43,13 +43,14 @@
 #include "../initial_line_state.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
+#include "../project.h"
 #include "../search_replace_engine.h"
 #include "../selection_controller.h"
 #include "../subs_controller.h"
 #include "../subs_edit_ctrl.h"
 #include "../text_selection_controller.h"
 #include "../utils.h"
-#include "../video_context.h"
+#include "../video_controller.h"
 
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/of_type_adaptor.h>
@@ -83,7 +84,7 @@ struct validate_sel_nonempty : public Command {
 struct validate_video_and_sel_nonempty : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) override {
-		return c->videoController->IsLoaded() && !c->selectionController->GetSelectedSet().empty();
+		return c->project->VideoProvider() && !c->selectionController->GetSelectedSet().empty();
 	}
 };
 

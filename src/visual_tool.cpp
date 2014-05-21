@@ -28,7 +28,7 @@
 #include "options.h"
 #include "selection_controller.h"
 #include "utils.h"
-#include "video_context.h"
+#include "video_controller.h"
 #include "video_display.h"
 #include "visual_feature.h"
 #include "visual_tool_clip.h"
