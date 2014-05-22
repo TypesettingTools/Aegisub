@@ -29,7 +29,7 @@ class wxString;
 namespace agi { struct Context; }
 
 class Project {
-	std::unique_ptr<AudioProvider> audio_provider;
+	std::unique_ptr<::AudioProvider> audio_provider;
 	std::unique_ptr<AsyncVideoProvider> video_provider;
 	agi::vfr::Framerate timecodes;
 	std::vector<int> keyframes;
@@ -39,7 +39,7 @@ class Project {
 	agi::fs::path timecodes_file;
 	agi::fs::path keyframes_file;
 
-	agi::signal::Signal<AudioProvider *> AnnounceAudioProviderModified;
+	agi::signal::Signal<::AudioProvider *> AnnounceAudioProviderModified;
 	agi::signal::Signal<AsyncVideoProvider *> AnnounceVideoProviderModified;
 	agi::signal::Signal<agi::vfr::Framerate const&> AnnounceTimecodesModified;
 	agi::signal::Signal<std::vector<int> const&> AnnounceKeyframesModified;
@@ -74,7 +74,7 @@ public:
 
 	void LoadAudio(agi::fs::path const& path);
 	void CloseAudio();
-	AudioProvider *AudioProvider() const { return audio_provider.get(); }
+	::AudioProvider *AudioProvider() const { return audio_provider.get(); }
 	agi::fs::path const& AudioName() const { return audio_file; }
 
 	void LoadVideo(agi::fs::path const& path);
