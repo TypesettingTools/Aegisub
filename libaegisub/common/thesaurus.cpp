@@ -23,7 +23,7 @@
 #include "libaegisub/line_iterator.h"
 #include "libaegisub/make_unique.h"
 
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/phoenix/operator/comparison.hpp>
 #include <boost/phoenix/core/argument.hpp>

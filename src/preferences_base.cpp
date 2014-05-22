@@ -20,12 +20,8 @@
 
 #include "colour_button.h"
 #include "compat.h"
-#include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
-#include "libresrc/libresrc.h"
 #include "options.h"
 #include "preferences.h"
-#include "video_provider_manager.h"
 
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
@@ -34,7 +30,6 @@
 #include <wx/combobox.h>
 #include <wx/dirdlg.h>
 #include <wx/event.h>
-#include <wx/filefn.h>
 #include <wx/fontdlg.h>
 #include <wx/listctrl.h>
 #include <wx/sizer.h>
@@ -52,7 +47,7 @@
 		type(std::string const& n, Preferences *p) : name(n), parent(p) { } \
 		void operator()(evttype& evt) {                                     \
 			evt.Skip();                                                     \
-			parent->SetOption(agi::make_unique<agi::opt>(name, body));\
+			parent->SetOption(agi::make_unique<agi::opt>(name, body));      \
 		}                                                                   \
 	}
 

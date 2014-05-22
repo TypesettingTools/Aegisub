@@ -36,21 +36,18 @@
 #include "ffmpegsource_common.h"
 
 #include "compat.h"
-#include "frame_main.h"
 #include "options.h"
 #include "utils.h"
 
 #include <libaegisub/background_runner.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/log.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/crc.hpp>
-#include <boost/filesystem.hpp>
-#include <inttypes.h>
-
-#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
+#include <boost/filesystem/path.hpp>
+#include <wx/intl.h>
+#include <wx/choicdlg.h>
 
 #ifdef _WIN32
 #include <objbase.h>

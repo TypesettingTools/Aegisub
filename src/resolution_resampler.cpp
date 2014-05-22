@@ -28,9 +28,8 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/lexical_cast.hpp>
 #include <cmath>
-#include <functional>
+#include <wx/intl.h>
 
 enum {
 	LEFT = 0,

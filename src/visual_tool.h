@@ -27,11 +27,11 @@
 #include <libaegisub/signal.h>
 
 #include <set>
-#include <wx/event.h>
 
 class AssDialogue;
-class SubtitlesGrid;
 class VideoDisplay;
+class wxMouseCaptureLostEvent;
+class wxMouseEvent;
 class wxToolBar;
 namespace agi {
 	struct Context;

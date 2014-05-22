@@ -25,7 +25,6 @@
 #include "ass_file.h"
 #include "ass_style.h"
 #include "compat.h"
-#include "utils.h"
 
 #include <algorithm>
 #include <tuple>

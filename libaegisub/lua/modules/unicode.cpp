@@ -16,7 +16,7 @@
 
 #include "libaegisub/lua/utils.h"
 
-#include <boost/locale.hpp>
+#include <boost/locale/conversion.hpp>
 
 namespace {
 using namespace agi::lua;

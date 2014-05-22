@@ -12,22 +12,14 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file log.cpp
-/// @brief Unix logging
-/// @ingroup libaegisub
-
 #include <cstdio>
 #include <ctime>
-#include <cstring>
 
 #include <unistd.h>
 
 #include "libaegisub/log.h"
-#include "libaegisub/make_unique.h"
 
-namespace agi {
-	namespace log {
-
+namespace agi { namespace log {
 void EmitSTDOUT::log(SinkMessage *sm) {
 	tm tmtime;
 	localtime_r(&sm->tv.tv_sec, &tmtime);
@@ -47,6 +39,4 @@ void EmitSTDOUT::log(SinkMessage *sm) {
 	if (!isatty(fileno(stdout)))
 		fflush(stdout);
 }
-
-	} // namespace log
-} // namespace agi
+} }

@@ -10,7 +10,6 @@ Author: Terry Caton
 
 #include <cstdint>
 #include <deque>
-#include <list>
 #include <map>
 #include <memory>
 #include <string>
@@ -24,9 +23,6 @@ namespace json
 struct Visitor;
 struct ConstVisitor;
 class UnknownElement;
-
-template <typename ValueTypeT>
-class TrivialType_T;
 
 typedef int64_t Integer;
 typedef double Double;

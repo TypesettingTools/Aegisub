@@ -27,8 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file time_range.h
-/// @ingroup audio_ui
+#include <cassert>
 
 /// @class TimeRange
 /// @brief Represents an immutable range of time

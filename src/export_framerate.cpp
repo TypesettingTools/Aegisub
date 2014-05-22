@@ -35,7 +35,6 @@
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "project.h"
-#include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
 

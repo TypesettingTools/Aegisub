@@ -47,33 +47,24 @@
 #include "command/command.h"
 #include "dialog_detached_video.h"
 #include "dialog_manager.h"
-#include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
 #include "project.h"
 #include "subs_controller.h"
 #include "subs_edit_box.h"
-#include "subs_edit_ctrl.h"
 #include "utils.h"
 #include "version.h"
 #include "video_box.h"
 #include "video_controller.h"
 #include "video_display.h"
-#include "video_slider.h"
 
-#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
-#include <libaegisub/path.h>
-#include <libaegisub/util.h>
-
-#include <boost/algorithm/string/predicate.hpp>
 
 #include <wx/dnd.h>
-#include <wx/filename.h>
-#include <wx/image.h>
 #include <wx/msgdlg.h>
+#include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/sysopt.h>
 

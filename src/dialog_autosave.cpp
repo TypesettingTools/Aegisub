@@ -20,7 +20,6 @@
 
 #include <libaegisub/path.h>
 
-#include <cstdint>
 #include <boost/range/adaptor/map.hpp>
 #include <map>
 #include <string>
@@ -31,7 +30,6 @@
 #include <wx/filename.h>
 #include <wx/listbox.h>
 #include <wx/sizer.h>
-#include <wx/statbox.h>
 #include <wx/string.h>
 
 namespace {

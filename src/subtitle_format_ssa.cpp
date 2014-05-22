@@ -24,8 +24,6 @@
 #include "text_file_writer.h"
 #include "version.h"
 
-#include <libaegisub/fs.h>
-
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/format.hpp>

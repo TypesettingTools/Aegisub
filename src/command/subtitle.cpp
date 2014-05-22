@@ -51,7 +51,7 @@
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/make_unique.h>
 
-#include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm/copy.hpp>
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 

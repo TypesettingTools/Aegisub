@@ -19,7 +19,6 @@
 #include <libaegisub/fs_fwd.h>
 
 #include <boost/flyweight.hpp>
-#include <vector>
 
 /// @class AssAttachment
 class AssAttachment final : public AssEntry {

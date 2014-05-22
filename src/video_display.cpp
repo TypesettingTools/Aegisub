@@ -45,19 +45,15 @@
 #include "project.h"
 #include "retina_helper.h"
 #include "spline_curve.h"
-#include "subs_controller.h"
 #include "utils.h"
 #include "video_out_gl.h"
 #include "video_controller.h"
-#include "video_frame.h"
 #include "visual_tool.h"
 
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <wx/combobox.h>
-#include <wx/dataobj.h>
-#include <wx/dcclient.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
 #include <wx/toolbar.h>

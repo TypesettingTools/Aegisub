@@ -27,28 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_box.cpp
-/// @brief The entire audio area in the main UI, containing display and related toolbars
-/// @ingroup audio_ui
-///
-
-#include <cmath>
-
-#include <wx/bmpbuttn.h>
-#include <wx/panel.h>
-#include <wx/slider.h>
-#include <wx/scrolbar.h>
-#include <wx/sizer.h>
-#include <wx/slider.h>
-#include <wx/string.h>
-#include <wx/statline.h>
-#include <wx/textctrl.h>
-#include <wx/tglbtn.h>
-#include <wx/toolbar.h>
-#include <wx/laywin.h> // Keep this last so wxSW_3D is set.
-
-#include <libaegisub/log.h>
-
 #include "audio_box.h"
 
 #include "include/aegisub/context.h"
@@ -58,13 +36,19 @@
 #include "audio_display.h"
 #include "audio_karaoke.h"
 #include "audio_timing.h"
-#include "command/command.h"
-#include "libresrc/libresrc.h"
 #include "options.h"
 #include "project.h"
 #include "toggle_bitmap.h"
-#include "selection_controller.h"
 #include "utils.h"
+
+#include <cmath>
+#include <wx/panel.h>
+#include <wx/slider.h>
+#include <wx/scrolbar.h>
+#include <wx/sizer.h>
+#include <wx/slider.h>
+#include <wx/string.h>
+#include <wx/toolbar.h>
 
 enum {
 	Audio_Horizontal_Zoom = 1600,

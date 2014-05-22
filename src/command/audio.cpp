@@ -36,7 +36,6 @@
 #include "../audio_controller.h"
 #include "../audio_karaoke.h"
 #include "../audio_timing.h"
-#include "../compat.h"
 #include "../include/aegisub/audio_provider.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
@@ -47,10 +46,7 @@
 #include "../video_controller.h"
 
 #include <libaegisub/make_unique.h>
-#include <libaegisub/fs.h>
 #include <libaegisub/io.h>
-
-#include <wx/msgdlg.h>
 
 namespace {
 	using cmd::Command;

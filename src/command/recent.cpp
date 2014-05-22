@@ -29,7 +29,6 @@
 
 #include "command.h"
 
-#include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"

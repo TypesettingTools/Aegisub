@@ -18,15 +18,17 @@
 
 #include <memory>
 #include <wx/dialog.h>
-#include <wx/event.h>
 
-namespace agi { struct Context; }
 class AssDialogue;
 class PersistLocation;
+class wxActivateEvent;
 class wxButton;
 class wxCheckBox;
+class wxCommandEvent;
+class wxKeyEvent;
 class wxListBox;
 class wxTextCtrl;
+namespace agi { struct Context; }
 
 class DialogStyling final : public wxDialog {
 	agi::Context *c;

@@ -27,23 +27,16 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file auto4_lua.h
-/// @see auto4_lua.cpp
-/// @ingroup scripting
-///
-
 #include "auto4_base.h"
 
 #include <deque>
 #include <vector>
-
-#include <wx/event.h>
-#include <wx/thread.h>
+#include <wx/string.h>
 
 class AssEntry;
+class wxControl;
 class wxWindow;
 struct lua_State;
-namespace agi { namespace vfr { class Framerate; } }
 
 namespace Automation4 {
 	/// @class LuaAssFile

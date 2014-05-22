@@ -37,7 +37,6 @@
 #include "resolution_resampler.h"
 #include "validators.h"
 
-#include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <vector>
 #include <wx/button.h>

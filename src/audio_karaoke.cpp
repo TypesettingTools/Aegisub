@@ -40,7 +40,6 @@
 
 #include <algorithm>
 #include <boost/locale/boundary.hpp>
-#include <numeric>
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/dcclient.h>

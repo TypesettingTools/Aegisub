@@ -20,9 +20,7 @@
 #include "option_visit.h"
 
 #include <cassert>
-#include <cmath>
 
-#include <libaegisub/color.h>
 #include <libaegisub/log.h>
 #include <libaegisub/option_value.h>
 #include <libaegisub/make_unique.h>

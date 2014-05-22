@@ -19,8 +19,8 @@
 /// @ingroup visual_ts
 ///
 
-#include "visual_feature.h"
 #include "visual_tool.h"
+#include "visual_feature.h"
 
 #include <memory>
 

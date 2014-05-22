@@ -40,13 +40,10 @@
 #include <libaegisub/signal.h>
 
 #include "ass_export_filter.h"
-#include "compat.h"
 
 #include <boost/filesystem/path.hpp>
 #include <memory>
 #include <vector>
-
-#include <wx/dialog.h>
 
 class AssStyle;
 class DialogProgress;
@@ -283,7 +280,7 @@ namespace Automation4 {
 		void Reload() override { }
 
 		std::string GetName() const override { return GetFilename().stem().string(); }
-		std::string GetDescription() const override { return from_wx(_("File was not recognized as a script")); }
+		std::string GetDescription() const override;
 		std::string GetAuthor() const override { return ""; }
 		std::string GetVersion() const override { return ""; }
 		bool GetLoadedState() const override { return false; }

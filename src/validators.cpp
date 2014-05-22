@@ -17,7 +17,6 @@
 #include "validators.h"
 
 #include "compat.h"
-#include "utils.h"
 
 #include <libaegisub/exception.h>
 #include <libaegisub/util.h>

@@ -34,25 +34,15 @@
 #include "ass_time.h"
 #include "audio_controller.h"
 #include "compat.h"
-#include "dialog_progress.h"
-#include "dialogs.h"
 #include "include/aegisub/context.h"
-#include "include/aegisub/video_provider.h"
-#include "mkv_wrap.h"
 #include "options.h"
 #include "project.h"
 #include "selection_controller.h"
-#include "subs_controller.h"
 #include "time_range.h"
 #include "async_video_provider.h"
 #include "utils.h"
-#include "video_frame.h"
 
-#include <libaegisub/fs.h>
-#include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
-
-#include <wx/msgdlg.h>
+#include <wx/log.h>
 
 VideoController::VideoController(agi::Context *c)
 : context(c)

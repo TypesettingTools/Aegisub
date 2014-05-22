@@ -16,14 +16,10 @@
 /// @brief Parse JSON files and return json::UnknownElement
 /// @ingroup libaegisub io
 
-#include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/fs_fwd.h>
 
-#include <memory>
-
-namespace agi {
-	namespace json_util {
+namespace agi { namespace json_util {
 
 /// Parse a JSON stream.
 /// @param stream JSON stream to parse
@@ -41,5 +37,4 @@ json::UnknownElement file(agi::fs::path const& file);
 /// @return json::UnknownElement
 json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
 
-	} // namespace json_util
-} // namespace agi
+} }

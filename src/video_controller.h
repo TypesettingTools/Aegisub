@@ -31,7 +31,6 @@
 #include <libaegisub/vfr.h>
 
 #include <chrono>
-#include <memory>
 #include <set>
 
 #include <wx/timer.h>
@@ -39,7 +38,6 @@
 class AssDialogue;
 class AsyncVideoProvider;
 struct SubtitlesProviderErrorEvent;
-struct VideoFrame;
 struct VideoProviderErrorEvent;
 
 namespace agi {

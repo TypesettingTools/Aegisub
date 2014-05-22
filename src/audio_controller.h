@@ -28,7 +28,6 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <libaegisub/exception.h>
-#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
 #include <cstdint>

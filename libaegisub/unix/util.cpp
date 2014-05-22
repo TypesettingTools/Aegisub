@@ -12,12 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file util.cpp
-/// @brief Unix utility methods.
-/// @ingroup libaegisub unix
-
-#include "libaegisub/make_unique.h"
-
 #include <boost/thread.hpp>
 
 namespace agi { namespace util {

@@ -39,7 +39,6 @@
 #include <vector>
 
 class AssExportFilter;
-class AssFile;
 namespace agi { struct Context; }
 class wxSizer;
 class wxWindow;

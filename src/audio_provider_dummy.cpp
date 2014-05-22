@@ -27,17 +27,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_provider_dummy.cpp
-/// @brief Dummy (silence or noise) audio provider
-/// @ingroup audio_input
-///
-
 #include "include/aegisub/audio_provider.h"
 
-#include <libaegisub/fs.h>
 #include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/filesystem/path.hpp>
 
 /*
  * scheme            ::= "dummy-audio" ":" signal-specifier "?" signal-parameters

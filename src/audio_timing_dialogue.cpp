@@ -27,14 +27,11 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_timing_dialogue.cpp
-/// @brief Default timing mode for dialogue subtitles
-/// @ingroup audio_ui
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
-#include "audio_renderer.h"
+#include "audio_marker.h"
+#include "audio_rendering_style.h"
 #include "audio_timing.h"
 #include "command/command.h"
 #include "include/aegisub/context.h"
@@ -46,7 +43,6 @@
 #include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm.hpp>
-#include <cstdint>
 #include <wx/pen.h>
 
 namespace {

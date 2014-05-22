@@ -27,18 +27,13 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_provider.h
-/// @brief Declaration of base-class for audio providers
-/// @ingroup main_headers audio_input
-///
-
 #pragma once
 
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
 #include <atomic>
-#include <boost/filesystem/path.hpp>
+#include <vector>
 
 class AudioProvider {
 protected:

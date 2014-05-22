@@ -12,25 +12,18 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file log.cpp
-/// @brief Logging
-/// @ingroup libaegisub
-
 #include "libaegisub/log.h"
 
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/dispatch.h"
-#include "libaegisub/io.h"
+#include "libaegisub/time.h"
 #include "libaegisub/util.h"
 
-#include <algorithm>
-#include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/range/algorithm.hpp>
-#include <cstring>
-#include <functional>
-#include <mutex>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/range/algorithm/remove_if.hpp>
 
 namespace agi {
 	namespace log {

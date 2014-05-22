@@ -27,23 +27,16 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file auto4_base.cpp
-/// @brief Baseclasses for Automation 4 scripting framework
-/// @ingroup scripting
-///
-
 #include "auto4_base.h"
 
 #include "ass_file.h"
 #include "ass_style.h"
-#include "command/command.h"
+#include "compat.h"
 #include "dialog_progress.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "string_codec.h"
 #include "subs_controller.h"
-#include "subtitle_format.h"
-#include "utils.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
@@ -59,7 +52,6 @@
 #include <wx/dcmemory.h>
 #include <wx/log.h>
 #include <wx/sizer.h>
-#include <wx/msgdlg.h>
 
 #ifdef __WINDOWS__
 #define WIN32_LEAN_AND_MEAN
@@ -510,5 +502,9 @@ namespace Automation4 {
 			fnfilter = from_wx(_("All Supported Formats")) + "|" + catchall + "|" + fnfilter;
 
 		return fnfilter;
+	}
+
+	std::string UnknownScript::GetDescription() const {
+		return from_wx(_("File was not recognized as a script"));
 	}
 }

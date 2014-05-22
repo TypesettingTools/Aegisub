@@ -19,7 +19,6 @@
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/time.h>
 
-#include <ctime>
 #include <boost/circular_buffer.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <iosfwd>

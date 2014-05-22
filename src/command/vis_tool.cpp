@@ -19,8 +19,6 @@
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../project.h"
-#include "../video_box.h"
-#include "../video_controller.h"
 #include "../video_display.h"
 #include "../visual_tool_clip.h"
 #include "../visual_tool_cross.h"

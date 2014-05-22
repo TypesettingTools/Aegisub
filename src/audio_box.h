@@ -27,11 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_box.h
-/// @see audio_box.cpp
-/// @ingroup audio_ui
-///
-
+#include <wx/defs.h>
 #include <wx/sashwin.h>
 
 #include <libaegisub/signal.h>

@@ -35,7 +35,6 @@
 #include "utils.h"
 
 #include "compat.h"
-#include "frame_main.h"
 #include "options.h"
 #include "retina_helper.h"
 
@@ -46,7 +45,7 @@
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
 #include <map>
 #include <unicode/locid.h>

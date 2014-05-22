@@ -34,7 +34,6 @@
 
 #include "spline.h"
 
-#include "utils.h"
 #include "visual_tool.h"
 
 #include <libaegisub/util.h>

@@ -18,12 +18,10 @@
 
 #include "charset_6937.h"
 
-#include <algorithm>
 #include <cerrno>
-
 #include <iconv.h>
 
-#include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm/lower_bound.hpp>
 
 namespace {
 

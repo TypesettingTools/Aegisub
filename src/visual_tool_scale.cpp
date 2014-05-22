@@ -18,11 +18,9 @@
 /// @brief X/Y scaling visual typesetting tool
 /// @ingroup visual_ts
 
-#include <cmath>
-
 #include "visual_tool_scale.h"
 
-#include "utils.h"
+#include <wx/colour.h>
 
 VisualToolScale::VisualToolScale(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)

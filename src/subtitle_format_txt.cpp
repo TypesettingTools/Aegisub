@@ -40,10 +40,7 @@
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "utils.h"
 #include "version.h"
-
-#include <libaegisub/path.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>

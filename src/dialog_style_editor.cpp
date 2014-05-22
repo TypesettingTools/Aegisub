@@ -55,8 +55,10 @@
 #include <algorithm>
 
 #include <wx/bmpbuttn.h>
+#include <wx/checkbox.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
+#include <wx/spinctrl.h>
 #include <wx/stattext.h>
 
 /// Style rename helper that walks a file searching for a style and optionally

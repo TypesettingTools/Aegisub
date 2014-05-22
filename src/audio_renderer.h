@@ -27,29 +27,20 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_renderer.h
-/// @see audio_renderer.cpp
-/// @ingroup audio_ui
-///
-/// Base classes for audio renderers (spectrum, waveform, ...)
-
 #pragma once
 
 #include <memory>
 #include <vector>
 
-#include <wx/dc.h>
 #include <wx/gdicmn.h>
 
 #include "audio_rendering_style.h"
 #include "block_cache.h"
 
-// Some forward declarations for outside stuff
 class AudioProvider;
-
-// Forwards declarations for internal stuff
 class AudioRendererBitmapProvider;
 class AudioRenderer;
+class wxDC;
 
 /// @class AudioRendererBitmapCacheBitmapFactory
 /// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer

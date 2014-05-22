@@ -27,12 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/fs_fwd.h>
-
 #include <memory>
-#include <vector>
 #include <wx/frame.h>
-#include <wx/sizer.h>
 #include <wx/timer.h>
 
 class AegisubApp;
@@ -77,9 +73,9 @@ class FrameMain : public wxFrame {
 	AudioBox *audioBox;      ///< The audio area
 	VideoBox *videoBox;      ///< The video area
 
-	wxBoxSizer *MainSizer;  ///< Arranges things from top to bottom in the window
-	wxBoxSizer *TopSizer;   ///< Arranges video box and tool box from left to right
-	wxBoxSizer *ToolsSizer; ///< Arranges audio and editing areas top to bottom
+	wxSizer *MainSizer;  ///< Arranges things from top to bottom in the window
+	wxSizer *TopSizer;   ///< Arranges video box and tool box from left to right
+	wxSizer *ToolsSizer; ///< Arranges audio and editing areas top to bottom
 
 public:
 	FrameMain();

@@ -39,15 +39,12 @@
 #include "fft.h"
 #endif
 #include "include/aegisub/audio_provider.h"
-#include "utils.h"
 
-#include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
 #include <wx/image.h>
-#include <wx/rawbmp.h>
 #include <wx/dcmemory.h>
 
 /// Allocates blocks of derived data for the audio spectrum

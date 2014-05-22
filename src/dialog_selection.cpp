@@ -25,11 +25,8 @@
 #include "options.h"
 #include "search_replace_engine.h"
 #include "selection_controller.h"
-#include "utils.h"
 
-#include <boost/algorithm/string/find.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm/set_algorithm.hpp>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>

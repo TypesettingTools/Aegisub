@@ -27,14 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file gl_text.h
-/// @see gl_text.cpp
-/// @ingroup video_output
-///
-
 #include <boost/container/map.hpp>
 
-#include <memory>
 #include <string>
 #include <vector>
 

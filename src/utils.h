@@ -27,29 +27,18 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file utils.h
-/// @see utils.cpp
-/// @ingroup utility
-///
-
 #pragma once
 
 #include <libaegisub/fs_fwd.h>
 
-#include <algorithm>
 #include <cstdint>
-#include <functional>
-#include <utility>
-#include <vector>
+#include <string>
 
-#include <wx/app.h>
-#include <wx/icon.h>
-#include <wx/event.h>
-#include <wx/thread.h>
+#include <wx/bitmap.h>
+#include <wx/string.h>
 
 class wxMouseEvent;
 class wxWindow;
-namespace cmd { class Command; }
 
 wxString PrettySize(int bytes);
 

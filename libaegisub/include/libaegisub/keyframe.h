@@ -12,18 +12,12 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file keyframe.h
-/// @see keyframe.cpp
-/// @ingroup libaegisub
-///
-
 #include <vector>
 
 #include "exception.h"
 #include "fs_fwd.h"
 
 namespace agi {
-	namespace vfr { class Framerate; }
 	namespace keyframe {
 		/// @brief Load a keyframe file
 		/// @param filename File to load

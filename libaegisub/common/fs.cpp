@@ -17,12 +17,11 @@
 #include "libaegisub/fs.h"
 
 #include "libaegisub/access.h"
-#include "libaegisub/exception.h"
 #include "libaegisub/log.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #define BOOST_NO_SCOPED_ENUMS
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
 #undef BOOST_NO_SCOPED_ENUMS
 
 namespace bfs = boost::filesystem;

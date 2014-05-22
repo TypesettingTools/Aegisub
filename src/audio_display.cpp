@@ -28,28 +28,20 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_display.cpp
-/// @brief Display audio in the main UI
-/// @ingroup audio_ui
-///
-
 #include "audio_display.h"
 
 #include "ass_time.h"
-#include "audio_colorscheme.h"
 #include "audio_controller.h"
 #include "audio_renderer.h"
 #include "audio_renderer_spectrum.h"
 #include "audio_renderer_waveform.h"
 #include "audio_timing.h"
-#include "block_cache.h"
 #include "compat.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "options.h"
 #include "project.h"
-#include "selection_controller.h"
 #include "utils.h"
 #include "video_controller.h"
 
@@ -58,7 +50,6 @@
 #include <algorithm>
 
 #include <wx/dcbuffer.h>
-#include <wx/dcclient.h>
 #include <wx/mousestate.h>
 
 namespace {

@@ -27,19 +27,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_renderer_waveform.h
-/// @see audio_renderer_waveform.cpp
-/// @ingroup audio_ui
-///
-/// Render a waveform display of PCM audio data
+#include "audio_renderer.h"
 
-#include <cstdint>
 #include <vector>
 
 class AudioColorScheme;
+class wxArrayString;
 
-#include "audio_renderer.h"
-
+/// Render a waveform display of PCM audio data
 class AudioWaveformRenderer final : public AudioRendererBitmapProvider {
 	/// Colour tables used for rendering
 	std::vector<AudioColorScheme> colors;

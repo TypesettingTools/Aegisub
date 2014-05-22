@@ -27,13 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_colorscheme.cpp
-/// @ingroup audio_ui
-///
-/// Manage colour schemes for the audio display
-
-#include <algorithm>
-
 #include "audio_colorscheme.h"
 
 #include "audio_rendering_style.h"

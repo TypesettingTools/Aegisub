@@ -32,15 +32,14 @@
 /// @ingroup custom_control
 ///
 
-#include <wx/dcbuffer.h>
-#include <wx/settings.h>
-#include <wx/tglbtn.h>
-
 #include "toggle_bitmap.h"
 
 #include "command/command.h"
-#include "include/aegisub/context.h"
 #include "tooltip_manager.h"
+
+#include <wx/dcbuffer.h>
+#include <wx/settings.h>
+#include <wx/tglbtn.h>
 
 ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *cmd_name, int icon_size, const char *ht_ctx, wxSize const& size)
 : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)

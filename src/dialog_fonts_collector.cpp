@@ -17,7 +17,6 @@
 #include "font_file_lister.h"
 #include "font_file_lister_fontconfig.h"
 
-#include "ass_file.h"
 #include "compat.h"
 #include "dialog_manager.h"
 #include "help_button.h"
@@ -25,8 +24,6 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "scintilla_text_ctrl.h"
-#include "selection_controller.h"
-#include "subs_controller.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>

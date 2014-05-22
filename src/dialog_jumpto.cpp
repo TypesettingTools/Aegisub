@@ -36,7 +36,6 @@
 #include "validators.h"
 #include "video_controller.h"
 
-#include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>

@@ -19,7 +19,6 @@
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/make_unique.h>
 
-#include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>

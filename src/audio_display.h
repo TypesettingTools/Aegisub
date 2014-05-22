@@ -27,11 +27,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Aegisub Project http://www.aegisub.org/
-
-/// @file audio_display.h
-/// @see audio_display.cpp
-/// @ingroup audio_ui
-///
+//
+#include <libaegisub/signal.h>
 
 #include <chrono>
 #include <cstdint>
@@ -43,14 +40,11 @@
 #include <wx/timer.h>
 #include <wx/window.h>
 
-#include <libaegisub/signal.h>
-
 namespace agi { struct Context; }
 
 class AudioController;
 class AudioRenderer;
 class AudioRendererBitmapProvider;
-class AudioKaraoke;
 class AudioProvider;
 class TimeRange;
 
@@ -58,7 +52,6 @@ class TimeRange;
 namespace {
 	class AudioDisplayScrollbar;
 	class AudioDisplayTimeline;
-	class AudioDisplaySelection;
 }
 class AudioMarkerInteractionObject;
 

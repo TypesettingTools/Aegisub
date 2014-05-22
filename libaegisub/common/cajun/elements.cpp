@@ -9,8 +9,7 @@ Author: Terry Caton
 
 #include "libaegisub/cajun/visitor.h"
 
-#include <algorithm>
-#include <cassert>
+#include <utility>
 
 namespace {
 	using namespace json;

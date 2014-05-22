@@ -23,10 +23,9 @@
 #include "ass_dialogue.h"
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
-#include "utils.h"
 
 #include <boost/format.hpp>
-#include <utility>
+#include <wx/colour.h>
 
 VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
 : VisualTool<ClipCorner>(parent, context)

@@ -39,7 +39,7 @@
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "ass_style.h"
-#include "utils.h"
+#include "compat.h"
 
 #include <libaegisub/exception.h>
 #include <libaegisub/log.h>

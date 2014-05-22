@@ -38,8 +38,6 @@
 #include "ass_file.h"
 #include "text_file_writer.h"
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
 
 EncoreSubtitleFormat::EncoreSubtitleFormat()
@@ -48,9 +46,7 @@ EncoreSubtitleFormat::EncoreSubtitleFormat()
 }
 
 std::vector<std::string> EncoreSubtitleFormat::GetWriteWildcards() const {
-	std::vector<std::string> formats;
-	formats.push_back("encore.txt");
-	return formats;
+	return {"encore.txt"};
 }
 
 void EncoreSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& video_fps, std::string const&) const {

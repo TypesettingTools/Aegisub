@@ -26,8 +26,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_style.h"
-#include "audio_controller.h"
 #include "command/command.h"
 #include "compat.h"
 #include "help_button.h"
@@ -41,6 +39,7 @@
 
 #include <wx/checkbox.h>
 #include <wx/colour.h>
+#include <wx/event.h>
 #include <wx/listbox.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>

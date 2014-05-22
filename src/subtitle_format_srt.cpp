@@ -37,14 +37,11 @@
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_style.h"
 #include "options.h"
-#include "utils.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
 #include <libaegisub/of_type_adaptor.h>
-#include <libaegisub/path.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>

@@ -20,7 +20,6 @@
 
 #include "ass_style_storage.h"
 #include "audio_renderer_waveform.h"
-#include "colour_button.h"
 #include "command/command.h"
 #include "compat.h"
 #include "help_button.h"
@@ -42,18 +41,13 @@
 #include <ffms.h>
 #endif
 
-#include <libaegisub/exception.h>
-#include <libaegisub/fs.h>
 #include <libaegisub/hotkey.h>
-#include <libaegisub/path.h>
 
-#include <iterator>
 #include <unordered_set>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/event.h>
-#include <wx/filefn.h>
 #include <wx/listctrl.h>
 #include <wx/msgdlg.h>
 #include <wx/srchctrl.h>
@@ -62,9 +56,8 @@
 #include <wx/stattext.h>
 #include <wx/treebook.h>
 
-#define CLASS_PAGE(name)                             \
-class name: public OptionPage {                  \
-public:                                          \
+#define CLASS_PAGE(name)                         \
+struct name : OptionPage {                       \
 	name(wxTreebook *book, Preferences *parent); \
 };
 

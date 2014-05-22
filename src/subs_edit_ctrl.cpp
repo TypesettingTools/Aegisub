@@ -35,7 +35,6 @@
 #include "subs_edit_ctrl.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
 #include "command/command.h"
 #include "compat.h"
 #include "options.h"

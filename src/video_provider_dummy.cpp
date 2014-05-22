@@ -38,13 +38,13 @@
 #include "video_frame.h"
 
 #include <libaegisub/color.h>
-#include <libaegisub/fs.h>
 #include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
 #include <boost/gil/gil_all.hpp>
 

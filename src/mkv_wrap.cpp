@@ -42,11 +42,9 @@
 #include "MatroskaParser.h"
 
 #include <libaegisub/file_mapping.h>
-#include <libaegisub/fs.h>
 #include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>

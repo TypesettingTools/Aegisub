@@ -18,7 +18,8 @@
 #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <fcntl.h>
 #include <fnmatch.h>
 #include <istream>

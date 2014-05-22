@@ -15,7 +15,6 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <map>
-#include <set>
 #include <string>
 #include <vector>
 

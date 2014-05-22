@@ -23,7 +23,6 @@
 
 #include "compat.h"
 #include "options.h"
-#include "text_file_writer.h"
 
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/make_unique.h>

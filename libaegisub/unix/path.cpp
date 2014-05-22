@@ -16,9 +16,10 @@
 
 #include <libaegisub/path.h>
 
+#include <libaegisub/exception.h>
 #include <libaegisub/util_osx.h>
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <pwd.h>
 
 namespace {
@@ -38,7 +39,6 @@ std::string home_dir() {
 }
 
 namespace agi {
-
 void Path::FillPlatformSpecificPaths() {
 #ifndef __APPLE__
 	agi::fs::path home = home_dir();

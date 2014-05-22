@@ -32,8 +32,6 @@
 /// @ingroup subtitle_io
 ///
 
-#include <cstdio>
-
 #include "subtitle_format_transtation.h"
 
 #include "ass_dialogue.h"
@@ -42,8 +40,6 @@
 #include "ass_time.h"
 #include "text_file_writer.h"
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
 
 TranStationSubtitleFormat::TranStationSubtitleFormat()
@@ -52,9 +48,7 @@ TranStationSubtitleFormat::TranStationSubtitleFormat()
 }
 
 std::vector<std::string> TranStationSubtitleFormat::GetWriteWildcards() const {
-	std::vector<std::string> formats;
-	formats.push_back("transtation.txt");
-	return formats;
+	return {"transtation.txt"};
 }
 
 void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, std::string const& encoding) const {

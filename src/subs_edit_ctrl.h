@@ -27,18 +27,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subs_edit_ctrl.h
-/// @see subs_edit_ctrl.cpp
-/// @ingroup main_ui
-///
+#include "scintilla_text_ctrl.h"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "scintilla_text_ctrl.h"
-
-class SubsEditBox;
 class Thesaurus;
 namespace agi {
 	class CalltipProvider;

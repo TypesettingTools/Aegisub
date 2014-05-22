@@ -31,6 +31,7 @@ public:
 };
 
 class wxBitmapButton;
+class wxCommandEvent;
 class wxToolBar;
 
 /// @class VisualToolDrag

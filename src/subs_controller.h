@@ -19,11 +19,8 @@
 
 #include <boost/container/list.hpp>
 #include <boost/filesystem/path.hpp>
-#include <set>
 #include <wx/timer.h>
 
-class AssDialogue;
-class AssFile;
 struct AssFileCommit;
 class SelectionController;
 

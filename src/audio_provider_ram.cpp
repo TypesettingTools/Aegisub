@@ -35,14 +35,12 @@
 #include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
-#include "compat.h"
 
 #include <libaegisub/make_unique.h>
 
 #include <array>
 #include <boost/container/stable_vector.hpp>
 #include <thread>
-#include <wx/intl.h>
 
 namespace {
 

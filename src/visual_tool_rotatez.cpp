@@ -20,10 +20,9 @@
 
 #include "visual_tool_rotatez.h"
 
-#include "utils.h"
-
 #include <boost/format.hpp>
 #include <cmath>
+#include <wx/colour.h>
 
 static const float deg2rad = 3.1415926536f / 180.f;
 static const float rad2deg = 180.f / 3.1415926536f;

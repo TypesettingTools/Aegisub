@@ -19,13 +19,11 @@
 
 #include "libaegisub/keyframe.h"
 
-#include <algorithm>
-
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm/copy.hpp>
 
 namespace {
 std::vector<int> agi_keyframes(std::istream &file) {

@@ -34,10 +34,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
 
-#include <algorithm>
 #include <ctime>
-#include <functional>
-#include <string>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>

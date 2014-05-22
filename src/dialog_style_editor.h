@@ -27,25 +27,25 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_style_editor.h
-/// @see dialog_style_editor.cpp
-/// @ingroup style_editor
-///
-
 #include <memory>
-
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
+#include <string>
 #include <wx/dialog.h>
-#include <wx/radiobox.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
 
-namespace agi { struct Context; }
 class AssStyle;
 class AssStyleStorage;
 class PersistLocation;
 class SubtitlesPreview;
+class wxArrayString;
+class wxCheckBox;
+class wxChildFocusEvent;
+class wxComboBox;
+class wxCommandEvent;
+class wxRadioBox;
+class wxSpinCtrl;
+class wxTextCtrl;
+class wxThreadEvent;
+class wxWindow;
+namespace agi { struct Context; }
 
 class DialogStyleEditor final : public wxDialog {
 	agi::Context *c;

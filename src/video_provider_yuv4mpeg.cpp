@@ -34,19 +34,16 @@
 
 #include "include/aegisub/video_provider.h"
 
-#include "compat.h"
 #include "utils.h"
 #include "video_frame.h"
 
 #include <libaegisub/file_mapping.h>
-#include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 #include <libaegisub/ycbcr_conv.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/filesystem/path.hpp>
 #include <memory>
 #include <vector>
 

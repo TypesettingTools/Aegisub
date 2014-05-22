@@ -28,7 +28,6 @@
 
 #include "../../vendor/universalchardet/nscore.h"
 #include "../../vendor/universalchardet/nsUniversalDetector.h"
-#include "../../vendor/universalchardet/nsMBCSGroupProber.h"
 #include "../../vendor/universalchardet/nsCharSetProber.h"
 
 namespace {

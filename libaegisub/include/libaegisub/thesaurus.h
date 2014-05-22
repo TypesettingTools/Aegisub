@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file thesaurus.h
-/// @brief MyThes-compatible thesaurus implementation
-/// @ingroup libaegisub thesaurus
-
 #include "fs_fwd.h"
 
 #include <boost/container/flat_map.hpp>

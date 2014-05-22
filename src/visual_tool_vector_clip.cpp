@@ -25,7 +25,6 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "selection_controller.h"
-#include "utils.h"
 
 #include <libaegisub/make_unique.h>
 

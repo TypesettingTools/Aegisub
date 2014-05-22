@@ -17,7 +17,6 @@
 #include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
-#include "compat.h"
 #include "options.h"
 
 #include <libaegisub/file_mapping.h>
@@ -25,13 +24,10 @@
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/format.hpp>
 #include <boost/interprocess/detail/os_thread_functions.hpp>
 #include <thread>
-#include <wx/intl.h>
 
 namespace {
 class HDAudioProvider final : public AudioProviderWrapper {

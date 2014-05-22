@@ -26,7 +26,6 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "selection_controller.h"
-#include "utils.h"
 #include "video_controller.h"
 #include "video_display.h"
 
@@ -35,7 +34,6 @@
 #include <algorithm>
 #include <boost/format.hpp>
 #include <boost/range/algorithm/binary_search.hpp>
-#include <functional>
 
 #include <wx/toolbar.h>
 

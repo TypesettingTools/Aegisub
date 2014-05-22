@@ -37,10 +37,8 @@
 #include <wx/intl.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
-#include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_style.h"
 #include "compat.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_ebu3264.h"
@@ -51,14 +49,12 @@
 #include "subtitle_format_transtation.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
-#include "video_controller.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
 namespace {

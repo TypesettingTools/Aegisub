@@ -22,6 +22,7 @@
 
 #include <boost/format.hpp>
 #include <cmath>
+#include <wx/colour.h>
 
 VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)

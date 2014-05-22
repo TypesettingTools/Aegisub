@@ -17,14 +17,10 @@
 #include "ass_karaoke.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
-#include "include/aegisub/context.h"
-#include "selection_controller.h"
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <wx/intl.h>
 
 std::string AssKaraoke::Syllable::GetText(bool k_tag) const {
 	std::string ret;

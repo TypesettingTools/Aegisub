@@ -27,23 +27,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_provider.cpp
-/// @brief Baseclass for audio providers
-/// @ingroup audio_input
-///
-
 #include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
 #include "factory_manager.h"
-#include "frame_main.h"
 #include "options.h"
 #include "utils.h"
 
-#include <libaegisub/background_runner.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/range/iterator_range.hpp>
 

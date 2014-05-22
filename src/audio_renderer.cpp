@@ -38,10 +38,7 @@
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
-#include <functional>
-
-#include <wx/bitmap.h>
-#include <wx/dcmemory.h>
+#include <wx/dc.h>
 
 namespace {
 	template<typename T>

@@ -39,12 +39,9 @@
 
 #include <libaegisub/split.h>
 
-#include <algorithm>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-#include <cctype>
-
 #include <wx/intl.h>
 
 AssStyle::AssStyle() {

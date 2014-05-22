@@ -35,8 +35,6 @@
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "project.h"
-#include "selection_controller.h"
-#include "utils.h"
 
 #include <algorithm>
 

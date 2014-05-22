@@ -12,17 +12,11 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file util.h
-/// @brief Public interface for general utilities.
-/// @ingroup libaegisub
-
 #include <libaegisub/time.h>
 
 #include <algorithm>
 #include <boost/range/irange.hpp>
-#include <cstdint>
 #include <string>
-#include <memory>
 
 struct tm;
 

@@ -36,12 +36,11 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "main.h"
-#include "subtitle_format.h"
 
 #include <libaegisub/signal.h>
 
 #include <algorithm>
-#include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm/transform.hpp>
 #include <vector>
 
 #include <wx/button.h>

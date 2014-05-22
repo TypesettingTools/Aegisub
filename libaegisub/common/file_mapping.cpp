@@ -20,7 +20,7 @@
 #include "libaegisub/make_unique.h"
 #include "libaegisub/util.h"
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <limits>
 

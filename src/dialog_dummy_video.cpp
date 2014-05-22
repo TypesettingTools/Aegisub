@@ -34,7 +34,6 @@
 #include <wx/string.h>
 #include <wx/textctrl.h>
 #include <wx/valgen.h>
-#include <wx/valnum.h>
 
 namespace {
 struct DialogDummyVideo final : wxDialog {

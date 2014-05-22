@@ -37,7 +37,6 @@
 #include "utils.h"
 
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/filesystem/path.hpp>

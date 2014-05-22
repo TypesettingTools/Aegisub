@@ -21,7 +21,6 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
-#include "ass_style_storage.h"
 #include "compat.h"
 #include "command/command.h"
 #include "frame_main.h"
@@ -31,13 +30,11 @@
 #include "selection_controller.h"
 #include "subtitle_format.h"
 #include "text_selection_controller.h"
-#include "utils.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/format.hpp>
 #include <wx/msgdlg.h>
 

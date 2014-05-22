@@ -43,10 +43,8 @@
 #include "../libresrc/libresrc.h"
 #include "../options.h"
 #include "../project.h"
-#include "../search_replace_engine.h"
 #include "../selection_controller.h"
 #include "../subs_controller.h"
-#include "../subs_edit_ctrl.h"
 #include "../text_selection_controller.h"
 #include "../utils.h"
 #include "../video_controller.h"
@@ -64,10 +62,12 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/sliced.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <wx/clipbrd.h>
 #include <wx/fontdlg.h>
+#include <wx/textentry.h>
 
 namespace {
 	using namespace boost::adaptors;

@@ -22,11 +22,10 @@
 #include "libaegisub/fs.h"
 #include "libaegisub/log.h"
 #include "libaegisub/make_unique.h"
-#include "libaegisub/path.h"
 #include "libaegisub/util.h"
 
-#include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
 
 namespace agi {
 	namespace io {

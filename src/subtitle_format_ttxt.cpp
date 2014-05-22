@@ -34,17 +34,14 @@
 
 #include "subtitle_format_ttxt.h"
 
-#include <wx/xml/xml.h>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
 #include "compat.h"
 #include "options.h"
 
-#include <libaegisub/path.h>
-
 #include <boost/range/adaptor/reversed.hpp>
+#include <wx/xml/xml.h>
 
 DEFINE_SIMPLE_EXCEPTION(TTXTParseError, SubtitleFormatParseError, "subtitle_io/parse/ttxt")
 
@@ -54,9 +51,7 @@ TTXTSubtitleFormat::TTXTSubtitleFormat()
 }
 
 std::vector<std::string> TTXTSubtitleFormat::GetReadWildcards() const {
-	std::vector<std::string> formats;
-	formats.push_back("ttxt");
-	return formats;
+	return {"ttxt"};
 }
 
 std::vector<std::string> TTXTSubtitleFormat::GetWriteWildcards() const {

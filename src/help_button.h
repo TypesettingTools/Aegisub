@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file help_button.h
-/// @see help_button.cpp
-/// @ingroup custom_control
-///
-
 #include <wx/button.h>
 
 class HelpButton final : public wxButton {

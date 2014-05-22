@@ -34,7 +34,6 @@
 #include "../help_button.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
-#include "../options.h"
 
 #include <libaegisub/make_unique.h>
 

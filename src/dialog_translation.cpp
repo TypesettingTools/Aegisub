@@ -26,7 +26,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "audio_controller.h"
 #include "command/command.h"
 #include "compat.h"
 #include "help_button.h"
@@ -35,7 +34,6 @@
 #include "project.h"
 #include "subs_edit_ctrl.h"
 #include "selection_controller.h"
-#include "utils.h"
 #include "video_controller.h"
 
 #include <libaegisub/make_unique.h>

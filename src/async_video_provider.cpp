@@ -20,14 +20,9 @@
 #include "ass_file.h"
 #include "export_fixstyle.h"
 #include "include/aegisub/subtitles_provider.h"
-#include "video_frame.h"
 #include "video_provider_manager.h"
 
 #include <libaegisub/dispatch.h>
-
-#include <condition_variable>
-#include <functional>
-#include <mutex>
 
 enum {
 	NEW_SUBS_FILE = -1,

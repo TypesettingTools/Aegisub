@@ -14,7 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <boost/range/iterator_range.hpp>
+#include <boost/range/iterator_range_core.hpp>
+#include <string>
 #include <vector>
 
 namespace agi {

@@ -16,18 +16,18 @@
 
 #pragma once
 
+#include "time_range.h"
+
 #include <libaegisub/signal.h>
 
 #include <memory>
 #include <vector>
-
 #include <wx/string.h>
 
 class AudioMarkerKeyframe;
 class Pen;
 class Project;
 class VideoController;
-class TimeRange;
 class VideoPositionMarker;
 class wxPen;
 
@@ -35,8 +35,6 @@ namespace agi {
 	class OptionValue;
 	struct Context;
 }
-
-#include "time_range.h"
 
 /// @class AudioMarker
 /// @brief A marker on the audio display

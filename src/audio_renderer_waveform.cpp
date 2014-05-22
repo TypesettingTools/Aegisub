@@ -27,22 +27,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_renderer_waveform.cpp
-/// @ingroup audio_ui
-///
-/// Render a waveform display of PCM audio data
-
 #include "audio_renderer_waveform.h"
+
+#include "audio_colorscheme.h"
+#include "include/aegisub/audio_provider.h"
+#include "options.h"
 
 #include <algorithm>
 
 #include <wx/dcmemory.h>
-
-#include "audio_colorscheme.h"
-#include "block_cache.h"
-#include "colorspace.h"
-#include "include/aegisub/audio_provider.h"
-#include "options.h"
 
 enum {
 	/// Only render the peaks

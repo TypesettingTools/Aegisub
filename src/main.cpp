@@ -37,7 +37,6 @@
 #include "command/command.h"
 #include "include/aegisub/hotkey.h"
 
-#include "ass_file.h"
 #include "auto4_base.h"
 #include "auto4_lua_factory.h"
 #include "compat.h"
@@ -51,14 +50,12 @@
 #include "options.h"
 #include "project.h"
 #include "subs_controller.h"
-#include "subtitle_format.h"
 #include "subtitles_provider_libass.h"
 #include "utils.h"
 #include "version.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
-#include <libaegisub/hotkey.h>
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>

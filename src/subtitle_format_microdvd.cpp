@@ -40,7 +40,6 @@
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
-#include "video_controller.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/util.h>
@@ -56,9 +55,7 @@ MicroDVDSubtitleFormat::MicroDVDSubtitleFormat()
 }
 
 std::vector<std::string> MicroDVDSubtitleFormat::GetReadWildcards() const {
-	std::vector<std::string> formats;
-	formats.push_back("sub");
-	return formats;
+	return {"sub"};
 }
 
 std::vector<std::string> MicroDVDSubtitleFormat::GetWriteWildcards() const {

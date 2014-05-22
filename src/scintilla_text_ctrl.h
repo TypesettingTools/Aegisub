@@ -27,14 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file scintilla_text_ctrl.h
-/// @see scintilla_text_ctrl.cpp
-/// @ingroup custom_control
-///
-
 #include <wx/stc/stc.h>
-
-#include <string>
 
 class ScintillaTextCtrl : public wxStyledTextCtrl {
 	wxString text;

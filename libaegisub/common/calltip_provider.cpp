@@ -18,8 +18,6 @@
 
 #include "libaegisub/ass/dialogue_parser.h"
 
-#include <boost/range.hpp>
-
 namespace {
 	struct proto_lit {
 		const char *name;

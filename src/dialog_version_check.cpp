@@ -43,16 +43,13 @@
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/scoped_ptr.h>
 
-#include <algorithm>
 #include <ctime>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/format.hpp>
 #include <functional>
-#include <memory>
 #include <mutex>
-#include <set>
 #include <vector>
 #include <wx/button.h>
 #include <wx/checkbox.h>

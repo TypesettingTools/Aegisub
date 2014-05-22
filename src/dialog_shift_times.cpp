@@ -39,9 +39,7 @@
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/writer.h>
 
-#include <algorithm>
 #include <boost/filesystem/path.hpp>
-#include <vector>
 #include <wx/dialog.h>
 #include <wx/listbox.h>
 #include <wx/radiobox.h>

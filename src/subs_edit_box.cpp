@@ -43,7 +43,6 @@
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "initial_line_state.h"
-#include "libresrc/libresrc.h"
 #include "options.h"
 #include "project.h"
 #include "placeholder_ctrl.h"

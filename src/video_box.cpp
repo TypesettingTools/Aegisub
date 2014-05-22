@@ -31,11 +31,9 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "command/command.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/toolbar.h"
-#include "libresrc/libresrc.h"
 #include "options.h"
 #include "project.h"
 #include "selection_controller.h"

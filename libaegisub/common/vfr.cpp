@@ -21,7 +21,6 @@
 #include "libaegisub/charset.h"
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
-#include "libaegisub/scoped_ptr.h"
 
 #include <algorithm>
 #include <boost/interprocess/streams/bufferstream.hpp>
@@ -30,7 +29,6 @@
 #include <functional>
 #include <iterator>
 #include <list>
-#include <numeric>
 
 namespace {
 

@@ -36,17 +36,12 @@
 #include "ffmpegsource_common.h"
 #include "include/aegisub/video_provider.h"
 
-#include "compat.h"
 #include "options.h"
 #include "utils.h"
-#include "video_controller.h"
 #include "video_frame.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/make_unique.h>
-
-#include <wx/choicdlg.h>
-#include <wx/msgdlg.h>
 
 namespace {
 /// @class FFmpegSourceVideoProvider

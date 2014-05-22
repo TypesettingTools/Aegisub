@@ -27,7 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "ass_style.h"
 #include "colorspace.h"
 #include "compat.h"
 #include "help_button.h"
@@ -50,7 +49,6 @@
 #include <wx/dcscreen.h>
 #include <wx/dialog.h>
 #include <wx/event.h>
-#include <wx/gbsizer.h>
 #include <wx/image.h>
 #include <wx/rawbmp.h>
 #include <wx/settings.h>

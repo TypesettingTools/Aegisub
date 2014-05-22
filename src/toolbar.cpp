@@ -20,18 +20,15 @@
 
 #include "command/command.h"
 #include "compat.h"
-#include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "retina_helper.h"
-#include "utils.h"
 
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 #include <libaegisub/signal.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>

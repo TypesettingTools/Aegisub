@@ -18,9 +18,9 @@
 
 #include "libaegisub/spellchecker.h"
 
-#include "iconv.h"
-
-#include <boost/locale/boundary.hpp>
+#include <boost/locale/boundary/index.hpp>
+#include <boost/locale/boundary/segment.hpp>
+#include <boost/locale/boundary/types.hpp>
 
 namespace {
 

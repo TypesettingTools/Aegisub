@@ -34,6 +34,8 @@
 
 #include "auto4_lua.h"
 
+#include "compat.h"
+
 #include <libaegisub/lua/utils.h>
 
 #include <wx/filedlg.h>

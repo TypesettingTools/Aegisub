@@ -43,8 +43,6 @@
 #include "project.h"
 #include "utils.h"
 
-#include <wx/clipbrd.h>
-#include <wx/dataobj.h>
 #include <wx/menu.h>
 #include <wx/valtext.h>
 

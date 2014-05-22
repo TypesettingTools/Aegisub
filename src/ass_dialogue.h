@@ -36,8 +36,6 @@
 #include "ass_override.h"
 #include "ass_time.h"
 
-#include <libaegisub/exception.h>
-
 #include <array>
 #include <boost/flyweight.hpp>
 #include <vector>

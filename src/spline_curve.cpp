@@ -36,7 +36,6 @@
 #include "utils.h"
 
 #include <limits>
-#include <numeric>
 
 SplineCurve::SplineCurve(Vector2D p1) : p1(std::move(p1)), type(POINT) { }
 SplineCurve::SplineCurve(Vector2D p1, Vector2D p2) : p1(std::move(p1)), p2(std::move(p2)), type(LINE) { }

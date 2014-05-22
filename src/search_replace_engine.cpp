@@ -24,7 +24,7 @@
 
 #include <libaegisub/util.h>
 
-#include <boost/locale.hpp>
+#include <boost/locale/conversion.hpp>
 
 #include <wx/msgdlg.h>
 

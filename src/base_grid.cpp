@@ -37,7 +37,6 @@
 #include "ass_file.h"
 #include "audio_box.h"
 #include "compat.h"
-#include "frame_main.h"
 #include "grid_column.h"
 #include "options.h"
 #include "project.h"
@@ -49,13 +48,8 @@
 #include <libaegisub/util.h>
 
 #include <algorithm>
-#include <boost/range/algorithm.hpp>
-#include <cmath>
-#include <iterator>
-#include <numeric>
 
 #include <wx/dcbuffer.h>
-#include <wx/kbdstate.h>
 #include <wx/menu.h>
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
@@ -63,10 +57,10 @@
 namespace {
 #ifdef __WXMSW__
 class PaintDC : public wxBufferedDC {
-    wxPaintDC dc;
+	wxPaintDC dc;
 
 public:
-    PaintDC(wxWindow *window) : dc(window) {
+	PaintDC(wxWindow *window) : dc(window) {
 		dc.SetLayoutDirection(wxLayout_LeftToRight);
 		Init(&dc, window->GetClientSize(), 0);
 		if (window->GetLayoutDirection() == wxLayout_RightToLeft) {
@@ -75,7 +69,7 @@ public:
 		}
 	}
 
-    ~PaintDC() {
+	~PaintDC() {
 		SetLayoutDirection(wxLayout_LeftToRight);
 		SetLogicalOrigin(0, 0);
 		UnMask();

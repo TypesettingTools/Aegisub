@@ -19,7 +19,6 @@
 #include "libaegisub/hotkey.h"
 
 #include "libaegisub/cajun/writer.h"
-#include "libaegisub/exception.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
@@ -27,7 +26,6 @@
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/map.hpp>
-#include <cmath>
 #include <tuple>
 
 namespace agi {

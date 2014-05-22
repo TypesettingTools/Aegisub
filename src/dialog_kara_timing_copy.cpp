@@ -36,17 +36,11 @@
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
-#include "selection_controller.h"
-#include "utils.h"
 
 #include <libaegisub/karaoke_matcher.h>
 
-#include <boost/algorithm/string/case_conv.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/locale/boundary.hpp>
-#include <boost/range/algorithm_ext.hpp>
 #include <deque>
-#include <list>
 #include <vector>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>

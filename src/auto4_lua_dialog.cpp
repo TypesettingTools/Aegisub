@@ -34,11 +34,9 @@
 
 #include "auto4_lua.h"
 
-#include "ass_style.h"
 #include "colour_button.h"
 #include "compat.h"
 #include "string_codec.h"
-#include "utils.h"
 #include "validators.h"
 
 #include <libaegisub/log.h>
@@ -46,24 +44,21 @@
 #include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/range/adaptors.hpp>
+#include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/tokenizer.hpp>
-#include <cassert>
 #include <cfloat>
 #include <unordered_map>
 
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/gbsizer.h>
 #include <wx/panel.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
-#include <wx/validate.h>
 #include <wx/valgen.h>
-#include <wx/valnum.h>
-#include <wx/window.h>
 
 using namespace agi::lua;
 namespace {

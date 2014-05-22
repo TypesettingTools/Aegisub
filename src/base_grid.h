@@ -29,7 +29,6 @@
 
 #include <libaegisub/signal.h>
 
-#include <array>
 #include <memory>
 #include <vector>
 #include <wx/window.h>

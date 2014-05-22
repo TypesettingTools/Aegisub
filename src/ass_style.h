@@ -27,17 +27,13 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_style.h
-/// @see ass_style.cpp
-/// @ingroup subs_storage
-///
-
 #include "ass_entry.h"
 
 #include <libaegisub/color.h>
 
 #include <array>
-#include <wx/arrstr.h>
+
+class wxArrayString;
 
 class AssStyle final : public AssEntry, public AssEntryListHook {
 	std::string data;

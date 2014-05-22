@@ -46,11 +46,9 @@
 #include "../project.h"
 #include "../selection_controller.h"
 #include "../utils.h"
-#include "../video_box.h"
 #include "../video_controller.h"
 #include "../video_display.h"
 #include "../video_frame.h"
-#include "../video_slider.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
@@ -61,7 +59,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/format.hpp>
-#include <wx/clipbrd.h>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 

@@ -27,23 +27,11 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file help_button.cpp
-/// @brief Push-button opening the help file at a specified section
-/// @ingroup custom_control
-///
-
 #include "help_button.h"
 
-#include "options.h"
-
 #include <libaegisub/exception.h>
-#include <libaegisub/path.h>
 
 #include <boost/container/flat_map.hpp>
-#include <boost/filesystem/path.hpp>
-#include <functional>
-
-#include <wx/filename.h>
 
 namespace {
 static boost::container::flat_map<wxString, wxString> pages;
@@ -78,7 +66,7 @@ void init_static() {
 HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position, wxSize size)
 : wxButton(parent, wxID_HELP, "", position, size)
 {
-	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, page));
+	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { OpenPage(page); });
 	init_static();
 	if (pages.find(page) == pages.end())
 		throw agi::InternalError("Invalid help page", nullptr);

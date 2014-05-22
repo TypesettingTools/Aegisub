@@ -22,7 +22,6 @@
 #include "libaegisub/cajun/visitor.h"
 
 #include <memory>
-#include <vector>
 
 namespace agi {
 

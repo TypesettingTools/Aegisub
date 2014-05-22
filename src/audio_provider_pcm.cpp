@@ -27,19 +27,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_provider_pcm.cpp
-/// @brief PCM WAV and WAV64 audio provider
-/// @ingroup audio_input
-///
-
 #include "include/aegisub/audio_provider.h"
 
 #include "audio_controller.h"
-#include "utils.h"
 
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
-#include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
 #include <vector>

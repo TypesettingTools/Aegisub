@@ -17,11 +17,9 @@
 #include "libaegisub/util.h"
 #include "libaegisub/util_osx.h"
 
-#include "libaegisub/exception.h"
-
 #include <boost/locale/boundary.hpp>
 #include <boost/locale/conversion.hpp>
-#include <boost/range/algorithm_ext.hpp>
+#include <boost/range/distance.hpp>
 #include <ctime>
 
 namespace {

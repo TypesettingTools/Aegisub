@@ -12,16 +12,10 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file vfr.h
-/// @brief Framerate handling of all sorts
-/// @ingroup libaegisub video_input
-
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include <cstdint>
+#include <vector>
 
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>

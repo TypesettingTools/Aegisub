@@ -27,15 +27,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subs_edit_box.h
-/// @see subs_edit_box.cpp
-/// @ingroup main_ui
-///
-
 #include <array>
 #include <boost/container/map.hpp>
 #include <boost/flyweight/flyweight_fwd.hpp>
-#include <memory>
 #include <vector>
 
 #include <wx/combobox.h>

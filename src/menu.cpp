@@ -28,6 +28,7 @@
 #include "main.h"
 #include "options.h"
 
+#include <libaegisub/cajun/reader.h>
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>

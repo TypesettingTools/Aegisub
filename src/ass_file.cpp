@@ -22,9 +22,6 @@
 #include "ass_style.h"
 #include "ass_style_storage.h"
 #include "options.h"
-#include "utils.h"
-
-#include <libaegisub/fs.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>

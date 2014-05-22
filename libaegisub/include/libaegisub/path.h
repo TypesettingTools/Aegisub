@@ -18,7 +18,6 @@
 /// @brief Common paths.
 /// @ingroup libaegisub
 
-#include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
 #include <boost/filesystem/path.hpp>

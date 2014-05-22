@@ -14,18 +14,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_timing_karaoke.cpp
-/// @brief Timing mode for karaoke
-/// @ingroup audio_ui
-///
-
 #include <libaegisub/signal.h>
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
 #include "audio_controller.h"
-#include "audio_renderer.h"
+#include "audio_marker.h"
+#include "audio_rendering_style.h"
 #include "audio_timing.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
@@ -39,6 +35,7 @@
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/sliced.hpp>
+#include <wx/intl.h>
 
 /// @class KaraokeMarker
 /// @brief AudioMarker implementation for AudioTimingControllerKaraoke

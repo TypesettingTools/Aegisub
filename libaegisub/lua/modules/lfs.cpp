@@ -16,7 +16,8 @@
 
 #include "libaegisub/lua/utils.h"
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/range/size.hpp>
 
 namespace {

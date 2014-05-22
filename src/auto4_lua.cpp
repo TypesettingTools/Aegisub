@@ -34,18 +34,15 @@
 
 #include "auto4_lua.h"
 
-#include "ass_attachment.h"
 #include "ass_dialogue.h"
-#include "ass_info.h"
 #include "ass_file.h"
+#include "ass_info.h"
 #include "ass_style.h"
 #include "async_video_provider.h"
 #include "auto4_lua_factory.h"
 #include "command/command.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
-#include "include/aegisub/video_provider.h"
-#include "main.h"
 #include "options.h"
 #include "project.h"
 #include "selection_controller.h"
@@ -53,7 +50,6 @@
 #include "video_controller.h"
 #include "utils.h"
 
-#include <libaegisub/access.h>
 #include <libaegisub/lua/modules.h>
 #include <libaegisub/lua/script_reader.h>
 #include <libaegisub/lua/utils.h>
@@ -67,14 +63,10 @@
 #include <boost/format.hpp>
 #include <boost/scope_exit.hpp>
 #include <cassert>
-#include <cstdint>
 #include <mutex>
 #include <wx/clipbrd.h>
-#include <wx/filefn.h>
-#include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
-#include <wx/window.h>
 
 using namespace agi::lua;
 using namespace Automation4;

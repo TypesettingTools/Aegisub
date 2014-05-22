@@ -45,7 +45,7 @@
 #include <algorithm>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/algorithm.hpp>
-#include <boost/range/algorithm_ext.hpp>
+#include <boost/range/algorithm_ext/push_back.hpp>
 #include <functional>
 #include <vector>
 #include <wx/button.h>
