@@ -50,10 +50,11 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "project.h"
+#include "subs_controller.h"
 #include "subtitle_format.h"
 #include "subtitles_provider_libass.h"
-#include "version.h"
 #include "utils.h"
+#include "version.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
