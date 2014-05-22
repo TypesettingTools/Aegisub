@@ -35,7 +35,6 @@
 ; This file declares all installables related to Aegisub Automation
 
 [Files]
-DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\clean-info.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\cleantags-autoload.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\kara-templater.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly
 DestDir: {app}\automation\autoload; Source: ..\..\automation\autoload\karaoke-auto-leadin.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly

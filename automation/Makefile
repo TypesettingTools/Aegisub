@@ -20,7 +20,6 @@ test: $(PROGRAM)
 
 # share/
 DATA_AUTOMATION += \
-	autoload/clean-info.lua \
 	autoload/cleantags-autoload.lua \
 	autoload/kara-templater.lua \
 	autoload/karaoke-auto-leadin.lua \

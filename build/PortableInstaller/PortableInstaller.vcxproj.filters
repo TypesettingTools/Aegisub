@@ -34,9 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <RarContents Include="$(AegisubSourceBase)automation\autoload\clean-info.lua">
-      <Filter>Automation\Autoload</Filter>
-    </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\autoload\cleantags-autoload.lua">
       <Filter>Automation\Autoload</Filter>
     </RarContents>
