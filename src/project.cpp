@@ -393,8 +393,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".srt",
 		".ssa",
 		".sub",
-		".ttxt",
-		".txt"
+		".ttxt"
 	};
 
 	// Audio formats
@@ -419,13 +418,36 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		});
 	};
 
-	agi::fs::path audio, video, subs;
+	agi::fs::path audio, video, subs, timecodes, keyframes;
 	for (auto file : files) {
 		if (file.is_relative()) file = absolute(file);
 		if (!agi::fs::FileExists(file)) continue;
 
 		auto ext = file.extension().string();
 		boost::to_lower(ext);
+
+		// Could be subtitles, keyframes or timecodes, so try loading as each
+		if (ext == ".txt" || ext == ".log") {
+			if (timecodes.empty()) {
+				try {
+					DoLoadTimecodes(file);
+					timecodes = file;
+					continue;
+				} catch (...) { }
+			}
+
+			if (keyframes.empty()) {
+				try {
+					DoLoadKeyframes(file);
+					keyframes = file;
+					continue;
+				} catch (...) { }
+			}
+
+			if (subs.empty() && ext != ".log")
+				subs = file;
+			continue;
+		}
 
 		if (subs.empty() && search(std::begin(subsList), std::end(subsList), ext))
 			subs = file;
@@ -437,12 +459,24 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 
 	if (!subs.empty())
 		DoLoadSubtitles(subs);
+
+	// Loading video will clear the audio file script header, so make sure we
+	// end up loading the audio if the newly loaded subs has some
+	if (!video.empty() && audio.empty() && !context->ass->Properties.audio_file.empty())
+		audio = config::path->MakeAbsolute(context->ass->Properties.audio_file, "?script");
+
 	if (!video.empty()) {
-		auto rel_audio_file = context->ass->Properties.audio_file;
 		DoLoadVideo(video);
-		if (!rel_audio_file.empty() && context->ass->Properties.audio_file.empty())
-			context->ass->Properties.audio_file.swap(rel_audio_file);
+
+		// We loaded these earlier, but loading video unloaded them
+		// Non-Do version of Load in case they've vanished or changed between
+		// then and now
+		if (!timecodes.empty())
+			LoadTimecodes(timecodes);
+		if (!keyframes.empty())
+			LoadKeyframes(keyframes);
 	}
+
 	if (!audio.empty())
 		DoLoadAudio(audio, false);
 	else if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)
