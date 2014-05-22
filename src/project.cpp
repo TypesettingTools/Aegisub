@@ -154,7 +154,26 @@ void Project::LoadUnloadFiles() {
 		return;
 
 	if (load_linked == 2) {
-		if (wxMessageBox(_("Do you want to load/unload the associated files?"), _("(Un)Load files?"), wxYES_NO | wxCENTRE, context->parent) != wxYES)
+		wxString str = _("Do you want to load/unload the associated files?");
+		str += "\n";
+
+		auto append_file = [&](agi::fs::path const& p, wxString const& unload, wxString const& load) {
+			if (p.empty())
+				str += "\n" + unload;
+			else
+				str += "\n" + wxString::Format(load, p.wstring());
+		};
+
+		if (audio != audio_file)
+			append_file(audio, _("Unload audio"), _("Load audio file: %s"));
+		if (video != video_file)
+			append_file(video, _("Unload video"), _("Load video file: %s"));
+		if (timecodes != timecodes_file)
+			append_file(timecodes, _("Unload timecodes"), _("Load timecodes file: %s"));
+		if (keyframes != keyframes_file)
+			append_file(keyframes, _("Unload keyframes"), _("Load keyframes file: %s"));
+
+		if (wxMessageBox(str, _("(Un)Load files?"), wxYES_NO | wxCENTRE, context->parent) != wxYES)
 			return;
 	}
 
