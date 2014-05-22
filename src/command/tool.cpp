@@ -32,16 +32,10 @@
 #include "command.h"
 
 #include "../compat.h"
-#include "../dialog_export.h"
-#include "../dialog_fonts_collector.h"
-#include "../dialog_kara_timing_copy.h"
 #include "../dialog_manager.h"
-#include "../dialog_resample.h"
-#include "../dialog_selection.h"
-#include "../dialog_style_manager.h"
 #include "../dialog_styling_assistant.h"
-#include "../dialog_timing_processor.h"
 #include "../dialog_translation.h"
+#include "../dialogs.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
@@ -79,7 +73,7 @@ struct tool_export final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogExport(c).ShowModal();
+		ShowExportDialog(c);
 	}
 };
 
@@ -91,7 +85,7 @@ struct tool_font_collector final : public Command {
 	STR_HELP("Open fonts collector")
 
 	void operator()(agi::Context *c) override {
-		c->dialog->Show<DialogFontsCollector>(c);
+		ShowFontsCollectorDialog(c);
 	}
 };
 
@@ -103,7 +97,7 @@ struct tool_line_select final : public Command {
 	STR_HELP("Select lines based on defined criteria")
 
 	void operator()(agi::Context *c) override {
-		c->dialog->Show<DialogSelection>(c);
+		ShowSelectLinesDialog(c);
 	}
 };
 
@@ -117,7 +111,7 @@ struct tool_resampleres final : public Command {
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		ResampleSettings settings;
-		if (DialogResample(c, settings).ShowModal() == wxID_OK)
+		if (PromptForResampleSettings(c, settings))
 			ResampleResolution(c->ass.get(), settings);
 	}
 };
@@ -172,7 +166,7 @@ struct tool_style_manager final : public Command {
 	STR_HELP("Open the styles manager")
 
 	void operator()(agi::Context *c) override {
-		c->dialog->Show<DialogStyleManager>(c);
+		ShowStyleManagerDialog(c);
 	}
 };
 
@@ -184,7 +178,7 @@ struct tool_time_kanji final : public Command {
 	STR_HELP("Open the Kanji timer copier")
 
 	void operator()(agi::Context *c) override {
-		DialogKanjiTimer(c).ShowModal();
+		ShowKanjiTimerDialog(c);
 	}
 };
 
@@ -196,7 +190,7 @@ struct tool_time_postprocess final : public Command {
 	STR_HELP("Post-process the subtitle timing to add lead-ins and lead-outs, snap timing to scene changes, etc.")
 
 	void operator()(agi::Context *c) override {
-		DialogTimingProcessor(c).ShowModal();
+		ShowTimingProcessorDialog(c);
 	}
 };
 

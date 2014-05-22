@@ -14,16 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_spellchecker.cpp
-/// @brief Spell checker dialogue box
-/// @ingroup spelling
-///
-
-#include "dialog_spellchecker.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "dialog_manager.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
@@ -39,14 +33,73 @@
 #include <libaegisub/spellchecker.h>
 
 #include <boost/locale/conversion.hpp>
+#include <map>
+#include <memory>
+#include <set>
+#include <wx/arrstr.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+
+namespace {
+class DialogSpellChecker final : public wxDialog {
+	agi::Context *context; ///< The project context
+	std::unique_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine
+
+	/// Words which the user has indicated should always be corrected
+	std::map<std::string, std::string> auto_replace;
+
+	/// Words which the user has temporarily added to the dictionary
+	std::set<std::string> auto_ignore;
+
+	/// Dictionaries available
+	wxArrayString dictionary_lang_codes;
+
+	int word_start; ///< Start index of the current misspelled word
+	int word_len;   ///< Length of the current misspelled word
+
+	wxTextCtrl *orig_word;    ///< The word being corrected
+	wxTextCtrl *replace_word; ///< The replacement that will be used if "Replace" is clicked
+	wxListBox *suggest_list;  ///< The list of suggested replacements
+
+	wxComboBox *language;      ///< The list of available languages
+	wxButton *add_button;      ///< Add word to currently active dictionary
+	wxButton *remove_button;   ///< Remove word from currently active dictionary
+
+	AssDialogue *start_line = nullptr;  ///< The first line checked
+	AssDialogue *active_line = nullptr; ///< The most recently checked line
+	bool has_looped = false;            ///< Has the search already looped from the end to beginning?
+
+	/// Find the next misspelled word and close the dialog if there are none
+	/// @return Are there any more misspelled words?
+	bool FindNext();
+
+	/// Check a single line for misspellings
+	/// @param active_line Line to check
+	/// @param start_pos Index in the line to start at
+	/// @param[in,out] commit_id Commit id for coalescing autoreplace commits
+	/// @return Was a misspelling found?
+	bool CheckLine(AssDialogue *active_line, int start_pos, int *commit_id);
+
+	/// Set the current word to be corrected
+	void SetWord(std::string const& word);
+	/// Correct the currently selected word
+	void Replace();
+
+	void OnChangeLanguage(wxCommandEvent&);
+	void OnChangeSuggestion(wxCommandEvent&);
+
+	void OnReplace(wxCommandEvent&);
+
+public:
+	DialogSpellChecker(agi::Context *context);
+};
 
 DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 : wxDialog(context->parent, -1, _("Spell Checker"))
@@ -174,9 +227,6 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 
 	if (FindNext())
 		Show();
-}
-
-DialogSpellChecker::~DialogSpellChecker() {
 }
 
 void DialogSpellChecker::OnReplace(wxCommandEvent&) {
@@ -309,4 +359,9 @@ void DialogSpellChecker::SetWord(std::string const& word) {
 	context->textSelectionController->SetInsertionPoint(word_start + word_len);
 
 	add_button->Enable(spellchecker->CanAddWord(word));
+}
+}
+
+void ShowSpellcheckerDialog(agi::Context *c) {
+	c->dialog->Show<DialogSpellChecker>(c);
 }

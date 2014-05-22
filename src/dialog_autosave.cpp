@@ -14,24 +14,51 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "dialog_autosave.h"
-
 #include "compat.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 
 #include <libaegisub/path.h>
 
+#include <cstdint>
 #include <boost/range/adaptor/map.hpp>
-
 #include <map>
-
+#include <string>
+#include <vector>
 #include <wx/button.h>
+#include <wx/dialog.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 #include <wx/statbox.h>
+#include <wx/string.h>
+
+namespace {
+struct Version {
+	wxString filename;
+	wxDateTime date;
+	wxString display;
+};
+
+struct AutosaveFile {
+	wxString name;
+	std::vector<Version> versions;
+};
+
+class DialogAutosave final : public wxDialog {
+	std::vector<AutosaveFile> files;
+
+	wxListBox *file_list;
+	wxListBox *version_list;
+
+	void Populate(std::map<wxString, AutosaveFile> &files_map, std::string const& path, wxString const& filter, wxString const& name_fmt);
+	void OnSelectFile(wxCommandEvent&);
+
+public:
+	DialogAutosave(wxWindow *parent);
+	std::string ChosenFile() const;
+};
 
 DialogAutosave::DialogAutosave(wxWindow *parent)
 : wxDialog(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
@@ -137,4 +164,12 @@ std::string DialogAutosave::ChosenFile() const {
 	if (sel_version < 0) return "";
 
 	return from_wx(files[sel_file].versions[sel_version].filename);
+}
+}
+
+std::string PickAutosaveFile(wxWindow *parent) {
+	DialogAutosave dialog(parent);
+	if (dialog.ShowModal() == wxID_OK)
+		return dialog.ChosenFile();
+	return "";
 }

@@ -28,13 +28,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_kara_timing_copy.cpp
-/// @brief Karaoke timing copier dialogue box and logic
-/// @ingroup tools_ui kara_timing_copy
-///
-
-#include "dialog_kara_timing_copy.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
@@ -53,10 +46,12 @@
 #include <boost/locale/boundary.hpp>
 #include <boost/range/algorithm_ext.hpp>
 #include <deque>
-
+#include <list>
+#include <vector>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/dcclient.h>
+#include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include <wx/msgdlg.h>
 #include <wx/settings.h>
@@ -64,6 +59,7 @@
 #include <wx/stattext.h>
 #include <wx/string.h>
 
+namespace {
 #define TEXT_LABEL_SOURCE _("Source: ")
 #define TEXT_LABEL_DEST _("Dest: ")
 
@@ -443,6 +439,39 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 	return true;
 }
 
+class DialogKanjiTimer final : public wxDialog {
+	AssFile *subs;
+
+	KaraokeLineMatchDisplay *display;
+
+	wxComboBox *SourceStyle, *DestStyle;
+	wxCheckBox *Interpolate;
+
+	std::vector<std::pair<AssDialogue*, std::string>> LinesToChange;
+
+	AssDialogue *currentSourceLine = nullptr;
+	AssDialogue *currentDestinationLine = nullptr;
+
+	void OnClose(wxCommandEvent &event);
+	void OnStart(wxCommandEvent &event);
+	void OnLink(wxCommandEvent &event);
+	void OnUnlink(wxCommandEvent &event);
+	void OnSkipSource(wxCommandEvent &event);
+	void OnSkipDest(wxCommandEvent &event);
+	void OnGoBack(wxCommandEvent &event);
+	void OnAccept(wxCommandEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
+
+	void ResetForNewLine();
+	void TryAutoMatch();
+
+	AssDialogue *FindNextStyleMatch(AssDialogue *search_from, const std::string &search_style);
+	AssDialogue *FindPrevStyleMatch(AssDialogue *search_from, const std::string &search_style);
+
+public:
+	DialogKanjiTimer(agi::Context *context);
+};
+
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 : wxDialog(c->parent, -1, _("Kanji timing"))
 , subs(c->ass.get())
@@ -684,4 +713,9 @@ AssDialogue *DialogKanjiTimer::FindPrevStyleMatch(AssDialogue *search_from, cons
 {
 	if (!search_from) return search_from;
 	return find_next(EntryList<AssDialogue>::reverse_iterator(subs->iterator_to(*search_from)), subs->Events.rend(), search_style);
+}
+}
+
+void ShowKanjiTimerDialog(agi::Context *c) {
+	DialogKanjiTimer(c).ShowModal();
 }

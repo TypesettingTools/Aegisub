@@ -27,14 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_log.cpp
-/// @brief Log window.
-/// @ingroup libaegisub
-///
-
-#include "dialog_log.h"
-
 #include "compat.h"
+#include "dialog_manager.h"
 #include "include/aegisub/context.h"
 
 #include <libaegisub/dispatch.h>
@@ -44,12 +38,13 @@
 #include <ctime>
 #include <functional>
 #include <string>
-
 #include <wx/button.h>
+#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
+namespace {
 class EmitLog final : public agi::log::Emitter {
 	wxTextCtrl *text_ctrl;
 public:
@@ -93,6 +88,14 @@ public:
 	}
 };
 
+class LogWindow : public wxDialog {
+	agi::log::Emitter *emit_log;
+
+public:
+	LogWindow(agi::Context *c);
+	~LogWindow();
+};
+
 LogWindow::LogWindow(agi::Context *c)
 : wxDialog(c->parent, -1, _("Log window"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER)
 {
@@ -109,4 +112,9 @@ LogWindow::LogWindow(agi::Context *c)
 
 LogWindow::~LogWindow() {
 	agi::log::log->Unsubscribe(emit_log);
+}
+}
+
+void ShowLogWindow(agi::Context *c) {
+	c->dialog->Show<LogWindow>(c);
 }

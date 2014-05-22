@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "dialog_video_properties.h"
-
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "options.h"

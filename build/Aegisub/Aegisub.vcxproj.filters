@@ -219,18 +219,6 @@
     <ClInclude Include="$(SrcDir)fft.h">
       <Filter>Audio</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_attachments.h">
-      <Filter>Features\Attachments</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_jumpto.h">
-      <Filter>Video\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_video_details.h">
-      <Filter>Video\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_style_manager.h">
-      <Filter>Features\Style editor</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_style_editor.h">
       <Filter>Features\Style editor</Filter>
     </ClInclude>
@@ -240,17 +228,8 @@
     <ClInclude Include="$(SrcDir)font_file_lister_fontconfig.h">
       <Filter>Features\Font collector</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_fonts_collector.h">
-      <Filter>Features\Font collector</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_dummy_video.h">
-      <Filter>Video\UI</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_detached_video.h">
       <Filter>Video\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_export.h">
-      <Filter>Features\Export</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_export_ebu3264.h">
       <Filter>Features\Export</Filter>
@@ -267,26 +246,11 @@
     <ClInclude Include="$(SrcDir)auto4_lua_factory.h">
       <Filter>Automation\Lua</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_automation.h">
-      <Filter>Automation\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_paste_over.h">
-      <Filter>Features\Paste Over</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_shift_times.h">
-      <Filter>Features\Shift Times</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_translation.h">
       <Filter>Features\Translation Assistant</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)colorspace.h">
       <Filter>Features\Colour picker</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_colorpicker.h">
-      <Filter>Features\Colour picker</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_kara_timing_copy.h">
-      <Filter>Features\Karaoke copier</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)gl_wrap.h">
       <Filter>Video\UI</Filter>
@@ -324,29 +288,14 @@
     <ClInclude Include="$(SrcDir)subtitle_format_ttxt.h">
       <Filter>Subtitle formats</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_spellchecker.h">
-      <Filter>Features\Spell checker</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)spellchecker_hunspell.h">
       <Filter>Features\Spell checker</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)thesaurus.h">
       <Filter>Features\Thesaurus</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_resample.h">
-      <Filter>Features\Resolution resampler</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_text_import.h">
-      <Filter>Features\Import</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_timing_processor.h">
-      <Filter>Features\Timing post-processor</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_styling_assistant.h">
       <Filter>Features\Styling assistant</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_version_check.h">
-      <Filter>Features\Update checker</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)video_controller.h">
       <Filter>Video</Filter>
@@ -510,17 +459,8 @@
     <ClInclude Include="$(SrcDir)version.h">
       <Filter>Features\About box</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_about.h">
-      <Filter>Features\About box</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_selection.h">
-      <Filter>Features\Conditional select lines</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_search_replace.h">
       <Filter>Features\Search-replace</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_selected_choices.h">
-      <Filter>Utilities\UI utilities</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_progress.h">
       <Filter>Utilities\UI utilities</Filter>
@@ -528,17 +468,11 @@
     <ClInclude Include="$(SrcDir)persist_location.h">
       <Filter>Utilities\UI utilities</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_log.h">
-      <Filter>Utilities\Logging</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)crash_writer.h">
       <Filter>Utilities\Logging</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)utils.h">
       <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_properties.h">
-      <Filter>Features\File properties</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)ass_karaoke.h">
       <Filter>ASS</Filter>
@@ -591,9 +525,6 @@
     <ClInclude Include="$(SrcDir)placeholder_ctrl.h">
       <Filter>Controls</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_autosave.h">
-      <Filter>Features\Autosave</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)ass_info.h">
       <Filter>ASS</Filter>
     </ClInclude>
@@ -618,14 +549,14 @@
     <ClInclude Include="$(SrcDir)subtitle_format_ssa.h">
       <Filter>Subtitle formats</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)dialog_video_properties.h">
-      <Filter>Features\Resolution resampler</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)async_video_provider.h">
       <Filter>Video\Providers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)project.h">
       <Filter>Main UI</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)dialogs.h">
+      <Filter>Features</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

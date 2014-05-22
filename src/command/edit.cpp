@@ -36,9 +36,8 @@
 #include "../ass_karaoke.h"
 #include "../ass_style.h"
 #include "../compat.h"
-#include "../dialog_colorpicker.h"
-#include "../dialog_paste_over.h"
 #include "../dialog_search_replace.h"
+#include "../dialogs.h"
 #include "../include/aegisub/context.h"
 #include "../initial_line_state.h"
 #include "../libresrc/libresrc.h"
@@ -138,7 +137,7 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 
 AssDialogue *paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, AssDialogue *new_line, AssDialogue *old_line) {
 	if (pasteOverOptions.empty()) {
-		if (DialogPasteOver(parent).ShowModal()) return nullptr;
+		if (!ShowPasteOverDialog(parent)) return nullptr;
 		pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
 	}
 

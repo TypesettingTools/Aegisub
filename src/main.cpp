@@ -42,7 +42,7 @@
 #include "auto4_lua_factory.h"
 #include "compat.h"
 #include "crash_writer.h"
-#include "dialog_version_check.h"
+#include "dialogs.h"
 #include "export_fixstyle.h"
 #include "export_framerate.h"
 #include "frame_main.h"

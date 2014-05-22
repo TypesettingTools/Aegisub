@@ -17,7 +17,7 @@
 #include "colour_button.h"
 
 #include "compat.h"
-#include "dialog_colorpicker.h"
+#include "dialogs.h"
 
 #include <boost/gil/gil_all.hpp>
 

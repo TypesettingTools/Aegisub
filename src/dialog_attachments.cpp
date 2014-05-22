@@ -27,19 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_attachments.cpp
-/// @brief Manage files attached to the subtitle file
-/// @ingroup tools_ui
-///
-
-#include "dialog_attachments.h"
-
-#include <wx/button.h>
-#include <wx/filedlg.h>
-#include <wx/dirdlg.h>
-#include <wx/listctrl.h>
-#include <wx/sizer.h>
-
 #include "ass_attachment.h"
 #include "ass_file.h"
 #include "compat.h"
@@ -47,6 +34,34 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "utils.h"
+
+#include <wx/button.h>
+#include <wx/dialog.h>
+#include <wx/filedlg.h>
+#include <wx/dirdlg.h>
+#include <wx/listctrl.h>
+#include <wx/sizer.h>
+
+namespace {
+class DialogAttachments final : public wxDialog {
+	AssFile *ass;
+
+	wxListView *listView;
+	wxButton *extractButton;
+	wxButton *deleteButton;
+
+	void OnAttachFont(wxCommandEvent &event);
+	void OnAttachGraphics(wxCommandEvent &event);
+	void OnExtract(wxCommandEvent &event);
+	void OnDelete(wxCommandEvent &event);
+	void OnListClick(wxListEvent &event);
+
+	void UpdateList();
+	void AttachFile(wxFileDialog &diag, wxString const& commit_msg);
+
+public:
+	DialogAttachments(wxWindow *parent, AssFile *ass);
+};
 
 DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 : wxDialog(parent, -1, _("Attachment List"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
@@ -181,4 +196,9 @@ void DialogAttachments::OnListClick(wxListEvent &) {
 	bool hasSel = listView->GetFirstSelected() != -1;
 	extractButton->Enable(hasSel);
 	deleteButton->Enable(hasSel);
+}
+}
+
+void ShowAttachmentsDialog(wxWindow *parent, AssFile *file) {
+	DialogAttachments(parent, file).ShowModal();
 }

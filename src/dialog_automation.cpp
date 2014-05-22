@@ -27,16 +27,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_automation.cpp
-/// @brief Manage loaded Automation scripts
-/// @ingroup secondary_ui
-///
-
-#include "dialog_automation.h"
-
 #include "auto4_base.h"
 #include "compat.h"
 #include "command/command.h"
+#include "dialog_manager.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -44,15 +38,70 @@
 #include "main.h"
 #include "subtitle_format.h"
 
+#include <libaegisub/signal.h>
+
 #include <algorithm>
 #include <boost/range/algorithm.hpp>
+#include <vector>
 
 #include <wx/button.h>
+#include <wx/dialog.h>
 #include <wx/filedlg.h>
 #include <wx/listctrl.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
+
+namespace {
+/// Struct to attach a flag for global/local to scripts
+struct ExtraScriptInfo {
+	Automation4::Script *script;
+	bool is_global;
+};
+
+class DialogAutomation final : public wxDialog {
+	agi::Context *context;
+
+	/// Currently loaded scripts
+	std::vector<ExtraScriptInfo> script_info;
+
+	/// File-local script manager
+	Automation4::ScriptManager *local_manager;
+
+	/// Listener for external changes to the local scripts
+	agi::signal::Connection local_scripts_changed;
+
+	/// Global script manager
+	Automation4::ScriptManager *global_manager;
+
+	/// Listener for external changes to the global scripts
+	agi::signal::Connection global_scripts_changed;
+
+
+	/// List of loaded scripts
+	wxListView *list;
+
+	/// Unload a local script
+	wxButton *remove_button;
+
+	/// Reload a script
+	wxButton *reload_button;
+
+	void RebuildList();
+	void AddScript(Automation4::Script *script, bool is_global);
+	void SetScriptInfo(int i, Automation4::Script *script);
+	void UpdateDisplay();
+
+	void OnAdd(wxCommandEvent &);
+	void OnRemove(wxCommandEvent &);
+	void OnReload(wxCommandEvent &);
+
+	void OnInfo(wxCommandEvent &);
+	void OnReloadAutoload(wxCommandEvent &);
+
+public:
+	DialogAutomation(agi::Context *context);
+};
 
 DialogAutomation::DialogAutomation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Automation Manager"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
@@ -260,4 +309,9 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 void DialogAutomation::OnReloadAutoload(wxCommandEvent &)
 {
 	global_manager->Reload();
+}
+}
+
+void ShowAutomationDialog(agi::Context *c) {
+	c->dialog->Show<DialogAutomation>(c);
 }

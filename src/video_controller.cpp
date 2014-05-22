@@ -35,7 +35,7 @@
 #include "audio_controller.h"
 #include "compat.h"
 #include "dialog_progress.h"
-#include "dialog_video_properties.h"
+#include "dialogs.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"

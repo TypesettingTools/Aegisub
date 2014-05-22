@@ -11,17 +11,18 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_manager.h
-/// @brief Manager for dialogs
-/// @ingroup utility
+#include "utils.h"
+
+#include <libaegisub/exception.h>
 
 #include <map>
 #include <typeinfo>
-
 #include <wx/dialog.h>
 
-#include "utils.h"
+namespace agi { struct Context; }
 
 /// @brief A manager for dialogs
 ///

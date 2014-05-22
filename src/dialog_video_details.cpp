@@ -27,13 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_video_details.cpp
-/// @brief Video Details dialogue box
-/// @ingroup secondary_ui
-///
-
-#include "dialog_video_details.h"
-
 #include "ass_time.h"
 #include "async_video_provider.h"
 #include "compat.h"
@@ -41,9 +34,17 @@
 #include "project.h"
 
 #include <boost/rational.hpp>
+#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+
+namespace {
+/// @class DialogVideoDetails
+/// @brief Display information about the video in a dialog
+struct DialogVideoDetails final : wxDialog {
+	DialogVideoDetails(agi::Context *c);
+};
 
 DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 : wxDialog(c->parent , -1, _("Video Details"))
@@ -75,4 +76,9 @@ DialogVideoDetails::DialogVideoDetails(agi::Context *c)
 	SetSizerAndFit(main_sizer);
 
 	CenterOnParent();
+}
+}
+
+void ShowVideoDetailsDialog(agi::Context *c) {
+	DialogVideoDetails(c).ShowModal();
 }

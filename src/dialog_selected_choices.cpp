@@ -14,16 +14,21 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_selected_choices.cpp
-/// @brief wxMultiChoiceDialog with Select All and Select None
-/// @ingroup
-
-#include "dialog_selected_choices.h"
-
 #include <numeric>
 #include <wx/button.h>
+#include <wx/choicdlg.h>
 #include <wx/listbox.h>
 #include <wx/sizer.h>
+
+namespace {
+/// @class SelectedChoicesDialog
+/// @brief wxMultiChoiceDialog with Select All and Select None
+class SelectedChoicesDialog final : public wxMultiChoiceDialog {
+	void SelectAll(wxCommandEvent&);
+
+public:
+	SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices);
+};
 
 SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices) {
 	Create(parent, message, caption, choices);
@@ -46,6 +51,7 @@ void SelectedChoicesDialog::SelectAll(wxCommandEvent&) {
 	wxArrayInt sel(m_listbox->GetCount());
 	std::iota(sel.begin(), sel.end(), 0);
 	SetSelections(sel);
+}
 }
 
 int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const& message, wxString const& caption, wxArrayString const& choices) {

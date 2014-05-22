@@ -36,8 +36,7 @@
 #include "../async_video_provider.h"
 #include "../audio_controller.h"
 #include "../audio_timing.h"
-#include "../dialog_manager.h"
-#include "../dialog_shift_times.h"
+#include "../dialogs.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
@@ -156,7 +155,7 @@ struct time_shift final : public Command {
 	STR_HELP("Shift subtitles by time or frames")
 
 	void operator()(agi::Context *c) override {
-		c->dialog->Show<DialogShiftTimes>(c);
+		ShowShiftTimesDialog(c);
 	}
 };
 

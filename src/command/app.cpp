@@ -37,11 +37,9 @@
 #include <libaegisub/make_unique.h>
 
 #include "../compat.h"
-#include "../dialog_about.h"
 #include "../dialog_detached_video.h"
-#include "../dialog_log.h"
 #include "../dialog_manager.h"
-#include "../dialog_version_check.h"
+#include "../dialogs.h"
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
@@ -62,7 +60,7 @@ struct app_about final : public Command {
 	STR_HELP("About Aegisub")
 
 	void operator()(agi::Context *c) override {
-		AboutScreen(c->parent).ShowModal();
+		ShowAboutDialog(c->parent);
 	}
 };
 
@@ -186,7 +184,7 @@ struct app_log final : public Command {
 	STR_HELP("View the event log")
 
 	void operator()(agi::Context *c) override {
-		c->dialog->Show<LogWindow>(c);
+		ShowLogWindow(c);
 	}
 };
 

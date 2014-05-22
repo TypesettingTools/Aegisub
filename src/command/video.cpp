@@ -36,10 +36,8 @@
 #include "../async_video_provider.h"
 #include "../compat.h"
 #include "../dialog_detached_video.h"
-#include "../dialog_dummy_video.h"
-#include "../dialog_jumpto.h"
 #include "../dialog_manager.h"
-#include "../dialog_video_details.h"
+#include "../dialogs.h"
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../include/aegisub/subtitles_provider.h"
@@ -270,7 +268,7 @@ struct video_details final : public validator_video_loaded {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogVideoDetails(c).ShowModal();
+		ShowVideoDetailsDialog(c);
 	}
 };
 
@@ -529,7 +527,7 @@ struct video_jump final : public validator_video_loaded {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogJumpTo(c).ShowModal();
+		ShowJumpToDialog(c);
 		c->videoSlider->SetFocus();
 	}
 };
@@ -584,7 +582,7 @@ struct video_open_dummy final : public Command {
 	STR_HELP("Open a placeholder video clip with solid color")
 
 	void operator()(agi::Context *c) override {
-		std::string fn = DialogDummyVideo::CreateDummyVideo(c->parent);
+		std::string fn = CreateDummyVideo(c->parent);
 		if (!fn.empty())
 			c->project->LoadVideo(fn);
 	}

@@ -27,13 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_jumpto.cpp
-/// @brief Dialogue box to enter a time to seek video to
-/// @ingroup secondary_ui
-///
-
-#include "dialog_jumpto.h"
-
 #include "ass_time.h"
 #include "async_video_provider.h"
 #include "include/aegisub/context.h"
@@ -44,9 +37,30 @@
 #include "video_controller.h"
 
 #include <wx/button.h>
+#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+
+namespace {
+class DialogJumpTo final : public wxDialog {
+	agi::Context *c;       ///< Project context
+	long jumpframe;        ///< Target frame to jump to
+	TimeEdit *JumpTime;    ///< Target time edit control
+	wxTextCtrl *JumpFrame; ///< Target frame edit control
+
+	/// Enter/OK button handler
+	void OnOK(wxCommandEvent &event);
+	/// Update target frame on target time changed
+	void OnEditTime(wxCommandEvent &event);
+	/// Update target time on target frame changed
+	void OnEditFrame(wxCommandEvent &event);
+	/// Dialog initializer to set default focus and selection
+	void OnInitDialog(wxInitDialogEvent&);
+
+public:
+	DialogJumpTo(agi::Context *c);
+};
 
 DialogJumpTo::DialogJumpTo(agi::Context *c)
 : wxDialog(c->parent, -1, _("Jump to"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxWANTS_CHARS)
@@ -111,4 +125,9 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &) {
 void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
 	JumpFrame->GetValue().ToLong(&jumpframe);
 	JumpTime->SetTime(c->videoController->TimeAtFrame(jumpframe));
+}
+}
+
+void ShowJumpToDialog(agi::Context *c) {
+	DialogJumpTo(c).ShowModal();
 }

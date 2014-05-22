@@ -31,20 +31,3 @@
 /// @see dialog_paste_over.cpp
 /// @ingroup secondary_ui
 ///
-
-#include <wx/dialog.h>
-
-class wxCheckListBox;
-
-class DialogPasteOver final : public wxDialog {
-	wxCheckListBox *ListBox;
-
-	void CheckAll(bool check);
-
-	void OnOK(wxCommandEvent &);
-	void OnTimes(wxCommandEvent &);
-	void OnText(wxCommandEvent &);
-
-public:
-	DialogPasteOver(wxWindow *parent);
-};

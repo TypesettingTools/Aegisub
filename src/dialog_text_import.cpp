@@ -27,21 +27,30 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_text_import.cpp
-/// @brief Set-up import from plain text files
-/// @ingroup secondary_ui
-///
-
-#include "dialog_text_import.h"
-
 #include "options.h"
 #include "validators.h"
 
 #include <wx/checkbox.h>
+#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/valgen.h>
+
+namespace {
+/// @class DialogTextImport
+/// @brief Plain text import separator character selection dialog
+///
+/// A simple dialog to let the user select the format of a plain text file
+/// being imported into Aegisub
+class DialogTextImport final : public wxDialog {
+	std::string seperator;
+	std::string comment;
+	bool include_blank;
+
+public:
+	DialogTextImport();
+};
 
 DialogTextImport::DialogTextImport()
 : wxDialog(nullptr , -1, _("Text import options"))
@@ -74,4 +83,9 @@ DialogTextImport::DialogTextImport()
 
 		EndModal(wxID_OK);
 	}, wxID_OK);
+}
+}
+
+bool ShowPlainTextImportDialog() {
+	return DialogTextImport().ShowModal() == wxID_OK;
 }

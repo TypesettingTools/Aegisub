@@ -14,16 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_selection.cpp
-/// @brief Select Lines dialogue box and logic
-/// @ingroup secondary_ui
-///
-
-#include "dialog_selection.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "dialog_manager.h"
 #include "frame_main.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
@@ -39,6 +33,7 @@
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/msgdlg.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
@@ -46,6 +41,28 @@
 #include <wx/textctrl.h>
 
 namespace {
+class DialogSelection final : public wxDialog {
+	agi::Context *con; ///< Project context
+
+	wxTextCtrl *match_text; ///< Text to search for
+	wxCheckBox *case_sensitive; ///< Should the search be case-sensitive
+	wxCheckBox *apply_to_dialogue; ///< Select/deselect uncommented lines
+	wxCheckBox *apply_to_comments; ///< Select/deselect commented lines
+	wxRadioButton *select_unmatching_lines; ///< Select lines which don't match instead
+	wxRadioBox *selection_change_type; ///< What sort of action to take on the selection
+	wxRadioBox *dialogue_field; ///< Which dialogue field to look at
+	wxRadioBox *match_mode;
+
+	void Process(wxCommandEvent&);
+
+	/// Dialogue/Comment check handler to ensure at least one is always checked
+	/// @param chk The checkbox to check if both are clear
+	void OnDialogueCheckbox(wxCheckBox *chk);
+
+public:
+	DialogSelection(agi::Context *c);
+	~DialogSelection();
+};
 
 enum class Action {
 	SET = 0,
@@ -85,8 +102,6 @@ std::set<AssDialogue*> process(std::string const& match_text, bool match_case, M
 	}
 
 	return matches;
-}
-
 }
 
 DialogSelection::DialogSelection(agi::Context *c) :
@@ -235,4 +250,9 @@ void DialogSelection::Process(wxCommandEvent&) {
 void DialogSelection::OnDialogueCheckbox(wxCheckBox *chk) {
 	if(!apply_to_dialogue->IsChecked() && !apply_to_comments->GetValue())
 		chk->SetValue(true);
+}
+}
+
+void ShowSelectLinesDialog(agi::Context *c) {
+	c->dialog->Show<DialogSelection>(c);
 }

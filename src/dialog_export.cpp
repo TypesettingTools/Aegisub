@@ -27,13 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_export.cpp
-/// @brief Export set-up dialogue box
-/// @ingroup export
-///
-
-#include "dialog_export.h"
-
 #include "ass_exporter.h"
 #include "ass_file.h"
 #include "compat.h"
@@ -49,8 +42,8 @@
 #include <algorithm>
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
-
 #include <wx/button.h>
+#include <wx/dialog.h>
 #include <wx/checklst.h>
 #include <wx/choice.h>
 #include <wx/msgdlg.h>
@@ -58,8 +51,39 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
+namespace {
+class DialogExport final : public wxDialog {
+	agi::Context *c;
+
+	/// The export transform engine
+	AssExporter exporter;
+
+	/// The description of the currently selected export filter
+	wxTextCtrl *filter_description;
+
+	/// A list of all registered export filters
+	wxCheckListBox *filter_list;
+
+	/// A list of available target charsets
+	wxChoice *charset_list;
+
+	wxSizer *opt_sizer;
+
+	void OnProcess(wxCommandEvent &);
+	void OnChange(wxCommandEvent &);
+
+	/// Set all the checkboxes
+	void SetAll(bool new_value);
+	/// Update which options sizers are shown
+	void RefreshOptions();
+
+public:
+	DialogExport(agi::Context *c);
+	~DialogExport();
+};
+
 // Swap the items at idx and idx + 1
-static void swap(wxCheckListBox *list, int idx, int sel_dir) {
+void swap(wxCheckListBox *list, int idx, int sel_dir) {
 	if (idx < 0 || idx + 1 == (int)list->GetCount()) return;
 
 	list->Freeze();
@@ -76,12 +100,12 @@ static void swap(wxCheckListBox *list, int idx, int sel_dir) {
 DialogExport::DialogExport(agi::Context *c)
 : wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
 , c(c)
-, exporter(agi::make_unique<AssExporter>(c))
+, exporter(c)
 {
 	SetIcon(GETICON(export_menu_16));
 	SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 
-	std::vector<std::string> filters = exporter->GetAllFilterNames();
+	std::vector<std::string> filters = exporter.GetAllFilterNames();
 	filter_list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(200, 100), to_wx(filters));
 	filter_list->Bind(wxEVT_CHECKLISTBOX, [=](wxCommandEvent&) { RefreshOptions(); });
 	filter_list->Bind(wxEVT_LISTBOX, &DialogExport::OnChange, this);
@@ -135,7 +159,7 @@ DialogExport::DialogExport(agi::Context *c)
 
 	wxSizer *horz_sizer = new wxBoxSizer(wxHORIZONTAL);
 	opt_sizer = new wxBoxSizer(wxVERTICAL);
-	exporter->DrawSettings(this, opt_sizer);
+	exporter.DrawSettings(this, opt_sizer);
 	horz_sizer->Add(top_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxRIGHT));
 	horz_sizer->Add(opt_sizer, wxSizerFlags(1).Expand().Border(wxALL & ~wxLEFT));
 
@@ -166,13 +190,13 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
 		if (filter_list->IsChecked(i))
-			exporter->AddFilter(from_wx(filter_list->GetString(i)));
+			exporter.AddFilter(from_wx(filter_list->GetString(i)));
 	}
 
 	try {
 		wxBusyCursor busy;
 		c->ass->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
-		exporter->Export(filename, from_wx(charset_list->GetStringSelection()), this);
+		exporter.Export(filename, from_wx(charset_list->GetStringSelection()), this);
 	}
 	catch (agi::UserCancelException const&) {
 	}
@@ -198,7 +222,7 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 void DialogExport::OnChange(wxCommandEvent &) {
 	wxString sel = filter_list->GetStringSelection();
 	if (!sel.empty())
-		filter_description->SetValue(to_wx(exporter->GetDescription(from_wx(sel))));
+		filter_description->SetValue(to_wx(exporter.GetDescription(from_wx(sel))));
 }
 
 void DialogExport::SetAll(bool new_value) {
@@ -212,9 +236,14 @@ void DialogExport::SetAll(bool new_value) {
 
 void DialogExport::RefreshOptions() {
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
-		if (wxSizer *sizer = exporter->GetSettingsSizer(from_wx(filter_list->GetString(i))))
+		if (wxSizer *sizer = exporter.GetSettingsSizer(from_wx(filter_list->GetString(i))))
 			opt_sizer->Show(sizer, filter_list->IsChecked(i), true);
 	}
 	Layout();
 	GetSizer()->Fit(this);
+}
+}
+
+void ShowExportDialog(agi::Context *c) {
+	DialogExport(c).ShowModal();
 }

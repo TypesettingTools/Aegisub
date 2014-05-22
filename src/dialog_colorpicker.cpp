@@ -27,13 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_colorpicker.cpp
-/// @brief Custom colour-selection dialogue box
-/// @ingroup tools_ui
-///
-
-#include "dialog_colorpicker.h"
-
 #include "ass_style.h"
 #include "colorspace.h"
 #include "compat.h"

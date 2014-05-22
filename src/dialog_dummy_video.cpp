@@ -14,15 +14,19 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_dummy_video.cpp
-/// @brief Set up dummy video provider
-/// @ingroup secondary_ui
-///
+#include "ass_time.h"
+#include "colour_button.h"
+#include "help_button.h"
+#include "libresrc/libresrc.h"
+#include "options.h"
+#include "validators.h"
+#include "video_provider_dummy.h"
 
-#include "dialog_dummy_video.h"
+#include <libaegisub/color.h>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/statline.h>
@@ -32,15 +36,26 @@
 #include <wx/valgen.h>
 #include <wx/valnum.h>
 
-#include "ass_time.h"
-#include "colour_button.h"
-#include "help_button.h"
-#include "libresrc/libresrc.h"
-#include "options.h"
-#include "validators.h"
-#include "video_provider_dummy.h"
-
 namespace {
+struct DialogDummyVideo final : wxDialog {
+	double fps       = OPT_GET("Video/Dummy/FPS")->GetDouble();
+	int width        = OPT_GET("Video/Dummy/Last/Width")->GetInt();
+	int height       = OPT_GET("Video/Dummy/Last/Height")->GetInt();
+	int length       = OPT_GET("Video/Dummy/Last/Length")->GetInt();
+	agi::Color color = OPT_GET("Colour/Video Dummy/Last Colour")->GetColor();
+	bool pattern     = OPT_GET("Video/Dummy/Pattern")->GetBool();
+
+	wxStaticText *length_display;
+	wxFlexGridSizer *sizer;
+
+	template<typename T>
+	void AddCtrl(wxString const& label, T *ctrl);
+
+	void OnResolutionShortcut(wxCommandEvent &evt);
+	void UpdateLengthDisplay();
+
+	DialogDummyVideo(wxWindow *parent);
+};
 
 struct ResolutionShortcut {
 	const char *name;
@@ -82,16 +97,8 @@ wxComboBox *resolution_shortcuts(wxWindow *parent, int width, int height) {
 	return ctrl;
 }
 
-}
-
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 : wxDialog(parent, -1, _("Dummy video options"))
-, fps(OPT_GET("Video/Dummy/FPS")->GetDouble())
-, width(OPT_GET("Video/Dummy/Last/Width")->GetInt())
-, height(OPT_GET("Video/Dummy/Last/Height")->GetInt())
-, length(OPT_GET("Video/Dummy/Last/Length")->GetInt())
-, color(OPT_GET("Colour/Video Dummy/Last Colour")->GetColor())
-, pattern(OPT_GET("Video/Dummy/Pattern")->GetBool())
 {
 	SetIcon(GETICON(use_dummy_video_menu_16));
 
@@ -154,8 +161,9 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &e) {
 void DialogDummyVideo::UpdateLengthDisplay() {
 	length_display->SetLabel(wxString::Format(_("Resulting duration: %s"), AssTime(length / fps * 1000).GetAssFormated(true)));
 }
+}
 
-std::string DialogDummyVideo::CreateDummyVideo(wxWindow *parent) {
+std::string CreateDummyVideo(wxWindow *parent) {
 	DialogDummyVideo dlg(parent);
 	if (dlg.ShowModal() != wxID_OK)
 		return "";

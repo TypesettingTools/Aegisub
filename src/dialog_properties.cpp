@@ -27,13 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_properties.cpp
-/// @brief Dialogue box to set subtitle meta-data
-/// @ingroup secondary_ui
-///
-
-#include "dialog_properties.h"
-
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "compat.h"
@@ -46,13 +39,50 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
-
+#include <vector>
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+
+namespace {
+class DialogProperties final : public wxDialog {
+	agi::Context *c; ///< Project this dialog is adjusting the properties of
+
+	/// Pairs of a script property and a text control for that property
+	std::vector<std::pair<std::string, wxTextCtrl*>> properties;
+
+	// Things that effect rendering
+	wxComboBox *WrapStyle;   ///< Wrapping style for long lines
+	wxTextCtrl *ResX;        ///< Script x resolution
+	wxTextCtrl *ResY;        ///< Script y resolution
+	wxCheckBox *ScaleBorder; ///< If script resolution != video resolution how should borders be handled
+	wxComboBox *YCbCrMatrix;
+
+	/// OK button handler
+	void OnOK(wxCommandEvent &event);
+	/// Set script resolution to video resolution button
+	void OnSetFromVideo(wxCommandEvent &event);
+	/// Set a script info field
+	/// @param key Name of field
+	/// @param value New value
+	/// @return Did the value actually need to be changed?
+	int SetInfoIfDifferent(std::string const& key, std::string const& value);
+
+	/// Add a property with label and text box for updating the property
+	/// @param sizer Sizer to add the label and control to
+	/// @param label Label text to use
+	/// @param property Script info property name
+	void AddProperty(wxSizer *sizer, wxString const& label, std::string const& property);
+
+public:
+	/// Constructor
+	/// @param c Project context
+	DialogProperties(agi::Context *c);
+};
 
 DialogProperties::DialogProperties(agi::Context *c)
 : wxDialog(c->parent, -1, _("Script Properties"))
@@ -175,4 +205,9 @@ int DialogProperties::SetInfoIfDifferent(std::string const& key, std::string con
 void DialogProperties::OnSetFromVideo(wxCommandEvent &) {
 	ResX->SetValue(std::to_wstring(c->project->VideoProvider()->GetWidth()));
 	ResY->SetValue(std::to_wstring(c->project->VideoProvider()->GetHeight()));
+}
+}
+
+void ShowPropertiesDialog(agi::Context *c) {
+	DialogProperties(c).ShowModal();
 }

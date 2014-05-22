@@ -36,7 +36,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "dialog_text_import.h"
+#include "dialogs.h"
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -54,9 +54,7 @@ TXTSubtitleFormat::TXTSubtitleFormat()
 }
 
 std::vector<std::string> TXTSubtitleFormat::GetReadWildcards() const {
-	std::vector<std::string> formats;
-	formats.push_back("txt");
-	return formats;
+	return {"txt"};
 }
 
 std::vector<std::string> TXTSubtitleFormat::GetWriteWildcards() const {
@@ -69,8 +67,7 @@ bool TXTSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
 }
 
 void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
-	DialogTextImport dlg;
-	if (dlg.ShowModal() == wxID_CANCEL) return;
+	if (!ShowPlainTextImportDialog()) return;
 
 	TextFileReader file(filename, encoding, false);
 

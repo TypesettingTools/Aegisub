@@ -27,19 +27,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_style_manager.cpp
-/// @brief Style Manager dialogue box and partial logic
-/// @ingroup style_editor
-
-#include "dialog_style_manager.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "ass_style_storage.h"
 #include "charset_detect.h"
 #include "compat.h"
-#include "dialog_selected_choices.h"
+#include "dialog_manager.h"
 #include "dialog_style_editor.h"
+#include "dialogs.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
@@ -52,23 +48,128 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/signal.h>
 #include <libaegisub/split.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>
 #include <functional>
-
+#include <future>
+#include <memory>
+#include <vector>
 #include <wx/bmpbuttn.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/filename.h>
 #include <wx/fontenum.h>
 #include <wx/intl.h>
+#include <wx/listbox.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/textdlg.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
 namespace {
+class DialogStyleManager final : public wxDialog {
+	agi::Context *c; ///< Project context
+	std::unique_ptr<PersistLocation> persist;
+
+	agi::signal::Connection commit_connection;
+	agi::signal::Connection active_line_connection;
+
+	std::shared_future<wxArrayString> font_list;
+
+	/// Styles in the current subtitle file
+	std::vector<AssStyle*> styleMap;
+
+	/// Style storage manager
+	AssStyleStorage Store;
+
+	wxComboBox *CatalogList;
+	wxListBox *StorageList;
+	wxListBox *CurrentList;
+
+	wxButton *CatalogDelete;
+
+	wxButton *MoveToLocal;
+	wxButton *MoveToStorage;
+
+	wxButton *StorageNew;
+	wxButton *StorageEdit;
+	wxButton *StorageCopy;
+	wxButton *StorageDelete;
+	wxButton *StorageMoveUp;
+	wxButton *StorageMoveDown;
+	wxButton *StorageMoveTop;
+	wxButton *StorageMoveBottom;
+	wxButton *StorageSort;
+
+	wxButton *CurrentNew;
+	wxButton *CurrentEdit;
+	wxButton *CurrentCopy;
+	wxButton *CurrentDelete;
+	wxButton *CurrentMoveUp;
+	wxButton *CurrentMoveDown;
+	wxButton *CurrentMoveTop;
+	wxButton *CurrentMoveBottom;
+	wxButton *CurrentSort;
+
+	/// Load the list of available storages
+	void LoadCatalog();
+	/// Load the style list from the subtitles file
+	void LoadCurrentStyles(int commit_type);
+	/// Enable/disable all of the buttons as appropriate
+	void UpdateButtons();
+	/// Move styles up or down
+	/// @param storage Storage or current file styles
+	/// @param type 0: up; 1: top; 2: down; 3: bottom; 4: sort
+	void MoveStyles(bool storage, int type);
+
+	/// Open the style editor for the given style on the script
+	/// @param style Style to edit, or nullptr for new
+	/// @param new_name Default new name for copies
+	void ShowCurrentEditor(AssStyle *style, std::string const& new_name = "");
+
+	/// Open the style editor for the given style in the storage
+	/// @param style Style to edit, or nullptr for new
+	/// @param new_name Default new name for copies
+	void ShowStorageEditor(AssStyle *style, std::string const& new_name = "");
+
+	/// Save the storage and update the view after a change
+	void UpdateStorage();
+
+	void OnChangeCatalog();
+	void OnCatalogNew();
+	void OnCatalogDelete();
+
+	void OnCopyToCurrent();
+	void OnCopyToStorage();
+
+	void OnCurrentCopy();
+	void OnCurrentDelete();
+	void OnCurrentEdit();
+	void OnCurrentImport();
+	void OnCurrentNew();
+
+	void OnStorageCopy();
+	void OnStorageDelete();
+	void OnStorageEdit();
+	void OnStorageNew();
+
+	void OnKeyDown(wxKeyEvent &event);
+	void PasteToCurrent();
+	void PasteToStorage();
+
+	template<class T>
+	void CopyToClipboard(wxListBox *list, T const& v);
+
+	void OnActiveLineChanged(AssDialogue *new_line);
+
+public:
+	DialogStyleManager(agi::Context *context);
+};
 
 wxBitmapButton *add_bitmap_button(wxWindow *parent, wxSizer *sizer, wxBitmap const& img, wxString const& tooltip) {
 	wxBitmapButton *btn = new wxBitmapButton(parent, -1, img);
@@ -149,8 +250,6 @@ int get_single_sel(wxListBox *lb) {
 	wxArrayInt selections;
 	int n = lb->GetSelections(selections);
 	return n == 1 ? selections[0] : -1;
-}
-
 }
 
 DialogStyleManager::DialogStyleManager(agi::Context *context)
@@ -272,9 +371,6 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	CurrentList->Bind(wxEVT_LISTBOX, bind(&DialogStyleManager::UpdateButtons, this));
 	CurrentList->Bind(wxEVT_LISTBOX_DCLICK, bind(&DialogStyleManager::OnCurrentEdit, this));
-}
-
-DialogStyleManager::~DialogStyleManager() {
 }
 
 void DialogStyleManager::LoadCurrentStyles(int commit_type) {
@@ -825,4 +921,9 @@ void DialogStyleManager::OnKeyDown(wxKeyEvent &event) {
 			event.Skip();
 			break;
 	}
+}
+}
+
+void ShowStyleManagerDialog(agi::Context *c) {
+	c->dialog->Show<DialogStyleManager>(c);
 }

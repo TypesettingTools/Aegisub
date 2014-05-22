@@ -27,13 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_timing_processor.cpp
-/// @brief Timing Post-processor dialogue box and logic
-/// @ingroup tools_ui
-///
-
-#include "dialog_timing_processor.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
@@ -54,10 +47,11 @@
 #include <boost/range/algorithm.hpp>
 #include <boost/range/algorithm_ext.hpp>
 #include <functional>
-
+#include <vector>
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/checklst.h>
+#include <wx/dialog.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
@@ -69,6 +63,47 @@
 using namespace boost::adaptors;
 
 namespace {
+/// @class DialogTimingProcessor
+/// @brief Automatic postprocessor for correcting common timing issues
+class DialogTimingProcessor final : public wxDialog {
+	agi::Context *c; ///< Project context
+
+	int leadIn;      ///< Lead-in to add in milliseconds
+	int leadOut;     ///< Lead-out to add in milliseconds
+	int beforeStart; ///< Maximum time in milliseconds to move start time of line backwards to land on a keyframe
+	int afterStart;  ///< Maximum time in milliseconds to move start time of line forwards to land on a keyframe
+	int beforeEnd;   ///< Maximum time in milliseconds to move end time of line backwards to land on a keyframe
+	int afterEnd;    ///< Maximum time in milliseconds to move end time of line forwards to land on a keyframe
+	int adjGap;      ///< Maximum gap in milliseconds to snap adjacent lines to each other
+	int adjOverlap;  ///< Maximum overlap in milliseconds to snap adjacent lines to each other
+
+	wxCheckBox *onlySelection; ///< Only process selected lines of the selected styles
+	wxCheckBox *hasLeadIn;     ///< Enable adding lead-in
+	wxCheckBox *hasLeadOut;    ///< Enable adding lead-out
+	wxCheckBox *keysEnable;    ///< Enable snapping to keyframes
+	wxCheckBox *adjsEnable;    ///< Enable snapping adjacent lines to each other
+	wxSlider *adjacentBias;    ///< Bias between shifting start and end times when snapping adjacent lines
+	wxCheckListBox *StyleList; ///< List of styles to process
+	wxButton *ApplyButton;     ///< Button to apply the processing
+
+	void OnApply(wxCommandEvent &event);
+
+	/// Check or uncheck all styles
+	void CheckAll(bool check);
+
+	/// Enable and disable text boxes based on which checkboxes are checked
+	void UpdateControls();
+
+	/// Process the file
+	void Process();
+
+	/// Get a list of dialogue lines in the file sorted by start time
+	std::vector<AssDialogue*> SortDialogues();
+
+public:
+	DialogTimingProcessor(agi::Context *c);
+};
+
 wxTextCtrl *make_ctrl(wxWindow *parent, wxSizer *sizer, wxString const& desc, int *value, wxCheckBox *cb, wxString const& tooltip) {
 	wxIntegerValidator<int> validator(value);
 	validator.SetMin(0);
@@ -97,7 +132,6 @@ wxCheckBox *make_check(wxStaticBoxSizer *sizer, wxString const& desc, const char
 	cb->SetValue(OPT_GET(opt)->GetBool());
 	sizer->Add(cb, wxSizerFlags().Border(wxRIGHT).Expand());
 	return cb;
-}
 }
 
 DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
@@ -408,4 +442,9 @@ void DialogTimingProcessor::Process() {
 	}
 
 	c->ass->Commit(_("timing processor"), AssFile::COMMIT_DIAG_TIME);
+}
+}
+
+void ShowTimingProcessorDialog(agi::Context *c) {
+	DialogTimingProcessor(c).ShowModal();
 }

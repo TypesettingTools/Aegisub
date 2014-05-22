@@ -32,8 +32,7 @@
 #include "command.h"
 
 #include "../auto4_base.h"
-#include "../dialog_automation.h"
-#include "../dialog_manager.h"
+#include "../dialogs.h"
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
@@ -80,7 +79,7 @@ struct open_manager final : public Command {
 	STR_HELP("Open automation manager")
 
 	void operator()(agi::Context *c) override {
-		c->dialog->Show<DialogAutomation>(c);
+		ShowAutomationDialog(c);
 	}
 };
 

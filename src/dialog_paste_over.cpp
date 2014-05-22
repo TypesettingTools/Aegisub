@@ -27,22 +27,29 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_paste_over.cpp
-/// @brief Paste Over set-up dialogue box
-/// @ingroup secondary_ui
-///
-
-#include "dialog_paste_over.h"
+#include "help_button.h"
+#include "options.h"
 
 #include <functional>
-
 #include <wx/button.h>
+#include <wx/dialog.h>
 #include <wx/checklst.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 
-#include "help_button.h"
-#include "options.h"
+namespace {
+class DialogPasteOver final : public wxDialog {
+	wxCheckListBox *ListBox;
+
+	void CheckAll(bool check);
+
+	void OnOK(wxCommandEvent &);
+	void OnTimes(wxCommandEvent &);
+	void OnText(wxCommandEvent &);
+
+public:
+	DialogPasteOver(wxWindow *parent);
+};
 
 DialogPasteOver::DialogPasteOver(wxWindow *parent)
 : wxDialog(parent, -1, _("Select Fields to Paste Over"))
@@ -124,4 +131,9 @@ void DialogPasteOver::OnTimes(wxCommandEvent &) {
 void DialogPasteOver::CheckAll(bool check) {
 	for (size_t i = 0; i < ListBox->GetCount(); ++i)
 		ListBox->Check(i, check);
+}
+}
+
+bool ShowPasteOverDialog(wxWindow *parent) {
+	return DialogPasteOver(parent).ShowModal() == wxID_OK;
 }

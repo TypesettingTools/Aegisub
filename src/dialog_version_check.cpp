@@ -27,14 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_version_check.cpp
-/// @brief Version Checker dialogue box and logic
-/// @ingroup configuration_ui
-///
-
 #ifdef WITH_UPDATE_CHECKER
-
-#include "dialog_version_check.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4250) // 'boost::asio::basic_socket_iostream<Protocol>' : inherits 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2' via dominance
@@ -50,6 +43,17 @@
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/scoped_ptr.h>
 
+#include <algorithm>
+#include <ctime>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/format.hpp>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <set>
+#include <vector>
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/dialog.h>
@@ -63,25 +67,13 @@
 #include <wx/string.h>
 #include <wx/textctrl.h>
 
-#include <algorithm>
-#include <ctime>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/format.hpp>
-#include <functional>
-#include <memory>
-#include <set>
-#include <vector>
-
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-// Allocate global lock mutex declared in header
+namespace {
 std::mutex VersionCheckLock;
 
-namespace {
 struct AegisubUpdateDescription {
 	std::string url;
 	std::string friendly_name;
@@ -362,7 +354,6 @@ void DoCheck(bool interactive) {
 		});
 	}
 }
-
 }
 
 void PerformVersionCheck(bool interactive) {

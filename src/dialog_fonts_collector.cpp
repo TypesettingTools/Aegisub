@@ -14,18 +14,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_fonts_collector.cpp
-/// @brief Font collector dialogue box
-/// @ingroup tools_ui font_collector
-///
-
-#include "dialog_fonts_collector.h"
-
 #include "font_file_lister.h"
 #include "font_file_lister_fontconfig.h"
 
 #include "ass_file.h"
 #include "compat.h"
+#include "dialog_manager.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -41,6 +35,7 @@
 #include <libaegisub/make_unique.h>
 
 #include <wx/button.h>
+#include <wx/dialog.h>
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
@@ -53,6 +48,31 @@
 #include <wx/textctrl.h>
 #include <wx/wfstream.h>
 #include <wx/zipstrm.h>
+
+namespace {
+class DialogFontsCollector final : public wxDialog {
+	AssFile *subs;
+
+	ScintillaTextCtrl *collection_log;
+	wxButton *close_btn;
+	wxButton *dest_browse_button;
+	wxButton *start_btn;
+	wxRadioBox *collection_mode;
+	wxStaticText *dest_label;
+	wxTextCtrl *dest_ctrl;
+
+	void OnStart(wxCommandEvent &);
+	void OnBrowse(wxCommandEvent &);
+	void OnRadio(wxCommandEvent &e);
+
+	/// Append text to log message from worker thread
+	void OnAddText(wxThreadEvent &event);
+	/// Collection complete notification from the worker thread to reenable buttons
+	void OnCollectionComplete(wxThreadEvent &);
+
+public:
+	DialogFontsCollector(agi::Context *c);
+};
 
 enum FcMode {
 	CheckFontsOnly = 0,
@@ -385,4 +405,9 @@ void DialogFontsCollector::OnCollectionComplete(wxThreadEvent &) {
 
 	wxCommandEvent evt;
 	OnRadio(evt);
+}
+}
+
+void ShowFontsCollectorDialog(agi::Context *c) {
+	c->dialog->Show<DialogFontsCollector>(c);
 }

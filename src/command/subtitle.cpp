@@ -34,12 +34,8 @@
 #include "../ass_dialogue.h"
 #include "../ass_file.h"
 #include "../compat.h"
-#include "../dialog_attachments.h"
-#include "../dialog_autosave.h"
-#include "../dialog_manager.h"
-#include "../dialog_properties.h"
 #include "../dialog_search_replace.h"
-#include "../dialog_spellchecker.h"
+#include "../dialogs.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
@@ -85,7 +81,7 @@ struct subtitle_attachment final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogAttachments(c->parent, c->ass.get()).ShowModal();
+		ShowAttachmentsDialog(c->parent, c->ass.get());
 	}
 };
 
@@ -255,9 +251,9 @@ struct subtitle_open_autosave final : public Command {
 
 	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
-		DialogAutosave dialog(c->parent);
-		if (dialog.ShowModal() == wxID_OK)
-			c->project->LoadSubtitles(dialog.ChosenFile());
+		auto file = PickAutosaveFile(c->parent);
+		if (!file.empty())
+			c->project->LoadSubtitles(file);
 	}
 };
 
@@ -307,7 +303,7 @@ struct subtitle_properties final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogProperties(c).ShowModal();
+		ShowPropertiesDialog(c);
 	}
 };
 
@@ -417,7 +413,7 @@ struct subtitle_spellcheck final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		c->dialog->Show<DialogSpellChecker>(c);
+		ShowSpellcheckerDialog(c);
 	}
 };
 }

@@ -14,17 +14,11 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_shift_times.cpp
-/// @brief Shift Times dialogue box and logic
-/// @ingroup secondary_ui
-///
-
-#include "dialog_shift_times.h"
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_time.h"
 #include "compat.h"
+#include "dialog_manager.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
@@ -38,20 +32,60 @@
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
+#include <libaegisub/signal.h>
+#include <libaegisub/vfr.h>
 
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/writer.h>
 
 #include <algorithm>
+#include <boost/filesystem/path.hpp>
 #include <vector>
-
+#include <wx/dialog.h>
 #include <wx/listbox.h>
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+
+namespace {
+class DialogShiftTimes final : public wxDialog {
+	agi::Context *context;
+
+	agi::fs::path history_filename;
+	json::Array history;
+	agi::vfr::Framerate fps;
+	agi::signal::Connection timecodes_loaded_slot;
+	agi::signal::Connection selected_set_changed_slot;
+
+	TimeEdit *shift_time;
+	wxTextCtrl *shift_frames;
+	wxRadioButton *shift_by_time;
+	wxRadioButton *shift_by_frames;
+	wxRadioButton *shift_forward;
+	wxRadioButton *shift_backward;
+	wxRadioBox *selection_mode;
+	wxRadioBox *time_fields;
+	wxListBox *history_box;
+
+	void SaveHistory(json::Array const& shifted_blocks);
+	void LoadHistory();
+	void Process(wxCommandEvent&);
+	int Shift(int initial_time, int shift, bool by_time, agi::vfr::Time type);
+
+	void OnClear(wxCommandEvent&);
+	void OnByTime(wxCommandEvent&);
+	void OnByFrames(wxCommandEvent&);
+	void OnHistoryClick(wxCommandEvent&);
+
+	void OnSelectedSetChanged();
+	void OnTimecodesLoaded(agi::vfr::Framerate const& new_fps);
+
+public:
+	DialogShiftTimes(agi::Context *context);
+	~DialogShiftTimes();
+};
 
 static wxString get_history_string(json::Object &obj) {
 	wxString filename = to_wx(obj["filename"]);
@@ -99,7 +133,6 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
 , history_filename(config::path->Decode("?user/shift_history.json"))
-, history(agi::make_unique<json::Array>())
 , timecodes_loaded_slot(context->project->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 , selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))
 {
@@ -234,7 +267,7 @@ void DialogShiftTimes::OnSelectedSetChanged() {
 void DialogShiftTimes::OnClear(wxCommandEvent &) {
 	agi::fs::Remove(history_filename);
 	history_box->Clear();
-	history->clear();
+	history.clear();
 }
 
 void DialogShiftTimes::OnByTime(wxCommandEvent &) {
@@ -249,9 +282,9 @@ void DialogShiftTimes::OnByFrames(wxCommandEvent &) {
 
 void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 	size_t entry = evt.GetInt();
-	if (entry >= history->size()) return;
+	if (entry >= history.size()) return;
 
-	json::Object& obj = (*history)[entry];
+	json::Object& obj = history[entry];
 	if (obj["is by time"]) {
 		shift_time->SetTime(AssTime((std::string)obj["amount"]));
 		shift_by_time->SetValue(true);
@@ -284,12 +317,12 @@ void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	new_entry["mode"] = selection_mode->GetSelection();
 	new_entry["selection"] = shifted_blocks;
 
-	history->push_front(new_entry);
-	if (history->size() > 50)
-		history->resize(50);
+	history.push_front(new_entry);
+	if (history.size() > 50)
+		history.resize(50);
 
 	try {
-		json::Writer::Write(*history, agi::io::Save(history_filename).Get());
+		json::Writer::Write(history, agi::io::Save(history_filename).Get());
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		LOG_E("dialog_shift_times/save_history") << "Cannot save shift times history: " << e.GetChainedMessage();
@@ -304,9 +337,9 @@ void DialogShiftTimes::LoadHistory() {
 		std::unique_ptr<std::istream> file(agi::io::Open(history_filename));
 		json::UnknownElement root;
 		json::Reader::Read(root, *file);
-		*history = root;
+		history = root;
 
-		for (auto& history_entry : *history)
+		for (auto& history_entry : history)
 			history_box->Append(get_history_string(history_entry));
 	}
 	catch (agi::fs::FileSystemError const& e) {
@@ -388,4 +421,9 @@ int DialogShiftTimes::Shift(int initial_time, int shift, bool by_time, agi::vfr:
 		return initial_time + shift;
 	else
 		return fps.TimeAtFrame(shift + fps.FrameAtTime(initial_time, type), type);
+}
+}
+
+void ShowShiftTimesDialog(agi::Context *c) {
+	c->dialog->Show<DialogShiftTimes>(c);
 }
