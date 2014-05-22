@@ -94,7 +94,6 @@ class BaseGrid final : public wxWindow {
 	void OnSize(wxSizeEvent &event);
 	void OnSubtitlesCommit(int type);
 	void OnSubtitlesOpen();
-	void OnSubtitlesSave();
 	void OnActiveLineChanged(AssDialogue *);
 
 	void ScrollTo(int y);

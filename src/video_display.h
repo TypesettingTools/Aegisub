@@ -141,8 +141,6 @@ class VideoDisplay final : public wxGLCanvas {
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
 
-	void OnSubtitlesSave();
-
 public:
 	/// @brief Constructor
 	VideoDisplay(

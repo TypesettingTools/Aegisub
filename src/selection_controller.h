@@ -47,7 +47,6 @@ class SelectionController {
 	AssDialogue *active_line = nullptr; ///< The currently active line or 0 if none
 
 	agi::signal::Connection open_connection;
-	agi::signal::Connection save_connection;
 
 	void OnSubtitlesOpen();
 	void OnSubtitlesSave();

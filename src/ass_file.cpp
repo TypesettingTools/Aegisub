@@ -84,6 +84,7 @@ void AssFile::swap(AssFile& from) throw() {
 	Events.swap(from.Events);
 	Attachments.swap(from.Attachments);
 	Extradata.swap(from.Extradata);
+	std::swap(Properties, from.Properties);
 	std::swap(next_extradata_id, from.next_extradata_id);
 }
 
@@ -119,22 +120,6 @@ std::string AssFile::GetScriptInfo(std::string const& key) const {
 
 int AssFile::GetScriptInfoAsInt(std::string const& key) const {
 	return atoi(GetScriptInfo(key).c_str());
-}
-
-std::string AssFile::GetUIState(std::string const& key) const {
-	auto value = GetScriptInfo("Aegisub " + key);
-	if (value.empty())
-		value = GetScriptInfo(key);
-	return value;
-}
-
-int AssFile::GetUIStateAsInt(std::string const& key) const {
-	return atoi(GetUIState(key).c_str());
-}
-
-void AssFile::SaveUIState(std::string const& key, std::string const& value) {
-	if (OPT_GET("App/Save UI State")->GetBool())
-		SetScriptInfo("Aegisub " + key, value);
 }
 
 void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
@@ -300,4 +285,3 @@ void AssFile::CleanExtradata() {
 		Extradata.erase(id);
 	}
 }
-

@@ -55,20 +55,15 @@ Project::Project(agi::Context *c) : context(c) {
 	OPT_SUB("Subtitle/Provider", &Project::ReloadVideo, this);
 	OPT_SUB("Video/Force BT.601", &Project::ReloadVideo, this);
 	OPT_SUB("Video/Provider", &Project::ReloadVideo, this);
-	c->subsController->AddFileSaveListener(&Project::OnSubtitlesSave, this);
 }
 
 Project::~Project() { }
 
-void Project::OnSubtitlesSave() {
-	context->ass->SetScriptInfo("Audio File",
-		config::path->MakeRelative(audio_file, "?script").generic_string());
-	context->ass->SetScriptInfo("Video File",
-		config::path->MakeRelative(video_file, "?script").generic_string());
-	context->ass->SetScriptInfo("VFR File",
-		config::path->MakeRelative(timecodes_file, "?script").generic_string());
-	context->ass->SetScriptInfo("Keyframes File",
-		config::path->MakeRelative(keyframes_file, "?script").generic_string());
+void Project::UpdateRelativePaths() {
+	context->ass->Properties.audio_file     = config::path->MakeRelative(audio_file, "?script").generic_string();
+	context->ass->Properties.video_file     = config::path->MakeRelative(video_file, "?script").generic_string();
+	context->ass->Properties.timecodes_file = config::path->MakeRelative(timecodes_file, "?script").generic_string();
+	context->ass->Properties.keyframes_file = config::path->MakeRelative(keyframes_file, "?script").generic_string();
 }
 
 void Project::ReloadAudio() {
@@ -87,6 +82,15 @@ void Project::ShowError(wxString const& message) {
 
 void Project::ShowError(std::string const& message) {
 	ShowError(to_wx(message));
+}
+
+void Project::SetPath(agi::fs::path& var, const char *token, const char *mru, agi::fs::path const& value) {
+	var = value;
+	if (*token)
+		config::path->SetToken(token, value);
+	if (*mru)
+		config::mru->Add(mru, value);
+	UpdateRelativePaths();
 }
 
 void Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding) {
@@ -141,10 +145,10 @@ void Project::LoadUnloadFiles() {
 	auto load_linked = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 	if (!load_linked) return;
 
-	auto audio     = config::path->MakeAbsolute(context->ass->GetScriptInfo("Audio File"), "?script");
-	auto video     = config::path->MakeAbsolute(context->ass->GetScriptInfo("Video File"), "?script");
-	auto timecodes = config::path->MakeAbsolute(context->ass->GetScriptInfo("VFR File"), "?script");
-	auto keyframes = config::path->MakeAbsolute(context->ass->GetScriptInfo("Keyframes File"), "?script");
+	auto audio     = config::path->MakeAbsolute(context->ass->Properties.audio_file, "?script");
+	auto video     = config::path->MakeAbsolute(context->ass->Properties.video_file, "?script");
+	auto timecodes = config::path->MakeAbsolute(context->ass->Properties.timecodes_file, "?script");
+	auto keyframes = config::path->MakeAbsolute(context->ass->Properties.keyframes_file, "?script");
 
 	if (video == video_file && audio == audio_file && keyframes == keyframes_file && timecodes == timecodes_file)
 		return;
@@ -160,23 +164,14 @@ void Project::LoadUnloadFiles() {
 			CloseVideo();
 		else if ((loaded_video = DoLoadVideo(video))) {
 			auto vc = context->videoController.get();
-			vc->JumpToFrame(context->ass->GetUIStateAsInt("Video Position"));
+			vc->JumpToFrame(context->ass->Properties.video_position);
 
-			std::string arString = context->ass->GetUIState("Video Aspect Ratio");
-			if (boost::starts_with(arString, "c")) {
-				double ar = 0.;
-				agi::util::try_parse(arString.substr(1), &ar);
-				vc->SetAspectRatio(ar);
-			}
-			else {
-				int ar = 0;
-				if (agi::util::try_parse(arString, &ar) && ar >= 0 && ar < 4)
-					vc->SetAspectRatio((AspectRatio)ar);
-			}
-
-			double videoZoom = 0.;
-			if (agi::util::try_parse(context->ass->GetUIState("Video Zoom Percent"), &videoZoom))
-				context->videoDisplay->SetZoom(videoZoom);
+			auto ar_mode = static_cast<AspectRatio>(context->ass->Properties.ar_mode);
+			if (ar_mode == AspectRatio::Custom)
+				vc->SetAspectRatio(context->ass->Properties.ar_value);
+			else
+				vc->SetAspectRatio(ar_mode);
+			context->videoDisplay->SetZoom(context->ass->Properties.video_zoom);
 		}
 	}
 
@@ -225,9 +220,7 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 		return ShowError(e.GetChainedMessage());
 	}
 
-	audio_file = path;
-	config::path->SetToken("?audio", path);
-	config::mru->Add("Audio", path);
+	SetPath(audio_file, "?audio", "Audio", path);
 	AnnounceAudioProviderModified(audio_provider.get());
 }
 
@@ -238,8 +231,7 @@ void Project::LoadAudio(agi::fs::path const& path) {
 void Project::CloseAudio() {
 	AnnounceAudioProviderModified(nullptr);
 	audio_provider.reset();
-	audio_file.clear();
-	config::path->SetToken("?audio", "");
+	SetPath(audio_file, "?audio", "", "");
 }
 
 bool Project::DoLoadVideo(agi::fs::path const& path) {
@@ -266,12 +258,10 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 
 	timecodes = video_provider->GetFPS();
 	keyframes = video_provider->GetKeyFrames();
+
 	timecodes_file.clear();
 	keyframes_file.clear();
-
-	video_file = path;
-	config::mru->Add("Video", path);
-	config::path->SetToken("?video", path);
+	SetPath(video_file, "?video", "Video", path);
 
 	std::string warning = video_provider->GetWarning();
 	if (!warning.empty())
@@ -296,15 +286,13 @@ void Project::LoadVideo(agi::fs::path const& path) {
 void Project::CloseVideo() {
 	AnnounceVideoProviderModified(nullptr);
 	video_provider.reset();
-	video_file.clear();
-	config::path->SetToken("?video", "");
+	SetPath(video_file, "?video", "", "");
 	video_has_subtitles = false;
 }
 
 void Project::DoLoadTimecodes(agi::fs::path const& path) {
 	timecodes = agi::vfr::Framerate(path);
-	timecodes_file = path;
-	config::mru->Add("Timecodes", path);
+	SetPath(timecodes_file, "", "Timecodes", path);
 	AnnounceTimecodesModified(timecodes);
 }
 
@@ -324,14 +312,13 @@ void Project::LoadTimecodes(agi::fs::path const& path) {
 
 void Project::CloseTimecodes() {
 	timecodes = video_provider ? video_provider->GetFPS() : agi::vfr::Framerate{};
-	timecodes_file.clear();
+	SetPath(timecodes_file, "", "", "");
 	AnnounceTimecodesModified(timecodes);
 }
 
 void Project::DoLoadKeyframes(agi::fs::path const& path) {
 	keyframes = agi::keyframe::Load(path);
-	keyframes_file = path;
-	config::mru->Add("Keyframes", path);
+	SetPath(keyframes_file, "", "Keyframes", path);
 	AnnounceKeyframesModified(keyframes);
 }
 
@@ -351,7 +338,7 @@ void Project::LoadKeyframes(agi::fs::path const& path) {
 
 void Project::CloseKeyframes() {
 	keyframes = video_provider ? video_provider->GetKeyFrames() : std::vector<int>{};
-	keyframes_file.clear();
+	SetPath(keyframes_file, "", "", "");
 	AnnounceKeyframesModified(keyframes);
 }
 
@@ -431,8 +418,12 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 
 	if (!subs.empty())
 		DoLoadSubtitles(subs);
-	if (!video.empty())
+	if (!video.empty()) {
+		auto rel_audio_file = context->ass->Properties.audio_file;
 		DoLoadVideo(video);
+		if (!rel_audio_file.empty() && context->ass->Properties.audio_file.empty())
+			context->ass->Properties.audio_file.swap(rel_audio_file);
+	}
 	if (!audio.empty())
 		DoLoadAudio(audio, false);
 	else if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)

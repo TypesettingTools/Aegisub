@@ -61,7 +61,6 @@ VideoController::VideoController(agi::Context *c)
 	context->ass->AddCommitListener(&VideoController::OnSubtitlesCommit, this),
 	context->project->AddVideoProviderListener(&VideoController::OnNewVideoProvider, this),
 	context->selectionController->AddActiveLineListener(&VideoController::OnActiveLineChanged, this),
-	context->subsController->AddFileSaveListener(&VideoController::OnSubtitlesSave, this),
 }))
 {
 	Bind(EVT_VIDEO_ERROR, &VideoController::OnVideoError, this);
@@ -76,6 +75,9 @@ void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	provider = new_provider;
 	if (!provider) {
 		color_matrix.clear();
+		context->ass->Properties.ar_mode = 0;
+		context->ass->Properties.ar_value = 0.0;
+		context->ass->Properties.video_position = 0;
 		return;
 	}
 
@@ -98,33 +100,12 @@ void VideoController::OnSubtitlesCommit(int type, std::set<const AssDialogue *> 
 		}
 	}
 
-	if (changed.empty() || no_amend)
+	if (changed.empty())
 		provider->LoadSubtitles(context->ass.get());
 	else
 		provider->UpdateSubtitles(context->ass.get(), changed);
 	if (!IsPlaying())
 		provider->GetFrame(frame_n, TimeAtFrame(frame_n));
-
-	no_amend = false;
-}
-
-void VideoController::OnSubtitlesSave() {
-	no_amend = true;
-
-	if (!provider) {
-		context->ass->SaveUIState("Video Aspect Ratio", "");
-		context->ass->SaveUIState("Video Position", "");
-		return;
-	}
-
-	std::string ar;
-	if (ar_type == AspectRatio::Custom)
-		ar = "c" + std::to_string(ar_value);
-	else
-		ar = std::to_string((int)ar_type);
-
-	context->ass->SaveUIState("Video Aspect Ratio", ar);
-	context->ass->SaveUIState("Video Position", std::to_string(frame_n));
 }
 
 void VideoController::OnActiveLineChanged(AssDialogue *line) {
@@ -133,6 +114,7 @@ void VideoController::OnActiveLineChanged(AssDialogue *line) {
 }
 
 void VideoController::RequestFrame() {
+	context->ass->Properties.video_position = frame_n;
 	provider->RequestFrame(frame_n, TimeAtFrame(frame_n));
 }
 
@@ -243,12 +225,16 @@ double VideoController::GetARFromType(AspectRatio type) const {
 void VideoController::SetAspectRatio(double value) {
 	ar_type = AspectRatio::Custom;
 	ar_value = mid(.5, value, 5.);
+	context->ass->Properties.ar_mode = (int)ar_type;
+	context->ass->Properties.ar_value = ar_value;
 	ARChange(ar_type, ar_value);
 }
 
 void VideoController::SetAspectRatio(AspectRatio type) {
 	ar_value = mid(.5, GetARFromType(type), 5.);
 	ar_type = type;
+	context->ass->Properties.ar_mode = (int)ar_type;
+	context->ass->Properties.ar_value = ar_value;
 	ARChange(ar_type, ar_value);
 }
 

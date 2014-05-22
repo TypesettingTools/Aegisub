@@ -52,11 +52,12 @@ class SubsController {
 
 	/// A new file has been opened (filename)
 	agi::signal::Signal<agi::fs::path> FileOpen;
-	/// The file is about to be saved
-	/// This signal is intended for adding metadata such as video filename,
-	/// frame number, etc. Ideally this would all be done immediately rather
-	/// than waiting for a save, but that causes (more) issues with undo
+	/// The file has been saved
 	agi::signal::Signal<> FileSave;
+	/// The file is about to be saved
+	/// This signal is intended for adding metadata which is awkward or
+	/// expensive to always keep up to date
+	agi::signal::Signal<> UpdateProperties;
 
 	/// The filename of the currently open file, if any
 	agi::fs::path filename;

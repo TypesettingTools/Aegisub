@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_file.h
-/// @see ass_file.cpp
-/// @ingroup subs_storage
-///
-
 #include "ass_entry.h"
 
 #include <libaegisub/fs_fwd.h>
@@ -58,6 +53,26 @@ struct AssFileCommit {
 	AssDialogue *single_line;
 };
 
+struct ProjectProperties {
+	std::string automation_scripts;
+	std::string export_filters;
+	std::string export_encoding;
+	std::string style_storage;
+	std::string audio_file;
+	std::string video_file;
+	std::string timecodes_file;
+	std::string keyframes_file;
+	std::map<std::string, std::string> automation_settings;
+
+	// UI State
+	double video_zoom = 0.;
+	double ar_value = 0.;
+	int scroll_position = 0;
+	int active_row = 0;
+	int ar_mode = 0;
+	int video_position = 0;
+};
+
 class AssFile {
 	/// A set of changes has been committed to the file (AssFile::COMMITType)
 	agi::signal::Signal<int, std::set<const AssDialogue*> const&> AnnounceCommit;
@@ -69,6 +84,7 @@ public:
 	EntryList<AssDialogue> Events;
 	std::vector<AssAttachment> Attachments;
 	AegisubExtradataMap Extradata;
+	ProjectProperties Properties;
 
 	uint32_t next_extradata_id = 0;
 
@@ -104,9 +120,6 @@ public:
 	std::string GetScriptInfo(std::string const& key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
 	void SetScriptInfo(std::string const& key, std::string const& value);
-	std::string GetUIState(std::string const& key) const;
-	int GetUIStateAsInt(std::string const& key) const;
-	void SaveUIState(std::string const& key, std::string const& value);
 
 	/// @brief Add a new extradata entry
 	/// @param key Class identifier/owner for the extradata

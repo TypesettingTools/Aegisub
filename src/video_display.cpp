@@ -109,7 +109,6 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	connections = agi::signal::make_vector({
 		con->project->AddVideoProviderListener(&VideoDisplay::UpdateSize, this),
 		con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
-		con->subsController->AddFileSaveListener(&VideoDisplay::OnSubtitlesSave, this),
 	});
 
 	Bind(wxEVT_PAINT, std::bind(&VideoDisplay::Render, this));
@@ -345,6 +344,7 @@ void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 		PositionVideo();
 		zoomValue = double(viewport_height) / con->project->VideoProvider()->GetHeight();
 		zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
+		con->ass->Properties.video_zoom = zoomValue;
 	}
 	else {
 		PositionVideo();
@@ -385,11 +385,13 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 }
 
 void VideoDisplay::SetZoom(double value) {
+	if (value == 0) return;
 	zoomValue = std::max(value, .125);
 	size_t selIndex = zoomValue / .125 - 1;
 	if (selIndex < zoomBox->GetCount())
 		zoomBox->SetSelection(selIndex);
 	zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
+	con->ass->Properties.video_zoom = zoomValue;
 	UpdateSize();
 }
 
@@ -397,6 +399,7 @@ void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	int sel = zoomBox->GetSelection();
 	if (sel != wxNOT_FOUND) {
 		zoomValue = (sel + 1) * .125;
+		con->ass->Properties.video_zoom = zoomValue;
 		UpdateSize();
 	}
 }
@@ -443,8 +446,4 @@ void VideoDisplay::Unload() {
 	videoOut.reset();
 	tool.reset();
 	pending_frame.reset();
-}
-
-void VideoDisplay::OnSubtitlesSave() {
-	con->ass->SaveUIState("Video Zoom Percent", std::to_string(zoomValue));
 }

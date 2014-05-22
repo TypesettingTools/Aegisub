@@ -87,7 +87,7 @@ DialogExport::DialogExport(agi::Context *c)
 	filter_list->Bind(wxEVT_LISTBOX, &DialogExport::OnChange, this);
 
 	// Get selected filters
-	std::string selected = c->ass->GetScriptInfo("Export filters");
+	std::string const& selected = c->ass->Properties.export_filters;
 	boost::char_separator<char> sep("|");
 	for (auto const& token : boost::tokenizer<boost::char_separator<char>>(selected, sep)) {
 		auto it = find(begin(filters), end(filters), token);
@@ -119,7 +119,7 @@ DialogExport::DialogExport(agi::Context *c)
 	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, wxSizerFlags().Center().Border(wxRIGHT));
 	charset_list_sizer->Add(charset_list, wxSizerFlags(1).Expand());
-	if (!charset_list->SetStringSelection(to_wx(c->ass->GetScriptInfo("Export Encoding"))))
+	if (!charset_list->SetStringSelection(to_wx(c->ass->Properties.export_encoding)))
 		charset_list->SetStringSelection("Unicode (UTF-8)");
 
 	wxSizer *top_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Filters"));
@@ -148,15 +148,14 @@ DialogExport::DialogExport(agi::Context *c)
 }
 
 DialogExport::~DialogExport() {
-	std::string infoList;
+	c->ass->Properties.export_filters.clear();
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
 		if (filter_list->IsChecked(i)) {
-			if (!infoList.empty())
-				infoList += "|";
-			infoList += from_wx(filter_list->GetString(i));
+			if (!c->ass->Properties.export_filters.empty())
+				c->ass->Properties.export_filters += "|";
+			c->ass->Properties.export_filters += from_wx(filter_list->GetString(i));
 		}
 	}
-	c->ass->SetScriptInfo("Export filters", infoList);
 }
 
 void DialogExport::OnProcess(wxCommandEvent &) {
@@ -172,7 +171,7 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 
 	try {
 		wxBusyCursor busy;
-		c->ass->SetScriptInfo("Export Encoding", from_wx(charset_list->GetStringSelection()));
+		c->ass->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
 		exporter->Export(filename, from_wx(charset_list->GetStringSelection()), this);
 	}
 	catch (agi::UserCancelException const&) {

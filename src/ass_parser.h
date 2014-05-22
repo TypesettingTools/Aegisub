@@ -20,6 +20,9 @@ class AssAttachment;
 class AssFile;
 
 class AssParser {
+	class HeaderToProperty;
+	std::unique_ptr<HeaderToProperty> property_handler;
+
 	AssFile *target;
 	int version;
 	std::unique_ptr<AssAttachment> attach;
@@ -29,6 +32,7 @@ class AssParser {
 	void ParseEventLine(std::string const& data);
 	void ParseStyleLine(std::string const& data);
 	void ParseScriptInfoLine(std::string const& data);
+	void ParseMetadataLine(std::string const& data);
 	void ParseFontLine(std::string const& data);
 	void ParseGraphicsLine(std::string const& data);
 	void ParseExtradataLine(std::string const &data);

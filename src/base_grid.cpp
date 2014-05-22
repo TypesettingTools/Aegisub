@@ -127,7 +127,6 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 	connections = agi::signal::make_vector({
 		context->ass->AddCommitListener(&BaseGrid::OnSubtitlesCommit, this),
 		context->subsController->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this),
-		context->subsController->AddFileSaveListener(&BaseGrid::OnSubtitlesSave, this),
 
 		context->selectionController->AddActiveLineListener(&BaseGrid::OnActiveLineChanged, this),
 		context->selectionController->AddSelectionListener([&]{ Refresh(false); }),
@@ -184,11 +183,7 @@ void BaseGrid::OnSubtitlesCommit(int type) {
 }
 
 void BaseGrid::OnSubtitlesOpen() {
-	ScrollTo(context->ass->GetUIStateAsInt("Scroll Position"));
-}
-
-void BaseGrid::OnSubtitlesSave() {
-	context->ass->SaveUIState("Scroll Position", std::to_string(yPos));
+	ScrollTo(context->ass->Properties.scroll_position);
 }
 
 void BaseGrid::OnShowColMenu(wxCommandEvent &event) {
@@ -444,7 +439,7 @@ void BaseGrid::OnSize(wxSizeEvent &) {
 void BaseGrid::OnScroll(wxScrollEvent &event) {
 	int newPos = event.GetPosition();
 	if (yPos != newPos) {
-		yPos = newPos;
+		context->ass->Properties.scroll_position = yPos = newPos;
 		Refresh(false);
 	}
 }
@@ -580,7 +575,7 @@ void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 void BaseGrid::ScrollTo(int y) {
 	int nextY = mid(0, y, GetRows() - 1);
 	if (yPos != nextY) {
-		yPos = nextY;
+		context->ass->Properties.scroll_position = yPos = nextY;
 		scrollBar->SetThumbPosition(yPos);
 		Refresh(false);
 	}
@@ -605,7 +600,7 @@ void BaseGrid::AdjustScrollbar() {
 	int drawPerScreen = clientSize.GetHeight() / lineHeight;
 	int rows = GetRows();
 
-	yPos = mid(0, yPos, rows - 1);
+	context->ass->Properties.scroll_position = yPos = mid(0, yPos, rows - 1);
 
 	scrollBar->SetScrollbar(yPos, drawPerScreen, rows + drawPerScreen - 1, drawPerScreen - 2, true);
 	scrollBar->Thaw();

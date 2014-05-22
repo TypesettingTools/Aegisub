@@ -220,11 +220,9 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 		this->filename = filename;
 		config::path->SetToken("?script", filename.parent_path());
 
-		FileSave();
-
 		context->ass->CleanExtradata();
-
 		writer->WriteFile(context->ass.get(), filename, 0, encoding);
+		FileSave();
 	}
 	catch (...) {
 		autosaved_commit_id = old_autosaved_commit_id;

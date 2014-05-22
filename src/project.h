@@ -29,7 +29,6 @@ class wxString;
 namespace agi { struct Context; }
 
 class Project {
-	// Things owned by this
 	std::unique_ptr<AudioProvider> audio_provider;
 	std::unique_ptr<AsyncVideoProvider> video_provider;
 	agi::vfr::Framerate timecodes;
@@ -46,10 +45,7 @@ class Project {
 	agi::signal::Signal<std::vector<int> const&> AnnounceKeyframesModified;
 
 	bool video_has_subtitles = false;
-
 	DialogProgress *progress = nullptr;
-
-	// Things not
 	agi::Context *context = nullptr;
 
 	void ShowError(wxString const& message);
@@ -62,10 +58,11 @@ class Project {
 	void DoLoadKeyframes(agi::fs::path const& path);
 
 	void LoadUnloadFiles();
-
-	void OnSubtitlesSave();
+	void UpdateRelativePaths();
 	void ReloadAudio();
 	void ReloadVideo();
+
+	void SetPath(agi::fs::path& var, const char *token, const char *mru, agi::fs::path const& value);
 
 public:
 	Project(agi::Context *context);

@@ -27,7 +27,6 @@
 SelectionController::SelectionController(agi::Context *c)
 : context(c)
 , open_connection(c->subsController->AddFileOpenListener(&SelectionController::OnSubtitlesOpen, this))
-, save_connection(c->subsController->AddFileSaveListener(&SelectionController::OnSubtitlesSave, this))
 {
 }
 
@@ -35,17 +34,12 @@ void SelectionController::OnSubtitlesOpen() {
 	selection.clear();
 	active_line = nullptr;
 	if (!context->ass->Events.empty()) {
-		int row = mid<int>(0, context->ass->GetUIStateAsInt("Active Line"), context->ass->Events.size() - 1);
+		int row = mid<int>(0, context->ass->Properties.active_row, context->ass->Events.size() - 1);
 		active_line = &*std::next(context->ass->Events.begin(), row);
 		selection.insert(active_line);
 	}
 	AnnounceSelectedSetChanged();
 	AnnounceActiveLineChanged(active_line);
-}
-
-void SelectionController::OnSubtitlesSave() {
-	if (active_line)
-		context->ass->SaveUIState("Active Line", std::to_string(active_line->Row));
 }
 
 void SelectionController::SetSelectedSet(Selection new_selection) {
@@ -56,6 +50,8 @@ void SelectionController::SetSelectedSet(Selection new_selection) {
 void SelectionController::SetActiveLine(AssDialogue *new_line) {
 	if (new_line != active_line) {
 		active_line = new_line;
+		if (active_line)
+			context->ass->Properties.active_row = active_line->Row;
 		AnnounceActiveLineChanged(new_line);
 	}
 }
@@ -64,6 +60,8 @@ void SelectionController::SetSelectionAndActive(Selection new_selection, AssDial
 	bool active_line_changed = new_line != active_line;
 	selection = std::move(new_selection);
 	active_line = new_line;
+	if (active_line)
+		context->ass->Properties.active_row = active_line->Row;
 
 	AnnounceSelectedSetChanged();
 	if (active_line_changed)

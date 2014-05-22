@@ -101,19 +101,12 @@ class VideoController final : public wxEvtHandler {
 
 	std::vector<agi::signal::Connection> connections;
 
-	/// Amending the frame source's copy of the subtitle file requires that it
-	/// be kept in perfect sync. Saving the file can add lines to the file
-	/// without a commit, breaking this sync, so force a non-amend after each
-	/// save.
-	bool no_amend = false;
-
 	void OnPlayTimer(wxTimerEvent &event);
 
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
 
 	void OnSubtitlesCommit(int type, std::set<const AssDialogue *> const& changed);
-	void OnSubtitlesSave();
 	void OnNewVideoProvider(AsyncVideoProvider *provider);
 	void OnActiveLineChanged(AssDialogue *line);
 

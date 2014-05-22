@@ -190,7 +190,7 @@ namespace Automation4 {
 
 	public:
 		/// Deletes all scripts managed
-		virtual ~ScriptManager();
+		virtual ~ScriptManager() = default;
 		/// Add a script to the manager.
 		void Add(std::unique_ptr<Script> script);
 		/// Remove a script from the manager, and delete the Script object.
@@ -215,9 +215,9 @@ namespace Automation4 {
 	/// Manager for scripts specified by a subtitle file
 	class LocalScriptManager final : public ScriptManager {
 		agi::Context *context;
-		std::vector<agi::signal::Connection> connections;
+		agi::signal::Connection file_open_connection;
 
-		void OnSubtitlesSave();
+		void SaveLoadedList();
 	public:
 		LocalScriptManager(agi::Context *context);
 		void Reload() override;

@@ -319,7 +319,7 @@ void DialogStyleManager::UpdateStorage() {
 
 void DialogStyleManager::OnChangeCatalog() {
 	std::string catalog(from_wx(CatalogList->GetStringSelection()));
-	c->ass->SetScriptInfo("Last Style Storage", catalog);
+	c->ass->Properties.style_storage = catalog;
 	Store.LoadCatalog(catalog);
 	UpdateStorage();
 }
@@ -341,15 +341,12 @@ void DialogStyleManager::LoadCatalog() {
 	}
 
 	// Set to default if available
-	std::string pickStyle = c->ass->GetScriptInfo("Last Style Storage");
+	std::string pickStyle = c->ass->Properties.style_storage;
 	if (pickStyle.empty())
 		pickStyle = "Default";
 
 	int opt = CatalogList->FindString(to_wx(pickStyle), false);
-	if (opt != wxNOT_FOUND)
-		CatalogList->SetSelection(opt);
-	else
-		CatalogList->SetSelection(0);
+	CatalogList->SetSelection(opt == wxNOT_FOUND ? 0 : opt);
 
 	OnChangeCatalog();
 }

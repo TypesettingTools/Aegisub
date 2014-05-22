@@ -182,14 +182,14 @@ namespace Automation4 {
 
 	std::string ExportFilter::GetScriptSettingsIdentifier()
 	{
-		return inline_string_encode("Automation Settings " + GetName());
+		return inline_string_encode(GetName());
 	}
 
 	wxWindow* ExportFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {
 		config_dialog = GenerateConfigDialog(parent, c);
 
 		if (config_dialog) {
-			std::string val = c->ass->GetScriptInfo(GetScriptSettingsIdentifier());
+			std::string const& val = c->ass->Properties.automation_settings[GetScriptSettingsIdentifier()];
 			if (!val.empty())
 				config_dialog->Unserialise(val);
 			return config_dialog->CreateWindow(parent);
@@ -199,11 +199,8 @@ namespace Automation4 {
 	}
 
 	void ExportFilter::LoadSettings(bool is_default, agi::Context *c) {
-		if (config_dialog) {
-			std::string val = config_dialog->Serialise();
-			if (!val.empty())
-				c->ass->SetScriptInfo(GetScriptSettingsIdentifier(), val);
-		}
+		if (config_dialog)
+			c->ass->Properties.automation_settings[GetScriptSettingsIdentifier()] = config_dialog->Serialise();
 	}
 
 	// ProgressSink
@@ -285,10 +282,6 @@ namespace Automation4 {
 	}
 
 	// ScriptManager
-	ScriptManager::~ScriptManager()
-	{
-	}
-
 	void ScriptManager::Add(std::unique_ptr<Script> script)
 	{
 		if (find(scripts.begin(), scripts.end(), script) == scripts.end())
@@ -373,18 +366,16 @@ namespace Automation4 {
 
 	LocalScriptManager::LocalScriptManager(agi::Context *c)
 	: context(c)
-	, connections(agi::signal::make_vector({
-		c->subsController->AddFileSaveListener(&LocalScriptManager::OnSubtitlesSave, this),
-		c->subsController->AddFileOpenListener(&LocalScriptManager::Reload, this),
-	}))
+	, file_open_connection(c->subsController->AddFileOpenListener(&LocalScriptManager::Reload, this))
 	{
+		AddScriptChangeListener(&LocalScriptManager::SaveLoadedList, this);
 	}
 
 	void LocalScriptManager::Reload()
 	{
 		scripts.clear();
 
-		auto local_scripts = context->ass->GetScriptInfo("Automation Scripts");
+		auto const& local_scripts = context->ass->Properties.automation_scripts;
 		if (local_scripts.empty()) {
 			ScriptsChanged();
 			return;
@@ -421,7 +412,7 @@ namespace Automation4 {
 		ScriptsChanged();
 	}
 
-	void LocalScriptManager::OnSubtitlesSave()
+	void LocalScriptManager::SaveLoadedList()
 	{
 		// Store Automation script data
 		// Algorithm:
@@ -450,7 +441,7 @@ namespace Automation4 {
 
 			scripts_string += scriptfn;
 		}
-		context->ass->SetScriptInfo("Automation Scripts", scripts_string);
+		context->ass->Properties.automation_scripts = std::move(scripts_string);
 	}
 
 	// ScriptFactory

@@ -24,6 +24,7 @@
 
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -31,9 +32,71 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
+#include <boost/variant.hpp>
+#include <unordered_map>
+
+class AssParser::HeaderToProperty {
+	using field = boost::variant<
+		std::string ProjectProperties::*,
+		int ProjectProperties::*,
+		double ProjectProperties::*
+	>;
+	std::unordered_map<std::string, field> fields;
+
+public:
+	HeaderToProperty()
+	: fields({
+		{"Automation Scripts", &ProjectProperties::automation_scripts},
+		{"Export Filters", &ProjectProperties::export_filters},
+		{"Export Encoding", &ProjectProperties::export_encoding},
+		{"Last Style Storage", &ProjectProperties::style_storage},
+		{"Audio URI", &ProjectProperties::audio_file},
+		{"Audio File", &ProjectProperties::audio_file},
+		{"Video File", &ProjectProperties::video_file},
+		{"Timecodes File", &ProjectProperties::timecodes_file},
+		{"Keyframes File", &ProjectProperties::keyframes_file},
+		{"Video Zoom Percent", &ProjectProperties::video_zoom},
+		{"Scroll Position", &ProjectProperties::scroll_position},
+		{"Active Line", &ProjectProperties::active_row},
+		{"Video Position", &ProjectProperties::video_position},
+		{"Video AR Mode", &ProjectProperties::ar_mode},
+		{"Video AR Value", &ProjectProperties::ar_value},
+		{"Aegisub Video Zoom Percent", &ProjectProperties::video_zoom},
+		{"Aegisub Scroll Position", &ProjectProperties::scroll_position},
+		{"Aegisub Active Line", &ProjectProperties::active_row},
+		{"Aegisub Video Position", &ProjectProperties::video_position}
+	})
+	{
+	}
+
+	bool ProcessProperty(AssFile *target, std::string const& key, std::string const& value) {
+		auto it = fields.find(key);
+		if (it != end(fields)) {
+			using namespace agi::util;
+			struct {
+				using result_type = void;
+				ProjectProperties &obj;
+				std::string const& value;
+				void operator()(std::string ProjectProperties::*f) const { obj.*f = value; }
+				void operator()(int ProjectProperties::*f)         const { try_parse(value, &(obj.*f)); }
+				void operator()(double ProjectProperties::*f)      const { try_parse(value, &(obj.*f)); }
+			} visitor {target->Properties, value};
+			boost::apply_visitor(visitor, it->second);
+			return true;
+		}
+
+		if (boost::starts_with(key, "Automation Settings ")) {
+			target->Properties.automation_settings[key.substr(strlen("Automation Settings"))] = value;
+			return true;
+		}
+
+		return false;
+	}
+};
 
 AssParser::AssParser(AssFile *target, int version)
-: target(target)
+: property_handler(new HeaderToProperty)
+, target(target)
 , version(version)
 , state(&AssParser::ParseScriptInfoLine)
 {
@@ -94,7 +157,23 @@ void AssParser::ParseScriptInfoLine(std::string const& data) {
 	size_t pos = data.find(':');
 	if (pos == data.npos) return;
 
-	target->Info.push_back(*new AssInfo(data.substr(0, pos), boost::trim_left_copy(data.substr(pos + 1))));
+	auto key = data.substr(0, pos);
+	auto value = data.substr(pos + 1);
+	boost::trim_left(value);
+
+	if (!property_handler->ProcessProperty(target, key, value))
+		target->Info.push_back(*new AssInfo(std::move(key), std::move(value)));
+}
+
+void AssParser::ParseMetadataLine(std::string const& data) {
+	size_t pos = data.find(':');
+	if (pos == data.npos) return;
+
+	auto key = data.substr(0, pos);
+	auto value = data.substr(pos + 1);
+	boost::trim_left(value);
+
+	property_handler->ProcessProperty(target, key, value);
 }
 
 void AssParser::ParseEventLine(std::string const& data) {
@@ -171,12 +250,14 @@ void AssParser::AddLine(std::string const& data) {
 			state = &AssParser::ParseEventLine;
 		else if (low == "[script info]")
 			state = &AssParser::ParseScriptInfoLine;
+		else if (low == "[aegisub project garbage]")
+			state = &AssParser::ParseMetadataLine;
+		else if (low == "[aegisub extradata]")
+			state = &AssParser::ParseExtradataLine;
 		else if (low == "[graphics]")
 			state = &AssParser::ParseGraphicsLine;
 		else if (low == "[fonts]")
 			state = &AssParser::ParseFontLine;
-		else if (low == "[aegisub extradata]")
-			state = &AssParser::ParseExtradataLine;
 		else
 			state = &AssParser::UnknownLine;
 		return;
