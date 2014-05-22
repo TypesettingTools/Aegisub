@@ -89,7 +89,7 @@ public:
 
 	Color rgb_to_rgb(Color c) const {
 		auto arr = rgb_to_rgb(std::array<uint8_t, 3>{{c.r, c.g, c.b}});
-		return Color{arr[0], arr[1], arr[2]};
+		return Color{arr[0], arr[1], arr[2], c.a};
 	}
 };
 }
