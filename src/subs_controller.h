@@ -54,10 +54,6 @@ class SubsController {
 	agi::signal::Signal<agi::fs::path> FileOpen;
 	/// The file has been saved
 	agi::signal::Signal<> FileSave;
-	/// The file is about to be saved
-	/// This signal is intended for adding metadata which is awkward or
-	/// expensive to always keep up to date
-	agi::signal::Signal<> UpdateProperties;
 
 	/// The filename of the currently open file, if any
 	agi::fs::path filename;
@@ -110,6 +106,11 @@ public:
 
 	/// Can the file be saved in its current format?
 	bool CanSave() const;
+
+	/// The file is about to be saved
+	/// This signal is intended for adding metadata which is awkward or
+	/// expensive to always keep up to date
+	agi::signal::Signal<> UpdateProperties;
 
 	DEFINE_SIGNAL_ADDERS(FileOpen, AddFileOpenListener)
 	DEFINE_SIGNAL_ADDERS(FileSave, AddFileSaveListener)

@@ -267,6 +267,33 @@ namespace {
 		return 4;
 	}
 
+	int project_properties(lua_State *L)
+	{
+		const agi::Context *c = get_context(L);
+		if (!c)
+			lua_pushnil(L);
+		else {
+			lua_createtable(L, 0, 14);
+#define PUSH_FIELD(name) set_field(L, #name, c->ass->Properties.name)
+			PUSH_FIELD(automation_scripts);
+			PUSH_FIELD(export_filters);
+			PUSH_FIELD(export_encoding);
+			PUSH_FIELD(style_storage);
+			PUSH_FIELD(audio_file);
+			PUSH_FIELD(video_file);
+			PUSH_FIELD(timecodes_file);
+			PUSH_FIELD(keyframes_file);
+			PUSH_FIELD(video_zoom);
+			PUSH_FIELD(ar_value);
+			PUSH_FIELD(scroll_position);
+			PUSH_FIELD(active_row);
+			PUSH_FIELD(ar_mode);
+			PUSH_FIELD(video_position);
+#undef PUSH_FIELD
+		}
+		return 1;
+	}
+
 	class LuaFeature {
 		int myid = 0;
 	protected:
@@ -422,7 +449,7 @@ namespace {
 
 		// make "aegisub" table
 		lua_pushstring(L, "aegisub");
-		lua_createtable(L, 0, 12);
+		lua_createtable(L, 0, 13);
 
 		set_field<LuaCommand::LuaRegister>(L, "register_macro");
 		set_field<LuaExportFilter::LuaRegister>(L, "register_filter");
@@ -437,6 +464,7 @@ namespace {
 		set_field<clipboard_init>(L, "__init_clipboard");
 		set_field<get_file_name>(L, "file_name");
 		set_field<get_translation>(L, "gettext");
+		set_field<project_properties>(L, "project_properties");
 
 		// store aegisub table to globals
 		lua_settable(L, LUA_GLOBALSINDEX);
