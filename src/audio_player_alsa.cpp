@@ -44,128 +44,74 @@
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
+#include <atomic>
 #include <algorithm>
+#include <boost/scope_exit.hpp>
+#include <chrono>
+#include <condition_variable>
 #include <alsa/asoundlib.h>
-#include <inttypes.h>
 #include <memory>
+#include <mutex>
+#include <thread>
+
+// X11 is the bestest
+#undef None
 
 namespace {
-struct PlaybackState {
-	pthread_mutex_t mutex;
-	pthread_cond_t cond;
-
-	bool playing = false;
-	bool alive = false;
-
-	bool signal_start = false;
-	bool signal_stop = false;
-	bool signal_close = false;
-	bool signal_volume = false;
-
-	double volume = 1.0;
-	int64_t start_position = 0;
-	int64_t end_position = 0;
-
-	AudioProvider *provider = nullptr;
-	std::string device_name;
-
-	int64_t last_position = 0;
-	timespec last_position_time;
-
-	PlaybackState()
-	{
-		pthread_mutex_init(&mutex, 0);
-		pthread_cond_init(&cond, 0);
-		memset(&last_position_time, 0, sizeof last_position_time);
-	}
-
-	~PlaybackState()
-	{
-		pthread_cond_destroy(&cond);
-		pthread_mutex_destroy(&mutex);
-	}
+enum class Message {
+	None,
+	Start,
+	Stop,
+	Close
 };
 
 class AlsaPlayer final : public AudioPlayer {
-	PlaybackState ps;
-	pthread_t thread;
+	std::mutex mutex;
+	std::condition_variable cond;
+
+	std::string device_name = OPT_GET("Player/Audio/ALSA/Device")->GetString();
+
+	Message message = Message::None;
+
+	std::atomic<bool> playing{false};
+	std::atomic<double> volume{1.0};
+	int64_t start_position = 0;
+	std::atomic<int64_t> end_position{0};
+
+	int64_t last_position = 0;
+	timespec last_position_time = {0, 0};
+
+	std::thread thread;
+
+	void PlaybackThread();
 
 public:
 	AlsaPlayer(AudioProvider *provider);
 	~AlsaPlayer();
 
-	void Play(int64_t start, int64_t count);
-	void Stop();
-	bool IsPlaying();
+	void Play(int64_t start, int64_t count) override;
+	void Stop() override;
+	bool IsPlaying() override { return playing; }
 
-	int64_t GetStartPosition();
-	int64_t GetEndPosition();
-	int64_t GetCurrentPosition();
-	void SetEndPosition(int64_t pos);
-	void SetCurrentPosition(int64_t pos);
-
-	void SetVolume(double vol);
+	void SetVolume(double vol) override { volume = vol; }
+	int64_t GetEndPosition() override { return end_position; }
+	int64_t GetCurrentPosition() override;
+	void SetEndPosition(int64_t pos) override;
 };
 
-class PthreadMutexLocker {
-	pthread_mutex_t &mutex;
-
-	PthreadMutexLocker(const PthreadMutexLocker &) = delete;
-	PthreadMutexLocker& operator=(PthreadMutexLocker const&) = delete;
-
-public:
-	explicit PthreadMutexLocker(pthread_mutex_t &mutex) : mutex(mutex)
-	{
-		pthread_mutex_lock(&mutex);
-	}
-
-	~PthreadMutexLocker()
-	{
-		pthread_mutex_unlock(&mutex);
-	}
-
-	int WaitCondition(pthread_cond_t &cond)
-	{
-		return pthread_cond_wait(&cond, &mutex);
-	}
-
-	int WaitConditionTimeout(pthread_cond_t &cond, int ms)
-	{
-		timespec abstime;
-		clock_gettime(CLOCK_REALTIME, &abstime);
-		abstime.tv_nsec += ms * 1000000;
-		return pthread_cond_timedwait(&cond, &mutex, &abstime);
-	}
-};
-
-class ScopedAliveFlag {
-	bool &flag;
-
-	ScopedAliveFlag(const ScopedAliveFlag &) = delete;
-	ScopedAliveFlag& operator=(ScopedAliveFlag const&) = delete;
-
-public:
-	explicit ScopedAliveFlag(bool &var) : flag(var) { flag = true; }
-	~ScopedAliveFlag() { flag = false; }
-};
-
-void *playback_thread(void *arg)
+void AlsaPlayer::PlaybackThread()
 {
-	// This is exception-free territory!
-	// Return a pointer to a static string constant describing the error, or 0 on no error
-	auto &ps = *static_cast<PlaybackState *>(arg);
+	std::unique_lock<std::mutex> lock(mutex);
 
-	PthreadMutexLocker ml(ps.mutex);
-	ScopedAliveFlag alive_flag(ps.alive);
-
-	snd_pcm_t *pcm = 0;
-	if (snd_pcm_open(&pcm, ps.device_name.c_str(), SND_PCM_STREAM_PLAYBACK, 0) != 0)
-		return (void*)"snd_pcm_open";
+	snd_pcm_t *pcm = nullptr;
+	if (snd_pcm_open(&pcm, device_name.c_str(), SND_PCM_STREAM_PLAYBACK, 0) != 0)
+		return;
 	LOG_D("audio/player/alsa") << "opened pcm";
+	BOOST_SCOPE_EXIT_ALL(&) { snd_pcm_close(pcm); };
 
 do_setup:
 	snd_pcm_format_t pcm_format;
-	switch (ps.provider->GetBytesPerSample())
+	switch (provider->GetBytesPerSample())
 	{
 	case 1:
 		LOG_D("audio/player/alsa") << "format U8";
@@ -176,62 +122,58 @@ do_setup:
 		pcm_format = SND_PCM_FORMAT_S16_LE;
 		break;
 	default:
-		snd_pcm_close(pcm);
-		return (void*)"snd_pcm_format_t";
+		return;
 	}
 	if (snd_pcm_set_params(pcm,
 	                       pcm_format,
 	                       SND_PCM_ACCESS_RW_INTERLEAVED,
-	                       ps.provider->GetChannels(),
-	                       ps.provider->GetSampleRate(),
+	                       provider->GetChannels(),
+	                       provider->GetSampleRate(),
 	                       1, // allow resample
 	                       100*1000 // 100 milliseconds latency
 	                      ) != 0)
-		return (void*)"snd_pcm_set_params";
+		return;
 	LOG_D("audio/player/alsa") << "set pcm params";
 
-	size_t framesize = ps.provider->GetChannels() * ps.provider->GetBytesPerSample();
+	size_t framesize = provider->GetChannels() * provider->GetBytesPerSample();
 
-	ps.signal_close = false;
-	while (ps.signal_close == false)
+	while (true)
 	{
 		// Wait for condition to trigger
-		if (!ps.signal_start)
-			ml.WaitCondition(ps.cond);
-		LOG_D("audio/player/alsa") << "outer loop, condition happened";
-
-		if (ps.signal_start == false || ps.end_position <= ps.start_position)
+		while (message != Message::Start)
 		{
-			LOG_D("audio/player/alsa") << "nothing to play, rewaiting";
-			ps.signal_start = false;
-			continue;
+			cond.wait(lock, [&] { return message != Message::None; });
+			if (message == Message::Close)
+				return;
+			if (message == Message::Start && end_position > start_position)
+				break;
+			// Not playing, so don't need to stop...
+			message = Message::None;
 		}
+		message = Message::None;
 
 		LOG_D("audio/player/alsa") << "starting playback";
-		int64_t position = ps.start_position;
+		int64_t position = start_position;
 
 		// Playback position
-		ps.last_position = position;
-		clock_gettime(CLOCK_REALTIME, &ps.last_position_time);
+		last_position = position;
+		clock_gettime(CLOCK_REALTIME, &last_position_time);
 
 		// Initial buffer-fill
 		{
-			snd_pcm_sframes_t avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(ps.end_position-position));
+			auto avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(end_position-position));
 			std::unique_ptr<char[]> buf{new char[avail*framesize]};
-			ps.provider->GetAudioWithVolume(buf.get(), position, avail, ps.volume);
+			provider->GetAudioWithVolume(buf.get(), position, avail, volume);
 			snd_pcm_sframes_t written = 0;
 			while (written <= 0)
 			{
 				written = snd_pcm_writei(pcm, buf.get(), avail);
 				if (written == -ESTRPIPE)
-				{
 					snd_pcm_recover(pcm, written, 0);
-				}
 				else if (written <= 0)
 				{
-					snd_pcm_close(pcm);
 					LOG_D("audio/player/alsa") << "error filling buffer";
-					return (void*)"snd_pcm_writei";
+					return;
 				}
 			}
 			position += written;
@@ -241,22 +183,21 @@ do_setup:
 		LOG_D("audio/player/alsa") << "initial buffer filled, hitting start";
 		snd_pcm_start(pcm);
 
-		ps.signal_start = false;
-		ps.signal_stop = false;
-
-		while (ps.signal_stop == false)
+		playing = true;
+		BOOST_SCOPE_EXIT_ALL(&) { playing = false; };
+		while (true)
 		{
-			int64_t orig_position = position;
-			int64_t orig_ps_end_position = ps.end_position;
-
-			ScopedAliveFlag playing_flag(ps.playing);
-
 			// Sleep a bit, or until an event
-			ml.WaitConditionTimeout(ps.cond, 50);
-			//LOG_D("audio/player/alsa") << "playback loop, out of wait";
+			cond.wait_for(lock, std::chrono::milliseconds{25});
+
+			if (message == Message::Close)
+			{
+				snd_pcm_drop(pcm);
+				return;
+			}
 
 			// Check for stop signal
-			if (ps.signal_stop == true)
+			if (message == Message::Stop || message == Message::Start)
 			{
 				LOG_D("audio/player/alsa") << "playback loop, stop signal";
 				snd_pcm_drop(pcm);
@@ -267,8 +208,8 @@ do_setup:
 			snd_pcm_sframes_t delay;
 			if (snd_pcm_delay(pcm, &delay) == 0)
 			{
-				ps.last_position = position - delay;
-				clock_gettime(CLOCK_REALTIME, &ps.last_position_time);
+				last_position = position - delay;
+				clock_gettime(CLOCK_REALTIME, &last_position_time);
 			}
 
 			// Fill buffer
@@ -278,66 +219,50 @@ do_setup:
 				if (snd_pcm_recover(pcm, -EPIPE, 1) < 0)
 				{
 					LOG_D("audio/player/alsa") << "failed to recover from underrun";
-					return (void*)"snd_pcm_avail";
+					return;
 				}
 				tmp_pcm_avail = snd_pcm_avail(pcm);
 			}
-			avail = std::min(tmp_pcm_avail, (snd_pcm_sframes_t)(ps.end_position-position));
+			auto avail = std::min(tmp_pcm_avail, (snd_pcm_sframes_t)(end_position-position));
 			if (avail < 0)
-			{
-				printf("\n--------- avail was less than 0: %ld\n", (long)avail);
-				printf("snd_pcm_avail(pcm): %ld\n", (long)tmp_pcm_avail);
-				printf("original position: %" PRId64 "\n", orig_position);
-				printf("current  position: %" PRId64 "\n", position);
-				printf("original ps.end_position: %" PRId64 "\n", orig_ps_end_position);
-				printf("current  ps.end_position: %" PRId64 "\n", ps.end_position);
-				printf("---------\n\n");
 				continue;
-			}
 
 			{
 				std::unique_ptr<char[]> buf{new char[avail*framesize]};
-				ps.provider->GetAudioWithVolume(buf.get(), position, avail, ps.volume);
+				provider->GetAudioWithVolume(buf.get(), position, avail, volume);
 				snd_pcm_sframes_t written = 0;
 				while (written <= 0)
 				{
 					written = snd_pcm_writei(pcm, buf.get(), avail);
 					if (written == -ESTRPIPE || written == -EPIPE)
-					{
 						snd_pcm_recover(pcm, written, 0);
-					}
 					else if (written == 0)
-					{
 						break;
-					}
 					else if (written < 0)
 					{
-						snd_pcm_close(pcm);
 						LOG_D("audio/player/alsa") << "error filling buffer, written=" << written;
-						return (void*)"snd_pcm_writei";
+						return;
 					}
 				}
 				position += written;
 			}
-			//LOG_D("audio/player/alsa") << "playback loop, filled buffer";
 
 			// Check for end of playback
-			if (position >= ps.end_position)
+			if (position >= end_position)
 			{
 				LOG_D("audio/player/alsa") << "playback loop, past end, draining";
 				snd_pcm_drain(pcm);
 				break;
 			}
 		}
-		ps.signal_stop = false;
+
+		playing = false;
 		LOG_D("audio/player/alsa") << "out of playback loop";
 
 		switch (snd_pcm_state(pcm))
 		{
 		case SND_PCM_STATE_OPEN:
 			// no clue what could have happened here, but start over
-			ps.signal_start = false;
-			ps.signal_stop = false;
 			goto do_setup;
 
 		case SND_PCM_STATE_SETUP:
@@ -347,80 +272,55 @@ do_setup:
 
 		case SND_PCM_STATE_DISCONNECTED:
 			// lost device, close the handle and return error
-			snd_pcm_close(pcm);
-			return (void*)"SND_PCM_STATE_DISCONNECTED";
+			return;
 
 		default:
 			// everything else should either be fine or impossible (here)
 			break;
 		}
 	}
-	ps.signal_close = false;
-	LOG_D("audio/player/alsa") << "out of outer loop";
-
-	snd_pcm_close(pcm);
-
-	return 0;
 }
 
-AlsaPlayer::AlsaPlayer(AudioProvider *provider)
+AlsaPlayer::AlsaPlayer(AudioProvider *provider) try
 : AudioPlayer(provider)
+, thread(&AlsaPlayer::PlaybackThread, this)
 {
-	ps.provider = provider;
-
-	ps.device_name = OPT_GET("Player/Audio/ALSA/Device")->GetString();
-
-	if (pthread_create(&thread, 0, &playback_thread, &ps) != 0)
-		throw agi::AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed", 0);
+}
+catch (std::system_error const&) {
+	throw agi::AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed", 0);
 }
 
 AlsaPlayer::~AlsaPlayer()
 {
 	{
-		PthreadMutexLocker ml(ps.mutex);
-		ps.signal_stop = true;
-		ps.signal_close = true;
-		LOG_D("audio/player/alsa") << "close stream, stop+close signal";
-		pthread_cond_signal(&ps.cond);
+		std::unique_lock<std::mutex> lock(mutex);
+		message = Message::Close;
+		cond.notify_all();
 	}
 
-	pthread_join(thread, 0); // FIXME: check for errors
+	thread.join();
 }
 
 void AlsaPlayer::Play(int64_t start, int64_t count)
 {
-	PthreadMutexLocker ml(ps.mutex);
-	ps.signal_start = true;
-	ps.signal_stop = true; // make sure to stop any ongoing playback first
-	ps.start_position = start;
-	ps.end_position = start + count;
-	pthread_cond_signal(&ps.cond);
+	std::unique_lock<std::mutex> lock(mutex);
+	message = Message::Start;
+	start_position = start;
+	end_position = start + count;
+	cond.notify_all();
 }
 
 void AlsaPlayer::Stop()
 {
-	PthreadMutexLocker ml(ps.mutex);
-	ps.signal_stop = true;
-	LOG_D("audio/player/alsa") << "stop stream, stop signal";
-	pthread_cond_signal(&ps.cond);
-}
-
-bool AlsaPlayer::IsPlaying()
-{
-	PthreadMutexLocker ml(ps.mutex);
-	return ps.playing;
+	std::unique_lock<std::mutex> lock(mutex);
+	message = Message::Stop;
+	cond.notify_all();
 }
 
 void AlsaPlayer::SetEndPosition(int64_t pos)
 {
-	PthreadMutexLocker ml(ps.mutex);
-	ps.end_position = pos;
-}
-
-int64_t AlsaPlayer::GetEndPosition()
-{
-	PthreadMutexLocker ml(ps.mutex);
-	return ps.end_position;
+	std::unique_lock<std::mutex> lock(mutex);
+	end_position = pos;
 }
 
 int64_t AlsaPlayer::GetCurrentPosition()
@@ -430,10 +330,10 @@ int64_t AlsaPlayer::GetCurrentPosition()
 	int64_t samplerate;
 
 	{
-		PthreadMutexLocker ml(ps.mutex);
-		lastpos = ps.last_position;
-		lasttime = ps.last_position_time;
-		samplerate = ps.provider->GetSampleRate();
+		std::unique_lock<std::mutex> lock(mutex);
+		lastpos = last_position;
+		lasttime = last_position_time;
+		samplerate = provider->GetSampleRate();
 	}
 
 	timespec now;
@@ -445,18 +345,7 @@ int64_t AlsaPlayer::GetCurrentPosition()
 	double last_sec = lasttime.tv_sec + lasttime.tv_nsec/NANO;
 	double diff_sec = now_sec - last_sec;
 
-	int64_t pos = lastpos + (int64_t)(diff_sec * samplerate);
-	//printf("AlsaPlayer: current position = %lld\n", pos);
-
-	return pos;
-}
-
-void AlsaPlayer::SetVolume(double vol)
-{
-	PthreadMutexLocker ml(ps.mutex);
-	ps.volume = vol;
-	ps.signal_volume = true;
-	pthread_cond_signal(&ps.cond);
+	return lastpos + (int64_t)(diff_sec * samplerate);
 }
 }
 
