@@ -84,9 +84,14 @@ struct SubsController::UndoInfo {
 	}
 
 	void Apply(agi::Context *c) const {
-		// Keep old lines alive until after the commit is complete
+		// Keep old dialogue lines alive until after the commit is complete
+		// since a bunch of stuff holds references to them
 		AssFile old;
-		old.swap(*c->ass);
+		old.Events.swap(c->ass->Events);
+		c->ass->Info.clear();
+		c->ass->Attachments.clear();
+		c->ass->Styles.clear();
+		c->ass->Extradata.clear();
 
 		sort(begin(selection), end(selection));
 
