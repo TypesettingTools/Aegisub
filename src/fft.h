@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file fft.h
-/// @see fft.cpp
-/// @ingroup utility
-///
-
 #include <cstdlib>
 
 class FFT {

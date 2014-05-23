@@ -36,6 +36,7 @@
 
 #include "fft.h"
 
+#ifndef WITH_FFTW3
 #include <cmath>
 
 void FFT::DoTransform (size_t n_samples,float *input,float *output_r,float *output_i,bool inverse) {
@@ -166,3 +167,4 @@ float FFT::FrequencyAtIndex (unsigned int baseFreq, unsigned int n_samples, unsi
 		return (-(float)(n_samples-index) / (float)n_samples * baseFreq);
 	}
 }
+#endif
