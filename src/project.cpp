@@ -270,6 +270,8 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 		return false;
 	}
 
+	AnnounceVideoProviderModified(video_provider.get());
+
 	UpdateVideoProperties(context->ass.get(), video_provider.get(), context->parent);
 	video_provider->LoadSubtitles(context->ass.get());
 
@@ -288,7 +290,6 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 	if (agi::fs::HasExtension(path, "mkv"))
 		video_has_subtitles = MatroskaWrapper::HasSubtitles(path);
 
-	AnnounceVideoProviderModified(video_provider.get());
 	AnnounceKeyframesModified(keyframes);
 	AnnounceTimecodesModified(timecodes);
 	return true;
