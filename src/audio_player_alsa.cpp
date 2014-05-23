@@ -81,6 +81,8 @@ class AlsaPlayer final : public AudioPlayer {
 	int64_t last_position = 0;
 	timespec last_position_time = {0, 0};
 
+	std::vector<char> decode_buffer;
+
 	std::thread thread;
 
 	void PlaybackThread();
@@ -162,12 +164,12 @@ do_setup:
 		// Initial buffer-fill
 		{
 			auto avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(end_position-position));
-			std::unique_ptr<char[]> buf{new char[avail*framesize]};
-			provider->GetAudioWithVolume(buf.get(), position, avail, volume);
+			decode_buffer.resize(avail * framesize);
+			provider->GetAudioWithVolume(decode_buffer.data(), position, avail, volume);
 			snd_pcm_sframes_t written = 0;
 			while (written <= 0)
 			{
-				written = snd_pcm_writei(pcm, buf.get(), avail);
+				written = snd_pcm_writei(pcm, decode_buffer.data(), avail);
 				if (written == -ESTRPIPE)
 					snd_pcm_recover(pcm, written, 0);
 				else if (written <= 0)
@@ -228,12 +230,12 @@ do_setup:
 				continue;
 
 			{
-				std::unique_ptr<char[]> buf{new char[avail*framesize]};
-				provider->GetAudioWithVolume(buf.get(), position, avail, volume);
+				decode_buffer.resize(avail * framesize);
+				provider->GetAudioWithVolume(decode_buffer.data(), position, avail, volume);
 				snd_pcm_sframes_t written = 0;
 				while (written <= 0)
 				{
-					written = snd_pcm_writei(pcm, buf.get(), avail);
+					written = snd_pcm_writei(pcm, decode_buffer.data(), avail);
 					if (written == -ESTRPIPE || written == -EPIPE)
 						snd_pcm_recover(pcm, written, 0);
 					else if (written == 0)
