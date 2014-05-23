@@ -215,27 +215,27 @@ do_setup:
 		clock_gettime(CLOCK_REALTIME, &ps.last_position_time);
 
 		// Initial buffer-fill
-		snd_pcm_sframes_t avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(ps.end_position-position));
-		char *buf = new char[avail*framesize];
-		ps.provider->GetAudioWithVolume(buf, position, avail, ps.volume);
-		snd_pcm_sframes_t written = 0;
-		while (written <= 0)
 		{
-			written = snd_pcm_writei(pcm, buf, avail);
-			if (written == -ESTRPIPE)
+			snd_pcm_sframes_t avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(ps.end_position-position));
+			std::unique_ptr<char[]> buf{new char[avail*framesize]};
+			ps.provider->GetAudioWithVolume(buf.get(), position, avail, ps.volume);
+			snd_pcm_sframes_t written = 0;
+			while (written <= 0)
 			{
-				snd_pcm_recover(pcm, written, 0);
+				written = snd_pcm_writei(pcm, buf.get(), avail);
+				if (written == -ESTRPIPE)
+				{
+					snd_pcm_recover(pcm, written, 0);
+				}
+				else if (written <= 0)
+				{
+					snd_pcm_close(pcm);
+					LOG_D("audio/player/alsa") << "error filling buffer";
+					return (void*)"snd_pcm_writei";
+				}
 			}
-			else if (written <= 0)
-			{
-				delete[] buf;
-				snd_pcm_close(pcm);
-				LOG_D("audio/player/alsa") << "error filling buffer";
-				return (void*)"snd_pcm_writei";
-			}
+			position += written;
 		}
-		delete[] buf;
-		position += written;
 
 		// Start playback
 		LOG_D("audio/player/alsa") << "initial buffer filled, hitting start";
@@ -294,30 +294,31 @@ do_setup:
 				printf("---------\n\n");
 				continue;
 			}
-			buf = new char[avail*framesize];
-			ps.provider->GetAudioWithVolume(buf, position, avail, ps.volume);
-			written = 0;
-			while (written <= 0)
+
 			{
-				written = snd_pcm_writei(pcm, buf, avail);
-				if (written == -ESTRPIPE || written == -EPIPE)
+				std::unique_ptr<char[]> buf{new char[avail*framesize]};
+				ps.provider->GetAudioWithVolume(buf.get(), position, avail, ps.volume);
+				snd_pcm_sframes_t written = 0;
+				while (written <= 0)
 				{
-					snd_pcm_recover(pcm, written, 0);
+					written = snd_pcm_writei(pcm, buf.get(), avail);
+					if (written == -ESTRPIPE || written == -EPIPE)
+					{
+						snd_pcm_recover(pcm, written, 0);
+					}
+					else if (written == 0)
+					{
+						break;
+					}
+					else if (written < 0)
+					{
+						snd_pcm_close(pcm);
+						LOG_D("audio/player/alsa") << "error filling buffer, written=" << written;
+						return (void*)"snd_pcm_writei";
+					}
 				}
-				else if (written == 0)
-				{
-					break;
-				}
-				else if (written < 0)
-				{
-					delete[] buf;
-					snd_pcm_close(pcm);
-					LOG_D("audio/player/alsa") << "error filling buffer, written=" << written;
-					return (void*)"snd_pcm_writei";
-				}
+				position += written;
 			}
-			delete[] buf;
-			position += written;
 			//LOG_D("audio/player/alsa") << "playback loop, filled buffer";
 
 			// Check for end of playback
