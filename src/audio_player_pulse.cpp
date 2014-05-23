@@ -58,9 +58,6 @@ class PulseAudioPlayer final : public AudioPlayer {
 	unsigned long bpf = 0; // bytes per frame
 
 	wxSemaphore context_notify{0, 1};
-	wxSemaphore context_success{0, 1};
-	volatile int context_success_val;
-
 	wxSemaphore stream_notify{0, 1};
 	wxSemaphore stream_success{0, 1};
 	volatile int stream_success_val;
@@ -76,8 +73,6 @@ class PulseAudioPlayer final : public AudioPlayer {
 
 	int paerror = 0;
 
-	/// Called by PA to notify about contetxt operation completion
-	static void pa_context_success(pa_context *c, int success, PulseAudioPlayer *thread);
 	/// Called by PA to notify about other context-related stuff
 	static void pa_context_notify(pa_context *c, PulseAudioPlayer *thread);
 	/// Called by PA when a stream operation completes
@@ -272,13 +267,6 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 	pa_usec_t playtime = play_cur_time - play_start_time;
 
 	return start_frame + playtime * provider->GetSampleRate() / (1000*1000);
-}
-
-/// @brief Called by PA to notify about contetxt operation completion
-void PulseAudioPlayer::pa_context_success(pa_context *c, int success, PulseAudioPlayer *thread)
-{
-	thread->context_success_val = success;
-	thread->context_success.Post();
 }
 
 /// @brief Called by PA to notify about other context-related stuff
