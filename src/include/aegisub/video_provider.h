@@ -81,6 +81,9 @@ public:
 
 	/// Should the video properties in the script be set to this video's property if they already have values?
 	virtual bool ShouldSetVideoProperties() const { return true; }
+
+	/// Does the file which this provider is reading have an audio track?
+	virtual bool HasAudio() const { return false; }
 };
 
 DEFINE_BASE_EXCEPTION_NOINNER(VideoProviderError, agi::Exception)

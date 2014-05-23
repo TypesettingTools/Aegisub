@@ -74,6 +74,8 @@ public:
 	std::string GetDecoderName() const override    { return master->GetDecoderName(); }
 	std::string GetColorSpace() const override     { return master->GetColorSpace(); }
 	std::string GetRealColorSpace() const override { return master->GetRealColorSpace(); }
+	bool ShouldSetVideoProperties() const override { return master->ShouldSetVideoProperties(); }
+	bool HasAudio() const override                 { return master->HasAudio(); }
 };
 
 std::shared_ptr<VideoFrame> VideoProviderCache::GetFrame(int n) {

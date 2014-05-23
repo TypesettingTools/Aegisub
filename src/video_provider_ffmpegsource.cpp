@@ -63,6 +63,7 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
+	bool has_audio = false;
 
 	void LoadVideo(agi::fs::path const& filename, std::string const& colormatrix);
 
@@ -84,16 +85,17 @@ public:
 #endif
 	}
 
-	int GetFrameCount() const override { return VideoInfo->NumFrames; }
-	int GetWidth() const override { return Width; }
-	int GetHeight() const override { return Height; }
-	double GetDAR() const override { return DAR; }
-	agi::vfr::Framerate GetFPS() const override { return Timecodes; }
-	std::string GetColorSpace() const override { return ColorSpace; }
+	int GetFrameCount() const override             { return VideoInfo->NumFrames; }
+	int GetWidth() const override                  { return Width; }
+	int GetHeight() const override                 { return Height; }
+	double GetDAR() const override                 { return DAR; }
+	agi::vfr::Framerate GetFPS() const override    { return Timecodes; }
+	std::string GetColorSpace() const override     { return ColorSpace; }
 	std::string GetRealColorSpace() const override { return RealColorSpace; }
 	std::vector<int> GetKeyFrames() const override { return KeyFramesList; };
-	std::string GetDecoderName() const override { return "FFmpegSource"; }
-	bool WantsCaching() const override { return true; }
+	std::string GetDecoderName() const override    { return "FFmpegSource"; }
+	bool WantsCaching() const override             { return true; }
+	bool HasAudio() const override                 { return has_audio; }
 };
 
 std::string colormatrix_description(int cs, int cr) {
@@ -203,6 +205,9 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 		if (TrackNumber < 0)
 			throw VideoNotSupported(std::string("Couldn't find any video tracks: ") + ErrInfo.Buffer);
 	}
+
+	// Check if there's an audio track
+	has_audio = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, nullptr) != -1;
 
 	// set thread count
 	int Threads = OPT_GET("Provider/Video/FFmpegSource/Decoding Threads")->GetInt();

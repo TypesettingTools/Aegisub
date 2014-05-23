@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file video_provider_avs.cpp
-/// @brief Avisynth-based video provider
-/// @ingroup video_input
-///
-
 #ifdef WITH_AVISYNTH
 #include "include/aegisub/video_provider.h"
 
@@ -66,6 +61,7 @@ class AvisynthVideoProvider: public VideoProvider {
 	std::string warning;
 	std::string colorspace;
 	std::string real_colorspace;
+	bool has_audio = false;
 
 	AVSValue source_clip;
 	PClip RGB32Video;
@@ -84,16 +80,17 @@ public:
 		try { Init(matrix); } catch (AvisynthError const&) { }
 	}
 
-	int GetFrameCount() const override { return vi.num_frames; }
-	agi::vfr::Framerate GetFPS() const override { return fps; }
-	int GetWidth() const override { return vi.width; }
-	int GetHeight() const override { return vi.height; }
-	double GetDAR() const override { return 0; }
+	int GetFrameCount() const override             { return vi.num_frames; }
+	agi::vfr::Framerate GetFPS() const override    { return fps; }
+	int GetWidth() const override                  { return vi.width; }
+	int GetHeight() const override                 { return vi.height; }
+	double GetDAR() const override                 { return 0; }
 	std::vector<int> GetKeyFrames() const override { return keyframes; }
-	std::string GetWarning() const override { return warning; }
-	std::string GetDecoderName() const override { return decoder_name; }
-	std::string GetColorSpace() const override { return colorspace; }
+	std::string GetWarning() const override        { return warning; }
+	std::string GetDecoderName() const override    { return decoder_name; }
+	std::string GetColorSpace() const override     { return colorspace; }
 	std::string GetRealColorSpace() const override { return real_colorspace; }
+	bool HasAudio() const override                 { return has_audio; }
 };
 
 AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) {
@@ -189,6 +186,7 @@ file_exit:
 void AvisynthVideoProvider::Init(std::string const& colormatrix) {
 	auto script = source_clip;
 	vi = script.AsClip()->GetVideoInfo();
+	has_audio = vi.HasAudio();
 	if (vi.IsRGB())
 		real_colorspace = colorspace = "None";
 	else {

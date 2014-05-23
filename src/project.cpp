@@ -295,8 +295,9 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 }
 
 void Project::LoadVideo(agi::fs::path const& path) {
+	if (path.empty()) return;
 	if (!DoLoadVideo(path)) return;
-	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)
+	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video_file, true);
 }
 

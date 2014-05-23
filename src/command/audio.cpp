@@ -32,6 +32,7 @@
 #include "command.h"
 
 #include "../ass_dialogue.h"
+#include "../async_video_provider.h"
 #include "../audio_box.h"
 #include "../audio_controller.h"
 #include "../audio_karaoke.h"
@@ -118,7 +119,7 @@ struct audio_open_video final : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	bool Validate(const agi::Context *c) override {
-		return !c->project->VideoName().empty();
+		return c->project->VideoProvider() && c->project->VideoProvider()->HasAudio();
 	}
 
 	void operator()(agi::Context *c) override {

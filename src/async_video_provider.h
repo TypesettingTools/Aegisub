@@ -111,6 +111,7 @@ public:
 	std::string GetWarning() const        { return source_provider->GetWarning(); }
 	std::string GetDecoderName() const    { return source_provider->GetDecoderName(); }
 	bool ShouldSetVideoProperties() const { return source_provider->ShouldSetVideoProperties(); }
+	bool HasAudio() const                 { return source_provider->HasAudio(); }
 
 	/// @brief Constructor
 	/// @param videoFileName File to open
