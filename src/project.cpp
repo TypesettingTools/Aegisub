@@ -201,7 +201,7 @@ void Project::LoadUnloadFiles() {
 		else
 			DoLoadAudio(audio, false);
 	}
-	else if (loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)
+	else if (loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video, true);
 }
 
