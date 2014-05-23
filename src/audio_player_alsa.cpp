@@ -65,6 +65,8 @@ enum class Message {
 	Close
 };
 
+using clock = std::chrono::steady_clock;
+
 class AlsaPlayer final : public AudioPlayer {
 	std::mutex mutex;
 	std::condition_variable cond;
@@ -78,14 +80,26 @@ class AlsaPlayer final : public AudioPlayer {
 	int64_t start_position = 0;
 	std::atomic<int64_t> end_position{0};
 
+	std::mutex position_mutex;
 	int64_t last_position = 0;
-	timespec last_position_time = {0, 0};
+	clock::time_point last_position_time;
 
 	std::vector<char> decode_buffer;
 
 	std::thread thread;
 
 	void PlaybackThread();
+
+	void UpdatePlaybackPosition(snd_pcm_t *pcm, int64_t position)
+	{
+		snd_pcm_sframes_t delay;
+		if (snd_pcm_delay(pcm, &delay) == 0)
+		{
+			std::unique_lock<std::mutex> playback_lock;
+			last_position = position - delay;
+			last_position_time = clock::now();
+		}
+	}
 
 public:
 	AlsaPlayer(AudioProvider *provider);
@@ -157,15 +171,12 @@ do_setup:
 		LOG_D("audio/player/alsa") << "starting playback";
 		int64_t position = start_position;
 
-		// Playback position
-		last_position = position;
-		clock_gettime(CLOCK_REALTIME, &last_position_time);
-
 		// Initial buffer-fill
 		{
 			auto avail = std::min(snd_pcm_avail(pcm), (snd_pcm_sframes_t)(end_position-position));
 			decode_buffer.resize(avail * framesize);
 			provider->GetAudioWithVolume(decode_buffer.data(), position, avail, volume);
+
 			snd_pcm_sframes_t written = 0;
 			while (written <= 0)
 			{
@@ -185,6 +196,7 @@ do_setup:
 		LOG_D("audio/player/alsa") << "initial buffer filled, hitting start";
 		snd_pcm_start(pcm);
 
+		UpdatePlaybackPosition(pcm, position);
 		playing = true;
 		BOOST_SCOPE_EXIT_ALL(&) { playing = false; };
 		while (true)
@@ -204,14 +216,6 @@ do_setup:
 				LOG_D("audio/player/alsa") << "playback loop, stop signal";
 				snd_pcm_drop(pcm);
 				break;
-			}
-
-			// Playback position
-			snd_pcm_sframes_t delay;
-			if (snd_pcm_delay(pcm, &delay) == 0)
-			{
-				last_position = position - delay;
-				clock_gettime(CLOCK_REALTIME, &last_position_time);
 			}
 
 			// Fill buffer
@@ -248,6 +252,8 @@ do_setup:
 				}
 				position += written;
 			}
+
+			UpdatePlaybackPosition(pcm, position);
 
 			// Check for end of playback
 			if (position >= end_position)
@@ -328,26 +334,16 @@ void AlsaPlayer::SetEndPosition(int64_t pos)
 int64_t AlsaPlayer::GetCurrentPosition()
 {
 	int64_t lastpos;
-	timespec lasttime;
-	int64_t samplerate;
+	clock::time_point lasttime;
 
 	{
-		std::unique_lock<std::mutex> lock(mutex);
+		std::unique_lock<std::mutex> playback_lock;
 		lastpos = last_position;
 		lasttime = last_position_time;
-		samplerate = provider->GetSampleRate();
 	}
 
-	timespec now;
-	clock_gettime(CLOCK_REALTIME, &now);
-
-	const double NANO = 1000000000; // nano- is 10^-9
-
-	double now_sec = now.tv_sec + now.tv_nsec/NANO;
-	double last_sec = lasttime.tv_sec + lasttime.tv_nsec/NANO;
-	double diff_sec = now_sec - last_sec;
-
-	return lastpos + (int64_t)(diff_sec * samplerate);
+	auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - lasttime).count();
+	return lastpos + ms * provider->GetSampleRate() / 1000;
 }
 }
 
