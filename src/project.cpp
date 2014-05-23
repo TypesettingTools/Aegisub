@@ -300,6 +300,13 @@ void Project::LoadVideo(agi::fs::path const& path) {
 	if (!DoLoadVideo(path)) return;
 	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video_file, true);
+
+	double dar = video_provider->GetDAR();
+	if (dar > 0)
+		context->videoController->SetAspectRatio(dar);
+	else
+		context->videoController->SetAspectRatio(AspectRatio::Default);
+	context->videoController->JumpToFrame(0);
 }
 
 void Project::CloseVideo() {
@@ -307,6 +314,9 @@ void Project::CloseVideo() {
 	video_provider.reset();
 	SetPath(video_file, "?video", "", "");
 	video_has_subtitles = false;
+	context->ass->Properties.ar_mode = 0;
+	context->ass->Properties.ar_value = 0.0;
+	context->ass->Properties.video_position = 0;
 }
 
 void Project::DoLoadTimecodes(agi::fs::path const& path) {

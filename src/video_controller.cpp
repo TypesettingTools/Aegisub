@@ -60,23 +60,8 @@ VideoController::VideoController(agi::Context *c)
 
 void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	Stop();
-	frame_n = 0;
-
 	provider = new_provider;
-	if (!provider) {
-		color_matrix.clear();
-		context->ass->Properties.ar_mode = 0;
-		context->ass->Properties.ar_value = 0.0;
-		context->ass->Properties.video_position = 0;
-		return;
-	}
-
-	color_matrix = provider->GetColorSpace();
-	double dar = provider->GetDAR();
-	if (dar > 0)
-		SetAspectRatio(dar);
-
-	JumpToFrame(0);
+	color_matrix = provider ? provider->GetColorSpace() : "";
 }
 
 void VideoController::OnSubtitlesCommit(int type, std::set<const AssDialogue *> const& changed) {
