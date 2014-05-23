@@ -29,6 +29,7 @@
 
 #include "audio_renderer.h"
 
+#include <memory>
 #include <vector>
 
 class AudioColorScheme;
@@ -40,13 +41,13 @@ class AudioWaveformRenderer final : public AudioRendererBitmapProvider {
 	std::vector<AudioColorScheme> colors;
 
 	/// Pre-allocated buffer for audio fetched from provider
-	char *audio_buffer = nullptr;
+	std::unique_ptr<char[]> audio_buffer;
 
 	/// Whether to render max+avg or just max
 	bool render_averages;
 
-	void OnSetProvider() override;
-	void OnSetMillisecondsPerPixel() override;
+	void OnSetProvider() override { audio_buffer.reset(); }
+	void OnSetMillisecondsPerPixel() override { audio_buffer.reset(); }
 
 public:
 	/// @brief Constructor

@@ -34,7 +34,6 @@
 #include "options.h"
 
 #include <algorithm>
-
 #include <wx/dcmemory.h>
 
 enum {
@@ -53,10 +52,7 @@ AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_nam
 		colors.emplace_back(6, color_scheme_name, i);
 }
 
-AudioWaveformRenderer::~AudioWaveformRenderer()
-{
-	delete[] audio_buffer;
-}
+AudioWaveformRenderer::~AudioWaveformRenderer() { }
 
 void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle style)
 {
@@ -78,7 +74,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	{
 		// Buffer for one pixel strip of audio
 		size_t buffer_needed = pixel_samples * provider->GetChannels() * provider->GetBytesPerSample();
-		audio_buffer = new char[buffer_needed];
+		audio_buffer.reset(new char[buffer_needed]);
 	}
 
 	double cur_sample = start * pixel_samples;
@@ -91,12 +87,12 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 
 	for (int x = 0; x < rect.width; ++x)
 	{
-		provider->GetAudio(audio_buffer, (int64_t)cur_sample, (int64_t)pixel_samples);
+		provider->GetAudio(audio_buffer.get(), (int64_t)cur_sample, (int64_t)pixel_samples);
 		cur_sample += pixel_samples;
 
 		int peak_min = 0, peak_max = 0;
 		int64_t avg_min_accum = 0, avg_max_accum = 0;
-		const int16_t *aud = (const int16_t *)audio_buffer;
+		auto aud = reinterpret_cast<const int16_t *>(audio_buffer.get());
 		for (int si = pixel_samples; si > 0; --si, ++aud)
 		{
 			if (*aud > 0)
@@ -151,18 +147,6 @@ void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRende
 
 	dc.SetPen(wxPen(line));
 	dc.DrawLine(rect.x, rect.y+halfheight, rect.x+rect.width, rect.y+halfheight);
-}
-
-void AudioWaveformRenderer::OnSetProvider()
-{
-	delete[] audio_buffer;
-	audio_buffer = nullptr;
-}
-
-void AudioWaveformRenderer::OnSetMillisecondsPerPixel()
-{
-	delete[] audio_buffer;
-	audio_buffer = nullptr;
 }
 
 wxArrayString AudioWaveformRenderer::GetWaveformStyles() {
