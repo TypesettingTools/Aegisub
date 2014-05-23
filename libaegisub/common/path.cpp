@@ -92,9 +92,9 @@ fs::path Path::MakeRelative(fs::path const& path, fs::path const& base) const {
 }
 
 fs::path Path::MakeAbsolute(fs::path path, std::string const& token) const {
+	if (path.empty()) return path;
 	const auto it = tokens.find(token);
 	if (it == tokens.end()) throw agi::InternalError("Bad token: " + token, nullptr);
-	if (path.empty()) return path;
 
 	path.make_preferred();
 	const auto str = path.string();

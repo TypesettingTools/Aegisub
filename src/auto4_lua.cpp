@@ -271,10 +271,6 @@ namespace {
 			PUSH_FIELD(export_filters);
 			PUSH_FIELD(export_encoding);
 			PUSH_FIELD(style_storage);
-			PUSH_FIELD(audio_file);
-			PUSH_FIELD(video_file);
-			PUSH_FIELD(timecodes_file);
-			PUSH_FIELD(keyframes_file);
 			PUSH_FIELD(video_zoom);
 			PUSH_FIELD(ar_value);
 			PUSH_FIELD(scroll_position);
@@ -282,6 +278,10 @@ namespace {
 			PUSH_FIELD(ar_mode);
 			PUSH_FIELD(video_position);
 #undef PUSH_FIELD
+			set_field(L, "audio_file", config::path->MakeAbsolute(c->ass->Properties.audio_file, "?script"));
+			set_field(L, "video_file", config::path->MakeAbsolute(c->ass->Properties.video_file, "?script"));
+			set_field(L, "timecodes_file", config::path->MakeAbsolute(c->ass->Properties.timecodes_file, "?script"));
+			set_field(L, "keyframes_file", config::path->MakeAbsolute(c->ass->Properties.keyframes_file, "?script"));
 		}
 		return 1;
 	}
