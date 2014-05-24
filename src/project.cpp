@@ -70,8 +70,10 @@ void Project::ReloadAudio() {
 }
 
 void Project::ReloadVideo() {
-	if (video_provider)
-		LoadAudio(video_file);
+	if (video_provider) {
+		DoLoadVideo(video_file);
+		context->videoController->JumpToFrame(context->videoController->GetFrameN());
+	}
 }
 
 void Project::ShowError(wxString const& message) {
