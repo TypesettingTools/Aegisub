@@ -27,19 +27,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file spline.h
-/// @see spline.cpp
-/// @ingroup visual_ts
-///
-
-#include <list>
-#include <string>
-
 #include "spline_curve.h"
+
+#include <string>
+#include <vector>
 
 class VisualToolBase;
 
-class Spline final : private std::list<SplineCurve> {
+class Spline final : private std::vector<SplineCurve> {
 	/// Visual tool to do the conversion between script and video pixels
 	const VisualToolBase &coord_translator;
 	/// Spline scale
@@ -86,33 +81,29 @@ public:
 	Vector2D GetClosestPoint(Vector2D reference);
 	Vector2D GetClosestControlPoint(Vector2D reference);
 
-	// This list intentionally excludes things specific to std::list
-	using std::list<SplineCurve>::value_type;
-	using std::list<SplineCurve>::pointer;
-	using std::list<SplineCurve>::reference;
-	using std::list<SplineCurve>::const_reference;
-	using std::list<SplineCurve>::size_type;
-	using std::list<SplineCurve>::difference_type;
-	using std::list<SplineCurve>::iterator;
-	using std::list<SplineCurve>::const_iterator;
-	using std::list<SplineCurve>::reverse_iterator;
-	using std::list<SplineCurve>::const_reverse_iterator;
+	using std::vector<SplineCurve>::value_type;
+	using std::vector<SplineCurve>::pointer;
+	using std::vector<SplineCurve>::reference;
+	using std::vector<SplineCurve>::const_reference;
+	using std::vector<SplineCurve>::size_type;
+	using std::vector<SplineCurve>::difference_type;
+	using std::vector<SplineCurve>::iterator;
+	using std::vector<SplineCurve>::const_iterator;
+	using std::vector<SplineCurve>::reverse_iterator;
+	using std::vector<SplineCurve>::const_reverse_iterator;
 
-	using std::list<SplineCurve>::begin;
-	using std::list<SplineCurve>::end;
-	using std::list<SplineCurve>::rbegin;
-	using std::list<SplineCurve>::rend;
-	using std::list<SplineCurve>::size;
-	using std::list<SplineCurve>::empty;
-	using std::list<SplineCurve>::front;
-	using std::list<SplineCurve>::back;
-	using std::list<SplineCurve>::push_front;
-	using std::list<SplineCurve>::push_back;
-	using std::list<SplineCurve>::pop_front;
-	using std::list<SplineCurve>::pop_back;
-	using std::list<SplineCurve>::emplace_front;
-	using std::list<SplineCurve>::emplace_back;
-	using std::list<SplineCurve>::insert;
-	using std::list<SplineCurve>::erase;
-	using std::list<SplineCurve>::clear;
+	using std::vector<SplineCurve>::begin;
+	using std::vector<SplineCurve>::end;
+	using std::vector<SplineCurve>::rbegin;
+	using std::vector<SplineCurve>::rend;
+	using std::vector<SplineCurve>::size;
+	using std::vector<SplineCurve>::empty;
+	using std::vector<SplineCurve>::front;
+	using std::vector<SplineCurve>::back;
+	using std::vector<SplineCurve>::push_back;
+	using std::vector<SplineCurve>::pop_back;
+	using std::vector<SplineCurve>::emplace_back;
+	using std::vector<SplineCurve>::insert;
+	using std::vector<SplineCurve>::erase;
+	using std::vector<SplineCurve>::clear;
 };

@@ -106,7 +106,7 @@ void Spline::DecodeFromAss(std::string const& str) {
 
 	// Prepare
 	char command = 'm';
-	Vector2D pt(0, 0);
+	Vector2D pt{0, 0};
 
 	// Tokenize the string
 	boost::char_separator<char> sep(" ");
@@ -125,6 +125,8 @@ void Spline::DecodeFromAss(std::string const& str) {
 
 			// Line
 			if (stack.size() == 2 && command == 'l') {
+				if (empty()) push_back(pt);
+
 				SplineCurve curve(pt, FromScript(Vector2D(stack[0], stack[1])));
 				push_back(curve);
 
@@ -134,6 +136,8 @@ void Spline::DecodeFromAss(std::string const& str) {
 
 			// Bicubic
 			else if (stack.size() == 6 && command == 'b') {
+				if (empty()) push_back(pt);
+
 				SplineCurve curve(pt,
 					FromScript(Vector2D(stack[0], stack[1])),
 					FromScript(Vector2D(stack[2], stack[3])),
@@ -150,9 +154,6 @@ void Spline::DecodeFromAss(std::string const& str) {
 			stack.clear();
 		}
 	}
-
-	if (!empty() && front().type != SplineCurve::POINT)
-		push_front(pt);
 }
 
 void Spline::MovePoint(iterator curve,int point,Vector2D pos) {
