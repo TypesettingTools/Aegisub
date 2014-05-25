@@ -107,7 +107,7 @@ void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, std::set<const
 
 	// Copy just the lines which were changed, then replace the lines at the
 	// same indices in the worker's copy of the file with the new entries
-	std::deque<std::pair<size_t, AssDialogue*>> changed;
+	std::vector<std::pair<size_t, AssDialogue*>> changed;
 	size_t i = 0;
 	for (auto const& e : new_subs->Events) {
 		if (changes.count(&e))

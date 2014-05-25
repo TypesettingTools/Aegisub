@@ -315,7 +315,7 @@ void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	new_entry["mode"] = selection_mode->GetSelection();
 	new_entry["selection"] = shifted_blocks;
 
-	history.push_front(new_entry);
+	history.insert(history.begin(), new_entry);
 	if (history.size() > 50)
 		history.resize(50);
 

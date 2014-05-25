@@ -17,16 +17,16 @@
 /// @ingroup libaegisub
 
 #include <boost/filesystem/path.hpp>
-#include <deque>
 #include <list>
 #include <map>
+#include <vector>
 
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
 namespace json {
 	class UnknownElement;
-	typedef std::deque<UnknownElement> Array;
+	typedef std::vector<UnknownElement> Array;
 }
 
 namespace agi {

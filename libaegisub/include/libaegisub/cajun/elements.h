@@ -9,14 +9,13 @@ Author: Terry Caton
 #pragma once
 
 #include <cstdint>
-#include <deque>
 #include <map>
 #include <memory>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
-namespace json
-{
+namespace json {
 
 /////////////////////////////////////////////////
 // forward declarations (more info further below)
@@ -28,7 +27,7 @@ typedef int64_t Integer;
 typedef double Double;
 typedef bool Boolean;
 typedef std::string String;
-typedef std::deque<UnknownElement> Array;
+typedef std::vector<UnknownElement> Array;
 typedef std::map<std::string, UnknownElement> Object;
 
 struct Null;

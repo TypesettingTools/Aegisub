@@ -17,14 +17,14 @@
 /// @see preferences.cpp
 /// @ingroup configuration_ui
 
-#include <deque>
+#include <libaegisub/exception.h>
+
 #include <functional>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include <wx/dialog.h>
-
-#include <libaegisub/exception.h>
 
 class wxButton;
 class wxTreebook;
@@ -42,8 +42,8 @@ private:
 	wxButton *applyButton;
 
 	std::map<std::string, std::unique_ptr<agi::OptionValue>> pending_changes;
-	std::deque<Thunk> pending_callbacks;
-	std::deque<std::string> option_names;
+	std::vector<Thunk> pending_callbacks;
+	std::vector<std::string> option_names;
 
 	void OnOK(wxCommandEvent &);
 	void OnCancel(wxCommandEvent &);
