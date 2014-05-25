@@ -37,10 +37,10 @@
 
 #include <limits>
 
-SplineCurve::SplineCurve(Vector2D p1) : p1(std::move(p1)), type(POINT) { }
-SplineCurve::SplineCurve(Vector2D p1, Vector2D p2) : p1(std::move(p1)), p2(std::move(p2)), type(LINE) { }
+SplineCurve::SplineCurve(Vector2D p1) : p1(p1), type(POINT) { }
+SplineCurve::SplineCurve(Vector2D p1, Vector2D p2) : p1(p1), p2(p2), type(LINE) { }
 SplineCurve::SplineCurve(Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4)
-: p1(std::move(p1)), p2(std::move(p2)), p3(std::move(p3)), p4(std::move(p4)), type(BICUBIC)
+: p1(p1), p2(p2), p3(p3), p4(p4), type(BICUBIC)
 {
 }
 
