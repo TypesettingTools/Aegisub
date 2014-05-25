@@ -102,7 +102,7 @@ public:
 
 	template<size_t N>
 	Hotkey(agi::fs::path const& file, const char (&default_config)[N])
-	: Hotkey(file, std::make_pair(default_config, N - 1)) { }
+	: Hotkey(file, {default_config, N - 1}) { }
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.

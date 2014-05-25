@@ -195,9 +195,9 @@ public:
 		items.push_back(co->name());
 
 		if (flags != cmd::COMMAND_NORMAL)
-			dynamic_items.push_back(std::make_pair(co->name(), item));
+			dynamic_items.emplace_back(co->name(), item);
 		else
-			static_items.push_back(std::make_pair(co->name(), item));
+			static_items.emplace_back(co->name(), item);
 
 		return item->GetId();
 	}

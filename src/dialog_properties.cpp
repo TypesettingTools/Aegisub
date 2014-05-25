@@ -174,7 +174,7 @@ void DialogProperties::AddProperty(wxSizer *sizer, wxString const& label, std::s
 	wxTextCtrl *ctrl = new wxTextCtrl(this, -1, to_wx(c->ass->GetScriptInfo(property)), wxDefaultPosition, wxSize(200, 20));
 	sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Left());
 	sizer->Add(ctrl, wxSizerFlags(1).Expand());
-	properties.push_back(std::make_pair(property, ctrl));
+	properties.push_back({property, ctrl});
 }
 
 void DialogProperties::OnOK(wxCommandEvent &) {

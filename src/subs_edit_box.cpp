@@ -467,7 +467,7 @@ void SubsEditBox::CommitTimes(TimeField field) {
 	auto const& sel = c->selectionController->GetSelectedSet();
 	for (AssDialogue *d : sel) {
 		if (!initial_times.count(d))
-			initial_times[d] = std::make_pair(d->Start, d->End);
+			initial_times[d] = {d->Start, d->End};
 
 		switch (field) {
 			case TIME_START:

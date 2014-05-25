@@ -47,9 +47,10 @@ SplineCurve::SplineCurve(Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4)
 std::pair<SplineCurve, SplineCurve> SplineCurve::Split(float t) {
 	if (type == LINE) {
 		Vector2D m = p1 * (1 - t) + p2 * t;
-		return std::make_pair(
+		return {
 			SplineCurve(p1, m),
-			SplineCurve(m, p2));
+			SplineCurve(m, p2)
+		};
 	}
 	else if (type == BICUBIC) {
 		float u = 1 - t;
@@ -60,11 +61,12 @@ std::pair<SplineCurve, SplineCurve> SplineCurve::Split(float t) {
 		Vector2D p234  = p23  * u + p34  * t;
 		Vector2D p1234 = p123 * u + p234 * t;
 
-		return std::make_pair(
+		return {
 			SplineCurve(p1, p12, p123, p1234),
-			SplineCurve(p1234, p234, p34, p4));
+			SplineCurve(p1234, p234, p34, p4)
+		};
 	}
-	return std::make_pair(SplineCurve(p1), SplineCurve(p1));
+	return {SplineCurve(p1), SplineCurve(p1)};
 }
 
 void SplineCurve::Smooth(Vector2D p0, Vector2D p5, float smooth) {

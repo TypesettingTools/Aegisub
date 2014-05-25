@@ -291,7 +291,7 @@ OpenGLTextGlyph const& OpenGLText::GetGlyph(int i) {
 }
 
 OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
-	OpenGLTextGlyph &glyph = glyphs.insert(std::make_pair(n, OpenGLTextGlyph(n, font))).first->second;
+	OpenGLTextGlyph &glyph = glyphs.emplace(n, OpenGLTextGlyph(n, font)).first->second;
 
 	// Insert into some texture
 	for (auto& texture : textures) {

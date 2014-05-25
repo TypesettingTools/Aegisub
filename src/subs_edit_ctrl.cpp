@@ -513,11 +513,11 @@ std::pair<int, int> SubsTextEditCtrl::GetBoundsOfWordAtPosition(int pos) {
 	for (auto const& tok : tokenized_line) {
 		if (len + (int)tok.length > pos) {
 			if (tok.type == agi::ass::DialogueTokenType::WORD)
-				return std::make_pair(len, tok.length);
-			return std::make_pair(0, 0);
+				return {len, tok.length};
+			return {0, 0};
 		}
 		len += tok.length;
 	}
 
-	return std::make_pair(0, 0);
+	return {0, 0};
 }

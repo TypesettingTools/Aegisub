@@ -72,7 +72,7 @@ public:
 
 	template<size_t N>
 	Options(agi::fs::path const& file, const char (&default_config)[N], const OptionSetting setting = NONE)
-	: Options(file, std::make_pair(default_config, N - 1), setting) { }
+	: Options(file, {default_config, N - 1}, setting) { }
 
 	/// Destructor
 	~Options();

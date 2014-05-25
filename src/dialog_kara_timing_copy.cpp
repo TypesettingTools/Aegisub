@@ -625,7 +625,7 @@ void DialogKanjiTimer::OnAccept(wxCommandEvent &) {
 	if (display->GetRemainingSource() > 0)
 		wxMessageBox(_("Group all of the source text."),_("Error"),wxICON_EXCLAMATION | wxOK);
 	else {
-		LinesToChange.push_back(std::make_pair(currentDestinationLine, display->GetOutputLine()));
+		LinesToChange.emplace_back(currentDestinationLine, display->GetOutputLine());
 
 		currentSourceLine = FindNextStyleMatch(currentSourceLine, from_wx(SourceStyle->GetValue()));
 		currentDestinationLine = FindNextStyleMatch(currentDestinationLine, from_wx(DestStyle->GetValue()));

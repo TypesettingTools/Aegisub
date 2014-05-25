@@ -233,7 +233,7 @@ void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialo
 uint32_t AssFile::AddExtradata(std::string const& key, std::string const& value) {
 	// next_extradata_id must not exist
 	assert(Extradata.find(next_extradata_id) == Extradata.end());
-	Extradata[next_extradata_id] = std::make_pair(key, value);
+	Extradata[next_extradata_id] = {key, value};
 	return next_extradata_id++; // return old value, then post-increment
 }
 

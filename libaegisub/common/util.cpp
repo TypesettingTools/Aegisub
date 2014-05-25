@@ -49,7 +49,7 @@ std::pair<size_t, size_t> find_range(std::string const& haystack, std::string co
 	const size_t match_start = haystack.find(needle, start);
 	if (match_start == std::string::npos)
 		return bad_match;
-	return std::make_pair(match_start, match_start + needle.size());
+	return {match_start, match_start + needle.size()};
 }
 
 }
@@ -115,7 +115,7 @@ std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& 
 		if (folded_pos > match.second)
 			return bad_match;
 
-		return std::make_pair(start, distance(begin(haystack), begin(*haystack_it)));
+		return {start, distance(begin(haystack), begin(*haystack_it))};
 	};
 
 	auto ret = map_folded_to_raw();

@@ -179,7 +179,7 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 		std::multimap<int64_t, agi::fs::path> cachefiles;
 		for (auto const& file : agi::fs::DirectoryIterator(directory, file_type)) {
 			agi::fs::path path = directory/file;
-			cachefiles.insert(std::make_pair(agi::fs::ModifiedTime(path), path));
+			cachefiles.insert({agi::fs::ModifiedTime(path), path});
 			total_size += agi::fs::Size(path);
 		}
 

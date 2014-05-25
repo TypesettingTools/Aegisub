@@ -135,7 +135,7 @@ class Signal final : private detail::SignalBase {
 
 	UnscopedConnection DoConnect(Slot sig) {
 		auto token = MakeToken();
-		slots.insert(std::make_pair(token, sig));
+		slots.emplace(token, sig);
 		return UnscopedConnection(token);
 	}
 

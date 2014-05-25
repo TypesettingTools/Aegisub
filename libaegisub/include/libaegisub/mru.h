@@ -58,7 +58,7 @@ public:
 
 	template<size_t N>
 	MRUManager(agi::fs::path const& file, const char (&default_config)[N])
-	: MRUManager(file, std::make_pair(default_config, N - 1)) { }
+	: MRUManager(file, {default_config, N - 1}) { }
 
 	/// Destructor
 	~MRUManager();

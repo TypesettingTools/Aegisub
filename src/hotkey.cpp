@@ -101,11 +101,11 @@ void init() {
 		auto hk_map = hotkey::inst->GetHotkeyMap();
 		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift"))) {
 			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/before", hotkey.second.Get());
-			hk_map.insert(std::make_pair(combo.CmdName(), combo));
+			hk_map.insert({combo.CmdName(), combo});
 		}
 		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift_back"))) {
 			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/after", hotkey.second.Get());
-			hk_map.insert(std::make_pair(combo.CmdName(), combo));
+			hk_map.insert({combo.CmdName(), combo});
 		}
 
 		hk_map.erase("edit/line/duplicate/shift");
