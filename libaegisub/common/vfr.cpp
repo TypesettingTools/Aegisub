@@ -28,10 +28,8 @@
 #include <cmath>
 #include <functional>
 #include <iterator>
-#include <list>
 
 namespace {
-
 static const int64_t default_denominator = 1000000000;
 using agi::line_iterator;
 using namespace agi::vfr;
@@ -85,26 +83,6 @@ TimecodeRange v1_parse_line(std::string const& str) {
 	return range;
 }
 
-/// @brief Generate override ranges for all frames with assumed fpses
-/// @param ranges List with ranges which is mutated
-/// @param fps    Assumed fps to use for gaps
-void v1_fill_range_gaps(std::list<TimecodeRange> &ranges, double fps) {
-	// Range for frames between start and first override
-	if (ranges.empty() || ranges.front().start > 0)
-		ranges.push_front(TimecodeRange{0, ranges.empty() ? 0 : ranges.front().start - 1, fps});
-
-	for (auto cur = ++begin(ranges), prev = begin(ranges); cur != end(ranges); ++cur, ++prev) {
-		if (prev->end >= cur->start)
-			// mkvmerge allows overlapping timecode ranges, but does completely
-			// broken things with them
-			throw UnorderedTimecodes("Override ranges must not overlap");
-		if (prev->end + 1 < cur->start) {
-			ranges.insert(cur, TimecodeRange{prev->end + 1, cur->start - 1, fps});
-			++prev;
-		}
-	}
-}
-
 /// @brief Parse a v1 timecode file
 /// @param      file      Iterator of lines in the file
 /// @param      line      Header of file with assumed fps
@@ -116,17 +94,29 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 	if (fps <= 0.) throw BadFPS("Assumed FPS must be greater than zero");
 	if (fps > 1000.) throw BadFPS("Assumed FPS must not be greater than 1000");
 
-	std::list<TimecodeRange> ranges;
-	transform(file, end(file), back_inserter(ranges), v1_parse_line);
-	ranges.erase(boost::remove_if(ranges, [](TimecodeRange const& r) { return r.fps == 0; }), ranges.end());
+	std::vector<TimecodeRange> ranges;
+	for (auto const& line : file) {
+		auto range = v1_parse_line(line);
+		if (range.fps != 0)
+			ranges.push_back(range);
+	}
 
-	ranges.sort();
-	v1_fill_range_gaps(ranges, fps);
-	timecodes.reserve(ranges.back().end);
+	std::sort(begin(ranges), end(ranges));
 
+	timecodes.reserve(ranges.back().end + 2);
 	double time = 0.;
+	int frame = 0;
 	for (auto const& range : ranges) {
-		for (int frame = range.start; frame <= range.end; ++frame) {
+		if (frame > range.start) {
+			// mkvmerge allows overlapping timecode ranges, but does completely
+			// broken things with them
+			throw UnorderedTimecodes("Override ranges must not overlap");
+		}
+		for (; frame < range.start; ++frame) {
+			timecodes.push_back(int(time + .5));
+			time += 1000. / fps;
+		}
+		for (; frame <= range.end; ++frame) {
 			timecodes.push_back(int(time + .5));
 			time += 1000. / range.fps;
 		}
@@ -135,12 +125,9 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 	last = int64_t(time * fps * default_denominator);
 	return int64_t(fps * default_denominator);
 }
-
 }
 
-namespace agi {
-namespace vfr {
-
+namespace agi { namespace vfr {
 Framerate::Framerate(double fps)
 : denominator(default_denominator)
 , numerator(int64_t(fps * denominator))
@@ -339,5 +326,4 @@ int Framerate::TimeAtSmpte(int h, int m, int s, int f) const {
 	return TimeAtFrame(FrameAtSmpte(h, m, s, f));
 }
 
-}
-}
+} }

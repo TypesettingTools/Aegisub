@@ -12,12 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file mru.h
-/// @brief Public interface for MRU (Most Recently Used) lists.
-/// @ingroup libaegisub
-
 #include <boost/filesystem/path.hpp>
-#include <list>
 #include <map>
 #include <vector>
 
@@ -30,10 +25,7 @@ namespace json {
 }
 
 namespace agi {
-	class Options;
-}
-
-namespace agi {
+class Options;
 
 DEFINE_BASE_EXCEPTION_NOINNER(MRUError,Exception)
 DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorInvalidKey, MRUError, "mru/invalid")
@@ -46,11 +38,10 @@ DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorIndexOutOfRange, MRUError, "mru/invalid"
 /// entry or update it if it already exists.
 ///
 /// If a file fails to open, Remove() should be called.
-///
 class MRUManager {
 public:
 	/// @brief Map for time->value pairs.
-	typedef std::list<agi::fs::path> MRUListMap;
+	using MRUListMap = std::vector<agi::fs::path>;
 
 	/// @brief Constructor
 	/// @param config File to load MRU values from
@@ -59,9 +50,6 @@ public:
 	template<size_t N>
 	MRUManager(agi::fs::path const& file, const char (&default_config)[N])
 	: MRUManager(file, {default_config, N - 1}) { }
-
-	/// Destructor
-	~MRUManager();
 
 	/// @brief Add entry to the list.
 	/// @param key List name
@@ -99,15 +87,20 @@ private:
 	/// @brief Map for MRUListMap values.
 	/// @param std::string Name
 	/// @param MRUListMap instance.
-	typedef std::map<std::string, MRUListMap> MRUMap;
+	using MRUMap = std::map<std::string, MRUListMap>;
 
 	/// Internal MRUMap values.
 	MRUMap mru;
 
 	/// Map from MRU name to option name
-	std::map<const std::string, std::string> option_names;
+	const std::map<std::string, std::string> option_names;
 
+	/// @brief Load MRU Lists.
+	/// @param key List name.
+	/// @param array json::Array of values.
 	void Load(std::string const& key, ::json::Array const& array);
+	/// @brief Prune MRUListMap to the desired length.
+	/// This uses the user-set values for MRU list length.
 	void Prune(std::string const& key, MRUListMap& map) const;
 	MRUListMap &Find(std::string const& key);
 };

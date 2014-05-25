@@ -54,6 +54,7 @@
 // General headers
 #include <array>
 #include <inttypes.h>
+#include <list>
 #include <limits>
 #include <set>
 #include <typeinfo>
@@ -67,6 +68,7 @@
 #include <sys/param.h>
 #endif
 
+#include <boost/container/list.hpp>
 #include <boost/flyweight.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/indirected.hpp>

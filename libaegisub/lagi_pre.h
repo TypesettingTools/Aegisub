@@ -35,14 +35,11 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include <list>
 #include <map>
 #include <memory>
 #include <numeric>
-#include <set>
 #include <stdexcept>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #ifdef _MSC_VER
@@ -50,7 +47,6 @@
 #endif
 
 // Boost
-#include <boost/container/list.hpp>
 #include <boost/container/map.hpp>
 #define BOOST_NO_SCOPED_ENUMS
 #include <boost/filesystem.hpp>

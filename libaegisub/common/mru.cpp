@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file mru.cpp
-/// @brief Most Recently Used (MRU) Lists
-/// @ingroup libaegisub
-
 #include "libaegisub/mru.h"
 
 #include "libaegisub/cajun/writer.h"
@@ -27,28 +23,24 @@
 #include "libaegisub/option_value.h"
 
 namespace agi {
-
 MRUManager::MRUManager(agi::fs::path const& config, std::pair<const char *, size_t> default_config, agi::Options *options)
 : config_name(config)
 , options(options)
+, option_names({
+	{"Audio", "Limits/MRU"},
+	{"Find", "Limits/Find Replace"},
+	{"Keyframes", "Limits/MRU"},
+	{"Replace", "Limits/Find Replace"},
+	{"Subtitle", "Limits/MRU"},
+	{"Timecodes", "Limits/MRU"},
+	{"Video", "Limits/MRU"},
+})
 {
-	option_names["Audio"] = "Limits/MRU";
-	option_names["Keyframes"] = "Limits/MRU";
-	option_names["Subtitle"] = "Limits/MRU";
-	option_names["Timecodes"] = "Limits/MRU";
-	option_names["Video"] = "Limits/MRU";
-
-	option_names["Find"] = "Limits/Find Replace";
-	option_names["Replace"] = "Limits/Find Replace";
-
 	LOG_D("agi/mru") << "Loading MRU List";
 
 	json::Object root(json_util::file(config, default_config));
 	for (auto const& it : root)
 		Load(it.first, it.second);
-}
-
-MRUManager::~MRUManager() {
 }
 
 MRUManager::MRUListMap &MRUManager::Find(std::string const& key) {
@@ -64,9 +56,9 @@ void MRUManager::Add(std::string const& key, agi::fs::path const& entry) {
 	if (it == begin(map) && it != end(map))
 		return;
 	if (it != end(map))
-		map.splice(begin(map), map, it);
+		rotate(begin(map), it, it);
 	else {
-		map.push_front(entry);
+		map.insert(begin(map), entry);
 		Prune(key, map);
 	}
 
@@ -74,8 +66,8 @@ void MRUManager::Add(std::string const& key, agi::fs::path const& entry) {
 }
 
 void MRUManager::Remove(std::string const& key, agi::fs::path const& entry) {
-	Find(key).remove(entry);
-
+	auto& map = Find(key);
+	map.erase(remove(begin(map), end(map), entry), end(map));
 	Flush();
 }
 
@@ -104,8 +96,6 @@ void MRUManager::Flush() {
 	json::Writer::Write(out, io::Save(config_name).Get());
 }
 
-/// @brief Prune MRUListMap to the desired length.
-/// This uses the user-set values for MRU list length.
 void MRUManager::Prune(std::string const& key, MRUListMap& map) const {
 	size_t limit = 16u;
 	if (options) {
@@ -116,9 +106,6 @@ void MRUManager::Prune(std::string const& key, MRUListMap& map) const {
 	map.resize(std::min(limit, map.size()));
 }
 
-/// @brief Load MRU Lists.
-/// @param key List name.
-/// @param array json::Array of values.
 void MRUManager::Load(std::string const& key, const json::Array& array) {
 	try {
 		transform(begin(array), end(array),
