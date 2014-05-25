@@ -16,7 +16,6 @@
 
 #include "parser.h"
 
-#include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 
 namespace agi {
@@ -38,7 +37,7 @@ std::string Color::GetAssOverrideFormatted() const {
 }
 
 std::string Color::GetSsaFormatted() const {
-	return boost::lexical_cast<std::string>((a << 24) + (b << 16) + (g << 8) + r);
+	return std::to_string((a << 24) + (b << 16) + (g << 8) + r);
 }
 
 std::string Color::GetHexFormatted(bool rgba) const {
