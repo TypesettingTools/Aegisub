@@ -25,10 +25,6 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
-#include <boost/phoenix/operator/comparison.hpp>
-#include <boost/phoenix/core/argument.hpp>
-
-using boost::phoenix::placeholders::_1;
 
 namespace agi {
 
@@ -48,7 +44,7 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 	// Read the list of words and file offsets for those words
 	for (auto const& line : line_iterator<std::string>(idx, encoding_name)) {
 		std::vector<std::string> chunks;
-		boost::split(chunks, line, _1 == '|');
+		boost::split(chunks, line, [](char c) { return c == '|'; });
 		if (chunks.size() == 2)
 			offsets[chunks[0]] = static_cast<size_t>(atoi(chunks[1].c_str()));
 	}
@@ -81,14 +77,14 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 
 	// First line is the word and meaning count
 	std::vector<std::string> header;
-	boost::split(header, read_line(), _1 == '|');
+	boost::split(header, read_line(), [](char c) { return c == '|'; });
 	if (header.size() != 2) return out;
 	int meanings = atoi(header[1].c_str());
 
 	out.reserve(meanings);
 	for (int i = 0; i < meanings; ++i) {
 		std::vector<std::string> line;
-		boost::split(line, read_line(), _1 == '|');
+		boost::split(line, read_line(), [](char c) { return c == '|'; });
 
 		if (line.size() < 2)
 			continue;
