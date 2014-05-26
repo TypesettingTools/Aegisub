@@ -14,7 +14,6 @@
 
 #include <libaegisub/fs_fwd.h>
 
-#include <boost/circular_buffer.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <cstdint>
 #include <memory>
@@ -70,7 +69,8 @@ class Emitter;
 
 /// Log sink, single destination for all messages
 class LogSink {
-	boost::circular_buffer<SinkMessage> messages{250};
+	std::vector<SinkMessage> messages;
+	size_t next_idx = 0;
 	std::unique_ptr<dispatch::Queue> queue;
 
 	/// List of pointers to emitters
@@ -93,7 +93,7 @@ public:
 
 	/// @brief @get the complete (current) log.
 	/// @return Const pointer to internal sink.
-	decltype(messages) GetMessages() const;
+	std::vector<SinkMessage> GetMessages() const;
 };
 
 /// An emitter to produce human readable output for a log sink.
@@ -103,7 +103,7 @@ public:
 	virtual ~Emitter() { }
 
 	/// Accept a single log entry
-	virtual void log(SinkMessage *sm)=0;
+	virtual void log(SinkMessage const& sm)=0;
 };
 
 /// A simple emitter which writes the log to a file in json format
@@ -115,7 +115,7 @@ public:
 	/// @param directory Directory to write the log file in
 	JsonEmitter(fs::path const& directory);
 
-	void log(SinkMessage *) override;
+	void log(SinkMessage const&) override;
 };
 
 /// Generates a message and submits it to the log sink.
@@ -133,7 +133,7 @@ public:
 /// Emit log entries to stdout.
 class EmitSTDOUT: public Emitter {
 public:
-	void log(SinkMessage *sm) override;
+	void log(SinkMessage const& sm) override;
 };
 
 	} // namespace log

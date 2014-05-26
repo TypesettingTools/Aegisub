@@ -44,9 +44,15 @@ LogSink::~LogSink() {
 }
 
 void LogSink::Log(SinkMessage const& sm) {
-	queue->Async([=]{
-		messages.push_back(sm);
-		for (auto& em : emitters) em->log(&messages.back());
+	queue->Async([=] {
+		if (messages.size() < 250)
+			messages.push_back(sm);
+		else {
+			messages[next_idx] = sm;
+			if (++next_idx == 250)
+				next_idx = 0;
+		}
+		for (auto& em : emitters) em->log(sm);
 	});
 }
 
@@ -67,7 +73,11 @@ void LogSink::Unsubscribe(Emitter *em) {
 
 decltype(LogSink::messages) LogSink::GetMessages() const {
 	decltype(messages) ret;
-	queue->Sync([&] { ret = messages; });
+	queue->Sync([&] {
+		ret.reserve(messages.size());
+		ret.insert(ret.end(), messages.begin() + next_idx, messages.end());
+		ret.insert(ret.end(), messages.begin(), messages.begin() + next_idx);
+	});
 	return ret;
 }
 
@@ -93,16 +103,16 @@ JsonEmitter::JsonEmitter(fs::path const& directory)
 {
 }
 
-void JsonEmitter::log(SinkMessage *sm) {
+void JsonEmitter::log(SinkMessage const& sm) {
 	json::Object entry;
-	entry["sec"]      = sm->time / 1000000000;
-	entry["usec"]     = sm->time % 1000000000;
-	entry["severity"] = sm->severity;
-	entry["section"]  = sm->section;
-	entry["file"]     = sm->file;
-	entry["func"]     = sm->func;
-	entry["line"]     = sm->line;
-	entry["message"]  = sm->message;
+	entry["sec"]      = sm.time / 1000000000;
+	entry["usec"]     = sm.time % 1000000000;
+	entry["severity"] = sm.severity;
+	entry["section"]  = sm.section;
+	entry["file"]     = sm.file;
+	entry["func"]     = sm.func;
+	entry["line"]     = sm.line;
+	entry["message"]  = sm.message;
 	json::Writer::Write(entry, *fp);
 	fp->flush();
 }

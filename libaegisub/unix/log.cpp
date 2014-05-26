@@ -19,23 +19,23 @@
 #include <unistd.h>
 
 namespace agi { namespace log {
-void EmitSTDOUT::log(SinkMessage *sm) {
-	time_t time = sm->time / 1000000000;
+void EmitSTDOUT::log(SinkMessage const& sm) {
+	time_t time = sm.time / 1000000000;
 	tm tmtime;
 	localtime_r(&time, &tmtime);
 
-	printf("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %.*s\n",
-		Severity_ID[sm->severity],
+	printf("%c %02d:%02d:%02d %-9ld <%-25s> [%s:%s:%d]  %.*s\n",
+		Severity_ID[sm.severity],
 		tmtime.tm_hour,
 		tmtime.tm_min,
 		tmtime.tm_sec,
-		(long)(sm->time % 1000000000),
-		sm->section,
-		sm->file,
-		sm->func,
-		sm->line,
-		(int)sm->message.size(),
-		sm->message.c_str());
+		(long)(sm.time % 1000000000),
+		sm.section,
+		sm.file,
+		sm.func,
+		sm.line,
+		(int)sm.message.size(),
+		sm.message.c_str());
 
 	if (!isatty(fileno(stdout)))
 		fflush(stdout);
