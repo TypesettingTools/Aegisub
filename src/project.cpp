@@ -101,6 +101,10 @@ void Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding) {
 	catch (agi::UserCancelException const&) {
 		return;
 	}
+	catch (agi::fs::FileNotFound const&) {
+		config::mru->Remove("Subtitle", path);
+		return ShowError(path.string() + " not found.");
+	}
 
 	if (encoding != "binary") {
 		// Try loading as timecodes and keyframes first since we can't
