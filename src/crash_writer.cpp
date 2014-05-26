@@ -22,6 +22,8 @@
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/format.hpp>
+#include <wx/string.h>
+#include <wx/stackwalk.h>
 
 using namespace agi;
 
