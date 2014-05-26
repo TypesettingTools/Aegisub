@@ -480,6 +480,13 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	if (!video.empty()) {
 		DoLoadVideo(video);
 
+		double dar = video_provider->GetDAR();
+		if (dar > 0)
+			context->videoController->SetAspectRatio(dar);
+		else
+			context->videoController->SetAspectRatio(AspectRatio::Default);
+		context->videoController->JumpToFrame(0);
+
 		// We loaded these earlier, but loading video unloaded them
 		// Non-Do version of Load in case they've vanished or changed between
 		// then and now
