@@ -15,7 +15,6 @@
 #pragma once
 
 #include <boost/config.hpp>
-#include <map>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -128,15 +127,20 @@ namespace detail {
 template<typename... Args>
 class Signal final : private detail::SignalBase {
 	using Slot = std::function<void(Args...)>;
-	std::map<detail::ConnectionToken*, Slot> slots; /// Signals currently connected to this slot
+	std::vector<std::pair<detail::ConnectionToken*, Slot>> slots; /// Signals currently connected to this slot
 
 	void Disconnect(detail::ConnectionToken *tok) override {
-		slots.erase(tok);
+		for (auto it = begin(slots), e = end(slots); it != e; ++it) {
+			if (tok == it->first) {
+				slots.erase(it);
+				return;
+			}
+		}
 	}
 
 	UnscopedConnection DoConnect(Slot sig) {
 		auto token = MakeToken();
-		slots.emplace(token, sig);
+		slots.emplace_back(token, sig);
 		return UnscopedConnection(token);
 	}
 
@@ -153,11 +157,9 @@ public:
 	/// The order in which connected slots are called is undefined and should
 	/// not be relied on
 	void operator()(Args... args) {
-		for (auto cur = slots.begin(); cur != slots.end(); ) {
-			if (Blocked(cur->first))
-				++cur;
-			else
-				(cur++)->second(args...);
+		for (size_t i = slots.size(); i > 0; --i) {
+			if (!Blocked(slots[i - 1].first))
+				slots[i - 1].second(args...);
 		}
 	}
 
