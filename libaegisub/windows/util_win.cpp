@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file util.cpp
-/// @brief Windows utility methods.
-/// @ingroup libaegisub windows
-
 #include "libaegisub/util.h"
 
 #include "libaegisub/charset_conv_win.h"
@@ -41,39 +37,6 @@ std::string ErrorString(int error) {
 	std::string str = ConvertW(lpstr);
 	LocalFree(lpstr);
 	return str;
-}
-
-/// @brief Get seconds and microseconds.
-/// @param tv[out] agi_timeval struct
-/// This code is from http://www.suacommunity.com/dictionary/gettimeofday-entry.php
-agi_timeval time_log() {
-#define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
-	// Define a structure to receive the current Windows filetime
-	FILETIME ft;
-
-	// Initialize the present time to 0 and the timezone to UTC
-	unsigned __int64 tmpres = 0;
-
-	GetSystemTimeAsFileTime(&ft);
-
-	// The GetSystemTimeAsFileTime returns the number of 100 nanosecond
-	// intervals since Jan 1, 1601 in a structure. Copy the high bits to
-	// the 64 bit tmpres, shift it left by 32 then or in the low 32 bits.
-	tmpres |= ft.dwHighDateTime;
-	tmpres <<= 32;
-	tmpres |= ft.dwLowDateTime;
-
-	// Convert to microseconds by dividing by 10
-	tmpres /= 10;
-
-	// The Unix epoch starts on Jan 1 1970.  Need to subtract the difference
-	// in seconds from Jan 1 1601.
-	tmpres -= DELTA_EPOCH_IN_MICROSECS;
-
-	// Finally change microseconds to seconds and place in the seconds value.
-	// The modulus picks up the microseconds.
-	agi_timeval tv = { (long)(tmpres / 1000000UL), (long)(tmpres % 1000000UL) };
-	return tv;
 }
 
 #define MS_VC_EXCEPTION 0x406d1388

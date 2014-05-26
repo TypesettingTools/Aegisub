@@ -80,7 +80,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\spellchecker.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\split.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\thesaurus.h" />
-    <ClInclude Include="$(SrcDir)include\libaegisub\time.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\util_osx.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\vfr.h" />

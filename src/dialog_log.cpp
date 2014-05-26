@@ -53,15 +53,16 @@ public:
 	}
 
 	void log(agi::log::SinkMessage *sm) override {
+		time_t time = sm->time / 1000000000;
 #ifndef _WIN32
 		tm tmtime;
-		localtime_r(&sm->tv.tv_sec, &tmtime);
+		localtime_r(&time, &tmtime);
 		auto log = wxString::Format("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm->severity],
 			(int)tmtime.tm_hour,
 			(int)tmtime.tm_min,
 			(int)tmtime.tm_sec,
-			(long)sm->tv.tv_usec,
+			(long)(sm->time % 1000000000),
 			sm->section,
 			sm->file,
 			sm->func,
@@ -70,7 +71,7 @@ public:
 #else
 		auto log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm->severity],
-			sm->tv.tv_usec,
+			(long)(sm->time % 1000000000),
 			sm->section,
 			sm->file,
 			sm->func,

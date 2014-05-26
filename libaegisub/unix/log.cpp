@@ -12,30 +12,31 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+#include "libaegisub/log.h"
+
 #include <cstdio>
 #include <ctime>
-
 #include <unistd.h>
-
-#include "libaegisub/log.h"
 
 namespace agi { namespace log {
 void EmitSTDOUT::log(SinkMessage *sm) {
+	time_t time = sm->time / 1000000000;
 	tm tmtime;
-	localtime_r(&sm->tv.tv_sec, &tmtime);
+	localtime_r(&time, &tmtime);
 
 	printf("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %.*s\n",
 		Severity_ID[sm->severity],
 		tmtime.tm_hour,
 		tmtime.tm_min,
 		tmtime.tm_sec,
-		(long)sm->tv.tv_usec,
+		(long)(sm->time % 1000000000),
 		sm->section,
 		sm->file,
 		sm->func,
 		sm->line,
 		(int)sm->message.size(),
 		sm->message.c_str());
+
 	if (!isatty(fileno(stdout)))
 		fflush(stdout);
 }

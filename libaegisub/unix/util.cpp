@@ -23,13 +23,6 @@
 #endif
 
 namespace agi { namespace util {
-
-timeval time_log() {
-	timeval tv;
-	gettimeofday(&tv, nullptr);
-	return tv;
-}
-
 void SetThreadName(const char *) { }
 
 void sleep_for(int ms) {

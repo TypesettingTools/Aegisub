@@ -152,9 +152,6 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\split.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\libaegisub\time.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\ass\uuencode.h">
       <Filter>ASS</Filter>
     </ClInclude>

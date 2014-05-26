@@ -12,16 +12,11 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file log.h
-/// @brief Logging
-/// @ingroup libaegisub
-
 #include <libaegisub/fs_fwd.h>
-#include <libaegisub/time.h>
 
 #include <boost/circular_buffer.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
-#include <iosfwd>
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -39,18 +34,18 @@
 #define LOG_D_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Debug)
 
 namespace agi {
-	namespace dispatch { class Queue; }
+namespace dispatch { class Queue; }
+namespace log {
 
-	namespace log {
 class LogSink;
 
 /// Severity levels
 enum Severity {
-	Exception,	///< Used when exceptions are thrown
-	Assert,		///< Fatal and non-fatal assert logging
-	Warning,	///< Warnings
-	Info,		///< Information only
-	Debug		///< Enabled by default when compiled in debug mode.
+	Exception, ///< Used when exceptions are thrown
+	Assert,    ///< Fatal and non-fatal assert logging
+	Warning,   ///< Warnings
+	Info,      ///< Information only
+	Debug      ///< Enabled by default when compiled in debug mode.
 };
 
 /// Short Severity ID
@@ -62,13 +57,13 @@ extern LogSink *log;
 
 /// Container to hold a single message
 struct SinkMessage {
-	std::string message;	///< Formatted message
-	agi_timeval tv;			///< Time at execution
-	const char *section;	///< Section info eg "video/open" "video/seek" etc
-	const char *file;		///< Source file
-	const char *func;		///< Function name
-	Severity severity;		///< Severity
-	int line;				///< Source line
+	std::string message; ///< Formatted message
+	int64_t time;        ///< Time at execution in nanoseconds since epoch
+	const char *section; ///< Section info eg "video/open" "video/seek" etc
+	const char *file;    ///< Source file
+	const char *func;    ///< Function name
+	Severity severity;   ///< Severity
+	int line;            ///< Source line
 };
 
 class Emitter;
@@ -115,14 +110,10 @@ public:
 class JsonEmitter final : public Emitter {
 	std::unique_ptr<std::ostream> fp;
 
-	void WriteTime(const char *key);
-
 public:
 	/// Constructor
 	/// @param directory Directory to write the log file in
 	JsonEmitter(fs::path const& directory);
-	/// Destructor
-	~JsonEmitter();
 
 	void log(SinkMessage *) override;
 };

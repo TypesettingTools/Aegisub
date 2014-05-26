@@ -17,16 +17,15 @@
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/dispatch.h"
-#include "libaegisub/time.h"
 #include "libaegisub/util.h"
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/range/algorithm/remove_if.hpp>
+#include <chrono>
 
-namespace agi {
-	namespace log {
+namespace agi { namespace log {
 
 /// Global log sink.
 LogSink *log;
@@ -75,12 +74,13 @@ decltype(LogSink::messages) LogSink::GetMessages() const {
 Message::Message(const char *section, Severity severity, const char *file, const char *func, int line)
 : msg(buffer, sizeof buffer)
 {
+	using namespace std::chrono;
 	sm.section = section;
 	sm.severity = severity;
 	sm.file = file;
 	sm.func = func;
 	sm.line = line;
-	sm.tv = util::time_log();
+	sm.time = duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count();
 }
 
 Message::~Message() {
@@ -91,17 +91,12 @@ Message::~Message() {
 JsonEmitter::JsonEmitter(fs::path const& directory)
 : fp(new boost::filesystem::ofstream(unique_path(directory/util::strftime("%Y-%m-%d-%H-%M-%S-%%%%%%%%.json"))))
 {
-	WriteTime("open");
-}
-
-JsonEmitter::~JsonEmitter() {
-	WriteTime("close");
 }
 
 void JsonEmitter::log(SinkMessage *sm) {
 	json::Object entry;
-	entry["sec"]      = (int64_t)sm->tv.tv_sec;
-	entry["usec"]     = (int64_t)sm->tv.tv_usec;
+	entry["sec"]      = sm->time / 1000000000;
+	entry["usec"]     = sm->time % 1000000000;
 	entry["severity"] = sm->severity;
 	entry["section"]  = sm->section;
 	entry["file"]     = sm->file;
@@ -112,14 +107,4 @@ void JsonEmitter::log(SinkMessage *sm) {
 	fp->flush();
 }
 
-void JsonEmitter::WriteTime(const char *key) {
-	auto time = util::time_log();
-	json::Object obj;
-	json::Array &timeval = obj[key];
-	timeval.push_back((int64_t)time.tv_sec);
-	timeval.push_back((int64_t)time.tv_usec);
-	json::Writer::Write(obj, *fp);
-}
-
-	} // namespace log
-} // namespace agi
+} }

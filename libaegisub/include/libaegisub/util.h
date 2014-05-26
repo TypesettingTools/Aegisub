@@ -12,8 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <libaegisub/time.h>
-
 #include <algorithm>
 #include <boost/range/irange.hpp>
 #include <string>
@@ -24,9 +22,6 @@ namespace agi {
 	namespace util {
 	/// Clamp `b` to the range [`a`,`c`]
 	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
-
-	/// Get time suitable for logging mechanisms.
-	agi_timeval time_log();
 
 	bool try_parse(std::string const& str, double *out);
 	bool try_parse(std::string const& str, int *out);
