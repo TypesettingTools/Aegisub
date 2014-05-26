@@ -9,22 +9,8 @@
 #include <cerrno>
 #include <climits>
 #include <cmath>
-#include <cstdarg>
-#include <cstdio>
 #include <cstdint>
-#include <cstring>
-#include <sys/stat.h>
-#ifdef HAVE_SYS_TIME_H
-#  include <sys/time.h>
-#else
-#  include <ctime>
-#endif
-
-// Unix C
-#ifndef _WIN32
-#include <sys/statvfs.h>
-#include <sys/param.h>
-#endif
+#include <ctime>
 
 // Common C++
 #ifdef _MSC_VER
@@ -38,7 +24,6 @@
 #include <map>
 #include <memory>
 #include <numeric>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -47,7 +32,9 @@
 #endif
 
 // Boost
-#include <boost/container/map.hpp>
+#include <boost/range/algorithm.hpp>
+#include <boost/range/irange.hpp>
+#include <boost/regex.hpp>
 #define BOOST_NO_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
 #undef BOOST_NO_SCOPED_ENUMS

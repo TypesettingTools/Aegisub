@@ -14,10 +14,11 @@
 
 #pragma once
 
-#include <boost/container/map.hpp>
-
+#include <boost/config.hpp>
+#include <map>
 #include <functional>
 #include <memory>
+#include <vector>
 
 namespace agi { namespace signal {
 class Connection;
@@ -127,7 +128,7 @@ namespace detail {
 template<typename... Args>
 class Signal final : private detail::SignalBase {
 	using Slot = std::function<void(Args...)>;
-	boost::container::map<detail::ConnectionToken*, Slot> slots; /// Signals currently connected to this slot
+	std::map<detail::ConnectionToken*, Slot> slots; /// Signals currently connected to this slot
 
 	void Disconnect(detail::ConnectionToken *tok) override {
 		slots.erase(tok);
