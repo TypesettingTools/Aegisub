@@ -655,7 +655,7 @@ void AudioDisplay::SetZoomLevel(int new_zoom_level)
 	double cursor_time = (scroll_left + cursor_pos) * ms_per_pixel;
 
 	ms_per_pixel = new_ms_per_pixel;
-	pixel_audio_width = std::max(1, int(controller->GetDuration() / ms_per_pixel));
+	pixel_audio_width = std::max(1, int(GetDuration() / ms_per_pixel));
 
 	audio_renderer->SetMillisecondsPerPixel(ms_per_pixel);
 	scrollbar->ChangeLengths(pixel_audio_width, client_width);
@@ -1164,6 +1164,12 @@ void AudioDisplay::OnFocus(wxFocusEvent &)
 	RefreshRect(scrollbar->GetBounds(), false);
 }
 
+int AudioDisplay::GetDuration() const
+{
+	if (!provider) return 0;
+	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
+}
+
 void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 {
 	this->provider = provider;
@@ -1174,7 +1180,7 @@ void AudioDisplay::OnAudioOpen(AudioProvider *provider)
 	audio_renderer->SetAudioProvider(provider);
 	audio_renderer->SetCacheMaxSize(OPT_GET("Audio/Renderer/Spectrum/Memory Max")->GetInt() * 1024 * 1024);
 
-	timeline->ChangeAudio(controller->GetDuration());
+	timeline->ChangeAudio(GetDuration());
 
 	ms_per_pixel = 0;
 	SetZoomLevel(zoom_level);

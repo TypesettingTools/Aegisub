@@ -228,7 +228,8 @@ class AudioDisplay: public wxWindow {
 	void OnMouseEnter(wxMouseEvent&);
 	void OnMouseLeave(wxMouseEvent&);
 
-	// AudioControllerAudioEventListener implementation
+	int GetDuration() const;
+
 	void OnAudioOpen(AudioProvider *provider);
 	void OnPlaybackPosition(int ms_position);
 	void OnSelectionChanged();

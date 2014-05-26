@@ -115,6 +115,10 @@ class AudioController final : public wxEvtHandler {
 	/// @return The index of the first sample that is wholly inside the millisecond
 	int64_t SamplesFromMilliseconds(int64_t ms) const;
 
+	/// Get the duration of the currently open audio in milliseconds, or 0 if none
+	/// @return Duration in milliseconds
+	int GetDuration() const;
+
 public:
 	AudioController(agi::Context *context);
 	~AudioController();
@@ -160,10 +164,6 @@ public:
 	///
 	/// Returns 0 if playback is stopped. The return value is only approximate.
 	int GetPlaybackPosition();
-
-	/// Get the duration of the currently open audio in milliseconds, or 0 if none
-	/// @return Duration in milliseconds
-	int GetDuration() const;
 
 	/// @brief Get the primary playback range
 	/// @return An immutable TimeRange object
