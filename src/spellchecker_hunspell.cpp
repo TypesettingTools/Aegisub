@@ -145,10 +145,10 @@ std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const&
 		catch (agi::charset::ConvError const&) {
 			// Shouldn't ever actually happen...
 		}
-		delete results[i];
+		free(results[i]);
 	}
 
-	delete results;
+	free(results);
 
 	return suggestions;
 }
