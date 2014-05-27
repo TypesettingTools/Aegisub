@@ -25,8 +25,7 @@
 
 #include <boost/interprocess/streams/bufferstream.hpp>
 
-namespace agi {
-	namespace json_util {
+namespace agi { namespace json_util {
 
 json::UnknownElement parse(std::istream &stream) {
 	try {
@@ -48,24 +47,20 @@ json::UnknownElement file(agi::fs::path const& file) {
 
 json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, size_t> default_config) {
 	try {
-		return parse(*io::Open(file));
+		if (fs::FileExists(file))
+			return parse(*io::Open(file));
 	}
 	catch (fs::FileNotFound const&) {
 		// Not an error
-		boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
-		return parse(stream);
 	}
 	catch (json::Exception&) {
 		// Already logged in parse
-		boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
-		return parse(stream);
 	}
 	catch (agi::Exception& e) {
 		LOG_E("json/file") << "Unexpected error when reading config file " << file << ": " << e.GetMessage();
-		boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
-		return parse(stream);
 	}
+	boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
+	return parse(stream);
 }
 
-	} // namespace json_util
-} // namespace agi
+} }
