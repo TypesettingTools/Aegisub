@@ -139,11 +139,10 @@ class  RiffWavPCMAudioProvider : public PCMAudioProvider {
 
 	static bool CheckFourcc(const char (&str1)[4], const char (&str2)[5])
 	{
-		return
-			(str1[0] == str2[0]) &&
-			(str1[1] == str2[1]) &&
-			(str1[2] == str2[2]) &&
-			(str1[3] == str2[3]);
+		return str1[0] == str2[0]
+			&& str1[1] == str2[1]
+			&& str1[2] == str2[2]
+			&& str1[3] == str2[3];
 	}
 
 public:
@@ -160,12 +159,12 @@ public:
 		if (!CheckFourcc(header.format, "WAVE"))
 			throw agi::AudioDataNotFoundError("File is not a RIFF WAV file", nullptr);
 
-		// Count how much more data we can have in the entire file
-		// The first 4 bytes are already eaten by the header.format field
-		uint32_t data_left = header.ch.size - 4;
 		// How far into the file we have processed.
 		// Must be incremented by the riff chunk size fields.
 		uint32_t filepos = sizeof(header);
+		// Count how much more data we can have in the entire file
+		// The first 4 bytes are already eaten by the header.format field
+		auto total_data = std::min<uint32_t>(header.ch.size - 4 + filepos, file->size());
 
 		bool got_fmt_header = false;
 
@@ -173,11 +172,8 @@ public:
 		num_samples = 0;
 
 		// Continue reading chunks until out of data
-		while (data_left) {
+		while (filepos + sizeof(ChunkHeader) < total_data) {
 			auto const& ch = Read<ChunkHeader>(filepos);
-
-			// Update counters
-			data_left -= sizeof(ch);
 			filepos += sizeof(ch);
 
 			if (CheckFourcc(ch.type, "fmt ")) {
@@ -194,14 +190,13 @@ public:
 				channels = fmt.channels;
 				bytes_per_sample = (fmt.significant_bits_sample + 7) / 8; // round up to nearest whole byte
 			}
-
 			else if (CheckFourcc(ch.type, "data")) {
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
 				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
 
-				auto samples = ch.size / bytes_per_sample / channels;
+				auto samples = std::min(total_data - filepos, ch.size) / bytes_per_sample / channels;
 				index_points.push_back(IndexPoint{filepos, samples});
 				num_samples += samples;
 			}
@@ -210,7 +205,6 @@ public:
 
 			// Update counters
 			// Make sure they're word aligned
-			data_left -= (ch.size + 1) & ~1;
 			filepos += (ch.size + 1) & ~1;
 		}
 
@@ -297,11 +291,11 @@ public:
 		if (!CheckGuid(header.format_guid, w64GuidWAVE))
 			throw agi::AudioDataNotFoundError("File is not a Wave64 WAVE file", nullptr);
 
-		// Count how much more data we can have in the entire file
-		uint64_t data_left = header.file_size - sizeof(RiffChunk);
 		// How far into the file we have processed.
 		// Must be incremented by the riff chunk size fields.
 		uint64_t filepos = sizeof(header);
+		// Count how much more data we can have in the entire file
+		auto total_data = std::min<uint64_t>(header.file_size, file->size());
 
 		bool got_fmt_header = false;
 
@@ -309,22 +303,20 @@ public:
 		num_samples = 0;
 
 		// Continue reading chunks until out of data
-		while (data_left) {
+		while (filepos + 24 < total_data) {
 			uint8_t *chunk_guid = (uint8_t*)EnsureRangeAccessible(filepos, 16);
-			auto chunk_size = Read<uint64_t>(filepos + 16);
+			auto chunk_size = std::min(total_data - filepos, Read<uint64_t>(filepos + 16)) - 24;
+			filepos += 24;
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
 					throw agi::AudioProviderOpenError("Bad file, found more than one 'fmt' chunk", nullptr);
 
 				auto const& fmt = Read<FormatChunk>(filepos);
-				got_fmt_header = true;
-
-				if (fmt.format.wFormatTag == 3)
-					throw agi::AudioProviderOpenError("File is IEEE 32 bit float format which isn't supported. Bug the developers if this matters.", nullptr);
 				if (fmt.format.wFormatTag != 1)
-					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", nullptr);
+					throw agi::AudioProviderOpenError("File is not uncompressed PCM", nullptr);
 
+				got_fmt_header = true;
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = fmt.format.nSamplesPerSec;
 				channels = fmt.format.nChannels;
@@ -343,7 +335,6 @@ public:
 
 			// Update counters
 			// Make sure they're 64 bit aligned
-			data_left -= (chunk_size + 7) & ~7;
 			filepos += (chunk_size + 7) & ~7;
 		}
 
