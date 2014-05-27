@@ -302,7 +302,10 @@ namespace
 								cur_row->emplace_back("", underline, italic, true);
 							}
 
-							start = i + (text[i] == '\\');
+							if (text[i] == '\\')
+								start = ++i + 1;
+							else
+								start = i;
 						}
 
 						// add the remaining text
