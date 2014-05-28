@@ -18,12 +18,13 @@
 
 #include <libaegisub/access.h>
 
+#include <libaegisub/format.h>
+#include <libaegisub/format_path.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
 #include <boost/filesystem.hpp>
-#include <boost/format.hpp>
 
 #include <windows.h>
 
@@ -63,7 +64,7 @@ void Check(fs::path const& file, acs::Type type) {
 			case ERROR_ACCESS_DENIED:
 				throw fs::ReadDenied(file);
 			default:
-				throw fs::FileSystemUnknownError(str(boost::format("Unexpected error when getting attributes for \"%s\": %s") % file % util::ErrorString(GetLastError())));
+				throw fs::FileSystemUnknownError(agi::format("Unexpected error when getting attributes for \"%s\": %s", file, util::ErrorString(GetLastError())));
 		}
 	}
 

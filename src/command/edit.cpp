@@ -50,12 +50,12 @@
 #include "../video_controller.h"
 
 #include <libaegisub/address_of_adaptor.h>
+#include <libaegisub/format.h>
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
 #include <boost/range/algorithm.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/indirected.hpp>
@@ -358,7 +358,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 		for (auto& line : lines) {
 			int shift = line.second.set_tag(tag, new_color.GetAssOverrideFormatted(), norm_sel_start, sel_start);
 			if (new_color.a != line.first.a) {
-				shift += line.second.set_tag(alpha, str(boost::format("&H%02X&") % (int)new_color.a), norm_sel_start, sel_start + shift);
+				shift += line.second.set_tag(alpha, agi::format("&H%02X&", (int)new_color.a), norm_sel_start, sel_start + shift);
 				line.first.a = new_color.a;
 			}
 

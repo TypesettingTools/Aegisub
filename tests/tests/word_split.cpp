@@ -28,7 +28,7 @@ TEST(lagi_word_split, empty) {
 	SplitWords(text, tokens);
 	EXPECT_TRUE(tokens.empty());
 
-	tokens.emplace_back(0, 0);
+	tokens.push_back(DialogueToken{0, 0});
 	SplitWords(text, tokens);
 	EXPECT_EQ(1u, tokens.size());
 }
@@ -134,7 +134,7 @@ TEST(lagi_word_split, unclosed_ovr) {
 
 	text = "{";
 	tokens.clear();
-	tokens.emplace_back(dt::OVR_BEGIN, 1);
+	tokens.push_back(DialogueToken{dt::OVR_BEGIN, 1});
 
 	SplitWords(text, tokens);
 	ASSERT_EQ(1u, tokens.size());

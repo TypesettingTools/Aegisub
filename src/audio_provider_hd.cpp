@@ -20,12 +20,12 @@
 #include "options.h"
 
 #include <libaegisub/file_mapping.h>
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
 
 #include <boost/filesystem/path.hpp>
-#include <boost/format.hpp>
 #include <boost/interprocess/detail/os_thread_functions.hpp>
 #include <thread>
 
@@ -64,9 +64,8 @@ public:
 		if ((uint64_t)num_samples * bytes_per_sample > agi::fs::FreeSpace(cache_dir))
 			throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir.string() + " to cache the audio", nullptr);
 
-		auto filename = str(boost::format("audio-%lld-%lld")
-			% (long long)time(nullptr)
-			% (long long)boost::interprocess::ipcdetail::get_current_process_id());
+		auto filename = agi::format("audio-%lld-%lld", time(nullptr),
+			boost::interprocess::ipcdetail::get_current_process_id());
 
 		file = agi::make_unique<agi::temp_file_mapping>(cache_dir / filename, num_samples * bytes_per_sample);
 		decoder = std::thread([&] {

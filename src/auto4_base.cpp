@@ -39,13 +39,13 @@
 #include "subs_controller.h"
 
 #include <libaegisub/dispatch.h>
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 #include <future>
 
@@ -490,7 +490,7 @@ namespace Automation4 {
 
 			std::string filter(fact->GetFilenamePattern());
 			boost::replace_all(filter, ",", ";");
-			fnfilter += str(boost::format("%s scripts (%s)|%s|") % fact->GetEngineName() % fact->GetFilenamePattern() % filter);
+			fnfilter += agi::format("%s scripts (%s)|%s|", fact->GetEngineName(), fact->GetFilenamePattern(), filter);
 			catchall += filter + ";";
 		}
 		fnfilter += from_wx(_("All Files")) + " (*.*)|*.*";

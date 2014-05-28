@@ -16,7 +16,7 @@
 
 #include "parser.h"
 
-#include <boost/format.hpp>
+#include "libaegisub/format.h"
 
 namespace agi {
 
@@ -29,11 +29,11 @@ Color::Color(std::string const& str) {
 }
 
 std::string Color::GetAssStyleFormatted() const {
-	return str(boost::format("&H%02X%02X%02X%02X") % (int)a % (int)b % (int)g % (int)r);
+	return agi::format("&H%02X%02X%02X%02X", a, b, g, r);
 }
 
 std::string Color::GetAssOverrideFormatted() const {
-	return str(boost::format("&H%02X%02X%02X&") % (int)b % (int)g % (int)r);
+	return agi::format("&H%02X%02X%02X&", b, g, r);
 }
 
 std::string Color::GetSsaFormatted() const {
@@ -42,12 +42,12 @@ std::string Color::GetSsaFormatted() const {
 
 std::string Color::GetHexFormatted(bool rgba) const {
 	if (rgba)
-		return str(boost::format("#%02X%02X%02X%02X") % (int)r % (int)g % (int)b % (int)a);
-	return str(boost::format("#%02X%02X%02X") % (int)r % (int)g % (int)b);
+		return agi::format("#%02X%02X%02X%02X", r, g, b, a);
+	return agi::format("#%02X%02X%02X", r, g, b);
 }
 
 std::string Color::GetRgbFormatted() const {
-	return str(boost::format("rgb(%d, %d, %d)") % (int)r % (int)g % (int)b);
+	return agi::format("rgb(%d, %d, %d)", r, g, b);
 }
 
 bool Color::operator==(Color const& col) const {

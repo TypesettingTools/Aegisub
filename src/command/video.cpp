@@ -50,6 +50,7 @@
 #include "../video_display.h"
 #include "../video_frame.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
@@ -58,7 +59,6 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/format.hpp>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
 
@@ -487,7 +487,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 	int session_shot_count = 1;
 	std::string path;
 	do {
-		path = str(boost::format("%s_%03d_%d.png") % basepath.string() % session_shot_count++ % c->videoController->GetFrameN());
+		path = agi::format("%s_%03d_%d.png", basepath.string(), session_shot_count++, c->videoController->GetFrameN());
 	} while (agi::fs::FileExists(path));
 
 	get_image(c, raw).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);

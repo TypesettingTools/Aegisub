@@ -18,10 +18,10 @@
 
 #include "version.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/util.h>
 
 #include <boost/filesystem/fstream.hpp>
-#include <boost/format.hpp>
 #include <wx/string.h>
 #include <wx/stackwalk.h>
 
@@ -41,8 +41,8 @@ public:
 		if (!fp.good()) return;
 
 		fp << util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
-		fp << boost::format("VER - %s\n") % GetAegisubLongVersionString();
-		fp << boost::format("FTL - Beginning stack dump for \"%s\": \n") % cause;
+		fp << agi::format("VER - %s\n", GetAegisubLongVersionString());
+		fp << agi::format("FTL - Beginning stack dump for \"%s\": \n", cause);
 	}
 
 	~StackWalker() {
@@ -55,9 +55,9 @@ public:
 	void OnStackFrame(wxStackFrame const& frame) override final {
 		if (!fp.good()) return;
 
-		fp << boost::format("%03u - %p: %s") % frame.GetLevel() % frame.GetAddress() % frame.GetName().utf8_str().data();
+		fp << agi::format("%03u - %p: %s", frame.GetLevel(), frame.GetAddress(), frame.GetName().utf8_str().data());
 		if (frame.HasSourceLocation())
-			fp << boost::format(" on %s:%u") % frame.GetFileName().utf8_str().data() % frame.GetLine();
+			fp << agi::format(" on %s:%u", frame.GetFileName().utf8_str().data(), frame.GetLine());
 
 		fp << "\n";
 	}
@@ -83,8 +83,8 @@ void Write(std::string const& error) {
 	boost::filesystem::ofstream file(crashlog_path, std::ios::app);
 	if (file.is_open()) {
 		file << util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
-		file << boost::format("VER - %s\n") % GetAegisubLongVersionString();
-		file << boost::format("EXC - Aegisub has crashed with unhandled exception \"%s\".\n") % error;
+		file << agi::format("VER - %s\n", GetAegisubLongVersionString());
+		file << agi::format("EXC - Aegisub has crashed with unhandled exception \"%s\".\n", error);
 		file << "----------------------------------------\n\n";
 		file.close();
 	}

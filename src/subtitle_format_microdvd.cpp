@@ -41,11 +41,11 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 
@@ -135,13 +135,13 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& 
 
 	// Write FPS line
 	if (!fps.IsVFR())
-		file.WriteLineToFile(str(boost::format("{1}{1}%.6f") % fps.FPS()));
+		file.WriteLineToFile(agi::format("{1}{1}%.6f", fps.FPS()));
 
 	// Write lines
 	for (auto const& current : copy.Events) {
 		int start = fps.FrameAtTime(current.Start, agi::vfr::START);
 		int end = fps.FrameAtTime(current.End, agi::vfr::END);
 
-		file.WriteLineToFile(str(boost::format("{%i}{%i}%s") % start % end % boost::replace_all_copy(current.Text.get(), "\\N", "|")));
+		file.WriteLineToFile(agi::format("{%i}{%i}%s", start, end, boost::replace_all_copy(current.Text.get(), "\\N", "|")));
 	}
 }

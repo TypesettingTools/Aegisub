@@ -37,10 +37,10 @@
 #include "subtitle_format.h"
 #include "utils.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/split.h>
 
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <wx/intl.h>
 
@@ -175,17 +175,17 @@ void AssStyle::UpdateData() {
 	replace(name.begin(), name.end(), ',', ';');
 	replace(font.begin(), font.end(), ',', ';');
 
-	data = str(boost::format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i")
-		% name % font % fontsize
-		% primary.GetAssStyleFormatted()
-		% secondary.GetAssStyleFormatted()
-		% outline.GetAssStyleFormatted()
-		% shadow.GetAssStyleFormatted()
-		% (bold? -1 : 0) % (italic ? -1 : 0)
-		% (underline ? -1 : 0) % (strikeout ? -1 : 0)
-		% scalex % scaley % spacing % angle
-		% borderstyle % outline_w % shadow_w % alignment
-		% Margin[0] % Margin[1] % Margin[2] % encoding);
+	data = agi::format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
+		name, font, fontsize,
+		primary.GetAssStyleFormatted(),
+		secondary.GetAssStyleFormatted(),
+		outline.GetAssStyleFormatted(),
+		shadow.GetAssStyleFormatted(),
+		(bold? -1 : 0), (italic ? -1 : 0),
+		(underline ? -1 : 0), (strikeout ? -1 : 0),
+		scalex, scaley, spacing, angle,
+		borderstyle, outline_w, shadow_w, alignment,
+		Margin[0], Margin[1], Margin[2], encoding);
 }
 
 void AssStyle::GetEncodings(wxArrayString &encodingStrings) {

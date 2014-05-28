@@ -42,11 +42,11 @@
 #include "MatroskaParser.h"
 
 #include <libaegisub/file_mapping.h>
+#include <libaegisub/format.h>
 #include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/range/irange.hpp>
 #include <boost/tokenizer.hpp>
@@ -143,18 +143,18 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 			subList.emplace_back(
 				boost::lexical_cast<int>(str_range(readBuf, first)),
-				str(boost::format("Dialogue: %d,%s,%s,%s")
-					% boost::lexical_cast<int>(str_range(first + 1, second))
-					% subStart.GetAssFormated()
-					% subEnd.GetAssFormated()
-					% str_range(second + 1, readBufEnd)));
+				agi::format("Dialogue: %d,%s,%s,%s"
+					, boost::lexical_cast<int>(str_range(first + 1, second))
+					, subStart.GetAssFormated()
+					, subEnd.GetAssFormated()
+					, str_range(second + 1, readBufEnd)));
 		}
 		// Process SRT
 		else {
-			auto line = str(boost::format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s")
-				% subStart.GetAssFormated()
-				% subEnd.GetAssFormated()
-				% str_range(readBuf, readBufEnd));
+			auto line = agi::format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s"
+				, subStart.GetAssFormated()
+				, subEnd.GetAssFormated()
+				, str_range(readBuf, readBufEnd));
 			boost::replace_all(line, "\r\n", "\\N");
 			boost::replace_all(line, "\r", "\\N");
 			boost::replace_all(line, "\n", "\\N");
@@ -191,7 +191,7 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 		std::string CodecID(trackInfo->CodecID);
 		if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
 			tracksFound.push_back(track);
-			tracksNames.emplace_back(str(boost::format("%d (%s %s)") % track % CodecID % trackInfo->Language));
+			tracksNames.emplace_back(agi::format("%d (%s %s)", track, CodecID, trackInfo->Language));
 			if (trackInfo->Name) {
 				tracksNames.back() += ": ";
 				tracksNames.back() += trackInfo->Name;

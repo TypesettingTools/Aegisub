@@ -170,6 +170,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\file_mapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\character_count.h">
       <Filter>Header Files</Filter>
     </ClInclude>

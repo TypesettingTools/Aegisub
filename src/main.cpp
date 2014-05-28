@@ -55,6 +55,7 @@
 #include "version.h"
 
 #include <libaegisub/dispatch.h>
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
@@ -62,7 +63,6 @@
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
-#include <boost/format.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/locale.hpp>
 #include <locale>
@@ -378,7 +378,7 @@ static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 		agi::fs::CreateDirectory(path);
 
 		auto filename = c->subsController->Filename().stem();
-		filename.replace_extension(str(boost::format("%s.ass") % agi::util::strftime("%Y-%m-%d-%H-%M-%S")));
+		filename.replace_extension(agi::format("%s.ass", agi::util::strftime("%Y-%m-%d-%H-%M-%S")));
 		path /= filename;
 		c->subsController->Save(path);
 

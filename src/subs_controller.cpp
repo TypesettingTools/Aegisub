@@ -31,11 +31,11 @@
 #include "subtitle_format.h"
 #include "text_selection_controller.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
-#include <boost/format.hpp>
 #include <wx/msgdlg.h>
 
 namespace {
@@ -277,7 +277,7 @@ agi::fs::path SubsController::AutoSave() {
 	if (name.empty())
 		name = "Untitled";
 
-	path /= str(boost::format("%s.%s.AUTOSAVE.ass") % name.string() % agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
+	path /= agi::format("%s.%s.AUTOSAVE.ass", name.string(), agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
 
 	SubtitleFormat::GetWriter(path)->WriteFile(context->ass.get(), path, 0);
 	autosaved_commit_id = commit_id;

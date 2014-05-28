@@ -20,7 +20,8 @@
 
 #include "visual_tool_rotatexy.h"
 
-#include <boost/format.hpp>
+#include <libaegisub/format.h>
+
 #include <cmath>
 #include <wx/colour.h>
 
@@ -162,8 +163,8 @@ void VisualToolRotateXY::UpdateHold() {
 	angle_x = fmodf(angle_x + 360.f, 360.f);
 	angle_y = fmodf(angle_y + 360.f, 360.f);
 
-	SetSelectedOverride("\\frx", str(boost::format("%.4g") % angle_x));
-	SetSelectedOverride("\\fry", str(boost::format("%.4g") % angle_y));
+	SetSelectedOverride("\\frx", agi::format("%.4g", angle_x));
+	SetSelectedOverride("\\fry", agi::format("%.4g", angle_y));
 }
 
 void VisualToolRotateXY::UpdateDrag(Feature *feature) {

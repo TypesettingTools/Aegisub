@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file utils.cpp
-/// @brief Misc. utility functions
-/// @ingroup utility
-///
-
 #include "utils.h"
 
 #include "compat.h"
@@ -39,6 +34,7 @@
 #include "retina_helper.h"
 
 #include <libaegisub/dispatch.h>
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
@@ -46,7 +42,6 @@
 #include <unistd.h>
 #endif
 #include <boost/filesystem/path.hpp>
-#include <boost/format.hpp>
 #include <map>
 #include <unicode/locid.h>
 #include <wx/clipbrd.h>
@@ -81,7 +76,7 @@ wxString PrettySize(int bytes) {
 }
 
 std::string float_to_string(double val) {
-	std::string s = str(boost::format("%.3f") % val);
+	std::string s = agi::format("%.3f", val);
 	size_t pos = s.find_last_not_of("0");
 	if (pos != s.find(".")) ++pos;
 	s.erase(begin(s) + pos, end(s));
@@ -184,8 +179,8 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 		}
 
 		if (cachefiles.size() <= max_files && total_size <= max_size) {
-			LOG_D("utils/clean_cache") << boost::format("cache does not need cleaning (maxsize=%d, cursize=%d, maxfiles=%d, numfiles=%d), exiting")
-				% max_size % total_size % max_files % cachefiles.size();
+			LOG_D("utils/clean_cache") << agi::format("cache does not need cleaning (maxsize=%d, cursize=%d, maxfiles=%d, numfiles=%d), exiting"
+				, max_size, total_size, max_files, cachefiles.size());
 			return;
 		}
 

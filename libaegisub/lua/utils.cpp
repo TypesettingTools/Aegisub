@@ -16,11 +16,11 @@
 
 #include "libaegisub/lua/utils.h"
 
+#include "libaegisub/format.h"
 #include "libaegisub/log.h"
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/format.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/regex.hpp>
 
@@ -170,9 +170,9 @@ int add_stack_trace(lua_State *L) {
 			else if (*ar.what == 'C')
 				function = '?';
 			else if (!*ar.namewhat)
-				function = str(boost::format("<anonymous function at lines %d-%d>") % real_line(ar.linedefined) % real_line(ar.lastlinedefined - 1));
+				function = agi::format("<anonymous function at lines %d-%d>", real_line(ar.linedefined), real_line(ar.lastlinedefined - 1));
 
-			frames.emplace_back(str(boost::format("    File \"%s\", line %d\n%s") % file % real_line(ar.currentline) % function));
+			frames.emplace_back(agi::format("    File \"%s\", line %d\n%s", file, real_line(ar.currentline), function));
 		}
 	}
 

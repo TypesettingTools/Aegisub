@@ -32,10 +32,10 @@
 #include "visual_tool_drag.h"
 #include "visual_tool_vector_clip.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
-#include <boost/format.hpp>
 
 const wxColour VisualToolBase::colour[] = {
 	wxColour(106,32,19),
@@ -500,11 +500,11 @@ std::string VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, boo
 		tag = find_tag(blocks, "\\clip");
 
 	if (tag && tag->size() == 4) {
-		return str(boost::format("m %d %d l %d %d %d %d %d %d")
-			% (*tag)[0].Get<int>() % (*tag)[1].Get<int>()
-			% (*tag)[2].Get<int>() % (*tag)[1].Get<int>()
-			% (*tag)[2].Get<int>() % (*tag)[3].Get<int>()
-			% (*tag)[0].Get<int>() % (*tag)[3].Get<int>());
+		return agi::format("m %d %d l %d %d %d %d %d %d"
+			, (*tag)[0].Get<int>(), (*tag)[1].Get<int>()
+			, (*tag)[2].Get<int>(), (*tag)[1].Get<int>()
+			, (*tag)[2].Get<int>(), (*tag)[3].Get<int>()
+			, (*tag)[0].Get<int>(), (*tag)[3].Get<int>());
 	}
 	if (tag) {
 		scale = std::max((*tag)[0].Get(scale), 1);

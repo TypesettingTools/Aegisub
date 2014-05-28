@@ -40,7 +40,7 @@
 #include "ass_time.h"
 #include "text_file_writer.h"
 
-#include <boost/format.hpp>
+#include <libaegisub/format.h>
 
 TranStationSubtitleFormat::TranStationSubtitleFormat()
 : SubtitleFormat("TranStation")
@@ -109,6 +109,6 @@ std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, const AssDialo
 	if (nextl_start > 0 && end == nextl_start)
 		end = fps.TimeAtFrame(fps.FrameAtTime(end, agi::vfr::END) - 1, agi::vfr::END);
 
-	std::string header = str(boost::format("SUB[%i%s%s %s>%s]\r\n") % valign % halign % type % ft.ToSMPTE(current->Start) % ft.ToSMPTE(end));
+	std::string header = agi::format("SUB[%i%s%s %s>%s]\r\n", valign, halign, type, ft.ToSMPTE(current->Start), ft.ToSMPTE(end));
 	return header + current->Text.get();
 }

@@ -23,12 +23,12 @@
 
 #include "utils.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/format.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 
 AssTime::AssTime(int time) : time(mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
@@ -94,7 +94,7 @@ SmpteFormatter::SmpteFormatter(agi::vfr::Framerate fps, std::string sep)
 std::string SmpteFormatter::ToSMPTE(AssTime time) const {
 	int h=0, m=0, s=0, f=0;
 	fps.SmpteAtTime(time, &h, &m, &s, &f);
-	return str(boost::format("%02d%s%02d%s%02d%c%02d") % h % sep % m % sep % s % sep % f);
+	return agi::format("%02d%s%02d%s%02d%c%02d", h, sep, m, sep, s, sep, f);
 }
 
 AssTime SmpteFormatter::FromSMPTE(std::string const& str) const {

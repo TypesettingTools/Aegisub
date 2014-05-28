@@ -18,7 +18,8 @@
 
 #include "ass_dialogue.h"
 
-#include <boost/format.hpp>
+#include <libaegisub/format.h>
+
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -26,7 +27,7 @@ std::string AssKaraoke::Syllable::GetText(bool k_tag) const {
 	std::string ret;
 
 	if (k_tag)
-		ret = str(boost::format("{%s%d}") % tag_type % ((duration + 5) / 10));
+		ret = agi::format("{%s%d}", tag_type, ((duration + 5) / 10));
 
 	size_t idx = 0;
 	for (auto const& ovr : ovr_tags) {

@@ -37,15 +37,14 @@
 
 #include "string_codec.h"
 
-#include <boost/format.hpp>
+#include <libaegisub/format.h>
 
 std::string inline_string_encode(const std::string &input) {
 	std::string output;
 	output.reserve(input.size());
-	auto format = boost::format("#%02X");
 	for (char c : input) {
 		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
-			output += str(format % (int)(unsigned char)c);
+			output += agi::format("#%02X", (unsigned char)c);
 		else
 			output += c;
 	}

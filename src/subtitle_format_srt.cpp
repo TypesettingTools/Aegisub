@@ -41,13 +41,13 @@
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/of_type_adaptor.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/format.hpp>
 #include <boost/regex.hpp>
 #include <map>
 
@@ -200,11 +200,11 @@ public:
 
 						// handle the attributes
 						if (attr_name == "face")
-							new_attribs.face = str(boost::format("{\\fn%s}") % attr_value);
+							new_attribs.face = agi::format("{\\fn%s}", attr_value);
 						else if (attr_name == "size")
-							new_attribs.size = str(boost::format("{\\fs%s}") % attr_value);
+							new_attribs.size = agi::format("{\\fs%s}", attr_value);
 						else if (attr_name == "color")
-							new_attribs.color = str(boost::format("{\\c%s}") % agi::Color(attr_value).GetAssOverrideFormatted());
+							new_attribs.color = agi::format("{\\c%s}", agi::Color(attr_value).GetAssOverrideFormatted());
 
 						// remove this attribute to prepare for the next
 						tag_attrs = result.suffix().str();
@@ -320,7 +320,7 @@ milliseconds:
 
 std::string WriteSRTTime(AssTime const& ts)
 {
-	return str(boost::format("%02d:%02d:%02d,%03d") % ts.GetTimeHours() % ts.GetTimeMinutes() % ts.GetTimeSeconds() % ts.GetTimeMiliseconds());
+	return agi::format("%02d:%02d:%02d,%03d", ts.GetTimeHours(), ts.GetTimeMinutes(), ts.GetTimeSeconds(), ts.GetTimeMiliseconds());
 }
 
 }
@@ -382,11 +382,11 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 				if (regex_search(text_line, timestamp_match, timestamp_regex))
 					goto found_timestamps;
 
-				throw SRTParseError(str(boost::format("Parsing SRT: Expected subtitle index at line %d") % line_num), nullptr);
+				throw SRTParseError(agi::format("Parsing SRT: Expected subtitle index at line %d", line_num), nullptr);
 
 			case STATE_TIMESTAMP:
 				if (!regex_search(text_line, timestamp_match, timestamp_regex))
-					throw SRTParseError(str(boost::format("Parsing SRT: Expected timestamp pair at line %d") % line_num), nullptr);
+					throw SRTParseError(agi::format("Parsing SRT: Expected timestamp pair at line %d", line_num), nullptr);
 found_timestamps:
 				if (line) {
 					// finalize active line
@@ -524,9 +524,9 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 					if (it != tag_states.end()) {
 						bool temp = tag.Params[0].Get(false);
 						if (temp && !it->second)
-							final += str(boost::format("<%c>") % it->first);
+							final += agi::format("<%c>", it->first);
 						if (!temp && it->second)
-							final += str(boost::format("</%c>") % it->first);
+							final += agi::format("</%c>", it->first);
 						it->second = temp;
 					}
 				}
@@ -541,7 +541,7 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
 	for (auto it : tag_states) {
 		if (it.second)
-			final += str(boost::format("</%c>") % it.first);
+			final += agi::format("</%c>", it.first);
 	}
 
 	return final;

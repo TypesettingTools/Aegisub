@@ -45,7 +45,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/format.hpp>
+#include <libaegisub/format.h>
 #include <boost/gil/gil_all.hpp>
 
 DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern)
@@ -89,7 +89,7 @@ DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int he
 }
 
 std::string DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
-	return str(boost::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s") % fps % frames % width % height % (int)colour.r % (int)colour.g % (int)colour.b % (pattern ? "c" : ""));
+	return agi::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, (int)colour.r, (int)colour.g, (int)colour.b, (pattern ? "c" : ""));
 }
 
 std::shared_ptr<VideoFrame> DummyVideoProvider::GetFrame(int) {

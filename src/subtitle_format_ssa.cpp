@@ -24,9 +24,10 @@
 #include "text_file_writer.h"
 #include "version.h"
 
+#include <libaegisub/format.h>
+
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/format.hpp>
 
 namespace {
 std::string replace_commas(std::string str) {
@@ -54,14 +55,14 @@ void SsaSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	file.WriteLineToFile("[V4 Styles]");
 	file.WriteLineToFile("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, TertiaryColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, AlphaLevel, Encoding");
 	for (auto const& line : src->Styles)
-		file.WriteLineToFile(str(boost::format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i")
-			% line.name % line.font % line.fontsize
-			% line.primary.GetSsaFormatted()
-			% line.secondary.GetSsaFormatted()
-			% line.shadow.GetSsaFormatted()
-			% (line.bold? -1 : 0) % (line.italic ? -1 : 0)
-			% line.borderstyle % line.outline_w % line.shadow_w % AssStyle::AssToSsa(line.alignment)
-			% line.Margin[0] % line.Margin[1] % line.Margin[2] % line.encoding));
+		file.WriteLineToFile(agi::format("Style: %s,%s,%g,%s,%s,0,%s,%d,%d,%d,%g,%g,%d,%d,%d,%d,0,%i"
+			, line.name, line.font, line.fontsize
+			, line.primary.GetSsaFormatted()
+			, line.secondary.GetSsaFormatted()
+			, line.shadow.GetSsaFormatted()
+			, (line.bold? -1 : 0), (line.italic ? -1 : 0)
+			, line.borderstyle, line.outline_w, line.shadow_w, AssStyle::AssToSsa(line.alignment)
+			, line.Margin[0], line.Margin[1], line.Margin[2], line.encoding));
 
 	file.WriteLineToFile("");
 	file.WriteLineToFile("[Fonts]");
@@ -81,11 +82,11 @@ void SsaSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	file.WriteLineToFile("[Events]");
 	file.WriteLineToFile("Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text");
 	for (auto const& line : src->Events)
-		file.WriteLineToFile(str(boost::format("%s: Marked=0,%s,%s,%s,%s,%d,%d,%d,%s,%s")
-			% (line.Comment ? "Comment" : "Dialogue")
-			% line.Start.GetAssFormated() % line.End.GetAssFormated()
-			% replace_commas(line.Style) % replace_commas(line.Actor)
-			% line.Margin[0] % line.Margin[1] % line.Margin[2]
-			% replace_commas(line.Effect)
-			% strip_newlines(line.Text)));
+		file.WriteLineToFile(agi::format("%s: Marked=0,%s,%s,%s,%s,%d,%d,%d,%s,%s"
+			, (line.Comment ? "Comment" : "Dialogue")
+			, line.Start.GetAssFormated(), line.End.GetAssFormated()
+			, replace_commas(line.Style), replace_commas(line.Actor)
+			, line.Margin[0], line.Margin[1], line.Margin[2]
+			, replace_commas(line.Effect)
+			, strip_newlines(line.Text)));
 }

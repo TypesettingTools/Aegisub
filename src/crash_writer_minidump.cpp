@@ -18,13 +18,13 @@
 
 #include "version.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <atomic>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/format.hpp>
 #include <condition_variable>
 #include <mutex>
 #include <thread>
@@ -143,10 +143,9 @@ void Write(std::string const& error) {
 	boost::filesystem::ofstream file(crashlog_path, std::ios::app);
 	if (file.is_open()) {
 		file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
-		file << boost::format("VER - %s\n") % GetAegisubLongVersionString();
-		file << boost::format("EXC - Aegisub has crashed with unhandled exception \"%s\".\n") % error;
+		agi::format(file, "VER - %s\n", GetAegisubLongVersionString());
+		agi::format(file, "EXC - Aegisub has crashed with unhandled exception \"%s\".\n", error);
 		file << "----------------------------------------\n\n";
-		file.close();
 	}
 }
 }

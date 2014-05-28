@@ -50,17 +50,17 @@
 #include "video_controller.h"
 #include "utils.h"
 
+#include <libaegisub/format.h>
 #include <libaegisub/lua/modules.h>
 #include <libaegisub/lua/script_reader.h>
 #include <libaegisub/lua/utils.h>
-#include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/path.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/format.hpp>
 #include <boost/scope_exit.hpp>
 #include <cassert>
 #include <mutex>
@@ -475,7 +475,7 @@ namespace {
 		// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
 		if (lua_pcall(L, 0, 0, 0)) {
 			// error occurred, assumed to be on top of Lua stack
-			description = str(boost::format("Error initialising Lua script \"%s\":\n\n%s") % GetPrettyFilename().string() % get_string_or_default(L, -1));
+			description = agi::format("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename().string(), get_string_or_default(L, -1));
 			lua_pop(L, 1);
 			return;
 		}
@@ -655,7 +655,7 @@ namespace {
 	, cmd_type(cmd::COMMAND_NORMAL)
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
-		cmd_name = str(boost::format("automation/lua/%s/%s") % check_string(L, -1) % check_string(L, 1));
+		cmd_name = agi::format("automation/lua/%s/%s", check_string(L, -1), check_string(L, 1));
 
 		if (!lua_isfunction(L, 3))
 			error(L, "The macro processing function must be a function");

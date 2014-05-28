@@ -23,7 +23,8 @@
 
 #include "utils.h"
 
-#include <boost/format.hpp>
+#include <libaegisub/format.h>
+
 #include <limits>
 
 Vector2D::Vector2D()
@@ -83,7 +84,7 @@ std::string Vector2D::PStr(char sep) const {
 }
 
 std::string Vector2D::DStr(char sep) const {
-	return str(boost::format("%d%c%d") % (int)x % sep % (int)y);
+	return agi::format("%d%c%d", (int)x, sep, (int)y);
 }
 
 std::string Vector2D::Str(char sep) const {

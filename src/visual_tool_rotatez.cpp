@@ -20,7 +20,8 @@
 
 #include "visual_tool_rotatez.h"
 
-#include <boost/format.hpp>
+#include <libaegisub/format.h>
+
 #include <cmath>
 #include <wx/colour.h>
 
@@ -108,7 +109,7 @@ void VisualToolRotateZ::UpdateHold() {
 
 	angle = fmodf(angle + 360.f, 360.f);
 
-	SetSelectedOverride("\\frz", str(boost::format("%.4g") % angle));
+	SetSelectedOverride("\\frz", agi::format("%.4g", angle));
 }
 
 void VisualToolRotateZ::UpdateDrag(Feature *feature) {

@@ -23,16 +23,16 @@
 
 #include "options.h"
 
-#include <boost/format.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
-#include <boost/range/algorithm.hpp>
-
 #include <libaegisub/dispatch.h>
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/thesaurus.h>
-#include <libaegisub/make_unique.h>
+
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/range/algorithm.hpp>
 
 Thesaurus::Thesaurus()
 : lang_listener(OPT_SUB("Tool/Thesaurus/Language", &Thesaurus::OnLanguageChanged, this))
@@ -76,8 +76,8 @@ std::vector<std::string> Thesaurus::GetLanguageList() const {
 }
 
 static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& idx, agi::fs::path& dat) {
-	idx = path/str(boost::format("th_%s.idx") % language);
-	dat = path/str(boost::format("th_%s.dat") % language);
+	idx = path/agi::format("th_%s.idx", language);
+	dat = path/agi::format("th_%s.dat", language);
 	return agi::fs::FileExists(idx) && agi::fs::FileExists(dat);
 }
 

@@ -38,12 +38,12 @@
 #include "utils.h"
 
 #include <libaegisub/color.h>
+#include <libaegisub/format.h>
 #include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/format.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <functional>
@@ -128,7 +128,7 @@ template<> void AssOverrideParameter::Set<std::string>(std::string new_value) {
 
 template<> void AssOverrideParameter::Set<int>(int new_value) {
 	if (classification == AssParameterClass::ALPHA)
-		Set(str(boost::format("&H%02X&") % mid(0, new_value, 255)));
+		Set(agi::format("&H%02X&", mid(0, new_value, 255)));
 	else
 		Set(std::to_string(new_value));
 }

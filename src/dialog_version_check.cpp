@@ -40,6 +40,7 @@
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
+#include <libaegisub/format.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/scoped_ptr.h>
 
@@ -47,7 +48,6 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/format.hpp>
 #include <functional>
 #include <mutex>
 #include <vector>
@@ -287,21 +287,20 @@ void DoCheck(bool interactive) {
 	if (!stream)
 		throw VersionCheckError(from_wx(_("Could not connect to updates server.")));
 
-	stream << boost::format(
+	stream << agi::format(
 		"GET %s?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s HTTP/1.0\r\n"
 		"User-Agent: Aegisub %s\r\n"
 		"Host: %s\r\n"
 		"Accept: */*\r\n"
-		"Connection: close\r\n\r\n")
-		% UPDATE_CHECKER_BASE_URL
-		% GetSVNRevision()
-		% (GetIsOfficialRelease() ? 1 : 0)
-		% GetOSShortName()
-		% GetSystemLanguage()
-		% GetAegisubLanguage()
-		% GetAegisubLongVersionString()
-		% UPDATE_CHECKER_SERVER
-		;
+		"Connection: close\r\n\r\n"
+		, UPDATE_CHECKER_BASE_URL
+		, GetSVNRevision()
+		, (GetIsOfficialRelease() ? 1 : 0)
+		, GetOSShortName()
+		, GetSystemLanguage()
+		, GetAegisubLanguage()
+		, GetAegisubLongVersionString()
+		, UPDATE_CHECKER_SERVER);
 
 	std::string http_version;
 	stream >> http_version;

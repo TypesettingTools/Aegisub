@@ -24,6 +24,7 @@
 #include "options.h"
 
 #include <libaegisub/charset_conv.h>
+#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
@@ -31,7 +32,6 @@
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
 
-#include <boost/format.hpp>
 #include <boost/range/algorithm.hpp>
 #include <hunspell/hunspell.hxx>
 
@@ -177,8 +177,8 @@ std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 }
 
 static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& aff, agi::fs::path& dic) {
-	aff = path/str(boost::format("%s.aff") % language);
-	dic = path/str(boost::format("%s.dic") % language);
+	aff = path/agi::format("%s.aff", language);
+	dic = path/agi::format("%s.dic", language);
 	return agi::fs::FileExists(aff) && agi::fs::FileExists(dic);
 }
 
@@ -204,7 +204,7 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", hunspell->get_dic_encoding());
 	rconv = agi::make_unique<agi::charset::IconvWrapper>(hunspell->get_dic_encoding(), "utf-8");
 
-	userDicPath = config::path->Decode("?user/dictionaries")/str(boost::format("user_%s.dic") % language);
+	userDicPath = config::path->Decode("?user/dictionaries")/agi::format("user_%s.dic", language);
 	ReadUserDictionary();
 
 	for (auto const& word : customWords) {
