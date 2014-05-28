@@ -103,7 +103,8 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 
 	std::sort(begin(ranges), end(ranges));
 
-	timecodes.reserve(ranges.back().end + 2);
+	if (!ranges.empty())
+		timecodes.reserve(ranges.back().end + 2);
 	double time = 0.;
 	int frame = 0;
 	for (auto const& range : ranges) {
