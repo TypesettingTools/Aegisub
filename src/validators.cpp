@@ -132,12 +132,12 @@ void DoubleValidator::OnChar(wxKeyEvent& event) {
 }
 
 bool DoubleValidator::TransferToWindow() {
-	auto str = wxString::Format("%g", *value);
+	auto str = std::to_wstring(*value);
 	if (decimal_sep != '.')
-		std::replace(str.begin(), str.end(), (wxChar)'.', decimal_sep);
+		std::replace(str.begin(), str.end(), L'.', decimal_sep);
 	if (str.find(decimal_sep) != str.npos) {
-		while (str.Last() == '0')
-			str.RemoveLast();
+		while (str.back() == '0')
+			str.pop_back();
 	}
 	static_cast<wxTextCtrl *>(GetWindow())->SetValue(str);
 	return true;

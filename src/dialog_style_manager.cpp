@@ -36,8 +36,9 @@
 #include "dialog_manager.h"
 #include "dialog_style_editor.h"
 #include "dialogs.h"
-#include "include/aegisub/context.h"
+#include "format.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "persist_location.h"
@@ -214,9 +215,9 @@ wxSizer *make_edit_buttons(wxWindow *parent, wxString move_label, wxButton **mov
 template<class Func>
 std::string unique_name(Func name_checker, std::string const& source_name) {
 	if (name_checker(source_name)) {
-		std::string name = from_wx(wxString::Format(_("%s - Copy"), to_wx(source_name)));
+		std::string name = agi::format(_("%s - Copy"), source_name);
 		for (int i = 2; name_checker(name); ++i)
-			name = from_wx(wxString::Format(_("%s - Copy (%d)"), to_wx(source_name), i));
+			name = agi::format(_("%s - Copy (%d)"), source_name, i);
 		return name;
 	}
 	return source_name;
@@ -244,7 +245,7 @@ void add_styles(Func1 name_checker, Func2 style_adder) {
 
 int confirm_delete(int n, wxWindow *parent, wxString const& title) {
 	return wxMessageBox(
-		wxString::Format(wxPLURAL("Are you sure you want to delete this style?", "Are you sure you want to delete these %d styles?", n), n),
+		fmt_plural(n, "Are you sure you want to delete this style?", "Are you sure you want to delete these %d styles?", n),
 		title, wxYES_NO | wxICON_EXCLAMATION, parent);
 }
 
@@ -472,7 +473,7 @@ void DialogStyleManager::OnCatalogNew() {
 	// Warn about bad characters
 	if (badchars_removed) {
 		wxMessageBox(
-			wxString::Format(_("The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\nThe catalog has been renamed to \"%s\"."), name),
+			fmt_tl("The specified catalog name contains one or more illegal characters. They have been replaced with underscores instead.\nThe catalog has been renamed to \"%s\".", name),
 			_("Invalid characters"));
 	}
 
@@ -486,7 +487,7 @@ void DialogStyleManager::OnCatalogDelete() {
 	if (CatalogList->GetCount() == 1) return;
 
 	wxString name = CatalogList->GetStringSelection();
-	wxString message = wxString::Format(_("Are you sure you want to delete the storage \"%s\" from the catalog?"), name);
+	wxString message = fmt_tl("Are you sure you want to delete the storage \"%s\" from the catalog?", name);
 	int option = wxMessageBox(message, _("Confirm delete"), wxYES_NO | wxICON_EXCLAMATION , this);
 	if (option == wxYES) {
 		agi::fs::Remove(config::path->Decode("?user/catalog/" + from_wx(name) + ".sty"));
@@ -505,7 +506,7 @@ void DialogStyleManager::OnCopyToStorage() {
 		wxString styleName = CurrentList->GetString(selections[i]);
 
 		if (AssStyle *style = Store.GetStyle(from_wx(styleName))) {
-			if (wxYES == wxMessageBox(wxString::Format(_("There is already a style with the name \"%s\" in the current storage. Overwrite?"),styleName), _("Style name collision"), wxYES_NO)) {
+			if (wxYES == wxMessageBox(fmt_tl("There is already a style with the name \"%s\" in the current storage. Overwrite?", styleName), _("Style name collision"), wxYES_NO)) {
 				*style = *styleMap.at(selections[i]);
 				copied.push_back(styleName);
 			}
@@ -532,7 +533,7 @@ void DialogStyleManager::OnCopyToCurrent() {
 		wxString styleName = StorageList->GetString(selections[i]);
 
 		if (AssStyle *style = c->ass->GetStyle(from_wx(styleName))) {
-			if (wxYES == wxMessageBox(wxString::Format(_("There is already a style with the name \"%s\" in the current script. Overwrite?"), styleName), _("Style name collision"), wxYES_NO)) {
+			if (wxYES == wxMessageBox(fmt_tl("There is already a style with the name \"%s\" in the current script. Overwrite?", styleName), _("Style name collision"), wxYES_NO)) {
 				*style = *Store[selections[i]];
 				copied.push_back(styleName);
 			}
@@ -709,7 +710,7 @@ void DialogStyleManager::OnCurrentImport() {
 		// Check if there is already a style with that name
 		if (AssStyle *existing = c->ass->GetStyle(styles[sel])) {
 			int answer = wxMessageBox(
-				wxString::Format(_("There is already a style with the name \"%s\" in the current script. Overwrite?"), styles[sel]),
+				fmt_tl("There is already a style with the name \"%s\" in the current script. Overwrite?", styles[sel]),
 				_("Style name collision"),
 				wxYES_NO);
 			if (answer == wxYES) {

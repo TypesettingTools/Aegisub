@@ -36,6 +36,7 @@
 #include "ffmpegsource_common.h"
 
 #include "compat.h"
+#include "format.h"
 #include "options.h"
 #include "utils.h"
 
@@ -141,7 +142,7 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int, std::string> 
 	wxArrayString Choices;
 
 	for (auto const& track : TrackList) {
-		Choices.Add(wxString::Format(_("Track %02d: %s"), track.first, to_wx(track.second)));
+		Choices.Add(agi::format(_("Track %02d: %s"), track.first, to_wx(track.second)));
 		TrackNumbers.push_back(track.first);
 	}
 

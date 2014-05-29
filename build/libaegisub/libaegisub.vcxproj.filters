@@ -173,6 +173,12 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\format.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\format_flyweight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\format_path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\character_count.h">
       <Filter>Header Files</Filter>
     </ClInclude>

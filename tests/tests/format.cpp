@@ -18,6 +18,7 @@
 #include "util.h"
 
 #include <libaegisub/format.h>
+#include <libaegisub/format_path.h>
 
 TEST(lagi_format, s) {
 	EXPECT_EQ("hello", agi::format("%s", "hello"));
@@ -116,4 +117,23 @@ TEST(lagi_format, flags) {
 TEST(lagi_format, bad_cast) {
 	EXPECT_THROW(agi::format("%d", "hello"), std::bad_cast);
 	EXPECT_THROW(agi::format("%.*s", "hello", "str"), std::bad_cast);
+}
+
+TEST(lagi_format, wchar_t) {
+	EXPECT_EQ(L"asdf", agi::format(L"%s", L"asdf"));
+	EXPECT_EQ(L"asdf", agi::format(L"%s", "asdf"));
+	EXPECT_EQ("asdf", agi::format("%s", L"asdf"));
+
+	EXPECT_EQ(L"\x2603", agi::format(L"%s", L"\x2603"));
+	EXPECT_EQ(L"\x2603", agi::format(L"%s", "\xE2\x98\x83"));
+	EXPECT_EQ("\xE2\x98\x83", agi::format("%s", L"\x2603"));
+
+	EXPECT_EQ(L"asdf", agi::format(L"%s", std::wstring(L"asdf")));
+	EXPECT_EQ(L"asdf", agi::format(L"%s", std::string("asdf")));
+	EXPECT_EQ("asdf", agi::format("%s", std::wstring(L"asdf")));
+}
+
+TEST(lagi_format, path) {
+	EXPECT_EQ("/usr/bin", agi::format("%s", agi::fs::path("/usr/bin")));
+	EXPECT_EQ(L"/usr/bin", agi::format(L"%s", agi::fs::path("/usr/bin")));
 }

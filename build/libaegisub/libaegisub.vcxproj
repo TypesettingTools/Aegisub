@@ -55,6 +55,8 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\exception.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\file_mapping.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\format.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\format_flyweight.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\format_path.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\fs.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\fs_fwd.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\hotkey.h" />

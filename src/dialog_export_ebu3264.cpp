@@ -22,6 +22,7 @@
 #include "dialog_export_ebu3264.h"
 
 #include "compat.h"
+#include "format.h"
 #include "options.h"
 
 #include <libaegisub/charset_conv.h>
@@ -53,7 +54,7 @@ namespace {
 		bool TransferToWindow() override {
 			wxTextCtrl *ctrl = GetCtrl();
 			if (!ctrl) return false;
-			ctrl->SetValue(wxString::Format("%02d:%02d:%02d:%02d", (int)value->h, (int)value->m, (int)value->s, (int)value->f));
+			ctrl->SetValue(fmt_wx("%02d:%02d:%02d:%02d", value->h, value->m, value->s, value->f));
 			return true;
 		}
 

@@ -38,6 +38,7 @@
 #include "../compat.h"
 #include "../dialog_search_replace.h"
 #include "../dialogs.h"
+#include "../format.h"
 #include "../include/aegisub/context.h"
 #include "../initial_line_state.h"
 #include "../libresrc/libresrc.h"
@@ -50,7 +51,6 @@
 #include "../video_controller.h"
 
 #include <libaegisub/address_of_adaptor.h>
-#include <libaegisub/format.h>
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/make_unique.h>
 
@@ -1146,12 +1146,12 @@ struct edit_redo final : public Command {
 	wxString StrMenu(const agi::Context *c) const override {
 		return c->subsController->IsRedoStackEmpty() ?
 			_("Nothing to &redo") :
-		wxString::Format(_("&Redo %s"), c->subsController->GetRedoDescription());
+			fmt_tl("&Redo %s", c->subsController->GetRedoDescription());
 	}
 	wxString StrDisplay(const agi::Context *c) const override {
 		return c->subsController->IsRedoStackEmpty() ?
 			_("Nothing to redo") :
-		wxString::Format(_("Redo %s"), c->subsController->GetRedoDescription());
+			fmt_tl("Redo %s", c->subsController->GetRedoDescription());
 	}
 
 	bool Validate(const agi::Context *c) override {
@@ -1172,12 +1172,12 @@ struct edit_undo final : public Command {
 	wxString StrMenu(const agi::Context *c) const override {
 		return c->subsController->IsUndoStackEmpty() ?
 			_("Nothing to &undo") :
-			wxString::Format(_("&Undo %s"), c->subsController->GetUndoDescription());
+			fmt_tl("&Undo %s", c->subsController->GetUndoDescription());
 	}
 	wxString StrDisplay(const agi::Context *c) const override {
 		return c->subsController->IsUndoStackEmpty() ?
 			_("Nothing to undo") :
-			wxString::Format(_("Undo %s"), c->subsController->GetUndoDescription());
+			fmt_tl("Undo %s", c->subsController->GetUndoDescription());
 	}
 
 	bool Validate(const agi::Context *c) override {

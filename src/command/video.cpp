@@ -38,6 +38,7 @@
 #include "../dialog_detached_video.h"
 #include "../dialog_manager.h"
 #include "../dialogs.h"
+#include "../format.h"
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../include/aegisub/subtitles_provider.h"
@@ -50,7 +51,6 @@
 #include "../video_display.h"
 #include "../video_frame.h"
 
-#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
@@ -232,7 +232,7 @@ struct video_cycle_subtitles_provider final : public cmd::Command {
 		if (it == end(providers)) it = begin(providers);
 
 		OPT_SET("Subtitle/Provider")->SetString(*it);
-		c->frame->StatusTimeout(wxString::Format(_("Subtitles provider set to %s"), to_wx(*it)), 5000);
+		c->frame->StatusTimeout(fmt_tl("Subtitles provider set to %s", *it), 5000);
 	}
 };
 

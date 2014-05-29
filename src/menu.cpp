@@ -24,6 +24,7 @@
 #include "auto4_base.h"
 #include "command/command.h"
 #include "compat.h"
+#include "format.h"
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
@@ -37,6 +38,7 @@
 #include <libaegisub/split.h>
 
 #include <algorithm>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 #include <vector>
 #include <wx/app.h>
@@ -61,7 +63,7 @@ class MruMenu final : public wxMenu {
 		for (size_t i = GetMenuItemCount(); i < new_size; ++i) {
 			if (i >= items.size()) {
 				items.push_back(new wxMenuItem(this, MENU_ID_BASE + cmds->size(), "_"));
-				cmds->push_back(from_wx(wxString::Format("recent/%s/%d", to_wx(type).Lower(), (int)i)));
+				cmds->push_back(agi::format("recent/%s/%d", boost::to_lower_copy(type), i));
 			}
 			Append(items[i]);
 		}
@@ -96,7 +98,7 @@ public:
 			wxString name = it->wstring();
 			if (!name.StartsWith("?"))
 				name = it->filename().wstring();
-			items[i]->SetItemLabel(wxString::Format("%s%d %s",
+			items[i]->SetItemLabel(fmt_wx("%s%d %s",
 				i <= 9 ? "&" : "", i + 1,
 				name));
 			items[i]->Enable(true);

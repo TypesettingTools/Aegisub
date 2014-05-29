@@ -19,6 +19,7 @@
 #include "ass_time.h"
 #include "compat.h"
 #include "dialog_manager.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
@@ -92,7 +93,7 @@ static wxString get_history_string(json::Object &obj) {
 
 	wxString shift_amount(to_wx(obj["amount"]));
 	if (!obj["is by time"])
-		shift_amount = wxString::Format(_("%s frames"), shift_amount);
+		shift_amount = fmt_tl("%s frames", shift_amount);
 
 	wxString shift_direction = obj["is backward"] ? _("backward") : _("forward");
 
@@ -109,7 +110,7 @@ static wxString get_history_string(json::Object &obj) {
 	if (sel_mode == 0)
 		lines = _("all");
 	else if (sel_mode == 2)
-		lines = wxString::Format(_("from %d onward"), (int)(int64_t)sel.front()["start"]);
+		lines = fmt_tl("from %d onward", (int64_t)sel.front()["start"]);
 	else {
 		lines += _("sel ");
 		for (auto it = sel.begin(); it != sel.end(); ++it) {
@@ -118,13 +119,13 @@ static wxString get_history_string(json::Object &obj) {
 			if (beg == end)
 				lines += std::to_wstring(beg);
 			else
-				lines += wxString::Format("%d-%d", beg, end);
+				lines += fmt_wx("%d-%d", beg, end);
 			if (it + 1 != sel.end())
 				lines += ";";
 		}
 	}
 
-	return wxString::Format("%s, %s %s, %s, %s", filename, shift_amount, shift_direction, fields, lines);
+	return fmt_wx("%s, %s %s, %s, %s", filename, shift_amount, shift_direction, fields, lines);
 }
 
 DialogShiftTimes::DialogShiftTimes(agi::Context *context)

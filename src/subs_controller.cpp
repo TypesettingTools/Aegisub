@@ -23,6 +23,7 @@
 #include "ass_style.h"
 #include "compat.h"
 #include "command/command.h"
+#include "format.h"
 #include "frame_main.h"
 #include "include/aegisub/context.h"
 #include "options.h"
@@ -31,7 +32,7 @@
 #include "subtitle_format.h"
 #include "text_selection_controller.h"
 
-#include <libaegisub/format.h>
+#include <libaegisub/format_path.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
@@ -154,7 +155,7 @@ SubsController::SubsController(agi::Context *context)
 		try {
 			auto fn = AutoSave();
 			if (!fn.empty())
-				context->frame->StatusTimeout(wxString::Format(_("File backup saved as \"%s\"."), fn.wstring()));
+				context->frame->StatusTimeout(fmt_tl("File backup saved as \"%s\".", fn));
 		}
 		catch (const agi::Exception& err) {
 			context->frame->StatusTimeout(to_wx("Exception when attempting to autosave file: " + err.GetMessage()));
@@ -254,7 +255,7 @@ int SubsController::TryToClose(bool allow_cancel) const {
 	int flags = wxYES_NO;
 	if (allow_cancel)
 		flags |= wxCANCEL;
-	int result = wxMessageBox(wxString::Format(_("Do you want to save changes to %s?"), Filename().wstring()), _("Unsaved changes"), flags, context->parent);
+	int result = wxMessageBox(fmt_tl("Do you want to save changes to %s?", Filename()), _("Unsaved changes"), flags, context->parent);
 	if (result == wxYES) {
 		cmd::call("subtitle/save", context);
 		// If it fails saving, return cancel anyway

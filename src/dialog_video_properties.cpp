@@ -16,6 +16,7 @@
 
 #include "ass_file.h"
 #include "async_video_provider.h"
+#include "format.h"
 #include "options.h"
 #include "resolution_resampler.h"
 
@@ -43,7 +44,7 @@ public:
 	Prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy)
 	: wxDialog(parent, -1, _("Resolution mismatch"))
 	{
-		auto label_text = wxString::Format(_("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?"), vx, vy, sx, sy);
+		auto label_text = fmt_tl("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?", vx, vy, sx, sy);
 
 		auto sizer = new wxBoxSizer(wxVERTICAL);
 		sizer->Add(new wxStaticText(this, -1, label_text), wxSizerFlags().Border());

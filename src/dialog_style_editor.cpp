@@ -149,7 +149,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	};
 
 	auto spin_ctrl = [&](float value, int max_value) {
-		return new wxSpinCtrl(this, -1, wxString::Format("%g", value), wxDefaultPosition, wxSize(60, -1), wxSP_ARROW_KEYS, 0, max_value, value);
+		return new wxSpinCtrl(this, -1, std::to_wstring(value), wxDefaultPosition, wxSize(60, -1), wxSP_ARROW_KEYS, 0, max_value, value);
 	};
 
 	auto num_text_ctrl = [&](double *value, double min, double max, double step) -> wxSpinCtrlDouble * {

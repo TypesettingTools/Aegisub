@@ -34,13 +34,13 @@
 #endif
 
 #include "compat.h"
+#include "format.h"
 #include "options.h"
 #include "string_codec.h"
 #include "version.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
-#include <libaegisub/format.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/scoped_ptr.h>
 
@@ -255,7 +255,7 @@ static wxString GetSystemLanguage() {
 	wxString res = GetUILanguage();
 	if (!res)
 		// On an old version of Windows, let's just return the LANGID as a string
-		res = wxString::Format("x-win%04x", GetUserDefaultUILanguage());
+		res = fmt_wx("x-win%04x", GetUserDefaultUILanguage());
 
 	return res;
 }
@@ -287,7 +287,7 @@ void DoCheck(bool interactive) {
 	if (!stream)
 		throw VersionCheckError(from_wx(_("Could not connect to updates server.")));
 
-	stream << agi::format(
+	agi::format(stream,
 		"GET %s?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s HTTP/1.0\r\n"
 		"User-Agent: Aegisub %s\r\n"
 		"Host: %s\r\n"
@@ -309,7 +309,7 @@ void DoCheck(bool interactive) {
 	if (!stream || http_version.substr(0, 5) != "HTTP/")
 		throw VersionCheckError(from_wx(_("Could not download from updates server.")));
 	if (status_code != 200)
-		throw VersionCheckError(from_wx(wxString::Format(_("HTTP request failed, got HTTP response %d."), status_code)));
+		throw VersionCheckError(agi::format(_("HTTP request failed, got HTTP response %d."), status_code));
 
 	stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -371,8 +371,8 @@ void PerformVersionCheck(bool interactive) {
 			DoCheck(interactive);
 		}
 		catch (const agi::Exception &e) {
-			PostErrorEvent(interactive, wxString::Format(
-				_("There was an error checking for updates to Aegisub:\n%s\n\nIf other applications can access the Internet fine, this is probably a temporary server problem on our end."),
+			PostErrorEvent(interactive, fmt_tl(
+				"There was an error checking for updates to Aegisub:\n%s\n\nIf other applications can access the Internet fine, this is probably a temporary server problem on our end.",
 				e.GetMessage()));
 		}
 		catch (...) {

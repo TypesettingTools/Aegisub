@@ -130,7 +130,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 		}
 
 		case agi::OptionType::Double: {
-			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, wxString::Format("%g", opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
+			wxSpinCtrlDouble *scd = new wxSpinCtrlDouble(this, -1, std::to_wstring(opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
 			scd->Bind(wxEVT_SPINCTRL, DoubleUpdater(opt_name, parent));
 			Add(flex, name, scd);
 			return scd;

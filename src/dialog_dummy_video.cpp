@@ -16,6 +16,7 @@
 
 #include "ass_time.h"
 #include "colour_button.h"
+#include "format.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
@@ -158,7 +159,7 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &e) {
 }
 
 void DialogDummyVideo::UpdateLengthDisplay() {
-	length_display->SetLabel(wxString::Format(_("Resulting duration: %s"), AssTime(length / fps * 1000).GetAssFormated(true)));
+	length_display->SetLabel(fmt_tl("Resulting duration: %s", AssTime(length / fps * 1000).GetAssFormated(true)));
 }
 }
 

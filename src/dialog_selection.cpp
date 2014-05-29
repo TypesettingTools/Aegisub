@@ -18,6 +18,7 @@
 #include "ass_file.h"
 #include "compat.h"
 #include "dialog_manager.h"
+#include "format.h"
 #include "frame_main.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
@@ -207,14 +208,14 @@ void DialogSelection::Process(wxCommandEvent&) {
 		case Action::SET:
 			new_sel = std::move(matches);
 			message = (count = new_sel.size())
-				? wxString::Format(wxPLURAL("Selection was set to one line", "Selection was set to %u lines", count), (unsigned)count)
+				? fmt_plural(count, "Selection was set to one line", "Selection was set to %u lines", count)
 				: _("Selection was set to no lines");
 			break;
 
 		case Action::ADD:
 			boost::set_union(old_sel, matches, inserter(new_sel, new_sel.begin()));
 			message = (count = new_sel.size() - old_sel.size())
-				? wxString::Format(wxPLURAL("One line was added to selection", "%u lines were added to selection", count), (unsigned)count)
+				? fmt_plural(count, "One line was added to selection", "%u lines were added to selection", count)
 				: _("No lines were added to selection");
 			break;
 
@@ -226,7 +227,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 			boost::set_intersection(old_sel, matches, inserter(new_sel, new_sel.begin()));
 			sub_message:
 			message = (count = old_sel.size() - new_sel.size())
-				? wxString::Format(wxPLURAL("One line was removed from selection", "%u lines were removed from selection", count), (unsigned)count)
+				? fmt_plural(count, "One line was removed from selection", "%u lines were removed from selection", count)
 				: _("No lines were removed from selection");
 			break;
 	}

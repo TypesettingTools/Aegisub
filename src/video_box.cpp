@@ -32,6 +32,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/toolbar.h"
 #include "options.h"
@@ -65,7 +66,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 
 	wxArrayString choices;
 	for (int i = 1; i <= 24; ++i)
-		choices.Add(wxString::Format("%g%%", i * 12.5));
+		choices.Add(fmt_wx("%g%%", i * 12.5));
 	auto zoomBox = new wxComboBox(this, -1, "75%", wxDefaultPosition, wxDefaultSize, choices, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
 	auto visualToolBar = toolbar::GetToolbar(this, "visual_tools", context, "Video", true);
@@ -114,7 +115,7 @@ void VideoBox::UpdateTimeBoxes() {
 	int time = context->videoController->TimeAtFrame(frame, agi::vfr::EXACT);
 
 	// Set the text box for frame number and time
-	VideoPosition->SetValue(wxString::Format("%s - %d", AssTime(time).GetAssFormated(true), frame));
+	VideoPosition->SetValue(fmt_wx("%s - %d", AssTime(time).GetAssFormated(true), frame));
 	if (boost::binary_search(context->project->Keyframes(), frame)) {
 		// Set the background color to indicate this is a keyframe
 		VideoPosition->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColor()));
@@ -129,7 +130,7 @@ void VideoBox::UpdateTimeBoxes() {
 	if (!active_line)
 		VideoSubsPos->SetValue("");
 	else {
-		VideoSubsPos->SetValue(wxString::Format(
+		VideoSubsPos->SetValue(fmt_wx(
 			"%+dms; %+dms",
 			time - active_line->Start,
 			time - active_line->End));

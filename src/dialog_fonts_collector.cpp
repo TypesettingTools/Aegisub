@@ -19,6 +19,7 @@
 
 #include "compat.h"
 #include "dialog_manager.h"
+#include "format.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -27,6 +28,7 @@
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
+#include <libaegisub/format_path.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
@@ -122,7 +124,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 				agi::fs::CreateDirectory(destination.parent_path());
 			}
 			catch (agi::fs::FileSystemError const& e) {
-				AppendText(wxString::Format(_("* Failed to create directory '%s': %s.\n"),
+				AppendText(fmt_tl("* Failed to create directory '%s': %s.\n",
 					destination.parent_path().wstring(), to_wx(e.GetMessage())), 2);
 				collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
 				return;
@@ -133,7 +135,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 				zip = agi::make_unique<wxZipOutputStream>(*out);
 
 			if (!out->IsOk() || !zip || !zip->IsOk()) {
-				AppendText(wxString::Format(_("* Failed to open %s.\n"), destination.wstring()), 2);
+				AppendText(fmt_tl("* Failed to open %s.\n", destination), 2);
 				collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
 				return;
 			}
@@ -188,13 +190,13 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 			}
 
 			if (ret == 1)
-				AppendText(wxString::Format(_("* Copied %s.\n"), path.wstring()), 1);
+				AppendText(fmt_tl("* Copied %s.\n", path), 1);
 			else if (ret == 2)
-				AppendText(wxString::Format(_("* %s already exists on destination.\n"), path.filename().wstring()), 3);
+				AppendText(fmt_tl("* %s already exists on destination.\n", path.filename()), 3);
 			else if (ret == 3)
-				AppendText(wxString::Format(_("* Symlinked %s.\n"), path.wstring()), 1);
+				AppendText(fmt_tl("* Symlinked %s.\n", path), 1);
 			else {
-				AppendText(wxString::Format(_("* Failed to copy %s.\n"), path.wstring()), 2);
+				AppendText(fmt_tl("* Failed to copy %s.\n", path), 2);
 				allOk = false;
 			}
 		}

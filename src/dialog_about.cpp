@@ -28,6 +28,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "libresrc/libresrc.h"
+#include "format.h"
 #include "version.h"
 
 #include <wx/button.h>
@@ -126,7 +127,7 @@ struct AboutScreen : wxDialog {
 		aboutString += translatorCredit;
 		aboutString += "\n" + libString;
 		aboutString += _("\nSee the help file for full credits.\n");
-		aboutString += wxString::Format(_("Built by %s on %s."), GetAegisubBuildCredit(), GetAegisubBuildTime());
+		aboutString += fmt_tl("Built by %s on %s.", GetAegisubBuildCredit(), GetAegisubBuildTime());
 
 		// Replace copyright symbol
 		wxChar copySymbol = 0xA9;

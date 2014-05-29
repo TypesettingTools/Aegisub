@@ -72,6 +72,7 @@
 // Common C++
 #include <algorithm>
 #include <array>
+#include <codecvt>
 #include <functional>
 #include <iterator>
 #include <limits>
@@ -81,9 +82,10 @@
 #include <set>
 #include <string>
 #include <type_traits>
+#include <type_traits>
 #include <typeinfo>
-#include <utility>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #ifdef _MSC_VER
@@ -100,6 +102,7 @@
 // Boost
 #include <boost/container/list.hpp>
 #include <boost/flyweight.hpp>
+#include <boost/io/ios_state.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm.hpp>
@@ -109,6 +112,7 @@
 #include <boost/filesystem/path.hpp>
 #undef BOOST_NO_SCOPED_ENUMS
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <boost/interprocess/streams/vectorstream.hpp>
 
 // wxWidgets headers
 #include <wx/defs.h> // Leave this first.

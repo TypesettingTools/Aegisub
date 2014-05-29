@@ -29,6 +29,7 @@
 
 #include "ass_time.h"
 #include "async_video_provider.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "project.h"
@@ -117,7 +118,7 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &) {
 	long newframe = c->videoController->FrameAtTime(JumpTime->GetTime());
 	if (jumpframe != newframe) {
 		jumpframe = newframe;
-		JumpFrame->ChangeValue(wxString::Format("%li", jumpframe));
+		JumpFrame->ChangeValue(fmt_wx("%d", jumpframe));
 	}
 }
 

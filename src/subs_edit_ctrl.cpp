@@ -37,6 +37,7 @@
 #include "ass_dialogue.h"
 #include "command/command.h"
 #include "compat.h"
+#include "format.h"
 #include "options.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
@@ -380,7 +381,7 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 	if (currentWord.empty()) return;
 
 	if (spellchecker->CanRemoveWord(currentWord))
-		menu.Append(EDIT_MENU_REMOVE_FROM_DICT, wxString::Format(_("Remove \"%s\" from dictionary"), to_wx(currentWord)));
+		menu.Append(EDIT_MENU_REMOVE_FROM_DICT, fmt_tl("Remove \"%s\" from dictionary", currentWord));
 
 	sugs = spellchecker->GetSuggestions(currentWord);
 	if (spellchecker->CheckWord(currentWord)) {
@@ -391,7 +392,7 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 			for (size_t i = 0; i < sugs.size(); ++i)
 				subMenu->Append(EDIT_MENU_SUGGESTIONS+i, to_wx(sugs[i]));
 
-			menu.Append(-1, wxString::Format(_("Spell checker suggestions for \"%s\""), to_wx(currentWord)), subMenu);
+			menu.Append(-1, fmt_tl("Spell checker suggestions for \"%s\"", currentWord), subMenu);
 		}
 	}
 	else {
@@ -402,7 +403,7 @@ void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
 			menu.Append(EDIT_MENU_SUGGESTIONS+i, to_wx(sugs[i]));
 
 		// Append "add word"
-		menu.Append(EDIT_MENU_ADD_TO_DICT, wxString::Format(_("Add \"%s\" to dictionary"), to_wx(currentWord)))->Enable(spellchecker->CanAddWord(currentWord));
+		menu.Append(EDIT_MENU_ADD_TO_DICT, fmt_tl("Add \"%s\" to dictionary", currentWord))->Enable(spellchecker->CanAddWord(currentWord));
 	}
 }
 
@@ -437,7 +438,7 @@ void SubsTextEditCtrl::AddThesaurusEntries(wxMenu &menu) {
 			}
 		}
 
-		menu.Append(-1, wxString::Format(_("Thesaurus suggestions for \"%s\""), to_wx(currentWord)), thesMenu);
+		menu.Append(-1, fmt_tl("Thesaurus suggestions for \"%s\"", currentWord), thesMenu);
 	}
 	else
 		menu.Append(EDIT_MENU_THESAURUS,_("No thesaurus suggestions"))->Enable(false);

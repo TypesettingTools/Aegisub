@@ -30,11 +30,11 @@
 #include "utils.h"
 
 #include "compat.h"
+#include "format.h"
 #include "options.h"
 #include "retina_helper.h"
 
 #include <libaegisub/dispatch.h>
-#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
@@ -72,7 +72,7 @@ wxString PrettySize(int bytes) {
 		fmt = "%.2f";
 	else if (size < 100)
 		fmt = "%1.f";
-	return wxString::Format(fmt, size) + " " + suffix[i];
+	return agi::wxformat(fmt, size) + " " + suffix[i];
 }
 
 std::string float_to_string(double val) {
@@ -104,7 +104,7 @@ void RestartAegisub() {
 	std::string helper_path = agi::util::GetBundleAuxillaryExecutablePath("restart-helper");
 	if (bundle_path.empty() || helper_path.empty()) return;
 
-	wxString exec = wxString::Format("\"%s\" /usr/bin/open -n \"%s\"'", to_wx(helper_path), to_wx(bundle_path));
+	wxString exec = fmt_wx("\"%s\" /usr/bin/open -n \"%s\"'", helper_path, bundle_path);
 	LOG_I("util/restart/exec") << exec;
 	wxExecute(exec);
 #else

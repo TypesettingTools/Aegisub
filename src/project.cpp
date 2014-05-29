@@ -23,6 +23,7 @@
 #include "compat.h"
 #include "dialog_progress.h"
 #include "dialogs.h"
+#include "format.h"
 #include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
@@ -32,6 +33,7 @@
 #include "video_controller.h"
 #include "video_display.h"
 
+#include <libaegisub/format_path.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/keyframe.h>
 #include <libaegisub/log.h>
@@ -165,7 +167,7 @@ void Project::LoadUnloadFiles() {
 			if (p.empty())
 				str += "\n" + unload;
 			else
-				str += "\n" + wxString::Format(load, p.wstring());
+				str += "\n" + agi::wxformat(load, p);
 		};
 
 		if (audio != audio_file)

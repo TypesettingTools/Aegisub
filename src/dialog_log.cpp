@@ -29,6 +29,7 @@
 
 #include "compat.h"
 #include "dialog_manager.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 
 #include <libaegisub/dispatch.h>
@@ -57,26 +58,26 @@ public:
 #ifndef _WIN32
 		tm tmtime;
 		localtime_r(&time, &tmtime);
-		auto log = wxString::Format("%c %02d:%02d:%02d %-6ld <%-25s> [%s:%s:%d]  %s\n",
+		auto log = fmt_wx("%c %02d:%02d:%02d %-6d <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm.severity],
-			(int)tmtime.tm_hour,
-			(int)tmtime.tm_min,
-			(int)tmtime.tm_sec,
-			(long)(sm.time % 1000000000),
+			tmtime.tm_hour,
+			tmtime.tm_min,
+			tmtime.tm_sec,
+			(sm.time % 1000000000),
 			sm.section,
 			sm.file,
 			sm.func,
 			sm.line,
-			to_wx(sm.message));
+			sm.message);
 #else
-		auto log = wxString::Format("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
+		auto log = fmt_wx("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm.severity],
-			(long)(sm.time % 1000000000),
+			(sm.time % 1000000000),
 			sm.section,
 			sm.file,
 			sm.func,
 			sm.line,
-			to_wx(sm.message));
+			sm.message);
 #endif
 
 		if (wxIsMainThread())

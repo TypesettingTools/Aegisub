@@ -42,6 +42,7 @@
     <ClCompile Include="$(SrcDir)tests\cajun.cpp" />
     <ClCompile Include="$(SrcDir)tests\color.cpp" />
     <ClCompile Include="$(SrcDir)tests\dialogue_lexer.cpp" />
+    <ClCompile Include="$(SrcDir)tests\format.cpp" />
     <ClCompile Include="$(SrcDir)tests\fs.cpp" />
     <ClCompile Include="$(SrcDir)tests\hotkey.cpp" />
     <ClCompile Include="$(SrcDir)tests\iconv.cpp" />

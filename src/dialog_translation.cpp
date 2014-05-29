@@ -28,6 +28,7 @@
 #include "ass_file.h"
 #include "command/command.h"
 #include "compat.h"
+#include "format.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
 #include "persist_location.h"
@@ -181,7 +182,7 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 void DialogTranslation::OnExternalCommit(int commit_type) {
 	if (commit_type == AssFile::COMMIT_NEW || commit_type & AssFile::COMMIT_DIAG_ADDREM) {
 		line_count = c->ass->Events.size();
-		line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), active_line->Row + 1, (int)line_count));
+		line_number_display->SetLabel(fmt_tl("Current line: %d/%d", active_line->Row + 1, line_count));
 	}
 
 	if (commit_type & AssFile::COMMIT_DIAG_TEXT)
@@ -231,7 +232,7 @@ bool DialogTranslation::PrevBlock() {
 }
 
 void DialogTranslation::UpdateDisplay() {
-	line_number_display->SetLabel(wxString::Format(_("Current line: %d/%d"), active_line->Row, (int)line_count));
+	line_number_display->SetLabel(fmt_tl("Current line: %d/%d", active_line->Row, line_count));
 
 	original_text->SetReadOnly(false);
 	original_text->ClearAll();

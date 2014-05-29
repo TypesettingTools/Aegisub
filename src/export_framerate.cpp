@@ -33,6 +33,7 @@
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "compat.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 #include "project.h"
 
@@ -68,9 +69,9 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	wxString initialInput;
 	auto FromVideo = new wxButton(base,-1,_("From &video"));
 	if (Input.IsLoaded()) {
-		initialInput = wxString::Format("%2.3f", Input.FPS());
+		initialInput = fmt_wx("%2.3f", Input.FPS());
 		FromVideo->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
-			InputFramerate->SetValue(wxString::Format("%g", c->project->Timecodes().FPS()));
+			InputFramerate->SetValue(fmt_wx("%g", c->project->Timecodes().FPS()));
 		});
 	}
 	else {

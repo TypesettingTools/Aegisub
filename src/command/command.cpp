@@ -15,6 +15,7 @@
 #include "command.h"
 
 #include "../compat.h"
+#include "../format.h"
 
 #include <libaegisub/log.h>
 
@@ -27,7 +28,7 @@ namespace cmd {
 	static iterator find_command(std::string const& name) {
 		auto it = cmd_map.find(name);
 		if (it == cmd_map.end())
-			throw CommandNotFound(from_wx(wxString::Format(_("'%s' is not a valid command name"), to_wx(name))));
+			throw CommandNotFound(agi::format(_("'%s' is not a valid command name"), name));
 		return it;
 	}
 

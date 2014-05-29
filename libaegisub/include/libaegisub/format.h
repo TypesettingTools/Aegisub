@@ -14,10 +14,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/fs_fwd.h>
+
 #include <boost/interprocess/streams/vectorstream.hpp>
 #include <boost/io/ios_state.hpp>
-#include <cassert>
+#include <codecvt>
 #include <type_traits>
+
+class wxString;
 
 namespace agi { namespace format_detail {
 // A static cast which throws at runtime if the cast is invalid rather than
@@ -40,36 +44,75 @@ Out runtime_cast(In const& value) {
 	return runtime_cast_helper<In, Out>::cast(value);
 }
 
-template<typename T>
-void write_string(std::ostream& out, int, T const& value) {
-	out << value;
-}
-
 // Check length for string types
-inline void write_string(std::ostream& out, int max_len, const char *value) {
-	if (max_len <= 0)
-		out << value;
-	else {
-		std::streamsize len = 0;
-		for (; len < max_len && value[len]; ++len) ;
-		out.write(value, len);
-	}
+template<typename Char>
+int actual_len(int max_len, const Char *value) {
+	int len = 0;
+	while (value[len] && (max_len <= 0 || len < max_len)) ++len;
+	return len;
 }
 
-inline void write_string(std::ostream& out, int max_len, std::string const& value) {
+template<typename Char>
+int actual_len(int max_len, std::basic_string<Char> value) {
 	if (max_len > 0 && static_cast<size_t>(max_len) < value.size())
-		out.write(value.data(), max_len);
-	else
-		out << value;
+		return max_len;
+	return value.size();
 }
 
+template<typename Char>
+inline void do_write_str(std::basic_ostream<Char>& out, const Char *str, int len) {
+	out.write(str, len);
+}
+
+inline void do_write_str(std::ostream& out, const wchar_t *str, int len) {
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
+	auto u8 = utf8_conv.to_bytes(str, str + len);
+	out.write(u8.data(), u8.size());
+}
+
+inline void do_write_str(std::wostream& out, const char *str, int len) {
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
+	auto wc = utf8_conv.from_bytes(str, str + len);
+	out.write(wc.data(), wc.size());
+}
+}
+
+template<typename Char, typename T>
+struct writer {
+	static void write(std::basic_ostream<Char>& out, int, T const& value) {
+		out << value;
+	}
+};
+
+// Ensure things with specializations don't get implicitly initialized
+template<> struct writer<char, agi::fs::path>;
+template<> struct writer<wchar_t, agi::fs::path>;
+template<> struct writer<char, wxString>;
+template<> struct writer<wchar_t, wxString>;
+
+template<typename StreamChar, typename Char>
+struct writer<StreamChar, const Char *> {
+	static void write(std::basic_ostream<StreamChar>& out, int max_len, const Char *value) {
+		format_detail::do_write_str(out, value, format_detail::actual_len(max_len, value));
+	}
+};
+
+template<typename StreamChar, typename Char>
+struct writer<StreamChar, std::basic_string<Char>> {
+	static void write(std::basic_ostream<StreamChar>& out, int max_len, std::basic_string<Char> const& value) {
+		format_detail::do_write_str(out, value.data(), format_detail::actual_len(max_len, value));
+	}
+};
+
+namespace format_detail {
+template<typename Char>
 class formatter {
 	formatter(const formatter&) = delete;
 	formatter& operator=(const formatter&) = delete;
 
-	std::ostream& out;
-	const char *fmt;
-	const char *fmt_cur = nullptr;
+	std::basic_ostream<Char>& out;
+	const Char *fmt;
+	const Char *fmt_cur = nullptr;
 
 	bool read_width = false;
 	bool read_precision = false;
@@ -78,7 +121,7 @@ class formatter {
 	int width = 0;
 	int precision = 0;
 
-	boost::io::ios_all_saver saver;
+	boost::io::basic_ios_all_saver<Char> saver;
 
 	void read_and_append_up_to_next_specifier() {
 		for (std::streamsize len = 0; ; ++len) {
@@ -168,7 +211,7 @@ class formatter {
 
 	void parse_length_modifiers() {
 		// Where "parse" means "skip" since we don't need them
-		for (char c = *fmt_cur;
+		for (Char c = *fmt_cur;
 			c == 'l' || c == 'h' || c == 'L' || c == 'j' || c == 'z' || c == 't';
 			c = *++fmt_cur);
 	}
@@ -198,7 +241,7 @@ class formatter {
 	}
 
 public:
-	formatter(std::ostream& out, const char *fmt) : out(out), fmt(fmt), saver(out) { }
+	formatter(std::basic_ostream<Char>& out, const Char *fmt) : out(out), fmt(fmt), saver(out) { }
 	~formatter() {
 		// Write remaining formatting string
 		for (std::streamsize len = 0; ; ++len) {
@@ -245,7 +288,7 @@ public:
 		out.width(width);
 		out.precision(precision < 0 ? 6 : precision);
 
-		char c = *fmt_cur ? fmt_cur[0] : 's';
+		Char c = *fmt_cur ? fmt_cur[0] : 's';
 		if (c >= 'A' && c <= 'Z') {
 			out.setf(std::ios::uppercase);
 			c += 'a' - 'A';
@@ -254,7 +297,7 @@ public:
 		switch (c) {
 		case 'c':
 			out.setf(std::ios::dec, std::ios::basefield);
-			out << runtime_cast<char>(value);
+			out << runtime_cast<Char>(value);
 			break;
 		case 'd': case 'i':
 			out.setf(std::ios::dec, std::ios::basefield);
@@ -292,7 +335,7 @@ public:
 			break;
 		default: // s and other
 			out.setf(std::ios::boolalpha);
-			write_string(out, precision, value);
+			writer<Char, typename std::decay<T>::type>::write(out, precision, value);
 			break;
 		}
 
@@ -301,23 +344,24 @@ public:
 };
 
 // Base case for variadic template recursion
-inline void format(formatter&&) { }
+template<typename Char>
+inline void format(formatter<Char>&&) { }
 
-template<typename T, typename... Args>
-void format(formatter&& fmt, T&& first, Args&&... rest) {
+template<typename Char, typename T, typename... Args>
+void format(formatter<Char>&& fmt, T&& first, Args&&... rest) {
 	fmt(first);
 	format(std::move(fmt), std::forward<Args>(rest)...);
 }
 } // namespace format_detail
 
-template<typename... Args>
-void format(std::ostream& out, const char *fmt, Args&&... args) {
-	format(format_detail::formatter(out, fmt), std::forward<Args>(args)...);
+template<typename Char, typename... Args>
+void format(std::basic_ostream<Char>& out, const Char *fmt, Args&&... args) {
+	format(format_detail::formatter<Char>(out, fmt), std::forward<Args>(args)...);
 }
 
-template<typename... Args>
-std::string format(const char *fmt, Args&&... args) {
-	boost::interprocess::basic_vectorstream<std::string> out;
+template<typename Char, typename... Args>
+std::basic_string<Char> format(const Char *fmt, Args&&... args) {
+	boost::interprocess::basic_vectorstream<std::basic_string<Char>> out;
 	format(out, fmt, std::forward<Args>(args)...);
 	return out.vector();
 }

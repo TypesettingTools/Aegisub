@@ -38,6 +38,7 @@
 #include "async_video_provider.h"
 #include "command/command.h"
 #include "compat.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/menu.h"
@@ -71,7 +72,7 @@ int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 }
 class OpenGlException final : public agi::Exception {
 public:
 	OpenGlException(const char *func, int err)
-	: agi::Exception(from_wx(wxString::Format("%s failed with error code %d", func, err)))
+	: agi::Exception(agi::format("%s failed with error code %d", func, err))
 	{ }
 };
 
@@ -93,7 +94,7 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	SetZoom(new_zoom);
 }))
 {
-	zoomBox->SetValue(wxString::Format("%g%%", zoomValue * 100.));
+	zoomBox->SetValue(fmt_wx("%g%%", zoomValue * 100.));
 	zoomBox->Bind(wxEVT_COMBOBOX, &VideoDisplay::SetZoomFromBox, this);
 	zoomBox->Bind(wxEVT_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
 
@@ -335,7 +336,7 @@ void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 		videoSize = GetClientSize() * scale_factor;
 		PositionVideo();
 		zoomValue = double(viewport_height) / con->project->VideoProvider()->GetHeight();
-		zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
+		zoomBox->ChangeValue(fmt_wx("%g%%", zoomValue * 100.));
 		con->ass->Properties.video_zoom = zoomValue;
 	}
 	else {
@@ -382,7 +383,7 @@ void VideoDisplay::SetZoom(double value) {
 	size_t selIndex = zoomValue / .125 - 1;
 	if (selIndex < zoomBox->GetCount())
 		zoomBox->SetSelection(selIndex);
-	zoomBox->ChangeValue(wxString::Format("%g%%", zoomValue * 100.));
+	zoomBox->ChangeValue(fmt_wx("%g%%", zoomValue * 100.));
 	con->ass->Properties.video_zoom = zoomValue;
 	UpdateSize();
 }

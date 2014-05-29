@@ -32,6 +32,7 @@
 #include "ass_time.h"
 #include "async_video_provider.h"
 #include "compat.h"
+#include "format.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -345,7 +346,7 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 	for (auto diag : sorted) {
 		if (diag->Start > diag->End) {
 			wxMessageBox(
-				wxString::Format(_("One of the lines in the file (%i) has negative duration. Aborting."), diag->Row),
+				fmt_tl("One of the lines in the file (%i) has negative duration. Aborting.", diag->Row),
 				_("Invalid script"),
 				wxOK | wxICON_ERROR | wxCENTER);
 			sorted.clear();

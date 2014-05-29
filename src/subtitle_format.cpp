@@ -34,12 +34,10 @@
 
 #include "subtitle_format.h"
 
-#include <wx/intl.h>
-#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "format.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_ebu3264.h"
 #include "subtitle_format_encore.h"
@@ -56,6 +54,7 @@
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <wx/choicdlg.h>
 
 namespace {
 	std::vector<std::unique_ptr<SubtitleFormat>> formats;
@@ -98,7 +97,7 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte, a
 	if (fps.IsLoaded()) {
 		vidLoaded = true;
 		if (!fps.IsVFR())
-			choices.Add(wxString::Format(_("From video (%g)"), fps.FPS()));
+			choices.Add(fmt_tl("From video (%g)", fps.FPS()));
 		else if (allow_vfr)
 			choices.Add(_("From video (VFR)"));
 		else

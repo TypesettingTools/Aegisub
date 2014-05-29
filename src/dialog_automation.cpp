@@ -31,6 +31,7 @@
 #include "compat.h"
 #include "command/command.h"
 #include "dialog_manager.h"
+#include "format.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -273,20 +274,20 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 	wxArrayString info;
 	std::back_insert_iterator<wxArrayString> append_info(info);
 
-	info.push_back(wxString::Format(
-		_("Total scripts loaded: %d\nGlobal scripts loaded: %d\nLocal scripts loaded: %d\n"),
-		(int)local_manager->GetScripts().size() + (int)global_manager->GetScripts().size(),
-		(int)global_manager->GetScripts().size(),
-		(int)local_manager->GetScripts().size()));
+	info.push_back(fmt_tl(
+		"Total scripts loaded: %d\nGlobal scripts loaded: %d\nLocal scripts loaded: %d\n",
+		local_manager->GetScripts().size() + global_manager->GetScripts().size(),
+		global_manager->GetScripts().size(),
+		local_manager->GetScripts().size()));
 
 	info.push_back(_("Scripting engines installed:"));
 	boost::transform(Automation4::ScriptFactory::GetFactories(), append_info,
 		[](std::unique_ptr<Automation4::ScriptFactory> const& f) {
-			return wxString::Format("- %s (%s)", to_wx(f->GetEngineName()), to_wx(f->GetFilenamePattern()));
+			return fmt_wx("- %s (%s)", f->GetEngineName(), f->GetFilenamePattern());
 		});
 
 	if (ei) {
-		info.push_back(wxString::Format(_("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:"),
+		info.push_back(fmt_tl("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:",
 			ei->script->GetName(),
 			ei->script->GetDescription(),
 			ei->script->GetAuthor(),
@@ -295,10 +296,10 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
 
 		boost::transform(ei->script->GetMacros(), append_info, [=](const cmd::Command *f) {
-			return wxString::Format(_("    Macro: %s (%s)"), f->StrDisplay(context), to_wx(f->name()));
+			return fmt_tl("    Macro: %s (%s)", f->StrDisplay(context), f->name());
 		});
 		boost::transform(ei->script->GetFilters(), append_info, [](const Automation4::ExportFilter* f) {
-			return wxString::Format(_("    Export filter: %s"), to_wx(f->GetName()));
+			return fmt_tl("    Export filter: %s", f->GetName());
 		});
 	}
 
