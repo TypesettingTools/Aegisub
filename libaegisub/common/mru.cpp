@@ -56,7 +56,7 @@ void MRUManager::Add(std::string const& key, agi::fs::path const& entry) {
 	if (it == begin(map) && it != end(map))
 		return;
 	if (it != end(map))
-		rotate(begin(map), it, it);
+		rotate(begin(map), it, it + 1);
 	else {
 		map.insert(begin(map), entry);
 		Prune(key, map);
