@@ -39,7 +39,7 @@ auto get_dialogue_field(SearchReplaceSettings::Field field) -> decltype(&AssDial
 		case SearchReplaceSettings::Field::ACTOR: return &AssDialogueBase::Actor;
 		case SearchReplaceSettings::Field::EFFECT: return &AssDialogueBase::Effect;
 	}
-	throw agi::InternalError("Bad field for search", nullptr);
+	throw agi::InternalError("Bad field for search");
 }
 
 std::string const& get_normalized(const AssDialogue *diag, decltype(&AssDialogueBase::Text) field) {

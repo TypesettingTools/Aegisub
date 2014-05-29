@@ -40,7 +40,7 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 
 	auto offset = static_cast<uint64_t>(s_offset);
 	if (offset + length > file_size)
-		throw agi::InternalError("Attempted to map beyond end of file", nullptr);
+		throw agi::InternalError("Attempted to map beyond end of file");
 
 	// Check if we can just use the current mapping
 	if (region && offset >= mapping_start && offset + length <= mapping_start + region->get_size())
@@ -150,9 +150,9 @@ temp_file_mapping::temp_file_mapping(fs::path const& filename, uint64_t size)
 	unlink(filename.string().c_str());
 	if (ftruncate(handle, size) == -1) {
 		switch (errno) {
-		case EBADF:  throw InternalError("Error opening file " + filename.string() + " not handled", nullptr);
+		case EBADF:  throw InternalError("Error opening file " + filename.string() + " not handled");
 		case EFBIG:  throw fs::DriveFull(filename);
-		case EINVAL: throw InternalError("File opened incorrectly: " + filename.string(), nullptr);
+		case EINVAL: throw InternalError("File opened incorrectly: " + filename.string());
 		case EROFS:  throw fs::WriteDenied(filename);
 		default: throw fs::FileSystemUnknownError("Unknown error opening file: " + filename.string());
 		}

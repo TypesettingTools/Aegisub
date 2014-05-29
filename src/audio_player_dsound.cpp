@@ -102,7 +102,7 @@ DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider, wxWindow *parent)
 	// Initialize the DirectSound object
 	HRESULT res;
 	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,nullptr); // TODO: support selecting audio device
-	if (FAILED(res)) throw agi::AudioPlayerOpenError("Failed initializing DirectSound", 0);
+	if (FAILED(res)) throw agi::AudioPlayerOpenError("Failed initializing DirectSound");
 
 	// Set DirectSound parameters
 	directSound->SetCooperativeLevel((HWND)parent->GetHandle(),DSSCL_PRIORITY);
@@ -133,11 +133,11 @@ DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider, wxWindow *parent)
 	// Create the buffer
 	IDirectSoundBuffer *buf;
 	res = directSound->CreateSoundBuffer(&desc,&buf,nullptr);
-	if (res != DS_OK) throw agi::AudioPlayerOpenError("Failed creating DirectSound buffer", 0);
+	if (res != DS_OK) throw agi::AudioPlayerOpenError("Failed creating DirectSound buffer");
 
 	// Copy interface to buffer
 	res = buf->QueryInterface(IID_IDirectSoundBuffer8,(LPVOID*) &buffer);
-	if (res != S_OK) throw agi::AudioPlayerOpenError("Failed casting interface to IDirectSoundBuffer8", 0);
+	if (res != S_OK) throw agi::AudioPlayerOpenError("Failed casting interface to IDirectSoundBuffer8");
 
 	// Set data
 	offset = 0;

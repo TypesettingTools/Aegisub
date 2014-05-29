@@ -123,7 +123,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 			}
 			catch (agi::fs::FileSystemError const& e) {
 				AppendText(wxString::Format(_("* Failed to create directory '%s': %s.\n"),
-					destination.parent_path().wstring(), to_wx(e.GetChainedMessage())), 2);
+					destination.parent_path().wstring(), to_wx(e.GetMessage())), 2);
 				collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
 				return;
 			}

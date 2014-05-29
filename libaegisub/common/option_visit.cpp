@@ -150,7 +150,7 @@ void ConfigVisitor::AddOptionValue(std::unique_ptr<OptionValue>&& opt) {
 		}
 		catch (agi::OptionValueError const& e) {
 			if (ignore_errors)
-				LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << e.GetChainedMessage();
+				LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << e.GetMessage();
 			else
 				throw;
 		}

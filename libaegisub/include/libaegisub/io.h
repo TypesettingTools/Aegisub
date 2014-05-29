@@ -26,8 +26,8 @@
 namespace agi {
 	namespace io {
 
-DEFINE_BASE_EXCEPTION_NOINNER(IOError, Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(IOFatal, IOError, "io/fatal")
+DEFINE_EXCEPTION(IOError, Exception);
+DEFINE_EXCEPTION(IOFatal, IOError);
 
 std::unique_ptr<std::istream> Open(fs::path const& file, bool binary = false);
 

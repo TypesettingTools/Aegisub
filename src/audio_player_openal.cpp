@@ -61,7 +61,7 @@
 #pragma comment(lib, "openal32.lib")
 #endif
 
-DEFINE_SIMPLE_EXCEPTION(OpenALException, agi::AudioPlayerOpenError, "audio/open/player/openal")
+DEFINE_EXCEPTION(OpenALException, agi::AudioPlayerOpenError);
 
 namespace {
 class OpenALPlayer final : public AudioPlayer, wxTimer {
@@ -130,25 +130,25 @@ OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 	try {
 		// Open device
 		device = alcOpenDevice(nullptr);
-		if (!device) throw OpenALException("Failed opening default OpenAL device", nullptr);
+		if (!device) throw OpenALException("Failed opening default OpenAL device");
 
 		// Create context
 		context = alcCreateContext(device, nullptr);
-		if (!context) throw OpenALException("Failed creating OpenAL context", nullptr);
-		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context", nullptr);
+		if (!context) throw OpenALException("Failed creating OpenAL context");
+		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context");
 
 		// Clear error code
 		alGetError();
 
 		// Generate buffers
 		alGenBuffers(num_buffers, buffers);
-		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers", nullptr);
+		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers");
 
 		// Generate source
 		alGenSources(1, &source);
 		if (alGetError() != AL_NO_ERROR) {
 			alDeleteBuffers(num_buffers, buffers);
-			throw OpenALException("Error generating OpenAL source", nullptr);
+			throw OpenALException("Error generating OpenAL source");
 		}
 	}
 	catch (...)

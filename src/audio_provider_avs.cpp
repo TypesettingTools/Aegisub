@@ -89,22 +89,22 @@ AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 				LoadFromClip(env->Invoke("DirectShowSource", AVSValue(args, 3), argnames));
 			// Otherwise fail
 			else
-				throw agi::AudioProviderOpenError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.", 0);
+				throw agi::AudioProviderOpenError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.");
 		}
 	}
 	catch (AvisynthError &err) {
 		std::string errmsg(err.msg);
 		if (errmsg.find("filter graph manager won't talk to me") != errmsg.npos)
-			throw agi::AudioDataNotFoundError("Avisynth error: " + errmsg, 0);
+			throw agi::AudioDataNotFoundError("Avisynth error: " + errmsg);
 		else
-			throw agi::AudioProviderOpenError("Avisynth error: " + errmsg, 0);
+			throw agi::AudioProviderOpenError("Avisynth error: " + errmsg);
 	}
 }
 
 void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	// Check if it has audio
 	VideoInfo vi = clip.AsClip()->GetVideoInfo();
-	if (!vi.HasAudio()) throw agi::AudioDataNotFoundError("No audio found.", 0);
+	if (!vi.HasAudio()) throw agi::AudioDataNotFoundError("No audio found.");
 
 	IScriptEnvironment *env = avs_wrapper.GetEnv();
 

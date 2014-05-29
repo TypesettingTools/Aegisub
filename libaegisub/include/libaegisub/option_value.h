@@ -27,8 +27,8 @@
 #undef Bool
 
 namespace agi {
-DEFINE_BASE_EXCEPTION_NOINNER(OptionValueError, Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionValueErrorInvalidType, OptionValueError, "options/invalid_type")
+DEFINE_EXCEPTION(OptionValueError, Exception);
+DEFINE_EXCEPTION(OptionValueErrorInvalidType, OptionValueError);
 
 /// Option type
 /// No bitsets here.
@@ -64,7 +64,7 @@ class OptionValue {
 			case OptionType::ListColor:  return "List of Colors";
 			case OptionType::ListBool:   return "List of Bools";
 		}
-		throw agi::InternalError("Invalid option type", nullptr);
+		throw agi::InternalError("Invalid option type");
 	}
 
 	OptionValueErrorInvalidType TypeError(OptionType type) const {

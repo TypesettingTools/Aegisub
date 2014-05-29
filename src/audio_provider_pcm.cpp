@@ -155,9 +155,9 @@ public:
 
 		// Check magic values
 		if (!CheckFourcc(header.ch.type, "RIFF"))
-			throw agi::AudioDataNotFoundError("File is not a RIFF file", nullptr);
+			throw agi::AudioDataNotFoundError("File is not a RIFF file");
 		if (!CheckFourcc(header.format, "WAVE"))
-			throw agi::AudioDataNotFoundError("File is not a RIFF WAV file", nullptr);
+			throw agi::AudioDataNotFoundError("File is not a RIFF WAV file");
 
 		// How far into the file we have processed.
 		// Must be incremented by the riff chunk size fields.
@@ -177,13 +177,13 @@ public:
 			filepos += sizeof(ch);
 
 			if (CheckFourcc(ch.type, "fmt ")) {
-				if (got_fmt_header) throw agi::AudioProviderOpenError("Invalid file, multiple 'fmt ' chunks", nullptr);
+				if (got_fmt_header) throw agi::AudioProviderOpenError("Invalid file, multiple 'fmt ' chunks");
 				got_fmt_header = true;
 
 				auto const& fmt = Read<fmtChunk>(filepos);
 
 				if (fmt.compression != 1)
-					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding", nullptr);
+					throw agi::AudioProviderOpenError("Can't use file, not PCM encoding");
 
 				// Set stuff inherited from the AudioProvider class
 				sample_rate = fmt.samplerate;
@@ -194,7 +194,7 @@ public:
 				// This won't pick up 'data' chunks inside 'wavl' chunks
 				// since the 'wavl' chunks wrap those.
 
-				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
+				if (!got_fmt_header) throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.");
 
 				auto samples = std::min(total_data - filepos, ch.size) / bytes_per_sample / channels;
 				index_points.push_back(IndexPoint{filepos, samples});
@@ -280,16 +280,16 @@ public:
 		size_t smallest_possible_file = sizeof(RiffChunk) + sizeof(FormatChunk) + sizeof(DataChunk);
 
 		if (file->size() < smallest_possible_file)
-			throw agi::AudioDataNotFoundError("File is too small to be a Wave64 file", nullptr);
+			throw agi::AudioDataNotFoundError("File is too small to be a Wave64 file");
 
 		// Read header
 		auto const& header = Read<RiffChunk>(0);
 
 		// Check magic values
 		if (!CheckGuid(header.riff_guid, w64GuidRIFF))
-			throw agi::AudioDataNotFoundError("File is not a Wave64 RIFF file", nullptr);
+			throw agi::AudioDataNotFoundError("File is not a Wave64 RIFF file");
 		if (!CheckGuid(header.format_guid, w64GuidWAVE))
-			throw agi::AudioDataNotFoundError("File is not a Wave64 WAVE file", nullptr);
+			throw agi::AudioDataNotFoundError("File is not a Wave64 WAVE file");
 
 		// How far into the file we have processed.
 		// Must be incremented by the riff chunk size fields.
@@ -310,11 +310,11 @@ public:
 
 			if (CheckGuid(chunk_guid, w64Guidfmt)) {
 				if (got_fmt_header)
-					throw agi::AudioProviderOpenError("Bad file, found more than one 'fmt' chunk", nullptr);
+					throw agi::AudioProviderOpenError("Bad file, found more than one 'fmt' chunk");
 
 				auto const& fmt = Read<FormatChunk>(filepos);
 				if (fmt.format.wFormatTag != 1)
-					throw agi::AudioProviderOpenError("File is not uncompressed PCM", nullptr);
+					throw agi::AudioProviderOpenError("File is not uncompressed PCM");
 
 				got_fmt_header = true;
 				// Set stuff inherited from the AudioProvider class
@@ -324,7 +324,7 @@ public:
 			}
 			else if (CheckGuid(chunk_guid, w64Guiddata)) {
 				if (!got_fmt_header)
-					throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.", nullptr);
+					throw agi::AudioProviderOpenError("Found 'data' chunk before 'fmt ' chunk, file is invalid.");
 
 				auto samples = chunk_size / bytes_per_sample / channels;
 				index_points.push_back(IndexPoint{
@@ -369,7 +369,7 @@ std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filen
 	}
 
 	if (wrong_file_type)
-		throw agi::AudioDataNotFoundError(msg, nullptr);
+		throw agi::AudioDataNotFoundError(msg);
 	else
-		throw agi::AudioProviderOpenError(msg, nullptr);
+		throw agi::AudioProviderOpenError(msg);
 }

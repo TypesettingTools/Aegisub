@@ -170,12 +170,12 @@ wxDEFINE_EVENT(EVT_VIDEO_ERROR, VideoProviderErrorEvent);
 wxDEFINE_EVENT(EVT_SUBTITLES_ERROR, SubtitlesProviderErrorEvent);
 
 VideoProviderErrorEvent::VideoProviderErrorEvent(VideoProviderError const& err)
-: agi::Exception(err.GetMessage(), &err)
+: agi::Exception(err.GetMessage())
 {
 	SetEventType(EVT_VIDEO_ERROR);
 }
 SubtitlesProviderErrorEvent::SubtitlesProviderErrorEvent(std::string const& err)
-: agi::Exception(err, nullptr)
+: agi::Exception(err)
 {
 	SetEventType(EVT_SUBTITLES_ERROR);
 }

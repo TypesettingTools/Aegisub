@@ -54,7 +54,7 @@
 namespace {
 	using namespace agi::lua;
 
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(BadField, Automation4::MacroRunError, "automation/macro/bad_field")
+	DEFINE_EXCEPTION(BadField, Automation4::MacroRunError);
 	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
 	{
 		return BadField(std::string("Invalid or missing field '") + name + "' in '" + line_clasee + "' class subtitle line (expected " + expected_type + ")");

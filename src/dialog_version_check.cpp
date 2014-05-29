@@ -163,7 +163,7 @@ void VersionCheckerResultDialog::OnClose(wxCloseEvent &) {
 	Destroy();
 }
 
-DEFINE_SIMPLE_EXCEPTION_NOINNER(VersionCheckError, agi::Exception, "versioncheck")
+DEFINE_EXCEPTION(VersionCheckError, agi::Exception);
 
 void PostErrorEvent(bool interactive, wxString const& error_text) {
 	if (interactive) {

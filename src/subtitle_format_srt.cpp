@@ -51,7 +51,7 @@
 #include <boost/regex.hpp>
 #include <map>
 
-DEFINE_SIMPLE_EXCEPTION(SRTParseError, SubtitleFormatParseError, "subtitle_io/parse/srt")
+DEFINE_EXCEPTION(SRTParseError, SubtitleFormatParseError);
 
 namespace {
 class SrtTagParser {
@@ -382,11 +382,11 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 				if (regex_search(text_line, timestamp_match, timestamp_regex))
 					goto found_timestamps;
 
-				throw SRTParseError(agi::format("Parsing SRT: Expected subtitle index at line %d", line_num), nullptr);
+				throw SRTParseError(agi::format("Parsing SRT: Expected subtitle index at line %d", line_num));
 
 			case STATE_TIMESTAMP:
 				if (!regex_search(text_line, timestamp_match, timestamp_regex))
-					throw SRTParseError(agi::format("Parsing SRT: Expected timestamp pair at line %d", line_num), nullptr);
+					throw SRTParseError(agi::format("Parsing SRT: Expected timestamp pair at line %d", line_num));
 found_timestamps:
 				if (line) {
 					// finalize active line
@@ -452,7 +452,7 @@ found_timestamps:
 	}
 
 	if (state == 1 || state == 2)
-		throw SRTParseError("Parsing SRT: Incomplete file", nullptr);
+		throw SRTParseError("Parsing SRT: Incomplete file");
 
 	if (line) // an unfinalized line
 		line->Text = tag_parser.ToAss(text);

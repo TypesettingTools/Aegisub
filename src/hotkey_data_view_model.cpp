@@ -105,11 +105,11 @@ public:
 				variant = cmd::get(combo.CmdName())->StrHelp();
 			}
 			catch (agi::Exception const& e) {
-				variant = to_wx(e.GetChainedMessage());
+				variant = to_wx(e.GetMessage());
 			}
 		}
 		else
-			throw agi::InternalError("HotkeyDataViewModel asked for an invalid column number", nullptr);
+			throw agi::InternalError("HotkeyDataViewModel asked for an invalid column number");
 	}
 
 	bool SetValue(wxVariant const& variant, unsigned int col) override {

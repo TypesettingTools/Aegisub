@@ -56,7 +56,7 @@ class parser {
 
 	std::string next_tok() {
 		if (pos.eof())
-			throw SubtitleFormatParseError("Malformed style: not enough fields", nullptr);
+			throw SubtitleFormatParseError("Malformed style: not enough fields");
 		return agi::str(trim_copy(*pos++));
 	}
 
@@ -69,7 +69,7 @@ public:
 
 	void check_done() const {
 		if (!pos.eof())
-			throw SubtitleFormatParseError("Malformed style: too many fields", nullptr);
+			throw SubtitleFormatParseError("Malformed style: too many fields");
 	}
 
 	std::string next_str() { return next_tok(); }
@@ -80,7 +80,7 @@ public:
 			return boost::lexical_cast<int>(next_tok());
 		}
 		catch (boost::bad_lexical_cast const&) {
-			throw SubtitleFormatParseError("Malformed style: bad int field", nullptr);
+			throw SubtitleFormatParseError("Malformed style: bad int field");
 		}
 	}
 
@@ -89,7 +89,7 @@ public:
 			return boost::lexical_cast<double>(next_tok());
 		}
 		catch (boost::bad_lexical_cast const&) {
-			throw SubtitleFormatParseError("Malformed style: bad double field", nullptr);
+			throw SubtitleFormatParseError("Malformed style: bad double field");
 		}
 	}
 

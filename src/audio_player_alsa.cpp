@@ -295,7 +295,7 @@ AlsaPlayer::AlsaPlayer(AudioProvider *provider) try
 {
 }
 catch (std::system_error const&) {
-	throw agi::AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed", 0);
+	throw agi::AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed");
 }
 
 AlsaPlayer::~AlsaPlayer()

@@ -43,7 +43,7 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <wx/xml/xml.h>
 
-DEFINE_SIMPLE_EXCEPTION(TTXTParseError, SubtitleFormatParseError, "subtitle_io/parse/ttxt")
+DEFINE_EXCEPTION(TTXTParseError, SubtitleFormatParseError);
 
 TTXTSubtitleFormat::TTXTSubtitleFormat()
 : SubtitleFormat("MPEG-4 Streaming Text")
@@ -63,10 +63,10 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename
 
 	// Load XML document
 	wxXmlDocument doc;
-	if (!doc.Load(filename.wstring())) throw TTXTParseError("Failed loading TTXT XML file.", nullptr);
+	if (!doc.Load(filename.wstring())) throw TTXTParseError("Failed loading TTXT XML file.");
 
 	// Check root node name
-	if (doc.GetRoot()->GetName() != "TextStream") throw TTXTParseError("Invalid TTXT file.", nullptr);
+	if (doc.GetRoot()->GetName() != "TextStream") throw TTXTParseError("Invalid TTXT file.");
 
 	// Check version
 	wxString verStr = doc.GetRoot()->GetAttribute("version", "");
@@ -76,7 +76,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename
 	else if (verStr == "1.1")
 		version = 1;
 	else
-		throw TTXTParseError("Unknown TTXT version: " + from_wx(verStr), nullptr);
+		throw TTXTParseError("Unknown TTXT version: " + from_wx(verStr));
 
 	// Get children
 	AssDialogue *diag = nullptr;

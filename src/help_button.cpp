@@ -69,7 +69,7 @@ HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position,
 	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { OpenPage(page); });
 	init_static();
 	if (pages.find(page) == pages.end())
-		throw agi::InternalError("Invalid help page", nullptr);
+		throw agi::InternalError("Invalid help page");
 }
 
 void HelpButton::OpenPage(wxString const& pageID) {

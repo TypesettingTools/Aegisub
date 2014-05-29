@@ -37,15 +37,15 @@ icu::BreakIterator& get_break_iterator(const char *ptr, size_t len) {
 	std::call_once(token, [&] {
 		UErrorCode status = U_ZERO_ERROR;
 		bi.reset(BreakIterator::createCharacterInstance(Locale::getDefault(), status));
-		if (U_FAILURE(status)) throw agi::InternalError("Failed to create character iterator", nullptr);
+		if (U_FAILURE(status)) throw agi::InternalError("Failed to create character iterator");
 	});
 
 	UErrorCode err = U_ZERO_ERROR;
 	utext_ptr ut(utext_openUTF8(nullptr, ptr, len, &err));
-	if (U_FAILURE(err)) throw agi::InternalError("Failed to open utext", nullptr);
+	if (U_FAILURE(err)) throw agi::InternalError("Failed to open utext");
 
 	bi->setText(ut.get(), err);
-	if (U_FAILURE(err)) throw agi::InternalError("Failed to set break iterator text", nullptr);
+	if (U_FAILURE(err)) throw agi::InternalError("Failed to set break iterator text");
 
 	return *bi;
 }

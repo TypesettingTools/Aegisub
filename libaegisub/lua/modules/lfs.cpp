@@ -38,7 +38,7 @@ int wrap(lua_State *L) {
 	}
 	catch (agi::Exception const& e) {
 		lua_pushnil(L);
-		push_value(L, e.GetChainedMessage());
+		push_value(L, e.GetMessage());
 		return 2;
 	}
 	catch (error_tag) {

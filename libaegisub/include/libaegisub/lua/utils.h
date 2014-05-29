@@ -79,7 +79,7 @@ int exception_wrapper(lua_State *L) {
 		return func(L);
 	}
 	catch (agi::Exception const& e) {
-		push_value(L, e.GetChainedMessage());
+		push_value(L, e.GetMessage());
 		return lua_error(L);
 	}
 	catch (std::exception const& e) {

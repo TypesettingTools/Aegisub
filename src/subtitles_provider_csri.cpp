@@ -83,7 +83,7 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) {
 	}
 
 	if (!renderer)
-		throw agi::InternalError("CSRI renderer vanished between initial list and creation?", 0);
+		throw agi::InternalError("CSRI renderer vanished between initial list and creation?");
 }
 
 void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {

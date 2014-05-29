@@ -81,7 +81,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 
 		// Check if this isn't a timecodes file
 		if (boost::starts_with(value, "# timecode"))
-			throw SubtitleFormatParseError("File is a timecode file, cannot load as subtitles.", nullptr);
+			throw SubtitleFormatParseError("File is a timecode file, cannot load as subtitles.");
 
 		// Read comment data
 		bool isComment = false;

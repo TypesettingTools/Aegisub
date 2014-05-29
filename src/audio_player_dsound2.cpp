@@ -677,7 +677,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 	thread_handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
-		throw agi::AudioPlayerOpenError("Failed creating playback thread in DirectSoundPlayer2. This is bad.", 0);
+		throw agi::AudioPlayerOpenError("Failed creating playback thread in DirectSoundPlayer2. This is bad.");
 
 	HANDLE running_or_error[] = { thread_running, error_happened };
 	switch (WaitForMultipleObjects(2, running_or_error, FALSE, INFINITE))
@@ -688,10 +688,10 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 
 	case WAIT_OBJECT_0 + 1:
 		// error happened, we fail
-		throw agi::AudioPlayerOpenError(error_message, 0);
+		throw agi::AudioPlayerOpenError(error_message);
 
 	default:
-		throw agi::AudioPlayerOpenError("Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.", 0);
+		throw agi::AudioPlayerOpenError("Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.");
 	}
 }
 
@@ -722,7 +722,7 @@ void DirectSoundPlayer2Thread::Play(int64_t start, int64_t count)
 	case WAIT_OBJECT_0+1: // Error
 		throw error_message;
 	default:
-		throw agi::InternalError("Unexpected result from WaitForMultipleObjects in DirectSoundPlayer2Thread::Play", 0);
+		throw agi::InternalError("Unexpected result from WaitForMultipleObjects in DirectSoundPlayer2Thread::Play");
 	}
 }
 
@@ -820,7 +820,7 @@ DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider, wxWindow *parent
 	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
-		throw agi::AudioPlayerOpenError(msg, 0);
+		throw agi::AudioPlayerOpenError(msg);
 	}
 }
 

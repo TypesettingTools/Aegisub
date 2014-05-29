@@ -22,7 +22,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
-DEFINE_SIMPLE_EXCEPTION_NOINNER(MatroskaException, agi::Exception, "matroksa_wrapper/generic")
+DEFINE_EXCEPTION(MatroskaException, agi::Exception);
 
 class AssFile;
 

@@ -71,7 +71,7 @@ struct MkvStdIO final : InputStream {
 			memcpy(buffer, self->file.read(pos, count), count);
 		}
 		catch (agi::Exception const& e) {
-			self->error = e.GetChainedMessage();
+			self->error = e.GetMessage();
 			return -1;
 		}
 
@@ -90,7 +90,7 @@ struct MkvStdIO final : InputStream {
 			}
 		}
 		catch (agi::Exception const& e) {
-			self->error = e.GetChainedMessage();
+			self->error = e.GetMessage();
 		}
 
 		return -1;

@@ -86,11 +86,11 @@ public:
 	virtual bool HasAudio() const { return false; }
 };
 
-DEFINE_BASE_EXCEPTION_NOINNER(VideoProviderError, agi::Exception)
+DEFINE_EXCEPTION(VideoProviderError, agi::Exception);
 /// File could be opened, but is not a supported format
-DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoNotSupported, VideoProviderError, "video/open/notsupported")
+DEFINE_EXCEPTION(VideoNotSupported, VideoProviderError);
 /// File appears to be a supported format, but could not be opened
-DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoOpenError, VideoProviderError, "video/open/failed")
+DEFINE_EXCEPTION(VideoOpenError, VideoProviderError);
 
 /// Error of some sort occurred while decoding a frame
-DEFINE_SIMPLE_EXCEPTION_NOINNER(VideoDecodeError, VideoProviderError, "video/error")
+DEFINE_EXCEPTION(VideoDecodeError, VideoProviderError);

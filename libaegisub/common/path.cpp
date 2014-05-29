@@ -62,7 +62,7 @@ fs::path Path::Decode(std::string const& path) const {
 
 fs::path Path::MakeRelative(fs::path const& path, std::string const& token) const {
 	const auto it = tokens.find(token);
-	if (it == tokens.end()) throw agi::InternalError("Bad token: " + token, nullptr);
+	if (it == tokens.end()) throw agi::InternalError("Bad token: " + token);
 
 	return MakeRelative(path, it->second);
 }
@@ -94,7 +94,7 @@ fs::path Path::MakeRelative(fs::path const& path, fs::path const& base) const {
 fs::path Path::MakeAbsolute(fs::path path, std::string const& token) const {
 	if (path.empty()) return path;
 	const auto it = tokens.find(token);
-	if (it == tokens.end()) throw agi::InternalError("Bad token: " + token, nullptr);
+	if (it == tokens.end()) throw agi::InternalError("Bad token: " + token);
 
 	path.make_preferred();
 	const auto str = path.string();
@@ -123,7 +123,7 @@ std::string Path::Encode(fs::path const& path) const {
 
 void Path::SetToken(std::string const& token_name, fs::path const& token_value) {
 	const auto it = tokens.find(token_name);
-	if (it == tokens.end()) throw agi::InternalError("Bad token: " + token_name, nullptr);
+	if (it == tokens.end()) throw agi::InternalError("Bad token: " + token_name);
 
 	if (token_value.empty())
 		it->second = token_value;

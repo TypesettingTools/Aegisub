@@ -124,7 +124,7 @@ void Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding) {
 		return ShowError(path.string() + " not found.");
 	}
 	catch (agi::Exception const& e) {
-		return ShowError(e.GetChainedMessage());
+		return ShowError(e.GetMessage());
 	}
 	catch (std::exception const& e) {
 		return ShowError(std::string(e.what()));
@@ -226,21 +226,21 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 		}
 	}
 	catch (agi::fs::FileNotFound const& e) {
-		return ShowError(_("The audio file was not found: ") + to_wx(e.GetChainedMessage()));
+		return ShowError(_("The audio file was not found: ") + to_wx(e.GetMessage()));
 	}
 	catch (agi::AudioDataNotFoundError const& e) {
 		if (quiet) {
-			LOG_D("video/open/audio") << "File " << video_file << " has no audio data: " << e.GetChainedMessage();
+			LOG_D("video/open/audio") << "File " << video_file << " has no audio data: " << e.GetMessage();
 			return;
 		}
 		else
-			return ShowError(_("None of the available audio providers recognised the selected file as containing audio data.\n\nThe following providers were tried:\n") + to_wx(e.GetChainedMessage()));
+			return ShowError(_("None of the available audio providers recognised the selected file as containing audio data.\n\nThe following providers were tried:\n") + to_wx(e.GetMessage()));
 	}
 	catch (agi::AudioProviderOpenError const& e) {
-		return ShowError(_("None of the available audio providers have a codec available to handle the selected file.\n\nThe following providers were tried:\n") + to_wx(e.GetChainedMessage()));
+		return ShowError(_("None of the available audio providers have a codec available to handle the selected file.\n\nThe following providers were tried:\n") + to_wx(e.GetMessage()));
 	}
 	catch (agi::Exception const& e) {
-		return ShowError(e.GetChainedMessage());
+		return ShowError(e.GetMessage());
 	}
 
 	SetPath(audio_file, "?audio", "Audio", path);
@@ -336,11 +336,11 @@ void Project::LoadTimecodes(agi::fs::path const& path) {
 		DoLoadTimecodes(path);
 	}
 	catch (agi::fs::FileSystemError const& e) {
-		ShowError(e.GetChainedMessage());
+		ShowError(e.GetMessage());
 		config::mru->Remove("Timecodes", path);
 	}
 	catch (agi::vfr::Error const& e) {
-		ShowError("Failed to parse timecodes file: " + e.GetChainedMessage());
+		ShowError("Failed to parse timecodes file: " + e.GetMessage());
 		config::mru->Remove("Timecodes", path);
 	}
 }
@@ -362,11 +362,11 @@ void Project::LoadKeyframes(agi::fs::path const& path) {
 		DoLoadKeyframes(path);
 	}
 	catch (agi::fs::FileSystemError const& e) {
-		ShowError(e.GetChainedMessage());
+		ShowError(e.GetMessage());
 		config::mru->Remove("Keyframes", path);
 	}
 	catch (agi::keyframe::Error const& e) {
-		ShowError("Failed to parse keyframes file: " + e.GetChainedMessage());
+		ShowError("Failed to parse keyframes file: " + e.GetMessage());
 		config::mru->Remove("Keyframes", path);
 	}
 }

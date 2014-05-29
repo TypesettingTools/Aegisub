@@ -44,7 +44,7 @@
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
-DEFINE_SIMPLE_EXCEPTION(PortAudioError, agi::AudioPlayerOpenError, "audio/player/open/portaudio")
+DEFINE_EXCEPTION(PortAudioError, agi::AudioPlayerOpenError);
 
 // Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG

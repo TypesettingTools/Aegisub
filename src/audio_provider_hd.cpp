@@ -62,7 +62,7 @@ public:
 
 		// Check free space
 		if ((uint64_t)num_samples * bytes_per_sample > agi::fs::FreeSpace(cache_dir))
-			throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir.string() + " to cache the audio", nullptr);
+			throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir.string() + " to cache the audio");
 
 		auto filename = agi::format("audio-%lld-%lld", time(nullptr),
 			boost::interprocess::ipcdetail::get_current_process_id());

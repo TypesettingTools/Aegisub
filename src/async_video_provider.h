@@ -134,16 +134,12 @@ struct FrameReadyEvent final : public wxEvent {
 // These exceptions are wxEvents so that they can be passed directly back to
 // the parent thread as events
 struct VideoProviderErrorEvent final : public wxEvent, public agi::Exception {
-	const char * GetName() const override { return "video/error"; }
 	wxEvent *Clone() const override { return new VideoProviderErrorEvent(*this); };
-	agi::Exception *Copy() const override { return new VideoProviderErrorEvent(*this); };
 	VideoProviderErrorEvent(VideoProviderError const& err);
 };
 
 struct SubtitlesProviderErrorEvent final : public wxEvent, public agi::Exception {
-	const char * GetName() const override { return "subtitles/error"; }
 	wxEvent *Clone() const override { return new SubtitlesProviderErrorEvent(*this); };
-	agi::Exception *Copy() const override { return new SubtitlesProviderErrorEvent(*this); };
 	SubtitlesProviderErrorEvent(std::string const& msg);
 };
 

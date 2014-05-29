@@ -84,7 +84,7 @@ class EnumBinder final : public wxValidator {
 		else if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
 			*value = static_cast<T>(rb->GetSelection());
 		else
-			throw agi::InternalError("Control type not supported by EnumBinder", nullptr);
+			throw agi::InternalError("Control type not supported by EnumBinder");
 		return true;
 	}
 
@@ -94,7 +94,7 @@ class EnumBinder final : public wxValidator {
 		else if (auto cb = dynamic_cast<wxComboBox*>(GetWindow()))
 			cb->SetSelection(static_cast<int>(*value));
 		else
-			throw agi::InternalError("Control type not supported by EnumBinder", nullptr);
+			throw agi::InternalError("Control type not supported by EnumBinder");
 		return true;
 	}
 

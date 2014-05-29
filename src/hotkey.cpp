@@ -172,7 +172,7 @@ bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
 		return true;
 	}
 	catch (cmd::CommandNotFound const& e) {
-		wxMessageBox(to_wx(e.GetChainedMessage()), _("Invalid command name for hotkey"),
+		wxMessageBox(to_wx(e.GetMessage()), _("Invalid command name for hotkey"),
 			wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP);
 		return true;
 	}

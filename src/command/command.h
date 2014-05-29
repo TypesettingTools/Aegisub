@@ -53,8 +53,8 @@ struct cname final : public Command {                         \
 
 /// Commands
 namespace cmd {
-DEFINE_BASE_EXCEPTION_NOINNER(CommandError, agi::Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(CommandNotFound, CommandError, "command/notfound")
+DEFINE_EXCEPTION(CommandError, agi::Exception);
+DEFINE_EXCEPTION(CommandNotFound, CommandError);
 
 	enum CommandFlags {
 		/// Default command type

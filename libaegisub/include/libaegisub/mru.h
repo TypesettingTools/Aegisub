@@ -27,9 +27,9 @@ namespace json {
 namespace agi {
 class Options;
 
-DEFINE_BASE_EXCEPTION_NOINNER(MRUError,Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorInvalidKey, MRUError, "mru/invalid")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(MRUErrorIndexOutOfRange, MRUError, "mru/invalid")
+DEFINE_EXCEPTION(MRUError, Exception);
+DEFINE_EXCEPTION(MRUErrorInvalidKey, MRUError);
+DEFINE_EXCEPTION(MRUErrorIndexOutOfRange, MRUError);
 
 /// @class MRUManager
 /// @brief Most Recently Used (MRU) list handling

@@ -150,7 +150,7 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte, a
 		case 10: return Framerate(120000, 1001); break;
 		case 11: return Framerate(120, 1);       break;
 	}
-	throw agi::InternalError("Out of bounds result from wxGetSingleChoiceIndex?", nullptr);
+	throw agi::InternalError("Out of bounds result from wxGetSingleChoiceIndex?");
 }
 
 void SubtitleFormat::StripTags(AssFile &file) {
@@ -277,7 +277,7 @@ template<class Cont, class Pred>
 SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	auto it = find_if(container.begin(), container.end(), pred);
 	if (it == container.end())
-		throw UnknownSubtitleFormatError("Subtitle format for extension not found", nullptr);
+		throw UnknownSubtitleFormatError("Subtitle format for extension not found");
 	return it->get();
 }
 

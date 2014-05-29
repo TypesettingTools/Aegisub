@@ -118,5 +118,5 @@ public:
 	static void LoadFormats();
 };
 
-DEFINE_SIMPLE_EXCEPTION(SubtitleFormatParseError, agi::InvalidInputException, "subtitle_io/parse/generic")
-DEFINE_SIMPLE_EXCEPTION(UnknownSubtitleFormatError, agi::InvalidInputException, "subtitle_io/unknown")
+DEFINE_EXCEPTION(SubtitleFormatParseError, agi::InvalidInputException);
+DEFINE_EXCEPTION(UnknownSubtitleFormatError, agi::InvalidInputException);

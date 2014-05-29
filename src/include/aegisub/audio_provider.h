@@ -94,6 +94,6 @@ struct AudioProviderFactory {
 	static std::unique_ptr<AudioProvider> GetProvider(agi::fs::path const& filename, agi::BackgroundRunner *br);
 };
 
-DEFINE_BASE_EXCEPTION_NOINNER(AudioProviderError, agi::Exception)
+DEFINE_EXCEPTION(AudioProviderError, agi::Exception);
 /// Error of some sort occurred while decoding a frame
-DEFINE_SIMPLE_EXCEPTION_NOINNER(AudioDecodeError, AudioProviderError, "audio/error")
+DEFINE_EXCEPTION(AudioDecodeError, AudioProviderError);

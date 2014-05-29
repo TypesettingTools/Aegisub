@@ -146,7 +146,7 @@ void AssParser::ParseScriptInfoLine(std::string const& data) {
 		else if (version_str == "v4.00+")
 			version = 1;
 		else
-			throw SubtitleFormatParseError("Unknown SSA file format version", nullptr);
+			throw SubtitleFormatParseError("Unknown SSA file format version");
 	}
 
 	// Nothing actually supports the Collisions property and malformed values

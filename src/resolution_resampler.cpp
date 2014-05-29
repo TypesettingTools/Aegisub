@@ -200,7 +200,7 @@ namespace {
 			case YCbCrMatrix::tv_fcc:  case YCbCrMatrix::pc_fcc:  return agi::ycbcr_matrix::fcc;
 			case YCbCrMatrix::tv_240m: case YCbCrMatrix::pc_240m: return agi::ycbcr_matrix::smpte_240m;
 		}
-		throw agi::InternalError("Invalid matrix", nullptr);
+		throw agi::InternalError("Invalid matrix");
 	}
 
 	agi::ycbcr_range range(YCbCrMatrix mat) {
@@ -217,7 +217,7 @@ namespace {
 			case YCbCrMatrix::pc_240m:
 				return agi::ycbcr_range::pc;
 		}
-		throw agi::InternalError("Invalid matrix", nullptr);
+		throw agi::InternalError("Invalid matrix");
 	}
 }
 

@@ -12,10 +12,10 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <vector>
+#include <libaegisub/exception.h>
+#include <libaegisub/fs_fwd.h>
 
-#include "exception.h"
-#include "fs_fwd.h"
+#include <vector>
 
 namespace agi {
 	namespace keyframe {
@@ -29,6 +29,6 @@ namespace agi {
 		/// @param keyframes List of keyframes to save
 		void Save(agi::fs::path const& filename, std::vector<int> const& keyframes);
 
-		DEFINE_SIMPLE_EXCEPTION_NOINNER(Error, Exception, "keyframe/error")
+		DEFINE_EXCEPTION(Error, Exception);
 	}
 }

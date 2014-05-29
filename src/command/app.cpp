@@ -211,7 +211,7 @@ struct app_options final : public Command {
 		try {
 			while (Preferences(c->parent).ShowModal() < 0);
 		} catch (agi::Exception& e) {
-			LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
+			LOG_E("config/init") << "Caught exception: " << e.GetMessage();
 		}
 	}
 };

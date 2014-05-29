@@ -323,7 +323,7 @@ void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 		json::Writer::Write(history, agi::io::Save(history_filename).Get());
 	}
 	catch (agi::fs::FileSystemError const& e) {
-		LOG_E("dialog_shift_times/save_history") << "Cannot save shift times history: " << e.GetChainedMessage();
+		LOG_E("dialog_shift_times/save_history") << "Cannot save shift times history: " << e.GetMessage();
 	}
 }
 
@@ -341,7 +341,7 @@ void DialogShiftTimes::LoadHistory() {
 			history_box->Append(get_history_string(history_entry));
 	}
 	catch (agi::fs::FileSystemError const& e) {
-		LOG_D("dialog_shift_times/load_history") << "Cannot load shift times history: " << e.GetChainedMessage();
+		LOG_D("dialog_shift_times/load_history") << "Cannot load shift times history: " << e.GetMessage();
 	}
 	catch (...) {
 		history_box->Thaw();

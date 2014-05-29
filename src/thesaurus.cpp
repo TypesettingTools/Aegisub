@@ -106,7 +106,7 @@ void Thesaurus::OnLanguageChanged() {
 			});
 		}
 		catch (agi::Exception const& e) {
-			LOG_E("thesaurus") << e.GetChainedMessage();
+			LOG_E("thesaurus") << e.GetMessage();
 		}
 	});
 }

@@ -684,7 +684,7 @@ void DialogStyleManager::OnCurrentImport() {
 			reader->ReadFile(&temp, filename, 0, charset);
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetChainedMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
 		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);

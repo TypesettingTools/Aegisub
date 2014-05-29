@@ -81,7 +81,7 @@ public:
 
 	agi::StringRange next_tok() {
 		if (pos.eof())
-			throw SubtitleFormatParseError("Failed parsing line: " + std::string(str.begin(), str.end()), nullptr);
+			throw SubtitleFormatParseError("Failed parsing line: " + std::string(str.begin(), str.end()));
 		return *pos++;
 	}
 
@@ -100,7 +100,7 @@ void AssDialogue::Parse(std::string const& raw) {
 		str = agi::StringRange(raw.begin() + 9, raw.end());
 	}
 	else
-		throw SubtitleFormatParseError("Failed parsing line: " + raw, nullptr);
+		throw SubtitleFormatParseError("Failed parsing line: " + raw);
 
 	tokenizer tkn(str);
 

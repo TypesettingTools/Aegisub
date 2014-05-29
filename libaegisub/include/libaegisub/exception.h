@@ -27,14 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file exception.h
-/// @brief Base exception classes for structured error handling
-/// @ingroup main_headers
-///
-
 #pragma once
 
-#include <memory>
 #include <string>
 
 namespace agi {
@@ -90,26 +84,13 @@ namespace agi {
 		/// The error message
 		std::string message;
 
-		/// An inner exception, the cause of this exception
-		std::shared_ptr<Exception> inner;
-
 	protected:
 		/// @brief Protected constructor initialising members
 		/// @param msg The error message
-		/// @param inr The inner exception, optional
 		///
 		/// Deriving classes should always use this constructor for initialising
 		/// the base class.
-		Exception(std::string msg, const Exception *inr = nullptr) : message(std::move(msg)) {
-			if (inr)
-				inner.reset(inr->Copy());
-		}
-
-		/// @brief Default constructor, not implemented
-		///
-		/// The default constructor is not implemented because it must not be used,
-		/// as it leaves the members un-initialised.
-		Exception();
+		Exception(std::string msg) : message(std::move(msg)) { }
 
 	public:
 		/// @brief Destructor
@@ -117,41 +98,7 @@ namespace agi {
 
 		/// @brief Get the outer exception error message
 		/// @return Error message
-		virtual std::string GetMessage() const { return message; }
-
-		/// @brief Get error messages for chained exceptions
-		/// @return Chained error message
-		///
-		/// If there is an inner exception, prepend its chained error message to
-		/// our error message, with a CRLF between. Returns our own error message
-		/// alone if there is no inner exception.
-		std::string GetChainedMessage() const { if (inner.get()) return inner->GetChainedMessage() + "\r\n" + GetMessage(); else return GetMessage(); }
-		
-		/// @brief Exception class printable name
-		///
-		/// Sub classes should implement this to return a constant character string
-		/// naming their exception in a hierarchic manner.
-		///
-		/// Exception classes inheriting directly from Exception define a top-level
-		/// name for their sub-tree, further sub-classes add further levels, each
-		/// level is separated by a slash. Characters allowed in the name for a
-		/// level are [a-z0-9_].
-		virtual const char * GetName() const = 0;
-
-		/// @brief Convert to char array as the error message
-		/// @return The error message
-		operator const char * () { return GetMessage().c_str(); }
-
-		/// @brief Convert to std::string as the error message
-		/// @return The error message
-		operator std::string () { return GetMessage(); }
-
-		/// @brief Create a copy of the exception allocated on the heap
-		/// @return A heap-allocated exception object
-		///
-		/// All deriving classes must implement this explicitly to avoid losing
-		/// information in the duplication.
-		virtual Exception *Copy() const = 0;
+		std::string const& GetMessage() const { return message; }
 	};
 
 /// @brief Convenience macro to include the current location in code
@@ -160,62 +107,14 @@ namespace agi {
 /// indicate the exact position the error occurred at.
 #define AG_WHERE " (at " __FILE__ ":" #__LINE__ ")"
 
-/// @brief Convenience macro for declaring exceptions with no support for inner exception
+/// @brief Convenience macro for declaring exceptions
 /// @param classname   Name of the exception class to declare
 /// @param baseclass   Class to derive from
-/// @param displayname The printable name of the exception (return of GetName())
-///
-/// This macro covers most cases of exception classes where support for inner
-/// exceptions is not relevant/wanted.
-#define DEFINE_SIMPLE_EXCEPTION_NOINNER(classname,baseclass,displayname)             \
-	class classname : public baseclass {                                             \
-	public:                                                                          \
-		classname(const std::string &msg) : baseclass(msg) { }                          \
-		const char * GetName() const { return displayname; }                   \
-		Exception * Copy() const { return new classname(*this); }                    \
-	};
-
-/// @brief Convenience macro for declaring exceptions supporting inner exceptions
-/// @param classname   Name of the exception class to declare
-/// @param baseclass   Class to derive from
-/// @param displayname The printable name of the exception (return of GetName())
-///
-/// This macro covers most cases of exception classes that should support
-/// inner exceptions.
-#define DEFINE_SIMPLE_EXCEPTION(classname,baseclass,displayname)                     \
-	class classname : public baseclass {                                             \
-	public:                                                                          \
-		classname(const std::string &msg, Exception *inner) : baseclass(msg, inner) { } \
-		const char * GetName() const { return displayname; }                   \
-		Exception * Copy() const { return new classname(*this); }                    \
-	};
-
-/// @brief Macro for declaring non-instantiable exception base classes
-/// @param classname Name of the exception class to declare
-/// @param baseclass Class to derive from
-///
-/// Declares an exception class that does not implement the GetName() function
-/// and as such (unless a base class implements it) is not constructable.
-/// Classes declared by this macro do not support inner exceptions.
-#define DEFINE_BASE_EXCEPTION_NOINNER(classname,baseclass)                           \
-	class classname : public baseclass {                                             \
-	public:                                                                          \
-		classname(const std::string &msg) : baseclass(msg) { }                          \
-	};
-
-/// @brief Macro for declaring non-instantiable exception base classes with inner
-///        exception support
-/// @param classname Name of the exception class to declare
-/// @param baseclass Class to derive from
-///
-/// Declares an exception class that does not implement the GetName() function
-/// and as such (unless a base class implements it) is not constructable.
-/// Classes declared by this macro do support inner exceptions.
-#define DEFINE_BASE_EXCEPTION(classname,baseclass)                                   \
-	class classname : public baseclass {                                             \
-	public:                                                                          \
-		classname(const std::string &msg, Exception *inner) : baseclass(msg, inner) { } \
-	};
+#define DEFINE_EXCEPTION(classname, baseclass)                 \
+class classname : public baseclass {                           \
+public:                                                        \
+	classname(std::string msg) : baseclass(std::move(msg)) { } \
+}
 
 	/// @class agi::UserCancelException
 	/// @extends agi::Exception
@@ -229,7 +128,7 @@ namespace agi {
 	/// possible, user cancel exceptions should unwind anything that was going on at the
 	/// moment. For this to work, RAII methodology has to be used consequently in the
 	/// code in question.
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(UserCancelException,Exception,"nonerror/user_cancel")
+	DEFINE_EXCEPTION(UserCancelException, Exception);
 
 	/// @class agi::InternalError
 	/// @extends agi:Exception
@@ -240,7 +139,7 @@ namespace agi {
 	/// have become inconsistent. All internal errors are of the type "this should never
 	/// happen", most often you'll want this kind of error unwind all the way past the main UI
 	/// and eventually cause an abort().
-	DEFINE_SIMPLE_EXCEPTION(InternalError, Exception, "internal_error")
+	DEFINE_EXCEPTION(InternalError, Exception);
 
 	/// @class agi::EnvironmentError
 	/// @extends agi:Exception
@@ -249,10 +148,10 @@ namespace agi {
 	/// Throw an environment error when a call to the platform API has failed
 	/// in some way that should normally never happen or suggests that the
 	/// runtime environment is too insane to support.
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(EnvironmentError, Exception, "environment_error")
+	DEFINE_EXCEPTION(EnvironmentError, Exception);
 
 	/// @class agi::InvalidInputException
 	/// @extends agi::Exception
 	/// @brief Some input data were invalid and could not be processed
-	DEFINE_BASE_EXCEPTION(InvalidInputException, Exception)
+	DEFINE_EXCEPTION(InvalidInputException, Exception);
 }

@@ -33,9 +33,9 @@ namespace json {
 
 namespace agi {
 
-DEFINE_BASE_EXCEPTION_NOINNER(OptionError,Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionErrorNotFound, OptionError, "options/not_found")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionErrorDuplicateKey, OptionError, "options/dump/duplicate")
+DEFINE_EXCEPTION(OptionError, Exception);
+DEFINE_EXCEPTION(OptionErrorNotFound, OptionError);
+DEFINE_EXCEPTION(OptionErrorDuplicateKey, OptionError);
 
 class OptionValue;
 

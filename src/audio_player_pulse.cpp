@@ -101,7 +101,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider) : AudioPlayer(provid
 	// Initialise a mainloop
 	mainloop = pa_threaded_mainloop_new();
 	if (!mainloop)
-		throw agi::AudioPlayerOpenError("Failed to initialise PulseAudio threaded mainloop object", 0);
+		throw agi::AudioPlayerOpenError("Failed to initialise PulseAudio threaded mainloop object");
 
 	pa_threaded_mainloop_start(mainloop);
 
@@ -109,7 +109,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider) : AudioPlayer(provid
 	context = pa_context_new(pa_threaded_mainloop_get_api(mainloop), "Aegisub");
 	if (!context) {
 		pa_threaded_mainloop_free(mainloop);
-		throw agi::AudioPlayerOpenError("Failed to create PulseAudio context", 0);
+		throw agi::AudioPlayerOpenError("Failed to create PulseAudio context");
 	}
 	pa_context_set_state_callback(context, (pa_context_notify_cb_t)pa_context_notify, this);
 
@@ -127,7 +127,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider) : AudioPlayer(provid
 			pa_context_unref(context);
 			pa_threaded_mainloop_stop(mainloop);
 			pa_threaded_mainloop_free(mainloop);
-			throw agi::AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror), 0);
+			throw agi::AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror));
 		}
 		// otherwise loop once more
 	}
@@ -148,7 +148,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider) : AudioPlayer(provid
 		pa_context_unref(context);
 		pa_threaded_mainloop_stop(mainloop);
 		pa_threaded_mainloop_free(mainloop);
-		throw agi::AudioPlayerOpenError("PulseAudio could not create stream", 0);
+		throw agi::AudioPlayerOpenError("PulseAudio could not create stream");
 	}
 	pa_stream_set_state_callback(stream, (pa_stream_notify_cb_t)pa_stream_notify, this);
 	pa_stream_set_write_callback(stream, (pa_stream_request_cb_t)pa_stream_write, this);
@@ -157,7 +157,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider) : AudioPlayer(provid
 	paerror = pa_stream_connect_playback(stream, nullptr, nullptr, (pa_stream_flags_t)(PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE), nullptr, nullptr);
 	if (paerror) {
 		LOG_E("audio/player/pulse") << "Stream connection failed: " << pa_strerror(paerror) << "(" << paerror << ")";
-		throw agi::AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror), 0);
+		throw agi::AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror));
 	}
 	while (true) {
 		stream_notify.Wait();
@@ -166,7 +166,7 @@ PulseAudioPlayer::PulseAudioPlayer(AudioProvider *provider) : AudioPlayer(provid
 		} else if (sstate == PA_STREAM_FAILED) {
 			paerror = pa_context_errno(context);
 			LOG_E("audio/player/pulse") << "Stream connection failed: " << pa_strerror(paerror) << "(" << paerror << ")";
-			throw agi::AudioPlayerOpenError("PulseAudio player: Something went wrong connecting the stream", 0);
+			throw agi::AudioPlayerOpenError("PulseAudio player: Something went wrong connecting the stream");
 		}
 	}
 }

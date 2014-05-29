@@ -44,7 +44,7 @@ namespace agi {
 		/// This base class can not be instantiated.
 		/// File system errors do not support inner exceptions, as they
 		/// are always originating causes for errors.
-		DEFINE_BASE_EXCEPTION_NOINNER(FileSystemError, Exception)
+		DEFINE_EXCEPTION(FileSystemError, Exception);
 
 		/// A file can't be accessed for some reason
 		DEFINE_FS_EXCEPTION(FileNotAccessible, FileSystemError, "File is not accessible: ");
@@ -53,7 +53,7 @@ namespace agi {
 		DEFINE_FS_EXCEPTION(FileNotFound, FileNotAccessible, "File not found: ");
 
 		/// An error of some unknown type has occured
-		DEFINE_SIMPLE_EXCEPTION_NOINNER(FileSystemUnknownError, FileSystemError, "filesystem/unknown");
+		DEFINE_EXCEPTION(FileSystemUnknownError, FileSystemError);;
 
 		/// The path exists, but isn't a file
 		DEFINE_FS_EXCEPTION(NotAFile, FileNotAccessible, "Path is not a file (and should be): ");

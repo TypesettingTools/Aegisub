@@ -154,7 +154,7 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int prior
 			task(this->ps);
 		}
 		catch (agi::Exception const& e) {
-			this->ps->Log(e.GetChainedMessage());
+			this->ps->Log(e.GetMessage());
 		}
 
 		Main().Async([this]{

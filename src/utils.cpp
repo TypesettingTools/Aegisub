@@ -196,7 +196,7 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 				LOG_D("utils/clean_cache") << "deleted " << i.second;
 			}
 			catch  (agi::Exception const& e) {
-				LOG_D("utils/clean_cache") << "failed to delete file " << i.second << ": " << e.GetChainedMessage();
+				LOG_D("utils/clean_cache") << "failed to delete file " << i.second << ": " << e.GetMessage();
 				continue;
 			}
 

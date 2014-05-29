@@ -25,10 +25,10 @@
 
 namespace agi {
 
-DEFINE_BASE_EXCEPTION_NOINNER(OptionJsonValueError, Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueArray, OptionJsonValueError, "options/value/array")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueSingle, OptionJsonValueError, "options/value")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(OptionJsonValueNull, OptionJsonValueError, "options/value")
+DEFINE_EXCEPTION(OptionJsonValueError, Exception);
+DEFINE_EXCEPTION(OptionJsonValueArray, OptionJsonValueError);
+DEFINE_EXCEPTION(OptionJsonValueSingle, OptionJsonValueError);
+DEFINE_EXCEPTION(OptionJsonValueNull, OptionJsonValueError);
 
 class ConfigVisitor final : public json::ConstVisitor {
 	/// Option map being populated

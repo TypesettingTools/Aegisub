@@ -27,12 +27,12 @@
 namespace agi {
 	namespace charset {
 
-DEFINE_BASE_EXCEPTION_NOINNER(ConvError, Exception)
-DEFINE_SIMPLE_EXCEPTION_NOINNER(UnsupportedConversion, ConvError, "iconv/unsupported")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(ConversionFailure, ConvError, "iconv/failed")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(BufferTooSmall, ConversionFailure, "iconv/failed/E2BIG")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(BadInput, ConversionFailure, "iconv/failed/EILSEQ")
-DEFINE_SIMPLE_EXCEPTION_NOINNER(BadOutput, ConversionFailure, "iconv/failed/EINVAL")
+DEFINE_EXCEPTION(ConvError, Exception);
+DEFINE_EXCEPTION(UnsupportedConversion, ConvError);
+DEFINE_EXCEPTION(ConversionFailure, ConvError);
+DEFINE_EXCEPTION(BufferTooSmall, ConversionFailure);
+DEFINE_EXCEPTION(BadInput, ConversionFailure);
+DEFINE_EXCEPTION(BadOutput, ConversionFailure);
 
 typedef void* iconv_t;
 

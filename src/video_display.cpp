@@ -67,16 +67,12 @@
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
-/// @class VideoOutRenderException
-/// @extends VideoOutException
-/// @brief An OpenGL error occurred while uploading or displaying a frame
+/// An OpenGL error occurred while uploading or displaying a frame
 class OpenGlException final : public agi::Exception {
 public:
 	OpenGlException(const char *func, int err)
 	: agi::Exception(from_wx(wxString::Format("%s failed with error code %d", func, err)))
 	{ }
-	const char * GetName() const override { return "video/opengl"; }
-	Exception * Copy() const override { return new OpenGlException(*this); }
 };
 
 #define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(#cmd, err)
@@ -224,7 +220,7 @@ catch (const agi::Exception &err) {
 	wxLogError(
 		"An error occurred trying to render the video frame on the screen.\n"
 		"Error message reported: %s",
-		err.GetChainedMessage());
+		err.GetMessage());
 	con->project->CloseVideo();
 }
 

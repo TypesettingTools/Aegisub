@@ -39,17 +39,17 @@ enum Time {
 	END
 };
 
-DEFINE_BASE_EXCEPTION_NOINNER(Error, Exception)
+DEFINE_EXCEPTION(Error, Exception);
 /// FPS specified is not a valid frame rate
-DEFINE_SIMPLE_EXCEPTION_NOINNER(BadFPS, Error, "vfr/badfps")
+DEFINE_EXCEPTION(BadFPS, Error);
 /// Unknown timecode file format
-DEFINE_SIMPLE_EXCEPTION_NOINNER(UnknownFormat, Error, "vfr/timecodes/unknownformat")
+DEFINE_EXCEPTION(UnknownFormat, Error);
 /// Invalid line encountered in a timecode file
-DEFINE_SIMPLE_EXCEPTION_NOINNER(MalformedLine, Error, "vfr/timecodes/malformed")
+DEFINE_EXCEPTION(MalformedLine, Error);
 /// Timecode file or vector has too few timecodes to be usable
-DEFINE_SIMPLE_EXCEPTION_NOINNER(TooFewTimecodes, Error, "vfr/timecodes/toofew")
+DEFINE_EXCEPTION(TooFewTimecodes, Error);
 /// Timecode file or vector has timecodes that are not monotonically increasing
-DEFINE_SIMPLE_EXCEPTION_NOINNER(UnorderedTimecodes, Error, "vfr/timecodes/order")
+DEFINE_EXCEPTION(UnorderedTimecodes, Error);
 
 /// @class Framerate
 /// @brief Class for managing everything related to converting frames to times

@@ -446,7 +446,7 @@ namespace Automation4 {
 	void ScriptFactory::Register(std::unique_ptr<ScriptFactory> factory)
 	{
 		if (find(Factories().begin(), Factories().end(), factory) != Factories().end())
-			throw agi::InternalError("Automation 4: Attempt to register the same script factory multiple times. This should never happen.", nullptr);
+			throw agi::InternalError("Automation 4: Attempt to register the same script factory multiple times. This should never happen.");
 
 		Factories().emplace_back(std::move(factory));
 	}

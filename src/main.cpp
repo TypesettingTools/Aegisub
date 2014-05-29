@@ -198,7 +198,7 @@ bool AegisubApp::OnInit() {
 		boost::interprocess::ibufferstream stream((const char *)default_config, sizeof(default_config));
 		config::opt->ConfigNext(stream);
 	} catch (agi::Exception& e) {
-		LOG_E("config/init") << "Caught exception: " << e.GetName() << " -> " << e.GetMessage();
+		LOG_E("config/init") << "Caught exception: " << e.GetMessage();
 	}
 
 	try {
@@ -421,7 +421,7 @@ bool AegisubApp::OnExceptionInMainLoop() {
 		throw;
 	}
 	catch (const agi::Exception &e) {
-		SHOW_EXCEPTION(to_wx(e.GetChainedMessage()));
+		SHOW_EXCEPTION(to_wx(e.GetMessage()));
 	}
 	catch (const std::exception &e) {
 		SHOW_EXCEPTION(to_wx(e.what()));
@@ -450,7 +450,7 @@ int AegisubApp::OnRun() {
 	catch (const wxString &err) { error = from_wx(err); }
 	catch (const char *err) { error = err; }
 	catch (const std::exception &e) { error = std::string("std::exception: ") + e.what(); }
-	catch (const agi::Exception &e) { error = "agi::exception: " + e.GetChainedMessage(); }
+	catch (const agi::Exception &e) { error = "agi::exception: " + e.GetMessage(); }
 	catch (...) { error = "Program terminated in error."; }
 
 	// Report errors

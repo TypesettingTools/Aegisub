@@ -54,7 +54,7 @@
 #endif
 
 namespace {
-DEFINE_SIMPLE_EXCEPTION(OSSError, agi::AudioPlayerOpenError, "audio/player/open/oss")
+DEFINE_EXCEPTION(OSSError, agi::AudioPlayerOpenError);
 class OSSPlayerThread;
 
 class OSSPlayer final : public AudioPlayer {
@@ -153,7 +153,7 @@ void OSSPlayer::OpenStream()
     wxString device = to_wx(OPT_GET("Player/Audio/OSS/Device")->GetString());
     dspdev = ::open(device.utf8_str(), O_WRONLY, 0);
     if (dspdev < 0) {
-        throw OSSError("OSS player: opening device failed", 0);
+        throw OSSError("OSS player: opening device failed");
     }
 
     // Use a reasonable buffer policy for low latency (OSS4)
@@ -165,7 +165,7 @@ void OSSPlayer::OpenStream()
     // Set number of channels
     int channels = provider->GetChannels();
     if (ioctl(dspdev, SNDCTL_DSP_CHANNELS, &channels) < 0) {
-        throw OSSError("OSS player: setting channels failed", 0);
+        throw OSSError("OSS player: setting channels failed");
     }
 
     // Set sample format
@@ -178,17 +178,17 @@ void OSSPlayer::OpenStream()
             sample_format = AFMT_S16_LE;
             break;
         default:
-            throw OSSError("OSS player: can only handle 8 and 16 bit sound", 0);
+            throw OSSError("OSS player: can only handle 8 and 16 bit sound");
     }
 
     if (ioctl(dspdev, SNDCTL_DSP_SETFMT, &sample_format) < 0) {
-        throw OSSError("OSS player: setting sample format failed", 0);
+        throw OSSError("OSS player: setting sample format failed");
     }
 
     // Set sample rate
     rate = provider->GetSampleRate();
     if (ioctl(dspdev, SNDCTL_DSP_SPEED, &rate) < 0) {
-        throw OSSError("OSS player: setting samplerate failed", 0);
+        throw OSSError("OSS player: setting samplerate failed");
     }
 }
 

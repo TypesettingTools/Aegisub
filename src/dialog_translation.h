@@ -79,5 +79,5 @@ public:
 	void Commit(bool next);
 	void InsertOriginal();
 
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(NothingToTranslate, agi::Exception, "dialog/translation/nothing_to_translate");
+	DEFINE_EXCEPTION(NothingToTranslate, agi::Exception);;
 };

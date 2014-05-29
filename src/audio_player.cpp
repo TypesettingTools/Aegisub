@@ -89,7 +89,7 @@ std::vector<std::string> AudioPlayerFactory::GetClasses() {
 
 std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider, wxWindow *window) {
 	if (std::begin(factories) == std::end(factories))
-		throw agi::NoAudioPlayersError("No audio players are available.", nullptr);
+		throw agi::NoAudioPlayersError("No audio players are available.");
 
 	auto preferred = OPT_GET("Audio/Player")->GetString();
 	auto sorted = GetSorted(boost::make_iterator_range(std::begin(factories), std::end(factories)), preferred);
@@ -100,8 +100,8 @@ std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *p
 			return factory->create(provider, window);
 		}
 		catch (agi::AudioPlayerOpenError const& err) {
-			error += std::string(factory->name) + " factory: " + err.GetChainedMessage() + "\n";
+			error += std::string(factory->name) + " factory: " + err.GetMessage() + "\n";
 		}
 	}
-	throw agi::AudioPlayerOpenError(error, nullptr);
+	throw agi::AudioPlayerOpenError(error);
 }

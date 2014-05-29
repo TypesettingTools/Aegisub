@@ -31,7 +31,7 @@
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/fs.h>
 
-DEFINE_SIMPLE_EXCEPTION(AssParseError, SubtitleFormatParseError, "subtitle_io/parse/ass")
+DEFINE_EXCEPTION(AssParseError, SubtitleFormatParseError);
 
 void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	TextFileReader file(filename, encoding);
@@ -44,7 +44,7 @@ void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 			parser.AddLine(line);
 		}
 		catch (const char *err) {
-			throw AssParseError("Error processing line: " + line + ": " + err, nullptr);
+			throw AssParseError("Error processing line: " + line + ": " + err);
 		}
 	}
 }

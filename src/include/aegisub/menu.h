@@ -29,9 +29,9 @@ class wxMenuBar;
 class wxWindow;
 
 namespace menu {
-	DEFINE_BASE_EXCEPTION_NOINNER(Error, agi::Exception)
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(UnknownMenu, Error, "menu/unknown")
-	DEFINE_SIMPLE_EXCEPTION_NOINNER(InvalidMenu, Error, "menu/invalid")
+	DEFINE_EXCEPTION(Error, agi::Exception);
+	DEFINE_EXCEPTION(UnknownMenu, Error);
+	DEFINE_EXCEPTION(InvalidMenu, Error);
 
 	/// @brief Get the menu with the specified name as a wxMenuBar
 	/// @param name Name of the menu

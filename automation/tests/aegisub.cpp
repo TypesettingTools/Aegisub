@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 	try {
 		check(L, !LoadFile(L, argv[1]));
 	} catch (agi::Exception const& e) {
-		fprintf(stderr, "%s\n", e.GetChainedMessage().c_str());
+		fprintf(stderr, "%s\n", e.GetMessage().c_str());
 	}
 
 	for (int i = 2; i < argc; ++i)

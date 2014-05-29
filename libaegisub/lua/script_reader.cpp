@@ -31,7 +31,7 @@ namespace agi { namespace lua {
 			filename = agi::fs::Canonicalize(raw_filename);
 		}
 		catch (agi::fs::FileSystemUnknownError const& e) {
-			LOG_E("auto4/lua") << "Error canonicalizing path: " << e.GetChainedMessage();
+			LOG_E("auto4/lua") << "Error canonicalizing path: " << e.GetMessage();
 		}
 
 		agi::read_file_mapping file(filename);
@@ -112,7 +112,7 @@ namespace agi { namespace lua {
 				// Not an error so swallow and continue on
 			}
 			catch (agi::Exception const& e) {
-				return error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), e.GetChainedMessage().c_str());
+				return error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), e.GetMessage().c_str());
 			}
 		}
 

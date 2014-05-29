@@ -30,5 +30,5 @@ public:
 	std::vector<std::string> GetWriteWildcards() const override;
 	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 
-	DEFINE_SIMPLE_EXCEPTION(ConversionFailed, agi::InvalidInputException, "subtitle_io/ebu3264/conversion_error")
+	DEFINE_EXCEPTION(ConversionFailed, agi::InvalidInputException);
 };
