@@ -208,7 +208,6 @@ SRC += \
 	preferences_base.cpp \
 	project.cpp \
 	resolution_resampler.cpp \
-	scintilla_text_ctrl.cpp \
 	search_replace_engine.cpp \
 	selection_controller.cpp \
 	spellchecker.cpp \

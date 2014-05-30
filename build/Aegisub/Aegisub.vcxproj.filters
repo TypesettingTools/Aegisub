@@ -390,9 +390,6 @@
     <ClInclude Include="$(SrcDir)base_grid.h">
       <Filter>Main UI\Grid</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h">
-      <Filter>Main UI\Edit box</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)selection_controller.h">
       <Filter>Main UI\Grid</Filter>
     </ClInclude>
@@ -925,9 +922,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)selection_controller.cpp">
       <Filter>Main UI\Grid</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp">
-      <Filter>Main UI\Edit box</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)subs_edit_box.cpp">
       <Filter>Main UI\Edit box</Filter>

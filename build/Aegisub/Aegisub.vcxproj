@@ -184,7 +184,6 @@
     <ClInclude Include="$(SrcDir)preferences_base.h" />
     <ClInclude Include="$(SrcDir)project.h" />
     <ClInclude Include="$(SrcDir)resolution_resampler.h" />
-    <ClInclude Include="$(SrcDir)scintilla_text_ctrl.h" />
     <ClInclude Include="$(SrcDir)search_replace_engine.h" />
     <ClInclude Include="$(SrcDir)selection_controller.h" />
     <ClInclude Include="$(SrcDir)spellchecker_hunspell.h" />
@@ -376,7 +375,6 @@
     <ClCompile Include="$(SrcDir)preferences_base.cpp" />
     <ClCompile Include="$(SrcDir)project.cpp" />
     <ClCompile Include="$(SrcDir)resolution_resampler.cpp" />
-    <ClCompile Include="$(SrcDir)scintilla_text_ctrl.cpp" />
     <ClCompile Include="$(SrcDir)search_replace_engine.cpp" />
     <ClCompile Include="$(SrcDir)selection_controller.cpp" />
     <ClCompile Include="$(SrcDir)spellchecker.cpp" />

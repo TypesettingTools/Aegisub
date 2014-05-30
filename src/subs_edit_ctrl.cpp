@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subs_edit_ctrl.cpp
-/// @brief Main subtitle editing text control
-/// @ingroup main_ui
-///
-
 #include "subs_edit_ctrl.h"
 
 #include "ass_dialogue.h"
@@ -82,7 +77,7 @@ enum {
 };
 
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context *context)
-: ScintillaTextCtrl(parent, -1, "", wxDefaultPosition, wsize, style)
+: wxStyledTextCtrl(parent, -1, wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
 , thesaurus(agi::make_unique<Thesaurus>())
 , context(context)

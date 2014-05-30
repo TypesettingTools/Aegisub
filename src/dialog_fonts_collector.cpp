@@ -24,7 +24,6 @@
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
-#include "scintilla_text_ctrl.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
@@ -52,7 +51,7 @@ namespace {
 class DialogFontsCollector final : public wxDialog {
 	AssFile *subs;
 
-	ScintillaTextCtrl *collection_log;
+	wxStyledTextCtrl *collection_log;
 	wxButton *close_btn;
 	wxButton *dest_browse_button;
 	wxButton *start_btn;
@@ -250,7 +249,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	destination_box->Add(dest_browse_sizer, wxSizerFlags().Expand());
 
 	wxStaticBoxSizer *log_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
-	collection_log = new ScintillaTextCtrl(this, -1, "", wxDefaultPosition, wxSize(600, 300));
+	collection_log = new wxStyledTextCtrl(this, -1, wxDefaultPosition, wxSize(600, 300));
 	collection_log->SetWrapMode(wxSTC_WRAP_WORD);
 	collection_log->SetMarginWidth(1, 0);
 	collection_log->SetReadOnly(true);
@@ -384,13 +383,14 @@ void DialogFontsCollector::OnRadio(wxCommandEvent &) {
 void DialogFontsCollector::OnAddText(wxThreadEvent &event) {
 	std::pair<int, wxString> str = event.GetPayload<std::pair<int, wxString>>();
 	collection_log->SetReadOnly(false);
-	int pos = collection_log->GetReverseUnicodePosition(collection_log->GetLength());
-	collection_log->AppendText(str.second);
+	int pos = collection_log->GetLength();
+	auto const& utf8 = str.second.utf8_str();
+	collection_log->AppendTextRaw(utf8.data(), utf8.length());
 	if (str.first) {
-		collection_log->StartUnicodeStyling(pos, 31);
-		collection_log->SetUnicodeStyling(pos, str.second.size(), str.first);
+		collection_log->StartStyling(pos, 31);
+		collection_log->SetStyling(utf8.length(), str.first);
 	}
-	collection_log->GotoPos(pos);
+	collection_log->GotoPos(pos + utf8.length());
 	collection_log->SetReadOnly(true);
 }
 

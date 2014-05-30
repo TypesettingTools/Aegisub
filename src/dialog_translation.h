@@ -14,10 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file dialog_translation.h
-/// @see dialog_translation.cpp
-/// @ingroup tools_ui
-
 #include <libaegisub/exception.h>
 #include <libaegisub/signal.h>
 
@@ -29,10 +25,10 @@ namespace agi { struct Context; }
 class AssDialogue;
 class AssDialogueBlock;
 class PersistLocation;
-class ScintillaTextCtrl;
 class SubsTextEditCtrl;
-class wxStaticText;
 class wxCheckBox;
+class wxStaticText;
+class wxStyledTextCtrl;
 
 /// Assistant for translating subtitles in one language to another language
 class DialogTranslation final : public wxDialog {
@@ -55,7 +51,7 @@ class DialogTranslation final : public wxDialog {
 	bool switching_lines = false;
 
 	wxStaticText *line_number_display;
-	ScintillaTextCtrl *original_text;
+	wxStyledTextCtrl *original_text;
 	SubsTextEditCtrl *translated_text;
 	wxCheckBox *seek_video;
 

@@ -41,12 +41,14 @@
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include <wx/checkbox.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/settings.h>
 #include <wx/stattext.h>
+#include <wx/stc/stc.h>
 
 static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wxString const& text) {
 	sizer->Add(new wxStaticText(parent, -1, text));
@@ -77,7 +79,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		line_number_display = new wxStaticText(this, -1, "");
 		original_box->Add(line_number_display, 0, wxBOTTOM, 5);
 
-		original_text = new ScintillaTextCtrl(this, -1, "", wxDefaultPosition, wxSize(320, 80));
+		original_text = new wxStyledTextCtrl(this, -1, wxDefaultPosition, wxSize(320, 80));
 		original_text->SetWrapMode(wxSTC_WRAP_WORD);
 		original_text->SetMarginWidth(1, 0);
 		original_text->StyleSetForeground(1, wxColour(10, 60, 200));
@@ -163,8 +165,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		UpdateDisplay();
 }
 
-DialogTranslation::~DialogTranslation() {
-}
+DialogTranslation::~DialogTranslation() { }
 
 void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 	if (switching_lines) return;
@@ -243,9 +244,8 @@ void DialogTranslation::UpdateDisplay() {
 			int initial_pos = original_text->GetLength();
 			original_text->AppendTextRaw(block->GetText().c_str());
 			if (i == cur_block) {
-				int cur_size = original_text->GetReverseUnicodePosition(initial_pos);
-				original_text->StartUnicodeStyling(cur_size);
-				original_text->SetUnicodeStyling(cur_size, block->GetText().size(), 1);
+				original_text->StartStyling(initial_pos, 31);
+				original_text->SetStyling(block->GetText().size(), 1);
 			}
 		}
 		else
@@ -262,11 +262,11 @@ void DialogTranslation::UpdateDisplay() {
 }
 
 void DialogTranslation::Commit(bool next) {
-	wxString new_value = translated_text->GetValue();
-	new_value.Replace("\r\n", "\\N");
-	new_value.Replace("\r", "\\N");
-	new_value.Replace("\n", "\\N");
-	*blocks[cur_block] = AssDialogueBlockPlain(from_wx(new_value));
+	std::string new_value = translated_text->GetTextRaw().data();
+	boost::replace_all(new_value, "\r\n", "\\N");
+	boost::replace_all(new_value, "\r", "\\N");
+	boost::replace_all(new_value, "\n", "\\N");
+	*blocks[cur_block] = AssDialogueBlockPlain(new_value);
 	active_line->UpdateText(blocks);
 
 	file_change_connection.Block();
@@ -285,7 +285,8 @@ void DialogTranslation::Commit(bool next) {
 }
 
 void DialogTranslation::InsertOriginal() {
-	translated_text->AddText(to_wx(blocks[cur_block]->GetText()));
+	auto const& text = blocks[cur_block]->GetText();
+	translated_text->AddTextRaw(text.data(), text.size());
 }
 
 void DialogTranslation::OnKeyDown(wxKeyEvent &evt) {

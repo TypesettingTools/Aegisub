@@ -27,11 +27,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "scintilla_text_ctrl.h"
-
 #include <memory>
 #include <string>
 #include <vector>
+#include <wx/stc/stc.h>
 
 class Thesaurus;
 namespace agi {
@@ -43,7 +42,7 @@ namespace agi {
 
 /// @class SubsTextEditCtrl
 /// @brief A Scintilla control with spell checking and syntax highlighting
-class SubsTextEditCtrl final : public ScintillaTextCtrl {
+class SubsTextEditCtrl final : public wxStyledTextCtrl {
 	/// Backend spellchecker to use
 	std::unique_ptr<agi::SpellChecker> spellchecker;
 
