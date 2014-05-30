@@ -26,6 +26,7 @@ SRC += \
 	common/color.cpp \
 	common/dispatch.cpp \
 	common/file_mapping.cpp \
+	common/format.cpp \
 	common/fs.cpp \
 	common/hotkey.cpp \
 	common/io.cpp \

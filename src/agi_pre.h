@@ -72,7 +72,6 @@
 // Common C++
 #include <algorithm>
 #include <array>
-#include <codecvt>
 #include <functional>
 #include <iterator>
 #include <limits>

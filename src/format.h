@@ -23,16 +23,14 @@ namespace agi {
 template<>
 struct writer<char, wxString> {
 	static void write(std::basic_ostream<char>& out, int max_len, wxString const& value) {
-		format_detail::do_write_str(out, value.wx_str(),
-			format_detail::actual_len(max_len, value.wx_str()));
+		writer<char, const wxChar *>::write(out, max_len, value.wx_str());
 	}
 };
 
 template<>
 struct writer<wchar_t, wxString> {
 	static void write(std::basic_ostream<wchar_t>& out, int max_len, wxString const& value) {
-		format_detail::do_write_str(out, value.wx_str(),
-			format_detail::actual_len(max_len, value.wx_str()));
+		writer<wchar_t, const wxChar *>::write(out, max_len, value.wx_str());
 	}
 };
 
