@@ -44,6 +44,14 @@ int WidthHelper::operator()(wxString const& str) {
 	return dc.GetTextExtent(str).GetWidth();
 }
 
+int WidthHelper::operator()(const char *str) {
+	return dc.GetTextExtent(wxString::FromUTF8(str)).GetWidth();
+}
+
+int WidthHelper::operator()(const wchar_t *str) {
+	return dc.GetTextExtent(str).GetWidth();
+}
+
 void GridColumn::UpdateWidth(const agi::Context *c, WidthHelper &helper) {
 	if (!visible) {
 		width = 0;

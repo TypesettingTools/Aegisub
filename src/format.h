@@ -23,14 +23,14 @@ namespace agi {
 template<>
 struct writer<char, wxString> {
 	static void write(std::basic_ostream<char>& out, int max_len, wxString const& value) {
-		writer<char, const wxChar *>::write(out, max_len, value.wx_str());
+		writer<char, const wxStringCharType *>::write(out, max_len, value.wx_str());
 	}
 };
 
 template<>
 struct writer<wchar_t, wxString> {
 	static void write(std::basic_ostream<wchar_t>& out, int max_len, wxString const& value) {
-		writer<wchar_t, const wxChar *>::write(out, max_len, value.wx_str());
+		writer<wchar_t, const wxStringCharType *>::write(out, max_len, value.wx_str());
 	}
 };
 
@@ -43,14 +43,14 @@ std::string format(wxString const& fmt, Args&&... args) {
 
 template<typename... Args>
 wxString wxformat(wxString const& fmt, Args&&... args) {
-	boost::interprocess::basic_vectorstream<std::basic_string<wxChar>> out;
+	boost::interprocess::basic_vectorstream<std::basic_string<wxStringCharType>> out;
 	format(out, fmt.wx_str(), std::forward<Args>(args)...);
 	return out.vector();
 }
 
 template<typename... Args>
-wxString wxformat(const wxChar *fmt, Args&&... args) {
-	boost::interprocess::basic_vectorstream<std::basic_string<wxChar>> out;
+wxString wxformat(const wxStringCharType *fmt, Args&&... args) {
+	boost::interprocess::basic_vectorstream<std::basic_string<wxStringCharType>> out;
 	format(out, fmt, std::forward<Args>(args)...);
 	return out.vector();
 }

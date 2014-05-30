@@ -41,6 +41,8 @@ struct WidthHelper {
 	int operator()(boost::flyweight<std::string> const& str);
 	int operator()(std::string const& str);
 	int operator()(wxString const& str);
+	int operator()(const char *str);
+	int operator()(const wchar_t *str);
 };
 
 class GridColumn {
