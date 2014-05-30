@@ -34,7 +34,25 @@ DEFINE_EXCEPTION(BufferTooSmall, ConversionFailure);
 DEFINE_EXCEPTION(BadInput, ConversionFailure);
 DEFINE_EXCEPTION(BadOutput, ConversionFailure);
 
-typedef void* iconv_t;
+typedef void *iconv_t;
+
+/// RAII handle for iconv
+class Iconv {
+	iconv_t cd;
+	Iconv(Iconv const&) = delete;
+	void operator=(Iconv const&) = delete;
+
+public:
+	Iconv();
+	Iconv(const char *source, const char *dest);
+	~Iconv();
+
+	Iconv(Iconv&& o) { std::swap(cd, o.cd); }
+	Iconv& operator=(Iconv&& o) { std::swap(cd, o.cd); return *this; }
+
+	size_t operator()(const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
+	operator iconv_t() { return cd; }
+};
 
 /// Helper class that abstracts away the differences between libiconv and
 /// POSIX iconv implementations

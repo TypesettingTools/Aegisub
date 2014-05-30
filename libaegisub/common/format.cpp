@@ -16,10 +16,16 @@
 
 #include <libaegisub/format.h>
 
+#include <libaegisub/charset_conv.h>
 #include <libaegisub/fs_fwd.h>
 
 #include <boost/filesystem/path.hpp>
-#include <codecvt>
+
+#ifdef _MSC_VER
+#define WCHAR_T_ENC "utf-16le"
+#else
+#define WCHAR_T_ENC "utf-32le"
+#endif
 
 namespace {
 template<typename Char>
@@ -41,16 +47,30 @@ void do_write_str(std::basic_ostream<Char>& out, const Char *str, int len) {
 	out.write(str, len);
 }
 
+template<typename Src, typename Dst>
+void convert_and_write(std::basic_ostream<Dst>& out, const Src *str, int len, const char *src_enc, const char *dst_enc) {
+	Dst buffer[512];
+	agi::charset::Iconv cd(src_enc, dst_enc);
+	size_t in_len = len * sizeof(Src);
+	const char *in = reinterpret_cast<const char *>(str);
+
+	size_t res;
+	do {
+		char *out_buf = reinterpret_cast<char *>(buffer);
+		size_t out_len = sizeof(buffer);
+		res = cd(&in, &in_len, &out_buf, &out_len);
+		if (res == 0) cd(nullptr, nullptr, &out_buf, &out_len);
+
+		out.write(buffer, (sizeof(buffer) - out_len) / sizeof(Dst));
+	} while (res == (size_t)-1 && errno == E2BIG);
+}
+
 void do_write_str(std::ostream& out, const wchar_t *str, int len) {
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
-	auto u8 = utf8_conv.to_bytes(str, str + len);
-	out.write(u8.data(), u8.size());
+	convert_and_write(out, str, len, WCHAR_T_ENC, "utf-8");
 }
 
 void do_write_str(std::wostream& out, const char *str, int len) {
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8_conv;
-	auto wc = utf8_conv.from_bytes(str, str + len);
-	out.write(wc.data(), wc.size());
+	convert_and_write(out, str, len, "utf-8", WCHAR_T_ENC);
 }
 
 template<typename Char>
