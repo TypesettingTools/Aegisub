@@ -48,7 +48,8 @@
 #include <wx/textctrl.h>
 
 namespace {
-class DialogProperties final : public wxDialog {
+class DialogProperties {
+	wxDialog d;
 	agi::Context *c; ///< Project this dialog is adjusting the properties of
 
 	/// Pairs of a script property and a text control for that property
@@ -81,16 +82,17 @@ public:
 	/// Constructor
 	/// @param c Project context
 	DialogProperties(agi::Context *c);
+	void ShowModal() { d.ShowModal(); }
 };
 
 DialogProperties::DialogProperties(agi::Context *c)
-: wxDialog(c->parent, -1, _("Script Properties"))
+: d(c->parent, -1, _("Script Properties"))
 , c(c)
 {
-	SetIcon(GETICON(properties_toolbutton_16));
+	d.SetIcon(GETICON(properties_toolbutton_16));
 
 	// Script details crap
-	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Script"));
+	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Script"));
 	auto TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
 
 	AddProperty(TopSizerGrid, _("Title:"), "Title");
@@ -106,10 +108,10 @@ DialogProperties::DialogProperties(agi::Context *c)
 	TopSizer->Add(TopSizerGrid,1,wxALL | wxEXPAND,0);
 
 	// Resolution box
-	ResX = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResX")));
-	ResY = new wxTextCtrl(this,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResY")));
+	ResX = new wxTextCtrl(&d,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResX")));
+	ResY = new wxTextCtrl(&d,-1,"",wxDefaultPosition,wxSize(50,20),0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResY")));
 
-	wxButton *FromVideo = new wxButton(this,-1,_("From &video"));
+	wxButton *FromVideo = new wxButton(&d,-1,_("From &video"));
 	if (!c->project->VideoProvider())
 		FromVideo->Enable(false);
 	else
@@ -117,23 +119,23 @@ DialogProperties::DialogProperties(agi::Context *c)
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(ResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
-	res_sizer->Add(new wxStaticText(this, -1, "x"), 0, wxALIGN_CENTER | wxRIGHT, 5);
+	res_sizer->Add(new wxStaticText(&d, -1, "x"), 0, wxALIGN_CENTER | wxRIGHT, 5);
 	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
 	res_sizer->Add(FromVideo, 1, 0, 0);
 
-	YCbCrMatrix = new wxComboBox(this, -1, c->ass->GetScriptInfo("YCbCr Matrix"),
+	YCbCrMatrix = new wxComboBox(&d, -1, c->ass->GetScriptInfo("YCbCr Matrix"),
 		 wxDefaultPosition, wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
 
 	auto matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	matrix_sizer->Add(new wxStaticText(this, -1, "YCbCr Matrix:"), wxSizerFlags().Center());
+	matrix_sizer->Add(new wxStaticText(&d, -1, "YCbCr Matrix:"), wxSizerFlags().Center());
 	matrix_sizer->Add(YCbCrMatrix, wxSizerFlags(1).Expand().Border(wxLEFT));
 
-	auto res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Resolution"));
+	auto res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Resolution"));
 	res_box->Add(res_sizer, wxSizerFlags().Expand());
 	res_box->Add(matrix_sizer, wxSizerFlags().Border(wxTOP).Expand());
 
 	// Options
-	wxSizer *optionsBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
+	wxSizer *optionsBox = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Options"));
 	auto optionsGrid = new wxFlexGridSizer(3,2,5,5);
 	wxString wrap_opts[] = {
 		_("0: Smart wrapping, top line is wider"),
@@ -141,12 +143,12 @@ DialogProperties::DialogProperties(agi::Context *c)
 		_("2: No word wrapping, both \\n and \\N break"),
 		_("3: Smart wrapping, bottom line is wider")
 	};
-	WrapStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 4, wrap_opts, wxCB_READONLY);
+	WrapStyle = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, 4, wrap_opts, wxCB_READONLY);
 	WrapStyle->SetSelection(c->ass->GetScriptInfoAsInt("WrapStyle"));
-	optionsGrid->Add(new wxStaticText(this,-1,_("Wrap Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
+	optionsGrid->Add(new wxStaticText(&d,-1,_("Wrap Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
 	optionsGrid->Add(WrapStyle,1,wxEXPAND,0);
 
-	ScaleBorder = new wxCheckBox(this,-1,_("Scale Border and Shadow"));
+	ScaleBorder = new wxCheckBox(&d,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
 	ScaleBorder->SetValue(boost::iequals(c->ass->GetScriptInfo("ScaledBorderAndShadow"), "yes"));
 	optionsGrid->AddSpacer(0);
@@ -155,9 +157,9 @@ DialogProperties::DialogProperties(agi::Context *c)
 	optionsBox->Add(optionsGrid,1,wxEXPAND,0);
 
 	// Button sizer
-	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
-	Bind(wxEVT_BUTTON, &DialogProperties::OnOK, this, wxID_OK);
-	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
+	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	d.Bind(wxEVT_BUTTON, &DialogProperties::OnOK, this, wxID_OK);
+	d.Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
@@ -166,13 +168,13 @@ DialogProperties::DialogProperties(agi::Context *c)
 	MainSizer->Add(optionsBox,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
 
-	SetSizerAndFit(MainSizer);
-	CenterOnParent();
+	d.SetSizerAndFit(MainSizer);
+	d.CenterOnParent();
 }
 
 void DialogProperties::AddProperty(wxSizer *sizer, wxString const& label, std::string const& property) {
-	wxTextCtrl *ctrl = new wxTextCtrl(this, -1, to_wx(c->ass->GetScriptInfo(property)), wxDefaultPosition, wxSize(200, 20));
-	sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Left());
+	wxTextCtrl *ctrl = new wxTextCtrl(&d, -1, to_wx(c->ass->GetScriptInfo(property)), wxDefaultPosition, wxSize(200, 20));
+	sizer->Add(new wxStaticText(&d, -1, label), wxSizerFlags().Center().Left());
 	sizer->Add(ctrl, wxSizerFlags(1).Expand());
 	properties.push_back({property, ctrl});
 }
@@ -190,7 +192,7 @@ void DialogProperties::OnOK(wxCommandEvent &) {
 
 	if (count) c->ass->Commit(_("property changes"), AssFile::COMMIT_SCRIPTINFO);
 
-	EndModal(!!count);
+	d.EndModal(!!count);
 }
 
 int DialogProperties::SetInfoIfDifferent(std::string const& key, std::string const&value) {

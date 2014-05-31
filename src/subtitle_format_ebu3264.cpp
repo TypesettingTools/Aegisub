@@ -611,7 +611,7 @@ namespace
 
 		// Disable the busy cursor set by the exporter while the dialog is visible
 		wxEndBusyCursor();
-		int res = EbuExportConfigurationDialog(parent, s).ShowModal();
+		int res = ShowEbuExportConfigurationDialog(parent, s);
 		wxBeginBusyCursor();
 
 		if (res != wxID_OK)

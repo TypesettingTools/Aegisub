@@ -33,6 +33,7 @@
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dialog.h>
 #include <wx/msgdlg.h>
 #include <wx/radiobox.h>
 #include <wx/sizer.h>
@@ -92,11 +93,12 @@ namespace {
 		TimecodeValidator(EbuTimecode *target) : value(target) { assert(target); }
 		TimecodeValidator(TimecodeValidator const& other) : wxValidator(other), value(other.value) { }
 	};
+
 } // namespace {
 
-EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s)
-: wxDialog(owner, -1, _("Export to EBU STL format"))
-{
+int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
+	wxDialog d(owner, -1, _("Export to EBU STL format"));
+
 	wxString tv_standards[] = {
 		_("23.976 fps (non-standard, STL24.01)"),
 		_("24 fps (non-standard, STL24.01)"),
@@ -105,10 +107,10 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 		_("29.97 fps (dropframe, STL30.01)"),
 		_("30 fps (STL30.01)")
 	};
-	wxRadioBox *tv_standard_box = new wxRadioBox(this, -1, _("TV standard"), wxDefaultPosition, wxDefaultSize, 6, tv_standards, 0, wxRA_SPECIFY_ROWS);
+	wxRadioBox *tv_standard_box = new wxRadioBox(&d, -1, _("TV standard"), wxDefaultPosition, wxDefaultSize, 6, tv_standards, 0, wxRA_SPECIFY_ROWS);
 
-	wxTextCtrl *timecode_offset_entry = new wxTextCtrl(this, -1, "00:00:00:00");
-	wxCheckBox *inclusive_end_times_check = new wxCheckBox(this, -1, _("Out-times are inclusive"));
+	wxTextCtrl *timecode_offset_entry = new wxTextCtrl(&d, -1, "00:00:00:00");
+	wxCheckBox *inclusive_end_times_check = new wxCheckBox(&d, -1, _("Out-times are inclusive"));
 
 	wxString text_encodings[] = {
 		_("ISO 6937-2 (Latin/Western Europe)"),
@@ -118,7 +120,7 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 		_("ISO 8859-8 (Hebrew)"),
 		_("UTF-8 Unicode (non-standard)")
 	};
-	wxRadioBox *text_encoding_box = new wxRadioBox(this, -1, _("Text encoding"), wxDefaultPosition, wxDefaultSize, 6, text_encodings, 0, wxRA_SPECIFY_ROWS);
+	wxRadioBox *text_encoding_box = new wxRadioBox(&d, -1, _("Text encoding"), wxDefaultPosition, wxDefaultSize, 6, text_encodings, 0, wxRA_SPECIFY_ROWS);
 
 	wxString wrap_modes[] = {
 		_("Automatically wrap long lines (ASS)"),
@@ -127,9 +129,9 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 		_("Skip lines that are too long")
 	};
 
-	wxSpinCtrl *max_line_length_ctrl = new wxSpinCtrl(this, -1, wxString(), wxDefaultPosition, wxSize(65, -1));
-	wxComboBox *wrap_mode_ctrl = new wxComboBox(this, -1, wrap_modes[0], wxDefaultPosition, wxDefaultSize, 4, wrap_modes, wxCB_DROPDOWN | wxCB_READONLY);
-	wxCheckBox *translate_alignments_check = new wxCheckBox(this, -1, _("Translate alignments"));
+	wxSpinCtrl *max_line_length_ctrl = new wxSpinCtrl(&d, -1, wxString(), wxDefaultPosition, wxSize(65, -1));
+	wxComboBox *wrap_mode_ctrl = new wxComboBox(&d, -1, wrap_modes[0], wxDefaultPosition, wxDefaultSize, 4, wrap_modes, wxCB_DROPDOWN | wxCB_READONLY);
+	wxCheckBox *translate_alignments_check = new wxCheckBox(&d, -1, _("Translate alignments"));
 
 	max_line_length_ctrl->SetRange(10, 99);
 
@@ -139,26 +141,26 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 		_("Level-2 teletext")
 	};
 
-	wxComboBox *display_standard_ctrl = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 2, display_standards, wxCB_DROPDOWN | wxCB_READONLY);
+	wxComboBox *display_standard_ctrl = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, 2, display_standards, wxCB_DROPDOWN | wxCB_READONLY);
 
 	wxSizer *max_line_length_labelled = new wxBoxSizer(wxHORIZONTAL);
-	max_line_length_labelled->Add(new wxStaticText(this, -1, _("Max. line length:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
+	max_line_length_labelled->Add(new wxStaticText(&d, -1, _("Max. line length:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
 	max_line_length_labelled->Add(max_line_length_ctrl, 0, 0, 0);
 
 	wxSizer *timecode_offset_labelled = new wxBoxSizer(wxHORIZONTAL);
-	timecode_offset_labelled->Add(new wxStaticText(this, -1, _("Time code offset:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
+	timecode_offset_labelled->Add(new wxStaticText(&d, -1, _("Time code offset:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
 	timecode_offset_labelled->Add(timecode_offset_entry, 0, 0, 0);
 
-	wxSizer *text_formatting_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Text formatting"));
+	wxSizer *text_formatting_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Text formatting"));
 	text_formatting_sizer->Add(max_line_length_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	text_formatting_sizer->Add(wrap_mode_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	text_formatting_sizer->Add(translate_alignments_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
-	wxSizer *timecode_control_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Time codes"));
+	wxSizer *timecode_control_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Time codes"));
 	timecode_control_sizer->Add(timecode_offset_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	timecode_control_sizer->Add(inclusive_end_times_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
-	wxSizer *display_standard_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Display standard"));
+	wxSizer *display_standard_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Display standard"));
 	display_standard_sizer->Add(display_standard_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
 	wxSizer *left_column = new wxBoxSizer(wxVERTICAL);
@@ -175,18 +177,18 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 	vertical_split_sizer->Add(right_column, 0, 0, 0);
 
 	wxSizer *buttons_sizer = new wxBoxSizer(wxHORIZONTAL);
-	// Developers are requested to leave this message in! Intentionally not translatable.
-	wxStaticText *sponsor_label = new wxStaticText(this, -1, "EBU STL format writing sponsored by Bandai");
+	// Developers are requested to leave &d message in! Intentionally not translatable.
+	wxStaticText *sponsor_label = new wxStaticText(&d, -1, "EBU STL format writing sponsored by Bandai");
 	sponsor_label->Enable(false);
 	buttons_sizer->Add(sponsor_label, 1, wxALIGN_BOTTOM, 0);
-	buttons_sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0, wxLEFT, 6);
+	buttons_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0, wxLEFT, 6);
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(vertical_split_sizer, 0, wxEXPAND|wxALL, 12);
 	main_sizer->Add(buttons_sizer, 0, wxEXPAND | (wxALL & ~wxTOP), 12);
 
-	SetSizerAndFit(main_sizer);
-	CenterOnParent();
+	d.SetSizerAndFit(main_sizer);
+	d.CenterOnParent();
 
 	// set up validators to move data in and out
 	tv_standard_box->SetValidator(wxGenericValidator((int*)&s.tv_standard));
@@ -197,6 +199,8 @@ EbuExportConfigurationDialog::EbuExportConfigurationDialog(wxWindow *owner, EbuE
 	inclusive_end_times_check->SetValidator(wxGenericValidator(&s.inclusive_end_times));
 	timecode_offset_entry->SetValidator(TimecodeValidator(&s.timecode_offset));
 	display_standard_ctrl->SetValidator(wxGenericValidator((int*)&s.display_standard));
+
+	return d.ShowModal();
 }
 
 agi::vfr::Framerate EbuExportSettings::GetFramerate() const {

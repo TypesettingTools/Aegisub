@@ -37,7 +37,9 @@
 #include <wx/valgen.h>
 
 namespace {
-struct DialogDummyVideo final : wxDialog {
+struct DialogDummyVideo {
+	wxDialog d;
+
 	double fps       = OPT_GET("Video/Dummy/FPS")->GetDouble();
 	int width        = OPT_GET("Video/Dummy/Last/Width")->GetInt();
 	int height       = OPT_GET("Video/Dummy/Last/Height")->GetInt();
@@ -98,45 +100,45 @@ wxComboBox *resolution_shortcuts(wxWindow *parent, int width, int height) {
 }
 
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
-: wxDialog(parent, -1, _("Dummy video options"))
+: d(parent, -1, _("Dummy video options"))
 {
-	SetIcon(GETICON(use_dummy_video_menu_16));
+	d.SetIcon(GETICON(use_dummy_video_menu_16));
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	res_sizer->Add(spin_ctrl(this, 1, 10000, &width), wxSizerFlags(1).Expand());
-	res_sizer->Add(new wxStaticText(this, -1, " x "), wxSizerFlags().Center());
-	res_sizer->Add(spin_ctrl(this, 1, 10000, &height), wxSizerFlags(1).Expand());
+	res_sizer->Add(spin_ctrl(&d, 1, 10000, &width), wxSizerFlags(1).Expand());
+	res_sizer->Add(new wxStaticText(&d, -1, " x "), wxSizerFlags().Center());
+	res_sizer->Add(spin_ctrl(&d, 1, 10000, &height), wxSizerFlags(1).Expand());
 
 	auto color_sizer = new wxBoxSizer(wxHORIZONTAL);
-	auto color_btn = new ColourButton(this, wxSize(30, 17), false, color);
+	auto color_btn = new ColourButton(&d, wxSize(30, 17), false, color);
 	color_sizer->Add(color_btn, wxSizerFlags().DoubleBorder(wxRIGHT));
-	color_sizer->Add(new wxCheckBox(this, -1, _("Checkerboard &pattern"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&pattern)), wxSizerFlags(1).Center());
+	color_sizer->Add(new wxCheckBox(&d, -1, _("Checkerboard &pattern"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&pattern)), wxSizerFlags(1).Center());
 
 	sizer = new wxFlexGridSizer(2, 5, 5);
-	AddCtrl(_("Video resolution:"), resolution_shortcuts(this, width, height));
+	AddCtrl(_("Video resolution:"), resolution_shortcuts(&d, width, height));
 	AddCtrl("", res_sizer);
 	AddCtrl(_("Color:"), color_sizer);
-	AddCtrl(_("Frame rate (fps):"), spin_ctrl(this, .1, 1000.0, &fps));
-	AddCtrl(_("Duration (frames):"), spin_ctrl(this, 2, 36000000, &length)); // Ten hours of 1k FPS
-	AddCtrl("", length_display = new wxStaticText(this, -1, ""));
+	AddCtrl(_("Frame rate (fps):"), spin_ctrl(&d, .1, 1000.0, &fps));
+	AddCtrl(_("Duration (frames):"), spin_ctrl(&d, 2, 36000000, &length)); // Ten hours of 1k FPS
+	AddCtrl("", length_display = new wxStaticText(&d, -1, ""));
 
-	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	auto btn_sizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	btn_sizer->GetHelpButton()->Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Dummy Video"));
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(sizer, wxSizerFlags(1).Border().Expand());
-	main_sizer->Add(new wxStaticLine(this, wxHORIZONTAL), wxSizerFlags().HorzBorder().Expand());
+	main_sizer->Add(new wxStaticLine(&d, wxHORIZONTAL), wxSizerFlags().HorzBorder().Expand());
 	main_sizer->Add(btn_sizer, wxSizerFlags().Expand().Border());
 
 	UpdateLengthDisplay();
 
-	SetSizerAndFit(main_sizer);
-	CenterOnParent();
+	d.SetSizerAndFit(main_sizer);
+	d.CenterOnParent();
 
-	Bind(wxEVT_COMBOBOX, &DialogDummyVideo::OnResolutionShortcut, this);
+	d.Bind(wxEVT_COMBOBOX, &DialogDummyVideo::OnResolutionShortcut, this);
 	color_btn->Bind(EVT_COLOR, [=](wxThreadEvent& e) { color = color_btn->GetColor(); });
-	Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) {
-		TransferDataFromWindow();
+	d.Bind(wxEVT_SPINCTRL, [&](wxCommandEvent&) {
+		d.TransferDataFromWindow();
 		UpdateLengthDisplay();
 	});
 }
@@ -146,16 +148,16 @@ void DialogDummyVideo::AddCtrl(wxString const& label, T *ctrl) {
 	if (!label)
 		sizer->AddStretchSpacer();
 	else
-		sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Left());
+		sizer->Add(new wxStaticText(&d, -1, label), wxSizerFlags().Center().Left());
 	sizer->Add(ctrl, wxSizerFlags().Expand().Center().Left());
 }
 
 void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &e) {
-	TransferDataFromWindow();
+	d.TransferDataFromWindow();
 	int rs = e.GetSelection();
 	width = resolutions[rs].width;
 	height = resolutions[rs].height;
-	TransferDataToWindow();
+	d.TransferDataToWindow();
 }
 
 void DialogDummyVideo::UpdateLengthDisplay() {
@@ -165,7 +167,7 @@ void DialogDummyVideo::UpdateLengthDisplay() {
 
 std::string CreateDummyVideo(wxWindow *parent) {
 	DialogDummyVideo dlg(parent);
-	if (dlg.ShowModal() != wxID_OK)
+	if (dlg.d.ShowModal() != wxID_OK)
 		return "";
 
 	OPT_SET("Video/Dummy/FPS")->SetDouble(dlg.fps);

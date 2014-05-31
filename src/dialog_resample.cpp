@@ -39,7 +39,8 @@ namespace {
 /// @brief Configuration dialog for resolution resampling
 ///
 /// Populate a ResampleSettings structure with data from the user
-class DialogResample final : public wxDialog {
+struct DialogResample {
+	wxDialog d;
 	agi::Context *c; ///< Project context
 
 	int script_w;
@@ -86,10 +87,10 @@ enum {
 };
 
 DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
-: wxDialog(c->parent, -1, _("Resample Resolution"))
+: d(c->parent, -1, _("Resample Resolution"))
 , c(c)
 {
-	SetIcon(GETICON(resample_toolbutton_16));
+	d.SetIcon(GETICON(resample_toolbutton_16));
 
 	memset(&settings, 0, sizeof(settings));
 	c->ass->GetResolution(script_w, script_h);
@@ -111,23 +112,23 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	// Create all controls and set validators
 	for (size_t i = 0; i < 4; ++i) {
-		margin_ctrl[i] = new wxSpinCtrl(this, -1, "0", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, -9999, 9999, 0);
+		margin_ctrl[i] = new wxSpinCtrl(&d, -1, "0", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, -9999, 9999, 0);
 		margin_ctrl[i]->SetValidator(wxGenericValidator(&settings.margin[i]));
 	}
 
-	symmetrical = new wxCheckBox(this, -1, _("&Symmetrical"));
+	symmetrical = new wxCheckBox(&d, -1, _("&Symmetrical"));
 	symmetrical->SetValue(true);
 
 	margin_ctrl[RIGHT]->Enable(false);
 	margin_ctrl[BOTTOM]->Enable(false);
 
-	source_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	source_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	source_matrix = new wxComboBox(this, -1, "", wxDefaultPosition,
+	source_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition,
 		wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
-	dest_x = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	dest_y = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	dest_matrix = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize,
+	dest_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize,
 		to_wx(MatrixNames()), wxCB_READONLY);
 
 	source_x->SetValidator(wxGenericValidator(&settings.source_x));
@@ -137,13 +138,13 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	dest_y->SetValidator(wxGenericValidator(&settings.dest_y));
 	dest_matrix->SetValidator(MakeEnumBinder(&settings.dest_matrix));
 
-	from_video = new wxButton(this, -1, _("From &video"));
+	from_video = new wxButton(&d, -1, _("From &video"));
 	from_video->Enable(false);
-	from_script = new wxButton(this, -1, _("From s&cript"));
+	from_script = new wxButton(&d, -1, _("From s&cript"));
 	from_script->Enable(false);
 
 	wxString ar_modes[] = {_("Stretch"), _("Add borders"), _("Remove borders"), _("Manual")};
-	ar_mode = new wxRadioBox(this, -1, _("Aspect Ratio Handling"), wxDefaultPosition,
+	ar_mode = new wxRadioBox(&d, -1, _("Aspect Ratio Handling"), wxDefaultPosition,
 		wxDefaultSize, boost::size(ar_modes), ar_modes, 1, 4, MakeEnumBinder(&settings.ar_mode));
 
 	// Position the controls
@@ -158,34 +159,34 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_sizer->Add(margin_ctrl[BOTTOM], wxSizerFlags(1).Expand());
 	margin_sizer->AddSpacer(1);
 
-	auto margin_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Margin offset"));
+	auto margin_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Margin offset"));
 	margin_box->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 
 	auto source_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	source_res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
+	source_res_sizer->Add(new wxStaticText(&d, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
 	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(from_script, wxSizerFlags(1));
 
 	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	source_matrix_sizer->Add(new wxStaticText(this, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	source_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	source_matrix_sizer->Add(source_matrix, wxSizerFlags(1).Center().Right());
 
-	auto source_res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Source Resolution"));
+	auto source_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Source Resolution"));
 	source_res_box->Add(source_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 	source_res_box->Add(source_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto dest_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	dest_res_sizer->Add(new wxStaticText(this, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
+	dest_res_sizer->Add(new wxStaticText(&d, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
 	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	dest_res_sizer->Add(from_video, wxSizerFlags(1));
 
 	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	dest_matrix_sizer->Add(new wxStaticText(this, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	dest_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	dest_matrix_sizer->Add(dest_matrix, wxSizerFlags(1).Center().Right());
 
-	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination Resolution"));
+	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Destination Resolution"));
 	dest_res_box->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 	dest_res_box->Add(dest_matrix_sizer, wxSizerFlags(1).Expand());
 
@@ -194,18 +195,18 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	main_sizer->Add(dest_res_box, wxSizerFlags().Expand().Border());
 	main_sizer->Add(ar_mode, wxSizerFlags().Expand().Border());
 	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
-	main_sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
-	SetSizerAndFit(main_sizer);
-	CenterOnParent();
+	main_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	d.SetSizerAndFit(main_sizer);
+	d.CenterOnParent();
 
-	TransferDataToWindow();
+	d.TransferDataToWindow();
 	UpdateButtons();
 
 	// Bind events
 	using std::bind;
-	Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
-	Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) { UpdateButtons(); });
-	Bind(wxEVT_RADIOBOX, [=](wxCommandEvent&) { UpdateButtons(); });
+	d.Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
+	d.Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) { UpdateButtons(); });
+	d.Bind(wxEVT_RADIOBOX, [=](wxCommandEvent&) { UpdateButtons(); });
 	from_video->Bind(wxEVT_BUTTON, &DialogResample::SetDestFromVideo, this);
 	from_script->Bind(wxEVT_BUTTON, &DialogResample::SetSourceFromScript, this);
 	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);
@@ -263,5 +264,5 @@ void DialogResample::OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst) {
 }
 
 bool PromptForResampleSettings(agi::Context *c, ResampleSettings &settings) {
-	return DialogResample(c, settings).ShowModal() == wxID_OK;
+	return DialogResample(c, settings).d.ShowModal() == wxID_OK;
 }

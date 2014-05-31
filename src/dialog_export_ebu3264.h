@@ -22,7 +22,6 @@
 #include <libaegisub/vfr.h>
 
 #include <memory>
-#include <wx/dialog.h>
 
 namespace agi { namespace charset { class IconvWrapper; } }
 
@@ -111,11 +110,7 @@ public:
 	void Save() const;
 };
 
-/// Dialog box for getting an export configuration for EBU Tech 3264-1991
-class EbuExportConfigurationDialog final : public wxDialog {
-public:
-	/// Constructor
-	/// @param owner Parent window of the dialog
-	/// @param s Struct with initial values and to fill with the chosen settings
-	EbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s);
-};
+/// Show a dialog box for getting an export configuration for EBU Tech 3264-1991
+/// @param owner Parent window of the dialog
+/// @param s Struct with initial values and to fill with the chosen settings
+int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s);

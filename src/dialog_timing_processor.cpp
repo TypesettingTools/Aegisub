@@ -66,7 +66,8 @@ using namespace boost::adaptors;
 namespace {
 /// @class DialogTimingProcessor
 /// @brief Automatic postprocessor for correcting common timing issues
-class DialogTimingProcessor final : public wxDialog {
+struct DialogTimingProcessor {
+	wxDialog d;
 	agi::Context *c; ///< Project context
 
 	int leadIn;      ///< Lead-in to add in milliseconds
@@ -101,7 +102,6 @@ class DialogTimingProcessor final : public wxDialog {
 	/// Get a list of dialogue lines in the file sorted by start time
 	std::vector<AssDialogue*> SortDialogues();
 
-public:
 	DialogTimingProcessor(agi::Context *c);
 };
 
@@ -136,12 +136,12 @@ wxCheckBox *make_check(wxStaticBoxSizer *sizer, wxString const& desc, const char
 }
 
 DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
-: wxDialog(c->parent, -1, _("Timing Post-Processor"))
+: d(c->parent, -1, _("Timing Post-Processor"))
 , c(c)
 {
 	using std::bind;
 
-	SetIcon(GETICON(timing_processor_toolbutton_16));
+	d.SetIcon(GETICON(timing_processor_toolbutton_16));
 
 	// Read options
 	leadIn = OPT_GET("Audio/Lead/IN")->GetInt();
@@ -154,24 +154,24 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	adjOverlap = OPT_GET("Tool/Timing Post Processor/Threshold/Adjacent Overlap")->GetInt();
 
 	// Styles box
-	auto LeftSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Apply to styles"));
-	StyleList = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->ass->GetStyles()));
+	auto LeftSizer = new wxStaticBoxSizer(wxVERTICAL,&d,_("Apply to styles"));
+	StyleList = new wxCheckListBox(&d, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->ass->GetStyles()));
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 
-	auto all = new wxButton(this,-1,_("&All"));
+	auto all = new wxButton(&d,-1,_("&All"));
 	all->SetToolTip(_("Select all styles"));
 
-	auto none = new wxButton(this,-1,_("&None"));
+	auto none = new wxButton(&d,-1,_("&None"));
 	none->SetToolTip(_("Deselect all styles"));
 
 	// Options box
-	auto optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Options"));
-	onlySelection = new wxCheckBox(this,-1,_("Affect &selection only"));
+	auto optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Options"));
+	onlySelection = new wxCheckBox(&d,-1,_("Affect &selection only"));
 	onlySelection->SetValue(OPT_GET("Tool/Timing Post Processor/Only Selection")->GetBool());
 	optionsSizer->Add(onlySelection,1,wxALL,0);
 
 	// Lead-in/out box
-	auto LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Lead-in/Lead-out"));
+	auto LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL, &d, _("Lead-in/Lead-out"));
 
 	hasLeadIn = make_check(LeadSizer, _("Add lead &in:"),
 		"Tool/Timing Post Processor/Enable/Lead/IN",
@@ -186,24 +186,24 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	LeadSizer->AddStretchSpacer(1);
 
 	// Adjacent subs sizer
-	auto AdjacentSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Make adjacent subtitles continuous"));
+	auto AdjacentSizer = new wxStaticBoxSizer(wxHORIZONTAL, &d, _("Make adjacent subtitles continuous"));
 	adjsEnable = make_check(AdjacentSizer, _("&Enable"),
 		"Tool/Timing Post Processor/Enable/Adjacent",
 		_("Enable snapping of subtitles together if they are within a certain distance of each other"));
 
 	auto adjBoxes = new wxBoxSizer(wxHORIZONTAL);
-	make_ctrl(this, adjBoxes, _("Max gap:"), &adjGap, adjsEnable,
+	make_ctrl(&d, adjBoxes, _("Max gap:"), &adjGap, adjsEnable,
 		_("Maximum difference between start and end time for two subtitles to be made continuous, in milliseconds"));
-	make_ctrl(this, adjBoxes, _("Max overlap:"), &adjOverlap, adjsEnable,
+	make_ctrl(&d, adjBoxes, _("Max overlap:"), &adjOverlap, adjsEnable,
 		_("Maximum overlap between the end and start time for two subtitles to be made continuous, in milliseconds"));
 
-	adjacentBias = new wxSlider(this, -1, mid<int>(0, OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble() * 100, 100), 0, 100, wxDefaultPosition, wxSize(-1,20));
+	adjacentBias = new wxSlider(&d, -1, mid<int>(0, OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble() * 100, 100), 0, 100, wxDefaultPosition, wxSize(-1,20));
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend or shrink start time of the second line; if totally to right, it will extend or shrink the end time of the first line."));
 
 	auto adjSliderSizer = new wxBoxSizer(wxHORIZONTAL);
-	adjSliderSizer->Add(new wxStaticText(this, -1, _("Bias: Start <- ")), wxSizerFlags().Center());
+	adjSliderSizer->Add(new wxStaticText(&d, -1, _("Bias: Start <- ")), wxSizerFlags().Center());
 	adjSliderSizer->Add(adjacentBias, wxSizerFlags(1).Center());
-	adjSliderSizer->Add(new wxStaticText(this, -1, _(" -> End")), wxSizerFlags().Center());
+	adjSliderSizer->Add(new wxStaticText(&d, -1, _(" -> End")), wxSizerFlags().Center());
 
 	auto adjRightSizer = new wxBoxSizer(wxVERTICAL);
 	adjRightSizer->Add(adjBoxes, wxSizerFlags().Expand());
@@ -211,10 +211,10 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	AdjacentSizer->Add(adjRightSizer);
 
 	// Keyframes sizer
-	auto KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Keyframe snapping"));
+	auto KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL, &d, _("Keyframe snapping"));
 	auto KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
 
-	keysEnable = new wxCheckBox(this, -1, _("E&nable"));
+	keysEnable = new wxCheckBox(&d, -1, _("E&nable"));
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold"));
 	keysEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Keyframe")->GetBool());
 	KeyframesFlexSizer->Add(keysEnable,0,wxRIGHT|wxEXPAND,10);
@@ -226,25 +226,25 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 		keysEnable->Enable(false);
 	}
 
-	make_ctrl(this, KeyframesFlexSizer, _("Starts before thres.:"), &beforeStart, keysEnable,
+	make_ctrl(&d, KeyframesFlexSizer, _("Starts before thres.:"), &beforeStart, keysEnable,
 		_("Threshold for 'before start' distance, that is, how many milliseconds a subtitle must start before a keyframe to snap to it"));
 
-	make_ctrl(this, KeyframesFlexSizer, _("Starts after thres.:"), &afterStart, keysEnable,
+	make_ctrl(&d, KeyframesFlexSizer, _("Starts after thres.:"), &afterStart, keysEnable,
 		_("Threshold for 'after start' distance, that is, how many milliseconds a subtitle must start after a keyframe to snap to it"));
 
 	KeyframesFlexSizer->AddStretchSpacer(1);
 
-	make_ctrl(this, KeyframesFlexSizer, _("Ends before thres.:"), &beforeEnd, keysEnable,
+	make_ctrl(&d, KeyframesFlexSizer, _("Ends before thres.:"), &beforeEnd, keysEnable,
 		_("Threshold for 'before end' distance, that is, how many milliseconds a subtitle must end before a keyframe to snap to it"));
 
-	make_ctrl(this, KeyframesFlexSizer, _("Ends after thres.:"), &afterEnd, keysEnable,
+	make_ctrl(&d, KeyframesFlexSizer, _("Ends after thres.:"), &afterEnd, keysEnable,
 		_("Threshold for 'after end' distance, that is, how many milliseconds a subtitle must end after a keyframe to snap to it"));
 
 	KeyframesSizer->Add(KeyframesFlexSizer,0,wxEXPAND);
 	KeyframesSizer->AddStretchSpacer(1);
 
 	// Button sizer
-	auto ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	ApplyButton = ButtonSizer->GetAffirmativeButton();
 	ButtonSizer->GetHelpButton()->Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Timing Processor"));
 
@@ -274,12 +274,12 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Main Sizer
 	auto MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxALL|wxEXPAND,5);
-	SetSizerAndFit(MainSizer);
-	CenterOnParent();
+	d.SetSizerAndFit(MainSizer);
+	d.CenterOnParent();
 
-	Bind(wxEVT_CHECKBOX, bind(&DialogTimingProcessor::UpdateControls, this));
-	Bind(wxEVT_CHECKLISTBOX, bind(&DialogTimingProcessor::UpdateControls, this));
-	Bind(wxEVT_BUTTON, &DialogTimingProcessor::OnApply, this, wxID_OK);
+	d.Bind(wxEVT_CHECKBOX, bind(&DialogTimingProcessor::UpdateControls, this));
+	d.Bind(wxEVT_CHECKLISTBOX, bind(&DialogTimingProcessor::UpdateControls, this));
+	d.Bind(wxEVT_BUTTON, &DialogTimingProcessor::OnApply, this, wxID_OK);
 	all->Bind(wxEVT_BUTTON, bind(&DialogTimingProcessor::CheckAll, this, true));
 	none->Bind(wxEVT_BUTTON, bind(&DialogTimingProcessor::CheckAll, this, false));
 
@@ -303,7 +303,7 @@ void DialogTimingProcessor::UpdateControls() {
 }
 
 void DialogTimingProcessor::OnApply(wxCommandEvent &) {
-	TransferDataFromWindow();
+	d.TransferDataFromWindow();
 	// Save settings
 	OPT_SET("Audio/Lead/IN")->SetInt(leadIn);
 	OPT_SET("Audio/Lead/OUT")->SetInt(leadOut);
@@ -321,7 +321,7 @@ void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	OPT_SET("Tool/Timing Post Processor/Only Selection")->SetBool(onlySelection->IsChecked());
 
 	Process();
-	EndModal(0);
+	d.EndModal(0);
 }
 
 std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
@@ -447,5 +447,5 @@ void DialogTimingProcessor::Process() {
 }
 
 void ShowTimingProcessorDialog(agi::Context *c) {
-	DialogTimingProcessor(c).ShowModal();
+	DialogTimingProcessor(c).d.ShowModal();
 }

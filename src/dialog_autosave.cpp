@@ -45,7 +45,8 @@ struct AutosaveFile {
 	std::vector<Version> versions;
 };
 
-class DialogAutosave final : public wxDialog {
+class DialogAutosave {
+	wxDialog d;
 	std::vector<AutosaveFile> files;
 
 	wxListBox *file_list;
@@ -57,34 +58,36 @@ class DialogAutosave final : public wxDialog {
 public:
 	DialogAutosave(wxWindow *parent);
 	std::string ChosenFile() const;
+
+	int ShowModal() { return d.ShowModal(); }
 };
 
 DialogAutosave::DialogAutosave(wxWindow *parent)
-: wxDialog(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+: d(parent, -1, _("Open autosave file"), wxDefaultPosition, wxSize(800, 350), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
-	SetIcon(GETICON(open_toolbutton_16));
+	d.SetIcon(GETICON(open_toolbutton_16));
 
-	wxSizer *files_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Files"));
-	file_list = new wxListBox(this, -1);
+	wxSizer *files_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Files"));
+	file_list = new wxListBox(&d, -1);
 	file_list->Bind(wxEVT_LISTBOX, &DialogAutosave::OnSelectFile, this);
 	files_box->Add(file_list, wxSizerFlags(1).Expand().Border());
 
-	wxSizer *versions_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Versions"));
-	version_list = new wxListBox(this, -1);
-	version_list->Bind(wxEVT_LISTBOX_DCLICK, [=](wxCommandEvent&) { EndModal(wxID_OK); });
+	wxSizer *versions_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Versions"));
+	version_list = new wxListBox(&d, -1);
+	version_list->Bind(wxEVT_LISTBOX_DCLICK, [=](wxCommandEvent&) { d.EndModal(wxID_OK); });
 	versions_box->Add(version_list, wxSizerFlags(1).Expand().Border());
 
 	wxSizer *boxes_sizer = new wxBoxSizer(wxHORIZONTAL);
 	boxes_sizer->Add(files_box, wxSizerFlags(1).Expand().Border());
 	boxes_sizer->Add(versions_box, wxSizerFlags(1).Expand().Border());
 
-	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL);
+	auto *btn_sizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL);
 	btn_sizer->GetAffirmativeButton()->SetLabelText(_("Open"));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(boxes_sizer, wxSizerFlags(1).Expand().Border());
 	main_sizer->Add(btn_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
-	SetSizer(main_sizer);
+	d.SetSizer(main_sizer);
 
 	std::map<wxString, AutosaveFile> files_map;
 	Populate(files_map, OPT_GET("Path/Auto/Save")->GetString(), ".AUTOSAVE.ass", "%s");

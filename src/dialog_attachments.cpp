@@ -43,7 +43,8 @@
 #include <wx/sizer.h>
 
 namespace {
-class DialogAttachments final : public wxDialog {
+struct DialogAttachments {
+	wxDialog d;
 	AssFile *ass;
 
 	wxListView *listView;
@@ -64,18 +65,18 @@ public:
 };
 
 DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
-: wxDialog(parent, -1, _("Attachment List"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
+: d(parent, -1, _("Attachment List"))
 , ass(ass)
 {
-	SetIcon(GETICON(attach_button_16));
+	d.SetIcon(GETICON(attach_button_16));
 
-	listView = new wxListView(this, -1, wxDefaultPosition, wxSize(500, 200));
+	listView = new wxListView(&d, -1, wxDefaultPosition, wxSize(500, 200));
 	UpdateList();
 
-	auto attachFont = new wxButton(this, -1, _("Attach &Font"));
-	auto attachGraphics = new wxButton(this, -1, _("Attach &Graphics"));
-	extractButton = new wxButton(this, -1, _("E&xtract"));
-	deleteButton = new wxButton(this, -1, _("&Delete"));
+	auto attachFont = new wxButton(&d, -1, _("Attach &Font"));
+	auto attachGraphics = new wxButton(&d, -1, _("Attach &Graphics"));
+	extractButton = new wxButton(&d, -1, _("E&xtract"));
+	deleteButton = new wxButton(&d, -1, _("&Delete"));
 	extractButton->Enable(false);
 	deleteButton->Enable(false);
 
@@ -84,14 +85,14 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 	buttonSizer->Add(attachGraphics, 1);
 	buttonSizer->Add(extractButton, 1);
 	buttonSizer->Add(deleteButton, 1);
-	buttonSizer->Add(new HelpButton(this, "Attachment Manager"), 1, wxLEFT, 5);
-	buttonSizer->Add(new wxButton(this, wxID_CANCEL, _("&Close")), 1);
+	buttonSizer->Add(new HelpButton(&d, "Attachment Manager"), 1, wxLEFT, 5);
+	buttonSizer->Add(new wxButton(&d, wxID_CANCEL, _("&Close")), 1);
 
 	auto mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(listView, 1, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 5);
 	mainSizer->Add(buttonSizer, 0, wxALL | wxEXPAND, 5);
-	SetSizerAndFit(mainSizer);
-	CenterOnParent();
+	d.SetSizerAndFit(mainSizer);
+	d.CenterOnParent();
 
 	attachFont->Bind(wxEVT_BUTTON, &DialogAttachments::OnAttachFont, this);
 	attachGraphics->Bind(wxEVT_BUTTON, &DialogAttachments::OnAttachGraphics, this);
@@ -133,7 +134,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& commit_ms
 }
 
 void DialogAttachments::OnAttachFont(wxCommandEvent &) {
-	wxFileDialog diag(this,
+	wxFileDialog diag(&d,
 		_("Choose file to be attached"),
 		to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf",
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
@@ -142,7 +143,7 @@ void DialogAttachments::OnAttachFont(wxCommandEvent &) {
 }
 
 void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
-	wxFileDialog diag(this,
+	wxFileDialog diag(&d,
 		_("Choose file to be attached"),
 		"", "",
 		"Graphic Files (*.bmp, *.gif, *.jpg, *.ico, *.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf",
@@ -167,7 +168,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 			"Path/Fonts Collector Destination",
 			ass->Attachments[i].GetFileName(),
 			".ttf", "Font Files (*.ttf)|*.ttf",
-			this);
+			&d);
 		fullPath = true;
 	}
 	if (path.empty()) return;
@@ -200,5 +201,5 @@ void DialogAttachments::OnListClick(wxListEvent &) {
 }
 
 void ShowAttachmentsDialog(wxWindow *parent, AssFile *file) {
-	DialogAttachments(parent, file).ShowModal();
+	DialogAttachments(parent, file).d.ShowModal();
 }

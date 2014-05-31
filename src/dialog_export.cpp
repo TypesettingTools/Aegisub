@@ -51,7 +51,8 @@
 #include <wx/textctrl.h>
 
 namespace {
-class DialogExport final : public wxDialog {
+class DialogExport {
+	wxDialog d;
 	agi::Context *c;
 
 	/// The export transform engine
@@ -79,6 +80,7 @@ class DialogExport final : public wxDialog {
 public:
 	DialogExport(agi::Context *c);
 	~DialogExport();
+	void ShowModal() { d.ShowModal(); }
 };
 
 // Swap the items at idx and idx + 1
@@ -97,15 +99,15 @@ void swap(wxCheckListBox *list, int idx, int sel_dir) {
 }
 
 DialogExport::DialogExport(agi::Context *c)
-: wxDialog(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
+: d(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
 , c(c)
 , exporter(c)
 {
-	SetIcon(GETICON(export_menu_16));
-	SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+	d.SetIcon(GETICON(export_menu_16));
+	d.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 
 	std::vector<std::string> filters = exporter.GetAllFilterNames();
-	filter_list = new wxCheckListBox(this, -1, wxDefaultPosition, wxSize(200, 100), to_wx(filters));
+	filter_list = new wxCheckListBox(&d, -1, wxDefaultPosition, wxSize(200, 100), to_wx(filters));
 	filter_list->Bind(wxEVT_CHECKLISTBOX, [=](wxCommandEvent&) { RefreshOptions(); });
 	filter_list->Bind(wxEVT_LISTBOX, &DialogExport::OnChange, this);
 
@@ -118,10 +120,10 @@ DialogExport::DialogExport(agi::Context *c)
 			filter_list->Check(distance(begin(filters), it));
 	}
 
-	wxButton *btn_up = new wxButton(this, -1, _("Move &Up"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_down = new wxButton(this, -1, _("Move &Down"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_all = new wxButton(this, -1, _("Select &All"), wxDefaultPosition, wxSize(80, -1));
-	wxButton *btn_none = new wxButton(this, -1, _("Select &None"), wxDefaultPosition, wxSize(80, -1));
+	wxButton *btn_up = new wxButton(&d, -1, _("Move &Up"), wxDefaultPosition, wxSize(90, -1));
+	wxButton *btn_down = new wxButton(&d, -1, _("Move &Down"), wxDefaultPosition, wxSize(90, -1));
+	wxButton *btn_all = new wxButton(&d, -1, _("Select &All"), wxDefaultPosition, wxSize(80, -1));
+	wxButton *btn_none = new wxButton(&d, -1, _("Select &None"), wxDefaultPosition, wxSize(80, -1));
 
 	btn_up->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
 	btn_down->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
@@ -134,40 +136,40 @@ DialogExport::DialogExport(agi::Context *c)
 	top_buttons->Add(btn_all, wxSizerFlags(1).Expand());
 	top_buttons->Add(btn_none, wxSizerFlags(1).Expand());
 
-	filter_description = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(200, 60), wxTE_MULTILINE | wxTE_READONLY);
+	filter_description = new wxTextCtrl(&d, -1, "", wxDefaultPosition, wxSize(200, 60), wxTE_MULTILINE | wxTE_READONLY);
 
 	// Charset dropdown list
-	wxStaticText *charset_list_label = new wxStaticText(this, -1, _("Text encoding:"));
-	charset_list = new wxChoice(this, -1, wxDefaultPosition, wxDefaultSize, agi::charset::GetEncodingsList<wxArrayString>());
+	wxStaticText *charset_list_label = new wxStaticText(&d, -1, _("Text encoding:"));
+	charset_list = new wxChoice(&d, -1, wxDefaultPosition, wxDefaultSize, agi::charset::GetEncodingsList<wxArrayString>());
 	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, wxSizerFlags().Center().Border(wxRIGHT));
 	charset_list_sizer->Add(charset_list, wxSizerFlags(1).Expand());
 	if (!charset_list->SetStringSelection(to_wx(c->ass->Properties.export_encoding)))
 		charset_list->SetStringSelection("Unicode (UTF-8)");
 
-	wxSizer *top_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Filters"));
+	wxSizer *top_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Filters"));
 	top_sizer->Add(filter_list, wxSizerFlags(1).Expand());
 	top_sizer->Add(top_buttons, wxSizerFlags(0).Expand());
 	top_sizer->Add(filter_description, wxSizerFlags(0).Expand().Border(wxTOP));
 	top_sizer->Add(charset_list_sizer, wxSizerFlags(0).Expand().Border(wxTOP));
 
-	wxStdDialogButtonSizer *btn_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	auto btn_sizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	btn_sizer->GetAffirmativeButton()->SetLabelText(_("Export..."));
-	Bind(wxEVT_BUTTON, &DialogExport::OnProcess, this, wxID_OK);
-	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
+	d.Bind(wxEVT_BUTTON, &DialogExport::OnProcess, this, wxID_OK);
+	d.Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
 
 	wxSizer *horz_sizer = new wxBoxSizer(wxHORIZONTAL);
 	opt_sizer = new wxBoxSizer(wxVERTICAL);
-	exporter.DrawSettings(this, opt_sizer);
+	exporter.DrawSettings(&d, opt_sizer);
 	horz_sizer->Add(top_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxRIGHT));
 	horz_sizer->Add(opt_sizer, wxSizerFlags(1).Expand().Border(wxALL & ~wxLEFT));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(horz_sizer, wxSizerFlags(1).Expand());
 	main_sizer->Add(btn_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
-	SetSizerAndFit(main_sizer);
+	d.SetSizerAndFit(main_sizer);
 	RefreshOptions();
-	CenterOnParent();
+	d.CenterOnParent();
 }
 
 DialogExport::~DialogExport() {
@@ -182,9 +184,9 @@ DialogExport::~DialogExport() {
 }
 
 void DialogExport::OnProcess(wxCommandEvent &) {
-	if (!TransferDataFromWindow()) return;
+	if (!d.TransferDataFromWindow()) return;
 
-	auto filename = SaveFileSelector(_("Export subtitles file"), "", "", "", to_wx(SubtitleFormat::GetWildcards(1)), this);
+	auto filename = SaveFileSelector(_("Export subtitles file"), "", "", "", to_wx(SubtitleFormat::GetWildcards(1)), &d);
 	if (filename.empty()) return;
 
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
@@ -195,27 +197,27 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 	try {
 		wxBusyCursor busy;
 		c->ass->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
-		exporter.Export(filename, from_wx(charset_list->GetStringSelection()), this);
+		exporter.Export(filename, from_wx(charset_list->GetStringSelection()), &d);
 	}
 	catch (agi::UserCancelException const&) {
 	}
 	catch (const char *error) {
-		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 	catch (wxString const& error) {
-		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 	catch (std::exception const& err) {
-		wxMessageBox(to_wx(err.what()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.what()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 
-	EndModal(0);
+	d.EndModal(0);
 }
 
 void DialogExport::OnChange(wxCommandEvent &) {
@@ -238,8 +240,8 @@ void DialogExport::RefreshOptions() {
 		if (wxSizer *sizer = exporter.GetSettingsSizer(from_wx(filter_list->GetString(i))))
 			opt_sizer->Show(sizer, filter_list->IsChecked(i), true);
 	}
-	Layout();
-	GetSizer()->Fit(this);
+	d.Layout();
+	d.GetSizer()->Fit(&d);
 }
 }
 

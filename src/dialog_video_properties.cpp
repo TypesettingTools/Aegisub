@@ -39,46 +39,46 @@ enum {
 	FIX_RESAMPLE
 };
 
-class Prompt : public wxDialog {
-public:
-	Prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy)
-	: wxDialog(parent, -1, _("Resolution mismatch"))
-	{
-		auto label_text = fmt_tl("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?", vx, vy, sx, sy);
+int prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
+	wxDialog d(parent, -1, _("Resolution mismatch"));
 
-		auto sizer = new wxBoxSizer(wxVERTICAL);
-		sizer->Add(new wxStaticText(this, -1, label_text), wxSizerFlags().Border());
+	auto label_text = fmt_tl("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d x %d\nScript resolution:\t%d x %d\n\nChange subtitles resolution to match video?", vx, vy, sx, sy);
 
-		wxRadioBox *rb;
-		if (ar_changed) {
-			wxString choices[] = {
-				_("Set to video resolution"),
-				_("Resample script (stretch to new aspect ratio)"),
-				_("Resample script (add borders)"),
-				_("Resample script (remove borders)")
-			};
-			rb = new wxRadioBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 4, choices, 1);
-		}
-		else {
-			wxString choices[] = {
-				_("Set to video resolution"),
-				_("Resample script"),
-			};
-			rb = new wxRadioBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 2, choices, 1);
-		}
-		sizer->Add(rb, wxSizerFlags().Border(wxALL & ~wxTOP).Expand());
-		sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Border().Expand());
+	auto sizer = new wxBoxSizer(wxVERTICAL);
+	sizer->Add(new wxStaticText(&d, -1, label_text), wxSizerFlags().Border());
 
-		unsigned int sel = OPT_GET("Video/Last Script Resolution Mismatch Choice")->GetInt();
-		rb->SetSelection(std::min(sel - 1, rb->GetCount()));
-
-		SetSizerAndFit(sizer);
-		CenterOnParent();
-
-		Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { EndModal(rb->GetSelection() + 1); }, wxID_OK);
-		Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { EndModal(0); }, wxID_CANCEL);
+	wxRadioBox *rb;
+	if (ar_changed) {
+		wxString choices[] = {
+			_("Set to video resolution"),
+			_("Resample script (stretch to new aspect ratio)"),
+			_("Resample script (add borders)"),
+			_("Resample script (remove borders)")
+		};
+		rb = new wxRadioBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, 4, choices, 1);
 	}
-};
+	else {
+		wxString choices[] = {
+			_("Set to video resolution"),
+			_("Resample script"),
+		};
+		rb = new wxRadioBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, 2, choices, 1);
+	}
+	sizer->Add(rb, wxSizerFlags().Border(wxALL & ~wxTOP).Expand());
+	sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Border().Expand());
+
+	unsigned int sel = OPT_GET("Video/Last Script Resolution Mismatch Choice")->GetInt();
+	rb->SetSelection(std::min(sel - 1, rb->GetCount()));
+
+	d.SetSizerAndFit(sizer);
+	d.CenterOnParent();
+
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(rb->GetSelection() + 1); }, wxID_OK);
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(0); }, wxID_CANCEL);
+
+	return d.ShowModal();
+}
+
 bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	bool commit_subs = false;
 
@@ -141,7 +141,7 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 		}
 
 	case MISMATCH_PROMPT:
-		int res = Prompt(parent, ar_changed, sx, sy, vx, vy).ShowModal();
+		int res = prompt(parent, ar_changed, sx, sy, vx, vy);
 		if (res == FIX_IGNORE) return commit_subs;
 		OPT_SET("Video/Last Script Resolution Mismatch Choice")->SetInt(res);
 

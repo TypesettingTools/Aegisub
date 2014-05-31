@@ -20,42 +20,27 @@
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 
-namespace {
-/// @class SelectedChoicesDialog
-/// @brief wxMultiChoiceDialog with Select All and Select None
-class SelectedChoicesDialog final : public wxMultiChoiceDialog {
-	void SelectAll(wxCommandEvent&);
+int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const& message, wxString const& caption, wxArrayString const& choices) {
+	wxMultiChoiceDialog dialog(parent, message, caption, choices);
 
-public:
-	SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices);
-};
+	auto selAll = new wxButton(&dialog, -1, _("Select &All"));
+	selAll->Bind(wxEVT_BUTTON, [&](wxCommandEvent&) {
+		wxArrayInt sel(selections.size());
+		std::iota(sel.begin(), sel.end(), 0);
+		dialog.SetSelections(sel);
+	});
 
-SelectedChoicesDialog::SelectedChoicesDialog(wxWindow *parent, wxString const& message, wxString const& caption, wxArrayString const& choices) {
-	Create(parent, message, caption, choices);
-
-	wxButton *selAll = new wxButton(this, -1, _("Select &All"));
-	wxButton *selNone = new wxButton(this, -1, _("Select &None"));
-	selAll->Bind(wxEVT_BUTTON, &SelectedChoicesDialog::SelectAll, this);
-	selNone->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetSelections(wxArrayInt()); });
+	auto selNone = new wxButton(&dialog, -1, _("Select &None"));
+	selNone->Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { dialog.SetSelections(wxArrayInt()); });
 
 	auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	buttonSizer->Add(selAll, wxSizerFlags(0).Left());
 	buttonSizer->Add(selNone, wxSizerFlags(0).Right());
 
-	wxSizer *sizer = GetSizer();
+	auto sizer = dialog.GetSizer();
 	sizer->Insert(2, buttonSizer, wxSizerFlags(0).Center());
-	sizer->Fit(this);
-}
+	sizer->Fit(&dialog);
 
-void SelectedChoicesDialog::SelectAll(wxCommandEvent&) {
-	wxArrayInt sel(m_listbox->GetCount());
-	std::iota(sel.begin(), sel.end(), 0);
-	SetSelections(sel);
-}
-}
-
-int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const& message, wxString const& caption, wxArrayString const& choices) {
-	SelectedChoicesDialog dialog(parent, message, caption, choices);
 	dialog.SetSelections(selections);
 
 	if (dialog.ShowModal() != wxID_OK) return -1;

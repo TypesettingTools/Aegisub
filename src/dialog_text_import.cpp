@@ -37,55 +37,41 @@
 #include <wx/textctrl.h>
 #include <wx/valgen.h>
 
-namespace {
-/// @class DialogTextImport
-/// @brief Plain text import separator character selection dialog
-///
 /// A simple dialog to let the user select the format of a plain text file
 /// being imported into Aegisub
-class DialogTextImport final : public wxDialog {
-	std::string seperator;
-	std::string comment;
-	bool include_blank;
+bool ShowPlainTextImportDialog() {
+	auto seperator = OPT_GET("Tool/Import/Text/Actor Separator")->GetString();
+	auto comment = OPT_GET("Tool/Import/Text/Comment Starter")->GetString();
+	auto include_blank = OPT_GET("Tool/Import/Text/Include Blank")->GetBool();
 
-public:
-	DialogTextImport();
-};
+	wxDialog d(nullptr, -1, _("Text import options"));
 
-DialogTextImport::DialogTextImport()
-: wxDialog(nullptr , -1, _("Text import options"))
-, seperator(OPT_GET("Tool/Import/Text/Actor Separator")->GetString())
-, comment(OPT_GET("Tool/Import/Text/Comment Starter")->GetString())
-, include_blank(OPT_GET("Tool/Import/Text/Include Blank")->GetBool())
-{
-	auto make_text_ctrl = [=](std::string *var) {
-		return new wxTextCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, 0, StringBinder(var));
+	auto make_text_ctrl = [&](std::string *var) {
+		return new wxTextCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, 0, StringBinder(var));
 	};
 
 	auto fg = new wxFlexGridSizer(2, 5, 5);
-	fg->Add(new wxStaticText(this, -1, _("Actor separator:")), 0, wxALIGN_CENTRE_VERTICAL);
+	fg->Add(new wxStaticText(&d, -1, _("Actor separator:")), 0, wxALIGN_CENTRE_VERTICAL);
 	fg->Add(make_text_ctrl(&seperator), 0, wxEXPAND);
-	fg->Add(new wxStaticText(this, -1, _("Comment starter:")), 0, wxALIGN_CENTRE_VERTICAL);
+	fg->Add(new wxStaticText(&d, -1, _("Comment starter:")), 0, wxALIGN_CENTRE_VERTICAL);
 	fg->Add(make_text_ctrl(&comment), 0, wxEXPAND);
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
-	main_sizer->Add(new wxCheckBox(this, -1, _("Include blank lines"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&include_blank)), 0, wxLEFT|wxRIGHT|wxALIGN_RIGHT, 5);
-	main_sizer->Add(CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
-	SetSizerAndFit(main_sizer);
+	main_sizer->Add(new wxCheckBox(&d, -1, _("Include blank lines"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&include_blank)), 0, wxLEFT|wxRIGHT|wxALIGN_RIGHT, 5);
+	main_sizer->Add(d.CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
+	d.SetSizerAndFit(main_sizer);
 
-	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
-		TransferDataFromWindow();
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) {
+		d.TransferDataFromWindow();
 
 		OPT_SET("Tool/Import/Text/Actor Separator")->SetString(seperator);
 		OPT_SET("Tool/Import/Text/Comment Starter")->SetString(comment);
 		OPT_SET("Tool/Import/Text/Include Blank")->SetBool(include_blank);
 
-		EndModal(wxID_OK);
+		d.EndModal(wxID_OK);
 	}, wxID_OK);
-}
-}
 
-bool ShowPlainTextImportDialog() {
-	return DialogTextImport().ShowModal() == wxID_OK;
+
+	return d.ShowModal() == wxID_OK;
 }

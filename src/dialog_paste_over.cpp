@@ -38,7 +38,8 @@
 #include <wx/stattext.h>
 
 namespace {
-class DialogPasteOver final : public wxDialog {
+struct DialogPasteOver {
+	wxDialog d;
 	wxCheckListBox *ListBox;
 
 	void CheckAll(bool check);
@@ -47,16 +48,15 @@ class DialogPasteOver final : public wxDialog {
 	void OnTimes(wxCommandEvent &);
 	void OnText(wxCommandEvent &);
 
-public:
 	DialogPasteOver(wxWindow *parent);
 };
 
 DialogPasteOver::DialogPasteOver(wxWindow *parent)
-: wxDialog(parent, -1, _("Select Fields to Paste Over"))
+: d(parent, -1, _("Select Fields to Paste Over"))
 {
 	// Label and list sizer
-	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Fields"));
-	ListSizer->Add(new wxStaticText(this, -1, _("Please select the fields that you want to paste over:")), wxSizerFlags());
+	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Fields"));
+	ListSizer->Add(new wxStaticText(&d, -1, _("Please select the fields that you want to paste over:")), wxSizerFlags());
 
 	// List box
 	wxArrayString choices;
@@ -71,7 +71,7 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 	choices.Add(_("Margin Vertical"));
 	choices.Add(_("Effect"));
 	choices.Add(_("Text"));
-	ListBox = new wxCheckListBox(this, -1, wxDefaultPosition, wxDefaultSize, choices);
+	ListBox = new wxCheckListBox(&d, -1, wxDefaultPosition, wxDefaultSize, choices);
 	ListSizer->Add(ListBox, wxSizerFlags(0).Expand().Border(wxTOP));
 
 	std::vector<bool> options = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
@@ -85,27 +85,27 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 	wxButton *btn;
 	wxSizer *TopButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&All")), wxSizerFlags(1));
+	TopButtonSizer->Add(btn = new wxButton(&d, -1, _("&All")), wxSizerFlags(1));
 	btn->Bind(wxEVT_BUTTON, std::bind(&DialogPasteOver::CheckAll, this, true));
-	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&None")), wxSizerFlags(1));
+	TopButtonSizer->Add(btn = new wxButton(&d, -1, _("&None")), wxSizerFlags(1));
 	btn->Bind(wxEVT_BUTTON, std::bind(&DialogPasteOver::CheckAll, this, false));
-	TopButtonSizer->Add(btn = new wxButton(this, -1, _("&Times")), wxSizerFlags(1));
+	TopButtonSizer->Add(btn = new wxButton(&d, -1, _("&Times")), wxSizerFlags(1));
 	btn->Bind(wxEVT_BUTTON, &DialogPasteOver::OnTimes, this);
-	TopButtonSizer->Add(btn = new wxButton(this, -1, _("T&ext")), wxSizerFlags(1));
+	TopButtonSizer->Add(btn = new wxButton(&d, -1, _("T&ext")), wxSizerFlags(1));
 	btn->Bind(wxEVT_BUTTON, &DialogPasteOver::OnText, this);
 
 	// Buttons
-	wxStdDialogButtonSizer *ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
-	Bind(wxEVT_BUTTON, &DialogPasteOver::OnOK, this, wxID_OK);
-	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Paste Over"), wxID_HELP);
+	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	d.Bind(wxEVT_BUTTON, &DialogPasteOver::OnOK, this, wxID_OK);
+	d.Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Paste Over"), wxID_HELP);
 
 	// Main sizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(ListSizer,0,wxEXPAND | wxLEFT | wxRIGHT,5);
 	MainSizer->Add(TopButtonSizer,0,wxLEFT | wxRIGHT | wxEXPAND,5);
 	MainSizer->Add(ButtonSizer,0,wxALL | wxEXPAND,5);
-	SetSizerAndFit(MainSizer);
-	CenterOnParent();
+	d.SetSizerAndFit(MainSizer);
+	d.CenterOnParent();
 }
 
 void DialogPasteOver::OnOK(wxCommandEvent &) {
@@ -114,7 +114,7 @@ void DialogPasteOver::OnOK(wxCommandEvent &) {
 		options.push_back(ListBox->IsChecked(i));
 	OPT_SET("Tool/Paste Lines Over/Fields")->SetListBool(std::move(options));
 
-	EndModal(wxID_OK);
+	d.EndModal(wxID_OK);
 }
 
 void DialogPasteOver::OnText(wxCommandEvent &) {
@@ -135,5 +135,5 @@ void DialogPasteOver::CheckAll(bool check) {
 }
 
 bool ShowPasteOverDialog(wxWindow *parent) {
-	return DialogPasteOver(parent).ShowModal() == wxID_OK;
+	return DialogPasteOver(parent).d.ShowModal() == wxID_OK;
 }
