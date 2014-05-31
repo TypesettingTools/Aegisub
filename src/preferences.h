@@ -17,8 +17,6 @@
 /// @see preferences.cpp
 /// @ingroup configuration_ui
 
-#include <libaegisub/exception.h>
-
 #include <functional>
 #include <map>
 #include <memory>
@@ -29,10 +27,6 @@
 class wxButton;
 class wxTreebook;
 namespace agi { class OptionValue; }
-
-DEFINE_EXCEPTION(PreferencesError, agi::Exception);
-DEFINE_EXCEPTION(PreferenceIncorrectType, PreferencesError);
-DEFINE_EXCEPTION(PreferenceNotSupported, PreferencesError);
 
 class Preferences final : public wxDialog {
 public:
@@ -52,7 +46,6 @@ private:
 
 public:
 	Preferences(wxWindow *parent);
-	~Preferences();
 
 	/// Add an option to be set when the OK or Apply button is clicked
 	/// @param new_value Clone of the option with the new value to copy over
