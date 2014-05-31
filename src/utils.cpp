@@ -105,7 +105,7 @@ void RestartAegisub() {
 	if (bundle_path.empty() || helper_path.empty()) return;
 
 	wxString exec = fmt_wx("\"%s\" /usr/bin/open -n \"%s\"'", helper_path, bundle_path);
-	LOG_I("util/restart/exec") << exec;
+	LOG_I("util/restart/exec") << exec.utf8_str();
 	wxExecute(exec);
 #else
 	wxExecute(wxStandardPaths::Get().GetExecutablePath());

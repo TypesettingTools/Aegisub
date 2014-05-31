@@ -29,7 +29,7 @@
 #define wxUSE_CMDLINE_PARSER 0
 #define wxUSE_THREADS 1
 #define wxUSE_STREAMS 1
-#define wxUSE_STD_IOSTREAM 1
+#define wxUSE_STD_IOSTREAM 0
 #define wxUSE_STD_STRING 1
 #define wxUSE_PRINTF_POS_PARAMS 1
 #define wxUSE_LONGLONG 1
