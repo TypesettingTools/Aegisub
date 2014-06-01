@@ -146,8 +146,8 @@ void SetClipboard(std::string const& new_data) {
 	wxClipboard *cb = wxClipboard::Get();
 	if (cb->Open()) {
 		cb->SetData(new wxTextDataObject(to_wx(new_data)));
-		cb->Close();
 		cb->Flush();
+		cb->Close();
 	}
 }
 
@@ -155,8 +155,8 @@ void SetClipboard(wxBitmap const& new_data) {
 	wxClipboard *cb = wxClipboard::Get();
 	if (cb->Open()) {
 		cb->SetData(new wxBitmapDataObject(new_data));
-		cb->Close();
 		cb->Flush();
+		cb->Close();
 	}
 }
 
