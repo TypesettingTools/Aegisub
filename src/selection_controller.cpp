@@ -20,27 +20,10 @@
 #include "ass_file.h"
 #include "include/aegisub/context.h"
 #include "subs_controller.h"
-#include "utils.h"
 
 #include <algorithm>
 
-SelectionController::SelectionController(agi::Context *c)
-: context(c)
-, open_connection(c->subsController->AddFileOpenListener(&SelectionController::OnSubtitlesOpen, this))
-{
-}
-
-void SelectionController::OnSubtitlesOpen() {
-	selection.clear();
-	active_line = nullptr;
-	if (!context->ass->Events.empty()) {
-		int row = mid<int>(0, context->ass->Properties.active_row, context->ass->Events.size() - 1);
-		active_line = &*std::next(context->ass->Events.begin(), row);
-		selection.insert(active_line);
-	}
-	AnnounceSelectedSetChanged();
-	AnnounceActiveLineChanged(active_line);
-}
+SelectionController::SelectionController(agi::Context *c) : context(c) { }
 
 void SelectionController::SetSelectedSet(Selection new_selection) {
 	selection = std::move(new_selection);

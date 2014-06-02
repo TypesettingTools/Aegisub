@@ -173,7 +173,7 @@ void SubsController::SetSelectionController(SelectionController *selection_contr
 	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
-void SubsController::Load(agi::fs::path const& filename, std::string charset) {
+ProjectProperties SubsController::Load(agi::fs::path const& filename, std::string charset) {
 	AssFile temp;
 
 	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
@@ -185,6 +185,7 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 		temp.Events.push_back(*new AssDialogue);
 
 	context->ass->swap(temp);
+	auto props = context->ass->Properties;
 
 	SetFileName(filename);
 
@@ -207,6 +208,7 @@ void SubsController::Load(agi::fs::path const& filename, std::string charset) {
 	}
 
 	FileOpen(filename);
+	return props;
 }
 
 void SubsController::Save(agi::fs::path const& filename, std::string const& encoding) {

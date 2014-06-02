@@ -120,7 +120,6 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 
 	connections = agi::signal::make_vector({
 		context->ass->AddCommitListener(&BaseGrid::OnSubtitlesCommit, this),
-		context->subsController->AddFileOpenListener(&BaseGrid::OnSubtitlesOpen, this),
 
 		context->selectionController->AddActiveLineListener(&BaseGrid::OnActiveLineChanged, this),
 		context->selectionController->AddSelectionListener([&]{ Refresh(false); }),
@@ -174,10 +173,6 @@ void BaseGrid::OnSubtitlesCommit(int type) {
 		for (auto const& rect : text_refresh_rects)
 			RefreshRect(rect, false);
 	}
-}
-
-void BaseGrid::OnSubtitlesOpen() {
-	ScrollTo(context->ass->Properties.scroll_position);
 }
 
 void BaseGrid::OnShowColMenu(wxCommandEvent &event) {

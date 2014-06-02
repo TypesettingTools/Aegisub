@@ -92,10 +92,7 @@ class BaseGrid final : public wxWindow {
 	void OnShowColMenu(wxCommandEvent &event);
 	void OnSize(wxSizeEvent &event);
 	void OnSubtitlesCommit(int type);
-	void OnSubtitlesOpen();
 	void OnActiveLineChanged(AssDialogue *);
-
-	void ScrollTo(int y);
 
 	void AdjustScrollbar();
 	void SetColumnWidths();
@@ -120,6 +117,7 @@ public:
 	~BaseGrid();
 
 	void SetByFrame(bool state);
+	void ScrollTo(int y);
 
 	DECLARE_EVENT_TABLE()
 };

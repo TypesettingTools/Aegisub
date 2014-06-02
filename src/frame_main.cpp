@@ -149,7 +149,7 @@ FrameMain::FrameMain()
 	SetDropTarget(new AegisubFileDropTarget(context.get()));
 
 	StartupLog("Load default file");
-	context->subsController->Close();
+	context->project->CloseSubtitles();
 
 	StartupLog("Display main window");
 	AddFullScreenButton(this);

@@ -46,11 +46,6 @@ class SelectionController {
 	Selection selection; ///< Currently selected lines
 	AssDialogue *active_line = nullptr; ///< The currently active line or 0 if none
 
-	agi::signal::Connection open_connection;
-
-	void OnSubtitlesOpen();
-	void OnSubtitlesSave();
-
 public:
 	SelectionController(agi::Context *context);
 

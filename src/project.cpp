@@ -16,9 +16,11 @@
 
 #include "project.h"
 
+#include "ass_dialogue.h"
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "audio_controller.h"
+#include "base_grid.h"
 #include "charset_detect.h"
 #include "compat.h"
 #include "dialog_progress.h"
@@ -29,7 +31,9 @@
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
 #include "options.h"
+#include "selection_controller.h"
 #include "subs_controller.h"
+#include "utils.h"
 #include "video_controller.h"
 #include "video_display.h"
 
@@ -95,17 +99,18 @@ void Project::SetPath(agi::fs::path& var, const char *token, const char *mru, ag
 	UpdateRelativePaths();
 }
 
-void Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding) {
+bool Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding, ProjectProperties &properties) {
 	try {
 		if (encoding.empty())
 			encoding = CharSetDetect::GetEncoding(path);
 	}
 	catch (agi::UserCancelException const&) {
-		return;
+		return false;
 	}
 	catch (agi::fs::FileNotFound const&) {
 		config::mru->Remove("Subtitle", path);
-		return ShowError(path.string() + " not found.");
+		ShowError(path.string() + " not found.");
+		return false;
 	}
 
 	if (encoding != "binary") {
@@ -113,48 +118,67 @@ void Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding) {
 		// distinguish them based on filename alone, and just ignore failures
 		// rather than trying to differentiate between malformed timecodes
 		// files and things that aren't timecodes files at all
-		try { return DoLoadTimecodes(path); } catch (...) { }
-		try { return DoLoadKeyframes(path); } catch (...) { }
+		try { DoLoadTimecodes(path); return false; } catch (...) { }
+		try { DoLoadKeyframes(path); return false; } catch (...) { }
 	}
 
 	try {
-		context->subsController->Load(path, encoding);
+		properties = context->subsController->Load(path, encoding);
 	}
-	catch (agi::UserCancelException const&) { return; }
+	catch (agi::UserCancelException const&) { return false; }
 	catch (agi::fs::FileNotFound const&) {
 		config::mru->Remove("Subtitle", path);
-		return ShowError(path.string() + " not found.");
+		ShowError(path.string() + " not found.");
+		return false;
 	}
 	catch (agi::Exception const& e) {
-		return ShowError(e.GetMessage());
+		ShowError(e.GetMessage());
+		return false;
 	}
 	catch (std::exception const& e) {
-		return ShowError(std::string(e.what()));
+		ShowError(std::string(e.what()));
+		return false;
 	}
 	catch (...) {
-		return ShowError(wxString("Unknown error"));
+		ShowError(wxString("Unknown error"));
+		return false;
 	}
+
+	Selection sel;
+	AssDialogue *active_line = nullptr;
+	if (!context->ass->Events.empty()) {
+		int row = mid<int>(0, properties.active_row, context->ass->Events.size() - 1);
+		active_line = &*std::next(context->ass->Events.begin(), row);
+		sel.insert(active_line);
+	}
+	context->selectionController->SetSelectionAndActive(std::move(sel), active_line);
+	context->subsGrid->ScrollTo(properties.scroll_position);
+
+	return true;
 }
 
 void Project::LoadSubtitles(agi::fs::path const& path, std::string encoding) {
-	DoLoadSubtitles(path, encoding);
-	LoadUnloadFiles();
+	ProjectProperties properties;
+	if (DoLoadSubtitles(path, encoding, properties))
+		LoadUnloadFiles(properties);
 }
 
 void Project::CloseSubtitles() {
 	context->subsController->Close();
 	config::path->SetToken("?script", "");
-	LoadUnloadFiles();
+	LoadUnloadFiles(context->ass->Properties);
+	auto line = &*context->ass->Events.begin();
+	context->selectionController->SetSelectionAndActive({line}, line);
 }
 
-void Project::LoadUnloadFiles() {
+void Project::LoadUnloadFiles(ProjectProperties properties) {
 	auto load_linked = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 	if (!load_linked) return;
 
-	auto audio     = config::path->MakeAbsolute(context->ass->Properties.audio_file, "?script");
-	auto video     = config::path->MakeAbsolute(context->ass->Properties.video_file, "?script");
-	auto timecodes = config::path->MakeAbsolute(context->ass->Properties.timecodes_file, "?script");
-	auto keyframes = config::path->MakeAbsolute(context->ass->Properties.keyframes_file, "?script");
+	auto audio     = config::path->MakeAbsolute(properties.audio_file, "?script");
+	auto video     = config::path->MakeAbsolute(properties.video_file, "?script");
+	auto timecodes = config::path->MakeAbsolute(properties.timecodes_file, "?script");
+	auto keyframes = config::path->MakeAbsolute(properties.keyframes_file, "?script");
 
 	if (video == video_file && audio == audio_file && keyframes == keyframes_file && timecodes == timecodes_file)
 		return;
@@ -189,14 +213,14 @@ void Project::LoadUnloadFiles() {
 			CloseVideo();
 		else if ((loaded_video = DoLoadVideo(video))) {
 			auto vc = context->videoController.get();
-			vc->JumpToFrame(context->ass->Properties.video_position);
+			vc->JumpToFrame(properties.video_position);
 
-			auto ar_mode = static_cast<AspectRatio>(context->ass->Properties.ar_mode);
+			auto ar_mode = static_cast<AspectRatio>(properties.ar_mode);
 			if (ar_mode == AspectRatio::Custom)
-				vc->SetAspectRatio(context->ass->Properties.ar_value);
+				vc->SetAspectRatio(properties.ar_value);
 			else
 				vc->SetAspectRatio(ar_mode);
-			context->videoDisplay->SetZoom(context->ass->Properties.video_zoom);
+			context->videoDisplay->SetZoom(properties.video_zoom);
 		}
 	}
 
@@ -475,13 +499,11 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 			audio = file;
 	}
 
-	if (!subs.empty())
-		DoLoadSubtitles(subs);
-
-	// Loading video will clear the audio file script header, so make sure we
-	// end up loading the audio if the newly loaded subs has some
-	if (!video.empty() && audio.empty() && !context->ass->Properties.audio_file.empty())
-		audio = config::path->MakeAbsolute(context->ass->Properties.audio_file, "?script");
+	ProjectProperties properties;
+	if (!subs.empty()) {
+		if (!DoLoadSubtitles(subs, "", properties))
+			subs.clear();
+	}
 
 	if (!video.empty()) {
 		DoLoadVideo(video);
@@ -508,5 +530,5 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		DoLoadAudio(video_file, true);
 
 	if (!subs.empty())
-		LoadUnloadFiles();
+		LoadUnloadFiles(properties);
 }

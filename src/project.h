@@ -27,6 +27,7 @@ class AudioProvider;
 class DialogProgress;
 class wxString;
 namespace agi { struct Context; }
+struct ProjectProperties;
 
 class Project {
 	std::unique_ptr<::AudioProvider> audio_provider;
@@ -51,13 +52,13 @@ class Project {
 	void ShowError(wxString const& message);
 	void ShowError(std::string const& message);
 
-	void DoLoadSubtitles(agi::fs::path const& path, std::string encoding="");
+	bool DoLoadSubtitles(agi::fs::path const& path, std::string encoding, ProjectProperties &properties);
 	void DoLoadAudio(agi::fs::path const& path, bool quiet);
 	bool DoLoadVideo(agi::fs::path const& path);
 	void DoLoadTimecodes(agi::fs::path const& path);
 	void DoLoadKeyframes(agi::fs::path const& path);
 
-	void LoadUnloadFiles();
+	void LoadUnloadFiles(ProjectProperties properties);
 	void UpdateRelativePaths();
 	void ReloadAudio();
 	void ReloadVideo();
