@@ -22,6 +22,13 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <!-- Project References -->
+  <ItemGroup>
+    <ProjectReference Include="..\luajit\luajit.vcxproj">
+      <Project>{5391a8b1-9c70-4dc4-92ad-d3e34c6b803f}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClCompile Include="$(SrcDir)fwrite.c" />

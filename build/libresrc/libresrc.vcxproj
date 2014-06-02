@@ -32,6 +32,19 @@
       />
   </Target>
 
+  <!-- Project References -->
+  <ItemGroup>
+    <ProjectReference Include="..\wx\wxWidgets.vcxproj">
+      <Project>{0518d6c0-7bf6-4fd1-91fb-191bd10db2ac}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\luajit-minilua\luajit-minilua.vcxproj">
+      <Project>{fcaed410-90ef-4ef9-916c-4b86dc13a3cf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libpng\libpng.vcxproj">
+      <Project>{5cabcbef-e79a-4d27-94a5-cf4eaaf1dd96}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ResPack Include="$(SrcDir)manifest.respack">
@@ -58,10 +71,5 @@
     <None Include="$(SrcDir)manifest.respack" />
     <None Include="$(SrcDir)..\bitmaps\manifest.respack" />
     <None Include="$(SrcDir)..\..\tools\respack.lua" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\luajit-minilua\luajit-minilua.vcxproj">
-      <Project>{fcaed410-90ef-4ef9-916c-4b86dc13a3cf}</Project>
-    </ProjectReference>
   </ItemGroup>
 </Project>

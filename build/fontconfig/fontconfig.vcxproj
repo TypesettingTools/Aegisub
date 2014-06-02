@@ -32,6 +32,13 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <!-- Project References -->
+  <ItemGroup>
+    <ProjectReference Include="..\freetype2\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <InstallHeader Include="$(FontconfigSrcDir)\fontconfig\*.h" />

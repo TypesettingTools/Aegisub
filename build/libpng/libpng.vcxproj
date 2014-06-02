@@ -15,6 +15,13 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
+  <!-- Project References -->
+  <ItemGroup>
+    <ProjectReference Include="..\zlib\zlib.vcxproj">
+      <Project>{10f22a5a-dd9e-44a1-ba2e-2a9a7c78b0ee}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <InstallHeader Include="$(SrcDir)\png.h" />

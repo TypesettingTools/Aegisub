@@ -30,6 +30,29 @@
       <ForcedIncludeFiles>lagi_pre.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
+
+  <!-- Project References -->
+  <ItemGroup>
+    <ProjectReference Include="..\boost\boost.vcxproj">
+      <Project>{a649d828-a399-4d81-adef-94cfdba7847f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\icu\icu.vcxproj">
+      <Project>{f934ab7b-186b-4e96-b20c-a58c38c1b818}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libiconv\libiconv.vcxproj">
+      <Project>{965054d2-44f2-4eb2-9879-051cc3d7ef08}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\luabins\luabins.vcxproj">
+      <Project>{A7A30702-8162-4E1A-A010-EF51B590C121}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\luajit\luajit.vcxproj">
+      <Project>{5391a8b1-9c70-4dc4-92ad-d3e34c6b803f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\universalchardet\universalchardet.vcxproj">
+      <Project>{7b56955d-5162-4698-aa5b-47484edc8783}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)common\charset_6937.h" />
