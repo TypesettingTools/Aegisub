@@ -23,6 +23,15 @@
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <PreprocessorDefinitions>
+        U_ENABLE_DYLOAD=0;
+        U_CHECK_DYLOAD=0;
+        UCONFIG_NO_FILE_IO=1;
+        UCONFIG_NO_LEGACY_CONVERSION=1;
+        U_CHARSET_IS_UTF8=1;
+        UCONFIG_NO_IDNA=1;
+        UCONFIG_NO_FORMATTING=1;
+        UCONFIG_NO_TRANSLITERATION=1;
+
         U_ATTRIBUTE_DEPRECATED=;
         _CRT_SECURE_NO_DEPRECATE;
         U_COMMON_IMPLEMENTATION;

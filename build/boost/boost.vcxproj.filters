@@ -117,19 +117,10 @@
     <ClCompile Include="$(BoostPath)\libs\locale\src\icu\conversion.cpp">
       <Filter>locale\icu</Filter>
     </ClCompile>
-    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\date_time.cpp">
-      <Filter>locale\icu</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\formatter.cpp">
-      <Filter>locale\icu</Filter>
-    </ClCompile>
     <ClCompile Include="$(BoostPath)\libs\locale\src\icu\icu_backend.cpp">
       <Filter>locale\icu</Filter>
     </ClCompile>
     <ClCompile Include="$(BoostPath)\libs\locale\src\icu\numeric.cpp">
-      <Filter>locale\icu</Filter>
-    </ClCompile>
-    <ClCompile Include="$(BoostPath)\libs\locale\src\icu\time_zone.cpp">
       <Filter>locale\icu</Filter>
     </ClCompile>
     <ClCompile Include="$(BoostPath)\libs\locale\src\util\codecvt_converter.cpp">
@@ -200,9 +191,6 @@
     <ClInclude Include="$(BoostPath)\libs\locale\src\icu\codecvt.hpp">
       <Filter>locale\icu</Filter>
     </ClInclude>
-    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\formatter.hpp">
-      <Filter>locale\icu</Filter>
-    </ClInclude>
     <ClInclude Include="$(BoostPath)\libs\locale\src\icu\icu_backend.hpp">
       <Filter>locale\icu</Filter>
     </ClInclude>
@@ -210,9 +198,6 @@
       <Filter>locale\icu</Filter>
     </ClInclude>
     <ClInclude Include="$(BoostPath)\libs\locale\src\icu\predefined_formatters.hpp">
-      <Filter>locale\icu</Filter>
-    </ClInclude>
-    <ClInclude Include="$(BoostPath)\libs\locale\src\icu\time_zone.hpp">
       <Filter>locale\icu</Filter>
     </ClInclude>
     <ClInclude Include="$(BoostPath)\libs\locale\src\icu\uconv.hpp">
