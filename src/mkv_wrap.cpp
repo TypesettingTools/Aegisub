@@ -40,6 +40,7 @@
 #include "compat.h"
 #include "dialog_progress.h"
 #include "MatroskaParser.h"
+#include "options.h"
 
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/format.h>
@@ -237,7 +238,7 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 	}
 	// Load default if it's SRT
 	else {
-		target->LoadDefault(false);
+		target->LoadDefault(false, OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString());
 		parser.AddLine("[Events]");
 	}
 
