@@ -62,6 +62,9 @@ class AudioController final : public wxEvtHandler {
 	/// The timing controller was replaced
 	agi::signal::Signal<> AnnounceTimingControllerChanged;
 
+	/// A new audio player was created
+	agi::signal::Signal<> AnnounceAudioPlayerOpened;
+
 	/// The audio output object
 	std::unique_ptr<AudioPlayer> player;
 
@@ -184,6 +187,7 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackPosition,        AddPlaybackPositionListener)
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop,            AddPlaybackStopListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceAudioPlayerOpened,       AddAudioPlayerOpenListener)
 };
 
 namespace agi {

@@ -104,6 +104,7 @@ void AudioController::OnAudioPlayerChanged()
 	{
 		context->project->CloseAudio();
 	}
+	AnnounceAudioPlayerOpened();
 }
 
 void AudioController::OnAudioProvider(AudioProvider *new_provider)
