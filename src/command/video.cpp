@@ -288,7 +288,8 @@ struct video_focus_seek final : public validator_video_loaded {
 };
 
 wxImage get_image(agi::Context *c, bool raw) {
-	return GetImage(*c->project->VideoProvider()->GetFrame(c->videoController->GetFrameN(), raw));
+	auto frame = c->videoController->GetFrameN();
+	return GetImage(*c->project->VideoProvider()->GetFrame(frame, c->project->Timecodes().TimeAtFrame(frame), raw));
 }
 
 struct video_frame_copy final : public validator_video_loaded {
