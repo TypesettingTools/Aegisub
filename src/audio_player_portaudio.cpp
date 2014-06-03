@@ -70,7 +70,7 @@ PortAudioPlayer::PortAudioPlayer(AudioProvider *provider) : AudioPlayer(provider
 	PaError err = Pa_Initialize();
 
 	if (err != paNoError)
-		throw PortAudioError(std::string("Failed opening PortAudio: ") + Pa_GetErrorText(err), 0);
+		throw PortAudioError(std::string("Failed opening PortAudio: ") + Pa_GetErrorText(err));
 
 	// Build a list of host API-specific devices we can use
 	// Some host APIs may not support all audio formats, so build a priority
@@ -83,7 +83,7 @@ PortAudioPlayer::PortAudioPlayer(AudioProvider *provider) : AudioPlayer(provider
 	GatherDevices(Pa_GetDefaultHostApi());
 
 	if (devices.empty())
-		throw PortAudioError("No PortAudio output devices found", 0);
+		throw PortAudioError("No PortAudio output devices found");
 
 	if (provider)
 		OpenStream();
@@ -168,7 +168,7 @@ void PortAudioPlayer::OpenStream() {
 		}
 	}
 
-	throw PortAudioError("Failed initializing PortAudio stream: " + error, 0);
+	throw PortAudioError("Failed initializing PortAudio stream: " + error);
 }
 
 void PortAudioPlayer::paStreamFinishedCallback(void *) {
