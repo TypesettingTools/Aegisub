@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file visual_tool_vector_clip.h
-/// @see visual_tool_vector_clip.cpp
-/// @ingroup visual_ts
-///
-
 #include "visual_feature.h"
 #include "visual_tool.h"
 #include "spline.h"
@@ -30,7 +25,7 @@ class wxToolBar;
 ///        in the spline
 struct VisualToolVectorClipDraggableFeature final : public VisualDraggableFeature {
 	/// Which curve in the spline this feature is a point on
-	Spline::iterator curve;
+	size_t idx = 0;
 	/// 0-3; indicates which part of the curve this point is
 	int point = 0;
 };
@@ -51,7 +46,7 @@ class VisualToolVectorClip final : public VisualTool<VisualToolVectorClipDraggab
 	void Commit(wxString message="") override;
 
 	void SelectAll();
-	void MakeFeature(Spline::iterator cur);
+	void MakeFeature(size_t idx);
 	void MakeFeatures();
 
 	bool InitializeHold() override;
@@ -62,6 +57,7 @@ class VisualToolVectorClip final : public VisualTool<VisualToolVectorClipDraggab
 
 	void DoRefresh() override;
 	void Draw() override;
+
 public:
 	VisualToolVectorClip(VideoDisplay *parent, agi::Context *context);
 	void SetToolbar(wxToolBar *tb) override;

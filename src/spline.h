@@ -71,9 +71,9 @@ public:
 	void Smooth(float smooth=1.0f);
 
 	/// Gets a list of points in the curve
-	void GetPointList(std::vector<float>& points, std::vector<int>& first, std::vector<int>& count);
+	std::vector<float> GetPointList(std::vector<int>& first, std::vector<int>& count);
 	/// Gets a list of points in the curve
-	void GetPointList(std::vector<float> &points, iterator curve);
+	std::vector<float> GetPointList(iterator curve);
 
 	/// Get t value and curve of the point closest to reference
 	void GetClosestParametricPoint(Vector2D reference, iterator& curve, float &t, Vector2D &point);
@@ -92,18 +92,19 @@ public:
 	using std::vector<SplineCurve>::reverse_iterator;
 	using std::vector<SplineCurve>::const_reverse_iterator;
 
+	using std::vector<SplineCurve>::back;
 	using std::vector<SplineCurve>::begin;
+	using std::vector<SplineCurve>::clear;
+	using std::vector<SplineCurve>::emplace_back;
+	using std::vector<SplineCurve>::empty;
 	using std::vector<SplineCurve>::end;
+	using std::vector<SplineCurve>::erase;
+	using std::vector<SplineCurve>::front;
+	using std::vector<SplineCurve>::insert;
+	using std::vector<SplineCurve>::operator[];
+	using std::vector<SplineCurve>::pop_back;
+	using std::vector<SplineCurve>::push_back;
 	using std::vector<SplineCurve>::rbegin;
 	using std::vector<SplineCurve>::rend;
 	using std::vector<SplineCurve>::size;
-	using std::vector<SplineCurve>::empty;
-	using std::vector<SplineCurve>::front;
-	using std::vector<SplineCurve>::back;
-	using std::vector<SplineCurve>::push_back;
-	using std::vector<SplineCurve>::pop_back;
-	using std::vector<SplineCurve>::emplace_back;
-	using std::vector<SplineCurve>::insert;
-	using std::vector<SplineCurve>::erase;
-	using std::vector<SplineCurve>::clear;
 };

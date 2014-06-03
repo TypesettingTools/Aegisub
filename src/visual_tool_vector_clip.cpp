@@ -14,10 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file visual_tool_vector_clip.cpp
-/// @brief Vector clipping visual typesetting tool
-/// @ingroup visual_ts
-
 #include "visual_tool_vector_clip.h"
 
 #include "ass_dialogue.h"
@@ -90,11 +86,9 @@ void VisualToolVectorClip::Draw() {
 	if (spline.empty()) return;
 
 	// Parse vector
-	std::vector<float> points;
 	std::vector<int> start;
 	std::vector<int> count;
-
-	spline.GetPointList(points, start, count);
+	auto points = spline.GetPointList(start, count);
 	assert(!start.empty());
 	assert(!count.empty());
 
@@ -121,8 +115,7 @@ void VisualToolVectorClip::Draw() {
 
 	// Draw highlighted line
 	if ((mode == 3 || mode == 4) && !active_feature && points.size() > 2) {
-		std::vector<float> highlighted_points;
-		spline.GetPointList(highlighted_points, highlighted_curve);
+		auto highlighted_points = spline.GetPointList(highlighted_curve);
 		if (!highlighted_points.empty()) {
 			gl.SetLineColour(colour[2], 1.f, 2);
 			gl.DrawLineStrip(2, highlighted_points);
@@ -173,38 +166,39 @@ void VisualToolVectorClip::Draw() {
 		gl.DrawCircle(pt, 4);
 }
 
-void VisualToolVectorClip::MakeFeature(Spline::iterator cur) {
+void VisualToolVectorClip::MakeFeature(size_t idx) {
 	auto feat = agi::make_unique<Feature>();
-	feat->curve = cur;
+	feat->idx = idx;
 
-	if (cur->type == SplineCurve::POINT) {
-		feat->pos = cur->p1;
+	auto const& curve = spline[idx];
+	if (curve.type == SplineCurve::POINT) {
+		feat->pos = curve.p1;
 		feat->type = DRAG_SMALL_CIRCLE;
 		feat->point = 0;
 	}
-	else if (cur->type == SplineCurve::LINE) {
-		feat->pos = cur->p2;
+	else if (curve.type == SplineCurve::LINE) {
+		feat->pos = curve.p2;
 		feat->type = DRAG_SMALL_CIRCLE;
 		feat->point = 1;
 	}
-	else if (cur->type == SplineCurve::BICUBIC) {
+	else if (curve.type == SplineCurve::BICUBIC) {
 		// Control points
-		feat->pos = cur->p2;
+		feat->pos = curve.p2;
 		feat->point = 1;
 		feat->type = DRAG_SMALL_SQUARE;
 		features.push_back(*feat.release());
 
 		feat = agi::make_unique<Feature>();
-		feat->curve = cur;
-		feat->pos = cur->p3;
+		feat->idx = idx;
+		feat->pos = curve.p3;
 		feat->point = 2;
 		feat->type = DRAG_SMALL_SQUARE;
 		features.push_back(*feat.release());
 
 		// End point
 		feat = agi::make_unique<Feature>();
-		feat->curve = cur;
-		feat->pos = cur->p4;
+		feat->idx = idx;
+		feat->pos = curve.p4;
 		feat->point = 3;
 		feat->type = DRAG_SMALL_CIRCLE;
 	}
@@ -215,8 +209,8 @@ void VisualToolVectorClip::MakeFeatures() {
 	sel_features.clear();
 	features.clear();
 	active_feature = nullptr;
-	for (auto it = spline.begin(); it != spline.end(); ++it)
-		MakeFeature(it);
+	for (size_t i = 0; i < spline.size(); ++i)
+		MakeFeature(i);
 }
 
 void VisualToolVectorClip::Save() {
@@ -239,30 +233,31 @@ void VisualToolVectorClip::Commit(wxString message) {
 }
 
 void VisualToolVectorClip::UpdateDrag(Feature *feature) {
-	spline.MovePoint(feature->curve, feature->point, feature->pos);
+	spline.MovePoint(spline.begin() + feature->idx, feature->point, feature->pos);
 }
 
 bool VisualToolVectorClip::InitializeDrag(Feature *feature) {
 	if (mode != 5) return true;
 
-	if (feature->curve->type == SplineCurve::BICUBIC && (feature->point == 1 || feature->point == 2)) {
+	auto curve = spline.begin() + feature->idx;
+	if (curve->type == SplineCurve::BICUBIC && (feature->point == 1 || feature->point == 2)) {
 		// Deleting bicubic curve handles, so convert to line
-		feature->curve->type = SplineCurve::LINE;
-		feature->curve->p2 = feature->curve->p4;
+		curve->type = SplineCurve::LINE;
+		curve->p2 = curve->p4;
 	}
 	else {
-		auto next = std::next(feature->curve);
+		auto next = std::next(curve);
 		if (next != spline.end()) {
-			if (feature->curve->type == SplineCurve::POINT) {
+			if (curve->type == SplineCurve::POINT) {
 				next->p1 = next->EndPoint();
 				next->type = SplineCurve::POINT;
 			}
 			else {
-				next->p1 = feature->curve->p1;
+				next->p1 = curve->p1;
 			}
 		}
 
-		spline.erase(feature->curve);
+		spline.erase(curve);
 	}
 	active_feature = nullptr;
 
@@ -297,7 +292,7 @@ bool VisualToolVectorClip::InitializeHold() {
 
 		spline.push_back(curve);
 		sel_features.clear();
-		MakeFeature(--spline.end());
+		MakeFeature(spline.size() - 1);
 		UpdateHold();
 		return true;
 	}
@@ -424,7 +419,7 @@ void VisualToolVectorClip::UpdateHold() {
 		float len = (last - mouse_pos).SquareLen();
 		if ((mode == 6 && len >= 900) || (mode == 7 && len >= 3600)) {
 			spline.emplace_back(last, mouse_pos);
-			MakeFeature(--spline.end());
+			MakeFeature(spline.size() - 1);
 		}
 	}
 

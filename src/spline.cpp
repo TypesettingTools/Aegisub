@@ -185,11 +185,11 @@ void Spline::MovePoint(iterator curve,int point,Vector2D pos) {
 	}
 }
 
-void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, std::vector<int>& count) {
-	points.clear();
+std::vector<float> Spline::GetPointList(std::vector<int>& first, std::vector<int>& count) {
 	first.clear();
 	count.clear();
 
+	std::vector<float> points;
 	points.reserve((size() + 1) * 2);
 	int curCount = 0;
 
@@ -207,11 +207,12 @@ void Spline::GetPointList(std::vector<float>& points, std::vector<int>& first, s
 	}
 
 	count.push_back(curCount);
+	return points;
 }
 
-void Spline::GetPointList(std::vector<float> &points, iterator curve) {
-	points.clear();
-	if (curve == end()) return;
+std::vector<float> Spline::GetPointList(iterator curve) {
+	std::vector<float> points;
+	if (curve == end()) return points;
 	switch (curve->type) {
 		case SplineCurve::LINE:
 			points.push_back(curve->p1.X());
@@ -226,9 +227,10 @@ void Spline::GetPointList(std::vector<float> &points, iterator curve) {
 
 		default: break;
 	}
+	return points;
 }
 
-void Spline::GetClosestParametricPoint(Vector2D reference,iterator &curve,float &t,Vector2D &pt) {
+void Spline::GetClosestParametricPoint(Vector2D reference, iterator &curve, float &t, Vector2D &pt) {
 	curve = end();
 	t = 0.f;
 	if (empty()) return;
@@ -237,24 +239,22 @@ void Spline::GetClosestParametricPoint(Vector2D reference,iterator &curve,float 
 	emplace_back(back().EndPoint(), front().p1);
 
 	float closest = std::numeric_limits<float>::infinity();
-	for (auto cur = begin(); cur != end(); ++cur) {
-		float param = cur->GetClosestParam(reference);
-		Vector2D p1 = cur->GetPoint(param);
+	size_t idx = 0;
+	for (size_t i = 0; i < size(); ++i) {
+		auto& cur = (*this)[i];
+		float param = cur.GetClosestParam(reference);
+		Vector2D p1 = cur.GetPoint(param);
 		float dist = (p1-reference).SquareLen();
 		if (dist < closest) {
 			closest = dist;
 			t = param;
-			curve = cur;
+			idx = i;
 			pt = p1;
 		}
 	}
 
-	if (&*curve == &back()) {
-		curve = end();
-	}
-
-	// Remove closing and return
 	pop_back();
+	curve = begin() + idx;
 }
 
 Vector2D Spline::GetClosestPoint(Vector2D reference) {
