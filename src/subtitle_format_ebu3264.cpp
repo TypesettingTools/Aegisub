@@ -108,7 +108,6 @@ namespace
 	/// Formatting character constants
 	const unsigned char EBU_FORMAT_ITALIC[]     = "\x81\x80";
 	const unsigned char EBU_FORMAT_UNDERLINE[]  = "\x83\x82";
-	const unsigned char EBU_FORMAT_BOXING[]     = "\x85\x84";
 	const unsigned char EBU_FORMAT_LINEBREAK    = '\x8a';
 	const unsigned char EBU_FORMAT_UNUSED_SPACE = '\x8f';
 
