@@ -28,6 +28,9 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <list>
+#include <map>
+#include <vector>
 
 using namespace agi::hotkey;
 
@@ -163,9 +166,10 @@ public:
 	}
 
 	void SetFilter(std::string const& new_filter) {
-		std::set<HotkeyModelCombo*> old_visible;
+		std::vector<HotkeyModelCombo *> old_visible;
 		for (auto item : visible_items)
-			old_visible.insert(static_cast<HotkeyModelCombo*>(item.GetID()));
+			old_visible.push_back(static_cast<HotkeyModelCombo*>(item.GetID()));
+		sort(begin(old_visible), end(old_visible));
 
 		visible_items.clear();
 
@@ -173,7 +177,7 @@ public:
 		wxDataViewItemArray removed;
 
 		for (auto& combo : children) {
-			bool was_visible = old_visible.count(&combo) > 0;
+			bool was_visible = binary_search(begin(old_visible), end(old_visible), &combo);
 			bool is_visible = combo.IsVisible(new_filter);
 
 			if (is_visible)
