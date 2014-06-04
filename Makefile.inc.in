@@ -62,7 +62,6 @@ P_LOCALE      = @localedir@
 P_DESKTOP     = @P_DESKTOP@
 P_ICON        = @P_ICON@
 P_DATA        = $(P_DATAROOT)/aegisub/
-P_DOC         = @docdir@
 
 ###############
 # LIBRARY FLAGS

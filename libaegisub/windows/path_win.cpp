@@ -51,7 +51,6 @@ void Path::FillPlatformSpecificPaths() {
 	SetToken("?data", filename);
 
 	SetToken("?dictionary", Decode("?data/dictionaries"));
-	//SetToken("?docs", Decode("?data/docs"));
 }
 
 }

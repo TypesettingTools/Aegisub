@@ -53,7 +53,6 @@ void Path::FillPlatformSpecificPaths() {
 #endif
 	SetToken("?temp", boost::filesystem::temp_directory_path());
 	SetToken("?dictionary", "/usr/share/hunspell");
-	SetToken("?docs", P_DOC);
 }
 
 }

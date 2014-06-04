@@ -43,7 +43,6 @@ Path::Path() {
 	tokens["?data"];
 	tokens["?temp"];
 	tokens["?dictionary"];
-	tokens["?docs"];
 
 	FillPlatformSpecificPaths();
 
