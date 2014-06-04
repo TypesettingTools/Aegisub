@@ -217,6 +217,13 @@ void SetFloatOnParent(wxWindow *) { }
 RetinaHelper::RetinaHelper(wxWindow *) { }
 RetinaHelper::~RetinaHelper() { }
 int RetinaHelper::GetScaleFactor() const { return 1; }
+
+// OS X implementation in scintilla_ime.mm
+namespace osx { namespace ime {
+	void inject(wxStyledTextCtrl *) { }
+	void invalidate(wxStyledTextCtrl *) { }
+	bool process_key_event(wxStyledTextCtrl *, wxKeyEvent&) { return false; }
+} }
 #endif
 
 wxString FontFace(std::string opt_prefix) {

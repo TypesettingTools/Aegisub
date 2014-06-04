@@ -37,7 +37,9 @@
 #include <wx/bitmap.h>
 #include <wx/string.h>
 
+class wxKeyEvent;
 class wxMouseEvent;
+class wxStyledTextCtrl;
 class wxWindow;
 
 wxString PrettySize(int bytes);
@@ -94,3 +96,12 @@ agi::fs::path OpenFileSelector(wxString const& message, std::string const& optio
 agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent);
 
 wxString LocalizedLanguageName(wxString const& lang);
+
+namespace osx { namespace ime {
+	/// Inject the IME helper into the given wxSTC
+	void inject(wxStyledTextCtrl *ctrl);
+	/// Invalidate any pending text from the IME
+	void invalidate(wxStyledTextCtrl *ctrl);
+	/// Give the IME a chance to process a key event and return whether it did
+	bool process_key_event(wxStyledTextCtrl *ctrl, wxKeyEvent &);
+} }

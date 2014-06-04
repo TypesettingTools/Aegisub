@@ -16,7 +16,7 @@ LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3) $(LIBS_UCHARDET) $(LIBS_BOOST)
 LIBS += $(LIBS_ICU) ../vendor/luabins/libluabins.a
 
 ifeq (yes, $(BUILD_DARWIN))
-SRC += osx_utils.mm retina_helper.mm
+SRC += osx/osx_utils.mm osx/retina_helper.mm osx/scintilla_ime.mm
 endif
 
 lpeg.o: CXXFLAGS += -Wno-unused-function
