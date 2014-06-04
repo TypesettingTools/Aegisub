@@ -198,7 +198,7 @@ void VideoSlider::OnPaint(wxPaintEvent &) {
 	// Selection border
 	if (HasFocus()) {
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
-		dc.SetPen(wxPen(shad,1,wxDOT));
+		dc.SetPen(wxPen(shad, 1, wxPENSTYLE_DOT));
 		dc.DrawRectangle(0,0,w,h);
 	}
 
