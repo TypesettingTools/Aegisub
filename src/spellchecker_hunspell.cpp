@@ -155,7 +155,7 @@ std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const&
 
 static std::vector<std::string> langs(const char *filter) {
 	std::vector<std::string> paths;
-	auto data_path = config::path->Decode("?data/dictionaries/");
+	auto data_path = config::path->Decode("?dictionary/");
 	auto user_path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
 
 	agi::fs::DirectoryIterator(data_path, filter).GetAll(paths);
@@ -191,7 +191,7 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	agi::fs::path aff, dic;
 	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
 	if (!check_path(path, language, aff, dic)) {
-		path = config::path->Decode("?data/dictionaries/");
+		path = config::path->Decode("?dictionary/");
 		if (!check_path(path, language, aff, dic))
 			return;
 	}
