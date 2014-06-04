@@ -289,7 +289,7 @@ bool HotkeyDataViewModel::IsContainer(wxDataViewItem const& item) const {
 bool HotkeyDataViewModel::SetValue(wxVariant const& variant, wxDataViewItem const& item, unsigned int col) {
 	if (!has_pending_changes) {
 		has_pending_changes = true;
-		parent->AddPendingChange(std::bind(&HotkeyDataViewModel::Apply, this));
+		parent->AddPendingChange([=] { Apply(); });
 	}
 	return get(item)->SetValue(variant, col);
 }
@@ -313,7 +313,7 @@ void HotkeyDataViewModel::Delete(wxDataViewItem const& item) {
 
 	if (!has_pending_changes) {
 		has_pending_changes = true;
-		parent->AddPendingChange(std::bind(&HotkeyDataViewModel::Apply, this));
+		parent->AddPendingChange([=] { Apply(); });
 	}
 }
 
