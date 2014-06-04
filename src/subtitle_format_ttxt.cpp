@@ -40,7 +40,6 @@
 #include "compat.h"
 #include "options.h"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include <wx/xml/xml.h>
 
 DEFINE_EXCEPTION(TTXTParseError, SubtitleFormatParseError);
@@ -258,10 +257,8 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 
 	// Find last line
 	AssTime lastTime;
-	for (auto const& line : file.Events | boost::adaptors::reversed) {
-		lastTime = line.End;
-		break;
-	}
+	if (!file.Events.empty())
+		lastTime = file.Events.back().End;
 
 	// Insert blank line at the end
 	auto diag = new AssDialogue;
