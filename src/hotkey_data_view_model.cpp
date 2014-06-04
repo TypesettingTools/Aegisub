@@ -14,27 +14,20 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file hotkey_data_view_model.cpp
-/// @see hotkey_data_view_model.h
-/// @ingroup hotkey configuration_ui
-///
-
 #include "hotkey_data_view_model.h"
-
-#include <libaegisub/exception.h>
-#include <libaegisub/hotkey.h>
-#include <libaegisub/make_unique.h>
 
 #include "command/command.h"
 #include "compat.h"
 #include "include/aegisub/hotkey.h"
 #include "preferences.h"
 
-#include <wx/dataview.h>
+#include <libaegisub/exception.h>
+#include <libaegisub/hotkey.h>
+#include <libaegisub/make_unique.h>
+#include <libaegisub/split.h>
 
 #include <algorithm>
-#include <list>
-#include <set>
+#include <boost/algorithm/string/case_conv.hpp>
 
 using namespace agi::hotkey;
 
@@ -60,20 +53,21 @@ class HotkeyModelCategory;
 /// All actual mutation of hotkeys happens through this class
 class HotkeyModelCombo final : public HotkeyModelItem {
 	HotkeyModelCategory *parent; ///< The containing category
-	Combo combo;                 ///< The actual hotkey
-	wxString cmd_name;
-	wxString cmd_str;
+	Combo combo;				 ///< The actual hotkey
+	std::string cmd_name;
+	std::string cmd_str;
 public:
 	HotkeyModelCombo(HotkeyModelCategory *parent, Combo const& combo)
 	: parent(parent)
 	, combo(combo)
-	, cmd_name(to_wx(combo.CmdName()))
-	, cmd_str(to_wx(combo.Str()))
+	, cmd_name(combo.CmdName())
+	, cmd_str(combo.Str())
 	{
 	}
 
-	bool IsVisible(wxString const& filter) const {
-		return cmd_name.Lower().Contains(filter) || cmd_str.Contains(filter);
+	bool IsVisible(std::string const& filter) const {
+		return boost::to_lower_copy(cmd_name).find(filter) != std::string::npos
+			|| boost::to_lower_copy(cmd_str).find(filter) != std::string::npos;
 	}
 
 	void Apply(Hotkey::HotkeyMap *hk_map) {
@@ -114,19 +108,19 @@ public:
 
 	bool SetValue(wxVariant const& variant, unsigned int col) override {
 		if (col == 0) {
-			wxArrayString toks = wxSplit(variant.GetString(), '-');
 			std::vector<std::string> keys;
-			keys.reserve(toks.size());
-			transform(toks.begin(), toks.end(), back_inserter(keys), (std::string(*)(wxString const&))&from_wx);
+			auto str = from_wx(variant.GetString());
+			for (auto tok : agi::Split(str, '-'))
+				keys.emplace_back(begin(tok), end(tok));
 			combo = Combo(combo.Context(), combo.CmdName(), keys);
-			cmd_str = to_wx(combo.Str());
+			cmd_str = combo.Str();
 			return true;
 		}
 		else if (col == 1) {
 			wxDataViewIconText text;
 			text << variant;
-			combo = Combo(combo.Context(), from_wx(text.GetText()), combo.Get());
-			cmd_name = text.GetText();
+			cmd_name = from_wx(text.GetText());
+			combo = Combo(combo.Context(), cmd_name, combo.Get());
 			return true;
 		}
 		return false;
@@ -168,7 +162,7 @@ public:
 			combo.Apply(hk_map);
 	}
 
-	void SetFilter(wxString const& new_filter) {
+	void SetFilter(std::string const& new_filter) {
 		std::set<HotkeyModelCombo*> old_visible;
 		for (auto item : visible_items)
 			old_visible.insert(static_cast<HotkeyModelCombo*>(item.GetID()));
@@ -240,7 +234,7 @@ public:
 			category.Apply(hk_map);
 	}
 
-	void SetFilter(wxString const& filter) {
+	void SetFilter(std::string const& filter) {
 		for (auto& category : categories)
 			category.SetFilter(filter);
 	}
@@ -331,5 +325,7 @@ void HotkeyDataViewModel::Apply() {
 }
 
 void HotkeyDataViewModel::SetFilter(wxString const& filter) {
-	root->SetFilter(filter.Lower());
+	auto str = from_wx(filter);
+	boost::to_lower(str);
+	root->SetFilter(str);
 }

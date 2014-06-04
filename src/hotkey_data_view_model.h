@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file hotkey_data_view_model.h
-/// @see hotkey_data_view_model.cpp
-/// @ingroup hotkey configuration_ui
-///
-
 #include <memory>
 #include <wx/dataview.h>
 
