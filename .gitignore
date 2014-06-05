@@ -18,12 +18,14 @@
 *.mo
 *.ncb
 *.obj
+*.opensdf
 *.orig
 *.patch
 *.pch
 *.pdb
+*.profdata
+*.profraw
 *.sdf
-*.opensdf
 *.so
 *.srt
 *.suo
