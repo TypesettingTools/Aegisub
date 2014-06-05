@@ -1,3 +1,4 @@
+#ifdef __cplusplus
 #ifndef _WIN32
 #include "../acconf.h"
 #endif
@@ -39,3 +40,4 @@
 #include <boost/filesystem.hpp>
 #undef BOOST_NO_SCOPED_ENUMS
 #include <boost/interprocess/streams/bufferstream.hpp>
+#endif

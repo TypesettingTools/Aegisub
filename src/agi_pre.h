@@ -38,6 +38,8 @@
 /// @note Make sure that you disable use of precompiled headers on md5.c and
 ///       MatroskaParser.c, as well as any possible future .c files.
 
+#ifdef __cplusplus
+
 // Block msvc from complaining about not using msvc-specific versions for
 // insecure C functions.
 #ifdef _CRT_SECURE_NO_WARNINGS
@@ -213,4 +215,6 @@
 
 #ifndef _CRT_SECURE_NO_WARNINGS_DEFINED
 #undef _CRT_SECURE_NO_WARNINGS
+#endif
+
 #endif
