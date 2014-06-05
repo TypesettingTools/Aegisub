@@ -578,8 +578,8 @@ void SubsEditBox::OnSplit(wxCommandEvent&) {
 		secondary_editor->SetValue(to_wx(c->initialLineState->GetInitialText()));
 }
 
-void SubsEditBox::OnStyleChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Style, style_box->GetValue(), _("style change"), AssFile::COMMIT_DIAG_META);
+void SubsEditBox::OnStyleChange(wxCommandEvent &evt) {
+	SetSelectedRows(&AssDialogue::Style, evt.GetString(), _("style change"), AssFile::COMMIT_DIAG_META);
 	active_style = c->ass->GetStyle(line->Style);
 }
 
@@ -589,18 +589,18 @@ void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	PopulateList(actor_box, &AssDialogue::Actor);
 }
 
-void SubsEditBox::OnLayerEnter(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Layer, layer->GetValue(), _("layer change"), AssFile::COMMIT_DIAG_META);
+void SubsEditBox::OnLayerEnter(wxCommandEvent &evt) {
+	SetSelectedRows(&AssDialogue::Layer, evt.GetInt(), _("layer change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_TEXT;
-	SetSelectedRows(&AssDialogue::Effect, effect_box->GetValue(), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(&AssDialogue::Effect, evt.GetString(), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(effect_box, &AssDialogue::Effect);
 }
 
-void SubsEditBox::OnCommentChange(wxCommandEvent &) {
-	SetSelectedRows(&AssDialogue::Comment, comment_box->GetValue(), _("comment change"), AssFile::COMMIT_DIAG_META);
+void SubsEditBox::OnCommentChange(wxCommandEvent &evt) {
+	SetSelectedRows(&AssDialogue::Comment, !!evt.GetInt(), _("comment change"), AssFile::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::CallCommand(const char *cmd_name) {
