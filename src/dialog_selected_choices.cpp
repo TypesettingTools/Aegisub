@@ -25,7 +25,7 @@ int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const&
 
 	auto selAll = new wxButton(&dialog, -1, _("Select &All"));
 	selAll->Bind(wxEVT_BUTTON, [&](wxCommandEvent&) {
-		wxArrayInt sel(selections.size());
+		wxArrayInt sel(choices.size(), 0);
 		std::iota(sel.begin(), sel.end(), 0);
 		dialog.SetSelections(sel);
 	});
