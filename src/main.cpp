@@ -78,7 +78,7 @@ namespace config {
 	agi::Path *path = nullptr;
 }
 
-IMPLEMENT_APP(AegisubApp)
+wxIMPLEMENT_APP(AegisubApp);
 
 static const char *LastStartupState = nullptr;
 

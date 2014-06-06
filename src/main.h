@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file main.h
-/// @see main.cpp
-/// @ingroup main
-///
-
 #include <wx/app.h>
 
 #include "aegisublocale.h"
