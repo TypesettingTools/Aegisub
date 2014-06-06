@@ -333,6 +333,10 @@ bool AegisubApp::OnInit() {
 		wxMessageBox(to_wx(e.GetMessage()), "Fatal error while initializing");
 		return false;
 	}
+	catch (std::exception const& e) {
+		wxMessageBox(to_wx(e.what()), "Fatal error while initializing");
+		return false;
+	}
 #ifndef _DEBUG
 	catch (...) {
 		wxMessageBox("Unhandled exception","Fatal error while initializing");
