@@ -37,8 +37,6 @@
 
 class FrameMain;
 
-namespace Automation4 { class AutoloadScriptManager; }
-
 class AegisubApp : public wxApp {
 	friend class FrameMain;
 
@@ -66,7 +64,6 @@ class AegisubApp : public wxApp {
 public:
 	AegisubApp();
 	AegisubLocale locale;
-	Automation4::AutoloadScriptManager *global_scripts = nullptr;
 
 	// Apple events
 	void MacOpenFile(const wxString &filename);

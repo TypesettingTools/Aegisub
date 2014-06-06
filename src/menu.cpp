@@ -26,7 +26,6 @@
 #include "compat.h"
 #include "format.h"
 #include "libresrc/libresrc.h"
-#include "main.h"
 #include "options.h"
 
 #include <libaegisub/cajun/reader.h>
@@ -41,7 +40,6 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
 #include <vector>
-#include <wx/app.h>
 #include <wx/frame.h>
 #include <wx/menu.h>
 #include <wx/menuitem.h>
@@ -402,7 +400,7 @@ class AutomationMenu final : public wxMenu {
 		for (size_t i = items.size() - 1; i >= 2; --i)
 			Delete(items[i]);
 
-		auto macros = wxGetApp().global_scripts->GetMacros();
+		auto macros = config::global_scripts->GetMacros();
 		boost::push_back(macros, c->local_scripts->GetMacros());
 		if (macros.empty()) {
 			Append(-1, _("No Automation macros loaded"))->Enable(false);
@@ -438,7 +436,7 @@ public:
 	AutomationMenu(agi::Context *c, CommandManager *cm)
 	: c(c)
 	, cm(cm)
-	, global_slot(wxGetApp().global_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
+	, global_slot(config::global_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
 	, local_slot(c->local_scripts->AddScriptChangeListener(&AutomationMenu::Regenerate, this))
 	{
 		cm->AddCommand(cmd::get("am/meta"), this);

@@ -36,7 +36,7 @@
 #include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
-#include "../main.h"
+#include "../options.h"
 
 #include <libaegisub/make_unique.h>
 
@@ -50,7 +50,7 @@ struct reload_all final : public Command {
 	STR_HELP("Reload all Automation scripts and rescan the autoload folder")
 
 	void operator()(agi::Context *c) override {
-		wxGetApp().global_scripts->Reload();
+		config::global_scripts->Reload();
 		c->local_scripts->Reload();
 		c->frame->StatusTimeout(_("Reloaded all Automation scripts"));
 	}
@@ -63,7 +63,7 @@ struct reload_autoload final : public Command {
 	STR_HELP("Rescan the Automation autoload folder")
 
 	void operator()(agi::Context *c) override {
-		wxGetApp().global_scripts->Reload();
+		config::global_scripts->Reload();
 		c->frame->StatusTimeout(_("Reloaded autoload Automation scripts"));
 	}
 };

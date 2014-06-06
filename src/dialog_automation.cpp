@@ -36,7 +36,6 @@
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
-#include "main.h"
 
 #include <libaegisub/signal.h>
 
@@ -108,7 +107,7 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 , context(c)
 , local_manager(c->local_scripts.get())
 , local_scripts_changed(local_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
-, global_manager(wxGetApp().global_scripts)
+, global_manager(config::global_scripts)
 , global_scripts_changed(global_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 {
 	SetIcon(GETICON(automation_toolbutton_16));

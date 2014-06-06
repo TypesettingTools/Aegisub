@@ -76,6 +76,7 @@ namespace config {
 	agi::Options *opt = nullptr;
 	agi::MRUManager *mru = nullptr;
 	agi::Path *path = nullptr;
+	Automation4::AutoloadScriptManager *global_scripts;
 }
 
 wxIMPLEMENT_APP(AegisubApp);
@@ -278,7 +279,7 @@ bool AegisubApp::OnInit() {
 
 		// Load Automation scripts
 		StartupLog("Load global Automation scripts");
-		global_scripts = new Automation4::AutoloadScriptManager(OPT_GET("Path/Automation/Autoload")->GetString());
+		config::global_scripts = new Automation4::AutoloadScriptManager(OPT_GET("Path/Automation/Autoload")->GetString());
 
 		// Load export filters
 		StartupLog("Register export filters");
@@ -365,7 +366,7 @@ int AegisubApp::OnExit() {
 	hotkey::clear();
 	cmd::clear();
 
-	delete global_scripts;
+	delete config::global_scripts;
 
 	AssExportFilterChain::Clear();
 
