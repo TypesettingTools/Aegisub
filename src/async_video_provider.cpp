@@ -140,9 +140,52 @@ void AsyncVideoProvider::RequestFrame(int new_frame, double new_time) throw() {
 	});
 }
 
+bool AsyncVideoProvider::NeedUpdate(std::vector<AssDialogueBase const*> const& visible_lines) {
+	// Always need to render after a seek
+	if (single_frame != NEW_SUBS_FILE || frame_number != last_rendered)
+		return true;
+
+	// Obviously need to render if the number of visible lines has changed
+	if (visible_lines.size() != last_lines.size())
+		return true;
+
+	for (size_t i = 0; i < last_lines.size(); ++i) {
+		auto const& last = last_lines[i];
+		auto const& cur = *visible_lines[i];
+		if (last.Layer  != cur.Layer)  return true;
+		if (last.Margin != cur.Margin) return true;
+		if (last.Style  != cur.Style)  return true;
+		if (last.Effect != cur.Effect) return true;
+		if (last.Text   != cur.Text)   return true;
+
+		// Changing the start/end time effects the appearance only if the
+		// line is animated. This is obviously not a very accurate check for
+		// animated lines, but false positives aren't the end of the world
+		if ((last.Start != cur.Start || last.End != cur.End) &&
+			(!cur.Effect.get().empty() || cur.Text.get().find('\\') != std::string::npos))
+			return true;
+	}
+
+	return false;
+}
+
 void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version) {
 	// Only actually produce the frame if there's no queued changes waiting
 	if (req_version < version || frame_number < 0) return;
+
+	std::vector<AssDialogueBase const*> visible_lines;
+	for (auto const& line : subs->Events) {
+		if (!line.Comment && !(line.Start > time || line.End <= time))
+			visible_lines.push_back(&line);
+	}
+
+	if (!NeedUpdate(visible_lines)) return;
+
+	last_lines.clear();
+	last_lines.reserve(visible_lines.size());
+	for (auto line : visible_lines)
+		last_lines.push_back(*line);
+	last_rendered = frame_number;
 
 	try {
 		FrameReadyEvent *evt = new FrameReadyEvent(ProcFrame(frame_number, time), time);

@@ -29,6 +29,7 @@ class AssFile;
 class SubtitlesProvider;
 class VideoProvider;
 class VideoProviderError;
+struct AssDialogueBase;
 struct VideoFrame;
 namespace agi {
 	class BackgroundRunner;
@@ -57,6 +58,14 @@ class AsyncVideoProvider {
 	/// that frame loaded. If -1, the entire file is loaded. If -2, the
 	/// currently loaded file is out of date.
 	int single_frame = -1;
+
+	/// Last rendered frame number
+	int last_rendered = -1;
+	/// Last rendered subtitles on that frame
+	std::vector<AssDialogueBase> last_lines;
+	/// Check if we actually need to honor a frame request or if no visible
+	/// lines have actually changed
+	bool NeedUpdate(std::vector<AssDialogueBase const*> const& visible_lines);
 
 	std::shared_ptr<VideoFrame> ProcFrame(int frame, double time, bool raw = false);
 
