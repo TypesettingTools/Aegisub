@@ -148,10 +148,6 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		sizer->Add(ctrl, wxSizerFlags(1).Left().Expand());
 	};
 
-	auto spin_ctrl = [&](float value, int max_value) {
-		return new wxSpinCtrl(this, -1, std::to_wstring(value), wxDefaultPosition, wxSize(60, -1), wxSP_ARROW_KEYS, 0, max_value, value);
-	};
-
 	auto num_text_ctrl = [&](double *value, double min, double max, double step) -> wxSpinCtrlDouble * {
 		auto scd = new wxSpinCtrlDouble(this, -1, "", wxDefaultPosition,
 			wxSize(75, -1), wxSP_ARROW_KEYS, min, max, *value, step);
@@ -201,7 +197,10 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		new ColourButton(this, wxSize(55, 16), true, style->shadow, ColorValidator(&work->shadow))
 	};
 	for (int i = 0; i < 3; i++)
-		margin[i] = spin_ctrl(style->Margin[i], 9999);
+		margin[i] = new wxSpinCtrl(this, -1, std::to_wstring(style->Margin[i]),
+		                           wxDefaultPosition, wxSize(60, -1),
+		                           wxSP_ARROW_KEYS, 0, 9999, style->Margin[i]);
+
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	auto Outline = num_text_ctrl(&work->outline_w, 0.0, 1000.0, 0.1);
 	auto Shadow = num_text_ctrl(&work->shadow_w, 0.0, 1000.0, 0.1);
