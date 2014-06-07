@@ -79,8 +79,6 @@ void VideoController::OnSubtitlesCommit(int type, std::set<const AssDialogue *> 
 		provider->LoadSubtitles(context->ass.get());
 	else
 		provider->UpdateSubtitles(context->ass.get(), changed);
-	if (!IsPlaying())
-		provider->GetFrame(frame_n, TimeAtFrame(frame_n));
 }
 
 void VideoController::OnActiveLineChanged(AssDialogue *line) {
