@@ -24,7 +24,6 @@ SRC += \
 	common/charset_6937.cpp \
 	common/charset_conv.cpp \
 	common/color.cpp \
-	common/dispatch.cpp \
 	common/file_mapping.cpp \
 	common/format.cpp \
 	common/fs.cpp \
@@ -57,7 +56,9 @@ SRC += \
 	unix/util.cpp
 
 ifeq (yes, $(BUILD_DARWIN))
-SRC += osx/util.mm
+SRC += osx/util.mm osx/dispatch.mm
+else
+SRC += common/dispatch.cpp
 endif
 
 HEADER += \
