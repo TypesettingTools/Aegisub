@@ -45,14 +45,15 @@ void Path::FillPlatformSpecificPaths() {
 	SetToken("?user", home/".aegisub");
 	SetToken("?local", home/".aegisub");
 	SetToken("?data", P_DATA);
+	SetToken("?dictionary", "/usr/share/hunspell");
 #else
 	agi::fs::path app_support = agi::util::GetApplicationSupportDirectory();
 	SetToken("?user", app_support/"Aegisub");
 	SetToken("?local", app_support/"Aegisub");
 	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
+	SetToken("?dictionary", agi::util::GetBundleSharedSupportDirectory() + "/dictionaries");
 #endif
 	SetToken("?temp", boost::filesystem::temp_directory_path());
-	SetToken("?dictionary", "/usr/share/hunspell");
 }
 
 }
