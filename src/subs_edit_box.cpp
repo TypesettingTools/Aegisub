@@ -86,6 +86,14 @@ void change_value(wxTextCtrl *ctrl, wxString const& value) {
 		ctrl->ChangeValue(value);
 }
 
+wxString new_value(wxComboBox *ctrl, wxCommandEvent &evt) {
+#ifdef __WXGTK__
+	return ctrl->GetValue();
+#else
+	return evt.GetString();
+#endif
+}
+
 void time_edit_char_hook(wxKeyEvent &event) {
 	// Force a modified event on Enter
 	if (event.GetKeyCode() == WXK_RETURN) {
@@ -579,13 +587,13 @@ void SubsEditBox::OnSplit(wxCommandEvent&) {
 }
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &evt) {
-	SetSelectedRows(&AssDialogue::Style, evt.GetString(), _("style change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Style, new_value(style_box, evt), _("style change"), AssFile::COMMIT_DIAG_META);
 	active_style = c->ass->GetStyle(line->Style);
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_TEXT;
-	SetSelectedRows(&AssDialogue::Actor, actor_box->GetValue(), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(&AssDialogue::Actor, new_value(actor_box, evt), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(actor_box, &AssDialogue::Actor);
 }
 
@@ -595,7 +603,7 @@ void SubsEditBox::OnLayerEnter(wxCommandEvent &evt) {
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_TEXT;
-	SetSelectedRows(&AssDialogue::Effect, evt.GetString(), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(&AssDialogue::Effect, new_value(effect_box, evt), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
 	PopulateList(effect_box, &AssDialogue::Effect);
 }
 
