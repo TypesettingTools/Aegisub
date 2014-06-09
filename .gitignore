@@ -59,10 +59,10 @@ config.log
 config.status
 config_windows.h
 configure
-desktop/aegisub.desktop
-desktop/aegisub.desktop.template
 git_version.h
 git_version.xml
+packages/desktop/aegisub.desktop
+packages/desktop/aegisub.desktop.template
 src/aegisub
 src/libresrc/bitmap.cpp
 src/libresrc/bitmap.h

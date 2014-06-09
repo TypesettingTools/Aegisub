@@ -1,4 +1,4 @@
-include ../Makefile.inc
+include ../../Makefile.inc
 
 applicationsdir = $(DESKTOP_DATADIR)/applications
 applications_DATA = aegisub.desktop
@@ -6,8 +6,8 @@ applications_DATA = aegisub.desktop
 iconsscalabledir = $(DESKTOP_DATADIR)/icons/hicolor/scalable/apps
 iconsscalable_DATA = scalable/aegisub.svg
 
-aegisub.desktop: aegisub.desktop.template ../po
-	intltool-merge --quiet --desktop-style ../po aegisub.desktop.template aegisub.desktop
+aegisub.desktop: aegisub.desktop.template ../../po
+	intltool-merge --quiet --desktop-style ../../po aegisub.desktop.template aegisub.desktop
 
 all: ;
 
@@ -50,4 +50,4 @@ install-icons:
 
 DISTCLEANFILES = aegisub.desktop
 
-include ../Makefile.target
+include ../../Makefile.target

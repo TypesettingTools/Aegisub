@@ -1,6 +1,7 @@
 include Makefile.inc
 
 SUBDIRS += \
+	packages/desktop \
 	vendor/luajit \
 	vendor/universalchardet \
 	vendor/luabins \
@@ -8,7 +9,6 @@ SUBDIRS += \
 	tools \
 	src \
 	automation \
-	desktop \
 	po
 
 all: ;
