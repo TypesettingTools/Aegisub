@@ -29,39 +29,29 @@ ifeq (yes, $(HAVE_ALSA))
 audio_player_alsa.o: CXXFLAGS += $(CFLAGS_ALSA)
 LIBS += $(LIBS_ALSA)
 SRC += audio_player_alsa.cpp
-else
-EXTRA_DIST += audio_player_alsa.cpp
 endif
 
 ifeq (yes, $(HAVE_PORTAUDIO))
 audio_player_portaudio.o: CXXFLAGS += $(CFLAGS_PORTAUDIO)
 LIBS += $(LIBS_PORTAUDIO)
 SRC += audio_player_portaudio.cpp
-else
-EXTRA_DIST += audio_player_portaudio.cpp
 endif
 
 ifeq (yes, $(HAVE_LIBPULSE))
 audio_player_pulse.o: CXXFLAGS += $(CFLAGS_LIBPULSE)
 LIBS += $(LIBS_LIBPULSE)
 SRC += audio_player_pulse.cpp
-else
-EXTRA_DIST += audio_player_pulse.cpp
 endif
 
 ifeq (yes, $(HAVE_OPENAL))
 audio_player_openal.o: CXXFLAGS += $(CFLAGS_OPENAL)
 LIBS += $(LIBS_OPENAL)
 SRC += audio_player_openal.cpp
-else
-EXTRA_DIST += audio_player_openal.cpp
 endif
 
 ifeq (yes, $(HAVE_OSS))
 audio_player_oss.o: CXXFLAGS += $(CFLAGS_OSS)
 SRC += audio_player_oss.cpp
-else
-EXTRA_DIST += audio_player_oss.cpp
 endif
 
 #######################
@@ -72,8 +62,6 @@ audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.
 	CXXFLAGS += $(CFLAGS_FFMS2)
 LIBS += $(LIBS_FFMS2)
 SRC += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
-else
-EXTRA_DIST += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
 endif
 
 ###########
@@ -91,8 +79,6 @@ ifeq (yes, $(HAVE_HUNSPELL))
 spellchecker_hunspell.o: CXXFLAGS += $(CFLAGS_HUNSPELL)
 LIBS += $(LIBS_HUNSPELL)
 SRC += spellchecker_hunspell.cpp
-else
-EXTRA_DIST += spellchecker_hunspell.cpp
 endif
 
 #####################
@@ -152,6 +138,21 @@ SRC += \
 	charset_detect.cpp \
 	colorspace.cpp \
 	colour_button.cpp \
+	command/app.cpp \
+	command/audio.cpp \
+	command/automation.cpp \
+	command/command.cpp \
+	command/edit.cpp \
+	command/grid.cpp \
+	command/help.cpp \
+	command/keyframe.cpp \
+	command/recent.cpp \
+	command/subtitle.cpp \
+	command/time.cpp \
+	command/timecode.cpp \
+	command/tool.cpp \
+	command/video.cpp \
+	command/vis_tool.cpp \
 	compat.cpp \
 	context.cpp \
 	crash_writer.cpp \
@@ -262,26 +263,6 @@ SRC += \
 	visual_tool_scale.cpp \
 	visual_tool_vector_clip.cpp
 
-
-HEADER += \
-	*.h \
-	command/*.h \
-	config/*.h \
-	include/aegisub/*.h \
-	gl/*.h
-
-EXTRA_DIST += \
-	bitmaps/button/*.png \
-	bitmaps/misc/*.png \
-	bitmaps/windows/eyedropper.cur \
-	bitmaps/windows/icon.ico \
-	bitmaps/*.respack
-
-EXTRA_DIST += \
-	command/Makefile.inc \
-	libresrc/Makefile.inc
-
-include command/Makefile.inc
 include libresrc/Makefile.inc
 
 include ../Makefile.target

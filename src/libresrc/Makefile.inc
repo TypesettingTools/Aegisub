@@ -3,9 +3,6 @@ SRC += \
 	libresrc/default_config.cpp \
 	libresrc/libresrc.cpp
 
-HEADER += \
-	libresrc/libresrc.h
-
 libresrc/bitmap.cpp libresrc/bitmap.h: ../tools/respack.lua bitmaps/button/*
 	../tools/respack.lua bitmaps/manifest.respack libresrc/bitmap.cpp libresrc/bitmap.h
 
@@ -27,6 +24,3 @@ DISTCLEANFILES += default_config_platform.json
 
 GLOBAL_DEPS += libresrc/bitmap.h libresrc/default_config.h
 
-EXTRA_DIST += \
-	libresrc/*.json \
-	libresrc/*.respack

@@ -24,12 +24,6 @@ ICON_SCALABLE = \
 
 DESKTOP_FILE = aegisub.desktop
 
-EXTRA_DIST = \
-	aegisub.desktop.template.in \
-	aegisub.desktop.template \
-	$(ICON_HICOLOR) \
-	$(ICON_SCALABLE)
-
 install: install-desktop install-icons
 
 install-desktop: $(DESKTOP_FILE)

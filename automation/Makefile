@@ -52,7 +52,5 @@ install: install-share
 		$(BIN_INSTALL) -m644 $$i $(DESTDIR)$(P_DATA)/automation/$$i; \
 	done
 
-EXTRA_DIST = $(DATA_AUTOMATION)
-
 include ../Makefile.target
 -include tests/*.d

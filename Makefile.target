@@ -110,26 +110,6 @@ ifdef DATA_SHARE_DOC
 	done
 endif
 
-##############
-# DISTRIBUTION
-##############
-dist: distdir
-	@$(BIN_TAR) chf - --posix "$(PACKAGE_TARNAME)" | $(BIN_GZIP) -c > "$(PACKAGE_TARNAME).tar.gz"
-	@rm -rf $(PACKAGE_TARNAME)
-
-distdir:
-	@if ! test -f packages/distfile/distfile.sh; then \
-		echo "Please run this from the parent directory."; \
-		exit 1; \
-	fi
-	@${SHELL} packages/distfile/distfile.sh $(MAKE) $(PACKAGE_TARNAME)
-
-distfiles: $(SUBDIRS)
-	@for i in $(SRC) $(HEADER) $(PO) $(EXTRA_DIST); do \
-		echo $(CURDIR)/$$i; \
-	done
-
-
 ########################
 # SUBDIRECTORY TRAVERSAL
 ########################
@@ -143,7 +123,6 @@ automation: libaegisub vendor/luajit
 src: vendor/universalchardet vendor/luajit tools libaegisub
 tests: libaegisub
 tools: libaegisub
-reporter: src
 
 $(OBJ): $(GLOBAL_DEPS)
 

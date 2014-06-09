@@ -61,15 +61,6 @@ else
 SRC += common/dispatch.cpp
 endif
 
-HEADER += \
-	*.h \
-	*/*.h \
-	include/libaegisub/*.h \
-	include/libaegisub/charsets.def \
-	include/libaegisub/cajun/*.h
-
-EXTRA_DIST += osx/util.mm
-
 include ../Makefile.target
 -include */*.d
 -include lua/*/*.d
