@@ -272,7 +272,7 @@ void AssFile::CleanExtradata() {
 		std::vector<uint32_t> new_ids;
 		for (auto& keyid : key_ids) {
 			new_ids.push_back(keyid.second);
-			ids.erase(std::remove(ids.begin(), ids.end(), keyid.second));
+			ids.erase(remove(begin(ids), end(ids), keyid.second), end(ids));
 		}
 		line.ExtradataIds = new_ids;
 	}
