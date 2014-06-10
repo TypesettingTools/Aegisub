@@ -297,16 +297,18 @@ namespace Automation4 {
 			dia->Effect = get_string_field(L, "effect", "dialogue");
 			dia->Text = get_string_field(L, "text", "dialogue");
 
-			lua_getfield(L, -1, "extra");
 			std::vector<uint32_t> new_ids;
-			lua_pushnil(L);
-			while (lua_next(L, -2)) {
-				auto key = get_string_or_default(L, -2);
-				auto value = get_string_or_default(L, -1);
-				new_ids.push_back(ass->AddExtradata(key, value));
-				lua_pop(L, 1);
-			}
-			lua_pop(L, 1);
+
+			lua_getfield(L, -1, "extra");
+			auto type = lua_type(L, -1);
+			if (type != LUA_TNIL && type != LUA_TTABLE)
+				error(L, "dialogue extradata must be a table");
+			lua_for_each(L, [&] {
+				if (lua_type(L, -2) != LUA_TSTRING) return;
+				new_ids.push_back(ass->AddExtradata(
+					get_string_or_default(L, -2),
+					get_string_or_default(L, -1)));
+			});
 			dia->ExtradataIds = new_ids;
 		}
 		else {
