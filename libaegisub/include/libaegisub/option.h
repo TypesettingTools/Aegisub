@@ -35,7 +35,6 @@ namespace agi {
 
 DEFINE_EXCEPTION(OptionError, Exception);
 DEFINE_EXCEPTION(OptionErrorNotFound, OptionError);
-DEFINE_EXCEPTION(OptionErrorDuplicateKey, OptionError);
 
 class OptionValue;
 

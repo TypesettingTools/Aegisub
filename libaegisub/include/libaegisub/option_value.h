@@ -27,9 +27,6 @@
 #undef Bool
 
 namespace agi {
-DEFINE_EXCEPTION(OptionValueError, Exception);
-DEFINE_EXCEPTION(OptionValueErrorInvalidType, OptionValueError);
-
 /// Option type
 /// No bitsets here.
 enum class OptionType {
@@ -67,8 +64,8 @@ class OptionValue {
 		throw agi::InternalError("Invalid option type");
 	}
 
-	OptionValueErrorInvalidType TypeError(OptionType type) const {
-		return OptionValueErrorInvalidType("Invalid type for option " + name + ": expected " + TypeToString(type) + ", got " + TypeToString(GetType()));
+	InternalError TypeError(OptionType type) const {
+		return InternalError("Invalid type for option " + name + ": expected " + TypeToString(type) + ", got " + TypeToString(GetType()));
 	}
 
 	template<typename T>

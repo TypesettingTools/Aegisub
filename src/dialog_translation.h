@@ -75,5 +75,5 @@ public:
 	void Commit(bool next);
 	void InsertOriginal();
 
-	DEFINE_EXCEPTION(NothingToTranslate, agi::Exception);;
+	struct NothingToTranslate { };
 };

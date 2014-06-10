@@ -212,50 +212,50 @@ TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
 		empty_arr_options opt;
 		EXPECT_NO_THROW(opt.Get("arr")->GetListBool());
 
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::OptionValueErrorInvalidType);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
 	}
 
 	{
 		empty_arr_options opt;
 		EXPECT_NO_THROW(opt.Get("arr")->GetListColor());
 
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::OptionValueErrorInvalidType);
+		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
 	}
 
 	{
 		empty_arr_options opt;
 		EXPECT_NO_THROW(opt.Get("arr")->GetListDouble());
 
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::OptionValueErrorInvalidType);
+		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
 	}
 
 	{
 		empty_arr_options opt;
 		EXPECT_NO_THROW(opt.Get("arr")->GetListInt());
 
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::OptionValueErrorInvalidType);
+		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
 	}
 
 	{
 		empty_arr_options opt;
 		EXPECT_NO_THROW(opt.Get("arr")->GetListString());
 
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::OptionValueErrorInvalidType);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::OptionValueErrorInvalidType);
+		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
+		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
 	}
 }
 

@@ -26,9 +26,6 @@
 namespace agi {
 
 DEFINE_EXCEPTION(OptionJsonValueError, Exception);
-DEFINE_EXCEPTION(OptionJsonValueArray, OptionJsonValueError);
-DEFINE_EXCEPTION(OptionJsonValueSingle, OptionJsonValueError);
-DEFINE_EXCEPTION(OptionJsonValueNull, OptionJsonValueError);
 
 class ConfigVisitor final : public json::ConstVisitor {
 	/// Option map being populated
@@ -42,7 +39,6 @@ class ConfigVisitor final : public json::ConstVisitor {
 	/// default value is changed to the new one
 	bool replace;
 
-	template<class ErrorType>
 	void Error(const char *message);
 
 	template<class OptionValueType>

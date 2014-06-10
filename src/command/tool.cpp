@@ -206,8 +206,8 @@ struct tool_translation_assistant final : public Command {
 		try {
 			c->dialog->ShowModal<DialogTranslation>(c);
 		}
-		catch (agi::Exception const& e) {
-			wxMessageBox(to_wx(e.GetMessage()));
+		catch (DialogTranslation::NothingToTranslate const&) {
+			wxMessageBox(_("There is nothing to translate in the file."));
 		}
 	}
 };

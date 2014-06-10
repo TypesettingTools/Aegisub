@@ -159,7 +159,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	blocks = active_line->ParseTags();
 	if (bad_block(blocks[0])) {
 		if (!NextBlock())
-			throw NothingToTranslate(from_wx(_("There is nothing to translate in the file.")));
+			throw NothingToTranslate();
 	}
 	else
 		UpdateDisplay();

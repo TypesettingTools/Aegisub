@@ -37,12 +37,11 @@ ConfigVisitor::ConfigVisitor(OptionValueMap &val, const std::string &member_name
 {
 }
 
-template<class ErrorType>
 void ConfigVisitor::Error(const char *message) {
 	if (ignore_errors)
 		LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << message;
 	else
-		throw ErrorType(message);
+		throw OptionJsonValueError(message);
 }
 
 void ConfigVisitor::Visit(const json::Object& object) {
@@ -62,11 +61,11 @@ std::unique_ptr<OptionValue> ConfigVisitor::ReadArray(json::Array const& src, st
 
 	for (json::Object const& obj : src) {
 		if (obj.size() != 1) {
-			Error<OptionJsonValueArray>("Invalid array member");
+			Error("Invalid array member");
 			return nullptr;
 		}
 		if (obj.begin()->first != array_type) {
-			Error<OptionJsonValueArray>("Attempt to insert value into array of wrong type");
+			Error("Attempt to insert value into array of wrong type");
 			return nullptr;
 		}
 
@@ -78,13 +77,13 @@ std::unique_ptr<OptionValue> ConfigVisitor::ReadArray(json::Array const& src, st
 
 void ConfigVisitor::Visit(const json::Array& array) {
 	if (array.empty()) {
-		Error<OptionJsonValueArray>("Cannot infer the type of an empty array");
+		Error("Cannot infer the type of an empty array");
 		return;
 	}
 
 	json::Object const& front = array.front();
 	if (front.size() != 1) {
-		Error<OptionJsonValueArray>("Invalid array member");
+		Error("Invalid array member");
 		return;
 	}
 
@@ -101,7 +100,7 @@ void ConfigVisitor::Visit(const json::Array& array) {
 	else if (array_type == "color")
 		AddOptionValue(ReadArray<OptionValueListColor>(array, array_type));
 	else
-		Error<OptionJsonValueArray>("Array type not handled");
+		Error("Array type not handled");
 }
 
 void ConfigVisitor::Visit(const json::Integer& number) {
@@ -130,7 +129,7 @@ void ConfigVisitor::Visit(const json::Boolean& boolean) {
 }
 
 void ConfigVisitor::Visit(const json::Null& null) {
-	Error<OptionJsonValueNull>("Attempt to read null value");
+	Error("Attempt to read null value");
 }
 
 void ConfigVisitor::AddOptionValue(std::unique_ptr<OptionValue>&& opt) {
@@ -148,7 +147,7 @@ void ConfigVisitor::AddOptionValue(std::unique_ptr<OptionValue>&& opt) {
 		try {
 			values[name]->Set(opt.get());
 		}
-		catch (agi::OptionValueError const& e) {
+		catch (agi::InternalError const& e) {
 			if (ignore_errors)
 				LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << e.GetMessage();
 			else
