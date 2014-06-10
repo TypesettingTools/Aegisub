@@ -58,7 +58,7 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, doub
 			}
 		}
 	}
-	catch (std::string const& err) { throw SubtitlesProviderErrorEvent(err); }
+	catch (agi::Exception const& err) { throw SubtitlesProviderErrorEvent(err.GetMessage()); }
 
 	try {
 		subs_provider->DrawSubtitles(*frame, time / 1000.);
@@ -72,8 +72,8 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_ha
 	try {
 		return SubtitlesProviderFactory::GetProvider(br);
 	}
-	catch (std::string const& err) {
-		evt_handler->AddPendingEvent(SubtitlesProviderErrorEvent(err));
+	catch (agi::Exception const& err) {
+		evt_handler->AddPendingEvent(SubtitlesProviderErrorEvent(err.GetMessage()));
 		return nullptr;
 	}
 }

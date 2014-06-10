@@ -34,19 +34,12 @@
 DEFINE_EXCEPTION(AssParseError, SubtitleFormatParseError);
 
 void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
-	TextFileReader file(filename, encoding);
 	int version = !agi::fs::HasExtension(filename, "ssa");
-	AssParser parser(target, version);
 
-	while (file.HasMoreLines()) {
-		std::string line = file.ReadLineFromFile();
-		try {
-			parser.AddLine(line);
-		}
-		catch (const char *err) {
-			throw AssParseError("Error processing line: " + line + ": " + err);
-		}
-	}
+	TextFileReader file(filename, encoding);
+	AssParser parser(target, version);
+	while (file.HasMoreLines())
+		parser.AddLine(file.ReadLineFromFile());
 }
 
 #ifdef _WIN32

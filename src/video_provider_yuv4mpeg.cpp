@@ -402,7 +402,7 @@ std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 			break;
 		/// @todo add support for more pixel formats
 		default:
-			throw "YUV4MPEG video provider: GetFrame: Unsupported source colorspace";
+			throw VideoNotSupported("YUV4MPEG video provider: GetFrame: Unsupported source colorspace");
 	}
 
 	auto src_y = reinterpret_cast<const unsigned char *>(file.read(seek_table[n], luma_sz + chroma_sz * 2));

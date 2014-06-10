@@ -69,7 +69,7 @@ FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 	if (SUCCEEDED(res))
 		COMInited = true;
 	else if (res != RPC_E_CHANGED_MODE)
-		throw "COM initialization failure";
+		throw agi::EnvironmentError("COM initialization failure");
 #endif
 
 	// initialize ffmpegsource
@@ -87,7 +87,6 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::pat
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
 	ErrInfo.ErrorType	= FFMS_ERROR_SUCCESS;
 	ErrInfo.SubType		= FFMS_ERROR_SUCCESS;
-	std::string MsgString;
 
 	// index all audio tracks
 	FFMS_Index *Index;
@@ -103,11 +102,8 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::pat
 			nullptr, nullptr, IndexEH, callback, ps, &ErrInfo);
 	});
 
-	if (Index == nullptr) {
-		MsgString += "Failed to index: ";
-		MsgString += ErrInfo.Buffer;
-		throw MsgString;
-	}
+	if (Index == nullptr)
+		throw agi::EnvironmentError(std::string("Failed to index: ") + ErrInfo.Buffer);
 
 	// write index to disk for later use
 	FFMS_WriteIndex(CacheName.string().c_str(), Index, &ErrInfo);
@@ -214,7 +210,6 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 	return result;
 }
 
-/// @brief		Starts the cache cleaner thread
 void FFmpegSourceProvider::CleanCache() {
 	::CleanCache(config::path->Decode("?local/ffms2cache/"),
 		"*.ffindex",

@@ -38,6 +38,7 @@
 #include "utils.h"
 
 #include <libaegisub/color.h>
+#include <libaegisub/exception.h>
 
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>
@@ -151,7 +152,7 @@ class OpenGLTextTexture final : boost::noncopyable {
 		// Upload image to video memory
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, imgw, imgh, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, &alpha[0]);
-		if (glGetError()) throw "Internal OpenGL text renderer error: Error uploading glyph data to video memory.";
+		if (glGetError()) throw agi::EnvironmentError("Internal OpenGL text renderer error: Error uploading glyph data to video memory.");
 	}
 
 public:
@@ -173,7 +174,7 @@ public:
 
 		// Allocate texture
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, nullptr);
-		if (glGetError()) throw "Internal OpenGL text renderer error: Could not allocate Text Texture";
+		if (glGetError()) throw agi::EnvironmentError("Internal OpenGL text renderer error: Could not allocate text texture");
 
 		TryToInsert(glyph);
 	}

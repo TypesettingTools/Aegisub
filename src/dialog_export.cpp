@@ -199,14 +199,7 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 		c->ass->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
 		exporter.Export(filename, from_wx(charset_list->GetStringSelection()), &d);
 	}
-	catch (agi::UserCancelException const&) {
-	}
-	catch (const char *error) {
-		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
-	}
-	catch (wxString const& error) {
-		wxMessageBox(error, "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
-	}
+	catch (agi::UserCancelException const&) { }
 	catch (agi::Exception const& err) {
 		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
 	}

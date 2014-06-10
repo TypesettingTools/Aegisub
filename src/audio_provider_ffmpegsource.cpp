@@ -78,11 +78,8 @@ FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filena
 
 	LoadAudio(filename);
 }
-catch (std::string const& err) {
-	throw agi::AudioProviderOpenError(err);
-}
-catch (const char *err) {
-	throw agi::AudioProviderOpenError(err);
+catch (agi::EnvironmentError const& err) {
+	throw agi::AudioProviderOpenError(err.GetMessage());
 }
 
 void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {

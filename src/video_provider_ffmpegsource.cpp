@@ -132,11 +132,8 @@ FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filena
 
 	LoadVideo(filename, colormatrix);
 }
-catch (std::string const& err) {
-	throw VideoOpenError(err);
-}
-catch (const char * err) {
-	throw VideoOpenError(err);
+catch (agi::EnvironmentError const& err) {
+	throw VideoOpenError(err.GetMessage());
 }
 
 void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::string const& colormatrix) {

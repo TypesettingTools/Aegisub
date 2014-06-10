@@ -67,8 +67,7 @@ void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 
 void AssExporter::AddFilter(std::string const& name) {
 	auto filter = AssExportFilterChain::GetFilter(name);
-
-	if (!filter) throw "Filter not found: " + name;
+	if (!filter) throw agi::InternalError("Filter not found: " + name);
 
 	filters.push_back(filter);
 }
@@ -90,7 +89,7 @@ void AssExporter::Export(agi::fs::path const& filename, std::string const& chars
 
 	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer)
-		throw "Unknown file type.";
+		throw agi::InvalidInputException("Unknown file type.");
 
 	writer->WriteFile(&subs, filename, c->project->Timecodes(), charset);
 }
@@ -104,5 +103,5 @@ std::string const& AssExporter::GetDescription(std::string const& name) const {
 	auto filter = AssExportFilterChain::GetFilter(name);
 	if (filter)
 		return filter->GetDescription();
-	throw "Filter not found: " + name;
+	throw agi::InternalError("Filter not found: " + name);
 }

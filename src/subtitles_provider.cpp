@@ -60,8 +60,7 @@ std::unique_ptr<SubtitlesProvider> SubtitlesProviderFactory::GetProvider(agi::Ba
 			if (provider) return provider;
 		}
 		catch (agi::UserCancelException const&) { throw; }
-		catch (std::string const& err) { error += factory->name + ": " + err + "\n"; }
-		catch (const char *err) { error += factory->name + ": " + std::string(err) + "\n"; }
+		catch (agi::Exception const& err) { error += factory->name + ": " + err.GetMessage() + "\n"; }
 		catch (...) { error += factory->name + ": Unknown error\n"; }
 	}
 

@@ -214,7 +214,7 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, std::strin
 void SubsController::Save(agi::fs::path const& filename, std::string const& encoding) {
 	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer)
-		throw "Unknown file type.";
+		throw agi::InvalidInputException("Unknown file type.");
 
 	int old_autosaved_commit_id = autosaved_commit_id, old_saved_commit_id = saved_commit_id;
 	try {

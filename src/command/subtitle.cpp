@@ -322,9 +322,6 @@ static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	catch (const agi::Exception& err) {
 		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 	}
-	catch (const char *err) {
-		wxMessageBox(err, "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
-	}
 	catch (...) {
 		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
 	}

@@ -131,7 +131,7 @@ public:
 	void LoadSubtitles(const char *data, size_t len) override {
 		if (ass_track) ass_free_track(ass_track);
 		ass_track = ass_read_memory(library, const_cast<char *>(data), len, nullptr);
-		if (!ass_track) throw "libass failed to load subtitles.";
+		if (!ass_track) throw agi::InternalError("libass failed to load subtitles.");
 	}
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
