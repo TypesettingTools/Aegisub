@@ -44,7 +44,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 
-#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/crc.hpp>
 #include <boost/filesystem/path.hpp>
 #include <wx/intl.h>
@@ -149,45 +149,45 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int, std::string> 
 
 	if (Choice < 0)
 		return Choice;
-	else
-		return TrackNumbers[Choice];
+	return TrackNumbers[Choice];
 }
 
 /// @brief Set ffms2 log level according to setting in config.dat
 void FFmpegSourceProvider::SetLogLevel() {
-	std::string LogLevel = OPT_GET("Provider/FFmpegSource/Log Level")->GetString();
+	auto LogLevel = OPT_GET("Provider/FFmpegSource/Log Level")->GetString();
+	boost::to_lower(LogLevel);
 
-	if (boost::iequals(LogLevel, "panic"))
+	if (LogLevel == "panic")
 		FFMS_SetLogLevel(FFMS_LOG_PANIC);
-	else if (boost::iequals(LogLevel, "fatal"))
+	else if (LogLevel == "fatal")
 		FFMS_SetLogLevel(FFMS_LOG_FATAL);
-	else if (boost::iequals(LogLevel, "error"))
+	else if (LogLevel == "error")
 		FFMS_SetLogLevel(FFMS_LOG_ERROR);
-	else if (boost::iequals(LogLevel, "warning"))
+	else if (LogLevel == "warning")
 		FFMS_SetLogLevel(FFMS_LOG_WARNING);
-	else if (boost::iequals(LogLevel, "info"))
+	else if (LogLevel == "info")
 		FFMS_SetLogLevel(FFMS_LOG_INFO);
-	else if (boost::iequals(LogLevel, "verbose"))
+	else if (LogLevel == "verbose")
 		FFMS_SetLogLevel(FFMS_LOG_VERBOSE);
-	else if (boost::iequals(LogLevel, "debug"))
+	else if (LogLevel == "debug")
 		FFMS_SetLogLevel(FFMS_LOG_DEBUG);
 	else
 		FFMS_SetLogLevel(FFMS_LOG_QUIET);
 }
 
 FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
-	std::string Mode = OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString();
+	auto Mode = OPT_GET("Provider/Audio/FFmpegSource/Decode Error Handling")->GetString();
+	boost::to_lower(Mode);
 
-	if (boost::iequals(Mode, "ignore"))
+	if (Mode == "ignore")
 		return FFMS_IEH_IGNORE;
-	else if (boost::iequals(Mode, "clear"))
+	if (Mode == "clear")
 		return FFMS_IEH_CLEAR_TRACK;
-	else if (boost::iequals(Mode, "stop"))
+	if (Mode == "stop")
 		return FFMS_IEH_STOP_TRACK;
-	else if (boost::iequals(Mode, "abort"))
+	if (Mode == "abort")
 		return FFMS_IEH_ABORT;
-	else
-		return FFMS_IEH_STOP_TRACK; // questionable default?
+	return FFMS_IEH_STOP_TRACK; // questionable default?
 }
 
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist
