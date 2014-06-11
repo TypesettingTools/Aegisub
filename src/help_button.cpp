@@ -81,5 +81,5 @@ void HelpButton::OpenPage(wxString const& pageID) {
 	wxString section;
 	page = page.BeforeFirst('#', &section);
 
-	wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.1/%s/#%s", page, section));
+	wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%s/#%s", page, section));
 }
