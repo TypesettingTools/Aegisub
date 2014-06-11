@@ -17,10 +17,20 @@
 #include "include/aegisub/spellchecker.h"
 #include "spellchecker_hunspell.h"
 
+#include "options.h"
+
 #include <libaegisub/make_unique.h>
+#include <libaegisub/spellchecker.h>
+
+namespace agi {
+class OptionValue;
+std::unique_ptr<agi::SpellChecker> CreateCocoaSpellChecker(OptionValue *opt);
+}
 
 std::unique_ptr<agi::SpellChecker> SpellCheckerFactory::GetSpellChecker() {
-#ifdef WITH_HUNSPELL
+#ifdef __APPLE__
+	return agi::CreateCocoaSpellChecker(OPT_SET("Tool/Spell Checker/Language"));
+#elif defined(WITH_HUNSPELL)
 	return agi::make_unique<HunspellSpellChecker>();
 #else
 	return {};

@@ -56,7 +56,7 @@ SRC += \
 	unix/util.cpp
 
 ifeq (yes, $(BUILD_DARWIN))
-SRC += osx/util.mm osx/dispatch.mm
+SRC += osx/util.mm osx/dispatch.mm osx/spellchecker.mm
 else
 SRC += common/dispatch.cpp
 endif
