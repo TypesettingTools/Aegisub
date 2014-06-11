@@ -33,53 +33,54 @@
 
 #include <libaegisub/exception.h>
 
-#include <boost/container/flat_map.hpp>
+#include <algorithm>
+
+static const char *pages[][2] = {
+	{"Attachment Manager", "Attachment_Manager"},
+	{"Automation Manager", "Automation/Manager"},
+	{"Colour Picker", "Colour_Picker"},
+	{"Dummy Video", "Video#dummyvideo"},
+	{"Export", "Exporting"},
+	{"Fonts Collector", "Fonts_Collector"},
+	{"Kanji Timer", "Kanji_Timer"},
+	{"Main", "Main_Page"},
+	{"Options", "Options"},
+	{"Paste Over", "Paste_Over"},
+	{"Properties", "Properties"},
+	{"Resample resolution", "Resolution_Resampler"},
+	{"Shift Times", "Shift_Times"},
+	{"Select Lines", "Select_Lines"},
+	{"Spell Checker", "Spell_Checker"},
+	{"Style Editor", "Styles"},
+	{"Styles Manager", "Styles"},
+	{"Styling Assistant", "Styling_Assistant"},
+	{"Timing Processor", "Timing_Post-Processor"},
+	{"Translation Assistant", "Translation_Assistant"},
+	{"Visual Typesetting", "Visual_Typesetting"},
+};
 
 namespace {
-static boost::container::flat_map<wxString, wxString> pages;
-
-void init_static() {
-	if (pages.empty()) {
-		pages["Attachment Manager"] = "Attachment_Manager";
-		pages["Automation Manager"] = "Automation/Manager";
-		pages["Colour Picker"] = "Colour_Picker";
-		pages["Dummy Video"] = "Video#dummyvideo";
-		pages["Export"] = "Exporting";
-		pages["Fonts Collector"] = "Fonts_Collector";
-		pages["Kanji Timer"] = "Kanji_Timer";
-		pages["Main"] = "Main_Page";
-		pages["Options"] = "Options";
-		pages["Paste Over"] = "Paste_Over";
-		pages["Properties"] = "Properties";
-		pages["Resample resolution"] = "Resolution_Resampler";
-		pages["Shift Times"] = "Shift_Times";
-		pages["Select Lines"] = "Select_Lines";
-		pages["Spell Checker"] = "Spell_Checker";
-		pages["Style Editor"] = "Styles";
-		pages["Styles Manager"] = "Styles";
-		pages["Styling Assistant"] = "Styling_Assistant";
-		pages["Timing Processor"] = "Timing_Post-Processor";
-		pages["Translation Assistant"] = "Translation_Assistant";
-		pages["Visual Typesetting"] = "Visual_Typesetting";
+	const char *url(const char *page) {
+		auto it = std::lower_bound(std::begin(pages), std::end(pages), page, [](const char *pair[], const char *page) {
+			return strcmp(pair[0], page) < 0;
+		});
+		return it == std::end(pages) ? nullptr : (*it)[1];
 	}
 }
-}
 
-HelpButton::HelpButton(wxWindow *parent, wxString const& page, wxPoint position, wxSize size)
+HelpButton::HelpButton(wxWindow *parent, const char *page, wxPoint position, wxSize size)
 : wxButton(parent, wxID_HELP, "", position, size)
 {
 	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { OpenPage(page); });
-	init_static();
-	if (pages.find(page) == pages.end())
+	if (!url(page))
 		throw agi::InternalError("Invalid help page");
 }
 
-void HelpButton::OpenPage(wxString const& pageID) {
-	init_static();
-
-	wxString page = pages[pageID];
-	wxString section;
-	page = page.BeforeFirst('#', &section);
-
-	wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%s/#%s", page, section));
+void HelpButton::OpenPage(const char *pageID) {
+	auto page = url(pageID);
+	auto sep = strchr(page, '#');
+	if (sep)
+		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%.*s/%s", sep - page, page, sep));
+	else
+		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%s/", page));
 }

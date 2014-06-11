@@ -31,7 +31,6 @@
 
 class HelpButton final : public wxButton {
 public:
-	HelpButton(wxWindow *parent, wxString const& page="", wxPoint position=wxDefaultPosition, wxSize size=wxDefaultSize);
-
-	static void OpenPage(wxString const& page);
+	HelpButton(wxWindow *parent, const char *page, wxPoint position=wxDefaultPosition, wxSize size=wxDefaultSize);
+	static void OpenPage(const char *page);
 };
