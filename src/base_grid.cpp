@@ -237,11 +237,13 @@ void BaseGrid::UpdateMaps() {
 
 void BaseGrid::OnActiveLineChanged(AssDialogue *new_active) {
 	if (new_active) {
-		int row = new_active->Row;
-		MakeRowVisible(row);
-		extendRow = row;
+		if (new_active->Row != active_row)
+			MakeRowVisible(new_active->Row);
+		extendRow = active_row = new_active->Row;
 		Refresh(false);
 	}
+	else
+		active_row = -1;
 }
 
 void BaseGrid::MakeRowVisible(int row) {

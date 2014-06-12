@@ -55,6 +55,8 @@ class BaseGrid final : public wxWindow {
 	/// First row that is visible at the current scroll position
 	int yPos = 0;
 
+	int active_row = -1;
+
 	agi::Context *context; ///< Associated project context
 
 	std::vector<std::unique_ptr<GridColumn>> columns;
