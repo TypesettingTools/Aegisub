@@ -143,7 +143,7 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 public:
 	YUV4MPEGVideoProvider(agi::fs::path const& filename);
 
-	std::shared_ptr<VideoFrame> GetFrame(int n) override;
+	void GetFrame(int n, VideoFrame &frame) override;
 	void SetColorSpace(std::string const&) override { }
 
 	int GetFrameCount() const override             { return num_frames; }
@@ -391,7 +391,7 @@ int YUV4MPEGVideoProvider::IndexFile(uint64_t pos) {
 	return framecount;
 }
 
-std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
+void YUV4MPEGVideoProvider::GetFrame(int n, VideoFrame &frame) {
 	n = mid(0, n, num_frames - 1);
 
 	int uv_width = w / 2;
@@ -408,9 +408,8 @@ std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 	auto src_y = reinterpret_cast<const unsigned char *>(file.read(seek_table[n], luma_sz + chroma_sz * 2));
 	auto src_u = src_y + luma_sz;
 	auto src_v = src_u + chroma_sz;
-	std::vector<unsigned char> data;
-	data.resize(w * h * 4);
-	unsigned char *dst = &data[0];
+	frame.data.resize(w * h * 4);
+	unsigned char *dst = &frame.data[0];
 
 	for (int py = 0; py < h; ++py) {
 		for (int px = 0; px < w / 2; ++px) {
@@ -433,7 +432,10 @@ std::shared_ptr<VideoFrame> YUV4MPEGVideoProvider::GetFrame(int n) {
 		}
 	}
 
-	return std::make_shared<VideoFrame>(std::move(data), w, h, w * 4, false);
+	frame.flipped = false;
+	frame.width = w;
+	frame.height = h;
+	frame.pitch = w * 4;
 }
 }
 

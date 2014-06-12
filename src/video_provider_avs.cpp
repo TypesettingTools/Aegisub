@@ -73,7 +73,7 @@ class AvisynthVideoProvider: public VideoProvider {
 public:
 	AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
 
-	std::shared_ptr<VideoFrame> GetFrame(int n);
+	void GetFrame(int n, VideoFrame &frame) override;
 
 	void SetColorSpace(std::string const& matrix) override {
 		// Can't really do anything if this fails
@@ -309,11 +309,16 @@ AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	throw VideoNotSupported("No function suitable for opening the video found");
 }
 
-std::shared_ptr<VideoFrame> AvisynthVideoProvider::GetFrame(int n) {
+void AvisynthVideoProvider::GetFrame(int n, VideoFrame &out) {
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
 
 	auto frame = RGB32Video->GetFrame(n, avs.GetEnv());
-	return std::make_shared<VideoFrame>(frame->GetReadPtr(), frame->GetRowSize() / 4, frame->GetHeight(), frame->GetPitch(), true);
+	auto ptr = frame->GetReadPtr();
+	out.data.assign(ptr, ptr + frame->GetPitch() * frame->GetHeight());
+	out.flipped = true;
+	out.height = frame->GetHeight();
+	out.width = frame->GetRowSize() / 4;
+	out.pitch = frame->GetPitch();
 }
 }
 

@@ -101,18 +101,19 @@ void SubtitlesPreview::SetColour(agi::Color col) {
 void SubtitlesPreview::UpdateBitmap() {
 	if (!vid) return;
 
-	auto frame = vid->GetFrame(0);
+	VideoFrame frame;
+	vid->GetFrame(0, frame);
 
 	if (provider) {
 		try {
 			provider->LoadSubtitles(sub_file.get());
-			provider->DrawSubtitles(*frame, 0.1);
+			provider->DrawSubtitles(frame, 0.1);
 		}
 		catch (...) { }
 	}
 
 	// Convert frame to bitmap
-	*bmp = static_cast<wxBitmap>(GetImage(*frame));
+	*bmp = static_cast<wxBitmap>(GetImage(frame));
 	Refresh();
 }
 

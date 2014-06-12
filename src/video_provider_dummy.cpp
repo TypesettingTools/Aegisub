@@ -92,8 +92,12 @@ std::string DummyVideoProvider::MakeFilename(double fps, int frames, int width, 
 	return agi::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, (int)colour.r, (int)colour.g, (int)colour.b, (pattern ? "c" : ""));
 }
 
-std::shared_ptr<VideoFrame> DummyVideoProvider::GetFrame(int) {
-	return std::make_shared<VideoFrame>(data.data(), width, height, width * 4, false);
+void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
+	frame.data    = data;
+	frame.width   = width;
+	frame.height  = height;
+	frame.pitch   = width * 4;
+	frame.flipped = false;
 }
 
 namespace agi { class BackgroundRunner; }

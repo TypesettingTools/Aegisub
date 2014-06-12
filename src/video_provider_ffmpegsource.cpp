@@ -70,7 +70,7 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 public:
 	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br);
 
-	std::shared_ptr<VideoFrame> GetFrame(int n) override;
+	void GetFrame(int n, VideoFrame &out) override;
 
 	void SetColorSpace(std::string const& matrix) override {
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
@@ -285,14 +285,18 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 		Timecodes = agi::vfr::Framerate(TimecodesVector);
 }
 
-std::shared_ptr<VideoFrame> FFmpegSourceVideoProvider::GetFrame(int n) {
+void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 	n = mid(0, n, GetFrameCount() - 1);
 
 	auto frame = FFMS_GetFrame(VideoSource, n, &ErrInfo);
 	if (!frame)
 		throw VideoDecodeError(std::string("Failed to retrieve frame: ") +  ErrInfo.Buffer);
 
-	return std::make_shared<VideoFrame>(frame->Data[0], Width, Height, frame->Linesize[0], false);
+	out.data.assign(frame->Data[0], frame->Data[0] + frame->Linesize[0] * Height);
+	out.flipped = false;
+	out.width = Width;
+	out.height = Height;
+	out.pitch = frame->Linesize[0];
 }
 }
 

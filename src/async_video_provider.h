@@ -76,6 +76,8 @@ class AsyncVideoProvider {
 	/// they can be rendered
 	std::atomic<uint_fast32_t> version{ 0 };
 
+	std::vector<std::shared_ptr<VideoFrame>> buffers;
+
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load

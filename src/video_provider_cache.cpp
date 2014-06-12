@@ -25,14 +25,14 @@
 
 namespace {
 /// A video frame and its frame number
-struct CachedFrame final : public VideoFrame {
+struct CachedFrame {
+	VideoFrame frame;
 	int frame_number;
 
-	CachedFrame(int frame_number, VideoFrame const& frame)
-	: VideoFrame(frame.data.data(), frame.width, frame.height, frame.pitch, frame.flipped)
-	, frame_number(frame_number)
-	{
-	}
+	CachedFrame(VideoFrame const& frame, int frame_number)
+	: frame(frame), frame_number(frame_number) { }
+
+	CachedFrame(CachedFrame const&) = delete;
 };
 
 /// @class VideoProviderCache
@@ -45,19 +45,15 @@ class VideoProviderCache final : public VideoProvider {
 	///
 	/// Note that this is a soft limit. The cache stops allocating new frames
 	/// once it has exceeded the limit, but it never tries to shrink
-	const size_t max_cache_size;
+	const size_t max_cache_size = OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20; // convert MB to bytes
 
 	/// Cache of video frames with the most recently used ones at the front
 	std::list<CachedFrame> cache;
 
 public:
-	VideoProviderCache(std::unique_ptr<VideoProvider> master)
-	: master(std::move(master))
-	, max_cache_size(OPT_GET("Provider/Video/Cache/Size")->GetInt() << 20) // convert MB to bytes
-	{
-	}
+	VideoProviderCache(std::unique_ptr<VideoProvider> master) : master(std::move(master)) { }
 
-	std::shared_ptr<VideoFrame> GetFrame(int n) override;
+	void GetFrame(int n, VideoFrame &frame) override;
 
 	void SetColorSpace(std::string const& m) override {
 		cache.clear();
@@ -78,25 +74,28 @@ public:
 	bool HasAudio() const override                 { return master->HasAudio(); }
 };
 
-std::shared_ptr<VideoFrame> VideoProviderCache::GetFrame(int n) {
+void VideoProviderCache::GetFrame(int n, VideoFrame &out) {
 	size_t total_size = 0;
 
 	for (auto cur = cache.begin(); cur != cache.end(); ++cur) {
 		if (cur->frame_number == n) {
 			cache.splice(cache.begin(), cache, cur); // Move to front
-			return std::make_shared<VideoFrame>(cache.front());
+			out = cache.front().frame;
+			return;
 		}
 
-		total_size += cur->data.size();
+		total_size += cur->frame.data.size();
 	}
 
-	auto frame = master->GetFrame(n);
+	master->GetFrame(n, out);
 
-	if (total_size >= max_cache_size)
-		cache.pop_back();
-	cache.emplace_front(n, *frame);
-
-	return frame;
+	if (total_size >= max_cache_size) {
+		cache.splice(cache.begin(), cache, --cache.end()); // Move last to front
+		cache.front().frame_number = n;
+		cache.front().frame = out;
+	}
+	else
+		cache.emplace_front(out, n);
 }
 }
 

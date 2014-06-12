@@ -64,7 +64,7 @@ public:
 	/// string will result in a video with the given parameters
 	static std::string MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
-	std::shared_ptr<VideoFrame> GetFrame(int n) override;
+	void GetFrame(int n, VideoFrame &frame) override;
 	void SetColorSpace(std::string const&) override { }
 
 	int GetFrameCount()             const override { return framecount; }

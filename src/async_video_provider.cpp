@@ -20,6 +20,7 @@
 #include "ass_file.h"
 #include "export_fixstyle.h"
 #include "include/aegisub/subtitles_provider.h"
+#include "video_frame.h"
 #include "video_provider_manager.h"
 
 #include <libaegisub/dispatch.h>
@@ -30,10 +31,22 @@ enum {
 };
 
 std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, double time, bool raw) {
+	// Find an unused buffer to use or allocate a new one if needed
 	std::shared_ptr<VideoFrame> frame;
+	for (auto& buffer : buffers) {
+		if (buffer.use_count() == 1) {
+			frame = buffer;
+			break;
+		}
+	}
+
+	if (!frame) {
+		frame = std::make_shared<VideoFrame>();
+		buffers.push_back(frame);
+	}
 
 	try {
-		frame = source_provider->GetFrame(frame_number);
+		source_provider->GetFrame(frame_number, *frame);
 	}
 	catch (VideoProviderError const& err) { throw VideoProviderErrorEvent(err); }
 

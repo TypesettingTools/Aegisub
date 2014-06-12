@@ -37,7 +37,6 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
 
-#include <memory>
 #include <string>
 
 struct VideoFrame;
@@ -47,7 +46,7 @@ public:
 	virtual ~VideoProvider() = default;
 
 	/// Override this method to actually get frames
-	virtual std::shared_ptr<VideoFrame> GetFrame(int n)=0;
+	virtual void GetFrame(int n, VideoFrame &frame)=0;
 
 	/// Set the YCbCr matrix to the specified one
 	///
