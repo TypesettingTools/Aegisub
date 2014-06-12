@@ -67,8 +67,10 @@ VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 
 void VideoSlider::SetValue(int value) {
 	if (val == value) return;
-	val = mid(0, value, max);
-	Refresh(false);
+	value = mid(0, value, max);
+	if (GetXAtValue(val) != GetXAtValue(value))
+		Refresh(false);
+	val = value;
 }
 
 void VideoSlider::VideoOpened(AsyncVideoProvider *provider) {
