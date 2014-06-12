@@ -98,7 +98,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 , context(context)
 , columns(GetGridColumns())
 , columns_visible(OPT_GET("Subtitle/Grid/Column")->GetListBool())
-, seek_listener(context->videoController->AddSeekListener([&] { Refresh(false); }))
+, seek_listener(context->videoController->AddSeekListener(&BaseGrid::OnSeek, this))
 {
 	scrollBar->SetScrollbar(0,10,100,10);
 
@@ -276,6 +276,24 @@ void BaseGrid::SelectRow(int row, bool addToSelected, bool select) {
 	}
 }
 
+void BaseGrid::OnSeek() {
+	int lines = GetClientSize().GetHeight() / lineHeight + 1;
+	lines = mid(0, lines, GetRows() - yPos);
+
+	auto it = begin(visible_rows);
+	for (int i : boost::irange(yPos, yPos + lines)) {
+		if (IsDisplayed(index_line_map[i])) {
+			if (it == end(visible_rows) || *it != i) {
+				Refresh(false);
+				return;
+			}
+			++it;
+		}
+	}
+	if (it != end(visible_rows))
+		Refresh(false);
+}
+
 void BaseGrid::OnPaint(wxPaintEvent &) {
 	// Find which columns need to be repainted
 	std::vector<char> paint_columns;
@@ -357,6 +375,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 
 	const auto active_line = context->selectionController->GetActiveLine();
 	auto const& selection = context->selectionController->GetSelectedSet();
+	visible_rows.clear();
 
 	for (int i : agi::util::range(nDraw)) {
 		wxBrush color = row_colors.Default;
@@ -369,8 +388,12 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 			color = row_colors.Selection;
 		else if (curDiag->Comment)
 			color = row_colors.Comment;
-		else if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag))
-			color = row_colors.Visible;
+
+		if (OPT_GET("Subtitle/Grid/Highlight Subtitles in Frame")->GetBool() && IsDisplayed(curDiag)) {
+			if (color == row_colors.Default)
+				color = row_colors.Visible;
+			visible_rows.push_back(i + yPos);
+		}
 		dc.SetBrush(color);
 
 		// Draw row background color
