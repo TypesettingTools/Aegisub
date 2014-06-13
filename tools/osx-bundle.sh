@@ -118,7 +118,7 @@ cp -v src/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
 
 echo
 echo " ---- Build / install restart-helper ----"
-cp -v tools/osx-bundle-restart-helper.c "${PKG_DIR}/Contents/MacOS/restart-helper"
+cp -v tools/osx-bundle-restart-helper "${PKG_DIR}/Contents/MacOS/restart-helper"
 
 
 echo
