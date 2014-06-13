@@ -33,6 +33,8 @@
 #include <sys/event.h>
 #include <sys/time.h>
 
+@import Foundation;
+
 /*
 Return codes:
 1: Error in kqueue()
@@ -42,57 +44,51 @@ Return codes:
 
 If none of those happen the requested command is execve()'d.
 */
-int main(int argc, char *argv[], char *env[])
-{
-	int waitpid = getppid();
-	int queue, nchange;
-	struct kevent event[1];
-	struct kevent change[1];
-	struct timespec timeout = { 30, 0 };
-
-	if ((queue = kqueue()) == -1)
-	{
+int main(int argc, char *argv[], char *env[]) {
+	int queue = kqueue();
+	if (queue  == -1) {
 		perror("Error in: kqueue()");
 		return 1;
 	}
 
+	struct kevent event[1];
 	EV_SET(event,
-	       waitpid,
+	       getppid(),
 	       EVFILT_PROC,
 	       EV_ADD|EV_ENABLE|EV_ONESHOT,
 	       NOTE_EXIT,
 	       0, 0);
 
-	printf("restart-helper: waiting for pid %d\n", waitpid);
+	printf("restart-helper: waiting for pid %d\n", getppid());
 
-	nchange = kevent(queue, change, 1, event, 1, &timeout);
+	struct kevent change[1];
+	struct timespec timeout = { 30, 0 };
+	int nchange = kevent(queue, change, 1, event, 1, &timeout);
 
-	if (nchange < 0)
-	{
+	if (nchange < 0) {
 		perror("restart-helper: Error in kevent()");
 		return 2;
 	}
-	else if (nchange == 0)
-	{
-		printf("restart-helper: Timed out waiting for pid %d\n", waitpid);
+	if (nchange == 0) {
+		printf("restart-helper: Timed out waiting for pid %d\n", getppid());
 		return 3;
 	}
-	else if (change[0].flags & EV_ERROR)
-	{
+	if (change[0].flags & EV_ERROR) {
 		perror("restart-helper: Error in event");
 		return 2;
 	}
-	else
-	{
-		close(queue);
 
-		printf("restart-helper: Executing '%s'\n", argv[1]);
+	close(queue);
 
-		if (execve(argv[1], argv+1, env) == -1)
-		{
-			perror("restart-helper: Error in execve()");
-			return 4;
-		}
-		return 0; /* never reached */
+	printf("restart-helper: Executing '%s'\n", argv[1]);
+
+	@try {
+		[NSTask launchedTaskWithLaunchPath:[NSString stringWithUTF8String:argv[1]] arguments:@[]];
 	}
+	@catch (NSException *e) {
+		printf("restart-helper: Error launching program: %s\n", e.description.UTF8String);
+		return 4;
+	}
+
+	return 0;
 }

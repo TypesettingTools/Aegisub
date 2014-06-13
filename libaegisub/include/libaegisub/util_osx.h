@@ -40,39 +40,11 @@ namespace agi {
 		};
 	}
     namespace util {
-/// @brief Get the full name of bundle.
-///  @return Full name of bundle.
-///  Get the full name of the bundle itself.
-///
-///  @warning May return "" if the current executable is not inside a bundle.
-std::string GetBundlePath();
-
 /// @brief Get the esources directory.
 /// @return Resources directory.
 ///
 /// Mainly for user interface elements such as graphics and strings
 std::string GetBundleResourcesDirectory();
-
-/// @brief Get the built-in plugins directory.
-/// @return Built-in plugins directory.
-///
-/// This is generaly only used by native Carbon and Cocoa applications. It is
-/// not for general shared libraries.
-std::string GetBundleBuiltInPlugInsDirectory();
-
-/// @brief Get the private Frameworks directory.
-/// @return Private Framework directory.
-///
-/// These are suitable locations for shared libraries.
-std::string GetBundlePrivateFrameworksDirectory();
-
-/// @brief Get the shared Frameworks directory.
-/// @return Shared Framework directory.
-///
-/// @see GetBundlePrivateFrameworksDirectory()
-/// @note Does anyone know the difference between private and shared frameworks
-///       inside a bundle?
-std::string GetBundleSharedFrameworksDirectory();
 
 /// @brief Get the shared support directory
 /// @return Shared support directory
@@ -80,18 +52,6 @@ std::string GetBundleSharedFrameworksDirectory();
 /// This is a suitable location for static configuration files. (Remember,
 /// bundle is considered read-only.)
 std::string GetBundleSharedSupportDirectory();
-
-/// @brief Get the main executable path.
-/// @return Main executable path.
-///
-/// The binary run when the user launches the bundle from Finder.
-std::string GetBundleExecutablePath();
-
-/// @brief Get the auxillary executable path.
-/// @return Auxillary executable path.
-///
-/// Pass the basename of the executable to get the path.
-std::string GetBundleAuxillaryExecutablePath(std::string const& executableName);
 
 std::string GetApplicationSupportDirectory();
     } // namespace util

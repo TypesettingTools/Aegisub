@@ -1,8 +1,8 @@
 include ../Makefile.inc
 
 ifeq (yes, $(BUILD_DARWIN))
-osx-bundle-restart-helper: osx-bundle-restart-helper.c
-	$(BIN_CC) -o osx-bundle-restart-helper osx-bundle-restart-helper.c
+osx-bundle-restart-helper: osx-bundle-restart-helper.m
+	$(BIN_CC) -o osx-bundle-restart-helper -fmodules osx-bundle-restart-helper.m
 CLEANFILES += osx-bundle-restart-helper
 all: osx-bundle-restart-helper
 endif

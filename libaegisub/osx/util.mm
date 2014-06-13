@@ -25,8 +25,7 @@ static std::string EmptyIfNil(NSString *string) {
 	return string ? [string UTF8String] : "";
 }
 
-namespace agi {
-	namespace osx {
+namespace agi { namespace osx {
 AppNapDisabler::AppNapDisabler(std::string reason) : handle(nullptr) {
 	if (reason.empty()) reason = "Loading";
 	auto processInfo = [NSProcessInfo processInfo];
@@ -42,42 +41,13 @@ AppNapDisabler::~AppNapDisabler() {
 		[processInfo endActivity:(id)handle];
 	[(id)handle release];
 }
-	}
-	namespace util {
 
-std::string GetBundlePath() {
-	@autoreleasepool {
-		return EmptyIfNil([[NSBundle mainBundle] bundlePath]);
-	}
 }
+namespace util {
 
 std::string GetBundleResourcesDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([[[NSBundle mainBundle] resourceURL] path]);
-	}
-}
-
-std::string GetBundleExecutablePath() {
-	@autoreleasepool {
-		return EmptyIfNil([[NSBundle mainBundle] executablePath]);
-	}
-}
-
-std::string GetBundleBuiltInPlugInsDirectory() {
-	@autoreleasepool {
-		return EmptyIfNil([[NSBundle mainBundle] builtInPlugInsPath]);
-	}
-}
-
-std::string GetBundlePrivateFrameworksDirectory() {
-	@autoreleasepool {
-		return EmptyIfNil([[NSBundle mainBundle] privateFrameworksPath]);
-	}
-}
-
-std::string GetBundleSharedFrameworksDirectory() {
-	@autoreleasepool {
-		return EmptyIfNil([[NSBundle mainBundle] sharedFrameworksPath]);
 	}
 }
 
@@ -87,18 +57,10 @@ std::string GetBundleSharedSupportDirectory() {
 	}
 }
 
-std::string GetBundleAuxillaryExecutablePath(std::string const& executableName) {
-	@autoreleasepool {
-		NSString *name = [NSString stringWithUTF8String:executableName.c_str()];
-		return EmptyIfNil([[NSBundle mainBundle]pathForAuxiliaryExecutable:name]);
-	}
-}
-
 std::string GetApplicationSupportDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject]);
 	}
 }
 
-	}
-}
+} }

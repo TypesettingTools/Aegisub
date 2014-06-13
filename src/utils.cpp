@@ -94,23 +94,17 @@ int SmallestPowerOf2(int x) {
 	return x;
 }
 
+#ifndef __WXMAC__
 void RestartAegisub() {
 	config::opt->Flush();
 
 #if defined(__WXMSW__)
 	wxExecute("\"" + wxStandardPaths::Get().GetExecutablePath() + "\"");
-#elif defined(__WXMAC__)
-	std::string bundle_path = agi::util::GetBundlePath();
-	std::string helper_path = agi::util::GetBundleAuxillaryExecutablePath("restart-helper");
-	if (bundle_path.empty() || helper_path.empty()) return;
-
-	wxString exec = fmt_wx("\"%s\" /usr/bin/open -n \"%s\"'", helper_path, bundle_path);
-	LOG_I("util/restart/exec") << exec.utf8_str();
-	wxExecute(exec);
 #else
 	wxExecute(wxStandardPaths::Get().GetExecutablePath());
 #endif
 }
+#endif
 
 bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
 	wxWindow *target = wxFindWindowAtPoint(wxGetMousePosition());

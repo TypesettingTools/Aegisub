@@ -59,3 +59,10 @@ void SetPlaceholderText(wxWindow *window, wxString const& placeholder) {
         cell.placeholderString = wxCFStringRef(placeholder).AsNSString();
     }
 }
+
+void RestartAegisub() {
+    auto helperPath = [NSBundle.mainBundle pathForAuxiliaryExecutable:@"restart-helper"];
+    if (helperPath)
+        [NSTask launchedTaskWithLaunchPath:helperPath
+                                 arguments:@[NSBundle.mainBundle.executablePath]];
+}
