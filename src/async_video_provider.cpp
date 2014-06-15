@@ -111,7 +111,7 @@ void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
 	worker->Async([=]{
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;
-		ProcAsync(req_version);
+		ProcAsync(req_version, false);
 	});
 }
 
@@ -135,7 +135,7 @@ void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, std::set<const
 		}
 
 		single_frame = NEW_SUBS_FILE;
-		ProcAsync(req_version);
+		ProcAsync(req_version, true);
 	});
 }
 
@@ -145,7 +145,7 @@ void AsyncVideoProvider::RequestFrame(int new_frame, double new_time) throw() {
 	worker->Async([=]{
 		time = new_time;
 		frame_number = new_frame;
-		ProcAsync(req_version);
+		ProcAsync(req_version, false);
 	});
 }
 
@@ -178,7 +178,7 @@ bool AsyncVideoProvider::NeedUpdate(std::vector<AssDialogueBase const*> const& v
 	return false;
 }
 
-void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version) {
+void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version, bool check_updated) {
 	// Only actually produce the frame if there's no queued changes waiting
 	if (req_version < version || frame_number < 0) return;
 
@@ -188,7 +188,7 @@ void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version) {
 			visible_lines.push_back(&line);
 	}
 
-	if (!NeedUpdate(visible_lines)) return;
+	if (check_updated && !NeedUpdate(visible_lines)) return;
 
 	last_lines.clear();
 	last_lines.reserve(visible_lines.size());

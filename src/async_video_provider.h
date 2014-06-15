@@ -70,7 +70,7 @@ class AsyncVideoProvider {
 	std::shared_ptr<VideoFrame> ProcFrame(int frame, double time, bool raw = false);
 
 	/// Produce a frame if req_version is still the current version
-	void ProcAsync(uint_fast32_t req_version);
+	void ProcAsync(uint_fast32_t req_version, bool check_updated);
 
 	/// Monotonic counter used to drop frames when changes arrive faster than
 	/// they can be rendered
