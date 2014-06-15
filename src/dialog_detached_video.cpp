@@ -129,8 +129,8 @@ void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
 	hotkey::check("Video Display", context, evt);
 }
 
-void DialogDetachedVideo::OnVideoOpen() {
-	if (context->project->VideoProvider())
+void DialogDetachedVideo::OnVideoOpen(AsyncVideoProvider *new_provider) {
+	if (new_provider)
 		SetTitle(fmt_tl("Video: %s", context->project->VideoName().filename()));
 	else {
 		Close();

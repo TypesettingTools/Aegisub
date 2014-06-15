@@ -38,6 +38,7 @@
 #include <libaegisub/signal.h>
 
 namespace agi { struct Context; }
+class AsyncVideoProvider;
 class PersistLocation;
 class VideoBox;
 class VideoDisplay;
@@ -53,7 +54,7 @@ class DialogDetachedVideo final : public wxDialog {
 	/// Minimize event handler to hack around a wx bug
 	void OnMinimize(wxIconizeEvent &evt);
 	void OnKeyDown(wxKeyEvent &evt);
-	void OnVideoOpen();
+	void OnVideoOpen(AsyncVideoProvider *new_provider);
 
 public:
 	/// @brief Constructor
