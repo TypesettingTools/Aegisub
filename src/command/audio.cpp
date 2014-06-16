@@ -235,7 +235,7 @@ struct audio_save_clip final : public Command {
 		size_t spr = 65536 / bytes_per_sample;
 		std::vector<char> buf(bufsize);
 		for (int64_t i = start_sample; i < end_sample; i += spr) {
-			buf.resize(std::min<size_t>(spr, end_sample - i));
+			buf.resize(std::min<size_t>(spr, end_sample - i) * bytes_per_sample);
 			provider->GetAudio(&buf[0], i, buf.size());
 			out.write(buf);
 		}
