@@ -1,36 +1,8 @@
-include ../../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../../header.mk
 
-LIB = libuniversalchardet.a
+universalchardet_OBJ := $(subst .cpp,.o,$(wildcard $(d)*.cpp))
+universalchardet_CPPFLAGS := -D_X86_
 
-CXXFLAGS += -D_X86_
+LIB += universalchardet
 
-SRC = \
-	CharDistribution.cpp \
-	JpCntx.cpp \
-	LangBulgarianModel.cpp \
-	LangCyrillicModel.cpp \
-	LangGreekModel.cpp \
-	LangHebrewModel.cpp \
-	LangHungarianModel.cpp \
-	LangThaiModel.cpp \
-	nsBig5Prober.cpp \
-	nsCharSetProber.cpp \
-	nsEUCJPProber.cpp \
-	nsEUCKRProber.cpp \
-	nsEUCTWProber.cpp \
-	nsEscCharsetProber.cpp \
-	nsEscSM.cpp \
-	nsGB2312Prober.cpp \
-	nsHebrewProber.cpp \
-	nsLatin1Prober.cpp \
-	nsMBCSGroupProber.cpp \
-	nsMBCSSM.cpp \
-	nsSBCSGroupProber.cpp \
-	nsSBCharSetProber.cpp \
-	nsSJISProber.cpp \
-	nsUTF8Prober.cpp \
-	nsUniversalDetector.cpp
-
-include ../../Makefile.target
--include *.d
-
+include $(TOP)Makefile.target

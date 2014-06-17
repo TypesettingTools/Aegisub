@@ -44,6 +44,10 @@
 #include <wx/menu.h>
 #include <wx/menuitem.h>
 
+#ifdef __WXMAC__
+#include <wx/app.h>
+#endif
+
 namespace {
 /// Window ID of first menu item
 static const int MENU_ID_BASE = 10000;

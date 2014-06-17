@@ -24,13 +24,14 @@
 #include <boost/phoenix/core/argument.hpp>
 #include <boost/phoenix/operator/comparison.hpp>
 #include <fstream>
+#include <sstream>
 
 namespace {
 using boost::phoenix::placeholders::_1;
 
 void convert(std::string const& path) {
-	std::unique_ptr<std::ifstream> idx(agi::io::Open(path + ".idx"));
-	std::unique_ptr<std::ifstream> dat(agi::io::Open(path + ".dat"));
+	std::unique_ptr<std::istream> idx(agi::io::Open(path + ".idx"));
+	std::unique_ptr<std::istream> dat(agi::io::Open(path + ".dat"));
 
 	std::ostringstream idx_out_buffer;
 	agi::io::Save idx_out(path + ".out.idx");

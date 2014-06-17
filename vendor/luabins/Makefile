@@ -1,17 +1,8 @@
-include ../../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../../header.mk
 
-LIB = libluabins.a
+luabins_OBJ := $(subst .c,.o,$(wildcard $(d)src/*.c))
+luabins_CPPFLAGS := $(CFLAGS_LUA)
 
-CPPFLAGS += -I../luajit/include
+LIB += luabins
 
-SRC = \
-	src/fwrite.c \
-	src/load.c \
-	src/luabins.c \
-	src/luainternals.c \
-	src/save.c \
-	src/savebuffer.c \
-	src/write.c
-
-include ../../Makefile.target
--include src/*.d
+include $(TOP)Makefile.target

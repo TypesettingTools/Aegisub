@@ -23,6 +23,7 @@
 
 #include <memory>
 
+class wxWindow;
 namespace agi { namespace charset { class IconvWrapper; } }
 
 #pragma pack(push, 1)

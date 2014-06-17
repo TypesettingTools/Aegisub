@@ -1,52 +1,24 @@
-include ../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../header.mk
 
 .SUFFIXES: .po .mo
 
-PO = \
-	ar.po \
-	bg.po \
-	ca.po \
-	cs.po \
-	da.po \
-	de.po \
-	el.po \
-	es.po \
-	eu.po \
-	fa.po \
-	fi.po \
-	fr_FR.po \
-	gl.po \
-	hu.po \
-	id.po \
-	it.po \
-	ja.po \
-	ko.po \
-	nl.po \
-	pl.po \
-	pt_BR.po \
-	pt_PT.po \
-	ru.po \
-	sr_RS.po \
-	sr_RS@latin.po \
-	vi.po \
-	zh_CN.po \
-	zh_TW.po
+PO := $(wildcard $(d)*.po)
+MO := $(PO:po=mo)
 
-MO = $(addsuffix .mo, $(basename $(PO)))
-
-all: $(MO)
+ifeq (yes, $(BUILD_DARWIN))
+MO_INSTALLED = $(DESTDIR)$(P_LOCALE)/%.lproj/$(AEGISUB_CATALOG).mo
+else
+MO_INSTALLED = $(DESTDIR)$(P_LOCALE)/%/LC_MESSAGES/$(AEGISUB_CATALOG).mo
+endif
 
 %.mo: %.po
 	$(BIN_MSGFMT) -o $@ $<
 
-install:
-	@$(BIN_MKDIR) -p $(addsuffix /LC_MESSAGES/, $(addprefix $(DESTDIR)$(P_LOCALE)/, $(basename $(PO))))
-	@for i in $(basename $(PO)); do \
-		$(BIN_ECHO) "$(BIN_INSTALL) -m644 $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_CATALOG).mo"; \
-		$(BIN_INSTALL) -m644 $$i.mo $(DESTDIR)$(P_LOCALE)/$$i/LC_MESSAGES/$(AEGISUB_CATALOG).mo; \
-	done
+$(MO_INSTALLED): $(d)%.mo	; $(MKDIR_INSTALL)
 
+all: $(MO)
+install: $(patsubst %.mo, $(MO_INSTALLED), $(notdir $(MO)))
 
-CLEANFILES = $(MO)
+CLEANFILES += $(MO)
 
-include ../Makefile.target
+include $(TOP)Makefile.target

@@ -1,16 +1,17 @@
-include ../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../header.mk
+
+osx-bundle-restart-helper_OBJ := $(d)osx-bundle-restart-helper.o
 
 ifeq (yes, $(BUILD_DARWIN))
-osx-bundle-restart-helper: osx-bundle-restart-helper.m
-	$(BIN_CC) -o osx-bundle-restart-helper -fmodules osx-bundle-restart-helper.m
-CLEANFILES += osx-bundle-restart-helper
-all: osx-bundle-restart-helper
+PROGRAM += $(d)osx-bundle-restart-helper
 endif
 
-CXXFLAGS +=  -I../libaegisub/include $(CFLAGS_ICU)
-LIBS := -L../libaegisub -laegisub $(LIBS) $(LIBS_BOOST) $(LIBS_ICU)
+repack-thes-dict_OBJ  := $(d)repack-thes-dict.o $(TOP)lib/libaegisub.a
+repack-thes-dict_LIBS := $(LIBS_BOOST) $(LIBS_ICU)
+repack-thes-dict_CPPFLAGS := -I$(TOP) -I$(TOP)libaegisub/include $(CFLAGS_ICU)
 
-repack-thes-dict: repack-thes-dict.cpp
-	$(BIN_CXX) -o repack-thes-dict repack-thes-dict.cpp  $(CXXFLAGS) $(LIBS)
+PROGRAM += $(d)repack-thes-dict
 
-include ../Makefile.target
+$(TOP)tools/respack.lua: $(TOP)vendor/luajit/src/host/minilua
+
+include $(TOP)Makefile.target

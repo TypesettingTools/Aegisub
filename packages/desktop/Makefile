@@ -1,47 +1,26 @@
-include ../../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../../header.mk
+DESKTOP_SRC := $(d)
 
-applicationsdir = $(DESKTOP_DATADIR)/applications
-applications_DATA = aegisub.desktop
+ICONS = $(wildcard $(d)*.png) $(wildcard $(d)*.svg)
+ICONS_INSTALLED = $(DESTDIR)$(P_ICON)/hicolor/%/aegisub.
 
-iconsscalabledir = $(DESKTOP_DATADIR)/icons/hicolor/scalable/apps
-iconsscalable_DATA = scalable/aegisub.svg
+DESKTOP_FILE := $(d)aegisub.desktop
+DESKTOP_FILE_PO := $(d)../../po
+DESKTOP_FILE_INSTALLED = $(DESTDIR)$(P_DESKTOP)/$(notdir $(DESKTOP_FILE))
 
-aegisub.desktop: aegisub.desktop.template ../../po
-	intltool-merge --quiet --desktop-style ../../po aegisub.desktop.template aegisub.desktop
+DISTCLEANFILES += $(DESKTOP_FILE)
 
-all: ;
+%.desktop: %.desktop.template $(DESKTOP_FILE_PO)
+	intltool-merge --quiet --desktop-style $(DESKTOP_FILE_PO) $< $@
 
-ICON_HICOLOR = \
-	16x16/apps/aegisub.png \
-	22x22/apps/aegisub.png \
-	24x24/apps/aegisub.png \
-	32x32/apps/aegisub.png \
-	48x48/apps/aegisub.png \
-	64x64/apps/aegisub.png
+$(ICONS_INSTALLED)png: $(d)%.png	; $(MKDIR_INSTALL)
+$(ICONS_INSTALLED)svg: $(d)%.svg	; $(MKDIR_INSTALL)
+$(DESKTOP_FILE_INSTALLED): $(DESKTOP_FILE)	; $(MKDIR_INSTALL)
 
-ICON_SCALABLE = \
-	scalable/apps/aegisub.svg
+ifneq (yes, $(BUILD_DARWIN))
+install: \
+	$(DESKTOP_FILE_INSTALLED) \
+	$(patsubst %.png, $(ICONS_INSTALLED)png, $(patsubst %.svg, $(ICONS_INSTALLED)svg, $(notdir $(ICONS))))
+endif
 
-DESKTOP_FILE = aegisub.desktop
-
-install: install-desktop install-icons
-
-install-desktop: $(DESKTOP_FILE)
-	@$(BIN_MKDIR) -p $(DESTDIR)$(P_DESKTOP)
-	$(BIN_INSTALL) $(DESKTOP_FILE) $(DESTDIR)$(P_DESKTOP)/$(DESKTOP_FILE)
-
-
-install-icons:
-	@$(BIN_MKDIR) -p $(addprefix $(DESTDIR)$(P_ICON)/hicolor/, $(dir $(ICON_HICOLOR)))
-	@for i in $(ICON_HICOLOR); do \
-		$(BIN_ECHO) "$(BIN_INSTALL) -m644 $$i $(DESTDIR)$(P_ICON)/hicolor/$$i"; \
-		$(BIN_INSTALL) -m644 $$i $(DESTDIR)$(P_ICON)/hicolor/$$i; \
-	done
-	$(BIN_TOUCH) $(DESTDIR)$(P_ICON)/hicolor
-	$(BIN_MKDIR) -p $(DESTDIR)$(P_ICON)/hicolor/scalable/apps
-	$(BIN_CP) $(ICON_SCALABLE) $(DESTDIR)$(P_ICON)/hicolor/$(ICON_SCALABLE)
-
-
-DISTCLEANFILES = aegisub.desktop
-
-include ../../Makefile.target
+include $(TOP)Makefile.target

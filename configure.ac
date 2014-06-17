@@ -13,7 +13,6 @@ m4_define([hunspell_required_version], [1.2.0])
 m4_define([icu_required_version], [4.8.1.1])
 m4_define([libass_required_version], [0.9.7])
 m4_define([libpulse_required_version], [0.5])
-m4_define([lua_auto4_required_version], [5.1])
 m4_define([pkgconfig_required_version], [0.20])
 m4_define([portaudio_required_version], [19])
 m4_define([wx_required_version], [3.0.0])
@@ -34,22 +33,15 @@ AC_CANONICAL_HOST
 ###########################
 build_darwin="no"
 build_linux="no"
-build_bsd="no"
-build_default="no"
 
 AS_CASE([$host],
         [*-*-darwin*], [build_darwin="yes"],
-        [*-*-linux*],  [build_linux="yes"],
-        [*-*-*bsd*],   [build_bsd="yes"],
-        [build_default="yes"])
+        [*-*-linux*],  [build_linux="yes"])
 
 # Used for universalchardet.
 AC_AGI_MDCPUCFG($host)
 
-AC_SUBST(build_bsd)
-AC_SUBST(build_linux)
 AC_SUBST(build_darwin)
-AC_SUBST(build_default)
 
 ########################
 # Configurable variables
@@ -431,10 +423,7 @@ AS_IF([test x$with_agi_cv_wxstc = xno], AC_MSG_FAILURE([wxWidgets StyledTextCtrl
 # This turns on some internal (to aegisub) debugging features.
 # A debug version of wxWidgets is required.
 AS_IF([test x$enable_debug = xyes],
-      [PACKAGE_DEBUG="-debug"
-       AS_IF([$WX_CONFIG_PATH --debug],[AC_CXX_FLAG([-D_DEBUG])])])
-
-AC_SUBST(PACKAGE_DEBUG)
+      [AS_IF([$WX_CONFIG_PATH --debug],[AC_CXX_FLAG([-D_DEBUG])])])
 
 ############################
 # Precompiled Header Support

@@ -37,8 +37,7 @@ local manifest = try_open(arg[1], 'r')
 local out_cpp = try_open(arg[2], 'w')
 local out_h = try_open(arg[3], 'w')
 
-local pos = arg[1]:find('/')
-local path = pos and arg[1]:sub(1, pos) or ''
+local path = arg[1]:match'(.*/).*' or ''
 
 out_cpp:write('#include "libresrc.h"\n')
 

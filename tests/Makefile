@@ -1,52 +1,37 @@
-include ../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../header.mk
 
-GTEST_ROOT = ../vendor/googletest
+GTEST_ROOT ?= $(TOP)vendor/googletest
+GTEST_FILE := ${GTEST_ROOT}/src/gtest-all
 
-PROGRAM = run
+run_PCH := $(d)support/tests_pre.h
+run_CPPFLAGS := -I$(TOP)libaegisub/include -I$(TOP) -I$(d)support \
+	-I$(GTEST_ROOT) -I$(GTEST_ROOT)/include $(CPPFLAGS_BOOST) $(CFLAGS_LUA)
+run_CXXFLAGS := -Wno-unused-value -Wno-sign-compare
+run_LIBS := $(LIBS_BOOST) $(LIBS_ICU)
+run_OBJ := \
+	$(subst .cpp,.o,$(wildcard $(d)tests/*.cpp)) \
+	$(d)support/main.o \
+	$(d)support/util.o \
+	$(d)support/util_unix.o \
+	$(TOP)lib/libaegisub.a \
+	$(TOP)lib/libuniversalchardet.a \
+	$(GTEST_FILE).o
 
-LIBS += -L../libaegisub -laegisub -L../vendor/universalchardet -luniversalchardet $(LIBS_BOOST) $(LIBS_ICU)
-LDFLAGS += -Wl,-rpath $(CURDIR)/../libaegisub $(LDFLAGS_ICONV)
-
-CPPFLAGS += -I../src/include -I../libaegisub/include $(CFLAGS_ICONV) -I${GTEST_ROOT} -I${GTEST_ROOT}/include -I./support $(CPPFLAGS_BOOST)
-CXXFLAGS += -Wno-unused-value -Wno-sign-compare
-
-PRECOMPILED_HEADER_NAME = ../libaegisub/lagi_pre.h
+# This bit of goofiness is to make it only try to build the tests if google
+# test can be found and silently skip it if not, by using $(wildcard) to check
+# for file existence
+PROGRAM += $(subst $(GTEST_FILE).cc,$(d)run,$(wildcard $(GTEST_FILE).cc))
 
 ifeq (yes, $(BUILD_DARWIN))
-LDFLAGS += -framework ApplicationServices -framework Foundation
+run_LIBS += -framework ApplicationServices -framework Foundation
 endif
 
-SRC = \
-		support/main.cpp \
-		support/util.cpp \
-		support/util_unix.cpp \
-		tests/access.cpp \
-		tests/cajun.cpp \
-		tests/color.cpp \
-		tests/dialogue_lexer.cpp \
-		tests/format.cpp \
-		tests/fs.cpp \
-		tests/hotkey.cpp \
-		tests/iconv.cpp \
-		tests/ifind.cpp \
-		tests/karaoke_matcher.cpp \
-		tests/keyframe.cpp \
-		tests/line_iterator.cpp \
-		tests/line_wrap.cpp \
-		tests/mru.cpp \
-		tests/option.cpp \
-		tests/path.cpp \
-		tests/signals.cpp \
-		tests/syntax_highlight.cpp \
-		tests/thesaurus.cpp \
-		tests/util.cpp \
-		tests/uuencode.cpp \
-		tests/vfr.cpp \
-		tests/word_split.cpp \
-		${GTEST_ROOT}/src/gtest-all.cc
+$(d)data: $(d)setup.sh
+	cd $(TOP)tests; ./setup.sh
 
-HEADER = support/*.h tests/*.h
+test-libaegisub: $(d)run $(d)data
+	cd $(TOP)tests; ./run
 
-include ../Makefile.target
--include support/*.d
--include tests/*.d
+test: $(subst $(GTEST_FILE).cc,test-libaegisub,$(wildcard $(GTEST_FILE).cc))
+
+include $(TOP)Makefile.target

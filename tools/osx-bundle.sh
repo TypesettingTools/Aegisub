@@ -9,10 +9,6 @@ SRCDIR=`pwd`
 HOME_DIR=`echo ~`
 WX_PREFIX=`${2} --prefix`
 
-if test -z "${CC}"; then
-  CC="cc"
-fi
-
 if ! test -d packages/osx_bundle; then
   echo
   echo "Make sure you're in the toplevel source directory"
@@ -43,6 +39,7 @@ if ! test -f "tools/osx-bundle.sed"; then
   exit 1
 fi
 
+# used by osx-bundle.sed
 find po -name *.po | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/; s/RS/YU/' > languages
 
 find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
@@ -53,6 +50,15 @@ cp ${SKEL_DIR}/Contents/Resources/etc/fonts/conf.d/*.conf "${PKG_DIR}/Contents/R
 cat ${SKEL_DIR}/Contents/Info.plist | sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Info.plist"
 
 rm languages
+
+echo
+echo "---- Installing files ----"
+make install \
+	DESTDIR="${PKG_DIR}/Contents" \
+	P_DATA="/SharedSupport" \
+	P_DOC="/SharedSupport/doc" \
+	P_LOCALE="/Resources" \
+	P_BINDIR="/MacOS"
 
 echo
 echo "---- Copying dictionaries ----"
@@ -67,31 +73,15 @@ else
   echo "         where the *.aff and *.dic files can be found"
 fi
 
-
-echo
-echo "---- Copying automation/ files ----"
-pushd automation
-make install DESTDIR="../${PKG_DIR}/Contents/SharedSupport" P_DATA="" P_DOC="/doc"
-popd
-
 echo
 echo "---- Copying Aegisub locale files ----"
 # Let Aqua know that aegisub supports english.  English strings are
 # internal so we don't need an aegisub.mo file.
 mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 
-for i in `ls -1 po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
-  # The only serbian locale 10.8 has is sr_YU
-  destname=$(echo ${i} | sed 's/sr_RS/sr_YU/')
-  if test -f "po/${i}.mo"; then
-    mkdir -p "${PKG_DIR}/Contents/Resources/${destname}.lproj"
-    cp -v po/${i}.mo "${PKG_DIR}/Contents/Resources/${destname}.lproj/aegisub.mo"
-  else
-    echo "${i}.mo not found!"
-    exit 1
-  fi
-done
-
+# 10.8 wants sr_YU rather than sr_RS
+mv "${PKG_DIR}/Contents/Resources/sr_RS.lproj" "${PKG_DIR}/Contents/Resources/sr_YU.lproj"
+mv "${PKG_DIR}/Contents/Resources/sr_RS@latin.lproj" "${PKG_DIR}/Contents/Resources/sr_YU@latin.lproj"
 
 echo
 echo "---- Copying WX locale files ----"
@@ -109,16 +99,6 @@ for i in `ls -1 po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
     echo "WARNING: \"$i\" locale in aegisub but no WX catalog found!"
   fi
 done
-
-
-echo
-echo " ---- Copying binary ----"
-cp -v src/${AEGISUB_BIN} "${PKG_DIR}/Contents/MacOS/aegisub"
-
-
-echo
-echo " ---- Build / install restart-helper ----"
-cp -v tools/osx-bundle-restart-helper "${PKG_DIR}/Contents/MacOS/restart-helper"
 
 
 echo

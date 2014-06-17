@@ -1,67 +1,51 @@
-include ../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../header.mk
 
-LIB = libaegisub.a
-
-CXXFLAGS += -Iinclude -I../src -I.. -fPIC
-CPPFLAGS += $(CPPFLAGS_BOOST) $(CFLAGS_LUA)
-
-PRECOMPILED_HEADER_NAME = lagi_pre.h
-lagi_pre.h.gch: CXXFLAGS := $(CXXFLAGS)
-
-common/charset_conv.o: CXXFLAGS += $(CFLAGS_ICONV)
-common/parser.o: CXXFLAGS += -ftemplate-depth=256
-unix/path.o: CXXFLAGS += -DP_DATA=\"$(P_DATA)\"
-
-SRC += \
-	common/parser.cpp \
-	ass/dialogue_parser.cpp \
-	common/cajun/elements.cpp \
-	common/cajun/reader.cpp \
-	common/cajun/writer.cpp \
-	common/calltip_provider.cpp \
-	common/character_count.cpp \
-	common/charset.cpp \
-	common/charset_6937.cpp \
-	common/charset_conv.cpp \
-	common/color.cpp \
-	common/file_mapping.cpp \
-	common/format.cpp \
-	common/fs.cpp \
-	common/hotkey.cpp \
-	common/io.cpp \
-	common/json.cpp \
-	common/kana_table.cpp \
-	common/karaoke_matcher.cpp \
-	common/keyframe.cpp \
-	common/log.cpp \
-	common/mru.cpp \
-	common/option.cpp \
-	common/option_visit.cpp \
-	common/path.cpp \
-	common/thesaurus.cpp \
-	common/util.cpp \
-	common/vfr.cpp \
-	common/ycbcr_conv.cpp \
-	lua/modules.cpp \
-	lua/modules/lfs.cpp \
-	lua/modules/lpeg.c \
-	lua/modules/re.cpp \
-	lua/modules/unicode.cpp \
-	lua/script_reader.cpp \
-	lua/utils.cpp \
-	unix/access.cpp \
-	unix/fs.cpp \
-	unix/log.cpp \
-	unix/path.cpp \
-	unix/util.cpp
+aegisub_OBJ := \
+	$(d)common/parser.o \
+	$(d)ass/dialogue_parser.o \
+	$(subst .cpp,.o,$(wildcard $(d)common/cajun/*.cpp)) \
+	$(subst .cpp,.o,$(wildcard $(d)lua/modules/*.cpp)) \
+	$(subst .c,.o,$(wildcard $(d)lua/modules/*.c)) \
+	$(subst .cpp,.o,$(wildcard $(d)lua/*.cpp)) \
+	$(subst .cpp,.o,$(wildcard $(d)unix/*.cpp)) \
+	$(d)common/calltip_provider.o \
+	$(d)common/character_count.o \
+	$(d)common/charset.o \
+	$(d)common/charset_6937.o \
+	$(d)common/charset_conv.o \
+	$(d)common/color.o \
+	$(d)common/file_mapping.o \
+	$(d)common/format.o \
+	$(d)common/fs.o \
+	$(d)common/hotkey.o \
+	$(d)common/io.o \
+	$(d)common/json.o \
+	$(d)common/kana_table.o \
+	$(d)common/karaoke_matcher.o \
+	$(d)common/keyframe.o \
+	$(d)common/log.o \
+	$(d)common/mru.o \
+	$(d)common/option.o \
+	$(d)common/option_visit.o \
+	$(d)common/path.o \
+	$(d)common/thesaurus.o \
+	$(d)common/util.o \
+	$(d)common/vfr.o \
+	$(d)common/ycbcr_conv.o
 
 ifeq (yes, $(BUILD_DARWIN))
-SRC += osx/util.mm osx/dispatch.mm osx/spellchecker.mm
+aegisub_OBJ += $(subst .mm,.o,$(wildcard $(d)osx/*.mm))
 else
-SRC += common/dispatch.cpp
+aegisub_OBJ += $(d)common/dispatch.o
 endif
 
-include ../Makefile.target
--include */*.d
--include lua/*/*.d
--include common/*/*.d
+aegisub_PCH := $(d)lagi_pre.h
+aegisub_CPPFLAGS := -I$(d)include -I$(TOP) -fPIC $(CPPFLAGS_BOOST) $(CFLAGS_LUA)
+
+$(d)common/charset_conv.o_FLAGS := $(CFLAGS_ICONV)
+$(d)common/parser.o_FLAGS := -ftemplate-depth=256
+$(d)unix/path.o_FLAGS := -DP_DATA=\"$(P_DATA)\"
+
+LIB += aegisub
+
+include $(TOP)Makefile.target

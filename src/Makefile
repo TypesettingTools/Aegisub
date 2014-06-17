@@ -1,271 +1,207 @@
-include ../Makefile.inc
+include $(dir $(lastword $(MAKEFILE_LIST)))../header.mk
 
-PROGRAM = $(AEGISUB_COMMAND)
-PROGRAM_INSTALL = yes
+PROGRAM += $(d)src
 
-PRECOMPILED_HEADER_NAME=agi_pre.h
+src_CPPFLAGS := -I$(d) -I.. -I$(d)include -I$(TOP)libaegisub/include -I$(TOP)build \
+	$(CFLAGS_PTHREAD) $(CFLAGS_FFTW3) $(CFLAGS_ICU)
+src_CXXFLAGS := -D__STDC_FORMAT_MACROS $(CXXFLAGS_WX)
+src_LIBS := $(LIBS_GL) $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE) \
+	$(LIBS_LIBASS) $(LIBS_FONTCONFIG) $(LIBS_FFTW3)  $(LIBS_BOOST) $(LIBS_ICU)
+src_PCH := $(d)agi_pre.h
+src_INSTALLNAME := $(AEGISUB_COMMAND)
 
-AEGISUB_CFLAGS = -I. -I.. -Iinclude -I../libaegisub/include -I../build -DAEGISUB $(CFLAGS_PTHREAD) $(CFLAGS_FFTW3) $(CFLAGS_ICU)
-
-CFLAGS += $(AEGISUB_CFLAGS)
-CXXFLAGS += $(AEGISUB_CFLAGS) -D__STDC_FORMAT_MACROS $(CXXFLAGS_WX)
-
-LIBS := -L../libaegisub -laegisub $(LIBS_LUA) $(LIBS)
-LIBS += $(LIBS_GL) $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE)
-LIBS += $(LIBS_FONTCONFIG) $(LIBS_FFTW3) $(LIBS_UCHARDET) $(LIBS_BOOST)
-LIBS += $(LIBS_ICU) ../vendor/luabins/libluabins.a
+src_OBJ := \
+	$(subst .cpp,.o,$(wildcard $(d)command/*.cpp)) \
+	$(subst .cpp,.o,$(wildcard $(d)dialog_*.cpp)) \
+	$(subst .cpp,.o,$(wildcard $(d)subtitle_format*.cpp)) \
+	$(subst .cpp,.o,$(wildcard $(d)visual_tool*.cpp)) \
+	$(d)MatroskaParser.o \
+	$(d)aegisublocale.o \
+	$(d)ass_attachment.o \
+	$(d)ass_dialogue.o \
+	$(d)ass_entry.o \
+	$(d)ass_export_filter.o \
+	$(d)ass_exporter.o \
+	$(d)ass_file.o \
+	$(d)ass_karaoke.o \
+	$(d)ass_override.o \
+	$(d)ass_parser.o \
+	$(d)ass_style.o \
+	$(d)ass_style_storage.o \
+	$(d)ass_time.o \
+	$(d)async_video_provider.o \
+	$(d)audio_box.o \
+	$(d)audio_colorscheme.o \
+	$(d)audio_controller.o \
+	$(d)audio_display.o \
+	$(d)audio_karaoke.o \
+	$(d)audio_marker.o \
+	$(d)audio_player.o \
+	$(d)audio_provider.o \
+	$(d)audio_provider_convert.o \
+	$(d)audio_provider_dummy.o \
+	$(d)audio_provider_hd.o \
+	$(d)audio_provider_lock.o \
+	$(d)audio_provider_pcm.o \
+	$(d)audio_provider_ram.o \
+	$(d)audio_renderer.o \
+	$(d)audio_renderer_spectrum.o \
+	$(d)audio_renderer_waveform.o \
+	$(d)audio_timing_dialogue.o \
+	$(d)audio_timing_karaoke.o \
+	$(d)auto4_base.o \
+	$(d)auto4_lua.o \
+	$(d)auto4_lua_assfile.o \
+	$(d)auto4_lua_dialog.o \
+	$(d)auto4_lua_progresssink.o \
+	$(d)avisynth_wrap.o \
+	$(d)base_grid.o \
+	$(d)charset_detect.o \
+	$(d)colorspace.o \
+	$(d)colour_button.o \
+	$(d)compat.o \
+	$(d)context.o \
+	$(d)crash_writer.o \
+	$(d)export_fixstyle.o \
+	$(d)export_framerate.o \
+	$(d)fft.o \
+	$(d)font_file_lister.o \
+	$(d)font_file_lister_fontconfig.o \
+	$(d)frame_main.o \
+	$(d)gl_text.o \
+	$(d)gl_wrap.o \
+	$(d)grid_column.o \
+	$(d)help_button.o \
+	$(d)hotkey.o \
+	$(d)hotkey_data_view_model.o \
+	$(d)initial_line_state.o \
+	$(d)main.o \
+	$(d)menu.o \
+	$(d)mkv_wrap.o \
+	$(d)pen.o \
+	$(d)persist_location.o \
+	$(d)preferences.o \
+	$(d)preferences_base.o \
+	$(d)project.o \
+	$(d)resolution_resampler.o \
+	$(d)search_replace_engine.o \
+	$(d)selection_controller.o \
+	$(d)spellchecker.o \
+	$(d)spline.o \
+	$(d)spline_curve.o \
+	$(d)string_codec.o \
+	$(d)subs_controller.o \
+	$(d)subs_edit_box.o \
+	$(d)subs_edit_ctrl.o \
+	$(d)subs_preview.o \
+	$(d)subtitles_provider.o \
+	$(d)subtitles_provider_libass.o \
+	$(d)text_file_reader.o \
+	$(d)text_file_writer.o \
+	$(d)text_selection_controller.o \
+	$(d)thesaurus.o \
+	$(d)timeedit_ctrl.o \
+	$(d)toggle_bitmap.o \
+	$(d)toolbar.o \
+	$(d)tooltip_manager.o \
+	$(d)utils.o \
+	$(d)validators.o \
+	$(d)vector2d.o \
+	$(d)version.o \
+	$(d)video_box.o \
+	$(d)video_controller.o \
+	$(d)video_display.o \
+	$(d)video_frame.o \
+	$(d)video_out_gl.o \
+	$(d)video_provider_cache.o \
+	$(d)video_provider_dummy.o \
+	$(d)video_provider_manager.o \
+	$(d)video_provider_yuv4mpeg.o \
+	$(d)video_slider.o \
+	$(d)visual_feature.o \
+	$(LIBS_LUA) \
+	$(TOP)lib/libaegisub.a \
+	$(TOP)lib/libluabins.a \
+	$(TOP)lib/libresrc.a \
+	$(TOP)lib/libuniversalchardet.a \
 
 ifeq (yes, $(BUILD_DARWIN))
-SRC += osx/osx_utils.mm osx/retina_helper.mm osx/scintilla_ime.mm
+src_OBJ += $(subst .mm,.o,$(wildcard $(d)osx/*.mm))
 endif
-
-lpeg.o: CXXFLAGS += -Wno-unused-function
-MatroskaParser.o: CFLAGS += -Wno-sometimes-uninitialized
 
 ###############
 # AUDIO PLAYERS
 ###############
+$(d)audio_player_alsa.o_FLAGS      := $(CFLAGS_ALSA)
+$(d)audio_player_portaudio.o_FLAGS := $(CFLAGS_PORTAUDIO)
+$(d)audio_player_pulse.o_FLAGS     := $(CFLAGS_LIBPULSE)
+$(d)audio_player_openal.o_FLAGS    := $(CFLAGS_OPENAL)
+$(d)audio_player_oss.o_FLAGS       := $(CFLAGS_OSS)
+
 ifeq (yes, $(HAVE_ALSA))
-audio_player_alsa.o: CXXFLAGS += $(CFLAGS_ALSA)
-LIBS += $(LIBS_ALSA)
-SRC += audio_player_alsa.cpp
+src_LIBS += $(LIBS_ALSA)
+src_OBJ += $(d)audio_player_alsa.o
 endif
 
 ifeq (yes, $(HAVE_PORTAUDIO))
-audio_player_portaudio.o: CXXFLAGS += $(CFLAGS_PORTAUDIO)
-LIBS += $(LIBS_PORTAUDIO)
-SRC += audio_player_portaudio.cpp
+src_LIBS += $(LIBS_PORTAUDIO)
+src_OBJ += $(d)audio_player_portaudio.o
 endif
 
 ifeq (yes, $(HAVE_LIBPULSE))
-audio_player_pulse.o: CXXFLAGS += $(CFLAGS_LIBPULSE)
-LIBS += $(LIBS_LIBPULSE)
-SRC += audio_player_pulse.cpp
+src_LIBS += $(LIBS_LIBPULSE)
+src_OBJ += $(d)audio_player_pulse.o
 endif
 
 ifeq (yes, $(HAVE_OPENAL))
-audio_player_openal.o: CXXFLAGS += $(CFLAGS_OPENAL)
-LIBS += $(LIBS_OPENAL)
-SRC += audio_player_openal.cpp
+src_LIBS += $(LIBS_OPENAL)
+src_OBJ += $(d)audio_player_openal.o
 endif
 
 ifeq (yes, $(HAVE_OSS))
-audio_player_oss.o: CXXFLAGS += $(CFLAGS_OSS)
-SRC += audio_player_oss.cpp
+src_OBJ += $(d)audio_player_oss.o
 endif
 
 #######################
 # AUDIO / VIDEO SUPPORT
 #######################
 ifeq (yes, $(HAVE_FFMS2))
-audio_provider_ffmpegsource.o video_provider_ffmpegsource.o ffmpegsource_common.o preferences.o: \
-	CXXFLAGS += $(CFLAGS_FFMS2)
-LIBS += $(LIBS_FFMS2)
-SRC += audio_provider_ffmpegsource.cpp video_provider_ffmpegsource.cpp ffmpegsource_common.cpp
+$(d)audio_provider_ffmpegsource.o_FLAGS := $(CFLAGS_FFMS2)
+$(d)video_provider_ffmpegsource.o_FLAGS := $(CFLAGS_FFMS2)
+$(d)ffmpegsource_common.o_FLAGS         := $(CFLAGS_FFMS2)
+$(d)preferences.o_FLAGS                 := $(CFLAGS_FFMS2)
+src_LIBS += $(LIBS_FFMS2)
+src_OBJ += \
+	$(d)audio_provider_ffmpegsource.o \
+	$(d)video_provider_ffmpegsource.o \
+	$(d)ffmpegsource_common.o
 endif
-
-###########
-# SUBTITLES
-###########
-subtitles_provider_libass.o: CXXFLAGS += $(CFLAGS_LIBASS) -Wno-c++11-narrowing
-subtitles_provider.o: CXXFLAGS += $(CFLAGS_LIBASS)
-LIBS += $(LIBS_LIBASS)
-SRC += subtitles_provider_libass.cpp
 
 ##############
 # MISCELLANOUS
 ##############
 ifeq (yes, $(HAVE_HUNSPELL))
-spellchecker_hunspell.o: CXXFLAGS += $(CFLAGS_HUNSPELL)
-LIBS += $(LIBS_HUNSPELL)
-SRC += spellchecker_hunspell.cpp
+$(d)spellchecker_hunspell.o_FLAGS := $(CFLAGS_HUNSPELL)
+src_LIBS += $(LIBS_HUNSPELL)
+src_OBJ += $(d)spellchecker_hunspell.o
 endif
 
 #####################
 # SOURCE-LEVEL CFLAGS
 #####################
-audio_player.o:                CXXFLAGS += $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(CFLAGS_LIBPULSE) $(CFLAGS_OPENAL)
-audio_provider.o:              CXXFLAGS += $(CFLAGS_FFMS2)
-auto4_base.o:                  CXXFLAGS += $(CFLAGS_FREETYPE)
-charset_detect.o:              CXXFLAGS += -D_X86_
-font_file_lister_fontconfig.o: CXXFLAGS += $(CFLAGS_FONTCONFIG)
-text_file_reader.o:            CXXFLAGS += -D_X86_
-video_provider_manager.o:      CXXFLAGS += $(CFLAGS_FFMS2)
-auto4_lua.o auto4_lua_assfile.o auto4_lua_dialog.o  auto4_lua_progresssink.o: CPPFLAGS += -I../vendor/luajit/include
+$(d)MatroskaParser.o_FLAGS              := -Wno-sometimes-uninitialized
+$(d)audio_player.o_FLAGS                := $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(CFLAGS_LIBPULSE) $(CFLAGS_OPENAL)
+$(d)audio_provider.o_FLAGS              := $(CFLAGS_FFMS2)
+$(d)auto4_base.o_FLAGS                  := $(CFLAGS_FREETYPE)
+$(d)charset_detect.o_FLAGS              := -D_X86_
+$(d)font_file_lister_fontconfig.o_FLAGS := $(CFLAGS_FONTCONFIG)
+$(d)subtitles_provider.o_FLAGS          := $(CFLAGS_LIBASS)
+$(d)subtitles_provider_libass.o_FLAGS   := $(CFLAGS_LIBASS) -Wno-c++11-narrowing
+$(d)text_file_reader.o_FLAGS            := -D_X86_
+$(d)video_provider_manager.o_FLAGS      := $(CFLAGS_FFMS2)
+$(d)auto4_lua.o_FLAGS                   := -I$(TOP)vendor/luajit/include
+$(d)auto4_lua_assfile.o_FLAGS           := -I$(TOP)vendor/luajit/include
+$(d)auto4_lua_dialog.o_FLAGS            := -I$(TOP)vendor/luajit/include
+$(d)auto4_lua_progresssink.o_FLAGS      := -I$(TOP)vendor/luajit/include
 
-SRC += \
-	MatroskaParser.c \
-	aegisublocale.cpp \
-	ass_attachment.cpp \
-	ass_dialogue.cpp \
-	ass_entry.cpp \
-	ass_export_filter.cpp \
-	ass_exporter.cpp \
-	ass_file.cpp \
-	ass_karaoke.cpp \
-	ass_override.cpp \
-	ass_parser.cpp \
-	ass_style.cpp \
-	ass_style_storage.cpp \
-	ass_time.cpp \
-	async_video_provider.cpp \
-	audio_box.cpp \
-	audio_colorscheme.cpp \
-	audio_controller.cpp \
-	audio_display.cpp \
-	audio_karaoke.cpp \
-	audio_marker.cpp \
-	audio_player.cpp \
-	audio_provider.cpp \
-	audio_provider_convert.cpp \
-	audio_provider_dummy.cpp \
-	audio_provider_hd.cpp \
-	audio_provider_lock.cpp \
-	audio_provider_pcm.cpp \
-	audio_provider_ram.cpp \
-	audio_renderer.cpp \
-	audio_renderer_spectrum.cpp \
-	audio_renderer_waveform.cpp \
-	audio_timing_dialogue.cpp \
-	audio_timing_karaoke.cpp \
-	auto4_base.cpp \
-	auto4_lua.cpp \
-	auto4_lua_assfile.cpp \
-	auto4_lua_dialog.cpp \
-	auto4_lua_progresssink.cpp \
-	avisynth_wrap.cpp \
-	base_grid.cpp \
-	charset_detect.cpp \
-	colorspace.cpp \
-	colour_button.cpp \
-	command/app.cpp \
-	command/audio.cpp \
-	command/automation.cpp \
-	command/command.cpp \
-	command/edit.cpp \
-	command/grid.cpp \
-	command/help.cpp \
-	command/keyframe.cpp \
-	command/recent.cpp \
-	command/subtitle.cpp \
-	command/time.cpp \
-	command/timecode.cpp \
-	command/tool.cpp \
-	command/video.cpp \
-	command/vis_tool.cpp \
-	compat.cpp \
-	context.cpp \
-	crash_writer.cpp \
-	dialog_about.cpp \
-	dialog_attachments.cpp \
-	dialog_automation.cpp \
-	dialog_autosave.cpp \
-	dialog_colorpicker.cpp \
-	dialog_detached_video.cpp \
-	dialog_dummy_video.cpp \
-	dialog_export.cpp \
-	dialog_export_ebu3264.cpp \
-	dialog_fonts_collector.cpp \
-	dialog_jumpto.cpp \
-	dialog_kara_timing_copy.cpp \
-	dialog_log.cpp \
-	dialog_paste_over.cpp \
-	dialog_progress.cpp \
-	dialog_properties.cpp \
-	dialog_resample.cpp \
-	dialog_search_replace.cpp \
-	dialog_selected_choices.cpp \
-	dialog_selection.cpp \
-	dialog_shift_times.cpp \
-	dialog_spellchecker.cpp \
-	dialog_style_editor.cpp \
-	dialog_style_manager.cpp \
-	dialog_styling_assistant.cpp \
-	dialog_text_import.cpp \
-	dialog_timing_processor.cpp \
-	dialog_translation.cpp \
-	dialog_version_check.cpp \
-	dialog_video_details.cpp \
-	dialog_video_properties.cpp \
-	export_fixstyle.cpp \
-	export_framerate.cpp \
-	fft.cpp \
-	font_file_lister.cpp \
-	font_file_lister_fontconfig.cpp \
-	frame_main.cpp \
-	gl_text.cpp \
-	gl_wrap.cpp \
-	grid_column.cpp \
-	help_button.cpp \
-	hotkey.cpp \
-	hotkey_data_view_model.cpp \
-	initial_line_state.cpp \
-	main.cpp \
-	menu.cpp \
-	mkv_wrap.cpp \
-	pen.cpp \
-	persist_location.cpp \
-	preferences.cpp \
-	preferences_base.cpp \
-	project.cpp \
-	resolution_resampler.cpp \
-	search_replace_engine.cpp \
-	selection_controller.cpp \
-	spellchecker.cpp \
-	spline.cpp \
-	spline_curve.cpp \
-	string_codec.cpp \
-	subs_controller.cpp \
-	subs_edit_box.cpp \
-	subs_edit_ctrl.cpp \
-	subs_preview.cpp \
-	subtitle_format.cpp \
-	subtitle_format_ass.cpp \
-	subtitle_format_ebu3264.cpp \
-	subtitle_format_encore.cpp \
-	subtitle_format_microdvd.cpp \
-	subtitle_format_mkv.cpp \
-	subtitle_format_srt.cpp \
-	subtitle_format_ssa.cpp \
-	subtitle_format_transtation.cpp \
-	subtitle_format_ttxt.cpp \
-	subtitle_format_txt.cpp \
-	subtitles_provider.cpp \
-	text_file_reader.cpp \
-	text_file_writer.cpp \
-	text_selection_controller.cpp \
-	thesaurus.cpp \
-	timeedit_ctrl.cpp \
-	toggle_bitmap.cpp \
-	toolbar.cpp \
-	tooltip_manager.cpp \
-	utils.cpp \
-	validators.cpp \
-	vector2d.cpp \
-	version.cpp \
-	video_box.cpp \
-	video_controller.cpp \
-	video_display.cpp \
-	video_frame.cpp \
-	video_out_gl.cpp \
-	video_provider_cache.cpp \
-	video_provider_dummy.cpp \
-	video_provider_manager.cpp \
-	video_provider_yuv4mpeg.cpp \
-	video_slider.cpp \
-	visual_feature.cpp \
-	visual_tool.cpp \
-	visual_tool_clip.cpp \
-	visual_tool_cross.cpp \
-	visual_tool_drag.cpp \
-	visual_tool_rotatexy.cpp \
-	visual_tool_rotatez.cpp \
-	visual_tool_scale.cpp \
-	visual_tool_vector_clip.cpp
-
-include libresrc/Makefile.inc
-
-include ../Makefile.target
--include *.d
--include command/*.d
--include libresrc/*.d
+include $(d)libresrc/Makefile

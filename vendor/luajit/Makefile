@@ -1,12 +1,15 @@
-default all:
-	$(MAKE) -C src amalg
+include $(dir $(lastword $(MAKEFILE_LIST)))../../header.mk
 
-clean:
-	$(MAKE) -C src clean
+LUAJIT_DIR := $(abspath $(d)src)
 
-distclean:
-	$(MAKE) -C src clean
+$(LIBS_LUA): $(LUAJIT_DIR)/host/minilua
+	$(MAKE) -C $(LUAJIT_DIR) amalg
 
-install:
+$(LUAJIT_DIR)/host/minilua:
+	$(MAKE) -C $(LUAJIT_DIR) host/minilua
 
-.PHONY: all clean install
+clean-luajit:
+	$(MAKE) -C $(LUAJIT_DIR) clean
+
+clean: clean-luajit
+distclean: clean-luajit
