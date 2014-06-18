@@ -204,4 +204,6 @@ $(d)auto4_lua_assfile.o_FLAGS           := -I$(TOP)vendor/luajit/include
 $(d)auto4_lua_dialog.o_FLAGS            := -I$(TOP)vendor/luajit/include
 $(d)auto4_lua_progresssink.o_FLAGS      := -I$(TOP)vendor/luajit/include
 
+$(src_OBJ): $(d)libresrc/bitmap.h $(d)libresrc/default_config.h
+
 include $(d)libresrc/Makefile
