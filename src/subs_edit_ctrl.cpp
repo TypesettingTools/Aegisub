@@ -373,11 +373,18 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 }
 
 void SubsTextEditCtrl::OnDoubleClick(wxStyledTextEvent &evt) {
-	auto bounds = GetBoundsOfWordAtPosition(evt.GetPosition());
-	if (bounds.second != 0)
-		SetSelection(bounds.first, bounds.first + bounds.second);
-	else
-		evt.Skip();
+	int pos = evt.GetPosition();
+	if (pos == -1 && !tokenized_line.empty()) {
+		auto tok = tokenized_line.back();
+		SetSelection(line_text.size() - tok.length, line_text.size());
+	}
+	else {
+		auto bounds = GetBoundsOfWordAtPosition(evt.GetPosition());
+		if (bounds.second != 0)
+			SetSelection(bounds.first, bounds.first + bounds.second);
+		else
+			evt.Skip();
+	}
 }
 
 void SubsTextEditCtrl::AddSpellCheckerEntries(wxMenu &menu) {
