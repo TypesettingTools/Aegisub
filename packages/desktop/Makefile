@@ -2,7 +2,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../header.mk
 DESKTOP_SRC := $(d)
 
 ICONS = $(wildcard $(d)*.png) $(wildcard $(d)*.svg)
-ICONS_INSTALLED = $(DESTDIR)$(P_ICON)/hicolor/%/aegisub.
+ICONS_INSTALLED = $(DESTDIR)$(P_ICON)/hicolor/%/apps/aegisub.
 
 DESKTOP_FILE := $(d)aegisub.desktop
 DESKTOP_FILE_PO := $(d)../../po
