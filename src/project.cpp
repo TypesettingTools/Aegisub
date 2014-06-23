@@ -157,7 +157,7 @@ bool Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding, P
 	return true;
 }
 
-void Project::LoadSubtitles(agi::fs::path const& path, std::string encoding) {
+void Project::LoadSubtitles(agi::fs::path path, std::string encoding) {
 	ProjectProperties properties;
 	if (DoLoadSubtitles(path, encoding, properties))
 		LoadUnloadFiles(properties);
@@ -273,7 +273,7 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 	AnnounceAudioProviderModified(audio_provider.get());
 }
 
-void Project::LoadAudio(agi::fs::path const& path) {
+void Project::LoadAudio(agi::fs::path path) {
 	DoLoadAudio(path, false);
 }
 
@@ -327,7 +327,7 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 	return true;
 }
 
-void Project::LoadVideo(agi::fs::path const& path) {
+void Project::LoadVideo(agi::fs::path path) {
 	if (path.empty()) return;
 	if (!DoLoadVideo(path)) return;
 	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
@@ -357,7 +357,7 @@ void Project::DoLoadTimecodes(agi::fs::path const& path) {
 	AnnounceTimecodesModified(timecodes);
 }
 
-void Project::LoadTimecodes(agi::fs::path const& path) {
+void Project::LoadTimecodes(agi::fs::path path) {
 	try {
 		DoLoadTimecodes(path);
 	}
@@ -383,7 +383,7 @@ void Project::DoLoadKeyframes(agi::fs::path const& path) {
 	AnnounceKeyframesModified(keyframes);
 }
 
-void Project::LoadKeyframes(agi::fs::path const& path) {
+void Project::LoadKeyframes(agi::fs::path path) {
 	try {
 		DoLoadKeyframes(path);
 	}
