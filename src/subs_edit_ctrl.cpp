@@ -479,10 +479,23 @@ void SubsTextEditCtrl::OnUseSuggestion(wxCommandEvent &event) {
 	else
 		suggestion = sugs[event.GetId() - EDIT_MENU_SUGGESTIONS];
 
-	// Strip suggestion of parenthesis
-	size_t pos = suggestion.find("(");
-	if (pos != suggestion.npos)
+	size_t pos;
+	while ((pos = suggestion.rfind('(')) != std::string::npos) {
+		// If there's only one suggestion for a word it'll be in the form "(noun) word",
+		// so we need to trim the "(noun) " part
+		if (pos == 0) {
+			pos = suggestion.find(')');
+			if (pos != std::string::npos) {
+				if (pos + 1< suggestion.size() && suggestion[pos + 1] == ' ') ++pos;
+				suggestion.erase(0, pos + 1);
+			}
+			break;
+		}
+
+		// Some replacements have notes about their usage after the word in the
+		// form "word (generic term)" that we need to remove (plus the leading space)
 		suggestion.resize(pos - 1);
+	}
 
 	// line_text needs to get cleared before SetTextRaw to ensure it gets reparsed
 	std::string new_text;
