@@ -349,17 +349,6 @@ static void printpatt (Instruction *p) {
   }
 }
 
-
-static void printcap (Capture *cap) {
-  printcapkind(cap->kind);
-  printf(" (idx: %d - size: %d) -> %p\n", cap->idx, cap->siz, cap->s);
-}
-
-
-static void printcaplist (Capture *cap) {
-  for (; cap->s; cap++) printcap(cap);
-}
-
 /* }====================================================== */
 
 
@@ -446,7 +435,7 @@ static const char *match (lua_State *L,
   lua_pushlightuserdata(L, stackbase);
   for (;;) {
 #if defined(DEBUG)
-      printf("s: |%s| stck: %d c: %d  ",
+      printf("s: |%s| stck: %ld c: %d  ",
              s, stack - getstackbase(L, ptop), captop);
       printinst(op, p);
 #endif
