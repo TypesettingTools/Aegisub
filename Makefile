@@ -2,7 +2,7 @@ include header.mk
 
 ifeq (yes, $(BUILD_DARWIN))
 osx-bundle:
-	$(BIN_SHELL) tools/osx-bundle.sh "$(AEGISUB_COMMAND)" "$(BIN_WX_CONFIG)" DICT_DIR=$(DICT_DIR)
+	$(BIN_SHELL) tools/osx-bundle.sh "$(AEGISUB_COMMAND)" "$(BIN_WX_CONFIG)" "$(FONTCONFIG_CONF_DIR)" DICT_DIR=$(DICT_DIR)
 
 osx-dmg: osx-bundle
 	codesign -s 'Mac Developer' --deep Aegisub.app || true

@@ -105,6 +105,8 @@ ifeq (yes, $(BUILD_DARWIN))
 LIBS_LUA           = $(TOP)vendor/luajit/src/libluajit-aegisub.so
 endif
 
+FONTCONFIG_CONF_DIR = @FONTCONFIG_CONF_DIR@
+
 #####################
 # DEBUG / DEVELOPMENT
 #####################

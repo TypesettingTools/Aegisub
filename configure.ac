@@ -206,6 +206,9 @@ PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version)
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version)
 PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version)
 
+FONTCONFIG_CONF_DIR=$($PKG_CONFIG --variable=confdir fontconfig)
+AC_SUBST(FONTCONFIG_CONF_DIR)
+
 AX_BOOST_BASE([boost_required_version])
 AX_BOOST_LIB(chrono,     BOOST_CHRONO_LIB,     [chrono.hpp], [boost::chrono::system_clock::time_point time])
 AX_BOOST_LIB(filesystem, BOOST_FILESYSTEM_LIB, [filesystem/path.hpp], [boost::filesystem::path("data.txt")])

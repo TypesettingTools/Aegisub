@@ -8,6 +8,7 @@ AEGISUB_BIN="${1}"
 SRCDIR=`pwd`
 HOME_DIR=`echo ~`
 WX_PREFIX=`${2} --prefix`
+FONTCONFIG_CONF_DIR="${3}"
 
 if ! test -d packages/osx_bundle; then
   echo
@@ -46,7 +47,7 @@ find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
 cp ${SKEL_DIR}/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
 cp ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.dtd "${PKG_DIR}/Contents/Resources/etc/fonts"
 cat ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.conf | sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Resources/etc/fonts/fonts.conf"
-cp ${SKEL_DIR}/Contents/Resources/etc/fonts/conf.d/*.conf "${PKG_DIR}/Contents/Resources/etc/fonts/conf.d"
+cp ${FONTCONFIG_CONF_DIR}/conf.d/*.conf "${PKG_DIR}/Contents/Resources/etc/fonts/conf.d"
 cat ${SKEL_DIR}/Contents/Info.plist | sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Info.plist"
 
 rm languages
