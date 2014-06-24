@@ -59,9 +59,6 @@
     <ClCompile Include="$(FontconfigSrcDir)\src\fcmatch.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(FontconfigSrcDir)\src\fcmatrix.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(FontconfigSrcDir)\src\fcname.c">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -61,7 +61,6 @@
     <ClCompile Include="$(FontconfigSrcDir)\src\fclang.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fclist.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcmatch.c" />
-    <ClCompile Include="$(FontconfigSrcDir)\src\fcmatrix.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcname.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcobjs.c" />
     <ClCompile Include="$(FontconfigSrcDir)\src\fcpat.c" />
