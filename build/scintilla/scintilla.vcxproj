@@ -19,6 +19,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SrcDir)\include\;$(SrcDir)\lexlib\;$(SrcDir)\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;__WX__;PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
   </ItemDefinitionGroup>
 

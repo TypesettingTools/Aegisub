@@ -37,6 +37,7 @@
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

@@ -4,14 +4,23 @@
     <ProjectGuid>{7B56955D-5162-4698-AA5B-47484EDC8783}</ProjectGuid>
     <RootNamespace>universalchardet</RootNamespace>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
     <SrcDir>..\..\vendor\universalchardet\</SrcDir>
   </PropertyGroup>
+
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <None Include="$(SrcDir)Big5Freq.tab" />
