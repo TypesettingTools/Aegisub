@@ -36,6 +36,9 @@ REMOVE_SUBDIRS=['LOCSRCDIR', 'CURRSRCDIR', 'ZONESRCDIR', 'COLSRCDIR', 'RBNFSRCDI
 delete_matching('Makefile.in', ['^-include .*%s' % s for s in REMOVE_SUBDIRS])
 delete_matching('Makefile.in', ['^CNV_FILES'])
 
+with open('misc/misclocal.mk', 'w') as f:
+    f.write('MISC_SOURCE = supplementalData.txt likelySubtags.txt icuver.txt icustd.txt metadata.txt')
+
 # Remove data we don't need from the lang and region files
 def parse_txt(filename):
     root = {}

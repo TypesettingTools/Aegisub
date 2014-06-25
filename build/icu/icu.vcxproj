@@ -58,9 +58,9 @@
     >
     <!-- Generated with tools/strip-icu.py -->
     <DownloadTgzFile
-      Url="http://www.aegisub.org/~plorkyeran/$(IcuDt).dat.gz"
+      Url="http://www.aegisub.org/~plorkyeran/$(IcuDt)-be995a7e5fe230029e9b1e547b7de8826888c18c.dat.gz"
       OutputFile="$(MSBuildThisFileDirectory)..\..\vendor\icu\source\data\in\$(IcuDt).dat"
-      Hash="2a351e7753fb1e92910dc2d68721b8f41bbf33b0"
+      Hash="be995a7e5fe230029e9b1e547b7de8826888c18c"
       />
   </Target>
 
