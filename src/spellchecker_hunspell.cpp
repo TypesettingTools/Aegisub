@@ -196,7 +196,12 @@ void HunspellSpellChecker::OnLanguageChanged() {
 
 	LOG_I("dictionary/file") << dic;
 
-	hunspell = agi::make_unique<Hunspell>(agi::fs::ShortName(aff).c_str(), agi::fs::ShortName(dic).c_str());
+#ifdef _WIN32
+	// The prefix makes hunspell assume the paths are UTF-8 and use _wfopen
+	hunspell = agi::make_unique<Hunspell>(("\\\\?\\" + aff.string()).c_str(), ("\\\\?\\" + dic.string()).c_str());
+#else
+	hunspell = agi::make_unique<Hunspell>(aff.string().c_str(), dic.string().c_str());
+#endif
 	if (!hunspell) return;
 
 	conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", hunspell->get_dic_encoding());
