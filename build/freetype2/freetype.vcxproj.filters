@@ -62,7 +62,7 @@
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftsynth.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Freetype2SrcDir)\src\base\ftsystem.c">
+    <ClCompile Include="$(MSBuildThisFileDirectory)ftsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(Freetype2SrcDir)\src\base\fttype1.c">

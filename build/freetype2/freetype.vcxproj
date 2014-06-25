@@ -36,6 +36,7 @@
     <InstallHeader Include="$(Freetype2SrcDir)\include\**\*.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ftsystem.cpp" />
     <ClCompile Include="$(Freetype2SrcDir)\src\autofit\autofit.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftbase.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftbbox.c" />
@@ -52,7 +53,6 @@
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftpfr.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftstroke.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftsynth.c" />
-    <ClCompile Include="$(Freetype2SrcDir)\src\base\ftsystem.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\fttype1.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftwinfnt.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftxf86.c" />
