@@ -1,10 +1,6 @@
 #ifndef _HUNSPELL_VISIBILITY_H_
 #define _HUNSPELL_VISIBILITY_H_
 
-#ifndef HUNSPELL_STATIC
-#define HUNSPELL_STATIC
-#endif
-
 #if defined(HUNSPELL_STATIC)
 #  define LIBHUNSPELL_DLL_EXPORTED
 #elif defined(_MSC_VER)
@@ -13,7 +9,7 @@
 #  else
 #    define LIBHUNSPELL_DLL_EXPORTED __declspec(dllimport)
 #  endif
-#elif BUILDING_LIBHUNSPELL && 1
+#elif defined(BUILDING_LIBHUNSPELL) && 1
 #  define LIBHUNSPELL_DLL_EXPORTED __attribute__((__visibility__("default")))
 #else
 #  define LIBHUNSPELL_DLL_EXPORTED

@@ -13,11 +13,6 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 
-/// @file spellchecker_hunspell.cpp
-/// @brief Hunspell-based spell checker implementation
-/// @ingroup spelling
-///
-
 #ifdef WITH_HUNSPELL
 #include "spellchecker_hunspell.h"
 
@@ -33,6 +28,9 @@
 #include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm.hpp>
+
+#define HUNSPELL_STATIC
+#undef near
 #include <hunspell/hunspell.hxx>
 
 HunspellSpellChecker::HunspellSpellChecker()

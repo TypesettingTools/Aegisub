@@ -4,6 +4,7 @@
     <ProjectGuid>{CC791693-6B28-40AC-879D-64A6C16468E3}</ProjectGuid>
     <RootNamespace>hunspell</RootNamespace>
   </PropertyGroup>
+
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
@@ -12,6 +13,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -20,6 +22,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
   </ItemDefinitionGroup>
+
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)hunspell\affentry.hxx" />
@@ -35,13 +38,7 @@
     <ClInclude Include="$(SrcDir)hunspell\langnum.hxx" />
     <ClInclude Include="$(SrcDir)hunspell\phonet.hxx" />
     <ClInclude Include="$(SrcDir)hunspell\suggestmgr.hxx" />
-    <ClInclude Include="$(SrcDir)parsers\firstparser.hxx" />
-    <ClInclude Include="$(SrcDir)parsers\htmlparser.hxx" />
-    <ClInclude Include="$(SrcDir)parsers\latexparser.hxx" />
-    <ClInclude Include="$(SrcDir)parsers\manparser.hxx" />
-    <ClInclude Include="$(SrcDir)parsers\textparser.hxx" />
     <ClInclude Include="$(SrcDir)win_api\config.h" />
-    <ClInclude Include="$(SrcDir)win_api\hunspelldll.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)hunspell\affentry.cxx" />
@@ -55,15 +52,5 @@
     <ClCompile Include="$(SrcDir)hunspell\phonet.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\replist.cxx" />
     <ClCompile Include="$(SrcDir)hunspell\suggestmgr.cxx" />
-    <ClCompile Include="$(SrcDir)parsers\firstparser.cxx" />
-    <ClCompile Include="$(SrcDir)parsers\htmlparser.cxx" />
-    <ClCompile Include="$(SrcDir)parsers\latexparser.cxx" />
-    <ClCompile Include="$(SrcDir)parsers\manparser.cxx" />
-    <ClCompile Include="$(SrcDir)parsers\testparser.cxx" />
-    <ClCompile Include="$(SrcDir)parsers\textparser.cxx" />
-    <ClCompile Include="$(SrcDir)win_api\hunspelldll.c">
-      <!-- Why is this file named .c when it's obviously C++ code -->
-      <CompileAs>CompileAsCpp</CompileAs>
-    </ClCompile>
   </ItemGroup>
 </Project>

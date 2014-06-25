@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)hunspell\affixmgr.hxx">
@@ -51,25 +47,7 @@
     <ClInclude Include="$(SrcDir)hunspell\suggestmgr.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)parsers\firstparser.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)parsers\htmlparser.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)parsers\latexparser.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)parsers\manparser.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)parsers\textparser.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)win_api\config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)win_api\hunspelldll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)hunspell\affentry.hxx">
@@ -99,27 +77,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)hunspell\suggestmgr.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)parsers\firstparser.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)parsers\htmlparser.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)parsers\latexparser.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)parsers\manparser.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)parsers\testparser.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)parsers\textparser.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)win_api\hunspelldll.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)hunspell\filemgr.cxx">

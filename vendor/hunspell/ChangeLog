@@ -1,3 +1,120 @@
+2014-06-02 Németh László <nemeth at numbertext dot org>:
+	* escape spaces in paths of ODF files
+
+2014-05-28 Németh László <nemeth at numbertext dot org>:
+	* add long path/Unicode path support in WIN32 environment:
+	- hunspell#233 (reported by mahak gark) and LibreOffice fdo#48017 
+	* flat ODF support, eg.:
+	  hunspell doc.fodt
+	  cat doc.fodt | hunspell -l -O
+	* new options:
+	- -X (XML) input format
+	- -O (ODF or flat ODF) input format
+	- --check-apostrophe: check and force Unicode apostrophe usage
+	  (ASCII or Unicode apostrophe has to be in the
+	  WORDCHARS section of the affix file)
+	* fix ODF support:
+	- break 1-line XML of ODT documents at </style:style>, too,
+	  not only at </text:p> (limiting tokenization problems, when
+	  fgets stops within an XML tag)
+	- show ODF file path on the UI instead of the temporary file
+	* fix XML support:
+	- ', ", &, < and > in replacements converted to XML entities
+	- recognize &apos at tokenization, depending from WORDCHARS
+	- &apos; in tokens converted to ' before spell checking and
+	  in the output of the pipe interface
+	* better apostrophe usage:
+	- WORDCHARS only with one of the Unicode or ASCII apostrophe
+	  results extended word tokenization: both of them will be part of
+	  the words (if they are inside: eg. word's, but not words').
+	- convert Unicode apostrophes to ASCII ones for 8-bit dictionaries
+	  (eg. English dictionaries), or for UTF-8 dictionaries only
+	  with ASCII apostrophe supports (eg. French dictionaries).
+	* updated manual:
+	- hunspell.4 renamed to hunspell.5, see
+	  hunspell#241 reported by Cristopher Yeleighton
+	- updated translations
+	- note about long/Unicode paths in WIN32 (hunspell.3)
+
+2014-04-25 Németh László <nemeth at numbertext dot org>:
+	* OpenDocument support, eg.
+	  hunspell *.odt
+	  hunspell -l *.odt
+	* always load default personal dictionary (fix
+	  filtering bad words - reduce this word list - using
+	  it as a personal dictionary workflow)
+	* fix parsing/URL recognition problem (bad tokens
+	  with aposthrophes)
+
+2013-07-25 pchang9@cs.wisc.edu
+	* moz#897255 Wasted work in line_uniq
+	* moz#897780 Wasted work in SuggestMgr::twowords
+
+2013-07-25 Caolán McNamara <caolanm at LibO>:
+	* hunspell#167 layout problems with long lines
+		- based on the original fix by xorho
+		  adapted to HEAD
+	* rhbz#925562 upgrade config.guess for aarch64
+
+2013-07-24 pchang9@cs.wisc.edu
+	* moz#896301 Wasted work in SfxEntry::checkword
+	* moz#896844 Wasted work in AffixMgr::defcpd_check
+
+2013-06-13 Konstantin Khlebniko
+	* #49 HashMgr::add_word computes wrong size for struct hentry
+
+2013-06-13 Ville Skyttä
+	* #53 Man page syntax fixes 
+
+2013-04-19 John Thomson <john thomson at SIL>
+        * win_api: add remove() of Hunspell API (hun#3606435)
+
+2013-04-19 Rouslan Solomokhin <at sf.net>
+        * fix crash in suggestions for 99-character long words
+          by extending arrays of SuggestMgr::forgotchar_*
+          (hun#3595024, also http://crbug.com/130128),
+          thanks to also Paweł Hajdan to report the patch
+
+2013-04-01 Caolán McNamara <caolanm at LibO>:
+	* hunspell: -Werror=undef
+
+2013-03-13 Caolán McNamara <caolanm at LibO>:
+	* rhbz#918938 crash in interaction with danish thesaurus
+
+2012-09-18 Németh László <nemeth at numbertext dot org>:
+        * src/hunspell/affixmgr.*: - fix morphological analysis of
+        compound words (hun#3544994, reported by Dávid Nemeskey, fdo#55045)
+
+2012-06-29 Caolán McNamara <caolanm at LibO>:
+	* fix various coverity warnings
+
+2012-01-10 Ehsan Akhgari <ehsan at mozilla dot com>
+	* moz#710940 Firefox Crash [@ AffixMgr::parse_file(char const*, char
+	const*) ]
+
+2011-12-16 Jared Wein <jwein at mozilla dot com>
+	* moz#710967 Incorrect argument passed to strncmp in
+	AffixMgr::parse_convtable
+
+2011-12-06 Caolán McNamara <caolanm at LibO>:
+	* rhbz#759647 fixed tempname of hunSPELL.bak collides with other users
+	when multiple edits in one dir
+
+2011-10-13 Caolán McNamara <caolanm at LibO>:
+	* moz#694002 crash in hunspell affixmgr on exit with bad .aff
+	* leak in hunspell affixmgr with bad .aff
+
+2011-09-19 Caolán McNamara <caolanm at LibO>:
+	* make libparsers.a not installed thanks to Tomáš Chvátal
+
+2011-06-23 Caolán McNamara <caolanm at LibO>:
+	* fix some windows compiler warnings
+
+2011-05-24 Németh László <nemeth at numbertext dot org>:
+        * src/hunspell/affixmgr.*: allow twofold suffixes in compounds
+          by extended version of Arno Teigseth's patch, see hun#3288562.
+        - new option for this feature: COMPOUNDMORESUFFIXES
+
 2011-02-16 Németh László <nemeth at numbertext dot org>:
         * src/*/Makefile.am: fix library versioning, the probem reported by
           Rene Engerhald and Simon Brouwer.
