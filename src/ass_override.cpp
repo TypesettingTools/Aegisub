@@ -199,9 +199,7 @@ struct AssOverrideTagProto {
 
 static std::vector<AssOverrideTagProto> proto;
 static void load_protos() {
-	static bool loaded = false;
-	if (loaded) return;
-	loaded = true;
+	if (!proto.empty()) return;
 
 	proto.resize(56);
 	int i = 0;
