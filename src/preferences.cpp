@@ -635,14 +635,12 @@ void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
 
 void Preferences::SetOption(std::unique_ptr<agi::OptionValue> new_value) {
 	pending_changes[new_value->GetName()] = std::move(new_value);
-	if (IsEnabled())
-		applyButton->Enable(true);
+	applyButton->Enable(true);
 }
 
 void Preferences::AddPendingChange(Thunk const& callback) {
 	pending_callbacks.push_back(callback);
-	if (IsEnabled())
-		applyButton->Enable(true);
+	applyButton->Enable(true);
 }
 
 void Preferences::AddChangeableOption(std::string const& name) {
