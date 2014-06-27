@@ -145,6 +145,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	Subscribe("Karaoke Template");
 	Subscribe("Karaoke Variable");
 
+	OPT_SUB("Colour/Subtitle/Background", &SubsTextEditCtrl::SetStyles, this);
 	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this);
 	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this);
 
@@ -204,13 +205,15 @@ void SubsTextEditCtrl::OnKeyDown(wxKeyEvent &event) {
 	}
 }
 
-void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& name) {
+void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& name, wxColor const& default_background) {
 	StyleSetFont(id, font);
 	StyleSetBold(id, OPT_GET("Colour/Subtitle/Syntax/Bold/" + name)->GetBool());
 	StyleSetForeground(id, to_wx(OPT_GET("Colour/Subtitle/Syntax/" + name)->GetColor()));
 	const agi::OptionValue *background = OPT_GET("Colour/Subtitle/Syntax/Background/" + name);
 	if (background->GetType() == agi::OptionType::Color)
 		StyleSetBackground(id, to_wx(background->GetColor()));
+	else
+		StyleSetBackground(id, default_background);
 }
 
 void SubsTextEditCtrl::SetStyles() {
@@ -220,18 +223,23 @@ void SubsTextEditCtrl::SetStyles() {
 	if (!fontname.empty()) font.SetFaceName(fontname);
 	font.SetPointSize(OPT_GET("Subtitle/Edit Box/Font Size")->GetInt());
 
+	auto default_background = to_wx(OPT_GET("Colour/Subtitle/Background")->GetColor());
+
 	namespace ss = agi::ass::SyntaxStyle;
-	SetSyntaxStyle(ss::NORMAL, font, "Normal");
-	SetSyntaxStyle(ss::COMMENT, font, "Comment");
-	SetSyntaxStyle(ss::DRAWING, font, "Drawing");
-	SetSyntaxStyle(ss::OVERRIDE, font, "Brackets");
-	SetSyntaxStyle(ss::PUNCTUATION, font, "Slashes");
-	SetSyntaxStyle(ss::TAG, font, "Tags");
-	SetSyntaxStyle(ss::ERROR, font, "Error");
-	SetSyntaxStyle(ss::PARAMETER, font, "Parameters");
-	SetSyntaxStyle(ss::LINE_BREAK, font, "Line Break");
-	SetSyntaxStyle(ss::KARAOKE_TEMPLATE, font, "Karaoke Template");
-	SetSyntaxStyle(ss::KARAOKE_VARIABLE, font, "Karaoke Variable");
+	SetSyntaxStyle(ss::NORMAL, font, "Normal", default_background);
+	SetSyntaxStyle(ss::COMMENT, font, "Comment", default_background);
+	SetSyntaxStyle(ss::DRAWING, font, "Drawing", default_background);
+	SetSyntaxStyle(ss::OVERRIDE, font, "Brackets", default_background);
+	SetSyntaxStyle(ss::PUNCTUATION, font, "Slashes", default_background);
+	SetSyntaxStyle(ss::TAG, font, "Tags", default_background);
+	SetSyntaxStyle(ss::ERROR, font, "Error", default_background);
+	SetSyntaxStyle(ss::PARAMETER, font, "Parameters", default_background);
+	SetSyntaxStyle(ss::LINE_BREAK, font, "Line Break", default_background);
+	SetSyntaxStyle(ss::KARAOKE_TEMPLATE, font, "Karaoke Template", default_background);
+	SetSyntaxStyle(ss::KARAOKE_VARIABLE, font, "Karaoke Variable", default_background);
+
+	SetCaretForeground(StyleGetForeground(ss::NORMAL));
+	StyleSetBackground(wxSTC_STYLE_DEFAULT, default_background);
 
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
