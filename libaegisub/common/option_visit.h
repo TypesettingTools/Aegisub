@@ -21,6 +21,8 @@
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/visitor.h"
 
+#include "libaegisub/exception.h"
+
 #include <memory>
 
 namespace agi {

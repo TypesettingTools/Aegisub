@@ -23,7 +23,6 @@
 #include <map>
 #include <memory>
 
-#include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
 namespace json {
@@ -32,10 +31,6 @@ namespace json {
 }
 
 namespace agi {
-
-DEFINE_EXCEPTION(OptionError, Exception);
-DEFINE_EXCEPTION(OptionErrorNotFound, OptionError);
-
 class OptionValue;
 
 using OptionValueMap = std::map<std::string, std::unique_ptr<OptionValue>>;

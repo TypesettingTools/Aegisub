@@ -22,6 +22,7 @@
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/cajun/elements.h"
 
+#include "libaegisub/exception.h"
 #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
@@ -114,7 +115,7 @@ OptionValue* Options::Get(const std::string &name) {
 		return index->second.get();
 
 	LOG_E("option/get") << "agi::Options::Get Option not found: (" << name << ")";
-	throw OptionErrorNotFound("Option value not found: " + name);
+	throw agi::InternalError("Option value not found: " + name);
 }
 
 void Options::Flush() const {

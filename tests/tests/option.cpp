@@ -49,7 +49,7 @@ TEST_F(lagi_option, get_existing_option) {
 
 TEST_F(lagi_option, get_nonexistant_option) {
 	agi::Options opt(conf_ok, default_opt, agi::Options::FLUSH_SKIP);
-	EXPECT_THROW(opt.Get("Nonexistant option"), agi::OptionErrorNotFound);
+	EXPECT_THROW(opt.Get("Nonexistant option"), agi::InternalError);
 }
 
 TEST_F(lagi_option, flush_skip) {
