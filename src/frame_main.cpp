@@ -59,6 +59,7 @@
 #include "video_controller.h"
 #include "video_display.h"
 
+#include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
@@ -87,7 +88,7 @@ public:
 		std::vector<agi::fs::path> files;
 		for (wxString const& fn : filenames)
 			files.push_back(from_wx(fn));
-		context->project->LoadList(files);
+		agi::dispatch::Main().Async([=] { context->project->LoadList(files); });
 		return true;
 	}
 };
