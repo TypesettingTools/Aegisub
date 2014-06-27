@@ -445,11 +445,4 @@ void VisualToolVectorClip::DoRefresh() {
 	spline.DecodeFromAss(vect);
 
 	MakeFeatures();
-	SelectAll();
-}
-
-void VisualToolVectorClip::SelectAll() {
-	sel_features.clear();
-	for (auto& feature : features)
-		sel_features.insert(&feature);
 }

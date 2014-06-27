@@ -45,7 +45,6 @@ class VisualToolVectorClip final : public VisualTool<VisualToolVectorClipDraggab
 	void Save();
 	void Commit(wxString message="") override;
 
-	void SelectAll();
 	void MakeFeature(size_t idx);
 	void MakeFeatures();
 
