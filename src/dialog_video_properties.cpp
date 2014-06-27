@@ -17,6 +17,7 @@
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "format.h"
+#include "help_button.h"
 #include "options.h"
 #include "resolution_resampler.h"
 
@@ -75,6 +76,7 @@ int prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
 
 	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(rb->GetSelection() + 1); }, wxID_OK);
 	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(0); }, wxID_CANCEL);
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { HelpButton::OpenPage("Resolution mismatch"); }, wxID_HELP);
 
 	return d.ShowModal();
 }
